@@ -91,7 +91,7 @@ SPUnitDesc unitdesc[] = {
 	{N_("Centimeters"), N_("Centimeter"), N_("cm"), SP_SVG_UNIT_ABSOLUTE, SP_CM},
 	{N_("Inches"), N_("Inch"), N_("\""), SP_SVG_UNIT_ABSOLUTE, SP_IN},
 	{N_("Points"), N_("Point"), N_("pt"), SP_SVG_UNIT_ABSOLUTE, SP_PT},
-	{N_("Pixelss"), N_("Pixel"), N_("px"), SP_SVG_UNIT_PIXELS, NONE},
+	{N_("Pixels"), N_("Pixel"), N_("px"), SP_SVG_UNIT_PIXELS, NONE},
 	{N_("Userspace"), N_("Userspace"), N_("us"), SP_SVG_UNIT_USER, NONE},
 	{N_("Percent"), N_("Percent"), N_("%"), SP_SVG_UNIT_PERCENT, NONE},
 	{N_("Em squares"), N_("Em square"), N_("em"), SP_SVG_UNIT_EM, NONE},

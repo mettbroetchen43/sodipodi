@@ -1,3 +1,31 @@
+2001-08-01  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document-undo.c (sp_document_undo): Fresh logic
+	(sp_document_redo): Ditto
+	(sp_document_child_added): Real listener
+	(sp_document_child_removed): Ditto
+	(sp_document_attr_changed): Ditto
+	(sp_document_content_changed): Ditto
+	(sp_document_order_changed): Ditto
+	(sp_document_add_repr): Fresh logic, use only as wrapper
+	(sp_document_del_repr): Ditto
+	(sp_document_clear_undo): Use new logic, free actions at last
+	(sp_document_clear_redo): Ditto
+	(sp_action_list_undo): New functions, plus handful children
+	(sp_action_list_redo): Ditto
+	(sp_action_new): New function
+	(sp_action_free): Ditto
+	(sp_action_free_list): Ditto
+
+2001-07-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr.c (sp_repr_ref): Return referenced repr
+	(sp_repr_unref): Ditto
+	(sp_repr_duplicate): Cleanup
+	(sp_repr_set_content): Ditto, new handler signatures
+
+	* src/xml/repr-private.h: Lot of signature changes
+
 2001-07-30  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item-group.c: #include <config.h> for i18n

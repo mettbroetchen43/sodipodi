@@ -3,6 +3,62 @@
 
 #include "document.h"
 
+typedef struct _SPAction SPAction;
+typedef struct _SPActionAdd SPActionAdd;
+typedef struct _SPActionDel SPActionDel;
+typedef struct _SPActionChgAttr SPActionChgAttr;
+typedef struct _SPActionChgContent SPActionChgContent;
+typedef struct _SPActionChgOrder SPActionChgOrder;
+
+typedef enum {
+	SP_ACTION_INVALID,
+	SP_ACTION_ADD,
+	SP_ACTION_DEL,
+	SP_ACTION_CHGATTR,
+	SP_ACTION_CHGCONTENT,
+	SP_ACTION_CHGORDER
+} SPActionType;
+
+struct _SPActionAdd {
+	SPRepr *child; /* Copy of child */
+	guchar *ref; /* ID of ref */
+};
+
+struct _SPActionDel {
+	SPRepr *child; /* Copy of child */
+	guchar *ref; /* ID of ref */
+};
+
+struct _SPActionChgAttr {
+	gint key; /* Quark of key name */
+	guchar *oldval; /* Old value */
+	guchar *newval; /* New value */
+};
+
+struct _SPActionChgContent {
+	guchar *oldval; /* Old value */
+	guchar *newval; /* New value */
+};
+
+struct _SPActionChgOrder {
+	guchar *child; /* Child ID */
+	guchar *oldref; /* ID of old ref */
+	guchar *newref; /* ID of new ref */
+};
+
+struct _SPAction {
+	SPAction *next;
+	SPActionType type;
+	guchar *id; /* ID of repr that emitted signal */
+	union {
+		SPActionAdd add;
+		SPActionDel del;
+		SPActionChgAttr chgattr;
+		SPActionChgContent chgcontent;
+		SPActionChgOrder chgorder;
+	};
+};
+
 struct _SPDocumentPrivate {
 	SPReprDoc * rdoc;	/* Our SPReprDoc */
 	SPRepr * rroot;		/* Root element of SPReprDoc */
@@ -22,14 +78,17 @@ struct _SPDocumentPrivate {
 	/* State */
 
 	guint sensitive: 1; /* If we save actions to undo stack */
-	guchar *key; /* Last action key */
 	GSList * undo; /* Undo stack of reprs */
 	GSList * redo; /* Redo stack of reprs */
-	GList * actions; /* List of current actions */
+
+	const guchar *key; /* Last action key */
+	SPAction *actions; /* List of current actions */
 
 	/* Handler ID */
 
 	guint modified_id;
 };
+
+void sp_action_free_list (SPAction *action);
 
 #endif

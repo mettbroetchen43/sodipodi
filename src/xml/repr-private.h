@@ -16,51 +16,55 @@ typedef struct _SPReprListener SPReprListener;
 typedef struct _SPReprEventVector SPReprEventVector;
 
 struct _SPReprAttr {
-	SPReprAttr * next;
+	SPReprAttr *next;
 	gint key;
-	gchar * value;
+	guchar *value;
 };
 
 struct _SPReprListener {
-	SPReprListener * next;
-	SPReprEventVector * vector;
+	SPReprListener *next;
+	const SPReprEventVector *vector;
 	gpointer data;
 };
 
 struct _SPReprEventVector {
 	/* Immediate signals */
-	void (* child_added) (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer data);
-	void (* remove_child) (SPRepr * repr, SPRepr * child, gpointer data);
-	gint (* change_attr) (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
-	void (* attr_changed) (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
-	gint (* change_content) (SPRepr * repr, const gchar * content, gpointer data);
-	void (* content_changed) (SPRepr * repr, gpointer data);
-	gint (* change_order) (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
-	void (* order_changed) (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
+	gboolean (* add_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+	void (* child_added) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+	gboolean (* remove_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+	void (* child_removed) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+	gboolean (* change_attr) (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
+	void (* attr_changed) (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
+	gboolean (* change_content) (SPRepr *repr, const guchar *oldcontent, const guchar *newcontent, gpointer data);
+	void (* content_changed) (SPRepr *repr, const guchar *oldcontent, const guchar *newcontent, gpointer data);
+	gboolean (* change_order) (SPRepr *repr, SPRepr *child, SPRepr *oldref, SPRepr *newref, gpointer data);
+	void (* order_changed) (SPRepr *repr, SPRepr *child, SPRepr *oldref, SPRepr *newref, gpointer data);
 };
 
 struct _SPRepr {
 	gint refcount;
 	gint name;
-	SPRepr * parent;
-	SPRepr * next;
-	SPRepr * children;
-	SPReprAttr * attributes;
-	SPReprListener * listeners;
-	gchar * content;
+	SPRepr *parent;
+	SPRepr *next;
+	SPRepr *children;
+	SPReprAttr *attributes;
+	SPReprListener *listeners;
+	guchar *content;
 };
 
-#define SP_REPR_ATTRIBUTE_KEY(a) g_quark_to_string (a->key)
-#define SP_REPR_ATTRIBUTE_VALUE(a) (a->value)
+#define SP_REPR_NAME(r) g_quark_to_string ((r)->name)
+#define SP_REPR_CONTENT(r) ((r)->content)
+#define SP_REPR_ATTRIBUTE_KEY(a) g_quark_to_string ((a)->key)
+#define SP_REPR_ATTRIBUTE_VALUE(a) ((a)->value)
 
-SPRepr * sp_repr_nth_child (SPRepr * repr, gint n);
+SPRepr * sp_repr_nth_child (const SPRepr *repr, gint n);
 
-void sp_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * ref);
+gboolean sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref);
 
-void sp_repr_add_listener (SPRepr * repr, SPReprEventVector * vector, gpointer data);
-void sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data);
+void sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, gpointer data);
+void sp_repr_remove_listener_by_data (SPRepr *repr, gpointer data);
 
-void sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr);
+void sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr);
 
 
 #endif

@@ -95,10 +95,11 @@ void sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive);
 void sp_document_clear_undo (SPDocument * document);
 void sp_document_clear_redo (SPDocument * document);
 
-gboolean sp_document_attr_changed (SPDocument * document, SPObject * object, const gchar * key, const gchar * oldval, const gchar * newval);
-gboolean sp_document_order_changed (SPDocument * document, SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
-
-gboolean sp_document_change_content_requested (SPDocument * document, SPObject * object, const gchar * value);
+void sp_document_child_added (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *ref);
+void sp_document_child_removed (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *ref);
+void sp_document_attr_changed (SPDocument *doc, SPObject *object, const guchar *key, const guchar *oldval, const guchar *newval);
+void sp_document_content_changed (SPDocument *doc, SPObject *object, const guchar *oldcontent, const guchar *newcontent);
+void sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *oldref, SPRepr *newref);
 
 /* Object modification root handler */
 
@@ -108,10 +109,7 @@ void sp_document_request_modified (SPDocument *document);
 void sp_document_done (SPDocument *document);
 void sp_document_maybe_done (SPDocument *document, const guchar *key);
 
-/* Clear current actions, so these cannot be undone */
-
-void sp_document_clear_actions (SPDocument * document);
-
+/* Undo and redo */
 void sp_document_undo (SPDocument * document);
 void sp_document_redo (SPDocument * document);
 
@@ -120,9 +118,9 @@ void sp_document_redo (SPDocument * document);
  */
 
 /* Adds repr to document, returning created item, if any */
-SPItem * sp_document_add_repr (SPDocument * document, SPRepr * repr);
+SPItem * sp_document_add_repr (SPDocument *document, SPRepr *repr);
 /* Deletes repr from document */
-void sp_document_del_repr (SPDocument * document, SPRepr * repr);
+void sp_document_del_repr (SPDocument *document, SPRepr *repr);
 
 /*
  * Misc

@@ -221,31 +221,32 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			if (addline) {
 				ArtBpath * bp;
 				addline = FALSE;
-				g_assert (dc->currentcurve->end > 1);
-				bp = sp_curve_last_bpath (dc->currentcurve);
-				p.x = bp->x3;
-				p.y = bp->y3;
-				/* We were in straight-line mode - draw it now */
-				concat_current (dc);
-				if (dc->cinside) {
-					if (dc->accumulated->end > 3) {
-						sp_curve_closepath_current (dc->accumulated);
+				if (dc->currentcurve->end > 1) {
+					bp = sp_curve_last_bpath (dc->currentcurve);
+					p.x = bp->x3;
+					p.y = bp->y3;
+					/* We were in straight-line mode - draw it now */
+					concat_current (dc);
+					if (dc->cinside) {
+						if (dc->accumulated->end > 3) {
+							sp_curve_closepath_current (dc->accumulated);
+						}
 					}
-				}
-				set_to_accumulated (dc);
-				clear_current (dc);
-				if (dc->accumulated->closed) {
-					/* reset accumulated curve */
-					sp_curve_reset (dc->accumulated);
-					if (dc->repr) {
+					set_to_accumulated (dc);
+					clear_current (dc);
+					if (dc->accumulated->closed) {
+						/* reset accumulated curve */
+						sp_curve_reset (dc->accumulated);
+						if (dc->repr) {
 #if 0
-						gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+							gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
 #endif
-						dc->repr = NULL;
+							dc->repr = NULL;
+						}
+						remove_ctrl (dc);
+					} else if (dc->currentcurve->end > 1) {
+						move_ctrl (dc, dc->accumulated->bpath->x3, dc->accumulated->bpath->y3);
 					}
-					remove_ctrl (dc);
-				} else if (dc->currentcurve->end > 1) {
-					move_ctrl (dc, dc->accumulated->bpath->x3, dc->accumulated->bpath->y3);
 				}
 			} else {
 				addline = TRUE;

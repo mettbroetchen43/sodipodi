@@ -27,31 +27,30 @@ static void sp_object_read_attr (SPObject * object, const gchar * key);
 
 /* Real handlers of repr signals */
 
-static gboolean sp_object_repr_change_attr (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
-static void sp_object_repr_attr_changed (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
+static gboolean sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
+static void sp_object_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
 
-static void sp_object_repr_change_content (SPRepr * repr, gpointer data);
+static void sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const guchar *newcontent, gpointer data);
 
-static void sp_object_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr *ref, gpointer data);
-static void sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data);
+static void sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+static gboolean sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
 
-static gboolean sp_object_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
-static void sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
-
-static gboolean sp_object_repr_content_changed_pre (SPRepr * repr, const gchar * value, gpointer data);
+static void sp_object_repr_order_changed (SPRepr *repr, SPRepr *child, SPRepr *old, SPRepr *new, gpointer data);
 
 static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 
 enum {MODIFIED, LAST_SIGNAL};
 
 SPReprEventVector object_event_vector = {
-	sp_object_repr_add_child,
+	NULL, /* Add child */
+	sp_object_repr_child_added,
 	sp_object_repr_remove_child,
+	NULL, /* Child removed */
 	sp_object_repr_change_attr,
 	sp_object_repr_attr_changed,
-	sp_object_repr_content_changed_pre,
-	sp_object_repr_change_content,
-	sp_object_repr_change_order,
+	NULL, /* Change content */
+	sp_object_repr_content_changed,
+	NULL, /* change_order */
 	sp_object_repr_order_changed
 };
 
@@ -207,7 +206,7 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 }
 
 static void
-sp_object_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer data)
+sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data)
 {
 	SPObject * object; 
 
@@ -215,10 +214,12 @@ sp_object_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer 
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->child_added)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->child_added) (object, child, ref);
+
+	sp_document_child_added (object->document, object, child, ref);
 }
 
-static void
-sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data)
+static gboolean
+sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data)
 {
 	SPObject * object;
 
@@ -226,12 +227,8 @@ sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data)
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child)
 		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child) (object, child);
-}
 
-static gboolean
-sp_object_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data)
-{
-	/* Nothing here */
+	sp_document_child_removed (object->document, object, child, ref);
 
 	return TRUE;
 }
@@ -245,10 +242,10 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 
 	object = SP_OBJECT (data);
 
-	sp_document_order_changed (object->document, object, child, old, new);
-
 	if (((SPObjectClass *) (((GtkObject *) object)->klass))->order_changed)
 		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->order_changed) (object, child, old, new);
+
+	sp_document_order_changed (object->document, object, child, old, new);
 }
 
 static void
@@ -292,7 +289,7 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 }
 
 static gboolean
-sp_object_repr_change_attr (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data)
+sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
 {
 	SPObject * object;
 	gpointer defid;
@@ -309,46 +306,28 @@ sp_object_repr_change_attr (SPRepr * repr, const gchar * key, const gchar * oldv
 }
 
 static void
-sp_object_repr_attr_changed (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data)
+sp_object_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
 {
 	SPObject * object;
 
 	object = SP_OBJECT (data);
-
-	sp_document_attr_changed (object->document, object, key, oldval, newval);
 
 	sp_object_invoke_read_attr (object, key);
-}
 
-static gboolean
-sp_object_repr_content_changed_pre (SPRepr * repr, const gchar * value, gpointer data)
-{
-	SPObject * object;
-
-	g_assert (repr != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
-	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
-
-	return sp_document_change_content_requested (object->document, object, value);
+	sp_document_attr_changed (object->document, object, key, oldval, newval);
 }
 
 static void
-sp_object_repr_change_content (SPRepr * repr, gpointer data)
+sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const guchar *newcontent, gpointer data)
 {
 	SPObject * object;
 
-	g_assert (repr != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
 	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_content)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
+
+	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
 
 /* Modification */

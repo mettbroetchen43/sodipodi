@@ -20,10 +20,10 @@ typedef struct _SPRepr SPRepr;
 
 /* Create new repr & similar */
 
-SPRepr * sp_repr_new (const gchar * name);
-void sp_repr_ref (SPRepr * repr);
-void sp_repr_unref (SPRepr * repr);
-SPRepr * sp_repr_duplicate (SPRepr * repr);
+SPRepr *sp_repr_new (const guchar *name);
+SPRepr *sp_repr_ref (SPRepr *repr);
+SPRepr *sp_repr_unref (SPRepr *repr);
+SPRepr *sp_repr_duplicate (const SPRepr *repr);
 
 /* Documents - 1st step in migrating to real XML */
 
@@ -38,9 +38,9 @@ SPReprDoc * sp_repr_document (SPRepr * repr);
 
 /* Contents */
 
-const gchar * sp_repr_name (SPRepr * repr);
-const gchar * sp_repr_content (SPRepr * repr);
-const gchar * sp_repr_attr (SPRepr * repr, const gchar * key);
+const guchar *sp_repr_name (const SPRepr *repr);
+const guchar *sp_repr_content (const SPRepr *repr);
+const guchar *sp_repr_attr (const SPRepr *repr, const guchar *key);
 
 /*
  * NB! signal handler may decide, that change is not allowed
@@ -48,8 +48,8 @@ const gchar * sp_repr_attr (SPRepr * repr, const gchar * key);
  * TRUE, if successful
  */
 
-gboolean sp_repr_set_content (SPRepr * repr, const gchar * content);
-gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value);
+gboolean sp_repr_set_content (SPRepr *repr, const guchar *content);
+gboolean sp_repr_set_attr (SPRepr *repr, const guchar *key, const guchar *value);
 
 /*
  * Returns list of attribute strings
@@ -64,10 +64,11 @@ gpointer sp_repr_data (SPRepr * repr);
 SPRepr * sp_repr_parent (SPRepr * repr);
 const GList * sp_repr_children (SPRepr * repr);
 gint sp_repr_n_children (SPRepr * repr);
-void sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref);
-void sp_repr_remove_child (SPRepr * repr, SPRepr * child);
+gboolean sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref);
+gboolean sp_repr_remove_child (SPRepr * repr, SPRepr * child);
+#if 0
 void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data);
-
+#endif
 /* IO */
 
 SPReprDoc * sp_repr_read_file (const gchar * filename);

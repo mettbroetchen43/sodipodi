@@ -4,8 +4,11 @@
 #include "repr-private.h"
 
 static SPRepr * sp_repr_new_from_code (gint code);
-static void sp_repr_remove_attribute (SPRepr * repr, SPReprAttr * attr);
+static void sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr);
 static void sp_node_remove_listener (SPNode *node, SPListener *listener);
+
+static SPAttribute *sp_attribute_duplicate (const SPAttribute *attr);
+static SPAttribute *sp_attribute_new_from_quark (gint key, const guchar *value);
 
 /* Helpers */
 static SPNode * sp_node_alloc (void);
@@ -33,7 +36,7 @@ sp_repr_new_from_code (gint code)
 }
 
 SPRepr *
-sp_repr_new (const gchar * name)
+sp_repr_new (const guchar *name)
 {
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (*name != '\0', NULL);
@@ -41,20 +44,22 @@ sp_repr_new (const gchar * name)
 	return sp_repr_new_from_code (g_quark_from_string (name));
 }
 
-void
-sp_repr_ref (SPRepr * repr)
+SPRepr *
+sp_repr_ref (SPRepr *repr)
 {
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (repr->refcount > 0);
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (repr->refcount > 0, NULL);
 
 	repr->refcount += 1;
+
+	return repr;
 }
 
-void
-sp_repr_unref (SPRepr * repr)
+SPRepr *
+sp_repr_unref (SPRepr *repr)
 {
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (repr->refcount > 0);
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (repr->refcount > 0, NULL);
 
 	repr->refcount -= 1;
 
@@ -68,14 +73,28 @@ sp_repr_unref (SPRepr * repr)
 		while (repr->listeners) sp_node_remove_listener (repr, repr->listeners);
 		sp_node_free (repr);
 	}
+
+	return NULL;
 }
 
-
-SPRepr * sp_repr_duplicate (SPRepr * repr)
+static SPRepr *
+sp_repr_attach (SPRepr *parent, SPRepr *child)
 {
-	SPRepr * new;
-	SPRepr * child, * lastchild;
-	SPReprAttr * attr, * lastattr;
+	g_assert (parent != NULL);
+	g_assert (child != NULL);
+	g_assert (child->parent == NULL);
+
+	child->parent = parent;
+
+	return child;
+}
+
+SPRepr *
+sp_repr_duplicate (const SPRepr *repr)
+{
+	SPRepr *new;
+	SPRepr *child, *lastchild;
+	SPReprAttr *attr, *lastattr;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 
@@ -85,82 +104,45 @@ SPRepr * sp_repr_duplicate (SPRepr * repr)
 
 	lastchild = NULL;
 	for (child = repr->children; child != NULL; child = child->next) {
-		SPRepr * newchild;
-		newchild = sp_repr_duplicate (child);
-		newchild->parent = new;
 		if (lastchild) {
-			lastchild->next = newchild;
+			lastchild = lastchild->next = sp_repr_attach (new, sp_repr_duplicate (child));
 		} else {
-			new->children = newchild;
+			lastchild = new->children = sp_repr_attach (new, sp_repr_duplicate (child));
 		}
-		lastchild = newchild;
 	}
 
 	lastattr = NULL;
 	for (attr = repr->attributes; attr != NULL; attr = attr->next) {
-		SPReprAttr * newattr;
-		newattr = sp_attribute_alloc ();
-		newattr->next = NULL;
-		newattr->key = attr->key;
-		newattr->value = g_strdup (attr->value);
 		if (lastattr) {
-			lastattr->next = newattr;
+			lastattr = lastattr->next = sp_attribute_duplicate (attr);
 		} else {
-			new->attributes = newattr;
+			lastattr = new->attributes = sp_attribute_duplicate (attr);
 		}
-		lastattr = newattr;
 	}
 
 	return new;
 }
 
-const gchar *
-sp_repr_name (SPRepr * repr)
+const guchar *
+sp_repr_name (const SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
 
-	return g_quark_to_string (repr->name);
+	return SP_REPR_NAME (repr);
 }
 
-gint
-sp_repr_set_content (SPRepr * repr, const gchar * content)
-{
-	SPReprListener * rl;
-	gboolean allowed;
-
-	g_return_val_if_fail (repr != NULL, FALSE);
-
-	allowed = TRUE;
-	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
-		if (rl->vector->change_content) allowed = (* rl->vector->change_content) (repr, content, rl->data);
-	}
-
-	if (allowed) {
-		if (repr->content) g_free (repr->content);
-		if (content) {
-			repr->content = g_strdup (content);
-		} else {
-			repr->content = NULL;
-		}
-		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
-			if (rl->vector->content_changed) (* rl->vector->content_changed) (repr, rl->data);
-		}
-	}
-
-	return allowed;
-}
-
-const gchar *
-sp_repr_content (SPRepr * repr)
+const guchar *
+sp_repr_content (const SPRepr *repr)
 {
 	g_assert (repr != NULL);
 
-	return repr->content;
+	return SP_REPR_CONTENT (repr);
 }
 
-const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
+const guchar *
+sp_repr_attr (const SPRepr *repr, const guchar *key)
 {
-	SPReprAttr * ra;
+	SPReprAttr *ra;
 	GQuark q;
 
 	g_return_val_if_fail (repr != NULL, NULL);
@@ -173,12 +155,85 @@ const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
 	return NULL;
 }
 
-gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
+gboolean
+sp_repr_set_content (SPRepr *repr, const guchar *newcontent)
 {
-	SPReprAttr * prev, * attr;
-	SPReprListener * rl;
+	SPReprListener *rl;
+	guchar *oldcontent;
 	gboolean allowed;
-	gchar * oldval;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+
+	oldcontent = SP_REPR_CONTENT (repr);
+
+	allowed = TRUE;
+	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
+		if (rl->vector->change_content) allowed = (* rl->vector->change_content) (repr, oldcontent, newcontent, rl->data);
+	}
+
+	if (allowed) {
+		if (newcontent) {
+			newcontent = repr->content = g_strdup (newcontent);
+		} else {
+			repr->content = NULL;
+		}
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->content_changed) (* rl->vector->content_changed) (repr, oldcontent, newcontent, rl->data);
+		}
+		if (oldcontent) g_free (oldcontent);
+	}
+
+	return allowed;
+}
+
+static gboolean
+sp_repr_del_attr (SPRepr *repr, const guchar *key)
+{
+	SPReprAttr *prev, *attr;
+	SPReprListener *rl;
+	gboolean allowed;
+	GQuark q;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (*key != '\0', FALSE);
+
+	allowed = TRUE;
+
+	q = g_quark_from_string (key);
+	prev = NULL;
+	for (attr = repr->attributes; attr && (attr->key != q); attr = attr->next) prev = attr;
+
+	if (attr) {
+		guchar *oldval;
+
+		oldval = attr->value;
+
+		for (rl = repr->listeners; rl && allowed; rl = rl->next) {
+			if (rl->vector->change_attr) allowed = (* rl->vector->change_attr) (repr, key, oldval, NULL, rl->data);
+		}
+
+		if (allowed) {
+			(prev) ? prev->next : repr->attributes = attr->next;
+
+			for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+				if (rl->vector->attr_changed) (* rl->vector->attr_changed) (repr, key, oldval, NULL, rl->data);
+			}
+
+			sp_attribute_free (attr);
+		}
+	}
+
+	return allowed;
+}
+
+static gboolean
+sp_repr_chg_attr (SPRepr *repr, const guchar *key, const guchar *value)
+{
+	SPReprAttr *prev, *attr;
+	SPReprListener *rl;
+	gboolean allowed;
+	gchar *oldval;
 	GQuark q;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
@@ -198,26 +253,11 @@ gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value
 
 	if (allowed) {
 		if (attr) {
-			if (value) {
-				attr->value = g_strdup (value);
-			} else {
-				if (prev) {
-					prev->next = attr->next;
-				} else {
-					repr->attributes = attr->next;
-				}
-				sp_attribute_free (attr);
-			}
-		} else if (value) {
-			attr = sp_attribute_alloc ();
-			attr->next = NULL;
-			attr->key = q;
 			attr->value = g_strdup (value);
-			if (prev) {
-				prev->next = attr;
-			} else {
-				repr->attributes = attr;
-			}
+		} else {
+			attr = sp_attribute_new_from_quark (q, value);
+
+			(prev) ? prev->next : repr->attributes = attr;
 		}
 
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
@@ -230,8 +270,21 @@ gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value
 	return allowed;
 }
 
+gboolean
+sp_repr_set_attr (SPRepr *repr, const guchar *key, const guchar *value)
+{
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (*key != '\0', FALSE);
+
+	if (!value) return sp_repr_del_attr (repr, key);
+
+	return sp_repr_chg_attr (repr, key, value);
+}
+
+
 static void
-sp_repr_remove_attribute (SPRepr * repr, SPReprAttr * attr)
+sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr)
 {
 	g_assert (repr != NULL);
 	g_assert (attr != NULL);
@@ -260,60 +313,81 @@ sp_repr_parent (SPRepr * repr)
 	return repr->parent;
 }
 
-void sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref)
+gboolean
+sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 {
 	SPReprListener * rl;
+	gboolean allowed;
 
 	g_assert (repr != NULL);
 	g_assert (child != NULL);
 	g_assert (!ref || ref->parent == repr);
 	g_assert (child->parent == NULL);
 
-	if (ref != NULL) {
-		child->next = ref->next;
-		ref->next = child;
-	} else {
-		child->next = repr->children;
-		repr->children = child;
-	}
-
-	child->parent = repr;
-	sp_repr_ref (child);
-
+	allowed = TRUE;
 	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
-		if (rl->vector->child_added) (* rl->vector->child_added) (repr, child, ref, rl->data);
+		if (rl->vector->add_child) allowed = (* rl->vector->add_child) (repr, child, ref, rl->data);
 	}
+
+	if (allowed) {
+		if (ref != NULL) {
+			child->next = ref->next;
+			ref->next = child;
+		} else {
+			child->next = repr->children;
+			repr->children = child;
+		}
+
+		child->parent = repr;
+		sp_repr_ref (child);
+
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->child_added) (* rl->vector->child_added) (repr, child, ref, rl->data);
+		}
+	}
+
+	return allowed;
 }
 
-void
-sp_repr_remove_child (SPRepr * repr, SPRepr * child)
+gboolean
+sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 {
-	SPReprListener * rl;
+	SPReprListener *rl;
+	SPRepr *ref;
+	gboolean allowed;
 
 	g_assert (repr != NULL);
 	g_assert (child != NULL);
 	g_assert (child->parent == repr);
 
+	ref = NULL;
+	if (child != repr->children) {
+		ref = repr->children;
+		while (ref->next != child) ref = ref->next;
+	}
+
+	allowed = TRUE;
 	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
-		if (rl->vector->remove_child) (* rl->vector->remove_child) (repr, child, rl->data);
+		if (rl->vector->remove_child) allowed = (* rl->vector->remove_child) (repr, child, ref, rl->data);
 	}
 
-	if (child == repr->children) {
-		repr->children = child->next;
-	} else {
-		SPRepr * last;
-		last = repr->children;
-		while (last->next != child) last = last->next;
-		last->next = child->next;
+	if (allowed) {
+		(ref) ? ref->next : repr->children = child->next;
+		child->parent = NULL;
+		child->next = NULL;
+
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->child_removed) (* rl->vector->child_removed) (repr, child, ref, rl->data);
+		}
+
+		sp_repr_unref (child);
 	}
 
-	child->parent = NULL;
-	child->next = NULL;
-	sp_repr_unref (child);
+	return allowed;
 }
 
-void
-sp_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * ref)
+gboolean
+sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref)
 {
 	SPRepr * prev;
 	SPReprListener * rl;
@@ -321,11 +395,11 @@ sp_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * ref)
 
 	prev = NULL;
 	if (child != repr->children) {
-		SPRepr * cur;
+		SPRepr *cur;
 		for (cur = repr->children; cur != child; cur = cur->next) prev = cur;
 	}
 
-	if (prev == ref) return;
+	if (prev == ref) return TRUE;
 
 	allowed = TRUE;
 	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
@@ -350,6 +424,8 @@ sp_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * ref)
 			if (rl->vector->order_changed) (* rl->vector->order_changed) (repr, child, prev, ref, rl->data);
 		}
 	}
+
+	return allowed;
 }
 
 void
@@ -379,9 +455,9 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 }
 
 void
-sp_repr_add_listener (SPRepr * repr, SPReprEventVector * vector, gpointer data)
+sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, gpointer data)
 {
-	SPReprListener * rl, * last;
+	SPReprListener *rl, *last;
 
 	g_assert (repr != NULL);
 	g_assert (vector != NULL);
@@ -441,7 +517,7 @@ sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data)
 }
 
 SPRepr *
-sp_repr_nth_child (SPRepr * repr, gint n)
+sp_repr_nth_child (const SPRepr * repr, gint n)
 {
 	SPRepr * child;
 
@@ -526,6 +602,33 @@ sp_repr_document_root (SPReprDoc * doc)
 	return repr->children;
 }
 
+static SPAttribute *
+sp_attribute_duplicate (const SPAttribute *attr)
+{
+	SPAttribute *new;
+
+	new = sp_attribute_alloc ();
+
+	new->next = NULL;
+	new->key = attr->key;
+	new->value = g_strdup (attr->value);
+
+	return new;
+}
+
+static SPAttribute *
+sp_attribute_new_from_quark (gint key, const guchar *value)
+{
+	SPAttribute *new;
+
+	new = sp_attribute_alloc ();
+
+	new->next = NULL;
+	new->key = key;
+	new->value = g_strdup (value);
+
+	return new;
+}
 
 /* Helpers */
 #define SP_NODE_ALLOC_SIZE 32

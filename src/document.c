@@ -98,7 +98,7 @@ sp_document_init (SPDocument * document)
 
 	p->namedviews = NULL;
 
-	p->sensitive = TRUE;
+	p->sensitive = FALSE;
 	p->undo = NULL;
 	p->redo = NULL;
 	p->actions = NULL;
@@ -118,9 +118,8 @@ sp_document_destroy (GtkObject * object)
 	private = document->private;
 
 	if (private) {
-		while (private->actions) {
-			sp_repr_unref ((SPRepr *) document->private->actions->data);
-			private->actions = g_list_remove_link (private->actions, private->actions);
+		if (private->actions) {
+			sp_action_free_list (document->private->actions);
 		}
 
 		sp_document_clear_redo (document);
@@ -219,6 +218,8 @@ sp_document_new (const gchar * uri)
 
 	sodipodi_ref ();
 
+	sp_document_set_undo_sensitive (document, TRUE);
+
 	return document;
 }
 
@@ -273,6 +274,8 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	}
 
 	sodipodi_ref ();
+
+	sp_document_set_undo_sensitive (document, TRUE);
 
 	return document;
 }
