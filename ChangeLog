@@ -1,5 +1,9 @@
 2002-11-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* configure.in: Version 0.29pre
+
+2002-11-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
 	* src/display/nr-arena-glyphs.c (nr_arena_glyphs_group_add_component): Skip
 	if zero-sized valid path
 
