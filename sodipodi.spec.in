@@ -1,71 +1,55 @@
-# Note that this is NOT a relocatable package
-%define name		@PACKAGE@
-%define ver		@VERSION@
-%define  RELEASE	1
-%define  rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define prefix		/usr
-%define sysconfdir	/etc
-
-Name:		%name
-Summary:	A Gnome Vector Graphics Application
-Version:	%ver
-Release:	%rel
+Name:		sodipodi
+Summary:	A Vector Drawing Application
+Version:	@VERSION@
+Release:	CVS
 Copyright:	GPL
 Group:		Applications/Graphics
-Source:		%{name}-%{ver}.tar.gz
+Source:		sodipodi-%{version}.tar.gz
 URL:		http://sodipodi.sourceforge.net/
-BuildRoot:	/var/tmp/%{name}-root
-Docdir:		%{prefix}/doc
+Prefix:		%{_prefix}
+Packager:	Automatic
+Vendor:		%{packager}
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
-Sodipodi is a gneneral vector drawing program for GNOME environment.
-
-%changelog
-2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
-
-	* configure.in: Version 0.22
+Sodipodi is a general vector-drawing program for the Gnome environment.
 
 %prep
-%setup -q
+%setup
 
 %build
-%ifarch alpha
- MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
-# Needed for snapshot releases.
-
+### Needed for snapshot releases.
 MYCFLAGS="$RPM_OPT_FLAGS"
 
-if [ ! -f configure ]; then
-  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc --without-bonobo
+if [ ! -x configure ]; then
+  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%{_prefix} --localstatedir=%{_localstatedir} --sysconfdir=%{_sysconfdir} --without-bonobo
 else
-  CFLAGS="$MYCFLAGS" ./configure $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc --without-bonobo
+  %configure --without-bonobo
 fi
-
-if [ "$SMP" != "" ]; then
-  make -j$SMP "MAKE=make -j$SMP"
-else
-  make
-fi
+make
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-make sysconfdir=$RPM_BUILD_ROOT/etc prefix=$RPM_BUILD_ROOT%{prefix} install
+rm -rf %{buildroot}
+%makeinstall
 
 %clean
-rm -rf $RPM_BUILD_ROOT
-
-%post 
-
-%postun
+rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
-%{prefix}/bin/*
-%{prefix}/share/sodipodi/*
-%{prefix}/share/pixmaps/*
-%{prefix}/share/gnome/apps/Graphics/*
+%{_bindir}/*
+%{_datadir}/gnome/apps/Graphics/*
+%{_datadir}/locale/*/LC_MESSAGES/sodipodi.mo
+%{_datadir}/oaf/GNOME_Sodipodi.oaf
+%{_datadir}/pixmaps/*
+%{_datadir}/sodipodi/*
+%{_mandir}/man1/*
 
+%changelog
+* Mon Sep 23 2002 Dag Wieers <dag@wieers.com>
+- Update to 0.2.6
+
+* Thu Sep 12 2002 Dag Wieers <dag@wieers.com>
+- Update to 0.2.5
+- Changed SPEC to benefit from macros

@@ -1,5 +1,7 @@
 2002-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* sodipodi.spec.in: Update to cleaner version by Dag Vieers
+
 	* src/sp-text.c (sp_text_is_empty): New method
 	(sp_string_release): Use ::release, not ::destroy
 	(sp_tspan_release): Ditto
