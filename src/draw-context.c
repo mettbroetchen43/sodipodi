@@ -334,7 +334,7 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 		norm = sp_path_normalized_bpath (SP_PATH (item));
 		sp_item_i2d_affine (dc->white_item, &i2dt);
 		nr_matrix_d_from_f (&i2dtd, &i2dt);
-		norm = sp_curve_transform (norm, NR_MATRIX_D_TO_DOUBLE (&i2dt));
+		norm = sp_curve_transform (norm, NR_MATRIX_D_TO_DOUBLE (&i2dtd));
 		g_return_if_fail (norm != NULL);
 		dc->white_curves = sp_curve_split (norm);
 		sp_curve_unref (norm);
@@ -367,19 +367,44 @@ spdc_detach_selection (SPDrawContext *dc, SPSelection *sel)
 	dc->ea = NULL;
 }
 
+#define NUMBER_OF_TURNS 12
+
 static void
 spdc_endpoint_snap (SPDrawContext *dc, ArtPoint *p, guint state)
 {
 	if (state & GDK_CONTROL_MASK) {
 		/* Constrained motion */
-		if (fabs (p->x - dc->p[0].x) > fabs (p->y - dc->p[0].y)) {
-			/* Horizontal */
-			p->y = dc->p[0].y;
-			sp_desktop_horizontal_snap (SP_EVENT_CONTEXT_DESKTOP (dc), p);
-		} else {
-			/* Vertical */
-			p->x = dc->p[0].x;
-			sp_desktop_vertical_snap (SP_EVENT_CONTEXT_DESKTOP (dc), p);
+		/* mirrored by fabs, so this corresponds to 15 degrees */
+		double bx = 0, by = 0; // best solution
+		double bn = 1e18; // best normal
+		double bdot = 0;
+		double vx = 0, vy = 1;
+		double r00 = cos (M_PI / NUMBER_OF_TURNS), r01 = sin (M_PI / NUMBER_OF_TURNS);
+		double r10 = -r01, r11 = r00;
+		double dx = p->x - dc->p[0].x;
+		double dy = p->y - dc->p[0].y;
+		int i;
+		for(i = 0; i < NUMBER_OF_TURNS; i++) {
+			double ndot = fabs(vy*dx-vx*dy);
+			if (ndot < bn) { 
+				/* I think it is better numerically to use the normal, rather than the */
+				/* dot product to assess solutions, but I haven't proven it */
+				bn = ndot;
+				bx = vx;
+				by = vy;
+				bdot = vx*dx + vy*dy;
+			}
+			double tx = r00*vx + r01*vy;
+			double ty = r10*vx + r11*vy;
+			vx = tx;
+			vy = ty;
+		}
+
+		if (fabs (bdot) > 0) {
+			p->x = dc->p[0].x + bdot * bx;
+			p->y = dc->p[0].y + bdot * by;
+			/* Snap it along best vector */
+			sp_desktop_vector_snap (SP_EVENT_CONTEXT_DESKTOP (dc), p, bx, by);
 		}
 	} else {
 		/* Free */
@@ -730,6 +755,8 @@ sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble d
 {
 	SPDrawAnchor *a;
 	NRPointF fp;
+
+	g_print ("Creating anchor at %g %g\n", dx, dy);
 
 	a = g_new (SPDrawAnchor, 1);
 

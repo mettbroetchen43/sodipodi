@@ -15,7 +15,8 @@ TODO for 0.29
 - Replacement for uri lists
 - Replacement for uri handler
 - Optional libgnome support?
-- Save on close dialog buttons
+- Save on close dialog buttons (DONE)
+- Fix freehand
 
 TODO for 0.28
 =============
