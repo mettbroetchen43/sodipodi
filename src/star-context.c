@@ -208,10 +208,8 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 /*  	} else if (state & GDK_SHIFT_MASK) { */
 
 	/* Free movement for corner point */
-	p0.x = sc->center.x;
-	p0.y = sc->center.y;
-	p1.x = x;
-	p1.y = y;
+	sp_desktop_d2doc_xy_point (desktop, &p0, sc->center.x, sc->center.y);
+	sp_desktop_d2doc_xy_point (desktop, &p1, x, y);
 	sp_desktop_free_snap (desktop, &p1);
 
 	star = SP_STAR(sc->item);
@@ -220,7 +218,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 	dx = p1.x - p0.x;
 	dy = p1.y - p0.y;
 	r1 = hypot (dx, dy);
-	arg1 = -atan2 (dy, dx);
+	arg1 = atan2 (dy, dx);
 	
 	sp_star_set (star, star->sides,
 		     p0.x, p0.y, r1, r1*(sides-2.0)/sides, arg1, arg1 + M_PI/sides);

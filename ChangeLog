@@ -1,3 +1,14 @@
+2001-12-30  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-spiral.c src/sp-star.c:
+	Revert to previous cx, cy attribute implementation.
+	Because SVG standard shape introduce cx, cy,
+	so we coordinate to that policy.
+
+	* src/sp-spiral.c (sp_spiral_get_polar): New function
+	(sp_spiral_is_invalid): New function to protect attributes
+	consistency. sp_spiral_read_attr use it.
+
 2001-12-29  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/knotholder.c src/knotholder.h

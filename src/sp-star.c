@@ -25,6 +25,8 @@
 
 #define noSTAR_VERBOSE
 
+#define SP_EPSILON       1e-5
+
 static void sp_star_class_init (SPStarClass *class);
 static void sp_star_init (SPStar *star);
 static void sp_star_destroy (GtkObject *object);
@@ -102,6 +104,8 @@ static void
 sp_star_init (SPStar * star)
 {
 	SP_PATH (star)->independent = FALSE;
+	star->cx    = 0.0;
+	star->cy    = 0.0;
 	star->sides = 3;
 	star->r1    = star->r2 = 0.0;
 	star->arg1  = star->arg2 = 0.0;
@@ -127,6 +131,8 @@ sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	if (SP_OBJECT_CLASS(parent_class)->build)
 		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+	sp_star_read_attr (object, "sodipodi:cx");
+	sp_star_read_attr (object, "sodipodi:cy");
 	sp_star_read_attr (object, "sodipodi:sides");
 	sp_star_read_attr (object, "sodipodi:r1");
 	sp_star_read_attr (object, "sodipodi:r2");
@@ -141,6 +147,11 @@ sp_star_write_repr (SPObject * object, SPRepr * repr)
 
 	star = SP_STAR (object);
 
+	
+        if ((star->cx > SP_EPSILON) || (star->cx < -SP_EPSILON))
+		sp_repr_set_double_attribute (repr, "sodipodi:cx", star->cx);
+        if ((star->cy > SP_EPSILON) || (star->cy < -SP_EPSILON))
+		sp_repr_set_double_attribute (repr, "sodipodi:cy", star->cy);
 	sp_repr_set_int_attribute (repr, "sodipodi:sides", star->sides);
 	sp_repr_set_double_attribute (repr, "sodipodi:r1", star->r1);
 	sp_repr_set_double_attribute (repr, "sodipodi:r2", star->r2);
@@ -170,8 +181,17 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 	astr = sp_repr_attr (object->repr, attr);
 
 	/* fixme: we should really collect updates */
-	
-	if (strcmp (attr, "sodipodi:sides") == 0) {
+	if (strcmp (attr, "sodipodi:cx") == 0) {
+		n = sp_svg_read_length (&unit, astr, 0.0);
+		star->cx = n;
+		sp_shape_set_shape (shape);
+		return;
+	} else if (strcmp (attr, "sodipodi:cy") == 0) {
+		n = sp_svg_read_length (&unit, astr, 0.0);
+		star->cy = n;
+		sp_shape_set_shape (shape);
+		return;
+	} else if (strcmp (attr, "sodipodi:sides") == 0) {
 		if (astr)
 			star->sides = (gint) strtol (astr, NULL, 10);
 		sp_shape_set_shape (shape);
@@ -215,8 +235,8 @@ sp_star_set_shape (SPShape *shape)
 	SPStar *star;
 	gint   i;
 	gint   sides;
-	gdouble r1, r2, arg1, arg2, darg;
 	SPCurve * c;
+	ArtPoint p;
 	
 	star = SP_STAR (shape);
 
@@ -231,20 +251,16 @@ sp_star_set_shape (SPShape *shape)
 	
 	sides = star->sides;
 
-	r1 = star->r1;
-	r2 = star->r2;
-	arg1 = star->arg1;
-	arg2 = star->arg2;
-	darg = 2.0*M_PI/(double)sides;
-	
 	/* i = 0 */
-	sp_curve_moveto (c, r1*cos(arg1), r1*sin(arg1));
-	sp_curve_lineto (c, r2*cos(arg2), r2*sin(arg2));
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT1, 0, &p);
+	sp_curve_moveto (c, p.x, p.y);
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, &p);
+	sp_curve_lineto (c, p.x, p.y);
 	for (i = 1; i<sides; i++) {
-		arg1 += darg;
-		arg2 += darg;
-		sp_curve_lineto (c, r1*cos(arg1), r1*sin(arg1));
-		sp_curve_lineto (c, r2*cos(arg2), r2*sin(arg2));
+		sp_star_get_xy (star, SP_STAR_POINT_KNOT1, i, &p);
+		sp_curve_lineto (c, p.x, p.y);
+		sp_star_get_xy (star, SP_STAR_POINT_KNOT2, i, &p);
+		sp_curve_lineto (c, p.x, p.y);
 	}
 	
 	sp_curve_closepath (c);
@@ -269,8 +285,8 @@ sp_star_knot1_set (SPItem   *item,
 
 	star = SP_STAR (item);
 
-	dx = p->x;
-	dy = p->y;
+	dx = p->x - star->cx;
+	dy = p->y - star->cy;
 
         arg1 = atan2 (dy, dx);
 	darg1 = arg1 - star->arg1;
@@ -294,8 +310,8 @@ sp_star_knot2_set (SPItem   *item,
 
 	star = SP_STAR (item);
 
-	dx = p->x;
-	dy = p->y;
+	dx = p->x - star->cx;
+	dy = p->y - star->cy;
 
 	if (state & GDK_CONTROL_MASK) {
 		star->r2   = hypot (dx, dy);
@@ -317,8 +333,7 @@ sp_star_knot1_get (SPItem *item,
 
 	star = SP_STAR(item);
 
-	p->x = star->r1 * cos(star->arg1);
-	p->y = star->r1 * sin(star->arg1);
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT1, 0, p);
 }
 
 static void
@@ -332,8 +347,7 @@ sp_star_knot2_get (SPItem *item,
 
 	star = SP_STAR(item);
 
-	p->x = star->r2 * cos(star->arg2);
-	p->y = star->r2 * sin(star->arg2);
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, p);
 }
 
 static SPKnotHolder *
@@ -375,18 +389,8 @@ sp_star_set (SPStar * star,
 	g_return_if_fail (SP_IS_STAR (star));
 	
 	star->sides = sides;
-	{
-		SPItem *item;
-		double i2d[6];
-		
-		item = SP_ITEM (star);
-		sp_item_i2d_affine (item, i2d);
-		i2d[4] = cx;
-		i2d[5] = cy;
-		sp_item_set_i2d_affine (item, i2d);
-		sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
-		sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
-        }
+	star->cx = cx;
+	star->cy = cy;
 	star->r1 = r1;
 	star->r2 = r2;
 	star->arg1 = arg1;
@@ -405,11 +409,9 @@ sp_star_snappoints (SPItem * item, GSList * points)
 	star = SP_STAR(item);
 	
 	/* we use two points of star */
-	p1.x = star->r1 * cos(star->arg1);
-	p1.y = star->r1 * sin(star->arg1);
-	p2.x = star->r2 * cos(star->arg2);
-	p2.y = star->r2 * sin(star->arg2);
-	p3.x = p3.y = 0.0;
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT1, 0, &p1);
+	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, &p2);
+	p3.x = star->cx; p3.y = star->cy;
 	sp_item_i2d_affine (item, affine);
 	
 	p = g_new (ArtPoint,1);
@@ -423,6 +425,39 @@ sp_star_snappoints (SPItem * item, GSList * points)
 	points = g_slist_append (points, p);
 	
 	return points;
+}
+
+/**
+ * sp_star_get_xy: Get X-Y value as item coordinate system
+ * @star: star item
+ * @point: point type to obtain X-Y value
+ * @index: index of vertex
+ * @p: pointer to store X-Y value
+ *
+ * Initial item coordinate system is same as document coordinate system.
+ */
+void
+sp_star_get_xy (SPStar     *star,
+		SPStarPoint point,
+		gint        index,
+		ArtPoint   *p)
+{
+	gdouble arg, darg;
+
+	darg = 2.0*M_PI/(double)star->sides;
+
+	switch (point) {
+	case SP_STAR_POINT_KNOT1:
+		arg = star->arg1 + index * darg;
+		p->x = star->r1 * cos(arg) + star->cx;
+		p->y = star->r1 * sin(arg) + star->cy;
+		break;
+	case SP_STAR_POINT_KNOT2:
+		arg = star->arg2 + index * darg;
+		p->x = star->r2 * cos(arg) + star->cx;
+		p->y = star->r2 * sin(arg) + star->cy;
+		break;
+	}
 }
 
 /* Generate context menu item section */

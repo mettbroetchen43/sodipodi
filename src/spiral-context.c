@@ -211,16 +211,14 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 /*  	} else if (state & GDK_SHIFT_MASK) { */
 
 	/* Free movement for corner point */
-	p0.x = sc->center.x;
-	p0.y = sc->center.y;
-	p1.x = x;
-	p1.y = y;
+	sp_desktop_d2doc_xy_point (desktop, &p0, sc->center.x, sc->center.y);
+	sp_desktop_d2doc_xy_point (desktop, &p1, x, y);
 	sp_desktop_free_snap (desktop, &p1);
 	
 	spiral = SP_SPIRAL(sc->item);
 
 	dx = p1.x - p0.x;
-	dy = - (p1.y - p0.y);
+	dy = p1.y - p0.y;
 	rad = hypot (dx, dy);
 	arg = atan2 (dy, dx) - 2.0*M_PI*spiral->revo;
 	

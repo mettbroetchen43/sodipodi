@@ -27,9 +27,15 @@ BEGIN_GNOME_DECLS
 typedef struct _SPStar SPStar;
 typedef struct _SPStarClass SPStarClass;
 
+typedef enum {
+	SP_STAR_POINT_KNOT1,
+	SP_STAR_POINT_KNOT2
+} SPStarPoint;
+
 struct _SPStar {
 	SPPolygon polygon;
 
+	double cx, cy;
 	gint   sides;
 	double r1;
 	double r2;
@@ -53,6 +59,11 @@ void    sp_star_set             (SPStar         *star,
                                  gdouble         r2,
                                  gdouble         arg1,
                                  gdouble         arg2);
+
+void    sp_star_get_xy          (SPStar         *star,
+				 SPStarPoint     point,
+				 gint            index,
+				 ArtPoint       *p);
 
 
 END_GNOME_DECLS

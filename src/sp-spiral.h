@@ -33,12 +33,13 @@ struct _SPSpiral {
 	
 	/*
 	 * Spiral shape is defined as:
-	 * x(t) = rad * t^exp cos(2 * Pi * revo*t + arg)
-	 * y(t) = rad * t^exp sin(2 * Pi * revo*t + arg)
+	 * x(t) = rad * t^exp cos(2 * Pi * revo*t + arg) + cx
+	 * y(t) = rad * t^exp sin(2 * Pi * revo*t + arg) + cy
 	 * where spiral curve is drawn for {t | t0 <= t <= 1}.
 	 * rad and arg parameters can also be represented by
 	 * transformation. shoud I remove these attributes?
 	 */
+	gdouble  cx, cy;
 	gdouble  exp;           /* Spiral expansion factor */
 	gdouble  revo;		/* Spiral revolution factor */
 	gdouble  rad;		/* Spiral radius */
@@ -67,9 +68,11 @@ void    sp_spiral_set		(SPSpiral      *spiral,
 void    sp_spiral_get_xy	(SPSpiral      *spiral,
 				 gdouble	t,
 				 ArtPoint      *p);
-
-void    sp_spiral_build_repr	(SPSpiral      *spiral,
-				 SPRepr	       *repr);
+void    sp_spiral_get_polar	(SPSpiral      *spiral,
+				 gdouble	t,
+				 gdouble       *rad,
+				 gdouble       *arg);
+gboolean sp_spiral_is_invalid   (SPSpiral      *spiral);
 
 
 END_GNOME_DECLS
