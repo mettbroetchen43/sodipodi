@@ -1,6 +1,16 @@
 #define SP_SHAPE_C
 
 #include <gnome.h>
+
+#include <libart_lgpl/art_misc.h>
+#include <libart_lgpl/art_vpath.h>
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_vpath.h>
+#include <libart_lgpl/art_svp_wind.h>
+#include <libart_lgpl/art_bpath.h>
+#include <libart_lgpl/art_vpath_bpath.h>
+
+#include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
 #include "sp-path-component.h"
 #include "sp-shape-style.h"
@@ -17,6 +27,7 @@ static gchar * sp_shape_description (SPItem * item);
 static void sp_shape_read (SPItem * item, SPRepr * repr);
 static void sp_shape_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
+static void sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
 static void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
@@ -65,6 +76,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	item_class->read = sp_shape_read;
 	item_class->read_attr = sp_shape_read_attr;
 	item_class->show = sp_shape_show;
+	item_class->paint = sp_shape_paint;
 
 	path_class->remove_comp = sp_shape_remove_comp;
 	path_class->add_comp = sp_shape_add_comp;
@@ -265,6 +277,62 @@ sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	}
 
 	return (GnomeCanvasItem *) cs;
+}
+
+static void
+sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
+{
+	SPPath *path;
+	SPShape * shape;
+	SPPathComp * comp;
+	GSList * l;
+	gdouble a[6];
+	ArtBpath * abp;
+	ArtVpath * vp, * perturbed_vpath;
+	ArtSVP * svp, * svpa, * svpb;
+
+	path = SP_PATH (item);
+	shape = SP_SHAPE (item);
+
+	for (l = path->comp; l != NULL; l = l->next) {
+		comp = (SPPathComp *) l->data;
+		if (comp->curve != NULL) {
+			art_affine_multiply (a, affine, comp->affine);
+			abp = art_bpath_affine_transform (comp->curve->bpath, a);
+			vp = art_bez_path_to_vec (abp, 0.25);
+			art_free (abp);
+
+			perturbed_vpath = art_vpath_perturb (vp);
+			svpa = art_svp_from_vpath (perturbed_vpath);
+			art_free (perturbed_vpath);
+			svpb = art_svp_uncross (svpa);
+			art_svp_free (svpa);
+			svp = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+			art_svp_free (svpb);
+
+			if (shape->fill->type == SP_FILL_COLOR) {
+				art_rgba_svp_alpha (svp,
+					0, 0, buf->width, buf->height,
+					shape->fill->color,
+					buf->pixels, buf->rowstride, NULL);
+			}
+			art_svp_free (svp);
+
+			if (shape->stroke->type == SP_STROKE_COLOR) {
+				svp = art_svp_vpath_stroke (vp,
+					shape->stroke->join,
+					shape->stroke->cap,
+					shape->stroke->width,
+					4, 0.25);
+				art_rgba_svp_alpha (svp,
+					0, 0, buf->width, buf->height,
+					shape->stroke->color,
+					buf->pixels, buf->rowstride, NULL);
+				art_svp_free (svp);
+			}
+			art_free (vp);
+		}
+	}
 }
 
 static void

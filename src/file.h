@@ -10,6 +10,7 @@ void sp_file_save (GtkWidget * widget);
 void sp_file_save_as (GtkWidget * widget);
 
 void sp_file_import (GtkWidget * widget);
+void sp_file_export (GtkWidget * widget);
 
 void sp_file_print (GtkWidget * widget);
 

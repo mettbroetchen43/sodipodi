@@ -1,5 +1,10 @@
 2000-01-23  Lauris Kaplinski <lauris@ariman.ee>
 
+    * helper/art*: functions for rendering into RGBA buffer
+    * file.*, sp-shape.*, sp-image.*: exporting png bitmaps
+
+2000-01-23  Lauris Kaplinski <lauris@ariman.ee>
+
     * Uses SPCurve everywhere
 
 2000-01-19  Lauris Kaplinski <lauris@ariman.ee>

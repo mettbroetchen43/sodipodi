@@ -1,24 +1,7 @@
 #define SP_IMAGE_C
 
-#if 0
-#include <config.h>
-#include <string.h>
-#include <math.h>
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_pixbuf.h>
-#include <libart_lgpl/art_rgb_pixbuf_affine.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_wind.h>
-#include <libart_lgpl/art_svp_point.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
-#include "xml/repr.h"
-#endif
-
-#include <gnome.h>
+#include "helper/art-rgba-rgba-affine.h"
 #include "display/canvas-image.h"
 #include "brokenimage.xpm"
 #include "sp-image.h"
@@ -38,6 +21,7 @@ static gchar * sp_image_description (SPItem * item);
 static void sp_image_read (SPItem * item, SPRepr * repr);
 static void sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
+static void sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 static SPItemClass *parent_class;
 
@@ -84,6 +68,7 @@ sp_image_class_init (SPImageClass *class)
 	item_class->read = sp_image_read;
 	item_class->read_attr = sp_image_read_attr;
 	item_class->show = sp_image_show;
+	item_class->paint = sp_image_paint;
 }
 
 static void
@@ -316,3 +301,22 @@ sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 
 	return (GnomeCanvasItem *) ci;
 }
+
+static void
+sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
+{
+	SPImage * image;
+	ArtPixBuf * ipb;
+
+	image = SP_IMAGE (item);
+	ipb = image->pixbuf->art_pixbuf;
+
+	if (ipb->n_channels != 4) return;
+
+	art_rgba_rgba_affine (pixbuf->pixels,
+		0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
+		ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
+		affine,
+		ART_FILTER_NEAREST, NULL);
+}
+

@@ -180,6 +180,18 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
+	      <name>menu_file_export</name>
+	      <signal>
+		<name>activate</name>
+		<handler>sp_file_export</handler>
+		<last_modification_time>Sun, 23 Jan 2000 13:17:53 GMT</last_modification_time>
+	      </signal>
+	      <label>_Export</label>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
 	      <name>separator4</name>
 	      <right_justify>False</right_justify>
 	    </widget>
@@ -1046,7 +1058,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>5.14039</position>
+	<position>2.41901</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -1070,7 +1082,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>0.596026</position>
+	<position>2.69231</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>0</left_attach>

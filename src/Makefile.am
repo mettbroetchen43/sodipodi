@@ -83,6 +83,7 @@ sodipodi_libs = \
 sodipodi_LDADD = \
 	$(sodipodi_libs) \
 	$(GNOME_LIBDIR) \
+	-lpng \
 	-lglade-gnome \
 	-lglade \
 	-lgdk_pixbuf \

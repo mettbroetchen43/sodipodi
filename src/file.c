@@ -6,6 +6,7 @@
 #include <libgnomeprint/gnome-printer-dialog.h>
 #include "xml/repr.h"
 #include "dir-util.h"
+#include "helper/png-write.h"
 #include "sodipodi.h"
 #include "mdi.h"
 #include "mdi-child.h"
@@ -16,6 +17,7 @@
 gchar * open_path = NULL;
 gchar * save_path = NULL;
 gchar * import_path = NULL;
+gchar * export_path = NULL;
 
 static void
 file_selection_destroy (GtkWidget * widget, GtkFileSelection * fs)
@@ -163,7 +165,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	SPDocument * doc;
 	SPRepr * rdoc;
 	gchar * filename;
-	const gchar * e, * n, * docbase, * relname;
+	const gchar * e, * docbase, * relname;
 	SPRepr * repr;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
@@ -223,6 +225,77 @@ void sp_file_import (GtkWidget * widget)
 	}
 	if (import_path)
 		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w),import_path);
+
+	gtk_widget_show (w);
+}
+
+static void
+file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
+{
+	SPDocument * doc;
+	gchar * filename;
+	ArtDRect bbox;
+	gint width, height;
+	art_u8 * pixels;
+	ArtPixBuf * pixbuf;
+	gdouble affine[6], a[6];
+
+	filename = g_strdup (gtk_file_selection_get_filename (fs));
+	file_selection_destroy (NULL, fs);
+
+	if (filename == NULL) return;
+
+	if (export_path) g_free (export_path);
+	export_path = g_dirname (filename);
+	if (export_path) export_path = g_strconcat (export_path, "/", NULL);
+
+	doc = SP_ACTIVE_DOCUMENT;
+	g_return_if_fail (doc != NULL);
+
+	sp_item_bbox (SP_ITEM (doc), &bbox);
+
+	width = bbox.x1 - bbox.x0 + 2;
+	height = bbox.y1 - bbox.y0 + 2;
+
+	if ((width < 16) || (height < 16)) return;
+
+	pixels = art_new (art_u8, width * height * 4);
+	memset (pixels, 0, width * height * 4);
+	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
+
+	sp_item_i2d_affine (SP_ITEM (doc), affine);
+	affine[4] -= bbox.x0;
+	affine[5] -= bbox.y0;
+	art_affine_scale (a, 1.0, -1.0);
+	art_affine_multiply (affine, affine, a);
+	art_affine_translate (a, 0.0, height);
+	art_affine_multiply (affine, affine, a);
+
+	sp_item_paint (SP_ITEM (doc), pixbuf, affine);
+
+	sp_png_write_rgba (filename, pixbuf);
+
+	art_pixbuf_free (pixbuf);
+#if 0
+	sp_desktop_set_title (sp_filename_from_path (filename));
+#endif
+}
+
+void sp_file_export (GtkWidget * widget)
+{
+	static GtkWidget * w = NULL;
+
+	if (w == NULL) {
+		w = gtk_file_selection_new (_("Export file"));
+		gtk_signal_connect (GTK_OBJECT (w), "delete_event",
+			GTK_SIGNAL_FUNC (file_selection_destroy), w);
+		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
+			GTK_SIGNAL_FUNC (file_export_ok), w);
+		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
+			GTK_SIGNAL_FUNC (file_selection_destroy), w);
+	}
+	if (export_path)
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), export_path);
 
 	gtk_widget_show (w);
 }

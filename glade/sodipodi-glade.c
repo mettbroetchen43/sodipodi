@@ -8,6 +8,7 @@ gchar *s = N_("Sodipodi");
 gchar *s = N_("_New File");
 gchar *s = N_("New View");
 gchar *s = N_("_Import");
+gchar *s = N_("_Export");
 gchar *s = N_("D_uplicate");
 gchar *s = N_("_Delete");
 gchar *s = N_("Node Editing...");
