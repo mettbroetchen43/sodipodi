@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-08-19 03:20+0200\n"
+"POT-Creation-Date: 2000-08-26 14:05+0200\n"
 "PO-Revision-Date: 2000-06-25 03:30+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -77,7 +77,7 @@ msgstr "Node redigering..."
 #.
 #: glade/sodipodi-glade.c:19 glade/xml-tree.c:7
 msgid "XML Tree"
-msgstr "XML træ"
+msgstr "XML-træ"
 
 #: glade/sodipodi-glade.c:20 glade/sodipodi-glade.c:89
 #: glade/sodipodi-glade.c:174 glade/sodipodi-glade.c:191
@@ -120,11 +120,11 @@ msgstr "_Arrangér"
 
 #: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:162
 msgid "_Align"
-msgstr ""
+msgstr "_Justér"
 
 #: glade/sodipodi-glade.c:33
 msgid "_Transform"
-msgstr ""
+msgstr "_Transformér"
 
 #: glade/sodipodi-glade.c:34
 msgid "_Order"
@@ -810,12 +810,12 @@ msgstr ""
 #: glade/transformation.c:9 glade/transformation.c:29
 #: glade/transformation.c:37
 msgid "horizontal"
-msgstr ""
+msgstr "vandret"
 
 #: glade/transformation.c:10 glade/transformation.c:30
 #: glade/transformation.c:38
 msgid "vertical"
-msgstr ""
+msgstr "lodret"
 
 #: glade/transformation.c:11
 msgid "move relative in"
@@ -845,11 +845,11 @@ msgstr ""
 
 #: glade/transformation.c:20
 msgid "90°"
-msgstr ""
+msgstr "90°"
 
 #: glade/transformation.c:21
 msgid "180°"
-msgstr ""
+msgstr "180°"
 
 #: glade/transformation.c:22
 msgid "270°"
@@ -875,7 +875,7 @@ msgstr "Slet"
 
 #: glade/transformation.c:27
 msgid "Rotate"
-msgstr ""
+msgstr "Rotér"
 
 #: glade/transformation.c:28
 #, fuzzy
@@ -950,11 +950,11 @@ msgstr ""
 
 #: glade/transformation.c:62
 msgid "Start transformation"
-msgstr ""
+msgstr "Start transformering"
 
 #: glade/transformation.c:63
 msgid "close dialog"
-msgstr ""
+msgstr "luk dialog"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
@@ -1028,7 +1028,7 @@ msgstr "En sti - hvad det så end betyder"
 
 #: src/sp-text.c:193
 msgid "Text object"
-msgstr ""
+msgstr "Tekstobjekt"
 
 #: src/dialogs/align.c:80
 msgid "Last selected"
@@ -1046,20 +1046,3 @@ msgstr ""
 msgid "Smallest item"
 msgstr ""
 
-#~ msgid "Break"
-#~ msgstr "Bryd"
-
-#~ msgid "To Line"
-#~ msgstr "Til linje"
-
-#~ msgid "To Curve"
-#~ msgstr "Til kurve"
-
-#~ msgid "Cusp"
-#~ msgstr "Cusp"
-
-#~ msgid "Smooth"
-#~ msgstr "Udjævn"
-
-#~ msgid "Join & cap"
-#~ msgstr "Saml og Cap"
