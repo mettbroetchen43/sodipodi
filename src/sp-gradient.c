@@ -204,8 +204,10 @@ sp_gradient_destroy (GtkObject *object)
 
 	gradient = (SPGradient *) object;
 
-	/* Unregister ourselves */
-	sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
+	}
 
 	if (gradient->href) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);

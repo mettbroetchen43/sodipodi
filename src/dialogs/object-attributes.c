@@ -41,6 +41,23 @@ static const guchar *star_attrs[] = {
 	"sodipodi:arg2"};
 #define NUM_STAR_ATTRS (sizeof (star_attrs) / sizeof (star_attrs[0]))
 
+static const guchar *spiral_labels[] = {
+	N_("Center X:"),
+	N_("Center Y:"),
+	N_("Expansion:"),
+	N_("Revolution:"),
+	N_("Radius:"),
+	N_("Argument:"),
+	N_("T0:")};
+static const guchar *spiral_attrs[] = {
+	"sodipodi:cx",
+	"sodipodi:cy",
+	"sodipodi:expansion",
+	"sodipodi:revolution",
+	"sodipodi:radius",
+	"sodipodi:argument",
+	"sodipodi:t0"};
+#define NUM_SPIRAL_ATTRS (sizeof (spiral_attrs) / sizeof (spiral_attrs[0]))
 
 static void
 object_destroyed (GtkObject *object, GtkWidget *widget)
@@ -73,12 +90,19 @@ sp_object_attributes_dialog (SPObject *object, const guchar *tag)
 		num_attrs = NUM_STAR_ATTRS;
 		labels = star_labels;
 		attrs = star_attrs;
+	} else if (!strcmp (tag, "SPSpiral")) {
+		num_attrs = NUM_SPIRAL_ATTRS;
+		labels = spiral_labels;
+		attrs = spiral_attrs;
 	}
 
-
 	if (num_attrs && labels && attrs) {
+		gchar *title;
+
 		w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (w), _("Link properties"));
+		title = g_strdup_printf (_("%s attributes"), tag);
+		gtk_window_set_title (GTK_WINDOW (w), title);
+		g_free (title);
 
 		t = sp_attribute_table_new (object, num_attrs, labels, attrs);
 		gtk_widget_show (t);

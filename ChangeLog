@@ -1,3 +1,13 @@
+2001-11-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/file.c (file_save_ok): Update relative image references
+
+	* src/sp-image.c (sp_image_destroy): Unregister resource
+	(sp_image_build): Register resource
+
+	* src/sp-spiral.c (sp_spiral_menu): Implement
+	(sp_spiral_spiral_properties): Generic attributes dialog
+
 2001-11-10  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-anchor.c (sp_anchor_menu): New method

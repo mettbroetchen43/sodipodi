@@ -151,6 +151,8 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 	gtk_widget_destroy (GTK_WIDGET (fs));
 
 	if (filename != NULL) {
+		const GSList *images, *l;
+
 		doc = SP_ACTIVE_DOCUMENT;
 		g_return_if_fail (doc != NULL);
 
@@ -162,6 +164,21 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 		sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 		sp_repr_set_attr (repr, "sodipodi:docname", filename);
+
+		images = sp_document_get_resource_list (doc, "image");
+		for (l = images; l != NULL; l = l->next) {
+			SPRepr *ir;
+			const guchar *href, *relname;
+			ir = SP_OBJECT_REPR (l->data);
+			href = sp_repr_attr (ir, "xlink:href");
+			if (!g_path_is_absolute (href)) {
+				href = sp_repr_attr (ir, "sodipodi:absref");
+			}
+			if (href && g_path_is_absolute (href)) {
+				relname = sp_relative_path_from_path (href, save_path);
+				sp_repr_set_attr (ir, "xlink:href", relname);
+			}
+		}
 
 		/* fixme: */
 		sp_document_set_undo_sensitive (doc, FALSE);

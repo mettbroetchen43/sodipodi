@@ -13,8 +13,10 @@
  * Licensed under GNU GPL
  */
 
-#include <gnome.h>
 #include <math.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
 #include "sp-star.h"
 #include "desktop.h"

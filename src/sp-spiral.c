@@ -1,11 +1,27 @@
-#define SP_SPIRAL_C
+#define __SP_SPIRAL_C__
 
-#include <gnome.h>
+/*
+ * SPStar
+ *
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Mitsuru Oka
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
+
 #include <math.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
 #include "sp-shape.h"
 #include "sp-spiral.h"
 #include "helper/bezier-utils.h"
+#include "dialogs/object-attributes.h"
 
 #define noSPIRAL_VERBOSE
 
@@ -26,6 +42,8 @@ static gchar * sp_spiral_description (SPItem * item);
 static GSList * sp_spiral_snappoints (SPItem * item, GSList * points);
 static void sp_spiral_set_shape (SPShape *shape);
 
+static void sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+static void sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPShapeClass *parent_class;
 
@@ -73,6 +91,7 @@ sp_spiral_class_init (SPSpiralClass *class)
 	item_class->bbox = sp_spiral_bbox;
 	item_class->description = sp_spiral_description;
 	item_class->snappoints = sp_spiral_snappoints;
+	item_class->menu = sp_spiral_menu;
 
 	shape_class->set_shape = sp_spiral_set_shape;
 }
@@ -143,33 +162,27 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 		spiral->cx = sp_svg_read_length (&unit, astr, 0.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:cy") == 0) {
+	} else if (strcmp (attr, "sodipodi:cy") == 0) {
 		spiral->cy = sp_svg_read_length (&unit, astr, 0.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:expansion") == 0) {
+	} else if (strcmp (attr, "sodipodi:expansion") == 0) {
 		spiral->expansion = sp_svg_read_length (&unit, astr, 1.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:revolution") == 0) {
+	} else if (strcmp (attr, "sodipodi:revolution") == 0) {
 		spiral->revolution = sp_svg_read_length (&unit, astr, 3.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:radius") == 0) {
+	} else if (strcmp (attr, "sodipodi:radius") == 0) {
 		spiral->radius = sp_svg_read_length (&unit, astr, 0.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:argument") == 0) {
+	} else if (strcmp (attr, "sodipodi:argument") == 0) {
 		spiral->argument = sp_svg_read_length (&unit, astr, 0.0);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:t0") == 0) {
+	} else if (strcmp (attr, "sodipodi:t0") == 0) {
 		spiral->t0 = sp_svg_read_length (&unit, astr, 0.0);
 		sp_shape_set_shape (shape);
 		return;
@@ -199,6 +212,9 @@ sp_spiral_set_shape (SPShape *shape)
 	SPCurve	       *c;
 
 	spiral = SP_SPIRAL(shape);
+
+	sp_object_request_modified (SP_OBJECT (spiral), SP_OBJECT_MODIFIED_FLAG);
+
 	sp_path_clear (SP_PATH (shape));
 	
 	if (spiral->radius < 1e-12) return;
@@ -358,3 +374,38 @@ sp_spiral_build_repr (SPSpiral *spiral,
 	sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->argument);
 	sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
 }
+
+/* Generate context menu item section */
+
+static void
+sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
+{
+	GtkWidget *i, *m, *w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Spiral"));
+	m = gtk_menu_new ();
+	/* Link dialog */
+	w = gtk_menu_item_new_with_label (_("Spiral Properties"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_spiral_spiral_properties), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
+}
+
+static void
+sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
+{
+	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPSpiral");
+}
+

@@ -23,6 +23,7 @@
 #include "svg/svg.h"
 #include "style.h"
 #include "brokenimage.xpm"
+#include "document.h"
 #include "sp-image.h"
 
 /*
@@ -119,6 +120,11 @@ sp_image_destroy (GtkObject *object)
 
 	image = SP_IMAGE (object);
 
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "image", SP_OBJECT (object));
+	}
+
 	if (image->href) {
 		g_free (image->href);
 		image->href = NULL;
@@ -144,6 +150,9 @@ sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_image_read_attr (object, "y");
 	sp_image_read_attr (object, "width");
 	sp_image_read_attr (object, "height");
+
+	/* Register */
+	sp_document_add_resource (document, "image", object);
 }
 
 static void
