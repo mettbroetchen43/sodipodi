@@ -16,6 +16,18 @@
 #include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 
+typedef enum {
+	SPXMinYMin,
+	SPXMidYMin,
+	SPXMaxYMin,
+	SPXMinYMid,
+	SPXMidYMid,
+	SPXMaxYMid,
+	SPXMinYMax,
+	SPXMidYMax,
+	SPXMaxYMax
+} SPAspect;
+
 #ifndef SP_OBJECT_DEFINED
 #define SP_OBJECT_DEFINED
 typedef struct _SPObject SPObject;
@@ -54,6 +66,10 @@ struct _SPDocument {
 	GHashTable * iddef;	/* id dictionary */
 	gchar * uri;		/* Document uri */
 	gchar * base;		/* Document base URI */
+	SPAspect aspect;	/* Our aspect ratio preferences */
+	guint clip :1;		/* Whether we clip or meet outer viewport */
+
+	/* State */
 	guint sensitive: 1;	/* If we save actions to undo stack */
 	GSList * undo;		/* Undo stack of reprs */
 	GSList * redo;		/* Redo stack of reprs */

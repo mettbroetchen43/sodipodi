@@ -279,11 +279,11 @@ sp_desktop_new (SPDocument * document)
 
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
-
+#if 0
 	gnome_canvas_item_new (desktop->grid, GNOME_TYPE_CANVAS_RECT,
 		"x1", 0.0, "y1", 0.0, "x2", dw, "y2", dh,
 		"outline_color", "black", "width_pixels", 2, NULL);
-
+#endif
 	/* Fixme: Setup initial zooming */
 
 	art_affine_scale (desktop->d2w, 1.0, -1.0);

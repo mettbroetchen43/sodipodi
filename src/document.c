@@ -65,6 +65,9 @@ sp_document_init (SPDocument * document)
 	document->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 	document->uri = NULL;
 	document->base = NULL;
+	document->aspect = SPXMidYMid;
+	document->clip = FALSE;
+
 	document->sensitive = TRUE;
 	document->undo = NULL;
 	document->redo = NULL;

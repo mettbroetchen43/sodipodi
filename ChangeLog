@@ -1,3 +1,11 @@
+2000-04-23  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/document.h: added aspect and clip attributes
+
+	* src/bonobo/embeddable-desktop.c: keep full page always visible
+
+	* src/bonobo/embeddable-document.c: print scaled full page
+
 2000-04-21  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/mdi-document.c: extract ACTIVE_DOCUMENT for ACTIVE_DESKTOP

@@ -232,6 +232,12 @@ sp_embeddable_document_ps_save (BonoboPersistStream * ps, Bonobo_Stream stream, 
 	return 0;
 }
 
+/*
+ * fixme:
+ * diferent aspect modes
+ * different clip modes
+ */
+
 static void
 sp_embeddable_document_print (GnomePrintContext * ctx,
 				gdouble width,
@@ -240,10 +246,25 @@ sp_embeddable_document_print (GnomePrintContext * ctx,
 				gpointer data)
 {
 	SPEmbeddableDocument * document;
+	gdouble scale, dw, dh;
 
 	document = SP_EMBEDDABLE_DOCUMENT (data);
 
+	dw = sp_document_width (document->document);
+	dh = sp_document_height (document->document);
+	scale = MIN (width / dw, height / dh);
+	dw *= scale;
+	dh *= scale;
+
+	gnome_print_gsave (ctx);
+
+	gnome_print_translate (ctx, width / 2 - dw / 2, height / 2 - dh / 2);
+
+	gnome_print_scale (ctx, scale, scale);
+
 	sp_item_print (SP_ITEM (document->document->root), ctx);
+
+	gnome_print_grestore (ctx);
 }
 
 static gint

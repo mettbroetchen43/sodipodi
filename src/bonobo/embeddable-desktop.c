@@ -10,6 +10,9 @@ static void sp_embeddable_desktop_init (GtkObject * object);
 static void sp_embeddable_desktop_destroyed (SPEmbeddableDesktop * desktop);
 static void sp_embeddable_desktop_activate (BonoboView * view, gboolean activate, gpointer data);
 
+/* fixme: this should go to main desktop */
+void sp_embeddable_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation, gpointer data);
+
 GtkType
 sp_embeddable_desktop_get_type (void)
 {
@@ -67,6 +70,9 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 
 	sp_desktop_show_decorations (desktop->desktop, FALSE);
 
+	gtk_signal_connect (GTK_OBJECT (desktop->desktop), "size_allocate",
+		GTK_SIGNAL_FUNC (sp_embeddable_desktop_size_allocate), desktop);
+
 	bonobo_view_construct (BONOBO_VIEW (desktop),
 		corba_desktop,
 		GTK_WIDGET (desktop->desktop));
@@ -110,4 +116,26 @@ sp_embeddable_desktop_new_doc (BonoboView * view, gpointer data)
 
 	sp_desktop_change_document (desktop->desktop, desktop->document->document);
 }
+
+/* fixme:
+ * Different aspect modes
+ * Different anchor modes
+ * Change only if not activated
+ */
+
+void
+sp_embeddable_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation, gpointer data)
+{
+	SPEmbeddableDesktop * ed;
+	SPDesktop * desktop;
+
+	desktop = SP_DESKTOP (widget);
+	ed = SP_EMBEDDABLE_DESKTOP (data);
+	g_assert (ed->desktop = desktop);
+	
+	sp_desktop_show_region (desktop, 0.0, 0.0,
+		sp_document_width (desktop->document),
+		sp_document_height (desktop->document));
+}
+
 
