@@ -268,7 +268,11 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 					gnome_print_gsave (gpc);
 					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 					gnome_print_setopacity (gpc, opacity);
-					gnome_print_eofill (gpc);
+					if (object->style->fill_rule == ART_WIND_RULE_ODDEVEN) {
+						gnome_print_eofill (gpc);
+					} else {
+						gnome_print_fill (gpc);
+					}
 					gnome_print_grestore (gpc);
 				} else if (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 					SPPainter *painter;
@@ -291,7 +295,13 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 						art_affine_invert (d2i, i2d);
 
 						gnome_print_gsave (gpc);
-						gnome_print_eoclip (gpc);
+						if (object->style->fill_rule == ART_WIND_RULE_ODDEVEN) {
+							gnome_print_eoclip (gpc);
+						} else {
+							gnome_print_clip (gpc);
+						}
+						gnome_print_concat (gpc, d2i);
+						/* Now we are in desktop coordinates */
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {
 							for (x = ibox.x0; x < ibox.x1; x+= 64) {
 								static guint32 *rgba = NULL;
@@ -299,7 +309,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 								gint xx, yy;
 								if (!rgba) rgba = g_new (guint32, 64 * 64);
 								if (!rgbp) rgbp = g_new (guchar, 4 * 64 * 64);
-								painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y, 64, 64, 64);
+								painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 64);
 								for (yy = 0; yy < 64; yy++) {
 									guint32 *sp;
 									guchar *dp;
@@ -314,7 +324,6 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 									}
 								}
 								gnome_print_gsave (gpc);
-								gnome_print_concat (gpc, d2i);
 								gnome_print_translate (gpc, x, y);
 								gnome_print_scale (gpc, 64, 64);
 								gnome_print_rgbaimage (gpc, rgbp, 64, 64, 4 * 64);
@@ -410,7 +419,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 				art_free (perturbed_vpath);
 				svpb = art_svp_uncross (svpa);
 				art_svp_free (svpa);
-				svp = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+				svp = art_svp_rewind_uncrossed (svpb, style->fill_rule);
 				art_svp_free (svpb);
 
 				if (style->fill.type == SP_PAINT_TYPE_COLOR) {

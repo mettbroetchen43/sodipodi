@@ -522,6 +522,101 @@ sp_curve_first_bpath (SPCurve * curve)
 	return curve->bpath;
 }
 
+SPCurve *
+sp_curve_reverse (SPCurve *curve)
+{
+  ArtBpath *bs, *be, *bp;
+  SPCurve  *new_curve;
+
+#if 0
+  g_return_val_if_fail (curve != NULL, NULL);
+  g_return_val_if_fail (!curve->sbpath, NULL);
+  g_return_val_if_fail (curve->hascpt, NULL);
+  g_return_val_if_fail (!curve->posset, NULL);
+  g_return_val_if_fail (!curve->moving, NULL);
+  g_return_val_if_fail (!curve->closed, NULL);
+#endif
+  /* We need at last M + C + E */
+  g_return_val_if_fail (curve->end - curve->substart > 1, NULL);
+
+  bs = curve->bpath + curve->substart;
+  be = curve->bpath + curve->end - 1;
+
+  new_curve = sp_curve_new_sized (curve->length);
+
+  g_assert (bs->code == ART_MOVETO_OPEN);
+  g_assert ((be+1)->code == ART_END);
+
+  sp_curve_moveto (new_curve, be->x3, be->y3);
+
+  for (bp = be; bp != bs; bp--)
+    {
+      switch (bp->code)
+        {
+        case ART_MOVETO_OPEN:
+          sp_curve_moveto (new_curve, (bp-1)->x3, (bp-1)->y3);
+          break;
+        case ART_MOVETO:
+          sp_curve_moveto (new_curve, (bp-1)->x3, (bp-1)->y3);
+          break;
+        case ART_LINETO:
+          sp_curve_lineto (new_curve, (bp-1)->x3, (bp-1)->y3);
+          break;
+        case ART_CURVETO:
+          sp_curve_curveto (new_curve, bp->x2, bp->y2, bp->x1, bp->y1, (bp-1)->x3, (bp-1)->y3);
+          break;
+        case ART_END:
+          g_assert_not_reached ();
+        }
+    }
+
+  return new_curve;
+}
+
+void
+sp_curve_append (SPCurve *curve,
+                 SPCurve *curve2,
+                 gboolean use_lineto)
+{
+  ArtBpath *bs, *be, *bp;
+
+  g_return_if_fail (curve != NULL);
+  g_return_if_fail (curve2 != NULL);
+
+  bs = curve2->bpath + curve2->substart;
+  be = curve2->bpath + curve2->end - 1;
+
+  g_return_if_fail ((be+1)->code == ART_END);
+  g_return_if_fail (use_lineto==FALSE || curve->end != 0);
+
+  if (use_lineto == TRUE)
+    sp_curve_lineto (curve, bs->x3, bs->y3);
+  else
+    sp_curve_moveto (curve, bs->x3, bs->y3);
+    
+  for (bp = bs+1; bp->code != ART_END; bp++)
+    {
+      switch (bp->code)
+        {
+        case ART_MOVETO_OPEN:
+          sp_curve_moveto (curve, bp->x3, bp->y3);
+          break;
+        case ART_MOVETO:
+          sp_curve_moveto (curve, bp->x3, bp->y3);
+          break;
+        case ART_LINETO:
+          sp_curve_lineto (curve, bp->x3, bp->y3);
+          break;
+        case ART_CURVETO:
+          sp_curve_curveto (curve, bp->x1, bp->y1, bp->x2, bp->y2, 
+                            bp->x3, bp->y3);
+          break;
+        case ART_END:
+          g_assert_not_reached ();
+        }
+    }
+}
+
 /* Private methods */
 
 static
@@ -573,7 +668,7 @@ sp_bpath_check_subpath (ArtBpath * bpath)
 	}
 
 	if (closed) {
-		if (len < 2) return NULL;
+		if (len < 1) return NULL;
 		if ((bpath->x3 != bpath[i-1].x3) || (bpath->y3 != bpath[i-1].y3)) return NULL;
 	} else {
 		if (len < 1) return NULL;
@@ -608,6 +703,3 @@ sp_bpath_closed (ArtBpath * bpath)
 
 	return TRUE;
 }
-
-
-

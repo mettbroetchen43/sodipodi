@@ -1,21 +1,30 @@
-#define SP_DYNA_DRAW_CONTEXT_C
-
 /*
- * drawing-context handlers
+ * dyna-draw-context handlers
  *
  * todo: use intelligent bpathing, i.e. without copying def all the time
- *       make freehand generating curves instead of lines
+ *       make dynahand generating curves instead of lines
  *
  * Copyright (C) Mitsuru Oka (oka326@parkcity.ne.jp), 2001
  * Copyright (C) Lauris Kaplinski (lauris@kaplinski.com), 1999-2000
  *
  * Contains pieces of code published in:
- * "Graphics Gems", Academic Press, 1990
- *  by Philip J. Schneider
+ * "Graphics Gems", Academic Press, 1990 by Philip J. Schneider
  *
+ * Dynadraw/Gtk+ code came from:
+ *
+ * Copyright (C) 1998 The Free Software Foundation
+ * Authors: Federico Mena <federico@nuclecu.unam.mx> - Port to Gtk+
+ *          Nat Friedman <ndf@mit.edu> - Original port to Xlib
+ *          Paul Haeberli <paul@sgi.com> - Original Dynadraw code for GL
  */
+#define SP_DYNA_DRAW_CONTEXT_C
 
 #define noDYNA_DRAW_VERBOSE
+#define NORMALIZED_COORDINATE
+#define TIMEOUT_DRIVEN
+#define DD_FILL SP_PAINT_TYPE_COLOR
+#define DD_STROKE SP_PAINT_TYPE_NONE
+
 
 #include <math.h>
 #include "xml/repr.h"
@@ -23,6 +32,7 @@
 #include "helper/curve.h"
 #include "helper/sodipodi-ctrl.h"
 #include "display/canvas-shape.h"
+#include "helper/bezier-utils.h"
 
 #include "sodipodi.h"
 #include "document.h"
@@ -33,1147 +43,1160 @@
 #include "desktop-snap.h"
 #include "dyna-draw-context.h"
 
-#define TOLERANCE 1.0
-#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
+
+#define SAMPLE_TIMEOUT            10
+#define TOLERANCE_LINE            1.0
+#define TOLERANCE_CALIGRAPHIC     5.0
+
+
+/*  #define hypot(a,b) sqrt ((a) * (a) + (b) * (b)) */
 static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass * klass);
 static void sp_dyna_draw_context_init (SPDynaDrawContext * dyna_draw_context);
 static void sp_dyna_draw_context_destroy (GtkObject * object);
 
-static void sp_dyna_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop);
-static gint sp_dyna_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
-static gint sp_dyna_draw_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
+static void sp_dyna_draw_context_setup (SPEventContext * event_context,
+					SPDesktop * desktop);
+static gint sp_dyna_draw_context_root_handler (SPEventContext * event_context,
+					       GdkEvent * event);
+static gint sp_dyna_draw_context_item_handler (SPEventContext * event_context,
+					       SPItem * item,
+					       GdkEvent * event);
 
 static void clear_current (SPDynaDrawContext * dc);
 static void set_to_accumulated (SPDynaDrawContext * dc);
-static void concat_current (SPDynaDrawContext * dc);
-#if 0
-static void repr_destroyed (SPRepr * repr, gpointer data);
-#endif
+static void concat_current_line (SPDynaDrawContext * dc);
+static void accumulate_caligraphic (SPDynaDrawContext * dc);
+/*  static void concat_current_polygon (SPDynaDrawContext * dc); */
 
 static void test_inside (SPDynaDrawContext * dc, double x, double y);
 static void move_ctrl (SPDynaDrawContext * dc, double x, double y);
 static void remove_ctrl (SPDynaDrawContext * dc);
 
-static void fit_and_split (SPDynaDrawContext * dc);
+static void fit_and_split (SPDynaDrawContext * dc, gboolean release);
+static void fit_and_split_line (SPDynaDrawContext * dc, gboolean release);
+static void fit_and_split_caligraphics (SPDynaDrawContext * dc, gboolean release);
 
-static SPEventContextClass * parent_class;
+static void sp_dyna_draw_reset (SPDynaDrawContext * dc, double x, double y);
+static void sp_dyna_draw_get_npoint (const SPDynaDrawContext *dc,
+                                     gdouble            vx,
+                                     gdouble            vy,
+                                     gdouble           *nx,
+                                     gdouble           *ny);
+static void sp_dyna_draw_get_vpoint (const SPDynaDrawContext *dc,
+                                     gdouble            nx,
+                                     gdouble            ny,
+                                     gdouble           *vx,
+                                     gdouble           *vy);
+static void sp_dyna_draw_get_curr_vpoint (const SPDynaDrawContext * dc,
+                                          gdouble *vx,
+                                          gdouble *vy);
+static void draw_temporary_box (SPDynaDrawContext *dc);
+
+
+static SPEventContextClass *parent_class;
 
 GtkType
 sp_dyna_draw_context_get_type (void)
 {
-	static GtkType dyna_draw_context_type = 0;
+  static GtkType dyna_draw_context_type = 0;
 
-	if (!dyna_draw_context_type) {
+  if (!dyna_draw_context_type)
+    {
 
-		static const GtkTypeInfo dyna_draw_context_info = {
-			"SPDynaDrawContext",
-			sizeof (SPDynaDrawContext),
-			sizeof (SPDynaDrawContextClass),
-			(GtkClassInitFunc) sp_dyna_draw_context_class_init,
-			(GtkObjectInitFunc) sp_dyna_draw_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
-		};
+      static const GtkTypeInfo dyna_draw_context_info = {
+	"SPDynaDrawContext",
+	sizeof (SPDynaDrawContext),
+	sizeof (SPDynaDrawContextClass),
+	(GtkClassInitFunc) sp_dyna_draw_context_class_init,
+	(GtkObjectInitFunc) sp_dyna_draw_context_init,
+	NULL,
+	NULL,
+	(GtkClassInitFunc) NULL
+      };
 
-		dyna_draw_context_type = gtk_type_unique (sp_event_context_get_type (), &dyna_draw_context_info);
-	}
+      dyna_draw_context_type =
+	gtk_type_unique (sp_event_context_get_type (),
+			 &dyna_draw_context_info);
+    }
 
-	return dyna_draw_context_type;
+  return dyna_draw_context_type;
 }
 
 static void
 sp_dyna_draw_context_class_init (SPDynaDrawContextClass * klass)
 {
-	GtkObjectClass * object_class;
-	SPEventContextClass * event_context_class;
+  GtkObjectClass *object_class;
+  SPEventContextClass *event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
-	event_context_class = (SPEventContextClass *) klass;
+  object_class = (GtkObjectClass *) klass;
+  event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+  parent_class = gtk_type_class (sp_event_context_get_type ());
 
-	object_class->destroy = sp_dyna_draw_context_destroy;
+  object_class->destroy = sp_dyna_draw_context_destroy;
 
-	event_context_class->setup = sp_dyna_draw_context_setup;
-	event_context_class->root_handler = sp_dyna_draw_context_root_handler;
-	event_context_class->item_handler = sp_dyna_draw_context_item_handler;
+  event_context_class->setup = sp_dyna_draw_context_setup;
+  event_context_class->root_handler = sp_dyna_draw_context_root_handler;
+  event_context_class->item_handler = sp_dyna_draw_context_item_handler;
 }
 
 static void
 sp_dyna_draw_context_init (SPDynaDrawContext * dc)
 {
-	dc->accumulated = NULL;
-	dc->npoints = 0;
-	dc->segments = NULL;
-	dc->currentcurve = NULL;
-	dc->currentshape = NULL;
-	dc->repr = NULL;
-	dc->citem = NULL;
-	dc->ccolor = 0xff0000ff;
-	dc->cinside = -1;
+  dc->accumulated = NULL;
+  dc->segments = NULL;
+  dc->currentcurve = NULL;
+  dc->currentshape = NULL;
+  dc->npoints = 0;
+  dc->cal1 = NULL;
+  dc->cal2 = NULL;
+  dc->repr = NULL;
+  dc->citem = NULL;
+  dc->ccolor = 0xff0000ff;
+  dc->cinside = -1;
+
+#ifdef TIMEOUT_DRIVEN
+  dc->timer_id = 0;
+  dc->dragging = FALSE;
+  dc->dynahand = FALSE;
+#endif
+  dc->firstdragging = FALSE;
+
+  /* DynaDraw attributes */
+  dc->curx = 0.0;
+  dc->cury = 0.0;
+  dc->lastx = 0.0;
+  dc->lasty = 0.0;
+  dc->velx = 0.0;
+  dc->vely = 0.0;
+  dc->accx = 0.0;
+  dc->accy = 0.0;
+  dc->angx = 0.0;
+  dc->angy = 0.0;
+  dc->delx = 0.0;
+  dc->dely = 0.0;
+  dc->fixed_angle = FALSE;
+  dc->use_caligraphic = TRUE;
+#ifdef NORMALIZED_COORDINATE
+  dc->mass = 0.5;
+  dc->drag = 0.5;
+  dc->angle = 30.0;
+  dc->width = 0.5;
+#else
+  dc->mass = 0.2;
+  dc->drag = 0.5;
+  dc->angle = 30.0;
+  dc->width = 0.1;
+#endif
 }
 
 static void
 sp_dyna_draw_context_destroy (GtkObject * object)
 {
-	SPDynaDrawContext * dc;
+  SPDynaDrawContext *dc;
 
-	dc = SP_DYNA_DRAW_CONTEXT (object);
+  dc = SP_DYNA_DRAW_CONTEXT (object);
 
 #if 0
-	/* fixme: */
-	if (dc->repr) gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+  /* fixme: */
+  if (dc->repr)
+    gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
 #endif
 
-	if (dc->accumulated) sp_curve_unref (dc->accumulated);
+  if (dc->accumulated)
+    sp_curve_unref (dc->accumulated);
 
-	while (dc->segments) {
-		gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-		dc->segments = g_slist_remove (dc->segments, dc->segments->data);
-	}
+  while (dc->segments)
+    {
+      gtk_object_destroy (GTK_OBJECT (dc->segments->data));
+      dc->segments = g_slist_remove (dc->segments, dc->segments->data);
+    }
 
-	if (dc->currentcurve) sp_curve_unref (dc->currentcurve);
+  if (dc->currentcurve)
+    sp_curve_unref (dc->currentcurve);
 
-	if (dc->currentshape) gtk_object_destroy (GTK_OBJECT (dc->currentshape));
+  if (dc->cal1)
+    sp_curve_unref (dc->cal1);
+  if (dc->cal2)
+    sp_curve_unref (dc->cal2);
 
-	if (dc->citem) gtk_object_destroy (GTK_OBJECT (dc->citem));
+  if (dc->currentshape)
+    gtk_object_destroy (GTK_OBJECT (dc->currentshape));
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+  if (dc->citem)
+    gtk_object_destroy (GTK_OBJECT (dc->citem));
+
+  if (GTK_OBJECT_CLASS (parent_class)->destroy)
+    (*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
-sp_dyna_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_dyna_draw_context_setup (SPEventContext * event_context,
+			    SPDesktop * desktop)
 {
-	SPDynaDrawContext * dc;
-	SPStyle *style;
+  SPDynaDrawContext *dc;
+  SPStyle *style;
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+  if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
+    SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 
-	dc = SP_DYNA_DRAW_CONTEXT (event_context);
+  dc = SP_DYNA_DRAW_CONTEXT (event_context);
 
-	dc->accumulated = sp_curve_new_sized (32);
-	dc->currentcurve = sp_curve_new_sized (4);
+  dc->accumulated = sp_curve_new_sized (32);
+  dc->currentcurve = sp_curve_new_sized (4);
 
-	/* fixme: */
-	style = sp_style_new (NULL);
-	style->fill.type = SP_PAINT_TYPE_NONE;
-	style->stroke.type = SP_PAINT_TYPE_COLOR;
-	style->stroke_width.unit = SP_UNIT_ABSOLUTE;
-	style->stroke_width.distance = 1.0;
-	style->absolute_stroke_width = 1.0;
-	style->user_stroke_width = 1.0;
-	dc->currentshape = (SPCanvasShape *) gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
-								    SP_TYPE_CANVAS_SHAPE, NULL);
-	sp_canvas_shape_set_style (dc->currentshape, style);
-	sp_style_unref (style);
-	gtk_signal_connect (GTK_OBJECT (dc->currentshape), "event",
-			    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
+  dc->cal1 = sp_curve_new_sized (32);
+  dc->cal2 = sp_curve_new_sized (32);
+
+  /* fixme: */
+  style = sp_style_new (NULL);
+  style->fill.type = DD_FILL;
+  style->stroke.type = DD_STROKE;
+  style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+  style->stroke_width.distance = 1.0;
+  style->absolute_stroke_width = 1.0;
+  style->user_stroke_width = 1.0;
+  dc->currentshape =
+    (SPCanvasShape *)
+    gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
+			   SP_TYPE_CANVAS_SHAPE, NULL);
+  sp_canvas_shape_set_style (dc->currentshape, style);
+  sp_style_unref (style);
+  gtk_signal_connect (GTK_OBJECT (dc->currentshape), "event",
+		      GTK_SIGNAL_FUNC (sp_desktop_root_handler),
+		      SP_EVENT_CONTEXT (dc)->desktop);
 }
 
 static gint
-sp_dyna_draw_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
+sp_dyna_draw_context_item_handler (SPEventContext * event_context,
+				   SPItem * item, GdkEvent * event)
 {
-	gint ret;
+  gint ret;
 
-	ret = FALSE;
+  ret = FALSE;
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-		ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
+  if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
+    ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
 
-	return ret;
+  return ret;
 }
 
-/*
- *  DynaDraw utility supoorts
- */
-#define DYNA_EPSILON 1.0e-6
-
-typedef struct _DynaFilter DynaFilter;
-
-struct _DynaFilter {
-  double curx, cury;
-  double velx, vely, vel;
-  double accx, accy, acc;
-  double angx, angy;
-  double lastx, lasty;
-  int fixed_angle;
-  /* attributes, it should be editable via sodipodi GUI */
-  double mass, drag;
-  double angle;
-  double width;
-};
-
+#define DYNA_EPSILON   1.0e-6
+#ifdef NORMALIZED_COORDINATE
+#define DYNA_MIN_WIDTH 1.0e-6
+#else
+#define DYNA_MIN_WIDTH 1.0
+#endif
 
 static double
-flerp (double f0,
-       double f1,
-       double p)
+flerp (double f0, double f1, double p)
 {
   return f0 + (f1 - f0) * p;
 }
 
+/* Get normalized point */
 static void
-dyna_filter_init (DynaFilter *f,
-                  double  x,
-                  double  y)
+sp_dyna_draw_get_npoint (const SPDynaDrawContext *dc,
+                         gdouble            vx,
+                         gdouble            vy,
+                         gdouble           *nx,
+                         gdouble           *ny)
 {
-  f->curx = x;
-  f->cury = y;
-  f->lastx = x;
-  f->lasty = y;
-  f->velx = 0.0;
-  f->vely = 0.0;
-  f->accx = 0.0;
-  f->accy = 0.0;
-  /* Fixme: default attribute value */
-  f->mass = 0.2;
-  f->drag = 0.5;
-  f->angle = 30.0;
-  f->width = 0.3;
+#ifdef NORMALIZED_COORDINATE
+  ArtDRect drect;
+
+  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+  *nx = (vx - drect.x0)/(drect.x1 - drect.x0);
+  *ny = (vy - drect.y0)/(drect.y1 - drect.y0);
+#else
+  *nx = vx;
+  *ny = vy;
+#endif
+
+/*    g_print ("NP:: vx:%g vy:%g => nx:%g ny:%g\n", vx, vy, *nx, *ny); */
+/*    g_print ("NP:: x0:%g y0:%g x1:%g y1:%g\n", drect.x0, drect.y0, drect.y1, drect.y1); */
+}
+
+/* Get view point */
+static void
+sp_dyna_draw_get_vpoint (const SPDynaDrawContext *dc,
+                         gdouble            nx,
+                         gdouble            ny,
+                         gdouble           *vx,
+                         gdouble           *vy)
+{
+#ifdef NORMALIZED_COORDINATE
+  ArtDRect drect;
+
+  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+  *vx = nx * (drect.x1 - drect.x0) + drect.x0;
+  *vy = ny * (drect.y1 - drect.y0) + drect.y0;
+#else
+  *vx = nx;
+  *vy = ny;
+#endif
+
+/*    g_print ("VP:: nx:%g ny:%g => vx:%g vy:%g\n", nx, ny, *vx, *vy); */
+}
+
+/* Get current view point */
+static void
+sp_dyna_draw_get_curr_vpoint (const SPDynaDrawContext * dc,
+                              gdouble *vx,
+                              gdouble *vy)
+{
+#ifdef NORMALIZED_COORDINATE
+  ArtDRect drect;
+
+  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+  *vx = dc->curx * (drect.x1 - drect.x0) + drect.x0;
+  *vy = dc->cury * (drect.y1 - drect.y0) + drect.y0;
+#else
+  *vx = dc->curx;
+  *vy = dc->cury;
+#endif
+}
+
+static void
+sp_dyna_draw_reset (SPDynaDrawContext * dc, double x, double y)
+{
+  gdouble nx, ny;
+
+  sp_dyna_draw_get_npoint (dc, x, y, &nx, &ny);
+
+  dc->curx = nx;
+  dc->cury = ny;
+  dc->lastx = nx;
+  dc->lasty = ny;
+  dc->velx = 0.0;
+  dc->vely = 0.0;
+  dc->accx = 0.0;
+  dc->accy = 0.0;
+  dc->angx = 0.0;
+  dc->angy = 0.0;
+  dc->delx = 0.0;
+  dc->dely = 0.0;
 }
 
 static int
-dyna_filter_apply (DynaFilter *f,
-                   double  x,
-                   double  y)
+sp_dyna_draw_apply (SPDynaDrawContext * dc, double x, double y)
 {
   double mass, drag;
   double fx, fy;
-  
-  /* Calculate mass and drag */  
-  mass = flerp (1.0, 160.0, f->mass);
-  drag = flerp (0.0, 0.5, f->drag * f->drag);
-  
+  double nx, ny;                /* normalized coordinates */
+
+  sp_dyna_draw_get_npoint (dc, x, y, &nx, &ny);
+
+  /* Calculate mass and drag */
+  mass = flerp (1.0, 160.0, dc->mass);
+  drag = flerp (0.0, 0.5, dc->drag * dc->drag);
+
   /* Calculate force and acceleration */
-  fx = x - f->curx;
-  fy = y - f->cury;
-  f->acc = sqrt (fx * fx + fy * fy);
-  if (f->acc < DYNA_EPSILON)
+  fx = nx - dc->curx;
+  fy = ny - dc->cury;
+  dc->acc = hypot(fx, fy);
+  if (dc->acc < DYNA_EPSILON)
     return FALSE;
 
-  f->accx = fx / mass;
-  f->accy = fy / mass;
-  
+  dc->accx = fx / mass;
+  dc->accy = fy / mass;
+
   /* Calculate new velocity */
-  f->velx += f->accx;
-  f->vely += f->accy;
-  f->vel = sqrt (f->velx * f->velx + f->vely * f->vely);
-  f->angx = -f->vely;
-  f->angy = f->velx;
-  if (f->vel < DYNA_EPSILON)
-    return FALSE;
-  
+  dc->velx += dc->accx;
+  dc->vely += dc->accy;
+  dc->vel = hypot (dc->velx, dc->vely);
+
   /* Calculate angle of drawing tool */
-  f->angx /= f->vel;
-  f->angy /= f->vel;
-  if (f->fixed_angle) {
-    f->angx = cos (f->angle * M_PI / 180.0);
-    f->angy = -sin (f->angle * M_PI / 180.0);
-  }
-  
+  if (dc->fixed_angle)
+    {
+      dc->angx = cos (dc->angle * M_PI / 180.0);
+      dc->angy = -sin (dc->angle * M_PI / 180.0);
+    }
+  else
+    {
+      dc->angx = -dc->vely;
+      dc->angy = dc->velx;
+      if (dc->vel < DYNA_EPSILON)
+        return FALSE;
+      dc->angx /= dc->vel;
+      dc->angy /= dc->vel;
+    }
+
   /* Apply drag */
-  f->velx *= 1.0 - drag;
-  f->vely *= 1.0 - drag;
-  
+  dc->velx *= 1.0 - drag;
+  dc->vely *= 1.0 - drag;
+
   /* Update position */
-  f->lastx = f->curx;
-  f->lasty = f->cury;
-  f->curx += f->velx;
-  f->cury += f->vely;
-  
+  dc->lastx = dc->curx;
+  dc->lasty = dc->cury;
+  dc->curx += dc->velx;
+  dc->cury += dc->vely;
+
   return TRUE;
 }
 
+static void
+sp_dyna_draw_brush (SPDynaDrawContext *dc,
+                    gboolean           init)
+{
+  if (init)
+    dc->npoints = 0;
+
+  g_assert (dc->npoints >= 0 && dc->npoints < SAMPLING_SIZE);
+
+  if (dc->use_caligraphic)
+    {
+      /* caligraphics */
+      double width;
+      double delx, dely;
+      ArtPoint *vp;
+
+      /* fixme: */
+#ifdef NORMALIZED_COORDINATE
+      width = (0.05 - dc->vel) * dc->width;
+#else
+      width = (100.0 - dc->vel) * dc->width;
+#endif
+      if (width < DYNA_MIN_WIDTH)
+        width = DYNA_MIN_WIDTH;
+      delx = dc->angx * width;
+      dely = dc->angy * width;
+
+#if 0
+      g_print ("brush:: [w:%g] [dc->w:%g] [dc->vel:%g]\n", width, dc->width, dc->vel);
+      g_print("brush:: [del: %g, %g]\n", delx, dely);
+#endif
+
+      vp = &dc->point1[dc->npoints];
+      sp_dyna_draw_get_vpoint (dc, dc->curx + delx, dc->cury + dely,
+                               &vp->x, &vp->y);
+      vp = &dc->point2[dc->npoints];
+      sp_dyna_draw_get_vpoint (dc, dc->curx - delx, dc->cury - dely,
+                               &vp->x, &vp->y);
+
+      dc->delx = delx;
+      dc->dely = dely;
+    }
+  else
+    {
+      sp_dyna_draw_get_curr_vpoint (dc, &dc->point1[dc->npoints].x,
+                                    &dc->point1[dc->npoints].y);
+    }
+
+  dc->npoints ++;
+}
+
+#ifdef TIMEOUT_DRIVEN
+static gint
+sp_dyna_draw_timeout_handler (gpointer data)
+{
+  SPDynaDrawContext *dc;
+  SPDesktop *desktop;
+  GnomeCanvas *canvas;
+  gint x, y;
+  ArtPoint p;
+
+  dc = SP_DYNA_DRAW_CONTEXT (data);
+  desktop = SP_EVENT_CONTEXT(dc)->desktop;
+  canvas = GNOME_CANVAS (desktop->canvas);
+
+  gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
+  gnome_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
+  sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
+/*    g_print ("(%d %d)=>(%g %g)\n", x, y, p.x, p.y); */
+  sp_dyna_draw_apply (dc, p.x, p.y);
+  sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
+  test_inside (dc, p.x, p.y);
+  
+  dc->dragging = TRUE;
+  dc->dynahand = TRUE;
+  
+  g_assert (dc->npoints > 0);
+  
+  if (!dc->cinside)
+    {
+      sp_desktop_free_snap (desktop, &p);
+    }
+  
+  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
+    {
+      sp_dyna_draw_brush (dc, FALSE);
+      g_assert (dc->npoints > 1);
+      fit_and_split (dc, FALSE);
+    }
+  dc->firstdragging = FALSE;
+  return TRUE;
+}
+#endif
 
 gint
-sp_dyna_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
+sp_dyna_draw_context_root_handler (SPEventContext * event_context,
+				   GdkEvent * event)
 {
-	static gboolean dragging = FALSE;
-	static gboolean freehand = FALSE;
-        static DynaFilter dyna_mouse;
-	SPDynaDrawContext * dc;
-	SPDesktop * desktop;
-	ArtPoint p;
-	gint ret;
-
-	dc = SP_DYNA_DRAW_CONTEXT (event_context);
-	desktop = event_context->desktop;
-
-	ret = FALSE;
-
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		if (event->button.button == 1) {
-
-			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-                        dyna_filter_init (&dyna_mouse, p.x, p.y);
-                        dyna_filter_apply (&dyna_mouse, p.x, p.y);
-                        p.x = dyna_mouse.curx;
-                        p.y = dyna_mouse.cury;
-
-			test_inside (dc, p.x, p.y);
-			if (!dc->cinside) {
-				sp_desktop_free_snap (desktop, &p);
-				sp_curve_reset (dc->accumulated);
-				if (dc->repr) {
-#if 0
-					gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+#ifndef TIMEOUT_DRIVEN
+  static gboolean dragging = FALSE;
+  static gboolean dynahand = FALSE;
 #endif
-					dc->repr = NULL;
-				}
-				move_ctrl (dc, p.x, p.y);
-			} else if (dc->accumulated->end > 1) {
-				ArtBpath * bp;
-				bp = sp_curve_last_bpath (dc->accumulated);
-				p.x = bp->x3;
-				p.y = bp->y3;
-				move_ctrl (dc, dc->accumulated->bpath->x3, dc->accumulated->bpath->y3);
-			} else {
-				ret = TRUE;
-				break;
-			}
+  SPDynaDrawContext *dc;
+  SPDesktop *desktop;
+  ArtPoint p;
+  gint ret;
 
-			/* initialize first point */
-			dc->npoints = 0;
-			dc->p[dc->npoints++] = p;
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
-			ret = TRUE;
-		}
-		break;
-	case GDK_MOTION_NOTIFY:
-		sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-                
-                dyna_filter_apply (&dyna_mouse, p.x, p.y);
-                p.x = dyna_mouse.curx;
-                p.y = dyna_mouse.cury;
+  dc = SP_DYNA_DRAW_CONTEXT (event_context);
+  desktop = event_context->desktop;
 
-		test_inside (dc, p.x, p.y);
-		if (event->motion.state & GDK_BUTTON1_MASK) {
-			dragging = TRUE;
-			freehand = TRUE;
-			g_assert (dc->npoints > 0);
-			if (!dc->cinside) {
-				sp_desktop_free_snap (desktop, &p);
-			}
+  ret = FALSE;
 
-			if ((p.x != dc->p[dc->npoints - 1].x) || (p.y != dc->p[dc->npoints - 1].y)) {
-				dc->p[dc->npoints++] = p;
-				fit_and_split (dc);
-			}
-			ret = TRUE;
-		}
-		break;
-	case GDK_BUTTON_RELEASE:
-		if (dragging && event->button.button == 1) {
-			dragging = FALSE;
+  switch (event->type)
+    {
+    case GDK_BUTTON_PRESS:
+      if (event->button.button == 1)
+	{
+	  sp_desktop_w2d_xy_point (desktop, &p, event->button.x,
+				   event->button.y);
+	  sp_dyna_draw_reset (dc, p.x, p.y);
+	  sp_dyna_draw_apply (dc, p.x, p.y);
+          sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-			if (freehand) {
-				freehand = FALSE;
-				/* Remove all temporary line segments */
-				while (dc->segments) {
-					gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-					dc->segments = g_slist_remove (dc->segments, dc->segments->data);
-				}
-				/* Create object */
-				concat_current (dc);
-				if (dc->cinside) {
-					if (dc->accumulated->end > 3) {
-						sp_curve_closepath_current (dc->accumulated);
-					}
-				}
-				set_to_accumulated (dc);
-				if (dc->cinside) {
-					/* reset accumulated curve */
-					sp_curve_reset (dc->accumulated);
-					clear_current (dc);
-					if (dc->repr) {
+	  test_inside (dc, p.x, p.y);
+	  if (!dc->cinside)
+	    {
+	      sp_desktop_free_snap (desktop, &p);
+	      sp_curve_reset (dc->accumulated);
+	      if (dc->repr)
+		{
 #if 0
-						gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+		  gtk_signal_disconnect (GTK_OBJECT (dc->repr),
+					 dc->destroyid);
 #endif
-						dc->repr = NULL;
-					}
-					remove_ctrl (dc);
-				}
-			}
-
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
-			ret = TRUE;
+		  dc->repr = NULL;
 		}
-		break;
-	default:
-		break;
-	}
+	      move_ctrl (dc, p.x, p.y);
+	    }
+	  else if (dc->accumulated->end > 1)
+	    {
+	      ArtBpath *bp;
+	      bp = sp_curve_last_bpath (dc->accumulated);
+	      p.x = bp->x3;
+	      p.y = bp->y3;
+	      move_ctrl (dc, dc->accumulated->bpath->x3,
+			 dc->accumulated->bpath->y3);
+	    }
+	  else
+	    {
+              dc->firstdragging = TRUE;
+	      ret = TRUE;
+	      break;
+	    }
 
-	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+	  /* initialize first point */
+          sp_dyna_draw_brush (dc, TRUE);
+         
+	  gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+				  GDK_BUTTON_RELEASE_MASK |
+#ifndef TIMEOUT_DRIVEN
+				  GDK_POINTER_MOTION_MASK |
+#endif
+				  GDK_BUTTON_PRESS_MASK, NULL,
+				  event->button.time);
+#ifdef TIMEOUT_DRIVEN
+          if (! dc->timer_id)
+            dc->timer_id = gtk_timeout_add (SAMPLE_TIMEOUT, sp_dyna_draw_timeout_handler, dc);
+#endif
+          dc->firstdragging = TRUE;
+	  ret = TRUE;
 	}
+      break;
+#ifndef TIMEOUT_DRIVEN
+    case GDK_MOTION_NOTIFY:
+      if (event->motion.state & GDK_BUTTON1_MASK)
+	{
+          sp_desktop_w2d_xy_point (desktop, &p, event->motion.x,
+                                   event->motion.y);
+#if 0
+          g_print ("(%g %g)=>(%g %g)\n", event->motion.x, event->motion.y, p.x, p.y);
+#endif
+          sp_dyna_draw_apply (dc, p.x, p.y);
+          sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-	return ret;
+          test_inside (dc, p.x, p.y);
+
+	  dragging = TRUE;
+	  dynahand = TRUE;
+
+          g_assert (dc->npoints > 0);
+
+	  if (!dc->cinside)
+	    {
+	      sp_desktop_free_snap (desktop, &p);
+	    }
+
+	  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
+	    {
+              sp_dyna_draw_brush (dc, FALSE);
+              g_assert (dc->npoints > 1);
+              fit_and_split (dc, FALSE);
+	    }
+          firstdragging = FALSE;
+	  ret = TRUE;
+	}
+      break;
+#endif
+    case GDK_BUTTON_RELEASE:
+#ifdef TIMEOUT_DRIVEN
+      if (dc->dragging && event->button.button == 1)
+	{
+	  dc->dragging = FALSE;
+
+/*            g_print ("[release]\n"); */
+          gtk_timeout_remove (dc->timer_id);
+          dc->timer_id = 0;
+
+	  if (dc->dynahand)
+	    {
+	      dc->dynahand = FALSE;
+#else
+      if (dragging && event->button.button == 1)
+	{
+	  dragging = FALSE;
+
+	  if (dynahand)
+	    {
+	      dynahand = FALSE;
+#endif
+	      /* Remove all temporary line segments */
+	      while (dc->segments)
+		{
+		  gtk_object_destroy (GTK_OBJECT (dc->segments->data));
+		  dc->segments = g_slist_remove (dc->segments, dc->segments->data);
+		}
+	      /* Create object */
+              fit_and_split (dc, TRUE);
+              if (dc->use_caligraphic)
+                {
+                  accumulate_caligraphic (dc);
+/*                    concat_current_polygon (dc); */
+                }
+              else
+                {
+                  concat_current_line (dc);
+                  if (dc->cinside && dc->accumulated->end > 3)
+                    {
+                      sp_curve_closepath_current (dc->accumulated);
+                    }
+                }
+              set_to_accumulated (dc); /* temporal implementation */
+              if (dc->cinside)
+                {
+                  /* reset accumulated curve */
+                  sp_curve_reset (dc->accumulated);
+                  clear_current (dc);
+                  if (dc->repr)
+		    {
+#if 0
+		      gtk_signal_disconnect (GTK_OBJECT (dc->repr),
+					     dc->destroyid);
+#endif
+		      dc->repr = NULL;
+		    }
+                  remove_ctrl (dc);
+                }
+              
+	    }
+
+	  gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate),
+				    event->button.time);
+	  ret = TRUE;
+	}
+      break;
+    default:
+      break;
+    }
+
+  if (!ret)
+    {
+      if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
+	ret = SP_EVENT_CONTEXT_CLASS (parent_class)-> root_handler (event_context, event);
+    }
+
+  return ret;
 }
 
 static void
 clear_current (SPDynaDrawContext * dc)
 {
-	sp_canvas_shape_clear (dc->currentshape);
-	/* reset curve */
-	sp_curve_reset (dc->currentcurve);
-	/* reset points */
-	dc->npoints = 0;
+  sp_canvas_shape_clear (dc->currentshape);
+  /* reset curve */
+  sp_curve_reset (dc->currentcurve);
+  /* reset points */
+/*    if (dc->use_caligraphic) */
+/*      { */
+/*        dc->npoints1 = 0; */
+/*        dc->npoints2 = 0; */
+/*      } */
+/*    else */
+    dc->npoints = 0;
 }
 
 static void
 set_to_accumulated (SPDynaDrawContext * dc)
 {
-	SPDesktop * desktop;
+  SPDesktop *desktop;
 
-	desktop = SP_EVENT_CONTEXT (dc)->desktop;
+  desktop = SP_EVENT_CONTEXT (dc)->desktop;
 
-	if (!sp_curve_empty (dc->accumulated)) {
-		ArtBpath *abp;
-		gdouble d2doc[6];
-		gchar * str;
+  if (!sp_curve_empty (dc->accumulated))
+    {
+      ArtBpath *abp;
+      gdouble d2doc[6];
+      gchar *str;
 
-		if (!dc->repr) {
-			SPRepr * repr, * style;
-			SPCSSAttr * css;
-			/* Create object */
-			repr = sp_repr_new ("path");
-			/* Set style */
-			style = sodipodi_get_repr (SODIPODI, "paint.freehand");
-			if (style) {
-				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (repr, css, "style");
-				sp_repr_css_attr_unref (css);
-			}
-			dc->repr = repr;
-#if 0
-			dc->destroyid = gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
-							    GTK_SIGNAL_FUNC (repr_destroyed), dc);
+      if (!dc->repr)
+	{
+	  SPRepr *repr, *style;
+	  SPCSSAttr *css;
+	  /* Create object */
+	  repr = sp_repr_new ("path");
+	  /* Set style */
+#if 1
+          if (dc->use_caligraphic)
+            style = sodipodi_get_repr (SODIPODI, "paint.caligraphic");
+          else
+            style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+#else
+/*  	  style = sodipodi_get_repr (SODIPODI, "paint.dynahand"); */
+	  style = sodipodi_get_repr (SODIPODI, "paint.freehand");
 #endif
-			sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
-			sp_repr_unref (dc->repr);
-			sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
-		}
-		sp_desktop_d2doc_affine (desktop, d2doc);
-		abp = art_bpath_affine_transform (sp_curve_first_bpath (dc->accumulated), d2doc);
-		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
-		art_free (abp);
-		sp_repr_set_attr (dc->repr, "d", str);
-		g_free (str);
-	} else {
-		if (dc->repr) sp_repr_unparent (dc->repr);
-		dc->repr = NULL;
+	  if (style)
+	    {
+	      css = sp_repr_css_attr_inherited (style, "style");
+/*	      sp_repr_css_set_property (css, "stroke", "none"); */
+/*	      sp_repr_css_set_property (css, "fill-rule", "nonzero"); */
+	      sp_repr_css_set (repr, css, "style");
+	      sp_repr_css_attr_unref (css);
+	    }
+	  dc->repr = repr;
+#if 0
+	  dc->destroyid =
+	    gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
+				GTK_SIGNAL_FUNC (repr_destroyed), dc);
+#endif
+	  sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
+	  sp_repr_unref (dc->repr);
+	  sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
 	}
+      sp_desktop_d2doc_affine (desktop, d2doc);
+      abp = art_bpath_affine_transform (sp_curve_first_bpath (dc->accumulated), d2doc);
+      str = sp_svg_write_path (abp);
+      g_assert (str != NULL);
+      art_free (abp);
+      sp_repr_set_attr (dc->repr, "d", str);
+      g_free (str);
+    }
+  else
+    {
+      if (dc->repr)
+	sp_repr_unparent (dc->repr);
+      dc->repr = NULL;
+    }
 
-	sp_document_done (SP_DT_DOCUMENT (desktop));
+  sp_document_done (SP_DT_DOCUMENT (desktop));
+
+#if 1
+  /* Hide currentshape */
+  clear_current (dc);
+#endif
+}
+
+#if 0
+static void
+accumulate_line (SPDynaDrawContext *dc)
+{
+}
+#endif
+static void
+concat_current_line (SPDynaDrawContext * dc)
+{
+  if (!sp_curve_empty (dc->currentcurve))
+    {
+      ArtBpath *bpath;
+      if (sp_curve_empty (dc->accumulated))
+	{
+	  bpath = sp_curve_first_bpath (dc->currentcurve);
+	  g_assert (bpath->code == ART_MOVETO_OPEN);
+	  sp_curve_moveto (dc->accumulated, bpath->x3, bpath->y3);
+	}
+      bpath = sp_curve_last_bpath (dc->currentcurve);
+      if (bpath->code == ART_CURVETO)
+	{
+	  sp_curve_curveto (dc->accumulated, bpath->x1, bpath->y1, bpath->x2,
+			    bpath->y2, bpath->x3, bpath->y3);
+	}
+      else if (bpath->code == ART_LINETO)
+	{
+	  sp_curve_lineto (dc->accumulated, bpath->x3, bpath->y3);
+	}
+      else
+	{
+	  g_assert_not_reached ();
+	}
+    }
 }
 
 static void
-concat_current (SPDynaDrawContext * dc)
+accumulate_caligraphic (SPDynaDrawContext * dc)
 {
-	if (!sp_curve_empty (dc->currentcurve)) {
-		ArtBpath * bpath;
-		if (sp_curve_empty (dc->accumulated)) {
-			bpath = sp_curve_first_bpath (dc->currentcurve);
-			g_assert (bpath->code == ART_MOVETO_OPEN);
-			sp_curve_moveto (dc->accumulated, bpath->x3, bpath->y3);
-		}
-		bpath = sp_curve_last_bpath (dc->currentcurve);
-		if (bpath->code == ART_CURVETO) {
-			sp_curve_curveto (dc->accumulated, bpath->x1, bpath->y1, bpath->x2, bpath->y2, bpath->x3, bpath->y3);
-		} else if (bpath->code == ART_LINETO) {
-			sp_curve_lineto (dc->accumulated, bpath->x3, bpath->y3);
-		} else {
-			g_assert_not_reached ();
-		}
-	}
+  SPCurve *rev_cal2;
+
+  if (!sp_curve_empty (dc->cal1) || !sp_curve_empty(dc->cal2))
+    {
+      sp_curve_reset (dc->accumulated); /*  Is this required ?? */
+      rev_cal2 = sp_curve_reverse (dc->cal2);
+      sp_curve_append (dc->accumulated, dc->cal1, FALSE);
+      sp_curve_append (dc->accumulated, rev_cal2, TRUE);
+      sp_curve_closepath(dc->accumulated);
+
+      sp_curve_unref (rev_cal2);
+
+      sp_curve_reset (dc->cal1);
+      sp_curve_reset (dc->cal2);
+    }
 }
-
-#if 0
-static void
-repr_destroyed (SPRepr * repr, gpointer data)
-{
-	SPDynaDrawContext * dc;
-
-	dc = SP_DYNA_DRAW_CONTEXT (data);
-
-	dc->repr = NULL;
-	sp_curve_reset (dc->accumulated);
-
-	remove_ctrl (dc);
-}
-#endif
 
 static void
 test_inside (SPDynaDrawContext * dc, double x, double y)
 {
-	ArtPoint p;
+  ArtPoint p;
 
-	if (dc->citem == NULL) {
-		dc->cinside = FALSE;
-		return;
+  if (dc->citem == NULL)
+    {
+      dc->cinside = FALSE;
+      return;
+    }
+
+  sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &p, x, y);
+
+#define MAX_INSIDE_DISTANCE 4.0
+
+  if ((fabs (p.x - dc->cpos.x) > MAX_INSIDE_DISTANCE) ||
+      (fabs (p.y - dc->cpos.y) > MAX_INSIDE_DISTANCE))
+    {
+      if (dc->cinside != 0)
+	{
+	  gnome_canvas_item_set (dc->citem, "filled", FALSE, NULL);
+	  dc->cinside = 0;
 	}
-
-	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &p, x, y);
-
-	if ((fabs (p.x - dc->cpos.x) > 4.0) || (fabs (p.y - dc->cpos.y) > 4.0)) {
-		if (dc->cinside != 0) {
-			gnome_canvas_item_set (dc->citem,
-				"filled", FALSE, NULL);
-			dc->cinside = 0;
-		}
-	} else {
-		if (dc->cinside != 1) {
-			gnome_canvas_item_set (dc->citem,
-				"filled", TRUE, NULL);
-				dc->cinside = 1;
-		}
+    }
+  else
+    {
+      if (dc->cinside != 1)
+	{
+	  gnome_canvas_item_set (dc->citem, "filled", TRUE, NULL);
+	  dc->cinside = 1;
 	}
+    }
 }
 
 
 static void
 move_ctrl (SPDynaDrawContext * dc, double x, double y)
 {
-	if (dc->citem == NULL) {
-		dc->citem = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT (dc)->desktop),
-			SP_TYPE_CTRL,
-			"size", 4.0,
-			"filled", 0,
-			"fill_color", dc->ccolor,
-			"stroked", 1,
-			"stroke_color", 0x000000ff,
-			NULL);
-		gtk_signal_connect (GTK_OBJECT (dc->citem), "event",
-			GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
-	}
-	sp_ctrl_moveto (SP_CTRL (dc->citem), x, y);
-	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &dc->cpos, x, y);
-	dc->cinside = -1;
+  if (dc->citem == NULL)
+    {
+      dc->citem =
+	gnome_canvas_item_new (SP_DT_CONTROLS
+			       (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CTRL,
+			       "size", 4.0, "filled", 0, "fill_color",
+			       dc->ccolor, "stroked", 1, "stroke_color",
+			       0x000000ff, NULL);
+      gtk_signal_connect (GTK_OBJECT (dc->citem), "event",
+			  GTK_SIGNAL_FUNC (sp_desktop_root_handler),
+			  SP_EVENT_CONTEXT (dc)->desktop);
+    }
+  sp_ctrl_moveto (SP_CTRL (dc->citem), x, y);
+  sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &dc->cpos, x, y);
+  dc->cinside = -1;
 }
 
 static void
 remove_ctrl (SPDynaDrawContext * dc)
 {
-	if (dc->citem) {
-		gtk_object_destroy (GTK_OBJECT (dc->citem));
-		dc->citem = NULL;
-	}
+  if (dc->citem)
+    {
+      gtk_object_destroy (GTK_OBJECT (dc->citem));
+      dc->citem = NULL;
+    }
 }
 
-/*
- * An Algorithm for Automatically Fitting Digitized Curves
- * by Philip J. Schneider
- * from "Graphics Gems", Academic Press, 1990
- */
-
-typedef ArtPoint * BezierCurve;
-
-/* Forward declarations */
-static gboolean FitCubic(ArtPoint * b, ArtPoint * d, gint first, gint last, ArtPoint tHat1, ArtPoint tHat2, gdouble error);
-static void GenerateBezier (ArtPoint * b, ArtPoint * d, gint first, gint last, double * uPrime, ArtPoint tHat1, ArtPoint tHat2);
-static gdouble * Reparameterize(ArtPoint * d, gint first, gint last, gdouble * u, BezierCurve bezCurve);
-static gdouble NewtonRaphsonRootFind(BezierCurve Q, ArtPoint P, gdouble u);
-static ArtPoint BezierII (gint degree, ArtPoint * V, gdouble t);
-static gdouble B0 (gdouble u);
-static gdouble B1 (gdouble u);
-static gdouble B2 (gdouble u);
-static gdouble B3 (gdouble u);
-static ArtPoint ComputeLeftTangent (ArtPoint * d, gint end);
-static ArtPoint ComputeRightTangent (ArtPoint * d, gint end);
-#if 0
-static ArtPoint ComputeCenterTangent (ArtPoint * d, gint center);
-#endif
-static gdouble * ChordLengthParameterize(ArtPoint * d, gint first, gint last);
-static gdouble ComputeMaxError(ArtPoint * d, gint first, gint last, BezierCurve bezCurve, gdouble * u, gint * splitPoint);
-static ArtPoint V2AddII (ArtPoint a, ArtPoint b);
-static ArtPoint V2ScaleIII (ArtPoint v, gdouble s);
-static ArtPoint V2SubII (ArtPoint a, ArtPoint b);
-static void V2Normalize (ArtPoint * v);
-
-#define V2Dot(a,b) ((a)->x * (b)->x + (a)->y * (b)->y)
-
-#define MAXPOINTS	1000		/* The most points you can have */
+#define BEZIER_ASSERT(b) { \
+      g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0)); \
+      g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0)); \
+      g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0)); \
+      g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0)); \
+      g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0)); \
+      g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0)); \
+      g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0)); \
+      g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0)); \
+      }
 
 static void
-fit_and_split (SPDynaDrawContext * dc)
+fit_and_split (SPDynaDrawContext *dc,
+               gboolean           release)
 {
-	ArtPoint t0, t1;
-	ArtPoint b[4];
-	gdouble tolerance;
+  if (dc->use_caligraphic)
+    {
+      fit_and_split_caligraphics (dc, release);
+    }
+  else
+    {
+/*        g_print ("npoints = %d\n", dc->npoints); */
+/*        if (release || (dc->npoints == SAMPLING_SIZE - 1)) */
+        fit_and_split_line (dc, release);
+    }
+}
 
-	g_assert (dc->npoints > 1);
+static void
+fit_and_split_line (SPDynaDrawContext *dc,
+                    gboolean           release)
+{
+/*    ArtPoint t0, t1; */
+  ArtPoint b[4];
+  gdouble tolerance;
 
-	tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE;
-	tolerance = tolerance * tolerance;
+  tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_LINE;
+  tolerance = tolerance * tolerance;
 
-	t0 = ComputeLeftTangent(dc->p, 0);
-	t1 = ComputeRightTangent(dc->p, dc->npoints - 1);
-
-	if (FitCubic (b, dc->p, 0, dc->npoints - 1, t0, t1, tolerance) && dc->npoints < 16) {
-		/* Fit and draw and reset state */
+  if (sp_bezier_fit_cubic (b, dc->point1, 0, dc->npoints - 1, tolerance)
+      && dc->npoints < SAMPLING_SIZE)
+    {
+      /* Fit and draw and reset state */
 #ifdef DYNA_DRAW_VERBOSE
-		g_print ("%d", dc->npoints);
+      g_print ("%d", dc->npoints);
 #endif
-		g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0));
-		g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0));
-		g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0));
-		g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0));
-		g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0));
-		g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0));
-		g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0));
-		g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0));
-		sp_curve_reset (dc->currentcurve);
-		sp_curve_moveto (dc->currentcurve, b[0].x, b[0].y);
-		sp_curve_curveto (dc->currentcurve, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
-		sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
-	} else {
-		SPCurve * curve;
-		SPStyle *style;
-		SPCanvasShape * cshape;
-		/* Fit and draw and copy last point */
+      BEZIER_ASSERT (b);
+      sp_curve_reset (dc->currentcurve);
+      sp_curve_moveto (dc->currentcurve, b[0].x, b[0].y);
+      sp_curve_curveto (dc->currentcurve, b[1].x, b[1].y, b[2].x, b[2].y,
+			b[3].x, b[3].y);
+      sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
+    }
+  else
+    {
+      SPCurve *curve;
+      SPStyle *style;
+      SPCanvasShape *cshape;
+      /* Fit and draw and copy last point */
 #ifdef DYNA_DRAW_VERBOSE
-		g_print("[%d]Yup\n", dc->npoints);
+      g_print ("[%d]Yup\n", dc->npoints);
 #endif
-		g_assert (!sp_curve_empty (dc->currentcurve));
-		concat_current (dc);
-		curve = sp_curve_copy (dc->currentcurve);
-		/* fixme: */
-		style = sp_style_new (NULL);
-		style->fill.type = SP_PAINT_TYPE_NONE;
-		style->stroke.type = SP_PAINT_TYPE_COLOR;
-		style->stroke_width.unit = SP_UNIT_ABSOLUTE;
-		style->stroke_width.distance = 1.0;
-		style->absolute_stroke_width = 1.0;
-		style->user_stroke_width = 1.0;
-		cshape = (SPCanvasShape *) gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
-								  SP_TYPE_CANVAS_SHAPE, NULL);
-		sp_canvas_shape_set_style (cshape, style);
-		sp_style_unref (style);
-		gtk_signal_connect (GTK_OBJECT (cshape), "event",
-				    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
+      g_assert (!sp_curve_empty (dc->currentcurve));
+      concat_current_line (dc);
+      curve = sp_curve_copy (dc->currentcurve);
+      /* fixme: */
+      style = sp_style_new (NULL);
+      style->fill.type = DD_FILL;
+      style->stroke.type = DD_STROKE;
+      style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+      style->stroke_width.distance = 1.0;
+      style->absolute_stroke_width = 1.0;
+      style->user_stroke_width = 1.0;
+      cshape =
+	(SPCanvasShape *)
+	gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
+			       SP_TYPE_CANVAS_SHAPE, NULL);
+      sp_canvas_shape_set_style (cshape, style);
+      sp_style_unref (style);
+      gtk_signal_connect (GTK_OBJECT (cshape), "event",
+			  GTK_SIGNAL_FUNC (sp_desktop_root_handler),
+			  SP_EVENT_CONTEXT (dc)->desktop);
 
-		sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
-		sp_curve_unref (curve);
+      sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
+      sp_curve_unref (curve);
 
-		dc->segments = g_slist_prepend (dc->segments, cshape);
+      dc->segments = g_slist_prepend (dc->segments, cshape);
 
-		dc->p[0] = dc->p[dc->npoints - 2];
-		dc->p[1] = dc->p[dc->npoints - 1];
-		dc->npoints = 1;
-	}
-}
-
-/*
- *  FitCubic :
- *  	Fit a Bezier curve to a (sub)set of digitized points
- */
-
-static gboolean
-FitCubic(ArtPoint * b, ArtPoint * d, gint first, gint last, ArtPoint tHat1, ArtPoint tHat2, gdouble error)
-{
-#if 0
-    Point2	*d;			/*  Array of digitized points */
-    int		first, last;	/* Indices of first and last pts in region */
-    ArtPoint	tHat1, tHat2;	/* Unit tangent vectors at endpoints */
-    double	error;		/*  User-defined error squared	   */
-    BezierCurve	bezCurve; /*Control points of fitted Bezier curve*/
-#endif
-    double	*u;		/*  Parameter values for point  */
-    double	*uPrime;	/*  Improved parameter values */
-    double	maxError;	/*  Maximum fitting error	 */
-    int		splitPoint;	/*  Point to split point set at	 */
-    int		nPts;		/*  Number of points in subset  */
-    double	iterationError; /*Error below which you try iterating  */
-    int		maxIterations = 4; /*  Max times to try iterating  */
-#if 0
-    ArtPoint	tHatCenter;   	/* Unit tangent vector at splitPoint */
-#endif
-    int		i;		
-
-    iterationError = error * error;
-    nPts = last - first + 1;
-
-    /*  Use heuristic if region only has two points in it */
-    if (nPts == 2) {
-	    double dist = hypot (d[last].x - d[first].x, d[last].y - d[first].y) / 3.0;
-
-		b[0] = d[first];
-		b[3] = d[last];
-#if 0
-		V2Add(&bezCurve[0], V2Scale(&tHat1, dist), &bezCurve[1]);
-		V2Add(&bezCurve[3], V2Scale(&tHat2, dist), &bezCurve[2]);
+#if 1
+      dc->point1[0] = dc->point1[dc->npoints - 2];
+      dc->point1[1] = dc->point1[dc->npoints - 1];
 #else
-		b[1].x = tHat1.x * dist + b[0].x;
-		b[1].y = tHat1.y * dist + b[0].y;
-		b[2].x = tHat2.x * dist + b[3].x;
-		b[2].y = tHat2.y * dist + b[3].y;
+      dc->point1[0] = dc->point1[dc->npoints - 2];
 #endif
-#if 0
-		DrawBezierCurve(3, bezCurve);
-#endif
-		return TRUE;
+      dc->npoints = 1;
     }
-
-    /*  Parameterize points, and attempt to fit curve */
-    u = ChordLengthParameterize(d, first, last);
-    GenerateBezier(b, d, first, last, u, tHat1, tHat2);
-
-    /*  Find max deviation of points to fitted curve */
-    maxError = ComputeMaxError(d, first, last, b, u, &splitPoint);
-
-    if (maxError < error) {
-#if 0
-		DrawBezierCurve(3, bezCurve);
-#endif
-		g_free (u);
-		return TRUE;
-    }
-
-
-    /*  If error not too large, try some reparameterization  */
-    /*  and iteration */
-    if (maxError < iterationError) {
-		for (i = 0; i < maxIterations; i++) {
-	    	uPrime = Reparameterize(d, first, last, u, b);
-	    	GenerateBezier(b, d, first, last, uPrime, tHat1, tHat2);
-	    	maxError = ComputeMaxError(d, first, last, b, uPrime, &splitPoint);
-	    	if (maxError < error) {
-#if 0
-			DrawBezierCurve(3, bezCurve);
-#endif
-			g_free (u);
-			g_free (uPrime);
-			return TRUE;
-	    }
-	    g_free (u);
-	    u = uPrime;
-	}
-    }
-
-    g_free (u);
-    return FALSE;
-#if 0
-    /* Fitting failed -- split at max error point and fit recursively */
-    g_free (u);
-    g_free (bezCurve);
-    tHatCenter = ComputeCenterTangent(d, splitPoint);
-    FitCubic(d, first, splitPoint, tHat1, tHatCenter, error);
-    V2Negate(&tHatCenter);
-    FitCubic(d, splitPoint, last, tHatCenter, tHat2, error);
-#endif
-}
-
-/*
- *  GenerateBezier :
- *  Use least-squares method to find Bezier control points for region.
- *
- */
-static void
-GenerateBezier (ArtPoint * b, ArtPoint * d, gint first, gint last, double * uPrime, ArtPoint tHat1, ArtPoint tHat2)
-{
-#if 0
-    Point2	*d;			/*  Array of digitized points	*/
-    int		first, last;		/*  Indices defining region	*/
-    double	*uPrime;		/*  Parameter values for region */
-    Vector2	tHat1, tHat2;	/*  Unit tangents at endpoints	*/
-#endif
-    int 	i;
-    ArtPoint 	A[MAXPOINTS][2];	/* Precomputed rhs for eqn	*/
-    int 	nPts;			/* Number of pts in sub-curve */
-    double 	C[2][2];			/* Matrix C		*/
-    double 	X[2];			/* Matrix X			*/
-    double 	det_C0_C1,		/* Determinants of matrices	*/
-    	   	det_C0_X,
-	   		det_X_C1;
-    double 	alpha_l,		/* Alpha values, left and right	*/
-    	   	alpha_r;
-    ArtPoint 	tmp;			/* Utility variable		*/
-#if 0
-    BezierCurve	bezCurve;	/* RETURN bezier curve ctl pts	*/
-#endif
-
-    nPts = last - first + 1;
- 
-    /* Compute the A's	*/
-    for (i = 0; i < nPts; i++) {
-		ArtPoint       	v1, v2;
-		gdouble b1, b2;
-
-		b1 = B1(uPrime[i]);
-		b2 = B2(uPrime[i]);
-		v1.x = tHat1.x * b1;
-		v1.y = tHat1.y * b1;
-		v2.x = tHat2.x * b2;
-		v2.y = tHat2.y * b2;
-#if 0
-		V2Scale(&v1, B1(uPrime[i]));
-		V2Scale(&v2, B2(uPrime[i]));
-#endif
-		A[i][0] = v1;
-		A[i][1] = v2;
-    }
-
-    /* Create the C and X matrices	*/
-    C[0][0] = 0.0;
-    C[0][1] = 0.0;
-    C[1][0] = 0.0;
-    C[1][1] = 0.0;
-    X[0]    = 0.0;
-    X[1]    = 0.0;
-
-    for (i = 0; i < nPts; i++) {
-        C[0][0] += V2Dot(&A[i][0], &A[i][0]);
-		C[0][1] += V2Dot(&A[i][0], &A[i][1]);
-/*					C[1][0] += V2Dot(&A[i][0], &A[i][1]);*/	
-		C[1][0] = C[0][1];
-		C[1][1] += V2Dot(&A[i][1], &A[i][1]);
-
-		tmp = V2SubII(d[first + i],
-	        V2AddII(
-	          V2ScaleIII(d[first], B0(uPrime[i])),
-		    	V2AddII(
-		      		V2ScaleIII(d[first], B1(uPrime[i])),
-		        			V2AddII(
-	                  		V2ScaleIII(d[last], B2(uPrime[i])),
-	                    		V2ScaleIII(d[last], B3(uPrime[i]))))));
-	
-
-	X[0] += V2Dot(&A[i][0], &tmp);
-	X[1] += V2Dot(&A[i][1], &tmp);
-    }
-
-    /* Compute the determinants of C and X	*/
-    det_C0_C1 = C[0][0] * C[1][1] - C[1][0] * C[0][1];
-    det_C0_X  = C[0][0] * X[1]    - C[0][1] * X[0];
-    det_X_C1  = X[0]    * C[1][1] - X[1]    * C[0][1];
-
-    /* Finally, derive alpha values	*/
-    if (det_C0_C1 == 0.0) {
-		det_C0_C1 = (C[0][0] * C[1][1]) * 10e-12;
-    }
-    alpha_l = det_X_C1 / det_C0_C1;
-    alpha_r = det_C0_X / det_C0_C1;
-
-
-    /*  If alpha negative, use the Wu/Barsky heuristic (see text) */
-	/* (if alpha is 0, you get coincident control points that lead to
-	 * divide by zero in any subsequent NewtonRaphsonRootFind() call. */
-    if (alpha_l < 1.0e-6 || alpha_r < 1.0e-6) {
-		double	dist;
-
-		dist = hypot (d[last].x - d[first].x, d[last].y - d[first].y) / 3.0;
-
-		b[0] = d[first];
-		b[3] = d[last];
-#if 0
-		V2Add(&bezCurve[0], V2Scale(&tHat1, dist), &bezCurve[1]);
-		V2Add(&bezCurve[3], V2Scale(&tHat2, dist), &bezCurve[2]);
-#else
-		b[1].x = tHat1.x * dist + b[0].x;
-		b[1].y = tHat1.y * dist + b[0].y;
-		b[2].x = tHat2.x * dist + b[3].x;
-		b[2].y = tHat2.y * dist + b[3].y;
-#endif
-		return;
-    }
-
-    /*  First and last control points of the Bezier curve are */
-    /*  positioned exactly at the first and last data points */
-    /*  Control points 1 and 2 are positioned an alpha distance out */
-    /*  on the tangent vectors, left and right, respectively */
-    b[0] = d[first];
-    b[3] = d[last];
-#if 0
-    V2Add(&bezCurve[0], V2Scale(&tHat1, alpha_l), &bezCurve[1]);
-    V2Add(&bezCurve[3], V2Scale(&tHat2, alpha_r), &bezCurve[2]);
-#else
-    b[1].x = tHat1.x * alpha_l + b[0].x;
-    b[1].y = tHat1.y * alpha_l + b[0].y;
-    b[2].x = tHat2.x * alpha_r + b[3].x;
-    b[2].y = tHat2.y * alpha_r + b[3].y;
-#endif
-    return;
-}
-
-/*
- *  Reparameterize:
- *	Given set of points and their parameterization, try to find
- *   a better parameterization.
- *
- */
-static gdouble *
-Reparameterize(ArtPoint * d, gint first, gint last, gdouble * u, BezierCurve bezCurve)
-{
-#if 0
-    Point2	*d;			/*  Array of digitized points	*/
-    int		first, last;		/*  Indices defining region	*/
-    double	*u;			/*  Current parameter values	*/
-    BezierCurve	bezCurve;	/*  Current fitted curve	*/
-#endif
-    int 	nPts = last-first+1;	
-    int 	i;
-    gdouble	*uPrime;		/*  New parameter values	*/
-
-    uPrime = g_new (gdouble, nPts);
-
-    for (i = first; i <= last; i++) {
-		uPrime[i-first] = NewtonRaphsonRootFind(bezCurve, d[i], u[i-
-					first]);
-    }
-    return (uPrime);
-}
-
-/*
- *  NewtonRaphsonRootFind :
- *	Use Newton-Raphson iteration to find better root.
- */
-static gdouble
-NewtonRaphsonRootFind(BezierCurve Q, ArtPoint P, gdouble u)
-{
-#if 0
-    BezierCurve	Q;			/*  Current fitted curve	*/
-    Point2 		P;		/*  Digitized point		*/
-    double 		u;		/*  Parameter value for "P"	*/
-#endif
-    double 		numerator, denominator;
-    ArtPoint 		Q1[3], Q2[2];	/*  Q' and Q''			*/
-    ArtPoint		Q_u, Q1_u, Q2_u; /*u evaluated at Q, Q', & Q''	*/
-    double 		uPrime;		/*  Improved u			*/
-    int 		i;
-    
-    /* Compute Q(u)	*/
-    Q_u = BezierII(3, Q, u);
-    
-    /* Generate control vertices for Q'	*/
-    for (i = 0; i <= 2; i++) {
-		Q1[i].x = (Q[i+1].x - Q[i].x) * 3.0;
-		Q1[i].y = (Q[i+1].y - Q[i].y) * 3.0;
-    }
-    
-    /* Generate control vertices for Q'' */
-    for (i = 0; i <= 1; i++) {
-		Q2[i].x = (Q1[i+1].x - Q1[i].x) * 2.0;
-		Q2[i].y = (Q1[i+1].y - Q1[i].y) * 2.0;
-    }
-    
-    /* Compute Q'(u) and Q''(u)	*/
-    Q1_u = BezierII(2, Q1, u);
-    Q2_u = BezierII(1, Q2, u);
-    
-    /* Compute f(u)/f'(u) */
-    numerator = (Q_u.x - P.x) * (Q1_u.x) + (Q_u.y - P.y) * (Q1_u.y);
-    denominator = (Q1_u.x) * (Q1_u.x) + (Q1_u.y) * (Q1_u.y) +
-		      	  (Q_u.x - P.x) * (Q2_u.x) + (Q_u.y - P.y) * (Q2_u.y);
-    
-    /* u = u - f(u)/f'(u) */
-    uPrime = u - (numerator/denominator);
-    return (uPrime);
-}
-
-/*
- *  Bezier :
- *  	Evaluate a Bezier curve at a particular parameter value
- * 
- */
-static ArtPoint
-BezierII (gint degree, ArtPoint * V, gdouble t)
-{
-#if 0
-    int		degree;		/* The degree of the bezier curve	*/
-    Point2 	*V;		/* Array of control points		*/
-    double 	t;		/* Parametric value to find point for	*/
-#endif
-    int 	i, j;		
-    ArtPoint 	Q;	        /* Point on curve at parameter t	*/
-    ArtPoint 	*Vtemp;		/* Local copy of control points		*/
-
-    /* Copy array	*/
-    Vtemp = g_new (ArtPoint, degree + 1);
-
-    for (i = 0; i <= degree; i++) {
-		Vtemp[i] = V[i];
-    }
-
-    /* Triangle computation	*/
-    for (i = 1; i <= degree; i++) {	
-		for (j = 0; j <= degree-i; j++) {
-	    	Vtemp[j].x = (1.0 - t) * Vtemp[j].x + t * Vtemp[j+1].x;
-	    	Vtemp[j].y = (1.0 - t) * Vtemp[j].y + t * Vtemp[j+1].y;
-		}
-    }
-
-    Q = Vtemp[0];
-    g_free (Vtemp);
-    return Q;
-}
-
-/*
- *  B0, B1, B2, B3 :
- *	Bezier multipliers
- */
-static gdouble B0 (gdouble u)
-{
-    double tmp = 1.0 - u;
-    return (tmp * tmp * tmp);
-}
-
-
-static gdouble B1 (gdouble u)
-{
-    double tmp = 1.0 - u;
-    return (3 * u * (tmp * tmp));
-}
-
-static gdouble B2 (gdouble u)
-{
-    double tmp = 1.0 - u;
-    return (3 * u * u * tmp);
-}
-
-static gdouble B3(gdouble u)
-{
-    return (u * u * u);
-}
-
-
-
-/*
- * ComputeLeftTangent, ComputeRightTangent, ComputeCenterTangent :
- *Approximate unit tangents at endpoints and "center" of digitized curve
- */
-static ArtPoint
-ComputeLeftTangent (ArtPoint * d, gint end)
-{
-    ArtPoint	tHat1;
-    tHat1 = V2SubII(d[end+1], d[end]);
-    V2Normalize(&tHat1);
-    return tHat1;
-}
-
-static ArtPoint
-ComputeRightTangent (ArtPoint * d, gint end)
-{
-    ArtPoint	tHat2;
-    tHat2 = V2SubII(d[end-1], d[end]);
-    V2Normalize(&tHat2);
-    return tHat2;
-}
-
-#if 0
-static ArtPoint
-ComputeCenterTangent(ArtPoint * d, gint center)
-{
-    ArtPoint	V1, V2, tHatCenter;
-
-    V1 = V2SubII(d[center-1], d[center]);
-    V2 = V2SubII(d[center], d[center+1]);
-    tHatCenter.x = (V1.x + V2.x)/2.0;
-    tHatCenter.y = (V1.y + V2.y)/2.0;
-    V2Normalize(&tHatCenter);
-    return tHatCenter;
-}
-#endif
-
-/*
- *  ChordLengthParameterize :
- *	Assign parameter values to digitized points 
- *	using relative distances between points.
- */
-static gdouble *
-ChordLengthParameterize(ArtPoint * d, gint first, gint last)
-{
-    int		i;	
-    gdouble	*u;			/*  Parameterization		*/
-
-    u = g_new (gdouble, last - first + 1);
-
-    u[0] = 0.0;
-    for (i = first+1; i <= last; i++) {
-		u[i-first] = u[i-first-1] +
-			hypot (d[i].x - d[i-1].x, d[i].y - d[i-1].y);
-    }
-
-    for (i = first + 1; i <= last; i++) {
-		u[i-first] = u[i-first] / u[last-first];
-    }
-
-    return(u);
-}
-
-
-
-
-/*
- *  ComputeMaxError :
- *	Find the maximum squared distance of digitized points
- *	to fitted curve.
-*/
-static gdouble
-ComputeMaxError(ArtPoint * d, gint first, gint last, BezierCurve bezCurve, gdouble * u, gint * splitPoint)
-{
-#if 0
-    Point2	*d;			/*  Array of digitized points	*/
-    int		first, last;		/*  Indices defining region	*/
-    BezierCurve	bezCurve;		/*  Fitted Bezier curve		*/
-    double	*u;			/*  Parameterization of points	*/
-    int		*splitPoint;		/*  Point of maximum error	*/
-#endif
-    int		i;
-    double	maxDist;		/*  Maximum error		*/
-    double	dist;		/*  Current error		*/
-    ArtPoint	P;			/*  Point on curve		*/
-    ArtPoint	v;			/*  Vector from point to curve	*/
-
-    *splitPoint = (last - first + 1)/2;
-    maxDist = 0.0;
-    for (i = first + 1; i < last; i++) {
-		P = BezierII(3, bezCurve, u[i-first]);
-		v = V2SubII(P, d[i]);
-		dist = v.x * v.x + v.y * v.y;
-		if (dist >= maxDist) {
-	    	maxDist = dist;
-	    	*splitPoint = i;
-		}
-    }
-    return (maxDist);
-}
-
-static ArtPoint V2AddII (ArtPoint a, ArtPoint b)
-{
-    ArtPoint	c;
-    c.x = a.x + b.x;  c.y = a.y + b.y;
-    return (c);
-}
-
-static ArtPoint V2ScaleIII (ArtPoint v, gdouble s)
-{
-    ArtPoint result;
-    result.x = v.x * s; result.y = v.y * s;
-    return (result);
-}
-
-static ArtPoint V2SubII (ArtPoint a, ArtPoint b)
-{
-    ArtPoint	c;
-    c.x = a.x - b.x; c.y = a.y - b.y;
-    return (c);
 }
 
 static void
-V2Normalize (ArtPoint * v)
+fit_and_split_caligraphics (SPDynaDrawContext *dc,
+                            gboolean           release)
 {
-	gdouble len;
+  gdouble tolerance;
 
-	len = hypot (v->x, v->y);
-	v->x /= len;
-	v->y /= len;
+  tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_CALIGRAPHIC;
+  tolerance = tolerance * tolerance;
+
+#ifdef DYNA_DRAW_VERBOSE
+  g_print ("[F&S:R=%c]", release?'T':'F');
+#endif
+
+  if (dc->npoints == SAMPLING_SIZE-1 || (release && dc->npoints > 1))
+    {
+#define BEZIER_SIZE       4
+#define BEZIER_MAX_DEPTH  4
+#define BEZIER_MAX_LENGTH (BEZIER_SIZE * (2 << (BEZIER_MAX_DEPTH-1)))
+      SPCurve *curve;
+      SPStyle *style;
+      SPCanvasShape *cshape;
+      ArtPoint b1[BEZIER_MAX_LENGTH], b2[BEZIER_MAX_LENGTH];
+      gint nb1, nb2;            /* number of blocks */
+
+#ifdef DYNA_DRAW_VERBOSE
+      g_print ("[F&S:#] dc->npoints:%d, release:%s\n",
+               dc->npoints, release ? "TRUE" : "FALSE");
+#endif
+
+      /* Current caligraphic */
+      if (dc->firstdragging==TRUE || dc->cal1->end==0 || dc->cal2->end==0)
+        {
+          /* dc->npoints > 0 */
+/*            g_print ("caligraphics(1|2) reset\n"); */
+          sp_curve_reset (dc->cal1);
+          sp_curve_reset (dc->cal2);
+          
+#if 0
+#if 0
+          sp_curve_moveto (dc->cal1, b1[3].x, b1[3].y);
+          sp_curve_moveto (dc->cal2, b2[3].x, b2[3].y);
+#else
+          sp_curve_moveto (dc->cal1, b1[0].x, b1[0].y);
+          sp_curve_moveto (dc->cal2, b2[0].x, b2[0].y);
+#endif
+#else
+          sp_curve_moveto (dc->cal1, dc->point1[0].x, dc->point1[0].y);
+          sp_curve_moveto (dc->cal2, dc->point2[0].x, dc->point2[0].y);
+#endif
+        }
+
+      nb1 = sp_bezier_fit_cubic_r (b1, dc->point1, 0, dc->npoints-1,
+                                       tolerance, BEZIER_MAX_DEPTH);
+      nb2 = sp_bezier_fit_cubic_r (b2, dc->point2, 0, dc->npoints-1,
+                                       tolerance, BEZIER_MAX_DEPTH);
+      if (nb1 != -1 && nb2 != -1)
+        {
+          ArtPoint *bp1, *bp2;
+          /* Fit and draw and reset state */
+#ifdef DYNA_DRAW_VERBOSE
+          g_print ("nb1:%d nb2:%d\n", nb1, nb2);
+#endif
+          /* CanvasShape */
+          sp_curve_reset (dc->currentcurve);
+          sp_curve_moveto (dc->currentcurve, b1[0].x, b1[0].y);
+          for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
+            {
+              BEZIER_ASSERT (bp1);
+
+              sp_curve_curveto (dc->currentcurve, bp1[1].x, bp1[1].y,
+                                bp1[2].x, bp1[2].y, bp1[3].x, bp1[3].y);
+
+            }
+          sp_curve_lineto (dc->currentcurve,
+                           b2[BEZIER_SIZE*(nb2-1) + 3].x,
+                           b2[BEZIER_SIZE*(nb2-1) + 3].y);
+          for (bp2 = b2 + BEZIER_SIZE*(nb2-1); bp2 >= b2; bp2 -= BEZIER_SIZE)
+            {
+              BEZIER_ASSERT (bp2);
+
+              sp_curve_curveto (dc->currentcurve, bp2[2].x, bp2[2].y,
+                                bp2[1].x, bp2[1].y, bp2[0].x, bp2[0].y);
+            }
+          sp_curve_closepath (dc->currentcurve);
+          sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
+
+          /* Current caligraphic */
+          for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
+            {
+              sp_curve_curveto (dc->cal1, bp1[1].x, bp1[1].y,
+                                bp1[2].x, bp1[2].y, bp1[3].x, bp1[3].y);
+            }
+          for (bp2 = b2; bp2 < b2 + BEZIER_SIZE*nb2; bp2 += BEZIER_SIZE)
+            {
+              sp_curve_curveto (dc->cal2, bp2[1].x, bp2[1].y,
+                                bp2[2].x, bp2[2].y, bp2[3].x, bp2[3].y);
+            }
+        }
+      else
+        {
+          gint  i;
+          /* fixme: ??? */
+#ifdef DYNA_DRAW_VERBOSE
+          g_print ("[fit_and_split_caligraphics] failed to fit-cubic.\n");
+#endif
+          draw_temporary_box (dc);
+
+          for (i = 1; i < dc->npoints; i++)
+            sp_curve_lineto (dc->cal1, dc->point1[i].x, dc->point1[i].y);
+          for (i = 1; i < dc->npoints; i++)
+            sp_curve_lineto (dc->cal2, dc->point2[i].x, dc->point2[i].y);
+        }
+
+      /* Fit and draw and copy last point */
+#ifdef DYNA_DRAW_VERBOSE
+      g_print ("[%d]Yup\n", dc->npoints);
+#endif
+      g_assert (!sp_curve_empty (dc->currentcurve));
+      curve = sp_curve_copy (dc->currentcurve);
+      /* fixme: */
+      style = sp_style_new (NULL);
+      style->fill.type = DD_FILL;
+      style->stroke.type = DD_STROKE;
+      style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+      style->stroke_width.distance = 1.0;
+      style->absolute_stroke_width = 1.0;
+      style->user_stroke_width = 1.0;
+      cshape =
+	(SPCanvasShape *)
+	gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
+			       SP_TYPE_CANVAS_SHAPE, NULL);
+      sp_canvas_shape_set_style (cshape, style);
+      sp_style_unref (style);
+      gtk_signal_connect (GTK_OBJECT (cshape), "event",
+			  GTK_SIGNAL_FUNC (sp_desktop_root_handler),
+			  SP_EVENT_CONTEXT (dc)->desktop);
+
+      if (!release) {
+	      sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
+      }
+      sp_curve_unref (curve);
+
+      dc->segments = g_slist_prepend (dc->segments, cshape);
+
+#if 1
+      dc->point1[0] = dc->point1[dc->npoints - 2];
+      dc->point1[1] = dc->point1[dc->npoints - 1];
+      dc->point2[0] = dc->point2[dc->npoints - 2];
+      dc->point2[1] = dc->point2[dc->npoints - 1];
+#else
+      dc->point1[0] = dc->point1[dc->npoints - 1];
+      dc->point2[0] = dc->point2[dc->npoints - 1];
+#endif
+      dc->npoints = 1;
+    }
+  else if (dc->npoints < SAMPLING_SIZE-1)
+    {
+      draw_temporary_box (dc);
+    }
 }
 
+static void
+draw_temporary_box (SPDynaDrawContext *dc)
+{
+  gint  i;
+  
+  sp_curve_reset (dc->currentcurve);
+  sp_curve_moveto (dc->currentcurve, dc->point1[0].x, dc->point1[0].y);
+  for (i = 1; i < dc->npoints; i++)
+    sp_curve_lineto (dc->currentcurve, dc->point1[i].x, dc->point1[i].y);
+  for (i = dc->npoints-1; i >= 0; i--)
+    sp_curve_lineto (dc->currentcurve, dc->point2[i].x, dc->point2[i].y);
+  sp_curve_closepath (dc->currentcurve);
+  sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
+}

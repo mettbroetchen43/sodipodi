@@ -16,26 +16,58 @@ typedef struct _SPDynaDrawContextClass SPDynaDrawContextClass;
 
 typedef struct _SPDynaDrawCtrl SPDynaDrawCtrl;
 
-struct _SPDynaDrawContext {
-	SPEventContext event_context;
-	SPCurve * accumulated;
-	ArtPoint p[16];
-	gint npoints;
-	GSList * segments;
-	SPCurve * currentcurve;
-	SPCanvasShape * currentshape;
+#define SAMPLING_SIZE 16        /* fixme: ?? */
 
-	SPRepr * repr;
-	guint destroyid;
+struct _SPDynaDrawContext
+{
+  SPEventContext event_context;
 
-	GnomeCanvasItem * citem;
-	ArtPoint cpos;
-	guint32 ccolor;
-	gboolean cinside;
+  SPCurve *accumulated;
+  GSList *segments;
+  SPCurve *currentcurve;
+  SPCanvasShape *currentshape;
+  /* normal and caligraphic stroke */
+  ArtPoint point1[SAMPLING_SIZE];
+  ArtPoint point2[SAMPLING_SIZE];
+  gint npoints;
+  SPCurve *cal1;
+  SPCurve *cal2;
+
+  /* repr */
+  SPRepr *repr;
+  guint destroyid;
+
+  /* control */
+  GnomeCanvasItem *citem;
+  ArtPoint cpos;
+  guint32 ccolor;
+  gboolean cinside;
+
+  /* time_id if use timeout */
+  gint timer_id;
+
+  /* DynaDraw */
+  double curx, cury;
+  double velx, vely, vel;
+  double accx, accy, acc;
+  double angx, angy;
+  double lastx, lasty;
+  double delx, dely;
+  /* attributes */
+  /* fixme: shuld be merge dragging and dynahand ?? */
+  guint dragging : 1;           /* mouse state: mouse is dragging */
+  guint dynahand : 1;           /* mouse state: mouse is in draw */
+  guint firstdragging : 1;
+  guint use_caligraphic : 1;
+  guint fixed_angle : 1;
+  double mass, drag;
+  double angle;
+  double width;
 };
 
-struct _SPDynaDrawContextClass {
-	SPEventContextClass parent_class;
+struct _SPDynaDrawContextClass
+{
+  SPEventContextClass parent_class;
 };
 
 /* Standard Gtk function */

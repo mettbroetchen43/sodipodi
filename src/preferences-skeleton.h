@@ -10,6 +10,7 @@ static const char preferences_skeleton[] =
 "      <style id=\"ellipse\"/>\n"
 "    </style>\n"
 "    <style id=\"freehand\"/>\n"
+"    <style id=\"caligraphic\" style=\"stroke:none;fill-rule:nonzero\"/>\n"
 "    <style id=\"text\""
 "           style=\"fill:#000000;stroke:none;font-family:helvetica;font-style:normal;font-weight:normal;font-size:12px\"/>"
 "  </style>\n"

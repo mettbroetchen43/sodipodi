@@ -27,7 +27,8 @@ libspchelp_a_SOURCES = \
 	png-write.c png-write.h \
 	unit-menu.c unit-menu.h \
 	nr-plain-stuff.c nr-plain-stuff.h \
-	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h
+	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
+	bezier-utils.c bezier-utils.h
 
 #	art_rgba.c art_rgba.h \
 #	art_render.c art_render.h \

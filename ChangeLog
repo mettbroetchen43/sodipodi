@@ -1,3 +1,18 @@
+2001-10-02  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dyna-draw-context.c: Stroking by Mitsuru Oka
+
+	* src/helper/bezier-utils.h: New file by Motsuru oka
+
+	* src/helper/bezier-utils.c: Ditto
+
+	* src/sp-shape.c (sp_shape_print): Translate gradients the right way
+
+2001-10-01  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-shape.c (sp_shape_print): Use rule for clip and fill
+	(sp_shape_paint): Use winding rule
+
 2001-09-30  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/style.c (sp_style_write_string): Write rule

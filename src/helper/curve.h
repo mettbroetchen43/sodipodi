@@ -60,4 +60,8 @@ gboolean sp_curve_empty (SPCurve * curve);
 ArtBpath * sp_curve_last_bpath (SPCurve * curve);
 ArtBpath * sp_curve_first_bpath (SPCurve * curve);
 
+void sp_curve_append (SPCurve *curve, SPCurve *curve2, gboolean use_lineto);
+SPCurve *sp_curve_reverse (SPCurve *curve);
+
+
 #endif
