@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-24 04:34+0100\n"
-"PO-Revision-Date: 2003-11-24 13:10+0100\n"
+"POT-Creation-Date: 2003-11-26 20:43+0100\n"
+"PO-Revision-Date: 2003-11-26 21:13+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,6 +27,11 @@ msgstr "Sodipodi"
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
+
+#: src/arc-context.c:303
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "Kreslím oblouk %s × %s"
 
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
@@ -1157,11 +1162,12 @@ msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
-#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
+#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156 src/main.c:644
+#: src/main.c:658
 msgid "FILENAME"
 msgstr "SOUBOR"
 
-#: src/main.c:138
+#: src/main.c:138 src/main.c:643
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
@@ -1171,15 +1177,15 @@ msgstr ""
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:144
+#: src/main.c:144 src/main.c:646
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
-#: src/main.c:145
+#: src/main.c:145 src/main.c:647
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:147
+#: src/main.c:147 src/main.c:649
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1187,48 +1193,48 @@ msgstr ""
 "Exportovaná oblast v milimetrech (výchozí je celý dokument, 0,0 představuje "
 "spodní levý roh)"
 
-#: src/main.c:148
+#: src/main.c:148 src/main.c:650
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:150
+#: src/main.c:150 src/main.c:652
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:150
+#: src/main.c:150 src/main.c:652
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:152
+#: src/main.c:152 src/main.c:654
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:152
+#: src/main.c:152 src/main.c:654
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:154
+#: src/main.c:154 src/main.c:656
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
 
-#: src/main.c:154
+#: src/main.c:154 src/main.c:656
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:156
+#: src/main.c:156 src/main.c:658
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:158
+#: src/main.c:158 src/main.c:660
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Zobrazit zadané soubory jeden po druhém, přepnout na další při jakékoli "
 "události myši nebo klávesnice"
 
-#: src/main.c:160
+#: src/main.c:160 src/main.c:662
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávat přednost bitmapovým ikonám (XPM) před SVG"
 
