@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi.HEAD.es\n"
-"POT-Creation-Date: 2003-06-20 13:56+0300\n"
-"PO-Revision-Date: 2003-06-14 01:05+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-22 13:27+0200\n"
+"PO-Revision-Date: 2003-06-22 17:21+0000\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.1\n"
 
 #: sodipodi.desktop.in.h:1
@@ -71,11 +71,11 @@ msgstr "Alinear objetos"
 
 #: src/dialogs/align.c:172
 msgid "Right side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Del lado derecha de los objetos alineados al lado izquierdo del ancla"
 
 #: src/dialogs/align.c:175
 msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Del lado izquierdo de los objetos alineados al lado izquierdo del ancla"
 
 #: src/dialogs/align.c:178
 msgid "Center horizontally"
@@ -83,15 +83,15 @@ msgstr "Centrar horizontalmente"
 
 #: src/dialogs/align.c:181
 msgid "Right side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Del lado derecho de los objetos alineados al lado derecho del ancla"
 
 #: src/dialogs/align.c:184
 msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Dellado izquierdo de los objetos alineadas al lado derecho del ancla"
 
 #: src/dialogs/align.c:188
 msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
+msgstr "De la parte inferior de os objetos alineados a la parte superior del ancla"
 
 #: src/dialogs/align.c:191 src/dialogs/align.c:200
 msgid "Top of aligned objects to top of anchor"
@@ -99,11 +99,11 @@ msgstr "Parte superior de los objetos alineados a la parte superior del ancla"
 
 #: src/dialogs/align.c:194
 msgid "Center vertically"
-msgstr ""
+msgstr "Centrar verticalmente"
 
 #: src/dialogs/align.c:197
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr ""
+msgstr "De a parte inferior de los objetos alineados a la parte inferior del ancla"
 
 #: src/dialogs/align.c:203
 msgid "Align"
@@ -111,27 +111,27 @@ msgstr "Alinear"
 
 #: src/dialogs/align.c:221
 msgid "Distribute left sides of objects at even distances"
-msgstr ""
+msgstr "Distribuir lis lados izquierdos de los objetos a distancias equivalentes"
 
 #: src/dialogs/align.c:224
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr ""
+msgstr "Distribuir los centros de los objetos a distancias equivalentes horizontalmente"
 
 #: src/dialogs/align.c:227
 msgid "Distribute right sides of objects at even distances"
-msgstr ""
+msgstr "Distribuir los lados derechos de los objetos a distancias equivalentes"
 
 #: src/dialogs/align.c:230
 msgid "Distribute horizontal distance between objects equally"
-msgstr ""
+msgstr "Distribuir la distancia horizontal entre los objetos ecuánimemente"
 
 #: src/dialogs/align.c:234
 msgid "Distribute top sides of objects at even distances"
-msgstr ""
+msgstr "Distribuir los lados superiores de los objetos a distancias ecuánimes"
 
 #: src/dialogs/align.c:237
 msgid "Distribute centres of objects at even distances vertically"
-msgstr ""
+msgstr "Distribuir los centros de los objetos a distancias iguales verticalmente"
 
 #: src/dialogs/align.c:240
 msgid "Distribute bottom sides of objects at even distances"
@@ -169,7 +169,7 @@ msgstr "Propiedades del escritorio"
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:231
 msgid "Grid"
-msgstr "Red"
+msgstr "Rejilla"
 
 #. Checkbuttons
 #: src/dialogs/desktop-properties.c:241
@@ -818,17 +818,17 @@ msgstr "Cancelar"
 msgid "Create"
 msgstr "Crear"
 
-#: src/document.c:340
+#: src/document.c:339
 #, c-format
 msgid "New document %d"
 msgstr "Nuevo documento %d"
 
-#: src/document.c:369
+#: src/document.c:368
 #, c-format
 msgid "Memory document %d"
 msgstr "Documento memoria %d"
 
-#: src/document.c:455
+#: src/document.c:454
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Documento sin nombre %d"
@@ -1106,44 +1106,43 @@ msgstr "Diálogos"
 msgid "Filters"
 msgstr "Filtros"
 
-#: src/main.c:122
+#: src/main.c:126
 msgid "Do not use X server (only process files from console)"
 msgstr "No utilizar el servidor X (sólo procesa archivos desde la consola)"
 
-#: src/main.c:125
+#: src/main.c:129
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Intentar utilizar el servidor X aunque $DISPLAY no se ha dado"
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Abrir el(los) documento(s) especificado(s) (se pueden excluir las opciones "
 "de cadena)"
 
-#: src/main.c:129 src/main.c:132 src/main.c:135 src/main.c:149
+#: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
 msgstr "NOMBRE DE ARCHIVO"
 
-#: src/main.c:131
+#: src/main.c:135
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Imprimir documento(s) al archivo de salida especificado (usa «| programa» "
 "para el filtro)"
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "Export document to png file"
 msgstr "Exportar documento a archivo png"
 
-#: src/main.c:137
+#: src/main.c:141
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
-"La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
+msgstr "La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
 
-#: src/main.c:138
+#: src/main.c:142
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:140
+#: src/main.c:144
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1151,51 +1150,51 @@ msgstr ""
 "Área exportada en milímetros (por omisión es el documento completo, 0,0 es "
 "la esquina inferior izquierda)"
 
-#: src/main.c:141
+#: src/main.c:145
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "El ancho del mapa de bits generado en píxeles (sobreescribe ppp)"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "WIDTH"
 msgstr "ANCHO"
 
-#: src/main.c:145
+#: src/main.c:149
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "El alto del mapa de bits generado en pixels (sobreescribe ppp)"
 
-#: src/main.c:145
+#: src/main.c:149
 msgid "HEIGHT"
 msgstr "ALTO"
 
-#: src/main.c:147
+#: src/main.c:151
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Color de fondo para el mapa de bits exportado (cualquier cadena de color "
 "admitida por SVG)"
 
-#: src/main.c:147
+#: src/main.c:151
 msgid "COLOR"
 msgstr "COLOR"
 
-#: src/main.c:149
+#: src/main.c:153
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportar documento a archivo SVG plano (sin nombre de espacio «xmlns:"
 "sodipodi»)"
 
-#: src/main.c:151
+#: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Mostrar los archivos uno por uno, cambiar al siguiente al pulsar una tecla o "
 "el ratón"
 
-#: src/main.c:153
+#: src/main.c:157
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr ""
+msgstr "Preferir iconos bitmap (xpm) a los SVG"
 
 #: src/module.c:556
 msgid "SVG with \"xmlns:sodipodi\" namespace"
@@ -1247,13 +1246,12 @@ msgstr "Imprimir destino"
 
 #. Print properties frame
 #: src/modules/ps.c:168
-#, fuzzy
 msgid "Print properties"
-msgstr "Propiedades del enlace"
+msgstr "Propiedades de impresión"
 
 #: src/modules/ps.c:176
 msgid "Print using PostScript operators"
-msgstr ""
+msgstr "Imprimir usando operadores postscript"
 
 #: src/modules/ps.c:178
 msgid ""
@@ -1261,11 +1259,13 @@ msgid ""
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
+"Usar operadores PostScript vectoriales, la imagen resultante sera (usualmete) menor "
+"y puede ser escalada arbitrariamente, pero la transparencia alfa, los marcadores y los "
+"patrones se perderán."
 
 #: src/modules/ps.c:183
-#, fuzzy
 msgid "Print as bitmap"
-msgstr "Exportar mapa de bits"
+msgstr "Imprimir como mapa de bits"
 
 #: src/modules/ps.c:185
 msgid ""
@@ -1273,15 +1273,17 @@ msgid ""
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
+"Imprimir todo como mapa de bits, la imagen resultante será (usualmente) mayor y "
+"la calidad dependerá del factor de ampliación, pero todos los gráficos sera renderizados "
+"idénticos a la pantalla"
 
 #: src/modules/ps.c:199
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr ""
+msgstr "Resolución preferida (puntospor pulgada) de bitmap"
 
 #: src/modules/ps.c:214
-#, fuzzy
 msgid "Resolution:"
-msgstr "Revolución:"
+msgstr "Resolución:"
 
 #: src/modules/ps.c:224
 msgid ""
@@ -1467,8 +1469,7 @@ msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi ha encontrado un error interno y se cerrará ahora.\n"
 
 #: src/sodipodi.c:424
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Las copias de seguridad automáticas se realizaron a los siguientes "
 "emplazamientos:\n"
@@ -1807,13 +1808,12 @@ msgid "Print document"
 msgstr "Imprimir documento"
 
 #: src/verbs.c:428
-#, fuzzy
 msgid "Print Direct..."
-msgstr "Imprimir..."
+msgstr "Imprimir directamente..."
 
 #: src/verbs.c:428
 msgid "Print directly to file or pipe"
-msgstr ""
+msgstr "Imprimir directamente a un archivo o tubería"
 
 #: src/verbs.c:429
 msgid "Print Preview"
@@ -2364,7 +2364,7 @@ msgstr "Negro:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr ""
+msgstr "Conmutar las separación de ventanas y la posición de la caja de herramientas principal"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
@@ -2426,3 +2426,4 @@ msgstr "Valor"
 
 #~ msgid "A path - whatever it means"
 #~ msgstr "Una trayectoria - lo que signifique"
+
