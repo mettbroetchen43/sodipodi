@@ -420,7 +420,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					} else {
 						tc->unipos += 1;
 					}
-				} else {
+				} else if (event->key.string) {
 					tc->unimode = FALSE;
 					utf8 = e_utf8_from_locale_string (event->key.string);
 					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);

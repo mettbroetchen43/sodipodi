@@ -805,10 +805,10 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 
 	/* Actually we have to set optiomenu history here */
 	if (mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
-		sp_gradient_selector_set_mode (gsel, SP_GRADIENT_SELECTOR_MODE_LINEAR);
+		sp_gradient_selector_set_mode (SP_GRADIENT_SELECTOR (gsel), SP_GRADIENT_SELECTOR_MODE_LINEAR);
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Linear gradient"));
 	} else {
-		sp_gradient_selector_set_mode (gsel, SP_GRADIENT_SELECTOR_MODE_RADIAL);
+		sp_gradient_selector_set_mode (SP_GRADIENT_SELECTOR (gsel), SP_GRADIENT_SELECTOR_MODE_RADIAL);
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Radial gradient"));
 	}
 
