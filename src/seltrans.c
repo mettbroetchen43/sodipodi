@@ -1004,7 +1004,7 @@ sp_sel_trans_rotate_request (SPSelTrans * seltrans, SPSelTransHandle * handle, N
 	sp_sel_trans_point_desktop (seltrans, &point);
 	sp_sel_trans_origin_desktop (seltrans, &norm);
 	
-	// rotate affine in rotate
+	/* rotate affine in rotate */
 	dx1 = point.x - norm.x;
 	dy1 = point.y - norm.y;
 	dx2 = p->x    - norm.x;
@@ -1017,6 +1017,20 @@ sp_sel_trans_rotate_request (SPSelTrans * seltrans, SPSelTransHandle * handle, N
 	if (fabs (h2) < 1e-15) return FALSE;
 	q2.x = (dx2) / h2;
 	q2.y = (dy2) / h2;
+	if (state & GDK_CONTROL_MASK) {
+		double cost, sint, theta;
+		/* Have to restrict movement */
+		cost = q1.x * q2.x + q1.y * q2.y;
+		sint = q1.x * q2.y - q1.y * q2.x;
+		cost = CLAMP (cost, -1.0, 1.0);
+		theta = acos (cost);
+		theta = (M_PI / 12.0) * floor (12.0 * theta / M_PI + M_PI / 24.0);
+		if (sint < 0.0) theta = -theta;
+		q1.x = 1.0;
+		q1.y = 0.0;
+		q2.x = cos (theta);
+		q2.y = sin (theta);
+	}
 	r1.c[0] = q1.x;  r1.c[1] = -q1.y;  r1.c[2] =  q1.y;  r1.c[3] = q1.x;  r1.c[4] = 0;  r1.c[5] = 0;
 	r2.c[0] = q2.x;  r2.c[1] =  q2.y;  r2.c[2] = -q2.y;  r2.c[3] = q2.x;  r2.c[4] = 0;  r2.c[5] = 0;
 	nr_matrix_d_set_translate (&n2p, norm.x, norm.y);
