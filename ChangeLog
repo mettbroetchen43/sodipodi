@@ -1,3 +1,9 @@
+2002-10-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c (sp_print_image_R8G8B8A8_N): Implement
+	(sp_print_preview): Remove root transform
+	(sp_print_fill): Do not apply ctm twice
+
 2002-10-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-compose-transform.c (nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM):

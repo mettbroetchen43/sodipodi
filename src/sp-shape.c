@@ -275,6 +275,9 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 #if 1
 	SPPath *path;
 	SPPathComp *comp;
+	NRRectF pbox, dbox, bbox;
+	ArtDRect box;
+	double i2d[6];
 
 	path = SP_PATH (item);
 
@@ -282,17 +285,29 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	comp = path->comp->data;
 	if (!comp->curve) return;
 
+	/* fixme: Think (Lauris) */
+	sp_item_invoke_bbox (item, &box, NR_MATRIX_D_IDENTITY.c);
+	pbox.x0 = box.x0;
+	pbox.y0 = box.y0;
+	pbox.x1 = box.x1;
+	pbox.y1 = box.y1;
+	dbox.x0 = 0.0;
+	dbox.y0 = 0.0;
+	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
+	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
+	sp_item_bbox_desktop (item, &box);
+	bbox.x0 = box.x0;
+	bbox.y0 = box.y0;
+	bbox.x1 = box.x1;
+	bbox.y1 = box.y1;
+	sp_item_i2d_affine (item, i2d);
+
 	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
-		NRMatrixF t;
+		NRMatrixF ctm;
 		NRBPath bp;
-		t.c[0] = comp->affine[0];
-		t.c[1] = comp->affine[1];
-		t.c[2] = comp->affine[2];
-		t.c[3] = comp->affine[3];
-		t.c[4] = comp->affine[4];
-		t.c[5] = comp->affine[5];
+		nr_matrix_multiply_fdd (&ctm, (NRMatrixD *) comp->affine, (NRMatrixD *) i2d);
 		bp.path = comp->curve->bpath;
-		sp_print_fill (ctx, &bp, &t, SP_OBJECT_STYLE (item));
+		sp_print_fill (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
 
 	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {

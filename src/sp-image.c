@@ -336,7 +336,7 @@ sp_image_print (SPItem *item, SPPrintContext *ctx)
 	nr_matrix_multiply_fff (&t, &s, &tp);
 	nr_matrix_multiply_fff (&t, &ti, &t);
 
-	sp_print_image_R8G8B8A8_P (ctx, px, w, h, rs, &t);
+	sp_print_image_R8G8B8A8_N (ctx, px, w, h, rs, &t, SP_OBJECT_STYLE (item));
 #else
 	SPObject *object;
 	SPImage *image;

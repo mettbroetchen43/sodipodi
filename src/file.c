@@ -30,16 +30,6 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkfilesel.h>
 
-#if 0
-#include <libgnomeprint/gnome-printer.h>
-#include <libgnomeprint/gnome-print.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeprint/gnome-printer-dialog.h>
-#include <libgnome/gnome-paper.h>
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
-#endif
-
 #include "macros.h"
 #include "xml/repr-private.h"
 #include "document.h"
@@ -50,6 +40,7 @@
 #include "desktop.h"
 #include "sp-image.h"
 #include "interface.h"
+#include "print.h"
 #include "file.h"
 
 gchar * open_path = NULL;
@@ -59,7 +50,6 @@ gchar * export_path = NULL;
 
 #if 0
 static void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer);
-static void sp_do_file_print_preview (SPDocument * doc);
 #endif
 
 void sp_file_new (void)
@@ -510,51 +500,6 @@ void sp_do_file_print (SPDocument * doc)
 #endif
 }
 
-#if 0
-static void
-sp_print_preview_destroy_cb (GtkObject *obj, gpointer data)
-{
-}
-
-static void
-sp_do_file_print_preview (SPDocument * doc)
-{
-        GnomePrintContext * gpc;
-        GnomePrintMaster * gpm;
-	GnomePrintMasterPreview *gpmp;
-	gchar * title;
-
-	sp_document_ensure_up_to_date (doc);
-
-	gpm = gnome_print_master_new();
-	gpc = gnome_print_master_get_context (gpm);
-
-	g_return_if_fail (gpm != NULL);
-	g_return_if_fail (gpc != NULL);
-
-	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
-	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
-	gnome_print_scale (gpc, 0.8, -0.8);
-	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);
-	sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (gpc));
-        gnome_print_showpage (gpc);
-        gnome_print_context_close (gpc);
-
-	title = g_strdup_printf (_("Sodipodi (doc name %s..): Print Preview"),"");
-	gpmp = gnome_print_master_preview_new (gpm, title);
-
-        /* Conect the signals and display the preview window */
-	gtk_signal_connect (GTK_OBJECT(gpmp), "destroy",
-			    GTK_SIGNAL_FUNC(sp_print_preview_destroy_cb), NULL);
-	gtk_widget_show (GTK_WIDGET(gpmp));
-
-	gnome_print_master_close (gpm);
-
-	g_free (title);
-
-}
-#endif
-
 void
 sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
 {
@@ -585,15 +530,13 @@ void sp_file_print (GtkWidget * widget)
 void
 sp_file_print_preview (GtkWidget * widget)
 {
-#if 0
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
-	if (!SP_IS_DOCUMENT(doc)) return;
-	//	g_return_if_fail (doc != NULL);
 
-	sp_do_file_print_preview (doc);
-#endif
+	if (doc) {
+		sp_print_preview (doc);
+	}
 }
 
 void sp_file_exit (void)

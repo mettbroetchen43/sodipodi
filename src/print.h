@@ -19,10 +19,16 @@
 unsigned int sp_print_bind (SPPrintContext *ctx, NRMatrixF *transform, float opacity);
 unsigned int sp_print_release (SPPrintContext *ctx);
 
-unsigned int sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *transform, SPStyle *style);
+unsigned int sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *style,
+			    NRRectF *pbox, NRRectF *dbox, NRRectF *bbox);
 unsigned int sp_print_stroke (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *transform, SPStyle *style);
-unsigned int sp_print_image_R8G8B8A8_P (SPPrintContext *ctx,
+unsigned int sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 					unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
-					NRMatrixF *transform);
+					NRMatrixF *transform, SPStyle *style);
+
+
+/* UI */
+
+void sp_print_preview (SPDocument *doc);
 
 #endif

@@ -51,14 +51,14 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0:
 	movl	-8(%ebp), %edi
 
 	movl	-12(%ebp), %eax
-	movl	%eax, -32(%ebp)
+	movl	%eax, %esi
 	movl	-16(%ebp), %eax
 	movl	%eax, -36(%ebp)
 
 	movl	12(%ebp), %ebx
 .for_x_0:
 
-	movl	-32(%ebp), %ecx
+	movl	%esi, %ecx
 	cmpl	$0, %ecx
 	js	.clip_0
 	sarl	$12, %ecx
@@ -136,7 +136,7 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0:
 .L37:
 	movl	40(%ebp), %ecx
 	movl	(%ecx), %edx
-	addl	%edx, -32(%ebp)
+	addl	%edx, %esi
 	movl	4(%ecx), %edx
 	addl	%edx, -36(%ebp)
 

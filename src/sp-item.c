@@ -421,6 +421,8 @@ sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
 			sp_print_bind (ctx, &t, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 			SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print (item, ctx);
 			sp_print_release (ctx);
+		} else {
+			SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print (item, ctx);
 		}
 	}
 }

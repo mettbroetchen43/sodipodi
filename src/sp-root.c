@@ -16,6 +16,7 @@
 #include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
+#include "print.h"
 #include "document.h"
 #include "desktop.h"
 #include "sp-defs.h"
@@ -385,15 +386,21 @@ static void
 sp_root_print (SPItem *item, SPPrintContext *ctx)
 {
 	SPRoot *root;
+	NRMatrixF t;
 
 	root = SP_ROOT (item);
 
-	gnome_print_gsave (ctx);
-	gnome_print_concat (ctx, root->viewbox.c);
+	t.c[0] = root->viewbox.c[0];
+	t.c[1] = root->viewbox.c[1];
+	t.c[2] = root->viewbox.c[2];
+	t.c[3] = root->viewbox.c[3];
+	t.c[4] = root->viewbox.c[4];
+	t.c[5] = root->viewbox.c[5];
+	sp_print_bind (ctx, &t, 1.0);
 
 	if (((SPItemClass *) (parent_class))->print) {
 		((SPItemClass *) (parent_class))->print (item, ctx);
 	}
 
-	gnome_print_grestore (ctx);
+	sp_print_release (ctx);
 }
