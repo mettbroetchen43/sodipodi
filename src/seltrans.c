@@ -364,9 +364,11 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	const GSList * l;
 	gchar tstr[80];
 	NRPointD p;
+	unsigned int updh;
 
 	g_return_if_fail (seltrans->grabbed);
 
+	updh = TRUE;
 	if (!seltrans->empty && seltrans->changed) {
 		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
 
@@ -402,6 +404,8 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 		
 		sp_document_done (SP_DT_DOCUMENT (seltrans->desktop));
 		sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
+
+		updh = FALSE;
 	}
 
 	if (seltrans->items) {
@@ -430,7 +434,7 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	}
 
 	sp_sel_trans_update_volatile_state (seltrans);
-	sp_sel_trans_update_handles (seltrans);
+	if (updh) sp_sel_trans_update_handles (seltrans);
 	if (seltrans->stamp_cache) {
 		g_slist_free(seltrans->stamp_cache);
 		seltrans->stamp_cache = NULL;

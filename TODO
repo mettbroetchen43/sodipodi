@@ -7,6 +7,7 @@ TODO for 0.30
 - Make internal canvas position floating-point
 - Split ::Modified and ::Update flags in SPObject
 - Fix zooming into scaled text
+- Baseline-shift and spacing properties
 
 TODO for 0.29
 =============

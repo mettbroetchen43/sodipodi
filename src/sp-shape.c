@@ -370,6 +370,13 @@ sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
 			}
 		}
 		sp_repr_set_attr (repr, "transform", NULL);
+	} else {
+		guchar t[80];
+		if (sp_svg_transform_write (t, 80, &item->transform)) {
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		} else {
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		}
 	}
 }
 

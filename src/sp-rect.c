@@ -576,8 +576,10 @@ sp_rect_rx_set (SPItem *item, const NRPointF *p, guint state)
 	if (state & GDK_CONTROL_MASK) {
 		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
 		rect->rx.computed = rect->ry.computed = CLAMP (p->x - rect->x.computed, 0.0, temp);
+		rect->rx.set = rect->ry.set = TRUE;
 	} else {
 		rect->rx.computed = CLAMP (p->x - rect->x.computed, 0.0, rect->width.computed / 2.0);
+		rect->rx.set = TRUE;
 	}
 }
 
@@ -603,8 +605,10 @@ sp_rect_ry_set (SPItem *item, const NRPointF *p, guint state)
 	if (state & GDK_CONTROL_MASK) {
 		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
 		rect->rx.computed = rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, temp);
+		rect->ry.set = rect->rx.set = TRUE;
 	} else {
 		rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, rect->height.computed / 2.0);
+		rect->ry.set = TRUE;
 	}
 }
 

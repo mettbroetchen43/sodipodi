@@ -338,6 +338,9 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 
 	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 
+#ifdef SP_FS_VERBOSE
+	g_print ("FillStyleWidget: Set update flag\n");
+#endif
 	psel = g_object_get_data (G_OBJECT (spw), "paint-selector");
 
 	style = sp_style_new ();
@@ -376,6 +379,9 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	sp_style_unref (style);
 
 	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+#ifdef SP_FS_VERBOSE
+	g_print ("FillStyleWidget: Cleared update flag\n");
+#endif
 }
 
 static void
@@ -398,6 +404,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 
 	if (!spw->sodipodi) return;
 	if (g_object_get_data (G_OBJECT (spw), "update")) return;
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 #ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint dragged\n");
 #endif
@@ -445,6 +452,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
 		break;
 	}
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
 static void
@@ -458,12 +466,16 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	guchar b[64];
 
 	if (g_object_get_data (G_OBJECT (spw), "update")) return;
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 #ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint changed\n");
 #endif
 	if (spw->sodipodi) {
 		/* fixme: */
-		if (!SP_WIDGET_DOCUMENT (spw)) return;
+		if (!SP_WIDGET_DOCUMENT (spw)) {
+			g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+			return;
+		}
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
@@ -567,6 +579,8 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	}
 
 	g_slist_free (reprs);
+
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
 static void

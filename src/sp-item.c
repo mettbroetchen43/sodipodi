@@ -349,6 +349,12 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
 
 	if (flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)) {
+		if (flags & SP_OBJECT_MODIFIED_FLAG) {
+			SPItemView *v;
+			for (v = item->display; v != NULL; v = v->next) {
+				nr_arena_item_set_transform (v->arenaitem, &item->transform);
+			}
+		}
 		if ((item->clip) || (item->mask)) {
 			NRRectF bbox;
 			SPItemView *v;
@@ -723,12 +729,8 @@ sp_item_set_item_transform (SPItem *item, const NRMatrixF *transform)
 	if (!transform) transform = &NR_MATRIX_F_IDENTITY;
 
 	if (!NR_MATRIX_DF_TEST_CLOSE (transform, &item->transform, NR_EPSILON_F)) {
-		SPItemView *v;
 		item->transform = *transform;
-		for (v = item->display; v != NULL; v = v->next) {
-			nr_arena_item_set_transform (v->arenaitem, transform);
-		}
-		sp_object_request_modified (SP_OBJECT (item), SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_update (SP_OBJECT (item), SP_OBJECT_MODIFIED_FLAG);
 	}
 }
 
