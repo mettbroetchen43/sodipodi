@@ -1,14 +1,14 @@
 # Norwegian translation of sodipodi (bokmål dialect).
 # Copyright © 2000-2004 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@gnome.org>, 2000-2004.
-#
+# Sigurd Gartmann <sigurd-translate@brogar.org>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.50\n"
+"Project-Id-Version: sodipodi HEAD\n"
 "POT-Creation-Date: 2004-02-11 19:01+0200\n"
-"PO-Revision-Date: 2004-01-29 10:35+0100\n"
-"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
-"Language-Team: Norwegian <no@li.org>\n"
+"PO-Revision-Date: 2004-12-04 15:20+0100\n"
+"Last-Translator: Sigurd Gartmann <sigurd-translate@brogar.org>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
@@ -66,7 +66,7 @@ msgstr "Valg"
 
 #: src/dialogs/align.c:155 src/toolbox.c:364
 msgid "Align objects"
-msgstr "Juster objekter"
+msgstr "Justér objekter"
 
 #: src/dialogs/align.c:174
 msgid "Right side of aligned objects to left side of anchor"
@@ -98,7 +98,7 @@ msgstr "Toppen av linjestilte objekter til toppen av anker"
 
 #: src/dialogs/align.c:196
 msgid "Center vertically"
-msgstr "Sentrer vertikalt"
+msgstr "Sentrér vertikalt"
 
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
@@ -110,11 +110,11 @@ msgstr "Toppen av linjestilte objekter til bunnen av anker"
 
 #: src/dialogs/align.c:205
 msgid "Align"
-msgstr "Linjestill"
+msgstr "Justér"
 
 #: src/dialogs/align.c:223
 msgid "Distribute left sides of objects at even distances"
-msgstr "Fordel venstre side av objekter på med jevne mellomrom"
+msgstr "Fordel venstre side av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:226
 msgid "Distribute centres of objects at even distances horizontally"
@@ -122,31 +122,31 @@ msgstr "Fordel senter av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:229
 msgid "Distribute right sides of objects at even distances"
-msgstr "Distribuer høyre side av objekter med jevne mellomrom"
+msgstr "Distribuér høyre side av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:232
 msgid "Distribute horizontal distance between objects equally"
-msgstr "Distribuer horisontalt mellomrom mellom objekter jevnt"
+msgstr "Distribuér horisontale avstander mellom objekter jevnt"
 
 #: src/dialogs/align.c:236
 msgid "Distribute top sides of objects at even distances"
-msgstr "Distribuer top sider av objekter med jevne mellomrom"
+msgstr "Distribuér top sider av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:239
 msgid "Distribute centres of objects at even distances vertically"
-msgstr "Distribuer senter av objekter med jevne mellomrom vertikalt"
+msgstr "Distribuér senter av objekter med jevne mellomrom vertikalt"
 
 #: src/dialogs/align.c:242
 msgid "Distribute bottom sides of objects at even distances"
-msgstr "Distribuer bunn sider av objekter med jevne mellomrom"
+msgstr "Distribuér bunn sider av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:245
 msgid "Distribute vertical distance between objects equally"
-msgstr "Distribuer vertikalt mellomrom mellom objekter jevnt"
+msgstr "Distribuér vertikalt mellomrom mellom objekter jevnt"
 
 #: src/dialogs/align.c:248
 msgid "Distribute"
-msgstr "Distribuer"
+msgstr "Distribuér"
 
 #: src/dialogs/align.c:286
 msgid "Last selected"
@@ -277,7 +277,7 @@ msgstr "Farge på kant:"
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
-msgstr ""
+msgstr "Farge på sidekant"
 
 #: src/dialogs/desktop-properties.c:308
 msgid "Page color:"
@@ -339,15 +339,15 @@ msgstr "Forvalgt markørtoleranse:"
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "Vinduer"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
-msgstr ""
+msgstr "Sett dialoghint for meldingsdialoger"
 
 #: src/dialogs/display-settings.c:179
 msgid "Skip taskbar entry for dialogs"
-msgstr ""
+msgstr "Ikke legg meldingsdialoger i oppgavelinje"
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -390,12 +390,12 @@ msgstr "Høyde:"
 
 #: src/dialogs/export.c:140
 msgid "Export bitmap"
-msgstr "Eksporter bitkart"
+msgstr "Eksportér bitkart"
 
 #. Export area frame
 #: src/dialogs/export.c:149
 msgid "Export area"
-msgstr "Eksporter område"
+msgstr "Eksportér område"
 
 #: src/dialogs/export.c:182
 msgid "x0:"
@@ -432,15 +432,15 @@ msgstr "Bakgrunnsfarge"
 
 #: src/dialogs/export.c:234
 msgid "Bitmap background:"
-msgstr ""
+msgstr "Bakgrunn for punktgrafikk:"
 
 #: src/dialogs/export.c:239
 msgid "Export png file"
-msgstr "Eksporter png-fil"
+msgstr "Eksportér png-fil"
 
 #: src/dialogs/export.c:266 src/verbs.c:413
 msgid "Export"
-msgstr "Eksporter"
+msgstr "Eksportér"
 
 #: src/dialogs/export.c:401
 msgid "Export in progress"
@@ -465,7 +465,7 @@ msgstr "ikke-null"
 
 #: src/dialogs/fill-style.c:143
 msgid "evenodd"
-msgstr ""
+msgstr "parodde"
 
 #: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
 #: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
@@ -636,11 +636,11 @@ msgstr "Fyll"
 
 #: src/dialogs/object-properties.c:142
 msgid "Stroke paint"
-msgstr ""
+msgstr "Strek opp tegning"
 
 #: src/dialogs/object-properties.c:156
 msgid "Stroke style"
-msgstr "Stil for strøk"
+msgstr "Strekstil"
 
 #: src/dialogs/object-properties.c:176
 msgid "Apply to:"
@@ -692,7 +692,7 @@ msgstr " Størrelse og posisjon"
 
 #: src/dialogs/stroke-style.c:553 src/toolbox.c:360
 msgid "Stroke settings"
-msgstr "Innstillinger for strøk"
+msgstr "Strekinnstillinger"
 
 #. Join type
 #: src/dialogs/stroke-style.c:589
@@ -770,7 +770,7 @@ msgstr "Proporsjon"
 
 #: src/dialogs/tool-attributes.c:115
 msgid "Transform:"
-msgstr "Transformer:"
+msgstr "Transformér:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
@@ -804,12 +804,12 @@ msgstr "Verktøy har ingen alternativer"
 
 #: src/dialogs/transformation.c:195
 msgid "Transform selection"
-msgstr "Transformer utvalg"
+msgstr "Transformér utvalg"
 
 #. Apply to duplicate
 #: src/dialogs/transformation.c:216
 msgid "Apply to duplicate"
-msgstr ""
+msgstr "Bruk på kopi"
 
 #: src/dialogs/transformation.c:313
 msgid "Move"
@@ -817,11 +817,11 @@ msgstr "Flytt"
 
 #: src/dialogs/transformation.c:457
 msgid "Scale"
-msgstr "Skaler"
+msgstr "Skalér"
 
 #: src/dialogs/transformation.c:584
 msgid "Rotate"
-msgstr "Roter"
+msgstr "Rotér"
 
 #: src/dialogs/transformation.c:602
 msgid "deg"
@@ -841,7 +841,7 @@ msgstr "Ny tekstnode"
 
 #: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
-msgstr "Duplisert node"
+msgstr "Kopiér node"
 
 #: src/dialogs/xml-tree.c:221
 msgid "Delete node"
@@ -1127,15 +1127,15 @@ msgstr "Ny forhåndsvisning"
 
 #: src/interface.c:455
 msgid "New Toplevel Toolbox"
-msgstr ""
+msgstr "Ny verktøykasse på toppnivå"
 
 #: src/interface.c:456
 msgid "New Docked Toolbox"
-msgstr ""
+msgstr "Ny verktøykasse i dokk"
 
 #: src/interface.c:457
 msgid "Remove Docked Toolbox"
-msgstr ""
+msgstr "Fjern verktøykasse i dokk"
 
 #. File
 #: src/interface.c:510 src/verbs.c:405
@@ -1160,7 +1160,7 @@ msgstr "Fil"
 #. Edit submenu
 #: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
-msgstr "Rediger"
+msgstr "Redigér"
 
 #. View submenu
 #: src/interface.c:612
@@ -1208,7 +1208,7 @@ msgstr "Eksporter dokument som en png-fil"
 
 #: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
+msgstr "Oppløsningen brukt for å konvertere SVG til punktgrafikk (forvalgt 72,0)"
 
 #: src/main.c:136
 msgid "DPI"
@@ -1228,7 +1228,7 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "Bredden av generert bilde i piksler (overskriver dpi)"
 
 #: src/main.c:141
 msgid "WIDTH"
@@ -1236,7 +1236,7 @@ msgstr "BREDDE"
 
 #: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "Høyden av generert bilde i piksler (overskriver dpi)"
 
 #: src/main.c:143
 msgid "HEIGHT"
@@ -1244,7 +1244,7 @@ msgstr "HØYDE"
 
 #: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
+msgstr "Bakgrunnsfarge for eksportert bilde (en SVG-støttet farge)"
 
 #: src/main.c:145
 msgid "COLOR"
@@ -1252,8 +1252,7 @@ msgstr "FARGE"
 
 #: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr ""
-"Eksporter dokument til en vanlig SVG-fil (ingen «xmlns:sodipodi» navneområde)"
+msgstr "Eksportér dokument til en vanlig SVG-fil (ingen «xmlns:sodipodi» navneområde)"
 
 #: src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -1262,7 +1261,7 @@ msgstr ""
 
 #: src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr ""
+msgstr "Foretrekk punktgrafikk- (xpm)-ikoner fremfor SVG-ikoner"
 
 #: src/main.c:622
 msgid "Print sodipodi version information"
@@ -1270,7 +1269,7 @@ msgstr "Skriv ut versjonsinformasjon for Sodipodi"
 
 #: src/main.c:623
 msgid "Print help about command-line arguments"
-msgstr ""
+msgstr "Skriv hjelp om kommandolinjeargumenter"
 
 #: src/main.c:772
 msgid "Untitled document"
@@ -1294,19 +1293,19 @@ msgstr "Automatisk sikkerhetskopiering av følgende dokumenter feilet:\n"
 
 #: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
-msgstr ""
+msgstr "Skalérbar vektorgrafikk (SVG)"
 
 #: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
-msgstr ""
+msgstr "Sodipodis interne filformat og W3C-standard"
 
 #: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr ""
+msgstr "SVG med «xmlns:sodipodi»-navnerom"
 
 #: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr ""
+msgstr "Skalérbar vektorgrafikkformat med Sodipodi-tillegg"
 
 #: src/module.c:884
 msgid "Plain SVG"
@@ -1314,7 +1313,7 @@ msgstr "Vanlig SVG"
 
 #: src/module.c:885
 msgid "Scalable Vector Graphics format"
-msgstr ""
+msgstr "Skalérbar vektorgrafikkformat"
 
 #: src/modules/gnome.c:158
 msgid "Select printer"
@@ -1335,6 +1334,9 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|SVG-filer\n"
+"*.xml|XML-filer\n"
+"*|Alle filer"
 
 #: src/modules/kde.cpp:174
 msgid "Save document as"
@@ -1352,14 +1354,14 @@ msgstr "Egenskaper for utskrift"
 
 #: src/modules/ps.c:264
 msgid "Print using PostScript operators"
-msgstr ""
+msgstr "Skriv ut med PostScript-operatorer"
 
 #: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
-msgstr ""
+msgstr "Bruk PostScript-vektoroperatorer, som gjør at bildet (vanligvis) blir mindre og kan skaléres i mange størrelser, men også at gjennomsiktighet, markører og mønstre går tapt"
 
 #: src/modules/ps.c:271
 msgid "Print as bitmap"
@@ -1370,11 +1372,11 @@ msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
-msgstr ""
+msgstr "Skriv alt som punktgrafikk, som gjør at bildet (vanligvis) blir større og at kvaliteten avhenger av zoomefaktorer, men også at all grafikk blir gjengitt identisk med visningen"
 
 #: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr ""
+msgstr "Foretrukket oppløsning (prikker per tomme) av bilde"
 
 #: src/modules/ps.c:302
 msgid "Resolution:"
@@ -1386,10 +1388,13 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+"Fyll inn lpr-kø for skrivermål.\n"
+"Bruk «> filnavn» for å skrive til fil.\n"
+"Bruk «| program argumenter...» for å sende til program."
 
 #: src/modules/ps.c:961
 msgid "write error occured"
-msgstr ""
+msgstr "skrivefeil oppsto"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:108
@@ -1521,12 +1526,12 @@ msgstr "Egenskaper for spiral"
 #. rx_ratio
 #: src/rect-context.c:396
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Rundhetsgrad for x:"
 
 #. ry_ratio
 #: src/rect-context.c:408
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Rundhetsgrad for y:"
 
 #: src/select-context.c:570
 msgid "Visual transformation"
@@ -1554,11 +1559,11 @@ msgstr "Preserver"
 
 #: src/select-context.c:606
 msgid "[Tab] Cycling"
-msgstr ""
+msgstr "[Tab] Bytting"
 
 #: src/select-context.c:611
 msgid "Cycle only among visible items"
-msgstr ""
+msgstr "Bytt kun mellom synlige elementer"
 
 #: src/select-context.c:614
 msgid "Center view to selected item"
@@ -1867,7 +1872,7 @@ msgstr "Gjør valgte noder om til kurver"
 
 #: src/verbs.c:403
 msgid "Does nothing"
-msgstr ""
+msgstr "Gjør ingenting"
 
 #: src/verbs.c:405
 msgid "Create new SVG document"
@@ -1911,7 +1916,7 @@ msgstr "Skriv ut direkte..."
 
 #: src/verbs.c:410
 msgid "Print directly to file or pipe"
-msgstr ""
+msgstr "Skriv direkte til fil eller kanal"
 
 #: src/verbs.c:411
 msgid "Print Preview"
@@ -1964,11 +1969,11 @@ msgstr "Klipp ut valgte objekter til utklippstavlen"
 
 #: src/verbs.c:419
 msgid "Copy"
-msgstr "Kopier"
+msgstr "Kopiér"
 
 #: src/verbs.c:419
 msgid "Copy selected objects to clipboard"
-msgstr "Kopier valgte objekter til utklippstavlen"
+msgstr "Kopiér valgte objekter til utklippstavlen"
 
 #: src/verbs.c:420
 msgid "Paste"
@@ -1988,11 +1993,11 @@ msgstr "Slett valgte objekter"
 
 #: src/verbs.c:422
 msgid "Duplicate"
-msgstr "Dupliser"
+msgstr "Kopiér"
 
 #: src/verbs.c:422
 msgid "Duplicate selected objects"
-msgstr "Dupliser valgte objekter"
+msgstr "Kopiér valgte objekter"
 
 #: src/verbs.c:423
 msgid "Clear All"
@@ -2061,11 +2066,11 @@ msgstr "Del opp valgt gruppe"
 
 #: src/verbs.c:433
 msgid "Combine"
-msgstr "Kombiner"
+msgstr "Kombinér"
 
 #: src/verbs.c:433
 msgid "Combine multiple paths"
-msgstr "Kombiner flere stier"
+msgstr "Kombinér flere baner"
 
 #: src/verbs.c:434
 msgid "Break Apart"
@@ -2073,15 +2078,15 @@ msgstr "Bryt opp"
 
 #: src/verbs.c:434
 msgid "Break selected path to subpaths"
-msgstr "Bryt opp valgt sti i understier"
+msgstr "Del opp valgt bane i delbaner"
 
 #: src/verbs.c:435
 msgid "Uncross"
-msgstr ""
+msgstr "Ikke kryss"
 
 #: src/verbs.c:435
 msgid "Break selected path at crossings"
-msgstr "Bryt opp valgt sti ved kryss"
+msgstr "Del opp valgt bane ved kryss"
 
 #: src/verbs.c:436
 msgid "Union"
@@ -2089,31 +2094,31 @@ msgstr "Union"
 
 #: src/verbs.c:436
 msgid "Calculate union of selected paths"
-msgstr ""
+msgstr "Regn ut unionen av valgte baner"
 
 #: src/verbs.c:437
 msgid "Intersection"
-msgstr "Krysningspunkt"
+msgstr "Snitt"
 
 #: src/verbs.c:437
 msgid "Calculate intersection of selected paths"
-msgstr ""
+msgstr "Regn ut snitt mellom valgte baner"
 
 #: src/verbs.c:438
 msgid "Subtraction"
-msgstr "Fratrekk"
+msgstr "Trekk fra"
 
 #: src/verbs.c:438
 msgid "Subtract paths from first"
-msgstr ""
+msgstr "Trekk andre baner fra den første"
 
 #: src/verbs.c:439
 msgid "Transform"
-msgstr "Transformer"
+msgstr "Transformér"
 
 #: src/verbs.c:439
 msgid "Applies transformation"
-msgstr "Påfører transformasjon"
+msgstr "Utfører transformasjon"
 
 #. Object
 #: src/verbs.c:441
@@ -2134,11 +2139,11 @@ msgstr "Fjern transformering fra objekt"
 
 #: src/verbs.c:443
 msgid "Convert to Curves"
-msgstr "Konverter til kurver"
+msgstr "Konvertér til kurver"
 
 #: src/verbs.c:443
 msgid "Convert selected object to path"
-msgstr "Konverter valgt objekt til sti"
+msgstr "Konvertér valgt objekt til baner"
 
 #: src/verbs.c:444
 msgid "Flip Horizontally"
@@ -2167,11 +2172,11 @@ msgstr "Velg og transformer objekter"
 
 #: src/verbs.c:450
 msgid "Node edit"
-msgstr "Rediger node"
+msgstr "Redigér node"
 
 #: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
-msgstr ""
+msgstr "Endre eksisterende objekter ved å kontrollere noder"
 
 #: src/verbs.c:451
 msgid "Rectangle"
@@ -2179,7 +2184,7 @@ msgstr "Rektangel"
 
 #: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
-msgstr ""
+msgstr "Lag rektangler og kvadrater med optimalt rundede hjørner"
 
 #: src/verbs.c:452
 msgid "Ellipse"
@@ -2187,11 +2192,11 @@ msgstr "Ellipse"
 
 #: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
-msgstr ""
+msgstr "Lag sirkler, ellipser og buer"
 
 #: src/verbs.c:453
 msgid "Create stars and polygons"
-msgstr ""
+msgstr "Lag stjerner og polygoner"
 
 #: src/verbs.c:454
 msgid "Create spirals"
@@ -2203,7 +2208,7 @@ msgstr "Blyant"
 
 #: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
-msgstr ""
+msgstr "Tegn kurver og linjer på frihånd"
 
 #: src/verbs.c:456
 msgid "Pen"
@@ -2211,7 +2216,7 @@ msgstr "Penn"
 
 #: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
-msgstr ""
+msgstr "Tegn kurver og linjer presist"
 
 #: src/verbs.c:457
 msgid "Calligraphy"
@@ -2223,19 +2228,19 @@ msgstr "Tegn kalligrafiske linjer"
 
 #: src/verbs.c:458
 msgid "Create and edit text objects"
-msgstr ""
+msgstr "Lag og rediger tekst"
 
 #: src/verbs.c:459
 msgid "Zoom into precisely selected area"
-msgstr ""
+msgstr "Zoom inn presist på det valgte området"
 
 #: src/verbs.c:460
 msgid "Dropper"
-msgstr ""
+msgstr "Dråpeteller"
 
 #: src/verbs.c:460
 msgid "Pick averaged colors from image"
-msgstr ""
+msgstr "Velg utjevnede farger fra bilde"
 
 #. Zooming
 #: src/verbs.c:462
@@ -2280,15 +2285,15 @@ msgstr "Sett zoom-faktor til 2:1"
 
 #: src/verbs.c:467
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "Tilpass siden til vinduet"
 
 #: src/verbs.c:468
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Tilpass tegningen til vinduet"
 
 #: src/verbs.c:469
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "Tilpass utvalget til vinduet"
 
 #. Dialogs
 #: src/verbs.c:471
@@ -2305,7 +2310,7 @@ msgstr "Dokument"
 
 #: src/verbs.c:472
 msgid "Page layout"
-msgstr ""
+msgstr "Sideoppsett"
 
 #: src/verbs.c:473
 msgid "Editing Window"
@@ -2325,11 +2330,11 @@ msgstr "Verktøyattributter"
 
 #: src/verbs.c:476
 msgid "Fill and Stroke"
-msgstr "Fyll og strøk"
+msgstr "Fyll og strek"
 
 #: src/verbs.c:476
 msgid "Fill and stroke settings"
-msgstr "Innstillinger for fyll og strøk"
+msgstr "Innstillinger for fyll og strek"
 
 #: src/verbs.c:478
 msgid "Transformations"
@@ -2337,11 +2342,11 @@ msgstr "Transformasjoner"
 
 #: src/verbs.c:479
 msgid "Align and Distribute"
-msgstr "Juster og distribuer"
+msgstr "Justér og distribuer"
 
 #: src/verbs.c:479
 msgid "Align and distribute"
-msgstr "Juster og distribuer"
+msgstr "Justér og distribuer"
 
 #: src/verbs.c:480
 msgid "Text and Font"
@@ -2432,7 +2437,7 @@ msgstr "RGB"
 
 #: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
-msgstr ""
+msgstr "RGB-fargerom"
 
 #: src/widgets/paint-selector.c:758
 msgid "HSV"
@@ -2444,12 +2449,12 @@ msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
-msgstr ""
+msgstr "CMYK-fargerom"
 
 #. Use dropper
 #: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
-msgstr ""
+msgstr "Hent fra dråpeteller"
 
 #: src/widgets/paint-selector.c:797
 msgid "Color paint"
@@ -2510,7 +2515,7 @@ msgstr "Sort:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr ""
+msgstr "Slå av og på adskilte vindus- og hovedverktøykasseplassering"
 
 #: src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
