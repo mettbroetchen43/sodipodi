@@ -591,6 +591,8 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
 
+		sp_selection_set_repr (SP_DT_SELECTION (dt), repr);
+
 		sp_document_done (doc);
 	}
 

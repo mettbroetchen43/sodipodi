@@ -333,6 +333,7 @@ sp_selected_path_uncross (unsigned int operation)
 	struct _NRNodePath *np, *nnp;
 	int numpaths, i;
 	int *and;
+	NRMatrixF i2root, root2i;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (!desktop) return;
@@ -441,9 +442,16 @@ sp_selected_path_uncross (unsigned int operation)
 	g_free (style);
 	sp_repr_set_attr (repr, "d", str);
 	g_free (str);
-	item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
-	sp_document_done (SP_DT_DOCUMENT (desktop));
+
+	sp_repr_append_child (SP_OBJECT_REPR (desktop->base), repr);
+	item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (desktop), sp_repr_get_attr (repr, "id"));
 	sp_repr_unref (repr);
+	/* Set item coordinate system identical to root, regardless of base */
+	sp_item_i2root_affine (item, &i2root);
+	nr_matrix_f_invert (&root2i, &i2root);
+	sp_item_set_item_transform (item, &root2i);
+
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 
 	sp_selection_set_item (sel, item);
 }
