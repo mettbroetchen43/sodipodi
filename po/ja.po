@@ -5,12 +5,12 @@
 # Mitsuru Oka <oka@debian.or.jp>, 2001.
 # Junichi Uekawa <dancer@debian.org>, 2002.
 # Mitsuru Oka <oka326@parkcity.ne.jp>, 2002.
-#
+# Masatake YAMATO <jetGyve.org>, 2002
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.27\n"
-"POT-Creation-Date: 2003-01-19 02:00+0200\n"
-"PO-Revision-Date: 2002-11-18 00:51+0900\n"
+"POT-Creation-Date: 2003-01-19 13:58+0900\n"
+"PO-Revision-Date: 2003-01-19 17:08+0900\n"
 "Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -21,16 +21,17 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-docファクトリを作成できません"
 
+#. Sticky zoom
 #: src/desktop.c:669
 msgid "Whether zoom follows window size"
-msgstr ""
+msgstr "ウィンドウサイズに従ってズームするかどうか"
 
 #: src/desktop.c:747
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:850
+#: src/desktop.c:849
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
@@ -55,6 +56,7 @@ msgstr "最大要素"
 msgid "Smallest item"
 msgstr "最小の要素"
 
+#. Page page
 #: src/dialogs/align.c:184 src/dialogs/desktop-properties.c:429
 #: src/dialogs/document-properties.c:162 src/dialogs/export.c:126
 #: src/interface.c:311
@@ -65,6 +67,7 @@ msgstr "ページ"
 msgid "Drawing"
 msgstr "描画"
 
+#. Selection submenu
 #: src/dialogs/align.c:186 src/dialogs/export.c:136 src/interface.c:309
 #: src/interface.c:444 src/toolbox.c:430
 msgid "Selection"
@@ -74,10 +77,13 @@ msgstr "選択"
 msgid "Desktop settings"
 msgstr "デスクトップ設定"
 
+#. Grid settings
+#. Notebook tab
 #: src/dialogs/desktop-properties.c:232
 msgid "Grid"
 msgstr "グリッド"
 
+#. Checkbuttons
 #: src/dialogs/desktop-properties.c:242
 msgid "Show grid"
 msgstr "グリッドの表示"
@@ -119,10 +125,10 @@ msgid "Grid color:"
 msgstr "グリッドのカラー:"
 
 #: src/dialogs/desktop-properties.c:350
-#, fuzzy
 msgid "Grid color"
 msgstr "グリッドのカラー:"
 
+#. Guidelines page
 #: src/dialogs/desktop-properties.c:356
 msgid "Guides"
 msgstr "ガイドライン"
@@ -148,7 +154,6 @@ msgid "Highlight color:"
 msgstr "ハイライトカラー:"
 
 #: src/dialogs/desktop-properties.c:420
-#, fuzzy
 msgid "Highlihted gudeline color"
 msgstr "ガイドラインのハイライトカラー"
 
@@ -157,14 +162,15 @@ msgid "Show border"
 msgstr "境界の表示"
 
 #: src/dialogs/desktop-properties.c:676
-#, fuzzy
 msgid "Close"
-msgstr "ビューを閉じる"
+msgstr "閉じる"
 
 #: src/dialogs/display-settings.c:84
 msgid "Display settings"
 msgstr "表示設定"
 
+#. Rendering settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:92
 msgid "Rendering"
 msgstr "描画"
@@ -193,6 +199,8 @@ msgstr "8x8"
 msgid "16x16"
 msgstr "16x16"
 
+#. Input settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:142
 msgid "Input"
 msgstr "入力"
@@ -213,16 +221,19 @@ msgstr "用紙サイズ:"
 msgid "Custom"
 msgstr "カスタム"
 
+#. Custom paper frame
 #: src/dialogs/document-properties.c:204
 msgid "Custom paper"
 msgstr "カスタムサイズ"
 
+#. Unit selector
 #: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
 #: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:399
 #: src/dialogs/transformation.c:575
 msgid "Units:"
 msgstr "ユニット:"
 
+#. Stroke width
 #: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
 #: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
 #: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
@@ -241,6 +252,7 @@ msgstr "高さ:"
 msgid "Export bitmap"
 msgstr "ビットマップの出力"
 
+#. Export area frame
 #: src/dialogs/export.c:115
 msgid "Export area"
 msgstr "指定範囲を出力"
@@ -261,6 +273,7 @@ msgstr "y0:"
 msgid "y1:"
 msgstr "y1:"
 
+#. Bitmap size frame
 #: src/dialogs/export.c:191
 msgid "Bitmap size"
 msgstr "ビットマップサイズ"
@@ -405,10 +418,12 @@ msgstr "偏角1:"
 msgid "ARG2:"
 msgstr "偏角2:"
 
+#. Expansion
 #: src/dialogs/object-attributes.c:55 src/spiral-context.c:362
 msgid "Expansion:"
 msgstr "展開係数:"
 
+#. Revolution
 #: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:89
 #: src/spiral-context.c:350
 msgid "Revolution:"
@@ -521,14 +536,17 @@ msgstr "位置と大きさ"
 msgid "Stroke settings"
 msgstr "ストローク設定"
 
+#. Join type
 #: src/dialogs/stroke-style.c:563
 msgid "Join:"
 msgstr "結合:"
 
+#. Cap type
 #: src/dialogs/stroke-style.c:606
 msgid "Cap:"
 msgstr "先端:"
 
+#. Dash
 #: src/dialogs/stroke-style.c:649
 msgid "Pattern:"
 msgstr "パターン:"
@@ -537,6 +555,7 @@ msgstr "パターン:"
 msgid "Text properties"
 msgstr "テキストプロパティ"
 
+#. Layout
 #: src/dialogs/text-edit.c:133
 msgid "Layout"
 msgstr "レイアウト"
@@ -574,6 +593,7 @@ msgstr "内半径"
 msgid "Missing tool preferences"
 msgstr "ツールプリファレンスがありません"
 
+#. Magnitude
 #: src/dialogs/tool-attributes.c:99 src/star-context.c:355
 msgid "Corners:"
 msgstr "角数:"
@@ -586,10 +606,12 @@ msgstr "比率"
 msgid "Transform:"
 msgstr "変形:"
 
+#. Mass
 #: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1038
 msgid "Mass:"
 msgstr "質量:"
 
+#. Drag
 #: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1050
 msgid "Drag:"
 msgstr "重み:"
@@ -622,10 +644,10 @@ msgstr "変形方式の選択"
 msgid "Move"
 msgstr "移動"
 
+#. Relative moves
 #: src/dialogs/transformation.c:405
-#, fuzzy
 msgid "Relative move"
-msgstr "垂直方向に移動"
+msgstr "相対位置で指定"
 
 #: src/dialogs/transformation.c:538 src/interface.c:313
 msgid "Scale"
@@ -723,10 +745,12 @@ msgstr "Memory document %d"
 msgid "Unnamed document %d"
 msgstr "Unnamed document %d"
 
+#. Angle
 #: src/dyna-draw-context.c:1062
 msgid "Angle:"
 msgstr "角度:"
 
+#. Reset
 #: src/dyna-draw-context.c:1086 src/rect-context.c:430
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
@@ -738,9 +762,8 @@ msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
 
 #: src/print.c:381 src/print.c:392
-#, fuzzy
 msgid "Print destination"
-msgstr "図面の印刷"
+msgstr "印刷出力先"
 
 #: src/print.c:399
 msgid ""
@@ -748,11 +771,16 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+"lprキューの出力先を入力して下さい。\n"
+"ファイルに出力するには、 '> ファイル名' を使って下さい。\n"
+"パイプを使って他のプログラムに出力を渡すには、'| プログラム 引数...' を使って下さい。"
 
+#. rx_ratio
 #: src/rect-context.c:406
 msgid "Roundness ratio for x:"
 msgstr "x の真円率:"
 
+#. ry_ratio
 #: src/rect-context.c:418
 msgid "Roundness ratio for y:"
 msgstr "y の真円率:"
@@ -781,14 +809,17 @@ msgstr "最適化"
 msgid "Preserve"
 msgstr "保護"
 
+#. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
 msgstr "内半径:"
 
+#. Proportion
 #: src/star-context.c:367
 msgid "Proportion:"
 msgstr "比率"
 
+#. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
 msgstr "正多角形にする"
@@ -821,6 +852,7 @@ msgstr "読み込むファイルを選択"
 msgid "About sodipodi"
 msgstr "Sodipodiについて"
 
+#. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
 msgid "Unit"
 msgstr "ユニット"
@@ -873,6 +905,8 @@ msgstr "ユーザ"
 msgid "Userspace units"
 msgstr "ユーザ空間ユニット"
 
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
 #: src/helper/units.c:46
 msgid "Percent"
 msgstr "パーセント"
@@ -1025,22 +1059,27 @@ msgstr "全て消去"
 msgid "Cleanup"
 msgstr "掃除する"
 
+#. Selection:Group
 #: src/interface.c:247 src/sp-item-group.c:515
 msgid "Group"
 msgstr "グループ化"
 
+#. Selection:Ungroup
 #: src/interface.c:252 src/sp-item-group.c:532
 msgid "Ungroup"
 msgstr "グループ解除"
 
+#. Selection:Combine
 #: src/interface.c:261
 msgid "Combine"
 msgstr "連結"
 
+#. Selection:Break apart
 #: src/interface.c:266
 msgid "Break apart"
 msgstr "分割"
 
+#. Selection:Order
 #: src/interface.c:275
 msgid "Order"
 msgstr "整列"
@@ -1061,6 +1100,7 @@ msgstr "上げる"
 msgid "Lower"
 msgstr "下げる"
 
+#. View:Zoom
 #: src/interface.c:305 src/interface.c:338 src/toolbox.c:549
 msgid "Zoom"
 msgstr "ズーム"
@@ -1077,10 +1117,12 @@ msgstr "1:1"
 msgid "2:1"
 msgstr "2:1"
 
+#. View:New View
 #: src/interface.c:321
 msgid "New View"
 msgstr "新規のビュー"
 
+#. View:New Preview
 #: src/interface.c:323
 msgid "New Preview"
 msgstr "新規のプレビュー"
@@ -1101,10 +1143,12 @@ msgstr "長方形"
 msgid "Arc"
 msgstr "アーク"
 
+#. Create toplevel menuitem
 #: src/interface.c:333 src/sp-star.c:481
 msgid "Star"
 msgstr "星"
 
+#. Create toplevel menuitem
 #: src/interface.c:334 src/sp-spiral.c:610
 msgid "Spiral"
 msgstr "螺旋"
@@ -1161,30 +1205,38 @@ msgstr "XMLエディタ"
 msgid "Display Properties"
 msgstr "表示設定"
 
+#. Undo
 #: src/interface.c:407
 msgid "Undo"
 msgstr "元に戻す"
 
+#. File:Print Preview
 #: src/interface.c:409
 msgid "Redo"
 msgstr "やり直し"
 
+#. Generic menu
+#. File submenu
 #: src/interface.c:432 src/toolbox.c:312
 msgid "File"
 msgstr "ファイル"
 
+#. Edit submenu
 #: src/interface.c:438 src/toolbox.c:348 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "編集"
 
+#. View submenu
 #: src/interface.c:450
 msgid "View"
 msgstr "ビュー"
 
+#. Drawing mode submenu
 #: src/interface.c:456
 msgid "Drawing Mode"
 msgstr "描画モード"
 
+#. Dialog submenu
 #: src/interface.c:462
 msgid "Dialogs"
 msgstr "ダイアログ"
@@ -1270,6 +1322,7 @@ msgstr "一つずつ与えられたファイルを表示。任意のキー/マウスで次にスイッチ"
 msgid "Untitled document"
 msgstr "無題文書"
 
+#. Show nice dialog box
 #: src/sodipodi.c:376
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi は内部エラーが発生しました。今すぐ終了します。\n"
@@ -1373,18 +1426,22 @@ msgstr ""
 msgid "Link to %s"
 msgstr "%s にリンク"
 
+#. Create toplevel menuitem
 #: src/sp-anchor.c:266
 msgid "Link"
 msgstr "リンク"
 
+#. Link dialog
 #: src/sp-anchor.c:269
 msgid "Link Properties"
 msgstr "リンクのプロパティ"
 
+#. Select item
 #: src/sp-anchor.c:279
 msgid "Follow link"
 msgstr "リンクを追う"
 
+#. Reset transformations
 #: src/sp-anchor.c:284
 msgid "Remove link"
 msgstr "リンクを除去"
@@ -1399,14 +1456,17 @@ msgstr "無効な参照の画像: %s"
 msgid "Color image %d x %d: %s"
 msgstr "カラー画像 %d x %d: %s"
 
+#. Create toplevel menuitem
 #: src/sp-image.c:636
 msgid "Image"
 msgstr "イメージ"
 
+#. Link dialog
 #: src/sp-image.c:639
 msgid "Image Properties"
 msgstr "イメージのプロパティ"
 
+#. Autotrace dialog
 #: src/sp-image.c:647 src/sp-image.c:843
 msgid "Trace"
 msgstr "トレース"
@@ -1437,6 +1497,7 @@ msgstr "画像 URI:"
 msgid "Group of %d objects"
 msgstr "%d オブジェクトのグループ"
 
+#. Group dialog
 #: src/sp-item-group.c:519
 msgid "Group Properties"
 msgstr "グループのプロパティ"
@@ -1445,18 +1506,22 @@ msgstr "グループのプロパティ"
 msgid "Unknown item :-("
 msgstr "未知の要素 :-("
 
+#. Create toplevel menuitem
 #: src/sp-item.c:744
 msgid "Item"
 msgstr "アイテム"
 
+#. Item dialog
 #: src/sp-item.c:747
 msgid "Item Properties"
 msgstr "アイテムプロパティ"
 
+#. Select item
 #: src/sp-item.c:757
 msgid "Select this"
 msgstr "選択"
 
+#. Reset transformations
 #: src/sp-item.c:767
 msgid "Reset transformation"
 msgstr "変形をリセット"
@@ -1469,14 +1534,17 @@ msgstr "センシティブに設定"
 msgid "Make insensitive"
 msgstr "インセンシティブに設定"
 
+#. Create link
 #: src/sp-item.c:778
 msgid "Create link"
 msgstr "リンクの作成"
 
+#. Create toplevel menuitem
 #: src/sp-rect.c:535
 msgid "Rect"
 msgstr "矩形"
 
+#. Link dialog
 #: src/sp-rect.c:538
 msgid "Rect Properties"
 msgstr "矩形のプロパティ"
@@ -1485,22 +1553,27 @@ msgstr "矩形のプロパティ"
 msgid "A path - whatever it means"
 msgstr "どんなものでも実体はパスです"
 
+#. Create toplevel menuitem
 #: src/sp-shape.c:357
 msgid "Shape"
 msgstr "シェイプ"
 
+#. Item dialog
 #: src/sp-shape.c:360 src/toolbox.c:388
 msgid "Fill settings"
 msgstr "フィルの設定"
 
+#. Link dialog
 #: src/sp-spiral.c:613
 msgid "Spiral Properties"
 msgstr "螺旋のプロパティ"
 
+#. Link dialog
 #: src/sp-star.c:484
 msgid "Star Properties"
 msgstr "星のプロパティ"
 
+#. fixme:
 #: src/sp-text.c:1237
 msgid "Text object"
 msgstr "テキストオブジェクト"
@@ -1585,15 +1658,14 @@ msgstr "テキストとフォント設定"
 msgid "Object transformations"
 msgstr "オブジェクトの変形"
 
+#. START COMPONENTS
 #: src/toolbox.c:399
-#, fuzzy
 msgid "Flip selected objects horizontally"
-msgstr "選択オブジェクトの反転"
+msgstr "選択オブジェクトを水平方向に反転"
 
 #: src/toolbox.c:400
-#, fuzzy
 msgid "Flip selected objects vertically"
-msgstr "選択オブジェクトの反転"
+msgstr "選択オブジェクトを垂直方向に反転"
 
 #: src/toolbox.c:404
 msgid "Rotate object 90 deg clockwise"
@@ -1643,14 +1715,18 @@ msgstr "選択したグループのグループ解除"
 msgid "Draw"
 msgstr "描画"
 
+#. Select
 #: src/toolbox.c:468
 msgid "Select tool - select and transform objects"
 msgstr "選択ツール - オブジェクトを選択して変形"
 
+#. Node
 #: src/toolbox.c:475
 msgid "Node tool - modify different aspects of existing objects"
 msgstr "ノードツール - 実在するオブジェクトの様々な外観を修正"
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:487
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
@@ -1668,6 +1744,8 @@ msgstr "スターツール - 星型やポリゴンを作成"
 msgid "Spiral tool - create spirals"
 msgstr "スパイラルツール - 螺旋形を作成"
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:505
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr "ペンシルツール - フリーハンド線やまっすぐの線分を描画"
@@ -1680,10 +1758,12 @@ msgstr "ペンツール - 明示的に位置を指定して曲線を描画"
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr "カリグラフィックツール - カリグラフ線を描画"
 
+#. Text
 #: src/toolbox.c:516
 msgid "Text tool - create editable text objects"
 msgstr "テキストツール - 編集可能なテキストオブジェクトを作成"
 
+#. Zoom
 #: src/toolbox.c:522
 msgid "Zoom tool - zoom into choosen area"
 msgstr "ズームツール - 選択領域にズーム"
@@ -1756,10 +1836,12 @@ msgstr "選択ノードを滑かにする"
 msgid "Make selected segments curves"
 msgstr "選択セグメントを曲線にする"
 
+#. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
 msgstr "フォントファミリー"
 
+#. Style frame
 #: src/widgets/font-selector.c:172
 msgid "Style"
 msgstr " スタイル"
@@ -1820,6 +1902,7 @@ msgstr "複数スタイル"
 msgid "No paint"
 msgstr "ペイント無し"
 
+#. Label
 #: src/widgets/paint-selector.c:716
 msgid "Mode:"
 msgstr "モード:"
@@ -1894,7 +1977,6 @@ msgid "Black:"
 msgstr "黒:"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
-#, fuzzy
 msgid "Attribute"
 msgstr "属性"
 
