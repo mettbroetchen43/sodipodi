@@ -6,6 +6,11 @@
 
 	* src/testing.h: Ditto
 
+	* src/libnrtype/nr-glyph.c: terminator glyph ID should be
+	undefined
+
+	* src/display/nr-arena-glyphs.c: Debugging tools
+
 2004-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp.c (nr_svl_from_path): Use iterators

@@ -43,6 +43,8 @@
 #include "nr-arena.h"
 #include "nr-arena-glyphs.h"
 
+#define noAG_DEBUG_BBOX			/* Need to set stroke-style if you use this */
+
 static void nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass);
 static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
 static void nr_arena_glyphs_finalize (NRObject *object);
@@ -609,10 +611,26 @@ nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int g
 
 	if (nr_font_glyph_outline_get (font, glyph, &bpath, FALSE) && bpath.path) {
 		SPCurve *curve;
-
+#ifdef AG_DEBUG_BBOX
+		NRRectF area;
+		NRPointF adv;
+#endif
 		nr_arena_item_request_render (NR_ARENA_ITEM (group));
 
 		curve = sp_curve_new_from_foreign_bpath (bpath.path);
+#ifdef AG_DEBUG_BBOX
+		if (curve && nr_font_glyph_area_get (font, glyph, &area)) {
+			sp_curve_moveto (curve, area.x0, area.y0);
+			sp_curve_lineto (curve, area.x1, area.y0);
+			sp_curve_lineto (curve, area.x1, area.y1);
+			sp_curve_lineto (curve, area.x0, area.y1);
+			sp_curve_closepath (curve);
+		}
+		if (curve && nr_font_glyph_advance_get (font, glyph, &adv)) {
+			sp_curve_moveto (curve, 0.0, 0.0);
+			sp_curve_lineto (curve, adv.x, adv.y);
+		}
+#endif
 		if (curve) {
 			NRArenaItem *new;
 			new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_GLYPHS);

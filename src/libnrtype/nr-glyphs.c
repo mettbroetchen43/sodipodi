@@ -49,7 +49,7 @@ nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMa
 	}
 
 	/* terminator */
-	pgl->glyphs[i].glyph = 0;
+	/* pgl->glyphs[i].glyph is not defined */
 	pgl->glyphs[i].x = pgl->origin.x + pgl->advance.x;
 	pgl->glyphs[i].y = pgl->origin.y + pgl->advance.y;
 
