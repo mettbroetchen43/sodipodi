@@ -11,6 +11,7 @@
 
 #include <gtk/gtkwindow.h>
 
+#include "api.h"
 #include "shortcuts.h"
 
 #include "window.h"
@@ -76,8 +77,12 @@ sp_window_new (const unsigned char *title, unsigned int resizeable, unsigned int
 
 	/* Test */
 	if (dialog) {
-		gtk_window_set_type_hint ((GtkWindow *) window, GDK_WINDOW_TYPE_HINT_DIALOG);
-		gtk_window_set_skip_taskbar_hint ((GtkWindow *) window, TRUE);
+		if (sp_config_value_get_boolean ("windows.dialogs.behaviour", "hintDialog", TRUE)) {
+			gtk_window_set_type_hint ((GtkWindow *) window, GDK_WINDOW_TYPE_HINT_DIALOG);
+		}
+		if (sp_config_value_get_boolean ("windows.dialogs.behaviour", "skipTaskbar", TRUE)) {
+			gtk_window_set_skip_taskbar_hint ((GtkWindow *) window, TRUE);
+		}
 		dialog_list = g_slist_prepend (dialog_list, window);
 	} else {
 		master_list = g_slist_prepend (master_list, window);

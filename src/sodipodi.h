@@ -32,6 +32,7 @@
  */
 
 #include "xml/repr.h"
+
 #include "forward.h"
 
 #define SODIPODI sodipodi
@@ -45,7 +46,8 @@ Sodipodi * sodipodi_application_new (void);
 /* Preference management */
 void sodipodi_load_preferences (Sodipodi * sodipodi);
 void sodipodi_save_preferences (Sodipodi * sodipodi);
-SPRepr *sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key);
+
+#define sodipodi_get_repr(s,k) sp_config_node_get (k, FALSE)
 
 /* Extension management */
 void sodipodi_load_extensions (Sodipodi *sodipodi);

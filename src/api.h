@@ -120,6 +120,17 @@ SPDocument *sodipodi_document_new (const unsigned char *uri, unsigned int advert
 SPDocument *sodipodi_document_new_from_mem (const unsigned char *cdata, unsigned int length,
 					    unsigned int advertize, unsigned int keepalive);
 SPDesktop *sodipodi_get_active_desktop (void);
+/* Configuration management */
+SPRepr *sp_config_node_get (const unsigned char *path, unsigned int create);
+const unsigned char *sp_config_value_get (const unsigned char *path, const unsigned char *key,
+										  const unsigned char *defval);
+unsigned int sp_config_value_get_boolean (const unsigned char *path, const unsigned char *key, unsigned int defval);
+int sp_config_value_get_int (const unsigned char *path, const unsigned char *key, int defval);
+double sp_config_value_get_double (const unsigned char *path, const unsigned char *key, double defval);
+unsigned int sp_config_value_set (const unsigned char *path, const unsigned char *key, const unsigned char *val, unsigned int create);
+unsigned int sp_config_value_set_boolean (const unsigned char *path, const unsigned char *key, unsigned int val, unsigned int create);
+unsigned int sp_config_value_set_int (const unsigned char *path, const unsigned char *key, int val, unsigned int create);
+unsigned int sp_config_value_set_double (const unsigned char *path, const unsigned char *key, double val, unsigned int create);
 
 /* Defined in sp-document.c */
 const unsigned char *sp_document_get_uri (SPDocument *doc);

@@ -20,14 +20,17 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <assert.h>
 
-#include "monostd.h"
+#include <libarikkei/arikkei-token.h>
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmessagedialog.h>
+
+#include "monostd.h"
 
 #include "helper/sp-intl.h"
 #include "helper/sp-marshal.h"
@@ -526,44 +529,6 @@ sodipodi_save_extensions (Sodipodi * sodipodi)
 	g_free (fn);
 }
 
-/* We use '.' as separator */
-SPRepr *
-sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key)
-{
-	SPRepr * repr;
-	const gchar * id, * s, * e;
-	gint len;
-
-	if (key == NULL) return NULL;
-
-	if (!strncmp (key, "extensions", 10) && (!key[10] || (key[10] == '.'))) {
-		repr = sp_repr_doc_get_root (sodipodi->extensions);
-	} else {
-		repr = sp_repr_doc_get_root (sodipodi->preferences);
-	}
-	g_assert (!(strcmp (sp_repr_get_name (repr), "sodipodi")));
-
-	s = key;
-	while ((s) && (*s)) {
-		SPRepr * child;
-		/* Find next name */
-		if ((e = strchr (s, '.'))) {
-			len = e++ - s;
-		} else {
-			len = strlen (s);
-		}
-		for (child = repr->children; child != NULL; child = child->next) {
-			id = sp_repr_attr (child, "id");
-			if ((id) && (strlen (id) == len) && (!strncmp (id, s, len))) break;
-		}
-		if (child == NULL) return NULL;
-
-		repr = child;
-		s = e;
-	}
-	return repr;
-}
-
 void
 sodipodi_selection_modified (SPSelection *selection, guint flags)
 {
@@ -963,5 +928,171 @@ sodipodi_get_active_desktop (void)
 	if (sodipodi->desktops == NULL) return NULL;
 
 	return (SPDesktop *) sodipodi->desktops->data;
+}
+
+/* Configuration management */
+
+#if 0
+/* We use '.' as separator */
+SPRepr *
+sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key)
+{
+	SPRepr * repr;
+	const gchar * id, * s, * e;
+	gint len;
+
+	if (key == NULL) return NULL;
+
+	if (!strncmp (key, "extensions", 10) && (!key[10] || (key[10] == '.'))) {
+		repr = sp_repr_doc_get_root (sodipodi->extensions);
+	} else {
+		repr = sp_repr_doc_get_root (sodipodi->preferences);
+	}
+	g_assert (!(strcmp (sp_repr_get_name (repr), "sodipodi")));
+
+	s = key;
+	while ((s) && (*s)) {
+		SPRepr * child;
+		/* Find next name */
+		if ((e = strchr (s, '.'))) {
+			len = e++ - s;
+		} else {
+			len = strlen (s);
+		}
+		for (child = repr->children; child != NULL; child = child->next) {
+			id = sp_repr_attr (child, "id");
+			if ((id) && (strlen (id) == len) && (!strncmp (id, s, len))) break;
+		}
+		if (child == NULL) return NULL;
+
+		repr = child;
+		s = e;
+	}
+	return repr;
+}
+#endif
+
+#define SP_MAX_CONFIG_DEPTH 64
+#define SP_MAX_CONFIG_ID_LENGTH 256
+
+SPRepr *
+sp_config_node_get (const unsigned char *path, unsigned int create)
+{
+	ArikkeiToken tokens[SP_MAX_CONFIG_DEPTH];
+	ArikkeiToken ptoken;
+	unsigned int ntokens;
+	SPRepr *repr;
+	unsigned int pos;
+
+	if (!path) return NULL;
+	if (!*path) return NULL;
+
+	/* Tokenize path */
+	arikkei_token_set_from_string (&ptoken, path);
+	ntokens = arikkei_token_tokenize_ws (&ptoken, tokens, SP_MAX_CONFIG_DEPTH, ".", 0);
+	assert (ntokens > 0);
+	if (!arikkei_token_strcmp (&tokens[0], "extensions")) {
+		repr = sp_repr_doc_get_root (sodipodi->extensions);
+	} else {
+		repr = sp_repr_doc_get_root (sodipodi->preferences);
+	}
+	assert (!(strcmp (sp_repr_get_name (repr), "sodipodi")));
+
+	/* Parse all tokens */
+	pos = 0;
+	while (pos < ntokens) {
+		unsigned char c[SP_MAX_CONFIG_ID_LENGTH];
+		SPRepr *child;
+
+		arikkei_token_strncpy (&tokens[pos], c, SP_MAX_CONFIG_ID_LENGTH);
+		if (!c[0]) return NULL;
+		child = sp_repr_lookup_child (repr, "id", c);
+		if (!child && create) {
+			child = sp_repr_new ("node");
+			sp_repr_set_attr (child, "id", c);
+			sp_repr_append_child (repr, child);
+		}
+		if (!child) return NULL;
+		repr = child;
+		pos += 1;
+	}
+	return repr;
+}
+
+const unsigned char *
+sp_config_value_get (const unsigned char *path, const unsigned char *key, const unsigned char *defval)
+{
+	SPRepr *repr;
+	const unsigned char *val;
+	repr = sp_config_node_get (path, FALSE);
+	if (!repr) return defval;
+	val = sp_repr_get_attr (repr, key);
+	return (val) ? val : defval;
+}
+
+unsigned int
+sp_config_value_get_boolean (const unsigned char *path, const unsigned char *key, unsigned int defval)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, FALSE);
+	if (!repr) return defval;
+	sp_repr_get_boolean (repr, key, &defval);
+	return defval;
+}
+
+int
+sp_config_value_get_int (const unsigned char *path, const unsigned char *key, int defval)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, FALSE);
+	if (!repr) return defval;
+	sp_repr_get_int (repr, key, &defval);
+	return defval;
+}
+
+double
+sp_config_value_get_double (const unsigned char *path, const unsigned char *key, double defval)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, FALSE);
+	if (!repr) return defval;
+	sp_repr_get_double (repr, key, &defval);
+	return defval;
+}
+
+unsigned int
+sp_config_value_set (const unsigned char *path, const unsigned char *key, const unsigned char *val, unsigned int create)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, create);
+	if (!repr) return FALSE;
+	return sp_repr_set_attr (repr, key, val);
+}
+
+unsigned int
+sp_config_value_set_boolean (const unsigned char *path, const unsigned char *key, unsigned int val, unsigned int create)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, create);
+	if (!repr) return FALSE;
+	return sp_repr_set_boolean (repr, key, val);
+}
+
+unsigned int
+sp_config_value_set_int (const unsigned char *path, const unsigned char *key, int val, unsigned int create)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, create);
+	if (!repr) return FALSE;
+	return sp_repr_set_int (repr, key, val);
+}
+
+unsigned int
+sp_config_value_set_double (const unsigned char *path, const unsigned char *key, double val, unsigned int create)
+{
+	SPRepr *repr;
+	repr = sp_config_node_get (path, create);
+	if (!repr) return FALSE;
+	return sp_repr_set_double (repr, key, val);
 }
 
