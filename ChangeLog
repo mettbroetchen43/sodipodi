@@ -1,4 +1,22 @@
+2002-09-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c (sp_text_find_version): Helper
+	(sp_text_build): Build tspans etc. if 0.0 < version < 0.25
+
+	* src/sp-ellipse.c (sp_arc_find_version): Helper
+	(sp_arc_build): Per-version attributes
+	(sp_arc_read_attr): Ditto
+
+	* src/document.c (sp_document_new): Delay namespaces etc. to determine version
+	(sp_document_new_from_mem): Ditto
+
+	* src/document.h: Bring some members here
+
 2002-09-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_line_update): Make insensitive, if not stroked
+
+	* src/sp-rect.c (sp_rect_write_transform): Adjust stroke width, if scale changes
 
 	* src/sp-text.c: Port to SPSVGUnits
 

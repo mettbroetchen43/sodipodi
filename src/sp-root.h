@@ -27,13 +27,17 @@ BEGIN_GNOME_DECLS
 struct _SPRoot {
 	SPGroup group;
 
+	guint svg : 8;
+	guint sodipodi : 8;
+	guint original : 8;
+
 	SPSVGLength width;
 	SPSVGLength height;
 
 	ArtDRect viewbox;
 	/* List of namedviews */
 	/* fixme: use single container instead */
-	GSList * namedviews;
+	GSList *namedviews;
 	/* Root-level <defs> node */
 	SPDefs *defs;
 };

@@ -18,6 +18,9 @@
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "style.h"
+/* For versioning */
+#include "sp-root.h"
+
 #include "sp-ellipse.h"
 
 /* Common parent class */
@@ -770,20 +773,58 @@ sp_arc_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (arc_parent_class)->destroy) (object);
 }
 
+/* fixme: Better place (Lauris) */
+
+static guint
+sp_arc_find_version (SPObject *object)
+{
+
+	while (object) {
+		if (SP_IS_ROOT (object)) {
+			return SP_ROOT (object)->sodipodi;
+		}
+		object = SP_OBJECT_PARENT (object);
+	}
+
+	return 0;
+}
+
 static void
 sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
+	guint version;
+
 	if (SP_OBJECT_CLASS (arc_parent_class)->build)
 		(* SP_OBJECT_CLASS (arc_parent_class)->build) (object, document, repr);
 
-	/* fixme: Use sodipodi namespace (Lauris) */
-	sp_arc_read_attr (object, "cx");
-	sp_arc_read_attr (object, "cy");
-	sp_arc_read_attr (object, "rx");
-	sp_arc_read_attr (object, "ry");
+	version = sp_arc_find_version (object);
+
+	if (version < 25) {
+		/* Old spec violating arc attributes */
+		sp_arc_read_attr (object, "cx");
+		sp_arc_read_attr (object, "cy");
+		sp_arc_read_attr (object, "rx");
+		sp_arc_read_attr (object, "ry");
+	} else {
+		/* New attributes */
+		sp_arc_read_attr (object, "sodipodi:cx");
+		sp_arc_read_attr (object, "sodipodi:cy");
+		sp_arc_read_attr (object, "sodipodi:rx");
+		sp_arc_read_attr (object, "sodipodi:ry");
+	}
+
 	sp_arc_read_attr (object, "sodipodi:start");
 	sp_arc_read_attr (object, "sodipodi:end");
 	sp_arc_read_attr (object, "sodipodi:open");
+
+	if (version < 25) {
+		/* fixme: I am 99.9% sure we can do this here safely, but check nevertheless (Lauris) */
+		sp_arc_write_repr (object, repr);
+		sp_repr_set_attr (repr, "cx", NULL);
+		sp_repr_set_attr (repr, "cy", NULL);
+		sp_repr_set_attr (repr, "rx", NULL);
+		sp_repr_set_attr (repr, "ry", NULL);
+	}
 }
 
 /*
@@ -835,12 +876,10 @@ sp_arc_write_repr (SPObject *object, SPRepr *repr)
 	ellipse = SP_GENERICELLIPSE (object);
 	arc = SP_ARC (object);
 
-	/* fixme: Jama */
-	sp_repr_set_double_attribute (repr, "cx", ellipse->cx.computed);
-	sp_repr_set_double_attribute (repr, "cy", ellipse->cy.computed);
-
-	sp_repr_set_double_attribute (repr, "rx", ellipse->rx.computed);
-	sp_repr_set_double_attribute (repr, "ry", ellipse->ry.computed);
+	sp_repr_set_double_attribute (repr, "sodipodi:cx", ellipse->cx.computed);
+	sp_repr_set_double_attribute (repr, "sodipodi:cy", ellipse->cy.computed);
+	sp_repr_set_double_attribute (repr, "sodipodi:rx", ellipse->rx.computed);
+	sp_repr_set_double_attribute (repr, "sodipodi:ry", ellipse->ry.computed);
 	sp_repr_set_double_attribute (repr, "sodipodi:start", ellipse->start);
 	sp_repr_set_double_attribute (repr, "sodipodi:end", ellipse->end);
 	if (! ellipse->closed)
@@ -857,6 +896,7 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 {
 	SPGenericEllipse *ellipse;
 	const gchar *str;
+	guint version;
 	gulong unit;
 	double n;
 
@@ -868,20 +908,21 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 
 	str = sp_repr_attr (object->repr, attr);
 
-	/* fixme: This is not correct, use sodipodi namespace (Lauris) */
-	if (!strcmp (attr, "cx")) {
+	version = sp_arc_find_version (object);
+
+	if (((version < 25) && !strcmp (attr, "cx")) || ((version >= 25) && !strcmp (attr, "sodipodi:cx"))) {
 		if (!sp_svg_length_read (str, &ellipse->cx)) {
 			ellipse->cx.set = FALSE;
 			ellipse->cx.computed = 0.0;
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "cy")) {
+	} else if (((version < 25) && !strcmp (attr, "cy")) || ((version >= 25) && !strcmp (attr, "sodipodi:cy"))) {
 		if (!sp_svg_length_read (str, &ellipse->cy)) {
 			ellipse->cy.set = FALSE;
 			ellipse->cy.computed = 0.0;
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "rx")) {
+	} else if (((version < 25) && !strcmp (attr, "rx")) || ((version >= 25) && !strcmp (attr, "sodipodi:rx"))) {
 		if (sp_svg_length_read_lff (str, &unit, &ellipse->rx.value, &ellipse->rx.computed) && (ellipse->rx.value > 0.0)) {
 			ellipse->rx.set = TRUE;
 			ellipse->rx.unit = unit;
@@ -890,7 +931,7 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 			ellipse->rx.computed = 0.0;
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "ry")) {
+	} else if (((version < 25) && !strcmp (attr, "ry")) || ((version >= 25) && !strcmp (attr, "sodipodi:ry"))) {
 		if (sp_svg_length_read_lff (str, &unit, &ellipse->ry.value, &ellipse->ry.computed) && (ellipse->ry.value > 0.0)) {
 			ellipse->ry.set = TRUE;
 			ellipse->ry.unit = unit;

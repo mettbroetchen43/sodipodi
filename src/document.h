@@ -1,14 +1,16 @@
-#ifndef SP_DOCUMENT_H
-#define SP_DOCUMENT_H
+#ifndef __SP_DOCUMENT_H__
+#define __SP_DOCUMENT_H__
 
 /*
- * SPDocument
+ * Typed SVG document implementation
  *
- * This is toplevel class, implementing a gateway from repr to most
- * editing properties, like canvases (desktops), undo stacks etc.
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 1999-2000
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 typedef enum {
@@ -35,6 +37,32 @@ typedef enum {
 #include "xml/repr.h"
 #include "forward.h"
 
+typedef struct _SPDocumentPrivate SPDocumentPrivate;
+
+struct _SPDocument {
+	GtkObject object;
+
+	SPReprDoc *rdoc; /* Our SPReprDoc */
+	SPRepr *rroot; /* Root element of SPReprDoc */
+	SPObject *root; /* Our SPRoot */
+
+	/* fixme: remove this */
+	SPDocumentPrivate * private;
+
+	/* Last action key */
+	const guchar *actionkey;
+	/* Handler ID */
+	guint modified_id;
+};
+
+struct _SPDocumentClass {
+	GtkObjectClass parent_class;
+
+	void (* modified) (SPDocument *document, guint flags);
+	void (* uri_set) (SPDocument *document, const guchar *uri);
+	void (* resized) (SPDocument *document, gdouble width, gdouble height);
+};
+
 GtkType sp_document_get_type (void);
 
 /*
@@ -53,10 +81,11 @@ SPDocument *sp_document_unref (SPDocument *doc);
  * Access methods
  */
 
-SPReprDoc * sp_document_repr_doc (SPDocument * document);
-SPRepr * sp_document_repr_root (SPDocument * document);
-#define SP_DOCUMENT_ROOT(d) sp_document_root (d)
-SPRoot * sp_document_root (SPDocument * document);
+#define sp_document_repr_doc(d) (SP_DOCUMENT (d)->rdoc)
+#define sp_document_repr_root(d) (SP_DOCUMENT (d)->rroot)
+#define sp_document_root(d) (SP_DOCUMENT (d)->root)
+#define SP_DOCUMENT_ROOT sp_document_root
+
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);
 #define SP_DOCUMENT_URI(d) sp_document_uri (d)

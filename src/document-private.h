@@ -7,7 +7,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2001-2002 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
@@ -16,29 +16,6 @@
 #include "sp-defs.h"
 #include "sp-root.h"
 #include "document.h"
-
-typedef struct _SPDocumentPrivate SPDocumentPrivate;
-
-struct _SPDocument {
-	GtkObject object;
-
-	/* fixme: remove this */
-	SPDocumentPrivate * private;
-
-	/* Last action key */
-	const guchar *actionkey;
-	/* Handler ID */
-	guint modified_id;
-};
-
-struct _SPDocumentClass {
-	GtkObjectClass parent_class;
-
-	void (* modified) (SPDocument *document, guint flags);
-
-	void (* uri_set) (SPDocument *document, const guchar *uri);
-	void (* resized) (SPDocument *document, gdouble width, gdouble height);
-};
 
 typedef struct _SPAction SPAction;
 typedef struct _SPActionAdd SPActionAdd;
@@ -98,14 +75,9 @@ struct _SPAction {
 	} act;
 };
 
-#define SP_DOCUMENT_DEFS(d) ((SPObject *) SP_DOCUMENT (d)->private->root->defs)
+#define SP_DOCUMENT_DEFS(d) ((SPObject *) SP_ROOT (SP_DOCUMENT_ROOT (d))->defs)
 
 struct _SPDocumentPrivate {
-	SPReprDoc * rdoc;	/* Our SPReprDoc */
-	SPRepr * rroot;		/* Root element of SPReprDoc */
-
-	SPRoot * root;		/* Our SPRoot */
-
 	GHashTable * iddef;	/* id dictionary */
 
 	gchar * uri;		/* Document uri */
@@ -113,13 +85,6 @@ struct _SPDocumentPrivate {
 
 	SPAspect aspect;	/* Our aspect ratio preferences */
 	guint clip :1;		/* Whether we clip or meet outer viewport */
-
-#if 0
-	GSList * namedviews;	/* Our NamedViews */
-	/* Base <defs> node */
-	/* fixme: I do not know, what to do with it (Lauris) */
-	SPDefs *defs;
-#endif
 
 	/* Resources */
 	/* It is GHashTable of GSLists */
@@ -130,9 +95,6 @@ struct _SPDocumentPrivate {
 	GSList * undo; /* Undo stack of reprs */
 	GSList * redo; /* Redo stack of reprs */
 
-#if 0
-	const guchar *key; /* Last action key */
-#endif
 	SPAction *actions; /* List of current actions */
 };
 

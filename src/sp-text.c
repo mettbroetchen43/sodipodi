@@ -38,6 +38,8 @@
 #include "display/nr-arena-glyphs.h"
 #include "document.h"
 #include "style.h"
+/* For versioning */
+#include "sp-root.h"
 
 #include "sp-text.h"
 
@@ -787,17 +789,47 @@ sp_text_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (text_parent_class)->destroy) (object);
 }
 
+/* fixme: Better place (Lauris) */
+
+static guint
+sp_text_find_version (SPObject *object)
+{
+
+	while (object) {
+		if (SP_IS_ROOT (object)) {
+			return SP_ROOT (object)->sodipodi;
+		}
+		object = SP_OBJECT_PARENT (object);
+	}
+
+	return 0;
+}
+
 static void
 sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
 	SPText *text;
 	SPObject *ref;
 	SPRepr *rch;
+	guint version;
 
 	text = SP_TEXT (object);
 
 	if (SP_OBJECT_CLASS (text_parent_class)->build)
 		SP_OBJECT_CLASS (text_parent_class)->build (object, doc, repr);
+
+	version = sp_text_find_version (object);
+	if ((version > 0) && (version < 25)) {
+		const guchar *content;
+		/* Old sodipodi */
+		for (rch = repr->children; rch != NULL; rch = rch->next) {
+			if (rch->type == SP_XML_TEXT_NODE) {
+				content = sp_repr_content (rch);
+				sp_text_set_repr_text_multiline (text, content);
+				break;
+			}
+		}
+	}
 
 	ref = NULL;
 
@@ -1486,13 +1518,14 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	repr = SP_OBJECT_REPR (text);
 	style = SP_OBJECT_STYLE (text);
 
+	if (!str) str = "";
+	content = g_strdup (str);
+
+	sp_repr_set_content (SP_OBJECT_REPR (text), NULL);
 	while (repr->children) {
 		sp_repr_remove_child (repr, repr->children);
 	}
 
-	if (!str) str = "";
-
-	content = g_strdup (str);
 	p = content;
 
 	cp.x = text->ly.x.computed;

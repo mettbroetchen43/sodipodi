@@ -70,8 +70,8 @@ sp_document_private_done (SPDocument *doc, const guchar *key)
 
 	g_assert (doc->private->redo == NULL);
 
-	if (!sp_repr_attr (doc->private->rroot, "sodipodi:modified")) {
-		sp_repr_set_attr (doc->private->rroot, "sodipodi:modified", "true");
+	if (!sp_repr_attr (doc->rroot, "sodipodi:modified")) {
+		sp_repr_set_attr (doc->rroot, "sodipodi:modified", "true");
 	}
 
 	if (g_slist_length (doc->private->undo) >= MAX_UNDO) {
@@ -138,8 +138,8 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 				last = last->next;
 			}
 			/* fixme: IMHO NOP is handled by repr itself */
-			if (!sp_repr_attr (doc->private->rroot, "sodipodi:modified")) {
-				sp_repr_set_attr (doc->private->rroot, "sodipodi:modified", "true");
+			if (!sp_repr_attr (doc->rroot, "sodipodi:modified")) {
+				sp_repr_set_attr (doc->rroot, "sodipodi:modified", "true");
 			}
 			sp_action_free_list (doc->private->actions);
 			doc->private->actions = NULL;

@@ -423,7 +423,7 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 
 	rect = SP_RECT (item);
 
-	/* Calculate text start in parent coords */
+	/* Calculate rect start in parent coords */
 	px = transform[0] * rect->x.computed + transform[2] * rect->y.computed + transform[4];
 	py = transform[1] * rect->x.computed + transform[3] * rect->y.computed + transform[5];
 
@@ -448,6 +448,7 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		transform[2] = 0.0;
 		transform[3] = 1.0;
 	}
+	/* fixme: Would be nice to preserve units here */
 	sp_repr_set_double_attribute (repr, "width", rect->width.computed * sw);
 	sp_repr_set_double_attribute (repr, "height", rect->height.computed * sh);
 	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed * sw);
@@ -467,6 +468,18 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
 	} else {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+
+	/* And last but not least */
+	if ((fabs (sw - 1.0) > 1e-9) || (fabs (sh - 1.0) > 1e-9)) {
+		SPStyle *style;
+		guchar *str;
+		/* Scale changed, so we have to adjust stroke width */
+		style = SP_OBJECT_STYLE (item);
+		style->stroke_width.computed *= sqrt (fabs (sw * sh));
+		str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
+		g_free (str);
 	}
 }
 

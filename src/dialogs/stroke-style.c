@@ -21,7 +21,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkwindow.h>
-#include <libgnomeui/gnome-pixmap.h>
+#include <gtk/gtkradiobutton.h>
+#include <libgnomeui/gnome-stock.h>
 
 #include "../helper/art-utils.h"
 #include "../helper/unit-menu.h"
@@ -373,13 +374,13 @@ sp_stroke_style_line_widget_new (void)
 
 	hb = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (hb);
-	gtk_table_attach (GTK_TABLE (t), hb, 1, 5, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	a = gtk_adjustment_new (1.0, 0.0, 100.0, 0.1, 10.0, 10.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "width", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
-	gtk_box_pack_start (GTK_BOX (hb), sb, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hb), sb, TRUE, TRUE, 0);
 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
 	gtk_widget_show (us);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
@@ -394,33 +395,40 @@ sp_stroke_style_line_widget_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_FILL, 0, 4, 0);
 
-	tb = gtk_toggle_button_new ();
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+
+	tb = gtk_radio_button_new (NULL);
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 1, 2, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-miter", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "miter");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_miter.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_miter.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
-	tb = gtk_toggle_button_new ();
+	tb = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (tb)));
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 1, 2, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_round.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_round.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
-	tb = gtk_toggle_button_new ();
+	tb = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (tb)));
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 1, 2, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-bevel", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "bevel");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_bevel.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_bevel.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -430,33 +438,40 @@ sp_stroke_style_line_widget_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_FILL, 0, 4, 0);
 
-	tb = gtk_toggle_button_new ();
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+
+	tb = gtk_radio_button_new (NULL);
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 2, 3, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-butt", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "butt");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_butt.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_butt.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
-	tb = gtk_toggle_button_new ();
+	tb = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (tb)));
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 2, 3, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_round.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_round.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
-	tb = gtk_toggle_button_new ();
+	tb = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (tb)));
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 2, 3, 0, 0, 0, 0);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (tb), FALSE);
+	gtk_box_pack_start (GTK_BOX (hb), tb, FALSE, FALSE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-square", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "square");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_square.xpm");
+	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_square.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -491,6 +506,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	const GSList *objects, *l;
 	SPObject *object;
 	gdouble avgwidth;
+	gboolean stroked;
 	gint jointype, captype;
 	GtkWidget *tb;
 
@@ -513,6 +529,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 
 	/* Determine average stroke width */
 	avgwidth = 0.0;
+	stroked = TRUE;
 	for (l = objects; l != NULL; l = l->next) {
 		gdouble i2d[6];
 		gdouble dist;
@@ -521,6 +538,15 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 		dist = sp_distance_d_matrix_d_transform (object->style->stroke_width.computed, i2d);
 		g_print ("%g in user is %g on desktop\n", object->style->stroke_width.computed, dist);
 		avgwidth += dist;
+		if (object->style->stroke.type == SP_PAINT_TYPE_NONE) stroked = FALSE;
+	}
+	if (stroked) {
+		gtk_widget_set_sensitive (sset, TRUE);
+	} else {
+		/* Some objects not stroked, set insensitive */
+		gtk_widget_set_sensitive (sset, FALSE);
+		gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+		return;
 	}
 	avgwidth /= g_slist_length ((GSList *) objects);
 	unit = sp_unit_selector_get_unit (SP_UNIT_SELECTOR (units));

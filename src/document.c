@@ -27,6 +27,10 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#define SP_NAMESPACE_SVG "http://www.w3.org/2000.svg"
+#define SP_NAMESPACE_SODIPODI "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+#define SP_NAMESPACE_XLINK "http://www.w3.org/1999/xlink"
+
 #define A4_WIDTH_STR "210mm"
 #define A4_HEIGHT_STR "297mm"
 
@@ -110,14 +114,12 @@ sp_document_init (SPDocument *doc)
 
 	doc->modified_id = 0;
 
-
+	doc->rdoc = NULL;
+	doc->rroot = NULL;
+	doc->root = NULL;
 
 	p = g_new (SPDocumentPrivate, 1);
 
-	p->rdoc = NULL;
-	p->rroot = NULL;
-
-	p->root = NULL;
 
 	p->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -165,11 +167,11 @@ sp_document_destroy (GtkObject *object)
 
 		if (private->uri) g_free (private->uri);
 
-		if (private->root) gtk_object_unref (GTK_OBJECT (private->root));
+		if (doc->root) gtk_object_unref (GTK_OBJECT (doc->root));
 
 		if (private->iddef) g_hash_table_destroy (private->iddef);
 
-		if (private->rdoc) sp_repr_document_unref (private->rdoc);
+		if (doc->rdoc) sp_repr_document_unref (doc->rdoc);
 
 		/* Free resources */
 		g_hash_table_foreach_remove (private->resources, sp_document_resource_list_free, doc);
@@ -209,26 +211,14 @@ sp_document_new (const gchar * uri)
 	} else {
 		rdoc = sp_repr_document_new ("svg");
 		rroot = sp_repr_document_root (rdoc);
-		g_return_val_if_fail (rroot != NULL, NULL);
-		sp_repr_set_attr (rroot, "style",
-			"fill:#000000;stroke:none;");
+		sp_repr_set_attr (rroot, "style", "fill:#000000;stroke:none;");
 	}
-	/* A quick hack to get namespaces into doc */
-	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000/svg");
-	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
-	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
-	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
-	/* End of quick hack */
-	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
-	/* End of quick hack 2 */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
 
-	document->private->rdoc = rdoc;
-	document->private->rroot = rroot;
+	document->rdoc = rdoc;
+	document->rroot = rroot;
 
 	if (uri != NULL) {
 		b = g_strdup (uri);
@@ -250,25 +240,38 @@ sp_document_new (const gchar * uri)
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
 
-	document->private->root = SP_ROOT (object);
+	document->root = object;
+
+	/* fixme: Not sure about this, but lets assume ::build updates */
+	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
+	/* fixme: Again, I moved these here to allow version determining in ::build (Lauris) */
+	/* A quick hack to get namespaces into doc */
+	sp_repr_set_attr (rroot, "xmlns", SP_NAMESPACE_SVG);
+	sp_repr_set_attr (rroot, "xmlns:sodipodi", SP_NAMESPACE_SODIPODI);
+	sp_repr_set_attr (rroot, "xmlns:xlink", SP_NAMESPACE_XLINK);
+	/* End of quick hack */
+	/* Quick hack 2 - get default image size into document */
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
+	/* End of quick hack 2 */
 
 	/* Namedviews */
-	if (!document->private->root->namedviews) {
+	if (!SP_ROOT (document->root)->namedviews) {
 		SPRepr * r;
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);
-		g_assert (document->private->root->namedviews);
+		g_assert (SP_ROOT (document->root)->namedviews);
 	}
 
 	/* Defs */
-	if (!document->private->root->defs) {
+	if (!SP_ROOT (document->root)->defs) {
 		SPRepr *r;
 		r = sp_repr_new ("defs");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);
-		g_assert (document->private->root->defs);
+		g_assert (SP_ROOT (document->root)->defs);
 	}
 
 	sodipodi_ref ();
@@ -299,22 +302,11 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	/* fixme: destroy document */
 	if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
 
-	/* A quick hack to get namespaces into doc */
-	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000.svg");
-	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
-	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
-	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
-	/* End of quick hack */
-	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
-	/* End of quick hack 2 */
-
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
 
-	document->private->rdoc = rdoc;
-	document->private->rroot = rroot;
+	document->rdoc = rdoc;
+	document->rroot = rroot;
 
 	document->private->uri = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
@@ -322,27 +314,40 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
 
-	document->private->root = SP_ROOT (object);
+	document->root = object;
 
 	/* fixme: docbase */
 
+	/* fixme: Not sure about this, but lets assume ::build updates */
+	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
+	/* fixme: Again, I moved these here to allow version determining in ::build (Lauris) */
+	/* A quick hack to get namespaces into doc */
+	sp_repr_set_attr (rroot, "xmlns", SP_NAMESPACE_SVG);
+	sp_repr_set_attr (rroot, "xmlns:sodipodi", SP_NAMESPACE_SODIPODI);
+	sp_repr_set_attr (rroot, "xmlns:xlink", SP_NAMESPACE_XLINK);
+	/* End of quick hack */
+	/* Quick hack 2 - get default image size into document */
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
+	/* End of quick hack 2 */
+
 	/* Namedviews */
-	if (!document->private->root->namedviews) {
+	if (!SP_ROOT (document->root)->namedviews) {
 		SPRepr * r;
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, 0);
 		sp_repr_unref (r);
-		g_assert (document->private->root->namedviews);
+		g_assert (SP_ROOT (document->root)->namedviews);
 	}
 
 	/* Defs */
-	if (!document->private->root->defs) {
+	if (!SP_ROOT (document->root)->defs) {
 		SPRepr *r;
 		r = sp_repr_new ("defs");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);
-		g_assert (document->private->root->defs);
+		g_assert (SP_ROOT (document->root)->defs);
 	}
 
 	sodipodi_ref ();
@@ -376,45 +381,15 @@ sp_document_unref (SPDocument *doc)
 	return NULL;
 }
 
-SPReprDoc *
-sp_document_repr_doc (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
-
-	return document->private->rdoc;
-}
-
-SPRepr *
-sp_document_repr_root (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
-
-	return document->private->rroot;
-}
-
-SPRoot *
-sp_document_root (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
-
-	return document->private->root;
-}
-
 gdouble
 sp_document_width (SPDocument * document)
 {
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
-	g_return_val_if_fail (document->private->root != NULL, 0.0);
+	g_return_val_if_fail (document->root != NULL, 0.0);
 
-	return document->private->root->width.computed / 1.25;
+	return SP_ROOT (document->root)->width.computed / 1.25;
 }
 
 gdouble
@@ -423,9 +398,9 @@ sp_document_height (SPDocument * document)
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
-	g_return_val_if_fail (document->private->root != NULL, 0.0);
+	g_return_val_if_fail (document->root != NULL, 0.0);
 
-	return document->private->root->height.computed / 1.25;
+	return SP_ROOT (document->root)->height.computed / 1.25;
 }
 
 const gchar *
@@ -485,7 +460,7 @@ sp_document_namedview_list (SPDocument * document)
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 
-	return document->private->root->namedviews;
+	return SP_ROOT (document->root)->namedviews;
 }
 
 SPNamedView *
@@ -496,7 +471,7 @@ sp_document_namedview (SPDocument * document, const gchar * id)
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 
-	nvl = document->private->root->namedviews;
+	nvl = SP_ROOT (document->root)->namedviews;
 	g_assert (nvl != NULL);
 
 	if (id == NULL) return SP_NAMEDVIEW (nvl->data);
@@ -553,7 +528,7 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		gtk_idle_remove (doc->modified_id);
 		doc->modified_id = 0;
 		/* Emit "modified" signal on objects */
-		sp_object_modified (SP_OBJECT (doc->private->root), 0);
+		sp_object_modified (doc->root, 0);
 		/* Emit our own "modified" signal */
 		gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
 				 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
@@ -583,7 +558,7 @@ sp_document_idle_handler (gpointer data)
 	/* ------------------------- */
 #endif
 	/* Emit "modified" signal on objects */
-	sp_object_modified (SP_OBJECT (doc->private->root), 0);
+	sp_object_modified (doc->root, 0);
 	/* Emit our own "modified" signal */
 	gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
@@ -603,9 +578,9 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 	type = sp_repr_type_lookup (repr);
 
 	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
-		sp_repr_append_child (document->private->rroot, repr);
+		sp_repr_append_child (document->rroot, repr);
 	} else if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-		sp_repr_append_child (SP_OBJECT_REPR (document->private->root->defs), repr);
+		sp_repr_append_child (SP_OBJECT_REPR (SP_ROOT (document->root)->defs), repr);
 	}
 
 	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
@@ -632,7 +607,7 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 	g_return_val_if_fail (document->private != NULL, NULL);
 	g_return_val_if_fail (box != NULL, NULL);
 
-	group = SP_GROUP (document->private->root);
+	group = SP_GROUP (document->root);
 
 	s = NULL;
 
@@ -671,7 +646,7 @@ sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box)
 	g_return_val_if_fail (document->private != NULL, NULL);
 	g_return_val_if_fail (box != NULL, NULL);
 
-	group = SP_GROUP (document->private->root);
+	group = SP_GROUP (document->root);
 
 	s = NULL;
 

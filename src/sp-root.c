@@ -79,6 +79,10 @@ sp_root_init (SPRoot *root)
 {
 	root->group.transparent = TRUE;
 
+	root->svg = 100;
+	root->sodipodi = 0;
+	root->original = 0;
+
 	sp_svg_length_unset (&root->width, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_WIDTH_PX, SP_SVG_DEFAULT_WIDTH_PX);
 	sp_svg_length_unset (&root->height, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_HEIGHT_PX, SP_SVG_DEFAULT_HEIGHT_PX);
 
@@ -106,17 +110,21 @@ sp_root_destroy (GtkObject *object)
 }
 
 static void
-sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
+sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-	SPGroup * group;
-	SPRoot * root;
-	SPObject * o;
+	SPGroup *group;
+	SPRoot *root;
+	SPObject *o;
 
 	group = (SPGroup *) object;
 	root = (SPRoot *) object;
 
+	if (sp_repr_attr (repr, "xmlns:sodipodi") || sp_repr_attr (repr, "sodipodi:docname") || sp_repr_attr (repr, "SP-DOCNAME")) {
+		/* This is ugly, but works */
+		root->original = 1;
+	}
+	sp_root_read_attr (object, "sodipodi:version");
 	/* It is important to parse these here, so objects will have viewport build-time */
-
 	sp_root_read_attr (object, "width");
 	sp_root_read_attr (object, "height");
 	sp_root_read_attr (object, "viewBox");
@@ -155,7 +163,13 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 
 	str = sp_repr_attr (object->repr, key);
 
-	if (!strcmp (key, "width")) {
+	if (!strcmp (key, "sodipodi:version")) {
+		if (str) {
+			root->sodipodi = (guint) (atof (str) * 100.0);
+		} else {
+			root->sodipodi = root->original;
+		}
+	} else if (!strcmp (key, "width")) {
 		if (sp_svg_length_read_lff (str, &unit, &root->width.value, &root->width.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
