@@ -194,3 +194,5 @@ gchar *s = N_("Stroke");
 gchar *s = N_("Text");
 gchar *s = N_("Nodes");
 gchar *s = N_("Desktop");
+gchar *s = N_("Document");
+gchar *s = N_("XML Tree");

@@ -1,11 +1,13 @@
 # List of source files containing translatable strings.
-glade/sodipodi-glade.c
-glade/xml-tree.c
 glade/align.c
-glade/stroke.c
-glade/transformation.c
 glade/desktop.c
 glade/document.c
+glade/object_props.c
+glade/sodipodi-glade.c
+glade/text-dialog.c
+glade/toolbox.c
+glade/transformation.c
+glade/xml-tree.c
 src/main.c
 src/bonobo/svg-doc-factory.c
 src/file.c
