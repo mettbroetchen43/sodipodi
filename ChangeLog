@@ -1,5 +1,21 @@
 2002-02-19  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/display/nr-arena-shape.c (nr_arena_shape_render): Render gradient
+	strokes as well
+
+	* src/dialogs/object-properties.c: Start rewriting to use dynamic
+	fill/stroke widgets instead of original glade dialog
+
+	* src/dialogs/stroke-style.h: New file
+
+	* src/dialogs/stroke-style.c: New file
+
+	* src/gradient-chemistry.c (sp_style_change_property): Reimplement,
+	hopefully the correct way now
+
+	* src/widgets/gradient-position.c (sp_gradient_position_update): Pre
+	build local renderer here 
+
 	* src/helper/nr-gradient.c (nr_lgradient_renderer_setup_r8g8b8a8): Do
 	not allocate renderer, allow using static ones too
 	(nr_lgradient_renderer_setup_r8g8b8): Ditto

@@ -34,7 +34,7 @@ struct _SPGradientSelector {
 	/* Vector selector */
 	GtkWidget *vectors;
 	/* Editing buttons */
-	GtkWidget *edit, *add, *del;
+	GtkWidget *edit, *add;
 	/* Position widget */
 	GtkWidget *position;
 	/* Reset button */

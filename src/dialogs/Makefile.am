@@ -29,7 +29,8 @@ libspdialogs_a_SOURCES = \
 	object-properties.c object-properties.h \
 	item-properties.c item-properties.h \
 	object-attributes.c object-attributes.h \
-	fill-style.c fill-style.h
+	fill-style.c fill-style.h \
+	stroke-style.c stroke-style.h
 
 #	sp-widget.c sp-widget.h \
 #	gradient-vector.c gradient-vector.h \

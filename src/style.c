@@ -688,3 +688,35 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 	style->fill_opacity = a;
 }
 
+void
+sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean stroke_set, gboolean opacity_set)
+{
+	g_return_if_fail (style != NULL);
+
+	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
+		gtk_object_unref (GTK_OBJECT (style->stroke.server));
+	}
+
+	style->stroke_set = stroke_set;
+	style->stroke.type = SP_PAINT_TYPE_COLOR;
+	sp_color_set_rgb_float (&style->stroke.color, r, g, b);
+	style->stroke_opacity_set = opacity_set;
+	style->stroke_opacity = a;
+}
+
+void
+sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean stroke_set, gboolean opacity_set)
+{
+	g_return_if_fail (style != NULL);
+
+	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
+		gtk_object_unref (GTK_OBJECT (style->stroke.server));
+	}
+
+	style->stroke_set = stroke_set;
+	style->stroke.type = SP_PAINT_TYPE_COLOR;
+	sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
+	style->stroke_opacity_set = opacity_set;
+	style->stroke_opacity = a;
+}
+

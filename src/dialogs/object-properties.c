@@ -1,4 +1,77 @@
-#define OBJECT_PROPERTIES_C
+#define __OBJECT_PROPERTIES_C__
+
+/*
+ * Basic object style dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *   Frank Felfe <iname@innerspace.com>
+ *
+ * Copyright (C) 2000-2001 Lauris Kaplinski and Frank Felfe
+ * Copyright (C) 2001-2002 Ximian, Inc. and Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
+
+#include <config.h>
+
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
+#include <libgnomeui/gnome-pixmap.h>
+
+#include "fill-style.h"
+#include "stroke-style.h"
+
+#include "object-properties.h"
+
+static GtkWidget *dlg = NULL;
+
+static void
+sp_object_properties_dialog_destroy (GtkObject *object, gpointer data)
+{
+	dlg = NULL;
+}
+
+void
+sp_object_properties_dialog (void)
+{
+	if (!dlg) {
+		GtkWidget *nb, *hb, *l, *px, *page;
+
+		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title (GTK_WINDOW (dlg), _("Object style"));
+		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_object_properties_dialog_destroy), dlg);
+
+		nb = gtk_notebook_new ();
+		gtk_widget_show (nb);
+		gtk_container_add (GTK_CONTAINER (dlg), nb);
+		gtk_object_set_data (GTK_OBJECT (dlg), "notebook", nb);
+
+		hb = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (hb);
+
+		l = gtk_label_new (_("Fill"));
+		gtk_widget_show (l);
+		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
+
+		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_fill.xpm");
+		gtk_widget_show (px);
+		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
+
+		page = sp_fill_style_widget_new ();
+		gtk_widget_show (page);
+
+		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
+	}
+
+	gtk_widget_show (dlg);
+}
 
 #include <config.h>
 #include <gnome.h>
@@ -12,6 +85,8 @@
 #include "../selection-chemistry.h"
 #include "fill-style.h"
 #include "object-properties.h"
+
+static void sp_object_properties_dialog_old (void);
 
 void sp_object_properties_page_changed (GtkNotebook * notebook,
 					GtkNotebookPage * page,
@@ -91,7 +166,7 @@ static void sp_object_fill_picker_changed (void);
 
 void sp_object_properties_stroke (void)
 {
-	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog_old ();
 	gtk_notebook_set_page (prop_notebook, 0);
 	sp_object_properties_reread_page ();
 	if (sel_changed_id < 1) {
@@ -105,7 +180,8 @@ void sp_object_properties_stroke (void)
 
 void sp_object_properties_fill (void)
 {
-	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+#if 0
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog_old ();
 	gtk_notebook_set_page (prop_notebook, 1);
 	sp_object_properties_reread_page ();
 	if (sel_changed_id < 1) {
@@ -115,11 +191,20 @@ void sp_object_properties_fill (void)
 						    NULL);
 	}
 	gtk_widget_show (dialog);
+#else
+	GtkWidget *nb;
+
+	if (!dlg) sp_object_properties_dialog ();
+
+	nb = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
+
+	gtk_notebook_set_page (GTK_NOTEBOOK (nb), 0);
+#endif
 }
 
 void sp_object_properties_layout (void)
 {
-	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog_old ();
 	gtk_notebook_set_page (prop_notebook, 2);
 	sp_object_properties_reread_page ();
 	if (sel_changed_id < 1) {
@@ -136,7 +221,8 @@ void sp_object_properties_layout (void)
  * dialog generation
  */
 
-void sp_object_properties_dialog (void)
+static void
+sp_object_properties_dialog_old (void)
 {
 	if (xml == NULL) {
 		GtkWidget *w, *p;
@@ -215,9 +301,9 @@ void sp_object_properties_dialog (void)
 		gtk_notebook_append_page (prop_notebook, p, w);
 #endif
 
-		w = gtk_label_new (_("Dynamic fill"));
+		w = gtk_label_new (_("Dynamic stroke"));
 		gtk_widget_show (w);
-		p = sp_fill_style_widget_new ();
+		p = sp_stroke_style_widget_new ();
 		gtk_widget_show (p);
 		gtk_notebook_append_page (prop_notebook, p, w);
 	}

@@ -12,6 +12,8 @@
  */
 
 #include <string.h>
+#include <ctype.h>
+
 #include "xml/repr-private.h"
 #include "document-private.h"
 #include "sp-root.h"
@@ -28,7 +30,7 @@
  */
 
 static void sp_gradient_repr_set_link (SPRepr *repr, SPGradient *gr);
-static void sp_item_repr_set_fill_gradient (SPRepr *repr, SPGradient *gr);
+static void sp_item_repr_set_style_gradient (SPRepr *repr, const guchar *property, SPGradient *gr);
 static guchar *sp_style_change_property (const guchar *sstr, const guchar *key, const guchar *value);
 
 /* fixme: One more step is needed - normalization vector to 0-1 (not sure 100% still) */
@@ -325,7 +327,7 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 		SPGradient *pg;
 		/* Current fill style is not lineargradient, so construct everything */
 		pg = sp_gradient_get_private_normalized (SP_OBJECT_DOCUMENT (item), gr);
-		sp_item_repr_set_fill_gradient (SP_OBJECT_REPR (item), pg);
+		sp_item_repr_set_style_gradient (SP_OBJECT_REPR (item), "fill", pg);
 	} else {
 		SPGradient *ig;
 		/* Current fill style is lineargradient */
@@ -339,7 +341,56 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 			if (pg != ig) {
 				/* We have to change object style here */
 				g_print ("Changing object %s fill to gradient %s requested\n", SP_OBJECT_ID (item), SP_OBJECT_ID (pg));
-				sp_item_repr_set_fill_gradient (SP_OBJECT_REPR (item), pg);
+				sp_item_repr_set_style_gradient (SP_OBJECT_REPR (item), "fill", pg);
+			}
+			return;
+		}
+		/* ig is private gradient, so change href to vector */
+		g_assert (ig->state == SP_GRADIENT_STATE_PRIVATE);
+		if (ig->href != gr) {
+			/* href is not vector */
+			sp_gradient_repr_set_link (SP_OBJECT_REPR (ig), gr);
+		}
+	}
+}
+
+void
+sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gr)
+{
+	SPStyle *style;
+
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+	g_return_if_fail (gr != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gr));
+	g_return_if_fail (gr->state == SP_GRADIENT_STATE_VECTOR);
+
+#if 0
+	g_print ("Changing item %s gradient vector to %s requested\n", SP_OBJECT_ID (item), SP_OBJECT_ID (gr));
+#endif
+
+	style = SP_OBJECT_STYLE (item);
+	g_assert (style != NULL);
+
+	if ((style->stroke.type != SP_PAINT_TYPE_PAINTSERVER) || !SP_IS_LINEARGRADIENT (style->stroke.server)) {
+		SPGradient *pg;
+		/* Current fill style is not lineargradient, so construct everything */
+		pg = sp_gradient_get_private_normalized (SP_OBJECT_DOCUMENT (item), gr);
+		sp_item_repr_set_style_gradient (SP_OBJECT_REPR (item), "stroke", pg);
+	} else {
+		SPGradient *ig;
+		/* Current fill style is lineargradient */
+		ig = SP_GRADIENT (style->stroke.server);
+		if (ig->state != SP_GRADIENT_STATE_PRIVATE) {
+			SPGradient *pg;
+			/* Check, whether we have to normalize private gradient */
+			pg = sp_gradient_ensure_private_normalized (ig, gr);
+			g_return_if_fail (pg != NULL);
+			g_return_if_fail (SP_IS_LINEARGRADIENT (pg));
+			if (pg != ig) {
+				/* We have to change object style here */
+				g_print ("Changing object %s stroke to gradient %s requested\n", SP_OBJECT_ID (item), SP_OBJECT_ID (pg));
+				sp_item_repr_set_style_gradient (SP_OBJECT_REPR (item), "stroke", pg);
 			}
 			return;
 		}
@@ -377,7 +428,7 @@ sp_gradient_repr_set_link (SPRepr *repr, SPGradient *link)
 }
 
 static void
-sp_item_repr_set_fill_gradient (SPRepr *repr, SPGradient *gr)
+sp_item_repr_set_style_gradient (SPRepr *repr, const guchar *property, SPGradient *gr)
 {
 	const guchar *sstr;
 	guchar *val, *newval;
@@ -388,7 +439,7 @@ sp_item_repr_set_fill_gradient (SPRepr *repr, SPGradient *gr)
 
 	val = g_strdup_printf ("url(#%s)", SP_OBJECT_ID (gr));
 	sstr = sp_repr_attr (repr, "style");
-	newval = sp_style_change_property (sstr, "fill", val);
+	newval = sp_style_change_property (sstr, property, val);
 	g_free (val);
 	sp_repr_set_attr (repr, "style", newval);
 	g_free (newval);
@@ -517,58 +568,72 @@ sp_object_ensure_stroke_gradient_normalized (SPObject *object)
 static guchar *
 sp_style_change_property (const guchar *sstr, const guchar *key, const guchar *value)
 {
-	guchar *str, *buf;
-	gint len, klen, vlen;
+	const guchar *s;
+	guchar *buf, *d;
+	gint len;
+
+	g_print ("%s <- %s:%s\n", sstr, key, value);
 
 	if (!sstr) {
 		if (!value) return NULL;
 		return g_strdup_printf ("%s:%s;", key, value);
 	}
 
-	len = strlen (sstr);
-	klen = strlen (key);
-	vlen = (value) ? strlen (value) : 0;
+	s = sstr;
+	len = strlen (key);
+	buf = alloca (strlen (sstr) + strlen (key) + ((value) ? strlen (value) : 0) + 2);
+	d = buf;
 
-	str = buf = alloca (len + vlen + 2);
-
-	while (sstr && *sstr) {
-		const guchar *a;
-		/* Rewing empty space */
-		while (*sstr && *sstr <= ' ') sstr++;
-		a = strchr (sstr, ':');
-		if (a) {
-			const guchar *b;
-			b = strchr (a + 1, ';');
-			if (!strncmp (sstr, key, klen)) {
-				/* Found it */
-				sstr = (b) ? b + 1 : NULL;
-			} else {
-				if (b) {
-					memcpy (str, sstr, b + 1 - sstr);
-					str += (b - sstr) + 1;
-					sstr = b + 1;
+	while (*s) {
+		while (*s && isspace (*s)) s += 1;
+		if (*s) {
+			const guchar *q;
+			q = strchr (s, ':');
+			if (q) {
+				const guchar *e;
+				e = strchr (q, ';');
+				if (e) {
+					if (((q - s) == len) && !strncmp (s, key, len)) {
+						/* Found it */
+						g_print ("found %s:%s\n", key, value);
+						if (value) {
+							memcpy (d, key, len);
+							d += len;
+							*d = ':';
+							d += 1;
+							memcpy (d, value, strlen (value));
+							d += strlen (value);
+							*d = ';';
+							d += 1;
+						}
+					} else {
+						/* Copy key:value; pair */
+						memcpy (d, s, e + 1 - s);
+						d += e + 1 - s;
+					}
+					s = e + 1;
 				} else {
-					gint l;
-					l = strlen (sstr);
-					memcpy (str, sstr, l);
-					sstr += l;
-					str += l;
-					*str++ = ';';
+					gint slen;
+					/* Copy up to end */
+					slen = strlen (s);
+					memcpy (d, s, slen);
+					d += slen;
+					s += slen;
 				}
+			} else {
+				gint slen;
+				/* Copy up to end */
+				slen = strlen (s);
+				memcpy (d, s, slen);
+				d += slen;
+				s += slen;
 			}
+			*d = '\0';
+			g_print ("%s\n", buf);
 		}
 	}
 
-	if (value) {
-		memcpy (str, key, klen);
-		str += klen;
-		*str++ = ':';
-		memcpy (str, value, vlen);
-		str += vlen;
-		*str++ = ';';
-	}
-
-	*str = '\0';
+	*d = '\0';
 
 	return (*buf) ? g_strdup (buf) : NULL;
 }

@@ -28,7 +28,8 @@ struct _NRArenaShape {
 	NRArenaItem item;
 	SPStyle *style;
 	SPCPathComp *comp;
-	SPPainter *painter;
+	SPPainter *fill_painter;
+	SPPainter *stroke_painter;
 };
 
 struct _NRArenaShapeClass {

@@ -45,7 +45,9 @@ static void sp_gradient_selector_position_dragged (SPGradientPosition *pos, SPGr
 static void sp_gradient_selector_position_changed (SPGradientPosition *pos, SPGradientSelector *sel);
 static void sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
 static void sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
+#if 0
 static void sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
+#endif
 static void sp_gradient_selector_reset_clicked (GtkWidget *w, SPGradientSelector *sel);
 
 static GtkVBoxClass *parent_class;
@@ -110,35 +112,42 @@ sp_gradient_selector_class_init (SPGradientSelectorClass *klass)
 static void
 sp_gradient_selector_init (SPGradientSelector *sel)
 {
-	GtkWidget *hb;
+	GtkWidget *hb, *bb;
 
-	sel->vectors = sp_gradient_vector_selector_new (NULL, NULL);
-	gtk_widget_show (sel->vectors);
-	gtk_box_pack_start (GTK_BOX (sel), sel->vectors, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT (sel->vectors), "vector_set", GTK_SIGNAL_FUNC (sp_gradient_selector_vector_set), sel);
-
-	/* Create box for buttons */
-	hb = gtk_hbox_new (TRUE, 0);
+	/* Create box for vector & buttons */
+	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
 	gtk_box_pack_start (GTK_BOX (sel), hb, FALSE, FALSE, 4);
 
+	sel->vectors = sp_gradient_vector_selector_new (NULL, NULL);
+	gtk_widget_show (sel->vectors);
+	gtk_box_pack_start (GTK_BOX (hb), sel->vectors, TRUE, TRUE, 0);
+	gtk_signal_connect (GTK_OBJECT (sel->vectors), "vector_set", GTK_SIGNAL_FUNC (sp_gradient_selector_vector_set), sel);
+
+	/* Create box for buttons */
+	bb = gtk_hbox_new (TRUE, 0);
+	gtk_widget_show (bb);
+	gtk_box_pack_start (GTK_BOX (hb), bb, TRUE, TRUE, 0);
+
 	sel->edit = gtk_button_new_with_label (_("Edit"));
 	gtk_widget_show (sel->edit);
-	gtk_box_pack_start (GTK_BOX (hb), sel->edit, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (bb), sel->edit, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->edit), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->edit, FALSE);
 
 	sel->add = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (sel->add);
-	gtk_box_pack_start (GTK_BOX (hb), sel->add, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (bb), sel->add, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->add), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->add, FALSE);
 
+#if 0
 	sel->del = gtk_button_new_with_label (_("Delete"));
 	gtk_widget_show (sel->del);
 	gtk_box_pack_start (GTK_BOX (hb), sel->del, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->del), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_delete_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->del, FALSE);
+#endif
 
 	/* Create gradient position widget */
 	sel->position = sp_gradient_position_new (NULL);
@@ -193,12 +202,10 @@ sp_gradient_selector_set_vector (SPGradientSelector *sel, SPDocument *doc, SPGra
 	if (vector) {
 		gtk_widget_set_sensitive (sel->edit, TRUE);
 		gtk_widget_set_sensitive (sel->add, TRUE);
-		gtk_widget_set_sensitive (sel->del, TRUE);
 		gtk_widget_set_sensitive (sel->reset, TRUE);
 	} else {
 		gtk_widget_set_sensitive (sel->edit, FALSE);
 		gtk_widget_set_sensitive (sel->add, (doc != NULL));
-		gtk_widget_set_sensitive (sel->del, FALSE);
 		gtk_widget_set_sensitive (sel->reset, FALSE);
 	}
 }
@@ -331,6 +338,7 @@ sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 	sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors), doc, gr);
 }
 
+#if 0
 static void
 sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 {
@@ -345,6 +353,7 @@ sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *se
 		}
 	}
 }
+#endif
 
 static void
 sp_gradient_selector_reset_clicked (GtkWidget *w, SPGradientSelector *sel)
@@ -352,45 +361,6 @@ sp_gradient_selector_reset_clicked (GtkWidget *w, SPGradientSelector *sel)
 }
 
 #if 0
-#include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkoptionmenu.h>
-#include "../widgets/gradient-image.h"
-#include "../widgets/gradient-position.h"
-#include "../sodipodi.h"
-#include "../document.h"
-#include "../desktop-handles.h"
-#include "../document-private.h"
-#include "../sp-root.h"
-#include "../selection.h"
-#include "../sp-gradient.h"
-#include "../sp-item.h"
-#include "../gradient-chemistry.h"
-#include "sp-widget.h"
-#include "gradient-vector.h"
-#include "gradient-selector.h"
-
-#if 0
-static GtkWidget *sp_gradient_selector_vector_menu_new (SPWidget *spw);
-static void sp_gradient_selector_vector_menu_refresh (GtkOptionMenu *vectors, SPWidget *spw);
-static void sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw);
-#endif
-
-static void sp_gradient_selector_reset_clicked (GtkWidget *w, SPWidget *spw);
-
-static void sp_gradient_selector_vector_set (SPGradientVectorSelector *gvs, SPGradient *gr, SPWidget *spw);
-
-static void sp_gradient_selector_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data);
-static void sp_gradient_selector_change_selection (SPWidget *spw, SPSelection *selection, gpointer data);
-
-static void sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection);
-
-static void sp_gradient_selection_position_dragged (SPGradientPosition *pos, SPWidget *spw);
-static void sp_gradient_selection_position_changed (SPGradientPosition *pos, SPWidget *spw);
-
 static void
 sp_gradient_selector_reset_clicked (GtkWidget *w, SPWidget *spw)
 {
@@ -424,22 +394,6 @@ sp_gradient_selector_reset_clicked (GtkWidget *w, SPWidget *spw)
 	sp_document_done (spw->document);
 }
 
-static void
-sp_gradient_selector_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data)
-{
-	sp_gradient_selector_load_selection (spw, selection);
-}
-
-static void
-sp_gradient_selector_change_selection (SPWidget *spw, SPSelection *selection, gpointer data)
-{
-	sp_gradient_selector_load_selection (spw, selection);
-}
-
-static void
-sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection)
-{
-}
 #endif
 
 

@@ -76,7 +76,8 @@ nr_arena_shape_init (NRArenaShape *shape)
 {
 	shape->style = NULL;
 	shape->comp = NULL;
-	shape->painter = NULL;
+	shape->fill_painter = NULL;
+	shape->stroke_painter = NULL;
 }
 
 static void
@@ -86,9 +87,14 @@ nr_arena_shape_destroy (GtkObject *object)
 
 	shape = NR_ARENA_SHAPE (object);
 
-	if (shape->painter) {
-		sp_painter_free (shape->painter);
-		shape->painter = NULL;
+	if (shape->fill_painter) {
+		sp_painter_free (shape->fill_painter);
+		shape->fill_painter = NULL;
+	}
+
+	if (shape->stroke_painter) {
+		sp_painter_free (shape->stroke_painter);
+		shape->stroke_painter = NULL;
 	}
 
 	while (shape->comp) {
@@ -114,9 +120,14 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	nr_irect_set_empty (&item->bbox);
 
-	if (shape->painter) {
-		sp_painter_free (shape->painter);
-		shape->painter = NULL;
+	if (shape->fill_painter) {
+		sp_painter_free (shape->fill_painter);
+		shape->fill_painter = NULL;
+	}
+
+	if (shape->stroke_painter) {
+		sp_painter_free (shape->stroke_painter);
+		shape->stroke_painter = NULL;
 	}
 
 	if (shape->comp && shape->comp->archetype) {
@@ -167,16 +178,24 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 		item->bbox.y0 = comp->bbox.y0;
 		item->bbox.x1 = comp->bbox.x1;
 		item->bbox.y1 = comp->bbox.y1;
+		if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+			ArtDRect bbox;
+			bbox.x0 = item->bbox.x0;
+			bbox.y0 = item->bbox.y0;
+			bbox.x1 = item->bbox.x1;
+			bbox.y1 = item->bbox.y1;
+			shape->fill_painter = sp_paint_server_painter_new (shape->style->fill.server, gc->affine, shape->style->opacity, &bbox);
+		}
+		if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
+			ArtDRect bbox;
+			bbox.x0 = item->bbox.x0;
+			bbox.y0 = item->bbox.y0;
+			bbox.x1 = item->bbox.x1;
+			bbox.y1 = item->bbox.y1;
+			shape->stroke_painter = sp_paint_server_painter_new (shape->style->stroke.server, gc->affine, shape->style->opacity, &bbox);
+		}
 	}
 
-	if (shape->comp && shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		ArtDRect bbox;
-		bbox.x0 = item->bbox.x0;
-		bbox.y0 = item->bbox.y0;
-		bbox.x1 = item->bbox.x1;
-		bbox.y1 = item->bbox.y1;
-		shape->painter = sp_paint_server_painter_new (shape->style->fill.server, gc->affine, shape->style->opacity, &bbox);
-	}
 
 	return NR_ARENA_ITEM_STATE_ALL;
 }
@@ -200,6 +219,7 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 		NRBuffer *m;
 		guint32 rgba;
 
+		/* fixme: it sucks, we are doing it even, if fill == NONE */
 		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
 		art_gray_svp_aa (comp->archetype->svp,
 				 area->x0 - comp->cx, area->y0 - comp->cy,
@@ -214,11 +234,11 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 			b->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:
-			if (shape->painter) {
+			if (shape->fill_painter) {
 				NRBuffer *pb;
 				/* Need separate gradient buffer */
 				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				shape->painter->fill (shape->painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
+				shape->fill_painter->fill (shape->fill_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
 				pb->empty = FALSE;
 				/* Composite */
 				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
@@ -226,10 +246,10 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 							m, 0, 0);
 				b->empty = FALSE;
 				nr_buffer_free (pb);
-				break;
-			default:
-				break;
 			}
+			break;
+		default:
+			break;
 		}
 		nr_buffer_free (m);
 	}
@@ -250,6 +270,28 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			nr_buffer_free (m);
+		}
+		break;
+	case SP_PAINT_TYPE_PAINTSERVER:
+		if (shape->stroke_painter) {
+			NRBuffer *m;
+			NRBuffer *pb;
+			m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
+			art_gray_svp_aa (comp->archetype->stroke,
+					 area->x0 - comp->cx, area->y0 - comp->cy,
+					 area->x1 - comp->cx, area->y1 - comp->cy,
+					 m->px, m->rs);
+			m->empty = FALSE;
+			/* Need separate gradient buffer */
+			pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
+			shape->stroke_painter->fill (shape->stroke_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
+			pb->empty = FALSE;
+			/* Composite */
+			nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
+						pb, 0, 0,
+						m, 0, 0);
+			b->empty = FALSE;
+			nr_buffer_free (pb);
 		}
 		break;
 	default:

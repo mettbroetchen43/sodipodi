@@ -97,7 +97,7 @@ sp_gradient_vector_selector_init (SPGradientVectorSelector *gvs)
 
 	gvs->menu = gtk_option_menu_new ();
 	gtk_widget_show (gvs->menu);
-	gtk_box_pack_start (GTK_BOX (gvs), gvs->menu, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (gvs), gvs->menu, TRUE, TRUE, 0);
 }
 
 static void

@@ -40,12 +40,13 @@ SPGradient *sp_gradient_ensure_private_normalized (SPGradient *gradient, SPGradi
 void sp_gradient_vector_release_references (SPGradient *gradient);
 
 /*
- * Sets item fill to lineargradient with given vector, creating
+ * Sets item fill/stroke to lineargradient with given vector, creating
  * new private gradient, if needed
  * gr has to be normalized vector
  */
 
 void sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gradient);
+void sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gradient);
 
 /*
  * Get default normalized gradient vector of document, create if there is none
