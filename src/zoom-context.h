@@ -30,5 +30,7 @@ void sp_zoom_page (GtkWidget * widget);
 void sp_zoom_1_to_2 (GtkWidget * widget);
 void sp_zoom_1_to_1 (GtkWidget * widget);
 void sp_zoom_2_to_1 (GtkWidget * widget);
+void sp_zoom_in (GtkWidget * widget);
+void sp_zoom_out (GtkWidget * widget);
 
 #endif

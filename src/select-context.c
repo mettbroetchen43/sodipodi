@@ -10,6 +10,7 @@
 #include "pixmaps/cursor-select.xpm"
 #include "select-context.h"
 #include "selection-chemistry.h"
+#include "path-chemistry.h"
 
 static void sp_select_context_class_init (SPSelectContextClass * klass);
 static void sp_select_context_init (SPSelectContext * select_context);
@@ -257,49 +258,105 @@ sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  
-          case 120: // Ctrl x - cut
+          case GDK_x: // Ctrl x - cut
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_cut(event_context->desktop);
+	      sp_selection_cut(NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 99:  // Ctrl c - copy
+	  case GDK_c:  // Ctrl c - copy
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_copy(event_context->desktop);
+	      sp_selection_copy(NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 118: // Ctrl v - paste
+	  case GDK_v: // Ctrl v - paste
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_paste(event_context->desktop);
+	      sp_selection_paste(NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 65360: // Home - raise selection to top
+	  case GDK_g: // Ctrl g - group
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_group(NULL);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_G: // Ctrl G - ungroup
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_ungroup(NULL);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_k: // Ctrl k - combine (shift - break appart)
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selected_path_combine();
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_K: // Ctrl K - break appart
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selected_path_break_apart();
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Home: // Home - raise selection to top
 	    sp_selection_raise_to_top (NULL);
             ret = TRUE;
             break;
-	  case 65367: // End - lower selection to bottom
+	  case GDK_End: // End - lower selection to bottom
 	    sp_selection_lower_to_bottom (NULL);
             ret = TRUE;
             break;
-	  case 65365: // PageUp - raise selection one layer
+	  case GDK_Page_Up: // PageUp - raise selection one layer
 	    sp_selection_raise (NULL);
             ret = TRUE;
             break;
-	  case 65366: // PageDown - lower selection one layer
+	  case GDK_Page_Down: // PageDown - lower selection one layer
 	    sp_selection_lower (NULL);
             ret = TRUE;
             break;
-	  case 65535: // Del - delete selection
-	    sp_selection_delete (event_context->desktop);
+	  case GDK_Delete: // Del - delete selection
+	    sp_selection_delete (GTK_WIDGET(desktop));
 	    ret = TRUE;
 	    break;
-	  case 100: // Ctrl d - duplicate selection
+	  case GDK_d: // Ctrl d - duplicate selection
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_duplicate (event_context->desktop);
+	      sp_selection_duplicate (GTK_WIDGET(desktop));
 	      ret = TRUE;
 	    }
+	    break;
+	  case GDK_Left: // Left - move selection left
+	    if (event->key.state != GDK_CONTROL_MASK) {
+	      if (event->key.state == GDK_SHIFT_MASK) sp_selection_move_screen (-1,0);
+	      else sp_selection_move_screen (-10,0);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Up: // Up - move selection up
+	    if (event->key.state != GDK_CONTROL_MASK) {
+	      if (event->key.state == GDK_SHIFT_MASK) sp_selection_move_screen (0,1);
+	      else sp_selection_move_screen (0,10);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Right: // Right - move selection right
+	    if (event->key.state != GDK_CONTROL_MASK) {
+	      if (event->key.state == GDK_SHIFT_MASK) sp_selection_move_screen (1,0);
+	      else sp_selection_move_screen (10,0);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Down: // Down - move selection down
+	    if (event->key.state != GDK_CONTROL_MASK) {
+	      if (event->key.state == GDK_SHIFT_MASK) sp_selection_move_screen (0,-1);
+	      else sp_selection_move_screen (0,-10);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Tab: // Tab - cycle selection forward
+	    sp_selection_item_next ();
+	    ret = TRUE;
 	    break;
           }
 	  break;

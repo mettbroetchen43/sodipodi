@@ -1,3 +1,20 @@
+2001-03-09  Frank Felfe  <innerspace@iname.com>
+
+	* src/desktop.c (sp_desktop_update_scrollbars): Cleanup
+
+	* src/event-context.c (sp_event_context_private_root_handler): Use
+	Gdk keysyms instead of numeric values. Add moving/panning keybindings,
+	space for root menu popup
+	(sp_event_root_menu_popup): Pop menu on space
+
+	* select-context.c (sp_select_context_root_handler): Use Gdk keysyms
+	instead of numeric values
+
+	* selection-chemistry.c (sp_selection_move_screen): New function
+	(sp_selection_item_next): New function
+	
+	* doc/keybingings.txt: New keybingings
+
 2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/nodepath.c (node_event): Update repr after deletion

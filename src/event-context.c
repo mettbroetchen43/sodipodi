@@ -13,6 +13,10 @@
 #include "event-broker.h"
 #include "sp-item.h"
 #include "zoom-context.h"
+#include "file.h"
+#include "interface.h"
+#include "selection-chemistry.h"
+
 
 static void sp_event_context_class_init (SPEventContextClass * klass);
 static void sp_event_context_init (SPEventContext * event_context);
@@ -134,7 +138,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			break;
 		case 3:
 			/* fixme: */
-			sp_event_root_menu_popup (NULL, NULL, &event->button);
+			sp_event_root_menu_popup (NULL, NULL, event);
 			break;
 		default:
 			break;
@@ -154,137 +158,160 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 		break;
         case GDK_KEY_PRESS:
           switch (event->key.keyval) {  
-          case 65289: // disable cursor keys and tab/shift-tab which cycle widget focus
-          case 65056: // they will get different functions
-          case 65361:
-          case 65362:
-          case 65363: 
-          case 65364: 
-            //g_print ("stop ");
+          case GDK_Tab: // disable tab/shift-tab which cycle widget focus
+          case GDK_ISO_Left_Tab: // they will get different functions
             ret = TRUE;
             break;
-	  case 65470: // F1 - select context 
+	  case GDK_F1: // F1 - select context 
 	    sp_event_context_set_select(NULL);
 	    ret = TRUE;
 	    break;
-	  case 65471: // F2 - node edit context 
+	  case GDK_F2: // F2 - node edit context 
 	    sp_event_context_set_node_edit(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 65472: // F3 - zoom context
+	  case GDK_F3: // F3 - zoom context
 	    sp_event_context_set_zoom(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 65473: // F4 - rect context
+	  case GDK_F4: // F4 - rect context
 	    sp_event_context_set_rect(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 65474: // F5 - ellipse context
+	  case GDK_F5: // F5 - ellipse context
 	    sp_event_context_set_ellipse(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 65475: // F6 - frehand line context
+	  case GDK_F6: // F6 - frehand line context
 	    sp_event_context_set_freehand(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 65476: // F7 - text context
+	  case GDK_F7: // F7 - text context
 	    sp_event_context_set_text(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case 61: // = 
-      	  case 43: // + - zoom in
+	  case GDK_equal: // = 
+      	  case GDK_plus: // + - zoom in
 	    sp_zoom_in(NULL);
 	    ret = TRUE;
 	    break;
-	  case 45: // - - zoom out
+	  case GDK_minus: // - - zoom out
 	    sp_zoom_out(NULL);
 	    ret = TRUE;
 	    break;
-	  case 48: // 0 - zoom entire page
+	  case GDK_0: // 0 - zoom entire page
 	    sp_zoom_page(NULL);
 	    ret = TRUE;
 	    break;
-	  case 49: // 1 - zoom 1 to 1
+	  case GDK_1: // 1 - zoom 1 to 1
 	    sp_zoom_1_to_1(NULL);
 	    ret = TRUE;
 	    break;
-	  case 122: // Ctrl z - undo
+	  case GDK_z: // Ctrl z - undo
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_undo (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 114: // Ctrl r - redo
+	  case GDK_r: // Ctrl r - redo
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_redo (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 119: // Crtl w - close view
+	  case GDK_w: // Crtl w - close view
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_ui_close_view ();
+	      sp_ui_close_view (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 110: // Crtl n - new document
+	  case GDK_n: // Crtl n - new document
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
 	      sp_file_new ();
 	    }
 	    break;
-	  case 78: // Ctrl N - new view
+	  case GDK_N: // Ctrl N - new view
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_ui_new_view ();
+	      sp_ui_new_view (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 111: // Ctrl o - open file
+	  case GDK_o: // Ctrl o - open file
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_file_open ();
 	      ret = TRUE;
 	    }
 	    break;
-	  case 101: // Ctrl e - export file
+	  case GDK_e: // Ctrl e - export file
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_export ();
+	      sp_file_export (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 105: // Ctrl i - import file
+	  case GDK_i: // Ctrl i - import file
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_import ();
+	      sp_file_import (NULL);
 	      ret = TRUE;
 	    }
 	    break;
-	  case 112: // Crtl p - print document
+	  case GDK_p: // Crtl p - print document
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
-	      sp_file_print ();
+	      sp_file_print (NULL);
 	    }
 	    break;
-	  case 80: // Crtl P - print preview
+	  case GDK_P: // Crtl P - print preview
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
-	      sp_file_print_preview ();
+	      sp_file_print_preview (NULL);
 	    }
 	    break;
-	  case 115: // Crtl s - save file
+	  case GDK_s: // Crtl s - save file
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
-	      sp_file_save ();
+	      sp_file_save (NULL);
 	    }
 	    break;
-	  case 83: // Crtl S - save file as
+	  case GDK_S: // Crtl S - save file as
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
-	      sp_file_save_as ();
+	      sp_file_save_as (NULL);
 	    }
 	    break;
-	  case 113: // Ctrl q - quit
+	  case GDK_q: // Ctrl q - quit
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_file_exit ();
 	      ret = TRUE;
 	    }
+	    break;
+	  case GDK_Left: // Ctrl Left 
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_desktop_scroll_world (event_context->desktop, 10, 0);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Up: // Ctrl Up
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_desktop_scroll_world (event_context->desktop, 0, +10);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Right: // Ctrl Right
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_desktop_scroll_world (event_context->desktop, -10, 0);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_Down: // Ctrl Down
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_desktop_scroll_world (event_context->desktop, 0, -10);
+	      ret = TRUE;
+	    }
+	    break;
+	  case GDK_space: // Space - root menu
+	    sp_event_root_menu_popup (NULL, NULL, event);
+	    ret= TRUE;
 	    break;
           }
           g_print ("What a funny key: %d \n", event->key.keyval);
@@ -306,7 +333,7 @@ sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * 
 		switch (event->button.button) {
 		case 3:
 			/* fixme: */
-			sp_event_root_menu_popup (NULL, item, &event->button);
+			sp_event_root_menu_popup (NULL, item, event);
 			return TRUE;
 		default:
 			break;
@@ -375,7 +402,7 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 }
 
 void
-sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEventButton * event)
+sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEvent * event)
 {
 	static GtkMenu * menu = NULL;
 	static GtkWidget * objitem = NULL;
@@ -409,7 +436,15 @@ sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEventButton * ev
 		gtk_widget_set_sensitive (objitem, FALSE);
 	}
 
-	gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button, event->time);
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+	  gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button.button, event->button.time);
+	  break;
+	case GDK_KEY_PRESS:
+	  gtk_menu_popup (menu, NULL, NULL, 0, NULL, 0, event->key.time);
+	  break;
+	default:
+	}
 }
 
 static void

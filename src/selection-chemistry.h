@@ -36,6 +36,21 @@ void sp_selection_skew_relative (SPSelection * selection, ArtPoint * align, doub
 void sp_selection_move_relative (SPSelection * selection, double dx, double dy);
 
 void sp_selection_rotate_90 (void);
+void sp_selection_move_screen (gdouble sx, gdouble sy);
+void sp_selection_item_next (void);
+
+
+
+// selection cycling
+
+typedef enum
+{
+  SP_CYCLE_SIMPLE = 0,  
+  SP_CYCLE_VISIBLE = 1,  // cycle only visible items
+  SP_CYCLE_FOCUS =2      // readjust visible area to view selected item
+} SP_Cycle_Type;
+
+#define SP_CYCLING SP_CYCLE_FOCUS
 
 #endif
 

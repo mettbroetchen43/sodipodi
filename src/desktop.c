@@ -597,11 +597,11 @@ sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop)
 	gtk_ruler_set_range (desktop->vruler, p0.y, p1.y, desktop->vruler->position, p1.y);
 }
 
-// redraw the scrollbars in the desktop window
+// redraw the scrollbars in the desktop window and set the adjustments to <reasonable> values
 static 
 void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
 {
-  ArtPoint p0, p1;
+  ArtPoint wc0, wc1, dc0, dc1, p0, p1;
   SPItem * docitem;
   ArtDRect d;
   gdouble dw, dh, zf, cw, ch;
@@ -616,7 +616,6 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
     return;
   }
 
-  g_print ("update scrollbars\n");
   g_return_if_fail (SP_IS_SELECTION (selection));
   desktop = selection->desktop;
   g_return_if_fail (SP_IS_DESKTOP (desktop));
@@ -629,39 +628,41 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   zf = sp_desktop_zoom_factor (desktop);
   cw = GTK_WIDGET (desktop->canvas)->allocation.width;
   ch = GTK_WIDGET (desktop->canvas)->allocation.height;
-  // drawing
+  // drawing / document coordinates
   sp_item_bbox (docitem, &d);
-  // add document
+  // add document area / document coordinates
   if (d.x0 > 0) d.x0 = 0;
   if (d.y0 > 0) d.y0 = 0;
   dw = sp_document_width (desktop->document);
   dh = sp_document_height (desktop->document);
   if (d.x1 < dw) d.x1 = dw;
   if (d.y1 < dh) d.y1 = dh;
-  // add border around drawing 
-  d.x0 -= cw/zf;
-  d.x1 += cw/zf;
-  d.y0 -= ch/zf;
-  d.y1 += ch/zf;
-  // enlarge to fit desktop 
+  // add border around drawing / document coordinates
+  dc0.x = d.x0 - cw/zf;
+  dc0.y = d.y1 + ch/zf;
+  dc1.x = d.x1 + cw/zf;
+  dc1.y = d.y0 - ch/zf;
+  // >> world coordinates
+  art_affine_point (&wc0, &dc0, desktop->d2w);
+  art_affine_point (&wc1, &dc1, desktop->d2w);
+  // enlarge to fit desktop / world coordinates 
   gnome_canvas_window_to_world (desktop->canvas, 0.0, 0.0, &p0.x, &p0.y);
   gnome_canvas_window_to_world (desktop->canvas, cw, ch, &p1.x, &p1.y);
-  art_affine_point (&p0, &p0, desktop->w2d);
-  art_affine_point (&p1, &p1, desktop->w2d);
-  if (d.x0 < p0.x) p0.x = d.x0;
-  if (d.y0 < p0.y) p0.y = d.y0;
-  if (d.x1 > p1.x) p1.x = d.x1;
-  if (d.y1 > p1.y) p1.y = d.y1;
-  art_affine_point (&p0, &p0, desktop->d2w);
-  art_affine_point (&p1, &p1, desktop->d2w);
-  gnome_canvas_world_to_window (desktop->canvas, p0.x, p0.y, &d.x0, &d.y0);
-  gnome_canvas_world_to_window (desktop->canvas, p1.x, p1.y, &d.x1, &d.y1);
-  // set new adjustment  
-  hadj->lower = p0.x + SP_DESKTOP_SCROLL_LIMIT;
-  hadj->upper = p1.x + SP_DESKTOP_SCROLL_LIMIT;
-  vadj->lower = p1.y + SP_DESKTOP_SCROLL_LIMIT;
-  vadj->upper = p0.y + SP_DESKTOP_SCROLL_LIMIT;
-  //restrict to canvas scroll limit
+  if (p0.x < wc0.x) wc0.x = p0.x;
+  if (p0.y < wc0.y) wc0.y = p0.y;
+  if (p1.x > wc1.x) wc1.x = p1.x;
+  if (p1.y > wc1.y) wc1.y = p1.y;
+  // add border arround desktop / world coordinates
+  wc0.x -= 10/zf;
+  wc0.y -= 10/zf;
+  wc1.x += 10/zf;
+  wc1.y += 10/zf;  
+  // set new adjustment / world coordinates
+  hadj->lower = wc0.x + SP_DESKTOP_SCROLL_LIMIT;
+  hadj->upper = wc1.x + SP_DESKTOP_SCROLL_LIMIT;
+  vadj->lower = wc0.y + SP_DESKTOP_SCROLL_LIMIT;
+  vadj->upper = wc1.y + SP_DESKTOP_SCROLL_LIMIT;//-abs(p1.y - p0.y);
+  //restrict to canvas scroll limit / world coordinates
   if (hadj->lower < 0) hadj->lower = 0;
   if (hadj->upper > 2*SP_DESKTOP_SCROLL_LIMIT) hadj->upper = 2*SP_DESKTOP_SCROLL_LIMIT;
   if (vadj->lower < 0) vadj->lower = 0;
@@ -970,7 +971,7 @@ sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop
 static void
 sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event)
 {
-	sp_event_root_menu_popup (widget, NULL, event);
+	sp_event_root_menu_popup (widget, NULL, (GdkEvent *)event);
 }
 
 void

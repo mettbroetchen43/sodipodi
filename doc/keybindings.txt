@@ -40,6 +40,10 @@ Ctrl s	- save file
 Ctrl S	- save file as
 Ctrl q	- exit sodipodi
 
+Ctrl Up - move desktop up
+Ctrl Down - move desktep down
+Ctrl Left - move desktop left
+Ctrl Right - move desktop right
 
 - keybindings in select context
 --------------------------------
@@ -55,6 +59,19 @@ End	- lower selection to bottom
 PageUp	- raise selection one layer
 PageDown- lower selection one layer 
 
+Up - move selection up
+Down - move selection down
+Left - move selection left
+Right - move selection right 
+(+ shift move slow)
+
+Ctrl g - group
+Ctrl G - ungroup
+Ctrl k - kombine paths
+Ctrl K - break apart
+
+Tab - cycle items in desktop
+ 
 
 * modifier for mouse drag
 

@@ -17,6 +17,7 @@
 #include "desktop-handles.h"
 #include "selection-chemistry.h"
 #include "sp-item-transform.h" 
+#include "sp-item-group.h"
 
 /* fixme: find a better place */
 GSList * clipboard = NULL;
@@ -591,4 +592,91 @@ sp_selection_rotate_90 (void)
 
 	sp_selection_changed (selection);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
+}
+
+void
+sp_selection_move_screen (gdouble sx, gdouble sy)
+{
+  SPDesktop * desktop;
+  SPSelection * selection;
+  gdouble dx,dy,zf;
+
+  desktop = SP_ACTIVE_DESKTOP;
+  g_return_if_fail(SP_IS_DESKTOP (desktop));
+  selection = SP_DT_SELECTION (desktop);
+  if (!SP_IS_SELECTION (selection)) return;
+  if sp_selection_is_empty(selection) return;
+
+  zf = sp_desktop_zoom_factor(desktop);
+  dx = sx / zf;
+  dy = sy / zf;
+  sp_selection_move_relative (selection,dx,dy);
+
+  //
+  sp_selection_changed (selection);
+  sp_document_done (SP_DT_DOCUMENT (desktop));
+}
+
+void
+sp_selection_item_next (void)
+{
+  SPDocument * document;
+  SPDesktop * desktop;
+  SPSelection * selection;
+  GSList * children = NULL, * item = NULL;
+  SPGroup * group;
+  ArtDRect dbox,sbox;
+  ArtPoint s,d;
+  gint dx=0, dy=0;
+
+  document = SP_ACTIVE_DOCUMENT;
+  desktop = SP_ACTIVE_DESKTOP;
+  g_return_if_fail(document != NULL);
+  g_return_if_fail(desktop != NULL);
+  if (!SP_IS_DESKTOP (desktop)) return;
+  selection = SP_DT_SELECTION(desktop);
+  g_return_if_fail(selection!=NULL);
+  
+  // get list of relevant items
+  if (SP_CYCLING == SP_CYCLE_VISIBLE) {
+    sp_desktop_get_visible_area (desktop, &dbox);
+    children = sp_document_items_in_box (document, &dbox);
+    g_print("get children \n");
+  } else {
+    group = SP_GROUP(sp_document_root(document));
+    children = group->children;
+  }
+  if (children==NULL) return;
+
+  // no selection -> take first
+  if sp_selection_is_empty(selection) {
+    sp_selection_set_item (selection,SP_ITEM(children->data));
+    return;
+  }
+
+  item = g_slist_find(children,selection->items->data);
+
+  // selection not in root or last element in list -> take first
+  if ((item==NULL) || (item->next==NULL)) item = children;
+  else item = item->next;
+
+  sp_selection_set_item (selection,SP_ITEM(item->data));
+
+  // adjust visible area to see whole new selection
+  if (SP_CYCLING == SP_CYCLE_FOCUS) {
+    sp_desktop_get_visible_area (desktop, &dbox);
+    sp_item_bbox (SP_ITEM(item->data),&sbox);
+    if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
+      s.x = (sbox.x0+sbox.x1)/2;
+      s.y = (sbox.y0+sbox.y1)/2;
+      d.x = (dbox.x0+dbox.x1)/2;
+      d.y = (dbox.y0+dbox.y1)/2;
+      art_affine_point (&s, &s, desktop->d2w);
+      art_affine_point (&d, &d, desktop->d2w);
+      dx = (gint)(d.x-s.x);
+      dy = (gint)(d.y-s.y);
+      sp_desktop_scroll_world (desktop, dx, dy);
+    }
+  }
+
 }
