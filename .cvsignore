@@ -19,6 +19,8 @@ libtool
 intl
 sodipodi.spec
 sodipodi.1
+sodipodi.prj.bak
+sodipodi.pws
 *.svg
 intltool-*
 sodipodi.desktop

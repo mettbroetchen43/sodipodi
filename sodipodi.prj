@@ -1,0 +1,795 @@
+# Anjuta Version 1.1.97 
+Compatibility Level: 1 
+
+<PROJECT_DESCRIPTION_START>
+Sodipodi is a vector illustrator program for the GNOME environment.
+It is currently in active development and approaching general usability.
+<PROJECT_DESCRIPTION_END>
+<CONFIG_PROGS_START>
+<CONFIG_PROGS_END>
+<CONFIG_LIBS_START>
+<CONFIG_LIBS_END>
+<CONFIG_HEADERS_START>
+<CONFIG_HEADERS_END>
+<CONFIG_CHARACTERISTICS_START>
+<CONFIG_CHARACTERISTICS_END>
+<CONFIG_LIB_FUNCS_START>
+<CONFIG_LIB_FUNCS_END>
+<CONFIG_ADDITIONAL_START>
+<CONFIG_ADDITIONAL_END>
+<CONFIG_FILES_START>
+<CONFIG_FILES_END>
+<MAKEFILE_AM_START>
+<MAKEFILE_AM_END>
+
+props.file.type=project
+
+anjuta.version=1.1.97
+anjuta.compatibility.level=1
+
+project.name=sodipodi
+project.type=GENERIC
+project.target.type=EXECUTABLE
+project.version=0.33
+project.author=me
+project.source.target=sodipodi
+project.has.gettext=1
+project.gui.command=
+project.programming.language=C
+project.excluded.modules=intl
+
+project.config.extra.modules.before=
+project.config.extra.modules.after=
+project.config.blocked=1
+project.config.disable.overwriting=1 1 1 1 1 1 1 1 1 
+
+project.menu.entry=sodipodi Version 0.99
+project.menu.group=Application
+project.menu.comment=sodipodi Version 0.99
+project.menu.icon=
+project.menu.need.terminal=0
+
+project.configure.options=
+anjuta.program.arguments=
+preferences.build.option.jobs=0
+preferences.build.option.silent=0
+preferences.build.option.autosave=0
+preferences.anjuta.make.options=-k
+preferences.make=make
+preferences.build.option.keep.going=1
+preferences.build.option.warn.undef=0
+preferences.autoformat.custom.style= -i8 -sc -bli0 -bl0 -cbi0 -ss
+preferences.autoformat.style=Style of Kangleipak
+preferences.indent.opening=0
+preferences.autoformat.disable=0
+preferences.indent.automatic=1
+preferences.use.tabs=1
+preferences.indent.size=4
+preferences.tabsize=4
+preferences.indent.closing=0
+
+module.include.name=.
+module.include.type=
+module.include.files=\
+	src/svg/gnome-canvas-bpath-util.h\
+	src/svg/svg.h\
+	src/svg/svg-types.h\
+	src/xml/repr-private.h\
+	src/xml/repr.h\
+	src/sp-anchor.h\
+	src/interface.h\
+	src/monostd.h\
+	src/color.h\
+	src/sodipodi.h\
+	src/desktop-handles.h\
+	src/application.h\
+	src/dialogs/text-edit.h\
+	src/dialogs/export.h\
+	src/dialogs/tool-attributes.h\
+	src/dialogs/item-properties.h\
+	src/dialogs/xml-tree.h\
+	src/dialogs/document-properties.h\
+	src/dialogs/display-settings.h\
+	src/dialogs/desktop-properties.h\
+	src/dialogs/fill-style.h\
+	src/dialogs/stroke-style.h\
+	src/dialogs/node-edit.h\
+	src/dialogs/align.h\
+	src/dialogs/tool-options.h\
+	src/dialogs/transformation.h\
+	src/dialogs/object-attributes.h\
+	src/dialogs/sp-attribute-widget.h\
+	src/dialogs/object-properties.h\
+	src/slideshow.h\
+	src/gradient-chemistry.h\
+	src/sp-paint-server.h\
+	src/display/nr-arena.h\
+	src/display/nr-arena-forward.h\
+	src/display/nr-arena-group.h\
+	src/display/nr-arena-item.h\
+	src/display/canvas-arena.h\
+	src/display/nr-arena-image.h\
+	src/display/nr-uta.h\
+	src/display/nr-arena-shape.h\
+	src/display/nr-arena-glyphs.h\
+	src/document-private.h\
+	src/sp-metrics.h\
+	src/libnrtype/codepages.h\
+	src/libnrtype/nr-typeface.h\
+	src/libnrtype/nr-type-primitives.h\
+	src/libnrtype/nr-type-ft2.h\
+	src/libnrtype/nr-type-w32.h\
+	src/libnrtype/nr-type-xft.h\
+	src/libnrtype/nr-type-directory.h\
+	src/libnrtype/nr-rasterfont.h\
+	src/libnrtype/nr-type-gnome.h\
+	src/libnrtype/nr-font.h\
+	src/nodepath.h\
+	src/libnr/nr-path.h\
+	src/libnr/nr-types.h\
+	src/libnr/nr-pixblock-pixel.h\
+	src/libnr/nr-rect.h\
+	src/libnr/nr-render.h\
+	src/libnr/nr_config.h\
+	src/libnr/nr-svp-private.h\
+	src/libnr/nr-macros.h\
+	src/libnr/nr-compose-transform.h\
+	src/libnr/nr-forward.h\
+	src/libnr/nr-matrix.h\
+	src/libnr/nr-pixops.h\
+	src/libnr/nr-pixblock.h\
+	src/libnr/nr-svp.h\
+	src/libnr/nr-svp-uncross.h\
+	src/libnr/nr-uta.h\
+	src/libnr/nr-object.h\
+	src/libnr/nr-pixblock-line.h\
+	src/libnr/nr-svp-render.h\
+	src/libnr/nr-pixblock-pattern.h\
+	src/libnr/nr-compose.h\
+	src/libnr/nr-blit.h\
+	src/libnr/nr-values.h\
+	src/libnr/nr-stroke.h\
+	src/libnr/nr-gradient.h\
+	src/extensions-skeleton.h\
+	src/spiral-context.h\
+	src/toolbox.h\
+	src/path-chemistry.h\
+	src/text-context.h\
+	src/knotholder.h\
+	src/sodipodi-private.h\
+	src/extension.h\
+	src/svg-view.h\
+	src/sp-spiral.h\
+	src/sp-guide.h\
+	src/macros.h\
+	src/event-broker.h\
+	src/sp-object-repr.h\
+	src/marshal.h\
+	src/sp-animation.h\
+	src/enums.h\
+	src/module.h\
+	src/sp-item-group.h\
+	src/document.h\
+	src/desktop-events.h\
+	src/selection-chemistry.h\
+	src/sp-item-transform.h\
+	src/selection.h\
+	src/attributes.h\
+	src/preferences-skeleton.h\
+	src/dropper-context.h\
+	src/sp-image.h\
+	src/rubberband.h\
+	src/sp-cursor.h\
+	src/sp-use.h\
+	src/bonobo/sodipodi-bonobo.h\
+	src/bonobo/svg-doc-factory.h\
+	src/bonobo/embeddable-drawing.h\
+	src/bonobo/embeddable-document.h\
+	src/bonobo/canvas-translator.h\
+	src/bonobo/embeddable-desktop.h\
+	src/style.h\
+	src/sp-ellipse.h\
+	src/sp-chars.h\
+	src/modules/ps.h\
+	src/modules/kde-private.h\
+	src/modules/kde.h\
+	src/modules/sp-module.h\
+	src/modules/sp-module-doc.h\
+	src/modules/sp-module-sys.h\
+	src/modules/gnome.h\
+	src/modules/sp-module-exec.h\
+	src/modules/sp-module-exec-ext.h\
+	src/modules/win32.h\
+	src/libarikkei/arikkei-token.h\
+	src/libarikkei/arikkei-dict.h\
+	src/sp-marker.h\
+	src/file.h\
+	src/arc-context.h\
+	src/help.h\
+	src/helper/canvas-grid.h\
+	src/helper/nr-gradient-gpl.h\
+	src/helper/sodipodi-ctrl.h\
+	src/helper/curve.h\
+	src/helper/nr-plain-stuff-gdk.h\
+	src/helper/sp-ctrlline.h\
+	src/helper/bezier-utils.h\
+	src/helper/sp-marshal.h\
+	src/helper/sodipodi-ctrlrect.h\
+	src/helper/sp-canvas.h\
+	src/helper/unit-menu.h\
+	src/helper/canvas-bpath.h\
+	src/helper/gnome-utils.h\
+	src/helper/guideline.h\
+	src/helper/action.h\
+	src/helper/png-write.h\
+	src/helper/window.h\
+	src/helper/units.h\
+	src/helper/sp-intl.h\
+	src/helper/nr-plain-stuff.h\
+	src/helper/helper-forward.h\
+	src/helper/sp-canvas-util.h\
+	src/helper/gnome-canvas-acetate.h\
+	src/sp-pattern.h\
+	src/object-edit.h\
+	src/knot.h\
+	src/star-context.h\
+	src/desktop-snap.h\
+	src/sp-symbol.h\
+	src/sp-defs.h\
+	src/dir-util.h\
+	src/sp-namedview.h\
+	src/object-ui.h\
+	src/desktop-units.h\
+	src/desktop.h\
+	src/desktop-affine.h\
+	src/seltrans-handles.h\
+	src/zoom-context.h\
+	src/uri-references.h\
+	src/verbs.h\
+	src/sp-item.h\
+	src/view.h\
+	src/sp-line.h\
+	src/sp-object.h\
+	src/sp-mask.h\
+	src/select-context.h\
+	src/forward.h\
+	src/sp-path.h\
+	src/seltrans.h\
+	src/sp-rect.h\
+	src/event-context.h\
+	src/sp-root.h\
+	src/sp-object-group.h\
+	src/sp-gradient.h\
+	src/sp-polygon.h\
+	src/sp-text.h\
+	src/sp-shape.h\
+	src/sp-star.h\
+	src/node-context.h\
+	src/draw-context.h\
+	src/widgets/sp-hwrap-box.h\
+	src/widgets/sp-xmlview-content.h\
+	src/widgets/gradient-image.h\
+	src/widgets/paint-selector.h\
+	src/widgets/sp-vwrap-box.h\
+	src/widgets/ruler.h\
+	src/widgets/font-selector.h\
+	src/widgets/sp-toolbox.h\
+	src/widgets/sp-xmlview-attr-list.h\
+	src/widgets/sp-color-preview.h\
+	src/widgets/icon.h\
+	src/widgets/sp-widget.h\
+	src/widgets/gradient-selector.h\
+	src/widgets/menu.h\
+	src/widgets/gradient-position.h\
+	src/widgets/sp-color-slider.h\
+	src/widgets/sp-color-selector.h\
+	src/widgets/gradient-vector.h\
+	src/widgets/sp-xmlview-tree.h\
+	src/widgets/sp-wrap-box.h\
+	src/widgets/button.h\
+	src/widgets/dash-selector.h\
+	src/rect-context.h\
+	src/sp-clippath.h\
+	src/dyna-draw-context.h\
+	src/shortcuts.h\
+	src/print.h\
+	src/sp-polyline.h\
+	config.h
+
+module.source.name=.
+module.source.type=
+module.source.files=\
+	src/svg/gnome-canvas-bpath-util.c\
+	src/svg/svg-path.c\
+	src/svg/svg-length.c\
+	src/svg/gill-svg-path.c\
+	src/svg/svg-affine.c\
+	src/svg/svg-color.c\
+	src/xml/repr-util.c\
+	src/xml/repr-io.c\
+	src/xml/repr.c\
+	src/xml/repr-css.c\
+	src/sp-anchor.c\
+	src/interface.c\
+	src/color.c\
+	src/sodipodi.c\
+	src/desktop-handles.c\
+	src/application.c\
+	src/dialogs/text-edit.c\
+	src/dialogs/export.c\
+	src/dialogs/tool-attributes.c\
+	src/dialogs/item-properties.c\
+	src/dialogs/xml-tree.c\
+	src/dialogs/document-properties.c\
+	src/dialogs/display-settings.c\
+	src/dialogs/desktop-properties.c\
+	src/dialogs/fill-style.c\
+	src/dialogs/stroke-style.c\
+	src/dialogs/node-edit.c\
+	src/dialogs/align.c\
+	src/dialogs/tool-options.c\
+	src/dialogs/transformation.c\
+	src/dialogs/object-attributes.c\
+	src/dialogs/sp-attribute-widget.c\
+	src/dialogs/object-properties.c\
+	src/slideshow.c\
+	src/gradient-chemistry.c\
+	src/sp-paint-server.c\
+	src/display/nr-arena.c\
+	src/display/nr-arena-group.c\
+	src/display/nr-arena-item.c\
+	src/display/testnr.c\
+	src/display/canvas-arena.c\
+	src/display/nr-arena-image.c\
+	src/display/nr-uta.c\
+	src/display/nr-arena-shape.c\
+	src/display/nr-arena-glyphs.c\
+	src/sp-metrics.c\
+	src/libnrtype/nr-typeface.c\
+	src/libnrtype/nr-type-primitives.c\
+	src/libnrtype/nr-type-ft2.c\
+	src/libnrtype/nr-type-w32.c\
+	src/libnrtype/nr-type-xft.c\
+	src/libnrtype/nr-type-directory.c\
+	src/libnrtype/nr-rasterfont.c\
+	src/libnrtype/nr-type-gnome.c\
+	src/libnrtype/nr-font.c\
+	src/nodepath.c\
+	src/spsvgview.c\
+	src/libnr/nr-path.c\
+	src/libnr/nr-pixblock-pixel.c\
+	src/libnr/nr-rect.c\
+	src/libnr/nr-compose-transform.c\
+	src/libnr/testnr.c\
+	src/libnr/nr-matrix.c\
+	src/libnr/nr-pixblock.c\
+	src/libnr/gen_nr_config.c\
+	src/libnr/nr-svp.c\
+	src/libnr/nr-svp-uncross.c\
+	src/libnr/nr-uta.c\
+	src/libnr/nr-object.c\
+	src/libnr/nr-pixblock-line.c\
+	src/libnr/nr-svp-render.c\
+	src/libnr/nr-pixblock-pattern.c\
+	src/libnr/nr-compose.c\
+	src/libnr/nr-blit.c\
+	src/libnr/nr-values.c\
+	src/libnr/nr-stroke.c\
+	src/libnr/nr-gradient.c\
+	src/spiral-context.c\
+	src/winmain.c\
+	src/toolbox.c\
+	src/path-chemistry.c\
+	src/text-context.c\
+	src/knotholder.c\
+	src/extension.c\
+	src/svg-view.c\
+	src/sp-spiral.c\
+	src/sp-guide.c\
+	src/event-broker.c\
+	src/sp-object-repr.c\
+	src/marshal.c\
+	src/sp-animation.c\
+	src/module.c\
+	src/sp-item-group.c\
+	src/document.c\
+	src/desktop-events.c\
+	src/selection-chemistry.c\
+	src/sp-item-transform.c\
+	src/selection.c\
+	src/attributes.c\
+	src/dropper-context.c\
+	src/sp-image.c\
+	src/rubberband.c\
+	src/sp-cursor.c\
+	src/sp-use.c\
+	src/bonobo/sodipodi-bonobo.c\
+	src/bonobo/svg-doc-factory.c\
+	src/bonobo/embeddable-drawing.c\
+	src/bonobo/embeddable-document.c\
+	src/bonobo/canvas-translator.c\
+	src/bonobo/embeddable-desktop.c\
+	src/style.c\
+	src/sp-ellipse.c\
+	src/sp-chars.c\
+	src/modules/ps.c\
+	src/modules/kde.cpp\
+	src/modules/sp-module.c\
+	src/modules/sp-module-doc.c\
+	src/modules/sp-module-sys.c\
+	src/modules/gnome.c\
+	src/modules/sp-module-exec.c\
+	src/modules/sp-module-exec-ext.c\
+	src/modules/win32.c\
+	src/libarikkei/arikkei-token.c\
+	src/libarikkei/arikkei-dict.c\
+	src/sp-marker.c\
+	src/file.c\
+	src/document-undo.c\
+	src/arc-context.c\
+	src/help.c\
+	src/helper/canvas-grid.c\
+	src/helper/nr-gradient-gpl.c\
+	src/helper/sodipodi-ctrl.c\
+	src/helper/curve.c\
+	src/helper/nr-plain-stuff-gdk.c\
+	src/helper/sp-ctrlline.c\
+	src/helper/bezier-utils.c\
+	src/helper/sp-marshal.c\
+	src/helper/sodipodi-ctrlrect.c\
+	src/helper/sp-canvas.c\
+	src/helper/unit-menu.c\
+	src/helper/canvas-bpath.c\
+	src/helper/gnome-utils.c\
+	src/helper/guideline.c\
+	src/helper/action.c\
+	src/helper/png-write.c\
+	src/helper/window.c\
+	src/helper/units.c\
+	src/helper/nr-plain-stuff.c\
+	src/helper/sp-canvas-util.c\
+	src/helper/gnome-canvas-acetate.c\
+	src/sp-pattern.c\
+	src/object-edit.c\
+	src/knot.c\
+	src/star-context.c\
+	src/main.c\
+	src/desktop-snap.c\
+	src/sp-symbol.c\
+	src/sp-defs.c\
+	src/dir-util.c\
+	src/sp-namedview.c\
+	src/object-ui.c\
+	src/desktop.c\
+	src/desktop-affine.c\
+	src/seltrans-handles.c\
+	src/zoom-context.c\
+	src/uri-references.c\
+	src/verbs.c\
+	src/sp-item.c\
+	src/view.c\
+	src/sp-line.c\
+	src/sp-object.c\
+	src/sp-mask.c\
+	src/select-context.c\
+	src/sp-path.c\
+	src/seltrans.c\
+	src/sp-rect.c\
+	src/event-context.c\
+	src/sp-root.c\
+	src/sp-object-group.c\
+	src/sp-gradient.c\
+	src/sp-polygon.c\
+	src/sp-text.c\
+	src/sp-shape.c\
+	src/sp-star.c\
+	src/node-context.c\
+	src/draw-context.c\
+	src/widgets/test-wrapbox.c\
+	src/widgets/sp-hwrap-box.c\
+	src/widgets/sp-xmlview-content.c\
+	src/widgets/gradient-image.c\
+	src/widgets/paint-selector.c\
+	src/widgets/sp-vwrap-box.c\
+	src/widgets/ruler.c\
+	src/widgets/font-selector.c\
+	src/widgets/sp-toolbox.c\
+	src/widgets/sp-xmlview-attr-list.c\
+	src/widgets/sp-color-preview.c\
+	src/widgets/icon.c\
+	src/widgets/sp-widget.c\
+	src/widgets/gradient-selector.c\
+	src/widgets/menu.c\
+	src/widgets/gradient-position.c\
+	src/widgets/sp-color-slider.c\
+	src/widgets/sp-color-selector.c\
+	src/widgets/gradient-vector.c\
+	src/widgets/sp-xmlview-tree.c\
+	src/widgets/sp-wrap-box.c\
+	src/widgets/button.c\
+	src/widgets/test-widgets.c\
+	src/widgets/dash-selector.c\
+	src/rect-context.c\
+	src/sp-clippath.c\
+	src/dyna-draw-context.c\
+	src/shortcuts.c\
+	src/print.c\
+	src/sp-polyline.c
+
+module.pixmap.name=.
+module.pixmap.type=
+module.pixmap.files=\
+	src/brokenimage.xpm\
+	src/pixmaps/handles.xpm\
+	src/pixmaps/cursor-node.xpm\
+	src/pixmaps/cursor-rect.xpm\
+	src/pixmaps/cursor-select-d.xpm\
+	src/pixmaps/cursor-select-m.xpm\
+	src/pixmaps/cursor-arrow.xpm\
+	src/pixmaps/cursor-spiral.xpm\
+	src/pixmaps/cursor-ellipse.xpm\
+	src/pixmaps/cursor-zoom.xpm\
+	src/pixmaps/cursor-text.xpm\
+	src/pixmaps/cursor-arc.xpm\
+	src/pixmaps/cursor-node-d.xpm\
+	src/pixmaps/cursor-node-m.xpm\
+	src/pixmaps/cursor-star.xpm\
+	glade/fill_none.xpm\
+	glade/selection_up.xpm\
+	glade/draw_arc.xpm\
+	glade/edit_duplicate.xpm\
+	glade/skew_ver.xpm\
+	glade/draw_pen.xpm\
+	glade/del.xpm\
+	glade/draw_ellipse.xpm\
+	glade/clear.xpm\
+	glade/draw_text.xpm\
+	glade/edit_undo.xpm\
+	glade/object_fill.xpm\
+	glade/al_right_out.xpm\
+	glade/selection_top.xpm\
+	glade/al_top_out.xpm\
+	glade/angle_any.xpm\
+	glade/selection_ungroup.xpm\
+	glade/div.xpm\
+	glade/file_export.xpm\
+	glade/skew_hor.xpm\
+	glade/properties_fill.xpm\
+	glade/properties_stroke.xpm\
+	glade/join_bevel.xpm\
+	glade/al_left_out.xpm\
+	glade/xml_text_node.xpm\
+	glade/zoom_page.xpm\
+	glade/selection_break.xpm\
+	glade/ellipse.xpm\
+	glade/object_align.xpm\
+	glade/stroke.xpm\
+	glade/set.xpm\
+	glade/node_symetric.xpm\
+	glade/object_reset.xpm\
+	glade/duplicate_xml_node.xpm\
+	glade/node_break.xpm\
+	glade/font.xpm\
+	glade/al_left_in.xpm\
+	glade/file_save_as.xpm\
+	glade/angle_180.xpm\
+	glade/join_round.xpm\
+	glade/selection_down.xpm\
+	glade/rotate_right.xpm\
+	glade/lock_aspect_no.xpm\
+	glade/dt_active.xpm\
+	glade/cap_square.xpm\
+	glade/cap_round.xpm\
+	glade/zoom.xpm\
+	glade/line_full.xpm\
+	glade/rotate.xpm\
+	glade/quit_nope.xpm\
+	glade/freehand.xpm\
+	glade/cap_butt.xpm\
+	glade/xml_element.xpm\
+	glade/draw_star.xpm\
+	glade/zoom_draw.xpm\
+	glade/seperate_tool.xpm\
+	glade/fill.xpm\
+	glade/origin.xpm\
+	glade/object_stroke.xpm\
+	glade/duplicate.xpm\
+	glade/smooth.xpm\
+	glade/node_smooth.xpm\
+	glade/select.xpm\
+	glade/toolbox_node.xpm\
+	glade/rotate_left.xpm\
+	glade/al_bottom_in.xpm\
+	glade/text.xpm\
+	glade/edit_paste.xpm\
+	glade/node_insert.xpm\
+	glade/angle_270.xpm\
+	glade/scale.xpm\
+	glade/cusp.xpm\
+	glade/file_save.xpm\
+	glade/line_doubled.xpm\
+	glade/node_cusp.xpm\
+	glade/dimension_ver.xpm\
+	glade/skew.xpm\
+	glade/object_flip_ver.xpm\
+	glade/selection_bot.xpm\
+	glade/forward.xpm\
+	glade/writing_mode_lr.xpm\
+	glade/object_rotate.xpm\
+	glade/sym.xpm\
+	glade/toolbox_edit.xpm\
+	glade/al_bottom_out.xpm\
+	glade/join_miter.xpm\
+	glade/dimension_hor.xpm\
+	glade/edit_copy.xpm\
+	glade/object_flip_hor.xpm\
+	glade/edge_up.xpm\
+	glade/dt_inactive.xpm\
+	glade/arrows_ver.xpm\
+	glade/writing_mode_tb.xpm\
+	glade/move.xpm\
+	glade/draw_node.xpm\
+	glade/file_print.xpm\
+	glade/draw_select.xpm\
+	glade/angle_90.xpm\
+	glade/edit_cut.xpm\
+	glade/edit_delete.xpm\
+	glade/add.xpm\
+	glade/draw_rect.xpm\
+	glade/join.xpm\
+	glade/draw_dynahand.xpm\
+	glade/node_join.xpm\
+	glade/arrows_hor.xpm\
+	glade/zoom_1_to_1.xpm\
+	glade/zoom_1_to_2.xpm\
+	glade/toolbox_select.xpm\
+	glade/add_xml_element_node.xpm\
+	glade/zoom_out.xpm\
+	glade/unknown.xpm\
+	glade/curve.xpm\
+	glade/draw_freehand.xpm\
+	glade/fill_gradient.xpm\
+	glade/fill_radial.xpm\
+	glade/toolbox_object.xpm\
+	glade/file_print_preview.xpm\
+	glade/scale_ver.xpm\
+	glade/zoom_select.xpm\
+	glade/fill_fractal.xpm\
+	glade/delete_xml_attribute.xpm\
+	glade/align_bc.xpm\
+	glade/tofront.xpm\
+	glade/object_trans.xpm\
+	glade/align_bl.xpm\
+	glade/add_xml_text_node.xpm\
+	glade/align_cc.xpm\
+	glade/line_dashed.xpm\
+	glade/align_br.xpm\
+	glade/toback.xpm\
+	glade/align_cl.xpm\
+	glade/selection_group.xpm\
+	glade/align_cr.xpm\
+	glade/quit_yep.xpm\
+	glade/file_import.xpm\
+	glade/reread.xpm\
+	glade/properties_layout.xpm\
+	glade/node_curve.xpm\
+	glade/zoom_in.xpm\
+	glade/node_delete.xpm\
+	glade/lock_aspect_yes.xpm\
+	glade/scale_hor.xpm\
+	glade/toolbox_zoom.xpm\
+	glade/create_new.xpm\
+	glade/al_right_in.xpm\
+	glade/al_top_in.xpm\
+	glade/delete_xml_node.xpm\
+	glade/file_print_direct.xpm\
+	glade/fill_pattern.xpm\
+	glade/guide_dialog.png\
+	glade/toolbox_draw.xpm\
+	glade/toolbox_file.xpm\
+	glade/flip_ver.xpm\
+	glade/fill_solid.xpm\
+	glade/al_center_ver.xpm\
+	glade/file_new.xpm\
+	glade/node.xpm\
+	glade/file_open.xpm\
+	glade/zoom_2_to_1.xpm\
+	glade/edge_down.xpm\
+	glade/orav.png\
+	glade/rect.xpm\
+	glade/object_tocurve.xpm\
+	glade/xml_attribute.xpm\
+	glade/flip_hor.xpm\
+	glade/edit_redo.xpm\
+	glade/draw_zoom.xpm\
+	glade/line.xpm\
+	glade/object_font.xpm\
+	glade/align_tc.xpm\
+	glade/draw_spiral.xpm\
+	glade/node_line.xpm\
+	glade/align_tl.xpm\
+	glade/al_center_hor.xpm\
+	glade/selection_combine.xpm\
+	glade/align_tr.xpm\
+	glade/xml_node.xpm\
+	glade/object_layout.xpm\
+	samples/tux.png\
+	extensions/roundhole.xpm\
+	sodipodi.ico\
+	sodipodi.png
+
+module.data.name=.
+module.data.type=
+module.data.files=
+
+module.help.name=.
+module.help.type=
+module.help.files=
+
+module.doc.name=.
+module.doc.type=
+module.doc.files=\
+	po/ChangeLog\
+	src/svg/HACKING\
+	src/xml/HACKING\
+	src/libnr/README\
+	src/helper/HACKING\
+	NEWS\
+	TODO\
+	README\
+	HACKING\
+	AUTHORS\
+	ChangeLog\
+	COPYING
+
+module.po.files=\
+	zh_CN.po\
+	am.po\
+	be.po\
+	ca.po\
+	az.po\
+	da.po\
+	de.po\
+	cs.po\
+	el.po\
+	es.po\
+	et.po\
+	ga.po\
+	fr.po\
+	gl.po\
+	hu.po\
+	ja.po\
+	it.po\
+	mk.po\
+	nl.po\
+	no.po\
+	pl.po\
+	pt.po\
+	ru.po\
+	sk.po\
+	sl.po\
+	sr.po\
+	sv.po\
+	tr.po\
+	uk.po\
+	sr@Latn.po\
+	pt_BR.po
+
+compiler.options.supports=
+compiler.options.include.paths=\
+	.\
+	..
+compiler.options.library.paths=
+compiler.options.libraries=
+compiler.options.libraries.selected=
+compiler.options.defines=\
+	HAVE_CONFIG_H
+compiler.options.defines.selected=
+compiler.options.warning.buttons=0 0 1 1 0 1 0 0 0 0 0 0 0 1 0 0 
+compiler.options.optimize.buttons=0 0 1 0 
+compiler.options.other.buttons=1 0 
+compiler.options.other.c.flags=
+compiler.options.other.l.flags=
+compiler.options.other.l.libs=
+
+project.src.paths=

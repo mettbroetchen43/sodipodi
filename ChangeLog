@@ -1,3 +1,9 @@
+2003-10-26  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* sodipodi.prj: Add Anjuta project file
+	
+	* .cvsignure: Add Anjuta workspace file and backup file
+
 2003-10-25  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/libnrtype/nr-type-gnome.h
