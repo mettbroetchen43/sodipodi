@@ -7,14 +7,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
-"POT-Creation-Date: 2003-11-23 14:42+0200\n"
-"PO-Revision-Date: 2003-11-18 22:49+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-18 20:36+0100\n"
+"PO-Revision-Date: 2003-11-27 00:32+0100\n"
 "Last-Translator: Jeroen van der Vegt <jeroen (at) dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
+"Content-Transfer-Encoding: 8bit"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -29,49 +29,49 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kon de sodipodi-svg fabriek niet maken"
 
-#: src/desktop.c:778
+#: src/desktop.c:752
 msgid "Zoom drawing if window size changes"
 msgstr "Tekening schalen wanneer de schermgrootte veranderd"
 
-#: src/desktop.c:858
+#: src/desktop.c:832
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:987
+#: src/desktop.c:961
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
 
 #. Page page
-#: src/desktop.c:1535 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
+#: src/desktop.c:1507 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:277 src/dialogs/document-properties.c:165
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Pagina"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1511 src/dialogs/align.c:289 src/dialogs/export.c:142
 #: src/verbs.c:454
 msgid "Drawing"
 msgstr "Tekening"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1515 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:580 src/toolbox.c:489 src/verbs.c:455
 msgid "Selection"
 msgstr "Selectie"
 
 #: src/dialogs/align.c:155 src/toolbox.c:449
 msgid "Align objects"
-msgstr "Objecten oplijnen"
+msgstr "Uitlijnen en verdelen"
 
 #: src/dialogs/align.c:174
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "Rechterkant van de objecten oplijnen met de linkerkant van het anker"
+msgstr "Rechterkant van de objecten uitlijnen op de linkerkant van het anker"
 
 #: src/dialogs/align.c:177
 msgid "Left side of aligned objects to left side of anchor"
-msgstr "Linkerkant van de objecten oplijnen met de linkerkant van het anker"
+msgstr "Linkerkant van de objecten uitlijnen op de linkerkant van het anker"
 
 #: src/dialogs/align.c:180
 msgid "Center horizontally"
@@ -79,19 +79,19 @@ msgstr "Horizontaal centreren"
 
 #: src/dialogs/align.c:183
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "Rechterkant van de objecten oplijnen met de rechterkant van het anker"
+msgstr "Rechterkant van de objecten uitlijnen op de rechterkant van het anker"
 
 #: src/dialogs/align.c:186
 msgid "Left side of aligned objects to right side of anchor"
-msgstr "Linkerkant van de objecten oplijnen met de rechterkant van de objecten"
+msgstr "Linkerkant van de objecten uitlijnen op de rechterkant van het anker"
 
 #: src/dialogs/align.c:190
 msgid "Bottom of aligned objects to top of anchor"
-msgstr "Onderkant van de objecten oplijnen met de bovenkant van het anker"
+msgstr "Onderkant van de objecten uitlijnen op de bovenkant van het anker"
 
 #: src/dialogs/align.c:193 src/dialogs/align.c:202
 msgid "Top of aligned objects to top of anchor"
-msgstr "Bovenkant van de objecten oplijnen met de bovenkant van het anker"
+msgstr "Bovenkant van de objecten uitlijnen op de onderkant van het anker"
 
 #: src/dialogs/align.c:196
 msgid "Center vertically"
@@ -99,7 +99,7 @@ msgstr "Vertikaal centreren"
 
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "Onderkant van de objecten oplijnen met de onderkant van het anker"
+msgstr "Onderkant van de objecten uitlijnen op de onderkant van het anker"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -107,7 +107,7 @@ msgstr "Uitlijnen"
 
 #: src/dialogs/align.c:223
 msgid "Distribute left sides of objects at even distances"
-msgstr "De linkerzijden van de objecten gelijkmatig verdelen"
+msgstr "De afstand tussen de linkerzijden van de objecten gelijkmatig verdelen"
 
 #: src/dialogs/align.c:226
 msgid "Distribute centres of objects at even distances horizontally"
@@ -125,7 +125,7 @@ msgstr "De horizontale afstand tussen objecten gelijkmatig verdelen"
 
 #: src/dialogs/align.c:236
 msgid "Distribute top sides of objects at even distances"
-msgstr "De bovenkanten van de objecten gelijkmatig verdelen"
+msgstr "De afstand tussen de bovenkanten van de objecten gelijkmatig verdelen"
 
 #: src/dialogs/align.c:239
 msgid "Distribute centres of objects at even distances vertically"
@@ -133,7 +133,7 @@ msgstr "De middens van de objecten gelijkmatig in vertikale richting verdelen"
 
 #: src/dialogs/align.c:242
 msgid "Distribute bottom sides of objects at even distances"
-msgstr "De onderkanten van de objecten geijkmatig verdelen."
+msgstr "De afstand tussen de onderkanten van de objecten gelijkmatig verdelen."
 
 #: src/dialogs/align.c:245
 msgid "Distribute vertical distance between objects equally"
@@ -177,115 +177,96 @@ msgstr "Raster weergeven"
 msgid "Snap to grid"
 msgstr "Uitlijnen op raster"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:215
 msgid "Horizontal lines"
 msgstr "Horizontale lijnen"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:216
 msgid "Vertical lines"
 msgstr "Vertikale lijnen"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:218
 msgid "Iso grid"
 msgstr "Isometrisch raster"
 
-#: src/dialogs/desktop-properties.c:220
+#: src/dialogs/desktop-properties.c:219
 msgid "Hex grid"
 msgstr "Hexagoon raster"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:224
 msgid "Grid units:"
 msgstr "Rastereenheden:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:226
 msgid "Origin X:"
 msgstr "X-oorsprong: "
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:228
 msgid "Origin Y:"
 msgstr "Y-oorsprong:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:231
 msgid "Spacing X:"
 msgstr "X tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:235
+#: src/dialogs/desktop-properties.c:233
 msgid "Spacing Y:"
 msgstr "Y tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
 msgid "Snap units:"
 msgstr "Uitlijneenheden"
 
-#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
+#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
 msgid "Snap distance:"
 msgstr "Uitlijnafstand:"
 
-#: src/dialogs/desktop-properties.c:244
+#: src/dialogs/desktop-properties.c:242
 msgid "Grid color:"
 msgstr "Rasterkleur:"
 
-#: src/dialogs/desktop-properties.c:245
+#: src/dialogs/desktop-properties.c:243
 msgid "Grid color"
 msgstr "Rasterkleur"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:249
+#: src/dialogs/desktop-properties.c:247
 msgid "Guides"
 msgstr "Hulplijnen"
 
-#: src/dialogs/desktop-properties.c:260
+#: src/dialogs/desktop-properties.c:258
 msgid "Show guides"
 msgstr "Hulplijnen weergeven"
 
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:259
 msgid "Snap to guides"
 msgstr "Uitlijnen op hulplijnen"
 
-#: src/dialogs/desktop-properties.c:271
+#: src/dialogs/desktop-properties.c:269
 msgid "Guides color:"
 msgstr "Hulplijn kleur:"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:270
 msgid "Guideline color"
 msgstr "Hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:274
+#: src/dialogs/desktop-properties.c:272
 msgid "Highlight color:"
 msgstr "Oplichtende kleur:"
 
-#: src/dialogs/desktop-properties.c:275
+#: src/dialogs/desktop-properties.c:273
 msgid "Highlighted guideline color"
 msgstr "Oplichtende hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:288
 msgid "Show border"
 msgstr "Rand weergeven"
 
-#: src/dialogs/desktop-properties.c:296
+#: src/dialogs/desktop-properties.c:290
 msgid "Border on top of drawing"
 msgstr "Rand aan de bovenkant van de tekening"
 
-#: src/dialogs/desktop-properties.c:301
-#, fuzzy
-msgid "Border color:"
-msgstr "Rasterkleur:"
-
-#: src/dialogs/desktop-properties.c:302
-msgid "Page border color"
-msgstr ""
-
-#: src/dialogs/desktop-properties.c:303
-#, fuzzy
-msgid "Page color:"
-msgstr "Hulplijn kleur:"
-
-#: src/dialogs/desktop-properties.c:304
-#, fuzzy
-msgid "Page color"
-msgstr "Begin kleur"
-
-#: src/dialogs/desktop-properties.c:575
+#: src/dialogs/desktop-properties.c:553
 msgid "Close"
 msgstr "Sluiten"
 
@@ -335,7 +316,7 @@ msgstr "Standaard cursor-tolerantie:"
 
 #: src/dialogs/document-properties.c:156
 msgid "Document settings"
-msgstr "Document voorkeuren"
+msgstr "Document eigenschappen"
 
 #: src/dialogs/document-properties.c:177
 msgid "Paper size:"
@@ -595,7 +576,7 @@ msgstr "%s eigenschappen"
 
 #: src/dialogs/object-properties.c:113
 msgid "Object style"
-msgstr "Objectstijl"
+msgstr "Opvulling en lijnen"
 
 #: src/dialogs/object-properties.c:128
 msgid "Fill"
@@ -643,7 +624,7 @@ msgstr "Vrije hand en pen"
 
 #: src/dialogs/object-properties.c:207
 msgid "Calligraphic line"
-msgstr "Callegrafische lijn"
+msgstr "Calligrafische lijn"
 
 #: src/dialogs/object-properties.c:210 src/verbs.c:444
 msgid "Text"
@@ -678,7 +659,7 @@ msgstr "Patroon:"
 
 #: src/dialogs/text-edit.c:98
 msgid "Text properties"
-msgstr "Text eigenschappen"
+msgstr "Tekst eigenschappen"
 
 #. Layout
 #: src/dialogs/text-edit.c:137
@@ -699,7 +680,7 @@ msgstr "Regel afstand:"
 
 #: src/dialogs/text-edit.c:213
 msgid "Text and font"
-msgstr "Text en lettertype"
+msgstr "Tekst en lettertype"
 
 #: src/dialogs/text-edit.c:224
 msgid "Set as default"
@@ -720,7 +701,7 @@ msgstr "Binnen straal"
 #: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
 #: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
 msgid "Missing tool preferences"
-msgstr "Ontbrekende gereedschap instellingen"
+msgstr "Ontbrekende gereedschap eigenschappen"
 
 #. Magnitude
 #: src/dialogs/tool-attributes.c:103 src/star-context.c:358
@@ -755,7 +736,7 @@ msgstr "Dit gereedschap heeft geen attributen"
 
 #: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
 msgid "No active tool"
-msgstr "Geen geselecteerd gereedschap"
+msgstr "Geen gereedschap geselecteerd"
 
 #: src/dialogs/tool-options.c:47 src/verbs.c:460
 msgid "Tool options"
@@ -767,7 +748,7 @@ msgstr "Dit gereedschap heeft geen voorkeuren"
 
 #: src/dialogs/transformation.c:195
 msgid "Transform selection"
-msgstr "Selectie transformeren."
+msgstr "Transformaties"
 
 #. Apply to duplicate
 #: src/dialogs/transformation.c:216
@@ -893,27 +874,27 @@ msgstr "Hoek:"
 msgid "Defaults"
 msgstr "Standaardwaarden"
 
-#: src/file.c:154 src/file.c:166 src/file.c:180
+#: src/file.c:152 src/file.c:163 src/file.c:175
 msgid "Select file to open"
 msgstr "Selecteer een bestand om te openen"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:192 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Schaalbaar Vector Bestand (SVG)"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:192 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Sodipodi's eigen formaat en de W3C standaard."
 
-#: src/file.c:203 src/file.c:277
+#: src/file.c:198 src/file.c:269
 msgid "File type:"
 msgstr "Bestandstype:"
 
-#: src/file.c:262
+#: src/file.c:254
 msgid "Save file"
 msgstr "Bestand opslaan"
 
-#: src/file.c:440 src/file.c:450 src/file.c:456
+#: src/file.c:430 src/file.c:440 src/file.c:446
 msgid "Select file to import"
 msgstr "Selecteer een bestand om te importeren"
 
@@ -1060,135 +1041,135 @@ msgstr ""
 msgid "Ex squares"
 msgstr ""
 
-#: src/interface.c:309 src/interface.c:491
+#: src/interface.c:308 src/interface.c:490
 msgid "Open Recent"
 msgstr "Recen_te bestanden"
 
-#: src/interface.c:329
+#: src/interface.c:328
 msgid "Close View"
 msgstr "Weergave sluiten"
 
-#: src/interface.c:330 src/interface.c:506
+#: src/interface.c:329 src/interface.c:505
 msgid "Exit Program"
 msgstr "Prorgamma afsluiten"
 
-#: src/interface.c:332 src/interface.c:498
+#: src/interface.c:331 src/interface.c:497
 msgid "About Sodipodi"
 msgstr "Over Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:335 src/interface.c:501
+#: src/interface.c:334 src/interface.c:500
 msgid "About Modules"
 msgstr "Over modules"
 
-#: src/interface.c:355
+#: src/interface.c:354
 msgid "Cleanup"
 msgstr "Opschonen"
 
 #. View:Zoom
-#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:424 src/toolbox.c:621 src/verbs.c:445
 msgid "Zoom"
 msgstr "Zoomen"
 
 #. View:New View
-#: src/interface.c:437
+#: src/interface.c:436
 msgid "New View"
 msgstr "Nieuwe weergave"
 
 #. View:New Preview
-#: src/interface.c:439
+#: src/interface.c:438
 msgid "New Preview"
 msgstr "Nieuw voorbeeld"
 
-#: src/interface.c:441
+#: src/interface.c:440
 msgid "New Toplevel Toolbox"
 msgstr "Nieuwe losse gereedschapskist"
 
-#: src/interface.c:442
+#: src/interface.c:441
 msgid "New Docked Toolbox"
 msgstr "Nieuwe gekoppelde gereedschapskist"
 
-#: src/interface.c:443
+#: src/interface.c:442
 msgid "Remove Docked Toolbox"
 msgstr "Verwijder gekoppelde gereedschapskist"
 
 #. File
-#: src/interface.c:488 src/verbs.c:396
+#: src/interface.c:487 src/verbs.c:396
 msgid "New"
 msgstr "Nieuw"
 
-#: src/interface.c:489
+#: src/interface.c:488
 msgid "Open"
 msgstr "Openen"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:569 src/toolbox.c:361
+#: src/interface.c:568 src/toolbox.c:361
 msgid "File"
 msgstr "Bestand"
 
 #. Edit submenu
-#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:574 src/toolbox.c:409 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Bewerken"
 
 #. View submenu
-#: src/interface.c:587
+#: src/interface.c:586
 msgid "View"
 msgstr "Beeld"
 
 #. Drawing mode submenu
-#: src/interface.c:593
+#: src/interface.c:592
 msgid "Drawing Mode"
 msgstr "Teken modus"
 
 #. Dialog submenu
-#: src/interface.c:599
+#: src/interface.c:598
 msgid "Dialogs"
 msgstr "Weergeven"
 
-#: src/interface.c:606
+#: src/interface.c:605
 msgid "Filters"
 msgstr "Filters"
 
-#: src/main.c:129
+#: src/main.c:128
 msgid "Do not use X server (only process files from console)"
 msgstr "X-server niet gebruiken (verwerk alleen bestanden van de terminal)"
 
-#: src/main.c:132
+#: src/main.c:131
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Probeer X-server te gebruiken zelfs als $DISPLAY geen waarde heeft"
 
-#: src/main.c:135
+#: src/main.c:134
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Open de aangeduidde documenten (optie-tekenreeks hoeft niet te worden "
 "opgegeven)"
 
-#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
+#: src/main.c:135 src/main.c:138 src/main.c:141 src/main.c:155
 msgid "FILENAME"
 msgstr "BESTANDSNAAM"
 
-#: src/main.c:138
+#: src/main.c:137
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Druk de documenten af naar het opgegeven bestand (gebruik '| programma' voor "
 "een pipe)"
 
-#: src/main.c:141
+#: src/main.c:140
 msgid "Export document to png file"
 msgstr "Document exporteren naar .png bestand."
 
-#: src/main.c:144
+#: src/main.c:143
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "De resolutie die gebruikt is om SVG naar bitmap om te zeten (standaard 72.0)"
 
-#: src/main.c:145
+#: src/main.c:144
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:147
+#: src/main.c:146
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1196,51 +1177,51 @@ msgstr ""
 "Oppervlakte van het geëxporteerde  ebied (standaard het hele documenten; 0,0 "
 "is de hoek linksonder)"
 
-#: src/main.c:148
+#: src/main.c:147
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:150
+#: src/main.c:149
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De breedte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
 
-#: src/main.c:150
+#: src/main.c:149
 msgid "WIDTH"
 msgstr "BREEDTE"
 
-#: src/main.c:152
+#: src/main.c:151
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De hoogte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
 
-#: src/main.c:152
+#: src/main.c:151
 msgid "HEIGHT"
 msgstr "HOOGTE"
 
-#: src/main.c:154
+#: src/main.c:153
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Achtergrondkleur van de geëxporteerde bitmap (kan iedere door SVG "
 "ondersteunde kleur zijn)"
 
-#: src/main.c:154
+#: src/main.c:153
 msgid "COLOR"
 msgstr "KLEUR"
 
-#: src/main.c:156
+#: src/main.c:155
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Document exporteren naar gewoon SVG bestand (geen \"xmlns:sodipodi\" "
 "naamruimte)"
 
-#: src/main.c:158
+#: src/main.c:157
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "De geselecteerde bestanden één voor één weergeven, en naar de volgende gaan "
 "bij muisklik of toetsenbord gebruik"
 
-#: src/main.c:160
+#: src/main.c:159
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Geef bitmap (xpm) pictogrammen de voorkeur boven de SVG versies."
 
@@ -1307,9 +1288,9 @@ msgid ""
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
-"Wanneer u gebruik maakt van Postscript bewerkingen zal de "
-"resulterendeafbeelding (gewoonlijk) kleiner en beter schaalbaar zijn. "
-"Transparantie,markeringen en patronen zullen echter verloren gaan."
+"Wanneer u gebruik maakt van Postscript bewerkingen zal de resulterende "
+"afbeelding gewoonlijk kleiner en beter schaalbaar zijn. Transparantie, "
+"markeringen en patronen zullen echter verloren gaan."
 
 #: src/modules/ps.c:185
 msgid "Print as bitmap"
@@ -1321,9 +1302,9 @@ msgid ""
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
-"Wanneer u alles afdrukt als bitmap zal de resulterende afbeelding "
-"gewoonlijkgroter zijn, en de kwaliteit hangt af van de zoom-factor. De "
-"afbeelding zaler wel altijd precies zo uitzien als op het scherm."
+"Wanneer u alles afdrukt als bitmap zal de resulterende afbeelding gewoonlijk "
+"groter zijn, en de kwaliteit hangt af van de zoom-factor. De afbeelding zal "
+"er wel altijd precies zo uitzien als op het scherm."
 
 #: src/modules/ps.c:201
 msgid "Preferred resolution (dots per inch) of bitmap"
@@ -1519,30 +1500,30 @@ msgstr "Centreer het beeld op het geselecteerde item"
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi diavoorstelling"
 
-#: src/sodipodi.c:406
+#: src/sodipodi.c:405
 msgid "Untitled document"
-msgstr "Namaloos document"
+msgstr "Naamloos document"
 
 #. Show nice dialog box
-#: src/sodipodi.c:431
+#: src/sodipodi.c:430
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Er is een fout op getreden in Sodipodi, en het zal nu worden afgesloten.\n"
 
-#: src/sodipodi.c:432
+#: src/sodipodi.c:431
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatische reservekopieën van niet opgeslagen documenten werden gemaakt op "
 "de volgende lokaties:\n"
 
-#: src/sodipodi.c:433
+#: src/sodipodi.c:432
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Het automatisch maken van een reservekopie is mislukt voor de volgende "
 "bestanden:\n"
 
-#: src/sodipodi.c:572
+#: src/sodipodi.c:571
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1553,7 +1534,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u uw instellingen niet laden of opslaan\n"
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:574
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1568,7 +1549,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:580
+#: src/sodipodi.c:579
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1581,7 +1562,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:592
+#: src/sodipodi.c:591
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1592,7 +1573,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:595
+#: src/sodipodi.c:594
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1605,7 +1586,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:599
+#: src/sodipodi.c:598
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1616,7 +1597,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:937
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1628,7 +1609,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u %s niet kunnen laden of opslaan."
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1641,7 +1622,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:946
+#: src/sodipodi.c:945
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1654,7 +1635,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:949
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1667,7 +1648,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:960
+#: src/sodipodi.c:959
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1678,7 +1659,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:963
+#: src/sodipodi.c:962
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1689,7 +1670,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:966
+#: src/sodipodi.c:965
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1700,7 +1681,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) gebruiken\n"
 
-#: src/sodipodi.c:969
+#: src/sodipodi.c:968
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1757,7 +1738,7 @@ msgid "Unknown item :-("
 msgstr "Onbekend item :-("
 
 #. fixme:
-#: src/sp-text.c:1432
+#: src/sp-text.c:1461
 msgid "Text object"
 msgstr "Tekst object"
 
@@ -1786,7 +1767,7 @@ msgstr "Object grootte en positie"
 
 #: src/toolbox.c:448
 msgid "Text and font settings"
-msgstr "Text en lettertype voorkeuren"
+msgstr "Tekst en lettertype voorkeuren"
 
 #: src/toolbox.c:450 src/verbs.c:464
 msgid "Object transformations"
@@ -1802,11 +1783,11 @@ msgstr "Extensie"
 
 #: src/toolbox.c:655
 msgid "Nodes"
-msgstr "Nodes"
+msgstr "Knooppunten"
 
 #: src/toolbox.c:658
 msgid "Insert new nodes into selected segments"
-msgstr "Nieuwe nodes invoegen in de geselecteerde segmenten"
+msgstr "Nieuwe knooppunten invoegen in de geselecteerde segmenten"
 
 #: src/toolbox.c:660
 msgid "Break line at selected nodes"
@@ -1871,7 +1852,7 @@ msgstr "Opslaan als..."
 
 #: src/verbs.c:399
 msgid "Save document under new name"
-msgstr "Document opslana onder een nieuw naam"
+msgstr "Document opslaan onder een nieuw naam"
 
 #: src/verbs.c:400
 msgid "Print..."
@@ -1916,7 +1897,7 @@ msgstr "Ongedaan maken"
 
 #: src/verbs.c:406
 msgid "Revert last action"
-msgstr "De laatste handeling herhalen"
+msgstr "De laatste handeling ongedaan maken"
 
 #: src/verbs.c:407
 msgid "Redo"
@@ -1924,7 +1905,7 @@ msgstr "Opnieuw"
 
 #: src/verbs.c:407
 msgid "Do again undone action"
-msgstr "Ongedaanmaken herstellen"
+msgstr "'Ongedaan maken' herstellen"
 
 #: src/verbs.c:408
 msgid "Cut"
@@ -1932,7 +1913,7 @@ msgstr "Knippen"
 
 #: src/verbs.c:408
 msgid "Cut selected objects to clipboard"
-msgstr "Geselecteerde objecten knippen naar het klembord"
+msgstr "De geselecteerde objecten knippen en op het klembord plaatsen"
 
 #: src/verbs.c:409
 msgid "Copy"
@@ -1940,7 +1921,7 @@ msgstr "Kopiëren"
 
 #: src/verbs.c:409
 msgid "Copy selected objects to clipboard"
-msgstr "Geselecteerde objecten naar het klembord kopieëren"
+msgstr "De geselecteerde objecten kopiëren en op het klembord plaatsen"
 
 #: src/verbs.c:410
 msgid "Paste"
@@ -1964,7 +1945,7 @@ msgstr "Dupliceren"
 
 #: src/verbs.c:412
 msgid "Duplicate selected objects"
-msgstr "Geselecteerde objecten verdubbelen"
+msgstr "Geselecteerde objecten dubliceren"
 
 #: src/verbs.c:413
 msgid "Clear All"
@@ -2013,7 +1994,7 @@ msgstr "Verhoog"
 
 #: src/verbs.c:419
 msgid "Raise selected objects one position"
-msgstr "De geselecteerde objecten één n veau naar voren brengen"
+msgstr "De geselecteerde objecten één niveau naar voren brengen"
 
 #: src/verbs.c:420
 msgid "Lower"
@@ -2021,7 +2002,7 @@ msgstr "Verlaag"
 
 #: src/verbs.c:420
 msgid "Lower selected objects one position"
-msgstr "De geselecteerde objecten één n veau naar achteren brengen"
+msgstr "De geselecteerde objecten één niveau naar achteren brengen"
 
 #: src/verbs.c:421
 msgid "Group selected objects"
@@ -2029,7 +2010,7 @@ msgstr "De geselecteerde objecten groeperen"
 
 #: src/verbs.c:422
 msgid "Ungroup selected group"
-msgstr "De geselecteerde groep de-goeperen"
+msgstr "De geselecteerde groep degoeperen"
 
 #: src/verbs.c:423
 msgid "Combine"
@@ -2086,7 +2067,7 @@ msgstr "Tuimelen"
 
 #: src/verbs.c:431
 msgid "Flip selected objects horizontally"
-msgstr "Tuimelt het object horizontaal"
+msgstr "Tuimel het object horizontaal"
 
 #: src/verbs.c:432
 msgid "Flip Vertically"
@@ -2094,7 +2075,7 @@ msgstr "Spiegelen"
 
 #: src/verbs.c:433
 msgid "Flip selected objects vertically"
-msgstr "Spiegelt het object vertikaal"
+msgstr "Spiegel het object vertikaal"
 
 #. Event contexts
 #: src/verbs.c:435
@@ -2111,7 +2092,7 @@ msgstr "Punten wijzigen"
 
 #: src/verbs.c:436
 msgid "Modify existing objects by control nodes"
-msgstr "Bestaande objecten aanpassen via controle-punten"
+msgstr "Bestaande objecten aanpassen via knooppunten"
 
 #: src/verbs.c:437
 msgid "Rectangle"
@@ -2127,7 +2108,7 @@ msgstr "Ellips"
 
 #: src/verbs.c:438
 msgid "Create circles, ellipses and arcs"
-msgstr "Circels, ellipsen en taartpunten maken"
+msgstr "Circels, ellipsen en sterren maken"
 
 #: src/verbs.c:439
 msgid "Create stars and polygons"
@@ -2143,7 +2124,7 @@ msgstr "Vrije hand"
 
 #: src/verbs.c:441
 msgid "Draw freehand curves and straight lines"
-msgstr "Rechte lijnen en lijnen uit de losse hand tekenen"
+msgstr "Lijnen uit de losse hand en rechte lijnen tekenen"
 
 #: src/verbs.c:442
 msgid "Pen"
@@ -2233,7 +2214,7 @@ msgstr "De hele selectie in het scherm passen"
 #. Dialogs
 #: src/verbs.c:457
 msgid "Display"
-msgstr "Weergave"
+msgstr "Weergave instellingen"
 
 #: src/verbs.c:457
 msgid "Global display settings"
@@ -2241,7 +2222,7 @@ msgstr "Algemene weergave voorkeuren"
 
 #: src/verbs.c:458
 msgid "Document"
-msgstr "Document"
+msgstr "Document eigenschappen"
 
 #: src/verbs.c:458
 msgid "Page layout"
@@ -2249,19 +2230,19 @@ msgstr "Pagina layout"
 
 #: src/verbs.c:459
 msgid "Editing Window"
-msgstr "Document instellingen"
+msgstr "Werkblad instellingen"
 
 #: src/verbs.c:459
 msgid "Editing window properties"
-msgstr "Eigenschappen van het 'document instellingen' scherm"
+msgstr "Eigenschappen van het 'werkblad instellingen' scherm"
 
 #: src/verbs.c:460
 msgid "Tool Options"
-msgstr "Tool opties"
+msgstr "Gereedschap eigenschappen"
 
 #: src/verbs.c:461
 msgid "Tool Attributes"
-msgstr "Gereedschaps instellingen"
+msgstr "Gereedschap instellingen"
 
 #: src/verbs.c:462
 msgid "Fill and Stroke"
@@ -2293,7 +2274,7 @@ msgstr "Tekst en lettertype aanpassen"
 
 #: src/verbs.c:467
 msgid "XML Editor"
-msgstr "XML aanpasser"
+msgstr "XML weergave"
 
 #. Family frame
 #: src/widgets/font-selector.c:146
