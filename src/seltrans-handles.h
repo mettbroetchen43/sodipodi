@@ -2,21 +2,21 @@
 #define SP_SELTRANS_HANDLES_H
 
 #include "helper/sodipodi-ctrl.h"
-#include "desktop.h"
+#include "seltrans.h"
 
 typedef struct _SPSelTransHandle SPSelTransHandle;
 
-void sp_handle_stretch (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_scale (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_skew (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_rotate (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_center (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
+void sp_handle_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
+void sp_handle_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
+void sp_handle_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
+void sp_handle_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
+void sp_handle_center (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
 
 struct _SPSelTransHandle {
 	GtkAnchorType anchor;
 	GdkCursorType cursor;
 	SPCtrl * control;
-	void (* action) (SPDesktop * desktop, SPSelTransHandle * handle, double x, double y, guint state);
+	void (* action) (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
 	gdouble * affine;
 	gdouble x, y;
 };

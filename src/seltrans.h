@@ -13,13 +13,12 @@ typedef enum {
 
 struct _SPSelTrans {
 	SPDesktop * desktop;
-	gboolean active;
-	gboolean empty;
 	gboolean grabbed;
 	gboolean show_handles;
+	SPSelTransStateType state;
+	gboolean empty;
 	gboolean changed;
 	gboolean sel_changed;
-	SPSelTransStateType state;
 	ArtDRect box;
 	double d2n[6];
 	double n2current[6];
@@ -28,29 +27,33 @@ struct _SPSelTrans {
 	SPCtrl * shandle[8];
 	SPCtrl * rhandle[8];
 	SPCtrl * chandle;
+	guint sel_changed_id;
 };
 
 /*
  * Logic
  *
- * set_active - toggles handles + selection changed activity
  * grab - removes handles, makes unsensitive
  * ungrab - if changed, flushes, otherwise increases state, shows handles,
  *          makes sensitive
  * if changed or sel changed during grabbing, sets state to scale
+ *
  */ 
 
-void sp_sel_trans_set_active (SPDesktop * desktop, gboolean active);
-void sp_sel_trans_increase_state (SPDesktop * desktop);
-void sp_sel_trans_set_center (SPDesktop * desktop, gdouble x, gdouble y);
+void sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop);
+void sp_sel_trans_shutdown (SPSelTrans * seltrans);
 
-void sp_sel_trans_grab (SPDesktop * desktop, gdouble affine[], gdouble x, gdouble y, gboolean show_handles);
-void sp_sel_trans_transform (SPDesktop * desktop, gdouble affine[]);
-void sp_sel_trans_ungrab (SPDesktop * desktop);
+void sp_sel_trans_reset_state (SPSelTrans * seltrans);
+void sp_sel_trans_increase_state (SPSelTrans * seltrans);
+void sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y);
 
-ArtPoint * sp_sel_trans_d2n_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble y);
-ArtPoint * sp_sel_trans_n2d_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble y);
-ArtPoint * sp_sel_trans_point_desktop (SPDesktop * desktop, ArtPoint * p);
-ArtPoint * sp_sel_trans_point_normal (SPDesktop * desktop, ArtPoint * p);
+void sp_sel_trans_grab (SPSelTrans * seltrans, gdouble affine[], gdouble x, gdouble y, gboolean show_handles);
+void sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[]);
+void sp_sel_trans_ungrab (SPSelTrans * seltrans);
+
+ArtPoint * sp_sel_trans_d2n_xy_point (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y);
+ArtPoint * sp_sel_trans_n2d_xy_point (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y);
+ArtPoint * sp_sel_trans_point_desktop (SPSelTrans * seltrans, ArtPoint * p);
+ArtPoint * sp_sel_trans_point_normal (SPSelTrans * seltrans, ArtPoint * p);
 
 #endif

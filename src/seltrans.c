@@ -3,17 +3,14 @@
 #include <math.h>
 #include "svg/svg.h"
 #include "mdi-desktop.h"
+#include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "select-context.h"
 #include "seltrans-handles.h"
 #include "seltrans.h"
 
-static SPSelTrans * sp_sel_trans_from_desktop (SPDesktop * desktop);
-static void sp_seltrans_destroy (SPSelTrans * seltrans);
-
 static void sp_sel_trans_update_handles (SPSelTrans * seltrans);
-static void sp_sel_trans_connect_changed_signal (SPSelTrans * seltrans);
-static void sp_sel_trans_disconnect_changed_signal (SPSelTrans * seltrans);
 static void sp_sel_trans_update_volatile_state (SPSelTrans * seltrans);
 static void sp_sel_trans_d2n_affine_from_box (gdouble affine[], ArtDRect * box);
 
@@ -22,64 +19,70 @@ static void sp_show_handles (SPSelTrans * seltrans, SPCtrl * ctrl[], SPSelTransH
 
 static gint sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransHandle * handle);
 
-void
-sp_sel_trans_set_active (SPDesktop * desktop, gboolean active)
-{
-	SPSelTrans * seltrans;
+static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 
+void
+sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
+{
+	SPSelection * selection;
+	gint i;
+
+	g_return_if_fail (seltrans != NULL);
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
-	seltrans = sp_sel_trans_from_desktop (desktop);
+	seltrans->desktop = desktop;
+	seltrans->grabbed = FALSE;
+	seltrans->show_handles = TRUE;
+	seltrans->state = SP_SEL_TRANS_SCALE;
+	for (i = 0; i < 8; i++) seltrans->shandle[i] = NULL;
+	for (i = 0; i < 8; i++) seltrans->rhandle[i] = NULL;
+	seltrans->chandle = NULL;
 
-	if (seltrans->active == active) return;
+	sp_sel_trans_update_volatile_state (seltrans);
 
-	if (!active) {
-		seltrans->active = FALSE;
-		sp_sel_trans_update_handles (seltrans);
-		sp_sel_trans_disconnect_changed_signal (seltrans);
-	} else {
-		seltrans->active = TRUE;
-		seltrans->grabbed = FALSE;
-		seltrans->show_handles = TRUE;
-		seltrans->state = SP_SEL_TRANS_SCALE;
-		sp_sel_trans_update_volatile_state (seltrans);
-		sp_sel_trans_update_handles (seltrans);
-		sp_sel_trans_connect_changed_signal (seltrans);
-	}
+	sp_sel_trans_update_handles (seltrans);
+
+	selection = SP_DT_SELECTION (desktop);
+
+	seltrans->sel_changed_id = gtk_signal_connect (GTK_OBJECT (selection), "changed",
+		GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
 }
 
 void
-sp_sel_trans_increase_state (SPDesktop * desktop)
+sp_sel_trans_shutdown (SPSelTrans * seltrans)
 {
-	SPSelTrans * seltrans;
+	seltrans->show_handles = FALSE;
 
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
+	sp_sel_trans_update_handles (seltrans);
 
-	seltrans = sp_sel_trans_from_desktop (desktop);
+	if (seltrans->sel_changed_id > 0)
+		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (seltrans->desktop)), seltrans->sel_changed_id);
+}
 
-	g_return_if_fail (seltrans->active);
+void
+sp_sel_trans_reset_state (SPSelTrans * seltrans)
+{
+	seltrans->state = SP_SEL_TRANS_SCALE;
+}
 
-	if (++seltrans->state > SP_SEL_TRANS_ROTATE) seltrans->state = SP_SEL_TRANS_SCALE;
+void
+sp_sel_trans_increase_state (SPSelTrans * seltrans)
+{
+	seltrans->state++;
 
-	/* fixme: */
-	seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
-	seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
-
+	if (seltrans->state > SP_SEL_TRANS_ROTATE) {
+		seltrans->state = SP_SEL_TRANS_SCALE;
+	} else {
+		seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
+		seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
+	}
 	sp_sel_trans_update_handles (seltrans);
 }
 
 void
-sp_sel_trans_set_center (SPDesktop * desktop, gdouble x, gdouble y)
+sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y)
 {
-	SPSelTrans * seltrans;
-
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
-
 	seltrans->center.x = x;
 	seltrans->center.y = y;
 
@@ -87,18 +90,12 @@ sp_sel_trans_set_center (SPDesktop * desktop, gdouble x, gdouble y)
 }
 
 void
-sp_sel_trans_grab (SPDesktop * desktop, gdouble affine[], gdouble x, gdouble y, gboolean show_handles)
+sp_sel_trans_grab (SPSelTrans * seltrans, gdouble affine[], gdouble x, gdouble y, gboolean show_handles)
 {
 	SPSelection * selection;
-	SPSelTrans * seltrans;
 
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
+	selection = SP_DT_SELECTION (seltrans->desktop);
 
-	selection = SP_DT_SELECTION (desktop);
-	seltrans = sp_sel_trans_from_desktop (desktop);
-
-	g_return_if_fail (seltrans->active);
 	g_return_if_fail (!seltrans->grabbed);
 
 	seltrans->grabbed = TRUE;
@@ -126,28 +123,21 @@ sp_sel_trans_grab (SPDesktop * desktop, gdouble affine[], gdouble x, gdouble y, 
 }
 
 void
-sp_sel_trans_transform (SPDesktop * desktop, gdouble affine[])
+sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[])
 {
-	SPSelTrans * seltrans;
 	SPItem * item;
 	const GSList * l;
 	double current2n[6], n2d[6], i2d[6], i2n[6], i2current[6], i2new[6], i2dnew[6];
 	ArtPoint p;
 	gint i;
 
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
-
-	g_return_if_fail (seltrans->active);
 	g_return_if_fail (seltrans->grabbed);
 	g_return_if_fail (!seltrans->empty);
 
 	/* We accept empty lists here, as something may well remove items */
 	/* and seltrans does not update, if frozen */
 
-	l = sp_selection_item_list (SP_DT_SELECTION (desktop));
+	l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
 
 	art_affine_invert (current2n, seltrans->n2current);
 	art_affine_invert (n2d, seltrans->d2n);
@@ -180,23 +170,16 @@ sp_sel_trans_transform (SPDesktop * desktop, gdouble affine[])
 }
 
 void
-sp_sel_trans_ungrab (SPDesktop * desktop)
+sp_sel_trans_ungrab (SPSelTrans * seltrans)
 {
-	SPSelTrans * seltrans;
 	SPItem * item;
 	const GSList * l;
 	gchar tstr[80];
 
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
-
-	g_return_if_fail (seltrans->active);
 	g_return_if_fail (seltrans->grabbed);
 
 	if (!seltrans->empty && seltrans->changed) {
-		l = sp_selection_item_list (SP_DT_SELECTION (desktop));
+		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
 
 		tstr[79] = '\0';
 
@@ -213,23 +196,19 @@ sp_sel_trans_ungrab (SPDesktop * desktop)
 
 	sp_sel_trans_update_volatile_state (seltrans);
 
+#if 0
 	if (seltrans->sel_changed) {
 		seltrans->state = SP_SEL_TRANS_SCALE;
 	}
+#endif
 
 	sp_sel_trans_update_handles (seltrans);
 }
 
 ArtPoint *
-sp_sel_trans_d2n_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble y)
+sp_sel_trans_d2n_xy_point (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y)
 {
-	SPSelTrans * seltrans;
-
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
 
 	p->x = x;
 	p->y = y;
@@ -239,16 +218,11 @@ sp_sel_trans_d2n_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 }
 
 ArtPoint *
-sp_sel_trans_n2d_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble y)
+sp_sel_trans_n2d_xy_point (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y)
 {
-	SPSelTrans * seltrans;
 	gdouble n2d[6];
 
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
 
 	art_affine_invert (n2d, seltrans->d2n);
 	p->x = x;
@@ -259,15 +233,9 @@ sp_sel_trans_n2d_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 }
 
 ArtPoint *
-sp_sel_trans_point_desktop (SPDesktop * desktop, ArtPoint * p)
+sp_sel_trans_point_desktop (SPSelTrans * seltrans, ArtPoint * p)
 {
-	SPSelTrans * seltrans;
-
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
 
 	p->x = seltrans->point.x;
 	p->y = seltrans->point.y;
@@ -276,53 +244,13 @@ sp_sel_trans_point_desktop (SPDesktop * desktop, ArtPoint * p)
 }
 
 ArtPoint *
-sp_sel_trans_point_normal (SPDesktop * desktop, ArtPoint * p)
+sp_sel_trans_point_normal (SPSelTrans * seltrans, ArtPoint * p)
 {
-	SPSelTrans * seltrans;
-
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
-
-	seltrans = sp_sel_trans_from_desktop (desktop);
 
 	art_affine_point (p, &seltrans->point, seltrans->d2n);
 
 	return p;
-}
-
-static SPSelTrans *
-sp_sel_trans_from_desktop (SPDesktop * desktop)
-{
-	SPSelTrans * seltrans;
-	gint i;
-
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
-
-	seltrans = (SPSelTrans *) gtk_object_get_data (GTK_OBJECT (desktop), "SPSelTrans");
-
-	if (seltrans == NULL) {
-		seltrans = g_new (SPSelTrans, 1);
-		seltrans->desktop = desktop;
-		seltrans->active = TRUE;
-		seltrans->grabbed = FALSE;
-		for (i = 0; i < 8; i++) seltrans->shandle[i] = NULL;
-		for (i = 0; i < 8; i++) seltrans->rhandle[i] = NULL;
-		seltrans->chandle = NULL;
-		gtk_object_set_data_full (GTK_OBJECT (desktop),
-			"SPSelTrans", seltrans, (GtkDestroyNotify) sp_seltrans_destroy);
-	}
-
-	return seltrans;
-}
-
-static void
-sp_seltrans_destroy (SPSelTrans * seltrans)
-{
-	g_return_if_fail (seltrans != NULL);
-
-	g_free (seltrans);
 }
 
 static void
@@ -330,9 +258,7 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 {
 	g_return_if_fail (seltrans != NULL);
 
-	if ((!seltrans->active) ||
-		((seltrans->grabbed) && (!seltrans->show_handles)) ||
-		(seltrans->empty)) {
+	if ((!seltrans->show_handles) || (seltrans->empty)) {
 		sp_remove_handles (seltrans->shandle, 8);
 		sp_remove_handles (seltrans->rhandle, 8);
 		sp_remove_handles (&seltrans->chandle, 1);
@@ -354,54 +280,6 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 		gnome_canvas_item_show (GNOME_CANVAS_ITEM (seltrans->chandle));
 		sp_ctrl_moveto (seltrans->chandle, seltrans->center.x, seltrans->center.y);
 	}
-}
-
-static void
-sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)
-{
-	SPSelTrans * seltrans;
-
-	g_return_if_fail (data != NULL);
-
-	seltrans = (SPSelTrans *) data;
-
-	g_return_if_fail (seltrans->active);
-
-	if (seltrans->grabbed) {
-		seltrans->sel_changed = TRUE;
-	} else {
-		sp_sel_trans_update_volatile_state (seltrans);
-		sp_sel_trans_update_handles (seltrans);
-	}
-}
-
-static void
-sp_sel_trans_connect_changed_signal (SPSelTrans * seltrans)
-{
-	SPSelection * selection;
-
-	g_return_if_fail (seltrans != NULL);
-
-	selection = SP_DT_SELECTION (seltrans->desktop);
-	g_return_if_fail (selection != NULL);
-	g_return_if_fail (SP_IS_SELECTION (selection));
-
-	gtk_signal_connect (GTK_OBJECT (selection), "changed",
-		GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
-}
-
-static void
-sp_sel_trans_disconnect_changed_signal (SPSelTrans * seltrans)
-{
-	SPSelection * selection;
-
-	g_return_if_fail (seltrans != NULL);
-
-	selection = SP_DT_SELECTION (seltrans->desktop);
-	g_return_if_fail (selection != NULL);
-	g_return_if_fail (SP_IS_SELECTION (selection));
-
-	gtk_signal_disconnect_by_data (GTK_OBJECT (selection), seltrans);
 }
 
 static void
@@ -480,6 +358,7 @@ static gint
 sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransHandle * handle)
 {
 	SPDesktop * desktop;
+	SPSelTrans * seltrans;
 	ArtPoint p;
 	static int dragging = FALSE;
 	GdkCursor * cursor;
@@ -488,6 +367,7 @@ sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransH
 	g_return_val_if_fail (SP_IS_CTRL (item), FALSE);
 	control = SP_CTRL (item);
 	desktop = SP_ACTIVE_DESKTOP;
+	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -500,7 +380,7 @@ sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransH
 			gdk_cursor_destroy (cursor);
 			dragging = TRUE;
 			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-			sp_sel_trans_grab (desktop, handle->affine, p.x, p.y, FALSE);
+			sp_sel_trans_grab (seltrans, handle->affine, p.x, p.y, FALSE);
 			break;
 		default:
 			break;
@@ -508,13 +388,13 @@ sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransH
 	case GDK_MOTION_NOTIFY:
 		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-			handle->action (desktop, handle, p.x, p.y, event->button.state);
+			handle->action (seltrans, handle, p.x, p.y, event->button.state);
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
 		gnome_canvas_item_ungrab (item, event->button.time);
 		dragging = FALSE;
-		sp_sel_trans_ungrab (desktop);
+		sp_sel_trans_ungrab (seltrans);
 		break;
 	case GDK_ENTER_NOTIFY:
 		cursor = gdk_cursor_new (handle->cursor);
@@ -528,5 +408,20 @@ sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransH
 		break;
 	}
 return TRUE;
+}
+
+static void
+sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)
+{
+	SPSelTrans * seltrans;
+
+	seltrans = (SPSelTrans *) data;
+
+	if (seltrans->grabbed) {
+		seltrans->sel_changed = TRUE;
+	} else {
+		sp_sel_trans_update_volatile_state (seltrans);
+		sp_sel_trans_update_handles (seltrans);
+	}
 }
 
