@@ -66,6 +66,7 @@ struct _SPRepr {
 };
 
 #define SP_REPR_NAME(r) g_quark_to_string ((r)->name)
+#define SP_REPR_TYPE(r) ((r)->type)
 #define SP_REPR_CONTENT(r) ((r)->content)
 #define SP_REPR_ATTRIBUTE_KEY(a) g_quark_to_string ((a)->key)
 #define SP_REPR_ATTRIBUTE_VALUE(a) ((a)->value)
@@ -73,6 +74,8 @@ struct _SPRepr {
 SPRepr *sp_repr_nth_child (const SPRepr *repr, gint n);
 
 gboolean sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref);
+
+void sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, gpointer data);
 
 void sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, gpointer data);
 void sp_repr_remove_listener_by_data (SPRepr *repr, gpointer data);

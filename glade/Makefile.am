@@ -5,6 +5,8 @@ images = about.svg
 
 pixmaps = \
 	add.xpm \
+	add_xml_element_node.xpm \
+	add_xml_text_node.xpm \
 	al_bottom_in.xpm \
 	al_bottom_out.xpm \
 	al_center_hor.xpm \
@@ -40,6 +42,8 @@ pixmaps = \
 	cusp.xpm \
 	del.xpm \
 	delete.xpm \
+	delete_xml_node.xpm \
+	delete_xml_attribute.xpm \
 	dimension_hor.xpm \
 	dimension_ver.xpm \
 	div.xpm \
@@ -57,6 +61,7 @@ pixmaps = \
 	dt_active.xpm \
 	dt_inactive.xpm \
 	duplicate.xpm \
+	duplicate_xml_node.xpm \
 	edge_down.xpm \
 	edge_up.xpm \
 	edit_copy.xpm \
@@ -143,6 +148,7 @@ pixmaps = \
 	selection_ungroup.xpm \
 	selection_up.xpm \
 	seperate_tool.xpm \
+	set.xpm \
 	skew.xpm \
 	skew_hor.xpm \
 	skew_ver.xpm \

@@ -60,6 +60,17 @@ sp_repr_new (const guchar *name)
 }
 
 SPRepr *
+sp_repr_new_text (const guchar *content)
+{
+	SPRepr * repr;
+	g_return_val_if_fail (content != NULL, NULL);
+	repr = sp_repr_new_from_code (g_quark_from_string ("text"));
+	repr->content = g_strdup (content);
+	repr->type = SP_XML_TEXT_NODE;
+	return repr;
+}
+
+SPRepr *
 sp_repr_ref (SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
@@ -475,6 +486,29 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 	}
 
 	sp_repr_change_order (parent, repr, ref);
+}
+
+void
+sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, gpointer data)
+{
+	
+	if (vector->attr_changed) {
+		SPReprAttr *attr;
+		attr = repr->attributes;
+		for ( ; attr ; attr = attr->next ) {
+			vector->attr_changed (repr, g_quark_to_string (attr->key), NULL, attr->value, data);
+		}
+	}
+	if (vector->child_added) {
+		SPRepr *child, *ref;
+		ref = NULL; child = repr->children;
+		for ( ; child ; ref = child, child = child->next ) {
+			vector->child_added (repr, child, ref, data);
+		}
+	}
+	if (vector->content_changed) {
+		vector->content_changed (repr, NULL, repr->content, data);
+	}
 }
 
 void

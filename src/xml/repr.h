@@ -49,6 +49,7 @@ typedef struct _SPRepr SPRepr;
 /* Create new repr & similar */
 
 SPRepr *sp_repr_new (const guchar *name);
+SPRepr *sp_repr_new_text (const guchar *content);
 SPRepr *sp_repr_ref (SPRepr *repr);
 SPRepr *sp_repr_unref (SPRepr *repr);
 SPRepr *sp_repr_duplicate (const SPRepr *repr);
