@@ -1,3 +1,8 @@
+2000-04-04  Lauris Kaplinski <lauris@ariman.ee>
+
+    * selection.*: Added functions to select via reprs (now when we have
+      unique id-s there isn't any reason thare wasn't such)
+
 2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
 
     * xml/repr-io.c: A very quick hack to load real svg code (DTD & stuff).

@@ -20,27 +20,29 @@ sp_selection_delete (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
-	GSList * sel;
+	GSList * selected;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
 	desktop = SP_ACTIVE_DESKTOP;
-
-	g_return_if_fail (desktop != NULL);
+	if (desktop == NULL) return;
+	g_assert (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
+	g_assert (selection != NULL);
+	g_assert (SP_IS_SELECTION (selection));
 
 	if (sp_selection_is_empty (selection)) return;
 
-	sel = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-#if 0
+	selected = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 	sp_selection_empty (selection);
-#endif
-	while (sel) {
-		sp_document_del_repr (SP_DT_DOCUMENT (desktop), (SPRepr *) sel->data);
-		sel = g_slist_remove (sel, sel->data);
+
+	while (selected) {
+		sp_document_del_repr (SP_DT_DOCUMENT (desktop), (SPRepr *) selected->data);
+		selected = g_slist_remove (sel, sel->data);
 	}
+
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
@@ -49,7 +51,7 @@ void sp_selection_duplicate (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
-	GSList * sel, * newsel;
+	GSList * selected, * newsel;
 	SPRepr * copy;
 	SPItem * item;
 
@@ -57,33 +59,34 @@ void sp_selection_duplicate (GtkWidget * widget)
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
 	desktop = SP_ACTIVE_DESKTOP;
-
-	g_return_if_fail (desktop != NULL);
+	if (desktop == NULL) return;
+	g_assert (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
+	g_assert (selection != NULL);
+	g_assert (SP_IS_SELECTION (selection));
 
 	if (sp_selection_is_empty (selection)) return;
 
-	sel = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-
+	selected = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 	sp_selection_empty (selection);
 
-	sel = g_slist_sort (sel, (GCompareFunc) sp_repr_compare_position);
+	selected = g_slist_sort (selected, (GCompareFunc) sp_repr_compare_position);
 
 	newsel = NULL;
 
-	while (sel) {
-		copy = sp_repr_copy ((SPRepr *) sel->data);
+	while (selected) {
+		copy = sp_repr_copy ((SPRepr *) selected->data);
 		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
 		sp_repr_unref (copy);
 		g_assert (item != NULL);
-		newsel = g_slist_prepend (newsel, item);
-		sel = g_slist_remove (sel, sel->data);
+		newsel = g_slist_prepend (newsel, copy);
+		selected = g_slist_remove (selected, selected->data);
 	}
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 
-	sp_selection_set_item_list (SP_DT_SELECTION (desktop), newsel);
+	sp_selection_set_repr_list (SP_DT_SELECTION (desktop), newsel);
 
 	g_slist_free (newsel);
 }
@@ -134,7 +137,7 @@ sp_selection_group (GtkWidget * widget)
 	sp_repr_unref (group);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 
-	sp_selection_set_item (selection, new);
+	sp_selection_set_repr (selection, group);
 }
 
 void sp_selection_ungroup (GtkWidget * widget)

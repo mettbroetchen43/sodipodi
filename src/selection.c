@@ -1,5 +1,6 @@
 #define SP_SELECTION_C
 
+#include "desktop-handles.h"
 #include "selection.h"
 
 enum {
@@ -133,9 +134,16 @@ sp_selection_changed (SPSelection * selection)
 }
 
 SPSelection *
-sp_selection_new (void)
+sp_selection_new (SPDesktop * desktop)
 {
-	return SP_SELECTION (gtk_type_new (sp_selection_get_type ()));
+	SPSelection * selection;
+
+	selection = gtk_type_new (SP_TYPE_SELECTION);
+	g_assert (selection != NULL);
+
+	selection->desktop = desktop;
+
+	return selection;
 }
 
 gboolean
@@ -184,10 +192,101 @@ sp_selection_add_item (SPSelection * selection, SPItem * item)
 }
 
 void
-sp_selection_set_item_list (SPSelection * selection, GSList * list)
+sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
+{
+	const gchar * id;
+	SPObject * object;
+
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (repr != NULL);
+
+	id = sp_repr_attr (repr, "id");
+	g_return_if_fail (id != NULL);
+
+	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_ITEM (object));
+
+	sp_selection_add_item (selection, SP_ITEM (object));
+}
+
+void
+sp_selection_set_item (SPSelection * selection, SPItem * item)
+{
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+
+	sp_selection_frozen_empty (selection);
+
+	sp_selection_add_item (selection, item);
+}
+
+void
+sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
+{
+	const gchar * id;
+	SPObject * object;
+
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (repr != NULL);
+
+	id = sp_repr_attr (repr, "id");
+	g_return_if_fail (id != NULL);
+
+	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_ITEM (object));
+
+	sp_selection_set_item (selection, SP_ITEM (object));
+}
+
+void
+sp_selection_remove_item (SPSelection * selection, SPItem * item)
+{
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+	g_return_if_fail (sp_selection_item_selected (selection, item));
+
+	g_slist_free (selection->reprs);
+	selection->reprs = NULL;
+
+	gtk_signal_disconnect_by_data (GTK_OBJECT (item), selection);
+	selection->items = g_slist_remove (selection->items, item);
+
+	sp_selection_changed (selection);
+}
+
+void
+sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
+{
+	const gchar * id;
+	SPObject * object;
+
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (repr != NULL);
+
+	id = sp_repr_attr (repr, "id");
+	g_return_if_fail (id != NULL);
+
+	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_ITEM (object));
+
+	sp_selection_remove_item (selection, SP_ITEM (object));
+}
+
+void
+sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 {
 	SPItem * i;
-	GSList * l;
+	const GSList * l;
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -208,21 +307,35 @@ sp_selection_set_item_list (SPSelection * selection, GSList * list)
 }
 
 void
-sp_selection_remove_item (SPSelection * selection, SPItem * item)
+sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 {
+	GSList * itemlist;
+	const GSList * l;
+	SPRepr * repr;
+	const gchar * id;
+	SPObject * object;
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-	g_return_if_fail (sp_selection_item_selected (selection, item));
 
-	g_slist_free (selection->reprs);
-	selection->reprs = NULL;
+	itemlist = NULL;
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (item), selection);
-	selection->items = g_slist_remove (selection->items, item);
+	for (l = list; l != NULL; l = l->next) {
+		repr = (SPRepr *) l->data;
+		g_return_if_fail (repr != NULL);
+		id = sp_repr_attr (repr, "id");
+		g_return_if_fail (id != NULL);
 
-	sp_selection_changed (selection);
+		object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
+		g_return_if_fail (object != NULL);
+		g_return_if_fail (SP_IS_ITEM (object));
+
+		itemlist = g_slist_prepend (itemlist, object);
+	}
+
+	sp_selection_set_item_list (selection, itemlist);
+
+	g_slist_free (itemlist);
 }
 
 void
@@ -263,21 +376,6 @@ sp_selection_repr_list (SPSelection * selection)
 	}
 
 	return selection->reprs;
-}
-
-/* Unimplemented */
-
-void
-sp_selection_set_item (SPSelection * selection, SPItem * item)
-{
-	g_return_if_fail (selection != NULL);
-	g_return_if_fail (SP_IS_SELECTION (selection));
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-
-	sp_selection_frozen_empty (selection);
-
-	sp_selection_add_item (selection, item);
 }
 
 SPItem *

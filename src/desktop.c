@@ -222,7 +222,7 @@ sp_desktop_new (SPDocument * document)
 	desktop->controls = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 
-	desktop->selection = sp_selection_new ();
+	desktop->selection = sp_selection_new (desktop);
 
 	desktop->event_context = sp_event_context_new (desktop, SP_TYPE_SELECT_CONTEXT);
 
