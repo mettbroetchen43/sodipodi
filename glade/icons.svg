@@ -4,7 +4,7 @@
 <!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
 <svg
    id="svg1"
-   sodipodi:version="0.31pre"
+   sodipodi:version="0.32pre"
    width="256pt"
    height="256pt"
    sodipodi:docbase="/home/lauris/cvs/sodipodi/glade/"
@@ -27,7 +27,7 @@
        id="sodipodi:guide273" />
     <sodipodi:guide
        orientation="vertical"
-       position="10.0062"
+       position="12.037154"
        id="guide268" />
     <sodipodi:guide
        orientation="horizontal"
@@ -733,5 +733,318 @@
        id="path284"
        sodipodi:nodetypes="ccc"
        transform="translate(13.75,13.75)" />
+  </g>
+  <g
+     id="distribute_left">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect201"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke:#000000;stroke-width:1.33631;"
+       id="rect202"
+       width="14.999999"
+       height="23.750002"
+       x="1.875000"
+       y="5.624999" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect203"
+       width="6.874999"
+       height="23.750002"
+       x="21.874997"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 21.875 5.625 L 21.875 29.375 L 28.75 29.375 "
+       id="path206"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 3.125 17.5 L 8.125 12.5 L 8.125 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 8.125 19.375 L 8.125 22.5 L 3.125 17.5 z "
+       id="path204"
+       sodipodi:nodetypes="ccccccccccc" />
+  </g>
+  <g
+     id="distribute_hcentre">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect249"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974"
+       transform="translate(30,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect260"
+       width="9.374988"
+       height="23.749999"
+       x="49.374996"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 19.375 5.625 L 19.375 29.375 L 28.75 29.375 "
+       id="path261"
+       sodipodi:nodetypes="cccc"
+       transform="translate(30,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect268"
+       width="8.750001"
+       height="23.749999"
+       x="31.249999"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 21.875 5.625 L 31.25 5.625 L 31.25 29.375 L 21.875 29.375 "
+       id="path269"
+       sodipodi:nodetypes="cccc"
+       transform="translate(9.375,0)" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 4.375 17.5 L 9.375 12.5 L 9.375 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 9.375 19.375 L 9.375 22.5 L 4.375 17.5 z "
+       id="path262"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="translate(32.5,0)" />
+  </g>
+  <g
+     id="distribute_right"
+     transform="matrix(-1,-0,-0,1,90,0)">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect278"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke:#000000;stroke-width:1.33631;"
+       id="rect279"
+       width="14.999999"
+       height="23.750002"
+       x="1.875000"
+       y="5.624999" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect280"
+       width="6.874999"
+       height="23.750002"
+       x="21.874997"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 21.875 5.625 L 21.875 29.375 L 28.75 29.375 "
+       id="path285"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 3.125 17.5 L 8.125 12.5 L 8.125 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 8.125 19.375 L 8.125 22.5 L 3.125 17.5 z "
+       id="path286"
+       sodipodi:nodetypes="ccccccccccc" />
+  </g>
+  <g
+     id="distribute_hdist">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect288"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974"
+       transform="translate(90,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect289"
+       width="5.624984"
+       height="23.749997"
+       x="113.124985"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 23.125 5.625 L 23.125 29.375 L 28.75 29.375 "
+       id="path290"
+       sodipodi:nodetypes="cccc"
+       transform="translate(90,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect293"
+       width="5.625001"
+       height="23.749997"
+       x="91.249990"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 21.875 5.625 L 27.5 5.625 L 27.5 29.375 L 21.875 29.375 "
+       id="path294"
+       sodipodi:nodetypes="cccc"
+       transform="translate(69.375,0)" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 5.625 17.5 L 10.625 12.5 L 10.625 15.625 L 14.375 15.625 L 14.375 12.5 L 19.375 17.5 L 14.375 22.5 L 14.375 19.375 L 10.625 19.375 L 10.625 22.5 L 5.625 17.5 z "
+       id="path295"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="translate(92.5,0)" />
+  </g>
+  <g
+     id="distribute_bottom"
+     transform="matrix(6.12303e-17,-1,1,6.12303e-17,57.5,62.5)">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect310"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke:#000000;stroke-width:1.33631;"
+       id="rect311"
+       width="14.999999"
+       height="23.750002"
+       x="1.875000"
+       y="5.624999" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect312"
+       width="6.874999"
+       height="23.750002"
+       x="21.874997"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 21.875 5.625 L 21.875 29.375 L 28.75 29.375 "
+       id="path313"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 3.125 17.5 L 8.125 12.5 L 8.125 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 8.125 19.375 L 8.125 22.5 L 3.125 17.5 z "
+       id="path314"
+       sodipodi:nodetypes="ccccccccccc" />
+  </g>
+  <g
+     id="distribute_vcentre"
+     transform="matrix(6.12303e-17,-1,1,6.12303e-17,27.5,92.5)">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect316"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974"
+       transform="translate(30,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect317"
+       width="9.374988"
+       height="23.749999"
+       x="49.374996"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 19.375 5.625 L 19.375 29.375 L 28.75 29.375 "
+       id="path318"
+       sodipodi:nodetypes="cccc"
+       transform="translate(30,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect319"
+       width="8.750001"
+       height="23.749999"
+       x="31.249999"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 21.875 5.625 L 31.25 5.625 L 31.25 29.375 L 21.875 29.375 "
+       id="path320"
+       sodipodi:nodetypes="cccc"
+       transform="translate(9.375,0)" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 4.375 17.5 L 9.375 12.5 L 9.375 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 9.375 19.375 L 9.375 22.5 L 4.375 17.5 z "
+       id="path321"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="translate(32.5,0)" />
+  </g>
+  <g
+     id="distribute_top"
+     transform="matrix(-6.12303e-17,1,1,6.12303e-17,-2.49997,32.5)">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect323"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke:#000000;stroke-width:1.33631;"
+       id="rect324"
+       width="14.999999"
+       height="23.750002"
+       x="1.875000"
+       y="5.624999" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect325"
+       width="6.874999"
+       height="23.750002"
+       x="21.874997"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 21.875 5.625 L 21.875 29.375 L 28.75 29.375 "
+       id="path326"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 3.125 17.5 L 8.125 12.5 L 8.125 15.625 L 15.625 15.625 L 15.625 12.5 L 20.625 17.5 L 15.625 22.5 L 15.625 19.375 L 8.125 19.375 L 8.125 22.5 L 3.125 17.5 z "
+       id="path327"
+       sodipodi:nodetypes="ccccccccccc" />
+  </g>
+  <g
+     id="distribute_vdist"
+     transform="matrix(6.12303e-17,-1,1,6.12303e-17,87.5,152.5)">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.187215;fill-rule:evenodd;stroke:#000000;stroke-width:0.0625;"
+       id="rect329"
+       width="29.999994"
+       height="30.000001"
+       x="0.000000"
+       y="2.499974"
+       transform="translate(90,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect330"
+       width="5.624984"
+       height="23.749997"
+       x="113.124985"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 28.75 5.625 L 23.125 5.625 L 23.125 29.375 L 28.75 29.375 "
+       id="path331"
+       sodipodi:nodetypes="cccc"
+       transform="translate(90,0)" />
+    <rect
+       style="font-size:12;fill:#4f89ff;fill-rule:evenodd;stroke-width:1pt;"
+       id="rect332"
+       width="5.625001"
+       height="23.749997"
+       x="91.249990"
+       y="5.624999" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;"
+       d="M 21.875 5.625 L 27.5 5.625 L 27.5 29.375 L 21.875 29.375 "
+       id="path333"
+       sodipodi:nodetypes="cccc"
+       transform="translate(69.375,0)" />
+    <path
+       style="font-size:12;fill:#feff80;fill-rule:evenodd;stroke:#00007f;stroke-width:1.25;stroke-linejoin:round;"
+       d="M 5.625 17.5 L 10.625 12.5 L 10.625 15.625 L 14.375 15.625 L 14.375 12.5 L 19.375 17.5 L 14.375 22.5 L 14.375 19.375 L 10.625 19.375 L 10.625 22.5 L 5.625 17.5 z "
+       id="path334"
+       sodipodi:nodetypes="ccccccccccc"
+       transform="translate(92.5,0)" />
   </g>
 </svg>

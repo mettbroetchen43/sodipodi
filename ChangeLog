@@ -1,5 +1,9 @@
 2003-02-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/align.c (sp_quick_align_dialog): Added "distribute" tab
+	(sp_align_distribute_h_clicked): New method
+	(sp_align_distribute_v_clicked): Ditto
+
 	* configure.in: Removed PACKAGE_LOCALE_DIR definition
 
 	* src/Makefile.am (INCLUDES): Set PACKAGE_LOCALE_DIR here

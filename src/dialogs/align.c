@@ -15,14 +15,16 @@
 #include <config.h>
 
 #include <math.h>
-#include <glib.h>
+#include <stdlib.h>
+#include <libnr/nr-macros.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkimage.h>
+#include <gtk/gtklabel.h>
 
 #include "helper/sp-intl.h"
 #include "widgets/button.h"
@@ -66,6 +68,20 @@ enum {
 	SP_ALIGN_CENTER_VER,
 };
 
+enum {
+	SP_DISTRIBUTE_LEFT,
+	SP_DISTRIBUTE_HCENTRE,
+	SP_DISTRIBUTE_RIGHT,
+	SP_DISTRIBUTE_HDIST
+};
+	
+enum {
+	SP_DISTRIBUTE_TOP,
+	SP_DISTRIBUTE_VCENTRE,
+	SP_DISTRIBUTE_BOTTOM,
+	SP_DISTRIBUTE_VDIST
+};
+
 static const unsigned char aligns[10][8] = {
 	{0, 0, 0, 2, 0, 0, 0, 2},
 	{0, 0, 0, 2, 0, 0, 2, 0},
@@ -79,11 +95,27 @@ static const unsigned char aligns[10][8] = {
 	{0, 0, 1, 1, 0, 0, 1, 1}
 };
 
+static const unsigned char hdist[4][3] = {
+	{2, 0, 0},
+	{1, 1, 0},
+	{0, 2, 0},
+	{1, 1, 1}
+};
+
+static const unsigned char vdist[4][3] = {
+	{0, 2, 0},
+	{1, 1, 0},
+	{2, 0, 0},
+	{1, 1, 1}
+};
+
 void sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns);
+void sp_align_distribute_h_clicked (GtkWidget *widget, const unsigned char *layout);
+void sp_align_distribute_v_clicked (GtkWidget *widget, const unsigned char *layout);
 
 void sp_quick_align_dialog_close (void);
 
-static GtkWidget * create_base_menu (void);
+static GtkWidget *sp_align_dialog_create_base_menu (void);
 static void set_base (GtkMenuItem * menuitem, gpointer data);
 static SPItem * sp_quick_align_find_master (const GSList * slist, gboolean horizontal);
 
@@ -103,7 +135,6 @@ static void
 sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, const unsigned char *px, const unsigned char *tip)
 {
 	GtkWidget *b;
-
 	b = sp_button_new (24, px, tip);
 	gtk_widget_show (b);
 	if (handler) g_signal_connect (G_OBJECT (b), "clicked", handler, (gpointer) data);
@@ -114,24 +145,25 @@ void
 sp_quick_align_dialog (void)
 {
 	if (!dlg) {
-		GtkWidget *vb, *om, *t;
+		GtkWidget *nb, *vb, *om, *t, *l;
 
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Align objects"));
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
 
+		nb = gtk_notebook_new ();
+		gtk_container_add (GTK_CONTAINER (dlg), nb);
+
+		/* Align */
+
 		vb = gtk_vbox_new (FALSE, 4);
-		gtk_widget_show (vb);
 		gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
-		gtk_container_add (GTK_CONTAINER (dlg), vb);
 
 		om = gtk_option_menu_new ();
-		gtk_widget_show (om);
 		gtk_box_pack_start (GTK_BOX (vb), om, FALSE, FALSE, 0);
-		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), create_base_menu ());
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), sp_align_dialog_create_base_menu ());
 
 		t = gtk_table_new (2, 5, TRUE);
-		gtk_widget_show (t);
 		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
 
 		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_OUT], "al_left_out",
@@ -155,6 +187,47 @@ sp_quick_align_dialog (void)
 				     _("Bottom of aligned objects to bottom of anchor"));
 		sp_align_add_button (t, 4, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_OUT], "al_bottom_out",
 				     _("Top of aligned objects to top of anchor"));
+
+		l = gtk_label_new (_("Align"));
+		gtk_widget_show (l);
+		gtk_notebook_append_page (GTK_NOTEBOOK (nb), vb, l);
+
+		/* Distribute */
+
+		vb = gtk_vbox_new (FALSE, 4);
+		gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
+
+		om = gtk_option_menu_new ();
+		gtk_box_pack_start (GTK_BOX (vb), om, FALSE, FALSE, 0);
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), sp_align_dialog_create_base_menu ());
+		gtk_widget_set_sensitive (om, FALSE);
+
+		t = gtk_table_new (2, 4, TRUE);
+		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
+
+		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_LEFT], "distribute_left",
+				     _("Distribute left sides of objects at even distances"));
+		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_HCENTRE], "distribute_hcentre",
+				     _("Distribute centres of objects at even distances horizontally"));
+		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_RIGHT], "distribute_right",
+				     _("Distribute right sides of objects at even distances"));
+		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_HDIST], "distribute_hdist",
+				     _("Distribute horizontal distance between objects equally"));
+
+		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_TOP], "distribute_top",
+				     _("Distribute top sides of objects at even distances"));
+		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_VCENTRE], "distribute_vcentre",
+				     _("Distribute centres of objects at even distances vertically"));
+		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_BOTTOM], "distribute_bottom",
+				     _("Distribute bottom sides of objects at even distances"));
+		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_VDIST], "distribute_vdist",
+				     _("Distribute vertical distance between objects equally"));
+
+		l = gtk_label_new (_("Distribute"));
+		gtk_widget_show (l);
+		gtk_notebook_append_page (GTK_NOTEBOOK (nb), vb, l);
+
+		gtk_widget_show_all (nb);
 	}
 
 	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);
@@ -180,7 +253,7 @@ sp_align_add_menuitem (GtkWidget *menu, const unsigned char *label, GCallback ha
 }
 
 static GtkWidget *
-create_base_menu (void)
+sp_align_dialog_create_base_menu (void)
 {
 	GtkWidget *menu;
 
@@ -350,6 +423,167 @@ sp_quick_align_find_master (const GSList *slist, gboolean horizontal)
 	}
 
 	return NULL;
+}
+
+struct _SPBBoxSort {
+	SPItem *item;
+	NRRectF bbox;
+	float anchor;
+};
+
+static int
+sp_align_bbox_sort (const void *a, const void *b)
+{
+	const struct _SPBBoxSort *bbsa, *bbsb;
+	bbsa = (struct _SPBBoxSort *) a;
+	bbsb = (struct _SPBBoxSort *) b;
+	if (bbsa->anchor < bbsb->anchor) return -1;
+	if (bbsa->anchor > bbsb->anchor) return 1;
+	return 0;
+}
+
+void
+sp_align_distribute_h_clicked (GtkWidget *widget, const unsigned char *layout)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+	const GSList *slist, *l;
+	struct _SPBBoxSort *bbs;
+	int len, pos;
+	unsigned int changed;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return;
+
+	selection = SP_DT_SELECTION (desktop);
+	slist = sp_selection_item_list (selection);
+	if (!slist) return;
+	if (!slist->next) return;
+
+	len = g_slist_length ((GSList *) slist);
+	bbs = g_new (struct _SPBBoxSort, len);
+	pos = 0;
+	for (l = slist; l != NULL; l = l->next) {
+		bbs[pos].item = SP_ITEM (l->data);
+		sp_item_bbox_desktop (bbs[pos].item, &bbs[pos].bbox);
+		bbs[pos].anchor = 0.5 * layout[0] * bbs[pos].bbox.x0 + 0.5 * layout[1] * bbs[pos].bbox.x1;
+		pos += 1;
+	}
+
+	qsort (bbs, len, sizeof (struct _SPBBoxSort), sp_align_bbox_sort);
+
+	changed = FALSE;
+
+	if (!layout[2]) {
+		float dist, step;
+		int i;
+		dist = bbs[len - 1].anchor - bbs[0].anchor;
+		step = dist / (len - 1);
+		for (i = 0; i < len; i++) {
+			float pos;
+			pos = bbs[0].anchor + i * step;
+			if (!NR_DF_TEST_CLOSE (pos, bbs[i].anchor, 1e-6)) {
+				sp_item_move_rel (bbs[i].item, pos - bbs[i].anchor, 0.0);
+				changed = TRUE;
+			}
+		}
+	} else {
+		/* Damn I am not sure, how to order them initially (Lauris) */
+		float dist, span, step, pos;
+		int i;
+		dist = bbs[len - 1].bbox.x1 - bbs[0].bbox.x0;
+		span = 0;
+		for (i = 0; i < len; i++) span += (bbs[i].bbox.x1 - bbs[i].bbox.x0);
+		step = (dist - span) / (len - 1);
+		pos = bbs[0].bbox.x0;
+		for (i = 0; i < len; i++) {
+			if (!NR_DF_TEST_CLOSE (pos, bbs[i].bbox.x0, 1e-6)) {
+				sp_item_move_rel (bbs[i].item, pos - bbs[i].bbox.x0, 0.0);
+				changed = TRUE;
+			}
+			pos += (bbs[i].bbox.x1 - bbs[i].bbox.x0);
+			pos += step;
+		}
+	}
+
+	g_free (bbs);
+
+	if (changed) {
+		sp_selection_changed (selection);
+		sp_document_done (SP_DT_DOCUMENT (desktop));
+	}
+}
+
+void
+sp_align_distribute_v_clicked (GtkWidget *widget, const unsigned char *layout)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+	const GSList *slist, *l;
+	struct _SPBBoxSort *bbs;
+	int len, pos;
+	unsigned int changed;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return;
+
+	selection = SP_DT_SELECTION (desktop);
+	slist = sp_selection_item_list (selection);
+	if (!slist) return;
+	if (!slist->next) return;
+
+	len = g_slist_length ((GSList *) slist);
+	bbs = g_new (struct _SPBBoxSort, len);
+	pos = 0;
+	for (l = slist; l != NULL; l = l->next) {
+		bbs[pos].item = SP_ITEM (l->data);
+		sp_item_bbox_desktop (bbs[pos].item, &bbs[pos].bbox);
+		bbs[pos].anchor = 0.5 * layout[0] * bbs[pos].bbox.y0 + 0.5 * layout[1] * bbs[pos].bbox.y1;
+		pos += 1;
+	}
+
+	qsort (bbs, len, sizeof (struct _SPBBoxSort), sp_align_bbox_sort);
+
+	changed = FALSE;
+
+	if (!layout[2]) {
+		float dist, step;
+		int i;
+		dist = bbs[len - 1].anchor - bbs[0].anchor;
+		step = dist / (len - 1);
+		for (i = 0; i < len; i++) {
+			float pos;
+			pos = bbs[0].anchor + i * step;
+			if (!NR_DF_TEST_CLOSE (pos, bbs[i].anchor, 1e-6)) {
+				sp_item_move_rel (bbs[i].item, 0.0, pos - bbs[i].anchor);
+				changed = TRUE;
+			}
+		}
+	} else {
+		/* Damn I am not sure, how to order them initially (Lauris) */
+		float dist, span, step, pos;
+		int i;
+		dist = bbs[len - 1].bbox.y1 - bbs[0].bbox.y0;
+		span = 0;
+		for (i = 0; i < len; i++) span += (bbs[i].bbox.y1 - bbs[i].bbox.y0);
+		step = (dist - span) / (len - 1);
+		pos = bbs[0].bbox.y0;
+		for (i = 0; i < len; i++) {
+			if (!NR_DF_TEST_CLOSE (pos, bbs[i].bbox.y0, 1e-6)) {
+				sp_item_move_rel (bbs[i].item, 0.0, pos - bbs[i].bbox.y0);
+				changed = TRUE;
+			}
+			pos += (bbs[i].bbox.y1 - bbs[i].bbox.y0);
+			pos += step;
+		}
+	}
+
+	g_free (bbs);
+
+	if (changed) {
+		sp_selection_changed (selection);
+		sp_document_done (SP_DT_DOCUMENT (desktop));
+	}
 }
 
 
