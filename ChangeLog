@@ -1,5 +1,9 @@
 2002-08-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/export.c (sp_export_do_export): Fix affine (one more time)
+
+	* src/sp-item.c (sp_item_paint): Ensure document is up-to-date
+
 	* src/sp-chars.c (sp_chars_print_bpath): Use new transformed bpath bbox
 	(sp_chars_bbox): Ditto
 

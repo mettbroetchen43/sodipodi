@@ -46,6 +46,7 @@
 #include "bonobo/svg-doc-factory.h"
 #endif
 
+#include "macros.h"
 #include "file.h"
 #include "document.h"
 #include "toolbox.h"
@@ -104,10 +105,10 @@ struct poptOption options[] = {
 	{"export-png", 'e', POPT_ARG_STRING, &sp_export_png, SP_ARG_EXPORT_PNG,
 	 N_("Export document to png file"),
 	 N_("FILENAME")},
-	{"export-dpi", 'e', POPT_ARG_STRING, &sp_export_dpi, SP_ARG_EXPORT_DPI,
+	{"export-dpi", 'd', POPT_ARG_STRING, &sp_export_dpi, SP_ARG_EXPORT_DPI,
 	 N_("Exported bitmap resolution in pixels per inch (default 72.0)"),
 	 N_("DPI")},
-	{"export-area", 'e', POPT_ARG_STRING, &sp_export_area, SP_ARG_EXPORT_AREA,
+	{"export-area", 'a', POPT_ARG_STRING, &sp_export_area, SP_ARG_EXPORT_AREA,
 	 N_("Exported area in millimeters (default is full document)"),
 	 N_("x0:y0:x1:y1")},
 	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
@@ -376,6 +377,8 @@ sp_main_console (int argc, char **argv)
 					affine[3] = height / (area.y1 - area.y0);
 					affine[4] = -affine[0] * area.x0;
 					affine[5] = -affine[3] * area.y0;
+
+					SP_PRINT_TRANSFORM ("SVG2PNG", affine);
 
 					sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 

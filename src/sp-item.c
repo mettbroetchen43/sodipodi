@@ -463,6 +463,8 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	g_assert (buf != NULL);
 	g_assert (affine != NULL);
 
+	sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (item));
+
 	/* Create new arena */
 	arena = gtk_type_new (NR_TYPE_ARENA);
 	/* Create ArenaItem and set transform */

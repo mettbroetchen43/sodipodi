@@ -12,11 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#if 0
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#endif
+#include "macros.h"
 #include "helper/art-utils.h"
 #include "display/nr-arena-shape.h"
 #include "style.h"

@@ -16,6 +16,7 @@
 #include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
+#include "../macros.h"
 #include "../helper/png-write.h"
 #include "../sodipodi.h"
 #include "../document.h"
@@ -192,9 +193,11 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	affine[0] = width / (x1 - x0);
 	affine[1] = 0.0;
 	affine[2] = 0.0;
-	affine[3] = height / (y0 - y1);
+	affine[3] = height / (y1 - y0);
 	affine[4] = -affine[0] * x0;
-	affine[5] = -affine[3] * y1;
+	affine[5] = -affine[3] * y0;
+
+	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
 
 	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
