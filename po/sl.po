@@ -615,7 +615,7 @@ msgstr "Nova"
 
 #: glade/sodipodi-glade.c:48
 msgid "Open File"
-msgstr "Odpri Datoteko"
+msgstr "Odpri datoteko"
 
 #: glade/sodipodi-glade.c:49
 msgid "Open"
@@ -623,7 +623,7 @@ msgstr "Odpri"
 
 #: glade/sodipodi-glade.c:50
 msgid "Save File"
-msgstr "Shrani Datoteko"
+msgstr "Shrani datoteko"
 
 #: glade/sodipodi-glade.c:51
 msgid "Save\t"
