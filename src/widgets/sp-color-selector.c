@@ -366,6 +366,10 @@ sp_color_selector_set_any_rgba_float (SPColorSelector *csel, gfloat r, gfloat g,
 	g_return_if_fail (SP_IS_COLOR_SELECTOR (csel));
 
 	sp_color_selector_get_rgba_floatv (csel, c);
+	g_print ("r %g %g\n", r, c[0]);
+	g_print ("g %g %g\n", g, c[1]);
+	g_print ("b %g %g\n", b, c[2]);
+	g_print ("a %g %g\n", a, c[3]);
 	if (CLOSE_ENOUGH (r, c[0]) && CLOSE_ENOUGH (g, c[1]) && CLOSE_ENOUGH (b, c[2]) && CLOSE_ENOUGH (a, c[3])) return;
 
 	switch (csel->mode) {
@@ -716,6 +720,8 @@ sp_color_selector_adjustment_changed (SPColorSelector *csel, guint channel)
 {
 	if (csel->updating) return;
 
+	csel->updating = TRUE;
+
 	sp_color_selector_update_sliders (csel, (1 << channel));
 
 	if (csel->dragging) {
@@ -723,6 +729,8 @@ sp_color_selector_adjustment_changed (SPColorSelector *csel, guint channel)
 	} else {
 		gtk_signal_emit (GTK_OBJECT (csel), csel_signals[CHANGED]);
 	}
+
+	csel->updating = FALSE;
 }
 
 static void

@@ -12,6 +12,7 @@
  */
 
 #include <string.h>
+#include "xml/repr-private.h"
 #include "document-private.h"
 #include "sp-root.h"
 #include "gradient-chemistry.h"
@@ -35,7 +36,7 @@ static guchar *sp_style_change_property (const guchar *sstr, const guchar *key, 
 SPGradient *
 sp_gradient_ensure_vector_normalized (SPGradient *gr)
 {
-	SPDocument *document;
+	SPDocument *doc;
 	SPDefs *defs;
 
 	g_return_val_if_fail (gr != NULL, NULL);
@@ -48,64 +49,30 @@ sp_gradient_ensure_vector_normalized (SPGradient *gr)
 		g_warning ("file %s: line %d: Cannot normalize private gradient to vector (%s)", __FILE__, __LINE__, SP_OBJECT_ID (gr));
 		return NULL;
 	}
-	g_return_val_if_fail (gr->state == SP_GRADIENT_STATE_UNKNOWN, NULL);
 
-	g_print ("GVECTORNORM: Gradient %s\n", SP_OBJECT_ID (gr));
+	g_print ("GVECTORNORM: Requested vector normalization of gradient %s\n", SP_OBJECT_ID (gr));
 
-	/* Ensure vector, so we can know some our metadata */
-	sp_gradient_ensure_vector (gr);
-	/* If our vector is broken, fail */
-	/* fixme: In future has_stops may be autoupdated by add_child/remove_child */
-	/* This shouldn't happen, because trivial vector will be always created */
-#if 0
-	/* Normalization fixes missing stops */
-	g_return_val_if_fail (gr->has_stops, NULL);
-#endif
-	g_return_val_if_fail (gr->vector, NULL);
+	doc = SP_OBJECT_DOCUMENT (gr);
+	defs = SP_DOCUMENT_DEFS (doc);
 
-	/* Determine, whether normalization is needed */
-	document = SP_OBJECT_DOCUMENT (gr);
-	defs = SP_DOCUMENT_DEFS (document);
-	if (SP_OBJECT_PARENT (gr) == SP_OBJECT (defs)) {
-		SPObject *child;
-		/* We are in global <defs> node, so keep trying */
-		for (child = defs->children; child != NULL; child = child->next) {
-			if (SP_IS_GRADIENT (child)) {
-				SPGradient *gchild;
-				gchild = SP_GRADIENT (child);
-				if (gchild == gr) {
-					/* Everything is OK, set state flag */
-					/* fixme: I am not sure, whether one should clone, if hrefcount > 1 */
-					/* In any case, we have to flatten that gradient here */
-					gr->state = SP_GRADIENT_STATE_VECTOR;
-					g_print ("How nice, vector gradient %s happens to be in right place\n", SP_OBJECT_ID (gr));
-					return gr;
-				}
-				/* If there is private gradient, we have to rearrange ourselves */
-				if (gchild->state == SP_GRADIENT_STATE_PRIVATE) break;
-			}
-		}
-		/* If we didn't find ourselves, <defs> is probably messed up */
-		g_assert (child != NULL);
-		/* NOTICE */
-		/* Here we move our gradient position to initial part of <defs> */
-		/* But we still return original gradient */
-		/* We have to flatten it, still */
-	} else {
+	if (SP_OBJECT_PARENT (gr) != SP_OBJECT (defs)) {
 		SPGradient *new;
 		SPRepr *repr;
-		guchar *href;
+		/* Lonely gradient */
+		/* Ensure vector, so we can know some our metadata */
+		sp_gradient_ensure_vector (gr);
+		g_assert (gr->vector);
 		/* NOTICE */
 		/* We are in some lonely place in tree, so clone EVERYTHING */
 		/* And do not forget to flatten original */
-		g_print ("GVECTORNORM: Gradient %s not in <defs>\n", SP_OBJECT_ID (gr));
+		g_print ("GVECTORNORM: Gradient %s IS NOT in <defs>\n", SP_OBJECT_ID (gr));
 		/* Step 1 - flatten original EXCEPT vector */
 		sp_gradient_repr_flatten_attributes (gr, SP_OBJECT_REPR (gr), TRUE);
 		g_print ("GVECTORNORM: Gradient %s attributes flattened\n", SP_OBJECT_ID (gr));
 		/* Step 2 - create new empty gradient and prepend it to <defs> */
 		repr = sp_repr_new ("linearGradient");
 		sp_repr_add_child (SP_OBJECT_REPR (defs), repr, NULL);
-		new = (SPGradient *) sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
+		new = (SPGradient *) sp_document_lookup_id (doc, sp_repr_attr (repr, "id"));
 		g_assert (gr != NULL);
 		g_assert (SP_IS_GRADIENT (gr));
 		g_print ("GVECTORNORM: Created new vector gradient %s\n", SP_OBJECT_ID (new));
@@ -116,18 +83,62 @@ sp_gradient_ensure_vector_normalized (SPGradient *gr)
 		new->state = SP_GRADIENT_STATE_VECTOR;
 		g_print ("GVECTORNORM: Set of %s to vector normalized\n", SP_OBJECT_ID (new));
 		/* Step 5 - set href of old vector */
-		href = g_strdup_printf ("#%s", SP_OBJECT_ID (new));
-		sp_repr_set_attr (SP_OBJECT_REPR (gr), "xlink:href", href);
-		g_free (href);
+		sp_gradient_repr_set_link (SP_OBJECT_REPR (gr), new);
 		g_print ("GVECTORNORM: Set href of %s to %s\n", SP_OBJECT_ID (gr), SP_OBJECT_ID (new));
 		/* Step 6 - clear stops of old gradient */
 		sp_gradient_repr_set_vector (gr, SP_OBJECT_REPR (gr), NULL);
 		g_print ("GVECTORNORM: Cleared all stops of %s\n", SP_OBJECT_ID (gr));
 		/* Now we have successfully created new normalized vector, and cleared old stops */
 		return new;
+	} else {
+		SPObject *child;
+		/* Gradient is in <defs> */
+		g_print ("GVECTORNORM: Gradient %s IS in <defs>\n", SP_OBJECT_ID (gr));
+		/* First make sure we have vector directly defined */
+		if (!gr->has_stops) {
+			/* We do not have stops ourselves, so flatten stops as well */
+			sp_gradient_ensure_vector (gr);
+			g_assert (gr->vector);
+			sp_gradient_repr_set_vector (gr, SP_OBJECT_REPR (gr), gr->vector);
+			g_print ("GVECTORNORM: Added stops to %s\n", SP_OBJECT_ID (gr));
+		}
+		/* Nof break free hrefing */
+		if (gr->href) {
+			/* We are hrefing someone, so require flattening */
+			sp_gradient_repr_flatten_attributes (gr, SP_OBJECT_REPR (gr), TRUE);
+			g_print ("GVECTORNORM: Gradient %s attributes flattened\n", SP_OBJECT_ID (gr));
+			sp_gradient_repr_set_link (SP_OBJECT_REPR (gr), NULL);
+		}
+		/* Now we can be sure we are in good condition */
+		/* Still have to ensure we are in vector position */
+		for (child = defs->children; child != NULL; child = child->next) {
+			if (SP_IS_GRADIENT (child)) {
+				SPGradient *gchild;
+				gchild = SP_GRADIENT (child);
+				if (gchild == gr) {
+					/* Everything is OK, set state flag */
+					/* fixme: I am not sure, whether one should clone, if hrefcount > 1 */
+					gr->state = SP_GRADIENT_STATE_VECTOR;
+					g_print ("GVECTORNORM: Found gradient %s in right position\n", SP_OBJECT_ID (gr));
+					return gr;
+				}
+				/* If there is private gradient, we have to rearrange ourselves */
+				if (gchild->state == SP_GRADIENT_STATE_PRIVATE) break;
+			}
+		}
+		/* If we didn't find ourselves, <defs> is probably messed up */
+		g_assert (child != NULL);
+		/* Now we have to move ourselves to the beggining of <defs> */
+		g_print ("GVECTORNORM: Moving %s to the beginning of <defs>\n", SP_OBJECT_ID (gr));
+		if (!sp_repr_change_order (SP_OBJECT_REPR (defs), SP_OBJECT_REPR (gr), NULL)) {
+			g_warning ("file %s: line %d: Cannot move gradient %s to vector position", __FILE__, __LINE__, SP_OBJECT_ID (gr));
+			return NULL;
+		}
+		/* Everything is OK, set state flag */
+		gr->state = SP_GRADIENT_STATE_VECTOR;
+		g_print ("GVECTORNORM: Moved gradient %s to the right position\n", SP_OBJECT_ID (gr));
+		return gr;
 	}
-
-	return NULL;
 }
 
 /*
@@ -139,7 +150,7 @@ sp_gradient_ensure_vector_normalized (SPGradient *gr)
 SPGradient *
 sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 {
-	SPDocument *document;
+	SPDocument *doc;
 	SPDefs *defs;
 
 	g_return_val_if_fail (gr != NULL, NULL);
@@ -148,7 +159,7 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 	g_return_val_if_fail (SP_IS_GRADIENT (vector), NULL);
 	g_return_val_if_fail (vector->state == SP_GRADIENT_STATE_VECTOR, NULL);
 
-	/* If we are already normalized vector, change href and return */
+	/* If we are already normalized private, change href and return */
 	if (gr->state == SP_GRADIENT_STATE_PRIVATE) {
 		/* This assertion is dangerous - we have to be very-very strict about it */
 		g_assert (SP_OBJECT_HREFCOUNT (gr) == 1);
@@ -166,35 +177,47 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 
 	g_print ("Private normalization of gradient %s requested\n", SP_OBJECT_ID (gr));
 
-	/* Ensure vector, so we can know our some metadata */
-	sp_gradient_ensure_vector (gr);
+	doc = SP_OBJECT_DOCUMENT (gr);
+	defs = SP_DOCUMENT_DEFS (doc);
 
-	/* Determine, whether normalization is needed */
-	document = SP_OBJECT_DOCUMENT (gr);
-	defs = SP_DOCUMENT_DEFS (document);
-
-	if ((!gr->has_stops) && (SP_OBJECT_PARENT (gr) == SP_OBJECT (defs)) && (SP_OBJECT_HREFCOUNT (gr) == 1)) {
-		/* We are private, nonstop and in <defs>, so all we need, is moving to the right place and flattening */
-		/* I.e. do not forget to test for normalized vectors after us */
-		/* fixme: placehilder for real code */
-		gr->state = SP_GRADIENT_STATE_PRIVATE;
-	} else {
+	/* Determine, whether we have to clone fresh new gradient */
+	if ((gr->has_stops) ||
+	    (gr->state != SP_GRADIENT_STATE_UNKNOWN) ||
+	    (SP_OBJECT_PARENT (gr) != SP_OBJECT (defs)) ||
+	    (SP_OBJECT_HREFCOUNT (gr) > 1)) {
 		SPRepr *repr;
-		/* We are either in some lonely place, or have multiple refs, so clone */
+		/* We are either in some lonely place, or have multiple refs, or vector or whatever, so clone */
+		/* fixme: no 'linear' please */
 		repr = sp_lineargradient_build_repr (SP_LINEARGRADIENT (gr), FALSE);
 		sp_gradient_repr_set_link (repr, vector);
 		/* Append cloned private gradient to defs */
 		sp_repr_append_child (SP_OBJECT_REPR (defs), repr);
 		sp_repr_unref (repr);
 		/* fixme: This does not look like nice */
-		gr = (SPGradient *) sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
+		gr = (SPGradient *) sp_document_lookup_id (doc, sp_repr_attr (repr, "id"));
 		g_assert (gr != NULL);
 		g_assert (SP_IS_GRADIENT (gr));
 		/* fixme: Maybe add extra sanity check here */
 		gr->state = SP_GRADIENT_STATE_PRIVATE;
+		return gr;
+	} else {
+		SPObject *sibling;
+		/* We still have to determine, whether we have to change our position */
+		for (sibling = SP_OBJECT_NEXT (gr); sibling != NULL; sibling = SP_OBJECT_NEXT (sibling)) {
+			if (SP_IS_GRADIENT (sibling) && SP_GRADIENT (sibling)->state == SP_GRADIENT_STATE_VECTOR) {
+				/* Found vector after us, so move */
+				while (SP_OBJECT_NEXT (sibling)) sibling = SP_OBJECT_NEXT (sibling);
+				if (!sp_repr_change_order (SP_OBJECT_REPR (defs), SP_OBJECT_REPR (gr), SP_OBJECT_REPR (sibling))) {
+					g_warning ("Cannot move gradient %s to private position", SP_OBJECT_ID (gr));
+					return NULL;
+				}
+				break;
+			}
+		}
+		/* Set state */
+		gr->state = SP_GRADIENT_STATE_PRIVATE;
+		return gr;
 	}
-
-	return gr;
 }
 
 /*
@@ -224,6 +247,7 @@ sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector)
 			if (SP_OBJECT_HREFCOUNT (gr) == 0) {
 				if (gr->state == SP_GRADIENT_STATE_PRIVATE) return gr;
 				if (gr->state == SP_GRADIENT_STATE_UNKNOWN) {
+					/* fixme: This is plain wrong - what if out gradient is not at private position? */
 					sp_gradient_ensure_vector (gr);
 					if (!gr->has_stops) return sp_gradient_ensure_private_normalized (gr, vector);
 				}
@@ -313,11 +337,15 @@ sp_gradient_repr_set_link (SPRepr *repr, SPGradient *link)
 	g_return_if_fail (link != NULL);
 	g_return_if_fail (SP_IS_GRADIENT (link));
 
-	id = SP_OBJECT_ID (link);
-	len = strlen (id);
-	ref = alloca (len + 2);
-	*ref = '#';
-	memcpy (ref + 1, id, len + 1);
+	if (link) {
+		id = SP_OBJECT_ID (link);
+		len = strlen (id);
+		ref = alloca (len + 2);
+		*ref = '#';
+		memcpy (ref + 1, id, len + 1);
+	} else {
+		ref = NULL;
+	}
 
 	sp_repr_set_attr (repr, "xlink:href", ref);
 }

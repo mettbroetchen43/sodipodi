@@ -549,37 +549,47 @@ void
 sp_gradient_repr_set_vector (SPGradient *gr, SPRepr *repr, SPGradientVector *vector)
 {
 	SPRepr *child;
-	GSList *sl;
+	GSList *sl, *cl;
 	gint i;
 
 	g_return_if_fail (gr != NULL);
 	g_return_if_fail (SP_IS_GRADIENT (gr));
 	g_return_if_fail (repr != NULL);
 
+	/* We have to be careful, as vector may be our own, so construct repr list at first */
+	cl = NULL;
+	if (vector) {
+		for (i = 0; i < vector->nstops; i++) {
+			SPRepr *child;
+			guchar c[64], s[256];
+			child = sp_repr_new ("stop");
+			sp_repr_set_double_attribute (child, "offset",
+						      vector->stops[i].offset * (vector->end - vector->start) + vector->start);
+			sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&vector->stops[i].color, 0x00));
+			g_snprintf (s, 256, "stop-color:%s;stop-opacity:%g;", c, vector->stops[i].opacity);
+			sp_repr_set_attr (child, "style", s);
+			/* Order will be reversed here */
+			cl = g_slist_prepend (cl, child);
+		}
+	}
+
+	/* Now collect stops from original repr */
 	sl = NULL;
 	for (child = repr->children; child != NULL; child = child->next) {
 		if (!strcmp (sp_repr_name (child), "stop")) sl = g_slist_prepend (sl, child);
 	}
 	/* Remove all stops */
 	while (sl) {
-		/* fixme: This should works, unless we make gradient into generic group */
+		/* fixme: This should work, unless we make gradient into generic group */
 		sp_repr_unparent (sl->data);
 		sl = g_slist_remove (sl, sl->data);
 	}
 
-	if (!vector || vector->nstops < 2) return;
-
-	for (i = vector->nstops - 1; i >= 0; i--) {
-		SPRepr *child;
-		guchar c[64], s[256];
-		child = sp_repr_new ("stop");
-		sp_repr_set_double_attribute (child, "offset",
-					      vector->stops[i].offset * (vector->end - vector->start) + vector->start);
-		sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&vector->stops[i].color, 0x00));
-		g_snprintf (s, 256, "stop-color:%s;stop-opacity:%g;", c, vector->stops[i].opacity);
-		sp_repr_set_attr (child, "style", s);
-		sp_repr_add_child (repr, child, NULL);
+	/* And insert new children from list */
+	while (cl) {
+		sp_repr_add_child (repr, (SPRepr *) cl->data, NULL);
 		sp_repr_unref (child);
+		cl = g_slist_remove (cl, cl->data);
 	}
 }
 

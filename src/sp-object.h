@@ -34,6 +34,7 @@
 #define SP_OBJECT_REPR(o) (SP_OBJECT (o)->repr)
 #define SP_OBJECT_DOCUMENT(o) (SP_OBJECT (o)->document)
 #define SP_OBJECT_PARENT(o) (SP_OBJECT (o)->parent)
+#define SP_OBJECT_NEXT(o) (SP_OBJECT (o)->next)
 #define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
 #define SP_OBJECT_STYLE(o) (SP_OBJECT (o)->style)
 

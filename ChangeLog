@@ -1,3 +1,18 @@
+2001-12-30  Lauris Kaplinski  <lauris@localhost.localdomain>
+
+	* src/widgets/sp-color-selector.c (sp_color_selector_adjustment_changed): Set
+	updating flag here, so we get single "changed" signal whatever happens
+
+	* src/sp-gradient.c (sp_gradient_repr_set_vector): Allow setting our
+	own vector too here
+
+	* src/sp-object.h (SP_OBJECT_NEXT): New macro
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_vector_normalized): Should
+	work as intended now
+	(sp_gradient_ensure_private_normalized): Ditto
+	(sp_gradient_repr_set_link): Set NULL link too
+
 2001-12-30  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-spiral.c src/sp-star.c:
