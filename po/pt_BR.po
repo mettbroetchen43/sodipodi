@@ -1,10 +1,12 @@
+# Potfile without header
+
 msgid ""
 msgstr ""
-"Project-Id-Version: sodioidi\n"
+"Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2000-10-30 11:20-0200\n"
 "PO-Revision-Date: 2000-08-21 11:55+00:00\n"
-"Last-Translator: Valek Filippov <frob@df.ru>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"Last-Translator: Ricardo Soares Guimarães <ricardo@conectiva.com>\n"
+"Language-Team: Brazillian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8-bit\n"
@@ -16,7 +18,7 @@ msgstr ""
 #.
 #: glade/align.c:7
 msgid "Align"
-msgstr ""
+msgstr "Alinhar"
 
 #: glade/align.c:8
 msgid "Align inside object to top border"
@@ -1273,7 +1275,7 @@ msgstr ""
 #: glade/transformation.c:31 glade/transformation.c:32
 #, c-format
 msgid "% "
-msgstr ""
+msgstr "% "
 
 #: glade/transformation.c:33 glade/transformation.c:34
 msgid " flip "
@@ -1286,7 +1288,7 @@ msgstr ""
 #: glade/transformation.c:39 glade/transformation.c:40
 #, c-format
 msgid "%  "
-msgstr ""
+msgstr "%  "
 
 #: glade/transformation.c:41
 msgid "Skew"
@@ -1294,31 +1296,31 @@ msgstr ""
 
 #: glade/transformation.c:42
 msgid "make copy"
-msgstr ""
+msgstr "fazer cópia"
 
 #: glade/transformation.c:43
 msgid "Guidelines setup"
-msgstr ""
+msgstr "Configuração da grade"
 
 #: glade/transformation.c:44
 msgid "move horizontal"
-msgstr ""
+msgstr "mover horizintal"
 
 #: glade/transformation.c:45
 msgid "move vertival"
-msgstr ""
+msgstr "mover vertical"
 
 #: glade/transformation.c:53
 msgid "Start transformation"
-msgstr ""
+msgstr "Iniciar transformação"
 
 #: glade/transformation.c:54
 msgid "close dialog"
-msgstr ""
+msgstr "fechar diálogo"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
-msgstr ""
+msgstr "Hierarquia"
 
 #: glade/xml-tree.c:9
 msgid "Dup"
@@ -1326,39 +1328,39 @@ msgstr ""
 
 #: glade/xml-tree.c:11
 msgid "Cut"
-msgstr ""
+msgstr "Cortar"
 
 #: glade/xml-tree.c:12
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 #: glade/xml-tree.c:13
 msgid "Paste"
-msgstr ""
+msgstr "Colar"
 
 #: glade/xml-tree.c:14
 msgid "Del"
-msgstr ""
+msgstr "Apagar"
 
 #: glade/xml-tree.c:15
 msgid "Attributes"
-msgstr ""
+msgstr "Atributos"
 
 #: glade/xml-tree.c:16
 msgid "Key"
-msgstr ""
+msgstr "Tecla"
 
 #: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: glade/xml-tree.c:19
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: glade/xml-tree.c:20 glade/xml-tree.c:22
 msgid "Change"
-msgstr ""
+msgstr "Alterar"
 
 #: glade/xml-tree.c:21
 msgid "Content"
@@ -1370,11 +1372,11 @@ msgstr ""
 
 #: glade/xml-tree.c:24 glade/xml-tree.c:28
 msgid "Value:"
-msgstr ""
+msgstr "Valor:"
 
 #: glade/xml-tree.c:25 glade/xml-tree.c:29 glade/xml-tree.c:32
 msgid "Attribute:"
-msgstr ""
+msgstr "Atributo:"
 
 #: glade/xml-tree.c:26 glade/xml-tree.c:33
 msgid "name"
@@ -1402,19 +1404,19 @@ msgstr ""
 
 #: src/main.c:57 src/main.c:66
 msgid "FILENAME"
-msgstr ""
+msgstr "ARQUIVO"
 
 #: src/main.c:65
 msgid "Print files to specified file (use '| program' for pipe)"
-msgstr ""
+msgstr "Imprimir arquivos para arquivo especificado (  use '| programa' para pipe)"
 
 #: src/main.c:161
 msgid "Oaf options"
-msgstr ""
+msgstr "Opções Oaf"
 
 #: src/main.c:169
 msgid "Could not initialize Bonobo"
-msgstr ""
+msgstr "Não foi possível inicializar Bonobo"
 
 #: src/bonobo/svg-doc-factory.c:25
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1422,62 +1424,62 @@ msgstr ""
 
 #: src/file.c:80
 msgid "Select file to open"
-msgstr ""
+msgstr "Selecionar arquivo para abrir"
 
 #: src/file.c:151
 msgid "Save file"
-msgstr ""
+msgstr "Salvar arquivo"
 
 #: src/file.c:251
 msgid "Select file to import"
-msgstr ""
+msgstr "Selecione arquivo a importar"
 
 #: src/file.c:323
 msgid "Export file"
-msgstr ""
+msgstr "Exportar arquivo"
 
 #: src/file.c:383
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr ""
+msgstr "Sodipodi (doc nome %s...): Visualizar impressão"
 
 #: src/sp-image.c:225
 msgid "Broken bitmap"
-msgstr ""
+msgstr "Bitmap preto/branco"
 
 #: src/sp-image.c:226
 msgid "Color bitmap"
-msgstr ""
+msgstr "Bitmap colorido"
 
 #: src/sp-item.c:168
 msgid "Unknown item :-("
-msgstr ""
+msgstr "Ítem desconhecido :-("
 
 #: src/sp-item-group.c:348
 #, c-format
 msgid "Group of %d items"
-msgstr ""
+msgstr "Grupo de %d ítems"
 
 #: src/sp-shape.c:278
 msgid "A path - whatever it means"
-msgstr ""
+msgstr "Um caminho - o que quer que signifique"
 
 #: src/sp-text.c:193
 msgid "Text object"
-msgstr ""
+msgstr "Objeto texto"
 
 #: src/dialogs/align.c:78
 msgid "Last selected"
-msgstr ""
+msgstr "Último selecionado"
 
 #: src/dialogs/align.c:83
 msgid "First selected"
-msgstr ""
+msgstr "Primeiro selecionado"
 
 #: src/dialogs/align.c:88
 msgid "Biggest item"
-msgstr ""
+msgstr "Maior ítem"
 
 #: src/dialogs/align.c:93
 msgid "Smallest item"
-msgstr ""
+msgstr "Menor ítem"
