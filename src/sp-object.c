@@ -26,6 +26,8 @@ static void sp_object_init (SPObject * object);
 static void sp_object_destroy (GtkObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_object_release (SPObject *object);
+
 static void sp_object_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -43,7 +45,7 @@ static void sp_object_repr_order_changed (SPRepr *repr, SPRepr *child, SPRepr *o
 
 static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 
-enum {MODIFIED, LAST_SIGNAL};
+enum {RELEASE, MODIFIED, LAST_SIGNAL};
 
 SPReprEventVector object_event_vector = {
 	NULL, /* Destroy */
@@ -91,6 +93,12 @@ sp_object_class_init (SPObjectClass * klass)
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
 
+	object_signals[RELEASE] =  gtk_signal_new ("release",
+						   GTK_RUN_FIRST,
+						   gtk_object_class->type,
+						   GTK_SIGNAL_OFFSET (SPObjectClass, release),
+						   gtk_marshal_NONE__NONE,
+						   GTK_TYPE_NONE, 0);
 	object_signals[MODIFIED] = gtk_signal_new ("modified",
 						   GTK_RUN_FIRST,
 						   gtk_object_class->type,
@@ -102,6 +110,7 @@ sp_object_class_init (SPObjectClass * klass)
 	gtk_object_class->destroy = sp_object_destroy;
 
 	klass->build = sp_object_build;
+	klass->release = sp_object_release;
 	klass->read_attr = sp_object_read_attr;
 	klass->write = sp_object_private_write;
 }
@@ -122,33 +131,11 @@ sp_object_init (SPObject * object)
 static void
 sp_object_destroy (GtkObject * object)
 {
-	SPObject * spobject;
+	SPObject *spobject;
 
 	spobject = (SPObject *) object;
 
-	/* Parent refcount us, so there shouldn't be any */
-	g_assert (!spobject->parent);
-	g_assert (!spobject->next);
-	g_assert (spobject->document);
-	g_assert (spobject->repr);
-	/* href holders HAVE to release it in "destroy" signal handler */
-	g_assert (spobject->hrefcount == 0);
-
-	if (spobject->style) {
-		sp_style_unref (spobject->style);
-		spobject->style = NULL;
-	}
-
-	if (!SP_OBJECT_IS_CLONED (object)) {
-		g_assert (spobject->id);
-		sp_document_undef_id (spobject->document, spobject->id);
-		g_free (spobject->id);
-	} else {
-		g_assert (!spobject->id);
-	}
-
-	sp_repr_remove_listener_by_data (spobject->repr, spobject);
-	sp_repr_unref (spobject->repr);
+	sp_object_invoke_release (spobject);
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
@@ -278,6 +265,12 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	/* Nothing specific here */
 }
 
+static void
+sp_object_release (SPObject * object)
+{
+	/* Nothing specific here */
+}
+
 void
 sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned)
 {
@@ -328,6 +321,43 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	/* Signalling (should be connected AFTER processing derived methods */
 
 	sp_repr_add_listener (repr, &object_event_vector, object);
+}
+
+void
+sp_object_invoke_release (SPObject *object)
+{
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+
+	/* Parent refcount us, so there shouldn't be any */
+	g_assert (!object->parent);
+	g_assert (!object->next);
+	g_assert (object->document);
+	g_assert (object->repr);
+
+	gtk_signal_emit (GTK_OBJECT (object), object_signals[RELEASE]);
+
+	/* href holders HAVE to release it in signal handler */
+	g_assert (object->hrefcount == 0);
+
+	if (object->style) {
+		object->style = sp_style_unref (object->style);
+	}
+
+	if (!SP_OBJECT_IS_CLONED (object)) {
+		g_assert (object->id);
+		sp_document_undef_id (object->document, object->id);
+		g_free (object->id);
+		object->id = NULL;
+	} else {
+		g_assert (!object->id);
+	}
+
+	sp_repr_remove_listener_by_data (object->repr, object);
+	sp_repr_unref (object->repr);
+
+	object->document = NULL;
+	object->repr = NULL;
 }
 
 static void

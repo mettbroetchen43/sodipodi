@@ -67,8 +67,8 @@ sp_root_class_init (SPRootClass *klass)
 	SPItemClass *sp_item_class;
 
 	gtk_object_class = GTK_OBJECT_CLASS (klass);
-	sp_object_class = SP_OBJECT_CLASS (klass);
-	sp_item_class = SP_ITEM_CLASS (klass);
+	sp_object_class = (SPObjectClass *) klass;
+	sp_item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (SP_TYPE_GROUP);
 

@@ -32,9 +32,9 @@
 
 static void sp_group_class_init (SPGroupClass *klass);
 static void sp_group_init (SPGroup *group);
-static void sp_group_destroy (GtkObject *object);
 
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_group_release (SPObject *object);
 static void sp_group_read_attr (SPObject * object, const gchar * attr);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
@@ -85,9 +85,8 @@ sp_group_class_init (SPGroupClass *klass)
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	gtk_object_class->destroy = sp_group_destroy;
-
 	sp_object_class->build = sp_group_build;
+	sp_object_class->release = sp_group_release;
 	sp_object_class->read_attr = sp_group_read_attr;
 	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
@@ -109,21 +108,6 @@ sp_group_init (SPGroup *group)
 {
 	group->children = NULL;
 	group->transparent = FALSE;
-}
-
-static void
-sp_group_destroy (GtkObject *object)
-{
-	SPGroup * group;
-
-	group = SP_GROUP (object);
-
-	while (group->children) {
-		group->children = sp_object_detach_unref (SP_OBJECT (object), group->children);
-	}
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * repr)
@@ -150,14 +134,29 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 }
 
 static void
+sp_group_release (SPObject *object)
+{
+	SPGroup * group;
+
+	group = SP_GROUP (object);
+
+	while (group->children) {
+		group->children = sp_object_detach_unref (SP_OBJECT (object), group->children);
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
+}
+
+static void
 sp_group_read_attr (SPObject * object, const gchar * attr)
 {
 	SPGroup * group;
 
 	group = SP_GROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) (parent_class))->read_attr)
+		((SPObjectClass *) (parent_class))->read_attr (object, attr);
 }
 
 static void

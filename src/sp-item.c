@@ -40,9 +40,9 @@
 
 #define noSP_ITEM_DEBUG_IDLE
 
-static void sp_item_class_init (SPItemClass * klass);
-static void sp_item_init (SPItem * item);
-static void sp_item_destroy (GtkObject * object);
+static void sp_item_class_init (SPItemClass *klass);
+static void sp_item_init (SPItem *item);
+static void sp_item_destroy (GtkObject *object);
 
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_read_attr (SPObject *object, const gchar *key);
@@ -63,38 +63,36 @@ static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
-static SPObjectClass * parent_class;
+static SPObjectClass *parent_class;
 
 GtkType
 sp_item_get_type (void)
 {
-	static GtkType item_type = 0;
-	if (!item_type) {
-		GtkTypeInfo item_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPItem",
 			sizeof (SPItem),
 			sizeof (SPItemClass),
 			(GtkClassInitFunc) sp_item_class_init,
 			(GtkObjectInitFunc) sp_item_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		item_type = gtk_type_unique (sp_object_get_type (), &item_info);
+		type = gtk_type_unique (SP_TYPE_OBJECT, &info);
 	}
-	return item_type;
+	return type;
 }
 
 static void
-sp_item_class_init (SPItemClass * klass)
+sp_item_class_init (SPItemClass *klass)
 {
-	GtkObjectClass * gtk_object_class;
-	SPObjectClass * sp_object_class;
+	GtkObjectClass *gtk_object_class;
+	SPObjectClass *sp_object_class;
 
 	gtk_object_class = (GtkObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (sp_object_get_type ());
+	parent_class = gtk_type_class (SP_TYPE_OBJECT);
 
 	gtk_object_class->destroy = sp_item_destroy;
 

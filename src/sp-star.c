@@ -126,8 +126,8 @@ static void
 sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 
-	if (SP_OBJECT_CLASS(parent_class)->build)
-		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
 
 	sp_star_read_attr (object, "sodipodi:cx");
 	sp_star_read_attr (object, "sodipodi:cy");
@@ -241,8 +241,8 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 		}
 		sp_shape_set_shape (shape);
 	} else {
-		if (SP_OBJECT_CLASS (parent_class)->read_attr)
-			SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+		if (((SPObjectClass *) parent_class)->read_attr)
+			((SPObjectClass *) parent_class)->read_attr (object, attr);
 	}
 }
 

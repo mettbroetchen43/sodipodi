@@ -82,17 +82,13 @@ struct _NRArenaGlyphsGroupClass {
 
 GtkType nr_arena_glyphs_group_get_type (void);
 
-void nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *group, SPStyle *style);
-
 /* Utility functions */
 
 void nr_arena_glyphs_group_clear (NRArenaGlyphsGroup *group);
 
 void nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *group, NRFont *font, int glyph, const NRMatrixF *transform);
 
-#if 0
-void nr_arena_glyphs_group_set_component (NRArenaGlyphsGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
-#endif
+void nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *group, SPStyle *style);
 
 void nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *group, const ArtDRect *pbox);
 

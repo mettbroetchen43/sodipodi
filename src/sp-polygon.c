@@ -120,8 +120,8 @@ static void
 sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 
-	if (SP_OBJECT_CLASS(parent_class)->build)
-		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
 
 	sp_polygon_read_attr (object, "points");
 }
@@ -244,8 +244,8 @@ sp_polygon_read_attr (SPObject * object, const gchar * attr)
 		return;
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) parent_class)->read_attr)
+		((SPObjectClass *) parent_class)->read_attr (object, attr);
 
 }
 

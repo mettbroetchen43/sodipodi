@@ -68,8 +68,8 @@ sp_anchor_class_init (SPAnchorClass *klass)
 	SPItemClass *item_class;
 
 	gtk_object_class = GTK_OBJECT_CLASS (klass);
-	sp_object_class = SP_OBJECT_CLASS (klass);
-	item_class = SP_ITEM_CLASS (klass);
+	sp_object_class = (SPObjectClass *) klass;
+	item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (SP_TYPE_GROUP);
 

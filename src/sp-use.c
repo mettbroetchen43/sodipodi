@@ -1,4 +1,16 @@
-#define SP_USE_C
+#define __SP_USE_C__
+
+/*
+ * SVG <svg> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <string.h>
 #include "display/nr-arena-group.h"
@@ -9,14 +21,11 @@
 /* fixme: */
 #include "desktop-events.h"
 
-enum {ARG_0, ARG_X, ARG_Y, ARG_WIDTH, ARG_HEIGHT, ARG_HREF};
-
 static void sp_use_class_init (SPUseClass *class);
 static void sp_use_init (SPUse *use);
-static void sp_use_destroy (GtkObject *object);
-static void sp_use_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_use_release (SPObject *object);
 static void sp_use_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -63,16 +72,8 @@ sp_use_class_init (SPUseClass *class)
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	gtk_object_add_arg_type ("SPUse::x", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X);
-	gtk_object_add_arg_type ("SPUse::y", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y);
-	gtk_object_add_arg_type ("SPUse::width", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_WIDTH);
-	gtk_object_add_arg_type ("SPUse::height", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_HEIGHT);
-	gtk_object_add_arg_type ("SPUse::href", GTK_TYPE_STRING, GTK_ARG_WRITABLE, ARG_HREF);
-
-	gtk_object_class->destroy = sp_use_destroy;
-	gtk_object_class->set_arg = sp_use_set_arg;
-
 	sp_object_class->build = sp_use_build;
+	sp_object_class->release = sp_use_release;
 	sp_object_class->read_attr = sp_use_read_attr;
 	sp_object_class->write = sp_use_write;
 
@@ -92,77 +93,14 @@ sp_use_init (SPUse * use)
 }
 
 static void
-sp_use_destroy (GtkObject *object)
-{
-	SPUse *use;
-
-	use = SP_USE (object);
-
-	if (use->child) {
-		use->child = sp_object_detach_unref (SP_OBJECT (object), use->child);
-	}
-
-	if (use->href) g_free (use->href);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-static void
-sp_use_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
-{
-	SPUse * use;
-	gchar * newref;
-
-	use = SP_USE (object);
-
-	switch (arg_id) {
-	case ARG_X:
-		use->x = GTK_VALUE_DOUBLE (*arg);
-		sp_use_changed (use);
-		break;
-	case ARG_Y:
-		use->y = GTK_VALUE_DOUBLE (*arg);
-		sp_use_changed (use);
-		break;
-	case ARG_WIDTH:
-		use->width = GTK_VALUE_DOUBLE (*arg);
-		sp_use_changed (use);
-		break;
-	case ARG_HEIGHT:
-		use->height = GTK_VALUE_DOUBLE (*arg);
-		sp_use_changed (use);
-		break;
-	case ARG_HREF:
-		newref = GTK_VALUE_STRING (*arg);
-		if (newref) {
-			if (use->href) {
-				if (strcmp (newref, use->href) == 0) return;
-				g_free (use->href);
-				use->href = g_strdup (newref + 1);
-			} else {
-				use->href = g_strdup (newref + 1);
-			}
-		} else {
-			if (use->href) {
-				g_free (use->href);
-				use->href = NULL;
-			}
-		}
-		sp_use_href_changed (use);
-		break;
-	}
-}
-
-static void
 sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPUse * use;
 
 	use = SP_USE (object);
 
-	if (SP_OBJECT_CLASS(parent_class)->build)
-		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
 
 	sp_use_read_attr (object, "x");
 	sp_use_read_attr (object, "y");
@@ -187,6 +125,23 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			}
 		}
 	}
+}
+
+static void
+sp_use_release (SPObject *object)
+{
+	SPUse *use;
+
+	use = SP_USE (object);
+
+	if (use->child) {
+		use->child = sp_object_detach_unref (SP_OBJECT (object), use->child);
+	}
+
+	if (use->href) g_free (use->href);
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void
@@ -244,8 +199,8 @@ sp_use_read_attr (SPObject * object, const gchar * attr)
 		return;
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) parent_class)->read_attr)
+		((SPObjectClass *) parent_class)->read_attr (object, attr);
 
 }
 

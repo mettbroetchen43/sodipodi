@@ -26,9 +26,9 @@
 
 static void sp_path_class_init (SPPathClass *class);
 static void sp_path_init (SPPath *path);
-static void sp_path_destroy (GtkObject *object);
 
 static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_path_release (SPObject *object);
 static void sp_path_read_attr (SPObject * object, const gchar * key);
 
 static void sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
@@ -70,9 +70,8 @@ sp_path_class_init (SPPathClass * klass)
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	gtk_object_class->destroy = sp_path_destroy;
-
 	sp_object_class->build = sp_path_build;
+	sp_object_class->release = sp_path_release;
 	sp_object_class->read_attr = sp_path_read_attr;
 
 	item_class->bbox = sp_path_bbox;
@@ -87,25 +86,6 @@ sp_path_init (SPPath *path)
 {
 	path->independent = TRUE;
 	path->comp = NULL;
-}
-
-static void
-sp_path_destroy (GtkObject *object)
-{
-	SPPath *path;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_PATH (object));
-
-	path = SP_PATH (object);
-
-	while (path->comp) {
-		sp_path_comp_destroy ((SPPathComp *) path->comp->data);
-		path->comp = g_slist_remove (path->comp, path->comp->data);
-	}
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 /* fixme: Better place (Lauris) */
@@ -182,8 +162,24 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		sp_repr_css_attr_unref (css);
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
+}
+
+static void
+sp_path_release (SPObject *object)
+{
+	SPPath *path;
+
+	path = SP_PATH (object);
+
+	while (path->comp) {
+		sp_path_comp_destroy ((SPPathComp *) path->comp->data);
+		path->comp = g_slist_remove (path->comp, path->comp->data);
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void
@@ -216,8 +212,8 @@ sp_path_read_attr (SPObject * object, const gchar * attr)
 		return;
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) parent_class)->read_attr)
+		((SPObjectClass *) parent_class)->read_attr (object, attr);
 
 }
 

@@ -85,8 +85,8 @@ sp_stop_init (SPStop *stop)
 static void
 sp_stop_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-	if (SP_OBJECT_CLASS (stop_parent_class)->build)
-		(* SP_OBJECT_CLASS (stop_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) stop_parent_class)->build)
+		(* ((SPObjectClass *) stop_parent_class)->build) (object, document, repr);
 
 	sp_stop_read_attr (object, "offset");
 	sp_stop_read_attr (object, "stop-color");
@@ -134,8 +134,8 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		stop->offset = sp_svg_read_percentage (str, 0.0);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else {
-		if (SP_OBJECT_CLASS (stop_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (stop_parent_class)->read_attr) (object, key);
+		if (((SPObjectClass *) stop_parent_class)->read_attr)
+			(* ((SPObjectClass *) stop_parent_class)->read_attr) (object, key);
 	}
 }
 
@@ -156,8 +156,8 @@ sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_set_attr (repr, "offset", sp_repr_attr (object->repr, "offset"));
 	}
 
-	if (SP_OBJECT_CLASS (stop_parent_class)->write)
-		(* SP_OBJECT_CLASS (stop_parent_class)->write) (object, repr, flags);
+	if (((SPObjectClass *) stop_parent_class)->write)
+		(* ((SPObjectClass *) stop_parent_class)->write) (object, repr, flags);
 
 	return repr;
 }
@@ -300,8 +300,8 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	gradient = SP_GRADIENT (object);
 
-	if (SP_OBJECT_CLASS (gradient_parent_class)->build)
-		(* SP_OBJECT_CLASS (gradient_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) gradient_parent_class)->build)
+		(* ((SPObjectClass *) gradient_parent_class)->build) (object, document, repr);
 
 	/* fixme: Add all children, not only stops? */
 	last = NULL;
@@ -398,8 +398,8 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		return;
 	}
 
-	if (SP_OBJECT_CLASS (gradient_parent_class)->read_attr)
-		(* SP_OBJECT_CLASS (gradient_parent_class)->read_attr) (object, key);
+	if (((SPObjectClass *) gradient_parent_class)->read_attr)
+		(* ((SPObjectClass *) gradient_parent_class)->read_attr) (object, key);
 }
 
 static void
@@ -523,8 +523,8 @@ sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
 
 	gr = SP_GRADIENT (object);
 
-	if (SP_OBJECT_CLASS (gradient_parent_class)->write)
-		(* SP_OBJECT_CLASS (gradient_parent_class)->write) (object, repr, flags);
+	if (((SPObjectClass *) gradient_parent_class)->write)
+		(* ((SPObjectClass *) gradient_parent_class)->write) (object, repr, flags);
 
 	if (flags & SP_OBJECT_WRITE_BUILD) {
 		SPObject *child;
@@ -1260,8 +1260,8 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 
 	lg = SP_LINEARGRADIENT (object);
 
-	if (SP_OBJECT_CLASS (lg_parent_class)->build)
-		(* SP_OBJECT_CLASS (lg_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) lg_parent_class)->build)
+		(* ((SPObjectClass *) lg_parent_class)->build) (object, document, repr);
 
 	sp_lineargradient_read_attr (object, "x1");
 	sp_lineargradient_read_attr (object, "y1");
@@ -1300,8 +1300,8 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else {
-		if (SP_OBJECT_CLASS (lg_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (lg_parent_class)->read_attr) (object, key);
+		if (((SPObjectClass *) lg_parent_class)->read_attr)
+			(* ((SPObjectClass *) lg_parent_class)->read_attr) (object, key);
 	}
 }
 
@@ -1321,8 +1321,8 @@ sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double (repr, "x2", lg->x2.computed);
 	sp_repr_set_double (repr, "y2", lg->y2.computed);
 
-	if (SP_OBJECT_CLASS (lg_parent_class)->write)
-		(* SP_OBJECT_CLASS (lg_parent_class)->write) (object, repr, flags);
+	if (((SPObjectClass *) lg_parent_class)->write)
+		(* ((SPObjectClass *) lg_parent_class)->write) (object, repr, flags);
 
 	return repr;
 }
@@ -1636,8 +1636,8 @@ sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	rg = SP_RADIALGRADIENT (object);
 
-	if (SP_OBJECT_CLASS (rg_parent_class)->build)
-		(* SP_OBJECT_CLASS (rg_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) rg_parent_class)->build)
+		(* ((SPObjectClass *) rg_parent_class)->build) (object, document, repr);
 
 	sp_radialgradient_read_attr (object, "cx");
 	sp_radialgradient_read_attr (object, "cy");
@@ -1682,8 +1682,8 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else {
-		if (SP_OBJECT_CLASS (rg_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (rg_parent_class)->read_attr) (object, key);
+		if (((SPObjectClass *) rg_parent_class)->read_attr)
+			(* ((SPObjectClass *) rg_parent_class)->read_attr) (object, key);
 	}
 }
 
@@ -1704,8 +1704,8 @@ sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double (repr, "fy", rg->fy.computed);
 	sp_repr_set_double (repr, "r", rg->r.computed);
 
-	if (SP_OBJECT_CLASS (rg_parent_class)->write)
-		(* SP_OBJECT_CLASS (rg_parent_class)->write) (object, repr, flags);
+	if (((SPObjectClass *) rg_parent_class)->write)
+		(* ((SPObjectClass *) rg_parent_class)->write) (object, repr, flags);
 
 	return repr;
 }

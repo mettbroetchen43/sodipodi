@@ -13,12 +13,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define SP_TYPE_OBJECT (sp_object_get_type ())
-#define SP_OBJECT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECT, SPObject))
-#define SP_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
-#define SP_IS_OBJECT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
-#define SP_IS_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
-
 /* Generic */
 #define SP_OBJECT_FLAGS GTK_OBJECT_FLAGS
 #define SP_OBJECT_SET_FLAGS GTK_OBJECT_SET_FLAGS
@@ -111,7 +105,8 @@ struct _SPObject {
 struct _SPObjectClass {
 	GtkObjectClass parent_class;
 
-	void (* build) (SPObject *object, SPDocument *document, SPRepr *repr);
+	void (* build) (SPObject *object, SPDocument *doc, SPRepr *repr);
+	void (* release) (SPObject *object);
 
 	/* Virtual handlers of repr signals */
 	void (* child_added) (SPObject * object, SPRepr * child, SPRepr * ref);
@@ -132,8 +127,6 @@ struct _SPObjectClass {
 
 	SPRepr * (* write) (SPObject *object, SPRepr *repr, guint flags);
 };
-
-GtkType sp_object_get_type (void);
 
 /*
  * Refcounting
@@ -160,6 +153,8 @@ SPObject *sp_object_detach (SPObject *parent, SPObject *object);
 SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
+void sp_object_invoke_release (SPObject *object);
+
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 /* Styling */

@@ -130,8 +130,8 @@ static void
 sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 
-	if (SP_OBJECT_CLASS(parent_class)->build)
-		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
 
 	sp_rect_read_attr (object, "x");
 	sp_rect_read_attr (object, "y");
@@ -215,16 +215,16 @@ sp_rect_read_attr (SPObject *object, const gchar *attr)
 		sp_rect_set_shape (rect);
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) parent_class)->read_attr)
+		((SPObjectClass *) parent_class)->read_attr (object, attr);
 
 }
 
 static void
 sp_rect_modified (SPObject *object, guint flags)
 {
-	if (SP_OBJECT_CLASS (parent_class)->modified)
-		SP_OBJECT_CLASS (parent_class)->modified (object, flags);
+	if (((SPObjectClass *) parent_class)->modified)
+		((SPObjectClass *) parent_class)->modified (object, flags);
 
 	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
 		sp_rect_set_shape (SP_RECT (object));
@@ -249,8 +249,8 @@ sp_rect_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double (repr, "x", rect->x.computed);
 	sp_repr_set_double (repr, "y", rect->y.computed);
 
-	if (SP_OBJECT_CLASS (parent_class)->write)
-		SP_OBJECT_CLASS (parent_class)->write (object, repr, flags);
+	if (((SPObjectClass *) parent_class)->write)
+		((SPObjectClass *) parent_class)->write (object, repr, flags);
 
 	return repr;
 }

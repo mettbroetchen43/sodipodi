@@ -41,7 +41,6 @@
 
 static void sp_shape_class_init (SPShapeClass *class);
 static void sp_shape_init (SPShape *shape);
-static void sp_shape_destroy (GtkObject *object);
 
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_modified (SPObject *object, guint flags);
@@ -71,9 +70,7 @@ sp_shape_get_type (void)
 			sizeof (SPShapeClass),
 			(GtkClassInitFunc) sp_shape_class_init,
 			(GtkObjectInitFunc) sp_shape_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		shape_type = gtk_type_unique (sp_path_get_type (), &shape_info);
 	}
@@ -94,8 +91,6 @@ sp_shape_class_init (SPShapeClass * klass)
 	path_class = (SPPathClass *) klass;
 
 	parent_class = gtk_type_class (sp_path_get_type ());
-
-	gtk_object_class->destroy = sp_shape_destroy;
 
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->write = sp_shape_write;
@@ -118,17 +113,6 @@ static void
 sp_shape_init (SPShape *shape)
 {
 	/* Nothing here */
-}
-
-static void
-sp_shape_destroy (GtkObject *object)
-{
-	SPShape *shape;
-
-	shape = SP_SHAPE (object);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 /* fixme: Better place (Lauris) */
@@ -278,12 +262,7 @@ sp_shape_style_modified (SPObject *object, guint flags)
 		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
 
 	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
-#if 0
-		/* fixme: */
-		nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (v->arenaitem), object->style);
-#else
 		nr_arena_shape_set_style (NR_ARENA_SHAPE (v->arenaitem), object->style);
-#endif
 	}
 }
 

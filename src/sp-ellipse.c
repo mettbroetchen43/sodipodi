@@ -134,8 +134,8 @@ sp_genericellipse_destroy (GtkObject *object)
 static void
 sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-	if (SP_OBJECT_CLASS (ge_parent_class)->build)
-		(* SP_OBJECT_CLASS (ge_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) ge_parent_class)->build)
+		(* ((SPObjectClass *) ge_parent_class)->build) (object, document, repr);
 }
 
 static void
@@ -152,8 +152,8 @@ sp_genericellipse_read_attr (SPObject * object, const gchar * attr)
 
 	str = sp_repr_attr (object->repr, attr);
 
-	if (SP_OBJECT_CLASS(ge_parent_class)->read_attr)
-		(* SP_OBJECT_CLASS (ge_parent_class)->read_attr) (object, attr);
+	if (((SPObjectClass *) ge_parent_class)->read_attr)
+		(* ((SPObjectClass *) ge_parent_class)->read_attr) (object, attr);
 }
 
 static void sp_genericellipse_glue_set_shape (SPShape *shape)
@@ -444,8 +444,8 @@ sp_ellipse_destroy (GtkObject *object)
 static void
 sp_ellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-	if (SP_OBJECT_CLASS (ellipse_parent_class)->build)
-		(* SP_OBJECT_CLASS (ellipse_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) ellipse_parent_class)->build)
+		(* ((SPObjectClass *) ellipse_parent_class)->build) (object, document, repr);
 
 	sp_ellipse_read_attr (object, "cx");
 	sp_ellipse_read_attr (object, "cy");
@@ -469,8 +469,8 @@ sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double_attribute (repr, "rx", ellipse->rx.computed);
 	sp_repr_set_double_attribute (repr, "ry", ellipse->ry.computed);
 	
-	if (SP_OBJECT_CLASS (ellipse_parent_class)->write)
-		(* SP_OBJECT_CLASS (ellipse_parent_class)->write) (object, repr, flags);
+	if (((SPObjectClass *) ellipse_parent_class)->write)
+		(* ((SPObjectClass *) ellipse_parent_class)->write) (object, repr, flags);
 
 	return repr;
 }
@@ -521,8 +521,8 @@ sp_ellipse_read_attr (SPObject * object, const gchar * attr)
 		}
 		sp_genericellipse_set_shape (ellipse);
 	} else {
-		if (SP_OBJECT_CLASS(ellipse_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (ellipse_parent_class)->read_attr) (object, attr);
+		if (((SPObjectClass *) ellipse_parent_class)->read_attr)
+			(* ((SPObjectClass *) ellipse_parent_class)->read_attr) (object, attr);
 	}
 }
 
@@ -624,8 +624,8 @@ sp_circle_destroy (GtkObject *object)
 static void
 sp_circle_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-	if (SP_OBJECT_CLASS (circle_parent_class)->build)
-		(* SP_OBJECT_CLASS (circle_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) circle_parent_class)->build)
+		(* ((SPObjectClass *) circle_parent_class)->build) (object, document, repr);
 
 	sp_circle_read_attr (object, "cx");
 	sp_circle_read_attr (object, "cy");
@@ -647,8 +647,8 @@ sp_circle_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double_attribute (repr, "cy", ellipse->cy.computed);
 	sp_repr_set_double_attribute (repr, "r", ellipse->rx.computed);
 	
-	if (SP_OBJECT_CLASS (circle_parent_class)->write)
-		SP_OBJECT_CLASS (circle_parent_class)->write (object, repr, flags);
+	if (((SPObjectClass *) circle_parent_class)->write)
+		((SPObjectClass *) circle_parent_class)->write (object, repr, flags);
 
 	return repr;
 }
@@ -691,8 +691,8 @@ sp_circle_read_attr (SPObject *object, const gchar * attr)
 		circle->ry.computed = circle->rx.computed;
 		sp_genericellipse_set_shape (circle);
 	} else {
-		if (SP_OBJECT_CLASS(circle_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (circle_parent_class)->read_attr) (object, attr);
+		if (((SPObjectClass *) circle_parent_class)->read_attr)
+			(* ((SPObjectClass *) circle_parent_class)->read_attr) (object, attr);
 	}
 }
 
@@ -798,8 +798,8 @@ sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
 	guint version;
 
-	if (SP_OBJECT_CLASS (arc_parent_class)->build)
-		(* SP_OBJECT_CLASS (arc_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) arc_parent_class)->build)
+		(* ((SPObjectClass *) arc_parent_class)->build) (object, document, repr);
 
 	version = sp_arc_find_version (object);
 
@@ -935,8 +935,8 @@ sp_arc_write (SPObject *object, SPRepr *repr, guint flags)
 		}
 	}
 
-	if (SP_OBJECT_CLASS (arc_parent_class)->write)
-		SP_OBJECT_CLASS (arc_parent_class)->write (object, repr, flags);
+	if (((SPObjectClass *) arc_parent_class)->write)
+		((SPObjectClass *) arc_parent_class)->write (object, repr, flags);
 
 	return repr;
 }
@@ -1005,8 +1005,8 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 			ellipse->closed = TRUE;
 		sp_genericellipse_set_shape (ellipse);
 	} else {
-		if (SP_OBJECT_CLASS(arc_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (arc_parent_class)->read_attr) (object, attr);
+		if (((SPObjectClass *) arc_parent_class)->read_attr)
+			((SPObjectClass *) arc_parent_class)->read_attr (object, attr);
 	}
 }
 

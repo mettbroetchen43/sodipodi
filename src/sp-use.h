@@ -1,7 +1,19 @@
-#ifndef SP_USE_H
-#define SP_USE_H
+#ifndef __SP_USE_H__
+#define __SP_USE_H__
 
-#include "sp-shape.h"
+/*
+ * SVG <svg> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include "sp-item.h"
 
 BEGIN_GNOME_DECLS
 

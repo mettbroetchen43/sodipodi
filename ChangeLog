@@ -1,3 +1,11 @@
+2002-10-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-object.c (sp_object_invoke_release): new frontend
+
+	* src/sp-object.h: Added ::release virtual method
+
+	* src/sp-object.c (sp_object_invoke_shutdown): New method
+
 2002-10-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-item-group.c (sp_item_group_ungroup): Rewrite it, so it moves

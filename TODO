@@ -3,15 +3,16 @@
 TODO for 0.27
 =============
 
-- Stamping (Masatake)
+- Stamping (DONE) (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)
 - Toolbox scaling bug
 - Tooltips for tools
 - Update .spec.in file
-- Ungroup forgetting font family bug
+- Ungroup forgetting font family bug (GONE)
 - Ungroup forgetting paintserver in group bug (DONE)
 - Fix places where bbox is not tested for emptyness
 - Fix misplaced draws if viewBox present (DONE)
+- Text does not update paint dynamically
 
 Other tasks
 ===========

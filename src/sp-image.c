@@ -150,8 +150,8 @@ sp_image_destroy (GtkObject *object)
 static void
 sp_image_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
 
 	sp_image_read_attr (object, "xlink:href");
 	sp_image_read_attr (object, "x");

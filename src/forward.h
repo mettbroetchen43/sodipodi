@@ -48,6 +48,12 @@ unsigned int sp_document_get_type (void);
 typedef struct _SPObject SPObject;
 typedef struct _SPObjectClass SPObjectClass;
 
+#define SP_TYPE_OBJECT (sp_object_get_type ())
+#define SP_OBJECT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECT, SPObject))
+#define SP_IS_OBJECT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
+
+unsigned int sp_object_get_type (void);
+
 typedef struct _SPItem SPItem;
 typedef struct _SPItemClass SPItemClass;
 

@@ -130,7 +130,8 @@ sp_string_destroy (GtkObject *object)
 static void
 sp_string_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
-	SP_OBJECT_CLASS (string_parent_class)->build (object, doc, repr);
+	if (((SPObjectClass *) string_parent_class)->build)
+		((SPObjectClass *) string_parent_class)->build (object, doc, repr);
 
 	sp_string_read_content (object);
 
@@ -554,8 +555,8 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	tspan = SP_TSPAN (object);
 
-	if (SP_OBJECT_CLASS (tspan_parent_class)->build)
-		SP_OBJECT_CLASS (tspan_parent_class)->build (object, doc, repr);
+	if (((SPObjectClass *) tspan_parent_class)->build)
+		((SPObjectClass *) tspan_parent_class)->build (object, doc, repr);
 
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
 		if (rch->type == SP_XML_TEXT_NODE) break;
@@ -627,8 +628,8 @@ sp_tspan_read_attr (SPObject *object, const gchar *attr)
 			tspan->role = SP_TSPAN_ROLE_UNSPECIFIED;
 		}
 	} else {
-		if (SP_OBJECT_CLASS (tspan_parent_class)->read_attr)
-			(SP_OBJECT_CLASS (tspan_parent_class)->read_attr) (object, attr);
+		if (((SPObjectClass *) tspan_parent_class)->read_attr)
+			(((SPObjectClass *) tspan_parent_class)->read_attr) (object, attr);
 	}
 }
 
@@ -639,8 +640,8 @@ sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 
 	tspan = SP_TSPAN (object);
 
-	if (SP_OBJECT_CLASS (tspan_parent_class)->child_added)
-		SP_OBJECT_CLASS (tspan_parent_class)->child_added (object, rch, ref);
+	if (((SPObjectClass *) tspan_parent_class)->child_added)
+		((SPObjectClass *) tspan_parent_class)->child_added (object, rch, ref);
 
 	if (!tspan->string && rch->type == SP_XML_TEXT_NODE) {
 		SPString *string;
@@ -659,8 +660,8 @@ sp_tspan_remove_child (SPObject *object, SPRepr *rch)
 
 	tspan = SP_TSPAN (object);
 
-	if (SP_OBJECT_CLASS (tspan_parent_class)->remove_child)
-		SP_OBJECT_CLASS (tspan_parent_class)->remove_child (object, rch);
+	if (((SPObjectClass *) tspan_parent_class)->remove_child)
+		((SPObjectClass *) tspan_parent_class)->remove_child (object, rch);
 
 	if (tspan->string && (SP_OBJECT_REPR (tspan->string) == rch)) {
 		tspan->string = sp_object_detach_unref (object, tspan->string);
@@ -714,8 +715,8 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 
 	/* fixme: Strictly speaking, item class write 'transform' too */
 	/* fixme: This is harmless as long as tspan affine is identity (lauris) */
-	if (SP_OBJECT_CLASS (tspan_parent_class)->write)
-		SP_OBJECT_CLASS (tspan_parent_class)->write (object, repr, flags);
+	if (((SPObjectClass *) tspan_parent_class)->write)
+		((SPObjectClass *) tspan_parent_class)->write (object, repr, flags);
 
 	return repr;
 }
@@ -907,8 +908,8 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	text = SP_TEXT (object);
 
-	if (SP_OBJECT_CLASS (text_parent_class)->build)
-		SP_OBJECT_CLASS (text_parent_class)->build (object, doc, repr);
+	if (((SPObjectClass *) text_parent_class)->build)
+		((SPObjectClass *) text_parent_class)->build (object, doc, repr);
 
 	version = sp_text_find_version (object);
 	if ((version > 0) && (version < 25)) {
@@ -997,8 +998,8 @@ sp_text_read_attr (SPObject *object, const gchar *attr)
 		text->ly.rotate_set = (str != NULL);
 		/* fixme: Re-layout it */
 	} else {
-		if (SP_OBJECT_CLASS (text_parent_class)->read_attr)
-			(SP_OBJECT_CLASS (text_parent_class)->read_attr) (object, attr);
+		if (((SPObjectClass *) text_parent_class)->read_attr)
+			(((SPObjectClass *) text_parent_class)->read_attr) (object, attr);
 	}
 }
 
@@ -1012,8 +1013,8 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	item = SP_ITEM (object);
 	text = SP_TEXT (object);
 
-	if (SP_OBJECT_CLASS (text_parent_class)->child_added)
-		SP_OBJECT_CLASS (text_parent_class)->child_added (object, rch, ref);
+	if (((SPObjectClass *) text_parent_class)->child_added)
+		((SPObjectClass *) text_parent_class)->child_added (object, rch, ref);
 
 	/* Search for position reference */
 	prev = NULL;
@@ -1074,8 +1075,8 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 
 	text = SP_TEXT (object);
 
-	if (SP_OBJECT_CLASS (text_parent_class)->remove_child)
-		SP_OBJECT_CLASS (text_parent_class)->remove_child (object, rch);
+	if (((SPObjectClass *) text_parent_class)->remove_child)
+		((SPObjectClass *) text_parent_class)->remove_child (object, rch);
 
 	prev = NULL;
 	och = text->children;

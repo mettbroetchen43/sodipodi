@@ -148,8 +148,8 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	pat = SP_PATTERN (object);
 
-	if (SP_OBJECT_CLASS (pattern_parent_class)->build)
-		(* SP_OBJECT_CLASS (pattern_parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) pattern_parent_class)->build)
+		(* ((SPObjectClass *) pattern_parent_class)->build) (object, document, repr);
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
@@ -285,8 +285,8 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else {
-		if (SP_OBJECT_CLASS (pattern_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (pattern_parent_class)->read_attr) (object, key);
+		if (((SPObjectClass *) pattern_parent_class)->read_attr)
+			(* ((SPObjectClass *) pattern_parent_class)->read_attr) (object, key);
 	}
 }
 
