@@ -1,3 +1,7 @@
+2002-02-03 Frank Felfe <innerspace@iname.com>
+
+	* src/sp-item.c (sp_item_distance_to_svg_bbox): Fix compilation error by
+
 2002-02-03  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/helper/units.c: Fix userspace/device confusion

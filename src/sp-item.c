@@ -869,12 +869,12 @@ sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *
 gdouble
 sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit)
 {
+	gdouble i2doc[6], dx, dy;
+	gdouble a2u, u2a;
+
 	g_return_val_if_fail (item != NULL, distance);
 	g_return_val_if_fail (SP_IS_ITEM (item), distance);
 	g_return_val_if_fail (unit != NULL, distance);
-
-	gdouble i2doc[6], dx, dy;
-	gdouble a2u, u2a;
 
 	g_return_val_if_fail (item != NULL, distance);
 	g_return_val_if_fail (SP_IS_ITEM (item), distance);
