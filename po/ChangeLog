@@ -1,3 +1,7 @@
+2003-03-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* POTFILES.in: Added src/module.c
+
 2003-03-03  Alessio Frusciante  <algol@firenze.linux.it>
 
 	* it.po: Updated Italian translation.

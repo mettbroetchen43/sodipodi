@@ -21,6 +21,7 @@ src/dialogs/xml-tree.c
 src/document.c
 src/dyna-draw-context.c
 src/event-context.c
+src/module.c
 src/print.c
 src/rect-context.c
 src/select-context.c
