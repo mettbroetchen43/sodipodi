@@ -14,7 +14,7 @@
 
 #include "macros.h"
 #include "helper/art-utils.h"
-#include "display/nr-arena-shape.h"
+#include "display/nr-arena-glyphs.h"
 #include "style.h"
 #include "sp-chars.h"
 
@@ -107,7 +107,7 @@ sp_chars_style_modified (SPObject *object, guint flags)
 
 	for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
 		/* fixme: */
-		nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (v->arenaitem), object->style);
+		nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (v->arenaitem), object->style);
 	}
 }
 
@@ -142,9 +142,9 @@ sp_chars_show (SPItem *item, NRArena *arena)
 
 	chars = SP_CHARS (item);
 
-	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE_GROUP);
+	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_GLYPHS_GROUP);
 
-	nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (arenaitem), SP_OBJECT_STYLE (item));
+	nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (arenaitem), SP_OBJECT_STYLE (item));
 
 	g_print ("Chars show\n");
 
@@ -157,7 +157,7 @@ sp_chars_show (SPItem *item, NRArena *arena)
 			gdouble a[6];
 			gint i;
 			for (i = 0; i < 6; i++) a[i] = el->affine[i];
-			nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (arenaitem), curve, FALSE, a);
+			nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (arenaitem), curve, FALSE, a);
 			sp_curve_unref (curve);
 		}
 	}
@@ -182,7 +182,7 @@ sp_chars_clear (SPChars *chars)
 	}
 
 	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_shape_group_clear (NR_ARENA_SHAPE_GROUP (v->arenaitem));
+		nr_arena_glyphs_group_clear (NR_ARENA_GLYPHS_GROUP (v->arenaitem));
 	}
 }
 
@@ -216,7 +216,7 @@ sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, const gd
 		gint i;
 		for (i = 0; i < 6; i++) a[i] = el->affine[i];
 		for (v = item->display; v != NULL; v = v->next) {
-			nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (v->arenaitem), curve, FALSE, a);
+			nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v->arenaitem), curve, FALSE, a);
 		}
 		sp_curve_unref (curve);
 	}
@@ -261,8 +261,8 @@ sp_chars_normalized_bpath (SPChars *chars)
 /* This is completely unrelated to SPItem::print */
 
 static void
-sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPStyle *style,
-		      const gdouble *ctm, const ArtDRect *dbox, const ArtDRect *bbox)
+sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPStyle *style, const gdouble *ctm,
+		      const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
 {
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 		gfloat rgb[3], opacity;
@@ -284,9 +284,8 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 
 	} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		SPPainter *painter;
-		static gdouble id[6] = {1,0,0,1,0,0};
 		/* fixme: */
-		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), id, SP_SCALE24_TO_FLOAT (style->opacity.value), bbox);
+		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), SP_MATRIX_D_IDENTITY, pbox);
 		if (painter) {
 			ArtDRect cbox, pbox;
 			ArtIRect ibox;
@@ -339,8 +338,14 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 	}
 }
 
+/*
+ * pbox is bbox for paint server (user coordinates)
+ * dbox is the whole display area
+ * bbox is item bbox on desktop
+ */
+
 void
-sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, const ArtDRect *dbox, const ArtDRect *bbox)
+sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
 {
 	SPCharElement *el;
 
@@ -354,7 +359,7 @@ sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, c
 		bpath = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
 		abp = art_bpath_affine_transform (bpath, chela);
 
-		sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, dbox, bbox);
+		sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
 
 		art_free (abp);
 	}

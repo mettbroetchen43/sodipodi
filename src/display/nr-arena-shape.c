@@ -14,6 +14,7 @@
 
 
 #include <math.h>
+#include <string.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -84,6 +85,8 @@ nr_arena_shape_init (NRArenaShape *shape)
 {
 	shape->curve = NULL;
 	shape->style = NULL;
+	shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
+	shape->paintbox.x1 = shape->paintbox.y1 = 1.0;
 	shape->fill_painter = NULL;
 	shape->stroke_painter = NULL;
 	shape->fill_svp = NULL;
@@ -208,13 +211,11 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style), gc->affine,
-								   SP_SCALE24_TO_FLOAT (shape->style->opacity.value), &bbox);
+		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style), gc->affine, &shape->paintbox);
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style), gc->affine,
-								     SP_SCALE24_TO_FLOAT (shape->style->opacity.value), &bbox);
+		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style), gc->affine, &shape->paintbox);
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;
@@ -396,173 +397,17 @@ nr_arena_shape_set_style (NRArenaShape *shape, SPStyle *style)
 	nr_arena_item_request_update (NR_ARENA_ITEM (shape), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }
 
-
-static void nr_arena_shape_group_class_init (NRArenaShapeGroupClass *klass);
-static void nr_arena_shape_group_init (NRArenaShapeGroup *group);
-static void nr_arena_shape_group_destroy (GtkObject *object);
-
-static guint nr_arena_shape_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static NRArenaItem *nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
-
-static NRArenaGroupClass *group_parent_class;
-
-GtkType
-nr_arena_shape_group_get_type (void)
-{
-	static GtkType type = 0;
-	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaShapeGroup",
-			sizeof (NRArenaShapeGroup),
-			sizeof (NRArenaShapeGroupClass),
-			(GtkClassInitFunc) nr_arena_shape_group_class_init,
-			(GtkObjectInitFunc) nr_arena_shape_group_init,
-			NULL, NULL, NULL
-		};
-		type = gtk_type_unique (NR_TYPE_ARENA_GROUP, &info);
-	}
-	return type;
-}
-
-static void
-nr_arena_shape_group_class_init (NRArenaShapeGroupClass *klass)
-{
-	GtkObjectClass *object_class;
-	NRArenaItemClass *item_class;
-
-	object_class = (GtkObjectClass *) klass;
-	item_class = (NRArenaItemClass *) klass;
-
-	group_parent_class = gtk_type_class (NR_TYPE_ARENA_GROUP);
-
-	object_class->destroy = nr_arena_shape_group_destroy;
-
-	item_class->render = nr_arena_shape_group_render;
-	item_class->pick = nr_arena_shape_group_pick;
-}
-
-static void
-nr_arena_shape_group_init (NRArenaShapeGroup *group)
-{
-	group->style = NULL;
-}
-
-static void
-nr_arena_shape_group_destroy (GtkObject *object)
-{
-	NRArenaShapeGroup *group;
-
-	group = NR_ARENA_SHAPE_GROUP (object);
-
-	if (group->style) {
-		sp_style_unref (group->style);
-		group->style = NULL;
-	}
-
-	if (GTK_OBJECT_CLASS (group_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (group_parent_class)->destroy) (object);
-}
-
-/* This sucks - as soon, as we have inheritable renderprops, do something with that opacity */
-
-static guint
-nr_arena_shape_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
-{
-	NRArenaGroup *group;
-	NRArenaItem *child;
-	guint ret;
-
-	group = NR_ARENA_GROUP (item);
-
-	ret = item->state;
-
-	for (child = group->children; child != NULL; child = child->next) {
-		ret = nr_arena_item_invoke_render (child, area, b);
-		if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) break;
-	}
-
-	g_return_val_if_fail (ret & NR_ARENA_ITEM_STATE_RENDER, ret);
-
-	return ret;
-}
-
-static NRArenaItem *
-nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
-{
-	NRArenaGroup *group;
-	NRArenaItem *picked;
-
-	group = NR_ARENA_GROUP (item);
-
-	picked = NULL;
-
-	if (((NRArenaItemClass *) group_parent_class)->pick)
-		picked = ((NRArenaItemClass *) group_parent_class)->pick (item, x, y, delta, sticky);
-
-	if (picked) picked = item;
-
-	return picked;
-}
-
 void
-nr_arena_shape_group_clear (NRArenaShapeGroup *sg)
+nr_arena_shape_set_paintbox (NRArenaShape *shape, const ArtDRect *pbox)
 {
-	NRArenaGroup *group;
+	g_return_if_fail (shape != NULL);
+	g_return_if_fail (NR_IS_ARENA_SHAPE (shape));
+	g_return_if_fail (pbox != NULL);
+	g_return_if_fail (pbox->x1 > pbox->x0);
+	g_return_if_fail (pbox->y1 > pbox->y0);
 
-	group = NR_ARENA_GROUP (sg);
+	memcpy (&shape->paintbox, pbox, sizeof (ArtDRect));
 
-	nr_arena_item_request_render (NR_ARENA_ITEM (group));
-
-	while (group->children) {
-		nr_arena_item_remove_child (NR_ARENA_ITEM (group), group->children);
-	}
-}
-
-void
-nr_arena_shape_group_add_component (NRArenaShapeGroup *sg, SPCurve *curve, gboolean private, const gdouble *affine)
-{
-	NRArenaGroup *group;
-	NRArenaItem *new;
-
-	group = NR_ARENA_GROUP (sg);
-
-	nr_arena_item_request_render (NR_ARENA_ITEM (group));
-
-	new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_SHAPE);
-	nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
-	nr_arena_item_unref (new);
-	nr_arena_shape_set_path (NR_ARENA_SHAPE (new), curve, private, affine);
-	nr_arena_shape_set_style (NR_ARENA_SHAPE (new), sg->style);
-}
-
-void
-nr_arena_shape_group_set_component (NRArenaShapeGroup *sg, SPCurve *curve, gboolean private, const gdouble *affine)
-{
-	g_return_if_fail (sg != NULL);
-	g_return_if_fail (NR_IS_ARENA_SHAPE_GROUP (sg));
-
-	nr_arena_shape_group_clear (sg);
-	nr_arena_shape_group_add_component (sg, curve, private, affine);
-}
-
-void
-nr_arena_shape_group_set_style (NRArenaShapeGroup *sg, SPStyle *style)
-{
-	NRArenaGroup *group;
-	NRArenaItem *child;
-
-	g_return_if_fail (sg != NULL);
-	g_return_if_fail (NR_IS_ARENA_SHAPE_GROUP (sg));
-
-	group = NR_ARENA_GROUP (sg);
-
-	if (style) sp_style_ref (style);
-	if (sg->style) sp_style_unref (sg->style);
-	sg->style = style;
-
-	for (child = group->children; child != NULL; child = child->next) {
-		g_return_if_fail (NR_IS_ARENA_SHAPE (child));
-		nr_arena_shape_set_style (NR_ARENA_SHAPE (child), sg->style);
-	}
+	nr_arena_item_request_update (NR_ARENA_ITEM (shape), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }
 

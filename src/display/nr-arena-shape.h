@@ -29,6 +29,7 @@ struct _NRArenaShape {
 	/* Shape data */
 	SPCurve *curve;
 	SPStyle *style;
+	ArtDRect paintbox;
 	/* State data */
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;
@@ -44,34 +45,6 @@ GtkType nr_arena_shape_get_type (void);
 
 void nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, gboolean private, const gdouble *affine);
 void nr_arena_shape_set_style (NRArenaShape *shape, SPStyle *style);
-
-/* Integrated group of component shapes */
-
-#include "nr-arena-group.h"
-
-#define NR_TYPE_ARENA_SHAPE_GROUP (nr_arena_shape_group_get_type ())
-#define NR_ARENA_SHAPE_GROUP(obj) (GTK_CHECK_CAST ((obj), NR_TYPE_ARENA_SHAPE_GROUP, NRArenaShapeGroup))
-#define NR_ARENA_SHAPE_GROUP_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), NR_TYPE_ARENA_SHAPE_GROUP, NRArenaShapeGroupClass))
-#define NR_IS_ARENA_SHAPE_GROUP(obj) (GTK_CHECK_TYPE ((obj), NR_TYPE_ARENA_SHAPE_GROUP))
-#define NR_IS_ARENA_SHAPE_GROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_SHAPE_GROUP))
-
-struct _NRArenaShapeGroup {
-	NRArenaGroup group;
-	SPStyle *style;
-};
-
-struct _NRArenaShapeGroupClass {
-	NRArenaGroupClass parent_class;
-};
-
-GtkType nr_arena_shape_group_get_type (void);
-
-void nr_arena_shape_group_set_style (NRArenaShapeGroup *group, SPStyle *style);
-
-/* Utility functions */
-
-void nr_arena_shape_group_clear (NRArenaShapeGroup *group);
-void nr_arena_shape_group_add_component (NRArenaShapeGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
-void nr_arena_shape_group_set_component (NRArenaShapeGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
+void nr_arena_shape_set_paintbox (NRArenaShape *shape, const ArtDRect *pbox);
 
 #endif

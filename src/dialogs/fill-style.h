@@ -2,13 +2,14 @@
 #define __SP_FILL_STYLE_H__
 
 /*
- * Fill style dialog
+ * Fill style configuration
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>
@@ -16,7 +17,6 @@
 BEGIN_GNOME_DECLS
 
 #include <gtk/gtkwidget.h>
-#include "../forward.h"
 
 GtkWidget *sp_fill_style_widget_new (void);
 

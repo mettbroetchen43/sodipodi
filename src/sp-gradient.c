@@ -17,11 +17,15 @@
 #include <stdlib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
+
 #include "svg/svg.h"
 #include "xml/repr-private.h"
 #include "document-private.h"
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
+
+#define SP_MACROS_SILENT
+#include "macros.h"
 
 #define NCOLORS 1024
 
@@ -78,6 +82,8 @@ sp_stop_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		(* SP_OBJECT_CLASS (stop_parent_class)->build) (object, document, repr);
 
 	sp_stop_read_attr (object, "offset");
+	sp_stop_read_attr (object, "stop-color");
+	sp_stop_read_attr (object, "stop-opacity");
 	sp_stop_read_attr (object, "style");
 }
 
@@ -92,12 +98,27 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 
 	if (!strcmp (key, "style")) {
 		const guchar *p;
+		/* fixme: We are reading simple values 3 times during build (Lauris) */
 		/* fixme: We need presentation attributes etc. */
 		p = sp_object_get_style_property (object, "stop-color", "black");
-		color = sp_svg_read_color (p, 0x00000000);
+		color = sp_svg_read_color (p, sp_color_get_rgba32_ualpha (&stop->color, 0x00));
 		sp_color_set_rgb_rgba32 (&stop->color, color);
 		p = sp_object_get_style_property (object, "stop-opacity", "1");
-		opacity = sp_svg_read_percentage (p, 1.0);
+		opacity = sp_svg_read_percentage (p, stop->opacity);
+		stop->opacity = opacity;
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	} else if (!strcmp (key, "stop-color")) {
+		const guchar *p;
+		/* fixme: We need presentation attributes etc. */
+		p = sp_object_get_style_property (object, "stop-color", "black");
+		color = sp_svg_read_color (p, sp_color_get_rgba32_ualpha (&stop->color, 0x00));
+		sp_color_set_rgb_rgba32 (&stop->color, color);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	} else if (!strcmp (key, "stop-opacity")) {
+		const guchar *p;
+		/* fixme: We need presentation attributes etc. */
+		p = sp_object_get_style_property (object, "stop-opacity", "1");
+		opacity = sp_svg_read_percentage (p, stop->opacity);
 		stop->opacity = opacity;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 	} else if (!strcmp (key, "offset")) {
@@ -961,7 +982,6 @@ struct _SPLGPainter {
 	gdouble len;
 	gdouble x0, y0;
 	gdouble dx, dy;
-	guint32 opacity;
 };
 
 static void sp_lineargradient_class_init (SPLinearGradientClass * klass);
@@ -971,7 +991,7 @@ static void sp_lineargradient_destroy (GtkObject * object);
 static void sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
 
-static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
+static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_lineargradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
@@ -1096,19 +1116,29 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 	}
 }
 
+/*
+ * Basically we have to deal with transformations
+ *
+ * 1) color2norm - maps point in (0,NCOLORS) vector to (0,1) vector
+ *    fixme: I do not know, how to deal with start > 0 and end < 1
+ * 2) norm2pos - maps (0,1) vector to x1,y1 - x2,y2
+ * 2) gradientTransform
+ * 3) bbox2user
+ * 4) ctm == userspace to pixel grid
+ */
+
 static SPPainter *
-sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox)
+sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *bbox)
 {
 	SPLinearGradient *lg;
 	SPGradient *gr;
 	SPLGPainter *lgp;
+	gdouble color2norm[6];
 
 	lg = SP_LINEARGRADIENT (ps);
 	gr = SP_GRADIENT (ps);
 
-	if (!gr->color) {
-		sp_gradient_ensure_colors (gr);
-	}
+	if (!gr->color) sp_gradient_ensure_colors (gr);
 
 	lgp = g_new (SPLGPainter, 1);
 
@@ -1117,58 +1147,94 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble
 
 	lgp->lg = lg;
 
-	lgp->opacity = (guint32) floor (opacity * 255.9999);
+	/* fixme: Technically speaking, we map NCOLORS on line [start,end] onto line [0,1] (Lauris) */
+	/* fixme: I almost think, we should fill color array start and end in that case (Lauris) */
+	/* fixme: The alternative would be to leave these just empty garbage or something similar (Lauris) */
+	/* fixme: Originally I had 1023.9999 here - not sure, whether we have really to cut out ceil int (Lauris) */
+	art_affine_scale (color2norm, gr->len / (gdouble) NCOLORS, gr->len / (gdouble) NCOLORS);
+	SP_PRINT_TRANSFORM ("color2norm", color2norm);
+	/* Now we have normalized vector */
 
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
-		gdouble b2c[6], vec2b[6], norm2vec[6], norm2c[6], c2norm[6];
-		/* fixme: we should use start & end here */
-		norm2vec[0] = gr->len / 1023.9999;
-		norm2vec[1] = 0.0;
-		norm2vec[2] = 0.0;
-		norm2vec[3] = gr->len / 1023.9999;
-		norm2vec[4] = 0.0;
-		norm2vec[5] = 0.0;
-#if 0
-		g_print ("\nnorm2vec: ");for (i = 0; i < 6; i++) g_print ("%g ", norm2vec[i]);g_print ("\n");
-#endif
-		/* fixme: gradient transform somewhere here */
-		vec2b[0] = lg->x2.computed - lg->x1.computed;
-		vec2b[1] = lg->y2.computed - lg->y1.computed;
-		vec2b[2] = lg->y2.computed - lg->y1.computed;
-		vec2b[3] = lg->x1.computed - lg->x2.computed;
-		vec2b[4] = lg->x1.computed;
-		vec2b[5] = lg->y1.computed;
-#if 0
-		g_print ("vec2b: ");for (i = 0; i < 6; i++) g_print ("%g ", vec2b[i]);g_print ("\n");
-#endif
-		b2c[0] = bbox->x1 - bbox->x0;
-		b2c[1] = 0.0;
-		b2c[2] = 0.0;
-		b2c[3] = bbox->y1 - bbox->y0;
-		b2c[4] = bbox->x0;
-		b2c[5] = bbox->y0;
-#if 0
-		g_print ("b2c: ");for (i = 0; i < 6; i++) g_print ("%g ", b2c[i]);g_print ("\n");
-#endif
-		art_affine_multiply (norm2c, norm2vec, vec2b);
-		art_affine_multiply (norm2c, norm2c, b2c);
-#if 0
-		g_print ("norm2c: ");for (i = 0; i < 6; i++) g_print ("%g ", norm2c[i]);g_print ("\n");
-#endif
-		art_affine_invert (c2norm, norm2c);
-#if 0
-		g_print ("c2norm: ");for (i = 0; i < 6; i++) g_print ("%g ", c2norm[i]);g_print ("\n");
-#endif
-		lgp->x0 = norm2c[4];
-		lgp->y0 = norm2c[5];
-		lgp->dx = c2norm[0];
-		lgp->dy = c2norm[2];
+		gdouble norm2pos[6], bbox2user[6];
+		gdouble color2pos[6], color2tpos[6], color2user[6], color2px[6], px2color[6];
+
+		/* This is easy case, as we can just ignore percenting here */
+		/* fixme: Still somewhat tricky, but I think I got it correct (lauris) */
+		norm2pos[0] = lg->x2.computed - lg->x1.computed;
+		norm2pos[1] = lg->y2.computed - lg->y1.computed;
+		norm2pos[2] = lg->y2.computed - lg->y1.computed;
+		norm2pos[3] = lg->x1.computed - lg->x2.computed;
+		norm2pos[4] = lg->x1.computed;
+		norm2pos[5] = lg->y1.computed;
+		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
+
+		/* gradientTransform goes here (Lauris) */
+		SP_PRINT_TRANSFORM ("gradientTransform", gr->transform);
+
+		/* BBox to user coordinate system */
+		bbox2user[0] = bbox->x1 - bbox->x0;
+		bbox2user[1] = 0.0;
+		bbox2user[2] = 0.0;
+		bbox2user[3] = bbox->y1 - bbox->y0;
+		bbox2user[4] = bbox->x0;
+		bbox2user[5] = bbox->y0;
+		SP_PRINT_TRANSFORM ("bbox2user", bbox2user);
+
+		/* CTM goes here */
+		SP_PRINT_TRANSFORM ("ctm", ctm);
+
+		art_affine_multiply (color2pos, color2norm, norm2pos);
+		SP_PRINT_TRANSFORM ("color2pos", color2pos);
+		art_affine_multiply (color2tpos, color2pos, gr->transform);
+		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
+		art_affine_multiply (color2user, color2tpos, bbox2user);
+		SP_PRINT_TRANSFORM ("color2user", color2user);
+		art_affine_multiply (color2px, color2user, ctm);
+		SP_PRINT_TRANSFORM ("color2px", color2px);
+
+		art_affine_invert (px2color, color2px);
+		SP_PRINT_TRANSFORM ("px2color", px2color);
+
+		lgp->x0 = color2px[4];
+		lgp->y0 = color2px[5];
+		lgp->dx = px2color[0];
+		lgp->dy = px2color[2];
 	} else {
-		/* This is placeholder */
-		lgp->x0 = affine[4];
-		lgp->y0 = affine[5];
-		lgp->dx = 127.0 / (bbox->x1 - bbox->x0);
-		lgp->dy = 127.0 / (bbox->y1 - bbox->y0);
+		gdouble norm2pos[6];
+		gdouble color2pos[6], color2tpos[6], color2px[6], px2color[6];
+		/* Problem: What to do, if we have mixed lengths and percentages? */
+		/* Currently we do ignore percentages at all, but that is not good (lauris) */
+
+		/* fixme: Do percentages (Lauris) */
+		norm2pos[0] = lg->x2.computed - lg->x1.computed;
+		norm2pos[1] = lg->y2.computed - lg->y1.computed;
+		norm2pos[2] = lg->y2.computed - lg->y1.computed;
+		norm2pos[3] = lg->x1.computed - lg->x2.computed;
+		norm2pos[4] = lg->x1.computed;
+		norm2pos[5] = lg->y1.computed;
+		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
+
+		/* gradientTransform goes here (Lauris) */
+		SP_PRINT_TRANSFORM ("gradientTransform", gr->transform);
+
+		/* CTM goes here */
+		SP_PRINT_TRANSFORM ("ctm", ctm);
+
+		art_affine_multiply (color2pos, color2norm, norm2pos);
+		SP_PRINT_TRANSFORM ("color2pos", color2pos);
+		art_affine_multiply (color2tpos, color2pos, gr->transform);
+		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
+		art_affine_multiply (color2px, color2tpos, ctm);
+		SP_PRINT_TRANSFORM ("color2px", color2px);
+
+		art_affine_invert (px2color, color2px);
+		SP_PRINT_TRANSFORM ("px2color", px2color);
+
+		lgp->x0 = color2px[4];
+		lgp->y0 = color2px[5];
+		lgp->dx = px2color[0];
+		lgp->dy = px2color[2];
 	}
 
 	return (SPPainter *) lgp;
@@ -1244,7 +1310,6 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	gdouble pos;
 	gint x, y;
 	guchar *p;
-	guint tmp;
 
 	lgp = (SPLGPainter *) painter;
 	lg = lgp->lg;
@@ -1258,6 +1323,7 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	for (y = 0; y < height; y++) {
 		p = px + y * rowstride;
 		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
+		g_print ("fill %d %d, pos %g\n", y0 + y, x0, pos);
 		for (x = 0; x < width; x++) {
 			gint ip, idx;
 			ip = (gint) pos;
@@ -1278,12 +1344,10 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 				break;
 			}
 			/* a * b / 255 = a * b * (256 * 256 / 255) / 256 / 256 */
-			tmp = g->color[4 * idx + 3] * lgp->opacity;
-			tmp = (tmp << 16) + tmp + (tmp >> 8);
 			*p++ = g->color[4 * idx];
 			*p++ = g->color[4 * idx + 1];
 			*p++ = g->color[4 * idx + 2];
-			*p++ = tmp >> 24;
+			*p++ = g->color[4 * idx + 3];
 			pos += lgp->dx;
 		}
 	}
@@ -1311,7 +1375,7 @@ static void sp_radialgradient_destroy (GtkObject *object);
 static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
 
-static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
+static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_radialgradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
@@ -1444,7 +1508,7 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 }
 
 static SPPainter *
-sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox)
+sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox)
 {
 	SPRadialGradient *rg;
 	SPGradient *gr;
@@ -1463,8 +1527,6 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble
 	rgp->painter.fill = sp_rg_fill;
 
 	rgp->rg = rg;
-
-	rgp->opacity = (guint) floor (opacity * 255.9999);
 
 #if 0
 	if (rg->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {

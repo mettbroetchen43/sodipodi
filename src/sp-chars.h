@@ -50,7 +50,8 @@ void sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, con
 SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 
 /* This is completely unrelated to SPItem::print */
-void sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, const ArtDRect *dbox, const ArtDRect *bbox);
+void sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm,
+			const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox);
 
 #endif
 

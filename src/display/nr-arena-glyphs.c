@@ -208,13 +208,12 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 
 	if (glyphs->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		glyphs->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (glyphs->style), gc->affine,
-								    SP_SCALE24_TO_FLOAT (glyphs->style->opacity.value), &bbox);
+		g_warning ("Glyphs gradient fill: Implement this");
+		glyphs->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (glyphs->style), gc->affine, &bbox);
 	}
 	if (glyphs->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		glyphs->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (glyphs->style), gc->affine,
-								      SP_SCALE24_TO_FLOAT (glyphs->style->opacity.value), &bbox);
+		glyphs->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (glyphs->style), gc->affine, &bbox);
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;

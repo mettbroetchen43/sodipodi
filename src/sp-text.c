@@ -1433,13 +1433,14 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 	SPText *text;
 	SPObject *ch;
 	gdouble ctm[6];
-	ArtDRect dbox, bbox;
+	ArtDRect pbox, dbox, bbox;
 
 	text = SP_TEXT (item);
 
 	gnome_print_gsave (gpc);
 
 	/* fixme: Think (Lauris) */
+	sp_item_invoke_bbox (item, &pbox, SP_MATRIX_D_IDENTITY);
 	sp_item_bbox_desktop (item, &bbox);
 	dbox.x0 = 0.0;
 	dbox.y0 = 0.0;
@@ -1449,9 +1450,9 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 
 	for (ch = text->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
-			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), gpc, ctm, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), gpc, ctm, &pbox, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
-			sp_chars_do_print (SP_CHARS (ch), gpc, ctm, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (ch), gpc, ctm, &pbox, &dbox, &bbox);
 		}
 	}
 

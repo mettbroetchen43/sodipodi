@@ -20,6 +20,8 @@
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 
+#include "macros.h"
+#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "dialogs/fill-style.h"
 #include "display/nr-arena-shape.h"
@@ -40,6 +42,7 @@ static void sp_shape_destroy (GtkObject *object);
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_write_repr (SPObject * object, SPRepr * repr);
 static void sp_shape_read_attr (SPObject * object, const gchar * attr);
+static void sp_shape_modified (SPObject *object, guint flags);
 static void sp_shape_style_modified (SPObject *object, guint flags);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
@@ -94,6 +97,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->write_repr = sp_shape_write_repr;
 	sp_object_class->read_attr = sp_shape_read_attr;
+	sp_object_class->modified = sp_shape_modified;
 	sp_object_class->style_modified = sp_shape_style_modified;
 
 	item_class->print = sp_shape_print;
@@ -168,6 +172,30 @@ sp_shape_read_attr (SPObject * object, const gchar * attr)
 }
 
 static void
+sp_shape_modified (SPObject *object, guint flags)
+{
+	SPShape *shape;
+	SPItemView *v;
+
+	shape = SP_SHAPE (object);
+
+	/* Item class reads style */
+	if (((SPObjectClass *) (parent_class))->modified)
+		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
+
+	if ((flags & SP_OBJECT_MODIFIED_FLAG) | (flags & SP_OBJECT_PARENT_MODIFIED_FLAG)) {
+		ArtDRect paintbox;
+		/* This is suboptimal, because changing parent style schedules recalculation */
+		/* But on the other hand - how can we know that parent does not tie style and transform */
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
+		SP_PRINT_DRECT ("Shape paintbox:", &paintbox);
+		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+			nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (v->arenaitem), &paintbox);
+		}
+	}
+}
+
+static void
 sp_shape_style_modified (SPObject *object, guint flags)
 {
 	SPShape *shape;
@@ -180,8 +208,12 @@ sp_shape_style_modified (SPObject *object, guint flags)
 		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
 
 	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+#if 0
 		/* fixme: */
 		nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (v->arenaitem), object->style);
+#else
+		nr_arena_shape_set_style (NR_ARENA_SHAPE (v->arenaitem), object->style);
+#endif
 	}
 }
 
@@ -241,11 +273,11 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 				} else if (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 					SPPainter *painter;
 					ArtDRect bbox;
-					gdouble id[6] = {1,0,0,1,0,0};
-					sp_item_bbox_desktop (item, &bbox);
+					sp_item_invoke_bbox (item, &bbox, SP_MATRIX_D_IDENTITY);
 					/* fixme: */
-					painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (object), id,
-									       SP_SCALE24_TO_FLOAT (object->style->opacity.value), &bbox);
+					painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (object),
+									       SP_MATRIX_D_IDENTITY,
+									       &bbox);
 					if (painter) {
 						ArtDRect dbox, cbox;
 						ArtIRect ibox;
@@ -316,16 +348,19 @@ static NRArenaItem *
 sp_shape_show (SPItem *item, NRArena *arena)
 {
 	SPObject *object;
-	SPShape * shape;
-	SPPath * path;
+	SPShape *shape;
+	SPPath *path;
 	NRArenaItem *arenaitem;
-	SPPathComp * comp;
+	SPPathComp *comp;
+#if 0
 	GSList * l;
+#endif
 
 	object = SP_OBJECT (item);
 	shape = SP_SHAPE (item);
 	path = SP_PATH (item);
 
+#if 0
 	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE_GROUP);
 
 	nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (arenaitem), object->style);
@@ -334,6 +369,14 @@ sp_shape_show (SPItem *item, NRArena *arena)
 		comp = (SPPathComp *) l->data;
 		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (arenaitem), comp->curve, comp->private, comp->affine);
 	}
+#else
+	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE);
+	nr_arena_shape_set_style (NR_ARENA_SHAPE (arenaitem), object->style);
+	if (path->comp) {
+		comp = (SPPathComp *) path->comp->data;
+		if (path->comp) nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
+	}
+#endif
 
 	return arenaitem;
 }
@@ -383,7 +426,7 @@ sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 }
 
 void
-sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
+sp_shape_remove_comp (SPPath *path, SPPathComp *comp)
 {
 	SPItem * item;
 	SPShape * shape;
@@ -394,7 +437,11 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 
 	/* fixme: */
 	for (v = item->display; v != NULL; v = v->next) {
+#if 0
 		nr_arena_shape_group_clear (NR_ARENA_SHAPE_GROUP (v->arenaitem));
+#else
+		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), NULL, FALSE, NULL);
+#endif
 	}
 
 	if (SP_PATH_CLASS (parent_class)->remove_comp)
@@ -402,7 +449,7 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 }
 
 void
-sp_shape_add_comp (SPPath * path, SPPathComp * comp)
+sp_shape_add_comp (SPPath *path, SPPathComp *comp)
 {
 	SPItem * item;
 	SPShape * shape;
@@ -412,7 +459,11 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 	shape = SP_SHAPE (path);
 
 	for (v = item->display; v != NULL; v = v->next) {
+#if 0
 		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (v->arenaitem), comp->curve, comp->private, comp->affine);
+#else
+		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), comp->curve, comp->private, comp->affine);
+#endif
 	}
 
 	if (SP_PATH_CLASS (parent_class)->add_comp)

@@ -87,33 +87,6 @@ sp_tool_options_dialog_setup (SPEventContext *ec)
 		if (!tbl) {
 			tbl = gtk_label_new (_("Tool has no options"));
 		}
-#if 0
-		const gchar *typename;
-		typename = gtk_type_name (GTK_OBJECT_TYPE (ec));
-		if (!strcmp (typename, "SPStarContext")) {
-			SPRepr *repr;
-			repr = sodipodi_get_repr (SODIPODI, "tools.shapes.star");
-			if (repr) {
-				guchar *labels[] = {N_("Number of corners:")};
-				guchar *attrs[] = {"magnitude"};
-				tbl = sp_attribute_table_new_repr (repr, 1, (const guchar **) labels, (const guchar **) attrs);
-			} else {
-				tbl = gtk_label_new (_("Missing tool preferences"));
-			}
-		} else if (!strcmp (typename, "SPDynaDrawContext")) {
-			SPRepr *repr;
-			repr = sodipodi_get_repr (SODIPODI, "tools.calligraphic");
-			if (repr) {
-				guchar *labels[] = {N_("Mass:"), N_("Drag:"), N_("Angle"), N_("Width:")};
-				guchar *attrs[] = {"mass", "drag", "angle", "width"};
-				tbl = sp_attribute_table_new_repr (repr, 4, (const guchar **) labels, (const guchar **) attrs);
-			} else {
-				tbl = gtk_label_new (_("Missing tool preferences"));
-			}
-		} else {
-			tbl = gtk_label_new (_("Tool has no options"));
-		}
-#endif
 	} else {
 		tbl = gtk_label_new (_("No active tool"));
 	}

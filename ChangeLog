@@ -1,3 +1,31 @@
+2002-09-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-paint-server.h: painter contructor signature change
+
+	* src/display/nr-arena-shape.c: Remove group stuff
+	(nr_arena_shape_set_paintbox): New method
+
+	* src/display/nr-arena-shape.h: Remove group stuff
+
+	* src/sp-object.c (sp_object_get_style_property): read presentation attr
+
+	* src/sp-chars.c (sp_chars_style_modified): Use nr_arena_glyphs_group
+	(sp_chars_show): Ditto
+	(sp_chars_clear): Ditto
+	(sp_chars_add_element): Ditto
+
+	* src/sp-shape.c (sp_shape_modified): Set paintbox
+	(sp_shape_style_modified): Use single nr_arena_shape
+	(sp_shape_show): Ditto
+	(sp_shape_remove_comp): Ditto
+	(sp_shape_add_comp): Ditto
+
+	* src/macros.h: Add total silencing
+
+	* src/sp-gradient.c (sp_lineargradient_painter_new): Implement userSpaceOnUse
+	except percentages (still not clear, what to do with those), but do
+	bbox correctly
+
 2002-09-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Generic method

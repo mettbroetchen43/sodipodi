@@ -2,13 +2,13 @@
 #define __SP_PAINT_SERVER_H__
 
 /*
- * Abstract base class for different paint types
+ * Base class for gradients and patterns
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2002 Lauris Kaplinski
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
@@ -54,14 +54,14 @@ struct _SPPaintServer {
 struct _SPPaintServerClass {
 	SPObjectClass sp_object_class;
 	/* Get SPPaint instance */
-	SPPainter * (* painter_new) (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
+	SPPainter * (* painter_new) (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 	/* Free SPPaint instance */
 	void (* painter_free) (SPPaintServer *ps, SPPainter *painter);
 };
 
 GtkType sp_paint_server_get_type (void);
 
-SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
+SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 
 #if 0
 void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);

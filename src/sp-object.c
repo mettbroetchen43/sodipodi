@@ -646,6 +646,7 @@ const guchar *
 sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *def)
 {
 	const gchar *style;
+	const guchar *val;
 
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
@@ -664,6 +665,8 @@ sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *d
 			if (*p) return p;
 		}
 	}
+	val = sp_repr_attr (object->repr, key);
+	if (val) return val;
 	if (object->parent) {
 		return sp_object_get_style_property (object->parent, key, def);
 	}
