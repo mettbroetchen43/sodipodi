@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.1\n"
-"POT-Creation-Date: 2002-05-24 04:28+0100\n"
-"PO-Revision-Date: 2002-05-24 04:35+0000\n"
+"POT-Creation-Date: 2002-05-27 23:05+0200\n"
+"PO-Revision-Date: 2002-05-28 01:35+0000\n"
 "Last-Translator: Álvaro Lopes <alvieboy@alvie.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -886,8 +886,8 @@ msgid "Rise selection one layer"
 msgstr "Elevar selecção uma camada"
 
 #: glade/toolbox.glade.h:52
-msgid "Rotate selected objects 90 clockwise"
-msgstr "Rodar objectos seleccionados 90 no sentido dos ponteiros"
+msgid "Rotate selected objects 90° clockwise"
+msgstr "Rodar objectos seleccionados 90° no sentido dos ponteiros"
 
 #: glade/toolbox.glade.h:53
 msgid "Save drawing "
