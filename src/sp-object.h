@@ -35,6 +35,7 @@
 #define SP_OBJECT_DOCUMENT(o) (SP_OBJECT (o)->document)
 #define SP_OBJECT_PARENT(o) (SP_OBJECT (o)->parent)
 #define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
+#define SP_OBJECT_STYLE(o) (SP_OBJECT (o)->style)
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>

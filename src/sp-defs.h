@@ -20,7 +20,7 @@
 
 struct _SPDefs {
 	SPObject object;
-	SPObject * children;
+	SPObject *children;
 };
 
 struct _SPDefsClass {

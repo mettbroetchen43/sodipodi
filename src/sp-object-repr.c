@@ -65,6 +65,7 @@ sp_object_type_lookup (const gchar * name)
 		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
 		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
+		g_hash_table_insert (dtable, "radialGradient", GINT_TO_POINTER (SP_TYPE_RADIALGRADIENT));
 		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
 	}
 

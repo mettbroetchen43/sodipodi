@@ -69,11 +69,13 @@ sp_paint_server_destroy (GtkObject *object)
 	ps = SP_PAINT_SERVER (object);
 
 	while (ps->painters) {
-		stale_painters = g_slist_prepend (stale_painters, ps->painters);
-		ps->painters->next = NULL;
-		ps->painters->server = NULL;
-		ps->painters->fill = sp_painter_stale_fill;
-		ps->painters = ps->painters->next;
+		SPPainter *painter;
+		painter = ps->painters;
+		ps->painters = painter->next;
+		stale_painters = g_slist_prepend (stale_painters, painter);
+		painter->next = NULL;
+		painter->server = NULL;
+		painter->fill = sp_painter_stale_fill;
 	}
 
 	if (((GtkObjectClass *) parent_class)->destroy)

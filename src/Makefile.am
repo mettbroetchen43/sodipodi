@@ -36,7 +36,6 @@ sodipodi_SOURCES = \
 	sp-item.c sp-item.h \
 	sp-item-group.c sp-item-group.h \
 	sp-root.c sp-root.h \
-	sp-header.c sp-header.h \
 	sp-namedview.c sp-namedview.h \
 	sp-guide.c sp-guide.h \
 	sp-image.c sp-image.h \

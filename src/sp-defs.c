@@ -17,6 +17,7 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static void sp_defs_modified (SPObject *object, guint flags);
 
 static SPObject * sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr);
 
@@ -57,6 +58,7 @@ sp_defs_class_init (SPDefsClass * klass)
 	sp_object_class->child_added = sp_defs_child_added;
 	sp_object_class->remove_child = sp_defs_remove_child;
 	sp_object_class->order_changed = sp_defs_order_changed;
+	sp_object_class->modified = sp_defs_modified;
 }
 
 static void
@@ -196,6 +198,34 @@ sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr *
 	} else {
 		ochild->next = defs->children;
 		defs->children = ochild;
+	}
+}
+
+static void
+sp_defs_modified (SPObject *object, guint flags)
+{
+	SPDefs *defs;
+	SPObject *child;
+	GSList *l;
+
+	defs = SP_DEFS (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+
+	l = NULL;
+	for (child = defs->children; child != NULL; child = child->next) {
+		gtk_object_ref (GTK_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_modified (child, flags);
+		}
+		gtk_object_unref (GTK_OBJECT (child));
 	}
 }
 

@@ -32,6 +32,7 @@
 #include "../sp-item.h"
 #include "../sp-gradient.h"
 #include "../style.h"
+#include "../gradient-chemistry.h"
 #include "sp-widget.h"
 #include "gradient-selector.h"
 #include "fill-style.h"
@@ -279,9 +280,21 @@ sp_fill_style_widget_type_toggled (GtkToggleButton *b, FSWFillType type)
 			g_snprintf (c, 64, "%g", lastalpha);
 			sp_repr_css_set_property (css, "fill-opacity", c);
 			break;
-		case FSW_GRADIENT:
+		case FSW_GRADIENT: {
+			SPGradient *gr;
+			const GSList *items;
 			g_warning ("Gradient fill specified");
+			gr = sp_document_default_gradient_vector (spw->document);
+			items = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
+			for (l = items; l != NULL; l = l->next) {
+				sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), gr);
+			}
+			sp_document_done (spw->document);
+			sp_repr_css_attr_unref (css);
+			localblocked = FALSE;
+			return;
 			break;
+		}
 		default:
 			g_assert_not_reached ();
 			break;

@@ -126,10 +126,10 @@ sp_gradient_image_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
 		gint x0, y0, x1, y1;
-		x0 = widget->allocation.x + event->area.x;
-		y0 = widget->allocation.y + event->area.y;
-		x1 = MIN (x0 + event->area.width, widget->allocation.x + widget->allocation.width);
-		y1 = MIN (y0 + event->area.height, widget->allocation.y + widget->allocation.height);
+		x0 = MAX (event->area.x, widget->allocation.x);
+		y0 = MAX (event->area.y, widget->allocation.y);
+		x1 = MIN (event->area.x + event->area.width, widget->allocation.x + widget->allocation.width);
+		y1 = MIN (event->area.y + event->area.height, widget->allocation.y + widget->allocation.height);
 		if ((x1 > x0) && (y1 > y0)) {
 			if (image->px) {
 				gint y;
@@ -145,7 +145,7 @@ sp_gradient_image_expose (GtkWidget *widget, GdkEventExpose *event)
 			} else {
 				gdk_draw_rectangle (widget->window, widget->style->black_gc,
 						    x0, y0,
-						    (x1 - x0), (y1 - y0),
+						    (x1 - x0), (y1 - x0),
 						    TRUE);
 			}
 		}

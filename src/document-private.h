@@ -62,6 +62,8 @@ struct _SPAction {
 	} act;
 };
 
+#define SP_DOCUMENT_DEFS(d) (SP_DOCUMENT (d)->private->root->defs)
+
 struct _SPDocumentPrivate {
 	SPReprDoc * rdoc;	/* Our SPReprDoc */
 	SPRepr * rroot;		/* Root element of SPReprDoc */

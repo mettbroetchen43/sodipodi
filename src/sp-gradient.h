@@ -65,6 +65,12 @@ struct _SPGradientVector {
 };
 
 typedef enum {
+	SP_GRADIENT_STATE_UNKNOWN,
+	SP_GRADIENT_STATE_VECTOR,
+	SP_GRADIENT_STATE_PRIVATE
+} SPGradientState;
+
+typedef enum {
 	SP_GRADIENT_UNITS_USERSPACEONUSE,
 	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX
 } SPGradientUnits;
@@ -88,10 +94,13 @@ struct _SPGradient {
 	SPPaintServer paint_server;
 	/* Reference (href) */
 	SPGradient *href;
+	/* State in Sodipodi gradient system */
+	guint state : 2;
 	SPGradientSpread spread;
 	guint spread_set : 1;
 	/* Gradient stops */
 	SPObject *stops;
+	guint has_stops : 1;
 	/* Composed vector */
 	SPGradientVector *vector;
 	/* Rendered color array */
@@ -160,6 +169,44 @@ GtkType sp_lineargradient_get_type (void);
 
 /* Builds flattened repr tree of gradient - i.e. no href */
 
-SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg);
+SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector);
+
+/*
+ * Radial Gradient
+ */
+
+#define SP_TYPE_RADIALGRADIENT (sp_radialgradient_get_type ())
+#define SP_RADIALGRADIENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_RADIALGRADIENT, SPRadialGradient))
+#define SP_RADIALGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_RADIALGRADIENT, SPRadialGradientClass))
+#define SP_IS_RADIALGRADIENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_RADIALGRADIENT))
+#define SP_IS_RADIALGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_RADIALGRADIENT))
+
+struct _SPRadialGradient {
+	SPGradient gradient;
+	SPGradientUnits units;
+	guint units_set : 1;
+	gdouble transform[6];
+	guint transform_set : 1;
+	SPDistance cx;
+	guint cx_set : 1;
+	SPDistance cy;
+	guint cy_set : 1;
+	SPDistance r;
+	guint r_set : 1;
+	SPDistance fx;
+	guint fx_set : 1;
+	SPDistance fy;
+	guint fy_set : 1;
+};
+
+struct _SPRadialGradientClass {
+	SPGradientClass parent_class;
+};
+
+GtkType sp_radialgradient_get_type (void);
+
+/* Builds flattened repr tree of gradient - i.e. no href */
+
+SPRepr *sp_radialgradient_build_repr (SPRadialGradient *lg, gboolean vector);
 
 #endif

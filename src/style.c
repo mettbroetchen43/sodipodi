@@ -342,12 +342,13 @@ sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *sty
 		g_assert (style->fill_set);
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
-		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_PARENT_MODIFIED_FLAG);
+		/* fixme: We have to use object_modified flag, because parent flag is only available downstreams */
+		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (server == style->stroke.server) {
 		g_assert (style->stroke_set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: */
-		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_PARENT_MODIFIED_FLAG);
+		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_MODIFIED_FLAG);
 	} else {
 		g_assert_not_reached ();
 	}
@@ -486,6 +487,7 @@ sp_style_write_paint (guchar *b, gint len, SPPaint *paint)
 static void
 sp_style_init (SPStyle *style)
 {
+	SPObject *object;
 	gint refcount;
 
 	g_return_if_fail (style != NULL);
@@ -502,9 +504,11 @@ sp_style_init (SPStyle *style)
 		g_free (style->stroke_dash.dash);
 	}
 
+	object = style->object;
 	refcount = style->refcount;
 	memset (style, 0, sizeof (SPStyle));
 	style->refcount = refcount;
+	style->object = object;
 
 	style->opacity = 1.0;
 	style->real_opacity = 1.0;

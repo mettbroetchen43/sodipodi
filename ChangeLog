@@ -1,3 +1,16 @@
+2001-09-15  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-gradient.c: Added radial gradient
+
+	* src/sp-gradient.h: Ditto
+
+	* src/sp-paint-server.c (sp_paint_server_destroy): Do not leak painters
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_vector_normalized): New method
+	(sp_item_force_fill_lineargradient_vector): Ditto
+
+	* src/sp-object.h (SP_OBJECT_STYLE): New macro
+
 2001-09-14  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/zoom-context.c (sp_zoom_2_to_1): Noop if no active desktop
