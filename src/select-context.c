@@ -340,54 +340,81 @@ sp_handle_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, dou
 void
 sp_handle_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state)
 {
-	ArtPoint p;
-	double skew[6];
+  ArtPoint p;
+  double skew[6], n2p[6], p2n[6];
 
-	sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
+  sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
 
-	skew[0] = 1.0;
-	skew[1] = 0.0;
-	skew[2] = p.x;
-	skew[3] = 1.0;
-	skew[4] = 0.0;
-	skew[5] = 0.0;
-
-	sp_sel_trans_transform (seltrans, skew);
+  skew[0] = 1.0;
+  if (state & GDK_CONTROL_MASK) {
+    if (fabs(p.y) < 1e-15) return;
+    skew[3] = p.y;
+    skew[2] = p.x;
+  } else {
+    if (fabs(p.y) < 1e-15) return;
+    if (fabs(p.y) < 1) p.y = fabs(p.y)/p.y;
+    skew[3] = (double)((int)(p.y + 0.5*(fabs(p.y)/p.y)));
+    if (fabs(skew[3]) < 1e-15) return;
+    skew[2] = p.x;
+  }
+  skew[1] = 0.0;
+  skew[4] = 0.0;
+  skew[5] = 0.0;
+  
+  if (state & GDK_SHIFT_MASK) {
+    n2p[0] = 2.0;
+    n2p[1] = 0;
+    n2p[2] = 0;
+    n2p[3] = 2.0;
+    n2p[4] = -1.0;
+    n2p[5] = -1.0;
+    art_affine_invert (p2n, n2p);
+    skew[3] = -1 + 2*skew[3];
+    skew[2] = 2*skew[2];
+  } else {
+    art_affine_identity (n2p);
+    art_affine_identity (p2n);
+  }
+  
+  art_affine_multiply (skew, n2p, skew);
+  art_affine_multiply (skew, skew, p2n);
+  
+  sp_sel_trans_transform (seltrans, skew);
 }
 
 void
 sp_handle_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state)
 {
-	ArtPoint p;
-	double s[6], rotate[6];
-	double d;
+  ArtPoint p;
+  double s[6], rotate[6];
+  double d;
+  
+  sp_sel_trans_point_normal (seltrans, &p);
+  d = sqrt (p.x * p.x + p.y * p.y);
+  if (d < 1e-15) return;
+  p.x /= d;
+  p.y /= d;
+  s[0] = p.x;
+  s[1] = -p.y;
+  s[2] = p.y;
+  s[3] = p.x;
+  s[4] = 0.0;
+  s[5] = 0.0;
+  
+  sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
+  art_affine_point (&p, &p, s);
+  d = sqrt (p.x * p.x + p.y * p.y);
+  if (d < 1e-15) return;
+  p.x /= d;
+  p.y /= d;
+  rotate[0] = p.x;
+  rotate[1] = p.y;
+  rotate[2] = -p.y;
+  rotate[3] = p.x;
+  rotate[4] = 0.0;
+  rotate[5] = 0.0;
 
-	sp_sel_trans_point_normal (seltrans, &p);
-	d = sqrt (p.x * p.x + p.y * p.y);
-	if (d < 1e-15) return;
-	p.x /= d;
-	p.y /= d;
-	s[0] = p.x;
-	s[1] = -p.y;
-	s[2] = p.y;
-	s[3] = p.x;
-	s[4] = 0.0;
-	s[5] = 0.0;
-
-	sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
-	art_affine_point (&p, &p, s);
-	d = sqrt (p.x * p.x + p.y * p.y);
-	if (d < 1e-15) return;
-	p.x /= d;
-	p.y /= d;
-	rotate[0] = p.x;
-	rotate[1] = p.y;
-	rotate[2] = -p.y;
-	rotate[3] = p.x;
-	rotate[4] = 0.0;
-	rotate[5] = 0.0;
-
-	sp_sel_trans_transform (seltrans, rotate);
+  sp_sel_trans_transform (seltrans, rotate);
 }
 
 void

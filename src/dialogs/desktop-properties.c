@@ -12,8 +12,8 @@
  *
  */ 
 
-#define MM2PT(v) ((v) * 25.4 / 72.0)
-#define PT2MM(v) ((v) * 72.0 / 25.4)
+#define MM2PT(v) ((v) * 72.0 / 25.4)
+#define PT2MM(v) ((v) * 25.4 / 72.0)
 
 static GladeXML  * xml = NULL;
 static GtkWidget * dialog = NULL;

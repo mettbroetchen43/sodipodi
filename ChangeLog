@@ -1,3 +1,15 @@
+2000-10-04  Frank Felfe <innerspace@iname.com>
+
+	* glade/transformation.glade: Improved dialog
+
+	* glade/*.xpm: New icons
+
+	* src/dialogs/transformation.*: Improved dialog
+
+	* src/selection-chemistry.*: new transformation functions
+
+	* src/sp-metrics.*: New files
+
 2000-10-04  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/nodepath.c: #define reasonable knot colors

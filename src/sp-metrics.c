@@ -1,0 +1,78 @@
+#include "sp-metrics.h"
+
+/*
+ * SPMetric handling and stuff
+ * I hope this will be usefull :-) 
+ */
+
+gdouble
+sp_absolute_metric_to_metric (gdouble length_src, const SPMetric metric_src, const SPMetric metric_dst) {
+  gdouble src = 1, dst = 1;
+
+  switch (metric_src) {
+  case SP_MM:
+    src = 25.4;
+    break;
+  case SP_CM:
+    src = 2.54;
+    break;
+  case SP_IN:
+    src = 1;
+    break;
+  case SP_PT:
+    src = 72;
+    break;
+  case NONE:
+    src = 1;
+    break;
+  }
+
+  switch (metric_dst) {
+  case SP_MM:
+    dst = 25.4;
+    break;
+  case SP_CM:
+    dst = 2.54;
+    break;
+  case SP_IN:
+    dst = 1;
+    break;
+  case SP_PT:
+    dst = 72;
+    break;
+  case NONE:
+    dst = 1;
+    break;
+  }
+
+  return length_src * (dst/src);
+}
+
+GString *
+sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src, const SPMetric metric_dst) {
+  GString * str;
+  gdouble len;
+
+  len = sp_absolute_metric_to_metric (length, metric_src, metric_dst);
+  str = g_string_new ("");
+  switch (metric_dst) {
+  case SP_MM:
+    g_string_sprintf (str, "%0.2f mm", len);
+    break;
+  case SP_CM:
+    g_string_sprintf (str, "%0.2f cm", len);
+    break;
+  case SP_IN:
+    g_string_sprintf (str, "%0.2f \"", len);
+    break;
+  case SP_PT:
+    g_string_sprintf (str, "%0.2f pt", len);
+    break;
+  case NONE:
+    g_string_sprintf (str, "%s", "ups!");
+    break;
+  }
+
+  return str;
+
+}

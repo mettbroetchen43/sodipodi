@@ -7,6 +7,9 @@
 #include "sp-guide.h"
 #include "sp-namedview.h"
 
+#define PTPERMM (72.0 / 25.4)
+#define DEFAULTTOLERANCE 5.0
+
 static void sp_namedview_class_init (SPNamedViewClass * klass);
 static void sp_namedview_init (SPNamedView * namedview);
 static void sp_namedview_destroy (GtkObject * object);
@@ -65,10 +68,10 @@ sp_namedview_init (SPNamedView * nv)
 	nv->snaptogrid = FALSE;
 	nv->showguides = FALSE;
 	nv->snaptoguides = FALSE;
-	nv->gridtolerance = 5.0;
-	nv->guidetolerance = 5.0;
+	nv->gridtolerance = DEFAULTTOLERANCE;
+	nv->guidetolerance = DEFAULTTOLERANCE;
 	nv->gridorigin.x = nv->gridorigin.y = 0.0;
-	nv->gridspacing.x = nv->gridspacing.y = (72.0 / 25.4);
+	nv->gridspacing.x = nv->gridspacing.y = PTPERMM;
 	nv->gridcolor = 0x3f3fff3f;
 	nv->guidecolor = 0x0000ff7f;
 	nv->guidehicolor = 0xff00007f;
@@ -172,11 +175,19 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		return;
 	}
 	if (strcmp (key, "gridtolerance") == 0) {
-		namedview->gridtolerance = sp_svg_read_length (&unit, astr);
+		if (astr) {
+			namedview->gridtolerance = sp_svg_read_length (&unit, astr);
+		} else {
+			namedview->gridtolerance = DEFAULTTOLERANCE;
+		}
 		return;
 	}
 	if (strcmp (key, "guidetolerance") == 0) {
-		namedview->guidetolerance = sp_svg_read_length (&unit, astr);
+		if (astr) {
+			namedview->guidetolerance = sp_svg_read_length (&unit, astr);
+		} else {
+			namedview->guidetolerance = DEFAULTTOLERANCE;
+		}
 		return;
 	}
 	if (strcmp (key, "gridoriginx") == 0) {
@@ -188,11 +199,19 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		return;
 	}
 	if (strcmp (key, "gridspacingx") == 0) {
-		namedview->gridspacing.x = sp_svg_read_length (&unit, astr);
+		if (astr) {
+			namedview->gridspacing.x = sp_svg_read_length (&unit, astr);
+		} else {
+			namedview->gridspacing.x = PTPERMM;
+		}
 		return;
 	}
 	if (strcmp (key, "gridspacingy") == 0) {
-		namedview->gridspacing.y = sp_svg_read_length (&unit, astr);
+		if (astr) {
+			namedview->gridspacing.y = sp_svg_read_length (&unit, astr);
+		} else {
+			namedview->gridspacing.y = PTPERMM;
+		}
 		return;
 	}
 	if (strcmp (key, "gridcolor") == 0) {

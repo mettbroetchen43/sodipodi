@@ -693,7 +693,7 @@ sp_node_ensure_knot (SPPathNode * node, gint which, gboolean show_knot)
 	side = sp_node_get_side (node, which);
 	code = sp_node_path_code_from_side (node, side);
 
-	show_knot = (code == ART_CURVETO);
+	show_knot = show_knot && (code == ART_CURVETO);
 
 	if (show_knot) {
 		if (!SP_KNOT_IS_VISIBLE (side->knot)) {
@@ -878,7 +878,6 @@ sp_node_selected_join (void)
 		sp_nodepath_node_new (t, NULL, SP_PATHNODE_CUSP, ART_MOVETO, &n->n.pos, &n->pos, &n->p.pos);
 		n = n->p.other;
 		while (n) {
-			g_assert (n->p.other);
 			sp_nodepath_node_new (t, NULL, n->type, n->n.other->code, &n->n.pos, &n->pos, &n->p.pos);
 			n = n->p.other;
 			if (n == sa->first) n = NULL;
@@ -931,7 +930,9 @@ sp_node_selected_delete (void)
 		node = (SPPathNode *) nodepath->selected->data;
 		sp_nodepath_node_destroy (node);
 	}
-	/* fixme: update knots? */
+
+	sp_nodepath_ensure_ctrls (nodepath);
+
 	update_repr (nodepath);
 }
 

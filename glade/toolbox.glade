@@ -2190,8 +2190,8 @@
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>clicked</name>
-	      <handler>sp_transformation_dialog</handler>
-	      <last_modification_time>Thu, 31 Aug 2000 13:26:05 GMT</last_modification_time>
+	      <handler>sp_transformation_dialog_move</handler>
+	      <last_modification_time>Thu, 28 Sep 2000 09:01:05 GMT</last_modification_time>
 	    </signal>
 	    <child>
 	      <left_attach>1</left_attach>

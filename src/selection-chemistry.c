@@ -15,6 +15,7 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection-chemistry.h"
+#include "sp-item-transform.h" 
 
 /* fixme: find a better place */
 GSList * clipboard = NULL;
@@ -436,6 +437,7 @@ void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
   SPItem * item;
   GSList * l;
   double curaff[6], newaff[6];
+  char tstr[80];
 
   g_assert (SP_IS_SELECTION (selection));
 
@@ -446,6 +448,12 @@ void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
     sp_item_i2d_affine (item, curaff);
     art_affine_multiply (newaff,curaff,affine);
     sp_item_set_i2d_affine (item, newaff);    
+
+    // update repr -  needed for undo 
+    tstr[79] = '\0';
+    sp_svg_write_affine (tstr, 79, item->affine);
+    sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+
   }
 }
 
@@ -454,9 +462,7 @@ void
 sp_selection_remove_transform (void) {
   SPDesktop * desktop;
   SPSelection * selection;
-  SPItem * item;
   GSList * l;
-  double curaff[6], newaff[6];
 
   desktop = SP_ACTIVE_DESKTOP;
   if (desktop == NULL) return;
@@ -470,3 +476,93 @@ sp_selection_remove_transform (void) {
   sp_document_done (SP_DT_DOCUMENT (desktop));
 
 }
+
+
+void
+sp_selection_scale_absolute (SPSelection * selection, double x0, double x1, double y0, double y1) {  
+  ArtDRect  bbox;
+  double p2o[6], o2n[6], scale[6], final[6], s[6];
+  double dx, dy, nx, ny;
+  
+  g_assert (SP_IS_SELECTION (selection));
+
+  sp_selection_bbox (selection, &bbox);
+
+  art_affine_translate (p2o, -bbox.x0, -bbox.y0);
+
+  dx = (x1-x0) / (bbox.x1 - bbox.x0);
+  dy = (y1-y0) / (bbox.y1 - bbox.y0);
+  art_affine_scale (scale, dx, dy);
+
+  nx = x0;
+  ny = y0;
+  art_affine_translate (o2n, nx, ny);
+
+  art_affine_multiply (s , p2o, scale);
+  art_affine_multiply (final , s, o2n);
+
+  sp_selection_apply_affine (selection, final);
+}
+
+
+void
+sp_selection_scale_relative (SPSelection * selection, ArtPoint * align, double dx, double dy) {  
+  double scale[6], n2d[6], d2n[6], final[6], s[6];
+
+  art_affine_translate (n2d, -align->x, -align->y);
+  art_affine_translate (d2n, align->x, align->y);
+  art_affine_scale (scale, dx, dy);
+
+  art_affine_multiply (s, n2d, scale);
+  art_affine_multiply (final, s, d2n);
+
+  sp_selection_apply_affine (selection, final);
+
+}
+
+
+void
+sp_selection_rotate_relative (SPSelection * selection, ArtPoint * center, gdouble angle) {
+  double rotate[6], n2d[6], d2n[6], final[6], s[6];
+  
+  art_affine_translate (n2d, -center->x, -center->y);
+  art_affine_invert (d2n,n2d);
+  art_affine_rotate (rotate, angle);
+
+  art_affine_multiply (s, n2d, rotate);
+  art_affine_multiply (final, s, d2n);
+
+  sp_selection_apply_affine (selection, final);
+}
+
+
+void
+sp_selection_skew_relative (SPSelection * selection, ArtPoint * align, double dx, double dy) {  
+  double skew[6], n2d[6], d2n[6], final[6], s[6];
+  
+  art_affine_translate (n2d, -align->x, -align->y);
+  art_affine_invert (d2n,n2d);
+
+  skew[0] = 1;
+  skew[1] = dy;
+  skew[2] = dx;
+  skew[3] = 1;
+  skew[4] = 0;
+  skew[5] = 0;
+
+  art_affine_multiply (s, n2d, skew);
+  art_affine_multiply (final, s, d2n);
+
+  sp_selection_apply_affine (selection, final);
+}
+
+
+void
+sp_selection_move_relative (SPSelection * selection, double dx, double dy) {  
+  double move[6];
+  
+  art_affine_translate (move, dx, dy);
+
+  sp_selection_apply_affine (selection, move);
+}
+
