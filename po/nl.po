@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-09-23 13:22+0200\n"
-"PO-Revision-Date: 2003-10-24 21:14+0200\n"
+"POT-Creation-Date: 2003-11-04 20:31+0100\n"
+"PO-Revision-Date: 2003-11-05 00:37+0100\n"
 "Last-Translator: Jeroen van der Vegt <jeroen@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,24 +44,24 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
 
 #. Page page
-#: src/desktop.c:1481 src/dialogs/align.c:286
-#: src/dialogs/desktop-properties.c:385 src/dialogs/document-properties.c:163
+#: src/desktop.c:1505 src/dialogs/align.c:286
+#: src/dialogs/desktop-properties.c:269 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:484
 msgid "Page"
 msgstr "Pagina"
 
-#: src/desktop.c:1485 src/dialogs/align.c:287 src/dialogs/export.c:140
+#: src/desktop.c:1509 src/dialogs/align.c:287 src/dialogs/export.c:140
 #: src/verbs.c:485
 msgid "Drawing"
 msgstr "Tekening"
 
 #. Selection submenu
-#: src/desktop.c:1489 src/dialogs/align.c:288 src/dialogs/export.c:145
-#: src/interface.c:553 src/toolbox.c:484 src/verbs.c:486
+#: src/desktop.c:1513 src/dialogs/align.c:288 src/dialogs/export.c:145
+#: src/interface.c:570 src/toolbox.c:485 src/verbs.c:486
 msgid "Selection"
 msgstr "Selectie"
 
-#: src/dialogs/align.c:153 src/toolbox.c:444
+#: src/dialogs/align.c:153 src/toolbox.c:445
 msgid "Align objects"
 msgstr "Objecten oplijnen"
 
@@ -159,99 +159,114 @@ msgstr "Grootste onderdeel"
 msgid "Smallest item"
 msgstr "Kleinste onderdeel"
 
-#: src/dialogs/desktop-properties.c:185
+#: src/dialogs/desktop-properties.c:191
 msgid "Desktop settings"
 msgstr "Werkblad instellingen"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:194
+#: src/dialogs/desktop-properties.c:200
 msgid "Grid"
 msgstr "Raster"
 
-#. Checkbuttons
-#: src/dialogs/desktop-properties.c:204
+#: src/dialogs/desktop-properties.c:211
 msgid "Show grid"
 msgstr "Raster weergeven"
 
-#: src/dialogs/desktop-properties.c:211
+#: src/dialogs/desktop-properties.c:212
 msgid "Snap to grid"
 msgstr "Uitlijnen op raster"
 
+#: src/dialogs/desktop-properties.c:214
+msgid "Horizontal lines"
+msgstr "Horizontale lijnen"
+
+#: src/dialogs/desktop-properties.c:215
+msgid "Vertical lines"
+msgstr "Vertikale lijnen"
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Iso grid"
+msgstr "Isometrisch raster"
+
 #: src/dialogs/desktop-properties.c:218
+msgid "Hex grid"
+msgstr "Hexagoon raster"
+
+#: src/dialogs/desktop-properties.c:221
 msgid "Grid units:"
 msgstr "Rastereenheden:"
 
-#: src/dialogs/desktop-properties.c:227
+#: src/dialogs/desktop-properties.c:223
 msgid "Origin X:"
 msgstr "X-oorsprong: "
 
-#: src/dialogs/desktop-properties.c:241
+#: src/dialogs/desktop-properties.c:225
 msgid "Origin Y:"
 msgstr "Y-oorsprong:"
 
-#: src/dialogs/desktop-properties.c:255
+#: src/dialogs/desktop-properties.c:228
 msgid "Spacing X:"
 msgstr "X tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:269
+#: src/dialogs/desktop-properties.c:230
 msgid "Spacing Y:"
 msgstr "Y tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:283 src/dialogs/desktop-properties.c:342
-msgid "Snap units:"
-msgstr "Uitlijneenheden"
-
-#: src/dialogs/desktop-properties.c:295 src/dialogs/desktop-properties.c:354
+#: src/dialogs/desktop-properties.c:235 src/dialogs/desktop-properties.c:258
 msgid "Snap distance:"
 msgstr "Uitlijnafstand:"
 
-#: src/dialogs/desktop-properties.c:308
+#: src/dialogs/desktop-properties.c:238
 msgid "Grid color:"
 msgstr "Rasterkleur:"
 
-#: src/dialogs/desktop-properties.c:312
+#: src/dialogs/desktop-properties.c:239
 msgid "Grid color"
 msgstr "Rasterkleur"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:318
+#: src/dialogs/desktop-properties.c:243
 msgid "Guides"
 msgstr "Hulplijnen"
 
-#: src/dialogs/desktop-properties.c:327
+#: src/dialogs/desktop-properties.c:252
 msgid "Show guides"
 msgstr "Hulplijnen weergeven"
 
-#: src/dialogs/desktop-properties.c:335
+#: src/dialogs/desktop-properties.c:253
 msgid "Snap to guides"
 msgstr "Uitlijnen op hulplijnen"
 
-#: src/dialogs/desktop-properties.c:366
+#: src/dialogs/desktop-properties.c:256
+msgid "Snap units:"
+msgstr "Uitlijneenheden"
+
+#: src/dialogs/desktop-properties.c:261
 msgid "Guides color:"
-msgstr "Hulplijnkleur:"
+msgstr "Hulplijn kleur:"
 
-#: src/dialogs/desktop-properties.c:370
+#: src/dialogs/desktop-properties.c:262
 msgid "Guideline color"
-msgstr "Hulplijnkleur"
+msgstr "Hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:375
+#: src/dialogs/desktop-properties.c:264
 msgid "Highlight color:"
 msgstr "Oplichtende kleur:"
 
-#: src/dialogs/desktop-properties.c:379
+#: src/dialogs/desktop-properties.c:265
 msgid "Highlighted guideline color"
-msgstr "Benadrukte hulplijnkleur"
+msgstr "Oplichtende hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:394
+#: src/dialogs/desktop-properties.c:278
 msgid "Show border"
 msgstr "Rand weergeven"
 
-#: src/dialogs/desktop-properties.c:401
+#: src/dialogs/desktop-properties.c:280
 msgid "Border on top of drawing"
 msgstr "Rand aan de bovenkant van de tekening"
 
-#: src/dialogs/desktop-properties.c:647
+#: src/dialogs/desktop-properties.c:543
 msgid "Close"
 msgstr "Sluiten"
 
@@ -386,7 +401,7 @@ msgstr "Exporteren"
 
 #: src/dialogs/fill-style.c:89
 msgid "Fill style"
-msgstr "Opvulstijl"
+msgstr "Opvul eigenschappen"
 
 #: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
@@ -400,51 +415,52 @@ msgstr "niet-nul"
 msgid "evenodd"
 msgstr "even-oneven"
 
-#: src/dialogs/item-properties.c:78
+#: src/dialogs/item-properties.c:77 src/dialogs/item-properties.c:274
+#: src/dialogs/item-properties.c:348 src/dialogs/item-properties.c:355
+msgid "ID"
+msgstr "ID"
+
+#: src/dialogs/item-properties.c:91
+msgid "Set ID"
+msgstr "ID van de set"
+
+#: src/dialogs/item-properties.c:102
 msgid "Sensitive"
 msgstr "Gevoelig"
 
-#: src/dialogs/item-properties.c:83
+#: src/dialogs/item-properties.c:107
 msgid "Visible"
 msgstr "Zichtbaar"
 
-#: src/dialogs/item-properties.c:88
+#: src/dialogs/item-properties.c:112
 msgid "Active"
 msgstr "Actief"
 
-#: src/dialogs/item-properties.c:93
+#: src/dialogs/item-properties.c:117
 msgid "Printable"
 msgstr "Afdrukbaar"
 
-#: src/dialogs/item-properties.c:104
+#: src/dialogs/item-properties.c:128
 msgid "Opacity:"
 msgstr "Ondoorzichtigheid"
 
-#: src/dialogs/item-properties.c:123
+#: src/dialogs/item-properties.c:147
 msgid "Transformation matrix"
 msgstr "Transformatie matrix"
 
-#: src/dialogs/item-properties.c:245
-msgid "Item is reference"
-msgstr "Item is referentie"
+#: src/dialogs/item-properties.c:268
+msgid "Ref"
+msgstr "Referentie"
 
-#: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:330
-msgid "The SVG ID of item"
-msgstr "Het SVG-ID van het item"
-
-#: src/dialogs/item-properties.c:332
-msgid "The ID is not valid"
+#: src/dialogs/item-properties.c:350
+msgid "ID invalid"
 msgstr "Het ID is ongeldig"
 
-#: src/dialogs/item-properties.c:334
-msgid "The ID is already defined"
-msgstr "Het ID is al gedefinieerd"
+#: src/dialogs/item-properties.c:352
+msgid "ID exists"
+msgstr "ID bestaat"
 
-#: src/dialogs/item-properties.c:337
-msgid "The ID is valid"
-msgstr "Het ID is geldig"
-
-#: src/dialogs/item-properties.c:410 src/verbs.c:499
+#: src/dialogs/item-properties.c:428 src/verbs.c:499
 msgid "Item properties"
 msgstr "Item eigenschappen"
 
@@ -615,14 +631,14 @@ msgid "Text"
 msgstr "Tekst"
 
 #: src/dialogs/object-properties.c:283
-msgid "Object position and size"
-msgstr "Object positie en grootte"
+msgid "Object Size and Position"
+msgstr "Object grootte en positie"
 
-#: src/dialogs/object-properties.c:305
-msgid "Position and size"
-msgstr "Positie en grootte"
+#: src/dialogs/object-properties.c:305 src/verbs.c:494
+msgid "Size and Position"
+msgstr "Grootte en positie"
 
-#: src/dialogs/stroke-style.c:543 src/toolbox.c:440
+#: src/dialogs/stroke-style.c:543 src/toolbox.c:441
 msgid "Stroke settings"
 msgstr "Lijn instellingen"
 
@@ -641,32 +657,32 @@ msgstr "Uiteinde"
 msgid "Pattern:"
 msgstr "Patroon:"
 
-#: src/dialogs/text-edit.c:93
+#: src/dialogs/text-edit.c:95
 msgid "Text properties"
 msgstr "Text eigenschappen"
 
 #. Layout
-#: src/dialogs/text-edit.c:132
+#: src/dialogs/text-edit.c:134
 msgid "Layout"
-msgstr "Lay-out"
+msgstr "Layout"
 
-#: src/dialogs/text-edit.c:140
+#: src/dialogs/text-edit.c:142
 msgid "Alignment:"
 msgstr "Uitlijning:"
 
-#: src/dialogs/text-edit.c:165
+#: src/dialogs/text-edit.c:167
 msgid "Orientation:"
 msgstr "Oriëntatie:"
 
-#: src/dialogs/text-edit.c:183
+#: src/dialogs/text-edit.c:185
 msgid "Line spacing:"
 msgstr "Regel afstand:"
 
-#: src/dialogs/text-edit.c:208
+#: src/dialogs/text-edit.c:210
 msgid "Text and font"
 msgstr "Text en lettertype"
 
-#: src/dialogs/text-edit.c:219
+#: src/dialogs/text-edit.c:221
 msgid "Set as default"
 msgstr "Instellen als standaard"
 
@@ -736,7 +752,7 @@ msgstr "Selectie transformeren."
 
 #: src/dialogs/transformation.c:365
 msgid "Move"
-msgstr "Bewegen"
+msgstr "Verplaatsen"
 
 #. Relative moves
 #: src/dialogs/transformation.c:407
@@ -757,7 +773,7 @@ msgstr "grd"
 
 #: src/dialogs/xml-tree.c:158
 msgid "Drag to reorder nodes"
-msgstr "Sleep om de nodes te herschikken"
+msgstr "Sleep om de items te herschikken"
 
 #: src/dialogs/xml-tree.c:171
 msgid "New element node"
@@ -769,11 +785,11 @@ msgstr "Nieuwe tekst node"
 
 #: src/dialogs/xml-tree.c:206
 msgid "Duplicate node"
-msgstr "Node verdubbelen"
+msgstr "Item dupliceren"
 
 #: src/dialogs/xml-tree.c:222
 msgid "Delete node"
-msgstr "Node verwijderen"
+msgstr "Item verwijderen"
 
 #: src/dialogs/xml-tree.c:235
 msgid "Unindent node"
@@ -785,11 +801,11 @@ msgstr "Inspring vergroten"
 
 #: src/dialogs/xml-tree.c:256
 msgid "Raise node"
-msgstr "Node naar voren brengen"
+msgstr "Item naar voren brengen"
 
 #: src/dialogs/xml-tree.c:267
 msgid "Lower node"
-msgstr "Node naar achteren brengen"
+msgstr "Item naar achteren brengen"
 
 #: src/dialogs/xml-tree.c:304
 msgid "Delete attribute"
@@ -797,7 +813,7 @@ msgstr "Attribuut verwijderen"
 
 #: src/dialogs/xml-tree.c:334
 msgid "Attribute name"
-msgstr "Atribuut naam"
+msgstr "Attribuut naam"
 
 #: src/dialogs/xml-tree.c:341
 msgid "Set attribute"
@@ -814,7 +830,7 @@ msgstr "Sodipodi: %s : XML weergave"
 
 #: src/dialogs/xml-tree.c:849
 msgid "New element node..."
-msgstr "Nieuwe element node..."
+msgstr "Nieuwe item toevoegen..."
 
 #: src/dialogs/xml-tree.c:869
 msgid "Cancel"
@@ -824,20 +840,20 @@ msgstr "Annuleren"
 msgid "Create"
 msgstr "Aanmaken"
 
-#: src/document.c:339
+#: src/document.c:340
 #, c-format
 msgid "New document %d"
 msgstr "Nieuw document %d"
 
-#: src/document.c:368
+#: src/document.c:369
 #, c-format
 msgid "Memory document %d"
 msgstr "Geheugen gebruik document %d"
 
-#: src/document.c:454
+#: src/document.c:455
 #, c-format
 msgid "Unnamed document %d"
-msgstr "Naamloos deocument %d"
+msgstr "Naamloos document %d"
 
 #: src/draw-context.c:280
 msgid "Appending to selection. Press 'a' to toggle Append/New."
@@ -1025,90 +1041,94 @@ msgstr ""
 msgid "Ex squares"
 msgstr ""
 
-#: src/interface.c:313
+#: src/interface.c:303 src/interface.c:480
+msgid "Open Recent"
+msgstr "Recen_te bestanden"
+
+#: src/interface.c:323
 msgid "Close View"
 msgstr "Weergave sluiten"
 
-#: src/interface.c:314 src/interface.c:478
+#: src/interface.c:324 src/interface.c:495
 msgid "Exit Program"
 msgstr "Prorgamma afsluiten"
 
-#: src/interface.c:316 src/interface.c:471
+#: src/interface.c:326 src/interface.c:487
 msgid "About Sodipodi"
 msgstr "Over Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:319 src/interface.c:474
+#: src/interface.c:329 src/interface.c:490
 msgid "About Modules"
 msgstr "Over modules"
 
-#: src/interface.c:337
+#: src/interface.c:347
 msgid "Cleanup"
 msgstr "Opschonen"
 
 #. View:Zoom
-#: src/interface.c:407 src/toolbox.c:616 src/verbs.c:476
+#: src/interface.c:417 src/toolbox.c:617 src/verbs.c:476
 msgid "Zoom"
 msgstr "Zoomen"
 
 #. View:New View
-#: src/interface.c:419
+#: src/interface.c:429
 msgid "New View"
 msgstr "Nieuwe weergave"
 
 #. View:New Preview
-#: src/interface.c:421
+#: src/interface.c:431
 msgid "New Preview"
 msgstr "Nieuw voorbeeld"
 
-#: src/interface.c:423
+#: src/interface.c:433
 msgid "New Toplevel Toolbox"
 msgstr "Nieuwe losse gereedschapskist"
 
-#: src/interface.c:424
+#: src/interface.c:434
 msgid "New Docked Toolbox"
 msgstr "Nieuwe gekoppelde gereedschapskist"
 
-#: src/interface.c:425
+#: src/interface.c:435
 msgid "Remove Docked Toolbox"
 msgstr "Verwijder gekoppelde gereedschapskist"
 
 #. File
-#: src/interface.c:467 src/verbs.c:429
+#: src/interface.c:477 src/verbs.c:429
 msgid "New"
 msgstr "Nieuw"
 
-#: src/interface.c:468
+#: src/interface.c:478
 msgid "Open"
 msgstr "Openen"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:541 src/toolbox.c:347
+#: src/interface.c:558 src/toolbox.c:348
 msgid "File"
 msgstr "Bestand"
 
 #. Edit submenu
-#: src/interface.c:547 src/toolbox.c:404 src/widgets/gradient-selector.c:135
+#: src/interface.c:564 src/toolbox.c:405 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Bewerken"
 
 #. View submenu
-#: src/interface.c:559
+#: src/interface.c:576
 msgid "View"
-msgstr "Weergeven"
+msgstr "Beeld"
 
 #. Drawing mode submenu
-#: src/interface.c:565
+#: src/interface.c:582
 msgid "Drawing Mode"
 msgstr "Teken modus"
 
 #. Dialog submenu
-#: src/interface.c:571
+#: src/interface.c:588
 msgid "Dialogs"
-msgstr "Meldingen"
+msgstr "Weergeven"
 
-#: src/interface.c:578
+#: src/interface.c:595
 msgid "Filters"
 msgstr "Filters"
 
@@ -1154,7 +1174,7 @@ msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
-"Oppervlakte van het geëxporteerde· ebied (standaard het hele documenten; 0,0 "
+"Oppervlakte van het geëxporteerde  ebied (standaard het hele documenten; 0,0 "
 "is de hoek linksonder)"
 
 #: src/main.c:145
@@ -1232,7 +1252,7 @@ msgstr "Sodipodi (doc. naam %s): Afdrukvoorbeeld"
 
 #: src/modules/kde.cpp:159
 msgid "Document variant:"
-msgstr "Document·variant"
+msgstr "Document variant"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1300,8 +1320,9 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
-"Geef de doel lpr-wachtrij.Gebruik '> bestandsnaam' om af te drukken naar een "
-"bestand,of '| programma argument....' om het naar een programma te sturen."
+"Geef de doel lpr-wachtrij. Gebruik '> bestandsnaam' om\n"
+"af te drukken naar een bestand, of '| programma argument....' \n"
+"om het naar een programma te sturen."
 
 #: src/modules/ps.c:837
 msgid "write error occured"
@@ -1315,7 +1336,7 @@ msgstr "Item"
 #. Item dialog
 #: src/object-ui.c:108 src/verbs.c:499
 msgid "Item Properties"
-msgstr "Itemeigenschappen"
+msgstr "Item eigenschappen"
 
 #. Select item
 #: src/object-ui.c:118
@@ -1395,7 +1416,7 @@ msgid "Shape"
 msgstr "Vorm"
 
 #. Item dialog
-#: src/object-ui.c:460 src/toolbox.c:441
+#: src/object-ui.c:460 src/toolbox.c:442
 msgid "Fill settings"
 msgstr "Opvul eigenschappen"
 
@@ -1432,16 +1453,16 @@ msgstr "Spiraal eigenschappen"
 #. rx_ratio
 #: src/rect-context.c:397
 msgid "Roundness ratio for x:"
-msgstr "Afrondingsfactor·in·x-richting:"
+msgstr "Afrondingsfactor in x-richting:"
 
 #. ry_ratio
 #: src/rect-context.c:409
 msgid "Roundness ratio for y:"
-msgstr "Afrondingsfactor·in·y-richting:"
+msgstr "Afrondingsfactor in y-richting:"
 
 #: src/select-context.c:564
 msgid "Visual transformation"
-msgstr ""
+msgstr "Weergave bij transformatie"
 
 #: src/select-context.c:572
 msgid "Show content"
@@ -1467,30 +1488,30 @@ msgstr "Behouden"
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi diavoorstelling"
 
-#: src/sodipodi.c:398
+#: src/sodipodi.c:395
 msgid "Untitled document"
 msgstr "Namaloos document"
 
 #. Show nice dialog box
-#: src/sodipodi.c:423
+#: src/sodipodi.c:420
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Er is een fout op getreden in Sodipodi, en het zal nu worden afgesloten.\n"
 
-#: src/sodipodi.c:424
+#: src/sodipodi.c:421
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatische reservekopieën van niet opgeslagen documenten werden gemaakt op "
 "de volgende lokaties:\n"
 
-#: src/sodipodi.c:425
+#: src/sodipodi.c:422
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Het automatisch maken van een reservekopie is mislukt voor de volgende "
 "bestanden:\n"
 
-#: src/sodipodi.c:564
+#: src/sodipodi.c:561
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1501,7 +1522,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u uw instellingen niet laden of opslaan\n"
 
-#: src/sodipodi.c:567
+#: src/sodipodi.c:564
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1516,7 +1537,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:572
+#: src/sodipodi.c:569
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1529,7 +1550,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:584
+#: src/sodipodi.c:581
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1540,7 +1561,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:587
+#: src/sodipodi.c:584
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1553,7 +1574,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:591
+#: src/sodipodi.c:588
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1564,7 +1585,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:930
+#: src/sodipodi.c:927
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1576,7 +1597,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u %s niet kunnen laden of opslaan."
 
-#: src/sodipodi.c:934
+#: src/sodipodi.c:931
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1589,7 +1610,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:935
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1602,7 +1623,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:939
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1615,7 +1636,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:952
+#: src/sodipodi.c:949
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1626,7 +1647,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:955
+#: src/sodipodi.c:952
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1637,7 +1658,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:958
+#: src/sodipodi.c:955
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1648,7 +1669,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) gebruiken\n"
 
-#: src/sodipodi.c:961
+#: src/sodipodi.c:958
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1659,7 +1680,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) gebruiken\n"
 
-#: src/sp-anchor.c:195
+#: src/sp-anchor.c:193
 #, c-format
 msgid "Link to %s"
 msgstr "Koppeling naar %s"
@@ -1695,7 +1716,7 @@ msgstr "Onbekend"
 msgid "Image URI:"
 msgstr "Afbeeldings URI:"
 
-#: src/sp-item-group.c:456
+#: src/sp-item-group.c:455
 #, c-format
 msgid "Group of %d objects"
 msgstr "Groep van %d objecten"
@@ -1705,7 +1726,7 @@ msgid "Unknown item :-("
 msgstr "Onbekend item :-("
 
 #. fixme:
-#: src/sp-text.c:1305
+#: src/sp-text.c:1460
 msgid "Text object"
 msgstr "Tekst object"
 
@@ -1724,65 +1745,70 @@ msgstr "Verhouding:"
 msgid "Make sides flat"
 msgstr "Maak zijkanten vlak"
 
-#: src/toolbox.c:438
+#: src/toolbox.c:439
 msgid "Object"
 msgstr "Object"
 
-#: src/toolbox.c:442 src/verbs.c:494
+#: src/toolbox.c:443 src/verbs.c:494
 msgid "Object size and position"
 msgstr "Object grootte en positie"
 
-#: src/toolbox.c:443
+#: src/toolbox.c:444
 msgid "Text and font settings"
 msgstr "Text en lettertype voorkeuren"
 
-#: src/toolbox.c:445 src/verbs.c:495
+#: src/toolbox.c:446 src/verbs.c:495
 msgid "Object transformations"
 msgstr "Object transformaties"
 
-#: src/toolbox.c:518
+#: src/toolbox.c:519
 msgid "Draw"
 msgstr "Tekenen"
 
-#: src/toolbox.c:573
+#: src/toolbox.c:574
 msgid "Extension"
 msgstr "Extensie"
 
-#: src/toolbox.c:650
+#: src/toolbox.c:651
 msgid "Nodes"
 msgstr "Nodes"
 
-#: src/toolbox.c:652
+#: src/toolbox.c:654
 msgid "Insert new nodes into selected segments"
 msgstr "Nieuwe nodes invoegen in de geselecteerde segmenten"
 
-#: src/toolbox.c:653
+#: src/toolbox.c:656
 msgid "Break line at selected nodes"
 msgstr "De lijnen op de geselecteerde knooppunten breken"
 
-#: src/toolbox.c:654
+#: src/toolbox.c:658
 msgid "Make selected nodes corner"
 msgstr "De geselecteerde knooppunten onder een hoek zetten"
 
-#: src/toolbox.c:655
+#: src/toolbox.c:660
 msgid "Make selected segments lines"
 msgstr "De geselecteerde segmenten omzetten naar rechtelijnen\t"
 
-#: src/toolbox.c:656
+#: src/toolbox.c:662
 msgid "Delete selected nodes"
 msgstr "De geselecteerde knooppunten verwijderen"
 
-#: src/toolbox.c:657
+#: src/toolbox.c:664
 msgid "Join lines at selected nodes"
 msgstr "Lijnen op de geselecteerde knooppunten samenvoegen"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:667
+msgid "Join lines at selected nodes with new segment"
+msgstr ""
+"Lijnen op de geselecteerde knooppunten samenvoegen met een nieuw segment"
+
+#: src/toolbox.c:669
 msgid "Make selected nodes smooth"
 msgstr "De geselecteerde knopen vloeiend"
 
-#: src/toolbox.c:659
+#: src/toolbox.c:671
 msgid "Make selected segments curves"
-msgstr "Gekromde·lijnen·maken·van de geselecteerde segmenten."
+msgstr "Gekromde lijnen maken van de geselecteerde segmenten."
 
 #: src/verbs.c:427
 msgid "Does nothing"
@@ -1911,7 +1937,7 @@ msgstr "Geselecteerde objecten verdubbelen"
 
 #: src/verbs.c:446
 msgid "Clear All"
-msgstr "Alles legen"
+msgstr "Alles verwijderen"
 
 #: src/verbs.c:446
 msgid "Delete all objects from document"
@@ -1948,7 +1974,7 @@ msgstr "Verhoog"
 
 #: src/verbs.c:451
 msgid "Raise selected objects one position"
-msgstr "De geselecteerde objecten één·n veau naar voren brengen"
+msgstr "De geselecteerde objecten één n veau naar voren brengen"
 
 #: src/verbs.c:452
 msgid "Lower"
@@ -1956,7 +1982,7 @@ msgstr "Verlaag"
 
 #: src/verbs.c:452
 msgid "Lower selected objects one position"
-msgstr "De geselecteerde objecten één·n veau naar achteren brengen"
+msgstr "De geselecteerde objecten één n veau naar achteren brengen"
 
 #: src/verbs.c:453
 msgid "Group selected objects"
@@ -2066,7 +2092,7 @@ msgstr "Spiralen maken"
 
 #: src/verbs.c:472
 msgid "Pencil"
-msgstr "Potlood"
+msgstr "Vrije·hand"
 
 #: src/verbs.c:472
 msgid "Draw freehand curves and straight lines"
@@ -2184,7 +2210,7 @@ msgstr "Eigenschappen van het 'document instellingen' scherm"
 
 #: src/verbs.c:491
 msgid "Tool Options"
-msgstr "Tool Opties"
+msgstr "Tool opties"
 
 #: src/verbs.c:492
 msgid "Tool Attributes"
@@ -2197,10 +2223,6 @@ msgstr "Opvulling en lijnen"
 #: src/verbs.c:493
 msgid "Fill and stroke settings"
 msgstr "Opvul- en lijninstellingen"
-
-#: src/verbs.c:494
-msgid "Size and Position"
-msgstr "Grootte en positie"
 
 #: src/verbs.c:495
 msgid "Transformations"
