@@ -1,5 +1,17 @@
 2003-02-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-item.c (sp_item_release): Release mask
+	(sp_item_mask_release): New handler
+	(sp_item_mask_modified): Ditto
+	(sp_item_set): Parse mask
+	(sp_item_show): Show mask
+	(sp_item_private_hide): Hide mask
+
+	* src/display/nr-arena-item.c (nr_arena_item_invoke_render): Do masking
+	(nr_arena_item_private_dispose): Release mask
+	(nr_arena_item_invoke_update): Update mask
+	(nr_arena_item_set_mask): New method
+
 	* src/sp-root.c (sp_root_build): Do not check for xmlns:sodipodi to determine
 	version, as this is set automatically in xml loader
 

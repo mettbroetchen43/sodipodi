@@ -80,6 +80,7 @@ struct _SPItem {
 	NRMatrixF transform;
 
 	SPObject *clip;
+	SPObject *mask;
 
 	SPItemView *display;
 };

@@ -75,6 +75,8 @@ struct _NRArenaItem {
 	float opacity;
 	/* Clip item */
 	NRArenaItem *clip;
+	/* Mask item */
+	NRArenaItem *mask;
 	/* Rendered buffer */
 	unsigned char *px;
 };
@@ -138,6 +140,7 @@ void nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 void nr_arena_item_set_opacity (NRArenaItem *item, gdouble opacity);
 void nr_arena_item_set_sensitive (NRArenaItem *item, gboolean sensitive);
 void nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip);
+void nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask);
 void nr_arena_item_set_order (NRArenaItem *item, gint order);
 
 /* Helpers */

@@ -39,6 +39,7 @@
 #include "sp-root.h"
 #include "sp-anchor.h"
 #include "sp-clippath.h"
+#include "sp-mask.h"
 #include "sp-item.h"
 
 #define noSP_ITEM_DEBUG_IDLE
@@ -127,6 +128,7 @@ sp_item_init (SPItem *item)
 	item->display = NULL;
 
 	item->clip = NULL;
+	item->mask = NULL;
 
 	if (!object->style) object->style = sp_style_new_from_object (SP_OBJECT (item));
 }
@@ -140,6 +142,7 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "transform");
 	sp_object_read_attr (object, "style");
 	sp_object_read_attr (object, "clip-path");
+	sp_object_read_attr (object, "mask");
 	sp_object_read_attr (object, "sodipodi:insensitive");
 }
 
@@ -155,6 +158,10 @@ sp_item_release (SPObject * object)
 			sp_clippath_hide (SP_CLIPPATH (item->clip), item->display->pkey);
 			nr_arena_item_set_clip (item->display->arenaitem, NULL);
 		}
+		if (item->mask) {
+			sp_mask_hide (SP_MASK (item->mask), item->display->pkey);
+			nr_arena_item_set_mask (item->display->arenaitem, NULL);
+		}
 		nr_arena_item_destroy (item->display->arenaitem);
 		item->display = sp_item_view_list_remove (item->display, item->display);
 	}
@@ -162,6 +169,11 @@ sp_item_release (SPObject * object)
 	if (item->clip) {
 		sp_signal_disconnect_by_data (item->clip, object);
 		item->clip = sp_object_hunref (SP_OBJECT (item->clip), object);
+	}
+
+	if (item->mask) {
+		sp_signal_disconnect_by_data (item->mask, object);
+		item->mask = sp_object_hunref (SP_OBJECT (item->mask), object);
 	}
 
 	if (((SPObjectClass *) (parent_class))->release)
@@ -192,6 +204,29 @@ sp_item_clip_modified (SPClipPath *cp, guint flags, SPItem *item)
 }
 
 static void
+sp_item_mask_release (SPMask *mask, SPItem *item)
+{
+	if (item->mask) {
+		SPItemView *v;
+		/* Hide mask */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_mask_hide (SP_MASK (item->mask), v->pkey);
+			nr_arena_item_set_mask (v->arenaitem, NULL);
+		}
+		/* Detach mask */
+		sp_signal_disconnect_by_data (item->mask, item);
+		item->mask = sp_object_hunref (SP_OBJECT (item->mask), item);
+	}
+}
+
+static void
+sp_item_mask_modified (SPMask *mask, guint flags, SPItem *item)
+{
+	/* I think mask does update automagically */
+	/* g_warning ("Item %s mask %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (mask)); */
+}
+
+static void
 sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
@@ -209,8 +244,6 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	}
-		/* fixme: */
-	case SP_ATTR_CLIP_PATH:
 	case SP_PROP_CLIP_PATH: {
 		SPObject *cp;
 		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
@@ -236,6 +269,37 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 					if (!v->pkey) v->pkey = sp_item_display_key_new ();
 					ai = sp_clippath_show (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
 					nr_arena_item_set_clip (v->arenaitem, ai);
+					nr_arena_item_unref (ai);
+				}
+			}
+		}
+		break;
+	}
+	case SP_PROP_MASK: {
+		SPObject *m;
+		m = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
+		if (m != item->mask) {
+			if (item->mask) {
+				SPItemView *v;
+				/* Detach mask */
+				sp_signal_disconnect_by_data (item->mask, item);
+				/* Hide mask */
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_mask_hide (SP_MASK (item->mask), v->pkey);
+					nr_arena_item_set_mask (v->arenaitem, NULL);
+				}
+				item->mask = sp_object_hunref (item->mask, object);
+			}
+			if (SP_IS_MASK (m)) {
+				SPItemView *v;
+				item->mask = sp_object_href (m, object);
+				g_signal_connect (G_OBJECT (item->mask), "release", G_CALLBACK (sp_item_mask_release), item);
+				g_signal_connect (G_OBJECT (item->mask), "modified", G_CALLBACK (sp_item_mask_modified), item);
+				for (v = item->display; v != NULL; v = v->next) {
+					NRArenaItem *ai;
+					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					ai = sp_mask_show (SP_MASK (item->mask), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					nr_arena_item_set_mask (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
 				}
 			}
@@ -526,6 +590,13 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
+		if (item->mask) {
+			NRArenaItem *ac;
+			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new ();
+			ac = sp_mask_show (SP_MASK (item->mask), arena, item->display->pkey);
+			nr_arena_item_set_mask (ai, ac);
+			nr_arena_item_unref (ac);
+		}
 		g_object_set_data (G_OBJECT (ai), "sp-item", item);
 	}
 
@@ -542,6 +613,10 @@ sp_item_private_hide (SPItem * item, unsigned int key)
 			if (item->clip) {
 				sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
 				nr_arena_item_set_clip (v->arenaitem, NULL);
+			}
+			if (item->mask) {
+				sp_mask_hide (SP_MASK (item->mask), v->pkey);
+				nr_arena_item_set_mask (v->arenaitem, NULL);
 			}
 			nr_arena_item_destroy (v->arenaitem);
 			item->display = sp_item_view_list_remove (item->display, v);

@@ -91,6 +91,7 @@ nr_arena_item_init (NRArenaItem *item)
 	item->opacity = 1.0;
 
 	item->clip = NULL;
+	item->mask = NULL;
 
 	item->px = NULL;
 }
@@ -114,6 +115,10 @@ nr_arena_item_private_dispose (GObject *object)
 
 	if (item->clip) {
 		item->clip = nr_arena_item_detach_unref (item, item->clip);
+	}
+
+	if (item->mask) {
+		item->mask = nr_arena_item_detach_unref (item, item->mask);
 	}
 
 	if (item->transform) {
@@ -247,6 +252,12 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 		g_return_val_if_fail (!(~newstate & state), newstate);
 	}
 
+	if (item->mask) {
+		/* Update our mask */
+		newstate = nr_arena_item_invoke_update (item->mask, area, &newgc, state, reset);
+		g_return_val_if_fail (!(~newstate & state), newstate);
+	}
+
 	if (!(item->state & NR_ARENA_ITEM_STATE_BBOX)) {
 		/* BBox state not set - need bbox level update before continuing */
 		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, NR_ARENA_ITEM_STATE_BBOX, reset);
@@ -257,6 +268,11 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	if (item->clip) {
 		/* We have do do intersect with clip bbox */
 		nr_rect_l_intersect (&item->bbox, &item->bbox, &item->clip->bbox);
+	}
+
+	if (item->mask) {
+		/* We have do do intersect with mask bbox */
+		nr_rect_l_intersect (&item->bbox, &item->bbox, &item->mask->bbox);
 	}
 
 	if ((~item->state & state) && (!area || nr_rect_l_test_intersect (area, &item->bbox))) {
@@ -290,15 +306,56 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
 		/* fixme: clip updating etc. needs serious contemplation */
-		if (item->clip) {
+		if (item->clip || item->mask) {
 			NRPixBlock nb, cb;
 			guint ret;
 
 			nr_pixblock_setup_fast (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P, area->x0, area->y0, area->x1, area->y1, TRUE);
 			nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-			ret = nr_arena_item_invoke_clip (item->clip, area, &cb);
-			/* fixme: */
-			cb.empty = FALSE;
+
+			if (item->clip) {
+				ret = nr_arena_item_invoke_clip (item->clip, area, &cb);
+				/* fixme: */
+				cb.empty = FALSE;
+			}
+
+			if (item->mask) {
+				NRPixBlock mb;
+				nr_pixblock_setup_fast (&mb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
+				ret = NR_ARENA_ITEM_VIRTUAL (item->mask, render) (item->mask, area, &mb, flags);
+				if (item->clip) {
+					int x, y;
+					for (y = area->y0; y < area->y1; y++) {
+						unsigned char *s, *d;
+						s = NR_PIXBLOCK_PX (&mb) + (y - area->y0) * mb.rs;
+						d = NR_PIXBLOCK_PX (&cb) + (y - area->y0) * cb.rs;
+						for (x = area->x0; x < area->x1; x++) {
+							unsigned int m;
+							m = ((s[0] + s[1] + s[2]) * s[3] + 127) / (3 * 255);
+							d[0] = (d[0] * m + 127) / 255;
+							s += 4;
+							d += 1;
+						}
+					}
+				} else {
+					int x, y;
+					for (y = area->y0; y < area->y1; y++) {
+						unsigned char *s, *d;
+						s = NR_PIXBLOCK_PX (&mb) + (y - area->y0) * mb.rs;
+						d = NR_PIXBLOCK_PX (&cb) + (y - area->y0) * cb.rs;
+						for (x = area->x0; x < area->x1; x++) {
+							unsigned int m;
+							m = ((s[0] + s[1] + s[2]) * s[3] + 127) / (3 * 255);
+							d[0] = m;
+							s += 4;
+							d += 1;
+						}
+					}
+					cb.empty = FALSE;
+				}
+				nr_pixblock_release (&mb);
+			}
+
 			ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, area, &nb, flags);
 			/* fixme: */
 			nb.empty = FALSE;
@@ -560,6 +617,26 @@ nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip)
 
 	if (clip) {
 		item->clip = nr_arena_item_attach_ref (item, clip, NULL, NULL);
+	}
+
+	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
+}
+
+void
+nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask)
+{
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	g_return_if_fail (!mask || NR_IS_ARENA_ITEM (mask));
+
+	nr_arena_item_request_render (item);
+
+	if (item->mask) {
+		item->mask = nr_arena_item_detach_unref (item, item->mask);
+	}
+
+	if (mask) {
+		item->mask = nr_arena_item_attach_ref (item, mask, NULL, NULL);
 	}
 
 	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
