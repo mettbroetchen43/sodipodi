@@ -327,6 +327,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 			rgba = nr_pixelstore_16K_new (FALSE, 0x00000000);
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
+					memset (rgba, 0x0, 4 * 64 * 64);
 					painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
 					gnome_print_gsave (ctx);
 					gnome_print_translate (ctx, x, y + 64);

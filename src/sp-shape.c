@@ -379,6 +379,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 						rgba = nr_pixelstore_16K_new (FALSE, 0x0);
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {
 							for (x = ibox.x0; x < ibox.x1; x+= 64) {
+								memset (rgba, 0x0, 4 * 64 * 64);
 								painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
 								gnome_print_gsave (gpc);
 								gnome_print_translate (gpc, x, y + 64);

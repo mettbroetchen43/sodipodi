@@ -613,20 +613,10 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 	ba.y1 = y0 + height;
 	nr_rect_f_matrix_f_transform (&psa, &ba, &pp->px2ps);
 
-	psa.x0 -= pp->pat->x.computed;
-	psa.y0 -= pp->pat->y.computed;
-	psa.x1 -= pp->pat->x.computed;
-	psa.y1 -= pp->pat->y.computed;
-
-	psa.x0 /= pp->pat->width.computed;
-	psa.y0 /= pp->pat->height.computed;
-	psa.x1 /= pp->pat->width.computed;
-	psa.y1 /= pp->pat->height.computed;
-
-	psa.x0 = floor (psa.x0);
-	psa.y0 = floor (psa.y0);
-	psa.x1 = ceil (psa.x1);
-	psa.y1 = ceil (psa.y1);
+	psa.x0 = floor ((psa.x0 - pp->pat->x.computed) / pp->pat->width.computed);
+	psa.y0 = floor ((psa.y0 - pp->pat->y.computed) / pp->pat->height.computed);
+	psa.x1 = ceil ((psa.x1 - pp->pat->x.computed) / pp->pat->width.computed);
+	psa.y1 = ceil ((psa.y1 - pp->pat->y.computed) / pp->pat->height.computed);
 
 	for (y = psa.y0; y < psa.y1; y++) {
 		for (x = psa.x0; x < psa.x1; x++) {
