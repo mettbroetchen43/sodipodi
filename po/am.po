@@ -382,7 +382,7 @@ msgstr "Href፦"
 
 #: src/dialogs/object-attributes.c:31
 msgid "Target:"
-msgstr ""
+msgstr "ኢላማ፦"
 
 #: src/dialogs/object-attributes.c:32
 msgid "Type:"
