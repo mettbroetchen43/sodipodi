@@ -21,22 +21,8 @@ oaf_DATA = GNOME_Sodipodi.oafinfo
 
 if BONOBO
 install-exec-local:
-	if test -r $(bindir)/sodipodi-bonobo; then \
-		rm -f $(bindir)/sodipodi-bonobo; \
-	fi ; \
-	ln -s $(bindir)/sodipodi $(bindir)/sodipodi-bonobo
+	ln -sf sodipodi $(DESTDIR)$(bindir)/sodipodi-bonobo
 endif
-
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/glade; then \
-	  $(mkinstalldirs) $(datadir)/sodipodi; \
-	  for uifile in $(srcdir)/glade/*; do \
-	    if test -f $$uifile; then \
-	      $(INSTALL_DATA) $$uifile $(datadir)/sodipodi; \
-	    fi \
-	  done \
-	fi
 
 dist-hook:
 	mkdir $(distdir)/samples
