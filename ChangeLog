@@ -1,3 +1,7 @@
+2000-09-30  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* configure.in ALL_LINGUAS: Add Japanese 'ja'
+
 2000-09-21  Pablo Saratxaga <pablo@mandrakesoft.com>
 	
 	* configure.in: ALL_LINGUAS: added 'ca' for Catalan translation.
