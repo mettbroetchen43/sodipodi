@@ -1,5 +1,14 @@
 2002-09-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/event-context.c (sp_event_context_destroy): Do not disconnect
+	desktop signal, as there is no such
+	(sp_event_context_new): Do not connect desktop signal
+
+	* src/draw-context.c (sp_pencil_context_root_handler): Changed grabbing only
+	to happen, if pointer is moved button-down. This changed irritating
+	double-click total grab problem.
+	(sp_pen_context_root_handler): Ditto
+
 	* src/display/nr-arena-group.c (nr_arena_group_update): Multiply
 	with group second transformation
 

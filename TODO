@@ -7,7 +7,7 @@ TODO for 0.26
 - Recently opened file list (DONE)
 - Cleanups
 - Speedups
-- double click on pen bug
+- double click on pen bug (DONE)
 - dirty fill of open paths bug
 - viewbox not applied bug (DONE)
 

@@ -109,7 +109,9 @@ sp_event_context_destroy (GtkObject *object)
 	}
 
 	if (ec->desktop) {
+#if 0
 		gtk_signal_disconnect_by_data (GTK_OBJECT (ec->desktop), ec);
+#endif
 		ec->desktop = NULL;
 	}
 
@@ -384,12 +386,14 @@ sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEve
 	return FALSE;
 }
 
+#if 0
 static void
 sp_event_context_desktop_destroy (GtkObject *object, SPEventContext *ec)
 {
 	/* This is actually non-event, as desktop should keep the only ref of ec */
 	ec->desktop = NULL;
 }
+#endif
 
 static void
 sp_ec_repr_destroy (SPRepr *repr, gpointer data)
@@ -446,7 +450,9 @@ sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
 	ec = gtk_type_new (type);
 
 	ec->desktop = desktop;
+#if 0
 	gtk_signal_connect (GTK_OBJECT (desktop), "destroy", GTK_SIGNAL_FUNC (sp_event_context_desktop_destroy), ec);
+#endif
 
 	ec->repr = repr;
 	if (ec->repr) {

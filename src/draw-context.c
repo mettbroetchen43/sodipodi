@@ -44,7 +44,11 @@
 
 #define TOLERANCE 1.0
 
-#define SPDC_EVENT_MASK (GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK)
+#if 1
+#define SPDC_EVENT_MASK (GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK)
+#else
+#define SPDC_EVENT_MASK 0x204
+#endif
 
 /* Drawing anchors */
 
@@ -860,9 +864,11 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+#if 0
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
 			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+#endif
 			/* Find desktop coordinates */
 			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
 			/* Test, whether we hit any anchor */
@@ -886,6 +892,13 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
+#if 1
+		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
+			/* Grab mouse, so release will not pass unnoticed */
+			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
+			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+		}
+#endif
 		/* Find desktop coordinates */
 		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
 		/* Test, whether we hit any anchor */
@@ -965,8 +978,13 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			default:
 				break;
 			}
-			/* Release grab now */
-			gnome_canvas_item_ungrab (dc->grab, event->button.time);
+#if 1
+			if (dc->grab) {
+				/* Release grab now */
+				gnome_canvas_item_ungrab (dc->grab, event->button.time);
+				dc->grab = NULL;
+			}
+#endif
 			dc->grab = NULL;
 			ret = TRUE;
 		}
@@ -1248,9 +1266,11 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+#if 0
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
 			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+#endif
 			/* Find desktop coordinates */
 			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
 			/* Test, whether we hit any anchor */
@@ -1317,6 +1337,13 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
+#if 1
+		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
+			/* Grab mouse, so release will not pass unnoticed */
+			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
+			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+		}
+#endif
 		/* Find desktop coordinates */
 		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
 		/* Test, whether we hit any anchor */
@@ -1444,11 +1471,19 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			default:
 				break;
 			}
-			/* Release grab now */
-			gnome_canvas_item_ungrab (dc->grab, event->button.time);
-			dc->grab = NULL;
+#if 1
+			if (dc->grab) {
+				/* Release grab now */
+				gnome_canvas_item_ungrab (dc->grab, event->button.time);
+				dc->grab = NULL;
+			}
+#endif
 			ret = TRUE;
 		}
+		break;
+	case GDK_2BUTTON_PRESS:
+		spdc_pen_finish (pc, FALSE);
+		ret = TRUE;
 		break;
 	case GDK_KEY_PRESS:
 		/* fixme: */
