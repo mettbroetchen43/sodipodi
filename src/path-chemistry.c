@@ -203,6 +203,7 @@ sp_path_cleanup (SPPath *path)
 	SPCurve *curve;
 	GSList *curves, *c;
 	SPStyle *style;
+	gboolean dropped;
 
 	if (strcmp (sp_repr_name (SP_OBJECT_REPR (path)), "path")) return;
 
@@ -214,12 +215,14 @@ sp_path_cleanup (SPPath *path)
 	c = sp_curve_split (curve);
 	sp_curve_unref (curve);
 
+	dropped = FALSE;
 	curves = NULL;
 	while (c) {
 		curve = (SPCurve *) c->data;
 		if (curve->closed) {
 			curves = g_slist_prepend (curves, curve);
 		} else {
+			dropped = TRUE;
 			sp_curve_unref (curve);
 		}
 		c = g_slist_remove (c, c->data);
@@ -235,11 +238,13 @@ sp_path_cleanup (SPPath *path)
 
 	if (sp_curve_is_empty (curve)) {
 		sp_repr_unparent (SP_OBJECT_REPR (path));
-	} else {
+	} else if (dropped) {
 		guchar *svgpath;
 		svgpath = sp_svg_write_path (curve->bpath);
 		sp_repr_set_attr (SP_OBJECT_REPR (path), "d", svgpath);
 		g_free (svgpath);
 	}
+
+	sp_curve_unref (curve);
 }
 

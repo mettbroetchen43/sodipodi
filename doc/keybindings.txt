@@ -97,7 +97,7 @@ skew:	Ctrl	- strech
 move:	Ctrl	- move either horizontal or vertical
 
 
-- keybindings for rect context
+- keybindings for rect tool
 ------------------------------
 
 * modifier for mouse drag
@@ -106,7 +106,7 @@ move:	Ctrl	- move either horizontal or vertical
 	Shift	- fix center
 
 
-- keybindings for ellipse context
+- keybindings for ellipse/arc tool
 ---------------------------------
 
 * modifier for mouse drag
@@ -114,6 +114,16 @@ move:	Ctrl	- move either horizontal or vertical
 	Ctrl	- 1:n
 	Shift	- fix center
 
+
+- keybindings for pen tool
+---------------------------------
+
+	'+'     - toggles creation of new shape, or appending to selection
+	Return  - finishes current line
+        Escape  - cancels current line
+        BackSpace - erases last segment of current line
+
+	Alt     - Restrict control point placement to single point, instead of both
 
 - keybindings for zoom context
 ------------------------------
