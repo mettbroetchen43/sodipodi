@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-11-21 18:21+0300\n"
-"PO-Revision-Date: 2000-11-21 18:21+03:00\n"
+"POT-Creation-Date: 2000-12-01 16:27+0300\n"
+"PO-Revision-Date: 2000-12-01 16:28+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1020,7 +1020,7 @@ msgstr ""
 "500%\n"
 
 #: glade/toolbox.c:33
-msgid "Select zom factor"
+msgid "Select zoom factor"
 msgstr "Выбрать показатель масштаба"
 
 #: glade/toolbox.c:34
