@@ -12,6 +12,10 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 #include <png.h>
 
 #ifdef WIN32
@@ -236,6 +240,9 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 {
 #ifdef WIN32
 	TCHAR *tfilename;
+#else
+	unsigned char *fsfn;
+	gsize bread, bwritten;
 #endif
 	FILE *fp;
 	png_structp png_ptr;
@@ -252,7 +259,9 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 	fp = _tfopen (tfilename, TEXT("wb"));
 	free (tfilename);
 #else
-	fp = fopen (filename, "wb");
+	fsfn = g_filename_from_utf8 (filename, strlen (filename), &bread, &bwritten, NULL);
+	fp = fopen (fsfn, "wb");
+	g_free (fsfn);
 #endif
 	g_return_val_if_fail (fp != NULL, FALSE);
 
@@ -266,6 +275,7 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 
 	if (png_ptr == NULL) {
 		fclose (fp);
+		/* fixme: We have to use properly encoded name here (Lauris) */
 		unlink (filename);
 		return FALSE;
 	}

@@ -101,53 +101,14 @@ sp_file_open (const unsigned char *uri, const unsigned char *key)
 	}
 }
 
-#if 0
-static void
-file_open_ok (GtkWidget *widget, GtkFileSelection *fs)
-{
-	unsigned char *filename;
-
-	filename = g_strdup (gtk_file_selection_get_filename (fs));
-
-	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
-		if (open_path) g_free (open_path);
-		if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
-			open_path = g_strconcat (filename, G_DIR_SEPARATOR_S, NULL);
-			g_free (filename);
-		} else {
-			open_path = filename;
-		}
-		gtk_file_selection_set_filename (fs, open_path);
-		return;
-	}
-
-	if (filename != NULL) {
-		gpointer key;
-		if (open_path) g_free (open_path);
-		open_path = g_dirname (filename);
-		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
-		key = g_object_get_data (G_OBJECT (fs), "type-key");
-		sp_file_open (filename, key);
-		g_free (filename);
-	}
-
-	gtk_widget_destroy (GTK_WIDGET (fs));
-}
-
-static void
-file_open_cancel (GtkButton *b, GtkFileSelection *fs)
-{
-	gtk_widget_destroy (GTK_WIDGET (fs));
-}
-#endif
-
 static void
 sp_file_open_dialog_type_selected (SPMenu *menu, gpointer itemdata, GObject *fsel)
 {
 	g_object_set_data (fsel, "type-key", itemdata);
 }
 
-void sp_file_open_dialog (gpointer object, gpointer data)
+void
+sp_file_open_dialog (gpointer object, gpointer data)
 {
 	GtkFileSelection *fsel;
 	GtkWidget *hb, *l, *om, *m;
@@ -191,7 +152,13 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	/* g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_open_ok), fsel); */
 	/* g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_open_cancel), fsel); */
 	/* open_path = NULL; */
-	if (open_path) gtk_file_selection_set_filename (fsel, open_path);
+	if (open_path) {
+		unsigned char *fspath;
+		gsize bread, bwritten;
+		fspath = g_filename_from_utf8 (open_path, strlen (open_path), &bread, &bwritten, NULL);
+		gtk_file_selection_set_filename (fsel, fspath);
+		g_free (fspath);
+	}
 
 	/* Create file type box */
 	hb = gtk_hbox_new (FALSE, 4);
@@ -210,10 +177,14 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 
 	res = GTK_RESPONSE_OK;
 	while (res != GTK_RESPONSE_CANCEL) {
+		const unsigned char *fsfn;
 		unsigned char *filename;
+		gsize bread, bwritten;
 		res = gtk_dialog_run ((GtkDialog *) fsel);
-		filename = g_strdup (gtk_file_selection_get_filename (fsel));
+		fsfn = gtk_file_selection_get_filename (fsel);
+		filename = g_filename_to_utf8 (fsfn, strlen (fsfn), &bread, &bwritten, NULL);
 		if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+			unsigned char *fsfn;
 			if (open_path) g_free (open_path);
 			if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
 				open_path = g_strconcat (filename, G_DIR_SEPARATOR_S, NULL);
@@ -221,7 +192,9 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 			} else {
 				open_path = filename;
 			}
-			gtk_file_selection_set_filename (fsel, open_path);
+			fsfn = g_filename_from_utf8 (open_path, strlen (open_path), &bread, &bwritten, NULL);
+			gtk_file_selection_set_filename (fsel, fsfn);
+			g_free (fsfn);
 		} else if (filename && *filename) {
 			gpointer key;
 			if (open_path) g_free (open_path);
@@ -306,17 +279,27 @@ sp_file_save_dialog (SPDocument *doc)
 	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 	gtk_widget_show_all (hb);
 
-	if (save_path) gtk_file_selection_set_filename (fsel, save_path);
+	if (save_path) {
+		unsigned char *fspath;
+		gsize bread, bwritten;
+		fspath = g_filename_from_utf8 (save_path, strlen (save_path), &bread, &bwritten, NULL);
+		gtk_file_selection_set_filename (fsel, fspath);
+		g_free (fspath);
+	}
 
 	b = gtk_dialog_run (GTK_DIALOG (dlg));
 
 	if (b == GTK_RESPONSE_OK) {
-		const gchar *filename;
-		filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (dlg));
+		const unsigned char *fsfn;
+		unsigned char *filename;
+		gsize bread, bwritten;
+		fsfn = gtk_file_selection_get_filename (GTK_FILE_SELECTION (dlg));
+		filename = g_filename_to_utf8 (fsfn, strlen (fsfn), &bread, &bwritten, NULL);
 		sp_file_do_save (doc, filename, ((SPMenu *) menu)->activedata);
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
 		if (save_path) save_path = g_strconcat (save_path, G_DIR_SEPARATOR_S, NULL);
+		g_free (filename);
 	}
 
 	gtk_widget_destroy (dlg);
@@ -500,15 +483,25 @@ void sp_file_import_dialog (GtkWidget * widget)
 #else
 	w = gtk_file_selection_new (_("Select file to import"));
 	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
-	if (import_path) gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), import_path);
+	if (import_path) {
+		unsigned char *fspath;
+		gsize bread, bwritten;
+		fspath = g_filename_from_utf8 (import_path, strlen (import_path), &bread, &bwritten, NULL);
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), fspath);
+		g_free (fspath);
+	}
 	gtk_window_set_modal (GTK_WINDOW (w), TRUE);
 
 	b = gtk_dialog_run (GTK_DIALOG (w));
 
 	if (b == GTK_RESPONSE_OK) {
-		const gchar *filename;
-		filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (w));
+		const unsigned char *fsfn;
+		unsigned char *filename;
+		gsize bread, bwritten;
+		fsfn = gtk_file_selection_get_filename (GTK_FILE_SELECTION (w));
+		filename = g_filename_to_utf8 (fsfn, strlen (fsfn), &bread, &bwritten, NULL);
 		sp_file_do_import (doc, filename);
+		g_free (filename);
 	}
 
 	gtk_widget_destroy (w);

@@ -261,7 +261,7 @@ nr_node_path_new_from_path (const NRPath *path, unsigned int value)
 {
 	struct _NRNodePathBuildData ndata;
 	unsigned int size, i;
-	size = sizeof (struct _NRNodePath) + (path->nsegments - 1) * sizeof (struct _NRNodeSeg);
+	size = sizeof (struct _NRNodePath) + path->nsegments * sizeof (struct _NRNodeSeg) - sizeof (struct _NRNodeSeg);
 	ndata.npath = (struct _NRNodePath *) malloc (size);
 	ndata.npath->nsegs = path->nsegments;
 	for (i = 0; i < ndata.npath->nsegs; i++) {
@@ -401,12 +401,13 @@ struct _NRNodePath *
 nr_node_path_concat (struct _NRNodePath *paths[], unsigned int npaths)
 {
 	struct _NRNodePath *npath;
-	unsigned int nsegs, segpos, i, j;
+	unsigned int size, nsegs, segpos, i, j;
 	nsegs = 0;
 	for (i = 0; i < npaths; i++) {
 		nsegs += paths[i]->nsegs;
 	}
-	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (nsegs - 1) * sizeof (struct _NRNodeSeg));
+	size = sizeof (struct _NRNodePath) + nsegs * sizeof (struct _NRNodeSeg) - sizeof (struct _NRNodeSeg);
+	npath = (struct _NRNodePath *) malloc (size);
 	npath->nsegs = nsegs;
 	segpos = 0;
 	for (i = 0; i < npaths; i++) {
@@ -684,7 +685,7 @@ nr_node_path_uncross (struct _NRNodePath *path)
 	struct _NRNodePath *npath;
 	unsigned int i0, i1, i;
 	struct _NRNodeSeg *segs;
-	unsigned int sizsegs, numsegs;
+	unsigned int size, sizsegs, numsegs;
 	/* Step 1 - add nodes to all intersections */
 	for (i0 = 0; i0 < path->nsegs; i0++) {
 		struct _NRNodeSeg *seg0, *seg1;
@@ -775,7 +776,8 @@ nr_node_path_uncross (struct _NRNodePath *path)
 	}
 
 	/* Dummy copy */
-	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (numsegs - 1) * sizeof (struct _NRNodeSeg));
+	size = sizeof (struct _NRNodePath) + numsegs * sizeof (struct _NRNodeSeg) - sizeof (struct _NRNodeSeg);
+	npath = (struct _NRNodePath *) malloc (size);
 	npath->nsegs = numsegs;
 	for (i = 0; i < numsegs; i++) {
 		const struct _NRNodeSeg *sseg;
@@ -1097,6 +1099,7 @@ struct _NRNodePath *
 nr_node_path_rewind (struct _NRNodePath *path, int ngroups, int *and, int *or, int *self)
 {
 	struct _NRNodePath *npath;
+	unsigned int size;
 	int *winds;
 	int i, j, ss;
 	int nsegs;
@@ -1127,7 +1130,8 @@ nr_node_path_rewind (struct _NRNodePath *path, int ngroups, int *and, int *or, i
 	/* Construct index list */
 
 	/* Dummy copy */
-	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (nsegs - 1) * sizeof (struct _NRNodeSeg));
+	size = sizeof (struct _NRNodePath) + nsegs * sizeof (struct _NRNodeSeg) - sizeof (struct _NRNodeSeg);
+	npath = (struct _NRNodePath *) malloc (size);
 	for (i = 0; i < nsegs; i++) {
 		struct _NRNodeSeg *dseg;
 		NRPointF dir0, dir1;

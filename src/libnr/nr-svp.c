@@ -70,7 +70,7 @@ nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
 		svl = sl;
 	}
 
-	svp = malloc (sizeof (NRSVP) + (nsegs - 1) * sizeof (NRSVPSegment));
+	svp = malloc (sizeof (NRSVP) + nsegs * sizeof (NRSVPSegment) - sizeof (NRSVPSegment));
 	svp->length = nsegs;
 	if (nsegs > 0) {
 		unsigned int sidx, pidx;

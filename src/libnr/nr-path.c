@@ -94,7 +94,7 @@ nr_path_new_from_art_bpath (const ArtBpath *bpath)
 			break;
 		}
 	}
-	path = (NRPath *) malloc (sizeof (NRPath) + (nelements - 1) * sizeof (NRPathElement));
+	path = (NRPath *) malloc (sizeof (NRPath) + nelements * sizeof (NRPathElement) - sizeof (NRPathElement));
 	path->nelements = nelements;
 	path->offset = 0;
 	path->nsegments = nsegments;
@@ -670,7 +670,7 @@ nr_dynamic_path_new (unsigned int nelements)
 	nelements = MIN (nelements, 4);
 	dpath = (NRDynamicPath *) malloc (sizeof (NRDynamicPath));
 	memset (dpath, 0x0, sizeof (NRDynamicPath));
-	dpath->path = (NRPath *) malloc (sizeof (NRPath) + (nelements - 1) * sizeof (NRPathElement));
+	dpath->path = (NRPath *) malloc (sizeof (NRPath) + nelements * sizeof (NRPathElement) - sizeof (NRPathElement));
 	dpath->path->nelements = 0;
 	dpath->path->offset = 0;
 	dpath->path->nsegments = 0;
