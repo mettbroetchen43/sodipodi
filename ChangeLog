@@ -1,5 +1,12 @@
 2003-02-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_desktop_widget_init): Create tooltips, enable sticky zoom
+	(sp_desktop_widget_size_allocate): Calculate sticky zoom by area instead of MIN (x, y)
+
+	* src/helper/sp-canvas.h: Added floating point scroll coordinates
+
+	* src/helper/sp-canvas.c (scroll_to): Preserver floating point coordinates
+
 	* src/display/nr-arena-group.c (nr_arena_group_set_child_transform): Do
 	not force full update if not needed
 

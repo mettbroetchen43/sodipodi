@@ -324,10 +324,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (desktop->w2d), NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
 	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
 
-#if 0
-	sp_canvas_set_scroll_region (canvas, -SP_DESKTOP_SCROLL_LIMIT, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
-#endif
-
 	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
 	desktop->dkey = sp_item_display_key_new ();
@@ -608,6 +604,7 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	GtkWidget *zoom, *entry; 
 #endif
 	GtkWidget * eventbox;
+	GtkTooltips *tt;
 	GtkStyle *style;
 
 	widget = GTK_WIDGET (dtw);
@@ -616,6 +613,8 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 
 	dtw->decorations = TRUE;
 	dtw->statusbar = TRUE;
+
+	tt = gtk_tooltips_new ();
 
 	/* Main table */
 	tbl = gtk_table_new (4, 3, FALSE);
@@ -669,12 +668,13 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	g_signal_connect (G_OBJECT (dtw->canvas), "event", G_CALLBACK (sp_desktop_widget_event), dtw);
       	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (dtw->canvas));
 
-	// Sticky zoom
-	dtw->sticky_zoom = sp_button_new (SP_ICON_SIZE_BUTTON, "sticky_zoom", _("Whether zoom follows window size"));
+	/* Sticky zoom */
+	dtw->sticky_zoom = sp_button_toggle_new (SP_ICON_SIZE_BUTTON, "sticky_zoom", _("Zoom drawing if window size changes"));
 	gtk_table_attach (GTK_TABLE (tbl), dtw->sticky_zoom, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_set_sensitive (dtw->sticky_zoom, FALSE);
+	/* gtk_widget_set_sensitive (dtw->sticky_zoom, FALSE); */
+	sp_button_set_tooltips (SP_BUTTON (dtw->sticky_zoom), tt);
 
-       // status bars
+	/* Status bars */
        	hbox = gtk_hbox_new (FALSE,0);
 	gtk_box_set_spacing (GTK_BOX (hbox), 2);
 	gtk_table_attach (GTK_TABLE (tbl), hbox, 0, 3, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
@@ -779,7 +779,15 @@ sp_desktop_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		if (GTK_WIDGET_CLASS (dtw_parent_class)->size_allocate)
 			GTK_WIDGET_CLASS (dtw_parent_class)->size_allocate (widget, allocation);
 		if (SP_BUTTON_IS_DOWN (dtw->sticky_zoom)) {
-			sp_desktop_set_display_area (dtw->desktop, area.x0, area.y0, area.x1, area.y1, 0);
+			NRRectF newarea;
+			double zpsp;
+			/* Calculate zoom per pixel */
+			zpsp = zoom / hypot (area.x1 - area.x0, area.y1 - area.y0);
+			/* Find new visible area */
+			sp_desktop_get_display_area (dtw->desktop, &newarea);
+			/* Calculate adjusted zoom */
+			zoom = zpsp * hypot (newarea.x1 - newarea.x0, newarea.y1 - newarea.y0);
+			sp_desktop_zoom_absolute (dtw->desktop, 0.5 * (area.x1 + area.x0), 0.5 * (area.y1 + area.y0), zoom);
 		} else {
 			sp_desktop_zoom_absolute (dtw->desktop, 0.5 * (area.x1 + area.x0), 0.5 * (area.y1 + area.y0), zoom);
 		}

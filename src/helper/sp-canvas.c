@@ -968,9 +968,6 @@ sp_canvas_init (SPCanvas *canvas)
 	GTK_WIDGET_UNSET_FLAGS (canvas, GTK_DOUBLE_BUFFERED);
 	GTK_WIDGET_SET_FLAGS (canvas, GTK_CAN_FOCUS);
 
-	canvas->x0 = 0;
-	canvas->y0 = 0;
-
 	canvas->pick_event.type = GDK_LEAVE_NOTIFY;
 	canvas->pick_event.crossing.x = 0;
 	canvas->pick_event.crossing.y = 0;
@@ -1144,15 +1141,19 @@ sp_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 }
 
 static void
-scroll_to (SPCanvas *canvas, int x, int y, unsigned int clear)
+scroll_to (SPCanvas *canvas, float x, float y, unsigned int clear)
 {
-	int dx, dy;
+	int ix, iy, dx, dy;
 
-	dx = x - canvas->x0;
-	dy = y - canvas->y0;
+	ix = (int) (x + 0.5);
+	iy = (int) (y + 0.5);
+	dx = ix - canvas->x0;
+	dy = iy - canvas->y0;
 
-	canvas->x0 = x;
-	canvas->y0 = y;
+	canvas->dx0 = x;
+	canvas->dy0 = y;
+	canvas->x0 = ix;
+	canvas->y0 = iy;
 
 	if (!clear) {
 		if ((dx != 0) || (dy != 0)) {
@@ -1164,14 +1165,14 @@ scroll_to (SPCanvas *canvas, int x, int y, unsigned int clear)
 				gdk_window_process_updates (SP_CANVAS_WINDOW (canvas), TRUE);
 			}
 			if (dx < 0) {
-				sp_canvas_request_redraw (canvas, x + 0, y + 0, x - dx, y + height);
+				sp_canvas_request_redraw (canvas, ix + 0, iy + 0, ix - dx, iy + height);
 			} else if (dx > 0) {
-				sp_canvas_request_redraw (canvas, x + width - dx, y + 0, x + width, y + height);
+				sp_canvas_request_redraw (canvas, ix + width - dx, iy + 0, ix + width, iy + height);
 			}
 			if (dy < 0) {
-				sp_canvas_request_redraw (canvas, x + 0, y + 0, x + width, y - dy);
+				sp_canvas_request_redraw (canvas, ix + 0, iy + 0, ix + width, iy - dy);
 			} else if (dy > 0) {
-				sp_canvas_request_redraw (canvas, x + 0, y + height - dy, x + width, y + height);
+				sp_canvas_request_redraw (canvas, ix + 0, iy + height - dy, ix + width, iy + height);
 			}
 		}
 	} else {
@@ -1858,7 +1859,7 @@ sp_canvas_root (SPCanvas *canvas)
 }
 
 void
-sp_canvas_scroll_to (SPCanvas *canvas, int cx, int cy, unsigned int clear)
+sp_canvas_scroll_to (SPCanvas *canvas, float cx, float cy, unsigned int clear)
 {
 	g_return_if_fail (canvas != NULL);
 	g_return_if_fail (SP_IS_CANVAS (canvas));
@@ -2111,8 +2112,8 @@ sp_canvas_get_viewbox (SPCanvas *canvas, NRRectF *viewbox)
 	g_return_val_if_fail (SP_IS_CANVAS (canvas), NULL);
 	g_return_val_if_fail (viewbox != NULL, NULL);
 
-	viewbox->x0 = canvas->x0;
-	viewbox->y0 = canvas->y0;
+	viewbox->x0 = canvas->dx0;
+	viewbox->y0 = canvas->dy0;
 	viewbox->x1 = viewbox->x0 + GTK_WIDGET (canvas)->allocation.width;
 	viewbox->y1 = viewbox->y0 + GTK_WIDGET (canvas)->allocation.height;
 

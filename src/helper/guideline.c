@@ -93,7 +93,6 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	unsigned int r, g, b, a;
 	int p, p0, p1, step;
 	unsigned char *d;
-	int ipos;
 
 	gl = SP_GUIDELINE (item);
 

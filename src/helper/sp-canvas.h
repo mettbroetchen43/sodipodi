@@ -102,6 +102,7 @@ struct _SPCanvas {
 
 	SPCanvasItem *root;
 
+	float dx0, dy0;
 	int x0, y0;
 
 	/* Area that needs redrawing, stored as a microtile array */
@@ -147,7 +148,7 @@ GtkWidget *sp_canvas_new_aa (void);
 
 SPCanvasGroup *sp_canvas_root (SPCanvas *canvas);
 
-void sp_canvas_scroll_to (SPCanvas *canvas, int cx, int cy, unsigned int clear);
+void sp_canvas_scroll_to (SPCanvas *canvas, float cx, float cy, unsigned int clear);
 void sp_canvas_update_now (SPCanvas *canvas);
 
 void sp_canvas_request_redraw_uta (SPCanvas *canvas, ArtUta *uta);
