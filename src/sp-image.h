@@ -4,10 +4,6 @@
 #if 0
 #include <gtk/gtkpacker.h> /* why the hell is GtkAnchorType here and not in gtkenums.h? */
 #endif
-#if 0
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_pixbuf.h>
-#endif
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "sp-item.h"
 

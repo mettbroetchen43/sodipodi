@@ -28,7 +28,7 @@ struct _SPCanvasImage {
 
 	ArtPixBuf *pixbuf;
 	double affine[6];
-	ArtSVP * svp;			/* Clipped outline */
+	ArtVpath * vpath;
 };
 
 struct _SPCanvasImageClass {

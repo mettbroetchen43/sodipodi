@@ -95,6 +95,10 @@ sp_rect_set_shape (SPRect * rect)
 	double x, y, rx, ry;
 	SPCurve * c;
 	
+	sp_path_clear (SP_PATH (rect));
+
+	if ((rect->height < 1e-12) || (rect->width < 1e-12)) return;
+
 	c = sp_curve_new ();
 
 	x = rect->x;
@@ -128,8 +132,6 @@ sp_rect_set_shape (SPRect * rect)
 	}
 
 	sp_curve_closepath_current (c);
-
-	sp_path_clear (SP_PATH (rect));
 	sp_path_add_bpath (SP_PATH (rect), c, TRUE, NULL);
 	sp_curve_unref (c);
 }

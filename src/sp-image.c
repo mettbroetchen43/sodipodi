@@ -23,6 +23,9 @@ static void sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr
 static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
+static GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
+static GdkPixbuf * sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
+
 static SPItemClass *parent_class;
 
 GtkType
@@ -101,26 +104,20 @@ static void
 sp_image_bbox (SPItem * item, ArtDRect * bbox)
 {
 	SPImage * image;
-	SPItem * i;
 	double a[6];
 	ArtPoint p;
 
 	image = SP_IMAGE (item);
 
-	if (image->pixbuf == NULL) {
-		bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
-		return;
-	}
-
-	art_affine_identity (a);
-	for (i = item; i != NULL; i = SP_ITEM (i->parent))
-		art_affine_multiply (a, a, i->affine);
+	sp_item_i2d_affine (item, a);
 
 	p.x = 0.0;
 	p.y = 0.0;
 	art_affine_point (&p, &p, a);
 	bbox->x0 = bbox->x1 = p.x;
 	bbox->y0 = bbox->y1 = p.y;
+
+	if (image->pixbuf == NULL) return;
 
 	p.x = 0.0;
 	p.y = image->pixbuf->art_pixbuf->height;
@@ -171,30 +168,22 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 
 	buf = abp->pixels;
 
-	if (abp->n_channels == 4) {
-		buf = g_new (art_u8, abp->width * abp->height * 3);
-		for (y = 0; y < abp->height; y++) {
-			sptr = abp->pixels + y * abp->rowstride;
-			dptr = buf + y * abp->width * 3;
-			for (x = 0; x < abp->width; x++) {
-				*dptr++ = *sptr++;
-				*dptr++ = *sptr++;
-				*dptr++ = *sptr++;
-				sptr++;
-			}
+	buf = g_new (art_u8, abp->width * abp->height * 3);
+
+	for (y = 0; y < abp->height; y++) {
+		sptr = abp->pixels + y * abp->rowstride;
+		dptr = buf + y * abp->width * 3;
+		for (x = 0; x < abp->width; x++) {
+			*dptr++ = *sptr++;
+			*dptr++ = *sptr++;
+			*dptr++ = *sptr++;
+			sptr++;
 		}
-		gnome_print_rgbimage (gpc, buf,
-			abp->width, abp->height, abp->width * 3);
-		g_free (buf);
 	}
-	else if (abp->n_channels == 3) {
-		gnome_print_rgbimage (gpc, abp->pixels,
-			abp->width, abp->height, abp->rowstride);
-	}
-	else if (abp->n_channels == 1) {
-		gnome_print_grayimage (gpc, abp->pixels,
-			abp->width, abp->height, abp->rowstride);
-	}
+
+	gnome_print_rgbimage (gpc, buf, abp->width, abp->height, abp->width * 3);
+
+	g_free (buf);
 
 	gnome_print_grestore (gpc);
 }
@@ -207,9 +196,7 @@ sp_image_description (SPItem * item)
 	image = SP_IMAGE (item);
 
 	if (image->pixbuf == NULL)
-		return g_strdup (_("Empty bitmap"));
-	if (image->pixbuf->art_pixbuf->n_channels == 1)
-		return g_strdup (_("Gray bitmap"));
+		return g_strdup (_("Broken bitmap"));
 	return g_strdup (_("Color bitmap"));
 }
 
@@ -226,9 +213,6 @@ static void
 sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 {
 	SPImage * image;
-	const char * filename;
-	const gchar * docbase;
-	gchar * fn;
 	GdkPixbuf * pixbuf;
 
 	image = SP_IMAGE (item);
@@ -236,48 +220,14 @@ sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 	pixbuf = NULL;
 
 	if (strcmp (attr, "src") == 0) {
-		if (image->pixbuf != NULL) gdk_pixbuf_unref (image->pixbuf);
-		image->pixbuf = NULL;
-		filename = sp_repr_attr (repr, attr);
-		if (filename != NULL) {
-			if (!g_path_is_absolute (filename)) {
-				/* try to load from relative pos */
-				docbase = sp_repr_doc_attr (repr, "SP-DOCBASE");
-				if (docbase != NULL) {
-					fn = g_strconcat (docbase, filename, NULL);
-					pixbuf = gdk_pixbuf_new_from_file (fn);
-					if (pixbuf != NULL) {
-						image->pixbuf = pixbuf;
-						g_free (fn);
-						sp_item_request_canvas_update (SP_ITEM (image));
-						return;
-					}
-					g_free (fn);
-				}
-			} else {
-				/* load from absolute pos */
-				pixbuf = gdk_pixbuf_new_from_file (filename);
-				if (pixbuf != NULL) {
-					image->pixbuf = pixbuf;
-					sp_item_request_canvas_update (SP_ITEM (image));
-					return;
-				}
-			}
-		}
-		/* at last try to load from sp-absolute-path-name */
-		filename = sp_repr_attr (repr, "sp-absolute-path-name");
-		if (filename != NULL) {
-			pixbuf = gdk_pixbuf_new_from_file (filename);
-			if (pixbuf != NULL) {
-				image->pixbuf = pixbuf;
-				sp_item_request_canvas_update (SP_ITEM (image));
-				return;
-			}
-		}
-		/* Nope: We do not find any valid pixmap file :-( */
-		pixbuf = gdk_pixbuf_new_from_xpm_data ((const gchar **) brokenimage_xpm);
-		g_assert (pixbuf != NULL);
+		pixbuf = sp_image_repr_read_image (repr);
+		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
+		g_return_if_fail (pixbuf != NULL);
+
+		if (image->pixbuf != NULL)
+			gdk_pixbuf_unref (image->pixbuf);
 		image->pixbuf = pixbuf;
+
 		sp_item_request_canvas_update (SP_ITEM (image));
 		return;
 	}
@@ -296,7 +246,7 @@ sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	image = (SPImage *) item;
 
 	ci = (SPCanvasImage *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_IMAGE, NULL);
-	g_assert (ci != NULL);
+	g_return_val_if_fail (ci != NULL, NULL);
 	sp_canvas_image_set_pixbuf (ci, image->pixbuf->art_pixbuf);
 
 	return (GnomeCanvasItem *) ci;
@@ -318,5 +268,83 @@ sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 		ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
 		affine,
 		ART_FILTER_NEAREST, NULL);
+}
+
+/*
+ * utility function to try loading image from src
+ *
+ * docbase/relative_src
+ * absolute_src
+ *
+ */
+
+static GdkPixbuf *
+sp_image_repr_read_image (SPRepr * repr)
+{
+	const gchar * filename, * docbase;
+	gchar * fullname;
+	GdkPixbuf * pixbuf;
+
+	filename = sp_repr_attr (repr, "src");
+
+	if (filename != NULL) {
+		if (!g_path_is_absolute (filename)) {
+			/* try to load from relative pos */
+			docbase = sp_repr_doc_attr (repr, "SP-DOCBASE");
+			if (docbase != NULL) {
+				fullname = g_strconcat (docbase, filename, NULL);
+				pixbuf = gdk_pixbuf_new_from_file (fullname);
+				g_free (fullname);
+				if (pixbuf != NULL) return pixbuf;
+			}
+		} else {
+			/* try absolute filename */
+			pixbuf = gdk_pixbuf_new_from_file (filename);
+			if (pixbuf != NULL) return pixbuf;
+		}
+	}
+	/* at last try to load from sp-absolute-path-name */
+	filename = sp_repr_attr (repr, "sp-absolute-path-name");
+	if (filename != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (filename);
+		if (pixbuf != NULL) return pixbuf;
+	}
+	/* Nope: We do not find any valid pixmap file :-( */
+	pixbuf = gdk_pixbuf_new_from_xpm_data ((const gchar **) brokenimage_xpm);
+
+	/* It should be included xpm, so if it still does not does load, */
+	/* our libraries are broken */
+	g_assert (pixbuf != NULL);
+
+	return pixbuf;
+}
+
+static GdkPixbuf *
+sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf)
+{
+	GdkPixbuf * newbuf;
+	gint x, y;
+	art_u8 * s, * d;
+
+	if (pixbuf->art_pixbuf->n_channels == 4) return pixbuf;
+	g_return_val_if_fail (pixbuf->art_pixbuf->n_channels == 3, NULL);
+
+	newbuf = gdk_pixbuf_new (ART_PIX_RGB, TRUE, 8,
+		pixbuf->art_pixbuf->width, pixbuf->art_pixbuf->height);
+
+	for (y = 0; y < pixbuf->art_pixbuf->height; y++) {
+		s = pixbuf->art_pixbuf->pixels + y * pixbuf->art_pixbuf->rowstride;
+		d = newbuf->art_pixbuf->pixels + y * newbuf->art_pixbuf->rowstride;
+		for (x = 0; x < pixbuf->art_pixbuf->width; x++) {
+			* d++ = * s++;
+			* d++ = * s++;
+			* d++ = * s++;
+			* d++ = 255;
+		}
+	}
+
+	gdk_pixbuf_unref (pixbuf);
+
+	return newbuf;
 }
 
