@@ -12,42 +12,42 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#if 0
 #include <glib-object.h>
 #include <gtk/gtkmarshal.h>
+#endif
 #include "nr-arena-item.h"
 #include "nr-arena.h"
 #include "../libnr/nr-rect.h"
 
+#if 0
 enum {
-	ITEM_ADDED,
-	REMOVE_ITEM,
 	REQUEST_UPDATE,
 	REQUEST_RENDER,
 	LAST_SIGNAL
 };
+#endif
 
 static void nr_arena_class_init (NRArenaClass *klass);
 static void nr_arena_init (NRArena *arena);
-static void nr_arena_dispose (GObject *object);
+static void nr_arena_finalize (NRObject *object);
 
-static GObjectClass *parent_class;
+static NRActiveObjectClass *parent_class;
+#if 0
 static guint signals[LAST_SIGNAL] = {0};
+#endif
 
 unsigned int
 nr_arena_get_type (void)
 {
 	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_class_init,
-			NULL, NULL,
-			sizeof (NRArena),
-			16,
-			(GInstanceInitFunc) nr_arena_init,
-		};
-		type = g_type_register_static (G_TYPE_OBJECT, "NRArena", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ACTIVE_OBJECT,
+						"NRArena",
+						sizeof (NRArenaClass),
+						sizeof (NRArena),
+						(void (*) (NRObjectClass *)) nr_arena_class_init,
+						(void (*) (NRObject *)) nr_arena_init);
 	}
 	return type;
 }
@@ -55,12 +55,13 @@ nr_arena_get_type (void)
 static void
 nr_arena_class_init (NRArenaClass *klass)
 {
-	GObjectClass * object_class;
+	NRObjectClass * object_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
+	parent_class = (NRActiveObjectClass *) (((NRObjectClass *) klass)->parent);
 
+#if 0
 	signals[ITEM_ADDED] = g_signal_new ("item_added",
 					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
@@ -89,8 +90,9 @@ nr_arena_class_init (NRArenaClass *klass)
 						NULL, NULL,
 						gtk_marshal_NONE__POINTER,
 						G_TYPE_NONE, 1, G_TYPE_POINTER);
+#endif
 
-	object_class->dispose = nr_arena_dispose;
+	object_class->finalize = nr_arena_finalize;
 }
 
 static void
@@ -99,16 +101,16 @@ nr_arena_init (NRArena *arena)
 }
 
 static void
-nr_arena_dispose (GObject *object)
+nr_arena_finalize (NRObject *object)
 {
 	NRArena *arena;
 
 	arena = NR_ARENA (object);
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose(object);
+	((NRObjectClass *) (parent_class))->finalize (object);
 }
 
+#if 0
 void
 nr_arena_item_added (NRArena *arena, NRArenaItem *item)
 {
@@ -130,27 +132,57 @@ nr_arena_remove_item (NRArena *arena, NRArenaItem *item)
 
 	g_signal_emit (G_OBJECT (arena), signals [REMOVE_ITEM], 0, item);
 }
+#endif
 
 void
 nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 {
-	g_return_if_fail (arena != NULL);
-	g_return_if_fail (NR_IS_ARENA (arena));
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	NRActiveObject *aobject;
+	NRObjectListener *listener;
 
+	aobject = (NRActiveObject *) arena;
+
+	nr_return_if_fail (arena != NULL);
+	nr_return_if_fail (NR_IS_ARENA (arena));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+
+	for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
+		NRArenaEventVector *avector;
+		avector = (NRArenaEventVector *) listener->vector;
+		if ((listener->size >= sizeof (NRArenaEventVector)) && avector->request_update) {
+			avector->request_update (arena, item, listener->data);
+		}
+	}
+
+#if 0
 	g_signal_emit (G_OBJECT (arena), signals [REQUEST_UPDATE], 0, item);
+#endif
 }
 
 void
 nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 {
-	g_return_if_fail (arena != NULL);
-	g_return_if_fail (NR_IS_ARENA (arena));
-	g_return_if_fail (area != NULL);
+	NRActiveObject *aobject;
+	NRObjectListener *listener;
+
+	aobject = (NRActiveObject *) arena;
+
+	nr_return_if_fail (arena != NULL);
+	nr_return_if_fail (NR_IS_ARENA (arena));
+	nr_return_if_fail (area != NULL);
 
 	if (area && !nr_rect_l_test_empty (area)) {
+		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
+			NRArenaEventVector *avector;
+			avector = (NRArenaEventVector *) listener->vector;
+			if ((listener->size >= sizeof (NRArenaEventVector)) && avector->request_render) {
+				avector->request_render (arena, area, listener->data);
+			}
+		}
+#if 0
 		g_signal_emit (G_OBJECT (arena), signals [REQUEST_RENDER], 0, area);
+#endif
 	}
 }
 

@@ -90,7 +90,7 @@ nr_arena_item_private_finalize (NRObject *object)
 		nr_arena_item_detach_unref (item, item->mask);
 	}
 
-	nr_arena_remove_item (item->arena, item);
+	/* nr_arena_remove_item (item->arena, item); */
 
 	if (item->px) {
 		nr_free (item->px);
@@ -532,7 +532,7 @@ nr_arena_item_new (NRArena *arena, unsigned int type)
 
 	item->arena = arena;
 
-	nr_arena_item_added (arena, item);
+	/* nr_arena_item_added (arena, item); */
 
 	return item;
 }

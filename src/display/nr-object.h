@@ -12,6 +12,20 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define NR_TYPE_OBJECT (nr_object_get_type ())
+#define NR_OBJECT(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_OBJECT, NRObject))
+#define NR_IS_OBJECT(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_OBJECT))
+
+typedef struct _NRObject NRObject;
+typedef struct _NRObjectClass NRObjectClass;
+
+#define NR_TYPE_ACTIVE_OBJECT (nr_active_object_get_type ())
+#define NR_ACTIVE_OBJECT(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_ACTIVE_OBJECT, NRActiveObject))
+#define NR_IS_ACTIVE_OBJECT(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ACTIVE_OBJECT))
+
+typedef struct _NRActiveObject NRActiveObject;
+typedef struct _NRActiveObjectClass NRActiveObjectClass;
+
 #define nr_return_if_fail(expr) if (!(expr) && nr_emit_fail_warning (__FILE__, __LINE__, "?", #expr)) return
 #define nr_return_val_if_fail(expr,val) if (!(expr) && nr_emit_fail_warning (__FILE__, __LINE__, "?", #expr)) return (val)
 
@@ -24,17 +38,7 @@ unsigned int nr_emit_fail_warning (const unsigned char *file, unsigned int line,
 #endif
 
 #define NR_CHECK_INSTANCE_TYPE(ip, tc) nr_object_check_instance_type (ip, tc)
-#define NR_OBJECT_GET_CLASS(ip) ((NRObjectClass *) (((NRObject *) ip)->klass))
-
-#define NR_TYPE_OBJECT (nr_object_get_type ())
-
-typedef struct _NRObject NRObject;
-typedef struct _NRObjectClass NRObjectClass;
-
-NRObject *nr_object_ref (NRObject *object);
-NRObject *nr_object_unref (NRObject *object);
-
-NRObject *nr_object_new (unsigned int type);
+#define NR_OBJECT_GET_CLASS(ip) (((NRObject *) ip)->klass)
 
 unsigned int nr_type_is_a (unsigned int type, unsigned int test);
 
@@ -48,7 +52,7 @@ unsigned int nr_object_register_type (unsigned int parent,
 				      void (* cinit) (NRObjectClass *),
 				      void (* iinit) (NRObject *));
 
-unsigned int nr_object_get_type (void);
+/* NRObject */
 
 struct _NRObject {
 	NRObjectClass *klass;
@@ -68,6 +72,50 @@ struct _NRObjectClass {
 	void (* finalize) (NRObject *object);
 };
 
-#endif
+unsigned int nr_object_get_type (void);
 
+/* Dynamic lifecycle */
+
+NRObject *nr_object_new (unsigned int type);
+NRObject *nr_object_delete (NRObject *object);
+
+NRObject *nr_object_ref (NRObject *object);
+NRObject *nr_object_unref (NRObject *object);
+
+/* Automatic lifecycle */
+
+NRObject *nr_object_setup (NRObject *object, unsigned int type);
+NRObject *nr_object_release (NRObject *object);
+
+/* NRActiveObject */
+
+typedef struct _NRObjectListener NRObjectListener;
+typedef struct _NRObjectEventVector NRObjectEventVector;
+
+struct _NRObjectEventVector {
+	void (* dispose) (NRObject *object, void *data);
+};
+
+struct _NRObjectListener {
+	NRObjectListener *next;
+	const NRObjectEventVector *vector;
+	unsigned int size;
+	void *data;
+};
+
+struct _NRActiveObject {
+	NRObject object;
+	NRObjectListener *listeners;
+};
+
+struct _NRActiveObjectClass {
+	NRObjectClass parent_class;
+};
+
+unsigned int nr_active_object_get_type (void);
+
+void nr_active_object_add_listener (NRActiveObject *object, const NRObjectEventVector *vector, unsigned int size, void *data);
+void nr_active_object_remove_listener_by_data (NRActiveObject *object, void *data);
+
+#endif
 

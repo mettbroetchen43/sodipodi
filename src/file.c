@@ -613,7 +613,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	ebp.a = NR_RGBA32_A (bgcolor);
 
 	/* Create new arena */
-	arena = g_object_new (NR_TYPE_ARENA, NULL);
+	arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 	dkey = sp_item_display_key_new (1);
 	/* Create ArenaItem and set transform */
 	ebp.root = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), arena, dkey);
@@ -634,5 +634,5 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	/* Free Arena and ArenaItem */
 	sp_item_invoke_hide (SP_ITEM (sp_document_root (doc)), dkey);
 	nr_arena_item_unref (ebp.root);
-	g_object_unref (G_OBJECT (arena));
+	nr_object_unref ((NRObject *) arena);
 }

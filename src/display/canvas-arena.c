@@ -40,10 +40,18 @@ static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
 
 static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
 
+#if 0
 static void sp_canvas_arena_item_added (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
 static void sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
-static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
-static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca);
+#endif
+static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, void *data);
+static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, void *data);
+
+NRArenaEventVector carenaev = {
+	{NULL},
+	sp_canvas_arena_request_update,
+	sp_canvas_arena_request_render
+};
 
 static SPCanvasItemClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -97,12 +105,13 @@ sp_canvas_arena_init (SPCanvasArena *arena)
 {
 	arena->sticky = FALSE;
 
-	arena->arena = g_object_new (NR_TYPE_ARENA, NULL);
+	arena->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 	arena->root = nr_arena_item_new (arena->arena, NR_TYPE_ARENA_GROUP);
 	nr_arena_group_set_transparent (NR_ARENA_GROUP (arena->root), TRUE);
 
 	arena->active = NULL;
 
+#if 0
 	g_signal_connect (G_OBJECT (arena->arena), "item_added",
 			  G_CALLBACK (sp_canvas_arena_item_added), arena);
 	g_signal_connect (G_OBJECT (arena->arena), "remove_item",
@@ -111,6 +120,9 @@ sp_canvas_arena_init (SPCanvasArena *arena)
 			  G_CALLBACK (sp_canvas_arena_request_update), arena);
 	g_signal_connect (G_OBJECT (arena->arena), "request_render",
 			  G_CALLBACK (sp_canvas_arena_request_render), arena);
+#endif
+
+	nr_active_object_add_listener ((NRActiveObject *) arena->arena, (NRObjectEventVector *) &carenaev, sizeof (carenaev), arena);
 }
 
 static void
@@ -131,9 +143,13 @@ sp_canvas_arena_destroy (GtkObject *object)
 	}
 
 	if (arena->arena) {
+#if 0
 /*  		g_signal_disconnect_by_data (G_OBJECT (arena->arena), arena); */
 		g_signal_handlers_disconnect_matched (G_OBJECT(arena->arena), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, arena);
-		g_object_unref (G_OBJECT (arena->arena));
+#endif
+		nr_active_object_remove_listener_by_data ((NRActiveObject *) arena->arena, arena);
+
+		nr_object_unref ((NRObject *) arena->arena);
 		arena->arena = NULL;
 	}
 
@@ -380,20 +396,13 @@ sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event)
 
 	ret = FALSE;
 
-#if 0
-	if (arena->active) {
-		/* Send event to active item */
-		ret = nr_arena_item_emit_event (arena->active, (NREvent *) event);
-	}
-#endif
-	if (!ret) {
-		/* Send event to arena */
-		gtk_signal_emit (GTK_OBJECT (arena), signals[ARENA_EVENT], arena->active, event, &ret);
-	}
+	/* Send event to arena */
+	gtk_signal_emit (GTK_OBJECT (arena), signals[ARENA_EVENT], arena->active, event, &ret);
 
 	return ret;
 }
 
+#if 0
 static void
 sp_canvas_arena_item_added (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
 {
@@ -403,17 +412,18 @@ static void
 sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
 {
 }
+#endif
 
 static void
-sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
+sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, void *data)
 {
-	sp_canvas_item_request_update (SP_CANVAS_ITEM (ca));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (data));
 }
 
 static void
-sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca)
+sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, void *data)
 {
-	sp_canvas_request_redraw (SP_CANVAS_ITEM (ca)->canvas, area->x0, area->y0, area->x1, area->y1);
+	sp_canvas_request_redraw (SP_CANVAS_ITEM (data)->canvas, area->x0, area->y0, area->x1, area->y1);
 }
 
 void

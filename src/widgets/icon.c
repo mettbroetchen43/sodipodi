@@ -308,7 +308,7 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 			NRGC gc;
 			sp_document_ensure_up_to_date (doc);
 			/* Create new arena */
-			arena = g_object_new (NR_TYPE_ARENA, NULL);
+			arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 			/* Create ArenaItem and set transform */
 			visionkey = sp_item_display_key_new (1);
 			/* fixme: Memory manage root if needed (Lauris) */

@@ -1,3 +1,18 @@
+2003-04-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/canvas-arena.c (sp_canvas_arena_init): Use active object
+	listener instead of g-signals
+	(sp_canvas_arena_destroy): Ditto
+
+	* src/display/nr-arena.h: Derive from NRActiveobject
+
+	* src/display/nr-object.c (nr_object_delete): proper lifecycle management
+	(nr_object_setup): Ditto, automatic object
+	(nr_object_release): Ditto
+	(nr_active_object_get_type): Added NRActiveObject
+
+	* src/display/nr-object.h: Added NRActiveObject
+
 2003-04-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-object.c: Reimplement in standalone way

@@ -917,7 +917,7 @@ sp_print_document (SPDocument *doc)
 	/* fixme: This has to go into module constructor somehow */
 	/* Create new arena */
 	mod->base = SP_ITEM (sp_document_root (doc));
-	mod->arena = g_object_new (NR_TYPE_ARENA, NULL);
+	mod->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 	mod->dkey = sp_item_display_key_new (1);
 	mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey);
 
@@ -938,7 +938,7 @@ sp_print_document (SPDocument *doc)
 	mod->base = NULL;
 	nr_arena_item_unref (mod->root);
 	mod->root = NULL;
-	g_object_unref (G_OBJECT (mod->arena));
+	nr_object_unref ((NRObject *) mod->arena);
 	mod->arena = NULL;
 
 	g_object_unref (G_OBJECT (mod));
