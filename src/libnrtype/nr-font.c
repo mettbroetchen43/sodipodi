@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include <libnr/nr-macros.h>
+#include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include "nr-font.h"
 
@@ -38,21 +39,27 @@ nr_font_unref (NRFont *font)
 }
 
 NRBPath *
-nr_font_glyph_outline_get (NRFont *font, int glyph, NRBPath *path, unsigned int ref)
+nr_font_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *path, unsigned int ref)
 {
 	return font->face->vmv->font_glyph_outline_get (font, glyph, path, ref);
 }
 
 void
-nr_font_glyph_outline_unref (NRFont *font, int glyph)
+nr_font_glyph_outline_unref (NRFont *font, unsigned int glyph)
 {
 	font->face->vmv->font_glyph_outline_unref (font, glyph);
 }
 
 NRPointF *
-nr_font_glyph_advance_get (NRFont *font, int glyph, NRPointF *adv)
+nr_font_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *adv)
 {
 	return font->face->vmv->font_glyph_advance_get (font, glyph, adv);
+}
+
+NRRectF *
+nr_font_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area)
+{
+	return font->face->vmv->font_glyph_area_get (font, glyph, area);
 }
 
 NRRasterFont *
@@ -62,6 +69,16 @@ nr_rasterfont_new (NRFont *font, NRMatrixF *transform)
 }
 
 /* Generic implementation */
+
+typedef struct _NRFontGeneric NRFontGeneric;
+
+struct _NRFontGeneric {
+	NRFont font;
+
+	NRRasterFont *rfonts;
+
+	NRBPath *outlines;
+};
 
 NRFont *
 nr_font_generic_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform)
@@ -142,6 +159,19 @@ nr_font_generic_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *a
 	adv->y *= (font->size / 1000.0);
 
 	return adv;
+}
+
+NRRectF *
+nr_font_generic_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area)
+{
+	NRBPath bpath;
+
+	if (!nr_font_glyph_outline_get (font, glyph, &bpath, 0)) return NULL;
+	area->x0 = area->y0 = NR_HUGE_F;
+	area->x1 = area->y1 = -NR_HUGE_F;
+	nr_path_matrix_f_bbox_f_union (&bpath, NULL, area, 0.25);
+
+	return !nr_rect_f_test_empty (area) ? area : NULL;
 }
 
 NRRasterFont *

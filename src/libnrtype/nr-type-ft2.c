@@ -16,6 +16,7 @@
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 #include <freetype/ftoutln.h>
+#include <freetype/ftbbox.h>
 #include "nr-type-ft2.h"
 
 #define NR_SLOTS_BLOCK 32
@@ -52,6 +53,7 @@ static NRTypeFaceVMV nr_type_ft2_vmv = {
 	nr_font_generic_glyph_outline_get,
 	nr_font_generic_glyph_outline_unref,
 	nr_font_generic_glyph_advance_get,
+	nr_font_generic_glyph_area_get,
 
 	nr_font_generic_rasterfont_new,
 	nr_font_generic_rasterfont_free,
@@ -288,7 +290,7 @@ nr_typeface_ft2_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *trans
 
 	font = tff->fonts;
 	while (font != NULL) {
-		if (NR_DF_TEST_CLOSE (size, font->size, 0.001 * size)) {
+		if (NR_DF_TEST_CLOSE (size, font->size, 0.001 * size) && (font->metrics == metrics)) {
 			return nr_font_ref (font);
 		}
 		font = font->next;
@@ -347,7 +349,7 @@ nr_typeface_ft2_ensure_slot_h (NRTypeFaceFT2 *tff, unsigned int glyph)
 
 		FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
 
-		slot->area.x0 = -tff->ft_face->glyph->metrics.horiBearingX * tff->ft2ps;
+		slot->area.x0 = tff->ft_face->glyph->metrics.horiBearingX * tff->ft2ps;
 		slot->area.y1 = tff->ft_face->glyph->metrics.horiBearingY * tff->ft2ps;
 		slot->area.y0 = slot->area.y1 - tff->ft_face->glyph->metrics.height * tff->ft2ps;
 		slot->area.x1 = slot->area.x0 + tff->ft_face->glyph->metrics.width * tff->ft2ps;
@@ -385,14 +387,28 @@ nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph)
 		}
 		slot = tff->slots + tff->slots_length;
 
-		FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_VERTICAL_LAYOUT | FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
-
-		slot->area.x0 = tff->ft_face->glyph->metrics.vertBearingX * tff->ft2ps;
-		slot->area.y1 = tff->ft_face->glyph->metrics.vertBearingY * tff->ft2ps;
-		slot->area.y0 = slot->area.y1 - tff->ft_face->glyph->metrics.height * tff->ft2ps;
-		slot->area.x1 = slot->area.x0 + tff->ft_face->glyph->metrics.width * tff->ft2ps;
-		slot->advance.x = 0.0;
-		slot->advance.y = tff->ft_face->glyph->metrics.vertAdvance * tff->ft2ps;
+		if (FT_HAS_VERTICAL (tff->ft_face)) {
+			FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_VERTICAL_LAYOUT | FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
+			slot->area.x0 = tff->ft_face->glyph->metrics.vertBearingX * tff->ft2ps;
+			slot->area.x1 = slot->area.x0 + tff->ft_face->glyph->metrics.width * tff->ft2ps;
+			slot->area.y1 = -tff->ft_face->glyph->metrics.vertBearingY * tff->ft2ps;
+			slot->area.y0 = slot->area.y1 - tff->ft_face->glyph->metrics.height * tff->ft2ps;
+			slot->advance.x = 0.0;
+			slot->advance.y = -tff->ft_face->glyph->metrics.vertAdvance * tff->ft2ps;
+#if 0
+			printf ("VM %d - %f %f %f %f - %f %f\n", glyph,
+				slot->area.x0, slot->area.y0, slot->area.x1, slot->area.y1,
+				slot->advance.x, slot->advance.y);
+#endif
+		} else {
+			FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
+			slot->area.x0 = -0.5 * tff->ft_face->glyph->metrics.width * tff->ft2ps;
+			slot->area.x1 = 0.5 * tff->ft_face->glyph->metrics.width * tff->ft2ps;
+			slot->area.y1 = tff->ft_face->glyph->metrics.horiBearingY * tff->ft2ps - 1000.0;
+			slot->area.y0 = slot->area.y1 - tff->ft_face->glyph->metrics.height * tff->ft2ps;
+			slot->advance.x = 0.0;
+			slot->advance.y = -1000.0;
+		}
 
 		slot->olref = 0;
 		slot->outline.path = NULL;
@@ -412,14 +428,26 @@ nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, un
 {
 	float a[6];
 
-	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
-		FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_VERTICAL_LAYOUT | FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
-	} else {
-		FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
-	}
+	FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
 
 	a[0] = a[3] = tff->ft2ps;
-	a[1] = a[2] = a[4] = a[5] = 0.0;
+	a[1] = a[2] = 0.0;
+
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+#if 0
+		FT_BBox bbox;
+		/* Metrics are always loaded if we have slot */
+		FT_Outline_Get_BBox (&tff->ft_face->glyph->outline, &bbox);
+		a[4] = slot->area.x0 - bbox.xMin * tff->ft2ps;
+		a[5] = slot->area.y0 - bbox.yMin * tff->ft2ps;
+#else
+		a[4] = slot->area.x0 - tff->ft_face->glyph->metrics.horiBearingX * tff->ft2ps;
+		a[5] = slot->area.y1 - tff->ft_face->glyph->metrics.horiBearingY * tff->ft2ps;
+#endif
+	} else {
+		a[4] = 0.0;
+		a[5] = 0.0;
+	}
 
 	slot->outline.path = tff_ol2bp (&tff->ft_face->glyph->outline, a);
 
@@ -441,15 +469,15 @@ static int tfft2_move_to (FT_Vector * to, void * user)
 
 	od = (TFFT2OutlineData *) user;
 
-	p.x = to->x * od->t[0] + to->y * od->t[2];
-	p.y = to->x * od->t[1] + to->y * od->t[3];
+	p.x = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	p.y = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 
 	if (od->end == 0 ||
 	    p.x != od->bp[od->end - 1].x3 ||
 	    p.y != od->bp[od->end - 1].y3) {
 		od->bp[od->end].code = ART_MOVETO;
-		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2];
-		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3];
+		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 		od->end++;
 	}
 
@@ -466,13 +494,13 @@ static int tfft2_line_to (FT_Vector * to, void * user)
 
 	s = &od->bp[od->end - 1];
 
-	p.x = to->x * od->t[0] + to->y * od->t[2];
-	p.y = to->x * od->t[1] + to->y * od->t[3];
+	p.x = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	p.y = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 
 	if ((p.x != s->x3) || (p.y != s->y3)) {
 		od->bp[od->end].code = ART_LINETO;
-		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2];
-		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3];
+		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 		od->end++;
 	}
 
@@ -492,10 +520,10 @@ static int tfft2_conic_to (FT_Vector * control, FT_Vector * to, void * user)
 
 	e->code = ART_CURVETO;
 
-	c.x = control->x * od->t[0] + control->y * od->t[2];
-	c.y = control->x * od->t[1] + control->y * od->t[3];
-	e->x3 = to->x * od->t[0] + to->y * od->t[2];
-	e->y3 = to->x * od->t[1] + to->y * od->t[3];
+	c.x = control->x * od->t[0] + control->y * od->t[2] + od->t[4];
+	c.y = control->x * od->t[1] + control->y * od->t[3] + od->t[5];
+	e->x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	e->y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 
 	od->bp[od->end].x1 = c.x - (c.x - s->x3) / 3;
 	od->bp[od->end].y1 = c.y - (c.y - s->y3) / 3;
@@ -513,12 +541,12 @@ static int tfft2_cubic_to (FT_Vector * control1, FT_Vector * control2, FT_Vector
 	od = (TFFT2OutlineData *) user;
 
 	od->bp[od->end].code = ART_CURVETO;
-	od->bp[od->end].x1 = control1->x * od->t[0] + control1->y * od->t[2];
-	od->bp[od->end].y1 = control1->x * od->t[1] + control1->y * od->t[3];
-	od->bp[od->end].x2 = control2->x * od->t[0] + control2->y * od->t[2];
-	od->bp[od->end].y2 = control2->x * od->t[1] + control2->y * od->t[3];
-	od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2];
-	od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3];
+	od->bp[od->end].x1 = control1->x * od->t[0] + control1->y * od->t[2] + od->t[4];
+	od->bp[od->end].y1 = control1->x * od->t[1] + control1->y * od->t[3] + od->t[5];
+	od->bp[od->end].x2 = control2->x * od->t[0] + control2->y * od->t[2] + od->t[4];
+	od->bp[od->end].y2 = control2->x * od->t[1] + control2->y * od->t[3] + od->t[5];
+	od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
 	od->end++;
 
 	return 0;

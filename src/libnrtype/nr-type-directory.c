@@ -390,42 +390,44 @@ nr_type_read_private_list (void)
 			/* File */
 			p = nr_type_next_token (img, st.st_size, p, &filep);
 			if (p >= st.st_size) break;
-			if (iscntrl (img[p])) break;
-			e0 = p;
-			p += 1;
-			/* Name */
-			p = nr_type_next_token (img, st.st_size, p, &namep);
-			if (p >= st.st_size) break;
-			if (iscntrl (img[p])) break;
-			e1 = p;
-			p += 1;
-			/* Family */
-			p = nr_type_next_token (img, st.st_size, p, &familyp);
-			e2 = p;
-			p += 1;
-			if ((filep >= 0) && (namep >= 0) && (familyp >= 0)) {
-				struct stat st;
-				if (!stat (filename, &st) && S_ISREG (st.st_mode)) {
-					NRTypeFaceDefFT2 *dft2;
-					int face;
-					char *cp;
-					img[e0] = 0;
-					img[e1] = 0;
-					img[e2] = 0;
-					cp = strchr (img + namep, ':');
-					if (cp) {
-						*cp = 0;
-						face = atoi (cp + 1);
-					} else {
-						face = 0;
+			if (!iscntrl (img[p])) {
+				e0 = p;
+				p += 1;
+				/* Name */
+				p = nr_type_next_token (img, st.st_size, p, &namep);
+				if (p >= st.st_size) break;
+				if (!iscntrl (img[p])) {
+					e1 = p;
+					p += 1;
+					/* Family */
+					p = nr_type_next_token (img, st.st_size, p, &familyp);
+					e2 = p;
+					p += 1;
+					if ((filep >= 0) && (namep >= 0) && (familyp >= 0)) {
+						struct stat st;
+						if (!stat (filename, &st) && S_ISREG (st.st_mode)) {
+							NRTypeFaceDefFT2 *dft2;
+							int face;
+							char *cp;
+							img[e0] = 0;
+							img[e1] = 0;
+							img[e2] = 0;
+							cp = strchr (img + filep, ':');
+							if (cp) {
+								*cp = 0;
+								face = atoi (cp + 1);
+							} else {
+								face = 0;
+							}
+							printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp);
+							dft2 = nr_new (NRTypeFaceDefFT2, 1);
+							dft2->def.next = NULL;
+							dft2->def.pdef = NULL;
+							nr_type_ft2_build_def (dft2, img + namep, img + filep, face);
+							nr_type_register ((NRTypeFaceDef *) dft2, img + familyp);
+							nentries += 1;
+						}
 					}
-					printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp);
-					dft2 = nr_new (NRTypeFaceDefFT2, 1);
-					dft2->def.next = NULL;
-					dft2->def.pdef = NULL;
-					nr_type_ft2_build_def (dft2, img + namep, img + filep, face);
-					nr_type_register ((NRTypeFaceDef *) dft2, img + familyp);
-					nentries += 1;
 				}
 			}
 			while (iscntrl (img[p]) && (p < st.st_size)) p++;

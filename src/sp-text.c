@@ -175,6 +175,7 @@ sp_string_modified (SPObject *object, guint flags)
 
 /* Vertical metric simulator */
 
+#if 0
 static ArtDRect *
 sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 {
@@ -206,7 +207,9 @@ sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 		return bbox;
 	}
 }
+#endif
 
+#if 0
 static NRPointF *
 sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
 {
@@ -218,22 +221,25 @@ sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
 		return adv;
 	}
 }
+#endif
 
+#if 0
 static void
 sp_font_get_glyph_bbox_lr2tb (NRFont *font, gint glyph, ArtPoint *d)
 {
-	ArtDRect hbox;
+	NRRectF hbox;
 
 	d->x = 0.0;
 	d->y = 0.0;
 
-	if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_LR, &hbox)) {
+	if (nr_font_glyph_area_get (font, glyph, &hbox)) {
 		/* Center horizontally */
 		d->x = 0.0 - (hbox.x1 + hbox.x0) / 2;
 		/* Just move down by EM */
 		d->y = 0.0 - NR_FONT_SIZE (font);
 	}
 }
+#endif
 
 static void
 sp_string_calculate_dimensions (SPString *string)
@@ -241,8 +247,10 @@ sp_string_calculate_dimensions (SPString *string)
 	SPStyle *style;
 	NRTypeFace *face;
 	NRFont *font;
-	gdouble size, spwidth;
+	gdouble size;
 	gint spglyph;
+	unsigned int metrics;
+	NRPointF spadv;
 
 	string->bbox.x0 = string->bbox.y0 = 1e18;
 	string->bbox.x1 = string->bbox.y1 = -1e18;
@@ -253,15 +261,23 @@ sp_string_calculate_dimensions (SPString *string)
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
-	font = nr_font_new_default (face, NR_TYPEFACE_METRICS_HORIZONTAL, size);
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		metrics = NR_TYPEFACE_METRICS_VERTICAL;
+	} else {
+		metrics = NR_TYPEFACE_METRICS_HORIZONTAL;
+	}
+	font = nr_font_new_default (face, metrics, size);
 
-	spwidth = size;
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		spadv.x = 0.0;
+		spadv.y = size;
+	} else {
+		spadv.x = size;
+		spadv.y = 0.0;
+	}
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
-		NRPointF adv;
-		if (nr_font_glyph_advance_get (font, spglyph, &adv)) {
-			spwidth = adv.x;
-		}
+		nr_font_glyph_advance_get (font, spglyph, &spadv);
 	}
 
 	if (string->text) {
@@ -279,42 +295,27 @@ sp_string_calculate_dimensions (SPString *string)
 			if (unival == ' ') {
 				if (intext) inspace = TRUE;
 			} else {
-				ArtDRect bbox;
+				NRRectF bbox;
 				NRPointF adv;
 				gint glyph;
 
 				glyph = nr_typeface_lookup_default (face, unival);
 
-				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-					if (inspace) {
-						string->advance.y += size;
-						inspace = FALSE;
-					}
-					if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_TB, &bbox)) {
-						string->bbox.x0 = MIN (string->bbox.x0, string->advance.x + bbox.x0);
-						string->bbox.y0 = MIN (string->bbox.y0, string->advance.y - bbox.y1);
-						string->bbox.x1 = MAX (string->bbox.x1, string->advance.x + bbox.x1);
-						string->bbox.y1 = MAX (string->bbox.y1, string->advance.y - bbox.y0);
-					}
-					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
-						string->advance.x += adv.x;
-						string->advance.y -= adv.y;
-					}
-				} else {
-					if (inspace) {
-						string->advance.x += spwidth;
-						inspace = FALSE;
-					}
-					if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_LR, &bbox)) {
-						string->bbox.x0 = MIN (string->bbox.x0, string->advance.x + bbox.x0);
-						string->bbox.y0 = MIN (string->bbox.y0, string->advance.y - bbox.y1);
-						string->bbox.x1 = MAX (string->bbox.x1, string->advance.x + bbox.x1);
-						string->bbox.y1 = MAX (string->bbox.y1, string->advance.y - bbox.y0);
-					}
-					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
-						string->advance.x += adv.x;
-						string->advance.y -= adv.y;
-					}
+				if (inspace) {
+					string->advance.x += spadv.x;
+					string->advance.y -= spadv.y;
+					inspace = FALSE;
+				}
+
+				if (nr_font_glyph_area_get (font, glyph, &bbox)) {
+					string->bbox.x0 = MIN (string->bbox.x0, string->advance.x + bbox.x0);
+					string->bbox.y0 = MIN (string->bbox.y0, string->advance.y - bbox.y1);
+					string->bbox.x1 = MAX (string->bbox.x1, string->advance.x + bbox.x1);
+					string->bbox.y1 = MAX (string->bbox.y1, string->advance.y - bbox.y0);
+				}
+				if (nr_font_glyph_advance_get (font, glyph, &adv)) {
+					string->advance.x += adv.x;
+					string->advance.y -= adv.y;
 				}
 				intext = TRUE;
 			}
@@ -340,13 +341,15 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	SPStyle *style;
 	NRTypeFace *face;
 	NRFont *font;
-	gdouble size, spwidth;
+	gdouble size;
 	gint spglyph;
 	gdouble x, y;
 	NRMatrixF a;
 	const guchar *p;
 	gboolean intext;
 	gint len, pos;
+	unsigned int metrics;
+	NRPointF spadv;
 
 	chars = SP_CHARS (string);
 	style = SP_OBJECT_STYLE (string);
@@ -362,15 +365,23 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
-	font = nr_font_new_default (face, NR_TYPEFACE_METRICS_HORIZONTAL, size);
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		metrics = NR_TYPEFACE_METRICS_VERTICAL;
+	} else {
+		metrics = NR_TYPEFACE_METRICS_HORIZONTAL;
+	}
+	font = nr_font_new_default (face, metrics, size);
 
-	spwidth = size;
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		spadv.x = 0.0;
+		spadv.y = size;
+	} else {
+		spadv.x = size;
+		spadv.y = 0.0;
+	}
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
-		NRPointF adv;
-		if (nr_font_glyph_advance_get (font, spglyph, &adv)) {
-			spwidth = adv.x;
-		}
+		nr_font_glyph_advance_get (font, spglyph, &spadv);
 	}
 
 	/* fixme: Find a way how to manipulate these */
@@ -385,13 +396,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
 		gunichar unival;
 		if (inspace) {
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				string->p[pos].x = x;
-				string->p[pos].y = y + size;
-			} else {
-				string->p[pos].x = x + spwidth;
-				string->p[pos].y = y;
-			}
+			string->p[pos].x = x + spadv.x;
+			string->p[pos].y = y - spadv.y;
 		} else {
 			string->p[pos].x = x;
 			string->p[pos].y = y;
@@ -405,32 +411,19 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 			glyph = nr_typeface_lookup_default (face, unival);
 
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				ArtPoint d;
-				if (inspace) {
-					y += size;
-					inspace = FALSE;
-				}
-				sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
-				a.c[4] = x + d.x;
-				a.c[5] = y - d.y;
-				sp_chars_add_element (chars, glyph, font, &a);
-				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
-					x += adv.x;
-					y -= adv.y;
-				}
-			} else {
-				if (inspace) {
-					x += spwidth;
-					inspace = FALSE;
-				}
-				a.c[4] = x;
-				a.c[5] = y;
-				sp_chars_add_element (chars, glyph, font, &a);
-				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
-					x += adv.x;
-					y -= adv.y;
-				}
+			if (inspace) {
+				x += spadv.x;
+				y -= spadv.y;
+				inspace = FALSE;
+			}
+
+			a.c[4] = x;
+			a.c[5] = y;
+
+			sp_chars_add_element (chars, glyph, font, &a);
+			if (nr_font_glyph_advance_get (font, glyph, &adv)) {
+				x += adv.x;
+				y -= adv.y;
 			}
 			intext = TRUE;
 		}
@@ -441,13 +434,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	nr_typeface_unref (face);
 
 	if (inspace) {
-		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-			string->p[pos].x = x;
-			string->p[pos].y = y + size;
-		} else {
-			string->p[pos].x = x + spwidth;
-			string->p[pos].y = y;
-		}
+		string->p[pos].x = x + spadv.x;
+		string->p[pos].y = y - spadv.y;
 	} else {
 		string->p[pos].x = x;
 		string->p[pos].y = y;

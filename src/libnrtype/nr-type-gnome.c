@@ -46,6 +46,7 @@ static NRTypeFaceVMV nr_type_gnome_vmv = {
 	nr_font_generic_glyph_outline_get,
 	nr_font_generic_glyph_outline_unref,
 	nr_font_generic_glyph_advance_get,
+	nr_font_generic_glyph_area_get,
 
 	nr_font_generic_rasterfont_new,
 	nr_font_generic_rasterfont_free,
@@ -235,6 +236,9 @@ nr_typeface_gnome_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigne
 			bbox.x0 = bbox.y0 = 1e18;
 			bbox.x1 = bbox.y1 = -1e18;
 			nr_path_matrix_f_bbox_f_union (&bpath, NULL, &bbox, 0.25);
+#if 0
+			printf ("BBOX %d - %f %f %f %f\n", glyph, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+#endif
 			if (!nr_rect_f_test_empty (&bbox)) {
 				t[0] = 1.0;
 				t[1] = 0.0;
@@ -307,7 +311,7 @@ nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *tra
 
 	font = tfg->fonts;
 	while (font != NULL) {
-		if (NR_DF_TEST_CLOSE (size, font->size, 0.001 * size)) {
+		if (NR_DF_TEST_CLOSE (size, font->size, 0.001 * size) && (font->metrics == metrics)) {
 			return nr_font_ref (font);
 		}
 		font = font->next;

@@ -56,6 +56,7 @@ struct _NRTypeFaceVMV {
 	NRBPath *(* font_glyph_outline_get) (NRFont *font, unsigned int glyph, NRBPath *path, unsigned int ref);
 	void (* font_glyph_outline_unref) (NRFont *font, unsigned int glyph);
 	NRPointF *(* font_glyph_advance_get) (NRFont *font, unsigned int glyph, NRPointF *adv);
+	NRRectF *(* font_glyph_area_get) (NRFont *font, unsigned int glyph, NRRectF *area);
 	NRRasterFont *(* rasterfont_new) (NRFont *font, NRMatrixF *transform);
 
 	void (* rasterfont_free) (NRRasterFont *rfont);
