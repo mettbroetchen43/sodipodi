@@ -96,6 +96,7 @@ sodipodi_SOURCES = \
 	toolbox.c toolbox.h \
 	\
 	verbs.c verbs.h \
+	shortcuts.c shortcuts.h \
 	event-context.c event-context.h \
 	seltrans-handles.c seltrans-handles.h \
 	seltrans.c seltrans.h \

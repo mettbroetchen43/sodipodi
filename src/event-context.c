@@ -23,7 +23,7 @@
 #include "xml/repr-private.h"
 #include "sp-cursor.h"
 
-#include "verbs.h"
+#include "shortcuts.h"
 
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -214,8 +214,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		break;
         case GDK_KEY_PRESS:
 		switch (event->key.keyval) {
-			SPAction *action;
-			unsigned int shortcut, verb;
+			unsigned int shortcut;
 		case GDK_Tab: // disable tab/shift-tab which cycle widget focus
 		case GDK_ISO_Left_Tab: // they will get different functions
 			ret = TRUE;
@@ -233,39 +232,26 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		case GDK_minus:
 		case GDK_0:
 		case GDK_1:
+		case GDK_Z:
+		case GDK_z:
+		case GDK_R:
+		case GDK_r:
+		case GDK_X:
+		case GDK_x:
+		case GDK_C:
+		case GDK_c:
+		case GDK_V:
+		case GDK_v:
+		case GDK_Delete:
+		case GDK_D:
+		case GDK_d:
 			shortcut = event->key.keyval;
-			if (event->key.state & GDK_SHIFT_MASK) shortcut |= SP_ACTION_SHIFT_MASK;
-			if (event->key.state & GDK_CONTROL_MASK) shortcut |= SP_ACTION_CONTROL_MASK;
-			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_ACTION_ALT_MASK;
-			verb = sp_shortcut_get_verb (shortcut);
-			if (verb) {
-				action = sp_verb_get_action (verb);
-				if (action) sp_action_perform (action);
-			}
+			if (event->key.state & GDK_SHIFT_MASK) shortcut |= SP_SHORTCUT_SHIFT_MASK;
+			if (event->key.state & GDK_CONTROL_MASK) shortcut |= SP_SHORTCUT_CONTROL_MASK;
+			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_SHORTCUT_ALT_MASK;
+			ret = sp_shortcut_run (shortcut);
 			break;
 #if 0
-		case GDK_equal:
-		case GDK_plus:
-			/* '+' & '=' Zoom in */
-			sp_zoom_in (NULL, NULL);
-			ret = TRUE;
-			break;
-		case GDK_minus:
-			/* '-' Zoom out */
-			sp_zoom_out (NULL, NULL);
-			ret = TRUE;
-			break;
-		case GDK_0:
-			/* '0' Zoom to full page */
-			sp_zoom_page (NULL, NULL);
-			ret = TRUE;
-			break;
-		case GDK_1:
-			/* '1' Zoom to 1:1 */
-			sp_zoom_1_to_1 (NULL, NULL);
-			ret = TRUE;
-			break;
-#endif
 		case GDK_Z:
 		case GDK_z:
 			/* Undo */
@@ -282,6 +268,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret = TRUE;
 			}
 			break;
+#endif
 		case GDK_W:
 		case GDK_w:
 			/* Close view */

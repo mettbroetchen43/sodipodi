@@ -376,7 +376,7 @@ sp_toolbox_file_create (void)
 static GtkWidget *
 sp_toolbox_edit_create (void)
 {
-	GtkWidget *t, *tb, *b;
+	GtkWidget *t, *tb;
 	GtkTooltips *tt;
 	SPRepr *repr;
 
@@ -386,16 +386,13 @@ sp_toolbox_edit_create (void)
 	tb = sp_toolbox_new (t, _("Edit"), "edit", "toolbox_edit");
 	tt = gtk_tooltips_new ();
 
-	b = sp_toolbox_button_new (t, 0, "edit_undo", GTK_SIGNAL_FUNC (sp_undo), tt, _("Revert last action"));
-	/* fixme: Freehand does not need this anymore, remove if node editing is fixed (Lauris) */
-	gtk_object_set_data (GTK_OBJECT (tb), "undo", b);
-	b = sp_toolbox_button_new (t, 1, "edit_redo", GTK_SIGNAL_FUNC (sp_redo), tt, _("Do again undone action"));
-	gtk_object_set_data (GTK_OBJECT (tb), "redo", b);
-	sp_toolbox_button_new (t, 3, "edit_delete", GTK_SIGNAL_FUNC (sp_selection_delete), tt, _("Delete selected objects"));
-	sp_toolbox_button_new (t, 4, "edit_cut", GTK_SIGNAL_FUNC (sp_selection_cut), tt, _("Cut selected objects to clipboard"));
-	sp_toolbox_button_new (t, 5, "edit_copy", GTK_SIGNAL_FUNC (sp_selection_copy), tt, _("Copy selected objects to clipboard"));
-	sp_toolbox_button_new (t, 6, "edit_paste", GTK_SIGNAL_FUNC (sp_selection_paste), tt, _("Paste objects from clipboard"));
-	sp_toolbox_button_new (t, 7, "edit_duplicate", GTK_SIGNAL_FUNC (sp_selection_duplicate), tt, _("Duplicate selected objects"));
+	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_EDIT_UNDO, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_EDIT_REDO, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_EDIT_DELETE, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_EDIT_CUT, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_EDIT_COPY, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_EDIT_PASTE, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_EDIT_DUPLICATE, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.edit");
 	if (repr) {
@@ -791,7 +788,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObj
 {
 	GObject *draw;
 	const gchar * tname;
-	gpointer active, new, e, w;
+	gpointer active, new;
 
 	tname = NULL;
 
@@ -813,6 +810,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObj
 			sp_button_toggle_set_down (SP_BUTTON (new), TRUE, TRUE);
 		}
 		g_object_set_data (draw, "active", new);
+#if 0
 		if (tname && !strcmp (tname, "SPNodeContext")) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
 			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
@@ -826,6 +824,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObj
 			w = gtk_object_get_data (GTK_OBJECT (e), "redo");
 			gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
 		}
+#endif
 	}
 
 	if (tname) {

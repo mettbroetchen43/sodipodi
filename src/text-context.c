@@ -497,11 +497,14 @@ sp_text_context_timeout (SPTextContext *tc)
 static void
 sp_text_context_forget_text (SPTextContext *tc)
 {
-	if (tc->text && sp_text_is_empty (SP_TEXT (tc->text))) {
-		sp_repr_unparent (SP_OBJECT_REPR (tc->text));
-	}
-
+	SPItem *ti;
+	ti = tc->text;
+	/* We have to set it to zero,
+	 * or selection changed signal messes everything up */
 	tc->text = NULL;
+	if (ti && sp_text_is_empty (SP_TEXT (ti))) {
+		sp_repr_unparent (SP_OBJECT_REPR (ti));
+	}
 }
 
 gint

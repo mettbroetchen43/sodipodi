@@ -31,8 +31,10 @@ void sp_selection_raise_to_top (GtkWidget * widget);
 void sp_selection_lower (GtkWidget * widget);
 void sp_selection_lower_to_bottom (GtkWidget * widget);
 
+#if 0
 void sp_undo (GtkWidget * widget);
 void sp_redo (GtkWidget * widget);
+#endif
 void sp_selection_cut (GtkWidget * widget);
 void sp_selection_copy (GtkWidget * widget);
 void sp_selection_paste (GtkWidget * widget);

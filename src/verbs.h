@@ -10,14 +10,9 @@
  * This code is in public domain
  */
 
-#include "forward.h"
 #include "helper/action.h"
 
 SPAction *sp_verb_get_action (unsigned int verb);
-
-void sp_shortcut_set_verb (unsigned int shortcut, unsigned int verb, unsigned int primary);
-void sp_shortcut_remove_verb (unsigned int shortcut);
-unsigned int sp_shortcut_get_verb (unsigned int shortcut);
 
 enum {
 	/* Header */
@@ -45,6 +40,14 @@ enum {
 	SP_VERB_ZOOM_PAGE,
 	SP_VERB_ZOOM_DRAWING,
 	SP_VERB_ZOOM_SELECTION,
+	/* Edit */
+	SP_VERB_EDIT_UNDO,
+	SP_VERB_EDIT_REDO,
+	SP_VERB_EDIT_CUT,
+	SP_VERB_EDIT_COPY,
+	SP_VERB_EDIT_PASTE,
+	SP_VERB_EDIT_DELETE,
+	SP_VERB_EDIT_DUPLICATE,
 	/* Footer */
 	SP_VERB_LAST
 };

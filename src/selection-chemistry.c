@@ -466,6 +466,7 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 	sp_document_done (document);
 }
 
+#if 0
 void
 sp_undo (GtkWidget * widget)
 {
@@ -487,6 +488,7 @@ sp_redo (GtkWidget * widget)
 		sp_document_redo (SP_DT_DOCUMENT (desktop));
 	}
 }
+#endif
 
 void
 sp_selection_cut (GtkWidget * widget)

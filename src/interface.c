@@ -265,17 +265,17 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 }
 
 static void
-sp_ui_edit_menu (GtkMenu *fm, SPDocument *doc)
+sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
 {
-	sp_ui_menu_append_item (GTK_MENU (fm), GTK_STOCK_CUT, _("Cut"), G_CALLBACK(sp_selection_cut), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GTK_STOCK_COPY, _("Copy"), G_CALLBACK(sp_selection_copy), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GTK_STOCK_PASTE, _("Paste"), G_CALLBACK(sp_selection_paste), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("Duplicate"), G_CALLBACK(sp_selection_duplicate), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("Delete"), G_CALLBACK(sp_selection_delete), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("Clear all"), G_CALLBACK(sp_edit_clear_all), NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("Cleanup"), G_CALLBACK(sp_edit_cleanup), NULL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_CUT);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_COPY);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_PASTE);
+	sp_ui_menu_append_item (menu, NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_DUPLICATE);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_DELETE);
+	sp_ui_menu_append_item (menu, NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Clear all"), G_CALLBACK(sp_edit_clear_all), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Cleanup"), G_CALLBACK(sp_edit_cleanup), NULL);
 }
 
 static void
@@ -496,10 +496,9 @@ sp_ui_generic_menu (SPView *v, SPItem *item)
 
 	m = gtk_menu_new ();
 
-	/* Undo */
-	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_UNDO, _("Undo"), GTK_SIGNAL_FUNC (sp_undo), NULL);
-	/* File:Print Preview */
-	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_REDO, _("Redo"), GTK_SIGNAL_FUNC (sp_redo), NULL);
+	/* Undo and Redo */
+	sp_ui_menu_append_item_from_verb (GTK_MENU (m), SP_VERB_EDIT_UNDO);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (m), SP_VERB_EDIT_REDO);
 	/* Separator */
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 

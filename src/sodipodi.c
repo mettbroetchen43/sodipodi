@@ -38,7 +38,7 @@
 #include "helper/sp-marshal.h"
 #include "xml/repr-private.h"
 
-#include "verbs.h"
+#include "shortcuts.h"
 
 #include "document.h"
 #include "desktop.h"
@@ -256,20 +256,7 @@ sodipodi_init (SPObject * object)
 	sodipodi->extensions = sp_repr_read_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
 
 	/* Initialize shortcuts */
-	sp_shortcut_set_verb (GDK_F1, SP_VERB_CONTEXT_SELECT, TRUE);
-	sp_shortcut_set_verb (GDK_F2, SP_VERB_CONTEXT_NODE, TRUE);
-	sp_shortcut_set_verb (GDK_F3, SP_VERB_CONTEXT_ZOOM, TRUE);
-	sp_shortcut_set_verb (GDK_F4, SP_VERB_CONTEXT_RECT, TRUE);
-	sp_shortcut_set_verb (GDK_F5, SP_VERB_CONTEXT_ARC, TRUE);
-	sp_shortcut_set_verb (GDK_F6, SP_VERB_CONTEXT_PENCIL, TRUE);
-	sp_shortcut_set_verb (GDK_F7, SP_VERB_CONTEXT_TEXT, TRUE);
-	sp_shortcut_set_verb (GDK_F8, SP_VERB_CONTEXT_DROPPER, TRUE);
-
-	sp_shortcut_set_verb (GDK_plus, SP_VERB_ZOOM_IN, TRUE);
-	sp_shortcut_set_verb (GDK_equal, SP_VERB_ZOOM_IN, FALSE);
-	sp_shortcut_set_verb (GDK_minus, SP_VERB_ZOOM_OUT, TRUE);
-	sp_shortcut_set_verb (GDK_0, SP_VERB_ZOOM_PAGE, TRUE);
-	sp_shortcut_set_verb (GDK_1, SP_VERB_ZOOM_1_1, TRUE);
+	sp_shortcut_table_load (NULL);
 
 	sodipodi->documents = NULL;
 	sodipodi->desktops = NULL;

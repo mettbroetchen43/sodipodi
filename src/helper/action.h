@@ -21,12 +21,6 @@ typedef struct _SPActionClass SPActionClass;
 
 #include <libnr/nr-object.h>
 
-/* We define high-bit mask for packing into single int */
-
-#define SP_ACTION_SHIFT_MASK (1 << 24)
-#define SP_ACTION_CONTROL_MASK (1 << 25)
-#define SP_ACTION_ALT_MASK (1 << 26)
-
 typedef struct _SPActionEventVector SPActionEventVector;
 
 struct _SPActionEventVector {
