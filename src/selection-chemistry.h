@@ -14,7 +14,8 @@ void sp_selection_delete (GtkWidget * widget);
 void sp_selection_duplicate (GtkWidget * widget);
 
 void sp_selection_group (GtkWidget * widget);
-void sp_selection_ungroup (GtkWidget * widget);
+
+void sp_selection_ungroup (gpointer data);
 
 void sp_selection_raise (GtkWidget * widget);
 void sp_selection_raise_to_top (GtkWidget * widget);

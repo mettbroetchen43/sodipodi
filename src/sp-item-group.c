@@ -23,6 +23,7 @@
 #include "sp-object-repr.h"
 #include "svg/svg.h"
 #include "document.h"
+#include "style.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
@@ -506,64 +507,72 @@ sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group)
 void
 sp_item_group_ungroup (SPGroup *group, GSList **children)
 {
-	SPDocument *document;
-	SPItem *gitem;
-	SPRepr *grepr;
-	gdouble gtrans[6];
+	SPDocument *doc;
+	SPItem *gitem, *pitem;
+	SPRepr *grepr, *prepr, *lrepr;
 
 	g_return_if_fail (group != NULL);
 	g_return_if_fail (SP_IS_GROUP (group));
 
-	document = ((SPObject *) group)->document;
+	doc = SP_OBJECT_DOCUMENT (group);
 
 	gitem = SP_ITEM (group);
+	grepr = SP_OBJECT_REPR (gitem);
+	pitem = SP_ITEM (SP_OBJECT_PARENT (gitem));
+	prepr = SP_OBJECT_REPR (pitem);
 
-	grepr = ((SPObject *) gitem)->repr;
 	g_return_if_fail (!strcmp (sp_repr_name (grepr), "g") || !strcmp (sp_repr_name (grepr), "a"));
-	if (gitem->affine) {
-		memcpy (gtrans, gitem->affine, 6 * sizeof (gdouble));
-	} else {
-		art_affine_identity (gtrans);
-	}
+
+	lrepr = grepr;
 
 	while (group->children) {
-		SPRepr *crepr;
-
-		crepr = group->children->repr;
-
 		if (SP_IS_ITEM (group->children)) {
-			SPRepr *nrepr;
-			SPItem *nitem;
+			SPRepr *crepr, *nrepr;
+			SPItem *citem, *nitem;
 			gdouble ctrans[6];
-			const gchar *castr;
-			SPCSSAttr * css;
 			gchar affinestr[80];
+			guchar *ss;
+
+			crepr = SP_OBJECT_REPR (group->children);
+			citem = SP_ITEM (group->children);
 
 			nrepr = sp_repr_duplicate (crepr);
 
-			art_affine_identity (ctrans);
-			castr = sp_repr_attr (nrepr, "transform");
-			sp_svg_read_affine (ctrans, castr);
-			art_affine_multiply (ctrans, ctrans, gtrans);
+			art_affine_multiply (ctrans, citem->affine, gitem->affine);
 			sp_svg_write_affine (affinestr, 79, ctrans);
 			affinestr[79] = '\0';
 			sp_repr_set_attr (nrepr, "transform", affinestr);
 
+			/* Merging of style */
+			/* fixme: We really should respect presentation attributes too */
+			ss = sp_style_write_difference (SP_OBJECT_STYLE (citem), SP_OBJECT_STYLE (pitem));
+			sp_repr_set_attr (nrepr, "style", ss);
+			g_free (ss);
+#if 0
 			css = sp_repr_css_attr_inherited (nrepr, "style");
 			sp_repr_css_set (nrepr, css, "style");
 			sp_repr_css_attr_unref (css);
+#endif
 
+#if 0
 			/* fixme: Sort up that item/object stuff (lauris) */
 			nitem = (SPItem *) sp_document_add_repr (document, nrepr);
 			sp_repr_unref (nrepr);
 			if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
+#else
+			/* Append new children after group */
+			sp_repr_add_child (prepr, nrepr, lrepr);
+			lrepr = nrepr;
+			nitem = (SPItem *) sp_document_lookup_id (doc, sp_repr_attr (nrepr, "id"));
+			sp_repr_unref (nrepr);
+			if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
+#endif
 		}
-
-		sp_repr_remove_child (grepr, crepr);
+		sp_repr_remove_child (grepr, SP_OBJECT_REPR (group->children));
 	}
 
 	sp_repr_unparent (grepr);
-	sp_document_done (document);
+	sp_document_done (doc);
 }
 
 /*

@@ -24,21 +24,21 @@ BEGIN_GNOME_DECLS
 #include "color.h"
 #include "forward.h"
 
-typedef struct _SPInheritedString SPInheritedString;
-typedef struct _SPInheritedFloat SPInheritedFloat;
-typedef struct _SPInheritedScale30 SPInheritedScale30;
-typedef struct _SPInheritedInt SPInheritedInt;
-typedef struct _SPInheritedShort SPInheritedShort;
-typedef struct _SPInheritedPaint SPInheritedPaint;
+typedef struct _SPIString SPIString;
+typedef struct _SPIFloat SPIFloat;
+typedef struct _SPIScale30 SPIScale30;
+typedef struct _SPIInt SPIInt;
+typedef struct _SPIShort SPIShort;
+typedef struct _SPIPaint SPIPaint;
 
-struct _SPInheritedString {
+struct _SPIString {
 	guint set : 1;
 	guint inherit : 1;
 	guint data : 30;
 	guchar *value;
 };
 
-struct _SPInheritedFloat {
+struct _SPIFloat {
 	guint set : 1;
 	guint inherit : 1;
 	guint data : 30;
@@ -49,20 +49,20 @@ struct _SPInheritedFloat {
 #define SP_SCALE30_TO_FLOAT(v) ((float) (v) / SP_SCALE30_MAX)
 #define SP_SCALE30_FROM_FLOAT(v) ((gint) floor ((v) * (SP_SCALE30_MAX + 0.9999)))
 
-struct _SPInheritedScale30 {
+struct _SPIScale30 {
 	guint set : 1;
 	guint inherit : 1;
 	guint value : 30;
 };
 
-struct _SPInheritedInt {
+struct _SPIInt {
 	guint set : 1;
 	guint inherit : 1;
 	guint data : 30;
 	gint value;
 };
 
-struct _SPInheritedShort {
+struct _SPIShort {
 	guint set : 1;
 	guint inherit : 1;
 	guint data : 14;
@@ -80,7 +80,7 @@ typedef enum {
 	SP_PAINT_TYPE_PAINTSERVER
 } SPPaintType;
 
-struct _SPInheritedPaint {
+struct _SPIPaint {
 	guint set : 1;
 	guint inherit : 1;
 	guint type : 3;
@@ -112,7 +112,7 @@ struct _SPStyle {
 	guint mask_set : 1;
 
 	/* opacity */
-	SPInheritedScale30 opacity;
+	SPIScale30 opacity;
 
 	/* display */
 	guint display : 1;
@@ -120,30 +120,29 @@ struct _SPStyle {
 	guint visibility : 1;
 
 	/* fill */
-	SPInheritedPaint fill;
+	SPIPaint fill;
 	/* fill-opacity */
-	SPInheritedScale30 fill_opacity;
+	SPIScale30 fill_opacity;
 	/* fill-rule: 0 nonzero, 1 evenodd */
-	SPInheritedShort fill_rule;
+	SPIShort fill_rule;
 
 	/* stroke */
-	SPInheritedPaint stroke;
+	SPIPaint stroke;
 	/* stroke-width */
 	SPDistance stroke_width;
 	guint stroke_width_set : 1;
 	/* stroke-linecap */
-	SPInheritedShort stroke_linecap;
+	SPIShort stroke_linecap;
 	/* stroke-linejoin */
-	SPInheritedShort stroke_linejoin;
+	SPIShort stroke_linejoin;
 	/* stroke-miterlimit */
-	gdouble stroke_miterlimit;
-	guint stroke_miterlimit_set;
+	SPIFloat stroke_miterlimit;
 	/* stroke-dash* */
 	ArtVpathDash stroke_dash;
 	guint stroke_dasharray_set : 1;
 	guint stroke_dashoffset_set : 1;
 	/* stroke-opacity */
-	SPInheritedScale30 stroke_opacity;
+	SPIScale30 stroke_opacity;
 	/* fixme: remove this */
 	/* Computed value */
 	gdouble absolute_stroke_width;
@@ -159,13 +158,14 @@ SPStyle *sp_style_unref (SPStyle *style);
 /*
  * 1. Reset existing object style
  * 2. Load current effective object style
- * 3. Load inherited attributes from immediate parent (which has to be up-to-date)
+ * 3. Load i attributes from immediate parent (which has to be up-to-date)
  */
 
 void sp_style_read_from_object (SPStyle *style, SPObject *object);
 void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object);
 
 guchar *sp_style_write_string (SPStyle *style);
+guchar *sp_style_write_difference (SPStyle *from, SPStyle *to);
 
 void sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
 void sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
@@ -227,13 +227,13 @@ struct _SPTextStyle {
 	gint refcount;
 
 	/* CSS font properties */
-	SPInheritedString font_family;
-	SPInheritedShort font_style;
-	SPInheritedShort font_variant;
-	SPInheritedShort font_weight;
-	SPInheritedShort font_stretch;
+	SPIString font_family;
+	SPIShort font_style;
+	SPIShort font_variant;
+	SPIShort font_weight;
+	SPIShort font_stretch;
 	/* fixme: Should this be SPDistance ? (Lauris) */
-	SPInheritedFloat font_size;
+	SPIFloat font_size;
 
 	guint font_size_adjust_set : 1;
 
@@ -241,7 +241,7 @@ struct _SPTextStyle {
 	gfloat font_size_adjust;
 
 	/* fixme: The 'font' property is ugly, and not working (lauris) */
-	SPInheritedString font;
+	SPIString font;
 
 	/* CSS text properties */
 	guint direction_set : 1;
@@ -260,7 +260,7 @@ struct _SPTextStyle {
 	GnomeFontFace *face;
 	gfloat size;
 	/* Text direction */
-	SPInheritedShort writing_mode;
+	SPIShort writing_mode;
 };
 
 /*

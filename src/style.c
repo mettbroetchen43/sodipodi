@@ -22,6 +22,11 @@
 #include "sp-paint-server.h"
 #include "style.h"
 
+#define BMAX 8192
+
+#define SP_STYLE_FLAG_IFSET (1 << 0)
+#define SP_STYLE_FLAG_IFDIFF (1 << 1)
+
 typedef struct _SPStyleEnum SPStyleEnum;
 
 static void sp_style_clear (SPStyle *style);
@@ -29,7 +34,7 @@ static void sp_style_clear (SPStyle *style);
 static void sp_style_merge_from_style_string (SPStyle *style, const guchar *p);
 static void sp_style_merge_property (SPStyle *style, gint id, const guchar *val);
 
-static void sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInheritedPaint *parent);
+static void sp_style_merge_ipaint (SPStyle *style, SPIPaint *paint, SPIPaint *parent);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 
 static SPTextStyle *sp_text_style_new (void);
@@ -42,16 +47,17 @@ static void sp_style_privatize_text (SPStyle *style);
 
 static gint sp_style_property_index (const guchar *str);
 
-static void sp_style_read_inherited_float (SPInheritedFloat *val, const guchar *str);
-static void sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str);
-static void sp_style_read_inherited_enum (SPInheritedShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
-static void sp_style_read_inherited_string (SPInheritedString *val, const guchar *str);
-static void sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
-static gint sp_style_write_inherited_float (guchar *p, gint len, const guchar *key, SPInheritedFloat *val);
-static gint sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val);
-static gint sp_style_write_inherited_enum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPInheritedShort *val);
-static gint sp_style_write_inherited_string (guchar *p, gint len, const guchar *key, SPInheritedString *val);
-static gint sp_style_write_inherited_paint (guchar *b, gint len, const guchar *key, SPInheritedPaint *paint);
+static void sp_style_read_ifloat (SPIFloat *val, const guchar *str);
+static void sp_style_read_iscale30 (SPIScale30 *val, const guchar *str);
+static void sp_style_read_ienum (SPIShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
+static void sp_style_read_istring (SPIString *val, const guchar *str);
+static void sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
+
+static gint sp_style_write_ifloat (guchar *p, gint len, const guchar *key, SPIFloat *val, SPIFloat *base, guint flags);
+static gint sp_style_write_iscale30 (guchar *p, gint len, const guchar *key, SPIScale30 *val, SPIScale30 *base, guint flags);
+static gint sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIShort *val, SPIShort *base, guint flags);
+static gint sp_style_write_istring (guchar *p, gint len, const guchar *key, SPIString *val, SPIString *base, guint flags);
+static gint sp_style_write_ipaint (guchar *b, gint len, const guchar *key, SPIPaint *paint, SPIPaint *base, guint flags);
 
 static SPColor *sp_style_read_color_cmyk (SPColor *color, const guchar *str);
 
@@ -237,56 +243,56 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	if (!style->opacity.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
 		if (val) {
-			sp_style_read_inherited_scale30 (&style->opacity, val);
+			sp_style_read_iscale30 (&style->opacity, val);
 		}
 	}
 	/* fill */
 	if (!style->fill.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
 		if (val) {
-			sp_style_read_inherited_paint (&style->fill, val, style, SP_OBJECT_DOCUMENT (object));
+			sp_style_read_ipaint (&style->fill, val, style, SP_OBJECT_DOCUMENT (object));
 		}
 	}
 	/* fill-opacity */
 	if (!style->fill_opacity.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill-opacity");
 		if (val) {
-			sp_style_read_inherited_scale30 (&style->fill_opacity, val);
+			sp_style_read_iscale30 (&style->fill_opacity, val);
 		}
 	}
 	/* fill-rule */
 	if (!style->fill_rule.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill-rule");
 		if (val) {
-			sp_style_read_inherited_enum (&style->fill_rule, val, enum_fill_rule, TRUE);
+			sp_style_read_ienum (&style->fill_rule, val, enum_fill_rule, TRUE);
 		}
 	}
 	/* stroke */
 	if (!style->stroke.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
 		if (val) {
-			sp_style_read_inherited_paint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (object));
+			sp_style_read_ipaint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (object));
 		}
 	}
 	/* stroke-linecap */
 	if (!style->stroke_linecap.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-linecap");
 		if (val) {
-			sp_style_read_inherited_enum (&style->stroke_linecap, val, enum_stroke_linecap, TRUE);
+			sp_style_read_ienum (&style->stroke_linecap, val, enum_stroke_linecap, TRUE);
 		}
 	}
 	/* stroke-linejoin */
 	if (!style->stroke_linejoin.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-linejoin");
 		if (val) {
-			sp_style_read_inherited_enum (&style->stroke_linejoin, val, enum_stroke_linejoin, TRUE);
+			sp_style_read_ienum (&style->stroke_linejoin, val, enum_stroke_linejoin, TRUE);
 		}
 	}
 	/* stroke-opacity */
 	if (!style->stroke_opacity.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-opacity");
 		if (val) {
-			sp_style_read_inherited_scale30 (&style->stroke_opacity, val);
+			sp_style_read_iscale30 (&style->stroke_opacity, val);
 		}
 	}
 
@@ -295,7 +301,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_string (&style->text->font_family, val);
+			sp_style_read_istring (&style->text->font_family, val);
 		}
 	}
 	/* font-size */
@@ -304,7 +310,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_float (&style->text->font_size, val);
+			sp_style_read_ifloat (&style->text->font_size, val);
 		}
 	}
 	/* font-style */
@@ -312,7 +318,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-style");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_style, TRUE);
+			sp_style_read_ienum (&style->text->font_style, val, enum_font_style, TRUE);
 		}
 	}
 	/* font-variant */
@@ -320,7 +326,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-variant");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_variant, TRUE);
+			sp_style_read_ienum (&style->text->font_style, val, enum_font_variant, TRUE);
 		}
 	}
 	/* font-weight */
@@ -328,7 +334,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-weight");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_weight, TRUE);
+			sp_style_read_ienum (&style->text->font_style, val, enum_font_weight, TRUE);
 		}
 	}
 	/* font-stretch */
@@ -336,7 +342,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-stretch");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_stretch, TRUE);
+			sp_style_read_ienum (&style->text->font_style, val, enum_font_stretch, TRUE);
 		}
 	}
 	/* writing-mode */
@@ -344,7 +350,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_inherited_enum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
+			sp_style_read_ienum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
 		}
 	}
 
@@ -373,13 +379,13 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_FONT_FAMILY:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_family.set) {
-			sp_style_read_inherited_string (&style->text->font_family, val);
+			sp_style_read_istring (&style->text->font_family, val);
 		}
 		break;
 	case SP_PROP_FONT_SIZE:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_size.set) {
-			sp_style_read_inherited_float (&style->text->font_size, val);
+			sp_style_read_ifloat (&style->text->font_size, val);
 		}
 		break;
 	case SP_PROP_FONT_SIZE_ADJUST:
@@ -388,25 +394,25 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_FONT_STYLE:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_style.set) {
-			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_style, TRUE);
+			sp_style_read_ienum (&style->text->font_style, val, enum_font_style, TRUE);
 		}
 		break;
 	case SP_PROP_FONT_VARIANT:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_variant.set) {
-			sp_style_read_inherited_enum (&style->text->font_variant, val, enum_font_variant, TRUE);
+			sp_style_read_ienum (&style->text->font_variant, val, enum_font_variant, TRUE);
 		}
 		break;
 	case SP_PROP_FONT_WEIGHT:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_weight.set) {
-			sp_style_read_inherited_enum (&style->text->font_weight, val, enum_font_weight, TRUE);
+			sp_style_read_ienum (&style->text->font_weight, val, enum_font_weight, TRUE);
 		}
 		break;
 	case SP_PROP_FONT_STRETCH:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_stretch.set) {
-			sp_style_read_inherited_enum (&style->text->font_stretch, val, enum_font_stretch, TRUE);
+			sp_style_read_ienum (&style->text->font_stretch, val, enum_font_stretch, TRUE);
 		}
 		break;
 	case SP_PROP_FONT:
@@ -456,7 +462,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_OPACITY:
 		if (!style->opacity.set) {
-			sp_style_read_inherited_scale30 (&style->opacity, val);
+			sp_style_read_iscale30 (&style->opacity, val);
 		}
 		break;
 	/* Filter */
@@ -479,17 +485,17 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_FILL:
 		if (!style->fill.set) {
-			sp_style_read_inherited_paint (&style->fill, val, style, SP_OBJECT_DOCUMENT (style->object));
+			sp_style_read_ipaint (&style->fill, val, style, SP_OBJECT_DOCUMENT (style->object));
 		}
 		break;
 	case SP_PROP_FILL_OPACITY:
 		if (!style->fill_opacity.set) {
-			sp_style_read_inherited_scale30 (&style->fill_opacity, val);
+			sp_style_read_iscale30 (&style->fill_opacity, val);
 		}
 		break;
 	case SP_PROP_FILL_RULE:
 		if (!style->fill_rule.set) {
-			sp_style_read_inherited_enum (&style->fill_rule, val, enum_fill_rule, TRUE);
+			sp_style_read_ienum (&style->fill_rule, val, enum_fill_rule, TRUE);
 		}
 		break;
 	case SP_PROP_IMAGE_RENDERING:
@@ -502,7 +508,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_STROKE:
 		if (!style->stroke.set) {
-			sp_style_read_inherited_paint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (style->object));
+			sp_style_read_ipaint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (style->object));
 		}
 		break;
 	case SP_PROP_STROKE_DASHARRAY:
@@ -521,25 +527,22 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_STROKE_LINECAP:
 		if (!style->stroke_linecap.set) {
-			sp_style_read_inherited_enum (&style->stroke_linecap, val, enum_stroke_linecap, TRUE);
+			sp_style_read_ienum (&style->stroke_linecap, val, enum_stroke_linecap, TRUE);
 		}
 		break;
 	case SP_PROP_STROKE_LINEJOIN:
 		if (!style->stroke_linejoin.set) {
-			sp_style_read_inherited_enum (&style->stroke_linejoin, val, enum_stroke_linejoin, TRUE);
+			sp_style_read_ienum (&style->stroke_linejoin, val, enum_stroke_linejoin, TRUE);
 		}
 		break;
 	case SP_PROP_STROKE_MITERLIMIT:
-		if (!style->stroke_miterlimit_set) {
-			const SPUnit *unit;
-			/* fixme */
-			style->stroke_miterlimit = sp_svg_read_length (&unit, val, style->stroke_miterlimit);
-			style->stroke_miterlimit_set = TRUE;
+		if (!style->stroke_miterlimit.set) {
+			sp_style_read_ifloat (&style->stroke_miterlimit, val);
 		}
 		break;
 	case SP_PROP_STROKE_OPACITY:
 		if (!style->stroke_opacity.set) {
-			sp_style_read_inherited_scale30 (&style->stroke_opacity, val);
+			sp_style_read_iscale30 (&style->stroke_opacity, val);
 		}
 		break;
 	case SP_PROP_STROKE_WIDTH:
@@ -563,7 +566,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_WRITING_MODE:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->writing_mode.set) {
-			sp_style_read_inherited_enum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
+			sp_style_read_ienum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
 		}
 		break;
 	default:
@@ -579,7 +582,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 static void
 sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 {
-	guchar c[4096];
+	guchar c[BMAX];
 
 	while (*p) {
 		const guchar *s, *e;
@@ -639,7 +642,7 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			style->visibility_set = TRUE;
 		}
 		if (!style->fill.set || style->fill.inherit) {
-			sp_style_merge_inherited_paint (style, &style->fill, &object->style->fill);
+			sp_style_merge_ipaint (style, &style->fill, &object->style->fill);
 		}
 		if (!style->fill_opacity.set || style->fill_opacity.inherit) {
 			style->fill_opacity.value = object->style->fill_opacity.value;
@@ -648,7 +651,7 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			style->fill_rule.value = object->style->fill_rule.value;
 		}
 		if (!style->stroke.set || style->stroke.inherit) {
-			sp_style_merge_inherited_paint (style, &style->stroke, &object->style->stroke);
+			sp_style_merge_ipaint (style, &style->stroke, &object->style->stroke);
 		}
 		if (!style->stroke_width_set && object->style->stroke_width_set) {
 			style->stroke_width = object->style->stroke_width;
@@ -658,12 +661,11 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 		if (!style->stroke_linecap.set || style->stroke_linecap.inherit) {
 			style->stroke_linecap.value = object->style->stroke_linecap.value;
 		}
-		if (!style->stroke_linejoin.set && style->stroke_linejoin.inherit) {
+		if (!style->stroke_linejoin.set || style->stroke_linejoin.inherit) {
 			style->stroke_linejoin.value = object->style->stroke_linejoin.value;
 		}
-		if (!style->stroke_miterlimit_set && object->style->stroke_miterlimit_set) {
-			style->stroke_miterlimit = object->style->stroke_miterlimit;
-			style->stroke_miterlimit_set = TRUE;
+		if (!style->stroke_miterlimit.set || style->stroke_miterlimit.inherit) {
+			style->stroke_miterlimit.value = object->style->stroke_miterlimit.value;
 		}
 		if (!style->stroke_dasharray_set && object->style->stroke_dasharray_set) {
 			style->stroke_dash.n_dash = object->style->stroke_dash.n_dash;
@@ -748,7 +750,7 @@ sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *sty
 }
 
 static void
-sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInheritedPaint *parent)
+sp_style_merge_ipaint (SPStyle *style, SPIPaint *paint, SPIPaint *parent)
 {
 	if ((paint->type == SP_PAINT_TYPE_PAINTSERVER) && paint->server) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (paint->server), style);
@@ -782,60 +784,105 @@ sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInher
 guchar *
 sp_style_write_string (SPStyle *style)
 {
-	guchar c[4096], *p;
+	guchar c[BMAX], *p;
 
 	g_return_val_if_fail (style != NULL, NULL);
 
 	p = c;
 	*p = '\0';
 
+	/* fixme: Per type methods need default flag too */
 	if (style->opacity.set && style->opacity.value != SP_SCALE30_MAX) {
-		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "opacity", &style->opacity);
+		p += sp_style_write_iscale30 (p, c + BMAX - p, "opacity", &style->opacity, NULL, SP_STYLE_FLAG_IFSET);
 	}
-	if (style->fill.set) {
-		p += sp_style_write_inherited_paint (p, c + 4096 - p, "fill", &style->fill);
-	}
-	if (style->fill_opacity.set) {
-		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "fill-opacity", &style->fill_opacity);
-	}
-	if (style->fill_rule.set) {
-		p += sp_style_write_inherited_enum (p, c + 4096 - p, "fill-rule", enum_fill_rule, &style->fill_rule);
-	}
-	if (style->stroke.set) {
-		p += sp_style_write_inherited_paint (p, c + 4096 - p, "stroke", &style->stroke);
-	}
+	p += sp_style_write_ipaint (p, c + BMAX - p, "fill", &style->fill, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_iscale30 (p, c + BMAX - p, "fill-opacity", &style->fill_opacity, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "fill-rule", enum_fill_rule, &style->fill_rule, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ipaint (p, c + BMAX - p, "stroke", &style->stroke, NULL, SP_STYLE_FLAG_IFSET);
+	/* fixme: */
 	if (style->stroke_width_set) {
-		p += g_snprintf (p, c + 4096 - p, "stroke-width:");
-		p += sp_svg_write_length (p, c + 4096 - p, style->stroke_width.distance, style->stroke_width.unit);
-		p += g_snprintf (p, c + 4096 - p, ";");
+		p += g_snprintf (p, c + BMAX - p, "stroke-width:");
+		p += sp_svg_write_length (p, c + BMAX - p, style->stroke_width.distance, style->stroke_width.unit);
+		p += g_snprintf (p, c + BMAX - p, ";");
 	}
-	if (style->stroke_linecap.set) {
-		p += sp_style_write_inherited_enum (p, c + 4096 - p, "stroke-linecap", enum_stroke_linecap, &style->stroke_linecap);
-	}
-	if (style->stroke_linejoin.set) {
-		p += sp_style_write_inherited_enum (p, c + 4096 - p, "stroke-linejoin", enum_stroke_linejoin, &style->stroke_linejoin);
-	}
-	if (style->stroke_miterlimit_set) {
-		p += g_snprintf (p, c + 4096 - p, "stroke-miterlimit:%g;", style->stroke_miterlimit);
-	}
+	p += sp_style_write_ienum (p, c + BMAX - p, "stroke-linecap", enum_stroke_linecap, &style->stroke_linecap, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "stroke-linejoin", enum_stroke_linejoin, &style->stroke_linejoin, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ifloat (p, c + BMAX - p, "stroke-miterlimit", &style->stroke_miterlimit, NULL, SP_STYLE_FLAG_IFSET);
+	/* fixme: */
 	if (style->stroke_dasharray_set) {
 		if (style->stroke_dash.n_dash && style->stroke_dash.dash) {
 			gint i;
-			p += g_snprintf (p, c + 4096 - p, "stroke-dasharray:");
+			p += g_snprintf (p, c + BMAX - p, "stroke-dasharray:");
 			for (i = 0; i < style->stroke_dash.n_dash; i++) {
-				p += g_snprintf (p, c + 4096 - p, "%g ", style->stroke_dash.dash[i]);
+				p += g_snprintf (p, c + BMAX - p, "%g ", style->stroke_dash.dash[i]);
 			}
-			p += g_snprintf (p, c + 4096 - p, ";");
+			p += g_snprintf (p, c + BMAX - p, ";");
 		}
 	}
+	/* fixme: */
 	if (style->stroke_dashoffset_set) {
-		p += g_snprintf (p, c + 4096 - p, "stroke-dashoffset:%g;", style->stroke_dash.offset);
+		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%g;", style->stroke_dash.offset);
 	}
-	if (style->stroke_opacity.set) {
-		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "stroke-opacity", &style->stroke_opacity);
-	}
+	p += sp_style_write_iscale30 (p, c + BMAX - p, "stroke-opacity", &style->stroke_opacity, NULL, SP_STYLE_FLAG_IFSET);
 
-	sp_text_style_write (p, c + 4096 - p, style->text);
+	/* fixme: */
+	sp_text_style_write (p, c + BMAX - p, style->text);
+
+	return g_strdup (c);
+}
+
+#define STYLE_BUF_MAX
+
+guchar *
+sp_style_write_difference (SPStyle *from, SPStyle *to)
+{
+	guchar c[BMAX], *p;
+
+	g_return_val_if_fail (from != NULL, NULL);
+	g_return_val_if_fail (to != NULL, NULL);
+
+	p = c;
+	*p = '\0';
+
+	/* fixme: Per type methods need default flag too */
+	if (from->opacity.set && from->opacity.value != SP_SCALE30_MAX) {
+		p += sp_style_write_iscale30 (p, c + BMAX - p, "opacity", &from->opacity, &to->opacity, SP_STYLE_FLAG_IFDIFF);
+	}
+	p += sp_style_write_ipaint (p, c + BMAX - p, "fill", &from->fill, &to->fill, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_iscale30 (p, c + BMAX - p, "fill-opacity", &from->fill_opacity, &to->fill_opacity, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "fill-rule", enum_fill_rule, &from->fill_rule, &to->fill_rule, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ipaint (p, c + BMAX - p, "stroke", &from->stroke, &to->stroke, SP_STYLE_FLAG_IFDIFF);
+	/* fixme: */
+	if (from->stroke_width.distance != to->stroke_width.distance) {
+		p += g_snprintf (p, c + BMAX - p, "stroke-width:");
+		p += sp_svg_write_length (p, c + BMAX - p, from->stroke_width.distance, from->stroke_width.unit);
+		p += g_snprintf (p, c + BMAX - p, ";");
+	}
+	p += sp_style_write_ienum (p, c + BMAX - p, "stroke-linecap", enum_stroke_linecap,
+				   &from->stroke_linecap, &to->stroke_linecap, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "stroke-linejoin", enum_stroke_linejoin,
+				   &from->stroke_linejoin, &to->stroke_linejoin, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ifloat (p, c + BMAX - p, "stroke-miterlimit",
+				    &from->stroke_miterlimit, &to->stroke_miterlimit, SP_STYLE_FLAG_IFDIFF);
+	/* fixme: */
+	if (from->stroke_dasharray_set) {
+		if (from->stroke_dash.n_dash && from->stroke_dash.dash) {
+			gint i;
+			p += g_snprintf (p, c + BMAX - p, "stroke-dasharray:");
+			for (i = 0; i < from->stroke_dash.n_dash; i++) {
+				p += g_snprintf (p, c + BMAX - p, "%g ", from->stroke_dash.dash[i]);
+			}
+			p += g_snprintf (p, c + BMAX - p, ";");
+		}
+	}
+	/* fixme: */
+	if (from->stroke_dashoffset_set) {
+		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%g;", from->stroke_dash.offset);
+	}
+	p += sp_style_write_iscale30 (p, c + BMAX - p, "stroke-opacity", &from->stroke_opacity, &to->stroke_opacity, SP_STYLE_FLAG_IFDIFF);
+
+	/* fixme: */
+	sp_text_style_write (p, c + BMAX - p, from->text);
 
 	return g_strdup (c);
 }
@@ -898,7 +945,7 @@ sp_style_clear (SPStyle *style)
 	style->user_stroke_width = 1.0;
 	style->stroke_linecap.value = ART_PATH_STROKE_CAP_BUTT;
 	style->stroke_linejoin.value = ART_PATH_STROKE_JOIN_MITER;
-	style->stroke_miterlimit = 4.0;
+	style->stroke_miterlimit.value = 4.0;
 	style->stroke_dash.n_dash = 0;
 	style->stroke_dash.dash = NULL;
 	style->stroke_dash.offset = 0.0;
@@ -1149,26 +1196,26 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 	d = 0;
 
 	if (st->font_family.set) {
-		d += sp_style_write_inherited_string (p + d, len - d, "font-family", &st->font_family);
+		d += sp_style_write_istring (p + d, len - d, "font-family", &st->font_family, NULL, SP_STYLE_FLAG_IFSET);
 	}
 	if (st->font_size.set) {
-		d += sp_style_write_inherited_float (p + d, len - d, "font-size", &st->font_size);
+		d += sp_style_write_ifloat (p + d, len - d, "font-size", &st->font_size, NULL, SP_STYLE_FLAG_IFSET);
 	}
 	if (st->font_style.set) {
-		d += sp_style_write_inherited_enum (p + d, len - d, "font-style", enum_font_style, &st->font_style);
+		d += sp_style_write_ienum (p + d, len - d, "font-style", enum_font_style, &st->font_style, NULL, SP_STYLE_FLAG_IFSET);
 	}
 	if (st->font_variant.set) {
-		d += sp_style_write_inherited_enum (p + d, len - d, "font-variant", enum_font_variant, &st->font_variant);
+		d += sp_style_write_ienum (p + d, len - d, "font-variant", enum_font_variant, &st->font_variant, NULL, SP_STYLE_FLAG_IFSET);
 	}
 	if (st->font_weight.set) {
-		d += sp_style_write_inherited_enum (p + d, len - d, "font-weight", enum_font_weight, &st->font_weight);
+		d += sp_style_write_ienum (p + d, len - d, "font-weight", enum_font_weight, &st->font_weight, NULL, SP_STYLE_FLAG_IFSET);
 	}
 	if (st->font_stretch.set) {
-		d += sp_style_write_inherited_enum (p + d, len - d, "font-stretch", enum_font_stretch, &st->font_stretch);
+		d += sp_style_write_ienum (p + d, len - d, "font-stretch", enum_font_stretch, &st->font_stretch, NULL, SP_STYLE_FLAG_IFSET);
 	}
 
 	if (st->writing_mode.set) {
-		d += sp_style_write_inherited_enum (p + d, len - d, "writing-mode", enum_writing_mode, &st->writing_mode);
+		d += sp_style_write_ienum (p + d, len - d, "writing-mode", enum_writing_mode, &st->writing_mode, NULL, SP_STYLE_FLAG_IFSET);
 	}
 
 	return d;
@@ -1272,7 +1319,7 @@ sp_style_property_index (const guchar *str)
 }
 
 static void
-sp_style_read_inherited_float (SPInheritedFloat *val, const guchar *str)
+sp_style_read_ifloat (SPIFloat *val, const guchar *str)
 {
 	if (!strcmp (str, "inherit")) {
 		val->set = TRUE;
@@ -1288,7 +1335,7 @@ sp_style_read_inherited_float (SPInheritedFloat *val, const guchar *str)
 }
 
 static void
-sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str)
+sp_style_read_iscale30 (SPIScale30 *val, const guchar *str)
 {
 	if (!strcmp (str, "inherit")) {
 		val->set = TRUE;
@@ -1304,7 +1351,7 @@ sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str)
 }
 
 static void
-sp_style_read_inherited_enum (SPInheritedShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit)
+sp_style_read_ienum (SPIShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit)
 {
 	if (inherit && !strcmp (str, "inherit")) {
 		val->set = TRUE;
@@ -1323,7 +1370,7 @@ sp_style_read_inherited_enum (SPInheritedShort *val, const guchar *str, const SP
 }
 
 static void
-sp_style_read_inherited_string (SPInheritedString *val, const guchar *str)
+sp_style_read_istring (SPIString *val, const guchar *str)
 {
 	if (val->value) g_free (val->value);
 
@@ -1339,7 +1386,7 @@ sp_style_read_inherited_string (SPInheritedString *val, const guchar *str)
 }
 
 static void
-sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPStyle *style, SPDocument *document)
+sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocument *document)
 {
 	if (!strcmp (str, "inherit")) {
 		paint->set = TRUE;
@@ -1380,70 +1427,98 @@ sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPSty
 }
 
 static gint
-sp_style_write_inherited_float (guchar *p, gint len, const guchar *key, SPInheritedFloat *val)
+sp_style_write_ifloat (guchar *p, gint len, const guchar *key, SPIFloat *val, SPIFloat *base, guint flags)
 {
-	if (val->inherit) {
-		return g_snprintf (p, len, "%s:inherit;", key);
-	} else {
-		return g_snprintf (p, len, "%s:%g;", key, val->value);
-	}
-}
-
-static gint
-sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val)
-{
-	if (val->inherit) {
-		return g_snprintf (p, len, "%s:inherit;", key);
-	} else {
-		return g_snprintf (p, len, "%s:%g;", key, SP_SCALE30_TO_FLOAT (val->value));
-	}
-}
-
-static gint
-sp_style_write_inherited_enum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPInheritedShort *val)
-{
-	gint i;
-
-	for (i = 0; dict[i].key; i++) {
-		if (dict[i].value == val->value) {
-			return g_snprintf (p, len, "%s:%s;", key, dict[i].key);
+	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->value != base->value))) {
+		if (val->inherit) {
+			return g_snprintf (p, len, "%s:inherit;", key);
+		} else {
+			return g_snprintf (p, len, "%s:%g;", key, val->value);
 		}
 	}
-
 	return 0;
 }
 
 static gint
-sp_style_write_inherited_string (guchar *p, gint len, const guchar *key, SPInheritedString *val)
+sp_style_write_iscale30 (guchar *p, gint len, const guchar *key, SPIScale30 *val, SPIScale30 *base, guint flags)
 {
-	if (val->inherit) {
-		return g_snprintf (p, len, "%s:inherit;", key);
-	} else {
-		return g_snprintf (p, len, "%s:%s;", key, val->value);
+	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->value != base->value))) {
+		if (val->inherit) {
+			return g_snprintf (p, len, "%s:inherit;", key);
+		} else {
+			return g_snprintf (p, len, "%s:%g;", key, SP_SCALE30_TO_FLOAT (val->value));
+		}
 	}
+	return 0;
 }
 
 static gint
-sp_style_write_inherited_paint (guchar *p, gint len, const guchar *key, SPInheritedPaint *paint)
+sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIShort *val, SPIShort *base, guint flags)
 {
-	if (paint->inherit) {
-		return g_snprintf (p, len, "%s:inherit;", key);
-	} else {
-		switch (paint->type) {
-		case SP_PAINT_TYPE_COLOR:
-			return g_snprintf (p, len, "%s:#%06x;", key, sp_color_get_rgba32_falpha (&paint->color, 0.0) >> 8);
-			break;
-		case SP_PAINT_TYPE_PAINTSERVER:
-			if (paint->server) {
-				return g_snprintf (p, len, "%s:url(#%s);", key, SP_OBJECT (paint->server)->id);
+	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->value != base->value))) {
+		gint i;
+		for (i = 0; dict[i].key; i++) {
+			if (dict[i].value == val->value) {
+				return g_snprintf (p, len, "%s:%s;", key, dict[i].key);
 			}
-			break;
-		default:
-			break;
 		}
-
-		return g_snprintf (p, len, "%s:none;", key);
 	}
+	return 0;
+}
+
+static gint
+sp_style_write_istring (guchar *p, gint len, const guchar *key, SPIString *val, SPIString *base, guint flags)
+{
+	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && strcmp (val->value, base->value))) {
+		if (val->inherit) {
+			return g_snprintf (p, len, "%s:inherit;", key);
+		} else {
+			return g_snprintf (p, len, "%s:%s;", key, val->value);
+		}
+	}
+	return 0;
+}
+
+static gboolean
+sp_paint_differ (SPIPaint *a, SPIPaint *b)
+{
+	if (a->type != b->type) return TRUE;
+	if (a->type == SP_PAINT_TYPE_COLOR) return !sp_color_is_equal (&a->color, &b->color);
+	if (a->type == SP_PAINT_TYPE_PAINTSERVER) return (a->server != b->server);
+	return FALSE;
+}
+
+static gint
+sp_style_write_ipaint (guchar *b, gint len, const guchar *key, SPIPaint *paint, SPIPaint *base, guint flags)
+{
+	gboolean set;
+
+	set = FALSE;
+	if (((flags & SP_STYLE_FLAG_IFSET) && paint->set) ||
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && sp_paint_differ (paint, base))) {
+		if (paint->inherit) {
+			return g_snprintf (b, len, "%s:inherit;", key);
+		} else {
+			switch (paint->type) {
+			case SP_PAINT_TYPE_COLOR:
+				return g_snprintf (b, len, "%s:#%06x;", key, sp_color_get_rgba32_falpha (&paint->color, 0.0) >> 8);
+				break;
+			case SP_PAINT_TYPE_PAINTSERVER:
+				if (paint->server) {
+					return g_snprintf (b, len, "%s:url(#%s);", key, SP_OBJECT (paint->server)->id);
+				}
+				break;
+			default:
+				break;
+			}
+			return g_snprintf (b, len, "%s:none;", key);
+		}
+	}
+	return 0;
 }
 
 /*

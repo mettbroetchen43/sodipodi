@@ -152,57 +152,29 @@ sp_selection_group (GtkWidget * widget)
 	sp_repr_unref (group);
 }
 
-void sp_selection_ungroup (GtkWidget * widget)
+void
+sp_selection_ungroup (gpointer data)
 {
-	SPDesktop * desktop;
-	SPSelection * selection;
-	SPItem * item;
-	SPRepr * current;
-	SPRepr * child;
-	const gchar * pastr, * castr;
-	gdouble pa[6], ca[6];
-	SPCSSAttr * css;
-	gchar affinestr[80];
+	SPDesktop *dt;
+	SPItem *group;
+	GSList *children;
 
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	selection = SP_DT_SELECTION (desktop);
-	if (sp_selection_is_empty (selection)) return;
-	current = sp_selection_repr (selection);
-	if (current == NULL) return;
-	if (strcmp (sp_repr_name (current), "g") != 0) return;
-	sp_selection_empty (selection);
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	if (sp_selection_is_empty (SP_DT_SELECTION (dt))) return;
+	group = sp_selection_item (SP_DT_SELECTION (dt));
+	if (!group) return;
+	if (strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) return;
 
-	art_affine_identity (pa);
-	pastr = sp_repr_attr (current, "transform");
-	sp_svg_read_affine (pa, pastr);
+	sp_selection_empty (SP_DT_SELECTION (dt));
 
-	while (current->children) {
-		child = current->children;
+	children = NULL;
 
-		art_affine_identity (ca);
-		castr = sp_repr_attr (child, "transform");
-		sp_svg_read_affine (ca, castr);
-		art_affine_multiply (ca, ca, pa);
+	sp_item_group_ungroup (SP_GROUP (group), &children);
 
-		css = sp_repr_css_attr_inherited (child, "style");
-		sp_repr_ref (child);
-		sp_repr_remove_child (current, child);
-		
-		sp_svg_write_affine (affinestr, 79, ca);
-		affinestr[79] = '\0';
-		sp_repr_set_attr (child, "transform", affinestr);
+	sp_selection_set_item_list (SP_DT_SELECTION (dt), children);
 
-		sp_repr_css_set (child, css, "style");
-		sp_repr_css_attr_unref (css);
-
-		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), child);
-		sp_repr_unref (child);
-		if (SP_IS_ITEM (item)) sp_selection_add_item (selection, item);
-	}
-
-	sp_repr_unparent (current);
-	sp_document_done (SP_DT_DOCUMENT (desktop));
+	g_slist_free (children);
 }
 
 void sp_selection_raise (GtkWidget * widget)

@@ -51,6 +51,21 @@ sp_color_copy (SPColor *dst, const SPColor *src)
 	*dst = *src;
 }
 
+gboolean
+sp_color_is_equal (SPColor *c0, SPColor *c1)
+{
+	g_return_val_if_fail (c0 != NULL, TRUE);
+	g_return_val_if_fail (c1 != NULL, TRUE);
+
+	if (c0->colorspace != c1->colorspace) return FALSE;
+	if (c0->v.c[0] != c1->v.c[0]) return FALSE;
+	if (c0->v.c[1] != c1->v.c[1]) return FALSE;
+	if (c0->v.c[2] != c1->v.c[2]) return FALSE;
+	if ((c0->colorspace == &CMYK) && (c0->v.c[3] != c1->v.c[3])) return FALSE;
+
+	return TRUE;
+}
+
 void
 sp_color_set_rgb_float (SPColor *color, gfloat r, gfloat g, gfloat b)
 {

@@ -190,7 +190,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 		wy = gc->affine[1] + gc->affine[3];
 		glyphs->stroke_svp = art_svp_vpath_stroke (pvp, glyphs->style->stroke_linejoin.value, glyphs->style->stroke_linecap.value,
 							  glyphs->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
-							  glyphs->style->stroke_miterlimit, 0.25);
+							  glyphs->style->stroke_miterlimit.value, 0.25);
 	}
 
 	art_free (pvp);

@@ -190,7 +190,7 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 		wy = gc->affine[1] + gc->affine[3];
 		shape->stroke_svp = art_svp_vpath_stroke (pvp, shape->style->stroke_linejoin.value, shape->style->stroke_linecap.value,
 							  shape->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
-							  shape->style->stroke_miterlimit, 0.25);
+							  shape->style->stroke_miterlimit.value, 0.25);
 	}
 
 	art_free (pvp);

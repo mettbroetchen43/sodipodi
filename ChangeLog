@@ -1,5 +1,32 @@
 2002-08-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/selection-chemistry.c (sp_selection_ungroup): Use method from item group
+
+	* src/sp-item-group.c (sp_item_group_ungroup): Preserve order and styles
+
+	* src/style.c (sp_style_read_from_object): Synchronized with new style structure
+	(sp_style_merge_property): Ditto
+	(sp_style_merge_from_object_parent): Ditto
+	(sp_style_merge_ipaint): Renamed
+	(sp_style_write_string): New write semantics
+	(sp_style_write_difference): New method
+	(sp_text_style_write): New write semantics
+	(sp_style_read_ifloat): Rename
+	(sp_style_read_iscale30): Ditto
+	(sp_style_read_ienum): Ditto
+	(sp_style_read_istring): Ditto
+	(sp_style_read_ipaint): Ditto
+	(sp_style_write_ifloat): Signature, semantics and name change
+	(sp_style_write_iscale30): Ditto
+	(sp_style_write_ienum): Ditto
+	(sp_style_write_istring): Ditto
+	(sp_style_write_ipaint): Ditto
+	(sp_paint_differ): Helper
+
+	* src/style.h: Renamed inherited types, changed miterlimit to ifloat
+
+	* src/color.c (sp_color_is_equal): New method
+
 	* src/style.c (sp_style_merge_from_style_string): Accept (although warn)
 	properties without end marker
 
