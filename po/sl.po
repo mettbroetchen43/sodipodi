@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-26 23:59+0200\n"
+"POT-Creation-Date: 2001-04-18 14:25+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -1268,30 +1268,34 @@ msgstr "Zbri¹i atribut"
 msgid "Do you want to delete attribute?"
 msgstr "®elite zbrisati atribut?"
 
-#: src/main.c:49
+#: src/main.c:54
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 "Ne uporabljajte Grafiènega umesnika. NB! èe obstaja, bi moral biti PRVI "
 "argument!"
 
-#: src/main.c:58
+#: src/main.c:63
 msgid "Open specified file (option string may be excluded)"
 msgstr "Odpri izbrano datoteko (lahko je vkljuèen niz mo¾nosti)"
 
-#: src/main.c:59 src/main.c:68
+#: src/main.c:64 src/main.c:73
 msgid "FILENAME"
 msgstr "IME DATOTEKE"
 
-#: src/main.c:67
+#: src/main.c:72
 msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr ""
 "Natisni datoteke v izbrano izhodno datoteko (uporabite '| program' za cev)"
 
-#: src/main.c:169
+#: src/main.c:81
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "Ka¾i podane datoteke vsako posebaj, preklopi na naslednjo ob kateremkoli mi¹kinem ali tipkovniènem dogodku."
+
+#: src/main.c:183
 msgid "Oaf options"
 msgstr "Oaf mo¾nosti"
 
-#: src/main.c:177
+#: src/main.c:191
 msgid "Could not initialize Bonobo"
 msgstr "Nisem mogel inicializirati Bonoba"
 
@@ -1308,15 +1312,15 @@ msgstr "Dokument %s vsebuje neshranjene spremembe, naj jih shranim?"
 msgid "Select file to open"
 msgstr "Izberi datoteko za odprtje"
 
-#: src/file.c:170
+#: src/file.c:177
 msgid "Save file"
 msgstr "Shrani datoteko"
 
-#: src/file.c:282
+#: src/file.c:285
 msgid "Select file to import"
 msgstr "Izberi datoteko za uvoz"
 
-#: src/file.c:361
+#: src/file.c:362
 msgid "Export file"
 msgstr "Izvozi datoteko"
 
@@ -1353,16 +1357,15 @@ msgstr "Naredi obèutljivega"
 msgid "Make insensitive"
 msgstr "Naredi neobèutljivega"
 
-#: src/sp-item-group.c:363
-#, c-format
-msgid "Group of %d items"
+#: src/sp-item-group.c:377
+msgid "Group of %d objects"
 msgstr "Skupina %d predmetov"
 
-#: src/sp-item-group.c:441
+#: src/sp-item-group.c:461
 msgid "Group"
 msgstr "Grupiraj"
 
-#: src/sp-item-group.c:444
+#: src/sp-item-group.c:464
 msgid "Ungroup"
 msgstr "Odgrupiraj"
 
