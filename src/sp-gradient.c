@@ -826,6 +826,7 @@ sp_gradient_rebuild_vector (SPGradient *gr)
 			if (stop->offset > (offset + 1e-9)) {
 				pos += 1;
 				gr->vector->stops[pos].offset = (stop->offset - offsets) / (offsete - offsets);
+				offset = stop->offset;
 			}
 			sp_color_copy (&gr->vector->stops[pos].color, &stop->color);
 			gr->vector->stops[pos].opacity = stop->opacity;

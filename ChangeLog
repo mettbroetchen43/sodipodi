@@ -1,5 +1,7 @@
 2003-02-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-gradient.c (sp_gradient_rebuild_vector): Fix crash if 2 stops coincide
+
 	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_generic_glyph_mask_render): Get real
 	bounding box, clip to pixblock area for SVP glyphs
 
