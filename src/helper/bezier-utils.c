@@ -51,7 +51,7 @@ static gdouble ComputeMaxError (const NRPointF *d, gdouble *u, gint len, const B
 static void sp_vector_add (const NRPointF *a, const NRPointF *b, NRPointF *result);
 static void sp_vector_sub (const NRPointF *a, const NRPointF *b, NRPointF *result);
 static void sp_vector_scale (const NRPointF *v, gdouble s, NRPointF *result);
-static void sp_vector_normalize (NRPointF *v);
+static unsigned int sp_vector_normalize (NRPointF *v);
 static void sp_vector_negate (NRPointF *v);
 
 #define V2Dot(a,b) ((a)->x * (b)->x + (a)->y * (b)->y)
@@ -92,8 +92,8 @@ sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble e
 
 	if (len < 2) return 0;
 
-	sp_darray_left_tangent (data, 0, len, &tHat1);
-	sp_darray_right_tangent (data, len - 1, len, &tHat2);
+	if (!sp_darray_left_tangent (data, 0, len, &tHat1)) return 0;
+	if (!sp_darray_right_tangent (data, len - 1, len, &tHat2)) return 0;
 	
 	/* call fit-cubic function without recursion */
 	fill = sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2,error, 1);
@@ -459,7 +459,7 @@ BezierII (gint degree, NRPointF * V, gdouble t, NRPointF *Q)
  * ComputeLeftTangent, ComputeRightTangent, ComputeCenterTangent :
  *Approximate unit tangents at endpoints and "center" of digitized curve
  */
-void
+unsigned int
 sp_darray_left_tangent (const NRPointF *d, int first, int len, NRPointF *tHat)
 {
 	int second, l2, i;
@@ -471,10 +471,10 @@ sp_darray_left_tangent (const NRPointF *d, int first, int len, NRPointF *tHat)
 		tHat->x += (d[second + i].x - d[first].x) * (l2 - i);
 		tHat->y += (d[second + i].y - d[first].y) * (l2 - i);
 	}
-	sp_vector_normalize (tHat);
+	return sp_vector_normalize (tHat);
 }
 
-void
+unsigned int
 sp_darray_right_tangent (const NRPointF *d, int last, int len, NRPointF *tHat)
 {
 	int prev, l2, i;
@@ -486,7 +486,7 @@ sp_darray_right_tangent (const NRPointF *d, int last, int len, NRPointF *tHat)
 		tHat->x += (d[prev - i].x - d[last].x) * (l2 - i);
 		tHat->y += (d[prev - i].y - d[last].y) * (l2 - i);
 	}
-	sp_vector_normalize (tHat);
+	return sp_vector_normalize (tHat);
 }
 
 void
@@ -587,14 +587,17 @@ sp_vector_scale (const NRPointF *v, gdouble s, NRPointF *result)
 	result->y = v->y * s;
 }
 
-static void
+static unsigned int
 sp_vector_normalize (NRPointF *v)
 {
 	gdouble len;
 
 	len = hypot (v->x, v->y);
+
 	v->x /= len;
 	v->y /= len;
+
+	return fabs (len) > 1e-18;
 }
 
 static void

@@ -64,4 +64,8 @@ char *sp_win32_get_write_filename (unsigned char *dir, unsigned char *filter, un
 
 char *sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns);
 
+/* fixme: */
+
+const char *sp_win32_get_data_dir (void);
+
 #endif

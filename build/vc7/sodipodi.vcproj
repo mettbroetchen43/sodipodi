@@ -20,14 +20,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_PIXMAPDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
 				WarningLevel="1"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -500,6 +500,9 @@
 				RelativePath="..\..\src\rect-context.h">
 			</File>
 			<File
+				RelativePath="resource.h">
+			</File>
+			<File
 				RelativePath="..\..\src\rubberband.h">
 			</File>
 			<File
@@ -671,6 +674,12 @@
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath="sodipodi.ico">
+			</File>
+			<File
+				RelativePath="sodipodi.rc">
+			</File>
 		</Filter>
 		<Filter
 			Name="display"
@@ -1298,6 +1307,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_svp.h">
+			</File>
+			<File
+				RelativePath="..\..\src\libart_lgpl\art_svp_intersect.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libart_lgpl\art_svp_intersect.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_svp_ops.c">

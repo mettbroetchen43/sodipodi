@@ -37,6 +37,45 @@ nr_pixblock_render_svp_mask_or (NRPixBlock *d, NRSVP *svp)
 		       nr_svp_run_A8_OR, NULL);
 }
 
+/* Renders colored SVP into buffer (has to be RGB/RGBA) */
+
+void
+nr_pixblock_render_svp_rgba (NRPixBlock *d, NRSVP *svp, NRULong rgba)
+{
+	unsigned char c[4];
+
+	c[0] = NR_RGBA32_R (rgba);
+	c[1] = NR_RGBA32_G (rgba);
+	c[2] = NR_RGBA32_B (rgba);
+	c[3] = NR_RGBA32_A (rgba);
+
+	switch (d->mode) {
+	case NR_PIXBLOCK_MODE_R8G8B8:
+		nr_svp_render (svp, NR_PIXBLOCK_PX (d), 3, d->rs,
+			       d->area.x0, d->area.y0, d->area.x1, d->area.y1,
+			       nr_svp_run_R8G8B8, c);
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8P:
+		if (d->empty) {
+			nr_svp_render (svp, NR_PIXBLOCK_PX (d), 4, d->rs,
+				       d->area.x0, d->area.y0, d->area.x1, d->area.y1,
+				       nr_svp_run_R8G8B8A8P_EMPTY, c);
+		} else {
+			nr_svp_render (svp, NR_PIXBLOCK_PX (d), 4, d->rs,
+				       d->area.x0, d->area.y0, d->area.x1, d->area.y1,
+				       nr_svp_run_R8G8B8A8P_R8G8B8A8P, c);
+		}
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8N:
+		nr_svp_render (svp, NR_PIXBLOCK_PX (d), 4, d->rs,
+			       d->area.x0, d->area.y0, d->area.x1, d->area.y1,
+			       nr_svp_run_R8G8B8A8N_R8G8B8A8N, c);
+		break;
+	default:
+		break;
+	}
+}
+
 /* Renders graymask of svl into buffer */
 
 void

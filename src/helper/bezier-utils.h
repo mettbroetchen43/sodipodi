@@ -31,8 +31,8 @@ gint sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
 
 /* Data array */
 
-void sp_darray_left_tangent (const NRPointF *d, int first, int length, NRPointF *tHat1);
-void sp_darray_right_tangent (const NRPointF *d, int last, int length, NRPointF *tHat2);
+unsigned int sp_darray_left_tangent (const NRPointF *d, int first, int length, NRPointF *tHat1);
+unsigned int sp_darray_right_tangent (const NRPointF *d, int last, int length, NRPointF *tHat2);
 void sp_darray_center_tangent (const NRPointF *d, gint center, NRPointF *tHatCenter);
 
 #endif /* __SP_BEZIER_UTILS_H__ */

@@ -1194,8 +1194,15 @@ emit_event (SPCanvas *canvas, GdkEvent *event)
 	SPCanvasItem *parent;
 	guint mask;
 
+#if 0
+	/* fixme: This does not work under Windows (Lauris) */
+	/* Basically current item becomes NULL if pointer leaves canvas */
+	/* And moving it back picks up something else as current item */
 	/* Perform checks for grabbed items */
-	if (canvas->grabbed_item && !is_descendant (canvas->current_item, canvas->grabbed_item)) return FALSE;
+	if (canvas->grabbed_item && !is_descendant (canvas->current_item, canvas->grabbed_item)) {
+		return FALSE;
+	}
+#endif
 
 	if (canvas->grabbed_item) {
 		switch (event->type) {
@@ -1259,7 +1266,12 @@ emit_event (SPCanvas *canvas, GdkEvent *event)
 
 	/* Choose where we send the event */
 
-	item = canvas->current_item;
+	if (canvas->grabbed_item && !is_descendant (canvas->current_item, canvas->grabbed_item)) {
+		/* fixme: Did this, not sure if correct (Lauris) */
+		item = canvas->grabbed_item;
+	} else {
+		item = canvas->current_item;
+	}
 
 	if (canvas->focused_item &&
 	    ((event->type == GDK_KEY_PRESS) ||

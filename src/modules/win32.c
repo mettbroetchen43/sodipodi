@@ -34,11 +34,14 @@ static unsigned int SPWin32Modal = FALSE;
 VOID CALLBACK
 sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	int cdown = 0;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+	static int cdown = 0;
+	if (!cdown) {
+		while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+			gtk_main_iteration_do (FALSE);
+		}
 		gtk_main_iteration_do (FALSE);
+		cdown = 0;
 	}
-	gtk_main_iteration_do (FALSE);
 }
 
 static void
@@ -529,4 +532,39 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 	return g_strdup (fnbuf);
 }
 
+/*
+ * config: HKEY_CURRENT_USER\\Volatile Environment
+ * images: HKEY_CURRENT_USER\\Software\\Sodipodi\\Ichigo Path
+ */
+
+const char *
+sp_win32_get_data_dir (void)
+{
+	static char *path = NULL;
+	TCHAR pathval [4096];
+    DWORD len = 4096;
+    HKEY hKey;
+    LONG ret;
+
+	if (path) return path;
+
+	ret = RegOpenKeyEx (HKEY_LOCAL_MACHINE, TEXT ("Software\\Sodipodi\\Ichigo"), 0, KEY_QUERY_VALUE, &hKey);
+	if (ret != ERROR_SUCCESS) {
+		path = "sodipodi";
+		return path;
+	}
+
+	ret = RegQueryValueEx(hKey, TEXT ("Path"), NULL, NULL, (LPBYTE) pathval, &len);
+
+    RegCloseKey(hKey);
+
+	if(ret != ERROR_SUCCESS) {
+		path = "sodipodi";
+		return path;
+	}
+
+	path = strdup (pathval);
+
+	return path;
+} 
 
