@@ -14,6 +14,8 @@
 #include <config.h>
 
 #include <string.h>
+#include <ctype.h>
+
 #include <libnr/nr-rect.h>
 #include <libnr/nr-pixblock.h>
 

@@ -31,6 +31,8 @@
 /* fixme: find a better place */
 GSList *clipboard = NULL;
 
+static void sp_matrix_d_set_rotate (NRMatrixD *m, double theta);
+
 void
 sp_selection_delete (gpointer object, gpointer data)
 {
@@ -659,7 +661,7 @@ sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, gdouble 
   
 	nr_matrix_d_set_translate (&n2d, -center->x, -center->y);
 	nr_matrix_d_invert (&d2n, &n2d);
-	art_affine_rotate (NR_MATRIX_D_TO_DOUBLE (&rotate), angle);
+	sp_matrix_d_set_rotate (&rotate, angle);
 
 	nr_matrix_multiply_ddd (&s, &n2d, &rotate);
 	nr_matrix_multiply_ddd (&final, &s, &d2n);
@@ -691,12 +693,13 @@ sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, 
 
 
 void
-sp_selection_move_relative (SPSelection * selection, double dx, double dy) {  
-  double move[6];
+sp_selection_move_relative (SPSelection * selection, double dx, double dy)
+{
+	NRMatrixD move;
   
-  art_affine_translate (move, dx, dy);
+	nr_matrix_d_set_translate (&move, dx, dy);
 
-  sp_selection_apply_affine (selection, move);
+	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&move));
 }
 
 void
@@ -805,14 +808,17 @@ sp_selection_item_next (void)
 		sp_desktop_get_display_area (desktop, &dbox);
 		sp_item_bbox_desktop (item, &sbox);
 		if (dbox.x0 > sbox.x0 || dbox.y0 > sbox.y0 || dbox.x1 < sbox.x1 || dbox.y1 < sbox.y1 ) {
-			s.x = (sbox.x0 + sbox.x1) / 2;
-			s.y = (sbox.y0 + sbox.y1) / 2;
-			d.x = (dbox.x0 + dbox.x1) / 2;
-			d.y = (dbox.y0 + dbox.y1) / 2;
-			art_affine_point (&s, &s, desktop->d2w);
-			art_affine_point (&d, &d, desktop->d2w);
-			dx = (gint) (d.x-s.x);
-			dy = (gint) (d.y-s.y);
+			double x, y;
+			x = (sbox.x0 + sbox.x1) / 2;
+			y = (sbox.y0 + sbox.y1) / 2;
+			s.x = NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+			s.y = NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+			x = (dbox.x0 + dbox.x1) / 2;
+			y = (dbox.y0 + dbox.y1) / 2;
+			d.x = NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+			d.y = NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+			dx = (gint) (d.x - s.x);
+			dy = (gint) (d.y - s.y);
 			sp_desktop_scroll_world (desktop, dx, dy);
 		}
 	}
@@ -875,17 +881,34 @@ sp_selection_item_prev (void)
     sp_desktop_get_display_area (desktop, &dbox);
     sp_item_bbox_desktop (item, &sbox);
     if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
-      s.x = (sbox.x0+sbox.x1)/2;
-      s.y = (sbox.y0+sbox.y1)/2;
-      d.x = (dbox.x0+dbox.x1)/2;
-      d.y = (dbox.y0+dbox.y1)/2;
-      art_affine_point (&s, &s, desktop->d2w);
-      art_affine_point (&d, &d, desktop->d2w);
-      dx = (gint)(d.x-s.x);
-      dy = (gint)(d.y-s.y);
-      sp_desktop_scroll_world (desktop, dx, dy);
+	    double x, y;
+	    x = (sbox.x0 + sbox.x1) / 2;
+	    y = (sbox.y0 + sbox.y1) / 2;
+	    s.x = NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+	    s.y = NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+	    x = (dbox.x0 + dbox.x1) / 2;
+	    y = (dbox.y0 + dbox.y1) / 2;
+	    d.x = NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+	    d.y = NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), x, y);
+	    dx = (gint) (d.x - s.x);
+	    dy = (gint) (d.y - s.y);
+	    sp_desktop_scroll_world (desktop, dx, dy);
     }
   }
 
+}
+
+static void
+sp_matrix_d_set_rotate (NRMatrixD *m, double theta)
+{
+	double s, c;
+	s = sin (theta * M_PI / 180.0);
+	c = cos (theta * M_PI / 180.0);
+	m->c[0] = c;
+	m->c[1] = s;
+	m->c[2] = -s;
+	m->c[3] = c;
+	m->c[4] = 0.0;
+	m->c[5] = 0.0;
 }
 

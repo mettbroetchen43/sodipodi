@@ -300,11 +300,7 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 void
 sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm)
 {
-	SPItem *item;
-	const GSList *l;
-	NRMatrixD i2current, n2p, p2n;
-	NRMatrixF i2d, i2dnew;
-	gint i;
+	NRMatrixD n2p, p2n;
 
 	g_return_if_fail (seltrans->grabbed);
 	g_return_if_fail (!seltrans->empty);

@@ -88,7 +88,7 @@ nr_pixblock_setup (NRPixBlock *pb, int mode, int x0, int y0, int x1, int y1, int
 void
 nr_pixblock_setup_extern (NRPixBlock *pb, int mode, int x0, int y0, int x1, int y1, unsigned char *px, int rs, int empty, int clear)
 {
-	int w, bpp, y;
+	int w, bpp;
 
 	w = x1 - x0;
 	bpp = (mode == NR_PIXBLOCK_MODE_A8) ? 1 : (mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;

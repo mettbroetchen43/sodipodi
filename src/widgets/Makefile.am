@@ -36,7 +36,7 @@ libspwidgets_a_SOURCES = \
 #	sp-spin-button.c sp-spin-button.h
 
 #noinst_PROGRAMS = test-widgets test-wrapbox
-noinst_PROGRAMS = test-wrapbox
+#noinst_PROGRAMS = test-wrapbox
 
 #test_widgets_SOURCES = \
 #	test-widgets.c \
@@ -46,10 +46,10 @@ noinst_PROGRAMS = test-wrapbox
 
 #test_widgets_LDADD = $(SODIPODI_LIBS)
 
-test_wrapbox_SOURCES = \
-	test-wrapbox.c \
-	sp-wrap-box.c sp-wrap-box.h \
-	sp-hwrap-box.c sp-hwrap-box.h \
-	sp-vwrap-box.c sp-vwrap-box.h
+#test_wrapbox_SOURCES = \
+#	test-wrapbox.c \
+#	sp-wrap-box.c sp-wrap-box.h \
+#	sp-hwrap-box.c sp-hwrap-box.h \
+#	sp-vwrap-box.c sp-vwrap-box.h
 
-test_wrapbox_LDADD = $(SODIPODI_LIBS)
+#test_wrapbox_LDADD = $(SODIPODI_LIBS)

@@ -1,3 +1,8 @@
+2003-01-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/nodepath.c (create_curve): Use NR_MATRIX_DF_TRANSFORM_X (Thanks to
+	MenTaLguY for finding these NRPointF/ArtPoint mismatches)
+
 2003-01-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-gnome.c (nr_typeface_gnome_new): Ditto

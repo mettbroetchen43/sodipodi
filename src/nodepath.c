@@ -333,20 +333,17 @@ create_curve (SPNodePath * np)
 		sp_curve_moveto (curve, p3.x, p3.y);
 		n = sp->first->n.other;
 		while (n) {
-			p3.x = n->pos.x;
-			p3.y = n->pos.y;
-			art_affine_point (&p3, &p3, np->d2i);
+			p3.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->pos.x, n->pos.y);
+			p3.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, n->pos.x, n->pos.y);
 			switch (n->code) {
 			case ART_LINETO:
-				sp_curve_lineto (curve, p3.x ,p3.y);
+				sp_curve_lineto (curve, p3.x, p3.y);
 				break;
 			case ART_CURVETO:
-				p1.x = n->p.other->n.pos.x;
-				p1.y = n->p.other->n.pos.y;
-				art_affine_point (&p1, &p1, np->d2i);
-				p2.x = n->p.pos.x;
-				p2.y = n->p.pos.y;
-				art_affine_point (&p2, &p2, np->d2i);
+				p1.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->p.other->n.pos.x, n->p.other->n.pos.y);
+				p1.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, n->p.other->n.pos.x, n->p.other->n.pos.y);
+				p2.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->p.pos.x, n->p.pos.y);
+				p2.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, n->p.pos.x, n->p.pos.y);
 				sp_curve_curveto (curve, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 				break;
 			default:
