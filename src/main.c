@@ -71,11 +71,10 @@
 
 #include "helper/sp-intl.h"
 
-/* fixme: (Lauris) */
-#ifndef bind_textdomain_codeset
+#ifndef HAVE_BIND_TEXTDOMAIN_CODESET
 #define bind_textdomain_codeset(p,c)
 #endif
-#ifndef gtk_window_set_default_icon_from_file
+#ifndef GAVE_GTK_WINDOW_SET_DEFAULT_ICON_FROM_FILE
 #define gtk_window_set_default_icon_from_file(f,v)
 #endif
 

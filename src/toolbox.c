@@ -357,7 +357,7 @@ sp_toolbox_file_create (void)
 #ifdef WITH_KDE
 #define PDIRECT
 #endif
-#ifdef WIN32
+#ifdef WITH_GNOME_PRINT
 #define PDIRECT
 #endif
 #ifdef PDIRECT

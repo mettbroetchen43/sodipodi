@@ -169,6 +169,14 @@ dnl ******************************
 PKG_CHECK_MODULES(SODIPODI, gtk+-2.0 >= 2.0.0  libart-2.0 >= 2.3.10  libxml-2.0 >= 2-2.4.24)
 SODIPODI_LIBS="$SODIPODI_LIBS $POPT_LIBS -lpng -lz"
 
+dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
+sp_save_LIBS=$LIBS
+LIBS="$LIBS $SODIPODI_LIBS"
+AC_CHECK_FUNCS(bind_textdomain_codeset)
+AC_CHECK_FUNCS(gtk_window_set_default_icon_from_file)
+LIBS=$sp_save_LIBS
+
+
 dnl ******************************
 dnl   Plugin Support
 dnl ******************************
