@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-01 04:34+0100\n"
-"PO-Revision-Date: 2004-03-01 15:30+0100\n"
+"POT-Creation-Date: 2004-06-07 04:24+0200\n"
+"PO-Revision-Date: 2004-06-07 11:15+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -36,20 +36,20 @@ msgstr "Kreslím oblouk %s × %s"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:924
+#: src/desktop.c:991
 msgid "Zoom drawing if window size changes"
 msgstr "Zvětšit či zmenšit kresbu při změně velikosti okna"
 
-#: src/desktop.c:931
+#: src/desktop.c:998
 msgid "Drawing target is constrained to active group"
 msgstr "Cíl kreslení je omezen na aktivní skupinu"
 
-#: src/desktop.c:1024
+#: src/desktop.c:1091
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1131
+#: src/desktop.c:1198
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
@@ -57,19 +57,19 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 #. Page page
 #. Page settings
 #. Notebook tab
-#: src/desktop.c:1684 src/dialogs/align.c:291
+#: src/desktop.c:1751 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:161 src/verbs.c:471
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1688 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/desktop.c:1755 src/dialogs/align.c:292 src/dialogs/export.c:166
 #: src/verbs.c:472
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1692 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/desktop.c:1759 src/dialogs/align.c:293 src/dialogs/export.c:171
 #: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
 msgstr "Výběr"
@@ -940,7 +940,7 @@ msgid "Angle:"
 msgstr "Úhel:"
 
 #. Reset
-#: src/dyna-draw-context.c:1099 src/rect-context.c:424
+#: src/dyna-draw-context.c:1099 src/rect-context.c:425
 #: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
 msgstr "Výchozí"
@@ -1362,7 +1362,7 @@ msgstr ""
 msgid "Save document as"
 msgstr "Uložit dokument jako"
 
-#: src/modules/plain-pdf.c:1050 src/modules/plain-ps.c:651
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
 #: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "vyskytla se chyba při zápisu"
@@ -1404,7 +1404,7 @@ msgid "Use Portable Document Format for printing"
 msgstr "Používat pro tisk Portable Document Format"
 
 #. Print destination frame
-#: src/modules/plain.c:224 src/modules/plain.c:292 src/modules/ps.c:245
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
 #: src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Cíl tisku"
@@ -1414,15 +1414,15 @@ msgstr "Cíl tisku"
 msgid "Print properties"
 msgstr "Vlastnosti tisku"
 
-#: src/modules/plain.c:273 src/modules/ps.c:287
+#: src/modules/plain.c:274 src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Upřednostněné rozlišení (v bodech na palec) bitové mapy"
 
-#: src/modules/plain.c:288 src/modules/ps.c:302
+#: src/modules/plain.c:289 src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Rozlišení:"
 
-#: src/modules/plain.c:298 src/modules/ps.c:312
+#: src/modules/plain.c:299 src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1433,144 +1433,154 @@ msgstr ""
 "Použijte '| prog arg...', chcete-li směrovat tisk do programu"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:108
+#: src/object-ui.c:111
 msgid "Item"
 msgstr "Položka"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:487
+#: src/object-ui.c:114 src/verbs.c:487
 msgid "Item Properties"
 msgstr "Vlastnosti položky"
 
 #. Select item
-#: src/object-ui.c:119
+#: src/object-ui.c:122
 msgid "Select this"
 msgstr "Vybrat toto"
 
 #. Reset transformations
-#: src/object-ui.c:128
+#: src/object-ui.c:131
 msgid "Reset transformation"
 msgstr "Vynulovat transformaci"
 
 #. Apply transformation
-#: src/object-ui.c:132
+#: src/object-ui.c:135
 msgid "Apply transformation"
 msgstr "Provést transformaci"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make sensitive"
 msgstr "Učinit citlivé"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make insensitive"
 msgstr "Učinit necitlivé"
 
 #. Create link
-#: src/object-ui.c:141
+#: src/object-ui.c:144
 msgid "Create link"
 msgstr "Vytvořit odkaz"
 
-#: src/object-ui.c:273 src/verbs.c:435
+#: src/object-ui.c:276 src/verbs.c:435
 msgid "Group"
 msgstr "Seskupit"
 
 #. Group dialog
-#: src/object-ui.c:277
+#: src/object-ui.c:280
 msgid "Group Properties"
 msgstr "Vlastnosti skupiny"
 
 #. "Ungroup"
-#: src/object-ui.c:288 src/verbs.c:436
+#: src/object-ui.c:291 src/verbs.c:436
 msgid "Ungroup"
 msgstr "Rozeskupit"
 
 #. Dive
-#: src/object-ui.c:293
+#: src/object-ui.c:296
 msgid "Set as layer"
 msgstr "Nastavit jako vrstvu"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:338
+#: src/object-ui.c:341
 msgid "Link"
 msgstr "Odkaz"
 
 #. Link dialog
-#: src/object-ui.c:341
+#: src/object-ui.c:344
 msgid "Link Properties"
 msgstr "Vlastnosti odkazu"
 
 #. Select item
-#: src/object-ui.c:351
+#: src/object-ui.c:354
 msgid "Follow link"
 msgstr "Následovat odkaz"
 
 #. Reset transformations
-#: src/object-ui.c:356
+#: src/object-ui.c:359
 msgid "Remove link"
 msgstr "Odstranit odkaz"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:419
+#: src/object-ui.c:422
 msgid "Image"
 msgstr "Obrázek"
 
 #. Link dialog
-#: src/object-ui.c:422
+#: src/object-ui.c:425
 msgid "Image Properties"
 msgstr "Vlastnosti obrázku"
 
 #. Autotrace dialog
-#: src/object-ui.c:430 src/sp-image.c:762
+#: src/object-ui.c:433 src/sp-image.c:762
 msgid "Trace"
 msgstr "Sledovat"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:479
+#: src/object-ui.c:482
 msgid "Shape"
 msgstr "Tvar"
 
 #. Item dialog
-#: src/object-ui.c:482 src/toolbox.c:402
+#: src/object-ui.c:485 src/toolbox.c:402
 msgid "Fill settings"
 msgstr "Nastavení výplně"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:509
+#: src/object-ui.c:516
+msgid "Path"
+msgstr "Cesta"
+
+#. Reverse
+#: src/object-ui.c:519
+msgid "Reverse"
+msgstr "Obrátit"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:542
 msgid "Rect"
 msgstr "Čtyřúhelník"
 
 #. Link dialog
-#: src/object-ui.c:512
+#: src/object-ui.c:545
 msgid "Rect Properties"
 msgstr "Vlastnosti čtyřúhelníku"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:545 src/verbs.c:457
+#: src/object-ui.c:578 src/verbs.c:457
 msgid "Star"
 msgstr "Hvězda"
 
 #. Link dialog
-#: src/object-ui.c:548
+#: src/object-ui.c:581
 msgid "Star Properties"
 msgstr "Vlastnosti hvězdy"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:581 src/verbs.c:458
+#: src/object-ui.c:614 src/verbs.c:458
 msgid "Spiral"
 msgstr "Spirála"
 
 #. Link dialog
-#: src/object-ui.c:584
+#: src/object-ui.c:617
 msgid "Spiral Properties"
 msgstr "Vlastnosti spirály"
 
 #. rx_ratio
-#: src/rect-context.c:400
+#: src/rect-context.c:401
 msgid "Roundness ratio for x:"
 msgstr "Poměr zaoblení pro X:"
 
 #. ry_ratio
-#: src/rect-context.c:412
+#: src/rect-context.c:413
 msgid "Roundness ratio for y:"
 msgstr "Poměr zaoblení pro Y:"
 
@@ -1820,12 +1830,12 @@ msgstr "URI obrázku:"
 msgid "Group of %d objects"
 msgstr "Skupina %d objektů"
 
-#: src/sp-item.c:553
+#: src/sp-item.c:554
 msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
 #. fixme:
-#: src/sp-text.c:1292
+#: src/sp-text.c:1294
 msgid "Text object"
 msgstr "Textový objekt"
 
@@ -2403,20 +2413,20 @@ msgid "XML Editor"
 msgstr "Editor XML"
 
 #. Family frame
-#: src/widgets/font-selector.c:148
+#: src/widgets/font-selector.c:153
 msgid "Font family"
 msgstr "Rodina písma"
 
 #. Style frame
-#: src/widgets/font-selector.c:176
+#: src/widgets/font-selector.c:193
 msgid "Style"
 msgstr "Styl"
 
-#: src/widgets/font-selector.c:211
+#: src/widgets/font-selector.c:228
 msgid "Font size:"
 msgstr "Velikost písma:"
 
-#: src/widgets/font-selector.c:521
+#: src/widgets/font-selector.c:560
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQqÁáČčŠš12368.;/()"
 
