@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-10-24 15:14+0200\n"
-"PO-Revision-Date: 2001-10-24 15:16+0200\n"
+"POT-Creation-Date: 2001-11-05 01:41+0100\n"
+"PO-Revision-Date: 2001-11-05 01:51+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -339,7 +339,7 @@ msgid "Y +"
 msgstr "Y +"
 
 #. Create toplevel menuitem
-#: glade/item.c:22 src/sp-item.c:592
+#: glade/item.c:22 src/sp-item.c:608
 msgid "Item"
 msgstr "Objekt"
 
@@ -794,7 +794,7 @@ msgid "New View"
 msgstr "Ny vy"
 
 #: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:88 glade/toolbox.c:25
-#: src/desktop.c:1096 src/toolbox.c:134
+#: src/desktop.c:1102 src/toolbox.c:134
 msgid "Zoom"
 msgstr "Zooma"
 
@@ -1275,19 +1275,19 @@ msgid "deg"
 msgstr "grader"
 
 #: glade/transformation.c:31
-msgid "Set angle to 0°"
+msgid "Set angle to 0 degrees"
 msgstr "Ställ in vinkeln till 0°"
 
 #: glade/transformation.c:32
-msgid "Set angle to 90°"
+msgid "Set angle to 90 degrees"
 msgstr "Ställ in vinkeln till 90°"
 
 #: glade/transformation.c:33
-msgid "Set angle to 180°"
+msgid "Set angle to 180 degrees"
 msgstr "Ställ in vinkeln till 180°"
 
 #: glade/transformation.c:34
-msgid "Set angle to 270°"
+msgid "Set angle to 270 degrees"
 msgstr "Ställ in vinkeln till 270°"
 
 #: glade/transformation.c:35
@@ -1525,7 +1525,7 @@ msgstr "Vill du ta bort attribut?"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
-#: src/desktop.c:1212
+#: src/desktop.c:1218
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokumentet %s har osparade ändringar, spara dem?"
@@ -1639,7 +1639,7 @@ msgstr "Välj fil att importera"
 msgid "Export file"
 msgstr "Exportera fil"
 
-#: src/file.c:426
+#: src/file.c:429
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"
@@ -1831,58 +1831,58 @@ msgstr "Trasig bitmappsbild"
 msgid "Color bitmap"
 msgstr "Färgbitmappsbild"
 
-#: src/sp-item.c:367
+#: src/sp-item.c:383
 msgid "Unknown item :-("
 msgstr "Okänt objekt :-("
 
 #. Item dialog
-#: src/sp-item.c:595
+#: src/sp-item.c:611
 msgid "Item Properties"
 msgstr "Objektegenskaper"
 
 #. Select item
-#: src/sp-item.c:605
+#: src/sp-item.c:621
 msgid "Select this"
 msgstr "Markera detta"
 
 #. Reset transformations
-#: src/sp-item.c:615
+#: src/sp-item.c:631
 msgid "Reset transformation"
 msgstr "Återställ transformering"
 
-#: src/sp-item.c:621
+#: src/sp-item.c:637
 msgid "Make sensitive"
 msgstr "GÖr känslig"
 
-#: src/sp-item.c:621
+#: src/sp-item.c:637
 msgid "Make insensitive"
 msgstr "Gör okänslig"
 
-#: src/sp-item-group.c:419
+#: src/sp-item-group.c:420
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupp med %d objekt"
 
-#: src/sp-item-group.c:480
+#: src/sp-item-group.c:482
 msgid "Group"
 msgstr "Gruppera"
 
 #. "Ungroup"
-#: src/sp-item-group.c:485
+#: src/sp-item-group.c:487
 msgid "Ungroup"
 msgstr "Avgruppera"
 
-#: src/sp-shape.c:335
+#: src/sp-shape.c:364
 msgid "A path - whatever it means"
 msgstr "En väg - vad det nu än betyder"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:391
+#: src/sp-shape.c:420
 msgid "Shape"
 msgstr "Form"
 
 #. Item dialog
-#: src/sp-shape.c:394
+#: src/sp-shape.c:423
 msgid "Fill settings"
 msgstr "Fyllningsinställningar"
 
