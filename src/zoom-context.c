@@ -13,7 +13,9 @@
  */
 
 #include <math.h>
+#include <stdlib.h>
 #include <gtk/gtkeditable.h>
+
 #include "rubberband.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -28,9 +30,6 @@ static void sp_zoom_context_class_init (SPZoomContextClass * klass);
 static void sp_zoom_context_init (SPZoomContext * zoom_context);
 static void sp_zoom_context_destroy (GtkObject * object);
 
-#if 0
-static void sp_zoom_context_setup (SPEventContext * event_context, SPDesktop * desktop);
-#endif
 static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -39,7 +38,7 @@ void sp_zoom_any (void);
 
 static SPEventContextClass * parent_class;
 
-extern GtkWidget * zoom_any;
+static GtkWidget *zoom_any = NULL;
 
 GtkType
 sp_zoom_context_get_type (void)
@@ -78,9 +77,6 @@ sp_zoom_context_class_init (SPZoomContextClass * klass)
 
 	object_class->destroy = sp_zoom_context_destroy;
 
-#if 0
-	event_context_class->setup = sp_zoom_context_setup;
-#endif
 	event_context_class->root_handler = sp_zoom_context_root_handler;
 	event_context_class->item_handler = sp_zoom_context_item_handler;
 }
@@ -103,15 +99,6 @@ sp_zoom_context_destroy (GtkObject * object)
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
-
-#if 0
-static void
-sp_zoom_context_setup (SPEventContext * event_context, SPDesktop * desktop)
-{
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
-}
-#endif
 
 static gint
 sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)

@@ -29,10 +29,6 @@ void sp_file_save_as (GtkWidget * widget);
 
 void sp_file_import (GtkWidget * widget);
 
-#if 0
-void sp_file_export (GtkWidget * widget);
-#endif
-
 void sp_file_print (GtkWidget * widget);
 void sp_file_print_preview (GtkWidget * widget);
 
@@ -43,6 +39,7 @@ void sp_file_print_preview (GtkWidget * widget);
 
 void sp_file_exit (void);
 
+void sp_file_export_dialog (void *widget);
 void sp_export_png_file (SPDocument *doc, unsigned char *filename,
 			 double x0, double y0, double x1, double y1,
 			 unsigned int width, unsigned int height,

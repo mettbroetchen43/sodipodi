@@ -36,6 +36,7 @@
 #include "view.h"
 #include "dir-util.h"
 #include "helper/png-write.h"
+#include "dialogs/export.h"
 #include "sodipodi.h"
 #include "desktop.h"
 #include "sp-image.h"
@@ -542,6 +543,12 @@ sp_file_print_preview (GtkWidget * widget)
 void sp_file_exit (void)
 {
 	sodipodi_exit (SODIPODI);
+}
+
+void
+sp_file_export_dialog (void *widget)
+{
+	sp_export_dialog ();
 }
 
 #include <display/nr-arena-item.h>

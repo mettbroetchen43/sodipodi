@@ -50,6 +50,7 @@
 #include "macros.h"
 #include "file.h"
 #include "document.h"
+#include "desktop.h"
 #include "sp-object.h"
 #include "toolbox.h"
 #include "interface.h"

@@ -328,7 +328,8 @@ sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox (item, bbox, transform);
 }
 
-void sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox)
+void
+sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox)
 {
 	gdouble i2d[6];
 
