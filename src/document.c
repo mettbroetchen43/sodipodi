@@ -239,6 +239,12 @@ sp_document_create (SPReprDoc *rdoc,
 	document->name = g_strdup (name);
 
 	document->root = sp_object_repr_build_tree (document, rroot);
+
+#if 0
+	/* fixme: Is this correct here? (Lauris) */
+	sp_document_ensure_up_to_date (document);
+#endif
+
 	version = SP_ROOT (document->root)->sodipodi;
 
 	/* fixme: Not sure about this, but lets assume ::build updates */

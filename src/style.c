@@ -680,10 +680,12 @@ sp_style_merge_from_parent (SPStyle *style, SPStyle *parent)
 		}
 	} else if (style->font_size.type == SP_FONT_SIZE_PERCENTAGE) {
 		/* fixme: SVG and CSS do no specify clearly, whether we should use parent or viewport values here (Lauris) */
+#if 0
 		g_print ("Parent %g PC %g own %g\n",
 			 parent->font_size.computed,
 			 SP_F8_16_TO_FLOAT (style->font_size.value),
 			 style->font_size.computed);
+#endif
 		style->font_size.computed = parent->font_size.computed * SP_F8_16_TO_FLOAT (style->font_size.value);
 	}
 	/* 'font-style' */

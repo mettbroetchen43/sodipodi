@@ -1,5 +1,8 @@
 2003-02-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-root.c (sp_root_build): Do not check for xmlns:sodipodi to determine
+	version, as this is set automatically in xml loader
+
 	* src/slideshow.h: New file
 
 	* src/slideshow.c: New file

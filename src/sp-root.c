@@ -123,7 +123,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	group = (SPGroup *) object;
 	root = (SPRoot *) object;
 
-	if (sp_repr_attr (repr, "xmlns:sodipodi") || sp_repr_attr (repr, "sodipodi:docname") || sp_repr_attr (repr, "SP-DOCNAME")) {
+	if (sp_repr_attr (repr, "sodipodi:docname") || sp_repr_attr (repr, "SP-DOCNAME")) {
 		/* This is ugly, but works */
 		root->original = 1;
 	}
