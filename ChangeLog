@@ -1,3 +1,12 @@
+2003-10-22  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Support `white space handling' in SVG text.
+	
+	* src/sp-text.c (sp_string_set_shape): Implement xml_space attribute.
+	(sp_string_calculate_dimensions): Implement xml_space attribute.
+
+	* src/attribute.c: Add SP_ATTR_XML_SPACE attribute.
+
 2003-10-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_text_sequence): Implement

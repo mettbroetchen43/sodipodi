@@ -53,10 +53,17 @@ struct _SPLayoutData {
 	SPSVGLength y;
 	SPSVGLength dx;
 	SPSVGLength dy;
+	unsigned int xml_space : 1;
 	unsigned int rotate_set : 1;
 	float rotate;
 	float linespacing;
 };
+
+enum {
+	SP_XML_SPACE_DEFAULT,
+	SP_XML_SPACE_PRESERVE
+};
+
 
 /*
  * The ultimate source of current mess is, that we have to derive string <- chars
@@ -114,6 +121,8 @@ GType sp_tspan_get_type (void);
 
 /* SPText */
 
+/* fixme: It should inherit from SPTSpan or SPBaseText class
+   and then share common feature. (oka326) */
 struct _SPText {
 	SPItem item;
 

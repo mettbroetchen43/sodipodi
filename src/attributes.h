@@ -160,6 +160,9 @@ enum {
 	SP_ATTR_ADDITIVE,
 	SP_ATTR_ACCUMULATE,
 
+	/* XML */
+	SP_ATTR_XML_SPACE,
+
 	/* CSS2 */
 	/* Font */
 	SP_PROP_FONT,
