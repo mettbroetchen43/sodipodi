@@ -215,8 +215,8 @@ sp_object_read_attr (SPObject * object, const gchar * key)
 
 		sp_document_undef_id (object->document, object->id);
 		g_free (object->id);
-		sp_document_def_id (object->document, id, object);
 		object->id = g_strdup (id);
+		sp_document_def_id (object->document, object->id, object);
 		return;
 	}
 }

@@ -98,16 +98,20 @@ sp_document_undo (SPDocument * document)
 			sp_repr_unref (copy);
 		}
 		if (strcmp (name, "attr") == 0) {
-			id = sp_repr_attr (action, "id");
-			g_assert (id != NULL);
-			object = sp_document_lookup_id (document, id);
-			g_assert (object != NULL);
 			key = sp_repr_attr (action, "key");
 			g_assert (key != NULL);
+			if (strcmp (key, "id") != 0) {
+				id = sp_repr_attr (action, "id");
+				g_assert (id != NULL);
+				object = sp_document_lookup_id (document, id);
+			} else {
+				id = sp_repr_attr (action, "new");
+				g_assert (id != NULL);
+				object = sp_document_lookup_id (document, id);
+			}
+			g_assert (object != NULL);
 			value = sp_repr_attr (action, "old");
-			sp_document_set_undo_sensitive (document, FALSE);
 			sp_repr_set_attr (object->repr, key, value);
-			sp_document_set_undo_sensitive (document, TRUE);
 		}
 		if (strcmp (name, "content") == 0) {
 			id = sp_repr_attr (action, "id");
@@ -115,9 +119,7 @@ sp_document_undo (SPDocument * document)
 			object = sp_document_lookup_id (document, id);
 			g_assert (object != NULL);
 			value = sp_repr_attr (action, "old");
-			sp_document_set_undo_sensitive (document, FALSE);
 			sp_repr_set_content (object->repr, value);
-			sp_document_set_undo_sensitive (document, TRUE);
 		}
 		if (strcmp (name, "order") == 0) {
 			id = sp_repr_attr (action, "id");
@@ -125,9 +127,7 @@ sp_document_undo (SPDocument * document)
 			object = sp_document_lookup_id (document, id);
 			g_assert (object != NULL);
 			position = sp_repr_get_int_attribute (action, "old", 0);
-			sp_document_set_undo_sensitive (document, FALSE);
 			sp_repr_set_position_absolute (object->repr, position);
-			sp_document_set_undo_sensitive (document, TRUE);
 		}
 	}
 

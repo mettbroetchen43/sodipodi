@@ -170,9 +170,11 @@ main (int argc, char *argv[])
                                     	    options, 0, &ctx);
 #endif /* ENABLE_BONOBO */
 
-/*		fl = sp_process_args (ctx);*/
+#if 1
+		fl = sp_process_args (ctx);
+#else
 		fl = NULL;
-
+#endif
 		glade_gnome_init ();
 
 		/* We must set LC_NUMERIC to default, or otherwise

@@ -205,9 +205,11 @@ sp_xml_tree_delete_attribute (GtkWidget * widget, gpointer data)
 	g_free (message);
 
 	if (b == 0) {
-		sp_repr_set_attr (selected_repr, attr, NULL);
-		gtk_clist_remove (attributes, selected_row);
-		selected_row = -1;
+		if (sp_repr_set_attr (selected_repr, attr, NULL)) {
+			gtk_clist_remove (attributes, selected_row);
+			selected_row = -1;
+		}
+		sp_document_done (SP_ACTIVE_DOCUMENT);
 	}
 }
 

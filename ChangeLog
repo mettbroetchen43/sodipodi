@@ -1,3 +1,13 @@
+2000-05-03  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/main.c: Uncommented line interpreting unknown command-line
+	arguments as filenames
+	* src/document-undo.c (sp_document_undo): If attribute is 'id', find
+	affected object from 'new' instead of 'key'
+	* src/dialogs/xml-tree.c: Added missing sp_document_done flushes
+	* src/sp-object.c (sp_object_read_attr): Fixed def-ing repr
+	id attribute instead of objects one
+
 2000-05-02  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/sp-item-group.c (sp_group_build): Check that xml node is
