@@ -136,19 +136,25 @@ void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
 SPCurve *sp_text_normalized_bpath (SPText *text);
 
-SPTSpan *sp_text_append_line (SPText *text);
-
 /* fixme: Better place for these */
 gint sp_text_font_weight_to_gp (gint weight);
 #define sp_text_font_italic_to_gp(s) ((s) != SP_CSS_FONT_STYLE_NORMAL)
 
 /* fixme: Think about these (Lauris) */
 
+SPTSpan *sp_text_append_line (SPText *text);
+SPTSpan *sp_text_insert_line (SPText *text, gint pos);
+
 /* This gives us SUM (strlen (STRING)) + (LINES - 1) */
 gint sp_text_get_length (SPText *text);
 gint sp_text_append (SPText *text, const guchar *utf8);
+/* Returns position after inserted */
+gint sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews);
 /* Returns start position */
 gint sp_text_delete (SPText *text, gint start, gint end);
+
+gint sp_text_up (SPText *text, gint pos);
+gint sp_text_down (SPText *text, gint pos);
 
 void sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *p1);
 

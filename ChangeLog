@@ -2,12 +2,15 @@
 
 	* src/sp-text.c (sp_string_set_shape): Update position array
 	(sp_text_get_cursor_coords): New method
-	(sp_text_set_shape): Set tspan position to text, if unset
+	(sp_text_set_shape): Set tspan position to text, if unset; Limit block
+	to tspans with unspecified role
+	(sp_text_insert_line): Implement
 
 	* src/text-context.c (sp_text_context_setup): Set blink to 250ms
 	(sp_text_context_selection_modified): Implement, update cursor position
 	(sp_text_context_selection_changed): Ditto
-	(sp_text_context_root_handler): BackSpace works
+	(sp_text_context_root_handler): Cursor placement, insertion and deletion
+	work as they should
 
 	* src/display/nr-arena-shape.c (nr_arena_shape_update): Do not try to
 	fill paths consisting of single lineto

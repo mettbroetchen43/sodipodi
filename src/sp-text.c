@@ -1422,6 +1422,7 @@ sp_text_set_shape (SPText *text)
 			if (SP_IS_TSPAN (next)) {
 				SPTSpan *tspan;
 				tspan = SP_TSPAN (next);
+				if (tspan->role != SP_TSPAN_ROLE_UNSPECIFIED) break;
 				if ((tspan->ly.x.set) || (tspan->ly.y.set)) break;
 				string = SP_TSPAN_STRING (tspan);
 			} else {
@@ -1735,57 +1736,6 @@ sp_text_normalized_bpath (SPText *text)
 	return curve;
 }
 
-SPTSpan *
-sp_text_append_line (SPText *text)
-{
-	SPRepr *rtspan, *rstring;
-	SPObject *child;
-	SPStyle *style;
-	ArtPoint cp;
-
-	g_return_val_if_fail (text != NULL, NULL);
-	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
-
-	style = SP_OBJECT_STYLE (text);
-
-	cp.x = text->ly.x.computed;
-	cp.y = text->ly.y.computed;
-
-	for (child = text->children; child != NULL; child = child->next) {
-		if (SP_IS_TSPAN (child)) {
-			SPTSpan *tspan;
-			tspan = SP_TSPAN (child);
-			if (tspan->role == SP_TSPAN_ROLE_LINE) {
-				cp.x = tspan->ly.x.computed;
-				cp.y = tspan->ly.y.computed;
-			}
-		}
-	}
-
-	/* Create <tspan> */
-	rtspan = sp_repr_new ("tspan");
-	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-		/* fixme: real line height */
-		/* fixme: What to do with mixed direction tspans? */
-		sp_repr_set_double (rtspan, "x", cp.x - style->font_size.computed);
-		sp_repr_set_double (rtspan, "y", cp.y);
-	} else {
-		sp_repr_set_double (rtspan, "x", cp.x);
-		sp_repr_set_double (rtspan, "y", cp.y + style->font_size.computed);
-	}
-	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
-
-	/* Create TEXT */
-	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
-	sp_repr_add_child (rtspan, rstring, NULL);
-	sp_repr_unref (rstring);
-	/* Append to text */
-	sp_repr_append_child (SP_OBJECT_REPR (text), rtspan);
-	sp_repr_unref (rtspan);
-
-	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
-}
-
 static void
 sp_text_update_immediate_state (SPText *text)
 {
@@ -1839,6 +1789,93 @@ sp_text_get_length (SPText *text)
 	}
 
 	return string->start + string->length;
+}
+
+SPTSpan *
+sp_text_append_line (SPText *text)
+{
+	SPRepr *rtspan, *rstring;
+	SPObject *child;
+	SPStyle *style;
+	ArtPoint cp;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
+
+	style = SP_OBJECT_STYLE (text);
+
+	cp.x = text->ly.x.computed;
+	cp.y = text->ly.y.computed;
+
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			tspan = SP_TSPAN (child);
+			if (tspan->role == SP_TSPAN_ROLE_LINE) {
+				cp.x = tspan->ly.x.computed;
+				cp.y = tspan->ly.y.computed;
+			}
+		}
+	}
+
+	/* Create <tspan> */
+	rtspan = sp_repr_new ("tspan");
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		/* fixme: real line height */
+		/* fixme: What to do with mixed direction tspans? */
+		sp_repr_set_double (rtspan, "x", cp.x - style->font_size.computed);
+		sp_repr_set_double (rtspan, "y", cp.y);
+	} else {
+		sp_repr_set_double (rtspan, "x", cp.x);
+		sp_repr_set_double (rtspan, "y", cp.y + style->font_size.computed);
+	}
+	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
+
+	/* Create TEXT */
+	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+	sp_repr_add_child (rtspan, rstring, NULL);
+	sp_repr_unref (rstring);
+	/* Append to text */
+	sp_repr_append_child (SP_OBJECT_REPR (text), rtspan);
+	sp_repr_unref (rtspan);
+
+	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
+}
+
+SPTSpan *
+sp_text_insert_line (SPText *text, gint pos)
+{
+	SPObject *child;
+	SPString *string;
+	SPRepr *rtspan, *rstring;
+	guchar *ip;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
+	g_return_val_if_fail (pos >= 0, NULL);
+
+	child = sp_text_get_child_by_position (text, pos);
+	string = SP_TEXT_CHILD_STRING (child);
+
+	/* Create <tspan> */
+	rtspan = sp_repr_new ("tspan");
+	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
+	/* Create TEXT */
+	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+	sp_repr_add_child (rtspan, rstring, NULL);
+	sp_repr_unref (rstring);
+
+	sp_repr_add_child (SP_OBJECT_REPR (text), rtspan, SP_OBJECT_REPR (child));
+	sp_repr_unref (rtspan);
+
+	if (string->text) {
+		ip = g_utf8_offset_to_pointer (string->text, pos - string->start);
+		sp_repr_set_content (rstring, ip);
+		*ip = '\0';
+		sp_repr_set_content (SP_OBJECT_REPR (string), string->text);
+	}
+
+	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
 }
 
 gint
@@ -1903,6 +1940,42 @@ sp_text_append (SPText *text, const guchar *utf8)
 	return string->start + cchars + uchars;
 }
 
+/* Returns position after inserted */
+
+gint
+sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
+{
+	SPObject *child;
+	SPString *string;
+	guchar *new, *ip;
+
+	g_return_val_if_fail (text != NULL, -1);
+	g_return_val_if_fail (SP_IS_TEXT (text), -1);
+	g_return_val_if_fail (pos >= 0, -1);
+
+	if (!utf8) return pos;
+	if (!*utf8) return pos;
+
+	child = sp_text_get_child_by_position (text, pos);
+	if (!child) return sp_text_append (text, utf8);
+	string = SP_TEXT_CHILD_STRING (child);
+
+	ip = g_utf8_offset_to_pointer (string->text, pos - string->start);
+	/* fixme: Do it the right way (Lauris) */
+	if (!preservews && !strcmp (utf8, " ") && (ip > string->text) && *(ip - 1) == ' ') {
+		return pos;
+	}
+
+	new = g_new (guchar, strlen (string->text) + strlen (utf8) + 1);
+	memcpy (new, string->text, ip - string->text);
+	memcpy (new + (ip - string->text), utf8, strlen (utf8));
+	strcpy (new + (ip - string->text) + strlen (utf8), ip);
+	sp_repr_set_content (SP_OBJECT_REPR (string), new);
+	g_free (new);
+
+	return pos + g_utf8_strlen (utf8, -1);
+}
+
 /* Returns start position */
 
 gint 
@@ -1958,6 +2031,47 @@ sp_text_delete (SPText *text, gint start, gint end)
 	}
 
 	return start;
+}
+
+/* fixme: Should look roles here */
+
+gint
+sp_text_up (SPText *text, gint pos)
+{
+	SPObject *child, *up;
+	SPString *string;
+	gint col;
+
+	child = sp_text_get_child_by_position (text, pos);
+	if (!child || child == text->children) return pos;
+	string = SP_TEXT_CHILD_STRING (child);
+	col = pos - string->start;
+
+	up = text->children;
+	while (up->next != child) up = up->next;
+	string = SP_TEXT_CHILD_STRING (up);
+	col = MIN (col, string->length);
+
+	return string->start + col;
+}
+
+gint
+sp_text_down (SPText *text, gint pos)
+{
+	SPObject *child;
+	SPString *string;
+	gint col;
+
+	child = sp_text_get_child_by_position (text, pos);
+	if (!child || !child->next) return pos;
+	string = SP_TEXT_CHILD_STRING (child);
+	col = pos - string->start;
+
+	child = child->next;
+	string = SP_TEXT_CHILD_STRING (child);
+	col = MIN (col, string->length);
+
+	return string->start + col;
 }
 
 void

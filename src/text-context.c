@@ -19,6 +19,7 @@
 #include "sp-text.h"
 #include "sodipodi.h"
 #include "document.h"
+#include "style.h"
 #include "selection.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -38,6 +39,7 @@ static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem
 static void sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc);
 static void sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextContext *tc);
 
+static void sp_text_context_update_cursor (SPTextContext *tc);
 static gint sp_text_context_timeout (SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
@@ -268,6 +270,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
 	SPTSpan *new;
+	SPStyle *style;
 	guchar *utf8;
 	gint ret;
 
@@ -323,28 +326,64 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 
 		g_assert (tc->text != NULL);
+		style = SP_OBJECT_STYLE (tc->text);
 
 		switch (event->key.keyval) {
 		case GDK_Return:
 			/* Append new line */
 			/* fixme: Has to be insert here */
-			new = sp_text_append_line (SP_TEXT (tc->text));
+			new = sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
 			tc->ipos += 1;
 			break;
 		case GDK_space:
 			if (event->key.state & GDK_CONTROL_MASK) {
 				/* Nonbreaking space */
-				tc->ipos = sp_text_append (SP_TEXT (tc->text), "\302\240");
+				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, "\302\240", TRUE);
 			} else {
-				tc->ipos = sp_text_append (SP_TEXT (tc->text), " ");
+				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, " ", FALSE);
 			}
 			break;
 		case GDK_BackSpace:
 			tc->ipos = sp_text_delete (SP_TEXT (tc->text), MAX (tc->ipos - 1, 0), tc->ipos);
 			break;
+		case GDK_Delete:
+			tc->ipos = sp_text_delete (SP_TEXT (tc->text), tc->ipos, MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text))));
+			break;
+		case GDK_Left:
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
+			} else {
+				tc->ipos = MAX (tc->ipos - 1, 0);
+			}
+			sp_text_context_update_cursor (tc);
+			break;
+		case GDK_Right:
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
+			} else {
+				tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
+			}
+			sp_text_context_update_cursor (tc);
+			break;
+		case GDK_Up:
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				tc->ipos = MAX (tc->ipos - 1, 0);
+			} else {
+				tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
+			}
+			sp_text_context_update_cursor (tc);
+			break;
+		case GDK_Down:
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
+			} else {
+				tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
+			}
+			sp_text_context_update_cursor (tc);
+			break;
 		default:
 			utf8 = e_utf8_from_locale_string (event->key.string);
-			tc->ipos = sp_text_append (SP_TEXT (tc->text), utf8);
+			tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
 			if (utf8) g_free (utf8);
 			break;
 		}
@@ -375,27 +414,23 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 	item = sp_selection_item (selection);
 
 	if (SP_IS_TEXT (item)) {
-		ArtPoint p0, p1;
-		gdouble i2d[6];
 		tc->text = item;
 		tc->ipos = sp_text_get_length (SP_TEXT (tc->text));
-		sp_text_get_cursor_coords (SP_TEXT (tc->text), tc->ipos, &p0, &p1);
-		gnome_canvas_item_show (tc->cursor);
-		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
-		art_affine_point (&p0, &p0, i2d);
-		art_affine_point (&p1, &p1, i2d);
-		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
-		tc->show = TRUE;
-		tc->phase = 1;
 	} else {
 		tc->text = NULL;
-		gnome_canvas_item_hide (tc->cursor);
-		tc->show = FALSE;
 	}
+
+	sp_text_context_update_cursor (tc);
 }
 
 static void
 sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextContext *tc)
+{
+	sp_text_context_update_cursor (tc);
+}
+
+static void
+sp_text_context_update_cursor (SPTextContext *tc)
 {
 	if (tc->text) {
 		ArtPoint p0, p1;
@@ -404,7 +439,13 @@ sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextC
 		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
 		art_affine_point (&p0, &p0, i2d);
 		art_affine_point (&p1, &p1, i2d);
+		gnome_canvas_item_show (tc->cursor);
 		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
+		tc->show = TRUE;
+		tc->phase = 1;
+	} else {
+		gnome_canvas_item_hide (tc->cursor);
+		tc->show = FALSE;
 	}
 }
 
