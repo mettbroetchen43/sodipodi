@@ -387,18 +387,21 @@ static void
 sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const unsigned char *skeleton, unsigned int skel_size,
 		      const unsigned char *e_notreg, const unsigned char *e_notxml, const unsigned char *e_notsp)
 {
-	gchar *fn;
+	unsigned char *fnutf8, *fnos;
 	struct stat s;
 	GtkWidget * w;
 	SPReprDoc * doc;
 	SPRepr * root;
+	gsize bytesin, bytesout;
 
 #ifdef WIN32
-	fn = g_build_filename (SODIPODI_APPDATADIR, filename, NULL);
+	fnutf8 = g_build_filename (SODIPODI_APPDATADIR, filename, NULL);
+	fnos = g_filename_from_utf8 (fnutf8, strlen (fnutf8), &bytesin, &bytesout, NULL);
 #else
-	fn = g_build_filename (g_get_home_dir (), ".sodipodi", filename, NULL);
+	fnutf8 = g_build_filename (g_get_home_dir (), ".sodipodi", filename, NULL);
+	fnos = g_filename_from_utf8 (fnutf8, strlen (fnutf8), &bytesin, &bytesout, NULL);
 #endif
-	if (stat (fn, &s)) {
+	if (stat (fnos, &s)) {
 		/* No such file */
 		/* fixme: Think out something (Lauris) */
 		if (!strcmp (filename, "extensions")) {
@@ -406,42 +409,51 @@ sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const un
 		} else {
 			sodipodi_init_preferences (SODIPODI);
 		}
-		g_free (fn);
+		g_free (fnos);
+		g_free (fnutf8);
 		return;
 	}
 
 	if (!S_ISREG (s.st_mode)) {
 		/* Not a regular file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notreg, fn);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    e_notreg, fnutf8);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
-		g_free (fn);
+		g_free (fnos);
+		g_free (fnutf8);
 		return;
 	}
 
-	doc = sp_repr_doc_new_from_file (fn, NULL);
+	doc = sp_repr_doc_new_from_file (fnutf8, NULL);
 	if (doc == NULL) {
 		/* Not an valid xml file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notxml, fn);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    e_notxml, fnutf8);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
-		g_free (fn);
+		g_free (fnos);
+		g_free (fnutf8);
 		return;
 	}
 
 	root = sp_repr_doc_get_root (doc);
 	if (strcmp (sp_repr_name (root), "sodipodi")) {
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notsp, fn);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    e_notsp, fnutf8);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		sp_repr_doc_unref (doc);
-		g_free (fn);
+		g_free (fnos);
+		g_free (fnutf8);
 		return;
 	}
 
+	g_free (fnos);
+	g_free (fnutf8);
+
 	sp_repr_doc_merge (config, doc, "id");
 	sp_repr_doc_unref (doc);
-	g_free (fn);
 }
 
 /* Preferences management */
@@ -773,63 +785,74 @@ static void
 sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *skeleton, int skel_size,
 		      const unsigned char *e_mkdir, const unsigned char *e_notdir, const unsigned char *e_ccf, const unsigned char *e_cwf)
 {
-	gchar * dn, *fn;
+	unsigned char *dnutf8, *dnos;
+	unsigned char *fnutf8, *fnos;
 	struct stat s;
+	GtkWidget *mdlg;
 	int fh;
-	GtkWidget * w;
+	gsize bytesin, bytesout;
+	unsigned int valid;
+
+	valid = TRUE;
+	mdlg = NULL;
 
 #ifdef WIN32
-	dn = g_strdup (SODIPODI_APPDATADIR);
+	dnutf8 = g_strdup (SODIPODI_APPDATADIR);
 #else
-	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
+	dnutf8 = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
 #endif
-	if (stat (dn, &s)) {
-		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP))
-		{
+	dnos = g_filename_from_utf8 (dnutf8, strlen (dnutf8), &bytesin, &bytesout, NULL);
+	if (stat (dnos, &s)) {
+		if (mkdir (dnos, S_IRWXU | S_IRGRP | S_IXGRP)) {
 			/* Cannot create directory */
-			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_mkdir, dn);
-			gtk_dialog_run (GTK_DIALOG (w));
-			gtk_widget_destroy (w);
-			g_free (dn);
-			return;
+			mdlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+						       e_mkdir, dnutf8);
+			valid = FALSE;
 		}
 	} else if (!S_ISDIR (s.st_mode)) {
 		/* Not a directory */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notdir, dn);
-		gtk_dialog_run (GTK_DIALOG (w));
-		gtk_widget_destroy (w);
-		g_free (dn);
-		return;
+		mdlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					       e_notdir, dnutf8);
+		valid = FALSE;
 	}
-	g_free (dn);
+	g_free (dnos);
+	g_free (dnutf8);
+	/* Return id error */
+	if (mdlg) {
+		gtk_dialog_run (GTK_DIALOG (mdlg));
+		gtk_widget_destroy (mdlg);
+		mdlg = NULL;
+	}
+	if (!valid) return;
 
 #ifdef WIN32
-	fn = g_build_filename (SODIPODI_APPDATADIR, config_name, NULL);
-	fh = creat (fn, S_IREAD | S_IWRITE);
+	fnutf8 = g_build_filename (SODIPODI_APPDATADIR, config_name, NULL);
+	fnos = g_filename_from_utf8 (fnutf8, strlen (fnutf8), &bytesin, &bytesout, NULL);
+	fh = creat (fnos, S_IREAD | S_IWRITE);
 #else
-	fn = g_build_filename (g_get_home_dir (), ".sodipodi", config_name, NULL);
-	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
+	fnutf8 = g_build_filename (g_get_home_dir (), ".sodipodi", config_name, NULL);
+	fnos = g_filename_from_utf8 (fnutf8, strlen (fnutf8), &bytesin, &bytesout, NULL);
+	fh = creat (fnos, S_IRUSR | S_IWUSR | S_IRGRP);
 #endif
 	if (fh < 0) {
 		/* Cannot create file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_ccf, fn);
-		gtk_dialog_run (GTK_DIALOG (w));
-		gtk_widget_destroy (w);
-		g_free (fn);
-		return;
+		mdlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					       e_ccf, fnutf8);
+		valid = FALSE;
 	}
 	if (write (fh, skeleton, skel_size) != skel_size) {
 		/* Cannot create file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_cwf, fn);
-		gtk_dialog_run (GTK_DIALOG (w));
-		gtk_widget_destroy (w);
-		g_free (fn);
-		close (fh);
-		return;
+		mdlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					       e_cwf, fnutf8);
+		valid = FALSE;
 	}
-
-	g_free (fn);
-	close (fh);
+	if (fh >= 0) close (fh);
+	g_free (fnos);
+	g_free (fnutf8);
+	if (mdlg) {
+		gtk_dialog_run (GTK_DIALOG (mdlg));
+		gtk_widget_destroy (mdlg);
+	}
 }
 
 /* This routine should be obsoleted in favor of the generic version */
