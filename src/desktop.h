@@ -110,6 +110,9 @@ NRRectF *sp_desktop_get_display_area (SPDesktop *dt, NRRectF *area);
 void sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float y1, float border);
 void sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom);
 void sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom);
+void sp_desktop_zoom_page (SPDesktop *dt);
+void sp_desktop_zoom_drawing (SPDesktop *dt);
+void sp_desktop_zoom_selection (SPDesktop *dt);
 void sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy);
 
 const SPUnit *sp_desktop_get_default_unit (SPDesktop *dt);
@@ -139,9 +142,9 @@ struct _SPDesktopWidget {
 	GtkWidget *coord_status;
         GtkWidget *select_status;
         GtkWidget *zoom_status;
+	gulong zoom_update;
 
         gint coord_status_id, select_status_id;
-        GtkWidget *zoom;
 
 	SPCanvas *canvas;
 

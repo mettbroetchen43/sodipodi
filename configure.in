@@ -243,7 +243,7 @@ fi
 
 dnl Have to add module makefiles (lauris)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/libnr/Makefile
@@ -261,6 +261,7 @@ glade/Makefile
 sodipodi.spec
 sodipodi.1
 ])
+AC_OUTPUT
 
 echo "
 Configuration:

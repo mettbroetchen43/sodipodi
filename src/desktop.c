@@ -78,6 +78,17 @@ static void sp_dt_update_snap_distances (SPDesktop *desktop);
 
 static gint sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
+static gint sp_dtw_zoom_input (GtkSpinButton *spin, gdouble *new_val, gpointer data);
+static gboolean sp_dtw_zoom_output (GtkSpinButton *spin, gpointer data);
+static void sp_dtw_zoom_value_changed (GtkSpinButton *spin, gpointer data);
+static void sp_dtw_zoom_populate_popup (GtkEntry *entry, GtkMenu *menu, gpointer data);
+static void sp_dtw_zoom_50 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_100 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_200 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_page (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_drawing (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_selection (GtkMenuItem *item, gpointer data);
+
 /* fixme: This is here, but shouldn't in theory (Lauris) */
 static void sp_desktop_widget_update_rulers (SPDesktopWidget *dtw);
 static void sp_desktop_update_scrollbars (SPDesktop *desktop);
@@ -654,9 +665,6 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	GtkWidget *w;
 
 	GtkWidget * hbox;
-#if 0
-	GtkWidget *zoom, *entry; 
-#endif
 	GtkWidget * eventbox;
 	GtkTooltips *tt;
 	GtkStyle *style;
@@ -749,13 +757,17 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	gtk_container_add (GTK_CONTAINER (w), dtw->select_status);
 	g_signal_connect (G_OBJECT (w), "size_request", G_CALLBACK (sp_dtw_status_frame_size_request), dtw);
 
-	w = gtk_frame_new (NULL);
-	gtk_widget_set_usize (w, 64, 0);
-	gtk_frame_set_shadow_type (GTK_FRAME (w), GTK_SHADOW_IN);
-	gtk_box_pack_end (GTK_BOX (hbox), w, FALSE, FALSE, 0);
-	dtw->zoom_status = gtk_label_new ("");
-	gtk_misc_set_alignment (GTK_MISC (dtw->zoom_status), 0.0, 0.5);
-	gtk_container_add (GTK_CONTAINER (w), dtw->zoom_status);
+	dtw->zoom_status = gtk_spin_button_new_with_range (log(SP_DESKTOP_ZOOM_MIN)/log(2), log(SP_DESKTOP_ZOOM_MAX)/log(2), 0.1);
+	gtk_widget_set_usize (dtw->zoom_status, 64, -1);
+	gtk_entry_set_width_chars (GTK_ENTRY (dtw->zoom_status), 5);
+	gtk_editable_set_editable (GTK_EDITABLE (dtw->zoom_status), FALSE);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (dtw->zoom_status), FALSE);
+	gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (dtw->zoom_status), GTK_UPDATE_ALWAYS);
+	g_signal_connect (G_OBJECT (dtw->zoom_status), "input", G_CALLBACK (sp_dtw_zoom_input), dtw);
+	g_signal_connect (G_OBJECT (dtw->zoom_status), "output", G_CALLBACK (sp_dtw_zoom_output), dtw);
+	dtw->zoom_update = g_signal_connect (G_OBJECT (dtw->zoom_status), "value_changed", G_CALLBACK (sp_dtw_zoom_value_changed), dtw);
+	dtw->zoom_update = g_signal_connect (G_OBJECT (dtw->zoom_status), "populate_popup", G_CALLBACK (sp_dtw_zoom_populate_popup), dtw);
+	gtk_box_pack_end (GTK_BOX (hbox), dtw->zoom_status, FALSE, FALSE, 0);
 
 	/* connecting canvas, scrollbars, rulers, statusbar */
 	g_signal_connect (G_OBJECT (dtw->hadj), "value-changed", G_CALLBACK (sp_desktop_widget_adjustment_value_changed), dtw);
@@ -1092,7 +1104,6 @@ sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show)
 			gtk_widget_show (GTK_WIDGET (dtw->vruler));
 			gtk_widget_show (GTK_WIDGET (dtw->mbtn));
 			gtk_widget_show (GTK_WIDGET (dtw->sticky_zoom));
-			gtk_widget_show (GTK_WIDGET (dtw->zoom)->parent);		
 		} else {
 			gtk_widget_hide (GTK_WIDGET (dtw->hscrollbar));
 			gtk_widget_hide (GTK_WIDGET (dtw->vscrollbar));
@@ -1100,7 +1111,6 @@ sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show)
 			gtk_widget_hide (GTK_WIDGET (dtw->vruler));
 			gtk_widget_hide (GTK_WIDGET (dtw->mbtn));
 			gtk_widget_hide (GTK_WIDGET (dtw->sticky_zoom));
-			gtk_widget_hide (GTK_WIDGET (dtw->zoom)->parent);
 		}
 	}
 }
@@ -1238,6 +1248,51 @@ sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom)
 }
 
 void
+sp_desktop_zoom_page (SPDesktop *dt)
+{
+	NRRectF d;
+
+	d.x0 = d.y0 = 0.0;
+	d.x1 = sp_document_width (SP_DT_DOCUMENT (dt));
+	d.y1 = sp_document_height (SP_DT_DOCUMENT (dt));
+
+	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
+
+	sp_desktop_set_display_area (dt, d.x0, d.y0, d.x1, d.y1, 10);
+}
+
+void
+sp_desktop_zoom_selection (SPDesktop *dt)
+{
+	SPSelection * selection;
+	NRRectF d;
+
+	selection = SP_DT_SELECTION (dt);
+	g_return_if_fail (selection != NULL);
+
+	sp_selection_bbox (selection, &d);
+	if ((fabs (d.x1 - d.x0) < 0.1) || (fabs (d.y1 - d.y0) < 0.1)) return;
+	sp_desktop_set_display_area (dt, d.x0, d.y0, d.x1, d.y1, 10);
+}
+
+void
+sp_desktop_zoom_drawing (SPDesktop *dt)
+{
+	SPDocument * doc;
+	SPItem * docitem;
+	NRRectF d;
+
+	doc = SP_VIEW_DOCUMENT (SP_VIEW (dt));
+	g_return_if_fail (doc != NULL);
+	docitem = SP_ITEM (sp_document_root (doc));
+	g_return_if_fail (docitem != NULL);
+	
+	sp_item_bbox_desktop (docitem, &d);
+	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
+	sp_desktop_set_display_area (dt, d.x0, d.y0, d.x1, d.y1, 10);
+}
+
+void
 sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy)
 {
 	SPDesktopWidget *dtw;
@@ -1339,16 +1394,137 @@ sp_desktop_update_scrollbars (SPDesktop *dt)
 static void
 sp_desktop_widget_update_zoom (SPDesktopWidget *dtw)
 {
-	unsigned char c[32];
-	double zoom;
-
-	zoom = SP_DESKTOP_ZOOM (dtw->desktop);
-
-	g_snprintf (c, 32, "%4.f%%", zoom * 100.0);
-
-	gtk_label_set_text (GTK_LABEL (dtw->zoom_status), c);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (dtw->zoom_status), log(SP_DESKTOP_ZOOM(dtw->desktop)) / log(2));
 }
 
+gint
+sp_dtw_zoom_input (GtkSpinButton *spin, gdouble *new_val, gpointer data)
+{
+	*new_val = gtk_spin_button_get_value (spin);
+	return TRUE;
+}
 
+gboolean
+sp_dtw_zoom_output (GtkSpinButton *spin, gpointer data)
+{
+	unsigned char b[64];
+	g_snprintf (b, 64, "%4.0f%%", pow (2, gtk_spin_button_get_value (spin)) * 100.0);
+	gtk_entry_set_text (GTK_ENTRY (spin), b);
+	return TRUE;
+}
 
+void
+sp_dtw_zoom_value_changed (GtkSpinButton *spin, gpointer data)
+{
+	NRRectF d;
+	float zoom_factor;
+	SPDesktop *desktop;
+	SPDesktopWidget *dtw;
 
+	zoom_factor = pow (2, gtk_spin_button_get_value (spin));
+
+	dtw = SP_DESKTOP_WIDGET (data);
+	desktop = dtw->desktop;
+
+	sp_desktop_get_display_area (desktop, &d);
+	g_signal_handler_block (spin, dtw->zoom_update);
+	sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, zoom_factor);
+	g_signal_handler_unblock (spin, dtw->zoom_update);
+}
+
+void
+sp_dtw_zoom_populate_popup (GtkEntry *entry, GtkMenu *menu, gpointer data)
+{
+	GList *children, *iter;
+	GtkWidget *item;
+	SPDesktop *dt;
+
+	dt = SP_DESKTOP_WIDGET (data)->desktop;
+
+	children = gtk_container_get_children (GTK_CONTAINER (menu));
+	for ( iter = children ; iter ; iter = g_list_next (iter)) {
+		gtk_container_remove (GTK_CONTAINER (menu), GTK_WIDGET (iter->data));
+	}
+	g_list_free (children);
+
+	item = gtk_menu_item_new_with_label ("200%");
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_200), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	item = gtk_menu_item_new_with_label ("100%");
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_100), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	item = gtk_menu_item_new_with_label ("50%");
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_50), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+	item = gtk_separator_menu_item_new ();
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+	item = gtk_menu_item_new_with_label (_("Page"));
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_page), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	item = gtk_menu_item_new_with_label (_("Drawing"));
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_drawing), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	item = gtk_menu_item_new_with_label (_("Selection"));
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_dtw_zoom_selection), dt);
+	gtk_widget_show (item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+}
+
+void
+sp_dtw_zoom_50 (GtkMenuItem *item, gpointer data)
+{
+	NRRectF d;
+	SPDesktop *dt;
+
+	dt = SP_DESKTOP (data);
+	sp_desktop_get_display_area (dt, &d);
+	sp_desktop_zoom_absolute (dt, ( d.x0 + d.x1 ) / 2, ( d.y0 + d.y1 ) / 2, 0.5);
+}
+
+void
+sp_dtw_zoom_100 (GtkMenuItem *item, gpointer data)
+{
+	NRRectF d;
+	SPDesktop *dt;
+
+	dt = SP_DESKTOP (data);
+	sp_desktop_get_display_area (dt, &d);
+	sp_desktop_zoom_absolute (dt, ( d.x0 + d.x1 ) / 2, ( d.y0 + d.y1 ) / 2, 1.0);
+}
+
+void
+sp_dtw_zoom_200 (GtkMenuItem *item, gpointer data)
+{
+	NRRectF d;
+	SPDesktop *dt;
+
+	dt = SP_DESKTOP (data);
+	sp_desktop_get_display_area (dt, &d);
+	sp_desktop_zoom_absolute (dt, ( d.x0 + d.x1 ) / 2, ( d.y0 + d.y1 ) / 2, 2.0);
+}
+
+void
+sp_dtw_zoom_page (GtkMenuItem *item, gpointer data)
+{
+	sp_desktop_zoom_page (SP_DESKTOP (data));
+}
+
+void
+sp_dtw_zoom_drawing (GtkMenuItem *item, gpointer data)
+{
+	sp_desktop_zoom_drawing (SP_DESKTOP (data));
+}
+
+void
+sp_dtw_zoom_selection (GtkMenuItem *item, gpointer data)
+{
+	sp_desktop_zoom_selection (SP_DESKTOP (data));
+}

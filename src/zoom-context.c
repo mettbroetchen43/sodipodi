@@ -182,60 +182,34 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 void
 sp_zoom_selection (gpointer object, gpointer data)
 {
-	SPSelection * selection;
-	NRRectF d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	selection = SP_DT_SELECTION (desktop);
-
-	g_return_if_fail (selection != NULL);
-
-	sp_selection_bbox (selection, &d);
-	if ((fabs (d.x1 - d.x0) < 0.1) || (fabs (d.y1 - d.y0) < 0.1)) return;
-	sp_desktop_set_display_area (desktop, d.x0, d.y0, d.x1, d.y1, 10);
+	sp_desktop_zoom_selection (desktop);
 }
 
 void
 sp_zoom_drawing (gpointer object, gpointer data)
 {
-	SPItem * docitem;
-	NRRectF d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	g_return_if_fail(SP_ACTIVE_DOCUMENT != NULL);
-
-	docitem = SP_ITEM (sp_document_root (SP_ACTIVE_DOCUMENT));
-
-	g_return_if_fail (docitem != NULL);
-
-	sp_item_bbox_desktop (docitem, &d);
-	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
-	sp_desktop_set_display_area (desktop, d.x0, d.y0, d.x1, d.y1, 10);
+	sp_desktop_zoom_drawing (desktop);
 }
 
 void
 sp_zoom_page (gpointer object, gpointer data)
 {
-	NRRectD d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	d.x0 = 0.0;
-	d.y0 = 0.0;
-	d.x1 = sp_document_width (SP_DT_DOCUMENT (desktop));
-	d.y1 = sp_document_height (SP_DT_DOCUMENT (desktop));
-
-	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
-
-	sp_desktop_set_display_area (desktop, d.x0, d.y0, d.x1, d.y1, 10);
+	sp_desktop_zoom_page (desktop);
 }
 
 void
