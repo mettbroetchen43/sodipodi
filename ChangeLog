@@ -1,3 +1,7 @@
+2000-04-12  Pablo Saratxaga Pablo <pablo@mandrakesoft.com>
+
+	* configure.in (ALL_LINGUAS): Add Danish
+
 200-04-09  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* bonobo/canvas-translator.*: implemented a translator group, which
