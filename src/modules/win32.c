@@ -552,7 +552,7 @@ sp_win32_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned
 char *
 sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 {
-	TCHAR fnbuf[4096] = {0};
+	TCHAR fnbuf[4096 + 4] = {0};
 	OPENFILENAME ofn = {
 		sizeof (OPENFILENAME),
 		NULL, /* hwndOwner */
@@ -575,7 +575,7 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 		NULL, /* lpfnHook */
 		NULL /* lpTemplateName */
 	};
-	int retval;
+	int retval, pos, hasext;
 	TCHAR *tdir;
 #ifdef USE_TIMER
 	UINT_PTR timer;
@@ -608,6 +608,18 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 #ifdef WIN32MBDEBUG
 	g_print ("Output file '%s'\n", fnbuf);
 #endif
+
+	pos = 0;
+	hasext = 0;
+	while (fnbuf[pos]) {
+		if (fnbuf[pos] == '.') hasext = 1;
+		if (fnbuf[pos] == '\\') hasext = 0;
+		pos += 1;
+	}
+	if (!hasext) {
+		/* We can be sure we have extra 4 bytes */
+		_tcscpy (&fnbuf[pos], TEXT(".svg"));
+	}
 
 	return sp_w32_utf8_strdup (fnbuf);
 }
