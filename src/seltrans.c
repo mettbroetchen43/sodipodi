@@ -31,6 +31,9 @@ static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 static void sp_sel_trans_sel_modified (SPSelection * selection, guint flags, gpointer data);
 
+extern GdkCursor * CursorSelectMouseover, * CursorSelectDragging;
+extern GdkPixbuf * handles[];
+
 void
 sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 {
@@ -66,22 +69,26 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	seltrans->norm = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
 		"anchor", GTK_ANCHOR_CENTER,
-		"shape", SP_CTRL_SHAPE_DIAMOND,
-		"size", 6.0,
-		"filled", FALSE,
-		"fill_color", 0x000000ff,
+		"mode", SP_CTRL_MODE_COLOR,
+		"shape", SP_CTRL_SHAPE_BITMAP,
+		"size", 13.0,
+		"filled", TRUE,
+		"fill_color", 0x40ff40a0,
 		"stroked", TRUE,
-		"stroke_color", 0x000000ff,
+		"stroke_color", 0x000000a0,
+		"pixbuf", handles[12],				
 		NULL);
 	seltrans->grip = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
 		"anchor", GTK_ANCHOR_CENTER,
-		"shape", SP_CTRL_SHAPE_SQUARE,
-		"size", 6.0,
-		"filled", FALSE,
-		"fill_color", 0x000000ff,
+		"mode", SP_CTRL_MODE_XOR,
+		"shape", SP_CTRL_SHAPE_CROSS,
+		"size", 7.0,
+		"filled", TRUE,
+		"fill_color", 0xff40ffa0,
 		"stroked", TRUE,
-		"stroke_color", 0x000000ff,
+		"stroke_color", 0xffffffFF,
+		"pixbuf", handles[12],				
 		NULL);
 	gnome_canvas_item_hide (seltrans->grip);
 	gnome_canvas_item_hide (seltrans->norm);
@@ -362,11 +369,20 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 	  seltrans->chandle = sp_knot_new (seltrans->desktop);
 	  gtk_object_set (GTK_OBJECT (seltrans->chandle),
 			  "anchor", handle_center.anchor, 
-			  "shape", handle_center.control,
-			  "fill", 0x00ff00a0,
-			  "fill_mouseover", 0xff0000a0,
-			  "stroke", 0x000000ff,
-			  "stroke_mouseover", 0x000000FF,
+			  "shape", SP_CTRL_SHAPE_BITMAP,
+			  "size", 13,
+			  "mode", SP_CTRL_MODE_COLOR,
+					"fill", 0x40ff40a0,
+					"fill_mouseover", 0xff4040f0,
+					"stroke", 0x000000a0,
+					"stroke_mouseover", 0x000000FF,
+			  //"fill", 0xff40ffa0,
+			  //"fill_mouseover", 0x40ffffa0,
+			  //"stroke", 0xFFb0b0ff,
+			  //"stroke_mouseover", 0xffffffFF,
+			  "pixbuf", handles[handle_center.control],
+			  "cursor_mouseover", CursorSelectMouseover,
+			  "cursor_dragging", CursorSelectDragging,
 			  NULL);
 	  gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "request",
 			      GTK_SIGNAL_FUNC (sp_sel_trans_handle_request), (gpointer) &handle_center);
@@ -421,12 +437,20 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 			knot[i] = sp_knot_new (seltrans->desktop);
 			gtk_object_set (GTK_OBJECT (knot[i]),
 					"anchor", handle[i].anchor, 
-					"shape", handle[i].control,
+					"shape", SP_CTRL_SHAPE_BITMAP,
+					"size", 13,
 					"mode", SP_KNOT_MODE_COLOR,
-					"fill", 0x0000ffa0,
-					"fill_mouseover", 0xff0000a0,
-					"stroke", 0x000000ff,
+					"fill", 0x4040ffa0,
+					"fill_mouseover", 0xff4040f0,
+					"stroke", 0x000000a0,
 					"stroke_mouseover", 0x000000FF,
+					//"fill", 0xffff0080,
+					//"fill_mouseover", 0x00ffff80,
+					//"stroke", 0xFFFFFFff,
+					//"stroke_mouseover", 0xb0b0b0FF,
+					"pixbuf", handles[handle[i].control],
+					"cursor_mouseover", CursorSelectMouseover,
+					"cursor_dragging", CursorSelectDragging,
 					NULL);
 
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "request",
@@ -463,6 +487,25 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 	desktop = knot->desktop;
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 	handle = (SPSelTransHandle *) data;
+
+	switch (handle->anchor) {
+	case GTK_ANCHOR_CENTER:
+	  gtk_object_set (GTK_OBJECT (seltrans->grip),
+			  "shape", SP_CTRL_SHAPE_BITMAP,
+			  "size", 13.0,
+			  NULL);
+	  gnome_canvas_item_show (seltrans->grip);
+	  break;
+	default:
+	  gtk_object_set (GTK_OBJECT (seltrans->grip),
+			  "shape", SP_CTRL_SHAPE_CROSS,
+			  "size", 7.0,
+			  NULL);
+	  gnome_canvas_item_show (seltrans->norm);
+	  gnome_canvas_item_show (seltrans->grip);
+
+	  break;
+	}
 
 	sp_knot_position (knot, &p);
 

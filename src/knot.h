@@ -22,6 +22,7 @@ typedef enum {
 	SP_KNOT_SHAPE_SQUARE,
 	SP_KNOT_SHAPE_DIAMOND,
 	SP_KNOT_SHAPE_CIRCLE,
+	SP_KNOT_SHAPE_CROSS,
 	SP_KNOT_SHAPE_BITMAP,
 	SP_KNOT_SHAPE_IMAGE
 } SPKnotShapeType;
@@ -77,6 +78,7 @@ struct _SPKnot {
 	GdkCursor *cursor[SP_KNOT_VISIBLE_STATES];
 
 	GdkCursor *saved_cursor;
+        gpointer pixbuf;
 };
 
 struct _SPKnotClass {

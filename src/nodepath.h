@@ -55,6 +55,7 @@ SPNodePath * sp_nodepath_new (SPDesktop * desktop, SPItem * item);
 void sp_nodepath_destroy (SPNodePath * nodepath);
 
 void sp_nodepath_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental);
+gboolean node_key (GdkEvent * event);
 
 /* possibly private functions */
 

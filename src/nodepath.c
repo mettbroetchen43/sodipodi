@@ -86,6 +86,10 @@ static SPPathNodeSide * sp_node_get_side (SPPathNode * node, gint which);
 static SPPathNodeSide * sp_node_opposite_side (SPPathNode * node, SPPathNodeSide * me);
 static ArtPathcode sp_node_path_code_from_side (SPPathNode * node, SPPathNodeSide * me);
 
+// active_node indicates mouseover node
+static SPPathNode * active_node = NULL;
+extern GdkCursor * CursorNodeMouseover, * CursorNodeDragging;
+
 /* Creation from object */
 
 SPNodePath *
@@ -531,10 +535,8 @@ sp_nodepath_node_break (SPPathNode * node)
 		SPNodeSubPath * newsubpath;
 		SPPathNode * newnode;
 		SPPathNode * n;
-
 		if (node == sp->first) return NULL;
 		if (node == sp->last) return NULL;
-
 		newsubpath = sp_nodepath_subpath_new (np);
 
 		newnode = sp_nodepath_node_new (newsubpath, NULL, node->type, ART_MOVETO, &node->pos, &node->pos, &node->n.pos);
@@ -825,6 +827,7 @@ sp_node_selected_break (void)
 	for (l = nodepath->selected; l != NULL; l = l->next) {
 		n = (SPPathNode *) l->data;
 		nn = sp_nodepath_node_break (n);
+		if (nn == NULL) continue; // no break, no new node 
 		/* seems that we can prepend here ;-) */
 		nn->selected = TRUE;
 		nodepath->selected = g_slist_prepend (nodepath->selected, nn);
@@ -1232,39 +1235,58 @@ sp_node_adjust_knots (SPPathNode * node)
 static gboolean
 node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
 {
+	switch (event->type) {
+	case GDK_ENTER_NOTIFY:
+		active_node = n;
+		break;
+	case GDK_LEAVE_NOTIFY:
+		active_node = NULL;
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
+gboolean node_key (GdkEvent * event)
+{
 	SPNodePath *np;
 	gint ret;
+
+	// there is no way to verify nodes so set active_node to nil when deleting!!
+	if (active_node == NULL) return FALSE;
 
 	if ((event->type == GDK_KEY_PRESS) && !(event->key.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK))) {
 		ret = FALSE;
 		switch (event->key.keyval) {
 		case GDK_Delete:
 		case GDK_KP_Delete:
-			np = n->subpath->nodepath;
-			sp_nodepath_node_destroy (n);
+			np = active_node->subpath->nodepath;
+			sp_nodepath_node_destroy (active_node);
 			update_repr (np);
+			active_node = NULL;
 			ret = TRUE;
 			break;
 		case GDK_c:
-			sp_nodepath_set_node_type (n, SP_PATHNODE_CUSP);
+			sp_nodepath_set_node_type (active_node, SP_PATHNODE_CUSP);
 			ret = TRUE;
 			break;
 		case GDK_s:
-			sp_nodepath_set_node_type (n, SP_PATHNODE_SMOOTH);
+			sp_nodepath_set_node_type (active_node, SP_PATHNODE_SMOOTH);
 			ret = TRUE;
 			break;
 		case GDK_y:
-			sp_nodepath_set_node_type (n, SP_PATHNODE_SYMM);
+			sp_nodepath_set_node_type (active_node, SP_PATHNODE_SYMM);
 			ret = TRUE;
 			break;
 		case GDK_b:
-			sp_nodepath_node_break (n);
+			sp_nodepath_node_break (active_node);
 			ret = TRUE;
 			break;
 		}
 		return ret;
 	}
-
 	return FALSE;
 }
 
@@ -1423,10 +1445,10 @@ node_ctrl_moved (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 		g_assert_not_reached ();
 	}
 
-	sp_ctrlline_set_coords (SP_CTRLLINE (me->line), n->pos.x, n->pos.y, me->pos.x, me->pos.y);
-
 	me->pos.x = p->x;
 	me->pos.y = p->y;
+
+	sp_ctrlline_set_coords (SP_CTRLLINE (me->line), n->pos.x, n->pos.y, me->pos.x, me->pos.y);
 
 	update_object (n->subpath->nodepath);
 
@@ -1567,6 +1589,8 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 			"fill_mouseover", NODE_FILL_HI,
 			"stroke", NODE_STROKE,
 			"stroke_mouseover", NODE_STROKE_HI,
+			"cursor_mouseover", CursorNodeMouseover,
+			"cursor_dragging", CursorNodeDragging,
 			NULL);
 	if (n->type == SP_PATHNODE_CUSP) {
 		gtk_object_set (GTK_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
@@ -1588,13 +1612,15 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	n->p.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->p.knot, ppos, 0);
 	gtk_object_set (GTK_OBJECT (n->p.knot),
-			"shape", SP_KNOT_SHAPE_DIAMOND,
+			"shape", SP_KNOT_SHAPE_CIRCLE,
 			"size", 7,
 			"anchor", GTK_ANCHOR_CENTER,
 			"fill", KNOT_FILL,
 			"fill_mouseover", KNOT_FILL_HI,
 			"stroke", KNOT_STROKE,
 			"stroke_mouseover", KNOT_STROKE_HI,
+			"cursor_mouseover", CursorNodeMouseover,
+			"cursor_dragging", CursorNodeDragging,
 			NULL);
 	gtk_signal_connect (GTK_OBJECT (n->p.knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);
@@ -1614,13 +1640,15 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	n->n.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->n.knot, npos, 0);
 	gtk_object_set (GTK_OBJECT (n->n.knot),
-			"shape", SP_KNOT_SHAPE_DIAMOND,
+			"shape", SP_KNOT_SHAPE_CIRCLE,
 			"size", 7,
 			"anchor", GTK_ANCHOR_CENTER,
 			"fill", KNOT_FILL,
 			"fill_mouseover", KNOT_FILL_HI,
 			"stroke", KNOT_STROKE,
 			"stroke_mouseover", KNOT_STROKE_HI,
+			"cursor_mouseover", CursorNodeMouseover,
+			"cursor_dragging", CursorNodeDragging,
 			NULL);
 	gtk_signal_connect (GTK_OBJECT (n->n.knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);
@@ -1662,12 +1690,17 @@ sp_nodepath_node_destroy (SPPathNode * node)
 	}
 
 	node->subpath->nodes = g_slist_remove (node->subpath->nodes, node);
+	/*
+	sp_knot_hide (node->knot);
+	sp_knot_hide (node->p.knot);
+	sp_knot_hide (node->n.knot);
+	*/
 	gtk_object_destroy (GTK_OBJECT (node->knot));
 	gtk_object_destroy (GTK_OBJECT (node->p.knot));
 	gtk_object_destroy (GTK_OBJECT (node->p.line));
 	gtk_object_destroy (GTK_OBJECT (node->n.knot));
 	gtk_object_destroy (GTK_OBJECT (node->n.line));
-
+	
 	if (sp->nodes) {
 		if (sp->closed) {
 			if (sp->first == node) {

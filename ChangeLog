@@ -1,3 +1,35 @@
+2001-09-24 Frank Felfe <innerspace@iname.com>
+
+	* src/helper/sodipodi-ctrl.*: New ctrl-shapes
+
+	* src/knot.*: Ditto
+
+	* src/pixmaps/cursor-node-d.xpm: New file
+	
+	* src/pixmaps/cursor-node-m.xpm: New file
+	
+	* src/pixmaps/cursor-select-d.xpm: New file
+	
+	* src/pixmaps/cursor-select-m.xpm: New file
+	
+	* src/pixmaps/handles.xpm: New file
+	
+	* src/sp-cursor.* (sp_cursor_new_from_xpm): New function
+
+	* src/seltrans.c: Use new ctrl-shapes and cursors
+
+ 	* src/seltrans-handles.*: Use new ctrl-shapes 
+
+	* src/select-context.c (sp_node_context_class_init): Init cursors and handle pix
+
+	* src/nodepath.* (node_event): Redirect key events
+	(node_key): New key handler
+	(sp_node_selected_break): Handle first and last node
+	(node_ctrl_moved): Update ctrlline after setting coords
+	(sp_nodepath_node_new): Use new ctrl-shapes and cursors
+
+	* src/node-context.c (sp_node_context_class_init): Init cursors
+
 2001-09-22  Mitsuru Oka <oka326@parkcity.ne.jp>
 
 	* src/dynadraw-context.c: New file

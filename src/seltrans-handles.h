@@ -25,7 +25,7 @@ void sp_sel_trans_center (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtP
 struct _SPSelTransHandle {
 	GtkAnchorType anchor;
 	GdkCursorType cursor;
-	SPKnotShapeType control;
+	guint control;
 	void (* action) (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
 	gboolean (* request) (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);        
 	gdouble x, y;

@@ -7,6 +7,10 @@
 #include "selection.h"
 #include "desktop-affine.h"
 #include "seltrans-handles.h"
+#include "sp-cursor.h"
+#include "pixmaps/cursor-select-m.xpm"
+#include "pixmaps/cursor-select-d.xpm"
+#include "pixmaps/handles.xpm"
 #if 0
 /* This is not needed, so kill warning (Lauris) */
 #include "pixmaps/cursor-select.xpm"
@@ -30,6 +34,9 @@ static gint sp_select_context_item_handler (SPEventContext * event_context, SPIt
 static void sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state);
 
 static SPEventContextClass * parent_class;
+
+GdkCursor * CursorSelectMouseover = NULL, * CursorSelectDragging = NULL;
+GdkPixbuf * handles[13];
 
 GtkType
 sp_select_context_get_type (void)
@@ -71,6 +78,25 @@ sp_select_context_class_init (SPSelectContextClass * klass)
 	event_context_class->setup = sp_select_context_setup;
 	event_context_class->root_handler = sp_select_context_root_handler;
 	event_context_class->item_handler = sp_select_context_item_handler;
+
+	// cursors in select context
+	CursorSelectMouseover = sp_cursor_new_from_xpm (cursor_select_m_xpm , 1, 1); 
+	CursorSelectDragging = sp_cursor_new_from_xpm (cursor_select_d_xpm , 1, 1); 
+	// selection handles
+      	handles[0]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_scale_nw_xpm);
+	handles[1]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_scale_ne_xpm);
+	handles[2]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_scale_h_xpm);
+	handles[3]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_scale_v_xpm);
+	handles[4]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_nw_xpm);
+	handles[5]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_n_xpm);
+	handles[6]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_ne_xpm);
+	handles[7]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_e_xpm);
+	handles[8]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_se_xpm);
+	handles[9]  = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_s_xpm);
+	handles[10] = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_sw_xpm);
+	handles[11] = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_rotate_w_xpm);
+	handles[12] = gdk_pixbuf_new_from_xpm_data ((const gchar **)handle_center_xpm);
+
 }
 
 static void

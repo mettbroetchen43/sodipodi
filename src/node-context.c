@@ -12,6 +12,9 @@
 #include "nodepath.h"
 #include "pixmaps/cursor-node.xpm"
 #include "node-context.h"
+#include "sp-cursor.h"
+#include "pixmaps/cursor-node-m.xpm"
+#include "pixmaps/cursor-node-d.xpm"
 
 static void sp_node_context_class_init (SPNodeContextClass * klass);
 static void sp_node_context_init (SPNodeContext * node_context);
@@ -24,6 +27,7 @@ static gint sp_node_context_item_handler (SPEventContext * event_context, SPItem
 static void sp_node_context_selection_changed (SPSelection * selection, gpointer data);
 
 static SPEventContextClass * parent_class;
+GdkCursor * CursorNodeMouseover = NULL, * CursorNodeDragging = NULL;
 
 GtkType
 sp_node_context_get_type (void)
@@ -65,6 +69,10 @@ sp_node_context_class_init (SPNodeContextClass * klass)
 	event_context_class->setup = sp_node_context_setup;
 	event_context_class->root_handler = sp_node_context_root_handler;
 	event_context_class->item_handler = sp_node_context_item_handler;
+
+	// cursors in node context
+	CursorNodeMouseover = sp_cursor_new_from_xpm (cursor_node_m_xpm , 1, 1); 
+	CursorNodeDragging = sp_cursor_new_from_xpm (cursor_node_d_xpm , 1, 1); 
 }
 
 static void
@@ -235,6 +243,10 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				break;
 			}
 		}
+		if (!(event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) 
+			ret = node_key (event);
+
+
 		break;
 	default:
 		break;

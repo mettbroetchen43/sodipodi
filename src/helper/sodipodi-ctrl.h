@@ -9,6 +9,7 @@
 
 #include <gtk/gtkpacker.h>
 #include <libgnomeui/gnome-canvas.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 BEGIN_GNOME_DECLS
 
@@ -25,9 +26,11 @@ typedef enum {
 	SP_CTRL_SHAPE_SQUARE,
 	SP_CTRL_SHAPE_DIAMOND,
 	SP_CTRL_SHAPE_CIRCLE,
+	SP_CTRL_SHAPE_CROSS,
 	SP_CTRL_SHAPE_BITMAP,
 	SP_CTRL_SHAPE_IMAGE
 } SPCtrlShapeType;
+
 
 typedef enum {
 	SP_CTRL_MODE_COLOR,
@@ -43,17 +46,21 @@ struct _SPCtrl {
 	gint span;
 	guint defined : 1;
 	guint shown   : 1;
+        guint build   : 1;
 	guint filled  : 1;
 	guint stroked : 1;
 	guint32 fill_color;
 	guint32 stroke_color;
 
 	ArtIRect box;			/* NB! x1 & y1 are included */
+        gpointer cache;
+        GdkPixbuf * pixbuf;
 };
 
 struct _SPCtrlClass {
 	GnomeCanvasItemClass parent_class;
 };
+
 
 
 /* Standard Gtk function */

@@ -30,7 +30,8 @@ enum {
 	ARG_FILL, ARG_FILL_MOUSEOVER, ARG_FILL_DRAGGING,
 	ARG_STROKE, ARG_STROKE_MOUSEOVER, ARG_STROKE_DRAGGING,
 	ARG_IMAGE, ARG_IMAGE_MOUSEOVER, ARG_IMAGE_DRAGGING,
-	ARG_CURSOR, ARG_CURSOR_MOUSEOVER, ARG_CURSOR_DRAGGING
+	ARG_CURSOR, ARG_CURSOR_MOUSEOVER, ARG_CURSOR_DRAGGING,
+	ARG_PIXBUF
 };
 
 enum {
@@ -105,6 +106,7 @@ sp_knot_class_init (SPKnotClass * klass)
 	gtk_object_add_arg_type ("SPKnot::cursor", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR);
 	gtk_object_add_arg_type ("SPKnot::cursor_mouseover", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_MOUSEOVER);
 	gtk_object_add_arg_type ("SPKnot::cursor_dragging", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_DRAGGING);
+	gtk_object_add_arg_type ("SPKnot::pixbuf", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_PIXBUF);
 
 	knot_signals[EVENT] = gtk_signal_new ("event",
 		GTK_RUN_LAST,
@@ -187,6 +189,7 @@ sp_knot_init (SPKnot * knot)
 	knot->cursor [SP_KNOT_STATE_DRAGGING] = NULL;
 
 	knot->saved_cursor = NULL;
+	knot->pixbuf = NULL;
 }
 
 static void
@@ -197,13 +200,16 @@ sp_knot_destroy (GtkObject * object)
 
 	knot = (SPKnot *) object;
 
+	/* ungrab pointer if still grabbed by mouseover, find a different way */
+	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (0);
+
 	if (knot->item) gtk_object_destroy (GTK_OBJECT (knot->item));
-
-	for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
-		/* fixme: There should be ::unref somewhere */
-		if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
-	}
-
+	/*
+	  for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
+	  
+	  if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
+	  }
+	*/
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
@@ -236,7 +242,8 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
 		break;
 	case ARG_FILL_MOUSEOVER:
-		knot->fill[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_UINT (* arg);
+		knot->fill[SP_KNOT_STATE_MOUSEOVER] = 
+		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
 		break;
 	case ARG_FILL_DRAGGING:
 		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
@@ -247,7 +254,8 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_STROKE_MOUSEOVER:
-		knot->stroke[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_UINT (*arg);
+		knot->stroke[SP_KNOT_STATE_MOUSEOVER] = 
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_STROKE_DRAGGING:
 		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
@@ -267,24 +275,27 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 		cursor = GTK_VALUE_BOXED (* arg);
 		for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
 			/* fixme: There should be ::unref somewhere */
-			if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
+			//if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
 			knot->cursor[i] = cursor;
 		}
 		break;
 	case ARG_CURSOR_MOUSEOVER:
 		cursor = GTK_VALUE_BOXED (* arg);
 		if (knot->cursor[SP_KNOT_STATE_MOUSEOVER]) {
-			gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_MOUSEOVER]);
+			//gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_MOUSEOVER]);
 		}
 		knot->cursor[SP_KNOT_STATE_MOUSEOVER] = cursor;
 		break;
 	case ARG_CURSOR_DRAGGING:
 		cursor = GTK_VALUE_BOXED (* arg);
 		if (knot->cursor[SP_KNOT_STATE_DRAGGING]) {
-			gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_DRAGGING]);
+			//gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_DRAGGING]);
 		}
 		knot->cursor[SP_KNOT_STATE_DRAGGING] = cursor;
 		break;
+	case ARG_PIXBUF:
+	        knot->pixbuf = GTK_VALUE_POINTER (*arg);
+	        break;
 	default:
 		g_assert_not_reached ();
 		break;
@@ -325,10 +336,12 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			knot->hx = p.x - knot->x;
 			knot->hy = p.y - knot->y;
 #ifndef KNOT_NOGRAB
+			gdk_pointer_ungrab (event->button.time);
 			gnome_canvas_item_grab (knot->item,
-				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				knot->cursor[SP_KNOT_STATE_DRAGGING],
-				event->button.time);
+						GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						knot->cursor[SP_KNOT_STATE_DRAGGING],
+						event->button.time);
+			
 #endif
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
@@ -340,6 +353,14 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
 #ifndef KNOT_NOGRAB
 			gnome_canvas_item_ungrab (knot->item, event->button.time);
+			gdk_pointer_grab (knot->item->canvas->layout.bin_window,
+					  FALSE,
+					  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
+					  GDK_BUTTON_PRESS_MASK | GDK_LEAVE_NOTIFY_MASK,
+					  NULL,
+					  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
+					  event->button.time);
+
 #endif
 			if (moved) {
 				sp_knot_set_flag (knot,
@@ -380,11 +401,19 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
-		gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (knot->item));
+		gdk_pointer_grab (knot->item->canvas->layout.bin_window,
+				  FALSE,
+				  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
+				  GDK_BUTTON_PRESS_MASK | GDK_LEAVE_NOTIFY_MASK,
+				  NULL,
+				  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
+				  event->button.time);
+
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, TRUE);
 		consumed = TRUE;
 		break;
 	case GDK_LEAVE_NOTIFY:
+		gdk_pointer_ungrab (event->button.time);
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, FALSE);
 		consumed = TRUE;
 		break;
@@ -561,6 +590,7 @@ sp_knot_update_ctrl (SPKnot * knot)
 	gtk_object_set (GTK_OBJECT (knot->item), "mode", knot->mode, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "anchor", knot->anchor, NULL);
+	if (knot->pixbuf) gtk_object_set (GTK_OBJECT (knot->item), "pixbuf", knot->pixbuf, NULL);
 
 	sp_knot_set_ctrl_state (knot);
 }

@@ -55,3 +55,22 @@ sp_cursor_bitmap_and_mask_from_xpm (GdkBitmap **bitmap, GdkBitmap **mask, gchar 
 	*mask   = gdk_bitmap_create_from_data (NULL, mask_buffer, 32, 32);
 }
 
+GdkCursor *
+sp_cursor_new_from_xpm (gchar ** xpm, gint hot_x, gint hot_y)
+{
+	GdkBitmap * bitmap, * mask;
+	GdkColor fg = { 0, 0, 0, 0 };
+	GdkColor bg = { 0, 65535, 65535, 65535 };
+	
+	bitmap = NULL;
+	mask = NULL;
+
+	sp_cursor_bitmap_and_mask_from_xpm (&bitmap, &mask, xpm);
+	if ((bitmap != NULL) && (mask != NULL)) 
+	  return gdk_cursor_new_from_pixmap (bitmap, mask,
+					     &fg, &bg,
+					     hot_x, hot_y);
+
+	return NULL;
+}
+
