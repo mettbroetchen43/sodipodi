@@ -1,7 +1,12 @@
-2003-07-06  Masatake YAMATO  <jet@gyve.org>
+2003-07-07  Masatake YAMATO  <jet@gyve.org>
+
+	* src/shortcuts.c (sp_shortcut_table_load): set shortcut
+	for SP_VERB_EDIT_SELECT_ALL.
+	
+	* src/selection-chemistry.[ch] (sp_edit_select_all): New function.
 
 	* src/verbs.c (sp_verb_action_edit_perform): Added case
-	SP_VERB_EDIT_CLEAR_ALL.
+	SP_VERB_EDIT_CLEAR_ALL and SP_VERB_EDIT_SELECT_ALL.
 	(SP_VERB_IS_EDIT): Extended to SP_VERB_EDIT_SELECT_ALL.
 
 2003-07-04  Lauris Kaplinski  <lauris@kaplinski.com>
@@ -87,7 +92,7 @@
 
 	* src/dialogs/desktop-properties.c (sp_color_picker_clicked): Enable "Close"
 	button.
-	(sp_color_picker_window_close): New functio.
+	(sp_color_picker_window_close): New function.
 
 2003-06-18  Lauris Kaplinski  <lauris@kaplinski.com>
 

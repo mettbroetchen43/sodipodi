@@ -121,6 +121,30 @@ sp_edit_clear_all (gpointer object, gpointer data)
 	sp_document_done (doc);
 }
 
+void
+sp_edit_select_all (gpointer object, gpointer data)
+{
+	SPDesktop *dt;
+	SPDocument *doc;
+	GSList *items;
+	SPSelection * selection;
+	SPRepr * repr;
+	
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return ;
+	doc 	  = SP_DT_DOCUMENT (dt);
+	selection = SP_DT_SELECTION (dt);
+	items = sp_item_group_item_list (SP_GROUP (sp_document_root (doc)));
+	
+	while (items) {
+		repr  = SP_OBJECT_REPR (items->data);
+		if (!sp_selection_repr_selected (selection, repr))
+			sp_selection_add_repr (selection, repr);
+		items = g_slist_remove (items, items->data);
+	}
+	sp_document_done (doc);
+}
+
 static void
 sp_group_cleanup (SPGroup *group)
 {

@@ -141,6 +141,9 @@ sp_verb_action_edit_perform (SPAction *action, void *data)
 	case SP_VERB_EDIT_CLEAR_ALL:
 	  	sp_edit_clear_all (NULL, NULL);
 		break;
+	case SP_VERB_EDIT_SELECT_ALL:
+	  	sp_edit_select_all(NULL, NULL);
+		break;
 	default:
 		break;
 	}

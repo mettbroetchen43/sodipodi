@@ -22,6 +22,7 @@ void sp_edit_cleanup (gpointer object, gpointer data);
 void sp_selection_delete (gpointer object, gpointer data);
 void sp_selection_duplicate (gpointer object, gpointer data);
 void sp_edit_clear_all (gpointer object, gpointer data);
+void sp_edit_select_all (gpointer object, gpointer data);
 
 void sp_selection_group (gpointer object, gpointer data);
 void sp_selection_ungroup (gpointer object, gpointer data);
