@@ -2,6 +2,7 @@
 
 #include <glade/glade.h>
 #include <libgnomeui/gnome-color-picker.h>
+#include "../helper/unit-menu.h"
 #include "desktop-properties.h"
 #include "../sodipodi.h"
 #include "../desktop-handles.h"
@@ -20,15 +21,29 @@ static GtkWidget * dialog = NULL;
 
 static void sp_desktop_dialog_setup (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
 
+static void grid_unit_set (SPUnitMenu * menu, SPSVGUnit system, SPMetric metric, gpointer data);
+
 void
 sp_desktop_dialog (void)
 {
+	GtkWidget * t, * o, * u;
+
 	if (dialog == NULL) {
 		g_assert (xml == NULL);
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/desktop.glade", "desktop_dialog");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "desktop_dialog");
 		
+		/* fixme: experimental */
+		t = glade_xml_get_widget (xml, "grid_table");
+		o = glade_xml_get_widget (xml, "grid_units");
+		u = sp_unitmenu_new (SP_SVG_UNIT_ABSOLUTE, SP_SVG_UNIT_ABSOLUTE, SP_MM, TRUE);
+		gtk_widget_show (u);
+		gtk_widget_unparent (o);
+		gtk_table_attach (GTK_TABLE (t), u, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+		gtk_signal_connect (GTK_OBJECT (u), "set_unit",
+				    GTK_SIGNAL_FUNC (grid_unit_set), dialog);
+
 		gtk_signal_connect_while_alive (GTK_OBJECT (sodipodi), "activate_desktop",
 						GTK_SIGNAL_FUNC (sp_desktop_dialog_setup), NULL,
 						GTK_OBJECT (dialog));
@@ -38,6 +53,12 @@ sp_desktop_dialog (void)
 	}
 
 	sp_desktop_dialog_setup (SODIPODI, SP_ACTIVE_DESKTOP, NULL);
+}
+
+static void
+grid_unit_set (SPUnitMenu * menu, SPSVGUnit system, SPMetric metric, gpointer data)
+{
+	g_print ("System %d metric %d\n", system, metric);
 }
 
 /*

@@ -1,3 +1,21 @@
+2000-10-09  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* configure.in: Version 0.20
+
+	* src/helper/unit-menu.*: New convenience object
+
+	* src/desktop.c (sp_desktop_destroy): Destroy first eventcontext,
+	then selection
+
+	* src/draw-context.c: Make silent
+
+	* src/file.c (sp_file_import_ok): Use "xlink:href" for images
+
+	* src/sp-image.c (sp_image_read_attr): Use "xlink:href"
+	(sp_image_repr_read_image): Ditto
+
+	* src/svg/svg.h: Use bitfield for units
+
 2000-10-08  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/dialogs/object-properties.c: Do not keep CSS objects, so

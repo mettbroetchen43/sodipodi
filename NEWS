@@ -1,3 +1,10 @@
+2000/10/09 Version 0.20
+
+This release is intended to test the whole thing out before Gnome 1.4 release
+later this year.
+We have completely new interface, GnomeMDI is gnome, bonobo embeddable works in
+limited way, there are guidelines, grid and countless other improvements.
+
 2000/05/04 Version 0.18
 
 This is still development release. Many bugs, some of whose are very nasty

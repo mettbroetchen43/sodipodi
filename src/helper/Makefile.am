@@ -2,7 +2,6 @@
 # Miscellaneous unsystematized and temporary helper utilities
 #
 # libspchelp - canvas utilities, specific canvas items, libart add-ons
-# libgt1 - Adobe Type1 font utilities (will be removed soon)
 #
 
 INCLUDES = \
@@ -25,15 +24,7 @@ libspchelp_a_SOURCES = \
 	sp-ctrlline.c sp-ctrlline.h \
 	sp-guide.c sp-guide.h \
 	canvas-grid.c canvas-grid.h \
-	png-write.c png-write.h
+	png-write.c png-write.h \
+	unit-menu.c unit-menu.h
 
-#libspgt1_a_SOURCES = \
-#	gt1.h \
-#	gt1-dict.c gt1-dict.h \
-#	gt1-misc.h \
-#	gt1-namecontext.c gt1-namecontext.h \
-#	gt1-parset1.c gt1-parset1.h \
-#	gt1-region.c gt1-region.h \
-#	gt1-value.h \
-#	parseAFM.c parseAFM.h
 

@@ -14,6 +14,8 @@
  *
  */
 
+#define noDRAW_VERBOSE
+
 #include <math.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
@@ -526,7 +528,9 @@ fit_and_split (SPDrawContext * dc)
 
 	if (FitCubic (b, dc->p, 0, dc->npoints - 1, t0, t1, tolerance) && dc->npoints < 16) {
 		/* Fit and draw and reset state */
+#ifdef DRAW_VERBOSE
 		g_print ("%d", dc->npoints);
+#endif
 		g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0));
 		g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0));
 		g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0));
@@ -544,7 +548,9 @@ fit_and_split (SPDrawContext * dc)
 		SPStroke * stroke;
 		SPCanvasShape * cshape;
 		/* Fit and draw and copy last point */
+#ifdef DRAW_VERBOSE
 		g_print("[%d]Yup\n", dc->npoints);
+#endif
 		g_assert (!sp_curve_empty (dc->currentcurve));
 		concat_current (dc);
 		curve = sp_curve_copy (dc->currentcurve);
@@ -557,6 +563,7 @@ fit_and_split (SPDrawContext * dc)
 				    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 
 		sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
+		sp_curve_unref (curve);
 
 		dc->segments = g_slist_prepend (dc->segments, cshape);
 
@@ -645,6 +652,7 @@ FitCubic(ArtPoint * b, ArtPoint * d, gint first, gint last, ArtPoint tHat1, ArtP
 			DrawBezierCurve(3, bezCurve);
 #endif
 			g_free (u);
+			g_free (uPrime);
 			return TRUE;
 	    }
 	    g_free (u);
@@ -652,6 +660,7 @@ FitCubic(ArtPoint * b, ArtPoint * d, gint first, gint last, ArtPoint tHat1, ArtP
 	}
     }
 
+    g_free (u);
     return FALSE;
 #if 0
     /* Fitting failed -- split at max error point and fit recursively */

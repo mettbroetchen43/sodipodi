@@ -1,18 +1,13 @@
 Tier 1 TODO items
 
-* Page size
-* Fonts - but we need some good library for reading outlines - and how to
-  do it portably?
+* Gradients
 * CORBA based plugins
-* NamedViews - i.e. saved views into document (preserving guides etc.)
 * Accesible groups - i.e. instead of layers, we can edit different groups
 * Bonobo container - we can get rid of images and still be SVG :)
 
 Tier 2 TODO items
 
 * Intelligent curve editing
-* Guidelines
-* Aligning
 * Show/hide/print/dontprint attributes
 * Agnostic DOM CORBA interface - i.e. repr tree
 * Gnostic DOM CORBA interface - i.e. document tree
@@ -36,5 +31,12 @@ Done
 
 * Undo
 * Middle object level
+* Page size
+* Fonts - but we need some good library for reading outlines - and how to
+  do it portably?
+* NamedViews - i.e. saved views into document (preserving guides etc.)
+* Guidelines
+* Aligning
 
 Lauris Kaplinski
+<lauris@helixcode.com>

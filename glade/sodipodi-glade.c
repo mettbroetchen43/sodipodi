@@ -87,33 +87,9 @@ gchar *s = N_("Write text");
 gchar *s = N_("Text");
 gchar *s = N_("Left button zooms in, right out");
 gchar *s = N_("Zoom");
-gchar *s = N_("Copyright Lauris Kaplinski 1999.");
+gchar *s = N_("Copyright Lauris Kaplinski 1999-2000.");
 gchar *s = N_("A Vector Drawing Program.\n"
               "Released under GPL");
-gchar *s = N_("Fill type");
-gchar *s = N_("None");
-gchar *s = N_("Color");
-gchar *s = N_("Gradient");
-gchar *s = N_("Special");
-gchar *s = N_("Fractal");
-gchar *s = N_("Fill settings");
-gchar *s = N_("Fill");
-gchar *s = N_("Not here");
-gchar *s = N_("Stroke");
-gchar *s = N_("window1");
-gchar *s = N_("Color settings");
-gchar *s = N_("Gradient settings");
-gchar *s = N_("Preview (object binding box)");
-gchar *s = N_("Valige v\344rv");
-gchar *s = N_("Valige v\344rv");
-gchar *s = N_("Linear\n"
-              "Radial\n"
-              "");
-gchar *s = N_("Color 1");
-gchar *s = N_("Color2");
-gchar *s = N_("Document coordinates");
-gchar *s = N_("Fractal settings");
-gchar *s = N_("Preview");
 gchar *s = N_("Node Edit");
 gchar *s = N_("Include one node into selected segments");
 gchar *s = N_("Break apart selected node");

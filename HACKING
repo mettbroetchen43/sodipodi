@@ -3,19 +3,17 @@ cautious, as every single thing in structure/API may change yet. If you ever
 have a good idea, how some subsystem should work, let me too know.
 
 Some things that should be done (in random order):
-- printing from command line, without display (should work without X)
-- bonobo support
+- printing from command line, without display (worked, but is broken now)
+- bonobo support (Skeleton is present, needs more flesh)
 - plugin support
-- use GnomeMDI for App<->Desktop hierarchy (mostly done)
-- good and clean API for dealing with sealection changes
-- extracting available fonts from gnome-print
+- good and clean API for dealing with selection changes (there is SODIPODI
+  object - we need similar signalling for desktops, documents)
 - gradient fills
 - 'fast_art' rendering of svp-s (vpaths?) (without antialiasing)
-- exporting bitmaps (png-s, at least). Also from command line
-- undo/redo, cut/copy/paste
+- exporting bitmaps from command line
 - all fancy filling types (fractals & so on)
-- automake chemistry, creating package files
 - import and export filters
+- port reprs to real XML (libxml, gdome)
 
 Please consult with separate HACKING files in subdirs. Some modules
 are only placeholders for something better and standardized (repr et al.)
@@ -27,8 +25,9 @@ As of translating, be first sure, that the english phrases are correct
 and meaningful (if they are not, somebody will replace these with better
 ones)
 
-This code should be quite modular and will become even more. A rough
-blueprint is as follows:
+This code should be quite modular and will become even more. Consult
+doc/architecture.txt for more info, here is only rough blueprint:
+
 
 1. reprs & cousins
 SPRepr, SPCSSAttr ...
@@ -38,8 +37,6 @@ Currently reprs (Representation Objects) hold all item attributes. Object
 tree is also constructed of reprs. They emit signals (to be exact - call
 functions), if modified, deleted etc. Most editing should be done directly
 to repr attributes.
-Reprs know, who are their editable (canvas) object, canvas objects do not
-know anything about reprs.
 
 2. Items
 
@@ -57,7 +54,7 @@ Grid, Guides, Drawarea, Sketch, Controls
 Acetate is borrowed from gill - it is basically infinite empty item, which
 serves as mouse target
 
-grid & guides groups are there, but not in use
+grid & guides groups
 drawing - this is most interesting
 sketch - simply a group I created for temporary items
 controls - group which holds resizing buttons, rubberband etc.
@@ -80,16 +77,11 @@ selected. It is capable of emitting "changed" signal (probably in future
 "attrmodified" too), to notice all interested parties about selection
 changes (fill & stroke dialogs for example use this method)
 
-Here is one caveat - it is impossible to set selection to reprs, only to items
-(opposite is very possible). This cannot be easily circumvented, as reprs
-do not know anything about items, but selected items are needed anyway. One
-possibility (what I probably do in future) is implementing some repr
-chemistry through document interface (sp_document_add_repr already exist)
-
 5. Context
 This object (hierarchy) defines, how mouse events on desktop are interpreted.
 Every desktop has its own context (select, node, rect & so on)
 
 
 Lauris Kaplinski
-<lauris@ariman.ee>
+<lauris@helixcode.com>
+

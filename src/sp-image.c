@@ -104,7 +104,7 @@ sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (SP_OBJECT_CLASS (parent_class)->build)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
 
-	sp_image_read_attr (object, "href");
+	sp_image_read_attr (object, "xlink:href");
 }
 
 static void
@@ -117,7 +117,7 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 
 	pixbuf = NULL;
 
-	if (strcmp (key, "href") == 0) {
+	if (strcmp (key, "xlink:href") == 0) {
 		pixbuf = sp_image_repr_read_image (object->repr);
 		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
 		g_return_if_fail (pixbuf != NULL);
@@ -290,7 +290,7 @@ sp_image_repr_read_image (SPRepr * repr)
 	gchar * fullname;
 	GdkPixbuf * pixbuf;
 
-	filename = sp_repr_attr (repr, "href");
+	filename = sp_repr_attr (repr, "xlink:href");
 
 	if (filename != NULL) {
 		if (!g_path_is_absolute (filename)) {

@@ -13,6 +13,8 @@
  *
  */
 
+#define noDESKTOP_VERBOSE
+
 #include <math.h>
 #include <gnome.h>
 #include <glade/glade.h>
@@ -246,11 +248,11 @@ sp_desktop_destroy (GtkObject * object)
 
 	sodipodi_remove_desktop (desktop);
 
-	if (desktop->selection)
-		gtk_object_destroy (GTK_OBJECT (desktop->selection));
-
 	if (desktop->event_context)
-		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
+		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+
+	if (desktop->selection)
+		gtk_object_unref (GTK_OBJECT (desktop->selection));
 
 	if (desktop->document) {
 		if (desktop->canvas) {
@@ -652,7 +654,7 @@ void
 sp_desktop_set_event_context (SPDesktop * desktop, GtkType type)
 {
 	if (desktop->event_context)
-		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
+		gtk_object_unref (GTK_OBJECT (desktop->event_context));
 
 	desktop->event_context = sp_event_context_new (desktop, type);
 }
@@ -728,7 +730,9 @@ zoom_any_update (gdouble any) {
   
   iany = (gint)(any*100);
   str = g_string_new("");
+#ifdef DESKTOP_VERBOSE
   g_print("\n    %d  to  ",iany);
+#endif
   g_string_sprintf (str,format,iany,'%');
   pos = &p0;
 

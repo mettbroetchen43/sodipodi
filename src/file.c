@@ -62,6 +62,7 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if (open_path) open_path = g_strconcat (open_path, "/", NULL);
 
 	doc = sp_document_new (filename);
+	g_free (filename);
 	g_return_if_fail (doc != NULL);
 
 	desktop = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
@@ -230,7 +231,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	    (strcmp (e, "tiff") == 0) ||
 	    (strcmp (e, "xpm") == 0)) {
 		repr = sp_repr_new ("image");
-		sp_repr_set_attr (repr, "src", relname);
+		sp_repr_set_attr (repr, "xlink:href", relname);
 		sp_repr_set_attr (repr, "sodipodi:absref", filename);
 		sp_document_add_repr (doc, repr);
 		sp_repr_unref (repr);
@@ -359,7 +360,6 @@ void sp_do_file_print (SPDocument * doc)
 static void
 sp_print_preview_destroy_cb (GtkObject *obj, gpointer data)
 {
-
 }
 
 void sp_do_file_print_preview (SPDocument * doc)
@@ -375,6 +375,7 @@ void sp_do_file_print_preview (SPDocument * doc)
 	g_return_if_fail (gpm != NULL);
 	g_return_if_fail (gpc != NULL);
 
+	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
 	sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (gpc));
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
