@@ -1,3 +1,7 @@
+2001-02-21  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: depend on Bonobo >= 0.37.
+
 2001-02-21  Lauris Kaplinski  <lauris@ximian.com>
 
 	* configure.in: Commented out GNOME_PRINT_CHECK

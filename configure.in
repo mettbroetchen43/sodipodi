@@ -65,11 +65,11 @@ AC_ARG_WITH(bonobo,
 )
 
 if $try_bonobo; then
-	AC_MSG_CHECKING(for Bonobo >= 0.30)
+	AC_MSG_CHECKING(for Bonobo >= 0.37)
 	if $GNOME_CONFIG --libs bonobox_print > /dev/null 2>&1; then
 		vers=`$GNOME_CONFIG --modversion bonobo | sed -e "s/bonobo-//" | \
 			awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-		if test "$vers" -ge 30; then
+		if test "$vers" -ge 37; then
 			bonobo_ok=true
 		else
 			bonobo_ok=false
