@@ -1,3 +1,10 @@
+2002-09-09  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* src/draw-context.c, src/dyna-draw-context.c, src/select-context.c,
+	src/spiral-context.c, src/star-context.c,
+	src/dialogs/tool-attributes.c, src/dialogs/tool-options.c,
+	src/dialogs/xml-tree.c: Added <config.h>
+
 2002-09-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/gradient-chemistry.c (sp_gradient_ensure_private_normalized): Normalize

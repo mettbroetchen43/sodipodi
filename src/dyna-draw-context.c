@@ -30,6 +30,7 @@
 #define noDYNA_DRAW_VERBOSE
 #define NORMALIZED_COORDINATE
 
+#include <config.h>
 #include <math.h>
 #include <string.h>
 #include <glib.h>

@@ -1,5 +1,6 @@
 #define SP_XML_TREE_C
 
+#include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
 #include "../xml/repr-private.h"

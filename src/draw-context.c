@@ -15,6 +15,7 @@
 
 #define DRAW_VERBOSE
 
+#include <config.h>
 #include <math.h>
 #include <string.h>
 #include <glib.h>
