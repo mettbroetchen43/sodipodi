@@ -1,4 +1,4 @@
-# Norwegian translation of sodipodi (bokmål dialect).
+# Danish translation of sodipodi
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@online.no>, 2000.
 # Keld Simonsen <keld@dkuug.dk> 2000.
@@ -6,10 +6,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-04-08 16:21+0200\n"
-"PO-Revision-Date: 2000-04-06 20:30+0200\n"
+"POT-Creation-Date: 2000-04-15 05:06+0200\n"
+"PO-Revision-Date: 2000-04-14 23:30+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
-"Language-Team: Norwegian <no@li.org>\n"
+"Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
@@ -20,7 +20,7 @@ msgstr "Brug ikke GUI. NB! hvis det angives bør dette være FØRSTE argument!"
 
 #: src/main.c:55
 msgid "Open specified file (option string may be excluded)"
-msgstr "Åbn specifiseret fil (streng med kalternativer kan udelukkes)"
+msgstr "Åbn specificeret fil (streng med alternativer kan udelukkes)"
 
 #: src/main.c:56 src/main.c:65
 msgid "FILENAME"
@@ -28,7 +28,7 @@ msgstr "FILNAVN"
 
 #: src/main.c:64
 msgid "Print files to specified file (use '| program' for pipe)"
-msgstr "Udskriv filer til specifiseret fil (brug '| program' for rør)"
+msgstr "Udskriv filer til specificeret fil (brug '| program' for rør)"
 
 #: src/main.c:165
 msgid "Could not initialize Bonobo"
@@ -129,7 +129,7 @@ msgstr "Et niveau frem"
 
 #: glade/sodipodi-glade.c:32
 msgid "Back One"
-msgstr "Ett niveau tilbage"
+msgstr "Et niveau tilbage"
 
 #: glade/sodipodi-glade.c:33
 msgid "Groups selected items"
@@ -157,7 +157,7 @@ msgstr "_Bryd op"
 
 #: glade/sodipodi-glade.c:39
 msgid "Convert to Cu_rves"
-msgstr "Konverér til ku_rver"
+msgstr "Konvertér til ku_rver"
 
 #: glade/sodipodi-glade.c:40
 msgid "New File"
@@ -263,7 +263,7 @@ msgstr "Hæv et niveau"
 
 #: glade/sodipodi-glade.c:67
 msgid "Up"
-msgstr "Opp"
+msgstr "Op"
 
 #: glade/sodipodi-glade.c:68
 msgid "Lower one position"
@@ -299,7 +299,7 @@ msgstr "Rekt"
 
 #: glade/sodipodi-glade.c:76
 msgid "Draw ellipses"
-msgstr "Tegn elipser"
+msgstr "Tegn ellipser"
 
 #: glade/sodipodi-glade.c:77
 msgid "Ellipse"
