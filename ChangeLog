@@ -1,3 +1,16 @@
+2002-10-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c: Port to new chars signature
+
+	* src/sp-chars.h: Use font instead of typeface
+
+	* src/libnr/nr-gradient.c (nr_lgradient_render_block): Signature change
+	(nr_lgradient_renderer_setup): Use generic base class
+	(nr_rgradient_renderer_setup): Ditto
+	(nr_rgradient_render_block): Signature change
+
+	* src/libnr/nr-render.h: New file
+
 2002-10-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Use libnrtype

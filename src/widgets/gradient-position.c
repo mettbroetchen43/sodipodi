@@ -751,7 +751,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
 
 				/* Render gradient */
-				nr_lgradient_render (&gp->renderer.lgr, &pb);
+				nr_render ((NRRenderer *) &gp->renderer.lgr, &pb, NULL);
 
 				/* Draw controls */
 				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, wx1 - x, wy1 - y, wx2 - x, wy2 - y,
@@ -825,7 +825,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
 
 				/* Render gradient */
-				nr_rgradient_render (&gp->renderer.rgr, &pb);
+				nr_render ((NRRenderer *) &gp->renderer.rgr, &pb, NULL);
 
 				/* Draw controls */
 				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, wcx - x, wcy - y, wdx - x, wdy - y,

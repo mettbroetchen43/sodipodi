@@ -19,5 +19,6 @@ libnr_a_SOURCES = \
 	nr-pixblock-pixel.c nr-pixblock-pixel.h \
 	nr-pixblock-line.c nr-pixblock-line.h \
 	nr-blit.c nr-blit.h \
+	nr-render.h \
 	nr-gradient.c nr-gradient.c \
 	nr-path.h

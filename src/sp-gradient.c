@@ -1529,7 +1529,7 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 
 	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
 
-	nr_lgradient_render (&lgp->lgr, &pb);
+	nr_render ((NRRenderer *) &lgp->lgr, &pb, NULL);
 
 	nr_pixblock_release (&pb);
 }
@@ -1843,7 +1843,7 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 
 	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
 
-	nr_rgradient_render (&rgp->rgr, &pb);
+	nr_render ((NRRenderer *) &rgp->rgr, &pb, NULL);
 
 	nr_pixblock_release (&pb);
 }

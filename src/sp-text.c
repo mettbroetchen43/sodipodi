@@ -372,9 +372,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	x = cp->x;
 	y = cp->y;
 
-	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
-
-	nr_matrix_f_set_scale (&a, size * 0.001, size * -0.001);
+	/* fixme: SPChars should do this upright instead */
+	nr_matrix_f_set_scale (&a, 1.0, -1.0);
 
 	intext = FALSE;
 	pos = 0;
@@ -408,10 +407,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 					inspace = FALSE;
 				}
 				sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
-				g_print ("Unival %d:%c delta %g %g\n", unival, (gchar) unival, d.x, d.y);
 				a.c[4] = x + d.x;
 				a.c[5] = y - d.y;
-				sp_chars_add_element (chars, glyph, nr_font_get_typeface (font), &a);
+				sp_chars_add_element (chars, glyph, font, &a);
 				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
 					x += adv.x;
 					y -= adv.y;
@@ -423,7 +421,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 				}
 				a.c[4] = x;
 				a.c[5] = y;
-				sp_chars_add_element (chars, glyph, nr_font_get_typeface (font), &a);
+				sp_chars_add_element (chars, glyph, font, &a);
 				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
 					x += adv.x;
 					y -= adv.y;
@@ -452,7 +450,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	cp->x = x;
 	cp->y = y;
-	g_print ("Finished string (%s) at %g %g\n", string->text, x, y);
 }
 
 /* SPTSpan */

@@ -27,12 +27,12 @@
 #define NRG_MASK (NR_GRADIENT_VECTOR_LENGTH - 1)
 #define NRG_2MASK ((NR_GRADIENT_VECTOR_LENGTH << 1) - 1)
 
-static void nr_lgradient_render_block (NRLGradientRenderer *lgr, NRPixBlock *pb);
+static void nr_lgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m);
 static void nr_lgradient_render_R8G8B8A8N (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs);
 static void nr_lgradient_render_R8G8B8 (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs);
 static void nr_lgradient_render_generic (NRLGradientRenderer *lgr, NRPixBlock *pb);
 
-NRLGradientRenderer *
+NRRenderer *
 nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
 			     const unsigned char *cv, 
 			     unsigned int spread, 
@@ -42,7 +42,7 @@ nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
 {
 	NRMatrixF n2gs, n2px, px2n;
 
-	lgr->render = nr_lgradient_render_block;
+	lgr->renderer.render = nr_lgradient_render_block;
 
 	lgr->vector = cv;
 	lgr->spread = spread;
@@ -62,19 +62,16 @@ nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
 	lgr->dx = px2n.c[0] * NR_GRADIENT_VECTOR_LENGTH;
 	lgr->dy = px2n.c[2] * NR_GRADIENT_VECTOR_LENGTH;
 
-	return lgr;
-}
-
-void
-nr_lgradient_render (NRLGradientRenderer *lgr, NRPixBlock *pb)
-{
-	lgr->render (lgr, pb);
+	return (NRRenderer *) lgr;
 }
 
 static void
-nr_lgradient_render_block (NRLGradientRenderer *lgr, NRPixBlock *pb)
+nr_lgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m)
 {
+	NRLGradientRenderer *lgr;
 	int width, height;
+
+	lgr = (NRLGradientRenderer *) r;
 
 	width = pb->area.x1 - pb->area.x0;
 	height = pb->area.y1 - pb->area.y0;
@@ -261,10 +258,10 @@ nr_lgradient_render_generic (NRLGradientRenderer *lgr, NRPixBlock *pb)
 
 /* Radial */
 
-static void nr_rgradient_render_block (NRRGradientRenderer *rgr, NRPixBlock *pb);
+static void nr_rgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m);
 static void nr_rgradient_render_generic (NRRGradientRenderer *rgr, NRPixBlock *pb);
 
-NRRGradientRenderer *
+NRRenderer *
 nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 			     const unsigned char *cv,
 			     unsigned int spread,
@@ -273,7 +270,7 @@ nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 			     float fx, float fy,
 			     float r)
 {
-	rgr->render = nr_rgradient_render_block;
+	rgr->renderer.render = nr_rgradient_render_block;
 
 	rgr->vector = cv;
 	rgr->spread = spread;
@@ -286,19 +283,16 @@ nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 	rgr->fy = fy;
 	rgr->r = r;
 
-	return rgr;
-}
-
-void
-nr_rgradient_render (NRRGradientRenderer *rgr, NRPixBlock *pb)
-{
-	rgr->render (rgr, pb);
+	return (NRRenderer *) rgr;
 }
 
 static void
-nr_rgradient_render_block (NRRGradientRenderer *rgr, NRPixBlock *pb)
+nr_rgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m)
 {
+	NRRGradientRenderer *rgr;
 	int width, height;
+
+	rgr = (NRRGradientRenderer *) r;
 
 	width = pb->area.x1 - pb->area.x0;
 	height = pb->area.y1 - pb->area.y0;

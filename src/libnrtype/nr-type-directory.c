@@ -64,7 +64,6 @@ nr_type_directory_family_list_get (NRNameList *families)
 	static GList *fl = NULL;
 
 	families->destructor = nr_type_directory_family_list_destructor;
-	families->data = NULL;
 
 	if (!fl) fl = gnome_font_family_list ();
 
@@ -98,7 +97,6 @@ nr_type_directory_style_list_get (const unsigned char *family, NRNameList *style
 	GList *sl, *l;
 
 	styles->destructor = nr_type_directory_style_list_destructor;
-	styles->data = NULL;
 
 	if (!fl) fl = gnome_font_list ();
 

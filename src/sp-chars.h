@@ -13,7 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libnrtype/nr-typeface.h>
+#include <libnrtype/nr-font.h>
 #include "helper/curve.h"
 #include "sp-item.h"
 
@@ -28,7 +28,11 @@ typedef struct _SPCharElement SPCharElement;
 struct _SPCharElement {
 	SPCharElement *next;
 	guint glyph;
+#if 0
 	NRTypeFace *face;
+#else
+	NRFont *font;
+#endif
 	NRMatrixF transform;
 };
 
@@ -46,7 +50,11 @@ GtkType sp_chars_get_type (void);
 
 void sp_chars_clear (SPChars *chars);
 
+#if 0
 void sp_chars_add_element (SPChars *chars, guint glyph, NRTypeFace *face, const NRMatrixF *transform);
+#else
+void sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF *transform);
+#endif
 
 SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 

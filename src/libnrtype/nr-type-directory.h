@@ -22,7 +22,6 @@ struct _NRNameList {
 	unsigned long length;
 	unsigned char **names;
 	NRNameListDestructor destructor;
-	void *data;
 };
 
 void nr_name_list_release (NRNameList *list);
