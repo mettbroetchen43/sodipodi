@@ -142,8 +142,8 @@ sp_desktop_class_init (SPDesktopClass *klass)
 					  G_SIGNAL_RUN_FIRST,
 					  G_STRUCT_OFFSET (SPDesktopClass, base_set),
 					  NULL, NULL,
-					  sp_marshal_NONE__OBJECT,
-					  G_TYPE_NONE, 1, G_TYPE_OBJECT);
+					  sp_marshal_NONE__OBJECT_OBJECT,
+					  G_TYPE_NONE, 2, G_TYPE_OBJECT, G_TYPE_OBJECT);
 	signals[ACTIVATE] = g_signal_new ("activate",
 					  G_TYPE_FROM_CLASS(klass),
 					  G_SIGNAL_RUN_FIRST,
@@ -605,14 +605,20 @@ sp_desktop_base_release (SPObject *object, SPDesktop *dt)
 void
 sp_desktop_set_base (SPDesktop *dt, SPGroup *base)
 {
+	SPGroup *oldbase;
 	if (base == dt->base) return;
-	if (dt->base) sp_desktop_private_detach_base (dt);
+	oldbase = dt->base;
+	if (dt->base) {
+		sp_object_ref ((SPObject *) oldbase, NULL);
+		sp_desktop_private_detach_base (dt);
+	}
 	dt->base = base;
 	if (dt->base) {
 		sp_group_set_transparent (dt->base, TRUE);
 		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
-	g_signal_emit (G_OBJECT (dt), signals[BASE_SET], 0, dt->base);
+	g_signal_emit (G_OBJECT (dt), signals[BASE_SET], 0, dt->base, oldbase);
+	if (oldbase) sp_object_unref ((SPObject *) oldbase, NULL);
 }
 
 /* Private methods */
@@ -901,16 +907,6 @@ sp_desktop_widget_class_init (SPDesktopWidgetClass *klass)
 	widget_class->realize = sp_desktop_widget_realize;
 }
 
-/* fixme: Move out of class declaration (Lauris) */
-
-static void
-sp_dtw_sdb_toggled (SPButton *button, SPDesktopWidget *dtw)
-{
-	if (!button->down) {
-		sp_desktop_set_base (dtw->desktop, (SPGroup *) ((SPView *) dtw->desktop)->root);
-	}
-}
-
 static void
 sp_desktop_widget_init (SPDesktopWidget *dtw)
 {
@@ -998,7 +994,6 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 							  _("Drawing target is constrained to active group"),
 							  tt);
 	gtk_table_attach (GTK_TABLE (tbl), dtw->sub_document_base, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
-	g_signal_connect ((GObject *) dtw->sub_document_base, "toggled", (GCallback) sp_dtw_sdb_toggled, dtw);
 
 	/* Status bars */
        	hbox = gtk_hbox_new (FALSE,0);
@@ -1226,6 +1221,25 @@ sp_dtw_desktop_request_shutdown (SPView *view, SPDesktopWidget *dtw)
 /* Constructor */
 
 
+/* fixme: Move out of class declaration (Lauris) */
+
+static void
+sp_dtw_desktop_base_set (SPDesktop *dt, SPGroup *base, SPGroup *oldbase, SPDesktopWidget *dtw)
+{
+	sp_button_toggle_set_down ((SPButton *) dtw->sub_document_base,
+				   (SPItem *) dtw->desktop->base != dtw->desktop->root, FALSE);
+	gtk_widget_set_sensitive (dtw->sub_document_base,
+				  (SPItem *) dtw->desktop->base != dtw->desktop->root);
+}
+
+static void
+sp_dtw_sdb_toggled (SPButton *button, SPDesktopWidget *dtw)
+{
+	if (!button->down) {
+		sp_desktop_set_base (dtw->desktop, (SPGroup *) ((SPView *) dtw->desktop)->root);
+	}
+}
+
 static void
 sp_desktop_uri_set (SPView *view, const guchar *uri, SPDesktopWidget *dtw)
 {
@@ -1249,6 +1263,14 @@ sp_desktop_widget_new (SPNamedView *namedview)
 
 	/* Once desktop is set, we can update rulers */
 	sp_desktop_widget_update_rulers (dtw);
+
+	/* Attach desktop base tracking */
+	sp_button_toggle_set_down ((SPButton *) dtw->sub_document_base,
+				   (SPItem *) dtw->desktop->base != dtw->desktop->root, FALSE);
+	gtk_widget_set_sensitive (dtw->sub_document_base,
+				  (SPItem *) dtw->desktop->base != dtw->desktop->root);
+	g_signal_connect ((GObject *) dtw->desktop, "base_set", (GCallback) sp_dtw_desktop_base_set, dtw);
+	g_signal_connect ((GObject *) dtw->sub_document_base, "toggled", (GCallback) sp_dtw_sdb_toggled, dtw);
 
 	g_signal_connect (G_OBJECT (dtw->desktop), "uri_set", G_CALLBACK (sp_desktop_uri_set), dtw);
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));

@@ -390,14 +390,19 @@ sp_tree_store_desktop_root_set (SPDesktop *dt, SPItem *root, SPTreeStore *store)
 }
 
 static void
-sp_tree_store_desktop_base_set (SPDesktop *dt, SPGroup *base, SPTreeStore *store)
+sp_tree_store_desktop_base_set (SPDesktop *dt, SPGroup *base, SPGroup *oldbase, SPTreeStore *store)
 {
 	GtkTreeIter iter = {0};
 	GtkTreePath *path;
 
 	iter.stamp = store->stamp;
-	iter.user_data = base;
 
+	iter.user_data = oldbase;
+	path = gtk_tree_model_get_path ((GtkTreeModel *) store, &iter);
+	gtk_tree_model_row_changed ((GtkTreeModel *) store, path, &iter);
+	gtk_tree_path_free (path);
+
+	iter.user_data = base;
 	path = gtk_tree_model_get_path ((GtkTreeModel *) store, &iter);
 	gtk_tree_model_row_changed ((GtkTreeModel *) store, path, &iter);
 	gtk_tree_path_free (path);

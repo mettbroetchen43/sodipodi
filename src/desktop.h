@@ -71,7 +71,7 @@ struct _SPDesktopClass {
 
 	void (*shutdown) (SPDesktop *desktop);
 	void (*root_set) (SPDesktop *desktop, SPItem *root);
-	void (*base_set) (SPDesktop *desktop, SPGroup *base);
+	void (*base_set) (SPDesktop *desktop, SPGroup *base, SPGroup *oldbase);
 	void (*activate) (SPDesktop *desktop);
 	void (*desactivate) (SPDesktop *desktop);
 	void (*modified) (SPDesktop *desktop, guint flags);
