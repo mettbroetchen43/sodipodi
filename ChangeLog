@@ -1,3 +1,15 @@
+2002-12-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/desktop.c (sp_desktop_widget_init): Some cleanup
+
+	* src/widgets/ruler.c: Moved to widgets subdir
+
+	* src/widgets/ruler.h: Moved to widgets subdir
+
+2002-12-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: --with[out]-gnome-print argument, thanks to MentaLguY
+
 2002-12-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-guide.c (sp_guide_set): Fixed horiz/vert

@@ -1,13 +1,20 @@
-/*
- */
-
 #ifndef __SP_RULER_H__
 #define __SP_RULER_H__
 
-#include <gdk/gdk.h>
+/*
+ * Customized ruler class for sodipodi
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <gtk/gtkruler.h>
 #include "sp-metrics.h"
-
 
 void sp_ruler_set_metric (GtkRuler * ruler, SPMetric  metric);
 

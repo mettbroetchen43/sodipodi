@@ -113,11 +113,14 @@ struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
 
 	unsigned int update : 1;
+
 	unsigned int decorations : 1;
+	unsigned int statusbar : 1;
 
 	SPDesktop *desktop;
 
-	GtkWidget *table;
+        GtkWidget *mbtn;
+
 	GtkWidget *hscrollbar, *vscrollbar;
 
 	/* Rulers */
@@ -127,7 +130,6 @@ struct _SPDesktopWidget {
 
         GtkWidget *active;
         GtkWidget *inactive;
-        GtkWidget *menubutton;   
         GtkWidget *select_status, *coord_status;
 
         gint coord_status_id, select_status_id;

@@ -1,7 +1,21 @@
+#define __SP_RULER_C__
+
+/*
+ * Customized ruler class for sodipodi
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include "sp-ruler.h"
+#include "ruler.h"
 
 
 #define RULER_WIDTH           14
