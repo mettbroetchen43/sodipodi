@@ -21,25 +21,8 @@
 
 #include <libnr/nr-matrix.h>
 #include "svg/svg-types.h"
+#include "enums.h"
 #include "sp-item-group.h"
-
-enum {
-	SP_ASPECT_NONE,
-	SP_ASPECT_XMIN_YMIN,
-	SP_ASPECT_XMID_YMIN,
-	SP_ASPECT_XMAX_YMIN,
-	SP_ASPECT_XMIN_YMID,
-	SP_ASPECT_XMID_YMID,
-	SP_ASPECT_XMAX_YMID,
-	SP_ASPECT_XMIN_YMAX,
-	SP_ASPECT_XMID_YMAX,
-	SP_ASPECT_XMAX_YMAX
-};
-
-enum {
-	SP_ASPECT_MEET,
-	SP_ASPECT_SLICE
-};
 
 struct _SPRoot {
 	SPGroup group;
@@ -55,7 +38,7 @@ struct _SPRoot {
 	SPSVGLength width;
 	SPSVGLength height;
 
-	/* NRMatrixD viewbox; */
+	/* viewBox; */
 	unsigned int viewBox_set : 1;
 	NRRectD viewBox;
 

@@ -1,8 +1,20 @@
-#define SP_OBJECT_REPR_C
+#define __SP_OBJECT_REPR_C__
+
+/*
+ * Object type dictionary and build frontend
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2003 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "document.h"
 #include "sp-item.h"
 #include "sp-defs.h"
+#include "sp-symbol.h"
 #include "sp-use.h"
 #include "sp-root.h"
 #include "sp-namedview.h"
@@ -86,6 +98,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "star", GINT_TO_POINTER (SP_TYPE_STAR));
 		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
 		g_hash_table_insert (dtable, "svg", GINT_TO_POINTER (SP_TYPE_ROOT));
+		g_hash_table_insert (dtable, "symbol", GINT_TO_POINTER (SP_TYPE_SYMBOL));
 		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
 		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
 		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));

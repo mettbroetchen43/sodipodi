@@ -30,6 +30,7 @@ sodipodi_SOURCES = \
 	\
 	macros.h \
 	forward.h \
+	enums.h \
 	attributes.c attributes.h \
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
@@ -37,6 +38,7 @@ sodipodi_SOURCES = \
 	sp-defs.c sp-defs.h \
 	sp-item.c sp-item.h \
 	sp-item-group.c sp-item-group.h \
+	sp-symbol.c sp-symbol.h \
 	sp-use.c sp-use.h \
 	sp-anchor.c sp-anchor.h \
 	sp-root.c sp-root.h \

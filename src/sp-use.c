@@ -98,8 +98,8 @@ sp_use_init (SPUse * use)
 {
 	sp_svg_length_unset (&use->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&use->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
-	sp_svg_length_unset (&use->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
-	sp_svg_length_unset (&use->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&use->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
+	sp_svg_length_unset (&use->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 	use->href = NULL;
 }
 
@@ -177,13 +177,13 @@ sp_use_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_WIDTH:
 		if (!sp_svg_length_read (value, &use->width)) {
-			sp_svg_length_unset (&use->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
+			sp_svg_length_unset (&use->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_HEIGHT:
 		if (!sp_svg_length_read (value, &use->height)) {
-			sp_svg_length_unset (&use->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+			sp_svg_length_unset (&use->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
@@ -237,8 +237,12 @@ sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned i
 
 	use = SP_USE (item);
 
-	if (use->child) {
-		sp_item_invoke_bbox_full (SP_ITEM (use->child), bbox, transform, flags, FALSE);
+	if (use->child && SP_IS_ITEM (use->child)) {
+		SPItem *child;
+		NRMatrixD ct;
+		child = SP_ITEM (use->child);
+		nr_matrix_multiply_dfd (&ct, &child->transform, transform);
+		sp_item_invoke_bbox_full (SP_ITEM (use->child), bbox, &ct, flags, FALSE);
 	}
 }
 
@@ -249,8 +253,9 @@ sp_use_print (SPItem *item, SPPrintContext *ctx)
 
 	use = SP_USE (item);
 
-	/* fixme: transformations? (lauris) */
-	if (use->child) sp_item_invoke_print (SP_ITEM (use->child), ctx);
+	if (use->child && SP_IS_ITEM (use->child)) {
+		sp_item_invoke_print (SP_ITEM (use->child), ctx);
+	}
 }
 
 static gchar *
@@ -341,18 +346,36 @@ sp_use_href_changed (SPUse * use)
 static void
 sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
-	SPUse *use_obj;
+	SPUse *use;
 	SPObject *child;
 	SPItemCtx *ictx, cctx;
 
-	use_obj = SP_USE (object);
+	use = SP_USE (object);
 	ictx = (SPItemCtx *) ctx;
 	cctx = *ictx;
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
-	child = use_obj->child;
+	/* Set up child viewport */
+	if (use->x.unit == SP_SVG_UNIT_PERCENT) {
+		use->x.computed = use->x.value * (ictx->vp.x1 - ictx->vp.x0);
+	}
+	if (use->y.unit == SP_SVG_UNIT_PERCENT) {
+		use->y.computed = use->y.value * (ictx->vp.y1 - ictx->vp.y0);
+	}
+	if (use->width.unit == SP_SVG_UNIT_PERCENT) {
+		use->width.computed = use->width.value * (ictx->vp.x1 - ictx->vp.x0);
+	}
+	if (use->height.unit == SP_SVG_UNIT_PERCENT) {
+		use->height.computed = use->height.value * (ictx->vp.y1 - ictx->vp.y0);
+	}
+	cctx.vp.x0 = use->x.computed;
+	cctx.vp.y0 = use->y.computed;
+	cctx.vp.x1 = cctx.vp.x0 + use->width.computed;
+	cctx.vp.y1 = cctx.vp.y0 + use->height.computed;
+
+	child = use->child;
 	if (child) {
 		g_object_ref (G_OBJECT (child));
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
@@ -360,6 +383,7 @@ sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 				SPItem *chi;
 				chi = SP_ITEM (child);
 				nr_matrix_multiply_dfd (&cctx.i2doc, &chi->transform, &ictx->i2doc);
+				nr_matrix_multiply_dfd (&cctx.i2vp, &chi->transform, &ictx->i2vp);
 				sp_object_invoke_update (child, (SPCtx *) &cctx, flags);
 			} else {
 				sp_object_invoke_update (child, ctx, flags);

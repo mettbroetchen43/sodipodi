@@ -1,5 +1,11 @@
 2003-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-symbol.c: New file
+
+	* src/sp-symbol.h: New file
+
+	* src/enums.h: New file
+
 	* src/xml/repr-io.c (sp_repr_svg_read_node): Return if entity declaration
 
 	* src/sp-root.c (sp_root_init): Set correct default viewport values

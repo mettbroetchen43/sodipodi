@@ -14,27 +14,24 @@
  */
 
 /* SPObject flags */
-enum {
-	/* Generic */
-	SP_OBJECT_IN_DESTRUCTION_FLAG = (1 << 0),
-	SP_OBJECT_CLONED_FLAG = (1 << 1),
+/* Generic */
+#define SP_OBJECT_CLONED_FLAG (1 << 0)
 
-	/* Async modification flags */
-	SP_OBJECT_MODIFIED_FLAG = (1 << 5),
-	SP_OBJECT_CHILD_MODIFIED_FLAG = (1 << 6),
-	SP_OBJECT_PARENT_MODIFIED_FLAG = (1 << 7),
-	SP_OBJECT_STYLE_MODIFIED_FLAG = (1 << 8),
-	SP_OBJECT_VIEWPORT_MODIFIED_FLAG = (1 << 9),
-	SP_OBJECT_USER_MODIFIED_FLAG_A = (1 << 10),
-	SP_OBJECT_USER_MODIFIED_FLAG_B = (1 << 11),
-	SP_OBJECT_USER_MODIFIED_FLAG_C = (1 << 12),
-	SP_OBJECT_USER_MODIFIED_FLAG_D = (1 << 13),
-	SP_OBJECT_USER_MODIFIED_FLAG_E = (1 << 14),
-	SP_OBJECT_USER_MODIFIED_FLAG_F = (1 << 15),
+/* Async modification flags */
+#define SP_OBJECT_MODIFIED_FLAG (1 << 5)
+#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 6)
+#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 7)
+#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 8)
+#define SP_OBJECT_VIEWPORT_MODIFIED_FLAG (1 << 9)
+#define SP_OBJECT_USER_MODIFIED_FLAG_A (1 << 10)
+#define SP_OBJECT_USER_MODIFIED_FLAG_B (1 << 11)
+#define SP_OBJECT_USER_MODIFIED_FLAG_C (1 << 12)
+#define SP_OBJECT_USER_MODIFIED_FLAG_D (1 << 13)
+#define SP_OBJECT_USER_MODIFIED_FLAG_E (1 << 14)
+#define SP_OBJECT_USER_MODIFIED_FLAG_F (1 << 15)
 
-	/* Update */
-	SP_OBJECT_UPDATE_FLAG = (1 << 16)
-};
+/* Update */
+#define SP_OBJECT_UPDATE_FLAG (1 << 16)
 
 /* Flags that mark object as modified */
 /* Object, Child, Style, Viewport, User */
@@ -65,8 +62,8 @@ enum {
 #define SP_OBJECT_NEXT(o) (SP_OBJECT (o)->next)
 #define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
 #define SP_OBJECT_STYLE(o) (SP_OBJECT (o)->style)
-#define SP_OBJECT_TITLE(o) (SP_OBJECT (o)->title)
-#define SP_OBJECT_DESCRIPTION(o) (SP_OBJECT (o)->description)
+#define SP_OBJECT_TITLE(o) sp_object_title_get (SP_OBJECT (o))
+#define SP_OBJECT_DESCRIPTION(o) sp_object_description_get (SP_OBJECT (o))
 
 #include <glib-object.h>
 #include "xml/repr.h"
@@ -119,8 +116,6 @@ struct _SPObject {
 	SPRepr *repr; /* Our xml representation */
 	gchar *id; /* Our very own unique id */
 	SPStyle *style;
-	const guchar *title; /* Our title, if any */
-	const guchar *description; /* Our description, if any */
 };
 
 struct _SPObjectClass {
@@ -198,6 +193,17 @@ gint sp_object_sequence (SPObject *object, gint seq);
 void sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data);
 /* Write object to repr */
 SPRepr *sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags);
+
+/*
+ * Get and set descriptive parameters
+ *
+ * These are inefficent, so they are not intended to be used interactively
+ */
+
+const unsigned char *sp_object_title_get (SPObject *object);
+const unsigned char *sp_object_description_get (SPObject *object);
+unsigned int sp_object_title_set (SPObject *object, const unsigned char *title);
+unsigned int sp_object_description_set (SPObject *object, const unsigned char *desc);
 
 /* Public */
 

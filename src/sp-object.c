@@ -28,13 +28,9 @@
 
 static void sp_object_class_init (SPObjectClass * klass);
 static void sp_object_init (SPObject * object);
-static void sp_object_dispose (GObject * object);
 static void sp_object_finalize (GObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
-#if 0
-static void sp_object_release (SPObject *object);
-#endif
 
 static void sp_object_private_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint flags);
@@ -75,22 +71,20 @@ static guint object_signals[LAST_SIGNAL] = {0};
 unsigned int
 sp_object_get_type (void)
 {
-	static GType object_type = 0;
-	if (!object_type) {
-		GTypeInfo object_info = {
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPObjectClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_object_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPObject),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_object_init,
 		};
-		object_type = g_type_register_static (G_TYPE_OBJECT, "SPObject", &object_info, 0);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPObject", &info, 0);
 	}
-	return object_type;
+	return type;
 }
 
 static void
@@ -102,13 +96,13 @@ sp_object_class_init (SPObjectClass * klass)
 
 	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	object_signals[RELEASE] = g_signal_new ("release",
-						G_TYPE_FROM_CLASS (klass),
-						G_SIGNAL_RUN_CLEANUP | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-						G_STRUCT_OFFSET (SPObjectClass, release),
-						NULL, NULL,
-						sp_marshal_VOID__VOID,
-						G_TYPE_NONE, 0);
+	object_signals[RELEASE] =  g_signal_new ("release",
+						 G_TYPE_FROM_CLASS (klass),
+						 G_SIGNAL_RUN_CLEANUP | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+						 G_STRUCT_OFFSET (SPObjectClass, release),
+						 NULL, NULL,
+						 sp_marshal_VOID__VOID,
+						 G_TYPE_NONE, 0);
 	object_signals[MODIFIED] = g_signal_new ("modified",
                                                  G_TYPE_FROM_CLASS (klass),
                                                  G_SIGNAL_RUN_FIRST,
@@ -117,13 +111,10 @@ sp_object_class_init (SPObjectClass * klass)
                                                  sp_marshal_NONE__UINT,
                                                  G_TYPE_NONE, 1, G_TYPE_UINT);
 
-	object_class->dispose = sp_object_dispose;
 	object_class->finalize = sp_object_finalize;
 
 	klass->build = sp_object_build;
-#if 0
-	klass->release = sp_object_release;
-#endif
+
 	klass->set = sp_object_private_set;
 	klass->write = sp_object_private_write;
 }
@@ -141,46 +132,6 @@ sp_object_init (SPObject * object)
 	object->repr = NULL;
 	object->id = NULL;
 	object->style = NULL;
-	object->title = NULL;
-	object->description = NULL;
-}
-
-/* fixme: This is complete crap - copy destrouctor from gnome1 version (Lauris) */
-
-static void
-sp_object_dispose (GObject * object)
-{
-	SPObject *spobject;
-
-	spobject = (SPObject *) object;
-
-#if 1
-	/* We have to be released */
-	g_assert (!spobject->parent);
-	g_assert (!spobject->next);
-	g_assert (!spobject->document);
-	g_assert (!spobject->repr);
-
-#ifdef SP_OBJECT_DEBUG
-	g_print("sp_object_dispose: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
-#endif
-	if (!(SP_OBJECT_FLAGS (spobject) & SP_OBJECT_IN_DESTRUCTION_FLAG))
-	{
-#ifdef SP_OBJECT_DEBUG
-		g_print("sp_object_dispose: id=%x, typename=%s enter IN_DESTRUCTION\n", object, g_type_name_from_instance((GTypeInstance*)object));
-#endif
-		SP_OBJECT_SET_FLAGS (spobject, SP_OBJECT_IN_DESTRUCTION_FLAG);
-
-/* 		sp_object_invoke_release (spobject); */
-		if (spobject->document) {
-			g_signal_emit (object, object_signals[RELEASE], 0);
-		}
-
-		SP_OBJECT_UNSET_FLAGS (spobject, SP_OBJECT_IN_DESTRUCTION_FLAG);
-	}
-#endif
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -325,37 +276,6 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	g_print("sp_object_build: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
 #endif
 }
-
-#if 0
-static void
-sp_object_release (SPObject * object)
-{
-#ifdef SP_OBJECT_DEBUG
-	g_print("sp_object_release: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
-#endif
-	/* href holders HAVE to release it in signal handler */
-	g_assert (object->hrefcount == 0);
-
-	if (object->style) {
-		object->style = sp_style_unref (object->style);
-	}
-
-	if (!SP_OBJECT_IS_CLONED (object)) {
-		g_assert (object->id);
-		sp_document_undef_id (object->document, object->id);
-		g_free (object->id);
-		object->id = NULL;
-	} else {
-		g_assert (!object->id);
-	}
-
-	sp_repr_remove_listener_by_data (object->repr, object);
-	sp_repr_unref (object->repr);
-
-	object->document = NULL;
-	object->repr = NULL;
-}
-#endif
 
 void
 sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned)
@@ -776,6 +696,36 @@ sp_object_sequence (SPObject *object, gint seq)
 		return (*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence) (object, seq);
 
 	return seq + 1;
+}
+
+/*
+ * Get and set descriptive parameters
+ *
+ * These are inefficent, so they are not intended to be used interactively
+ */
+
+const unsigned char *
+sp_object_title_get (SPObject *object)
+{
+	return NULL;
+}
+
+const unsigned char *
+sp_object_description_get (SPObject *object)
+{
+	return NULL;
+}
+
+unsigned int
+sp_object_title_set (SPObject *object, const unsigned char *title)
+{
+	return FALSE;
+}
+
+unsigned int
+sp_object_description_set (SPObject *object, const unsigned char *desc)
+{
+	return FALSE;
 }
 
 const guchar *

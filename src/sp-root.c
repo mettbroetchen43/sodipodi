@@ -434,7 +434,7 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	if (root->width.unit == SP_SVG_UNIT_PERCENT) {
 		root->width.computed = root->width.value * (ictx->vp.x1 - ictx->vp.x0);
 	}
-	if (root->y.unit == SP_SVG_UNIT_PERCENT) {
+	if (root->height.unit == SP_SVG_UNIT_PERCENT) {
 		root->height.computed = root->height.value * (ictx->vp.y1 - ictx->vp.y0);
 	}
 
@@ -455,9 +455,13 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	nr_matrix_d_set_identity (&root->c2p);
 
 	if (object->parent) {
-		/* fixme: I am absolutely not sure */
-		/* fixme: whether x and y result in translate in inner svg elements (Lauris) */
-		/* fixme: The spec doe not say much useful */
+		/*
+		 * fixme: I am not sure whether setting x and y does or does not
+		 * fixme: translate the content of inner SVG.
+		 * fixme: Still applying translation and setting viewport to width and
+		 * fixme: height seems natural, as this makes the inner svg element
+		 * fixme: self-contained. The spec is vague here.
+		 */
 		nr_matrix_d_set_translate (&root->c2p, root->x.computed, root->y.computed);
 	}
 
