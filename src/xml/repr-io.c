@@ -201,6 +201,28 @@ sp_repr_print (SPRepr * repr)
 	return;
 }
 
+/* (No doubt this function already exists elsewhere.) */
+static void
+repr_quote_write (FILE * file, const gchar * val)
+{
+	/* TODO: Presumably VAL is actually encoded in UTF8, no?
+	 * [Actually, preliminary tests suggest that this is not the
+	 * case; can sodipodi encode big charsets at all?]  If VAL is
+	 * UTF8, then this code will be buggy if e.g. `&' is the
+	 * second byte of a single utf8 "character".
+	 */
+
+	for (; *val != '\0'; val++) {
+		switch (*val) {
+		case '"': fputs ("&quot;", file); break;
+		case '&': fputs ("&amp;", file); break;
+		case '<': fputs ("&lt;", file); break;
+		case '>': fputs ("&gt;", file); break;
+		default: putc (*val, file); break;
+		}
+	}
+}
+
 static void
 repr_write (SPRepr * repr, FILE * file, gint level)
 {
@@ -221,7 +243,9 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 		val = SP_REPR_ATTRIBUTE_VALUE (attr);
 		fputs ("\n", file);
 		for (i = 0; i < level + 1; i++) fputs ("  ", file);
-		fprintf (file, " %s=\"%s\"", key, val);
+		fprintf (file, " %s=\"", key);
+		repr_quote_write (file, val);
+		putc ('"', file);
 	}
 
 	fprintf (file, ">");
@@ -231,7 +255,7 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 	}
 
 	if (sp_repr_content (repr)) {
-		fprintf (file, "%s", sp_repr_content (repr));
+		repr_quote_write (file, sp_repr_content (repr));
 	} else {
 		fputs ("\n", file);
 		for (i = 0; i < level; i++) fputs ("  ", file);
