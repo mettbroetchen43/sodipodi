@@ -1,0 +1,2065 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Wang Li <charlesw1234@163.com>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi 0.24\n"
+"POT-Creation-Date: 2002-01-09 10:14+0800\n"
+"PO-Revision-Date: 2002-01-09 11:34+0800\n"
+"Last-Translator: wang li <charlesw1234@163.com>\n"
+"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=gb2312\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: glade/align.glade.h:1 glade/transformation.glade.h:3
+msgid "Align"
+msgstr "对齐"
+
+#: glade/align.glade.h:2
+msgid "Align inside object to bottom border"
+msgstr "将内部对象对齐到底边"
+
+#: glade/align.glade.h:3
+msgid "Align inside object to left border"
+msgstr "将内部对象对齐到左边"
+
+#: glade/align.glade.h:4
+msgid "Align inside object to right border"
+msgstr "将内部对象对齐到右边"
+
+#: glade/align.glade.h:5
+msgid "Align inside object to top border"
+msgstr "将内部对象对齐到顶边"
+
+#: glade/align.glade.h:6
+msgid "Align objects to horizontal mid"
+msgstr "将对象对齐到水平中央"
+
+#: glade/align.glade.h:7
+msgid "Align objects to vertical mid"
+msgstr "将对象对齐到垂直中央"
+
+#: glade/align.glade.h:8
+msgid "Align outside object to bottom border"
+msgstr "将外部对象对齐到底边"
+
+#: glade/align.glade.h:9
+msgid "Align outside object to left border"
+msgstr "将外部对象对齐到左边"
+
+#: glade/align.glade.h:10
+msgid "Align outside object to right border"
+msgstr "将外部对象对齐到右边"
+
+#: glade/align.glade.h:11
+msgid "Align outside object to top border"
+msgstr "将外部对象对齐到顶边"
+
+#: glade/align.glade.h:12
+msgid "Alignment base"
+msgstr "对齐基础"
+
+#: glade/align.glade.h:13 src/dialogs/align.c:91
+msgid "Biggest item"
+msgstr "最大项目"
+
+#: glade/align.glade.h:14
+msgid "Choose align type"
+msgstr "选择对齐类型"
+
+#: glade/align.glade.h:15
+msgid "Close window"
+msgstr "关闭窗口"
+
+#: glade/align.glade.h:16 glade/sodipodi.glade.h:18 src/dialogs/align.c:106
+msgid "Drawing"
+msgstr "图画"
+
+#: glade/align.glade.h:17 src/dialogs/align.c:86
+msgid "First selected"
+msgstr "第一个选择"
+
+#: glade/align.glade.h:18 src/dialogs/align.c:81
+msgid "Last selected"
+msgstr "最后的选择"
+
+#: glade/align.glade.h:19 glade/document.glade.h:8 glade/sodipodi.glade.h:42
+#: src/dialogs/align.c:101
+msgid "Page"
+msgstr "页"
+
+#: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
+#: src/dialogs/align.c:111 src/toolbox.c:95
+msgid "Selection"
+msgstr "选择"
+
+#: glade/align.glade.h:21 src/dialogs/align.c:96
+msgid "Smallest item"
+msgstr "最小项目"
+
+#: glade/desktop.glade.h:1 glade/display.glade.h:1
+msgid "Choose base unit system for grid"
+msgstr "为栅格选择基本单位系统"
+
+#: glade/desktop.glade.h:2 glade/display.glade.h:2
+msgid "Choose color for grid"
+msgstr "选择栅格颜色"
+
+#: glade/desktop.glade.h:3 glade/display.glade.h:3
+msgid "Choose color for guidelines"
+msgstr "选择指示线颜色"
+
+#: glade/desktop.glade.h:4 glade/display.glade.h:4
+msgid "Choose color for highlighted guidelines"
+msgstr "选择高亮指示线颜色"
+
+#: glade/desktop.glade.h:5 glade/display.glade.h:5
+msgid "Choose unit system for grid snapping"
+msgstr "选择栅格定位单位系统"
+
+#: glade/desktop.glade.h:6 glade/display.glade.h:6
+msgid "Choose unit system for guideline snapping"
+msgstr "选择指示线定位单位系统"
+
+#: glade/desktop.glade.h:7 glade/display.glade.h:7
+msgid "Desktop settings"
+msgstr "桌面设置"
+
+#: glade/desktop.glade.h:8 glade/display.glade.h:9
+msgid "Grid"
+msgstr "栅格"
+
+#: glade/desktop.glade.h:9 glade/display.glade.h:10
+msgid "Grid color"
+msgstr "栅格颜色"
+
+#: glade/desktop.glade.h:10 glade/display.glade.h:11
+msgid "Grid color:"
+msgstr "栅格颜色："
+
+#: glade/desktop.glade.h:11 glade/display.glade.h:12
+msgid "Grid units:"
+msgstr "栅格单元："
+
+#: glade/desktop.glade.h:12 glade/display.glade.h:13
+msgid "Guideline color"
+msgstr "指示线颜色"
+
+#: glade/desktop.glade.h:13 glade/display.glade.h:14
+msgid "Guides"
+msgstr "指示"
+
+#: glade/desktop.glade.h:14 glade/display.glade.h:15
+msgid "Guides color:"
+msgstr "指示颜色："
+
+#: glade/desktop.glade.h:15 glade/display.glade.h:16
+msgid "Highlight color:"
+msgstr "高亮颜色："
+
+#: glade/desktop.glade.h:16 glade/display.glade.h:17
+msgid "Highlited guideline color"
+msgstr "高亮指示线颜色"
+
+#: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
+#: src/helper/unit-menu.c:91
+msgid "Millimeters"
+msgstr "毫米"
+
+#: glade/desktop.glade.h:18 glade/display.glade.h:20
+msgid "Origin X:"
+msgstr "X 原点："
+
+#: glade/desktop.glade.h:19 glade/display.glade.h:21
+msgid "Origin Y:"
+msgstr "Y 原点："
+
+#: glade/desktop.glade.h:20 glade/display.glade.h:23 src/helper/unit-menu.c:95
+msgid "Pixels"
+msgstr "像素"
+
+#: glade/desktop.glade.h:21 glade/display.glade.h:25
+msgid "Set distance between horizontal grid lines"
+msgstr "设置水平栅格线之间的距离"
+
+#: glade/desktop.glade.h:22 glade/display.glade.h:26
+msgid "Set distance between vertical grid lines"
+msgstr "设置垂直栅格线之间的距离"
+
+#: glade/desktop.glade.h:23 glade/display.glade.h:27
+msgid "Set maximum distance for grid snapping"
+msgstr "设置栅格定位最大距离"
+
+#: glade/desktop.glade.h:24 glade/display.glade.h:28
+msgid "Set maximum distance for guideline snapping"
+msgstr "设置指示线定位最大距离"
+
+#: glade/desktop.glade.h:25 glade/display.glade.h:29
+msgid "Set origin of page coordinate system"
+msgstr "设定页坐标系统原点"
+
+#: glade/desktop.glade.h:26 glade/display.glade.h:30
+msgid "Show grid"
+msgstr "显示栅格"
+
+#: glade/desktop.glade.h:27 glade/display.glade.h:31
+msgid "Show guides"
+msgstr "显示指示线"
+
+#: glade/desktop.glade.h:28 glade/display.glade.h:32
+msgid "Snap distance:"
+msgstr "定位距离："
+
+#: glade/desktop.glade.h:29 glade/display.glade.h:33
+msgid "Snap to grid"
+msgstr "定位到栅格"
+
+#: glade/desktop.glade.h:30 glade/display.glade.h:34
+msgid "Snap to guides"
+msgstr "定位到指示线"
+
+#: glade/desktop.glade.h:31 glade/display.glade.h:35
+msgid "Snap units:"
+msgstr "定位单位："
+
+#: glade/desktop.glade.h:32 glade/display.glade.h:36
+msgid "Spacing X:"
+msgstr "X 间据："
+
+#: glade/desktop.glade.h:33 glade/display.glade.h:37
+msgid "Spacing Y:"
+msgstr "Y 间据："
+
+#: glade/display.glade.h:8
+msgid "Display settings"
+msgstr "显示设置"
+
+#: glade/display.glade.h:19 src/dialogs/display-settings.c:68
+#: src/dialogs/fill-style.c:404
+msgid "None"
+msgstr "无"
+
+#: glade/display.glade.h:22
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: glade/display.glade.h:24
+msgid "Rendering"
+msgstr "正在渲染"
+
+#: glade/document.glade.h:1
+msgid "A4"
+msgstr "A4"
+
+#: glade/document.glade.h:2
+msgid "Choose paper size"
+msgstr "选择页面大小"
+
+#: glade/document.glade.h:3
+msgid "Choose unit system"
+msgstr "选择单位系统"
+
+#: glade/document.glade.h:4
+msgid "Custom paper"
+msgstr "定制页面"
+
+#: glade/document.glade.h:5
+msgid "Document settings"
+msgstr "文档设置"
+
+#: glade/document.glade.h:6 glade/object_props.glade.h:22
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+msgid "Height:"
+msgstr "高度："
+
+#: glade/document.glade.h:9
+msgid "Paper size:"
+msgstr "页面大小："
+
+#: glade/document.glade.h:10
+msgid "Set page height"
+msgstr "设定页面高度"
+
+#: glade/document.glade.h:11
+msgid "Set page width"
+msgstr "设定页面宽度"
+
+#: glade/document.glade.h:12
+msgid "Units:"
+msgstr "单位："
+
+#: glade/document.glade.h:13 glade/object_props.glade.h:41
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+msgid "Width:"
+msgstr "宽度："
+
+#: glade/item.glade.h:1
+msgid "Active"
+msgstr "活跃"
+
+#: glade/item.glade.h:2
+msgid "ID:"
+msgstr "标识："
+
+#. Create toplevel menuitem
+#: glade/item.glade.h:3 src/sp-item.c:646
+msgid "Item"
+msgstr "项目"
+
+#: glade/item.glade.h:4 src/dialogs/item-properties.c:341
+msgid "Item properties"
+msgstr "项目属性"
+
+#: glade/item.glade.h:5
+msgid "Opacity:"
+msgstr "不透明度："
+
+#: glade/item.glade.h:6
+msgid "Parent X ="
+msgstr "父坐标 X ="
+
+#: glade/item.glade.h:7
+msgid "Parent Y ="
+msgstr "父坐标 Y ="
+
+#: glade/item.glade.h:8
+msgid "Printable"
+msgstr "可打印的"
+
+#: glade/item.glade.h:9
+msgid "Sensitive"
+msgstr "敏感的"
+
+#: glade/item.glade.h:10 src/dialogs/item-properties.c:181
+#: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:492
+msgid "The SVG ID of item"
+msgstr "项目的 SVG 标识"
+
+#: glade/item.glade.h:11
+msgid "Transformation"
+msgstr "转化"
+
+#: glade/item.glade.h:12
+msgid "Visible"
+msgstr "可见"
+
+#: glade/item.glade.h:13
+msgid "X +"
+msgstr "X +"
+
+#: glade/item.glade.h:14
+msgid "Y +"
+msgstr "Y +"
+
+#: glade/object_props.glade.h:1
+msgid " Color fill "
+msgstr " 色彩填充 "
+
+#: glade/object_props.glade.h:2
+msgid " General "
+msgstr " 通用 "
+
+#: glade/object_props.glade.h:3
+msgid " Style "
+msgstr " 风格 "
+
+#: glade/object_props.glade.h:4
+msgid "Add new gradient"
+msgstr "添加新渐变"
+
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:610
+#: src/widgets/sp-color-selector.c:630 src/widgets/sp-color-selector.c:652
+msgid "Alpha:"
+msgstr "Alpha："
+
+#: glade/object_props.glade.h:6
+msgid "Behind fill"
+msgstr ""
+
+#: glade/object_props.glade.h:7
+msgid "Bevel join"
+msgstr ""
+
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:609
+msgid "Blue:"
+msgstr "蓝色："
+
+#: glade/object_props.glade.h:9
+msgid "Butt endpoints"
+msgstr ""
+
+#: glade/object_props.glade.h:10
+msgid "Choose fill color"
+msgstr "选择填充颜色"
+
+#: glade/object_props.glade.h:11
+msgid "Choose stroke color"
+msgstr "选择勾描颜色"
+
+#: glade/object_props.glade.h:12
+msgid "Color fill"
+msgstr "色彩填充"
+
+#: glade/object_props.glade.h:13
+msgid "Color:"
+msgstr "颜色"
+
+#: glade/object_props.glade.h:14
+msgid "Dimension"
+msgstr "尺寸"
+
+#: glade/object_props.glade.h:15
+msgid "Edit..."
+msgstr "编辑..."
+
+#: glade/object_props.glade.h:16
+msgid "Endpoints:"
+msgstr "端点："
+
+#: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
+msgid "Fill"
+msgstr "填充"
+
+#: glade/object_props.glade.h:18
+msgid "Fill Color:"
+msgstr "填充颜色："
+
+#: glade/object_props.glade.h:19
+msgid "Fractal fill"
+msgstr "分形填充"
+
+#: glade/object_props.glade.h:20
+msgid "Gradient fill"
+msgstr "渐变填充"
+
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:608
+msgid "Green:"
+msgstr "绿色："
+
+#: glade/object_props.glade.h:23
+msgid "Is stroked"
+msgstr "已被勾描"
+
+#: glade/object_props.glade.h:24
+msgid "Join:"
+msgstr "连接："
+
+#: glade/object_props.glade.h:25
+msgid "Layout"
+msgstr "布局"
+
+#: glade/object_props.glade.h:26
+msgid "Mitter join"
+msgstr ""
+
+#: glade/object_props.glade.h:27
+msgid "No fill"
+msgstr "不填充"
+
+#: glade/object_props.glade.h:28
+msgid "Pattern fill"
+msgstr "模式填充"
+
+#: glade/object_props.glade.h:29
+msgid "Pick a color"
+msgstr "选取颜色"
+
+#: glade/object_props.glade.h:30
+msgid "Pick fill color"
+msgstr "选取填充颜色"
+
+#: glade/object_props.glade.h:31
+msgid "Pick stroke color"
+msgstr "选取勾描颜色"
+
+#: glade/object_props.glade.h:32
+msgid "Position"
+msgstr "位置"
+
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:607
+msgid "Red:"
+msgstr "红色："
+
+#: glade/object_props.glade.h:34
+msgid "Reread"
+msgstr "重读"
+
+#: glade/object_props.glade.h:35
+msgid "Round endpoints"
+msgstr "圆形端点"
+
+#: glade/object_props.glade.h:36
+msgid "Round join"
+msgstr "圆形连接"
+
+#: glade/object_props.glade.h:37
+msgid "Scale with object"
+msgstr ""
+
+#: glade/object_props.glade.h:38
+msgid "Square endpoints"
+msgstr "正方形端点"
+
+#: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
+msgid "Stroke"
+msgstr "勾描"
+
+#: glade/object_props.glade.h:40
+msgid "Stroke width"
+msgstr "勾描宽度"
+
+#: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
+#: src/dialogs/object-attributes.c:72
+msgid "X:"
+msgstr "X："
+
+#: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
+#: src/dialogs/object-attributes.c:73
+msgid "Y:"
+msgstr "Y："
+
+#: glade/object_props.glade.h:44
+msgid "centimeter"
+msgstr "厘米"
+
+#: glade/object_props.glade.h:45 glade/transformation.glade.h:48
+#: src/helper/unit-menu.c:92
+msgid "cm"
+msgstr "cm"
+
+#: glade/object_props.glade.h:46
+msgid "color"
+msgstr "颜色"
+
+#: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+msgid "in"
+msgstr "in"
+
+#: glade/object_props.glade.h:48
+msgid "inches"
+msgstr "英寸"
+
+#: glade/object_props.glade.h:49
+msgid "millimeters"
+msgstr "毫米"
+
+#: glade/object_props.glade.h:50 glade/transformation.glade.h:58
+#: src/helper/unit-menu.c:91
+msgid "mm"
+msgstr "mm"
+
+#: glade/object_props.glade.h:51
+msgid "none"
+msgstr "无"
+
+#: glade/object_props.glade.h:52
+msgid "object properties"
+msgstr "对象属性"
+
+#: glade/object_props.glade.h:53 glade/sodipodi.glade.h:78
+msgid "pixels"
+msgstr "像素"
+
+#: glade/object_props.glade.h:54
+msgid "points"
+msgstr "点"
+
+#: glade/object_props.glade.h:55 glade/transformation.glade.h:59
+#: src/helper/unit-menu.c:94
+msgid "pt"
+msgstr "pt"
+
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:95
+msgid "px"
+msgstr "px"
+
+#: glade/sodipodi.glade.h:1
+msgid "1.0MB"
+msgstr "1.0MB"
+
+#: glade/sodipodi.glade.h:2
+msgid "1:1"
+msgstr "1:1"
+
+#: glade/sodipodi.glade.h:3
+msgid "1:2"
+msgstr "1:2"
+
+#: glade/sodipodi.glade.h:4
+msgid "2:1"
+msgstr "2:1"
+
+#: glade/sodipodi.glade.h:5
+msgid "Back One"
+msgstr "后移一个位置"
+
+#: glade/sodipodi.glade.h:6 glade/toolbox.glade.h:2
+msgid "Break apart selected node"
+msgstr "拆分选定的节点"
+
+#: glade/sodipodi.glade.h:7
+msgid "Bring to _Front"
+msgstr "移动到最前方(_F)"
+
+#: glade/sodipodi.glade.h:8 glade/toolbox.glade.h:4
+msgid "Close dialog"
+msgstr "关闭对话框"
+
+#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:7
+msgid "Convert selected segments to curves"
+msgstr "将选定段转换为曲线"
+
+#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:8
+msgid "Convert selected segments to lines"
+msgstr "将选定段转换为连线"
+
+#: glade/sodipodi.glade.h:11
+msgid "Convert to Cu_rves"
+msgstr "转换为曲线(_R)"
+
+#: glade/sodipodi.glade.h:12 glade/toolbox.glade.h:10
+msgid "Cusp line at selected nodes"
+msgstr ""
+
+#: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
+#: src/dialogs/gradient-selector.c:84
+msgid "Delete"
+msgstr "删除"
+
+#: glade/sodipodi.glade.h:14 glade/toolbox.glade.h:12
+msgid "Delete selected nodes"
+msgstr "删除选定节点"
+
+#: glade/sodipodi.glade.h:15
+msgid "Desktop"
+msgstr "桌面"
+
+#: glade/sodipodi.glade.h:16
+msgid "Display"
+msgstr "显示"
+
+#: glade/sodipodi.glade.h:17
+msgid "Document"
+msgstr "文档"
+
+#: glade/sodipodi.glade.h:19
+msgid "Drawing Context"
+msgstr "绘图上下文"
+
+#: glade/sodipodi.glade.h:20
+msgid "Duplicate"
+msgstr "复制"
+
+#: glade/sodipodi.glade.h:21
+msgid "Dynahand"
+msgstr "弹力手绘"
+
+#: glade/sodipodi.glade.h:22
+msgid "Ellipse"
+msgstr "椭圆"
+
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29
+msgid "Export"
+msgstr "导出"
+
+#: glade/sodipodi.glade.h:24
+msgid "Export picture to png"
+msgstr "将图形导出为 png"
+
+#: glade/sodipodi.glade.h:25
+msgid "Exported as"
+msgstr "导出为"
+
+#: glade/sodipodi.glade.h:26
+msgid "Filename:"
+msgstr "文件名："
+
+#: glade/sodipodi.glade.h:28
+msgid "Forward One"
+msgstr "前移一个位置"
+
+#: glade/sodipodi.glade.h:29
+msgid "Freehand"
+msgstr "手绘"
+
+#: glade/sodipodi.glade.h:30
+msgid "Height"
+msgstr "高度"
+
+#: glade/sodipodi.glade.h:31
+msgid "Image size"
+msgstr "图像大小"
+
+#: glade/sodipodi.glade.h:32
+msgid "Import"
+msgstr "导入"
+
+#: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
+msgid "Include one node into selected segments"
+msgstr "将一个节点包含到选定段中去"
+
+#: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
+msgid "Join 2 selected endpoints"
+msgstr "连接两个选定端点"
+
+#: glade/sodipodi.glade.h:35
+msgid "Lock aspect ratio"
+msgstr "锁定外观比率"
+
+#: glade/sodipodi.glade.h:36
+msgid "New Preview"
+msgstr "新建预览"
+
+#: glade/sodipodi.glade.h:37
+msgid "New View"
+msgstr "新建视图"
+
+#: glade/sodipodi.glade.h:38
+msgid "Node"
+msgstr "节点"
+
+#: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
+msgid "Node Edit"
+msgstr "节点编辑"
+
+#: glade/sodipodi.glade.h:40 src/toolbox.c:138
+msgid "Nodes"
+msgstr "节点"
+
+#: glade/sodipodi.glade.h:41
+msgid "Order"
+msgstr "顺序"
+
+#: glade/sodipodi.glade.h:43
+msgid "Png file name"
+msgstr "Png 文件名"
+
+#: glade/sodipodi.glade.h:44
+msgid "Rectangle"
+msgstr "长方形"
+
+#: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
+msgid "Scale"
+msgstr "缩放"
+
+#: glade/sodipodi.glade.h:46
+msgid "Select"
+msgstr "选择"
+
+#: glade/sodipodi.glade.h:48
+msgid "Send to _Back"
+msgstr "移动到最后方(_B)"
+
+#: glade/sodipodi.glade.h:49
+msgid "Set dimensions"
+msgstr "设定尺寸"
+
+#: glade/sodipodi.glade.h:50
+msgid "Show Toolbox"
+msgstr "显示工具条"
+
+#: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
+msgid "Smooth line at selected nodes"
+msgstr "使选定节点处成为光滑线段"
+
+#. Create toplevel menuitem
+#: glade/sodipodi.glade.h:52 src/sp-spiral.c:595
+msgid "Spiral"
+msgstr "螺旋形"
+
+#. Create toplevel menuitem
+#: glade/sodipodi.glade.h:53 src/sp-star.c:475
+msgid "Star"
+msgstr "星形"
+
+#: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
+msgid "Symmetric "
+msgstr "对称 "
+
+#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1
+msgid "Text"
+msgstr "文本"
+
+#: glade/sodipodi.glade.h:57
+msgid "Toggle Borders"
+msgstr "切换边框"
+
+#: glade/sodipodi.glade.h:58
+msgid "Uncompressed file size:"
+msgstr "解压文件大小："
+
+#: glade/sodipodi.glade.h:59
+msgid "Where to export"
+msgstr "导出到何处"
+
+#: glade/sodipodi.glade.h:60
+msgid "Width"
+msgstr "宽度"
+
+#: glade/sodipodi.glade.h:61
+msgid "X0"
+msgstr "X0"
+
+#: glade/sodipodi.glade.h:62
+msgid "X1"
+msgstr "X1"
+
+#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:21
+msgid "XML Tree"
+msgstr "XML 树"
+
+#: glade/sodipodi.glade.h:64
+msgid "Y0"
+msgstr "Y0"
+
+#: glade/sodipodi.glade.h:65
+msgid "Y1"
+msgstr "Y1"
+
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1090
+#: src/toolbox.c:134
+msgid "Zoom"
+msgstr "缩放"
+
+#: glade/sodipodi.glade.h:67
+msgid "_Align"
+msgstr "对齐(_A)"
+
+#: glade/sodipodi.glade.h:68
+msgid "_Break Apart"
+msgstr "拆分(_B)"
+
+#: glade/sodipodi.glade.h:69
+msgid "_Combine"
+msgstr "组合(_C)"
+
+#: glade/sodipodi.glade.h:70
+msgid "_Drawing"
+msgstr "绘图(_D)"
+
+#: glade/sodipodi.glade.h:71
+msgid "_Group"
+msgstr "编组(_G)"
+
+#: glade/sodipodi.glade.h:72
+msgid "_Interactive"
+msgstr "交互(_I)"
+
+#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:78
+msgid "_New"
+msgstr "新建(_N)"
+
+#: glade/sodipodi.glade.h:74
+msgid "_Page"
+msgstr "页(_P)"
+
+#: glade/sodipodi.glade.h:75
+msgid "_Selection"
+msgstr "选择(_S)"
+
+#: glade/sodipodi.glade.h:76
+msgid "_Ungroup"
+msgstr "分解组(_U)"
+
+#: glade/sodipodi.glade.h:77
+msgid "dpi"
+msgstr "dpi"
+
+#: glade/text-dialog.glade.h:2
+msgid "Text Properties"
+msgstr "文本属性"
+
+#: glade/toolbox.glade.h:1
+msgid "Align dialog"
+msgstr "对齐对话框"
+
+#: glade/toolbox.glade.h:3
+msgid "Break apart selected paths"
+msgstr "拆分选定路径"
+
+#: glade/toolbox.glade.h:5
+msgid "Combine selected paths"
+msgstr "组合选定路径"
+
+#: glade/toolbox.glade.h:6
+msgid "Convert selected objects to curves"
+msgstr "将选定对象转换为曲线"
+
+#: glade/toolbox.glade.h:9
+msgid "Copy selection to clipboard"
+msgstr "将选中内容复制到剪贴板"
+
+#: glade/toolbox.glade.h:11
+msgid "Cut selection"
+msgstr "剪切选中内容"
+
+#: glade/toolbox.glade.h:13
+msgid "Delete selection"
+msgstr "删除选中内容"
+
+#: glade/toolbox.glade.h:14
+msgid "Draw dynahand line"
+msgstr "绘制弹力手绘线"
+
+#: glade/toolbox.glade.h:15
+msgid "Draw ellipse"
+msgstr "绘制椭圆"
+
+#: glade/toolbox.glade.h:16
+msgid "Draw freehand line"
+msgstr "绘制手绘线"
+
+#: glade/toolbox.glade.h:17
+msgid "Draw rectangle"
+msgstr "绘制长方形"
+
+#: glade/toolbox.glade.h:18
+msgid "Draw spiral"
+msgstr "绘制螺旋"
+
+#: glade/toolbox.glade.h:19
+msgid "Draw star"
+msgstr "绘制星形"
+
+#: glade/toolbox.glade.h:20
+msgid "Draw text"
+msgstr "绘制文本"
+
+#: glade/toolbox.glade.h:21
+msgid "Drawing context"
+msgstr "绘图上下文"
+
+#: glade/toolbox.glade.h:22
+msgid "Duplicate selection"
+msgstr "复制选中内容"
+
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:74
+#: src/toolbox.c:78
+msgid "Edit"
+msgstr " 编辑"
+
+#: glade/toolbox.glade.h:24
+msgid "Edit fill style of selected objects"
+msgstr "编辑选中对象的填充风格"
+
+#: glade/toolbox.glade.h:25
+msgid "Edit font style of selected objects"
+msgstr "编辑选中对象的字体风格"
+
+#: glade/toolbox.glade.h:26
+msgid "Edit layout of selected objects"
+msgstr "编辑选中对象的布局"
+
+#: glade/toolbox.glade.h:27
+msgid "Edit nodes"
+msgstr "编辑节点"
+
+#: glade/toolbox.glade.h:28
+msgid "Edit stroke style of selected objects"
+msgstr "编辑选中对象的勾描风格"
+
+#: glade/toolbox.glade.h:30 src/toolbox.c:74
+msgid "File"
+msgstr "文件"
+
+#: glade/toolbox.glade.h:31
+msgid "Flip selected objects"
+msgstr "翻转选中对象"
+
+#: glade/toolbox.glade.h:32
+msgid "Group selected objects"
+msgstr "编组选中对象"
+
+#: glade/toolbox.glade.h:33
+msgid "Import "
+msgstr "导入 "
+
+#: glade/toolbox.glade.h:36
+msgid "Lower selection one layer"
+msgstr "将选中内容降低一个图层"
+
+#: glade/toolbox.glade.h:37
+msgid "New drawing"
+msgstr "新建图画"
+
+#: glade/toolbox.glade.h:38
+msgid "No I'd rather do some more cool vector drawing with sodipodi."
+msgstr "不，我宁愿用 sodipodi 做些更酷的向量图画。"
+
+#: glade/toolbox.glade.h:40
+msgid "Nope !"
+msgstr "不 ！"
+
+#: glade/toolbox.glade.h:41 src/event-context.c:432 src/toolbox.c:87
+msgid "Object"
+msgstr "对象"
+
+#: glade/toolbox.glade.h:42
+msgid "Open new drawing"
+msgstr "打开新图画"
+
+#: glade/toolbox.glade.h:43
+msgid "Paste from clipboard"
+msgstr "从剪贴板中粘贴"
+
+#: glade/toolbox.glade.h:44
+msgid "Preview print drawing"
+msgstr "预览打印图画"
+
+#: glade/toolbox.glade.h:45
+msgid "Print drawing"
+msgstr "打印图画"
+
+#: glade/toolbox.glade.h:46
+msgid "Quit or not quit ?"
+msgstr "退出或不退出？"
+
+#: glade/toolbox.glade.h:47
+msgid "Raise selection to top"
+msgstr "将选中内容提升到顶层"
+
+#: glade/toolbox.glade.h:48
+msgid "Really wanna quit sodipodi ?"
+msgstr "真的要退出 sodipodi ？"
+
+#: glade/toolbox.glade.h:49
+msgid "Redo"
+msgstr "恢复"
+
+#: glade/toolbox.glade.h:50
+msgid "Remove transformation"
+msgstr "删除变换"
+
+#: glade/toolbox.glade.h:51
+msgid "Rise selection one layer"
+msgstr "将选中内容提升一个图层"
+
+#: glade/toolbox.glade.h:52
+msgid "Rotate selected objects 90 clockwise"
+msgstr "将选定对象转换为曲线"
+
+#: glade/toolbox.glade.h:53
+msgid "Save drawing "
+msgstr "保存图画 "
+
+#: glade/toolbox.glade.h:54
+msgid "Save drawing under new filename"
+msgstr "以新文件名保存图画"
+
+#: glade/toolbox.glade.h:55
+msgid "Select and transform"
+msgstr "选择并变换"
+
+#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: glade/toolbox.glade.h:60
+msgid "Transformation dialog"
+msgstr "变换对话框"
+
+#: glade/toolbox.glade.h:61
+msgid "Undo "
+msgstr "撤销 "
+
+#: glade/toolbox.glade.h:62
+msgid "Ungroup selected objects"
+msgstr "分解选中对象构成的组"
+
+#: glade/toolbox.glade.h:63
+msgid "Unsymmetric"
+msgstr "不对称"
+
+#: glade/toolbox.glade.h:64
+msgid "Yep !"
+msgstr "是 ！"
+
+#: glade/toolbox.glade.h:65
+msgid "Yes quick! I want to leave sodipodi and come back later."
+msgstr "是的 快点！我希望离开 sodipodi 一会儿再回来。"
+
+#: glade/toolbox.glade.h:67
+msgid "Zoom in"
+msgstr "放大"
+
+#: glade/toolbox.glade.h:68
+msgid "Zoom out"
+msgstr "缩小"
+
+#: glade/toolbox.glade.h:69
+msgid "Zoom to 1:1"
+msgstr "缩放到 1:1"
+
+#: glade/toolbox.glade.h:70
+msgid "Zoom to 1:2"
+msgstr "缩放到 1:2"
+
+#: glade/toolbox.glade.h:71
+msgid "Zoom to 2:1"
+msgstr "缩放到 2:1"
+
+#: glade/toolbox.glade.h:72
+msgid "Zoom to drawing"
+msgstr "缩放到图画"
+
+#: glade/toolbox.glade.h:73
+msgid "Zoom to page"
+msgstr "缩放到页"
+
+#: glade/toolbox.glade.h:74
+msgid "Zoom to selection"
+msgstr "缩放到选中内容"
+
+#: glade/toolbox.glade.h:75
+msgid "_About ..."
+msgstr "关于(_A)..."
+
+#: glade/toolbox.glade.h:76
+msgid "_File"
+msgstr "文件(_F)"
+
+#: glade/toolbox.glade.h:77
+msgid "_Help"
+msgstr "求助(_H)"
+
+#: glade/toolbox.glade.h:79
+msgid "_Open"
+msgstr "打开(_O)"
+
+#: glade/toolbox.glade.h:80
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: glade/toolbox.glade.h:81
+msgid "lower selection to bottom"
+msgstr "将选中内容降低到底层"
+
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:97
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: glade/transformation.glade.h:4
+msgid "Align to bottom left"
+msgstr "对齐到底部左侧"
+
+#: glade/transformation.glade.h:5
+msgid "Align to bottom middle"
+msgstr "对齐到底部中央"
+
+#: glade/transformation.glade.h:6
+msgid "Align to bottom right"
+msgstr "对齐到底部右侧"
+
+#: glade/transformation.glade.h:7
+msgid "Align to center"
+msgstr "对齐到中央"
+
+#: glade/transformation.glade.h:8
+msgid "Align to left middle"
+msgstr "对齐到左侧中央"
+
+#: glade/transformation.glade.h:9
+msgid "Align to right middle"
+msgstr "对齐到右侧中央"
+
+#: glade/transformation.glade.h:10
+msgid "Align to top left"
+msgstr "对齐到顶部左侧"
+
+#: glade/transformation.glade.h:11
+msgid "Align to top middle"
+msgstr "对齐到顶部中央"
+
+#: glade/transformation.glade.h:12
+msgid "Align to top right"
+msgstr "对齐到顶部右侧"
+
+#: glade/transformation.glade.h:13
+msgid "Apply transformation to copy Ctl+m"
+msgstr "对副本应用变换 Ctl+m"
+
+#: glade/transformation.glade.h:14
+msgid "Center"
+msgstr "中央"
+
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:92
+msgid "Centimeter"
+msgstr "厘米"
+
+#: glade/transformation.glade.h:16
+msgid "Choose metric for center"
+msgstr "为中央选择公制"
+
+#: glade/transformation.glade.h:17
+msgid "Close dialog - Ctl+c"
+msgstr "关闭对话框 - Ctl+c"
+
+#: glade/transformation.glade.h:18
+msgid "Degree"
+msgstr "度"
+
+#: glade/transformation.glade.h:19
+msgid "Expand dialog - Ctl+e"
+msgstr "扩展对话框 - Ctl+e"
+
+#: glade/transformation.glade.h:20
+msgid "Height: "
+msgstr "高度："
+
+#: glade/transformation.glade.h:21
+msgid "Horizontal center value"
+msgstr "水平中心值"
+
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:93
+msgid "Inch"
+msgstr "英寸"
+
+#: glade/transformation.glade.h:23
+msgid "Keep height of selection during transformation"
+msgstr "在变换中保持选中内容的高度不变"
+
+#: glade/transformation.glade.h:24
+msgid "Keep width of selection during transformation"
+msgstr "在变换中保持选中内容的宽度不变"
+
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:91
+msgid "Millimeter"
+msgstr "毫米"
+
+#: glade/transformation.glade.h:26
+msgid "Move"
+msgstr "移动"
+
+#: glade/transformation.glade.h:27
+msgid "Orig. Width: "
+msgstr "原点宽度："
+
+#: glade/transformation.glade.h:28
+msgid "Orig. X: "
+msgstr "X 原点："
+
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:97
+msgid "Percent"
+msgstr "百分比"
+
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:94
+msgid "Points"
+msgstr "点"
+
+#: glade/transformation.glade.h:31
+msgid "Reset dialog to default - Ctl+r"
+msgstr "将对话框内容重置为默认值 - Ctl+r"
+
+#: glade/transformation.glade.h:32
+msgid "Rotate"
+msgstr "旋转"
+
+#: glade/transformation.glade.h:34
+msgid "Set angle to 0 degrees"
+msgstr "将角度设置为 0 度"
+
+#: glade/transformation.glade.h:35
+msgid "Set angle to 180 degrees"
+msgstr "将角度设置为 180 度"
+
+#: glade/transformation.glade.h:36
+msgid "Set angle to 270 degrees"
+msgstr "将角度设置为 270 度"
+
+#: glade/transformation.glade.h:37
+msgid "Set angle to 90 degrees"
+msgstr "将角度设置为 90 度"
+
+#: glade/transformation.glade.h:38
+msgid "Skew"
+msgstr "扭曲"
+
+#: glade/transformation.glade.h:39
+msgid "Start transformation - Ctl+a"
+msgstr "开始变换 - Ctl+a"
+
+#: glade/transformation.glade.h:40
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr "在选中内容坐标给出的中心和桌面坐标给出的中心间切换"
+
+#: glade/transformation.glade.h:41
+msgid "Transform selection"
+msgstr "变换选择"
+
+#: glade/transformation.glade.h:42
+msgid "Use alignment during transformation"
+msgstr "在变换中对齐"
+
+#: glade/transformation.glade.h:43
+msgid "Use center as transformation fixpoint"
+msgstr "将中心作为变换的固定点"
+
+#: glade/transformation.glade.h:44
+msgid "Vertical center value"
+msgstr "垂直中心值"
+
+#: glade/transformation.glade.h:45
+msgid "Y: "
+msgstr "Y： "
+
+#: glade/transformation.glade.h:46
+msgid "absolute"
+msgstr "绝对"
+
+#: glade/transformation.glade.h:47
+msgid "angle"
+msgstr "角度"
+
+#: glade/transformation.glade.h:49
+msgid "deg"
+msgstr "度"
+
+#: glade/transformation.glade.h:50
+msgid "desktop"
+msgstr "桌面"
+
+#: glade/transformation.glade.h:51
+msgid "flip horizontal"
+msgstr "水平翻转"
+
+#: glade/transformation.glade.h:52
+msgid "flip vertical"
+msgstr "垂直翻转"
+
+#: glade/transformation.glade.h:53
+msgid "horizontal move"
+msgstr "水平移动"
+
+#: glade/transformation.glade.h:54
+msgid "horizontal scale value"
+msgstr "水平缩放值"
+
+#: glade/transformation.glade.h:56
+msgid "keep aspect"
+msgstr "保持比率"
+
+#: glade/transformation.glade.h:57
+msgid "lock/unlock horizontal and vertical scale"
+msgstr "锁定/解锁水平及垂直缩放"
+
+#: glade/transformation.glade.h:60
+msgid "select direction"
+msgstr "选择方向"
+
+#: glade/transformation.glade.h:61
+msgid "select direction (horizontal/vertical skew)"
+msgstr "选择方向 (水平/垂直 扭曲)"
+
+#: glade/transformation.glade.h:62
+msgid "select metric for scale"
+msgstr "按公制缩放"
+
+#: glade/transformation.glade.h:63
+msgid "select metric for values"
+msgstr "按公制计值"
+
+#: glade/transformation.glade.h:64
+msgid "skew"
+msgstr "扭曲"
+
+#: glade/transformation.glade.h:65
+msgid "toggle absolute/relative move"
+msgstr "切换绝对/相对移动"
+
+#: glade/transformation.glade.h:66
+msgid "toggle absolute/relative scale"
+msgstr "切换绝对/相对缩放"
+
+#: glade/transformation.glade.h:67
+msgid "vertical move"
+msgstr "垂直移动"
+
+#: glade/transformation.glade.h:68
+msgid "vertical scale value"
+msgstr "垂直缩放值"
+
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:79
+msgid "Add"
+msgstr "添加"
+
+#: glade/xml-tree.glade.h:2
+msgid "Add attribute"
+msgstr "添加属性"
+
+#: glade/xml-tree.glade.h:3
+msgid "Attribute:"
+msgstr "属性："
+
+#: glade/xml-tree.glade.h:4
+msgid "Attributes"
+msgstr "属性"
+
+#: glade/xml-tree.glade.h:5
+msgid "Change"
+msgstr "改变"
+
+#: glade/xml-tree.glade.h:6
+msgid "Change Attribute"
+msgstr "改变属性"
+
+#: glade/xml-tree.glade.h:7
+msgid "Content"
+msgstr "内容"
+
+#: glade/xml-tree.glade.h:8
+msgid "Copy"
+msgstr "复制"
+
+#: glade/xml-tree.glade.h:9
+msgid "Cut"
+msgstr "剪切"
+
+#: glade/xml-tree.glade.h:10
+msgid "Del"
+msgstr "删除"
+
+#: glade/xml-tree.glade.h:12
+msgid "Delete attribute"
+msgstr "删除属性"
+
+#: glade/xml-tree.glade.h:13
+msgid "Do you want to delete attribute?"
+msgstr "你是否需要删除属性？"
+
+#: glade/xml-tree.glade.h:14
+msgid "Dup"
+msgstr "复制"
+
+#: glade/xml-tree.glade.h:15
+msgid "Hierarchy"
+msgstr "层次"
+
+#: glade/xml-tree.glade.h:16
+msgid "Key"
+msgstr "键"
+
+#: glade/xml-tree.glade.h:17
+msgid "New"
+msgstr "新建"
+
+#: glade/xml-tree.glade.h:18
+msgid "Paste"
+msgstr "粘贴"
+
+#: glade/xml-tree.glade.h:19
+msgid "Value"
+msgstr "值"
+
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:629
+msgid "Value:"
+msgstr "值："
+
+#: glade/xml-tree.glade.h:22
+msgid "name"
+msgstr "名称"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "无法创建 sodipodi-svg-doc 车间"
+
+#. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
+#. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
+#: src/desktop.c:1082
+msgid "Welcome !"
+msgstr "欢迎 ！"
+
+#: src/desktop.c:1156
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi：%s：%s：%d"
+
+#: src/desktop.c:1216
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "文档 %s 含有未保存的修改，保存吗？"
+
+#: src/desktop.c:1217
+msgid "Save"
+msgstr "保存"
+
+#: src/desktop.c:1217
+msgid "Don't save"
+msgstr "不保存"
+
+#: src/dialogs/display-settings.c:72
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:76
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:80
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:84
+msgid "16x16"
+msgstr "16x16"
+
+#: src/dialogs/document-properties.c:57
+msgid "Custom"
+msgstr "定制"
+
+#. Frame
+#: src/dialogs/fill-style.c:156 src/dialogs/fill-style.c:378
+msgid "Empty"
+msgstr "空"
+
+#: src/dialogs/fill-style.c:206
+msgid "Fill style"
+msgstr "填充模式"
+
+#. Set frame label
+#: src/dialogs/fill-style.c:548
+msgid "Solid color"
+msgstr "纯色"
+
+#. Label
+#: src/dialogs/fill-style.c:559
+msgid "Mode:"
+msgstr "模式："
+
+#: src/dialogs/fill-style.c:566
+msgid "RGB"
+msgstr "RGB"
+
+#: src/dialogs/fill-style.c:573
+msgid "HSV"
+msgstr "HSV"
+
+#: src/dialogs/fill-style.c:580
+msgid "CMYK"
+msgstr "CMYK"
+
+#. Set frame label
+#: src/dialogs/fill-style.c:648
+msgid "Gradient"
+msgstr "渐变"
+
+#: src/dialogs/item-properties.c:175
+msgid "Item is reference"
+msgstr "项目是引用"
+
+#: src/dialogs/item-properties.c:253 src/dialogs/item-properties.c:494
+msgid "The ID is not valid"
+msgstr "标识不合法"
+
+#: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
+msgid "The ID is already defined"
+msgstr "标识已定义"
+
+#: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
+msgid "The ID is valid"
+msgstr "标识合法"
+
+#. Reset button
+#: src/dialogs/gradient-selector.c:102
+msgid "Reset"
+msgstr "重置"
+
+#: src/dialogs/gradient-vector.c:58
+msgid "Start color"
+msgstr "起点颜色"
+
+#: src/dialogs/gradient-vector.c:70
+msgid "End color"
+msgstr "终点颜色"
+
+#: src/dialogs/gradient-vector.c:97
+msgid "Gradient vector"
+msgstr "渐变向量"
+
+#: src/dialogs/object-attributes.c:29
+msgid "Href:"
+msgstr "Href："
+
+#: src/dialogs/object-attributes.c:30
+msgid "Target:"
+msgstr "目标："
+
+#: src/dialogs/object-attributes.c:31
+msgid "Type:"
+msgstr "类型："
+
+#: src/dialogs/object-attributes.c:32
+msgid "Role:"
+msgstr "作用："
+
+#: src/dialogs/object-attributes.c:33
+msgid "Arcrole:"
+msgstr "弓形作用："
+
+#: src/dialogs/object-attributes.c:34
+msgid "Title:"
+msgstr "标题："
+
+#: src/dialogs/object-attributes.c:35
+msgid "Show:"
+msgstr "显示："
+
+#: src/dialogs/object-attributes.c:36
+msgid "Actuate:"
+msgstr "促使："
+
+#: src/dialogs/object-attributes.c:41
+msgid "Sides:"
+msgstr "边："
+
+#: src/dialogs/object-attributes.c:42 src/dialogs/object-attributes.c:52
+msgid "Center X:"
+msgstr "X 中心："
+
+#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
+msgid "Center Y:"
+msgstr "Y 中心："
+
+#: src/dialogs/object-attributes.c:44
+msgid "R1:"
+msgstr "R1:"
+
+#: src/dialogs/object-attributes.c:45
+msgid "R2:"
+msgstr "R2:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "ARG1:"
+msgstr "参数1："
+
+#: src/dialogs/object-attributes.c:47
+msgid "ARG2:"
+msgstr "参数2："
+
+#: src/dialogs/object-attributes.c:54
+msgid "Expansion:"
+msgstr "扩充："
+
+#: src/dialogs/object-attributes.c:55
+msgid "Revolution:"
+msgstr "旋转："
+
+#: src/dialogs/object-attributes.c:56
+msgid "Radius:"
+msgstr "半径："
+
+#: src/dialogs/object-attributes.c:57
+msgid "Argument:"
+msgstr "参数："
+
+#: src/dialogs/object-attributes.c:58
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "URL:"
+msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:76
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:77
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:107
+#, c-format
+msgid "%s attributes"
+msgstr "%s 属性"
+
+#. Do some evil things
+#: src/dialogs/object-properties.c:209
+msgid "Dynamic fill"
+msgstr "动态填充"
+
+#: src/document.c:235
+#, c-format
+msgid "Unnamed document %d"
+msgstr "未命名文档 %d"
+
+#: src/document.c:307
+#, c-format
+msgid "Memory document %d"
+msgstr "内存文档 %d"
+
+#: src/file.c:97
+msgid "Select file to open"
+msgstr "选择打开的文件"
+
+#: src/file.c:207
+msgid "Save file"
+msgstr "保存文件"
+
+#: src/file.c:324
+msgid "Select file to import"
+msgstr "选择需导入的文件"
+
+#: src/file.c:401
+msgid "Export file"
+msgstr "导出文件"
+
+#: src/file.c:468
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (文档名 %s..)：打印预览"
+
+#: src/help.c:36
+msgid "About sodipodi"
+msgstr "关于 sodipodi"
+
+#: src/helper/unit-menu.c:92
+msgid "Centimeters"
+msgstr "厘米"
+
+#: src/helper/unit-menu.c:93
+msgid "Inches"
+msgstr "英寸"
+
+#: src/helper/unit-menu.c:93
+msgid "\""
+msgstr "\""
+
+#: src/helper/unit-menu.c:94
+msgid "Point"
+msgstr "点"
+
+#: src/helper/unit-menu.c:95
+msgid "Pixel"
+msgstr "像素"
+
+#: src/helper/unit-menu.c:96
+msgid "Userspace"
+msgstr "用户空间"
+
+#: src/helper/unit-menu.c:96
+msgid "us"
+msgstr ""
+
+#: src/helper/unit-menu.c:98
+msgid "Em squares"
+msgstr ""
+
+#: src/helper/unit-menu.c:98
+msgid "Em square"
+msgstr ""
+
+#: src/helper/unit-menu.c:98
+msgid "em"
+msgstr ""
+
+#: src/helper/unit-menu.c:99
+msgid "Ex squares"
+msgstr ""
+
+#: src/helper/unit-menu.c:99
+msgid "Ex square"
+msgstr ""
+
+#: src/helper/unit-menu.c:99
+msgid "ex"
+msgstr ""
+
+#: src/main.c:51
+msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+msgstr "不要使用 GUI。若 NB! 存在，应为第一个参数！"
+
+#: src/main.c:60
+msgid "Open specified file (option string may be excluded)"
+msgstr "打开指定文件 (可能不包括选项字符串)"
+
+#: src/main.c:61 src/main.c:70
+msgid "FILENAME"
+msgstr "文件名"
+
+#: src/main.c:69
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr "将文件打印到指定输出文件 (‘| 程序’将成为管道)"
+
+#: src/main.c:78
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "逐个显示给定文件，在出现任何键盘/鼠标事件时切换"
+
+#: src/main.c:180
+msgid "Oaf options"
+msgstr "Oaf 选项"
+
+#: src/main.c:188
+msgid "Could not initialize Bonobo"
+msgstr "无法初始化 Bonobo"
+
+#. Not a regular file
+#: src/sodipodi.c:305
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s 不是普通文件。\n"
+"虽然 sodipodi 能够运行，您即\n"
+"不能读取也不能保存设置\n"
+
+#. Not an valid xml file
+#: src/sodipodi.c:318
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s 不是合法的 xml 文件或\n"
+"您没有访问它的读权限。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#: src/sodipodi.c:332
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s 不是合法的 sodipodi 设置文件。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#. Cannot create directory
+#: src/sodipodi.c:588
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"无法创建目录 %s。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#. Not a directory
+#: src/sodipodi.c:600
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s 不是合法的目录。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#. Cannot create file
+#: src/sodipodi.c:616
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"无法创建文件 %s。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#. Cannot create file
+#: src/sodipodi.c:628
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"无法写入文件 %s。\n"
+"虽然 sodipodi 能够运行，\n"
+"但您即不能读取也不能保存\n"
+"设置。"
+
+#: src/sp-image.c:291
+msgid "Broken bitmap"
+msgstr "不完整的位图"
+
+#: src/sp-image.c:292
+msgid "Color bitmap"
+msgstr "彩色位图"
+
+#. Create toplevel menuitem
+#: src/sp-image.c:508
+msgid "Image"
+msgstr "图像"
+
+#. Link dialog
+#: src/sp-image.c:511
+msgid "Image Properties"
+msgstr "图像属性"
+
+#: src/sp-item.c:386
+msgid "Unknown item :-("
+msgstr "未知项目 :-("
+
+#. Item dialog
+#: src/sp-item.c:649
+msgid "Item Properties"
+msgstr "项目属性"
+
+#. Select item
+#: src/sp-item.c:659
+msgid "Select this"
+msgstr "选择它"
+
+#. Reset transformations
+#: src/sp-item.c:669
+msgid "Reset transformation"
+msgstr "重置变换"
+
+#: src/sp-item.c:675
+msgid "Make sensitive"
+msgstr "使其敏感"
+
+#: src/sp-item.c:675
+msgid "Make insensitive"
+msgstr "使其不敏感"
+
+#. Create link
+#: src/sp-item.c:680
+msgid "Create link"
+msgstr "创建连接"
+
+#: src/sp-item-group.c:434
+#, c-format
+msgid "Group of %d objects"
+msgstr "含有 %d 个对象的组"
+
+#: src/sp-item-group.c:496
+msgid "Group"
+msgstr "组"
+
+#. Group dialog
+#: src/sp-item-group.c:500
+msgid "Group Properties"
+msgstr "组属性"
+
+#. "Ungroup"
+#: src/sp-item-group.c:513
+msgid "Ungroup"
+msgstr "分解组"
+
+#. Create toplevel menuitem
+#: src/sp-rect.c:363
+msgid "Rect"
+msgstr "长方形"
+
+#. Link dialog
+#: src/sp-rect.c:366
+msgid "Rect Properties"
+msgstr "长方形属性"
+
+#: src/sp-shape.c:364
+msgid "A path - whatever it means"
+msgstr "一条路径 - 任何含义"
+
+#. Create toplevel menuitem
+#: src/sp-shape.c:420
+msgid "Shape"
+msgstr "形状"
+
+#. Item dialog
+#: src/sp-shape.c:423
+msgid "Fill settings"
+msgstr "填充设置"
+
+#. Link dialog
+#: src/sp-spiral.c:598
+msgid "Spiral Properties"
+msgstr "螺旋属性"
+
+#. Link dialog
+#: src/sp-star.c:478
+msgid "Star Properties"
+msgstr "星形属性"
+
+#: src/sp-text.c:222
+msgid "Text object"
+msgstr "文本对象"
+
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "连接到 %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "连接"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "连接属性"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "跟随连接"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "删除连接"
+
+#: src/toolbox.c:99
+msgid "Draw"
+msgstr "绘制"
+
+#: src/widgets/sp-color-selector.c:627
+msgid "Hue:"
+msgstr "色调："
+
+#: src/widgets/sp-color-selector.c:628
+msgid "Saturation:"
+msgstr "饱和度："
+
+#: src/widgets/sp-color-selector.c:648
+msgid "Cyan:"
+msgstr "青蓝："
+
+#: src/widgets/sp-color-selector.c:649
+msgid "Magenta:"
+msgstr "洋红："
+
+#: src/widgets/sp-color-selector.c:650
+msgid "Yellow:"
+msgstr "黄："
+
+#: src/widgets/sp-color-selector.c:651
+msgid "Black:"
+msgstr "黑："
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Sodipodi SVG 文档"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Sodipodi SVG 文档车间"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "向量图解器"
