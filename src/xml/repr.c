@@ -630,7 +630,7 @@ sp_repr_document_new (const char *rootname)
 		sp_repr_set_attr (repr, "version", "1.0");
 		sp_repr_set_attr (repr, "standalone", "no");
 		sp_repr_set_attr (repr, "doctype",
-				  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
+				  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\"\n"
 				  "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
 		sp_repr_set_attr (repr, "comment",
 				  "<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n");
