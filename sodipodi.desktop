@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Sodipodi
+Name[pt_BR]=Sodipodi
 Name[da]=Sodipodi
 Name[de]=Sodipodi
 Name[et]=Sodipodi
@@ -8,6 +9,7 @@ Name[no]=Sodipodi
 Name[sv]=Sodipodi
 Name[tr]=Sodipodi
 Comment=Vector illustrator
+Comment[pt_BR]=Ilustrador vetorial 
 Comment[da]=Vektor-illustrationsprogram
 Comment[de]=Vektor-Zeichenprogramm
 Comment[et]=Vektorjoonistusprogramm
