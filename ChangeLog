@@ -1,3 +1,18 @@
+2000-10-03  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/nodepath.c (update_repr): Call sp_document_done ()
+
+	* src/dialogs/desktop-properties.*: Use new dialog layout
+
+	* glade/desktop.glade: Use new dialog layout
+
+	* src/sp-guide.*: "color" and "hicolor" attributes
+
+	* src/sp-namedview.*: Bunch of new attributes
+
+	* src/desktop-events.c (sp_dt_guide_event): Use guide colors
+	(sp_dt_ruler_event): Use guide colors
+
 2000-10-02  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/knot.c (sp_knot_set_flag): Implement different outlines

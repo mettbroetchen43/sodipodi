@@ -98,7 +98,7 @@ fake_dialogs (void)
 	sp_xml_tree_dialog ();
 	sp_quick_align_dialog ();
 	sp_transformation_dialog ();
-	sp_guides_dialog ();
+	sp_desktop_dialog ();
 }
 
 

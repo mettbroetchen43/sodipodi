@@ -58,13 +58,23 @@ sp_namedview_class_init (SPNamedViewClass * klass)
 }
 
 static void
-sp_namedview_init (SPNamedView * namedview)
+sp_namedview_init (SPNamedView * nv)
 {
-	namedview->editable = TRUE;
-	namedview->snaptoguides = TRUE;
-	namedview->guidetolerance = 5.0;
-	namedview->hguides = NULL;
-	namedview->vguides = NULL;
+	nv->editable = TRUE;
+	nv->showgrid = FALSE;
+	nv->snaptogrid = FALSE;
+	nv->showguides = FALSE;
+	nv->snaptoguides = FALSE;
+	nv->gridtolerance = 5.0;
+	nv->guidetolerance = 5.0;
+	nv->gridorigin.x = nv->gridorigin.y = 0.0;
+	nv->gridspacing.x = nv->gridspacing.y = (72.0 / 25.4);
+	nv->gridcolor = 0x3f3fff3f;
+	nv->guidecolor = 0x0000ff7f;
+	nv->guidehicolor = 0xff00007f;
+
+	nv->hguides = NULL;
+	nv->vguides = NULL;
 }
 
 static void
@@ -95,8 +105,22 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
 	sp_namedview_read_attr (object, "viewonly");
+	sp_namedview_read_attr (object, "showgrid");
+	sp_namedview_read_attr (object, "snaptogrid");
+	sp_namedview_read_attr (object, "showguides");
 	sp_namedview_read_attr (object, "snaptoguides");
+	sp_namedview_read_attr (object, "gridtolerance");
 	sp_namedview_read_attr (object, "guidetolerance");
+	sp_namedview_read_attr (object, "gridoriginx");
+	sp_namedview_read_attr (object, "gridoriginy");
+	sp_namedview_read_attr (object, "gridspacingx");
+	sp_namedview_read_attr (object, "gridspacingy");
+	sp_namedview_read_attr (object, "gridcolor");
+	sp_namedview_read_attr (object, "gridopacity");
+	sp_namedview_read_attr (object, "guidecolor");
+	sp_namedview_read_attr (object, "guideopacity");
+	sp_namedview_read_attr (object, "guidehicolor");
+	sp_namedview_read_attr (object, "guidehiopacity");
 
 	/* Construct guideline list */
 
@@ -109,6 +133,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			} else {
 				nv->vguides = g_slist_prepend (nv->vguides, g);
 			}
+			gtk_object_set (GTK_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
 		}
 	}
 }
@@ -119,6 +144,8 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	SPNamedView * namedview;
 	SPSVGUnit unit;
 	const gchar * astr;
+	GSList * l;
+	gdouble v;
 
 	namedview = SP_NAMEDVIEW (object);
 
@@ -128,12 +155,104 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		namedview->editable = (astr == NULL);
 		return;
 	}
+	if (strcmp (key, "showgrid") == 0) {
+		namedview->showgrid = (astr != NULL);
+		return;
+	}
+	if (strcmp (key, "snaptogrid") == 0) {
+		namedview->snaptogrid = (astr != NULL);
+		return;
+	}
+	if (strcmp (key, "showguides") == 0) {
+		namedview->showguides = (astr != NULL);
+		return;
+	}
 	if (strcmp (key, "snaptoguides") == 0) {
 		namedview->snaptoguides = (astr != NULL);
 		return;
 	}
+	if (strcmp (key, "gridtolerance") == 0) {
+		namedview->gridtolerance = sp_svg_read_length (&unit, astr);
+		return;
+	}
 	if (strcmp (key, "guidetolerance") == 0) {
 		namedview->guidetolerance = sp_svg_read_length (&unit, astr);
+		return;
+	}
+	if (strcmp (key, "gridoriginx") == 0) {
+		namedview->gridorigin.x = sp_svg_read_length (&unit, astr);
+		return;
+	}
+	if (strcmp (key, "gridoriginy") == 0) {
+		namedview->gridorigin.y = sp_svg_read_length (&unit, astr);
+		return;
+	}
+	if (strcmp (key, "gridspacingx") == 0) {
+		namedview->gridspacing.x = sp_svg_read_length (&unit, astr);
+		return;
+	}
+	if (strcmp (key, "gridspacingy") == 0) {
+		namedview->gridspacing.y = sp_svg_read_length (&unit, astr);
+		return;
+	}
+	if (strcmp (key, "gridcolor") == 0) {
+		if (astr) {
+			namedview->gridcolor = (namedview->gridcolor & 0xff) | sp_svg_read_color (astr);
+		}
+		return;
+	}
+	if (strcmp (key, "gridopacity") == 0) {
+		v = sp_repr_get_double_attribute (object->repr, key, 0.25);
+		v = CLAMP (v, 0.0, 1.0);
+		namedview->gridcolor = (namedview->gridcolor & 0xffffff00) | (guint) (v * 255.0);
+		return;
+	}
+	if (strcmp (key, "guidecolor") == 0) {
+		if (astr) {
+			namedview->guidecolor = (namedview->guidecolor & 0xff) | sp_svg_read_color (astr);
+			for (l = namedview->hguides; l != NULL; l = l->next) {
+				gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
+			}
+			for (l = namedview->vguides; l != NULL; l = l->next) {
+				gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
+			}
+		}
+		return;
+	}
+	if (strcmp (key, "guideopacity") == 0) {
+		v = sp_repr_get_double_attribute (object->repr, key, 0.5);
+		v = CLAMP (v, 0.0, 1.0);
+		namedview->guidecolor = (namedview->guidecolor & 0xffffff00) | (guint) (v * 255.0);
+		for (l = namedview->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
+		}
+		for (l = namedview->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
+		}
+		return;
+	}
+	if (strcmp (key, "guidehicolor") == 0) {
+		if (astr) {
+			namedview->guidehicolor = (namedview->guidehicolor & 0xff) | sp_svg_read_color (astr);
+			for (l = namedview->hguides; l != NULL; l = l->next) {
+				gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+			}
+			for (l = namedview->vguides; l != NULL; l = l->next) {
+				gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+			}
+		}
+		return;
+	}
+	if (strcmp (key, "guidehiopacity") == 0) {
+		v = sp_repr_get_double_attribute (object->repr, key, 0.5);
+		v = CLAMP (v, 0.0, 1.0);
+		namedview->guidehicolor = (namedview->guidehicolor & 0xffffff00) | (guint) (v * 255.0);
+		for (l = namedview->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+		}
+		for (l = namedview->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+		}
 		return;
 	}
 
@@ -167,6 +286,7 @@ sp_namedview_add_child (SPObject * object, SPRepr * child)
 		} else {
 			nv->vguides = g_slist_prepend (nv->vguides, g);
 		}
+		gtk_object_set (GTK_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
 		if (nv->editable) {
 			for (l = nv->views; l != NULL; l = l->next) {
 				sp_guide_show (g, SP_DESKTOP (l->data)->guides, sp_dt_guide_event);

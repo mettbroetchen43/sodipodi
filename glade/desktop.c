@@ -4,51 +4,43 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Transform selection");
-gchar *s = N_(" Move ");
-gchar *s = N_("horizontal");
-gchar *s = N_("vertical");
-gchar *s = N_("move relative in");
-gchar *s = N_("pixel\n"
-              "points\n"
-              "millimeter\n"
-              "centimeter\n"
-              "inch\n"
+gchar *s = N_("Desktop settings");
+gchar *s = N_("Grid units:");
+gchar *s = N_("Choose base unit system for grid");
+gchar *s = N_("Millimeters\n"
               "");
-gchar *s = N_("Move");
-gchar *s = N_(" Rotate ");
-gchar *s = N_("90°");
-gchar *s = N_("180°");
-gchar *s = N_("270°");
-gchar *s = N_("any");
-gchar *s = N_("degree");
-gchar *s = N_("right");
-gchar *s = N_("left");
-gchar *s = N_("Rotate");
-gchar *s = N_(" Scale ");
-gchar *s = N_("horizontal");
-gchar *s = N_("vertical");
-gchar *s = N_("% ");
-gchar *s = N_("% ");
-gchar *s = N_(" flip ");
-gchar *s = N_(" flip ");
-gchar *s = N_("Scale");
-gchar *s = N_(" Skew ");
-gchar *s = N_("horizontal");
-gchar *s = N_("vertical");
-gchar *s = N_("%  ");
-gchar *s = N_("%  ");
-gchar *s = N_("Skew");
-gchar *s = N_("make copy");
-gchar *s = N_("Guidelines setup");
-gchar *s = N_("Tolerance:");
-gchar *s = N_("move horizontal");
-gchar *s = N_("pixel\n"
-              "points\n"
-              "millimeter\n"
-              "centimeter\n"
-              "inch\n"
+gchar *s = N_("Show grid");
+gchar *s = N_("Snap to grid");
+gchar *s = N_("Grid color:");
+gchar *s = N_("Choose color for grid");
+gchar *s = N_("Grid color");
+gchar *s = N_("Snap distance:");
+gchar *s = N_("Set maximum distance for grid snapping");
+gchar *s = N_("Snap units:");
+gchar *s = N_("Choose unit system for grid snapping");
+gchar *s = N_("Pixels\n"
               "");
+gchar *s = N_("Spacing Y:");
+gchar *s = N_("Set distance between vertical grid lines");
+gchar *s = N_("Spacing X:");
+gchar *s = N_("Set distance between horizontal grid lines");
+gchar *s = N_("Origin X:");
+gchar *s = N_("Origin Y:");
+gchar *s = N_("Set Origin of page coordinate system");
+gchar *s = N_("Set origin of page coordinate system");
+gchar *s = N_("Grid");
+gchar *s = N_("Snap units:");
+gchar *s = N_("Choose unit system for guideline snapping");
+gchar *s = N_("Pixels\n"
+              "");
+gchar *s = N_("Snap distance:");
+gchar *s = N_("Set maximum distance for guideline snapping");
+gchar *s = N_("Guides color:");
+gchar *s = N_("Choose color for guidelines");
+gchar *s = N_("Guideline color");
+gchar *s = N_("Show guides");
 gchar *s = N_("Snap to guides");
-gchar *s = N_("Start transformation");
-gchar *s = N_("close dialog");
+gchar *s = N_("Highlight color:");
+gchar *s = N_("Choode color for highlighted guidelines");
+gchar *s = N_("Highlited guideline color");
+gchar *s = N_("Guides");

@@ -4,9 +4,12 @@
 #include "helper/sp-guide.h"
 #include "sp-guide.h"
 
+enum {ARG_0, ARG_COLOR, ARG_HICOLOR};
+
 static void sp_guide_class_init (SPGuideClass * klass);
 static void sp_guide_init (SPGuide * guide);
 static void sp_guide_destroy (GtkObject * object);
+static void sp_guide_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_guide_read_attr (SPObject * object, const gchar * key);
@@ -44,7 +47,11 @@ sp_guide_class_init (SPGuideClass * klass)
 
 	parent_class = gtk_type_class (sp_object_get_type ());
 
+	gtk_object_add_arg_type ("SPGuide::color", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_COLOR);
+	gtk_object_add_arg_type ("SPGuide::hicolor", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_HICOLOR);
+
 	gtk_object_class->destroy = sp_guide_destroy;
+	gtk_object_class->set_arg = sp_guide_set_arg;
 
 	sp_object_class->build = sp_guide_build;
 	sp_object_class->read_attr = sp_guide_read_attr;
@@ -55,6 +62,8 @@ sp_guide_init (SPGuide * guide)
 {
 	guide->orientation = SP_GUIDE_HORIZONTAL;
 	guide->position = 0.0;
+	guide->color = 0x0000ff7f;
+	guide->hicolor = 0xff00007f;
 }
 
 static void
@@ -71,6 +80,27 @@ sp_guide_destroy (GtkObject * object)
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+}
+
+static void
+sp_guide_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
+{
+	SPGuide * guide;
+	GSList * l;
+
+	guide = SP_GUIDE (object);
+
+	switch (arg_id) {
+	case ARG_COLOR:
+		guide->color = GTK_VALUE_UINT (*arg);
+		for (l = guide->views; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", guide->color, NULL);
+		}
+		break;
+	case ARG_HICOLOR:
+		guide->hicolor = GTK_VALUE_UINT (*arg);
+		break;
+	}
 }
 
 static void
@@ -116,7 +146,9 @@ sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler)
 	GnomeCanvasItem * item;
 
 	item = gnome_canvas_item_new (group, SP_TYPE_GUIDELINE,
-		"orientation", guide->orientation, NULL);
+				      "orientation", guide->orientation,
+				      "color", guide->color,
+				      NULL);
 	g_assert (item != NULL);
 	gtk_signal_connect (GTK_OBJECT (item), "event",
 			    GTK_SIGNAL_FUNC (handler), guide);

@@ -31,6 +31,8 @@ struct _SPGuide {
 	SPObject object;
 	SPGuideOrientation orientation;
 	gdouble position;
+	guint32 color;
+	guint32 hicolor;
 	GSList * views;
 };
 

@@ -26,8 +26,17 @@ typedef struct _SPNamedViewClass SPNamedViewClass;
 struct _SPNamedView {
 	SPObjectGroup objectgroup;
 	guint editable : 1;
+	guint showgrid : 1;
+	guint snaptogrid : 1;
+	guint showguides : 1;
 	guint snaptoguides : 1;
+	gdouble gridtolerance;
 	gdouble guidetolerance;
+	ArtPoint gridorigin;
+	ArtPoint gridspacing;
+	guint32 gridcolor;
+	guint32 guidecolor;
+	guint32 guidehicolor;
 	GSList * hguides;
 	GSList * vguides;
 	GSList * views;

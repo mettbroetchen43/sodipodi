@@ -4152,13 +4152,13 @@ Radial
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>guides</name>
+	<name>desktop_dialog_menu</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_guides_dialog</handler>
+	  <handler>sp_desktop_dialog</handler>
 	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
 	</signal>
-	<label>Guidelines</label>
+	<label>Desktop</label>
 	<right_justify>False</right_justify>
       </widget>
     </widget>

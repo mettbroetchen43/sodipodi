@@ -60,6 +60,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			guide = gnome_canvas_item_new (desktop->guides, SP_TYPE_GUIDELINE,
 						       "orientation",
 						       horiz ? SP_GUIDELINE_ORIENTATION_HORIZONTAL : SP_GUIDELINE_ORIENTATION_VERTICAL,
+						       "color", desktop->namedview->guidehicolor,
 						       NULL);
 			gdk_pointer_grab (widget->window, FALSE,
 					  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK,
@@ -134,11 +135,6 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging) {
-#if 0
-			gnome_canvas_window_to_world (desktop->canvas,
-						      event->motion.x, event->motion.y,
-						      &p.x, &p.y);
-#endif
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
 			sp_guide_moveto (guide, p.x, p.y);
 		}
@@ -154,11 +150,6 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			if ((winx >= 0) && (winy >= 0) &&
 			    (winx < w->allocation.width) &&
 			    (winy < w->allocation.height)) {
-#if 0
-				gnome_canvas_window_to_world (item->canvas,
-							      event->button.x, event->button.y,
-							      &p.x, &p.y);
-#endif
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 				sp_repr_set_double_attribute (SP_OBJECT (data)->repr,
 							      "position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? p.y : p.x);
@@ -167,10 +158,10 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			}
 		}
 	case GDK_ENTER_NOTIFY:
-		gnome_canvas_item_set (item, "color", 0xff0000ff, NULL);
+		gnome_canvas_item_set (item, "color", guide->hicolor, NULL);
 		break;
 	case GDK_LEAVE_NOTIFY:
-		gnome_canvas_item_set (item, "color", 0x0000ffff, NULL);
+		gnome_canvas_item_set (item, "color", guide->color, NULL);
 		break;
 	default:
 		break;

@@ -245,6 +245,8 @@ update_repr (SPNodePath * np)
 	sp_repr_set_attr (SP_OBJECT (np->path)->repr, "d", svgpath);
 	sp_repr_set_attr (SP_OBJECT (np->path)->repr, "sodipodi:nodetypes", typestr);
 
+	sp_document_done (SP_DT_DOCUMENT (np->desktop));
+
 	g_free (svgpath);
 	g_free (typestr);
 	sp_curve_unref (curve);
