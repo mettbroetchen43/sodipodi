@@ -1,5 +1,8 @@
 2003-04-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/xml/repr-io.c (sp_repr_read_file): Substitute entities (by MentaL)
+	(sp_repr_read_mem): Ditto
+
 	* src/style.c (sp_style_merge_from_style_string): Complain only if not the end
 	of the style string (thanks to MenTaL)
 

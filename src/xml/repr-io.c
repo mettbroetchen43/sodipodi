@@ -44,6 +44,8 @@ sp_repr_read_file (const gchar * filename, const gchar *default_ns)
 	xmlDocPtr doc;
 	SPReprDoc * rdoc;
 
+	xmlSubstituteEntitiesDefault(1);
+
 	g_return_val_if_fail (filename != NULL, NULL);
 
 #ifdef HAVE_LIBWMF
@@ -73,6 +75,8 @@ sp_repr_read_mem (const gchar * buffer, gint length, const gchar *default_ns)
 {
 	xmlDocPtr doc;
 	SPReprDoc * rdoc;
+
+	xmlSubstituteEntitiesDefault(1);
 
 	g_return_val_if_fail (buffer != NULL, NULL);
 
