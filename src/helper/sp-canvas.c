@@ -151,24 +151,6 @@ sp_canvas_item_new (SPCanvasGroup *parent, GtkType type, const gchar *first_arg_
 	return item;
 }
 
-#if 0
-SPCanvasItem *
-sp_canvas_item_newv (SPCanvasGroup *parent, GtkType type, guint nargs, GtkArg *args)
-{
-	SPCanvasItem *item;
-
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (SP_IS_CANVAS_GROUP (parent), NULL);
-	g_return_val_if_fail (gtk_type_is_a (type, sp_canvas_item_get_type ()), NULL);
-
-	item = SP_CANVAS_ITEM(gtk_type_new (type));
-
-	sp_canvas_item_constructv (item, parent, nargs, args);
-
-	return item;
-}
-#endif
-
 static void
 item_post_create_setup (SPCanvasItem *item)
 {
@@ -196,28 +178,6 @@ sp_canvas_item_construct (SPCanvasItem *item, SPCanvasGroup *parent, const gchar
 
 	item_post_create_setup (item);
 }
-
-#if 0
-void
-sp_canvas_item_constructv (SPCanvasItem *item, SPCanvasGroup *parent, guint nargs, GtkArg *args)
-{
-	GtkObject *obj;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_CANVAS_ITEM (item));
-	g_return_if_fail (parent != NULL);
-	g_return_if_fail (SP_IS_CANVAS_GROUP (parent));
-
-	obj = GTK_OBJECT (item);
-
-	item->parent = SP_CANVAS_ITEM (parent);
-	item->canvas = item->parent->canvas;
-
-	gtk_object_setv (obj, nargs, args);
-
-	item_post_create_setup (item);
-}
-#endif
 
 static void
 redraw_if_visible (SPCanvasItem *item)
@@ -919,10 +879,6 @@ static void sp_canvas_class_init (SPCanvasClass *class);
 static void sp_canvas_init (SPCanvas *canvas);
 static void sp_canvas_destroy (GtkObject *object);
 
-#if 0
-static void sp_canvas_map (GtkWidget *widget);
-static void sp_canvas_unmap (GtkWidget *widget);
-#endif
 static void sp_canvas_realize (GtkWidget *widget);
 static void sp_canvas_unrealize (GtkWidget *widget);
 
@@ -982,10 +938,6 @@ sp_canvas_class_init (SPCanvasClass *class)
 
 	object_class->destroy = sp_canvas_destroy;
 
-#if 0
-	widget_class->map = sp_canvas_map;
-	widget_class->unmap = sp_canvas_unmap;
-#endif
 	widget_class->realize = sp_canvas_realize;
 	widget_class->unrealize = sp_canvas_unrealize;
 	widget_class->size_request = sp_canvas_size_request;
@@ -1081,56 +1033,10 @@ sp_canvas_new_aa (void)
 {
 	SPCanvas *canvas;
 
-#if 0
-	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-	gtk_widget_push_visual (gdk_rgb_get_visual ());
-#endif
 	canvas = gtk_type_new (sp_canvas_get_type ());
-#if 0
-	gtk_widget_pop_colormap ();
-	gtk_widget_pop_visual ();
-#endif
 
 	return (GtkWidget *) canvas;
 }
-
-#if 0
-/* Map handler for the canvas */
-static void
-sp_canvas_map (GtkWidget *widget)
-{
-	SPCanvas *canvas;
-
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (SP_IS_CANVAS (widget));
-
-	/* Normal widget mapping stuff */
-
-	if (GTK_WIDGET_CLASS (canvas_parent_class)->map)
-		(* GTK_WIDGET_CLASS (canvas_parent_class)->map) (widget);
-
-	canvas = SP_CANVAS (widget);
-}
-
-/* Unmap handler for the canvas */
-static void
-sp_canvas_unmap (GtkWidget *widget)
-{
-	SPCanvas *canvas;
-
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (SP_IS_CANVAS (widget));
-
-	canvas = SP_CANVAS (widget);
-
-	shutdown_transients (canvas);
-
-	/* Normal widget unmapping stuff */
-
-	if (GTK_WIDGET_CLASS (canvas_parent_class)->unmap)
-		(* GTK_WIDGET_CLASS (canvas_parent_class)->unmap) (widget);
-}
-#endif
 
 static void
 sp_canvas_realize (GtkWidget *widget)
@@ -1778,11 +1684,7 @@ paint (SPCanvas *canvas)
 
 	if (canvas->need_update) {
 		double affine[6];
-#if 0
-		art_affine_translate (affine, -canvas->scroll_x1, -canvas->scroll_y1);
-#else
 		art_affine_identity (affine);
-#endif
 		sp_canvas_item_invoke_update (canvas->root, affine, 0);
 		canvas->need_update = FALSE;
 	}
@@ -1790,6 +1692,10 @@ paint (SPCanvas *canvas)
 	if (!canvas->need_redraw) return TRUE;
 
 	rects = art_rect_list_from_uta (canvas->redraw_area, IMAGE_WIDTH_AA, IMAGE_HEIGHT_AA, &n_rects);
+
+	art_uta_free (canvas->redraw_area);
+	canvas->redraw_area = NULL;
+	canvas->need_redraw = FALSE;
 
 	for (i = 0; i < n_rects; i++) {
 		int x0, y0, x1, y1;
@@ -1817,9 +1723,6 @@ paint (SPCanvas *canvas)
 	}
 
 	art_free (rects);
-	art_uta_free (canvas->redraw_area);
-	canvas->redraw_area = NULL;
-	canvas->need_redraw = FALSE;
 
 	return TRUE;
 }
@@ -1830,11 +1733,7 @@ do_update (SPCanvas *canvas)
 	/* Cause the update if necessary */
 	if (canvas->need_update) {
 		double affine[6];
-#if 0
-		art_affine_translate (affine, -canvas->scroll_x1, -canvas->scroll_y1);
-#else
 		art_affine_identity (affine);
-#endif
 		sp_canvas_item_invoke_update (canvas->root, affine, 0);
 		canvas->need_update = FALSE;
 	}
@@ -1906,51 +1805,6 @@ sp_canvas_root (SPCanvas *canvas)
 	return SP_CANVAS_GROUP (canvas->root);
 }
 
-/**
- * sp_canvas_set_scroll_region:
- * @canvas: A canvas.
- * @x1: Leftmost limit of the scrolling region.
- * @y1: Upper limit of the scrolling region.
- * @x2: Rightmost limit of the scrolling region.
- * @y2: Lower limit of the scrolling region.
- *
- * Sets the scrolling region of a canvas to the specified rectangle.  The canvas
- * will then be able to scroll only within this region.  The view of the canvas
- * is adjusted as appropriate to display as much of the new region as possible.
- **/
-void
-sp_canvas_set_scroll_region (SPCanvas *canvas, double x1, double y1, double x2, double y2)
-{
-#if 0
-	double wxofs, wyofs;
-	int xofs, yofs;
-
-	g_return_if_fail (canvas != NULL);
-	g_return_if_fail (SP_IS_CANVAS (canvas));
-
-	/*
-	 * Set the new scrolling region.  If possible, do not move the visible contents of the
-	 * canvas.
-	 */
-
-	/* fixme: What the hell goes here (Lauris) */
-	wxofs = DISPLAY_X1(canvas) - canvas->scroll_x1;
-	wyofs = DISPLAY_Y1(canvas) - canvas->scroll_y1;
-
-	canvas->scroll_x1 = x1;
-	canvas->scroll_y1 = y1;
-	canvas->scroll_x2 = x2;
-	canvas->scroll_y2 = y2;
-
-	xofs = wxofs + canvas->scroll_x1;
-	yofs = wyofs + canvas->scroll_y1;
-
-	scroll_to (canvas, xofs, yofs);
-
-	canvas->need_repick = TRUE;
-#endif
-}
-
 void
 sp_canvas_scroll_to (SPCanvas *canvas, int cx, int cy)
 {
@@ -1958,26 +1812,6 @@ sp_canvas_scroll_to (SPCanvas *canvas, int cx, int cy)
 	g_return_if_fail (SP_IS_CANVAS (canvas));
 
 	scroll_to (canvas, cx, cy);
-}
-
-/**
- * sp_canvas_get_scroll_offsets:
- * @canvas: A canvas.
- * @cx: Horizontal scrolling offset (return value).
- * @cy: Vertical scrolling offset (return value).
- *
- * Queries the scrolling offsets of a canvas.  The values are returned in canvas
- * pixel units.
- **/
-void
-sp_canvas_get_scroll_offsets (SPCanvas *canvas, int *cx, int *cy)
-{
-	g_return_if_fail (canvas != NULL);
-	g_return_if_fail (SP_IS_CANVAS (canvas));
-
-	if (cx) *cx = canvas->x0;
-
-	if (cy) *cy = canvas->y0;
 }
 
 void
@@ -1992,7 +1826,6 @@ sp_canvas_update_now (SPCanvas *canvas)
 	do_update (canvas);
 }
 
-/* Queues an update of the canvas */
 static void
 sp_canvas_request_update (SPCanvas *canvas)
 {
@@ -2169,7 +2002,7 @@ sp_canvas_request_redraw_uta (SPCanvas *canvas,
 }
 
 void
-sp_canvas_request_redraw (SPCanvas *canvas, int x1, int y1, int x2, int y2)
+sp_canvas_request_redraw (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 {
 	ArtUta *uta;
 	ArtIRect bbox;
@@ -2179,13 +2012,13 @@ sp_canvas_request_redraw (SPCanvas *canvas, int x1, int y1, int x2, int y2)
 	g_return_if_fail (canvas != NULL);
 	g_return_if_fail (SP_IS_CANVAS (canvas));
 
-	if (!GTK_WIDGET_DRAWABLE (canvas) || (x1 == x2) || (y1 == y2))
-		return;
+	if (!GTK_WIDGET_DRAWABLE (canvas)) return;
+	if ((x0 >= x1) || (y0 >= y1)) return;
 
-	bbox.x0 = x1;
-	bbox.y0 = y1;
-	bbox.x1 = x2;
-	bbox.y1 = y2;
+	bbox.x0 = x0;
+	bbox.y0 = y0;
+	bbox.x1 = x1;
+	bbox.y1 = y1;
 
 	visible.x0 = DISPLAY_X1 (canvas);
 	visible.y0 = DISPLAY_Y1 (canvas);

@@ -616,7 +616,12 @@ sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
+#if 0
 	sp_canvas_get_scroll_offsets (desktop->owner->canvas, &x, &y);
+#else
+	x = desktop->owner->canvas->x0;
+	x = desktop->owner->canvas->y0;
+#endif
 	sp_canvas_scroll_to (desktop->owner->canvas, x - dx, y - dy);
 
 	//	sp_desktop_update_rulers (NULL, desktop);

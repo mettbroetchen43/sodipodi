@@ -1,5 +1,7 @@
 2002-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* configure.in: ... and everyting else - merged SODIPODI_GTK2_BRANCH
+
 	* po/Makevars: Added this
 
 2002-11-28  gettextize  <bug-gnu-gettext@gnu.org>

@@ -345,7 +345,9 @@ sp_svg_view_widget_init (SPSVGViewWidget *vw)
 	style = gtk_style_copy (vw->canvas->style);
 	style->bg[GTK_STATE_NORMAL] = style->white;
 	gtk_widget_set_style (vw->canvas, style);
+#if 0
 	sp_canvas_set_scroll_region (SP_CANVAS (vw->canvas), 0, 0, 200, 200);
+#endif
 	gtk_container_add (GTK_CONTAINER (vw->sw), vw->canvas);
 	gtk_widget_show (vw->canvas);
 
@@ -437,7 +439,9 @@ sp_svg_view_widget_view_resized (SPViewWidget *vw, SPView *view, gdouble width, 
 
 	if (svgvw->canvas) {
 		g_print ("set scroll %g %g\n", width, height);
+#if 0
 		sp_canvas_set_scroll_region (SP_CANVAS (svgvw->canvas), 0, 0, MAX (width, 1.0), MAX (height, 1.0));
+#endif
 	}
 
 	if (svgvw->resize) {

@@ -67,9 +67,7 @@ struct _SPCanvasItemClass {
 };
 
 SPCanvasItem *sp_canvas_item_new (SPCanvasGroup *parent, GtkType type, const gchar *first_arg_name, ...);
-SPCanvasItem *sp_canvas_item_newv (SPCanvasGroup *parent, GtkType type, guint nargs, GtkArg *args);
 void sp_canvas_item_construct (SPCanvasItem *item, SPCanvasGroup *parent, const gchar *first_arg_name, va_list args);
-void sp_canvas_item_constructv (SPCanvasItem *item, SPCanvasGroup *parent, guint nargs, GtkArg *args);
 
 #define sp_canvas_item_set gtk_object_set
 
@@ -147,10 +145,8 @@ struct _SPCanvas {
 GtkWidget *sp_canvas_new_aa (void);
 
 SPCanvasGroup *sp_canvas_root (SPCanvas *canvas);
-void sp_canvas_set_scroll_region (SPCanvas *canvas, double x1, double y1, double x2, double y2);
 
 void sp_canvas_scroll_to (SPCanvas *canvas, int cx, int cy);
-void sp_canvas_get_scroll_offsets (SPCanvas *canvas, int *cx, int *cy);
 void sp_canvas_update_now (SPCanvas *canvas);
 
 void sp_canvas_request_redraw_uta (SPCanvas *canvas, ArtUta *uta);
