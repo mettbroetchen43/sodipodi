@@ -27,6 +27,10 @@ src/object-ui.c
 src/print.c
 src/rect-context.c
 src/select-context.c
+src/sp-anchor.c
+src/sp-image.c
+src/sp-item-group.c
+src/sp-item.c
 src/spiral-context.c
 src/star-context.c
 src/file.c
