@@ -1,5 +1,15 @@
 2002-10-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-blit.c (nr_blit_pixblock_mask_rgba32): New method
+
+	* src/libnr/nr-gradient.c (nr_rgradient_renderer_setup): Do r == 0 correctly
+	(nr_rgradient_render_generic_optimized): Optimize
+	(nr_rgradient_render_block_end): New method
+
+	* configure.in: Version 0.28pre
+
+2002-10-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
 	* configure.in: Version 0.27
 
 	* src/text-context.c (sp_text_context_root_handler): Only turn off unimode,

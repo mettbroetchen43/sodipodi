@@ -54,6 +54,7 @@ struct _NRRGradientRenderer {
 	float cx, cy;
 	float fx, fy;
 	float r;
+	float C;
 };
 
 NRRenderer *nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
