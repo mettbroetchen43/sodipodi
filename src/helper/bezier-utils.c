@@ -15,7 +15,8 @@
  * Released under GNU GPL
  */
 
-#define BEZIER_DEBUG
+#define SP_HUGE 1e5
+#define noBEZIER_DEBUG
 
 #include <math.h>
 #include <stdlib.h>
@@ -52,17 +53,13 @@ static void sp_vector_negate (ArtPoint *v);
 #define V2Dot(a,b) ((a)->x * (b)->x + (a)->y * (b)->y)
 
 #ifdef BEZIER_DEBUG
-#define DOUBLE_ASSERT(x) (g_assert (((x) > -8000.0) && ((x) < 8000.0)))
+#define DOUBLE_ASSERT(x) (g_assert (((x) > -SP_HUGE) && ((x) < SP_HUGE)))
 #define BEZIER_ASSERT(b) { \
-      g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0)); \
-      g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0)); \
-      g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0)); \
-      g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0)); \
-      g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0)); \
-      g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0)); \
-      g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0)); \
-      g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0)); \
-      }
+	DOUBLE_ASSERT(b[0].x); DOUBLE_ASSERT(b[0].y); \
+	DOUBLE_ASSERT(b[1].x); DOUBLE_ASSERT(b[1].y); \
+	DOUBLE_ASSERT(b[2].x); DOUBLE_ASSERT(b[2].y); \
+	DOUBLE_ASSERT(b[3].x); DOUBLE_ASSERT(b[3].y); \
+	}
 #else
 #define DOUBLE_ASSERT(x)
 #define BEZIER_ASSERT(b)

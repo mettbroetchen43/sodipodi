@@ -1,3 +1,7 @@
+2002-01-05  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/helper/bezier-utils.c (BEZIER_DEBUG): inhibit debug messages.
+
 2002-01-04  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* src/desktop.c (sp_desktop_widget_init, sp_desktop_widget_set_title,
