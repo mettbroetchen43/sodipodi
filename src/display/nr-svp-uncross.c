@@ -11,6 +11,8 @@ static NRSVP * nr_split_slice_at_start (NRSVPSlice * cs, NRCoord x, NRSVP * svp,
 static gint nr_svp_slice_compare (NRSVPSlice * l, NRSVPSlice * r);
 static gint nr_svp_slice_coincident_start (NRSVPSlice * l, NRSVPSlice * r);
 static gboolean nr_svp_slice_colinear_end (NRSVPSlice * l, NRSVPSlice * r);
+static void nr_svp_slice_ensure_vertex (NRSVPSlice * s);
+static void nr_svp_slice_ensure_vertex_at (NRSVPSlice * s, NRCoord x, NRCoord y);
 static gboolean nr_test_point_line (NRVertex * a, NRVertex * b, NRCoord cx, NRCoord cy);
 
 NRSVP *
@@ -59,8 +61,12 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 		cs = slices;
 		while ((cs) && (cs->next)) {
 			ns = cs->next;
-			/* fixme: probably use some tolerance here */
 			if (cs->x == ns->x) {
+				/* Slices are exactly coincident at yslice */
+				/* Ensure both have vertex at yslice */
+				nr_svp_slice_ensure_vertex (cs);
+				nr_svp_slice_ensure_vertex (ns);
+				/* Our starting parts are safe and we can do whatever we want with continuation */
 				if (nr_svp_slice_colinear_end (cs, ns)) {
 					NRCoord xtop, ytop;
 					/* Colinear slices */
@@ -123,40 +129,25 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 						cs = cs->next;
 					}
 				} else {
-					NRCoord cx;
-					/* Calculate common snapped x */
-					cx = NR_COORD_SNAP ((cs->x + ns->x) / 2);
-					cs->x = cx;
-					ns->x = cx;
-					/* break if both are mid-svp */
-					/* Create beginning of cs */
-					svp = nr_split_slice_at_start (cs, cs->x, svp, &flats);
-					/* Create beginning of ns */
-					svp = nr_split_slice_at_start (ns, ns->x, svp, &flats);
-					/* Bitch - it is possible, that the order of cs & ns is reversed */
-					/* This can happen only if both cs & ns beginnings are cut off */
-					/* fixme: test it */
+					/* Test, whether the order changes after yslice */
 					if (nr_svp_slice_compare (cs, ns) > 0) {
-						NRSVP * tsvp;
-						NRVertex * tvertex;
-						tsvp = cs->svp;
-						tvertex = cs->vertex;
-						cs->svp = ns->svp;
-						cs->vertex = ns->vertex;
-						ns->svp = tsvp;
-						ns->vertex = tvertex;
+						NRVertex * t;
+						/* swap continuation svp-s */
+						t = cs->vertex->next;
+						cs->vertex->next = ns->vertex->next;
+						ns->vertex->next = t;
+						nr_svp_calculate_bbox (cs->svp);
+						nr_svp_calculate_bbox (ns->svp);
 						/* By definition coordinates are equal */
 					}
 					ss = cs;
 					cs = cs->next;
 				}
-			} else {
+			} else if (MAX (cs->x, cs->vertex->next->x) > MIN (ns->x, ns->vertex->next->x)) {
 				NRCoord x, y;
-				float xba, xdc, yba, ydc;
-				float xac, yac, numr, nums;
-				float r, s;
-				float d;
-				/* fixme: break if intersect */
+				NRCoord xba, xdc, yba, ydc;
+				NRCoord d;
+
 				/* Bitch 'o' bitches */
 				xba = cs->vertex->next->x - cs->x;
 				yba = cs->vertex->next->y - cs->y;
@@ -165,6 +156,9 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 				d = xba * ydc - yba * xdc;
 
 				if ((d < -NR_EPSILON) || (d > NR_EPSILON)) {
+					NRCoord xac, yac, numr, nums;
+					NRCoord r, s;
+
 					/* Not parallel */
 					xac = cs->x - ns->x;
 					yac = cs->y - ns->y;
@@ -172,23 +166,19 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 					nums = yac * xba - xac * yba;
 					r = numr / d;
 					s = nums / d;
+
 					if ((r > -NR_EPSILON) && (r < 1.0 + NR_EPSILON) && (s > -NR_EPSILON) && (s < 1.0 + NR_EPSILON)) {
 						x = NR_COORD_SNAP (cs->x + r * xba);
 						y = NR_COORD_SNAP (cs->y + r * yba);
 						if (y > yslice) {
+							/* fixme: here is still one problematic spot */
 							/* Simple case */
-							/* continuation of cs */
-							newsvp = nr_split_slice_at_end (cs, x, y, &flats);
-							if (newsvp) {
-								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
-								if (newsvp->next == nsvp) nsvp = newsvp;
-							}
-							/* continuation of cs */
-							newsvp = nr_split_slice_at_end (ns, x, y, &flats);
-							if (newsvp) {
-								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
-								if (newsvp->next == nsvp) nsvp = newsvp;
-							}
+							/* Ensure vertices at startpoint */
+							nr_svp_slice_ensure_vertex (cs);
+							nr_svp_slice_ensure_vertex (ns);
+							/* Ensure vertex at crossing point */
+							nr_svp_slice_ensure_vertex_at (cs, x, y);
+							nr_svp_slice_ensure_vertex_at (ns, x, y);
 							ss = cs;
 							cs = cs->next;
 						} else {
@@ -206,8 +196,11 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 							} else {
 								slices = ns->next;
 							}
+							g_assert ((!slices) || (slices != slices->next));
 							slices = nr_svp_slice_insert_sorted (slices, ns);
+							g_assert ((!slices) || (slices != slices->next));
 							slices = nr_svp_slice_insert_sorted (slices, cs);
+							g_assert ((!slices) || (slices != slices->next));
 							ss = NULL;
 							cs = slices;
 #else
@@ -223,6 +216,9 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 					ss = cs;
 					cs = cs->next;
 				}
+			} else {
+				ss = cs;
+				cs = cs->next;
 			}
 		}
 		/* Process flats (NB! we advance nflat to first > y) */
@@ -365,6 +361,7 @@ nr_split_slice_at_start (NRSVPSlice * cs, NRCoord x, NRSVP * svp, NRFlat ** flat
 		svp = nr_svp_insert_sorted (svp, newsvp);
 		cs->svp = newsvp;
 		cs->vertex = newsvp->vertex;
+		cs->x = newsvp->vertex->x;
 	} else {
 		if (x != cs->vertex->x) {
 			NRFlat * newflat;
@@ -390,6 +387,42 @@ nr_split_slice_at_start (NRSVPSlice * cs, NRCoord x, NRSVP * svp, NRFlat ** flat
 	}
 
 	return svp;
+}
+
+static void
+nr_svp_slice_ensure_vertex (NRSVPSlice * s)
+{
+	if (s->vertex->y != s->y) {
+		NRVertex * newvertex;
+		g_assert (s->vertex->y < s->y);
+		newvertex = nr_vertex_new_xy (s->x, s->y);
+		newvertex->next = s->vertex->next;
+		s->vertex->next = newvertex;
+		s->vertex = newvertex;
+		nr_svp_calculate_bbox (s->svp);
+	}
+}
+
+static void
+nr_svp_slice_ensure_vertex_at (NRSVPSlice * s, NRCoord x, NRCoord y)
+{
+	/* Invariant 1 */
+	g_assert (y > s->y);
+	/* Invariant 2 */
+	g_assert (y <= s->vertex->next->y);
+	/* Invariant 3 */
+	g_assert (s->y == s->vertex->y);
+
+	if (y < s->vertex->next->y) {
+		NRVertex * newvertex;
+		newvertex = nr_vertex_new_xy (x, y);
+		newvertex->next = s->vertex->next;
+		s->vertex->next = newvertex;
+	} else {
+		s->vertex->next->x = x;
+	}
+
+	nr_svp_calculate_bbox (s->svp);
 }
 
 #if 0
