@@ -9,9 +9,6 @@ struct _SPDocumentPrivate {
 
 	SPRoot * root;		/* Our SPRoot */
 
-	gdouble width;		/* Width of document */
-	gdouble height;		/* Height of document */
-
 	GHashTable * iddef;	/* id dictionary */
 
 	gchar * uri;		/* Document uri */
@@ -19,6 +16,8 @@ struct _SPDocumentPrivate {
 
 	SPAspect aspect;	/* Our aspect ratio preferences */
 	guint clip :1;		/* Whether we clip or meet outer viewport */
+
+	GSList * namedviews;	/* Our NamedViews */
 
 	/* State */
 	guint sensitive: 1;	/* If we save actions to undo stack */

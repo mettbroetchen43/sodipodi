@@ -20,6 +20,7 @@ static void sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], SPSelTransH
 static void sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data);
 static void sp_sel_trans_handle_ungrab (SPKnot * knot, guint state, gpointer data);
 static void sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint32 state, gpointer data);
+static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data);
 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 
@@ -285,22 +286,9 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), &handle_center);
 			gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "ungrabbed",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), &handle_center);
-#if 0
-			seltrans->chandle = (SPCtrl *) gnome_canvas_item_new (SP_DT_CONTROLS (seltrans->desktop),
-				SP_TYPE_CTRL, "anchor", handle_center.anchor, NULL);
-			gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "event",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_event), &handle_center);
-#endif
 		}
 		sp_knot_show (seltrans->chandle);
-		gtk_object_set (GTK_OBJECT (seltrans->chandle),
-			"x", seltrans->center.x,
-			"y", seltrans->center.y,
-			NULL);
-#if 0
-		gnome_canvas_item_show (GNOME_CANVAS_ITEM (seltrans->chandle));
-		sp_ctrl_moveto (seltrans->chandle, seltrans->center.x, seltrans->center.y);
-#endif
+		sp_knot_set_position (seltrans->chandle, &seltrans->center, 0);
 	}
 }
 
@@ -345,9 +333,6 @@ sp_remove_handles (SPKnot * knot[], gint num)
 	for (i = 0; i < num; i++) {
 		if (knot[i] != NULL) {
 			sp_knot_hide (knot[i]);
-#if 0
-			gnome_canvas_item_hide (GNOME_CANVAS_ITEM (ctrl[i]));
-#endif
 		}
 	}
 }
@@ -367,33 +352,23 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], SPSelTransHandle handle
 			knot[i] = sp_knot_new (seltrans->desktop);
 			gtk_object_set (GTK_OBJECT (knot[i]),
 				"anchor", handle[i].anchor, NULL);
+			gtk_signal_connect (GTK_OBJECT (knot[i]), "request",
+				GTK_SIGNAL_FUNC (sp_sel_trans_handle_request), &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "moved",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_new_event), &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "grabbed",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "ungrabbed",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), &handle[i]);
-#if 0
-			ctrl[i] = (SPCtrl *) gnome_canvas_item_new (SP_DT_CONTROLS (seltrans->desktop),
-				SP_TYPE_CTRL, "anchor", handle[i].anchor, NULL);
-			gtk_signal_connect (GTK_OBJECT (ctrl[i]), "event",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_event), &handle[i]);
-#endif
 		}
 		sp_knot_show (knot[i]);
-#if 0
-		gnome_canvas_item_show (GNOME_CANVAS_ITEM (ctrl[i]));
-#endif
 		p.x = handle[i].x;
 		p.y = handle[i].y;
 		/* fixme: current2n */
 		art_affine_point (&p, &p, seltrans->n2current);
 		art_affine_point (&p, &p, n2d);
 
-		gtk_object_set (GTK_OBJECT (knot[i]), "x", p.x, "y", p.y, NULL);
-#if 0
-		sp_ctrl_moveto (ctrl[i], p.x, p.y);
-#endif
+		sp_knot_set_position (knot[i], &p, 0);
 	}
 }
 
@@ -433,6 +408,8 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 	SPSelTrans * seltrans;
 	SPSelTransHandle * handle;
 	
+	if (!SP_KNOT_IS_GRABBED (knot)) return;
+
 	desktop = knot->desktop;
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 	handle = (SPSelTransHandle *) data;
@@ -440,63 +417,20 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 	handle->action (seltrans, handle, position->x, position->y, state);
 }
 
-#if 0
-static gint
-sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransHandle * handle)
-{
-	SPDesktop * desktop;
-	SPSelTrans * seltrans;
-	ArtPoint p;
-	static int dragging = FALSE;
-	GdkCursor * cursor;
-	SPCtrl * control;
-	
-	g_return_val_if_fail (SP_IS_CTRL (item), FALSE);
-	control = SP_CTRL (item);
-	desktop = SP_ACTIVE_DESKTOP;
-	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
+/* fixme: Highly experimental test :) */
 
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 1:
-			cursor = gdk_cursor_new (GDK_HAND2);
-			gnome_canvas_item_grab (item,
-				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				cursor, event->button.time);
-			gdk_cursor_destroy (cursor);
-			dragging = TRUE;
-			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-			sp_sel_trans_grab (seltrans, handle->affine, p.x, p.y, FALSE);
-			break;
-		default:
-			break;
-		}
-	case GDK_MOTION_NOTIFY:
-		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
-			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-			handle->action (seltrans, handle, p.x, p.y, event->button.state);
-		}
-		break;
-	case GDK_BUTTON_RELEASE:
-		gnome_canvas_item_ungrab (item, event->button.time);
-		dragging = FALSE;
-		sp_sel_trans_ungrab (seltrans);
-		break;
-	case GDK_ENTER_NOTIFY:
-		cursor = gdk_cursor_new (handle->cursor);
-		gdk_window_set_cursor (item->canvas->layout.container.widget.window, cursor);
-		gdk_cursor_destroy (cursor);
-		break;
-	case GDK_LEAVE_NOTIFY:
-		gdk_window_set_cursor (item->canvas->layout.container.widget.window, NULL);
-		break;
-	default:
-		break;
-	}
-return TRUE;
+static gboolean
+sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
+{
+	ArtPoint s;
+
+	s.x = rint (p->x);
+	s.y = rint (p->y);
+
+	sp_knot_set_position (knot, &s, state);
+
+	return TRUE;
 }
-#endif
 
 static void
 sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)

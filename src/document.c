@@ -59,28 +59,31 @@ sp_document_class_init (SPDocumentClass * klass)
 static void
 sp_document_init (SPDocument * document)
 {
-	document->private = g_new (SPDocumentPrivate, 1);
+	SPDocumentPrivate * p;
 
-	document->private->rdoc = NULL;
-	document->private->rroot = NULL;
+	p = g_new (SPDocumentPrivate, 1);
 
-	document->private->root = NULL;
+	p->rdoc = NULL;
+	p->rroot = NULL;
 
-	document->private->width = 0.0;
-	document->private->height = 0.0;
+	p->root = NULL;
 
-	document->private->iddef = g_hash_table_new (g_str_hash, g_str_equal);
+	p->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 
-	document->private->uri = NULL;
-	document->private->base = NULL;
+	p->uri = NULL;
+	p->base = NULL;
 
-	document->private->aspect = SPXMidYMid;
-	document->private->clip = FALSE;
+	p->aspect = SPXMidYMid;
+	p->clip = FALSE;
 
-	document->private->sensitive = TRUE;
-	document->private->undo = NULL;
-	document->private->redo = NULL;
-	document->private->actions = NULL;
+	p->namedviews = NULL;
+
+	p->sensitive = TRUE;
+	p->undo = NULL;
+	p->redo = NULL;
+	p->actions = NULL;
+
+	document->private = p;
 }
 
 static void
@@ -160,12 +163,6 @@ sp_document_new (const gchar * uri)
 
 	document->private->root = SP_ROOT (object);
 
-	/* We assume, that SPRoot requires width and height, and sets these
-	 * if not specified in SVG */
-
-	document->private->width = document->private->root->width;
-	document->private->height = document->private->root->height;
-
 	if (uri != NULL) {
 		b = g_strdup (uri);
 		g_return_val_if_fail (b != NULL, NULL);
@@ -219,12 +216,6 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 
 	document->private->root = SP_ROOT (object);
 
-	/* We assume, that SPRoot requires width and height, and sets these
-	 * if not specified in SVG */
-
-	document->private->width = document->private->root->width;
-	document->private->height = document->private->root->height;
-
 	/* fixme: docbase */
 
 	return document;
@@ -263,21 +254,29 @@ sp_document_root (SPDocument * document)
 gdouble
 sp_document_width (SPDocument * document)
 {
+	gdouble width;
+
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
 
-	return document->private->width;
+	gtk_object_get (GTK_OBJECT (document->private->root), "width", &width, NULL);
+
+	return width;
 }
 
 gdouble
 sp_document_height (SPDocument * document)
 {
+	gdouble height;
+
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
 
-	return document->private->height;
+	gtk_object_get (GTK_OBJECT (document->private->root), "height", &height, NULL);
+
+	return height;
 }
 
 const gchar *

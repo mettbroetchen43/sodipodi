@@ -3,6 +3,8 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_rgb_svp.h>
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-util.h>
 #include "sp-canvas-util.h"
 
 void
@@ -34,6 +36,8 @@ gnome_canvas_render_svp_translated (GnomeCanvasBuf * buf, ArtSVP * svp,
 {
 	guint32 fg_color, bg_color;
 	int alpha;
+
+	gnome_canvas_buf_ensure_buf (buf);
 
 	if (buf->is_bg) {
 		bg_color = buf->bg_color;

@@ -7,6 +7,7 @@
  *
  */
 
+#include <math.h>
 #include "helper/sodipodi-ctrl.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -17,8 +18,6 @@
 enum {
 	ARG_NONE,
 	ARG_SIZE,
-	ARG_X,
-	ARG_Y,
 	ARG_ANCHOR,
 	ARG_SHAPE,
 	ARG_FILL, ARG_FILL_MOUSEOVER, ARG_FILL_DRAGGING,
@@ -33,8 +32,19 @@ enum {
 	GRABBED,
 	UNGRABBED,
 	MOVED,
+	REQUEST,
+	DISTANCE,
 	LAST_SIGNAL
 };
+
+static void sp_marshal_BOOL__POINTER_UINT (GtkObject * object,
+	GtkSignalFunc func,
+	gpointer func_data,
+	GtkArg * args);
+static void sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object,
+	GtkSignalFunc func,
+	gpointer func_data,
+	GtkArg * args);
 
 static void sp_knot_class_init (SPKnotClass * klass);
 static void sp_knot_init (SPKnot * knot);
@@ -79,8 +89,6 @@ sp_knot_class_init (SPKnotClass * klass)
 	/* Huh :) */
 
 	gtk_object_add_arg_type ("SPKnot::size", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_SIZE);
-	gtk_object_add_arg_type ("SPKnot::x", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X);
-	gtk_object_add_arg_type ("SPKnot::y", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y);
 	gtk_object_add_arg_type ("SPKnot::anchor", GTK_TYPE_ANCHOR_TYPE, GTK_ARG_WRITABLE, ARG_ANCHOR);
 	gtk_object_add_arg_type ("SPKnot::shape", GTK_TYPE_ENUM, GTK_ARG_WRITABLE, ARG_SHAPE);
 	gtk_object_add_arg_type ("SPKnot::fill", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL);
@@ -127,6 +135,18 @@ sp_knot_class_init (SPKnotClass * klass)
 		GTK_SIGNAL_OFFSET (SPKnotClass, moved),
 		gtk_marshal_NONE__POINTER_UINT,
 		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
+	knot_signals[REQUEST] = gtk_signal_new ("request",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, request),
+		sp_marshal_BOOL__POINTER_UINT,
+		GTK_TYPE_BOOL, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
+	knot_signals[DISTANCE] = gtk_signal_new ("distance",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, distance),
+		sp_marshal_DOUBLE__POINTER_UINT,
+		GTK_TYPE_DOUBLE, 3, GTK_TYPE_POINTER, GTK_TYPE_UINT);
 
 	gtk_object_class_add_signals (object_class, knot_signals, LAST_SIGNAL);
 
@@ -199,14 +219,6 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 		knot->size = GTK_VALUE_UINT (* arg);
 		if (knot->item) {
 			gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
-		}
-		break;
-	case ARG_X:
-	case ARG_Y:
-		if (id == ARG_X) knot->x = GTK_VALUE_DOUBLE (* arg);
-		if (id == ARG_Y) knot->y = GTK_VALUE_DOUBLE (* arg);
-		if (knot->item) {
-			sp_ctrl_moveto (SP_CTRL (knot->item), knot->x, knot->y);
 		}
 		break;
 	case ARG_ANCHOR:
@@ -310,12 +322,14 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
 				knot->cursor[SP_KNOT_STATE_DRAGGING],
 				event->button.time);
+			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
 			consumed = TRUE;
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
+			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
 			gnome_canvas_item_ungrab (knot->item, event->button.time);
 			if (moved) {
 				sp_knot_set_flag (knot,
@@ -350,11 +364,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				event->motion.y);
 			p.x -= knot->hx;
 			p.y -= knot->hy;
-			sp_knot_set_position (knot, &p);
-			gtk_signal_emit (GTK_OBJECT (knot),
-				knot_signals[MOVED],
-				&p,
-				event->motion.state);
+			sp_knot_request_position (knot, &p, event->motion.state);
 			moved = TRUE;
 			consumed = TRUE;
 		}
@@ -424,6 +434,68 @@ sp_knot_hide (SPKnot * knot)
 	sp_knot_set_flag (knot, SP_KNOT_VISIBLE, FALSE);
 }
 
+void
+sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
+{
+	gboolean done;
+
+	g_return_if_fail (knot != NULL);
+	g_return_if_fail (SP_IS_KNOT (knot));
+	g_return_if_fail (p != NULL);
+
+	done = FALSE;
+
+	gtk_signal_emit (GTK_OBJECT (knot),
+		knot_signals[REQUEST],
+		p,
+		state,
+		&done);
+
+	/* If user did not complete, we simply move knot to new position */
+
+	if (!done) {
+		sp_knot_set_position (knot, p, state);
+	}
+}
+
+gdouble
+sp_knot_distance (SPKnot * knot, ArtPoint * p, guint state)
+{
+	gdouble distance;
+
+	g_return_val_if_fail (knot != NULL, 1e18);
+	g_return_val_if_fail (SP_IS_KNOT (knot), 1e18);
+	g_return_val_if_fail (p != NULL, 1e18);
+
+	distance = hypot (p->x - knot->x, p->y - knot->y);
+
+	gtk_signal_emit (GTK_OBJECT (knot),
+		knot_signals[DISTANCE],
+		p,
+		state,
+		&distance);
+
+	return distance;
+}
+
+void
+sp_knot_set_position (SPKnot * knot, ArtPoint * p, guint state)
+{
+	g_return_if_fail (knot != NULL);
+	g_return_if_fail (SP_IS_KNOT (knot));
+	g_return_if_fail (p != NULL);
+
+	knot->x = p->x;
+	knot->y = p->y;
+
+	if (knot->item) sp_ctrl_moveto (SP_CTRL (knot->item), p->x, p->y);
+
+	gtk_signal_emit (GTK_OBJECT (knot),
+		knot_signals[MOVED],
+		p,
+		state);
+}
+
 ArtPoint *
 sp_knot_position (SPKnot * knot, ArtPoint * p)
 {
@@ -435,19 +507,6 @@ sp_knot_position (SPKnot * knot, ArtPoint * p)
 	p->y = knot->y;
 
 	return p;
-}
-
-void
-sp_knot_set_position (SPKnot * knot, ArtPoint * p)
-{
-	g_return_if_fail (knot != NULL);
-	g_return_if_fail (SP_IS_KNOT (knot));
-	g_return_if_fail (p != NULL);
-
-	knot->x = p->x;
-	knot->y = p->y;
-
-	if (knot->item) sp_ctrl_moveto (SP_CTRL (knot->item), p->x, p->y);
 }
 
 static void
@@ -490,6 +549,8 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 				NULL);
 		}
 		break;
+	case SP_KNOT_GRABBED:
+		break;
 	default:
 		g_assert_not_reached ();
 		break;
@@ -500,5 +561,43 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 	} else {
 		knot->flags &= ~flag;
 	}
+}
+
+typedef gboolean (* SPSignal_BOOL__POINTER_UINT) (GtkObject *object,
+	gpointer arg1, guint arg2, gpointer user_data);
+
+static void
+sp_marshal_BOOL__POINTER_UINT (GtkObject * object,
+	GtkSignalFunc func,
+	gpointer func_data,
+	GtkArg * args)
+{
+	SPSignal_BOOL__POINTER_UINT rfunc;
+	gboolean * return_val;
+	return_val = GTK_RETLOC_BOOL (args[2]);
+	rfunc = (SPSignal_BOOL__POINTER_UINT) func;
+	* return_val =  (* rfunc) (object,
+		GTK_VALUE_POINTER(args[0]),
+		GTK_VALUE_INT(args[1]),
+		func_data);
+}
+
+typedef gdouble (* SPSignal_DOUBLE__POINTER_UINT) (GtkObject *object,
+	gpointer arg1, guint arg2, gpointer user_data);
+
+static void
+sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object,
+	GtkSignalFunc func,
+	gpointer func_data,
+	GtkArg * args)
+{
+	SPSignal_DOUBLE__POINTER_UINT rfunc;
+	gdouble * return_val;
+	return_val = GTK_RETLOC_DOUBLE (args[2]);
+	rfunc = (SPSignal_DOUBLE__POINTER_UINT) func;
+	* return_val =  (* rfunc) (object,
+		GTK_VALUE_POINTER(args[0]),
+		GTK_VALUE_INT(args[1]),
+		func_data);
 }
 

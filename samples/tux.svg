@@ -2,13 +2,15 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG August 1999//EN"
 "http://www.w3.org/Graphics/SVG/SVG-19990812.dtd">
 <svg
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/Graphics/SVG/SVG-19991203.dtd"
+   width = "595.7"
+   height = "841.89"
    sodipodi:docname="/home/lauris/src/sodipodi/samples/tux.svg"
    sodipodi:docbase="/home/lauris/src/sodipodi/samples/"
    transform="matrix (1.0 0.0 0.0 -1.0 0.0 841.889764)"
-   id="svg2"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/Graphics/SVG/SVG-19991203.dtd">  <g
-     id="g3">    <path
+   id="svg2">
+   <g id="g3">    <path
        transform="matrix(1.000000 0.000000 0.000000 1.000000 -188.771027 11.293993)"
        id="path4"
        style="stroke-width:1; stroke:none; fill-opacity:100%; fill:#ffffff; "

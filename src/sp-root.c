@@ -2,12 +2,19 @@
 
 #include "sp-root.h"
 
+enum {
+	ARG_0,
+	ARG_WIDTH,
+	ARG_HEIGHT
+};
+
 #define SP_SVG_DEFAULT_WIDTH 595.27
 #define SP_SVG_DEFAULT_HEIGHT 841.89
 
 static void sp_root_class_init (SPRootClass * klass);
 static void sp_root_init (SPRoot * root);
 static void sp_root_destroy (GtkObject * object);
+static void sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id);
 
 static void sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_root_read_attr (SPObject * object, const gchar * key);
@@ -49,7 +56,11 @@ sp_root_class_init (SPRootClass *klass)
 
 	parent_class = gtk_type_class (sp_group_get_type ());
 
+	gtk_object_add_arg_type ("SPRoot::width", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_WIDTH);
+	gtk_object_add_arg_type ("SPRoot::height", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_HEIGHT);
+
 	gtk_object_class->destroy = sp_root_destroy;
+	gtk_object_class->get_arg = sp_root_get_arg;
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->read_attr = sp_root_read_attr;
@@ -76,6 +87,25 @@ sp_root_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+static void
+sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id)
+{
+	SPRoot * root;
+
+	root = SP_ROOT (object);
+
+	switch (id) {
+	case ARG_WIDTH:
+		GTK_VALUE_DOUBLE (* arg) = root->width;
+		break;
+	case ARG_HEIGHT:
+		GTK_VALUE_DOUBLE (* arg) = root->height;
+		break;
+	default:
+		arg->type = GTK_TYPE_INVALID;
+		break;
+	}
+}
 
 static void
 sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -90,8 +120,11 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_root_read_attr (SPObject * object, const gchar * key)
 {
+	SPItem * item;
 	SPRoot * root;
+	GSList * l;
 
+	item = SP_ITEM (object);
 	root = SP_ROOT (object);
 
 	if (strcmp (key, "width") == 0) {
@@ -101,8 +134,11 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 	if (strcmp (key, "height") == 0) {
 		root->height = sp_repr_get_double_attribute (object->repr, key, root->height);
 		/* fixme: */
-		art_affine_scale (SP_ITEM (root)->affine, 1.0, -1.0);
-		SP_ITEM (root)->affine[5] = root->height;
+		art_affine_scale (item->affine, 1.0, -1.0);
+		item->affine[5] = root->height;
+		for (l = item->display; l != NULL; l = l->next) {
+			gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
+		}
 		return;
 	}
 

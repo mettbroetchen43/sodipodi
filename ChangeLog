@@ -1,3 +1,16 @@
+2000-05-14  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/knot.*: Lot of rearranging, new signals
+
+	* src/seltrans.c: Changes induced by new knot signalling
+	Added fake snapping to PostScript points (remove it, if you dare ;)
+ 
+2000-05-13  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/document-private.h: Removed width and height attributes
+
+	* src/sp-root.c: Added "width" and "height" readable attributes
+ 
 2000-05-12  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/xml/repr.h: A bit rearranging, added SPReprDoc, induces

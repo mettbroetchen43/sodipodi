@@ -43,7 +43,8 @@ typedef enum {
 enum {
 	SP_KNOT_VISIBLE = 1 << 0,
 	SP_KNOT_MOUSEOVER = 1 << 1,
-	SP_KNOT_DRAGGING = 1 << 2
+	SP_KNOT_DRAGGING = 1 << 2,
+	SP_KNOT_GRABBED = 1 << 3
 };
 
 typedef struct _SPKnot SPKnot;
@@ -82,22 +83,47 @@ struct _SPKnotClass {
 
 	gint (* event) (SPKnot * knot, GdkEvent * event);
 
+	/*
+	 * These are unconditional
+	 */
+
 	void (* clicked) (SPKnot * knot, guint state);
 	void (* grabbed) (SPKnot * knot, guint state);
 	void (* ungrabbed) (SPKnot * knot, guint state);
 	void (* moved) (SPKnot * knot, ArtPoint * position, guint state);
 
-	gdouble (* try_move) (SPKnot * knot, gdouble x, gdouble y);
+	/*
+	 * Request knot to move to absolute position
+	 */
+
+	gboolean (* request) (SPKnot * knot, ArtPoint * position, guint state);
+
+	/*
+	 * Find complex distance from knot to point
+	 */
+
+	gdouble (* distance) (SPKnot * knot, ArtPoint * position, guint state);
 };
 
 GtkType sp_knot_get_type (void);
 
 SPKnot * sp_knot_new (SPDesktop * desktop);
 
+#define SP_KNOT_IS_VISIBLE(k) ((k->flags & SP_KNOT_VISIBLE) != 0)
+#define SP_KNOT_IS_MOSEOVER(k) ((k->flags & SP_KNOT_MOUSEOVER) != 0)
+#define SP_KNOT_IS_DRAGGING(k) ((k->flags & SP_KNOT_DRAGGING) != 0)
+#define SP_KNOT_IS_GRABBED(k) ((k->flags & SP_KNOT_GRABBED) != 0)
+
 void sp_knot_show (SPKnot * knot);
 void sp_knot_hide (SPKnot * knot);
 
+void sp_knot_request_position (SPKnot * knot, ArtPoint * position, guint state);
+gdouble sp_knot_distance (SPKnot * knot, ArtPoint * p, guint state);
+
+/* Unconditional */
+
+void sp_knot_set_position (SPKnot * knot, ArtPoint * p, guint state);
+
 ArtPoint * sp_knot_position (SPKnot * knot, ArtPoint * p);
-void sp_knot_set_position (SPKnot * knot, ArtPoint * p);
 
 #endif
