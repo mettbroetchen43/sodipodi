@@ -20,7 +20,7 @@ nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMa
 	NRPGL *pgl;
 	unsigned int i;
 
-	pgl = (NRPGL *) malloc (sizeof (NRPGL) + (length - 1) * sizeof (struct _NRPosGlyph));
+	pgl = (NRPGL *) malloc (sizeof (NRPGL) + length * sizeof (struct _NRPosGlyph));
 
 	pgl->rfont = nr_rasterfont_new (font, transform);
 	nr_rect_f_set_empty (&pgl->area);
@@ -42,6 +42,11 @@ nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMa
 		nr_rasterfont_glyph_area_get (pgl->rfont, glyph, &area);
 		nr_rect_f_union (&pgl->area, &pgl->area, &area);
 	}
+
+	/* terminator */
+	pgl->glyphs[i].glyph = 0;
+	pgl->glyphs[i].x = pgl->advance.x;
+	pgl->glyphs[i].y = pgl->advance.y;
 
 	return pgl;
 }

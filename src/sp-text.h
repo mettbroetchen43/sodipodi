@@ -81,9 +81,10 @@ struct _SPString {
 	unsigned int ulen;
 	unsigned int spstart : 1;
 	unsigned int spend : 1;
+#else
+	NRPointF *p;
 #endif
 
-	NRPointF *p;
 	/* Bookkeeping */
 	guint start;
 	guint length;

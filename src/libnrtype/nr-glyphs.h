@@ -10,6 +10,7 @@
  * This code is in public domain
  */
 
+typedef struct _NRPosGlyph NRPosGlyph;
 typedef struct _NRPGL NRPGL;
 
 #include <libnr/nr-types.h>

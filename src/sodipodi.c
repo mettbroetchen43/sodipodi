@@ -66,7 +66,7 @@ enum {
 	LAST_SIGNAL
 };
 
-#define DESKTOP_IS_ACTIVE(d) ((d) == sodipodi->desktops->data)
+#define DESKTOP_IS_ACTIVE(d) ((d) && (sodipodi->desktops) && (d) == sodipodi->desktops->data)
 
 static void sodipodi_class_init (SodipodiClass *klass);
 static void sodipodi_init (SPObject *object);

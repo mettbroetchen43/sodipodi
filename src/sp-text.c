@@ -129,11 +129,12 @@ sp_string_release (SPObject *object)
 
 	string = SP_STRING (object);
 
-	if (string->p) g_free (string->p);
 	if (string->text) g_free (string->text);
 
 #ifdef SP_TEXT_NEW_CONTENT
 	if (string->uchars) nr_free (string->uchars);
+#else
+	if (string->p) g_free (string->p);
 #endif
 
 	if (((SPObjectClass *) string_parent_class)->release)
@@ -150,8 +151,10 @@ sp_string_read_content (SPObject *object)
 
 	string = SP_STRING (object);
 
+#ifndef SP_TEXT_NEW_CONTENT
 	if (string->p) g_free (string->p);
 	string->p = NULL;
+#endif
 	if (string->text) g_free (string->text);
 	t = sp_repr_content (object->repr);
 	string->text = (t) ? g_strdup (t) : NULL;
@@ -375,8 +378,10 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	if (!string->text || !*string->text) return;
 	len = g_utf8_strlen (string->text, -1);
 	if (!len) return;
+#ifndef SP_TEXT_NEW_CONTENT
 	if (string->p) g_free (string->p);
 	string->p = g_new (NRPointF, len + 1);
+#endif
 
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
@@ -401,11 +406,19 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	nr_matrix_f_set_scale (&a, 1.0, -1.0);
 
 	for (i = 0; i < string->ulen; i++) {
+		NRFont *font;
+		NRPosGlyph *pglyph;
+
+		/* fixme: we should use rasterfont instead */
+		font = pgl->rfont->font;
+		pglyph = &pgl->glyphs[i];
+		a.c[4] = x + pglyph->x;
+		a.c[5] = y + pglyph->y;
+
+		sp_chars_add_element (chars, pglyph->glyph, font, &a);
 	}
 
 	nr_pgl_free (pgl);
-
-
 #else
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		spadv.x = 0.0;
@@ -2293,10 +2306,43 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 	SPObject *child;
 	SPString *string;
 	gfloat x, y;
+#ifdef SP_TEXT_NEW_CONTENT
+	NRPGL *pgl;
+	NRMatrixF gtr;
+	SPStyle *style;
+	NRTypeFace *face;
+	NRFont     *font;
+	gdouble     size;
+	guint       metrics;
+#endif
 
 	child = sp_text_get_child_by_position (text, position);
 	string = SP_TEXT_CHILD_STRING (child);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	/* fixme: */
+	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
+	size = style->font_size.computed;
+	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		metrics = NR_TYPEFACE_METRICS_VERTICAL;
+	} else {
+		metrics = NR_TYPEFACE_METRICS_HORIZONTAL;
+	}
+	font = nr_font_new_default (face, metrics, size);
+
+	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
+	gtr.c[4] = string->ly->x.computed;
+	gtr.c[5] = string->ly->y.computed;
+
+	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
+	x = pgl->glyphs[position - string->start].x;
+	y = pgl->glyphs[position - string->start].y;
+
+	nr_pgl_free (pgl);
+	nr_font_unref (font);
+	nr_typeface_unref (face);
+#else
 	if (!string->p) {
 		x = string->ly->x.computed;
 		y = string->ly->y.computed;
@@ -2304,6 +2350,7 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 		x = string->p[position - string->start].x;
 		y = string->p[position - string->start].y;
 	}
+#endif
 
 	if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		p0->x = x - child->style->font_size.computed / 2.0;

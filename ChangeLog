@@ -1,3 +1,22 @@
+2003-12-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/desktop.c (sp_desktop_prepare_shutdown): Fixed a bug which
+	is caused when application exit, if text selection is empty in
+	text-context
+	
+	* src/sodipodi.c (DESKTOP_IS_ACTIVE): Improved robustness
+
+	* src/sp-text.c: src/sp-text.h (sp_string_release):
+	New text content stuff which works with SP_TEXT_NEW_CONTENT macro
+	(sp_string_read_content): Ditto
+	(sp_string_set_shape): Ditto
+	(sp_text_get_cursor_coords): Ditto
+
+	* src/libnrtype/nr-glyphs.c (nr_pgl_new_from_string): Add
+	terminator glyph
+
+	* src/libnrtype/nr-glyphs.h (NRPosGlyph): Add typedef
+
 2003-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Version 0.33

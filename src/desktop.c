@@ -363,11 +363,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 static void
 sp_desktop_prepare_shutdown (SPDesktop *dt)
 {
-	if (dt->sodipodi) {
-		sodipodi_remove_desktop (dt);
-		dt->sodipodi = NULL;
-	}
-
 	while (dt->event_context) {
 		SPEventContext *ec = dt->event_context;
 		dt->event_context = ec->next;
@@ -389,6 +384,11 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 	if (dt->drawing) {
 		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
 		dt->drawing = NULL;
+	}
+
+	if (dt->sodipodi) {
+		sodipodi_remove_desktop (dt);
+		dt->sodipodi = NULL;
 	}
 }
 
