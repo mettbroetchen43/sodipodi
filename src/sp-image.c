@@ -22,7 +22,7 @@ static void sp_image_update (SPItem * item, gdouble affine[]);
 static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
-static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
+static GnomeCanvasItem * sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
@@ -83,6 +83,7 @@ static void
 sp_image_init (SPImage *image)
 {
 	image->pixbuf = NULL;
+	image->sensitive = TRUE;
 }
 
 static void
@@ -105,6 +106,7 @@ sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
 
 	sp_image_read_attr (object, "xlink:href");
+	sp_image_read_attr (object, "insensitive");
 }
 
 static void
@@ -127,6 +129,20 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 		image->pixbuf = pixbuf;
 
 		sp_item_request_canvas_update (SP_ITEM (image));
+		return;
+	}
+
+	if (strcmp (key, "insensitive") == 0) {
+		const gchar * val;
+		gboolean sensitive;
+		SPItemView * v;
+
+		val = sp_repr_attr (object->repr, key);
+		sensitive = (val == NULL);
+
+		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
+			sp_canvas_image_set_sensitive (SP_CANVAS_IMAGE (v->canvasitem), sensitive);
+		}
 		return;
 	}
 
@@ -227,7 +243,7 @@ sp_image_description (SPItem * item)
 }
 
 static GnomeCanvasItem *
-sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
 	SPImage * image;
 	SPCanvasImage * ci;

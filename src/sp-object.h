@@ -10,18 +10,6 @@
  *
  */
 
-#ifndef SP_OBJECT_DEFINED
-#define SP_OBJECT_DEFINED
-typedef struct _SPObject SPObject;
-typedef struct _SPObjectClass SPObjectClass;
-#endif
-
-#ifndef SP_DOCUMENT_DEFINED
-#define SP_DOCUMENT_DEFINED
-typedef struct _SPDocument SPDocument;
-typedef struct _SPDocumentClass SPDocumentClass;
-#endif
-
 #define SP_TYPE_OBJECT            (sp_object_get_type ())
 #define SP_OBJECT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECT, SPObject))
 #define SP_OBJECT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
@@ -34,6 +22,35 @@ typedef struct _SPDocumentClass SPDocumentClass;
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
 #include "xml/repr.h"
+#include "forward.h"
+
+typedef enum {
+	SP_NO_EXCEPTION,
+	SP_INDEX_SIZE_ERR,
+	SP_DOMSTRING_SIZE_ERR,
+	SP_HIERARCHY_REQUEST_ERR,
+	SP_WRONG_DOCUMENT_ERR,
+	SP_INVALID_CHARACTER_ERR,
+	SP_NO_DATA_ALLOWED_ERR,
+	SP_NO_MODIFICATION_ALLOWED_ERR,
+	SP_NOT_FOUND_ERR,
+	SP_NOT_SUPPORTED_ERR,
+	SP_INUSE_ATTRIBUTE_ERR,
+	SP_INVALID_STATE_ERR,
+	SP_SYNTAX_ERR,
+	SP_INVALID_MODIFICATION_ERR,
+	SP_NAMESPACE_ERR,
+	SP_INVALID_ACCESS_ERR
+} SPExceptionType;
+
+typedef struct _SPException SPException;
+
+struct _SPException {
+	SPExceptionType code;
+};
+
+#define SP_EXCEPTION_INIT(ex) {(ex)->code = SP_NO_EXCEPTION;}
+#define SP_EXCEPTION_IS_OK(ex) ((ex)->code == SP_NO_EXCEPTION;}
 
 struct _SPObject {
 	GtkObject object;
@@ -62,5 +79,10 @@ GtkType sp_object_get_type (void);
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
+/* Public */
+
+const gchar * sp_object_getAttribute (SPObject * object, const gchar * key, SPException * ex);
+void sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * value, SPException * ex);
+void sp_object_removeAttribute (SPObject * object, const gchar * key, SPException * ex);
 
 #endif

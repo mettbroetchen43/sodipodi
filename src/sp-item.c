@@ -3,6 +3,7 @@
 #include <gnome.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
+#include "desktop.h"
 #include "sp-item.h"
 
 static void sp_item_class_init (SPItemClass * klass);
@@ -14,8 +15,12 @@ static void sp_item_read_attr (SPObject * object, const gchar * key);
 
 static gchar * sp_item_private_description (SPItem * item);
 
-static GnomeCanvasItem * sp_item_private_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-static void sp_item_private_hide (SPItem * item, GnomeCanvas * canvas);
+static GnomeCanvasItem * sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+static void sp_item_private_hide (SPItem * item, SPDesktop * desktop);
+
+static void sp_item_private_menu (SPItem * item, GtkMenu * menu);
+void sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item);
+void sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item);
 
 static SPObjectClass * parent_class;
 
@@ -58,6 +63,7 @@ sp_item_class_init (SPItemClass * klass)
 	klass->description = sp_item_private_description;
 	klass->show = sp_item_private_show;
 	klass->hide = sp_item_private_hide;
+	klass->menu = sp_item_private_menu;
 }
 
 static void
@@ -75,8 +81,8 @@ sp_item_destroy (GtkObject * object)
 	item = (SPItem *) object;
 
 	while (item->display) {
-		gtk_object_destroy ((GtkObject *) item->display->data);
-		item->display = g_slist_remove_link (item->display, item->display);
+		gtk_object_destroy (GTK_OBJECT (item->display->canvasitem));
+		item->display = sp_item_view_list_remove (item->display, item->display);
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -95,10 +101,8 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_item_read_attr (SPObject * object, const gchar * key)
 {
-	SPItem * item;
-	GnomeCanvasItem * ci;
-	SPItem * i;
-	GSList * l;
+	SPItem * item, * i;
+	SPItemView * v;
 	gdouble a[6];
 	const gchar * astr;
 
@@ -111,9 +115,8 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 		if (astr != NULL) {
 			sp_svg_read_affine (item->affine, astr);
 		}
-		for (l = item->display; l != NULL; l = l->next) {
-			ci = (GnomeCanvasItem *) l->data;
-			gnome_canvas_item_affine_absolute (ci, item->affine);
+		for (v = item->display; v != NULL; v = v->next) {
+			gnome_canvas_item_affine_absolute (v->canvasitem, item->affine);
 		}
 		art_affine_identity (a);
 		for (i = item; i != NULL; i = (SPItem *) ((SPObject *)i)->parent)
@@ -181,70 +184,65 @@ gchar * sp_item_description (SPItem * item)
 }
 
 static GnomeCanvasItem *
-sp_item_private_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
 	return NULL;
 }
 
 GnomeCanvasItem *
-sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
-	GnomeCanvasItem * ci;
+	GnomeCanvasItem * canvasitem;
 
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
-	g_return_val_if_fail (canvas_group != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (canvas_group), NULL);
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (canvas_group != NULL);
+	g_assert (GNOME_IS_CANVAS_GROUP (canvas_group));
 
-	ci = NULL;
+	canvasitem = NULL;
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show)
-		ci =  (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) (item, canvas_group, handler);
-
-	if (ci != NULL) {
-#if 0
-/* fixme: this goes to SPGroup */
-		if (item->parent != NULL) {
-			pos = g_slist_index (item->parent->children, item);
-			gnome_canvas_item_move_to_z (ci, pos);
-		}
-#endif
-		gnome_canvas_item_affine_absolute (ci, item->affine);
-		if (handler != NULL)
-			gtk_signal_connect (GTK_OBJECT (ci), "event",
-				GTK_SIGNAL_FUNC (handler), item);
-		item->display = g_slist_prepend (item->display, ci);
+	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) {
+		canvasitem =  (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) (item, desktop, canvas_group);
+	} else {
+		canvasitem = NULL;
 	}
 
-	return ci;
+	if (canvasitem != NULL) {
+		item->display = sp_item_view_new_prepend (item->display, item, desktop, canvasitem);
+		gnome_canvas_item_affine_absolute (canvasitem, item->affine);
+		sp_desktop_connect_item (desktop, item, canvasitem);
+	}
+
+	return canvasitem;
 }
 
 static void
-sp_item_private_hide (SPItem * item, GnomeCanvas * canvas)
+sp_item_private_hide (SPItem * item, SPDesktop * desktop)
 {
-	GnomeCanvasItem * ci;
-	GSList * l;
+	SPItemView * v;
 
-	for (l = item->display; l != NULL; l = l->next) {
-		ci = GNOME_CANVAS_ITEM (l->data);
-		if (ci->canvas == canvas) {
-			gtk_object_destroy ((GtkObject *) ci);
-			item->display = g_slist_remove (item->display, ci);
+	for (v = item->display; v != NULL; v = v->next) {
+		if (v->desktop == desktop) {
+			gtk_object_destroy (GTK_OBJECT (v->canvasitem));
+			item->display = sp_item_view_list_remove (item->display, v);
 			return;
 		}
 	}
+
 	g_assert_not_reached ();
 }
 
-void sp_item_hide (SPItem * item, GnomeCanvas * canvas)
+void sp_item_hide (SPItem * item, SPDesktop * desktop)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (canvas != NULL);
-	g_assert (GNOME_IS_CANVAS (canvas));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, canvas);
+		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, desktop);
 }
 
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
@@ -263,19 +261,17 @@ gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 }
 
 GnomeCanvasItem *
-sp_item_canvas_item (SPItem * item, GnomeCanvas * canvas)
+sp_item_canvas_item (SPItem * item, SPDesktop * desktop)
 {
-	GnomeCanvasItem * ci;
-	GSList * l;
+	SPItemView * v;
 
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
-	g_return_val_if_fail (canvas != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_CANVAS (canvas), NULL);
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
 
-	for (l = item->display; l != NULL; l = l->next) {
-		ci = (GnomeCanvasItem *) l->data;
-		if (ci->canvas == canvas) return ci;
+	for (v = item->display; v != NULL; v = v->next) {
+		if (v->desktop == desktop) return v->canvasitem;
 	}
 
 	return NULL;
@@ -284,15 +280,13 @@ sp_item_canvas_item (SPItem * item, GnomeCanvas * canvas)
 void
 sp_item_request_canvas_update (SPItem * item)
 {
-	GnomeCanvasItem * ci;
-	GSList * l;
+	SPItemView * v;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 
-	for (l = item->display; l != NULL; l = l->next) {
-		ci = GNOME_CANVAS_ITEM (l->data);
-		gnome_canvas_item_request_update (ci);
+	for (v = item->display; v != NULL; v = v->next) {
+		gnome_canvas_item_request_update (v->canvasitem);
 	}
 }
 
@@ -316,8 +310,7 @@ sp_item_i2d_affine (SPItem * item, gdouble affine[])
 void
 sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
 {
-	GnomeCanvasItem * ci;
-	GSList * l;
+	SPItemView * v;
 	gdouble p2d[6], d2p[6];
 	gint i;
 
@@ -337,9 +330,8 @@ sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
 	/* fixme: do the updating right way */
 	sp_item_update (item, affine);
 #else
-	for (l = item->display; l != NULL; l = l->next) {
-		ci = (GnomeCanvasItem *) l->data;
-		gnome_canvas_item_affine_absolute (ci, affine);
+	for (v = item->display; v != NULL; v = v->next) {
+		gnome_canvas_item_affine_absolute (v->canvasitem, affine);
 	}
 #endif
 }
@@ -364,18 +356,18 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 void
 sp_item_change_canvasitem_position (SPItem * item, gint delta)
 {
-	GSList * l;
+	SPItemView * v;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 
 	if (delta == 0) return;
 
-	for (l = item->display; l != NULL; l = l->next) {
+	for (v = item->display; v != NULL; v = v->next) {
 		if (delta > 0) {
-			gnome_canvas_item_raise (GNOME_CANVAS_ITEM (l->data), delta);
+			gnome_canvas_item_raise (v->canvasitem, delta);
 		} else {
-			gnome_canvas_item_lower (GNOME_CANVAS_ITEM (l->data), -delta);
+			gnome_canvas_item_lower (v->canvasitem, -delta);
 		}
 	}
 }
@@ -383,12 +375,128 @@ sp_item_change_canvasitem_position (SPItem * item, gint delta)
 void
 sp_item_raise_canvasitem_to_top (SPItem * item)
 {
-	GSList * l;
+	SPItemView * v;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 
-	for (l = item->display; l != NULL; l = l->next) {
-		gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM (l->data));
+	for (v = item->display; v != NULL; v = v->next) {
+		gnome_canvas_item_raise_to_top (v->canvasitem);
 	}
 }
+
+static void
+sp_item_private_menu (SPItem * item, GtkMenu * menu)
+{
+	GtkWidget * i, * m, * w;
+
+	i = gtk_menu_item_new_with_label ("Item");
+
+	/* Reset transformations */
+	m = gtk_menu_new ();
+	w = gtk_menu_item_new_with_label (_("Reset transformation"));
+	gtk_signal_connect (GTK_OBJECT (w), "activate",
+			    GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Toggle sensitivity */
+	/* "sensitive" attribute is handled in shape & image */
+	w = gtk_menu_item_new_with_label (_("Toggle sensitivity"));
+	gtk_signal_connect (GTK_OBJECT (w), "activate",
+			    GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
+}
+
+void
+sp_item_menu (SPItem * item, GtkMenu * menu)
+{
+	g_assert (SP_IS_ITEM (item));
+	g_assert (GTK_IS_MENU (menu));
+
+	if (SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu)
+		(* SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu) (item, menu);
+}
+
+void
+sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
+{
+	g_assert (SP_IS_ITEM (item));
+
+	sp_repr_set_attr (((SPObject *) item)->repr, "transform", NULL);
+}
+
+void
+sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
+{
+	const gchar * val;
+
+	g_assert (SP_IS_ITEM (item));
+
+	/* fixme: reprs suck */
+	val = sp_repr_attr (((SPObject *) item)->repr, "insensitive");
+	if (val != NULL) {
+		val = NULL;
+	} else {
+		val = "1";
+	}
+	sp_repr_set_attr (((SPObject *) item)->repr, "insensitive", val);
+}
+
+/* Item views */
+
+SPItemView *
+sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop, GnomeCanvasItem * canvasitem)
+{
+	SPItemView * new;
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (canvasitem != NULL);
+	g_assert (GNOME_IS_CANVAS_ITEM (canvasitem));
+
+	new = g_new (SPItemView, 1);
+
+	new->next = list;
+	new->prev = NULL;
+	if (list) list->prev = new;
+	new->item = item;
+	new->desktop = desktop;
+	new->canvasitem = canvasitem;
+
+	return new;
+}
+
+SPItemView *
+sp_item_view_list_remove (SPItemView * list, SPItemView * view)
+{
+	SPItemView * v;
+
+	g_assert (list != NULL);
+	g_assert (view != NULL);
+
+	for (v = list; v != NULL; v = v->next) {
+		if (v == view) {
+			if (v->next) v->next->prev = v->prev;
+			if (v->prev) {
+				v->prev->next = v->next;
+			} else {
+				list = v->next;
+			}
+			g_free (v);
+			return list;
+		}
+	}
+
+	g_assert_not_reached ();
+	return NULL;
+}
+

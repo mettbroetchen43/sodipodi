@@ -11,25 +11,14 @@
  */
 
 #include <gtk/gtk.h>
+#include "forward.h"
 #include "sp-item.h"
-
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
 
 #define SP_TYPE_SELECTION            (sp_selection_get_type ())
 #define SP_SELECTION(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SELECTION, SPSelection))
 #define SP_SELECTION_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SELECTION, SPSelectionClass))
 #define SP_IS_SELECTION(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SELECTION))
 #define SP_IS_SELECTION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SELECTION))
-
-#ifndef SP_SELECTION_DEFINED
-#define SP_SELECTION_DEFINED
-typedef struct _SPSelection SPSelection;
-#endif
-typedef struct _SPSelectionClass SPSelectionClass;
 
 struct _SPSelection {
 	GtkObject object;

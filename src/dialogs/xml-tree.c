@@ -2,8 +2,9 @@
 
 #include <gnome.h>
 #include <glade/glade.h>
-#include "../sp-object.h"
 #include "../sodipodi.h"
+#include "../document.h"
+#include "../sp-object.h"
 #include "xml-tree.h"
 
 static GladeXML * xml;

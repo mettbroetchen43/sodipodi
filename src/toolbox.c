@@ -16,6 +16,7 @@
 #include <glade/glade.h>
 #include "widgets/sp-toolbox.h"
 #include "sodipodi-private.h"
+#include "document.h"
 #include "toolbox.h"
 #include "sodipodi.h"
 #include "event-broker.h"
@@ -33,6 +34,7 @@ GtkWidget * sp_toolbox_create (GladeXML * xml,
 
 static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
+void object_flip (GtkWidget * widget, GdkEventButton * event);
 
 static GladeXML  * toolbox_xml = NULL;
 static GtkWidget * toolbox = NULL;

@@ -3,11 +3,13 @@
 #include "align.h"
 #include <math.h>
 #include <glade/glade.h>
-#include "transformation.h"
 #include "../sodipodi.h"
+#include "../document.h"
+#include "../desktop.h"
 #include "../desktop-handles.h"
 #include "../svg/svg.h"
 #include "../selection-chemistry.h"
+#include "transformation.h"
 
 /*
  * handler functions for transformation dialog

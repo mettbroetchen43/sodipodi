@@ -30,7 +30,7 @@ static void sp_shape_read_attr (SPObject * object, const gchar * attr);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
-static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
+static GnomeCanvasItem * sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
@@ -132,7 +132,7 @@ sp_shape_read_attr (SPObject * object, const gchar * attr)
 	SPFill * fill;
 	SPStroke * stroke;
 	SPCanvasShape * cs;
-	GSList * l;
+	SPItemView * v;
 
 	shape = SP_SHAPE (object);
 
@@ -152,8 +152,8 @@ g_print ("sp_shape_read_attr: %s\n", attr);
 		sp_stroke_unref (shape->stroke);
 		shape->stroke = stroke;
 
-		for (l = SP_ITEM (shape)->display; l != NULL; l = l->next) {
-			cs = SP_CANVAS_SHAPE (l->data);
+		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+			cs = SP_CANVAS_SHAPE (v->canvasitem);
 			sp_canvas_shape_set_fill (cs, shape->fill);
 			sp_canvas_shape_set_stroke (cs, shape->stroke);
 		}
@@ -279,7 +279,7 @@ sp_shape_description (SPItem * item)
 }
 
 static GnomeCanvasItem *
-sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
 	SPShape * shape;
 	SPPath * path;
@@ -391,14 +391,14 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 	SPItem * item;
 	SPShape * shape;
 	SPCanvasShape * cs;
-	GSList * l;
+	SPItemView * v;
 
 	item = SP_ITEM (path);
 	shape = SP_SHAPE (path);
 
 	/* fixme: */
-	for (l = item->display; l != NULL; l = l->next) {
-		cs = (SPCanvasShape *) l->data;
+	for (v = item->display; v != NULL; v = v->next) {
+		cs = (SPCanvasShape *) v->canvasitem;
 		sp_canvas_shape_clear (cs);
 	}
 
@@ -412,13 +412,13 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 	SPItem * item;
 	SPShape * shape;
 	SPCanvasShape * cs;
-	GSList * l;
+	SPItemView * v;
 
 	item = SP_ITEM (path);
 	shape = SP_SHAPE (path);
 
-	for (l = item->display; l != NULL; l = l->next) {
-		cs = (SPCanvasShape *) l->data;
+	for (v = item->display; v != NULL; v = v->next) {
+		cs = (SPCanvasShape *) v->canvasitem;
 		sp_canvas_shape_add_component (cs, comp->curve, comp->private, comp->affine);
 	}
 
@@ -432,14 +432,14 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 	SPItem * item;
 	SPShape * shape;
 	SPCanvasShape * cs;
-	GSList * l;
+	SPItemView * v;
 
 	item = SP_ITEM (path);
 	shape = SP_SHAPE (path);
 
 	/* fixme: */
-	for (l = item->display; l != NULL; l = l->next) {
-		cs = (SPCanvasShape *) l->data;
+	for (v = item->display; v != NULL; v = v->next) {
+		cs = (SPCanvasShape *) v->canvasitem;
 		sp_canvas_shape_change_bpath (cs, comp->curve);
 	}
 

@@ -23,30 +23,6 @@ typedef enum {
 	SPXMaxYMax
 } SPAspect;
 
-#ifndef SP_OBJECT_DEFINED
-#define SP_OBJECT_DEFINED
-typedef struct _SPObject SPObject;
-typedef struct _SPObjectClass SPObjectClass;
-#endif
-
-#ifndef SP_ITEM_DEFINED
-#define SP_ITEM_DEFINED
-typedef struct _SPItem SPItem;
-typedef struct _SPItemClass SPItemClass;
-#endif
-
-#ifndef SP_ROOT_DEFINED
-#define SP_ROOT_DEFINED
-typedef struct _SPRoot SPRoot;
-typedef struct _SPRootClass SPRootClass;
-#endif
-
-#ifndef SP_DOCUMENT_DEFINED
-#define SP_DOCUMENT_DEFINED
-typedef struct _SPDocument SPDocument;
-typedef struct _SPDocumentClass SPDocumentClass;
-#endif
-
 typedef struct _SPDocumentPrivate SPDocumentPrivate;
 
 #define SP_TYPE_DOCUMENT            (sp_document_get_type ())
@@ -59,7 +35,7 @@ typedef struct _SPDocumentPrivate SPDocumentPrivate;
 #include <gtk/gtkobject.h>
 #include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
-#include "sp-namedview.h"
+#include "forward.h"
 
 struct _SPDocument {
 	GtkObject object;

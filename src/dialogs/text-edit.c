@@ -5,8 +5,11 @@
 #include <libgnomeprint/gnome-font-dialog.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
+#include "../forward.h"
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop-handles.h"
+#include "../selection.h"
 #include "text-edit.h"
 
 static void sp_text_read_selection (void);

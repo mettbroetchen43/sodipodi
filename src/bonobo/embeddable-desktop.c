@@ -1,6 +1,7 @@
 #define SP_EMBEDDABLE_DESKTOP_C
 
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop.h"
 #include "embeddable-desktop.h"
 
@@ -26,7 +27,7 @@ sp_embeddable_desktop_get_type (void)
 			(GtkObjectInitFunc) sp_embeddable_desktop_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (BONOBO_VIEW_TYPE, &info);
+		type = bonobo_x_type_unique (BONOBO_EMBEDDABLE_TYPE, NULL, NULL, 0, &info);
 	}
 	return type;
 }
@@ -52,17 +53,9 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	const Bonobo_ViewFrame view_frame, gpointer data)
 {
 	SPEmbeddableDesktop * desktop;
-	Bonobo_Embeddable corba_desktop;
 	SPNamedView * namedview;
 
 	desktop = gtk_type_new (SP_EMBEDDABLE_DESKTOP_TYPE);
-
-	corba_desktop = bonobo_view_corba_object_create (BONOBO_OBJECT (desktop));
-
-	if (corba_desktop == CORBA_OBJECT_NIL) {
-		gtk_object_unref (GTK_OBJECT (desktop));
-		return CORBA_OBJECT_NIL;
-	}
 
 	desktop->document = SP_EMBEDDABLE_DOCUMENT (embeddable);
 
@@ -81,7 +74,6 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 		GTK_SIGNAL_FUNC (sp_embeddable_desktop_size_allocate), desktop);
 
 	bonobo_view_construct (BONOBO_VIEW (desktop),
-		corba_desktop,
 		GTK_WIDGET (desktop->desktop));
 
 	gtk_widget_show (GTK_WIDGET (desktop->desktop));

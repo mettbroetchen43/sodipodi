@@ -10,10 +10,12 @@
  *
  */
 
+#include <string.h>
 #include <xml/repr.h>
 #include "sodipodi-private.h"
 #include "sp-object-repr.h"
 #include "sp-root.h"
+#include "sp-namedview.h"
 #include "document-private.h"
 
 #define A4_WIDTH  (21.0 * 72.0 / 2.54)

@@ -21,7 +21,7 @@ sp_embeddable_drawing_get_type (void)
 			(GtkObjectInitFunc) sp_embeddable_drawing_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (BONOBO_CANVAS_COMPONENT_TYPE, &info);
+		type = bonobo_x_type_unique (BONOBO_CANVAS_COMPONENT_TYPE, NULL, NULL, 0, &info);
 	}
 	return type;
 }
@@ -52,19 +52,11 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 	GnomeCanvas * canvas, gpointer data)
 {
 	SPEmbeddableDrawing * drawing;
-	Bonobo_Canvas_Component corba_drawing;
 	SPEmbeddableDocument * document;
 
 	document = SP_EMBEDDABLE_DOCUMENT (embeddable);
 
 	drawing = gtk_type_new (SP_EMBEDDABLE_DRAWING_TYPE);
-
-	corba_drawing = bonobo_canvas_component_object_create (BONOBO_OBJECT (drawing));
-
-	if (corba_drawing == CORBA_OBJECT_NIL) {
-		gtk_object_unref (GTK_OBJECT (drawing));
-		return CORBA_OBJECT_NIL;
-	}
 
 	drawing->edocument = document;
 	drawing->spdocument = document->document;
@@ -84,7 +76,6 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 		"fill_color", "red", NULL);
 #endif
 	bonobo_canvas_component_construct (BONOBO_CANVAS_COMPONENT (drawing),
-		corba_drawing,
 		GNOME_CANVAS_ITEM (drawing->drawing));
 
 #if 0
@@ -97,9 +88,8 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (drawing->drawing), affine);
 #endif
 
-	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)),
-		drawing->drawing,
-		NULL);
+	/* fixme: */
+	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)), NULL, drawing->drawing);
 
 	return BONOBO_CANVAS_COMPONENT (drawing);
 }
@@ -113,16 +103,15 @@ sp_embeddable_drawing_new_doc (BonoboCanvasComponent * component, gpointer data)
 
 	drawing = SP_EMBEDDABLE_DRAWING (component);
 
-	sp_item_hide (SP_ITEM (sp_document_root (drawing->spdocument)),
-		GNOME_CANVAS_ITEM (drawing->drawing)->canvas);
+	/* fixme: */
+	sp_item_hide (SP_ITEM (sp_document_root (drawing->spdocument)), NULL);
 
 	gtk_object_ref (GTK_OBJECT (drawing->edocument->document));
 	gtk_object_unref (GTK_OBJECT (drawing->spdocument));
 
 	drawing->spdocument = drawing->edocument->document;
 
-	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)),
-		drawing->drawing,
-		NULL);
+	/* fixme: */
+	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)), NULL, drawing->drawing);
 }
 

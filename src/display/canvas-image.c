@@ -76,6 +76,7 @@ sp_canvas_image_init (SPCanvasImage * canvas_image)
 {
 	canvas_image->pixbuf = NULL;
 	canvas_image->vpath = NULL;
+	canvas_image->sensitive = TRUE;
 }
 
 static void
@@ -166,6 +167,7 @@ sp_canvas_image_point (GnomeCanvasItem *item, double x, double y,
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
+	if (!canvas_image->sensitive) return 1e18;
 	if (canvas_image->pixbuf == NULL) return 1e18;
 
 	pixels = gdk_pixbuf_get_pixels (canvas_image->pixbuf);
@@ -230,3 +232,10 @@ sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf)
 	gnome_canvas_item_request_update ((GnomeCanvasItem *) image);
 }
 
+void
+sp_canvas_image_set_sensitive (SPCanvasImage * image, gboolean sensitive)
+{
+	g_assert (SP_IS_CANVAS_IMAGE (image));
+
+	image->sensitive = sensitive;
+}

@@ -114,7 +114,7 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 	switch (event->type) {
 	case GDK_KEY_PRESS:
                 // filter control-modifier for desktop shortcuts
-                if (event->key.state & GDK_CONTROL_MASK) return;
+                if (event->key.state & GDK_CONTROL_MASK) return FALSE;
                                 
 		if (!SP_TEXT_CONTEXT (event_context)->text) {
 			ret = FALSE;
@@ -191,7 +191,7 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 /* fixme: */
 			if (item != NULL) {
 				text_context->item = item;
-				text_context->canvasitem = sp_item_canvas_item (item, SP_DT_CANVAS (desktop));
+				text_context->canvasitem = sp_item_canvas_item (item, desktop);
 				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
 				gnome_canvas_item_grab_focus (text_context->canvasitem);
 			}

@@ -1,5 +1,6 @@
 #define SP_NAMEDVIEW_C
 
+#include <string.h>
 #include "helper/canvas-grid.h"
 #include "svg/svg.h"
 #include "document.h"

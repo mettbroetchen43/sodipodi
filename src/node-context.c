@@ -7,6 +7,7 @@
 #include "rubberband.h"
 #include "desktop.h"
 #include "desktop-affine.h"
+#include "selection.h"
 #include "nodepath.h"
 #include "pixmaps/cursor-node.xpm"
 #include "node-context.h"

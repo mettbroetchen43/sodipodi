@@ -18,12 +18,7 @@
 
 #include <glib.h>
 #include <libart_lgpl/art_point.h>
-
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
+#include "forward.h"
 
 gdouble * sp_desktop_w2d_affine (SPDesktop * desktop, gdouble w2d[]);
 gdouble * sp_desktop_d2w_affine (SPDesktop * desktop, gdouble d2w[]);

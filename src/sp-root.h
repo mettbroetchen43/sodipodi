@@ -10,7 +10,7 @@
  * Idea: should we derive SPGroup from SPRoot?
  */
 
-#include "sp-item.h"
+#include "sp-item-group.h"
 
 BEGIN_GNOME_DECLS
 
@@ -19,12 +19,6 @@ BEGIN_GNOME_DECLS
 #define SP_ROOT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ROOT, SPRootClass))
 #define SP_IS_ROOT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ROOT))
 #define SP_IS_ROOT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ROOT))
-
-#ifndef SP_ROOT_DEFINED
-#define SP_ROOT_DEFINED
-typedef struct _SPRoot SPRoot;
-typedef struct _SPRootClass SPRootClass;
-#endif
 
 struct _SPRoot {
 	SPGroup group;

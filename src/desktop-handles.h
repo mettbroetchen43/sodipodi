@@ -2,23 +2,7 @@
 #define SP_DESKTOP_HANDLES_H
 
 #include <libgnomeui/gnome-canvas.h>
-#include "event-context.h"
-
-#ifndef SP_DOCUMENT_DEFINED
-#define SP_DOCUMENT_DEFINED
-typedef struct _SPDocument SPDocument;
-#endif
-
-#ifndef SP_SELECTION_DEFINED
-#define SP_SELECTION_DEFINED
-typedef struct _SPSelection SPSelection;
-#endif
-
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
+#include "forward.h"
 
 #define SP_DT_IS_EDITABLE(d) (TRUE)
 

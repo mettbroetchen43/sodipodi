@@ -5,8 +5,10 @@
 #include "desktop.h"
 #include "sp-guide.h"
 #include "desktop-affine.h"
-#include "desktop-events.h"
+#include "event-context.h"
 #include "sp-metrics.h"
+#include "sp-item.h"
+#include "desktop-events.h"
 
 static gchar coord_str[80];
 

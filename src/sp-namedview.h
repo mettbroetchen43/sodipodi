@@ -11,9 +11,6 @@
  *
  */
 
-typedef struct _SPNamedView SPNamedView;
-typedef struct _SPNamedViewClass SPNamedViewClass;
-
 #define SP_TYPE_NAMEDVIEW            (sp_namedview_get_type ())
 #define SP_NAMEDVIEW(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_NAMEDVIEW, SPNamedView))
 #define SP_NAMEDVIEW_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_NAMEDVIEW, SPNamedViewClass))

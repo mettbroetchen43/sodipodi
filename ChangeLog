@@ -1,3 +1,33 @@
+2001-02-19  Lauris Kaplinski  <lauris@tont.kaplinski.com>
+
+	* src/desktop.c (sp_desktop_connect_item): New function
+
+	* src/sp-item.c (sp_item_view_new_prepend): View list management
+	(sp_item_view_list_remove): Ditto
+
+	* src/sp-item.h: SPItemView - new object encapsulating view. I also induced
+	changes in almost all source files
+
+	* src/sp-item-group.h: New file
+
+	* src/bonobo/embeddable-drawing.c (sp_embeddable_drawing_get_type):
+	Use new bonobo object stuff
+	(sp_embeddable_drawing_factory): Ditto
+
+	* src/bonobo/embeddable-desktop.c (sp_embeddable_desktop_get_type):
+	Use new bonobo object stuff
+	(sp_embeddable_desktop_factory): Ditto
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_get_type):
+	Use new bonobo object stuff
+	(sp_embeddable_document_new): Ditto
+
+2001-02-17  Lauris Kaplinski  <lauris@tont.kaplinski.com>
+
+	* src/sp-object.c (sp_object_getAttribute): New function
+	(sp_object_setAttribute): New function
+	(sp_object_removeAttribute): New function
+
 2001-02-11  Lauris Kaplinski  <lauris@ximian.com>
 
 	* configure.in: Added es to ALL_LINGUAS

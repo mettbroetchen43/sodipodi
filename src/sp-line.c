@@ -1,6 +1,7 @@
 #define SP_LINE_C
 
 #include <math.h>
+#include <string.h>
 #include "sp-line.h"
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))

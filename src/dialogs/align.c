@@ -3,10 +3,12 @@
 #include <math.h>
 #include <gnome.h>
 #include <glade/glade.h>
-#include "align.h"
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop-handles.h"
 #include "../sp-item-transform.h"
+#include "../selection.h"
+#include "align.h"
 
 /*
  * handler functions for quick align dialog

@@ -29,6 +29,7 @@
 #include "bonobo/svg-doc-factory.h"
 #endif
 
+#include "document.h"
 #include "file.h"
 #include "toolbox.h"
 #include "interface.h"
@@ -316,9 +317,8 @@ static GSList *
 sp_process_args (poptContext ctx)
 {
 	GSList * fl;
-	const gchar * fn;
 	const gchar ** args;
-	gint i, a;
+	gint i;
 
 	fl = NULL;
 

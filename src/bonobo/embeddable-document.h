@@ -4,12 +4,7 @@
 #include <config.h>
 #include <gnome.h>
 #include <bonobo.h>
-
-#ifndef SP_DOCUMENT_DEFINED
-#define SP_DOCUMENT_DEFINED
-typedef struct _SPDocument * SPDocument;
-typedef struct _SPDocumentClass SPDocumentClass;
-#endif
+#include "../forward.h"
 
 #define SP_EMBEDDABLE_DOCUMENT_TYPE	(sp_embeddable_document_get_type ())
 #define SP_EMBEDDABLE_DOCUMENT(o)  	(GTK_CHECK_CAST ((o), SP_EMBEDDABLE_DOCUMENT_TYPE, SPEmbeddableDocument))

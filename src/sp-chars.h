@@ -10,9 +10,6 @@
 #define SP_IS_CHARS(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_CHARS))
 #define SP_IS_CHARS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_CHARS))
 
-typedef struct _SPChars SPChars;
-typedef struct _SPCharsClass SPCharsClass;
-
 typedef struct {
 	guint glyph;
 	GnomeFontFace * face;

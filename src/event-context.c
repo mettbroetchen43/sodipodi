@@ -1,5 +1,9 @@
 #define SP_EVENT_CONTEXT_C
 
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>
 #include "sp-cursor.h"
 #include "desktop.h"
@@ -7,6 +11,7 @@
 #include "desktop-affine.h"
 #include "event-context.h"
 #include "event-broker.h"
+#include "sp-item.h"
 #include "zoom-context.h"
 
 static void sp_event_context_class_init (SPEventContextClass * klass);
@@ -19,6 +24,7 @@ static gint sp_event_context_private_item_handler (SPEventContext * event_contex
 
 static void set_event_location (SPDesktop * desktop, GdkEvent * event);
 
+static void sp_event_grab_item_destroy (GtkObject * object, gpointer data);
 
 static GtkObjectClass * parent_class;
 
@@ -127,7 +133,8 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			ret = TRUE;
 			break;
 		case 3:
-			sp_event_root_menu_popup (&event->button, &event->button);
+			/* fixme: */
+			sp_event_root_menu_popup (NULL, NULL, &event->button);
 			break;
 		default:
 			break;
@@ -294,6 +301,21 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 static gint
 sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
 {
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		switch (event->button.button) {
+		case 3:
+			/* fixme: */
+			sp_event_root_menu_popup (NULL, item, &event->button);
+			return TRUE;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
 	return FALSE;
 }
 
@@ -353,9 +375,10 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 }
 
 void
-sp_event_root_menu_popup (GtkWidget * widget, GdkEventButton * event)
+sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEventButton * event)
 {
 	static GtkMenu * menu = NULL;
+	static GtkWidget * objitem = NULL;
 	GladeXML * xml;
 
 	if (menu == NULL) {
@@ -366,7 +389,32 @@ sp_event_root_menu_popup (GtkWidget * widget, GdkEventButton * event)
 
 		menu = GTK_MENU (glade_xml_get_widget (xml, "popup_main"));
 		g_return_if_fail (menu != NULL);
+
+		objitem = gtk_menu_item_new_with_label (_("Object"));
+		gtk_menu_append (menu, objitem);
+		gtk_widget_show (objitem);
+	}
+
+	if (item != NULL) {
+		GtkWidget * m;
+		m = gtk_menu_new ();
+		gtk_signal_connect_while_alive (GTK_OBJECT (item), "destroy",
+						GTK_SIGNAL_FUNC (sp_event_grab_item_destroy), objitem, GTK_OBJECT (m));
+		sp_item_menu (item, GTK_MENU (m));
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (objitem), m);
+		gtk_widget_show (m);
+		gtk_widget_set_sensitive (objitem, TRUE);
+	} else {
+		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (objitem));
+		gtk_widget_set_sensitive (objitem, FALSE);
 	}
 
 	gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button, event->time);
+}
+
+static void
+sp_event_grab_item_destroy (GtkObject * object, gpointer data)
+{
+	gtk_menu_item_remove_submenu (GTK_MENU_ITEM (data));
+	gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 }

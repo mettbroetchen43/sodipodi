@@ -3,7 +3,7 @@
 #include <gnome.h>
 #include "display/canvas-bgroup.h"
 #include "sp-object-repr.h"
-#include "sp-item.h"
+#include "sp-item-group.h"
 
 /* fixme: */
 #include "desktop-events.h"
@@ -22,8 +22,8 @@ static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
-static GnomeCanvasItem * sp_group_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-static void sp_group_hide (SPItem * item, GnomeCanvas * canvas);
+static GnomeCanvasItem * sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+static void sp_group_hide (SPItem * item, SPDesktop * desktop);
 static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 static SPItemClass * parent_class;
@@ -170,13 +170,14 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 static void
 sp_group_add_child (SPObject * object, SPRepr * child)
 {
+	SPItem * item;
 	SPGroup * group;
 	const gchar * name;
 	GtkType type;
 	SPObject * childobject;
-	GSList * l;
-	GnomeCanvasItem * ci;
+	SPItemView * v;
 
+	item = SP_ITEM (object);
 	group = SP_GROUP (object);
 
 	if (SP_OBJECT_CLASS (parent_class)->add_child)
@@ -193,11 +194,8 @@ sp_group_add_child (SPObject * object, SPRepr * child)
 	if (SP_IS_ITEM (childobject)) {
 		group->children = g_slist_append (group->children, childobject);
 		sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
-		g_print ("sp-item-group.c: Please fix signals\n");
-		for (l = SP_ITEM (object)->display; l != NULL; l = l->next) {
-			ci = sp_item_show (SP_ITEM (childobject),
-				GNOME_CANVAS_GROUP (l->data),
-				sp_desktop_item_handler);
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_item_show (SP_ITEM (childobject), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
 		}
 	} else {
 		group->other = g_slist_append (group->other, childobject);
@@ -351,7 +349,7 @@ static gchar * sp_group_description (SPItem * item)
 }
 
 static GnomeCanvasItem *
-sp_group_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
 	SPGroup * group;
 	GnomeCanvasGroup * cg;
@@ -365,14 +363,14 @@ sp_group_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 
 	for (l = group->children; l != NULL; l = l->next) {
 		child = (SPItem *) l->data;
-		sp_item_show (child, cg, handler);
+		sp_item_show (child, desktop, cg);
 	}
 
 	return (GnomeCanvasItem *) cg;
 }
 
 static void
-sp_group_hide (SPItem * item, GnomeCanvas * canvas)
+sp_group_hide (SPItem * item, SPDesktop * desktop)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -382,11 +380,11 @@ sp_group_hide (SPItem * item, GnomeCanvas * canvas)
 
 	for (l = group->children; l != NULL; l = l->next) {
 		child = (SPItem *) l->data;
-		sp_item_hide (child, canvas);
+		sp_item_hide (child, desktop);
 	}
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, canvas);
+		(* SP_ITEM_CLASS (parent_class)->hide) (item, desktop);
 }
 
 static gboolean

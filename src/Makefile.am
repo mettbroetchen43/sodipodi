@@ -27,13 +27,14 @@ bin_PROGRAMS = sodipodi
 sodipodi_SOURCES = \
 	sodipodi.c sodipodi.h sodipodi-private.h \
 	\
+	forward.h \
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
 	sp-object-group.c sp-object-group.h \
 	sp-defs.c sp-defs.h \
 	sp-use.c sp-use.h \
 	sp-item.c sp-item.h \
-	sp-item-group.c \
+	sp-item-group.c sp-item-group.h \
 	sp-root.c sp-root.h \
 	sp-namedview.c sp-namedview.h \
 	sp-guide.c sp-guide.h \

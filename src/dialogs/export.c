@@ -5,9 +5,11 @@
 #include <glade/glade.h>
 #include "../helper/png-write.h"
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop-units.h"
 #include "../desktop-handles.h"
 #include "../desktop-affine.h"
+#include "../selection.h"
 #include "export.h"
 
 #ifdef ENABLE_RBUF

@@ -4,6 +4,7 @@
 #include <glade/glade.h>
 #include "document-properties.h"
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop-handles.h"
 #include "../svg/svg.h"
 

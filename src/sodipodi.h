@@ -27,9 +27,8 @@
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
-
-#include "document.h"
-#include "desktop.h"
+#include "xml/repr.h"
+#include "forward.h"
 
 typedef struct _Sodipodi Sodipodi;
 typedef struct _SodipodiClass SodipodiClass;

@@ -19,12 +19,16 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "helper/canvas-helper.h"
+#include "forward.h"
 #include "sodipodi-private.h"
+#include "desktop.h"
 #include "desktop-events.h"
 #include "desktop-affine.h"
-#include "desktop.h"
+#include "document.h"
+#include "selection.h"
 #include "select-context.h"
 #include "event-context.h"
+#include "sp-item.h"
 #include "sp-ruler.h"
 
 #include <gal/widgets/gtk-combo-text.h>
@@ -50,6 +54,8 @@ void sp_desktop_zoom (GtkEntry * caller,SPDesktop * desktop);
 
 /* fixme: */
 void sp_desktop_toggle_borders (GtkWidget * widget);
+
+static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event);
 
 GtkEventBoxClass * parent_class;
 
@@ -230,7 +236,7 @@ sp_desktop_init (SPDesktop * desktop)
 	gtk_container_add ((GtkContainer *)desktop->menubutton, menu_arrow);
 	gtk_signal_connect (GTK_OBJECT (desktop-> menubutton), 
 			    "button_press_event", 
-			    GTK_SIGNAL_FUNC (sp_event_root_menu_popup), 
+			    GTK_SIGNAL_FUNC (sp_desktop_menu_popup), 
 			    NULL);
         GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET(desktop->menubutton), GTK_CAN_FOCUS);
 	/* indicator for active desktop */
@@ -335,7 +341,7 @@ sp_desktop_destroy (GtkObject * object)
 	if (desktop->document) {
 		if (desktop->canvas) {
 			sp_namedview_hide (desktop->namedview, desktop);
-			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
+			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop);
 		}
 		gtk_object_unref (GTK_OBJECT (desktop->document));
 	}
@@ -466,7 +472,7 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	gtk_signal_connect (GTK_OBJECT (gnome_canvas_root (desktop->canvas)), "event",
 			    GTK_SIGNAL_FUNC (sp_canvas_root_handler), desktop);
 
-	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
+	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop, desktop->drawing);
 
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
@@ -546,7 +552,7 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	g_assert (SP_IS_DOCUMENT (document));
 
 	sp_namedview_hide (desktop->namedview, desktop);
-	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
+	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop);
 
 	gtk_object_ref (GTK_OBJECT (document));
 	gtk_object_unref (GTK_OBJECT (desktop->document));
@@ -554,7 +560,7 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	desktop->document = document;
 	desktop->namedview = sp_document_namedview (document, NULL);
 
-	sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
+	sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop, desktop->drawing);
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
 	sp_desktop_activate_guides (desktop, TRUE);
@@ -963,3 +969,23 @@ sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop
   return FALSE;
 }
  
+static void
+sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event)
+{
+	sp_event_root_menu_popup (widget, NULL, event);
+}
+
+void
+sp_desktop_connect_item (SPDesktop * desktop, SPItem * item, GnomeCanvasItem * canvasitem)
+{
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (canvasitem != NULL);
+	g_assert (GNOME_IS_CANVAS_ITEM (canvasitem));
+
+	gtk_signal_connect (GTK_OBJECT (canvasitem), "event",
+			    GTK_SIGNAL_FUNC (sp_desktop_item_handler), item);
+}
+

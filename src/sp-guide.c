@@ -1,5 +1,6 @@
 #define SP_GUIDE_C
 
+#include <string.h>
 #include <gtk/gtksignal.h>
 #include "helper/sp-guide.h"
 #include "sp-guide.h"

@@ -17,7 +17,10 @@
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-messagebox.h>
+#include "desktop.h"
 #include "desktop-handles.h"
+#include "selection.h"
+#include "event-context.h"
 #include "sodipodi.h"
 #include "sodipodi-private.h"
 #include "preferences-skeleton.h"

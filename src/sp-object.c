@@ -9,6 +9,7 @@
  *
  */
 
+#include <string.h>
 #include "document.h"
 #include "sp-object.h"
 
@@ -429,6 +430,50 @@ sp_object_set_description (SPObject * object, SPRepr * repr)
 	object->description = content;
 }
 
+const gchar *
+sp_object_getAttribute (SPObject * object, const gchar * key, SPException * ex)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (*key != '\0', NULL);
+
+	return sp_repr_attr (object->repr, key);
+}
+
+void
+sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * value, SPException * ex)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (*key != '\0');
+	g_return_if_fail (value != NULL);
+
+	if (!sp_repr_set_attr (object->repr, key, value)) {
+		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
+	} else {
+		ex->code = SP_NO_EXCEPTION;
+	}
+}
+
+void
+sp_object_removeAttribute (SPObject * object, const gchar * key, SPException * ex)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (*key != '\0');
+
+	if (!sp_repr_set_attr (object->repr, key, NULL)) {
+		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
+	} else {
+		ex->code = SP_NO_EXCEPTION;
+	}
+}
+
+/* Helper */
+
 static gchar *
 sp_object_get_unique_id (SPObject * object, const gchar * id)
 {
@@ -443,6 +488,11 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 
 	count++;
 
+	name = sp_repr_name (object->repr);
+	g_assert (name != NULL);
+	len = strlen (name) + 17;
+	b = alloca (len);
+	g_assert (b != NULL);
 	realid = NULL;
 
 	if (id != NULL) {
@@ -450,14 +500,6 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 			realid = g_strdup (id);
 			g_assert (realid != NULL);
 		}
-	}
-
-	if (realid == NULL) {
-		name = sp_repr_name (object->repr);
-		g_assert (name != NULL);
-		len = strlen (name) + 17;
-		b = alloca (len);
-		g_assert (b != NULL);
 	}
 
 	while (realid == NULL) {

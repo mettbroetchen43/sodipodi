@@ -3,8 +3,9 @@
 #define sp_debug(str, section) 	if (FALSE) printf ("%s:%d (%s) %s\n", __FILE__, __LINE__, __FUNCTION__, str); 
 
 #include "sodipodi-private.h"
-#include "desktop-handles.h"
 #include "desktop.h"
+#include "desktop-handles.h"
+#include "document.h"
 #include "selection.h"
 
 enum {

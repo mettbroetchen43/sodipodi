@@ -3,10 +3,14 @@
 #include <glade/glade.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include "../helper/unit-menu.h"
-#include "desktop-properties.h"
-#include "../sodipodi.h"
-#include "../desktop-handles.h"
 #include "../svg/svg.h"
+#include "../forward.h"
+#include "../sodipodi.h"
+#include "../document.h"
+#include "../desktop.h"
+#include "../desktop-handles.h"
+#include "../sp-namedview.h"
+#include "desktop-properties.h"
 
 /*
  * Very-very basic desktop properties dialog

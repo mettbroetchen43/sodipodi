@@ -10,9 +10,6 @@
 #define SP_IS_PATH(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_PATH))
 #define SP_IS_PATH_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_PATH))
 
-typedef struct _SPPath SPPath;
-typedef struct _SPPathClass SPPathClass;
-
 struct _SPPath {
 	SPItem item;
 	GSList * comp;

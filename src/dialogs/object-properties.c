@@ -5,6 +5,7 @@
 #include "../xml/repr.h"
 #include "../svg/svg.h"
 #include "../sodipodi.h"
+#include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection-chemistry.h"
 #include "object-properties.h"

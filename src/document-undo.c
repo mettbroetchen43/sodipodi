@@ -1,5 +1,6 @@
 #define SP_DOCUMENT_UNDO_C
 
+#include <string.h>
 #include <stdlib.h>
 #include "sp-object.h"
 #include "sp-item.h"

@@ -10,9 +10,6 @@
  * description - gives textual description of item
  *               for example "group of 4 items"
  *               caller has to free string
- * read - reads item params from representation, creating children if
- *        necessary
- * read_attr
  * show
  * hide
  * paint
@@ -23,23 +20,11 @@
  * For other changes there should be other methods
  */
 
-#include <gtk/gtk.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libart_lgpl/art_pixbuf.h>
+#include "forward.h"
 #include "sp-object.h"
-
-#ifndef SP_ITEM_DEFINED
-#define SP_ITEM_DEFINED
-typedef struct _SPItem SPItem;
-typedef struct _SPItemClass SPItemClass;
-#endif
-
-#ifndef SP_GROUP_DEFINED
-#define SP_GROUP_DEFINED
-typedef struct _SPGroup SPGroup;
-typedef struct _SPGroupClass SPGroupClass;
-#endif
 
 #define SP_TYPE_ITEM            (sp_item_get_type ())
 #define SP_ITEM(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
@@ -47,11 +32,21 @@ typedef struct _SPGroupClass SPGroupClass;
 #define SP_IS_ITEM(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ITEM))
 #define SP_IS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
 
+typedef struct _SPItemView SPItemView;
+
+struct _SPItemView {
+	SPItemView * next;
+	SPItemView * prev;
+	SPItem * item;
+	SPDesktop * desktop;
+	GnomeCanvasItem * canvasitem;
+};
+
 struct _SPItem {
 	SPObject object;
 	guint stop_paint: 1;	/* If set, ::paint returns TRUE */
 	double affine[6];
-	GSList * display;
+	SPItemView * display;
 };
 
 struct _SPItemClass {
@@ -70,8 +65,8 @@ struct _SPItemClass {
 	gchar * (* description) (SPItem * item);
 
 	/* Silly, silly. We should assign handlers a more intelligent way */
-	GnomeCanvasItem * (* show) (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-	void (* hide) (SPItem * item, GnomeCanvas * canvas);
+	GnomeCanvasItem * (* show) (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+	void (* hide) (SPItem * item, SPDesktop * desktop);
 
 	/* Who finds better name?
 	 * Basically same as render, but draws to rgba buf,
@@ -80,6 +75,9 @@ struct _SPItemClass {
 	 */
 
 	gboolean (* paint) (SPItem * item, ArtPixBuf * buf, gdouble * affine);
+
+	/* Append to context menu */
+	void (* menu) (SPItem * item, GtkMenu * menu);
 };
 
 /* Flag testing macros */
@@ -97,13 +95,13 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
 
-GnomeCanvasItem * sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-void sp_item_hide (SPItem * item, GnomeCanvas * canvas);
+GnomeCanvasItem * sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+void sp_item_hide (SPItem * item, SPDesktop * desktop);
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 /* Utility */
 
-GnomeCanvasItem * sp_item_canvas_item (SPItem * item, GnomeCanvas * canvas);
+GnomeCanvasItem * sp_item_canvas_item (SPItem * item, SPDesktop * desktop);
 
 void sp_item_request_canvas_update (SPItem * item);
 
@@ -114,28 +112,11 @@ gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
 void sp_item_change_canvasitem_position (SPItem * item, gint delta);
 void sp_item_raise_canvasitem_to_top (SPItem * item);
 
-/* group */
+/* Context menu stuff */
 
-#define SP_TYPE_GROUP            (sp_group_get_type ())
-#define SP_GROUP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_GROUP, SPGroup))
-#define SP_GROUP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GROUP, SPGroupClass))
-#define SP_IS_GROUP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_GROUP))
-#define SP_IS_GROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GROUP))
+void sp_item_menu (SPItem * item, GtkMenu * menu);
 
-struct _SPGroup {
-	SPItem item;
-	GSList * children;
-	GSList * other;
-	gboolean transparent;
-};
-
-struct _SPGroupClass {
-	SPItemClass parent_class;
-};
-
-
-/* Standard Gtk function */
-
-GtkType sp_group_get_type (void);
+SPItemView * sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop, GnomeCanvasItem * canvasitem);
+SPItemView * sp_item_view_list_remove (SPItemView * list, SPItemView * view);
 
 #endif

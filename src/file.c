@@ -9,6 +9,7 @@
 #include <libgnomeprint/gnome-print-master-preview.h>
 
 #include "xml/repr.h"
+#include "document.h"
 #include "dir-util.h"
 #include "helper/png-write.h"
 #include "sodipodi.h"

@@ -4,13 +4,8 @@
 #include <config.h>
 #include <gnome.h>
 #include <bonobo.h>
+#include "../forward.h"
 #include "embeddable-document.h"
-
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop * SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
 
 #define SP_EMBEDDABLE_DESKTOP_TYPE	(sp_embeddable_desktop_get_type ())
 #define SP_EMBEDDABLE_DESKTOP(o)  	(GTK_CHECK_CAST ((o), SP_EMBEDDABLE_DESKTOP_TYPE, SPEmbeddableDesktop))

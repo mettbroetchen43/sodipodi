@@ -1,5 +1,6 @@
 #define SP_ROOT_C
 
+#include <string.h>
 #include "helper/sodipodi-ctrlrect.h"
 #include "svg/svg.h"
 #include "document.h"
@@ -158,11 +159,11 @@ static void
 set_page (SPRoot * root)
 {
 	ArtDRect pdim;
-	GSList * l;
+	SPItemView * v;
 
-	for (l = SP_ITEM (root)->display; l != NULL; l = l->next) {
+	for (v = SP_ITEM (root)->display; v != NULL; v = v->next) {
 		SPDesktop * dt;
-		dt = gtk_object_get_data (GTK_OBJECT (GNOME_CANVAS_ITEM (l->data)->canvas), "SPDesktop");
+		dt = gtk_object_get_data (GTK_OBJECT (v->canvasitem->canvas), "SPDesktop");
 		pdim.x0 = pdim.y0 = 0.0;
 		pdim.x1 = root->width;
 		pdim.y1 = root->height;
@@ -178,7 +179,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 	const gchar * astr;
 	SPSVGUnit unit;
 	gdouble len;
-	GSList * l;
+	SPItemView * v;
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
@@ -197,8 +198,8 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 		/* fixme: */
 		art_affine_scale (item->affine, 1.0, -1.0);
 		item->affine[5] = root->height;
-		for (l = item->display; l != NULL; l = l->next) {
-			gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
+		for (v = item->display; v != NULL; v = v->next) {
+			gnome_canvas_item_affine_absolute (v->canvasitem, item->affine);
 		}
 		set_page (root);
 		return;
@@ -230,8 +231,8 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			art_affine_multiply (a, t0, s);
 			art_affine_multiply (a, a, t1);
 			memcpy (item->affine, a, 6 * sizeof (gdouble));
-			for (l = item->display; l != NULL; l = l->next) {
-				gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
+			for (v = item->display; v != NULL; v = v->next) {
+				gnome_canvas_item_affine_absolute (v->canvasitem, item->affine);
 			}
 			return;
 		}

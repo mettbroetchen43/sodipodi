@@ -1,5 +1,6 @@
 #define SP_USE_C
 
+#include <string.h>
 #include "display/canvas-bgroup.h"
 #include "document.h"
 #include "sp-object-repr.h"
@@ -21,8 +22,8 @@ static void sp_use_read_attr (SPObject * object, const gchar * attr);
 static void sp_use_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_use_description (SPItem * item);
-static GnomeCanvasItem * sp_use_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-static void sp_use_hide (SPItem * item, GnomeCanvas * canvas);
+static GnomeCanvasItem * sp_use_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+static void sp_use_hide (SPItem * item, SPDesktop * desktop);
 static gboolean sp_use_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 static void sp_use_changed (SPUse * use);
@@ -293,7 +294,7 @@ sp_use_description (SPItem * item)
 }
 
 static GnomeCanvasItem *
-sp_use_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
+sp_use_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
 	SPUse * use;
 	GnomeCanvasItem * ci;
@@ -303,7 +304,7 @@ sp_use_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	if (use->child) {
 		ci = gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_BGROUP, NULL);
 		SP_CANVAS_BGROUP (ci)->transparent = FALSE;
-		sp_item_show (use->child, GNOME_CANVAS_GROUP (ci), handler);
+		sp_item_show (use->child, desktop, GNOME_CANVAS_GROUP (ci));
 		return ci;
 	}
 		
@@ -311,16 +312,16 @@ sp_use_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 }
 
 static void
-sp_use_hide (SPItem * item, GnomeCanvas * canvas)
+sp_use_hide (SPItem * item, SPDesktop * desktop)
 {
 	SPUse * use;
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_hide (use->child, canvas);
+	if (use->child) sp_item_hide (use->child, desktop);
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, canvas);
+		(* SP_ITEM_CLASS (parent_class)->hide) (item, desktop);
 }
 
 static gboolean
@@ -346,6 +347,10 @@ sp_use_changed (SPUse * use)
 static void
 sp_use_href_changed (SPUse * use)
 {
+	SPItem * item;
+
+	item = SP_ITEM (use);
+
 	if (use->child) {
 		SP_OBJECT (use->child)->parent = NULL;
 		gtk_object_destroy (GTK_OBJECT (use->child));
@@ -367,15 +372,13 @@ sp_use_href_changed (SPUse * use)
 			g_return_if_fail (type > GTK_TYPE_NONE);
 			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject * childobj;
-				GSList * l;
+				SPItemView * v;
 				childobj = gtk_type_new (type);
 				childobj->parent = SP_OBJECT (use);
 				use->child = SP_ITEM (childobj);
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
-				for (l = SP_ITEM (use)->display; l != NULL; l = l->next) {
-					sp_item_show (SP_ITEM (childobj),
-						      GNOME_CANVAS_GROUP (l->data),
-						      sp_desktop_item_handler);
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_item_show (SP_ITEM (childobj), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
 				}
 			}
 		}

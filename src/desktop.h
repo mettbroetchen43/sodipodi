@@ -11,12 +11,6 @@
  *
  */
 
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
-
 #define SP_TYPE_DESKTOP            (sp_desktop_get_type ())
 #define SP_DESKTOP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DESKTOP, SPDesktop))
 #define SP_DESKTOP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DESKTOP, SPDesktopClass))
@@ -26,9 +20,8 @@ typedef struct _SPDesktopClass SPDesktopClass;
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-appbar.h>
-#include "document.h"
-#include "selection.h"
-#include "event-context.h"
+#include "forward.h"
+#include "sp-namedview.h"
 
 struct _SPDesktop {
 	GtkEventBox eventbox;
@@ -110,5 +103,7 @@ void sp_desktop_set_title (const gchar * title);
 #endif
 
 void sp_desktop_set_status (SPDesktop *desktop, const gchar * text);
+
+void sp_desktop_connect_item (SPDesktop * desktop, SPItem * item, GnomeCanvasItem * canvasitem);
 
 #endif

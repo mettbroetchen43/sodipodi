@@ -16,12 +16,7 @@
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkpacker.h>
 #include <libgnomeui/gnome-canvas.h>
-
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
+#include "forward.h"
 
 typedef enum {
 	SP_KNOT_SHAPE_SQUARE,

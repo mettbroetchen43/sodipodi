@@ -18,9 +18,6 @@ typedef enum {
 	SP_GUIDE_VERTICAL
 } SPGuideOrientation;
 
-typedef struct _SPGuide SPGuide;
-typedef struct _SPGuideClass SPGuideClass;
-
 #define SP_TYPE_GUIDE            (sp_guide_get_type ())
 #define SP_GUIDE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_GUIDE, SPGuide))
 #define SP_GUIDE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GUIDE, SPGuideClass))

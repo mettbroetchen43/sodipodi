@@ -11,9 +11,6 @@
  *
  */
 
-typedef struct _SPObjectGroup SPObjectGroup;
-typedef struct _SPObjectGroupClass SPObjectGroupClass;
-
 #define SP_TYPE_OBJECTGROUP            (sp_objectgroup_get_type ())
 #define SP_OBJECTGROUP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECTGROUP, SPObjectGroup))
 #define SP_OBJECTGROUP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECTGROUP, SPObjectGroupClass))

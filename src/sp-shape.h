@@ -12,9 +12,6 @@
 #define SP_IS_SHAPE(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SHAPE))
 #define SP_IS_SHAPE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SHAPE))
 
-typedef struct _SPShape SPShape;
-typedef struct _SPShapeClass SPShapeClass;
-
 struct _SPShape {
 	SPPath path;
 	SPFill * fill;

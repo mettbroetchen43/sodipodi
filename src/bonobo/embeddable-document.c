@@ -11,6 +11,7 @@
 #include <bonobo/bonobo-print.h>
 #include <libgnomeprint/gnome-print.h>
 
+#include "../forward.h"
 #include "../sp-object.h"
 #include "../sp-item.h"
 #include "../sodipodi.h"
@@ -55,7 +56,7 @@ sp_embeddable_document_get_type (void)
 			(GtkObjectInitFunc) sp_embeddable_document_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (BONOBO_EMBEDDABLE_TYPE, &info);
+		type = bonobo_x_type_unique (BONOBO_EMBEDDABLE_TYPE, NULL, NULL, 0, &info);
 	}
 	return type;
 }
@@ -300,24 +301,15 @@ BonoboObject *
 sp_embeddable_document_new (void)
 {
 	SPEmbeddableDocument * document;
-	Bonobo_Embeddable corba_document;
 	BonoboPersistFile * pfile;
 	BonoboPersistStream * pstream;
 	BonoboPrint * print;
 
 	document = gtk_type_new (SP_EMBEDDABLE_DOCUMENT_TYPE);
 
-	corba_document = bonobo_embeddable_corba_object_create (
-		BONOBO_OBJECT (document));
-	if (corba_document == CORBA_OBJECT_NIL) {
-		gtk_object_unref (GTK_OBJECT (document));
-		return CORBA_OBJECT_NIL;
-	}
-
 	document->document = sp_document_new (NULL);
 
 	bonobo_embeddable_construct_full (BONOBO_EMBEDDABLE (document),
-		corba_document,
 		sp_embeddable_desktop_factory, NULL,
 		sp_embeddable_drawing_factory, NULL);
 
