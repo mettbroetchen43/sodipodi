@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-15 13:28+0200\n"
+"POT-Creation-Date: 2004-04-18 00:06+0200\n"
 "PO-Revision-Date: 2003-07-28 02:03+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -1297,7 +1297,7 @@ msgstr "Drukowanie informacji o wersji sodipodi"
 
 #: src/main.c:623
 msgid "Print help about command-line arguments"
-msgstr ""
+msgstr "Drukowanie pomocy o paramatrach wiersza poleceń"
 
 #: src/main.c:772
 msgid "Untitled document"
@@ -1345,9 +1345,8 @@ msgid "Scalable Vector Graphics format"
 msgstr "Format skalowalnej grafiki wektorowej"
 
 #: src/modules/gnome.c:158
-#, fuzzy
 msgid "Select printer"
-msgstr "Zaznaczenie"
+msgstr "Wybór drukarki"
 
 #: src/modules/gnome.c:212
 #, c-format
@@ -1372,14 +1371,14 @@ msgstr ""
 msgid "Save document as"
 msgstr "Zapisuje dokument pod inną nazwą"
 
-#: src/modules/plain-pdf.c:1049 src/modules/plain-ps.c:651
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
 #: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "wystąpił błąd podczas zapisu"
 
 #: src/modules/plain.c:178 src/modules/ps.c:264
 msgid "Print using PostScript operators"
-msgstr ""
+msgstr "Drukowanie przy użyciu operatorów PostScript"
 
 #: src/modules/plain.c:179 src/modules/ps.c:266
 msgid ""
@@ -1387,11 +1386,13 @@ msgid ""
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
+"Użycie operatorów wektorowych PostScript powoduje, że obraz będzie "
+"(zazwyczaj) mniejszy oraz będzie można go dowolnie przeskalowywać, ale "
+"zostanie utracona przezroczystość kanału alfa, znaczniki i wzorce"
 
 #: src/modules/plain.c:184 src/modules/ps.c:271
-#, fuzzy
 msgid "Print as bitmap"
-msgstr "Kolorowa bitmapa"
+msgstr "Wydruk jako mapa bitowa"
 
 #: src/modules/plain.c:185 src/modules/ps.c:273
 msgid ""
@@ -1399,14 +1400,17 @@ msgid ""
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
+"Wydruk wszystkiego jako mapy bitowej powoduje, że obraz będzie (zazwyczaj) "
+"większy i jego jakość będzie zależała od współczynnika powiększenia, ale "
+"cała grafika będzie identyczna jak na ekranie"
 
 #: src/modules/plain.c:190
 msgid "Print using PDF driver"
-msgstr ""
+msgstr "Wydruk przy użyciu przeglądarki PDF"
 
 #: src/modules/plain.c:191
 msgid "Use Portable Document Format for printing"
-msgstr ""
+msgstr "Użycie formatu PDF (Portable Document Format) do wydruku"
 
 #. Print destination frame
 #: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
@@ -1433,6 +1437,9 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+"Wprowadź docelową kolejkę lpr.\n"
+"Wpisz \"> nazwa_pliku\" aby wydrukowac do pliku.\n"
+"Wpisz \"| program parametry...\" aby przekierować do programu"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:108
@@ -1456,9 +1463,8 @@ msgstr "Wyczyść przekształcenia"
 
 #. Apply transformation
 #: src/object-ui.c:132
-#, fuzzy
 msgid "Apply transformation"
-msgstr "Stosuje przekształcenie"
+msgstr "Zastosuj przekształcenie"
 
 #: src/object-ui.c:137
 msgid "Make sensitive"
@@ -1489,9 +1495,8 @@ msgstr "Rozgrupuj"
 
 #. Dive
 #: src/object-ui.c:293
-#, fuzzy
 msgid "Set as layer"
-msgstr "Ustaw jako domyślne"
+msgstr "Ustaw jako warstwa"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:338
@@ -1579,18 +1584,16 @@ msgid "Roundness ratio for y:"
 msgstr "Współczynnik zaokrąglenia dla y:"
 
 #: src/select-context.c:570
-#, fuzzy
 msgid "Visual transformation"
-msgstr "Wyczyść przekształcenia"
+msgstr "Przekształcenie wizualne"
 
 #: src/select-context.c:576
 msgid "Show content"
 msgstr "Wyświetl zawartość"
 
 #: src/select-context.c:582
-#, fuzzy
 msgid "Show outline"
-msgstr "Wyświetlanie prowadnic"
+msgstr "Wyświetl obramowanie"
 
 #: src/select-context.c:588
 msgid "Object transformation"
@@ -1606,16 +1609,15 @@ msgstr ""
 
 #: src/select-context.c:606
 msgid "[Tab] Cycling"
-msgstr ""
+msgstr "[Tab] Przechodzenie"
 
 #: src/select-context.c:611
 msgid "Cycle only among visible items"
-msgstr ""
+msgstr "Przechodzi pomiędzy widocznymi elementami"
 
 #: src/select-context.c:614
-#, fuzzy
 msgid "Center view to selected item"
-msgstr "Dołącza nowe węzły do zaznaczonych segmentów"
+msgstr "Wyśrodkowanie widoku względem wybranego elementu"
 
 #: src/slideshow.c:90
 msgid "Sodipodi slideshow"
