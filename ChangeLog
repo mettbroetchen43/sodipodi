@@ -3,6 +3,8 @@
 	* configure.in: required frontline-0.5.4.
 	You can get both autotrace and frontline from
 	http://sourceforge.net/autotrace.
+	(AC_PROG_AS): wrapped by ifdef.
+	Missing to add ChangeLog before commiting.
 
 2002-11-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
