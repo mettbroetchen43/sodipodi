@@ -67,7 +67,7 @@ nr_arena_image_class_init (NRArenaImageClass *klass)
 	object_class = (GtkObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	parent_class = gtk_type_class (NR_TYPE_ARENA_IMAGE);
+	parent_class = gtk_type_class (NR_TYPE_ARENA_ITEM);
 
 	object_class->destroy = nr_arena_image_destroy;
 

@@ -209,7 +209,6 @@ sp_text_set_shape (SPText * text)
 	guchar * c;
 	guint glyph;
 	gdouble x, y;
-	gchar utfbuf[6];
 	double a[6], trans[6], scale[6];
 	double w;
 
@@ -230,13 +229,15 @@ sp_text_set_shape (SPText * text)
 
 	art_affine_scale (scale, text->size * 0.001, text->size * -0.001);
 	if (text->text) {
-		for (c = text->text; *c; c++) {
-			if (*c == '\n') {
+		guchar *p;
+		for (p = text->text; p && *p; p = g_utf8_next_char (p)) {
+			gunichar u;
+			u = g_utf8_get_char (p);
+			if (u == '\n') {
 				x = text->x;
 				y += text->size;
 			} else {
-				g_unichar_to_utf8 (btowc(*c), utfbuf);
-				glyph = gnome_font_face_lookup_default (face, g_utf8_get_char(utfbuf));
+				glyph = gnome_font_face_lookup_default (face, u);
 
 				w = gnome_font_face_get_glyph_width (face, glyph);
 				w = w * text->size / 1000.0;

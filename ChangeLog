@@ -1,3 +1,15 @@
+2001-10-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/text-edit.c (sp_text_read_selection): Use gal
+	utf8/editable methods
+	(sp_text_dialog_apply): Ditto
+	(sp_text_dialog_text_changed): Ditto
+
+	* src/sp-text.c (sp_text_set_shape): Use correct utf8 methods
+
+	* src/display/nr-arena-image.c (nr_arena_image_class_init): Use
+	correct parent class
+
 2001-10-31  Mitsuru Oka <oka326@parkcity.ne.jp>
 
 	* src/knotholder.c:

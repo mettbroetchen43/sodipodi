@@ -2,6 +2,7 @@
 
 #include <gnome.h>
 #include <glade/glade.h>
+#include <gal/widgets/e-unicode.h>
 #include <libgnomeprint/gnome-font-dialog.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
@@ -70,7 +71,6 @@ sp_text_read_selection (void)
 	SPSelection * selection;
 	SPRepr * repr;
 	SPCSSAttr * settings;
-	gint pos;
 	const gchar * str;
 	const gchar * family;
 	GnomeFontWeight weight;
@@ -101,10 +101,11 @@ sp_text_read_selection (void)
 	if (strcmp (sp_repr_name (repr), "text") != 0) return;
 
 	str = sp_repr_content (repr);
+#if 0
 	gtk_editable_delete_text (GTK_EDITABLE (ttext), 0, -1);
-
+#endif
 	if (str) {
-		gtk_editable_insert_text (GTK_EDITABLE (ttext), str, strlen (str), &pos);
+		e_utf8_gtk_editable_set_text (GTK_EDITABLE (ttext), str);
 	}
 
 	css = sp_repr_css_attr_new ();
@@ -133,7 +134,7 @@ void
 sp_text_dialog_apply (GtkButton * button, gpointer data)
 {
 	SPRepr * repr;
-	const gchar * str;
+	gchar *str;
 	GnomeFontWeight weight;
 	double size;
 	SPCSSAttr * css;
@@ -144,14 +145,15 @@ sp_text_dialog_apply (GtkButton * button, gpointer data)
 	if (repr == NULL) return;
 	if (strcmp (sp_repr_name (repr), "text") != 0) return;
 
-	str = gtk_editable_get_chars (GTK_EDITABLE (ttext), 0, -1);
+	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (ttext));
 	sp_repr_set_content (repr, str);
+	g_free (str);
 
 	css = sp_repr_css_attr_new ();
 
 	font = gnome_font_selection_get_font ((GnomeFontSelection *) fontsel);
 
-	str = gnome_font_get_family_name (font);
+	str = (gchar *) gnome_font_get_family_name (font);
 	sp_repr_css_set_property (css, "font-family", g_strdup (str));
 
 	weight = gnome_font_get_weight_code (font);
@@ -209,14 +211,15 @@ sp_text_dialog_delete (GtkWidget * widget)
 void
 sp_text_dialog_text_changed (GtkEditable * editable, gpointer data)
 {
-	const gchar * str;
+	gchar *str;
 
-	str = gtk_editable_get_chars ((GtkEditable *) ttext, 0, -1);
+	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (ttext));
 	if (strlen (str) > 0) {
 		gnome_font_preview_set_phrase ((GnomeFontPreview *) preview, str);
 	} else {
 		gnome_font_preview_set_phrase ((GnomeFontPreview *) preview, NULL);
 	}
+	g_free (str);
 #if 0
 	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
 #endif
