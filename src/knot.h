@@ -82,9 +82,10 @@ struct _SPKnotClass {
 
 	gint (* event) (SPKnot * knot, GdkEvent * event);
 
-	void (* grab) (SPKnot * knot);
-	void (* ungrab) (SPKnot * knot);
-	void (* move) (SPKnot * knot, ArtPoint * position);
+	void (* clicked) (SPKnot * knot, guint state);
+	void (* grabbed) (SPKnot * knot, guint state);
+	void (* ungrabbed) (SPKnot * knot, guint state);
+	void (* moved) (SPKnot * knot, ArtPoint * position, guint state);
 
 	gdouble (* try_move) (SPKnot * knot, gdouble x, gdouble y);
 };
@@ -95,5 +96,8 @@ SPKnot * sp_knot_new (SPDesktop * desktop);
 
 void sp_knot_show (SPKnot * knot);
 void sp_knot_hide (SPKnot * knot);
+
+ArtPoint * sp_knot_position (SPKnot * knot, ArtPoint * p);
+void sp_knot_set_position (SPKnot * knot, ArtPoint * p);
 
 #endif

@@ -49,7 +49,7 @@ sodipodi_SOURCES = \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \
-	desktop-events.h \
+	desktop-events.c desktop-events.h \
 	desktop-handles.c desktop-handles.h \
 	desktop-affine.c desktop-affine.h \
 	\

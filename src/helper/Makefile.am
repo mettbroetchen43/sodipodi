@@ -23,6 +23,7 @@ libspchelp_a_SOURCES = \
 	sodipodi-ctrl.c sodipodi-ctrl.h \
 	sodipodi-ctrlrect.c sodipodi-ctrlrect.h \
 	sp-ctrlline.c sp-ctrlline.h \
+	sp-guide.c sp-guide.h \
 	png-write.c png-write.h
 
 libspgt1_a_SOURCES = \

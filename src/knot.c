@@ -29,9 +29,10 @@ enum {
 
 enum {
 	EVENT,
-	GRAB,
-	UNGRAB,
-	MOVE,
+	CLICKED,
+	GRABBED,
+	UNGRABBED,
+	MOVED,
 	LAST_SIGNAL
 };
 
@@ -102,25 +103,30 @@ sp_knot_class_init (SPKnotClass * klass)
 		gtk_marshal_BOOL__POINTER,
 		GTK_TYPE_BOOL, 1,
 		GTK_TYPE_GDK_EVENT);
-	knot_signals[GRAB] = gtk_signal_new ("grab",
+	knot_signals[CLICKED] = gtk_signal_new ("clicked",
 		GTK_RUN_FIRST,
 		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, grab),
-		gtk_marshal_NONE__NONE,
-		GTK_TYPE_NONE, 0);
-	knot_signals[GRAB] = gtk_signal_new ("ungrab",
+		GTK_SIGNAL_OFFSET (SPKnotClass, clicked),
+		gtk_marshal_NONE__UINT,
+		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	knot_signals[GRABBED] = gtk_signal_new ("grabbed",
 		GTK_RUN_FIRST,
 		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, ungrab),
-		gtk_marshal_NONE__NONE,
-		GTK_TYPE_NONE, 0);
-	knot_signals[GRAB] = gtk_signal_new ("move",
+		GTK_SIGNAL_OFFSET (SPKnotClass, grabbed),
+		gtk_marshal_NONE__UINT,
+		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	knot_signals[UNGRABBED] = gtk_signal_new ("ungrabbed",
 		GTK_RUN_FIRST,
 		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, move),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
+		GTK_SIGNAL_OFFSET (SPKnotClass, ungrabbed),
+		gtk_marshal_NONE__UINT,
+		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	knot_signals[MOVED] = gtk_signal_new ("moved",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, moved),
+		gtk_marshal_NONE__POINTER_UINT,
+		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
 
 	gtk_object_class_add_signals (object_class, knot_signals, LAST_SIGNAL);
 
@@ -275,6 +281,8 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	SPKnot * knot;
 	ArtPoint p;
 	gboolean consumed;
+	static gboolean grabbed = FALSE;
+	static gboolean moved = FALSE;
 
 	g_assert (data != NULL);
 	g_assert (SP_IS_KNOT (data));
@@ -283,36 +291,72 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 
 	consumed = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (knot),
-		knot_signals[EVENT],
-		event,
-		&consumed);
+	/* Run client universal event handler, if present */
+
+	gtk_signal_emit (GTK_OBJECT (knot), knot_signals[EVENT], event, &consumed);
 
 	if (consumed) return;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+			sp_desktop_w2d_xy_point (knot->desktop,
+				&p,
+				event->button.x,
+				event->button.y);
+			knot->hx = p.x - knot->x;
+			knot->hy = p.y - knot->y;
 			gnome_canvas_item_grab (knot->item,
 				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
 				knot->cursor[SP_KNOT_STATE_DRAGGING],
 				event->button.time);
-			sp_knot_set_flag (knot, SP_KNOT_DRAGGING, TRUE);
-			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[GRAB]);
+			grabbed = TRUE;
+			consumed = TRUE;
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
 			gnome_canvas_item_ungrab (knot->item, event->button.time);
-			sp_knot_set_flag (knot, SP_KNOT_DRAGGING, FALSE);
-			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[UNGRAB]);
+			if (moved) {
+				sp_knot_set_flag (knot,
+					SP_KNOT_DRAGGING,
+					FALSE);
+				gtk_signal_emit (GTK_OBJECT (knot),
+					knot_signals[UNGRABBED],
+					event->button.state);
+			} else {
+				gtk_signal_emit (GTK_OBJECT (knot),
+					knot_signals[CLICKED],
+					event->button.state);
+			}
+			grabbed = FALSE;
+			moved = FALSE;
+			consumed = TRUE;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-		if (knot->flags & SP_KNOT_DRAGGING) {
-			sp_desktop_w2d_xy_point (knot->desktop, &p, event->motion.x, event->motion.y);
-			gtk_object_set (GTK_OBJECT (knot), "x", p.x, "y", p.y, NULL);
-			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[MOVE], &p);
+		if (grabbed) {
+			if (!moved) {
+				gtk_signal_emit (GTK_OBJECT (knot),
+					knot_signals[GRABBED],
+					event->motion.state);
+				sp_knot_set_flag (knot,
+					SP_KNOT_DRAGGING,
+					TRUE);
+			}
+			sp_desktop_w2d_xy_point (knot->desktop,
+				&p,
+				event->motion.x,
+				event->motion.y);
+			p.x -= knot->hx;
+			p.y -= knot->hy;
+			sp_knot_set_position (knot, &p);
+			gtk_signal_emit (GTK_OBJECT (knot),
+				knot_signals[MOVED],
+				&p,
+				event->motion.state);
+			moved = TRUE;
+			consumed = TRUE;
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
@@ -378,6 +422,32 @@ sp_knot_hide (SPKnot * knot)
 	g_return_if_fail (SP_IS_KNOT (knot));
 
 	sp_knot_set_flag (knot, SP_KNOT_VISIBLE, FALSE);
+}
+
+ArtPoint *
+sp_knot_position (SPKnot * knot, ArtPoint * p)
+{
+	g_return_val_if_fail (knot != NULL, NULL);
+	g_return_val_if_fail (SP_IS_KNOT (knot), NULL);
+	g_return_val_if_fail (p != NULL, NULL);
+
+	p->x = knot->x;
+	p->y = knot->y;
+
+	return p;
+}
+
+void
+sp_knot_set_position (SPKnot * knot, ArtPoint * p)
+{
+	g_return_if_fail (knot != NULL);
+	g_return_if_fail (SP_IS_KNOT (knot));
+	g_return_if_fail (p != NULL);
+
+	knot->x = p->x;
+	knot->y = p->y;
+
+	if (knot->item) sp_ctrl_moveto (SP_CTRL (knot->item), p->x, p->y);
 }
 
 static void

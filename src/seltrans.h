@@ -1,7 +1,7 @@
 #ifndef SP_SELTRANS_H
 #define SP_SELTRANS_H
 
-#include "helper/sodipodi-ctrl.h"
+#include "knot.h"
 #include "desktop-handles.h"
 
 typedef struct _SPSelTrans SPSelTrans;
@@ -24,9 +24,9 @@ struct _SPSelTrans {
 	double n2current[6];
 	ArtPoint point;
 	ArtPoint center;
-	SPCtrl * shandle[8];
-	SPCtrl * rhandle[8];
-	SPCtrl * chandle;
+	SPKnot * shandle[8];
+	SPKnot * rhandle[8];
+	SPKnot * chandle;
 	guint sel_changed_id;
 };
 

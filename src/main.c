@@ -1,6 +1,6 @@
 /*
  * sodipodi - an ambitious vector drawing program
- * Copyright (c) Lauris Kaplinski et al 1999-2000
+ * Copyright (c) Lauris Kaplinski et al. 1999-2000
  * Distributable under GPL version 2 (or later)
  *
  */

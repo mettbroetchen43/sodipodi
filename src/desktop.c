@@ -16,6 +16,7 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "helper/canvas-helper.h"
+#include "helper/sp-guide.h"
 #include "mdi-desktop.h"
 #include "desktop-events.h"
 #include "desktop-affine.h"
@@ -30,10 +31,6 @@ static void sp_desktop_destroy (GtkObject * object);
 
 static void sp_desktop_update_rulers (SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
-
-/* Signal handlers */
-
-gint sp_desktop_activate (GtkWidget * widget, GdkEventCrossing * event, gpointer data);
 
 GtkEventBoxClass * parent_class;
 
@@ -72,6 +69,11 @@ sp_desktop_class_init (SPDesktopClass * klass)
 	widget_class = (GtkWidgetClass *) klass;
 
 	object_class->destroy = sp_desktop_destroy;
+
+	widget_class->enter_notify_event = sp_desktop_enter_notify;
+	widget_class->button_press_event = sp_desktop_button_press;
+	widget_class->button_release_event = sp_desktop_button_release;
+	widget_class->motion_notify_event = sp_desktop_motion_notify;
 }
 
 static void
@@ -168,53 +170,6 @@ sp_desktop_destroy (GtkObject * object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-#if 0
-static void
-sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition)
-{
-	GtkBox * box;
-	GtkWidget * child;
-
-	box = GTK_BOX (widget);
-
-	if (box->children != NULL) {
-		child = ((GtkBoxChild *) box->children->data)->widget;
-		gtk_widget_size_request (child, requisition);
-	} else {
-		requisition->width = 600;
-		requisition->height = 400;
-	}
-
-	requisition->width += GTK_CONTAINER (box)->border_width * 2;
-	requisition->height += GTK_CONTAINER (box)->border_width * 2;
-}
-#endif
-
-#if 0
-static void
-sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
-{
-	GtkBox * box;
-	GtkWidget * child;
-	GtkAllocation child_allocation;
-
-	box = GTK_BOX (widget);
-
-	widget->allocation = * allocation;
-
-	if (box->children != NULL) {
-		child = ((GtkBoxChild *) box->children->data)->widget;
-
-		child_allocation.x = allocation->x + GTK_CONTAINER (widget)->border_width;
-		child_allocation.y = allocation->y + GTK_CONTAINER (widget)->border_width;
-		child_allocation.width = allocation->width - 2 * GTK_CONTAINER (widget)->border_width;
-		child_allocation.height = allocation->height - 2 * GTK_CONTAINER (widget)->border_width;
-
-		gtk_widget_size_allocate (child, &child_allocation);
-	}
-}
-#endif
-
 /* Constructor */
 
 SPDesktop *
@@ -235,9 +190,6 @@ sp_desktop_new (SPDocument * document)
 	/* Setup widget */
 
 	desktop = (SPDesktop *) gtk_type_new (sp_desktop_get_type ());
-
-	gtk_signal_connect (GTK_OBJECT (desktop), "enter_notify_event",
-		GTK_SIGNAL_FUNC (sp_desktop_activate), desktop);
 
 	/* Setup document */
 
@@ -611,46 +563,6 @@ sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
 
 	sp_desktop_update_rulers (desktop);
 }
-
-void
-sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
-{
-	sp_event_context_root_handler (SP_DESKTOP (data)->event_context, event);
-}
-
-/*
- * fixme: this conatins a hack, to deal with deleting a view, which is
- * completely on another view, in which case active_desktop will not be updated
- *
- */
-
-void
-sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
-{
-	gpointer ddata;
-	SPDesktop * desktop;
-
-	ddata = gtk_object_get_data (GTK_OBJECT (item->canvas), "SPDesktop");
-	g_return_if_fail (ddata != NULL);
-
-	desktop = SP_DESKTOP (ddata);
-
-	sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
-}
-
-/* Signal handlers */
-
-gint
-sp_desktop_activate (GtkWidget * widget, GdkEventCrossing * event, gpointer data)
-{
-	g_assert (data != NULL);
-	g_assert (SP_IS_DESKTOP (data));
-
-	sp_active_desktop_set (SP_DESKTOP (data));
-
-	return FALSE;
-}
-
 
 /* fixme: this is UI functions - find a better place */
 

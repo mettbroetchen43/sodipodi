@@ -1,3 +1,19 @@
+2000-05-11  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/desktop-events.c: Collected events to separate file
+	Added guidline and grid positioning skeleton
+
+	* src/helper/sp-guide.*: Guideline implementation
+ 
+2000-05-10  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* glade/*.xpm: Some new icons (thanks to Jeff Mrochuk)
+
+	* src/knot.*: signals clicked, grabbed, ungrabbed, moved
+	Many fixes and enhancements
+
+	* src/seltrans.c: Use knots instead of Ctrl canvas items
+ 
 2000-05-09  Michael Meeks  <michael@helixcode.com>
 
 	* src/bonobo/svg-doc-factory.c (sp_svg_doc_factory_init): add
