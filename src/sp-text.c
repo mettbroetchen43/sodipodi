@@ -50,6 +50,8 @@
 
 static guchar *sp_text_font_style_to_lookup (SPStyle *style);
 
+static void sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale);
+
 /* SPString */
 
 static void sp_string_class_init (SPStringClass *class);
@@ -608,14 +610,26 @@ static void
 sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	SPTSpan *tspan;
+	SPItemCtx *ictx;
+	SPStyle *style;
+	double d;
 
 	tspan = SP_TSPAN (object);
+	style = SP_OBJECT_STYLE (object);
+	ictx = (SPItemCtx *) ctx;
 
 	if (((SPObjectClass *) tspan_parent_class)->update)
 		((SPObjectClass *) tspan_parent_class)->update (object, ctx, flags);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	/* Update relative distances */
+	d = 1.0 / NR_MATRIX_DF_EXPANSION (&ictx->i2vp);
+	sp_text_update_length (&tspan->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&tspan->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&tspan->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&tspan->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
 
 	if (tspan->string) {
 		if (flags || (((SPObject *) tspan->string)->flags & SP_OBJECT_UPDATE_FLAG)) {
@@ -1062,17 +1076,29 @@ static void
 sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	SPText *text;
+	SPItemCtx *ictx;
 	SPObject *child;
 	GSList *l;
 	guint cflags;
+	SPStyle *style;
+	double d;
 
 	text = SP_TEXT (object);
+	style = SP_OBJECT_STYLE (text);
+	ictx = (SPItemCtx *) ctx;
 
 	if (((SPObjectClass *) text_parent_class)->update)
 		((SPObjectClass *) text_parent_class)->update (object, ctx, flags);
 
 	cflags = (flags & SP_OBJECT_MODIFIED_CASCADE);
 	if (flags & SP_OBJECT_MODIFIED_FLAG) cflags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+
+	/* Update relative distances */
+	d = 1.0 / NR_MATRIX_DF_EXPANSION (&ictx->i2vp);
+	sp_text_update_length (&text->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
 
 	/* Create temporary list of children */
 	l = NULL;
@@ -1336,53 +1362,6 @@ sp_text_font_style_to_lookup (SPStyle *style)
 	return c;
 }
 
-static void
-sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
-{
-	if (length->unit == SP_SVG_UNIT_EM) {
-		length->computed = length->value * em;
-	} else if (length->unit == SP_SVG_UNIT_EX) {
-		length->computed = length->value * ex;
-	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
-		length->computed = length->value * scale;
-	}
-}
-
-static void
-sp_text_compute_values (SPText *text)
-{
-	SPObject *child;
-	SPStyle *style;
-	NRMatrixF i2vp, vp2i;
-	gdouble d;
-
-	style = SP_OBJECT_STYLE (text);
-
-	/* fixme: It is somewhat dangerous, yes (Lauris) */
-	/* fixme: And it is terribly slow too (Lauris) */
-	/* fixme: In general we want to keep viewport scales around */
-	sp_item_i2vp_affine (SP_ITEM (text), &i2vp);
-	nr_matrix_f_invert (&vp2i, &i2vp);
-	d = NR_MATRIX_DF_EXPANSION (&vp2i);
-
-	sp_text_update_length (&text->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_text_update_length (&text->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_text_update_length (&text->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_text_update_length (&text->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
-
-	for (child = text->children; child != NULL; child = child->next) {
-		if (SP_IS_TSPAN (child)) {
-			SPTSpan *tspan;
-			tspan = SP_TSPAN (child);
-			style = SP_OBJECT_STYLE (tspan);
-			sp_text_update_length (&tspan->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
-			sp_text_update_length (&tspan->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
-			sp_text_update_length (&tspan->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
-			sp_text_update_length (&tspan->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
-		}
-	}
-}
-
 /* fixme: Do text chunks here (Lauris) */
 /* fixme: We'll remove string bbox adjustment and bring it here for the whole chunk (Lauris) */
 
@@ -1393,10 +1372,6 @@ sp_text_set_shape (SPText *text)
 	SPObject *child;
 	gboolean isfirstline, haslast, lastwastspan;
 	NRRectF paintbox;
-
-	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
-	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
-	sp_text_compute_values (text);
 
 	/* The logic should be: */
 	/* 1. Calculate attributes */
@@ -1450,6 +1425,12 @@ sp_text_set_shape (SPText *text)
 				} else {
 					tspan->ly.y.computed = cp.y;
 				}
+				if (tspan->ly.dx.set) {
+					cp.x += tspan->ly.dx.computed;
+				}
+				if (tspan->ly.dy.set) {
+					cp.y += tspan->ly.dy.computed;
+				}
 				break;
 			default:
 				/* Error */
@@ -1459,8 +1440,14 @@ sp_text_set_shape (SPText *text)
 			string = SP_STRING (child);
 		}
 		/* Calculate block bbox */
-		bbox = string->bbox;
-		advance = string->advance;
+		advance.x = (string->ly->dx.set) ? string->ly->dx.computed : 0.0;
+		advance.y = (string->ly->dy.set) ? string->ly->dy.computed : 0.0;
+		bbox.x0 = string->bbox.x0 + advance.x;
+		bbox.y0 = string->bbox.y0 + advance.y;
+		bbox.x1 = string->bbox.x1 + advance.x;
+		bbox.y1 = string->bbox.y1 + advance.y;
+		advance.x += string->advance.x;
+		advance.y += string->advance.y;
 		for (next = child->next; next != NULL; next = next->next) {
 			SPString *string;
 			if (SP_IS_TSPAN (next)) {
@@ -1468,6 +1455,8 @@ sp_text_set_shape (SPText *text)
 				tspan = SP_TSPAN (next);
 				if (tspan->role != SP_TSPAN_ROLE_UNSPECIFIED) break;
 				if ((tspan->ly.x.set) || (tspan->ly.y.set)) break;
+				if (tspan->ly.dx.set) advance.x += tspan->ly.dx.computed;
+				if (tspan->ly.dy.set) advance.y += tspan->ly.dy.computed;
 				string = SP_TSPAN_STRING (tspan);
 			} else {
 				string = SP_STRING (next);
@@ -1510,7 +1499,11 @@ sp_text_set_shape (SPText *text)
 				haslast = TRUE;
 				lastwastspan = FALSE;
 			} else {
-				sp_tspan_set_shape (SP_TSPAN (next), &text->ly, &cp, isfirstline, haslast && !lastwastspan);
+				SPTSpan *tspan;
+				tspan = SP_TSPAN (next);
+				if (tspan->ly.dx.set) cp.x += tspan->ly.dx.computed;
+				if (tspan->ly.dy.set) cp.y += tspan->ly.dy.computed;
+				sp_tspan_set_shape (tspan, &text->ly, &cp, isfirstline, haslast && !lastwastspan);
 				haslast = TRUE;
 				lastwastspan = TRUE;
 			}
@@ -2186,5 +2179,17 @@ sp_text_get_child_by_position (SPText *text, gint pos)
 	}
 
 	return child;
+}
+
+static void
+sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
+{
+	if (length->unit == SP_SVG_UNIT_EM) {
+		length->computed = length->value * em;
+	} else if (length->unit == SP_SVG_UNIT_EX) {
+		length->computed = length->value * ex;
+	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
+		length->computed = length->value * scale;
+	}
 }
 

@@ -7,7 +7,7 @@ TODO for 0.31
 - Make internal canvas position floating-point (DONE)
 - Split ::Modified and ::Update flags in SPObject
 - Fix zooming into scaled text (DONE)
-- Baseline-shift and spacing properties
+- Baseline-shift and spacing properties (POSTPONED)
 - Does export create namedview views that are not destroyed?
 - Star::Build does not work for non-sodipodi objects (DONE)
 

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.50)
-AC_INIT(sodipodi, 0.31pre)
+AC_INIT(sodipodi, 0.31)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE
 
@@ -69,6 +69,40 @@ fi
 AM_CONDITIONAL(USE_POPT, test "x$popt_ok" = "xyes")
 if test "x$popt_ok" = "xyes"; then
 	AC_DEFINE(WITH_POPT, 1, [Use popt argument parsing library])
+fi
+
+dnl ******************************
+dnl Fontconfig
+dnl ******************************
+
+dnl We do not use real fontconfig bu only xft compatibility wrapper
+dnl Unfortunately we still need check, because it uses nonstandard include directories
+
+AC_ARG_WITH(fontconfig,
+            AC_HELP_STRING([--with-fontconfig], [use fontconfig version of xft (default is auto)]),
+            [with_fc=$withval], [with_fc=auto])
+
+if test "x$with_fc" != "xno"; then
+	dnl Have to test fontconfig presence
+	PKG_CHECK_MODULES(FONTCONFIG, fontconfig, fc=yes, fc=no)
+	if test "x$fc" != "xyes"; then
+		dnl No fontconfig found
+		if test "x$with_fc" = "xyes"; then
+			dnl Fontconfig was explicitly asked, so stop
+			AC_MSG_ERROR([--with-fontconfig was specified, but appropriate development packages could not found])
+		fi
+	fi
+else
+	dnl Asked to ignore fontconfig
+	fc=no
+fi
+
+AC_SUBST(FONTCONFIG_CFLAGS)
+AC_SUBST(FONTCONFIG_LIBS)
+
+AM_CONDITIONAL(USE_FONTCONFIG, test "x$fc" = "xyes")
+if test "x$fc" = "xyes"; then
+	AC_DEFINE(WITH_FONTCONFIG, 1, [Use fontconfig version of xft])
 fi
 
 dnl ******************************

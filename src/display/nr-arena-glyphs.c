@@ -675,8 +675,6 @@ nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *gg, const ArtDRect *pbox
 	g_return_if_fail (gg != NULL);
 	g_return_if_fail (NR_IS_ARENA_GLYPHS_GROUP (gg));
 	g_return_if_fail (pbox != NULL);
-	g_return_if_fail (pbox->x1 > pbox->x0);
-	g_return_if_fail (pbox->y1 > pbox->y0);
 
 	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
 		memcpy (&gg->paintbox, pbox, sizeof (ArtDRect));

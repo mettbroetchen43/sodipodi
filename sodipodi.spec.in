@@ -12,7 +12,7 @@ Vendor:		%{packager}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
-Sodipodi is a general vector-drawing program for the Gnome environment.
+Sodipodi is a SVG based generic vector-drawing program for Linux/Unix/Windows.
 
 %prep
 %setup

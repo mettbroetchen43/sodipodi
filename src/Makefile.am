@@ -136,7 +136,8 @@ sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
-	$(GNOME_PRINT_LIBS)
+	$(GNOME_PRINT_LIBS) \
+	$(FONTCONFIG_LIBS)
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic
 

@@ -507,7 +507,6 @@ sp_text_context_forget_text (SPTextContext *tc)
 gint
 sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
-	g_print ("IM focus in\n");
 	gtk_im_context_focus_in (tc->imc);
 	return FALSE;
 }
@@ -515,7 +514,6 @@ sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 gint
 sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
-	g_print ("IM focus out\n");
 	gtk_im_context_focus_out (tc->imc);
 	return FALSE;
 }
@@ -524,8 +522,6 @@ void
 sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc)
 {
 	if (!tc->text) sp_text_context_setup_text (tc);
-
-	g_print ("IM commit\n");
 
 	tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, string, TRUE);
 
