@@ -90,8 +90,6 @@ sodipodi_SOURCES = \
 
 #	font-wrapper.c font-wrapper.h \
 
-sodipodi_LDFLAGS = -export-dynamic
-
 sodipodi_libs = \
 	xml/libspxml.a \
 	dialogs/libspdialogs.a \

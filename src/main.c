@@ -14,6 +14,7 @@
 #include <gnome.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
+#include <libxml/tree.h>
 
 #ifdef __FreeBSD__
 #include <floatingpoint.h>
@@ -95,6 +96,8 @@ main (int argc, char *argv[])
 
 	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
 	textdomain (PACKAGE);
+
+	LIBXML_TEST_VERSION
 
 	use_gui = TRUE;
 

@@ -25,7 +25,7 @@ oaf_DATA = sodipodi.oafinfo
 
 if BONOBO
 install-exec-local:
-	if test -e $(bindir)/sodipodi-bonobo; then \
+	if test -r $(bindir)/sodipodi-bonobo; then \
 		rm -f $(bindir)/sodipodi-bonobo; \
 	fi ; \
 	ln -s $(bindir)/sodipodi $(bindir)/sodipodi-bonobo

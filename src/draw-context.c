@@ -117,6 +117,9 @@ sp_draw_context_destroy (GtkObject * object)
 
 	dc = SP_DRAW_CONTEXT (object);
 
+	/* fixme: */
+	if (dc->repr) gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+
 	if (dc->accumulated) sp_curve_unref (dc->accumulated);
 
 	while (dc->segments) {

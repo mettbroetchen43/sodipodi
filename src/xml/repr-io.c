@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include "repr.h"
 #include "repr-private.h"
-#include <gnome-xml/parser.h>
-#include <gnome-xml/tree.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 static SPRepr * sp_repr_svg_read_node (xmlNodePtr node);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
@@ -25,8 +26,8 @@ SPReprDoc * sp_repr_read_file (const gchar * filename)
 
 	repr = NULL;
 
-	for (node = doc->root; node != NULL; node = node->next) {
-		if (strcmp (node->name, "svg") == 0) {
+	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
+		if (node->name && (strcmp (node->name, "svg") == 0)) {
 			repr = sp_repr_svg_read_node (node);
 			break;
 		}
@@ -55,8 +56,8 @@ SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 
 	repr = NULL;
 
-	for (node = doc->root; node != NULL; node = node->next) {
-		if (strcmp (node->name, "svg") == 0) {
+	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
+		if (node->name && (strcmp (node->name, "svg") == 0)) {
 			repr = sp_repr_svg_read_node (node);
 			break;
 		}
@@ -93,7 +94,8 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 	repr = sp_repr_new (c);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
-		if (prop->val) {
+        xmlChar *value = xmlGetProp(node,prop->name);
+		if (value != NULL) {
 			g_snprintf (c, 256, prop->name);
 			if (prop->ns != NULL) {
 			if (prop->ns->prefix != NULL) {
@@ -102,16 +104,18 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 			}
 			}
 			}
-			sp_repr_set_attr (repr, c, prop->val->content);
+			sp_repr_set_attr (repr, c, value);
+            xmlFree (value);
 		}
 	}
 
 	if (node->content)
 		sp_repr_set_content (repr, node->content);
 
-	child = node->childs;
+	child = node->xmlChildrenNode;
 #if 1
 	if ((child != NULL) &&
+        (child->name != NULL) &&
 		(strcmp (child->name, node->name) == 0) &&
 		(child->properties == NULL) &&
 		(child->content != NULL)) {
@@ -120,7 +124,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	} else {
 #endif
-	for (child = node->childs; child != NULL; child = child->next) {
+	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
 		crepr = sp_repr_svg_read_node (child);
 		if (crepr) sp_repr_append_child (repr, crepr);
 	}

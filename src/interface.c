@@ -12,7 +12,7 @@
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
 
-static void fake_dialogs (void);
+void fake_dialogs (void);
 
 void
 sp_create_window (SPDesktop * desktop, gboolean editable)
@@ -84,10 +84,10 @@ sp_ui_close_view (GtkWidget * widget)
 	 * not compiled into application.
 	 */
 
-	if (GTK_IS_OBJECT (NULL)) fake_dialogs ();
+	if (GTK_IS_WIDGET (SODIPODI)) fake_dialogs ();
 }
 
-static void
+void
 fake_dialogs (void)
 {
 	sp_object_properties_dialog ();

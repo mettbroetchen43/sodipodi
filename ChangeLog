@@ -1,3 +1,19 @@
+2000-10-11  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/draw-context.c (sp_draw_context-destroy): Detach signal
+
+2000-10-11  Frederic Devernay <Frederic.Devernay@sophia.inria.fr>
+
+	* Makefile.am: Use test -r for compatibility
+
+	* src/Makefile.am: Remove -export-dynamic
+
+	* src/main.c: Use libxml 1.8.8/2.0
+
+	* src/interface.c: Make fake_dialogs nonstatic
+
+	* src/xml/repr-io.c: Use libxml 1.8.8/2.0
+
 2000-10-09  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* configure.in: Version 0.20
