@@ -1,6 +1,6 @@
-2002-02-03 Frank Felfe <innerspace@iname.com>
+2002-02-04 Frank Felfe <innerspace@iname.com>
 
-	* src/sp-item.c (sp_item_distance_to_svg_bbox): Fix compilation error by
+	* src/sp-item.c (sp_item_distance_to_svg_bbox): Fix compilation error
 
 2002-02-03  Lauris Kaplinski  <lauris@ximian.com>
 
