@@ -209,7 +209,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 		/* Create object */
 		repr = sp_repr_new ("rect");
 		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "paint.shape.rect");
+		style = sodipodi_get_repr (SODIPODI, "tools.shapes.rect");
 		if (style) {
 			css = sp_repr_css_attr_inherited (style, "style");
 			sp_repr_css_set (repr, css, "style");

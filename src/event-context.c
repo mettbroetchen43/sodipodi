@@ -513,6 +513,18 @@ sp_event_context_item_handler (SPEventContext * event_context, SPItem * item, Gd
 	return ret;
 }
 
+GtkWidget *
+sp_event_context_config_widget (SPEventContext *ec)
+{
+	g_return_val_if_fail (ec != NULL, NULL);
+	g_return_val_if_fail (SP_IS_EVENT_CONTEXT (ec), NULL);
+
+	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->config_widget)
+		return SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->config_widget (ec);
+
+	return NULL;
+}
+
 static void
 set_event_location (SPDesktop * desktop, GdkEvent * event)
 {

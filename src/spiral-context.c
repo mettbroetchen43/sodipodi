@@ -211,7 +211,7 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 		repr = sp_repr_new ("path");
                 sp_repr_set_attr (repr, "sodipodi:type", "spiral");
 		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "paint.shape.spiral");
+		style = sodipodi_get_repr (SODIPODI, "tools.shapes.spiral");
 		if (style) {
 			css = sp_repr_css_attr_inherited (style, "style");
 			sp_repr_css_set (repr, css, "style");

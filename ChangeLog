@@ -1,3 +1,14 @@
+2002-09-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/tool-options.c (sp_tool_options_dialog_setup): Implement
+	using sp_event_context_config_widget
+
+	* src/event-context.h: Added ::config_widget virtual method
+
+	* src/event-context.c (sp_event_context_config_widget): New method
+
+	* src/dyna-draw-context.c (sp_dyna_draw_context_config_widget): new method
+
 2002-09-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/stroke-style.c (sp_stroke_style_paint_construct): Handler

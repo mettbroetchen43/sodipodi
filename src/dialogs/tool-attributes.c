@@ -94,7 +94,7 @@ sp_tool_attributes_dialog_setup (SPEventContext *ec)
 			}
 		} else if (!strcmp (typename, "SPDynaDrawContext")) {
 			SPRepr *repr;
-			repr = sodipodi_get_repr (SODIPODI, "tools.freehand.dynamic");
+			repr = sodipodi_get_repr (SODIPODI, "tools.calligraphic");
 			if (repr) {
 				guchar *labels[] = {N_("Mass:"), N_("Drag:"), N_("Angle"), N_("Width:")};
 				guchar *attrs[] = {"mass", "drag", "angle", "width"};

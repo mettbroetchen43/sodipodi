@@ -1,16 +1,16 @@
-#ifndef SP_KNOT_H
-#define SP_KNOT_H
+#ifndef __SP_KNOT_H__
+#define __SP_KNOT_H__
 
 /*
- * SPKnot
+ * Desktop-bound visual control object
  *
- * A flexible handle for most transforming contexts. It can:
- * - display rectangles, circles, diamonds, bitmaps and pixmaps
- * - change color and/or curson on mouseover
- * - test snapping and suggest actaul distance
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 2000
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <gtk/gtktypeutils.h>

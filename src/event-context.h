@@ -19,6 +19,7 @@
 
 #include <gdk/gdk.h>
 #include <gtk/gtkobject.h>
+#include <gtk/gtkwidget.h>
 #include "xml/repr.h"
 #include "forward.h"
 
@@ -44,6 +45,8 @@ struct _SPEventContextClass {
 	void (* set) (SPEventContext *ec, const guchar *key, const guchar *val);
 	gint (* root_handler) (SPEventContext *ec, GdkEvent *event);
 	gint (* item_handler) (SPEventContext *ec, SPItem *item, GdkEvent *event);
+	/* fixme: I do not like Gtk+ stuff here (Lauris) */
+	GtkWidget * (* config_widget) (SPEventContext *ec);
 };
 
 #define SP_EVENT_CONTEXT_DESKTOP(e) (SP_EVENT_CONTEXT (e)->desktop)
@@ -59,6 +62,8 @@ void sp_event_context_read (SPEventContext *ec, const guchar *key);
 
 gint sp_event_context_root_handler (SPEventContext *ec, GdkEvent *event);
 gint sp_event_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event);
+
+GtkWidget *sp_event_context_config_widget (SPEventContext *ec);
 
 void sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event);
 

@@ -249,7 +249,6 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 	} else if (strcmp (attr, "sodipodi:argument") == 0) {
 		if (str) {
 			spiral->arg = atof (str);
-			spiral->arg = CLAMP (spiral->arg, 0.0, (2 * M_PI));
 		} else {
 			spiral->arg = 0.0;
 		}

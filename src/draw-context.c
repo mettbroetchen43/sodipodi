@@ -509,7 +509,8 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		} else {
 			SPRepr *style;
 			repr = sp_repr_new ("path");
-			style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+			/* fixme: Pen and pencil need separate style (Lauris) */
+			style = sodipodi_get_repr (SODIPODI, "tools.freehand");
 			if (style) {
 				SPCSSAttr *css;
 				css = sp_repr_css_attr_inherited (style, "style");

@@ -302,7 +302,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			/* Create <text> */
 			rtext = sp_repr_new ("text");
 			/* Set style */
-			style = sodipodi_get_repr (SODIPODI, "paint.text");
+			style = sodipodi_get_repr (SODIPODI, "tools.text");
 			if (style) {
 				SPCSSAttr *css;
 				css = sp_repr_css_attr_inherited (style, "style");

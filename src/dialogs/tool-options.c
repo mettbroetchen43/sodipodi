@@ -20,7 +20,10 @@
 #include "../forward.h"
 #include "../sodipodi.h"
 #include "../desktop-handles.h"
+#include "../event-context.h"
+#if 0
 #include "sp-attribute-widget.h"
+#endif
 
 #include "tool-options.h"
 
@@ -80,6 +83,11 @@ sp_tool_options_dialog_setup (SPEventContext *ec)
 	}
 
 	if (ec) {
+		tbl = sp_event_context_config_widget (ec);
+		if (!tbl) {
+			tbl = gtk_label_new (_("Tool has no options"));
+		}
+#if 0
 		const gchar *typename;
 		typename = gtk_type_name (GTK_OBJECT_TYPE (ec));
 		if (!strcmp (typename, "SPStarContext")) {
@@ -94,7 +102,7 @@ sp_tool_options_dialog_setup (SPEventContext *ec)
 			}
 		} else if (!strcmp (typename, "SPDynaDrawContext")) {
 			SPRepr *repr;
-			repr = sodipodi_get_repr (SODIPODI, "tools.freehand.dynamic");
+			repr = sodipodi_get_repr (SODIPODI, "tools.calligraphic");
 			if (repr) {
 				guchar *labels[] = {N_("Mass:"), N_("Drag:"), N_("Angle"), N_("Width:")};
 				guchar *attrs[] = {"mass", "drag", "angle", "width"};
@@ -105,6 +113,7 @@ sp_tool_options_dialog_setup (SPEventContext *ec)
 		} else {
 			tbl = gtk_label_new (_("Tool has no options"));
 		}
+#endif
 	} else {
 		tbl = gtk_label_new (_("No active tool"));
 	}

@@ -32,6 +32,9 @@
 
 #include <math.h>
 #include <string.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
 #include "helper/curve.h"
 #include "helper/canvas-bpath.h"
@@ -68,6 +71,8 @@ static void sp_dyna_draw_context_destroy (GtkObject *object);
 static void sp_dyna_draw_context_setup (SPEventContext *ec);
 static void sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 static gint sp_dyna_draw_context_root_handler (SPEventContext *ec, GdkEvent *event);
+
+static GtkWidget *sp_dyna_draw_context_config_widget (SPEventContext *ec);
 
 static void clear_current (SPDynaDrawContext * dc);
 static void set_to_accumulated (SPDynaDrawContext * dc);
@@ -123,6 +128,7 @@ sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass)
 	event_context_class->setup = sp_dyna_draw_context_setup;
 	event_context_class->set = sp_dyna_draw_context_set;
 	event_context_class->root_handler = sp_dyna_draw_context_root_handler;
+	event_context_class->config_widget = sp_dyna_draw_context_config_widget;
 }
 
 static void
@@ -660,12 +666,12 @@ set_to_accumulated (SPDynaDrawContext * dc)
 	  /* Set style */
 #if 1
           if (dc->use_calligraphic)
-            style = sodipodi_get_repr (SODIPODI, "paint.calligraphic");
+            style = sodipodi_get_repr (SODIPODI, "tools.calligraphic");
           else
-            style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+            style = sodipodi_get_repr (SODIPODI, "tools.freehand");
 #else
 /*  	  style = sodipodi_get_repr (SODIPODI, "paint.dynahand"); */
-	  style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+	  style = sodipodi_get_repr (SODIPODI, "tools.freehand");
 #endif
 	  if (style)
 	    {
@@ -967,3 +973,113 @@ draw_temporary_box (SPDynaDrawContext *dc)
 	sp_curve_closepath (dc->currentcurve);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->currentshape), dc->currentcurve);
 }
+
+/* Gtk stuff */
+
+static void
+sp_ddc_mass_value_changed (GtkAdjustment *adj, SPDynaDrawContext *ddc)
+{
+	sp_repr_set_double (SP_EVENT_CONTEXT_REPR (ddc), "mass", adj->value);
+}
+
+static void
+sp_ddc_drag_value_changed (GtkAdjustment *adj, SPDynaDrawContext *ddc)
+{
+	sp_repr_set_double (SP_EVENT_CONTEXT_REPR (ddc), "drag", adj->value);
+}
+
+static void
+sp_ddc_angle_value_changed (GtkAdjustment *adj, SPDynaDrawContext *ddc)
+{
+	sp_repr_set_double (SP_EVENT_CONTEXT_REPR (ddc), "angle", adj->value);
+}
+
+static void
+sp_ddc_width_value_changed (GtkAdjustment *adj, SPDynaDrawContext *ddc)
+{
+	sp_repr_set_double (SP_EVENT_CONTEXT_REPR (ddc), "width", adj->value);
+}
+
+static void
+sp_ddc_defaults (GtkWidget *widget, GtkObject *obj)
+{
+	GtkAdjustment *adj;
+
+	adj = gtk_object_get_data (obj, "mass");
+	gtk_adjustment_set_value (adj, 0.3);
+	adj = gtk_object_get_data (obj, "drag");
+	gtk_adjustment_set_value (adj, 0.5);
+	adj = gtk_object_get_data (obj, "angle");
+	gtk_adjustment_set_value (adj, 30.0);
+	adj = gtk_object_get_data (obj, "width");
+	gtk_adjustment_set_value (adj, 0.2);
+}
+
+static GtkWidget *
+sp_dyna_draw_context_config_widget (SPEventContext *ec)
+{
+	SPDynaDrawContext *ddc;
+	GtkWidget *tbl, *l, *sb, *b;
+	GtkObject *a;
+
+	ddc = SP_DYNA_DRAW_CONTEXT (ec);
+
+	tbl = gtk_table_new (5, 2, FALSE);
+
+	/* Mass */
+	l = gtk_label_new (_("Mass:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 0, 1, 0, 0, 0, 0);
+	a = gtk_adjustment_new (ddc->mass, 0.0, 1.0, 0.01, 0.1, 0.1);
+	gtk_object_set_data (GTK_OBJECT (tbl), "mass", a);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_ddc_mass_value_changed), ddc);
+
+	/* Drag */
+	l = gtk_label_new (_("Drag:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 0, 0);
+	a = gtk_adjustment_new (ddc->drag, 0.0, 10.0, 0.01, 0.1, 0.1);
+	gtk_object_set_data (GTK_OBJECT (tbl), "drag", a);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_ddc_drag_value_changed), ddc);
+
+	/* Angle */
+	l = gtk_label_new (_("Angle:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 2, 3, 0, 0, 0, 0);
+	a = gtk_adjustment_new (ddc->angle, 0.0, 360.0, 0.01, 0.1, 0.1);
+	gtk_object_set_data (GTK_OBJECT (tbl), "angle", a);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_ddc_angle_value_changed), ddc);
+
+	/* Width */
+	l = gtk_label_new (_("Width:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 3, 4, 0, 0, 0, 0);
+	a = gtk_adjustment_new (ddc->width, 0.01, 1.0, 0.01, 0.1, 0.1);
+	gtk_object_set_data (GTK_OBJECT (tbl), "width", a);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_ddc_width_value_changed), ddc);
+
+	/* Reset */
+	b = gtk_button_new_with_label (_("Defaults"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (tbl), b, 0, 2, 4, 5, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_ddc_defaults), tbl);
+
+	return tbl;
+}
+

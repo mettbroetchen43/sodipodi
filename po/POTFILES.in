@@ -26,6 +26,7 @@ src/dialogs/tool-attributes.c
 src/dialogs/xml-tree.c
 src/document.c
 src/event-context.c
+src/dyna-draw-context.c
 src/file.c
 src/help.c
 src/helper/unit-menu.c

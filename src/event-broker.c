@@ -113,7 +113,7 @@ void
 sp_event_context_set_dynahand (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT, "tools.freehand.dynamic");
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT, "tools.calligraphic");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
