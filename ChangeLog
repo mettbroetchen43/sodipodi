@@ -1,3 +1,9 @@
+2003-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libarikkei/arikkei-iolib.c: New file
+
+	* src/libarikkei/arikkei-iolib.h: New file
+
 2003-11-29  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/xml/repr-io.c (sp_repr_svg_read_node): Fixed preserve bug.

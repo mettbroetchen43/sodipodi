@@ -19,6 +19,9 @@
 
 #include <string.h>
 #include <time.h>
+
+#include <libarikkei/arikkei-iolib.h>
+
 #include <libnr/nr-pixops.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
