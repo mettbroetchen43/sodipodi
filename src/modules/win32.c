@@ -571,24 +571,6 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 
 /* Stuff */
 
-static unsigned char *
-nr_win32_utf8_strdup (TCHAR *w32str)
-{
-	char *d;
-	int slen, sp, dp;
-	if (!w32str) return NULL;
-	slen = 0;
-	while (w32str[slen]) slen+= 1;
-	d = malloc (6 * slen + 1);
-	dp = 0;
-	for (sp = 0; sp < slen; sp++) {
-		dp += g_unichar_to_utf8 (w32str[sp], d + dp);
-	}
-	d[dp++] = 0;
-	d = realloc (d, dp);
-	return d;
-}
-
 /*
  * config: HKEY_CURRENT_USER\\Volatile Environment
  * images: HKEY_CURRENT_USER\\Software\\Sodipodi\\Ichigo Path
@@ -620,7 +602,7 @@ sp_win32_ichigo (void)
 		return ichigo;
 	}
 
-	ichigo = nr_win32_utf8_strdup (pathval);
+	ichigo = sp_w32_utf8_strdup (pathval);
 
 	return ichigo;
 }
@@ -679,7 +661,7 @@ sp_win32_get_appdata_dir (void)
 		return path;
 	}
 
-	pathvalutf8 = nr_win32_utf8_strdup (pathval);
+	pathvalutf8 = sp_w32_utf8_strdup (pathval);
 	path = g_build_filename (pathvalutf8, "Sodipodi", NULL);
 	free (pathvalutf8);
 

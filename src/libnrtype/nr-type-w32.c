@@ -583,7 +583,7 @@ nr_type_w32_init (void)
 
 	/* g_print ("Loading W32 type directory...\n"); */
 
-    hdc = CreateDC (L"DISPLAY", NULL, NULL, NULL);
+    hdc = CreateDC (TEXT ("DISPLAY"), NULL, NULL, NULL);
 
 	arikkei_dict_setup_string (&familydict, 131);
 	arikkei_dict_setup_string (&namedict, 537);
@@ -814,7 +814,7 @@ nr_w32_mmap (const TCHAR *filename, int size, LPCTSTR name)
 	}
 
 	/* Load file into mmaped memory buffer */
-	if (_wstat (filename, &st) /* || !S_ISREG (st.st_mode)*/) {
+	if (_tstat (filename, &st) /* || !S_ISREG (st.st_mode)*/) {
 		/* No such file */
 		/* fprintf (stderr, "File %s not found or not regular file\n", filename); */
 		return NULL;

@@ -18,6 +18,8 @@
  * These go away, once I got unicode layer working
  */
 
+#ifndef _UNICODE
+
 extern const unsigned short tt_cp1250[];
 extern const unsigned int tt_cp1250_size;
 
@@ -60,5 +62,6 @@ extern const unsigned int tt_cp949_size;
 extern const unsigned short tt_cp950[];
 extern const unsigned int tt_cp950_size;
 
+#endif
 
 #endif

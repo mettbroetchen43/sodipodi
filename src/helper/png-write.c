@@ -246,7 +246,11 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 
 	/* open the file */
 #ifdef WIN32
+#ifdef _UNICODE
 	tfilename = arikkei_utf8_ucs2_strdup (filename);
+#else
+	tfilename = strdup (filename);
+#endif
 	fp = _tfopen (tfilename, TEXT("wb"));
 	free (tfilename);
 #else

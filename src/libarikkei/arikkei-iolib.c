@@ -12,8 +12,10 @@
  *
  */
 
+#ifndef WIN32
 #include <unistd.h>
 #include <sys/mman.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -22,6 +24,8 @@
 #include <windows.h>
 #include <tchar.h>
 #endif
+
+#include "arikkei-strlib.h"
 
 #include "arikkei-iolib.h"
 
@@ -40,10 +44,18 @@ arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *nam
 	HANDLE fh, hMapObject;
 
 	if (!filename) return NULL;
+#ifdef _UNICODE
 	tfilename = arikkei_utf8_ucs2_strdup (filename);
+#else
+	tfilename = strdup (filename);
+#endif
 
 	if (name) {
+#ifdef _UNICODE
 		tname = arikkei_utf8_ucs2_strdup (name);
+#else
+		tname = strdup (name);
+#endif
 	} else {
 		static int rval = 0;
 		TCHAR tbuf[32];

@@ -20,6 +20,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include <libarikkei/arikkei-strlib.h>
 #include <libarikkei/arikkei-iolib.h>
 
 #include <glib.h>
@@ -276,6 +277,11 @@ sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 	sp_repr_write_stream (repr, fp, 0);
 }
 
+#ifdef WIN32
+#include <windows.h>
+#include <tchar.h>
+#endif
+
 void
 sp_repr_save_file (SPReprDoc *doc, const char *filename)
 {
@@ -285,7 +291,11 @@ sp_repr_save_file (SPReprDoc *doc, const char *filename)
 	FILE * file;
 
 #ifdef WIN32
+#ifdef _UNICODE
 	tfilename = arikkei_utf8_ucs2_strdup (filename);
+#else
+	tfilename = strdup (filename);
+#endif
 	file = _tfopen (tfilename, TEXT ("w"));
 	free (tfilename);
 #else
