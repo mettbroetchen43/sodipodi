@@ -1,3 +1,7 @@
+2002-09-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* glade/toolbox.glade: Fixed non-ASCII character
+
 2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c (sp_export_do_export): Fixed affine

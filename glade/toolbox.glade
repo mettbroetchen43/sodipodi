@@ -2634,7 +2634,7 @@
 	  <widget>
 	    <class>GtkButton</class>
 	    <name>button113</name>
-	    <tooltip>Rotate selected objects 90° clockwise</tooltip>
+	    <tooltip>Rotate selected objects 90deg clockwise</tooltip>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>pressed</name>

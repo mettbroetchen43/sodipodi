@@ -22,13 +22,14 @@ src/dialogs/object-properties.c
 src/dialogs/stroke-style.c
 src/dialogs/text-edit.c
 src/dialogs/tool-attributes.c
+src/dialogs/tool-options.c
 src/dialogs/xml-tree.c
 src/document.c
+src/dyna-draw-context.c
 src/event-context.c
 src/select-context.c
-src/star-context.c
 src/spiral-context.c
-src/dyna-draw-context.c
+src/star-context.c
 src/file.c
 src/help.c
 src/helper/unit-menu.c
