@@ -44,6 +44,7 @@ struct _SPButton {
 	unsigned int pressed : 1;
 	unsigned int down : 1;
 	unsigned int initial : 1;
+	unsigned int grabbed : 1;
 	unsigned int size : 8;
 
 	SPBImageData *options;

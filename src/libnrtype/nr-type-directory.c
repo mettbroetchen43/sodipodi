@@ -504,10 +504,20 @@ static void
 nr_type_read_xft_list (void)
 {
 	NRNameList gnames, gfamilies;
+	const char *debugenv;
+	int debug;
 	int i, j;
+
+	debugenv = getenv ("SODIPODI_DEBUG_XFT");
+	debug = (debugenv && *debugenv && (*debugenv != '0'));
 
 	nr_type_xft_typefaces_get (&gnames);
 	nr_type_xft_families_get (&gfamilies);
+
+	if (debug) {
+		fprintf (stderr, "Number of usable Xft familes: %lu\n", gfamilies.length);
+		fprintf (stderr, "Number of usable Xft typefaces: %lu\n", gnames.length);
+	}
 
 	for (i = gnames.length - 1; i >= 0; i--) {
 		NRTypeFaceDefFT2 *tdef;

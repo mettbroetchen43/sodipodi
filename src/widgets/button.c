@@ -402,14 +402,14 @@ sp_button_button_press (GtkWidget *widget, GdkEventButton *event)
 		}
 		switch (button->type) {
 		case SP_BUTTON_TYPE_NORMAL:
-			gdk_pointer_grab (button->event_window, FALSE, GDK_BUTTON_RELEASE_MASK, NULL, NULL, GDK_CURRENT_TIME); 
+			button->grabbed = 1;
 			button->pressed = 1;
 			button->down = 1;
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[PRESSED], 0);
 			break;
 		case SP_BUTTON_TYPE_TOGGLE:
-			gdk_pointer_grab (button->event_window, FALSE, GDK_BUTTON_RELEASE_MASK, NULL, NULL, GDK_CURRENT_TIME);
+			button->grabbed = 1;
 			button->pressed = 1;
 			button->initial = button->down;
 			button->down = 1;
@@ -440,7 +440,7 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 		case SP_BUTTON_TYPE_NORMAL:
 			button->pressed = 0;
 			button->down = 0;
-			gdk_pointer_ungrab (GDK_CURRENT_TIME);
+			button->grabbed = 0;
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[CLICKED], 0);
@@ -448,7 +448,7 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 		case SP_BUTTON_TYPE_TOGGLE:
 			button->pressed = 0;
 			button->down = !button->initial;
-			gdk_pointer_ungrab (GDK_CURRENT_TIME);
+			button->grabbed = 0;
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[TOGGLED], 0);

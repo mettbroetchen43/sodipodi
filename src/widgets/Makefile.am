@@ -17,7 +17,6 @@ libspwidgets_a_SOURCES = \
 	button.c button.h \
 	ruler.c ruler.h \
 	sp-toolbox.c sp-toolbox.h \
-	sp-menu-button.c sp-menu-button.h \
 	sp-color-preview.c sp-color-preview.h \
 	sp-color-slider.c sp-color-slider.h \
 	sp-color-selector.c sp-color-selector.h \

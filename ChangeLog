@@ -1,3 +1,10 @@
+2003-01-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-xft.c (nr_type_xft_init): Added ebug printout
+
+	* src/widgets/button.c (sp_button_button_press): Do not grab mouse
+	(sp_button_button_release): Ditto
+
 2003-01-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.c (sp_dtw_status_frame_size_request): Always request minimum size

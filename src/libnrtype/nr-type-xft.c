@@ -12,6 +12,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 
 #include <X11/Xft/Xft.h>
 
@@ -68,7 +69,16 @@ static void
 nr_type_xft_init (void)
 {
 	XftFontSet *fs;
+	const char *debugenv;
+	int debug;
 	int i, pos, fpos;
+
+	debugenv = getenv ("SODIPODI_DEBUG_XFT");
+	debug = (debugenv && *debugenv && (*debugenv != '0'));
+
+	if (debug) {
+		fprintf (stderr, "Reading Xft font database...\n");
+	}
 
 	/* Get family list */
 	fs = XftListFonts (GDK_DISPLAY (), 0,
@@ -79,6 +89,10 @@ nr_type_xft_init (void)
 	NRXftFamilies.destructor = NULL;
 	XftFontSetDestroy (fs);
 
+	if (debug) {
+		fprintf (stderr, "Read %lu families\n", NRXftFamilies.length);
+	}
+
 	/* Get typeface list */
 	NRXftPatterns = XftListFonts (GDK_DISPLAY (), 0,
 				      XFT_SCALABLE, XftTypeBool, 1, XFT_OUTLINE, XftTypeBool, 1, 0,
@@ -88,13 +102,25 @@ nr_type_xft_init (void)
 	NRXftTypefaces.destructor = NULL;
 	NRXftNamedict = g_hash_table_new (g_str_hash, g_str_equal);
 	NRXftFamilydict = g_hash_table_new (g_str_hash, g_str_equal);
+
+	if (debug) {
+		fprintf (stderr, "Read %lu fonts\n", NRXftTypefaces.length);
+	}
+
 	pos = 0;
 	fpos = 0;
 	for (i = 0; i < NRXftPatterns->nfont; i++) {
-		char *file;
+		char *name, *file;
+		XftPatternGetString (NRXftPatterns->fonts[i], XFT_FAMILY, 0, &name);
+		if (debug) {
+			fprintf (stderr, "Typeface %s\n", name);
+		}
 		XftPatternGetString (NRXftPatterns->fonts[i], XFT_FILE, 0, &file);
 		if (file) {
 			int len;
+			if (debug) {
+				fprintf (stderr, "Got filename %s\n", file);
+			}
 			len = strlen (file);
 			/* fixme: This is silly and evil */
 			/* But Freetype just does not load pfa reliably (Lauris) */
@@ -110,6 +136,9 @@ nr_type_xft_init (void)
 				char *fn, *wn, *sn, *name;
 				int weight;
 				int slant;
+				if (debug) {
+					fprintf (stderr, "Seems valid\n");
+				}
 				XftPatternGetString (NRXftPatterns->fonts[i], XFT_FAMILY, 0, &fn);
 				XftPatternGetInteger (NRXftPatterns->fonts[i], XFT_WEIGHT, 0, &weight);
 				XftPatternGetInteger (NRXftPatterns->fonts[i], XFT_SLANT, 0, &slant);
