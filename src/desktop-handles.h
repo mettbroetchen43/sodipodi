@@ -19,6 +19,8 @@ typedef struct _SPDesktop SPDesktop;
 typedef struct _SPDesktopClass SPDesktopClass;
 #endif
 
+#define SP_DT_IS_EDITABLE(d) (TRUE)
+
 #define SP_DT_SELECTION(d) sp_desktop_selection (d)
 #define SP_DT_DOCUMENT(d) sp_desktop_document (d)
 #define SP_DT_CANVAS(d) sp_desktop_canvas (d)

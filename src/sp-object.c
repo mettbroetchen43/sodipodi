@@ -1,4 +1,4 @@
-#define SP_OBJECT_GROUP_C
+#define SP_OBJECT_C
 
 /*
  * SPObject

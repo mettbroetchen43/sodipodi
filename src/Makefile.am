@@ -64,6 +64,8 @@ sodipodi_SOURCES = \
 	draw-context.c draw-context.h \
 	text-context.c text-context.h \
 	\
+	knot.c knot.h \
+	\
 	main.c \
 	session.c session.h \
 	help.c help.h \

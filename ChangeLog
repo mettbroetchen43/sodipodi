@@ -1,5 +1,11 @@
 2000-05-05  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* src/desktop-handles.h: Added SP_DT_IS_EDITABLE
+	* src/knot.*: started implementing universal handle object for
+	all contexts
+
+2000-05-05  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* src/Makefile.am: Define $gladedir, which has been forgotten :)
 	* src/sp-image.c (sp_image_print): Do it :)
 
