@@ -762,9 +762,8 @@ msgid "Left button zooms in, right out"
 msgstr ""
 
 #: glade/sodipodi-glade.c:90
-#, fuzzy
 msgid "Copyright Lauris Kaplinski 1999-2000."
-msgstr "Copyright Lauris Kaplinski 1999."
+msgstr "Copyright Lauris Kaplinski 1999-2000."
 
 #: glade/sodipodi-glade.c:91
 msgid ""
@@ -894,7 +893,7 @@ msgstr "т/д"
 
 #: glade/sodipodi-glade.c:126
 msgid "Lock aspect ratio"
-msgstr ""
+msgstr "Ф╕ксоване в╕дношення"
 
 #: glade/sodipodi-glade.c:127
 msgid "1.0MB"
@@ -1086,14 +1085,12 @@ msgid "Combine selected paths"
 msgstr "Об'╓днати дв╕ вибран╕ к╕нцев╕ точки"
 
 #: glade/toolbox.c:48
-#, fuzzy
 msgid "Group selected objects"
-msgstr "Розгрупувати вибран╕ елементи"
+msgstr "Згрупувати вибран╕ об'╓кти"
 
 #: glade/toolbox.c:49
-#, fuzzy
 msgid "Ungroup selected objects"
-msgstr "Розгрупувати вибран╕ елементи"
+msgstr "Розгрупувати вибран╕ об'╓кти"
 
 #: glade/toolbox.c:60
 msgid "Unsymmetric"
