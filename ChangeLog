@@ -1,5 +1,8 @@
 2002-11-09  Masatake YAMATO  <jet@gyve.org>
 
+	* configure.in (AM_CONDITIONAL(USING_OAF)): moved to toplevel.
+	(AM_PROG_AS): used to check gas/as.
+
 	* src/toolbox.c (sp_update_draw_toolbox): tooltips
 	are added to the buttons.
 	(gtk_event_box_new_with_image_file_and_tooltips) 

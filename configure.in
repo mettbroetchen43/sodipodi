@@ -9,6 +9,7 @@ AC_PROG_INTLTOOL(0.11)
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
+AM_PROG_AS
 AC_HEADER_STDC
 
 CFLAGS="$CFLAGS -Wall -Wunused"
@@ -53,6 +54,7 @@ dnl Check for Bonobo
 dnl ******************************
 try_bonobo=false
 have_bonobo=false
+using_oaf="no"
 AC_ARG_WITH(bonobo,
 	[--{with,without}-bonobo Compile with Bonobo support or without it],
 	if test x$withval = xyes; then
@@ -92,8 +94,6 @@ if $try_bonobo; then
 		fi
 
 		AC_MSG_RESULT("$using_oaf")
-
-		AM_CONDITIONAL(USING_OAF, test x"using_oaf" = "xyes")
 	else    
 		AC_MSG_RESULT(not found)
 		SODIPODI_BONOBO_LIBS=
@@ -101,6 +101,7 @@ if $try_bonobo; then
 	fi
 fi
 
+AM_CONDITIONAL(USING_OAF, test x"using_oaf" = "xyes")
 AM_CONDITIONAL(BONOBO, $have_bonobo)
 AC_SUBST(SODIPODI_BONOBO_CFLAGS)
 AC_SUBST(SODIPODI_BONOBO_LIBS)
