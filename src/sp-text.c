@@ -508,7 +508,7 @@ static void sp_text_init (SPText *text);
 static void sp_text_destroy (GtkObject *object);
 
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_text_read_attr (SPObject * object, const gchar * attr);
+static void sp_text_read_attr (SPObject *object, const gchar * attr);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_modified (SPObject *object, guint flags);
@@ -520,6 +520,7 @@ static char * sp_text_description (SPItem * item);
 static GSList * sp_text_snappoints (SPItem * item, GSList * points);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
+static void sp_text_request_relayout (SPText *text, guint flags);
 static void sp_text_update_immediate_state (SPText *text);
 static void sp_text_set_shape (SPText *text);
 
@@ -654,31 +655,31 @@ sp_text_read_attr (SPObject *object, const gchar *attr)
 	if (strcmp (attr, "x") == 0) {
 		text->ly.x = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.x_set = (astr != NULL);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "y") == 0) {
 		text->ly.y = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.y_set = (astr != NULL);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "dx") == 0) {
 		text->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.dx_set = (astr != NULL);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "dy") == 0) {
 		text->ly.dy = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.dy_set = (astr != NULL);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "rotate") == 0) {
 		text->ly.rotate = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.rotate_set = (astr != NULL);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 
@@ -745,7 +746,8 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		}
 	}
 
-	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
+	/* fixme: Instead of forcing it, do it when needed */
 	sp_text_update_immediate_state (text);
 }
 
@@ -773,9 +775,11 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 		text->children = sp_object_detach_unref (object, och);
 	}
 
-	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
 	sp_text_update_immediate_state (text);
 }
+
+/* fixme: This is wrong, as we schedule relayout every time something changes */
 
 static void
 sp_text_modified (SPObject *object, guint flags)
@@ -783,6 +787,7 @@ sp_text_modified (SPObject *object, guint flags)
 	SPText *text;
 	SPObject *child;
 	GSList *l;
+	gboolean relayout;
 
 	text = SP_TEXT (object);
 
@@ -796,20 +801,27 @@ sp_text_modified (SPObject *object, guint flags)
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
+	relayout = FALSE;
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
+		if (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_STATE)) {
+			relayout = TRUE;
+		}
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
 		sp_object_unref (SP_OBJECT (child), object);
 	}
 
-	/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
-	/* fixme: Even now it may not work, as we are delayed */
-	/* fixme: So check modification flag everywhere immediate state is used */
-	sp_text_update_immediate_state (text);
-	sp_text_set_shape (text);
+	if (relayout || text->relayout || (flags & SP_OBJECT_STYLE_MODIFIED_FLAG)) {
+		/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
+		/* fixme: Even now it may not work, as we are delayed */
+		/* fixme: So check modification flag everywhere immediate state is used */
+		sp_text_update_immediate_state (text);
+		sp_text_set_shape (text);
+		text->relayout = FALSE;
+	}
 }
 
 static void
@@ -1213,6 +1225,14 @@ sp_text_update_immediate_state (SPText *text)
 		/* Count newlines as well */
 		if (child->next) start += 1;
 	}
+}
+
+static void
+sp_text_request_relayout (SPText *text, guint flags)
+{
+	text->relayout = TRUE;
+
+	sp_object_request_modified (SP_OBJECT (text), flags);
 }
 
 /* fixme: Think about these (Lauris) */

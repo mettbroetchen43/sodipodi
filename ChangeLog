@@ -1,5 +1,11 @@
 2002-08-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_text_read_attr): Request relayout
+	(sp_text_child_added): Ditto
+	(sp_text_remove_child): Ditto
+	(sp_text_modified): Check, whether relayout is needed
+	(sp_text_request_relayout): Helper
+
 	* src/style.c (sp_style_merge_from_object_parent): Inherit font size (still wrong)
 
 	* src/text-context.c (sp_text_context_root_handler): Allow control key
