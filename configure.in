@@ -24,7 +24,7 @@ GNOME_PRINT_LIBS=`gnome-config --libs print`
 AC_SUBST(GNOME_PRINT_LIBS)
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sl sv tr uk pl pt_BR pt zh_CN"
+ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sk sl sv tr uk pl pt_BR pt zh_CN"
 AM_GNU_GETTEXT
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.

@@ -1,0 +1,2131 @@
+# sodipodi sk.po
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi\n"
+"POT-Creation-Date: 2002-02-09 06:24-0500\n"
+"PO-Revision-Date: 2002-03-07 18:29+0100\n"
+"Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Sodipodi SVG Dokument"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Sodipodi SVG dokumentová továreò"
+
+#: glade/align.glade.h:1 glade/transformation.glade.h:3
+msgid "Align"
+msgstr "Zarovna»"
+
+#: glade/align.glade.h:2
+msgid "Align inside object to bottom border"
+msgstr "Zarovna» vnútorný objekt k dolnému okraju"
+
+#: glade/align.glade.h:3
+msgid "Align inside object to left border"
+msgstr "Zarovna» vnútorný objekt k µavému okraju"
+
+#: glade/align.glade.h:4
+msgid "Align inside object to right border"
+msgstr "Zarovna» vnútorný objekt k pravému okraju"
+
+#: glade/align.glade.h:5
+msgid "Align inside object to top border"
+msgstr "Zarovnanie vo vnútri objektu k hornému okraju"
+
+#: glade/align.glade.h:6
+msgid "Align objects to horizontal mid"
+msgstr "Zarovna» objekty k vodorovnému stredu"
+
+#: glade/align.glade.h:7
+msgid "Align objects to vertical mid"
+msgstr "Zarovna» objekty k zvislému stredu"
+
+#: glade/align.glade.h:8
+msgid "Align outside object to bottom border"
+msgstr "Zarovna» vonkaj¹í objekt k dolnému okraju"
+
+#: glade/align.glade.h:9
+msgid "Align outside object to left border"
+msgstr "Zarovna» vonkaj¹í objekt k µavému okraju"
+
+#: glade/align.glade.h:10
+msgid "Align outside object to right border"
+msgstr "Zarovna» vonkaj¹í objekt k pravému okraju"
+
+#: glade/align.glade.h:11
+msgid "Align outside object to top border"
+msgstr "Zarovna» vonkaj¹í objekt k hornému okraju"
+
+#: glade/align.glade.h:12
+msgid "Alignment base"
+msgstr "Základòa zarovnávania"
+
+#: glade/align.glade.h:13 src/dialogs/align.c:91
+msgid "Biggest item"
+msgstr "Najväè¹ia polo¾ka"
+
+#: glade/align.glade.h:14
+msgid "Choose align type"
+msgstr "Voµba typu zarovnávania"
+
+#: glade/align.glade.h:15
+msgid "Close window"
+msgstr "Zatvori» okno"
+
+#: glade/align.glade.h:16 glade/sodipodi.glade.h:18 src/dialogs/align.c:106
+msgid "Drawing"
+msgstr "Kresba"
+
+#: glade/align.glade.h:17 src/dialogs/align.c:86
+msgid "First selected"
+msgstr "Prvé zvolené"
+
+#: glade/align.glade.h:18 src/dialogs/align.c:81
+msgid "Last selected"
+msgstr "Naposledy zvolené"
+
+#. Page settings
+#. Notebook tab
+#: glade/align.glade.h:19 glade/document.glade.h:8 glade/sodipodi.glade.h:42
+#: src/dialogs/align.c:101 src/dialogs/document-properties.c:144
+msgid "Page"
+msgstr "Stránka"
+
+#: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
+#: src/dialogs/align.c:111 src/toolbox.c:95
+msgid "Selection"
+msgstr "Výber"
+
+#: glade/align.glade.h:21 src/dialogs/align.c:96
+msgid "Smallest item"
+msgstr "Najmen¹ia polo¾ka"
+
+#: glade/desktop.glade.h:1 glade/display.glade.h:1
+msgid "Choose base unit system for grid"
+msgstr "Zvoµte základný jednotkový systém pre mrie¾ku"
+
+#: glade/desktop.glade.h:2 glade/display.glade.h:2
+msgid "Choose color for grid"
+msgstr "Zvoµte farbu pre mrie¾ku"
+
+#: glade/desktop.glade.h:3 glade/display.glade.h:3
+msgid "Choose color for guidelines"
+msgstr "Voµba farby vodítok"
+
+#: glade/desktop.glade.h:4 glade/display.glade.h:4
+msgid "Choose color for highlighted guidelines"
+msgstr "Voµba farby pre zvýraznené vodítka"
+
+#: glade/desktop.glade.h:5 glade/display.glade.h:5
+msgid "Choose unit system for grid snapping"
+msgstr "Voµba jednotkového systému pre pri»ahovanie k mrie¾ke"
+
+#: glade/desktop.glade.h:6 glade/display.glade.h:6
+msgid "Choose unit system for guideline snapping"
+msgstr "Voµba jednotkového systému pre pritiahnutie k vodítkam"
+
+#: glade/desktop.glade.h:7 glade/display.glade.h:7
+msgid "Desktop settings"
+msgstr "Nastavenie pracovnej plochy"
+
+#: glade/desktop.glade.h:8 glade/display.glade.h:9
+msgid "Grid"
+msgstr "Mrie¾ka"
+
+#: glade/desktop.glade.h:9 glade/display.glade.h:10
+msgid "Grid color"
+msgstr "Farba mrie¾ky"
+
+#: glade/desktop.glade.h:10 glade/display.glade.h:11
+msgid "Grid color:"
+msgstr "Farba mrie¾ky:"
+
+#: glade/desktop.glade.h:11 glade/display.glade.h:12
+msgid "Grid units:"
+msgstr "Jednotky mrie¾ky:"
+
+#: glade/desktop.glade.h:12 glade/display.glade.h:13
+msgid "Guideline color"
+msgstr "Farba èiar vodítok"
+
+#: glade/desktop.glade.h:13 glade/display.glade.h:14
+msgid "Guides"
+msgstr "Vodítka"
+
+#: glade/desktop.glade.h:14 glade/display.glade.h:15
+msgid "Guides color:"
+msgstr "Farba vodítok:"
+
+#: glade/desktop.glade.h:15 glade/display.glade.h:16
+msgid "Highlight color:"
+msgstr "Farba zváraznenia:"
+
+#: glade/desktop.glade.h:16 glade/display.glade.h:17
+msgid "Highlited guideline color"
+msgstr "Farba zvýraznených vodítok"
+
+#: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
+msgid "Millimeters"
+msgstr "Milimetre"
+
+#: glade/desktop.glade.h:18 glade/display.glade.h:20
+msgid "Origin X:"
+msgstr "Zaèiatok X:"
+
+#: glade/desktop.glade.h:19 glade/display.glade.h:21
+msgid "Origin Y:"
+msgstr "Zaèiatok Y:"
+
+#: glade/desktop.glade.h:20 glade/display.glade.h:23
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
+msgid "Pixels"
+msgstr "Body"
+
+#: glade/desktop.glade.h:21 glade/display.glade.h:25
+msgid "Set distance between horizontal grid lines"
+msgstr "Nastavenie vzdialenosti medzi vodorovnými èiarami"
+
+#: glade/desktop.glade.h:22 glade/display.glade.h:26
+msgid "Set distance between vertical grid lines"
+msgstr "Nastavenie vzdialenosti medzi zvislými èiarami"
+
+#: glade/desktop.glade.h:23 glade/display.glade.h:27
+msgid "Set maximum distance for grid snapping"
+msgstr "Nastavenie maximálnej vzdialenosti pre pritiahnutie k mrie¾ke"
+
+#: glade/desktop.glade.h:24 glade/display.glade.h:28
+msgid "Set maximum distance for guideline snapping"
+msgstr "Nastavenie maximálnej vzdialenosti pre pitiahnutie k vodítkam"
+
+#: glade/desktop.glade.h:25 glade/display.glade.h:29
+msgid "Set origin of page coordinate system"
+msgstr "Nastavenie pôvodného súradnicového systému stránky"
+
+#: glade/desktop.glade.h:26 glade/display.glade.h:30
+msgid "Show grid"
+msgstr "Zobrazi» mrie¾ku"
+
+#: glade/desktop.glade.h:27 glade/display.glade.h:31
+msgid "Show guides"
+msgstr "Zobrazi» vodítka"
+
+#: glade/desktop.glade.h:28 glade/display.glade.h:32
+msgid "Snap distance:"
+msgstr "Vzdialenos» pritiahnutia:"
+
+#: glade/desktop.glade.h:29 glade/display.glade.h:33
+msgid "Snap to grid"
+msgstr "Pritiahnu» k mrie¾ke"
+
+#: glade/desktop.glade.h:30 glade/display.glade.h:34
+msgid "Snap to guides"
+msgstr "Pritiahnu» k vodítkam"
+
+#: glade/desktop.glade.h:31 glade/display.glade.h:35
+msgid "Snap units:"
+msgstr "Jednotky pritiahnutia:"
+
+#: glade/desktop.glade.h:32 glade/display.glade.h:36
+msgid "Spacing X:"
+msgstr "Rozostup X:"
+
+#: glade/desktop.glade.h:33 glade/display.glade.h:37
+msgid "Spacing Y:"
+msgstr "Rozostup Y:"
+
+#: glade/display.glade.h:8
+msgid "Display settings"
+msgstr "Zobrazi» nastavenia"
+
+#: glade/display.glade.h:19 src/dialogs/display-settings.c:68
+#: src/dialogs/fill-style.c:404
+msgid "None"
+msgstr "®iadne"
+
+#: glade/display.glade.h:22
+msgid "Oversample bitmaps:"
+msgstr "Prevzorkovanie bitmáp:"
+
+#: glade/display.glade.h:24
+msgid "Rendering"
+msgstr "Generovanie"
+
+#: glade/document.glade.h:1
+msgid "A4"
+msgstr "A4"
+
+#: glade/document.glade.h:2
+msgid "Choose paper size"
+msgstr "Voµba veµkosti papiera"
+
+#: glade/document.glade.h:3
+msgid "Choose unit system"
+msgstr "Voµba jednotkového systému"
+
+#. Custom paper frame
+#: glade/document.glade.h:4 src/dialogs/document-properties.c:185
+msgid "Custom paper"
+msgstr "Vlastný papier"
+
+#: glade/document.glade.h:5 src/dialogs/document-properties.c:135
+msgid "Document settings"
+msgstr "Nastavenie dokumentu"
+
+#: glade/document.glade.h:6 glade/object_props.glade.h:22
+#: src/dialogs/document-properties.c:220 src/dialogs/object-attributes.c:67
+#: src/dialogs/object-attributes.c:75
+msgid "Height:"
+msgstr "Vý¹ka:"
+
+#: glade/document.glade.h:9 src/dialogs/document-properties.c:156
+msgid "Paper size:"
+msgstr "Veµkos» papiera:"
+
+#: glade/document.glade.h:10
+msgid "Set page height"
+msgstr "Nastavenie vý¹ky papiera"
+
+#: glade/document.glade.h:11
+msgid "Set page width"
+msgstr "Nastavenie ¹írky papiera"
+
+#: glade/document.glade.h:12 src/dialogs/document-properties.c:196
+msgid "Units:"
+msgstr "Jednotky:"
+
+#: glade/document.glade.h:13 glade/object_props.glade.h:41
+#: src/dialogs/document-properties.c:205 src/dialogs/object-attributes.c:66
+#: src/dialogs/object-attributes.c:74
+msgid "Width:"
+msgstr "©írka:"
+
+#: glade/item.glade.h:1
+msgid "Active"
+msgstr "Aktívne"
+
+#: glade/item.glade.h:2
+msgid "ID:"
+msgstr "ID:"
+
+#. Create toplevel menuitem
+#: glade/item.glade.h:3 src/sp-item.c:619
+msgid "Item"
+msgstr "Polo¾ka"
+
+#: glade/item.glade.h:4 src/dialogs/item-properties.c:341
+msgid "Item properties"
+msgstr "Vlastnosti polo¾iek"
+
+#: glade/item.glade.h:5
+msgid "Opacity:"
+msgstr "Krytie:"
+
+#: glade/item.glade.h:6
+msgid "Parent X ="
+msgstr "Rodiè X ="
+
+#: glade/item.glade.h:7
+msgid "Parent Y ="
+msgstr "Rodiè Y ="
+
+#: glade/item.glade.h:8
+msgid "Printable"
+msgstr "Tlaèiteµné"
+
+#: glade/item.glade.h:9
+msgid "Sensitive"
+msgstr "Citlivé"
+
+#: glade/item.glade.h:10 src/dialogs/item-properties.c:181
+#: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:492
+msgid "The SVG ID of item"
+msgstr "SVG ID polo¾ky"
+
+#: glade/item.glade.h:11
+msgid "Transformation"
+msgstr "Transformácia"
+
+#: glade/item.glade.h:12
+msgid "Visible"
+msgstr "Viditeµné"
+
+#: glade/item.glade.h:13
+msgid "X +"
+msgstr "X +"
+
+#: glade/item.glade.h:14
+msgid "Y +"
+msgstr "Y +"
+
+#: glade/object_props.glade.h:1
+msgid " Color fill "
+msgstr " farba vyplnenia "
+
+#: glade/object_props.glade.h:2
+msgid " General "
+msgstr " V¹eobecné "
+
+#: glade/object_props.glade.h:3
+msgid " Style "
+msgstr " ©týl "
+
+#: glade/object_props.glade.h:4
+msgid "Add new gradient"
+msgstr "Prida» nový prechod"
+
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
+msgid "Alpha:"
+msgstr "Alfa:"
+
+#: glade/object_props.glade.h:6
+msgid "Behind fill"
+msgstr "Za výplòou"
+
+#: glade/object_props.glade.h:7
+msgid "Bevel join"
+msgstr "©ikmý spoj"
+
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
+msgid "Blue:"
+msgstr "Modrá:"
+
+#: glade/object_props.glade.h:9
+msgid "Butt endpoints"
+msgstr "Ploché koncové body"
+
+#: glade/object_props.glade.h:10
+msgid "Choose fill color"
+msgstr "Voµba farby vyplnenia"
+
+#: glade/object_props.glade.h:11
+msgid "Choose stroke color"
+msgstr "Voµba farby »ahu"
+
+#: glade/object_props.glade.h:12
+msgid "Color fill"
+msgstr "Farba vyplnenia"
+
+#: glade/object_props.glade.h:13
+msgid "Color:"
+msgstr "Farba:"
+
+#: glade/object_props.glade.h:14
+msgid "Dimension"
+msgstr "Rozmer"
+
+#: glade/object_props.glade.h:15
+msgid "Edit..."
+msgstr "Upravi»..."
+
+#: glade/object_props.glade.h:16
+msgid "Endpoints:"
+msgstr "Koncové body:"
+
+#: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
+msgid "Fill"
+msgstr "Výplò"
+
+#: glade/object_props.glade.h:18
+msgid "Fill Color:"
+msgstr "Farba výplne:"
+
+#: glade/object_props.glade.h:19
+msgid "Fractal fill"
+msgstr "Fraktál vyplnenia"
+
+#: glade/object_props.glade.h:20
+msgid "Gradient fill"
+msgstr "Vyplnenie prechodom"
+
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
+msgid "Green:"
+msgstr "Zelená:"
+
+#: glade/object_props.glade.h:23
+msgid "Is stroked"
+msgstr "Obkreslené"
+
+#: glade/object_props.glade.h:24
+msgid "Join:"
+msgstr "Spojnica:"
+
+#: glade/object_props.glade.h:25
+msgid "Layout"
+msgstr "Rozlo¾enie"
+
+#: glade/object_props.glade.h:26
+msgid "Miter join"
+msgstr "Kolmé spojenie"
+
+#: glade/object_props.glade.h:27
+msgid "No fill"
+msgstr "Bez vyplnenia"
+
+#: glade/object_props.glade.h:28
+msgid "Pattern fill"
+msgstr "Vzorka vyplnenia"
+
+#: glade/object_props.glade.h:29
+msgid "Pick a color"
+msgstr "Zobra» farbu"
+
+#: glade/object_props.glade.h:30
+msgid "Pick fill color"
+msgstr "Zobra» farbu vyplnenia"
+
+#: glade/object_props.glade.h:31
+msgid "Pick stroke color"
+msgstr "Zobra» farbu »ahu"
+
+#: glade/object_props.glade.h:32
+msgid "Position"
+msgstr "Pozícia"
+
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
+msgid "Red:"
+msgstr "Èervená:"
+
+#: glade/object_props.glade.h:34
+msgid "Reread"
+msgstr "Znovu naèíta»"
+
+#: glade/object_props.glade.h:35
+msgid "Round endpoints"
+msgstr "Oblé koncové body"
+
+#: glade/object_props.glade.h:36
+msgid "Round join"
+msgstr "Oblý spoj"
+
+#: glade/object_props.glade.h:37
+msgid "Scale with object"
+msgstr "Meni» s objektom"
+
+#: glade/object_props.glade.h:38
+msgid "Square endpoints"
+msgstr "©tvorcové koncové body"
+
+#: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
+msgid "Stroke"
+msgstr "«ah"
+
+#: glade/object_props.glade.h:40
+msgid "Stroke width"
+msgstr "©írka »ahu"
+
+#: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
+#: src/dialogs/object-attributes.c:72
+msgid "X:"
+msgstr "X:"
+
+#: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
+#: src/dialogs/object-attributes.c:73
+msgid "Y:"
+msgstr "Y:"
+
+#: glade/object_props.glade.h:44
+msgid "centimeter"
+msgstr "centimeter"
+
+#: glade/object_props.glade.h:45 glade/transformation.glade.h:48
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
+msgid "cm"
+msgstr "cm"
+
+#: glade/object_props.glade.h:46
+msgid "color"
+msgstr "farba"
+
+#: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:44
+msgid "in"
+msgstr "palec"
+
+#: glade/object_props.glade.h:48
+msgid "inches"
+msgstr "palce"
+
+#: glade/object_props.glade.h:49
+msgid "millimeters"
+msgstr "milimetre"
+
+#: glade/object_props.glade.h:50 glade/transformation.glade.h:58
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
+msgid "mm"
+msgstr "mm"
+
+#: glade/object_props.glade.h:51
+msgid "none"
+msgstr "niè"
+
+#: glade/object_props.glade.h:52
+msgid "object properties"
+msgstr "vlastnosti objektov"
+
+#: glade/object_props.glade.h:53 glade/sodipodi.glade.h:78
+msgid "pixels"
+msgstr "bodov"
+
+#: glade/object_props.glade.h:54
+msgid "points"
+msgstr "body"
+
+#: glade/object_props.glade.h:55 glade/transformation.glade.h:59
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
+msgid "pt"
+msgstr "bod"
+
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
+#: src/helper/units.c:36
+msgid "px"
+msgstr "bd"
+
+#: glade/sodipodi.glade.h:1
+msgid "1.0MB"
+msgstr "1.0MB"
+
+#: glade/sodipodi.glade.h:2
+msgid "1:1"
+msgstr "1:1"
+
+#: glade/sodipodi.glade.h:3
+msgid "1:2"
+msgstr "1:2"
+
+#: glade/sodipodi.glade.h:4
+msgid "2:1"
+msgstr "2:1"
+
+#: glade/sodipodi.glade.h:5
+msgid "Back One"
+msgstr "Dozadu o jednu"
+
+#: glade/sodipodi.glade.h:6 glade/toolbox.glade.h:2
+msgid "Break apart selected node"
+msgstr "Rozdeli» zvolený uzol"
+
+#: glade/sodipodi.glade.h:7
+msgid "Bring to _Front"
+msgstr "Prinies» do p_opredia"
+
+#: glade/sodipodi.glade.h:8 glade/toolbox.glade.h:4
+msgid "Close dialog"
+msgstr "Zavrie» dialóg"
+
+#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:7
+msgid "Convert selected segments to curves"
+msgstr "Konvertova» zvolené segmenty na krivky"
+
+#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:8
+msgid "Convert selected segments to lines"
+msgstr "Konvertova» zvolené segmenty na èiary"
+
+#: glade/sodipodi.glade.h:11
+msgid "Convert to Cu_rves"
+msgstr "Konvertova» na k_rivky"
+
+#: glade/sodipodi.glade.h:12 glade/toolbox.glade.h:10
+msgid "Cusp line at selected nodes"
+msgstr "Vrchol èiary vo zvolených uzloch"
+
+#: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:115
+msgid "Delete"
+msgstr "Zmaza»"
+
+#: glade/sodipodi.glade.h:14 glade/toolbox.glade.h:12
+msgid "Delete selected nodes"
+msgstr "Zmaza» zvolené uzly"
+
+#: glade/sodipodi.glade.h:15
+msgid "Desktop"
+msgstr "Plocha"
+
+#: glade/sodipodi.glade.h:16
+msgid "Display"
+msgstr "Zobrazenie"
+
+#: glade/sodipodi.glade.h:17
+msgid "Document"
+msgstr "Dokument"
+
+#: glade/sodipodi.glade.h:19
+msgid "Drawing Context"
+msgstr "Kontext kresby"
+
+#: glade/sodipodi.glade.h:20
+msgid "Duplicate"
+msgstr "Duplikova»"
+
+#: glade/sodipodi.glade.h:21
+msgid "Dynahand"
+msgstr "Dynamická ruka"
+
+#: glade/sodipodi.glade.h:22
+msgid "Ellipse"
+msgstr "Elipsa"
+
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29
+msgid "Export"
+msgstr "Export"
+
+#: glade/sodipodi.glade.h:24
+msgid "Export picture to png"
+msgstr "Exportova» obrázok do png"
+
+#: glade/sodipodi.glade.h:25
+msgid "Exported as"
+msgstr "Exportova» ako"
+
+#: glade/sodipodi.glade.h:26
+msgid "Filename:"
+msgstr "Názov súboru:"
+
+#: glade/sodipodi.glade.h:28
+msgid "Forward One"
+msgstr "Dopredu o jednu"
+
+#: glade/sodipodi.glade.h:29
+msgid "Freehand"
+msgstr "Voµná ruka"
+
+#: glade/sodipodi.glade.h:30
+msgid "Height"
+msgstr "Vý¹ka"
+
+#: glade/sodipodi.glade.h:31
+msgid "Image size"
+msgstr "Veµkos» súboru"
+
+#: glade/sodipodi.glade.h:32
+msgid "Import"
+msgstr "Import"
+
+#: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
+msgid "Include one node into selected segments"
+msgstr "Zahrnú» jeden uzol do zvolených segmentov"
+
+#: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
+msgid "Join 2 selected endpoints"
+msgstr "Spoji» dva zvolené koncové body"
+
+#: glade/sodipodi.glade.h:35
+msgid "Lock aspect ratio"
+msgstr "Uzamknú» oèakávaný pomer"
+
+#: glade/sodipodi.glade.h:36
+msgid "New Preview"
+msgstr "Nový náhµad"
+
+#: glade/sodipodi.glade.h:37
+msgid "New View"
+msgstr "Nový pohµad"
+
+#: glade/sodipodi.glade.h:38
+msgid "Node"
+msgstr "Uzol"
+
+#: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
+msgid "Node Edit"
+msgstr "Upravi» uzol"
+
+#: glade/sodipodi.glade.h:40 src/toolbox.c:138
+msgid "Nodes"
+msgstr "Uzly"
+
+#: glade/sodipodi.glade.h:41
+msgid "Order"
+msgstr "Poradie"
+
+#: glade/sodipodi.glade.h:43
+msgid "Png file name"
+msgstr "Názov png súboru"
+
+#: glade/sodipodi.glade.h:44
+msgid "Rectangle"
+msgstr "Obdå¾nik"
+
+#: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
+msgid "Scale"
+msgstr "Veµkos»"
+
+#: glade/sodipodi.glade.h:46
+msgid "Select"
+msgstr "Vybra»"
+
+#: glade/sodipodi.glade.h:48
+msgid "Send to _Back"
+msgstr "Po_sla» do pozadia"
+
+#: glade/sodipodi.glade.h:49
+msgid "Set dimensions"
+msgstr "Nastavi» rozmery"
+
+#: glade/sodipodi.glade.h:50
+msgid "Show Toolbox"
+msgstr "Zobrazi» panel s nástrojmi"
+
+#: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
+msgid "Smooth line at selected nodes"
+msgstr "Hladká èiara vo zvolených uzloch"
+
+#. Create toplevel menuitem
+#: glade/sodipodi.glade.h:52 src/sp-spiral.c:595
+msgid "Spiral"
+msgstr "©pirála"
+
+#. Create toplevel menuitem
+#: glade/sodipodi.glade.h:53 src/sp-star.c:476
+msgid "Star"
+msgstr "Hviezda"
+
+#: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
+msgid "Symmetric "
+msgstr "Súmerný "
+
+#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1
+msgid "Text"
+msgstr "Text"
+
+#: glade/sodipodi.glade.h:57
+msgid "Toggle Borders"
+msgstr "Prepnú» okraje"
+
+#: glade/sodipodi.glade.h:58
+msgid "Uncompressed file size:"
+msgstr "Veµkos» nekomprimovaného súboru"
+
+#: glade/sodipodi.glade.h:59
+msgid "Where to export"
+msgstr "Kam exportova»"
+
+#: glade/sodipodi.glade.h:60
+msgid "Width"
+msgstr "©írka"
+
+#: glade/sodipodi.glade.h:61
+msgid "X0"
+msgstr "X0"
+
+#: glade/sodipodi.glade.h:62
+msgid "X1"
+msgstr "X1"
+
+#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:21
+msgid "XML Tree"
+msgstr "XML strom"
+
+#: glade/sodipodi.glade.h:64
+msgid "Y0"
+msgstr "Y0"
+
+#: glade/sodipodi.glade.h:65
+msgid "Y1"
+msgstr "Y1"
+
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1090
+#: src/toolbox.c:134
+msgid "Zoom"
+msgstr "Lupa"
+
+#: glade/sodipodi.glade.h:67
+msgid "_Align"
+msgstr "_Zarovnanie"
+
+#: glade/sodipodi.glade.h:68
+msgid "_Break Apart"
+msgstr "_Rozdeli»"
+
+#: glade/sodipodi.glade.h:69
+msgid "_Combine"
+msgstr "_Kombinácia"
+
+#: glade/sodipodi.glade.h:70
+msgid "_Drawing"
+msgstr "_Kresba"
+
+#: glade/sodipodi.glade.h:71
+msgid "_Group"
+msgstr "_Zoskupi»"
+
+#: glade/sodipodi.glade.h:72
+msgid "_Interactive"
+msgstr "_Interaktívne"
+
+#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:78
+msgid "_New"
+msgstr "_Nový"
+
+#: glade/sodipodi.glade.h:74
+msgid "_Page"
+msgstr "_Stránka"
+
+#: glade/sodipodi.glade.h:75
+msgid "_Selection"
+msgstr "Vý_ber"
+
+#: glade/sodipodi.glade.h:76
+msgid "_Ungroup"
+msgstr "Z_ru¹i» zoskupenie"
+
+#: glade/sodipodi.glade.h:77
+msgid "dpi"
+msgstr "dpi"
+
+#: glade/text-dialog.glade.h:2
+msgid "Text Properties"
+msgstr "Vlastnosti textu"
+
+#: glade/toolbox.glade.h:1
+msgid "Align dialog"
+msgstr "Zarovnávací dialóg"
+
+#: glade/toolbox.glade.h:3
+msgid "Break apart selected paths"
+msgstr "Rozdeli» zvolené cesty"
+
+#: glade/toolbox.glade.h:5
+msgid "Combine selected paths"
+msgstr "Kombinova» zvolené cesty"
+
+#: glade/toolbox.glade.h:6
+msgid "Convert selected objects to curves"
+msgstr "Konvertova» zvolenú skupinu objektov na krivky"
+
+#: glade/toolbox.glade.h:9
+msgid "Copy selection to clipboard"
+msgstr "Kopírova» výber do schránky"
+
+#: glade/toolbox.glade.h:11
+msgid "Cut selection"
+msgstr "Vystrihnú» výber"
+
+#: glade/toolbox.glade.h:13
+msgid "Delete selection"
+msgstr "Zmaza» výber"
+
+#: glade/toolbox.glade.h:14
+msgid "Draw dynahand line"
+msgstr "Kresli» èiaru dynamickou rukou"
+
+#: glade/toolbox.glade.h:15
+msgid "Draw ellipse"
+msgstr "Kresli» elipsu"
+
+#: glade/toolbox.glade.h:16
+msgid "Draw freehand line"
+msgstr "Kresli» èiaru voµnou rukou"
+
+#: glade/toolbox.glade.h:17
+msgid "Draw rectangle"
+msgstr "Kresli» pravouholník"
+
+#: glade/toolbox.glade.h:18
+msgid "Draw spiral"
+msgstr "Kresli» ¹pirálu"
+
+#: glade/toolbox.glade.h:19
+msgid "Draw star"
+msgstr "Kresli» hviezdu"
+
+#: glade/toolbox.glade.h:20
+msgid "Draw text"
+msgstr "Kresli» text"
+
+#: glade/toolbox.glade.h:21
+msgid "Drawing context"
+msgstr "Obsah kresby"
+
+#: glade/toolbox.glade.h:22
+msgid "Duplicate selection"
+msgstr "Duplikova» výber"
+
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
+#: src/dialogs/gradient-vector.c:107 src/toolbox.c:78
+msgid "Edit"
+msgstr "Úpravy"
+
+#: glade/toolbox.glade.h:24
+msgid "Edit fill style of selected objects"
+msgstr "Upravi» ¹týl vyplnenia zvolených objektov"
+
+#: glade/toolbox.glade.h:25
+msgid "Edit font style of selected objects"
+msgstr "Upravi» ¹týl písma zvolených objektov"
+
+#: glade/toolbox.glade.h:26
+msgid "Edit layout of selected objects"
+msgstr "Upravi» rozlo¾enie zvolených objektov"
+
+#: glade/toolbox.glade.h:27
+msgid "Edit nodes"
+msgstr "Upravi» uzly"
+
+#: glade/toolbox.glade.h:28
+msgid "Edit stroke style of selected objects"
+msgstr "Upravi» ¹týl »ahu zvolených objektov"
+
+#: glade/toolbox.glade.h:30 src/toolbox.c:74
+msgid "File"
+msgstr "Súbor"
+
+#: glade/toolbox.glade.h:31
+msgid "Flip selected objects"
+msgstr "Preklopi» zvolené objekty"
+
+#: glade/toolbox.glade.h:32
+msgid "Group selected objects"
+msgstr "Zoskupi» zvolené objekty"
+
+#: glade/toolbox.glade.h:33
+msgid "Import "
+msgstr "Import "
+
+#: glade/toolbox.glade.h:36
+msgid "Lower selection one layer"
+msgstr "Zní¾i» výber o jednu vrstvu"
+
+#: glade/toolbox.glade.h:37
+msgid "New drawing"
+msgstr "Nová kresba"
+
+#: glade/toolbox.glade.h:38
+msgid "No I'd rather do some more cool vector drawing with sodipodi."
+msgstr "Nie, rad¹ej vytvorím nejakú super vektorovú kresbu so sodipodi."
+
+#: glade/toolbox.glade.h:40
+msgid "Nope !"
+msgstr "Nie !"
+
+#: glade/toolbox.glade.h:41 src/event-context.c:432 src/toolbox.c:87
+msgid "Object"
+msgstr "Objekt"
+
+#: glade/toolbox.glade.h:42
+msgid "Open new drawing"
+msgstr "Otvori» novú kresbu"
+
+#: glade/toolbox.glade.h:43
+msgid "Paste from clipboard"
+msgstr "Vlo¾i» obsah schránky"
+
+#: glade/toolbox.glade.h:44
+msgid "Preview print drawing"
+msgstr "Zobrazi» náhµad na kresbu pred tlaèou"
+
+#: glade/toolbox.glade.h:45
+msgid "Print drawing"
+msgstr "Tlaè kresby"
+
+#: glade/toolbox.glade.h:46
+msgid "Quit or not quit ?"
+msgstr "Ukonèi» alebo neukonèi»?"
+
+#: glade/toolbox.glade.h:47
+msgid "Raise selection to top"
+msgstr "Presunú» výber na vrchol"
+
+#: glade/toolbox.glade.h:48
+msgid "Really wanna quit sodipodi ?"
+msgstr "Skutoène chcete ukonèi» sodipodi ?"
+
+#: glade/toolbox.glade.h:49
+msgid "Redo"
+msgstr "Opakova» vrátené"
+
+#: glade/toolbox.glade.h:50
+msgid "Remove transformation"
+msgstr "Odstráni» transformáciu"
+
+#: glade/toolbox.glade.h:51
+msgid "Rise selection one layer"
+msgstr "Zvý¹i» výber o jednu vrstvu"
+
+#: glade/toolbox.glade.h:52
+msgid "Rotate selected objects 90 clockwise"
+msgstr "Otoèi» zvolené objekty o 90 stupòov doprava"
+
+#: glade/toolbox.glade.h:53
+msgid "Save drawing "
+msgstr "Ulo¾i» kresbu "
+
+#: glade/toolbox.glade.h:54
+msgid "Save drawing under new filename"
+msgstr "Ulo¾i» kresbu pod novým názvom"
+
+#: glade/toolbox.glade.h:55
+msgid "Select and transform"
+msgstr "Vybra» a transformova»"
+
+#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: glade/toolbox.glade.h:60
+msgid "Transformation dialog"
+msgstr "Transformaèný dialóg"
+
+#: glade/toolbox.glade.h:61
+msgid "Undo "
+msgstr "Vráti» spä» "
+
+#: glade/toolbox.glade.h:62
+msgid "Ungroup selected objects"
+msgstr "Zru¹i» zoskupenie zvolených objektov"
+
+#: glade/toolbox.glade.h:63
+msgid "Unsymmetric"
+msgstr "Nesymetricky"
+
+#: glade/toolbox.glade.h:64
+msgid "Yep !"
+msgstr "Áno !"
+
+#: glade/toolbox.glade.h:65
+msgid "Yes quick! I want to leave sodipodi and come back later."
+msgstr "Áno rýchlo! Chcem odís» zo sodipodi a neskôr sa vráti»."
+
+#: glade/toolbox.glade.h:67
+msgid "Zoom in"
+msgstr "Zväè¹i»"
+
+#: glade/toolbox.glade.h:68
+msgid "Zoom out"
+msgstr "Zmen¹i»"
+
+#: glade/toolbox.glade.h:69
+msgid "Zoom to 1:1"
+msgstr "Mierka 1:1"
+
+#: glade/toolbox.glade.h:70
+msgid "Zoom to 1:2"
+msgstr "Mierka 1:2"
+
+#: glade/toolbox.glade.h:71
+msgid "Zoom to 2:1"
+msgstr "Mierka 2:1"
+
+#: glade/toolbox.glade.h:72
+msgid "Zoom to drawing"
+msgstr "Zobrazi» kresbu"
+
+#: glade/toolbox.glade.h:73
+msgid "Zoom to page"
+msgstr "Zobrazi» stránku"
+
+#: glade/toolbox.glade.h:74
+msgid "Zoom to selection"
+msgstr "Zobrazi» zvolené"
+
+#: glade/toolbox.glade.h:75
+msgid "_About ..."
+msgstr "_O programe..."
+
+#: glade/toolbox.glade.h:76
+msgid "_File"
+msgstr "_Súbor"
+
+#: glade/toolbox.glade.h:77
+msgid "_Help"
+msgstr "_Pomocník"
+
+#: glade/toolbox.glade.h:79
+msgid "_Open"
+msgstr "_Otvori»"
+
+#: glade/toolbox.glade.h:80
+msgid "_Quit"
+msgstr "_Koniec"
+
+#: glade/toolbox.glade.h:81
+msgid "lower selection to bottom"
+msgstr "Presunú» výber na spodok"
+
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: glade/transformation.glade.h:4
+msgid "Align to bottom left"
+msgstr "Zarovna» dole doµava"
+
+#: glade/transformation.glade.h:5
+msgid "Align to bottom middle"
+msgstr "Zarovna» dole na stred"
+
+#: glade/transformation.glade.h:6
+msgid "Align to bottom right"
+msgstr "Zarovna» dole vpravo"
+
+#: glade/transformation.glade.h:7
+msgid "Align to center"
+msgstr "Zarovna» do stredu"
+
+#: glade/transformation.glade.h:8
+msgid "Align to left middle"
+msgstr "Zarovna» vµavo do stredu"
+
+#: glade/transformation.glade.h:9
+msgid "Align to right middle"
+msgstr "Zarovna» dole na stred"
+
+#: glade/transformation.glade.h:10
+msgid "Align to top left"
+msgstr "Zarovna» hore doµava"
+
+#: glade/transformation.glade.h:11
+msgid "Align to top middle"
+msgstr "Zarovna» hore na stred"
+
+#: glade/transformation.glade.h:12
+msgid "Align to top right"
+msgstr "Zarovna» hore vpravo"
+
+#: glade/transformation.glade.h:13
+msgid "Apply transformation to copy Ctl+m"
+msgstr "Pou¾i» transformáciu na kópií Ctl+m"
+
+#: glade/transformation.glade.h:14
+msgid "Center"
+msgstr "Stred"
+
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:42
+msgid "Centimeter"
+msgstr "Centimeter"
+
+#: glade/transformation.glade.h:16
+msgid "Choose metric for center"
+msgstr "Voµba metriky pre stred"
+
+#: glade/transformation.glade.h:17
+msgid "Close dialog - Ctl+c"
+msgstr "Ukonèenie dialógu - Ctl+c"
+
+#: glade/transformation.glade.h:18
+msgid "Degree"
+msgstr "Stupeò"
+
+#: glade/transformation.glade.h:19
+msgid "Expand dialog - Ctl+e"
+msgstr "Roz¹íri» dialóg - Ctl+e"
+
+#: glade/transformation.glade.h:20
+msgid "Height: "
+msgstr "vý¹ka: "
+
+#: glade/transformation.glade.h:21
+msgid "Horizontal center value"
+msgstr "Vodorovná stredová hodnota"
+
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:44
+msgid "Inch"
+msgstr "Palec"
+
+#: glade/transformation.glade.h:23
+msgid "Keep height of selection during transformation"
+msgstr "Dodr¾a» vý¹ku výberu poèas transformácie"
+
+#: glade/transformation.glade.h:24
+msgid "Keep width of selection during transformation"
+msgstr "Dodr¾a» ¹írku výberu poèas transformácie"
+
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:41
+msgid "Millimeter"
+msgstr "Milimeter"
+
+#: glade/transformation.glade.h:26
+msgid "Move"
+msgstr "Presunú»"
+
+#: glade/transformation.glade.h:27
+msgid "Orig. Width: "
+msgstr "Pôvodná ¹írka: "
+
+#: glade/transformation.glade.h:28
+msgid "Orig. X: "
+msgstr "Pôvodné X: "
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
+msgid "Percent"
+msgstr "Percento"
+
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:35
+msgid "Points"
+msgstr "Body"
+
+#: glade/transformation.glade.h:31
+msgid "Reset dialog to default - Ctl+r"
+msgstr "Nastavenie dialógu na ¹tandard - Ctl+r"
+
+#: glade/transformation.glade.h:32
+msgid "Rotate"
+msgstr "Otoèenie"
+
+#: glade/transformation.glade.h:34
+msgid "Set angle to 0 degrees"
+msgstr "Nastavi» uhol na 0 stupòov"
+
+#: glade/transformation.glade.h:35
+msgid "Set angle to 180 degrees"
+msgstr "Nastavi» uhol na 180 stupòov"
+
+#: glade/transformation.glade.h:36
+msgid "Set angle to 270 degrees"
+msgstr "Nastavi» uhol na 270 stupòov"
+
+#: glade/transformation.glade.h:37
+msgid "Set angle to 90 degrees"
+msgstr "Nastavi» uhol na 90 stupòov"
+
+#: glade/transformation.glade.h:38
+msgid "Skew"
+msgstr "Zo¹ikmenie"
+
+#: glade/transformation.glade.h:39
+msgid "Start transformation - Ctl+a"
+msgstr "spustenie transformácie - Ctl+a"
+
+#: glade/transformation.glade.h:40
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr "Prepnutie stredu daného súradnicami výberu/pracovnej plochy"
+
+#: glade/transformation.glade.h:41
+msgid "Transform selection"
+msgstr "Transformova» výber"
+
+#: glade/transformation.glade.h:42
+msgid "Use alignment during transformation"
+msgstr "Pou¾i» zarovnávanie poèas transformácie"
+
+#: glade/transformation.glade.h:43
+msgid "Use center as transformation fixpoint"
+msgstr "Pou¾i» stred ako  pevný bod transformácie"
+
+#: glade/transformation.glade.h:44
+msgid "Vertical center value"
+msgstr "Zvislá stredová hodnota"
+
+#: glade/transformation.glade.h:45
+msgid "Y: "
+msgstr "Y: "
+
+#: glade/transformation.glade.h:46
+msgid "absolute"
+msgstr "absolútny"
+
+#: glade/transformation.glade.h:47
+msgid "angle"
+msgstr "uhol"
+
+#: glade/transformation.glade.h:49
+msgid "deg"
+msgstr "stup."
+
+#: glade/transformation.glade.h:50
+msgid "desktop"
+msgstr "pracovná plocha"
+
+#: glade/transformation.glade.h:51
+msgid "flip horizontal"
+msgstr "preklopi» vodorovne"
+
+#: glade/transformation.glade.h:52
+msgid "flip vertical"
+msgstr "preklopi» zvisle"
+
+#: glade/transformation.glade.h:53
+msgid "horizontal move"
+msgstr "vodorovný posun"
+
+#: glade/transformation.glade.h:54
+msgid "horizontal scale value"
+msgstr "vodorovný pomer hodnoty"
+
+#: glade/transformation.glade.h:56
+msgid "keep aspect"
+msgstr "zachova» pomer"
+
+#: glade/transformation.glade.h:57
+msgid "lock/unlock horizontal and vertical scale"
+msgstr "uzamknutie/uvoµnenie vodorovného a zvislého pomeru"
+
+#: glade/transformation.glade.h:60
+msgid "select direction"
+msgstr "voµba smeru"
+
+#: glade/transformation.glade.h:61
+msgid "select direction (horizontal/vertical skew)"
+msgstr "voµba smeru (vodorovné/zvislé zo¹ikmenie)"
+
+#: glade/transformation.glade.h:62
+msgid "select metric for scale"
+msgstr "voµba metriky pre pomer"
+
+#: glade/transformation.glade.h:63
+msgid "select metric for values"
+msgstr "voµba metriky pre hodnoty"
+
+#: glade/transformation.glade.h:64
+msgid "skew"
+msgstr "zo¹ikmenie"
+
+#: glade/transformation.glade.h:65
+msgid "toggle absolute/relative move"
+msgstr "prepnutie absolútneho/relatívneho posunu"
+
+#: glade/transformation.glade.h:66
+msgid "toggle absolute/relative scale"
+msgstr "prepnutie medzi absolútnym a relatívnym pomerom"
+
+#: glade/transformation.glade.h:67
+msgid "vertical move"
+msgstr "zvislý posun"
+
+#: glade/transformation.glade.h:68
+msgid "vertical scale value"
+msgstr "zvislý pomer hodnoty"
+
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
+#: src/dialogs/gradient-vector.c:111
+msgid "Add"
+msgstr "Prida»"
+
+#: glade/xml-tree.glade.h:2
+msgid "Add attribute"
+msgstr "Pridaj atribút"
+
+#: glade/xml-tree.glade.h:3
+msgid "Attribute:"
+msgstr "Atribút:"
+
+#: glade/xml-tree.glade.h:4
+msgid "Attributes"
+msgstr "Atribúty"
+
+#: glade/xml-tree.glade.h:5
+msgid "Change"
+msgstr "Zmeni»"
+
+#: glade/xml-tree.glade.h:6
+msgid "Change Attribute"
+msgstr "Zmena atribútu"
+
+#: glade/xml-tree.glade.h:7
+msgid "Content"
+msgstr "Obsah"
+
+#: glade/xml-tree.glade.h:8
+msgid "Copy"
+msgstr "Kopírova»"
+
+#: glade/xml-tree.glade.h:9
+msgid "Cut"
+msgstr "Vystrihnú»"
+
+#: glade/xml-tree.glade.h:10
+msgid "Del"
+msgstr "Zmaza»"
+
+#: glade/xml-tree.glade.h:12
+msgid "Delete attribute"
+msgstr "Zmaza» atribút"
+
+#: glade/xml-tree.glade.h:13
+msgid "Do you want to delete attribute?"
+msgstr "Chcete zmaza» atribút?"
+
+#: glade/xml-tree.glade.h:14
+msgid "Dup"
+msgstr "Dup"
+
+#: glade/xml-tree.glade.h:15
+msgid "Hierarchy"
+msgstr "Hierarchia"
+
+#: glade/xml-tree.glade.h:16
+msgid "Key"
+msgstr "Klávesa"
+
+#: glade/xml-tree.glade.h:17
+msgid "New"
+msgstr "Nový"
+
+#: glade/xml-tree.glade.h:18
+msgid "Paste"
+msgstr "Vlo¾i»"
+
+#: glade/xml-tree.glade.h:19
+msgid "Value"
+msgstr "Hodnota"
+
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
+msgid "Value:"
+msgstr "Hodnota:"
+
+#: glade/xml-tree.glade.h:22
+msgid "name"
+msgstr "názov"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "Vektorový ilustrátor"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Nie je mo¾né vytvori» sodipodi-svg-doc továreò"
+
+#. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
+#. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
+#: src/desktop.c:1082
+msgid "Welcome !"
+msgstr "Vitajte !"
+
+#: src/desktop.c:1156
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: %s: %d"
+
+#: src/desktop.c:1216
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "Dokument %s obsahuje neulo¾ené zmeny, ulo¾i» ich?"
+
+#: src/desktop.c:1217
+msgid "Save"
+msgstr "Ulo¾i»"
+
+#: src/desktop.c:1217
+msgid "Don't save"
+msgstr "Neuklada»"
+
+#: src/dialogs/display-settings.c:72
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:76
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:80
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:84
+msgid "16x16"
+msgstr "16x16"
+
+#: src/dialogs/document-properties.c:177 src/dialogs/document-properties.c:356
+msgid "Custom"
+msgstr "Vlastné"
+
+#. Frame
+#: src/dialogs/fill-style.c:156 src/dialogs/fill-style.c:378
+msgid "Empty"
+msgstr "Vyprázdni»"
+
+#: src/dialogs/fill-style.c:206
+msgid "Fill style"
+msgstr "©týl výplne"
+
+#. Set frame label
+#: src/dialogs/fill-style.c:548
+msgid "Solid color"
+msgstr "Plne farebné"
+
+#. Label
+#: src/dialogs/fill-style.c:559
+msgid "Mode:"
+msgstr "Re¾im:"
+
+#: src/dialogs/fill-style.c:566
+msgid "RGB"
+msgstr "RGB"
+
+#: src/dialogs/fill-style.c:573
+msgid "HSV"
+msgstr "HSV"
+
+#: src/dialogs/fill-style.c:580
+msgid "CMYK"
+msgstr "CMYK"
+
+#. Set frame label
+#: src/dialogs/fill-style.c:648
+msgid "Gradient"
+msgstr "Prechod"
+
+#. Reset button
+#: src/dialogs/gradient-selector.c:115
+msgid "Reset"
+msgstr "Obnovi»"
+
+#. No document or no gradients
+#: src/dialogs/gradient-vector.c:242
+msgid "No gradients defined"
+msgstr "Prechod nie je definovaný"
+
+#: src/dialogs/gradient-vector.c:473
+msgid "Start color"
+msgstr "Poèiatoèná farba"
+
+#: src/dialogs/gradient-vector.c:485
+msgid "End color"
+msgstr "Koncová farba"
+
+#: src/dialogs/gradient-vector.c:512
+msgid "Gradient vector"
+msgstr "Vektor prechodu"
+
+#: src/dialogs/item-properties.c:175
+msgid "Item is reference"
+msgstr "Polo¾ka je odkaz"
+
+#: src/dialogs/item-properties.c:253 src/dialogs/item-properties.c:494
+msgid "The ID is not valid"
+msgstr "ID nie je platné"
+
+#: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
+msgid "The ID is already defined"
+msgstr "ID je u¾ definované"
+
+#: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
+msgid "The ID is valid"
+msgstr "ID je platné"
+
+#: src/dialogs/object-attributes.c:29
+msgid "Href:"
+msgstr "Href:"
+
+#: src/dialogs/object-attributes.c:30
+msgid "Target:"
+msgstr "Cieµ:"
+
+#: src/dialogs/object-attributes.c:31
+msgid "Type:"
+msgstr "Typ:"
+
+#: src/dialogs/object-attributes.c:32
+msgid "Role:"
+msgstr "Rola:"
+
+#: src/dialogs/object-attributes.c:33
+msgid "Arcrole:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:34
+msgid "Title:"
+msgstr "Titulok:"
+
+#: src/dialogs/object-attributes.c:35
+msgid "Show:"
+msgstr "Zobrazi»:"
+
+#: src/dialogs/object-attributes.c:36
+msgid "Actuate:"
+msgstr "Riadenie:"
+
+#: src/dialogs/object-attributes.c:41
+msgid "Sides:"
+msgstr "Strany:"
+
+#: src/dialogs/object-attributes.c:42 src/dialogs/object-attributes.c:52
+msgid "Center X:"
+msgstr "Stred X:"
+
+#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
+msgid "Center Y:"
+msgstr "Stred Y:"
+
+#: src/dialogs/object-attributes.c:44
+msgid "R1:"
+msgstr "R1:"
+
+#: src/dialogs/object-attributes.c:45
+msgid "R2:"
+msgstr "R2:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "ARG1:"
+msgstr "ARG1:"
+
+#: src/dialogs/object-attributes.c:47
+msgid "ARG2:"
+msgstr "ARG2:"
+
+#: src/dialogs/object-attributes.c:54
+msgid "Expansion:"
+msgstr "Rozpínanie:"
+
+#: src/dialogs/object-attributes.c:55
+msgid "Revolution:"
+msgstr "Otáèanie:"
+
+#: src/dialogs/object-attributes.c:56
+msgid "Radius:"
+msgstr "Polomer:"
+
+#: src/dialogs/object-attributes.c:57
+msgid "Argument:"
+msgstr "Argument:"
+
+#: src/dialogs/object-attributes.c:58
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "URL:"
+msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:76
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:77
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:107
+#, c-format
+msgid "%s attributes"
+msgstr "%s atribútov"
+
+#. Do some evil things
+#: src/dialogs/object-properties.c:209
+msgid "Dynamic fill"
+msgstr "Dynamická vypåò"
+
+#: src/document.c:235
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Nepomenovaný dokument %d"
+
+#: src/document.c:307
+#, c-format
+msgid "Memory document %d"
+msgstr "Pamä»ový dokument %d"
+
+#: src/file.c:97
+msgid "Select file to open"
+msgstr "Voµba súboru na otvorenie"
+
+#: src/file.c:207
+msgid "Save file"
+msgstr "Ulo¾i» súbor"
+
+#: src/file.c:324
+msgid "Select file to import"
+msgstr "Voµba súboru na importovanie"
+
+#: src/file.c:401
+msgid "Export file"
+msgstr "Export súboru"
+
+#: src/file.c:468
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (doc názov %s..): Náhµad pre tlaèou"
+
+#: src/help.c:36
+msgid "About sodipodi"
+msgstr "O sodipodi"
+
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
+msgid "Centimeters"
+msgstr "Centimetre"
+
+#: src/helper/unit-menu.c:356 src/helper/units.c:44
+msgid "Inches"
+msgstr "Palce"
+
+#: src/helper/unit-menu.c:356
+msgid "\""
+msgstr "\""
+
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
+msgid "Point"
+msgstr "Bod"
+
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
+msgid "Pixel"
+msgstr "Bod"
+
+#: src/helper/unit-menu.c:359
+msgid "Userspace"
+msgstr "Pou¾ívateµský priestor"
+
+#: src/helper/unit-menu.c:359
+msgid "us"
+msgstr "pp"
+
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
+msgid "Em squares"
+msgstr "Em ¹tvorce"
+
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
+msgid "Em square"
+msgstr "Em ¹tvorec"
+
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
+msgid "em"
+msgstr "em"
+
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
+msgid "Ex squares"
+msgstr "Ex ¹tvorce"
+
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
+msgid "Ex square"
+msgstr "Ex ¹tvorec"
+
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
+msgid "ex"
+msgstr "ex"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:34
+msgid "Unit"
+msgstr "Jednotka"
+
+#: src/helper/units.c:34
+msgid "Units"
+msgstr "Jednotky"
+
+#: src/helper/units.c:35
+msgid "Pt"
+msgstr "b."
+
+#: src/helper/units.c:36
+msgid "Px"
+msgstr "px"
+
+#: src/helper/units.c:37
+msgid "Userspace unit"
+msgstr "Pou¾ívateµská jednotka"
+
+#: src/helper/units.c:37
+msgid "User"
+msgstr "Pou¾ívateµ"
+
+#: src/helper/units.c:37
+msgid "Userspace units"
+msgstr "Pou¾ívateµské jednotky"
+
+#: src/helper/units.c:40
+msgid "Percents"
+msgstr "percent"
+
+#: src/helper/units.c:43
+msgid "Meter"
+msgstr "meter"
+
+#: src/helper/units.c:43
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:43
+msgid "meters"
+msgstr "metre"
+
+#: src/main.c:51
+msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+msgstr "Nepou¾íva» GUI. NB! ak existuje, mal by by» PRVÝM argumentom!"
+
+#: src/main.c:60
+msgid "Open specified file (option string may be excluded)"
+msgstr "Otvori» konkrétny súbor (re»azec s voµbami mô¾e by» vylúèený)"
+
+#: src/main.c:61 src/main.c:70
+msgid "FILENAME"
+msgstr "NÁZOV_SÚBORU"
+
+#: src/main.c:69
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr "Tlaèi» súbory do urèeného výstupného súboru (pou¾ite '| program' pre rúru)"
+
+#: src/main.c:78
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+"Zobrazi» dané súbory jeden po druhom, na nasledujúci prepnú» po "
+"akejkoµvek udalosti klávesnice/my¹i"
+
+#: src/main.c:180
+msgid "Oaf options"
+msgstr "Mo¾nosti oaf"
+
+#: src/main.c:188
+msgid "Could not initialize Bonobo"
+msgstr "Nie je mo¾né inicializova» Bonobo"
+
+#. Not a regular file
+#: src/sodipodi.c:305
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s nie je regulárny súbor.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia.\n"
+
+#. Not an valid xml file
+#: src/sodipodi.c:318
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Ani %s nie je platný xml súbor alebo\n"
+"ho nemáte právo èíta».\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#: src/sodipodi.c:332
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s nie je platný súbor so sodipodi nastaveniami.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#. Cannot create directory
+#: src/sodipodi.c:588
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Nie je mo¾né vytvori» prieèinok %s.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#. Not a directory
+#: src/sodipodi.c:600
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s nie je platný prieèinok.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#. Cannot create file
+#: src/sodipodi.c:616
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Nie je mo¾né vytvori» súbor %s.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#. Cannot create file
+#: src/sodipodi.c:628
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Nie je mo¾né zapísa» súbor %s.\n"
+"Hoci sodipodi bude spustené, nebudete\n"
+"môc» naèíta» alebo ulo¾i» nastavenia."
+
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "Odkaz na %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "Odkaz"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "Vlastnosti odkazu"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "Nasledova» odkaz"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "Odstráni» odkaz"
+
+#: src/sp-image.c:291
+msgid "Broken bitmap"
+msgstr "Po¹kodená bitmapa"
+
+#: src/sp-image.c:292
+msgid "Color bitmap"
+msgstr "Farebná bitmapa"
+
+#. Create toplevel menuitem
+#: src/sp-image.c:508
+msgid "Image"
+msgstr "Obrázok"
+
+#. Link dialog
+#: src/sp-image.c:511
+msgid "Image Properties"
+msgstr "Vlastnosti obrázku"
+
+#: src/sp-item-group.c:435
+#, c-format
+msgid "Group of %d objects"
+msgstr "Zoskupi» %d objekty"
+
+#: src/sp-item-group.c:497
+msgid "Group"
+msgstr "Zoskupi»"
+
+#. Group dialog
+#: src/sp-item-group.c:501
+msgid "Group Properties"
+msgstr "Vlastnosti skupiny"
+
+#. "Ungroup"
+#: src/sp-item-group.c:514
+msgid "Ungroup"
+msgstr "Zru¹i» zoskupenie"
+
+#: src/sp-item.c:359
+msgid "Unknown item :-("
+msgstr "Neznáma polo¾ka :-("
+
+#. Item dialog
+#: src/sp-item.c:622
+msgid "Item Properties"
+msgstr "Vlastnosti polo¾iek"
+
+#. Select item
+#: src/sp-item.c:632
+msgid "Select this"
+msgstr "Vybra» toto"
+
+#. Reset transformations
+#: src/sp-item.c:642
+msgid "Reset transformation"
+msgstr "Zru¹i» transformáciu"
+
+#: src/sp-item.c:648
+msgid "Make sensitive"
+msgstr "Urobi» citlivým"
+
+#: src/sp-item.c:648
+msgid "Make insensitive"
+msgstr "Urobi» necitlivým"
+
+#. Create link
+#: src/sp-item.c:653
+msgid "Create link"
+msgstr "Vytvori» odkaz"
+
+#. Create toplevel menuitem
+#: src/sp-rect.c:363
+msgid "Rect"
+msgstr "Pravouholník"
+
+#. Link dialog
+#: src/sp-rect.c:366
+msgid "Rect Properties"
+msgstr "Vlastnosti pravouholníka"
+
+#: src/sp-shape.c:364
+msgid "A path - whatever it means"
+msgstr "Cesta - èokoµvek èo to znamená"
+
+#. Create toplevel menuitem
+#: src/sp-shape.c:420
+msgid "Shape"
+msgstr "Tvar"
+
+#. Item dialog
+#: src/sp-shape.c:423
+msgid "Fill settings"
+msgstr "Nastavenie výplne"
+
+#. Link dialog
+#: src/sp-spiral.c:598
+msgid "Spiral Properties"
+msgstr "Vlastnosti ¹pirály"
+
+#. Link dialog
+#: src/sp-star.c:479
+msgid "Star Properties"
+msgstr "Vlastnosti hviezdy"
+
+#: src/sp-text.c:222
+msgid "Text object"
+msgstr "Textový objekt"
+
+#: src/toolbox.c:99
+msgid "Draw"
+msgstr "Kreslenie"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Hue:"
+msgstr "Odtieò:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Saturation:"
+msgstr "Sýtos»:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Cyan:"
+msgstr "Azúrová:"
+
+#: src/widgets/sp-color-selector.c:646
+msgid "Magenta:"
+msgstr "Purpurová:"
+
+#: src/widgets/sp-color-selector.c:647
+msgid "Yellow:"
+msgstr "®ltá:"
+
+#: src/widgets/sp-color-selector.c:648
+msgid "Black:"
+msgstr "Èierna:"
+
