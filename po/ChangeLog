@@ -1,3 +1,9 @@
+2000-08-13  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+	* update.pl: added script.
+	* POTFILES.in: added missing file.
+
 2000-08-02  Pablo Saratxaga <pablo@mandrakesoft.com>
 
 	* et.po: added a header to the file, so statistics and checking can

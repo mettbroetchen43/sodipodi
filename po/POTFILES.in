@@ -9,3 +9,5 @@ src/sp-item.c
 src/sp-item-group.c
 src/sp-rect.c
 src/sp-shape.c
+src/sp-text.c
+

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodioidi\n"
-"POT-Creation-Date: 2000-06-24 14:45+0000\n"
-"PO-Revision-Date: 2000-06-24 14:46+00:00\n"
+"POT-Creation-Date: 2000-08-13 23:16+0000\n"
+"PO-Revision-Date: 2000-08-13 23:19+00:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -454,7 +454,7 @@ msgstr "Соединить"
 
 #: glade/sodipodi-glade.c:126
 msgid "Cusp"
-msgstr ""
+msgstr "Острая"
 
 #: glade/sodipodi-glade.c:127
 msgid "Smooth"
@@ -527,7 +527,7 @@ msgstr "круг"
 
 #: glade/sodipodi-glade.c:148
 msgid "bevel"
-msgstr ""
+msgstr "скос"
 
 #: glade/sodipodi-glade.c:150
 msgid "square"
@@ -642,7 +642,7 @@ msgstr "Переключатель границ"
 msgid "Drawing Context"
 msgstr "Рисование содержания"
 
-#: glade/sodipodi-glade.c:211 src/sp-rect.c:162
+#: glade/sodipodi-glade.c:211
 msgid "Rectangle"
 msgstr "Прямоугольник"
 
@@ -772,7 +772,7 @@ msgstr "Выбрать файл для импортирования"
 msgid "Export file"
 msgstr "Экспортировать файл"
 
-#: src/file.c:381
+#: src/file.c:373
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (документ %s..): Просмотр печати"
@@ -797,3 +797,7 @@ msgstr "Группа из %d элементов"
 #: src/sp-shape.c:277
 msgid "A path - whatever it means"
 msgstr "Контур - чтобы это значило"
+
+#: src/sp-text.c:193
+msgid "Text object"
+msgstr "Текстовый объект"
