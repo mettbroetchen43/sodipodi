@@ -40,6 +40,7 @@ struct _SPNamedView {
 	GSList * hguides;
 	GSList * vguides;
 	GSList * views;
+	GSList * gridviews;
 };
 
 struct _SPNamedViewClass {

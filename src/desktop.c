@@ -475,65 +475,6 @@ sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop)
 
 /* Public methods */
 
-#if 0
-void
-sp_desktop_set_focus (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-
-	desktop = (SPDesktop *) gtk_object_get_data (GTK_OBJECT (widget), "SPDesktop");
-
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-#if 0
-	active_desktop = desktop;
-#endif
-}
-
-gboolean
-sp_desktop_close (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-
-	/* fixme: do it the right way - please!!! */
-
-	desktop = (SPDesktop *) gtk_object_get_data (GTK_OBJECT (widget), "SPDesktop");
-
-	g_return_val_if_fail (desktop != NULL, TRUE);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), TRUE);
-
-	gtk_object_destroy (GTK_OBJECT (desktop));
-#if 0
-	num_desktops--;
-
-	if (num_desktops < 1)
-		gtk_main_quit ();
-#endif
-	return FALSE;
-}
-
-SPDesktop *
-sp_desktop_widget_desktop (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-
-	g_return_val_if_fail (widget != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-
-	while (widget->parent != NULL) {
-		widget = widget->parent;
-	}
-	desktop = (SPDesktop *) gtk_object_get_data (GTK_OBJECT (widget), "SPDesktop");
-#if 0
-	if (desktop == NULL) desktop = active_desktop;
-#endif
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
-
-	return desktop;
-}
-#endif
-
 void
 sp_desktop_set_position (SPDesktop * desktop, double x, double y)
 {

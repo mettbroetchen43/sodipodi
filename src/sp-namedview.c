@@ -1,9 +1,11 @@
 #define SP_NAMEDVIEW_C
 
+#include "helper/canvas-grid.h"
 #include "svg/svg.h"
 #include "document.h"
 #include "desktop.h"
 #include "desktop-events.h"
+#include "desktop-handles.h"
 #include "sp-guide.h"
 #include "sp-namedview.h"
 
@@ -18,6 +20,9 @@ static void sp_namedview_build (SPObject * object, SPDocument * document, SPRepr
 static void sp_namedview_read_attr (SPObject * object, const gchar * key);
 static void sp_namedview_add_child (SPObject * object, SPRepr * child);
 static void sp_namedview_remove_child (SPObject * object, SPRepr * child);
+
+static void sp_namedview_setup_grid (SPNamedView * nv);
+static void sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item);
 
 static SPObjectGroupClass * parent_class;
 
@@ -90,6 +95,13 @@ sp_namedview_destroy (GtkObject * object)
 	g_slist_free (namedview->hguides);
 	g_slist_free (namedview->vguides);
 
+	g_assert (!namedview->views);
+
+	while (namedview->gridviews) {
+		gtk_object_destroy (GTK_OBJECT (namedview->gridviews->data));
+		namedview->gridviews = g_slist_remove (namedview->gridviews, namedview->gridviews->data);
+	}
+
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
@@ -160,6 +172,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "showgrid") == 0) {
 		namedview->showgrid = (astr != NULL);
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "snaptogrid") == 0) {
@@ -192,10 +205,12 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "gridoriginx") == 0) {
 		namedview->gridorigin.x = sp_svg_read_length (&unit, astr);
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridoriginy") == 0) {
 		namedview->gridorigin.y = sp_svg_read_length (&unit, astr);
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridspacingx") == 0) {
@@ -204,6 +219,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		} else {
 			namedview->gridspacing.x = PTPERMM;
 		}
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridspacingy") == 0) {
@@ -212,18 +228,21 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		} else {
 			namedview->gridspacing.y = PTPERMM;
 		}
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridcolor") == 0) {
 		if (astr) {
 			namedview->gridcolor = (namedview->gridcolor & 0xff) | sp_svg_read_color (astr);
 		}
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridopacity") == 0) {
 		v = sp_repr_get_double_attribute (object->repr, key, 0.25);
 		v = CLAMP (v, 0.0, 1.0);
 		namedview->gridcolor = (namedview->gridcolor & 0xffffff00) | (guint) (v * 255.0);
+		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "guidecolor") == 0) {
@@ -344,24 +363,29 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 }
 
 void
-sp_namedview_show (SPNamedView * namedview, gpointer desktop)
+sp_namedview_show (SPNamedView * nv, gpointer desktop)
 {
 	SPDesktop * dt;
 	GSList * l;
+	GnomeCanvasItem * item;
 
 	dt = SP_DESKTOP (desktop);
 
-	for (l = namedview->hguides; l != NULL; l = l->next) {
+	for (l = nv->hguides; l != NULL; l = l->next) {
 		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
 		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
 	}
 
-	for (l = namedview->vguides; l != NULL; l = l->next) {
+	for (l = nv->vguides; l != NULL; l = l->next) {
 		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
 		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
 	}
 
-	namedview->views = g_slist_prepend (namedview->views, desktop);
+	nv->views = g_slist_prepend (nv->views, desktop);
+
+	item = gnome_canvas_item_new (SP_DT_GRID (dt), SP_TYPE_CGRID, NULL);
+	nv->gridviews = g_slist_prepend (nv->gridviews, item);
+	sp_namedview_setup_grid_item (nv, item);
 }
 
 void
@@ -387,6 +411,15 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 	}
 
 	nv->views = g_slist_remove (nv->views, desktop);
+
+	for (l = nv->gridviews; l != NULL; l = l->next) {
+		if (GNOME_CANVAS_ITEM (l->data)->canvas == SP_DT_CANVAS (dt)) break;
+	}
+
+	g_assert (l);
+
+	gtk_object_destroy (GTK_OBJECT (l->data));
+	nv->gridviews = g_slist_remove (nv->gridviews, l->data);
 }
 
 void
@@ -410,6 +443,34 @@ sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean activ
 	for (l = nv->vguides; l != NULL; l = l->next) {
 		sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, active);
 	}
+}
+
+static void
+sp_namedview_setup_grid (SPNamedView * nv)
+{
+	GSList * l;
+
+	for (l = nv->gridviews; l != NULL; l = l->next) {
+		sp_namedview_setup_grid_item (nv, GNOME_CANVAS_ITEM (l->data));
+	}
+}
+
+static void
+sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
+{
+	if (nv->showgrid) {
+		gnome_canvas_item_show (item);
+	} else {
+		gnome_canvas_item_hide (item);
+	}
+
+	gnome_canvas_item_set (item,
+			       "color", nv->gridcolor,
+			       "originx", nv->gridorigin.x,
+			       "originy", nv->gridorigin.y,
+			       "spacingx", nv->gridspacing.x,
+			       "spacingy", nv->gridspacing.y,
+			       NULL);
 }
 
 

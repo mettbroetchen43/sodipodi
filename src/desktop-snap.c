@@ -47,6 +47,22 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 		}
 	}
 
+	if (nv->snaptogrid) {
+		gdouble p;
+		best = nv->gridtolerance * desktop->w2d[0];
+		p = nv->gridorigin.x + floor ((req->x - nv->gridorigin.x) / nv->gridspacing.x) * nv->gridspacing.x;
+		if (fabs (req->x - p) < best) {
+			best = fabs (req->x - p);
+			actual.x = p;
+			snapped = TRUE;
+		}
+		if (fabs (nv->gridspacing.x - (req->x - p)) < best) {
+			best = fabs (nv->gridspacing.x - (req->x - p));
+			actual.x = nv->gridspacing.x + p;
+			snapped = TRUE;
+		}
+	}
+
 	dist = (snapped) ? fabs (actual.x - req->x) : 1e18;
 
 	*req = actual;
@@ -80,6 +96,22 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 				actual.y = SP_GUIDE (l->data)->position;
 				snapped = TRUE;
 			}
+		}
+	}
+
+	if (nv->snaptogrid) {
+		gdouble p;
+		best = nv->gridtolerance * desktop->w2d[0];
+		p = nv->gridorigin.y + floor ((req->y - nv->gridorigin.y) / nv->gridspacing.y) * nv->gridspacing.y;
+		if (fabs (req->y - p) < best) {
+			best = fabs (req->y - p);
+			actual.y = p;
+			snapped = TRUE;
+		}
+		if (fabs (nv->gridspacing.y - (req->y - p)) < best) {
+			best = fabs (nv->gridspacing.y - (req->y - p));
+			actual.y = nv->gridspacing.y + p;
+			snapped = TRUE;
 		}
 	}
 

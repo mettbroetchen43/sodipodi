@@ -1,0 +1,229 @@
+#define SP_CANVAS_GRID_C
+
+/*
+ * SPCGrid
+ *
+ * Copyright (C) Lauris Kaplinski 2000
+ *
+ */
+
+#include <math.h>
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-canvas-util.h>
+#include "canvas-grid.h"
+
+enum {
+	ARG_0,
+	ARG_ORIGINX,
+	ARG_ORIGINY,
+	ARG_SPACINGX,
+	ARG_SPACINGY,
+	ARG_COLOR
+};
+
+
+static void sp_cgrid_class_init (SPCGridClass *klass);
+static void sp_cgrid_init (SPCGrid *grid);
+static void sp_cgrid_destroy (GtkObject *object);
+static void sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+
+static void sp_cgrid_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
+static void sp_cgrid_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+
+static double sp_cgrid_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem ** actual_item);
+
+
+static GnomeCanvasItemClass * parent_class;
+
+GtkType
+sp_cgrid_get_type (void)
+{
+	static GtkType cgrid_type = 0;
+
+	if (!cgrid_type) {
+		GtkTypeInfo cgrid_info = {
+			"SPCGrid",
+			sizeof (SPCGrid),
+			sizeof (SPCGridClass),
+			(GtkClassInitFunc) sp_cgrid_class_init,
+			(GtkObjectInitFunc) sp_cgrid_init,
+			NULL, NULL,
+			(GtkClassInitFunc) NULL
+		};
+		cgrid_type = gtk_type_unique (gnome_canvas_item_get_type (), &cgrid_info);
+	}
+	return cgrid_type;
+}
+
+static void
+sp_cgrid_class_init (SPCGridClass *klass)
+{
+	GtkObjectClass *object_class;
+	GnomeCanvasItemClass *item_class;
+
+	object_class = (GtkObjectClass *) klass;
+	item_class = (GnomeCanvasItemClass *) klass;
+
+	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+
+	gtk_object_add_arg_type ("SPCGrid::originx", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_ORIGINX);
+	gtk_object_add_arg_type ("SPCGrid::originy", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_ORIGINY);
+	gtk_object_add_arg_type ("SPCGrid::spacingx", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_SPACINGX);
+	gtk_object_add_arg_type ("SPCGrid::spacingy", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_SPACINGY);
+	gtk_object_add_arg_type ("SPCGrid::color", GTK_TYPE_INT, GTK_ARG_WRITABLE, ARG_COLOR);
+
+	object_class->destroy = sp_cgrid_destroy;
+	object_class->set_arg = sp_cgrid_set_arg;
+
+	item_class->update = sp_cgrid_update;
+	item_class->render = sp_cgrid_render;
+	item_class->point = sp_cgrid_point;
+}
+
+static void
+sp_cgrid_init (SPCGrid *grid)
+{
+	grid->origin.x = grid->origin.y = 0.0;
+	grid->spacing.x = grid->spacing.y = 8.0;
+	grid->color = 0x0000ff7f;
+}
+
+static void
+sp_cgrid_destroy (GtkObject *object)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_CGRID (object));
+
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+{
+	GnomeCanvasItem *item;
+	SPCGrid *grid;
+
+	item = GNOME_CANVAS_ITEM (object);
+	grid = SP_CGRID (object);
+
+	switch (arg_id) {
+	case ARG_ORIGINX:
+		grid->origin.x = GTK_VALUE_DOUBLE (* arg);
+		gnome_canvas_item_request_update (item);
+		break;
+	case ARG_ORIGINY:
+		grid->origin.y = GTK_VALUE_DOUBLE (* arg);
+		gnome_canvas_item_request_update (item);
+		break;
+	case ARG_SPACINGX:
+		grid->spacing.x = GTK_VALUE_DOUBLE (* arg);
+		if (grid->spacing.x < 0.01) grid->spacing.x = 0.01;
+		gnome_canvas_item_request_update (item);
+		break;
+	case ARG_SPACINGY:
+		grid->spacing.y = GTK_VALUE_DOUBLE (* arg);
+		if (grid->spacing.y < 0.01) grid->spacing.y = 0.01;
+		gnome_canvas_item_request_update (item);
+		break;
+	case ARG_COLOR:
+		grid->color = GTK_VALUE_INT (* arg);
+		gnome_canvas_item_request_update (item);
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+dot (GnomeCanvasBuf * buf, guint32 color, gint x, gint y)
+{
+	guchar * p;
+	guint alpha, tmp;
+	guint bg_r, fg_r, bg_g, fg_g, bg_b, fg_b;
+
+	if ((x >= buf->rect.x0) &&
+	    (x < buf->rect.x1) &&
+	    (y >= buf->rect.y0) &&
+	    (y < buf->rect.y1)) {
+		fg_r = (color >> 24) & 0xff;
+		fg_g = (color >> 16) & 0xff;
+		fg_b = (color >> 8) & 0xff;
+		alpha = color & 0xff;
+
+		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
+
+		bg_r = *p;
+		tmp = (fg_r - bg_r) * alpha;
+		*p++ = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		bg_g = *p;
+		tmp = (fg_g - bg_g) * alpha;
+		*p++ = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		bg_b = *p;
+		tmp = (fg_b - bg_b) * alpha;
+		*p++ = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
+	}
+}
+
+static void
+sp_cgrid_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
+{
+	SPCGrid * grid;
+	gdouble sxg, syg, x, y;
+
+	grid = SP_CGRID (item);
+
+	gnome_canvas_buf_ensure_buf (buf);
+	buf->is_bg = FALSE;
+
+	syg = ceil ((buf->rect.y0 - 1.0 - grid->ow.y) / grid->sw.y) * grid->sw.y + grid->ow.y;
+	sxg = ceil ((buf->rect.x0 - 1.0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
+
+	for (y = syg; y < buf->rect.y1; y += grid->sw.y) {
+		for (x = sxg; x < buf->rect.x1; x += grid->sw.x) {
+			gint ix, iy;
+			ix = (int) (x + 0.5);
+			iy = (int) (y + 0.5);
+			dot (buf, grid->color, ix, iy);
+		}
+	}
+}
+
+static void
+sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int flags)
+{
+	SPCGrid * grid;
+	GtkWidget * w;
+
+	grid = SP_CGRID (item);
+	w = GTK_WIDGET (item->canvas);
+
+	if (parent_class->update)
+		(* parent_class->update) (item, affine, clip_path, flags);
+
+	art_affine_point (&grid->ow, &grid->origin, affine);
+	art_affine_point (&grid->sw, &grid->spacing, affine);
+	grid->sw.x -= affine[4];
+	grid->sw.y -= affine[5];
+	grid->sw.x = fabs (grid->sw.x);
+	grid->sw.y = fabs (grid->sw.y);
+	while (grid->sw.x < 8.0) grid->sw.x *= 5.0;
+	while (grid->sw.y < 8.0) grid->sw.y *= 5.0;
+
+	gnome_canvas_request_redraw (item->canvas,
+				     -1000000, -1000000,
+				     1000000, 1000000);
+				     
+	item->x1 = item->y1 = -1000000;
+	item->x2 = item->y2 = 1000000;
+}
+
+static double
+sp_cgrid_point (GnomeCanvasItem *item, double x, double y,
+	       int cx, int cy, GnomeCanvasItem **actual_item)
+{
+	return 1e18;
+}
+
+
+
