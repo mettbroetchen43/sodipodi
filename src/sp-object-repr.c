@@ -31,12 +31,13 @@
 #include "sp-gradient.h"
 #include "sp-pattern.h"
 #include "sp-clippath.h"
+#include "sp-mask.h"
 #include "sp-anchor.h"
 #include "sp-animation.h"
 #include "sp-object-repr.h"
 
 SPObject *
-sp_object_repr_build_tree (SPDocument * document, SPRepr * repr)
+sp_object_repr_build_tree (SPDocument *document, SPRepr *repr)
 {
 	const gchar * name;
 	GType type;
@@ -57,7 +58,7 @@ sp_object_repr_build_tree (SPDocument * document, SPRepr * repr)
 	return object;
 }
 
-GType
+unsigned int
 sp_repr_type_lookup (SPRepr *repr)
 {
 	const guchar *name;
@@ -68,7 +69,7 @@ sp_repr_type_lookup (SPRepr *repr)
 	return sp_object_type_lookup (name);
 }
 
-GType
+unsigned int
 sp_object_type_lookup (const guchar * name)
 {
 	static GHashTable *dtable = NULL;
@@ -88,6 +89,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
 		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
+		g_hash_table_insert (dtable, "mask", GINT_TO_POINTER (SP_TYPE_MASK));
 		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
 		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
 		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
@@ -109,6 +111,6 @@ sp_object_type_lookup (const guchar * name)
 
 	if (data == NULL) return SP_TYPE_OBJECT;
 
-	return GPOINTER_TO_INT (data);
+	return GPOINTER_TO_UINT (data);
 }
 

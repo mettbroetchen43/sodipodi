@@ -2,7 +2,7 @@
 #define __SP_CLIPPATH_H__
 
 /*
- * SVG <g> implementation
+ * SVG <clipPath> implementation
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>

@@ -60,6 +60,7 @@ sodipodi_SOURCES = \
 	sp-gradient.c sp-gradient.h \
 	sp-pattern.c sp-pattern.h \
 	sp-clippath.c sp-clippath.h \
+	sp-mask.c sp-mask.h \
 	sp-animation.c sp-animation.h \
 	\
 	color.c color.h \

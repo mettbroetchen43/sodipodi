@@ -13,11 +13,11 @@
  */
 
 #include <xml/repr.h>
-#include "sp-object.h"
+#include "forward.h"
 
-SPObject * sp_object_repr_build_tree (SPDocument * document, SPRepr * repr);
+SPObject *sp_object_repr_build_tree (SPDocument *document, SPRepr *repr);
 
-GType sp_repr_type_lookup (SPRepr *repr);
-GType sp_object_type_lookup (const guchar *name);
+unsigned int sp_repr_type_lookup (SPRepr *repr);
+unsigned int sp_object_type_lookup (const unsigned char *name);
 
 #endif

@@ -350,6 +350,7 @@ static void nr_arena_glyphs_group_dispose (GObject *object);
 
 static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+static unsigned int nr_arena_glyphs_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaGroupClass *group_parent_class;
@@ -388,6 +389,7 @@ nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass)
 
 	item_class->update = nr_arena_glyphs_group_update;
 	item_class->render = nr_arena_glyphs_group_render;
+	item_class->clip = nr_arena_glyphs_group_clip;
 	item_class->pick = nr_arena_glyphs_group_pick;
 }
 
@@ -560,6 +562,28 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, 
 			break;
 		}
 		nr_pixblock_release (&m);
+	}
+
+	return ret;
+}
+
+static unsigned int
+nr_arena_glyphs_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
+{
+	NRArenaGroup *group;
+	NRArenaGlyphsGroup *ggroup;
+	NRArenaItem *child;
+	guint ret;
+
+	group = NR_ARENA_GROUP (item);
+	ggroup = NR_ARENA_GLYPHS_GROUP (item);
+
+	ret = item->state;
+
+	/* Render children fill mask */
+	for (child = group->children; child != NULL; child = child->next) {
+		ret = nr_arena_glyphs_fill_mask (NR_ARENA_GLYPHS (child), area, pb);
+		if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) return ret;
 	}
 
 	return ret;
