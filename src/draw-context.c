@@ -323,7 +323,8 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 
 	if (item && SP_IS_PATH (item) && SP_PATH (item)->independent) {
 		SPCurve *norm;
-		gdouble i2dt[6];
+		NRMatrixF i2dt;
+		NRMatrixD i2dtd;
 		GSList *l;
 		/* Create new white data */
 		/* Item */
@@ -331,8 +332,9 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 		/* Curve list */
 		/* We keep it in desktop coordinates to eliminate calculation errors */
 		norm = sp_path_normalized_bpath (SP_PATH (item));
-		sp_item_i2d_affine (dc->white_item, i2dt);
-		norm = sp_curve_transform (norm, i2dt);
+		sp_item_i2d_affine (dc->white_item, &i2dt);
+		nr_matrix_d_from_f (&i2dtd, &i2dt);
+		norm = sp_curve_transform (norm, NR_MATRIX_D_TO_DOUBLE (&i2dt));
 		g_return_if_fail (norm != NULL);
 		dc->white_curves = sp_curve_split (norm);
 		sp_curve_unref (norm);
@@ -512,9 +514,11 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 
 	/* Now we have to go back to item coordinates at last */
 	if (dc->white_item) {
-		gdouble d2item[6];
-		sp_item_dt2i_affine (dc->white_item, SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
-		c = sp_curve_transform (c, d2item);
+		NRMatrixF d2itemf;
+		NRMatrixD d2itemd;
+		sp_item_dt2i_affine (dc->white_item, SP_EVENT_CONTEXT_DESKTOP (dc), &d2itemf);
+		nr_matrix_d_from_f (&d2itemd, &d2itemf);
+		c = sp_curve_transform (c, NR_MATRIX_D_TO_DOUBLE (&d2itemd));
 	} else {
 		gdouble d2item[6];
 		sp_desktop_dt2root_affine (SP_EVENT_CONTEXT_DESKTOP (dc), (NRMatrixD *) d2item);

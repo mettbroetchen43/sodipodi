@@ -114,6 +114,7 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 	const gchar * nodetypes;
 	gchar * typestr;
 	gint length;
+	NRMatrixF i2d;
 
 	if (!SP_IS_PATH (item)) return NULL;
 	path = SP_PATH (item);
@@ -132,7 +133,8 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 	np->path = path;
 	np->subpaths = NULL;
 	np->selected = NULL;
-	sp_item_i2d_affine (SP_ITEM (path), np->i2d);
+	sp_item_i2d_affine (SP_ITEM (path), &i2d);
+	nr_matrix_d_from_f (NR_MATRIX_D_FROM_DOUBLE (np->i2d), &i2d);
 	art_affine_invert (np->d2i, np->i2d);
 
 	/* Now the bitchy part */

@@ -46,6 +46,6 @@ GType nr_arena_shape_get_type (void);
 
 void nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, gboolean private, const gdouble *affine);
 void nr_arena_shape_set_style (NRArenaShape *shape, SPStyle *style);
-void nr_arena_shape_set_paintbox (NRArenaShape *shape, const ArtDRect *pbox);
+void nr_arena_shape_set_paintbox (NRArenaShape *shape, const NRRectF *pbox);
 
 #endif

@@ -355,11 +355,13 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (!strcmp (key, "gradientTransform")) {
-		if (val) {
-			art_affine_identity (gr->transform);
-			sp_svg_read_affine (gr->transform, val);
+		NRMatrixF t;
+		if (val && sp_svg_transform_read (val, &t)) {
+			int i;
+			for (i = 0; i < 6; i++) gr->transform[i] = t.c[i];
 			gr->transform_set = TRUE;
 		} else {
+			art_affine_identity (gr->transform);
 			gr->transform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
@@ -570,7 +572,10 @@ sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missi
 
 	if (set_missing || gr->transform_set) {
 		gchar c[256];
-		if (sp_svg_write_affine (c, 256, gr->transform)) {
+		NRMatrixF t;
+		int i;
+		for (i = 0; i < 6; i++) t.c[i] = gr->transform[i];
+		if (sp_svg_transform_write (c, 256, &t)) {
 			sp_repr_set_attr (repr, "gradientTransform", c);
 		} else {
 			sp_repr_set_attr (repr, "gradientTransform", NULL);

@@ -441,12 +441,11 @@ sp_svg_view_widget_view_resized (SPViewWidget *vw, SPView *view, gdouble width, 
 #if 0
 		g_print ("set scroll %g %g\n", width, height);
 		sp_canvas_set_scroll_region (SP_CANVAS (svgvw->canvas), 0, 0, MAX (width, 1.0), MAX (height, 1.0));
-#else
-		gtk_widget_set_usize (svgvw->canvas, width, height);
 #endif
 	}
 
 	if (svgvw->resize) {
+		gtk_widget_set_usize (svgvw->canvas, width, height);
 		gtk_widget_queue_resize (GTK_WIDGET (vw));
 	}
 }

@@ -43,12 +43,12 @@ static void sp_image_release (SPObject * object);
 static void sp_image_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_image_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
-static void sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
@@ -292,25 +292,27 @@ sp_image_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
-	ArtDRect bb;
 	SPImage *image;
 
 	image = SP_IMAGE (item);
 
 	if ((image->width.computed > 0.0) && (image->height.computed > 0.0)) {
-		ArtDRect dim;
-
-		dim.x0 = image->x.computed;
-		dim.y0 = image->y.computed;
-		dim.x1 = dim.x0 + image->width.computed;
-		dim.y1 = dim.y0 + image->height.computed;
-
-		art_drect_affine_transform (&bb, &dim, transform);
+		float x, y;
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, image->x.computed, image->y.computed);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, image->x.computed, image->y.computed);
+		bbox->x0 = MIN (bbox->x0, x);
+		bbox->y0 = MIN (bbox->y0, y);
+		bbox->x1 = MAX (bbox->x1, x);
+		bbox->y1 = MAX (bbox->y1, y);
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, image->x.computed + image->width.computed, image->y.computed + image->height.computed);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, image->x.computed + image->width.computed, image->y.computed + image->height.computed);
+		bbox->x0 = MIN (bbox->x0, x);
+		bbox->y0 = MIN (bbox->y0, y);
+		bbox->x1 = MAX (bbox->x1, x);
+		bbox->y1 = MAX (bbox->y1, y);
 	}
-
-	art_drect_union (bbox, bbox, &bb);
 }
 
 static void
@@ -522,36 +524,37 @@ sp_image_update_canvas_image (SPImage *image)
 static GSList * 
 sp_image_snappoints (SPItem * item, GSList * points)
 {
-	ArtPoint *p, p1, p2, p3, p4;
-	gdouble affine[6];
 	SPImage *image;
+	NRMatrixF i2d;
+	ArtPoint *p;
+	float x0, y0, x1, y1;
 
 	image = SP_IMAGE (item);
 
-	sp_item_i2d_affine (item, affine);
+	sp_item_i2d_affine (item, &i2d);
 
 	/* we use corners of image only */
-	p1.x = image->x.computed;
-	p1.y = image->y.computed;
-	p2.x = p1.x + image->width.computed;
-	p2.y = p1.y;
-	p3.x = p1.x;
-	p3.y = p1.y + image->height.computed;
-	p4.x = p2.x;
-	p4.y = p3.y;
+	x0 = image->x.computed;
+	y0 = image->y.computed;
+	x1 = x0 + image->width.computed;
+	y1 = y0 + image->height.computed;
 
 	p = g_new (ArtPoint,1);
-	art_affine_point (p, &p1, affine);
-	points = g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
+	points = g_slist_prepend (points, p);
 	p = g_new (ArtPoint,1);
-	art_affine_point (p, &p2, affine);
-	points = g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
+	points = g_slist_prepend (points, p);
 	p = g_new (ArtPoint,1);
-	art_affine_point (p, &p3, affine);
-	points = g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
+	points = g_slist_prepend (points, p);
 	p = g_new (ArtPoint,1);
-	art_affine_point (p, &p4, affine);
-	points = g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
+	points = g_slist_prepend (points, p);
 
 	return points;
 }
@@ -562,50 +565,50 @@ sp_image_snappoints (SPItem * item, GSList * points)
  */
 
 static void
-sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 {
 	SPImage *image;
-	gdouble rev[6];
+	NRMatrixF rev;
 	gdouble px, py, sw, sh;
-	guchar t[80];
+	guchar c[80];
 
 	image = SP_IMAGE (item);
 
 	/* Calculate text start in parent coords */
-	px = transform[0] * image->x.computed + transform[2] * image->y.computed + transform[4];
-	py = transform[1] * image->x.computed + transform[3] * image->y.computed + transform[5];
+	px = NR_MATRIX_DF_TRANSFORM_X (t, image->x.computed, image->y.computed);
+	py = NR_MATRIX_DF_TRANSFORM_Y (t, image->x.computed, image->y.computed);
 
 	/* Clear translation */
-	transform[4] = 0.0;
-	transform[5] = 0.0;
+	t->c[4] = 0.0;
+	t->c[5] = 0.0;
 
 	/* Scalers */
-	sw = sqrt (transform[0] * transform[0] + transform[1] * transform[1]);
-	sh = sqrt (transform[2] * transform[2] + transform[3] * transform[3]);
+	sw = sqrt (t->c[0] * t->c[0] + t->c[1] * t->c[1]);
+	sh = sqrt (t->c[2] * t->c[2] + t->c[3] * t->c[3]);
 	if (sw > 1e-9) {
-		transform[0] = transform[0] / sw;
-		transform[1] = transform[1] / sw;
+		t->c[0] = t->c[0] / sw;
+		t->c[1] = t->c[1] / sw;
 	} else {
-		transform[0] = 1.0;
-		transform[1] = 0.0;
+		t->c[0] = 1.0;
+		t->c[1] = 0.0;
 	}
 	if (sh > 1e-9) {
-		transform[2] = transform[2] / sh;
-		transform[3] = transform[3] / sh;
+		t->c[2] = t->c[2] / sh;
+		t->c[3] = t->c[3] / sh;
 	} else {
-		transform[2] = 0.0;
-		transform[3] = 1.0;
+		t->c[2] = 0.0;
+		t->c[3] = 1.0;
 	}
 	sp_repr_set_double_attribute (repr, "width", image->width.computed * sw);
 	sp_repr_set_double_attribute (repr, "height", image->height.computed * sh);
 
 	/* Find start in item coords */
-	art_affine_invert (rev, transform);
-	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
-	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
+	nr_matrix_f_invert (&rev, t);
+	sp_repr_set_double_attribute (repr, "x", px * rev.c[0] + py * rev.c[2]);
+	sp_repr_set_double_attribute (repr, "y", px * rev.c[1] + py * rev.c[3]);
 
-	if (sp_svg_write_affine (t, 80, transform)) {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	if (sp_svg_transform_write (c, 80, t)) {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", c);
 	} else {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	}
@@ -618,8 +621,8 @@ sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	GtkWidget *i, *m, *w;
 
-	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+	if (((SPItemClass *) parent_class)->menu)
+		((SPItemClass *) parent_class)->menu (item, desktop, menu);
 
 	/* Create toplevel menuitem */
 	i = gtk_menu_item_new_with_label (_("Image"));

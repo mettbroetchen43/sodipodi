@@ -18,85 +18,85 @@
 
 #include "svg.h"
 
-gboolean
-sp_svg_read_number_f (const guchar *str, gfloat *val)
+unsigned int
+sp_svg_number_read_f (const unsigned char *str, float *val)
 {
-	gchar *e;
-	gfloat v;
+	char *e;
+	float v;
 
-	if (!str) return FALSE;
+	if (!str) return 0;
 	v = strtod (str, &e);
-	if ((const guchar *) e == str) return FALSE;
+	if ((const unsigned char *) e == str) return 0;
 	*val = v;
-	return TRUE;
+	return 1;
 }
 
-gboolean
-sp_svg_read_number_d (const guchar *str, gdouble *val)
+unsigned int
+sp_svg_number_read_d (const unsigned char *str, double *val)
 {
-	gchar *e;
-	gdouble v;
+	char *e;
+	double v;
 
-	if (!str) return FALSE;
+	if (!str) return 0;
 	v = strtod (str, &e);
-	if ((const guchar *) e == str) return FALSE;
+	if ((const unsigned char *) e == str) return 0;
 	*val = v;
-	return TRUE;
+	return 1;
 }
 
 /* Length */
 
-gboolean
+unsigned int
 sp_svg_length_read (const unsigned char *str, SPSVGLength *length)
 {
 	unsigned long unit;
 	float value, computed;
 
-	if (!str) return FALSE;
+	if (!str) return 0;
 
-	if (!sp_svg_length_read_lff (str, &unit, &value, &computed)) return FALSE;
+	if (!sp_svg_length_read_lff (str, &unit, &value, &computed)) return 0;
 
-	length->set = TRUE;
+	length->set = 1;
 	length->unit = unit;
 	length->value = value;
 	length->computed = computed;
 
-	return TRUE;
+	return 1;
 }
 
-#define UVAL(a,b) (((guint) (a) << 8) | (guint) (b))
+#define UVAL(a,b) (((unsigned int) (a) << 8) | (unsigned int) (b))
 
-gboolean
+unsigned int
 sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *val, float *computed)
 {
-	const guchar *e;
-	gfloat v;
+	const unsigned char *e;
+	float v;
 
-	if (!str) return FALSE;
-	v = strtod (str, (gchar **) &e);
-	if (e == str) return FALSE;
+	if (!str) return 0;
+	v = strtod (str, (char **) &e);
+	if (e == str) return 0;
 	if (!e[0]) {
 		/* Unitless */
 		if (unit) *unit = SP_SVG_UNIT_NONE;
 		if (val) *val = v;
 		if (computed) *computed = v;
-		return TRUE;
+		return 1;
 	} else if (!isalnum (e[0])) {
 		/* Unitless or percent */
 		if (e[0] == '%') {
 			/* Percent */
-			if (e[1] && isalnum (e[1])) return FALSE;
+			if (e[1] && isalnum (e[1])) return 0;
 			if (unit) *unit = SP_SVG_UNIT_PERCENT;
 			if (val) *val = v * 0.01;
-			return TRUE;
+			return 1;
 		} else {
 			if (unit) *unit = SP_SVG_UNIT_NONE;
 			if (val) *val = v;
 			if (computed) *computed = v;
-			return TRUE;
+			return 1;
 		}
 	} else if (e[1] && !isalnum (e[2])) {
-		guint uval;
+		unsigned int uval;
 		/* Units */
 		uval = UVAL (e[0], e[1]);
 		switch (uval) {
@@ -132,21 +132,21 @@ sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *va
 			break;
 		default:
 			/* Invalid */
-			return FALSE;
+			return 0;
 			break;
 		}
 		if (val) *val = v;
-		return TRUE;
+		return 1;
 	}
 
 	/* Invalid */
-	return FALSE;
+	return 0;
 }
 
 void
 sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float computed)
 {
-	length->set = FALSE;
+	length->set = 0;
 	length->unit = unit;
 	length->value = value;
 	length->computed = computed;
@@ -201,8 +201,9 @@ sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def)
 }
 #endif
 
-gint
-sp_svg_write_length (gchar * buf, gint buflen, gdouble val, const SPUnit *unit)
+#if 0
+int
+sp_svg_write_length (char *buf, gint buflen, gdouble val, const SPUnit *unit)
 {
 	if (unit->base != SP_UNIT_USERSPACE) {
 		return snprintf (buf, buflen, "%g%s", val, unit->abbr);
@@ -210,12 +211,13 @@ sp_svg_write_length (gchar * buf, gint buflen, gdouble val, const SPUnit *unit)
 		return snprintf (buf, buflen, "%g", val);
 	}
 }
+#endif
 
-gdouble
-sp_svg_read_percentage (const gchar * str, gdouble def)
+double
+sp_svg_read_percentage (const char * str, double def)
 {
 	char * u;
-	gdouble v;
+	double v;
 
 	if (str == NULL) return def;
 
@@ -229,9 +231,9 @@ sp_svg_read_percentage (const gchar * str, gdouble def)
 	return v;
 }
 
-gint
-sp_svg_write_percentage (gchar * buf, gint buflen, gdouble val)
+int
+sp_svg_write_percentage (char * buf, int buflen, double val)
 {
-	return sp_svg_write_length (buf, buflen, val * 100.0, sp_unit_get_by_abbreviation ("%"));
+	return snprintf (buf, buflen, "%g%%", val);
 }
 

@@ -34,9 +34,9 @@ sodipodi_SOURCES = \
 	sp-object-repr.c sp-object-repr.h \
 	sp-object-group.c sp-object-group.h \
 	sp-defs.c sp-defs.h \
-	sp-use.c sp-use.h \
 	sp-item.c sp-item.h \
 	sp-item-group.c sp-item-group.h \
+	sp-use.c sp-use.h \
 	sp-anchor.c sp-anchor.h \
 	sp-root.c sp-root.h \
 	sp-namedview.c sp-namedview.h \

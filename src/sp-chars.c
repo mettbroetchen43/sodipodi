@@ -28,7 +28,7 @@ static void sp_chars_init (SPChars *chars);
 static void sp_chars_release (SPObject *object);
 static void sp_chars_style_modified (SPObject *object, guint flags);
 
-static void sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena);
 
 static SPItemClass *parent_class;
@@ -121,32 +121,21 @@ sp_chars_style_modified (SPObject *object, guint flags)
 }
 
 static void
-sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPChars *chars;
 	SPCharElement *el;
-	NRRectF bb;
 
 	chars = SP_CHARS (item);
-
-	bb.x0 = bbox->x0;
-	bb.y0 = bbox->y0;
-	bb.x1 = bbox->x1;
-	bb.y1 = bbox->y1;
 
 	for (el = chars->elements; el != NULL; el = el->next) {
 		NRBPath bpath;
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			NRMatrixF a;
-			nr_matrix_multiply_ffd (&a, &el->transform, (NRMatrixD *) transform);
-			nr_path_matrix_f_bbox_f_union (&bpath, &a, &bb, 0.25);
+			nr_matrix_multiply_ffd (&a, &el->transform, transform);
+			nr_path_matrix_f_bbox_f_union (&bpath, &a, bbox, 0.25);
 		}
 	}
-
-	bbox->x0 = bb.x0;
-	bbox->y0 = bb.y0;
-	bbox->x1 = bb.x1;
-	bbox->y1 = bb.y1;
 }
 
 static NRArenaItem *
@@ -274,34 +263,9 @@ sp_chars_print_bpath (SPPrintContext *ctx, const NRBPath *bpath, const SPStyle *
  */
 
 void
-sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *dctm, const ArtDRect *pb, const ArtDRect *db, const ArtDRect *bb)
+sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const NRMatrixF *ctm, const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPCharElement *el;
-	NRMatrixF ctm;
-	NRRectF pbox, dbox, bbox;
-
-	ctm.c[0] = dctm[0];
-	ctm.c[1] = dctm[1];
-	ctm.c[2] = dctm[2];
-	ctm.c[3] = dctm[3];
-	ctm.c[4] = dctm[4];
-	ctm.c[5] = dctm[5];
-
-	pbox.x0 = pb->x0;
-	pbox.y0 = pb->y0;
-	pbox.x1 = pb->x1;
-	pbox.y1 = pb->y1;
-
-	dbox.x0 = db->x0;
-	dbox.y0 = db->y0;
-	dbox.x1 = db->x1;
-	dbox.y1 = db->y1;
-
-	bbox.x0 = bb->x0;
-	bbox.y0 = bb->y0;
-	bbox.x1 = bb->x1;
-	bbox.y1 = bb->y1;
-
 
 	for (el = chars->elements; el != NULL; el = el->next) {
 		gdouble chela[6];
@@ -312,21 +276,24 @@ sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *dctm, con
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			NRBPath abp;
 			abp.path = art_bpath_affine_transform (bpath.path, chela);
-			sp_chars_print_bpath (ctx, &abp, SP_OBJECT_STYLE (chars), &ctm, &pbox, &dbox, &bbox);
+			sp_chars_print_bpath (ctx, &abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
 			art_free (abp.path);
 		}
 	}
 }
 
 void
-sp_chars_set_paintbox (SPChars *chars, ArtDRect *paintbox)
+sp_chars_set_paintbox (SPChars *chars, NRRectF *paintbox)
 {
 	SPItemView *v;
 
-	memcpy (&chars->paintbox, paintbox, sizeof (ArtDRect));
+	chars->paintbox.x0 = paintbox->x0;
+	chars->paintbox.y0 = paintbox->y0;
+	chars->paintbox.x1 = paintbox->x1;
+	chars->paintbox.y1 = paintbox->y1;
 
 	for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
-		nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (v->arenaitem), paintbox);
+		nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (v->arenaitem), &chars->paintbox);
 	}
 }
 

@@ -27,7 +27,7 @@ static void sp_line_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_line_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar *sp_line_description (SPItem * item);
-static void sp_line_write_transform (SPItem *item, SPRepr *repr, gdouble *t);
+static void sp_line_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t);
 
 static void sp_line_set_shape (SPLine * line);
 
@@ -165,7 +165,7 @@ sp_line_description (SPItem * item)
 }
 
 static void
-sp_line_write_transform (SPItem *item, SPRepr *repr, gdouble *t)
+sp_line_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 {
 	double sw, sh;
 	SPLine *line;
@@ -173,14 +173,14 @@ sp_line_write_transform (SPItem *item, SPRepr *repr, gdouble *t)
 	line = SP_LINE (item);
 
 	/* fixme: Would be nice to preserve units here */
-	sp_repr_set_double (repr, "x1", t[0] * line->x1 + t[2] * line->y1 + t[4]);
-	sp_repr_set_double (repr, "y1", t[1] * line->x1 + t[3] * line->y1 + t[5]);
-	sp_repr_set_double (repr, "x2", t[0] * line->x2 + t[2] * line->y2 + t[4]);
-	sp_repr_set_double (repr, "y2", t[1] * line->x2 + t[3] * line->y2 + t[5]);
+	sp_repr_set_double (repr, "x1", t->c[0] * line->x1 + t->c[2] * line->y1 + t->c[4]);
+	sp_repr_set_double (repr, "y1", t->c[1] * line->x1 + t->c[3] * line->y1 + t->c[5]);
+	sp_repr_set_double (repr, "x2", t->c[0] * line->x2 + t->c[2] * line->y2 + t->c[4]);
+	sp_repr_set_double (repr, "y2", t->c[1] * line->x2 + t->c[3] * line->y2 + t->c[5]);
 
 	/* Scalers */
-	sw = sqrt (t[0] * t[0] + t[1] * t[1]);
-	sh = sqrt (t[2] * t[2] + t[3] * t[3]);
+	sw = sqrt (t->c[0] * t->c[0] + t->c[1] * t->c[1]);
+	sh = sqrt (t->c[2] * t->c[2] + t->c[3] * t->c[3]);
 
 	/* And last but not least */
 	if ((fabs (sw - 1.0) > 1e-9) || (fabs (sh - 1.0) > 1e-9)) {

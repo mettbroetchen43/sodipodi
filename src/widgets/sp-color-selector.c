@@ -139,7 +139,7 @@ sp_color_selector_class_init (SPColorSelectorClass *klass)
 static void
 sp_color_selector_init (SPColorSelector *csel)
 {
-	GtkWidget *t, *hb;
+	GtkWidget *t;
 	gint i;
 
 	csel->updating = FALSE;
@@ -186,17 +186,15 @@ sp_color_selector_init (SPColorSelector *csel)
 	gtk_misc_set_alignment (GTK_MISC (csel->l[i]), 1.0, 0.5);
 	gtk_widget_show (csel->rgbal);
 	gtk_table_attach (GTK_TABLE (t), csel->rgbal, 0, 1, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
-	hb = gtk_hbox_new (FALSE, XPAD);
-	gtk_widget_show (hb);
-	gtk_table_attach (GTK_TABLE (t), hb, 1, 3, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
-	csel->rgbae = gtk_entry_new_with_max_length (8);
-	gtk_object_set_data (GTK_OBJECT (csel->rgbae), "width", GINT_TO_POINTER(64));
+	csel->rgbae = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (csel->rgbae), 16);
+	gtk_entry_set_width_chars (GTK_ENTRY (csel->rgbae), 10);
 	gtk_widget_show (csel->rgbae);
-	gtk_box_pack_start (GTK_BOX (hb), csel->rgbae, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (t), csel->rgbae, 1, 2, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
 #ifdef SPCS_PREVIEW
 	csel->p = sp_color_preview_new (0xffffffff);
 	gtk_widget_show (csel->p);
-	gtk_box_pack_start (GTK_BOX (hb), csel->p, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (t), csel->p, 2, 3, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
 #endif
 
 	gtk_signal_connect (GTK_OBJECT (csel->rgbae), "changed", GTK_SIGNAL_FUNC (sp_color_selector_rgba_entry_changed), csel);

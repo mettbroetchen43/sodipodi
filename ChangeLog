@@ -5,6 +5,13 @@ Wed Dec  4 01:05:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 	* src/toolbox.c: enable draw buttons.
 	Comment out signal_connect_after.
 
+2002-12-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item.h: Replaced libart transforms and bboxes with libnr ones -
+	this involves changes almost every file there.
+
+	* src/main.c: Added POPT_AUTOHELP
+
 2002-12-03  Masatake YAMATO  <jet@gyve.org>
 
 	* tools-version.sh (TOOLS): Added automake-1.6 and

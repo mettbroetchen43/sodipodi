@@ -482,14 +482,16 @@ static void
 sp_text_context_update_cursor (SPTextContext *tc)
 {
 	if (tc->text) {
-		ArtPoint p0, p1;
-		gdouble i2d[6];
+		ArtPoint p0, p1, d0, d1;
+		NRMatrixF i2d;
 		sp_text_get_cursor_coords (SP_TEXT (tc->text), tc->ipos, &p0, &p1);
-		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
-		art_affine_point (&p0, &p0, i2d);
-		art_affine_point (&p1, &p1, i2d);
+		sp_item_i2d_affine (SP_ITEM (tc->text), &i2d);
+		d0.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, p0.x, p0.y);
+		d0.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, p0.x, p0.y);
+		d1.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, p1.x, p1.y);
+		d1.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, p1.x, p1.y);
 		sp_canvas_item_show (tc->cursor);
-		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), d0.x, d0.y, d1.x, d1.y);
 		tc->show = TRUE;
 		tc->phase = 1;
 	} else {

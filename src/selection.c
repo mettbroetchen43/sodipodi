@@ -501,11 +501,11 @@ sp_selection_repr (SPSelection * selection)
 	return SP_OBJECT (selection->items->data)->repr;
 }
 
-ArtDRect *
-sp_selection_bbox (SPSelection *selection, ArtDRect *bbox)
+NRRectF *
+sp_selection_bbox (SPSelection *selection, NRRectF *bbox)
 {
 	SPItem *item;
-	ArtDRect b;
+	NRRectF b;
 	GSList *l;
 
 	g_return_val_if_fail (selection != NULL, NULL);
@@ -532,8 +532,8 @@ sp_selection_bbox (SPSelection *selection, ArtDRect *bbox)
 	return bbox;
 }
 
-ArtDRect *
-sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox)
+NRRectF *
+sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox)
 {
 	GSList *l;
 
@@ -550,10 +550,12 @@ sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox)
 	bbox->x1 = bbox->y1 = -1e18;
 
 	for (l = selection->items; l != NULL; l = l-> next) {
-		gdouble i2doc[6];
+		NRMatrixF i2docf;
+		NRMatrixD i2docd;
 
-		sp_item_i2doc_affine (SP_ITEM (l->data), i2doc);
-		sp_item_invoke_bbox (SP_ITEM (l->data), bbox, i2doc, FALSE);
+		sp_item_i2doc_affine (SP_ITEM (l->data), &i2docf);
+		nr_matrix_d_from_f (&i2docd, &i2docf);
+		sp_item_invoke_bbox (SP_ITEM (l->data), bbox, &i2docd, FALSE);
 	}
 
 	return bbox;
@@ -566,7 +568,7 @@ sp_selection_snappoints (SPSelection * selection)
 {
         GSList * points = NULL, * l;
 	ArtPoint * p;
-	ArtDRect bbox;
+	NRRectF bbox;
 
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);

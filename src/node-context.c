@@ -331,7 +331,6 @@ sp_node_context_stamp (SPNodeContext * nc)
 {
 	SPItem * original_item, * copy_item;
 	SPRepr * original_repr, * copy_repr;
-	gdouble * new_affine;
 	gchar tstr[80];
 	SPEventContext * ec;
 	
@@ -343,11 +342,11 @@ sp_node_context_stamp (SPNodeContext * nc)
 		copy_item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), 
 							     copy_repr);
 		
-		new_affine = original_item->affine;
-		if (sp_svg_write_affine (tstr, 79, new_affine)) 
+		if (sp_svg_transform_write (tstr, 80, &original_item->transform)) {
 			sp_repr_set_attr (copy_repr, "transform", tstr);
-		else
+		} else {
 			sp_repr_set_attr (copy_repr, "transform", NULL);
+		}
 		
 		sp_repr_unref (copy_repr);
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));

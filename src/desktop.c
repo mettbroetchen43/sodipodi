@@ -1362,8 +1362,7 @@ void sp_desktop_update_scrollbars (SPDesktop *dt)
 {
 	SPDesktopWidget *dtw;
 	SPDocument *doc;
-	ArtDRect darea;
-	NRRectF carea, viewbox;
+	NRRectF darea, carea, viewbox;
 	double scale;
 
 	dtw = g_object_get_data (G_OBJECT (dt), "widget");

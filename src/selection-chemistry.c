@@ -575,22 +575,25 @@ sp_selection_paste (GtkWidget * widget)
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
-void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
+void
+sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
 	SPItem * item;
 	GSList * l;
-	double curaff[6], newaff[6];
 
 	g_assert (SP_IS_SELECTION (selection));
 
     
 	for (l = selection->items; l != NULL; l = l-> next) {
+		NRMatrixF curaff, newaff;
+
 		item = SP_ITEM (l->data);
-		sp_item_i2d_affine (item, curaff);
-		art_affine_multiply (newaff, curaff, affine);
+
+		sp_item_i2d_affine (item, &curaff);
+		nr_matrix_multiply_ffd (&newaff, &curaff, NR_MATRIX_D_FROM_DOUBLE (affine));
 		/* fixme: This is far from elegant (Lauris) */
-		sp_item_set_i2d_affine (item, newaff);    
+		sp_item_set_i2d_affine (item, &newaff);
 		/* update repr -  needed for undo */
-		sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+		sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
 		/* fixme: Check, whether anything changed */
 		sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
 	}
@@ -623,7 +626,7 @@ sp_selection_remove_transform (void)
 
 void
 sp_selection_scale_absolute (SPSelection * selection, double x0, double x1, double y0, double y1) {  
-  ArtDRect  bbox;
+  NRRectF bbox;
   double p2o[6], o2n[6], scale[6], final[6], s[6];
   double dx, dy, nx, ny;
   
@@ -762,7 +765,8 @@ sp_selection_item_next (void)
 	SPSelection *selection;
 	SPItem *item = NULL;
 	GSList *children = NULL, *l = NULL;
-	ArtDRect dbox,sbox;
+	ArtDRect dbox;
+	NRRectF sbox;
 	ArtPoint s,d;
 	gint dx=0, dy=0;
 
@@ -830,7 +834,8 @@ sp_selection_item_prev (void)
   SPSelection * selection;
   SPItem * item = NULL;
   GSList * children = NULL, * l = NULL;
-  ArtDRect dbox,sbox;
+  ArtDRect dbox;
+  NRRectF sbox;
   ArtPoint s,d;
   gint dx=0, dy=0;
 

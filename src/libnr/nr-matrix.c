@@ -14,6 +14,40 @@
 #include "nr-matrix.h"
 
 NRMatrixD *
+nr_matrix_d_from_f (NRMatrixD *d, const NRMatrixF *s)
+{
+	if (s) {
+		d->c[0] = s->c[0];
+		d->c[1] = s->c[1];
+		d->c[2] = s->c[2];
+		d->c[3] = s->c[3];
+		d->c[4] = s->c[4];
+		d->c[5] = s->c[5];
+	} else {
+		nr_matrix_d_set_identity (d);
+	}
+
+	return d;
+}
+
+NRMatrixF *
+nr_matrix_f_from_d (NRMatrixF *d, const NRMatrixD *s)
+{
+	if (s) {
+		d->c[0] = s->c[0];
+		d->c[1] = s->c[1];
+		d->c[2] = s->c[2];
+		d->c[3] = s->c[3];
+		d->c[4] = s->c[4];
+		d->c[5] = s->c[5];
+	} else {
+		nr_matrix_f_set_identity (d);
+	}
+
+	return d;
+}
+
+NRMatrixD *
 nr_matrix_multiply_ddd (NRMatrixD *d, const NRMatrixD *m0, const NRMatrixD *m1)
 {
 	if (m0) {
@@ -40,6 +74,39 @@ nr_matrix_multiply_ddd (NRMatrixD *d, const NRMatrixD *m0, const NRMatrixD *m1)
 			*d = *m1;
 		} else {
 			nr_matrix_d_set_identity (d);
+		}
+	}
+
+	return d;
+}
+
+NRMatrixF *
+nr_matrix_multiply_fff (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixF *m1)
+{
+	if (m0) {
+		if (m1) {
+			float d0, d1, d2, d3, d4, d5;
+
+			d0 = m0->c[0] * m1->c[0] + m0->c[1] * m1->c[2];
+			d1 = m0->c[0] * m1->c[1] + m0->c[1] * m1->c[3];
+			d2 = m0->c[2] * m1->c[0] + m0->c[3] * m1->c[2];
+			d3 = m0->c[2] * m1->c[1] + m0->c[3] * m1->c[3];
+			d4 = m0->c[4] * m1->c[0] + m0->c[5] * m1->c[2] + m1->c[4];
+			d5 = m0->c[4] * m1->c[1] + m0->c[5] * m1->c[3] + m1->c[5];
+			d->c[0] = d0;
+			d->c[1] = d1;
+			d->c[2] = d2;
+			d->c[3] = d3;
+			d->c[4] = d4;
+			d->c[5] = d5;
+		} else {
+			*d = *m0;
+		}
+	} else {
+		if (m1) {
+			*d = *m1;
+		} else {
+			nr_matrix_f_set_identity (d);
 		}
 	}
 
@@ -157,12 +224,12 @@ nr_matrix_multiply_ffd (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixD *m1)
 	return d;
 }
 
-NRMatrixF *
-nr_matrix_multiply_fff (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixF *m1)
+NRMatrixD *
+nr_matrix_multiply_ddf (NRMatrixD *d, const NRMatrixD *m0, const NRMatrixF *m1)
 {
 	if (m0) {
 		if (m1) {
-			float d0, d1, d2, d3, d4, d5;
+			double d0, d1, d2, d3, d4, d5;
 
 			d0 = m0->c[0] * m1->c[0] + m0->c[1] * m1->c[2];
 			d1 = m0->c[0] * m1->c[1] + m0->c[1] * m1->c[3];
@@ -181,9 +248,52 @@ nr_matrix_multiply_fff (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixF *m1)
 		}
 	} else {
 		if (m1) {
+			d->c[0] = m1->c[0];
+			d->c[1] = m1->c[1];
+			d->c[2] = m1->c[2];
+			d->c[3] = m1->c[3];
+			d->c[4] = m1->c[4];
+			d->c[5] = m1->c[5];
+		} else {
+			nr_matrix_d_set_identity (d);
+		}
+	}
+
+	return d;
+}
+
+NRMatrixD *
+nr_matrix_multiply_dfd (NRMatrixD *d, const NRMatrixF *m0, const NRMatrixD *m1)
+{
+	if (m0) {
+		if (m1) {
+			double d0, d1, d2, d3, d4, d5;
+
+			d0 = m0->c[0] * m1->c[0] + m0->c[1] * m1->c[2];
+			d1 = m0->c[0] * m1->c[1] + m0->c[1] * m1->c[3];
+			d2 = m0->c[2] * m1->c[0] + m0->c[3] * m1->c[2];
+			d3 = m0->c[2] * m1->c[1] + m0->c[3] * m1->c[3];
+			d4 = m0->c[4] * m1->c[0] + m0->c[5] * m1->c[2] + m1->c[4];
+			d5 = m0->c[4] * m1->c[1] + m0->c[5] * m1->c[3] + m1->c[5];
+			d->c[0] = d0;
+			d->c[1] = d1;
+			d->c[2] = d2;
+			d->c[3] = d3;
+			d->c[4] = d4;
+			d->c[5] = d5;
+		} else {
+			d->c[0] = m0->c[0];
+			d->c[1] = m0->c[1];
+			d->c[2] = m0->c[2];
+			d->c[3] = m0->c[3];
+			d->c[4] = m0->c[4];
+			d->c[5] = m0->c[5];
+		}
+	} else {
+		if (m1) {
 			*d = *m1;
 		} else {
-			nr_matrix_f_set_identity (d);
+			nr_matrix_d_set_identity (d);
 		}
 	}
 

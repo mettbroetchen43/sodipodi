@@ -243,7 +243,7 @@ sp_shape_modified (SPObject *object, guint flags)
 		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
 
 	if ((flags & SP_OBJECT_MODIFIED_FLAG) | (flags & SP_OBJECT_PARENT_MODIFIED_FLAG)) {
-		ArtDRect paintbox;
+		NRRectF paintbox;
 		/* This is suboptimal, because changing parent style schedules recalculation */
 		/* But on the other hand - how can we know that parent does not tie style and transform */
 		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NULL, TRUE);
@@ -276,8 +276,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	SPPath *path;
 	SPPathComp *comp;
 	NRRectF pbox, dbox, bbox;
-	ArtDRect box;
-	double i2d[6];
+	NRMatrixF i2d;
 
 	path = SP_PATH (item);
 
@@ -286,26 +285,18 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	if (!comp->curve) return;
 
 	/* fixme: Think (Lauris) */
-	sp_item_invoke_bbox (item, &box, NULL, TRUE);
-	pbox.x0 = box.x0;
-	pbox.y0 = box.y0;
-	pbox.x1 = box.x1;
-	pbox.y1 = box.y1;
+	sp_item_invoke_bbox (item, &pbox, NULL, TRUE);
 	dbox.x0 = 0.0;
 	dbox.y0 = 0.0;
 	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
 	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	sp_item_bbox_desktop (item, &box);
-	bbox.x0 = box.x0;
-	bbox.y0 = box.y0;
-	bbox.x1 = box.x1;
-	bbox.y1 = box.y1;
-	sp_item_i2d_affine (item, i2d);
+	sp_item_bbox_desktop (item, &bbox);
+	sp_item_i2d_affine (item, &i2d);
 
 	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
 		NRMatrixF ctm;
 		NRBPath bp;
-		nr_matrix_multiply_fdd (&ctm, (NRMatrixD *) comp->affine, (NRMatrixD *) i2d);
+		nr_matrix_multiply_fdf (&ctm, (NRMatrixD *) comp->affine, &i2d);
 		bp.path = comp->curve->bpath;
 		sp_print_fill (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
@@ -313,7 +304,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {
 		NRMatrixF ctm;
 		NRBPath bp;
-		nr_matrix_multiply_fdd (&ctm, (NRMatrixD *) comp->affine, (NRMatrixD *) i2d);
+		nr_matrix_multiply_fdf (&ctm, (NRMatrixD *) comp->affine, &i2d);
 		bp.path = comp->curve->bpath;
 		sp_print_stroke (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
@@ -341,7 +332,7 @@ sp_shape_show (SPItem *item, NRArena *arena)
 	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE);
 	nr_arena_shape_set_style (NR_ARENA_SHAPE (arenaitem), object->style);
 	if (path->comp) {
-		ArtDRect paintbox;
+		NRRectF paintbox;
 		comp = (SPPathComp *) path->comp->data;
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
 		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NULL, TRUE);
@@ -374,8 +365,8 @@ sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	GtkWidget *i, *m, *w;
 
-	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+	if (((SPItemClass *) parent_class)->menu)
+		((SPItemClass *) parent_class)->menu (item, desktop, menu);
 
 	/* Create toplevel menuitem */
 	i = gtk_menu_item_new_with_label (_("Shape"));

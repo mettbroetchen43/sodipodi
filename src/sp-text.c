@@ -392,7 +392,7 @@ static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
 static void sp_tspan_modified (SPObject *object, guint flags);
 static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
 static void sp_tspan_hide (SPItem *item, NRArena *arena);
 
@@ -651,14 +651,14 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPTSpan *tspan;
 
 	tspan = SP_TSPAN (item);
 
 	if (tspan->string) {
-		sp_item_invoke_bbox (SP_ITEM (tspan->string), bbox, transform, FALSE);
+		sp_item_invoke_bbox_full (SP_ITEM (tspan->string), bbox, transform, flags, FALSE);
 	}
 }
 
@@ -693,8 +693,8 @@ sp_tspan_hide (SPItem *item, NRArena *arena)
 
 	if (tspan->string) sp_item_hide (SP_ITEM (tspan->string), arena);
 
-	if (SP_ITEM_CLASS (tspan_parent_class)->hide)
-		(* SP_ITEM_CLASS (tspan_parent_class)->hide) (item, arena);
+	if (((SPItemClass *) tspan_parent_class)->hide)
+		((SPItemClass *) tspan_parent_class)->hide (item, arena);
 }
 
 static void
@@ -720,12 +720,12 @@ static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_modified (SPObject *object, guint flags);
 static SPRepr *sp_text_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
 static void sp_text_hide (SPItem *item, NRArena *arena);
 static char * sp_text_description (SPItem *item);
 static GSList * sp_text_snappoints (SPItem *item, GSList *points);
-static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_text_print (SPItem *item, SPPrintContext *gpc);
 
 static void sp_text_request_relayout (SPText *text, guint flags);
@@ -1114,7 +1114,7 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPText *text;
 	SPItem *child;
@@ -1123,10 +1123,10 @@ sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	text = SP_TEXT (item);
 
 	for (o = text->children; o != NULL; o = o->next) {
-		gdouble a[6];
+		NRMatrixD a;
 		child = SP_ITEM (o);
-		art_affine_multiply (a, child->affine, transform);
-		sp_item_invoke_bbox (child, bbox, a, FALSE);
+		nr_matrix_multiply_dfd (&a, &child->transform, transform);
+		sp_item_invoke_bbox_full (child, bbox, &a, flags, FALSE);
 	}
 }
 
@@ -1175,8 +1175,8 @@ sp_text_hide (SPItem *item, NRArena *arena)
 		}
 	}
 
-	if (SP_ITEM_CLASS (text_parent_class)->hide)
-		(* SP_ITEM_CLASS (text_parent_class)->hide) (item, arena);
+	if (((SPItemClass *) text_parent_class)->hide)
+		((SPItemClass *) text_parent_class)->hide (item, arena);
 }
 
 static char *
@@ -1282,8 +1282,7 @@ sp_text_compute_values (SPText *text)
 {
 	SPObject *child;
 	SPStyle *style;
-	gdouble i2vp[6], vp2i[6];
-	gdouble aw, ah;
+	NRMatrixF i2vp, vp2i;
 	gdouble d;
 
 	style = SP_OBJECT_STYLE (text);
@@ -1291,12 +1290,9 @@ sp_text_compute_values (SPText *text)
 	/* fixme: It is somewhat dangerous, yes (Lauris) */
 	/* fixme: And it is terribly slow too (Lauris) */
 	/* fixme: In general we want to keep viewport scales around */
-	sp_item_i2vp_affine (SP_ITEM (text), i2vp);
-	art_affine_invert (vp2i, i2vp);
-	aw = sp_distance_d_matrix_d_transform (1.0, vp2i);
-	ah = sp_distance_d_matrix_d_transform (1.0, vp2i);
-	/* sqrt ((actual_width) ** 2 + (actual_height) ** 2)) / sqrt (2) */
-	d = sqrt (aw * aw + ah * ah) * M_SQRT1_2;
+	sp_item_i2vp_affine (SP_ITEM (text), &i2vp);
+	nr_matrix_f_invert (&vp2i, &i2vp);
+	d = NR_MATRIX_DF_EXPANSION (&vp2i);
 
 	sp_text_update_length (&text->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
 	sp_text_update_length (&text->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
@@ -1325,7 +1321,7 @@ sp_text_set_shape (SPText *text)
 	ArtPoint cp;
 	SPObject *child;
 	gboolean isfirstline, haslast, lastwastspan;
-	ArtDRect paintbox;
+	NRRectF paintbox;
 
 	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
 	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
@@ -1468,19 +1464,23 @@ sp_text_set_shape (SPText *text)
 static GSList * 
 sp_text_snappoints (SPItem *item, GSList *points)
 {
+	SPLayoutData *ly;
 	ArtPoint *p;
-	gdouble affine[6];
+	NRMatrixF i2d;
 
 	/* we use corners of item and x,y coordinates of ellipse */
-	if (SP_ITEM_CLASS (text_parent_class)->snappoints)
-		points = SP_ITEM_CLASS (text_parent_class)->snappoints (item, points);
+	if (((SPItemClass *) text_parent_class)->snappoints)
+		points = ((SPItemClass *) text_parent_class)->snappoints (item, points);
+
+	ly = &SP_TEXT (item)->ly;
+
+	sp_item_i2d_affine (item, &i2d);
 
 	p = g_new (ArtPoint,1);
-	p->x = SP_TEXT (item)->ly.x.computed;
-	p->y = SP_TEXT (item)->ly.y.computed;
-	sp_item_i2d_affine (item, affine);
-	art_affine_point (p, p, affine);
-	g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ly->x.computed, ly->y.computed);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ly->x.computed, ly->y.computed);
+	g_slist_prepend (points, p);
+
 	return points;
 }
 
@@ -1490,11 +1490,11 @@ sp_text_snappoints (SPItem *item, GSList *points)
  */
 
 static void
-sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 {
 	SPText *text;
 	gdouble d;
-	guchar t[80];
+	guchar c[80];
 
 	text = SP_TEXT (item);
 
@@ -1505,15 +1505,15 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	 * y = (t[0] * TRANS (lyy) - t[1] * TRANS (lyx)) / (t[0] * t[3] - t[1] * t[2]);
 	 */
 
-	d = transform[0] * transform[3] - transform[1] * transform[2];
+	d = NR_MATRIX_DF_EXPANSION (t);
 
 	if (fabs (d) > 1e-18) {
 		gdouble px, py, x, y;
 		SPObject *child;
-		px = transform[0] * text->ly.x.computed + transform[2] * text->ly.y.computed + transform[4];
-		py = transform[1] * text->ly.x.computed + transform[3] * text->ly.y.computed + transform[5];
-		x = (transform[3] * px - transform[2] * py) / d;
-		y = (transform[0] * py - transform[1] * px) / d;
+		px = NR_MATRIX_DF_TRANSFORM_X (t, text->ly.x.computed, text->ly.y.computed);
+		py = NR_MATRIX_DF_TRANSFORM_Y (t, text->ly.x.computed, text->ly.y.computed);
+		x = (t->c[3] * px - t->c[2] * py) / d;
+		y = (t->c[0] * py - t->c[1] * px) / d;
 		sp_repr_set_double_attribute (repr, "x", x);
 		sp_repr_set_double_attribute (repr, "y", y);
 		for (child = text->children; child != NULL; child = child->next) {
@@ -1523,10 +1523,10 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 				if (tspan->ly.x.set || tspan->ly.y.set) {
 					x = (tspan->ly.x.set) ? tspan->ly.x.computed : text->ly.x.computed;
 					y = (tspan->ly.y.set) ? tspan->ly.y.computed : text->ly.y.computed;
-					px = transform[0] * x + transform[2] * y + transform[4];
-					py = transform[1] * x + transform[3] * y + transform[5];
-					x = (transform[3] * px - transform[2] * py) / d;
-					y = (transform[0] * py - transform[1] * px) / d;
+					px = NR_MATRIX_DF_TRANSFORM_X (t, x, y);
+					py = NR_MATRIX_DF_TRANSFORM_Y (t, x, y);
+					x = (t->c[3] * px - t->c[2] * py) / d;
+					y = (t->c[0] * py - t->c[1] * px) / d;
 					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "x", x);
 					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "y", y);
 				}
@@ -1534,11 +1534,11 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		}
 	}
 
-	transform[4] = 0.0;
-	transform[5] = 0.0;
+	t->c[4] = 0.0;
+	t->c[5] = 0.0;
 
-	if (sp_svg_write_affine (t, 80, transform)) {
-		sp_repr_set_attr (repr, "transform", t);
+	if (sp_svg_transform_write (c, 80, t)) {
+		sp_repr_set_attr (repr, "transform", c);
 	} else {
 		sp_repr_set_attr (repr, "transform", NULL);
 	}
@@ -1549,8 +1549,8 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 {
 	SPText *text;
 	SPObject *ch;
-	gdouble ctm[6];
-	ArtDRect pbox, dbox, bbox;
+	NRMatrixF ctm;
+	NRRectF pbox, dbox, bbox;
 
 	text = SP_TEXT (item);
 
@@ -1561,13 +1561,13 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 	dbox.y0 = 0.0;
 	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
 	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	sp_item_i2d_affine (item, ctm);
+	sp_item_i2d_affine (item, &ctm);
 
 	for (ch = text->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
-			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), ctx, ctm, &pbox, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), ctx, &ctm, &pbox, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
-			sp_chars_do_print (SP_CHARS (ch), ctx, ctm, &pbox, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (ch), ctx, &ctm, &pbox, &dbox, &bbox);
 		}
 	}
 }

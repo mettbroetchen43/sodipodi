@@ -94,9 +94,9 @@ sp_fill_style_dialog (void)
 		fs = sp_fill_style_widget_new ();
 		gtk_widget_show (fs);
 		gtk_container_add (GTK_CONTAINER (dialog), fs);
-	}
 
-	gtk_widget_show (dialog);
+		gtk_widget_show (dialog);
+	}
 }
 
 GtkWidget *
@@ -206,10 +206,8 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	SPObject *object;
 	SPGradient *vector;
 	gfloat c[5];
-	ArtDRect bbox;
 	SPLinearGradient *lg;
 	SPRadialGradient *rg;
-	gdouble ctm[6];
 #if 0
 	NRPointF p0, p1, p2;
 #endif
@@ -277,23 +275,13 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		}
 		/* fixme: Probably we should set multiple mode here too */
 		sp_paint_selector_set_gradient_linear (psel, vector);
-		sp_selection_bbox_document (sel, &bbox);
-		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		sp_selection_bbox_document (sel, &fbb);
+		sp_paint_selector_set_gradient_bbox (psel, fbb.x0, fbb.y0, fbb.x1, fbb.y1);
 
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
-		sp_item_i2doc_affine (SP_ITEM (object), ctm);
-		fctm.c[0] = ctm[0];
-		fctm.c[1] = ctm[1];
-		fctm.c[2] = ctm[2];
-		fctm.c[3] = ctm[3];
-		fctm.c[4] = ctm[4];
-		fctm.c[5] = ctm[5];
-		fbb.x0 = bbox.x0;
-		fbb.y0 = bbox.y0;
-		fbb.x1 = bbox.x1;
-		fbb.y1 = bbox.y1;
+		sp_item_invoke_bbox (SP_ITEM (object), &fbb, NULL, TRUE);
+		sp_item_i2doc_affine (SP_ITEM (object), &fctm);
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
 		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (lg), SP_GRADIENT_SPREAD (lg));
@@ -315,22 +303,12 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		}
 		/* fixme: Probably we should set multiple mode here too */
 		sp_paint_selector_set_gradient_radial (psel, vector);
-		sp_selection_bbox_document (sel, &bbox);
-		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		sp_selection_bbox_document (sel, &fbb);
+		sp_paint_selector_set_gradient_bbox (psel, fbb.x0, fbb.y0, fbb.x1, fbb.y1);
 		/* fixme: This is plain wrong */
 		rg = SP_RADIALGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
-		sp_item_i2doc_affine (SP_ITEM (object), ctm);
-		fctm.c[0] = ctm[0];
-		fctm.c[1] = ctm[1];
-		fctm.c[2] = ctm[2];
-		fctm.c[3] = ctm[3];
-		fctm.c[4] = ctm[4];
-		fctm.c[5] = ctm[5];
-		fbb.x0 = bbox.x0;
-		fbb.y0 = bbox.y0;
-		fbb.x1 = bbox.x1;
-		fbb.y1 = bbox.y1;
+		sp_item_invoke_bbox (SP_ITEM (object), &fbb, NULL, TRUE);
+		sp_item_i2doc_affine (SP_ITEM (object), &fctm);
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
 		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (rg), SP_GRADIENT_SPREAD (rg));

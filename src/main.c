@@ -72,8 +72,8 @@ enum {
 	SP_ARG_LAST
 };
 
-int sp_main_gui (int argc, char **argv);
-int sp_main_console (int argc, char **argv);
+int sp_main_gui (int argc, const char **argv);
+int sp_main_console (int argc, const char **argv);
 static void sp_do_export_png (SPDocument *doc);
 static GSList *sp_process_args (poptContext ctx);
 
@@ -119,11 +119,11 @@ struct poptOption options[] = {
 	 N_("Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"), N_("FILENAME")},
 	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
 	 N_("Show given files one-by-one, switch to next on any key/mouse event"), NULL},
-	{NULL, '\0', 0, NULL, 0, NULL, NULL}
+	POPT_AUTOHELP POPT_TABLEEND
 };
 
 int
-main (int argc, char **argv)
+main (int argc, const char **argv)
 {
 	gboolean use_gui;
 	gint result, i;
@@ -170,22 +170,20 @@ main (int argc, char **argv)
 }
 
 int
-sp_main_gui (int argc, char **argv)
+sp_main_gui (int argc, const char **argv)
 {
-	poptContext ctx = NULL;
+	poptContext ctx;
 	GSList *fl;
 
-#if 0
-	/* Setup gnome */
-	gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv, options, 0, &ctx);
-#else
-	gtk_init (&argc, &argv);
-#endif
+	gtk_init (&argc, (char ***) &argv);
 
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */
 
 	setlocale (LC_NUMERIC, "C");
+
+	ctx = poptGetContext (NULL, argc, argv, options, 0);
+	g_return_val_if_fail (ctx != NULL, 1);
 
 	/* Collect own arguments */
 	fl = sp_process_args (ctx);
@@ -256,20 +254,20 @@ sp_main_gui (int argc, char **argv)
 }
 
 int
-sp_main_console (int argc, char **argv)
+sp_main_console (int argc, const char **argv)
 {
 	poptContext ctx = NULL;
 	GSList * fl;
 	guchar *printer;
+
+	/* We are started in text mode */
 
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */
 
 	setlocale (LC_NUMERIC, "C");
 
-	/* We are started in text mode */
-
-	ctx = poptGetContext (NULL, argc, (const char **) argv, options, 0);
+	ctx = poptGetContext (NULL, argc, argv, options, 0);
 	g_return_val_if_fail (ctx != NULL, 1);
 
 	fl = sp_process_args (ctx);

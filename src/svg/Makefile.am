@@ -7,6 +7,7 @@
 #
 
 INCLUDES = \
+	-I.. \
 	$(SODIPODI_CFLAGS) \
 	-I$(includedir)
 
@@ -16,7 +17,7 @@ libspsvg_a_SOURCES = \
 	svg.h \
 	svg-types.h \
 	svg-length.c \
-	svg-color.c svg-color.h \
+	svg-color.c \
 	svg-affine.c \
 	svg-path.c \
 	gnome-canvas-bpath-util.c gnome-canvas-bpath-util.h

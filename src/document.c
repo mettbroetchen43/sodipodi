@@ -659,12 +659,12 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
  */
 
 GSList *
-sp_document_items_in_box (SPDocument * document, ArtDRect * box)
+sp_document_items_in_box (SPDocument *document, ArtDRect *box)
 {
 	SPGroup * group;
 	SPItem * child;
 	SPObject * o;
-	ArtDRect b;
+	NRRectF b;
 	GSList * s;
 
 	g_return_val_if_fail (document != NULL, NULL);
@@ -703,7 +703,7 @@ sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box)
 	SPGroup * group;
 	SPItem * child;
 	SPObject * o;
-	ArtDRect b;
+	NRRectF b;
 	GSList * s;
 
 	g_return_val_if_fail (document != NULL, NULL);

@@ -130,7 +130,7 @@ NRArenaItem *nr_arena_item_destroy (NRArenaItem *item);
 
 void nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child);
 
-void nr_arena_item_set_transform (NRArenaItem *item, const gdouble *transform);
+void nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform);
 void nr_arena_item_set_opacity (NRArenaItem *item, gdouble opacity);
 void nr_arena_item_set_sensitive (NRArenaItem *item, gboolean sensitive);
 void nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip);

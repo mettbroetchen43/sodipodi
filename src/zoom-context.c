@@ -186,7 +186,7 @@ void
 sp_zoom_selection (GtkWidget * widget)
 {
 	SPSelection * selection;
-	ArtDRect d;
+	NRRectF d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
@@ -205,7 +205,7 @@ void
 sp_zoom_drawing (GtkWidget * widget)
 {
 	SPItem * docitem;
-	ArtDRect d;
+	NRRectF d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;

@@ -94,8 +94,8 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 {
 	SPKnotHolderEntity *e;
 	SPItem        *item;
-	ArtPoint       p;
-	gdouble        affine[6];
+	ArtPoint sp, dp;
+	NRMatrixF i2d;
 	GtkObject     *ob;
 
 	g_return_if_fail (knot_holder != NULL);
@@ -127,10 +127,11 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 
 	ob = GTK_OBJECT (e->knot);
 	/* move to current point */
-	e->knot_get (item, &p);
-	sp_item_i2d_affine(item, affine);
-	art_affine_point (&p, &p, affine);
-	sp_knot_set_position (e->knot, &p, SP_KNOT_STATE_NORMAL);
+	e->knot_get (item, &sp);
+	sp_item_i2d_affine(item, &i2d);
+	dp.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, sp.x, sp.y);
+	dp.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, sp.x, sp.y);
+	sp_knot_set_position (e->knot, &dp, SP_KNOT_STATE_NORMAL);
 
 	e->handler_id = gtk_signal_connect (ob, "moved", GTK_SIGNAL_FUNC (knot_moved_handler), knot_holder);
 
@@ -149,7 +150,7 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 	SPKnotHolder *knot_holder;
 	SPItem *item;
 	SPObject *object;
-	gdouble affine[6];
+	NRMatrixF i2d;
 	GSList *el;
 
 	knot_holder = (SPKnotHolder *) data;
@@ -159,12 +160,13 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
 		if (e->knot == knot) {
+			NRMatrixF d2i;
 			ArtPoint q;
-			double d2i[6];
 
-			sp_item_i2d_affine(item, affine);
-			art_affine_invert (d2i, affine);
-			art_affine_point (&q, p, d2i);
+			sp_item_i2d_affine(item, &i2d);
+			nr_matrix_f_invert (&d2i, &i2d);
+			q.x = NR_MATRIX_DF_TRANSFORM_X (&d2i, p->x, p->y);
+			q.y = NR_MATRIX_DF_TRANSFORM_Y (&d2i, p->x, p->y);
 
 			e->knot_set (item, &q, state);
 
@@ -176,22 +178,22 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 
 	sp_object_invoke_write (object, object->repr, SP_OBJECT_WRITE_SODIPODI);
 	
-	sp_item_i2d_affine(item, affine);
+	sp_item_i2d_affine(item, &i2d);
 
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
-		ArtPoint p1;
+		ArtPoint sp, dp;
 		GObject *kob;
 		
 		kob = G_OBJECT (e->knot);
 
-		e->knot_get (item, &p1);
-		
-		art_affine_point (&p1, &p1, affine);
+		e->knot_get (item, &sp);
+
+		dp.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, sp.x, sp.y);
+		dp.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, sp.x, sp.y);
 
 		g_signal_handler_block (kob, e->handler_id);
-		sp_knot_set_position (e->knot, &p1,
-				      SP_KNOT_STATE_NORMAL);
+		sp_knot_set_position (e->knot, &dp, SP_KNOT_STATE_NORMAL);
 		g_signal_handler_unblock (kob, e->handler_id);
 	}
 }

@@ -49,7 +49,6 @@ sp_selected_path_combine (void)
 	SPPath * path;
 	SPCurve * c;
 	ArtBpath * abp;
-	gdouble i2root[6];
 	gchar * d, * str, * style;
 
 	sp_selected_path_to_curves0 (FALSE, 0);
@@ -74,10 +73,13 @@ sp_selected_path_combine (void)
 	style = g_strdup (sp_repr_attr ((SP_OBJECT (il->data))->repr, "style"));
 
 	for (l = il; l != NULL; l = l->next) {
+		NRMatrixF i2root;
+		NRMatrixD i2rootd;
 		path = (SPPath *) l->data;
 		c = sp_path_normalized_bpath (path);
-		sp_item_i2root_affine (SP_ITEM (path), i2root);
-		abp = art_bpath_affine_transform (c->bpath, i2root);
+		sp_item_i2root_affine (SP_ITEM (path), &i2root);
+		nr_matrix_d_from_f (&i2rootd, &i2root);
+		abp = art_bpath_affine_transform (c->bpath, NR_MATRIX_D_TO_DOUBLE (&i2rootd));
 		sp_curve_unref (c);
 		str = sp_svg_write_path (abp);
 		art_free (abp);
@@ -109,7 +111,8 @@ sp_selected_path_break_apart (void)
 	SPPath * path;
 	SPCurve * curve;
 	ArtBpath * abp;
-	double i2root[6];
+	NRMatrixF i2root;
+	NRMatrixD d;
 	gchar * style, * str;
 	GSList * list, * l;
 	SPDesktop * desktop;
@@ -130,10 +133,11 @@ sp_selected_path_break_apart (void)
 	curve = sp_path_normalized_bpath (path);
 	if (curve == NULL) return;
 
-	sp_item_i2root_affine (SP_ITEM (path), i2root);
+	sp_item_i2root_affine (SP_ITEM (path), &i2root);
+	nr_matrix_d_from_f (&d, &i2root);
 	style = g_strdup (sp_repr_attr (SP_OBJECT (item)->repr, "style"));
 
-	abp = art_bpath_affine_transform (curve->bpath, i2root);
+	abp = art_bpath_affine_transform (curve->bpath, NR_MATRIX_D_TO_DOUBLE (&d));
 
 	sp_curve_unref (curve);
 	sp_repr_unparent (SP_OBJECT_REPR (item));

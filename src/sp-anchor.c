@@ -252,8 +252,8 @@ sp_anchor_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	GtkWidget *i, *m, *w;
 
-	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+	if (((SPItemClass *) parent_class)->menu)
+		((SPItemClass *) parent_class)->menu (item, desktop, menu);
 
 	/* Create toplevel menuitem */
 	i = gtk_menu_item_new_with_label (_("Link"));

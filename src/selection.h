@@ -13,7 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libart_lgpl/art_rect.h>
+#include <libnr/nr-types.h>
 #include "forward.h"
 #include "xml/repr.h"
 
@@ -63,8 +63,8 @@ const GSList *sp_selection_repr_list (SPSelection * selection);
 SPItem *sp_selection_item (SPSelection * selection);
 SPRepr *sp_selection_repr (SPSelection * selection);
 
-ArtDRect *sp_selection_bbox (SPSelection *selection, ArtDRect *bbox);
-ArtDRect *sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox);
+NRRectF *sp_selection_bbox (SPSelection *selection, NRRectF *bbox);
+NRRectF *sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox);
 GSList *sp_selection_snappoints (SPSelection * selection);
 
 #endif

@@ -20,6 +20,7 @@
 #include <glib.h>
 
 #include <libnr/nr-values.h>
+#include <libnr/nr-matrix.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
@@ -143,10 +144,8 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 	SPObject *object;
 	SPGradient *vector;
 	gfloat c[5];
-	ArtDRect bbox;
 	SPLinearGradient *lg;
 	SPRadialGradient *rg;
-	gdouble ctm[6];
 #if 0
 	NRPointF p0, p1;
 #endif
@@ -215,22 +214,12 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		/* fixme: Probably we should set multiple mode here too */
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 		sp_paint_selector_set_gradient_linear (psel, vector);
-		sp_selection_bbox_document (sel, &bbox);
-		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		sp_selection_bbox_document (sel, &fbb);
+		sp_paint_selector_set_gradient_bbox (psel, fbb.x0, fbb.y0, fbb.x1, fbb.y1);
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
-		sp_item_i2doc_affine (SP_ITEM (object), ctm);
-		fctm.c[0] = ctm[0];
-		fctm.c[1] = ctm[1];
-		fctm.c[2] = ctm[2];
-		fctm.c[3] = ctm[3];
-		fctm.c[4] = ctm[4];
-		fctm.c[5] = ctm[5];
-		fbb.x0 = bbox.x0;
-		fbb.y0 = bbox.y0;
-		fbb.x1 = bbox.x1;
-		fbb.y1 = bbox.y1;
+		sp_item_invoke_bbox (SP_ITEM (object), &fbb, NULL, TRUE);
+		sp_item_i2doc_affine (SP_ITEM (object), &fctm);
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
 		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (lg), SP_GRADIENT_SPREAD (lg));
@@ -252,22 +241,12 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		}
 		/* fixme: Probably we should set multiple mode here too */
 		sp_paint_selector_set_gradient_radial (psel, vector);
-		sp_selection_bbox_document (sel, &bbox);
-		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		sp_selection_bbox_document (sel, &fbb);
+		sp_paint_selector_set_gradient_bbox (psel, fbb.x0, fbb.y0, fbb.x1, fbb.y1);
 		/* fixme: This is plain wrong */
 		rg = SP_RADIALGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
-		sp_item_i2doc_affine (SP_ITEM (object), ctm);
-		fctm.c[0] = ctm[0];
-		fctm.c[1] = ctm[1];
-		fctm.c[2] = ctm[2];
-		fctm.c[3] = ctm[3];
-		fctm.c[4] = ctm[4];
-		fctm.c[5] = ctm[5];
-		fbb.x0 = bbox.x0;
-		fbb.y0 = bbox.y0;
-		fbb.x1 = bbox.x1;
-		fbb.y1 = bbox.y1;
+		sp_item_invoke_bbox (SP_ITEM (object), &fbb, NULL, TRUE);
+		sp_item_i2doc_affine (SP_ITEM (object), &fctm);
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
 		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (rg), SP_GRADIENT_SPREAD (rg));
@@ -760,11 +739,11 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	avgwidth = 0.0;
 	stroked = TRUE;
 	for (l = objects; l != NULL; l = l->next) {
-		gdouble i2d[6];
+		NRMatrixF i2d;
 		gdouble dist;
-		sp_item_i2d_affine (SP_ITEM (l->data), i2d);
+		sp_item_i2d_affine (SP_ITEM (l->data), &i2d);
 		object = SP_OBJECT (l->data);
-		dist = sp_distance_d_matrix_d_transform (object->style->stroke_width.computed, i2d);
+		dist = object->style->stroke_width.computed * NR_MATRIX_DF_EXPANSION (&i2d);
 #ifdef SP_SS_VERBOSE
 		g_print ("%g in user is %g on desktop\n", object->style->stroke_width.computed, dist);
 #endif
@@ -991,7 +970,7 @@ sp_stroke_style_scale_line (SPWidget *spw)
 
 	if (items) {
 		for (i = items; i != NULL; i = i->next) {
-			double i2d[6], d2i[6];
+			NRMatrixF i2d, d2i;
 			double length, dist;
 			double *dash, offset;
 			int ndash;
@@ -999,10 +978,10 @@ sp_stroke_style_scale_line (SPWidget *spw)
 			sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
 			/* Set stroke width */
 			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
-			sp_item_i2d_affine (SP_ITEM (i->data), i2d);
-			art_affine_invert (d2i, i2d);
-			dist = sp_distance_d_matrix_d_transform (length, d2i);
-			g_snprintf (c, 32, "%g", sp_distance_d_matrix_d_transform (length, d2i));
+			sp_item_i2d_affine (SP_ITEM (i->data), &i2d);
+			nr_matrix_f_invert (&d2i, &i2d);
+			dist = length * NR_MATRIX_DF_EXPANSION (&d2i);
+			g_snprintf (c, 32, "%g", dist);
 			sp_repr_css_set_property (css, "stroke-width", c);
 			/* Set dash */
 			sp_stroke_style_set_scaled_dash (css, ndash, dash, offset, dist);

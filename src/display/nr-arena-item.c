@@ -500,20 +500,20 @@ nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child)
 }
 
 void
-nr_arena_item_set_transform (NRArenaItem *item, const gdouble *transform)
+nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	nr_arena_item_request_render (item);
 
-	if (nr_matrix_d_test_identity ((NRMatrixD *) transform, NR_EPSILON_D)) {
+	if (nr_matrix_f_test_identity (transform, NR_EPSILON_F)) {
 		/* Set to identity affine */
 		if (item->affine) g_free (item->affine);
 		item->affine = NULL;
 	} else {
 		if (!item->affine) item->affine = g_new (gdouble, 6);
-		memcpy (item->affine, transform, 6 * sizeof (gdouble));
+		nr_matrix_d_from_f (NR_MATRIX_D_FROM_DOUBLE (item->affine), transform);
 	}
 
 	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);

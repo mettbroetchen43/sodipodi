@@ -487,8 +487,6 @@ void
 sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient *lg, SPItem *item)
 {
 	gfloat p[4], gp[4];
-	ArtDRect bbox;
-	gdouble ctm[6];
 	NRMatrixF fctm, gs2d, g2d, d2g, gs2g, g2gs;
 	NRRectF fbb;
 	double e;
@@ -503,18 +501,8 @@ sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient 
 	/* Now position */
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
 	/* Calculate raw gradient transform */
-	sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
-	sp_item_i2doc_affine (item, ctm);
-	fctm.c[0] = ctm[0];
-	fctm.c[1] = ctm[1];
-	fctm.c[2] = ctm[2];
-	fctm.c[3] = ctm[3];
-	fctm.c[4] = ctm[4];
-	fctm.c[5] = ctm[5];
-	fbb.x0 = bbox.x0;
-	fbb.y0 = bbox.y0;
-	fbb.x1 = bbox.x1;
-	fbb.y1 = bbox.y1;
+	sp_item_invoke_bbox (item, &fbb, NULL, TRUE);
+	sp_item_i2doc_affine (item, &fctm);
 	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
 	sp_gradient_get_g2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &g2d);
 	nr_matrix_f_invert (&d2g, &g2d);
@@ -546,8 +534,6 @@ void
 sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient *rg, SPItem *item)
 {
 	gfloat p[5], gp[4];
-	ArtDRect bbox;
-	gdouble ctm[6];
 	NRMatrixF fctm, gs2d, g2d, d2g, gs2g, g2gs;
 	NRRectF fbb;
 	double e;
@@ -561,18 +547,8 @@ sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient 
 	/* Now position */
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
 	/* Calculate raw gradient transform */
-	sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
-	sp_item_i2doc_affine (item, ctm);
-	fctm.c[0] = ctm[0];
-	fctm.c[1] = ctm[1];
-	fctm.c[2] = ctm[2];
-	fctm.c[3] = ctm[3];
-	fctm.c[4] = ctm[4];
-	fctm.c[5] = ctm[5];
-	fbb.x0 = bbox.x0;
-	fbb.y0 = bbox.y0;
-	fbb.x1 = bbox.x1;
-	fbb.y1 = bbox.y1;
+	sp_item_invoke_bbox (item, &fbb, NULL, TRUE);
+	sp_item_i2doc_affine (item, &fctm);
 	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
 	sp_gradient_get_g2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &g2d);
 	nr_matrix_f_invert (&d2g, &g2d);

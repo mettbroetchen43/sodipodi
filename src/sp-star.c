@@ -406,6 +406,8 @@ sp_star_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble r1, gdoub
 static GSList * 
 sp_star_snappoints (SPItem * item, GSList * points)
 {
+#if 0
+	/* fixme: We should use all corners of star anyways (Lauris) */
 	SPStar *star;
 	ArtPoint * p, p1, p2, p3;
 	gdouble affine[6];
@@ -427,6 +429,7 @@ sp_star_snappoints (SPItem * item, GSList * points)
 	p = g_new (ArtPoint,1);
 	art_affine_point (p, &p3, affine);
 	points = g_slist_append (points, p);
+#endif
 	
 	return points;
 }
@@ -469,8 +472,8 @@ sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	GtkWidget *i, *m, *w;
 
-	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+	if (((SPItemClass *) parent_class)->menu)
+		((SPItemClass *) parent_class)->menu (item, desktop, menu);
 
 	/* Create toplevel menuitem */
 	i = gtk_menu_item_new_with_label (_("Star"));

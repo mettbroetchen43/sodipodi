@@ -206,17 +206,17 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 
 	/* Transform */
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t0");
-	gtk_adjustment_set_value (a, item->affine[0]);
+	gtk_adjustment_set_value (a, item->transform.c[0]);
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t1");
-	gtk_adjustment_set_value (a, item->affine[1]);
+	gtk_adjustment_set_value (a, item->transform.c[1]);
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t2");
-	gtk_adjustment_set_value (a, item->affine[2]);
+	gtk_adjustment_set_value (a, item->transform.c[2]);
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t3");
-	gtk_adjustment_set_value (a, item->affine[3]);
+	gtk_adjustment_set_value (a, item->transform.c[3]);
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t4");
-	gtk_adjustment_set_value (a, item->affine[4]);
+	gtk_adjustment_set_value (a, item->transform.c[4]);
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t5");
-	gtk_adjustment_set_value (a, item->affine[5]);
+	gtk_adjustment_set_value (a, item->transform.c[5]);
 
 #if 0
 	/* Id */
@@ -332,7 +332,7 @@ sp_item_widget_transform_value_changed (GtkWidget *widget, SPWidget *spw)
 {
 	SPException ex;
 	SPItem *item;
-	double t[6];
+	NRMatrixF t;
 	unsigned char c[64];
 	int i;
 
@@ -346,10 +346,10 @@ sp_item_widget_transform_value_changed (GtkWidget *widget, SPWidget *spw)
 	for (i = 0; i < 6; i++) {
 		unsigned char c[8];
 		g_snprintf (c, 8, "t%d", i);
-		t[i] = GTK_ADJUSTMENT (gtk_object_get_data (GTK_OBJECT (spw), c))->value;
+		t.c[i] = GTK_ADJUSTMENT (gtk_object_get_data (GTK_OBJECT (spw), c))->value;
 	}
 
-	sp_svg_write_affine (c, 64, t);
+	sp_svg_transform_write (c, 64, &t);
 	SP_EXCEPTION_INIT (&ex);
 	sp_object_setAttribute (SP_OBJECT (item), "transform", c, &ex);
 

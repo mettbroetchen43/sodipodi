@@ -353,7 +353,7 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	if (!style->stroke_dashoffset_set) {
 		/* fixme */
 		val = sp_repr_attr (repr, "stroke-dashoffset");
-		if (sp_svg_read_number_d (val, &style->stroke_dash.offset)) {
+		if (sp_svg_number_read_d (val, &style->stroke_dash.offset)) {
 			style->stroke_dashoffset_set = TRUE;
 		} else {
 			style->stroke_dashoffset_set = FALSE;
@@ -557,7 +557,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_STROKE_DASHOFFSET:
 		if (!style->stroke_dashoffset_set) {
 			/* fixme */
-			if (sp_svg_read_number_d (val, &style->stroke_dash.offset)) {
+			if (sp_svg_number_read_d (val, &style->stroke_dash.offset)) {
 				style->stroke_dashoffset_set = TRUE;
 			} else {
 				style->stroke_dashoffset_set = FALSE;
@@ -1342,7 +1342,7 @@ sp_style_read_ifloat (SPIFloat *val, const guchar *str)
 		val->inherit = TRUE;
 	} else {
 		gfloat value;
-		if (sp_svg_read_number_f (str, &value)) {
+		if (sp_svg_number_read_f (str, &value)) {
 			val->set = TRUE;
 			val->inherit = FALSE;
 			val->value = value;
@@ -1358,7 +1358,7 @@ sp_style_read_iscale24 (SPIScale24 *val, const guchar *str)
 		val->inherit = TRUE;
 	} else {
 		gfloat value;
-		if (sp_svg_read_number_f (str, &value)) {
+		if (sp_svg_number_read_f (str, &value)) {
 			val->set = TRUE;
 			val->inherit = FALSE;
 			val->value = SP_SCALE24_FROM_FLOAT (value);

@@ -212,11 +212,13 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "patternTransform")) {
-		nr_matrix_d_set_identity (&pat->patternTransform);
-		if (val) {
-			sp_svg_read_affine (pat->patternTransform.c, val);
+		NRMatrixF t;
+		if (val && sp_svg_transform_read (val, &t)) {
+			int i;
+			for (i = 0; i < 6; i++) pat->patternTransform.c[i] = t.c[i];
 			pat->patternTransform_set = TRUE;
 		} else {
+			nr_matrix_d_set_identity (&pat->patternTransform);
 			pat->patternTransform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);

@@ -13,6 +13,7 @@
 
 #include <math.h>
 
+#include <libnr/nr-matrix.h>
 #include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -272,9 +273,10 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 void
 sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm)
 {
-	SPItem * item;
-	const GSList * l;
-	gdouble current_[6], i2d[6], i2current[6], i2dnew[6], n2p[6], p2n[6];
+	SPItem *item;
+	const GSList *l;
+	gdouble current_[6], i2current[6], n2p[6], p2n[6];
+	NRMatrixF i2d, i2dnew;
 	ArtPoint p1, p2, p3, p4;
 	gint i;
 
@@ -295,10 +297,10 @@ sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm
 	        l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
 	        while (l != NULL) {
 		        item = SP_ITEM (l->data);
-			sp_item_i2d_affine (item, i2d);
-			art_affine_multiply (i2current, i2d, current_);
-			art_affine_multiply (i2dnew, i2current, affine);
-			sp_item_set_i2d_affine (item, i2dnew);
+			sp_item_i2d_affine (item, &i2d);
+			nr_matrix_multiply_dfd (NR_MATRIX_D_FROM_DOUBLE (i2current), &i2d, NR_MATRIX_D_FROM_DOUBLE (current_));
+			nr_matrix_multiply_fdd (&i2dnew, NR_MATRIX_D_FROM_DOUBLE (i2current), NR_MATRIX_D_FROM_DOUBLE (affine));
+			sp_item_set_i2d_affine (item, &i2dnew);
 			l = l->next;
 		}
 	} else {
@@ -335,7 +337,6 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	const GSList * l;
 	gchar tstr[80];
 	ArtPoint p;
-	gdouble i2d[6], i2dnew[6];
 
 	g_return_if_fail (seltrans->grabbed);
 
@@ -348,18 +349,19 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 			item = SP_ITEM (l->data);
 			/* fixme: We do not have to set it here (Lauris) */
 			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
-				sp_item_i2d_affine (item, i2d);
-				art_affine_multiply (i2dnew, i2d, seltrans->current);
-				sp_item_set_i2d_affine (item, i2dnew);
+				NRMatrixF i2d, i2dnew;
+				sp_item_i2d_affine (item, &i2d);
+				nr_matrix_multiply_ffd (&i2dnew, &i2d, NR_MATRIX_D_FROM_DOUBLE (seltrans->current));
+				sp_item_set_i2d_affine (item, &i2dnew);
 			}
 			if (seltrans->transform == SP_SELTRANS_TRANSFORM_OPTIMIZE) {
-				sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+				sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
 				/* because item/repr affines may be out of sync, invoke reread */
 				/* fixme: We should test equality to avoid unnecessary rereads */
 				/* fixme: This probably is not needed (Lauris) */
 				sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
 			} else {
-				if (sp_svg_write_affine (tstr, 79, item->affine)) {
+				if (sp_svg_transform_write (tstr, 79, &item->transform)) {
 					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
 				} else {
 					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
@@ -429,9 +431,8 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	GSList * l;
 
 	gchar tstr[80];
-	gdouble i2d[6], i2dnew[6];
-	
-	gdouble * new_affine;
+	NRMatrixF i2d, i2dnew;
+	NRMatrixF *new_affine;
 
 	tstr[79] = '\0';
 	
@@ -455,17 +456,19 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 								     copy_repr);
 			
 			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
-				sp_item_i2d_affine (original_item, i2d);
-				art_affine_multiply (i2dnew, i2d, seltrans->current);
-				sp_item_set_i2d_affine (copy_item, i2dnew);
-				new_affine = copy_item->affine;
-			} else 
-				new_affine = original_item->affine;
+				sp_item_i2d_affine (original_item, &i2d);
+				nr_matrix_multiply_ffd (&i2dnew, &i2d, NR_MATRIX_D_FROM_DOUBLE (seltrans->current));
+				sp_item_set_i2d_affine (copy_item, &i2dnew);
+				new_affine = &copy_item->transform;
+			} else {
+				new_affine = &original_item->transform;
+			}
 
-			if (sp_svg_write_affine (tstr, 79, new_affine)) 
+			if (sp_svg_transform_write (tstr, 80, new_affine)) {
 				sp_repr_set_attr (copy_repr, "transform", tstr);
-			else
+			} else {
 				sp_repr_set_attr (copy_repr, "transform", NULL);
+			}
 			sp_repr_unref (copy_repr);
 			l = l->next;
 		}
@@ -555,7 +558,8 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 static void
 sp_sel_trans_update_volatile_state (SPSelTrans * seltrans)
 {
-	SPSelection * selection;
+	SPSelection *selection;
+	NRRectF b;
 
 	g_return_if_fail (seltrans != NULL);
 
@@ -565,7 +569,11 @@ sp_sel_trans_update_volatile_state (SPSelTrans * seltrans)
 
 	if (seltrans->empty) return;
 
-	sp_selection_bbox (SP_DT_SELECTION (seltrans->desktop), &seltrans->box);
+	sp_selection_bbox (SP_DT_SELECTION (seltrans->desktop), &b);
+	seltrans->box.x0 = b.x0;
+	seltrans->box.y0 = b.y0;
+	seltrans->box.x1 = b.x1;
+	seltrans->box.y1 = b.y1;
 
 	if ((seltrans->box.x0 > seltrans->box.x1) || (seltrans->box.y0 > seltrans->box.y1)) {
 		seltrans->empty = TRUE;

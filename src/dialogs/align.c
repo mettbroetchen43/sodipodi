@@ -266,8 +266,8 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 	SPSelection * selection;
 	GSList * slist;
 	SPItem * master, * item;
-	ArtDRect b;
-	ArtPoint mp, sp;
+	NRRectF b;
+	NRPointF mp, sp;
 	GSList * l;
 	gboolean changed;
 
@@ -338,7 +338,7 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 static SPItem *
 sp_quick_align_find_master (const GSList *slist, gboolean horizontal)
 {
-	ArtDRect b;
+	NRRectF b;
 	const GSList * l;
 	SPItem * master, * item;
 	gdouble dim, max;

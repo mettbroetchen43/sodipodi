@@ -32,7 +32,7 @@ static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_path_release (SPObject *object);
 static void sp_path_read_attr (SPObject * object, const gchar * key);
 
-static void sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_path_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 
 static void sp_path_private_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_path_private_add_comp (SPPath * path, SPPathComp * comp);
@@ -266,31 +266,22 @@ sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 }
 
 static void
-sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_path_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPPath *path;
 	GSList *l;
-	NRRectF bb;
 
 	path = SP_PATH (item);
-
-	bb.x0 = bb.y0 = 1e18;
-	bb.x1 = bb.y1 = -1e18;
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		SPPathComp *comp;
 		NRMatrixF a;
 		NRBPath bp;
 		comp = (SPPathComp *) l->data;
-		nr_matrix_multiply_fdd (&a, (NRMatrixD *) comp->affine, (NRMatrixD *) transform);
+		nr_matrix_multiply_fdd (&a, (NRMatrixD *) comp->affine, transform);
 		bp.path = SP_CURVE_BPATH (comp->curve);
-		nr_path_matrix_f_bbox_f_union (&bp, &a, &bb, 0.25);
+		nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
 	}
-
-	bbox->x0 = MIN (bbox->x0, bb.x0);
-	bbox->y0 = MIN (bbox->y0, bb.y0);
-	bbox->x1 = MAX (bbox->x1, bb.x1);
-	bbox->y1 = MAX (bbox->y1, bb.y1);
 }
 
 void

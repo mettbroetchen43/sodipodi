@@ -176,8 +176,7 @@ static void
 sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
 {
 	SPStyle *style;
-	gdouble i2vp[6], vp2i[6];
-	gdouble aw, ah;
+	NRMatrixF i2vp, vp2i;
 	gdouble d;
 
 	style = SP_OBJECT_STYLE (ellipse);
@@ -185,12 +184,9 @@ sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
 	/* fixme: It is somewhat dangerous, yes (Lauris) */
 	/* fixme: And it is terribly slow too (Lauris) */
 	/* fixme: In general we want to keep viewport scales around */
-	sp_item_i2vp_affine (SP_ITEM (ellipse), i2vp);
-	art_affine_invert (vp2i, i2vp);
-	aw = sp_distance_d_matrix_d_transform (1.0, vp2i);
-	ah = sp_distance_d_matrix_d_transform (1.0, vp2i);
-	/* sqrt ((actual_width) ** 2 + (actual_height) ** 2)) / sqrt (2) */
-	d = sqrt (aw * aw + ah * ah) * M_SQRT1_2;
+	sp_item_i2vp_affine (SP_ITEM (ellipse), &i2vp);
+	nr_matrix_f_invert (&vp2i, &i2vp);
+	d = NR_MATRIX_DF_EXPANSION (&vp2i);
 
 	sp_genericellipse_update_length (&ellipse->cx, style->font_size.computed, style->font_size.computed * 0.5, d);
 	sp_genericellipse_update_length (&ellipse->cy, style->font_size.computed, style->font_size.computed * 0.5, d);
@@ -311,21 +307,22 @@ static GSList *
 sp_genericellipse_snappoints (SPItem *item, GSList *points)
 {
 	SPGenericEllipse *ge;
+	NRMatrixF i2d;
 	ArtPoint *p;
-	gdouble affine[6];
 
 	ge = SP_GENERICELLIPSE (item);
 
 	/* we use corners of item and center of ellipse */
-	if (SP_ITEM_CLASS (ge_parent_class)->snappoints)
-		points = (SP_ITEM_CLASS (ge_parent_class)->snappoints) (item, points);
+	if (((SPItemClass *) ge_parent_class)->snappoints)
+		points = ((SPItemClass *) ge_parent_class)->snappoints (item, points);
+
+	sp_item_i2d_affine (item, &i2d);
 
 	p = g_new (ArtPoint,1);
-	p->x = ge->cx.computed;
-	p->y = ge->cy.computed;
-	sp_item_i2d_affine (item, affine);
-	art_affine_point (p, p, affine);
-	points = g_slist_append (points, p);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ge->cx.computed, ge->cy.computed);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ge->cx.computed, ge->cy.computed);
+	points = g_slist_prepend (points, p);
+
 	return points;
 }
 

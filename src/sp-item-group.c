@@ -44,7 +44,7 @@ static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
 static SPRepr *sp_group_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_group_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_group_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_group_description (SPItem * item);
 static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
@@ -379,7 +379,7 @@ sp_group_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_group_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -389,10 +389,10 @@ sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
-			gdouble a[6];
+			NRMatrixD ct;
 			child = SP_ITEM (o);
-			art_affine_multiply (a, child->affine, transform);
-			sp_item_invoke_bbox (child, bbox, a, FALSE);
+			nr_matrix_multiply_dfd (&ct, &child->transform, transform);
+			sp_item_invoke_bbox_full (child, bbox, &ct, flags, FALSE);
 		}
 	}
 }
@@ -476,8 +476,8 @@ sp_group_hide (SPItem *item, NRArena *arena)
 		}
 	}
 
-	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
+	if (((SPItemClass *) parent_class)->hide)
+		((SPItemClass *) parent_class)->hide (item, arena);
 }
 
 static void
@@ -485,8 +485,8 @@ sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu * menu)
 {
 	GtkWidget * i, * m, * w;
 
-	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+	if (((SPItemClass *) parent_class)->menu)
+		((SPItemClass *) parent_class)->menu (item, desktop, menu);
 
 	i = gtk_menu_item_new_with_label (_("Group"));
 	m = gtk_menu_new ();
@@ -569,14 +569,14 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 		nrepr = sp_repr_duplicate (SP_OBJECT_REPR (child));
 		if (SP_IS_ITEM (child)) {
 			SPItem *citem;
-			NRMatrixD ctrans;
+			NRMatrixF ctrans;
 			gchar affinestr[80];
 			guchar *ss;
 
 			citem = SP_ITEM (child);
 
-			nr_matrix_multiply_ddd (&ctrans, (NRMatrixD *) citem->affine, (NRMatrixD *) gitem->affine);
-			if (sp_svg_write_affine (affinestr, 79, (double *) &ctrans)) {
+			nr_matrix_multiply_fff (&ctrans, &citem->transform, &gitem->transform);
+			if (sp_svg_transform_write (affinestr, 79, &ctrans)) {
 				sp_repr_set_attr (nrepr, "transform", affinestr);
 			} else {
 				sp_repr_set_attr (nrepr, "transform", NULL);

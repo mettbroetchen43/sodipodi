@@ -72,6 +72,18 @@ unsigned int sp_object_get_type (void);
 typedef struct _SPItem SPItem;
 typedef struct _SPItemClass SPItemClass;
 
+#define SP_TYPE_ITEM (sp_item_get_type ())
+#define SP_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_ITEM, SPItem))
+#if 0
+#define SP_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_ITEM, SPItemClass))
+#endif
+#define SP_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_ITEM))
+#if 0
+#define SP_ITEM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), SP_TYPE_ITEM, SPItemClass))
+#endif
+
+unsigned int sp_item_get_type (void);
+
 typedef struct _SPGroup SPGroup;
 typedef struct _SPGroupClass SPGroupClass;
 

@@ -1,6 +1,18 @@
-#ifndef NODEPATH_H
-#define NODEPATH_H
+#ifndef __NODEPATH_H__
+#define __NODEPATH_H__
 
+/*
+ * Container for node editing
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 #include "knot.h"
 #include "sp-path.h"

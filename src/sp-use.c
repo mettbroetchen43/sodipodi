@@ -31,7 +31,7 @@ static void sp_use_release (SPObject *object);
 static void sp_use_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_use_print (SPItem *item, SPPrintContext *ctx);
 static gchar * sp_use_description (SPItem * item);
 static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
@@ -230,14 +230,14 @@ sp_use_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPUse * use;
 
 	use = SP_USE (item);
 
 	if (use->child) {
-		sp_item_invoke_bbox (SP_ITEM (use->child), bbox, transform, FALSE);
+		sp_item_invoke_bbox_full (SP_ITEM (use->child), bbox, transform, flags, FALSE);
 	}
 }
 
@@ -295,8 +295,8 @@ sp_use_hide (SPItem * item, NRArena *arena)
 
 	if (use->child) sp_item_hide (SP_ITEM (use->child), arena);
 
-	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
+	if (((SPItemClass *) parent_class)->hide)
+		((SPItemClass *) parent_class)->hide (item, arena);
 }
 
 static void

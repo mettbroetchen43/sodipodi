@@ -508,14 +508,17 @@ nr_arena_shape_set_style (NRArenaShape *shape, SPStyle *style)
 }
 
 void
-nr_arena_shape_set_paintbox (NRArenaShape *shape, const ArtDRect *pbox)
+nr_arena_shape_set_paintbox (NRArenaShape *shape, const NRRectF *pbox)
 {
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (NR_IS_ARENA_SHAPE (shape));
 	g_return_if_fail (pbox != NULL);
 
 	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
-		memcpy (&shape->paintbox, pbox, sizeof (ArtDRect));
+		shape->paintbox.x0 = pbox->x0;
+		shape->paintbox.y0 = pbox->y0;
+		shape->paintbox.x1 = pbox->x1;
+		shape->paintbox.y1 = pbox->y1;
 	} else {
 		/* fixme: We kill warning, although not sure what to do here (Lauris) */
 		shape->paintbox.x0 = shape->paintbox.y0 = 0.0;

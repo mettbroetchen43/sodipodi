@@ -12,10 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
-#include <libart_lgpl/art_bpath.h>
-#include "svg-types.h"
-#include "../helper/units.h"
+#include <libnr/nr-types.h>
+#include <svg/svg-types.h>
 
 /* Generic */
 
@@ -26,8 +24,8 @@
  * Return FALSE and let val untouched on error
  */
  
-gboolean sp_svg_read_number_f (const guchar *str, gfloat *val);
-gboolean sp_svg_read_number_d (const guchar *str, gdouble *val);
+unsigned int sp_svg_number_read_f (const unsigned char *str, float *val);
+unsigned int sp_svg_number_read_d (const unsigned char *str, double *val);
 
 /* Length */
 
@@ -40,24 +38,29 @@ gboolean sp_svg_read_number_d (const guchar *str, gdouble *val);
  * Any return value pointer can be NULL
  */
 
-gboolean sp_svg_length_read (const unsigned char *str, SPSVGLength *length);
-gboolean sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *value, float *computed);
+unsigned int sp_svg_length_read (const unsigned char *str, SPSVGLength *length);
+unsigned int sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *value, float *computed);
 void sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float computed);
 
+unsigned int sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform);
+
+unsigned int sp_svg_transform_write (unsigned char *str, unsigned int size, NRMatrixF *transform);
+
+#if 0
 gint sp_svg_write_length (gchar *buf, gint buflen, gdouble val, const SPUnit *unit);
+#endif
 
-gdouble sp_svg_read_percentage (const gchar * str, gdouble def);
-gint sp_svg_write_percentage (gchar * buf, gint buflen, gdouble val);
+double sp_svg_read_percentage (const char * str, double def);
+int sp_svg_write_percentage (char * buf, int buflen, double val);
 
-guint32 sp_svg_read_color (const guchar * str, guint32 def);
-gint sp_svg_write_color (gchar * buf, gint buflen, guint32 color);
-
-gdouble * sp_svg_read_affine (gdouble affine[], const gchar * str);
-gint sp_svg_write_affine (gchar * buf, gint buflen, gdouble affine[]);
+unsigned int sp_svg_read_color (const unsigned char * str, unsigned int def);
+int sp_svg_write_color (char * buf, int buflen, unsigned int color);
 
 /* NB! As paths can be long, we use here dynamic string */
 
-ArtBpath * sp_svg_read_path (const gchar * str);
-gchar * sp_svg_write_path (const ArtBpath * bpath);
+#include <libart_lgpl/art_bpath.h>
+
+ArtBpath * sp_svg_read_path (const char * str);
+char * sp_svg_write_path (const ArtBpath * bpath);
 
 #endif

@@ -198,16 +198,18 @@ sp_object_properties_dialog (void)
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.text");
 
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
-	}
 
-	gtk_widget_show (dlg);
+		gtk_widget_show (dlg);
+	} else {
+		gtk_window_present (GTK_WINDOW (dlg));
+	}
 }
 
 void sp_object_properties_stroke (void)
 {
 	GtkWidget *nb;
 
-	if (!dlg) sp_object_properties_dialog ();
+	sp_object_properties_dialog ();
 
 	nb = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
 
@@ -218,7 +220,7 @@ void sp_object_properties_fill (void)
 {
 	GtkWidget *nb;
 
-	if (!dlg) sp_object_properties_dialog ();
+	sp_object_properties_dialog ();
 
 	nb = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
 
@@ -402,7 +404,7 @@ sp_selection_layout_widget_update (SPWidget *spw, SPSelection *sel)
 	f = gtk_object_get_data (GTK_OBJECT (spw), "frame");
 
 	if (sel && !sp_selection_is_empty (sel)) {
-		ArtDRect bbox;
+		NRRectF bbox;
 
 		sp_selection_bbox (sel, &bbox);
 
@@ -440,7 +442,7 @@ sp_object_layout_any_value_changed (GtkAdjustment *adj, SPWidget *spw)
 	GtkWidget *us;
 	GtkAdjustment *a;
 	const SPUnit *unit;
-	ArtDRect bbox;
+	NRRectF bbox;
 	gdouble x0, y0, x1, y1;
 	SPSelection *sel;
 

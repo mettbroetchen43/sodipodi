@@ -482,7 +482,8 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 		    unsigned int width, unsigned int height,
 		    unsigned long bgcolor)
 {
-	gdouble affine[6], t;
+	NRMatrixF affine;
+	gdouble t;
 	NRArena *arena;
 	struct SPEBP ebp;
 
@@ -515,14 +516,14 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	 * (2) a[5] = -a[3] * y1
 	 */
 
-	affine[0] = width / ((x1 - x0) * 1.25);
-	affine[1] = 0.0;
-	affine[2] = 0.0;
-	affine[3] = height / ((y1 - y0) * 1.25);
-	affine[4] = -affine[0] * x0 * 1.25;
-	affine[5] = -affine[3] * y0 * 1.25;
+	affine.c[0] = width / ((x1 - x0) * 1.25);
+	affine.c[1] = 0.0;
+	affine.c[2] = 0.0;
+	affine.c[3] = height / ((y1 - y0) * 1.25);
+	affine.c[4] = -affine.c[0] * x0 * 1.25;
+	affine.c[5] = -affine.c[3] * y0 * 1.25;
 
-	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
+	SP_PRINT_MATRIX ("SVG2PNG", &affine);
 
 	ebp.width = width;
 	ebp.height = height;
@@ -537,7 +538,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	arena = g_object_new (NR_TYPE_ARENA, NULL);
 	/* Create ArenaItem and set transform */
 	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
-	nr_arena_item_set_transform (ebp.root, affine);
+	nr_arena_item_set_transform (ebp.root, &affine);
 
 
 	sp_png_write_rgba_striped (filename, width, height, sp_export_get_rows, &ebp);

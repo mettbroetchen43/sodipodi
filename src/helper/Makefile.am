@@ -12,7 +12,8 @@ INCLUDES = \
 	$(SODIPODI_CFLAGS)
 
 libspchelp_a_SOURCES = \
- 	sp-marshal.c sp-marshal.h \
+	sp-intl.h \
+	sp-marshal.c sp-marshal.h \
 	helper-forward.h \
 	sp-canvas.c sp-canvas.h \
 	art-utils.c art-utils.h \
