@@ -1,4 +1,11 @@
+2003-03-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-marker.c (sp_marker_update): Do it properly
+	(sp_marker_write): Do it properly (almost)
+
 2003-03-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c (sp_module_print_plain_class_init): Use correct destructor
 
 	* src/sp-marker.c (sp_marker_set): Implement all attributes
 

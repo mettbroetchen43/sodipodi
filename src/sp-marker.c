@@ -28,11 +28,9 @@ static void sp_marker_init (SPMarker *marker);
 static void sp_marker_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
-static void sp_marker_modified (SPObject *object, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 
 static NRArenaItem *sp_marker_show (SPItem *item, NRArena *arena, unsigned int key);
-static void sp_marker_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
@@ -73,11 +71,9 @@ sp_marker_class_init (SPMarkerClass *klass)
 	sp_object_class->build = sp_marker_build;
 	sp_object_class->set = sp_marker_set;
 	sp_object_class->update = sp_marker_update;
-	sp_object_class->modified = sp_marker_modified;
 	sp_object_class->write = sp_marker_write;
 
 	sp_item_class->show = sp_marker_show;
-	sp_item_class->hide = sp_marker_hide;
 	sp_item_class->bbox = sp_marker_bbox;
 	sp_item_class->print = sp_marker_print;
 }
@@ -267,140 +263,138 @@ sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value)
 	}
 }
 
+/*
+ * Updating <marker> - we are not renderable anyways, so
+ * we as well cascade with identity transforms
+ */
+
 static void
 sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	SPItem *item;
 	SPMarker *marker;
-	SPItemCtx *ictx, rctx;
+	SPItemCtx rctx;
 	SPItemView *v;
+	NRRectD *vb;
+	double x, y, width, height;
+	NRMatrixD q;
 
 	item = SP_ITEM (object);
 	marker = SP_MARKER (object);
-	ictx = (SPItemCtx *) ctx;
 
-	if (SP_OBJECT_IS_CLONED (object)) {
-		/* Cloned <marker> is actually renderable */
+	/* fixme: We have to set up clip here too */
 
-		/* fixme: We have to set up clip here too */
+	/* Copy parent context */
+	rctx.ctx = *ctx;
+	/* Initialize tranformations */
+	nr_matrix_d_set_identity (&rctx.i2doc);
+	nr_matrix_d_set_identity (&rctx.i2vp);
+	/* Set up viewport */
+	rctx.vp.x0 = 0.0;
+	rctx.vp.y0 = 0.0;
+	rctx.vp.x1 = marker->markerWidth.computed;
+	rctx.vp.y1 = marker->markerHeight.computed;
 
-		/* Create copy of item context */
-		rctx = *ictx;
+	/* Start with identity transform */
+	nr_matrix_d_set_identity (&marker->c2p);
 
-		/* Calculate child to parent transformation */
-		/* Apply parent <use> translation (set up as vewport) */
-		nr_matrix_d_set_translate (&marker->c2p, rctx.vp.x0, rctx.vp.y0);
-
-		if (marker->viewBox_set) {
-			double x, y, width, height;
-			NRMatrixD q;
-			/* Determine actual viewbox in viewport coordinates */
-			if (marker->aspect_align == SP_ASPECT_NONE) {
-				x = 0.0;
-				y = 0.0;
-				width = rctx.vp.x1 - rctx.vp.x0;
-				height = rctx.vp.y1 - rctx.vp.y0;
-			} else {
-				double scalex, scaley, scale;
-				/* Things are getting interesting */
-				scalex = (rctx.vp.x1 - rctx.vp.x0) / (marker->viewBox.x1 - marker->viewBox.x0);
-				scaley = (rctx.vp.y1 - rctx.vp.y0) / (marker->viewBox.y1 - marker->viewBox.y0);
-				scale = (marker->aspect_clip == SP_ASPECT_MEET) ? MIN (scalex, scaley) : MAX (scalex, scaley);
-				width = (marker->viewBox.x1 - marker->viewBox.x0) * scale;
-				height = (marker->viewBox.y1 - marker->viewBox.y0) * scale;
-				/* Now place viewbox to requested position */
-				switch (marker->aspect_align) {
-				case SP_ASPECT_XMIN_YMIN:
-					x = 0.0;
-					y = 0.0;
-					break;
-				case SP_ASPECT_XMID_YMIN:
-					x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 0.0;
-					break;
-				case SP_ASPECT_XMAX_YMIN:
-					x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 0.0;
-					break;
-				case SP_ASPECT_XMIN_YMID:
-					x = 0.0;
-					y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				case SP_ASPECT_XMID_YMID:
-					x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				case SP_ASPECT_XMAX_YMID:
-					x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				case SP_ASPECT_XMIN_YMAX:
-					x = 0.0;
-					y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				case SP_ASPECT_XMID_YMAX:
-					x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				case SP_ASPECT_XMAX_YMAX:
-					x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
-					y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
-					break;
-				default:
-					x = 0.0;
-					y = 0.0;
-					break;
-				}
-			}
-			/* Compose additional transformation from scale and position */
-			q.c[0] = width / (marker->viewBox.x1 - marker->viewBox.x0);
-			q.c[1] = 0.0;
-			q.c[2] = 0.0;
-			q.c[3] = height / (marker->viewBox.y1 - marker->viewBox.y0);
-			q.c[4] = -marker->viewBox.x0 * q.c[0] + x;
-			q.c[5] = -marker->viewBox.y0 * q.c[3] + y;
-			/* Append viewbox transformation */
-			nr_matrix_multiply_ddd (&marker->c2p, &q, &marker->c2p);
-		}
-
-		nr_matrix_multiply_ddd (&rctx.i2doc, &marker->c2p, &rctx.i2doc);
-
-		/* If viewBox is set initialize child viewport */
-		/* Otherwise <use> has set it up already */
-		if (marker->viewBox_set) {
-			rctx.vp.x0 = marker->viewBox.x0;
-			rctx.vp.y0 = marker->viewBox.y0;
-			rctx.vp.x1 = marker->viewBox.x1;
-			rctx.vp.y1 = marker->viewBox.y1;
-			nr_matrix_d_set_identity (&rctx.i2vp);
-		}
-
-		/* And invoke parent method */
-		if (((SPObjectClass *) (parent_class))->update)
-			((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
-
-		/* As last step set additional transform of arena group */
-		for (v = item->display; v != NULL; v = v->next) {
-			NRMatrixF vbf;
-			nr_matrix_f_from_d (&vbf, &marker->c2p);
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
-		}
+	/* Viewbox is always present, either implicitly or explicitly */
+	if (marker->viewBox_set) {
+		vb = &marker->viewBox;
 	} else {
-		/* No-op */
-		if (((SPObjectClass *) (parent_class))->update)
-			((SPObjectClass *) (parent_class))->update (object, ctx, flags);
+		vb = &rctx.vp;
 	}
-}
+	/* Now set up viewbox transformation */
+	/* Determine actual viewbox in viewport coordinates */
+	if (marker->aspect_align == SP_ASPECT_NONE) {
+		x = 0.0;
+		y = 0.0;
+		width = rctx.vp.x1 - rctx.vp.x0;
+		height = rctx.vp.y1 - rctx.vp.y0;
+	} else {
+		double scalex, scaley, scale;
+		/* Things are getting interesting */
+		scalex = (rctx.vp.x1 - rctx.vp.x0) / (vb->x1 - vb->x0);
+		scaley = (rctx.vp.y1 - rctx.vp.y0) / (vb->y1 - vb->y0);
+		scale = (marker->aspect_clip == SP_ASPECT_MEET) ? MIN (scalex, scaley) : MAX (scalex, scaley);
+		width = (vb->x1 - vb->x0) * scale;
+		height = (vb->y1 - vb->y0) * scale;
+		/* Now place viewbox to requested position */
+		switch (marker->aspect_align) {
+		case SP_ASPECT_XMIN_YMIN:
+			x = 0.0;
+			y = 0.0;
+			break;
+		case SP_ASPECT_XMID_YMIN:
+			x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 0.0;
+			break;
+		case SP_ASPECT_XMAX_YMIN:
+			x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 0.0;
+			break;
+		case SP_ASPECT_XMIN_YMID:
+			x = 0.0;
+			y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		case SP_ASPECT_XMID_YMID:
+			x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		case SP_ASPECT_XMAX_YMID:
+			x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 0.5 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		case SP_ASPECT_XMIN_YMAX:
+			x = 0.0;
+			y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		case SP_ASPECT_XMID_YMAX:
+			x = 0.5 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		case SP_ASPECT_XMAX_YMAX:
+			x = 1.0 * ((rctx.vp.x1 - rctx.vp.x0) - width);
+			y = 1.0 * ((rctx.vp.y1 - rctx.vp.y0) - height);
+			break;
+		default:
+			x = 0.0;
+			y = 0.0;
+			break;
+		}
+	}
+	/* Compose additional transformation from scale and position */
+	q.c[0] = width / (vb->x1 - vb->x0);
+	q.c[1] = 0.0;
+	q.c[2] = 0.0;
+	q.c[3] = height / (vb->y1 - vb->y0);
+	q.c[4] = -vb->x0 * q.c[0] + x;
+	q.c[5] = -vb->y0 * q.c[3] + y;
+	/* Append viewbox transformation */
+	nr_matrix_multiply_ddd (&marker->c2p, &q, &marker->c2p);
 
-static void
-sp_marker_modified (SPObject *object, guint flags)
-{
-	SPMarker *marker;
+	nr_matrix_multiply_ddd (&rctx.i2doc, &marker->c2p, &rctx.i2doc);
 
-	marker = SP_MARKER (object);
+	/* If viewBox is set reinitialize child viewport */
+	/* Otherwise it already correct */
+	if (marker->viewBox_set) {
+		rctx.vp.x0 = marker->viewBox.x0;
+		rctx.vp.y0 = marker->viewBox.y0;
+		rctx.vp.x1 = marker->viewBox.x1;
+		rctx.vp.y1 = marker->viewBox.y1;
+		nr_matrix_d_set_identity (&rctx.i2vp);
+	}
 
-	if (((SPObjectClass *) (parent_class))->modified)
-		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
+	/* And invoke parent method */
+	if (((SPObjectClass *) (parent_class))->update)
+		((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
+
+	/* As last step set additional transform of arena group */
+	for (v = item->display; v != NULL; v = v->next) {
+		NRMatrixF vbf;
+		nr_matrix_f_from_d (&vbf, &marker->c2p);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
+	}
 }
 
 static SPRepr *
@@ -414,6 +408,45 @@ sp_marker_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("marker");
 	}
 
+	if (marker->markerUnits_set) {
+		if (marker->markerUnits == SP_MARKER_UNITS_STROKEWIDTH) {
+			sp_repr_set_attr (repr, "markerUnits", "strokeWidth");
+		} else {
+			sp_repr_set_attr (repr, "markerUnits", "userSpaceOnUse");
+		}
+	} else {
+		sp_repr_set_attr (repr, "markerUnits", NULL);
+	}
+	if (marker->refX.set) {
+		sp_repr_set_double (repr, "refX", marker->refX.computed);
+	} else {
+		sp_repr_set_attr (repr, "refX", NULL);
+	}
+	if (marker->refY.set) {
+		sp_repr_set_double (repr, "refY", marker->refY.computed);
+	} else {
+		sp_repr_set_attr (repr, "refY", NULL);
+	}
+	if (marker->markerWidth.set) {
+		sp_repr_set_double (repr, "markerWidth", marker->markerWidth.computed);
+	} else {
+		sp_repr_set_attr (repr, "markerWidth", NULL);
+	}
+	if (marker->markerHeight.set) {
+		sp_repr_set_double (repr, "markerHeight", marker->markerHeight.computed);
+	} else {
+		sp_repr_set_attr (repr, "markerHeight", NULL);
+	}
+	if (marker->orient_set) {
+		if (marker->orient_auto) {
+			sp_repr_set_attr (repr, "orient", "auto");
+		} else {
+			sp_repr_set_double (repr, "orient", marker->orient);
+		}
+	} else {
+		sp_repr_set_attr (repr, "orient", NULL);
+	}
+	/* fixme: */
 	sp_repr_set_attr (repr, "viewBox", sp_repr_attr (object->repr, "viewBox"));
 	sp_repr_set_attr (repr, "preserveAspectRatio", sp_repr_attr (object->repr, "preserveAspectRatio"));
 
@@ -431,37 +464,18 @@ sp_marker_show (SPItem *item, NRArena *arena, unsigned int key)
 
 	marker = SP_MARKER (item);
 
-	if (SP_OBJECT_IS_CLONED (marker)) {
-		/* Cloned <marker> is actually renderable */
-		if (((SPItemClass *) (parent_class))->show) {
-			ai = ((SPItemClass *) (parent_class))->show (item, arena, key);
-			if (ai) {
-				NRMatrixF vbf;
-				nr_matrix_f_from_d (&vbf, &marker->c2p);
-				nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
-			}
-		} else {
-			ai = NULL;
+	if (((SPItemClass *) (parent_class))->show) {
+		ai = ((SPItemClass *) (parent_class))->show (item, arena, key);
+		if (ai) {
+			NRMatrixF vbf;
+			nr_matrix_f_from_d (&vbf, &marker->c2p);
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
 		}
 	} else {
 		ai = NULL;
 	}
 
 	return ai;
-}
-
-static void
-sp_marker_hide (SPItem *item, unsigned int key)
-{
-	SPMarker *marker;
-
-	marker = SP_MARKER (item);
-
-	if (SP_OBJECT_IS_CLONED (marker)) {
-		/* Cloned <marker> is actually renderable */
-		if (((SPItemClass *) (parent_class))->hide)
-			((SPItemClass *) (parent_class))->hide (item, key);
-	}
 }
 
 static void
@@ -472,15 +486,10 @@ sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigne
 
 	marker = SP_MARKER (item);
 
-	if (SP_OBJECT_IS_CLONED (marker)) {
-		/* Cloned <marker> is actually renderable */
+	nr_matrix_multiply_ddd (a, &marker->c2p, transform);
 
-		nr_matrix_multiply_ddd (a, &marker->c2p, transform);
-
-		if (((SPItemClass *) (parent_class))->bbox) {
-			((SPItemClass *) (parent_class))->bbox (item, bbox, a, flags);
-		}
-	}
+	if (((SPItemClass *) (parent_class))->bbox)
+		((SPItemClass *) (parent_class))->bbox (item, bbox, a, flags);
 }
 
 static void
@@ -491,16 +500,12 @@ sp_marker_print (SPItem *item, SPPrintContext *ctx)
 
 	marker = SP_MARKER (item);
 
-	if (SP_OBJECT_IS_CLONED (marker)) {
-		/* Cloned <marker> is actually renderable */
+	nr_matrix_f_from_d (&t, &marker->c2p);
+	sp_print_bind (ctx, &t, 1.0);
 
-		nr_matrix_f_from_d (&t, &marker->c2p);
-		sp_print_bind (ctx, &t, 1.0);
-
-		if (((SPItemClass *) (parent_class))->print) {
-			((SPItemClass *) (parent_class))->print (item, ctx);
-		}
-
-		sp_print_release (ctx);
+	if (((SPItemClass *) (parent_class))->print) {
+		((SPItemClass *) (parent_class))->print (item, ctx);
 	}
+
+	sp_print_release (ctx);
 }

@@ -565,7 +565,7 @@ sp_module_print_plain_class_init (SPModulePrintClass *klass)
 
 	print_plain_parent_class = g_type_class_peek_parent (klass);
 
-	g_object_class->finalize = sp_module_print_finalize;
+	g_object_class->finalize = sp_module_print_plain_finalize;
 
 	module_print_class->setup = sp_module_print_plain_setup;
 	module_print_class->begin = sp_module_print_plain_begin;
