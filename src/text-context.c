@@ -474,7 +474,7 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 
 	item = sp_selection_item (selection);
 
-	if (tc->text && (item != tc->text)) {
+	if (item && tc->text && (item != tc->text)) {
 		sp_text_context_forget_text (tc);
 	}
 	tc->text = NULL;

@@ -1,3 +1,9 @@
+2004-01-10  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/text-context.c (sp_text_context_selection_changed):
+	Fixed C-x segv bug. It was called sp_repr_unparent twice for empty
+	text.
+
 2004-01-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-text.c: Removed non SP_TEXT_NEW_CONTENT codes
