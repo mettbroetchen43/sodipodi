@@ -790,6 +790,9 @@ sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 	nr_matrix_d_set_identity (&td);
 
 	while (SP_OBJECT_PARENT (item)) {
+		if (!SP_IS_ITEM (item)) {
+			g_print ("Lala\n");
+		}
 		nr_matrix_multiply_ddf (&td, &td, &item->transform);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}

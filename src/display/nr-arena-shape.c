@@ -280,15 +280,18 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	item->bbox.y1 = bbox.y1 + 1.0;
 	nr_arena_request_render_rect (item->arena, &item->bbox);
 
+	item->render_opacity = TRUE;
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style),
 								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
+		item->render_opacity = FALSE;
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style),
 								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
+		item->render_opacity = FALSE;
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;

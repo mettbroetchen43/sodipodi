@@ -48,6 +48,13 @@ typedef struct _SPModuleInputClass SPModuleInputClass;
 typedef struct _SPModuleOutput SPModuleOutput;
 typedef struct _SPModuleOutputClass SPModuleOutputClass;
 
+#define SP_TYPE_MODULE_FILTER (sp_module_filter_get_type())
+#define SP_MODULE_FILTER(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_FILTER, SPModuleFilter))
+#define SP_IS_MODULE_FILTER(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_FILTER))
+
+typedef struct _SPModuleFilter SPModuleFilter;
+typedef struct _SPModuleFilterClass SPModuleFilterClass;
+
 #include "widgets/menu.h"
 #include "xml/repr.h"
 #include "forward.h"
@@ -88,13 +95,13 @@ SPModule *sp_module_unref (SPModule *mod);
 /* ModuleInput */
 
 struct _SPModuleInput {
-	SPModule object;
+	SPModule module;
 	gchar *mimetype;
 	gchar *extention;
 };
 
 struct _SPModuleInputClass {
-	SPModuleClass parent_class;
+	SPModuleClass module_class;
 };
 
 unsigned int sp_module_input_get_type (void);
@@ -104,18 +111,30 @@ SPDocument *sp_module_input_document_open (SPModuleInput *mod, const unsigned ch
 /* ModuleOutput */
 
 struct _SPModuleOutput {
-	SPModule object;
+	SPModule module;
 	gchar *mimetype;
 	gchar *extention;
 };
 
 struct _SPModuleOutputClass {
-	SPModuleClass parent_class;
+	SPModuleClass module_class;
 };
 
 unsigned int sp_module_output_get_type (void);
 
 void sp_module_output_document_save (SPModuleOutput *mod, SPDocument *doc, const unsigned char *uri);
+
+/* ModuleFilter */
+
+struct _SPModuleFilter {
+	SPModule module;
+};
+
+struct _SPModuleFilterClass {
+	SPModuleClass module_class;
+};
+
+unsigned int sp_module_filter_get_type (void);
 
 /* Global methods */
 

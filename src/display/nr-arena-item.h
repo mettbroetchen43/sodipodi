@@ -26,9 +26,21 @@ typedef struct _NRGC NRGC;
 /* Warning: This is UNDEFINED in NR, implementations should do that */
 typedef struct _NREvent NREvent;
 
-/* State flags */
+/*
+ * NRArenaItem state flags
+ */
+
+/*
+ * NR_ARENA_ITEM_STATE_INVALID
+ *
+ * If set or retuned indicates, that given object is in error.
+ * Calling method has to return immediately, with appropriate
+ * error flag.
+ */
 
 #define NR_ARENA_ITEM_STATE_INVALID  (1 << 0)
+
+
 #define NR_ARENA_ITEM_STATE_BBOX     (1 << 1)
 #define NR_ARENA_ITEM_STATE_COVERAGE (1 << 2)
 #define NR_ARENA_ITEM_STATE_DRAFT    (1 << 3)
@@ -43,7 +55,7 @@ typedef struct _NREvent NREvent;
 
 #define NR_ARENA_ITEM_STATE(i,s) (NR_ARENA_ITEM (i)->state & (s))
 #define NR_ARENA_ITEM_SET_STATE(i,s) (NR_ARENA_ITEM (i)->state |= (s))
-#define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ^(s))
+#define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ~(s))
 
 #define NR_ARENA_ITEM_RENDER_NO_CACHE (1 << 0)
 
@@ -64,9 +76,11 @@ struct _NRArenaItem {
 	NRArenaItem *prev;
 
 	/* Item state */
-	guint state : 16;
-	guint propagate : 1;
-	guint sensitive : 1;
+	unsigned int state : 16;
+	unsigned int propagate : 1;
+	unsigned int sensitive : 1;
+	/* Whether items renders opacity itself */
+	unsigned int render_opacity : 1;
 	/* BBox in grid coordinates */
 	NRRectL bbox;
 	/* Our affine */
@@ -114,13 +128,20 @@ void nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NR
  *
  * area == NULL is infinite
  * gc is PARENT gc for invoke, CHILD gc in corresponding virtual method
- * state - requested to state
- * reset - reset to state
- * reset == 0 means no reset
+ * state - requested to state (bitwise or of requested flags)
+ * reset - reset to state (bitwise or of flags to reset)
  */
 
-guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
+
+/*
+ * Render item to pixblock
+ *
+ * Return value has NR_ARENA_ITEM_STATE_RENDER set on success
+ */
+
 unsigned int nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+
 guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 

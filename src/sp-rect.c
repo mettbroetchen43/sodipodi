@@ -226,9 +226,33 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 }
 
 static void
+sp_rect_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
+{
+	if (length->unit == SP_SVG_UNIT_EM) {
+		length->computed = length->value * em;
+	} else if (length->unit == SP_SVG_UNIT_EX) {
+		length->computed = length->value * ex;
+	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
+		length->computed = length->value * scale;
+	}
+}
+
+static void
 sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		SPRect *rect;
+		SPStyle *style;
+		double d;
+		rect = (SPRect *) object;
+		style = object->style;
+		d = 1.0 / NR_MATRIX_DF_EXPANSION (&((SPItemCtx *) ctx)->i2vp);
+		sp_rect_update_length (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_rect_update_length (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_rect_update_length (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_rect_update_length (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_rect_update_length (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_rect_update_length (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
 		sp_rect_set_shape (SP_RECT (object));
 	}
 
@@ -293,42 +317,6 @@ sp_rect_glue_set_shape (SPShape *shape)
 	sp_rect_set_shape (rect);
 }
 
-static void
-sp_rect_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
-{
-	if (length->unit == SP_SVG_UNIT_EM) {
-		length->computed = length->value * em;
-	} else if (length->unit == SP_SVG_UNIT_EX) {
-		length->computed = length->value * ex;
-	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
-		length->computed = length->value * scale;
-	}
-}
-
-static void
-sp_rect_compute_values (SPRect *rect)
-{
-	SPStyle *style;
-	NRMatrixF i2vp, vp2i;
-	gdouble d;
-
-	style = SP_OBJECT_STYLE (rect);
-
-	/* fixme: It is somewhat dangerous, yes (Lauris) */
-	/* fixme: And it is terribly slow too (Lauris) */
-	/* fixme: In general we want to keep viewport scales around */
-	sp_item_i2vp_affine (SP_ITEM (rect), &i2vp);
-	nr_matrix_f_invert (&vp2i, &i2vp);
-	d = NR_MATRIX_DF_EXPANSION (&vp2i);
-
-	sp_rect_update_length (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_rect_update_length (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_rect_update_length (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_rect_update_length (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_rect_update_length (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_rect_update_length (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
-}
-
 #define C1 0.554
 
 static void
@@ -337,9 +325,11 @@ sp_rect_set_shape (SPRect * rect)
 	double x, y, w, h, w2, h2, rx, ry;
 	SPCurve * c;
 	
+#if 0
 	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
 	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
 	sp_rect_compute_values (rect);
+#endif
 
 	if ((rect->height.computed < 1e-18) || (rect->width.computed < 1e-18)) return;
 

@@ -19,6 +19,7 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
+#include <libnr/nr-pixops.h>
 #include <glib-object.h>
 #include "helper/sp-marshal.h"
 #include "nr-arena.h"
@@ -31,7 +32,7 @@ enum {
 
 static void nr_arena_item_class_init (NRArenaItemClass *klass);
 static void nr_arena_item_init (NRArenaItem *item);
-static void nr_arena_item_private_dispose (GObject *object);
+static void nr_arena_item_private_finalize (GObject *object);
 
 static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -43,13 +44,11 @@ nr_arena_item_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaItemClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_item_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaItem),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_item_init,
 		};
 		type = g_type_register_static (G_TYPE_OBJECT, "NRArenaItem", &info, 0);
@@ -64,7 +63,7 @@ nr_arena_item_class_init (NRArenaItemClass *klass)
 
 	object_class = (GObjectClass *) klass;
 
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
+	parent_class = g_type_class_peek_parent (klass);
 
 	signals[EVENT] = g_signal_new ("event",
 				       G_TYPE_FROM_CLASS (klass),
@@ -74,61 +73,49 @@ nr_arena_item_class_init (NRArenaItemClass *klass)
 				       sp_marshal_BOOLEAN__POINTER,
 				       G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
 
-	object_class->dispose = nr_arena_item_private_dispose;
+	object_class->finalize = nr_arena_item_private_finalize;
 }
 
 static void
 nr_arena_item_init (NRArenaItem *item)
 {
-	item->arena = NULL;
-	item->parent = NULL;
-	item->next = NULL;
-	item->prev = NULL;
-
-	item->state = NR_ARENA_ITEM_STATE_NONE;
+	item->state = 0;
 	item->sensitive = TRUE;
+
 	/* fixme: Initialize bbox */
 	item->transform = NULL;
 	item->opacity = 1.0;
-
-	item->clip = NULL;
-	item->mask = NULL;
-
-	item->px = NULL;
 }
 
 static void
-nr_arena_item_private_dispose (GObject *object)
+nr_arena_item_private_finalize (GObject *object)
 {
 	NRArenaItem *item;
 
-	item = NR_ARENA_ITEM (object);
+	item = (NRArenaItem *) object;
 
 	/* Parent has to refcount children */
 	g_assert (!item->parent);
 	g_assert (!item->prev);
 	g_assert (!item->next);
 
-	if (item->px) {
-		g_free (item->px);
-		item->px = NULL;
-	}
-
 	if (item->clip) {
-		item->clip = nr_arena_item_detach_unref (item, item->clip);
+		nr_arena_item_detach_unref (item, item->clip);
 	}
 
 	if (item->mask) {
-		item->mask = nr_arena_item_detach_unref (item, item->mask);
+		nr_arena_item_detach_unref (item, item->mask);
+	}
+
+	nr_arena_remove_item (item->arena, item);
+
+	if (item->px) {
+		nr_free (item->px);
 	}
 
 	if (item->transform) {
 		nr_free (item->transform);
-		item->transform = NULL;
 	}
-
-	nr_arena_remove_item (item->arena, item);
-	item->arena = NULL;
 
 	if (G_OBJECT_CLASS(parent_class)->dispose)
 		G_OBJECT_CLASS(parent_class)->dispose (object);
@@ -196,24 +183,23 @@ nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArena
 NRArenaItem *
 nr_arena_item_ref (NRArenaItem *item)
 {
-	g_object_ref (G_OBJECT (item));
+	g_object_ref ((GObject *) item);
 
 	return item;
 }
 
 NRArenaItem *
-nr_arena_item_unref(NRArenaItem *item)
+nr_arena_item_unref (NRArenaItem *item)
 {
-	g_object_unref (G_OBJECT (item));
+	g_object_unref ((GObject *) item);
 
 	return NULL;
 }
 
 guint
-nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
+nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset)
 {
-	guint newstate;
-	NRGC newgc;
+	NRGC childgc;
 
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
@@ -223,66 +209,56 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	g_print("Update %s:%p %x %x %x\n", g_type_name_from_instance ((GTypeInstance *) item), item, state, item->state, reset);
 #endif
 
-	/* Propagation means to clear children at least to our state */
+	/* return if in error */
+	if (item->state & NR_ARENA_ITEM_STATE_INVALID) return item->state;
+	/* Set reset flags according to propagation status */
 	if (item->propagate) {
 		reset |= ~item->state;
 		item->propagate = FALSE;
 	}
-
-	/* Reset requested flags on our state */
+	/* Reset our state */
 	item->state &= ~reset;
+	/* Return if NOP */
+	if (!(~item->state & state)) return item->state;
+	/* Test whether to return immediately */
+	if (area && (item->state & NR_ARENA_ITEM_STATE_BBOX)) {
+		if (!nr_rect_l_test_intersect (area, &item->bbox)) return item->state;
+	}
 
-	if (!(item->state & NR_ARENA_ITEM_STATE_IMAGE)) {
-		/* Concept test */
-		if (item->px) {
-			g_free (item->px);
-			item->px = NULL;
-		}
+	/* Reset image cache, if not to be kept */
+	if (!(item->state & NR_ARENA_ITEM_STATE_IMAGE) && (item->px)) {
+		nr_free (item->px);
+		item->px = NULL;
 	}
 
 	/* Set up local gc */
+	childgc = *gc;
 	if (item->transform) {
-		nr_matrix_multiply_dfd (&newgc.transform, item->transform, &gc->transform);
-	} else {
-		newgc.transform = gc->transform;
+		nr_matrix_multiply_dfd (&childgc.transform, item->transform, &childgc.transform);
 	}
 
+	/* Invoke the real method */
+	item->state = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &childgc, state, reset);
+	if (item->state & NR_ARENA_ITEM_STATE_INVALID) return item->state;
+	/* Clipping */
 	if (item->clip) {
-		/* Update our clip */
-		newstate = nr_arena_item_invoke_update (item->clip, area, &newgc, state, reset);
-		g_return_val_if_fail (!(~newstate & state), newstate);
-	}
-
-	if (item->mask) {
-		/* Update our mask */
-		newstate = nr_arena_item_invoke_update (item->mask, area, &newgc, state, reset);
-		g_return_val_if_fail (!(~newstate & state), newstate);
-	}
-
-	if (!(item->state & NR_ARENA_ITEM_STATE_BBOX)) {
-		/* BBox state not set - need bbox level update before continuing */
-		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, NR_ARENA_ITEM_STATE_BBOX, reset);
-		g_return_val_if_fail (newstate & NR_ARENA_ITEM_STATE_BBOX, newstate);
-		item->state = newstate;
-	}
-
-	if (item->clip) {
-		/* We have do do intersect with clip bbox */
+		unsigned int newstate;
+		newstate = nr_arena_item_invoke_update (item->clip, area, &childgc, state, reset);
+		if (newstate & NR_ARENA_ITEM_STATE_INVALID) {
+			item->state |= NR_ARENA_ITEM_STATE_INVALID;
+			return item->state;
+		}
 		nr_rect_l_intersect (&item->bbox, &item->bbox, &item->clip->bbox);
 	}
-
+	/* Masking */
 	if (item->mask) {
-		/* We have do do intersect with mask bbox */
+		unsigned int newstate;
+		newstate = nr_arena_item_invoke_update (item->mask, area, &childgc, state, reset);
+		if (newstate & NR_ARENA_ITEM_STATE_INVALID) {
+			item->state |= NR_ARENA_ITEM_STATE_INVALID;
+			return item->state;
+		}
 		nr_rect_l_intersect (&item->bbox, &item->bbox, &item->mask->bbox);
-	}
-
-	if ((~item->state & state) && (!area || nr_rect_l_test_intersect (area, &item->bbox))) {
-		/* Need update to given state */
-		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, state, reset);
-#if 0
-		g_return_val_if_fail (!(~newstate & state), newstate);
-#endif
-		item->state = newstate;
 	}
 
 	return item->state;
@@ -291,60 +267,128 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 unsigned int
 nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
+	NRRectL carea;
+	NRPixBlock *dpb;
+	NRPixBlock cpb;
+	unsigned int state;
+
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, item->state);
-#if 0
-	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_RENDER, item->state);
-#endif
-	g_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 
 #ifdef NR_ARENA_ITEM_VERBOSE
 	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
-	if (nr_rect_l_test_intersect (area, &item->bbox)) {
-		/* Need render that item */
-		/* fixme: clip updating etc. needs serious contemplation */
+	/* If we are outside bbox just return successfully */
+	if (NR_RECT_DFLS_TEST_EMPTY (&item->bbox)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
+	nr_rect_l_intersect (&carea, area, &item->bbox);
+	if (nr_rect_l_test_empty (&carea)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
+
+	if (item->px) {
+		/* Has cache pixblock, render this and return */
+		nr_pixblock_setup_extern (&cpb, NR_PIXBLOCK_MODE_R8G8B8A8P,
+					  /* fixme: This probably cannot overflow, because we render only if visible */
+					  /* fixme: and pixel cache is there only for small items */
+					  /* fixme: But this still needs extra check (Lauris) */
+					  item->bbox.x0, item->bbox.y0,
+					  item->bbox.x1, item->bbox.y1,
+					  item->px, 4 * (item->bbox.x1 - item->bbox.x0), FALSE, FALSE);
+		nr_blit_pixblock_pixblock (pb, &cpb);
+		nr_pixblock_release (&cpb);
+		cpb.empty = FALSE;
+		return item->state | NR_ARENA_ITEM_STATE_RENDER;
+	}
+
+	dpb = pb;
+	/* Setup cache if we can */
+	if ((!(flags & NR_ARENA_ITEM_RENDER_NO_CACHE)) &&
+	    (carea.x0 <= item->bbox.x0) && (carea.y0 <= item->bbox.y0) &&
+	    (carea.x1 >= item->bbox.x1) && (carea.y1 >= item->bbox.y1) &&
+	    (((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0)) <= 4096)) {
+		/* Item bbox is fully in renderable area and size is acceptable */
+		carea.x0 = item->bbox.x0;
+		carea.y0 = item->bbox.y0;
+		carea.x1 = item->bbox.x1;
+		carea.y1 = item->bbox.y1;
+		item->px = nr_new (unsigned char, 4 * (carea.x1 - carea.x0) * (carea.y1 - carea.y0));
+		nr_pixblock_setup_extern (&cpb, NR_PIXBLOCK_MODE_R8G8B8A8P,
+					  carea.x0, carea.y0, carea.x1, carea.y1,
+					  item->px, 4 * (carea.x1 - carea.x0), TRUE, TRUE);
+		dpb = &cpb;
+		/* Set nocache flag for downstream rendering */
+		flags |= NR_ARENA_ITEM_RENDER_NO_CACHE;
+	}
+
+	/* Determine, whether we need temporary buffer */
+	if (item->clip || item->mask || ((item->opacity < 1.0) && !item->render_opacity)) {
+		NRPixBlock ipb, mpb;
+
+		/* Setup and render item buffer */
+		nr_pixblock_setup_fast (&ipb, NR_PIXBLOCK_MODE_R8G8B8A8P, carea.x0, carea.y0, carea.x1, carea.y1, TRUE);
+		state = NR_ARENA_ITEM_VIRTUAL (item, render) (item, &carea, &ipb, flags);
+		if (state & NR_ARENA_ITEM_STATE_INVALID) {
+			/* Clean up and return error */
+			nr_pixblock_release (&ipb);
+			if (dpb != pb) nr_pixblock_release (dpb);
+			item->state |= NR_ARENA_ITEM_STATE_INVALID;
+			return item->state;
+		}
+		ipb.empty = FALSE;
+
 		if (item->clip || item->mask) {
-			NRPixBlock nb, cb;
-			guint ret;
-
-			nr_pixblock_setup_fast (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P, area->x0, area->y0, area->x1, area->y1, TRUE);
-			nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-
+			/* Setup mask pixblock */
+			nr_pixblock_setup_fast (&mpb, NR_PIXBLOCK_MODE_A8, carea.x0, carea.y0, carea.x1, carea.y1, TRUE);
+			/* Do clip if needed */
 			if (item->clip) {
-				ret = nr_arena_item_invoke_clip (item->clip, area, &cb);
-				/* fixme: */
-				cb.empty = FALSE;
+				state = nr_arena_item_invoke_clip (item->clip, &carea, &mpb);
+				if (state & NR_ARENA_ITEM_STATE_INVALID) {
+					/* Clean up and return error */
+					nr_pixblock_release (&mpb);
+					nr_pixblock_release (&ipb);
+					if (dpb != pb) nr_pixblock_release (dpb);
+					item->state |= NR_ARENA_ITEM_STATE_INVALID;
+					return item->state;
+				}
+				mpb.empty = FALSE;
 			}
-
+			/* Do mask if needed */
 			if (item->mask) {
-				NRPixBlock mb;
-				nr_pixblock_setup_fast (&mb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
-				ret = NR_ARENA_ITEM_VIRTUAL (item->mask, render) (item->mask, area, &mb, flags);
+				NRPixBlock tpb;
+				/* Set up yet another temporary pixblock */
+				nr_pixblock_setup_fast (&tpb, NR_PIXBLOCK_MODE_R8G8B8A8N, carea.x0, carea.y0, carea.x1, carea.y1, TRUE);
+				state = NR_ARENA_ITEM_VIRTUAL (item->mask, render) (item->mask, &carea, &tpb, flags);
+				if (state & NR_ARENA_ITEM_STATE_INVALID) {
+					/* Clean up and return error */
+					nr_pixblock_release (&tpb);
+					nr_pixblock_release (&mpb);
+					nr_pixblock_release (&ipb);
+					if (dpb != pb) nr_pixblock_release (dpb);
+					item->state |= NR_ARENA_ITEM_STATE_INVALID;
+					return item->state;
+				}
+				/* Composite with clip */
 				if (item->clip) {
 					int x, y;
-					for (y = area->y0; y < area->y1; y++) {
+					for (y = carea.y0; y < carea.y1; y++) {
 						unsigned char *s, *d;
-						s = NR_PIXBLOCK_PX (&mb) + (y - area->y0) * mb.rs;
-						d = NR_PIXBLOCK_PX (&cb) + (y - area->y0) * cb.rs;
-						for (x = area->x0; x < area->x1; x++) {
+						s = NR_PIXBLOCK_PX (&tpb) + (y - carea.y0) * tpb.rs;
+						d = NR_PIXBLOCK_PX (&mpb) + (y - carea.y0) * mpb.rs;
+						for (x = carea.x0; x < carea.x1; x++) {
 							unsigned int m;
 							m = ((s[0] + s[1] + s[2]) * s[3] + 127) / (3 * 255);
-							d[0] = (d[0] * m + 127) / 255;
+							d[0] = NR_PREMUL (d[0], m);
 							s += 4;
 							d += 1;
 						}
 					}
 				} else {
 					int x, y;
-					for (y = area->y0; y < area->y1; y++) {
+					for (y = carea.y0; y < carea.y1; y++) {
 						unsigned char *s, *d;
-						s = NR_PIXBLOCK_PX (&mb) + (y - area->y0) * mb.rs;
-						d = NR_PIXBLOCK_PX (&cb) + (y - area->y0) * cb.rs;
-						for (x = area->x0; x < area->x1; x++) {
+						s = NR_PIXBLOCK_PX (&tpb) + (y - carea.y0) * tpb.rs;
+						d = NR_PIXBLOCK_PX (&mpb) + (y - carea.y0) * mpb.rs;
+						for (x = carea.x0; x < carea.x1; x++) {
 							unsigned int m;
 							m = ((s[0] + s[1] + s[2]) * s[3] + 127) / (3 * 255);
 							d[0] = m;
@@ -352,57 +396,53 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 							d += 1;
 						}
 					}
-					cb.empty = FALSE;
+					mpb.empty = FALSE;
 				}
-				nr_pixblock_release (&mb);
+				nr_pixblock_release (&tpb);
 			}
-
-			ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, area, &nb, flags);
-			/* fixme: */
-			nb.empty = FALSE;
-			if (!(ret & NR_ARENA_ITEM_STATE_INVALID)) {
-				/* Compose */
-				nr_blit_pixblock_pixblock_mask (pb, &nb, &cb);
+			/* Multiply with opacity if needed */
+			if ((item->opacity < 1.0) && !item->render_opacity) {
+				int x, y;
+				unsigned int a;
+				a = (int) (item->opacity * 255.9999);
+				for (y = carea.y0; y < carea.y1; y++) {
+					unsigned char *d;
+					d = NR_PIXBLOCK_PX (&mpb) + (y - carea.y0) * mpb.rs;
+					for (x = carea.x0; x < carea.x1; x++) {
+						d[0] = NR_PREMUL (d[0], a);
+						d += 1;
+					}
+				}
 			}
-			nr_pixblock_release (&cb);
-			nr_pixblock_release (&nb);
+			/* Compose renderind pixblock int destination */
+			nr_blit_pixblock_pixblock_mask (dpb, &ipb, &mpb);
+			nr_pixblock_release (&mpb);
 		} else {
-			if (!(flags & NR_ARENA_ITEM_RENDER_NO_CACHE) &&
-			    !item->px &&
-			    ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 4096)) {
-				NRPixBlock nb;
-				gint ret;
-				item->px = g_new (guchar, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));
-				/* Hack for concept testing */
-				nr_pixblock_setup_extern (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P,
-							  item->bbox.x0, item->bbox.y0, item->bbox.x1, item->bbox.y1,
-							  item->px, 4 * (item->bbox.x1 - item->bbox.x0),
-							  TRUE, TRUE);
-				ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, &item->bbox, &nb, flags & NR_ARENA_ITEM_RENDER_NO_CACHE);
-				if (ret & NR_ARENA_ITEM_STATE_INVALID) return ret;
-			}
-			if (!(flags & NR_ARENA_ITEM_RENDER_NO_CACHE) && item->px) {
-				NRPixBlock pbi;
-				/* Concept test */
-				/* Item px it placed at item bbox 0,0, 4 * width rowstride, premultiplied */
-				nr_pixblock_setup_extern (&pbi, NR_PIXBLOCK_MODE_R8G8B8A8P,
-							  /* fixme: This probably cannot overflow, because we render only if visible */
-							  /* fixme: and pixel cache is there only for small items */
-							  /* fixme: But this still needs extra check (Lauris) */
-							  item->bbox.x0, item->bbox.y0,
-							  item->bbox.x1, item->bbox.y1,
-							  item->px, 4 * (item->bbox.x1 - item->bbox.x0), FALSE, FALSE);
-				nr_blit_pixblock_pixblock (pb, &pbi);
-				nr_pixblock_release (&pbi);
-				pb->empty = FALSE;
-				return item->state;
-			} else {
-				return ((NRArenaItemClass *) G_OBJECT_GET_CLASS (item))->render (item, area, pb, flags);
-			}
+			/* Opacity only */
+			nr_blit_pixblock_pixblock_alpha (dpb, &ipb, (int) (item->opacity * 255.9999));
 		}
+		nr_pixblock_release (&ipb);
+	} else {
+		/* Just render */
+		state = NR_ARENA_ITEM_VIRTUAL (item, render) (item, &carea, dpb, flags);
+		if (state & NR_ARENA_ITEM_STATE_INVALID) {
+			/* Clean up and return error */
+			if (dpb != pb) nr_pixblock_release (dpb);
+			item->state |= NR_ARENA_ITEM_STATE_INVALID;
+			return item->state;
+		}
+		dpb->empty = FALSE;
 	}
 
-	return item->state;
+	if (dpb != pb) {
+		/* Have to blit from cache */
+		nr_blit_pixblock_pixblock (pb, dpb);
+		nr_pixblock_release (dpb);
+		pb->empty = FALSE;
+		item->state |= NR_ARENA_ITEM_STATE_IMAGE;
+	}
+
+	return item->state | NR_ARENA_ITEM_STATE_RENDER;
 }
 
 guint
@@ -481,12 +521,14 @@ nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate
 
 	if (item->state & reset) {
 		item->state &= ~reset;
+#if 0
 		if ((reset & NR_ARENA_ITEM_STATE_IMAGE) && item->px) {
 			/* Concept test */
 			/* Clear buffer */
-			g_free (item->px);
+			nr_free (item->px);
 			item->px = NULL;
 		}
+#endif
 		if (item->parent) {
 			nr_arena_item_request_update (item->parent, reset, FALSE);
 		} else {

@@ -195,9 +195,6 @@ nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		NRGC cgc;
 		nr_matrix_multiply_dfd (&cgc.transform, &group->child_transform, &gc->transform);
 		newstate = nr_arena_item_invoke_update (child, area, &cgc, state, reset);
-#if 0
-		g_return_val_if_fail (!(~newstate & state), newstate);
-#endif
 		beststate = beststate & newstate;
 	}
 
@@ -222,7 +219,7 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 
 	ret = item->state;
 
-	if (item->opacity == 1.0) {
+	if (1 || (item->opacity == 1.0)) {
 		/* Just compose children into parent buffer */
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_item_invoke_render (child, area, pb, flags);

@@ -205,7 +205,9 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 
 	arena = SP_CANVAS_ARENA (item);
 
-	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_RENDER, NR_ARENA_ITEM_STATE_NONE);
+	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
+				     NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_RENDER,
+				     NR_ARENA_ITEM_STATE_NONE);
 
 	if (buf->is_bg) {
 		sp_canvas_clear_buffer (buf);
@@ -272,7 +274,9 @@ sp_canvas_arena_point (SPCanvasItem *item, double x, double y, SPCanvasItem **ac
 
 	arena = SP_CANVAS_ARENA (item);
 
-	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
+	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
+				     NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_PICK,
+				     NR_ARENA_ITEM_STATE_NONE);
 
 	picked = nr_arena_item_invoke_pick (arena->root, x, y, nr_arena_global_delta, arena->sticky);
 
