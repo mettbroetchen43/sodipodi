@@ -1,5 +1,14 @@
 2001-03-21  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sodipodi.h: Remove Sodipodi typedef
+
+	* src/forward.h: Typedef Sodipodi here
+
+	* src/dialogs/sp-widget.c: New file
+
+	* src/dialogs/sp-widget.h: New file, implement abstract base class for
+	configuration widgets
+
 	* glade/Makefile.am (pixmaps): Added guide_dialog.png
 
 	* src/dialogs/document-properties.c (sp_document_dialog_delete): New function, or

@@ -10,6 +10,9 @@
  *
  */
 
+typedef struct _Sodipodi Sodipodi;
+typedef struct _SodipodiClass SodipodiClass;
+
 typedef struct _SPDocument SPDocument;
 typedef struct _SPDocumentClass SPDocumentClass;
 

@@ -17,6 +17,7 @@ INCLUDES = \
 noinst_LIBRARIES = libspdialogs.a
 
 libspdialogs_a_SOURCES = \
+	sp-widget.c sp-widget.h \
 	text-edit.c text-edit.h \
 	export.c export.h \
 	xml-tree.c xml-tree.h \

@@ -30,9 +30,6 @@
 #include "xml/repr.h"
 #include "forward.h"
 
-typedef struct _Sodipodi Sodipodi;
-typedef struct _SodipodiClass SodipodiClass;
-
 GtkType sodipodi_get_type (void);
 
 #define SODIPODI sodipodi
