@@ -161,7 +161,7 @@ static unsigned int
 sp_defs_remove_child (SPObject * object, SPRepr * child)
 {
 	SPDefs *defs;
-	SPObject *prev, *ochild;
+	SPObject *ref, *oc;
 	unsigned int ret;
 
 	defs = SP_DEFS (object);
@@ -171,21 +171,21 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 		if (!ret) return ret;
 	}
 
-	prev = NULL;
-	ochild = object->children;
-	while (ochild && ochild->repr != child) {
-		prev = ochild;
-		ochild = ochild->next;
+	ref = NULL;
+	oc = object->children;
+	while (oc && (SP_OBJECT_REPR (oc) != child)) {
+		ref = oc;
+		oc = oc->next;
 	}
 
-	if (prev) {
-		prev->next = ochild->next;
-	} else {
-		object->children = ochild->next;
+	if (oc) {
+		if (ref) {
+			ref->next = sp_object_detach_unref (object, oc);
+		} else {
+			object->children = sp_object_detach_unref (object, oc);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
-	ochild->parent = NULL;
-	ochild->next = NULL;
-	g_object_unref (G_OBJECT (ochild));
 
 	return TRUE;
 }

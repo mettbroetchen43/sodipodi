@@ -1,3 +1,19 @@
+2003-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/document.c (sp_document_get_abstime): New helper
+	(sp_document_begin): New method
+	(sp_document_end): Ditto
+	(sp_document_get_time): Ditto
+	(sp_doc_timer_compare): New helper
+	(sp_document_add_timer): New method
+	(sp_document_remove_timer): Ditto
+	(sp_document_set_timer): Ditto
+	(sp_document_idle_handler): Moved here
+	(sp_document_schedule_timers): New helper
+
+	* src/sp-defs.c (sp_defs_remove_child): Detach child properly, removes
+	warning about invalid object
+
 2003-12-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sodipodi.c (sodipodi_eventcontext_set): Handle action

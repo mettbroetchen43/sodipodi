@@ -18,14 +18,12 @@
 #include "xml/repr.h"
 #include "forward.h"
 
-
 /* Version type. See SPRoot for more detail */
 enum {
 	SP_VERSION_SVG,
 	SP_VERSION_SODIPODI,
 	SP_VERSION_ORIGINAL,
 };
-
 
 typedef struct _SPDocumentPrivate SPDocumentPrivate;
 
@@ -48,8 +46,12 @@ struct _SPDocument {
 
 	/* Last action key */
 	const guchar *actionkey;
+
 	/* Handler ID */
-	guint modified_id;
+	/* guint modified_id; */
+
+	/* Begin time */
+	double begintime;
 };
 
 struct _SPDocumentClass {
@@ -58,6 +60,9 @@ struct _SPDocumentClass {
 	void (* modified) (SPDocument *document, guint flags);
 	void (* uri_set) (SPDocument *document, const guchar *uri);
 	void (* resized) (SPDocument *document, gdouble width, gdouble height);
+	/* Timer events */
+	void (* begin) (SPDocument *doc, double dtime);
+	void (* end) (SPDocument *doc, double dtime);
 };
 
 /*
@@ -167,5 +172,32 @@ void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);
 
 guint sp_document_get_version (SPDocument *document, guint version_type);
+
+/*
+ * Timer
+ *
+ * Objects are required to use time services only from their parent document
+ */
+
+enum {
+	SP_TIMER_IDLE,
+	SP_TIMER_EXACT
+};
+
+/* Begin document and start timer */
+double sp_document_begin (SPDocument *doc);
+/* End document and stop timer */
+double sp_document_end (SPDocument *doc);
+/* Get time in seconds from document begin */
+double sp_document_get_time (SPDocument *doc);
+
+/* Create and set up timer */
+unsigned int sp_document_add_timer (SPDocument *doc, double time, unsigned int class,
+				    unsigned int (* callback) (double, void *),
+				    void *data);
+/* Remove timer */
+void sp_document_remove_timer (SPDocument *doc, unsigned int id);
+/* Set up timer */
+void sp_document_set_timer (SPDocument *doc, unsigned int id, double time, unsigned int class);
 
 #endif

@@ -370,7 +370,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 {
 	SPChars *chars;
 	SPStyle *style;
-	const guchar *p;
+	/* const guchar *p; */
 	gint len;
 	NRMatrixF a;
 	gdouble x, y;
@@ -2488,8 +2488,8 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 	gfloat x, y;
 	NRRasterFont *rfont;
 	NRPosGlyph *pglyph;
-	NRRectF area;
-	NRPointF adv;
+	/* NRRectF area; */
+	/* NRPointF adv; */
 
 	child = sp_text_get_child_by_position (text, position);
 	string = SP_TEXT_CHILD_STRING (child);

@@ -20,6 +20,8 @@
 
 #define SP_DOCUMENT_DEFS(d) ((SPObject *) SP_ROOT (SP_DOCUMENT_ROOT (d))->defs)
 
+typedef struct _SPDocTimer SPDocTimer;
+
 struct _SPDocumentPrivate {
 	GHashTable * iddef;	/* id dictionary */
 
@@ -33,6 +35,16 @@ struct _SPDocumentPrivate {
 	int undo_size;
 	GSList *undo; /* Undo stack of reprs */
 	GSList *redo; /* Redo stack of reprs */
+
+	/* Timers */
+	unsigned int timers_size;
+	SPDocTimer *timers;
+	/* Queue entry points */
+	GSList *itqueue;
+	GSList *etqueue;
+	/* Handlers */
+	int idle;
+	int timeout;
 };
 
 #endif

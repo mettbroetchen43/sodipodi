@@ -20,7 +20,7 @@
 #endif
 
 #include <string.h>
-#include <glib.h>
+
 #include <gtk/gtkmain.h>
 #include <xml/repr.h>
 
@@ -48,6 +48,8 @@ enum {
 	MODIFIED,
 	URI_SET,
 	RESIZED,
+	BEGIN,
+	END,
 	LAST_SIGNAL
 };
 
@@ -62,6 +64,9 @@ gboolean sp_document_resource_list_free (gpointer key, gpointer value, gpointer 
 #ifdef SP_DOCUMENT_DEBUG_UNDO
 static gboolean sp_document_warn_undo_stack (SPDocument *doc);
 #endif
+
+/* Schedule either idle or timeout */
+static void sp_document_schedule_timers (SPDocument *doc);
 
 static GObjectClass * parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -96,7 +101,7 @@ sp_document_class_init (SPDocumentClass * klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	signals[MODIFIED] = g_signal_new ("modified",
-					    G_TYPE_FROM_CLASS(klass),
+					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
 					    G_STRUCT_OFFSET (SPDocumentClass, modified),
 					    NULL, NULL,
@@ -104,7 +109,7 @@ sp_document_class_init (SPDocumentClass * klass)
 					    G_TYPE_NONE, 1,
 					    G_TYPE_UINT);
 	signals[URI_SET] =    g_signal_new ("uri_set",
-					    G_TYPE_FROM_CLASS(klass),
+					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
 					    G_STRUCT_OFFSET (SPDocumentClass, uri_set),
 					    NULL, NULL,
@@ -112,25 +117,37 @@ sp_document_class_init (SPDocumentClass * klass)
 					    G_TYPE_NONE, 1,
 					    G_TYPE_POINTER);
 	signals[RESIZED] =    g_signal_new ("resized",
-					    G_TYPE_FROM_CLASS(klass),
+					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
 					    G_STRUCT_OFFSET (SPDocumentClass, uri_set),
 					    NULL, NULL,
 					    sp_marshal_NONE__DOUBLE_DOUBLE,
 					    G_TYPE_NONE, 2,
 					    G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+	signals[BEGIN] =      g_signal_new ("begin",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, begin),
+					    NULL, NULL,
+					    sp_marshal_NONE__DOUBLE,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_DOUBLE);
+	signals[BEGIN] =      g_signal_new ("end",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, end),
+					    NULL, NULL,
+					    sp_marshal_NONE__DOUBLE,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_DOUBLE);
 	object_class->dispose = sp_document_dispose;
 }
 
 static void
 sp_document_init (SPDocument *doc)
 {
-	SPDocumentPrivate *p;
-
 	doc->advertize = FALSE;
 	doc->keepalive = FALSE;
-
-	doc->modified_id = 0;
 
 	doc->rdoc = NULL;
 	doc->rroot = NULL;
@@ -140,19 +157,11 @@ sp_document_init (SPDocument *doc)
 	doc->base = NULL;
 	doc->name = NULL;
 
-	p = g_new (SPDocumentPrivate, 1);
+	doc->priv = g_new0 (SPDocumentPrivate, 1);
 
-	p->iddef = g_hash_table_new (g_str_hash, g_str_equal);
+	doc->priv->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 
-	p->resources = g_hash_table_new (g_str_hash, g_str_equal);
-
-	p->sensitive = FALSE;
-	p->partial = NULL;
-	p->undo_size = 0;
-	p->undo = NULL;
-	p->redo = NULL;
-
-	doc->priv = p;
+	doc->priv->resources = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 static void
@@ -166,6 +175,26 @@ sp_document_dispose (GObject *object)
 
 	if (priv) {
 		sodipodi_remove_document (doc);
+
+		if (priv->idle) {
+			/* Remove idle handler */
+			gtk_idle_remove (priv->idle);
+			priv->idle = 0;
+		}
+		if (priv->timeout) {
+			/* Remove timer */
+			gtk_timeout_remove (priv->timeout);
+			priv->timeout = 0;
+		}
+		while (priv->itqueue) {
+			/* free (priv->itqueue->data); */
+			priv->itqueue = g_slist_remove (priv->itqueue, priv->itqueue->data);
+		}
+		while (priv->etqueue) {
+			/* free (priv->etqueue->data); */
+			priv->etqueue = g_slist_remove (priv->etqueue, priv->etqueue->data);
+		}
+		if (priv->timers) free (priv->timers);
 
 		if (priv->partial) {
 			sp_repr_free_log (priv->partial);
@@ -204,11 +233,6 @@ sp_document_dispose (GObject *object)
 	if (doc->uri) {
 		g_free (doc->uri);
 		doc->uri = NULL;
-	}
-
-	if (doc->modified_id) {
-		gtk_idle_remove (doc->modified_id);
-		doc->modified_id = 0;
 	}
 
 	if (doc->keepalive) {
@@ -501,40 +525,6 @@ sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height)
 	g_signal_emit (G_OBJECT (doc), signals [RESIZED], 0, width / 1.25, height / 1.25);
 }
 
-#if 0
-/* named views */
-
-const GSList *
-sp_document_namedview_list (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-
-	return SP_ROOT (document->root)->namedviews;
-}
-
-SPNamedView *
-sp_document_namedview (SPDocument * document, const gchar * id)
-{
-	const GSList * nvl, * l;
-
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-
-	nvl = SP_ROOT (document->root)->namedviews;
-	g_assert (nvl != NULL);
-
-	if (id == NULL) return SP_NAMEDVIEW (nvl->data);
-
-	for (l = nvl; l != NULL; l = l->next) {
-		if (strcmp (id, SP_OBJECT (l->data)->id) == 0)
-			return SP_NAMEDVIEW (l->data);
-	}
-
-	return NULL;
-}
-#endif
-
 void
 sp_document_def_id (SPDocument * document, const gchar * id, SPObject * object)
 {
@@ -578,8 +568,8 @@ sp_document_get_object_from_repr (SPDocument *doc, SPRepr *repr)
 void
 sp_document_request_modified (SPDocument *doc)
 {
-	if (!doc->modified_id) {
-		doc->modified_id = gtk_idle_add_priority (SP_DOCUMENT_UPDATE_PRIORITY, sp_document_idle_handler, doc);
+	if (!doc->priv->idle) {
+		sp_document_schedule_timers (doc);
 	}
 }
 
@@ -592,11 +582,9 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		lc -= 1;
 		if (lc < 0) {
 			g_warning ("More than 16 iterations while updating document '%s'", doc->uri);
-			if (doc->modified_id) {
-				/* Remove handler */
-				gtk_idle_remove (doc->modified_id);
-				doc->modified_id = 0;
-			}
+			/* doc->priv->need_update = 0; */
+			/* Idle will be scheduled, but rien a faire */
+			sp_document_schedule_timers (doc);
 			return FALSE;
 		}
 		/* Process updates */
@@ -618,59 +606,8 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
 			       SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 	}
-	if (doc->modified_id) {
-		/* Remove handler */
-		gtk_idle_remove (doc->modified_id);
-		doc->modified_id = 0;
-	}
+	sp_document_schedule_timers (doc);
 	return TRUE;
-}
-
-static gint
-sp_document_idle_handler (gpointer data)
-{
-	SPDocument *doc;
-	int repeat;
-
-	doc = SP_DOCUMENT (data);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print ("->\n");
-#endif
-
-	/* Process updates */
-	if (doc->root->uflags) {
-		SPItemCtx ctx;
-		ctx.ctx.flags = 0;
-		nr_matrix_d_set_identity (&ctx.i2doc);
-		/* Set up viewport in case svg has it defined as percentages */
-		ctx.vp.x0 = 0.0;
-		ctx.vp.y0 = 0.0;
-		ctx.vp.x1 = 21.0 / 2.54 * 72.0 * 1.25;
-		ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
-		nr_matrix_d_set_identity (&ctx.i2vp);
-		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
-		/* if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return TRUE; */
-	}
-
-	/* Emit "modified" signal on objects */
-	sp_object_invoke_modified (doc->root, 0);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print ("\n->");
-#endif
-
-	/* Emit our own "modified" signal */
-	g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
-			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print (" S ->\n");
-#endif
-
-	repeat = (doc->root->uflags || doc->root->mflags);
-	if (!repeat) doc->modified_id = 0;
-	return repeat;
 }
 
 SPObject *
@@ -876,3 +813,261 @@ sp_document_get_version (SPDocument *document, guint version_type)
 
 	return 0;
 }
+
+/*
+ * Timer
+ *
+ * Objects are required to use time services only from their parent document
+ */
+
+#ifdef WIN32
+#include <sys/timeb.h>
+#include <time.h>
+#else
+#include <sys/time.h>
+#include <unistd.h>
+#endif
+
+static double
+sp_document_get_abstime (void)
+{
+#ifdef WIN32
+        struct _timeb t;
+        _ftime (&t);
+        return (t.time + t.millitm / 1000.0);
+#else
+        struct timeval tv;
+        struct timezone tz;
+
+        gettimeofday (&tv, &tz);
+
+        return (tv.tv_sec + tv.tv_usec / 1000000.0);
+#endif
+}
+
+/* Begin document and start timer */
+double
+sp_document_begin (SPDocument *doc)
+{
+	g_return_val_if_fail (doc->begintime == 0.0, 0.0);
+	doc->begintime = sp_document_get_abstime ();
+	g_signal_emit (G_OBJECT (doc), signals [BEGIN], 0, doc->begintime);
+	return doc->begintime;
+}
+
+/* End document and stop timer */
+double
+sp_document_end (SPDocument *doc)
+{
+	double endtime;
+	g_return_val_if_fail (doc->begintime != 0.0, 0.0);
+	endtime = sp_document_get_abstime ();
+	g_signal_emit (G_OBJECT (doc), signals [BEGIN], 0, endtime);
+	doc->begintime = 0.0;
+	return endtime;
+}
+
+/* Get time in seconds from document begin */
+double
+sp_document_get_time (SPDocument *document)
+{
+	return sp_document_get_abstime () - document->begintime;
+}
+
+struct _SPDocTimer {
+	double time;
+	unsigned int flags : 1;
+	unsigned int awake : 1;
+	unsigned int (* callback) (double, void *);
+	void *data;
+};
+
+gint
+sp_doc_timer_compare (gconstpointer a, gconstpointer b)
+{
+	SPDocTimer *ta, *tb;
+	ta = (SPDocTimer *) a;
+	tb = (SPDocTimer *) b;
+	if (ta->time < tb->time) return -1;
+	if (ta->time > tb->time) return 1;
+	return 0;
+}
+
+/* Create and set up timer */
+unsigned int
+sp_document_add_timer (SPDocument *doc, double time, unsigned int flags,
+		       unsigned int (* callback) (double, void *),
+		       void *data)
+{
+	SPDocumentPrivate *priv;
+	SPDocTimer *timer;
+	unsigned int id;
+	priv = doc->priv;
+	for (id = 0; id < priv->timers_size; id++) {
+		if (!priv->timers[id].callback) break;
+	}
+	if (id >= priv->timers_size) {
+		priv->timers_size = MIN ((priv->timers_size << 1), 4);
+		priv->timers = realloc (priv->timers, priv->timers_size * sizeof (SPDocTimer));
+		memset (priv->timers + id, 0, (priv->timers_size - id) * sizeof (SPDocTimer));
+	}
+	timer = &priv->timers[id];
+	timer->time = time;
+	timer->flags = flags;
+	timer->awake = 1;
+	timer->callback = callback;
+	timer->data = data;
+	if (flags == SP_TIMER_EXACT) {
+		priv->etqueue = g_slist_insert_sorted (priv->etqueue, timer, sp_doc_timer_compare);
+	} else {
+		priv->itqueue = g_slist_prepend (priv->itqueue, timer);
+	}
+	return id;
+}
+
+/* Remove timer */
+void
+sp_document_remove_timer (SPDocument *doc, unsigned int id)
+{
+	SPDocumentPrivate *priv;
+	SPDocTimer *timer;
+	priv = doc->priv;
+	timer = &priv->timers[id];
+	if (timer->awake) {
+		if (timer->flags == SP_TIMER_EXACT) {
+			priv->etqueue = g_slist_remove (priv->etqueue, timer);
+		} else {
+			priv->itqueue = g_slist_remove (priv->itqueue, timer);
+		}
+	}
+	timer->callback = NULL;
+	timer->data = NULL;
+}
+
+/* Set up timer */
+void
+sp_document_set_timer (SPDocument *doc, unsigned int id, double time, unsigned int flags)
+{
+	SPDocumentPrivate *priv;
+	SPDocTimer *timer;
+	priv = doc->priv;
+	timer = &priv->timers[id];
+	/* Remove from queue */
+	if (timer->awake) {
+		if (timer->flags == SP_TIMER_EXACT) {
+			priv->etqueue = g_slist_remove (priv->etqueue, timer);
+		} else {
+			priv->itqueue = g_slist_remove (priv->itqueue, timer);
+		}
+	}
+	timer->time = time;
+	timer->flags = flags;
+	timer->awake = 1;
+	if (flags == SP_TIMER_EXACT) {
+		priv->etqueue = g_slist_insert_sorted (priv->etqueue, timer, sp_doc_timer_compare);
+	} else {
+		priv->itqueue = g_slist_prepend (priv->itqueue, timer);
+	}
+}
+
+static gint
+sp_document_idle_handler (gpointer data)
+{
+	SPDocument *doc;
+	/* int repeat; */
+
+	doc = SP_DOCUMENT (data);
+
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print ("->\n");
+#endif
+
+	/* Process updates */
+	if (doc->root->uflags) {
+		SPItemCtx ctx;
+		ctx.ctx.flags = 0;
+		nr_matrix_d_set_identity (&ctx.i2doc);
+		/* Set up viewport in case svg has it defined as percentages */
+		ctx.vp.x0 = 0.0;
+		ctx.vp.y0 = 0.0;
+		ctx.vp.x1 = 21.0 / 2.54 * 72.0 * 1.25;
+		ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
+		nr_matrix_d_set_identity (&ctx.i2vp);
+		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
+		/* if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return TRUE; */
+	}
+
+	/* Emit "modified" signal on objects */
+	sp_object_invoke_modified (doc->root, 0);
+
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print ("\n->");
+#endif
+
+	/* Emit our own "modified" signal */
+	g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
+			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print (" S ->\n");
+#endif
+
+	sp_document_schedule_timers (doc);
+	/* If idle not cleared we have to repeat */
+	return doc->priv->idle != 0;
+}
+
+#define deltat 0.0
+
+static void
+sp_document_schedule_timers (SPDocument *doc)
+{
+	SPDocumentPrivate *priv;
+	double ctime, dtime;
+	unsigned int idle;
+	priv = doc->priv;
+	idle = FALSE;
+	dtime = 1e18;
+	if (doc->root && (doc->root->uflags || doc->root->mflags)) idle = TRUE;
+	if (priv->itqueue) idle = TRUE;
+	if (!idle && priv->etqueue) {
+		SPDocTimer *timer;
+		timer = (SPDocTimer *) priv->itqueue->data;
+		/* Get current time */
+		ctime = sp_document_get_time (doc);
+		dtime = timer->time - ctime;
+		if (dtime <= deltat) idle = TRUE;
+	}
+	if (idle) {
+		if (priv->timeout) {
+			/* Remove timer */
+			gtk_timeout_remove (priv->timeout);
+			priv->timeout = 0;
+		}
+		if (!priv->idle) {
+			/* Register idle */
+			priv->idle = gtk_idle_add_priority (SP_DOCUMENT_UPDATE_PRIORITY, sp_document_idle_handler, doc);
+		}
+	} else if (dtime < 1000 * 365.25 * 86400) {
+		if (priv->idle) {
+			/* Remove idle handler */
+			gtk_idle_remove (priv->idle);
+			priv->idle = 0;
+		}
+		/* Register timeout */
+		/* fixme: TODO */
+	} else {
+		if (priv->idle) {
+			/* Remove idle handler */
+			gtk_idle_remove (priv->idle);
+			priv->idle = 0;
+		}
+		if (priv->timeout) {
+			/* Remove timer */
+			gtk_timeout_remove (priv->timeout);
+			priv->timeout = 0;
+		}
+	}
+}
+
+
