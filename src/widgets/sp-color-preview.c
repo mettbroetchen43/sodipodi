@@ -191,7 +191,7 @@ sp_color_preview_paint (SPColorPreview *cp, GdkRectangle *area)
 
 	carea.x = warea.x + w2;
 	carea.y = warea.y + by;
-	carea.width = warea.width - bx - carea.x;
+	carea.width = warea.width - bx - w2;
 	carea.height = warea.height - 2 * by;
 
 	if (gdk_rectangle_intersect (area, &carea, &cpaint)) {
@@ -202,27 +202,3 @@ sp_color_preview_paint (SPColorPreview *cp, GdkRectangle *area)
 	}
 }
 
-#if 0
-static void
-sp_color_preview_update (SPColorPreview *image)
-{
-	GtkAllocation *allocation;
-
-	if (!image->px) return;
-
-	allocation = &((GtkWidget *) image)->allocation;
-
-	if (image->gradient) {
-		nr_render_checkerboard_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
-		sp_gradient_render_vector_block_rgb (image->gradient,
-						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
-						     0, allocation->width, TRUE);
-	} else {
-		nr_render_gray_garbage_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
-	}
-
-	if (GTK_WIDGET_DRAWABLE (image)) {
-		gtk_widget_queue_draw (GTK_WIDGET (image));
-	}
-}
-#endif
