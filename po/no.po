@@ -461,7 +461,7 @@ msgstr "Plassering"
 
 #: glade/object_props.glade.h:26
 msgid "Mitter join"
-msgstr "Slå sammen på midten"
+msgstr "Slå sammen med vinkel"
 
 #: glade/object_props.glade.h:27
 msgid "No fill"
