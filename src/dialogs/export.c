@@ -124,7 +124,7 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 
 	rbuf = gnome_print_rbuf_rgba_new (pixels, width, height, width * 4, affine);
 
-	sp_item_print (SP_ITEM (doc->root), rbuf);
+	sp_item_print (SP_ITEM (sp_document_root (doc)), rbuf);
 
 	gtk_object_destroy (GTK_OBJECT (rbuf));
 
