@@ -46,7 +46,7 @@ sp_help_about (void)
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (w), _("About sodipodi"));
-	gtk_window_set_default_size (GTK_WINDOW (w), 480, 360);
+	gtk_window_set_default_size (GTK_WINDOW (w), sp_document_width (doc), sp_document_height (doc));
 #if 1
 	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, FALSE);
 #endif

@@ -1,5 +1,7 @@
 2003-02-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/help.c (sp_help_about): Make default window size the same as document
+
 	* src/style.c: Use custom winding rule and stroke parameter enumerations
 
 	* src/enums.h: Define winding rules and stroke parameters
