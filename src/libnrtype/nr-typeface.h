@@ -38,6 +38,7 @@ struct _NRTypeFaceDef {
 	NRTypePosDef *pdef;
 	unsigned int idx;
 	unsigned char *name;
+	unsigned char *family;
 	NRTypeFace *typeface;
 };
 

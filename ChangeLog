@@ -1,3 +1,17 @@
+2002-11-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-path.c (nr_path_matrix_f_bbox_f_union): Allow NULL path member
+	(nr_path_matrix_f_point_f_bbox_wind_distance): Ditto
+	(nr_path_duplicate_transform): Ditto
+
+	* src/libnrtype/nr-typeface.h: Added family member to definition
+
+	* src/libnrtype/nr-type-directory.c (nr_type_register): Use family from def
+
+	* src/libnrtype/nr-type-ft2.c (nr_type_ft2_build_def): Set family member
+
+	* src/libnrtype/nr-type-gnome.c (nr_type_gnome_build_def): Set family member
+
 2002-11-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dyna-draw-context.c: Clamp drag to [0.0 1.0]

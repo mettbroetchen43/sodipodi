@@ -257,16 +257,16 @@ nr_type_directory_build (void)
 }
 
 static int
-nr_type_register (NRTypeFaceDef *def, const unsigned char *family)
+nr_type_register (NRTypeFaceDef *def)
 {
 	NRFamilyDef *fdef;
 
 	if (nr_type_dict_lookup (typedict, def->name)) return 0;
 
-	fdef = nr_type_dict_lookup (familydict, family);
+	fdef = nr_type_dict_lookup (familydict, def->family);
 	if (!fdef) {
 		fdef = nr_new (NRFamilyDef, 1);
-		fdef->name = strdup (family);
+		fdef->name = strdup (def->family);
 		fdef->faces = NULL;
 		fdef->next = families;
 		families = fdef;
@@ -423,8 +423,8 @@ nr_type_read_private_list (void)
 							dft2 = nr_new (NRTypeFaceDefFT2, 1);
 							dft2->def.next = NULL;
 							dft2->def.pdef = NULL;
-							nr_type_ft2_build_def (dft2, img + namep, img + filep, face);
-							nr_type_register ((NRTypeFaceDef *) dft2, img + familyp);
+							nr_type_ft2_build_def (dft2, img + namep, img + familyp, img + filep, face);
+							nr_type_register ((NRTypeFaceDef *) dft2);
 							nentries += 1;
 						}
 					}
@@ -454,10 +454,6 @@ nr_type_read_gnome_list (void)
 	for (i = gnames.length - 1; i >= 0; i--) {
 		NRTypeFaceDef *tdef;
 		const unsigned char *family;
-		tdef = nr_new (NRTypeFaceDef, 1);
-		tdef->next = NULL;
-		tdef->pdef = NULL;
-		nr_type_gnome_build_def (tdef, gnames.names[i]);
 		family = NULL;
 		for (j = gfamilies.length - 1; j >= 0; j--) {
 			int len;
@@ -468,7 +464,11 @@ nr_type_read_gnome_list (void)
 			}
 		}
 		if (family) {
-			nr_type_register (tdef, family);
+			tdef = nr_new (NRTypeFaceDef, 1);
+			tdef->next = NULL;
+			tdef->pdef = NULL;
+			nr_type_gnome_build_def (tdef, gnames.names[i], family);
+			nr_type_register (tdef);
 		}
 	}
 

@@ -66,10 +66,15 @@ static NRTypeFaceVMV nr_type_ft2_vmv = {
 static FT_Library ft_library = NULL;
 
 void
-nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const unsigned char *file, unsigned int face)
+nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
+		       const unsigned char *name,
+		       const unsigned char *family,
+		       const unsigned char *file,
+		       unsigned int face)
 {
 	dft2->def.vmv = &nr_type_ft2_vmv;
 	dft2->def.name = strdup (name);
+	dft2->def.family = strdup (family);
 	dft2->def.typeface = NULL;
 	dft2->file = strdup (file);
 	dft2->face = face;
@@ -170,8 +175,7 @@ nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	if (!strcmp (key, "name")) {
 		val = tf->def->name;
 	} else if (!strcmp (key, "family")) {
-		/* fixme: Really family should be encoded into definition */
-		val = tff->ft_face->family_name;
+		val = tf->def->family;
 	} else if (!strcmp (key, "weight")) {
 		/* fixme: This is just wrong */
 		val = (tff->ft_face->style_flags & FT_STYLE_FLAG_BOLD) ? "bold" : "normal";
@@ -277,7 +281,7 @@ nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	tff = (NRTypeFaceFT2 *) tf;
 
 	if (rule == NR_TYPEFACE_LOOKUP_RULE_DEFAULT) {
-		if (!tff->unimap || (unival >= 0xe000) && (unival <= 0xf8ff)) {
+		if (!tff->unimap || ((unival >= 0xe000) && (unival <= 0xf8ff))) {
 			unsigned int idx;
 			idx = CLAMP (unival, 0xe000, 0xf8ff) - 0xe000;
 			return MIN (idx, tf->nglyphs);

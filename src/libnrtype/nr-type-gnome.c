@@ -121,10 +121,11 @@ nr_type_gnome_families_get (NRNameList *families)
 }
 
 void
-nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name)
+nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family)
 {
 	def->vmv = &nr_type_gnome_vmv;
 	def->name = g_strdup (name);
+	def->family = g_strdup (family);
 	def->typeface = NULL;
 }
 
@@ -179,9 +180,9 @@ nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 	tfg = (NRTypeFaceGnome *) tf;
 
 	if (!strcmp (key, "name")) {
-		val = gnome_font_face_get_name (tfg->face);
+		val = tf->def->name;
 	} else if (!strcmp (key, "family")) {
-		val = gnome_font_face_get_family_name (tfg->face);
+		val = tf->def->family;
 	} else if (!strcmp (key, "weight")) {
 		guint wc;
 		wc = gnome_font_face_get_weight_code (tfg->face);

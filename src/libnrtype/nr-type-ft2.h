@@ -49,6 +49,11 @@ struct _NRTypeFaceFT2 {
 	unsigned int slots_size;
 };
 
-void nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const unsigned char *file, unsigned int face);
+void
+nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
+		       const unsigned char *name,
+		       const unsigned char *family,
+		       const unsigned char *file,
+		       unsigned int face);
 
 #endif

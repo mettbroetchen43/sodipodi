@@ -18,6 +18,11 @@ nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 {
 	int i;
 
+	if (!s->path) {
+		d->path = NULL;
+		return;
+	}
+
 	i = 0;
 	while (s->path[i].code != ART_END) i += 1;
 
@@ -218,6 +223,12 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 	double x0, y0, x3, y3;
 	const ArtBpath *p;
 
+	if (!bpath->path) {
+		if (wind) *wind = 0;
+		if (dist) *dist = NR_HUGE_F;
+		return;
+	}
+
 	if (!m) m = &NR_MATRIX_F_IDENTITY;
 
 	x0 = y0 = 0.0;
@@ -342,6 +353,8 @@ nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 {
 	double x0, y0, x3, y3;
 	const ArtBpath *p;
+
+	if (!bpath->path) return;
 
 	if (!m) m = &NR_MATRIX_F_IDENTITY;
 
