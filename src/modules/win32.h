@@ -34,8 +34,8 @@ struct _SPModulePrintWin32 {
 	SPModulePrint module;
 
 	/* Document dimensions */
-	float width;
-	float height;
+	float PageWidth;
+	float PageHeight;
 
 	HDC hDC;
 };

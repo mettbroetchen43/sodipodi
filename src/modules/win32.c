@@ -189,8 +189,8 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
-	w32mod->width = sp_document_width (doc);
-	w32mod->height = sp_document_height (doc);
+	w32mod->PageWidth = sp_document_width (doc);
+	w32mod->PageHeight = sp_document_height (doc);
 
 	di.lpszDocName = SP_DOCUMENT_NAME (doc);
 
@@ -205,11 +205,13 @@ static unsigned int
 sp_module_print_win32_finish (SPModulePrint *mod)
 {
 	SPModulePrintWin32 *w32mod;
-	float dpiX, dpiY;
-	float scaleh, scalew;
-	int pWidth, pHeight;
+	int dpiX, dpiY;
+	int pPhysicalWidth, pPhysicalHeight;
+	int pPhysicalOffsetX, pPhysicalOffsetY;
+	int pPrintableWidth, pPrintableHeight;
+	float scalex, scaley;
+	int x0, y0, x1, y1;
 	int width, height;
-	float x0, y0, x1, y1;
 	NRMatrixF affine;
 	unsigned char *px;
 	int sheight, row;
@@ -234,54 +236,49 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
-	x0 = 0.0F;
-	y0 = 0.0F;
-	x1 = w32mod->width;
-	y1 = w32mod->height;
-
+	// Number of pixels per logical inch
 	dpiX = (float) GetDeviceCaps (w32mod->hDC, LOGPIXELSX);
 	dpiY = (float) GetDeviceCaps (w32mod->hDC, LOGPIXELSY);
-	pWidth = GetDeviceCaps (w32mod->hDC, HORZRES); 
-	pHeight = GetDeviceCaps (w32mod->hDC, VERTRES); 
+	// Size in pixels of the printable area
+	pPhysicalWidth = GetDeviceCaps (w32mod->hDC, PHYSICALWIDTH); 
+	pPhysicalHeight = GetDeviceCaps (w32mod->hDC, PHYSICALHEIGHT); 
+	// Top left corner of prontable area
+	pPhysicalOffsetX = GetDeviceCaps (w32mod->hDC, PHYSICALOFFSETX); 
+	pPhysicalOffsetY = GetDeviceCaps (w32mod->hDC, PHYSICALOFFSETY); 
+	// Size in pixels of the printable area
+	pPrintableWidth = GetDeviceCaps (w32mod->hDC, HORZRES); 
+	pPrintableHeight = GetDeviceCaps (w32mod->hDC, VERTRES); 
 
-	scaleh = dpiX / 72.0;
-	scalew = dpiY / 72.0;
+	// Scaling from document to device
+	scalex = dpiX / 72.0;
+	scaley = dpiY / 72.0;
 
-	width = w32mod->width * scaleh;
-	height = w32mod->height * scalew;
-	width = MIN (width, pWidth);
-	height = MIN (height, pHeight);
-
-	/*
-	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
-	 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
-	 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
-	 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
-	 * 5) a[1] = 0.0;
-	 * 6) a[2] = 0.0;
-	 *
-	 * (1,3) a[0] * x1 - a[0] * x0 = width
-	 * a[0] = width / (x1 - x0)
-	 * (2,4) a[3] * y0 - a[3] * y1 = height
-	 * a[3] = height / (y0 - y1)
-	 * (1) a[4] = -a[0] * x0
-	 * (2) a[5] = -a[3] * y1
-	 */
-
-	affine.c[0] = width / ((x1 - x0) * 1.25);
+	// We simply map document 0,0 to physical page 0,0
+	affine.c[0] = scalex / 1.25;
 	affine.c[1] = 0.0;
 	affine.c[2] = 0.0;
-	affine.c[3] = height / ((y1 - y0) * 1.25);
-	affine.c[4] = -affine.c[0] * x0 * 1.25;
-	affine.c[5] = -affine.c[3] * y0 * 1.25;
+	affine.c[3] = scaley / 1.25;
+	affine.c[4] = 0.0;
+	affine.c[5] = 0.0;
 
 	nr_arena_item_set_transform (mod->root, &affine);
 
-	px = nr_new (unsigned char, 4 * 1024 * width);
-	sheight = 1024;
+	// Calculate printable area in device coordinates
+	x0 = pPhysicalOffsetX;
+	y0 = pPhysicalOffsetY;
+	x1 = x0 + pPrintableWidth;
+	y1 = y0 + pPrintableHeight;
+	x1 = MIN (x1, (int) (w32mod->PageWidth * scalex));
+	y1 = MIN (y1, (int) (w32mod->PageHeight * scaley));
+
+	width = x1 - x0;
+	height = y1 - y0;
+
+	px = nr_new (unsigned char, 4 * 64 * width);
+	sheight = 64;
 
 	/* Printing goes here */
-	for (row = 0; row < height; row += 960) {
+	for (row = 0; row < height; row += 64) {
 		NRPixBlock pb;
 		NRRectL bbox;
 		NRGC gc;
@@ -292,10 +289,10 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		if ((row + num_rows) > height) num_rows = height - row;
 
 		/* Set area of interest */
-		bbox.x0 = 0;
-		bbox.y0 = row;
-		bbox.x1 = width;
-		bbox.y1 = row + num_rows;
+		bbox.x0 = x0;
+		bbox.y0 = y0 + row;
+		bbox.x1 = bbox.x0 + width;
+		bbox.y1 = bbox.y0 + num_rows;
 		/* Update to renderable state */
 		nr_matrix_d_set_identity (&gc.transform);
 		nr_arena_item_invoke_update (mod->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
@@ -343,7 +340,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 #if 1
 		SetStretchBltMode(w32mod->hDC, COLORONCOLOR);
 		res = StretchDIBits (w32mod->hDC,
-						bbox.x0, bbox.y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
+						bbox.x0 - x0, bbox.y0 - y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
 						0, 0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
 						px,
 						&bmInfo,
