@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-18 04:35+0100\n"
+"POT-Creation-Date: 2003-11-23 14:42+0200\n"
 "PO-Revision-Date: 2003-11-18 13:00+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -28,35 +28,35 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:752
+#: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr "Zvětšit či zmenšit kresbu při změně velikosti okna"
 
-#: src/desktop.c:832
+#: src/desktop.c:858
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:961
+#: src/desktop.c:987
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
 #. Page page
-#: src/desktop.c:1507 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:277 src/dialogs/document-properties.c:165
+#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1511 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
 #: src/verbs.c:454
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1515 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:580 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
 msgid "Selection"
 msgstr "Výběr"
 
@@ -174,96 +174,115 @@ msgstr "Zobrazovat mřížku"
 msgid "Snap to grid"
 msgstr "Uchytávat k mřížce"
 
-#: src/dialogs/desktop-properties.c:215
+#: src/dialogs/desktop-properties.c:216
 msgid "Horizontal lines"
 msgstr "Vodorovné čáry"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:217
 msgid "Vertical lines"
 msgstr "Svislé čáry"
 
-#: src/dialogs/desktop-properties.c:218
+#: src/dialogs/desktop-properties.c:219
 msgid "Iso grid"
 msgstr "Čtverečková mřížka"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:220
 msgid "Hex grid"
 msgstr "Šesterečková mřížka"
 
-#: src/dialogs/desktop-properties.c:224
+#: src/dialogs/desktop-properties.c:226
 msgid "Grid units:"
 msgstr "Jednotky mřížky:"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:228
 msgid "Origin X:"
 msgstr "Počátek X:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:230
 msgid "Origin Y:"
 msgstr "Počátek Y:"
 
-#: src/dialogs/desktop-properties.c:231
+#: src/dialogs/desktop-properties.c:233
 msgid "Spacing X:"
 msgstr "Mezery X:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:235
 msgid "Spacing Y:"
 msgstr "Mezery Y:"
 
-#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
 msgid "Snap units:"
 msgstr "Jednotky uchycení:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
 msgid "Snap distance:"
 msgstr "Vzdálenost uchycení:"
 
-#: src/dialogs/desktop-properties.c:242
+#: src/dialogs/desktop-properties.c:244
 msgid "Grid color:"
 msgstr "Barva mřížky:"
 
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:245
 msgid "Grid color"
 msgstr "Barva mřížky"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:247
+#: src/dialogs/desktop-properties.c:249
 msgid "Guides"
 msgstr "Vodítka"
 
-#: src/dialogs/desktop-properties.c:258
+#: src/dialogs/desktop-properties.c:260
 msgid "Show guides"
 msgstr "Zobrazovat vodítka"
 
-#: src/dialogs/desktop-properties.c:259
+#: src/dialogs/desktop-properties.c:261
 msgid "Snap to guides"
 msgstr "Uchytávat na vodítka"
 
-#: src/dialogs/desktop-properties.c:269
+#: src/dialogs/desktop-properties.c:271
 msgid "Guides color:"
 msgstr "Barva vodítek:"
 
-#: src/dialogs/desktop-properties.c:270
+#: src/dialogs/desktop-properties.c:272
 msgid "Guideline color"
 msgstr "Barva čáry vodítka"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:274
 msgid "Highlight color:"
 msgstr "Barva zvýraznění:"
 
-#: src/dialogs/desktop-properties.c:273
+#: src/dialogs/desktop-properties.c:275
 msgid "Highlighted guideline color"
 msgstr "Barva zvýrazněného vodítka"
 
-#: src/dialogs/desktop-properties.c:288
+#: src/dialogs/desktop-properties.c:290
 msgid "Show border"
 msgstr "Zobrazovat ohraničení"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:296
 msgid "Border on top of drawing"
 msgstr "Okraj na horní straně obrázku"
 
-#: src/dialogs/desktop-properties.c:553
+#: src/dialogs/desktop-properties.c:301
+#, fuzzy
+msgid "Border color:"
+msgstr "Barva mřížky:"
+
+#: src/dialogs/desktop-properties.c:302
+msgid "Page border color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:303
+#, fuzzy
+msgid "Page color:"
+msgstr "Barva vodítek:"
+
+#: src/dialogs/desktop-properties.c:304
+#, fuzzy
+msgid "Page color"
+msgstr "Počáteční barva"
+
+#: src/dialogs/desktop-properties.c:575
 msgid "Close"
 msgstr "Zavřít"
 
@@ -871,27 +890,27 @@ msgstr "Úhel:"
 msgid "Defaults"
 msgstr "Výchozí"
 
-#: src/file.c:152 src/file.c:163 src/file.c:175
+#: src/file.c:154 src/file.c:166 src/file.c:180
 msgid "Select file to open"
 msgstr "Vyberte soubor pro otevření"
 
-#: src/file.c:192 src/module.c:550
+#: src/file.c:197 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Škálovatelná Vektorová Grafika (SVG)"
 
-#: src/file.c:192 src/module.c:550
+#: src/file.c:197 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Nativní formát souborů Sodipodi a standard W3C"
 
-#: src/file.c:198 src/file.c:269
+#: src/file.c:203 src/file.c:277
 msgid "File type:"
 msgstr "Typ souboru:"
 
-#: src/file.c:254
+#: src/file.c:262
 msgid "Save file"
 msgstr "Uložit soubor"
 
-#: src/file.c:430 src/file.c:440 src/file.c:446
+#: src/file.c:440 src/file.c:450 src/file.c:456
 msgid "Select file to import"
 msgstr "Vyberte soubor pro import"
 
@@ -1038,132 +1057,132 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Čtverčíky ex"
 
-#: src/interface.c:308 src/interface.c:490
+#: src/interface.c:309 src/interface.c:491
 msgid "Open Recent"
 msgstr "Otevřít nedávné"
 
-#: src/interface.c:328
+#: src/interface.c:329
 msgid "Close View"
 msgstr "Zavřít pohled"
 
-#: src/interface.c:329 src/interface.c:505
+#: src/interface.c:330 src/interface.c:506
 msgid "Exit Program"
 msgstr "Ukončit program"
 
-#: src/interface.c:331 src/interface.c:497
+#: src/interface.c:332 src/interface.c:498
 msgid "About Sodipodi"
 msgstr "O aplikaci Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:334 src/interface.c:500
+#: src/interface.c:335 src/interface.c:501
 msgid "About Modules"
 msgstr "O modulech"
 
-#: src/interface.c:354
+#: src/interface.c:355
 msgid "Cleanup"
 msgstr "Uklidit"
 
 #. View:Zoom
-#: src/interface.c:424 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
 msgid "Zoom"
 msgstr "Zvětšit"
 
 #. View:New View
-#: src/interface.c:436
+#: src/interface.c:437
 msgid "New View"
 msgstr "Nový pohled"
 
 #. View:New Preview
-#: src/interface.c:438
+#: src/interface.c:439
 msgid "New Preview"
 msgstr "Nový náhled"
 
-#: src/interface.c:440
+#: src/interface.c:441
 msgid "New Toplevel Toolbox"
 msgstr "Nová nejvyšší nástrojová lišta"
 
-#: src/interface.c:441
+#: src/interface.c:442
 msgid "New Docked Toolbox"
 msgstr "Nová ukotvená nástrojová lišta"
 
-#: src/interface.c:442
+#: src/interface.c:443
 msgid "Remove Docked Toolbox"
 msgstr "Odstranit ukotvenou nástrojovou lištu"
 
 #. File
-#: src/interface.c:487 src/verbs.c:396
+#: src/interface.c:488 src/verbs.c:396
 msgid "New"
 msgstr "Nový"
 
-#: src/interface.c:488
+#: src/interface.c:489
 msgid "Open"
 msgstr "Otevřít"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:568 src/toolbox.c:361
+#: src/interface.c:569 src/toolbox.c:361
 msgid "File"
 msgstr "Soubor"
 
 #. Edit submenu
-#: src/interface.c:574 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Úpravy"
 
 #. View submenu
-#: src/interface.c:586
+#: src/interface.c:587
 msgid "View"
 msgstr "Zobrazit"
 
 #. Drawing mode submenu
-#: src/interface.c:592
+#: src/interface.c:593
 msgid "Drawing Mode"
 msgstr "Režim kreslení"
 
 #. Dialog submenu
-#: src/interface.c:598
+#: src/interface.c:599
 msgid "Dialogs"
 msgstr "Dialogy"
 
-#: src/interface.c:605
+#: src/interface.c:606
 msgid "Filters"
 msgstr "Filtry"
 
-#: src/main.c:128
+#: src/main.c:129
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívat X server (pouze zpracovat soubory z konzole)"
 
-#: src/main.c:131
+#: src/main.c:132
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY"
 
-#: src/main.c:134
+#: src/main.c:135
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
-#: src/main.c:135 src/main.c:138 src/main.c:141 src/main.c:155
+#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
 msgid "FILENAME"
 msgstr "SOUBOR"
 
-#: src/main.c:137
+#: src/main.c:138
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
 "program')"
 
-#: src/main.c:140
+#: src/main.c:141
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:143
+#: src/main.c:144
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
-#: src/main.c:144
+#: src/main.c:145
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:146
+#: src/main.c:147
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1171,48 +1190,48 @@ msgstr ""
 "Exportovaná oblast v milimetrech (výchozí je celý dokument, 0,0 představuje "
 "spodní levý roh)"
 
-#: src/main.c:147
+#: src/main.c:148
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:149
+#: src/main.c:150
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:149
+#: src/main.c:150
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:151
+#: src/main.c:152
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:151
+#: src/main.c:152
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:153
+#: src/main.c:154
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
 
-#: src/main.c:153
+#: src/main.c:154
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:155
+#: src/main.c:156
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:157
+#: src/main.c:158
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Zobrazit zadané soubory jeden po druhém, přepnout na další při jakékoli "
 "události myši nebo klávesnice"
 
-#: src/main.c:159
+#: src/main.c:160
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávat přednost bitmapovým ikonám (XPM) před SVG"
 
@@ -1491,26 +1510,26 @@ msgstr "Vystředit pohled na vybranou položku"
 msgid "Sodipodi slideshow"
 msgstr "Promítání snímků Sodipodi"
 
-#: src/sodipodi.c:405
+#: src/sodipodi.c:406
 msgid "Untitled document"
 msgstr "Nepojmenovaný dokument"
 
 #. Show nice dialog box
-#: src/sodipodi.c:430
+#: src/sodipodi.c:431
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Aplikace Sodipodi narazila na vnitřní chybu a bude nyní uzavřena.\n"
 
-#: src/sodipodi.c:431
+#: src/sodipodi.c:432
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatické zálohy neuložených dokumentů byly provedeny do těchto míst:\n"
 
-#: src/sodipodi.c:432
+#: src/sodipodi.c:433
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatické zálohy následujících dokumentů selhaly:\n"
 
-#: src/sodipodi.c:571
+#: src/sodipodi.c:572
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1521,7 +1540,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení.\n"
 
-#: src/sodipodi.c:574
+#: src/sodipodi.c:575
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1535,7 +1554,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:579
+#: src/sodipodi.c:580
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1547,7 +1566,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:591
+#: src/sodipodi.c:592
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1558,7 +1577,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:594
+#: src/sodipodi.c:595
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1571,7 +1590,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:598
+#: src/sodipodi.c:599
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1582,7 +1601,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:937
+#: src/sodipodi.c:938
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1595,7 +1614,7 @@ msgstr ""
 "ani načíst, ani uložit\n"
 "%s."
 
-#: src/sodipodi.c:941
+#: src/sodipodi.c:942
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1607,7 +1626,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:945
+#: src/sodipodi.c:946
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1619,7 +1638,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:949
+#: src/sodipodi.c:950
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1631,7 +1650,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:959
+#: src/sodipodi.c:960
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1642,7 +1661,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:962
+#: src/sodipodi.c:963
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1653,7 +1672,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:965
+#: src/sodipodi.c:966
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1664,7 +1683,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "používat rozšíření (moduly)\n"
 
-#: src/sodipodi.c:968
+#: src/sodipodi.c:969
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1721,7 +1740,7 @@ msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
 #. fixme:
-#: src/sp-text.c:1461
+#: src/sp-text.c:1432
 msgid "Text object"
 msgstr "Textový objekt"
 

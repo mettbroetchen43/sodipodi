@@ -65,7 +65,7 @@ arikkei_strtod_simple (const unsigned char *str, unsigned int len, double *val)
 	if (!valid) return 0;
 	*val = sign * (integra + fract);
 
-	assert ((*val > -1e17) && (*val < 1e17));
+	/* assert ((*val > -1e17) && (*val < 1e17)); */
 
 	return p - str;
 }
@@ -92,7 +92,7 @@ arikkei_strtod_exp (const unsigned char *str, unsigned int len, double *val)
 	}
 	*val = rval;
 
-	assert ((*val > -1e17) && (*val < 1e17));
+	/* assert ((*val > -1e17) && (*val < 1e17)); */
 
 	return p - str;
 }

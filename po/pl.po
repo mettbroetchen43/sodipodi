@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-11-17 23:36+0100\n"
+"POT-Creation-Date: 2003-11-23 14:42+0200\n"
 "PO-Revision-Date: 2003-07-28 02:03+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -31,35 +31,35 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nie można utworzyć generatora sodipodi-svg-doc"
 
-#: src/desktop.c:752
+#: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr "Rysowanie powiększania podczas zmiany rozmiaru okna"
 
-#: src/desktop.c:832
+#: src/desktop.c:858
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:961
+#: src/desktop.c:987
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s zawiera niezapisane zmiany. Czy chcesz je zapisać?"
 
 #. Page page
-#: src/desktop.c:1507 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:277 src/dialogs/document-properties.c:165
+#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Strona"
 
-#: src/desktop.c:1511 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
 #: src/verbs.c:454
 msgid "Drawing"
 msgstr "Rysunek"
 
 #. Selection submenu
-#: src/desktop.c:1515 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:580 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
 msgid "Selection"
 msgstr "Zaznaczenie"
 
@@ -183,96 +183,115 @@ msgstr "Wyświetlanie siatki"
 msgid "Snap to grid"
 msgstr "Przyciąganie do siatki"
 
-#: src/dialogs/desktop-properties.c:215
+#: src/dialogs/desktop-properties.c:216
 msgid "Horizontal lines"
 msgstr "Linie poziome"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:217
 msgid "Vertical lines"
 msgstr "Linie pionowe"
 
-#: src/dialogs/desktop-properties.c:218
+#: src/dialogs/desktop-properties.c:219
 msgid "Iso grid"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:220
 msgid "Hex grid"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:224
+#: src/dialogs/desktop-properties.c:226
 msgid "Grid units:"
 msgstr "Jednostki siatki:"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:228
 msgid "Origin X:"
 msgstr "Początek X:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:230
 msgid "Origin Y:"
 msgstr "Początek Y:"
 
-#: src/dialogs/desktop-properties.c:231
+#: src/dialogs/desktop-properties.c:233
 msgid "Spacing X:"
 msgstr "Odstępy X:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:235
 msgid "Spacing Y:"
 msgstr "Odstępy Y:"
 
-#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
 msgid "Snap units:"
 msgstr "Jednostki przyciągania"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
 msgid "Snap distance:"
 msgstr "Odległość przyciągania:"
 
-#: src/dialogs/desktop-properties.c:242
+#: src/dialogs/desktop-properties.c:244
 msgid "Grid color:"
 msgstr "Kolor siatki:"
 
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:245
 msgid "Grid color"
 msgstr "Kolor siatki"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:247
+#: src/dialogs/desktop-properties.c:249
 msgid "Guides"
 msgstr "Prowadnice"
 
-#: src/dialogs/desktop-properties.c:258
+#: src/dialogs/desktop-properties.c:260
 msgid "Show guides"
 msgstr "Wyświetlanie prowadnic"
 
-#: src/dialogs/desktop-properties.c:259
+#: src/dialogs/desktop-properties.c:261
 msgid "Snap to guides"
 msgstr "Przyciąganie do prowadnic"
 
-#: src/dialogs/desktop-properties.c:269
+#: src/dialogs/desktop-properties.c:271
 msgid "Guides color:"
 msgstr "Kolor prowadnic:"
 
-#: src/dialogs/desktop-properties.c:270
+#: src/dialogs/desktop-properties.c:272
 msgid "Guideline color"
 msgstr "Kolor prowadnic"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:274
 msgid "Highlight color:"
 msgstr "Kolor podświetlenia:"
 
-#: src/dialogs/desktop-properties.c:273
+#: src/dialogs/desktop-properties.c:275
 msgid "Highlighted guideline color"
 msgstr "Kolor podświetlenia prowadnic"
 
-#: src/dialogs/desktop-properties.c:288
+#: src/dialogs/desktop-properties.c:290
 msgid "Show border"
 msgstr "Wyświetlanie krawędzi"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:296
 msgid "Border on top of drawing"
 msgstr "Krawędź na wierzchu rysunku"
 
-#: src/dialogs/desktop-properties.c:553
+#: src/dialogs/desktop-properties.c:301
+#, fuzzy
+msgid "Border color:"
+msgstr "Kolor siatki:"
+
+#: src/dialogs/desktop-properties.c:302
+msgid "Page border color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:303
+#, fuzzy
+msgid "Page color:"
+msgstr "Kolor prowadnic:"
+
+#: src/dialogs/desktop-properties.c:304
+#, fuzzy
+msgid "Page color"
+msgstr "Kolor początkowy"
+
+#: src/dialogs/desktop-properties.c:575
 msgid "Close"
 msgstr "Zamknij"
 
@@ -887,27 +906,27 @@ msgstr "Kąt:"
 msgid "Defaults"
 msgstr "Domyślne"
 
-#: src/file.c:152 src/file.c:163 src/file.c:175
+#: src/file.c:154 src/file.c:166 src/file.c:180
 msgid "Select file to open"
 msgstr "Wybór pliku do odczytu"
 
-#: src/file.c:192 src/module.c:550
+#: src/file.c:197 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Skalowalna grafika wektorowa (SVG)"
 
-#: src/file.c:192 src/module.c:550
+#: src/file.c:197 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Rodzimy format pliku Sodipodi i standard W3C"
 
-#: src/file.c:198 src/file.c:269
+#: src/file.c:203 src/file.c:277
 msgid "File type:"
 msgstr "Typ pliku:"
 
-#: src/file.c:254
+#: src/file.c:262
 msgid "Save file"
 msgstr "Zapis pliku"
 
-#: src/file.c:430 src/file.c:440 src/file.c:446
+#: src/file.c:440 src/file.c:450 src/file.c:456
 msgid "Select file to import"
 msgstr "Wybór pliku do importu"
 
@@ -1054,132 +1073,132 @@ msgstr ""
 msgid "Ex squares"
 msgstr ""
 
-#: src/interface.c:308 src/interface.c:490
+#: src/interface.c:309 src/interface.c:491
 msgid "Open Recent"
 msgstr ""
 
-#: src/interface.c:328
+#: src/interface.c:329
 msgid "Close View"
 msgstr "Zamknij widok"
 
-#: src/interface.c:329 src/interface.c:505
+#: src/interface.c:330 src/interface.c:506
 msgid "Exit Program"
 msgstr "Zakończ program"
 
-#: src/interface.c:331 src/interface.c:497
+#: src/interface.c:332 src/interface.c:498
 msgid "About Sodipodi"
 msgstr "Informacje o Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:334 src/interface.c:500
+#: src/interface.c:335 src/interface.c:501
 msgid "About Modules"
 msgstr "Informacje o modułach"
 
-#: src/interface.c:354
+#: src/interface.c:355
 msgid "Cleanup"
 msgstr ""
 
 #. View:Zoom
-#: src/interface.c:424 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
 msgid "Zoom"
 msgstr "Powiększenie"
 
 #. View:New View
-#: src/interface.c:436
+#: src/interface.c:437
 msgid "New View"
 msgstr "Nowy widok"
 
 #. View:New Preview
-#: src/interface.c:438
+#: src/interface.c:439
 msgid "New Preview"
 msgstr "Nowy podgląd"
 
-#: src/interface.c:440
+#: src/interface.c:441
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:441
+#: src/interface.c:442
 msgid "New Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:442
+#: src/interface.c:443
 msgid "Remove Docked Toolbox"
 msgstr ""
 
 #. File
-#: src/interface.c:487 src/verbs.c:396
+#: src/interface.c:488 src/verbs.c:396
 msgid "New"
 msgstr "Nowy"
 
-#: src/interface.c:488
+#: src/interface.c:489
 msgid "Open"
 msgstr "Otwórz"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:568 src/toolbox.c:361
+#: src/interface.c:569 src/toolbox.c:361
 msgid "File"
 msgstr "Plik"
 
 #. Edit submenu
-#: src/interface.c:574 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Edycja"
 
 #. View submenu
-#: src/interface.c:586
+#: src/interface.c:587
 msgid "View"
 msgstr "Widok"
 
 #. Drawing mode submenu
-#: src/interface.c:592
+#: src/interface.c:593
 msgid "Drawing Mode"
 msgstr "Tryb rysowania"
 
 #. Dialog submenu
-#: src/interface.c:598
+#: src/interface.c:599
 msgid "Dialogs"
 msgstr "Okna dialogowe"
 
-#: src/interface.c:605
+#: src/interface.c:606
 msgid "Filters"
 msgstr "Filtry"
 
-#: src/main.c:128
+#: src/main.c:129
 msgid "Do not use X server (only process files from console)"
 msgstr "Bez korzystania z serwera X (tylko pliki procesów z konsoli)"
 
-#: src/main.c:131
+#: src/main.c:132
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Używanie serwera X nawet jeśli zmienna $DISPLAY jest nieustawiona)"
 
-#: src/main.c:134
+#: src/main.c:135
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otwiera podany(-e) dokument(y) (tekst opcji może zostać wyłączony)"
 
-#: src/main.c:135 src/main.c:138 src/main.c:141 src/main.c:155
+#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
 msgid "FILENAME"
 msgstr "NAZWA_PLIKU"
 
-#: src/main.c:137
+#: src/main.c:138
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Drukuje dokumenty do podanego pliku wyjściowego (zapis do potoku - \"| "
 "program\")"
 
-#: src/main.c:140
+#: src/main.c:141
 msgid "Export document to png file"
 msgstr "Eksportuje dokument do obrazu png"
 
-#: src/main.c:143
+#: src/main.c:144
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozdzielczość używana do konwersji SVG do bitmapy (domyślnie 72.0)"
 
-#: src/main.c:144
+#: src/main.c:145
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:146
+#: src/main.c:147
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1187,46 +1206,46 @@ msgstr ""
 "Eksportowany obszar w milimetrach (domyślnie jest to pełny dokument, 0,0 to "
 "współrzędne lewego dolnego narożnika)"
 
-#: src/main.c:147
+#: src/main.c:148
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:149
+#: src/main.c:150
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Szerokość generowanej bitmapy w pikselach (przesłania dpi)"
 
-#: src/main.c:149
+#: src/main.c:150
 msgid "WIDTH"
 msgstr "SZEROKOŚĆ"
 
-#: src/main.c:151
+#: src/main.c:152
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Wysokość generowanej bitmapy w pikselach (przesłania dpi)"
 
-#: src/main.c:151
+#: src/main.c:152
 msgid "HEIGHT"
 msgstr "WYSOKOŚĆ"
 
-#: src/main.c:153
+#: src/main.c:154
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Kolor tła eksportowanej bitmapy (dowolny napis koloru obsługiwany przez SVG)"
 
-#: src/main.c:153
+#: src/main.c:154
 msgid "COLOR"
 msgstr "KOLOR"
 
-#: src/main.c:155
+#: src/main.c:156
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:157
+#: src/main.c:158
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Wyświetla kolejno podane pliki, przełączając na kolejny po jakiejkolwiek "
 "akcji myszy lub klawiatury"
 
-#: src/main.c:159
+#: src/main.c:160
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
@@ -1501,28 +1520,28 @@ msgstr "Dołącza nowe węzły do zaznaczonych segmentów"
 msgid "Sodipodi slideshow"
 msgstr "Pokaz slajdów Sodipodi"
 
-#: src/sodipodi.c:405
+#: src/sodipodi.c:406
 msgid "Untitled document"
 msgstr "Dokument bez nazwy"
 
 #. Show nice dialog box
-#: src/sodipodi.c:430
+#: src/sodipodi.c:431
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Program Sodipodi napotkał wewnętrzny błąd i zostanie teraz zamknięty.\n"
 
-#: src/sodipodi.c:431
+#: src/sodipodi.c:432
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatyczne kopie zapasowe niezapisanych dokumentów zostały utworzone w:\n"
 
-#: src/sodipodi.c:432
+#: src/sodipodi.c:433
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Automatyczne tworzenie kopii dla poniższych dokumentów nie powiodło się:\n"
 
-#: src/sodipodi.c:571
+#: src/sodipodi.c:572
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1534,7 +1553,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji.\n"
 
-#: src/sodipodi.c:574
+#: src/sodipodi.c:575
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1549,7 +1568,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji."
 
-#: src/sodipodi.c:579
+#: src/sodipodi.c:580
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1562,7 +1581,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji."
 
-#: src/sodipodi.c:591
+#: src/sodipodi.c:592
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1573,7 +1592,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek)\n"
 
-#: src/sodipodi.c:594
+#: src/sodipodi.c:595
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1586,7 +1605,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek)\n"
 
-#: src/sodipodi.c:598
+#: src/sodipodi.c:599
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1597,7 +1616,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek)\n"
 
-#: src/sodipodi.c:937
+#: src/sodipodi.c:938
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1610,7 +1629,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "%s."
 
-#: src/sodipodi.c:941
+#: src/sodipodi.c:942
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1623,7 +1642,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji."
 
-#: src/sodipodi.c:945
+#: src/sodipodi.c:946
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1636,7 +1655,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji."
 
-#: src/sodipodi.c:949
+#: src/sodipodi.c:950
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1649,7 +1668,7 @@ msgstr ""
 "nie można ani odczytać, ani zapisać\n"
 "preferencji."
 
-#: src/sodipodi.c:959
+#: src/sodipodi.c:960
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1660,7 +1679,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek)\n"
 
-#: src/sodipodi.c:962
+#: src/sodipodi.c:963
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1671,7 +1690,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek)\n"
 
-#: src/sodipodi.c:965
+#: src/sodipodi.c:966
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1682,7 +1701,7 @@ msgstr ""
 "Sodipodi zostanie uruchomiony, lecz\n"
 "nie można użyć rozszerzeń (wtyczek).\n"
 
-#: src/sodipodi.c:968
+#: src/sodipodi.c:969
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1739,7 +1758,7 @@ msgid "Unknown item :-("
 msgstr "Nieznany element :-("
 
 #. fixme:
-#: src/sp-text.c:1461
+#: src/sp-text.c:1432
 msgid "Text object"
 msgstr "Obiekt tekstowy"
 

@@ -8,7 +8,8 @@
 
 INCLUDES = \
 	$(SODIPODI_CFLAGS) \
-	-I.. \
+ 	-I.. \
+ 	-I$(top_srcdir)/src \
 	-I$(includedir)
 
 noinst_LIBRARIES = libspxml.a

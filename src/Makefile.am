@@ -32,9 +32,12 @@ INCLUDES = \
 bin_PROGRAMS = sodipodi
 
 sodipodilib_src = \
+	testing.h \
 	macros.h \
 	forward.h \
 	enums.h \
+	system.h \
+	monostd.h \
 	attributes.c attributes.h \
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \

@@ -150,7 +150,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 {
 #ifdef WITH_KDE
 	char *filename;
-	if (!open_path) open_path = g_strdup (SODIPODI_DOCDIR);
+	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 	filename = sp_kde_get_open_filename (open_path, "*.svg *.svgz|SVG files\n*.*|All files", _("Select file to open"));
 	if (filename) {
 		if (open_path) g_free (open_path);
@@ -162,7 +162,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 #else
 #ifdef WIN32
 	char *filename;
-	if (!open_path) open_path = g_strdup (SODIPODI_DOCDIR);
+	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 	filename = sp_win32_get_open_filename (open_path, "SVG files\0*.svg;*.svgz\0All files\0*\0", _("Select file to open"));
 	if (filename) {
 		if (open_path) g_free (open_path);
@@ -175,7 +175,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	GtkFileSelection *fsel;
 	GtkWidget *hb, *l, *om, *m;
 
-	if (!open_path) open_path = g_strdup (SODIPODI_DOCDIR);
+	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 
 	fsel = (GtkFileSelection *) gtk_file_selection_new (_("Select file to open"));
 	gtk_file_selection_hide_fileop_buttons (fsel);
@@ -231,7 +231,7 @@ sp_file_save_dialog (SPDocument *doc)
 #ifdef WITH_KDE
 	char *filename;
 	unsigned int spns;
-	if (!save_path) save_path = g_strdup (SODIPODI_DOCDIR);
+	if (!save_path) save_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 	filename = sp_kde_get_save_filename (save_path, &spns);
 	if (filename && *filename) {
 		sp_file_do_save (doc, filename, (spns) ? SP_MODULE_KEY_OUTPUT_SVG_SODIPODI : SP_MODULE_KEY_OUTPUT_SVG);
@@ -244,7 +244,7 @@ sp_file_save_dialog (SPDocument *doc)
 #ifdef WIN32
 	char *filename;
 	unsigned int spns;
-	if (!save_path) save_path = g_strdup (SODIPODI_DOCDIR);
+	if (!save_path) save_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 	filename = sp_win32_get_save_filename (save_path, &spns);
 	if (filename && *filename) {
 		sp_file_do_save (doc, filename, (spns) ? SP_MODULE_KEY_OUTPUT_SVG_SODIPODI : SP_MODULE_KEY_OUTPUT_SVG);
@@ -258,7 +258,7 @@ sp_file_save_dialog (SPDocument *doc)
 	GtkWidget *dlg, *hb, *l, *om, *menu;
 	int b;
 
-	if (!save_path) save_path = g_strdup (SODIPODI_DOCDIR);
+	if (!save_path) save_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 	dlg = gtk_file_selection_new (_("Save file"));
 	g_object_set_data (G_OBJECT (dlg), "document", doc);
 	/* fixme: Remove modality (Lauris) */
@@ -339,8 +339,6 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 	const gchar *e, *docbase, *relname;
 	SPRepr * repr;
 	SPReprDoc * rnewdoc;
-
-	if (!import_path) import_path = g_strdup (SODIPODI_DOCDIR);
 
 	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
 		if (import_path) g_free (import_path);
@@ -432,6 +430,8 @@ void sp_file_import (GtkWidget * widget)
 
         doc = SP_ACTIVE_DOCUMENT;
 	if (!SP_IS_DOCUMENT(doc)) return;
+
+	if (!import_path) import_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
 
 #ifdef WITH_KDE
 	filename = sp_kde_get_open_filename (import_path,
