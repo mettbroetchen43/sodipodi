@@ -594,7 +594,7 @@ msgid ""
 "A Vector Drawing Program.\n"
 "Released under GPL"
 msgstr ""
-"Program za Vektorsko Risanje.\n"
+"Program za vektorsko risanje.\n"
 "Dostopen pod GNU Splo¹no Javno Licenco"
 
 #: glade/sodipodi-glade.c:10 glade/toolbox.c:40
@@ -794,7 +794,7 @@ msgstr "Poveèava"
 
 #: glade/sodipodi-glade.c:68 glade/transformation.c:16
 msgid "Scale"
-msgstr "Faktor poveèave"
+msgstr "Spremeni velikost"
 
 #: glade/sodipodi-glade.c:69
 msgid "1:2"
@@ -1250,7 +1250,7 @@ msgstr "Nastavi kot na 270°"
 
 #: glade/transformation.c:35
 msgid "Skew"
-msgstr "Stri¾enje"
+msgstr "Stri¾i"
 
 #: glade/transformation.c:36
 msgid "select direction (horizontal/vertical skew)"
