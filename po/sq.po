@@ -302,9 +302,10 @@ msgid "Page color"
 msgstr ""
 
 #. GRUT modified this item
+#. GRUT modified this item
 #: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
-msgstr "Mbylle"
+msgstr "Mbyll"
 
 #: src/dialogs/display-settings.c:101
 msgid "Display settings"
@@ -441,9 +442,10 @@ msgid "Bitmap size"
 msgstr ""
 
 #. GRUT modified this item
+#. GRUT modified this item
 #: src/dialogs/export.c:213 src/dialogs/export.c:221
 msgid "pixels"
-msgstr "piksele"
+msgstr "pixels"
 
 #. GRUT modified this item
 #: src/dialogs/export.c:217 src/dialogs/export.c:225
@@ -1187,10 +1189,11 @@ msgid "Cleanup"
 msgstr ""
 
 #. GRUT modified this item
+#. GRUT modified this item
 #. View:Zoom
 #: src/interface.c:429 src/toolbox.c:587 src/verbs.c:463
 msgid "Zoom"
-msgstr "Shkalla"
+msgstr "Shkalla e zmadhimit"
 
 #. View:New View
 #: src/interface.c:441
@@ -1950,14 +1953,16 @@ msgstr ""
 msgid "Save"
 msgstr "Ruaj"
 
+#. GRUT modified this item
 #: src/verbs.c:411
 msgid "Save document"
-msgstr ""
+msgstr "Ruaj dokumentin"
 
+#. GRUT modified this item
 #. GRUT modified this item
 #: src/verbs.c:412
 msgid "Save As..."
-msgstr "Ruaje Si..."
+msgstr "Ruaj Si..."
 
 #: src/verbs.c:412
 msgid "Save document under new name"
