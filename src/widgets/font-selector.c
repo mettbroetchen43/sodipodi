@@ -15,6 +15,8 @@
 
 #include "config.h"
 
+#include <stdlib.h>
+
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
