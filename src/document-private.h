@@ -15,6 +15,8 @@ struct _SPDocument {
 
 	/* Last action key */
 	const guchar *actionkey;
+	/* Handler ID */
+	guint modified_id;
 };
 
 struct _SPDocumentClass {
@@ -120,10 +122,6 @@ struct _SPDocumentPrivate {
 	const guchar *key; /* Last action key */
 #endif
 	SPAction *actions; /* List of current actions */
-
-	/* Handler ID */
-
-	guint modified_id;
 };
 
 void sp_action_free_list (SPAction *action);

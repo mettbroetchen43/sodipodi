@@ -10,6 +10,8 @@
  *
  */
 
+#define noSP_DOCUMENT_DEBUG_UNDO
+
 #include <config.h>
 #include <string.h>
 #include <xml/repr.h>
@@ -40,6 +42,10 @@ static void sp_document_destroy (GtkObject * object);
 static gint sp_document_idle_handler (gpointer data);
 
 gboolean sp_document_resource_list_free (gpointer key, gpointer value, gpointer data);
+
+#ifdef SP_DOCUMENT_DEBUG_UNDO
+static gboolean sp_document_warn_undo_stack (SPDocument *doc);
+#endif
 
 static GtkObjectClass * parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -96,9 +102,13 @@ sp_document_class_init (SPDocumentClass * klass)
 }
 
 static void
-sp_document_init (SPDocument * document)
+sp_document_init (SPDocument *doc)
 {
-	SPDocumentPrivate * p;
+	SPDocumentPrivate *p;
+
+	doc->modified_id = 0;
+
+
 
 	p = g_new (SPDocumentPrivate, 1);
 
@@ -127,29 +137,27 @@ sp_document_init (SPDocument * document)
 	p->redo = NULL;
 	p->actions = NULL;
 
-	p->modified_id = 0;
-
-	document->private = p;
+	doc->private = p;
 }
 
 static void
-sp_document_destroy (GtkObject * object)
+sp_document_destroy (GtkObject *object)
 {
-	SPDocument * document;
+	SPDocument *doc;
 	SPDocumentPrivate * private;
 
-	document = (SPDocument *) object;
-	private = document->private;
+	doc = (SPDocument *) object;
+	private = doc->private;
 
 	if (private) {
-		sodipodi_remove_document (document);
+		sodipodi_remove_document (doc);
 
 		if (private->actions) {
-			sp_action_free_list (document->private->actions);
+			sp_action_free_list (private->actions);
 		}
 
-		sp_document_clear_redo (document);
-		sp_document_clear_undo (document);
+		sp_document_clear_redo (doc);
+		sp_document_clear_undo (doc);
 
 		if (private->base) g_free (private->base);
 
@@ -161,15 +169,15 @@ sp_document_destroy (GtkObject * object)
 
 		if (private->rdoc) sp_repr_document_unref (private->rdoc);
 
-		if (private->modified_id) gtk_idle_remove (private->modified_id);
-
 		/* Free resources */
-		g_hash_table_foreach_remove (private->resources, sp_document_resource_list_free, document);
+		g_hash_table_foreach_remove (private->resources, sp_document_resource_list_free, doc);
 		g_hash_table_destroy (private->resources);
 
 		g_free (private);
-		document->private = NULL;
+		doc->private = NULL;
 	}
+
+	if (doc->modified_id) gtk_idle_remove (doc->modified_id);
 
 	sodipodi_unref ();
 
@@ -522,25 +530,36 @@ sp_document_lookup_id (SPDocument * document, const gchar * id)
 void
 sp_document_request_modified (SPDocument *document)
 {
-	if (!document->private->modified_id) {
-		document->private->modified_id = gtk_idle_add (sp_document_idle_handler, document);
+	if (!document->modified_id) {
+		document->modified_id = gtk_idle_add (sp_document_idle_handler, document);
 	}
 }
 
 static gint
 sp_document_idle_handler (gpointer data)
 {
-	SPDocument *document;
+	SPDocument *doc;
 
-	document = SP_DOCUMENT (data);
+	doc = SP_DOCUMENT (data);
 
-	document->private->modified_id = 0;
+	doc->modified_id = 0;
+
+#ifdef SP_DOCUMENT_DEBUG_UNDO
+	/* ------------------------- */
+	if (doc->private->actions) {
+		static gboolean warn = TRUE;
+		if (warn) {
+			warn = sp_document_warn_undo_stack (doc);
+		}
+	}
+	/* ------------------------- */
+#endif
 
 	/* Emit "modified" signal on objects */
-	sp_object_modified (SP_OBJECT (document->private->root), 0);
+	sp_object_modified (SP_OBJECT (doc->private->root), 0);
 
 	/* Emit our own "modified" signal */
-	gtk_signal_emit (GTK_OBJECT (document), signals [MODIFIED],
+	gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 
 	return FALSE;
@@ -667,3 +686,99 @@ sp_document_resource_list_free (gpointer key, gpointer value, gpointer data)
 	g_slist_free ((GSList *) value);
 	return TRUE;
 }
+
+#ifdef SP_DOCUMENT_DEBUG_UNDO
+
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-dialog.h>
+
+static GSList *
+sp_action_print_pending_list (SPAction *action)
+{
+	GSList *al;
+	gchar *s;
+
+	al = NULL;
+
+	while (action) {
+		s = g_strdup_printf ("SPAction: Id %s\n", action->id);
+		al = g_slist_prepend (al, s);
+		switch (action->type) {
+		case SP_ACTION_ADD:
+			s = g_strdup_printf ("SPAction: Add ref %s\n", action->act.add.ref);
+			al = g_slist_prepend (al, s);
+			break;
+		case SP_ACTION_DEL:
+			s = g_strdup_printf ("SPAction: Del ref %s\n", action->act.del.ref);
+			al = g_slist_prepend (al, s);
+			break;
+		case SP_ACTION_CHGATTR:
+			s = g_strdup_printf ("SPAction: ChgAttr %s: %s -> %s\n",
+				 g_quark_to_string (action->act.chgattr.key),
+				 action->act.chgattr.oldval,
+				 action->act.chgattr.newval);
+			al = g_slist_prepend (al, s);
+			break;
+		case SP_ACTION_CHGCONTENT:
+			s = g_strdup_printf ("SPAction: ChgContent %s -> %s\n",
+				 action->act.chgcontent.oldval,
+				 action->act.chgcontent.newval);
+			al = g_slist_prepend (al, s);
+			break;
+		case SP_ACTION_CHGORDER:
+			s = g_strdup_printf ("SPAction: ChgOrder %s: %s -> %s\n",
+				 action->act.chgorder.child,
+				 action->act.chgorder.oldref,
+				 action->act.chgorder.newref);
+			al = g_slist_prepend (al, s);
+			break;
+		default:
+			s = g_strdup_printf ("SPAction: Invalid action type %d\n", action->type);
+			al = g_slist_prepend (al, s);
+			break;
+		}
+		action = action->next;
+	}
+
+	return al;
+}
+
+static gboolean
+sp_document_warn_undo_stack (SPDocument *doc)
+{
+	GnomeDialog *dlg;
+	GtkWidget *l, *t;
+	GSList *al;
+
+	dlg = (GnomeDialog *) gnome_dialog_new ("Stale undo stack warning", GNOME_STOCK_BUTTON_OK, NULL);
+
+	l = gtk_label_new ("WARNING");
+	gtk_widget_show (l);
+	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
+
+	l = gtk_label_new ("Last operation did not flush undo stack");
+	gtk_widget_show (l);
+	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
+
+	l = gtk_label_new ("Please report following data to developers");
+	gtk_widget_show (l);
+	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
+
+	t = gtk_text_new (NULL, NULL);
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (dlg->vbox), t, FALSE, FALSE, 8);
+
+	al = sp_action_print_pending_list (doc->private->actions);
+	while (al) {
+		gtk_text_set_point (GTK_TEXT (t), 0);
+		gtk_text_insert (GTK_TEXT (t), NULL, NULL, NULL, al->data, strlen (al->data));
+		g_free (al->data);
+		al = g_slist_remove (al, al->data);
+	}
+
+	gnome_dialog_run_and_close (dlg);
+
+	return TRUE;
+}
+
+#endif

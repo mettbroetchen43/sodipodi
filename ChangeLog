@@ -1,3 +1,16 @@
+2002-02-25  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/curve.c (sp_curve_append): Do not requite non-empty curves
+
+	* src/draw-context.c (fit_and_split): Commetn out boundary checks
+
+	* src/document.c (sp_document_idle_handler): Bring up uncommited undo
+	warning, if compiled with debug
+	(sp_action_print_pending_list): Debug method
+	(sp_document_warn_undo_stack): Ditto
+
+	* src/document-private.h: Moved idel_id into base struct
+
 2002-02-23  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/helper/units.c (sp_points_get_units): New method

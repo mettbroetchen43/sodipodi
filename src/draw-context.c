@@ -818,6 +818,7 @@ fit_and_split (SPDrawContext * dc)
 #ifdef DRAW_VERBOSE
 		g_print ("%d", dc->npoints);
 #endif
+#if 0
 		g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0));
 		g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0));
 		g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0));
@@ -826,6 +827,7 @@ fit_and_split (SPDrawContext * dc)
 		g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0));
 		g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0));
 		g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0));
+#endif
 		sp_curve_reset (dc->rc);
 		sp_curve_moveto (dc->rc, b[0].x, b[0].y);
 		sp_curve_curveto (dc->rc, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);

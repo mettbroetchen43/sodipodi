@@ -355,7 +355,9 @@ sp_object_layout_any_value_changed (GtkAdjustment *adj, SPWidget *spw)
 		art_affine_multiply (s , p2o, scale);
 		art_affine_multiply (t , s, o2n);
 		sp_selection_apply_affine (sel, t);
+#if 1
 		sp_document_done (spw->document);
+#endif
 	}
 
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
