@@ -1,3 +1,34 @@
+2001-03-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* doc/keybindings.txt: Register node editing keystrokes
+
+	* src/desktop.c (sp_desktop_new): Do not grab focus here
+
+	* src/helper/sodipodi-ctrl.c: Added shape argument type
+	(sp_ctrl_class_init): Ditto
+	(sp_ctrl_init): Ditto
+	(sp_ctrl_set_arg): Ditto
+	(sp_ctrl_update): New logic, keep node absolute size always odd number
+	(sp_ctrl_point): Ditto
+	(draw_line): New function
+	(draw_point): New function
+	(sp_ctrl_render): New logic, draw diamond shape
+
+	* src/desktop-events.c (sp_desktop_root_handler): Grab focus on
+	acetate enter notify
+
+	* src/knot.c (sp_knot_set_arg): Set shape attribute
+	(sp_knot_handler): Grab focus on enter notify
+	(sp_knot_update_ctrl): Set shape
+	(sp_knot_set_ctrl_state): New function
+
+	* src/node-context.c (sp_node_context_root_handler): Process keypresses
+
+	* src/nodepath.c (sp_nodepath_node_new): Connect "event" and set knot shape
+	(node_clicked): Toggle type on Ctrl-click
+	(node_event): New signal handler for keypresses
+	(sp_nodepath_set_node_type): Set knot shape
+
 2001-02-21  Michael Meeks  <michael@ximian.com>
 
 	* configure.in: depend on Bonobo >= 0.37.

@@ -43,14 +43,8 @@ enum {
 	LAST_SIGNAL
 };
 
-static void sp_marshal_BOOL__POINTER_UINT (GtkObject * object,
-	GtkSignalFunc func,
-	gpointer func_data,
-	GtkArg * args);
-static void sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object,
-	GtkSignalFunc func,
-	gpointer func_data,
-	GtkArg * args);
+static void sp_marshal_BOOL__POINTER_UINT (GtkObject * object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
+static void sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
 
 static void sp_knot_class_init (SPKnotClass * klass);
 static void sp_knot_init (SPKnot * knot);
@@ -60,6 +54,7 @@ static void sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id);
 static void sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 static void sp_knot_update_ctrl (SPKnot * knot);
+static void sp_knot_set_ctrl_state (SPKnot *knot);
 
 static GtkObjectClass * parent_class;
 static guint knot_signals[LAST_SIGNAL] = {0};
@@ -75,9 +70,7 @@ sp_knot_get_type (void)
 			sizeof (SPKnotClass),
 			(GtkClassInitFunc) sp_knot_class_init,
 			(GtkObjectInitFunc) sp_knot_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		knot_type = gtk_type_unique (gtk_object_get_type (), &knot_info);
 	}
@@ -223,12 +216,13 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 
 	switch (id) {
 	case ARG_SIZE:
-		knot->size = GTK_VALUE_UINT (* arg);
+		knot->size = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_ANCHOR:
-		knot->anchor = GTK_VALUE_ENUM (* arg);
+		knot->anchor = GTK_VALUE_ENUM (*arg);
 		break;
 	case ARG_SHAPE:
+		knot->shape = GTK_VALUE_ENUM (*arg);
 		break;
 	case ARG_FILL:
 		knot->fill[SP_KNOT_STATE_NORMAL] =
@@ -373,6 +367,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
+		gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (knot->item));
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, TRUE);
 		consumed = TRUE;
 		break;
@@ -457,13 +452,6 @@ sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
 	/* If user did not complete, we simply move knot to new position */
 
 	if (!done) {
-#if 0
-		/* Try the logic */
-		GSList * l;
-		for (l = knot->desktop->namedview->hguides; l != NULL; l = l->next) {
-			if (fabs (p->y - SP_GUIDE (l->data)->position) < 10.0) p->y = SP_GUIDE (l->data)->position;
-		}
-#endif
 		sp_knot_set_position (knot, p, state);
 	}
 }
@@ -525,6 +513,12 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 	g_assert (knot != NULL);
 	g_assert (SP_IS_KNOT (knot));
 
+	if (set) {
+		knot->flags |= flag;
+	} else {
+		knot->flags &= ~flag;
+	}
+
 	switch (flag) {
 	case SP_KNOT_VISIBLE:
 		if (set) {
@@ -534,58 +528,14 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 		}
 		break;
 	case SP_KNOT_MOUSEOVER:
-		if (!(knot->flags & SP_KNOT_DRAGGING)) {
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"fill_color",
-				knot->fill [set ? SP_KNOT_STATE_MOUSEOVER : SP_KNOT_STATE_NORMAL],
-				NULL);
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"stroke_color",
-				knot->stroke [set ? SP_KNOT_STATE_MOUSEOVER : SP_KNOT_STATE_NORMAL],
-				NULL);
-		}
-		break;
 	case SP_KNOT_DRAGGING:
-		if (set) {
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"fill_color",
-				knot->fill [SP_KNOT_STATE_DRAGGING],
-				NULL);
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"stroke_color",
-				knot->stroke [SP_KNOT_STATE_DRAGGING],
-				NULL);
-		} else if (knot->flags & SP_KNOT_MOUSEOVER) {
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"fill_color",
-				knot->fill [SP_KNOT_STATE_MOUSEOVER],
-				NULL);
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"stroke_color",
-				knot->stroke [SP_KNOT_STATE_MOUSEOVER],
-				NULL);
-		} else {
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"fill_color",
-				knot->fill [SP_KNOT_STATE_NORMAL],
-				NULL);
-			gtk_object_set (GTK_OBJECT (knot->item),
-				"stroke_color",
-				knot->stroke [SP_KNOT_STATE_NORMAL],
-				NULL);
-		}
+		sp_knot_set_ctrl_state (knot);
 		break;
 	case SP_KNOT_GRABBED:
 		break;
 	default:
 		g_assert_not_reached ();
 		break;
-	}
-
-	if (set) {
-		knot->flags |= flag;
-	} else {
-		knot->flags &= ~flag;
 	}
 }
 
@@ -594,9 +544,16 @@ sp_knot_update_ctrl (SPKnot * knot)
 {
 	if (!knot->item) return;
 
+	gtk_object_set (GTK_OBJECT (knot->item), "shape", knot->shape, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "anchor", knot->anchor, NULL);
 
+	sp_knot_set_ctrl_state (knot);
+}
+
+static void
+sp_knot_set_ctrl_state (SPKnot * knot)
+{
 	if (knot->flags & SP_KNOT_DRAGGING) {
 		gtk_object_set (GTK_OBJECT (knot->item),
 				"fill_color",

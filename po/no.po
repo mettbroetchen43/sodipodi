@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2001-02-16 11:25+0100\n"
+"POT-Creation-Date: 2001-02-25 01:39+0200\n"
 "PO-Revision-Date: 2001-02-16 11:28+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -248,7 +248,7 @@ msgstr "Bredde:"
 msgid "Height:"
 msgstr "Høyde:"
 
-#: glade/document.c:21 src/dialogs/align.c:98
+#: glade/document.c:21 src/dialogs/align.c:100
 msgid "Page"
 msgstr "Side"
 
@@ -677,7 +677,7 @@ msgstr "Zoom til tegning"
 msgid "Zoom to selection"
 msgstr "Zoom til utvalg"
 
-#: glade/toolbox.c:31 src/dialogs/align.c:108
+#: glade/toolbox.c:31 src/dialogs/align.c:110
 msgid "Selection"
 msgstr "Valg"
 
@@ -1268,27 +1268,27 @@ msgstr "Slett attributt"
 msgid "Do you want to delete attribute?"
 msgstr "Ønsker du å slette attributten?"
 
-#: src/main.c:48
+#: src/main.c:49
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr "Ikke bruk GUI. NB! hvis det oppgis bør dette være FØRSTE argument!"
 
-#: src/main.c:57
+#: src/main.c:58
 msgid "Open specified file (option string may be excluded)"
 msgstr "Åpne spesifisert fil (alternativ strenk kan eksluderes)"
 
-#: src/main.c:58 src/main.c:67
+#: src/main.c:59 src/main.c:68
 msgid "FILENAME"
 msgstr "FILNAVN"
 
-#: src/main.c:66
+#: src/main.c:67
 msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr "Skriv ut filer til spesifisert utfil (bruk '| program' for rør)"
 
-#: src/main.c:168
+#: src/main.c:169
 msgid "Oaf options"
 msgstr "Oaf alternativer"
 
-#: src/main.c:176
+#: src/main.c:177
 msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initialisere Bonobo"
 
@@ -1296,40 +1296,51 @@ msgstr "Kunne ikke initialisere Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunne ikke opprette sodipodi-svg-doc factory"
 
-#: src/file.c:80
+#: src/file.c:81
 msgid "Select file to open"
 msgstr "Velg fil som skal åpnes"
 
-#: src/file.c:151
+#: src/file.c:152
 msgid "Save file"
 msgstr "Lagre fil"
 
-#: src/file.c:251
+#: src/file.c:252
 msgid "Select file to import"
 msgstr "Velg fil som skal importeres"
 
-#: src/file.c:323
+#: src/file.c:324
 msgid "Export file"
 msgstr "Eksportér fil"
 
-#: src/file.c:383
+#: src/file.c:384
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnavn %s..): Forhåndsvisning"
 
-#: src/sp-image.c:225
+#: src/sp-image.c:241
 msgid "Broken bitmap"
 msgstr "Ødelagt bitkart"
 
-#: src/sp-image.c:226
+#: src/sp-image.c:242
 msgid "Color bitmap"
 msgstr "Farge bitkart"
 
-#: src/sp-item.c:168
+#: src/sp-item.c:171
 msgid "Unknown item :-("
 msgstr "Ukjent oppføring :-("
 
-#: src/sp-item-group.c:348
+#: src/sp-item.c:397
+#, fuzzy
+msgid "Reset transformation"
+msgstr "Fjern transformering"
+
+#. Toggle sensitivity
+#. "sensitive" attribute is handled in shape & image
+#: src/sp-item.c:404
+msgid "Toggle sensitivity"
+msgstr ""
+
+#: src/sp-item-group.c:346
 #, c-format
 msgid "Group of %d items"
 msgstr "Gruppe med %d oppføringer"
@@ -1342,23 +1353,23 @@ msgstr "En sti - hva nå enn det betyr"
 msgid "Text object"
 msgstr "Tekstobjekt"
 
-#: src/dialogs/align.c:78
+#: src/dialogs/align.c:80
 msgid "Last selected"
 msgstr "Sist valgte"
 
-#: src/dialogs/align.c:83
+#: src/dialogs/align.c:85
 msgid "First selected"
 msgstr "Først valgte"
 
-#: src/dialogs/align.c:88
+#: src/dialogs/align.c:90
 msgid "Biggest item"
 msgstr "Største oppføring"
 
-#: src/dialogs/align.c:93
+#: src/dialogs/align.c:95
 msgid "Smallest item"
 msgstr "Minste oppføring"
 
-#: src/dialogs/align.c:103
+#: src/dialogs/align.c:105
 msgid "Drawing"
 msgstr "Tegning"
 

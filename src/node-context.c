@@ -1,5 +1,6 @@
 #define SP_NODE_CONTEXT_C
 
+#include <gdk/gdkkeysyms.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
@@ -187,6 +188,52 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			break;
 		default:
 			break;
+		}
+		break;
+	case GDK_KEY_PRESS:
+		if ((event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) {
+			switch (event->key.keyval) {
+			case GDK_Insert:
+			case GDK_KP_Insert:
+				sp_node_selected_add_node ();
+				ret = TRUE;
+				break;
+			case GDK_Delete:
+			case GDK_KP_Delete:
+				sp_node_selected_delete ();
+				ret = TRUE;
+				break;
+			case GDK_C:
+				sp_node_selected_set_type (SP_PATHNODE_CUSP);
+				ret = TRUE;
+				break;
+			case GDK_S:
+				sp_node_selected_set_type (SP_PATHNODE_SMOOTH);
+				ret = TRUE;
+				break;
+			case GDK_Y:
+				sp_node_selected_set_type (SP_PATHNODE_SYMM);
+				ret = TRUE;
+				break;
+			case GDK_B:
+				sp_node_selected_break ();
+				ret = TRUE;
+				break;
+			case GDK_J:
+				sp_node_selected_join ();
+				ret = TRUE;
+				break;
+			case GDK_L:
+				sp_node_selected_set_line_type (ART_LINETO);
+				ret = TRUE;
+				break;
+			case GDK_K:
+				sp_node_selected_set_line_type (ART_CURVETO);
+				ret = TRUE;
+				break;
+			default:
+				break;
+			}
 		}
 		break;
 	default:

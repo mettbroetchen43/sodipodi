@@ -1,11 +1,13 @@
 #define NODEPATH_C
 
 #include <math.h>
+#include <gdk/gdkkeysyms.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
 #include "helper/sp-ctrlline.h"
 #include "knot.h"
 #include "sodipodi.h"
+#include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
@@ -21,9 +23,9 @@
 #define NODE_STROKE 0x3f3f3f7f
 #define NODE_FILL_HI 0xff7f7f7f
 #define NODE_STROKE_HI 0xff3f3fbf
-#define NODE_FILL_SEL 0xbfbfbf7f
-#define NODE_STROKE_SEL 0x0000ffbf
-#define NODE_FILL_SEL_HI 0x7f7fffbf
+#define NODE_FILL_SEL 0x7f7fff7f
+#define NODE_STROKE_SEL 0x3f3fffbf
+#define NODE_FILL_SEL_HI 0x3f3fffbf
 #define NODE_STROKE_SEL_HI 0x3f3fffff
 #define KNOT_FILL 0xbfbfbf7f
 #define KNOT_STROKE 0x3f3f3f7f
@@ -600,6 +602,13 @@ sp_nodepath_set_node_type (SPPathNode * node, SPPathNodeType type)
 	}
 
 	node->type = type;
+
+	if (node->type == SP_PATHNODE_CUSP) {
+		gtk_object_set (GTK_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
+	} else {
+		gtk_object_set (GTK_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
+	}
+
 	sp_node_adjust_knots (node);
 
 	return node;
@@ -1220,6 +1229,42 @@ sp_node_adjust_knots (SPPathNode * node)
  * Knot events
  */
 
+static gboolean
+node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
+{
+	gint ret;
+
+	if ((event->type == GDK_KEY_PRESS) && !(event->key.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK))) {
+		ret = FALSE;
+		switch (event->key.keyval) {
+		case GDK_Delete:
+		case GDK_KP_Delete:
+			sp_nodepath_node_destroy (n);
+			ret = TRUE;
+			break;
+		case GDK_c:
+			sp_nodepath_set_node_type (n, SP_PATHNODE_CUSP);
+			ret = TRUE;
+			break;
+		case GDK_s:
+			sp_nodepath_set_node_type (n, SP_PATHNODE_SMOOTH);
+			ret = TRUE;
+			break;
+		case GDK_y:
+			sp_nodepath_set_node_type (n, SP_PATHNODE_SYMM);
+			ret = TRUE;
+			break;
+		case GDK_b:
+			sp_nodepath_node_break (n);
+			ret = TRUE;
+			break;
+		}
+		return ret;
+	}
+
+	return FALSE;
+}
+
 static void
 node_clicked (SPKnot * knot, guint state, gpointer data)
 {
@@ -1227,7 +1272,15 @@ node_clicked (SPKnot * knot, guint state, gpointer data)
 
 	n = (SPPathNode *) data;
 
-	sp_nodepath_node_select (n, (state & GDK_SHIFT_MASK));
+	if (state & GDK_CONTROL_MASK) {
+		if (n->type == SP_PATHNODE_CUSP) {
+			sp_nodepath_set_node_type (n, SP_PATHNODE_SMOOTH);
+		} else {
+			sp_nodepath_set_node_type (n, SP_PATHNODE_CUSP);
+		}
+	} else {
+		sp_nodepath_node_select (n, (state & GDK_SHIFT_MASK));
+	}
 }
 
 static void
@@ -1504,13 +1557,19 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	n->knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->knot, pos, 0);
 	gtk_object_set (GTK_OBJECT (n->knot),
-			"size", 8,
 			"anchor", GTK_ANCHOR_CENTER,
 			"fill", NODE_FILL,
 			"fill_mouseover", NODE_FILL_HI,
 			"stroke", NODE_STROKE,
 			"stroke_mouseover", NODE_STROKE_HI,
 			NULL);
+	if (n->type == SP_PATHNODE_CUSP) {
+		gtk_object_set (GTK_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
+	} else {
+		gtk_object_set (GTK_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
+	}
+	gtk_signal_connect (GTK_OBJECT (n->knot), "event",
+			    GTK_SIGNAL_FUNC (node_event), n);
 	gtk_signal_connect (GTK_OBJECT (n->knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_clicked), n);
 	gtk_signal_connect (GTK_OBJECT (n->knot), "grabbed",
@@ -1524,7 +1583,8 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	n->p.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->p.knot, ppos, 0);
 	gtk_object_set (GTK_OBJECT (n->p.knot),
-			"size", 5,
+			"shape", SP_KNOT_SHAPE_DIAMOND,
+			"size", 7,
 			"anchor", GTK_ANCHOR_CENTER,
 			"fill", KNOT_FILL,
 			"fill_mouseover", KNOT_FILL_HI,
@@ -1549,7 +1609,8 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	n->n.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->n.knot, npos, 0);
 	gtk_object_set (GTK_OBJECT (n->n.knot),
-			"size", 5,
+			"shape", SP_KNOT_SHAPE_DIAMOND,
+			"size", 7,
 			"anchor", GTK_ANCHOR_CENTER,
 			"fill", KNOT_FILL,
 			"fill_mouseover", KNOT_FILL_HI,

@@ -47,8 +47,11 @@ sp_canvas_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * de
 void
 sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
-  sp_event_context_root_handler (desktop->event_context, event);
-
+	if (event->type == GDK_ENTER_NOTIFY) {
+		/* fixme: should it go here? */
+		gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
+	}
+	sp_event_context_root_handler (desktop->event_context, event);
 }
 
 /*

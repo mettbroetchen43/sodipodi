@@ -320,7 +320,6 @@ sp_desktop_init (SPDesktop * desktop)
                           0);
 
         gtk_widget_grab_focus (GTK_WIDGET (desktop->canvas));
-
 }
 
 static void
@@ -414,7 +413,6 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	desktop->main = (GnomeCanvasGroup *) gnome_canvas_item_new (root,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
-        gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,

@@ -18,21 +18,30 @@ BEGIN_GNOME_DECLS
 #define SP_IS_CTRL(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_CTRL))
 #define SP_IS_CTRL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_CTRL))
 
-
 typedef struct _SPCtrl SPCtrl;
 typedef struct _SPCtrlClass SPCtrlClass;
+
+typedef enum {
+	SP_CTRL_SHAPE_SQUARE,
+	SP_CTRL_SHAPE_DIAMOND,
+	SP_CTRL_SHAPE_CIRCLE,
+	SP_CTRL_SHAPE_BITMAP,
+	SP_CTRL_SHAPE_IMAGE
+} SPCtrlShapeType;
 
 struct _SPCtrl {
 	GnomeCanvasItem item;
 
+	SPCtrlShapeType shape;
 	GtkAnchorType anchor;
-	gint size;			/* Width in pixels */
+	gint span;
 	guint defined : 1;
 	guint shown   : 1;
 	guint filled  : 1;
 	guint stroked : 1;
 	guint32 fill_color;
 	guint32 stroke_color;
+
 	ArtIRect box;			/* NB! x1 & y1 are included */
 };
 

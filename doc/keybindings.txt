@@ -101,10 +101,28 @@ move:	Ctrl	- move either horizontal or vertical
 - keybindings for node edit context
 -----------------------------------
 
+c - make hilighted node cusp
+s - make hilighted node smooth
+y - make hilighted node symmetrical
+b - break hilighted node
+Del - delete hilighted node
+Shift l - make selected segment(s) line
+Shift k - make selected segment(s) curve
+Shift c - make selected node(s) cusp
+Shift s - make selected node(s) smooth
+Shift y - make selected node(s) symmetrical
+Shift j - join selected nodes
+Shift b - break selected node(s)
+Shift l - make selected segment(s) line
+Shift k - make selected segment(s) curve
+Shift Del - delete selected node(s)
+Shift Ins - insert new node(s) to selected segment(s)
+
 * modifier
 	
 	Shift + drag - add to selection  
-
+	Shift + click - add to selection  
+	Ctrl + click - toggle smooth/cusp
 
 #----------------------------
 # transformation dialog

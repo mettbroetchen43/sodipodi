@@ -22,6 +22,7 @@
 
 enum {
 	ARG_0,
+	ARG_SHAPE,
 	ARG_ANCHOR,
 	ARG_SIZE,
 	ARG_FILLED,
@@ -40,8 +41,7 @@ static void sp_ctrl_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static void sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
 
-static double sp_ctrl_point (GnomeCanvasItem *item, double x, double y,
-			     int cx, int cy, GnomeCanvasItem **actual_item);
+static double sp_ctrl_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
 
 
 static GnomeCanvasItemClass *parent_class;
@@ -50,7 +50,6 @@ GtkType
 sp_ctrl_get_type (void)
 {
 	static GtkType ctrl_type = 0;
-
 	if (!ctrl_type) {
 		GtkTypeInfo ctrl_info = {
 			"SPCtrl",
@@ -58,9 +57,7 @@ sp_ctrl_get_type (void)
 			sizeof (SPCtrlClass),
 			(GtkClassInitFunc) sp_ctrl_class_init,
 			(GtkObjectInitFunc) sp_ctrl_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		ctrl_type = gtk_type_unique (gnome_canvas_item_get_type (), &ctrl_info);
 	}
@@ -78,6 +75,7 @@ sp_ctrl_class_init (SPCtrlClass *klass)
 
 	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
 
+	gtk_object_add_arg_type ("SPCtrl::shape", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_SHAPE);
 	gtk_object_add_arg_type ("SPCtrl::anchor", GTK_TYPE_ANCHOR_TYPE, GTK_ARG_READWRITE, ARG_ANCHOR);
 	gtk_object_add_arg_type ("SPCtrl::size", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_SIZE);
 	gtk_object_add_arg_type ("SPCtrl::filled", GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_FILLED);
@@ -97,14 +95,16 @@ sp_ctrl_class_init (SPCtrlClass *klass)
 static void
 sp_ctrl_init (SPCtrl *ctrl)
 {
+	ctrl->shape = SP_CTRL_SHAPE_SQUARE;
 	ctrl->anchor = GTK_ANCHOR_CENTER;
-	ctrl->size = 8;
+	ctrl->span = 3;
 	ctrl->defined = TRUE;
 	ctrl->shown = FALSE;
 	ctrl->filled = 1;
 	ctrl->stroked = 0;
 	ctrl->fill_color = 0x000000ff;
 	ctrl->stroke_color = 0x000000ff;
+
 	ctrl->box.x0 = ctrl->box.y0 = ctrl->box.x1 = ctrl->box.y1 = 0;
 }
 
@@ -132,13 +132,17 @@ sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	ctrl = SP_CTRL (object);
 
 	switch (arg_id) {
+	case ARG_SHAPE:
+		ctrl->shape = GTK_VALUE_ENUM (*arg);
+		gnome_canvas_item_request_update (item);
+		break;
 	case ARG_ANCHOR:
 		ctrl->anchor = GTK_VALUE_ENUM (*arg);
 		gnome_canvas_item_request_update (item);
 		break;
 	case ARG_SIZE:
-		ctrl->size = (gint) (GTK_VALUE_DOUBLE (*arg) + 0.5);
-		ctrl->defined = (ctrl->size > 2);
+		ctrl->span = (gint) ((GTK_VALUE_DOUBLE (*arg) - 1.0) / 2.0 + 0.5);
+		ctrl->defined = (ctrl->span > 0);
 		gnome_canvas_item_request_update (item);
 		break;
 	case ARG_FILLED:
@@ -174,7 +178,7 @@ sp_ctrl_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		GTK_VALUE_ENUM (*arg) = ctrl->anchor;
 		break;
 	case ARG_SIZE:
-		GTK_VALUE_DOUBLE (*arg) = ctrl->size;
+		GTK_VALUE_DOUBLE (*arg) = 2.0 * ctrl->span + 1.0;
 		break;
 	default:
 		arg->type = GTK_TYPE_INVALID;
@@ -183,118 +187,65 @@ sp_ctrl_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 static void
-sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
-{
-	SPCtrl *ctrl;
-	guint32 color;
-	guchar * p;
-	gint x, y;
-	guint alpha, tmp;
-	guint bg_r, fg_r, bg_g, fg_g, bg_b, fg_b;
-	gboolean doit;
-
-	ctrl = SP_CTRL (item);
-
-	if (!ctrl->defined) return;
-
-	gnome_canvas_buf_ensure_buf (buf);
-	buf->is_bg = FALSE;
-
-	for (y = MAX (ctrl->box.y0, buf->rect.y0); (y <= ctrl->box.y1) && (y < buf->rect.y1); y++)
-	for (x = MAX (ctrl->box.x0, buf->rect.x0); (x <= ctrl->box.x1) && (x < buf->rect.x1); x++) {
-		doit = ctrl->filled;
-		color = ctrl->fill_color;
-		if ((x == ctrl->box.x0) || (y == ctrl->box.y0) || (x == ctrl->box.x1) || (y == ctrl->box.y1)) {
-			if (ctrl->stroked) {
-				color = ctrl->stroke_color;
-				doit = TRUE;
-			}
-		}
-
-		if (doit) {
-		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0);
-		alpha = color & 0xff;
-		bg_r = * p;
-		fg_r = (color >> 24) & 0xff;
-		tmp = (fg_r - bg_r) * alpha;
-		* p = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		bg_g = * (p + 1);
-		fg_g = (color >> 16) & 0xff;
-		tmp = (fg_g - bg_g) * alpha;
-		* (p + 1) = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		bg_b = * (p + 2);
-		fg_b = (color >> 8) & 0xff;
-		tmp = (fg_b - bg_b) * alpha;
-		* (p + 2) = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		}
-	}
-
-	ctrl->shown = TRUE;
-}
-
-static void
 sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 {
 	SPCtrl *ctrl;
-	ArtPoint p;
+	gint x, y;
 
 	ctrl = SP_CTRL (item);
 
-	if (parent_class->update)
-		(* parent_class->update) (item, affine, clip_path, flags);
+	if (((GnomeCanvasItemClass *) parent_class)->update)
+		(* ((GnomeCanvasItemClass *) parent_class)->update) (item, affine, clip_path, flags);
 
 	gnome_canvas_item_reset_bounds (item);
 
-	if (ctrl->shown)
+	if (ctrl->shown) {
 		gnome_canvas_request_redraw (item->canvas, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
+	}
 
-	if (!ctrl->defined)
-		return;
+	if (!ctrl->defined) return;
 
-	p.x = 0.0;
-	p.y = 0.0;
-	art_affine_point (&p, &p, affine);
-	p.x -= ctrl->size / 2;
-	p.y -= ctrl->size / 2;
+	x = (gint) affine[4] - ctrl->span;
+	y = (gint) affine[5] - ctrl->span;
 
 	switch (ctrl->anchor) {
-		case GTK_ANCHOR_N:
-		case GTK_ANCHOR_CENTER:
-		case GTK_ANCHOR_S:
-			break;
-		case GTK_ANCHOR_NW:
-		case GTK_ANCHOR_W:
-		case GTK_ANCHOR_SW:
-			p.x += ctrl->size / 2;
-			break;
-		case GTK_ANCHOR_NE:
-		case GTK_ANCHOR_E:
-		case GTK_ANCHOR_SE:
-			p.x -= ctrl->size / 2;
-			break;
+	case GTK_ANCHOR_N:
+	case GTK_ANCHOR_CENTER:
+	case GTK_ANCHOR_S:
+		break;
+	case GTK_ANCHOR_NW:
+	case GTK_ANCHOR_W:
+	case GTK_ANCHOR_SW:
+		x += ctrl->span;
+		break;
+	case GTK_ANCHOR_NE:
+	case GTK_ANCHOR_E:
+	case GTK_ANCHOR_SE:
+		x -= (ctrl->span + 1);
+		break;
 	}
 
 	switch (ctrl->anchor) {
-		case GTK_ANCHOR_W:
-		case GTK_ANCHOR_CENTER:
-		case GTK_ANCHOR_E:
-			break;
-		case GTK_ANCHOR_NW:
-		case GTK_ANCHOR_N:
-		case GTK_ANCHOR_NE:
-			p.y += ctrl->size / 2;
-			break;
-		case GTK_ANCHOR_SW:
-		case GTK_ANCHOR_S:
-		case GTK_ANCHOR_SE:
-			p.y -= ctrl->size / 2;
-			break;
+	case GTK_ANCHOR_W:
+	case GTK_ANCHOR_CENTER:
+	case GTK_ANCHOR_E:
+		break;
+	case GTK_ANCHOR_NW:
+	case GTK_ANCHOR_N:
+	case GTK_ANCHOR_NE:
+		y += ctrl->span;
+		break;
+	case GTK_ANCHOR_SW:
+	case GTK_ANCHOR_S:
+	case GTK_ANCHOR_SE:
+		y -= (ctrl->span + 1);
+		break;
 	}
 
-	ctrl->box.x0 = (gint) (p.x + 0.5);
-	ctrl->box.y0 = (gint) (p.y + 0.5);
-	ctrl->box.x1 = ctrl->box.x0 + ctrl->size - 1;
-	ctrl->box.y1 = ctrl->box.y0 + ctrl->size - 1;
+	ctrl->box.x0 = x;
+	ctrl->box.y0 = y;
+	ctrl->box.x1 = ctrl->box.x0 + 2 * ctrl->span;
+	ctrl->box.y1 = ctrl->box.y0 + 2 * ctrl->span;
 
 	gnome_canvas_update_bbox (item, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
 
@@ -305,64 +256,123 @@ sp_ctrl_point (GnomeCanvasItem *item, double x, double y,
 	       int cx, int cy, GnomeCanvasItem **actual_item)
 {
 	SPCtrl *ctrl;
-	double affine[6];
-	ArtPoint p;
-	double rx,ry,x0,y0,x1,y1,dx,dy;
 
 	ctrl = SP_CTRL (item);
 
 	*actual_item = item;
 
-	gnome_canvas_item_i2c_affine (item, affine);
-	p.x = 0.0;
-	p.y = 0.0;
-	art_affine_point (&p, &p, affine);
+	if ((cx >= ctrl->box.x0) && (cx <= ctrl->box.x1) && (cy >= ctrl->box.y0) && (cy <= ctrl->box.y1)) return 0.0;
 
-	p.x += ctrl->size / 2;
-	p.y += ctrl->size / 2;
+	return 1e18;
+}
 
-	switch (ctrl->anchor) {
-		case GTK_ANCHOR_NE:
-		case GTK_ANCHOR_E:
-		case GTK_ANCHOR_SE:
-			p.x -= ctrl->size / 2;
-		case GTK_ANCHOR_N:
-		case GTK_ANCHOR_CENTER:
-		case GTK_ANCHOR_S:
-			p.x -= ctrl->size / 2;
-		default:
+#define set_channel(p,v,a) ((p) + (((((v) - (p)) * (a)) + 0x80) >> 8))
+
+static void
+draw_line (GnomeCanvasBuf *buf, gint x0, gint x1, gint y, guint8 r, guint8 g, guint8 b, guint8 a)
+{
+	gint x;
+	guchar *p;
+
+	x0 = MAX (x0, buf->rect.x0);
+	x1 = MIN (x1 + 1, buf->rect.x1);
+
+	p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
+
+	for (x = x0; x < x1; x++) {
+		*p++ = set_channel (*p, (guint) r, (guint) a);
+		*p++ = set_channel (*p, (guint) g, (guint) a);
+		*p++ = set_channel (*p, (guint) b, (guint) a);
+	}
+}
+
+static void
+draw_point (GnomeCanvasBuf *buf, gint x, gint y, guint8 r, guint8 g, guint8 b, guint8 a)
+{
+	guchar *p;
+
+	if (x < buf->rect.x0) return;
+	if (x >= buf->rect.x1) return;
+
+	p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
+
+	*p++ = set_channel (*p, (guint) r, (guint) a);
+	*p++ = set_channel (*p, (guint) g, (guint) a);
+	*p++ = set_channel (*p, (guint) b, (guint) a);
+}
+
+static void
+sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+{
+	SPCtrl *ctrl;
+	guint8 fr, fg, fb, fa, sr, sg, sb, sa;
+
+	ctrl = SP_CTRL (item);
+
+	if (!ctrl->defined) return;
+	if ((!ctrl->filled) && (!ctrl->stroked)) return;
+
+	gnome_canvas_buf_ensure_buf (buf);
+	buf->is_bg = FALSE;
+
+	fr = (ctrl->fill_color >> 24) & 0xff;
+	fg = (ctrl->fill_color >> 16) & 0xff;
+	fb = (ctrl->fill_color >> 8) & 0xff;
+	fa = (ctrl->fill_color) & 0xff;
+	if (ctrl->stroked) {
+		sr = (ctrl->stroke_color >> 24) & 0xff;
+		sg = (ctrl->stroke_color >> 16) & 0xff;
+		sb = (ctrl->stroke_color >> 8) & 0xff;
+		sa = (ctrl->stroke_color) & 0xff;
+	} else {
+		sr = fr;
+		sg = fg;
+		sb = fb;
+		sa = fa;
 	}
 
-	switch (ctrl->anchor) {
-		case GTK_ANCHOR_SW:
-		case GTK_ANCHOR_S:
-		case GTK_ANCHOR_SE:
-			p.y -= ctrl->size / 2;
-		case GTK_ANCHOR_W:
-		case GTK_ANCHOR_CENTER:
-		case GTK_ANCHOR_E:
-			p.y -= ctrl->size / 2;
-		default:
+	if (ctrl->shape == SP_CTRL_SHAPE_SQUARE) {
+		gint y0, y1, y;
+		y0 = MAX (ctrl->box.y0, buf->rect.y0);
+		y1 = MIN (ctrl->box.y1, buf->rect.y1 - 1);
+		if (y0 == ctrl->box.y0) {
+			draw_line (buf, ctrl->box.x0, ctrl->box.x1, y0, sr, sg, sb, sa);
+			y0 += 1;
+		}
+		if (y1 == ctrl->box.y1) {
+			draw_line (buf, ctrl->box.x0, ctrl->box.x1, y1, sr, sg, sb, sa);
+			y1 -= 1;
+		}
+		for (y = y0; y <= y1; y++) {
+			draw_point (buf, ctrl->box.x0, y, sr, sg, sb, sa);
+			if (ctrl->filled) draw_line (buf, ctrl->box.x0 + 1, ctrl->box.x1 - 1, y, sr, sg, sb, sa);
+			draw_point (buf, ctrl->box.x1, y, sr, sg, sb, sa);
+		}
+	} else if (ctrl->shape == SP_CTRL_SHAPE_DIAMOND) {
+		gint cx, cy, y0, y1, y;
+		cx = (ctrl->box.x0 + ctrl->box.x1) / 2;
+		cy = (ctrl->box.y0 + ctrl->box.y1) / 2;
+		y0 = MAX (ctrl->box.y0, buf->rect.y0);
+		y1 = MIN (ctrl->box.y1, buf->rect.y1 - 1);
+		if (y0 == ctrl->box.y0) {
+			draw_point (buf, cx, y0, sr, sg, sb, sa);
+			y0 += 1;
+		}
+		if (y1 == ctrl->box.y1) {
+			draw_point (buf, cx, y1, sr, sg, sb, sa);
+			y1 -= 1;
+		}
+		for (y = y0; y <= y1; y++) {
+			gint r, s;
+			r = (cy >= y) ? cy - y : y - cy;
+			s = ctrl->span - r;
+			draw_point (buf, cx - s, y, sr, sg, sb, sa);
+			if (ctrl->filled) draw_line (buf, cx - s + 1, cx + s - 1, y, sr, sg, sb, sa);
+			draw_point (buf, cx + s, y, sr, sg, sb, sa);
+		}
 	}
-	rx = cx;
-	ry = cy;
-	x0 = p.x - ctrl->size / 2;
-	y0 = p.y - ctrl->size / 2;
-	x1 = p.x + ctrl->size / 2;
-	y1 = p.y + ctrl->size / 2;
 
-	if ((rx >= x0) && (rx <= x1) && (ry >= y0) && (ry <= y1))
-		return 0.0;
-
-	if (rx < x0) dx = x0 - rx;
-	else if (rx > x1) dx = rx - x1;
-	else dx = 0.0;
-
-	if (ry < y0) dy = y0 - ry;
-	else if (ry > y1) dy = ry - y1;
-	else dy = 0.0;
-
-	return sqrt (dx * dx + dy * dy);
+	ctrl->shown = TRUE;
 }
 
 void
