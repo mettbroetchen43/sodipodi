@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the sodipodi package.
 # Valek Filippov <frob@df.ru>, 2000.
 # Vitaly Lipatov <lav@altlinux.ru>, 2002.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2002-10-07 21:53+0200\n"
-"PO-Revision-Date: 2002-09-21 15:57MSK\n"
+"Project-Id-Version: sodipodi 0.27\n"
+"POT-Creation-Date: 2002-10-09 13:04+0200\n"
+"PO-Revision-Date: 2002-10-28 00:15MSK\n"
 "Last-Translator: Vitaly Lipatov <lav@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -276,7 +277,7 @@ msgstr "Соединение:"
 #. Layout
 #: glade/object_props.glade.h:25 src/dialogs/text-edit.c:117
 msgid "Layout"
-msgstr "Отступ"
+msgstr "Размещение"
 
 #: glade/object_props.glade.h:26
 msgid "Miter join"
@@ -828,8 +829,7 @@ msgstr "Создать новый рисунок"
 
 #: glade/toolbox.glade.h:38
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr ""
-"Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
+msgstr "Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
 
 #: glade/toolbox.glade.h:40
 msgid "Nope !"
@@ -915,7 +915,7 @@ msgstr "Разгруппировать выбранные объекты"
 
 #: glade/toolbox.glade.h:63
 msgid "Unsymmetric"
-msgstr "Асимметрично "
+msgstr "Асимметрично"
 
 #: glade/toolbox.glade.h:64
 msgid "Yep !"
@@ -1470,22 +1470,20 @@ msgid "Fill style"
 msgstr "Стиль заливки"
 
 #: src/dialogs/fill-style.c:111
-#, fuzzy
 msgid "Fill Rule"
-msgstr "Стиль заливки"
+msgstr "Пересечения"
 
 #: src/dialogs/fill-style.c:125
-#, fuzzy
 msgid "nonzero"
-msgstr "нет"
+msgstr "как одно целое"
 
 #: src/dialogs/fill-style.c:130
 msgid "evenodd"
-msgstr ""
+msgstr "не заливать"
 
 #: src/dialogs/item-properties.c:165
 msgid "Item is reference"
-msgstr "Элемент -- ссылка"
+msgstr "Элемент является ссылкой"
 
 #: src/dialogs/item-properties.c:243
 msgid "The ID is not valid"
@@ -1613,7 +1611,7 @@ msgstr "Стиль рамки"
 
 #: src/dialogs/object-properties.c:153
 msgid "Apply to:"
-msgstr ""
+msgstr "Применить к:"
 
 #: src/dialogs/object-properties.c:164
 msgid "Selected objects"
@@ -1805,7 +1803,7 @@ msgstr "Умолчания"
 #. rx_ratio
 #: src/rect-context.c:412 src/rect-context.c:424
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Округляющий коэффициент для X:"
 
 #: src/select-context.c:635
 msgid "Visual transformation"
@@ -2129,7 +2127,7 @@ msgstr "Вид"
 #. Drawing mode submenu
 #: src/interface.c:430
 msgid "Drawing Mode"
-msgstr "Режим рисования"
+msgstr "Инструменты"
 
 #. Dialog submenu
 #: src/interface.c:436
@@ -2138,8 +2136,7 @@ msgstr "Диалоги"
 
 #: src/main.c:105
 msgid "Do not use X server (only process files from console)"
-msgstr ""
-"Не использовать X-сервер (выполнять только обработку файлов из консоли)"
+msgstr "Не использовать X-сервер (выполнять только обработку файлов из консоли)"
 
 #: src/main.c:108
 msgid "Try to use X server even if $DISPLAY is not set)"
@@ -2165,8 +2162,7 @@ msgstr "Экспортировать документ в файл PNG"
 
 #: src/main.c:120
 msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
-msgstr ""
-"Разрешение растра при экспортировании, в точках на дюйм (по умолчанию 72.0)"
+msgstr "Разрешение растра при экспортировании, в точках на дюйм (по умолчанию 72.0)"
 
 #: src/main.c:121
 msgid "DPI"
@@ -2197,20 +2193,17 @@ msgstr "Без названия"
 #. Show nice dialog box
 #: src/sodipodi.c:361
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
-"В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
+msgstr "В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
 
 #: src/sodipodi.c:362
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Автоматическое резервное копирование несохранённых документы было выполнено "
 "в следующие места:\n"
 
 #: src/sodipodi.c:363
 msgid "Automatic backup of following documents failed:\n"
-msgstr ""
-"Автоматическое резервное копирование следующих документов не удалось:\n"
+msgstr "Автоматическое резервное копирование следующих документов не удалось:\n"
 
 #. Not a regular file
 #: src/sodipodi.c:452
@@ -2359,28 +2352,28 @@ msgstr "Свойства изображения"
 msgid "Trace"
 msgstr "Трассировка"
 
-#: src/sp-image.c:943
+#: src/sp-image.c:941
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Ошибка записи %s: %s"
 
-#: src/sp-image.c:947
+#: src/sp-image.c:945
 msgid "Ok"
 msgstr "Ok"
 
-#: src/sp-image.c:975
+#: src/sp-image.c:973
 msgid "Untitled"
 msgstr "Без названия"
 
-#: src/sp-image.c:980
+#: src/sp-image.c:978
 msgid "Document Name:"
 msgstr "Название документа:"
 
-#: src/sp-image.c:993
+#: src/sp-image.c:991
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/sp-image.c:999
+#: src/sp-image.c:997
 msgid "Image URI:"
 msgstr "Путь к изображению:"
 
@@ -2472,22 +2465,20 @@ msgstr "Рисование"
 #. Family frame
 #: src/widgets/font-selector.c:143
 msgid "Font family"
-msgstr ""
+msgstr "Семейство шрифта"
 
 #. Style frame
 #: src/widgets/font-selector.c:171
-#, fuzzy
 msgid "Style"
-msgstr " Стиль "
+msgstr "Стиль"
 
 #: src/widgets/font-selector.c:206
-#, fuzzy
 msgid "Font size:"
-msgstr "Не сохранять"
+msgstr "Размер шрифта:"
 
 #: src/widgets/font-selector.c:519
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "АаБбЭэЯяAaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-vector.c:241
 msgid "No document selected"
@@ -2513,48 +2504,46 @@ msgstr "Конечный цвет"
 msgid "Gradient vector"
 msgstr "Вектор градиента"
 
-#: src/widgets/paint-selector.c:536
+#: src/widgets/paint-selector.c:565
 msgid "No objects"
 msgstr "Нет объектов"
 
-#: src/widgets/paint-selector.c:550
+#: src/widgets/paint-selector.c:579
 msgid "Multiple styles"
 msgstr "Множество стилей"
 
-#: src/widgets/paint-selector.c:564
+#: src/widgets/paint-selector.c:593
 msgid "No paint"
 msgstr "Нет заливки"
 
 #. Label
-#: src/widgets/paint-selector.c:655
+#: src/widgets/paint-selector.c:684
 msgid "Mode:"
 msgstr "Режим:"
 
-#: src/widgets/paint-selector.c:665
+#: src/widgets/paint-selector.c:694
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:671
+#: src/widgets/paint-selector.c:700
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:677
+#: src/widgets/paint-selector.c:706
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:711
+#: src/widgets/paint-selector.c:740
 msgid "Color paint"
 msgstr "Цветная заливка"
 
-#: src/widgets/paint-selector.c:779
-#, fuzzy
+#: src/widgets/paint-selector.c:809
 msgid "Linear gradient"
-msgstr "Добавить новый градиент"
+msgstr "Линейный градиент"
 
-#: src/widgets/paint-selector.c:781
-#, fuzzy
+#: src/widgets/paint-selector.c:812
 msgid "Radial gradient"
-msgstr "Добавить новый градиент"
+msgstr "Круговой градиент"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2592,17 +2581,3 @@ msgstr ""
 "Создать новую кривую. Нажимайте '+' для переключения Добавлять/Создавать "
 "новый"
 
-#~ msgid "Style to change:"
-#~ msgstr "Изменяемый стиль:"
-
-#~ msgid "Reset"
-#~ msgstr "Сбросить"
-
-#~ msgid "Linear"
-#~ msgstr "Линейное"
-
-#~ msgid "Radial"
-#~ msgstr "Радиальное"
-
-#~ msgid "Gradient paint"
-#~ msgstr "Градиентная заливка"
