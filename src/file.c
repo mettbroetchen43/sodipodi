@@ -389,7 +389,7 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 unsigned int
 sp_file_import (SPDocument *doc, const unsigned char *filename)
 {
-	static const char *imgext[] = {"png", "jpg", "jpeg", "tif", "tiff", "bmp", "xpm", NULL};
+	static const char *imgext[] = {"png", "jpg", "jpeg", "gif", "tif", "tiff", "bmp", "xpm", NULL};
 	const unsigned char *e, *docbase, *relname;
 	unsigned int i;
 	SPReprDoc *rnewdoc;
