@@ -47,7 +47,7 @@ struct _NRNodePath *nr_node_path_concat (struct _NRNodePath *paths[], unsigned i
 
 struct _NRNodePath *nr_node_path_uncross (struct _NRNodePath *path);
 
-struct _NRNodePath *nr_node_path_rewind (struct _NRNodePath *path);
+struct _NRNodePath *nr_node_path_rewind (struct _NRNodePath *path, int ngroups, int *and, int *or, int *self);
 
 /*
  * Returns TRUE if segments intersect

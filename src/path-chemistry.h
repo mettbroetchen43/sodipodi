@@ -21,6 +21,13 @@ void sp_selected_path_to_curves (void);
 
 void sp_path_cleanup (SPPath *path);
 
-void sp_selected_path_uncross (void);
+enum {
+	SP_PATH_UNCROSS,
+	SP_PATH_UNION,
+	SP_PATH_INTERSECTION,
+	SP_PATH_SUBTRACTION
+};
+
+void sp_selected_path_uncross (unsigned int operation);
 
 #endif

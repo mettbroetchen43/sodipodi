@@ -90,7 +90,16 @@ sp_selection_action_perform (SPAction *action, void *config, void *data)
 		sp_selected_path_break_apart ();
 		break;
 	case SP_VERB_SELECTION_UNCROSS:
-		sp_selected_path_uncross ();
+		sp_selected_path_uncross (SP_PATH_UNCROSS);
+		break;
+	case SP_VERB_SELECTION_UNION:
+		sp_selected_path_uncross (SP_PATH_UNION);
+		break;
+	case SP_VERB_SELECTION_INTERSECTION:
+		sp_selected_path_uncross (SP_PATH_INTERSECTION);
+		break;
+	case SP_VERB_SELECTION_SUBTRACTION:
+		sp_selected_path_uncross (SP_PATH_SUBTRACTION);
 		break;
 	case SP_VERB_SELECTION_TRANSFORM:
 		sp_selection_perform_transform (dt, (SPRepr *) config);

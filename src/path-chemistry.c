@@ -302,7 +302,7 @@ sp_path_cleanup (SPPath *path)
 #include <libnr/nr-pathops.h>
 
 void
-sp_selected_path_uncross (void)
+sp_selected_path_uncross (unsigned int operation)
 {
 	SPDesktop *desktop;
 	SPSelection * selection;
@@ -356,7 +356,7 @@ sp_selected_path_uncross (void)
 		nrp = nr_path_new_from_art_bpath (abp);
 		art_free (abp);
 
-		npaths[i] = nr_node_path_new_from_path (nrp, 0);
+		npaths[i] = nr_node_path_new_from_path (nrp, (i != 0));
 
 		free (nrp);
 		sp_repr_unparent (SP_OBJECT_REPR (path));
@@ -372,9 +372,26 @@ sp_selected_path_uncross (void)
 	nnp = nr_node_path_uncross (np);
 	nr_node_path_free (np);
 	np = nnp;
-	nnp = nr_node_path_rewind (np);
-	nr_node_path_free (np);
-	np = nnp;
+
+	if (operation == SP_PATH_UNION) {
+		/* everything null */
+		static int and[] = {-1, -1};
+		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		nr_node_path_free (np);
+		np = nnp;
+	} else if (operation == SP_PATH_INTERSECTION) {
+		/* Everything not null */
+		static int and[] = {1, 1};
+		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		nr_node_path_free (np);
+		np = nnp;
+	} else if (operation == SP_PATH_SUBTRACTION) {
+		/* Everything but first null */
+		static int and[] = {1, -1};
+		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		nr_node_path_free (np);
+		np = nnp;
+	}
 
 	c = sp_curve_new ();
 	for (i = 0; i < np->nsegs; i++) {
