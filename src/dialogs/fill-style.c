@@ -50,6 +50,7 @@
 #include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection.h"
+#include "../sp-item.h"
 #include "../sp-gradient.h"
 #include "../sodipodi.h"
 

@@ -20,6 +20,7 @@
 #include "document.h"
 #include "sodipodi.h"
 #include "desktop.h"
+#include "selection.h"
 #include "desktop-handles.h"
 #include "sp-item-transform.h" 
 #include "sp-item-group.h"

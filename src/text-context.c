@@ -19,8 +19,8 @@
 #include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
 #include <helper/sp-ctrlline.h>
+#include "macros.h"
 #include "sp-text.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -34,7 +34,7 @@
 
 static void sp_text_context_class_init (SPTextContextClass * klass);
 static void sp_text_context_init (SPTextContext * text_context);
-static void sp_text_context_destroy (GtkObject *object);
+static void sp_text_context_dispose (GObject *object);
 
 static void sp_text_context_setup (SPEventContext *ec);
 static void sp_text_context_finish (SPEventContext *ec);
@@ -50,42 +50,37 @@ static void sp_text_context_forget_text (SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
-GtkType
+GType
 sp_text_context_get_type (void)
 {
-	static GtkType text_context_type = 0;
-
-	if (!text_context_type) {
-
-		static const GtkTypeInfo text_context_info = {
-			"SPTextContext",
-			sizeof (SPTextContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPTextContextClass),
-			(GtkClassInitFunc) sp_text_context_class_init,
-			(GtkObjectInitFunc) sp_text_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_text_context_class_init,
+			NULL, NULL,
+			sizeof (SPTextContext),
+			4,
+			(GInstanceInitFunc) sp_text_context_init,
 		};
-
-		text_context_type = gtk_type_unique (sp_event_context_get_type (), &text_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPTextContext", &info, 0);
 	}
-
-	return text_context_type;
+	return type;
 }
 
 static void
 sp_text_context_class_init (SPTextContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_text_context_destroy;
+	object_class->dispose = sp_text_context_dispose;
 
 	event_context_class->setup = sp_text_context_setup;
 	event_context_class->finish = sp_text_context_finish;
@@ -118,7 +113,7 @@ sp_text_context_init (SPTextContext *tc)
 }
 
 static void
-sp_text_context_destroy (GtkObject *object)
+sp_text_context_dispose (GObject *object)
 {
 	SPEventContext *ec;
 	SPTextContext *tc;
@@ -128,21 +123,20 @@ sp_text_context_destroy (GtkObject *object)
 
 	if (tc->timeout) {
 		gtk_timeout_remove (tc->timeout);
+		tc->timeout = 0;
 	}
 
 	if (tc->cursor) {
 		gtk_object_destroy (GTK_OBJECT (tc->cursor));
+		tc->cursor = NULL;
 	}
 
 	if (ec->desktop) {
-		g_signal_handlers_disconnect_matched(SP_DT_CANVAS(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, tc);
-		g_signal_handlers_disconnect_matched(SP_DT_SELECTION(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, ec);
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc); */
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec); */
+  		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
+  		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 #if 0
@@ -216,11 +210,11 @@ sp_text_context_setup (SPEventContext *ec)
 		gtk_signal_connect (GTK_OBJECT (SP_DT_CANVAS (desktop)), "focus_out_event", GTK_SIGNAL_FUNC (sptc_focus_out), tc);
 	}
 #endif
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed", GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "modified", GTK_SIGNAL_FUNC (sp_text_context_selection_modified), tc);
+	g_signal_connect (G_OBJECT (SP_DT_SELECTION (desktop)), "changed", G_CALLBACK (sp_text_context_selection_changed), tc);
+	g_signal_connect (G_OBJECT (SP_DT_SELECTION (desktop)), "modified", G_CALLBACK (sp_text_context_selection_modified), tc);
 
 	sp_text_context_selection_changed (SP_DT_SELECTION (desktop), tc);
 }
@@ -249,10 +243,8 @@ sp_text_context_finish (SPEventContext *ec)
 	}
 
 	if (ec->desktop) {
-		g_signal_handlers_disconnect_matched(SP_DT_CANVAS(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, tc);
-		g_signal_handlers_disconnect_matched(SP_DT_SELECTION(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, ec);
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc); */
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec); */
+  		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
+		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
 	}
 
 	sp_text_context_forget_text (tc);
@@ -282,8 +274,8 @@ sp_text_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (ec, item, event);
+		if (((SPEventContextClass *) parent_class)->item_handler)
+			ret = ((SPEventContextClass *) parent_class)->item_handler (ec, item, event);
 	}
 
 	return ret;
@@ -451,8 +443,8 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (ec, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (ec, event);
 	}
 
 	return ret;

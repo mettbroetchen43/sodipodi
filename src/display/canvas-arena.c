@@ -131,7 +131,7 @@ sp_canvas_arena_destroy (GtkObject *object)
 		arena->root = NULL;
 	}
 
-	if (arena->arean) {
+	if (arena->arena) {
 /*  		g_signal_disconnect_by_data (G_OBJECT (arena->arena), arena); */
 		g_signal_handlers_disconnect_matched (G_OBJECT(arena->arena), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, arena);
 		g_object_unref (G_OBJECT (arena->arena));

@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-intl.h"
@@ -59,7 +60,7 @@ struct _SPDrawAnchor {
 
 static void sp_draw_context_class_init (SPDrawContextClass *klass);
 static void sp_draw_context_init (SPDrawContext *dc);
-static void sp_draw_context_destroy (GtkObject *object);
+static void sp_draw_context_dispose (GObject *object);
 
 static void sp_draw_context_setup (SPEventContext *ec);
 static void sp_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *value);
@@ -95,35 +96,34 @@ static SPEventContextClass *draw_parent_class;
 GtkType
 sp_draw_context_get_type (void)
 {
-	static GtkType type = 0;
-
+	static GType type = 0;
 	if (!type) {
-		static const GtkTypeInfo info = {
-			"SPDrawContext",
-			sizeof (SPDrawContext),
+		GTypeInfo info = {
 			sizeof (SPDrawContextClass),
-			(GtkClassInitFunc) sp_draw_context_class_init,
-			(GtkObjectInitFunc) sp_draw_context_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_draw_context_class_init,
+			NULL, NULL,
+			sizeof (SPDrawContext),
+			4,
+			(GInstanceInitFunc) sp_draw_context_init,
 		};
-		type = gtk_type_unique (SP_TYPE_EVENT_CONTEXT, &info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPDrawContext", &info, 0);
 	}
-
 	return type;
 }
 
 static void
 sp_draw_context_class_init (SPDrawContextClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPEventContextClass *ec_class;
 
-	object_class = (GtkObjectClass *)klass;
+	object_class = (GObjectClass *)klass;
 	ec_class = (SPEventContextClass *) klass;
 
-	draw_parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
+	draw_parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_draw_context_destroy;
+	object_class->dispose = sp_draw_context_dispose;
 
 	ec_class->setup = sp_draw_context_setup;
 	ec_class->set = sp_draw_context_set;
@@ -144,22 +144,25 @@ sp_draw_context_init (SPDrawContext *dc)
 }
 
 static void
-sp_draw_context_destroy (GtkObject *object)
+sp_draw_context_dispose (GObject *object)
 {
 	SPDrawContext *dc;
 
 	dc = SP_DRAW_CONTEXT (object);
 
-	if (dc->grab) sp_canvas_item_ungrab (dc->grab, GDK_CURRENT_TIME);
+	if (dc->grab) {
+		sp_canvas_item_ungrab (dc->grab, GDK_CURRENT_TIME);
+		dc->grab = NULL;
+	}
 
 	if (dc->selection) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
+		sp_signal_disconnect_by_data (dc->selection, dc);
+		dc->selection = NULL;
 	}
 
 	spdc_free_colors (dc);
 
-	if (GTK_OBJECT_CLASS (draw_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (draw_parent_class)->destroy) (object);
+	G_OBJECT_CLASS (draw_parent_class)->dispose (object);
 }
 
 static void
@@ -171,14 +174,14 @@ sp_draw_context_setup (SPEventContext *ec)
 	dc = SP_DRAW_CONTEXT (ec);
 	dt = ec->desktop;
 
-	if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup (ec);
+	if (((SPEventContextClass *) draw_parent_class)->setup)
+		((SPEventContextClass *) draw_parent_class)->setup (ec);
 
 	dc->selection = SP_DT_SELECTION (dt);
 
 	/* Connect signals to track selection changes */
-	gtk_signal_connect (GTK_OBJECT (dc->selection), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
-	gtk_signal_connect (GTK_OBJECT (dc->selection), "modified", GTK_SIGNAL_FUNC (spdc_selection_modified), dc);
+	g_signal_connect (G_OBJECT (dc->selection), "changed", G_CALLBACK (spdc_selection_changed), dc);
+	g_signal_connect (G_OBJECT (dc->selection), "modified", G_CALLBACK (spdc_selection_modified), dc);
 
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
@@ -212,7 +215,7 @@ sp_draw_context_finish (SPEventContext *ec)
 	}
 
 	if (dc->selection) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
+		sp_signal_disconnect_by_data (dc->selection, dc);
 		dc->selection = NULL;
 	}
 
@@ -259,8 +262,8 @@ sp_draw_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (draw_parent_class)->root_handler (ec, event);
+		if (((SPEventContextClass *) draw_parent_class)->root_handler)
+			ret = ((SPEventContextClass *) draw_parent_class)->root_handler (ec, event);
 	}
 
 	return ret;
@@ -782,7 +785,7 @@ sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean acti
 
 static void sp_pencil_context_class_init (SPPencilContextClass *klass);
 static void sp_pencil_context_init (SPPencilContext *dc);
-static void sp_pencil_context_destroy (GtkObject *object);
+static void sp_pencil_context_dispose (GObject *object);
 
 static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
@@ -796,35 +799,34 @@ static SPDrawContextClass *pencil_parent_class;
 GtkType
 sp_pencil_context_get_type (void)
 {
-	static GtkType type = 0;
-
+	static GType type = 0;
 	if (!type) {
-		static const GtkTypeInfo info = {
-			"SPPencilContext",
-			sizeof (SPPencilContext),
+		GTypeInfo info = {
 			sizeof (SPPencilContextClass),
-			(GtkClassInitFunc) sp_pencil_context_class_init,
-			(GtkObjectInitFunc) sp_pencil_context_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_pencil_context_class_init,
+			NULL, NULL,
+			sizeof (SPPencilContext),
+			4,
+			(GInstanceInitFunc) sp_pencil_context_init,
 		};
-		type = gtk_type_unique (SP_TYPE_DRAW_CONTEXT, &info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPPencilContext", &info, 0);
 	}
-
 	return type;
 }
 
 static void
 sp_pencil_context_class_init (SPPencilContextClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPEventContextClass *event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	pencil_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
+	pencil_parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_pencil_context_destroy;
+	object_class->dispose = sp_pencil_context_dispose;
 
 	event_context_class->root_handler = sp_pencil_context_root_handler;
 }
@@ -836,14 +838,13 @@ sp_pencil_context_init (SPPencilContext *pc)
 }
 
 static void
-sp_pencil_context_destroy (GtkObject *object)
+sp_pencil_context_dispose (GObject *object)
 {
 	SPPencilContext *pc;
 
 	pc = SP_PENCIL_CONTEXT (object);
 
-	if (GTK_OBJECT_CLASS (pencil_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (pencil_parent_class)->destroy) (object);
+	G_OBJECT_CLASS (pencil_parent_class)->dispose (object);
 }
 
 gint
@@ -1004,8 +1005,8 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->root_handler (ec, event);
+		if (((SPEventContextClass *) pencil_parent_class)->root_handler)
+			ret = ((SPEventContextClass *) pencil_parent_class)->root_handler (ec, event);
 	}
 
 	return ret;
@@ -1122,7 +1123,7 @@ spdc_add_freehand_point (SPPencilContext *pc, ArtPoint *p, guint state)
 
 static void sp_pen_context_class_init (SPPenContextClass *klass);
 static void sp_pen_context_init (SPPenContext *pc);
-static void sp_pen_context_destroy (GtkObject *object);
+static void sp_pen_context_dispose (GObject *object);
 
 static void sp_pen_context_setup (SPEventContext *ec);
 static void sp_pen_context_finish (SPEventContext *ec);
@@ -1140,35 +1141,34 @@ static SPDrawContextClass *pen_parent_class;
 GtkType
 sp_pen_context_get_type (void)
 {
-	static GtkType type = 0;
-
+	static GType type = 0;
 	if (!type) {
-		static const GtkTypeInfo info = {
-			"SPPenContext",
-			sizeof (SPPenContext),
+		GTypeInfo info = {
 			sizeof (SPPenContextClass),
-			(GtkClassInitFunc) sp_pen_context_class_init,
-			(GtkObjectInitFunc) sp_pen_context_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_pen_context_class_init,
+			NULL, NULL,
+			sizeof (SPPenContext),
+			4,
+			(GInstanceInitFunc) sp_pen_context_init,
 		};
-		type = gtk_type_unique (SP_TYPE_DRAW_CONTEXT, &info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPPenContext", &info, 0);
 	}
-
 	return type;
 }
 
 static void
 sp_pen_context_class_init (SPPenContextClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPEventContextClass *event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	pen_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
+	pen_parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_pen_context_destroy;
+	object_class->dispose = sp_pen_context_dispose;
 
 	event_context_class->setup = sp_pen_context_setup;
 	event_context_class->finish = sp_pen_context_finish;
@@ -1190,19 +1190,30 @@ sp_pen_context_init (SPPenContext *pc)
 }
 
 static void
-sp_pen_context_destroy (GtkObject *object)
+sp_pen_context_dispose (GObject *object)
 {
 	SPPenContext *pc;
 
 	pc = SP_PEN_CONTEXT (object);
 
-	if (pc->c0) gtk_object_destroy (GTK_OBJECT (pc->c0));
-	if (pc->c1) gtk_object_destroy (GTK_OBJECT (pc->c1));
-	if (pc->cl0) gtk_object_destroy (GTK_OBJECT (pc->cl0));
-	if (pc->cl1) gtk_object_destroy (GTK_OBJECT (pc->cl1));
+	if (pc->c0) {
+		gtk_object_destroy (GTK_OBJECT (pc->c0));
+		pc->c0 = NULL;
+	}
+	if (pc->c1) {
+		gtk_object_destroy (GTK_OBJECT (pc->c1));
+		pc->c1 = NULL;
+	}
+	if (pc->cl0) {
+		gtk_object_destroy (GTK_OBJECT (pc->cl0));
+		pc->cl0 = NULL;
+	}
+	if (pc->cl1) {
+		gtk_object_destroy (GTK_OBJECT (pc->cl1));
+		pc->cl1 = NULL;
+	}
 
-	if (GTK_OBJECT_CLASS (pen_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (pen_parent_class)->destroy) (object);
+	G_OBJECT_CLASS (pen_parent_class)->dispose (object);
 }
 
 static void
@@ -1212,8 +1223,8 @@ sp_pen_context_setup (SPEventContext *ec)
 
 	pc = SP_PEN_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec);
+	if (((SPEventContextClass *) pen_parent_class)->setup)
+		((SPEventContextClass *) pen_parent_class)->setup (ec);
 
 	/* Pen indicators */
 	pc->c0 = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
@@ -1238,8 +1249,8 @@ sp_pen_context_finish (SPEventContext *ec)
 {
 	spdc_pen_finish (SP_PEN_CONTEXT (ec), FALSE);
 
-	if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->finish)
-		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->finish (ec);
+	if (((SPEventContextClass *) pen_parent_class)->finish)
+		((SPEventContextClass *) pen_parent_class)->finish (ec);
 }
 
 static void
@@ -1577,8 +1588,8 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (pen_parent_class)->root_handler (ec, event);
+		if (((SPEventContextClass *) pen_parent_class)->root_handler)
+			return ((SPEventContextClass *) pen_parent_class)->root_handler (ec, event);
 	}
 
 	return ret;

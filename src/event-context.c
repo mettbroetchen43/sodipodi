@@ -34,9 +34,9 @@
 #include "selection-chemistry.h"
 #include "dialogs/desktop-properties.h"
 
-static void sp_event_context_class_init (SPEventContextClass * klass);
-static void sp_event_context_init (SPEventContext * event_context);
-static void sp_event_context_destroy (GtkObject * object);
+static void sp_event_context_class_init (SPEventContextClass *klass);
+static void sp_event_context_init (SPEventContext *event_context);
+static void sp_event_context_dispose (GObject *object);
 
 static void sp_event_context_private_setup (SPEventContext *ec);
 static gint sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent * event);
@@ -44,46 +44,37 @@ static gint sp_event_context_private_item_handler (SPEventContext * event_contex
 
 static void set_event_location (SPDesktop * desktop, GdkEvent * event);
 
-#if 0
-static void sp_event_grab_item_destroy (GtkObject * object, gpointer data);
-#endif
+static GObjectClass *parent_class;
 
-static GtkObjectClass * parent_class;
-
-GtkType
+unsigned int
 sp_event_context_get_type (void)
 {
-	static GtkType event_context_type = 0;
-
-	if (!event_context_type) {
-
-		static const GtkTypeInfo event_context_info = {
-			"SPEventContext",
-			sizeof (SPEventContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPEventContextClass),
-			(GtkClassInitFunc) sp_event_context_class_init,
-			(GtkObjectInitFunc) sp_event_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_event_context_class_init,
+			NULL, NULL,
+			sizeof (SPEventContext),
+			4,
+			(GInstanceInitFunc) sp_event_context_init,
 		};
-
-		event_context_type = gtk_type_unique (gtk_object_get_type (), &event_context_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPEventContext", &info, 0);
 	}
-
-	return event_context_type;
+	return type;
 }
 
 static void
-sp_event_context_class_init (SPEventContextClass * klass)
+sp_event_context_class_init (SPEventContextClass *klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_event_context_destroy;
+	object_class->dispose = sp_event_context_dispose;
 
 	klass->setup = sp_event_context_private_setup;
 	klass->root_handler = sp_event_context_private_root_handler;
@@ -91,27 +82,25 @@ sp_event_context_class_init (SPEventContextClass * klass)
 }
 
 static void
-sp_event_context_init (SPEventContext * event_context)
+sp_event_context_init (SPEventContext *event_context)
 {
 	event_context->desktop = NULL;
 	event_context->cursor = NULL;
 }
 
 static void
-sp_event_context_destroy (GtkObject *object)
+sp_event_context_dispose (GObject *object)
 {
 	SPEventContext *ec;
 
 	ec = SP_EVENT_CONTEXT (object);
 
 	if (ec->cursor != NULL) {
-		gdk_cursor_destroy (ec->cursor);
+		gdk_cursor_unref (ec->cursor);
+		ec->cursor = NULL;
 	}
 
 	if (ec->desktop) {
-#if 0
-		gtk_signal_disconnect_by_data (GTK_OBJECT (ec->desktop), ec);
-#endif
 		ec->desktop = NULL;
 	}
 
@@ -121,15 +110,14 @@ sp_event_context_destroy (GtkObject *object)
 		ec->repr = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 sp_event_context_private_setup (SPEventContext *ec)
 {
-	GtkWidget * w;
-	GdkBitmap * bitmap, * mask;
+	GtkWidget *w;
+	GdkBitmap *bitmap, * mask;
 
 	w = GTK_WIDGET (SP_DT_CANVAS (ec->desktop));
 	if (w->window) {
@@ -388,15 +376,6 @@ sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEve
 	return FALSE;
 }
 
-#if 0
-static void
-sp_event_context_desktop_destroy (GtkObject *object, SPEventContext *ec)
-{
-	/* This is actually non-event, as desktop should keep the only ref of ec */
-	ec->desktop = NULL;
-}
-#endif
-
 static void
 sp_ec_repr_destroy (SPRepr *repr, gpointer data)
 {
@@ -422,8 +401,8 @@ sp_ec_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, 
 
 	ec = SP_EVENT_CONTEXT (data);
 
-	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set)
-		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set (ec, key, newval);
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->set)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->set (ec, key, newval);
 }
 
 SPReprEventVector sp_ec_event_vector = {
@@ -441,20 +420,17 @@ SPReprEventVector sp_ec_event_vector = {
 };
 
 SPEventContext *
-sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
+sp_event_context_new (GType type, SPDesktop *desktop, SPRepr *repr)
 {
 	SPEventContext *ec;
 
-	g_return_val_if_fail (gtk_type_is_a (type, SP_TYPE_EVENT_CONTEXT), NULL);
+	g_return_val_if_fail (g_type_is_a (type, SP_TYPE_EVENT_CONTEXT), NULL);
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 
-	ec = gtk_type_new (type);
+	ec = g_object_new (type, NULL);
 
 	ec->desktop = desktop;
-#if 0
-	gtk_signal_connect (GTK_OBJECT (desktop), "destroy", GTK_SIGNAL_FUNC (sp_event_context_desktop_destroy), ec);
-#endif
 
 	ec->repr = repr;
 	if (ec->repr) {
@@ -462,8 +438,8 @@ sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
 		sp_repr_add_listener (ec->repr, &sp_ec_event_vector, ec);
 	}
 
-	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->setup)
-		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->setup (ec);
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->setup)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->setup (ec);
 
 	return ec;
 }
@@ -474,8 +450,8 @@ sp_event_context_finish (SPEventContext *ec)
 	g_return_if_fail (ec != NULL);
 	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
 
-	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->finish)
-		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->finish (ec);
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->finish)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->finish (ec);
 }
 
 void
@@ -488,8 +464,8 @@ sp_event_context_read (SPEventContext *ec, const guchar *key)
 	if (ec->repr) {
 		const guchar *val;
 		val = sp_repr_attr (ec->repr, key);
-		if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set)
-			SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set (ec, key, val);
+		if (((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->set)
+			((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->set (ec, key, val);
 	}
 }
 
@@ -498,7 +474,7 @@ sp_event_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
 	gint ret;
 
-	ret = (* SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(event_context))->root_handler) (event_context, event);
+	ret = ((SPEventContextClass *) G_OBJECT_GET_CLASS (event_context))->root_handler (event_context, event);
 
 	set_event_location (event_context->desktop, event);
 
@@ -510,7 +486,7 @@ sp_event_context_item_handler (SPEventContext * event_context, SPItem * item, Gd
 {
 	gint ret;
 
-	ret = (* SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(event_context))->item_handler) (event_context, item, event);
+	ret = ((SPEventContextClass *) G_OBJECT_GET_CLASS(event_context))->item_handler (event_context, item, event);
 
 	if (! ret) {
 		ret = sp_event_context_root_handler (event_context, event);
@@ -527,8 +503,8 @@ sp_event_context_config_widget (SPEventContext *ec)
 	g_return_val_if_fail (ec != NULL, NULL);
 	g_return_val_if_fail (SP_IS_EVENT_CONTEXT (ec), NULL);
 
-	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->config_widget)
-		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->config_widget (ec);
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->config_widget)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->config_widget (ec);
 
 	return NULL;
 }

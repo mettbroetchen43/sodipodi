@@ -37,11 +37,12 @@
 #include "desktop.h"
 #include "dialogs/object-properties.h"
 #include "sp-metrics.h"
+#include "sp-item.h"
 #include "desktop-snap.h"
 
 static void sp_select_context_class_init (SPSelectContextClass * klass);
 static void sp_select_context_init (SPSelectContext * select_context);
-static void sp_select_context_destroy (GtkObject * object);
+static void sp_select_context_dispose (GObject *object);
 
 static void sp_select_context_setup (SPEventContext *ec);
 static void sp_select_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
@@ -61,39 +62,34 @@ GdkPixbuf * handles[13];
 GtkType
 sp_select_context_get_type (void)
 {
-	static GtkType select_context_type = 0;
-
-	if (!select_context_type) {
-
-		static const GtkTypeInfo select_context_info = {
-			"SPSelectContext",
-			sizeof (SPSelectContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPSelectContextClass),
-			(GtkClassInitFunc) sp_select_context_class_init,
-			(GtkObjectInitFunc) sp_select_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_select_context_class_init,
+			NULL, NULL,
+			sizeof (SPSelectContext),
+			4,
+			(GInstanceInitFunc) sp_select_context_init,
 		};
-
-		select_context_type = gtk_type_unique (sp_event_context_get_type (), &select_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPSelectContext", &info, 0);
 	}
-
-	return select_context_type;
+	return type;
 }
 
 static void
 sp_select_context_class_init (SPSelectContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_select_context_destroy;
+	object_class->dispose = sp_select_context_dispose;
 
 	event_context_class->setup = sp_select_context_setup;
 	event_context_class->set = sp_select_context_set;
@@ -130,7 +126,7 @@ sp_select_context_init (SPSelectContext * sc)
 }
 
 static void
-sp_select_context_destroy (GtkObject * object)
+sp_select_context_dispose (GObject *object)
 {
 	SPSelectContext *sc;
 
@@ -143,8 +139,7 @@ sp_select_context_destroy (GtkObject * object)
 
 	sp_sel_trans_shutdown (&sc->seltrans);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -154,8 +149,8 @@ sp_select_context_setup (SPEventContext *ec)
 
 	select_context = SP_SELECT_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
 	sp_sel_trans_init (&select_context->seltrans, ec->desktop);
 
@@ -297,8 +292,8 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
+		if (((SPEventContextClass *) parent_class)->item_handler)
+			ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
 	}
 
 	return ret;
@@ -549,8 +544,8 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	}
 	
 	if (!ret) {
-	  if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-	    ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 	
 	return ret;

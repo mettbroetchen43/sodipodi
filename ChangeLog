@@ -1,5 +1,9 @@
 2002-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/selection.h: Inherit directly from GObject
+
+	* src/event-context.h: Inherit directly from GObject
+
 	* src/helper/sp-canvas.c (sp_canvas_item_dispose): Set xform to NULL
 
 	* src/display/canvas-arena.c (sp_canvas_arena_destroy): Fixed typo, so

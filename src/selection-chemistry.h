@@ -14,7 +14,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "selection.h"
+#include <libart_lgpl/art_point.h>
+#include "forward.h"
 
 void sp_edit_cleanup (gpointer data);
 
@@ -36,13 +37,13 @@ void sp_selection_cut (GtkWidget * widget);
 void sp_selection_copy (GtkWidget * widget);
 void sp_selection_paste (GtkWidget * widget);
 
-void sp_selection_apply_affine (SPSelection * selection, double affine[6]);
+void sp_selection_apply_affine (SPSelection *selection, double affine[6]);
 void sp_selection_remove_transform (void);
-void sp_selection_scale_absolute (SPSelection * selection, double x0, double x1, double y0, double y1);
-void sp_selection_scale_relative (SPSelection * selection, ArtPoint * align, double dx, double dy);
-void sp_selection_rotate_relative (SPSelection * selection, ArtPoint * center, gdouble angle);
-void sp_selection_skew_relative (SPSelection * selection, ArtPoint * align, double dx, double dy);
-void sp_selection_move_relative (SPSelection * selection, double dx, double dy);
+void sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, double y0, double y1);
+void sp_selection_scale_relative (SPSelection *selection, ArtPoint *align, double dx, double dy);
+void sp_selection_rotate_relative (SPSelection *selection, ArtPoint *center, gdouble angle);
+void sp_selection_skew_relative (SPSelection *selection, ArtPoint *align, double dx, double dy);
+void sp_selection_move_relative (SPSelection *selection, double dx, double dy);
 
 void sp_selection_rotate_90 (void);
 void sp_selection_move_screen (gdouble sx, gdouble sy);

@@ -13,6 +13,7 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
@@ -32,7 +33,7 @@
 
 static void sp_node_context_class_init (SPNodeContextClass * klass);
 static void sp_node_context_init (SPNodeContext * node_context);
-static void sp_node_context_destroy (GtkObject * object);
+static void sp_node_context_dispose (GObject *object);
 
 static void sp_node_context_setup (SPEventContext *ec);
 static gint sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event);
@@ -44,42 +45,37 @@ static gboolean sp_node_context_stamp (SPNodeContext * node_context);
 static SPEventContextClass * parent_class;
 GdkCursor * CursorNodeMouseover = NULL, * CursorNodeDragging = NULL;
 
-GtkType
+GType
 sp_node_context_get_type (void)
 {
-	static GtkType node_context_type = 0;
-
-	if (!node_context_type) {
-
-		static const GtkTypeInfo node_context_info = {
-			"SPNodeContext",
-			sizeof (SPNodeContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPNodeContextClass),
-			(GtkClassInitFunc) sp_node_context_class_init,
-			(GtkObjectInitFunc) sp_node_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_node_context_class_init,
+			NULL, NULL,
+			sizeof (SPNodeContext),
+			4,
+			(GInstanceInitFunc) sp_node_context_init,
 		};
-
-		node_context_type = gtk_type_unique (sp_event_context_get_type (), &node_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPNodeContext", &info, 0);
 	}
-
-	return node_context_type;
+	return type;
 }
 
 static void
 sp_node_context_class_init (SPNodeContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_node_context_destroy;
+	object_class->dispose = sp_node_context_dispose;
 
 	event_context_class->setup = sp_node_context_setup;
 	event_context_class->root_handler = sp_node_context_root_handler;
@@ -103,17 +99,27 @@ sp_node_context_init (SPNodeContext * node_context)
 }
 
 static void
-sp_node_context_destroy (GtkObject * object)
+sp_node_context_dispose (GObject *object)
 {
 	SPNodeContext * nc;
 
 	nc = SP_NODE_CONTEXT (object);
 
-	if (nc->nodepath) sp_nodepath_destroy (nc->nodepath);
-	if (nc->knot_holder) sp_knot_holder_destroy (nc->knot_holder);
+	if (nc->nodepath) {
+		sp_nodepath_destroy (nc->nodepath);
+		nc->nodepath = NULL;
+	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (nc->knot_holder) {
+		sp_knot_holder_destroy (nc->knot_holder);
+		nc->knot_holder = NULL;
+	}
+
+	if (SP_EVENT_CONTEXT_DESKTOP (nc)) {
+		sp_signal_disconnect_by_data (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (nc)), nc);
+	}
+
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -124,12 +130,10 @@ sp_node_context_setup (SPEventContext *ec)
 
 	nc = SP_NODE_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), "changed",
-					GTK_SIGNAL_FUNC (sp_node_context_selection_changed), nc,
-					GTK_OBJECT (nc));
+	g_signal_connect (G_OBJECT (SP_DT_SELECTION (ec->desktop)), "changed", G_CALLBACK (sp_node_context_selection_changed), nc);
 
 	item = sp_selection_item (SP_DT_SELECTION (ec->desktop));
 
@@ -171,8 +175,8 @@ sp_node_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
+		if (((SPEventContextClass *) parent_class)->item_handler)
+			ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
 	}
 
 	return ret;
@@ -291,8 +295,8 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

@@ -38,7 +38,7 @@
 
 static void sp_star_context_class_init (SPStarContextClass * klass);
 static void sp_star_context_init (SPStarContext * star_context);
-static void sp_star_context_destroy (GtkObject * object);
+static void sp_star_context_dispose (GObject *object);
 
 static void sp_star_context_setup (SPEventContext *ec);
 static void sp_star_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
@@ -53,39 +53,34 @@ static SPEventContextClass * parent_class;
 GtkType
 sp_star_context_get_type (void)
 {
-	static GtkType star_context_type = 0;
-
-	if (!star_context_type) {
-
-		static const GtkTypeInfo star_context_info = {
-			"SPStarContext",
-			sizeof (SPStarContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPStarContextClass),
-			(GtkClassInitFunc) sp_star_context_class_init,
-			(GtkObjectInitFunc) sp_star_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_star_context_class_init,
+			NULL, NULL,
+			sizeof (SPStarContext),
+			4,
+			(GInstanceInitFunc) sp_star_context_init,
 		};
-
-		star_context_type = gtk_type_unique (sp_event_context_get_type (), &star_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPStarContext", &info, 0);
 	}
-
-	return star_context_type;
+	return type;
 }
 
 static void
 sp_star_context_class_init (SPStarContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_star_context_destroy;
+	object_class->dispose = sp_star_context_dispose;
 
 	event_context_class->setup = sp_star_context_setup;
 	event_context_class->set = sp_star_context_set;
@@ -111,7 +106,7 @@ sp_star_context_init (SPStarContext * star_context)
 }
 
 static void
-sp_star_context_destroy (GtkObject * object)
+sp_star_context_dispose (GObject *object)
 {
 	SPStarContext * sc;
 
@@ -120,8 +115,7 @@ sp_star_context_destroy (GtkObject * object)
 	/* fixme: This is necessary because we do not grab */
 	if (sc->item) sp_star_finish (sc);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -131,8 +125,8 @@ sp_star_context_setup (SPEventContext *ec)
 
 	sc = SP_STAR_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
 	sp_event_context_read (ec, "magnitude");
 	sp_event_context_read (ec, "proportion");
@@ -204,8 +198,8 @@ sp_star_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

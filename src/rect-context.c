@@ -33,12 +33,11 @@
 
 static void sp_rect_context_class_init (SPRectContextClass * klass);
 static void sp_rect_context_init (SPRectContext * rect_context);
-static void sp_rect_context_destroy (GtkObject * object);
+static void sp_rect_context_dispose (GObject *object);
 
-#if 1
 static void sp_rect_context_setup (SPEventContext *ec);
 static void sp_rect_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
-#endif
+
 static gint sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 static GtkWidget *sp_rect_context_config_widget (SPEventContext *ec);
@@ -51,39 +50,34 @@ static SPEventContextClass * parent_class;
 GtkType
 sp_rect_context_get_type (void)
 {
-	static GtkType rect_context_type = 0;
-
-	if (!rect_context_type) {
-
-		static const GtkTypeInfo rect_context_info = {
-			"SPRectContext",
-			sizeof (SPRectContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPRectContextClass),
-			(GtkClassInitFunc) sp_rect_context_class_init,
-			(GtkObjectInitFunc) sp_rect_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_rect_context_class_init,
+			NULL, NULL,
+			sizeof (SPRectContext),
+			4,
+			(GInstanceInitFunc) sp_rect_context_init,
 		};
-
-		rect_context_type = gtk_type_unique (sp_event_context_get_type (), &rect_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPRectContext", &info, 0);
 	}
-
-	return rect_context_type;
+	return type;
 }
 
 static void
 sp_rect_context_class_init (SPRectContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_rect_context_destroy;
+	object_class->dispose = sp_rect_context_dispose;
 
 #if 1
 	event_context_class->setup = sp_rect_context_setup;
@@ -112,7 +106,7 @@ sp_rect_context_init (SPRectContext * rect_context)
 }
 
 static void
-sp_rect_context_destroy (GtkObject * object)
+sp_rect_context_dispose (GObject *object)
 {
 	SPRectContext * rc;
 
@@ -121,8 +115,7 @@ sp_rect_context_destroy (GtkObject * object)
 	/* fixme: This is necessary because we do not grab */
 	if (rc->item) sp_rect_finish (rc);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 #if 1
@@ -133,8 +126,8 @@ sp_rect_context_setup (SPEventContext *ec)
 
 	rc = SP_RECT_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
 	sp_event_context_read (ec, "rx_ratio");
 	sp_event_context_read (ec, "ry_ratio");
@@ -164,8 +157,8 @@ sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 
 	ret = FALSE;
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-		ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
+	if (((SPEventContextClass *) parent_class)->item_handler)
+		ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
 
 	return ret;
 }
@@ -220,8 +213,8 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

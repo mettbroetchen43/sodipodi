@@ -23,14 +23,8 @@
 #include "xml/repr.h"
 #include "forward.h"
 
-#define SP_TYPE_EVENT_CONTEXT (sp_event_context_get_type ())
-#define SP_EVENT_CONTEXT(o) (GTK_CHECK_CAST ((o), SP_TYPE_EVENT_CONTEXT, SPEventContext))
-#define SP_EVENT_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_EVENT_CONTEXT, SPEventContextClass))
-#define SP_IS_EVENT_CONTEXT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_EVENT_CONTEXT))
-#define SP_IS_EVENT_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_EVENT_CONTEXT))
-
 struct _SPEventContext {
-	GtkObject object;
+	GObject object;
 	SPDesktop *desktop;
 	SPRepr *repr;
 	gchar **cursor_shape;
@@ -39,7 +33,7 @@ struct _SPEventContext {
 };
 
 struct _SPEventContextClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 	void (* setup) (SPEventContext *ec);
 	void (* finish) (SPEventContext *ec);
 	void (* set) (SPEventContext *ec, const guchar *key, const guchar *val);
@@ -52,9 +46,7 @@ struct _SPEventContextClass {
 #define SP_EVENT_CONTEXT_DESKTOP(e) (SP_EVENT_CONTEXT (e)->desktop)
 #define SP_EVENT_CONTEXT_REPR(e) (SP_EVENT_CONTEXT (e)->repr)
 
-GtkType sp_event_context_get_type (void);
-
-SPEventContext *sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr);
+SPEventContext *sp_event_context_new (GType type, SPDesktop *desktop, SPRepr *repr);
 
 void sp_event_context_finish (SPEventContext *ec);
 

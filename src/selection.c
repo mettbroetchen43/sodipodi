@@ -12,14 +12,14 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define sp_debug(str, section) 	if (FALSE) printf ("%s:%d (%s) %s\n", __FILE__, __LINE__, __FUNCTION__, str); 
-
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
+#include "macros.h"
+#include "helper/sp-marshal.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "document.h"
+#include "sp-item.h"
 #include "selection.h"
 
 #define SP_SELECTION_UPDATE_PRIORITY 0
@@ -30,69 +30,70 @@ enum {
 	LAST_SIGNAL
 };
 
-static void sp_selection_class_init (SPSelectionClass * klass);
-static void sp_selection_init (SPSelection * selection);
-static void sp_selection_destroy (GtkObject * object);
+static void sp_selection_class_init (SPSelectionClass *klass);
+static void sp_selection_init (SPSelection *selection);
+static void sp_selection_dispose (GObject *object);
 
-static void sp_selection_private_changed (SPSelection * selection);
+static void sp_selection_private_changed (SPSelection *selection);
 
-static void sp_selection_frozen_empty (SPSelection * selection);
+static void sp_selection_frozen_empty (SPSelection *selection);
 
 static gint sp_selection_idle_handler (gpointer data);
 
-static GtkObjectClass * parent_class;
+static GObjectClass *parent_class;
 static guint selection_signals[LAST_SIGNAL] = { 0 };
 
-GtkType
+unsigned int
 sp_selection_get_type (void)
 {
-	static GtkType selection_type = 0;
-
-	if (!selection_type) {
-
-		static const GtkTypeInfo selection_info = {
-			"SPSelection",
-			sizeof (SPSelection),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPSelectionClass),
-			(GtkClassInitFunc) sp_selection_class_init,
-			(GtkObjectInitFunc) sp_selection_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_selection_class_init,
+			NULL, NULL,
+			sizeof (SPSelection),
+			4,
+			(GInstanceInitFunc) sp_selection_init,
 		};
-
-		selection_type = gtk_type_unique (gtk_object_get_type (), &selection_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPSelection", &info, 0);
 	}
-	return selection_type;
+	return type;
 }
 
 static void
-sp_selection_class_init (SPSelectionClass * klass)
+sp_selection_class_init (SPSelectionClass *klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	selection_signals [CHANGED] = gtk_signal_new ("changed",
-						      GTK_RUN_FIRST,
-						      GTK_CLASS_TYPE(object_class),
-						      GTK_SIGNAL_OFFSET (SPSelectionClass, changed),
-						      gtk_marshal_NONE__NONE,
-						      GTK_TYPE_NONE, 0);
-	selection_signals [MODIFIED] = gtk_signal_new ("modified",
-						       GTK_RUN_FIRST,
-						       GTK_CLASS_TYPE(object_class),
-						       GTK_SIGNAL_OFFSET (SPSelectionClass, modified),
-						       gtk_marshal_NONE__UINT,
-						       GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	selection_signals [CHANGED] =  g_signal_new ("changed",
+						     G_TYPE_FROM_CLASS(klass),
+						     G_SIGNAL_RUN_FIRST,
+						     G_STRUCT_OFFSET (SPSelectionClass, changed),
+						     NULL, NULL,
+						     sp_marshal_NONE__NONE,
+						     G_TYPE_NONE, 0);
+	selection_signals [MODIFIED] = g_signal_new ("modified",
+						     G_TYPE_FROM_CLASS(klass),
+						     G_SIGNAL_RUN_FIRST,
+						     G_STRUCT_OFFSET (SPSelectionClass, modified),
+						     NULL, NULL,
+						     sp_marshal_NONE__UINT,
+						     G_TYPE_NONE, 1,
+						     G_TYPE_UINT);
 
-	object_class->destroy = sp_selection_destroy;
+	object_class->dispose = sp_selection_dispose;
 
 	klass->changed = sp_selection_private_changed;
 }
 
 static void
-sp_selection_init (SPSelection * selection)
+sp_selection_init (SPSelection *selection)
 {
 	selection->reprs = NULL;
 	selection->items = NULL;
@@ -101,27 +102,26 @@ sp_selection_init (SPSelection * selection)
 }
 
 static void
-sp_selection_destroy (GtkObject *object)
+sp_selection_dispose (GObject *object)
 {
-	SPSelection * selection;
+	SPSelection *selection;
 
 	selection = SP_SELECTION (object);
 
 	sp_selection_frozen_empty (selection);
 
 	if (selection->idle) {
-		/* Clear pending idle request */
 		gtk_idle_remove (selection->idle);
 		selection->idle = 0;
 	}
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 sp_selection_private_changed (SPSelection * selection)
 {
-	sodipodi_selection_set (selection);
+	sodipodi_selection_changed (selection);
 }
 
 static void
@@ -172,7 +172,7 @@ sp_selection_idle_handler (gpointer data)
 	flags = selection->flags;
 	selection->flags = 0;
 	/* Emit our own "modified" signal */
-	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [MODIFIED], flags);
+	g_signal_emit (G_OBJECT (selection), selection_signals [MODIFIED], 0, flags);
 
 	/* Request "selection_modified" signal on Sodipodi */
 	sodipodi_selection_modified (selection, flags);
@@ -183,10 +183,6 @@ sp_selection_idle_handler (gpointer data)
 void
 sp_selection_frozen_empty (SPSelection * selection)
 {
-	SPItem * i;
-
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
@@ -194,13 +190,11 @@ sp_selection_frozen_empty (SPSelection * selection)
 	selection->reprs = NULL;
 
 	while (selection->items) {
-		i = (SPItem *) selection->items->data;
-/* 		gtk_signal_disconnect_by_data (GTK_OBJECT (i), selection); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(i), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, selection);
-		selection->items = g_slist_remove (selection->items, i);
+		SPItem *item;
+		item = SP_ITEM (selection->items->data);
+		sp_signal_disconnect_by_data (item, selection);
+		selection->items = g_slist_remove (selection->items, item);
 	}
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -226,16 +220,12 @@ sp_selection_update_statusbar (SPSelection * selection)
 void
 sp_selection_changed (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
-	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [CHANGED]);
+	g_signal_emit (G_OBJECT (selection), selection_signals [CHANGED], 0);
 
 	sp_selection_update_statusbar (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 SPSelection *
@@ -243,14 +233,9 @@ sp_selection_new (SPDesktop * desktop)
 {
 	SPSelection * selection;
 
-	sp_debug ("start", SP_SELECTION);
-
-	selection = gtk_type_new (SP_TYPE_SELECTION);
-	g_assert (selection != NULL);
+	selection = g_object_new (SP_TYPE_SELECTION, NULL);
 
 	selection->desktop = desktop;
-
-	sp_debug ("end", SP_SELECTION);
 
 	return selection;
 }
@@ -258,14 +243,10 @@ sp_selection_new (SPDesktop * desktop)
 gboolean
 sp_selection_item_selected (SPSelection * selection, SPItem * item)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_val_if_fail (selection != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), FALSE);
 	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_ITEM (item), FALSE);
-
-	sp_debug ("end", SP_SELECTION);
 
 	return (g_slist_find (selection->items, item) != NULL);
 }
@@ -275,8 +256,6 @@ sp_selection_repr_selected (SPSelection * selection, SPRepr * repr)
 {
 	GSList * l;
 
-	sp_debug ("start", SP_SELECTION);
-	
 	g_return_val_if_fail (selection != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), FALSE);
 	g_return_val_if_fail (repr != NULL, FALSE);
@@ -285,16 +264,12 @@ sp_selection_repr_selected (SPSelection * selection, SPRepr * repr)
 		if (((SPObject *)l->data)->repr == repr) return TRUE;
 	}
 
-	sp_debug ("end", SP_SELECTION);
-
 	return FALSE;
 }
 
 void
 sp_selection_add_item (SPSelection * selection, SPItem * item)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -311,8 +286,6 @@ sp_selection_add_item (SPSelection * selection, SPItem * item)
 			  G_CALLBACK (sp_selection_selected_item_modified), selection);
 
 	sp_selection_changed (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -320,8 +293,6 @@ sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -335,15 +306,11 @@ sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_add_item (selection, SP_ITEM (object));
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_set_item (SPSelection * selection, SPItem * item)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -352,8 +319,6 @@ sp_selection_set_item (SPSelection * selection, SPItem * item)
 	sp_selection_frozen_empty (selection);
 
 	sp_selection_add_item (selection, item);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -361,8 +326,6 @@ sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -376,15 +339,11 @@ sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_set_item (selection, SP_ITEM (object));
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_remove_item (SPSelection * selection, SPItem * item)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -394,13 +353,10 @@ sp_selection_remove_item (SPSelection * selection, SPItem * item)
 	g_slist_free (selection->reprs);
 	selection->reprs = NULL;
 
-/* 	gtk_signal_disconnect_by_data (GTK_OBJECT (item), selection); */
-	g_signal_handlers_disconnect_matched (G_OBJECT(item), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, selection);
+ 	sp_signal_disconnect_by_data (item, selection);
 	selection->items = g_slist_remove (selection->items, item);
 
 	sp_selection_changed (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -408,8 +364,6 @@ sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -423,8 +377,6 @@ sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_remove_item (selection, SP_ITEM (object));
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -432,8 +384,6 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 {
 	SPItem * i;
 	const GSList * l;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -453,8 +403,6 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 	}
 
 	sp_selection_changed (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -465,8 +413,6 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 	SPRepr * repr;
 	const gchar * id;
 	SPObject * object;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -489,34 +435,24 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 	sp_selection_set_item_list (selection, itemlist);
 
 	g_slist_free (itemlist);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_empty (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	sp_selection_frozen_empty (selection);
 
 	sp_selection_changed (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 const GSList *
 sp_selection_item_list (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
-
-	sp_debug ("end", SP_SELECTION);
 
 	return selection->items;
 }
@@ -526,8 +462,6 @@ sp_selection_repr_list (SPSelection * selection)
 {
 	SPItem * i;
 	GSList * l;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
@@ -540,23 +474,17 @@ sp_selection_repr_list (SPSelection * selection)
 		selection->reprs = g_slist_prepend (selection->reprs, SP_OBJECT (i)->repr);
 	}
 
-	sp_debug ("end", SP_SELECTION);
-
 	return selection->reprs;
 }
 
 SPItem *
 sp_selection_item (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
 
 	if (selection->items == NULL) return NULL;
 	if (selection->items->next != NULL) return NULL;
-
-	sp_debug ("end", SP_SELECTION);
 
 	return SP_ITEM (selection->items->data);
 }
@@ -564,15 +492,11 @@ sp_selection_item (SPSelection * selection)
 SPRepr *
 sp_selection_repr (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
 
 	if (selection->items == NULL) return NULL;
 	if (selection->items->next != NULL) return NULL;
-
-	sp_debug ("end", SP_SELECTION);
 
 	return SP_OBJECT (selection->items->data)->repr;
 }
@@ -583,8 +507,6 @@ sp_selection_bbox (SPSelection *selection, ArtDRect *bbox)
 	SPItem *item;
 	ArtDRect b;
 	GSList *l;
-
-	sp_debug ("start", SP_SELECTION);
 
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
@@ -607,7 +529,6 @@ sp_selection_bbox (SPSelection *selection, ArtDRect *bbox)
 		if (b.y1 > bbox->y1) bbox->y1 = b.y1;
 	}
 
-	sp_debug ("end", SP_SELECTION);
 	return bbox;
 }
 

@@ -1026,7 +1026,10 @@ sp_canvas_destroy (GtkObject *object)
 
 	canvas = SP_CANVAS (object);
 
-	gtk_object_unref (GTK_OBJECT (canvas->root));
+	if (canvas->root) {
+		gtk_object_unref (GTK_OBJECT (canvas->root));
+		canvas->root = NULL;
+	}
 
 	shutdown_transients (canvas);
 

@@ -23,7 +23,7 @@
 
 static void sp_slide_context_class_init (SPSlideContextClass * klass);
 static void sp_slide_context_init (SPSlideContext * slide_context);
-static void sp_slide_context_destroy (GtkObject * object);
+static void sp_slide_context_dispose (GObject *object);
 
 static void sp_slide_context_setup (SPEventContext *ec);
 static gint sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event);
@@ -38,33 +38,34 @@ static SPEventContextClass * parent_class;
 GtkType
 sp_slide_context_get_type (void)
 {
-	static GtkType slide_context_type = 0;
-	if (!slide_context_type) {
-		static const GtkTypeInfo slide_context_info = {
-			"SPSlideContext",
-			sizeof (SPSlideContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPSlideContextClass),
-			(GtkClassInitFunc) sp_slide_context_class_init,
-			(GtkObjectInitFunc) sp_slide_context_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_slide_context_class_init,
+			NULL, NULL,
+			sizeof (SPSlideContext),
+			4,
+			(GInstanceInitFunc) sp_slide_context_init,
 		};
-		slide_context_type = gtk_type_unique (sp_event_context_get_type (), &slide_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPSlideContext", &info, 0);
 	}
-	return slide_context_type;
+	return type;
 }
 
 static void
 sp_slide_context_class_init (SPSlideContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass *object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_slide_context_destroy;
+	object_class->dispose = sp_slide_context_dispose;
 
 	event_context_class->setup = sp_slide_context_setup;
 	event_context_class->root_handler = sp_slide_context_root_handler;
@@ -84,10 +85,9 @@ sp_slide_context_init (SPSlideContext * slide_context)
 }
 
 static void
-sp_slide_context_destroy (GtkObject * object)
+sp_slide_context_dispose (GObject *object)
 {
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -97,8 +97,8 @@ sp_slide_context_setup (SPEventContext *ec)
 	sp_desktop_toggle_borders ((GtkWidget *) ec->desktop);
 	sp_slide_context_zoom (ec->desktop);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 }
 
 static gint
@@ -162,8 +162,8 @@ sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

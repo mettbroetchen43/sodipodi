@@ -24,16 +24,28 @@ typedef struct _SPDesktop SPDesktop;
 typedef struct _SPDesktopClass SPDesktopClass;
 
 #define SP_TYPE_DESKTOP (sp_desktop_get_type ())
-#define SP_DESKTOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
-#define SP_IS_DESKTOP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP))
+#define SP_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
+#define SP_IS_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_DESKTOP))
 
 unsigned int sp_desktop_get_type (void);
 
 typedef struct _SPSelection SPSelection;
 typedef struct _SPSelectionClass SPSelectionClass;
 
+#define SP_TYPE_SELECTION (sp_selection_get_type ())
+#define SP_SELECTION(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_SELECTION, SPSelection))
+#define SP_IS_SELECTION(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_SELECTION))
+
+unsigned int sp_selection_get_type (void);
+
 typedef struct _SPEventContext SPEventContext;
 typedef struct _SPEventContextClass SPEventContextClass;
+
+#define SP_TYPE_EVENT_CONTEXT (sp_event_context_get_type ())
+#define SP_EVENT_CONTEXT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_EVENT_CONTEXT, SPEventContext))
+#define SP_IS_EVENT_CONTEXT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_EVENT_CONTEXT))
+
+unsigned int sp_event_context_get_type (void);
 
 /* Document tree */
 
@@ -54,8 +66,6 @@ typedef struct _SPObjectClass SPObjectClass;
 #define SP_TYPE_OBJECT (sp_object_get_type ())
 #define SP_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_OBJECT, SPObject))
 #define SP_IS_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_OBJECT))
-#define SP_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
-#define SP_IS_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
 
 unsigned int sp_object_get_type (void);
 

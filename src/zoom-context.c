@@ -25,12 +25,13 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "sp-item.h"
 #include "pixmaps/cursor-zoom.xpm"
 #include "zoom-context.h"
 
 static void sp_zoom_context_class_init (SPZoomContextClass * klass);
 static void sp_zoom_context_init (SPZoomContext * zoom_context);
-static void sp_zoom_context_destroy (GtkObject * object);
+static void sp_zoom_context_dispose (GObject * object);
 
 static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
@@ -45,39 +46,34 @@ static GtkWidget *zoom_any = NULL;
 GtkType
 sp_zoom_context_get_type (void)
 {
-	static GtkType zoom_context_type = 0;
-
-	if (!zoom_context_type) {
-
-		static const GtkTypeInfo zoom_context_info = {
-			"SPZoomContext",
-			sizeof (SPZoomContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPZoomContextClass),
-			(GtkClassInitFunc) sp_zoom_context_class_init,
-			(GtkObjectInitFunc) sp_zoom_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_zoom_context_class_init,
+			NULL, NULL,
+			sizeof (SPZoomContext),
+			4,
+			(GInstanceInitFunc) sp_zoom_context_init,
 		};
-
-		zoom_context_type = gtk_type_unique (sp_event_context_get_type (), &zoom_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPZoomContext", &info, 0);
 	}
-
-	return zoom_context_type;
+	return type;
 }
 
 static void
 sp_zoom_context_class_init (SPZoomContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_zoom_context_destroy;
+	object_class->dispose = sp_zoom_context_dispose;
 
 	event_context_class->root_handler = sp_zoom_context_root_handler;
 	event_context_class->item_handler = sp_zoom_context_item_handler;
@@ -96,10 +92,9 @@ sp_zoom_context_init (SPZoomContext * zoom_context)
 }
 
 static void
-sp_zoom_context_destroy (GtkObject * object)
+sp_zoom_context_dispose (GObject *object)
 {
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static gint
@@ -109,8 +104,8 @@ sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 
 	ret = FALSE;
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-		ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
+	if (((SPEventContextClass *) parent_class)->item_handler)
+		ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
 
 	return ret;
 }
@@ -178,8 +173,8 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

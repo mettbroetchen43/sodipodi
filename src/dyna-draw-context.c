@@ -76,7 +76,7 @@
 
 static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass);
 static void sp_dyna_draw_context_init (SPDynaDrawContext *ddc);
-static void sp_dyna_draw_context_destroy (GtkObject *object);
+static void sp_dyna_draw_context_dispose (GObject *object);
 
 static void sp_dyna_draw_context_setup (SPEventContext *ec);
 static void sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
@@ -105,35 +105,34 @@ static SPEventContextClass *parent_class;
 GtkType
 sp_dyna_draw_context_get_type (void)
 {
-	static GtkType type = 0;
-
+	static GType type = 0;
 	if (!type) {
-		static const GtkTypeInfo info = {
-			"SPDynaDrawContext",
-			sizeof (SPDynaDrawContext),
+		GTypeInfo info = {
 			sizeof (SPDynaDrawContextClass),
-			(GtkClassInitFunc) sp_dyna_draw_context_class_init,
-			(GtkObjectInitFunc) sp_dyna_draw_context_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_dyna_draw_context_class_init,
+			NULL, NULL,
+			sizeof (SPDynaDrawContext),
+			4,
+			(GInstanceInitFunc) sp_dyna_draw_context_init,
 		};
-		type = gtk_type_unique (SP_TYPE_EVENT_CONTEXT, &info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPDynaDrawContext", &info, 0);
 	}
-
 	return type;
 }
 
 static void
 sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPEventContextClass *event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_dyna_draw_context_destroy;
+	object_class->dispose = sp_dyna_draw_context_dispose;
 
 	event_context_class->setup = sp_dyna_draw_context_setup;
 	event_context_class->set = sp_dyna_draw_context_set;
@@ -189,7 +188,7 @@ sp_dyna_draw_context_init (SPDynaDrawContext *ddc)
 }
 
 static void
-sp_dyna_draw_context_destroy (GtkObject *object)
+sp_dyna_draw_context_dispose (GObject *object)
 {
 	SPDynaDrawContext *ddc;
 
@@ -211,7 +210,7 @@ sp_dyna_draw_context_destroy (GtkObject *object)
 		ddc->currentshape = NULL;
 	}
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -221,8 +220,8 @@ sp_dyna_draw_context_setup (SPEventContext *ec)
 
 	ddc = SP_DYNA_DRAW_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
 	ddc->accumulated = sp_curve_new_sized (32);
 	ddc->currentcurve = sp_curve_new_sized (4);
@@ -235,7 +234,7 @@ sp_dyna_draw_context_setup (SPEventContext *ec)
 	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (ddc->currentshape), DDC_RED_RGBA, ART_WIND_RULE_ODDEVEN);
 	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* fixme: Cannot we cascade it to root more clearly? */
-	gtk_signal_connect (GTK_OBJECT (ddc->currentshape), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), ec->desktop);
+	g_signal_connect (G_OBJECT (ddc->currentshape), "event", G_CALLBACK (sp_desktop_root_handler), ec->desktop);
 
 	sp_event_context_read (ec, "mass");
 	sp_event_context_read (ec, "drag");
@@ -628,8 +627,8 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)-> root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)-> root_handler (event_context, event);
 	}
 
 	return ret;
@@ -826,7 +825,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
 		sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), DDC_GREEN_RGBA, ART_WIND_RULE_ODDEVEN);
 		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x000000ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 		/* fixme: Cannot we cascade it to root more clearly? */
-		gtk_signal_connect (GTK_OBJECT (cbp), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
+		g_signal_connect (G_OBJECT (cbp), "event", G_CALLBACK (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 
 		dc->segments = g_slist_prepend (dc->segments, cbp);
 
@@ -948,7 +947,7 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 			sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x000000ff, ART_WIND_RULE_ODDEVEN);
 			sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 			/* fixme: Cannot we cascade it to root more clearly? */
-			gtk_signal_connect (GTK_OBJECT (cbp), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
+			g_signal_connect (G_OBJECT (cbp), "event", G_CALLBACK (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 
 			dc->segments = g_slist_prepend (dc->segments, cbp);
 		}

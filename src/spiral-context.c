@@ -37,7 +37,7 @@
 
 static void sp_spiral_context_class_init (SPSpiralContextClass * klass);
 static void sp_spiral_context_init (SPSpiralContext * spiral_context);
-static void sp_spiral_context_destroy (GtkObject * object);
+static void sp_spiral_context_dispose (GObject *object);
 static void sp_spiral_context_setup (SPEventContext *ec);
 static void sp_spiral_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 
@@ -53,39 +53,34 @@ static SPEventContextClass * parent_class;
 GtkType
 sp_spiral_context_get_type (void)
 {
-	static GtkType spiral_context_type = 0;
-
-	if (!spiral_context_type) {
-
-		static const GtkTypeInfo spiral_context_info = {
-			"SPSpiralContext",
-			sizeof (SPSpiralContext),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPSpiralContextClass),
-			(GtkClassInitFunc) sp_spiral_context_class_init,
-			(GtkObjectInitFunc) sp_spiral_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_spiral_context_class_init,
+			NULL, NULL,
+			sizeof (SPSpiralContext),
+			4,
+			(GInstanceInitFunc) sp_spiral_context_init,
 		};
-
-		spiral_context_type = gtk_type_unique (sp_event_context_get_type (), &spiral_context_info);
+		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPSpiralContext", &info, 0);
 	}
-
-	return spiral_context_type;
+	return type;
 }
 
 static void
 sp_spiral_context_class_init (SPSpiralContextClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 	SPEventContextClass * event_context_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_spiral_context_destroy;
+	object_class->dispose = sp_spiral_context_dispose;
 
 	event_context_class->setup = sp_spiral_context_setup;
 	event_context_class->set = sp_spiral_context_set;
@@ -112,7 +107,7 @@ sp_spiral_context_init (SPSpiralContext * spiral_context)
 }
 
 static void
-sp_spiral_context_destroy (GtkObject * object)
+sp_spiral_context_dispose (GObject *object)
 {
 	SPSpiralContext * sc;
 
@@ -121,8 +116,7 @@ sp_spiral_context_destroy (GtkObject * object)
 	/* fixme: This is necessary because we do not grab */
 	if (sc->item) sp_spiral_finish (sc);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -132,8 +126,8 @@ sp_spiral_context_setup (SPEventContext *ec)
 
 	sc = SP_SPIRAL_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+	if (((SPEventContextClass *) parent_class)->setup)
+		((SPEventContextClass *) parent_class)->setup (ec);
 
 	sp_event_context_read (ec, "expansion");
 	sp_event_context_read (ec, "revolution");
@@ -209,8 +203,8 @@ sp_spiral_context_root_handler (SPEventContext * event_context, GdkEvent * event
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+		if (((SPEventContextClass *) parent_class)->root_handler)
+			ret = ((SPEventContextClass *) parent_class)->root_handler (event_context, event);
 	}
 
 	return ret;

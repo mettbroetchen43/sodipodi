@@ -16,6 +16,7 @@
 #include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "svg/svg.h"
 #include "sodipodi-private.h"
 #include "sodipodi.h"
@@ -104,8 +105,8 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	sp_sel_trans_update_handles (seltrans);
 
 	seltrans->selection = SP_DT_SELECTION (desktop);
-	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "changed", GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
-	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "modified", GTK_SIGNAL_FUNC (sp_sel_trans_sel_modified), seltrans);
+	g_signal_connect (G_OBJECT (seltrans->selection), "changed", G_CALLBACK (sp_sel_trans_sel_changed), seltrans);
+	g_signal_connect (G_OBJECT (seltrans->selection), "modified", G_CALLBACK (sp_sel_trans_sel_modified), seltrans);
 
 	seltrans->norm = sp_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
@@ -192,7 +193,7 @@ sp_sel_trans_shutdown (SPSelTrans *seltrans)
 	}
 
 	if (seltrans->selection) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (seltrans->selection), seltrans);
+		sp_signal_disconnect_by_data (seltrans->selection, seltrans);
 	}
 }
 
@@ -654,14 +655,14 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 
 	switch (handle->anchor) {
 	case GTK_ANCHOR_CENTER:
-	  gtk_object_set (GTK_OBJECT (seltrans->grip),
+	  g_object_set (G_OBJECT (seltrans->grip),
 			  "shape", SP_CTRL_SHAPE_BITMAP,
 			  "size", 13.0,
 			  NULL);
 	  sp_canvas_item_show (seltrans->grip);
 	  break;
 	default:
-	  gtk_object_set (GTK_OBJECT (seltrans->grip),
+	  g_object_set (G_OBJECT (seltrans->grip),
 			  "shape", SP_CTRL_SHAPE_CROSS,
 			  "size", 7.0,
 			  NULL);

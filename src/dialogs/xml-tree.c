@@ -35,6 +35,7 @@
 #include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection.h"
+#include "../sp-item.h"
 
 #include "../xml/repr-private.h"
 
@@ -516,7 +517,7 @@ set_dt_select (SPRepr *repr)
 	}
 
 	blocked++;
-	if ( object && SP_IS_ITEM (object) ) {
+	if (object && SP_IS_ITEM (object)) {
 		sp_selection_set_item (selection, SP_ITEM (object));
 	} else {
 		sp_selection_empty (selection);

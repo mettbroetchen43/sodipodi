@@ -73,9 +73,9 @@ sp_anchor_class_init (SPAnchorClass *klass)
 	SPObjectClass *sp_object_class;
 	SPItemClass *item_class;
 
-	gobject_class = G_OBJECT_CLASS (klass);
-	sp_object_class = SP_OBJECT_CLASS (klass);
-	item_class = SP_ITEM_CLASS (klass);
+	gobject_class = (GObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
+	item_class = (SPItemClass *) klass;
 
 	parent_class = g_type_class_ref (SP_TYPE_GROUP);
 

@@ -176,12 +176,12 @@ sp_desktop_destroy (GtkObject *object)
 
 	if (dt->event_context) {
 		sp_event_context_finish (dt->event_context);
-		gtk_object_destroy (GTK_OBJECT (dt->event_context));
+		g_object_unref (G_OBJECT (dt->event_context));
 		dt->event_context = NULL;
 	}
 
 	if (dt->selection) {
-		gtk_object_destroy (GTK_OBJECT (dt->selection));
+		g_object_unref (G_OBJECT (dt->selection));
 		dt->selection = NULL;
 	}
 
@@ -296,8 +296,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	desktop->controls = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
 	desktop->selection = sp_selection_new (desktop);
-	gtk_object_ref (GTK_OBJECT (desktop->selection));
-	gtk_object_sink (GTK_OBJECT (desktop->selection));
 
 #if 0
 	desktop->event_context = sp_event_context_new (SP_TYPE_SELECT_CONTEXT, desktop, NULL);
@@ -328,8 +326,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	sp_canvas_set_scroll_region (canvas, -SP_DESKTOP_SCROLL_LIMIT, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
 #endif
 
-	gtk_signal_connect (GTK_OBJECT (canvas), "size-allocate", GTK_SIGNAL_FUNC (sp_desktop_size_allocate), desktop);
-	gtk_signal_connect (GTK_OBJECT (desktop->selection), "modified", GTK_SIGNAL_FUNC (sp_desktop_selection_modified), desktop);
+	g_signal_connect (G_OBJECT (canvas), "size-allocate", G_CALLBACK (sp_desktop_size_allocate), desktop);
+	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
 	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
 	if (ai) {
@@ -359,12 +357,12 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 
 	if (dt->event_context) {
 		sp_event_context_finish (dt->event_context);
-		gtk_object_destroy (GTK_OBJECT (dt->event_context));
+		g_object_unref (G_OBJECT (dt->event_context));
 		dt->event_context = NULL;
 	}
 
 	if (dt->selection) {
-		gtk_object_destroy (GTK_OBJECT (dt->selection));
+		g_object_unref (G_OBJECT (dt->selection));
 		dt->selection = NULL;
 	}
 
@@ -535,14 +533,12 @@ sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *co
 
 	if (desktop->event_context) {
 		sp_event_context_finish (desktop->event_context);
-		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
+		g_object_unref (G_OBJECT (desktop->event_context));
 	}
 
 	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
 
 	desktop->event_context = sp_event_context_new (type, desktop, repr);
-	gtk_object_ref (GTK_OBJECT (desktop->event_context));
-	gtk_object_sink (GTK_OBJECT (desktop->event_context));
 }
 
 /* Private helpers */

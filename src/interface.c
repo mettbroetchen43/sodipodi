@@ -26,6 +26,7 @@
 #include "help.h"
 #include "interface.h"
 #include "desktop.h"
+#include "sp-item.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
 #include "zoom-context.h"
