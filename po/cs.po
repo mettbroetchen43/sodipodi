@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-26 20:43+0100\n"
-"PO-Revision-Date: 2003-11-26 21:13+0100\n"
+"POT-Creation-Date: 2003-11-28 15:40+0100\n"
+"PO-Revision-Date: 2003-11-28 17:37+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,7 @@ msgstr "Levá strana zarovnaných objektů k pravé straně ukotvení"
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Dolní strana zarovnaných objektů k horní straně ukotvení"
 
-#: src/dialogs/align.c:193 src/dialogs/align.c:202
+#: src/dialogs/align.c:193
 msgid "Top of aligned objects to top of anchor"
 msgstr "Horní strana zarovnaných objektů k horní straně ukotvení"
 
@@ -104,6 +104,10 @@ msgstr "Na střed svisle"
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Dolní strana zarovnaných objektů k dolní straně ukotvení"
+
+#: src/dialogs/align.c:202
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Horní strana zarovnaných objektů k spodní straně ukotvení"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -1150,42 +1154,41 @@ msgstr "Dialogy"
 msgid "Filters"
 msgstr "Filtry"
 
-#: src/main.c:129
+#: src/main.c:130 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívat X server (pouze zpracovat soubory z konzole)"
 
-#: src/main.c:132
+#: src/main.c:133 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY"
 
-#: src/main.c:135
+#: src/main.c:136 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
-#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156 src/main.c:644
-#: src/main.c:658
+#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
 msgid "FILENAME"
 msgstr "SOUBOR"
 
-#: src/main.c:138 src/main.c:643
+#: src/main.c:139
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
 "program')"
 
-#: src/main.c:141
+#: src/main.c:142 src/main.c:615
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:144 src/main.c:646
+#: src/main.c:145 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
-#: src/main.c:145 src/main.c:647
+#: src/main.c:146
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:147 src/main.c:649
+#: src/main.c:148 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1193,50 +1196,58 @@ msgstr ""
 "Exportovaná oblast v milimetrech (výchozí je celý dokument, 0,0 představuje "
 "spodní levý roh)"
 
-#: src/main.c:148 src/main.c:650
+#: src/main.c:149
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:150 src/main.c:652
+#: src/main.c:151 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:150 src/main.c:652
+#: src/main.c:151
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:152 src/main.c:654
+#: src/main.c:153 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:152 src/main.c:654
+#: src/main.c:153
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:154 src/main.c:656
+#: src/main.c:155 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
 
-#: src/main.c:154 src/main.c:656
+#: src/main.c:155
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:156 src/main.c:658
+#: src/main.c:157 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:158 src/main.c:660
+#: src/main.c:159
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Zobrazit zadané soubory jeden po druhém, přepnout na další při jakékoli "
 "události myši nebo klávesnice"
 
-#: src/main.c:160 src/main.c:662
+#: src/main.c:161
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávat přednost bitmapovým ikonám (XPM) před SVG"
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "Vytisknout informace o verzi sodipodi"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "Vytisknout nápovědu o argumentech na příkazovém řádku"
 
 #: src/module.c:558
 msgid "SVG with \"xmlns:sodipodi\" namespace"
@@ -1473,39 +1484,39 @@ msgstr "Poměr zaoblení pro X:"
 msgid "Roundness ratio for y:"
 msgstr "Poměr zaoblení pro Y:"
 
-#: src/select-context.c:568
+#: src/select-context.c:569
 msgid "Visual transformation"
 msgstr "Vizuální transformace"
 
-#: src/select-context.c:574
+#: src/select-context.c:575
 msgid "Show content"
 msgstr "Zobrazit obsah"
 
-#: src/select-context.c:580
+#: src/select-context.c:581
 msgid "Show outline"
 msgstr "Zobrazit kontury"
 
-#: src/select-context.c:586
+#: src/select-context.c:587
 msgid "Object transformation"
 msgstr "Transformace objektu"
 
-#: src/select-context.c:592
+#: src/select-context.c:593
 msgid "Optimize"
 msgstr "Optimalizovat"
 
-#: src/select-context.c:598
+#: src/select-context.c:599
 msgid "Preserve"
 msgstr "Zachovat"
 
-#: src/select-context.c:604
+#: src/select-context.c:605
 msgid "[Tab] Cycling"
 msgstr "Procházení s [Tab]"
 
-#: src/select-context.c:609
+#: src/select-context.c:610
 msgid "Cycle only among visible items"
 msgstr "Procházet jen mezi viditelnými položkami"
 
-#: src/select-context.c:612
+#: src/select-context.c:613
 msgid "Center view to selected item"
 msgstr "Vystředit pohled na vybranou položku"
 
