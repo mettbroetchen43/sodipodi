@@ -1,3 +1,7 @@
+2003-11-29  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Fixed preserve bug.
+
 2003-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-image.c (nr_arena_image_init): Mark

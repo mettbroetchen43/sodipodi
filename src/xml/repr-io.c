@@ -189,11 +189,7 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 		xmlChar *p;
 		gboolean preserve;
 
-#if 0
-		preserve = xmlNodeGetSpacePreserve (node);
-#else
-		preserve = 0;
-#endif
+		preserve = (xmlNodeGetSpacePreserve (node) == 1);
 
 		for (p = node->content; p && *p; p++) {
 			if (!isspace (*p) || preserve) {
