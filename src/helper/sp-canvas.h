@@ -123,6 +123,8 @@ struct _SPCanvas {
 	/* If non-NULL, the currently focused item */
 	SPCanvasItem *focused_item;
 
+	/* Button down coordinates */
+	double bdx, bdy;
 	/* Event on which selection of current item is based */
 	GdkEvent pick_event;
 
@@ -134,6 +136,8 @@ struct _SPCanvas {
 	unsigned int need_update : 1;
 	unsigned int need_redraw : 1;
 	unsigned int need_repick : 1;
+	/* Filter out initial movement */
+	unsigned int filter_move : 1;
 
 	/* For use by internal pick_current_item() function */
 	unsigned int left_grabbed_item : 1;

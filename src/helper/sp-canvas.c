@@ -1483,12 +1483,16 @@ sp_canvas_button (GtkWidget *widget, GdkEventButton *event)
 		pick_current_item (canvas, (GdkEvent *) event);
 		canvas->state ^= mask;
 		retval = emit_event (canvas, (GdkEvent *) event);
+		canvas->bdx = event->x;
+		canvas->bdy = event->y;
+		canvas->filter_move = 1;
 		break;
 
 	case GDK_BUTTON_RELEASE:
 		/* Process the event as if the button were pressed, then repick
 		 * after the button has been released
 		 */
+		canvas->filter_move = 0;
 		canvas->state = event->state;
 		retval = emit_event (canvas, (GdkEvent *) event);
 		event->state ^= mask;
@@ -1532,6 +1536,14 @@ sp_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 		gdk_window_get_pointer (widget->window, &x, &y, NULL);
 		event->x = x;
 		event->y = y;
+	}
+
+	if (canvas->filter_move) {
+		double dx, dy;
+		dx = fabs (event->x - canvas->bdx);
+		dy = fabs (event->y - canvas->bdy);
+		if ((dx < 2.0) && (dy < 2.0)) return TRUE;
+		canvas->filter_move = 0;
 	}
 
 	canvas->state = event->state;
