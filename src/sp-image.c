@@ -273,9 +273,12 @@ sp_image_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("image");
 	}
 
-	if (repr != SP_OBJECT_REPR (object)) {
-		sp_repr_merge (repr, SP_OBJECT_REPR (image), "id");
-	}
+	sp_repr_set_attr (repr, "xlink:href", image->href);
+	/* fixme: Reset attribute if needed (Lauris) */
+	if (image->x.set) sp_repr_set_double (repr, "x", image->x.computed);
+	if (image->y.set) sp_repr_set_double (repr, "y", image->y.computed);
+	if (image->width.set) sp_repr_set_double (repr, "width", image->width.computed);
+	if (image->height.set) sp_repr_set_double (repr, "height", image->height.computed);
 
 	if (((SPObjectClass *) (parent_class))->write)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags);

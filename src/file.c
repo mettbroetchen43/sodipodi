@@ -165,7 +165,7 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 	type = gtk_object_get_data (GTK_OBJECT (fs), "type");
-	spns = (type && !strcmp (type, "sodipodi"));
+	spns = (type && strcmp (type, "svg"));
 
 	gtk_widget_destroy (GTK_WIDGET (fs));
 

@@ -837,11 +837,11 @@ sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
 static gboolean
 sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 {
-#define ARC_BUFSIZE 128
+#define ARC_BUFSIZE 256
 	SPGenericEllipse *ge;
 	ArtPoint p1, p2;
-	gdouble  dt;
 	gint fa, fs;
+	gdouble  dt;
 	gchar c[ARC_BUFSIZE];
 
 	ge = SP_GENERICELLIPSE (arc);
@@ -849,18 +849,39 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 	sp_arc_get_xy (arc, ge->start, &p1);
 	sp_arc_get_xy (arc, ge->end, &p2);
 
-	dt = fmod(ge->end - ge->start, SP_2PI);
-	fa = (fabs(dt) > M_PI) ? 1 : 0;
-	fs = (dt > 0) ? 1 : 0;
+	dt = fmod (ge->end - ge->start, SP_2PI);
+	if (fabs (dt) < 1e-6) {
+		ArtPoint ph;
+		sp_arc_get_xy (arc, (ge->start + ge->end) / 2.0, &ph);
+		g_snprintf (c, ARC_BUFSIZE, "M %f %f A %f %f 0 %d %d %f,%f A %g %g 0 %d %d %g %g L %f %f z",
+			    p1.x, p1.y,
+			    ge->rx.computed, ge->ry.computed,
+			    1, (dt > 0),
+			    ph.x, ph.y,
+			    ge->rx.computed, ge->ry.computed,
+			    1, (dt > 0),
+			    p2.x, p2.y,
+			    ge->cx.computed, ge->cy.computed);
+	} else {
+		fa = (fabs (dt) > M_PI) ? 1 : 0;
+		fs = (dt > 0) ? 1 : 0;
 #ifdef ARC_VERBOSE
-	g_print ("start:%g end:%g fa=%d fs=%d\n", ge->start, ge->end, fa, fs);
+		g_print ("start:%g end:%g fa=%d fs=%d\n", ge->start, ge->end, fa, fs);
 #endif
-	if (arc->is_closed)
-		g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
-			    p1.x, p1.y, ge->rx.computed, ge->ry.computed, fa, fs, p2.x, p2.y, ge->cx.computed, ge->cy.computed);
-	else
-		g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f",
-			    p1.x, p1.y, ge->rx.computed, ge->ry.computed, fa, fs, p2.x, p2.y);
+		if (arc->is_closed) {
+			g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
+				    p1.x, p1.y,
+				    ge->rx.computed, ge->ry.computed,
+				    fa, fs,
+				    p2.x, p2.y,
+				    ge->cx.computed, ge->cy.computed);
+		} else {
+			g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f",
+				    p1.x, p1.y,
+				    ge->rx.computed, ge->ry.computed,
+				    fa, fs, p2.x, p2.y);
+		}
+	}
 
 
 	return sp_repr_set_attr (repr, "d", c);
@@ -869,29 +890,46 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 static SPRepr *
 sp_arc_write (SPObject *object, SPRepr *repr, guint flags)
 {
-	SPGenericEllipse *ellipse;
+	SPGenericEllipse *ge;
 	SPArc *arc;
 
-	ellipse = SP_GENERICELLIPSE (object);
+	ge = SP_GENERICELLIPSE (object);
 	arc = SP_ARC (object);
 
-	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
-		repr = sp_repr_new ("path");
-	}
-
 	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+			repr = sp_repr_new ("path");
+		}
+
 		sp_repr_set_attr (repr, "sodipodi:type", "arc");
-		sp_repr_set_double_attribute (repr, "sodipodi:cx", ellipse->cx.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:cy", ellipse->cy.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:rx", ellipse->rx.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:ry", ellipse->ry.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:start", ellipse->start);
-		sp_repr_set_double_attribute (repr, "sodipodi:end", ellipse->end);
-		sp_repr_set_attr (repr, "sodipodi:open", (!ellipse->closed) ? "true" : NULL);
+		sp_repr_set_double_attribute (repr, "sodipodi:cx", ge->cx.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:cy", ge->cy.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:rx", ge->rx.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:ry", ge->ry.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:start", ge->start);
+		sp_repr_set_double_attribute (repr, "sodipodi:end", ge->end);
+		sp_repr_set_attr (repr, "sodipodi:open", (!ge->closed) ? "true" : NULL);
+
+		sp_arc_set_elliptical_path_attribute (arc, repr);
+	} else {
+		gdouble dt;
+		dt = fmod (ge->end - ge->start, SP_2PI);
+		if (fabs (dt) < 1e-6) {
+			if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+				repr = sp_repr_new ("ellipse");
+			}
+			sp_repr_set_double_attribute (repr, "cx", ge->cx.computed);
+			sp_repr_set_double_attribute (repr, "cy", ge->cy.computed);
+			sp_repr_set_double_attribute (repr, "rx", ge->rx.computed);
+			sp_repr_set_double_attribute (repr, "ry", ge->ry.computed);
+		} else {
+			if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+				repr = sp_repr_new ("path");
+			}
+			sp_arc_set_elliptical_path_attribute (arc, repr);
+		}
 	}
 
-	sp_arc_set_elliptical_path_attribute (arc, repr);
-	
 	if (SP_OBJECT_CLASS (arc_parent_class)->write)
 		SP_OBJECT_CLASS (arc_parent_class)->write (object, repr, flags);
 
