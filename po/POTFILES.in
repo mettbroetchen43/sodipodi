@@ -2,6 +2,7 @@
 # Please keep this file sorted alphabetically.
 sodipodi.desktop.in
 src/bonobo/svg-doc-factory.c
+src/arc-context.c
 src/desktop.c
 src/dialogs/align.c
 src/dialogs/desktop-properties.c
