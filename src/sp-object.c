@@ -396,7 +396,6 @@ sp_object_modified (SPObject *object, guint flags)
 	SP_OBJECT_UNSET_FLAGS (object, (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG));
 
 	gtk_object_ref (GTK_OBJECT (object));
-	g_print ("Object %s modified %d\n", object->id, flags);
 	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
 	gtk_object_unref (GTK_OBJECT (object));
 }

@@ -45,6 +45,8 @@ struct _SPDocument {
 
 struct _SPDocumentClass {
 	GtkObjectClass parent_class;
+
+	void (* modified) (SPDocument *document, guint flags);
 };
 
 GtkType sp_document_get_type (void);
@@ -103,8 +105,8 @@ gboolean sp_document_change_content_requested (SPDocument * document, SPObject *
 void sp_document_request_modified (SPDocument *document);
 
 /* Save all previous actions to stack, as one undo step */
-
-void sp_document_done (SPDocument * document);
+void sp_document_done (SPDocument *document);
+void sp_document_maybe_done (SPDocument *document);
 
 /* Clear current actions, so these cannot be undone */
 

@@ -34,19 +34,19 @@ struct _SPWidget {
 	Sodipodi *sodipodi;
 	SPDesktop *desktop;
 	SPDocument *document;
-	guint change_selection_id;
-	guint set_selection_id;
 };
 
 struct _SPWidgetClass {
 	GtkBinClass bin_class;
+	void (* modify_selection) (SPWidget *spw, SPSelection *selection, guint flags);
 	void (* change_selection) (SPWidget *spw, SPSelection *selection);
 	void (* set_selection) (SPWidget *spw, SPSelection *selection);
 };
 
 GtkType sp_widget_get_type (void);
 
-SPWidget *sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document);
+GtkWidget *sp_widget_new (Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document);
+GtkWidget *sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document);
 
 END_GNOME_DECLS
 

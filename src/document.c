@@ -22,6 +22,11 @@
 #define A4_WIDTH  (21.0 * 72.0 / 2.54)
 #define A4_HEIGHT (29.7 * 72.0 / 2.54)
 
+enum {
+	MODIFIED,
+	LAST_SIGNAL
+};
+
 static void sp_document_class_init (SPDocumentClass * klass);
 static void sp_document_init (SPDocument * document);
 static void sp_document_destroy (GtkObject * object);
@@ -29,6 +34,7 @@ static void sp_document_destroy (GtkObject * object);
 static gint sp_document_idle_handler (gpointer data);
 
 static GtkObjectClass * parent_class;
+static guint signals[LAST_SIGNAL] = { 0 };
 static gint doc_count = 0;
 
 GtkType
@@ -56,7 +62,16 @@ sp_document_class_init (SPDocumentClass * klass)
 
 	object_class = (GtkObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+
+	signals [MODIFIED] = gtk_signal_new ("modified",
+					     GTK_RUN_FIRST,
+					     object_class->type,
+					     GTK_SIGNAL_OFFSET (SPDocumentClass, modified),
+					     gtk_marshal_NONE__UINT,
+					     GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_document_destroy;
 }
@@ -333,16 +348,16 @@ sp_document_uri (SPDocument * document)
 void
 sp_document_set_uri (SPDocument * document, const gchar * uri)
 {
-  const GSList * l, * m;
+	const GSList * l, * m;
 
-  g_assert (SP_IS_DOCUMENT (document));
+	g_assert (SP_IS_DOCUMENT (document));
 
-  g_free (document->private->uri);
-  document->private->uri = g_strdup (uri);
+	g_free (document->private->uri);
+	document->private->uri = g_strdup (uri);
 
-  for (l = sp_document_namedview_list (document); l != NULL; l = l->next)
-    for (m = sp_namedview_view_list(SP_NAMEDVIEW(l->data)); m != NULL; m = m->next) 
-      sp_desktop_set_title (SP_DESKTOP (m->data));
+	for (l = sp_document_namedview_list (document); l != NULL; l = l->next)
+		for (m = sp_namedview_view_list(SP_NAMEDVIEW(l->data)); m != NULL; m = m->next) 
+			sp_desktop_set_title (SP_DESKTOP (m->data));
 }
 
 const gchar *
@@ -433,9 +448,12 @@ sp_document_idle_handler (gpointer data)
 
 	document->private->modified_id = 0;
 
-	g_print ("Starting document handling\n");
+	/* Emit "modified" signal on objects */
 	sp_object_modified (SP_OBJECT (document->private->root), 0);
-	g_print ("End of document handling\n");
+
+	/* Emit our own "modified" signal */
+	gtk_signal_emit (GTK_OBJECT (document), signals [MODIFIED],
+			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 
 	return FALSE;
 }

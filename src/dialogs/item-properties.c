@@ -21,14 +21,31 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include "../svg/svg.h"
+#include "../sodipodi.h"
 #include "../document.h"
+#include "../desktop-handles.h"
+#include "../selection.h"
 #include "../sp-item.h"
 #include "../style.h"
+#include "sp-widget.h"
 #include "item-properties.h"
 
-static GladeXML  * xml = NULL;
+/* fixme: This sucks, we should really use per-widget xml */
+static GladeXML *xml = NULL;
+
 static GtkWidget * dialog = NULL;
+#if 0
 static SPItem *dialog_item = NULL;
+#endif
+
+static void sp_item_widget_destroy (GtkObject *object);
+static void sp_item_widget_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, GtkWidget *itemw);
+static void sp_item_widget_change_selection (SPWidget *spw, SPSelection *selection, GtkWidget *itemw);
+static void sp_item_widget_setup (SPWidget *spw, SPSelection *selection);
+static void sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw);
+static void sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw);
+static void sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw);
+static void sp_item_widget_transform_changed (GtkWidget *widget, SPWidget *spw);
 
 static void sp_item_dialog_setup (SPItem *item);
 
@@ -38,45 +55,108 @@ void sp_item_dialog_sensitive_toggled (GtkWidget *widget, gpointer data);
 void sp_item_dialog_id_changed (GtkWidget *widget, gpointer data);
 void sp_item_dialog_opacity_changed (GtkWidget *widget, gpointer data);
 void sp_item_dialog_transform_changed (GtkWidget *widget, gpointer data);
-static void sp_item_dialog_item_destroy (GtkObject *object, gpointer data);
 
-void
-sp_item_dialog (SPItem *item)
+static gboolean blocked = FALSE;
+
+/* Creates new instance of item properties widget */
+
+GtkWidget *
+sp_item_widget_new (void)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
+	GtkWidget *spw, *itemw, *w;
 
-	if (dialog == NULL) {
-		g_assert (xml == NULL);
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/item.glade", "item_dialog");
-		glade_xml_signal_autoconnect (xml);
-		dialog = glade_xml_get_widget (xml, "item_dialog");
-		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event",
-				    GTK_SIGNAL_FUNC (sp_item_dialog_delete), NULL);
-	} else {
-		if (!GTK_WIDGET_VISIBLE (dialog)) gtk_widget_show (dialog);
-	}
+	/* Read widget backbone from glade file */
+	xml = glade_xml_new (SODIPODI_GLADEDIR "/item.glade", "item_widget");
+	g_return_val_if_fail (xml != NULL, NULL);
+	itemw = glade_xml_get_widget (xml, "item_widget");
+	/* Create container widget */
+	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
+	gtk_object_set_data (GTK_OBJECT (spw), "xml", xml);
+	gtk_signal_connect (GTK_OBJECT (spw), "destroy", GTK_SIGNAL_FUNC (sp_item_widget_destroy), NULL);
+	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_item_widget_modify_selection), itemw);
+	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_item_widget_change_selection), itemw);
+	/* Connect handlers */
+	w = glade_xml_get_widget (xml, "sensitive");
+	gtk_signal_connect (GTK_OBJECT (w), "toggled", GTK_SIGNAL_FUNC (sp_item_widget_sensitivity_toggled), spw);
+	w = glade_xml_get_widget (xml, "id");
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_id_changed), spw);
+	w = glade_xml_get_widget (xml, "opacity");
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_opacity_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_0");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (0));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_1");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (1));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_2");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (2));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_3");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (3));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_4");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (4));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	w = glade_xml_get_widget (xml, "transform_5");
+	gtk_object_set_data (GTK_OBJECT (w), "pos", GINT_TO_POINTER (5));
+	gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_changed), spw);
+	/* Add widget to container */
+	gtk_container_add (GTK_CONTAINER (spw), itemw);
 
-	if (dialog_item) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (dialog_item), dialog);
-		dialog_item = NULL;
-	}
+	sp_item_widget_setup (SP_WIDGET (spw), SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
 
-	dialog_item = item;
-	gtk_signal_connect (GTK_OBJECT (item), "destroy",
-			    GTK_SIGNAL_FUNC (sp_item_dialog_item_destroy), dialog);
-
-	sp_item_dialog_setup (item);
+	return (GtkWidget *) spw;
 }
 
 static void
-sp_item_dialog_setup (SPItem *item)
+sp_item_widget_destroy (GtkObject *object)
 {
+	GladeXML *xml;
+
+	xml = gtk_object_get_data (GTK_OBJECT (object), "xml");
+
+	gtk_object_unref (GTK_OBJECT (xml));
+}
+
+static void
+sp_item_widget_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, GtkWidget *itemw)
+{
+	if (blocked) return;
+
+	sp_item_widget_setup (spw, selection);
+}
+
+static void
+sp_item_widget_change_selection (SPWidget *spw, SPSelection *selection, GtkWidget *itemw)
+{
+	if (blocked) return;
+
+	sp_item_widget_setup (spw, selection);
+}
+
+static void
+sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
+{
+	GladeXML *xml;
+	SPItem *item;
 	SPObject *object;
 	SPRepr *repr;
 	const guchar *str;
 	GtkWidget * w;
 
+	if (blocked) return;
+
+	if (!selection || !sp_selection_item (selection)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (spw), FALSE);
+		return;
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (spw), TRUE);
+	}
+
+	blocked = TRUE;
+
+	xml = gtk_object_get_data (GTK_OBJECT (spw), "xml");
+	item = sp_selection_item (selection);
 	object = SP_OBJECT (item);
 	repr = object->repr;
 
@@ -118,6 +198,175 @@ sp_item_dialog_setup (SPItem *item)
 	w = glade_xml_get_widget (xml, "transform_5");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), item->affine[5]);
 
+	blocked = FALSE;
+}
+
+static void
+sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
+{
+	SPItem *item;
+	SPException ex;
+
+	if (blocked) return;
+
+	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	g_return_if_fail (item != NULL);
+
+	blocked = TRUE;
+
+	SP_EXCEPTION_INIT (&ex);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
+		sp_object_removeAttribute (SP_OBJECT (item), "insensitive", &ex);
+	} else {
+		sp_object_setAttribute (SP_OBJECT (item), "insensitive", "true", &ex);
+	}
+
+	sp_document_maybe_done (spw->document);
+
+	blocked = FALSE;
+}
+
+static void
+sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw)
+{
+	GladeXML *xml;
+	SPItem *item;
+	GtkWidget *w;
+	gchar *id;
+
+	if (blocked) return;
+
+	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	g_return_if_fail (item != NULL);
+	xml = gtk_object_get_data (GTK_OBJECT (spw), "xml");
+	g_return_if_fail (xml != NULL);
+
+	blocked = TRUE;
+
+	w = glade_xml_get_widget (xml, "id");
+	id = gtk_entry_get_text (GTK_ENTRY (w));
+	w = glade_xml_get_widget (xml, "id_comment");
+	if (!strcmp (id, ((SPObject *) item)->id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
+	} else if (!*id || !isalnum (*id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is not valid"));
+	} else if (sp_document_lookup_id (spw->document, id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is already defined"));
+	} else {
+		SPException ex;
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is valid"));
+		SP_EXCEPTION_INIT (&ex);
+		sp_object_setAttribute (SP_OBJECT (item), "id", id, &ex);
+		sp_document_maybe_done (spw->document);
+	}
+
+	blocked = FALSE;
+}
+
+static void
+sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
+{
+	SPItem *item;
+	const gchar *str;
+	SPStyle *style;
+	gchar *s;
+	SPException ex;
+
+	if (blocked) return;
+
+	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	g_return_if_fail (item != NULL);
+
+	blocked = TRUE;
+
+	/* Opacity */
+	str = sp_repr_attr (((SPObject *) item)->repr, "style");
+	style = sp_style_new ();
+	sp_style_read_from_string (style, str, spw->document);
+	style->opacity = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (widget));
+	style->opacity_set = TRUE;
+	s = sp_style_write_string (style);
+	sp_style_unref (style);
+	SP_EXCEPTION_INIT (&ex);
+	sp_object_setAttribute (SP_OBJECT (item), "style", s, &ex);
+	g_free (s);
+
+	sp_document_maybe_done (spw->document);
+
+	blocked = FALSE;
+}
+
+static void
+sp_item_widget_transform_changed (GtkWidget *widget, SPWidget *spw)
+{
+	SPItem *item;
+	gdouble a[6], t;
+	gint pos;
+	guchar c[256];
+	SPException ex;
+
+	if (blocked) return;
+
+	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	g_return_if_fail (item != NULL);
+	pos = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "pos"));
+
+	blocked = TRUE;
+
+	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (widget));
+	if (t != a[pos]) {
+		memcpy (a, item->affine, 6 * sizeof (gdouble));
+		a[pos] = t;
+		sp_svg_write_affine (c, 256, a);
+		SP_EXCEPTION_INIT (&ex);
+		sp_object_setAttribute (SP_OBJECT (item), "transform", c, &ex);
+
+		sp_document_maybe_done (spw->document);
+	}
+
+	blocked = FALSE;
+}
+
+void
+sp_item_dialog (SPItem *item)
+{
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+
+	if (dialog == NULL) {
+		GtkWidget *itemw, *vb, *b;
+		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Item properties"));
+		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event", GTK_SIGNAL_FUNC (sp_item_dialog_delete), NULL);
+		itemw = sp_item_widget_new ();
+		/* Connect signals */
+		gtk_widget_show (itemw);
+		gtk_container_add (GTK_CONTAINER (dialog), itemw);
+	}
+
+	if (!GTK_WIDGET_VISIBLE (dialog)) gtk_widget_show (dialog);
+
+#if 0
+	if (dialog_item) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (dialog_item), dialog);
+		dialog_item = NULL;
+	}
+#endif
+
+#if 0
+	dialog_item = item;
+	gtk_signal_connect (GTK_OBJECT (item), "destroy",
+			    GTK_SIGNAL_FUNC (sp_item_dialog_item_destroy), dialog);
+#endif
+
+	sp_item_dialog_setup (item);
+}
+
+static void
+sp_item_dialog_setup (SPItem *item)
+{
+	GtkWidget * w;
+
 	/* Apply button */
 	w = glade_xml_get_widget (xml, "apply");
 	gtk_widget_set_sensitive (w, FALSE);
@@ -127,11 +376,6 @@ void
 sp_item_dialog_close (GtkWidget * widget)
 {
 	g_assert (dialog != NULL);
-
-	if (dialog_item) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (dialog_item), dialog);
-		dialog_item = NULL;
-	}
 
 	if (GTK_WIDGET_VISIBLE (dialog)) gtk_widget_hide (dialog);
 }
@@ -147,6 +391,7 @@ sp_item_dialog_delete (GtkWidget *widget, GdkEvent *event)
 void
 sp_item_dialog_apply (GtkWidget * widget)
 {
+	SPItem *item;
 	SPObject *object;
 	SPRepr *repr;
 	GtkWidget *w;
@@ -158,9 +403,11 @@ sp_item_dialog_apply (GtkWidget * widget)
 
 	g_assert (dialog != NULL);
 
-	g_return_if_fail (dialog_item != NULL);
+	/* fixme: */
+	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	g_return_if_fail (item != NULL);
 
-	object = SP_OBJECT (dialog_item);
+	object = SP_OBJECT (item);
 	repr = object->repr;
 
 	/* Sensitive */
@@ -204,7 +451,7 @@ sp_item_dialog_apply (GtkWidget * widget)
 
 	sp_document_done (object->document);
 
-	sp_item_dialog_setup (dialog_item);
+	sp_item_dialog_setup (item);
 }
 
 void
@@ -221,14 +468,19 @@ sp_item_dialog_sensitive_toggled (GtkWidget *widget, gpointer data)
 void
 sp_item_dialog_id_changed (GtkWidget *widget, gpointer data)
 {
+#if 0
+	SPItem *item;
 	SPObject *o;
 	GtkWidget *w;
 	gchar *id;
 
 	g_assert (dialog != NULL);
-	g_assert (dialog_item != NULL);
 
-	o = SP_OBJECT (dialog_item);
+	/* fixme: */
+	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	g_return_if_fail (item != NULL);
+
+	o = SP_OBJECT (item);
 
 	w = glade_xml_get_widget (xml, "id");
 	id = gtk_entry_get_text (GTK_ENTRY (w));
@@ -245,17 +497,20 @@ sp_item_dialog_id_changed (GtkWidget *widget, gpointer data)
 
 	w = glade_xml_get_widget (xml, "apply");
 	gtk_widget_set_sensitive (w, TRUE);
+#endif
 }
 
 void
 sp_item_dialog_opacity_changed (GtkWidget *widget, gpointer data)
 {
+#if 0
 	GtkWidget *w;
 
 	g_assert (dialog != NULL);
 
 	w = glade_xml_get_widget (xml, "apply");
 	gtk_widget_set_sensitive (w, TRUE);
+#endif
 }
 
 void
@@ -269,10 +524,12 @@ sp_item_dialog_transform_changed (GtkWidget *widget, gpointer data)
 	gtk_widget_set_sensitive (w, TRUE);
 }
 
+#if 0
 static void
 sp_item_dialog_item_destroy (GtkObject *object, gpointer data)
 {
 	sp_item_dialog_close (dialog);
 }
+#endif
 
 

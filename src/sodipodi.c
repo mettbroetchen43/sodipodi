@@ -27,6 +27,7 @@
 #include "preferences-skeleton.h"
 
 enum {
+	MODIFY_SELECTION,
 	CHANGE_SELECTION,
 	SET_SELECTION,
 	SET_EVENTCONTEXT,
@@ -58,6 +59,7 @@ struct _SodipodiClass {
 	/* Signals */
 
 	void (* change_selection) (Sodipodi * sodipodi, SPSelection * selection);
+	void (* modify_selection) (Sodipodi * sodipodi, SPSelection * selection, guint flags);
 	void (* set_selection) (Sodipodi * sodipodi, SPSelection * selection);
 	void (* set_eventcontext) (Sodipodi * sodipodi, SPEventContext * eventcontext);
 	void (* new_desktop) (Sodipodi * sodipodi, SPDesktop * desktop);
@@ -99,6 +101,13 @@ sodipodi_class_init (SodipodiClass * klass)
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
 
+	sodipodi_signals[MODIFY_SELECTION] = gtk_signal_new ("modify_selection",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SodipodiClass, modify_selection),
+		gtk_marshal_NONE__POINTER_UINT,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER, GTK_TYPE_UINT);
 	sodipodi_signals[CHANGE_SELECTION] = gtk_signal_new ("change_selection",
 		GTK_RUN_LAST,
 		object_class->type,
@@ -315,6 +324,19 @@ sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key)
 		s = e;
 	}
 	return repr;
+}
+
+void
+sodipodi_selection_modified (SPSelection *selection)
+{
+	g_return_if_fail (sodipodi != NULL);
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+
+	if (DESKTOP_IS_ACTIVE (selection->desktop)) {
+		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[MODIFY_SELECTION], selection,
+				 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+	}
 }
 
 void

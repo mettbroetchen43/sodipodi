@@ -174,6 +174,8 @@ sp_selection_idle_handler (gpointer data)
 	/* Emit our own "modified" signal */
 	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [MODIFIED],
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+	/* Request "selection_modified" signal on Sodipodi */
+	sodipodi_selection_changed (selection);
 
 	return FALSE;
 }

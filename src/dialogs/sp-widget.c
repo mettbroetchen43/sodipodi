@@ -17,6 +17,13 @@
 #include "../document.h"
 #include "sp-widget.h"
 
+enum {
+	MODIFY_SELECTION,
+	CHANGE_SELECTION,
+	SET_SELECTION,
+	LAST_SIGNAL
+};
+
 static void sp_widget_class_init (SPWidgetClass *klass);
 static void sp_widget_init (SPWidget *widget);
 
@@ -29,10 +36,12 @@ static gint sp_widget_expose (GtkWidget *widget, GdkEventExpose *event);
 static void sp_widget_size_request (GtkWidget *widget, GtkRequisition *requisition);
 static void sp_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
 
+static void sp_widget_modify_selection (Sodipodi *sodipodi, SPSelection *selection, guint flags, SPWidget *spw);
 static void sp_widget_change_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw);
 static void sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw);
 
 static GtkBinClass *parent_class;
+static guint signals[LAST_SIGNAL] = {0};
 
 GtkType
 sp_widget_get_type (void)
@@ -65,6 +74,29 @@ sp_widget_class_init (SPWidgetClass *klass)
 
 	object_class->destroy = sp_widget_destroy;
 
+	signals[MODIFY_SELECTION] = gtk_signal_new ("change_selection",
+						    GTK_RUN_LAST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, change_selection),
+						    gtk_marshal_NONE__POINTER,
+						    GTK_TYPE_NONE, 1,
+						    GTK_TYPE_POINTER);
+	signals[CHANGE_SELECTION] = gtk_signal_new ("modify_selection",
+						    GTK_RUN_LAST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, modify_selection),
+						    gtk_marshal_NONE__POINTER_UINT,
+						    GTK_TYPE_NONE, 1,
+						    GTK_TYPE_POINTER, GTK_TYPE_UINT);
+	signals[SET_SELECTION] = gtk_signal_new ("set_selection",
+						 GTK_RUN_LAST,
+						 object_class->type,
+						 GTK_SIGNAL_OFFSET (SPWidgetClass, set_selection),
+						 gtk_marshal_NONE__POINTER,
+						 GTK_TYPE_NONE, 1,
+						 GTK_TYPE_POINTER);
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
 	widget_class->show = sp_widget_show;
 	widget_class->hide = sp_widget_hide;
 	widget_class->draw = sp_widget_draw;
@@ -88,9 +120,6 @@ sp_widget_destroy (GtkObject *object)
 
 	spw = (SPWidget *) object;
 
-	g_assert (spw->change_selection_id == 0);
-	g_assert (spw->set_selection_id == 0);
-
 	if (((GtkObjectClass *) parent_class)->destroy)
 		(* ((GtkObjectClass *) parent_class)->destroy) (object);
 }
@@ -102,13 +131,10 @@ sp_widget_show (GtkWidget *widget)
 
 	spw = SP_WIDGET (widget);
 
-	g_assert (spw->change_selection_id == 0);
-	g_assert (spw->set_selection_id == 0);
-
-	spw->change_selection_id = gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection",
-						       GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
-	spw->set_selection_id = gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection",
-						    GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+	/* Connect signals */
+	gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
+	gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
+	gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
 
 	if (((GtkWidgetClass *) parent_class)->show)
 		(* ((GtkWidgetClass *) parent_class)->show) (widget);
@@ -121,13 +147,8 @@ sp_widget_hide (GtkWidget *widget)
 
 	spw = SP_WIDGET (widget);
 
-	g_assert (spw->change_selection_id != 0);
-	g_assert (spw->set_selection_id != 0);
-
-	gtk_signal_disconnect (GTK_OBJECT (widget), spw->change_selection_id);
-	spw->change_selection_id = 0;
-	gtk_signal_disconnect (GTK_OBJECT (widget), spw->set_selection_id);
-	spw->set_selection_id = 0;
+	/* Disconnect signals */
+	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
 
 	if (((GtkWidgetClass *) parent_class)->show)
 		(* ((GtkWidgetClass *) parent_class)->show) (widget);
@@ -174,7 +195,22 @@ sp_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 /* Methods */
 
-SPWidget *
+GtkWidget *
+sp_widget_new (Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document)
+{
+	SPWidget *spw;
+
+	spw = gtk_type_new (SP_TYPE_WIDGET);
+
+	if (!sp_widget_construct (spw, sodipodi, desktop, document)) {
+		gtk_object_unref (GTK_OBJECT (spw));
+		return NULL;
+	}
+
+	return (GtkWidget *) spw;
+}
+
+GtkWidget *
 sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document)
 {
 	g_return_val_if_fail (spw != NULL, NULL);
@@ -188,8 +224,19 @@ sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDo
 	g_return_val_if_fail (sodipodi != NULL, NULL);
 
 	spw->sodipodi = sodipodi;
+	spw->desktop = SP_ACTIVE_DESKTOP;
+	spw->document = SP_ACTIVE_DOCUMENT;
 
-	return spw;
+	return (GtkWidget *) spw;
+}
+
+static void
+sp_widget_modify_selection (Sodipodi *sodipodi, SPSelection *selection, guint flags, SPWidget *spw)
+{
+	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->modify_selection)
+		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->modify_selection) (spw, selection, flags);
+
+	gtk_signal_emit (GTK_OBJECT (spw), signals[MODIFY_SELECTION], selection, flags);
 }
 
 static void
@@ -197,13 +244,21 @@ sp_widget_change_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget
 {
 	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection)
 		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection) (spw, selection);
+
+	gtk_signal_emit (GTK_OBJECT (spw), signals[CHANGE_SELECTION], selection);
 }
 
 static void
 sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw)
 {
+	/* Set desktop and document members */
+	spw->desktop = SP_ACTIVE_DESKTOP;
+	spw->document = SP_ACTIVE_DOCUMENT;
+	/* Call virtual method */
 	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection)
 		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection) (spw, selection);
+	/* Emit "set_selection" signal */
+	gtk_signal_emit (GTK_OBJECT (spw), signals[SET_SELECTION], selection);
 }
 
 

@@ -52,6 +52,12 @@ sp_document_done (SPDocument * document)
 }
 
 void
+sp_document_maybe_done (SPDocument *document)
+{
+	sp_document_done (document);
+}
+
+void
 sp_document_clear_actions (SPDocument * document)
 {
 	g_assert (document != NULL);

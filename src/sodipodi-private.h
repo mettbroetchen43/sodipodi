@@ -13,6 +13,7 @@ Sodipodi * sodipodi_new ();
  * These are meant solely for desktop, document etc. implementations
  */
 
+void sodipodi_selection_modified (SPSelection *selection);
 void sodipodi_selection_changed (SPSelection * selection);
 void sodipodi_selection_set (SPSelection * selection);
 void sodipodi_eventcontext_set (SPEventContext * eventcontext);

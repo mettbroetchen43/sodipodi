@@ -1,5 +1,21 @@
 2001-07-19  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/dialogs/sp-widget.c (sp_widget_modify_selection): New function
+	(sp_widget_show): Connect "modify_selection"
+	(sp_widget_hide): Disconnect by data
+	(sp_widget_new): New function
+	(sp_widget_class_init): Added signals
+	(sp_widget_change_selection): Emit signal
+	(sp_widget_set_selection): Ditto
+
+	* src/sodipodi.c (sodipodi_selection_modified): New function
+	(sodipodi_class_init): Added "modify_selection" signal
+
+	* src/selection.c (sp_selection_idle_handler): Signal sodipodi
+
+	* src/document.c (sp_document_class_init): Added "modified" signal
+	(sp_document_idle_handler): Emit modified signal
+
 	* src/seltrans.c (sp_sel_trans_sel_modified): New function
 
 	* src/sp-item.c (sp_item_set_item_transform): New function

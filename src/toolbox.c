@@ -13,6 +13,7 @@
 #include <gnome.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
 #include "widgets/sp-toolbox.h"
 #include "sodipodi-private.h"
