@@ -1,0 +1,2548 @@
+# translation of sodipodi.po to Mongolian
+# translation of sodipodi.po to
+# translation of sodipodi.po to
+# translation of sodipodi.po to
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Mungun <d_mungun2000@yahoo.com>, 2004.
+# Sanlig Badral <badral@openmn.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi\n"
+"POT-Creation-Date: 2004-02-11 19:01+0200\n"
+"PO-Revision-Date: 2004-02-14 18:55+0100\n"
+"Last-Translator: Sanlig Badral <badral@openmn.org>\n"
+"Language-Team: Mongolian <openmn-gnome@lists.sf.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"X-Generator: KBabel 1.3\n"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "СВЖ (SVG) вектор дүрслэгч"
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
+msgid "Sodipodi"
+msgstr "Содиподи"
+
+#: src/arc-context.c:302
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "%s x %s нумыг зурж байна"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "содиподи свж (svg) док факторийг үүсгэж чадахгүй"
+
+#: src/desktop.c:778
+msgid "Zoom drawing if window size changes"
+msgstr "Цонхны хэмжээ өөрчлөгдвөл зургийн харагдац өөрчлөгдөнө"
+
+#: src/desktop.c:860
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Содиподи: %s: %s: %d"
+
+#: src/desktop.c:989
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "%s документийн өөрчлөлтийг хадгалаагүй байна. Хадгалах уу?"
+
+#. Page page
+#: src/desktop.c:1541 src/dialogs/align.c:290
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:160 src/verbs.c:467
+msgid "Page"
+msgstr "Хуудас"
+
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/verbs.c:468
+msgid "Drawing"
+msgstr "Зурах"
+
+#. Selection submenu
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
+msgid "Selection"
+msgstr "Сонгох"
+
+#: src/dialogs/align.c:155 src/toolbox.c:364
+msgid "Align objects"
+msgstr "Объектийг эмхэтгэх"
+
+#: src/dialogs/align.c:174
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Объектүүдийн баруун талыг сонгогдсон объектийн зүүн талтай тааруулах"
+
+#: src/dialogs/align.c:177
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "Объектүүдийн зүүн талыг сонгогдсон объектийн зүүн талтай тааруулах"
+
+#: src/dialogs/align.c:180
+msgid "Center horizontally"
+msgstr "Хэвтээ тэнхлэгийн төвд эмхэтгэх"
+
+#: src/dialogs/align.c:183
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Объектүүдийн баруун талыг сонгогдсон объектийн баруун талтай тааруулах"
+
+#: src/dialogs/align.c:186
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "Объектүүдийн зүүн талыг сонгогдсон объектийн баруун талтай тааруулах"
+
+#: src/dialogs/align.c:190
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "Объектүүдийн доод талыг сонгогдсон объектийн дээд талтай тааруулах"
+
+#: src/dialogs/align.c:193
+msgid "Top of aligned objects to top of anchor"
+msgstr "Объектүүдийн дээд талыг сонгогдсон объектийн дээд талтай тааруулах"
+
+#: src/dialogs/align.c:196
+msgid "Center vertically"
+msgstr "Босоо тэнхлэгийн төвд эмхэтгэх"
+
+#: src/dialogs/align.c:199
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Объектүүдийн доод талыг сонгогдсон объектийн доод талтай тааруулах"
+
+#: src/dialogs/align.c:202
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Объектүүдийн дээд талыг сонгогдсон объектийн доод талтай тааруулах"
+
+#: src/dialogs/align.c:205
+msgid "Align"
+msgstr "Эмхэтгэх"
+
+#: src/dialogs/align.c:223
+msgid "Distribute left sides of objects at even distances"
+msgstr "Объектийн зүүн талаас ижил зайд тавих"
+
+#: src/dialogs/align.c:226
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "Объектүүдийн төвийн хоорондох зайг хэвтээ тэнхлэгийн дагуу ижил болгох"
+
+#: src/dialogs/align.c:229
+msgid "Distribute right sides of objects at even distances"
+msgstr "Объектийн баруун талаас ижил зайд тавих"
+
+#: src/dialogs/align.c:232
+msgid "Distribute horizontal distance between objects equally"
+msgstr "Объектүүдийн хоорондох зайг хэвтээ тэнхлэгийн дагуу адил болгох"
+
+#: src/dialogs/align.c:236
+msgid "Distribute top sides of objects at even distances"
+msgstr "Объектийн дээд талаас ижил зайд тавих"
+
+#: src/dialogs/align.c:239
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "Объектүүдийн төвийн хоорондох зайг босоо тэнхлэгийн дагуу ижил болгох"
+
+#: src/dialogs/align.c:242
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "Объектийн доод талаас ижил зайд тавих"
+
+#: src/dialogs/align.c:245
+msgid "Distribute vertical distance between objects equally"
+msgstr "Объектүүдийн хоорондох зайг босоо тэнхлэгийн дагуу адил болгох"
+
+#: src/dialogs/align.c:248
+msgid "Distribute"
+msgstr "Тараах"
+
+#: src/dialogs/align.c:286
+msgid "Last selected"
+msgstr "Сүүлд сонгогдсон"
+
+#: src/dialogs/align.c:287
+msgid "First selected"
+msgstr "Эхэнд сонгогдсон"
+
+#: src/dialogs/align.c:288
+msgid "Biggest item"
+msgstr "Хамгийн том дүрс"
+
+#: src/dialogs/align.c:289
+msgid "Smallest item"
+msgstr "Хамгийн жижиг дүрс"
+
+#: src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr "Дэлгэцний тохиргоо"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "Тор"
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr "Торийг үзүүлэх"
+
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "Торлуу буулгана"
+
+#: src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr "Хөндлөн шугамууд"
+
+#: src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr "Босоо шугамууд"
+
+#: src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr "Исо тор"
+
+#: src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr "Хекс тор"
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr "Торны нэгж:"
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr "Эхлэлийн цэгийн X координат:"
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr "Эхлэлийн цэгийн Y координат:"
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr "X дагуух зай:"
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr "Y дагуух зай:"
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr "Буулгах нэгж:"
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr "Буулгах зай:"
+
+#: src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr "Торны өнгө:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "Торны өнгө"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "Таниулагч шугам"
+
+#: src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr "Таниулагч шугамыг үзүүлэх"
+
+#: src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr "Таниулагч шугамыг буулгах"
+
+#: src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr "Таниулагч шугамын өнгө:"
+
+#: src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr "Таниулагч шугамын өнгө"
+
+#: src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr "Тодотгосон өнгө:"
+
+#: src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr "Тодотгосон таниулагч шугамын өнгө"
+
+#: src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr "Ирмэгийн үзүүлэх"
+
+#: src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr "Зургийн дээд ирмэг"
+
+#: src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr "Ирмэгийн өнгө:"
+
+#: src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr "Хуудасны ирмэгийн өнгө"
+
+#: src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr "Хуудасны өнгө:"
+
+#: src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr "Хуудсын өнгө"
+
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
+msgid "Close"
+msgstr "Хаах"
+
+#: src/dialogs/display-settings.c:101
+msgid "Display settings"
+msgstr "Үзүүлэх тохиргоо"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:108
+msgid "Rendering"
+msgstr "Өнгөлөлт"
+
+#: src/dialogs/display-settings.c:117
+msgid "Oversample bitmaps:"
+msgstr "Жишээ битмап"
+
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
+msgid "None"
+msgstr "Хоосон"
+
+#: src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr "16x16"
+
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:147
+msgid "Input"
+msgstr "Оруулах"
+
+#: src/dialogs/display-settings.c:155
+msgid "Default cursor tolerance:"
+msgstr "Курсорийн tolerance үндсэн утга:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr "Цонх"
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr "Диалагт тайлбар хийх"
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr "Алгасах"
+
+#: src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr "Документийн тохиргоо"
+
+#: src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr "Цаасны хэмжээ:"
+
+#: src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr "Тодорхойлох"
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr "Тодорхойлсон цаасыг"
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr "Нэгж:"
+
+#. Stroke width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
+#: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:566 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
+msgid "Width:"
+msgstr "Өргөн:"
+
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:197
+#: src/dialogs/export.c:220 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "Өндөр:"
+
+#: src/dialogs/export.c:140
+msgid "Export bitmap"
+msgstr "Битмап гаргах"
+
+#. Export area frame
+#: src/dialogs/export.c:149
+msgid "Export area"
+msgstr "Тодорхойлсон мужийг гаргах"
+
+#: src/dialogs/export.c:182
+msgid "x0:"
+msgstr "x0:"
+
+#: src/dialogs/export.c:185
+msgid "x1:"
+msgstr "x1:"
+
+#: src/dialogs/export.c:191
+msgid "y0:"
+msgstr "y0:"
+
+#: src/dialogs/export.c:194
+msgid "y1:"
+msgstr "y1:"
+
+#. Bitmap size frame
+#: src/dialogs/export.c:203
+msgid "Bitmap size"
+msgstr "Битмап хэмжээ"
+
+#: src/dialogs/export.c:212 src/dialogs/export.c:220
+msgid "pixels"
+msgstr "пиксел"
+
+#: src/dialogs/export.c:216 src/dialogs/export.c:224
+msgid "dpi"
+msgstr "дпи"
+
+#: src/dialogs/export.c:232
+msgid "Background color"
+msgstr "Арын дэвсгэрийн өнгө"
+
+#: src/dialogs/export.c:234
+msgid "Bitmap background:"
+msgstr "Битмап арын дэвсгэр:"
+
+#: src/dialogs/export.c:239
+msgid "Export png file"
+msgstr "Пнж файл гаргах"
+
+#: src/dialogs/export.c:266 src/verbs.c:413
+msgid "Export"
+msgstr "Гаргах"
+
+#: src/dialogs/export.c:401
+msgid "Export in progress"
+msgstr "Дарааллаар гаргах"
+
+#: src/dialogs/export.c:405
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "[%d x %d] %s зургийг гаргав"
+
+#: src/dialogs/fill-style.c:87
+msgid "Fill style"
+msgstr "Дүүргэх хэлбэр"
+
+#: src/dialogs/fill-style.c:124
+msgid "Fill Rule"
+msgstr "Дүүргэх заавар"
+
+#: src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr "тэгбиш"
+
+#: src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr "тэгшсондгой"
+
+#: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
+#: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
+msgid "ID"
+msgstr "ТТ"
+
+#: src/dialogs/item-properties.c:99
+msgid "Set ID"
+msgstr "ТТ г тохируулах"
+
+#: src/dialogs/item-properties.c:110
+msgid "Sensitive"
+msgstr "Харгалзах"
+
+#: src/dialogs/item-properties.c:115
+msgid "Visible"
+msgstr "Харагдах"
+
+#: src/dialogs/item-properties.c:120
+msgid "Active"
+msgstr "Идэвхтэй"
+
+#: src/dialogs/item-properties.c:125
+msgid "Printable"
+msgstr "Хэвлэх"
+
+#: src/dialogs/item-properties.c:136
+msgid "Opacity:"
+msgstr "Тодорхойгүй:"
+
+#: src/dialogs/item-properties.c:155
+msgid "Transformation matrix"
+msgstr "Хөрвүүлэгч матрикс"
+
+#: src/dialogs/item-properties.c:276
+msgid "Ref"
+msgstr "Рэф"
+
+#: src/dialogs/item-properties.c:358
+msgid "ID invalid"
+msgstr "Хуурмаг ТТ"
+
+#: src/dialogs/item-properties.c:360
+msgid "ID exists"
+msgstr "Давхцсан ТТ"
+
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
+msgid "Item properties"
+msgstr "Элементийн шинж"
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr "Href:"
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "Биет:"
+
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "Төрөл:"
+
+#: src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr "Дүр:"
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr "Нумын дүр:"
+
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "Гарчиг:"
+
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
+msgid "Show:"
+msgstr "Үзүүлэх:"
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr "Идэвхжих:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr "Нүүр:"
+
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr "Төвийн X координат:"
+
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr "Төвийн Y координат:"
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr "R1:"
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr "R2:"
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr "ARG1:"
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr "ARG2:"
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
+msgid "Expansion:"
+msgstr "Тэлэлт:"
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:351
+msgid "Revolution:"
+msgstr "Хувирал:"
+
+#: src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr "Радиус:"
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr "Хувьсагч:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL хаяг:"
+
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr "X:"
+
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr "Y:"
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr "%s шинж"
+
+#: src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr "Объектийн хэв"
+
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "Дүүргэх"
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr "Строк будалт"
+
+#: src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr "Строк хэв"
+
+#: src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr "Батлах:"
+
+#: src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr "Сонгогдсон объектууд"
+
+#: src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr "Бүх хэлбэрийн багаж"
+
+#: src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr "Тэгш өнцөгт дүрслэгч"
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr "Нум дүрслэгч"
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr "Од дүрслэгч"
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr "Спирал дүрслэгч"
+
+#: src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr "Харандаа"
+
+#: src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr "Каллиграфик шугам"
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
+msgid "Text"
+msgstr "Бичиг"
+
+#: src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr "Объектийн хэмжээ, Байрлал"
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
+msgid "Size and Position"
+msgstr "Хэмжээ ба Байрлал"
+
+#: src/dialogs/stroke-style.c:553 src/toolbox.c:360
+msgid "Stroke settings"
+msgstr "Строк тохиргоо"
+
+#. Join type
+#: src/dialogs/stroke-style.c:589
+msgid "Join:"
+msgstr "Холбох:"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:632
+msgid "Cap:"
+msgstr "Давхарлах:"
+
+#. Dash
+#: src/dialogs/stroke-style.c:675
+msgid "Pattern:"
+msgstr "Дэвсгэр:"
+
+#: src/dialogs/text-edit.c:102
+msgid "Text properties"
+msgstr "Бичигийн шинж"
+
+#. Layout
+#: src/dialogs/text-edit.c:141
+msgid "Layout"
+msgstr "Хучилт"
+
+#: src/dialogs/text-edit.c:149
+msgid "Alignment:"
+msgstr "Эмхэтгэх:"
+
+#: src/dialogs/text-edit.c:174
+msgid "Orientation:"
+msgstr "Чиглэл:"
+
+#: src/dialogs/text-edit.c:192
+msgid "Line spacing:"
+msgstr "Шугам хоорондын зай:"
+
+#: src/dialogs/text-edit.c:212
+msgid "Spacing:"
+msgstr "Зай:"
+
+#: src/dialogs/text-edit.c:235
+msgid "Text and font"
+msgstr "Бичиг ба бичгийн хэв"
+
+#: src/dialogs/text-edit.c:246
+msgid "Set as default"
+msgstr "Үндсэн утгаар тохируулах"
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
+msgid "Tool attributes"
+msgstr "Багажны шинж"
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr "Тэлэлт"
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Inner radius"
+msgstr "Дотоод радиус"
+
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
+msgid "Missing tool preferences"
+msgstr "Багажны тохиргоо алга"
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
+msgid "Corners:"
+msgstr "Булан:"
+
+#: src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr "Харицаа"
+
+#: src/dialogs/tool-attributes.c:115
+msgid "Transform:"
+msgstr "Хөрвүүлэх:"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr "Жин:"
+
+#. Drag
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
+msgid "Drag:"
+msgstr "Чирэх:"
+
+#: src/dialogs/tool-attributes.c:125
+msgid "Angle"
+msgstr "Өнцөг"
+
+#: src/dialogs/tool-attributes.c:132
+msgid "Tool has no attributes"
+msgstr "Багажны шинж алга"
+
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
+msgid "No active tool"
+msgstr "Идэвхтэй багаж алга"
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
+msgid "Tool options"
+msgstr "Багажны сонголт"
+
+#: src/dialogs/tool-options.c:90
+msgid "Tool has no options"
+msgstr "Багажинд сонголт алга"
+
+#: src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr "Хөрвүүлэгч сонгох"
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "Хувилахыг батлах"
+
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "Зөөх"
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "Масштаб"
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "Эргүүлэх"
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr "хэм"
+
+#: src/dialogs/xml-tree.c:157
+msgid "Drag to reorder nodes"
+msgstr "Зангилааг эрэмблэхээр чирэх"
+
+#: src/dialogs/xml-tree.c:170
+msgid "New element node"
+msgstr "Шинэ элентийн зангилаа"
+
+#: src/dialogs/xml-tree.c:188
+msgid "New text node"
+msgstr "Шинэ бичгийн зангилаа"
+
+#: src/dialogs/xml-tree.c:205
+msgid "Duplicate node"
+msgstr "Зангилааг хувилах"
+
+#: src/dialogs/xml-tree.c:221
+msgid "Delete node"
+msgstr "Зангилааг устгах"
+
+#: src/dialogs/xml-tree.c:234
+msgid "Unindent node"
+msgstr "Салангид бус зангилаа"
+
+#: src/dialogs/xml-tree.c:245
+msgid "Indent node"
+msgstr "Салангид зангилаа"
+
+#: src/dialogs/xml-tree.c:255
+msgid "Raise node"
+msgstr "Зангилааг дээшлүүлэх"
+
+#: src/dialogs/xml-tree.c:266
+msgid "Lower node"
+msgstr "Зангилааг доошлуулах"
+
+#: src/dialogs/xml-tree.c:303
+msgid "Delete attribute"
+msgstr "Шинжийг устгах"
+
+#: src/dialogs/xml-tree.c:333
+msgid "Attribute name"
+msgstr "Шинжний нэр"
+
+#: src/dialogs/xml-tree.c:340
+msgid "Set attribute"
+msgstr "Шинжний тохиргоо"
+
+#: src/dialogs/xml-tree.c:353
+msgid "Attribute value"
+msgstr "Шинжний утга"
+
+#: src/dialogs/xml-tree.c:832
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "Содиподи: %s : XML Харах"
+
+#: src/dialogs/xml-tree.c:855
+msgid "New element node..."
+msgstr "Шинэ элементийн зангилаа..."
+
+#: src/dialogs/xml-tree.c:875
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#: src/dialogs/xml-tree.c:879
+msgid "Create"
+msgstr "Үүсгэх"
+
+#: src/document.c:353
+#, c-format
+msgid "New document %d"
+msgstr "Шинэ документ %d"
+
+#: src/document.c:389
+#, c-format
+msgid "Memory document %d"
+msgstr "Санах ойн документ %d"
+
+#: src/document.c:499
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Нэргүй документ %d"
+
+#: src/draw-context.c:294
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "Сонголтонд нэмэгдэнэ. Нэмэх/Шинэ г солихдоо 'a' товчийг дарна уу."
+
+#: src/draw-context.c:299
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "Шинэ муруйг үүсгэв.Нэмэх/Шинэ г солихдоо 'a' товчийг дарна уу."
+
+#. Angle
+#: src/dyna-draw-context.c:1075
+msgid "Angle:"
+msgstr "Өнцөг:"
+
+#. Reset
+#: src/dyna-draw-context.c:1099 src/rect-context.c:420
+#: src/spiral-context.c:387 src/star-context.c:387
+msgid "Defaults"
+msgstr "Үндсэн утга"
+
+#: src/file.c:162 src/file.c:176 src/file.c:188
+msgid "Select file to open"
+msgstr "Нээх файлыг сонгох"
+
+#: src/file.c:207 src/file.c:305
+msgid "File type:"
+msgstr "Файлын төрөл:"
+
+#: src/file.c:290
+msgid "Save file"
+msgstr "Файлыг хадгалах"
+
+#: src/file.c:485 src/file.c:495 src/file.c:501
+msgid "Select file to import"
+msgstr "Оруулах файлыг сонгох"
+
+#: src/help.c:51
+msgid "About sodipodi"
+msgstr "Содиподигийн тухай"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+msgid "Unit"
+msgstr "Нэгж"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr "Нэгж"
+
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "Цэг"
+
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "цэг"
+
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "Цэг"
+
+#: src/helper/units.c:43
+msgid "Pt"
+msgstr "Цэг"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr "Пиксел"
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr "пик"
+
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "Пиксел"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr "Пик"
+
+#: src/helper/units.c:45
+msgid "Userspace unit"
+msgstr "Хэрэглэгчийн нэгж"
+
+#: src/helper/units.c:45
+msgid "User"
+msgstr "Хэрэглэгч"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr "Хэрэглэгчийн нэгж"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "Хувь"
+
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr "Хувь"
+
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "Миллиметр"
+
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "мм"
+
+#: src/helper/units.c:49
+msgid "Millimeters"
+msgstr "Миллиметр"
+
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "Сантиметр"
+
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "см"
+
+#: src/helper/units.c:50
+msgid "Centimeters"
+msgstr "Сантиметр"
+
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "Метр"
+
+#: src/helper/units.c:51
+msgid "m"
+msgstr "м"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr "метр"
+
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "Инч"
+
+#: src/helper/units.c:52
+msgid "in"
+msgstr "инч"
+
+#: src/helper/units.c:52
+msgid "Inches"
+msgstr "Инч"
+
+#: src/helper/units.c:53
+msgid "Em square"
+msgstr "Em квадрат"
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr "em"
+
+#: src/helper/units.c:53
+msgid "Em squares"
+msgstr "Em квадрат"
+
+#: src/helper/units.c:54
+msgid "Ex square"
+msgstr "Ex квадрат"
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr "ex"
+
+#: src/helper/units.c:54
+msgid "Ex squares"
+msgstr "Ex квадрат"
+
+#: src/interface.c:315 src/interface.c:513
+msgid "Open Recent"
+msgstr "Сүүлчийнхийг нээх"
+
+#: src/interface.c:335
+msgid "Close View"
+msgstr "Хаах Харах"
+
+#: src/interface.c:338 src/interface.c:519
+msgid "About Sodipodi"
+msgstr "Содиподигийн Тухай"
+
+#. Have modules about menu
+#: src/interface.c:344 src/interface.c:525
+msgid "About Modules"
+msgstr "Модулийн Тухай"
+
+#: src/interface.c:364
+msgid "Cleanup"
+msgstr "Цэвэрлэх"
+
+#. View:Zoom
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
+msgid "Zoom"
+msgstr "Томруулах"
+
+#. View:New View
+#: src/interface.c:451
+msgid "New View"
+msgstr "Шинэ Харах"
+
+#. View:New Preview
+#: src/interface.c:453
+msgid "New Preview"
+msgstr "Шинэ Уридчилах харах"
+
+#: src/interface.c:455
+msgid "New Toplevel Toolbox"
+msgstr "Шинэ Багажны цуглабар"
+
+#: src/interface.c:456
+msgid "New Docked Toolbox"
+msgstr "Шинэ Зэрэгцээ Багажны цуглабар"
+
+#: src/interface.c:457
+msgid "Remove Docked Toolbox"
+msgstr "Багажны цуглабарыг Устгах"
+
+#. File
+#: src/interface.c:510 src/verbs.c:405
+msgid "New"
+msgstr "Шинэ"
+
+#: src/interface.c:511
+msgid "Open"
+msgstr "Нээх"
+
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:531 src/verbs.c:414
+msgid "Exit program"
+msgstr "Програмаас Гарах"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:594 src/toolbox.c:270
+msgid "File"
+msgstr "Файл"
+
+#. Edit submenu
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "Засах"
+
+#. View submenu
+#: src/interface.c:612
+msgid "View"
+msgstr "Харах"
+
+#. Drawing mode submenu
+#: src/interface.c:618
+msgid "Drawing Mode"
+msgstr "Зурах"
+
+#. Dialog submenu
+#: src/interface.c:624
+msgid "Dialogs"
+msgstr "Харилцаа"
+
+#. Have modules menu
+#: src/interface.c:633
+msgid "Modules"
+msgstr "Модул"
+
+#: src/main.c:120 src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr "X сэрверийг ашиглаж болохгүй (файл процессийг л консолоор хийнэ)"
+
+#: src/main.c:123 src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "$DISPLAY хувьсагчийн тохиргоо хиигдээгүй бол X сэрверийг ашиглаж болно"
+
+#: src/main.c:126 src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Хандсан документийг нээх (сонголт мөрт нь хүчингүй болно)"
+
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
+msgid "FILENAME"
+msgstr "Файлын нэр"
+
+#: src/main.c:129
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr ""
+"Документийг хандсан гаралтын файлд хэвлэх "
+"( '| програмийг' пайп болгон ашиглана уу)"
+
+#: src/main.c:132 src/main.c:615
+msgid "Export document to png file"
+msgstr "Документийг ПНЖ файллуу гаргах"
+
+#: src/main.c:135 src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr ""
+"СВЖ (SVG) г битмап руу хувиргахад хэрэглэгдэх "
+"харицаа(үндсэн утга 72.0)"
+
+#: src/main.c:136
+msgid "DPI"
+msgstr "ДПИ"
+
+#: src/main.c:138 src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr ""
+"Гаргах мужийг миллиметрээр үзүүлэх (үндсэн утга нь бүх документ ба, "
+"0,0 зүүн доод булан)"
+
+#: src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:141 src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "Үүссэн битмап өргөнийг пикселээр үзүүлэх(дпи г дарж бичих)"
+
+#: src/main.c:141
+msgid "WIDTH"
+msgstr "Өргөн"
+
+#: src/main.c:143 src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "Үүссэн битмап өндөрийг пикселээр үзүүлэх(дпи г дарж бичих)"
+
+#: src/main.c:143
+msgid "HEIGHT"
+msgstr "Өндөр"
+
+#: src/main.c:145 src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "Гаргах битмапын арын дэвсгэрийн өнгө (СВЖ өнгө мөрт)"
+
+#: src/main.c:145
+msgid "COLOR"
+msgstr "Өнгө"
+
+#: src/main.c:147 src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr ""
+"Документийг СВЖ (SVG) файл руу гаргах (\"xmlns: sodipodi\" namespace-г "
+"ашиглаагүй)"
+
+#: src/main.c:149
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+"Өгөгдсөн файлуудыг нэг нэгээр үзүүлэх, дурын товч/хулганыг дарвал "
+"дараагийн файллуу шилжинэ."
+
+#: src/main.c:151
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "Битмап(xpm) дарцаг нь СВЖ дарцагаас давуу зэрэгтэй"
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "Содиподи хувилбарын мэдээлэл хэвлэх"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "Тушаалын-мөрийн хувьсагчдын тухай тусламжийг хэвлэх"
+
+#: src/main.c:772
+msgid "Untitled document"
+msgstr "Гарчиггүй документ"
+
+#. Show nice dialog box
+#: src/main.c:797
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Дотоод алдаа үүслээ. Хаана уу.\n"
+
+#: src/main.c:798
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "Хадгалагдаагүй документ нь дараагийн байрлалд өөрөө нөөцлөгдөх болно.\n"
+
+#: src/main.c:799
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Документ нөөцлөлт бүтэлгүйтэв:\n"
+
+#: src/module.c:873
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Scalable Vector Graphic (СВЖ)(Масштаблагдагч Вектор График)"
+
+#: src/module.c:873
+msgid "Sodipodi native file format and W3C standard"
+msgstr "W3C стандарт Содиподи үндсэн файл хэлбэр"
+
+#: src/module.c:880
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "\"xmlns:sodipodi\" namespace-г агуулсан СВЖ (SVG)"
+
+#: src/module.c:881
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "Содиподи өргөтгөлтэй СВЖ (SVG) хэлбэр"
+
+#: src/module.c:884
+msgid "Plain SVG"
+msgstr "Энгийн СВЖ (SVG)"
+
+#: src/module.c:885
+msgid "Scalable Vector Graphics format"
+msgstr "СВЖ (SVG) хэлбэр (Scalable Vector Graphic)"
+
+#: src/modules/gnome.c:158
+msgid "Select printer"
+msgstr "Хэвлэгчийг сонгоно уу"
+
+#: src/modules/gnome.c:212
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Содиподи (%s нэртэй док..): Хэвлэхийг Уридчилан Харах"
+
+#: src/modules/kde.cpp:162
+msgid "Document variant:"
+msgstr "Документийн төрөл:"
+
+#: src/modules/kde.cpp:172
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.svg *.svgz|SVG(СВЖ) файл\n"
+"*.xml|XML файл\n"
+"*|Бүх файл"
+
+#: src/modules/kde.cpp:174
+msgid "Save document as"
+msgstr "Документийг өөр нэрээр хадгалах"
+
+#. Print destination frame
+#: src/modules/ps.c:245 src/modules/ps.c:306
+msgid "Print destination"
+msgstr "Тодорхойлж хэвлэх"
+
+#. Print properties frame
+#: src/modules/ps.c:256
+msgid "Print properties"
+msgstr "Хэвлэх шинж"
+
+#: src/modules/ps.c:264
+msgid "Print using PostScript operators"
+msgstr "PostScript -г ашиглан хэвлэх"
+
+#: src/modules/ps.c:266
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr ""
+"PostScript вектор операторыг ашиглавал, жижгэрсэн дурын "
+"масштабаар илэрхийлэгдэж болох дүр гарна. Харин alpha хувиргалт, "
+"тэмдэглэгээ, хэвиин талаарх мэдээлэл нь алдагдана."
+
+#: src/modules/ps.c:271
+msgid "Print as bitmap"
+msgstr "Битмап аар хэвлэх"
+
+#: src/modules/ps.c:273
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr ""
+"Бүгдийг битмап аар хэвлэвэл, томорсон чанар нь томосголтын "
+"хэмжээнээс хамаарсан дүр гарна. Харин график нь дэлгэцэнд үзүүлсэн "
+"тэйгээ адилханаар дүрслэгдэнэ."
+
+#: src/modules/ps.c:287
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "Битмапруу хувиргасан харицаа (ДПИ)(dots per inch)"
+
+#: src/modules/ps.c:302
+msgid "Resolution:"
+msgstr "Харицаа:"
+
+#: src/modules/ps.c:312
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+"Гаргах lpr дарааллыг тодорхойлно уу.\n"
+"Файллуу гаргах үед, '> файлын нэр' г ашиглана уу.\n"
+"Пайпаар өөр програмруу үр дүнг дамжуулах үед, "
+"'| (програм нэр) (хувьсагчийн нэр)...' г ашиглана уу."
+
+#: src/modules/ps.c:961
+msgid "write error occured"
+msgstr "Бичихэд алдаа үүсэв"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:108
+msgid "Item"
+msgstr "Элемент"
+
+#. Item dialog
+#: src/object-ui.c:111 src/verbs.c:482
+msgid "Item Properties"
+msgstr "Элементийн Шинж"
+
+#. Select item
+#: src/object-ui.c:119
+msgid "Select this"
+msgstr "Сонгох"
+
+#. Reset transformations
+#: src/object-ui.c:128
+msgid "Reset transformation"
+msgstr "Хөрвүүлэлтийг дахин тохируулах"
+
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr "Хөрвүүлэлтийг батлах"
+
+#: src/object-ui.c:137
+msgid "Make sensitive"
+msgstr "Харгалзах"
+
+#: src/object-ui.c:137
+msgid "Make insensitive"
+msgstr "Үл харгалзах"
+
+#. Create link
+#: src/object-ui.c:141
+msgid "Create link"
+msgstr "Холбоос үүсгэх"
+
+#: src/object-ui.c:261 src/verbs.c:431
+msgid "Group"
+msgstr "Бүлэг"
+
+#. Group dialog
+#: src/object-ui.c:265
+msgid "Group Properties"
+msgstr "Бүлгийн Шинж"
+
+#. "Ungroup"
+#: src/object-ui.c:278 src/verbs.c:432
+msgid "Ungroup"
+msgstr "Бүлэггүй"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:326
+msgid "Link"
+msgstr "Холбоос"
+
+#. Link dialog
+#: src/object-ui.c:329
+msgid "Link Properties"
+msgstr "Холбоосын Шинж"
+
+#. Select item
+#: src/object-ui.c:339
+msgid "Follow link"
+msgstr "Холбоосыг дагах"
+
+#. Reset transformations
+#: src/object-ui.c:344
+msgid "Remove link"
+msgstr "Холбоосыг устгах"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:407
+msgid "Image"
+msgstr "Дүр"
+
+#. Link dialog
+#: src/object-ui.c:410
+msgid "Image Properties"
+msgstr "Дүрийн Шинж"
+
+#. Autotrace dialog
+#: src/object-ui.c:418 src/sp-image.c:788
+msgid "Trace"
+msgstr "Дагах"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:467
+msgid "Shape"
+msgstr "Хэлбэр"
+
+#. Item dialog
+#: src/object-ui.c:470 src/toolbox.c:361
+msgid "Fill settings"
+msgstr "Дүүргэх тохиргоо"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:497
+msgid "Rect"
+msgstr "Тэгш өнцөгт"
+
+#. Link dialog
+#: src/object-ui.c:500
+msgid "Rect Properties"
+msgstr "Тэгш өнцөгтийн Шинж"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:533 src/verbs.c:453
+msgid "Star"
+msgstr "Од"
+
+#. Link dialog
+#: src/object-ui.c:536
+msgid "Star Properties"
+msgstr "Одны Шинж"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:569 src/verbs.c:454
+msgid "Spiral"
+msgstr "Спирал"
+
+#. Link dialog
+#: src/object-ui.c:572
+msgid "Spiral Properties"
+msgstr "Спиралын Шинж"
+
+#. rx_ratio
+#: src/rect-context.c:396
+msgid "Roundness ratio for x:"
+msgstr "Мохоолголт X:"
+
+#. ry_ratio
+#: src/rect-context.c:408
+msgid "Roundness ratio for y:"
+msgstr "Мохоолголт Y:"
+
+#: src/select-context.c:570
+msgid "Visual transformation"
+msgstr "Визуал хөрвүүлэлт"
+
+#: src/select-context.c:576
+msgid "Show content"
+msgstr "Агуулгыг үзүүлэх"
+
+#: src/select-context.c:582
+msgid "Show outline"
+msgstr "Таталбарыг үзүүлэх"
+
+#: src/select-context.c:588
+msgid "Object transformation"
+msgstr "Объект хөрвүүлэлт"
+
+#: src/select-context.c:594
+msgid "Optimize"
+msgstr "Сайжруулах"
+
+#: src/select-context.c:600
+msgid "Preserve"
+msgstr "Хадгалах"
+
+#: src/select-context.c:606
+msgid "[Tab] Cycling"
+msgstr "[Tab] цикл хийнэ"
+
+#: src/select-context.c:611
+msgid "Cycle only among visible items"
+msgstr "Харагдаж байгаа элементүүдийн хооронд л цикл хийнэ"
+
+#: src/select-context.c:614
+msgid "Center view to selected item"
+msgstr "Сонгосон элементээр төвлөн харах"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "Содиподи слайдаар үзүүлэх"
+
+#: src/sodipodi.c:468
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s нь энгийн файл биш байна.\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж чадахгүй\n"
+
+#: src/sodipodi.c:471
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s нь XML файл биш юмуу танд\n "
+"файлыг унших эрх өгөгдөөгүй байн\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж\n"
+"чадахгүй."
+
+#: src/sodipodi.c:476
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s нь содиподи лавлах файл биш.\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж\n"
+"чадахгүй."
+
+#: src/sodipodi.c:488
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s нь энгийн файл биш.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:491
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s нь XML файл биш юмуу танд\n"
+"файлыг унших эрх өгөгдөөгүй байн\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:495
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s нь содиподи залгагч биш.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:829
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+"%s директорийг үүсгэж чадахгүй.\n"
+"содиподи нь ажиллах боловч\n"
+"%s г дуудах болон хадгалж чадахгүй\n"
+" "
+
+#: src/sodipodi.c:833
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s нь директор биш.\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж\n"
+"чадахгүй."
+
+#: src/sodipodi.c:837
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s файлыг үүсгэж чадахгүй.\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж\n"
+"чадахгүй."
+
+#: src/sodipodi.c:841
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s файлд бичиж чадахгүй.\n"
+"содиподи нь ажиллах боловч,\n"
+"тохиргоог ачааллах болон хадгалж\n"
+"чадахгүй."
+
+#: src/sodipodi.c:851
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s директорийг үүсгэж чадахгүй.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:854
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s нь директор биш.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:857
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s файлыг үүсгэж чадахгүй.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sodipodi.c:860
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s файлд бичиж чадахгүй.\n"
+"содиподи нь ажиллах боловч,\n"
+"залгагчыг (plugin) ашиглаж чадахгүй\n"
+
+#: src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "%s д холбох"
+
+#: src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "Буруу лавлагаатай дүр: %s"
+
+#: src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "Өнгөт дүр %d x %d: %s"
+
+#: src/sp-image.c:934
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "%s д бичихэд алдаа үүсэв: %s"
+
+#: src/sp-image.c:968
+msgid "Untitled"
+msgstr "Гарчиггүй"
+
+#: src/sp-image.c:973
+msgid "Document Name:"
+msgstr "Документийн Нэр:"
+
+#: src/sp-image.c:986
+msgid "Unknown"
+msgstr "Үл мэдэгдэх"
+
+#: src/sp-image.c:992
+msgid "Image URI:"
+msgstr "Дүрийн URI:"
+
+#: src/sp-item-group.c:462
+#, c-format
+msgid "Group of %d objects"
+msgstr "%d объектуудын бүлэг"
+
+#: src/sp-item.c:509
+msgid "Unknown item :-("
+msgstr "Үл мэдэгдэх элемент :-("
+
+#. fixme:
+#: src/sp-text.c:1292
+msgid "Text object"
+msgstr "Бичиг объект"
+
+#. T0
+#: src/spiral-context.c:375
+msgid "Inner radius:"
+msgstr "Дотоод радиус:"
+
+#. Proportion
+#: src/star-context.c:368
+msgid "Proportion:"
+msgstr "Харицаа:"
+
+#. Making sides flat
+#: src/star-context.c:381
+msgid "Make sides flat"
+msgstr "Хажууг хавтгайруулах"
+
+#: src/toolbox.c:358
+msgid "Object"
+msgstr "Объект"
+
+#: src/toolbox.c:362 src/verbs.c:477
+msgid "Object size and position"
+msgstr "Объектийн хэмжээ ба байрлал"
+
+#: src/toolbox.c:363
+msgid "Text and font settings"
+msgstr "Бичиг ба бичгийн хэвийн тохиргоо"
+
+#: src/toolbox.c:365 src/verbs.c:478
+msgid "Object transformations"
+msgstr "Объект хөрвүүлэлт"
+
+#: src/toolbox.c:444
+msgid "Draw"
+msgstr "Зурах"
+
+#: src/toolbox.c:501
+msgid "Extension"
+msgstr "Өргөтгөл"
+
+#: src/toolbox.c:583
+msgid "Nodes"
+msgstr "Зангилаа"
+
+#: src/toolbox.c:586
+msgid "Insert new nodes into selected segments"
+msgstr "Сонгосон муруйд шинэ зангилаа оруулах"
+
+#: src/toolbox.c:588
+msgid "Break line at selected nodes"
+msgstr "Сонгосон зангилаагаар шугамыг хуваах"
+
+#: src/toolbox.c:590
+msgid "Make selected nodes corner"
+msgstr "Сонгосон зангилааг өнцөг болгох"
+
+#: src/toolbox.c:592
+msgid "Make selected segments lines"
+msgstr "Сонгосон муруйг шугам болгох"
+
+#: src/toolbox.c:594
+msgid "Delete selected nodes"
+msgstr "Сонгосон зангилааг устгах"
+
+#: src/toolbox.c:596
+msgid "Join lines at selected nodes"
+msgstr "Сонгосон зангилаанд шугамыг холбох"
+
+#: src/toolbox.c:599
+msgid "Join lines at selected nodes with new segment"
+msgstr "Сонгосон зангилаанд шугам ба муруйг холбох"
+
+#: src/toolbox.c:601
+msgid "Make selected nodes smooth"
+msgstr "Сонгосон зангилааг мохоох"
+
+#: src/toolbox.c:603
+msgid "Make selected segments curves"
+msgstr "Сонгосон муруйг шугам болгох"
+
+#: src/verbs.c:403
+msgid "Does nothing"
+msgstr "Юу ч хийхгүй"
+
+#: src/verbs.c:405
+msgid "Create new SVG document"
+msgstr "Шинэ СВЖ (SVG) документ үүсгэх"
+
+#: src/verbs.c:406
+msgid "Open..."
+msgstr "Нээх..."
+
+#: src/verbs.c:406
+msgid "Open existing SVG document"
+msgstr "Байгаа СВЖ (SVG) документийг нээх"
+
+#: src/verbs.c:407
+msgid "Save"
+msgstr "Хадгалах"
+
+#: src/verbs.c:407
+msgid "Save document"
+msgstr "Документ хадгалах"
+
+#: src/verbs.c:408
+msgid "Save As..."
+msgstr "Өөр нэрээр хадгалах..."
+
+#: src/verbs.c:408
+msgid "Save document under new name"
+msgstr "Шинэ нэрээр документийг хадгалах"
+
+#: src/verbs.c:409
+msgid "Print..."
+msgstr "Хэвлэх..."
+
+#: src/verbs.c:409
+msgid "Print document"
+msgstr "Документийг хэвлэх"
+
+#: src/verbs.c:410
+msgid "Print Direct..."
+msgstr "Тодорхойлон Хэвлэх..."
+
+#: src/verbs.c:410
+msgid "Print directly to file or pipe"
+msgstr "Файл эсвэл пайпруу хэвлэх"
+
+#: src/verbs.c:411
+msgid "Print Preview"
+msgstr "Хэвлэхийг Уридчилан харах"
+
+#: src/verbs.c:411
+msgid "Preview document printout"
+msgstr "Хэвлэх документийг уридчилан харах"
+
+#: src/verbs.c:412
+msgid "Import"
+msgstr "Авчирах"
+
+#: src/verbs.c:412
+msgid "Import bitmap or SVG image into document"
+msgstr "Битмап, СВЖ (SVG) дүрийг документруу авчирах"
+
+#: src/verbs.c:413
+msgid "Export document as PNG bitmap"
+msgstr "Документийг ПНЖ битмап руу гаргах"
+
+#: src/verbs.c:414
+msgid "Exit"
+msgstr "Гарах"
+
+#. Edit
+#: src/verbs.c:416
+msgid "Undo"
+msgstr "Болих"
+
+#: src/verbs.c:416
+msgid "Revert last action"
+msgstr "Сүүлийн үйлдлийг болих"
+
+#: src/verbs.c:417
+msgid "Redo"
+msgstr "Дахин хийх"
+
+#: src/verbs.c:417
+msgid "Do again undone action"
+msgstr "Болисоныг дахин хиих"
+
+#: src/verbs.c:418
+msgid "Cut"
+msgstr "Хайчлах"
+
+#: src/verbs.c:418
+msgid "Cut selected objects to clipboard"
+msgstr "Сонгосон объектийг клипбоардруу хайчлах"
+
+#: src/verbs.c:419
+msgid "Copy"
+msgstr "Хуулах"
+
+#: src/verbs.c:419
+msgid "Copy selected objects to clipboard"
+msgstr "Сонгосон объектийг клипбоардруу хуулах"
+
+#: src/verbs.c:420
+msgid "Paste"
+msgstr "Наах"
+
+#: src/verbs.c:420
+msgid "Paste objects from clipboard"
+msgstr "Клипбоардаас объектийг авч наах"
+
+#: src/verbs.c:421
+msgid "Delete"
+msgstr "Устгах"
+
+#: src/verbs.c:421
+msgid "Delete selected objects"
+msgstr "Сонгосон объектийг устгах"
+
+#: src/verbs.c:422
+msgid "Duplicate"
+msgstr "Хувилах"
+
+#: src/verbs.c:422
+msgid "Duplicate selected objects"
+msgstr "Сонгосон объектийг хувилах"
+
+#: src/verbs.c:423
+msgid "Clear All"
+msgstr "Бүгдийг арилгах"
+
+#: src/verbs.c:423
+msgid "Delete all objects from document"
+msgstr "Документээс бүх объектийг устгах"
+
+#: src/verbs.c:424
+msgid "Select All"
+msgstr "Бүгдийг сонгох"
+
+#: src/verbs.c:424
+msgid "Select all objects in document"
+msgstr "Документдэх бүх объектийг сонгох"
+
+#: src/verbs.c:425
+msgid "Repeat"
+msgstr "Давтах"
+
+#: src/verbs.c:425
+msgid "Repeat last saved action"
+msgstr "Сүүлд хадгалсан үйлдлийг давтах"
+
+#. Selection
+#: src/verbs.c:427
+msgid "Bring to Front"
+msgstr "Хамгийн наад талд гаргах"
+
+#: src/verbs.c:427
+msgid "Raise selected objects to top"
+msgstr "Сонгосон объектийг хамгийн дээр гаргах"
+
+#: src/verbs.c:428
+msgid "Send to Back"
+msgstr "Хамгийн цаад тал руу илгээх"
+
+#: src/verbs.c:428
+msgid "Lower selected objects to bottom"
+msgstr "Сонгосон объектийг хамгийн доор буулгах"
+
+#: src/verbs.c:429
+msgid "Raise"
+msgstr "Дээшлүүлэх"
+
+#: src/verbs.c:429
+msgid "Raise selected objects one position"
+msgstr "Сонгосон объектийг нэг шат дээшлүүлэх"
+
+#: src/verbs.c:430
+msgid "Lower"
+msgstr "Доошлуулах"
+
+#: src/verbs.c:430
+msgid "Lower selected objects one position"
+msgstr "Сонгосон объектийг нэг шат доошлуулах"
+
+#: src/verbs.c:431
+msgid "Group selected objects"
+msgstr "Сонгосон объектуудийг бүлэг болгох"
+
+#: src/verbs.c:432
+msgid "Ungroup selected group"
+msgstr "Сонгосон бүлгийг бүлэг бус болгох"
+
+#: src/verbs.c:433
+msgid "Combine"
+msgstr "Хамтатгах"
+
+#: src/verbs.c:433
+msgid "Combine multiple paths"
+msgstr "Олон замыг хамтатгах"
+
+#: src/verbs.c:434
+msgid "Break Apart"
+msgstr "Салгах"
+
+#: src/verbs.c:434
+msgid "Break selected path to subpaths"
+msgstr "Сонгосон замыг дэд замуудруу салгах"
+
+#: src/verbs.c:435
+msgid "Uncross"
+msgstr "Хөндлөн бус"
+
+#: src/verbs.c:435
+msgid "Break selected path at crossings"
+msgstr "Сонгогдсон замыг хэрээсээр задлах"
+
+#: src/verbs.c:436
+msgid "Union"
+msgstr "Нэгдэл"
+
+#: src/verbs.c:436
+msgid "Calculate union of selected paths"
+msgstr "Сонгосон замуудын нэгдэлийг тооцох"
+
+#: src/verbs.c:437
+msgid "Intersection"
+msgstr "Огтлолцол"
+
+#: src/verbs.c:437
+msgid "Calculate intersection of selected paths"
+msgstr "Сонгосон замуудын огтлолцолыг тооцох"
+
+#: src/verbs.c:438
+msgid "Subtraction"
+msgstr "Хасах"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr "Замыг эхнээс нь хасах"
+
+#: src/verbs.c:439
+msgid "Transform"
+msgstr "Хөрвүүлэх"
+
+#: src/verbs.c:439
+msgid "Applies transformation"
+msgstr "Хөрвүүлэлтийг батлах"
+
+#. Object
+#: src/verbs.c:441
+msgid "Rotate 90 degrees"
+msgstr "90 хэм эргүүлэх"
+
+#: src/verbs.c:441
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Цагийн зүүний дагуу 90 хэм эргүүлэх"
+
+#: src/verbs.c:442
+msgid "Flatten object"
+msgstr "Хавтгайрсан объект"
+
+#: src/verbs.c:442
+msgid "Remove transformations from object"
+msgstr "Объект хөрвүүлэхийг болих"
+
+#: src/verbs.c:443
+msgid "Convert to Curves"
+msgstr "Муруйруу хувиргах"
+
+#: src/verbs.c:443
+msgid "Convert selected object to path"
+msgstr "Сонгогдсон объектийг замруу хувиргах"
+
+#: src/verbs.c:444
+msgid "Flip Horizontally"
+msgstr "Хэвтээ тэнхлэгээр ойлгох"
+
+#: src/verbs.c:445
+msgid "Flip selected objects horizontally"
+msgstr "Сонгогдсон объектийг хэвтээ тэнхлэгээр ойлгох"
+
+#: src/verbs.c:446
+msgid "Flip Vertically"
+msgstr "Босоо тэнхлэгээр ойлгох"
+
+#: src/verbs.c:447
+msgid "Flip selected objects vertically"
+msgstr "Сонгогдсон объектийг босоо тэнхлэгээр ойлгох"
+
+#. Event contexts
+#: src/verbs.c:449
+msgid "Select"
+msgstr "Сонгох"
+
+#: src/verbs.c:449
+msgid "Select and transform objects"
+msgstr "Объектийг сонгох ба хөрвүүлэх"
+
+#: src/verbs.c:450
+msgid "Node edit"
+msgstr "Зангилааг засах"
+
+#: src/verbs.c:450
+msgid "Modify existing objects by control nodes"
+msgstr "Зангилаагаар объектийг өөрчлөх"
+
+#: src/verbs.c:451
+msgid "Rectangle"
+msgstr "Тэгш өнцөгт"
+
+#: src/verbs.c:451
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr ""
+"Тэгш өнцөгт ба квадрат үүсгэх. Сонголт ашиглан оройг нь мохоолгож "
+"болно"
+
+#: src/verbs.c:452
+msgid "Ellipse"
+msgstr "Эллипс"
+
+#: src/verbs.c:452
+msgid "Create circles, ellipses and arcs"
+msgstr "Нум, тойрог, эллипс үүсгэх"
+
+#: src/verbs.c:453
+msgid "Create stars and polygons"
+msgstr "Од ба олон өнцөгт үүсгэх"
+
+#: src/verbs.c:454
+msgid "Create spirals"
+msgstr "Спирал үүсгэх"
+
+#: src/verbs.c:455
+msgid "Pencil"
+msgstr "Харандаа"
+
+#: src/verbs.c:455
+msgid "Draw freehand curves and straight lines"
+msgstr "Муруй ба шугамыг зурах"
+
+#: src/verbs.c:456
+msgid "Pen"
+msgstr "Үзэг"
+
+#: src/verbs.c:456
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Тодорхойлсон байрлалд муруй ба шугам зурах"
+
+#: src/verbs.c:457
+msgid "Calligraphy"
+msgstr "Каллиграф"
+
+#: src/verbs.c:457
+msgid "Draw calligraphic lines"
+msgstr "Каллиграф муруй зурах"
+
+#: src/verbs.c:458
+msgid "Create and edit text objects"
+msgstr "Бичиг объект үүсгэх ба засах"
+
+#: src/verbs.c:459
+msgid "Zoom into precisely selected area"
+msgstr "Сонгосон мужийг томруулах"
+
+#: src/verbs.c:460
+msgid "Dropper"
+msgstr "Унагах"
+
+#: src/verbs.c:460
+msgid "Pick averaged colors from image"
+msgstr "Дүрээс дундаж өнгийг сонгох"
+
+#. Zooming
+#: src/verbs.c:462
+msgid "In"
+msgstr "Том"
+
+#: src/verbs.c:462
+msgid "Zoom in drawing"
+msgstr "Зураг томруулах"
+
+#: src/verbs.c:463
+msgid "Out"
+msgstr "жижиг"
+
+#: src/verbs.c:463
+msgid "Zoom out drawing"
+msgstr "Зураг жижгэрүүлэх"
+
+#: src/verbs.c:464
+msgid "1:1"
+msgstr "1:1"
+
+#: src/verbs.c:464
+msgid "Set zoom factor to 1:1"
+msgstr "Өөрчлөгч харицааг 1:1 болгох"
+
+#: src/verbs.c:465
+msgid "1:2"
+msgstr "1:2"
+
+#: src/verbs.c:465
+msgid "Set zoom factor to 1:2"
+msgstr "Өөрчлөгч харицааг 1:2 болгох"
+
+#: src/verbs.c:466
+msgid "2:1"
+msgstr "2:1"
+
+#: src/verbs.c:466
+msgid "Set zoom factor to 2:1"
+msgstr "Өөрчлөгч харицааг 2:1 болгох"
+
+#: src/verbs.c:467
+msgid "Fit the whole page into window"
+msgstr "Хуудсыг цонхонд багтаах"
+
+#: src/verbs.c:468
+msgid "Fit the whole drawing into window"
+msgstr "Зургийг цонхонд багтаах"
+
+#: src/verbs.c:469
+msgid "Fit the whole selection into window"
+msgstr "Сонгосон хэсгийг цонхонд багтаах"
+
+#. Dialogs
+#: src/verbs.c:471
+msgid "Display"
+msgstr "Дүрслэх"
+
+#: src/verbs.c:471
+msgid "Global display settings"
+msgstr "Дэлгэцний тохиргоо"
+
+#: src/verbs.c:472
+msgid "Document"
+msgstr "Документ"
+
+#: src/verbs.c:472
+msgid "Page layout"
+msgstr "Хуудасны хучилт"
+
+#: src/verbs.c:473
+msgid "Editing Window"
+msgstr "Цонхыг засах"
+
+#: src/verbs.c:473
+msgid "Editing window properties"
+msgstr "Цонхны шинжийг засах"
+
+#: src/verbs.c:474
+msgid "Tool Options"
+msgstr "Багаж Сонголт"
+
+#: src/verbs.c:475
+msgid "Tool Attributes"
+msgstr "Багаж Шинж"
+
+#: src/verbs.c:476
+msgid "Fill and Stroke"
+msgstr "Дүүргэх ба Строк"
+
+#: src/verbs.c:476
+msgid "Fill and stroke settings"
+msgstr "Дүүргэх ба строк тохиргоо"
+
+#: src/verbs.c:478
+msgid "Transformations"
+msgstr "Хөрвүүлэлт"
+
+#: src/verbs.c:479
+msgid "Align and Distribute"
+msgstr "Эмхэтгэх Тараах"
+
+#: src/verbs.c:479
+msgid "Align and distribute"
+msgstr "Эмхэтгэх ба тараах"
+
+#: src/verbs.c:480
+msgid "Text and Font"
+msgstr "Бичиг ба Бичгийн хэв"
+
+#: src/verbs.c:480
+msgid "Text editing and font settings"
+msgstr "Бичиг засах ба бичгийн хэв тохиргоо"
+
+#: src/verbs.c:481
+msgid "XML Editor"
+msgstr "XML засварлагч"
+
+#. Family frame
+#: src/widgets/font-selector.c:148
+msgid "Font family"
+msgstr "Бичгийн хэвийн бүл "
+
+#. Style frame
+#: src/widgets/font-selector.c:176
+msgid "Style"
+msgstr "Хэлбэр"
+
+#: src/widgets/font-selector.c:211
+msgid "Font size:"
+msgstr "Бичгийн хэв хэмжээ:"
+
+#: src/widgets/font-selector.c:521
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "ААББВВӨөУуӨө12368.;/()"
+
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "Нэмэх"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "Градиент нэгж"
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "ГрадиентЦацалт"
+
+#: src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "Документ сонгогдоогүй"
+
+#: src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "Документэд градиент байхгүй"
+
+#: src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "Градиент сонгогдоогүй"
+
+#: src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "Эхлэлийн өнгө"
+
+#: src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "Төгсгөлийн өнгө"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "Градиент вектор"
+
+#: src/widgets/paint-selector.c:622
+msgid "No objects"
+msgstr "Объект байхгүй"
+
+#: src/widgets/paint-selector.c:636
+msgid "Multiple styles"
+msgstr "Олон хэлбэрийн"
+
+#: src/widgets/paint-selector.c:650
+msgid "No paint"
+msgstr "Будаггүй"
+
+#. Label
+#: src/widgets/paint-selector.c:747
+msgid "Mode:"
+msgstr "Төлөв:"
+
+#: src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "РЖБ(RGB)"
+
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr "РЖБ(RGB) өнгөний зай"
+
+#: src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr "ХСВ(HSV)"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr "СМҮК"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr "СМҮК өнгөний зай"
+
+#. Use dropper
+#: src/widgets/paint-selector.c:766
+msgid "Get from dropper"
+msgstr "Унагалтаас авах"
+
+#: src/widgets/paint-selector.c:797
+msgid "Color paint"
+msgstr "Өнгөөр будах"
+
+#: src/widgets/paint-selector.c:875
+msgid "Linear gradient"
+msgstr "Шугаман градиент"
+
+#: src/widgets/paint-selector.c:878
+msgid "Radial gradient"
+msgstr "Өнцгөн градиент"
+
+#: src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "Улаан:"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "Ногоон:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "Хөх:"
+
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "Алфа:"
+
+#: src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "Өнгөний хэм:"
+
+#: src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "Ханалт:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "Утга: "
+
+#: src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "Хөх:"
+
+#: src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "Ягаан:"
+
+#: src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "Шар:"
+
+#: src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "Хар:"
+
+#: src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr "Хажуугийн цэсийг үзүүлэх үл үзүүлэх"
+
+#: src/widgets/sp-xmlview-attr-list.c:54
+msgid "Attribute"
+msgstr "Шинж"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Value"
+msgstr "Утга"
+

@@ -1,3 +1,7 @@
+2004-02-15  Sanlig Badral  <badral@openmn.org>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2004-02-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/modules/plain.c: New file
@@ -15,7 +19,6 @@
 	* src/testing.h (USE_PRINT_DRIVERS): New macro
 
 	* src/modules/Makefile.am (libspmodules_a_SOURCES): Plain printing support
-
 	* src/print.c (sp_print_document): Ditto
 
 	* src/print.c (sp_print_preview_document): Ditto
