@@ -1,0 +1,3626 @@
+# translation of sodipodi to Kinyarwanda.
+# Copyright (C) 2005 Free Software Foundation, Inc.
+# This file is distributed under the same license as the sodipodi package.
+# Steve Murphy <murf@e-tools.com>, 2005
+# Steve performed initial rough translation from compendium built from translations provided by the following translators:
+# Philibert Ndandali  <ndandali@yahoo.fr>, 2005.
+# Viateur MUGENZI <muvia1@yahoo.fr>, 2005.
+# Noëlla Mupole <s24211045@tuks.co.za>, 2005.
+# Carole Karema <karemacarole@hotmail.com>, 2005.
+# JEAN BAPTISTE NGENDAHAYO <ngenda_denis@yahoo.co.uk>, 2005.
+# Augustin KIBERWA  <akiberwa@yahoo.co.uk>, 2005.
+# Donatien NSENGIYUMVA <ndonatienuk@yahoo.co.uk>, 2005..
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-04-01 17:09-0700\n"
+"PO-Revision-Date: 2005-03-31 20:55-0700\n"
+"Last-Translator: Steve Murphy <murf@e-tools.com>\n"
+"Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"ULL NAME <EMAIL@ADDRESS>\n"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr ""
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:144
+#: src/toolbox.c:178
+msgid "Sodipodi"
+msgstr ""
+
+#: src/arc-context.c:254
+#, fuzzy, c-format
+msgid "Drawing arc %s x %s"
+msgstr "Agaheto X"
+
+#: src/bonobo/svg-doc-factory.c:35
+#, fuzzy
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "OYA Kurema"
+
+#: src/desktop.c:990
+#, fuzzy
+msgid "Zoom drawing if window size changes"
+msgstr "Igishushanyo NIBA Idirishya Ingano Amahinduka"
+
+#: src/desktop.c:997
+#, fuzzy
+msgid "Drawing target is constrained to active group"
+msgstr "Intego ni Kuri Gikora Itsinda"
+
+#: src/desktop.c:1089
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr ""
+
+#: src/desktop.c:1196
+#, fuzzy, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "Amahinduka Kubika"
+
+# basctl/source\basicide\basidesh.src:RID_STR_PAGE.text
+#. Page page
+#. Page settings
+#. Notebook tab
+#: src/desktop.c:1776 src/dialogs/align.c:291
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:161 src/verbs.c:471 src/widgets/sp-dock-notebook.c:135
+msgid "Page"
+msgstr "Ipaji"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Print.Content.Drawing.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Draw.Enable.text
+#: src/desktop.c:1780 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/verbs.c:472
+msgid "Drawing"
+msgstr "Igishushanyo"
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\dbgui\dapitype.src:RID_SCDLG_DAPITYPE.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\dbgui\dapitype.src:RID_SCDLG_DAPISERVICE.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\dbgui\dapitype.src:RID_SCDLG_DAPIDATA.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\chartdlg.src:RID_SCDLG_CHARTRANGE.FL_1.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_DELCELL.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_INSCELL.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_DELCONT.FL_FRAME.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_INSCONT.FL_FRAME.text
+#. Selection submenu
+#: src/desktop.c:1784 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
+msgid "Selection"
+msgstr "Ihitamo"
+
+#: src/dialogs/align.c:156 src/toolbox.c:405
+#, fuzzy
+msgid "Align objects"
+msgstr "Ibintu"
+
+#: src/dialogs/align.c:175
+#, fuzzy
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Bya Ibintu Kuri Ibumoso: Bya Agafashi"
+
+#: src/dialogs/align.c:178
+#, fuzzy
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "Bya Ibintu Kuri Ibumoso: Bya Agafashi"
+
+#: src/dialogs/align.c:181
+#, fuzzy
+msgid "Center horizontally"
+msgstr "Mu buryo Butambitse"
+
+#: src/dialogs/align.c:184
+#, fuzzy
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Bya Ibintu Kuri Iburyo: Bya Agafashi"
+
+#: src/dialogs/align.c:187
+#, fuzzy
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "Bya Ibintu Kuri Iburyo: Bya Agafashi"
+
+#: src/dialogs/align.c:191
+#, fuzzy
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "Bya Ibintu Kuri Hejuru: Bya Agafashi"
+
+#: src/dialogs/align.c:194
+#, fuzzy
+msgid "Top of aligned objects to top of anchor"
+msgstr "Bya Ibintu Kuri Hejuru: Bya Agafashi"
+
+#: src/dialogs/align.c:197
+#, fuzzy
+msgid "Center vertically"
+msgstr "Mu buryo buhagaze"
+
+#: src/dialogs/align.c:200
+#, fuzzy
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Bya Ibintu Kuri Hasi: Bya Agafashi"
+
+#: src/dialogs/align.c:203
+#, fuzzy
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Bya Ibintu Kuri Hasi: Bya Agafashi"
+
+# Align menu items
+#: src/dialogs/align.c:206
+msgid "Align"
+msgstr "Itunganya"
+
+#: src/dialogs/align.c:224
+#, fuzzy
+msgid "Distribute left sides of objects at even distances"
+msgstr "Ibumoso: Bya Ibintu ku ATARIIGIHARWE"
+
+#: src/dialogs/align.c:227
+#, fuzzy
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "Bya Ibintu ku ATARIIGIHARWE Mu buryo Butambitse"
+
+#: src/dialogs/align.c:230
+#, fuzzy
+msgid "Distribute right sides of objects at even distances"
+msgstr "Iburyo: Bya Ibintu ku ATARIIGIHARWE"
+
+#: src/dialogs/align.c:233
+#, fuzzy
+msgid "Distribute horizontal distance between objects equally"
+msgstr "Gitambitse Intera hagati Ibintu"
+
+#: src/dialogs/align.c:237
+#, fuzzy
+msgid "Distribute top sides of objects at even distances"
+msgstr "Hejuru: Bya Ibintu ku ATARIIGIHARWE"
+
+#: src/dialogs/align.c:240
+#, fuzzy
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "Bya Ibintu ku ATARIIGIHARWE Mu buryo buhagaze"
+
+#: src/dialogs/align.c:243
+#, fuzzy
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "Hasi: Bya Ibintu ku ATARIIGIHARWE"
+
+#: src/dialogs/align.c:246
+#, fuzzy
+msgid "Distribute vertical distance between objects equally"
+msgstr "Bihagaritse Intera hagati Ibintu"
+
+# svx/sdi\svxslots.src:SID_DISTRIBUTE_DLG.text
+#: src/dialogs/align.c:249
+msgid "Distribute"
+msgstr "Gukwirakwiza"
+
+#: src/dialogs/align.c:287
+#, fuzzy
+msgid "Last selected"
+msgstr "Byahiswemo"
+
+#: src/dialogs/align.c:288
+#, fuzzy
+msgid "First selected"
+msgstr "Byahiswemo"
+
+#: src/dialogs/align.c:289
+#, fuzzy
+msgid "Biggest item"
+msgstr "Ikintu"
+
+#: src/dialogs/align.c:290
+#, fuzzy
+msgid "Smallest item"
+msgstr "Ikintu"
+
+#: src/dialogs/desktop-properties.c:195
+#, fuzzy
+msgid "Desktop settings"
+msgstr "Amagenamiterere"
+
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SW_EDITOPTIONS.5.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SW_ONLINEOPTIONS.4.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SC_EDITOPTIONS.8.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SD_EDITOPTIONS.4.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SD_GRAPHIC_OPTIONS.4.text
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "Urusobetudirishya"
+
+#: src/dialogs/desktop-properties.c:217
+#, fuzzy
+msgid "Show grid"
+msgstr "Urusobetudirishya"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Grid.Option.SnapToGrid.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Grid.Option.SnapToGrid.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Grid.Option.SnapToGrid.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Grid.Option.SnapToGrid.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Grid.Option.SnapToGrid.text
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "Gucika ku rusobe-tudirishya"
+
+#: src/dialogs/desktop-properties.c:221
+#, fuzzy
+msgid "Horizontal lines"
+msgstr "Imirongo Itambitse"
+
+#: src/dialogs/desktop-properties.c:222
+#, fuzzy
+msgid "Vertical lines"
+msgstr "Imirongo Ihagaze"
+
+#: src/dialogs/desktop-properties.c:224
+#, fuzzy
+msgid "Iso grid"
+msgstr "Urusobetudirishya"
+
+#: src/dialogs/desktop-properties.c:225
+#, fuzzy
+msgid "Hex grid"
+msgstr "Urusobetudirishya"
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+#, fuzzy
+msgid "Snap distance:"
+msgstr "Intera"
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_GRIDCOLOR.text
+#: src/dialogs/desktop-properties.c:249
+#, fuzzy
+msgid "Grid color:"
+msgstr "ibara ry'urusobe- tudirishya"
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_GRIDCOLOR.text
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "ibara ry'urusobe-tudirishya"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Line.Guide.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Line.Guide.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Line.Guide.text
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "Ibiyobora"
+
+#: src/dialogs/desktop-properties.c:265
+#, fuzzy
+msgid "Show guides"
+msgstr "Ibiyobora"
+
+#: src/dialogs/desktop-properties.c:266
+#, fuzzy
+msgid "Snap to guides"
+msgstr "Icika ku biyobora"
+
+#: src/dialogs/desktop-properties.c:276
+#, fuzzy
+msgid "Guides color:"
+msgstr "Ibara"
+
+#: src/dialogs/desktop-properties.c:277
+#, fuzzy
+msgid "Guideline color"
+msgstr "Ibara"
+
+#: src/dialogs/desktop-properties.c:279
+#, fuzzy
+msgid "Highlight color:"
+msgstr "Garagaza ibara"
+
+#: src/dialogs/desktop-properties.c:280
+#, fuzzy
+msgid "Highlighted guideline color"
+msgstr "Ibara"
+
+#: src/dialogs/desktop-properties.c:295
+#, fuzzy
+msgid "Show border"
+msgstr "Imbibi"
+
+#: src/dialogs/desktop-properties.c:301
+#, fuzzy
+msgid "Border on top of drawing"
+msgstr "ku Hejuru: Bya Igishushanyo"
+
+# svx/source\tbxctrls\tbcontrl.src:RID_SVXSTR_FRAME_COLOR.text
+#: src/dialogs/desktop-properties.c:306
+#, fuzzy
+msgid "Border color:"
+msgstr "Ibara ry'urubibi"
+
+#: src/dialogs/desktop-properties.c:307
+#, fuzzy
+msgid "Page border color"
+msgstr "Imbibi Ibara"
+
+#: src/dialogs/desktop-properties.c:308
+#, fuzzy
+msgid "Page color:"
+msgstr "Ibara"
+
+#: src/dialogs/desktop-properties.c:309
+#, fuzzy
+msgid "Page color"
+msgstr "Ibara"
+
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\macrodlg.src:RID_MACROCHOOSER.RID_PB_CLOSE.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\macrodlg.src:RID_STR_CLOSE.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\moduldlg.src:RID_TP_MODULS.RID_PB_CLOSE.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\moduldlg.src:RID_TP_LIBS.RID_PB_CLOSE.text
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
+msgid "Close"
+msgstr "Gufunga"
+
+#: src/dialogs/display-settings.c:101
+#, fuzzy
+msgid "Display settings"
+msgstr "Amagenamiterere"
+
+# Debug: Turn on gfx-rendered widgets
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:108
+msgid "Rendering"
+msgstr "Isubizwa"
+
+#: src/dialogs/display-settings.c:117
+#, fuzzy
+msgid "Oversample bitmaps:"
+msgstr "Bitimapu"
+
+# goodies/source\filter.vcl\eps\dlgeps.src:DLG_EXPORT_EPS.RB_COMPRESSION_NONE.text
+#: src/dialogs/display-settings.c:125 src/verbs.c:407
+msgid "None"
+msgstr "Nta na kimwe"
+
+#: src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr ""
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_UNDO_ENTERDATA.text
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:147
+msgid "Input"
+msgstr "Iyinjiza"
+
+#: src/dialogs/display-settings.c:155
+#, fuzzy
+msgid "Default cursor tolerance:"
+msgstr "indanga Icishiriza"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+#, fuzzy
+msgid "Set dialog hint for dialogs"
+msgstr "Ikiganiro kugirango Ibiganiro"
+
+#: src/dialogs/display-settings.c:179
+#, fuzzy
+msgid "Skip taskbar entry for dialogs"
+msgstr "Icyinjijwe kugirango Ibiganiro"
+
+#: src/dialogs/document-properties.c:159
+#, fuzzy
+msgid "Document settings"
+msgstr "Amagenamiterere"
+
+#: src/dialogs/document-properties.c:180
+#, fuzzy
+msgid "Paper size:"
+msgstr "Ingano y'urupapuro:"
+
+#: src/dialogs/document-properties.c:201
+#, fuzzy
+msgid "Custom"
+msgstr "Guhanga"
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+#, fuzzy
+msgid "Custom paper"
+msgstr "Kugena urupapuro"
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr ""
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_TIP_WIDTH.text
+#. Stroke width
+#. Width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:189
+#: src/dialogs/export.c:213 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
+msgid "Width:"
+msgstr "Ubugari:"
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_TIP_HEIGHT.text
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
+#: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "Ubuhagarike:"
+
+# basctl/source\basicide\basidesh.src:RID_STR_DOC.text
+#: src/dialogs/document-tree.c:60 src/verbs.c:476
+msgid "Document"
+msgstr "Inyandiko"
+
+#: src/dialogs/export.c:141
+#, fuzzy
+msgid "Export bitmap"
+msgstr "Bitimapu"
+
+#. Export area frame
+#: src/dialogs/export.c:150
+#, fuzzy
+msgid "Export area"
+msgstr "Ubuso"
+
+#: src/dialogs/export.c:183
+msgid "x0:"
+msgstr ""
+
+#: src/dialogs/export.c:186
+msgid "x1:"
+msgstr ""
+
+#: src/dialogs/export.c:192
+msgid "y0:"
+msgstr ""
+
+#: src/dialogs/export.c:195
+msgid "y1:"
+msgstr ""
+
+#. Bitmap size frame
+#: src/dialogs/export.c:204
+#, fuzzy
+msgid "Bitmap size"
+msgstr "Ingano"
+
+#: src/dialogs/export.c:213 src/dialogs/export.c:221
+msgid "pixels"
+msgstr "pigiseli"
+
+#: src/dialogs/export.c:217 src/dialogs/export.c:225
+msgid "dpi"
+msgstr ""
+
+#: src/dialogs/export.c:233
+msgid "Background color"
+msgstr "Ibara rya mbuganyuma"
+
+#: src/dialogs/export.c:235
+#, fuzzy
+msgid "Bitmap background:"
+msgstr "Mbuganyuma"
+
+#: src/dialogs/export.c:240
+#, fuzzy
+msgid "Export png file"
+msgstr "png IDOSIYE"
+
+# filter/source\pdf\impdialog.src:RID_PDF_EXPORT_DLG.BT_OK.text
+# filter/source\xsltdialog\xmlfiltertestdialog.src:DLG_XML_FILTER_TEST_DIALOG.FL_EXPORT.text
+#: src/dialogs/export.c:267 src/verbs.c:417
+msgid "Export"
+msgstr "Kohereza"
+
+#: src/dialogs/export.c:401
+#, fuzzy
+msgid "Export in progress"
+msgstr "in Aho bigeze"
+
+#: src/dialogs/export.c:405
+#, fuzzy, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "X"
+
+# svx/source\svdraw\svdstr.src:SIP_XA_FILLSTYLE.text
+#: src/dialogs/fill-style.c:87
+msgid "Fill style"
+msgstr "Imisusire yo kuzuza"
+
+#: src/dialogs/fill-style.c:124
+msgid "Fill Rule"
+msgstr ""
+
+#: src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr ""
+
+#: src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr ""
+
+# svtools/source\dialogs\addresstemplate.src:STR_FIELD_ID.text
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:269
+#: src/dialogs/item-properties.c:368 src/dialogs/item-properties.c:375
+msgid "ID"
+msgstr "ID"
+
+#: src/dialogs/item-properties.c:95
+msgid "Set ID"
+msgstr ""
+
+#. Sensitive
+#: src/dialogs/item-properties.c:104
+msgid "Sensitive"
+msgstr ""
+
+# 6488
+#. Visible
+#: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
+msgid "Visible"
+msgstr "kigaragara"
+
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\basidesh.src:RID_POPUP_BRKPROPS.RID_ACTIV.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\brkdlg.src:RID_BASICIDE_BREAKPOINTDLG.RID_CHKB_ACTIVE.text
+#. Active
+#: src/dialogs/item-properties.c:114
+msgid "Active"
+msgstr "Gikora"
+
+# 4839
+#. Printable
+#: src/dialogs/item-properties.c:119
+msgid "Printable"
+msgstr "Bishobora gushyrwa ku Rupapuro"
+
+#: src/dialogs/item-properties.c:128
+msgid "Opacity:"
+msgstr ""
+
+#: src/dialogs/item-properties.c:144
+#, fuzzy
+msgid "Transformation matrix"
+msgstr "Matirise"
+
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_INDIRECT.2.text
+#: src/dialogs/item-properties.c:263
+#, fuzzy
+msgid "Ref"
+msgstr "indango"
+
+#: src/dialogs/item-properties.c:370
+#, fuzzy
+msgid "ID invalid"
+msgstr "Sibyo"
+
+#: src/dialogs/item-properties.c:372
+msgid "ID exists"
+msgstr ""
+
+#: src/dialogs/item-properties.c:448 src/verbs.c:487
+#, fuzzy
+msgid "Item properties"
+msgstr "Indangakintu..."
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "Intego:"
+
+# sfx2/source\dialog\dinfdlg.src:TP_DOCINFODOC.FT_FILE_TYP.text
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "Ubwoko"
+
+# VCARD_LDAP_ROLE
+# # @name VCARD_LDAP_ROLE
+# # @loc None
+#: src/dialogs/object-attributes.c:37
+#, fuzzy
+msgid "Role:"
+msgstr "Inshingano"
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr ""
+
+# shell/source\win32\shlxthandler\shlxthdl.lng:%TITLE_COLON%.text
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "Umutwe:"
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\menue.src:SCCFG_PLUGINMENU.SUBMENU_EDIT.SUBMENU_CHANGES.FID_CHG_SHOW.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\menue.src:SCCFG_MENUBAR.SUBMENU_EDIT.SUBMENU_CHANGES.FID_CHG_SHOW.text
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
+#, fuzzy
+msgid "Show:"
+msgstr "Kwerekana..."
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr ""
+
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_TRANSPARENCE.FT_TRGR_CENTER_X.text
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_GRADIENT.FT_CENTER_X.text
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+#, fuzzy
+msgid "Center X:"
+msgstr "X Hagati"
+
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_TRANSPARENCE.FT_TRGR_CENTER_Y.text
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_GRADIENT.FT_CENTER_Y.text
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+#, fuzzy
+msgid "Center Y:"
+msgstr "Y Hagati"
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr ""
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
+msgid "Expansion:"
+msgstr ""
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:331
+msgid "Revolution:"
+msgstr ""
+
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\test.src:RID_SVXPAGE_SLANT.FT_RADIUS.text
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\transfrm.src:RID_SVXPAGE_SLANT.FT_RADIUS.text
+#: src/dialogs/object-attributes.c:61
+#, fuzzy
+msgid "Radius:"
+msgstr "Akarambararo"
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr ""
+
+# offmgr/source\offapp\dialog\hyprlink.src:RID_SVXDLG_HYPERLINK.FT_URL.text
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL:"
+
+# officecfg/registry\schema\org\openoffice\Office\Common.xcs:....Font.Strikeout..6.text
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+#, fuzzy
+msgid "X:"
+msgstr "X"
+
+# svx/source\engine3d\float3d.src:RID_SVXFLOAT3D_FIX_Y.text
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+#, fuzzy
+msgid "Y:"
+msgstr "Y"
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:117
+#, fuzzy, c-format
+msgid "%s attributes"
+msgstr "%sIbiranga"
+
+#: src/dialogs/object-properties.c:113
+#, fuzzy
+msgid "Object style"
+msgstr "IMISUSIRE"
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_UNDO_AUTOFILL.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\menue.src:SCCFG_PLUGINMENU.SUBMENU_EDIT.SUBMENU_FILL.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\menue.src:SCCFG_MENUBAR.SUBMENU_EDIT.SUBMENU_FILL.text
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "Kuzuza"
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr ""
+
+#: src/dialogs/object-properties.c:156
+#, fuzzy
+msgid "Stroke style"
+msgstr "IMISUSIRE"
+
+# sw/source\ui\frmdlg\column.src:DLG_COLUMN.FT_APPLY_TO.text
+#: src/dialogs/object-properties.c:176
+#, fuzzy
+msgid "Apply to:"
+msgstr "Gukoresha ku"
+
+#: src/dialogs/object-properties.c:186
+#, fuzzy
+msgid "Selected objects"
+msgstr "Ibintu"
+
+#: src/dialogs/object-properties.c:189
+#, fuzzy
+msgid "All shape tools"
+msgstr "Imisusire Ibikoresho"
+
+# 4984
+#: src/dialogs/object-properties.c:192
+#, fuzzy
+msgid "Rectangle tool"
+msgstr "Agakoresho k'Ishusho y'urukiramende"
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:204
+#, fuzzy
+msgid "Freehand and pen"
+msgstr "Na ikaramu"
+
+#: src/dialogs/object-properties.c:207
+#, fuzzy
+msgid "Calligraphic line"
+msgstr "Umurongo"
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:462
+msgid "Text"
+msgstr "Umwandiko"
+
+#: src/dialogs/object-properties.c:289
+#, fuzzy
+msgid "Object Size and Position"
+msgstr "Na"
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:481
+#, fuzzy
+msgid "Size and Position"
+msgstr "Na"
+
+#: src/dialogs/stroke-style.c:554 src/toolbox.c:401
+#, fuzzy
+msgid "Stroke settings"
+msgstr "Amagenamiterere"
+
+#. Join type
+#: src/dialogs/stroke-style.c:590
+msgid "Join:"
+msgstr ""
+
+#. Cap type
+#: src/dialogs/stroke-style.c:633
+msgid "Cap:"
+msgstr ""
+
+# sc/source\ui\src\autofmt.src:RID_SCDLG_AUTOFORMAT.BTN_PATTERN.text
+#. Dash
+#: src/dialogs/stroke-style.c:676
+#, fuzzy
+msgid "Pattern:"
+msgstr "Ishusho"
+
+#: src/dialogs/text-edit.c:102
+#, fuzzy
+msgid "Text properties"
+msgstr "Indangakintu..."
+
+# #-#-#-#-#  sch.pot (PACKAGE VERSION)  #-#-#-#-#
+# sch/source\core\glob.src:STR_LAYOUT.text
+# #-#-#-#-#  sch.pot (PACKAGE VERSION)  #-#-#-#-#
+# sch/source\ui\dlg\attrib.src:TAB_DATA_POINT.1.TP_LAYOUT.text
+#. Layout
+#: src/dialogs/text-edit.c:141
+msgid "Layout"
+msgstr "Imigaragarire"
+
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\menu.src:RID_SMMENU.~Format.SID_ALIGN.text
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\menu.src:RID_SMPLUGINMENU.~Format.SID_ALIGN.text
+#: src/dialogs/text-edit.c:149
+#, fuzzy
+msgid "Alignment:"
+msgstr "Itondekanya"
+
+#: src/dialogs/text-edit.c:174
+msgid "Orientation:"
+msgstr "Icyerekezo:"
+
+# sc/source\ui\drawfunc\objdraw.src:MN_TEXT_ATTR.RID_MN_FORMAT_LINESPACE.text
+#: src/dialogs/text-edit.c:192
+#, fuzzy
+msgid "Line spacing:"
+msgstr "Itandukanyamirongo"
+
+#: src/dialogs/text-edit.c:212
+msgid "Spacing:"
+msgstr "itandukanya:"
+
+#: src/dialogs/text-edit.c:235
+#, fuzzy
+msgid "Text and font"
+msgstr "Na Intego- nyuguti"
+
+#: src/dialogs/text-edit.c:246
+#, fuzzy
+msgid "Set as default"
+msgstr "Shyiraho nka Mburabuzi."
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:479
+#, fuzzy
+msgid "Tool attributes"
+msgstr "Ibiranga"
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:95
+#, fuzzy
+msgid "Inner radius"
+msgstr "Akarambararo"
+
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
+#, fuzzy
+msgid "Missing tool preferences"
+msgstr "Ibyahiswemo"
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:343
+msgid "Corners:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr ""
+
+# sch/source\ui\app\strings.src:STR_UNDO_TRANSFORM.text
+#: src/dialogs/tool-attributes.c:115
+#, fuzzy
+msgid "Transform:"
+msgstr "Guhinduramo"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr ""
+
+#. Drag
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
+#, fuzzy
+msgid "Drag:"
+msgstr "Kurura"
+
+# officecfg/registry\schema\org\openoffice\Office\Common.xcs:....Image.Color.RotationAngle.text
+#: src/dialogs/tool-attributes.c:125
+msgid "Angle"
+msgstr "Imfuruka"
+
+#: src/dialogs/tool-attributes.c:132
+#, fuzzy
+msgid "Tool has no attributes"
+msgstr "Oya Ibiranga"
+
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
+#, fuzzy
+msgid "No active tool"
+msgstr "Gikora"
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:478
+#, fuzzy
+msgid "Tool options"
+msgstr "Amahitamo"
+
+#: src/dialogs/tool-options.c:90
+#, fuzzy
+msgid "Tool has no options"
+msgstr "Oya Amahitamo"
+
+#: src/dialogs/transformation.c:195
+#, fuzzy
+msgid "Transform selection"
+msgstr "Ihitamo"
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+#, fuzzy
+msgid "Apply to duplicate"
+msgstr "Kuri Gusubiramo"
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_UNDO_MOVE.text
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "Kwimura"
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "Gupima"
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "Kuzengurutsa"
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:157
+#, fuzzy
+msgid "Drag to reorder nodes"
+msgstr "Kuri Kwongera gupanga"
+
+#: src/dialogs/xml-tree.c:170
+#, fuzzy
+msgid "New element node"
+msgstr "Ikigize:"
+
+#: src/dialogs/xml-tree.c:188
+#, fuzzy
+msgid "New text node"
+msgstr "Umwandiko"
+
+#: src/dialogs/xml-tree.c:205
+msgid "Duplicate node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:221
+msgid "Delete node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:234
+msgid "Unindent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:245
+msgid "Indent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:255
+msgid "Raise node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:266
+msgid "Lower node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:303
+#, fuzzy
+msgid "Delete attribute"
+msgstr "Gusiba Ikiranga"
+
+#: src/dialogs/xml-tree.c:333
+#, fuzzy
+msgid "Attribute name"
+msgstr "Izina:"
+
+#: src/dialogs/xml-tree.c:340
+#, fuzzy
+msgid "Set attribute"
+msgstr "Ikiranga"
+
+#: src/dialogs/xml-tree.c:353
+#, fuzzy
+msgid "Attribute value"
+msgstr "Agaciro"
+
+#: src/dialogs/xml-tree.c:833
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:856
+#, fuzzy
+msgid "New element node..."
+msgstr "Ikigize:"
+
+# crashrep/source\all\crashrep.lng:%CANCEL_BUTTON%.text
+#: src/dialogs/xml-tree.c:876
+msgid "Cancel"
+msgstr "Kureka"
+
+# sch/source\ui\dlg\dlggraut.src:DLG_CHART_WIZ.PB_EXECUTE.text
+#: src/dialogs/xml-tree.c:880
+msgid "Create"
+msgstr "Kurema"
+
+# dbaccess/source/ui/inc/toolbox.hrc:MID_DOCUMENT_CREATE_NEW.text
+#: src/document.c:389
+#, fuzzy, c-format
+msgid "New document %d"
+msgstr "Inyandiko Nshya"
+
+#: src/document.c:425
+#, fuzzy, c-format
+msgid "Memory document %d"
+msgstr "Inyandiko"
+
+#: src/document.c:572
+#, fuzzy, c-format
+msgid "Unnamed document %d"
+msgstr "Inyandiko"
+
+#: src/draw-context.c:294
+#, fuzzy
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "Kuri Ihitamo Kuri Mukomatanya"
+
+#: src/draw-context.c:299
+#, fuzzy
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "Gishya Agaheto Kuri Mukomatanya"
+
+# officecfg/registry\schema\org\openoffice\Office\Common.xcs:....Image.Color.RotationAngle.text
+#. Angle
+#: src/dyna-draw-context.c:1075
+#, fuzzy
+msgid "Angle:"
+msgstr "Imfuruka"
+
+#. Reset
+#: src/dyna-draw-context.c:1099 src/rect-context.c:382
+#: src/spiral-context.c:367 src/star-context.c:374
+msgid "Defaults"
+msgstr ""
+
+#: src/file.c:123 src/file.c:137 src/file.c:149
+#, fuzzy
+msgid "Select file to open"
+msgstr "IDOSIYE Kuri Gufungura"
+
+# svtools/source\filepicker\iodlg.src:DLG_SVT_EXPLORERFILE.FT_EXPLORERFILE_FILETYPE.text
+#: src/file.c:174 src/file.c:278
+#, fuzzy
+msgid "File type:"
+msgstr "Ubwoko bw'idosiye"
+
+#: src/file.c:263
+#, fuzzy
+msgid "Save file"
+msgstr "Bika idosiye"
+
+#: src/file.c:468 src/file.c:478 src/file.c:484
+#, fuzzy
+msgid "Select file to import"
+msgstr "IDOSIYE Kuri Kuzana"
+
+#: src/help.c:51
+msgid "About sodipodi"
+msgstr ""
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+#, fuzzy
+msgid "Unit"
+msgstr "Igice:"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr ""
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.Metric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.NonMetric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.Metric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.NonMetric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.Metric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.NonMetric..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.HorizontalRulerUnit..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.VerticalRulerUnit..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Other.MeasureUnit..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.HorizontalRulerUnit..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.VerticalRulerUnit..6.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Other.MeasureUnit..6.text
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "Akadomo"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.7.text
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "pt"
+
+# 4705
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "utubago"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.7.text
+#: src/helper/units.c:43
+#, fuzzy
+msgid "Pt"
+msgstr "pt"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr ""
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr ""
+
+# offmgr/source\offapp\dialog\optgdlg.src:OFA_TP_VIEW.FT_POINTLIMIT_UNIT.text
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "Pigiseli"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr ""
+
+#: src/helper/units.c:45
+#, fuzzy
+msgid "Userspace unit"
+msgstr "Igice:"
+
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\chardlg.src:RID_SVXSTR_COLOR_USER.text
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\page.src:RID_SVXSTRARY_PAPERSIZE_STD.13.text
+# #-#-#-#-#  svx.pot (PACKAGE VERSION)  #-#-#-#-#
+# svx/source\dialog\page.src:RID_SVXSTRARY_PAPERSIZE_DRAW.16.text
+#: src/helper/units.c:45
+msgid "User"
+msgstr "Ukoresha"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr ""
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Zoom.Type..0.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Zoom.Type..0.text
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "Ku ijana"
+
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\smres.src:RID_DISTANCEDIALOG.1.text
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\smres.src:RID_DISTANCEDIALOG.2.text
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\smres.src:RID_DISTANCEDIALOG.3.text
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr ""
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.Metric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.NonMetric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.Metric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.NonMetric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.Metric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.NonMetric..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.HorizontalRulerUnit..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.VerticalRulerUnit..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Other.MeasureUnit..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.HorizontalRulerUnit..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.VerticalRulerUnit..1.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Other.MeasureUnit..1.text
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "Milimetero"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.1.text
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "mm"
+
+#: src/helper/units.c:49
+#, fuzzy
+msgid "Millimeters"
+msgstr "Milimetero"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.Metric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.NonMetric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.Metric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.NonMetric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.Metric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.NonMetric..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.HorizontalRulerUnit..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.VerticalRulerUnit..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Other.MeasureUnit..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.HorizontalRulerUnit..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.VerticalRulerUnit..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Other.MeasureUnit..2.text
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "Santimetero"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.2.text
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "cm"
+
+#: src/helper/units.c:50
+#, fuzzy
+msgid "Centimeters"
+msgstr "Santimetero"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.HorizontalRulerUnit..3.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.VerticalRulerUnit..3.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Other.MeasureUnit..3.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.HorizontalRulerUnit..3.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.VerticalRulerUnit..3.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Other.MeasureUnit..3.text
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "Metero"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.3.text
+#: src/helper/units.c:51
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr ""
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.Metric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Calc.xcs:....Layout.Other.MeasureUnit.NonMetric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.Metric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Impress.xcs:....Layout.Other.MeasureUnit.NonMetric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.Metric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Draw.xcs:....Layout.Other.MeasureUnit.NonMetric..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.HorizontalRulerUnit..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Window.VerticalRulerUnit..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\WriterWeb.xcs:....Layout.Other.MeasureUnit..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.HorizontalRulerUnit..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Window.VerticalRulerUnit..8.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Layout.Other.MeasureUnit..8.text
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "Inci"
+
+# vcl/source\src\units.src:SV_FUNIT_STRINGS.10.text
+#: src/helper/units.c:52
+msgid "in"
+msgstr "in"
+
+#: src/helper/units.c:52
+#, fuzzy
+msgid "Inches"
+msgstr "inci"
+
+#: src/helper/units.c:53
+#, fuzzy
+msgid "Em square"
+msgstr "kare"
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr ""
+
+#: src/helper/units.c:53
+#, fuzzy
+msgid "Em squares"
+msgstr "kare"
+
+#: src/helper/units.c:54
+#, fuzzy
+msgid "Ex square"
+msgstr "kare"
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr ""
+
+#: src/helper/units.c:54
+#, fuzzy
+msgid "Ex squares"
+msgstr "kare"
+
+#: src/interface.c:305 src/interface.c:504
+msgid "Open Recent"
+msgstr ""
+
+#: src/interface.c:325
+#, fuzzy
+msgid "Close View"
+msgstr "Funga"
+
+#: src/interface.c:328 src/interface.c:510
+msgid "About Sodipodi"
+msgstr ""
+
+#. Have modules about menu
+#: src/interface.c:334 src/interface.c:516
+msgid "About Modules"
+msgstr ""
+
+#: src/interface.c:354
+msgid "Cleanup"
+msgstr ""
+
+#. View:Zoom
+#: src/interface.c:429 src/toolbox.c:587 src/verbs.c:463
+msgid "Zoom"
+msgstr "Ihindurangano"
+
+#. View:New View
+#: src/interface.c:441
+msgid "New View"
+msgstr ""
+
+#. View:New Preview
+#: src/interface.c:443
+msgid "New Preview"
+msgstr ""
+
+#: src/interface.c:445
+msgid "New Toplevel Toolbox"
+msgstr ""
+
+#: src/interface.c:446
+msgid "New Docked Toolbox"
+msgstr ""
+
+#: src/interface.c:447
+msgid "Remove Docked Toolbox"
+msgstr ""
+
+# basctl/source\basicide\brkdlg.src:RID_BASICIDE_BREAKPOINTDLG.RID_PB_NEW.text
+#. File
+#: src/interface.c:501 src/verbs.c:409
+msgid "New"
+msgstr "Gishya"
+
+# #-#-#-#-#  sfx2.pot (PACKAGE VERSION)  #-#-#-#-#
+# sfx2/source\accel\accel.src:STR_OPEN.text
+# #-#-#-#-#  sfx2.pot (PACKAGE VERSION)  #-#-#-#-#
+# sfx2/source\dialog\cfg.src:STR_OPEN.text
+# #-#-#-#-#  sfx2.pot (PACKAGE VERSION)  #-#-#-#-#
+# sfx2/source\dialog\versdlg.src:DLG_VERSIONS.PB_OPEN.text
+#: src/interface.c:502
+msgid "Open"
+msgstr "Gufungura"
+
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:522 src/verbs.c:418
+#, fuzzy
+msgid "Exit program"
+msgstr "Porogaramu"
+
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_DDE.4.text
+#. Generic menu
+#. File submenu
+#: src/interface.c:585 src/toolbox.c:311
+msgid "File"
+msgstr "Idosiye"
+
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+#. Edit submenu
+#: src/interface.c:591 src/toolbox.c:362 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "Kwandika"
+
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_GENERAL_OPTIONS.5.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SW_EDITOPTIONS.3.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SW_ONLINEOPTIONS.2.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SC_EDITOPTIONS.3.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SD_EDITOPTIONS.3.text
+# #-#-#-#-#  offmgr.pot (PACKAGE VERSION)  #-#-#-#-#
+# offmgr/source\offapp\dialog\treeopt.src:RID_OFADLG_OPTIONS_TREE_PAGES.SID_SD_GRAPHIC_OPTIONS.3.text
+#. View submenu
+#: src/interface.c:603
+msgid "View"
+msgstr "Igaragaza"
+
+# 1822
+#. Drawing mode submenu
+#: src/interface.c:609
+#, fuzzy
+msgid "Drawing Mode"
+msgstr "Uburyo- Shushanya"
+
+#. Dialog submenu
+#: src/interface.c:615
+msgid "Dialogs"
+msgstr "Ibiganiro"
+
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\basidesh.src:RID_BASICIDE_OBJECTBAR.SID_BASICIDE_MODULEDLG.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\moduldlg.src:RID_TD_ORGANIZE.RID_TC_ORGANIZE.RID_TP_MOD.text
+#. Have modules menu
+#: src/interface.c:624
+msgid "Modules"
+msgstr "Modire"
+
+#: src/main.c:120 src/main.c:612
+#, fuzzy
+msgid "Do not use X server (only process files from console)"
+msgstr "OYA Gukoresha Seriveri Idosiye Bivuye"
+
+#: src/main.c:123 src/main.c:613
+#, fuzzy
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "Kuri Gukoresha Seriveri ATARIIGIHARWE NIBA ni OYA Gushyiraho"
+
+#: src/main.c:126 src/main.c:614
+#, fuzzy
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Inyandiko S Ihitamo Ikurikiranyanyuguti Gicurasi"
+
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
+#, fuzzy
+msgid "FILENAME"
+msgstr "Izina ry'idosiye"
+
+#: src/main.c:129
+#, fuzzy
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "Inyandiko S Kuri Ibisohoka IDOSIYE Gukoresha kugirango"
+
+#: src/main.c:132 src/main.c:615
+#, fuzzy
+msgid "Export document to png file"
+msgstr "Inyandiko Kuri png IDOSIYE"
+
+#: src/main.c:135 src/main.c:616
+#, fuzzy
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "Imikemurire kugirango Guhindura.... Bitimapu Mburabuzi 0"
+
+#: src/main.c:136
+msgid "DPI"
+msgstr ""
+
+#: src/main.c:138 src/main.c:617
+#, fuzzy
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr ""
+"Ubuso in Milimetero Mburabuzi ni Inyandiko 0 0 ni Ntoya Ibumoso: Inguni"
+
+#: src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr ""
+
+#: src/main.c:141 src/main.c:618
+#, fuzzy
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "Ubugari Bya Bitimapu in Pigiseli"
+
+#: src/main.c:141
+#, fuzzy
+msgid "WIDTH"
+msgstr "Ubugari"
+
+#: src/main.c:143 src/main.c:619
+#, fuzzy
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "Ubuhagarike Bya Bitimapu in Pigiseli"
+
+#: src/main.c:143
+#, fuzzy
+msgid "HEIGHT"
+msgstr "Ubuhagarike"
+
+#: src/main.c:145 src/main.c:620
+#, fuzzy
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "Ibara Bya Bitimapu Ibara Ikurikiranyanyuguti"
+
+# goodies/source\filter.vcl\eps\dlgeps.src:DLG_EXPORT_EPS.RB_COLOR.text
+#: src/main.c:145
+#, fuzzy
+msgid "COLOR"
+msgstr "Ibara"
+
+#: src/main.c:147 src/main.c:621
+#, fuzzy
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr "Inyandiko Kuri Byuzuye IDOSIYE Oya"
+
+#: src/main.c:149
+#, fuzzy
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "Idosiye ku Hindura Kuri Komeza>> ku Urufunguzo Imbeba Icyabaye"
+
+#: src/main.c:151
+#, fuzzy
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "Bitimapu XPM Udushushondanga Kuri"
+
+#: src/main.c:622
+#, fuzzy
+msgid "Print sodipodi version information"
+msgstr "Verisiyo Ibisobanuro"
+
+#: src/main.c:623
+#, fuzzy
+msgid "Print help about command-line arguments"
+msgstr "Ifashayobora Ibyerekeye Komandi: Umurongo ingingo"
+
+#: src/main.c:772
+#, fuzzy
+msgid "Untitled document"
+msgstr "Inyandiko"
+
+#. Show nice dialog box
+#: src/main.c:797
+#, fuzzy
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "By'imbere Ikosa Na Gufunga NONEAHA"
+
+#: src/main.c:798
+#, fuzzy
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "Ibyashyinguwe Bya Inyandiko Byakozwe Kuri"
+
+#: src/main.c:799
+#, fuzzy
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Inyibutsa Bya Inyandiko Byanze"
+
+#: src/module.c:898
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: src/module.c:898
+#, fuzzy
+msgid "Sodipodi native file format and W3C standard"
+msgstr "IDOSIYE Imiterere Na Bisanzwe"
+
+#: src/module.c:905
+#, fuzzy
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "Na:"
+
+#: src/module.c:906
+#, fuzzy
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "Imiterere Na: Umigereka"
+
+#: src/module.c:909
+msgid "Plain SVG"
+msgstr ""
+
+#: src/module.c:910
+#, fuzzy
+msgid "Scalable Vector Graphics format"
+msgstr "Imiterere"
+
+#: src/modules/gnome.c:158
+#, fuzzy
+msgid "Select printer"
+msgstr "Mucapyi"
+
+#: src/modules/gnome.c:212
+#, fuzzy, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr ""
+"Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+#: src/modules/kde.cpp:162
+msgid "Document variant:"
+msgstr ""
+
+#: src/modules/kde.cpp:172
+#, fuzzy
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.Project- Id- Version: basctl\n"
+"POT- Creation- Date: 2003- 12- 07 17: 13+ 02\n"
+"PO- Revision- Date: 2004- 11- 04 10: 13- 0700\n"
+"Last- Translator: Language- Team:< en@ li. org> MIME- Version: 1. 0\n"
+"Content- Type: text/ plain; charset= UTF- 8\n"
+"Content- Transfer- Encoding: 8bit\n"
+"X- Generator: KBabel 1. 0\n"
+"."
+
+# #-#-#-#-#  sfx2.pot (PACKAGE VERSION)  #-#-#-#-#
+# sfx2/sdi\sfxslots.src:SID_SAVEASDOC.text
+# #-#-#-#-#  sfx2.pot (PACKAGE VERSION)  #-#-#-#-#
+# sfx2/source\appl\app.src:STR_EVENT_SAVEASDOC.text
+#: src/modules/kde.cpp:174
+#, fuzzy
+msgid "Save document as"
+msgstr "Gushyingura Inyandiko Mu"
+
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
+#: src/modules/ps.c:961
+#, fuzzy
+msgid "write error occured"
+msgstr "Kwandika Ikosa"
+
+#: src/modules/plain.c:178 src/modules/ps.c:264
+#, fuzzy
+msgid "Print using PostScript operators"
+msgstr "ikoresha Mukoresha"
+
+#: src/modules/plain.c:179 src/modules/ps.c:266
+#, fuzzy
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr "Mukoresha Ishusho Gitoya Na Gipimye Alufa Ibonerana Na"
+
+#: src/modules/plain.c:184 src/modules/ps.c:271
+#, fuzzy
+msgid "Print as bitmap"
+msgstr "Nka Bitimapu"
+
+#: src/modules/plain.c:185 src/modules/ps.c:273
+#, fuzzy
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr ""
+"Nka Bitimapu Ishusho Kinini Na Ubwiza ku Ihindurangano Umubarwa Byose "
+"Ibishushanyo birasa Kuri Kugaragaza"
+
+#: src/modules/plain.c:190
+#, fuzzy
+msgid "Print using PDF driver"
+msgstr "ikoresha Musomyi:"
+
+#: src/modules/plain.c:191
+#, fuzzy
+msgid "Use Portable Document Format for printing"
+msgstr "kugirango Icapa..."
+
+#. Print destination frame
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
+#: src/modules/ps.c:306
+#, fuzzy
+msgid "Print destination"
+msgstr "Ishyika"
+
+#. Print properties frame
+#: src/modules/plain.c:235 src/modules/ps.c:256
+#, fuzzy
+msgid "Print properties"
+msgstr "Indangakintu..."
+
+#: src/modules/plain.c:274 src/modules/ps.c:287
+#, fuzzy
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "Imikemurire Utudomo Inci Bya Bitimapu"
+
+# officecfg/registry\schema\org\openoffice\Office\Common.xcs:....Filter.Graphic.Export.BMP.Resolution.text
+#: src/modules/plain.c:289 src/modules/ps.c:302
+#, fuzzy
+msgid "Resolution:"
+msgstr "Imikemurire"
+
+#: src/modules/plain.c:299 src/modules/ps.c:312
+#, fuzzy
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr "Ishyika Umurongo Kuri Gucapa Kuri IDOSIYE Kuri Kuri Porogaramu"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:111 src/widgets/sp-dock-layout.c:741
+msgid "Item"
+msgstr "Ikintu"
+
+#. Item dialog
+#: src/object-ui.c:114 src/verbs.c:487
+msgid "Item Properties"
+msgstr ""
+
+#. Select item
+#: src/object-ui.c:122
+#, fuzzy
+msgid "Select this"
+msgstr "iyi"
+
+#. Reset transformations
+#: src/object-ui.c:131
+#, fuzzy
+msgid "Reset transformation"
+msgstr "Ihindurwa"
+
+#. Apply transformation
+#: src/object-ui.c:135
+#, fuzzy
+msgid "Apply transformation"
+msgstr "Ihindurwa"
+
+#: src/object-ui.c:140
+msgid "Make sensitive"
+msgstr ""
+
+#: src/object-ui.c:140
+msgid "Make insensitive"
+msgstr ""
+
+# 1246
+#. Create link
+#: src/object-ui.c:144
+#, fuzzy
+msgid "Create link"
+msgstr "kurema ibihuza"
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_UNDO_MAKEOUTLINE.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_GROUP.text
+#: src/object-ui.c:276 src/verbs.c:435
+msgid "Group"
+msgstr "Itsinda"
+
+#. Group dialog
+#: src/object-ui.c:280
+msgid "Group Properties"
+msgstr ""
+
+# sc/source\ui\src\globstr.src:RID_GLOBSTR.STR_UNDO_REMAKEOUTLINE.text
+#. "Ungroup"
+#: src/object-ui.c:291 src/verbs.c:436
+msgid "Ungroup"
+msgstr "kuvana mu itsinda"
+
+#. Dive
+#: src/object-ui.c:296
+#, fuzzy
+msgid "Set as layer"
+msgstr "Nka Akugara"
+
+# offmgr/source\offapp\dialog\hyprlink.src:RID_SVXDLG_HYPERLINK.BTN_INSERT_BOOKMARK.text
+#. Create toplevel menuitem
+#: src/object-ui.c:341
+msgid "Link"
+msgstr "Ihuza"
+
+#. Link dialog
+#: src/object-ui.c:344
+msgid "Link Properties"
+msgstr "Indangakintu z'ihuriro"
+
+#. Select item
+#: src/object-ui.c:354
+#, fuzzy
+msgid "Follow link"
+msgstr "Ihuza"
+
+#. Reset transformations
+#: src/object-ui.c:359
+#, fuzzy
+msgid "Remove link"
+msgstr "Ihuza"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Common.xcs:....Image.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Image.Enable.text
+#. Create toplevel menuitem
+#: src/object-ui.c:422
+msgid "Image"
+msgstr "Ishusho"
+
+#. Link dialog
+#: src/object-ui.c:425
+msgid "Image Properties"
+msgstr "Indangakintu y'ishusho"
+
+#. Autotrace dialog
+#: src/object-ui.c:433 src/sp-image.c:762
+msgid "Trace"
+msgstr ""
+
+#. Create toplevel menuitem
+#: src/object-ui.c:482
+msgid "Shape"
+msgstr "Imisusire"
+
+#. Item dialog
+#: src/object-ui.c:485 src/toolbox.c:402
+#, fuzzy
+msgid "Fill settings"
+msgstr "Amagenamiterere"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:516
+msgid "Path"
+msgstr "Inzira"
+
+#. Reverse
+#: src/object-ui.c:519
+msgid "Reverse"
+msgstr "Ihindurakerekezo"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:542
+msgid "Rect"
+msgstr ""
+
+#. Link dialog
+#: src/object-ui.c:545
+msgid "Rect Properties"
+msgstr ""
+
+# officecfg/registry\schema\org\openoffice\Office\DataAccess.xcs:....DataSettings.CharacterEmphasis.text
+#. Create toplevel menuitem
+#: src/object-ui.c:578 src/verbs.c:457
+#, fuzzy
+msgid "Star"
+msgstr "star"
+
+#. Link dialog
+#: src/object-ui.c:581
+msgid "Star Properties"
+msgstr ""
+
+#. Create toplevel menuitem
+#: src/object-ui.c:614 src/verbs.c:458
+msgid "Spiral"
+msgstr "Nyamwihinahine"
+
+#. Link dialog
+#: src/object-ui.c:617
+msgid "Spiral Properties"
+msgstr ""
+
+#. rx_ratio
+#: src/rect-context.c:358
+#, fuzzy
+msgid "Roundness ratio for x:"
+msgstr "kugirango X"
+
+#. ry_ratio
+#: src/rect-context.c:370
+#, fuzzy
+msgid "Roundness ratio for y:"
+msgstr "kugirango Y"
+
+#: src/select-context.c:570
+#, fuzzy
+msgid "Visual transformation"
+msgstr "Ihindurwa"
+
+#: src/select-context.c:576
+#, fuzzy
+msgid "Show content"
+msgstr "Ibikubiyemo"
+
+#: src/select-context.c:582
+#, fuzzy
+msgid "Show outline"
+msgstr "Imbata"
+
+#: src/select-context.c:588
+#, fuzzy
+msgid "Object transformation"
+msgstr "Ihindurwa"
+
+# #-#-#-#-#  sw.pot (PACKAGE VERSION)  #-#-#-#-#
+# sw/sdi\swslots.src:FN_OPTIMIZE_TABLE.text
+# #-#-#-#-#  sw.pot (PACKAGE VERSION)  #-#-#-#-#
+# sw/source\ui\ribbar\tblctrl.src:RID_TBL_OPT_CTRL.text
+#: src/select-context.c:594
+msgid "Optimize"
+msgstr "Kugeza ku ndunduro"
+
+#: src/select-context.c:600
+msgid "Preserve"
+msgstr ""
+
+#: src/select-context.c:606
+msgid "[Tab] Cycling"
+msgstr ""
+
+#: src/select-context.c:611
+#, fuzzy
+msgid "Cycle only among visible items"
+msgstr "Kigaragara"
+
+#: src/select-context.c:614
+#, fuzzy
+msgid "Center view to selected item"
+msgstr "Kureba Kuri Byahiswemo Ikintu"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr ""
+
+#: src/sodipodi.c:468
+#, fuzzy, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr "%sni OYA Ibisanzwe IDOSIYE Gukoresha Ibirimo Kubika"
+
+#: src/sodipodi.c:471
+#, fuzzy, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "%sni OYA Byemewe xml IDOSIYE OYA Gusoma ku Gukoresha Kuri Ibirimo"
+
+#: src/sodipodi.c:476
+#, fuzzy, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "%sni OYA Byemewe Ibyahiswemo IDOSIYE Gukoresha Kuri Ibirimo"
+
+#: src/sodipodi.c:488
+#, fuzzy, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%sni OYA Ibisanzwe IDOSIYE Gukoresha Kuri Gukoresha Umigereka"
+
+#: src/sodipodi.c:491
+#, fuzzy, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%sni OYA Byemewe xml IDOSIYE OYA Gusoma ku Gukoresha Kuri Gukoresha Umigereka"
+
+#: src/sodipodi.c:495
+#, fuzzy, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%sni OYA Byemewe Umigereka IDOSIYE Gukoresha Kuri Gukoresha Umigereka"
+
+#: src/sodipodi.c:829
+#, fuzzy, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr "Kurema bushyinguro Gukoresha Kuri Ibirimo"
+
+#: src/sodipodi.c:833
+#, fuzzy, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "%sni OYA a Byemewe bushyinguro Gukoresha Kuri Ibirimo"
+
+#: src/sodipodi.c:837
+#, fuzzy, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "Ntirishiboraguhimbaidosiye."
+
+#: src/sodipodi.c:841
+#, fuzzy, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "Kwandika IDOSIYE Gukoresha Kuri Ibirimo"
+
+#: src/sodipodi.c:851
+#, fuzzy, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Kurema bushyinguro Gukoresha Kuri Gukoresha Umigereka"
+
+#: src/sodipodi.c:854
+#, fuzzy, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%sni OYA a Byemewe bushyinguro Gukoresha Kuri Gukoresha Umigereka"
+
+#: src/sodipodi.c:857
+#, fuzzy, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Ntirishiboraguhimbaidosiye."
+
+#: src/sodipodi.c:860
+#, fuzzy, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Kwandika IDOSIYE Gukoresha Kuri Gukoresha Umigereka"
+
+# sw/source\ui\wrtsh\wrtsh.src:STR_DDEERROR_LINK1.text
+#: src/sp-anchor.c:196
+#, fuzzy, c-format
+msgid "Link to %s"
+msgstr "Guhuza na["
+
+#: src/sp-image.c:373
+#, fuzzy, c-format
+msgid "Image with bad reference: %s"
+msgstr "Na: Indango"
+
+#: src/sp-image.c:375
+#, fuzzy, c-format
+msgid "Color image %d x %d: %s"
+msgstr "Ishusho X"
+
+#: src/sp-image.c:908
+#, fuzzy, c-format
+msgid "Error to write %s: %s"
+msgstr "Kuri Kwandika"
+
+# filter/source\xsltdialog\xmlfilterdialogstrings.src:STR_DEFAULT_UI_NAME.text
+#: src/sp-image.c:942
+msgid "Untitled"
+msgstr "Nta mutwe"
+
+#: src/sp-image.c:947
+msgid "Document Name:"
+msgstr ""
+
+# filter/source\xsltdialog\xmlfilterdialogstrings.src:STR_UNKNOWN_APPLICATION.text
+#: src/sp-image.c:960
+msgid "Unknown"
+msgstr "Kitazwi"
+
+#: src/sp-image.c:966
+msgid "Image URI:"
+msgstr ""
+
+#: src/sp-item-group.c:483
+#, fuzzy, c-format
+msgid "Group of %d objects"
+msgstr "Bya Ibintu"
+
+#: src/sp-item.c:554
+#, fuzzy
+msgid "Unknown item :-("
+msgstr "Ikintu"
+
+#. fixme:
+#: src/sp-text.c:1293
+#, fuzzy
+msgid "Text object"
+msgstr "Igikoresho cy'Umwandiko"
+
+#. T0
+#: src/spiral-context.c:355
+#, fuzzy
+msgid "Inner radius:"
+msgstr "Akarambararo"
+
+#. Proportion
+#: src/star-context.c:355
+msgid "Proportion:"
+msgstr ""
+
+#. Making sides flat
+#: src/star-context.c:368
+#, fuzzy
+msgid "Make sides flat"
+msgstr "Kirambuye"
+
+#: src/toolbox.c:399
+msgid "Object"
+msgstr "Igikoresho"
+
+#: src/toolbox.c:403 src/verbs.c:481
+#, fuzzy
+msgid "Object size and position"
+msgstr "Ingano Na Ibirindiro"
+
+#: src/toolbox.c:404
+#, fuzzy
+msgid "Text and font settings"
+msgstr "Na Intego- nyuguti Amagenamiterere"
+
+#: src/toolbox.c:406 src/verbs.c:482
+msgid "Object transformations"
+msgstr ""
+
+# scp/source\draw\module_draw.lng:STR_NAME_MODULE_PRG_DRAW_LOCALLY_CACHED.text
+#: src/toolbox.c:485
+msgid "Draw"
+msgstr "Gushushanya"
+
+#: src/toolbox.c:542
+msgid "Extension"
+msgstr "Umugereka"
+
+#: src/toolbox.c:624
+msgid "Nodes"
+msgstr ""
+
+#: src/toolbox.c:627
+#, fuzzy
+msgid "Insert new nodes into selected segments"
+msgstr "Gishya Byahiswemo Ingeri"
+
+#: src/toolbox.c:629
+#, fuzzy
+msgid "Break line at selected nodes"
+msgstr "Umurongo ku Byahiswemo"
+
+#: src/toolbox.c:631
+#, fuzzy
+msgid "Make selected nodes corner"
+msgstr "Byahiswemo Inguni"
+
+#: src/toolbox.c:633
+#, fuzzy
+msgid "Make selected segments lines"
+msgstr "Byahiswemo Ingeri Imirongo"
+
+#: src/toolbox.c:635
+#, fuzzy
+msgid "Delete selected nodes"
+msgstr "Byahiswemo"
+
+#: src/toolbox.c:637
+#, fuzzy
+msgid "Join lines at selected nodes"
+msgstr "Imirongo ku Byahiswemo"
+
+#: src/toolbox.c:640
+#, fuzzy
+msgid "Join lines at selected nodes with new segment"
+msgstr "Imirongo ku Byahiswemo Na: Gishya"
+
+#: src/toolbox.c:642
+#, fuzzy
+msgid "Make selected nodes smooth"
+msgstr "Byahiswemo Cyorohereye"
+
+#: src/toolbox.c:644
+#, fuzzy
+msgid "Make selected segments curves"
+msgstr "Byahiswemo Ingeri Imirongo Ihese"
+
+#: src/verbs.c:407
+msgid "Does nothing"
+msgstr ""
+
+#: src/verbs.c:409
+#, fuzzy
+msgid "Create new SVG document"
+msgstr "Gishya Inyandiko"
+
+# sfx2/source\appl\minbox.src:RID_MAIL_INBOX.BTN_MAILINBOX_OPEN.text
+#: src/verbs.c:410
+msgid "Open..."
+msgstr "Gufungura..."
+
+#: src/verbs.c:410
+#, fuzzy
+msgid "Open existing SVG document"
+msgstr "Inyandiko"
+
+# basctl/source\basicide\basidesh.src:RID_STR_SAVE.text
+#: src/verbs.c:411
+msgid "Save"
+msgstr "Kubika"
+
+# sch/source\ui\app\strings.src:STR_SAVE_DOCUMENT.text
+#: src/verbs.c:411
+msgid "Save document"
+msgstr "Kubika inyandiko"
+
+#: src/verbs.c:412
+msgid "Save As..."
+msgstr "Bika nka..."
+
+#: src/verbs.c:412
+#, fuzzy
+msgid "Save document under new name"
+msgstr "Kubika Inyandiko Gishya Izina:"
+
+# sfx2/source\appl\newhelp.src:STR_HELP_BUTTON_PRINT.text
+#: src/verbs.c:413
+msgid "Print..."
+msgstr "Gucapa..."
+
+# sfx2/source\appl\app.src:STR_EVENT_PRINTDOC.text
+#: src/verbs.c:413
+#, fuzzy
+msgid "Print document"
+msgstr "Gucapa Inyandiko"
+
+#: src/verbs.c:414
+msgid "Print Direct..."
+msgstr ""
+
+#: src/verbs.c:414
+#, fuzzy
+msgid "Print directly to file or pipe"
+msgstr "Kuri IDOSIYE Cyangwa"
+
+# sc/source\ui\src\scstring.src:SCSTR_PREVIEWSHELL.text
+#: src/verbs.c:415
+msgid "Print Preview"
+msgstr "Igaragazambere ryo Gucapa"
+
+#: src/verbs.c:415
+#, fuzzy
+msgid "Preview document printout"
+msgstr "Inyandiko"
+
+# filter/source\xsltdialog\xmlfiltertestdialog.src:DLG_XML_FILTER_TEST_DIALOG.FL_IMPORT.text
+#: src/verbs.c:416
+msgid "Import"
+msgstr "Kuzana"
+
+#: src/verbs.c:416
+#, fuzzy
+msgid "Import bitmap or SVG image into document"
+msgstr "Bitimapu Cyangwa Ishusho Inyandiko"
+
+#: src/verbs.c:417
+#, fuzzy
+msgid "Export document as PNG bitmap"
+msgstr "Inyandiko Nka Bitimapu"
+
+# #-#-#-#-#  setup2.pot (PACKAGE VERSION)  #-#-#-#-#
+# setup2/source\ui\app.src:STR_RESTART_BTN_NO.text
+# #-#-#-#-#  setup2.pot (PACKAGE VERSION)  #-#-#-#-#
+# setup2/source\ui\pages\phavefun.src:RESID_PAGE_PAGEHAVEFUN.STR_LOGOUT_BTN_NO.text
+#: src/verbs.c:418
+msgid "Exit"
+msgstr "Gusohoka"
+
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# dbaccess/source/ui/inc/toolbox.hrc:MID_UNDO.text
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+#. Edit
+#: src/verbs.c:420
+msgid "Undo"
+msgstr "Isubiranyuma"
+
+#: src/verbs.c:420
+#, fuzzy
+msgid "Revert last action"
+msgstr "Iheruka Igikorwa"
+
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# dbaccess/source/ui/inc/toolbox.hrc:MID_REDO.text
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+# #-#-#-#-#  dbaccess.pot (PACKAGE VERSION)  #-#-#-#-#
+#: src/verbs.c:421
+msgid "Redo"
+msgstr "Isubiramo"
+
+#: src/verbs.c:421
+#, fuzzy
+msgid "Do again undone action"
+msgstr "Igikorwa"
+
+# dbaccess/source/ui/inc/toolbox.hrc:MID_SBA_QRY_CUT.text
+#: src/verbs.c:422
+msgid "Cut"
+msgstr "Gukata"
+
+#: src/verbs.c:422
+#, fuzzy
+msgid "Cut selected objects to clipboard"
+msgstr "Byahiswemo Ibintu Kuri Ububikokoporora"
+
+# dbaccess/source/ui/inc/toolbox.hrc:MID_SBA_QRY_COPY.text
+#: src/verbs.c:423
+msgid "Copy"
+msgstr "Gukoporora"
+
+#: src/verbs.c:423
+#, fuzzy
+msgid "Copy selected objects to clipboard"
+msgstr "Byahiswemo Ibintu Kuri Ububikokoporora"
+
+# dbaccess/source/ui/inc/toolbox.hrc:MID_SBA_QRY_PASTE.text
+#: src/verbs.c:424
+msgid "Paste"
+msgstr "Komeka"
+
+#: src/verbs.c:424
+#, fuzzy
+msgid "Paste objects from clipboard"
+msgstr "Ibintu Bivuye Ububikokoporora"
+
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\basidesh.src:RID_POPUP_TABBAR.SID_BASICIDE_DELETECURRENT.text
+# #-#-#-#-#  basctl.pot (PACKAGE VERSION)  #-#-#-#-#
+# basctl/source\basicide\brkdlg.src:RID_BASICIDE_BREAKPOINTDLG.RID_PB_DEL.text
+#: src/verbs.c:425
+msgid "Delete"
+msgstr "Gusiba"
+
+#: src/verbs.c:425
+#, fuzzy
+msgid "Delete selected objects"
+msgstr "Byahiswemo Ibintu"
+
+#: src/verbs.c:426
+msgid "Duplicate"
+msgstr "Gusubiramo"
+
+#: src/verbs.c:426
+#, fuzzy
+msgid "Duplicate selected objects"
+msgstr "Byahiswemo Ibintu"
+
+#: src/verbs.c:427
+msgid "Clear All"
+msgstr ""
+
+#: src/verbs.c:427
+#, fuzzy
+msgid "Delete all objects from document"
+msgstr "Byose Ibintu Bivuye Inyandiko"
+
+# sfx2/sdi\sfxslots.src:SID_SELECTALL.text
+#: src/verbs.c:428
+msgid "Select All"
+msgstr "Guhitamo Byose"
+
+#: src/verbs.c:428
+#, fuzzy
+msgid "Select all objects in document"
+msgstr "Byose Ibintu in Inyandiko"
+
+# sfx2/sdi\sfxslots.src:SID_REPEAT.text
+#: src/verbs.c:429
+msgid "Repeat"
+msgstr "Gusubiramo"
+
+#: src/verbs.c:429
+#, fuzzy
+msgid "Repeat last saved action"
+msgstr "Iheruka Igikorwa"
+
+# svx/source\dialog\imapdlg.src:RID_SVXMN_IMAP.MN_POSITION.MN_FRAME_TO_TOP.text
+#. Selection
+#: src/verbs.c:431
+msgid "Bring to Front"
+msgstr "Kuzana Imbere"
+
+#: src/verbs.c:431
+#, fuzzy
+msgid "Raise selected objects to top"
+msgstr "Byahiswemo Ibintu Kuri Hejuru:"
+
+#: src/verbs.c:432
+msgid "Send to Back"
+msgstr "Kohereza Inyuma"
+
+#: src/verbs.c:432
+#, fuzzy
+msgid "Lower selected objects to bottom"
+msgstr "Byahiswemo Ibintu Kuri Hasi:"
+
+#: src/verbs.c:433
+msgid "Raise"
+msgstr ""
+
+#: src/verbs.c:433
+#, fuzzy
+msgid "Raise selected objects one position"
+msgstr "Byahiswemo Ibintu Ibirindiro"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Inet.xcs:....SearchEngine.And.ooInetCaseMatch..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Inet.xcs:....SearchEngine.Or.ooInetCaseMatch..2.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Inet.xcs:....SearchEngine.Exact.ooInetCaseMatch..2.text
+#: src/verbs.c:434
+msgid "Lower"
+msgstr "Ntoya"
+
+#: src/verbs.c:434
+#, fuzzy
+msgid "Lower selected objects one position"
+msgstr "Byahiswemo Ibintu Ibirindiro"
+
+#: src/verbs.c:435
+#, fuzzy
+msgid "Group selected objects"
+msgstr "Byahiswemo Ibintu"
+
+#: src/verbs.c:436
+#, fuzzy
+msgid "Ungroup selected group"
+msgstr "Byahiswemo Itsinda"
+
+# offmgr/source\offapp\dialog\autocdlg.src:RID_OFADLG_PRCNT_SET.text
+#: src/verbs.c:437
+msgid "Combine"
+msgstr "Kuvanga"
+
+#: src/verbs.c:437
+#, fuzzy
+msgid "Combine multiple paths"
+msgstr "Igikubo Inzira"
+
+#: src/verbs.c:438
+msgid "Break Apart"
+msgstr ""
+
+#: src/verbs.c:438
+#, fuzzy
+msgid "Break selected path to subpaths"
+msgstr "Byahiswemo Inzira Kuri"
+
+#: src/verbs.c:439
+msgid "Uncross"
+msgstr ""
+
+#: src/verbs.c:439
+#, fuzzy
+msgid "Break selected path at crossings"
+msgstr "Byahiswemo Inzira ku"
+
+# starmath/source\smres.src:RID_TOOLBOXWINDOW.3.RID_XUNIONY.text
+#: src/verbs.c:440
+msgid "Union"
+msgstr "Ihuza"
+
+#: src/verbs.c:440
+#, fuzzy
+msgid "Calculate union of selected paths"
+msgstr "Ihuza Bya Byahiswemo Inzira"
+
+# starmath/source\smres.src:RID_TOOLBOXWINDOW.3.RID_XINTERSECTIONY.text
+#: src/verbs.c:441
+msgid "Intersection"
+msgstr "Ihuriro"
+
+#: src/verbs.c:441
+#, fuzzy
+msgid "Calculate intersection of selected paths"
+msgstr "Ihuriro Bya Byahiswemo Inzira"
+
+# starmath/source\smres.src:RID_TOOLBOXWINDOW.1.RID_XMINUSY.text
+#: src/verbs.c:442
+#, fuzzy
+msgid "Subtraction"
+msgstr "Gukuramo"
+
+#: src/verbs.c:442
+#, fuzzy
+msgid "Subtract paths from first"
+msgstr "Inzira Bivuye Itangira"
+
+#: src/verbs.c:443
+#, fuzzy
+msgid "Transform"
+msgstr "Guhindura"
+
+#: src/verbs.c:443
+#, fuzzy
+msgid "Applies transformation"
+msgstr "Ihindurwa"
+
+#. Object
+#: src/verbs.c:445
+#, fuzzy
+msgid "Rotate 90 degrees"
+msgstr "Dogere"
+
+#: src/verbs.c:445
+#, fuzzy
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Igikoresho Dogere Mu cyerekezo cy'isaha"
+
+#: src/verbs.c:446
+#, fuzzy
+msgid "Flatten object"
+msgstr "Igikoresho"
+
+#: src/verbs.c:446
+#, fuzzy
+msgid "Remove transformations from object"
+msgstr "Bivuye Igikoresho"
+
+# svx/source\svdraw\svdstr.src:STR_EditConvToCurves.text
+#: src/verbs.c:447
+#, fuzzy
+msgid "Convert to Curves"
+msgstr "Guhindura ku mirongo ihese"
+
+#: src/verbs.c:447
+#, fuzzy
+msgid "Convert selected object to path"
+msgstr "Byahiswemo Igikoresho Kuri Inzira"
+
+# sw/sdi\swslots.src:FN_FLIP_VERT_GRAFIC.text
+#: src/verbs.c:448
+msgid "Flip Horizontally"
+msgstr "Guhindukiza intambike"
+
+#: src/verbs.c:449
+#, fuzzy
+msgid "Flip selected objects horizontally"
+msgstr "Byahiswemo Ibintu Mu buryo Butambitse"
+
+# sc/sdi\scslots.src:SID_MIRROR_VERTICAL.text
+#: src/verbs.c:450
+msgid "Flip Vertically"
+msgstr "Guhindukiza mu Buhagarike"
+
+#: src/verbs.c:451
+#, fuzzy
+msgid "Flip selected objects vertically"
+msgstr "Byahiswemo Ibintu Mu buryo buhagaze"
+
+# basctl/source\basicide\tbxctl.src:RID_TOOLBOX.SID_INSERT_SELECT.text
+#. Event contexts
+#: src/verbs.c:453
+msgid "Select"
+msgstr "Guhitamo"
+
+#: src/verbs.c:453
+#, fuzzy
+msgid "Select and transform objects"
+msgstr "Na Guhinduramo Ibintu"
+
+#: src/verbs.c:454
+#, fuzzy
+msgid "Node edit"
+msgstr "Guhindura"
+
+#: src/verbs.c:454
+#, fuzzy
+msgid "Modify existing objects by control nodes"
+msgstr "Ibintu ku Igenzura"
+
+#: src/verbs.c:455
+msgid "Rectangle"
+msgstr "Urukiramende"
+
+#: src/verbs.c:455
+#, fuzzy
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "Urukiramende Na kare Na: Bitari ngombwa Biburungushuye"
+
+#: src/verbs.c:456
+msgid "Ellipse"
+msgstr "Ishushogi"
+
+#: src/verbs.c:456
+#, fuzzy
+msgid "Create circles, ellipses and arcs"
+msgstr "Inziga Amashushogi Na Uduheto"
+
+#: src/verbs.c:457
+#, fuzzy
+msgid "Create stars and polygons"
+msgstr "Inyenyeri Na Ibinyampande"
+
+#: src/verbs.c:458
+msgid "Create spirals"
+msgstr ""
+
+#: src/verbs.c:459
+msgid "Pencil"
+msgstr ""
+
+#: src/verbs.c:459
+#, fuzzy
+msgid "Draw freehand curves and straight lines"
+msgstr "Imirongo Ihese Na Imirongo"
+
+# 4635
+#: src/verbs.c:460
+msgid "Pen"
+msgstr "ikaramu"
+
+#: src/verbs.c:460
+#, fuzzy
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Na Imirongo"
+
+#: src/verbs.c:461
+msgid "Calligraphy"
+msgstr ""
+
+#: src/verbs.c:461
+#, fuzzy
+msgid "Draw calligraphic lines"
+msgstr "Imirongo"
+
+#: src/verbs.c:462
+#, fuzzy
+msgid "Create and edit text objects"
+msgstr "Na Guhindura Umwandiko Ibintu"
+
+#: src/verbs.c:463
+#, fuzzy
+msgid "Zoom into precisely selected area"
+msgstr "Byahiswemo Ubuso"
+
+#: src/verbs.c:464
+msgid "Dropper"
+msgstr ""
+
+#: src/verbs.c:464
+#, fuzzy
+msgid "Pick averaged colors from image"
+msgstr "Amabara Bivuye Ishusho"
+
+#. Zooming
+#: src/verbs.c:466
+msgid "In"
+msgstr "Imbere"
+
+#: src/verbs.c:466
+#, fuzzy
+msgid "Zoom in drawing"
+msgstr "in Igishushanyo"
+
+#: src/verbs.c:467
+msgid "Out"
+msgstr "Inyuma"
+
+#: src/verbs.c:467
+#, fuzzy
+msgid "Zoom out drawing"
+msgstr "Inyuma Igishushanyo"
+
+#: src/verbs.c:468
+#, fuzzy
+msgid "1:1"
+msgstr "1. 1."
+
+#: src/verbs.c:468
+#, fuzzy
+msgid "Set zoom factor to 1:1"
+msgstr "Ihindurangano Umubarwa Kuri 1. 1."
+
+#: src/verbs.c:469
+#, fuzzy
+msgid "1:2"
+msgstr "1. 2."
+
+#: src/verbs.c:469
+#, fuzzy
+msgid "Set zoom factor to 1:2"
+msgstr "Ihindurangano Umubarwa Kuri 1. 2."
+
+#: src/verbs.c:470
+#, fuzzy
+msgid "2:1"
+msgstr "2. 1."
+
+#: src/verbs.c:470
+#, fuzzy
+msgid "Set zoom factor to 2:1"
+msgstr "Ihindurangano Umubarwa Kuri 2. 1."
+
+#: src/verbs.c:471
+#, fuzzy
+msgid "Fit the whole page into window"
+msgstr "i Ipaji Idirishya"
+
+#: src/verbs.c:472
+#, fuzzy
+msgid "Fit the whole drawing into window"
+msgstr "i Igishushanyo Idirishya"
+
+#: src/verbs.c:473
+#, fuzzy
+msgid "Fit the whole selection into window"
+msgstr "i Ihitamo Idirishya"
+
+# offmgr/source\offapp\dialog\optgdlg.src:OFA_TP_VIEW.GB_APPEARANCE.text
+#. Dialogs
+#: src/verbs.c:475
+msgid "Display"
+msgstr "Kugaragaza"
+
+#: src/verbs.c:475
+#, fuzzy
+msgid "Global display settings"
+msgstr "Kugaragaza Amagenamiterere"
+
+# svx/source\dialog\page.src:RID_SVXPAGE_PAGE.FT_PAGELAYOUT.text
+#: src/verbs.c:476
+msgid "Page layout"
+msgstr "Imigaragarire y'ipaji"
+
+#: src/verbs.c:477
+msgid "Editing Window"
+msgstr ""
+
+#: src/verbs.c:477
+#, fuzzy
+msgid "Editing window properties"
+msgstr "Idirishya Indangakintu..."
+
+#: src/verbs.c:478
+msgid "Tool Options"
+msgstr ""
+
+#: src/verbs.c:479
+msgid "Tool Attributes"
+msgstr ""
+
+#: src/verbs.c:480
+#, fuzzy
+msgid "Fill and Stroke"
+msgstr "Na"
+
+#: src/verbs.c:480
+#, fuzzy
+msgid "Fill and stroke settings"
+msgstr "Na Akarongo Amagenamiterere"
+
+#: src/verbs.c:482
+msgid "Transformations"
+msgstr ""
+
+#: src/verbs.c:483
+#, fuzzy
+msgid "Align and Distribute"
+msgstr "Na"
+
+#: src/verbs.c:483
+#, fuzzy
+msgid "Align and distribute"
+msgstr "Na Gukwirakwiza"
+
+#: src/verbs.c:484
+#, fuzzy
+msgid "Text and Font"
+msgstr "Na"
+
+#: src/verbs.c:484
+#, fuzzy
+msgid "Text editing and font settings"
+msgstr "Na Intego- nyuguti Amagenamiterere"
+
+#: src/verbs.c:485
+msgid "Document Tree"
+msgstr ""
+
+#: src/verbs.c:486
+msgid "XML Editor"
+msgstr ""
+
+#. Family frame
+#: src/widgets/font-selector.c:153
+msgid "Font family"
+msgstr ""
+
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_STYLE.2.text
+#. Style frame
+#: src/widgets/font-selector.c:193
+msgid "Style"
+msgstr "Umususire"
+
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\menu.src:RID_SMMENU.~Format.SID_FONTSIZE.text
+# #-#-#-#-#  starmath.pot (PACKAGE VERSION)  #-#-#-#-#
+# starmath/source\menu.src:RID_SMPLUGINMENU.~Format.SID_FONTSIZE.text
+#: src/widgets/font-selector.c:228
+#, fuzzy
+msgid "Font size:"
+msgstr "Ingano y'Imyandikire"
+
+#: src/widgets/font-selector.c:560
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr ""
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_COL_OPT.FT_LABEL.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\miscdlgs.src:RID_SCDLG_ROW_OPT.FT_LABEL.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\scstring.src:STR_OPT_ROWHEIGHT.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\scstring.src:STR_OPT_COLWIDTH.text
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "Kongera"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr ""
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr ""
+
+#: src/widgets/gradient-vector.c:250
+#, fuzzy
+msgid "No document selected"
+msgstr "Inyandiko Byahiswemo"
+
+#: src/widgets/gradient-vector.c:256
+#, fuzzy
+msgid "No gradients in document"
+msgstr "Ibizamuko in Inyandiko"
+
+#: src/widgets/gradient-vector.c:262
+#, fuzzy
+msgid "No gradient selected"
+msgstr "Ikizamuko Byahiswemo"
+
+#: src/widgets/gradient-vector.c:417
+#, fuzzy
+msgid "Start color"
+msgstr "Gutangira Ibara"
+
+#: src/widgets/gradient-vector.c:427
+#, fuzzy
+msgid "End color"
+msgstr "Impera Ibara"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr ""
+
+#: src/widgets/paint-selector.c:622
+#, fuzzy
+msgid "No objects"
+msgstr "Ibintu"
+
+#: src/widgets/paint-selector.c:636
+#, fuzzy
+msgid "Multiple styles"
+msgstr "Imisusire"
+
+#: src/widgets/paint-selector.c:650
+msgid "No paint"
+msgstr ""
+
+# #-#-#-#-#  goodies.pot (PACKAGE VERSION)  #-#-#-#-#
+# goodies/source\filter.vcl\egif\dlgegif.src:DLG_EXPORT_GIF.GRP_MODE.text
+# #-#-#-#-#  goodies.pot (PACKAGE VERSION)  #-#-#-#-#
+# goodies/source\filter.vcl\eos2met\dlgeos2.src:DLG_EXPORT_EMET.GRP_MODE.text
+# #-#-#-#-#  goodies.pot (PACKAGE VERSION)  #-#-#-#-#
+# goodies/source\filter.vcl\epict\dlgepct.src:DLG_EXPORT_EPCT.GRP_MODE.text
+# #-#-#-#-#  goodies.pot (PACKAGE VERSION)  #-#-#-#-#
+# goodies/source\filter.vcl\epng\dlgepng.src:DLG_EXPORT_EPNG.GRP_COMPRESSION.text
+#. Label
+#: src/widgets/paint-selector.c:747
+#, fuzzy
+msgid "Mode:"
+msgstr "Ubwoko"
+
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_COLOR.LB_COLORMODEL.1.text
+#: src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "UmutukuIcyatsiUbururu"
+
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr ""
+
+#: src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr ""
+
+# svx/source\dialog\tabarea.src:RID_SVXPAGE_COLOR.LB_COLORMODEL.2.text
+#: src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr ""
+
+#. Use dropper
+#: src/widgets/paint-selector.c:766
+#, fuzzy
+msgid "Get from dropper"
+msgstr "Bivuye"
+
+#: src/widgets/paint-selector.c:797
+msgid "Color paint"
+msgstr ""
+
+#: src/widgets/paint-selector.c:875
+#, fuzzy
+msgid "Linear gradient"
+msgstr "Ikizamuko"
+
+#: src/widgets/paint-selector.c:878
+#, fuzzy
+msgid "Radial gradient"
+msgstr "Ikizamuko"
+
+# sw/source\ui\utlui\attrdesc.src:STR_CHANNELR.text
+#: src/widgets/sp-color-selector.c:623
+#, fuzzy
+msgid "Red:"
+msgstr "Umutuku:"
+
+# sw/source\ui\utlui\attrdesc.src:STR_CHANNELG.text
+#: src/widgets/sp-color-selector.c:624
+#, fuzzy
+msgid "Green:"
+msgstr "Icyatsi kibisi:"
+
+# sw/source\ui\utlui\attrdesc.src:STR_CHANNELB.text
+#: src/widgets/sp-color-selector.c:625
+#, fuzzy
+msgid "Blue:"
+msgstr "Ubururu"
+
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_PERCENTILE.4.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_TRIM_MEAN.4.text
+# #-#-#-#-#  sc.pot (PACKAGE VERSION)  #-#-#-#-#
+# sc/source\ui\src\scfuncs.src:RID_SC_FUNCTION_DESCRIPTIONS2.SC_OPCODE_WEIBULL.4.text
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+#, fuzzy
+msgid "Alpha:"
+msgstr "Alufa"
+
+# svtools/source\dialogs\colrdlg.src:DLG_COLOR.FT_HUE.text
+#: src/widgets/sp-color-selector.c:643
+#, fuzzy
+msgid "Hue:"
+msgstr "Ibara"
+
+# svtools/source\dialogs\colrdlg.src:DLG_COLOR.FT_SATURATION.text
+#: src/widgets/sp-color-selector.c:644
+#, fuzzy
+msgid "Saturation:"
+msgstr "Ubwuzurane"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "Agaciro:"
+
+#: src/widgets/sp-color-selector.c:664
+#, fuzzy
+msgid "Cyan:"
+msgstr "Ubururu bukeye"
+
+#: src/widgets/sp-color-selector.c:665
+#, fuzzy
+msgid "Magenta:"
+msgstr "Umutuku werurutse"
+
+#: src/widgets/sp-color-selector.c:666
+#, fuzzy
+msgid "Yellow:"
+msgstr "Umuhondo"
+
+# officecfg/registry\schema\org\openoffice\Office\Math.xcs:....FontFormat.Weight..10.text
+#: src/widgets/sp-color-selector.c:667
+#, fuzzy
+msgid "Black:"
+msgstr "umukara"
+
+#: src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "Icyerekezo"
+
+#: src/widgets/sp-dock-item.c:244
+#, fuzzy
+msgid "Orientation of the docking item"
+msgstr "Bya i Ikintu"
+
+#: src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:260
+#, fuzzy
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr "Gushyiraho i Ikintu Ryari: in a"
+
+#: src/widgets/sp-dock-item.c:267
+#, fuzzy
+msgid "Item behavior"
+msgstr "imyitwarire"
+
+#: src/widgets/sp-dock-item.c:268
+#, fuzzy
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr "E."
+
+#: src/widgets/sp-dock-item.c:276
+#, fuzzy
+msgid "Grip size"
+msgstr "Ingano"
+
+#: src/widgets/sp-dock-item.c:277
+#, fuzzy
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr "in Pigiseli Bya i Kuri Kurura i Ikintu"
+
+# 3625
+#: src/widgets/sp-dock-item.c:283 src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "Gifunze"
+
+#: src/widgets/sp-dock-item.c:284
+#, fuzzy
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "Gushyiraho i Ikintu Na Garagaza a"
+
+#: src/widgets/sp-dock-item.c:292
+#, fuzzy
+msgid "Preferred width"
+msgstr "Ubugari"
+
+#: src/widgets/sp-dock-item.c:293
+#, fuzzy
+msgid "Preferred width for the dock item"
+msgstr "Ubugari kugirango i Ikintu"
+
+#: src/widgets/sp-dock-item.c:299
+#, fuzzy
+msgid "Preferred height"
+msgstr "Ubuhagarike"
+
+#: src/widgets/sp-dock-item.c:300
+#, fuzzy
+msgid "Preferred height for the dock item"
+msgstr "Ubuhagarike kugirango i Ikintu"
+
+#: src/widgets/sp-dock-item.c:547
+#, fuzzy, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr ""
+"Kongeramo a Igikoresho Bya Ubwoko Mo Imbere a a Cyangwa Ikindi Igikoresho"
+
+#: src/widgets/sp-dock-item.c:554
+#, fuzzy, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr "Kuri Kongeramo a Na: Ubwoko Kuri a ku a Igihe Kirimo a Bya Ubwoko"
+
+#: src/widgets/sp-dock-item.c:1156
+#, fuzzy, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr "in Igikoresho Bya Ubwoko"
+
+# basctl/source\basicide\basidesh.src:RID_POPUP_TABBAR.SID_BASICIDE_HIDECURPAGE.text
+#. Hide menuitem.
+#: src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "Gushisha"
+
+#. Lock menuitem
+#: src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:1411
+#, fuzzy, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr "Kuri Ikintu"
+
+#: src/widgets/sp-dock-layout.c:144
+#, fuzzy
+msgid "Master"
+msgstr "Mugenga"
+
+#: src/widgets/sp-dock-layout.c:145
+#, fuzzy
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr "Igikoresho i Imigaragarire Igikoresho ni Kuri"
+
+#: src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:153
+#, fuzzy
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr "NIBA i Imigaragarire Byahinduwe Na Kuri Kuri a IDOSIYE"
+
+#: src/widgets/sp-dock-layout.c:500
+#, fuzzy
+msgid "You must provide a name for the layout"
+msgstr "a Izina: kugirango i Imigaragarire"
+
+#. FIXME: pop up an error dialog
+#: src/widgets/sp-dock-layout.c:679
+#, fuzzy, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr "OYA Ibirimo Imigaragarire Ukoresha: IDOSIYE"
+
+#: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "Izina"
+
+#: src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:836
+#, fuzzy
+msgid "Saved layouts"
+msgstr "Imigaragarire"
+
+#: src/widgets/sp-dock-layout.c:902
+#, fuzzy, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr "Itangira... Imigaragarire Kuri Kurema a Igikoresho bya ni"
+
+#: src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:142 src/widgets/sp-dock.c:184
+#, fuzzy
+msgid "Default title"
+msgstr "Umutwe"
+
+#: src/widgets/sp-dock-master.c:143
+#, fuzzy
+msgid "Default title for newly created floating docks"
+msgstr "Umutwe kugirango Byaremwe Bihindagurika"
+
+#: src/widgets/sp-dock-master.c:150
+#, fuzzy
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr "ni Gushyiraho Kuri 1. Byose i Kuri i Mugenga Gifunze NIBA 0 Byose 1. i"
+
+#: src/widgets/sp-dock-master.c:741
+#, fuzzy, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr "Mugenga Kuri Kongeramo Igikoresho Kuri i ni Ikintu Na: Izina:"
+
+#: src/widgets/sp-dock-master.c:906
+#, fuzzy, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr "Gishya ni Byikoresha Bikorwa Ibintu"
+
+#: src/widgets/sp-dock-notebook.c:136
+#, fuzzy
+msgid "The index of the current page"
+msgstr "Umubarendanga Bya i KIGEZWEHO Ipaji"
+
+#: src/widgets/sp-dock-object.c:124
+#, fuzzy
+msgid "Unique name for identifying the dock object"
+msgstr "Izina: kugirango i Igikoresho"
+
+#: src/widgets/sp-dock-object.c:131
+#, fuzzy
+msgid "Long name"
+msgstr "Izina:"
+
+#: src/widgets/sp-dock-object.c:132
+#, fuzzy
+msgid "Human readable name for the dock object"
+msgstr "Izina: kugirango i Igikoresho"
+
+#: src/widgets/sp-dock-object.c:138
+#, fuzzy
+msgid "Dock master"
+msgstr "Mugenga"
+
+#: src/widgets/sp-dock-object.c:139
+#, fuzzy
+msgid "Dock master this dock object is bound to"
+msgstr "Mugenga iyi Igikoresho ni Kuri"
+
+#: src/widgets/sp-dock-object.c:408
+#, fuzzy, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr "Kuri in a Igikoresho Igikoresho Ubwoko ni iyi Uburyo"
+
+#: src/widgets/sp-dock-object.c:537
+#, fuzzy, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr "in a Igikoresho Porogaramu"
+
+#: src/widgets/sp-dock-object.c:544
+#, fuzzy, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr "Kuri Kuri"
+
+#: src/widgets/sp-dock-object.c:586
+#, fuzzy, c-format
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr "Kuri Kuri Igikoresho KIGEZWEHO Mugenga"
+
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.WriterObject.Table.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.WriterObject.Frame.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Calc.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Draw.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Chart.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Image.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Formula.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.Impress.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....Insert.Caption.OfficeObject.OLEMisc.Settings.Position.text
+# #-#-#-#-#  officecfg.pot (PACKAGE VERSION)  #-#-#-#-#
+# officecfg/registry\schema\org\openoffice\Office\Writer.xcs:....BusinessCard.BusinessAddress.Position.text
+#: src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "Ibirindiro"
+
+#: src/widgets/sp-dock-paned.c:135
+#, fuzzy
+msgid "Position of the divider in pixels"
+msgstr "Bya i in Pigiseli"
+
+#: src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:126
+#, fuzzy
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr ""
+"i Akarindamwanya Gufatisha Kuri Ubuturo Cyangwa Kwimura Hejuru i Ryari: i "
+"Ubuturo ni"
+
+# svx/source\options\optinet2.src:RID_SVXPAGE_INET_SCRIPTING.LB_NETACCESS.3.text
+#: src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "Ubuturo"
+
+#: src/widgets/sp-dock-placeholder.c:134
+#, fuzzy
+msgid "The dock object this placeholder is attached to"
+msgstr "Igikoresho iyi Akarindamwanya ni Kuri"
+
+#: src/widgets/sp-dock-placeholder.c:141
+#, fuzzy
+msgid "Next placement"
+msgstr "Ishyira mu mwanya"
+
+#: src/widgets/sp-dock-placeholder.c:142
+#, fuzzy
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr "Ibirindiro Ikintu Kuri Ubuturo NIBA a Kubaza... ni Kuri Kuri RW"
+
+#: src/widgets/sp-dock-placeholder.c:303
+#, fuzzy
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr "Kuri a Igikoresho Kuri Akarindamwanya"
+
+#: src/widgets/sp-dock-placeholder.c:417
+#, fuzzy, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr "a Gukuraho... Bivuye Igikoresho ni OYA Ubuturo"
+
+#: src/widgets/sp-dock-placeholder.c:438
+#, fuzzy, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr "i Ishyira mu mwanya kugirango Bivuye"
+
+#: src/widgets/sp-dock-tablabel.c:131
+#, fuzzy
+msgid "Controlling dock item"
+msgstr "Ikintu"
+
+#: src/widgets/sp-dock-tablabel.c:132
+#, fuzzy
+msgid "Dockitem which 'owns' this tablabel"
+msgstr "iyi"
+
+# vcl/source\src\helptext.src:SV_HELPTEXT_SPLITFLOATING.text
+#: src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "Bihindagurika"
+
+#: src/widgets/sp-dock.c:177
+#, fuzzy
+msgid "Whether the dock is floating in its own window"
+msgstr "i ni Bihindagurika in Idirishya"
+
+#: src/widgets/sp-dock.c:185
+#, fuzzy
+msgid "Default title for the newly created floating docks"
+msgstr "Umutwe kugirango i Byaremwe Bihindagurika"
+
+#: src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "Ubugari"
+
+#: src/widgets/sp-dock.c:192
+#, fuzzy
+msgid "Width for the dock when it's of floating type"
+msgstr "kugirango i Ryari: Bya Bihindagurika Ubwoko"
+
+#: src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "Ubuhagarike"
+
+#: src/widgets/sp-dock.c:200
+#, fuzzy
+msgid "Height for the dock when it's of floating type"
+msgstr "kugirango i Ryari: Bya Bihindagurika Ubwoko"
+
+#: src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr ""
+
+#: src/widgets/sp-dock.c:208
+#, fuzzy
+msgid "X coordinate for a floating dock"
+msgstr "kugirango a Bihindagurika"
+
+#: src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr ""
+
+#: src/widgets/sp-dock.c:216
+#, fuzzy
+msgid "Y coordinate for a floating dock"
+msgstr "kugirango a Bihindagurika"
+
+#: src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr ""
+
+#: src/widgets/sp-toolbox.c:305
+#, fuzzy
+msgid "Toggle separate window and main toolbox placement"
+msgstr "Idirishya Na Agasanduku k'ibikoresha Ishyira mu mwanya"
+
+#: src/widgets/sp-xmlview-attr-list.c:54
+msgid "Attribute"
+msgstr "Ikiranga"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Value"
+msgstr "Agaciro"
