@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi.HEAD.es\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
-"PO-Revision-Date: 2004-01-24 02:00+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-08 22:00+0100\n"
+"PO-Revision-Date: 2004-02-08 22:01+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.1\n"
 
 #: sodipodi.desktop.in.h:1
@@ -53,6 +53,8 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "El documento %s ha sido modificado. ¿Desea guardar los cambios?"
 
 #. Page page
+#. Page settings
+#. Notebook tab
 #: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
@@ -347,15 +349,15 @@ msgstr "Tolerancia por omisión del cursor:"
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "Ventanas"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
-msgstr ""
+msgstr "Establecer consejo para los diálogos"
 
 #: src/dialogs/display-settings.c:179
 msgid "Skip taskbar entry for dialogs"
-msgstr ""
+msgstr "Saltar entrada de barra de tareas para los diálogos"
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -382,6 +384,7 @@ msgid "Units:"
 msgstr "Unidades:"
 
 #. Stroke width
+#. Width
 #: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
 #: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
@@ -950,7 +953,7 @@ msgstr "Tipo de archivo"
 msgid "Save file"
 msgstr "Guardar el archivo"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:485 src/file.c:495 src/file.c:501
 msgid "Select file to import"
 msgstr "Seleccionar el archivo a importar"
 
@@ -1190,15 +1193,15 @@ msgstr "Diálogos"
 msgid "Modules"
 msgstr "Módulos"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "No utilizar el servidor X (sólo procesa archivos desde la consola)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Intentar utilizar el servidor X aunque $DISPLAY no se ha dado"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Abrir el(los) documento(s) especificado(s) (se pueden excluir las opciones "
@@ -1214,11 +1217,11 @@ msgstr ""
 "Imprimir documento(s) al archivo de salida especificado (usa «| programa» "
 "para el filtro)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
 msgstr "Exportar documento a archivo png"
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
@@ -1227,7 +1230,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1239,7 +1242,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "El ancho del mapa de bits generado en píxeles (sobreescribe ppp)"
 
@@ -1247,7 +1250,7 @@ msgstr "El ancho del mapa de bits generado en píxeles (sobreescribe ppp)"
 msgid "WIDTH"
 msgstr "ANCHO"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "El alto del mapa de bits generado en pixels (sobreescribe ppp)"
 
@@ -1255,7 +1258,7 @@ msgstr "El alto del mapa de bits generado en pixels (sobreescribe ppp)"
 msgid "HEIGHT"
 msgstr "ALTO"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Color de fondo para el mapa de bits exportado (cualquier cadena de color "
@@ -1265,7 +1268,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "COLOR"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportar documento a archivo SVG plano (sin nombre de espacio «xmlns:"
@@ -1281,31 +1284,31 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Preferir iconos de mapa de bits (xpm) a los SVG"
 
-#: src/main.c:621
+#: src/main.c:622
 msgid "Print sodipodi version information"
 msgstr "Imprimir la información de versión de Sodipodi"
 
-#: src/main.c:622
+#: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr "Imprimir ayuda acerca de los argumentos de línea de órdenes"
 
-#: src/main.c:771
+#: src/main.c:772
 msgid "Untitled document"
 msgstr "Documento sin nombre"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi ha encontrado un error interno y se cerrará ahora.\n"
 
-#: src/main.c:797
+#: src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Las copias de seguridad automáticas se realizaron a los siguientes "
 "emplazamientos:\n"
 
-#: src/main.c:798
+#: src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
 msgstr "La copia de seguridad de los siguientes documentos falló:\n"
 
