@@ -37,6 +37,7 @@ sodipodi_SOURCES = \
 	sp-ellipse.c sp-ellipse.h \
 	sp-chars.c sp-chars.h \
 	sp-text.c sp-text.h \
+	sp-gradient.c sp-gradient.h \
 	\
 	document.c document.h \
 	document-undo.c \

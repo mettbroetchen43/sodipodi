@@ -7,6 +7,7 @@
 #include "sp-rect.h" 
 #include "sp-text.h" 
 #include "sp-ellipse.h"
+#include "sp-gradient.h"
 #include "sp-object-repr.h"
 
 SPObject *
@@ -48,6 +49,7 @@ sp_object_type_lookup (const gchar * name)
 		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
 		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
 		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
+		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
 	}
 
 	data = g_hash_table_lookup (dtable, name);

@@ -1,3 +1,8 @@
+2000-05-02  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/sp-gradient.*: Implemented skeleton for gradient fills
+	* src/sp-object-repr.c: Gradient parsing
+
 2000-05-01  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/helper/sodipodi-ctrl.c: Fixed bug in ::render, which left

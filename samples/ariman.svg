@@ -9,6 +9,10 @@
    transform="matrix (1.0 0.0 0.0 -1.0 0.0 841.889764)"
    id="svg2">
 <defs>
+   <linearGradient id="MyGradient">
+        <stop offset="0%" style="stop-color:#F60"/>
+        <stop offset="70%" style="stop-color:#FF6"/>
+   </linearGradient>
    <path
      transform="matrix(1.000000 0.000000 0.000000 1.000000 0.000000 0.000000)"
      id="path3"
