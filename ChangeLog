@@ -1,3 +1,9 @@
+2004-02-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/widgets/sp-dock*: New dockable UI come from libegg
+
+	* src/widgets/Makefile.am: Support for dock
+
 2004-02-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.c (sp_desktop_set_base): New method
