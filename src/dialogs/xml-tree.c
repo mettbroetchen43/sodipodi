@@ -29,6 +29,7 @@
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkvpaned.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
@@ -122,7 +123,7 @@ sp_xml_tree_dialog (void)
 
 	if (dialog == NULL) {
 		GtkWidget *box, *sw, *paned, *toolbar, *button, *label;
-		GtkWidget *text_container, *attr_container;
+		GtkWidget *text_container, *attr_container, *attr_subpaned_container;
 		GtkWidget *set_attr;
 
 		tooltips = gtk_tooltips_new ();
@@ -206,10 +207,13 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (toolbar), FALSE, TRUE, 0);
-
+		attr_subpaned_container = gtk_vpaned_new();
+		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (attr_subpaned_container), TRUE, TRUE, 0);
+		gtk_widget_show(attr_subpaned_container);
+		
 		sw = gtk_scrolled_window_new (NULL, NULL);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (sw), TRUE, TRUE, 0);
+		gtk_paned_pack1 (GTK_PANED(attr_subpaned_container), GTK_WIDGET (sw), TRUE, TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attributes));
 
 		toolbar = gtk_hbox_new (FALSE, 4);
@@ -245,8 +249,8 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (set_attr), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (toolbar), set_attr, FALSE, FALSE, 0);
-		
-		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (toolbar), FALSE, TRUE, 0);
+
+		gtk_paned_pack2 (GTK_PANED(attr_subpaned_container), GTK_WIDGET (toolbar), FALSE, TRUE);
 
 
 		/* text */
