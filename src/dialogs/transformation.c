@@ -60,7 +60,10 @@ static GtkWidget *sp_transformation_page_scale_new (GObject *obj);
 static void sp_transformation_scale_update (GObject *dlg, SPSelection *selection);
 static void sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
 
+static GtkWidget *sp_transformation_page_rotate_new (GObject *obj);
+static void sp_transformation_rotate_update (GObject *dlg, SPSelection *selection);
 static void sp_transformation_rotate_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
+
 static void sp_transformation_skew_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
 
 static GtkWidget *dlg = NULL;
@@ -234,6 +237,14 @@ sp_transformation_dialog_new (void)
 	gtk_widget_show (page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (nbook), page, img);
 	g_object_set_data (G_OBJECT (dlg), "scale", page);
+
+	/* Rotate page */
+	img = sp_icon_new (SP_ICON_SIZE_NOTEBOOK, "rotate");
+	gtk_widget_show (img);
+	page = sp_transformation_page_rotate_new (G_OBJECT (dlg));
+	gtk_widget_show (page);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nbook), page, img);
+	g_object_set_data (G_OBJECT (dlg), "rotate", page);
 
 	/* Connect signals */
 	g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_transformation_dialog_destroy), NULL);
@@ -447,6 +458,8 @@ sp_transformation_move_apply (GObject *dlg, SPSelection *selection, unsigned int
 		sp_selection_bbox (selection, &bbox);
 		sp_selection_move_relative (selection, x - bbox.x0, y - bbox.y0);
 	}
+
+	if (selection) sp_document_done (SP_DT_DOCUMENT (selection->desktop));
 }
 
 /*
@@ -609,6 +622,8 @@ sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned in
 	c.x = 0.5 * (bbox.x0 + bbox.x1);
 	c.y = 0.5 * (bbox.y0 + bbox.y1);
 	sp_selection_scale_relative (selection, &c, x / (bbox.x1 - bbox.x0), y / (bbox.y1 - bbox.y0));
+
+	if (selection) sp_document_done (SP_DT_DOCUMENT (selection->desktop));
 }
 
 #if 0
@@ -738,10 +753,82 @@ sp_transformation_apply_scale (SPSelection * selection) {
 }
 #endif
 
+/*
+ * Rotate implementation
+ */
+
+static void
+sp_transformation_rotate_value_changed (GtkAdjustment *adj, GObject *dlg)
+{
+	GtkWidget *apply;
+
+	if (g_object_get_data (dlg, "update")) return;
+
+	apply = g_object_get_data (dlg, "apply");
+	gtk_widget_set_sensitive (apply, TRUE);
+}
+
+static GtkWidget *
+sp_transformation_page_rotate_new (GObject *obj)
+{
+	GtkWidget *frame, *vb, *tbl, *lbl, *img, *sb;
+	GtkAdjustment *adj;
+
+	frame = gtk_frame_new (_("Rotate"));
+
+	vb = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
+	gtk_container_add (GTK_CONTAINER (frame), vb);
+
+	tbl = gtk_table_new (1, 3, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (tbl), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (tbl), 4);
+	gtk_box_pack_start (GTK_BOX (vb), tbl, FALSE, FALSE, 0);
+
+	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "rotate_right");
+	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	g_object_set_data (obj, "rotate_angle", adj);
+	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_rotate_value_changed), obj);
+	sb = gtk_spin_button_new (adj, 0.1, 2);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	lbl = gtk_label_new (_("deg"));
+	gtk_table_attach (GTK_TABLE (tbl), lbl, 2, 3, 0, 1, 0, 0, 0, 0);
+
+	gtk_widget_show_all (vb);
+
+	return frame;
+}
+
+static void
+sp_transformation_rotate_update (GObject *dlg, SPSelection *selection)
+{
+	GtkWidget *page;
+
+	page = g_object_get_data (dlg, "rotate");
+
+	if (selection && !sp_selection_is_empty (selection)) {
+		gtk_widget_set_sensitive (page, TRUE);
+	} else {
+		gtk_widget_set_sensitive (page, FALSE);
+	}
+}
 
 static void
 sp_transformation_rotate_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
 {
+	GtkAdjustment *a;
+	NRRectF bbox;
+	NRPointF c;
+
+	a = g_object_get_data (dlg, "rotate_angle");
+
+	sp_selection_bbox (selection, &bbox);
+	c.x = 0.5 * (bbox.x0 + bbox.x1);
+	c.y = 0.5 * (bbox.y0 + bbox.y1);
+	sp_selection_rotate_relative (selection, &c, a->value);
+
+	if (selection) sp_document_done (SP_DT_DOCUMENT (selection->desktop));
 }
 
 static void
