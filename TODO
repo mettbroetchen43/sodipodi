@@ -1,4 +1,19 @@
-25/09/2002
+01/12/2002
+
+TODO for 0.29
+=============
+
+- Support for Xft font sources
+- Write replacement for color picker
+- Write replacement for combo text
+- GtkIMContext support for text-context (?)
+- More works for XML Editor (?)
+- Fix unstable SPMenuButton/SPToolbox behavior
+- Fix GuideLine bug
+- Test gnome-print support
+- Replacement for uri lists
+- Replacement for uri handler
+- Optional libgnome support?
 
 TODO for 0.28
 =============
@@ -44,7 +59,7 @@ Other tasks
 - Dynamic DynaLine (Mitsuru)
 - Animation support
 
-Porting to GTK+-2.0
+Porting to GTK+-2.0 (DEAD, look 0.29 tasks instead)
 ===================
 
  (go into SODIPODI_GTK2_BRANCH)
@@ -54,7 +69,7 @@ Porting to GTK+-2.0
 - More works for XML Editor
 - Fix unstable SPMenuButton/SPToolbox behavior
 - Fix GuideLine bug
-- Merge into HEAD tree
+- Merge into HEAD tree (DONE)
 
 TODO for 0.26
 =============

@@ -115,10 +115,8 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	w = gtk_file_selection_new (_("Select file to open"));
 	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
 
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_open_ok), w);
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_open_cancel), w);
+	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked", G_CALLBACK (file_open_ok), w);
+	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked", G_CALLBACK (file_open_cancel), w);
 
 	if (open_path) {
 		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w),open_path);
@@ -166,7 +164,7 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 	gboolean spns;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
-	type = gtk_object_get_data (GTK_OBJECT (fs), "type");
+	type = g_object_get_data (G_OBJECT (fs), "type");
 	spns = !(type && !strcmp (type, "svg"));
 
 	gtk_widget_destroy (GTK_WIDGET (fs));
@@ -228,9 +226,9 @@ file_save_cancel (GtkButton *b, GtkFileSelection *fs)
 }
 
 static void
-sp_file_save_type_activate (GtkWidget *widget, GtkObject *dlg)
+sp_file_save_type_activate (GtkWidget *widget, GObject *dlg)
 {
-	gtk_object_set_data (dlg, "type", gtk_object_get_data (GTK_OBJECT (widget), "type"));
+	g_object_set_data (dlg, "type", g_object_get_data (G_OBJECT (widget), "type"));
 }
 
 void
@@ -257,21 +255,21 @@ sp_file_save_as (GtkWidget * widget)
 	mi = gtk_menu_item_new_with_label (_("SVG with \"xmlns:sodipodi\" namespace"));
 	gtk_widget_show (mi);
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "type", "sodipodi");
-	gtk_object_set_data (GTK_OBJECT (dlg), "type", "sodipodi");
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_file_save_type_activate), dlg);
+	g_object_set_data (G_OBJECT (mi), "type", "sodipodi");
+	g_object_set_data (G_OBJECT (dlg), "type", "sodipodi");
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_file_save_type_activate), dlg);
 	mi = gtk_menu_item_new_with_label (_("Plain SVG"));
 	gtk_widget_show (mi);
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "type", "svg");
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_file_save_type_activate), dlg);
+	g_object_set_data (G_OBJECT (mi), "type", "svg");
+	g_signal_connect (G_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_file_save_type_activate), dlg);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
 	l = gtk_label_new (_("Save as:"));
 	gtk_widget_show (l);
 	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 
-	gtk_signal_connect (GTK_OBJECT (fsel->ok_button), "clicked", GTK_SIGNAL_FUNC (file_save_ok), dlg);
-	gtk_signal_connect (GTK_OBJECT (fsel->cancel_button), "clicked", GTK_SIGNAL_FUNC (file_save_cancel), dlg);
+	g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_save_ok), dlg);
+	g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_save_cancel), dlg);
 
 	if (save_path) {
 		gtk_file_selection_set_filename (fsel, save_path);
@@ -378,10 +376,8 @@ void sp_file_import (GtkWidget * widget)
 	w = gtk_file_selection_new (_("Select file to import"));
 	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
 
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_import_ok), w);
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_import_cancel), w);
+	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked", G_CALLBACK (file_import_ok), w);
+	g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked", G_CALLBACK (file_import_cancel), w);
 
 	if (import_path)
 		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), import_path);
@@ -538,7 +534,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	ebp.buf = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
 
 	/* Create new arena */
-	arena = gtk_type_new (NR_TYPE_ARENA);
+	arena = g_object_new (NR_TYPE_ARENA, NULL);
 	/* Create ArenaItem and set transform */
 	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
 	nr_arena_item_set_transform (ebp.root, affine);
@@ -548,7 +544,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 
 	/* Free Arena and ArenaItem */
 	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
-	gtk_object_unref (GTK_OBJECT (arena));
+	g_object_unref (G_OBJECT (arena));
 
 	/* Release RGBA buffer */
 	nr_buffer_free (ebp.buf);

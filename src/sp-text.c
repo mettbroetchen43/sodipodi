@@ -78,7 +78,7 @@ sp_string_get_type (void)
 			NULL,	/* class_data */
 			sizeof (SPString),
 			16,	/* n_preallocs */
-			(GtkObjectInitFunc) sp_string_init,
+			(GInstanceInitFunc) sp_string_init,
 		};
 		type = g_type_register_static (SP_TYPE_CHARS, "SPString", &info, 0);
 	}
@@ -414,7 +414,7 @@ sp_tspan_get_type (void)
 			NULL,	/* class_data */
 			sizeof (SPTSpan),
 			16,	/* n_preallocs */
-			(GtkObjectInitFunc) sp_tspan_init,
+			(GInstanceInitFunc) sp_tspan_init,
 		};
 		type = g_type_register_static (SP_TYPE_ITEM, "SPTSpan", &info, 0);
 	}
@@ -478,7 +478,7 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	}
 
 	/* fixme: We should really pick up first child always */
-	string = gtk_type_new (SP_TYPE_STRING);
+	string = g_object_new (SP_TYPE_STRING, NULL);
 	tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 	string->ly = &tspan->ly;
 	sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
@@ -750,7 +750,7 @@ sp_text_get_type (void)
 			NULL,	/* class_data */
 			sizeof (SPText),
 			16,	/* n_preallocs */
-			(GtkObjectInitFunc) sp_text_init,
+			(GInstanceInitFunc) sp_text_init,
 		};
 		type = g_type_register_static (SP_TYPE_ITEM, "SPText", &info, 0);
 	}

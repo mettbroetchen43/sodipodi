@@ -1,5 +1,11 @@
 2002-12-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c: GtkObject/GObject cleanup
+
+	* src/file.c: Ditto
+
+	* TODO: Update with 0.29 tasks
+
 	* src/sp-gradient.c: GtkObject/GObject cleanup
 
 	* src/widgets/sp-widget.c: Ditto

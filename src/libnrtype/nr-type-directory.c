@@ -144,7 +144,7 @@ nr_type_directory_family_list_get (NRNameList *flist)
 
 	if (!fnames) {
 		NRFamilyDef *fdef;
-		unsigned int pos;
+		int pos;
 		for (fdef = families; fdef; fdef = fdef->next) flen += 1;
 		fnames = nr_new (unsigned char *, flen);
 		pos = 0;
@@ -180,7 +180,7 @@ nr_type_directory_style_list_get (const unsigned char *family, NRNameList *style
 
 	if (fdef) {
 		NRTypeFaceDef *tdef;
-		unsigned int tlen, pos;
+		int tlen, pos;
 		tlen = 0;
 		for (tdef = fdef->faces; tdef; tdef = tdef->next) tlen += 1;
 		styles->length = tlen;
@@ -209,7 +209,7 @@ nr_type_directory_build (void)
 {
 	NRFamilyDef *fdef, **ffdef;
 	NRTypePosDef *pdefs;
-	unsigned int fnum, tnum, pos, i;
+	int fnum, tnum, pos, i;
 
 	typedict = nr_type_dict_new ();
 	familydict = nr_type_dict_new ();

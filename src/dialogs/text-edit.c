@@ -32,6 +32,7 @@
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkimage.h>
 
+#include "macros.h"
 #include "../helper/sp-intl.h"
 #include "../widgets/font-selector.h"
 #include "../forward.h"
@@ -64,14 +65,14 @@ static GtkWidget *dlg = NULL;
 static void
 sp_text_edit_dialog_destroy (GtkObject *object, gpointer data)
 {
-	gtk_signal_disconnect_by_data (GTK_OBJECT (SODIPODI), dlg);
+	sp_signal_disconnect_by_data (SODIPODI, dlg);
 	dlg = NULL;
 }
 
 static gint
 sp_text_edit_dialog_delete (GtkWidget *dlg, GdkEvent *event, gpointer data)
 {
-	gtk_object_destroy (GTK_OBJECT (dlg));
+	gtk_widget_destroy (GTK_WIDGET (dlg));
 
 	return TRUE;
 }
@@ -85,8 +86,8 @@ sp_text_edit_dialog (void)
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Text properties"));
 		gtk_window_set_policy (GTK_WINDOW (dlg), TRUE, TRUE, FALSE);
-		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_text_edit_dialog_destroy), dlg);
-		gtk_signal_connect (GTK_OBJECT (dlg), "delete_event", GTK_SIGNAL_FUNC (sp_text_edit_dialog_delete), dlg);
+		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_text_edit_dialog_destroy), dlg);
+		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_text_edit_dialog_delete), dlg);
 
 		mainvb = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (mainvb);
@@ -96,7 +97,7 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (nb);
 		gtk_container_set_border_width (GTK_CONTAINER (nb), 4);
 		gtk_box_pack_start (GTK_BOX (mainvb), nb, TRUE, TRUE, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "notebook", nb);
+		g_object_set_data (G_OBJECT (dlg), "notebook", nb);
 
 		/* Vbox inside notebook */
 		vb = gtk_vbox_new (FALSE, 0);
@@ -105,9 +106,9 @@ sp_text_edit_dialog (void)
 		txt = gtk_text_new (NULL, NULL);
 		gtk_widget_show (txt);
 		gtk_text_set_editable (GTK_TEXT (txt), TRUE);
-		gtk_signal_connect (GTK_OBJECT (txt), "changed", GTK_SIGNAL_FUNC (sp_text_edit_dialog_text_changed), dlg);
+		g_signal_connect (G_OBJECT (txt), "changed", G_CALLBACK (sp_text_edit_dialog_text_changed), dlg);
 		gtk_box_pack_start (GTK_BOX (vb), txt, TRUE, TRUE, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "text", txt);
+		g_object_set_data (G_OBJECT (dlg), "text", txt);
 
 		/* HBox containing font selection and layout */
 		hb = gtk_hbox_new (FALSE, 0);
@@ -116,9 +117,9 @@ sp_text_edit_dialog (void)
 
 		fontsel = sp_font_selector_new ();
 		gtk_widget_show (fontsel);
-		gtk_signal_connect (GTK_OBJECT (fontsel), "font_set", GTK_SIGNAL_FUNC (sp_text_edit_dialog_font_changed), dlg);
+		g_signal_connect (G_OBJECT (fontsel), "font_set", G_CALLBACK (sp_text_edit_dialog_font_changed), dlg);
 		gtk_box_pack_start (GTK_BOX (hb), fontsel, TRUE, TRUE, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "fontsel", fontsel);
+		g_object_set_data (G_OBJECT (dlg), "fontsel", fontsel);
 
 		/* Layout */
 		f = gtk_frame_new (_("Layout"));
@@ -139,29 +140,29 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (NULL);
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_text_edit_dialog_any_toggled), dlg);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 0, 1, 0, 0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "text_anchor_start", b);
+		g_object_set_data (G_OBJECT (dlg), "text_anchor_start", b);
 		px = gtk_image_new_from_stock (GTK_STOCK_JUSTIFY_CENTER, GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_text_edit_dialog_any_toggled), dlg);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 2, 3, 0, 1, 0, 0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "text_anchor_middle", b);
+		g_object_set_data (G_OBJECT (dlg), "text_anchor_middle", b);
 		px = gtk_image_new_from_stock (GTK_STOCK_JUSTIFY_RIGHT, GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_text_edit_dialog_any_toggled), dlg);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 3, 4, 0, 1, 0, 0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "text_anchor_end", b);
+		g_object_set_data (G_OBJECT (dlg), "text_anchor_end", b);
 
 		l = gtk_label_new (_("Orientation:"));
 		gtk_widget_show (l);
@@ -172,26 +173,26 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (NULL);
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_text_edit_dialog_any_toggled), dlg);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 1, 2, 0, 0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "writing_mode_lr", b);
+		g_object_set_data (G_OBJECT (dlg), "writing_mode_lr", b);
 		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_tb.xpm");
 /*  		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_tb.xpm"); */
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_text_edit_dialog_any_toggled), dlg);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 2, 3, 1, 2, 0, 0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "writing_mode_tb", b);
+		g_object_set_data (G_OBJECT (dlg), "writing_mode_tb", b);
 
 		preview = sp_font_preview_new ();
 		gtk_widget_show (preview);
 		gtk_box_pack_start (GTK_BOX (vb), preview, TRUE, TRUE, 4);
-		gtk_object_set_data (GTK_OBJECT (dlg), "preview", preview);
+		g_object_set_data (G_OBJECT (dlg), "preview", preview);
 
 		l = gtk_label_new (_("Text and font"));
 		gtk_widget_show (l);
@@ -209,26 +210,26 @@ sp_text_edit_dialog (void)
 
 		b = gtk_button_new_with_label (_("Set as default"));
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_set_default), dlg);
+		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_text_edit_dialog_set_default), dlg);
 		gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "default", b);
+		g_object_set_data (G_OBJECT (dlg), "default", b);
 
 		b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 /*  		b = gnome_stock_button (GTK_STOCK_CLOSE); */
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_close), dlg);
+		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_text_edit_dialog_close), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
 
 		b = gtk_button_new_from_stock (GTK_STOCK_APPLY);
 /*  		b = gnome_stock_button (GTK_STOCK_APPLY); */
 		gtk_widget_show (b);
-		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_apply), dlg);
+		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_text_edit_dialog_apply), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "apply", b);
+		g_object_set_data (G_OBJECT (dlg), "apply", b);
 	}
 
-	gtk_signal_connect (GTK_OBJECT (SODIPODI), "modify_selection", GTK_SIGNAL_FUNC (sp_text_edit_dialog_modify_selection), dlg);
-	gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", GTK_SIGNAL_FUNC (sp_text_edit_dialog_change_selection), dlg);
+	g_signal_connect (G_OBJECT (SODIPODI), "modify_selection", G_CALLBACK (sp_text_edit_dialog_modify_selection), dlg);
+	g_signal_connect (G_OBJECT (SODIPODI), "change_selection", G_CALLBACK (sp_text_edit_dialog_change_selection), dlg);
 
 	sp_text_edit_dialog_read_selection (dlg, TRUE, TRUE);
 
@@ -255,13 +256,13 @@ sp_text_edit_dialog_change_selection (Sodipodi *sodipodi, SPSelection *sel, GtkW
 static void
 sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 {
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
+	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
 	if (text) {
 		GtkWidget *textw;
 		guchar *str;
 
-		textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
+		textw = g_object_get_data (G_OBJECT (dlg), "text");
 
 		/* Content */
 		str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
@@ -275,8 +276,8 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		NRFont *font;
 		guchar c[256];
 
-		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
-		preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
+		fontsel = g_object_get_data (G_OBJECT (dlg), "fontsel");
+		preview = g_object_get_data (G_OBJECT (dlg), "preview");
 
 		css = sp_repr_css_attr_new ();
 
@@ -294,18 +295,18 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		sp_repr_css_set_property (css, "font-size", c);
 		nr_font_unref (font);
 		/* Layout */
-		b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_start");
+		b = g_object_get_data (G_OBJECT (dlg), "text_anchor_start");
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) {
 			sp_repr_css_set_property (css, "text-anchor", "start");
 		} else {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_middle");
+			b = g_object_get_data (G_OBJECT (dlg), "text_anchor_middle");
 			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) {
 				sp_repr_css_set_property (css, "text-anchor", "middle");
 			} else {
 				sp_repr_css_set_property (css, "text-anchor", "end");
 			}
 		}
-		b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_lr");
+		b = g_object_get_data (G_OBJECT (dlg), "writing_mode_lr");
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) {
 			sp_repr_css_set_property (css, "writing-mode", "lr");
 		} else {
@@ -321,7 +322,7 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (text));
 	}
 
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
+	g_object_set_data (G_OBJECT (dlg), "blocked", NULL);
 }
 
 static void
@@ -330,7 +331,7 @@ sp_text_edit_dialog_set_default (GtkButton *button, GtkWidget *dlg)
 	GtkWidget *def;
 	SPRepr *repr;
 
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	repr = sodipodi_get_repr (SODIPODI, "tools.text");
 
@@ -346,10 +347,10 @@ sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
 	SPText *text;
 	SPRepr *repr;
 
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
+	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	apply = g_object_get_data (G_OBJECT (dlg), "apply");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	text = sp_ted_get_selected_text_item ();
 	if (text) {
@@ -365,13 +366,13 @@ sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
 	}
 	gtk_widget_set_sensitive (apply, FALSE);
 
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
+	g_object_set_data (G_OBJECT (dlg), "blocked", NULL);
 }
 
 static void
 sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg)
 {
-	gtk_object_destroy (GTK_OBJECT (dlg));
+	gtk_widget_destroy (GTK_WIDGET (dlg));
 }
 
 static guchar *
@@ -453,15 +454,15 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 	SPText *text;
 	SPStyle *style;
 
-	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
+	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
+	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
-	notebook = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
-	textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
-	fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
-	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	notebook = g_object_get_data (G_OBJECT (dlg), "notebook");
+	textw = g_object_get_data (G_OBJECT (dlg), "text");
+	fontsel = g_object_get_data (G_OBJECT (dlg), "fontsel");
+	preview = g_object_get_data (G_OBJECT (dlg), "preview");
+	apply = g_object_get_data (G_OBJECT (dlg), "apply");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	text = sp_ted_get_selected_text_item ();
 
@@ -521,22 +522,22 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 		}
 
 		if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_START) {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_start");
+			b = g_object_get_data (G_OBJECT (dlg), "text_anchor_start");
 		} else if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_MIDDLE) {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_middle");
+			b = g_object_get_data (G_OBJECT (dlg), "text_anchor_middle");
 		} else {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_end");
+			b = g_object_get_data (G_OBJECT (dlg), "text_anchor_end");
 		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
 		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_LR) {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_lr");
+			b = g_object_get_data (G_OBJECT (dlg), "writing_mode_lr");
 		} else {
-			b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_tb");
+			b = g_object_get_data (G_OBJECT (dlg), "writing_mode_tb");
 		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
 	}
 
-	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
+	g_object_set_data (G_OBJECT (dlg), "blocked", NULL);
 }
 
 static void
@@ -546,14 +547,14 @@ sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 	SPText *text;
 	gchar *str;
 
-	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
+	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
 
 	text = sp_ted_get_selected_text_item ();
 
-	textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
-	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	textw = g_object_get_data (G_OBJECT (dlg), "text");
+	preview = g_object_get_data (G_OBJECT (dlg), "preview");
+	apply = g_object_get_data (G_OBJECT (dlg), "apply");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
 	if (str && *str) {
@@ -575,13 +576,13 @@ sp_text_edit_dialog_font_changed (SPFontSelector *fsel, NRFont *font, GtkWidget 
 	GtkWidget *preview, *apply, *def;
 	SPText *text;
 
-	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
+	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
 
 	text = sp_ted_get_selected_text_item ();
 
-	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	preview = g_object_get_data (G_OBJECT (dlg), "preview");
+	apply = g_object_get_data (G_OBJECT (dlg), "apply");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	sp_font_preview_set_font (SP_FONT_PREVIEW (preview), font);
 
@@ -597,12 +598,12 @@ sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg)
 	GtkWidget *apply, *def;
 	SPText *text;
 
-	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
+	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
 
 	text = sp_ted_get_selected_text_item ();
 
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+	apply = g_object_get_data (G_OBJECT (dlg), "apply");
+	def = g_object_get_data (G_OBJECT (dlg), "default");
 
 	if (text) {
 		gtk_widget_set_sensitive (apply, TRUE);
