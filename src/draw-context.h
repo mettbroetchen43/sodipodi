@@ -131,9 +131,9 @@ enum {
 struct _SPPenContext {
 	SPDrawContext draw_context;
 
-	guint mode : 1;
-
-	guint state : 2;
+	unsigned int mode : 1;
+	unsigned int state : 2;
+	unsigned int onlycurves : 1;
 
 	SPCanvasItem *c0, *c1, *cl0, *cl1;
 };

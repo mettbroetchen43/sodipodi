@@ -1651,7 +1651,13 @@ spdc_pen_set_point (SPPenContext *pc, NRPointF *p, guint state)
 		dc->npoints = 5;
 		sp_curve_reset (dc->red_curve);
 		sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
-		sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+		if ((pc->onlycurves) ||
+		    (dc->p[1].x != dc->p[0].x) ||
+		    (dc->p[1].y != dc->p[0].y)) {
+			sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+		} else {
+			sp_curve_lineto (dc->red_curve, dc->p[3].x, dc->p[3].y);
+		}
 		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
 	}
 }
