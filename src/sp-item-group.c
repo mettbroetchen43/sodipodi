@@ -14,18 +14,14 @@
 
 #include <config.h>
 #include <string.h>
-#include <glib.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtksignal.h>
+
 #include "display/nr-arena-group.h"
 #include "xml/repr-private.h"
 #include "sp-object-repr.h"
 #include "svg/svg.h"
 #include "document.h"
 #include "style.h"
-#include "desktop.h"
-#include "desktop-handles.h"
-#include "selection.h"
+
 #include "sp-root.h"
 #include "sp-item-group.h"
 #include "helper/sp-intl.h"
@@ -48,9 +44,6 @@ static void sp_group_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_group_description (SPItem * item);
 static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_group_hide (SPItem * item, unsigned int key);
-static void sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-
-static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group);
 
 static SPItemClass * parent_class;
 
@@ -103,7 +96,6 @@ sp_group_class_init (SPGroupClass *klass)
 	item_class->description = sp_group_description;
 	item_class->show = sp_group_show;
 	item_class->hide = sp_group_hide;
-	item_class->menu = sp_group_menu;
 }
 
 static void
@@ -513,64 +505,6 @@ sp_group_hide (SPItem *item, unsigned int key)
 
 	if (((SPItemClass *) parent_class)->hide)
 		((SPItemClass *) parent_class)->hide (item, key);
-}
-
-static void
-sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu * menu)
-{
-	GtkWidget * i, * m, * w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	i = gtk_menu_item_new_with_label (_("Group"));
-	m = gtk_menu_new ();
-
-	/* Group dialog */
-	w = gtk_menu_item_new_with_label (_("Group Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
-#endif
-	gtk_widget_set_sensitive (w, FALSE);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Separator */
-	w = gtk_menu_item_new ();
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* "Ungroup" */
-	w = gtk_menu_item_new_with_label (_("Ungroup"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_group_ungroup_activate), item);
-	gtk_widget_show (w);
-
-	gtk_menu_append (GTK_MENU (m), w);
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-static void
-sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group)
-{
-	SPDesktop *desktop;
-	GSList *children;
-
-	g_assert (SP_IS_GROUP (group));
-
-	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	children = NULL;
-	sp_item_group_ungroup (group, &children);
-
-	sp_selection_set_item_list (SP_DT_SELECTION (desktop), children);
-	g_slist_free (children);
 }
 
 void

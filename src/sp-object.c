@@ -13,15 +13,14 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <glib-object.h>
-#include <gtk/gtkmarshal.h>
-#include <gtk/gtksignal.h>
+
 #include "helper/sp-marshal.h"
 #include "xml/repr-private.h"
 #include "attributes.h"
 #include "document.h"
 #include "style.h"
 #include "sp-object-repr.h"
+
 #include "sp-object.h"
 
 #define noSP_OBJECT_DEBUG
@@ -520,11 +519,6 @@ sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data)
 
 	func (object, data);
 
-#if 0
-
-	if (((SPObjectClass *) (((GtkObject *) object)->klass))->forall)
-		((SPObjectClass *) (((GtkObject *) object)->klass))->forall (object, func, data);
-#else
 	repr = SP_OBJECT_REPR (object);
 	for (child = repr->children; child != NULL; child = child->next) {
 		const unsigned char *id;
@@ -533,7 +527,6 @@ sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data)
 		cho = sp_document_lookup_id (SP_OBJECT_DOCUMENT (object), id);
 		if (cho) sp_object_invoke_forall (cho, func, data);
 	}
-#endif
 }
 
 static SPRepr *
@@ -733,48 +726,45 @@ sp_object_description_set (SPObject *object, const unsigned char *desc)
 	return FALSE;
 }
 
-const guchar *
-sp_object_getAttribute (SPObject *object, const guchar *key, SPException *ex)
+const unsigned char *
+sp_object_tagName_get (const SPObject *object, SPException *ex)
 {
-	g_return_val_if_fail (object != NULL, NULL);
-	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
-	g_return_val_if_fail (key != NULL, NULL);
-	g_return_val_if_fail (*key != '\0', NULL);
-
 	/* If exception is not clear, return */
 	if (!SP_EXCEPTION_IS_OK (ex)) return NULL;
 
+	/* fixme: Exception if object is NULL? */
+	return sp_repr_name (object->repr);
+}
+
+const unsigned char *
+sp_object_getAttribute (const SPObject *object, const unsigned char *key, SPException *ex)
+{
+	/* If exception is not clear, return */
+	if (!SP_EXCEPTION_IS_OK (ex)) return NULL;
+
+	/* fixme: Exception if object is NULL? */
 	return (const guchar *) sp_repr_attr (object->repr, key);
 }
 
 void
-sp_object_setAttribute (SPObject *object, const guchar *key, const guchar *value, SPException *ex)
+sp_object_setAttribute (SPObject *object, const unsigned char *key, const unsigned char *value, SPException *ex)
 {
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
-	g_return_if_fail (key != NULL);
-	g_return_if_fail (*key != '\0');
-	g_return_if_fail (value != NULL);
-
 	/* If exception is not clear, return */
 	g_return_if_fail (SP_EXCEPTION_IS_OK (ex));
 
+	/* fixme: Exception if object is NULL? */
 	if (!sp_repr_set_attr (object->repr, key, value)) {
 		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
 	}
 }
 
 void
-sp_object_removeAttribute (SPObject *object, const guchar *key, SPException *ex)
+sp_object_removeAttribute (SPObject *object, const unsigned char *key, SPException *ex)
 {
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
-	g_return_if_fail (key != NULL);
-	g_return_if_fail (*key != '\0');
-
 	/* If exception is not clear, return */
 	g_return_if_fail (SP_EXCEPTION_IS_OK (ex));
 
+	/* fixme: Exception if object is NULL? */
 	if (!sp_repr_set_attr (object->repr, key, NULL)) {
 		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
 	}

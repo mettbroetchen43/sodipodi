@@ -18,12 +18,9 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <glib.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
+
 #include "svg/svg.h"
 #include "attributes.h"
-#include "knotholder.h"
 #include "helper/bezier-utils.h"
 #include "dialogs/object-attributes.h"
 #include "helper/sp-intl.h"
@@ -49,13 +46,9 @@ static SPRepr *sp_spiral_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_spiral_update (SPObject *object, SPCtx *ctx, guint flags);
 
-static SPKnotHolder *sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_spiral_description (SPItem * item);
 static int sp_spiral_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_spiral_set_shape (SPShape *shape);
-
-static void sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-static void sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPShapeClass *parent_class;
 
@@ -101,10 +94,8 @@ sp_spiral_class_init (SPSpiralClass *class)
 	sp_object_class->set = sp_spiral_set;
 	sp_object_class->update = sp_spiral_update;
 
-	item_class->knot_holder = sp_spiral_knot_holder;
 	item_class->description = sp_spiral_description;
 	item_class->snappoints = sp_spiral_snappoints;
-	item_class->menu = sp_spiral_menu;
 
 	shape_class->set_shape = sp_spiral_set_shape;
 }
@@ -385,121 +376,6 @@ sp_spiral_set_shape (SPShape *shape)
 	sp_curve_unref (c);
 }
 
-/*
- * set attributes via inner (t=t0) knot point:
- *   [default] increase/decrease inner point
- *   [shift]   increase/decrease inner and outer arg synchronizely
- *   [control] constrain inner arg to round per PI/4
- */
-static void
-sp_spiral_inner_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPSpiral *spiral;
-	gdouble   dx, dy;
-	gdouble   arg_tmp;
-	gdouble   arg_t0;
-	gdouble   arg_t0_new;
-
-	spiral = SP_SPIRAL (item);
-
-	dx = p->x - spiral->cx;
-	dy = p->y - spiral->cy;
-	sp_spiral_get_polar (spiral, spiral->t0, NULL, &arg_t0);
-/*  	arg_t0 = 2.0*M_PI*spiral->revo * spiral->t0 + spiral->arg; */
-	arg_tmp = atan2(dy, dx) - arg_t0;
-	arg_t0_new = arg_tmp - floor((arg_tmp+M_PI)/(2.0*M_PI))*2.0*M_PI + arg_t0;
-	spiral->t0 = (arg_t0_new - spiral->arg) / (2.0*M_PI*spiral->revo);
-#if 0				/* we need round function */
-	/* round inner arg per PI/4, if CTRL is pressed */
-	if ((state & GDK_CONTROL_MASK) &&
-	    (fabs(spiral->revo) > SP_EPSILON_2)) {
-		gdouble arg = 2.0*M_PI*spiral->revo*spiral->t0 + spiral->arg;
-		t0 = (round(arg/(0.25*M_PI))*0.25*M_PI
-		      - spiral->arg)/(2.0*M_PI*spiral->revo);
-	}
-#endif
-	spiral->t0 = CLAMP (spiral->t0, 0.0, 0.999);
-
-#if 0
-	/* outer point synchronize with inner point, if SHIFT is pressed */
-	if (state & GDK_SHIFT_MASK) {
-		spiral->revo += spiral->revo * (t0 - spiral->t0);
-	}
-	spiral->t0 = t0;
-#endif
-	sp_object_request_update ((SPObject *) spiral, SP_OBJECT_MODIFIED_FLAG);
-}
-
-/*
- * set attributes via outer (t=1) knot point:
- *   [default] increase/decrease revolution factor
- *   [control] constrain inner arg to round per PI/4
- */
-static void
-sp_spiral_outer_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPSpiral *spiral;
-	gdouble   dx, dy;
-/*  	gdouble arg; */
-	
-	spiral = SP_SPIRAL (item);
-
-	dx = p->x - spiral->cx;
-	dy = p->y - spiral->cy;
-	spiral->arg = atan2(dy, dx) - 2.0*M_PI*spiral->revo;
-	spiral->rad = MAX (hypot (dx, dy), 0.001);
-#if 0
- /* we need round function */
-/*  	arg  = -atan2(p->y, p->x) - spiral->arg; */
-	if (state & GDK_CONTROL_MASK) {
-		spiral->revo = (round(arg/(0.25*M_PI))*0.25*M_PI)/(2.0*M_PI);
-	} else {
-		spiral->revo = arg/(2.0*M_PI);
-	}
-	spiral->revo = arg/(2.0*M_PI);
-#endif
-	sp_object_request_update ((SPObject *) spiral, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_spiral_inner_get (SPItem *item, NRPointF *p)
-{
-	SPSpiral *spiral;
-
-	spiral = SP_SPIRAL (item);
-
-	sp_spiral_get_xy (spiral, spiral->t0, p);
-}
-
-static void
-sp_spiral_outer_get (SPItem *item, NRPointF *p)
-{
-	SPSpiral *spiral;
-
-	spiral = SP_SPIRAL (item);
-
-	sp_spiral_get_xy (spiral, 1.0, p);
-}
-
-static SPKnotHolder *
-sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop)
-{
-	SPSpiral *spiral;
-	SPKnotHolder *knot_holder;
-
-	spiral = SP_SPIRAL (item);
-	knot_holder = sp_knot_holder_new (desktop, item, NULL);
-
-	sp_knot_holder_add (knot_holder,
-			    sp_spiral_inner_set,
-			    sp_spiral_inner_get);
-	sp_knot_holder_add (knot_holder,
-			    sp_spiral_outer_set,
-			    sp_spiral_outer_get);
-
-	return knot_holder;
-}
-
 void
 sp_spiral_position_set       (SPSpiral          *spiral,
 		     gdouble            cx,
@@ -604,39 +480,5 @@ sp_spiral_is_invalid (SPSpiral *spiral)
 		return TRUE;
 	}
 	return FALSE;
-}
-
-/* Generate context menu item section */
-
-static void
-sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget *i, *m, *w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Spiral"));
-	m = gtk_menu_new ();
-	/* Link dialog */
-	w = gtk_menu_item_new_with_label (_("Spiral Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_spiral_spiral_properties), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-static void
-sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
-{
-	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPSpiral");
 }
 

@@ -105,6 +105,7 @@ sodipodi_SOURCES = \
 	node-context.c node-context.h \
 	nodepath.c nodepath.h \
 	knotholder.c knotholder.h \
+	object-edit.c object-edit.h \
 	rect-context.c rect-context.h \
 	arc-context.c arc-context.h \
 	star-context.c star-context.h \
@@ -131,6 +132,7 @@ sodipodi_SOURCES = \
 	file.c file.h \
 	print.c print.h \
 	interface.c interface.h \
+	object-ui.c object-ui.h \
 	slideshow.c slideshow.h \
 	$(module_src) \
 	$(extensions_src) \
@@ -169,9 +171,10 @@ sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 #	view.c view.h
 #	svg-view.c svg-view.h
 #	module.c module.h
+#	dir-util.c dir-util.h
 #	print.c print.h
 
-# spsvgview_LDADD =
+#spsvgview_LDADD =
 #	$(sodipodi_private_libs)
 #	$(SODIPODI_LIBS)
 #	$(GNOME_PRINT_LIBS)

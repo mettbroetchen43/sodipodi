@@ -15,16 +15,12 @@
 #include <config.h>
 
 #include <string.h>
-#include <glib.h>
-#include <gtk/gtk.h>
+
 #include <libnr/nr-pixblock.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
 
 #include "macros.h"
 #include "helper/sp-intl.h"
 #include "svg/svg.h"
-#include "dialogs/fill-style.h"
 #include "display/nr-arena-shape.h"
 #include "uri-references.h"
 #include "attributes.h"
@@ -54,8 +50,6 @@ static void sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transfo
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_shape_hide (SPItem *item, unsigned int key);
-
-static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai);
 
@@ -102,7 +96,6 @@ sp_shape_class_init (SPShapeClass *klass)
 	item_class->print = sp_shape_print;
 	item_class->show = sp_shape_show;
 	item_class->hide = sp_shape_hide;
-	item_class->menu = sp_shape_menu;
 }
 
 static void
@@ -518,50 +511,6 @@ sp_shape_hide (SPItem *item, unsigned int key)
 
 	if (((SPItemClass *) parent_class)->hide)
 		((SPItemClass *) parent_class)->hide (item, key);
-}
-
-/* Generate context menu item section */
-
-static void
-sp_shape_fill_settings (GtkMenuItem *menuitem, SPItem *item)
-{
-	SPDesktop *desktop;
-
-	g_assert (SP_IS_ITEM (item));
-
-	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-
-	sp_fill_style_dialog ();
-}
-
-static void
-sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget *i, *m, *w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Shape"));
-	m = gtk_menu_new ();
-	/* Item dialog */
-	w = gtk_menu_item_new_with_label (_("Fill settings"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_shape_fill_settings), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
 }
 
 /* Marker stuff */

@@ -35,7 +35,7 @@
 #include "interface.h"
 #include "toolbox.h"
 #include "desktop.h"
-#include "sp-item.h"
+#include "object-ui.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
 #include "zoom-context.h"
@@ -525,7 +525,7 @@ sp_ui_generic_menu (SPView *v, SPItem *item)
 
 	/* Item menu */
 	if (item) {
-		sp_item_menu (item, dt, GTK_MENU (m));
+		sp_object_menu ((SPObject *) item, dt, GTK_MENU (m));
 		/* Separator */
 		sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 	}

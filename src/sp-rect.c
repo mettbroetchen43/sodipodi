@@ -13,12 +13,12 @@
  */
 
 #include <config.h>
+
 #include <math.h>
 #include <string.h>
+
 #include <libnr/nr-matrix.h>
-#include <glib.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
+
 #include "svg/svg.h"
 #include "attributes.h"
 #include "style.h"
@@ -41,13 +41,8 @@ static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 static gchar * sp_rect_description (SPItem * item);
 static int sp_rect_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
-static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-
-static void sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static void sp_rect_set_shape (SPShape *shape);
-
-static SPKnotHolder *sp_rect_knot_holder (SPItem *item, SPDesktop *desktop);
 
 static SPShapeClass *parent_class;
 
@@ -96,8 +91,6 @@ sp_rect_class_init (SPRectClass *class)
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
 	item_class->write_transform = sp_rect_write_transform;
-	item_class->menu = sp_rect_menu;
-	item_class->knot_holder = sp_rect_knot_holder;
 
 	shape_class->set_shape = sp_rect_set_shape;
 }
@@ -502,111 +495,4 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	}
 }
 
-/* Generate context menu item section */
 
-static void
-sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget *i, *m, *w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Rect"));
-	m = gtk_menu_new ();
-	/* Link dialog */
-	w = gtk_menu_item_new_with_label (_("Rect Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_rect_rect_properties), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-static void
-sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
-{
-	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPRect");
-}
-
-static void
-sp_rect_rx_get (SPItem *item, NRPointF *p)
-{
-	SPRect *rect;
-
-	rect = SP_RECT (item);
-
-	p->x = rect->x.computed + rect->rx.computed;
-	p->y = rect->y.computed;
-}
-
-static void
-sp_rect_rx_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPRect *rect;
-
-	rect = SP_RECT(item);
-	
-	if (state & GDK_CONTROL_MASK) {
-		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
-		rect->rx.computed = rect->ry.computed = CLAMP (p->x - rect->x.computed, 0.0, temp);
-		rect->rx.set = rect->ry.set = TRUE;
-	} else {
-		rect->rx.computed = CLAMP (p->x - rect->x.computed, 0.0, rect->width.computed / 2.0);
-		rect->rx.set = TRUE;
-	}
-	sp_object_request_update ((SPObject *) rect, SP_OBJECT_MODIFIED_FLAG);
-}
-
-
-static void
-sp_rect_ry_get (SPItem *item, NRPointF *p)
-{
-	SPRect *rect;
-
-	rect = SP_RECT(item);
-
-	p->x = rect->x.computed;
-	p->y = rect->y.computed + rect->ry.computed;
-}
-
-static void
-sp_rect_ry_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPRect *rect;
-
-	rect = SP_RECT(item);
-	
-	if (state & GDK_CONTROL_MASK) {
-		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
-		rect->rx.computed = rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, temp);
-		rect->ry.set = rect->rx.set = TRUE;
-	} else {
-		rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, rect->height.computed / 2.0);
-		rect->ry.set = TRUE;
-	}
-	sp_object_request_update ((SPObject *) rect, SP_OBJECT_MODIFIED_FLAG);
-}
-
-
-static SPKnotHolder *
-sp_rect_knot_holder (SPItem *item, SPDesktop *desktop)
-{
-	SPRect *rect;
-	SPKnotHolder *knot_holder;
-
-	rect = SP_RECT (item);
-	knot_holder = sp_knot_holder_new (desktop, item, NULL);
-	
-	sp_knot_holder_add (knot_holder, sp_rect_rx_set, sp_rect_rx_get);
-	sp_knot_holder_add (knot_holder, sp_rect_ry_set, sp_rect_ry_get);
-	
-	return knot_holder;
-}

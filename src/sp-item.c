@@ -13,11 +13,9 @@
  */
 
 #include <config.h>
+
 #include <math.h>
 #include <string.h>
-
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
 
 #include "macros.h"
 #include "svg/svg.h"
@@ -27,15 +25,10 @@
 #include "attributes.h"
 #include "document.h"
 #include "uri-references.h"
-#include "desktop.h"
-#include "desktop-handles.h"
-#include "desktop-affine.h"
+
 #include "selection.h"
 #include "style.h"
 #include "helper/sp-intl.h"
-/* fixme: I do not like that (Lauris) */
-#include "dialogs/item-properties.h"
-#include "dialogs/object-attributes.h"
 #include "sp-root.h"
 #include "sp-anchor.h"
 #include "sp-clippath.h"
@@ -55,13 +48,6 @@ static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
-
-static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
-static void sp_item_select_this (GtkMenuItem *menuitem, SPItem *item);
-static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
-static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
-static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
 static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
 static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
@@ -90,8 +76,8 @@ sp_item_get_type (void)
 static void
 sp_item_class_init (SPItemClass *klass)
 {
-	GObjectClass * object_class;
-	SPObjectClass * sp_object_class;
+	GObjectClass *object_class;
+	SPObjectClass *sp_object_class;
 
 	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
@@ -105,8 +91,6 @@ sp_item_class_init (SPItemClass *klass)
 	sp_object_class->write = sp_item_write;
 
 	klass->description = sp_item_private_description;
-	klass->knot_holder = NULL;
-	klass->menu = sp_item_private_menu;
 	klass->snappoints = sp_item_private_snappoints;
 }
 
@@ -455,20 +439,6 @@ sp_item_bbox_desktop (SPItem *item, NRRectF *bbox)
 	nr_matrix_d_from_f (&i2dd, &i2d);
 
 	sp_item_invoke_bbox (item, bbox, &i2dd, TRUE);
-}
-
-SPKnotHolder *
-sp_item_knot_holder (SPItem *item, SPDesktop *desktop)
-{
-	SPKnotHolder *knot_holder = NULL;
-
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-
-	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->knot_holder)
-		knot_holder = ((SPItemClass *) G_OBJECT_GET_CLASS (item))->knot_holder (item, desktop);
-
-	return knot_holder;
 }
 
 static int
@@ -836,159 +806,6 @@ sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *affine)
 	nr_matrix_f_invert (affine, &i2dt);
 
 	return affine;
-}
-
-/* Generate context menu item section */
-
-static void
-sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget * i, * m, * w;
-	gboolean insensitive;
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Item"));
-	m = gtk_menu_new ();
-	/* Item dialog */
-	w = gtk_menu_item_new_with_label (_("Item Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Separator */
-	w = gtk_menu_item_new ();
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Select item */
-	w = gtk_menu_item_new_with_label (_("Select this"));
-	if (sp_selection_item_selected (SP_DT_SELECTION (desktop), item)) {
-		gtk_widget_set_sensitive (w, FALSE);
-	} else {
-		gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-		gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_select_this), item);
-	}
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Reset transformations */
-	w = gtk_menu_item_new_with_label (_("Reset transformation"));
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Toggle sensitivity */
-	insensitive = (sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive") != NULL);
-	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Create link */
-	w = gtk_menu_item_new_with_label (_("Create link"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_create_link), item);
-	gtk_widget_set_sensitive (w, !SP_IS_ANCHOR (item));
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-void
-sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	g_assert (SP_IS_ITEM (item));
-	g_assert (GTK_IS_MENU (menu));
-
-	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->menu)
-		((SPItemClass *) G_OBJECT_GET_CLASS(item))->menu (item, desktop, menu);
-}
-
-static void
-sp_item_properties (GtkMenuItem *menuitem, SPItem *item)
-{
-	SPDesktop *desktop;
-
-	g_assert (SP_IS_ITEM (item));
-
-	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-
-	sp_item_dialog ();
-}
-
-static void
-sp_item_select_this (GtkMenuItem *menuitem, SPItem *item)
-{
-	SPDesktop *desktop;
-
-	g_assert (SP_IS_ITEM (item));
-
-	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-}
-
-static void
-sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
-{
-	g_assert (SP_IS_ITEM (item));
-
-	sp_repr_set_attr (((SPObject *) item)->repr, "transform", NULL);
-	sp_document_done (SP_OBJECT_DOCUMENT (item));
-}
-
-static void
-sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
-{
-	const gchar * val;
-
-	g_assert (SP_IS_ITEM (item));
-
-	/* fixme: reprs suck */
-	val = sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive");
-	if (val != NULL) {
-		val = NULL;
-	} else {
-		val = "1";
-	}
-	sp_repr_set_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive", val);
-	sp_document_done (SP_OBJECT_DOCUMENT (item));
-}
-
-static void
-sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
-{
-	SPRepr *repr, *child;
-	SPObject *object;
-	SPDesktop *desktop;
-
-	g_assert (SP_IS_ITEM (item));
-	g_assert (!SP_IS_ANCHOR (item));
-
-	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	repr = sp_repr_new ("a");
-	sp_repr_add_child (SP_OBJECT_REPR (SP_OBJECT_PARENT (item)), repr, SP_OBJECT_REPR (item));
-	object = sp_document_lookup_id (SP_OBJECT_DOCUMENT (item), sp_repr_attr (repr, "id"));
-	g_return_if_fail (SP_IS_ANCHOR (object));
-	child = sp_repr_duplicate (SP_OBJECT_REPR (item));
-	sp_repr_unparent (SP_OBJECT_REPR (item));
-	sp_repr_add_child (repr, child, NULL);
-	sp_document_done (SP_OBJECT_DOCUMENT (object));
-
-	sp_object_attributes_dialog (object, "SPAnchor");
-
-	sp_selection_set_item (SP_DT_SELECTION (desktop), SP_ITEM (object));
 }
 
 /* Item views */

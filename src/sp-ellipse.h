@@ -45,6 +45,9 @@ struct _SPGenericEllipseClass {
 
 GType sp_genericellipse_get_type (void);
 
+/* This is technically priate by we need this in object edit (Lauris) */
+void sp_genericellipse_normalize (SPGenericEllipse *ellipse);
+
 /* SVG <ellipse> element */
 
 #define SP_TYPE_ELLIPSE (sp_ellipse_get_type ())

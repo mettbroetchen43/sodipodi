@@ -14,11 +14,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
 #include "sp-shape.h"
 
 G_BEGIN_DECLS
-
 
 #define SP_TYPE_SPIRAL            (sp_spiral_get_type ())
 #define SP_SPIRAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_SPIRAL, SPSpiral))

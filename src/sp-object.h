@@ -37,22 +37,22 @@
 #define SP_OBJECT_MODIFIED_CASCADE (SP_OBJECT_FLAGS_ALL & ~(SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))
 
 /* Generic */
-#define SP_OBJECT_IS_CLONED(o) (SP_OBJECT (o)->cloned)
+#define SP_OBJECT_IS_CLONED(o) (((SPObject *) (o))->cloned)
 
 /* Write flags */
 #define SP_OBJECT_WRITE_BUILD (1 << 0)
 #define SP_OBJECT_WRITE_SODIPODI (1 << 1)
 
 /* Convenience stuff */
-#define SP_OBJECT_ID(o) (SP_OBJECT (o)->id)
-#define SP_OBJECT_REPR(o) (SP_OBJECT (o)->repr)
-#define SP_OBJECT_DOCUMENT(o) (SP_OBJECT (o)->document)
-#define SP_OBJECT_PARENT(o) (SP_OBJECT (o)->parent)
-#define SP_OBJECT_NEXT(o) (SP_OBJECT (o)->next)
-#define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
-#define SP_OBJECT_STYLE(o) (SP_OBJECT (o)->style)
-#define SP_OBJECT_TITLE(o) sp_object_title_get (SP_OBJECT (o))
-#define SP_OBJECT_DESCRIPTION(o) sp_object_description_get (SP_OBJECT (o))
+#define SP_OBJECT_ID(o) (((SPObject *) (o))->id)
+#define SP_OBJECT_REPR(o) (((SPObject *)  (o))->repr)
+#define SP_OBJECT_DOCUMENT(o) (((SPObject *) (o))->document)
+#define SP_OBJECT_PARENT(o) (((SPObject *) (o))->parent)
+#define SP_OBJECT_NEXT(o) (((SPObject *) (o))->next)
+#define SP_OBJECT_HREFCOUNT(o) (((SPObject *) (o))->hrefcount)
+#define SP_OBJECT_STYLE(o) (((SPObject *) (o))->style)
+#define SP_OBJECT_TITLE(o) sp_object_title_get ((SPObject *) (o))
+#define SP_OBJECT_DESCRIPTION(o) sp_object_description_get ((SPObject *) (o))
 
 #include <glib-object.h>
 #include "xml/repr.h"
@@ -196,9 +196,10 @@ unsigned int sp_object_description_set (SPObject *object, const unsigned char *d
 
 /* Public */
 
-const guchar *sp_object_getAttribute (SPObject *object, const guchar *key, SPException *ex);
-void sp_object_setAttribute (SPObject *object, const guchar *key, const guchar *value, SPException *ex);
-void sp_object_removeAttribute (SPObject * object, const guchar *key, SPException *ex);
+const unsigned char *sp_object_tagName_get (const SPObject *object, SPException *ex);
+const unsigned char *sp_object_getAttribute (const SPObject *object, const unsigned char *key, SPException *ex);
+void sp_object_setAttribute (SPObject *object, const unsigned char *key, const unsigned char *value, SPException *ex);
+void sp_object_removeAttribute (SPObject *object, const unsigned char *key, SPException *ex);
 
 /* Style */
 

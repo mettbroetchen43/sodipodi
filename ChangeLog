@@ -1,3 +1,17 @@
+2003-05-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item.h: Removed ::menu and ::knot_holder virtual methods
+
+	* src/object-edit.c: New file, collect all knotholder methods from
+	item implementations here
+
+	* src/object-edit.h (sp_item_knot_holder): New file
+
+	* src/object-ui.c: New file, collect all Gtk related methods from
+	object implementations here
+
+	* src/object-ui.h (sp_object_menu): New file
+
 2003-05-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/print.c (sp_print_preview_document): Use ::set_preview if present

@@ -22,15 +22,10 @@
 
 #include <gdk/gdkkeys.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 
 #include "helper/sp-marshal.h"
-#include "forward.h"
-#include "sodipodi-private.h"
-#include "document.h"
-#include "sp-item.h"
-#include "display/nr-arena.h"
-#include "display/nr-arena-item.h"
 
 #include "icon.h"
 #include "button.h"

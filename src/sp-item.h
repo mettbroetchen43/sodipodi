@@ -15,13 +15,12 @@
 
 #include <libnr/nr-types.h>
 
-#include <gtk/gtkmenu.h>
-
 #include "helper/units.h"
 #include "display/nr-arena-forward.h"
+
 #include "forward.h"
+
 #include "sp-object.h"
-#include "knotholder.h"
 
 /* fixme: This is just placeholder */
 /*
@@ -102,9 +101,6 @@ struct _SPItemClass {
 	/* BBox union in given coordinate system */
 	void (* bbox) (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 
-	/* Give list of points for item to be controled */
-	SPKnotHolder *(* knot_holder) (SPItem *item, SPDesktop *desktop);
-
 	/* Printing method. Assumes ctm is set to item affine matrix */
 	/* fixme: Think about it, and maybe implement generic export method instead (Lauris) */
 	void (* print) (SPItem *item, SPPrintContext *ctx);
@@ -123,10 +119,6 @@ struct _SPItemClass {
 
 	/* Emit event, if applicable */
 	gint (* event) (SPItem *item, SPEvent *event);
-
-	/* Append to context menu */
-	/* fixme: i do not want this, so move to some other place (Lauris) */
-	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
 };
 
 /* Flag testing macros */
@@ -138,7 +130,6 @@ struct _SPItemClass {
 void sp_item_invoke_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int clear);
 void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags, unsigned int clear);
 
-SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 
@@ -169,10 +160,6 @@ NRMatrixF *sp_item_i2d_affine (SPItem *item, NRMatrixF *transform);
 void sp_item_set_i2d_affine (SPItem *item, const NRMatrixF *transform);
 
 NRMatrixF *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *transform);
-
-/* Context menu stuff */
-
-void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 /* Convert distances into SVG units */
 

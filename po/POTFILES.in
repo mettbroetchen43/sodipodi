@@ -23,6 +23,7 @@ src/dyna-draw-context.c
 src/event-context.c
 src/helper/kde.cpp
 src/module.c
+src/object-ui.c
 src/print.c
 src/rect-context.c
 src/select-context.c
@@ -36,14 +37,6 @@ src/interface.c
 src/main.c
 src/slideshow.c
 src/sodipodi.c
-src/sp-anchor.c
-src/sp-image.c
-src/sp-item-group.c
-src/sp-item.c
-src/sp-rect.c
-src/sp-shape.c
-src/sp-spiral.c
-src/sp-star.c
 src/sp-text.c
 src/toolbox.c
 src/verbs.c

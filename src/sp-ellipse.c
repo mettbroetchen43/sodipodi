@@ -68,8 +68,6 @@ static int sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size);
 
 static void sp_genericellipse_set_shape (SPShape *shape);
 
-static void sp_genericellipse_normalize (SPGenericEllipse *ellipse);
-
 static SPShapeClass *ge_parent_class;
 
 GType
@@ -276,7 +274,7 @@ sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size)
 	return pos;
 }
 
-static void
+void
 sp_genericellipse_normalize (SPGenericEllipse *ellipse)
 {
 	double diff;
@@ -291,27 +289,6 @@ sp_genericellipse_normalize (SPGenericEllipse *ellipse)
 		ellipse->end += diff - fmod(diff, SP_2PI) + SP_2PI;
 
 	/* Now we keep: 0 <= start < end <= 2*PI */
-}
-
-/*
- * return values:
- *   1  : inside
- *   0  : on the curves
- *   -1 : outside
- */
-static gint
-sp_genericellipse_side (SPGenericEllipse *ellipse, const NRPointF *p)
-{
-	gdouble dx, dy;
-	gdouble s;
-
-	dx = p->x - ellipse->cx.computed;
-	dy = p->y - ellipse->cy.computed;
-
-	s = dx * dx / (ellipse->rx.computed * ellipse->rx.computed) + dy * dy / (ellipse->ry.computed * ellipse->ry.computed);
-	if (s < 1.0) return 1;
-	if (s > 1.0) return -1;
-	return 0;
 }
 
 /* SVG <ellipse> element */
@@ -613,7 +590,6 @@ static void sp_arc_set (SPObject *object, unsigned int key, const unsigned char 
 static void sp_arc_modified (SPObject *object, guint flags);
 
 static gchar * sp_arc_description (SPItem * item);
-static SPKnotHolder *sp_arc_knot_holder (SPItem * item, SPDesktop *desktop);
 
 static SPGenericEllipseClass *arc_parent_class;
 
@@ -657,7 +633,6 @@ sp_arc_class_init (SPArcClass *class)
 	sp_object_class->modified = sp_arc_modified;
 
 	item_class->description = sp_arc_description;
-	item_class->knot_holder = sp_arc_knot_holder;
 }
 
 static void
@@ -933,94 +908,6 @@ sp_arc_position_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry)
 	ge->ry.computed = ry;
 
 	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_arc_start_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPGenericEllipse *ge;
-	SPArc *arc;
-	gdouble dx, dy;
-
-	ge = SP_GENERICELLIPSE (item);
-	arc = SP_ARC(item);
-
-	ge->closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
-
-	dx = p->x - ge->cx.computed;
-	dy = p->y - ge->cy.computed;
-
-	ge->start = atan2 (dy / ge->ry.computed, dx / ge->rx.computed);
-	if (state & GDK_CONTROL_MASK) {
-		ge->start = sp_round(ge->start, M_PI_4);
-	}
-	sp_genericellipse_normalize (ge);
-	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_arc_start_get (SPItem *item, NRPointF *p)
-{
-	SPGenericEllipse *ge;
-	SPArc *arc;
-
-	ge = SP_GENERICELLIPSE (item);
-	arc = SP_ARC (item);
-
-	sp_arc_get_xy (arc, ge->start, p);
-}
-
-static void
-sp_arc_end_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPGenericEllipse *ge;
-	SPArc *arc;
-	gdouble dx, dy;
-
-	ge = SP_GENERICELLIPSE (item);
-	arc = SP_ARC(item);
-
-	ge->closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
-
-	dx = p->x - ge->cx.computed;
-	dy = p->y - ge->cy.computed;
-	ge->end = atan2 (dy / ge->ry.computed, dx / ge->rx.computed);
-	if (state & GDK_CONTROL_MASK) {
-		ge->end = sp_round(ge->end, M_PI_4);
-	}
-	sp_genericellipse_normalize (ge);
-	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_arc_end_get (SPItem *item, NRPointF *p)
-{
-	SPGenericEllipse *ge;
-	SPArc *arc;
-
-	ge = SP_GENERICELLIPSE (item);
-	arc = SP_ARC (item);
-
-	sp_arc_get_xy (arc, ge->end, p);
-}
-
-static SPKnotHolder *
-sp_arc_knot_holder (SPItem *item, SPDesktop *desktop)
-{
-	SPArc *arc;
-	SPKnotHolder *knot_holder;
-
-	arc = SP_ARC (item);
-	knot_holder = sp_knot_holder_new (desktop, item, NULL);
-	
-	sp_knot_holder_add (knot_holder,
-			    sp_arc_start_set,
-			    sp_arc_start_get);
-	sp_knot_holder_add (knot_holder,
-			    sp_arc_end_set,
-			    sp_arc_end_get);
-	
-	return knot_holder;
 }
 
 void

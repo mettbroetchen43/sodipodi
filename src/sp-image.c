@@ -17,9 +17,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <libnr/nr-matrix.h>
-#include <glib.h>
-#include <libart_lgpl/art_affine.h>
-#include <gtk/gtk.h>
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "display/nr-arena-image.h"
 #include "svg/svg.h"
@@ -51,9 +49,7 @@ static gchar * sp_image_description (SPItem * item);
 static int sp_image_snappoints (SPItem *item, NRPointF *p, int size);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
-static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
-static void sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 #ifdef ENABLE_AUTOTRACE
 static void sp_image_autotrace (GtkMenuItem *menuitem, SPAnchor *anchor);
 static void autotrace_dialog(SPImage * img);
@@ -113,7 +109,6 @@ sp_image_class_init (SPImageClass * klass)
 	item_class->show = sp_image_show;
 	item_class->snappoints = sp_image_snappoints;
 	item_class->write_transform = sp_image_write_transform;
-	item_class->menu = sp_image_menu;
 }
 
 static void
@@ -602,50 +597,6 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	} else {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	}
-}
-
-/* Generate context menu item section */
-
-static void
-sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget *i, *m, *w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Image"));
-	m = gtk_menu_new ();
-	/* Link dialog */
-	w = gtk_menu_item_new_with_label (_("Image Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_image_image_properties), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-
-#ifdef ENABLE_AUTOTRACE
-	/* Autotrace dialog */
-	w = gtk_menu_item_new_with_label (_("Trace"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_image_autotrace), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-#endif /* Def: ENABLE_AUTOTRACE */
-
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-static void
-sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
-{
-	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPImage");
 }
 
 #ifdef ENABLE_AUTOTRACE

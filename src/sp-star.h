@@ -14,7 +14,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
 #include "sp-polygon.h"
 
 G_BEGIN_DECLS

@@ -18,16 +18,15 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <glib.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
+
 #include "svg/svg.h"
 #include "attributes.h"
-#include "sp-star.h"
 #include "desktop.h"
 #include "desktop-affine.h"
 #include "dialogs/object-attributes.h"
 #include "helper/sp-intl.h"
+
+#include "sp-star.h"
 
 #define noSTAR_VERBOSE
 
@@ -41,14 +40,10 @@ static SPRepr *sp_star_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_star_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_star_update (SPObject *object, SPCtx *ctx, guint flags);
 
-static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
 static int sp_star_snappoints (SPItem *item, NRPointF *p, int size);
-static void sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_star_set_shape (SPShape *shape);
-
-static void sp_star_star_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPPolygonClass *parent_class;
 
@@ -94,10 +89,8 @@ sp_star_class_init (SPStarClass *class)
 	sp_object_class->set = sp_star_set;
 	sp_object_class->update = sp_star_update;
 
-	item_class->knot_holder = sp_star_knot_holder;
 	item_class->description = sp_star_description;
 	item_class->snappoints = sp_star_snappoints;
-	item_class->menu = sp_star_menu;
 
 	shape_class->set_shape = sp_star_set_shape;
 }
@@ -301,104 +294,6 @@ sp_star_set_shape (SPShape *shape)
 	sp_curve_unref (c);
 }
 
-static void
-sp_star_knot1_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPStar *star;
-	gdouble dx, dy, arg1, darg1;
-
-	star = SP_STAR (item);
-
-	dx = p->x - star->cx;
-	dy = p->y - star->cy;
-
-        arg1 = atan2 (dy, dx);
-	darg1 = arg1 - star->arg1;
-        
-	if (state & GDK_CONTROL_MASK) {
-		star->r1    = hypot(dx, dy);
-	} else {		
-		star->r1    = hypot(dx, dy);
-		star->arg1  = arg1;
-		star->arg2 += darg1;
-	}
-	sp_object_request_update ((SPObject *) star, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_star_knot2_set (SPItem *item, const NRPointF *p, guint state)
-{
-	SPStar *star;
-	gdouble dx, dy;
-
-	star = SP_STAR (item);
-
-	dx = p->x - star->cx;
-	dy = p->y - star->cy;
-
-	if (state & GDK_CONTROL_MASK) {
-		star->r2   = hypot (dx, dy);
-		star->arg2 = star->arg1 + M_PI / star->sides;
-	} else {
-		star->r2   = hypot (dx, dy);
-		star->arg2 = atan2 (dy, dx);
-	}
-	sp_object_request_update ((SPObject *) star, SP_OBJECT_MODIFIED_FLAG);
-}
-
-static void
-sp_star_knot1_get (SPItem *item, NRPointF *p)
-{
-	SPStar *star;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (p != NULL);
-
-	star = SP_STAR(item);
-
-	sp_star_get_xy (star, SP_STAR_POINT_KNOT1, 0, p);
-}
-
-static void
-sp_star_knot2_get (SPItem *item, NRPointF *p)
-{
-	SPStar *star;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (p != NULL);
-
-	star = SP_STAR(item);
-
-	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, p);
-}
-
-static SPKnotHolder *
-sp_star_knot_holder (SPItem *item, SPDesktop *desktop)
-{
-	SPStar  *star;
-	SPKnotHolder *knot_holder;
-	
-	star = SP_STAR(item);
-
-#if 0
-	/* if you want to get parent knot_holder, do it */
-	if (SP_ITEM_CLASS(parent_class)->knot_holder)
-		knot_holder = (* SP_ITEM_CLASS(parent_class)->knot_holder) (item);
-#else
-	/* we don't need to get parent knot_holder */
-	knot_holder = sp_knot_holder_new (desktop, item, NULL);
-#endif
-
-	sp_knot_holder_add (knot_holder,
-			    sp_star_knot1_set,
-			    sp_star_knot1_get);
-	sp_knot_holder_add (knot_holder,
-			    sp_star_knot2_set,
-			    sp_star_knot2_get);
-
-	return knot_holder;
-}
-
 void
 sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble r1, gdouble r2, gdouble arg1, gdouble arg2)
 {
@@ -479,39 +374,5 @@ sp_star_get_xy (SPStar *star, SPStarPoint point, gint index, NRPointF *p)
 		p->y = star->r2 * sin (arg) + star->cy;
 		break;
 	}
-}
-
-/* Generate context menu item section */
-
-static void
-sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
-{
-	GtkWidget *i, *m, *w;
-
-	if (((SPItemClass *) parent_class)->menu)
-		((SPItemClass *) parent_class)->menu (item, desktop, menu);
-
-	/* Create toplevel menuitem */
-	i = gtk_menu_item_new_with_label (_("Star"));
-	m = gtk_menu_new ();
-	/* Link dialog */
-	w = gtk_menu_item_new_with_label (_("Star Properties"));
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_star_star_properties), item);
-	gtk_widget_show (w);
-	gtk_menu_append (GTK_MENU (m), w);
-	/* Show menu */
-	gtk_widget_show (m);
-
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
-
-	gtk_menu_append (menu, i);
-	gtk_widget_show (i);
-}
-
-static void
-sp_star_star_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
-{
-	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPStar");
 }
 
