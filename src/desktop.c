@@ -159,6 +159,7 @@ sp_desktop_new (SPDocument * document)
 	SPDesktop * desktop;
 	GtkWidget * dwidget;
 	GladeXML * xml;
+	GtkStyle * style;
 	GnomeCanvasGroup * root;
 	GnomeCanvasItem * ci;
 	GtkAdjustment * hadj, * vadj;
@@ -192,8 +193,14 @@ sp_desktop_new (SPDocument * document)
 	desktop->hruler = (GtkRuler *) glade_xml_get_widget (xml, "hruler");
 	desktop->vruler = (GtkRuler *) glade_xml_get_widget (xml, "vruler");
 
+	/* Setup Canvas */
+
 	desktop->canvas = (GnomeCanvas *) glade_xml_get_widget (xml, "canvas");
 	gtk_object_set_data (GTK_OBJECT (desktop->canvas), "SPDesktop", desktop);
+
+	style = gtk_style_copy (GTK_WIDGET (desktop->canvas)->style);
+	style->bg[GTK_STATE_NORMAL] = style->white;
+	gtk_widget_set_style (GTK_WIDGET (desktop->canvas), style);
 
 	root = gnome_canvas_root (desktop->canvas);
 

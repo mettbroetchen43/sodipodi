@@ -23,6 +23,8 @@
 #include "mdi-child.h"
 #include "file.h"
 
+#include "session.h"
+
 /* TODO - allow multiple file's to be specifed at startup? */
 
 /* Extract command line options which apply before we start up
@@ -51,6 +53,15 @@ static gchar *arg_to_file = NULL;
 
 struct poptOption options[] = {
   {
+        NULL,
+        'z',
+        POPT_ARG_NONE,
+        NULL,
+        0,
+        N_("Do not initialize GUI. NB! should be FIRST argument"),
+        NULL
+  },
+  {
         "file",
         'f',
         POPT_ARG_STRING,
@@ -76,7 +87,8 @@ struct poptOption options[] = {
         0,
         N_("Destination filename for print output"),
         N_("FILENAME")
-  }
+  },
+  { NULL, '\0', 0, NULL, 0 }
 };
 
 
@@ -84,6 +96,9 @@ struct poptOption options[] = {
 int
 main (int argc, char *argv[])
 {
+	GnomeClient * client;
+	GnomeClientFlags flags;
+	gchar * prefix;
 	SPDocument * doc;
 	SPMDIChild * child;
 
@@ -99,11 +114,18 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
 	textdomain (PACKAGE);
 
+#if 0
 	/* Check command line args before starting up gnome to avoid
 	 * requiring X start-up when using sodipodi to print a file
 	 */
 	extract_args (argc, argv,
 		      &sp_use_gui, &print_file, &filename, &to_filename);
+#endif
+	if (argc > 1) {
+		if (strcmp (argv[1], "-z") == 0) {
+			sp_use_gui = FALSE;
+		}
+	}
 
 	if (sp_use_gui) {
 
@@ -111,8 +133,12 @@ main (int argc, char *argv[])
 
 		gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv,
                                     	    options, 0, &pctx);
+#if 0
+		/* fixme: - leftover args */
 
-		setlocale (LC_NUMERIC, "C");
+		extract_args (argc, argv,
+			&sp_use_gui, &print_file, &filename, &to_filename);
+#endif
 
 		/* Would normally check args here, but extract_args has
 		 * already done that, and we just needed to use
@@ -122,7 +148,33 @@ main (int argc, char *argv[])
 
 		glade_gnome_init ();
 
+		/* We must set LC_NUMERIC to default, or otherwise
+		 * we'll end with localised SVG files :-(
+		 */
+
+		setlocale (LC_NUMERIC, "C");
+
+		/* Session management stuff */
+
+		client = gnome_master_client ();
+		gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
+			GTK_SIGNAL_FUNC (sp_sm_save_yourself), argv[0]);
+		gtk_signal_connect (GTK_OBJECT (client), "die",
+			GTK_SIGNAL_FUNC (sp_sm_die), NULL);
+
+		/* Create main MDI object */
+
 		sp_mdi_create ();
+
+		flags = gnome_client_get_flags (client);
+		if (flags & GNOME_CLIENT_RESTORED) {
+			prefix = gnome_client_get_config_prefix (client);
+			gnome_config_push_prefix (prefix);
+			sp_sm_restore_children ();
+			gnome_config_pop_prefix ();
+		}
+
+		/* fixme: */
 
 		if (filename == NULL) {
 
@@ -144,9 +196,18 @@ main (int argc, char *argv[])
 		gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
 		gnome_mdi_add_view (SODIPODI, GNOME_MDI_CHILD (child));
 
+		/* fixme: Is this right? */
+
+		poptFreeContext (pctx);
+
 		gtk_main ();
 
 	} else {
+
+		/* fixme: */
+
+		extract_args (argc, argv,
+			&sp_use_gui, &print_file, &filename, &to_filename);
 
 		/* printing a file */
 
@@ -196,7 +257,7 @@ extract_args (int argc, char *argv[],
   	*filename = NULL;
   	*to_filename = NULL;
 
-	while ((ch = getopt(argc,argv,"p:f:t:")) != EOF)  {
+	while ((ch = getopt(argc,argv,"p:f:t:z")) != EOF)  {
 
 		count++;
 

@@ -1,3 +1,9 @@
+2000-03-28  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Added cute little squirrel to /gnome/apps/Graphics ;-)
+    * src/desktop.c: Set canvas background to white
+    * Makefile.am: added samples to tarball
+
 2000-03-27  Lauris Kaplinski <lauris@ariman.ee>
 
     * main.c: Applied Yukihiro Nakai FreeBSD patches

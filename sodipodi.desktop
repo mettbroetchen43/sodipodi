@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sodipodi
+Name[et]=Sodipodi
+Comment=Vector illustrator
+Comment[et]=Vektorjoonistusprogramm
+Exec=sodipodi
+Terminal=0
+Type=Application
+Icon=sodipodi.png

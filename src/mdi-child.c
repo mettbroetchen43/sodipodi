@@ -124,8 +124,18 @@ sp_mdi_child_create_menus (GnomeMDIChild * mdi_child, GtkWidget * widget, gpoint
 static gchar *
 sp_mdi_child_get_config_string (GnomeMDIChild * mdi_child, gpointer data)
 {
-	g_print ("get_config_string\n");
-	return NULL;
+	SPMDIChild * spchild;
+	SPRepr * repr;
+	const gchar * docname;
+
+	spchild = SP_MDI_CHILD (mdi_child);
+
+	/* fixme: */
+	repr = SP_ITEM (spchild->document)->repr;
+	docname = sp_repr_attr (repr, "SP-DOCNAME");
+
+	if (docname != NULL) return g_strdup (docname);
+	return g_strdup ("Taara");
 }
 
 static GtkWidget *

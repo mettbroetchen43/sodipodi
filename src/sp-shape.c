@@ -10,8 +10,6 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 
-#include "helper/print-bpath.h"
-
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
 #include "sp-path-component.h"

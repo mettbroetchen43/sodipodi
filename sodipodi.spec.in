@@ -1,7 +1,7 @@
 # Note that this is NOT a relocatable package
 %define name		@PACKAGE@
 %define ver		@VERSION@
-%define  RELEASE	2
+%define  RELEASE	6
 %define  rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr
 %define sysconfdir	/etc
@@ -65,5 +65,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
 %{prefix}/bin/*
 %{prefix}/share/sodipodi/*
-
+%{prefix}/share/pixmaps/*
+%{prefix}/share/gnome/apps/Graphics/*
 

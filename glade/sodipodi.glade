@@ -1094,7 +1094,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>0.346821</position>
+	<position>0.335196</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -1118,7 +1118,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>0.198675</position>
+	<position>7.83069</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>0</left_attach>

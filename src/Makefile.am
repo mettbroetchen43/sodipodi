@@ -57,6 +57,7 @@ sodipodi_SOURCES = \
 	text-context.c text-context.h \
 	\
 	main.c \
+	session.c session.h \
 	help.c help.h \
 	sp-cursor.c sp-cursor.h \
 	dir-util.c dir-util.h \

@@ -2,6 +2,17 @@
 
 SUBDIRS = intl po macros src
 
+EXTRA_DIST = \
+	sodipodi.desktop \
+	sodipodi.png \
+	samples/*
+
+appicondir = $(datadir)/pixmaps
+appicon_DATA = sodipodi.png
+
+sysdir = $(datadir)/gnome/apps/Graphics
+sys_DATA = sodipodi.desktop
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/glade; then \
