@@ -1,3 +1,8 @@
+2002-11-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/seltrans.c (sp_sel_trans_stamp): Reversing still was not correct,
+	replaced it with explicit sort
+
 2002-11-20  Masatake YAMATO  <jet@gyve.org>
 
 	* src/seltrans.c (sp_sel_trans_stamp): The order of

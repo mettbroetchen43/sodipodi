@@ -403,13 +403,22 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	sp_sel_trans_update_handles (seltrans);
 }
 
+/* fixme: This is really bad, as we compare positoons for each stamp (Lauris) */
+/* fixme: IMHO the best way to keep sort cache would be to implement timestamping at last */
+
+static int
+sp_object_compare_position (SPObject *a, SPObject *b)
+{
+	return sp_repr_compare_position (a->repr, b->repr);
+}
+
 void
 sp_sel_trans_stamp (SPSelTrans * seltrans)
 {
 	/* stamping mode */
 	SPItem * original_item, * copy_item;
 	SPRepr * original_repr, * copy_repr;
-	const GSList * l, * l0;
+	GSList *l, *l0;
 
 	gchar tstr[80];
 	gdouble i2d[6], i2dnew[6];
@@ -419,9 +428,9 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	tstr[79] = '\0';
 	
 	if (!seltrans->empty) {
-		l  = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
-		l  = g_slist_copy(l);
-		l  = g_slist_reverse(l);
+		l  = (GSList *) sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+		l  = g_slist_copy (l);
+		l  = g_slist_sort (l, (GCompareFunc) sp_object_compare_position);
 		l0 = l;
 
 		while (l) {
