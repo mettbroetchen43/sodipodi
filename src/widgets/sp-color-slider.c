@@ -201,7 +201,7 @@ sp_color_slider_realize (GtkWidget *widget)
 	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
 	gdk_window_set_user_data (widget->window, widget);
 
-	/* fixme: styling? */
+	widget->style = gtk_style_attach (widget->style, widget->window);
 }
 
 static void
@@ -453,12 +453,12 @@ sp_color_slider_adjustment_value_changed (GtkAdjustment *adjustment, SPColorSlid
 			gfloat value;
 			value = slider->value;
 			slider->value = adjustment->value;
-			ax = value * cw - ARROW_SIZE / 2 + cx;
-			ay = ch - ARROW_SIZE + cy * 2;
-			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
-			ax = slider->value * cw - ARROW_SIZE / 2 + cx;
-			ay = ch - ARROW_SIZE + cy * 2;
-			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
+			ax = cx + value * cw - ARROW_SIZE / 2 - 1;
+			ay = ch - ARROW_SIZE + cy * 2 - 1;
+			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE + 2, ARROW_SIZE + 2);
+			ax = cx + slider->value * cw - ARROW_SIZE / 2 - 1;
+			ay = ch - ARROW_SIZE + cy * 2 - 1;
+			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE + 2, ARROW_SIZE + 2);
 		} else {
 			slider->value = adjustment->value;
 		}
@@ -543,7 +543,7 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 	}
 
 	/* Draw shadow */
-	gtk_draw_shadow (widget->style, px,
+	gtk_draw_box (widget->style, px,
 			 widget->state, GTK_SHADOW_IN,
 			 0 - wpaint.x, 0 - wpaint.y,
 			 warea.width, warea.height);

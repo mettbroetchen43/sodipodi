@@ -1,3 +1,10 @@
+2003-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/sp-color-slider.c (sp_color_slider_adjustment_value_changed): Add
+	some extra pixels around arrow dirtified area
+	(sp_color_slider_paint): Use gtk_draw_box instead of gtk_draw_shadow
+	(sp_color_slider_realize): Attach style
+
 2003-02-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sodipodi.c (sodipodi_load_config): Generic method by Bryce

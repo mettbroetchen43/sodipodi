@@ -51,6 +51,7 @@ static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static gchar * sp_shape_description (SPItem * item);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
@@ -67,13 +68,11 @@ sp_shape_get_type (void)
 	if (!shape_type) {
 		GTypeInfo shape_info = {
 			sizeof (SPShapeClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_shape_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPShape),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_shape_init,
 		};
 		shape_type = g_type_register_static (SP_TYPE_PATH, "SPShape", &shape_info, 0);
@@ -104,6 +103,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	item_class->print = sp_shape_print;
 	item_class->description = sp_shape_description;
 	item_class->show = sp_shape_show;
+	item_class->write_transform = sp_shape_write_transform;
 	item_class->menu = sp_shape_menu;
 
 	path_class->remove_comp = sp_shape_remove_comp;
@@ -281,7 +281,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
 		NRMatrixF ctm;
 		NRBPath bp;
-		nr_matrix_multiply_fdf (&ctm, (NRMatrixD *) comp->affine, &i2d);
+		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &i2d);
 		bp.path = comp->curve->bpath;
 		sp_print_fill (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
@@ -289,7 +289,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {
 		NRMatrixF ctm;
 		NRBPath bp;
-		nr_matrix_multiply_fdf (&ctm, (NRMatrixD *) comp->affine, &i2d);
+		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &i2d);
 		bp.path = comp->curve->bpath;
 		sp_print_stroke (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
@@ -325,6 +325,104 @@ sp_shape_show (SPItem *item, NRArena *arena, unsigned int key)
 	}
 
 	return arenaitem;
+}
+
+static void
+sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
+{
+	guchar t[80];
+
+	if (sp_svg_transform_write (t, 80, &item->transform)) {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	}
+#if 0
+	SPPath *path;
+	SPShape *shape;
+
+	double ex;
+	NRMatrixF rev;
+	gdouble px, py, sw, sh;
+	guchar c[80];
+	SPStyle *style;
+
+	path = SP_PATH (item);
+	shape = SP_SHAPE (item);
+
+	if (path->independent) {
+		NRMatrixF ctm;
+		NRPath dpath, spath;
+		SPCurve *curve;
+		ex = NR_MATRIX_DF_EXPANSION (transform);
+		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &item->transform);
+		spath.path = comp->curve->bpath;
+		nr_path_duplicate_transform (&dpath, &spath, &ctm);
+		
+	}
+
+	/* Calculate rect start in parent coords */
+	px = t->c[0] * rect->x.computed + t->c[2] * rect->y.computed + t->c[4];
+	py = t->c[1] * rect->x.computed + t->c[3] * rect->y.computed + t->c[5];
+
+	/* Clear translation */
+	t->c[4] = 0.0;
+	t->c[5] = 0.0;
+
+	/* Scalers */
+	sw = sqrt (t->c[0] * t->c[0] + t->c[1] * t->c[1]);
+	sh = sqrt (t->c[2] * t->c[2] + t->c[3] * t->c[3]);
+	if (sw > 1e-9) {
+		t->c[0] = t->c[0] / sw;
+		t->c[1] = t->c[1] / sw;
+	} else {
+		t->c[0] = 1.0;
+		t->c[1] = 0.0;
+	}
+	if (sh > 1e-9) {
+		t->c[2] = t->c[2] / sh;
+		t->c[3] = t->c[3] / sh;
+	} else {
+		t->c[2] = 0.0;
+		t->c[3] = 1.0;
+	}
+	/* fixme: Would be nice to preserve units here */
+	sp_repr_set_double_attribute (repr, "width", rect->width.computed * sw);
+	sp_repr_set_double_attribute (repr, "height", rect->height.computed * sh);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed * sw);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed * sh);
+
+	/* Find start in item coords */
+	nr_matrix_f_invert (&rev, t);
+	sp_repr_set_double_attribute (repr, "x", px * rev.c[0] + py * rev.c[2]);
+	sp_repr_set_double_attribute (repr, "y", px * rev.c[1] + py * rev.c[3]);
+
+	if (sp_svg_transform_write (c, 80, t)) {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", c);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+
+	/* And last but not least */
+	style = SP_OBJECT_STYLE (item);
+	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+		if (!NR_DF_TEST_CLOSE (sw, 1.0, NR_EPSILON_D) || !NR_DF_TEST_CLOSE (sh, 1.0, NR_EPSILON_D)) {
+			double scale;
+			guchar *str;
+			/* Scale changed, so we have to adjust stroke width */
+			scale = sqrt (fabs (sw * sh));
+			style->stroke_width.computed *= scale;
+			if (style->stroke_dash.n_dash != 0) {
+				int i;
+				for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= scale;
+				style->stroke_dash.offset *= scale;
+			}
+			str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
+			g_free (str);
+		}
+	}
+#endif
 }
 
 /* Generate context menu item section */
