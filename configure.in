@@ -206,7 +206,7 @@ dnl ******************************
 dnl Frontline/Autotrace support
 dnl ******************************
 ifdef([AM_PATH_FRONTLINE],
-[AM_PATH_FRONTLINE("0.5.1",[AC_DEFINE(ENABLE_AUTOTRACE)
+[AM_PATH_FRONTLINE("0.5.3",[AC_DEFINE(ENABLE_AUTOTRACE)
 SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
 SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
 AC_MSG_WARN([Cannot find Frontline library.])

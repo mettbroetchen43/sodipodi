@@ -905,10 +905,8 @@ load_splines(at_splines_type * splines)
 	umask(old_mask);
   
 	writer = at_output_get_handler_by_suffix ("svg");
-	at_splines_write(splines, tmp_fp, filename, AT_DEFAULT_DPI,
-			 writer, 
-			 handle_msg, 
-			 filename);
+	at_splines_write (writer, tmp_fp, filename, NULL, splines,
+			  handle_msg, filename);
 	fclose(tmp_fp);
   
 	load_file (filename);

@@ -1,3 +1,13 @@
+2002-10-09  Masatake YAMATO  <jet@gyve.org>
+
+	* src/sp-image.c (load_splines): changed the order
+	of arguments. this change is for frontline-0.5.3.
+
+	* configure.in: required frontline-0.5.3.
+	To build sodipodi with frontline you have to get:
+	http://autotrace.sourceforge.net/snapshots/autotrace-0.30.8.tar.gz
+	http://autotrace.sourceforge.net/frontline/frontline-0.5.3.tar.gz
+
 2002-10-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/gradient-position.c (sp_gradient_position_motion_notify): Do
