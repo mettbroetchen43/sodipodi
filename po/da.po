@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2000-04-15 05:06+0200\n"
-"PO-Revision-Date: 2000-04-16 03:30+0200\n"
+"PO-Revision-Date: 2000-04-25 03:30+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "Sodipodi"
 msgid "_New File"
 msgstr "_Ny fil"
 
-#: glade/sodipodi-glade.c:9
+#: glade/sodipodi-glade.c:9 glade/sodipodi-glade.c:192
 msgid "New View"
 msgstr "Ny visning"
 
@@ -60,14 +60,17 @@ msgid "_Export"
 msgstr "_Eksportér"
 
 #: glade/sodipodi-glade.c:12 glade/sodipodi-glade.c:25
+#: glade/sodipodi-glade.c:200
 msgid "_Drawing"
 msgstr "_Tegning"
 
 #: glade/sodipodi-glade.c:13 glade/sodipodi-glade.c:24
+#: glade/sodipodi-glade.c:199
 msgid "_Selection"
 msgstr "_Udvalg"
 
 #: glade/sodipodi-glade.c:14 glade/sodipodi-glade.c:26
+#: glade/sodipodi-glade.c:201
 msgid "_Page"
 msgstr "_Side"
 
@@ -83,304 +86,315 @@ msgstr "S_let"
 msgid "Node Editing..."
 msgstr "Node redigering..."
 
-#: glade/sodipodi-glade.c:18 glade/sodipodi-glade.c:83
+#: glade/sodipodi-glade.c:18 glade/sodipodi-glade.c:85
+#: glade/sodipodi-glade.c:193 glade/sodipodi-glade.c:210
 msgid "Zoom"
 msgstr "Zoom"
 
-#: glade/sodipodi-glade.c:19
+#: glade/sodipodi-glade.c:19 glade/sodipodi-glade.c:194
 msgid "Scale"
 msgstr "Skalér"
 
-#: glade/sodipodi-glade.c:20
+#: glade/sodipodi-glade.c:20 glade/sodipodi-glade.c:195
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi-glade.c:21
+#: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:196
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi-glade.c:22
+#: glade/sodipodi-glade.c:22 glade/sodipodi-glade.c:197
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi-glade.c:23
+#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:198
 msgid "_Interactive"
 msgstr "_Interaktiv"
 
 #: glade/sodipodi-glade.c:27
+msgid "Toggles desktop borders (rulers and scrollbars on and off)"
+msgstr "Skifter mellem skrivebordskanter (linealer og rullegradienr fra og til)"
+
+#: glade/sodipodi-glade.c:28
+msgid "Toggle borders"
+msgstr "Skift mellem kanter"
+
+#: glade/sodipodi-glade.c:29
 msgid "_Arrange"
 msgstr "_Arrangér"
 
-#: glade/sodipodi-glade.c:28
+#: glade/sodipodi-glade.c:30
 msgid "_Order"
 msgstr "_Rækkefølge"
 
-#: glade/sodipodi-glade.c:29
+#: glade/sodipodi-glade.c:31 glade/sodipodi-glade.c:183
 msgid "Bring to _Front"
 msgstr "Hent til _front"
 
-#: glade/sodipodi-glade.c:30
+#: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:184
 msgid "Send to _Back"
 msgstr "Send til _baggrund"
 
-#: glade/sodipodi-glade.c:31
+#: glade/sodipodi-glade.c:33 glade/sodipodi-glade.c:185
 msgid "Forward One"
 msgstr "Et niveau frem"
 
-#: glade/sodipodi-glade.c:32
+#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:186
 msgid "Back One"
 msgstr "Et niveau tilbage"
 
-#: glade/sodipodi-glade.c:33
+#: glade/sodipodi-glade.c:35
 msgid "Groups selected items"
 msgstr "Gruppér valgte opføringer"
 
-#: glade/sodipodi-glade.c:34
+#: glade/sodipodi-glade.c:36 glade/sodipodi-glade.c:187
 msgid "_Group"
 msgstr "_Gruppér"
 
-#: glade/sodipodi-glade.c:35
+#: glade/sodipodi-glade.c:37
 msgid "Ungroups selected group"
 msgstr "Deler op valgt gruppe"
 
-#: glade/sodipodi-glade.c:36
+#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:188
 msgid "_Ungroup"
 msgstr "Opdel gr_uppe"
 
-#: glade/sodipodi-glade.c:37
+#: glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:189
 msgid "_Combine"
 msgstr "_Kombinér"
 
-#: glade/sodipodi-glade.c:38
+#: glade/sodipodi-glade.c:40 glade/sodipodi-glade.c:190
 msgid "_Break Apart"
 msgstr "_Bryd op"
 
-#: glade/sodipodi-glade.c:39
+#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:191
 msgid "Convert to Cu_rves"
 msgstr "Konvertér til ku_rver"
 
-#: glade/sodipodi-glade.c:40
+#: glade/sodipodi-glade.c:42
 msgid "New File"
 msgstr "Ny fil"
 
-#: glade/sodipodi-glade.c:41
+#: glade/sodipodi-glade.c:43
 msgid "New"
 msgstr "Ny"
 
-#: glade/sodipodi-glade.c:42
+#: glade/sodipodi-glade.c:44
 msgid "Open File"
 msgstr "Åbn fil"
 
-#: glade/sodipodi-glade.c:43
+#: glade/sodipodi-glade.c:45
 msgid "Open"
 msgstr "Åbn"
 
-#: glade/sodipodi-glade.c:44
+#: glade/sodipodi-glade.c:46
 msgid "Save File"
 msgstr "gem fil"
 
-#: glade/sodipodi-glade.c:45
+#: glade/sodipodi-glade.c:47
 msgid "Save\t"
 msgstr "gem\t"
 
-#: glade/sodipodi-glade.c:46
+#: glade/sodipodi-glade.c:48
 msgid "Print file"
 msgstr "Udskriv fil"
 
-#: glade/sodipodi-glade.c:47
+#: glade/sodipodi-glade.c:49
 msgid "Print"
 msgstr "Skriv ud"
 
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:49
+#: glade/sodipodi-glade.c:50 glade/sodipodi-glade.c:51
 msgid "Undo"
 msgstr "Fortryd"
 
-#: glade/sodipodi-glade.c:50 glade/sodipodi-glade.c:51
+#: glade/sodipodi-glade.c:52 glade/sodipodi-glade.c:53
 msgid "Redo"
 msgstr "Genopret"
 
-#: glade/sodipodi-glade.c:52 glade/sodipodi-glade.c:93
+#: glade/sodipodi-glade.c:54 glade/sodipodi-glade.c:95
 msgid "Fill settings"
 msgstr "Indstillinger for fyld"
 
-#: glade/sodipodi-glade.c:53 glade/sodipodi-glade.c:94
-#: glade/sodipodi-glade.c:145
+#: glade/sodipodi-glade.c:55 glade/sodipodi-glade.c:96
+#: glade/sodipodi-glade.c:147 glade/sodipodi-glade.c:211
 msgid "Fill"
 msgstr "Fyld"
 
-#: glade/sodipodi-glade.c:54
+#: glade/sodipodi-glade.c:56
 msgid "Stroke settings"
 msgstr "Skravering indstilinger"
 
-#: glade/sodipodi-glade.c:55 glade/sodipodi-glade.c:96
-#: glade/sodipodi-glade.c:144
+#: glade/sodipodi-glade.c:57 glade/sodipodi-glade.c:98
+#: glade/sodipodi-glade.c:146 glade/sodipodi-glade.c:212
 msgid "Stroke"
 msgstr "Skravering"
 
-#: glade/sodipodi-glade.c:56
+#: glade/sodipodi-glade.c:58
 msgid "Font settings"
 msgstr "Indstillinger for skrifttyper"
 
-#: glade/sodipodi-glade.c:57 glade/sodipodi-glade.c:81
+#: glade/sodipodi-glade.c:59 glade/sodipodi-glade.c:83
+#: glade/sodipodi-glade.c:209 glade/sodipodi-glade.c:213
 msgid "Text"
 msgstr "Tekst"
 
-#: glade/sodipodi-glade.c:58
+#: glade/sodipodi-glade.c:60
 msgid "Delete selected object(s)"
 msgstr "Slet valgte objekt(er)"
 
-#: glade/sodipodi-glade.c:59 glade/sodipodi-glade.c:113
+#: glade/sodipodi-glade.c:61 glade/sodipodi-glade.c:115
+#: glade/sodipodi-glade.c:180
 msgid "Delete"
 msgstr "Slet"
 
-#: glade/sodipodi-glade.c:60
+#: glade/sodipodi-glade.c:62
 msgid "Duplicate selected object(s)"
 msgstr "Duplikér valgte objekt(er)"
 
-#: glade/sodipodi-glade.c:61
+#: glade/sodipodi-glade.c:63
 msgid "Duplic\t"
 msgstr "Duplik\t"
 
-#: glade/sodipodi-glade.c:62
+#: glade/sodipodi-glade.c:64
 msgid "Raise selected object(s) to top"
 msgstr "Hæv valgte objekt(er) op til toppen"
 
-#: glade/sodipodi-glade.c:63
+#: glade/sodipodi-glade.c:65
 msgid "To Front"
 msgstr "Til front"
 
-#: glade/sodipodi-glade.c:64
+#: glade/sodipodi-glade.c:66
 msgid "Lower selected object(s) to bottom"
 msgstr "Sænk valgt(e) objekt(er) til bunden"
 
-#: glade/sodipodi-glade.c:65
+#: glade/sodipodi-glade.c:67
 msgid "To Back"
 msgstr "Til baggrund"
 
-#: glade/sodipodi-glade.c:66
+#: glade/sodipodi-glade.c:68
 msgid "Raise one position"
 msgstr "Hæv et niveau"
 
-#: glade/sodipodi-glade.c:67
+#: glade/sodipodi-glade.c:69
 msgid "Up"
 msgstr "Op"
 
-#: glade/sodipodi-glade.c:68
+#: glade/sodipodi-glade.c:70
 msgid "Lower one position"
 msgstr "Sænk et niveau"
 
-#: glade/sodipodi-glade.c:69
+#: glade/sodipodi-glade.c:71
 msgid "Down"
 msgstr "Ned"
 
-#: glade/sodipodi-glade.c:70
+#: glade/sodipodi-glade.c:72
 msgid "Select and transform objects and groups"
 msgstr "Vælg og transformér objekter og grupper"
 
-#: glade/sodipodi-glade.c:71
+#: glade/sodipodi-glade.c:73 glade/sodipodi-glade.c:204
 msgid "Select"
 msgstr "Vælg"
 
-#: glade/sodipodi-glade.c:72
+#: glade/sodipodi-glade.c:74
 msgid "Edit objects using control nodes"
 msgstr "Redigér objekter ved brug af kontrolnoder"
 
-#: glade/sodipodi-glade.c:73
+#: glade/sodipodi-glade.c:75 glade/sodipodi-glade.c:205
 msgid "Node"
 msgstr "Node"
 
-#: glade/sodipodi-glade.c:74
+#: glade/sodipodi-glade.c:76
 msgid "Draw rectangles"
 msgstr "Tegn rektangler"
 
-#: glade/sodipodi-glade.c:75
+#: glade/sodipodi-glade.c:77
 msgid "Rect"
 msgstr "Rekt"
 
-#: glade/sodipodi-glade.c:76
+#: glade/sodipodi-glade.c:78
 msgid "Draw ellipses"
 msgstr "Tegn ellipser"
 
-#: glade/sodipodi-glade.c:77
+#: glade/sodipodi-glade.c:79 glade/sodipodi-glade.c:207
 msgid "Ellipse"
 msgstr "Elipse"
 
-#: glade/sodipodi-glade.c:78
+#: glade/sodipodi-glade.c:80
 msgid "Draw freeform lines"
 msgstr "Tegn frihåndslinjer"
 
-#: glade/sodipodi-glade.c:79
+#: glade/sodipodi-glade.c:81
 msgid "Draw\t"
 msgstr "Tegn\t"
 
-#: glade/sodipodi-glade.c:80
+#: glade/sodipodi-glade.c:82
 msgid "Write text"
 msgstr "Skriv tekst"
 
-#: glade/sodipodi-glade.c:82
+#: glade/sodipodi-glade.c:84
 msgid "Left button zooms in, right out"
 msgstr "Venstre knap zoomer ind, højre ud"
 
-#: glade/sodipodi-glade.c:84
+#: glade/sodipodi-glade.c:86
 msgid "Copyright Lauris Kaplinski 1999."
 msgstr "Copyright Lauris Kaplinski 1999."
 
-#: glade/sodipodi-glade.c:85
+#: glade/sodipodi-glade.c:87
 msgid ""
 "A Vector Drawing Program.\n"
 "Released under GPL"
 msgstr "Et vektorbaseret tegneprogramUdgivet under GPL"
 
-#: glade/sodipodi-glade.c:87
+#: glade/sodipodi-glade.c:89
 msgid "Fill type"
 msgstr "Fyldtype"
 
-#: glade/sodipodi-glade.c:88
+#: glade/sodipodi-glade.c:90
 msgid "None"
 msgstr "Ingen"
 
-#: glade/sodipodi-glade.c:89
+#: glade/sodipodi-glade.c:91
 msgid "Color"
 msgstr "Farve"
 
-#: glade/sodipodi-glade.c:90
+#: glade/sodipodi-glade.c:92
 msgid "Gradient"
 msgstr "Gradient"
 
-#: glade/sodipodi-glade.c:91
+#: glade/sodipodi-glade.c:93
 msgid "Special"
 msgstr "Speciel"
 
-#: glade/sodipodi-glade.c:92
+#: glade/sodipodi-glade.c:94
 msgid "Fractal"
 msgstr "Fraktal"
 
-#: glade/sodipodi-glade.c:95
+#: glade/sodipodi-glade.c:97
 msgid "Not here"
 msgstr "Ikke her"
 
-#: glade/sodipodi-glade.c:97
+#: glade/sodipodi-glade.c:99
 msgid "window1"
 msgstr "vindue1"
 
-#: glade/sodipodi-glade.c:98
+#: glade/sodipodi-glade.c:100
 msgid "Color settings"
 msgstr "Farveindstilliner"
 
-#: glade/sodipodi-glade.c:99
+#: glade/sodipodi-glade.c:101
 msgid "Gradient settings"
 msgstr "Gradientindstillinger"
 
-#: glade/sodipodi-glade.c:100
+#: glade/sodipodi-glade.c:102
 msgid "Preview (object binding box)"
 msgstr "Forhåndsvisning (objektbindingsboks)"
 
-#: glade/sodipodi-glade.c:101 glade/sodipodi-glade.c:102
-#: glade/sodipodi-glade.c:124
+#: glade/sodipodi-glade.c:103 glade/sodipodi-glade.c:104
+#: glade/sodipodi-glade.c:126
 msgid "Valige värv"
 msgstr "Valige värv"
 
-#: glade/sodipodi-glade.c:103
+#: glade/sodipodi-glade.c:105
 msgid ""
 "Linear\n"
 "Radial\n"
@@ -388,88 +402,88 @@ msgstr ""
 "Lineær\n"
 "Radial\n"
 
-#: glade/sodipodi-glade.c:106
+#: glade/sodipodi-glade.c:108
 msgid "Color 1"
 msgstr "Farve 1"
 
-#: glade/sodipodi-glade.c:107
+#: glade/sodipodi-glade.c:109
 msgid "Color2"
 msgstr "Farve2"
 
-#: glade/sodipodi-glade.c:108
+#: glade/sodipodi-glade.c:110
 msgid "Document coordinates"
 msgstr "Dokumentkoordinater"
 
-#: glade/sodipodi-glade.c:109
+#: glade/sodipodi-glade.c:111
 msgid "Fractal settings"
 msgstr "Fraktalindstillinger"
 
-#: glade/sodipodi-glade.c:110
+#: glade/sodipodi-glade.c:112
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
-#: glade/sodipodi-glade.c:111
+#: glade/sodipodi-glade.c:113
 msgid "Node Edit"
 msgstr "Noderedigering"
 
-#: glade/sodipodi-glade.c:112
+#: glade/sodipodi-glade.c:114
 msgid "Add"
 msgstr "Læg til"
 
-#: glade/sodipodi-glade.c:114
+#: glade/sodipodi-glade.c:116
 msgid "Break"
 msgstr "Bryd"
 
-#: glade/sodipodi-glade.c:115
+#: glade/sodipodi-glade.c:117
 msgid "To Line"
 msgstr "Til linje"
 
-#: glade/sodipodi-glade.c:116
+#: glade/sodipodi-glade.c:118
 msgid "To Curve"
 msgstr "Til kurve"
 
-#: glade/sodipodi-glade.c:117 glade/sodipodi-glade.c:136
+#: glade/sodipodi-glade.c:119 glade/sodipodi-glade.c:138
 msgid "Join"
 msgstr "Sæt sammen"
 
-#: glade/sodipodi-glade.c:118
+#: glade/sodipodi-glade.c:120
 msgid "Cusp"
 msgstr "Cusp"
 
-#: glade/sodipodi-glade.c:119
+#: glade/sodipodi-glade.c:121
 msgid "Smooth"
 msgstr "Udjævn"
 
-#: glade/sodipodi-glade.c:120
+#: glade/sodipodi-glade.c:122
 msgid "Symmetric"
 msgstr "Symmetrisk"
 
-#: glade/sodipodi-glade.c:121
+#: glade/sodipodi-glade.c:123
 msgid "Close"
 msgstr "Luk"
 
-#: glade/sodipodi-glade.c:122
+#: glade/sodipodi-glade.c:124
 msgid "General"
 msgstr "Generelt"
 
-#: glade/sodipodi-glade.c:123
+#: glade/sodipodi-glade.c:125
 msgid "Is stroked"
 msgstr "Er skraveret"
 
-#: glade/sodipodi-glade.c:125
+#: glade/sodipodi-glade.c:127
 msgid "Stroke color"
 msgstr "Skraveringsfarve"
 
-#: glade/sodipodi-glade.c:126 glade/sodipodi-glade.c:159
-#: glade/sodipodi-glade.c:162
+#: glade/sodipodi-glade.c:128 glade/sodipodi-glade.c:161
+#: glade/sodipodi-glade.c:164
 msgid "Width"
 msgstr "Bredde"
 
-#: glade/sodipodi-glade.c:127
+#: glade/sodipodi-glade.c:129
 msgid "Stroke width"
 msgstr "Skraveringsbredde"
 
-#: glade/sodipodi-glade.c:128
+#: glade/sodipodi-glade.c:130
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -481,118 +495,159 @@ msgstr ""
 "punkter\n"
 "tommer\n"
 
-#: glade/sodipodi-glade.c:133
+#: glade/sodipodi-glade.c:135
 msgid "Scale with image"
 msgstr "Skalér med billede"
 
-#: glade/sodipodi-glade.c:134
+#: glade/sodipodi-glade.c:136
 msgid "Behind fill"
 msgstr "Baggrundsfyld"
 
-#: glade/sodipodi-glade.c:135
+#: glade/sodipodi-glade.c:137
 msgid "Join & cap"
 msgstr "Saml og Cap"
 
-#: glade/sodipodi-glade.c:137
+#: glade/sodipodi-glade.c:139
 msgid "Cap"
 msgstr "Cap"
 
-#: glade/sodipodi-glade.c:138
+#: glade/sodipodi-glade.c:140
 msgid "miter"
 msgstr "miter"
 
-#: glade/sodipodi-glade.c:139
+#: glade/sodipodi-glade.c:141
 msgid "butt"
 msgstr "afkort"
 
-#: glade/sodipodi-glade.c:140 glade/sodipodi-glade.c:142
+#: glade/sodipodi-glade.c:142 glade/sodipodi-glade.c:144
 msgid "round"
 msgstr "rund"
 
-#: glade/sodipodi-glade.c:141
+#: glade/sodipodi-glade.c:143
 msgid "bevel"
 msgstr "bevel"
 
-#: glade/sodipodi-glade.c:143
+#: glade/sodipodi-glade.c:145
 msgid "square"
 msgstr "kvadrat"
 
-#: glade/sodipodi-glade.c:146
+#: glade/sodipodi-glade.c:148
 msgid "Export picture to png"
 msgstr "Eksportér billede til png"
 
-#: glade/sodipodi-glade.c:147
+#: glade/sodipodi-glade.c:149
 msgid "Set dimensions"
 msgstr "Sæt dimensioner"
 
-#: glade/sodipodi-glade.c:148
+#: glade/sodipodi-glade.c:150 glade/sodipodi-glade.c:176
 msgid "Drawing"
 msgstr "Tegning"
 
-#: glade/sodipodi-glade.c:149
+#: glade/sodipodi-glade.c:151 glade/sodipodi-glade.c:178
 msgid "Page"
 msgstr "Side"
 
-#: glade/sodipodi-glade.c:150
+#: glade/sodipodi-glade.c:152 glade/sodipodi-glade.c:177
+#: glade/sodipodi-glade.c:181
 msgid "Selection"
 msgstr "Valg"
 
-#: glade/sodipodi-glade.c:151
+#: glade/sodipodi-glade.c:153
 msgid "Where to export"
 msgstr "Eksportmål"
 
-#: glade/sodipodi-glade.c:152
+#: glade/sodipodi-glade.c:154
 msgid "Filename:"
 msgstr "Filnavn:"
 
-#: glade/sodipodi-glade.c:153
+#: glade/sodipodi-glade.c:155
 msgid "Png file name"
 msgstr "Png filnavn"
 
-#: glade/sodipodi-glade.c:154
+#: glade/sodipodi-glade.c:156
 msgid "Image size"
 msgstr "Billedstørrelse"
 
-#: glade/sodipodi-glade.c:155
+#: glade/sodipodi-glade.c:157
 msgid "X0"
 msgstr "X0"
 
-#: glade/sodipodi-glade.c:156
+#: glade/sodipodi-glade.c:158
 msgid "Y0"
 msgstr "Y0"
 
-#: glade/sodipodi-glade.c:157
+#: glade/sodipodi-glade.c:159
 msgid "X1"
 msgstr "X1"
 
-#: glade/sodipodi-glade.c:158
+#: glade/sodipodi-glade.c:160
 msgid "Y1"
 msgstr "Y1"
 
-#: glade/sodipodi-glade.c:160 glade/sodipodi-glade.c:163
+#: glade/sodipodi-glade.c:162 glade/sodipodi-glade.c:165
 msgid "Height"
 msgstr "Højde"
 
-#: glade/sodipodi-glade.c:161
+#: glade/sodipodi-glade.c:163
 msgid "Exported as"
 msgstr "Eksporteret som"
 
-#: glade/sodipodi-glade.c:164 glade/sodipodi-glade.c:165
+#: glade/sodipodi-glade.c:166 glade/sodipodi-glade.c:167
 msgid "pixels"
 msgstr "piksler"
 
-#: glade/sodipodi-glade.c:166 glade/sodipodi-glade.c:167
+#: glade/sodipodi-glade.c:168 glade/sodipodi-glade.c:169
 msgid "dpi"
 msgstr "dpi"
 
-#: glade/sodipodi-glade.c:168
+#: glade/sodipodi-glade.c:170
 msgid "Lock aspect ratio"
 msgstr "Lås aspektraten"
 
-#: glade/sodipodi-glade.c:169
+#: glade/sodipodi-glade.c:171
 msgid "1.0MB"
 msgstr "1.0Mb"
 
-#: glade/sodipodi-glade.c:170
+#: glade/sodipodi-glade.c:172
 msgid "Uncompressed file size:"
 msgstr "Ukomprimeret filstørrelse:"
+
+#: glade/sodipodi-glade.c:173
+msgid "_Uus"
+msgstr "_Uus"
+
+#: glade/sodipodi-glade.c:174
+msgid "Import"
+msgstr "Importér"
+
+#: glade/sodipodi-glade.c:175
+msgid "Export"
+msgstr "Eksportér"
+
+#: glade/sodipodi-glade.c:179
+msgid "Duplicate"
+msgstr "Duplikér"
+
+#: glade/sodipodi-glade.c:182
+msgid "Order"
+msgstr "Rækkefølge"
+
+#: glade/sodipodi-glade.c:202
+msgid "Toggle Borders"
+msgstr "Skift kanter"
+
+#: glade/sodipodi-glade.c:203
+msgid "Drawing Context"
+msgstr "Tegnesammenhæng"
+
+#: glade/sodipodi-glade.c:206
+msgid "Rectangle"
+msgstr "Firkant"
+
+#: glade/sodipodi-glade.c:208
+msgid "Freehand"
+msgstr "Frihånd"
+
+#: glade/sodipodi-glade.c:214
+msgid "Nodes"
+msgstr "Noder"
