@@ -1,3 +1,7 @@
+2003-07-23  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
 2003-07-21  Christian Neumair  <chris@gnome-de.org>
 
 	* src/verbs.c: Fix another typo (preciely->precisely).
