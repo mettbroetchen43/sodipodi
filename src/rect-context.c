@@ -342,25 +342,17 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 }
 
 static void
-sp_rect_finish (SPRectContext * rc)
+sp_rect_finish (SPRectContext *rc)
 {
 	if (rc->item != NULL) {
-		SPDesktop * desktop;
-		SPRect * rect;
-		SPRepr * repr;
+		SPDesktop * dt;
 
-		desktop = SP_EVENT_CONTEXT (rc)->desktop;
-		rect = SP_RECT (rc->item);
-		repr = SP_OBJECT (rc->item)->repr;
+		dt = SP_EVENT_CONTEXT_DESKTOP (rc);
 
-		/* fixme: Set shape or some other convenience method */
-		sp_repr_set_double_attribute (repr, "x", rect->x.computed);
-		sp_repr_set_double_attribute (repr, "y", rect->y.computed);
-		sp_repr_set_double_attribute (repr, "width", rect->width.computed);
-		sp_repr_set_double_attribute (repr, "height", rect->height.computed);
+		sp_object_invoke_write (SP_OBJECT (rc->item), SP_OBJECT_REPR (rc->item), SP_OBJECT_WRITE_SODIPODI);
 
-		sp_selection_set_item (SP_DT_SELECTION (desktop), rc->item);
-		sp_document_done (SP_DT_DOCUMENT (desktop));
+		sp_selection_set_item (SP_DT_SELECTION (dt), rc->item);
+		sp_document_done (SP_DT_DOCUMENT (dt));
 
 		rc->item = NULL;
 	}

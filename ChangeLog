@@ -1,5 +1,10 @@
 2003-02-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-rect.c (sp_rect_set): Accept 0.0 as valid for x, y, width and height
+	(sp_rect_write): Use 0.0 as default for rx, ry
+
+	* src/rect-context.c (sp_rect_finish): Use ::write to be sure
+
 	* src/display/nr-arena-shape.c (nr_arena_shape_clip): OR masks
 
 	* src/sp-defs.c (sp_defs_update): Implement

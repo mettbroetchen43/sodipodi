@@ -160,25 +160,25 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_WIDTH:
-		if (!sp_svg_length_read (value, &rect->width) || (rect->width.value <= 0.0)) {
+		if (!sp_svg_length_read (value, &rect->width) || (rect->width.value < 0.0)) {
 			sp_svg_length_unset (&rect->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_HEIGHT:
-		if (!sp_svg_length_read (value, &rect->height) || (rect->width.value <= 0.0)) {
+		if (!sp_svg_length_read (value, &rect->height) || (rect->width.value < 0.0)) {
 			sp_svg_length_unset (&rect->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RX:
-		if (!sp_svg_length_read (value, &rect->rx) || (rect->rx.value <= 0.0)) {
+		if (!sp_svg_length_read (value, &rect->rx) || (rect->rx.value < 0.0)) {
 			sp_svg_length_unset (&rect->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RY:
-		if (!sp_svg_length_read (value, &rect->ry) || (rect->ry.value <= 0.0)) {
+		if (!sp_svg_length_read (value, &rect->ry) || (rect->ry.value < 0.0)) {
 			sp_svg_length_unset (&rect->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
@@ -227,8 +227,8 @@ sp_rect_write (SPObject *object, SPRepr *repr, guint flags)
 
 	sp_repr_set_double (repr, "width", rect->width.computed);
 	sp_repr_set_double (repr, "height", rect->height.computed);
-	sp_repr_set_double_default (repr, "rx", rect->rx.computed, 0.0, 1e-6);
-	sp_repr_set_double_default (repr, "ry", rect->ry.computed, 0.0, 1e-6);
+	if (rect->rx.set) sp_repr_set_double (repr, "rx", rect->rx.computed);
+	if (rect->ry.set) sp_repr_set_double (repr, "ry", rect->ry.computed);
 	sp_repr_set_double (repr, "x", rect->x.computed);
 	sp_repr_set_double (repr, "y", rect->y.computed);
 
