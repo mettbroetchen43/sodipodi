@@ -132,8 +132,8 @@ void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 
 /* Shows/Hides item on given arena display list */
 unsigned int sp_item_display_key_new (unsigned int numkeys);
-NRArenaItem *sp_item_show (SPItem *item, NRArena *arena, unsigned int key);
-void sp_item_hide (SPItem *item, unsigned int key);
+NRArenaItem *sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key);
+void sp_item_invoke_hide (SPItem *item, unsigned int key);
 
 int sp_item_snappoints (SPItem *item, NRPointF *points, int size);
 

@@ -311,7 +311,8 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 			arena = g_object_new (NR_TYPE_ARENA, NULL);
 			/* Create ArenaItem and set transform */
 			visionkey = sp_item_display_key_new (1);
-			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey);
+			/* fixme: Memory manage root if needed (Lauris) */
+			root = sp_item_invoke_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey);
 			/* Update to renderable state */
 			nr_matrix_d_set_scale (&gc.transform, 0.8, 0.8);
 			nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);

@@ -26,7 +26,6 @@ struct _SPMarkerView {
 	SPMarkerView *next;
 	unsigned int key;
 	unsigned int size;
-	unsigned int length;
 	NRArenaItem *items[1];
 };
 
@@ -44,7 +43,7 @@ static void sp_marker_private_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
-static void sp_marker_view_erase (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems);
+static void sp_marker_view_remove (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems);
 
 static SPGroupClass *parent_class;
 
@@ -129,13 +128,15 @@ sp_marker_release (SPObject *object)
 
 	marker = (SPMarker *) object;
 
-	if (((SPObjectClass *) parent_class)->release)
-		((SPObjectClass *) parent_class)->release (object);
-
 	while (marker->views) {
 		/* Destroy all NRArenaitems etc. */
-		sp_marker_view_erase (marker, marker->views, FALSE);
+		/* Parent class ::hide method */
+		((SPItemClass *) parent_class)->hide ((SPItem *) marker, marker->views->key);
+		sp_marker_view_remove (marker, marker->views, TRUE);
 	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void
@@ -431,7 +432,7 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 		NRMatrixF vbf;
 		int i;
 		nr_matrix_f_from_d (&vbf, &marker->c2p);
-		for (i = 0; i < v->length; i++) {
+		for (i = 0; i < v->size; i++) {
 			if (v->items[i]) nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->items[i]), &vbf);
 		}
 	}
@@ -521,69 +522,31 @@ sp_marker_print (SPItem *item, SPPrintContext *ctx)
 	/* Break propagation */
 }
 
+/* fixme: Remove link if zero-sized (Lauris) */
+
 void
 sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size)
 {
-	SPMarkerView *ref, *view, *new;
+	SPMarkerView *view;
 	int i;
 
-	ref = NULL;
-	view = NULL;
-	if (marker->views) {
-		if (marker->views->key == key) {
-			view = marker->views;
-		} else {
-			ref = marker->views;
-			while (ref->next && (ref->next->key != key)) ref = ref->next;
-			view = ref->next;
-		}
+	for (view = marker->views; view != NULL; view = view->next) {
+		if (view->key == key) break;
 	}
-	if (view) {
-		if (view->size < size) {
-			/* Free old view and allocate new */
-			/* hide all children */
-#if 0
-			sp_marker_hide_children (marker, view->key);
-#endif
-			/* Destroy container items */
-			for (i = 0; i < view->size; i++) {
-				if (view->items[i]) nr_arena_item_destroy (view->items[i]);
-			}
-			/* Remove link */
-			if (ref) {
-				ref->next = view->next;
-			} else {
-				marker->views = view->next;
-			}
-			/* And free it */
-			free (view);
-		}
+	if (view && (view->size != size)) {
+		/* Free old view and allocate new */
+		/* Parent class ::hide method */
+		((SPItemClass *) parent_class)->hide ((SPItem *) marker, key);
+		sp_marker_view_remove (marker, view, TRUE);
+		view = NULL;
 	}
-	/* fixme: Remove link if zero-sized (Lauris) */
-	new = malloc (sizeof (SPMarkerView) + (size - 1) * sizeof (NRArenaItem *));
-	if (ref) {
-		ref->next = new;
-	} else {
-		marker->views = new;
-	}
-	if (view) {
-		new->next = view->next;
-	} else {
-		new->next = NULL;
-	}
-	new->key = key;
-	new->size = size;
-	if (view) {
-		int clen;
-		clen = MIN (new->size, view->size);
-		for (i = 0; i < clen; i++) new->items[i] = view->items[i];
-		for (i = clen; i < new->size; i++) new->items[i] = NULL;
-		for (i = clen; i < view->size; i++) {
-			nr_arena_item_destroy (view->items[i]);
-		}
-		free (view);
-	} else {
-		for (i = 0; i < size; i++) new->items[i] = NULL;
+	if (!view) {
+		view = malloc (sizeof (SPMarkerView) + (size - 1) * sizeof (NRArenaItem *));
+		for (i = 0; i < size; i++) view->items[i] = NULL;
+		view->next = marker->views;
+		marker->views = view;
+		view->key = key;
+		view->size = size;
 	}
 }
 
@@ -598,12 +561,13 @@ sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 		if (v->key == key) {
 			if (pos >= v->size) return NULL;
 			if (!v->items[pos]) {
+				/* Parent class ::show method */
 				v->items[pos] = ((SPItemClass *) parent_class)->show ((SPItem *) marker, parent->arena, key);
 				if (v->items[pos]) {
 					NRMatrixF vbf;
 					/* fixme: Position (Lauris) */
 					nr_arena_item_add_child (parent, v->items[pos], NULL);
-					nr_arena_item_unref (v->items[pos]);
+					/* nr_arena_item_unref (v->items[pos]); */
 					nr_matrix_f_from_d (&vbf, &marker->c2p);
 					nr_arena_group_set_child_transform ((NRArenaGroup *) v->items[pos], &vbf);
 				}
@@ -632,29 +596,22 @@ sp_marker_hide (SPMarker *marker, unsigned int key)
 {
 	SPMarkerView *v;
 
-	for (v = marker->views; v != NULL; v = v->next) {
+	v = marker->views;
+	while (v != NULL) {
+		SPMarkerView *next;
+		next = v->next;
 		if (v->key == key) {
-			int i;
-			for (i = 0; i < v->size; i++) {
-				if (v->items[i]) {
-					SPGroup *group;
-					SPObject *o;
-					group = SP_GROUP (marker);
-					for (o = group->children; o != NULL; o = o->next) {
-						if (SP_IS_ITEM (o)) {
-							sp_item_hide ((SPItem *) o, key);
-						}
-					}
-				}
-			}
-			sp_marker_view_erase (marker, v, TRUE);
+			/* Parent class ::hide method */
+			((SPItemClass *) parent_class)->hide ((SPItem *) marker, key);
+			sp_marker_view_remove (marker, v, TRUE);
 			return;
 		}
+		v = next;
 	}
 }
 
 static void
-sp_marker_view_erase (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems)
+sp_marker_view_remove (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems)
 {
 	int i;
 	if (view == marker->views) {
@@ -666,7 +623,8 @@ sp_marker_view_erase (SPMarker *marker, SPMarkerView *view, unsigned int destroy
 	}
 	if (destroyitems) {
 		for (i = 0; i < view->size; i++) {
-			if (view->items[i]) nr_arena_item_destroy (view->items[i]);
+			/* We have to walk through the whole array because there may be hidden items */
+			if (view->items[i]) nr_arena_item_unref (view->items[i]);
 		}
 	}
 	g_free (view);

@@ -853,6 +853,7 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 #endif
 
 #include "display/nr-arena.h"
+#include "display/nr-arena-item.h"
 
 /* fixme: Sooner or later we want SPPrintContext subclasses (Lauris) */
 
@@ -918,7 +919,7 @@ sp_print_document (SPDocument *doc)
 	mod->base = SP_ITEM (sp_document_root (doc));
 	mod->arena = g_object_new (NR_TYPE_ARENA, NULL);
 	mod->dkey = sp_item_display_key_new (1);
-	mod->root = sp_item_show (mod->base, mod->arena, mod->dkey);
+	mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey);
 
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
 		ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup (mod);
@@ -933,11 +934,12 @@ sp_print_document (SPDocument *doc)
 			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->finish (mod);
 	}
 
-	sp_item_hide (mod->base, mod->dkey);
+	sp_item_invoke_hide (mod->base, mod->dkey);
 	mod->base = NULL;
+	nr_arena_item_unref (mod->root);
+	mod->root = NULL;
 	g_object_unref (G_OBJECT (mod->arena));
 	mod->arena = NULL;
-	mod->root = NULL;
 
 	g_object_unref (G_OBJECT (mod));
 }

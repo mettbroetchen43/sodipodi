@@ -56,8 +56,6 @@ static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
 
-static void sp_item_private_hide (SPItem * item, unsigned int key);
-
 static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_select_this (GtkMenuItem *menuitem, SPItem *item);
@@ -104,7 +102,6 @@ sp_item_class_init (SPItemClass *klass)
 	sp_object_class->write = sp_item_write;
 
 	klass->description = sp_item_private_description;
-	klass->hide = sp_item_private_hide;
 	klass->knot_holder = NULL;
 	klass->menu = sp_item_private_menu;
 	klass->snappoints = sp_item_private_snappoints;
@@ -158,7 +155,7 @@ sp_item_release (SPObject * object)
 			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
 			nr_arena_item_set_mask (item->display->arenaitem, NULL);
 		}
-		nr_arena_item_destroy (item->display->arenaitem);
+		nr_arena_item_unparent (item->display->arenaitem);
 		item->display = sp_item_view_list_remove (item->display, item->display);
 	}
 
@@ -560,7 +557,7 @@ sp_item_display_key_new (unsigned int numkeys)
 }
 
 NRArenaItem *
-sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	NRArenaItem *ai;
 
@@ -571,8 +568,8 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 
 	ai = NULL;
 
-	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->show)
-		ai = ((SPItemClass *) G_OBJECT_GET_CLASS(item))->show (item, arena, key);
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->show)
+		ai = ((SPItemClass *) G_OBJECT_GET_CLASS (item))->show (item, arena, key);
 
 	if (ai != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, key, ai);
@@ -599,12 +596,21 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 	return ai;
 }
 
-static void
-sp_item_private_hide (SPItem * item, unsigned int key)
+void
+sp_item_invoke_hide (SPItem *item, unsigned int key)
 {
-	SPItemView *v;
+	SPItemView *v, *ref, *next;
 
-	for (v = item->display; v != NULL; v = v->next) {
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide)
+		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, key);
+
+	ref = NULL;
+	v = item->display;
+	while (v != NULL) {
+		next = v->next;
 		if (v->key == key) {
 			if (item->clip) {
 				sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
@@ -614,23 +620,18 @@ sp_item_private_hide (SPItem * item, unsigned int key)
 				sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 				nr_arena_item_set_mask (v->arenaitem, NULL);
 			}
-			nr_arena_item_destroy (v->arenaitem);
-			item->display = sp_item_view_list_remove (item->display, v);
-			return;
+			if (!ref) {
+				item->display = v->next;
+			} else {
+				ref->next = v->next;
+			}
+			nr_arena_item_unparent (v->arenaitem);
+			g_free (v);
+		} else {
+			ref = v;
 		}
+		v = next;
 	}
-
-	g_assert_not_reached ();
-}
-
-void
-sp_item_hide (SPItem *item, unsigned int key)
-{
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-
-	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide)
-		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, key);
 }
 
 void

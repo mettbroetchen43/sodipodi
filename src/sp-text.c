@@ -719,10 +719,10 @@ sp_tspan_show (SPItem *item, NRArena *arena, unsigned int key)
 		NRArenaItem *ai, *ac;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_show (SP_ITEM (tspan->string), arena, key);
+		ac = sp_item_invoke_show (SP_ITEM (tspan->string), arena, key);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
-			g_object_unref (G_OBJECT (ac));
+			nr_arena_item_unref (ac);
 		}
 		return ai;
 	}
@@ -737,7 +737,7 @@ sp_tspan_hide (SPItem *item, unsigned int key)
 
 	tspan = SP_TSPAN (item);
 
-	if (tspan->string) sp_item_hide (SP_ITEM (tspan->string), key);
+	if (tspan->string) sp_item_invoke_hide (SP_ITEM (tspan->string), key);
 
 	if (((SPItemClass *) tspan_parent_class)->hide)
 		((SPItemClass *) tspan_parent_class)->hide (item, key);
@@ -1031,10 +1031,10 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		NRArenaItem *ac;
 
 		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_show (SP_ITEM (och), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+			ac = sp_item_invoke_show (SP_ITEM (och), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
-				g_object_unref (G_OBJECT (ac));
+				nr_arena_item_unref (ac);
 			}
 		}
 	}
@@ -1246,11 +1246,11 @@ sp_text_show (SPItem *item, NRArena *arena, unsigned int key)
 	for (o = text->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			ac = sp_item_show (child, arena, key);
+			ac = sp_item_invoke_show (child, arena, key);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
-				g_object_unref (G_OBJECT (ac));
+				nr_arena_item_unref (ac);
 			}
 		}
 	}
@@ -1270,7 +1270,7 @@ sp_text_hide (SPItem *item, unsigned int key)
 	for (o = text->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_hide (child, key);
+			sp_item_invoke_hide (child, key);
 		}
 	}
 

@@ -101,8 +101,7 @@ nr_arena_item_private_finalize (GObject *object)
 		nr_free (item->transform);
 	}
 
-	if (G_OBJECT_CLASS(parent_class)->dispose)
-		G_OBJECT_CLASS(parent_class)->dispose (object);
+	G_OBJECT_CLASS(parent_class)->finalize (object);
 }
 
 NRArenaItem *
@@ -540,7 +539,7 @@ nr_arena_item_new (NRArena *arena, GType type)
 }
 
 NRArenaItem *
-nr_arena_item_destroy (NRArenaItem *item)
+nr_arena_item_unparent (NRArenaItem *item)
 {
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
@@ -549,8 +548,6 @@ nr_arena_item_destroy (NRArenaItem *item)
 
 	if (item->parent) {
 		nr_arena_item_remove_child (item->parent, item);
-	} else {
-		nr_arena_item_unref (item);
 	}
 
 	return NULL;

@@ -1,3 +1,12 @@
+2003-04-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-marker.c (sp_marker_show_dimension): Reimplement
+	(sp_marker_show_instance): Ditto
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_finalize): Detach markers
+
+	* src/sp-shape.c (sp_shape_update_marker_view): Test orientation
+
 2003-03-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-item.c: Removed ::event signal

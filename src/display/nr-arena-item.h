@@ -118,7 +118,7 @@ struct _NRArenaItemClass {
 unsigned int nr_arena_item_get_type (void);
 
 NRArenaItem *nr_arena_item_ref (NRArenaItem *item);
-NRArenaItem *nr_arena_item_unref(NRArenaItem *item);
+NRArenaItem *nr_arena_item_unref (NRArenaItem *item);
 
 NRArenaItem *nr_arena_item_children (NRArenaItem *item);
 void nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -153,7 +153,8 @@ void nr_arena_item_request_render (NRArenaItem *item);
 /* Public */
 
 NRArenaItem *nr_arena_item_new (NRArena *arena, GType type);
-NRArenaItem *nr_arena_item_destroy (NRArenaItem *item);
+
+NRArenaItem *nr_arena_item_unparent (NRArenaItem *item);
 
 void nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child);
 

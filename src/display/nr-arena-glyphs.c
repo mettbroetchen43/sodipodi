@@ -35,7 +35,7 @@
 
 static void nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass);
 static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
-static void nr_arena_glyphs_dispose (GObject *object);
+static void nr_arena_glyphs_finalize (GObject *object);
 
 static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
@@ -73,7 +73,7 @@ nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass)
 
 	glyphs_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->dispose = nr_arena_glyphs_dispose;
+	object_class->finalize = nr_arena_glyphs_finalize;
 
 	item_class->update = nr_arena_glyphs_update;
 	item_class->clip = nr_arena_glyphs_clip;
@@ -90,7 +90,7 @@ nr_arena_glyphs_init (NRArenaGlyphs *glyphs)
 }
 
 static void
-nr_arena_glyphs_dispose (GObject *object)
+nr_arena_glyphs_finalize (GObject *object)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -118,8 +118,8 @@ nr_arena_glyphs_dispose (GObject *object)
 		glyphs->curve = sp_curve_unref (glyphs->curve);
 	}
 
-	if (G_OBJECT_CLASS (glyphs_parent_class)->dispose)
-		(* G_OBJECT_CLASS (glyphs_parent_class)->dispose) (object);
+	if (G_OBJECT_CLASS (glyphs_parent_class)->finalize)
+		(* G_OBJECT_CLASS (glyphs_parent_class)->finalize) (object);
 }
 
 static guint
@@ -347,7 +347,7 @@ nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m
 
 static void nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass);
 static void nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group);
-static void nr_arena_glyphs_group_dispose (GObject *object);
+static void nr_arena_glyphs_group_finalize (GObject *object);
 
 static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
@@ -386,7 +386,7 @@ nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass)
 
 	group_parent_class = g_type_class_ref (NR_TYPE_ARENA_GROUP);
 
-	object_class->dispose = nr_arena_glyphs_group_dispose;
+	object_class->finalize = nr_arena_glyphs_group_finalize;
 
 	item_class->update = nr_arena_glyphs_group_update;
 	item_class->render = nr_arena_glyphs_group_render;
@@ -406,7 +406,7 @@ nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group)
 }
 
 static void
-nr_arena_glyphs_group_dispose (GObject *object)
+nr_arena_glyphs_group_finalize (GObject *object)
 {
 	NRArenaGlyphsGroup *group;
 
@@ -427,8 +427,8 @@ nr_arena_glyphs_group_dispose (GObject *object)
 		group->style = NULL;
 	}
 
-	if (G_OBJECT_CLASS (group_parent_class)->dispose)
-		(* G_OBJECT_CLASS (group_parent_class)->dispose) (object);
+	if (G_OBJECT_CLASS (group_parent_class)->finalize)
+		(* G_OBJECT_CLASS (group_parent_class)->finalize) (object);
 }
 
 static guint

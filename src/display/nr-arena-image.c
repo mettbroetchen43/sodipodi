@@ -28,7 +28,7 @@ gint nr_arena_image_y_sample = 1;
 
 static void nr_arena_image_class_init (NRArenaImageClass *klass);
 static void nr_arena_image_init (NRArenaImage *image);
-static void nr_arena_image_dispose (GObject *object);
+static void nr_arena_image_finalize (GObject *object);
 
 static guint nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
@@ -66,7 +66,7 @@ nr_arena_image_class_init (NRArenaImageClass *klass)
 
 	parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->dispose = nr_arena_image_dispose;
+	object_class->finalize = nr_arena_image_finalize;
 
 	item_class->update = nr_arena_image_update;
 	item_class->render = nr_arena_image_render;
@@ -83,7 +83,7 @@ nr_arena_image_init (NRArenaImage *image)
 }
 
 static void
-nr_arena_image_dispose (GObject *object)
+nr_arena_image_finalize (GObject *object)
 {
 	NRArenaImage *image;
 
@@ -91,7 +91,7 @@ nr_arena_image_dispose (GObject *object)
 
 	image->px = NULL;
 
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static guint

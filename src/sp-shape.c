@@ -308,18 +308,41 @@ sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai)
 	nend = 0;
 	for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
 		NRMatrixF m;
-		nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
 		if (shape->marker_start && ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN))) {
+			float dx, dy, h;
+			if (bp[1].code == ART_LINETO) {
+				dx = bp[1].x3 - bp[0].x3;
+				dy = bp[1].y3 - bp[0].y3;
+			} else if (bp[1].code == ART_CURVETO) {
+				dx = bp[1].x1 - bp[0].x3;
+				dy = bp[1].y1 - bp[0].y3;
+			} else {
+				dx = 1.0;
+				dy = 0.0;
+			}
+			h = hypot (dx, dy);
+			if (h > 1e-9) {
+				m.c[0] = dx / h;
+				m.c[1] = dy / h;
+				m.c[2] = -dy / h;
+				m.c[3] = dx / h;
+				m.c[4] = bp->x3;
+				m.c[5] = bp->y3;
+			} else {
+				nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+			}
 			sp_marker_show_instance ((SPMarker *) shape->marker_start, ai,
 						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_START, nstart,
 						 &m, style->stroke_width.computed);
 			nstart += 1;
 		} else if (shape->marker_end && ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO))) {
+			nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
 			sp_marker_show_instance ((SPMarker *) shape->marker_end, ai,
 						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_END, nend,
 						 &m, style->stroke_width.computed);
 			nend += 1;
 		} else if (shape->marker_mid) {
+			nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
 			sp_marker_show_instance ((SPMarker *) shape->marker_mid, ai,
 						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_MID, nmid,
 						 &m, style->stroke_width.computed);

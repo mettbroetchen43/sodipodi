@@ -616,7 +616,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	arena = g_object_new (NR_TYPE_ARENA, NULL);
 	dkey = sp_item_display_key_new (1);
 	/* Create ArenaItem and set transform */
-	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena, dkey);
+	ebp.root = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), arena, dkey);
 	nr_arena_item_set_transform (ebp.root, &affine);
 
 	if ((width < 256) || ((width * height) < 32768)) {
@@ -632,6 +632,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	}
 
 	/* Free Arena and ArenaItem */
-	sp_item_hide (SP_ITEM (sp_document_root (doc)), dkey);
+	sp_item_invoke_hide (SP_ITEM (sp_document_root (doc)), dkey);
+	nr_arena_item_unref (ebp.root);
 	g_object_unref (G_OBJECT (arena));
 }

@@ -15,7 +15,7 @@ endif
 
 SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"
 
 INCLUDES = \

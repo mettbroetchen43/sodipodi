@@ -181,7 +181,7 @@ sp_clippath_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		SPClipPathView *v;
 		for (v = cp->display; v != NULL; v = v->next) {
 			NRArenaItem *ac;
-			ac = sp_item_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				nr_arena_item_unref (ac);
@@ -307,7 +307,7 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena, unsigned int key)
 
 	for (child = SP_OBJECTGROUP (cp)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
-			ac = sp_item_show (SP_ITEM (child), arena, key);
+			ac = sp_item_invoke_show (SP_ITEM (child), arena, key);
 			if (ac) {
 				/* The order is not important in clippath */
 				nr_arena_item_add_child (ai, ac, NULL);
@@ -338,7 +338,7 @@ sp_clippath_hide (SPClipPath *cp, unsigned int key)
 
 	for (child = SP_OBJECTGROUP (cp)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
-			sp_item_hide (SP_ITEM (child), key);
+			sp_item_invoke_hide (SP_ITEM (child), key);
 		}
 	}
 

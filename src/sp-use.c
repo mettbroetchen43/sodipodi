@@ -287,10 +287,10 @@ sp_use_show (SPItem *item, NRArena *arena, unsigned int key)
 		NRMatrixF t;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_show (SP_ITEM (use->child), arena, key);
+		ac = sp_item_invoke_show (SP_ITEM (use->child), arena, key);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
-			g_object_unref (G_OBJECT(ac));
+			nr_arena_item_unref (ac);
 		}
 		nr_matrix_f_set_translate (&t, use->x.computed, use->y.computed);
 		nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &t);
@@ -307,7 +307,7 @@ sp_use_hide (SPItem * item, unsigned int key)
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_hide (SP_ITEM (use->child), key);
+	if (use->child) sp_item_invoke_hide (SP_ITEM (use->child), key);
 
 	if (((SPItemClass *) parent_class)->hide)
 		((SPItemClass *) parent_class)->hide (item, key);
@@ -341,10 +341,10 @@ sp_use_href_changed (SPUse * use)
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					ai = sp_item_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+					ai = sp_item_invoke_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 					if (ai) {
 						nr_arena_item_add_child (v->arenaitem, ai, NULL);
-						g_object_unref (G_OBJECT(ai));
+						nr_arena_item_unref (ai);
 					}
 				}
 			}

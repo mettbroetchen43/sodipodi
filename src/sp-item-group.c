@@ -192,17 +192,19 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		SPItemView *v;
 		NRArenaItem *ac;
 		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				nr_arena_item_set_order (ac, position);
-				g_object_unref (G_OBJECT (ac));
+				nr_arena_item_unref (ac);
 			}
 		}
 	}
 
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
+
+/* fixme: hide (Lauris) */
 
 static void
 sp_group_remove_child (SPObject * object, SPRepr * child)
@@ -473,11 +475,11 @@ sp_group_show (SPItem *item, NRArena *arena, unsigned int key)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			ac = sp_item_show (child, arena, key);
+			ac = sp_item_invoke_show (child, arena, key);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
-				g_object_unref (G_OBJECT(ac));
+				nr_arena_item_unref (ac);
 			}
 		}
 	}
@@ -497,7 +499,7 @@ sp_group_hide (SPItem *item, unsigned int key)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_hide (child, key);
+			sp_item_invoke_hide (child, key);
 		}
 	}
 

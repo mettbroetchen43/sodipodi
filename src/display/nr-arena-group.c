@@ -20,7 +20,7 @@
 
 static void nr_arena_group_class_init (NRArenaGroupClass *klass);
 static void nr_arena_group_init (NRArenaGroup *group);
-static void nr_arena_group_dispose (GObject *object);
+static void nr_arena_group_finalize (GObject *object);
 
 static NRArenaItem *nr_arena_group_children (NRArenaItem *item);
 static void nr_arena_group_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -64,7 +64,7 @@ nr_arena_group_class_init (NRArenaGroupClass *klass)
 
 	parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->dispose = nr_arena_group_dispose;
+	object_class->finalize = nr_arena_group_finalize;
 
 	item_class->children = nr_arena_group_children;
 	item_class->add_child = nr_arena_group_add_child;
@@ -86,7 +86,7 @@ nr_arena_group_init (NRArenaGroup *group)
 }
 
 static void
-nr_arena_group_dispose (GObject *object)
+nr_arena_group_finalize (GObject *object)
 {
 	NRArenaItem *item;
 	NRArenaGroup *group;
@@ -98,10 +98,7 @@ nr_arena_group_dispose (GObject *object)
 		group->children = nr_arena_item_detach_unref (item, group->children);
 	}
 
-	group->last = NULL;
-
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static NRArenaItem *

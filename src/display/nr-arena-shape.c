@@ -38,7 +38,7 @@
 
 static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
-static void nr_arena_shape_dispose (GObject *object);
+static void nr_arena_shape_finalize (GObject *object);
 
 static NRArenaItem *nr_arena_shape_children (NRArenaItem *item);
 static void nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -82,7 +82,7 @@ nr_arena_shape_class_init (NRArenaShapeClass *klass)
 
 	shape_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->dispose = nr_arena_shape_dispose;
+	object_class->finalize = nr_arena_shape_finalize;
 
 	item_class->children = nr_arena_shape_children;
 	item_class->add_child = nr_arena_shape_add_child;
@@ -110,44 +110,26 @@ nr_arena_shape_init (NRArenaShape *shape)
 }
 
 static void
-nr_arena_shape_dispose (GObject *object)
+nr_arena_shape_finalize (GObject *object)
 {
+	NRArenaItem *item;
 	NRArenaShape *shape;
 
-	shape = NR_ARENA_SHAPE (object);
+	item = (NRArenaItem *) object;
+	shape = (NRArenaShape *) (object);
 
-	if (shape->fill_svp) {
-		art_svp_free (shape->fill_svp);
-		shape->fill_svp = NULL;
+	while (shape->markers) {
+		shape->markers = nr_arena_item_detach_unref (item, shape->markers);
 	}
 
-	if (shape->stroke_svp) {
-		art_svp_free (shape->stroke_svp);
-		shape->stroke_svp = NULL;
-	}
+	if (shape->fill_svp) art_svp_free (shape->fill_svp);
+	if (shape->stroke_svp) art_svp_free (shape->stroke_svp);
+	if (shape->fill_painter) sp_painter_free (shape->fill_painter);
+	if (shape->stroke_painter) sp_painter_free (shape->stroke_painter);
+	if (shape->style) sp_style_unref (shape->style);
+	if (shape->curve) sp_curve_unref (shape->curve);
 
-	if (shape->fill_painter) {
-		sp_painter_free (shape->fill_painter);
-		shape->fill_painter = NULL;
-	}
-
-	if (shape->stroke_painter) {
-		sp_painter_free (shape->stroke_painter);
-		shape->stroke_painter = NULL;
-	}
-
-	if (shape->style) {
-		sp_style_unref (shape->style);
-		shape->style = NULL;
-	}
-
-	if (shape->curve) {
-		sp_curve_unref (shape->curve);
-		shape->curve = NULL;
-	}
-
-	if (G_OBJECT_CLASS (shape_parent_class)->dispose)
-		(* G_OBJECT_CLASS (shape_parent_class)->dispose) (object);
+	G_OBJECT_CLASS (shape_parent_class)->finalize (object);
 }
 
 static NRArenaItem *
@@ -166,8 +148,6 @@ nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *re
 	NRArenaShape *shape;
 
 	shape = (NRArenaShape *) item;
-
-	g_print ("nr_arena_shape_add_child: Added child item\n");
 
 	if (!ref) {
 		shape->markers = nr_arena_item_attach_ref (item, child, NULL, shape->markers);

@@ -347,7 +347,7 @@ sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 			SPPatPainter *pp;
 			NRArenaItem *ai;
 			pp = (SPPatPainter *) p;
-			ai = sp_item_show (SP_ITEM (ochild), pp->arena, pp->dkey);
+			ai = sp_item_invoke_show (SP_ITEM (ochild), pp->arena, pp->dkey);
 			if (ai) {
 				nr_arena_item_add_child (pp->root, ai, NULL);
 				nr_arena_item_set_order (ai, position);
@@ -547,7 +547,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bb
 	for (child = pat->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			NRArenaItem *cai;
-			cai = sp_item_show (SP_ITEM (child), pp->arena, pp->dkey);
+			cai = sp_item_invoke_show (SP_ITEM (child), pp->arena, pp->dkey);
 			nr_arena_item_append_child (pp->root, cai);
 			nr_arena_item_unref (cai);
 		}
@@ -573,7 +573,7 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 	/* fixme: Among other thing we want to traverse href here */
 	for (child = pat->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
-			sp_item_hide (SP_ITEM (child), pp->dkey);
+			sp_item_invoke_hide (SP_ITEM (child), pp->dkey);
 		}
 	}
 
