@@ -20,7 +20,9 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtktogglebutton.h>
+#include "helper/sp-intl.h"
 #include "icon.h"
+#include "button.h"
 #include "sp-toolbox.h"
 #include "../helper/sp-marshal.h"
 
@@ -33,16 +35,12 @@ static void sp_toolbox_class_init (SPToolBoxClass * klass);
 static void sp_toolbox_init (SPToolBox * toolbox);
 static void sp_toolbox_destroy (GtkObject * object);
 
-#if 0
-static void sp_toolbox_size_request (GtkWidget * widget, GtkRequisition * requisition);
-#endif
-
 static gboolean sp_toolbox_real_set_state (SPToolBox * toolbox, guint state);
 static gboolean sp_toolbox_set_state_accumulator (GSignalInvocationHint *ihint, GValue *return_accu, const GValue *handler_return, gpointer data);
 
 static void sp_toolbox_hide (GtkButton * button, gpointer data);
 //static void sp_toolbox_separate (GtkButton * button, gpointer data);
-static void sp_toolbox_separate (GtkToggleButton * button, gpointer data);
+static void sp_toolbox_separate (SPButton *button, SPToolBox *toolbox);
 static void sp_toolbox_close (GtkButton * button, gpointer data);
 static gint sp_toolbox_delete (GtkWidget * widget, GdkEventAny * event, gpointer data);
 
@@ -212,17 +210,17 @@ sp_toolbox_real_set_state (SPToolBox * toolbox, guint state)
 		} else {
 			gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
 		}
-		gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle),
-						  G_CALLBACK (sp_toolbox_separate), toolbox);
 		if (state & SP_TOOLBOX_STANDALONE) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), TRUE);
+			sp_button_toggle_set_down (SP_BUTTON (toolbox->standalonetoggle), TRUE, FALSE);
+#if 0
 			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NORMAL);
+#endif
 		} else {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), FALSE);
+			sp_button_toggle_set_down (SP_BUTTON (toolbox->standalonetoggle), FALSE, FALSE);
+#if 0
 			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
+#endif
 		}
-		gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle),
-						    G_CALLBACK (sp_toolbox_separate), toolbox);
 		toolbox->state = state;
 	}
 
@@ -247,15 +245,17 @@ sp_toolbox_real_set_state (SPToolBox * toolbox, guint state)
 		gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
 	}
 
-	gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle), GTK_SIGNAL_FUNC(sp_toolbox_separate), toolbox);
 	if (state & SP_TOOLBOX_STANDALONE) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), TRUE);
+		sp_button_toggle_set_down (SP_BUTTON (toolbox->standalonetoggle), TRUE, FALSE);
+#if 0
 		gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NORMAL);
+#endif
 	} else {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), FALSE);
+		sp_button_toggle_set_down (SP_BUTTON (toolbox->standalonetoggle), FALSE, FALSE);
+#if 0
 		gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
+#endif
 	}
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle), GTK_SIGNAL_FUNC(sp_toolbox_separate), toolbox);
 	toolbox->state = state;
 
 	gtk_object_unref (GTK_OBJECT (toolbox));
@@ -309,16 +309,18 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_widget_show (w);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_hide), t);
 	/* Separate button */
-	//b = gtk_button_new ();
-	//gtk_button_set_relief (GTK_BUTTON (b), GTK_RELIEF_NONE);
+	b = sp_button_toggle_new (SP_ICON_SIZE_TITLEBAR, "seperate_tool", _("Toggle separate window and main toolbox placement"));
+#if 0
         b = gtk_toggle_button_new ();
+#endif
 	gtk_box_pack_start (GTK_BOX (hbox), b, FALSE, FALSE, 0);
 	gtk_widget_show (b);
         t->standalonetoggle = b;
+#if 0
 	w = sp_icon_new (SP_ICON_SIZE_TITLEBAR, "seperate_tool");
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_widget_show (w);
-	//gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_separate), t);
+#endif
         gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_toolbox_separate), t);
 	/* Contents */
 	gtk_box_pack_start (GTK_BOX (t), contents, TRUE, TRUE, 0);
@@ -364,12 +366,9 @@ sp_toolbox_hide (GtkButton * button, gpointer data)
 
 static void
 //sp_toolbox_separate (GtkButton * button, gpointer data)
-sp_toolbox_separate (GtkToggleButton * button, gpointer data)
+sp_toolbox_separate (SPButton *button, SPToolBox *toolbox)
 {
-	SPToolBox * toolbox;
 	guint newstate;
-
-	toolbox = SP_TOOLBOX (data);
 
 	//if ((toolbox->state & SP_TOOLBOX_STANDALONE) && (toolbox->state & SP_TOOLBOX_VISIBLE)) {
 	if (toolbox->state & SP_TOOLBOX_STANDALONE) {

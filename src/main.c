@@ -78,6 +78,7 @@ enum {
 	SP_ARG_EXPORT_BACKGROUND,
 	SP_ARG_EXPORT_SVG,
 	SP_ARG_SLIDESHOW,
+	SP_ARG_SVG_ICONS,
 	SP_ARG_LAST
 };
 #endif
@@ -87,6 +88,9 @@ int sp_main_gui (int argc, const char **argv);
 int sp_main_console (int argc, const char **argv);
 static void sp_do_export_png (SPDocument *doc);
 #endif
+
+/* fixme: We need this non-static, but better arrange it another way (Lauris) */
+gboolean sp_svg_icons = FALSE;
 
 static guchar *sp_global_printer = NULL;
 static gboolean sp_global_slideshow = FALSE;
@@ -132,6 +136,9 @@ struct poptOption options[] = {
 	 N_("Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"), N_("FILENAME")},
 	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
 	 N_("Show given files one-by-one, switch to next on any key/mouse event"), NULL},
+	{"svg-icons", 'i', POPT_ARG_NONE, &sp_svg_icons, SP_ARG_SVG_ICONS,
+	 N_("Prefer SVG icons (file icons.svg) to pixmap ones"),
+	 NULL},
 	POPT_AUTOHELP POPT_TABLEEND
 };
 #endif

@@ -264,6 +264,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	SPDocument *document;
 
 	document = SP_OBJECT_DOCUMENT (namedview);
+	/* Kill flicker */
+	sp_document_ensure_up_to_date (document);
 
 	/* Setup widget */
 

@@ -31,6 +31,9 @@
 
 #include "icon.h"
 
+/* fixme: (Lauris) */
+extern gboolean sp_svg_icons;
+
 static void sp_icon_class_init (SPIconClass *klass);
 static void sp_icon_init (SPIcon *icon);
 static void sp_icon_destroy (GtkObject *object);
@@ -171,8 +174,13 @@ sp_icon_image_load (const unsigned char *name, unsigned int size)
 {
 	unsigned char *px;
 
-	px = sp_icon_image_load_pixmap (name, size);
-	if (!px) px = sp_icon_image_load_svg (name, size);
+	if (sp_svg_icons) {
+		px = sp_icon_image_load_svg (name, size);
+		if (!px) px = sp_icon_image_load_pixmap (name, size);
+	} else {
+		px = sp_icon_image_load_pixmap (name, size);
+		if (!px) px = sp_icon_image_load_svg (name, size);
+	}
 
 	return px;
 }
@@ -293,22 +301,20 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 
 	/* Try to load from document */
 	if (!edoc && !doc) {
-		doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
-		if (!doc) doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
+		doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
+		if (!doc) doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
 		if (doc) {
-			NRMatrixF affine;
 			unsigned int visionkey;
-
+			NRGC gc;
 			sp_document_ensure_up_to_date (doc);
-
 			/* Create new arena */
 			arena = g_object_new (NR_TYPE_ARENA, NULL);
 			/* Create ArenaItem and set transform */
 			visionkey = sp_item_display_key_new ();
 			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey);
-			/* Set up matrix */
-			nr_matrix_f_set_scale (&affine, 0.8, 0.8);
-			nr_arena_item_set_transform (root, &affine);
+			/* Update to renderable state */
+			nr_matrix_d_set_scale (&gc.transform, 0.8, 0.8);
+			nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 		} else {
 			edoc = TRUE;
 		}
@@ -318,30 +324,45 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 		SPObject *object;
 		object = sp_document_lookup_id (doc, name);
 		if (object && SP_IS_ITEM (object)) {
-			NRRectF area;
-			sp_item_bbox_desktop (SP_ITEM (object), &area);
-			if (!nr_rect_f_test_empty (&area)) {
-				NRRectF bbox;
-				NRGC gc;
+			NRMatrixD i2docD;
+			NRMatrixF i2docF;
+			NRRectF dbox;
+			sp_item_i2doc_affine (SP_ITEM (object), &i2docF);
+			/* Find bbox in document */
+			nr_matrix_d_from_f (&i2docD, &i2docF);
+			sp_item_invoke_bbox (SP_ITEM (object), &dbox, &i2docD, TRUE);
+			/* This is in document coordinates, i.e. pixels */
+			if (!nr_rect_f_test_empty (&dbox)) {
+				NRRectL ibox, area, ua;
 				NRPixBlock B;
-				NRRectL ua;
+				int width, height, dx, dy;
+				/* Item integer bbox in points */
+				ibox.x0 = (int) (0.8 * dbox.x0 + 0.0625);
+				ibox.y0 = (int) (0.8 * dbox.y0 + 0.0625);
+				ibox.x1 = (int) (0.8 * dbox.x1 + 0.875);
+				ibox.y1 = (int) (0.8 * dbox.y1 + 0.875);
+				/* Find button visible area */
+				width = ibox.x1 - ibox.x0;
+				height = ibox.y1 - ibox.y0;
+				dx = (size - width) / 2;
+				dy = (size - height) / 2;
+				area.x0 = ibox.x0 - dx;
+				area.y0 = ibox.y0 - dy;
+				area.x1 = area.x0 + size;
+				area.y1 = area.y0 + size;
+				/* Actual renderable area */
+				ua.x0 = MAX (ibox.x0, area.x0);
+				ua.y0 = MAX (ibox.y0, area.y0);
+				ua.x1 = MIN (ibox.x1, area.x1);
+				ua.y1 = MIN (ibox.y1, area.y1);
+				/* Set up pixblock */
 				px = nr_new (unsigned char, 4 * size * size);
 				memset (px, 0x00, 4 * size * size);
-				/* Set up area of interest */
-				bbox.x0 = area.x0 * 1.0;
-				bbox.y0 = (sp_document_height (doc) - area.y1) * 1.0;
-				bbox.x1 = area.x1 * 1.0;
-				bbox.y1 = (sp_document_height (doc) - area.y0) * 1.0;
-				/* Update to renderable state */
-				nr_matrix_d_set_identity (&gc.transform);
-				ua.x0 = (bbox.x0 + 0.0625);
-				ua.y0 = (bbox.y0 + 0.0625);
-				ua.x1 = ua.x0 + size;
-				ua.y1 = ua.y0 + size;
-				nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
-
 				/* Render */
-				nr_pixblock_setup_extern (&B, NR_PIXBLOCK_MODE_R8G8B8A8N, ua.x0, ua.y0, ua.x1, ua.y1, px, 4 * size, FALSE, FALSE);
+				nr_pixblock_setup_extern (&B, NR_PIXBLOCK_MODE_R8G8B8A8N,
+							  ua.x0, ua.y0, ua.x1, ua.y1,
+							  px + 4 * size * (ua.y0 - area.y0) + 4 * (ua.x0 - area.x0),
+							  4 * size, FALSE, FALSE);
 				nr_arena_item_invoke_render (root, &ua, &B, NR_ARENA_ITEM_RENDER_NO_CACHE);
 				nr_pixblock_release (&B);
 				return px;

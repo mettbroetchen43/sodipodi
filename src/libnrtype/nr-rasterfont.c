@@ -245,6 +245,7 @@ nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, N
 		area.y0 = MAX (area.y0, m->area.y0);
 		area.x1 = MIN (area.x1, m->area.x1);
 		area.y1 = MIN (area.y1, m->area.y1);
+		if (nr_rect_s_test_empty (&area)) return;
 		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, 0);
 		art_gray_svp_aa (slot->gmap.svp, area.x0 - sx, area.y0 - sy, area.x1 - sx, area.y1 - sy,
 				 NR_PIXBLOCK_PX (&spb), spb.rs);

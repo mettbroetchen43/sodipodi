@@ -42,6 +42,7 @@ static void sp_image_init (SPImage * image);
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_image_release (SPObject * object);
 static void sp_image_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_image_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
@@ -103,6 +104,7 @@ sp_image_class_init (SPImageClass * klass)
 	sp_object_class->build = sp_image_build;
 	sp_object_class->release = sp_image_release;
 	sp_object_class->set = sp_image_set;
+	sp_object_class->update = sp_image_update;
 	sp_object_class->write = sp_image_write;
 
 	item_class->bbox = sp_image_bbox;
@@ -193,7 +195,7 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 				image->pixbuf = pixbuf;
 			}
 		}
-		sp_image_update_canvas_image (image);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_X:
 		if (sp_svg_length_read_lff (value, &unit, &image->x.value, &image->x.computed) &&
@@ -206,9 +208,7 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			sp_svg_length_unset (&image->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		/* fixme: Do async (Lauris) */
-		sp_image_update_canvas_image (image);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_Y:
 		if (sp_svg_length_read_lff (value, &unit, &image->y.value, &image->y.computed) &&
@@ -221,9 +221,7 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			sp_svg_length_unset (&image->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		/* fixme: Do async (Lauris) */
-		sp_image_update_canvas_image (image);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_WIDTH:
 		if (sp_svg_length_read_lff (value, &unit, &image->width.value, &image->width.computed) &&
@@ -236,9 +234,7 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			sp_svg_length_unset (&image->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		/* fixme: Do async (Lauris) */
-		sp_image_update_canvas_image (image);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_HEIGHT:
 		if (sp_svg_length_read_lff (value, &unit, &image->height.value, &image->height.computed) &&
@@ -251,15 +247,22 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			sp_svg_length_unset (&image->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		/* fixme: Do async (Lauris) */
-		sp_image_update_canvas_image (image);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) (parent_class))->set)
 			((SPObjectClass *) (parent_class))->set (object, key, value);
 		break;
 	}
+}
+
+static void
+sp_image_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	if (((SPObjectClass *) (parent_class))->update)
+		((SPObjectClass *) (parent_class))->update (object, ctx, flags);
+
+	sp_image_update_canvas_image ((SPImage *) object);
 }
 
 static SPRepr *
@@ -332,7 +335,6 @@ sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 static void
 sp_image_print (SPItem *item, SPPrintContext *ctx)
 {
-#if 1
 	SPImage *image;
 	NRMatrixF tp, ti, s, t;
 	unsigned char *px;
@@ -357,53 +359,6 @@ sp_image_print (SPItem *item, SPPrintContext *ctx)
 	nr_matrix_multiply_fff (&t, &ti, &t);
 
 	sp_print_image_R8G8B8A8_N (ctx, px, w, h, rs, &t, SP_OBJECT_STYLE (item));
-#else
-	SPObject *object;
-	SPImage *image;
-	guchar *pixels;
-	gint width, height, rowstride;
-
-	object = SP_OBJECT (item);
-	image = SP_IMAGE (item);
-
-	if (!image->pixbuf) return;
-	if ((image->width.computed <= 0.0) || (image->height.computed <= 0.0)) return;
-
-	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
-	width = gdk_pixbuf_get_width (image->pixbuf);
-	height = gdk_pixbuf_get_height (image->pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
-
-	gnome_print_gsave (gpc);
-
-	gnome_print_translate (gpc, image->x.computed, image->y.computed);
-	gnome_print_scale (gpc, image->width.computed, -image->height.computed);
-	gnome_print_translate (gpc, 0.0, -1.0);
-
-	if (object->style->opacity.value != SP_SCALE24_MAX) {
-		guchar *px, *d, *s;
-		gint x, y;
-		guint32 alpha;
-		alpha = (guint32) floor (SP_SCALE24_TO_FLOAT (object->style->opacity.value) * 255.9999);
-		px = g_new (guchar, width * height * 4);
-		for (y = 0; y < height; y++) {
-			s = pixels + y * rowstride;
-			d = px + y * width * 4;
-			memcpy (d, s, width * 4);
-			for (x = 0; x < width; x++) {
-				d[3] = (s[3] * alpha) / 255;
-				s += 4;
-				d += 4;
-			}
-		}
-		gnome_print_rgbaimage (gpc, px, width, height, width * 4);
-		g_free (px);
-	} else {
-		gnome_print_rgbaimage (gpc, pixels, width, height, rowstride);
-	}
-
-	gnome_print_grestore (gpc);
-#endif
 }
 
 static gchar *
