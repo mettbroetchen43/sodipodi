@@ -1,3 +1,17 @@
+2002-12-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/icon.h: New file, use as frontend to image loading
+
+	* src/widgets/icon.c: New file
+
+	* src/document.c (sp_document_create): Generic method, implement
+	constructors as frontends
+
+	* src/sodipodi.c (sodipodi_dispose): Only unref documents and let
+	them manage list
+
+	* glade/icons.svg: New icon definition file
+
 2002-12-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/align.c (sp_align_arrange_clicked): Collected all

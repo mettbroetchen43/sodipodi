@@ -34,7 +34,7 @@ sp_help_about (void)
 	SPObject *title;
 	GtkWidget *w, *v;
 
-	doc = sp_document_new (SODIPODI_GLADEDIR "/about.svg", FALSE);
+	doc = sp_document_new (SODIPODI_GLADEDIR "/about.svg", FALSE, TRUE);
 	g_return_if_fail (doc != NULL);
 	title = sp_document_lookup_id (doc, "title");
 	if (title && SP_IS_TEXT (title)) {

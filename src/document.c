@@ -121,7 +121,8 @@ sp_document_init (SPDocument *doc)
 {
 	SPDocumentPrivate *p;
 
-	doc->public = FALSE;
+	doc->advertize = FALSE;
+	doc->keepalive = FALSE;
 
 	doc->modified_id = 0;
 
@@ -206,65 +207,41 @@ sp_document_dispose (GObject *object)
 		doc->modified_id = 0;
 	}
 
-	sodipodi_unref ();
+	if (doc->keepalive) {
+		sodipodi_unref ();
+		doc->keepalive = FALSE;
+	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
-SPDocument *
-sp_document_new (const gchar *uri, gboolean public)
+static SPDocument *
+sp_document_create (SPReprDoc *rdoc,
+		    const unsigned char *uri,
+		    const unsigned char *base,
+		    const unsigned char *name,
+		    unsigned int advertize,
+		    unsigned int keepalive)
 {
 	SPDocument *document;
-	SPReprDoc *rdoc;
 	SPRepr *rroot;
 	guint version;
 
-	if (uri != NULL) {
-		/* Try to fetch repr from file */
-		rdoc = sp_repr_read_file (uri);
-		/* If file cannot be loaded, return NULL without warning */
-		if (rdoc == NULL) return NULL;
-		rroot = sp_repr_document_root (rdoc);
-		/* If xml file is not svg, return NULL without warning */
-		/* fixme: destroy document */
-		if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
-	} else {
-		rdoc = sp_repr_document_new ("svg");
-		rroot = sp_repr_document_root (rdoc);
-	}
+	rroot = sp_repr_document_root (rdoc);
 
 	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
-	g_return_val_if_fail (document != NULL, NULL);
 
-	document->public = public;
+	document->advertize = advertize;
+	document->keepalive = keepalive;
 
 	document->rdoc = rdoc;
 	document->rroot = rroot;
 
-	if (uri) {
-		guchar *s, *p;
-		document->uri = g_strdup (uri);
-		/* fixme: Think, what this means for images (Lauris) */
-		s = g_strdup (uri);
-		p = strrchr (s, '/');
-		if (p) {
-			document->name = g_strdup (p + 1);
-			p[1] = '\0';
-			document->base = g_strdup (s);
-		} else {
-			document->base = NULL;
-			document->name = g_strdup (document->uri);
-		}
-		g_free (s);
-	} else {
-		document->uri = NULL;
-		document->base = NULL;
-		document->name = g_strdup_printf (_("New document %d"), ++doc_count);
-	}
+	document->uri = g_strdup (uri);
+	document->base = g_strdup (base);
+	document->name = g_strdup (name);
 
 	document->root = sp_object_repr_build_tree (document, rroot);
-	g_return_val_if_fail (document->root != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ROOT (document->root), NULL);
 	version = SP_ROOT (document->root)->sodipodi;
 
 	/* fixme: Not sure about this, but lets assume ::build updates */
@@ -314,7 +291,9 @@ sp_document_new (const gchar *uri, gboolean public)
 		g_assert (SP_ROOT (document->root)->defs);
 	}
 
-	sodipodi_ref ();
+	if (keepalive) {
+		sodipodi_ref ();
+	}
 
 	sp_document_set_undo_sensitive (document, TRUE);
 
@@ -324,12 +303,55 @@ sp_document_new (const gchar *uri, gboolean public)
 }
 
 SPDocument *
-sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public)
+sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepalive)
 {
-	SPDocument *document;
+	SPDocument *doc;
+	SPReprDoc *rdoc;
+	unsigned char *base, *name;
+
+	if (uri) {
+		SPRepr *rroot;
+		unsigned char *s, *p;
+		/* Try to fetch repr from file */
+		rdoc = sp_repr_read_file (uri);
+		/* If file cannot be loaded, return NULL without warning */
+		if (rdoc == NULL) return NULL;
+		rroot = sp_repr_document_root (rdoc);
+		/* If xml file is not svg, return NULL without warning */
+		/* fixme: destroy document */
+		if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
+		s = g_strdup (uri);
+		p = strrchr (s, '/');
+		if (p) {
+			name = g_strdup (p + 1);
+			p[1] = '\0';
+			base = g_strdup (s);
+		} else {
+			base = NULL;
+			name = g_strdup (uri);
+		}
+		g_free (s);
+	} else {
+		rdoc = sp_repr_document_new ("svg");
+		base = NULL;
+		name = g_strdup_printf (_("New document %d"), ++doc_count);
+	}
+
+	doc = sp_document_create (rdoc, uri, base, name, advertize, keepalive);
+
+	if (base) g_free (base);
+	if (name) g_free (name);
+
+	return doc;
+}
+
+SPDocument *
+sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int advertize, unsigned int keepalive)
+{
+	SPDocument *doc;
 	SPReprDoc *rdoc;
 	SPRepr *rroot;
-	guint version;
+	unsigned char *name;
 
 	rdoc = sp_repr_read_mem (buffer, length);
 
@@ -337,77 +359,15 @@ sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public)
 	if (rdoc == NULL) return NULL;
 
 	rroot = sp_repr_document_root (rdoc);
-
 	/* If xml file is not svg, return NULL without warning */
 	/* fixme: destroy document */
 	if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
 
-	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
-	g_return_val_if_fail (document != NULL, NULL);
+	name = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
-	document->public = public;
+	doc = sp_document_create (rdoc, NULL, NULL, name, advertize, keepalive);
 
-	document->rdoc = rdoc;
-	document->rroot = rroot;
-
-	document->uri = NULL;
-	document->base = NULL;
-	document->name = g_strdup_printf (_("Memory document %d"), ++doc_count);
-
-	document->root = sp_object_repr_build_tree (document, rroot);
-	g_return_val_if_fail (document->root != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ROOT (document->root), NULL);
-	version = SP_ROOT (document->root)->sodipodi;
-
-	/* fixme: docbase */
-
-	/* fixme: Not sure about this, but lets assume ::build updates */
-	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
-	/* fixme: Again, I moved these here to allow version determining in ::build (Lauris) */
-	/* A quick hack to get namespaces into doc */
-	sp_repr_set_attr (rroot, "xmlns", SP_NAMESPACE_SVG);
-	sp_repr_set_attr (rroot, "xmlns:sodipodi", SP_NAMESPACE_SODIPODI);
-	sp_repr_set_attr (rroot, "xmlns:xlink", SP_NAMESPACE_XLINK);
-	/* End of quick hack */
-	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
-	/* End of quick hack 2 */
-	if ((version > 0) && (version < 25)) {
-		/* Clear ancient spec violating attributes */
-		sp_repr_set_attr (rroot, "SP-DOCNAME", NULL);
-		sp_repr_set_attr (rroot, "SP-DOCBASE", NULL);
-		sp_repr_set_attr (rroot, "docname", NULL);
-		sp_repr_set_attr (rroot, "docbase", NULL);
-	}
-
-	/* Namedviews */
-	if (!SP_ROOT (document->root)->namedviews) {
-		SPRepr *r;
-		r = sodipodi_get_repr (SODIPODI, "template.sodipodi:namedview");
-		if (!r) r = sp_repr_new ("sodipodi:namedview");
-		sp_repr_set_attr (r, "id", "base");
-		sp_repr_add_child (rroot, r, 0);
-		sp_repr_unref (r);
-		g_assert (SP_ROOT (document->root)->namedviews);
-	}
-
-	/* Defs */
-	if (!SP_ROOT (document->root)->defs) {
-		SPRepr *r;
-		r = sp_repr_new ("defs");
-		sp_repr_add_child (rroot, r, NULL);
-		sp_repr_unref (r);
-		g_assert (SP_ROOT (document->root)->defs);
-	}
-
-	sodipodi_ref ();
-
-	sp_document_set_undo_sensitive (document, TRUE);
-
-	sodipodi_add_document (document);
-
-	return document;
+	return doc;
 }
 
 SPDocument *

@@ -20,7 +20,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtktogglebutton.h>
-#include <gtk/gtkimage.h>
+#include "icon.h"
 #include "sp-toolbox.h"
 #include "../helper/sp-marshal.h"
 
@@ -298,7 +298,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 2);
 	gtk_widget_show (w);
 	t->arrow = w;
-	w = gtk_image_new_from_file (pixmapname);
+	w = sp_icon_new (SP_ICON_TITLEBAR, pixmapname);
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 0);
 	gtk_widget_show (w);
 	w = gtk_label_new (t->name);
@@ -315,7 +315,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_box_pack_start (GTK_BOX (hbox), b, FALSE, FALSE, 0);
 	gtk_widget_show (b);
         t->standalonetoggle = b;
-	w = gtk_image_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
+	w = sp_icon_new (SP_ICON_TITLEBAR, "seperate_tool");
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_widget_show (w);
 	//gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_separate), t);

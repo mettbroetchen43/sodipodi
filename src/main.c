@@ -206,7 +206,7 @@ sp_main_gui (int argc, const char **argv)
 		while (fl) {
 			SPDocument *doc;
 			SPViewWidget *dtw;
-			doc = sp_document_new ((const gchar *) fl->data, TRUE);
+			doc = sp_document_new ((const gchar *) fl->data, TRUE, TRUE);
 			if (doc) {
 				dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 				sp_document_unref (doc);
@@ -225,7 +225,7 @@ sp_main_gui (int argc, const char **argv)
 		sodipodi_unref ();
 		
 		while (fl) {
-			doc = sp_document_new ((const gchar *) fl->data, FALSE);
+			doc = sp_document_new ((const gchar *) fl->data, FALSE, TRUE);
 			if (doc) {
 				slides = g_slist_append (slides, doc);
 			}
@@ -299,7 +299,7 @@ sp_main_console (int argc, const char **argv)
 
 	while (fl) {
 		SPDocument *doc;
-		doc = sp_document_new ((gchar *) fl->data, FALSE);
+		doc = sp_document_new ((gchar *) fl->data, FALSE, TRUE);
 		if (doc == NULL) {
 			g_warning ("Specified document %s cannot be opened (is it valid SVG file?)", (gchar *) fl->data);
 		} else {

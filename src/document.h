@@ -35,7 +35,8 @@ typedef struct _SPDocumentPrivate SPDocumentPrivate;
 struct _SPDocument {
 	GObject object;
 
-	guint public : 1;
+	unsigned int advertize : 1;
+	unsigned int keepalive : 1;
 
 	SPReprDoc *rdoc; /* Our SPReprDoc */
 	SPRepr *rroot; /* Root element of SPReprDoc */
@@ -67,8 +68,8 @@ struct _SPDocumentClass {
  * Public document appear in document list
  */
 
-SPDocument *sp_document_new (const gchar *uri, gboolean public);
-SPDocument *sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public);
+SPDocument *sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepalive);
+SPDocument *sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int advertize, unsigned int keepalive);
 
 SPDocument *sp_document_ref (SPDocument *doc);
 SPDocument *sp_document_unref (SPDocument *doc);

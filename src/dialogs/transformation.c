@@ -1,9 +1,10 @@
 #define __SP_TRANSFORMATION_C__
 
 /*
- * PNG export dialog
+ * Object align dialog
  *
  * Authors:
+ *   Frank Felfe <innerspace@iname.com>
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) 1999-2002 Authors
@@ -12,7 +13,117 @@
  */
 
 #include "config.h"
-#include "align.h"
+
+#include <gtk/gtkwindow.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkframe.h>
+
+#include "helper/sp-intl.h"
+#include "widgets/icon.h"
+
+enum {
+	SP_TRANSFORMATION_MOVE,
+	SP_TRANSFORMATION_SCALE,
+	SP_TRANSFORMATION_ROTATE,
+	SP_TRANSFORMATION_SKEW
+};
+
+static void sp_transformation_dialog_present (unsigned int page);
+static GtkWidget *sp_transformation_dialog_new (void);
+
+static GtkWidget *dlg = NULL;
+
+void
+sp_transformation_dialog_move (void)
+{
+	sp_transformation_dialog_present (SP_TRANSFORMATION_MOVE);
+}
+
+void
+sp_transformation_dialog_scale (void)
+{
+	sp_transformation_dialog_present (SP_TRANSFORMATION_SCALE);
+}
+
+void
+sp_transformation_dialog_rotate (void)
+{
+	sp_transformation_dialog_present (SP_TRANSFORMATION_ROTATE);
+}
+
+void
+sp_transformation_dialog_skew (void)
+{
+	sp_transformation_dialog_present (SP_TRANSFORMATION_SKEW);
+}
+
+static void
+sp_transformation_dialog_destroy (GtkObject *object, gpointer data)
+{
+	dlg = NULL;
+}
+
+static void
+sp_transformation_dialog_present (unsigned int page)
+{
+	GtkWidget *nbook;
+
+	if (!dlg) {
+		dlg = sp_transformation_dialog_new ();
+		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_transformation_dialog_destroy), NULL);
+	}
+
+	nbook = g_object_get_data (G_OBJECT (dlg), "notebook");
+	gtk_notebook_set_page (GTK_NOTEBOOK (nbook), page);
+
+#if 0
+	sp_transformation_apply_button_reset ();
+#endif
+
+	gtk_widget_show (dlg);
+	gtk_window_present (GTK_WINDOW (dlg));
+}
+
+static GtkWidget *
+sp_move_page_new (void)
+{
+	GtkWidget *frame;
+
+	frame = gtk_frame_new (_("Move"));
+
+	return frame;
+}
+
+static GtkWidget *
+sp_transformation_dialog_new (void)
+{
+	GtkWidget *w, *hb, *nbook, *page, *img;
+
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (w), _("Transform selection"));
+
+	hb = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hb);
+	gtk_container_add (GTK_CONTAINER (w), hb);
+
+	nbook = gtk_notebook_new ();
+	gtk_widget_show (nbook);
+	gtk_box_pack_start (GTK_BOX (hb), nbook, TRUE, TRUE, 0);
+	g_object_set_data (G_OBJECT (w), "notebook", nbook);
+
+	img = sp_icon_new (SP_ICON_NOTEBOOK, "move");
+	gtk_widget_show (img);
+	page = sp_move_page_new ();
+	gtk_widget_show (page);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nbook), page, img);
+
+	return w;
+}
+
+
+#if 0
+
 #include <math.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
@@ -30,6 +141,16 @@
 #include "../svg/svg.h"
 #include "../selection-chemistry.h"
 #include "transformation.h"
+
+typedef enum {
+	ABSOLUTE,
+	RELATIVE
+} SPTransformationType;
+
+typedef enum {
+	SELECTION,
+	DESKTOP
+} SPReferType;
 
 /*
  * handler functions for transformation dialog
@@ -127,63 +248,6 @@ ArtPoint * sp_transformation_get_align (SPSelection * selection, ArtPoint * p);
 ArtPoint * sp_transformation_get_center (SPSelection * selection, ArtPoint * p);
 void sp_transformation_apply_button_reset (void);
 
-
-/*
- * dialog invokations
- */
-
-void
-sp_transformation_dialog_move (void) {
-  
-  if (!GTK_IS_WIDGET (transformation_dialog)) sp_transformation_dialog ();
-  if (sel_changed_id < 1) sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-							      "change_selection",
-							      GTK_SIGNAL_FUNC (sp_transformation_selection_changed),
-							      NULL);
-  gtk_notebook_set_page (trans_notebook, 1);
-  gtk_notebook_set_page (trans_notebook, 0);
-  sp_transformation_apply_button_reset ();
-  gtk_widget_show (transformation_dialog);
-}
-
-void
-sp_transformation_dialog_scale (void) {
-  
-  if (!GTK_IS_WIDGET (transformation_dialog)) sp_transformation_dialog ();
-  if (sel_changed_id < 1) sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-							      "change_selection",
-							      GTK_SIGNAL_FUNC (sp_transformation_selection_changed),
-							      NULL);
-  gtk_notebook_set_page (trans_notebook, 1);
-  sp_transformation_apply_button_reset ();
-  gtk_widget_show (transformation_dialog);
-}
-
-void
-sp_transformation_dialog_rotate (void) {
-  
-  if (!GTK_IS_WIDGET (transformation_dialog)) sp_transformation_dialog ();
-  if (sel_changed_id < 1) sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-							      "change_selection",
-							      GTK_SIGNAL_FUNC (sp_transformation_selection_changed),
-							      NULL);
-  gtk_notebook_set_page (trans_notebook, 2);
-  sp_transformation_apply_button_reset ();
-  gtk_widget_show (transformation_dialog);
-}
-
-void
-sp_transformation_dialog_skew (void) {
-  
-  if (!GTK_IS_WIDGET (transformation_dialog)) sp_transformation_dialog ();
-  if (sel_changed_id < 1) sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-							      "change_selection",
-							      GTK_SIGNAL_FUNC (sp_transformation_selection_changed),
-							      NULL);
-  gtk_notebook_set_page (trans_notebook, 3);
-  sp_transformation_apply_button_reset ();
-  gtk_widget_show (transformation_dialog);
-}
 
 void
 sp_transformation_dialog_close (void) {
@@ -1254,3 +1318,6 @@ sp_transformation_get_center (SPSelection * selection, ArtPoint * p) {
   }
   return p;
 }
+
+
+#endif

@@ -42,9 +42,7 @@
 #include "dialogs/export.h"
 #include "dialogs/xml-tree.h"
 #include "dialogs/align.h"
-#if 0
 #include "dialogs/transformation.h"
-#endif
 #include "dialogs/object-properties.h"
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
@@ -343,19 +341,17 @@ sp_ui_event_context_menu (GtkMenu *menu, SPDocument *doc)
 static void
 sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 {
-	sp_ui_menu_append_item (menu, NULL, _("Fill and Stroke"), G_CALLBACK(sp_object_properties_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Size and Position"), G_CALLBACK(sp_object_properties_layout), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Align Objects"), G_CALLBACK(sp_quick_align_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Text Editing"), G_CALLBACK(sp_text_edit_dialog), NULL);
-#if 0
-	sp_ui_menu_append_item (menu, NULL, _("Transformations"), G_CALLBACK(sp_transformation_dialog), NULL);
-#endif
-	sp_ui_menu_append_item (menu, NULL, _("Tool Options"), G_CALLBACK(sp_tool_options_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Tool Attributes"), G_CALLBACK(sp_tool_attributes_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Document"), G_CALLBACK(sp_document_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Editing Window"), G_CALLBACK(sp_desktop_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("XML Editor"), G_CALLBACK(sp_xml_tree_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Display Properties"), G_CALLBACK(sp_display_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Fill and Stroke"), G_CALLBACK (sp_object_properties_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Size and Position"), G_CALLBACK (sp_object_properties_layout), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Align Objects"), G_CALLBACK (sp_quick_align_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Text Editing"), G_CALLBACK (sp_text_edit_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Transformations"), G_CALLBACK (sp_transformation_dialog_move), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Tool Options"), G_CALLBACK (sp_tool_options_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Tool Attributes"), G_CALLBACK (sp_tool_attributes_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Document"), G_CALLBACK (sp_document_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Editing Window"), G_CALLBACK (sp_desktop_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("XML Editor"), G_CALLBACK (sp_xml_tree_dialog), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Display Properties"), G_CALLBACK (sp_display_dialog), NULL);
 }
 
 /* Menus */

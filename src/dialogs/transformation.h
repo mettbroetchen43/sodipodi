@@ -1,25 +1,21 @@
-#ifndef SP_TRANSFORMATION_H
-#define SP_TRANSFORMATION_H
+#ifndef __SP_TRANSFORMATION_H__
+#define __SP_TRANSFORMATION_H__
 
-#include "../sp-metrics.h"
+/*
+ * Object align dialog
+ *
+ * Authors:
+ *   Frank Felfe <innerspace@iname.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
-void sp_transformation_dialog (void);
-
-// dialog invocation and close can be called from menues etc
 void sp_transformation_dialog_move (void);
 void sp_transformation_dialog_scale (void);
 void sp_transformation_dialog_rotate (void);
 void sp_transformation_dialog_skew (void);
-void sp_transformation_dialog_close (void);
-
-typedef enum {
-  ABSOLUTE,
-  RELATIVE
-} SPTransformationType;
-
-typedef enum {
-  SELECTION,
-  DESKTOP
-} SPReferType;
 
 #endif

@@ -57,7 +57,7 @@ void sp_file_new (void)
 	SPDocument * doc;
 	SPViewWidget *dtw;
 
-	doc = sp_document_new (NULL, TRUE);
+	doc = sp_document_new (NULL, TRUE, TRUE);
 	g_return_if_fail (doc != NULL);
 
 	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
@@ -73,7 +73,7 @@ sp_file_open (const guchar *uri)
 	SPDocument *doc;
 	SPViewWidget *dtw;
 
-	doc = sp_document_new (uri, TRUE);
+	doc = sp_document_new (uri, TRUE, TRUE);
 	g_return_if_fail (doc != NULL);
 
 	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));

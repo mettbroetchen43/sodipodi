@@ -33,10 +33,8 @@ libspdialogs_a_SOURCES = \
 	tool-attributes.c tool-attributes.h \
 	fill-style.c fill-style.h \
 	stroke-style.c stroke-style.h \
+	transformation.c transformation.h \
 	node-edit.c node-edit.h
-
-# fixme: Kill glade and re-enable this (Lauris)
-#	transformation.c transformation.h
 
 #	sp-widget.c sp-widget.h \
 #	gradient-vector.c gradient-vector.h \

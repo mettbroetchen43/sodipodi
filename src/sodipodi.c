@@ -234,13 +234,9 @@ sodipodi_dispose (GObject *object)
 	sodipodi = (Sodipodi *) object;
 
 	while (sodipodi->documents) {
-		SPDocument *document;
-		document = (SPDocument *) sodipodi->documents->data;
-		gtk_object_destroy (GTK_OBJECT (document));
-		sodipodi->documents = g_slist_remove (sodipodi->documents, sodipodi->documents->data);
+		g_object_unref (G_OBJECT (sodipodi->documents->data));
 	}
 
-	g_assert (!sodipodi->documents);
 	g_assert (!sodipodi->desktops);
 
 	if (sodipodi->preferences) {
@@ -714,7 +710,7 @@ sodipodi_remove_document (SPDocument *document)
 
 	sodipodi->documents = g_slist_remove (sodipodi->documents, document);
 
-	if (document->public && SP_DOCUMENT_URI (document)) {
+	if (document->advertize && SP_DOCUMENT_URI (document)) {
 		SPRepr *recent;
 		recent = sodipodi_get_repr (SODIPODI, "documents.recent");
 		if (recent) {

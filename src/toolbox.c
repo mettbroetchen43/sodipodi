@@ -23,11 +23,11 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkimage.h>
 #include <gtk/gtktooltips.h>
 #include <gtk/gtkdnd.h>
 
 #include "macros.h"
+#include "widgets/icon.h"
 #include "widgets/sp-toolbox.h"
 #include "widgets/sp-menu-button.h"
 #include "widgets/sp-hwrap-box.h"
@@ -39,9 +39,7 @@
 #include "sodipodi.h"
 #include "event-broker.h"
 #include "dialogs/object-properties.h"
-#if 0
 #include "dialogs/transformation.h"
-#endif
 #include "dialogs/text-edit.h"
 #include "dialogs/align.h"
 #include "dialogs/export.h"
@@ -285,11 +283,9 @@ static GtkWidget *
 sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSignalFunc handler, GtkTooltips *tt, unsigned char *tip)
 {
 	GtkWidget *pm, *b;
-	unsigned char c[1024];
 	int xpos, ypos;
 
-	g_snprintf (c, 1024, "%s/%s", SODIPODI_PIXMAPDIR, pxname);
-	pm = gtk_image_new_from_file (c);
+	pm = sp_icon_new (SP_ICON_BUTTON, pxname);
 	gtk_widget_show (pm);
 	b = gtk_button_new ();
 	gtk_widget_show (b);
@@ -309,7 +305,7 @@ sp_toolbox_toggle_button_new (const unsigned char *pixmap, unsigned int show)
 {
 	GtkWidget *pm, *b;
 
-	pm = gtk_image_new_from_file (pixmap);
+	pm = sp_icon_new (SP_ICON_BUTTON, pixmap);
 	gtk_widget_show (pm);
 	b = gtk_toggle_button_new ();
 	if (show) gtk_widget_show (b);
@@ -328,17 +324,17 @@ sp_toolbox_file_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("File"), "file", SODIPODI_PIXMAPDIR "/toolbox_file.xpm");
+	tb = sp_toolbox_new (t, _("File"), "file", "toolbox_file");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "file_new.xpm", GTK_SIGNAL_FUNC (sp_file_new), tt, _("Create new SVG document"));
-	sp_toolbox_button_new (t, 4, "file_open.xpm", GTK_SIGNAL_FUNC (sp_file_open_dialog), tt, _("Open existing SVG document"));
-	sp_toolbox_button_new (t, 1, "file_save.xpm", GTK_SIGNAL_FUNC (sp_file_save), tt, _("Save document"));
-	sp_toolbox_button_new (t, 5, "file_save_as.xpm", GTK_SIGNAL_FUNC (sp_file_save_as), tt, _("Save document under new name"));
-	sp_toolbox_button_new (t, 2, "file_print.xpm", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
-	sp_toolbox_button_new (t, 6, "file_print_preview.xpm", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
-	sp_toolbox_button_new (t, 3, "file_import.xpm", GTK_SIGNAL_FUNC (sp_file_import), tt, _("Import bitmap or SVG image into document"));
-	sp_toolbox_button_new (t, 7, "file_export.xpm", GTK_SIGNAL_FUNC (sp_file_export_dialog), tt, _("Export document as PNG bitmap"));
+	sp_toolbox_button_new (t, 0, "file_new", GTK_SIGNAL_FUNC (sp_file_new), tt, _("Create new SVG document"));
+	sp_toolbox_button_new (t, 4, "file_open", GTK_SIGNAL_FUNC (sp_file_open_dialog), tt, _("Open existing SVG document"));
+	sp_toolbox_button_new (t, 1, "file_save", GTK_SIGNAL_FUNC (sp_file_save), tt, _("Save document"));
+	sp_toolbox_button_new (t, 5, "file_save_as", GTK_SIGNAL_FUNC (sp_file_save_as), tt, _("Save document under new name"));
+	sp_toolbox_button_new (t, 2, "file_print", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
+	sp_toolbox_button_new (t, 6, "file_print_preview", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
+	sp_toolbox_button_new (t, 3, "file_import", GTK_SIGNAL_FUNC (sp_file_import), tt, _("Import bitmap or SVG image into document"));
+	sp_toolbox_button_new (t, 7, "file_export", GTK_SIGNAL_FUNC (sp_file_export_dialog), tt, _("Export document as PNG bitmap"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.file");
 	if (repr) {
@@ -362,19 +358,19 @@ sp_toolbox_edit_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Edit"), "edit", SODIPODI_PIXMAPDIR "/toolbox_edit.xpm");
+	tb = sp_toolbox_new (t, _("Edit"), "edit", "toolbox_edit");
 	tt = gtk_tooltips_new ();
 
-	b = sp_toolbox_button_new (t, 0, "edit_undo.xpm", GTK_SIGNAL_FUNC (sp_undo), tt, _("Revert last action"));
+	b = sp_toolbox_button_new (t, 0, "edit_undo", GTK_SIGNAL_FUNC (sp_undo), tt, _("Revert last action"));
 	/* fixme: Freehand does not need this anymore, remove if node editing is fixed (Lauris) */
 	gtk_object_set_data (GTK_OBJECT (tb), "undo", b);
-	b = sp_toolbox_button_new (t, 1, "edit_redo.xpm", GTK_SIGNAL_FUNC (sp_redo), tt, _("Do again undone action"));
+	b = sp_toolbox_button_new (t, 1, "edit_redo", GTK_SIGNAL_FUNC (sp_redo), tt, _("Do again undone action"));
 	gtk_object_set_data (GTK_OBJECT (tb), "redo", b);
-	sp_toolbox_button_new (t, 3, "edit_delete.xpm", GTK_SIGNAL_FUNC (sp_selection_delete), tt, _("Delete selected objects"));
-	sp_toolbox_button_new (t, 4, "edit_cut.xpm", GTK_SIGNAL_FUNC (sp_selection_cut), tt, _("Cut selected objects to clipboard"));
-	sp_toolbox_button_new (t, 5, "edit_copy.xpm", GTK_SIGNAL_FUNC (sp_selection_copy), tt, _("Copy selected objects to clipboard"));
-	sp_toolbox_button_new (t, 6, "edit_paste.xpm", GTK_SIGNAL_FUNC (sp_selection_paste), tt, _("Paste objects from clipboard"));
-	sp_toolbox_button_new (t, 7, "edit_duplicate.xpm", GTK_SIGNAL_FUNC (sp_selection_duplicate), tt, _("Duplicate selected objects"));
+	sp_toolbox_button_new (t, 3, "edit_delete", GTK_SIGNAL_FUNC (sp_selection_delete), tt, _("Delete selected objects"));
+	sp_toolbox_button_new (t, 4, "edit_cut", GTK_SIGNAL_FUNC (sp_selection_cut), tt, _("Cut selected objects to clipboard"));
+	sp_toolbox_button_new (t, 5, "edit_copy", GTK_SIGNAL_FUNC (sp_selection_copy), tt, _("Copy selected objects to clipboard"));
+	sp_toolbox_button_new (t, 6, "edit_paste", GTK_SIGNAL_FUNC (sp_selection_paste), tt, _("Paste objects from clipboard"));
+	sp_toolbox_button_new (t, 7, "edit_duplicate", GTK_SIGNAL_FUNC (sp_selection_duplicate), tt, _("Duplicate selected objects"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.edit");
 	if (repr) {
@@ -398,20 +394,18 @@ sp_toolbox_object_create (void)
 	t = gtk_table_new (3, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Object"), "object", SODIPODI_PIXMAPDIR "/toolbox_object.xpm");
+	tb = sp_toolbox_new (t, _("Object"), "object", "toolbox_object");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "object_stroke.xpm", GTK_SIGNAL_FUNC (sp_object_properties_stroke), tt, _("Stroke settings"));
-	sp_toolbox_button_new (t, 1, "object_fill.xpm", GTK_SIGNAL_FUNC (sp_object_properties_fill), tt, _("Fill settings"));
-	sp_toolbox_button_new (t, 2, "object_layout.xpm", GTK_SIGNAL_FUNC (sp_object_properties_layout), tt, _("Object size and position"));
-	sp_toolbox_button_new (t, 3, "object_font.xpm", GTK_SIGNAL_FUNC (sp_text_edit_dialog), tt, _("Text and font settings"));
-	sp_toolbox_button_new (t, 4, "object_align.xpm", GTK_SIGNAL_FUNC (sp_quick_align_dialog), tt, _("Align objects"));
-#if 0
-	sp_toolbox_button_new (t, 5, "object_trans.xpm", GTK_SIGNAL_FUNC (sp_transformation_dialog_move), tt, _("Object transformations"));
-#endif
-	sp_toolbox_button_new (t, 7, "object_rotate.xpm", GTK_SIGNAL_FUNC (sp_selection_rotate_90), tt, _("Rotate object 90 deg clockwise"));
-	sp_toolbox_button_new (t, 8, "object_reset.xpm", GTK_SIGNAL_FUNC (sp_selection_remove_transform), tt, _("Remove transformations"));
-	sp_toolbox_button_new (t, 9, "object_tocurve.xpm", GTK_SIGNAL_FUNC (sp_selected_path_to_curves), tt, _("Convert object to curve"));
+	sp_toolbox_button_new (t, 0, "object_stroke", GTK_SIGNAL_FUNC (sp_object_properties_stroke), tt, _("Stroke settings"));
+	sp_toolbox_button_new (t, 1, "object_fill", GTK_SIGNAL_FUNC (sp_object_properties_fill), tt, _("Fill settings"));
+	sp_toolbox_button_new (t, 2, "object_layout", GTK_SIGNAL_FUNC (sp_object_properties_layout), tt, _("Object size and position"));
+	sp_toolbox_button_new (t, 3, "object_font", GTK_SIGNAL_FUNC (sp_text_edit_dialog), tt, _("Text and font settings"));
+	sp_toolbox_button_new (t, 4, "object_align", GTK_SIGNAL_FUNC (sp_quick_align_dialog), tt, _("Align objects"));
+	sp_toolbox_button_new (t, 5, "object_trans", GTK_SIGNAL_FUNC (sp_transformation_dialog_move), tt, _("Object transformations"));
+	sp_toolbox_button_new (t, 7, "object_rotate", GTK_SIGNAL_FUNC (sp_selection_rotate_90), tt, _("Rotate object 90 deg clockwise"));
+	sp_toolbox_button_new (t, 8, "object_reset", GTK_SIGNAL_FUNC (sp_selection_remove_transform), tt, _("Remove transformations"));
+	sp_toolbox_button_new (t, 9, "object_tocurve", GTK_SIGNAL_FUNC (sp_selected_path_to_curves), tt, _("Convert object to curve"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.object");
 	if (repr) {
@@ -435,17 +429,17 @@ sp_toolbox_selection_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Selection"), "selection", SODIPODI_PIXMAPDIR "/toolbox_select.xpm");
+	tb = sp_toolbox_new (t, _("Selection"), "selection", "toolbox_select");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "selection_top.xpm", GTK_SIGNAL_FUNC (sp_selection_raise_to_top), tt, _("Raise selected objects to top"));
-	sp_toolbox_button_new (t, 1, "selection_up.xpm", GTK_SIGNAL_FUNC (sp_selection_raise), tt, _("Raise selected objects one level"));
-	sp_toolbox_button_new (t, 2, "selection_combine.xpm", GTK_SIGNAL_FUNC (sp_selected_path_combine), tt, _("Combine multiple paths"));
-	sp_toolbox_button_new (t, 3, "selection_group.xpm", GTK_SIGNAL_FUNC (sp_selection_group), tt, _("Group selected objects"));
-	sp_toolbox_button_new (t, 4, "selection_bot.xpm", GTK_SIGNAL_FUNC (sp_selection_lower_to_bottom), tt, _("Lower selected objects to bottom"));
-	sp_toolbox_button_new (t, 5, "selection_down.xpm", GTK_SIGNAL_FUNC (sp_selection_lower), tt, _("Lower selected objects one level"));
-	sp_toolbox_button_new (t, 6, "selection_break.xpm", GTK_SIGNAL_FUNC (sp_selected_path_break_apart), tt, _("Break selected path to subpaths"));
-	sp_toolbox_button_new (t, 7, "selection_ungroup.xpm", GTK_SIGNAL_FUNC (sp_selection_ungroup), tt, _("Ungroup selected group"));
+	sp_toolbox_button_new (t, 0, "selection_top", GTK_SIGNAL_FUNC (sp_selection_raise_to_top), tt, _("Raise selected objects to top"));
+	sp_toolbox_button_new (t, 1, "selection_up", GTK_SIGNAL_FUNC (sp_selection_raise), tt, _("Raise selected objects one level"));
+	sp_toolbox_button_new (t, 2, "selection_combine", GTK_SIGNAL_FUNC (sp_selected_path_combine), tt, _("Combine multiple paths"));
+	sp_toolbox_button_new (t, 3, "selection_group", GTK_SIGNAL_FUNC (sp_selection_group), tt, _("Group selected objects"));
+	sp_toolbox_button_new (t, 4, "selection_bot", GTK_SIGNAL_FUNC (sp_selection_lower_to_bottom), tt, _("Lower selected objects to bottom"));
+	sp_toolbox_button_new (t, 5, "selection_down", GTK_SIGNAL_FUNC (sp_selection_lower), tt, _("Lower selected objects one level"));
+	sp_toolbox_button_new (t, 6, "selection_break", GTK_SIGNAL_FUNC (sp_selected_path_break_apart), tt, _("Break selected path to subpaths"));
+	sp_toolbox_button_new (t, 7, "selection_ungroup", GTK_SIGNAL_FUNC (sp_selection_ungroup), tt, _("Ungroup selected group"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.selection");
 	if (repr) {
@@ -468,19 +462,19 @@ sp_toolbox_draw_create (void)
 	
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
-	tb = sp_toolbox_new (t, _("Draw"), "draw", SODIPODI_PIXMAPDIR "/toolbox_draw.xpm");
+	tb = sp_toolbox_new (t, _("Draw"), "draw", "toolbox_draw");
 	
 	tt = gtk_tooltips_new ();
 	
 	/* Select */
-	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_select.xpm", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_select", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
 	gtk_tooltips_set_tip (tt, b, _("Select tool - select and transform objects"), NULL);
 
 	/* Node */
-	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_node.xpm", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_node", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
@@ -492,25 +486,25 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Rect */
-	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_rect.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_rect",
 							    _("Rectangle tool - create rectangles and squares with optional rounded corners"),
 							    NULL);
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
 	/* Arc */
-	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_arc.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_arc",
 							    _("Arc tool - create circles, ellipses and arcs"),
 							    NULL);
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
 	/* Star */
-	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_star.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_star",
 							    _("Star tool - create stars and polygons"),
 							    NULL);
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
 	/* Spiral */
-	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_spiral.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_spiral",
 							    _("Spiral tool - create spirals"),
 							    NULL);
 	gtk_widget_show (ev);
@@ -529,19 +523,19 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Freehand */
-	ev = gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_freehand.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips ("draw_freehand",
 							     _("Pencil tool - draw freehand lines and straight segments"),
 							     NULL);
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
 	/* Pen */
-	ev = gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_pen.xpm",
+	ev = gtk_event_box_new_with_image_file_and_tooltips ("draw_pen",
 							     _("Pen tool - draw exactly positioned curved lines"),
 							     NULL);
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
 	/* Dynahand */
-	ev =  gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_dynahand.xpm",
+	ev =  gtk_event_box_new_with_image_file_and_tooltips ("draw_dynahand",
 							      _("Calligraphic tool - draw calligraphic lines"),
 							      NULL);
 	gtk_widget_show (ev);
@@ -556,14 +550,14 @@ sp_toolbox_draw_create (void)
 #endif
 
 	/* Text */
-	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_text.xpm", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_text", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPTextContext", b);
 	gtk_tooltips_set_tip (tt, b, _("Text tool - create editable text objects"), NULL);
 
 	/* Zoom */
-	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_zoom.xpm", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_zoom", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
@@ -591,17 +585,17 @@ sp_toolbox_zoom_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Zoom"), "zoom", SODIPODI_PIXMAPDIR "/toolbox_zoom.xpm");
+	tb = sp_toolbox_new (t, _("Zoom"), "zoom", "toolbox_zoom");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "zoom_in.xpm", GTK_SIGNAL_FUNC (sp_zoom_in), tt, _("Zoom in drawing"));
-	sp_toolbox_button_new (t, 1, "zoom_2_to_1.xpm", GTK_SIGNAL_FUNC (sp_zoom_2_to_1), tt, _("Set zoom factor to 2:1"));
-	sp_toolbox_button_new (t, 2, "zoom_1_to_1.xpm", GTK_SIGNAL_FUNC (sp_zoom_1_to_1), tt, _("Set zoom factor to 1:1"));
-	sp_toolbox_button_new (t, 3, "zoom_1_to_2.xpm", GTK_SIGNAL_FUNC (sp_zoom_1_to_2), tt, _("Set zoom factor to 1:2"));
-	sp_toolbox_button_new (t, 4, "zoom_out.xpm", GTK_SIGNAL_FUNC (sp_zoom_out), tt, _("Zoom out drawing"));
-	sp_toolbox_button_new (t, 5, "zoom_page.xpm", GTK_SIGNAL_FUNC (sp_zoom_page), tt, _("Fit the whole page into window"));
-	sp_toolbox_button_new (t, 6, "zoom_draw.xpm", GTK_SIGNAL_FUNC (sp_zoom_drawing), tt, _("Fit the whole drawing into window"));
-	sp_toolbox_button_new (t, 7, "zoom_select.xpm", GTK_SIGNAL_FUNC (sp_zoom_selection), tt, _("Fit the whole selection into window"));
+	sp_toolbox_button_new (t, 0, "zoom_in", GTK_SIGNAL_FUNC (sp_zoom_in), tt, _("Zoom in drawing"));
+	sp_toolbox_button_new (t, 1, "zoom_2_to_1", GTK_SIGNAL_FUNC (sp_zoom_2_to_1), tt, _("Set zoom factor to 2:1"));
+	sp_toolbox_button_new (t, 2, "zoom_1_to_1", GTK_SIGNAL_FUNC (sp_zoom_1_to_1), tt, _("Set zoom factor to 1:1"));
+	sp_toolbox_button_new (t, 3, "zoom_1_to_2", GTK_SIGNAL_FUNC (sp_zoom_1_to_2), tt, _("Set zoom factor to 1:2"));
+	sp_toolbox_button_new (t, 4, "zoom_out", GTK_SIGNAL_FUNC (sp_zoom_out), tt, _("Zoom out drawing"));
+	sp_toolbox_button_new (t, 5, "zoom_page", GTK_SIGNAL_FUNC (sp_zoom_page), tt, _("Fit the whole page into window"));
+	sp_toolbox_button_new (t, 6, "zoom_draw", GTK_SIGNAL_FUNC (sp_zoom_drawing), tt, _("Fit the whole drawing into window"));
+	sp_toolbox_button_new (t, 7, "zoom_select", GTK_SIGNAL_FUNC (sp_zoom_selection), tt, _("Fit the whole selection into window"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.zoom");
 	if (repr) {
@@ -625,17 +619,17 @@ sp_toolbox_node_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Nodes"), "node", SODIPODI_PIXMAPDIR "/toolbox_node.xpm");
+	tb = sp_toolbox_new (t, _("Nodes"), "node", "toolbox_node");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "node_insert.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_add), tt, _("Insert new nodes into selected segments"));
-	sp_toolbox_button_new (t, 1, "node_break.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_break), tt, _("Break line at selected nodes"));
-	sp_toolbox_button_new (t, 2, "node_cusp.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_cusp), tt, _("Make selected nodes corner"));
-	sp_toolbox_button_new (t, 3, "node_line.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_toline), tt, _("Make selected segments lines"));
-	sp_toolbox_button_new (t, 4, "node_delete.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_delete), tt, _("Delete selected nodes"));
-	sp_toolbox_button_new (t, 5, "node_join.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_join), tt, _("Join lines at selected nodes"));
-	sp_toolbox_button_new (t, 6, "node_smooth.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_smooth), tt, _("Make selected nodes smooth"));
-	sp_toolbox_button_new (t, 7, "node_curve.xpm", GTK_SIGNAL_FUNC (sp_node_path_edit_tocurve), tt, _("Make selected segments curves"));
+	sp_toolbox_button_new (t, 0, "node_insert", GTK_SIGNAL_FUNC (sp_node_path_edit_add), tt, _("Insert new nodes into selected segments"));
+	sp_toolbox_button_new (t, 1, "node_break", GTK_SIGNAL_FUNC (sp_node_path_edit_break), tt, _("Break line at selected nodes"));
+	sp_toolbox_button_new (t, 2, "node_cusp", GTK_SIGNAL_FUNC (sp_node_path_edit_cusp), tt, _("Make selected nodes corner"));
+	sp_toolbox_button_new (t, 3, "node_line", GTK_SIGNAL_FUNC (sp_node_path_edit_toline), tt, _("Make selected segments lines"));
+	sp_toolbox_button_new (t, 4, "node_delete", GTK_SIGNAL_FUNC (sp_node_path_edit_delete), tt, _("Delete selected nodes"));
+	sp_toolbox_button_new (t, 5, "node_join", GTK_SIGNAL_FUNC (sp_node_path_edit_join), tt, _("Join lines at selected nodes"));
+	sp_toolbox_button_new (t, 6, "node_smooth", GTK_SIGNAL_FUNC (sp_node_path_edit_smooth), tt, _("Make selected nodes smooth"));
+	sp_toolbox_button_new (t, 7, "node_curve", GTK_SIGNAL_FUNC (sp_node_path_edit_tocurve), tt, _("Make selected segments curves"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.node");
 	if (repr) {
@@ -815,7 +809,7 @@ gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
 	GtkWidget * ev;
 	GtkTooltips *tt;
 	
-	pm = gtk_image_new_from_file (image_file);
+	pm = sp_icon_new (SP_ICON_BUTTON, image_file);
 	tt = gtk_tooltips_new ();
 	ev = gtk_event_box_new();
 	gtk_tooltips_set_tip (tt, ev, tip_text, tip_private);

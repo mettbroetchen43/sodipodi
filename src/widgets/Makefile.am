@@ -8,11 +8,12 @@ gladedir = $(datadir)/sodipodi
 INCLUDES = \
 	-I.. \
 	$(SODIPODI_CFLAGS) \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\"
+	-DSODIPODI_PIXMAPDIR=\""$(gladedir)"\"
 
 noinst_LIBRARIES = libspwidgets.a
 
 libspwidgets_a_SOURCES = \
+	icon.c icon.h \
 	sp-toolbox.c sp-toolbox.h \
 	sp-menu-button.c sp-menu-button.h \
 	sp-color-preview.c sp-color-preview.h \

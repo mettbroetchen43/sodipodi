@@ -476,7 +476,7 @@ sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDes
 
 // update the zoomfactor in the combobox of the desktop window
 static 
-void sp_desktop_zoom_update (SPDesktop * desktop)
+void sp_desktop_zoom_update (SPDesktop *desktop)
 {
 	GString * str = NULL;
 	gint * pos, p0 = 0;
