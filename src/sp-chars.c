@@ -214,7 +214,7 @@ sp_chars_normalized_bpath_list (SPChars *chars)
 {
 	SPCharElement *el;
 	GSList *cc;
-	SPCurve *curve;
+	/* SPCurve *curve; */
 
 	cc = NULL;
 	for (el = chars->elements; el != NULL; el = el->next) {

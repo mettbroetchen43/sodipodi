@@ -300,6 +300,10 @@ nr_svl_build_finish_segment (NRSVLBuild *svlb)
 void
 nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y)
 {
+	if (svlb->bboxonly) {
+		nr_rect_f_union_xy (&svlb->bbox, x, y);
+		return;
+	}
 	nr_svl_build_finish_segment (svlb);
 	svlb->sx = NR_COORD_X_FROM_ART (x);
 	svlb->sy = NR_COORD_Y_FROM_ART (y);
@@ -309,6 +313,10 @@ nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y)
 void
 nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 {
+	if (svlb->bboxonly) {
+		nr_rect_f_union_xy (&svlb->bbox, x, y);
+		return;
+	}
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
 	if (y != svlb->sy) {
@@ -426,6 +434,7 @@ nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, uns
 	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
 	svlb.dir = 0;
 	svlb.reverse = FALSE;
+	svlb.bboxonly = FALSE;
 	svlb.sx = svlb.sy = 0.0;
 
 	x = y = 0.0;
@@ -521,6 +530,8 @@ nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 	svlb.bbox.x0 = svlb.bbox.y0 = NR_HUGE_F;
 	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
 	svlb.dir = 0;
+	svlb.reverse = FALSE;
+	svlb.bboxonly = FALSE;
 	svlb.sx = svlb.sy = 0.0;
 
 	for (s = vpath; s->code != ART_END; s++) {
@@ -570,6 +581,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
 	svlb.dir = 0;
 	svlb.reverse = FALSE;
+	svlb.bboxonly = FALSE;
 	svlb.sx = svlb.sy = 0.0;
 
 	x = y = 0.0;

@@ -84,4 +84,10 @@ NRArenaItem *sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 				      NRMatrixF *base, float linewidth);
 void sp_marker_hide (SPMarker *marker, unsigned int key);
 
+void
+sp_marker_union_bbox (SPMarker *marker,
+                      unsigned int key, unsigned int pos,
+                      const NRMatrixD *base, float linewidth,
+                      NRRectF *bbox);
+
 #endif

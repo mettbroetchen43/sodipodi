@@ -1,6 +1,6 @@
 #
 # Several object property dialogs
-# Author: Lauris Kaplinski <lauris@ximian.com>
+# Author: Lauris Kaplinski <lauris@kaplinski.com>
 #
 # Here should be things, that use only xml interface, not objects themselves
 # Currently we still have selection_changed functions, but these will be
@@ -22,7 +22,6 @@ libspdialogs_a_SOURCES = \
 	sp-attribute-widget.c sp-attribute-widget.h \
 	text-edit.c text-edit.h \
 	export.c export.h \
-	xml-tree.c xml-tree.h \
 	align.c align.h	\
 	display-settings.c display-settings.h \
 	desktop-properties.c desktop-properties.h \
@@ -37,7 +36,20 @@ libspdialogs_a_SOURCES = \
 	transformation.c transformation.h \
 	node-edit.c node-edit.h
 
-#	sp-widget.c sp-widget.h \
-#	gradient-vector.c gradient-vector.h \
-#	gradient-selector.c gradient-selector.h
+# xml-tree.c xml-tree.h
+
+moduledir = $(libdir)/sodipodi/modules
+
+module_LTLIBRARIES = libxmleditor.la
+
+libxmleditor_la_CPPFLAGS = \
+	-DSTANDALONE_MODULE
+
+libxmleditor_la_SOURCES = \
+	xml-tree.c xml-tree.h
+
+libxmleditor_la_LDFLAGS = \
+	-module \
+	-avoid-version
+
 

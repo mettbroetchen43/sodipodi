@@ -1,3 +1,15 @@
+2003-12-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-stroke.c (nr_bpath_stroke_bbox_union): Implement
+
+2003-12-10  John Stracke  <francis@REMOVE_THISthibault.org>
+
+	* src/dialogs/export.c (sp_export_area_toggled): Use visual bbox
+
+	* src/sp-shape.c (sp_shape_bbox): Use visual bbox, if requested
+
+	* src/sp-marker.c (sp_marker_union_bbox): New method
+
 2003-12-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/xml/repr-util.c (sp_repr_lookup_child_by_name): New method

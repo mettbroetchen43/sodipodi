@@ -147,6 +147,7 @@ sodipodi_SOURCES = \
 sodipodi_private_libs = \
 	$(spproglibs) \
 	dialogs/libspdialogs.a \
+	dialogs/libxmleditor.la \
 	xml/libspxml.a \
 	svg/libspsvg.a \
 	widgets/libspwidgets.a \

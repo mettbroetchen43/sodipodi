@@ -149,6 +149,7 @@ void sp_item_set_item_transform (SPItem *item, const NRMatrixF *transform);
 /* Utility */
 
 void sp_item_bbox_desktop (SPItem *item, NRRectF *bbox);
+void sp_item_bbox_desktop_full (SPItem *item, NRRectF *bbox, unsigned int flags);
 NRMatrixF *sp_item_i2doc_affine (SPItem *item, NRMatrixF *transform);
 NRMatrixF *sp_item_i2root_affine (SPItem *item, NRMatrixF *transform);
 /* Transformation to normalized (0,0-1,1) viewport */

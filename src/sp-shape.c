@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include <libnr/nr-pixblock.h>
+#include <libnr/nr-stroke.h>
 
 #include "macros.h"
 #include "helper/sp-intl.h"
@@ -394,9 +395,80 @@ sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 	if (shape->curve) {
 		NRMatrixF a;
 		NRBPath bp;
+                SPStyle *style;
+
 		nr_matrix_f_from_d (&a, transform);
 		bp.path = SP_CURVE_BPATH (shape->curve);
-		nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
+
+                style = SP_OBJECT_STYLE (item);
+		if (flags & SP_ITEM_BBOX_VISUAL) {
+			/* Need visual bbox */
+			if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+				float scale, width;
+				/* Have stroke */
+				scale = NR_MATRIX_DF_EXPANSION (&a);
+				width = MAX (0.125, style->stroke_width.computed * scale);
+				nr_bpath_stroke_bbox_union (&bp, &a,
+							    bbox,
+							    width,
+							    style->stroke_linecap.computed,
+							    style->stroke_linejoin.computed,
+							    style->stroke_miterlimit.value * M_PI / 180.0,
+							    0.25);
+			} else if (style->fill.type != SP_PAINT_TYPE_NONE) {
+				/* Have fill */
+				nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
+			}
+			/* Markers only attribute to visual bbox */
+			if (shape->marker_start || shape->marker_mid || shape->marker_end) {
+				SPStyle *style=((SPObject*)item)->style;
+				ArtBpath *bp;
+				int nstart, nmid, nend;
+				/* Determine the number of markers needed */
+				nstart = 0;
+				nmid = 0;
+				nend = 0;
+				for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+					if ((bp[0].code == ART_MOVETO) || (bp[0].code == ART_MOVETO_OPEN)) {
+						nstart += 1;
+					} else if ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO)) {
+						nend += 1;
+					} else {
+						nmid += 1;
+					}
+				}
+
+				/* Measure marker views */
+				/*if (!arenaitem->key) NR_ARENA_ITEM_SET_KEY (arenaitem, sp_item_display_key_new (3));*/
+				if (shape->marker_start) {
+					sp_marker_union_bbox ((SPMarker *) shape->marker_start,
+							      /*NR_ARENA_ITEM_GET_KEY (arenaitem) + */SP_MARKER_START,
+							      nstart,
+							      transform,
+							      style->stroke_width.computed,
+							      bbox);
+				}
+				if (shape->marker_mid) {
+					sp_marker_union_bbox ((SPMarker *) shape->marker_mid,
+							      /*NR_ARENA_ITEM_GET_KEY (arenaitem) + */SP_MARKER_MID,
+							      nmid,
+							      transform,
+							      style->stroke_width.computed,
+							      bbox);
+				}
+				if (shape->marker_end) {
+					sp_marker_union_bbox ((SPMarker *) shape->marker_end,
+							      /*NR_ARENA_ITEM_GET_KEY (arenaitem) + */SP_MARKER_END,
+							      nend,
+							      transform,
+							      style->stroke_width.computed,
+							      bbox);
+				}
+			}
+		} else {
+			/* Logical bbox */
+			nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
+		}
 	}
 }
 

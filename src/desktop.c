@@ -734,7 +734,7 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 
 	/* Horizontal ruler */
 	eventbox = gtk_event_box_new ();
-	dtw->hruler = sp_hruler_new ();
+	dtw->hruler = sp_ruler_new (FALSE);
 	sp_ruler_set_metric (GTK_RULER (dtw->hruler), SP_PT);
 	gtk_container_add (GTK_CONTAINER (eventbox), dtw->hruler);
 	gtk_table_attach (GTK_TABLE (tbl), eventbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, widget->style->xthickness, 0);
@@ -743,7 +743,7 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	g_signal_connect (G_OBJECT (eventbox), "motion_notify_event", G_CALLBACK (sp_dt_hruler_event), dtw);
 	/* Vertical ruler */
 	eventbox = gtk_event_box_new ();
-	dtw->vruler = sp_vruler_new ();
+	dtw->vruler = sp_ruler_new (TRUE);
 	sp_ruler_set_metric (GTK_RULER (dtw->vruler), SP_PT);
 	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (dtw->vruler));
 	gtk_table_attach (GTK_TABLE (tbl), eventbox, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, widget->style->ythickness);

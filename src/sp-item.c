@@ -451,6 +451,12 @@ sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 void
 sp_item_bbox_desktop (SPItem *item, NRRectF *bbox)
 {
+        sp_item_bbox_desktop_full (item, bbox, 0);
+}
+
+void
+sp_item_bbox_desktop_full (SPItem *item, NRRectF *bbox, unsigned int flags)
+{
 	NRMatrixF i2d;
 	NRMatrixD i2dd;
 
@@ -461,7 +467,7 @@ sp_item_bbox_desktop (SPItem *item, NRRectF *bbox)
 	sp_item_i2d_affine (item, &i2d);
 	nr_matrix_d_from_f (&i2dd, &i2d);
 
-	sp_item_invoke_bbox (item, bbox, &i2dd, TRUE);
+	sp_item_invoke_bbox_full (item, bbox, &i2dd, flags, TRUE);
 }
 
 static int

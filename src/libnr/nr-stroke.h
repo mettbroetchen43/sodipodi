@@ -35,4 +35,10 @@ NRSVL *nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 			unsigned int cap, unsigned int join, float miterlimit,
 			float flatness);
 
+NRRectF *nr_bpath_stroke_bbox_union (const NRBPath *path, NRMatrixF *transform,
+				     NRRectF *bbox,
+				     float width,
+				     unsigned int cap, unsigned int join, float miterlimit,
+				     float flatness);
+
 #endif

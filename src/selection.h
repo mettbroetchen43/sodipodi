@@ -64,6 +64,7 @@ SPItem *sp_selection_item (SPSelection * selection);
 SPRepr *sp_selection_repr (SPSelection * selection);
 
 NRRectF *sp_selection_bbox (SPSelection *selection, NRRectF *bbox);
+NRRectF *sp_selection_bbox_full (SPSelection *selection, NRRectF *bbox, unsigned int flags);
 NRRectF *sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox);
 
 /* Returns number of points used */

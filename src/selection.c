@@ -504,6 +504,12 @@ sp_selection_repr (SPSelection * selection)
 NRRectF *
 sp_selection_bbox (SPSelection *selection, NRRectF *bbox)
 {
+        return sp_selection_bbox_full (selection, bbox, 0);
+}
+
+NRRectF *
+sp_selection_bbox_full (SPSelection *selection, NRRectF *bbox, unsigned int flags)
+{
 	SPItem *item;
 	NRRectF b;
 	GSList *l;
@@ -522,7 +528,7 @@ sp_selection_bbox (SPSelection *selection, NRRectF *bbox)
 
 	for (l = selection->items; l != NULL; l = l-> next) {
 		item = SP_ITEM (l->data);
-		sp_item_bbox_desktop (item, &b);
+		sp_item_bbox_desktop_full (item, &b, flags);
 		if (b.x0 < bbox->x0) bbox->x0 = b.x0;
 		if (b.y0 < bbox->y0) bbox->y0 = b.y0;
 		if (b.x1 > bbox->x1) bbox->x1 = b.x1;

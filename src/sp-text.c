@@ -1895,7 +1895,7 @@ sp_text_normalized_bpath_list (SPText *text)
 {
 	SPObject *child;
 	GSList *cc;
-	SPCurve *curve;
+	/* SPCurve *curve; */
 
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (SP_IS_TEXT (text), NULL);

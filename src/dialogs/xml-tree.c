@@ -1196,4 +1196,20 @@ sp_xml_module_unload (SPModule *module)
 	g_object_unref ((GObject *) xml_editor_module);
 }
 
+#ifdef STANDALONE_MODULE
+/* Standalone module */
+
+SPModule *
+sp_module_load (void)
+{
+	return sp_xml_module_load ();
+}
+
+void
+sp_module_unload (SPModule *module)
+{
+	sp_xml_module_unload (module);
+}
+
+#endif
 

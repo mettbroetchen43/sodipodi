@@ -25,7 +25,8 @@ struct _NRSVLBuild {
 	NRFlat **flats;
 	NRVertex *refvx;
 	int dir;
-	int reverse;
+	unsigned int reverse : 1;
+	unsigned int bboxonly : 1;
 	NRCoord sx, sy;
 	NRRectF bbox;
 };

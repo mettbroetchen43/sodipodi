@@ -34,6 +34,7 @@ struct _NRSVLStrokeBuild {
 	NRSVL *svl;
 	NRFlat *flats;
 	NRMatrixF transform;
+	unsigned int bboxonly : 1;
 	unsigned int closed : 1;
 	unsigned int cap : 2;
 	unsigned int join : 2;
@@ -95,15 +96,17 @@ nr_svl_stroke_build_lineto (NRSVLStrokeBuild *svlb, float x, float y)
 			len = (float) hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
 			dx = (float) (svlb->x[1] - svlb->x[0]) / len;
 			dy = (float) (svlb->y[1] - svlb->y[0]) / len;
+			dx *= svlb->width_2;
+			dy *= svlb->width_2;
 			if (!svlb->closed) {
 				/* Draw cap[0,1] if open */
-				nr_svl_build_moveto (&svlb->left, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
-				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
+				nr_svl_build_moveto (&svlb->left, svlb->x[0] + dy, svlb->y[0] - dx);
+				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy, svlb->y[0] - dx);
 				nr_svl_stroke_build_draw_cap (svlb, svlb->x[0], svlb->y[0], svlb->x[1], svlb->y[1], FALSE);
 			} else {
 				/* Set starting point */
-				nr_svl_build_moveto (&svlb->left, svlb->x[0] - dy * svlb->width_2, svlb->y[0] + dx * svlb->width_2);
-				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
+				nr_svl_build_moveto (&svlb->left, svlb->x[0] - dy, svlb->y[0] + dx);
+				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy, svlb->y[0] - dx);
 			}
 		} else {
 			/* Draw 2->3 + join 2->3->CP */
@@ -243,6 +246,7 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 	} else {
 		nr_matrix_f_set_identity (&svlb.transform);
 	}
+	svlb.bboxonly = FALSE;
 	svlb.closed = FALSE;
 	svlb.width_2 = width / 2.0;
 	svlb.cap = cap;
@@ -256,6 +260,7 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 	svlb.left.refvx = NULL;
 	svlb.left.dir = 0;
 	svlb.left.reverse = FALSE;
+	svlb.left.bboxonly = FALSE;
 	svlb.left.sx = svlb.left.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.left.bbox);
 
@@ -264,6 +269,7 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 	svlb.right.refvx = NULL;
 	svlb.right.dir = 0;
 	svlb.right.reverse = TRUE;
+	svlb.right.bboxonly = FALSE;
 	svlb.right.sx = svlb.right.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.right.bbox);
 
@@ -318,6 +324,128 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 	return svlb.svl;
 }
 
+NRRectF *
+nr_bpath_stroke_bbox_union (const NRBPath *path, NRMatrixF *transform,
+			    NRRectF *bbox,
+			    float width,
+			    unsigned int cap, unsigned int join, float miterlimit,
+			    float flatness)
+{
+	NRSVLStrokeBuild svlb;
+	ArtBpath *bp;
+	double x, y, sx, sy;
+
+	/* Initialize NRSVLBuilds */
+	svlb.svl = NULL;
+	svlb.flats = NULL;
+	if (transform) {
+		svlb.transform = *transform;
+	} else {
+		nr_matrix_f_set_identity (&svlb.transform);
+	}
+	svlb.bboxonly = FALSE;
+	svlb.closed = FALSE;
+	svlb.width_2 = width / 2.0;
+	svlb.cap = cap;
+	svlb.join = join;
+	svlb.curve = FALSE;
+	svlb.cosml = MIN (cos (miterlimit), 0.9998477);
+	svlb.npoints = 0;
+
+	svlb.left.svl = &svlb.svl;
+	svlb.left.flats = &svlb.flats;
+	svlb.left.refvx = NULL;
+	svlb.left.dir = 0;
+	svlb.left.reverse = FALSE;
+	svlb.left.bboxonly = TRUE;
+	svlb.left.sx = svlb.left.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.left.bbox);
+
+	svlb.right.svl = &svlb.svl;
+	svlb.right.flats = &svlb.flats;
+	svlb.right.refvx = NULL;
+	svlb.right.dir = 0;
+	svlb.right.reverse = TRUE;
+	svlb.right.bboxonly = TRUE;
+	svlb.right.sx = svlb.right.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.right.bbox);
+
+	x = y = 0.0;
+	sx = sy = 0.0;
+
+	for (bp = path->path; bp->code != ART_END; bp++) {
+		switch (bp->code) {
+		case ART_MOVETO:
+			nr_svl_stroke_build_finish_subpath (&svlb);
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
+			nr_svl_stroke_build_start_closed_subpath (&svlb, (float) x, (float) y);
+			break;
+		case ART_MOVETO_OPEN:
+			nr_svl_stroke_build_finish_subpath (&svlb);
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
+			nr_svl_stroke_build_start_open_subpath (&svlb, (float) x, (float) y);
+			break;
+		case ART_LINETO:
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
+			nr_svl_stroke_build_lineto (&svlb, (float) x, (float) y);
+			break;
+		case ART_CURVETO:
+			if (transform) {
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+				nr_svl_stroke_build_curveto (&svlb,
+							     sx, sy,
+							     NR_MATRIX_DF_TRANSFORM_X (transform, bp->x1, bp->y1),
+							     NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x1, bp->y1),
+							     NR_MATRIX_DF_TRANSFORM_X (transform, bp->x2, bp->y2),
+							     NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x2, bp->y2),
+							     x, y,
+							     flatness, 0);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+				nr_svl_stroke_build_curveto (&svlb,
+							     sx, sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y,
+							     flatness, 0);
+			}
+			/* Restore original join type */
+			svlb.curve = FALSE;
+			sx = x;
+			sy = y;
+			break;
+		default:
+			/* fixme: free lists */
+			return NULL;
+			break;
+		}
+	}
+	nr_svl_stroke_build_finish_subpath (&svlb);
+	nr_svl_stroke_build_finish_segment (&svlb);
+
+	nr_rect_f_union (bbox, bbox, &svlb.left.bbox);
+	nr_rect_f_union (bbox, bbox, &svlb.right.bbox);
+
+	return bbox;
+}
+
 NRSVL *
 nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 		 float width,
@@ -349,6 +477,7 @@ nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 	svlb.left.refvx = NULL;
 	svlb.left.dir = 0;
 	svlb.left.reverse = FALSE;
+	svlb.left.bboxonly = FALSE;
 	svlb.left.sx = svlb.left.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.left.bbox);
 
@@ -357,6 +486,7 @@ nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 	svlb.right.refvx = NULL;
 	svlb.right.dir = 0;
 	svlb.right.reverse = TRUE;
+	svlb.right.bboxonly = TRUE;
 	svlb.right.sx = svlb.right.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.right.bbox);
 

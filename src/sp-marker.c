@@ -610,6 +610,50 @@ sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 	return NULL;
 }
 
+void
+sp_marker_union_bbox (SPMarker *marker,
+                      unsigned int key, unsigned int pos,
+                      const NRMatrixD *base, float linewidth,
+                      NRRectF *bbox)
+{
+	SPMarkerView *v;
+
+        printf("sp_marker_union_bbox(key: %u)\n",key);
+
+	for (v = marker->views; v != NULL; v = v->next) {
+		printf("\tv->key: %u\n",v->key);
+
+		if (v->key == key) {
+			if (pos >= v->size) return;
+                        NRMatrixD m;
+                        if (marker->orient_auto) {
+                          m = *base;
+                        } else {
+                          /* fixme: Orient units (Lauris) */
+                          nr_matrix_d_set_rotate (&m, marker->orient * M_PI / 180.0);
+                          m.c[4] = base->c[4];
+                          m.c[5] = base->c[5];
+                        }
+                        if (marker->markerUnits == SP_MARKER_UNITS_STROKEWIDTH) {
+                          m.c[0] *= linewidth;
+                          m.c[1] *= linewidth;
+                          m.c[2] *= linewidth;
+                          m.c[3] *= linewidth;
+                        }
+
+                        float x=fabsf(NR_MATRIX_DF_TRANSFORM_X(&m,1,1));
+                        float y=fabsf(NR_MATRIX_DF_TRANSFORM_Y(&m,1,1));
+
+                        bbox->x0=MIN(bbox->x0,-x);
+                        bbox->y0=MIN(bbox->y0,-y);
+                        bbox->x1=MAX(bbox->x1,x);
+                        bbox->y1=MAX(bbox->y1,y);
+
+			break;
+		}
+	}
+}
+
 /* This replaces SPItem implementation because we have own views */
 
 void
