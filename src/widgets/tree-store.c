@@ -14,6 +14,7 @@
 #include "macros.h"
 #include "document.h"
 #include "desktop.h"
+#include "desktop-handles.h"
 #include "sp-item-group.h"
 
 #include "tree-store.h"
@@ -36,6 +37,9 @@ static void sp_tree_store_init (SPTreeStore *store);
 static void sp_tree_store_class_init (SPTreeStoreClass *Klass);
 static void sp_tree_store_tree_model_init (GtkTreeModelIface *iface);
 static void sp_tree_store_finalize (GObject *object);
+
+static void sp_tree_store_attach_document (SPTreeStore *store, SPDocument *doc, SPObject *root);
+static void sp_tree_store_detach_document (SPTreeStore *store);
 
 /* GtkTreeModel Interface */
 
@@ -126,8 +130,7 @@ sp_tree_store_finalize (GObject *object)
 
 	/* Detach from document */
 	if (store->doc) {
-		sp_signal_disconnect_by_data (store->doc, store);
-		sp_document_set_object_signals (store->doc, FALSE);
+		sp_tree_store_detach_document (store);
 	}
 
 	store_parent_class->finalize (object);
@@ -136,6 +139,7 @@ sp_tree_store_finalize (GObject *object)
 static void
 sp_tree_store_doc_destroy (SPDocument *doc, SPTreeStore *store)
 {
+	/* fixme: Should not happen now if we ref document (Lauris) */
 	/* fixme: How to handle that? (Lauris) */
 	store->doc = NULL;
 	store->root = NULL;
@@ -216,7 +220,7 @@ sp_tree_store_doc_object_removed (SPDocument *doc, SPObject *parent, SPObject *r
 
 	gtk_tree_model_row_deleted ((GtkTreeModel *) store, path);
 	/* Notify if no more children */
-	if (!parent->children) {
+	if (!parent || !parent->children) {
 		gtk_tree_path_up (path);
 		iter.user_data = parent;
 #ifdef TREE_DEBUG
@@ -305,26 +309,123 @@ sp_tree_store_doc_object_modified (SPDocument *doc, SPObject *object, unsigned i
 	}
 }
 
+static void
+sp_tree_store_root_release (SPObject *object, SPTreeStore *store)
+{
+	/* fixme: Do we need this? It should be handled by ::object_removed (Lauris) */
+	store->root = NULL;
+}
+
+static void
+sp_tree_store_attach_document (SPTreeStore *store, SPDocument *doc, SPObject *root)
+{
+	if (doc && !root) root = (SPObject *) SP_DOCUMENT_ROOT (doc);
+	sp_document_ref (doc);
+	store->doc = doc;
+	store->root = root;
+	if (doc) {
+		/* Document signals */
+		sp_document_set_object_signals (store->doc, TRUE);
+		g_signal_connect ((GObject *) store->doc, "destroy",
+				  (GCallback) sp_tree_store_doc_destroy, store);
+		g_signal_connect ((GObject *) store->doc, "object_added",
+				  (GCallback) sp_tree_store_doc_object_added, store);
+		g_signal_connect ((GObject *) store->doc, "object_removed",
+				  (GCallback) sp_tree_store_doc_object_removed, store);
+		g_signal_connect ((GObject *) store->doc, "order_changed",
+				  (GCallback) sp_tree_store_doc_order_changed, store);
+		g_signal_connect ((GObject *) store->doc, "object_modified",
+				  (GCallback) sp_tree_store_doc_object_modified, store);
+	}
+	if (root) {
+		/* Root signals */
+		g_signal_connect ((GObject *) store->doc, "release",
+				  (GCallback) sp_tree_store_root_release, store);
+	}
+}
+
+static void
+sp_tree_store_detach_document (SPTreeStore *store)
+{
+	if (store->dt) {
+		/* Detach desktop */
+		sp_signal_disconnect_by_data (store->dt, store);
+		store->dt = NULL;
+	}
+	/* Detach root */
+	sp_signal_disconnect_by_data (store->root, store);
+	/* Detach document */
+	sp_signal_disconnect_by_data (store->doc, store);
+	sp_document_set_object_signals (store->doc, FALSE);
+	sp_document_unref (store->doc);
+}
+
+static void
+sp_tree_store_desktop_shutdown (SPDesktop *dt, SPTreeStore *store)
+{
+	/* Document remains attached (Lauris) */
+	store->dt = NULL;
+}
+
+static void
+sp_tree_store_desktop_root_set (SPDesktop *dt, SPItem *root, SPTreeStore *store)
+{
+	if ((SPObject *) root != store->root) {
+		GtkTreeIter iter = {0};
+		GtkTreePath *path;
+		/* Detach document */
+		sp_tree_store_detach_document (store);
+		/* Attach new document */
+		sp_tree_store_attach_document (store, SP_OBJECT_DOCUMENT (root), (SPObject *) root);
+		/* fixme: (Lauris) */
+		/* Emulate full refresh */
+		iter.stamp = store->stamp;
+		iter.user_data = NULL;
+		path = sp_tree_store_get_path ((GtkTreeModel *) store, &iter);
+		gtk_tree_path_down (path);
+		gtk_tree_model_row_deleted ((GtkTreeModel *) store, path);
+		gtk_tree_model_row_inserted ((GtkTreeModel *) store, path, &iter);
+		gtk_tree_path_free (path);
+	}
+}
+
+static void
+sp_tree_store_desktop_base_set (SPDesktop *dt, SPGroup *base, SPTreeStore *store)
+{
+	GtkTreeIter iter = {0};
+	GtkTreePath *path;
+
+	iter.stamp = store->stamp;
+	iter.user_data = base;
+
+	path = gtk_tree_model_get_path ((GtkTreeModel *) store, &iter);
+	gtk_tree_model_row_changed ((GtkTreeModel *) store, path, &iter);
+	gtk_tree_path_free (path);
+}
+
 SPTreeStore *
-sp_tree_store_new (SPDesktop *desktop)
+sp_tree_store_new (SPDesktop *dt, SPDocument *doc, SPObject *root)
 {
 	SPTreeStore *store;
 
 	store = g_object_new (SP_TYPE_TREE_STORE, NULL);
 
-	/* fixme: We need "shutodwn" signal on desktop (Lauris) */
-	store->doc = SP_VIEW_DOCUMENT (desktop);
-	store->dt = desktop;
-	store->root = (SPObject *) SP_VIEW_ROOT (desktop);
+	if (dt && !doc) doc = SP_DT_DOCUMENT (dt);
+	if (dt && !root) root = (SPObject *) SP_VIEW_ROOT (dt);
 
-	/* Attach document */
-	sp_document_set_object_signals (store->doc, TRUE);
-	g_signal_connect ((GObject *) store->doc, "destroy", (GCallback) sp_tree_store_doc_destroy, store);
-	g_signal_connect ((GObject *) store->doc, "object_added", (GCallback) sp_tree_store_doc_object_added, store);
-	g_signal_connect ((GObject *) store->doc, "object_removed", (GCallback) sp_tree_store_doc_object_removed, store);
-	g_signal_connect ((GObject *) store->doc, "order_changed", (GCallback) sp_tree_store_doc_order_changed, store);
-	g_signal_connect ((GObject *) store->doc, "object_modified", (GCallback) sp_tree_store_doc_object_modified, store);
+	sp_tree_store_attach_document (store, doc, root);
+	store->dt = dt;
 
+	/* Connect signals */
+	if (dt) {
+		/* Desktop signals */
+		g_signal_connect ((GObject *) store->dt, "shutdown",
+				  (GCallback) sp_tree_store_desktop_shutdown, store);
+		g_signal_connect ((GObject *) store->dt, "root_set",
+				  (GCallback) sp_tree_store_desktop_root_set, store);
+		g_signal_connect ((GObject *) store->dt, "base_set",
+				  (GCallback) sp_tree_store_desktop_base_set, store);
+	}
 	return store;
 }
 
@@ -453,7 +554,7 @@ sp_tree_store_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 		break;
 	case SP_TREE_STORE_COLUMN_TARGET:
 		g_value_init (value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (value, object == (SPObject *) store->dt->base);
+		g_value_set_boolean (value, store->dt && (object == (SPObject *) store->dt->base));
 		break;
 	case SP_TREE_STORE_COLUMN_VISIBLE:
 		g_value_init (value, G_TYPE_BOOLEAN);

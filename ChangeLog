@@ -1,3 +1,17 @@
+2004-06-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/tree-store.c (sp_tree_store_attach_document): Helper
+	(sp_tree_store_detach_document): Ditto
+	(sp_tree_store_desktop_root_set): Handle changes
+	(sp_tree_store_desktop_base_set): Ditto
+	(sp_tree_store_new): Signature change
+	(sp_tree_store_get_value): Do not crash if dt == NULL
+
+	* src/dialogs/document-tree.c (sp_document_tree_target_toggled): Handle
+	activity state properly
+
+	* src/desktop.h: Added ::shutodwn, ::root_set and ::base_set signals
+
 2004-06-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/path-chemistry.c (sp_path_reverse): New method

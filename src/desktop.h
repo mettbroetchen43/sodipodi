@@ -69,9 +69,12 @@ struct _SPDesktop {
 struct _SPDesktopClass {
 	SPViewClass parent_class;
 
-	void (* activate) (SPDesktop *desktop);
-	void (* desactivate) (SPDesktop *desktop);
-	void (* modified) (SPDesktop *desktop, guint flags);
+	void (*shutdown) (SPDesktop *desktop);
+	void (*root_set) (SPDesktop *desktop, SPItem *root);
+	void (*base_set) (SPDesktop *desktop, SPGroup *base);
+	void (*activate) (SPDesktop *desktop);
+	void (*desactivate) (SPDesktop *desktop);
+	void (*modified) (SPDesktop *desktop, guint flags);
 };
 
 #define SP_DESKTOP_SCROLL_LIMIT 4000.0

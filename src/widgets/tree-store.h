@@ -33,7 +33,7 @@ enum {
 
 GType sp_tree_store_get_type (void);
 
-SPTreeStore *sp_tree_store_new (SPDesktop *dektop);
+SPTreeStore *sp_tree_store_new (SPDesktop *dt, SPDocument *doc, SPObject *root);
 
 /* iter->user_data points to SPObject */
 

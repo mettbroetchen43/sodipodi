@@ -91,7 +91,7 @@ sp_document_tree_selection_changed (GtkTreeSelection *sel, GtkTreeModel *model)
 static void
 sp_document_tree_target_toggled (GtkCellRendererToggle *crt, const char *path, GtkTreeModel *model)
 {
-	if (gtk_cell_renderer_toggle_get_active (crt)) {
+	if (!gtk_cell_renderer_toggle_get_active (crt)) {
 		SPObject *object;
 		GtkTreeIter iter;
 		gtk_tree_model_get_iter_from_string (model, &iter, path);
@@ -159,7 +159,7 @@ sp_document_tree_new (SPDesktop *desktop)
 
 	doc = SP_VIEW_DOCUMENT (desktop);
 
-	store = sp_tree_store_new (desktop);
+	store = sp_tree_store_new (desktop, NULL, NULL);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));

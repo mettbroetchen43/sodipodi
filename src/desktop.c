@@ -55,6 +55,9 @@
 #define SP_CANVAS_STICKY_FLAG (1 << 16)
 
 enum {
+	SHUTDOWN,
+	ROOT_SET,
+	BASE_SET,
 	ACTIVATE,
 	DESACTIVATE,
 	MODIFIED,
@@ -120,6 +123,27 @@ sp_desktop_class_init (SPDesktopClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 
+	signals[SHUTDOWN] = g_signal_new ("shutdown",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, shutdown),
+					  NULL, NULL,
+					  sp_marshal_NONE__NONE,
+					  G_TYPE_NONE, 0);
+	signals[ROOT_SET] = g_signal_new ("root_set",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, root_set),
+					  NULL, NULL,
+					  sp_marshal_NONE__OBJECT,
+					  G_TYPE_NONE, 1, G_TYPE_OBJECT);
+	signals[BASE_SET] = g_signal_new ("base_set",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, base_set),
+					  NULL, NULL,
+					  sp_marshal_NONE__OBJECT,
+					  G_TYPE_NONE, 1, G_TYPE_OBJECT);
 	signals[ACTIVATE] = g_signal_new ("activate",
 					  G_TYPE_FROM_CLASS(klass),
 					  G_SIGNAL_RUN_FIRST,
@@ -182,6 +206,9 @@ sp_desktop_dispose (GObject *object)
 
 	dt = (SPDesktop *) object;
 	view = (SPView *) object;
+
+	/* fixme: find a proper place (Lauris) */
+	g_signal_emit (G_OBJECT (dt), signals[SHUTDOWN], 0);
 
 	sp_desktop_private_detach_root (dt);
 
@@ -551,6 +578,10 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 		sp_desktop_activate_guides (desktop, TRUE);
 		/* Ugly hack */
 		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+
+		/* fixme: Is it safe to emit this without base set? (Lauris) */
+		g_signal_emit (G_OBJECT (desktop), signals[ROOT_SET], 0, desktop->root);
+
 		/* Attach root */
 		/* fixme: view->root should really be set before this */
 		/* fixme: What to do if root is not group? */
@@ -581,6 +612,7 @@ sp_desktop_set_base (SPDesktop *dt, SPGroup *base)
 		sp_group_set_transparent (dt->base, TRUE);
 		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
+	g_signal_emit (G_OBJECT (dt), signals[BASE_SET], 0, dt->base);
 }
 
 /* Private methods */
