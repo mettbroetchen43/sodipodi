@@ -810,9 +810,10 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 {
 	struct _NRNodeSeg *s0, *s1;
 	struct _NRNode *n0, *n1;
+	double x0, y0, x1, y1;
 	NRPointD a, b, p;
 	unsigned int skip;
-	int wind;
+	int wind, lower, upper;
 
 	s0 = path->segs + seg;
 	s1 = path->segs + other;
@@ -829,16 +830,34 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 		if (val < 0) skip = 1;
 	}
 	wind = 0;
+	lower = 0;
+	upper = 0;
 	/* Because of rounding this is exact */
 	if (n0->next->isline) {
-		p.x = 0.5 * (n0->x3 + n0->next->x3);
-		p.y = 0.5 * (n0->y3 + n0->next->y3);
+		x0 = n0->x3;
+		y0 = n0->y3;
+		x1 = n0->next->x3;
+		y1 = n0->next->y3;
 	} else {
 		if (!n0->flats) n0->flats = nr_node_flat_list_build (n0);
-		p.x = 0.5 * (n0->flats->x + n0->flats->next->x);
-		p.y = 0.5 * (n0->flats->y + n0->flats->next->y);
+		x0 = n0->flats->x;
+		y0 = n0->flats->y;
+		x1 = n0->flats->next->x;
+		y1 = n0->flats->next->y;
 	}
+	p.x = 0.5 * (x0 + x1);
+	p.y = 0.5 * (y0 + y1);
 	if (p.y == n0->y3) {
+		/* Horizontal */
+		/* Ensure we do not touch endpoints horizontally */
+		if ((p.x == s1->nodes->x3) || (p.x == s1->last->x3)) {
+			p.x = 0.75 * (x0 + x1);
+			p.y = 0.75 * (y0 + y1);
+		}
+		if ((p.x == s1->nodes->x3) || (p.x == s1->last->x3)) {
+			p.x = 0.875 * (x0 + x1);
+			p.y = 0.875 * (y0 + y1);
+		}
 		if (p.x > n0->x3) {
 			double t;
 			t = p.x;
@@ -852,7 +871,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 					a.y = n1->x3;
 					b.x = -n1->next->y3;
 					b.y = n1->next->x3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 					skip = 0;
 				} else {
 					struct _NRFlatNode *f;
@@ -863,7 +882,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 						a.y = f->x;
 						b.x = -f->next->y;
 						b.y = f->next->x;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 						skip = 0;
 						f = f->next;
 					}
@@ -883,7 +902,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 					a.y = -n1->x3;
 					b.x = n1->next->y3;
 					b.y = -n1->next->x3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 					skip = 0;
 				} else {
 					struct _NRFlatNode *f;
@@ -894,7 +913,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 						a.y = -f->x;
 						b.x = f->next->y;
 						b.y = -f->next->x;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 						skip = 0;
 						f = f->next;
 					}
@@ -903,14 +922,24 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 			}
 		}
 	} else {
+		/* Ensure we do not touch endpoints vertically */
+		if ((p.y == s1->nodes->y3) || (p.y == s1->last->y3)) {
+			p.x = 0.75 * (x0 + x1);
+			p.y = 0.75 * (y0 + y1);
+		}
+		if ((p.y == s1->nodes->y3) || (p.y == s1->last->y3)) {
+			p.x = 0.875 * (x0 + x1);
+			p.y = 0.875 * (y0 + y1);
+		}
 		if (p.y > n0->y3) {
+			/* Classical case */
 			while (n1 && n1->next) {
 				if (n1->next->isline) {
 					a.x = n1->x3;
 					a.y = n1->y3;
 					b.x = n1->next->x3;
 					b.y = n1->next->y3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 					skip = 0;
 				} else {
 					struct _NRFlatNode *f;
@@ -921,7 +950,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 						a.y = f->y;
 						b.x = f->next->x;
 						b.y = f->next->y;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 						skip = 0;
 						f = f->next;
 					}
@@ -937,7 +966,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 					a.y = -n1->y3;
 					b.x = -n1->next->x3;
 					b.y = -n1->next->y3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 					skip = 0;
 				} else {
 					struct _NRFlatNode *f;
@@ -948,7 +977,7 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 						a.y = -f->y;
 						b.x = -f->next->x;
 						b.y = -f->next->y;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, 1);
+						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
 						skip = 0;
 						f = f->next;
 					}
@@ -957,6 +986,8 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 			}
 		}
 	}
+	assert (lower == upper);
+	wind += lower;
 	return wind;
 }
 
@@ -1328,15 +1359,16 @@ nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b
  * Returns left winding count of point and segment
  *
  * + is forward, - is reverse
- * exact determines wheter exact match counts
+ * upper and lower are endpoint winding counts
+ * exact determines whether exact match counts
  */
 
 int
-nr_segment_find_wind (NRPointD a, NRPointD b, NRPointD p, unsigned int exact)
+nr_segment_find_wind (NRPointD a, NRPointD b, NRPointD p, int *upper, int *lower, unsigned int exact)
 {
 	double dx, dy;
 	double qdy, pdy;
-	if (((a.y <= p.y) && (b.y > p.y)) || ((a.y >= p.y) && (b.y < p.y))) {
+	if (((a.y < p.y) && (b.y > p.y)) || ((a.y > p.y) && (b.y < p.y))) {
 		dx = b.x - a.x;
 		dy = b.y - a.y;
 		qdy = dx * p.y + dy * a.x - dx * a.y;
@@ -1348,7 +1380,20 @@ nr_segment_find_wind (NRPointD a, NRPointD b, NRPointD p, unsigned int exact)
 			/* Descending slope */
 			if ((qdy > pdy) || (exact && (qdy >= pdy))) return -1;
 		}
+	} else if ((a.y == p.y) && (b.y > p.y)) {
+		/* Upper positive */
+		if ((a.x < p.x) || (exact && (a.x == p.x))) *upper += 1;
+	} else if ((a.y > p.y) && (b.y == p.y)) {
+		/* Upper negative */
+		if ((b.x < p.x) || (exact && (b.x == p.x))) *upper -= 1;
+	} else if ((a.y < p.y) && (b.y == p.y)) {
+		/* Lower positive */
+		if ((b.x < p.x) || (exact && (b.x == p.x))) *lower += 1;
+	} else if ((a.y == p.y) && (b.y < p.y)) {
+		/* Lower negative */
+		if ((a.x < p.x) || (exact && (a.x == p.x))) *lower -= 1;
 	}
+		
 	return 0;
 }
 
