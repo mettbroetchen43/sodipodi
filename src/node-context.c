@@ -16,6 +16,7 @@
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
+#include "verbs.h"
 #include "object-edit.h"
 #include "sp-path.h"
 #include "rubberband.h"
@@ -87,15 +88,14 @@ sp_node_context_class_init (SPNodeContextClass * klass)
 }
 
 static void
-sp_node_context_init (SPNodeContext * node_context)
+sp_node_context_init (SPNodeContext *node_context)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (node_context);
-
-	event_context->cursor_shape = cursor_node_xpm;
-	event_context->hot_x = 1;
-	event_context->hot_y = 1;
+	SPEventContext *ec;
+	ec = (SPEventContext *) node_context;
+	ec->verb = SP_VERB_CONTEXT_NODE;
+	ec->cursor_shape = cursor_node_xpm;
+	ec->hot_x = 1;
+	ec->hot_y = 1;
 }
 
 static void

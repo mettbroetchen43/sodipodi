@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
+#include "verbs.h"
 #include "sp-rect.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -93,20 +94,14 @@ sp_rect_context_class_init (SPRectContextClass * klass)
 }
 
 static void
-sp_rect_context_init (SPRectContext * rect_context)
+sp_rect_context_init (SPRectContext *rect_context)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (rect_context);
-
-	event_context->cursor_shape = cursor_rect_xpm;
-	event_context->hot_x = 4;
-	event_context->hot_y = 4;
-
-	rect_context->item = NULL;
-
-	rect_context->rx_ratio = 0.0;
-	rect_context->ry_ratio = 0.0;
+	SPEventContext *ec;
+	ec = (SPEventContext *) rect_context;
+	ec->verb = SP_VERB_CONTEXT_RECT;
+	ec->cursor_shape = cursor_rect_xpm;
+	ec->hot_x = 4;
+	ec->hot_y = 4;
 }
 
 static void

@@ -73,9 +73,6 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 					       guint event_time,
 					       gpointer user_data);
 
-/* fixme: Move this to some sensible place (Lauris) */
-static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox);
-
 /* Drag and Drop */
 typedef enum {
 	URI_LIST
@@ -178,8 +175,6 @@ sp_maintoolbox_new (void)
 		}
 	}
 
-	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
-
 	/* Zoom */
 	t = sp_toolbox_zoom_create ();
 	gtk_widget_show (t);
@@ -214,70 +209,6 @@ sp_maintoolbox_close_all (void)
 	}
 }
 
-enum {
-	SP_TOOLBOX_DRAW_RECT,
-	SP_TOOLBOX_DRAW_ARC,
-	SP_TOOLBOX_DRAW_STAR,
-	SP_TOOLBOX_DRAW_SPIRAL
-};
-
-enum {
-	SP_TOOLBOX_DRAW_FREEHAND,
-	SP_TOOLBOX_DRAW_PEN,
-	SP_TOOLBOX_DRAW_DYNAHAND
-};
-
-#if 0
-static void
-sp_toolbox_draw_set_object (SPButton *button, gpointer data)
-{
-	unsigned int mode;
-
-	mode = sp_button_get_option (button);
-
-	switch (mode) {
-	case SP_TOOLBOX_DRAW_RECT:
-		sp_event_context_set_rect (NULL);
-		break;
-	case SP_TOOLBOX_DRAW_ARC:
-		sp_event_context_set_arc (NULL);
-		break;
-	case SP_TOOLBOX_DRAW_STAR:
-		sp_event_context_set_star (NULL);
-		break;
-	case SP_TOOLBOX_DRAW_SPIRAL:
-		sp_event_context_set_spiral (NULL);
-		break;
-	default:
-		g_warning ("Illegal draw code %d", mode);
-		break;
-	}
-}
-
-static void
-sp_toolbox_draw_set_freehand (SPButton *button, gpointer data)
-{
-	unsigned int mode;
-
-	mode = sp_button_get_option (button);
-
-	switch (mode) {
-	case SP_TOOLBOX_DRAW_FREEHAND:
-		sp_event_context_set_freehand (NULL);
-		break;
-	case SP_TOOLBOX_DRAW_PEN:
-		sp_event_context_set_pen (NULL);
-		break;
-	case SP_TOOLBOX_DRAW_DYNAHAND:
-		sp_event_context_set_dynahand (NULL);
-		break;
-	default:
-		g_warning ("Illegal draw code %d", mode);
-		break;
-	}
-}
-#endif
-
 static GtkWidget *
 sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSignalFunc handler, GtkTooltips *tt, unsigned char *tip)
 {
@@ -293,14 +224,6 @@ sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSi
 
 	return b;
 }
-
-#if 0
-static void
-sp_toolbox_button_clicked (void *object, SPAction *action)
-{
-	sp_action_perform (action);
-}
-#endif
 
 static GtkWidget *
 sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int type, unsigned int verb, GtkTooltips *tt)
@@ -320,19 +243,6 @@ sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int type, unsig
 	gtk_table_attach (GTK_TABLE (t), b, xpos, xpos + 1, ypos, ypos + 1, 0, 0, 0, 0);
 	return b;
 }
-
-#if 0
-static GtkWidget *
-sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, const unsigned char *tip)
-{
-	GtkWidget *b;
-
-	b = sp_button_new_from_data (24, SP_BUTTON_TYPE_TOGGLE, pxname, tip, tt);
-	gtk_widget_show (b);
-
-	return b;
-}
-#endif
 
 static GtkWidget *
 sp_toolbox_file_create (void)
@@ -763,41 +673,3 @@ sp_maintoolbox_open_one_file_with_check (gpointer filename, gpointer unused)
 		}
 	}
 }
-
-static void
-sp_toolbox_verb_activate (unsigned int verb, const unsigned char *tname, const unsigned char *name)
-{
-	SPAction *action;
-	action = sp_verb_get_action (verb);
-	sp_action_set_active (action, tname && !strcmp (tname, name));
-}
-
-static void 
-sp_update_draw_toolbox (Sodipodi *sodipodi, SPEventContext *eventcontext, GObject *toolbox)
-{
-	/* fixme: We can remove this, but hten have to update action active state */
-	/* Probably form sodipodi::set_eventcontext handler or something (Lauris) */
-#if 1
-	const unsigned char *tname;
-
-	if (eventcontext != NULL) {
-		tname = gtk_type_name (GTK_OBJECT_TYPE (eventcontext));
-	} else {
-		tname = NULL;
-	}
-
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_SELECT, tname, "SPSelectContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_NODE, tname, "SPNodeContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_RECT, tname, "SPRectContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_ARC, tname, "SPArcContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_STAR, tname, "SPStarContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_SPIRAL, tname, "SPSpiralContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_PENCIL, tname, "SPPencilContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_PEN, tname, "SPPenContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_CALLIGRAPHIC, tname, "SPDynaDrawContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_TEXT, tname, "SPTextContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_ZOOM, tname, "SPZoomContext");
-	sp_toolbox_verb_activate (SP_VERB_CONTEXT_DROPPER, tname, "SPDropperContext");
-#endif
-}
-

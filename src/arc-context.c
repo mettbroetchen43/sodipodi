@@ -19,6 +19,7 @@
 #include "helper/sp-intl.h"
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
+#include "verbs.h"
 #include "sodipodi.h"
 #include "sp-ellipse.h"
 #include "document.h"
@@ -86,17 +87,14 @@ sp_arc_context_class_init (SPArcContextClass *klass)
 }
 
 static void
-sp_arc_context_init (SPArcContext * arc_context)
+sp_arc_context_init (SPArcContext *arc_context)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (arc_context);
-
-	event_context->cursor_shape = cursor_arc_xpm;
-	event_context->hot_x = 4;
-	event_context->hot_y = 4;
-
-	arc_context->item = NULL;
+	SPEventContext *ec;
+	ec = (SPEventContext *) arc_context;
+	ec->verb = SP_VERB_CONTEXT_ARC;
+	ec->cursor_shape = cursor_arc_xpm;
+	ec->hot_x = 4;
+	ec->hot_y = 4;
 }
 
 static void

@@ -98,6 +98,8 @@ struct _Sodipodi {
 	/* Last action */
 	unsigned int action_verb;
 	SPRepr *action_config;
+	/* Current tool verb */
+	unsigned int eventverb;
 };
 
 struct _SodipodiClass {
@@ -254,7 +256,7 @@ sodipodi_init (SPObject * object)
 
 	/* Set static object */
 	sodipodi = (Sodipodi *) object;
-
+	sodipodi->eventverb = SP_VERB_NONE;
 	/* Initialize preferences to default tree */
 	sodipodi->preferences = sp_repr_doc_new_from_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
 	/* Initialize extensions to default tree */
@@ -545,13 +547,19 @@ sodipodi_selection_set (SPSelection * selection)
 }
 
 void
-sodipodi_eventcontext_set (SPEventContext * eventcontext)
+sodipodi_eventcontext_set (SPEventContext *eventcontext)
 {
-	g_return_if_fail (sodipodi != NULL);
-	g_return_if_fail (eventcontext != NULL);
-	g_return_if_fail (SP_IS_EVENT_CONTEXT (eventcontext));
+	SPAction *action;
 
-	if (DESKTOP_IS_ACTIVE (eventcontext->desktop)) {
+	g_return_if_fail (sodipodi != NULL);
+
+	action = sp_verb_get_action (sodipodi->eventverb);
+	if (action) sp_action_set_active (action, FALSE);
+	sodipodi->eventverb = (eventcontext) ? eventcontext->verb : SP_VERB_NONE;
+	action = sp_verb_get_action (sodipodi->eventverb);
+	if (action) sp_action_set_active (action, TRUE);
+
+	if (eventcontext && DESKTOP_IS_ACTIVE (eventcontext->desktop)) {
 		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, eventcontext);
 	}
 }
@@ -571,7 +579,9 @@ sodipodi_add_desktop (SPDesktop * desktop)
 
 	if (DESKTOP_IS_ACTIVE (desktop)) {
 		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, desktop);
-		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop));
+		/* Update actions and emit signal */
+		sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (desktop));
+		/* g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop)); */
 		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (desktop));
 		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (desktop));
 	}
@@ -594,11 +604,15 @@ sodipodi_remove_desktop (SPDesktop * desktop)
 			sodipodi->desktops = g_slist_remove (sodipodi->desktops, new);
 			sodipodi->desktops = g_slist_prepend (sodipodi->desktops, new);
 			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, new);
-			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (new));
+			/* Update actions and emit signal */
+			sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (new));
+			/* g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (new)); */
 			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (new));
 			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (new));
 		} else {
-			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, NULL);
+			/* Update actions and emit signal */
+			sodipodi_eventcontext_set (NULL);
+			/* g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, NULL); */
 			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, NULL);
 			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, NULL);
 		}
@@ -630,7 +644,9 @@ sodipodi_activate_desktop (SPDesktop * desktop)
 	sodipodi->desktops = g_slist_prepend (sodipodi->desktops, desktop);
 
 	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, desktop);
-	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop));
+	/* Update actions and emit signal */
+	sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (desktop));
+	/* g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop)); */
 	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (desktop));
 	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (desktop));
 }

@@ -1,3 +1,8 @@
+2003-12-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sodipodi.c (sodipodi_eventcontext_set): Handle action
+	activation/desactivation here instead of toolbox
+
 2003-12-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-gradient.c (sp_gradient_set_units): Mark units as set

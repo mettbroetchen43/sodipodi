@@ -36,6 +36,7 @@
 #include "helper/canvas-bpath.h"
 
 #include "enums.h"
+#include "verbs.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "sp-path.h"
@@ -867,6 +868,9 @@ sp_pencil_context_class_init (SPPencilContextClass *klass)
 static void
 sp_pencil_context_init (SPPencilContext *pc)
 {
+	SPEventContext *ec;
+	ec = (SPEventContext *) pc;
+	ec->verb = SP_VERB_CONTEXT_PENCIL;
 	pc->state = SP_PENCIL_CONTEXT_IDLE;
 }
 
@@ -1214,14 +1218,12 @@ sp_pen_context_class_init (SPPenContextClass *klass)
 static void
 sp_pen_context_init (SPPenContext *pc)
 {
+	SPEventContext *ec;
+	ec = (SPEventContext *) pc;
+	ec->verb = SP_VERB_CONTEXT_PEN;
+
 	pc->mode = SP_PEN_CONTEXT_MODE_CLICK;
-
 	pc->state = SP_PEN_CONTEXT_POINT;
-
-	pc->c0 = NULL;
-	pc->c1 = NULL;
-	pc->cl0 = NULL;
-	pc->cl1 = NULL;
 }
 
 static void

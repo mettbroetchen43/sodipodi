@@ -15,6 +15,7 @@
 #include "helper/canvas-bpath.h"
 #include "display/canvas-arena.h"
 #include "enums.h"
+#include "verbs.h"
 #include "color.h"
 #include "sodipodi-private.h"
 #include "desktop-affine.h"
@@ -82,8 +83,8 @@ static void
 sp_dropper_context_init (SPDropperContext *dc)
 {
 	SPEventContext *ec;
-	
-	ec = SP_EVENT_CONTEXT (dc);
+	ec = (SPEventContext *) dc;
+	ec->verb = SP_VERB_CONTEXT_DROPPER;
 }
 
 static void

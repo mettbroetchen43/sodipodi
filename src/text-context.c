@@ -24,6 +24,7 @@
 #include <gtk/gtkimmulticontext.h>
 #include "xml/repr-private.h"
 #include "macros.h"
+#include "verbs.h"
 #include "sp-text.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -105,13 +106,12 @@ sp_text_context_class_init (SPTextContextClass * klass)
 static void
 sp_text_context_init (SPTextContext *tc)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (tc);
-
-	event_context->cursor_shape = cursor_text_xpm;
-	event_context->hot_x = 0;
-	event_context->hot_y = 0;
+	SPEventContext *ec;
+	ec = (SPEventContext *) tc;
+	ec->verb = SP_VERB_CONTEXT_TEXT;
+	ec->cursor_shape = cursor_text_xpm;
+	ec->hot_x = 0;
+	ec->hot_y = 0;
 
 	tc->imc = NULL;
 

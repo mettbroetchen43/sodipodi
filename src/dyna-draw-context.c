@@ -67,6 +67,7 @@
 #include "helper/bezier-utils.h"
 
 #include "enums.h"
+#include "verbs.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
@@ -163,6 +164,9 @@ sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass)
 static void
 sp_dyna_draw_context_init (SPDynaDrawContext *ddc)
 {
+	SPEventContext *ec;
+	ec = (SPEventContext *) ddc;
+	ec->verb = SP_VERB_CONTEXT_CALLIGRAPHIC;
 	ddc->accumulated = NULL;
 	ddc->segments = NULL;
 	ddc->currentcurve = NULL;

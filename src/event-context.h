@@ -27,6 +27,9 @@ struct _SPEventContext {
 	/* Desktop eventcontext stack */
 	SPEventContext *next;
 	unsigned int key;
+	/* Associated action verb */
+	unsigned int verb;
+	/* Additional stuff */
 	SPDesktop *desktop;
 	SPRepr *repr;
 	gchar **cursor_shape;

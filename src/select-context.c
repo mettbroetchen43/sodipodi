@@ -22,6 +22,7 @@
 #include <gtk/gtk.h>
 #include "helper/sp-canvas-util.h"
 #include "rubberband.h"
+#include "verbs.h"
 #include "sodipodi-private.h"
 #include "document.h"
 #include "selection.h"
@@ -121,11 +122,11 @@ sp_select_context_class_init (SPSelectContextClass * klass)
 }
 
 static void
-sp_select_context_init (SPSelectContext * sc)
+sp_select_context_init (SPSelectContext *sc)
 {
-	sc->dragging = FALSE;
-	sc->moved = FALSE;
-	sc->button_press_shift = FALSE;
+	SPEventContext *ec;
+	ec = (SPEventContext *) sc;
+	ec->verb = SP_VERB_CONTEXT_SELECT;
 }
 
 static void
@@ -148,7 +149,7 @@ sp_select_context_dispose (GObject *object)
 static void
 sp_select_context_setup (SPEventContext *ec)
 {
-	SPSelectContext * select_context;
+	SPSelectContext *select_context;
 
 	select_context = SP_SELECT_CONTEXT (ec);
 

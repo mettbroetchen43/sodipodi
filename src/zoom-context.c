@@ -14,6 +14,7 @@
 
 #include "pixmaps/cursor-zoom.xpm"
 #include "rubberband.h"
+#include "verbs.h"
 #include "desktop.h"
 #include "desktop-affine.h"
 
@@ -67,15 +68,14 @@ sp_zoom_context_class_init (SPZoomContextClass * klass)
 }
 
 static void
-sp_zoom_context_init (SPZoomContext * zoom_context)
+sp_zoom_context_init (SPZoomContext *zoom_context)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (zoom_context);
-
-	event_context->cursor_shape = cursor_zoom_xpm;
-	event_context->hot_x = 6;
-	event_context->hot_y = 6;
+	SPEventContext *ec;
+	ec = (SPEventContext *) zoom_context;
+	ec->verb = SP_VERB_CONTEXT_ZOOM;
+	ec->cursor_shape = cursor_zoom_xpm;
+	ec->hot_x = 6;
+	ec->hot_y = 6;
 }
 
 static void

@@ -27,6 +27,7 @@
 #include <gtk/gtklabel.h>
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
+#include "verbs.h"
 #include "sp-spiral.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -93,18 +94,14 @@ sp_spiral_context_class_init (SPSpiralContextClass * klass)
 }
 
 static void
-sp_spiral_context_init (SPSpiralContext * spiral_context)
+sp_spiral_context_init (SPSpiralContext *spiral_context)
 {
-	SPEventContext * event_context;
-	
-	event_context = SP_EVENT_CONTEXT (spiral_context);
-
-	event_context->cursor_shape = cursor_spiral_xpm;
-	event_context->hot_x = 4;
-	event_context->hot_y = 4;
-
-	spiral_context->item = NULL;
-
+	SPEventContext *ec;
+	ec = (SPEventContext *) spiral_context;
+	ec->verb = SP_VERB_CONTEXT_SPIRAL;
+	ec->cursor_shape = cursor_spiral_xpm;
+	ec->hot_x = 4;
+	ec->hot_y = 4;
 	spiral_context->revo = 3.0;
 	spiral_context->exp = 1.0;
 	spiral_context->t0 = 0.0;
