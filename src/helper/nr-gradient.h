@@ -34,9 +34,8 @@ struct _NRLGradientRenderer {
 	gdouble dx, dy;
 };
 
-NRLGradientRenderer *nr_lgradient_renderer_new_r8g8b8a8 (guchar *vector, NRGradientSpreadType spread, gdouble *n2b);
-NRLGradientRenderer *nr_lgradient_renderer_new_r8g8b8 (guchar *vector, NRGradientSpreadType spread, gdouble *n2b);
-void nr_lgradient_renderer_destroy (NRLGradientRenderer *lgr);
+NRLGradientRenderer *nr_lgradient_renderer_setup_r8g8b8a8 (NRLGradientRenderer *lgr, NRGradientSpreadType spread, gdouble *n2b);
+NRLGradientRenderer *nr_lgradient_renderer_setup_r8g8b8 (NRLGradientRenderer *lgr, NRGradientSpreadType spread, gdouble *n2b);
 void nr_lgradient_render (NRLGradientRenderer *lgr, guchar *px, gint x0, gint y0, gint width, gint height, gint rs);
 
 #endif

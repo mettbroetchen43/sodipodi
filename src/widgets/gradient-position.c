@@ -529,10 +529,6 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	/* Create image data */
 	if (!pos->px) pos->px = gdk_pixmap_new (widget->window, 64, 64, -1);
 	if (!pos->gc) pos->gc = gdk_gc_new (widget->window);
-	if (pos->lgr) {
-		nr_lgradient_renderer_destroy (pos->lgr);
-		pos->lgr = NULL;
-	}
 
 	/* Calculate bbox */
 	xs = widget->allocation.width / (pos->bbox.x1 - pos->bbox.x0);
@@ -554,7 +550,8 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	pos->vbox.x1 = widget->allocation.width - pos->vbox.x0;
 	pos->vbox.y1 = widget->allocation.height - pos->vbox.y0;
 
-	sp_gradient_ensure_colors (pos->gradient);
+	if (!pos->lgr.vector) pos->lgr.vector = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
+	sp_gradient_render_vector_line_rgba (pos->gradient, pos->lgr.vector, NR_GRADIENT_VECTOR_LENGTH, 0 , NR_GRADIENT_VECTOR_LENGTH);
 
 	/* Vector -> BBox */
 	v2bb[0] = pos->p1.x - pos->p0.x;
@@ -572,7 +569,8 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	bb2d[5] = pos->vbox.y0;
 	art_affine_multiply (n2d, pos->transform, v2bb);
 	art_affine_multiply (n2d, n2d, bb2d);
-	pos->lgr = nr_lgradient_renderer_new_r8g8b8 (pos->gradient->color, pos->spread, n2d);
+
+	nr_lgradient_renderer_setup_r8g8b8 (&pos->lgr, pos->spread, n2d);
 }
 
 static void
@@ -586,9 +584,9 @@ sp_gradient_position_free_image_data (SPGradientPosition *pos)
 		gdk_gc_unref (pos->gc);
 		pos->gc = NULL;
 	}
-	if (pos->lgr) {
-		nr_lgradient_renderer_destroy (pos->lgr);
-		pos->lgr = NULL;
+	if (pos->lgr.vector) {
+		g_free (pos->lgr.vector);
+		pos->lgr.vector = NULL;
 	}
 }
 
@@ -626,7 +624,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 
 			/* Draw checkerboard */
 			nr_render_checkerboard_rgb (rgb, w, h, 3 * w, x, y);
-			nr_lgradient_render (gp->lgr, rgb, x, y, w, h, 3 * w);
+			nr_lgradient_render (&gp->lgr, rgb, x, y, w, h, 3 * w);
 
 			/* Draw pixmap */
 			gdk_gc_set_function (gp->gc, GDK_COPY);

@@ -22,19 +22,15 @@ static void nr_lgradient_render_r8g8b8a8 (NRLGradientRenderer *lgr, guchar *px, 
 static void nr_lgradient_render_r8g8b8 (NRLGradientRenderer *lgr, guchar *px, gint x0, gint y0, gint width, gint height, gint rs);
 
 NRLGradientRenderer *
-nr_lgradient_renderer_new_r8g8b8a8 (guchar *vector, NRGradientSpreadType spread, gdouble *n2b)
+nr_lgradient_renderer_setup_r8g8b8a8 (NRLGradientRenderer *lgr, NRGradientSpreadType spread, gdouble *n2b)
 {
-	NRLGradientRenderer *lgr;
 	gdouble b2n[6];
 
-	g_return_val_if_fail (vector != NULL, NULL);
+	g_return_val_if_fail (lgr != NULL, NULL);
 	g_return_val_if_fail (n2b != NULL, NULL);
-
-	lgr = g_new (NRLGradientRenderer, 1);
+	g_return_val_if_fail (lgr->vector != NULL, NULL);
 
 	lgr->render = nr_lgradient_render_r8g8b8a8;
-	lgr->vector = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
-	memcpy (lgr->vector, vector, 4 * NR_GRADIENT_VECTOR_LENGTH);
 	lgr->spread = spread;
 
 	art_affine_invert (b2n, n2b);
@@ -48,19 +44,15 @@ nr_lgradient_renderer_new_r8g8b8a8 (guchar *vector, NRGradientSpreadType spread,
 }
 
 NRLGradientRenderer *
-nr_lgradient_renderer_new_r8g8b8 (guchar *vector, NRGradientSpreadType spread, gdouble *n2b)
+nr_lgradient_renderer_setup_r8g8b8 (NRLGradientRenderer *lgr, NRGradientSpreadType spread, gdouble *n2b)
 {
-	NRLGradientRenderer *lgr;
 	gdouble b2n[6];
 
-	g_return_val_if_fail (vector != NULL, NULL);
+	g_return_val_if_fail (lgr != NULL, NULL);
 	g_return_val_if_fail (n2b != NULL, NULL);
-
-	lgr = g_new (NRLGradientRenderer, 1);
+	g_return_val_if_fail (lgr->vector != NULL, NULL);
 
 	lgr->render = nr_lgradient_render_r8g8b8;
-	lgr->vector = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
-	memcpy (lgr->vector, vector, 4 * NR_GRADIENT_VECTOR_LENGTH);
 	lgr->spread = spread;
 
 	art_affine_invert (b2n, n2b);
@@ -71,15 +63,6 @@ nr_lgradient_renderer_new_r8g8b8 (guchar *vector, NRGradientSpreadType spread, g
 	lgr->dy = b2n[2];
 
 	return lgr;
-}
-
-void
-nr_lgradient_renderer_destroy (NRLGradientRenderer *lgr)
-{
-	g_return_if_fail (lgr != NULL);
-
-	g_free (lgr->vector);
-	g_free (lgr);
 }
 
 void

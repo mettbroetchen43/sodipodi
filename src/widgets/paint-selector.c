@@ -693,9 +693,11 @@ sp_paint_selector_set_style_buttons (SPPaintSelector *psel, GtkWidget *active)
 	gtk_widget_set_sensitive (psel->solid, (active != psel->solid));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->gradient), (active == psel->gradient));
 	gtk_widget_set_sensitive (psel->gradient, (active != psel->gradient));
+#if 0
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->pattern), (active == psel->pattern));
 	gtk_widget_set_sensitive (psel->pattern, (active != psel->pattern));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->fractal), (active == psel->fractal));
 	gtk_widget_set_sensitive (psel->fractal, (active != psel->fractal));
+#endif
 }
 

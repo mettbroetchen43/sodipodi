@@ -37,7 +37,8 @@ struct _SPGradientPosition {
 	GdkPixmap *px;
 
 	NRGradientSpreadType spread;
-	NRLGradientRenderer *lgr;
+
+	NRLGradientRenderer lgr;
 };
 
 struct _SPGradientPositionClass {

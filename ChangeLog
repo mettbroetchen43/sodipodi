@@ -1,3 +1,12 @@
+2002-02-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/nr-gradient.c (nr_lgradient_renderer_setup_r8g8b8a8): Do
+	not allocate renderer, allow using static ones too
+	(nr_lgradient_renderer_setup_r8g8b8): Ditto
+
+	* src/widgets/paint-selector.c (sp_paint_selector_set_style_buttons): Do not
+	activate pattern and fractal fill buttons
+
 2002-02-18  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/widgets/paint-selector.c: Lot of rearrangements everywhere -
