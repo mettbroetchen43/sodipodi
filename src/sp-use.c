@@ -225,7 +225,10 @@ sp_use_write (SPObject *object, SPRepr *repr, guint flags)
 
 	sp_repr_set_attr (repr, "id", object->id);
 	sp_repr_set_attr (repr, "xlink:href", use->href);
-	/* fixme: Implement x, y, width, height */
+	sp_repr_set_double (repr, "x", use->x.computed);
+	sp_repr_set_double (repr, "y", use->y.computed);
+	sp_repr_set_double (repr, "width", use->width.computed);
+	sp_repr_set_double (repr, "height", use->height.computed);
 
 	return repr;
 }
@@ -239,9 +242,11 @@ sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned i
 
 	if (use->child && SP_IS_ITEM (use->child)) {
 		SPItem *child;
-		NRMatrixD ct;
+		NRMatrixD ct, t;
 		child = SP_ITEM (use->child);
-		nr_matrix_multiply_dfd (&ct, &child->transform, transform);
+		nr_matrix_d_set_translate (&t, use->x.computed, use->y.computed);
+		nr_matrix_multiply_ddd (&ct, &t, transform);
+		nr_matrix_multiply_dfd (&ct, &child->transform, &ct);
 		sp_item_invoke_bbox_full (SP_ITEM (use->child), bbox, &ct, flags, FALSE);
 	}
 }
@@ -279,6 +284,7 @@ sp_use_show (SPItem *item, NRArena *arena)
 
 	if (use->child) {
 		NRArenaItem *ai, *ac;
+		NRMatrixF t;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
 		ac = sp_item_show (SP_ITEM (use->child), arena);
@@ -286,6 +292,8 @@ sp_use_show (SPItem *item, NRArena *arena)
 			nr_arena_item_add_child (ai, ac, NULL);
 			g_object_unref (G_OBJECT(ac));
 		}
+		nr_matrix_f_set_translate (&t, use->x.computed, use->y.computed);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &t);
 		return ai;
 	}
 		
@@ -346,10 +354,12 @@ sp_use_href_changed (SPUse * use)
 static void
 sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
+	SPItem *item;
 	SPUse *use;
-	SPObject *child;
 	SPItemCtx *ictx, cctx;
+	SPItemView *v;
 
+	item = SP_ITEM (object);
 	use = SP_USE (object);
 	ictx = (SPItemCtx *) ctx;
 	cctx = *ictx;
@@ -370,26 +380,33 @@ sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	if (use->height.unit == SP_SVG_UNIT_PERCENT) {
 		use->height.computed = use->height.value * (ictx->vp.y1 - ictx->vp.y0);
 	}
-	cctx.vp.x0 = use->x.computed;
-	cctx.vp.y0 = use->y.computed;
-	cctx.vp.x1 = cctx.vp.x0 + use->width.computed;
-	cctx.vp.y1 = cctx.vp.y0 + use->height.computed;
+	cctx.vp.x0 = 0.0;
+	cctx.vp.y0 = 0.0;
+	cctx.vp.x1 = use->width.computed;
+	cctx.vp.y1 = use->height.computed;
+	nr_matrix_d_set_identity (&cctx.i2vp);
 
-	child = use->child;
-	if (child) {
-		g_object_ref (G_OBJECT (child));
-		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			if (SP_IS_ITEM (child)) {
+	if (use->child) {
+		g_object_ref (G_OBJECT (use->child));
+		if (flags || (SP_OBJECT_FLAGS (use->child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			if (SP_IS_ITEM (use->child)) {
 				SPItem *chi;
-				chi = SP_ITEM (child);
+				chi = SP_ITEM (use->child);
 				nr_matrix_multiply_dfd (&cctx.i2doc, &chi->transform, &ictx->i2doc);
 				nr_matrix_multiply_dfd (&cctx.i2vp, &chi->transform, &ictx->i2vp);
-				sp_object_invoke_update (child, (SPCtx *) &cctx, flags);
+				sp_object_invoke_update (use->child, (SPCtx *) &cctx, flags);
 			} else {
-				sp_object_invoke_update (child, ctx, flags);
+				sp_object_invoke_update (use->child, ctx, flags);
 			}
 		}
-		g_object_unref (G_OBJECT (child));
+		g_object_unref (G_OBJECT (use->child));
+	}
+
+	/* As last step set additional transform of arena group */
+	for (v = item->display; v != NULL; v = v->next) {
+		NRMatrixF t;
+		nr_matrix_f_set_translate (&t, use->x.computed, use->y.computed);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &t);
 	}
 }
 

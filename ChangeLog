@@ -1,5 +1,12 @@
 2003-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-use.c (sp_use_init): Set width and height default to 100%
+	(sp_use_set): Ditto
+	(sp_use_bbox): use child transform
+	(sp_use_update): Calculate relative lengths, set new viewport
+
+	* src/sp-object.c: Removed ::dispose and some commented out code
+
 	* src/sp-symbol.c: New file
 
 	* src/sp-symbol.h: New file
