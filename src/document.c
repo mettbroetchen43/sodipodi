@@ -277,13 +277,16 @@ sp_document_create (SPReprDoc *rdoc,
 	if (!sp_repr_get_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
 	if (!sp_repr_get_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
-	/* Quick hack 3 - Set uri attributes */
+	/* Quick hack 3 - set xml:space */
+	sp_repr_set_attr (rroot, "xml:space", "preserve");
+	/* End of quick hack 3 */
+	/* Quick hack 4 - Set uri attributes */
 	if (uri) {
 		/* fixme: Think, what this means for images (Lauris) */
 		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->base);
 	}
-	/* End of quick hack 3 */
+	/* End of quick hack 4 */
 	if ((version > 0) && (version < 25)) {
 		/* Clear ancient spec violating attributes */
 		sp_repr_set_attr (rroot, "SP-DOCNAME", NULL);

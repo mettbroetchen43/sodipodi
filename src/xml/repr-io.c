@@ -202,6 +202,9 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	char c[256];
 
 #ifdef SP_REPR_IO_VERBOSE
+	int preserve;
+	preserve = xmlNodeGetSpacePreserve (node);
+	g_print ("node %s preserve %d\n", node->name, preserve);
 	g_print ("Node %d %s contains %s\n", node->type, node->name, node->content);
 #endif
 
@@ -210,6 +213,7 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 		gboolean preserve;
 		preserve = (xmlNodeGetSpacePreserve (node) == 1);
 		for (p = node->content; p && *p; p++) {
+#if 0
 			if (!isspace (*p) || preserve) {
 				xmlChar *e;
 				unsigned char *s;
@@ -224,6 +228,11 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 				g_free (s);
 				return rdoc;
 			}
+#else
+			if (!isspace (*p)) {
+				return sp_xml_document_createTextNode (doc, node->content);
+			}
+#endif
 		}
 		return NULL;
 	}
