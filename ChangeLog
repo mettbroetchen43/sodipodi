@@ -1,3 +1,20 @@
+2002-04-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/svg/svg-length.c (sp_svg_read_number_f): New method with right signature
+	(sp_svg_read_number_d): Ditto
+
+	* src/style.c (sp_style_privatize_text): New method
+	(sp_style_merge_property): Moved text properties here
+
+	* src/sp-text.c (sp_text_init): No properties
+	(sp_text_build): No style anymore
+	(sp_text_style_modified): New virtual method
+	(sp_text_font_weight_to_gp): Helper
+	(sp_text_font_italic_to_gp): Ditto
+	(sp_text_set_shape): Use style properties, hackish support for vertical writing
+
+	* src/sp-text.h: Removed properties from object, as these are handled by style
+
 2002-04-04  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/helper/canvas-bpath.c (sp_canvas_bpath_init): Can be filled now

@@ -45,7 +45,40 @@ struct _SPPaint {
 #define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
 #define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
 
-typedef struct _SPStyleText SPStyleText;
+typedef struct _SPInheritedString SPInheritedString;
+typedef struct _SPInheritedFloat SPInheritedFloat;
+typedef struct _SPInheritedInt SPInheritedInt;
+typedef struct _SPInheritedShort SPInheritedShort;
+
+struct _SPInheritedString {
+	guint set : 1;
+	guint inherit : 1;
+	guint data : 30;
+	guchar *value;
+};
+
+struct _SPInheritedFloat {
+	guint set : 1;
+	guint inherit : 1;
+	guint data : 30;
+	gfloat value;
+};
+
+struct _SPInheritedInt {
+	guint set : 1;
+	guint inherit : 1;
+	guint data : 30;
+	gint value;
+};
+
+struct _SPInheritedShort {
+	guint set : 1;
+	guint inherit : 1;
+	guint data : 14;
+	gshort value;
+};
+
+typedef struct _SPTextStyle SPTextStyle;
 
 struct _SPStyle {
 	gint refcount;
@@ -54,7 +87,7 @@ struct _SPStyle {
 	/* fixme: Or alternatively, whole style to be moved inside SPObject[Styled] */
 	SPObject *object;
 	/* Our text style component */
-	SPStyleText *text;
+	SPTextStyle *text;
 	guint text_private : 1;
 
 	/* Misc attributes */
@@ -128,7 +161,7 @@ void sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat
 
 void sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set);
 
-/* SPStyleText */
+/* SPTextStyle */
 
 typedef enum {
 	SP_CSS_FONT_STYLE_NORMAL,
@@ -177,38 +210,47 @@ typedef enum {
 	SP_CSS_WRITING_MODE_TB
 } SPWritingMode;
 
-struct _SPStyleText {
+struct _SPTextStyle {
 	gint refcount;
-	/* SVG properties */
-	guchar *font_family;
-	guint font_family_set : 1;
 
-	/* fixme: relatives, units, percentages... */
-	gfloat font_size;
+	/* CSS font properties */
+	SPInheritedString font;
+	SPInheritedString font_family;
+
 	guint font_size_set : 1;
-#if 0
-	/* fixme: Has to have 'none' option here */
-	gfloat font_size_adjust;
 	guint font_size_adjust_set : 1;
-#endif
-	guint font_style : 2;
+	guint font_stretch_set : 1;
 	guint font_style_set : 1;
-
-	guint font_variant : 1;
 	guint font_variant_set : 1;
-
-	guint font_weight : 4;
 	guint font_weight_set : 1;
 
+	/* fixme: SPDistance */
+	gfloat font_size;
+	/* fixme: Has to have 'none' option here */
+	gfloat font_size_adjust;
 	guint font_stretch : 4;
-	guint font_stretch_set : 1;
+	guint font_style : 2;
+	guint font_variant : 1;
+	guint font_weight : 4;
+
+	/* CSS text properties */
+	guint direction_set : 1;
+	guint letter_spacing_set : 1;
+	guint text_decoration_set : 1;
+	guint unicode_bidi_set : 1;
+	guint word_spacing_set : 1;
+
+	guint direction : 2;
+	SPDistance letter_spacing;
+	guint text_decoration : 3;
+	guint unicode_bidi : 2;
+	SPDistance word_spacing;
 
 	/* Parsed values */
 	GnomeFontFace *face;
 	gfloat size;
 	/* Text direction */
-	SPWritingMode writing_mode;
-	guint writing_mode_set : 1;
+	SPInheritedShort writing_mode;
 };
 
 /*

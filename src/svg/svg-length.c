@@ -1,10 +1,48 @@
-#define SP_SVG_LENGTH_C
+#define __SP_SVG_LENGTH_C__
+
+/*
+ * SVG data parser
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ */
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include "svg.h"
+
+gboolean
+sp_svg_read_number_f (const guchar *str, gfloat *val)
+{
+	gchar *e;
+	gfloat v;
+
+	if (!str) return FALSE;
+
+	v = strtod (str, &e);
+	if (e) *val = v;
+
+	return (e != NULL);
+}
+
+gboolean
+sp_svg_read_number_d (const guchar *str, gdouble *val)
+{
+	gchar *e;
+	gdouble v;
+
+	if (!str) return FALSE;
+
+	v = strtod (str, &e);
+	if (e) *val = v;
+
+	return (e != NULL);
+}
 
 /* Length */
 /* NB! px is absolute in SVG, but we prefer to keep it separate for UI reasons */

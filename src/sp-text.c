@@ -20,6 +20,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <gal/unicode/gunicode.h>
 #include "svg/svg.h"
+#include "style.h"
 #include "sp-text.h"
 
 static void sp_text_class_init (SPTextClass *class);
@@ -29,6 +30,7 @@ static void sp_text_destroy (GtkObject *object);
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_text_read_attr (SPObject * object, const gchar * attr);
 static void sp_text_read_content (SPObject * object);
+static void sp_text_style_modified (SPObject *object, guint flags);
 
 static char * sp_text_description (SPItem * item);
 static GSList * sp_text_snappoints (SPItem * item, GSList * points);
@@ -74,6 +76,7 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->build = sp_text_build;
 	sp_object_class->read_attr = sp_text_read_attr;
 	sp_object_class->read_content = sp_text_read_content;
+	sp_object_class->style_modified = sp_text_style_modified;
 
 	item_class->description = sp_text_description;
 	item_class->snappoints = sp_text_snappoints;
@@ -85,11 +88,13 @@ sp_text_init (SPText *text)
 {
 	text->x = text->y = 0.0;
 	text->text = NULL;
+
+#if 0
 	text->fontname = g_strdup ("Helvetica");
 	text->weight = GNOME_FONT_BOOK;
 	text->italic = FALSE;
-	text->face = NULL;
 	text->size = 12.0;
+#endif
 }
 
 static void
@@ -104,16 +109,6 @@ sp_text_destroy (GtkObject *object)
 		text->text = NULL;
 	}
 
-	if (text->fontname) {
-		g_free (text->fontname);
-		text->fontname = NULL;
-	}
-
-	if (text->face) {
-		gnome_font_face_unref (text->face);
-		text->face = NULL;
-	}
-
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -126,7 +121,6 @@ sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	sp_text_read_attr (object, "x");
 	sp_text_read_attr (object, "y");
-	sp_text_read_attr (object, "style");
 	sp_text_read_content (object);
 }
 
@@ -135,12 +129,6 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 {
 	SPText *text;
 	const guchar *astr;
-	SPCSSAttr * css;
-	const gchar * fontname;
-	gdouble size;
-	GnomeFontWeight weight;
-	gboolean italic;
-	const gchar *str;
 	const SPUnit *unit;
 
 	text = SP_TEXT (object);
@@ -155,32 +143,6 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 		astr = sp_repr_attr (SP_OBJECT_REPR (object), attr);
 		text->y = sp_svg_read_length (&unit, astr, 0.0);
 		sp_text_set_shape (text);
-		return;
-	}
-	if (strcmp (attr, "style") == 0) {
-		css = sp_repr_css_attr_inherited (object->repr, attr);
-		fontname = sp_repr_css_property (css, "font-family", "Helvetica");
-		str = sp_repr_css_property (css, "font-size", "12pt");
-		size = sp_svg_read_length (&unit, str, 12.0);
-		str = sp_repr_css_property (css, "font-weight", "normal");
-		weight = sp_svg_read_font_weight (str);
-		str = sp_repr_css_property (css, "font-style", "normal");
-		italic = sp_svg_read_font_italic (str);
-		if (text->fontname)
-			g_free (text->fontname);
-		text->fontname = g_strdup (fontname);
-		if (text->face)
-			gnome_font_face_unref (text->face);
-		text->face = NULL;
-		text->size = size;
-		text->weight = weight;
-		text->italic = italic;
-		sp_repr_css_attr_unref (css);
-		sp_text_set_shape (text);
-
-		if (SP_OBJECT_CLASS (parent_class)->read_attr)
-			(SP_OBJECT_CLASS (parent_class)->read_attr) (object, attr);
-
 		return;
 	}
 
@@ -208,6 +170,20 @@ sp_text_read_content (SPObject * object)
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
+static void
+sp_text_style_modified (SPObject *object, guint flags)
+{
+	SPText *text;
+
+	text = SP_TEXT (object);
+
+	/* Item class reads style */
+	if (((SPObjectClass *) (parent_class))->style_modified)
+		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
+
+	sp_text_set_shape (text);
+}
+
 static char *
 sp_text_description (SPItem * item)
 {
@@ -222,11 +198,65 @@ sp_text_description (SPItem * item)
 	return g_strdup (_("Text object"));
 }
 
+static gint
+sp_text_font_weight_to_gp (SPCSSFontWeight weight)
+{
+	switch (weight) {
+	case SP_CSS_FONT_WEIGHT_100:
+		return GNOME_FONT_EXTRA_LIGHT;
+		break;
+	case SP_CSS_FONT_WEIGHT_200:
+		return GNOME_FONT_THIN;
+		break;
+	case SP_CSS_FONT_WEIGHT_300:
+		return GNOME_FONT_LIGHT;
+		break;
+	case SP_CSS_FONT_WEIGHT_400:
+	case SP_CSS_FONT_WEIGHT_NORMAL:
+		return GNOME_FONT_BOOK;
+		break;
+	case SP_CSS_FONT_WEIGHT_500:
+		return GNOME_FONT_MEDIUM;
+		break;
+	case SP_CSS_FONT_WEIGHT_600:
+		return GNOME_FONT_SEMI;
+		break;
+	case SP_CSS_FONT_WEIGHT_700:
+	case SP_CSS_FONT_WEIGHT_BOLD:
+		return GNOME_FONT_BOLD;
+		break;
+	case SP_CSS_FONT_WEIGHT_800:
+		return GNOME_FONT_HEAVY;
+		break;
+	case SP_CSS_FONT_WEIGHT_900:
+		return GNOME_FONT_BLACK;
+		break;
+	default:
+		return GNOME_FONT_BOOK;
+		break;
+	}
+
+	/* fixme: case SP_CSS_FONT_WEIGHT_LIGHTER: */
+	/* fixme: case SP_CSS_FONT_WEIGHT_DARKER: */
+
+	return GNOME_FONT_BOOK;
+}
+
+static gboolean
+sp_text_font_italic_to_gp (SPCSSFontStyle style)
+{
+	if (style == SP_CSS_FONT_STYLE_NORMAL) return FALSE;
+
+	return TRUE;
+}
+
 static void
-sp_text_set_shape (SPText * text)
+sp_text_set_shape (SPText *text)
 {
 	SPChars *chars;
-	GnomeFontFace * face;
+	SPStyle *style;
+	const GnomeFontFace *face;
+	gdouble size;
 	guint glyph;
 	gdouble x, y;
 	gdouble a[6];
@@ -234,34 +264,47 @@ sp_text_set_shape (SPText * text)
 	const guchar *p;
 
 	chars = SP_CHARS (text);
+	style = SP_OBJECT_STYLE (text);
 
 	sp_chars_clear (chars);
 
-	face = gnome_font_unsized_closest (text->fontname, text->weight, text->italic);
-
-	if (text->face) gnome_font_face_unref (text->face);
-	text->face = face;
+	face = gnome_font_unsized_closest (style->text->font_family.value,
+					   sp_text_font_weight_to_gp (style->text->font_weight),
+					   sp_text_font_italic_to_gp (style->text->font_style));
+	size = style->text->font_size;
 
 	x = text->x;
 	y = text->y;
 
-	art_affine_scale (a, text->size * 0.001, text->size * -0.001);
+	art_affine_scale (a, size * 0.001, size * -0.001);
 	if (text->text) {
 		for (p = text->text; p && *p; p = g_utf8_next_char (p)) {
 			gunichar u;
 			u = g_utf8_get_char (p);
 			if (u == '\n') {
-				x = text->x;
-				y += text->size;
+				if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+					x -= size;
+					y = text->y;
+				} else {
+					x = text->x;
+					y += size;
+				}
 			} else {
 				glyph = gnome_font_face_lookup_default (face, u);
 
-				w = gnome_font_face_get_glyph_width (face, glyph);
-				w = w * text->size / 1000.0;
-				a[4] = x;
-				a[5] = y;
-				sp_chars_add_element (chars, glyph, text->face, a);
-				x += w;
+				if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+					a[4] = x;
+					a[5] = y;
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					y += size;
+				} else {
+					w = gnome_font_face_get_glyph_width (face, glyph);
+					w = w * size / 1000.0;
+					a[4] = x;
+					a[5] = y;
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					x += w;
+				}
 			}
 		}
 	}

@@ -28,13 +28,13 @@ static void sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *paren
 static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
 static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
-static const guchar *sp_style_str_value (const guchar *str, const guchar *key);
 
-static SPStyleText *sp_style_text_new (void);
-static SPStyleText *sp_style_text_ref (SPStyleText *st);
-static SPStyleText *sp_style_text_unref (SPStyleText *st);
-static SPStyleText *sp_style_text_duplicate_unset (SPStyleText *st);
-static guint sp_style_text_write (guchar *p, guint len, SPStyleText *st);
+static SPTextStyle *sp_text_style_new (void);
+static void sp_text_style_clear (SPTextStyle *ts);
+static SPTextStyle *sp_text_style_ref (SPTextStyle *st);
+static SPTextStyle *sp_text_style_unref (SPTextStyle *st);
+static SPTextStyle *sp_text_style_duplicate_unset (SPTextStyle *st);
+static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);
 
 static gint sp_style_property_index (const guchar *str);
 
@@ -56,6 +56,9 @@ sp_style_new (SPObject *object)
 
 	style->refcount = 1;
 	style->object = object;
+
+	style->text = sp_text_style_new ();
+	style->text_private = TRUE;
 
 	gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
 
@@ -85,7 +88,7 @@ sp_style_unref (SPStyle *style)
 
 	if (style->refcount < 1) {
 		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style);
-		if (style->text) sp_style_text_unref (style->text);
+		if (style->text) sp_text_style_unref (style->text);
 		if (style->fill.server) {
 			sp_object_hunref (SP_OBJECT (style->fill.server), style);
 			gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
@@ -104,19 +107,67 @@ sp_style_unref (SPStyle *style)
 }
 
 static void
+sp_style_privatize_text (SPStyle *style)
+{
+	SPTextStyle *text;
+
+	text = style->text;
+	style->text = sp_text_style_duplicate_unset (style->text);
+	sp_text_style_unref (text);
+	style->text_private = TRUE;
+}
+
+static void
 sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 {
 	switch (id) {
 	/* CSS2 */
 	/* Font */
 	case SP_PROP_FONT:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font.set) {
+			if (style->text->font.value) g_free (style->text->font.value);
+			style->text->font.value = g_strdup (val);
+			style->text->font.set = TRUE;
+			style->text->font.inherit = (val && !strcmp (val, "inherit"));
+		}
+		break;
 	case SP_PROP_FONT_FAMILY:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_family.set) {
+			if (style->text->font_family.value) g_free (style->text->font_family.value);
+			style->text->font_family.value = g_strdup (val);
+			style->text->font_family.set = TRUE;
+			style->text->font_family.inherit = (val && !strcmp (val, "inherit"));
+		}
+		break;
 	case SP_PROP_FONT_SIZE:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_size_set) {
+			if (sp_svg_read_number_f (val, &style->text->font_size)) {
+				style->text->font_size_set = TRUE;
+			}
+		}
+		break;
 	case SP_PROP_FONT_SIZE_ADJUST:
 	case SP_PROP_FONT_STRETCH:
 	case SP_PROP_FONT_STYLE:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_style_set) {
+			/* fixme: */
+			style->text->font_style = SP_CSS_FONT_STYLE_NORMAL;
+			style->text->font_style_set = TRUE;
+		}
+		break;
 	case SP_PROP_FONT_VARIANT:
 	case SP_PROP_FONT_WEIGHT:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_weight_set) {
+			/* fixme: */
+			style->text->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
+			style->text->font_weight_set = TRUE;
+		}
+		break;
 	/* Text */
 	case SP_PROP_DIRECTION:
 	case SP_PROP_LETTER_SPACING:
@@ -284,8 +335,24 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_GLYPH_ORIENTATION_VERTICAL:
 	case SP_PROP_KERNING:
 	case SP_PROP_TEXT_ANCHOR:
-	case SP_PROP_WRITING_MODE:
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_WRITING_MODE:
+		if (!style->text->writing_mode.set) {
+			if (!strcmp (val, "lr") || !strcmp (val, "lr-tb")) {
+				style->text->writing_mode.value = SP_CSS_WRITING_MODE_LR;
+				style->text->writing_mode.inherit = FALSE;
+			} else if (!strcmp (val, "rl") || !strcmp (val, "rl-tb")) {
+				style->text->writing_mode.value = SP_CSS_WRITING_MODE_RL;
+				style->text->writing_mode.inherit = FALSE;
+			} else if (!strcmp (val, "tb") || !strcmp (val, "tb-rl")) {
+				style->text->writing_mode.value = SP_CSS_WRITING_MODE_TB;
+				style->text->writing_mode.inherit = FALSE;
+			} else if (!strcmp (val, "inherit")) {
+				style->text->writing_mode.inherit = TRUE;
+			}
+			style->text->writing_mode.set = TRUE;
+		}
 		break;
 	default:
 		g_warning ("Invalid style property id: %d value: %s", id, val);
@@ -656,6 +723,8 @@ sp_style_clear (SPStyle *style)
 {
 	SPObject *object;
 	gint refcount;
+	SPTextStyle *text;
+	gboolean text_private;
 
 	g_return_if_fail (style != NULL);
 
@@ -671,11 +740,22 @@ sp_style_clear (SPStyle *style)
 		g_free (style->stroke_dash.dash);
 	}
 
+	/* fixme: Do that text manipulation via parents */
 	object = style->object;
 	refcount = style->refcount;
+	text = style->text;
+	text_private = style->text_private;
 	memset (style, 0, sizeof (SPStyle));
 	style->refcount = refcount;
 	style->object = object;
+	style->text = text;
+	style->text_private = text_private;
+	/* fixme: */
+	style->text->font.set = FALSE;
+	style->text->font_family.set = FALSE;
+	style->text->font_style_set = FALSE;
+	style->text->font_weight_set = FALSE;
+	style->text->font_size_set = FALSE;
 
 	style->opacity = 1.0;
 	style->display = TRUE;
@@ -755,36 +835,6 @@ sp_style_read_dash (ArtVpathDash *dash, const guchar *str)
 		memcpy (dash->dash, d, sizeof (gdouble) * n_dash);
 		dash->n_dash = n_dash;
 	}
-}
-
-static const guchar *
-sp_style_str_value (const guchar *str, const guchar *key)
-{
-	gint len;
-
-	len = strlen (key);
-
-	while (*str) {
-		while (!isalpha (*str)) {
-			if (!*str) return NULL;
-			str += 1;
-		}
-		if (!strncmp (str, key, len) && str[len] == ':') {
-			str += len + 1;
-			while (isspace (*str)) {
-				if (!*str) return NULL;
-				str += 1;
-			}
-			if (*str == ';') return NULL;
-			return str;
-		}
-		while (*str != ';') {
-			if (!*str) return NULL;
-			str += 1;
-		}
-	}
-
-	return NULL;
 }
 
 void
@@ -870,44 +920,69 @@ sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
 
-/* SPStyleText operations */
+/* SPTextStyle operations */
 
-static SPStyleText *
-sp_style_text_new (void)
+static SPTextStyle *
+sp_text_style_new (void)
 {
-	SPStyleText *st;
+	SPTextStyle *ts;
 
-	st = g_new0 (SPStyleText, 1);
+	ts = g_new0 (SPTextStyle, 1);
 
-	st->refcount = 1;
+	ts->refcount = 1;
 
-	st->font_family = "Bitstream Cyberbit";
-	st->font_size = 12.0;
-	st->font_style = SP_CSS_FONT_STYLE_NORMAL;
-	st->font_variant = SP_CSS_FONT_VARIANT_NORMAL;
-	st->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
-	st->font_stretch = SP_CSS_FONT_STRETCH_NORMAL;
+	sp_text_style_clear (ts);
 
-	st->writing_mode = SP_CSS_WRITING_MODE_LR;
+	ts->font.value = g_strdup ("Bitstream Cyberbit 12");
+	ts->font_family.value = g_strdup ("Bitstream Cyberbit");
+	ts->font_size = 12.0;
+	ts->font_style = SP_CSS_FONT_STYLE_NORMAL;
+	ts->font_variant = SP_CSS_FONT_VARIANT_NORMAL;
+	ts->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
+	ts->font_stretch = SP_CSS_FONT_STRETCH_NORMAL;
 
-	return st;
+	ts->writing_mode.value = SP_CSS_WRITING_MODE_LR;
+
+	return ts;
 }
 
-static SPStyleText *
-sp_style_text_ref (SPStyleText *st)
+static void
+sp_text_style_clear (SPTextStyle *ts)
+{
+	ts->font.set = FALSE;
+	ts->font_family.set = FALSE;
+	ts->font_size_set = FALSE;
+	ts->font_size_adjust_set = FALSE;
+	ts->font_stretch_set = FALSE;
+	ts->font_style_set = FALSE;
+	ts->font_variant_set = FALSE;
+	ts->font_weight_set = FALSE;
+
+	ts->direction_set = FALSE;
+	ts->letter_spacing_set = FALSE;
+	ts->text_decoration_set = FALSE;
+	ts->unicode_bidi_set = FALSE;
+	ts->word_spacing_set = FALSE;
+
+	ts->writing_mode.set = FALSE;
+}
+
+static SPTextStyle *
+sp_text_style_ref (SPTextStyle *st)
 {
 	st->refcount += 1;
 
 	return st;
 }
 
-static SPStyleText *
-sp_style_text_unref (SPStyleText *st)
+static SPTextStyle *
+sp_text_style_unref (SPTextStyle *st)
 {
 	st->refcount -= 1;
 
 	if (st->refcount < 1) {
-		if (st->font_family && st->font_family_set) g_free (st->font_family);
+		if (st->font.value) g_free (st->font.value);
+		if (st->font_family.value) g_free (st->font_family.value);
 		if (st->face) gnome_font_face_unref (st->face);
 		g_free (st);
 	}
@@ -915,16 +990,17 @@ sp_style_text_unref (SPStyleText *st)
 	return NULL;
 }
 
-static SPStyleText *
-sp_style_text_duplicate (SPStyleText *st)
+static SPTextStyle *
+sp_text_style_duplicate_unset (SPTextStyle *st)
 {
-	SPStyleText *nt;
+	SPTextStyle *nt;
 
-	nt = g_new0 (SPStyleText, 1);
+	nt = g_new0 (SPTextStyle, 1);
 
 	nt->refcount = 1;
 
-	nt->font_family = g_strdup (st->font_family);
+	nt->font.value = g_strdup (st->font.value);
+	nt->font_family.value = g_strdup (st->font_family.value);
 
 	nt->font_size = st->font_size;
 	nt->font_style = st->font_style;
@@ -938,7 +1014,7 @@ sp_style_text_duplicate (SPStyleText *st)
 }
 
 static guint
-sp_style_text_write_property (guchar *p, guint len, const guchar *key, const guchar *value)
+sp_text_style_write_property (guchar *p, guint len, const guchar *key, const guchar *value)
 {
 	guint klen, vlen;
 
@@ -957,14 +1033,14 @@ sp_style_text_write_property (guchar *p, guint len, const guchar *key, const guc
 }
 
 static guint
-sp_style_text_write (guchar *p, guint len, SPStyleText *st)
+sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 {
 	gint d;
 
 	d = 0;
 
-	if (st->font_family_set) {
-		d += sp_style_text_write_property (p + d, len - d, "font-family", st->font_family);
+	if (st->font_family.set) {
+		d += sp_text_style_write_property (p + d, len - d, "font-family", st->font_family.value);
 	}
 
 	if (st->font_size_set) {
@@ -973,30 +1049,30 @@ sp_style_text_write (guchar *p, guint len, SPStyleText *st)
 
 	if (st->font_style_set) {
 		static const guchar *s[] = {"normal", "italic", "oblique"};
-		d += sp_style_text_write_property (p + d, len - d, "font-style", s[st->font_style]);
+		d += sp_text_style_write_property (p + d, len - d, "font-style", s[st->font_style]);
 	}
 
 	if (st->font_variant_set) {
 		static const guchar *s[] = {"normal", "small-caps"};
-		d += sp_style_text_write_property (p + d, len - d, "font-variant", s[st->font_variant]);
+		d += sp_text_style_write_property (p + d, len - d, "font-variant", s[st->font_variant]);
 	}
 
 	if (st->font_weight_set) {
 		static const guchar *s[] = {"100", "200", "300", "400", "500", "600", "700", "800", "900",
 					    "normal", "bold", "lighter", "darker"};
-		d += sp_style_text_write_property (p + d, len - d, "font-weight", s[st->font_weight]);
+		d += sp_text_style_write_property (p + d, len - d, "font-weight", s[st->font_weight]);
 	}
 
 	if (st->font_stretch_set) {
 		static const guchar *s[] = {"ultra-condensed", "extra-condensed", "condensed", "semi-condensed", "normal",
 					    "semi-expanded", "expanded", "extra-expanded", "ultra-expanded",
 					    "narrower", "wider"};
-		d += sp_style_text_write_property (p + d, len - d, "font-stretch", s[st->font_stretch]);
+		d += sp_text_style_write_property (p + d, len - d, "font-stretch", s[st->font_stretch]);
 	}
 
-	if (st->writing_mode_set) {
+	if (st->writing_mode.set) {
 		static const guchar *s[] = {"lr", "rl", "tb"};
-		d += sp_style_text_write_property (p + d, len - d, "writing-mode", s[st->writing_mode]);
+		d += sp_text_style_write_property (p + d, len - d, "writing-mode", s[st->writing_mode.value]);
 	}
 
 	return d;
@@ -1015,9 +1091,9 @@ static const SPStyleProp props[] = {
 	{SP_PROP_FONT_SIZE, "font-size"},
 	{SP_PROP_FONT_SIZE_ADJUST, "font-size-adjust"},
 	{SP_PROP_FONT_STRETCH, "font-stretch"},
-	{SP_PROP_FONT_STYLE, "style"},
-	{SP_PROP_FONT_VARIANT, "variant"},
-	{SP_PROP_FONT_WEIGHT, "weight"},
+	{SP_PROP_FONT_STYLE, "font-style"},
+	{SP_PROP_FONT_VARIANT, "font-variant"},
+	{SP_PROP_FONT_WEIGHT, "font-weight"},
 	/* Text */
 	{SP_PROP_DIRECTION, "direction"},
 	{SP_PROP_LETTER_SPACING, "letter-spacing"},

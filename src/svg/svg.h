@@ -1,13 +1,27 @@
 #ifndef __SP_SVG_H__
 #define __SP_SVG_H__
 
+/*
+ * SVG data parser
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ */
+
 #include <glib.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libgnomeprint/gnome-font.h>
 #include "../helper/units.h"
 #include "../display/stroke.h"
 
-/* General CSS Properties */
+/* Generic CSS Properties */
+
+gboolean sp_svg_read_number_f (const guchar *str, gfloat *val);
+gboolean sp_svg_read_number_d (const guchar *str, gdouble *val);
+
 /* length */
 
 gdouble sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def);

@@ -31,11 +31,13 @@ struct _SPText {
 
 	guchar *text;
 
+#if 0
 	gchar *fontname;
 	GnomeFontWeight weight;
 	gboolean italic;
 	GnomeFontFace * face;
 	gdouble size;
+#endif
 };
 
 struct _SPTextClass {
