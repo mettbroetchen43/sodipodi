@@ -31,12 +31,22 @@
 #include <libgnomeprint/gnome-printer-dialog.h>
 #endif
 
+#include <gtk/gtkstock.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkentry.h>
+
+#include "helper/sp-intl.h"
 #include "document.h"
 #include "sp-item.h"
 #include "style.h"
 #include "sp-paint-server.h"
 
 #include "print.h"
+
+/* fixme: Sooner or later we want SPPrintContext subclasses (Lauris) */
 
 #ifdef WITH_GNOME_PRINT
 struct _SPPrintContext {
@@ -46,9 +56,16 @@ struct _SPPrintContext {
 struct _SPPrintContext {
 	FILE *stream;
 };
-#endif
-
+unsigned int sp_print_plain_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity);
+unsigned int sp_print_plain_release (SPPrintContext *ctx);
+unsigned int sp_print_plain_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+				  const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+unsigned int sp_print_plain_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+				    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+unsigned int sp_print_plain_image_R8G8B8A8_N (SPPrintContext *ctx, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+					      const NRMatrixF *transform, const SPStyle *style);
 static void sp_print_bpath (FILE *stream, const ArtBpath *bp);
+#endif
 
 unsigned int
 sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
@@ -68,19 +85,11 @@ sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 	gnome_print_concat (ctx->gpc, t);
 
 	/* fixme: Opacity? (lauris) */
-#else
-	if (!ctx->stream) return -1;
-
-	fprintf (ctx->stream, "gsave [%g %g %g %g %g %g] concat\n",
-		 transform->c[0],
-		 transform->c[1],
-		 transform->c[2],
-		 transform->c[3],
-		 transform->c[4],
-		 transform->c[5]);
-#endif
 
 	return 0;
+#else
+	return sp_print_plain_bind (ctx, transform, opacity);
+#endif
 }
 
 unsigned int
@@ -88,13 +97,11 @@ sp_print_release (SPPrintContext *ctx)
 {
 #ifdef WITH_GNOME_PRINT
 	gnome_print_grestore (ctx->gpc);
-#else
-	if (!ctx->stream) return -1;
-
-	fprintf (ctx->stream, "grestore\n");
-#endif
 
 	return 0;
+#else
+	return sp_print_plain_release (ctx);
+#endif
 }
 
 unsigned int
@@ -197,27 +204,11 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			sp_painter_free (painter);
 		}
 	}
-#else
-	if (!ctx->stream) return -1;
-
-	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
-		float rgb[3];
-
-		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
-
-		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
-
-		sp_print_bpath (ctx->stream, bpath->path);
-
-		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
-			fprintf (ctx->stream, "eofill\n");
-		} else {
-			fprintf (ctx->stream, "fill\n");
-		}
-	}
-#endif
 
 	return 0;
+#else
+	return sp_print_plain_fill (ctx, bpath, ctm, style, pbox, dbox, bbox);
+#endif
 }
 
 unsigned int
@@ -260,38 +251,11 @@ sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm
 
 		gnome_print_stroke (ctx->gpc);
 	}
-#else
-	if (!ctx->stream) return -1;
-
-	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
-		float rgb[3];
-
-		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
-
-		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
-
-		sp_print_bpath (ctx->stream, bpath->path);
-
-		if (style->stroke_dash.n_dash > 0) {
-			int i;
-			fprintf (ctx->stream, "[");
-			for (i = 0; i < style->stroke_dash.n_dash; i++) {
-				fprintf (ctx->stream, (i) ? " %g" : "%g", style->stroke_dash.dash[i]);
-			}
-			fprintf (ctx->stream, "] %g setdash\n", style->stroke_dash.offset);
-		} else {
-			fprintf (ctx->stream, "[] 0 setdash\n");
-		}
-
-		fprintf (ctx->stream, "%g setlinewidth\n", style->stroke_width.computed);
-		fprintf (ctx->stream, "%d setlinejoin\n", style->stroke_linejoin.computed);
-		fprintf (ctx->stream, "%d setlinecap\n", style->stroke_linecap.computed);
-
-		fprintf (ctx->stream, "stroke\n");
-	}
-#endif
 
 	return 0;
+#else
+	return sp_print_plain_stroke (ctx, bpath, ctm, style, pbox, dbox, bbox);
+#endif
 }
 
 unsigned int
@@ -336,46 +300,11 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 	}
 
 	gnome_print_grestore (ctx->gpc);
-#else
-	int r;
-
-	fprintf (ctx->stream, "gsave\n");
-	fprintf (ctx->stream, "/rowdata %d string def\n", 3 * w);
-	fprintf (ctx->stream, "[%g %g %g %g %g %g] concat\n",
-		 transform->c[0],
-		 transform->c[1],
-		 transform->c[2],
-		 transform->c[3],
-		 transform->c[4],
-		 transform->c[5]);
-	fprintf (ctx->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", w, h, w, h, h);
-	fprintf (ctx->stream, "{currentfile rowdata readhexstring pop}\n");
-	fprintf (ctx->stream, "false 3 colorimage\n");
-
-	for (r = 0; r < h; r++) {
-		unsigned char *s;
-		int c0, c1, c;
-		s = px + r * rs;
-		for (c0 = 0; c0 < w; c0 += 24) {
-			c1 = MIN (w, c0 + 24);
-			for (c = c0; c < c1; c++) {
-				static const char xtab[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-				fputc (xtab[s[0] >> 4], ctx->stream);
-				fputc (xtab[s[0] & 0xf], ctx->stream);
-				fputc (xtab[s[1] >> 4], ctx->stream);
-				fputc (xtab[s[1] & 0xf], ctx->stream);
-				fputc (xtab[s[2] >> 4], ctx->stream);
-				fputc (xtab[s[2] & 0xf], ctx->stream);
-				s += 4;
-			}
-			fputs ("\n", ctx->stream);
-		}
-	}
-
-	fprintf (ctx->stream, "grestore\n");
-#endif
 
 	return 0;
+#else
+	return sp_print_image_R8G8B8A8_N (ctx, px, w, h, rs, transform, style);
+#endif
 }
 
 /* UI */
@@ -446,7 +375,77 @@ sp_print_document (SPDocument *doc)
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
 #else
-	/* Implement plain PS dialog here */
+	GtkWidget *dlg, *vbox, *f, *vb, *l, *e;
+	int response;
+
+	dlg = gtk_dialog_new_with_buttons (_("Print destination"), NULL,
+					   GTK_DIALOG_MODAL,
+					   GTK_STOCK_PRINT,
+					   GTK_RESPONSE_OK,
+					   GTK_STOCK_CANCEL,
+					   GTK_RESPONSE_CANCEL,
+					   NULL);
+
+	vbox = GTK_DIALOG (dlg)->vbox;
+
+	f = gtk_frame_new (_("Print destination"));
+	gtk_box_pack_start (GTK_BOX (vbox), f, FALSE, FALSE, 4);
+
+	vb = gtk_vbox_new (FALSE, 4);
+	gtk_container_add (GTK_CONTAINER (f), vb);
+
+	l = gtk_label_new (_("Please select destination lpr queue.\n"
+			     "Use '> queuename' to print to file.\n"
+			     "Use '| prog arg...' to pipe to program"));
+	gtk_box_pack_start (GTK_BOX (vb), l, FALSE, FALSE, 0);
+
+	e = gtk_entry_new ();
+	gtk_box_pack_start (GTK_BOX (vb), e, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (vbox);
+	
+	response = gtk_dialog_run (GTK_DIALOG (dlg));
+
+	if (response == GTK_RESPONSE_OK) {
+		const unsigned char *fn;
+		FILE *osf, *osp;
+		SPPrintContext ctx;
+		/* Arrgh, have to do something */
+		fn = gtk_entry_get_text (GTK_ENTRY (e));
+		g_print ("Printing to %s\n", fn);
+		osf = NULL;
+		osp = NULL;
+		if (fn) {
+			if (*fn == '|') {
+				fn += 1;
+				while (isspace (*fn)) fn += 1;
+				osp = popen (fn, "w");
+				ctx.stream = osp;
+			} else if (*fn == '>') {
+				fn += 1;
+				while (isspace (*fn)) fn += 1;
+				osf = fopen (fn, "w+");
+				ctx.stream = osf;
+			} else {
+				unsigned char *qn;
+				qn = g_strdup_printf ("lpr %s", fn);
+				osp = popen (qn, "w");
+				g_free (qn);
+				ctx.stream = osp;
+			}
+		}
+		if (ctx.stream) {
+			sp_document_ensure_up_to_date (doc);
+			fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
+			fprintf (ctx.stream, "0.8 -0.8 scale\n");
+			sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+			fprintf (ctx.stream, "showpage\n");
+		}
+		if (osf) fclose (osf);
+		if (osp) fclose (osp);
+	}
+
+	gtk_widget_destroy (dlg);
 #endif
 }
 
@@ -491,6 +490,139 @@ sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 #endif
 }
 
+#ifndef WITH_GNOME_PRINT
+
+/* Plain PostScript output */
+
+unsigned int
+sp_print_plain_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
+{
+	if (!ctx->stream) return -1;
+
+	return fprintf (ctx->stream, "gsave [%g %g %g %g %g %g] concat\n",
+			transform->c[0],
+			transform->c[1],
+			transform->c[2],
+			transform->c[3],
+			transform->c[4],
+			transform->c[5]);
+}
+
+unsigned int
+sp_print_plain_release (SPPrintContext *ctx)
+{
+	if (!ctx->stream) return -1;
+
+	fprintf (ctx->stream, "grestore\n");
+
+	return 0;
+}
+
+unsigned int
+sp_print_plain_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+		     const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
+{
+	if (!ctx->stream) return -1;
+
+	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
+		float rgb[3];
+
+		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
+
+		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+
+		sp_print_bpath (ctx->stream, bpath->path);
+
+		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
+			fprintf (ctx->stream, "eofill\n");
+		} else {
+			fprintf (ctx->stream, "fill\n");
+		}
+	}
+
+	return 0;
+}
+
+unsigned int
+sp_print_plain_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+		       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
+{
+	if (!ctx->stream) return -1;
+
+	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
+		float rgb[3];
+
+		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
+
+		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+
+		sp_print_bpath (ctx->stream, bpath->path);
+
+		if (style->stroke_dash.n_dash > 0) {
+			int i;
+			fprintf (ctx->stream, "[");
+			for (i = 0; i < style->stroke_dash.n_dash; i++) {
+				fprintf (ctx->stream, (i) ? " %g" : "%g", style->stroke_dash.dash[i]);
+			}
+			fprintf (ctx->stream, "] %g setdash\n", style->stroke_dash.offset);
+		} else {
+			fprintf (ctx->stream, "[] 0 setdash\n");
+		}
+
+		fprintf (ctx->stream, "%g setlinewidth\n", style->stroke_width.computed);
+		fprintf (ctx->stream, "%d setlinejoin\n", style->stroke_linejoin.computed);
+		fprintf (ctx->stream, "%d setlinecap\n", style->stroke_linecap.computed);
+
+		fprintf (ctx->stream, "stroke\n");
+	}
+
+	return 0;
+}
+
+unsigned int
+sp_print_plain_image_R8G8B8A8_N (SPPrintContext *ctx, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+				 const NRMatrixF *transform, const SPStyle *style)
+{
+	int r;
+
+	fprintf (ctx->stream, "gsave\n");
+	fprintf (ctx->stream, "/rowdata %d string def\n", 3 * w);
+	fprintf (ctx->stream, "[%g %g %g %g %g %g] concat\n",
+		 transform->c[0],
+		 transform->c[1],
+		 transform->c[2],
+		 transform->c[3],
+		 transform->c[4],
+		 transform->c[5]);
+	fprintf (ctx->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", w, h, w, h, h);
+	fprintf (ctx->stream, "{currentfile rowdata readhexstring pop}\n");
+	fprintf (ctx->stream, "false 3 colorimage\n");
+
+	for (r = 0; r < h; r++) {
+		unsigned char *s;
+		int c0, c1, c;
+		s = px + r * rs;
+		for (c0 = 0; c0 < w; c0 += 24) {
+			c1 = MIN (w, c0 + 24);
+			for (c = c0; c < c1; c++) {
+				static const char xtab[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+				fputc (xtab[s[0] >> 4], ctx->stream);
+				fputc (xtab[s[0] & 0xf], ctx->stream);
+				fputc (xtab[s[1] >> 4], ctx->stream);
+				fputc (xtab[s[1] & 0xf], ctx->stream);
+				fputc (xtab[s[2] >> 4], ctx->stream);
+				fputc (xtab[s[2] & 0xf], ctx->stream);
+				s += 4;
+			}
+			fputs ("\n", ctx->stream);
+		}
+	}
+
+	fprintf (ctx->stream, "grestore\n");
+
+	return 0;
+}
+
 /* PostScript helpers */
 
 static void
@@ -531,3 +663,5 @@ sp_print_bpath (FILE *stream, const ArtBpath *bp)
 		fprintf (stream, "closepath\n");
 	}
 }
+#endif
+

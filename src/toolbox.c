@@ -319,7 +319,7 @@ sp_toolbox_file_create (void)
 	sp_toolbox_button_new (t, 1, "file_save", GTK_SIGNAL_FUNC (sp_file_save), tt, _("Save document"));
 	sp_toolbox_button_new (t, 5, "file_save_as", GTK_SIGNAL_FUNC (sp_file_save_as), tt, _("Save document under new name"));
 	b = sp_toolbox_button_new (t, 2, "file_print", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
-	gtk_widget_set_sensitive (b, FALSE);
+	gtk_widget_set_sensitive (b, TRUE);
 	b = sp_toolbox_button_new (t, 6, "file_print_preview", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
 	gtk_widget_set_sensitive (b, FALSE);
 	sp_toolbox_button_new (t, 3, "file_import", GTK_SIGNAL_FUNC (sp_file_import), tt, _("Import bitmap or SVG image into document"));

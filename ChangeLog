@@ -1,3 +1,12 @@
+2003-01-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c (sp_print_plain_bind): Move generic PS code here
+	(sp_print_plain_release): Ditto
+	(sp_print_plain_fill): Ditto
+	(sp_print_plain_stroke): Ditto
+	(sp_print_plain_image_R8G8B8A8_N): Ditto
+	(sp_print_document): Implement very-very simple non-gnome print dialog
+
 2003-01-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/main.c: Made --without-popt working
