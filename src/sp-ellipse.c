@@ -147,7 +147,9 @@ sp_genericellipse_update (SPObject *object, SPCtx *ctx, guint flags)
 		((SPObjectClass *) ge_parent_class)->update (object, ctx, flags);
 }
 
-#define C1 0.552
+#define noC1 0.552
+
+#define C1 (4.0/3.0*(sqrt(2.0)-1.0))
 
 /* fixme: Think (Lauris) */
 

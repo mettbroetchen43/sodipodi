@@ -19,6 +19,7 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-path.h>
+#include <libnr/nr-pathops.h>
 #include <libnr/nr-pixops.h>
 #include <libnr/nr-blit.h>
 #include <libnr/nr-stroke.h>
@@ -284,7 +285,8 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			if (TRUE || !shape->fill_svp) {
 				NRMatrixF ctmf;
 #ifdef NR_TESTING_PATH
-				NRPath path;
+				NRPath path, path2;
+				NRNodePathGroup *npg;
 #endif
 				NRSVL *svl;
 				unsigned int windrule;
@@ -292,7 +294,11 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				windrule = (shape->style->fill_rule.value == SP_WIND_RULE_EVENODD) ? NR_WIND_RULE_EVENODD : NR_WIND_RULE_NONZERO;
 #ifdef NR_TESTING_PATH
 				nr_path_setup_from_art_bpath (&path, shape->curve->bpath);
-				svl = nr_svl_from_path (&path, &ctmf, windrule, TRUE, 0.25);
+				npg = nr_node_path_group_from_path (&path);
+				nr_node_path_group_join_coincident (npg);
+				nr_path_setup_from_node_path_group (&path2, npg);
+				svl = nr_svl_from_path (&path2, &ctmf, windrule, TRUE, 0.25);
+				nr_path_release (&path2);
 				nr_path_release (&path);
 #else
 				svl = nr_svl_from_art_bpath (shape->curve->bpath, &ctmf, windrule, TRUE, 0.25);

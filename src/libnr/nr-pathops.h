@@ -46,9 +46,12 @@ struct _NRNodePathGroup {
 	NRNodePath paths[1];
 };
 
-NRNodePathGroup *nr_node_path_group_build (NRPath *path);
+NRNodePathGroup *nr_node_path_group_from_path (NRPath *path);
+NRNodePathGroup *nr_node_path_group_free (NRNodePathGroup *npg);
 
-NRPath *nr_path_from_node_path_group (NRNodePathGroup *npg);
+void nr_node_path_group_join_coincident (NRNodePathGroup *npg);
+
+NRPath *nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *npg);
 
 /* Lala */
 

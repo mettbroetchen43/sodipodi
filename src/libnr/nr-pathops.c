@@ -9,9 +9,16 @@
  * This code is in public domain
  */
 
+#define QUANT 65536.0
+#define IQUANT (1.0 / QUANT)
+#define IQUANT2 (0.5 / QUANT)
+#define IQUANT4 (0.25 / QUANT)
+#define QROUND(v) (floor (QUANT * (v) + 0.5) / QUANT)
+
 #include <string.h>
 
 #include "nr-macros.h"
+#include "nr-values.h"
 
 #include "nr-pathops.h"
 
@@ -31,90 +38,291 @@ static NRNode *nr_node_new (unsigned int value, unsigned int isfirst, unsigned i
 static void nr_node_connect_line (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos);
 static void nr_node_connect_curve (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos,
 				   double x1, double y1, double x2, double y2);
-static void nr_node_join_end (NRNode *start, NRNode *end);
+/* Joins 2 linked lists of nodes */
+static void nr_node_align (NRNode *node, NRNode *other);
+/* Insets new node at given t (NOP is coincident with either end) */
+static void nr_node_path_insert_node (NRNode *pnode, double t);
 
 NRNodePathGroup *
-nr_node_path_group_build (NRPath *path)
+nr_node_path_group_from_path (NRPath *path)
 {
 	NRNodePathGroup *npg;
-	int seg, sidx;
+	int sidx, seg;
 	double x, y, sx, sy;
 
 	npg = (NRNodePathGroup *) malloc (sizeof (NRNodePathGroup) + (path->nsegments - 1) * sizeof (NRNodePath));
-	npg->npaths = path->nsegments;
 
 	x = y = 0.0;
 	sx = sy = 0.0;
 
 	seg = 0;
-	sidx = 0;
-	while (seg < path->nsegments) {
+	for (sidx = 0; sidx < path->nelements; sidx += path->elements[sidx].code.length) {
 		NRPathElement *sel;
 		NRNode *cnode, *nnode;
-		int nelements, idx;
+		int nnodes, idx;
 
 		sel = path->elements + sidx;
-		nelements = sel[0].code.length;
 
 		/* Initialize path */
 		npg->paths[seg].closed = sel[0].code.closed;
 
 		/* First node */
-		cnode = nr_node_new (0, 1, 0, sel[1].value, sel[2].value, 2);
+		sx = x = QROUND (sel[1].value);
+		sy = y = QROUND (sel[2].value);
+		cnode = nr_node_new (0, 1, 0, x, y, 2);
 		npg->paths[seg].nodes = cnode;
+		nnodes = 1;
 
 		idx = 3;
-		while (idx < nelements) {
+		while (idx < sel[0].code.length) {
 			int nmulti, i;
 			nmulti = sel[idx].code.length;
 			if (sel[idx].code.code == NR_PATH_LINETO) {
 				idx += 1;
 				for (i = 0; i < nmulti; i++) {
 					/* Append new node at sel[idx], sel[idx + 1] using line */
-					nnode = nr_node_new (0, 0, 0, sel[idx].value, sel[idx + 1].value, 2);
-					nr_node_connect_line (cnode, 1, nnode, 0);
-					cnode = nnode;
+					x = QROUND (sel[idx].value);
+					y = QROUND (sel[idx + 1].value);
+					if ((x != sx) || (y != sy)) {
+						nnode = nr_node_new (0, 0, 0, x, y, 2);
+						nr_node_connect_line (cnode, 1, nnode, 0);
+						cnode = nnode;
+						nnodes += 1;
+						sx = x;
+						sy = y;
+					}
 					idx += 2;
 				}
 			} else {
 				idx += 1;
 				for (i = 0; i < nmulti; i++) {
+					double x1, y1, x2, y2;
 					/* Append new node at sel[idx + 4], sel[idx + 5] using curve */
-					nnode = nr_node_new (0, 0, 0, sel[idx + 4].value, sel[idx + 5].value, 2);
-					nr_node_connect_curve (cnode, 1, nnode, 0,
-							       sel[idx].value, sel[idx + 1].value,
-							       sel[idx + 2].value, sel[idx + 3].value);
-					cnode = nnode;
+					x = QROUND (sel[idx + 4].value);
+					y = QROUND (sel[idx + 5].value);
+					x1 = QROUND (sel[idx].value);
+					y1 = QROUND (sel[idx + 1].value);
+					x2 = QROUND (sel[idx + 2].value);
+					y2 = QROUND (sel[idx + 3].value);
+					if ((x != sx) || (y != sy) || (x1 != sx) || (y1 != sy) || (x2 != sx) || (y2 != sy)) {
+						nnode = nr_node_new (0, 0, 0, x, y, 2);
+						nr_node_connect_curve (cnode, 1, nnode, 0, x1, y1, x2, y2);
+						cnode = nnode;
+						nnodes += 1;
+						sx = x;
+						sy = y;
+					}
 					idx += 6;
 				}
 			}
 		}
-		/* Closing segment if needed */
-		if (npg->paths[seg].closed) {
-			nr_node_join_end (npg->paths[seg].nodes, cnode);
+		if (nnodes < 2) {
+			/* Invisible */
+			free (npg->paths[seg].nodes);
+			npg->paths[seg].nodes = NULL;
+			/* Keep the same segment number */
 		} else {
+			/* Closing segment if needed */
+			if (npg->paths[seg].closed) {
+				NRNode *start, *end, *nnode;
+				start = npg->paths[seg].nodes;
+				end = cnode;
+				if ((start->x != end->x) || (start->y != end->y)) {
+					/* Connect start and end with straight line */
+					nnode = nr_node_new (0, 0, 0, start->x, start->y, 2);
+					nr_node_connect_line (cnode, 1, nnode, 0);
+					cnode = end = nnode;
+				}
+			}
 			cnode->islast = 1;
+			seg += 1;
 		}
-		seg += 1;
-		sidx += nelements;
 	}
+
+	npg->npaths = seg;
 
 	return npg;
 }
 
-NRPath *
-nr_path_from_node_path_group (NRNodePathGroup *ngr)
+NRNodePathGroup *
+nr_node_path_group_free (NRNodePathGroup *npg)
 {
-	int nelements, pidx;
+	int pidx;
+	for (pidx = 0; pidx < npg->npaths; pidx++) {
+		NRNodePath *np;
+		np = npg->paths + pidx;
+		while (np->nodes) {
+			NRNode *node;
+			node = np->nodes;
+			np->nodes = node->connections[1].node;
+			free (node);
+			if (np->nodes->isfirst) break;
+		}
+	}
+	free (npg);
+	return (NRNodePathGroup *) 0;
+}
+
+void
+nr_node_path_group_join_coincident (NRNodePathGroup *npg)
+{
+	int pidx, qidx;
+	/* Iterate over subpaths */
+	for (pidx = 0; pidx < npg->npaths; pidx++) {
+		NRNode *node;
+		node = npg->paths[pidx].nodes;
+		while (node) {
+			/* Main iteration */
+			for (qidx = pidx; qidx < npg->npaths; qidx++) {
+				NRNode *qnode;
+				if (qidx == pidx) {
+					if (node->islast) continue;
+					qnode = node->connections[1].node;
+				} else {
+					qnode = npg->paths[qidx].nodes;
+				}
+				while (qnode) {
+					if ((node->x == qnode->x) && (node->y == qnode->y)) {
+						nr_node_align (node, qnode);
+					}
+					if (qnode->islast) break;
+					qnode = qnode->connections[1].node;
+				}
+			}
+			/* Step forward */
+			if (node->islast) break;
+			node = node->connections[1].node;
+		};
+	}
+}
+
+/* We join, if distance < QUANT/2 to reduce perturbances */
+
+void nr_node_path_group_break_at_nodes (NRNodePathGroup *npg)
+{
+	int pidx, qidx;
+	/* Iterate over subpaths */
+	for (pidx = 0; pidx < npg->npaths; pidx++) {
+		NRNode *node;
+		node = npg->paths[pidx].nodes;
+		while (node) {
+			/* Main iteration */
+			for (qidx = pidx; qidx < npg->npaths; qidx++) {
+				NRNode *qnode;
+				if (qidx == pidx) {
+					if (node->islast) continue;
+					qnode = node->connections[1].node;
+				} else {
+					qnode = npg->paths[qidx].nodes;
+				}
+				while (qnode && !qnode->islast) {
+					NRNode *rnode;
+					rnode = qnode->connections[1].node;
+					/* Check node against qnode<->rnode*/
+					if (qnode->connections[1].isline) {
+						double dist, t;
+						dist = nr_line_point_distance (qnode->x, qnode->y, rnode->x, rnode->y,
+									       node->x, node->y,
+									       &t, IQUANT);
+						if (dist <= IQUANT2) {
+							/* Split line at t */
+							nr_node_path_insert_node (qnode, t);
+						}
+					} else {
+						double dist, t;
+						dist = nr_curve_point_distance (qnode->x, qnode->y,
+										qnode->connections[1].x, qnode->connections[1].y,
+										rnode->x, rnode->y,
+										rnode->connections[0].x, rnode->connections[0].y,
+										node->x, node->y,
+										&t, NR_HUGE_F, IQUANT);
+						if (dist <= IQUANT2) {
+							/* Split curve at t */
+							nr_node_path_insert_node (qnode, t);
+						}
+					}
+					/* Step forward */
+					qnode = rnode;
+				}
+			}
+			/* Step forward */
+			if (node->islast) break;
+			node = node->connections[1].node;
+		};
+	}
+}
+
+NRPath *
+nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
+{
+	int nelements, pidx, nidx;
 
 	nelements = 0;
 	for (pidx = 0; pidx < ngr->npaths; pidx++) {
-		NRNodePath *path;
-		path = ngr->paths + pidx;
+		NRNodePath *np;
+		NRNode *node;
+		np = ngr->paths + pidx;
 		/* Number of subpath elements */
 		nelements += 1;
+		node = np->nodes;
 		/* Initial moveto */
 		nelements += 2;
+		do {
+			if (node->connections[1].isline) {
+				/* Append lineto x y */
+				nelements += 3;
+			} else {
+				/* Append curveto x1 y1 x2 y2 x y */
+				nelements += 7;
+			}
+			node = node->connections[1].node;
+		} while (node && !node->islast && !node->isfirst);
+	}
+
+	path->nelements = nelements;
+	path->nsegments = ngr->npaths;
+	path->elements = (NRPathElement *) malloc (nelements * sizeof (NRPathElement));
+
+	nidx = 0;
+	for (pidx = 0; pidx < ngr->npaths; pidx++) {
+		NRNodePath *np;
+		NRNode *node;
+		int nidxstart;
+		np = ngr->paths + pidx;
+		nidxstart = nidx;
+		/* Number of subpath elements */
+		nidx += 1;
+		node = np->nodes;
+		/* Initial moveto */
+		path->elements[nidx].value = node->x;
+		path->elements[nidx + 1].value = node->y;
+		nidx += 2;
+		do {
+			NRNode *other;
+			other = node->connections[1].node;
+			if (node->connections[1].isline) {
+				/* Append lineto x y */
+				path->elements[nidx].code.length = 1;
+				path->elements[nidx].code.code = NR_PATH_LINETO;
+				path->elements[nidx + 1].value = other->x;
+				path->elements[nidx + 2].value = other->y;
+				nidx += 3;
+			} else {
+				/* Append curveto x1 y1 x2 y2 x y */
+				path->elements[nidx].code.length = 1;
+				path->elements[nidx].code.code = NR_PATH_CURVETO;
+				path->elements[nidx + 1].value = node->connections[1].x;
+				path->elements[nidx + 2].value = node->connections[1].y;
+				path->elements[nidx + 3].value = other->connections[0].x;
+				path->elements[nidx + 4].value = other->connections[0].y;
+				path->elements[nidx + 5].value = other->x;
+				path->elements[nidx + 6].value = other->y;
+				nidx += 7;
+			}
+			node = other;
+		} while (node && !node->islast && !node->isfirst);
+		path->elements[nidxstart].code.length = nidx - nidxstart;
+		path->elements[nidxstart].code.closed = np->closed;
 	}
 
 	return NULL;
@@ -150,27 +358,65 @@ static void
 nr_node_connect_curve (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos, double x1, double y1, double x2, double y2)
 {
 	a->connections[apos].node = b;
-	a->connections[apos].isline = TRUE;
+	a->connections[apos].isline = FALSE;
 	a->connections[apos].x = x1;
 	a->connections[apos].y = y1;
 	b->connections[bpos].node = a;
-	b->connections[bpos].isline = TRUE;
+	b->connections[bpos].isline = FALSE;
 	b->connections[bpos].x = x2;
 	b->connections[bpos].y = y2;
 }
 
-/* This works only for initial construction */
+static void
+nr_node_align (NRNode *node, NRNode *other)
+{
+	NRNode *nlast, *ofirst;
+	nlast = node;
+	while (nlast->next) nlast = nlast->next;
+	ofirst = other;
+	while (ofirst->prev) ofirst = ofirst->prev;
+	nlast->next = ofirst;
+	ofirst->prev = nlast;
+}
 
 static void
-nr_node_join_end (NRNode *start, NRNode *end)
+nr_node_path_insert_node (NRNode *pnode, double t)
 {
-	NRNode *prev;
-	if (end == start) return;
-	prev = end->connections[0].node;
-	start->connections[0] = end->connections[0];
-	prev->connections[1].node = start;
-	free (end);
+	NRNode *qnode, *nnode;
+	qnode = pnode->connections[1].node;
+	if (pnode->connections[1].isline) {
+		double x, y;
+		x = pnode->x + t * (qnode->x - pnode->x);
+		x = QROUND (x);
+		y = pnode->y + t * (qnode->y - pnode->y);
+		y = QROUND (y);
+		if ((x == pnode->x) && (y == pnode->y)) return;
+		if ((x == qnode->x) && (y == qnode->y)) return;
+		nnode = nr_node_new (0, 0, 0, x, y, 2);
+		nr_node_connect_line (pnode, 1, nnode, 0);
+		nr_node_connect_line (nnode, 1, qnode, 0);
+	} else {
+		double path[8], a[8], b[8];
+		path[0] = pnode->x;
+		path[1] = pnode->y;
+		path[2] = pnode->connections[1].x;
+		path[3] = pnode->connections[1].y;
+		path[4] = qnode->connections[0].x;
+		path[5] = qnode->connections[0].y;
+		path[6] = qnode->x;
+		path[7] = qnode->y;
+		nr_path_subdivide (path, a, b, t);
+		a[6] = QROUND (a[6]);
+		a[7] = QROUND (a[7]);
+		if ((a[6] == pnode->x) && (a[7] == pnode->y)) return;
+		if ((a[6] == qnode->x) && (a[7] == qnode->y)) return;
+		nnode = nr_node_new (0, 0, 0, a[6], a[7], 2);
+		nr_node_connect_curve (pnode, 1, nnode, 0, a[2], a[3], a[4], a[5]);
+		nr_node_connect_curve (nnode, 1, qnode, 0, b[2], b[3], b[4], b[5]);
+	}
 }
+
+/* ---------------------------------- */
 
 int
 nr_path_intersect_self (double path[], double pos[], double tolerance)
@@ -303,25 +549,25 @@ nr_path_subdivide (double path[], double a[], double b[], double t)
 }
 
 static double
-nr_line_point_distance (double Ax, double Ay, double Bx, double By, double Px, double Py, double *t, double tolerance)
+nr_line_point_distance (double x0, double y0, double x1, double y1, double Px, double Py, double *t, double tolerance)
 {
 	double Dx, Dy;
 	double dist2;
 
-	Dx = Bx - Ax;
-	Dy = By - Ay;
+	Dx = x1 - x0;
+	Dy = y1 - y0;
 
-	*t = ((Px - Ax) * Dx + (Py - Ay) * Dy) / (Dx * Dx + Dy * Dy);
+	*t = ((Px - x0) * Dx + (Py - y0) * Dy) / (Dx * Dx + Dy * Dy);
 	if (*t <= 0.0) {
-		dist2 = (Px - Ax) * (Px - Ax) + (Py - Ay) * (Py - Ay);
+		dist2 = (Px - x0) * (Px - x0) + (Py - y0) * (Py - y0);
 		*t = 0.0;
 	} else if (*t >= 1.0) {
-		dist2 = (Px - Bx) * (Px - Bx) + (Py - By) * (Py - By);
+		dist2 = (Px - x1) * (Px - x1) + (Py - y1) * (Py - y1);
 		*t = 1.0;
 	} else {
 		double Qx, Qy;
-		Qx = Ax + *t * Dx;
-		Qy = Ay + *t * Dy;
+		Qx = x0 + *t * Dx;
+		Qy = y0 + *t * Dy;
 		dist2 = (Px - Qx) * (Px - Qx) + (Py - Qy) * (Py - Qy);
 	}
 	return sqrt (dist2);
