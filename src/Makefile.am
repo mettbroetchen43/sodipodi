@@ -11,7 +11,13 @@ gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
 
 CPPFLAGS = \
+	$(cppflags) \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"
+
+CFLAGS = \
+	$(cflags) \
+	$(SODIPODI_CFLAGS) \
+	$(SODIPODI_BONOBO_CFLAGS)
 
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
@@ -19,9 +25,7 @@ INCLUDES = \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
 	-I$(srcdir) \
 	-I$(srcdir/xml) \
-	-I$(srcdir/svg) \
-	$(SODIPODI_CFLAGS) \
-	$(SODIPODI_BONOBO_CFLAGS)
+	-I$(srcdir/svg)
 
 bin_PROGRAMS = sodipodi
 
@@ -113,10 +117,6 @@ sodipodi_SOURCES = \
 	\
 	preferences-skeleton.h
 
-#	sp-node-path-edit.c sp-node-path-edit.h \
-#	font-wrapper.c font-wrapper.h \
-#
-
 sodipodi_private_libs = \
 	dialogs/libspdialogs.a \
 	xml/libspxml.a \
@@ -133,16 +133,6 @@ sodipodi_LDADD = \
 	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
 	$(SODIPODI_BONOBO_LIBS)
-
-#	$(GNOME_LIBDIR) \
-#	-lpng \
-#	-lglade-gnome \
-#	-lglade \
-#	-lgdk_pixbuf \
-#	$(GNOMEUI_LIBS) \
-#	$(GNOME_PRINT_LIBS) \
-#	$(EXTRA_BONOBO_GNOME_LIBS) \
-#	$(INTLLIBS)
 
 EXTRA_DIST = \
 	brokenimage.xpm

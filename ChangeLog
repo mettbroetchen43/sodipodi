@@ -1,3 +1,11 @@
+2002-10-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in (use_mmx_asm): Check for mmx
+
+	* src/libnr/nr-compose.c (nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32): Use mmx if present
+
+	* src/libnr/nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP.S: Assembler code
+
 2002-10-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.h: Changed object type to SPCanvas, cleanup

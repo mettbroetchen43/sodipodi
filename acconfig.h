@@ -9,6 +9,5 @@
 #undef PACKAGE_SOURCE_DIR
 #undef ENABLE_BONOBO
 #undef USING_OAF
-#undef NEW_RENDER
 #undef ENABLE_AUTOTRACE
-
+#undef USE_MMX
