@@ -1,5 +1,8 @@
 2002-11-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/curve.c (sp_curve_closepath): Reinitialize pointers, as we may
+	have reallocated path in helper
+
 	* src/knotholder.h: Added hook for knot ungrabbing
 
 	* src/knotholder.c (knot_ungrabbed_handler): Implement

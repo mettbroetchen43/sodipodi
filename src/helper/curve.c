@@ -547,6 +547,9 @@ sp_curve_closepath (SPCurve * curve)
 		sp_curve_lineto (curve, bs->x3, bs->y3);
 	}
 
+	bs = curve->bpath + curve->substart;
+	be = curve->bpath + curve->end - 1;
+
 	bs->code = ART_MOVETO;
 
 	curve->closed = TRUE;
