@@ -92,8 +92,8 @@ sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble e
 
 	if (len < 2) return 0;
 
-	sp_darray_left_tangent (data, 0, &tHat1);
-	sp_darray_right_tangent (data, len - 1, &tHat2);
+	sp_darray_left_tangent (data, 0, len, &tHat1);
+	sp_darray_right_tangent (data, len - 1, len, &tHat2);
 	
 	/* call fit-cubic function without recursion */
 	fill = sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2,error, 1);
@@ -126,8 +126,8 @@ sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, gint len, gdouble
 
 	if (len < 2) return 0;
 
-	sp_darray_left_tangent (data, 0, &tHat1);
-	sp_darray_right_tangent (data, len - 1, &tHat2);
+	sp_darray_left_tangent (data, 0, len, &tHat1);
+	sp_darray_right_tangent (data, len - 1, len, &tHat2);
 	
 	/* call fit-cubic function with recursion */
 	return sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2, error, max_depth);
@@ -460,21 +460,33 @@ BezierII (gint degree, NRPointF * V, gdouble t, NRPointF *Q)
  *Approximate unit tangents at endpoints and "center" of digitized curve
  */
 void
-sp_darray_left_tangent (const NRPointF *d,
-			gint            first,
-			NRPointF       *tHat1)
+sp_darray_left_tangent (const NRPointF *d, int first, int len, NRPointF *tHat)
 {
-	sp_vector_sub (&d[first+1], &d[first], tHat1);
-	sp_vector_normalize(tHat1);
+	int second, l2, i;
+	second = first + 1;
+	l2 = len / 2;
+	tHat->x = (d[second].x - d[first].x) * l2;
+	tHat->y = (d[second].y - d[first].y) * l2;
+	for (i = 1; i < l2; i++) {
+		tHat->x += (d[second + i].x - d[first].x) * (l2 - i);
+		tHat->y += (d[second + i].y - d[first].y) * (l2 - i);
+	}
+	sp_vector_normalize (tHat);
 }
 
 void
-sp_darray_right_tangent (const NRPointF *d,
-			 gint            last,
-			 NRPointF       *tHat2)
+sp_darray_right_tangent (const NRPointF *d, int last, int len, NRPointF *tHat)
 {
-	sp_vector_sub (&d[last-1], &d[last], tHat2);
-	sp_vector_normalize(tHat2);
+	int prev, l2, i;
+	prev = last - 1;
+	l2 = len / 2;
+	tHat->x = (d[prev].x - d[last].x) * l2;
+	tHat->y = (d[prev].y - d[last].y) * l2;
+	for (i = 1; i < l2; i++) {
+		tHat->x += (d[prev - i].x - d[last].x) * (l2 - i);
+		tHat->y += (d[prev - i].y - d[last].y) * (l2 - i);
+	}
+	sp_vector_normalize (tHat);
 }
 
 void

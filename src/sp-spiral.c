@@ -356,7 +356,7 @@ sp_spiral_set_shape (SPShape *shape)
 		for (d = spiral->t0, i = 1; i <= 2; d += dstep, i++)
 			sp_spiral_get_xy (spiral, d, &darray[i]);
 
-		sp_darray_left_tangent (darray, 1, &hat1);
+		sp_darray_left_tangent (darray, 1, 2, &hat1);
 	}
 
 	sp_curve_moveto (c, darray[1].x, darray[1].y);

@@ -345,9 +345,6 @@ sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
 		SP_VERB_NONE,
 		SP_VERB_SELECTION_COMBINE, SP_VERB_SELECTION_BREAK_APART,
 		SP_VERB_NONE,
-		SP_VERB_LAST
-	};
-	static const unsigned int order_verbs[] = {
 		SP_VERB_SELECTION_TO_FRONT,
 		SP_VERB_SELECTION_TO_BACK,
 		SP_VERB_SELECTION_RAISE,
@@ -355,14 +352,6 @@ sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
 		SP_VERB_LAST
 	};
 	sp_ui_menu_append (menu, select_verbs);
-	/* Selection:Order */
-	i = gtk_menu_item_new_with_label (_("Order"));
-	gtk_widget_show (i);
-	sm = gtk_menu_new ();
-	gtk_widget_show (sm);
-	sp_ui_menu_append ((GtkMenu *) sm, order_verbs);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
-	gtk_menu_append (GTK_MENU (menu), i);
 }
 
 static void
@@ -423,13 +412,9 @@ sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_DRAWING);
 	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_PAGE);
 	sp_ui_menu_append_item (GTK_MENU (zm), NULL, NULL, NULL, NULL);
-	si = sp_ui_menu_append_item (GTK_MENU (zm), NULL, _("Scale"), NULL, NULL);
-	sm = gtk_menu_new ();
-	gtk_widget_show (sm);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (si), sm);
-	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_1_2);
-	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_1_1);
-	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_2_1);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_1_2);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_1_1);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_2_1);
 	/* View:New View*/
 	sp_ui_menu_append_item (menu, NULL, _("New View"), G_CALLBACK(sp_ui_new_view), NULL);
 	/* View:New Preview*/

@@ -376,9 +376,6 @@ sp_toolbox_file_create (void)
 #ifdef WITH_KDE
 	gtk_widget_set_sensitive (b, TRUE);
 #endif
-#ifdef WITH_GNOME_PRINT
-	gtk_widget_set_sensitive (b, TRUE);
-#endif
 	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_IMPORT, tt);
 	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_EXPORT, tt);
 
