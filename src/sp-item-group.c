@@ -442,10 +442,9 @@ sp_group_menu (SPItem * item, GtkMenu * menu)
 
 	m = gtk_menu_new ();
 	w = gtk_menu_item_new_with_label (_("Ungroup"));
-#if 0
 	gtk_signal_connect (GTK_OBJECT (w), "activate",
-			    GTK_SIGNAL_FUNC (sp_group_ungroup), item);
-#endif
+			    GTK_SIGNAL_FUNC (sp_item_group_ungroup), item);
+
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	gtk_widget_show (m);
@@ -456,4 +455,51 @@ sp_group_menu (SPItem * item, GtkMenu * menu)
 	gtk_widget_show (i);
 }
 
+void
+sp_item_group_ungroup (SPGroup *group)
+{
+#if 0
+	SPObject *object, *parent;
+	gdouble affine[6];
+
+	g_return_if_fail (group != NULL);
+	g_return_if_fail (SP_IS_GROUP (group));
+
+	object = SP_OBJECT (group);
+	parent = object->parent;
+
+	sp_svg_write_affine
+
+	art_affine_identity (pa);
+	pastr = sp_repr_attr (current, "transform");
+	sp_svg_read_affine (pa, pastr);
+
+	while ((list = (GList *) sp_repr_children (current))) {
+		child = (SPRepr *) list->data;
+
+		art_affine_identity (ca);
+		castr = sp_repr_attr (child, "transform");
+		sp_svg_read_affine (ca, castr);
+		art_affine_multiply (ca, ca, pa);
+
+		css = sp_repr_css_attr_inherited (child, "style");
+		sp_repr_ref (child);
+		sp_repr_remove_child (current, child);
+		
+		sp_svg_write_affine (affinestr, 79, ca);
+		affinestr[79] = '\0';
+		sp_repr_set_attr (child, "transform", affinestr);
+
+		sp_repr_css_set (child, css, "style");
+		sp_repr_css_attr_unref (css);
+
+		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), child);
+		sp_repr_unref (child);
+		sp_selection_add_item (selection, item);
+	}
+
+	sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
+#endif
+}
 

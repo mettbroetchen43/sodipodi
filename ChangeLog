@@ -1,3 +1,11 @@
+2001-04-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item-group.c (sp_item_group_ungroup): New method
+
+	* src/draw-context.c (set_to_accumulated): Transform path instead of
+	setting initial transform, so clear transform does not do interesting
+	things for freehand curves ;-)
+
 2001-04-04  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/file.c (sp_file_open): Do not connect "delete_event"

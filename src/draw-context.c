@@ -366,13 +366,13 @@ set_to_accumulated (SPDrawContext * dc)
 	desktop = SP_EVENT_CONTEXT (dc)->desktop;
 
 	if (!sp_curve_empty (dc->accumulated)) {
+		ArtBpath *abp;
+		gdouble d2doc[6];
 		gchar * str;
 
 		if (!dc->repr) {
 			SPRepr * repr, * style;
 			SPCSSAttr * css;
-			gdouble d2doc[6];
-			gchar c[64];
 			/* Create object */
 			repr = sp_repr_new ("path");
 			/* Set style */
@@ -385,17 +385,15 @@ set_to_accumulated (SPDrawContext * dc)
 			dc->repr = repr;
 			dc->destroyid = gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
 							    GTK_SIGNAL_FUNC (repr_destroyed), dc);
-			sp_desktop_d2doc_affine (desktop, d2doc);
-			sp_svg_write_affine (c, 64, d2doc);
-			c[63] = '\0';
-			sp_repr_set_attr (dc->repr, "transform", c);
 			sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
 			sp_repr_unref (dc->repr);
 			sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
 		}
-
-		str = sp_svg_write_path (sp_curve_first_bpath (dc->accumulated));
+		sp_desktop_d2doc_affine (desktop, d2doc);
+		abp = art_bpath_affine_transform (sp_curve_first_bpath (dc->accumulated), d2doc);
+		str = sp_svg_write_path (abp);
 		g_assert (str != NULL);
+		art_free (abp);
 		sp_repr_set_attr (dc->repr, "d", str);
 		g_free (str);
 	} else {
@@ -517,7 +515,9 @@ static gdouble B2 (gdouble u);
 static gdouble B3 (gdouble u);
 static ArtPoint ComputeLeftTangent (ArtPoint * d, gint end);
 static ArtPoint ComputeRightTangent (ArtPoint * d, gint end);
+#if 0
 static ArtPoint ComputeCenterTangent (ArtPoint * d, gint center);
+#endif
 static gdouble * ChordLengthParameterize(ArtPoint * d, gint first, gint last);
 static gdouble ComputeMaxError(ArtPoint * d, gint first, gint last, BezierCurve bezCurve, gdouble * u, gint * splitPoint);
 static ArtPoint V2AddII (ArtPoint a, ArtPoint b);
@@ -987,7 +987,7 @@ ComputeRightTangent (ArtPoint * d, gint end)
     return tHat2;
 }
 
-
+#if 0
 static ArtPoint
 ComputeCenterTangent(ArtPoint * d, gint center)
 {
@@ -1000,7 +1000,7 @@ ComputeCenterTangent(ArtPoint * d, gint center)
     V2Normalize(&tHatCenter);
     return tHatCenter;
 }
-
+#endif
 
 /*
  *  ChordLengthParameterize :
