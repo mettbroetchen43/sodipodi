@@ -56,7 +56,7 @@ struct _SPAction {
 		SPActionChgAttr chgattr;
 		SPActionChgContent chgcontent;
 		SPActionChgOrder chgorder;
-	};
+	} act;
 };
 
 struct _SPDocumentPrivate {
