@@ -1,3 +1,8 @@
+2003-06-17  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish translation by
+                 Francisco Javier F. Serrador <serrador@arrakis.es>.
+
 2003-06-12  Abel Cheung  <maddog@linux.org.hk>
 
 	* POTFILES.in: Added some files under src/modules, and remove
@@ -204,7 +209,7 @@ Mon Sep 23 19:15:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 2002-08-26  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 
 2002-08-25  Duarte Loreto <happyguy_pt@hotmail.com>
 
@@ -212,7 +217,7 @@ Mon Sep 23 19:15:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 2002-08-24  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	* POTFILES.in: Added missing files.
 	
 2002-08-24  Duarte Loreto <happyguy_pt@hotmail.com>
@@ -260,7 +265,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 2002-03-05  Carlos Perello Marin <carlos@gnome-db.org>
 
-	* es.po: Updated by José Antonio Salgueiro <joseantsa@retemail.es>
+	* es.po: Updated by JosÃ© Antonio Salgueiro <joseantsa@retemail.es>
 
 2002-03-03  Christopher R. Gabriel  <cgabriel@cgabriel.org>
 
@@ -290,7 +295,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 2002-02-02  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	
 2002-02-02  Christophe Merlet  <christophe@merlet.net>
 
@@ -375,7 +380,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 2001-12-04  German Poo-Caaman~o <gpoo@ubiobio.cl>
 
 	* sv.po: Updated spanish translation from
-	José Antonio Salgueiro <joseantonio@salgueiro.c.telefonica.net>
+	JosÃ© Antonio Salgueiro <joseantonio@salgueiro.c.telefonica.net>
 
 2001-11-25 Duarte Loreto <happyguy_pt@hotmail.com>
 
@@ -398,7 +403,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* sv.po: Updated Swedish translation.
 
-2001-11-04  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-11-04  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* es.po: Updated Spanish translation by Jose antonio s.a.
 	<joseantsa@eresmas.net>
@@ -434,7 +439,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 	use cyrillic!!!)
 	* pl.po: Enabled header
 
-2001-09-09  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-09-09  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
         * es.po: Updated Spanish translation by Jose Antonio
 	Salgueiro <joseantsa@retemail.es>
@@ -451,7 +456,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* sv.po: Updated Swedish translation.
 
-2001-07-08  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-07-08  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
         * es.po: Updated Spanish translation by Jose Antonio
 	Salgueiro <joseantsa@retemail.es>
@@ -505,7 +510,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* de.po: Updated German translation for Matthias Warkus.
 
-2001-03-11  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-03-11  Carlos PerellÃ³ MarÃ­n <carlos@gnome-db.org>
 
 	* es.po: Updated Spanish translation by Jose Antonio
 	  Salgueiro <joseantsa@retemail.es>
@@ -536,7 +541,7 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 2001-02-16  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* no.po: Updated Norwegian (bokmÃ¥l) translation.
 	
 2001-01-12  Valek Filippov  <frob@df.ru>
 
