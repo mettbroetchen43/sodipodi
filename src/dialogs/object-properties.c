@@ -397,7 +397,7 @@ sp_object_properties_reread_stroke (void)
 		case SP_STROKE_COLOR:
 			gtk_toggle_button_set_active (stroked, TRUE);
 			stroke_color = sp_svg_read_color (str, 0x00000000);
-			str = sp_repr_css_property (stroke_css, "stroke-opacity", "100%");
+			str = sp_repr_css_property (stroke_css, "stroke-opacity", "1");
 			stroke_opacity = sp_svg_read_percentage (str, 1.0);
 			gnome_color_picker_set_i8 (cp_stroke_color,
 				(stroke_color >> 24),
@@ -474,7 +474,7 @@ sp_object_properties_apply_stroke (void)
 		sp_repr_css_set_property (stroke_css, "stroke", "none");
 	}
 
-	sp_svg_write_percentage (cstr, 79, cp_stroke_color->a);
+	g_snprintf (cstr, 80, "%g", cp_stroke_color->a);
 	sp_repr_css_set_property (stroke_css, "stroke-opacity", cstr);
 
 	stroke_width = gtk_spin_button_get_value_as_float (sp_stroke_width);
@@ -586,7 +586,7 @@ sp_object_properties_reread_fill (void)
 		case SP_FILL_COLOR:
 			gtk_toggle_button_set_active (fill_color, TRUE);
 			f_color = sp_svg_read_color (str, 0x00000000);
-			str = sp_repr_css_property (fill_css, "fill-opacity", "100%");
+			str = sp_repr_css_property (fill_css, "fill-opacity", "1");
 			opacity = sp_svg_read_percentage (str, 1.0);
 			gnome_color_picker_set_i8 (cs,
 				(f_color >> 24),
@@ -632,7 +632,7 @@ sp_object_properties_apply_fill (void)
 	  sp_repr_css_set_property (fill_css, "fill", "none");
 	}
 
-	sp_svg_write_percentage (cstr, 79, cs->a);
+	g_snprintf (cstr, 80, "%g", cs->a);
 	sp_repr_css_set_property (fill_css, "fill-opacity", cstr);
 
 	apply_fill (fill_css);

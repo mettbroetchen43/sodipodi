@@ -17,6 +17,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
+#include "dialogs/object-attributes.h"
 #include "sp-rect.h"
 
 #define noRECT_VERBOSE
@@ -35,6 +36,9 @@ static void sp_rect_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_rect_description (SPItem * item);
 static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+
+static void sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static void sp_rect_set_shape (SPRect * rect);
 
@@ -91,6 +95,7 @@ sp_rect_class_init (SPRectClass *class)
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
 	item_class->write_transform = sp_rect_write_transform;
+	item_class->menu = sp_rect_menu;
 }
 
 static void
@@ -376,6 +381,8 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	}
 	sp_repr_set_double_attribute (repr, "width", rect->width * sw);
 	sp_repr_set_double_attribute (repr, "height", rect->height * sh);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx * sw);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry * sh);
 
 	/* Find start in item coords */
 	art_affine_invert (rev, transform);
@@ -393,6 +400,40 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	}
 
+}
+
+/* Generate context menu item section */
+
+static void
+sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
+{
+	GtkWidget *i, *m, *w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Rect"));
+	m = gtk_menu_new ();
+	/* Link dialog */
+	w = gtk_menu_item_new_with_label (_("Rect Properties"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_rect_rect_properties), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
+}
+
+static void
+sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
+{
+	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPRect");
 }
 
 

@@ -1,5 +1,13 @@
 2001-11-11  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sp-rect.c (sp_rect_write_transform): Scale rx and ry
+	(sp_rect_menu): Implement
+	(sp_rect_rect_properties): Implement
+
+	* src/dialogs/object-properties.c (sp_object_properties_apply_fill): Use
+	float value, not percentage
+	(sp_object_properties_apply_stroke): Ditto
+
 	* src/file.c (file_save_ok): Update relative image references
 
 	* src/sp-image.c (sp_image_destroy): Unregister resource

@@ -1,7 +1,7 @@
 #define __SP_IMAGE_C__
 
 /*
- * SPRect
+ * SPImage - SVG <image> element
  *
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
@@ -24,6 +24,7 @@
 #include "style.h"
 #include "brokenimage.xpm"
 #include "document.h"
+#include "dialogs/object-attributes.h"
 #include "sp-image.h"
 
 /*
@@ -43,6 +44,9 @@ static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
 static void sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+
+static void sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
@@ -56,7 +60,6 @@ GtkType
 sp_image_get_type (void)
 {
 	static GtkType image_type = 0;
-
 	if (!image_type) {
 		GtkTypeInfo image_info = {
 			"SPImage",
@@ -64,14 +67,10 @@ sp_image_get_type (void)
 			sizeof (SPImageClass),
 			(GtkClassInitFunc) sp_image_class_init,
 			(GtkObjectInitFunc) sp_image_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-
 		image_type = gtk_type_unique (sp_item_get_type (), &image_info);
 	}
-
 	return image_type;
 }
 
@@ -99,6 +98,7 @@ sp_image_class_init (SPImageClass * klass)
 	item_class->show = sp_image_show;
 	item_class->snappoints = sp_image_snappoints;
 	item_class->write_transform = sp_image_write_transform;
+	item_class->menu = sp_image_menu;
 }
 
 static void
@@ -491,6 +491,40 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	}
 
+}
+
+/* Generate context menu item section */
+
+static void
+sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
+{
+	GtkWidget *i, *m, *w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Image"));
+	m = gtk_menu_new ();
+	/* Link dialog */
+	w = gtk_menu_item_new_with_label (_("Image Properties"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_image_image_properties), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
+}
+
+static void
+sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
+{
+	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPImage");
 }
 
 static GdkPixbuf *
