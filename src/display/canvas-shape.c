@@ -289,7 +289,10 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 
 		switch (shape->stroke->type) {
 			case SP_STROKE_COLOR:
-				gnome_canvas_render_svp_translated (buf, comp->archetype->stroke, shape->stroke->color, comp->cx, comp->cy);
+				if (comp->archetype->stroke) {
+					gnome_canvas_render_svp_translated (buf, comp->archetype->stroke, shape->stroke->color,
+									    comp->cx, comp->cy);
+				}
 				break;
 
 			default:

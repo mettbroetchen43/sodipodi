@@ -109,7 +109,7 @@ sp_path_at_new (SPCurve * curve,
 	SPPathAT * at;
 	gint i;
 	ArtBpath * affine_bpath;
-	ArtVpath * perturbed_vpath;
+	ArtVpath * vpath;
 	ArtSVP * svpa, * svpb;
 	gdouble fa[6];
 
@@ -130,14 +130,14 @@ sp_path_at_new (SPCurve * curve,
 	at->cap = cap;
 
 	affine_bpath = art_bpath_affine_transform (at->curve->bpath, fa);
-	at->vpath = art_bez_path_to_vec (affine_bpath, 0.25);
+	vpath = art_bez_path_to_vec (affine_bpath, 0.25);
 	art_free (affine_bpath);
+	at->vpath = art_vpath_perturb (vpath);
+	art_free (vpath);
 
 	art_vpath_bbox_drect (at->vpath, &at->bbox);
 
-	perturbed_vpath = art_vpath_perturb (at->vpath);
-	svpa = art_svp_from_vpath (perturbed_vpath);
-	art_free (perturbed_vpath);
+	svpa = art_svp_from_vpath (at->vpath);
 	svpb = art_svp_uncross (svpa);
 	art_svp_free (svpa);
 	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);

@@ -1,3 +1,13 @@
+2000-09-16  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/draw-context.*: Freehand should work OK now
+
+	* src/display/canvas-shape.c (sp_canvas_shape_render): Test, if
+	archetype has stroke SVP
+
+	* src/display/path-archetype.c (sp_path_at_new): Disturb Vpaths
+	before stroking - this removes ugly random crashing in art_uta_from_svp
+
 2000-09-15  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/sp-line.h, sp-line.c: <line> item

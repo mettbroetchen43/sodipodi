@@ -24,6 +24,14 @@ struct _SPDrawContext {
 	GSList * segments;
 	SPCurve * currentcurve;
 	SPCanvasShape * currentshape;
+
+	SPRepr * repr;
+	guint destroyid;
+
+	GnomeCanvasItem * citem;
+	ArtPoint cpos;
+	guint32 ccolor;
+	gboolean cinside;
 };
 
 struct _SPDrawContextClass {
