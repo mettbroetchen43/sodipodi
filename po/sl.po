@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-11 21:53+0100\n"
+"POT-Creation-Date: 2001-03-26 23:59+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -1325,11 +1325,11 @@ msgstr "Izvozi datoteko"
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (ime dokumenta %s..): Predogled Tiskanja"
 
-#: src/sp-image.c:241
+#: src/sp-image.c:239
 msgid "Broken bitmap"
 msgstr "Po¹kodovana rastrska slika"
 
-#: src/sp-image.c:242
+#: src/sp-image.c:240
 msgid "Color bitmap"
 msgstr "Barvna rastrska slika"
 
@@ -1337,22 +1337,36 @@ msgstr "Barvna rastrska slika"
 msgid "Unknown item :-("
 msgstr "Neznan predmet :-("
 
-#: src/sp-item.c:397
+#: src/sp-item.c:394
+msgid "Item"
+msgstr "Predmet"
+
+#: src/sp-item.c:398
 msgid "Reset transformation"
 msgstr "Ponastavi preoblikovanje"
 
-#. Toggle sensitivity
-#. "sensitive" attribute is handled in shape & image
-#: src/sp-item.c:404
-msgid "Toggle sensitivity"
-msgstr "Preklopi obèutljivost"
+#: src/sp-item.c:405
+msgid "Make sensitive"
+msgstr "Naredi obèutljivega"
 
-#: src/sp-item-group.c:346
+#: src/sp-item.c:405
+msgid "Make insensitive"
+msgstr "Naredi neobèutljivega"
+
+#: src/sp-item-group.c:363
 #, c-format
 msgid "Group of %d items"
 msgstr "Skupina %d predmetov"
 
-#: src/sp-shape.c:278
+#: src/sp-item-group.c:441
+msgid "Group"
+msgstr "Grupiraj"
+
+#: src/sp-item-group.c:444
+msgid "Ungroup"
+msgstr "Odgrupiraj"
+
+#: src/sp-shape.c:292
 msgid "A path - whatever it means"
 msgstr "Pot - karkoli ¾e pomeni"
 
@@ -1458,14 +1472,8 @@ msgstr "Risanje"
 #~ msgid "Groups selected items"
 #~ msgstr "Grupira izbrane predmete"
 
-#~ msgid "_Group"
-#~ msgstr "_Grupiraj"
-
 #~ msgid "Ungroups selected group"
 #~ msgstr "Odgrupira izbrano skupino"
-
-#~ msgid "_Ungroup"
-#~ msgstr "_Odgrupiraj"
 
 #~ msgid "_Combine"
 #~ msgstr "_Zdru¾i"
