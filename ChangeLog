@@ -1,3 +1,9 @@
+2001-02-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* samples/mangatips3.svg: New file
+	* samples/mangatips4.svg: New file
+	* samples/mangatips5.svg: New file
+
 2001-01-29  Fatih Demir	<kabalak@gmx.net>
 
 	* src/widgets/.cvsignore: Added this.
