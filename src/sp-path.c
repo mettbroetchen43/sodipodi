@@ -199,7 +199,7 @@ sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 
 	path = SP_PATH (object);
 
-	art_affine_identity (affine);
+	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (affine));
 
 	switch (key) {
 	case SP_ATTR_D:
@@ -347,7 +347,6 @@ sp_path_normalized_bpath (SPPath * path)
 {
 	SPPathComp * comp;
 	ArtBpath * bp, * bpath;
-	ArtPoint p;
 	gint n_nodes;
 	GSList * l;
 	gint i;
@@ -376,22 +375,13 @@ sp_path_normalized_bpath (SPPath * path)
 				bp = comp->curve->bpath + i;
 				bpath[n_nodes].code = bp->code;
 				if (bp->code == ART_CURVETO) {
-					p.x = bp->x1;
-					p.y = bp->y1;
-					art_affine_point (&p, &p, comp->affine);
-					bpath[n_nodes].x1 = p.x;
-					bpath[n_nodes].y1 = p.y;
-					p.x = bp->x2;
-					p.y = bp->y2;
-					art_affine_point (&p, &p, comp->affine);
-					bpath[n_nodes].x2 = p.x;
-					bpath[n_nodes].y2 = p.y;
+					bpath[n_nodes].x1 = comp->affine[0] * bp->x1 + comp->affine[2] * bp->y1 + comp->affine[4];
+					bpath[n_nodes].y1 = comp->affine[1] * bp->x1 + comp->affine[3] * bp->y1 + comp->affine[5];
+					bpath[n_nodes].x2 = comp->affine[0] * bp->x2 + comp->affine[2] * bp->y2 + comp->affine[4];
+					bpath[n_nodes].y2 = comp->affine[1] * bp->x2 + comp->affine[3] * bp->y2 + comp->affine[5];
 				}
-				p.x = bp->x3;
-				p.y = bp->y3;
-				art_affine_point (&p, &p, comp->affine);
-				bpath[n_nodes].x3 = p.x;
-				bpath[n_nodes].y3 = p.y;
+				bpath[n_nodes].x3 = comp->affine[0] * bp->x3 + comp->affine[2] * bp->y3 + comp->affine[4];
+				bpath[n_nodes].y3 = comp->affine[1] * bp->x3 + comp->affine[3] * bp->y3 + comp->affine[5];
 				n_nodes++;
 			}
 		}
@@ -458,7 +448,7 @@ sp_path_comp_new (SPCurve * curve, gboolean private, double affine[])
 	if (affine != NULL) {
 		for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
 	} else {
-		art_affine_identity (comp->affine);
+		nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (comp->affine));
 	}
 	return comp;
 }

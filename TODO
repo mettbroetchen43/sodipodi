@@ -4,7 +4,7 @@ TODO for 0.29
 =============
 
 - Support for Xft font sources
-- Write replacement for color picker
+- Write replacement for color picker (DONE)
 - Write replacement for combo text
 - GtkIMContext support for text-context (?)
 - More works for XML Editor (DONE?)

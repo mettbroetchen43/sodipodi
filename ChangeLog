@@ -1,5 +1,7 @@
 2002-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/desktop-properties.c: Fully functional color picker
+
 	* src/display/nr-arena-item.h: Ported rendering from NRBuffer to NRPixBlock,
 	involves changes in most Arena objects. Added NO_CACHE flag to rendering.
 

@@ -1,10 +1,17 @@
-#ifndef SP_DESKTOP_PROPERTIES_H
-#define SP_DESKTOP_PROPERTIES_H
+#ifndef __SP_DESKTOP_PROPERTIES_H__
+#define __SP_DESKTOP_PROPERTIES_H__
 
-#include <gtk/gtk.h>
+/*
+ * Desktop configuration dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) Lauris Kaplinski 2000-2002
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
-void sp_desktop_dialog (void);
-void sp_desktop_dialog_apply (GtkWidget * widget);
-void sp_desktop_dialog_close (GtkWidget * widget);
+void sp_desktop_dialog (void *object, void *data);
 
 #endif

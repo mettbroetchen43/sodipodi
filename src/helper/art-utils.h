@@ -12,16 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <math.h>
-
 #include <libnr/nr-types.h>
 
-#include <glib.h>
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 

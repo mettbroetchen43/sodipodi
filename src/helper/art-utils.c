@@ -358,14 +358,15 @@ sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *trans
 
 	if (perturb) {
 		ArtVpath *vp;
+		int closed;
+		closed = 0;
 		for (vp = vpath; vp->code != ART_END; vp++) {
-			int closed;
 			switch (vp->code) {
 			case ART_MOVETO:
-				closed = TRUE;
+				closed = 1;
 				break;
 			case ART_MOVETO_OPEN:
-				closed = FALSE;
+				closed = 0;
 				break;
 			case ART_LINETO:
 				if (!closed || vp[1].code == ART_LINETO) {

@@ -13,8 +13,15 @@
 
 #include <config.h>
 
+#include <gtk/gtkwindow.h>
+#include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhseparator.h>
 
 #include "macros.h"
 #include "helper/sp-intl.h"
@@ -36,29 +43,30 @@ static void sp_dtw_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, Gtk
 static void sp_dtw_desactivate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
 static void sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop);
 
-static GtkWidget *sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, guint32 rgba);
+static GtkWidget *sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba);
 static void sp_color_picker_set_rgba32 (GtkWidget *cp, guint32 rgba);
-static void sp_color_picker_clicked (GObject *cp, GObject *dlg);
+static void sp_color_picker_clicked (GObject *cp, void *data);
 
-static GtkWidget *dialog = NULL;
+static GtkWidget *dlg = NULL;
 
 static void
 sp_dtw_dialog_destroy (GtkObject *object, gpointer data)
 {
-	sp_signal_disconnect_by_data (SODIPODI, dialog);
+	sp_signal_disconnect_by_data (SODIPODI, dlg);
 
-	dialog = NULL;
+	dlg = NULL;
 }
 
 void
-sp_desktop_dialog (void)
+sp_desktop_dialog (void *object, void *data)
 {
-	if (!dialog) {
-		dialog = sp_desktop_dialog_new ();
-		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_dtw_dialog_destroy), NULL);
+	if (!dlg) {
+		dlg = sp_desktop_dialog_new ();
+		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_dtw_dialog_destroy), NULL);
+		gtk_widget_show (dlg);
 	}
 
-	gtk_widget_show (dialog);
+	gtk_window_present (GTK_WINDOW (dlg));
 }
 
 static void
@@ -339,7 +347,7 @@ sp_desktop_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("gridcolor", "gridopacity", 0);
+	cp = sp_color_picker_new ("gridcolor", "gridopacity", _("Grid color"), 0);
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	g_object_set_data (G_OBJECT (dialog), "gridcolor", cp);
@@ -397,7 +405,7 @@ sp_desktop_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("guidecolor", "guideopacity", 0);
+	cp = sp_color_picker_new ("guidecolor", "guideopacity", _("Guideline color"), 0);
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidecolor", cp);
@@ -409,7 +417,7 @@ sp_desktop_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("guidehicolor", "guidehiopacity", 0);
+	cp = sp_color_picker_new ("guidehicolor", "guidehiopacity", _("Highlihted gudeline color"), 0);
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
@@ -458,11 +466,21 @@ static void
 sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 {
 	if (!desktop) {
+		GObject *cp, *w;
 		gtk_widget_set_sensitive (dialog, FALSE);
+		cp = g_object_get_data (G_OBJECT (dialog), "gridcolor");
+		w = g_object_get_data (cp, "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
+		cp = g_object_get_data (G_OBJECT (dialog), "guidecolor");
+		w = g_object_get_data (cp, "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
+		cp = g_object_get_data (G_OBJECT (dialog), "guidecolor");
+		w = g_object_get_data (cp, "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
 	} else {
 		static const SPUnit *pt;
 		SPNamedView *nv;
-		GtkWidget *cp;
+		GtkWidget *cp, *w;
 		GtkObject *o;
 		gdouble val;
 
@@ -507,6 +525,8 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 
 		cp = gtk_object_get_data (GTK_OBJECT (dialog), "gridcolor");
 		sp_color_picker_set_rgba32 (cp, nv->gridcolor);
+		w = g_object_get_data (G_OBJECT (cp), "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "showguides");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showgrid);
@@ -522,9 +542,13 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 
 		cp = g_object_get_data (G_OBJECT (dialog), "guidecolor");
 		sp_color_picker_set_rgba32 (cp, nv->guidecolor);
+		w = g_object_get_data (G_OBJECT (cp), "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
 
 		cp = g_object_get_data (G_OBJECT (dialog), "guidehicolor");
 		sp_color_picker_set_rgba32 (cp, nv->guidehicolor);
+		w = g_object_get_data (G_OBJECT (cp), "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "showborder");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showborder);
@@ -544,13 +568,18 @@ sp_color_picker_destroy (GtkObject *cp, gpointer data)
 }
 
 static GtkWidget *
-sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, guint32 rgba)
+sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba)
 {
 	GtkWidget *b, *cpv;
 
 	b = gtk_button_new ();
 
+	g_object_set_data (G_OBJECT (b), "title", title);
+
 	cpv = sp_color_preview_new (rgba);
+#if 0
+	sp_color_preview_set_show_solid  (SP_COLOR_PREVIEW (rgba), FALSE);
+#endif
 	gtk_widget_show (cpv);
 	gtk_container_add (GTK_CONTAINER (b), cpv);
 	g_object_set_data (G_OBJECT (b), "preview", cpv);
@@ -559,7 +588,7 @@ sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, guint32 r
 	g_object_set_data (G_OBJECT (b), "alphakey", alphakey);
 
 	g_signal_connect (G_OBJECT (b), "destroy", G_CALLBACK (sp_color_picker_destroy), NULL);
-	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_color_picker_clicked), dialog);
+	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_color_picker_clicked), NULL);
 
 	return b;
 }
@@ -568,16 +597,22 @@ static void
 sp_color_picker_set_rgba32 (GtkWidget *cp, guint32 rgba)
 {
 	SPColorPreview *cpv;
+	SPColorSelector *csel;
 
 	cpv = g_object_get_data (G_OBJECT (cp), "preview");
-
 	sp_color_preview_set_rgba32 (cpv, rgba);
+
+	csel = g_object_get_data (G_OBJECT (cp), "selector");
+	if (csel) sp_color_selector_set_rgba32 (csel, rgba);
+
+	g_object_set_data (G_OBJECT (cp), "color", GUINT_TO_POINTER (rgba));
 }
 
 static void
 sp_color_picker_window_destroy (GtkObject *object, GObject *cp)
 {
 	g_object_set_data (G_OBJECT (cp), "window", NULL);
+	g_object_set_data (G_OBJECT (cp), "selector", NULL);
 }
 
 static void
@@ -609,7 +644,7 @@ sp_color_picker_color_mod (SPColorSelector *csel, GObject *cp)
 }
 
 static void
-sp_color_picker_clicked (GObject *cp, GObject *dlg)
+sp_color_picker_clicked (GObject *cp, void *data)
 {
 	GtkWidget *w;
 
@@ -617,16 +652,20 @@ sp_color_picker_clicked (GObject *cp, GObject *dlg)
 	if (!w) {
 		GtkWidget *vb, *csel, *hs, *hb, *b;
 		w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title (GTK_WINDOW (w), g_object_get_data (cp, "title"));
+		gtk_container_set_border_width (GTK_CONTAINER (w), 4);
 		g_object_set_data (cp, "window", w);
 		g_signal_connect (G_OBJECT (w), "destroy", G_CALLBACK (sp_color_picker_window_destroy), cp);
 
-		vb = gtk_vbox_new (FALSE, 0);
+		vb = gtk_vbox_new (FALSE, 4);
 		gtk_container_add (GTK_CONTAINER (w), vb);
 
 		csel = sp_color_selector_new ();
 		gtk_box_pack_start (GTK_BOX (vb), csel, TRUE, TRUE, 0);
+		sp_color_selector_set_rgba32 (SP_COLOR_SELECTOR (csel), GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (cp), "color")));
 		g_signal_connect (G_OBJECT (csel), "dragged", G_CALLBACK (sp_color_picker_color_mod), cp);
 		g_signal_connect (G_OBJECT (csel), "changed", G_CALLBACK (sp_color_picker_color_mod), cp);
+		g_object_set_data (cp, "selector", csel);
 
 		hs = gtk_hseparator_new ();
 		gtk_box_pack_start (GTK_BOX (vb), hs, FALSE, FALSE, 0);
@@ -638,6 +677,8 @@ sp_color_picker_clicked (GObject *cp, GObject *dlg)
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
 
 		gtk_widget_show_all (w);
+	} else {
+		gtk_window_present (GTK_WINDOW (w));
 	}
 }
 

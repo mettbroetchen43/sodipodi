@@ -149,7 +149,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 
 	switch (event->type) {
 	case GDK_2BUTTON_PRESS:
-		sp_desktop_dialog ();
+		sp_desktop_dialog (NULL, NULL);
 		break;
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {

@@ -197,8 +197,6 @@ sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
 		sp_rect_set_shape (SP_RECT (object));
 	}
 
-	g_print ("Rect update\n");
-
 	if (((SPObjectClass *) parent_class)->update)
 		((SPObjectClass *) parent_class)->update (object, ctx, flags);
 }
@@ -207,10 +205,10 @@ static void
 sp_rect_modified (SPObject *object, guint flags)
 {
 	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		/* fixme: This should happen only in ::update */
+		/* fixme: But until all objects request update properly we have to keep it here (Lauris) */
 		sp_rect_set_shape (SP_RECT (object));
 	}
-
-	g_print ("Rect modified\n");
 
 	if (((SPObjectClass *) parent_class)->modified)
 		((SPObjectClass *) parent_class)->modified (object, flags);
