@@ -37,6 +37,7 @@
 #include "helper/window.h"
 #include "helper/unit-menu.h"
 #include "widgets/sp-color-preview.h"
+#include "dir-util.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "desktop-handles.h"
