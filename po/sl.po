@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-09 19:23+0200\n"
+"POT-Creation-Date: 2001-03-11 21:53+0100\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -1302,7 +1302,7 @@ msgstr "Nisem uspel ustvariti sodipodi-svg-doc "
 #: src/interface.c:108
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr ""
+msgstr "Dokument %s vsebuje neshranjene spremembe, naj jih shranim?"
 
 #: src/file.c:82
 msgid "Select file to open"
