@@ -227,7 +227,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			if (closed) {
 				if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
 					sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
-					opacity = object->style->fill_opacity * object->style->real_opacity;
+					/* fixme: */
+					opacity = object->style->fill_opacity * object->style->opacity;
 					gnome_print_gsave (gpc);
 					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 					gnome_print_setopacity (gpc, opacity);
@@ -242,7 +243,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 					ArtDRect bbox;
 					gdouble id[6] = {1,0,0,1,0,0};
 					sp_item_bbox (item, &bbox);
-					painter = sp_paint_server_painter_new (object->style->fill.server, id, object->style->real_opacity, &bbox);
+					/* fixme: */
+					painter = sp_paint_server_painter_new (object->style->fill.server, id, object->style->opacity, &bbox);
 					if (painter) {
 						ArtDRect dbox, cbox;
 						ArtIRect ibox;
@@ -285,7 +287,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			}
 			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
 				sp_color_get_rgb_floatv (&object->style->stroke.color, rgb);
-				opacity = object->style->stroke_opacity * object->style->real_opacity;
+				/* fixme: */
+				opacity = object->style->stroke_opacity * object->style->opacity;
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);

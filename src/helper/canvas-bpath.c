@@ -17,6 +17,7 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_bpath.h>
+#include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_point.h>
 #include <libart_lgpl/art_rect_svp.h>
 #include <libgnomeui/gnome-canvas.h>
@@ -72,13 +73,17 @@ sp_canvas_bpath_class_init (SPCanvasBPathClass *klass)
 static void
 sp_canvas_bpath_init (SPCanvasBPath * bpath)
 {
-	bpath->width = 1.0;
-	bpath->join = ART_PATH_STROKE_JOIN_MITER;
-	bpath->cap = ART_PATH_STROKE_CAP_BUTT;
-	bpath->miter = 11.0;
-	bpath->rgba = 0x0000007f;
+	bpath->fill_rgba = 0x000000ff;
+	bpath->fill_rule = ART_WIND_RULE_ODDEVEN;
 
-	bpath->svp = NULL;
+	bpath->stroke_rgba = 0x00000000;
+	bpath->stroke_width = 1.0;
+	bpath->stroke_linejoin = ART_PATH_STROKE_JOIN_MITER;
+	bpath->stroke_linecap = ART_PATH_STROKE_CAP_BUTT;
+	bpath->stroke_miterlimit = 11.0;
+
+	bpath->fill_svp = NULL;
+	bpath->stroke_svp = NULL;
 }
 
 static void
@@ -88,9 +93,14 @@ sp_canvas_bpath_destroy (GtkObject *object)
 
 	cbp = SP_CANVAS_BPATH (object);
 
-	if (cbp->svp) {
-		art_svp_free (cbp->svp);
-		cbp->svp = NULL;
+	if (cbp->fill_svp) {
+		art_svp_free (cbp->fill_svp);
+		cbp->fill_svp = NULL;
+	}
+
+	if (cbp->stroke_svp) {
+		art_svp_free (cbp->stroke_svp);
+		cbp->stroke_svp = NULL;
 	}
 
 	if (cbp->curve) {
@@ -105,9 +115,7 @@ static void
 sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_path, gint flags)
 {
 	SPCanvasBPath *cbp;
-	ArtBpath *bp;
-	ArtVpath *vp, *pp;
-	ArtDRect dbox;
+	ArtDRect dbox, pbox;
 	ArtIRect ibox;
 
 	cbp = SP_CANVAS_BPATH (item);
@@ -119,24 +127,51 @@ sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_pat
 
 	gnome_canvas_item_reset_bounds (item);
 
-	if (cbp->svp) {
-		art_svp_free (cbp->svp);
-		cbp->svp = NULL;
+	if (cbp->fill_svp) {
+		art_svp_free (cbp->fill_svp);
+		cbp->fill_svp = NULL;
+	}
+
+	if (cbp->stroke_svp) {
+		art_svp_free (cbp->stroke_svp);
+		cbp->stroke_svp = NULL;
 	}
 
 	if (!cbp->curve) return;
 
-	/* Build SVP */
+	dbox.x0 = dbox.y0 = 0.0;
+	dbox.x1 = dbox.y1 = -1.0;
 
-	bp = art_bpath_affine_transform (cbp->curve->bpath, affine);
-	vp = art_bez_path_to_vec (bp, 0.25);
-	art_free (bp);
-	pp = art_vpath_perturb (vp);
-	art_free (vp);
-	cbp->svp = art_svp_vpath_stroke (pp, cbp->join, cbp->cap, cbp->width, cbp->miter, 0.25);
-	art_free (pp);
+	if ((cbp->fill_rgba & 0xff) || (cbp->stroke_rgba & 0xff)) {
+		ArtBpath *bp;
+		ArtVpath *vp, *pp;
+		bp = art_bpath_affine_transform (cbp->curve->bpath, affine);
+		vp = art_bez_path_to_vec (bp, 0.25);
+		art_free (bp);
+		pp = art_vpath_perturb (vp);
+		art_free (vp);
 
-	art_drect_svp (&dbox, cbp->svp);
+		if ((cbp->fill_rgba & 0xff) && (cbp->curve->end > 2)) {
+			ArtSVP *svpa, *svpb;
+			svpa = art_svp_from_vpath (pp);
+			svpb = art_svp_uncross (svpa);
+			art_svp_free (svpa);
+			cbp->fill_svp = art_svp_rewind_uncrossed (svpb, cbp->fill_rule);
+			art_svp_free (svpb);
+			art_drect_svp (&pbox, cbp->fill_svp);
+			art_drect_union (&dbox, &dbox, &pbox);
+		}
+
+		if ((cbp->stroke_rgba & 0xff) && (cbp->curve->end > 1)) {
+			cbp->stroke_svp = art_svp_vpath_stroke (pp, cbp->stroke_linejoin, cbp->stroke_linecap,
+								cbp->stroke_width, cbp->stroke_miterlimit, 0.25);
+			art_drect_svp (&pbox, cbp->stroke_svp);
+			art_drect_union (&dbox, &dbox, &pbox);
+		}
+
+		art_free (pp);
+	}
+
 
 	art_drect_to_irect (&ibox, &dbox);
 
@@ -155,9 +190,13 @@ sp_canvas_bpath_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 
 	cbp = SP_CANVAS_BPATH (item);
 
-	if (!cbp->svp) return;
+	if (cbp->fill_svp) {
+		gnome_canvas_render_svp (buf, cbp->fill_svp, cbp->fill_rgba);
+	}
 
-	gnome_canvas_render_svp (buf, cbp->svp, cbp->rgba);
+	if (cbp->stroke_svp) {
+		gnome_canvas_render_svp (buf, cbp->stroke_svp, cbp->stroke_rgba);
+	}
 }
 
 #define BIGVAL 1e18
@@ -171,17 +210,30 @@ sp_canvas_bpath_point (GnomeCanvasItem *item, gdouble x, gdouble y, gint cx, gin
 
 	cbp = SP_CANVAS_BPATH (item);
 
-	if (!cbp->svp) return BIGVAL;
-
-	wind = art_svp_point_wind (cbp->svp, cx, cy);
-	if (wind) {
-		*actual_item = item;
-		return 0.0;
+	if (cbp->fill_svp) {
+		wind = art_svp_point_wind (cbp->fill_svp, cx, cy);
+		if (wind) {
+			*actual_item = item;
+			return 0.0;
+		}
 	}
 
-	dist = art_svp_point_dist (cbp->svp, cx, cy);
+	if (cbp->stroke_svp) {
+		wind = art_svp_point_wind (cbp->stroke_svp, cx, cy);
+		if (wind) {
+			*actual_item = item;
+			return 0.0;
+		}
+		dist = art_svp_point_dist (cbp->stroke_svp, cx, cy);
+		return dist;
+	}
 
-	return dist;
+	if (cbp->fill_svp) {
+		dist = art_svp_point_dist (cbp->fill_svp, cx, cy);
+		return dist;
+	}
+
+	return BIGVAL;
 }
 
 GnomeCanvasItem *
@@ -217,15 +269,27 @@ sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve)
 }
 
 void
-sp_canvas_bpath_set_style (SPCanvasBPath *cbp, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap, guint32 rgba)
+sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule)
 {
 	g_return_if_fail (cbp != NULL);
 	g_return_if_fail (SP_IS_CANVAS_BPATH (cbp));
 
-	cbp->width = width;
-	cbp->join = join;
-	cbp->cap = cap;
-	cbp->rgba = rgba;
+	cbp->fill_rgba = rgba;
+	cbp->fill_rule = rule;
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cbp));
+}
+
+void
+sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap)
+{
+	g_return_if_fail (cbp != NULL);
+	g_return_if_fail (SP_IS_CANVAS_BPATH (cbp));
+
+	cbp->stroke_rgba = rgba;
+	cbp->stroke_width = MAX (width, 0.1);
+	cbp->stroke_linejoin = join;
+	cbp->stroke_linecap = cap;
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cbp));
 }

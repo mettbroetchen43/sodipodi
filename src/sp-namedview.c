@@ -1,5 +1,6 @@
-#define SP_NAMEDVIEW_C
+#define __SP_NAMEDVIEW_C__
 
+#include <math.h>
 #include <string.h>
 #include <ctype.h>
 #include "helper/canvas-grid.h"

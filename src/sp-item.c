@@ -229,6 +229,7 @@ sp_item_style_modified (SPObject *object, guint flags)
 
 	/* Set up inherited/relative style properties */
 
+#if 0
 	if (!style->real_opacity_set) {
 		SPObject *parent;
 		style->real_opacity = style->opacity;
@@ -238,6 +239,7 @@ sp_item_style_modified (SPObject *object, guint flags)
 		if (parent) style->real_opacity = style->real_opacity * parent->style->real_opacity;
 		style->real_opacity_set = TRUE;
 	}
+#endif
 
 	if (!style->real_stroke_width_set) {
 		gdouble i2doc[6], dx, dy;

@@ -56,18 +56,24 @@ struct _SPStyle {
 	/* Our text style component */
 	SPStyleText *text;
 	guint text_private : 1;
+
+	/* Misc attributes */
+	guint clip_set : 1;
+	guint color_set : 1;
+	guint cursor_set : 1;
+	guint display_set : 1;
+	guint overflow_set : 1;
+	guint visibility_set : 1;
+	guint clip_path_set : 1;
+	guint clip_rule_set : 1;
+	guint mask_set : 1;
+	guint opacity_set : 1;
 	/* Global opacity */
 	gdouble opacity;
-	guint opacity_set : 1;
-	/* Computed value */
-	gdouble real_opacity;
-	guint real_opacity_set : 1;
 	/* display */
 	guint display : 1;
-	guint display_set : 1;
 	/* visibility */
 	guint visibility : 1;
-	guint visibility_set : 1;
 	/* fill */
 	SPPaint fill;
 	guint fill_set : 1;
@@ -203,6 +209,89 @@ struct _SPStyleText {
 	/* Text direction */
 	SPWritingMode writing_mode;
 	guint writing_mode_set : 1;
+};
+
+/*
+ * SVG style properties
+ *
+ * Maybe they should go to source instead, but at moment they are
+ * here for everyone to use
+ */
+
+enum {
+	SP_PROP_INVALID,
+	/* CSS2 */
+	/* Font */
+	SP_PROP_FONT,
+	SP_PROP_FONT_FAMILY,
+	SP_PROP_FONT_SIZE,
+	SP_PROP_FONT_SIZE_ADJUST,
+	SP_PROP_FONT_STRETCH,
+	SP_PROP_FONT_STYLE,
+	SP_PROP_FONT_VARIANT,
+	SP_PROP_FONT_WEIGHT,
+	/* Text */
+	SP_PROP_DIRECTION,
+	SP_PROP_LETTER_SPACING,
+	SP_PROP_TEXT_DECORATION,
+	SP_PROP_UNICODE_BIDI,
+	SP_PROP_WORD_SPACING,
+	/* Misc */
+	SP_PROP_CLIP,
+	SP_PROP_COLOR,
+	SP_PROP_CURSOR,
+	SP_PROP_DISPLAY,
+	SP_PROP_OVERFLOW,
+	SP_PROP_VISIBILITY,
+	/* SVG */
+	/* Clip/Mask */
+	SP_PROP_CLIP_PATH,
+	SP_PROP_CLIP_RULE,
+	SP_PROP_MASK,
+	SP_PROP_OPACITY,
+	/* Filter */
+	SP_PROP_ENABLE_BACKGROUND,
+	SP_PROP_FILTER,
+	SP_PROP_FLOOD_COLOR,
+	SP_PROP_FLOOD_OPACITY,
+	SP_PROP_LIGHTING_COLOR,
+	/* Gradient */
+	SP_PROP_STOP_COLOR,
+	SP_PROP_STOP_OPACITY,
+	/* Interactivity */
+	SP_PROP_POINTER_EVENTS,
+	/* Paint */
+	SP_PROP_COLOR_INTERPOLATION,
+	SP_PROP_COLOR_INTERPOLATION_FILTERS,
+	SP_PROP_COLOR_PROFILE,
+	SP_PROP_COLOR_RENDERING,
+	SP_PROP_FILL,
+	SP_PROP_FILL_OPACITY,
+	SP_PROP_FILL_RULE,
+	SP_PROP_IMAGE_RENDERING,
+	SP_PROP_MARKER,
+	SP_PROP_MARKER_END,
+	SP_PROP_MARKER_MID,
+	SP_PROP_MARKER_START,
+	SP_PROP_SHAPE_RENDERING,
+	SP_PROP_STROKE,
+	SP_PROP_STROKE_DASHARRAY,
+	SP_PROP_STROKE_DASHOFFSET,
+	SP_PROP_STROKE_LINECAP,
+	SP_PROP_STROKE_LINEJOIN,
+	SP_PROP_STROKE_MITERLIMIT,
+	SP_PROP_STROKE_OPACITY,
+	SP_PROP_STROKE_WIDTH,
+	SP_PROP_TEXT_RENDERING,
+	/* Text */
+	SP_PROP_ALIGNMENT_BASELINE,
+	SP_PROP_BASELINE_SHIFT,
+	SP_PROP_DOMINANT_BASELINE,
+	SP_PROP_GLYPH_ORIENTATION_HORIZONTAL,
+	SP_PROP_GLYPH_ORIENTATION_VERTICAL,
+	SP_PROP_KERNING,
+	SP_PROP_TEXT_ANCHOR,
+	SP_PROP_WRITING_MODE
 };
 
 END_GNOME_DECLS

@@ -1,14 +1,40 @@
 2002-04-04  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/helper/canvas-bpath.c (sp_canvas_bpath_init): Can be filled now
+	(sp_canvas_bpath_destroy): Ditto
+	(sp_canvas_bpath_update): Ditto
+	(sp_canvas_bpath_render): Ditto
+	(sp_canvas_bpath_point): Ditto
+	(sp_canvas_bpath_set_fill): New method
+	(sp_canvas_bpath_set_stroke): Name change
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_render): No real_opacity
+	anymore
+
+	* src/sp-shape.c (sp_shape_print): No real opacity anymore
+
+	* src/dyna-draw-context.c (sp_dyna_draw_context_setup): Port to
+	canvas bpath instead of canvas shape
+	(clear_current): Ditto
+	(fit_and_split_line): Ditto
+	(fit_and_split_calligraphics): Ditto
+	(draw_temporary_box): Ditto
+
+	* src/draw-context.c (sp_draw_context_setup): Port to new canvas bpath
+	(fit_and_split): Ditto
+
 	* src/dialogs/item-properties.c: Removed #ifdef 0 code
 
 	* src/style.c (sp_style_new): Require object validity
+	(sp_style_merge_property): Moved actual code to new method
+	(sp_style_merge_from_string): Does not clear style anymore, thus name change
 	(sp_style_paint_server_modified): Use sp_object_request_modified
 	(sp_style_set_fill_color_rgba): Request modified
 	(sp_style_set_fill_color_cmyka): Ditto
 	(sp_style_set_stroke_color_rgba): Ditto
 	(sp_style_set_stroke_color_cmyka): Ditto
 	(sp_style_set_opacity): Ditto
+	(sp_style_property_index): New enumerated property codes
 
 	* src/sp-shape.c (sp_shape_style_modified): Renamed method
 

@@ -22,9 +22,10 @@
 #include "sp-paint-server.h"
 #include "style.h"
 
+static void sp_style_clear (SPStyle *style);
+
 static void sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent);
 static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
-static void sp_style_init (SPStyle *style);
 static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 static const guchar *sp_style_str_value (const guchar *str, const guchar *key);
@@ -34,6 +35,8 @@ static SPStyleText *sp_style_text_ref (SPStyleText *st);
 static SPStyleText *sp_style_text_unref (SPStyleText *st);
 static SPStyleText *sp_style_text_duplicate_unset (SPStyleText *st);
 static guint sp_style_text_write (guchar *p, guint len, SPStyleText *st);
+
+static gint sp_style_property_index (const guchar *str);
 
 static void
 sp_style_object_destroyed (GtkObject *object, SPStyle *style)
@@ -46,6 +49,7 @@ sp_style_new (SPObject *object)
 {
 	SPStyle *style;
 
+	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 
 	style = g_new0 (SPStyle, 1);
@@ -53,11 +57,9 @@ sp_style_new (SPObject *object)
 	style->refcount = 1;
 	style->object = object;
 
-	if (object) {
-		gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
-	}
+	gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
 
-	sp_style_init (style);
+	sp_style_clear (style);
 
 	return style;
 }
@@ -101,42 +103,94 @@ sp_style_unref (SPStyle *style)
 	return NULL;
 }
 
-void
-sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *document)
+static void
+sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 {
-	g_return_if_fail (style != NULL);
-	g_return_if_fail (document != NULL);
-	g_return_if_fail (SP_IS_DOCUMENT (document));
-
-	sp_style_init (style);
-
-	if (str) {
-		const guchar *val;
-		val = sp_style_str_value (str, "opacity");
-		if (val) {
-			style->opacity = sp_svg_read_percentage (val, style->opacity);
-			style->opacity_set = TRUE;
-			style->real_opacity_set = FALSE;
-		}
-		val = sp_style_str_value (str, "display");
-		if (val) {
+	switch (id) {
+	/* CSS2 */
+	/* Font */
+	case SP_PROP_FONT:
+	case SP_PROP_FONT_FAMILY:
+	case SP_PROP_FONT_SIZE:
+	case SP_PROP_FONT_SIZE_ADJUST:
+	case SP_PROP_FONT_STRETCH:
+	case SP_PROP_FONT_STYLE:
+	case SP_PROP_FONT_VARIANT:
+	case SP_PROP_FONT_WEIGHT:
+	/* Text */
+	case SP_PROP_DIRECTION:
+	case SP_PROP_LETTER_SPACING:
+	case SP_PROP_TEXT_DECORATION:
+	case SP_PROP_UNICODE_BIDI:
+	case SP_PROP_WORD_SPACING:
+	/* Misc */
+	case SP_PROP_CLIP:
+	case SP_PROP_COLOR:
+	case SP_PROP_CURSOR:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_DISPLAY:
+		if (!style->display_set) {
 			/* fixme: */
 			style->display = strncmp (val, "none", 4);
 			style->display_set = TRUE;
 		}
-		val = sp_style_str_value (str, "visibility");
-		if (val) {
+		break;
+	case SP_PROP_OVERFLOW:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_VISIBILITY:
+		if (!style->visibility_set) {
 			/* fixme: */
 			style->visibility = !strncmp (val, "visible", 7);
 			style->visibility_set = TRUE;
 		}
-		val = sp_style_str_value (str, "fill");
-		if (val) {
-			sp_style_read_paint (style, &style->fill, val, document);
+		break;
+	/* SVG */
+	/* Clip/Mask */
+	case SP_PROP_CLIP_PATH:
+	case SP_PROP_CLIP_RULE:
+	case SP_PROP_MASK:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_OPACITY:
+		if (!style->opacity_set) {
+			style->opacity = sp_svg_read_percentage (val, style->opacity);
+			style->opacity_set = TRUE;
+		}
+		break;
+	/* Filter */
+	case SP_PROP_ENABLE_BACKGROUND:
+	case SP_PROP_FILTER:
+	case SP_PROP_FLOOD_COLOR:
+	case SP_PROP_FLOOD_OPACITY:
+	case SP_PROP_LIGHTING_COLOR:
+	/* Gradient */
+	case SP_PROP_STOP_COLOR:
+	case SP_PROP_STOP_OPACITY:
+	/* Interactivity */
+	case SP_PROP_POINTER_EVENTS:
+	/* Paint */
+	case SP_PROP_COLOR_INTERPOLATION:
+	case SP_PROP_COLOR_INTERPOLATION_FILTERS:
+	case SP_PROP_COLOR_PROFILE:
+	case SP_PROP_COLOR_RENDERING:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_FILL:
+		if (!style->fill_set) {
+			sp_style_read_paint (style, &style->fill, val, SP_OBJECT_DOCUMENT (style->object));
 			style->fill_set = TRUE;
 		}
-		val = sp_style_str_value (str, "fill-rule");
-		if (val) {
+		break;
+	case SP_PROP_FILL_OPACITY:
+		if (!style->fill_opacity_set) {
+			style->fill_opacity = sp_svg_read_percentage (val, style->fill_opacity);
+			style->fill_opacity_set = TRUE;
+		}
+		break;
+	case SP_PROP_FILL_RULE:
+		if (!style->fill_rule_set) {
 			if (!strncmp (val, "evenodd", 7)) {
 				style->fill_rule = ART_WIND_RULE_ODDEVEN;
 				style->fill_rule_set = TRUE;
@@ -145,24 +199,37 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 				style->fill_rule_set = TRUE;
 			}
 		}
-		val = sp_style_str_value (str, "fill-opacity");
-		if (val) {
-			style->fill_opacity = sp_svg_read_percentage (val, style->fill_opacity);
-			style->fill_opacity_set = TRUE;
-		}
-		val = sp_style_str_value (str, "stroke");
-		if (val) {
-			sp_style_read_paint (style, &style->stroke, val, document);
+		break;
+	case SP_PROP_IMAGE_RENDERING:
+	case SP_PROP_MARKER:
+	case SP_PROP_MARKER_END:
+	case SP_PROP_MARKER_MID:
+	case SP_PROP_MARKER_START:
+	case SP_PROP_SHAPE_RENDERING:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_STROKE:
+		if (!style->stroke_set) {
+			sp_style_read_paint (style, &style->stroke, val, SP_OBJECT_DOCUMENT (style->object));
 			style->stroke_set = TRUE;
 		}
-		val = sp_style_str_value (str, "stroke-width");
-		if (val) {
-			style->stroke_width.distance = sp_svg_read_length (&style->stroke_width.unit, val, style->stroke_width.distance);
-			style->stroke_width_set = TRUE;
-			style->real_stroke_width_set = FALSE;
+		break;
+	case SP_PROP_STROKE_DASHARRAY:
+		if (!style->stroke_dasharray_set) {
+			sp_style_read_dash (&style->stroke_dash, val);
+			style->stroke_dasharray_set = TRUE;
 		}
-		val = sp_style_str_value (str, "stroke-linecap");
-		if (val) {
+		break;
+	case SP_PROP_STROKE_DASHOFFSET:
+		if (!style->stroke_dashoffset_set) {
+			const SPUnit *unit;
+			/* fixme */
+			style->stroke_dash.offset = sp_svg_read_length (&unit, val, style->stroke_dash.offset);
+			style->stroke_dashoffset_set = TRUE;
+		}
+		break;
+	case SP_PROP_STROKE_LINECAP:
+		if (!style->stroke_linecap_set) {
 			/* fixme: */
 			if (!strncmp (val, "butt", 4)) {
 				style->stroke_linecap = ART_PATH_STROKE_CAP_BUTT;
@@ -173,8 +240,9 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 			}
 			style->stroke_linecap_set = TRUE;
 		}
-		val = sp_style_str_value (str, "stroke-linejoin");
-		if (val) {
+		break;
+	case SP_PROP_STROKE_LINEJOIN:
+		if (!style->stroke_linejoin_set) {
 			/* fixme: */
 			if (!strncmp (val, "miter", 5)) {
 				style->stroke_linejoin = ART_PATH_STROKE_JOIN_MITER;
@@ -185,30 +253,85 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 			}
 			style->stroke_linejoin_set = TRUE;
 		}
-		val = sp_style_str_value (str, "stroke-miterlimit");
-		if (val) {
+		break;
+	case SP_PROP_STROKE_MITERLIMIT:
+		if (!style->stroke_miterlimit_set) {
 			const SPUnit *unit;
 			/* fixme */
 			style->stroke_miterlimit = sp_svg_read_length (&unit, val, style->stroke_miterlimit);
 			style->stroke_miterlimit_set = TRUE;
 		}
-		val = sp_style_str_value (str, "stroke-dasharray");
-		if (val) {
-			sp_style_read_dash (&style->stroke_dash, val);
-			style->stroke_dasharray_set = TRUE;
-		}
-		val = sp_style_str_value (str, "stroke-dashoffset");
-		if (val) {
-			const SPUnit *unit;
-			/* fixme */
-			style->stroke_dash.offset = sp_svg_read_length (&unit, val, style->stroke_dash.offset);
-			style->stroke_dashoffset_set = TRUE;
-		}
-		val = sp_style_str_value (str, "stroke-opacity");
-		if (val) {
+		break;
+	case SP_PROP_STROKE_OPACITY:
+		if (!style->stroke_opacity_set) {
 			style->stroke_opacity = sp_svg_read_percentage (val, style->stroke_opacity);
 			style->stroke_opacity_set = TRUE;
 		}
+		break;
+	case SP_PROP_STROKE_WIDTH:
+		if (!style->stroke_width_set) {
+			style->stroke_width.distance = sp_svg_read_length (&style->stroke_width.unit, val, style->stroke_width.distance);
+			style->stroke_width_set = TRUE;
+			style->real_stroke_width_set = FALSE;
+		}
+		break;
+	case SP_PROP_TEXT_RENDERING:
+	/* Text */
+	case SP_PROP_ALIGNMENT_BASELINE:
+	case SP_PROP_BASELINE_SHIFT:
+	case SP_PROP_DOMINANT_BASELINE:
+	case SP_PROP_GLYPH_ORIENTATION_HORIZONTAL:
+	case SP_PROP_GLYPH_ORIENTATION_VERTICAL:
+	case SP_PROP_KERNING:
+	case SP_PROP_TEXT_ANCHOR:
+	case SP_PROP_WRITING_MODE:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	default:
+		g_warning ("Invalid style property id: %d value: %s", id, val);
+		break;
+	}
+}
+
+static void
+sp_style_merge_from_string (SPStyle *style, const guchar *p)
+{
+	guchar c[4096];
+
+	while (*p) {
+		const guchar *s, *e;
+		gint len, idx;
+		while (!isalpha (*p)) {
+			if (!*p) return;
+			p += 1;
+		}
+		s = strchr (p, ':');
+		if (!s) {
+			g_warning ("No separator at style at: %s", p);
+			return;
+		}
+		e = strchr (p, ';');
+		if (!e) {
+			g_warning ("No end marker at style at: %s", p);
+			return;
+		}
+		len = MIN (s - p, 4095);
+		if (len < 1) {
+			g_warning ("Zero length style property at: %s", p);
+			return;
+		}
+		memcpy (c, p, len);
+		c[len] = '\0';
+		idx = sp_style_property_index (c);
+		if (idx > 0) {
+			len = MIN (e - s - 1, 4095);
+			if (len > 0) memcpy (c, s + 1, len);
+			c[len] = '\0';
+			sp_style_merge_property (style, idx, c);
+		} else {
+			g_warning ("Unknown style property at: %s", p);
+		}
+		p = e + 1;
 	}
 }
 
@@ -221,10 +344,10 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 
-	sp_style_init (style);
+	sp_style_clear (style);
 
 	str = sp_repr_attr (object->repr, "style");
-	sp_style_read_from_string (style, str, object->document);
+	if (str) sp_style_merge_from_string (style, str);
 	/* fixme */
 	/* CMYK has precedence here */
 	str = sp_repr_attr (object->repr, "fill-cmyk");
@@ -257,7 +380,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		if (str) {
 			style->opacity = sp_svg_read_percentage (str, style->opacity);
 			style->opacity_set = TRUE;
-			style->real_opacity_set = FALSE;
 		}
 	}
 	if (!style->fill_set) {
@@ -291,7 +413,6 @@ sp_style_merge_from_object (SPStyle *style, SPObject *object)
 		if (!style->opacity_set && object->style->opacity_set) {
 			style->opacity = object->style->opacity;
 			style->opacity_set = TRUE;
-			style->real_opacity_set = FALSE;
 		}
 		if (!style->display_set && object->style->display_set) {
 			style->display = object->style->display;
@@ -531,7 +652,7 @@ sp_style_write_paint (guchar *b, gint len, SPPaint *paint)
 }
 
 static void
-sp_style_init (SPStyle *style)
+sp_style_clear (SPStyle *style)
 {
 	SPObject *object;
 	gint refcount;
@@ -557,7 +678,6 @@ sp_style_init (SPStyle *style)
 	style->object = object;
 
 	style->opacity = 1.0;
-	style->real_opacity = 1.0;
 	style->display = TRUE;
 	style->visibility = TRUE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
@@ -880,5 +1000,102 @@ sp_style_text_write (guchar *p, guint len, SPStyleText *st)
 	}
 
 	return d;
+}
+
+typedef struct {
+	gint code;
+	guchar *name;
+} SPStyleProp;
+
+static const SPStyleProp props[] = {
+	/* CSS2 */
+	/* Font */
+	{SP_PROP_FONT, "font"},
+	{SP_PROP_FONT_FAMILY, "font-family"},
+	{SP_PROP_FONT_SIZE, "font-size"},
+	{SP_PROP_FONT_SIZE_ADJUST, "font-size-adjust"},
+	{SP_PROP_FONT_STRETCH, "font-stretch"},
+	{SP_PROP_FONT_STYLE, "style"},
+	{SP_PROP_FONT_VARIANT, "variant"},
+	{SP_PROP_FONT_WEIGHT, "weight"},
+	/* Text */
+	{SP_PROP_DIRECTION, "direction"},
+	{SP_PROP_LETTER_SPACING, "letter-spacing"},
+	{SP_PROP_TEXT_DECORATION, "text-decoration"},
+	{SP_PROP_UNICODE_BIDI, "unicode-bidi"},
+	{SP_PROP_WORD_SPACING, "word-spacing"},
+	/* Misc */
+	{SP_PROP_CLIP, "clip"},
+	{SP_PROP_COLOR, "color"},
+	{SP_PROP_CURSOR, "cursor"},
+	{SP_PROP_DISPLAY, "display"},
+	{SP_PROP_OVERFLOW, "overflow"},
+	{SP_PROP_VISIBILITY, "visibility"},
+	/* SVG */
+	/* Clip/Mask */
+	{SP_PROP_CLIP_PATH, "clip-path"},
+	{SP_PROP_CLIP_RULE, "clip-rule"},
+	{SP_PROP_MASK, "mask"},
+	{SP_PROP_OPACITY, "opacity"},
+	/* Filter */
+	{SP_PROP_ENABLE_BACKGROUND, "enable-background"},
+	{SP_PROP_FILTER, "filter"},
+	{SP_PROP_FLOOD_COLOR, "flood-color"},
+	{SP_PROP_FLOOD_OPACITY, "flood-opacity"},
+	{SP_PROP_LIGHTING_COLOR, "lighting-color"},
+	/* Gradient */
+	{SP_PROP_STOP_COLOR, "stop-color"},
+	{SP_PROP_STOP_OPACITY, "stop-opacity"},
+	/* Interactivity */
+	{SP_PROP_POINTER_EVENTS, "pointer-events"},
+	/* Paint */
+	{SP_PROP_COLOR_INTERPOLATION, "color-interpolation"},
+	{SP_PROP_COLOR_INTERPOLATION_FILTERS, "color-interpolation-filters"},
+	{SP_PROP_COLOR_PROFILE, "color-profile"},
+	{SP_PROP_COLOR_RENDERING, "color-rendering"},
+	{SP_PROP_FILL, "fill"},
+	{SP_PROP_FILL_OPACITY, "fill-opacity"},
+	{SP_PROP_FILL_RULE, "fill-rule"},
+	{SP_PROP_IMAGE_RENDERING, "image-rendering"},
+	{SP_PROP_MARKER, "marker"},
+	{SP_PROP_MARKER_END, "marker-end"},
+	{SP_PROP_MARKER_MID, "marker-mid"},
+	{SP_PROP_MARKER_START, "marker-start"},
+	{SP_PROP_SHAPE_RENDERING, "shape-rendering"},
+	{SP_PROP_STROKE, "stroke"},
+	{SP_PROP_STROKE_DASHARRAY, "stroke-dasharray"},
+	{SP_PROP_STROKE_DASHOFFSET, "stroke-dashoffset"},
+	{SP_PROP_STROKE_LINECAP, "stroke-linecap"},
+	{SP_PROP_STROKE_LINEJOIN, "stroke-linejoin"},
+	{SP_PROP_STROKE_MITERLIMIT, "stroke-miterlimit"},
+	{SP_PROP_STROKE_OPACITY, "stroke-opacity"},
+	{SP_PROP_STROKE_WIDTH, "stroke-width"},
+	{SP_PROP_TEXT_RENDERING, "text-rendering"},
+	/* Text */
+	{SP_PROP_ALIGNMENT_BASELINE, "alignment-baseline"},
+	{SP_PROP_BASELINE_SHIFT, "baseline-shift"},
+	{SP_PROP_DOMINANT_BASELINE, "dominant-baseline"},
+	{SP_PROP_GLYPH_ORIENTATION_HORIZONTAL, "glyph-orientation-horizontal"},
+	{SP_PROP_GLYPH_ORIENTATION_VERTICAL, "glyph-orientation-vertical"},
+	{SP_PROP_KERNING, "kerning"},
+	{SP_PROP_TEXT_ANCHOR, "text-anchor"},
+	{SP_PROP_WRITING_MODE, "writing-mode"},
+	{SP_PROP_INVALID, NULL}
+};
+
+static gint
+sp_style_property_index (const guchar *str)
+{
+	static GHashTable *propdict = NULL;
+
+	if (!propdict) {
+		const SPStyleProp *prop;
+		propdict = g_hash_table_new (g_str_hash, g_str_equal);
+		for (prop = props; prop->code != SP_PROP_INVALID; prop++) {
+			g_hash_table_insert (propdict, prop->name, GINT_TO_POINTER (prop->code));
+		}
+	}
+
+	return GPOINTER_TO_INT (g_hash_table_lookup (propdict, str));
 }
 

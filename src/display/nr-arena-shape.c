@@ -266,7 +266,7 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 					 area->x1 - comp->cx, area->y1 - comp->cy,
 					 m->px, m->rs);
 			m->empty = FALSE;
-			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->real_opacity);
+			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->opacity);
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			nr_buffer_free (m);

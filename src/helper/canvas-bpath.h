@@ -29,6 +29,7 @@ typedef struct _SPCanvasBPathClass SPCanvasBPathClass;
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libgnomeui/gnome-canvas.h>
 #include "curve.h"
@@ -39,15 +40,20 @@ struct _SPCanvasBPath {
 	/* Line def */
 	SPCurve *curve;
 
+	/* Fill attributes */
+	guint32 fill_rgba;
+	ArtWindRule fill_rule;
+
 	/* Line attributes */
-	gdouble width;
-	ArtPathStrokeJoinType join;
-	ArtPathStrokeCapType cap;
-	gdouble miter;
-	guint32 rgba;
+	guint32 stroke_rgba;
+	gdouble stroke_width;
+	ArtPathStrokeJoinType stroke_linejoin;
+	ArtPathStrokeCapType stroke_linecap;
+	gdouble stroke_miterlimit;
 
 	/* State */
-	ArtSVP *svp;
+	ArtSVP *fill_svp;
+	ArtSVP *stroke_svp;
 };
 
 struct _SPCanvasBPathClass {
@@ -59,7 +65,8 @@ GtkType sp_canvas_bpath_get_type (void);
 GnomeCanvasItem *sp_canvas_bpath_new (GnomeCanvasGroup *parent, SPCurve *curve);
 
 void sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve);
-void sp_canvas_bpath_set_style (SPCanvasBPath *cbp, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap, guint32 rgba);
+void sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule);
+void sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap);
 
 END_GNOME_DECLS
 

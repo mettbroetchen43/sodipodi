@@ -265,13 +265,13 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 
 	/* Create red bpath */
 	dc->rbp = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_style (SP_CANVAS_BPATH (dc->rbp), 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT, 0xff00007f);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->rbp), 0xff00007f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* Create red curve */
 	dc->rc = sp_curve_new_sized (4);
 
 	/* Create blue bpath */
 	dc->bbp = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_style (SP_CANVAS_BPATH (dc->bbp), 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT, 0x0000ff7f);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->bbp), 0x0000ff7f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* Create blue curve */
 	dc->bc = sp_curve_new_sized (8);
 
@@ -846,7 +846,7 @@ fit_and_split (SPDrawContext * dc)
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_style (SP_CANVAS_BPATH (cshape), 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT, 0x00bf00ff);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 
 #if 0
 		gtk_signal_connect (GTK_OBJECT (cshape), "event",
