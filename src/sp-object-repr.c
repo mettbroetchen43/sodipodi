@@ -69,7 +69,7 @@ sp_object_type_lookup (const gchar * name)
 
 	data = g_hash_table_lookup (dtable, name);
 
-	if (data == NULL) return GTK_TYPE_NONE;
+	if (data == NULL) return SP_TYPE_OBJECT;
 
 	return GPOINTER_TO_INT (data);
 }

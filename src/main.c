@@ -315,6 +315,8 @@ main (int argc, char *argv[])
 			sodipodi_load_preferences (sodipodi);
 			gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
 					    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
+			sp_maintoolbox_create ();
+			sodipodi_unref ();
 
 			while (fl) {
 				doc = sp_document_new ((const gchar *) fl->data);
@@ -333,7 +335,9 @@ main (int argc, char *argv[])
 					gtk_object_set_data (GTK_OBJECT (dt), "slides", slides);
 					sp_create_window (dt, FALSE);
 				}
+#if 0
 				sp_document_unref (doc);
+#endif
 			}
 
 			sodipodi_unref ();

@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include "svg/svg.h"
+#include "xml/repr-private.h"
 #include "document.h"
 #include "sodipodi.h"
 #include "desktop.h"
@@ -83,7 +84,7 @@ void sp_selection_duplicate (GtkWidget * widget)
 	newsel = NULL;
 
 	while (selected) {
-		copy = sp_repr_copy ((SPRepr *) selected->data);
+		copy = sp_repr_duplicate ((SPRepr *) selected->data);
 		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
 		sp_repr_unref (copy);
 		g_assert (item != NULL);
@@ -132,7 +133,7 @@ sp_selection_group (GtkWidget * widget)
 	while (p) {
 		SPRepr *new;
 		current = (SPRepr *) p->data;
-		new = sp_repr_copy (current);
+		new = sp_repr_duplicate (current);
 		sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
 		sp_repr_append_child (group, new);
 		sp_repr_unref (new);
@@ -153,7 +154,6 @@ void sp_selection_ungroup (GtkWidget * widget)
 	SPItem * item;
 	SPRepr * current;
 	SPRepr * child;
-	GList * list;
 	const gchar * pastr, * castr;
 	gdouble pa[6], ca[6];
 	SPCSSAttr * css;
@@ -180,8 +180,8 @@ void sp_selection_ungroup (GtkWidget * widget)
 	pastr = sp_repr_attr (current, "transform");
 	sp_svg_read_affine (pa, pastr);
 
-	while ((list = (GList *) sp_repr_children (current))) {
-		child = (SPRepr *) list->data;
+	while (current->children) {
+		child = current->children;
 
 		art_affine_identity (ca);
 		castr = sp_repr_attr (child, "transform");
@@ -397,7 +397,7 @@ sp_selection_copy (GtkWidget * widget)
 	for (l = sl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		css = sp_repr_css_attr_inherited (repr, "style");
-		copy = sp_repr_copy (repr);
+		copy = sp_repr_duplicate (repr);
 		sp_repr_css_set (copy, css, "style");
 		sp_repr_css_attr_unref (css);
 
@@ -425,7 +425,7 @@ sp_selection_paste (GtkWidget * widget)
 
 	for (l = clipboard; l != NULL; l = l->next) {
 		repr = (SPRepr *) clipboard->data;
-		copy = sp_repr_copy (repr);
+		copy = sp_repr_duplicate (repr);
 		sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
 		sp_repr_unref (copy);
 		sp_selection_add_repr (selection, copy);

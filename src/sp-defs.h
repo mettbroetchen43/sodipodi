@@ -23,7 +23,7 @@ typedef struct _SPDefsClass SPDefsClass;
 
 struct _SPDefs {
 	SPObject object;
-	GSList * children;
+	SPObject * children;
 };
 
 struct _SPDefsClass {

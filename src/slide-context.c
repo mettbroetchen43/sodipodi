@@ -65,6 +65,8 @@ sp_slide_context_init (SPSlideContext * slide_context)
 	SPEventContext * event_context;
 	
 	event_context = SP_EVENT_CONTEXT (slide_context);
+
+	slide_context->forward = NULL;
 }
 
 static void
@@ -85,27 +87,15 @@ sp_slide_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 }
 
-#if 0
-static gint
-sp_slide_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
-{
-	gint ret;
-
-	ret = FALSE;
-
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-		ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
-
-	return ret;
-}
-#endif
-
 static gint
 sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
+	SPSlideContext *sc;
 	SPDesktop * desktop;
 	GSList *slides;
 	gint ret;
+
+	sc = SP_SLIDE_CONTEXT (event_context);
 
 	ret = FALSE;
 
@@ -117,19 +107,40 @@ sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			sp_slide_context_zoom (desktop);
 			ret = TRUE;
 			break;
+		} else if (event->key.keyval == GDK_BackSpace) {
+			if (sc->forward) {
+				SPDocument *doc;
+				doc = SP_DT_DOCUMENT (desktop);
+				slides = gtk_object_get_data (GTK_OBJECT (desktop), "slides");
+				slides = g_slist_prepend (slides, doc);
+				gtk_object_set_data (GTK_OBJECT (desktop), "slides", slides);
+				doc = SP_DOCUMENT (sc->forward->data);
+				sc->forward = g_slist_remove (sc->forward, doc);
+				sp_desktop_change_document (desktop, doc);
+				sp_slide_context_zoom (desktop);
+			}
+			ret = TRUE;
+			break;
 		}
 	case GDK_BUTTON_PRESS:
 		slides = gtk_object_get_data (GTK_OBJECT (desktop), "slides");
 		if (slides) {
 			SPDocument *doc;
+			doc = SP_DT_DOCUMENT (desktop);
+			sc->forward = g_slist_prepend (sc->forward, doc);
 			doc = SP_DOCUMENT (slides->data);
 			slides = g_slist_remove (slides, doc);
 			gtk_object_set_data (GTK_OBJECT (desktop), "slides", slides);
 			sp_desktop_change_document (desktop, doc);
-			sp_document_unref (doc);
 			sp_slide_context_zoom (desktop);
 		} else {
 			sp_ui_close_view (NULL);
+			while (sc->forward) {
+				SPDocument *doc;
+				doc = SP_DOCUMENT (sc->forward->data);
+				sc->forward = g_slist_remove (sc->forward, doc);
+				sp_document_unref (doc);
+			}
 		}
 		ret = TRUE;
 	default:

@@ -14,6 +14,7 @@ typedef struct _SPSlideContextClass SPSlideContextClass;
 
 struct _SPSlideContext {
 	SPEventContext event_context;
+	GSList *forward;
 };
 
 struct _SPSlideContextClass {

@@ -2,6 +2,7 @@
 
 #include <gnome.h>
 #include <glade/glade.h>
+#include "../xml/repr-private.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../sp-object.h"
@@ -93,23 +94,22 @@ sp_xml_tree_repr_subtree (GtkWidget * item, SPRepr * repr)
 {
 	GtkWidget * subtree;
 	GtkWidget * child;
-	const GList * children, * l;
 
-	children = sp_repr_children (repr);
+	if (repr->children) {
+		SPRepr * crepr;
 
-	if (children != NULL) {
 		subtree = gtk_tree_new ();
 		gtk_tree_item_set_subtree (GTK_TREE_ITEM (item), subtree);
 
-		for (l = children; l != NULL; l = l->next) {
-			child = gtk_tree_item_new_with_label (sp_repr_name ((SPRepr *) l->data));
+		for (crepr = repr->children; crepr != NULL; crepr = crepr->next) {
+			child = gtk_tree_item_new_with_label (sp_repr_name (crepr));
 			gtk_signal_connect (GTK_OBJECT (child), "select",
-				GTK_SIGNAL_FUNC (sp_xml_tree_select), l->data);
+				GTK_SIGNAL_FUNC (sp_xml_tree_select), crepr);
 			gtk_signal_connect (GTK_OBJECT (child), "deselect",
-				GTK_SIGNAL_FUNC (sp_xml_tree_deselect), l->data);
+				GTK_SIGNAL_FUNC (sp_xml_tree_deselect), crepr);
 			gtk_tree_item_collapse (GTK_TREE_ITEM (child));
 			gtk_tree_append (GTK_TREE (subtree), child);
-			sp_xml_tree_repr_subtree (child, (SPRepr *) l->data);
+			sp_xml_tree_repr_subtree (child, crepr);
 		}
 
 		gtk_widget_show_all (GTK_WIDGET (subtree));
@@ -126,7 +126,7 @@ sp_xml_tree_close (GtkWidget * widget)
 void
 sp_xml_tree_select (GtkItem * item, gpointer data)
 {
-	GList * attr;
+	SPReprAttr * attr;
 	gchar * rowtext[2];
 	const gchar * text;
 	gint row, pos;
@@ -137,14 +137,11 @@ sp_xml_tree_select (GtkItem * item, gpointer data)
 
 	gtk_clist_clear (attributes);
 
-	attr = sp_repr_attributes ((SPRepr *) data);
-
-	while (attr) {
-		rowtext[0] = (gchar *) attr->data;
-		rowtext[1] = (gchar *) sp_repr_attr ((SPRepr *) data, rowtext[0]);
+	for (attr = selected_repr->attributes; attr != NULL; attr = attr->next) {
+		rowtext[0] = (gchar *) SP_REPR_ATTRIBUTE_KEY (attr);
+		rowtext[1] = (gchar *) SP_REPR_ATTRIBUTE_VALUE (attr);
 		row = gtk_clist_append (attributes, rowtext);
 		gtk_clist_set_row_data (attributes, row, rowtext[0]);
-		attr = g_list_remove (attr, attr->data);
 	}
 
 	gtk_clist_thaw (attributes);

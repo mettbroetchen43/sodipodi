@@ -192,8 +192,7 @@ sp_repr_print (SPRepr * repr)
 static void
 repr_write (SPRepr * repr, FILE * file, gint level)
 {
-	GList * attrlist;
-	const GList * childrenlist;
+	SPReprAttr * attr;
 	SPRepr * child;
 	const gchar * key, * val;
 	gint i;
@@ -205,25 +204,18 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 	for (i = 0; i < level; i++) fputs ("  ", file);
 	fprintf (file, "<%s", sp_repr_name (repr));
 
-	attrlist = sp_repr_attributes (repr);
-
-	while (attrlist) {
-		key = (const gchar *) attrlist->data;
-		val = sp_repr_attr (repr, key);
+	for (attr = repr->attributes; attr != NULL; attr = attr->next) {
+		key = SP_REPR_ATTRIBUTE_KEY (attr);
+		val = SP_REPR_ATTRIBUTE_VALUE (attr);
 		fputs ("\n", file);
 		for (i = 0; i < level + 1; i++) fputs ("  ", file);
 		fprintf (file, " %s=\"%s\"", key, val);
-		attrlist = g_list_remove (attrlist, (gpointer) key);
 	}
 
 	fprintf (file, ">");
 
-	childrenlist = sp_repr_children (repr);
-
-	while (childrenlist) {
-		child = (SPRepr *) childrenlist->data;
+	for (child = repr->children; child != NULL; child = child->next) {
 		repr_write (child, file, level + 1);
-		childrenlist = childrenlist->next;
 	}
 
 	if (sp_repr_content (repr)) {

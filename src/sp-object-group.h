@@ -21,7 +21,7 @@
 
 struct _SPObjectGroup {
 	SPObject object;
-	GSList * children;
+	SPObject * children;
 	gboolean transparent;
 };
 

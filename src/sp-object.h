@@ -55,7 +55,8 @@ struct _SPException {
 struct _SPObject {
 	GtkObject object;
 	SPDocument * document;		/* Document we are part of */
-	SPObject * parent;		/* Our parent (only one allowed) */
+	SPObject * parent; /* Our parent (only one allowed) */
+	SPObject * next; /* Next object in linked list */
 	SPRepr * repr;			/* Our xml representation */
 	gchar * id;			/* Our very own unique id */
 	const gchar * title;		/* Our title, if any */
@@ -67,11 +68,13 @@ struct _SPObjectClass {
 	void (* build) (SPObject * object, SPDocument * document, SPRepr * repr);
 
 	/* Virtual handlers of repr signals */
+	void (* child_added) (SPObject * object, SPRepr * child, SPRepr * ref);
+	void (* remove_child) (SPObject * object, SPRepr * child);
+
+	void (* order_changed) (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+
 	void (* read_attr) (SPObject * object, const gchar * key);
 	void (* read_content) (SPObject * object);
-	void (* set_order) (SPObject * object);
-	void (* add_child) (SPObject * object, SPRepr * child);
-	void (* remove_child) (SPObject * object, SPRepr * child);
 };
 
 GtkType sp_object_get_type (void);

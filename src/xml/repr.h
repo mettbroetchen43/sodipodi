@@ -11,29 +11,19 @@
 
 #include <glib.h>
 #include <stdio.h>
-#include <gtk/gtktypeutils.h>
 
 /*
  * SPRepr is opaque
  */
 
 typedef struct _SPRepr SPRepr;
-typedef struct _SPReprClass SPReprClass;
-
-#define SP_TYPE_REPR            (sp_repr_get_type ())
-#define SP_REPR(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_REPR, SPRepr))
-#define SP_REPR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_REPR, SPReprClass))
-#define SP_IS_REPR(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_REPR))
-#define SP_IS_REPR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_REPR))
-
-GtkType sp_repr_get_type (void);
 
 /* Create new repr & similar */
 
 SPRepr * sp_repr_new (const gchar * name);
 void sp_repr_ref (SPRepr * repr);
 void sp_repr_unref (SPRepr * repr);
-SPRepr * sp_repr_copy (SPRepr * repr);
+SPRepr * sp_repr_duplicate (SPRepr * repr);
 
 /* Documents - 1st step in migrating to real XML */
 
@@ -74,7 +64,7 @@ gpointer sp_repr_data (SPRepr * repr);
 SPRepr * sp_repr_parent (SPRepr * repr);
 const GList * sp_repr_children (SPRepr * repr);
 gint sp_repr_n_children (SPRepr * repr);
-void sp_repr_add_child (SPRepr * repr, SPRepr * child, gint position);
+void sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref);
 void sp_repr_remove_child (SPRepr * repr, SPRepr * child);
 void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data);
 

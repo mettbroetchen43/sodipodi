@@ -1,12 +1,11 @@
 #define SP_GROUP_C
 
 #include <gnome.h>
+#include "helper/sp-canvas-util.h"
 #include "display/canvas-bgroup.h"
+#include "xml/repr-private.h"
 #include "sp-object-repr.h"
 #include "sp-item-group.h"
-
-/* fixme: */
-#include "desktop-events.h"
 
 static void sp_group_class_init (SPGroupClass *klass);
 static void sp_group_init (SPGroup *group);
@@ -14,9 +13,9 @@ static void sp_group_destroy (GtkObject *object);
 
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_group_read_attr (SPObject * object, const gchar * attr);
-static void sp_group_add_child (SPObject * object, SPRepr * child);
+static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
-static void sp_group_set_order (SPObject * object);
+static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 
 static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
@@ -66,9 +65,9 @@ sp_group_class_init (SPGroupClass *klass)
 
 	sp_object_class->build = sp_group_build;
 	sp_object_class->read_attr = sp_group_read_attr;
-	sp_object_class->add_child = sp_group_add_child;
+	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
-	sp_object_class->set_order = sp_group_set_order;
+	sp_object_class->order_changed = sp_group_order_changed;
 
 	item_class->update = sp_group_update;
 	item_class->bbox = sp_group_bbox;
@@ -84,7 +83,6 @@ static void
 sp_group_init (SPGroup *group)
 {
 	group->children = NULL;
-	group->other = NULL;
 	group->transparent = FALSE;
 }
 
@@ -92,22 +90,16 @@ static void
 sp_group_destroy (GtkObject *object)
 {
 	SPGroup * group;
-	SPObject * spobject;
 
 	group = SP_GROUP (object);
 
 	while (group->children) {
-		spobject = SP_OBJECT (group->children->data);
-		spobject->parent = NULL;
-		gtk_object_destroy ((GtkObject *) spobject);
-		group->children = g_slist_remove_link (group->children, group->children);
-	}
-
-	while (group->other) {
-		spobject = SP_OBJECT (group->other->data);
-		spobject->parent = NULL;
-		gtk_object_destroy ((GtkObject *) spobject);
-		group->other = g_slist_remove_link (group->other, group->other);
+		SPObject * child;
+		child = group->children;
+		child->parent = NULL;
+		child->next = NULL;
+		group->children = child->next;
+		gtk_object_unref (GTK_OBJECT (child));
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -117,35 +109,28 @@ sp_group_destroy (GtkObject *object)
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPGroup * group;
-	const GList * l;
-	SPRepr * crepr;
-	const gchar * name;
-	GtkType type;
-	SPObject * child;
+	SPObject * last;
+	SPRepr * rchild;
 
 	group = SP_GROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) (parent_class))->build)
+		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	l = sp_repr_children (repr);
-
-	while (l != NULL) {
-		crepr = (SPRepr *) l->data;
-		name = sp_repr_name (crepr);
-		g_assert (name != NULL);
-		type = sp_object_type_lookup (name);
-		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-			child = gtk_type_new (type);
-			child->parent = object;
-			if (SP_IS_ITEM (child)) {
-				group->children = g_slist_append (group->children, child);
-			} else {
-				group->other = g_slist_append (group->other, child);
-			}
-			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
+	last = NULL;
+	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
+		GtkType type;
+		SPObject * child;
+		type = sp_object_type_lookup (sp_repr_name (rchild));
+		child = gtk_type_new (type);
+		child->parent = object;
+		if (last) {
+			last->next = child;
+		} else {
+			group->children = child;
 		}
-		l = l->next;
+		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+		last = child;
 	}
 
 	sp_group_read_attr (object, "insensitive");
@@ -155,15 +140,15 @@ static void
 sp_group_read_attr (SPObject * object, const gchar * attr)
 {
 	SPGroup * group;
-	GSList * l;
 
 	group = SP_GROUP (object);
 
 	/* fixme: We are hardcoding "style" attribute here, but I do not know another way */
 
 	if (strcmp (attr, "style") == 0) {
-		for (l = group->children; l != NULL; l = l->next) {
-			sp_object_invoke_read_attr (SP_OBJECT (l->data), attr);
+		SPObject * child;
+		for (child = group->children; child != NULL; child = child->next) {
+			sp_object_invoke_read_attr (child, attr);
 		}
 	} else if (strcmp (attr, "insensitive") == 0) {
 		const gchar * val;
@@ -179,118 +164,139 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 		return;
 	}
 
-
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 }
 
 static void
-sp_group_add_child (SPObject * object, SPRepr * child)
+sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
-	SPItem * item;
 	SPGroup * group;
-	const gchar * name;
+	SPItem * item;
 	GtkType type;
-	SPObject * childobject;
-	SPItemView * v;
+	SPObject * ochild, * prev;
+	gint position;
 
 	item = SP_ITEM (object);
 	group = SP_GROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->add_child)
-		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->child_added)
+		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	name = sp_repr_name (child);
-	g_assert (name != NULL);
-	type = sp_object_type_lookup (name);
-	g_return_if_fail (type > GTK_TYPE_NONE);
+	type = sp_object_type_lookup (sp_repr_name (child));
+	ochild = gtk_type_new (type);
+	ochild->parent = object;
 
-	childobject = gtk_type_new (type);
-	childobject->parent = object;
-
-	if (SP_IS_ITEM (childobject)) {
-		group->children = g_slist_append (group->children, childobject);
-		sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
-		for (v = item->display; v != NULL; v = v->next) {
-			sp_item_show (SP_ITEM (childobject), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
+	prev = NULL;
+	position = 0;
+	if (ref != NULL) {
+		prev = group->children;
+		while (prev->repr != ref) {
+			if (SP_IS_ITEM (prev)) position += 1;
+			prev = prev->next;
 		}
-	} else {
-		group->other = g_slist_append (group->other, childobject);
-		sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
+		if (SP_IS_ITEM (prev)) position += 1;
 	}
-	sp_group_set_order (object);
+
+	if (prev) {
+		ochild->next = prev->next;
+		prev->next = ochild;
+	} else {
+		ochild->next = group->children;
+		group->children = ochild;
+	}
+
+	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
+
+	if (SP_IS_ITEM (ochild)) {
+		SPItemView * v;
+		for (v = item->display; v != NULL; v = v->next) {
+			GnomeCanvasItem * ci;
+			ci = sp_item_show (SP_ITEM (ochild), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
+			gnome_canvas_item_move_to_z (ci, position);
+		}
+	}
 }
 
 static void
 sp_group_remove_child (SPObject * object, SPRepr * child)
 {
 	SPGroup * group;
-	GSList * l;
-	SPObject * childobject;
+	SPObject * prev, * ochild;
 
 	group = SP_GROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->remove_child)
-		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child)
+		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
-	for (l = group->children; l != NULL; l = l->next) {
-		childobject = (SPObject *) l->data;
-		if (childobject->repr == child) {
-			group->children = g_slist_remove (group->children, childobject);
-			childobject->parent = NULL;
-			gtk_object_unref (GTK_OBJECT (childobject));
-#if 0
-			sp_group_set_order (object);
-#endif
-			return;
-		}
+	prev = NULL;
+	ochild = group->children;
+	while (ochild->repr != child) {
+		prev = ochild;
+		ochild = ochild->next;
 	}
-	for (l = group->other; l != NULL; l = l->next) {
-		childobject = (SPObject *) l->data;
-		if (childobject->repr == child) {
-			group->other = g_slist_remove_link (group->other, l);
-			childobject->parent = NULL;
-			gtk_object_unref (GTK_OBJECT (childobject));
-			return;
-		}
+
+	if (prev) {
+		prev->next = ochild->next;
+	} else {
+		group->children = ochild->next;
 	}
-	/* fixme: this occurs, if item is not supported, although shouldn't */
-}
 
-static gint
-sp_group_compare_children_pos (gconstpointer a, gconstpointer b)
-{
-	return sp_repr_compare_position (SP_OBJECT (a)->repr, SP_OBJECT (b)->repr);
+	ochild->parent = NULL;
+	ochild->next = NULL;
+	gtk_object_unref (GTK_OBJECT (ochild));
 }
-
-/* fixme: all this is horribly ineffective */
 
 static void
-sp_group_set_order (SPObject * object)
+sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new)
 {
 	SPGroup * group;
-	GSList * neworder;
-	GSList * l;
-	SPItem * child;
-	gint delta;
+	SPObject * ochild, * oold, * onew, * o;
+	gint pos, oldpos, newpos;
 
 	group = SP_GROUP (object);
 
-	neworder = g_slist_copy (group->children);
-	neworder = g_slist_sort (neworder, sp_group_compare_children_pos);
+	if (((SPObjectClass *) (parent_class))->order_changed)
+		(* ((SPObjectClass *) (parent_class))->order_changed) (object, child, old, new);
 
-	for (l = neworder; l != NULL; l = l->next) {
-		if (l->data == group->children->data) {
-			group->children = g_slist_remove (group->children, group->children->data);
-		} else {
-			child = SP_ITEM (l->data);
-			delta = g_slist_index (group->children, child);
-			sp_item_change_canvasitem_position (child, -delta);
-			group->children = g_slist_remove (group->children, l->data);
+	ochild = NULL;
+	oold = NULL;
+	onew = NULL;
+	pos = oldpos = newpos = 0;
+
+	o = group->children;
+	while ((!ochild) || (old && !oold) || (new && !onew)) {
+		if (SP_IS_ITEM (o)) pos += 1;
+		if (o->repr == child) ochild = o;
+		if (old && o->repr == old) {
+			oold = o;
+			oldpos = pos;
 		}
+		if (new && o->repr == new) {
+			onew = o;
+			newpos = pos;
+		}
+		o = o->next;
 	}
 
-	group->children = neworder;
+	g_print ("oldpos %d newpos %d\n", oldpos, newpos);
+
+	if (oold) {
+		oold->next = ochild->next;
+	} else {
+		group->children = ochild->next;
+	}
+	if (onew) {
+		ochild->next = onew->next;
+		onew->next = ochild;
+	} else {
+		ochild->next = group->children;
+		group->children = ochild;
+	}
+
+	if (SP_IS_ITEM (ochild)) {
+		sp_item_change_canvasitem_position (SP_ITEM (ochild), newpos - oldpos);
+	}
 }
 
 static void
@@ -298,7 +304,7 @@ sp_group_update (SPItem *item, gdouble affine[])
 {
 	SPGroup *group;
 	SPItem * child;
-	GSList * l;
+	SPObject * o;
 	gdouble a[6];
 
 	group = SP_GROUP (item);
@@ -306,10 +312,12 @@ sp_group_update (SPItem *item, gdouble affine[])
 	if (SP_ITEM_CLASS (parent_class)->update)
 		(* SP_ITEM_CLASS (parent_class)->update) (item, affine);
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		art_affine_multiply (a, child->affine, affine);
-		sp_item_update (child, a);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			art_affine_multiply (a, child->affine, affine);
+			sp_item_update (child, a);
+		}
 	}
 }
 
@@ -319,16 +327,18 @@ sp_group_bbox (SPItem * item, ArtDRect *bbox)
 	SPGroup * group;
 	SPItem * child;
 	ArtDRect child_bbox;
-	GSList * l;
+	SPObject * o;
 
 	group = SP_GROUP (item);
 
 	bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		sp_item_bbox (child, &child_bbox);
-		art_drect_union (bbox, bbox, &child_bbox);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			sp_item_bbox (child, &child_bbox);
+			art_drect_union (bbox, bbox, &child_bbox);
+		}
 	}
 }
 
@@ -337,30 +347,34 @@ sp_group_print (SPItem * item, GnomePrintContext * gpc)
 {
 	SPGroup * group;
 	SPItem * child;
-	GSList * l;
+	SPObject * o;
 
 	group = SP_GROUP (item);
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		gnome_print_gsave (gpc);
-		gnome_print_concat (gpc, child->affine);
-		sp_item_print (child, gpc);
-		gnome_print_grestore (gpc);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			gnome_print_gsave (gpc);
+			gnome_print_concat (gpc, child->affine);
+			sp_item_print (child, gpc);
+			gnome_print_grestore (gpc);
+		}
 	}
 }
 
 static gchar * sp_group_description (SPItem * item)
 {
 	SPGroup * group;
-	gint n;
+	SPObject * o;
+	gint len;
 	static char c[128];
 
 	group = SP_GROUP (item);
 
-	n = g_slist_length (group->children);
+	len = 0;
+	for (o = group->children; o != NULL; o = o->next) len += 1;
 
-	snprintf (c, 128, _("Group of %d items"), n);
+	snprintf (c, 128, _("Group of %d objects"), len);
 
 	return g_strdup (c);
 }
@@ -371,16 +385,18 @@ sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_gro
 	SPGroup * group;
 	GnomeCanvasGroup * cg;
 	SPItem * child;
-	GSList * l;
+	SPObject * o;
 
 	group = (SPGroup *) item;
 
 	cg = (GnomeCanvasGroup *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_BGROUP, NULL);
 	SP_CANVAS_BGROUP(cg)->transparent = group->transparent;
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		sp_item_show (child, desktop, cg);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			sp_item_show (child, desktop, cg);
+		}
 	}
 
 	return (GnomeCanvasItem *) cg;
@@ -391,13 +407,15 @@ sp_group_hide (SPItem * item, SPDesktop * desktop)
 {
 	SPGroup * group;
 	SPItem * child;
-	GSList * l;
+	SPObject * o;
 
 	group = (SPGroup *) item;
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		sp_item_hide (child, desktop);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			sp_item_hide (child, desktop);
+		}
 	}
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
@@ -410,7 +428,7 @@ sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 	SPGroup * group;
 	SPItem * child;
 	gdouble a[6];
-	GSList * l;
+	SPObject * o;
 	gboolean ret;
 
 	group = (SPGroup *) item;
@@ -420,11 +438,13 @@ sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 
 	ret = FALSE;
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = (SPItem *) l->data;
-		art_affine_multiply (a, child->affine, affine);
-		ret = sp_item_paint (child, buf, a);
-		if (ret) return TRUE;
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			art_affine_multiply (a, child->affine, affine);
+			ret = sp_item_paint (child, buf, a);
+			if (ret) return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -459,8 +479,8 @@ void
 sp_item_group_ungroup (SPGroup *group)
 {
 #if 0
-	SPObject *object, *parent;
-	gdouble affine[6];
+	SPItem *object, *item, *root;
+	gdouble pa[6], ca[6];
 
 	g_return_if_fail (group != NULL);
 	g_return_if_fail (SP_IS_GROUP (group));
@@ -468,7 +488,7 @@ sp_item_group_ungroup (SPGroup *group)
 	object = SP_OBJECT (group);
 	parent = object->parent;
 
-	sp_svg_write_affine
+	memcpy (
 
 	art_affine_identity (pa);
 	pastr = sp_repr_attr (current, "transform");

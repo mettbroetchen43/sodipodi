@@ -9,8 +9,11 @@
  *
  */
 
+#include <stdlib.h>
 #include <string.h>
+#include "xml/repr-private.h"
 #include "document.h"
+#include "sp-object-repr.h"
 #include "sp-object.h"
 
 static void sp_object_class_init (SPObjectClass * klass);
@@ -18,27 +21,35 @@ static void sp_object_init (SPObject * object);
 static void sp_object_destroy (GtkObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
-
 static void sp_object_read_attr (SPObject * object, const gchar * key);
 
 /* Real handlers of repr signals */
 
-static void sp_object_repr_destroy (SPRepr * repr, gpointer data);
+static gboolean sp_object_repr_change_attr (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
+static void sp_object_repr_attr_changed (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);
 
-static void sp_object_repr_change_attr (SPRepr * repr, const gchar * key, gpointer data);
 static void sp_object_repr_change_content (SPRepr * repr, gpointer data);
-static void sp_object_repr_change_order (SPRepr * repr, gpointer data);
-static void sp_object_repr_add_child (SPRepr * repr, SPRepr * child, gpointer data);
+
+static void sp_object_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr *ref, gpointer data);
 static void sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data);
 
-static gboolean sp_object_repr_order_changed_pre (SPRepr * repr, gint order, gpointer data);
-static gboolean sp_object_repr_attr_changed_pre (SPRepr * repr, const gchar * key, const gchar * value, gpointer data);
+static gboolean sp_object_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
+static void sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data);
+
 static gboolean sp_object_repr_content_changed_pre (SPRepr * repr, const gchar * value, gpointer data);
 
 static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 
-static void sp_object_set_title (SPObject * object, SPRepr * repr);
-static void sp_object_set_description (SPObject * object, SPRepr * repr);
+SPReprEventVector object_event_vector = {
+	sp_object_repr_add_child,
+	sp_object_repr_remove_child,
+	sp_object_repr_change_attr,
+	sp_object_repr_attr_changed,
+	sp_object_repr_content_changed_pre,
+	sp_object_repr_change_content,
+	sp_object_repr_change_order,
+	sp_object_repr_order_changed
+};
 
 static GtkObjectClass * parent_class;
 
@@ -81,7 +92,7 @@ static void
 sp_object_init (SPObject * object)
 {
 	object->document = NULL;
-	object->parent = NULL;
+	object->parent = object->next = NULL;
 	object->repr = NULL;
 	object->id = NULL;
 	object->title = NULL;
@@ -97,6 +108,7 @@ sp_object_destroy (GtkObject * object)
 
 	/* Parent refcount us, so there shouldn't be any */
 	g_assert (!spobject->parent);
+	g_assert (!spobject->next);
 	g_assert (spobject->document);
 	g_assert (spobject->repr);
 
@@ -108,7 +120,7 @@ sp_object_destroy (GtkObject * object)
 		g_assert (!spobject->id);
 	}
 
-	/* Signals will be disconnected, if we are destroyed */
+	sp_repr_remove_listener_by_data (spobject->repr, spobject);
 	sp_repr_unref (spobject->repr);
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -122,24 +134,7 @@ sp_object_destroy (GtkObject * object)
 static void
 sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-	const GList * l;
-	const gchar * name;
-
-	/* Set object title and description */
-
-	l = sp_repr_children (repr);
-
-	while (l != NULL) {
-		name = sp_repr_name ((SPRepr *) l->data);
-		g_assert (name != NULL);
-		if (strcmp (name, "title") == 0) {
-			sp_object_set_title (object, (SPRepr *) l->data);
-		}
-		if (strcmp (name, "description") == 0) {
-			sp_object_set_description (object, (SPRepr *) l->data);
-		}
-		l = l->next;
-	}
+	/* Nothing specific here */
 }
 
 void
@@ -154,7 +149,6 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
 	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
 
 	g_assert (object->document == NULL);
 	g_assert (object->repr == NULL);
@@ -190,15 +184,52 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 
 	/* Signalling (should be connected AFTER processing derived methods */
 
-	sp_repr_set_signal (repr, "destroy", sp_object_repr_destroy, object);
-	sp_repr_set_signal (repr, "change_attr", sp_object_repr_attr_changed_pre, object);
-	sp_repr_set_signal (repr, "attr_changed", sp_object_repr_change_attr, object);
-	sp_repr_set_signal (repr, "change_content", sp_object_repr_content_changed_pre, object);
-	sp_repr_set_signal (repr, "content_changed", sp_object_repr_change_content, object);
-	sp_repr_set_signal (repr, "change_order", sp_object_repr_order_changed_pre, object);
-	sp_repr_set_signal (repr, "order_changed", sp_object_repr_change_order, object);
-	sp_repr_set_signal (repr, "child_added", sp_object_repr_add_child, object);
-	sp_repr_set_signal (repr, "remove_child", sp_object_repr_remove_child, object);
+	sp_repr_add_listener (repr, &object_event_vector, object);
+}
+
+static void
+sp_object_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer data)
+{
+	SPObject * object; 
+
+	object = SP_OBJECT (data);
+
+	if (((SPObjectClass *)(((GtkObject *) object)->klass))->child_added)
+		(*((SPObjectClass *)(((GtkObject *) object)->klass))->child_added) (object, child, ref);
+}
+
+static void
+sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data)
+{
+	SPObject * object;
+
+	object = SP_OBJECT (data);
+
+	if (((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child)
+		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child) (object, child);
+}
+
+static gboolean
+sp_object_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data)
+{
+	/* Nothing here */
+
+	return TRUE;
+}
+
+/* fixme: */
+
+static void
+sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRepr * new, gpointer data)
+{
+	SPObject * object;
+
+	object = SP_OBJECT (data);
+
+	sp_document_order_changed (object->document, object, child, old, new);
+
+	if (((SPObjectClass *) (((GtkObject *) object)->klass))->order_changed)
+		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->order_changed) (object, child, old, new);
 }
 
 static void
@@ -241,53 +272,31 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr) (object, key);
 }
 
-
-/*
- * Repr cannot be destroyed while "destroy" connected, because we ref it
- */
-
-static void
-sp_object_repr_destroy (SPRepr * repr, gpointer data)
-{
-	g_assert_not_reached ();
-}
-
 static gboolean
-sp_object_repr_attr_changed_pre (SPRepr * repr, const gchar * key, const gchar * value, gpointer data)
+sp_object_repr_change_attr (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data)
 {
 	SPObject * object;
 	gpointer defid;
 
-	g_assert (repr != NULL);
-	g_assert (key != NULL);
-	g_assert (data != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
 	object = SP_OBJECT (data);
 
-	g_assert (object->repr == repr);
-
 	if (strcmp (key, "id") == 0) {
-		defid = sp_document_lookup_id (object->document, value);
+		defid = sp_document_lookup_id (object->document, newval);
 		if (defid == object) return TRUE;
 		if (defid) return FALSE;
 	}
 
-	return sp_document_change_attr_requested (object->document, object, key, value);
+	return TRUE;
 }
 
 static void
-sp_object_repr_change_attr (SPRepr * repr, const gchar * key, gpointer data)
+sp_object_repr_attr_changed (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data)
 {
 	SPObject * object;
 
-	g_assert (repr != NULL);
-	g_assert (key != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
 	object = SP_OBJECT (data);
 
-	g_assert (object->repr == repr);
+	sp_document_attr_changed (object->document, object, key, oldval, newval);
 
 	sp_object_invoke_read_attr (object, key);
 }
@@ -321,113 +330,6 @@ sp_object_repr_change_content (SPRepr * repr, gpointer data)
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_content)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
-}
-
-static gboolean
-sp_object_repr_order_changed_pre (SPRepr * repr, gint order, gpointer data)
-{
-	SPObject * object;
-
-	g_assert (repr != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
-	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
-
-	return sp_document_change_order_requested (object->document, object, order);
-}
-
-/* fixme: */
-
-static void
-sp_object_repr_change_order (SPRepr * repr, gpointer data)
-{
-	SPObject * object, * parent;
-
-	g_assert (repr != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
-	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
-
-	parent = object->parent;
-
-	if (((SPObjectClass *)(((GtkObject *) parent)->klass))->set_order)
-		(*((SPObjectClass *)(((GtkObject *) parent)->klass))->set_order) (parent);
-}
-
-static void
-sp_object_repr_add_child (SPRepr * repr, SPRepr * child, gpointer data)
-{
-	SPObject * object;
-	const gchar * name;
-
-	g_assert (repr != NULL);
-	g_assert (child != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
-	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
-	g_assert (sp_repr_parent (child) == repr);
-
-	name = sp_repr_name (child);
-
-	/*
-	 * fixme: probably we should have <title> and <description> objects
-	 * to handle foreign namespaces, connect modified signals etc.
-	 */
-
-	if (strcmp (name, "title") == 0) sp_object_set_title (object, repr);
-	if (strcmp (name, "description") == 0) sp_object_set_description (object, repr);
-
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->add_child)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->add_child) (object, child);
-}
-
-static void
-sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data)
-{
-	SPObject * object;
-	const gchar * name;
-
-	g_assert (repr != NULL);
-	g_assert (child != NULL);
-	g_assert (SP_IS_OBJECT (data));
-
-	object = SP_OBJECT (data);
-
-	g_assert (object->repr == repr);
-
-	name = sp_repr_name (child);
-
-	if (strcmp (name, "title") == 0) object->title = NULL;
-	if (strcmp (name, "description") == 0) object->title = NULL;
-
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child) (object, child);
-}
-
-static void
-sp_object_set_title (SPObject * object, SPRepr * repr)
-{
-	const gchar * content;
-
-	content = sp_repr_content (repr);
-
-	object->title = content;
-}
-
-static void
-sp_object_set_description (SPObject * object, SPRepr * repr)
-{
-	const gchar * content;
-
-	content = sp_repr_content (repr);
-
-	object->description = content;
 }
 
 const gchar *

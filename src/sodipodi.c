@@ -17,6 +17,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-messagebox.h>
+#include <xml/repr-private.h>
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
@@ -298,23 +299,17 @@ sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key)
 	s = key;
 	while ((s) && (*s)) {
 		SPRepr * child;
-		const GList * l;
 		/* Find next name */
 		if ((e = strchr (s, '.'))) {
 			len = e++ - s;
 		} else {
 			len = strlen (s);
 		}
-
-		child = NULL;
-		l = sp_repr_children (repr);
-		while (l != NULL) {
-			child = (SPRepr *) l->data;
+		for (child = repr->children; child != NULL; child = child->next) {
 			id = sp_repr_attr (child, "id");
 			if ((id) && (strlen (id) == len) && (!strncmp (id, s, len))) break;
-			l = l->next;
 		}
-		if (l == NULL) return NULL;
+		if (child == NULL) return NULL;
 
 		repr = child;
 		s = e;

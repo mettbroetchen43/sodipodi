@@ -138,7 +138,7 @@ sp_repr_css_double_property (SPCSSAttr * css, const gchar * name, gdouble defval
 void
 sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 {
-	GList * list;
+	SPReprAttr * a;
 	const gchar * key;
 	gchar * val;
 	gchar * r, * result;
@@ -148,18 +148,16 @@ sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 	g_assert (css != NULL);
 	g_assert (attr != NULL);
 
-	list = sp_repr_attributes ((SPRepr *) css);
 	result = "";
 	r = g_strdup (result);
 
-	while (list) {
-		key = (const gchar *) list->data;
-		val = (gchar *) sp_repr_attr ((SPRepr *) css, key);
+	for (a = ((SPRepr *) css)->attributes; a != NULL; a = a->next) {
+		key = SP_REPR_ATTRIBUTE_KEY (a);
+		val = SP_REPR_ATTRIBUTE_VALUE (a);
 		snprintf (c, 128, "%s:%s; ", key, val);
 		result = g_strconcat (r, c, NULL);
 		g_free (r);
 		r = result;
-		list = g_list_remove (list, (gpointer) key);
 	}
 g_print ("style: %s\n", result);
 	sp_repr_set_attr (repr, attr, result);
@@ -169,20 +167,16 @@ g_print ("style: %s\n", result);
 static void
 sp_repr_css_merge (SPCSSAttr * dst, SPCSSAttr * src)
 {
-	GList * list;
-	const gchar * key;
-	gchar * val;
+	SPReprAttr * attr;
+	const gchar * key, * val;
 
 	g_assert (dst != NULL);
 	g_assert (src != NULL);
 
-	list = sp_repr_attributes ((SPRepr *) src);
-
-	while (list) {
-		key = (const gchar *) list->data;
-		val = (gchar *) sp_repr_attr ((SPRepr *) src, key);
+	for (attr = ((SPRepr *) src)->attributes; attr != NULL; attr = attr->next) {
+		key = SP_REPR_ATTRIBUTE_KEY (attr);
+		val = SP_REPR_ATTRIBUTE_VALUE (attr);
 		sp_repr_set_attr ((SPRepr *) dst, key, val);
-		list = g_list_remove (list, (gpointer) key);
 	}
 
 }
@@ -206,7 +200,6 @@ sp_repr_css_change (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 void
 sp_repr_css_change_recursive (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 {
-	const GList * list;
 	SPRepr * child;
 
 	g_assert (repr != NULL);
@@ -215,12 +208,8 @@ sp_repr_css_change_recursive (SPRepr * repr, SPCSSAttr * css, const gchar * attr
 
 	sp_repr_css_change (repr, css, attr);
 
-	list = sp_repr_children (repr);
-
-	while (list) {
-		child = (SPRepr *) list->data;
+	for (child = repr->children; child != NULL; child = child->next) {
 		sp_repr_css_change_recursive (child, css, attr);
-		list = list->next;
 	}
 }
 

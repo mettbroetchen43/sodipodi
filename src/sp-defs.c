@@ -5,6 +5,7 @@
  * flips in
  */
 
+#include "xml/repr-private.h"
 #include "sp-defs.h"
 
 static void sp_defs_class_init (SPDefsClass * klass);
@@ -12,8 +13,11 @@ static void sp_defs_init (SPDefs * defs);
 static void sp_defs_destroy (GtkObject * object);
 
 static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_defs_add_child (SPObject * object, SPRepr * child);
+static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
+static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+
+static SPObject * sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr);
 
 static SPObjectClass * parent_class;
 
@@ -51,8 +55,9 @@ sp_defs_class_init (SPDefsClass * klass)
 	gtk_object_class->destroy = sp_defs_destroy;
 
 	sp_object_class->build = sp_defs_build;
-	sp_object_class->add_child = sp_defs_add_child;
+	sp_object_class->child_added = sp_defs_child_added;
 	sp_object_class->remove_child = sp_defs_remove_child;
+	sp_object_class->order_changed = sp_defs_order_changed;
 }
 
 static void
@@ -65,85 +70,143 @@ static void
 sp_defs_destroy (GtkObject * object)
 {
 	SPDefs * defs;
-	SPObject * spobject;
 
 	defs = (SPDefs *) object;
 
 	while (defs->children) {
-		spobject = SP_OBJECT (defs->children->data);
-		spobject->parent = NULL;
-		gtk_object_unref (GTK_OBJECT (spobject));
-		defs->children = g_slist_remove_link (defs->children, defs->children);
+		SPObject * child;
+		child = defs->children;
+		child->parent = NULL;
+		child->next = NULL;
+		defs->children = child->next;
+		gtk_object_unref (GTK_OBJECT (child));
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (((GtkObjectClass *) (parent_class))->destroy)
+		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
 static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPDefs * defs;
-	SPRepr * crepr;
-	SPObject * child;
-	const GList * l;
+	SPObject * last;
+	SPRepr * rchild;
 
 	defs = SP_DEFS (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) (parent_class))->build)
+		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	l = sp_repr_children (repr);
-
-	while (l != NULL) {
-		crepr = (SPRepr *) l->data;
+	last = NULL;
+	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
+		SPObject * child;
 		child = gtk_type_new (SP_TYPE_DEFS);
 		child->parent = object;
-		defs->children = g_slist_prepend (defs->children, child);
-		sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
-		l = l->next;
+		if (last) {
+			last->next = child;
+		} else {
+			defs->children = child;
+		}
+		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+		last = child;
 	}
 }
 
 static void
-sp_defs_add_child (SPObject * object, SPRepr * child)
+sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
 	SPDefs * defs;
-	SPObject * childobject;
+	SPObject * ochild, * prev;
 
 	defs = SP_DEFS (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->add_child)
-		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->child_added)
+		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	childobject = gtk_type_new (SP_TYPE_DEFS);
-	childobject->parent = object;
-	defs->children = g_slist_prepend (defs->children, childobject);
-	sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
+	ochild = gtk_type_new (SP_TYPE_DEFS);
+	ochild->parent = object;
+
+	prev = sp_defs_get_child_by_repr (defs, ref);
+
+	if (!prev) {
+		ochild->next = defs->children;
+		defs->children = ochild;
+	} else {
+		ochild->next = prev->next;
+		prev->next = ochild;
+	}
+
+	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 }
 
 static void
 sp_defs_remove_child (SPObject * object, SPRepr * child)
 {
 	SPDefs * defs;
-	GSList * l;
-	SPObject * childobject;
+	SPObject * prev, * ochild;
 
 	defs = SP_DEFS (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->remove_child)
-		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child)
+		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
-	for (l = defs->children; l != NULL; l = l->next) {
-		childobject = (SPObject *) l->data;
-		if (childobject->repr == child) {
-			defs->children = g_slist_remove (defs->children, childobject);
-			childobject->parent = NULL;
-			gtk_object_destroy (GTK_OBJECT (childobject));
-			return;
-		}
+	prev = NULL;
+	ochild = defs->children;
+	while (ochild && ochild->repr != child) {
+		prev = ochild;
+		ochild = ochild->next;
 	}
-	g_assert_not_reached ();
+
+	if (prev) {
+		prev->next = ochild->next;
+	} else {
+		defs->children = ochild->next;
+	}
+	ochild->parent = NULL;
+	ochild->next = NULL;
+	gtk_object_unref (GTK_OBJECT (ochild));
 }
 
+static void
+sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new)
+{
+	SPDefs * defs;
+	SPObject * ochild, * oold, * onew;
+
+	defs = SP_DEFS (object);
+
+	if (((SPObjectClass *) (parent_class))->order_changed)
+		(* ((SPObjectClass *) (parent_class))->order_changed) (object, child, old, new);
+
+	ochild = sp_defs_get_child_by_repr (defs, child);
+	oold = sp_defs_get_child_by_repr (defs, old);
+	onew = sp_defs_get_child_by_repr (defs, new);
+
+	if (oold) {
+		oold->next = ochild->next;
+	} else {
+		defs->children = ochild->next;
+	}
+	if (onew) {
+		ochild->next = onew->next;
+		onew->next = ochild;
+	} else {
+		ochild->next = defs->children;
+		defs->children = ochild;
+	}
+}
+
+static SPObject *
+sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr)
+{
+	SPObject * o;
+
+	if (!repr) return NULL;
+
+	o = defs->children;
+	while (o->repr != repr) o = o->next;
+
+	return o;
+}
 
 

@@ -16,8 +16,7 @@
 
 struct _SPGroup {
 	SPItem item;
-	GSList * children;
-	GSList * other;
+	SPObject * children;
 	gboolean transparent;
 };
 

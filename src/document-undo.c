@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "xml/repr-private.h"
 #include "sp-object.h"
 #include "sp-item.h"
 #include "document-private.h"
@@ -70,7 +71,6 @@ sp_document_undo (SPDocument * document)
 	GList * l;
 	SPRepr * action;
 	const gchar * name;
-	const GList * children;
 	SPRepr * repr, * copy;
 	const gchar * id, * key, * value, * str;
 	SPObject * object;
@@ -94,8 +94,7 @@ sp_document_undo (SPDocument * document)
 		name = sp_repr_name (action);
 		if (strcmp (name, "add") == 0) {
 			/* Undoing add is del */
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
+			repr = action->children;
 			id = sp_repr_attr (repr, "id");
 			g_assert (id != NULL);
 			object = sp_document_lookup_id (document, id);
@@ -110,11 +109,11 @@ sp_document_undo (SPDocument * document)
 			str = sp_repr_attr (action, "position");
 			g_assert (str != NULL);
 			position = atoi (str);
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			copy = sp_repr_copy (repr);
+			repr = action->children;
+			copy = sp_repr_duplicate (repr);
 			g_assert (copy != NULL);
-			sp_repr_add_child (object->repr, copy, position);
+			sp_repr_add_child (object->repr, copy, NULL);
+			sp_repr_set_position_absolute (copy, position);
 			sp_repr_unref (copy);
 		}
 		if (strcmp (name, "attr") == 0) {
@@ -142,12 +141,16 @@ sp_document_undo (SPDocument * document)
 			sp_repr_set_content (object->repr, value);
 		}
 		if (strcmp (name, "order") == 0) {
+			SPRepr * repr;
 			id = sp_repr_attr (action, "id");
 			g_assert (id != NULL);
 			object = sp_document_lookup_id (document, id);
 			g_assert (object != NULL);
+			position = sp_repr_get_int_attribute (action, "new", 0);
+			repr = sp_repr_nth_child (object->repr, position);
+			g_assert (repr != NULL);
 			position = sp_repr_get_int_attribute (action, "old", 0);
-			sp_repr_set_position_absolute (object->repr, position);
+			sp_repr_set_position_absolute (repr, position);
 		}
 	}
 
@@ -163,7 +166,6 @@ sp_document_redo (SPDocument * document)
 	GList * l;
 	SPRepr * action;
 	const gchar * name;
-	const GList * children;
 	SPRepr * repr, * copy;
 	const gchar * id, * key, * value;
 	SPObject * object;
@@ -186,17 +188,15 @@ sp_document_redo (SPDocument * document)
 		action = (SPRepr *) l->data;
 		name = sp_repr_name (action);
 		if (strcmp (name, "add") == 0) {
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			copy = sp_repr_copy (repr);
+			repr = action->children;
+			copy = sp_repr_duplicate (repr);
 			g_assert (copy != NULL);
 			/* fixme: order! */
 			sp_repr_append_child (document->private->rroot, copy);
 			sp_repr_unref (copy);
 		}
 		if (strcmp (name, "del") == 0) {
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
+			repr = action->children;
 			id = sp_repr_attr (repr, "id");
 			g_assert (id != NULL);
 			object = sp_document_lookup_id (document, id);
@@ -226,14 +226,16 @@ sp_document_redo (SPDocument * document)
 			sp_document_set_undo_sensitive (document, TRUE);
 		}
 		if (strcmp (name, "order") == 0) {
+			SPRepr * repr;
 			id = sp_repr_attr (action, "id");
 			g_assert (id != NULL);
 			object = sp_document_lookup_id (document, id);
 			g_assert (object != NULL);
+			position = sp_repr_get_int_attribute (action, "old", 0);
+			repr = sp_repr_nth_child (object->repr, position);
+			g_assert (repr != NULL);
 			position = sp_repr_get_int_attribute (action, "new", 0);
-			sp_document_set_undo_sensitive (document, FALSE);
-			sp_repr_set_position_absolute (object->repr, position);
-			sp_document_set_undo_sensitive (document, TRUE);
+			sp_repr_set_position_absolute (repr, position);
 		}
 	}
 
@@ -264,7 +266,7 @@ sp_document_add_repr (SPDocument * document, SPRepr * repr)
 
 	if (document->private->sensitive) {
 		action = sp_repr_new ("add");
-		copy = sp_repr_copy (repr);
+		copy = sp_repr_duplicate (repr);
 		sp_repr_append_child (action, copy);
 		sp_repr_unref (copy);
 
@@ -328,28 +330,18 @@ sp_document_del_repr (SPDocument * document, SPRepr * repr)
  */
 
 gboolean
-sp_document_change_attr_requested (SPDocument * document, SPObject * object, const gchar * key, const gchar * value)
+sp_document_attr_changed (SPDocument * document, SPObject * object, const gchar * key, const gchar * oldval, const gchar * newval)
 {
-	SPRepr * action;
-	const gchar * oldvalue;
-
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (object != NULL);
-	g_assert (SP_IS_OBJECT (object));
-	g_assert (object->document == document);
-	g_assert (key != NULL);
-
 	if (document->private->sensitive) {
-		sp_document_clear_redo (document);
+		SPRepr * action;
 
-		oldvalue = sp_repr_attr (object->repr, key);
+		sp_document_clear_redo (document);
 
 		action = sp_repr_new ("attr");
 		sp_repr_set_attr (action, "id", object->id);
 		sp_repr_set_attr (action, "key", key);
-		sp_repr_set_attr (action, "old", oldvalue);
-		sp_repr_set_attr (action, "new", value);
+		sp_repr_set_attr (action, "old", oldval);
+		sp_repr_set_attr (action, "new", newval);
 
 		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
@@ -394,10 +386,10 @@ sp_document_change_content_requested (SPDocument * document, SPObject * object, 
  */
 
 gboolean
-sp_document_change_order_requested (SPDocument * document, SPObject * object, gint order)
+sp_document_order_changed (SPDocument * document, SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new)
 {
 	SPRepr * action;
-	gint oldorder;
+	gint order, oldorder;
 
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
@@ -408,7 +400,10 @@ sp_document_change_order_requested (SPDocument * document, SPObject * object, gi
 	if (document->private->sensitive) {
 		sp_document_clear_redo (document);
 
-		oldorder = sp_repr_position (object->repr);
+		oldorder = 0;
+		if (old) oldorder = sp_repr_position (old) + 1;
+		order = 0;
+		if (new) order = sp_repr_position (new) + 1;
 
 		action = sp_repr_new ("order");
 		sp_repr_set_attr (action, "id", object->id);

@@ -8,7 +8,7 @@
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprint/gnome-print-master-preview.h>
 
-#include "xml/repr.h"
+#include "xml/repr-private.h"
 #include "document.h"
 #include "dir-util.h"
 #include "helper/png-write.h"
@@ -226,23 +226,22 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	e = sp_extension_from_path (filename);
 
 	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
-		const GList * children, * l;
 		SPRepr * newgroup;
 		const gchar * style;
+		SPRepr * child;
 
 		rnewdoc = sp_repr_read_file (filename);
 		if (rnewdoc == NULL) return;
 		repr = sp_repr_document_root (rnewdoc);
-		children = sp_repr_children (repr);
 		style = sp_repr_attr (repr, "style");
 
 		newgroup = sp_repr_new ("g");
 		sp_repr_set_attr (newgroup, "style", style);
 
-		for (l = children; l != NULL; l = l->next) {
-			SPRepr * child;
-			child = sp_repr_copy ((SPRepr *) l->data);
-			sp_repr_append_child (newgroup, child);
+		for (child = repr->children; child != NULL; child = child->next) {
+			SPRepr * newchild;
+			newchild = sp_repr_duplicate (child);
+			sp_repr_append_child (newgroup, newchild);
 		}
 
 		sp_repr_document_unref (rnewdoc);

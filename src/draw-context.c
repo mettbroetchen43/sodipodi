@@ -118,8 +118,10 @@ sp_draw_context_destroy (GtkObject * object)
 
 	dc = SP_DRAW_CONTEXT (object);
 
+#if 0
 	/* fixme: */
 	if (dc->repr) gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+#endif
 
 	if (dc->accumulated) sp_curve_unref (dc->accumulated);
 
@@ -229,7 +231,9 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 					/* reset accumulated curve */
 					sp_curve_reset (dc->accumulated);
 					if (dc->repr) {
+#if 0
 						gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+#endif
 						dc->repr = NULL;
 					}
 					remove_ctrl (dc);
@@ -241,7 +245,9 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				if (!dc->cinside) {
 					sp_curve_reset (dc->accumulated);
 					if (dc->repr) {
+#if 0
 						gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+#endif
 						dc->repr = NULL;
 					}
 					move_ctrl (dc, p.x, p.y);
@@ -316,7 +322,9 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 					sp_curve_reset (dc->accumulated);
 					clear_current (dc);
 					if (dc->repr) {
+#if 0
 						gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
+#endif
 						dc->repr = NULL;
 					}
 					remove_ctrl (dc);
@@ -383,8 +391,10 @@ set_to_accumulated (SPDrawContext * dc)
 				sp_repr_css_attr_unref (css);
 			}
 			dc->repr = repr;
+#if 0
 			dc->destroyid = gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
 							    GTK_SIGNAL_FUNC (repr_destroyed), dc);
+#endif
 			sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
 			sp_repr_unref (dc->repr);
 			sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);

@@ -2,21 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "repr.h"
-
-#if 0
-SPRepr *
-sp_repr_new_with_name (const gchar * name)
-{
-	SPRepr * repr;
-
-	repr = sp_repr_new ();
-
-	sp_repr_set_name (repr, name);
-
-	return repr;
-}
-#endif
+#include "repr-private.h"
 
 gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
 {
@@ -100,16 +86,13 @@ gint
 sp_repr_compare_position (SPRepr * first, SPRepr * second)
 {
 	SPRepr * parent;
-	const GList * siblings;
 	gint p1, p2;
 
 	parent = sp_repr_parent (first);
 	g_assert (parent == sp_repr_parent (second));
 
-	siblings = sp_repr_children (parent);
-
-	p1 = g_list_index ((GList *) siblings, first);
-	p2 = g_list_index ((GList *) siblings, second);
+	p1 = sp_repr_position (first);
+	p2 = sp_repr_position (second);
 
 	if (p1 > p2) return 1;
 	if (p1 < p2) return -1;
@@ -120,15 +103,22 @@ gint
 sp_repr_position (SPRepr * repr)
 {
 	SPRepr * parent;
-	const GList * siblings;
+	SPRepr * sibling;
+	gint pos;
 
 	g_assert (repr != NULL);
 	parent = sp_repr_parent (repr);
 	g_assert (parent != NULL);
 
-	siblings = sp_repr_children (parent);
+	pos = 0;
+	for (sibling = parent->children; sibling != NULL; sibling = sibling->next) {
+		if (repr == sibling) return pos;
+		pos += 1;
+	}
+	
+	g_assert_not_reached ();
 
-	return g_list_index ((GList *) siblings, repr);
+	return -1;
 }
 
 void
@@ -145,22 +135,32 @@ sp_repr_set_position_relative (SPRepr * repr, gint pos)
 gint
 sp_repr_n_children (SPRepr * repr)
 {
-	const GList * children;
+	SPRepr * child;
+	gint n;
 
 	g_assert (repr != NULL);
 
-	children = sp_repr_children (repr);
+	n = 0;
+	for (child = repr->children; child != NULL; child = child->next) n++;
 
-	return g_list_length ((GList *) children);
+	return n;
 }
 
 void
 sp_repr_append_child (SPRepr * repr, SPRepr * child)
 {
+	SPRepr * ref;
+
 	g_assert (repr != NULL);
 	g_assert (child != NULL);
 
-	sp_repr_add_child (repr, child, sp_repr_n_children (repr));
+	ref = NULL;
+	if (repr->children) {
+		ref = repr->children;
+		while (ref->next) ref = ref->next;
+	}
+
+	sp_repr_add_child (repr, child, ref);
 }
 
 void sp_repr_unparent (SPRepr * repr)
@@ -184,7 +184,7 @@ SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr)
 	parent = sp_repr_parent (repr);
 	g_assert (parent != NULL);
 
-	new = sp_repr_copy (repr);
+	new = sp_repr_duplicate (repr);
 	sp_repr_append_child (parent, new);
 	sp_repr_unref (new);
 

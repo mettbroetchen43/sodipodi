@@ -1,3 +1,9 @@
+2001-04-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* everywhere (TM): Changed the basic structure of Reprs (they are
+	not GtkObjects any more) and SPObjects (they have own list sequence
+	instead of using GLists)
+
 2001-04-06  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item-group.c (sp_item_group_ungroup): New method

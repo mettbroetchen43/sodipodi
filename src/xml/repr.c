@@ -1,235 +1,115 @@
 #define SP_REPR_C
 
 #include <string.h>
-#include <gtk/gtksignal.h>
-#include "repr.h"
 #include "repr-private.h"
 
-static void sp_repr_class_init (SPReprClass * klass);
-static void sp_repr_init (SPRepr * repr);
-static void sp_repr_destroy (GtkObject * object);
+static SPRepr * sp_repr_new_from_code (gint code);
+static void sp_repr_remove_attribute (SPRepr * repr, SPReprAttr * attr);
+static void sp_node_remove_listener (SPNode *node, SPListener *listener);
 
-static void sp_marshal_BOOL__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
-static gboolean sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data);
-static void sp_repr_attr_to_list (gpointer key, gpointer value, gpointer user_data);
-static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
+/* Helpers */
+static SPNode * sp_node_alloc (void);
+static void sp_node_free (SPNode *node);
+static SPAttribute * sp_attribute_alloc (void);
+static void sp_attribute_free (SPAttribute *attribute);
+static SPListener *sp_listener_alloc (void);
+static void sp_listener_free (SPListener *listener);
 
-#define dontDEBUG_REPR
-
-#ifdef DEBUG_REPR
-	gint num_repr = 0;
-#endif
-
-enum {
-	CHILD_ADDED,
-	REMOVE_CHILD,
-	CHANGE_ATTR,
-	ATTR_CHANGED,
-	CHANGE_CONTENT,
-	CONTENT_CHANGED,
-	CHANGE_ORDER,
-	ORDER_CHANGED,
-	LAST_SIGNAL
-};
-
-typedef gboolean (*GtkSignal_BOOL__POINTER_POINTER) (GtkObject *object, gpointer arg1, gpointer arg2, gpointer user_data);
-static GtkObjectClass * parent_class;
-static guint repr_signals[LAST_SIGNAL] = { 0 };
-
-GtkType
-sp_repr_get_type (void)
-{
-	static GtkType repr_type = 0;
-	if (!repr_type) {
-		static const GtkTypeInfo repr_info = {
-			"SPRepr",
-			sizeof (SPRepr),
-			sizeof (SPReprClass),
-			(GtkClassInitFunc) sp_repr_class_init,
-			(GtkObjectInitFunc) sp_repr_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
-		};
-		repr_type = gtk_type_unique (gtk_object_get_type (), &repr_info);
-	}
-	return repr_type;
-}
-
-static void
-sp_repr_class_init (SPReprClass * klass)
-{
-	GtkObjectClass * object_class;
-
-	object_class = (GtkObjectClass *) klass;
-
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
-
-	repr_signals [CHILD_ADDED] = gtk_signal_new ("child_added",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, child_added),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	repr_signals [REMOVE_CHILD] = gtk_signal_new ("remove_child",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, remove_child),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	/* fixme: */
-	repr_signals [CHANGE_ATTR] = gtk_signal_new ("change_attr",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, change_attr),
-		sp_marshal_BOOL__POINTER_POINTER,
-		GTK_TYPE_BOOL, 2,
-		GTK_TYPE_POINTER, GTK_TYPE_POINTER);
-	repr_signals [ATTR_CHANGED] = gtk_signal_new ("attr_changed",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, attr_changed),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	repr_signals [CHANGE_CONTENT] = gtk_signal_new ("change_content",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, change_content),
-		gtk_marshal_BOOL__POINTER,
-		GTK_TYPE_BOOL, 1,
-		GTK_TYPE_POINTER);
-	repr_signals [CONTENT_CHANGED] = gtk_signal_new ("content_changed",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, content_changed),
-		gtk_marshal_NONE__NONE,
-		GTK_TYPE_NONE, 0);
-	/* fixme: */
-	repr_signals [CHANGE_ORDER] = gtk_signal_new ("change_order",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, change_order),
-		gtk_marshal_INT__INT,
-		GTK_TYPE_BOOL, 1,
-		GTK_TYPE_INT);
-	repr_signals [ORDER_CHANGED] = gtk_signal_new ("order_changed",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPReprClass, order_changed),
-		gtk_marshal_NONE__NONE,
-		GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, repr_signals, LAST_SIGNAL);
-
-	object_class->destroy = sp_repr_destroy;
-}
-
-static void
-sp_repr_init (SPRepr * repr)
-{
-	repr->parent = NULL;
-	/* repr->name = 0 */
-	repr->content = NULL;
-	repr->attr = g_hash_table_new (NULL, NULL);
-	repr->children = NULL;
-}
-
-static void
-sp_repr_destroy (GtkObject * object)
+SPRepr *
+sp_repr_new_from_code (gint code)
 {
 	SPRepr * repr;
-	SPRepr * child;
 
-	repr = (SPRepr *) object;
+	repr = sp_node_alloc ();
 
-	/* parents have to do refcounting !!! */
+	repr->refcount = 1;
+	repr->name = code;
+	repr->parent = repr->next = repr->children = NULL;
+	repr->attributes = NULL;
+	repr->listeners = NULL;
+	repr->content = NULL;
 
-	g_assert (repr->parent == NULL);
-
-	while (repr->children) {
-		child = (SPRepr *) repr->children->data;
-		sp_repr_remove_child (repr, child);
-		repr->children = g_list_remove (repr->children, child);
-	}
-
-	if (repr->attr) {
-		g_hash_table_foreach_remove (repr->attr, sp_repr_hash_del_value, repr);
-		g_hash_table_destroy (repr->attr);
-	}
-
-#ifdef DEBUG_REPR
-		num_repr--;
-		g_print ("num_repr = %d\n", num_repr);
-#endif
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	return repr;
 }
-
 
 SPRepr *
 sp_repr_new (const gchar * name)
 {
-	SPRepr * repr;
-
 	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (*name != '\0', NULL);
 
-	repr = gtk_type_new (SP_TYPE_REPR);
-
-#ifdef DEBUG_REPR
-	num_repr++;
-	g_print ("num_repr = %d\n", num_repr);
-#endif
-
-	repr->name = g_quark_from_string (name);
-
-	return repr;
+	return sp_repr_new_from_code (g_quark_from_string (name));
 }
 
 void
 sp_repr_ref (SPRepr * repr)
 {
 	g_return_if_fail (repr != NULL);
-	g_return_if_fail (SP_IS_REPR (repr));
+	g_return_if_fail (repr->refcount > 0);
 
-	gtk_object_ref (GTK_OBJECT (repr));
+	repr->refcount += 1;
 }
 
 void
 sp_repr_unref (SPRepr * repr)
 {
 	g_return_if_fail (repr != NULL);
-	g_return_if_fail (SP_IS_REPR (repr));
+	g_return_if_fail (repr->refcount > 0);
 
-	gtk_object_unref (GTK_OBJECT (repr));
+	repr->refcount -= 1;
+
+	if (repr->refcount < 1) {
+		/* Parents reference children */
+		g_assert (repr->parent == NULL);
+		g_assert (repr->next == NULL);
+		while (repr->children) sp_repr_remove_child (repr, repr->children);
+		while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
+		if (repr->content) g_free (repr->content);
+		while (repr->listeners) sp_node_remove_listener (repr, repr->listeners);
+		sp_node_free (repr);
+	}
 }
 
-SPRepr * sp_repr_copy (SPRepr * repr)
+
+SPRepr * sp_repr_duplicate (SPRepr * repr)
 {
-	SPRepr * new, * child, * newchild;
-	GList * list;
-	gint n;
+	SPRepr * new;
+	SPRepr * child, * lastchild;
+	SPReprAttr * attr, * lastattr;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 
-	new = sp_repr_new (g_quark_to_string (repr->name));
-	g_assert (new != NULL);
+	new = sp_repr_new_from_code (repr->name);
 
-	if (repr->content != NULL)
-		new->content = g_strdup (repr->content);
+	if (repr->content != NULL) new->content = g_strdup (repr->content);
 
-	n = 0;
-	for (list = repr->children; list != NULL; list = list->next) {
-		child = (SPRepr *) list->data;
-		newchild = sp_repr_copy (child);
-		g_assert (newchild != NULL);
-		sp_repr_add_child (new, newchild, n);
-		sp_repr_unref (newchild);
-		n++;
+	lastchild = NULL;
+	for (child = repr->children; child != NULL; child = child->next) {
+		SPRepr * newchild;
+		newchild = sp_repr_duplicate (child);
+		newchild->parent = new;
+		if (lastchild) {
+			lastchild->next = newchild;
+		} else {
+			new->children = newchild;
+		}
+		lastchild = newchild;
 	}
 
-	g_hash_table_foreach (repr->attr, sp_repr_hash_copy, new->attr);
+	lastattr = NULL;
+	for (attr = repr->attributes; attr != NULL; attr = attr->next) {
+		SPReprAttr * newattr;
+		newattr = sp_attribute_alloc ();
+		newattr->next = NULL;
+		newattr->key = attr->key;
+		newattr->value = g_strdup (attr->value);
+		if (lastattr) {
+			lastattr->next = newattr;
+		} else {
+			new->attributes = newattr;
+		}
+		lastattr = newattr;
+	}
 
 	return new;
 }
@@ -245,29 +125,26 @@ sp_repr_name (SPRepr * repr)
 gint
 sp_repr_set_content (SPRepr * repr, const gchar * content)
 {
+	SPReprListener * rl;
 	gboolean allowed;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
-	g_return_val_if_fail (SP_IS_REPR (repr), FALSE);
 
 	allowed = TRUE;
-
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[CHANGE_CONTENT],
-		content,
-		&allowed);
+	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
+		if (rl->vector->change_content) allowed = (* rl->vector->change_content) (repr, content, rl->data);
+	}
 
 	if (allowed) {
 		if (repr->content) g_free (repr->content);
-
 		if (content) {
 			repr->content = g_strdup (content);
 		} else {
 			repr->content = NULL;
 		}
-
-		gtk_signal_emit (GTK_OBJECT (repr),
-			repr_signals[CONTENT_CHANGED]);
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->content_changed) (* rl->vector->content_changed) (repr, rl->data);
+		}
 	}
 
 	return allowed;
@@ -281,176 +158,301 @@ sp_repr_content (SPRepr * repr)
 	return repr->content;
 }
 
-gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
-{
-	gboolean allowed;
-	GQuark q;
-	gchar * old_value;
-
-	g_return_val_if_fail (repr != NULL, FALSE);
-	g_return_val_if_fail (SP_IS_REPR (repr), FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
-
-	allowed = TRUE;
-
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[CHANGE_ATTR],
-		key,
-		value,
-		&allowed);
-
-	if (allowed) {
-		q = g_quark_from_string (key);
-		old_value = g_hash_table_lookup (repr->attr, GINT_TO_POINTER (q));
-
-		if (value == NULL) {
-			g_hash_table_remove (repr->attr, GINT_TO_POINTER (q));
-		} else {
-			g_hash_table_insert (repr->attr, GINT_TO_POINTER (q), g_strdup (value));
-		}
-
-		if (old_value) g_free (old_value);
-
-		gtk_signal_emit (GTK_OBJECT (repr),
-			repr_signals[ATTR_CHANGED],
-			key);
-	}
-
-	return allowed;
-}
-
 const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
 {
+	SPReprAttr * ra;
 	GQuark q;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
 	q = g_quark_from_string (key);
-	return g_hash_table_lookup (repr->attr, GINT_TO_POINTER (q));
+
+	for (ra = repr->attributes; ra != NULL; ra = ra->next) if (ra->key == q) return ra->value;
+
+	return NULL;
+}
+
+gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
+{
+	SPReprAttr * prev, * attr;
+	SPReprListener * rl;
+	gboolean allowed;
+	gchar * oldval;
+	GQuark q;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (*key != '\0', FALSE);
+
+	oldval = NULL;
+	q = g_quark_from_string (key);
+	prev = NULL;
+	for (attr = repr->attributes; attr && (attr->key != q); attr = attr->next) prev = attr;
+	if (attr) oldval = attr->value;
+
+	allowed = TRUE;
+	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
+		if (rl->vector->change_attr) allowed = (* rl->vector->change_attr) (repr, key, oldval, value, rl->data);
+	}
+
+	if (allowed) {
+		if (attr) {
+			if (value) {
+				attr->value = g_strdup (value);
+			} else {
+				if (prev) {
+					prev->next = attr->next;
+				} else {
+					repr->attributes = attr->next;
+				}
+				sp_attribute_free (attr);
+			}
+		} else if (value) {
+			attr = sp_attribute_alloc ();
+			attr->next = NULL;
+			attr->key = q;
+			attr->value = g_strdup (value);
+			if (prev) {
+				prev->next = attr;
+			} else {
+				repr->attributes = attr;
+			}
+		}
+
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->attr_changed) (* rl->vector->attr_changed) (repr, key, oldval, value, rl->data);
+		}
+
+		if (oldval) g_free (oldval);
+	}
+
+	return allowed;
+}
+
+static void
+sp_repr_remove_attribute (SPRepr * repr, SPReprAttr * attr)
+{
+	g_assert (repr != NULL);
+	g_assert (attr != NULL);
+
+	if (attr == repr->attributes) {
+		repr->attributes = attr->next;
+	} else {
+		SPReprAttr * prev;
+		prev = repr->attributes;
+		while (prev->next != attr) {
+			prev = prev->next;
+			g_assert (prev != NULL);
+		}
+		prev->next = attr->next;
+	}
+
+	g_free (attr->value);
+	sp_attribute_free (attr);
 }
 
 SPRepr *
 sp_repr_parent (SPRepr * repr)
 {
 	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
 
 	return repr->parent;
 }
 
-const GList *
-sp_repr_children (SPRepr * repr)
+void sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref)
 {
-	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
+	SPReprListener * rl;
 
-	return repr->children;
-}
-
-void sp_repr_add_child (SPRepr * repr, SPRepr * child, gint position)
-{
 	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
 	g_assert (child != NULL);
-	g_assert (SP_IS_REPR (child));
+	g_assert (!ref || ref->parent == repr);
 	g_assert (child->parent == NULL);
-	g_assert (position >= 0);
-	g_assert (position <= g_list_length (repr->children));
 
-	repr->children = g_list_insert (repr->children, child, position);
+	if (ref != NULL) {
+		child->next = ref->next;
+		ref->next = child;
+	} else {
+		child->next = repr->children;
+		repr->children = child;
+	}
+
 	child->parent = repr;
 	sp_repr_ref (child);
 
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[CHILD_ADDED],
-		child);
+	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+		if (rl->vector->child_added) (* rl->vector->child_added) (repr, child, ref, rl->data);
+	}
 }
 
 void
 sp_repr_remove_child (SPRepr * repr, SPRepr * child)
 {
+	SPReprListener * rl;
+
 	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
 	g_assert (child != NULL);
-	g_assert (SP_IS_REPR (child));
 	g_assert (child->parent == repr);
 
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[REMOVE_CHILD],
-		child);
+	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+		if (rl->vector->remove_child) (* rl->vector->remove_child) (repr, child, rl->data);
+	}
 
-	repr->children = g_list_remove (repr->children, child);
+	if (child == repr->children) {
+		repr->children = child->next;
+	} else {
+		SPRepr * last;
+		last = repr->children;
+		while (last->next != child) last = last->next;
+		last->next = child->next;
+	}
+
 	child->parent = NULL;
+	child->next = NULL;
 	sp_repr_unref (child);
+}
+
+void
+sp_repr_change_order (SPRepr * repr, SPRepr * child, SPRepr * ref)
+{
+	SPRepr * prev;
+	SPReprListener * rl;
+	gint allowed;
+
+	prev = NULL;
+	if (child != repr->children) {
+		SPRepr * cur;
+		for (cur = repr->children; cur != child; cur = cur->next) prev = cur;
+	}
+
+	if (prev == ref) return;
+
+	allowed = TRUE;
+	for (rl = repr->listeners; rl && allowed; rl = rl->next) {
+		if (rl->vector->change_order) allowed = (* rl->vector->change_order) (repr, child, prev, ref, rl->data);
+	}
+
+	if (allowed) {
+		if (prev) {
+			prev->next = child->next;
+		} else {
+			repr->children = child->next;
+		}
+		if (ref) {
+			child->next = ref->next;
+			ref->next = child;
+		} else {
+			child->next = repr->children;
+			repr->children = child;
+		}
+
+		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+			if (rl->vector->order_changed) (* rl->vector->order_changed) (repr, child, prev, ref, rl->data);
+		}
+	}
 }
 
 void
 sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 {
 	SPRepr * parent;
-	gint allowed;
-	gint nsiblings;
-
-	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
-	g_assert (repr->parent != NULL);
+	SPRepr * ref, * cur;
 
 	parent = repr->parent;
 
-	nsiblings = g_list_length (parent->children);
-	if ((pos < 0) || (pos >= nsiblings)) pos = nsiblings - 1;
-	if (pos == sp_repr_position (repr)) return;
+	if (pos < 0) pos = G_MAXINT;
 
-	allowed = TRUE;
-
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[CHANGE_ORDER],
-		pos,
-		&allowed);
-
-	if (!allowed) return;
-
-	parent->children = g_list_remove (parent->children, repr);
-	parent->children = g_list_insert (parent->children, repr, pos);
-
-	gtk_signal_emit (GTK_OBJECT (repr),
-		repr_signals[ORDER_CHANGED]);
-}
-
-
-void
-sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data)
-{
-	static gboolean warned = FALSE;
-
-	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
-	g_assert (name != NULL);
-	g_assert (data != NULL);
-	g_assert (GTK_IS_OBJECT (data));
-
-	if (!warned) {
-		g_warning ("implement signal setting in sp-object");
-		warned = TRUE;
+	ref = NULL;
+	cur = parent->children;
+	while (pos > 0 && cur) {
+		ref = cur;
+		cur = cur->next;
+		pos -= 1;
 	}
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (repr), name,
-		GTK_SIGNAL_FUNC (func), data, GTK_OBJECT (data));
+	if (ref == repr) {
+		ref = repr->next;
+		if (!ref) return;
+	}
+
+	sp_repr_change_order (parent, repr, ref);
 }
 
-GList *
-sp_repr_attributes (SPRepr * repr)
+void
+sp_repr_add_listener (SPRepr * repr, SPReprEventVector * vector, gpointer data)
 {
-	GList * listptr;
+	SPReprListener * rl, * last;
 
 	g_assert (repr != NULL);
+	g_assert (vector != NULL);
 
-	listptr = NULL;
+	last = NULL;
+	if (repr->listeners) {
+		last = repr->listeners;
+		while (last->next) last = last->next;
+	}
 
-	g_hash_table_foreach (repr->attr, sp_repr_attr_to_list, &listptr);
+	rl = sp_listener_alloc ();
+	rl->next = NULL;
+	rl->vector = vector;
+	rl->data = data;
 
-	return listptr;
+	if (last) {
+		last->next = rl;
+	} else {
+		repr->listeners = rl;
+	}
+}
+
+static void
+sp_node_remove_listener (SPNode *node, SPListener *listener)
+{
+	if (listener == node->listeners) {
+		node->listeners = listener->next;
+	} else {
+		SPListener *prev;
+		prev = node->listeners;
+		while (prev->next != listener) prev = prev->next;
+		prev->next = listener->next;
+	}
+
+	sp_listener_free (listener);
+}
+
+void
+sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data)
+{
+	SPReprListener * last, * rl;
+
+	last = NULL;
+	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
+		if (rl->data == data) {
+			if (last) {
+				last->next = rl->next;
+			} else {
+				repr->listeners = rl->next;
+			}
+			sp_listener_free (rl);
+			return;
+		}
+		last = rl;
+		rl = rl->next;
+	}
+}
+
+SPRepr *
+sp_repr_nth_child (SPRepr * repr, gint n)
+{
+	SPRepr * child;
+
+	child = repr->children;
+
+	while (n > 0 && child) {
+		child = child->next;
+		n -= 1;
+	}
+
+	return child;
 }
 
 /* Documents - 1st step in migrating to real XML */
@@ -494,16 +496,14 @@ sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
 	SPRepr * rdoc;
 
 	g_assert (doc != NULL);
-	g_assert (SP_IS_REPR (doc));
 	g_assert (repr != NULL);
-	g_assert (SP_IS_REPR (repr));
 
-	rdoc = SP_REPR (doc);
+	rdoc = (SPRepr *) doc;
 
 	g_assert (rdoc->children != NULL);
 
-	sp_repr_remove_child (rdoc, SP_REPR (rdoc->children->data));
-	sp_repr_add_child (rdoc, repr, 0);
+	sp_repr_remove_child (rdoc, rdoc->children);
+	sp_repr_add_child (rdoc, repr, NULL);
 }
 
 SPReprDoc *
@@ -520,53 +520,99 @@ sp_repr_document_root (SPReprDoc * doc)
 {
 	SPRepr * repr;
 
-	repr = SP_REPR (doc);
+	repr = (SPRepr *) doc;
 	g_return_val_if_fail (repr->children != NULL, NULL);
 
-	return SP_REPR (repr->children->data);
+	return repr->children;
 }
 
 
 /* Helpers */
+#define SP_NODE_ALLOC_SIZE 32
+static SPNode *free_node = NULL;
 
-static gboolean
-sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data)
+static SPNode *
+sp_node_alloc (void)
 {
-	g_free (value);
+	SPNode *node;
+	gint i;
 
-	return TRUE;
+	if (free_node) {
+		node = free_node;
+		free_node = free_node->next;
+	} else {
+		node = g_new (SPNode, SP_NODE_ALLOC_SIZE);
+		for (i = 1; i < SP_NODE_ALLOC_SIZE - 1; i++) node[i].next = node + i + 1;
+		node[SP_NODE_ALLOC_SIZE - 1].next = NULL;
+		free_node = node + 1;
+	}
+
+	return node;
 }
 
 static void
-sp_repr_attr_to_list (gpointer key, gpointer value, gpointer user_data)
+sp_node_free (SPNode *node)
 {
-	GList ** ptr;
+	node->next = free_node;
+	free_node = node;
+}
 
-	ptr = (GList **) user_data;
+#define SP_ATTRIBUTE_ALLOC_SIZE 32
+static SPAttribute *free_attribute = NULL;
 
-	* ptr = g_list_prepend (* ptr, g_quark_to_string (GPOINTER_TO_INT (key)));
+static SPAttribute *
+sp_attribute_alloc (void)
+{
+	SPAttribute *attribute;
+	gint i;
+
+	if (free_attribute) {
+		attribute = free_attribute;
+		free_attribute = free_attribute->next;
+	} else {
+		attribute = g_new (SPAttribute, SP_ATTRIBUTE_ALLOC_SIZE);
+		for (i = 1; i < SP_ATTRIBUTE_ALLOC_SIZE - 1; i++) attribute[i].next = attribute + i + 1;
+		attribute[SP_ATTRIBUTE_ALLOC_SIZE - 1].next = NULL;
+		free_attribute = attribute + 1;
+	}
+
+	return attribute;
 }
 
 static void
-sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash)
+sp_attribute_free (SPAttribute *attribute)
 {
-	g_hash_table_insert (new_hash, key, g_strdup (value));
+	attribute->next = free_attribute;
+	free_attribute = attribute;
 }
 
-/* This is not in Gtk+ :-( */
+#define SP_LISTENER_ALLOC_SIZE 32
+static SPListener *free_listener = NULL;
 
-static void sp_marshal_BOOL__POINTER_POINTER (GtkObject    *object, 
-                            GtkSignalFunc func, 
-                            gpointer      func_data, 
-                            GtkArg       *args)
+static SPListener *
+sp_listener_alloc (void)
 {
-  GtkSignal_BOOL__POINTER_POINTER rfunc;
-  gboolean  *return_val;
-  return_val = GTK_RETLOC_BOOL (args[2]);
-  rfunc = (GtkSignal_BOOL__POINTER_POINTER) func;
-  *return_val =  (* rfunc) (object,
-                      GTK_VALUE_POINTER(args[0]),
-                      GTK_VALUE_POINTER(args[1]),
-                             func_data);
+	SPListener *listener;
+	gint i;
+
+	if (free_listener) {
+		listener = free_listener;
+		free_listener = free_listener->next;
+	} else {
+		listener = g_new (SPListener, SP_LISTENER_ALLOC_SIZE);
+		for (i = 1; i < SP_LISTENER_ALLOC_SIZE - 1; i++) listener[i].next = listener + i + 1;
+		listener[SP_LISTENER_ALLOC_SIZE - 1].next = NULL;
+		free_listener = listener + 1;
+	}
+
+	return listener;
 }
+
+static void
+sp_listener_free (SPListener *listener)
+{
+	listener->next = free_listener;
+	free_listener = listener;
+}
+
 

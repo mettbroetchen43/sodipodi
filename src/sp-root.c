@@ -25,7 +25,7 @@ static void sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id);
 
 static void sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_root_read_attr (SPObject * object, const gchar * key);
-static void sp_root_add_child (SPObject * object, SPRepr * child);
+static void sp_root_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_root_remove_child (SPObject * object, SPRepr * child);
 
 static void sp_root_print (SPItem * item, GnomePrintContext * gpc);
@@ -74,7 +74,7 @@ sp_root_class_init (SPRootClass *klass)
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->read_attr = sp_root_read_attr;
-	sp_object_class->add_child = sp_root_add_child;
+	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
 
 	item_class->print = sp_root_print;
@@ -132,7 +132,7 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPGroup * group;
 	SPRoot * root;
-	GSList * l;
+	SPObject * o;
 
 	group = (SPGroup *) object;
 	root = (SPRoot *) object;
@@ -144,9 +144,9 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_root_read_attr (object, "height");
 	sp_root_read_attr (object, "viewBox");
 
-	for (l = group->other; l != NULL; l = l->next) {
-		if (SP_IS_NAMEDVIEW (l->data)) {
-			root->namedviews = g_slist_prepend (root->namedviews, l->data);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_NAMEDVIEW (o)) {
+			root->namedviews = g_slist_prepend (root->namedviews, o);
 		}
 	}
 
@@ -243,7 +243,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 }
 
 static void
-sp_root_add_child (SPObject * object, SPRepr * child)
+sp_root_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
 	SPRoot * root;
 	SPObject * co;
@@ -251,10 +251,8 @@ sp_root_add_child (SPObject * object, SPRepr * child)
 
 	root = (SPRoot *) object;
 
-	if (SP_OBJECT_CLASS (parent_class)->add_child)
-		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
-
-	/* Hope, parent invoked children's ::build method */
+	if (((SPObjectClass *) (parent_class))->child_added)
+		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
 	id = sp_repr_attr (child, "id");
 	co = sp_document_lookup_id (object->document, id);
@@ -282,8 +280,8 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 		root->namedviews = g_slist_remove (root->namedviews, co);
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->remove_child)
-		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child)
+		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
 }
 

@@ -7,6 +7,7 @@
 #include <string.h>
 #include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
+#include "xml/repr-private.h"
 #include "sp-gradient.h"
 
 static void sp_stop_class_init (SPStopClass * klass);
@@ -201,7 +202,6 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 	SPRepr * crepr;
 	SPObject * child;
 	const gchar * cname;
-	const GList * l;
 
 	lg = SP_LINEARGRADIENT (object);
 
@@ -216,17 +216,13 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 	sp_lineargradient_read_attr (object, "y2");
 	sp_lineargradient_read_attr (object, "spreadMethod");
 
-	l = sp_repr_children (repr);
-
-	while (l != NULL) {
-		crepr = (SPRepr *) l->data;
+	for (crepr = repr->children; crepr != NULL; crepr = crepr->next) {
 		cname = sp_repr_name (crepr);
 		if (strcmp (cname, "stop") == 0) {
 			child = gtk_type_new (SP_TYPE_STOP);
 			child->parent = object;
 			lg->stops = g_slist_append (lg->stops, child);
 			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
-			l = l->next;
 		}
 	}
 }

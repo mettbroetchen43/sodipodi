@@ -406,8 +406,9 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 {
 	SPGroup * group;
 	SPItem * child;
+	SPObject * o;
 	ArtDRect b;
-	GSList * s, * l;
+	GSList * s;
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
@@ -418,12 +419,14 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 
 	s = NULL;
 
-	for (l = group->children; l != NULL; l = l->next) {
-		child = SP_ITEM (l->data);
-		sp_item_bbox (child, &b);
-		if ((b.x0 > box->x0) && (b.x1 < box->x1) &&
-		    (b.y0 > box->y0) && (b.y1 < box->y1)) {
-			s = g_slist_append (s, child);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) {
+			child = SP_ITEM (o);
+			sp_item_bbox (child, &b);
+			if ((b.x0 > box->x0) && (b.x1 < box->x1) &&
+			    (b.y0 > box->y0) && (b.y1 < box->y1)) {
+				s = g_slist_append (s, child);
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 #define SP_OBJECTGROUP_C
 
+#include "xml/repr-private.h"
 #include "sp-object-group.h"
 #include "sp-object-repr.h"
 
@@ -8,9 +9,11 @@ static void sp_objectgroup_init (SPObjectGroup *objectgroup);
 static void sp_objectgroup_destroy (GtkObject *object);
 
 static void sp_objectgroup_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_objectgroup_add_child (SPObject * object, SPRepr * child);
+static void sp_objectgroup_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_objectgroup_remove_child (SPObject * object, SPRepr * child);
-static void sp_objectgroup_set_order (SPObject * object);
+static void sp_objectgroup_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+
+static SPObject * sp_objectgroup_get_child_by_repr (SPObjectGroup * og, SPRepr * repr);
 
 static SPObjectClass * parent_class;
 
@@ -48,9 +51,9 @@ sp_objectgroup_class_init (SPObjectGroupClass *klass)
 	gtk_object_class->destroy = sp_objectgroup_destroy;
 
 	sp_object_class->build = sp_objectgroup_build;
-	sp_object_class->add_child = sp_objectgroup_add_child;
+	sp_object_class->child_added = sp_objectgroup_child_added;
 	sp_object_class->remove_child = sp_objectgroup_remove_child;
-	sp_object_class->set_order = sp_objectgroup_set_order;
+	sp_object_class->order_changed = sp_objectgroup_order_changed;
 }
 
 static void
@@ -63,133 +66,146 @@ sp_objectgroup_init (SPObjectGroup *objectgroup)
 static void
 sp_objectgroup_destroy (GtkObject *object)
 {
-	SPObjectGroup * objectgroup;
-	SPObject * spobject;
+	SPObjectGroup * og;
 
-	objectgroup = SP_OBJECTGROUP (object);
+	og = SP_OBJECTGROUP (object);
 
-	while (objectgroup->children) {
-		spobject = SP_OBJECT (objectgroup->children->data);
-		spobject->parent = NULL;
-		gtk_object_unref ((GtkObject *) spobject);
-		objectgroup->children = g_slist_remove_link (objectgroup->children, objectgroup->children);
+	while (og->children) {
+		SPObject * child;
+		child = og->children;
+		child->parent = NULL;
+		child->next = NULL;
+		og->children = child->next;
+		gtk_object_unref (GTK_OBJECT (child));
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (((GtkObjectClass *) (parent_class))->destroy)
+		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
 static void sp_objectgroup_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-	SPObjectGroup * objectgroup;
-	const GList * l;
-	SPRepr * crepr;
-	const gchar * name;
-	GtkType type;
-	SPObject * child;
+	SPObjectGroup * og;
+	SPObject * last;
+	SPRepr * rchild;
 
-	objectgroup = SP_OBJECTGROUP (object);
+	og = SP_OBJECTGROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+	if (((SPObjectClass *) (parent_class))->build)
+		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	l = sp_repr_children (repr);
-
-	while (l != NULL) {
-		crepr = (SPRepr *) l->data;
-		name = sp_repr_name (crepr);
-		g_assert (name != NULL);
-		type = sp_object_type_lookup (name);
-		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-			child = gtk_type_new (type);
-			child->parent = object;
-			objectgroup->children = g_slist_append (objectgroup->children, child);
-			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
+	last = NULL;
+	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
+		GtkType type;
+		SPObject * child;
+		type = sp_object_type_lookup (sp_repr_name (rchild));
+		child = gtk_type_new (type);
+		child->parent = object;
+		if (last) {
+			last->next = child;
+		} else {
+			og->children = child;
 		}
-		l = l->next;
+		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+		last = child;
 	}
 }
 
 static void
-sp_objectgroup_add_child (SPObject * object, SPRepr * child)
+sp_objectgroup_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
-	SPObjectGroup * objectgroup;
-	const gchar * name;
+	SPObjectGroup * og;
 	GtkType type;
-	SPObject * childobject;
+	SPObject * ochild, * prev;
 
-	objectgroup = SP_OBJECTGROUP (object);
+	og = SP_OBJECTGROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->add_child)
-		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->child_added)
+		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	name = sp_repr_name (child);
-	g_assert (name != NULL);
-	type = sp_object_type_lookup (name);
-	g_return_if_fail (type > GTK_TYPE_NONE);
+	type = sp_object_type_lookup (sp_repr_name (child));
+	ochild = gtk_type_new (type);
+	ochild->parent = object;
 
-	childobject = gtk_type_new (type);
-	childobject->parent = object;
+	prev = sp_objectgroup_get_child_by_repr (og, ref);
 
-	objectgroup->children = g_slist_append (objectgroup->children, childobject);
-	sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
+	if (!prev) {
+		ochild->next = og->children;
+		og->children = ochild;
+	} else {
+		ochild->next = prev->next;
+		prev->next = ochild;
+	}
 
-	sp_objectgroup_set_order (object);
+	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 }
 
 static void
 sp_objectgroup_remove_child (SPObject * object, SPRepr * child)
 {
-	SPObjectGroup * objectgroup;
-	GSList * l;
-	SPObject * childobject;
+	SPObjectGroup * og;
+	SPObject * prev, * ochild;
 
-	objectgroup = SP_OBJECTGROUP (object);
+	og = SP_OBJECTGROUP (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->remove_child)
-		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child)
+		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
-	for (l = objectgroup->children; l != NULL; l = l->next) {
-		childobject = (SPObject *) l->data;
-		if (childobject->repr == child) {
-			objectgroup->children = g_slist_remove (objectgroup->children, childobject);
-			childobject->parent = NULL;
-			gtk_object_unref (GTK_OBJECT (childobject));
-			return;
-		}
+	prev = NULL;
+	ochild = og->children;
+	while (ochild && ochild->repr != child) {
+		prev = ochild;
+		ochild = ochild->next;
 	}
 
-	g_assert_not_reached ();
+	if (prev) {
+		prev->next = ochild->next;
+	} else {
+		og->children = ochild->next;
+	}
+	ochild->parent = NULL;
+	ochild->next = NULL;
+	gtk_object_unref (GTK_OBJECT (ochild));
 }
-
-static gint
-sp_objectgroup_compare_children_pos (gconstpointer a, gconstpointer b)
-{
-	return sp_repr_compare_position (SP_OBJECT (a)->repr, SP_OBJECT (b)->repr);
-}
-
-/* fixme: all this is horribly ineffective */
 
 static void
-sp_objectgroup_set_order (SPObject * object)
+sp_objectgroup_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new)
 {
-	SPObjectGroup * objectgroup;
-	GSList * neworder;
-	GSList * l;
+	SPObjectGroup * og;
+	SPObject * ochild, * oold, * onew;
 
-	objectgroup = SP_OBJECTGROUP (object);
+	og = SP_OBJECTGROUP (object);
 
-	neworder = g_slist_copy (objectgroup->children);
-	neworder = g_slist_sort (neworder, sp_objectgroup_compare_children_pos);
+	if (((SPObjectClass *) (parent_class))->order_changed)
+		(* ((SPObjectClass *) (parent_class))->order_changed) (object, child, old, new);
 
-	for (l = neworder; l != NULL; l = l->next) {
-		if (l->data == objectgroup->children->data) {
-			objectgroup->children = g_slist_remove (objectgroup->children, objectgroup->children->data);
-		} else {
-			objectgroup->children = g_slist_remove (objectgroup->children, l->data);
-		}
+	ochild = sp_objectgroup_get_child_by_repr (og, child);
+	oold = sp_objectgroup_get_child_by_repr (og, old);
+	onew = sp_objectgroup_get_child_by_repr (og, new);
+
+	if (oold) {
+		oold->next = ochild->next;
+	} else {
+		og->children = ochild->next;
 	}
-
-	objectgroup->children = neworder;
+	if (onew) {
+		ochild->next = onew->next;
+		onew->next = ochild;
+	} else {
+		ochild->next = og->children;
+		og->children = ochild;
+	}
 }
 
+static SPObject *
+sp_objectgroup_get_child_by_repr (SPObjectGroup * og, SPRepr * repr)
+{
+	SPObject * o;
+
+	if (!repr) return NULL;
+
+	o = og->children;
+	while (o->repr != repr) o = o->next;
+
+	return o;
+}

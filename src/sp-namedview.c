@@ -19,7 +19,7 @@ static void sp_namedview_destroy (GtkObject * object);
 
 static void sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_namedview_read_attr (SPObject * object, const gchar * key);
-static void sp_namedview_add_child (SPObject * object, SPRepr * child);
+static void sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_namedview_remove_child (SPObject * object, SPRepr * child);
 
 static void sp_namedview_setup_grid (SPNamedView * nv);
@@ -62,7 +62,7 @@ sp_namedview_class_init (SPNamedViewClass * klass)
 
 	sp_object_class->build = sp_namedview_build;
 	sp_object_class->read_attr = sp_namedview_read_attr;
-	sp_object_class->add_child = sp_namedview_add_child;
+	sp_object_class->child_added = sp_namedview_child_added;
 	sp_object_class->remove_child = sp_namedview_remove_child;
 }
 
@@ -112,7 +112,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPNamedView * nv;
 	SPObjectGroup * og;
-	GSList * l;
+        SPObject * o;
 
 	nv = (SPNamedView *) object;
 	og = (SPObjectGroup *) object;
@@ -140,10 +140,10 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	/* Construct guideline list */
 
-	for (l = og->children; l != NULL; l = l->next) {
-		if (SP_IS_GUIDE (l->data)) {
+	for (o = og->children; o != NULL; o = o->next) {
+		if (SP_IS_GUIDE (o)) {
 			SPGuide * g;
-			g = (SPGuide *) l->data;
+			g = SP_GUIDE (o);
 			if (g->orientation == SP_GUIDE_HORIZONTAL) {
 				nv->hguides = g_slist_prepend (nv->hguides, g);
 			} else {
@@ -300,7 +300,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 }
 
 static void
-sp_namedview_add_child (SPObject * object, SPRepr * child)
+sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
 	SPNamedView * nv;
 	SPObject * no;
@@ -309,11 +309,10 @@ sp_namedview_add_child (SPObject * object, SPRepr * child)
 
 	nv = (SPNamedView *) object;
 
-	if (((SPObjectClass *) (parent_class))->add_child)
-		(* ((SPObjectClass *) (parent_class))->add_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->child_added)
+		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
 	id = sp_repr_attr (child, "id");
-
 	no = sp_document_lookup_id (object->document, id);
 	g_assert (SP_IS_OBJECT (no));
 
@@ -345,7 +344,6 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 	nv = (SPNamedView *) object;
 
 	id = sp_repr_attr (child, "id");
-
 	no = sp_document_lookup_id (object->document, id);
 	g_assert (no != NULL);
 
