@@ -1,4 +1,16 @@
-#define SP_TEXT_EDIT_C
+#define __SP_TEXT_EDIT_C__
+
+/*
+ * Text editing dialog
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <gnome.h>
 #include <glade/glade.h>
@@ -180,7 +192,7 @@ sp_text_dialog_apply (GtkButton * button, gpointer data)
 
 	size = gnome_font_get_size (font);
 	snprintf (c, 64, "%f", size);
-	sp_repr_css_set_property (css, "font-size", str);
+	sp_repr_css_set_property (css, "font-size", c);
 
 	gnome_font_unref (font);
 

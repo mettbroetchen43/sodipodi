@@ -1,5 +1,7 @@
 2002-08-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c (sp_text_dialog_apply): Oops, set size, not some crap here
+
 	* src/sp-chars.c (sp_chars_do_print): New direct method
 	(sp_chars_print_bpath): Helper
 
