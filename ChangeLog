@@ -1,5 +1,10 @@
 2003-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-item.c (sp_item_update): Set arena item transform here
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_update_repr): Made non-recursive
+	(sp_fill_style_widget_update): Ditto
+
 	* src/sp-shape.c (sp_shape_write_transform): Working path tranformation optimizer
 
 	* src/widgets/sp-color-slider.c (sp_color_slider_adjustment_value_changed): Add
