@@ -10,6 +10,8 @@
  * Licensed under GNU GPL
  */
 
+#include "config.h"
+
 #include <math.h>
 
 #include "sp-rect.h"
@@ -18,10 +20,6 @@
 #include "sp-spiral.h"
 
 #include "object-edit.h"
-
-#ifndef M_PI_4
-#define M_PI_4 0.7853981633974483096
-#endif
 
 #define sp_round(v,m) (((v) < 0.0) ? ((ceil ((v) / (m) - 0.5)) * (m)) : ((floor ((v) / (m) + 0.5)) * (m)))
 

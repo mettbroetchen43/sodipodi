@@ -9,6 +9,8 @@
  * This code is in public domain
  */
 
+#define USE_TIMER
+
 #include <config.h>
 
 #include <libnr/nr-macros.h>
@@ -86,6 +88,34 @@ sp_module_print_win32_finalize (GObject *object)
 	G_OBJECT_CLASS (print_win32_parent_class)->finalize (object);
 }
 
+#ifdef USE_TIMER
+
+#define SP_FOREIGN_MAX_ITER 10
+
+VOID CALLBACK
+sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	int cdown = 0;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+}
+
+UINT_PTR CALLBACK
+sp_w32_print_hook (HWND hdlg, UINT uiMsg, WPARAM wParam, LPARAM lParam)
+{
+#if 0
+	int cdown = 0;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+#endif
+	return 0;
+}
+#endif
+
 static unsigned int
 sp_module_print_win32_setup (SPModulePrint *mod)
 {
@@ -104,10 +134,24 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 		0, /* lCustData */
 		NULL, NULL, NULL, NULL, NULL, NULL
 	};
+#ifdef USE_TIMER
+	UINT_PTR timer;
+#endif
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
+#ifdef USE_TIMER
+	pd.Flags |= PD_ENABLEPRINTHOOK;
+	pd.lpfnPrintHook = sp_w32_print_hook;
+	timer = SetTimer (NULL, 0, 40, sp_win32_timer);
+#endif
+
 	res = PrintDlg (&pd);
+
+#ifdef USE_TIMER
+	KillTimer (NULL, timer);
+#endif
+
 	if (!res) return FALSE;
 
 	w32mod->hDC = pd.hDC;
@@ -255,7 +299,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		bmInfo.bmiHeader.biHeight = -num_rows;
 
 		res = SetDIBitsToDevice (w32mod->hDC,
-						   0, 0, width, num_rows,
+						   0, row, width, num_rows,
 						   0, 0, 0, num_rows, px, &bmInfo, DIB_RGB_COLORS);
 
 		/* Blitter ends here */
@@ -275,3 +319,74 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 	return 0;
 }
 
+#if 0
+void
+SPKDEBridge::EventHook (void) {
+	int cdown = 0;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+}
+
+void
+SPKDEBridge::TimerHook (void) {
+	int cdown = 10;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+}
+
+static KApplication *KDESodipodi = NULL;
+static SPKDEBridge *Bridge = NULL;
+static bool SPKDEModal = FALSE;
+
+static void
+sp_kde_gdk_event_handler (GdkEvent *event)
+{
+	if (SPKDEModal) {
+		// KDE widget is modal, filter events
+		switch (event->type) {
+		case GDK_NOTHING:
+		case GDK_DELETE:
+		case GDK_SCROLL:
+		case GDK_BUTTON_PRESS:
+		case GDK_2BUTTON_PRESS:
+		case GDK_3BUTTON_PRESS:
+		case GDK_BUTTON_RELEASE:
+		case GDK_KEY_PRESS:
+		case GDK_KEY_RELEASE:
+		case GDK_DRAG_STATUS:
+		case GDK_DRAG_ENTER:
+		case GDK_DRAG_LEAVE:
+		case GDK_DRAG_MOTION:
+		case GDK_DROP_START:
+		case GDK_DROP_FINISHED:
+			return;
+			break;
+		default:
+			break;
+		}
+	}
+	gtk_main_do_event (event);
+}
+
+void
+sp_kde_init (int argc, char **argv, const char *name)
+{
+	KDESodipodi = new KApplication (argc, argv, name);
+	Bridge = new SPKDEBridge ("KDE Bridge");
+
+	QObject::connect (KDESodipodi, SIGNAL (guiThreadAwake ()), Bridge, SLOT (EventHook ()));
+
+	gdk_event_handler_set ((GdkEventFunc) sp_kde_gdk_event_handler, NULL, NULL);
+}
+
+void
+sp_kde_finish (void)
+{
+	delete Bridge;
+	delete KDESodipodi;
+}
+#endif
