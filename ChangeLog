@@ -1,3 +1,9 @@
+2000-04-29  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/dialogs/xml-tree.c (sp_xml_tree_change_attribute_long):
+	new function to change long attribute (GtkEntry does not like
+	long strings). Also attribute changing in xml pushes Undo stack.
+
 2000-04-28  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* glade/Makefile.am: Added xml-tree.glade
