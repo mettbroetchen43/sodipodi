@@ -294,6 +294,9 @@ sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	ictx = (SPItemCtx *) ctx;
 	cctx = *ictx;
 
+	if (((SPObjectClass *) (parent_class))->update)
+		((SPObjectClass *) (parent_class))->update (object, ctx, flags);
+
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 

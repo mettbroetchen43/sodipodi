@@ -69,7 +69,6 @@ sp_seltrans_handle_event (SPKnot *knot, GdkEvent *event, gpointer data)
 		}
 		break;
 	default:
-		g_print ("Event type %d occured\n", event->type);
 		break;
 	}
 

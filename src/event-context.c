@@ -354,7 +354,9 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 	    ret= TRUE;
 	    break;
           }
-          g_print ("What a funny key: %d \n", event->key.keyval);
+#if 0
+		g_print ("What a funny key: %d \n", event->key.keyval);
+#endif
           break;
 	default:
 		break;

@@ -243,7 +243,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			sp_item_set_item_transform (item, NULL);
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	}
 	case SP_PROP_CLIP_PATH: {

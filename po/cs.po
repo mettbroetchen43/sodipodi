@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
-"POT-Creation-Date: 2003-01-28 21:19+0200\n"
+"POT-Creation-Date: 2003-02-07 21:34+0200\n"
 "PO-Revision-Date: 2003-01-21 23:55GMT\n"
 "Last-Translator: Michal Bukovjan <bukm@centrum.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -19,21 +19,21 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:672
+#: src/desktop.c:673
 msgid "Whether zoom follows window size"
 msgstr "Zda-li zvětšení sleduje velikost okna"
 
-#: src/desktop.c:751
+#: src/desktop.c:752
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:872
+#: src/desktop.c:873
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
-#: src/dialogs/align.c:120 src/toolbox.c:407
+#: src/dialogs/align.c:120 src/toolbox.c:384
 msgid "Align objects"
 msgstr "Zarovnat objekty"
 
@@ -93,16 +93,16 @@ msgstr "Nejmenší položka"
 
 #: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
 #: src/dialogs/document-properties.c:164 src/dialogs/export.c:126
-#: src/interface.c:361
+#: src/interface.c:360
 msgid "Page"
 msgstr "Strana"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:360
+#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:359
 msgid "Drawing"
 msgstr "Kresba"
 
-#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:359
-#: src/interface.c:498 src/toolbox.c:446
+#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:358
+#: src/interface.c:497 src/toolbox.c:423
 msgid "Selection"
 msgstr "Výběr"
 
@@ -259,8 +259,8 @@ msgstr "Jednotky:"
 #: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
 #: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
 #: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
-#: src/dialogs/stroke-style.c:540 src/dialogs/tool-attributes.c:120
-#: src/dyna-draw-context.c:1074
+#: src/dialogs/stroke-style.c:541 src/dialogs/tool-attributes.c:120
+#: src/dyna-draw-context.c:1075
 msgid "Width:"
 msgstr "Šířka:"
 
@@ -310,7 +310,7 @@ msgstr "dpi"
 msgid "Export png file"
 msgstr "Exportovat soubor PNG"
 
-#: src/dialogs/export.c:235 src/interface.c:221
+#: src/dialogs/export.c:235 src/interface.c:220
 msgid "Export"
 msgstr "Export"
 
@@ -538,7 +538,7 @@ msgstr "Volná ruka a pero"
 msgid "Calligraphic line"
 msgstr "Kaligrafická linie"
 
-#: src/dialogs/object-properties.c:195 src/interface.c:391
+#: src/dialogs/object-properties.c:195 src/interface.c:390
 msgid "Text"
 msgstr "Text"
 
@@ -550,19 +550,19 @@ msgstr "Umístění a velikost objektu"
 msgid "Position and size"
 msgstr "Umístění a velikost"
 
-#: src/dialogs/stroke-style.c:527 src/toolbox.c:403
+#: src/dialogs/stroke-style.c:528 src/toolbox.c:380
 msgid "Stroke settings"
 msgstr "Nastavení tahu"
 
-#: src/dialogs/stroke-style.c:563
+#: src/dialogs/stroke-style.c:564
 msgid "Join:"
 msgstr "Spojení:"
 
-#: src/dialogs/stroke-style.c:606
+#: src/dialogs/stroke-style.c:607
 msgid "Cap:"
 msgstr "Víčko:"
 
-#: src/dialogs/stroke-style.c:649
+#: src/dialogs/stroke-style.c:650
 msgid "Pattern:"
 msgstr "Vzorek:"
 
@@ -619,11 +619,11 @@ msgstr "Proporce"
 msgid "Transform:"
 msgstr "Transformace:"
 
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1038
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
 msgid "Mass:"
 msgstr "Hmota:"
 
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1050
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1051
 msgid "Drag:"
 msgstr "Táhnutí:"
 
@@ -659,7 +659,7 @@ msgstr "Přesun"
 msgid "Relative move"
 msgstr "Relativní přesun"
 
-#: src/dialogs/transformation.c:540 src/interface.c:363
+#: src/dialogs/transformation.c:540 src/interface.c:362
 msgid "Scale"
 msgstr "Změnit velikost"
 
@@ -740,44 +740,44 @@ msgstr "Zrušit"
 msgid "Create"
 msgstr "Vytvořit"
 
-#: src/document.c:337
+#: src/document.c:340
 #, c-format
 msgid "New document %d"
 msgstr "Nový dokument %d"
 
-#: src/document.c:366
+#: src/document.c:369
 #, c-format
 msgid "Memory document %d"
 msgstr "Dokument v paměti %d"
 
-#: src/document.c:452
+#: src/document.c:455
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Nepojmenovaný dokument %d"
 
-#: src/dyna-draw-context.c:1062
+#: src/dyna-draw-context.c:1063
 msgid "Angle:"
 msgstr "Úhel:"
 
-#: src/dyna-draw-context.c:1086 src/rect-context.c:430
+#: src/dyna-draw-context.c:1087 src/rect-context.c:422
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
 msgstr "Výchozí"
 
-#: src/print.c:334
+#: src/print.c:333
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (název dok. %s..): Náhled tisku"
 
-#: src/print.c:357
+#: src/print.c:356
 msgid "Select printer"
 msgstr "Vyberte tiskárnu"
 
-#: src/print.c:397 src/print.c:408
+#: src/print.c:396 src/print.c:407
 msgid "Print destination"
 msgstr "Cíl tisku"
 
-#: src/print.c:415
+#: src/print.c:414
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -787,11 +787,11 @@ msgstr ""
 "Použijte '> soubor', chcete-li tisk do souboru.\n"
 "Použijte '| prog arg...', chcete-li směrovat tisk do programu"
 
-#: src/rect-context.c:406
+#: src/rect-context.c:398
 msgid "Roundness ratio for x:"
 msgstr "Poměr zaoblení pro X:"
 
-#: src/rect-context.c:418
+#: src/rect-context.c:410
 msgid "Roundness ratio for y:"
 msgstr "Poměr zaoblení pro Y:"
 
@@ -831,27 +831,27 @@ msgstr "Proporce:"
 msgid "Make sides flat"
 msgstr "Placaté strany"
 
-#: src/file.c:115
+#: src/file.c:114
 msgid "Select file to open"
 msgstr "Vyberte soubor pro otevření"
 
-#: src/file.c:203
+#: src/file.c:202
 msgid "Save file"
 msgstr "Uložit soubor"
 
-#: src/file.c:219
+#: src/file.c:218
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG se jmenným prostorem \"xmlns:sodipodi\""
 
-#: src/file.c:225
+#: src/file.c:224
 msgid "Plain SVG"
 msgstr "Prostá SVG"
 
-#: src/file.c:231
+#: src/file.c:230
 msgid "Save as:"
 msgstr "Uložit jako:"
 
-#: src/file.c:384
+#: src/file.c:383
 msgid "Select file to import"
 msgstr "Vyberte soubor pro import"
 
@@ -995,285 +995,285 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Čtverčíky ex"
 
-#: src/interface.c:215 src/interface.c:416
+#: src/interface.c:214 src/interface.c:415
 msgid "New"
 msgstr "Nový"
 
-#: src/interface.c:216 src/interface.c:417
+#: src/interface.c:215 src/interface.c:416
 msgid "Open"
 msgstr "Otevřít"
 
-#: src/interface.c:217
+#: src/interface.c:216
 msgid "Save"
 msgstr "Uložit"
 
-#: src/interface.c:218
+#: src/interface.c:217
 msgid "Save as"
 msgstr "Uložit jako"
 
-#: src/interface.c:220
+#: src/interface.c:219
 msgid "Import"
 msgstr "Import"
 
-#: src/interface.c:223
+#: src/interface.c:222
 msgid "Print"
 msgstr "Tisk"
 
-#: src/interface.c:224
+#: src/interface.c:223
 msgid "Print Preview"
 msgstr "Náhled tisku"
 
-#: src/interface.c:227
+#: src/interface.c:226
 msgid "Close View"
 msgstr "Zavřít pohled"
 
-#: src/interface.c:228 src/interface.c:422
+#: src/interface.c:227 src/interface.c:421
 msgid "Exit Program"
 msgstr "Ukončit program"
 
-#: src/interface.c:230 src/interface.c:420
+#: src/interface.c:229 src/interface.c:419
 msgid "About Sodipodi"
 msgstr "O aplikaci Sodipodi"
 
-#: src/interface.c:236
+#: src/interface.c:235
 msgid "Cut"
 msgstr "Vyjmout"
 
-#: src/interface.c:237
+#: src/interface.c:236
 msgid "Copy"
 msgstr "Kopírovat"
 
-#: src/interface.c:238
+#: src/interface.c:237
 msgid "Paste"
 msgstr "Vložit"
 
-#: src/interface.c:240
+#: src/interface.c:239
 msgid "Duplicate"
 msgstr "Duplikovat"
 
-#: src/interface.c:241
+#: src/interface.c:240
 msgid "Delete"
 msgstr "Odstranit"
 
-#: src/interface.c:243
+#: src/interface.c:242
 msgid "Clear all"
 msgstr "Vymazat vše"
 
-#: src/interface.c:244
+#: src/interface.c:243
 msgid "Cleanup"
 msgstr "Uklidit"
 
-#: src/interface.c:253 src/sp-item-group.c:515
+#: src/interface.c:252 src/sp-item-group.c:513
 msgid "Group"
 msgstr "Seskupit"
 
-#: src/interface.c:258 src/sp-item-group.c:532
+#: src/interface.c:257 src/sp-item-group.c:530
 msgid "Ungroup"
 msgstr "Rozeskupit"
 
-#: src/interface.c:267
+#: src/interface.c:266
 msgid "Combine"
 msgstr "Kombinovat"
 
-#: src/interface.c:272
+#: src/interface.c:271
 msgid "Break apart"
 msgstr "Rozdělit"
 
-#: src/interface.c:281
+#: src/interface.c:280
 msgid "Order"
 msgstr "Seřadit"
 
-#: src/interface.c:285
+#: src/interface.c:284
 msgid "Bring to Front"
 msgstr "Do popředí"
 
-#: src/interface.c:289
+#: src/interface.c:288
 msgid "Send to Back"
 msgstr "Do pozadí"
 
-#: src/interface.c:293
+#: src/interface.c:292
 msgid "Raise"
 msgstr "Zvýšit"
 
-#: src/interface.c:297
+#: src/interface.c:296
 msgid "Lower"
 msgstr "Snížit"
 
-#: src/interface.c:355 src/interface.c:392 src/toolbox.c:565
+#: src/interface.c:354 src/interface.c:391 src/toolbox.c:594
 msgid "Zoom"
 msgstr "Zvětšit"
 
-#: src/interface.c:367
+#: src/interface.c:366
 msgid "1:2"
 msgstr "1:2"
 
-#: src/interface.c:368
+#: src/interface.c:367
 msgid "1:1"
 msgstr "1:1"
 
-#: src/interface.c:369
+#: src/interface.c:368
 msgid "2:1"
 msgstr "2:1"
 
-#: src/interface.c:371
+#: src/interface.c:370
 msgid "New View"
 msgstr "Nový pohled"
 
-#: src/interface.c:373
+#: src/interface.c:372
 msgid "New Preview"
 msgstr "Nový náhled"
 
-#: src/interface.c:375
+#: src/interface.c:374
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:376
+#: src/interface.c:375
 msgid "New Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:377
+#: src/interface.c:376
 msgid "Remove Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:383
+#: src/interface.c:382
 msgid "Select"
 msgstr "Vybrat"
 
-#: src/interface.c:384
+#: src/interface.c:383
 msgid "Node"
 msgstr "Uzel"
 
-#: src/interface.c:385
+#: src/interface.c:384
 msgid "Rectangle"
 msgstr "Čtyřúhelník"
 
-#: src/interface.c:386
+#: src/interface.c:385
 msgid "Arc"
 msgstr "Oblouk"
 
-#: src/interface.c:387 src/sp-star.c:481
+#: src/interface.c:386 src/sp-star.c:481
 msgid "Star"
 msgstr "Hvězda"
 
-#: src/interface.c:388 src/sp-spiral.c:610
+#: src/interface.c:387 src/sp-spiral.c:610
 msgid "Spiral"
 msgstr "Spirála"
 
-#: src/interface.c:389
+#: src/interface.c:388
 msgid "Freehand"
 msgstr "Volná ruka"
 
-#: src/interface.c:390
+#: src/interface.c:389
 msgid "Dynahand"
 msgstr "Dynamická ruka"
 
-#: src/interface.c:398
+#: src/interface.c:397
 msgid "Fill and Stroke"
 msgstr "Výplň a čáry"
 
-#: src/interface.c:399
+#: src/interface.c:398
 msgid "Size and Position"
 msgstr "Velikost a umístění"
 
-#: src/interface.c:400
+#: src/interface.c:399
 msgid "Align Objects"
 msgstr "Zarovnat objekty"
 
-#: src/interface.c:401
+#: src/interface.c:400
 msgid "Text Editing"
 msgstr "Úpravy textu"
 
-#: src/interface.c:402
+#: src/interface.c:401
 msgid "Transformations"
 msgstr "Transformace"
 
-#: src/interface.c:403
+#: src/interface.c:402
 msgid "Tool Options"
 msgstr "Volby nástroje"
 
-#: src/interface.c:404
+#: src/interface.c:403
 msgid "Tool Attributes"
 msgstr "Vlastnosti nástroje"
 
-#: src/interface.c:405
+#: src/interface.c:404
 msgid "Document"
 msgstr "Dokument"
 
-#: src/interface.c:406
+#: src/interface.c:405
 msgid "Editing Window"
 msgstr "Editační okno"
 
-#: src/interface.c:407
+#: src/interface.c:406
 msgid "XML Editor"
 msgstr "Editor XML"
 
-#: src/interface.c:408
+#: src/interface.c:407
 msgid "Display Properties"
 msgstr "Vlastnosti zobrazení"
 
-#: src/interface.c:461
+#: src/interface.c:460
 msgid "Undo"
 msgstr "Zpět"
 
-#: src/interface.c:463
+#: src/interface.c:462
 msgid "Redo"
 msgstr "Znovu"
 
-#: src/interface.c:486 src/toolbox.c:327
+#: src/interface.c:485 src/toolbox.c:304
 msgid "File"
 msgstr "Soubor"
 
-#: src/interface.c:492 src/toolbox.c:364 src/widgets/gradient-selector.c:135
+#: src/interface.c:491 src/toolbox.c:341 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Úpravy"
 
-#: src/interface.c:504
+#: src/interface.c:503
 msgid "View"
 msgstr "Zobrazit"
 
-#: src/interface.c:510
+#: src/interface.c:509
 msgid "Drawing Mode"
 msgstr "Režim kreslení"
 
-#: src/interface.c:516
+#: src/interface.c:515
 msgid "Dialogs"
 msgstr "Dialogy"
 
-#: src/main.c:106
+#: src/main.c:105
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívat X server (pouze zpracovat soubory z konzole)"
 
-#: src/main.c:109
+#: src/main.c:108
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY"
 
-#: src/main.c:112
+#: src/main.c:111
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
-#: src/main.c:113 src/main.c:116 src/main.c:119 src/main.c:133
+#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:132
 msgid "FILENAME"
 msgstr "SOUBOR"
 
-#: src/main.c:115
+#: src/main.c:114
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
 "program')"
 
-#: src/main.c:118
+#: src/main.c:117
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:121
+#: src/main.c:120
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
-#: src/main.c:122
+#: src/main.c:121
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:124
+#: src/main.c:123
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1281,66 +1281,66 @@ msgstr ""
 "Exportovaná oblast v milimetrech (výchozí je celý dokument, 0,0 představuje "
 "spodní levý roh)"
 
-#: src/main.c:125
+#: src/main.c:124
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:127
+#: src/main.c:126
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:127
+#: src/main.c:126
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:129
+#: src/main.c:128
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:129
+#: src/main.c:128
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:131
+#: src/main.c:130
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
 
-#: src/main.c:131
+#: src/main.c:130
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:133
+#: src/main.c:132
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:135
+#: src/main.c:134
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Zobrazit zadané soubory jeden po druhém, přepnout na další při jakékoli "
 "události myši nebo klávesnice"
 
-#: src/sodipodi.c:351
+#: src/sodipodi.c:370
 msgid "Untitled document"
 msgstr "Nepojmenovaný dokument"
 
-#: src/sodipodi.c:376
+#: src/sodipodi.c:395
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Aplikace Sodipodi narazila na vnitřní chybu a bude nyní uzavřena.\n"
 
-#: src/sodipodi.c:377
+#: src/sodipodi.c:396
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatické zálohy neuložených dokumentů byly provedeny do těchto míst:\n"
 
-#: src/sodipodi.c:378
+#: src/sodipodi.c:397
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatické zálohy následujících dokumentů selhaly:\n"
 
-#: src/sodipodi.c:472
+#: src/sodipodi.c:534
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1351,7 +1351,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení.\n"
 
-#: src/sodipodi.c:486
+#: src/sodipodi.c:537
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1365,7 +1365,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:501
+#: src/sodipodi.c:542
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1377,19 +1377,54 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:795
-#, c-format
+#: src/sodipodi.c:554
+#, fuzzy, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s není běžný soubor.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení.\n"
+
+#: src/sodipodi.c:557
+#, fuzzy, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s buď není platný soubor XML\n"
+"nebo na něj nemáte práva ke čtení.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:561
+#, fuzzy, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s buď není platný soubor s nastavením Sodipodi.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:898
+#, fuzzy, c-format
 msgid ""
 "Cannot create directory %s.\n"
 "Although sodipodi will run, you\n"
 "are neither able to load nor save\n"
-"preferences."
+"%s."
 msgstr ""
 "Nelze vytvořit adresář %s.\n"
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:808
+#: src/sodipodi.c:902
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1401,7 +1436,7 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:830
+#: src/sodipodi.c:906
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1413,13 +1448,57 @@ msgstr ""
 "I když Sodipodi poběží, nemůžete\n"
 "ani načíst, ani uložit vaše nastavení."
 
-#: src/sodipodi.c:843
+#: src/sodipodi.c:910
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
 "Although sodipodi will run, you\n"
 "are neither able to load nor save\n"
 "preferences."
+msgstr ""
+"Nelze psát do souboru %s.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:920
+#, fuzzy, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Nelze vytvořit adresář %s.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:923
+#, fuzzy, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s není platný adresář.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:926
+#, fuzzy, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Nelze vytvořit soubor %s.\n"
+"I když Sodipodi poběží, nemůžete\n"
+"ani načíst, ani uložit vaše nastavení."
+
+#: src/sodipodi.c:929
+#, fuzzy, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
 msgstr ""
 "Nelze psát do souboru %s.\n"
 "I když Sodipodi poběží, nemůžete\n"
@@ -1446,107 +1525,107 @@ msgstr "Následovat odkaz"
 msgid "Remove link"
 msgstr "Odstranit odkaz"
 
-#: src/sp-image.c:398
+#: src/sp-image.c:417
 #, c-format
 msgid "Image with bad reference: %s"
 msgstr "Obrázek s chybným odkazem: %s"
 
-#: src/sp-image.c:400
+#: src/sp-image.c:419
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr "Barevný obrázek %d × %d: %s"
 
-#: src/sp-image.c:636
+#: src/sp-image.c:655
 msgid "Image"
 msgstr "Obrázek"
 
-#: src/sp-image.c:639
+#: src/sp-image.c:658
 msgid "Image Properties"
 msgstr "Vlastnosti obrázku"
 
-#: src/sp-image.c:647 src/sp-image.c:843
+#: src/sp-image.c:666 src/sp-image.c:862
 msgid "Trace"
 msgstr "Sledovat"
 
-#: src/sp-image.c:989
+#: src/sp-image.c:1008
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Chyba při zápisu %s: %s"
 
-#: src/sp-image.c:1023
+#: src/sp-image.c:1042
 msgid "Untitled"
 msgstr "Nepojmenovaný"
 
-#: src/sp-image.c:1028
+#: src/sp-image.c:1047
 msgid "Document Name:"
 msgstr "Název dokumentu:"
 
-#: src/sp-image.c:1041
+#: src/sp-image.c:1060
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: src/sp-image.c:1047
+#: src/sp-image.c:1066
 msgid "Image URI:"
 msgstr "URI obrázku:"
 
-#: src/sp-item-group.c:453
+#: src/sp-item-group.c:451
 #, c-format
 msgid "Group of %d objects"
 msgstr "Skupina %d objektů"
 
-#: src/sp-item-group.c:519
+#: src/sp-item-group.c:517
 msgid "Group Properties"
 msgstr "Vlastnosti skupiny"
 
-#: src/sp-item.c:445
+#: src/sp-item.c:579
 msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
-#: src/sp-item.c:744
+#: src/sp-item.c:896
 msgid "Item"
 msgstr "Položka"
 
-#: src/sp-item.c:747
+#: src/sp-item.c:899
 msgid "Item Properties"
 msgstr "Vlastnosti položky"
 
-#: src/sp-item.c:757
+#: src/sp-item.c:909
 msgid "Select this"
 msgstr "Vybrat toto"
 
-#: src/sp-item.c:767
+#: src/sp-item.c:919
 msgid "Reset transformation"
 msgstr "Vynulovat transformaci"
 
-#: src/sp-item.c:773
+#: src/sp-item.c:925
 msgid "Make sensitive"
 msgstr "Učinit citlivé"
 
-#: src/sp-item.c:773
+#: src/sp-item.c:925
 msgid "Make insensitive"
 msgstr "Učinit necitlivé"
 
-#: src/sp-item.c:778
+#: src/sp-item.c:930
 msgid "Create link"
 msgstr "Vytvořit odkaz"
 
-#: src/sp-rect.c:535
+#: src/sp-rect.c:571
 msgid "Rect"
 msgstr "Čtyřúhelník"
 
-#: src/sp-rect.c:538
+#: src/sp-rect.c:574
 msgid "Rect Properties"
 msgstr "Vlastnosti čtyřúhelníku"
 
-#: src/sp-shape.c:301
+#: src/sp-shape.c:299
 msgid "A path - whatever it means"
 msgstr "Cesta - cokoli to znamená"
 
-#: src/sp-shape.c:357
+#: src/sp-shape.c:408
 msgid "Shape"
 msgstr "Tvar"
 
-#: src/sp-shape.c:360 src/toolbox.c:404
+#: src/sp-shape.c:411 src/toolbox.c:381
 msgid "Fill settings"
 msgstr "Nastavení výplně"
 
@@ -1558,258 +1637,263 @@ msgstr "Vlastnosti spirály"
 msgid "Star Properties"
 msgstr "Vlastnosti hvězdy"
 
-#: src/sp-text.c:1237
+#: src/sp-text.c:1240
 msgid "Text object"
 msgstr "Textový objekt"
 
-#: src/toolbox.c:137 src/toolbox.c:159
+#: src/toolbox.c:109 src/toolbox.c:131
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/toolbox.c:330
+#: src/toolbox.c:307
 msgid "Create new SVG document"
 msgstr "Vytvořit nový dokument SVG"
 
-#: src/toolbox.c:331
+#: src/toolbox.c:308
 msgid "Open existing SVG document"
 msgstr "Otevřít existující dokument SVG"
 
-#: src/toolbox.c:332
+#: src/toolbox.c:309
 msgid "Save document"
 msgstr "Uložit dokument"
 
-#: src/toolbox.c:333
+#: src/toolbox.c:310
 msgid "Save document under new name"
 msgstr "Uložit dokument pod novým názvem"
 
-#: src/toolbox.c:334
+#: src/toolbox.c:311
 msgid "Print document"
 msgstr "Tisknout dokument"
 
-#: src/toolbox.c:335
+#: src/toolbox.c:312
 msgid "Preview document printout"
 msgstr "Náhled tisku dokumentu"
 
-#: src/toolbox.c:339
+#: src/toolbox.c:316
 msgid "Import bitmap or SVG image into document"
 msgstr "Import bitmapy nebo obrázku SVG do dokumentu"
 
-#: src/toolbox.c:340
+#: src/toolbox.c:317
 msgid "Export document as PNG bitmap"
 msgstr "Export dokumentu jako bitmapy PNG"
 
-#: src/toolbox.c:367
+#: src/toolbox.c:344
 msgid "Revert last action"
 msgstr "Vrátit zpět poslední akci"
 
-#: src/toolbox.c:370
+#: src/toolbox.c:347
 msgid "Do again undone action"
 msgstr "Znovu provést vrácenou akci"
 
-#: src/toolbox.c:372
+#: src/toolbox.c:349
 msgid "Delete selected objects"
 msgstr "Odstranit vybrané objekty"
 
-#: src/toolbox.c:373
+#: src/toolbox.c:350
 msgid "Cut selected objects to clipboard"
 msgstr "Vyjmout vybrané objekty do schránky"
 
-#: src/toolbox.c:374
+#: src/toolbox.c:351
 msgid "Copy selected objects to clipboard"
 msgstr "Kopírovat vybrané objekty do schránky"
 
-#: src/toolbox.c:375
+#: src/toolbox.c:352
 msgid "Paste objects from clipboard"
 msgstr "Vložit objekty ze schránky"
 
-#: src/toolbox.c:376
+#: src/toolbox.c:353
 msgid "Duplicate selected objects"
 msgstr "Duplikovat vybrané objekty"
 
-#: src/toolbox.c:400
+#: src/toolbox.c:377
 msgid "Object"
 msgstr "Objekt"
 
-#: src/toolbox.c:405
+#: src/toolbox.c:382
 msgid "Object size and position"
 msgstr "Velikost a umístění objektu"
 
-#: src/toolbox.c:406
+#: src/toolbox.c:383
 msgid "Text and font settings"
 msgstr "Nastavení textu a písma"
 
-#: src/toolbox.c:408
+#: src/toolbox.c:385
 msgid "Object transformations"
 msgstr "Transformace objektu"
 
-#: src/toolbox.c:415
+#: src/toolbox.c:392
 msgid "Flip selected objects horizontally"
 msgstr "Přehodit vybrané objekty vodorovně"
 
-#: src/toolbox.c:416
+#: src/toolbox.c:393
 msgid "Flip selected objects vertically"
 msgstr "Přehodit vybrané objekty svisle"
 
-#: src/toolbox.c:420
+#: src/toolbox.c:397
 msgid "Rotate object 90 deg clockwise"
 msgstr "Rotovat objekt o 90° po směru hodinových ručiček"
 
-#: src/toolbox.c:421
+#: src/toolbox.c:398
 msgid "Remove transformations"
 msgstr "Odstranit transformace"
 
-#: src/toolbox.c:422
+#: src/toolbox.c:399
 msgid "Convert object to curve"
 msgstr "Převést objekt na křivku"
 
-#: src/toolbox.c:449
+#: src/toolbox.c:426
 msgid "Raise selected objects to top"
 msgstr "Vyvýšit vybrané objekty úplně nahoru"
 
-#: src/toolbox.c:450
+#: src/toolbox.c:427
 msgid "Raise selected objects one level"
 msgstr "Vyvýšit vybrané objekty nahoru o jednu úroveň"
 
-#: src/toolbox.c:451
+#: src/toolbox.c:428
 msgid "Combine multiple paths"
 msgstr "Kombinovat více cest"
 
-#: src/toolbox.c:452
+#: src/toolbox.c:429
 msgid "Group selected objects"
 msgstr "Seskupit vybrané objekty"
 
-#: src/toolbox.c:453
+#: src/toolbox.c:430
 msgid "Lower selected objects to bottom"
 msgstr "Snížit vybrané objekty úplně dolů"
 
-#: src/toolbox.c:454
+#: src/toolbox.c:431
 msgid "Lower selected objects one level"
 msgstr "Snížit vybrané objekty dolů o jednu úroveň"
 
-#: src/toolbox.c:455
+#: src/toolbox.c:432
 msgid "Break selected path to subpaths"
 msgstr "Rozdělit vybrané cesty do podcest"
 
-#: src/toolbox.c:456
+#: src/toolbox.c:433
 msgid "Ungroup selected group"
 msgstr "Rozeskupit vybranou skupinu"
 
-#: src/toolbox.c:479
+#: src/toolbox.c:456
 msgid "Draw"
 msgstr "Kreslit"
 
-#: src/toolbox.c:484
+#: src/toolbox.c:461
 msgid "Select tool - select and transform objects"
 msgstr "Nástroj výběru - výběr a transformace objektů"
 
-#: src/toolbox.c:491
+#: src/toolbox.c:468
 msgid "Node tool - modify different aspects of existing objects"
 msgstr "Nástroj uzlu - úprava různých aspektů existujících objektů"
 
-#: src/toolbox.c:503
+#: src/toolbox.c:480
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
 "Nástroj čtyřúhelníku - tvorba čtyřúhelníků a čtverců s volitelně oblými "
 "hranami"
 
-#: src/toolbox.c:504
+#: src/toolbox.c:481
 msgid "Arc tool - create circles, ellipses and arcs"
 msgstr "Nástroj oblouku - tvorba kruhů, elips a oblouků"
 
-#: src/toolbox.c:505
+#: src/toolbox.c:482
 msgid "Star tool - create stars and polygons"
 msgstr "Nástroj hvězdy - tvorba hvězd a polygonů"
 
-#: src/toolbox.c:506
+#: src/toolbox.c:483
 msgid "Spiral tool - create spirals"
 msgstr "Nástroj spirály - tvorba spirál"
 
-#: src/toolbox.c:521
+#: src/toolbox.c:498
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr "Nástroj tužka - kreslení volnou rukou a přímé segmenty"
 
-#: src/toolbox.c:522
+#: src/toolbox.c:499
 msgid "Pen tool - draw exactly positioned curved lines"
 msgstr "Nástroj pero - kreslení přesně umístěných zahnutých čar"
 
-#: src/toolbox.c:523
+#: src/toolbox.c:500
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr "Kaligrafický nástroj - kresba kaligrafických čar"
 
-#: src/toolbox.c:532
+#: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
 msgstr "Textový nástroj - tvorba upravitelných textových objektů"
 
-#: src/toolbox.c:538
+#: src/toolbox.c:515
 msgid "Zoom tool - zoom into choosen area"
 msgstr "Nástroj zvětšení - zvětšení vybrané oblasti"
 
-#: src/toolbox.c:568
+#: src/toolbox.c:552
+#, fuzzy
+msgid "Extension"
+msgstr "Rozšíření"
+
+#: src/toolbox.c:597
 msgid "Zoom in drawing"
 msgstr "Zvětšení obrázku"
 
-#: src/toolbox.c:569
+#: src/toolbox.c:598
 msgid "Set zoom factor to 2:1"
 msgstr "Nastavit poměr zvětšení na 2:1"
 
-#: src/toolbox.c:570
+#: src/toolbox.c:599
 msgid "Set zoom factor to 1:1"
 msgstr "Nastavit poměr zvětšení na 1:1"
 
-#: src/toolbox.c:571
+#: src/toolbox.c:600
 msgid "Set zoom factor to 1:2"
 msgstr "Nastavit poměr zvětšení na 1:2"
 
-#: src/toolbox.c:572
+#: src/toolbox.c:601
 msgid "Zoom out drawing"
 msgstr "Zmenšení obrázku"
 
-#: src/toolbox.c:573
+#: src/toolbox.c:602
 msgid "Fit the whole page into window"
 msgstr "Přizpůsobit celou stránku oknu"
 
-#: src/toolbox.c:574
+#: src/toolbox.c:603
 msgid "Fit the whole drawing into window"
 msgstr "Přizpůsobit celý obrázek oknu"
 
-#: src/toolbox.c:575
+#: src/toolbox.c:604
 msgid "Fit the whole selection into window"
 msgstr "Přizpůsobit celý výběr oknu"
 
-#: src/toolbox.c:599
+#: src/toolbox.c:628
 msgid "Nodes"
 msgstr "Uzly"
 
-#: src/toolbox.c:602
+#: src/toolbox.c:631
 msgid "Insert new nodes into selected segments"
 msgstr "Vložení nových uzlů do zvolených segmentů"
 
-#: src/toolbox.c:603
+#: src/toolbox.c:632
 msgid "Break line at selected nodes"
 msgstr "Zlomit čáru na vybraných uzlech"
 
-#: src/toolbox.c:604
+#: src/toolbox.c:633
 msgid "Make selected nodes corner"
 msgstr "Vytvořit z vybraných uzlů roh"
 
-#: src/toolbox.c:605
+#: src/toolbox.c:634
 msgid "Make selected segments lines"
 msgstr "Vytvořit z vybraných segmentů čáru"
 
-#: src/toolbox.c:606
+#: src/toolbox.c:635
 msgid "Delete selected nodes"
 msgstr "Odstranit vybrané uzly"
 
-#: src/toolbox.c:607
+#: src/toolbox.c:636
 msgid "Join lines at selected nodes"
 msgstr "Spojit čáry na vybraných uzlech"
 
-#: src/toolbox.c:608
+#: src/toolbox.c:637
 msgid "Make selected nodes smooth"
 msgstr "Učinit vybrané uzly hladké"
 
-#: src/toolbox.c:609
+#: src/toolbox.c:638
 msgid "Make selected segments curves"
 msgstr "Učinit z vybraných segmentů křivky"
 
@@ -1958,11 +2042,11 @@ msgstr "Atribut"
 msgid "Value"
 msgstr "Hodnota"
 
-#: src/draw-context.c:279
+#: src/draw-context.c:280
 msgid "Appending to selection. Press '+' to toggle Append/New."
 msgstr "Připojuje se k výběru. Stisknutím '+' přepnete Přidání/Nový."
 
-#: src/draw-context.c:284
+#: src/draw-context.c:285
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr "Vytváří se nová křivka. Stisknutím '+' přepnete Přidání/Nový."
 

@@ -263,8 +263,6 @@ sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	cr->area.x1 = (int) (bbox.x1 + 0.5);
 	cr->area.y1 = (int) (bbox.y1 + 0.5);
 
-	g_print ("y1 is %d\n", cr->area.y1);
-
 	cr->shadow_size = cr->shadow;
 
 	/* Request redraw new */
