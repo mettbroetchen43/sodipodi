@@ -1,3 +1,12 @@
+2002-02-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_any_toggled): Handle
+	cap/join style changes
+	(sp_stroke_style_widget_new): Create cap/join togglebuttons
+	(sp_stroke_style_widget_update): Set cap/join selector activity
+	(sp_stroke_style_set_join_buttons): New method
+	(sp_stroke_style_set_cap_buttons): Ditto
+
 2002-02-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/stroke-style.c: New file

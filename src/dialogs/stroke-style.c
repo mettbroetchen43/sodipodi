@@ -19,6 +19,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkwindow.h>
+#include <libgnomeui/gnome-pixmap.h>
 
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
@@ -44,6 +45,9 @@ static void sp_stroke_style_widget_paint_changed (SPPaintSelector *psel, SPWidge
 static void sp_stroke_style_get_average_color_rgba (const GSList *objects, gfloat *c);
 static void sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c);
 static SPPaintSelectorMode sp_stroke_style_determine_paint_selector_mode (SPObject *object);
+
+static void sp_stroke_style_set_join_buttons (SPWidget *spw, GtkWidget *active);
+static void sp_stroke_style_set_cap_buttons (SPWidget *spw, GtkWidget *active);
 
 static GtkWidget *dialog = NULL;
 
@@ -95,10 +99,44 @@ sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
 	sp_document_done (spw->document);
 }
 
+static void
+sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
+{
+	if (gtk_toggle_button_get_active (tb)) {
+		const GSList *items, *i;
+		const guchar *join, *cap;
+		SPCSSAttr *css;
+
+		items = sp_widget_get_item_list (spw);
+		join = gtk_object_get_data (GTK_OBJECT (tb), "join");
+		cap = gtk_object_get_data (GTK_OBJECT (tb), "cap");
+
+		/* fixme: Create some standardized method */
+		css = sp_repr_css_attr_new ();
+
+		if (join) {
+			sp_repr_css_set_property (css, "stroke-linejoin", join);
+			for (i = items; i != NULL; i = i->next) {
+				sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+			}
+			sp_stroke_style_set_join_buttons (spw, GTK_WIDGET (tb));
+		} else {
+			sp_repr_css_set_property (css, "stroke-linecap", cap);
+			for (i = items; i != NULL; i = i->next) {
+				sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+			}
+			sp_stroke_style_set_cap_buttons (spw, GTK_WIDGET (tb));
+		}
+
+		sp_repr_css_attr_unref (css);
+		sp_document_done (spw->document);
+	}
+}
+
 GtkWidget *
 sp_stroke_style_widget_new (void)
 {
-	GtkWidget *spw, *vb, *f, *t, *l, *hb, *sb, *us, *psel;
+	GtkWidget *spw, *vb, *f, *t, *l, *hb, *sb, *us, *tb, *px, *psel;
 	GtkObject *a;
 
 	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
@@ -108,10 +146,14 @@ sp_stroke_style_widget_new (void)
 	gtk_container_add (GTK_CONTAINER (spw), vb);
 
 	/* Stroke settings */
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+
 	f = gtk_frame_new (_("Stroke settings"));
 	gtk_widget_show (f);
 	gtk_container_set_border_width (GTK_CONTAINER (f), 4);
-	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hb), f, FALSE, FALSE, 0);
 	
 	t = gtk_table_new (3, 4, FALSE);
 	gtk_widget_show (t);
@@ -120,14 +162,15 @@ sp_stroke_style_widget_new (void)
 	gtk_container_add (GTK_CONTAINER (f), t);
 	gtk_object_set_data (GTK_OBJECT (spw), "stroke", t);
 
-	l = gtk_label_new (_("Stroke width:"));
+	/* Stroke width */
+	l = gtk_label_new (_("Width:"));
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 0, 1, GTK_FILL, 0, 4, 0);
 
 	hb = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (hb);
-	gtk_table_attach (GTK_TABLE (t), hb, 1, 5, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	a = gtk_adjustment_new (1.0, 0.0, 100.0, 0.1, 10.0, 10.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "width", a);
@@ -141,6 +184,78 @@ sp_stroke_style_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "units", us);
 
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_stroke_style_width_changed), spw);
+
+	/* Join type */
+	l = gtk_label_new (_("Join:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_FILL, 0, 4, 0);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "join-miter", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "join", "miter");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_miter.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "join-round", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "join", "round");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_round.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "join-bevel", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "join", "bevel");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/join_bevel.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
+
+	/* Cap type */
+	l = gtk_label_new (_("Cap:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_FILL, 0, 4, 0);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "cap-butt", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "cap", "butt");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_butt.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "cap-round", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "cap", "round");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_round.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
+
+	tb = gtk_toggle_button_new ();
+	gtk_widget_show (tb);
+	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "cap-square", tb);
+	gtk_object_set_data (GTK_OBJECT (tb), "cap", "square");
+	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
+	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/cap_square.xpm");
+	gtk_widget_show (px);
+	gtk_container_add (GTK_CONTAINER (tb), px);
 
 	/* Paint selector */
 	psel = sp_paint_selector_new ();
@@ -191,6 +306,8 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 	ArtDRect bbox;
 	SPLinearGradient *lg;
 	gdouble avgwidth;
+	gint jointype, captype;
+	GtkWidget *tb;
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -207,8 +324,6 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_EMPTY);
 		gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 		return;
-	} else {
-		gtk_widget_set_sensitive (sset, TRUE);
 	}
 
 	objects = sp_selection_item_list (sel);
@@ -223,6 +338,54 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 	unit = sp_unit_selector_get_unit (SP_UNIT_SELECTOR (units));
 	sp_convert_distance (&avgwidth, SP_PS_UNIT, unit);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT (width), avgwidth);
+
+	/* Join & Cap */
+	object = SP_OBJECT (objects->data);
+	jointype = object->style->stroke_linejoin;
+	captype = object->style->stroke_linecap;
+
+	for (l = objects->next; l != NULL; l = l->next) {
+		SPObject *o;
+		o = SP_OBJECT (l->data);
+		if (o->style->stroke_linejoin != jointype) jointype = -1;
+		if (o->style->stroke_linecap != captype) captype = -1;
+	}
+
+	switch (jointype) {
+	case ART_PATH_STROKE_JOIN_MITER:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-miter");
+		break;
+	case ART_PATH_STROKE_JOIN_ROUND:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-round");
+		break;
+	case ART_PATH_STROKE_JOIN_BEVEL:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-bevel");
+		break;
+	default:
+		tb = NULL;
+		break;
+	}
+
+	sp_stroke_style_set_join_buttons (spw, tb);
+
+	switch (captype) {
+	case ART_PATH_STROKE_CAP_BUTT:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap_butt");
+		break;
+	case ART_PATH_STROKE_CAP_ROUND:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");
+		break;
+	case ART_PATH_STROKE_CAP_SQUARE:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-square");
+		break;
+	default:
+		tb = NULL;
+		break;
+	}
+
+	sp_stroke_style_set_cap_buttons (spw, tb);
+
+	/* Paint */
 
 	object = SP_OBJECT (objects->data);
 	pselmode = sp_stroke_style_determine_paint_selector_mode (object);
@@ -239,6 +402,8 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 	}
 
 	g_print ("StrokeStyleWidget: paint selector mode %d\n", pselmode);
+
+	gtk_widget_set_sensitive (sset, pselmode != SP_PAINT_SELECTOR_MODE_NONE);
 
 	switch (pselmode) {
 	case SP_PAINT_SELECTOR_MODE_NONE:
@@ -620,5 +785,37 @@ sp_stroke_style_determine_paint_selector_mode (SPObject *object)
 	}
 
 	return SP_PAINT_SELECTOR_MODE_NONE;
+}
+
+static void
+sp_stroke_style_set_join_buttons (SPWidget *spw, GtkWidget *active)
+{
+	GtkWidget *tb;
+
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "join-miter");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "join-round");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "join-bevel");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
+}
+
+static void
+sp_stroke_style_set_cap_buttons (SPWidget *spw, GtkWidget *active)
+{
+	GtkWidget *tb;
+
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-butt");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
+	tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-square");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
+	gtk_widget_set_sensitive (tb, (active != tb));
 }
 
