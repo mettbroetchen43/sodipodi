@@ -346,7 +346,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		NRRectL bbox;
 		NRGC gc;
 		int num_rows;
-		int i;
+		int i, x, y;
 
 		num_rows = sheight;
 		if ((row + num_rows) > height) num_rows = height - row;
@@ -369,6 +369,15 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		memset (px, 0xff, 4 * num_rows * width);
 		/* Render */
 		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
+		for (y = bbox.y0; y < bbox.y1; y++) {
+			unsigned char *p = NR_PIXBLOCK_PX (&pb) + (y - bbox.y0) * pb.rs;
+			for (x = bbox.x0; x < bbox.x1; x++) {
+				unsigned char t = p[0];
+				p[0] = p[2];
+				p[2] = t;
+				p += 4;
+			}
+		}
 
 		SetStretchBltMode(w32mod->hDC, COLORONCOLOR);
 		res = StretchDIBits (w32mod->hDC,
