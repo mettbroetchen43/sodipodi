@@ -20,7 +20,6 @@
 
 static void sp_line_class_init (SPLineClass *class);
 static void sp_line_init (SPLine *line);
-static void sp_line_destroy (GtkObject *object);
 
 static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_line_read_attr (SPObject * object, const gchar * attr);
@@ -66,8 +65,6 @@ sp_line_class_init (SPLineClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-	gtk_object_class->destroy = sp_line_destroy;
-
 	sp_object_class->build = sp_line_build;
 	sp_object_class->read_attr = sp_line_read_attr;
 	sp_object_class->write = sp_line_write;
@@ -81,17 +78,6 @@ sp_line_init (SPLine * line)
 {
 	SP_PATH (line) -> independent = FALSE;
 	line->x1 = line->y1 = line->x2 = line->y2 = 0.0;
-}
-
-static void
-sp_line_destroy (GtkObject *object)
-{
-	SPLine *line;
-
-	line = SP_LINE (object);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void

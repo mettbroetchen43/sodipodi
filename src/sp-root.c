@@ -26,9 +26,9 @@
 
 static void sp_root_class_init (SPRootClass *klass);
 static void sp_root_init (SPRoot *root);
-static void sp_root_destroy (GtkObject *object);
 
 static void sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_root_release (SPObject *object);
 static void sp_root_read_attr (SPObject *object, const gchar *key);
 static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_root_remove_child (SPObject *object, SPRepr *child);
@@ -72,9 +72,8 @@ sp_root_class_init (SPRootClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_GROUP);
 
-	gtk_object_class->destroy = sp_root_destroy;
-
 	sp_object_class->build = sp_root_build;
+	sp_object_class->release = sp_root_release;
 	sp_object_class->read_attr = sp_root_read_attr;
 	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
@@ -102,21 +101,6 @@ sp_root_init (SPRoot *root)
 
 	root->namedviews = NULL;
 	root->defs = NULL;
-}
-
-static void
-sp_root_destroy (GtkObject *object)
-{
-	SPRoot * root;
-
-	root = (SPRoot *) object;
-
-	root->defs = NULL;
-	g_slist_free (root->namedviews);
-	root->namedviews = NULL;
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
@@ -157,6 +141,21 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 			break;
 		}
 	}
+}
+
+static void
+sp_root_release (SPObject *object)
+{
+	SPRoot * root;
+
+	root = (SPRoot *) object;
+
+	root->defs = NULL;
+	g_slist_free (root->namedviews);
+	root->namedviews = NULL;
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

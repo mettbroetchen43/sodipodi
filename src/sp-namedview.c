@@ -33,9 +33,9 @@
 
 static void sp_namedview_class_init (SPNamedViewClass * klass);
 static void sp_namedview_init (SPNamedView * namedview);
-static void sp_namedview_destroy (GtkObject * object);
 
 static void sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_namedview_release (SPObject *object);
 static void sp_namedview_read_attr (SPObject * object, const gchar * key);
 static void sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_namedview_remove_child (SPObject *object, SPRepr *child);
@@ -81,9 +81,8 @@ sp_namedview_class_init (SPNamedViewClass * klass)
 
 	parent_class = gtk_type_class (sp_objectgroup_get_type ());
 
-	gtk_object_class->destroy = sp_namedview_destroy;
-
 	sp_object_class->build = sp_namedview_build;
+	sp_object_class->release = sp_namedview_release;
 	sp_object_class->read_attr = sp_namedview_read_attr;
 	sp_object_class->child_added = sp_namedview_child_added;
 	sp_object_class->remove_child = sp_namedview_remove_child;
@@ -117,27 +116,6 @@ sp_namedview_init (SPNamedView * nv)
 	nv->hguides = NULL;
 	nv->vguides = NULL;
 	nv->viewcount = 0;
-}
-
-static void
-sp_namedview_destroy (GtkObject * object)
-{
-	SPNamedView * namedview;
-
-	namedview = (SPNamedView *) object;
-
-	g_slist_free (namedview->hguides);
-	g_slist_free (namedview->vguides);
-
-	g_assert (!namedview->views);
-
-	while (namedview->gridviews) {
-		gtk_object_destroy (GTK_OBJECT (namedview->gridviews->data));
-		namedview->gridviews = g_slist_remove (namedview->gridviews, namedview->gridviews->data);
-	}
-
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
 static void
@@ -185,6 +163,34 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			gtk_object_set (GTK_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
 		}
 	}
+}
+
+static void
+sp_namedview_release (SPObject * object)
+{
+	SPNamedView *namedview;
+
+	namedview = (SPNamedView *) object;
+
+	if (namedview->hguides) {
+		g_slist_free (namedview->hguides);
+		namedview->hguides = NULL;
+	}
+
+	if (namedview->vguides) {
+		g_slist_free (namedview->vguides);
+		namedview->vguides = NULL;
+	}
+
+	g_assert (!namedview->views);
+
+	while (namedview->gridviews) {
+		gtk_object_destroy (GTK_OBJECT (namedview->gridviews->data));
+		namedview->gridviews = g_slist_remove (namedview->gridviews, namedview->gridviews->data);
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

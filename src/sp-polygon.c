@@ -16,16 +16,8 @@
 #include <string.h>
 #include "sp-polygon.h"
 
-#if 0
-enum {ARG_0, ARG_POINTS};
-#endif
-
 static void sp_polygon_class_init (SPPolygonClass *class);
 static void sp_polygon_init (SPPolygon *polygon);
-static void sp_polygon_destroy (GtkObject *object);
-#if 0
-static void sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
-#endif
 
 static void sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_polygon_write (SPObject *object, SPRepr *repr, guint flags);
@@ -67,15 +59,6 @@ sp_polygon_class_init (SPPolygonClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-#if 0
-	gtk_object_add_arg_type ("SPPolygon::points", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_POINTS);
-#endif
-
-	gtk_object_class->destroy = sp_polygon_destroy;
-#if 0
-	gtk_object_class->set_arg = sp_polygon_set_arg;
-#endif
-
 	sp_object_class->build = sp_polygon_build;
 	sp_object_class->write = sp_polygon_write;
 	sp_object_class->read_attr = sp_polygon_read_attr;
@@ -88,33 +71,6 @@ sp_polygon_init (SPPolygon * polygon)
 {
 	SP_PATH (polygon)->independent = FALSE;
 }
-
-static void
-sp_polygon_destroy (GtkObject *object)
-{
-	SPPolygon *polygon;
-
-	polygon = SP_POLYGON (object);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-#if 0
-static void
-sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
-{
-	SPPolygon * polygon;
-
-	polygon = SP_POLYGON (object);
-
-	switch (arg_id) {
-	case ARG_POINTS:
-		g_warning ("::points not implemented");
-		break;
-	}
-}
-#endif
 
 static void
 sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr)

@@ -18,7 +18,7 @@
 static void sp_paint_server_class_init (SPPaintServerClass *klass);
 static void sp_paint_server_init (SPPaintServer *ps);
 
-static void sp_paint_server_destroy (GtkObject *object);
+static void sp_paint_server_release (SPObject *object);
 
 static void sp_painter_stale_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
@@ -46,13 +46,13 @@ sp_paint_server_get_type (void)
 static void
 sp_paint_server_class_init (SPPaintServerClass *klass)
 {
-	GtkObjectClass *object_class;
+	SPObjectClass *sp_object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
 
 	parent_class = gtk_type_class (SP_TYPE_OBJECT);
 
-	object_class->destroy = sp_paint_server_destroy;
+	sp_object_class->release = sp_paint_server_release;
 }
 
 static void
@@ -62,7 +62,7 @@ sp_paint_server_init (SPPaintServer *ps)
 }
 
 static void
-sp_paint_server_destroy (GtkObject *object)
+sp_paint_server_release (SPObject *object)
 {
 	SPPaintServer *ps;
 
@@ -78,8 +78,8 @@ sp_paint_server_destroy (GtkObject *object)
 		painter->fill = sp_painter_stale_fill;
 	}
 
-	if (((GtkObjectClass *) parent_class)->destroy)
-		(* ((GtkObjectClass *) parent_class)->destroy) (object);
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 SPPainter *

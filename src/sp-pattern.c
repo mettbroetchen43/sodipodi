@@ -45,9 +45,9 @@ struct _SPPatPainter {
 
 static void sp_pattern_class_init (SPPatternClass *klass);
 static void sp_pattern_init (SPPattern *gr);
-static void sp_pattern_finalize (GtkObject *object);
 
 static void sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_pattern_release (SPObject *object);
 static void sp_pattern_read_attr (SPObject *object, const gchar *key);
 static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
@@ -92,9 +92,8 @@ sp_pattern_class_init (SPPatternClass *klass)
 
 	pattern_parent_class = gtk_type_class (SP_TYPE_PAINT_SERVER);
 
-	gtk_object_class->finalize = sp_pattern_finalize;
-
 	sp_object_class->build = sp_pattern_build;
+	sp_object_class->release = sp_pattern_release;
 	sp_object_class->read_attr = sp_pattern_read_attr;
 	sp_object_class->child_added = sp_pattern_child_added;
 	sp_object_class->remove_child = sp_pattern_remove_child;
@@ -116,27 +115,6 @@ sp_pattern_init (SPPattern *pat)
 	sp_svg_length_unset (&pat->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&pat->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&pat->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
-}
-
-static void
-sp_pattern_finalize (GtkObject *object)
-{
-	SPPattern *pat;
-
-	pat = (SPPattern *) object;
-
-	if (SP_OBJECT_DOCUMENT (object)) {
-		/* Unregister ourselves */
-		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "pattern", SP_OBJECT (object));
-	}
-
-	if (pat->href) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (pat->href), pat);
-		sp_object_hunref (SP_OBJECT (pat->href), object);
-	}
-
-	if (GTK_OBJECT_CLASS (pattern_parent_class)->finalize)
-		(* GTK_OBJECT_CLASS (pattern_parent_class)->finalize) (object);
 }
 
 static void
@@ -174,6 +152,27 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "pattern", object);
+}
+
+static void
+sp_pattern_release (SPObject *object)
+{
+	SPPattern *pat;
+
+	pat = (SPPattern *) object;
+
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "pattern", SP_OBJECT (object));
+	}
+
+	if (pat->href) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (pat->href), pat);
+		sp_object_hunref (SP_OBJECT (pat->href), object);
+	}
+
+	if (((SPObjectClass *) pattern_parent_class)->release)
+		((SPObjectClass *) pattern_parent_class)->release (object);
 }
 
 static void
