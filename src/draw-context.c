@@ -955,7 +955,8 @@ sp_pencil_context_update_curves (SPPencilContext *pc)
 					  pc->sz.cpts[pos + 1].x, pc->sz.cpts[pos + 1].y,
 					  pc->sz.cpts[pos + 2].x, pc->sz.cpts[pos + 2].y);
 		}
-		sp_curve_append_continuous (dc->green_curve, curve, 0.0625);
+		/* fixme: Something sounds fishy to me (Lauris) */
+		sp_curve_append_continuous (dc->green_curve, curve, 0.25);
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
 		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape),
@@ -1044,6 +1045,9 @@ sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 	dy = yd - pc->ppos.y;
 	len = hypot (dx, dy);
 
+	/* Skip if changing direction with 2 pixel force */
+	if (((dx * pc->fval.x + dy * pc->fval.y) < 0.0) && (len <= 5.0)) return;
+
 	if ((len > 4.0) || (dtime > 0.02)) {
 		double x0, y0, t0, l, s;
 		x0 = pc->ppos.x;
@@ -1061,8 +1065,6 @@ sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 			fval.x = x - pc->ppos.x;
 			fval.y = y - pc->ppos.y;
 			/* if (len < 4.0) return; */
-			/* Skip if changing direction with 2 pixel force */
-			if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
 			pc->fval = fval;
 
 			/* Apply acceleration */
@@ -1088,7 +1090,6 @@ sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 		fval.y = yd - pc->ppos.y;
 		/* if (len < 4.0) return; */
 		/* Skip if changing direction with 2 pixel force */
-		if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
 		pc->fval = fval;
 
 		/* Apply acceleration */

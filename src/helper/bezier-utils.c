@@ -19,7 +19,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define noBEZIER_DEBUG
+#define BEZIER_DEBUG
 
 #include <math.h>
 #include <malloc.h>
@@ -276,7 +276,6 @@ nr_synthesizer_add_point (struct _NRSynthesizer *sz, float x, float y, float dis
 #endif
 			/* Fit into single segment */
 			for (i = 0; i < 4; i++) sz->fpts[i] = fpts[i];
-			sz->fsegs = fsegs;
 			sz->d2 = d2;
 		} else if (fsegs == 2) {
 			unsigned int i;
@@ -288,12 +287,17 @@ nr_synthesizer_add_point (struct _NRSynthesizer *sz, float x, float y, float dis
 #endif
 			/* Fit into two segments */
 			for (i = 0; i < 8; i++) sz->fpts[i] = fpts[i];
-			sz->fsegs = fsegs;
 			sz->d1 = d1;
 			sz->d2 = d2;
 			sz->midpt = midpt;
 		}
+		sz->fsegs = fsegs;
 		sz->numvpts += 1;
+
+		if (fsegs > 0) {
+			assert (sz->cpts[sz->numcpts - 1].x == sz->fpts[0].x);
+			assert (sz->cpts[sz->numcpts - 1].y == sz->fpts[0].y);
+		}
 	}
 }
 
@@ -569,6 +573,11 @@ GenerateBezier (NRPointF *bezier, const NRPointF *data, double *uPrime, int len,
 	/* Utility variable */
 	NRPointD tmp;
 
+	/* First and last control points of the Bezier curve are */
+	/* positioned exactly at the first and last data points */
+	bezier[0] = data[0];
+	bezier[3] = data[len - 1];
+
 	/* Compute the A's	*/
 	for (i = 0; i < len; i++) {
 		nr_vector_scale_df (&A[i][0], tHat1, B1 (uPrime[i]));
@@ -627,11 +636,6 @@ GenerateBezier (NRPointF *bezier, const NRPointF *data, double *uPrime, int len,
 	alpha_l = det_X_C1 / det_C0_C1;
 	alpha_r = det_C0_X / det_C0_C1;
 	
-	/*  First and last control points of the Bezier curve are */
-	/*  positioned exactly at the first and last data points */
-	bezier[0] = data[0];
-	bezier[3] = data[len - 1];
-
 	/*  If alpha negative, use the Wu/Barsky heuristic (see text) */
 	/* (if alpha is 0, you get coincident control points that lead to
 	 * divide by zero in any subsequent NewtonRaphsonRootFind() call. */
