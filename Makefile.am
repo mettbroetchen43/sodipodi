@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = intl m4  src glade po
+SUBDIRS = m4  intl  src glade po
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png

@@ -968,8 +968,8 @@ sp_canvas_init (SPCanvas *canvas)
 	GTK_WIDGET_UNSET_FLAGS (canvas, GTK_DOUBLE_BUFFERED);
 	GTK_WIDGET_SET_FLAGS (canvas, GTK_CAN_FOCUS);
 
-	canvas->x0 = 0.0;
-	canvas->y0 = 0.0;
+	canvas->x0 = 0;
+	canvas->y0 = 0;
 
 	canvas->pick_event.type = GDK_LEAVE_NOTIFY;
 	canvas->pick_event.crossing.x = 0;
@@ -1144,12 +1144,12 @@ sp_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 }
 
 static void
-scroll_to (SPCanvas *canvas, double x, double y, unsigned int clear)
+scroll_to (SPCanvas *canvas, int x, int y, unsigned int clear)
 {
 	int dx, dy;
 
-	dx = (int) (x + 0.5) - (int) (canvas->x0 + 0.5);
-	dy = (int) (y + 0.5) - (int) (canvas->y0 + 0.5);
+	dx = x - canvas->x0;
+	dy = y - canvas->y0;
 
 	canvas->x0 = x;
 	canvas->y0 = y;
@@ -1160,9 +1160,8 @@ scroll_to (SPCanvas *canvas, double x, double y, unsigned int clear)
 			width = canvas->widget.allocation.width;
 			height = canvas->widget.allocation.height;
 			if (GTK_WIDGET_REALIZED (canvas)) {
-				gdk_draw_drawable (SP_CANVAS_WINDOW (canvas), canvas->pixmap_gc,
-						   SP_CANVAS_WINDOW (canvas),
-						   0, 0, -dx, -dy, width, height);
+				gdk_window_scroll (SP_CANVAS_WINDOW (canvas), -dx, -dy);
+				gdk_window_process_updates (SP_CANVAS_WINDOW (canvas), TRUE);
 			}
 			if (dx < 0) {
 				sp_canvas_request_redraw (canvas, x + 0, y + 0, x - dx, y + height);
@@ -1517,8 +1516,8 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 
 	widget = GTK_WIDGET (canvas);
 
-	draw_x1 = MAX (x0, (int) (canvas->x0 + 0.5));
-	draw_y1 = MAX (y0, (int) (canvas->y0 + 0.5));
+	draw_x1 = MAX (x0, canvas->x0);
+	draw_y1 = MAX (y0, canvas->y0);
 	draw_x2 = MIN (x1, draw_x1 + GTK_WIDGET (canvas)->allocation.width);
 	draw_y2 = MIN (y1, draw_y1 + GTK_WIDGET (canvas)->allocation.height);
 
@@ -1553,17 +1552,17 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 				gdk_draw_rectangle (SP_CANVAS_WINDOW (canvas),
 						    canvas->pixmap_gc,
 						    TRUE,
-						    x0 - (int) (canvas->x0 + 0.5), y0 - (int) (canvas->y0 + 0.5),
+						    x0 - canvas->x0, y0 - canvas->y0,
 						    x1 - x0, y1 - y0);
 			} else {
 				gdk_draw_rgb_image_dithalign (SP_CANVAS_WINDOW (canvas),
 							      canvas->pixmap_gc,
-							      x0 - (int) (canvas->x0 + 0.5), y0 - (int) (canvas->y0 + 0.5),
+							      x0 - canvas->x0, y0 - canvas->y0,
 							      x1 - x0, y1 - y0,
 							      GDK_RGB_DITHER_MAX,
 							      buf.buf,
 							      IMAGE_WIDTH_AA * 3,
-							      x0 - (int) (canvas->x0 + 0.5), y0 - (int) (canvas->y0 + 0.5));
+							      x0 - canvas->x0, y0 - canvas->y0);
 			}
 			nr_pixelstore_64K_free (buf.buf);
 	  	}
@@ -1586,8 +1585,8 @@ sp_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 	for (i = 0; i < n_rects; i++) {
 		ArtIRect rect;
 
-		rect.x0 = rects[i].x + (int) (canvas->x0 + 0.5);
-		rect.y0 = rects[i].y + (int) (canvas->y0 + 0.5);
+		rect.x0 = rects[i].x + canvas->x0;
+		rect.y0 = rects[i].y + canvas->y0;
 		rect.x1 = rect.x0 + rects[i].width;
 		rect.y1 = rect.y0 + rects[i].height;
 

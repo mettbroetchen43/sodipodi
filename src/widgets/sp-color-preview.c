@@ -165,7 +165,7 @@ sp_color_preview_paint (SPColorPreview *cp, GdkRectangle *area)
 
 	/* Draw shadow */
 	gtk_draw_shadow (widget->style, widget->window,
-			 widget->state, GTK_SHADOW_IN,
+			 widget->state, GTK_SHADOW_ETCHED_IN,
 			 warea.x, warea.y,
 			 warea.width, warea.height);
 

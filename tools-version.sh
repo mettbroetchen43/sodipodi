@@ -4,15 +4,15 @@
 # You can get the latest distro command from 
 # distro web page: http://distro.pipfield.ca/ 
 
-# Please added a tool you want to check
+# Please add a tool you want to check
 TOOLS="m4 automake autoheader aclocal autoconf intltoolize gettextize libtoolize "
-ENVPATTERN='PATH\|LANG'
+ENVPATTERN='PATH\|FLAGS\|LANG'
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 echo '============================================================================='
-echo 'When you report a trouble about building CVS version of sodipdoi,            '
+echo 'When you report a trouble about building CVS version of sodipodi,            '
 echo 'Please report following information about distro and tools version, too.     '
 echo 
 (echo '--1. distribution------------------------------------------------------------'

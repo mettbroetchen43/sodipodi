@@ -54,6 +54,9 @@ static void sp_color_selector_class_init (SPColorSelectorClass *klass);
 static void sp_color_selector_init (SPColorSelector *slider);
 static void sp_color_selector_destroy (GtkObject *object);
 
+static void sp_color_selector_show_all (GtkWidget *widget);
+static void sp_color_selector_hide_all (GtkWidget *widget);
+
 static void sp_color_selector_adjustment_any_changed (GtkAdjustment *adjustment, SPColorSelector *csel);
 static void sp_color_selector_slider_any_grabbed (SPColorSlider *slider, SPColorSelector *csel);
 static void sp_color_selector_slider_any_released (SPColorSlider *slider, SPColorSelector *csel);
@@ -125,6 +128,9 @@ sp_color_selector_class_init (SPColorSelectorClass *klass)
 						 GTK_TYPE_NONE, 0);
 
 	object_class->destroy = sp_color_selector_destroy;
+
+	widget_class->show_all = sp_color_selector_show_all;
+	widget_class->hide_all = sp_color_selector_hide_all;
 }
 
 #define XPAD 4
@@ -216,6 +222,18 @@ sp_color_selector_destroy (GtkObject *object)
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+}
+
+static void
+sp_color_selector_show_all (GtkWidget *widget)
+{
+	gtk_widget_show (widget);
+}
+
+static void
+sp_color_selector_hide_all (GtkWidget *widget)
+{
+	gtk_widget_hide (widget);
 }
 
 GtkWidget *

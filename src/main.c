@@ -37,12 +37,6 @@
 #include <gtk/gtksignal.h>
 #include "helper/sp-intl.h"
 
-#ifdef ENABLE_BONOBO
-#include <liboaf/liboaf.h>
-#include "bonobo/sodipodi-bonobo.h"
-#include "bonobo/svg-doc-factory.h"
-#endif
-
 #include "macros.h"
 #include "file.h"
 #include "document.h"
@@ -135,11 +129,10 @@ main (int argc, char **argv)
 	gint result, i;
 
 #ifdef __FreeBSD__
-	fpsetmask(fpgetmask() & ~(FP_X_DZ|FP_X_INV));
+	fpsetmask (fpgetmask() & ~(FP_X_DZ|FP_X_INV));
 #endif
 
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-/* 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8"); */
 	textdomain (GETTEXT_PACKAGE);
 
 	LIBXML_TEST_VERSION

@@ -1,3 +1,11 @@
+2002-12-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.h: Made scrolling offsets integers
+
+	* src/helper/sp-canvas.c (scroll_to): Scroll instead of draw
+
+	* tools-version.sh (ENVPATTERN): Added FLAGS
+
 2002-12-02  Masatake YAMATO  <jet@gyve.org>
 
 	* distro, tools-version.sh: New files.
