@@ -10,18 +10,6 @@
 
 	* ru.po: Update from Vitaly Lipatov
 
-2002-10-23  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
-2002-10-18  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
-2002-10-16  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
 Sun Oct 13 23:00:13 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* ja.po: Merged Japanese translation for 0.26 from works of
