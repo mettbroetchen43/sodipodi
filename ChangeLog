@@ -1,3 +1,11 @@
+2004-02-29  Michael Schumacher <schumaml@cvs.gnome.org>
+
+	* autogen.sh: addedd check for automake-1.8
+
+	* configure.in: switched mingw build from 
+	console to windows application (-mwindows in LDFLAGS)
+	honor ACLOCAL_FLAGS environment variable
+        	
 2004-02-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/widgets/sp-dock*: New dockable UI come from libegg
