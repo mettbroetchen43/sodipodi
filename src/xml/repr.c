@@ -59,6 +59,14 @@ SPReprClass _sp_repr_xml_text_class = {
 	repr_finalize
 };
 
+SPReprClass _sp_repr_xml_comment_class = {
+	sizeof (SPRepr),
+	NULL,
+	repr_init,
+	repr_copy,
+	repr_finalize
+};
+
 static SPRepr *sp_repr_new_from_code (SPReprClass *type, int code);
 static void sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr);
 static void sp_repr_remove_listener (SPRepr *repr, SPListener *listener);
@@ -97,11 +105,20 @@ sp_repr_new (const unsigned char *name)
 SPRepr *
 sp_repr_new_text (const unsigned char *content)
 {
-	SPRepr * repr;
-	g_return_val_if_fail (content != NULL, NULL);
+	SPRepr *repr;
 	repr = sp_repr_new_from_code (SP_XML_TEXT_NODE, g_quark_from_static_string ("text"));
 	repr->content = g_strdup (content);
 	repr->type = SP_XML_TEXT_NODE;
+	return repr;
+}
+
+SPRepr *
+sp_repr_new_comment (const unsigned char *content)
+{
+	SPRepr *repr;
+	repr = sp_repr_new_from_code (SP_XML_COMMENT_NODE, g_quark_from_static_string ("comment"));
+	repr->content = g_strdup (content);
+	repr->type = SP_XML_COMMENT_NODE;
 	return repr;
 }
 
@@ -119,11 +136,11 @@ repr_init (SPRepr *repr)
 static void
 repr_doc_init (SPRepr *repr)
 {
-	SPReprDoc *doc=(SPReprDoc *)repr;
+	SPReprDoc *doc= (SPReprDoc *) repr;
 
 	repr_init (repr);
-
 	repr->doc = doc;
+	doc->root = NULL;
 	doc->log = NULL;
 	doc->is_logging = 0;
 }
@@ -241,7 +258,7 @@ repr_copy (SPRepr *to, const SPRepr *from)
 void
 repr_doc_copy (SPRepr *to, const SPRepr *from)
 {
-	SPReprDoc *to_doc=(SPReprDoc *)to;
+	SPReprDoc *to_doc= (SPReprDoc *) to;
 	repr_copy (to, from);
 	to_doc->log = NULL;
 	to_doc->is_logging = 0;
@@ -516,7 +533,7 @@ bind_document (SPReprDoc *doc, SPRepr *repr)
 
 	repr->doc = doc;
 
-	for ( child = repr->children ; child != NULL ; child = child->next ) {
+	for (child = repr->children ;child != NULL ;child = child->next) {
 		bind_document (doc, child);
 	}
 }
@@ -643,31 +660,6 @@ sp_repr_set_position_absolute (SPRepr * repr, int pos)
 	sp_repr_change_order (parent, repr, ref);
 }
 
-#if 0
-void
-sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void * data)
-{
-	
-	if (vector->attr_changed) {
-		SPReprAttr *attr;
-		attr = repr->attributes;
-		for ( ; attr ; attr = attr->next ) {
-			vector->attr_changed (repr, g_quark_to_string (attr->key), NULL, attr->value, data);
-		}
-	}
-	if (vector->child_added) {
-		SPRepr *child, *ref;
-		ref = NULL; child = repr->children;
-		for ( ; child ; ref = child, child = child->next ) {
-			vector->child_added (repr, child, ref, data);
-		}
-	}
-	if (vector->content_changed) {
-		vector->content_changed (repr, NULL, repr->content, data);
-	}
-}
-#endif
-
 void
 sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data)
 {
@@ -767,6 +759,7 @@ sp_repr_doc_new (const unsigned char *rootname)
 	root = sp_repr_new (rootname);
 
 	sp_repr_add_child (&doc->repr, root, 0);
+	doc->root = root;
 	sp_repr_unref (root);
 
 	return doc;
@@ -794,6 +787,7 @@ sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr)
 
 	sp_repr_remove_child (&doc->repr, doc->repr.children);
 	sp_repr_add_child (&doc->repr, repr, NULL);
+	doc->root = repr;
 }
 
 SPReprDoc *
@@ -806,7 +800,7 @@ SPRepr *
 sp_repr_doc_get_root (SPReprDoc *doc)
 {
 	g_assert (doc != NULL);
-	return doc->repr.children;
+	return doc->root;
 }
 
 /*

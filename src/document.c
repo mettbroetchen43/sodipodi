@@ -45,6 +45,7 @@
 #define SP_DOCUMENT_UPDATE_PRIORITY (G_PRIORITY_HIGH_IDLE - 1)
 
 enum {
+	DESTROY,
 	MODIFIED,
 	URI_SET,
 	RESIZED,
@@ -100,6 +101,13 @@ sp_document_class_init (SPDocumentClass * klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 
+	signals[DESTROY] =   g_signal_new ("destroy",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, destroy),
+					    NULL, NULL,
+					    sp_marshal_NONE__NONE,
+					    G_TYPE_NONE, 0);
 	signals[MODIFIED] = g_signal_new ("modified",
 					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
@@ -146,17 +154,6 @@ sp_document_class_init (SPDocumentClass * klass)
 static void
 sp_document_init (SPDocument *doc)
 {
-	doc->advertize = FALSE;
-	doc->keepalive = FALSE;
-
-	doc->rdoc = NULL;
-	doc->rroot = NULL;
-	doc->root = NULL;
-
-	doc->uri = NULL;
-	doc->base = NULL;
-	doc->name = NULL;
-
 	doc->priv = g_new0 (SPDocumentPrivate, 1);
 
 	doc->priv->iddef = g_hash_table_new (g_str_hash, g_str_equal);
@@ -173,9 +170,9 @@ sp_document_dispose (GObject *object)
 	doc = (SPDocument *) object;
 	priv = doc->priv;
 
-	if (priv) {
-		sodipodi_remove_document (doc);
+	g_signal_emit (G_OBJECT (doc), signals [DESTROY], 0);
 
+	if (priv) {
 		if (priv->idle) {
 			/* Remove idle handler */
 			gtk_idle_remove (priv->idle);
@@ -235,11 +232,6 @@ sp_document_dispose (GObject *object)
 		doc->uri = NULL;
 	}
 
-	if (doc->keepalive) {
-		sodipodi_unref ();
-		doc->keepalive = FALSE;
-	}
-
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
@@ -247,9 +239,7 @@ static SPDocument *
 sp_document_create (SPReprDoc *rdoc,
 		    const unsigned char *uri,
 		    const unsigned char *base,
-		    const unsigned char *name,
-		    unsigned int advertize,
-		    unsigned int keepalive)
+		    const unsigned char *name)
 {
 	SPDocument *document;
 	SPRepr *rroot;
@@ -258,9 +248,6 @@ sp_document_create (SPReprDoc *rdoc,
 	rroot = sp_repr_doc_get_root (rdoc);
 
 	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
-
-	document->advertize = advertize;
-	document->keepalive = keepalive;
 
 	document->rdoc = rdoc;
 	document->rroot = rroot;
@@ -324,19 +311,11 @@ sp_document_create (SPReprDoc *rdoc,
 		g_assert (SP_ROOT (document->root)->defs);
 	}
 
-	if (keepalive) {
-		sodipodi_ref ();
-	}
-
-	sp_document_set_undo_sensitive (document, TRUE);
-
-	sodipodi_add_document (document);
-
 	return document;
 }
 
 SPDocument *
-sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepalive)
+sp_document_new (const gchar *uri)
 {
 	SPDocument *doc;
 	SPReprDoc *rdoc;
@@ -370,7 +349,7 @@ sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepaliv
 		name = g_strdup_printf (_("New document %d"), ++doc_count);
 	}
 
-	doc = sp_document_create (rdoc, uri, base, name, advertize, keepalive);
+	doc = sp_document_create (rdoc, uri, base, name);
 
 	if (base) g_free (base);
 	if (name) g_free (name);
@@ -379,7 +358,7 @@ sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepaliv
 }
 
 SPDocument *
-sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int advertize, unsigned int keepalive)
+sp_document_new_from_mem (const gchar *buffer, gint length)
 {
 	SPDocument *doc;
 	SPReprDoc *rdoc;
@@ -398,7 +377,7 @@ sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int adverti
 
 	name = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
-	doc = sp_document_create (rdoc, NULL, NULL, name, advertize, keepalive);
+	doc = sp_document_create (rdoc, NULL, NULL, name);
 
 	return doc;
 }
@@ -970,20 +949,10 @@ sp_document_set_timer (SPDocument *doc, unsigned int id, double time, unsigned i
 	}
 }
 
-static gint
-sp_document_idle_handler (gpointer data)
+static void
+sp_document_process_updates (SPDocument *doc)
 {
-	SPDocument *doc;
-	/* int repeat; */
-
-	doc = SP_DOCUMENT (data);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print ("->\n");
-#endif
-
-	/* Process updates */
-	if (doc->root->uflags) {
+	if (doc->root->uflags || doc->root->mflags) {
 		SPItemCtx ctx;
 		ctx.ctx.flags = 0;
 		nr_matrix_d_set_identity (&ctx.i2doc);
@@ -995,29 +964,89 @@ sp_document_idle_handler (gpointer data)
 		nr_matrix_d_set_identity (&ctx.i2vp);
 		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
 		/* if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return TRUE; */
+
+		/* Emit "modified" signal on objects */
+		sp_object_invoke_modified (doc->root, 0);
+
+		/* Emit our own "modified" signal */
+		g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
+			       SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 	}
-
-	/* Emit "modified" signal on objects */
-	sp_object_invoke_modified (doc->root, 0);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print ("\n->");
-#endif
-
-	/* Emit our own "modified" signal */
-	g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
-			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
-
-#ifdef SP_DOCUMENT_DEBUG_IDLE
-	g_print (" S ->\n");
-#endif
-
-	sp_document_schedule_timers (doc);
-	/* If idle not cleared we have to repeat */
-	return doc->priv->idle != 0;
 }
 
 #define deltat 0.0
+
+static void
+sp_document_process_timers (SPDocument *doc)
+{
+	static int tsize = 0;
+	static int tlen = 0;
+	static SPDocTimer *timers = NULL;
+	SPDocumentPrivate *priv;
+	double ntime;
+	GSList *l;
+	int i;
+
+	priv = doc->priv;
+
+	ntime = sp_document_get_time (doc) + deltat;
+
+	tlen = 0;
+	while (priv->etqueue && (((SPDocTimer *) priv->etqueue->data)->time <= ntime)) {
+		if (tlen >= tsize) {
+			tsize = MAX (4, (tsize << 1));
+			timers = (SPDocTimer *) realloc (timers, tsize * sizeof (SPDocTimer));
+		}
+		timers[tlen++] = *((SPDocTimer *) priv->etqueue->data);
+		((SPDocTimer *) priv->etqueue->data)->awake = FALSE;
+		priv->etqueue = g_slist_remove (priv->etqueue, priv->etqueue->data);
+	}
+	for (l = priv->itqueue; l != NULL; l = l->next) {
+		if (tlen >= tsize) {
+			tsize = MAX (4, (tsize << 1));
+			timers = (SPDocTimer *) realloc (timers, tsize * sizeof (SPDocTimer));
+		}
+		timers[tlen++] = *((SPDocTimer *) l->data);
+	}
+	for (i = 0; i < tlen; i++) {
+		timers[i].callback (ntime, timers[i].data);
+	}
+}
+
+static int
+sp_document_timeout_handler (void *data)
+{
+	SPDocument *doc;
+
+	doc = SP_DOCUMENT (data);
+
+	/* Process updates if needed */
+	sp_document_process_updates (doc);
+	/* Process timers */
+	sp_document_process_timers (doc);
+
+	sp_document_schedule_timers (doc);
+
+	return FALSE;
+}
+
+static int
+sp_document_idle_handler (void *data)
+{
+	SPDocument *doc;
+
+	doc = SP_DOCUMENT (data);
+
+	/* Process updates if needed */
+	sp_document_process_updates (doc);
+	/* Process timers */
+	sp_document_process_timers (doc);
+
+	sp_document_schedule_timers (doc);
+
+	/* If idle not cleared we have to repeat */
+	return doc->priv->idle != 0;
+}
 
 static void
 sp_document_schedule_timers (SPDocument *doc)
@@ -1038,12 +1067,13 @@ sp_document_schedule_timers (SPDocument *doc)
 		dtime = timer->time - ctime;
 		if (dtime <= deltat) idle = TRUE;
 	}
+	/* We have to remove old timer always */
+	if (priv->timeout) {
+		/* Remove timer */
+		gtk_timeout_remove (priv->timeout);
+		priv->timeout = 0;
+	}
 	if (idle) {
-		if (priv->timeout) {
-			/* Remove timer */
-			gtk_timeout_remove (priv->timeout);
-			priv->timeout = 0;
-		}
 		if (!priv->idle) {
 			/* Register idle */
 			priv->idle = gtk_idle_add_priority (SP_DOCUMENT_UPDATE_PRIORITY, sp_document_idle_handler, doc);
@@ -1055,17 +1085,12 @@ sp_document_schedule_timers (SPDocument *doc)
 			priv->idle = 0;
 		}
 		/* Register timeout */
-		/* fixme: TODO */
+		priv->timeout = gtk_timeout_add ((int) dtime * 1000, sp_document_timeout_handler, doc);
 	} else {
 		if (priv->idle) {
 			/* Remove idle handler */
 			gtk_idle_remove (priv->idle);
 			priv->idle = 0;
-		}
-		if (priv->timeout) {
-			/* Remove timer */
-			gtk_timeout_remove (priv->timeout);
-			priv->timeout = 0;
 		}
 	}
 }

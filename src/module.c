@@ -331,7 +331,7 @@ sp_module_input_setup (SPModule *module, SPRepr *repr)
 SPDocument *
 sp_module_input_document_open (SPModuleInput *mod, const unsigned char *uri, unsigned int advertize, unsigned int keepalive)
 {
-	return sp_document_new (uri, advertize, keepalive);
+	return sodipodi_document_new (uri, advertize, keepalive);
 }
 
 /* ModuleOutput */

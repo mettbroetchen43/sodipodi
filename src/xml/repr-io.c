@@ -138,7 +138,8 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 		if (default_ns) {
 			sp_repr_set_attr (repr, "xmlns", default_ns);
 		}
-		g_hash_table_foreach (prefix_map, (GHFunc)sp_repr_set_xmlns_attr, repr);
+		/* Not sure whether collating everything here makes sense (Lauris) */
+		/* g_hash_table_foreach (prefix_map, (GHFunc) sp_repr_set_xmlns_attr, repr); */
 		/* always include Sodipodi namespace */
 		sp_repr_set_xmlns_attr (sp_xml_ns_uri_prefix (SP_SODIPODI_NS_URI, "sodipodi"), SP_SODIPODI_NS_URI, repr);
 
@@ -195,9 +196,10 @@ static SPRepr *
 sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns, GHashTable *prefix_map)
 {
 	SPRepr *repr, *crepr;
+	xmlNsPtr ns;
 	xmlAttrPtr prop;
 	xmlNodePtr child;
-	gchar c[256];
+	char c[256];
 
 #ifdef SP_REPR_IO_VERBOSE
 	g_print ("Node %d %s contains %s\n", node->type, node->name, node->content);
@@ -235,6 +237,15 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	sp_repr_qualified_name (c, 256, node->ns, node->name, default_ns, prefix_map);
 	repr = sp_repr_new (c);
 
+	for (ns = node->nsDef; ns != NULL; ns = ns->next) {
+		if (ns->prefix) {
+			g_snprintf (c, 256, "xmlns:%s", ns->prefix);
+			sp_repr_set_attr (repr, c, ns->href);
+		} else {
+			sp_repr_set_attr (repr, "xmlns", ns->href);
+		}
+	}
+
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->children) {
 			sp_repr_qualified_name (c, 256, prop->ns, prop->name, default_ns, prefix_map);
@@ -242,8 +253,9 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 		}
 	}
 
-	if (node->content)
+	if (node->content) {
 		sp_repr_set_content (repr, node->content);
+	}
 
 	child = node->xmlChildrenNode;
 	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {

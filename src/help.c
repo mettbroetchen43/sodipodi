@@ -41,7 +41,7 @@ sp_help_about (void)
 	char *path;
 
 	path = g_build_filename (SODIPODI_PIXMAPDIR, "about.svg", NULL);
-	doc = sp_document_new (path, FALSE, TRUE);
+	doc = sodipodi_document_new (path, FALSE, TRUE);
 	g_free (path);
 	g_return_if_fail (doc != NULL);
 	title = sp_document_lookup_id (doc, "title");

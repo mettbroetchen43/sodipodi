@@ -65,6 +65,7 @@ struct _SPRepr {
 
 struct _SPReprDoc {
 	SPRepr repr;
+	SPRepr *root;
 	unsigned int is_logging;
 	SPReprAction *log;
 };
@@ -83,10 +84,12 @@ struct _SPXMLNs {
 extern SPReprClass _sp_repr_xml_document_class;
 extern SPReprClass _sp_repr_xml_element_class;
 extern SPReprClass _sp_repr_xml_text_class;
+extern SPReprClass _sp_repr_xml_comment_class;
 
 #define SP_XML_DOCUMENT_NODE &_sp_repr_xml_document_class
 #define SP_XML_ELEMENT_NODE &_sp_repr_xml_element_class
 #define SP_XML_TEXT_NODE &_sp_repr_xml_text_class
+#define SP_XML_COMMENT_NODE &_sp_repr_xml_comment_class
 
 SPRepr *sp_repr_nth_child (const SPRepr *repr, int n);
 
@@ -141,14 +144,6 @@ int sp_repr_attr_is_set (SPRepr * repr, const char * key);
 
 /* Defaults */
 unsigned int sp_repr_set_double_default (SPRepr *repr, const unsigned char *key, double val, double def, double e);
-
-#if 0
-/* Deprecated */
-double sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def);
-int sp_repr_get_int_attribute (SPRepr * repr, const char * key, int def);
-unsigned int sp_repr_set_double_attribute (SPRepr * repr, const char * key, double value);
-unsigned int sp_repr_set_int_attribute (SPRepr * repr, const char * key, int value);
-#endif
 
 int sp_repr_compare_position (SPRepr * first, SPRepr * second);
 

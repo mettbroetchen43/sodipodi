@@ -66,7 +66,7 @@ sp_slideshow_event (SPViewWidget *vw, GdkEvent *event, GtkWidget *window)
 	if (nname && (nname != fname)) {
 		SPDocument *doc;
 		g_print ("Trying to load\n");
-		doc = sp_document_new (nname, FALSE, TRUE);
+		doc = sodipodi_document_new (nname, FALSE, TRUE);
 		if (doc) {
 			sp_view_set_document (SP_VIEW_WIDGET_VIEW (vw), doc);
 			sp_document_unref (doc);
@@ -83,7 +83,7 @@ sp_slideshow_new (const GSList *files)
 	SPDocument *doc;
 	GtkWidget *w, *v;
 
-	doc = sp_document_new ((unsigned char *) files->data, FALSE, TRUE);
+	doc = sodipodi_document_new ((unsigned char *) files->data, FALSE, TRUE);
 	g_return_val_if_fail (doc != NULL, NULL);
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);

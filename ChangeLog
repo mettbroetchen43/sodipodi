@@ -1,5 +1,10 @@
 2003-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Parse nsDef-s inot
+	xmlns:prefix attributes
+	(sp_repr_do_read): Do not process namespaces separately as these are now
+	normal attributes
+
 	* src/document.c (sp_document_get_abstime): New helper
 	(sp_document_begin): New method
 	(sp_document_end): Ditto

@@ -31,7 +31,6 @@ struct _SPDocument {
 	GObject object;
 
 	unsigned int advertize : 1;
-	unsigned int keepalive : 1;
 
 	SPReprDoc *rdoc; /* Our SPReprDoc */
 	SPRepr *rroot; /* Root element of SPReprDoc */
@@ -57,6 +56,8 @@ struct _SPDocument {
 struct _SPDocumentClass {
 	GObjectClass parent_class;
 
+	void (* destroy) (SPDocument *document);
+
 	void (* modified) (SPDocument *document, guint flags);
 	void (* uri_set) (SPDocument *document, const guchar *uri);
 	void (* resized) (SPDocument *document, gdouble width, gdouble height);
@@ -70,8 +71,8 @@ struct _SPDocumentClass {
  * Public document appear in document list
  */
 
-SPDocument *sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepalive);
-SPDocument *sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int advertize, unsigned int keepalive);
+SPDocument *sp_document_new (const gchar *uri);
+SPDocument *sp_document_new_from_mem (const gchar *buffer, gint length);
 
 SPDocument *sp_document_ref (SPDocument *doc);
 SPDocument *sp_document_unref (SPDocument *doc);
@@ -94,6 +95,8 @@ const unsigned char *sp_document_get_name (SPDocument *doc);
 #define SP_DOCUMENT_URI(d) (SP_DOCUMENT (d)->uri)
 #define SP_DOCUMENT_NAME(d) (SP_DOCUMENT (d)->name)
 #define SP_DOCUMENT_BASE(d) (SP_DOCUMENT (d)->base)
+
+#define sp_document_set_advertize(d,v) (((SPDocument *)(d))->advertize = ((v) != 0))
 
 /*
  * Dictionary

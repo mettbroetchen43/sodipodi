@@ -29,6 +29,7 @@ typedef struct _SPReprAttr SPReprAttr;
 
 SPRepr *sp_repr_new (const unsigned char *name);
 SPRepr *sp_repr_new_text (const unsigned char *content);
+SPRepr *sp_repr_new_comment (const unsigned char *content);
 SPRepr *sp_repr_ref (SPRepr *repr);
 SPRepr *sp_repr_unref (SPRepr *repr);
 SPRepr *sp_repr_duplicate (SPRepr *repr);

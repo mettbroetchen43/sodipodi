@@ -337,6 +337,49 @@ sodipodi_application_new (void)
 	return sp;
 }
 
+static void
+sodipodi_document_destroy (SPDocument *doc, void *data)
+{
+	sodipodi_remove_document (doc);
+	sodipodi_unref ();
+}
+
+SPDocument *
+sodipodi_document_new (const unsigned char *uri, unsigned int advertize, unsigned int keepalive)
+{
+	SPDocument *doc;
+	doc = sp_document_new (uri);
+	if (doc) {
+		sp_document_set_advertize (doc, TRUE);
+		if (keepalive) {
+			g_signal_connect ((GObject *) doc, "destroy", (GCallback) sodipodi_document_destroy, NULL);
+			sodipodi_ref ();
+		}
+		sp_document_set_undo_sensitive (doc, TRUE);
+		sodipodi_add_document (doc);
+	}
+	return doc;
+}
+
+SPDocument *
+sodipodi_document_new_from_mem (const unsigned char *cdata, unsigned int length,
+				unsigned int advertize, unsigned int keepalive)
+{
+	SPDocument *doc;
+	doc = sp_document_new_from_mem (cdata, length);
+	if (doc) {
+		sp_document_set_advertize (doc, TRUE);
+		if (keepalive) {
+			g_signal_connect ((GObject *) doc, "destroy", (GCallback) sodipodi_document_destroy, NULL);
+			sodipodi_ref ();
+		}
+		sp_document_set_undo_sensitive (doc, TRUE);
+		sodipodi_add_document (doc);
+	}
+	return doc;
+}
+
+
 /* Preference management */
 /* We use '.' as separator */
 

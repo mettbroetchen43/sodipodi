@@ -374,11 +374,11 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size, unsigned i
 		unsigned char *path;
 		struct stat st;
 		if (!stat ("glade/icons.svg", &st) && S_ISREG (st.st_mode)) {
-			doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
+			doc = sp_document_new ("glade/icons.svg");
 		}
 		path = g_build_filename (SODIPODI_PIXMAPDIR, "icons.svg", NULL);
 		if (!doc && !stat (path, &st) && S_ISREG (st.st_mode)) {
-			doc = sp_document_new (path, FALSE, FALSE);
+			doc = sp_document_new (path);
 		}
 		g_free (path);
 		if (doc) {

@@ -116,6 +116,9 @@ typedef struct _SPSelectionClass SPSelectionClass;
 GType sp_selection_get_type (void);
 
 /* Defined in sodipodi.c */
+SPDocument *sodipodi_document_new (const unsigned char *uri, unsigned int advertize, unsigned int keepalive);
+SPDocument *sodipodi_document_new_from_mem (const unsigned char *cdata, unsigned int length,
+					    unsigned int advertize, unsigned int keepalive);
 SPDesktop *sodipodi_get_active_desktop (void);
 
 /* Defined in sp-document.c */

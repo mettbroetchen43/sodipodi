@@ -282,7 +282,7 @@ sp_main_gui (int argc, const char **argv)
 
 		while (fl) {
 			SPDocument *doc;
-			doc = sp_document_new ((const gchar *) fl->data, TRUE, TRUE);
+			doc = sodipodi_document_new ((const unsigned char *) fl->data, TRUE, TRUE);
 			if (doc) {
 				if (sp_export_png) {
 					sp_do_export_png (doc);
@@ -374,7 +374,7 @@ sp_main_console (int argc, const char **argv)
 
 	while (fl) {
 		SPDocument *doc;
-		doc = sp_document_new ((gchar *) fl->data, FALSE, TRUE);
+		doc = sodipodi_document_new ((const unsigned char *) fl->data, FALSE, TRUE);
 		if (doc == NULL) {
 			g_warning ("Specified document %s cannot be opened (is it valid SVG file?)", (gchar *) fl->data);
 		} else {

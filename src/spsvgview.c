@@ -139,7 +139,7 @@ main (int argc, const char **argv)
 	}
 
 	while (!ss.doc) {
-		ss.doc = sp_document_new (ss.slides[ss.current], FALSE, FALSE);
+		ss.doc = sp_document_new (ss.slides[ss.current]);
 		if (!ss.doc && (++ss.current >= ss.length)) {
 			/* No loadable documents */
 			return 1;
@@ -213,7 +213,7 @@ sp_svgview_show_next (struct _SPSlideShow *ss)
 	doc = NULL;
 	current = ss->current;
 	while (!doc && (current < (ss->length - 1))) {
-		doc = sp_document_new (ss->slides[++current], FALSE, FALSE);
+		doc = sp_document_new (ss->slides[++current]);
 	}
 	if (doc) {
 		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
@@ -231,7 +231,7 @@ sp_svgview_show_prev (struct _SPSlideShow *ss)
 	doc = NULL;
 	current = ss->current;
 	while (!doc && (current > 0)) {
-		doc = sp_document_new (ss->slides[--current], FALSE, FALSE);
+		doc = sp_document_new (ss->slides[--current]);
 	}
 	if (doc) {
 		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
@@ -243,15 +243,7 @@ sp_svgview_show_prev (struct _SPSlideShow *ss)
 
 Sodipodi *sodipodi;
 
-void sodipodi_ref (void) {}
-void sodipodi_unref (void) {}
-void sodipodi_add_document (SPDocument *document) {}
-void sodipodi_remove_document (SPDocument *document) {}
 SPRepr *sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key) {return NULL;}
-#if 0
-#include "widgets/menu.h"
-void sp_menu_append (SPMenu *menu, const unsigned char *name, const unsigned char *tip, const void *data) {}
-#endif
 
 #include <libnr/nr-path.h>
 unsigned int sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity) {return 0;}
