@@ -10,6 +10,7 @@ glade/transformation.c
 glade/xml-tree.c
 src/main.c
 src/bonobo/svg-doc-factory.c
+src/interface.c
 src/file.c
 src/sp-image.c
 src/sp-item.c

@@ -1,3 +1,7 @@
+2001-03-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* POTFILES.in: Added src/interface.c
+
 2001-02-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* es.po: Updates by Jose Antonio Salgueiro
