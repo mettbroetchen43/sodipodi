@@ -10,10 +10,10 @@
  * This code is in public domain
  */
 
-#define NR_RGBA32_R(v) (((v) >> 24) & 0xff)
-#define NR_RGBA32_G(v) (((v) >> 16) & 0xff)
-#define NR_RGBA32_B(v) (((v) >> 8) & 0xff)
-#define NR_RGBA32_A(v) ((v) & 0xff)
+#define NR_RGBA32_R(v) (unsigned char) (((v) >> 24) & 0xff)
+#define NR_RGBA32_G(v) (unsigned char) (((v) >> 16) & 0xff)
+#define NR_RGBA32_B(v) (unsigned char) (((v) >> 8) & 0xff)
+#define NR_RGBA32_A(v) (unsigned char) ((v) & 0xff)
 
 #define NR_PREMUL(c,a) (((c) * (a) + 127) / 255)
 #define NR_A7(fa,ba) (65025 - (255 - fa) * (255 - ba))

@@ -65,7 +65,7 @@ struct _SPSelTrans {
 	SPKnot *rhandle[8];
 	SPKnot *chandle;
         SPCanvasItem *norm;
-        SPCanvasItem *grip;;
+        SPCanvasItem *grip;
         SPCanvasItem *l1, *l2, *l3, *l4;
 	guint sel_changed_id;
 	guint sel_modified_id;

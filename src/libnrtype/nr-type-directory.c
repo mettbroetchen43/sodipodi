@@ -18,7 +18,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <ctype.h>
 #include <libnr/nr-macros.h>
@@ -239,7 +241,11 @@ nr_type_register (NRTypeFaceDef *def)
 static int
 nr_type_family_def_compare (const void *a, const void *b)
 {
+#ifndef WIN32
 	return strcasecmp ((*((NRFamilyDef **) a))->name, (*((NRFamilyDef **) b))->name);
+#else
+	return stricmp ((*((NRFamilyDef **) a))->name, (*((NRFamilyDef **) b))->name);
+#endif
 }
 
 static void
@@ -371,16 +377,26 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 {
 	int alen, blen;
 
+#ifndef WIN32
 	if (!strcasecmp (ask, bid)) return MIN (best, 0.0);
+#else
+	if (!stricmp (ask, bid)) return MIN (best, 0.0);
+#endif
 
 	alen = strlen (ask);
 	blen = strlen (bid);
 
+#ifndef WIN32
 	if ((blen < alen) && !strncasecmp (ask, bid, blen)) return MIN (best, 1.0);
-
 	if (!strcasecmp (bid, "bitstream cyberbit")) return MIN (best, 10.0);
 	if (!strcasecmp (bid, "arial")) return MIN (best, 100.0);
 	if (!strcasecmp (bid, "helvetica")) return MIN (best, 1000.0);
+#else
+	if ((blen < alen) && !strnicmp (ask, bid, blen)) return MIN (best, 1.0);
+	if (!stricmp (bid, "bitstream cyberbit")) return MIN (best, 10.0);
+	if (!stricmp (bid, "arial")) return MIN (best, 100.0);
+	if (!stricmp (bid, "helvetica")) return MIN (best, 1000.0);
+#endif
 
 	return 10000.0;
 }
@@ -433,6 +449,10 @@ nr_type_read_private_list (void)
 	filename = nr_new (unsigned char, len + sizeof (privatename) + 1);
 	strcpy (filename, homedir);
 	strcpy (filename + len, privatename);
+
+#ifndef S_ISREG
+#define S_ISREG(st) 1
+#endif
 
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
 		unsigned char *img;

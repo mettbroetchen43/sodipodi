@@ -138,7 +138,11 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		SPObject * child;
 		type = sp_repr_type_lookup (rchild);
 		child = g_object_new (type, NULL);
-		last ? last->next : pat->children = sp_object_attach_reref (object, child, NULL);
+		if (last) {
+			last->next = sp_object_attach_reref (object, child, NULL);
+		} else {
+			pat->children = sp_object_attach_reref (object, child, NULL);
+		}
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}

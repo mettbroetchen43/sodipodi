@@ -652,7 +652,11 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 			if (*fn == '|') {
 				fn += 1;
 				while (isspace (*fn)) fn += 1;
+#ifndef WIN32
 				osp = popen (fn, "w");
+#else
+				osp = _popen (fn, "w");
+#endif
 				pmod->stream = osp;
 			} else if (*fn == '>') {
 				fn += 1;
@@ -662,7 +666,11 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 			} else {
 				unsigned char *qn;
 				qn = g_strdup_printf ("lpr %s", fn);
+#ifndef WIN32
 				osp = popen (qn, "w");
+#else
+				osp = _popen (qn, "w");
+#endif
 				g_free (qn);
 				pmod->stream = osp;
 			}

@@ -99,6 +99,7 @@ void sp_extension(GtkWidget * widget)
 
         rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 
+#ifndef WIN32
 	/* Store SVG text to a temporary file */
 	if (mkstemp(tempfilename) == -1) {
 	  /* Error, couldn't create temporary filename */
@@ -115,6 +116,24 @@ void sp_extension(GtkWidget * widget)
 	    exit(-1);
 	  }
 	}
+#else
+	/* Store SVG text to a temporary file */
+	if (_mktemp(tempfilename) == -1) {
+	  /* Error, couldn't create temporary filename */
+	  if (errno == EINVAL) {
+	    /* The  last  six characters of template were not XXXXXX.  Now template is unchanged. */
+	    perror("extension.c:  template for filenames is misconfigured.\n");
+	    exit(-1);	    
+	  } else if (errno == EEXIST) {
+	    /* Now the  contents of template are undefined. */
+	    perror("extension.c:  Could not create a unique temporary filename\n");
+	    return;
+	  } else {
+	    perror("extension.c:  Unknown error creating temporary filename\n");
+	    exit(-1);
+	  }
+	}
+#endif
 
 	sp_repr_save_file(sp_document_repr_doc (document), tempfilename);
 
@@ -130,7 +149,11 @@ void sp_extension(GtkWidget * widget)
 	strncat(command, tempfilename, BUFSIZE-strlen(command));
 
 	/* Run script */
-	ppipe = popen(command, "r");
+#ifndef WIN32
+	ppipe = popen (command, "r");
+#else
+	ppipe = _popen (command, "r");
+#endif
 
 	if (ppipe == NULL) {
 	  /* Error - could not open pipe - check errno */
@@ -142,6 +165,7 @@ void sp_extension(GtkWidget * widget)
 	  return;
 	}
 
+#ifndef WIN32
 	/* Store SVG text to a temporary file */
 	if (mkstemp(tempfilename2) == -1) {
 	  /* Error, couldn't create temporary filename */
@@ -158,6 +182,24 @@ void sp_extension(GtkWidget * widget)
 	    exit(-1);
 	  }
 	}
+#else
+	/* Store SVG text to a temporary file */
+	if (_mktemp(tempfilename2) == -1) {
+	  /* Error, couldn't create temporary filename */
+	  if (errno == EINVAL) {
+	    /* The  last  six characters of template were not XXXXXX.  Now template is unchanged. */
+	    perror("extension.c:  template for filenames is misconfigured.\n");
+	    exit(-1);	    
+	  } else if (errno == EEXIST) {
+	    /* Now the  contents of template are undefined. */
+	    perror("extension.c:  Could not create a unique temporary filename\n");
+	    return;
+	  } else {
+	    perror("extension.c:  Unknown error creating temporary filename\n");
+	    exit(-1);
+	  }
+	}
+#endif
 
 	pfile = fopen(tempfilename2, "w");
 
@@ -187,6 +229,7 @@ void sp_extension(GtkWidget * widget)
 	}
 
 	/* Close pipe */
+#ifndef WIN32
 	if (pclose(ppipe) == -1) {
 	  if (errno == EINVAL) {
 	    perror("extension.c:  Invalid mode set for pclose\n");
@@ -196,6 +239,17 @@ void sp_extension(GtkWidget * widget)
 	    perror("extension.c:  Unknown error for pclose\n");
 	  }
 	}
+#else
+	if (_pclose (ppipe) == -1) {
+	  if (errno == EINVAL) {
+	    perror("extension.c:  Invalid mode set for pclose\n");
+	  } else if (errno == ECHILD) {
+	    perror("extension.c:  Could not obtain child status for pclose\n");
+	  } else {
+	    perror("extension.c:  Unknown error for pclose\n");
+	  }
+	}
+#endif
 
 	/* TODO:  Make a routine like sp_file_open, that can load from popen's output stream */	
 

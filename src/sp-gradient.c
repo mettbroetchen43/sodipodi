@@ -279,7 +279,11 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		type = sp_repr_type_lookup (rchild);
 		if (g_type_is_a (type, SP_TYPE_OBJECT)) {
 			child = g_object_new(type, 0);
-			(last) ? last->next : gradient->stops = sp_object_attach_reref (object, child, NULL);
+			if (last) {
+				last->next = sp_object_attach_reref (object, child, NULL);
+			} else {
+				gradient->stops = sp_object_attach_reref (object, child, NULL);
+			}
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			/* Set has_stops flag */
 			if (SP_IS_STOP (child)) gradient->has_stops = TRUE;

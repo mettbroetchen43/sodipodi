@@ -14,6 +14,8 @@
 
 #include <string.h>
 
+#include <libart_lgpl/art_misc.h>
+
 #include <libnr/nr-pixblock.h>
 #include "macros.h"
 #include "helper/art-utils.h"

@@ -18,7 +18,9 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <fcntl.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <signal.h>
 #include <ctype.h>
 
@@ -475,9 +477,11 @@ sodipodi_application_new (void)
 	sp = g_object_new (SP_TYPE_SODIPODI, NULL);
 	/* fixme: load application defaults */
 
+#ifndef WIN32
 	segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
 	signal (SIGFPE, sodipodi_segv_handler);
 	signal (SIGILL, sodipodi_segv_handler);
+#endif
 
 	return sp;
 }
@@ -889,7 +893,7 @@ sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *ske
 
 #ifdef WIN32
 	fn = g_strdup_printf ("sodipodi/%s", config_name);
-	fh = creat (fn, S_IRUSR | S_IWUSR);
+	fh = creat (fn, S_IREAD | S_IWRITE);
 #else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi", config_name, NULL);
 	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);

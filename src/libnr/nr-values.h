@@ -15,8 +15,8 @@
 #define NR_EPSILON_D 1e-18
 #define NR_EPSILON_F 1e-18
 
-#define NR_HUGE_D 1e18
-#define NR_HUGE_F 1e18
+#define NR_HUGE_D 1e18L
+#define NR_HUGE_F 1e18F
 #define NR_HUGE_L (0x7fffffff)
 #define NR_HUGE_S (0x7fff)
 

@@ -157,7 +157,7 @@ rsvg_path_arc (RSVGParsePathCtx *ctx,
   else if (th_arc > 0 && !sweep_flag)
     th_arc -= 2 * M_PI;
 
-  n_segs = ceil (fabs (th_arc / (M_PI * 0.5 + 0.001)));
+  n_segs = (int) ceil (fabs (th_arc / (M_PI * 0.5 + 0.001)));
 
   for (i = 0; i < n_segs; i++)
     rsvg_path_arc_segment (ctx, xc, yc,
@@ -421,7 +421,7 @@ rsvg_parse_path_do_cmd (RSVGParsePathCtx *ctx, gboolean final)
 	{
 	  rsvg_path_arc (ctx,
 			ctx->params[0], ctx->params[1], ctx->params[2],
-			ctx->params[3], ctx->params[4],
+			(int) ctx->params[3], (int) ctx->params[4],
 			ctx->params[5], ctx->params[6]);
 	  ctx->param = 0;
 	}

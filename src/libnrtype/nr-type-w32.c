@@ -24,45 +24,71 @@
 
 #define NR_SLOTS_BLOCK 32
 
+static void nr_typeface_w32_class_init (NRTypeFaceW32Class *klass);
+static void nr_typeface_w32_init (NRTypeFaceW32 *tfw32);
+static void nr_typeface_w32_finalize (NRObject *object);
 
+static void nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def);
 
-static NRTypeFace *nr_typeface_w32_new (NRTypeFaceDef *def);
-void nr_typeface_w32_free (NRTypeFace *tf);
+static unsigned int nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
+static NRBPath *nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static void nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
+static NRPointF *nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
+static unsigned int nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
 
-unsigned int nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-NRBPath *nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
-void nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
-NRPointF *nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
-unsigned int nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
+static NRFont *nr_typeface_w32_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
+static void nr_typeface_w32_font_free (NRFont *font);
 
-NRFont *nr_typeface_w32_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
-void nr_typeface_w32_font_free (NRFont *font);
+static NRTypeFaceClass *parent_class;
 
-static NRTypeFaceVMV nr_type_w32_vmv = {
-    nr_typeface_w32_new,
+unsigned int
+nr_typeface_w32_get_type (void)
+{
+	static unsigned int type = 0;
+	if (!type) {
+		type = nr_object_register_type (NR_TYPE_TYPEFACE,
+						"NRTypeFaceW32",
+						sizeof (NRTypeFaceW32Class),
+						sizeof (NRTypeFaceW32),
+						(void (*) (NRObjectClass *)) nr_typeface_w32_class_init,
+						(void (*) (NRObject *)) nr_typeface_w32_init);
+	}
+	return type;
+}
 
-    nr_typeface_w32_free,
-    nr_typeface_w32_attribute_get,
-    nr_typeface_w32_glyph_outline_get,
-    nr_typeface_w32_glyph_outline_unref,
-    nr_typeface_w32_glyph_advance_get,
-    nr_typeface_w32_lookup,
+static void
+nr_typeface_w32_class_init (NRTypeFaceW32Class *klass)
+{
+	NRObjectClass *object_class;
+	NRTypeFaceClass *tface_class;
 
-    nr_typeface_w32_font_new,
-    nr_typeface_w32_font_free,
+	object_class = (NRObjectClass *) klass;
+	tface_class = (NRTypeFaceClass *) klass;
 
-	nr_font_generic_glyph_outline_get,
-	nr_font_generic_glyph_outline_unref,
-	nr_font_generic_glyph_advance_get,
-	nr_font_generic_glyph_area_get,
+	parent_class = (NRTypeFaceClass *) (((NRObjectClass *) klass)->parent);
 
-	nr_font_generic_rasterfont_new,
-	nr_font_generic_rasterfont_free,
+	object_class->finalize = nr_typeface_w32_finalize;
 
-	nr_rasterfont_generic_glyph_advance_get,
-	nr_rasterfont_generic_glyph_area_get,
-	nr_rasterfont_generic_glyph_mask_render
-};
+	tface_class->setup = nr_typeface_w32_setup;
+	tface_class->attribute_get = nr_typeface_w32_attribute_get;
+	tface_class->glyph_outline_get = nr_typeface_w32_glyph_outline_get;
+	tface_class->glyph_outline_unref = nr_typeface_w32_glyph_outline_unref;
+	tface_class->glyph_advance_get = nr_typeface_w32_glyph_advance_get;
+	tface_class->lookup = nr_typeface_w32_lookup;
+
+	tface_class->font_new = nr_typeface_w32_font_new;
+	tface_class->font_free = nr_typeface_w32_font_free;
+}
+
+static void
+nr_typeface_w32_init (NRTypeFaceW32 *tfw32)
+{
+	NRTypeFace *tface;
+
+	tface = (NRTypeFace *) tfw32;
+
+	tface->nglyphs = 1;
+}
 
 static unsigned int w32i = FALSE;
 
@@ -101,34 +127,27 @@ nr_type_w32_families_get (NRNameList *names)
 void
 nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family)
 {
-    def->vmv = &nr_type_w32_vmv;
+    def->type = NR_TYPE_TYPEFACE_W32;
     def->name = g_strdup (name);
     def->family = g_strdup (family);
     def->typeface = NULL;
 }
 
-static NRTypeFace *
-nr_typeface_w32_new (NRTypeFaceDef *def)
+static void
+nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 { 
     NRTypeFaceW32 *tfw32;
     unsigned int otmsize;
 
-    tfw32 = nr_new (NRTypeFaceW32, 1);
+    tfw32 = (NRTypeFaceW32 *) tface;
 
-    tfw32->typeface.vmv = def->vmv;
-	tfw32->typeface.refcount = 1;
-	tfw32->typeface.def = def;
+	((NRTypeFaceClass *) (parent_class))->setup (tface, def);
 
 	tfw32->fonts = NULL;
-
 	tfw32->logfont = g_hash_table_lookup (namedict, def->name);
-
 	tfw32->logfont->lfHeight = 1000;
-
 	tfw32->logfont->lfWidth = 0;
-
 	tfw32->hfont = CreateFontIndirect (tfw32->logfont);
-
 
 	/* Have to select font to get metrics etc. */
 	SelectFont (hdc, tfw32->hfont);
@@ -139,64 +158,40 @@ nr_typeface_w32_new (NRTypeFaceDef *def)
 
 	tfw32->typeface.nglyphs = tfw32->otm->otmTextMetrics.tmLastChar - tfw32->otm->otmTextMetrics.tmFirstChar + 1;
 
-
-
 	tfw32->hgidx = NULL;
-
 	tfw32->vgidx = NULL;
-
 	tfw32->slots = NULL;
-
 	tfw32->slots_length = 0;
-
 	tfw32->slots_size = 0;
-
-
-
-	return (NRTypeFace *) tfw32;
 }
 
-void
-nr_typeface_w32_free (NRTypeFace *tf)
+static void
+nr_typeface_w32_finalize (NRObject *object)
 {
     NRTypeFaceW32 *tfw32;
 
-    tfw32 = (NRTypeFaceW32 *) tf;
+    tfw32 = (NRTypeFaceW32 *) object;
 
     nr_free (tfw32->otm);
     DeleteFont (tfw32->hfont);
 
 
     if (tfw32->slots) {
-
         int i;
-
         for (i = 0; i < tfw32->slots_length; i++) {
-
             if (tfw32->slots[i].outline.path > 0) {
-
 				art_free (tfw32->slots[i].outline.path);
-
             }
-
         }
-
 		nr_free (tfw32->slots);
-
     }
-
     if (tfw32->hgidx) nr_free (tfw32->hgidx);
-
     if (tfw32->vgidx) nr_free (tfw32->vgidx);
 
-
-
-    nr_free (tf);
-
+	((NRObjectClass *) (parent_class))->finalize (object);
 }
 
-
-unsigned int
+static unsigned int
 nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size)
 {
 	NRTypeFaceW32 *tfw32;
@@ -297,7 +292,7 @@ nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	return strlen (val);
 }
 
-NRBPath *
+static NRBPath *
 nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
 {
 	NRTypeFaceW32 *tfw32;
@@ -340,7 +335,7 @@ nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 
 }
 
-void
+static void
 nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics)
 {
 	NRTypeFaceW32 *tfw32;
@@ -373,7 +368,7 @@ nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 
 }
 
-NRPointF *
+static NRPointF *
 nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv)
 {
 	NRTypeFaceW32 *tfw32;
@@ -398,7 +393,7 @@ nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 
 }
 
-unsigned int
+static unsigned int
 nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 {
 	NRTypeFaceW32 *tfw32;
@@ -546,7 +541,7 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 }
 
 
-NRFont *
+static NRFont *
 nr_typeface_w32_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform)
 {
 	NRTypeFaceW32 *tfw32;
@@ -572,7 +567,7 @@ nr_typeface_w32_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *trans
 	return font;
 }
 
-void
+static void
 nr_typeface_w32_font_free (NRFont *font)
 {
 	NRTypeFaceW32 *tfw32;
@@ -799,18 +794,12 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
         		slot->advance.y = -1000.0;
 
 		} else {
-
-		slot->area.x0 = gmetrics.gmptGlyphOrigin.x;
-
-		slot->area.y1 = gmetrics.gmptGlyphOrigin.y;
-
-		slot->area.x1 = slot->area.x0 + gmetrics.gmBlackBoxX;
-
-		slot->area.y0 = slot->area.y1 - gmetrics.gmBlackBoxY;
-
-		slot->advance.x = gmetrics.gmCellIncX;
-
-        slot->advance.y = gmetrics.gmCellIncY;
+			slot->area.x0 = (float) gmetrics.gmptGlyphOrigin.x;
+			slot->area.y1 = (float) gmetrics.gmptGlyphOrigin.y;
+			slot->area.x1 = slot->area.x0 + gmetrics.gmBlackBoxX;
+			slot->area.y0 = slot->area.y1 - gmetrics.gmBlackBoxY;
+			slot->advance.x = gmetrics.gmCellIncX;
+			slot->advance.y = gmetrics.gmCellIncY;
 
 		}
 

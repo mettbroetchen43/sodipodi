@@ -892,14 +892,22 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		if (rch->type == SP_XML_TEXT_NODE) {
 			SPString *string;
 			string = g_object_new (SP_TYPE_STRING, 0);
-			(ref) ? ref->next : text->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+			if (ref) {
+				ref->next = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+			} else {
+				text->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+			}
 			string->ly = &text->ly;
 			sp_object_invoke_build (SP_OBJECT (string), doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = SP_OBJECT (string);
 		} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
 			SPObject *child;
 			child = g_object_new (SP_TYPE_TSPAN, 0);
-			ref ? ref->next : text->children = sp_object_attach_reref (object, child, NULL);
+			if (ref) {
+				ref->next = sp_object_attach_reref (object, child, NULL);
+			} else {
+				text->children = sp_object_attach_reref (object, child, NULL);
+			}
 			sp_object_invoke_build (child, doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = child;
 		} else {

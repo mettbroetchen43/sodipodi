@@ -155,7 +155,13 @@ struct poptOption options[] = {
 int WINAPI
 WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nFS)
 {
-	gtk_init (&_argc, &_argv);
+	int argc;
+	char **argv;
+	char *a[] = {"Sodipodi"};
+
+	argc = 1;
+	argv = a;
+	gtk_init (&argc, &argv);
 
 	LIBXML_TEST_VERSION
 

@@ -94,7 +94,11 @@ static void sp_objectgroup_build (SPObject *object, SPDocument *document, SPRepr
 		type = sp_repr_type_lookup (rchild);
 		if (g_type_is_a (type, SP_TYPE_OBJECT)) {
 			child = g_object_new (type, 0);
-			(last) ? last->next : og->children = sp_object_attach_reref (object, child, NULL);
+			if (last) {
+				last->next = sp_object_attach_reref (object, child, NULL);
+			} else {
+				og->children = sp_object_attach_reref (object, child, NULL);
+			}
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			last = child;
 		}
@@ -161,7 +165,11 @@ sp_objectgroup_remove_child (SPObject *object, SPRepr *child)
 	}
 
 	if (oc) {
-		(ref) ? ref->next : og->children = sp_object_detach_unref (object, oc);
+		if (ref) {
+			ref->next = sp_object_detach_unref (object, oc);
+		} else {
+			og->children = sp_object_detach_unref (object, oc);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
 }
@@ -182,8 +190,16 @@ sp_objectgroup_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRe
 	onew = sp_objectgroup_get_le_child_by_repr (og, new);
 
 	if (ochild) {
-		(oold) ? oold->next : og->children = sp_object_detach (object, ochild);
-		(onew) ? onew->next : og->children = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
+		if (oold) {
+			oold->next = sp_object_detach (object, ochild);
+		} else {
+			og->children = sp_object_detach (object, ochild);
+		}
+		if (onew) {
+			onew->next = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
+		} else {
+			og->children = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
 }

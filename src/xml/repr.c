@@ -245,7 +245,11 @@ sp_repr_del_attr (SPRepr *repr, const guchar *key)
 		}
 
 		if (allowed) {
-			(prev) ? prev->next : repr->attributes = attr->next;
+			if (prev) {
+				prev->next = attr->next;
+			} else {
+				repr->attributes = attr->next;
+			}
 
 			for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 				if (rl->vector->attr_changed) (* rl->vector->attr_changed) (repr, key, oldval, NULL, rl->data);
@@ -290,8 +294,11 @@ sp_repr_chg_attr (SPRepr *repr, const guchar *key, const guchar *value)
 			attr->value = g_strdup (value);
 		} else {
 			attr = sp_attribute_new_from_quark (q, value);
-
-			(prev) ? prev->next : repr->attributes = attr;
+			if (prev) {
+				prev->next = attr;
+			} else {
+				repr->attributes = attr;
+			}
 		}
 
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
@@ -406,7 +413,11 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 	}
 
 	if (allowed) {
-		(ref) ? ref->next : repr->children = child->next;
+		if (ref) {
+			ref->next = child->next;
+		} else {
+			repr->children = child->next;
+		}
 		child->parent = NULL;
 		child->next = NULL;
 

@@ -173,6 +173,9 @@ sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
 
 /* fixme: Think (Lauris) */
 
+#include <libart_lgpl/art_misc.h>
+#include <libart_lgpl/art_bpath.h>
+
 static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
 {
 	SPCurve * c;

@@ -317,7 +317,7 @@ sp_knot_dispose (GObject * object)
 	knot = (SPKnot *) object;
 
 	/* ungrab pointer if still grabbed by mouseover, find a different way */
-	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	if (gdk_pointer_is_grabbed ()) gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
 	if (knot->item) {
 		gtk_object_destroy (GTK_OBJECT (knot->item));

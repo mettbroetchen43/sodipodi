@@ -578,9 +578,9 @@ static gboolean
 sp_str_to_bool (const guchar *str)
 {
 	if (str) {
-		if (!strcasecmp (str, "true") ||
-		    !strcasecmp (str, "yes") ||
-		    !strcasecmp (str, "y") ||
+		if (!g_strcasecmp (str, "true") ||
+		    !g_strcasecmp (str, "yes") ||
+		    !g_strcasecmp (str, "y") ||
 		    (atoi (str) != 0)) return TRUE;
 	}
 

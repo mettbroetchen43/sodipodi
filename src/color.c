@@ -87,7 +87,7 @@ sp_color_set_rgb_float (SPColor *color, float r, float g, float b)
 }
 
 void
-sp_color_set_rgb_rgba32 (SPColor *color, guint32 value)
+sp_color_set_rgb_rgba32 (SPColor *color, NRULong value)
 {
 	g_return_if_fail (color != NULL);
 
@@ -117,8 +117,8 @@ sp_color_set_cmyk_float (SPColor *color, float c, float m, float y, float k)
 	color->v.c[3] = k;
 }
 
-guint32
-sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha)
+NRULong
+sp_color_get_rgba32_ualpha (const SPColor *color, NRULong alpha)
 {
 	guint32 rgba;
 
@@ -136,7 +136,7 @@ sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha)
 	return rgba;
 }
 
-guint32
+NRULong
 sp_color_get_rgba32_falpha (const SPColor *color, float alpha)
 {
 	g_return_val_if_fail (color != NULL, 0x0);

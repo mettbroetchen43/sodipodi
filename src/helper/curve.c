@@ -853,7 +853,7 @@ sp_bpath_clean (ArtBpath *bpath)
 	}
 
 	if (np == new) {
-		g_free (new);
+		art_free (new);
 		return NULL;
 	}
 

@@ -108,14 +108,12 @@ sp_module_private_build (SPModule *module, SPRepr *repr)
 		if (val) {
 			module->name = g_strdup (val);
 		}
-		val = sp_repr_attr (repr, "about");
-		module->about = (val && (!strcasecmp (val, "true") || !strcasecmp (val, "yes") || !strcasecmp (val, "y") || atoi (val)));
+		sp_repr_get_boolean (repr, "about", &module->about);
 		val = sp_repr_attr (repr, "icon");
 		if (val) {
 			module->icon = g_strdup (val);
 		}
-		val = sp_repr_attr (repr, "toolbox");
-		module->toolbox = (val && (!strcasecmp (val, "true") || !strcasecmp (val, "yes") || !strcasecmp (val, "y") || atoi (val)));
+		sp_repr_get_boolean (repr, "toolbox", &module->toolbox);
 		sp_module_register (module);
 	}
 }

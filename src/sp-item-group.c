@@ -130,7 +130,11 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 		SPObject * child;
 		type = sp_repr_type_lookup (rchild);
 		child = g_object_new (type, 0);
-		last ? last->next : group->children = sp_object_attach_reref (object, child, NULL);
+		if (last) {
+			last->next = sp_object_attach_reref (object, child, NULL);
+		} else {
+			group->children = sp_object_attach_reref (object, child, NULL);
+		}
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
@@ -224,7 +228,11 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		ochild = ochild->next;
 	}
 
-	(prev) ? prev->next : group->children = sp_object_detach_unref (object, ochild);
+	if (prev) {
+		prev->next = sp_object_detach_unref (object, ochild);
+	} else {
+		group->children = sp_object_detach_unref (object, ochild);
+	}
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 

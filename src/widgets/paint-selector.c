@@ -438,7 +438,7 @@ sp_paint_selector_get_rgba_floatv (SPPaintSelector *psel, gfloat *rgba)
 
 	csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
 
-	return sp_color_selector_get_rgba_floatv (csel, rgba);
+	sp_color_selector_get_rgba_floatv (csel, rgba);
 }
 
 void
@@ -450,7 +450,7 @@ sp_paint_selector_get_cmyka_floatv (SPPaintSelector *psel, gfloat *cmyka)
 
 	csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
 
-	return sp_color_selector_get_cmyka_floatv (csel, cmyka);
+	sp_color_selector_get_cmyka_floatv (csel, cmyka);
 }
 
 SPGradient *
@@ -477,9 +477,9 @@ sp_paint_selector_get_gradient_position_floatv (SPPaintSelector *psel, gfloat *p
 	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
 
 	if (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
-		return sp_gradient_selector_get_lgradient_position_floatv (gsel, pos);
+		sp_gradient_selector_get_lgradient_position_floatv (gsel, pos);
 	} else {
-		return sp_gradient_selector_get_rgradient_position_floatv (gsel, pos);
+		sp_gradient_selector_get_rgradient_position_floatv (gsel, pos);
 	}
 }
 

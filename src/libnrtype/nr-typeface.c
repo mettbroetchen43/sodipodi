@@ -126,7 +126,7 @@ nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int 
 void
 nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics)
 {
-	return ((NRTypeFaceClass *) ((NRObject *) tf)->klass)->glyph_outline_unref (tf, glyph, metrics);
+	((NRTypeFaceClass *) ((NRObject *) tf)->klass)->glyph_outline_unref (tf, glyph, metrics);
 }
 
 NRPointF *
