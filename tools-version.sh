@@ -22,7 +22,8 @@ echo )
 (echo '--2. tools-------------------------------------------------------------------'
 for x in $TOOLS; do 
     echo "which $x:"
-    $x --version | grep $x 
+    y=`echo $x | cut -f1 -d-`
+    $x --version | grep $y
 done 
 echo )
 

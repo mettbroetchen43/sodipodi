@@ -2,6 +2,7 @@
 
 	* tools-version.sh (TOOLS): Added automake-1.6 and
 	aclocal-1.6. Suggested by MenTaLguY.
+	(srcdir): remove version number from grep pattern.
 
 2002-12-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
