@@ -3,7 +3,11 @@ LibNR
 This is collection of RGB(A) rendering utilities.
 
 The code is in public domain, i.e. not copyrighted.
-You can do whatever you like with it.
+OK, I understand that it does not make any sense
+under Berne convention, but this is the way I'd like
+it to be. In any case you can do whatever you want
+with this code, so it really does not make any
+difference.
 
 If you want your changes to be included in
 Sodipodi/LibNR, you have to put these in public

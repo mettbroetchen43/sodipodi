@@ -18,13 +18,10 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <fcntl.h>
-#ifndef WIN32
-#include <unistd.h>
-#else
-#include "monostd.h"
-#endif
 #include <signal.h>
 #include <ctype.h>
+
+#include "monostd.h"
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>

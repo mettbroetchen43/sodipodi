@@ -1,3 +1,8 @@
+2003-10-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/node-context.c (sp_node_context_root_handler): Catch delete, so
+	default action does not destroy selected object
+
 2003-10-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-directory.c (nr_type_read_private_list): Test

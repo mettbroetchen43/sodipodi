@@ -273,8 +273,7 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			default:
 				break;
 			}
-		}
-		if (!(event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) {
+		} else if (!(event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) {
 			switch (event->key.keyval) {
 			case GDK_space:
 				if ((event->key.state & GDK_BUTTON1_MASK)
@@ -282,12 +281,18 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 					ret = sp_node_context_stamp(nc);
 				}
 				break;
+			case GDK_Delete:
+			case GDK_KP_Delete:
+				/* Catch delete so action will not be called */
+				/* Otherwise the whole object gets deleted */
+				node_key (event);
+				ret = TRUE;
+				break;
 			default:
 				ret = node_key (event);
 				break;
 			}
 		}
-
 
 		break;
 	default:
