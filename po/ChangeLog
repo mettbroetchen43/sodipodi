@@ -1,3 +1,7 @@
+2002-11-19  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Updated German translation (quick&dirty release-rework).
+
 2002-11-17  gettextize  <bug-gnu-utils@gnu.org>
 
 	* Makefile.in.in: Upgrade to gettext-0.10.40.
