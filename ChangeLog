@@ -1,5 +1,10 @@
 2000-04-05  Lauris Kaplinski <lauris@ariman.ee>
 
+    * sp-document.c, sp-file.c, sp-image.c: removed namespace. How to
+      extract this correctly from libxml?
+
+2000-04-05  Lauris Kaplinski <lauris@ariman.ee>
+
     * xml/repr.c: added order_changed_pre callback
     * document-undo.c: stacking order changes are now undoable
     * sp-document.c, sp-file.c, sp-image.c: added namespace "sodipodi",

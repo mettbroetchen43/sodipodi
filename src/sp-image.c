@@ -24,7 +24,7 @@ static gchar * sp_image_description (SPItem * item);
 static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
-static GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
+GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf * sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
 
 static SPItemClass *parent_class;
@@ -321,7 +321,7 @@ sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
  *
  */
 
-static GdkPixbuf *
+GdkPixbuf *
 sp_image_repr_read_image (SPRepr * repr)
 {
 	const gchar * filename, * docbase;
@@ -333,7 +333,7 @@ sp_image_repr_read_image (SPRepr * repr)
 	if (filename != NULL) {
 		if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
-			docbase = sp_repr_doc_attr (repr, "sodipodi:docbase");
+			docbase = sp_repr_doc_attr (repr, "docbase");
 			if (docbase != NULL) {
 				fullname = g_strconcat (docbase, filename, NULL);
 				pixbuf = gdk_pixbuf_new_from_file (fullname);
@@ -347,7 +347,7 @@ sp_image_repr_read_image (SPRepr * repr)
 		}
 	}
 	/* at last try to load from sp absolute path name */
-	filename = sp_repr_attr (repr, "sodipodi:absref");
+	filename = sp_repr_attr (repr, "absref");
 	if (filename != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (filename);
 		if (pixbuf != NULL) return pixbuf;
