@@ -3,6 +3,8 @@
 TODO for 0.27
 =============
 
+- Fix text dialog
+- Garbage collection on save
 - Stamping (DONE) (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)
 - Toolbox scaling bug

@@ -1,5 +1,13 @@
 2002-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_text_is_empty): New method
+	(sp_string_release): Use ::release, not ::destroy
+	(sp_tspan_release): Ditto
+	(sp_text_release): Ditto
+
+	* src/text-context.c (sp_text_context_selection_changed): Forget text
+	(sp_text_context_forget_text): New method, remove empty text item
+
 	* src/sp-text.c (sp_tspan_build): Ensure there is always text child
 
 	* src/sp-item-group.c (sp_group_bbox): Do not set bbox to 0,0,0,0

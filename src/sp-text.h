@@ -131,6 +131,7 @@ struct _SPTextClass {
 
 GtkType sp_text_get_type (void);
 
+int sp_text_is_empty (SPText *text);
 gchar *sp_text_get_string_multiline (SPText *text);
 void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 

@@ -496,6 +496,19 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
 
+void
+sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail (func != NULL);
+
+	func (object, data);
+
+	if (((SPObjectClass *) (((GtkObject *) object)->klass))->forall)
+		((SPObjectClass *) (((GtkObject *) object)->klass))->forall (object, func, data);
+}
+
 static SPRepr *
 sp_object_private_write (SPObject *object, SPRepr *repr, guint flags)
 {

@@ -42,6 +42,7 @@ static void sp_text_context_selection_modified (SPSelection *selection, guint fl
 
 static void sp_text_context_update_cursor (SPTextContext *tc);
 static gint sp_text_context_timeout (SPTextContext *tc);
+static void sp_text_context_forget_text (SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -236,6 +237,8 @@ sp_text_context_finish (SPEventContext *ec)
 		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
 	}
+
+	sp_text_context_forget_text (tc);
 }
 
 static gint
@@ -448,9 +451,12 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 {
 	SPItem *item;
 
-	tc->text = NULL;
-
 	item = sp_selection_item (selection);
+
+	if (tc->text && (item != tc->text)) {
+		sp_text_context_forget_text (tc);
+	}
+	tc->text = NULL;
 
 	if (SP_IS_TEXT (item)) {
 		tc->text = item;
@@ -502,4 +508,14 @@ sp_text_context_timeout (SPTextContext *tc)
 	}
 
 	return TRUE;
+}
+
+static void
+sp_text_context_forget_text (SPTextContext *tc)
+{
+	if (tc->text && sp_text_is_empty (SP_TEXT (tc->text))) {
+		sp_repr_unparent (SP_OBJECT_REPR (tc->text));
+	}
+
+	tc->text = NULL;
 }

@@ -53,9 +53,9 @@ static guchar *sp_text_font_style_to_lookup (SPStyle *style);
 
 static void sp_string_class_init (SPStringClass *class);
 static void sp_string_init (SPString *string);
-static void sp_string_destroy (GtkObject *object);
 
 static void sp_string_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_string_release (SPObject *object);
 static void sp_string_read_content (SPObject *object);
 static void sp_string_modified (SPObject *object, guint flags);
 
@@ -95,9 +95,8 @@ sp_string_class_init (SPStringClass *class)
 
 	string_parent_class = gtk_type_class (SP_TYPE_CHARS);
 
-	object_class->destroy = sp_string_destroy;
-
 	sp_object_class->build = sp_string_build;
+	sp_object_class->release = sp_string_release;
 	sp_object_class->read_content = sp_string_read_content;
 	sp_object_class->modified = sp_string_modified;
 }
@@ -115,19 +114,6 @@ sp_string_init (SPString *string)
 }
 
 static void
-sp_string_destroy (GtkObject *object)
-{
-	SPString *string;
-
-	string = SP_STRING (object);
-
-	if (string->p) g_free (string->p);
-	if (string->text) g_free (string->text);
-
-	GTK_OBJECT_CLASS (string_parent_class)->destroy (object);
-}
-
-static void
 sp_string_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
 	if (((SPObjectClass *) string_parent_class)->build)
@@ -137,6 +123,20 @@ sp_string_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	/* fixme: This can be waste here, but ensures loaded documents are up-to-date */
 	sp_string_calculate_dimensions (SP_STRING (object));
+}
+
+static void
+sp_string_release (SPObject *object)
+{
+	SPString *string;
+
+	string = SP_STRING (object);
+
+	if (string->p) g_free (string->p);
+	if (string->text) g_free (string->text);
+
+	if (((SPObjectClass *) string_parent_class)->release)
+		((SPObjectClass *) string_parent_class)->release (object);
 }
 
 /* fixme: We have to notify parents that we changed */
@@ -457,9 +457,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 static void sp_tspan_class_init (SPTSpanClass *class);
 static void sp_tspan_init (SPTSpan *tspan);
-static void sp_tspan_destroy (GtkObject *object);
 
 static void sp_tspan_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_tspan_release (SPObject *object);
 static void sp_tspan_read_attr (SPObject * object, const gchar * attr);
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
@@ -505,9 +505,8 @@ sp_tspan_class_init (SPTSpanClass *class)
 
 	tspan_parent_class = gtk_type_class (SP_TYPE_ITEM);
 
-	object_class->destroy = sp_tspan_destroy;
-
 	sp_object_class->build = sp_tspan_build;
+	sp_object_class->release = sp_tspan_release;
 	sp_object_class->read_attr = sp_tspan_read_attr;
 	sp_object_class->child_added = sp_tspan_child_added;
 	sp_object_class->remove_child = sp_tspan_remove_child;
@@ -528,23 +527,6 @@ sp_tspan_init (SPTSpan *tspan)
 	sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	tspan->string = NULL;
-}
-
-static void
-sp_tspan_destroy (GtkObject *object)
-{
-	SPTSpan *tspan;
-
-	tspan = SP_TSPAN (object);
-
-	if (tspan->string) {
-		tspan->string = sp_object_detach_unref (SP_OBJECT (object), tspan->string);
-	} else {
-		g_print ("NULL tspan content\n");
-	}
-
-	if (GTK_OBJECT_CLASS (tspan_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (tspan_parent_class)->destroy) (object);
 }
 
 static void
@@ -580,6 +562,23 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_tspan_read_attr (object, "dy");
 	sp_tspan_read_attr (object, "rotate");
 	sp_tspan_read_attr (object, "sodipodi:role");
+}
+
+static void
+sp_tspan_release (SPObject *object)
+{
+	SPTSpan *tspan;
+
+	tspan = SP_TSPAN (object);
+
+	if (tspan->string) {
+		tspan->string = sp_object_detach_unref (SP_OBJECT (object), tspan->string);
+	} else {
+		g_print ("NULL tspan content\n");
+	}
+
+	if (((SPObjectClass *) tspan_parent_class)->release)
+		((SPObjectClass *) tspan_parent_class)->release (object);
 }
 
 static void
@@ -785,9 +784,9 @@ sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean fir
 
 static void sp_text_class_init (SPTextClass *class);
 static void sp_text_init (SPText *text);
-static void sp_text_destroy (GtkObject *object);
 
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_text_release (SPObject *object);
 static void sp_text_read_attr (SPObject *object, const gchar * attr);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
@@ -841,9 +840,8 @@ sp_text_class_init (SPTextClass *class)
 
 	text_parent_class = gtk_type_class (SP_TYPE_ITEM);
 
-	object_class->destroy = sp_text_destroy;
-
 	sp_object_class->build = sp_text_build;
+	sp_object_class->release = sp_text_release;
 	sp_object_class->read_attr = sp_text_read_attr;
 	sp_object_class->child_added = sp_text_child_added;
 	sp_object_class->remove_child = sp_text_remove_child;
@@ -868,21 +866,6 @@ sp_text_init (SPText *text)
 	sp_svg_length_unset (&text->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	text->children = NULL;
-}
-
-static void
-sp_text_destroy (GtkObject *object)
-{
-	SPText *text;
-
-	text = SP_TEXT (object);
-
-	while (text->children) {
-		text->children = sp_object_detach_unref (SP_OBJECT (object), text->children);
-	}
-
-	if (GTK_OBJECT_CLASS (text_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (text_parent_class)->destroy) (object);
 }
 
 /* fixme: Better place (Lauris) */
@@ -956,6 +939,21 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_text_read_attr (object, "rotate");
 
 	sp_text_update_immediate_state (text);
+}
+
+static void
+sp_text_release (SPObject *object)
+{
+	SPText *text;
+
+	text = SP_TEXT (object);
+
+	while (text->children) {
+		text->children = sp_object_detach_unref (SP_OBJECT (object), text->children);
+	}
+
+	if (((SPObjectClass *) text_parent_class)->release)
+		((SPObjectClass *) text_parent_class)->release (object);
 }
 
 static void
@@ -1691,6 +1689,25 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 	}
 
 	gnome_print_grestore (gpc);
+}
+
+int
+sp_text_is_empty (SPText *text)
+{
+	SPObject *ch;
+
+	for (ch = text->children; ch != NULL; ch = ch->next) {
+		SPString *str;
+		unsigned char *p;
+		str = SP_TEXT_CHILD_STRING (ch);
+		for (p = str->text; p && *p; p = g_utf8_next_char (p)) {
+			gunichar unival;
+			unival = g_utf8_get_char (p);
+			if (g_unichar_isgraph (unival)) return FALSE;
+		}
+	}
+
+	return TRUE;
 }
 
 gchar *

@@ -61,6 +61,8 @@
 #include "xml/repr.h"
 #include "forward.h"
 
+typedef void (* SPObjectMethod) (SPObject *object, gpointer data);
+
 typedef enum {
 	SP_NO_EXCEPTION,
 	SP_INDEX_SIZE_ERR,
@@ -124,6 +126,7 @@ struct _SPObjectClass {
 
 	/* Compute next sequence number */
 	gint (* sequence) (SPObject *object, gint seq);
+	void (* forall) (SPObject *object, SPObjectMethod func, gpointer data);
 
 	SPRepr * (* write) (SPObject *object, SPRepr *repr, guint flags);
 };
@@ -166,6 +169,7 @@ void sp_object_modified (SPObject *object, guint flags);
 /* Sequence */
 gint sp_object_sequence (SPObject *object, gint seq);
 
+void sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data);
 /* Write object to repr */
 SPRepr *sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags);
 
