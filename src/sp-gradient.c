@@ -267,6 +267,11 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) gradient_parent_class)->build)
 		(* ((SPObjectClass *) gradient_parent_class)->build) (object, document, repr);
 
+	sp_object_read_attr (object, "gradientUnits");
+	sp_object_read_attr (object, "gradientTransform");
+	sp_object_read_attr (object, "spreadMethod");
+	sp_object_read_attr (object, "xlink:href");
+
 	/* fixme: Add all children, not only stops? */
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
@@ -286,11 +291,6 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 			last = child;
 		}
 	}
-
-	sp_object_read_attr (object, "gradientUnits");
-	sp_object_read_attr (object, "gradientTransform");
-	sp_object_read_attr (object, "spreadMethod");
-	sp_object_read_attr (object, "xlink:href");
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "gradient", object);

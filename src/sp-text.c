@@ -576,6 +576,14 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	if (((SPObjectClass *) tspan_parent_class)->build)
 		((SPObjectClass *) tspan_parent_class)->build (object, doc, repr);
 
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "dx");
+	sp_object_read_attr (object, "dy");
+	sp_object_read_attr (object, "rotate");
+	sp_object_read_attr (object, "sodipodi:role");
+	sp_object_read_attr (object, "xml:space");
+
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
 		if (rch->type == SP_XML_TEXT_NODE) break;
 	}
@@ -590,14 +598,6 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 	string->ly = &tspan->ly;
 	sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
-
-	sp_object_read_attr (object, "x");
-	sp_object_read_attr (object, "y");
-	sp_object_read_attr (object, "dx");
-	sp_object_read_attr (object, "dy");
-	sp_object_read_attr (object, "rotate");
-	sp_object_read_attr (object, "sodipodi:role");
-	sp_object_read_attr (object, "xml:space");
 }
 
 static void
@@ -1002,7 +1002,16 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	if (((SPObjectClass *) text_parent_class)->build)
 		((SPObjectClass *) text_parent_class)->build (object, doc, repr);
 
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "dx");
+	sp_object_read_attr (object, "dy");
+	sp_object_read_attr (object, "rotate");
+	sp_object_read_attr (object, "sodipodi:linespacing");
+	sp_object_read_attr (object, "xml:space");
+
 	version = sp_text_find_version (object);
+
 	if ((version > 0) && (version < 25)) {
 		const guchar *content;
 		/* Old sodipodi */
@@ -1043,15 +1052,6 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 			continue;
 		}
 	}
-
-	/* We can safely set these after building tree, as modified is scheduled anyways (Lauris) */
-	sp_object_read_attr (object, "x");
-	sp_object_read_attr (object, "y");
-	sp_object_read_attr (object, "dx");
-	sp_object_read_attr (object, "dy");
-	sp_object_read_attr (object, "rotate");
-	sp_object_read_attr (object, "sodipodi:linespacing");
-	sp_object_read_attr (object, "xml:space");
 
 	sp_text_update_immediate_state (text);
 }

@@ -136,6 +136,16 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) pattern_parent_class)->build)
 		(* ((SPObjectClass *) pattern_parent_class)->build) (object, document, repr);
 
+	sp_object_read_attr (object, "patternUnits");
+	sp_object_read_attr (object, "patternContentUnits");
+	sp_object_read_attr (object, "patternTransform");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "viewBox");
+	sp_object_read_attr (object, "xlink:href");
+
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
 		GType type;
@@ -150,16 +160,6 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
-
-	sp_object_read_attr (object, "patternUnits");
-	sp_object_read_attr (object, "patternContentUnits");
-	sp_object_read_attr (object, "patternTransform");
-	sp_object_read_attr (object, "x");
-	sp_object_read_attr (object, "y");
-	sp_object_read_attr (object, "width");
-	sp_object_read_attr (object, "height");
-	sp_object_read_attr (object, "viewBox");
-	sp_object_read_attr (object, "xlink:href");
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "pattern", object);

@@ -816,6 +816,7 @@ sp_document_get_version (SPDocument *document, guint version_type)
 
 	g_return_val_if_fail (document != NULL, 0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0);
+	g_return_val_if_fail (document->root != NULL, 0);
 
 	root = SP_ROOT (document->root);
 

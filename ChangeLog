@@ -1,3 +1,16 @@
+2003-11-12  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/document.c: (sp_document_get_version): Add pointer guard.
+
+	* src/sp-gradient.c (sp_gradient_build):
+	Moved sp_object_read_attr to pre build-children, so we can access
+	attribute value from children while building itself
+
+	* src/sp-pattern.c (sp_pattern_build): Ditto
+	
+	* src/sp-text.c (sp_text_build): Ditto
+	(sp_tspan_build): Ditto
+
 2003-11-10  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-pathops.c: Handful of new code
