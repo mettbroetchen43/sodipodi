@@ -15,8 +15,10 @@
 #include <stdlib.h>
 #include "svg/svg.h"
 #include "document.h"
+#include "sp-paint-server.h"
 #include "style.h"
 
+static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
 static void sp_style_init (SPStyle *style);
 static void sp_style_read_paint (SPPaint *paint, const guchar *str, SPDocument *document);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
@@ -295,27 +297,89 @@ sp_style_write_string (SPStyle *style)
 		p += g_snprintf (p, c + 4096 - p, "opacity:%g;", style->opacity);
 	}
 	if (style->fill_set) {
-		if (style->fill.type == SP_PAINT_TYPE_COLOR) {
-			p += g_snprintf (p, c + 4096 - p, "fill:");
-			p += sp_svg_write_color (p, c + 4096 - p, SP_RGBA_FROM_COLOR (&style->fill.color,1.0));
-			p += g_snprintf (p, c + 4096 - p, ";");
-		}
+		p += g_snprintf (p, c + 4096 - p, "fill:");
+		p += sp_style_write_paint (p, c + 4096 - p, &style->fill);
 	}
 	if (style->fill_opacity_set) {
 		p += g_snprintf (p, c + 4096 - p, "fill-opacity:%g;", style->fill_opacity);
 	}
 	if (style->stroke_set) {
-		if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
-			p += g_snprintf (p, c + 4096 - p, "stroke:");
-			p += sp_svg_write_color (p, c + 4096 - p, SP_RGBA_FROM_COLOR (&style->stroke.color, 1.0));
+		p += g_snprintf (p, c + 4096 - p, "stroke:");
+		p += sp_style_write_paint (p, c + 4096 - p, &style->stroke);
+	}
+	if (style->stroke_width_set) {
+		p += g_snprintf (p, c + 4096 - p, "stroke-width:");
+		p += sp_svg_write_length (p, c + 4096 - p, style->stroke_width.distance, (SPSVGUnit) style->stroke_width.unit);
+		p += g_snprintf (p, c + 4096 - p, ";");
+	}
+	if (style->stroke_linecap_set) {
+		p += g_snprintf (p, c + 4096 - p, "stroke-linecap:");
+		switch (style->stroke_linecap) {
+		case ART_PATH_STROKE_CAP_ROUND:
+			p += g_snprintf (p, c + 4096 - p, "round;");
+			break;
+		case ART_PATH_STROKE_CAP_SQUARE:
+			p += g_snprintf (p, c + 4096 - p, "square;");
+			break;
+		default:
+			p += g_snprintf (p, c + 4096 - p, "butt;");
+			break;
+		}
+	}
+	if (style->stroke_linejoin_set) {
+		p += g_snprintf (p, c + 4096 - p, "stroke-linejoin:");
+		switch (style->stroke_linejoin) {
+		case ART_PATH_STROKE_JOIN_ROUND:
+			p += g_snprintf (p, c + 4096 - p, "round;");
+			break;
+		case ART_PATH_STROKE_JOIN_BEVEL:
+			p += g_snprintf (p, c + 4096 - p, "bevel;");
+			break;
+		default:
+			p += g_snprintf (p, c + 4096 - p, "miter;");
+			break;
+		}
+	}
+	if (style->stroke_miterlimit_set) {
+		p += g_snprintf (p, c + 4096 - p, "stroke-miterlimit:%g;", style->stroke_miterlimit);
+	}
+	if (style->stroke_dasharray_set) {
+		if (style->stroke_dash.n_dash && style->stroke_dash.dash) {
+			gint i;
+			p += g_snprintf (p, c + 4096 - p, "stroke-dasharray:");
+			for (i = 0; i < style->stroke_dash.n_dash; i++) {
+				p += g_snprintf (p, c + 4096 - p, "%g ", style->stroke_dash.dash[i]);
+			}
 			p += g_snprintf (p, c + 4096 - p, ";");
 		}
+	}
+	if (style->stroke_dashoffset_set) {
+		p += g_snprintf (p, c + 4096 - p, "stroke-dashoffset:%g;", style->stroke_dash.offset);
 	}
 	if (style->stroke_opacity_set) {
 		p += g_snprintf (p, c + 4096 - p, "stroke-opacity:%g;", style->stroke_opacity);
 	}
 
 	return g_strdup (c);
+}
+
+static gint
+sp_style_write_paint (guchar *b, gint len, SPPaint *paint)
+{
+	switch (paint->type) {
+	case SP_PAINT_TYPE_COLOR:
+		return g_snprintf (b, len, "#%06x;", SP_RGBA_FROM_COLOR (&paint->color, 0.0) >> 8);
+		break;
+	case SP_PAINT_TYPE_PAINTSERVER:
+		if (paint->server) {
+			return g_snprintf (b, len, "url(#%s);", SP_OBJECT (paint->server)->id);
+		}
+		break;
+	default:
+		break;
+	}
+
+	return g_snprintf (b, len, "none;");
 }
 
 static void

@@ -57,15 +57,13 @@ sp_maintoolbox_create (void)
 		GtkWidget * vbox, * t, * w;
 		GladeXML * xml;
 
-	        /* Crete main toolbox */
+		/* Crete main toolbox */
 		toolbox_xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "maintoolbox");
 		g_return_if_fail (toolbox_xml != NULL);
 		glade_xml_signal_autoconnect (toolbox_xml);
+
 		toolbox = glade_xml_get_widget (toolbox_xml, "maintoolbox");
 		g_return_if_fail (toolbox != NULL);
-
-		/* Reference our sodipodi engine */
-		sodipodi_ref ();
 
 		vbox = glade_xml_get_widget (toolbox_xml, "main_vbox");
 
@@ -131,9 +129,12 @@ sp_maintoolbox_create (void)
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "node_table");
 		t = sp_toolbox_create (xml, "node_table", _("Nodes"), "node", "toolbox_node.xpm");
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-
-		gtk_widget_show (toolbox);
 	}
+
+	/* Reference our sodipodi engine */
+	if (!GTK_WIDGET_VISIBLE (toolbox)) sodipodi_ref ();
+
+	gtk_widget_show (toolbox);
 }
 
 GtkWidget *
@@ -180,7 +181,7 @@ sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
 {
 	sodipodi_unref ();
 
-	gtk_widget_destroy (GTK_WIDGET (toolbox));
+	gtk_widget_hide (GTK_WIDGET (toolbox));
 
 	return TRUE;
 }

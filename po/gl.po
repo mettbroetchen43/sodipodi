@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.22\n"
-"POT-Creation-Date: 2001-03-08 12:09+0100\n"
+"POT-Creation-Date: 2001-05-17 03:12+0200\n"
 "PO-Revision-Date: 2001-03-29 00:50+200\n"
 "Last-Translator: Francisco Xosé Vázquez Grandal <grandal@mundivia.es>\n"
 "Language-Team: Gallician <trasno@ceu.fi.udc.es>\n"
@@ -71,137 +71,165 @@ msgstr "Aliña-lo exterior do obxecto á beira inferior"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/desktop.c:7
+#: glade/desktop.c:7 glade/display.c:7
 msgid "Desktop settings"
 msgstr "Configuración do escritorio"
 
-#: glade/desktop.c:8
+#: glade/desktop.c:8 glade/display.c:8
 msgid "Grid units:"
 msgstr "Unidades da reixa:"
 
-#: glade/desktop.c:9
+#: glade/desktop.c:9 glade/display.c:9
 msgid "Choose base unit system for grid"
 msgstr "Escolle-lo sistema base de unidades para a reixa"
+
+#: glade/display.c:10
+#, fuzzy
+msgid "Millimeters"
+msgstr "Milímetros\n"
+
+#: glade/desktop.c:12 glade/display.c:11
+msgid "Show grid"
+msgstr "Amosa-la reixa"
+
+#: glade/desktop.c:13 glade/display.c:12
+msgid "Snap to grid"
+msgstr "Enganchar á reixa"
+
+#: glade/desktop.c:14 glade/display.c:13
+msgid "Grid color:"
+msgstr "Cor da reixa:"
+
+#: glade/desktop.c:15 glade/display.c:14
+msgid "Choose color for grid"
+msgstr "Escolle-la cor da reixa"
+
+#: glade/desktop.c:16 glade/display.c:15
+msgid "Grid color"
+msgstr "Cor da reixa"
+
+#: glade/desktop.c:17 glade/desktop.c:36 glade/display.c:16 glade/display.c:33
+msgid "Snap distance:"
+msgstr "Distancia de enganche:"
+
+#: glade/desktop.c:18 glade/display.c:17
+msgid "Set maximum distance for grid snapping"
+msgstr "Configura-la distancia máxima para o enganche á reixa"
+
+#: glade/desktop.c:19 glade/desktop.c:32 glade/display.c:18 glade/display.c:30
+msgid "Snap units:"
+msgstr "Unidades de enganche:"
+
+#: glade/desktop.c:20 glade/display.c:19
+msgid "Choose unit system for grid snapping"
+msgstr "Escolle-lo sistema de unidades para o enganche á reixa"
+
+#: glade/display.c:20 glade/display.c:32
+#, fuzzy
+msgid "Pixels"
+msgstr "Pixeles\n"
+
+#: glade/desktop.c:23 glade/display.c:21
+msgid "Spacing Y:"
+msgstr "Separación Y:"
+
+#: glade/desktop.c:24 glade/display.c:22
+msgid "Set distance between vertical grid lines"
+msgstr "Configura-la distancia entre liñas verticais da reixa"
+
+#: glade/desktop.c:25 glade/display.c:23
+msgid "Spacing X:"
+msgstr "Separación X:"
+
+#: glade/desktop.c:26 glade/display.c:24
+msgid "Set distance between horizontal grid lines"
+msgstr "Configura-la distancia entre liñas horizontais da reixa"
+
+#: glade/desktop.c:27 glade/display.c:25
+msgid "Origin X:"
+msgstr "Orixe X:"
+
+#: glade/desktop.c:28 glade/display.c:26
+msgid "Origin Y:"
+msgstr "Orixe Y:"
+
+#: glade/desktop.c:29 glade/desktop.c:30 glade/display.c:27 glade/display.c:28
+msgid "Set origin of page coordinate system"
+msgstr "Configura-la orixe do sistema de coordeadas da páxina"
+
+#: glade/desktop.c:31 glade/display.c:29
+msgid "Grid"
+msgstr "Reixa"
+
+#: glade/desktop.c:33 glade/display.c:31
+msgid "Choose unit system for guideline snapping"
+msgstr "Escolle-lo sistema de unidades para o enganche as liñas guía"
+
+#: glade/desktop.c:37 glade/display.c:34
+msgid "Set maximum distance for guideline snapping"
+msgstr "Configura-la distancia máxima para o enganche ás liñas guía"
+
+#: glade/desktop.c:38 glade/display.c:35
+msgid "Guides color:"
+msgstr "Cor das guías"
+
+#: glade/desktop.c:39 glade/display.c:36
+msgid "Choose color for guidelines"
+msgstr "Escolle-las cores para as liñas guía"
+
+#: glade/desktop.c:40 glade/display.c:37
+msgid "Guideline color"
+msgstr "Cor da guía liña"
+
+#: glade/desktop.c:41 glade/display.c:38
+msgid "Show guides"
+msgstr "Amosar guías"
+
+#: glade/desktop.c:42 glade/display.c:39
+msgid "Snap to guides"
+msgstr "Enganchar ás guías"
+
+#: glade/desktop.c:43 glade/display.c:40
+msgid "Highlight color:"
+msgstr "Cor de destaque"
+
+#: glade/desktop.c:44 glade/display.c:41
+msgid "Choose color for highlighted guidelines"
+msgstr "Escolle-la cor para as liñas guía destacadas"
+
+#: glade/desktop.c:45 glade/display.c:42
+msgid "Highlited guideline color"
+msgstr "Cor da liña guía destacada"
+
+#: glade/desktop.c:46 glade/display.c:43
+msgid "Guides"
+msgstr "Guías"
+
+#: glade/display.c:44
+#, fuzzy
+msgid "Display settings"
+msgstr "Configuración do escritorio"
+
+#: glade/display.c:45 glade/object_props.c:34
+msgid "None"
+msgstr "Ningun"
+
+#: glade/display.c:46
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: glade/display.c:47
+#, fuzzy
+msgid "Rendering"
+msgstr "Novo debuxo"
 
 #: glade/desktop.c:10 glade/document.c:17
 msgid "Millimeters\n"
 msgstr "Milímetros\n"
 
-#: glade/desktop.c:12
-msgid "Show grid"
-msgstr "Amosa-la reixa"
-
-#: glade/desktop.c:13
-msgid "Snap to grid"
-msgstr "Enganchar á reixa"
-
-#: glade/desktop.c:14
-msgid "Grid color:"
-msgstr "Cor da reixa:"
-
-#: glade/desktop.c:15
-msgid "Choose color for grid"
-msgstr "Escolle-la cor da reixa"
-
-#: glade/desktop.c:16
-msgid "Grid color"
-msgstr "Cor da reixa"
-
-#: glade/desktop.c:17 glade/desktop.c:36
-msgid "Snap distance:"
-msgstr "Distancia de enganche:"
-
-#: glade/desktop.c:18
-msgid "Set maximum distance for grid snapping"
-msgstr "Configura-la distancia máxima para o enganche á reixa"
-
-#: glade/desktop.c:19 glade/desktop.c:32
-msgid "Snap units:"
-msgstr "Unidades de enganche:"
-
-#: glade/desktop.c:20
-msgid "Choose unit system for grid snapping"
-msgstr "Escolle-lo sistema de unidades para o enganche á reixa"
-
 #: glade/desktop.c:21 glade/desktop.c:34
 msgid "Pixels\n"
 msgstr "Pixeles\n"
-
-#: glade/desktop.c:23
-msgid "Spacing Y:"
-msgstr "Separación Y:"
-
-#: glade/desktop.c:24
-msgid "Set distance between vertical grid lines"
-msgstr "Configura-la distancia entre liñas verticais da reixa"
-
-#: glade/desktop.c:25
-msgid "Spacing X:"
-msgstr "Separación X:"
-
-#: glade/desktop.c:26
-msgid "Set distance between horizontal grid lines"
-msgstr "Configura-la distancia entre liñas horizontais da reixa"
-
-#: glade/desktop.c:27
-msgid "Origin X:"
-msgstr "Orixe X:"
-
-#: glade/desktop.c:28
-msgid "Origin Y:"
-msgstr "Orixe Y:"
-
-#: glade/desktop.c:29 glade/desktop.c:30
-msgid "Set origin of page coordinate system"
-msgstr "Configura-la orixe do sistema de coordeadas da páxina"
-
-#: glade/desktop.c:31
-msgid "Grid"
-msgstr "Reixa"
-
-#: glade/desktop.c:33
-msgid "Choose unit system for guideline snapping"
-msgstr "Escolle-lo sistema de unidades para o enganche as liñas guía"
-
-#: glade/desktop.c:37
-msgid "Set maximum distance for guideline snapping"
-msgstr "Configura-la distancia máxima para o enganche ás liñas guía"
-
-#: glade/desktop.c:38
-msgid "Guides color:"
-msgstr "Cor das guías"
-
-#: glade/desktop.c:39
-msgid "Choose color for guidelines"
-msgstr "Escolle-las cores para as liñas guía"
-
-#: glade/desktop.c:40
-msgid "Guideline color"
-msgstr "Cor da guía liña"
-
-#: glade/desktop.c:41
-msgid "Show guides"
-msgstr "Amosar guías"
-
-#: glade/desktop.c:42
-msgid "Snap to guides"
-msgstr "Enganchar ás guías"
-
-#: glade/desktop.c:43
-msgid "Highlight color:"
-msgstr "Cor de destaque"
-
-#: glade/desktop.c:44
-msgid "Choose color for highlighted guidelines"
-msgstr "Escolle-la cor para as liñas guía destacadas"
-
-#: glade/desktop.c:45
-msgid "Highlited guideline color"
-msgstr "Cor da liña guía destacada"
-
-#: glade/desktop.c:46
-msgid "Guides"
-msgstr "Guías"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -261,6 +289,62 @@ msgstr "Páxina"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
+#: glade/item.c:7
+#, fuzzy
+msgid "Item properties"
+msgstr "Propiedades do obxecto"
+
+#: glade/item.c:8
+msgid "Sensitive"
+msgstr ""
+
+#: glade/item.c:9
+msgid "Visible"
+msgstr ""
+
+#: glade/item.c:10
+msgid "Active"
+msgstr ""
+
+#: glade/item.c:11
+msgid "Printable"
+msgstr ""
+
+#: glade/item.c:12
+msgid "Opacity:"
+msgstr ""
+
+#: glade/item.c:13
+#, fuzzy
+msgid "Transformation"
+msgstr "Formulario de transformacións"
+
+#: glade/item.c:14
+msgid "Parent X ="
+msgstr ""
+
+#: glade/item.c:15
+msgid "Parent Y ="
+msgstr ""
+
+#: glade/item.c:16 glade/item.c:17
+msgid "X +"
+msgstr ""
+
+#: glade/item.c:18 glade/item.c:19
+#, fuzzy
+msgid "Y +"
+msgstr "Y:"
+
+#: glade/item.c:20 src/sp-item.c:471
+msgid "Item"
+msgstr ""
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/object_props.c:7 glade/sodipodi-glade.c:7
 msgid "object properties"
 msgstr "Propiedades do obxecto"
@@ -281,8 +365,8 @@ msgstr "Detrás do recheo"
 msgid "Stroke color : "
 msgstr "Cor do trazado: "
 
-#: glade/object_props.c:12 glade/sodipodi-glade.c:29
 # [*] A ver que se pode facer con esto
+#: glade/object_props.c:12 glade/sodipodi-glade.c:29
 msgid "Valige värv"
 msgstr "Valige värv (¿?)"
 
@@ -349,8 +433,8 @@ msgstr " Tapa "
 msgid "butt"
 msgstr "fondo"
 
-#: glade/object_props.c:32
 # [*] Revisar
+#: glade/object_props.c:32
 msgid "sqare"
 msgstr "Encadrar"
 
@@ -358,10 +442,6 @@ msgstr "Encadrar"
 #: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
 msgid "Stroke"
 msgstr "Trazo"
-
-#: glade/object_props.c:34
-msgid "None"
-msgstr "Ningun"
 
 #: glade/object_props.c:35
 msgid "Color"
@@ -423,8 +503,8 @@ msgstr "Ancho "
 msgid "Height "
 msgstr "Alto "
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:61
 # [*] Revisar
+#: glade/object_props.c:61 glade/sodipodi-glade.c:61
 msgid "Layout"
 msgstr "Equipamento"
 
@@ -432,8 +512,8 @@ msgstr "Equipamento"
 msgid "Reread"
 msgstr "Reler"
 
-#: glade/object_props.c:65 glade/sodipodi-glade.c:65
 # [*] Mirar abreviaturas de unidades
+#: glade/object_props.c:65 glade/sodipodi-glade.c:65
 msgid ""
 "px\n"
 "mm\n"
@@ -467,8 +547,8 @@ msgstr "Cor:"
 msgid "Stroke width"
 msgstr "Ancho do trazado"
 
-#: glade/sodipodi-glade.c:15
 # [*] Mirar abreviaturas das unidades
+#: glade/sodipodi-glade.c:15
 msgid ""
 "px\n"
 "mm\n"
@@ -484,33 +564,33 @@ msgstr ""
 msgid "Join:"
 msgstr "Xuntar:"
 
-#: glade/sodipodi-glade.c:21
 # [*] Revisar
+#: glade/sodipodi-glade.c:21
 msgid "Bevel join"
 msgstr "Xuntar biselado"
 
-#: glade/sodipodi-glade.c:22
 # [*] Revisar
+#: glade/sodipodi-glade.c:22
 msgid "Round join"
 msgstr "Xuntar redondeado"
 
-#: glade/sodipodi-glade.c:23
 # [*] Revisar
+#: glade/sodipodi-glade.c:23
 msgid "Mitter join"
 msgstr "Xuntar metades"
 
-#: glade/sodipodi-glade.c:24
 # [*] Revisar
+#: glade/sodipodi-glade.c:24
 msgid "Butt endpoints"
 msgstr "Xuntar a tope os puntos finais"
 
-#: glade/sodipodi-glade.c:25
 # [*] Revisar
+#: glade/sodipodi-glade.c:25
 msgid "Round endpoints"
 msgstr "Redondear puntos finais"
 
-#: glade/sodipodi-glade.c:26
 # [*] Revisar
+#: glade/sodipodi-glade.c:26
 msgid "Square endpoints"
 msgstr "Encadrar puntos finais"
 
@@ -574,8 +654,8 @@ msgstr "X:"
 msgid "Y:"
 msgstr "Y:"
 
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
 # [*] Mirar abreviaturas das unidades
+#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
 msgid ""
 "pt\n"
 "mm\n"
@@ -713,8 +793,8 @@ msgstr "Baixa-la selección unha capa"
 msgid "Rise selection one layer"
 msgstr "Eleva-la selección unha capa"
 
-#: glade/toolbox.c:36
 # [*] Mirar
+#: glade/toolbox.c:36
 msgid "Break apart selected paths"
 msgstr "Fragmenta-las curvas seleccionadas"
 
@@ -750,8 +830,8 @@ msgstr "Converti-los segmentos seleccionados a liñas"
 msgid "Convert selected segments to curves"
 msgstr "Converti-los segmentos seleccionados a curvas"
 
-#: glade/toolbox.c:45
 # [*] Mirar
+#: glade/toolbox.c:45
 msgid "Break apart selected node"
 msgstr "Fragmenta-lo nodo seleccionado"
 
@@ -855,8 +935,8 @@ msgstr "Formulario de transformacións"
 msgid "Edit font style of selected objects"
 msgstr "Edita-lo estilo da fonte dos obxectos seleccionados"
 
-#: glade/toolbox.c:71
 # [*] Revisar Layout
+#: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
 msgstr "Edita-lo equipamento dos obxectos seleccionados"
 
@@ -868,8 +948,8 @@ msgstr "Edita-lo estilo de recheo dos obxectos seleccionados"
 msgid "Edit stroke style of selected objects"
 msgstr "Edita-lo estilo de trazado dos obxectos seleccionados"
 
+# [*] Revisar
 #: glade/toolbox.c:74
-#[*] Revisar
 msgid "Flip selected objects"
 msgstr "Voltea-los obxectos seleccionados"
 
@@ -1147,9 +1227,9 @@ msgstr "Aliñar arriba á esqueda"
 msgid "Points"
 msgstr "Puntos"
 
+# [*] mirar unidades
 #: glade/transformation.c:68 glade/transformation.c:78
 #: glade/transformation.c:86 glade/transformation.c:96
-# [*] mirar unidades
 msgid "pt"
 msgstr "pt"
 
@@ -1178,9 +1258,9 @@ msgstr "cm"
 msgid "Inch"
 msgstr "Polgada"
 
+# [*] mirar unidades
 #: glade/transformation.c:74 glade/transformation.c:84
 #: glade/transformation.c:92 glade/transformation.c:102
-# [*] mirar unidades
 msgid "in"
 msgstr "in"
 
@@ -1210,8 +1290,8 @@ msgstr "Arbore XML"
 msgid "Hierarchy"
 msgstr "Xerarquía"
 
-#: glade/xml-tree.c:9
 # [*] mirar
+#: glade/xml-tree.c:9
 msgid "Dup"
 msgstr "Duplicar"
 
@@ -1239,8 +1319,8 @@ msgstr "Borrar"
 msgid "Attributes"
 msgstr "Atributos"
 
-#: glade/xml-tree.c:16
 # [*] mirar
+#: glade/xml-tree.c:16
 msgid "Key"
 msgstr "Chave"
 
@@ -1292,27 +1372,33 @@ msgstr "Borrar atributo"
 msgid "Do you want to delete attribute?"
 msgstr "¿Quere borra-los atributos?"
 
-#: src/main.c:49
+#: src/main.c:54
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr "¡Non usa-lo IGU. NB! ¡se existe, debe se-lo PRIMEIRO argumento!"
 
-#: src/main.c:58
+#: src/main.c:63
 msgid "Open specified file (option string may be excluded)"
 msgstr "Abri-lo ficheiro especificado (débese exclui-la cadea de opcion)"
 
-#: src/main.c:59 src/main.c:68
+#: src/main.c:64 src/main.c:73
 msgid "FILENAME"
 msgstr "NOME DO FICHEIRO"
 
-#: src/main.c:67
+#: src/main.c:72
 msgid "Print files to specified output file (use '| program' for pipe)"
-msgstr "Imprimi-los ficheiros ó ficheiro de saida especificado (use '| programa' para canalización)"
+msgstr ""
+"Imprimi-los ficheiros ó ficheiro de saida especificado (use '| programa' "
+"para canalización)"
 
-#: src/main.c:169
+#: src/main.c:81
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+
+#: src/main.c:183
 msgid "Oaf options"
 msgstr "Opcións de Oaf"
 
-#: src/main.c:177
+#: src/main.c:191
 msgid "Could not initialize Bonobo"
 msgstr "Non se puido iniciar Bonobo"
 
@@ -1320,60 +1406,79 @@ msgstr "Non se puido iniciar Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Non se puido crea-la factoría sodipodi-svg-doc"
 
-#: src/interface.c:108
+#: src/interface.c:109
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "O documento %s ten cambios sen gardar, ¿quere gardalos?"
 
-#: src/file.c:81
+#: src/file.c:82
 msgid "Select file to open"
 msgstr "Seleccione o ficheiro que quere abrir"
 
-#: src/file.c:158
+#: src/file.c:177
 msgid "Save file"
 msgstr "Garda-lo ficheiro"
 
-#: src/file.c:258
+#: src/file.c:285
 msgid "Select file to import"
 msgstr "Seleccione o ficheiro a importar"
 
-#: src/file.c:330
+#: src/file.c:362
 msgid "Export file"
 msgstr "Exporta-lo ficheiro"
 
-#: src/file.c:390
+#: src/file.c:422
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (nome do doc. %s..): Previsualización da impresión"
 
-#: src/sp-image.c:241
+#: src/sp-image.c:270
 msgid "Broken bitmap"
 msgstr "Bitmap roto"
 
-#: src/sp-image.c:242
+#: src/sp-image.c:271
 msgid "Color bitmap"
 msgstr "Bitmap a cor"
 
-#: src/sp-item.c:171
+#: src/sp-item.c:243
 msgid "Unknown item :-("
 msgstr "Elemento descoñecido :-("
 
-#: src/sp-item.c:397
+#. Item dialog
+#: src/sp-item.c:475
+#, fuzzy
+msgid "Item Properties"
+msgstr "Propiedades do texto"
+
+#. Reset transformations
+#: src/sp-item.c:484
 msgid "Reset transformation"
 msgstr "Reinicia-la transformación"
 
-#. Toggle sensitivity
-#. "sensitive" attribute is handled in shape & image
-#: src/sp-item.c:404
-msgid "Toggle sensitivity"
+#: src/sp-item.c:491
+#, fuzzy
+msgid "Make sensitive"
 msgstr "Conmuta-la sensibilidade"
 
-#: src/sp-item-group.c:346
-#, c-format
-msgid "Group of %d items"
+#: src/sp-item.c:491
+msgid "Make insensitive"
+msgstr ""
+
+#: src/sp-item-group.c:375
+#, fuzzy, c-format
+msgid "Group of %d objects"
 msgstr "Grupo de elementos %d"
 
-#: src/sp-shape.c:278
+#: src/sp-item-group.c:459
+#, fuzzy
+msgid "Group"
+msgstr "redondear"
+
+#: src/sp-item-group.c:462
+msgid "Ungroup"
+msgstr ""
+
+#: src/sp-shape.c:270
 msgid "A path - whatever it means"
 msgstr "Unha curva - o que queira que signifique"
 

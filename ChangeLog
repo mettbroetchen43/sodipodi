@@ -1,4 +1,17 @@
+2001-05-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.23 final
+
+	* src/sp-gradient.c (sp_lg_fill): Do opacity
+
+	* src/document-undo.c (sp_document_redo): Fixed bug in redoing
+	order changes
+
 2001-05-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/toolbox.c (sp_maintoolbox_create): Show toolbox, if
+	it already exists and reference sodipodi
+	(sp_maintoolbox_close): Hide toolbox
 
 	* glade/Makefile.am (glade_DATA): Added item.glade, item.c
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2001-03-09 19:23+0200\n"
+"POT-Creation-Date: 2001-05-17 03:12+0200\n"
 "PO-Revision-Date: 2000-11-30 12:40+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -67,137 +67,164 @@ msgstr "A külsõ objektum igazítása az alsó szélhez"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/desktop.c:7
+#: glade/desktop.c:7 glade/display.c:7
 msgid "Desktop settings"
 msgstr "Munkafelület beállításai"
 
-#: glade/desktop.c:8
+#: glade/desktop.c:8 glade/display.c:8
 msgid "Grid units:"
 msgstr "Rács egység:"
 
-#: glade/desktop.c:9
+#: glade/desktop.c:9 glade/display.c:9
 msgid "Choose base unit system for grid"
 msgstr "A rács alap mértékegységének kiválasztása"
+
+#: glade/display.c:10
+#, fuzzy
+msgid "Millimeters"
+msgstr "Miliméter\n"
+
+#: glade/desktop.c:12 glade/display.c:11
+msgid "Show grid"
+msgstr "Rács mutatása"
+
+#: glade/desktop.c:13 glade/display.c:12
+msgid "Snap to grid"
+msgstr "Rácsra ugrás"
+
+#: glade/desktop.c:14 glade/display.c:13
+msgid "Grid color:"
+msgstr "Rács színe:"
+
+#: glade/desktop.c:15 glade/display.c:14
+msgid "Choose color for grid"
+msgstr "Válassz színt a rácsnak"
+
+#: glade/desktop.c:16 glade/display.c:15
+msgid "Grid color"
+msgstr "Rács színe"
+
+#: glade/desktop.c:17 glade/desktop.c:36 glade/display.c:16 glade/display.c:33
+msgid "Snap distance:"
+msgstr "Ugrás hatósugara:"
+
+#: glade/desktop.c:18 glade/display.c:17
+msgid "Set maximum distance for grid snapping"
+msgstr "A rácsraugrás maximális hatósugara"
+
+#: glade/desktop.c:19 glade/desktop.c:32 glade/display.c:18 glade/display.c:30
+msgid "Snap units:"
+msgstr "Ugrás mértékegysége:"
+
+#: glade/desktop.c:20 glade/display.c:19
+msgid "Choose unit system for grid snapping"
+msgstr "Az ugrás hatósugaráshoz rendelt mértékegység megadása"
+
+#: glade/display.c:20 glade/display.c:32
+#, fuzzy
+msgid "Pixels"
+msgstr "Képpont\n"
+
+#: glade/desktop.c:23 glade/display.c:21
+msgid "Spacing Y:"
+msgstr "Y távolság:"
+
+#: glade/desktop.c:24 glade/display.c:22
+msgid "Set distance between vertical grid lines"
+msgstr "A függõleges rácsvonalak közötti távolság beállítása"
+
+#: glade/desktop.c:25 glade/display.c:23
+msgid "Spacing X:"
+msgstr "X távolság:"
+
+#: glade/desktop.c:26 glade/display.c:24
+msgid "Set distance between horizontal grid lines"
+msgstr "A vízszintes rácsvonalak közötti távolság beállítása"
+
+#: glade/desktop.c:27 glade/display.c:25
+msgid "Origin X:"
+msgstr "X origó:"
+
+#: glade/desktop.c:28 glade/display.c:26
+msgid "Origin Y:"
+msgstr "Y origó:"
+
+#: glade/desktop.c:29 glade/desktop.c:30 glade/display.c:27 glade/display.c:28
+msgid "Set origin of page coordinate system"
+msgstr "A koordináta-rendszer origójának beállítása"
+
+#: glade/desktop.c:31 glade/display.c:29
+msgid "Grid"
+msgstr "Rács"
+
+#: glade/desktop.c:33 glade/display.c:31
+msgid "Choose unit system for guideline snapping"
+msgstr "A segédvonalakra ugrás hatósugarának beállítása"
+
+#: glade/desktop.c:37 glade/display.c:34
+msgid "Set maximum distance for guideline snapping"
+msgstr "segédvonalakra ugrás maximális távolsága"
+
+#: glade/desktop.c:38 glade/display.c:35
+msgid "Guides color:"
+msgstr "Segédvonalak színe:"
+
+#: glade/desktop.c:39 glade/display.c:36
+msgid "Choose color for guidelines"
+msgstr "Segédvonal színének kiválasztása"
+
+#: glade/desktop.c:40 glade/display.c:37
+msgid "Guideline color"
+msgstr "Segédvonal színe"
+
+#: glade/desktop.c:41 glade/display.c:38
+msgid "Show guides"
+msgstr "Segédvonalak mutatása"
+
+#: glade/desktop.c:42 glade/display.c:39
+msgid "Snap to guides"
+msgstr "Segédvonalakra ugrás"
+
+#: glade/desktop.c:43 glade/display.c:40
+msgid "Highlight color:"
+msgstr "Kijelölt szín:"
+
+#: glade/desktop.c:44 glade/display.c:41
+msgid "Choose color for highlighted guidelines"
+msgstr "A kijelölt segédvonal színének beállítása"
+
+#: glade/desktop.c:45 glade/display.c:42
+msgid "Highlited guideline color"
+msgstr "Kijelölt segédvonal színe"
+
+#: glade/desktop.c:46 glade/display.c:43
+msgid "Guides"
+msgstr "Segédvonalak"
+
+#: glade/display.c:44
+#, fuzzy
+msgid "Display settings"
+msgstr "Kitöltés beállításai"
+
+#: glade/display.c:45 glade/object_props.c:34
+msgid "None"
+msgstr "Nincs"
+
+#: glade/display.c:46
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: glade/display.c:47
+msgid "Rendering"
+msgstr ""
 
 #: glade/desktop.c:10 glade/document.c:17
 msgid "Millimeters\n"
 msgstr "Miliméter\n"
 
-#: glade/desktop.c:12
-msgid "Show grid"
-msgstr "Rács mutatása"
-
-#: glade/desktop.c:13
-msgid "Snap to grid"
-msgstr "Rácsra ugrás"
-
-#: glade/desktop.c:14
-msgid "Grid color:"
-msgstr "Rács színe:"
-
-#: glade/desktop.c:15
-msgid "Choose color for grid"
-msgstr "Válassz színt a rácsnak"
-
-#: glade/desktop.c:16
-msgid "Grid color"
-msgstr "Rács színe"
-
-#: glade/desktop.c:17 glade/desktop.c:36
-msgid "Snap distance:"
-msgstr "Ugrás hatósugara:"
-
-#: glade/desktop.c:18
-msgid "Set maximum distance for grid snapping"
-msgstr "A rácsraugrás maximális hatósugara"
-
-#: glade/desktop.c:19 glade/desktop.c:32
-msgid "Snap units:"
-msgstr "Ugrás mértékegysége:"
-
-#: glade/desktop.c:20
-msgid "Choose unit system for grid snapping"
-msgstr "Az ugrás hatósugaráshoz rendelt mértékegység megadása"
-
 #: glade/desktop.c:21 glade/desktop.c:34
 msgid "Pixels\n"
 msgstr "Képpont\n"
-
-#: glade/desktop.c:23
-msgid "Spacing Y:"
-msgstr "Y távolság:"
-
-#: glade/desktop.c:24
-msgid "Set distance between vertical grid lines"
-msgstr "A függõleges rácsvonalak közötti távolság beállítása"
-
-#: glade/desktop.c:25
-msgid "Spacing X:"
-msgstr "X távolság:"
-
-#: glade/desktop.c:26
-msgid "Set distance between horizontal grid lines"
-msgstr "A vízszintes rácsvonalak közötti távolság beállítása"
-
-#: glade/desktop.c:27
-msgid "Origin X:"
-msgstr "X origó:"
-
-#: glade/desktop.c:28
-msgid "Origin Y:"
-msgstr "Y origó:"
-
-#: glade/desktop.c:29 glade/desktop.c:30
-msgid "Set origin of page coordinate system"
-msgstr "A koordináta-rendszer origójának beállítása"
-
-#: glade/desktop.c:31
-msgid "Grid"
-msgstr "Rács"
-
-#: glade/desktop.c:33
-msgid "Choose unit system for guideline snapping"
-msgstr "A segédvonalakra ugrás hatósugarának beállítása"
-
-#: glade/desktop.c:37
-msgid "Set maximum distance for guideline snapping"
-msgstr "segédvonalakra ugrás maximális távolsága"
-
-#: glade/desktop.c:38
-msgid "Guides color:"
-msgstr "Segédvonalak színe:"
-
-#: glade/desktop.c:39
-msgid "Choose color for guidelines"
-msgstr "Segédvonal színének kiválasztása"
-
-#: glade/desktop.c:40
-msgid "Guideline color"
-msgstr "Segédvonal színe"
-
-#: glade/desktop.c:41
-msgid "Show guides"
-msgstr "Segédvonalak mutatása"
-
-#: glade/desktop.c:42
-msgid "Snap to guides"
-msgstr "Segédvonalakra ugrás"
-
-#: glade/desktop.c:43
-msgid "Highlight color:"
-msgstr "Kijelölt szín:"
-
-#: glade/desktop.c:44
-msgid "Choose color for highlighted guidelines"
-msgstr "A kijelölt segédvonal színének beállítása"
-
-#: glade/desktop.c:45
-msgid "Highlited guideline color"
-msgstr "Kijelölt segédvonal színe"
-
-#: glade/desktop.c:46
-msgid "Guides"
-msgstr "Segédvonalak"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -251,6 +278,62 @@ msgstr "Magasság:"
 #: glade/document.c:21 src/dialogs/align.c:100
 msgid "Page"
 msgstr "Oldal"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/item.c:7
+#, fuzzy
+msgid "Item properties"
+msgstr "ojektum tulajdonságai"
+
+#: glade/item.c:8
+msgid "Sensitive"
+msgstr ""
+
+#: glade/item.c:9
+msgid "Visible"
+msgstr ""
+
+#: glade/item.c:10
+msgid "Active"
+msgstr ""
+
+#: glade/item.c:11
+#, fuzzy
+msgid "Printable"
+msgstr "Fájl nyomtatása"
+
+#: glade/item.c:12
+msgid "Opacity:"
+msgstr ""
+
+#: glade/item.c:13
+#, fuzzy
+msgid "Transformation"
+msgstr "Á_talakítás"
+
+#: glade/item.c:14
+msgid "Parent X ="
+msgstr ""
+
+#: glade/item.c:15
+msgid "Parent Y ="
+msgstr ""
+
+#: glade/item.c:16 glade/item.c:17
+msgid "X +"
+msgstr ""
+
+#: glade/item.c:18 glade/item.c:19
+msgid "Y +"
+msgstr ""
+
+#: glade/item.c:20 src/sp-item.c:471
+msgid "Item"
+msgstr ""
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -352,10 +435,6 @@ msgstr ""
 #: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
 msgid "Stroke"
 msgstr ""
-
-#: glade/object_props.c:34
-msgid "None"
-msgstr "Nincs"
 
 #: glade/object_props.c:35
 msgid "Color"
@@ -1309,29 +1388,33 @@ msgstr ""
 msgid "Do you want to delete attribute?"
 msgstr ""
 
-#: src/main.c:49
+#: src/main.c:54
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 
-#: src/main.c:58
+#: src/main.c:63
 msgid "Open specified file (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:59 src/main.c:68
+#: src/main.c:64 src/main.c:73
 msgid "FILENAME"
 msgstr ""
 
-#: src/main.c:67
+#: src/main.c:72
 msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr ""
 
+#: src/main.c:81
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+
 # src/main.c:168
-#: src/main.c:169
+#: src/main.c:183
 msgid "Oaf options"
 msgstr "Oaf beállítások"
 
 # src/main.c:176
-#: src/main.c:177
+#: src/main.c:191
 msgid "Could not initialize Bonobo"
 msgstr "A Bonobo inicializálása nem sikerült"
 
@@ -1340,7 +1423,7 @@ msgstr "A Bonobo inicializálása nem sikerült"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
-#: src/interface.c:108
+#: src/interface.c:109
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr ""
@@ -1349,15 +1432,15 @@ msgstr ""
 msgid "Select file to open"
 msgstr ""
 
-#: src/file.c:170
+#: src/file.c:177
 msgid "Save file"
 msgstr ""
 
-#: src/file.c:282
+#: src/file.c:285
 msgid "Select file to import"
 msgstr ""
 
-#: src/file.c:361
+#: src/file.c:362
 msgid "Export file"
 msgstr ""
 
@@ -1366,34 +1449,53 @@ msgstr ""
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr ""
 
-#: src/sp-image.c:241
+#: src/sp-image.c:270
 msgid "Broken bitmap"
 msgstr ""
 
-#: src/sp-image.c:242
+#: src/sp-image.c:271
 msgid "Color bitmap"
 msgstr ""
 
-#: src/sp-item.c:171
+#: src/sp-item.c:243
 msgid "Unknown item :-("
 msgstr ""
 
-#: src/sp-item.c:397
+#. Item dialog
+#: src/sp-item.c:475
+#, fuzzy
+msgid "Item Properties"
+msgstr "ojektum tulajdonságai"
+
+#. Reset transformations
+#: src/sp-item.c:484
 msgid "Reset transformation"
 msgstr ""
 
-#. Toggle sensitivity
-#. "sensitive" attribute is handled in shape & image
-#: src/sp-item.c:404
-msgid "Toggle sensitivity"
+#: src/sp-item.c:491
+msgid "Make sensitive"
 msgstr ""
 
-#: src/sp-item-group.c:346
+#: src/sp-item.c:491
+msgid "Make insensitive"
+msgstr ""
+
+#: src/sp-item-group.c:375
 #, c-format
-msgid "Group of %d items"
+msgid "Group of %d objects"
 msgstr ""
 
-#: src/sp-shape.c:278
+#: src/sp-item-group.c:459
+#, fuzzy
+msgid "Group"
+msgstr "_Csoport"
+
+#: src/sp-item-group.c:462
+#, fuzzy
+msgid "Ungroup"
+msgstr "Csoprt _felbontása"
+
+#: src/sp-shape.c:270
 msgid "A path - whatever it means"
 msgstr ""
 
@@ -1479,9 +1581,6 @@ msgstr "Rajz"
 #~ msgid "_Align"
 #~ msgstr "I_gazítás"
 
-#~ msgid "_Transform"
-#~ msgstr "Á_talakítás"
-
 #~ msgid "_Order"
 #~ msgstr "_Sorrend"
 
@@ -1500,14 +1599,8 @@ msgstr "Rajz"
 #~ msgid "Groups selected items"
 #~ msgstr "A kijelölt elemeket csoportosítja"
 
-#~ msgid "_Group"
-#~ msgstr "_Csoport"
-
 #~ msgid "Ungroups selected group"
 #~ msgstr "A kijelölt csoport felbontása"
-
-#~ msgid "_Ungroup"
-#~ msgstr "Csoprt _felbontása"
 
 #~ msgid "_Combine"
 #~ msgstr "Össze_vonás"
@@ -1533,17 +1626,11 @@ msgstr "Rajz"
 #~ msgid "Save\t"
 #~ msgstr "Mentés\t"
 
-#~ msgid "Print file"
-#~ msgstr "Fájl nyomtatása"
-
 #~ msgid "Print"
 #~ msgstr "Nyomtatás"
 
 #~ msgid "Undo"
 #~ msgstr "Visszavonás"
-
-#~ msgid "Fill settings"
-#~ msgstr "Kitöltés beállításai"
 
 #~ msgid "Font settings"
 #~ msgstr "Betûkészlet beállításai"

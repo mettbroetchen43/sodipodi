@@ -21,4 +21,6 @@ src/sp-rect.c
 src/sp-shape.c
 src/sp-text.c
 src/dialogs/align.c
+src/dialogs/display-settings.c
+src/dialogs/item-properties.c
 

@@ -10,6 +10,8 @@
  *
  */
 
+#include <string.h>
+#include <ctype.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -32,6 +34,7 @@ static void sp_item_dialog_setup (SPItem *item);
 static gint sp_item_dialog_delete (GtkWidget *widget, GdkEvent *event);
 
 void sp_item_dialog_sensitive_toggled (GtkWidget *widget, gpointer data);
+void sp_item_dialog_id_changed (GtkWidget *widget, gpointer data);
 void sp_item_dialog_opacity_changed (GtkWidget *widget, gpointer data);
 void sp_item_dialog_transform_changed (GtkWidget *widget, gpointer data);
 static void sp_item_dialog_item_destroy (GtkObject *object, gpointer data);
@@ -81,6 +84,21 @@ sp_item_dialog_setup (SPItem *item)
 	w = glade_xml_get_widget (xml, "sensitive");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), (str == NULL));
 	
+	/* Id */
+	if (SP_OBJECT_IS_CLONED (object)) {
+		w = glade_xml_get_widget (xml, "id");
+		gtk_entry_set_text (GTK_ENTRY (w), "");
+		gtk_widget_set_sensitive (w, FALSE);
+		w = glade_xml_get_widget (xml, "id_comment");
+		gtk_label_set_text (GTK_LABEL (w), _("Item is reference"));
+	} else {
+		w = glade_xml_get_widget (xml, "id");
+		gtk_entry_set_text (GTK_ENTRY (w), object->id);
+		gtk_widget_set_sensitive (w, TRUE);
+		w = glade_xml_get_widget (xml, "id_comment");
+		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
+	}
+
 	/* Opacity */
 	w = glade_xml_get_widget (xml, "opacity");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), object->style->opacity);
@@ -148,6 +166,13 @@ sp_item_dialog_apply (GtkWidget * widget)
 	w = glade_xml_get_widget (xml, "sensitive");
 	sp_repr_set_attr (repr, "insensitive", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? NULL : "true");
 
+	/* Id */
+	w = glade_xml_get_widget (xml, "id");
+	s = gtk_entry_get_text (GTK_ENTRY (w));
+	if (s && *s && isalnum (*s) && strcmp (s, object->id) && !SP_OBJECT_IS_CLONED (object) && !sp_document_lookup_id (object->document, s)) {
+		sp_repr_set_attr (repr, "id", s);
+	}
+
 	/* Opacity */
 	str = sp_repr_attr (repr, "style");
 	style = sp_style_new ();
@@ -177,6 +202,8 @@ sp_item_dialog_apply (GtkWidget * widget)
 	sp_repr_set_attr (repr, "transform", c);
 
 	sp_document_done (object->document);
+
+	sp_item_dialog_setup (dialog_item);
 }
 
 void
@@ -185,6 +212,35 @@ sp_item_dialog_sensitive_toggled (GtkWidget *widget, gpointer data)
 	GtkWidget *w;
 
 	g_assert (dialog != NULL);
+
+	w = glade_xml_get_widget (xml, "apply");
+	gtk_widget_set_sensitive (w, TRUE);
+}
+
+void
+sp_item_dialog_id_changed (GtkWidget *widget, gpointer data)
+{
+	SPObject *o;
+	GtkWidget *w;
+	gchar *id;
+
+	g_assert (dialog != NULL);
+	g_assert (dialog_item != NULL);
+
+	o = SP_OBJECT (dialog_item);
+
+	w = glade_xml_get_widget (xml, "id");
+	id = gtk_entry_get_text (GTK_ENTRY (w));
+	w = glade_xml_get_widget (xml, "id_comment");
+	if (!strcmp (id, o->id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
+	} else if (!*id || !isalnum (*id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is not valid"));
+	} else if (sp_document_lookup_id (o->document, id)) {
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is already defined"));
+	} else {
+		gtk_label_set_text (GTK_LABEL (w), _("The ID is valid"));
+	}
 
 	w = glade_xml_get_widget (xml, "apply");
 	gtk_widget_set_sensitive (w, TRUE);

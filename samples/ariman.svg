@@ -17,7 +17,7 @@
 	<sodipodi:guide orientation="vertical" position="10"></sodipodi:guide>
 </sodipodi:namedview>
 <defs>
-   <linearGradient id="MyGradient">
+   <linearGradient id="mygradient">
         <stop offset="0%" style="stop-color:#F60"/>
         <stop offset="70%" style="stop-color:#FF6"/>
    </linearGradient>
@@ -193,7 +193,7 @@
         </g>
         <g
            id="g35"
-           style="fill: #c1c1bf">          <path
+           style="fill:url(#mygradient)">          <path
              id="path36"
              d="M120.968 500.464C108.368 523.792 103.976 546.256 132.92 550.216C117.008 553.888 97.208 568.648 77.192 593.488L77.624 543.016L101.456 503.272L120.968 500.464z">
           </path>

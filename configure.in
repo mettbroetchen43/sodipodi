@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(sodipodi, 0.23-test)
+AM_INIT_AUTOMAKE(sodipodi, 0.23)
 AM_CONFIG_HEADER(config.h)
 
 dnl Pick up the Gnome macros.
@@ -147,8 +147,16 @@ AC_ARG_WITH(arena,
 AM_CONDITIONAL(WITH_ARENA, $use_arena)
 AC_SUBST(WITH_ARENA)
 
-SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print xml`
-SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print xml`
+XML_KEY=xml
+AC_ARG_WITH(gnome-xml2,
+	[--{with,without}-gnome-xml2 Use gnome-config {--cflags|--libs} xml2],
+	if test x$withval = xyes; then
+		XML_KEY=xml2
+	fi
+)
+
+SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
+SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
 SODIPODI_LIBS="$SODIPODI_LIBS -lpng -lz"
 AC_SUBST(SODIPODI_CFLAGS)
 AC_SUBST(SODIPODI_LIBS)

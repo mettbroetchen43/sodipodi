@@ -29,7 +29,7 @@ sp_svg_read_color (const guchar *str, guint32 def)
 			int hexval;
 			if (str[i] >= '0' && str[i] <= '9')
 				hexval = str[i] - '0';
-			else if (str[i] >= 'A' && str[i] <= 'A')
+			else if (str[i] >= 'A' && str[i] <= 'F')
 				hexval = str[i] - 'A' + 10;
 			else if (str[i] >= 'a' && str[i] <= 'f')
 				hexval = str[i] - 'a' + 10;

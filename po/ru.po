@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-11 17:32+0300\n"
+"POT-Creation-Date: 2001-05-17 03:12+0200\n"
 "PO-Revision-Date: 2001-03-11 17:33+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -66,137 +66,165 @@ msgstr "Выровнять внешний объект по нижнему краю"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/desktop.c:7
+#: glade/desktop.c:7 glade/display.c:7
 msgid "Desktop settings"
 msgstr "Установки стола"
 
-#: glade/desktop.c:8
+#: glade/desktop.c:8 glade/display.c:8
 msgid "Grid units:"
 msgstr "Единицы сетки:"
 
-#: glade/desktop.c:9
+#: glade/desktop.c:9 glade/display.c:9
 msgid "Choose base unit system for grid"
 msgstr "Выбрать основную систему единиц для сетки"
+
+#: glade/display.c:10
+#, fuzzy
+msgid "Millimeters"
+msgstr "Миллиметры\n"
+
+#: glade/desktop.c:12 glade/display.c:11
+msgid "Show grid"
+msgstr "Показать сетку"
+
+#: glade/desktop.c:13 glade/display.c:12
+msgid "Snap to grid"
+msgstr "Выровнять по сетке"
+
+#: glade/desktop.c:14 glade/display.c:13
+msgid "Grid color:"
+msgstr "Цвет сетки:"
+
+#: glade/desktop.c:15 glade/display.c:14
+msgid "Choose color for grid"
+msgstr "Выбрать цвет для сетки"
+
+#: glade/desktop.c:16 glade/display.c:15
+msgid "Grid color"
+msgstr "Цвет сетки"
+
+#: glade/desktop.c:17 glade/desktop.c:36 glade/display.c:16 glade/display.c:33
+msgid "Snap distance:"
+msgstr "Расстояние выравнивания:"
+
+#: glade/desktop.c:18 glade/display.c:17
+msgid "Set maximum distance for grid snapping"
+msgstr "Установить максимальное расстояние для выравнивания по сетке"
+
+#: glade/desktop.c:19 glade/desktop.c:32 glade/display.c:18 glade/display.c:30
+msgid "Snap units:"
+msgstr "Единицы выравнивания:"
+
+#: glade/desktop.c:20 glade/display.c:19
+msgid "Choose unit system for grid snapping"
+msgstr "Выбрать систему единиц для выравнивания по сетке"
+
+#: glade/display.c:20 glade/display.c:32
+#, fuzzy
+msgid "Pixels"
+msgstr "Точки растра\n"
+
+#: glade/desktop.c:23 glade/display.c:21
+msgid "Spacing Y:"
+msgstr "Интервал Y:"
+
+#: glade/desktop.c:24 glade/display.c:22
+msgid "Set distance between vertical grid lines"
+msgstr "Установить расстояние между вертикальными линиями сетки"
+
+#: glade/desktop.c:25 glade/display.c:23
+msgid "Spacing X:"
+msgstr "Интервал X:"
+
+#: glade/desktop.c:26 glade/display.c:24
+msgid "Set distance between horizontal grid lines"
+msgstr "Установить расстояние между горизонтальными линиями сетки"
+
+#: glade/desktop.c:27 glade/display.c:25
+msgid "Origin X:"
+msgstr "Начало X:"
+
+#: glade/desktop.c:28 glade/display.c:26
+msgid "Origin Y:"
+msgstr "Начало Y:"
+
+#: glade/desktop.c:29 glade/desktop.c:30 glade/display.c:27 glade/display.c:28
+msgid "Set origin of page coordinate system"
+msgstr "Установить начало системы координат страницы"
+
+#: glade/desktop.c:31 glade/display.c:29
+msgid "Grid"
+msgstr "Сетка"
+
+#: glade/desktop.c:33 glade/display.c:31
+msgid "Choose unit system for guideline snapping"
+msgstr "Выбрать систему единиц для выравнивания направляющих"
+
+#: glade/desktop.c:37 glade/display.c:34
+msgid "Set maximum distance for guideline snapping"
+msgstr "Установить максимальное расстояние для выравнивания по направляющим"
+
+#: glade/desktop.c:38 glade/display.c:35
+msgid "Guides color:"
+msgstr "Цвет направляющих:"
+
+#: glade/desktop.c:39 glade/display.c:36
+msgid "Choose color for guidelines"
+msgstr "Выбор цвета для направляющих"
+
+#: glade/desktop.c:40 glade/display.c:37
+msgid "Guideline color"
+msgstr "Цвет направляющих"
+
+#: glade/desktop.c:41 glade/display.c:38
+msgid "Show guides"
+msgstr "Показать направляющие"
+
+#: glade/desktop.c:42 glade/display.c:39
+msgid "Snap to guides"
+msgstr "Выравнять по направляющим"
+
+#: glade/desktop.c:43 glade/display.c:40
+msgid "Highlight color:"
+msgstr "Цвет подсветки:"
+
+#: glade/desktop.c:44 glade/display.c:41
+msgid "Choose color for highlighted guidelines"
+msgstr "Выбрать цвет для подсвеченных направляющих"
+
+#: glade/desktop.c:45 glade/display.c:42
+msgid "Highlited guideline color"
+msgstr "Цвет подсвеченных направляющих"
+
+#: glade/desktop.c:46 glade/display.c:43
+msgid "Guides"
+msgstr "Направляющие"
+
+#: glade/display.c:44
+#, fuzzy
+msgid "Display settings"
+msgstr "Установки стола"
+
+#: glade/display.c:45 glade/object_props.c:34
+msgid "None"
+msgstr "Нет"
+
+#: glade/display.c:46
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: glade/display.c:47
+#, fuzzy
+msgid "Rendering"
+msgstr "Новый чертеж"
 
 #: glade/desktop.c:10 glade/document.c:17
 msgid "Millimeters\n"
 msgstr "Миллиметры\n"
 
-#: glade/desktop.c:12
-msgid "Show grid"
-msgstr "Показать сетку"
-
-#: glade/desktop.c:13
-msgid "Snap to grid"
-msgstr "Выровнять по сетке"
-
-#: glade/desktop.c:14
-msgid "Grid color:"
-msgstr "Цвет сетки:"
-
-#: glade/desktop.c:15
-msgid "Choose color for grid"
-msgstr "Выбрать цвет для сетки"
-
-#: glade/desktop.c:16
-msgid "Grid color"
-msgstr "Цвет сетки"
-
-#: glade/desktop.c:17 glade/desktop.c:36
-msgid "Snap distance:"
-msgstr "Расстояние выравнивания:"
-
-#: glade/desktop.c:18
-msgid "Set maximum distance for grid snapping"
-msgstr "Установить максимальное расстояние для выравнивания по сетке"
-
-#: glade/desktop.c:19 glade/desktop.c:32
-msgid "Snap units:"
-msgstr "Единицы выравнивания:"
-
-#: glade/desktop.c:20
-msgid "Choose unit system for grid snapping"
-msgstr "Выбрать систему единиц для выравнивания по сетке"
-
 #: glade/desktop.c:21 glade/desktop.c:34
 msgid "Pixels\n"
 msgstr "Точки растра\n"
-
-#: glade/desktop.c:23
-msgid "Spacing Y:"
-msgstr "Интервал Y:"
-
-#: glade/desktop.c:24
-msgid "Set distance between vertical grid lines"
-msgstr "Установить расстояние между вертикальными линиями сетки"
-
-#: glade/desktop.c:25
-msgid "Spacing X:"
-msgstr "Интервал X:"
-
-#: glade/desktop.c:26
-msgid "Set distance between horizontal grid lines"
-msgstr "Установить расстояние между горизонтальными линиями сетки"
-
-#: glade/desktop.c:27
-msgid "Origin X:"
-msgstr "Начало X:"
-
-#: glade/desktop.c:28
-msgid "Origin Y:"
-msgstr "Начало Y:"
-
-#: glade/desktop.c:29 glade/desktop.c:30
-msgid "Set origin of page coordinate system"
-msgstr "Установить начало системы координат страницы"
-
-#: glade/desktop.c:31
-msgid "Grid"
-msgstr "Сетка"
-
-#: glade/desktop.c:33
-msgid "Choose unit system for guideline snapping"
-msgstr "Выбрать систему единиц для выравнивания направляющих"
-
-#: glade/desktop.c:37
-msgid "Set maximum distance for guideline snapping"
-msgstr "Установить максимальное расстояние для выравнивания по направляющим"
-
-#: glade/desktop.c:38
-msgid "Guides color:"
-msgstr "Цвет направляющих:"
-
-#: glade/desktop.c:39
-msgid "Choose color for guidelines"
-msgstr "Выбор цвета для направляющих"
-
-#: glade/desktop.c:40
-msgid "Guideline color"
-msgstr "Цвет направляющих"
-
-#: glade/desktop.c:41
-msgid "Show guides"
-msgstr "Показать направляющие"
-
-#: glade/desktop.c:42
-msgid "Snap to guides"
-msgstr "Выравнять по направляющим"
-
-#: glade/desktop.c:43
-msgid "Highlight color:"
-msgstr "Цвет подсветки:"
-
-#: glade/desktop.c:44
-msgid "Choose color for highlighted guidelines"
-msgstr "Выбрать цвет для подсвеченных направляющих"
-
-#: glade/desktop.c:45
-msgid "Highlited guideline color"
-msgstr "Цвет подсвеченных направляющих"
-
-#: glade/desktop.c:46
-msgid "Guides"
-msgstr "Направляющие"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -250,6 +278,62 @@ msgstr "Высота:"
 #: glade/document.c:21 src/dialogs/align.c:100
 msgid "Page"
 msgstr "Страница"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/item.c:7
+#, fuzzy
+msgid "Item properties"
+msgstr "свойства объекта"
+
+#: glade/item.c:8
+msgid "Sensitive"
+msgstr ""
+
+#: glade/item.c:9
+msgid "Visible"
+msgstr ""
+
+#: glade/item.c:10
+msgid "Active"
+msgstr ""
+
+#: glade/item.c:11
+msgid "Printable"
+msgstr ""
+
+#: glade/item.c:12
+msgid "Opacity:"
+msgstr ""
+
+#: glade/item.c:13
+#, fuzzy
+msgid "Transformation"
+msgstr "Диалог преобразования"
+
+#: glade/item.c:14
+msgid "Parent X ="
+msgstr ""
+
+#: glade/item.c:15
+msgid "Parent Y ="
+msgstr ""
+
+#: glade/item.c:16 glade/item.c:17
+msgid "X +"
+msgstr ""
+
+#: glade/item.c:18 glade/item.c:19
+#, fuzzy
+msgid "Y +"
+msgstr "Y:"
+
+#: glade/item.c:20 src/sp-item.c:471
+msgid "Item"
+msgstr ""
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -351,10 +435,6 @@ msgstr "квадрат"
 #: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
 msgid "Stroke"
 msgstr "Штрихи"
-
-#: glade/object_props.c:34
-msgid "None"
-msgstr "Нет"
 
 #: glade/object_props.c:35
 msgid "Color"
@@ -1269,29 +1349,33 @@ msgstr "Удалить аттрибут"
 msgid "Do you want to delete attribute?"
 msgstr "Вы хотите удалить аттрибут?"
 
-#: src/main.c:49
+#: src/main.c:54
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 "Не использовать GUI. NB! если присутствует, должно быть ПЕРВЫМ аргументом!"
 
-#: src/main.c:58
+#: src/main.c:63
 msgid "Open specified file (option string may be excluded)"
 msgstr "Открыть указанный файл (строка параметров может быть исключена)"
 
-#: src/main.c:59 src/main.c:68
+#: src/main.c:64 src/main.c:73
 msgid "FILENAME"
 msgstr "FILENAME"
 
-#: src/main.c:67
+#: src/main.c:72
 msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr ""
 "Напечатать файлы в указанный файл (используйте '| program' для конвейеров)"
 
-#: src/main.c:169
+#: src/main.c:81
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+
+#: src/main.c:183
 msgid "Oaf options"
 msgstr "Параметры Oaf"
 
-#: src/main.c:177
+#: src/main.c:191
 msgid "Could not initialize Bonobo"
 msgstr "Не удалось инициализировать Bonobo"
 
@@ -1299,7 +1383,7 @@ msgstr "Не удалось инициализировать Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
-#: src/interface.c:108
+#: src/interface.c:109
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "В документе %s есть несохраненные изменения, сохранить их?"
@@ -1308,15 +1392,15 @@ msgstr "В документе %s есть несохраненные изменения, сохранить их?"
 msgid "Select file to open"
 msgstr "Выбрать файл для открытия"
 
-#: src/file.c:170
+#: src/file.c:177
 msgid "Save file"
 msgstr "Сохранить файл"
 
-#: src/file.c:282
+#: src/file.c:285
 msgid "Select file to import"
 msgstr "Выбрать файл для импортирования"
 
-#: src/file.c:361
+#: src/file.c:362
 msgid "Export file"
 msgstr "Экспортировать файл"
 
@@ -1325,34 +1409,53 @@ msgstr "Экспортировать файл"
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (документ %s..): Просмотр печати"
 
-#: src/sp-image.c:241
+#: src/sp-image.c:270
 msgid "Broken bitmap"
 msgstr "Испорченая битовая карта"
 
-#: src/sp-image.c:242
+#: src/sp-image.c:271
 msgid "Color bitmap"
 msgstr "Цветная битовая карта"
 
-#: src/sp-item.c:171
+#: src/sp-item.c:243
 msgid "Unknown item :-("
 msgstr "Неизвестный элемент :-("
 
-#: src/sp-item.c:397
+#. Item dialog
+#: src/sp-item.c:475
+#, fuzzy
+msgid "Item Properties"
+msgstr "Свойства текста"
+
+#. Reset transformations
+#: src/sp-item.c:484
 msgid "Reset transformation"
 msgstr "Удалить преобразование"
 
-#. Toggle sensitivity
-#. "sensitive" attribute is handled in shape & image
-#: src/sp-item.c:404
-msgid "Toggle sensitivity"
+#: src/sp-item.c:491
+#, fuzzy
+msgid "Make sensitive"
 msgstr "Переключить чувствительность"
 
-#: src/sp-item-group.c:346
-#, c-format
-msgid "Group of %d items"
+#: src/sp-item.c:491
+msgid "Make insensitive"
+msgstr ""
+
+#: src/sp-item-group.c:375
+#, fuzzy, c-format
+msgid "Group of %d objects"
 msgstr "Группа из %d элементов"
 
-#: src/sp-shape.c:278
+#: src/sp-item-group.c:459
+#, fuzzy
+msgid "Group"
+msgstr "круг"
+
+#: src/sp-item-group.c:462
+msgid "Ungroup"
+msgstr ""
+
+#: src/sp-shape.c:270
 msgid "A path - whatever it means"
 msgstr "Контур - чтобы это значило"
 

@@ -6,10 +6,12 @@
 
 gchar *s = N_("Item properties");
 gchar *s = N_("Sensitive");
-gchar *s = N_("Visible");
 gchar *s = N_("Active");
+gchar *s = N_("Visible");
 gchar *s = N_("Printable");
+gchar *s = N_("ID:");
 gchar *s = N_("Opacity:");
+gchar *s = N_("The SVG ID of item");
 gchar *s = N_("Transformation");
 gchar *s = N_("Parent X =");
 gchar *s = N_("Parent Y =");

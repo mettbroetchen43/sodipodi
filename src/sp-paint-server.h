@@ -19,10 +19,9 @@
 BEGIN_GNOME_DECLS
 
 #include <libart_lgpl/art_rect.h>
+#include "forward.h"
 #include "sp-object.h"
 
-typedef struct _SPPaintServer SPPaintServer;
-typedef struct _SPPaintServerClass SPPaintServerClass;
 typedef struct _SPPainter SPPainter;
 
 #define SP_TYPE_PAINT_SERVER (sp_paint_server_get_type ())
@@ -32,13 +31,16 @@ typedef struct _SPPainter SPPainter;
 #define SP_IS_PAINT_SERVER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_PAINT_SERVER))
 
 typedef enum {
-	SP_PAINT_IND,
-	SP_PAINT_DEP
+	SP_PAINTER_IND,
+	SP_PAINTER_DEP
 } SPPainterType;
+
+typedef void (* SPPainterFillFunc) (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 struct _SPPainter {
 	SPPainter *next;
 	SPPainterType type;
+	SPPainterFillFunc fill;
 };
 
 struct _SPPaintServer {
@@ -50,14 +52,14 @@ struct _SPPaintServer {
 struct _SPPaintServerClass {
 	SPObjectClass sp_object_class;
 	/* Get SPPaint instance */
-	SPPainter * (* painter_new) (SPPaintServer *ps, gdouble *affine, ArtDRect *bbox);
+	SPPainter * (* painter_new) (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
 	/* Free SPPaint instance */
 	void (* painter_free) (SPPaintServer *ps, SPPainter *painter);
 };
 
 GtkType sp_paint_server_get_type (void);
 
-SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, ArtDRect *bbox);
+SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
 void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 END_GNOME_DECLS

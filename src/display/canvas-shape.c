@@ -78,6 +78,8 @@ sp_canvas_shape_init (SPCanvasShape * shape)
 	shape->style = NULL;
 	shape->comp = NULL;
 	shape->sensitive = TRUE;
+	shape->ps = NULL;
+	shape->painter = NULL;
 }
 
 static void
@@ -86,6 +88,13 @@ sp_canvas_shape_destroy (GtkObject *object)
 	SPCanvasShape * shape;
 
 	shape = (SPCanvasShape *) object;
+
+	if (shape->ps) {
+		sp_paint_server_painter_free (shape->ps, shape->painter);
+		gtk_object_unref (GTK_OBJECT (shape->ps));
+		shape->ps = NULL;
+		shape->painter = NULL;
+	}
 
 	while (shape->comp) {
 		sp_cpath_comp_unref ((SPCPathComp *) shape->comp->data);
@@ -152,6 +161,14 @@ g_print ("sp_canvas_shape_update: entering\n");
 
 	gnome_canvas_item_reset_bounds (item);
 
+	/* Free painter */
+	if (shape->ps) {
+		sp_paint_server_painter_free (shape->ps, shape->painter);
+		gtk_object_unref (GTK_OBJECT (shape->ps));
+		shape->ps = NULL;
+		shape->painter = NULL;
+	}
+
 	if (GNOME_CANVAS_ITEM_CLASS(parent_class)->update)
 		(* GNOME_CANVAS_ITEM_CLASS(parent_class)->update) (item, affine, clip_path, flags);
 
@@ -191,6 +208,18 @@ g_print ("sp_canvas_shape_update: entering\n");
 			if (comp->bbox.x1 > item->x2) item->x2 = comp->bbox.x1;
 			if (comp->bbox.y1 > item->y2) item->y2 = comp->bbox.y1;
 		}
+	}
+
+	/* Create painter */
+	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+		ArtDRect bbox;
+		shape->ps = shape->style->fill.server;
+		gtk_object_ref (GTK_OBJECT (shape->ps));
+		bbox.x0 = item->x1;
+		bbox.y0 = item->y1;
+		bbox.x1 = item->x2;
+		bbox.y1 = item->y2;
+		shape->painter = sp_paint_server_painter_new (shape->ps, affine, shape->style->opacity, &bbox);
 	}
 
 #ifdef CANVAS_SHAPE_VERBOSE
@@ -270,12 +299,40 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 #endif
 				break;
 
-#if 0
-			case SP_FILL_IND:
-				if (buf->is_bg) {
-					gnome_canvas_clear_buffer (buf);
-					buf->is_bg = FALSE;
+			case SP_PAINT_TYPE_PAINTSERVER:
+				if (shape->painter) {
+					static guint32 *rgba = NULL;
+					static gint rgbaw = 0;
+					static gint rgbah = 0;
+					gint w, h;
+					/* fixme: DEP vs. IND */
+					if (buf->is_bg) {
+						gnome_canvas_clear_buffer (buf);
+						buf->is_bg = FALSE;
+						buf->is_buf = TRUE;
+					}
+					w = buf->rect.x1 - buf->rect.x0;
+					h = buf->rect.y1 - buf->rect.y0;
+					if (!rgba || (rgbaw * rgbah < w * h)) {
+						if (rgba) g_free (rgba);
+						rgba = g_new (guint32, w * h);
+					}
+					(* shape->painter->fill) (shape->painter, rgba,
+								  buf->rect.x0, buf->rect.y0,
+								  w, h, w);
+					art_rgb_svp_rgba (comp->archetype->svp,
+							  buf->rect.x0 - comp->cx,
+							  buf->rect.y0 - comp->cy,
+							  buf->rect.x1 - comp->cx,
+							  buf->rect.y1 - comp->cy,
+							  (art_u32 *) rgba,
+							  0,0,
+							  w,
+							  buf->buf, buf->buf_rowstride,
+							  NULL);
 				}
+				break;
+#if 0
 
 				width = buf->rect.x1 - buf->rect.x0;
 				height = buf->rect.y1 - buf->rect.y0;
@@ -301,7 +358,6 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 
 				g_free (rgba);
 				break;
-
 			case SP_FILL_DEP:
 				if (buf->is_bg) {
 				  gnome_canvas_clear_buffer (buf);

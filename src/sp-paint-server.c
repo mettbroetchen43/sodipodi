@@ -65,14 +65,14 @@ sp_paint_server_destroy (GtkObject *object)
 
 	ps = SP_PAINT_SERVER (object);
 
-	g_assert (ps->painters = NULL);
+	g_assert (ps->painters == NULL);
 
 	if (((GtkObjectClass *) parent_class)->destroy)
 		(* ((GtkObjectClass *) parent_class)->destroy) (object);
 }
 
 SPPainter *
-sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, ArtDRect *bbox)
+sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox)
 {
 	SPPainter *painter;
 
@@ -83,7 +83,7 @@ sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, ArtDRect *bbox)
 
 	painter = NULL;
 	if (((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new)
-		painter = (* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new) (ps, affine, bbox);
+		painter = (* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new) (ps, affine, opacity, bbox);
 
 	if (painter) {
 		gtk_object_ref (GTK_OBJECT (ps));

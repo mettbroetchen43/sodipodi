@@ -53,16 +53,16 @@
 	<name>vbox9</name>
 	<border_width>4</border_width>
 	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
+	<spacing>4</spacing>
 
 	<widget>
 	  <class>GtkTable</class>
-	  <name>table16</name>
-	  <rows>3</rows>
+	  <name>table18</name>
+	  <rows>2</rows>
 	  <columns>2</columns>
-	  <homogeneous>True</homogeneous>
-	  <row_spacing>4</row_spacing>
-	  <column_spacing>4</column_spacing>
+	  <homogeneous>False</homogeneous>
+	  <row_spacing>0</row_spacing>
+	  <column_spacing>0</column_spacing>
 	  <child>
 	    <padding>0</padding>
 	    <expand>True</expand>
@@ -84,30 +84,6 @@
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>visible</name>
-	    <sensitive>False</sensitive>
-	    <can_focus>True</can_focus>
-	    <label>Visible</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
 	      <top_attach>0</top_attach>
 	      <bottom_attach>1</bottom_attach>
 	      <xpad>0</xpad>
@@ -147,6 +123,30 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
+	    <name>visible</name>
+	    <sensitive>False</sensitive>
+	    <can_focus>True</can_focus>
+	    <label>Visible</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
 	    <name>printable</name>
 	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
@@ -168,11 +168,26 @@
 	      <yfill>False</yfill>
 	    </child>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkTable</class>
+	  <name>table16</name>
+	  <rows>3</rows>
+	  <columns>2</columns>
+	  <homogeneous>False</homogeneous>
+	  <row_spacing>4</row_spacing>
+	  <column_spacing>4</column_spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label64</name>
-	    <label>Opacity:</label>
+	    <name>label71</name>
+	    <label>ID:</label>
 	    <justify>GTK_JUSTIFY_CENTER</justify>
 	    <wrap>False</wrap>
 	    <xalign>1</xalign>
@@ -182,8 +197,37 @@
 	    <child>
 	      <left_attach>0</left_attach>
 	      <right_attach>1</right_attach>
-	      <top_attach>2</top_attach>
-	      <bottom_attach>3</bottom_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkEntry</class>
+	    <name>id</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>sp_item_dialog_id_changed</handler>
+	      <last_modification_time>Thu, 17 May 2001 13:35:12 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text></text>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	      <xexpand>True</xexpand>
@@ -224,6 +268,58 @@
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label64</name>
+	    <label>Opacity:</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>1</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>id_comment</name>
+	    <label>The SVG ID of item</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
 	      <yexpand>False</yexpand>
 	      <xshrink>False</xshrink>
 	      <yshrink>False</yshrink>

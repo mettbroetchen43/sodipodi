@@ -15,18 +15,8 @@
  * Released under GNU GPL
  */
 
+#include "style.h"
 #include "sp-paint-server.h"
-
-typedef enum {
-	SP_GRADIENT_UNITS_USERSPACEONUSE,
-	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX
-} SPGradientUnits;
-
-typedef enum {
-	SP_GRADIENT_SPREAD_PAD,
-	SP_GRADIENT_SPREAD_REFLECT,
-	SP_GRADIENT_SPREAD_REPEAT
-} SPGradientSpread;
 
 /*
  * Gradient Stop
@@ -35,7 +25,7 @@ typedef enum {
 typedef struct _SPStop SPStop;
 typedef struct _SPStopClass SPStopClass;
 
-#define SP_TYPE_STOP            (sp_lineargradient_get_type ())
+#define SP_TYPE_STOP            (sp_stop_get_type ())
 #define SP_STOP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_STOP, SPStop))
 #define SP_STOP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_STOP, SPStopClass))
 #define SP_IS_STOP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_STOP))
@@ -58,6 +48,17 @@ GtkType sp_stop_get_type (void);
  * Linear Gradient
  */
 
+typedef enum {
+	SP_GRADIENT_UNITS_USERSPACEONUSE,
+	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX
+} SPGradientUnits;
+
+typedef enum {
+	SP_GRADIENT_SPREAD_PAD,
+	SP_GRADIENT_SPREAD_REFLECT,
+	SP_GRADIENT_SPREAD_REPEAT
+} SPGradientSpread;
+
 typedef struct _SPLinearGradient SPLinearGradient;
 typedef struct _SPLinearGradientClass SPLinearGradientClass;
 
@@ -73,13 +74,23 @@ struct _SPLinearGradient {
 	guint units_set : 1;
 	gdouble transform[6];
 	guint transform_set : 1;
-	ArtDRect vector;
-	guint vector_set : 1;
+	SPDistance x1;
+	guint x1_set : 1;
+	SPDistance y1;
+	guint y1_set : 1;
+	SPDistance x2;
+	guint x2_set : 1;
+	SPDistance y2;
+	guint y2_set : 1;
 	SPGradientSpread spread;
 	guint spread_set : 1;
 	SPLinearGradient *href;
 	/* Gradient stops */
 	SPStop *stops;
+	/* Color array */
+	guint32 color[256];
+	/* Length of vector */
+	gdouble len;
 };
 
 struct _SPLinearGradientClass {

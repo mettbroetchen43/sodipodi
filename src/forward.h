@@ -55,6 +55,9 @@ typedef struct _SPShapeClass SPShapeClass;
 typedef struct _SPChars SPChars;
 typedef struct _SPCharsClass SPCharsClass;
 
+typedef struct _SPPaintServer SPPaintServer;
+typedef struct _SPPaintServerClass SPPaintServerClass;
+
 typedef struct _SPStyle SPStyle;
 
 #endif

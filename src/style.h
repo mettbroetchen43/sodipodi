@@ -20,7 +20,6 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_vpath_dash.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include "forward.h"
-#include "sp-paint-server.h"
 
 typedef struct _SPColor SPColor;
 typedef struct _SPPaint SPPaint;

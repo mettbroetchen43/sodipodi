@@ -12,6 +12,7 @@
 #include "path-archetype.h"
 #include "cpath-component.h"
 #include "../forward.h"
+#include "../sp-paint-server.h"
 
 #define SP_TYPE_CANVAS_SHAPE            (sp_canvas_shape_get_type ())
 #define SP_CANVAS_SHAPE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_CANVAS_SHAPE, SPCanvasShape))
@@ -27,6 +28,9 @@ struct _SPCanvasShape {
 	SPStyle *style;
 	GList * comp;
 	gboolean sensitive;
+	/* Paint server */
+	SPPaintServer *ps;
+	SPPainter *painter;
 };
 
 struct _SPCanvasShapeClass {
