@@ -535,7 +535,6 @@ sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data)
 			return;
 		}
 		last = rl;
-		rl = rl->next;
 	}
 }
 

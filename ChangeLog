@@ -1,14 +1,30 @@
+2002-09-10  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr.c (sp_repr_remove_listener_by_data): Oops, removed excess step
+
+	* src/sp-shape.c (sp_shape_build): Force style rewrite for old versions
+
+	* src/view.c (sp_view_widget_view_destroy): handler
+	(sp_view_widget_set_view): Connect "destroy"
+
+	* src/main.c (sp_do_export_png): Move exporting code here, implement
+	--export-width, --export-height, --export-backround arguments
+
+	* src/helper/nr-plain-stuff.c (nr_render_r8g8b8a8_r8g8b8a8_alpha): Implement
+	using internal composer
+
+	* src/sp-item.c (sp_item_paint): Render buffer instead of copy
+
 2002-09-09  Masatake YAMATO  <jet@gyve.org>
 
-        * src/sp-image.c (autotrace_dialog): Used 
-        gtk_signal_connect_object_while_alive and 
-        gtk_signal_connect_object instead of gtk_signal_connect_while_alive
-        and gtk_signal_connect. 
-        (object_destroyed): Removed.
-        (load_trace_result): ask the user whehter loading or net.
+	* src/sp-image.c (autotrace_dialog): Used 
+	gtk_signal_connect_object_while_alive and 
+	gtk_signal_connect_object instead of gtk_signal_connect_while_alive
+	and gtk_signal_connect.
+	(object_destroyed): Removed.
+	(load_trace_result): ask the user whehter loading or net.
 
-        * configure.in (AM_PATH_FRONTLINE): Check the version of 
-        frontline(>= 0.5.1).
+	* configure.in (AM_PATH_FRONTLINE): Check the version of frontline(>= 0.5.1).
 
 2002-09-09  Zbigniew Chyla  <cyba@gnome.pl>
 

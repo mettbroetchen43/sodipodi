@@ -139,29 +139,24 @@ void
 sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 {
 	SPReprAttr * a;
-	const gchar * key;
-	gchar * val;
-	gchar * r, * result;
-	char c[128];
+	const gchar *key;
+	gchar *val;
+	gchar c[4096], *p;
 
 	g_assert (repr != NULL);
 	g_assert (css != NULL);
 	g_assert (attr != NULL);
 
-	result = "";
-	r = g_strdup (result);
+	c[0] = '\0';
+	p = c;
 
 	for (a = ((SPRepr *) css)->attributes; a != NULL; a = a->next) {
 		key = SP_REPR_ATTRIBUTE_KEY (a);
 		val = SP_REPR_ATTRIBUTE_VALUE (a);
-		snprintf (c, 128, "%s:%s; ", key, val);
-		result = g_strconcat (r, c, NULL);
-		g_free (r);
-		r = result;
+		p += g_snprintf (p, c + 4096 - p, "%s:%s;", key, val);
 	}
-g_print ("style: %s\n", result);
-	sp_repr_set_attr (repr, attr, result);
-	g_free (result);
+	g_print ("style: %s\n", c);
+	sp_repr_set_attr (repr, attr, (c[0]) ? c : NULL);
 }
 
 static void

@@ -1,4 +1,16 @@
-#define SP_ITEM_C
+#define __SP_ITEM_C__
+
+/*
+ * Base class for visual SVG elements
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <config.h>
 #include <math.h>
@@ -7,6 +19,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "helper/art-utils.h"
+#include "helper/nr-plain-stuff.h"
 #include "svg/svg.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
@@ -464,7 +477,6 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	NRIRect bbox;
 	NRGC gc;
 	NRBuffer *b;
-	gint y;
 
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
@@ -494,9 +506,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	sp_item_hide (item, arena);
 	gtk_object_unref (GTK_OBJECT (arena));
 	/* Copy buffer to output */
-	for (y = 0; y < buf->height; y++) {
-		memcpy (buf->pixels + y * buf->rowstride, b->px + y * b->rs, 4 * buf->width);
-	}
+	nr_render_r8g8b8a8_r8g8b8a8_alpha (buf->pixels, buf->width, buf->height, buf->rowstride, b->px, b->rs, 255);
 	/* Release RGBA buffer */
 	nr_buffer_free (b);
 

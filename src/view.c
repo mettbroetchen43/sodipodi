@@ -215,6 +215,7 @@ static void sp_view_widget_class_init (SPViewWidgetClass *klass);
 static void sp_view_widget_init (SPViewWidget *widget);
 static void sp_view_widget_destroy (GtkObject *object);
 
+static void sp_view_widget_view_destroy (GtkObject *object, SPViewWidget *vw);
 static void sp_view_widget_view_resized (SPView *view, gdouble width, gdouble height, SPViewWidget *vw);
 
 static GtkEventBoxClass *widget_parent_class;
@@ -284,6 +285,7 @@ sp_view_widget_set_view (SPViewWidget *vw, SPView *view)
 
 	vw->view = view;
 	gtk_object_ref (GTK_OBJECT (view));
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", GTK_SIGNAL_FUNC (sp_view_widget_view_destroy), vw);
 	gtk_signal_connect (GTK_OBJECT (view), "resized", GTK_SIGNAL_FUNC (sp_view_widget_view_resized), vw);
 
 	if (((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->set_view)
@@ -300,6 +302,12 @@ sp_view_widget_shutdown (SPViewWidget *vw)
 		return ((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->shutdown (vw);
 
 	return FALSE;
+}
+
+static void
+sp_view_widget_view_destroy (GtkObject *object, SPViewWidget *vw)
+{
+	vw->view = NULL;
 }
 
 static void

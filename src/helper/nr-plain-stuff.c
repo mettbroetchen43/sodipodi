@@ -1508,42 +1508,10 @@ nr_render_rgba32_rgba32 (guchar *px, gint w, gint h, gint rs, const guchar *src,
 void
 nr_render_r8g8b8a8_r8g8b8a8_alpha (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs, guint alpha)
 {
-	gint x, y;
-
 	g_return_if_fail (px != NULL);
 	g_return_if_fail (src != NULL);
 
-	for (y = 0; y < h; y++) {
-		const guchar *s;
-		guchar *p;
-		p = px;
-		s = src;
-		for (x = 0; x < w; x++) {
-			guint fa;
-			fa = (s[3] * alpha + 127) / 255;
-			if (fa == 0) {
-				/* Do nothing */
-			} else if ((fa == 255) || (p[3] == 0)) {
-				/* Opaque */
-				p[0] = s[0];
-				p[1] = s[1];
-				p[2] = s[2];
-				p[3] = fa;
-			} else {
-				guint da;
-				/* Full composition */
-				da = 65025 - (255 - fa) * (255 - p[3]);
-				p[0] = COMPOSE4 (p[0], s[0], p[3], fa, da);
-				p[1] = COMPOSE4 (p[1], s[1], p[3], fa, da);
-				p[2] = COMPOSE4 (p[2], s[2], p[3], fa, da);
-				p[3] = (da + 0x80) / 255;
-			}
-			p += 4;
-			s += 4;
-		}
-		px += rs;
-		src += srcrs;
-	}
+	nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (px, w, h, rs, src, srcrs, alpha);
 }
 
 void

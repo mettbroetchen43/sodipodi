@@ -13,7 +13,9 @@
  */
 
 #include <config.h>
+
 #include <math.h>
+#include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -31,6 +33,7 @@
 #include "desktop-handles.h"
 #include "sp-paint-server.h"
 #include "style.h"
+#include "sp-root.h"
 #include "sp-shape.h"
 
 #define noSHAPE_VERBOSE
@@ -127,7 +130,6 @@ sp_shape_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-#if 0
 /* fixme: Better place (Lauris) */
 
 static guint
@@ -143,21 +145,53 @@ sp_shape_find_version (SPObject *object)
 
 	return 0;
 }
-#endif
 
 static void
-sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
+sp_shape_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
-#if 0
 	guint version;
-#endif
+
+	version = sp_shape_find_version (object);
+
+	if ((version > 0) && (version < 25)) {
+		SPCSSAttr *css;
+		const guchar *val;
+		gdouble dval;
+		gchar c[32];
+		gboolean changed;
+		/* Have to check for percentage opacities */
+		css = sp_repr_css_attr (repr, "style");
+		/* We foce style rewrite at moment (Lauris) */
+		changed = TRUE;
+		val = sp_repr_css_property (css, "opacity", NULL);
+		if (val && strchr (val, '%')) {
+			dval = sp_svg_read_percentage (val, 1.0);
+			g_snprintf (c, 32, "%g", dval);
+			sp_repr_css_set_property (css, "opacity", c);
+			changed = TRUE;
+		}
+		val = sp_repr_css_property (css, "fill-opacity", NULL);
+		if (val && strchr (val, '%')) {
+			dval = sp_svg_read_percentage (val, 1.0);
+			g_snprintf (c, 32, "%g", dval);
+			sp_repr_css_set_property (css, "fill-opacity", c);
+			changed = TRUE;
+		}
+		val = sp_repr_css_property (css, "stroke-opacity", NULL);
+		if (val && strchr (val, '%')) {
+			dval = sp_svg_read_percentage (val, 1.0);
+			g_snprintf (c, 32, "%g", dval);
+			sp_repr_css_set_property (css, "stroke-opacity", c);
+			changed = TRUE;
+		}
+		if (changed) sp_repr_css_set (repr, css, "style");
+		sp_repr_css_attr_unref (css);
+	}
 
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
 #if 0
-	version = sp_shape_find_version (object);
-
 	if ((version > 0) && (version < 25)) {
 		SPStyle *style;
 		/* Potential invalid gradient position */
@@ -217,7 +251,6 @@ sp_shape_modified (SPObject *object, guint flags)
 		/* This is suboptimal, because changing parent style schedules recalculation */
 		/* But on the other hand - how can we know that parent does not tie style and transform */
 		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
-		SP_PRINT_DRECT ("Shape paintbox:", &paintbox);
 		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
 			nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (v->arenaitem), &paintbox);
 		}
@@ -398,7 +431,6 @@ sp_shape_show (SPItem *item, NRArena *arena)
 		comp = (SPPathComp *) path->comp->data;
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
 		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
-		SP_PRINT_DRECT ("Shape paintbox:", &paintbox);
 		nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
 	}
 
