@@ -1,3 +1,19 @@
+2004-02-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/modules/ps.c: Use arikkei_strlib, fixes comma bug
+
+	* src/libarikkei/arikkei-strlib.c (arikkei_dtoa_simple): Change
+	epsilon properly, so skipping zeroes really works now
+
+2004-02-02  Emile Snyder <emile@alumni.reed.edu>
+
+	* src/modules/ps.c (private_sp_module_print_plain_setup_output): New helper
+	(sp_module_print_plain_setup_file): Implement
+
+	* src/module.h: Added ::setup_file virtual method
+
+	* src/print.c (sp_print_document): Ditto
+
 2004-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/draw-context.c (sp_pencil_context_update_curves): New method

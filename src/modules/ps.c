@@ -30,6 +30,8 @@
 #include <signal.h>
 #include <errno.h>
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 
@@ -60,6 +62,7 @@ static void sp_module_print_plain_finalize (GObject *object);
 static SPRepr *sp_module_print_plain_write (SPModule *module, SPRepr *root);
 
 static unsigned int sp_module_print_plain_setup (SPModulePrint *mod);
+static unsigned int sp_module_print_plain_setup_file (SPModulePrint *mod, const unsigned char *filename);
 static unsigned int sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_plain_finish (SPModulePrint *mod);
 static unsigned int sp_module_print_plain_bind (SPModulePrint *mod, const NRMatrixF *transform, float opacity);
@@ -114,6 +117,7 @@ sp_module_print_plain_class_init (SPModulePrintPlainClass *klass)
 	module_class->write = sp_module_print_plain_write;
 
 	module_print_class->setup = sp_module_print_plain_setup;
+	module_print_class->setup_file = sp_module_print_plain_setup_file;
 	module_print_class->begin = sp_module_print_plain_begin;
 	module_print_class->finish = sp_module_print_plain_finish;
 	module_print_class->bind = sp_module_print_plain_bind;
@@ -141,7 +145,7 @@ sp_module_print_plain_finalize (GObject *object)
 
 #ifndef WIN32
 	/* restore default signal handling for SIGPIPE */
-	(void) signal(SIGPIPE, SIG_DFL);
+	(void) signal (SIGPIPE, SIG_DFL);
 #endif
 
 	G_OBJECT_CLASS (print_plain_parent_class)->finalize (object);
@@ -165,6 +169,55 @@ sp_module_print_plain_write (SPModule *module, SPRepr *root)
 	sp_repr_append_child (grp, repr);
 	return repr;
 }
+
+
+unsigned int
+private_sp_module_print_plain_setup_output (SPModulePrintPlain *pmod, const unsigned char *filename)
+{
+        FILE *osf, *osp;
+        unsigned int ret;
+        
+        ret = FALSE;
+        osf = NULL;
+        osp = NULL;
+        if (filename) {
+                if (*filename == '|') {
+                        filename += 1;
+                        while (isspace (*filename)) filename += 1;
+#ifndef WIN32
+                        osp = popen (filename, "w");
+#else
+                        osp = _popen (filename, "w");
+#endif
+                        pmod->stream = osp;
+                } else if (*filename == '>') {
+                        filename += 1;
+                        while (isspace (*filename)) filename += 1;
+                        osf = fopen (filename, "w+");
+                        pmod->stream = osf;
+                } else {
+                        unsigned char *qn;
+                        qn = g_strdup_printf ("lpr -P %s", filename);
+#ifndef WIN32
+                        osp = popen (qn, "w");
+#else
+                        osp = _popen (qn, "w");
+#endif
+                        g_free (qn);
+                        pmod->stream = osp;
+                }
+        }
+        if (pmod->stream) {
+#ifndef WIN32
+                /* fixme: this is kinda icky */
+                (void) signal(SIGPIPE, SIG_IGN);
+#endif
+                ret = TRUE;
+        }
+
+        return ret;
+}
+
 
 static unsigned int
 sp_module_print_plain_setup (SPModulePrint *mod)
@@ -280,7 +333,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	if (response == GTK_RESPONSE_OK) {
 		const unsigned char *fn;
 		const char *sstr;
-		FILE *osf, *osp;
+		/* FILE *osf, *osp; */
 		pmod->bitmap = gtk_toggle_button_get_active ((GtkToggleButton *) rb);
 		sstr = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (combo)->entry));
 		pmod->dpi = MAX (atof (sstr), 1);
@@ -292,42 +345,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 			sp_repr_set_attr (repr, "resolution", sstr);
 			sp_repr_set_attr (repr, "destination", fn);
 		}
-		osf = NULL;
-		osp = NULL;
-		if (fn) {
-			if (*fn == '|') {
-				fn += 1;
-				while (isspace (*fn)) fn += 1;
-#ifndef WIN32
-				osp = popen (fn, "w");
-#else
-				osp = _popen (fn, "w");
-#endif
-				pmod->stream = osp;
-			} else if (*fn == '>') {
-				fn += 1;
-				while (isspace (*fn)) fn += 1;
-				osf = fopen (fn, "w+");
-				pmod->stream = osf;
-			} else {
-				unsigned char *qn;
-				qn = g_strdup_printf ("lpr -P %s", fn);
-#ifndef WIN32
-				osp = popen (qn, "w");
-#else
-				osp = _popen (qn, "w");
-#endif
-				g_free (qn);
-				pmod->stream = osp;
-			}
-		}
-		if (pmod->stream) {
-#ifndef WIN32
-			/* fixme: this is kinda icky */
-			(void) signal(SIGPIPE, SIG_IGN);
-#endif
-			ret = TRUE;
-		}
+                ret = private_sp_module_print_plain_setup_output (pmod, fn);
 	}
 
 	gtk_widget_destroy (dlg);
@@ -335,10 +353,42 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	return ret;
 }
 
+
+static unsigned int
+sp_module_print_plain_setup_file (SPModulePrint *mod, const unsigned char *filename)
+{
+	SPModulePrintPlain *pmod;
+	unsigned int ret;
+	/* SPRepr *repr; */
+        char sstr[16];
+
+        ret = FALSE;
+	pmod = (SPModulePrintPlain *) mod;
+	/* repr = ((SPModule *) mod)->repr; */
+
+        pmod->bitmap = 0;
+        pmod->dpi = 300;
+        sprintf (sstr, "%d", pmod->dpi);
+
+#if 0
+        if (repr) {
+                sp_repr_set_attr (repr, "bitmap", (pmod->bitmap) ? "true" : "false");
+                sp_repr_set_attr (repr, "resolution", sstr);
+                sp_repr_set_attr (repr, "destination", filename);
+        }
+#endif
+
+        ret = private_sp_module_print_plain_setup_output (pmod, filename);
+
+        return ret;
+}
+
+
 static unsigned int
 sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 {
 	SPModulePrintPlain *pmod;
+	unsigned char c[32];
 	int res;
 
 	pmod = (SPModulePrintPlain *) mod;
@@ -363,7 +413,8 @@ sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 
 	if (pmod->bitmap) return 0;
 
-	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
+	arikkei_dtoa_simple (c, 32, sp_document_height (doc), 6, 0, FALSE);
+	if (res >= 0) res = fprintf (pmod->stream, "0.0 %s translate\n", c);
 	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
 
 	return res;
@@ -443,6 +494,10 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 
 	res = fprintf (pmod->stream, "showpage\n");
 
+	/* fixme: should really use pclose for popen'd streams */
+	fclose (pmod->stream);
+	pmod->stream = 0;
+
 	return res;
 }
 
@@ -450,16 +505,21 @@ static unsigned int
 sp_module_print_plain_bind (SPModulePrint *mod, const NRMatrixF *transform, float opacity)
 {
 	SPModulePrintPlain *pmod;
+	unsigned char c[256];
+	unsigned int p, i;
 
 	pmod = (SPModulePrintPlain *) mod;
 
 	if (!pmod->stream) return -1;
 	if (pmod->bitmap) return 0;
 
-	return fprintf (pmod->stream, "gsave [%g %g %g %g %g %g] concat\n",
-			transform->c[0], transform->c[1],
-			transform->c[2], transform->c[3],
-			transform->c[4], transform->c[5]);
+	p = 0;
+	for (i = 0; i < 6; i++) {
+		if (i > 0) c[p++] = ' ';
+		p += arikkei_dtoa_simple (c + p, 32, transform->c[i], 6, 0, FALSE);
+	}
+
+	return fprintf (pmod->stream, "gsave [%s] concat\n", c);
 }
 
 static unsigned int
@@ -487,11 +547,18 @@ sp_module_print_plain_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMa
 	if (pmod->bitmap) return 0;
 
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
+		unsigned char c[256];
+		unsigned int p, i;
 		float rgb[3];
 
 		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
 
-		fprintf (pmod->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+		p = 0;
+		for (i = 0; i < 3; i++) {
+			if (i > 0) c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, rgb[i], 6, 0, FALSE);
+		}
+		fprintf (pmod->stream, "%s setrgbcolor\n", c);
 
 		sp_print_bpath (pmod->stream, bpath->path);
 
@@ -517,11 +584,18 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 	if (pmod->bitmap) return 0;
 
 	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
+		unsigned char c[256];
+		unsigned int p, i;
 		float rgb[3];
 
 		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
 
-		fprintf (pmod->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+		p = 0;
+		for (i = 0; i < 3; i++) {
+			if (i > 0) c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, rgb[i], 6, 0, FALSE);
+		}
+		fprintf (pmod->stream, "%s setrgbcolor\n", c);
 
 		sp_print_bpath (pmod->stream, bpath->path);
 
@@ -529,14 +603,17 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 			int i;
 			fprintf (pmod->stream, "[");
 			for (i = 0; i < style->stroke_dash.n_dash; i++) {
-				fprintf (pmod->stream, (i) ? " %g" : "%g", style->stroke_dash.dash[i]);
+				arikkei_dtoa_simple (c, 32, style->stroke_dash.dash[i], 6, 0, FALSE);
+				fprintf (pmod->stream, (i) ? " %s" : "%s", c);
 			}
-			fprintf (pmod->stream, "] %g setdash\n", style->stroke_dash.offset);
+			arikkei_dtoa_simple (c, 32, style->stroke_dash.offset, 6, 0, FALSE);
+			fprintf (pmod->stream, "] %s setdash\n", c);
 		} else {
 			fprintf (pmod->stream, "[] 0 setdash\n");
 		}
 
-		fprintf (pmod->stream, "%g setlinewidth\n", style->stroke_width.computed);
+		arikkei_dtoa_simple (c, 32, style->stroke_width.computed, 6, 0, FALSE);
+		fprintf (pmod->stream, "%s setlinewidth\n", c);
 		fprintf (pmod->stream, "%d setlinejoin\n", style->stroke_linejoin.computed);
 		fprintf (pmod->stream, "%d setlinecap\n", style->stroke_linecap.computed);
 
@@ -558,44 +635,6 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 	if (pmod->bitmap) return 0;
 
 	return sp_ps_print_image (pmod->stream, px, w, h, rs, transform);
-#if 0
-	fprintf (pmod->stream, "gsave\n");
-	fprintf (pmod->stream, "/rowdata %d string def\n", 3 * w);
-	fprintf (pmod->stream, "[%g %g %g %g %g %g] concat\n",
-		 transform->c[0],
-		 transform->c[1],
-		 transform->c[2],
-		 transform->c[3],
-		 transform->c[4],
-		 transform->c[5]);
-	fprintf (pmod->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", w, h, w, h, h);
-	fprintf (pmod->stream, "{currentfile rowdata readhexstring pop}\n");
-	fprintf (pmod->stream, "false 3 colorimage\n");
-
-	for (r = 0; r < h; r++) {
-		unsigned char *s;
-		int c0, c1, c;
-		s = px + r * rs;
-		for (c0 = 0; c0 < w; c0 += 24) {
-			c1 = MIN (w, c0 + 24);
-			for (c = c0; c < c1; c++) {
-				static const char xtab[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-				fputc (xtab[s[0] >> 4], pmod->stream);
-				fputc (xtab[s[0] & 0xf], pmod->stream);
-				fputc (xtab[s[1] >> 4], pmod->stream);
-				fputc (xtab[s[1] & 0xf], pmod->stream);
-				fputc (xtab[s[2] >> 4], pmod->stream);
-				fputc (xtab[s[2] & 0xf], pmod->stream);
-				s += 4;
-			}
-			fputs ("\n", pmod->stream);
-		}
-	}
-
-	fprintf (pmod->stream, "grestore\n");
-
-	return 0;
-#endif
 }
 
 /* PostScript helpers */
@@ -608,26 +647,52 @@ sp_print_bpath (FILE *stream, const ArtBpath *bp)
 	fprintf (stream, "newpath\n");
 	closed = FALSE;
 	while (bp->code != ART_END) {
+		unsigned char c[256];
+		unsigned int p;
 		switch (bp->code) {
 		case ART_MOVETO:
 			if (closed) {
 				fprintf (stream, "closepath\n");
 			}
 			closed = TRUE;
-			fprintf (stream, "%g %g moveto\n", bp->x3, bp->y3);
+			p = 0;
+			p += arikkei_dtoa_simple (c + p, 32, bp->x3, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y3, 6, 0, FALSE);
+			fprintf (stream, "%s moveto\n", c);
 			break;
 		case ART_MOVETO_OPEN:
 			if (closed) {
 				fprintf (stream, "closepath\n");
 			}
 			closed = FALSE;
-			fprintf (stream, "%g %g moveto\n", bp->x3, bp->y3);
+			p = 0;
+			p += arikkei_dtoa_simple (c + p, 32, bp->x3, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y3, 6, 0, FALSE);
+			fprintf (stream, "%s moveto\n", c);
 			break;
 		case ART_LINETO:
-			fprintf (stream, "%g %g lineto\n", bp->x3, bp->y3);
+			p = 0;
+			p += arikkei_dtoa_simple (c + p, 32, bp->x3, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y3, 6, 0, FALSE);
+			fprintf (stream, "%s lineto\n", c);
 			break;
 		case ART_CURVETO:
-			fprintf (stream, "%g %g %g %g %g %g curveto\n", bp->x1, bp->y1, bp->x2, bp->y2, bp->x3, bp->y3);
+			p = 0;
+			p += arikkei_dtoa_simple (c + p, 32, bp->x1, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y1, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->x2, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y2, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->x3, 6, 0, FALSE);
+			c[p++] = ' ';
+			p += arikkei_dtoa_simple (c + p, 32, bp->y3, 6, 0, FALSE);
+			fprintf (stream, "%s curveto\n", c);
 			break;
 		default:
 			break;
@@ -817,18 +882,18 @@ static unsigned int
 sp_ps_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs,
 		   const NRMatrixF *transform)
 {
+	unsigned char c[256];
+	unsigned int p;
 	int i, j;
 	/* guchar *data, *src; */
 	guchar *packb = NULL, *plane = NULL;
 
-	fprintf (ofp, "gsave\n");
-	fprintf (ofp, "[%g %g %g %g %g %g] concat\n",
-		 transform->c[0],
-		 transform->c[1],
-		 transform->c[2],
-		 transform->c[3],
-		 transform->c[4],
-		 transform->c[5]);
+	p = 0;
+	for (i = 0; i < 6; i++) {
+		if (i > 0) c[p++] = ' ';
+		p += arikkei_dtoa_simple (c + p, 32, transform->c[i], 6, 0, FALSE);
+	}
+	fprintf (ofp, "gsave [%s] concat\n", c);
 	fprintf (ofp, "%d %d 8 [%d 0 0 -%d 0 %d]\n", width, height, width, height, height);
 
 	/* Write read image procedure */

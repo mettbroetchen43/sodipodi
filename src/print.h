@@ -28,8 +28,7 @@ unsigned int sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 #ifndef WITHOUT_PRINT_UI
 /* UI frontend */
 void sp_print_preview_document (SPDocument *doc);
-void sp_print_document (SPDocument *doc, unsigned int direct);
-void sp_print_document_to_file (SPDocument *doc, const unsigned char *filename);
+void sp_print_document (SPDocument *doc, unsigned int direct, const unsigned char *filename);
 #endif
 
 #endif

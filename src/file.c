@@ -508,7 +508,7 @@ sp_file_print (void)
 {
 	SPDocument *doc;
 	doc = SP_ACTIVE_DOCUMENT;
-	if (doc) sp_print_document (doc, FALSE);
+	if (doc) sp_print_document (doc, FALSE, NULL);
 }
 
 void
@@ -516,7 +516,7 @@ sp_file_print_direct (void)
 {
 	SPDocument *doc;
 	doc = SP_ACTIVE_DOCUMENT;
-	if (doc) sp_print_document (doc, TRUE);
+	if (doc) sp_print_document (doc, TRUE, NULL);
 }
 
 void

@@ -343,6 +343,18 @@ sp_main_console (int argc, const char **argv)
 	fl = sp_process_args (argc, argv);
 	if (stop) exit (1);
 
+	/* Start up g type system, without requiring X, do this before modules init */
+        g_type_init();
+        sodipodi_application_new();
+
+#ifdef _DEBUG
+	g_print ("Initializing modules...\n");
+#endif
+	sp_modules_init (&argc, argv, TRUE);
+
+#ifdef _DEBUG
+	g_print ("Registering objects...\n");
+#endif
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
 	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
@@ -352,23 +364,6 @@ sp_main_console (int argc, const char **argv)
 		exit (0);
 	}
 
-	/* Check for and set up printing path */
-	printer = NULL;
-	if (sp_global_printer != NULL) {
-		if ((sp_global_printer[0] != '|') && (sp_global_printer[0] != '/')) {
-			gchar *cwd;
-			/* Gnome-print appends relative paths to $HOME by default */
-			cwd = g_get_current_dir ();
-			printer = g_build_filename (cwd, sp_global_printer, NULL);
-			g_free (cwd);
-		} else {
-			printer = g_strdup (sp_global_printer);
-		}
-	}
-
-	/* Start up g type system, without requiring X */
-	g_type_init();
-	sodipodi_application_new ();
 	sodipodi_load_preferences (sodipodi);
 	sodipodi_load_extensions (sodipodi);
 
@@ -378,8 +373,8 @@ sp_main_console (int argc, const char **argv)
 		if (doc == NULL) {
 			g_warning ("Specified document %s cannot be opened (is it valid SVG file?)", (gchar *) fl->data);
 		} else {
-			if (printer) {
-				sp_print_document_to_file (doc, printer);
+			if (sp_global_printer) {
+                                sp_print_document(doc, FALSE, sp_global_printer);
 			}
 			if (sp_export_png) {
 				sp_do_export_png (doc);
@@ -395,8 +390,6 @@ sp_main_console (int argc, const char **argv)
 		}
 		fl = g_slist_remove (fl, fl->data);
 	}
-
-	if (printer) g_free (printer);
 
 	sodipodi_unref ();
 

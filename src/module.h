@@ -181,6 +181,7 @@ struct _SPModulePrintClass {
 
 	/* FALSE means user hit cancel */
 	unsigned int (* setup) (SPModulePrint *modp);
+        unsigned int (* setup_file) (SPModulePrint *modp, const unsigned char *filename);
 	unsigned int (* set_preview) (SPModulePrint *modp);
 
 	unsigned int (* begin) (SPModulePrint *modp, SPDocument *doc);

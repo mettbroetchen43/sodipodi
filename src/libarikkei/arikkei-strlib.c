@@ -143,6 +143,7 @@ arikkei_dtoa_simple (unsigned char *buf, unsigned int len, double val,
 	epsilon = 0.5 * pow (10.0, - (double) fprec);
 	/* Round value */
 	val += epsilon;
+	epsilon *= 2;
 	/* Extract integral and fractional parts */
 	dival = floor (val);
 	ival = (int) dival;
@@ -155,6 +156,7 @@ arikkei_dtoa_simple (unsigned char *buf, unsigned int len, double val,
 		buf[i++] = '.';
 		while ((fprec > 0) && (padf || (fval > epsilon))) {
 			fval *= 10.0;
+			epsilon *= 10.0;
 			dival = floor (fval);
 			fval -= dival;
 			buf[i++] = '0' + (int) dival;

@@ -148,7 +148,7 @@ sp_print_preview_document (SPDocument *doc)
 }
 
 void
-sp_print_document (SPDocument *doc, unsigned int direct)
+sp_print_document (SPDocument *doc, unsigned int direct, const unsigned char *filename)
 {
 	SPModulePrint *mod;
 	unsigned int ret;
@@ -169,8 +169,13 @@ sp_print_document (SPDocument *doc, unsigned int direct)
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
 
 	ret = FALSE;
-	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
-		ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup (mod);
+        if (filename != NULL) {
+		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup_file)
+			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup_file (mod, filename);
+        } else {
+		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
+			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup (mod);
+        }
 
 	if (ret) {
 		/* fixme: This has to go into module constructor somehow */
@@ -197,49 +202,5 @@ sp_print_document (SPDocument *doc, unsigned int direct)
 	g_object_unref (G_OBJECT (mod));
 }
 
-void
-sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
-{
-#ifdef lalala
-#ifdef WITH_GNOME_PRINT
-        GnomePrintConfig *config;
-	SPPrintContext ctx;
-        GnomePrintContext *gpc;
-
-	config = gnome_print_config_default ();
-        if (!gnome_print_config_set (config, "Settings.Engine.Backend.Driver", "gnome-print-ps")) return;
-        if (!gnome_print_config_set (config, "Settings.Transport.Backend", "file")) return;
-        if (!gnome_print_config_set (config, GNOME_PRINT_KEY_OUTPUT_FILENAME, filename)) return;
-
-	sp_document_ensure_up_to_date (doc);
-
-	gpc = gnome_print_context_new (config);
-	ctx.gpc = gpc;
-
-	g_return_if_fail (gpc != NULL);
-
-	/* Print document */
-	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
-	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
-	/* From desktop points to document pixels */
-	gnome_print_scale (gpc, 0.8, -0.8);
-	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
-        gnome_print_showpage (gpc);
-        gnome_print_context_close (gpc);
-#else
-	SPPrintContext ctx;
-
-	ctx.stream = fopen (filename, "w");
-	if (ctx.stream) {
-		sp_document_ensure_up_to_date (doc);
-		fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
-		fprintf (ctx.stream, "0.8 -0.8 scale\n");
-		sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
-		fprintf (ctx.stream, "showpage\n");
-		fclose (ctx.stream);
-	}
-#endif
-#endif
-}
 
 #endif
