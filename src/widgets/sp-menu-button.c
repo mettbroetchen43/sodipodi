@@ -198,7 +198,7 @@ sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event)
 	if (GTK_WIDGET_CLASS (parent_class)->expose_event) {
 		ret = GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
 	} else {
-		ret = NULL;
+		ret = FALSE;
 	}
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
