@@ -6,15 +6,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.27\n"
+"Project-Id-Version: sodipodi 0.28\n"
 "POT-Creation-Date: 2002-11-16 21:45+0200\n"
-"PO-Revision-Date: 2002-10-28 00:15MSK\n"
+"PO-Revision-Date: 2002-11-17 00:49MSK\n"
 "Last-Translator: Vitaly Lipatov <lav@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=KOI8-R\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.0\n"
 
 #: GNOME_Sodipodi.oaf.in.h:1
 msgid "Sodipodi SVG Document"
@@ -832,8 +832,7 @@ msgstr "Создать новый рисунок"
 
 #: glade/toolbox.glade.h:38
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr ""
-"Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
+msgstr "Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
 
 #: glade/toolbox.glade.h:40
 msgid "Nope !"
@@ -1316,7 +1315,7 @@ msgstr "Sodipodi: %s: %s: %d"
 #: src/desktop.c:1165
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr "В документе %s есть несохранённые изменения, сохранить их?"
+msgstr "В документе '%s' есть несохранённые изменения, сохранить их?"
 
 #: src/desktop.c:1166 src/interface.c:217
 msgid "Save"
@@ -1327,9 +1326,8 @@ msgid "Don't save"
 msgstr "Не сохранять"
 
 #: src/dialogs/align.c:107 src/toolbox.c:392
-#, fuzzy
 msgid "Align objects"
-msgstr "Выравнивание объектов"
+msgstr "Выравнивать объекты"
 
 #: src/dialogs/desktop-properties.c:201
 msgid "Desktop settings"
@@ -1404,9 +1402,8 @@ msgid "Highlight color:"
 msgstr "Цвет подсветки:"
 
 #: src/dialogs/desktop-properties.c:416
-#, fuzzy
 msgid "Show border"
-msgstr "Показать сетку"
+msgstr "Показать рамку"
 
 #: src/dialogs/display-settings.c:85
 msgid "Display settings"
@@ -1475,47 +1472,39 @@ msgid "Units:"
 msgstr "Единицы:"
 
 #: src/dialogs/export.c:108
-#, fuzzy
 msgid "Export bitmap"
-msgstr "Экспортировать файл"
+msgstr "Экспортировать растровое изображение"
 
 #. Export area frame
 #: src/dialogs/export.c:117
-#, fuzzy
 msgid "Export area"
-msgstr "Экспортировать как"
+msgstr "Экспортировать область"
 
 #: src/dialogs/export.c:154
-#, fuzzy
 msgid "x0:"
-msgstr "T0:"
+msgstr "x0:"
 
 #: src/dialogs/export.c:161
-#, fuzzy
 msgid "x1:"
-msgstr "R1:"
+msgstr "x1:"
 
 #: src/dialogs/export.c:174
-#, fuzzy
 msgid "y0:"
-msgstr "T0:"
+msgstr "y0:"
 
 #: src/dialogs/export.c:181
-#, fuzzy
 msgid "y1:"
-msgstr "R1:"
+msgstr "y1:"
 
 #. Bitmap size frame
 #: src/dialogs/export.c:193
-#, fuzzy
 msgid "Bitmap size"
-msgstr "Размер изображения"
+msgstr "Размер растрового изображения"
 
 #. File entry
 #: src/dialogs/export.c:222
-#, fuzzy
 msgid "Export png file"
-msgstr "Экспортировать файл"
+msgstr "Экспортировать в файл png"
 
 #: src/dialogs/fill-style.c:82
 msgid "Fill style"
@@ -1534,9 +1523,8 @@ msgid "evenodd"
 msgstr "не заливать"
 
 #: src/dialogs/item-properties.c:111
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "Преобразование"
+msgstr "Матрица преобразования"
 
 #: src/dialogs/item-properties.c:229
 msgid "Item is reference"
@@ -1700,7 +1688,7 @@ msgstr "Свободная кисть"
 
 #: src/dialogs/object-properties.c:193
 msgid "Calligraphic line"
-msgstr "Точная линия"
+msgstr "Динамичная линия"
 
 #: src/dialogs/object-properties.c:269
 msgid "Object position and size"
@@ -1721,9 +1709,8 @@ msgstr "Края:"
 
 #. Dash
 #: src/dialogs/stroke-style.c:666
-#, fuzzy
 msgid "Pattern:"
-msgstr "Заливка шаблоном"
+msgstr "Шаблон:"
 
 #: src/dialogs/text-edit.c:86
 msgid "Text properties"
@@ -1807,86 +1794,73 @@ msgstr "Инструмент не имеет параметров"
 
 #: src/dialogs/xml-tree.c:155
 msgid "Drag to reorder nodes"
-msgstr ""
+msgstr "Переместите для изменения порядка узлов"
 
 #: src/dialogs/xml-tree.c:163
-#, fuzzy
 msgid "New element node"
-msgstr "Новый элемент"
+msgstr "Создать узел элемента"
 
 #: src/dialogs/xml-tree.c:168
 msgid "New text node"
-msgstr ""
+msgstr "Создать текстовый узел"
 
 #: src/dialogs/xml-tree.c:173
-#, fuzzy
 msgid "Duplicate node"
-msgstr "Дублировать"
+msgstr "Дублировать узел"
 
 #: src/dialogs/xml-tree.c:180
-#, fuzzy
 msgid "Delete node"
-msgstr "Удалить"
+msgstr "Удалить узел"
 
 #: src/dialogs/xml-tree.c:187
-#, fuzzy
 msgid "Unindent node"
-msgstr "Изменение узлов"
+msgstr "Убрать отступ узла"
 
 #: src/dialogs/xml-tree.c:192
-#, fuzzy
 msgid "Indent node"
-msgstr "Изменение узлов"
+msgstr "Добавить отступ узла"
 
 #: src/dialogs/xml-tree.c:197
-#, fuzzy
 msgid "Raise node"
-msgstr "Поднять"
+msgstr "Поднять узел"
 
 #: src/dialogs/xml-tree.c:202
-#, fuzzy
 msgid "Lower node"
-msgstr "Опустить"
+msgstr "Опустить узел"
 
 #: src/dialogs/xml-tree.c:254
-#, fuzzy
 msgid "Attribute name"
-msgstr "Атрибут:"
+msgstr "Название атрибута"
 
 #: src/dialogs/xml-tree.c:265
-#, fuzzy
 msgid "Attribute value"
-msgstr "Атрибуты"
+msgstr "Значение атрибута"
 
 #: src/dialogs/xml-tree.c:273
-#, fuzzy
 msgid "Set attribute"
-msgstr "Удалить атрибут"
+msgstr "Установить атрибут"
 
 #: src/dialogs/xml-tree.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s : Просмотр XML"
 
 #: src/dialogs/xml-tree.c:752
-#, fuzzy
 msgid "New element node..."
-msgstr "Новый элемент"
+msgstr "Создать узел элемента..."
 
 #: src/dialogs/xml-tree.c:772
-#, fuzzy
 msgid "Cancel"
-msgstr "Изменить"
+msgstr "Отменить"
 
 #: src/dialogs/xml-tree.c:776
-#, fuzzy
 msgid "Create"
-msgstr "Создать ссылку"
+msgstr "Создать"
 
 #: src/document.c:252
 #, c-format
 msgid "New document %d"
-msgstr "Новый документ %d"
+msgstr "Создать документ %d"
 
 #: src/document.c:345
 #, c-format
@@ -1921,9 +1895,8 @@ msgstr "Округляющий коэффициент для X:"
 
 #. ry_ratio
 #: src/rect-context.c:430
-#, fuzzy
 msgid "Roundness ratio for y:"
-msgstr "Округляющий коэффициент для X:"
+msgstr "Округляющий коэффициент для y:"
 
 #: src/select-context.c:641
 msgid "Visual transformation"
@@ -2235,8 +2208,7 @@ msgstr "Диалоги"
 
 #: src/main.c:102
 msgid "Do not use X server (only process files from console)"
-msgstr ""
-"Не использовать X-сервер (выполнять только обработку файлов из консоли)"
+msgstr "Не использовать X-сервер (выполнять только обработку файлов из консоли)"
 
 #: src/main.c:105
 msgid "Try to use X server even if $DISPLAY is not set)"
@@ -2263,17 +2235,20 @@ msgstr "Экспортировать документ в файл PNG"
 #: src/main.c:117
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
+"Разрешение, используемое при преобразовании SVG в растровый формат (по "
+"умолчанию - 72,0)"
 
 #: src/main.c:118
 msgid "DPI"
 msgstr "DPI"
 
 #: src/main.c:120
-#, fuzzy
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
-msgstr "Экспортируемая область в миллиметрах (по умолчанию весь документ)"
+msgstr ""
+"Экспортируемая область в миллиметрах (по умолчанию весь документ, 0,0 - "
+"левый нижний угол)"
 
 #: src/main.c:121
 msgid "x0:y0:x1:y1"
@@ -2281,32 +2256,35 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:123
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "Ширина генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
 #: src/main.c:123
 msgid "WIDTH"
-msgstr ""
+msgstr "ШИРИНА"
 
 #: src/main.c:125
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "Высота генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
 #: src/main.c:125
 msgid "HEIGHT"
-msgstr ""
+msgstr "ВЫСОТА"
 
 #: src/main.c:127
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
+"Цвет фона экспортируемого растрового изображения (любая строка цвета, "
+"поддерживаемая SVG)"
 
 #: src/main.c:127
 msgid "COLOR"
-msgstr ""
+msgstr "ЦВЕТ"
 
 #: src/main.c:129
-#, fuzzy
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr "Экспортировать документ в простой SVG"
+msgstr ""
+"Экспортировать документ в простой файл SVG (без пространства имён \"xmlns:"
+"sodipodi\")"
 
 #: src/main.c:131
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -2321,20 +2299,17 @@ msgstr "Без названия"
 #. Show nice dialog box
 #: src/sodipodi.c:364
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
-"В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
+msgstr "В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
 
 #: src/sodipodi.c:365
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Автоматическое резервное копирование несохранённых документы было выполнено "
 "в следующие места:\n"
 
 #: src/sodipodi.c:366
 msgid "Automatic backup of following documents failed:\n"
-msgstr ""
-"Автоматическое резервное копирование следующих документов не удалось:\n"
+msgstr "Автоматическое резервное копирование следующих документов не удалось:\n"
 
 #. Not a regular file
 #: src/sodipodi.c:455
@@ -2591,261 +2566,225 @@ msgstr "Текстовый объект"
 
 #: src/toolbox.c:318
 msgid "Create new SVG document"
-msgstr ""
+msgstr "Создать новый документ SVG"
 
 #: src/toolbox.c:319
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "Открыть существующий документ SVG"
 
 #: src/toolbox.c:320
-#, fuzzy
 msgid "Save document"
-msgstr "Новый документ %d"
+msgstr "Сохранить документ"
 
 #: src/toolbox.c:321
-#, fuzzy
 msgid "Save document under new name"
-msgstr "Сохранить рисунок под другим названием"
+msgstr "Сохранить документ с новым названием"
 
 #: src/toolbox.c:322
-#, fuzzy
 msgid "Print document"
-msgstr "Без названия"
+msgstr "Напечатать документ"
 
 #: src/toolbox.c:323
-#, fuzzy
 msgid "Preview document printout"
-msgstr "Предварительный просмотр"
+msgstr "Предварительный просмотр того, что будет напечатано"
 
 #: src/toolbox.c:324
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "Импортировать растровое SVG-изображение в документ"
 
 #: src/toolbox.c:325
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "Экспортировать документ в файл PNG"
+msgstr "Экспортировать документ в растровый формат PNG"
 
 #: src/toolbox.c:352
-#, fuzzy
 msgid "Revert last action"
-msgstr "Удалить преобразование"
+msgstr "Откатить последнее действие"
 
 #: src/toolbox.c:355
 msgid "Do again undone action"
-msgstr ""
+msgstr "Выполнить отменённое действие"
 
 #: src/toolbox.c:357
-#, fuzzy
 msgid "Delete selected objects"
-msgstr "Удалить выбранные узлы"
+msgstr "Удалить выбранные объекты"
 
 #: src/toolbox.c:358
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "Преобразовать выбранные объекты в кривые"
+msgstr "Вырезать выбранные объекты в буфер обмена"
 
 #: src/toolbox.c:359
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "Запомнить выбранное в буфере обмена"
+msgstr "Запомнить выбранные объекты в буфер обмена"
 
 #: src/toolbox.c:360
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "Вставить из буфера обмена"
+msgstr "Вставить объекты из буфера обмена"
 
 #: src/toolbox.c:361
-#, fuzzy
 msgid "Duplicate selected objects"
-msgstr "Отражение выбранных объектов"
+msgstr "Сдублировать выбранные объекты"
 
 #: src/toolbox.c:390
-#, fuzzy
 msgid "Object size and position"
-msgstr "Размер и расположение"
+msgstr "Размер и расположение объекта"
 
 #: src/toolbox.c:391
-#, fuzzy
 msgid "Text and font settings"
-msgstr "Текст и шрифт"
+msgstr "Параметры текста и шрифта"
 
 #: src/toolbox.c:393
-#, fuzzy
 msgid "Object transformations"
-msgstr "Преобразование объекта"
+msgstr "Преобразования объекта"
 
 #: src/toolbox.c:394
-#, fuzzy
 msgid "Rotate object 90 deg clockwise"
-msgstr "Поворот выбранных объектов на 90 градусов  по часовой стрелке"
+msgstr "Повернуть объект на 90 градусов по часовой стрелке"
 
 #: src/toolbox.c:395
-#, fuzzy
 msgid "Remove transformations"
-msgstr "Удалить преобразование"
+msgstr "Удалить преобразования"
 
 #: src/toolbox.c:396
-#, fuzzy
 msgid "Convert object to curve"
-msgstr "Преобразовать выбранные объекты в кривые"
+msgstr "Преобразовать объект в кривые"
 
 #: src/toolbox.c:423
-#, fuzzy
 msgid "Raise selected objects to top"
-msgstr "Поднять выбранное наверх"
+msgstr "Переместить выбранные объекты на верхний уровень"
 
 #: src/toolbox.c:424
-#, fuzzy
 msgid "Raise selected objects one level"
-msgstr "Поворот выбранных объектов на 90 градусов  по часовой стрелке"
+msgstr "Поднять выбранные объекты на один уровень"
 
 #: src/toolbox.c:425
-#, fuzzy
 msgid "Combine multiple paths"
-msgstr "Объединить выбранные контуры"
+msgstr "Объединить различные пути"
 
 #: src/toolbox.c:427
-#, fuzzy
 msgid "Lower selected objects to bottom"
-msgstr "Опустить выбранное вниз"
+msgstr "Опустить выбранные объекты на нижний уровень"
 
 #: src/toolbox.c:428
-#, fuzzy
 msgid "Lower selected objects one level"
-msgstr "Преобразовать выбранные объекты в кривые"
+msgstr "Опустить выбранные объекты на один уровень"
 
 #: src/toolbox.c:429
-#, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "Разделить на части выбранные контуры"
+msgstr "Разделить выбранный путь на подпути"
 
 #: src/toolbox.c:430
-#, fuzzy
 msgid "Ungroup selected group"
-msgstr "Разгруппировать выбранные объекты"
+msgstr "Разгруппировать выбранные группы"
 
 #: src/toolbox.c:454
 msgid "Draw"
 msgstr "Рисование"
 
 #: src/toolbox.c:463
-#, fuzzy
 msgid "Select tool - select and transform objects"
-msgstr "Выбирать и преобразовывать"
+msgstr "Выбор - выбор и преобразование объектов"
 
 #: src/toolbox.c:470
 msgid "Node tool - modify different aspects of existing objects"
-msgstr ""
+msgstr "Инструмент работы с узлами - изменяет пропорции существующих объектов"
 
 #: src/toolbox.c:478
-msgid ""
-"Rectangle tool - create rectangles and squares with optional rounded corners"
+msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
+"Прямоугольник - создаёт прямоугольники и квадраты, с возможностью "
+"закругления углов"
 
 #: src/toolbox.c:484
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr ""
+msgstr "Сектор - создаёт окружности, эллипсы и сектора"
 
 #: src/toolbox.c:490
 msgid "Star tool - create stars and polygons"
-msgstr ""
+msgstr "Звезда - создаёт звёзды и полигоны"
 
 #: src/toolbox.c:496
 msgid "Spiral tool - create spirals"
-msgstr ""
+msgstr "Спираль - создаёт спирали"
 
 #: src/toolbox.c:515
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr ""
+msgstr "Карандаш - рисование произвольных линий и прямых отрезков"
 
 #: src/toolbox.c:521
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr ""
+msgstr "Перо - рисование точно расположенных кривых линий"
 
 #: src/toolbox.c:527
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr ""
+msgstr "Динамичная линия - рисует линии, толщина которых зависит от скорости курсора"
 
 #: src/toolbox.c:544
 msgid "Text tool - create editable text objects"
-msgstr ""
+msgstr "Текст - создание редактируемых текстовых объектов"
 
 #: src/toolbox.c:551
 msgid "Zoom tool - zoom into choosen area"
-msgstr ""
+msgstr "Масштаб - изменение масштаба по выделенной области"
 
 #: src/toolbox.c:578
-#, fuzzy
 msgid "Zoom in drawing"
-msgstr "Масштаб по рисунку"
+msgstr "Увеличить масштаб"
 
 #: src/toolbox.c:579
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "Масштаб 2:1"
+msgstr "Установить масштаб 2:1"
 
 #: src/toolbox.c:580
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "Масштаб 1:1"
+msgstr "Установить масштаб 1:1"
 
 #: src/toolbox.c:581
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "Масштаб 1:2"
+msgstr "Установить масштаб 1:2"
 
 #: src/toolbox.c:582
-#, fuzzy
 msgid "Zoom out drawing"
-msgstr "Масштаб по рисунку"
+msgstr "Уменьшить масштаб"
 
 #: src/toolbox.c:583
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "Поместить страницу целиком в окно"
 
 #: src/toolbox.c:584
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Поместить рисунок целиком в окно"
 
 #: src/toolbox.c:585
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "Поместить выделенную область целиком в окно"
 
 #: src/toolbox.c:612
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "Вставить один узел в выбранные сегменты"
+msgstr "Вставить новые узлы в выделенные сегменты"
 
 #: src/toolbox.c:613
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Заострить линию по выбранным узлам"
+msgstr "Разорвать линию на выбранных узлах"
 
 #: src/toolbox.c:614
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Удалить выбранные узлы"
+msgstr "Сделать выбранные узлы вершинами"
 
 #: src/toolbox.c:615
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "Преобразовать выбранные сегменты в прямые"
+msgstr "Сделать выбранные сегменты прямыми"
 
 #: src/toolbox.c:617
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Сгладить линию по выбранным узлам"
+msgstr "Подсоединить линии к выбранным узлам"
 
 #: src/toolbox.c:618
-#, fuzzy
 msgid "Make selected nodes smooth"
-msgstr "Удалить выбранные узлы"
+msgstr "Сделать выбранные узлы гладкими"
 
 #: src/toolbox.c:619
-#, fuzzy
 msgid "Make selected segments curves"
-msgstr "Преобразовать выбранные сегменты в кривые"
+msgstr "Сделать выбранные сегменты кривыми"
 
 #. Family frame
 #: src/widgets/font-selector.c:147
@@ -2866,13 +2805,12 @@ msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "АаБбЭэЯяAaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:177
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Градиентная заливка"
+msgstr "Область градиента:"
 
 #: src/widgets/gradient-selector.c:206
 msgid "gradientSpread"
-msgstr ""
+msgstr "Распространение градиента:"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
@@ -2975,37 +2913,3 @@ msgstr ""
 "Создать новую кривую. Нажимайте '+' для переключения Добавлять/Создавать "
 "новый"
 
-#~ msgid "You can't delete 'id' attribute!"
-#~ msgstr "Вы не можете удалить атрибут 'id'!"
-
-#~ msgid "Do you want to delete attribute %s?"
-#~ msgstr "Вы хотите удалить атрибут %s?"
-
-#~ msgid "Yes"
-#~ msgstr "Да"
-
-#~ msgid "No"
-#~ msgstr "Нет"
-
-#~ msgid "You can't delete element %s!"
-#~ msgstr "Вы не можете удалить элемент %s!"
-
-#~ msgid "Do you want to delete element %s?"
-#~ msgstr "Вы хотите удалить элемент %s?"
-
-#~ msgid "You can't cut element %s!"
-#~ msgstr "Вы не можете вырезать элемент %s!"
-
-#~ msgid "\""
-#~ msgstr "\""
-
-#~ msgid "Userspace"
-#~ msgstr "Пользовательские"
-
-#~ msgid "us"
-#~ msgstr "us"
-
-#~ msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
-#~ msgstr ""
-#~ "Разрешение растра при экспортировании, в точках на дюйм (по умолчанию "
-#~ "72.0)"
