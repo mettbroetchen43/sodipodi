@@ -240,6 +240,8 @@ sp_main_gui (int argc, const char **argv)
 	/* Collect own arguments */
 	fl = sp_process_args (ctx);
 	poptFreeContext (ctx);
+#else
+	/* fl = sp_process_args (argc, argv); */
 #endif
 
 #ifdef WITH_KDE
@@ -332,6 +334,8 @@ sp_main_console (int argc, const char **argv)
 	g_return_val_if_fail (ctx != NULL, 1);
 	fl = sp_process_args (ctx);
 	poptFreeContext (ctx);
+#else
+	/* fl = sp_process_args (argc, argv); */
 #endif
 
 	if (fl == NULL) {
