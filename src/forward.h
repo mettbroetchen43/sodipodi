@@ -64,6 +64,9 @@ typedef struct _SPEllipseClass SPEllipseClass;
 typedef struct _SPCircle SPCircle;
 typedef struct _SPCircleClass SPCircleClass;
 
+typedef struct _SPArc SPArc;
+typedef struct _SPArcClass SPArcClass;
+
 typedef struct _SPChars SPChars;
 typedef struct _SPCharsClass SPCharsClass;
 

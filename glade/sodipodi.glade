@@ -2089,13 +2089,13 @@
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>ellipse1</name>
+	<name>arc1</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_event_context_set_ellipse</handler>
-	  <last_modification_time>Fri, 21 Apr 2000 23:00:14 GMT</last_modification_time>
+	  <handler>sp_event_context_set_arc</handler>
+	  <last_modification_time>Wed, 02 Jan 2002 16:50:42 GMT</last_modification_time>
 	</signal>
-	<label>Ellipse</label>
+	<label>Arc</label>
 	<right_justify>False</right_justify>
       </widget>
 

@@ -310,13 +310,13 @@
 
 	<widget>
 	  <class>GtkToggleButton</class>
-	  <name>draw_ellipse</name>
+	  <name>draw_arc</name>
 	  <tooltip>Draw ellipse</tooltip>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>released</name>
-	    <handler>sp_event_context_set_ellipse</handler>
-	    <last_modification_time>Sun, 03 Sep 2000 22:42:05 GMT</last_modification_time>
+	    <handler>sp_event_context_set_arc</handler>
+	    <last_modification_time>Sat, 02 Mar 2002 16:26:57 GMT</last_modification_time>
 	  </signal>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
@@ -337,8 +337,8 @@
 
 	  <widget>
 	    <class>GtkPixmap</class>
-	    <name>pixmap7</name>
-	    <filename>draw_ellipse.xpm</filename>
+	    <name>pixmap197</name>
+	    <filename>draw_arc.xpm</filename>
 	    <xalign>0.5</xalign>
 	    <yalign>0.5</yalign>
 	    <xpad>0</xpad>

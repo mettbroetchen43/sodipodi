@@ -75,6 +75,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
 		g_hash_table_insert (dtable, "star", GINT_TO_POINTER (SP_TYPE_STAR));
 		g_hash_table_insert (dtable, "spiral", GINT_TO_POINTER (SP_TYPE_SPIRAL));
+		g_hash_table_insert (dtable, "arc", GINT_TO_POINTER (SP_TYPE_ARC));
 		g_hash_table_insert (dtable, "circle", GINT_TO_POINTER (SP_TYPE_CIRCLE));
 		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
 		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));

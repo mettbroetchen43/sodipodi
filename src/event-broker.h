@@ -6,7 +6,7 @@
 void sp_event_context_set_select (GtkWidget * widget);
 void sp_event_context_set_node_edit (GtkWidget * widget);
 void sp_event_context_set_rect (GtkWidget * widget);
-void sp_event_context_set_ellipse (GtkWidget * widget);
+void sp_event_context_set_arc (GtkWidget * widget);
 void sp_event_context_set_star (GtkWidget * widget);
 void sp_event_context_set_spiral (GtkWidget * widget);
 void sp_event_context_set_dynahand (GtkWidget * widget);

@@ -189,8 +189,8 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	    sp_event_context_set_rect(NULL);	    
 	    ret = TRUE;
 	    break;
-	  case GDK_F5: // F5 - ellipse context
-	    sp_event_context_set_ellipse(NULL);	    
+	  case GDK_F5: // F5 - arc context
+	    sp_event_context_set_arc(NULL);	    
 	    ret = TRUE;
 	    break;
 	  case GDK_F6: // F6 - frehand line context

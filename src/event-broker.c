@@ -3,7 +3,7 @@
 #include "select-context.h"
 #include "node-context.h"
 #include "rect-context.h"
-#include "ellipse-context.h"
+#include "arc-context.h"
 #include "star-context.h"
 #include "spiral-context.h"
 #include "draw-context.h"
@@ -48,10 +48,10 @@ sp_event_context_set_rect (GtkWidget * widget)
 }
 
 void
-sp_event_context_set_ellipse (GtkWidget * widget)
+sp_event_context_set_arc (GtkWidget * widget)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ELLIPSE_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ARC_CONTEXT);
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }

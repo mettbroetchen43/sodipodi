@@ -7,6 +7,7 @@ static const char preferences_skeleton[] =
 "                 stroke:#000000;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt\">\n"
 "    <style id=\"shape\" style=\"stroke:none\">\n"
 "      <style id=\"rect\"/>\n"
+"      <style id=\"arc\"/>\n"
 "      <style id=\"ellipse\"/>\n"
 "      <style id=\"star\"/>\n"
 "    </style>\n"

@@ -79,4 +79,24 @@ struct _SPCircleClass {
 
 GtkType sp_circle_get_type (void);
 
+/* <path sodipodi:type="arc"> element */
+
+#define SP_TYPE_ARC (sp_arc_get_type ())
+#define SP_ARC(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ARC, SPArc))
+#define SP_ARC_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ARC, SPArcClass))
+#define SP_IS_ARC(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ARC))
+#define SP_IS_ARC_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ARC))
+
+struct _SPArc {
+	SPGenericEllipse genericellipse;
+};
+
+struct _SPArcClass {
+	SPGenericEllipseClass parent_class;
+};
+
+GtkType sp_arc_get_type (void);
+void sp_arc_set (SPArc * arc, gdouble x, gdouble y, gdouble rx, gdouble ry);
+void sp_arc_get_xy (SPArc *ge, gdouble arg, ArtPoint *p);
+
 #endif

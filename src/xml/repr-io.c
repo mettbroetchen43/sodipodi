@@ -249,7 +249,7 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 	}
 	
 	if (repr->children || sp_repr_content(repr)) {
-		fputs (">", file);
+		fputs (">\n", file);
 		
 		for (child = repr->children; child != NULL; child = child->next) {
 			repr_write (child, file, level + 1);

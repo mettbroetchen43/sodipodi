@@ -1,3 +1,22 @@
+Sun Mar  3 03:40:07 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Merged from ge-arc-branch
+	
+	* src/sp-ellipse.h (SPArc): New class
+
+	* src/sp-ellipse.c (sp_arc_*): New methods
+
+	* src/arc-context.c: New event context for SPArc. Mainly it is
+	renamed from ellipse-context.c.
+	So we should remove ellipse-context.c later.
+
+	* src/arc-context.h: Ditto
+
+	* glade/draw_arc.xpm: New pixmap file for draw arc tool.
+	Now, we does not need draw_ellipse.xpm.
+
+	* src/pixmaps/cursor-arc.xpm: Ditto
+
 2002-02-25  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/helper/curve.c (sp_curve_append): Do not requite non-empty curves

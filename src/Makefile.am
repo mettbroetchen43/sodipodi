@@ -81,7 +81,7 @@ sodipodi_SOURCES = \
 	nodepath.c nodepath.h \
 	knotholder.c knotholder.h \
 	rect-context.c rect-context.h \
-	ellipse-context.c ellipse-context.h \
+	arc-context.c arc-context.h \
 	star-context.c star-context.h \
 	spiral-context.c spiral-context.h \
 	draw-context.c draw-context.h \

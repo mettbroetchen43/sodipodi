@@ -43,6 +43,7 @@ pixmaps = \
 	dimension_hor.xpm \
 	dimension_ver.xpm \
 	div.xpm \
+	draw_arc.xpm \
 	draw_ellipse.xpm \
 	draw_freehand.xpm \
 	draw_dynahand.xpm \
