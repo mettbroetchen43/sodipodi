@@ -2,7 +2,8 @@ noinst_LIBRARIES = libmlview.a
 
 INCLUDES = \
 	-I$(top_srcdir) \
-	-DGNOMELOCALDIR = \"$(datadir)/locale\" \
+	-DGNOMELOCALEDIR=\"$(datadir)/locale\" \
+	-DDATADIR=\"$(datadir)\" \
 	$(MLVIEW_CFLAGS)
 
 libmlview_a_SOURCES = \

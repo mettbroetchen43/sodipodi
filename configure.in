@@ -320,6 +320,8 @@ if test "x$mlview" = "xyes"; then
 		dnl No mlview found
 		AC_MSG_ERROR([--with-mlview was specified, but appropriate libraries could not found])
 	fi
+	AC_SUBST(MLVIEW_CFLAGS)
+	AC_SUBST(MLVIEW_LIBS)
 	AC_DEFINE(WITH_MLVIEW, 1, [Use experimental mlview support])
 fi
 
