@@ -1,3 +1,8 @@
+2000-06-11  Benedikt Roth  <Benedikt.Roth@gmx.net>
+
+	* configure.in: Added de to ALL_LINGUAS.
+	* sodipodi.desktop: Added German translations
+
 2000-06-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c (sp_export_do_export): use pixbuf context,
