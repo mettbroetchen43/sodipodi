@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-03-29 21:55+0200\n"
+"POT-Creation-Date: 2000-04-02 16:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgstr "Kustuta"
 msgid "Node Editing..."
 msgstr "Punktiredaktor"
 
-#: glade/sodipodi-glade.c:18 glade/sodipodi-glade.c:79
+#: glade/sodipodi-glade.c:18 glade/sodipodi-glade.c:83
 msgid "Zoom"
 msgstr "Suurendus"
 
@@ -188,133 +188,141 @@ msgstr "Trükib faili"
 msgid "Print"
 msgstr "Trüki"
 
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:89
+#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:49
+msgid "Undo"
+msgstr ""
+
+#: glade/sodipodi-glade.c:50 glade/sodipodi-glade.c:51
+msgid "Redo"
+msgstr ""
+
+#: glade/sodipodi-glade.c:52 glade/sodipodi-glade.c:93
 msgid "Fill settings"
 msgstr "Värvimine"
 
-#: glade/sodipodi-glade.c:49 glade/sodipodi-glade.c:90
-#: glade/sodipodi-glade.c:141
+#: glade/sodipodi-glade.c:53 glade/sodipodi-glade.c:94
+#: glade/sodipodi-glade.c:145
 msgid "Fill"
 msgstr "Värv"
 
-#: glade/sodipodi-glade.c:50
+#: glade/sodipodi-glade.c:54
 msgid "Stroke settings"
 msgstr "Piirjoon"
 
-#: glade/sodipodi-glade.c:51 glade/sodipodi-glade.c:92
-#: glade/sodipodi-glade.c:140
+#: glade/sodipodi-glade.c:55 glade/sodipodi-glade.c:96
+#: glade/sodipodi-glade.c:144
 msgid "Stroke"
 msgstr "Piirjoon"
 
-#: glade/sodipodi-glade.c:52
+#: glade/sodipodi-glade.c:56
 msgid "Font settings"
 msgstr "Shrift"
 
-#: glade/sodipodi-glade.c:53 glade/sodipodi-glade.c:77
+#: glade/sodipodi-glade.c:57 glade/sodipodi-glade.c:81
 msgid "Text"
 msgstr "Tekst"
 
-#: glade/sodipodi-glade.c:54
+#: glade/sodipodi-glade.c:58
 msgid "Delete selected object(s)"
 msgstr "Kustutab valitud objekti(d)"
 
-#: glade/sodipodi-glade.c:55 glade/sodipodi-glade.c:109
+#: glade/sodipodi-glade.c:59 glade/sodipodi-glade.c:113
 msgid "Delete"
 msgstr "Kustuta"
 
-#: glade/sodipodi-glade.c:56
+#: glade/sodipodi-glade.c:60
 msgid "Duplicate selected object(s)"
 msgstr ""
 
-#: glade/sodipodi-glade.c:57
+#: glade/sodipodi-glade.c:61
 msgid "Duplic\t"
 msgstr ""
 
-#: glade/sodipodi-glade.c:58
+#: glade/sodipodi-glade.c:62
 msgid "Raise selected object(s) to top"
 msgstr ""
 
-#: glade/sodipodi-glade.c:59
+#: glade/sodipodi-glade.c:63
 msgid "To Front"
 msgstr ""
 
-#: glade/sodipodi-glade.c:60
+#: glade/sodipodi-glade.c:64
 msgid "Lower selected object(s) to bottom"
 msgstr ""
 
-#: glade/sodipodi-glade.c:61
+#: glade/sodipodi-glade.c:65
 msgid "To Back"
 msgstr ""
 
-#: glade/sodipodi-glade.c:62
+#: glade/sodipodi-glade.c:66
 msgid "Raise one position"
 msgstr ""
 
-#: glade/sodipodi-glade.c:63
+#: glade/sodipodi-glade.c:67
 msgid "Up"
 msgstr ""
 
-#: glade/sodipodi-glade.c:64
+#: glade/sodipodi-glade.c:68
 msgid "Lower one position"
 msgstr ""
 
-#: glade/sodipodi-glade.c:65
+#: glade/sodipodi-glade.c:69
 msgid "Down"
 msgstr ""
 
-#: glade/sodipodi-glade.c:66
+#: glade/sodipodi-glade.c:70
 msgid "Select and transform objects and groups"
 msgstr ""
 
-#: glade/sodipodi-glade.c:67
+#: glade/sodipodi-glade.c:71
 msgid "Select"
 msgstr ""
 
-#: glade/sodipodi-glade.c:68
+#: glade/sodipodi-glade.c:72
 msgid "Edit objects using control nodes"
 msgstr ""
 
-#: glade/sodipodi-glade.c:69
+#: glade/sodipodi-glade.c:73
 msgid "Node"
 msgstr ""
 
-#: glade/sodipodi-glade.c:70
+#: glade/sodipodi-glade.c:74
 msgid "Draw rectangles"
 msgstr ""
 
-#: glade/sodipodi-glade.c:71
+#: glade/sodipodi-glade.c:75
 msgid "Rect"
 msgstr ""
 
-#: glade/sodipodi-glade.c:72
+#: glade/sodipodi-glade.c:76
 msgid "Draw ellipses"
 msgstr ""
 
-#: glade/sodipodi-glade.c:73
+#: glade/sodipodi-glade.c:77
 msgid "Ellipse"
 msgstr ""
 
-#: glade/sodipodi-glade.c:74
+#: glade/sodipodi-glade.c:78
 msgid "Draw freeform lines"
 msgstr ""
 
-#: glade/sodipodi-glade.c:75
+#: glade/sodipodi-glade.c:79
 msgid "Draw\t"
 msgstr ""
 
-#: glade/sodipodi-glade.c:76
+#: glade/sodipodi-glade.c:80
 msgid "Write text"
 msgstr ""
 
-#: glade/sodipodi-glade.c:78
+#: glade/sodipodi-glade.c:82
 msgid "Left button zooms in, right out"
 msgstr ""
 
-#: glade/sodipodi-glade.c:80
+#: glade/sodipodi-glade.c:84
 msgid "Copyright Lauris Kaplinski 1999."
 msgstr "Copyright Lauris Kaplinski 1999."
 
-#: glade/sodipodi-glade.c:81
+#: glade/sodipodi-glade.c:85
 msgid ""
 "A Vector Drawing Program.\n"
 "Released under GPL"
@@ -322,145 +330,145 @@ msgstr ""
 "Vektorjoonistusprogramm.\n"
 "Litsenseeritud vastavalt GNU GPL tingimustele."
 
-#: glade/sodipodi-glade.c:83
+#: glade/sodipodi-glade.c:87
 msgid "Fill type"
 msgstr ""
 
-#: glade/sodipodi-glade.c:84
+#: glade/sodipodi-glade.c:88
 msgid "None"
 msgstr ""
 
-#: glade/sodipodi-glade.c:85
+#: glade/sodipodi-glade.c:89
 msgid "Color"
 msgstr ""
 
-#: glade/sodipodi-glade.c:86
+#: glade/sodipodi-glade.c:90
 msgid "Gradient"
 msgstr ""
 
-#: glade/sodipodi-glade.c:87
+#: glade/sodipodi-glade.c:91
 msgid "Special"
 msgstr ""
 
-#: glade/sodipodi-glade.c:88
+#: glade/sodipodi-glade.c:92
 msgid "Fractal"
 msgstr ""
 
-#: glade/sodipodi-glade.c:91
+#: glade/sodipodi-glade.c:95
 msgid "Not here"
 msgstr ""
 
-#: glade/sodipodi-glade.c:93
+#: glade/sodipodi-glade.c:97
 msgid "window1"
 msgstr ""
 
-#: glade/sodipodi-glade.c:94
+#: glade/sodipodi-glade.c:98
 #, fuzzy
 msgid "Color settings"
 msgstr "Värvimine"
 
-#: glade/sodipodi-glade.c:95
+#: glade/sodipodi-glade.c:99
 msgid "Gradient settings"
 msgstr ""
 
-#: glade/sodipodi-glade.c:96
+#: glade/sodipodi-glade.c:100
 msgid "Preview (object binding box)"
 msgstr ""
 
-#: glade/sodipodi-glade.c:97 glade/sodipodi-glade.c:98
-#: glade/sodipodi-glade.c:120
+#: glade/sodipodi-glade.c:101 glade/sodipodi-glade.c:102
+#: glade/sodipodi-glade.c:124
 msgid "Valige värv"
 msgstr ""
 
-#: glade/sodipodi-glade.c:99
+#: glade/sodipodi-glade.c:103
 msgid ""
 "Linear\n"
 "Radial\n"
 msgstr ""
 
-#: glade/sodipodi-glade.c:102
+#: glade/sodipodi-glade.c:106
 msgid "Color 1"
 msgstr ""
 
-#: glade/sodipodi-glade.c:103
+#: glade/sodipodi-glade.c:107
 msgid "Color2"
 msgstr ""
 
-#: glade/sodipodi-glade.c:104
+#: glade/sodipodi-glade.c:108
 msgid "Document coordinates"
 msgstr ""
 
-#: glade/sodipodi-glade.c:105
+#: glade/sodipodi-glade.c:109
 #, fuzzy
 msgid "Fractal settings"
 msgstr "Värvimine"
 
-#: glade/sodipodi-glade.c:106
+#: glade/sodipodi-glade.c:110
 msgid "Preview"
 msgstr ""
 
-#: glade/sodipodi-glade.c:107
+#: glade/sodipodi-glade.c:111
 msgid "Node Edit"
 msgstr ""
 
-#: glade/sodipodi-glade.c:108
+#: glade/sodipodi-glade.c:112
 msgid "Add"
 msgstr ""
 
-#: glade/sodipodi-glade.c:110
+#: glade/sodipodi-glade.c:114
 msgid "Break"
 msgstr ""
 
-#: glade/sodipodi-glade.c:111
+#: glade/sodipodi-glade.c:115
 msgid "To Line"
 msgstr ""
 
-#: glade/sodipodi-glade.c:112
+#: glade/sodipodi-glade.c:116
 msgid "To Curve"
 msgstr ""
 
-#: glade/sodipodi-glade.c:113 glade/sodipodi-glade.c:132
+#: glade/sodipodi-glade.c:117 glade/sodipodi-glade.c:136
 msgid "Join"
 msgstr ""
 
-#: glade/sodipodi-glade.c:114
+#: glade/sodipodi-glade.c:118
 msgid "Cusp"
 msgstr ""
 
-#: glade/sodipodi-glade.c:115
+#: glade/sodipodi-glade.c:119
 msgid "Smooth"
 msgstr ""
 
-#: glade/sodipodi-glade.c:116
+#: glade/sodipodi-glade.c:120
 msgid "Symmetric"
 msgstr ""
 
-#: glade/sodipodi-glade.c:117
+#: glade/sodipodi-glade.c:121
 msgid "Close"
 msgstr ""
 
-#: glade/sodipodi-glade.c:118
+#: glade/sodipodi-glade.c:122
 msgid "General"
 msgstr "Üldine"
 
-#: glade/sodipodi-glade.c:119
+#: glade/sodipodi-glade.c:123
 msgid "Is stroked"
 msgstr "Piirjoon"
 
-#: glade/sodipodi-glade.c:121
+#: glade/sodipodi-glade.c:125
 msgid "Stroke color"
 msgstr ""
 
-#: glade/sodipodi-glade.c:122 glade/sodipodi-glade.c:155
-#: glade/sodipodi-glade.c:158
+#: glade/sodipodi-glade.c:126 glade/sodipodi-glade.c:159
+#: glade/sodipodi-glade.c:162
 msgid "Width"
 msgstr ""
 
-#: glade/sodipodi-glade.c:123
+#: glade/sodipodi-glade.c:127
 msgid "Stroke width"
 msgstr ""
 
-#: glade/sodipodi-glade.c:124
+#: glade/sodipodi-glade.c:128
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -468,123 +476,123 @@ msgid ""
 "inches\n"
 msgstr ""
 
-#: glade/sodipodi-glade.c:129
+#: glade/sodipodi-glade.c:133
 msgid "Scale with image"
 msgstr ""
 
-#: glade/sodipodi-glade.c:130
+#: glade/sodipodi-glade.c:134
 msgid "Behind fill"
 msgstr ""
 
-#: glade/sodipodi-glade.c:131
+#: glade/sodipodi-glade.c:135
 msgid "Join & cap"
 msgstr ""
 
-#: glade/sodipodi-glade.c:133
+#: glade/sodipodi-glade.c:137
 msgid "Cap"
 msgstr ""
 
-#: glade/sodipodi-glade.c:134
+#: glade/sodipodi-glade.c:138
 msgid "miter"
 msgstr ""
 
-#: glade/sodipodi-glade.c:135
+#: glade/sodipodi-glade.c:139
 msgid "butt"
 msgstr ""
 
-#: glade/sodipodi-glade.c:136 glade/sodipodi-glade.c:138
+#: glade/sodipodi-glade.c:140 glade/sodipodi-glade.c:142
 msgid "round"
 msgstr ""
 
-#: glade/sodipodi-glade.c:137
+#: glade/sodipodi-glade.c:141
 msgid "bevel"
 msgstr ""
 
-#: glade/sodipodi-glade.c:139
+#: glade/sodipodi-glade.c:143
 msgid "square"
 msgstr ""
 
-#: glade/sodipodi-glade.c:142
+#: glade/sodipodi-glade.c:146
 msgid "Export picture to png"
 msgstr ""
 
-#: glade/sodipodi-glade.c:143
+#: glade/sodipodi-glade.c:147
 msgid "Set dimensions"
 msgstr ""
 
-#: glade/sodipodi-glade.c:144
+#: glade/sodipodi-glade.c:148
 #, fuzzy
 msgid "Drawing"
 msgstr "Joonistus"
 
-#: glade/sodipodi-glade.c:145
+#: glade/sodipodi-glade.c:149
 #, fuzzy
 msgid "Page"
 msgstr "Lehekülg"
 
-#: glade/sodipodi-glade.c:146
+#: glade/sodipodi-glade.c:150
 #, fuzzy
 msgid "Selection"
 msgstr "_Selektsioon"
 
-#: glade/sodipodi-glade.c:147
+#: glade/sodipodi-glade.c:151
 msgid "Where to export"
 msgstr ""
 
-#: glade/sodipodi-glade.c:148
+#: glade/sodipodi-glade.c:152
 msgid "Filename:"
 msgstr ""
 
-#: glade/sodipodi-glade.c:149
+#: glade/sodipodi-glade.c:153
 #, fuzzy
 msgid "Png file name"
 msgstr "Trükib faili"
 
-#: glade/sodipodi-glade.c:150
+#: glade/sodipodi-glade.c:154
 msgid "Image size"
 msgstr ""
 
-#: glade/sodipodi-glade.c:151
+#: glade/sodipodi-glade.c:155
 msgid "X0"
 msgstr ""
 
-#: glade/sodipodi-glade.c:152
+#: glade/sodipodi-glade.c:156
 msgid "Y0"
 msgstr ""
 
-#: glade/sodipodi-glade.c:153
+#: glade/sodipodi-glade.c:157
 msgid "X1"
 msgstr ""
 
-#: glade/sodipodi-glade.c:154
+#: glade/sodipodi-glade.c:158
 msgid "Y1"
 msgstr ""
 
-#: glade/sodipodi-glade.c:156 glade/sodipodi-glade.c:159
+#: glade/sodipodi-glade.c:160 glade/sodipodi-glade.c:163
 msgid "Height"
 msgstr ""
 
-#: glade/sodipodi-glade.c:157
+#: glade/sodipodi-glade.c:161
 msgid "Exported as"
 msgstr ""
 
-#: glade/sodipodi-glade.c:160 glade/sodipodi-glade.c:161
+#: glade/sodipodi-glade.c:164 glade/sodipodi-glade.c:165
 msgid "pixels"
 msgstr ""
 
-#: glade/sodipodi-glade.c:162 glade/sodipodi-glade.c:163
+#: glade/sodipodi-glade.c:166 glade/sodipodi-glade.c:167
 msgid "dpi"
 msgstr ""
 
-#: glade/sodipodi-glade.c:164
+#: glade/sodipodi-glade.c:168
 msgid "Lock aspect ratio"
 msgstr ""
 
-#: glade/sodipodi-glade.c:165
+#: glade/sodipodi-glade.c:169
 msgid "1.0MB"
 msgstr ""
 
-#: glade/sodipodi-glade.c:166
+#: glade/sodipodi-glade.c:170
 msgid "Uncompressed file size:"
 msgstr ""
 

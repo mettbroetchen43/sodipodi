@@ -1,3 +1,12 @@
+2000/05/04 Version 0.18
+
+This is still development release. Many bugs, some of whose are very nasty
+memory corrupting ones are lurking around.
+Undo/Redo now basically work. Undo is unlimited, so you are encouraged to
+test, how long it takes to fill all memory...
+There are also some minor improvements, such as (preliminary) way to print
+semi-transparent pixmaps.
+
 2000/28/03 Version 0.17
 
 Sodipodi home is now http://sodipodi.sourceforge.net/
