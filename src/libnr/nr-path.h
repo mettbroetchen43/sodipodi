@@ -31,4 +31,8 @@ struct _NRBPath {
 
 NRBPath *nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform);
 
+void nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPointF *pt,
+						  NRRectF *bbox, int *wind, float *dist,
+						  float tolerance);
+
 #endif

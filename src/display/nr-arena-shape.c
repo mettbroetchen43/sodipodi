@@ -17,6 +17,7 @@
 #include <string.h>
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
+#include <libnr/nr-path.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -148,8 +149,28 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	shape = NR_ARENA_SHAPE (item);
 
+	if (!(state & NR_ARENA_ITEM_STATE_RENDER)) {
+		/* We do not have to create rendering structures */
+		memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
+		if (state & NR_ARENA_ITEM_STATE_BBOX) {
+			if (shape->curve) {
+				ArtDRect bbox;
+				/* fixme: */
+				bbox.x0 = bbox.y0 = NR_HUGE_D;
+				bbox.x1 = bbox.y1 = -NR_HUGE_D;
+				sp_bpath_matrix_d_bbox_d_union (shape->curve->bpath, gc->affine, &bbox, 1.0);
+				item->bbox.x0 = bbox.x0 - 1.0;
+				item->bbox.y0 = bbox.y0 - 1.0;
+				item->bbox.x1 = bbox.x1 + 1.9999;
+				item->bbox.y1 = bbox.y1 + 1.9999;
+			}
+		}
+		return (state | item->state);
+	}
+
 	/* Request repaint old area if needed */
 	/* fixme: Think about it a bit (Lauris) */
+	/* fixme: Thios is only needed, if actually rendered/had svp (Lauris) */
 	if (!nr_rect_l_test_empty (&item->bbox)) {
 		nr_arena_request_render_rect (item->arena, &item->bbox);
 		nr_rect_l_set_empty (&item->bbox);
@@ -365,19 +386,45 @@ nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 	if (!shape->curve) return NULL;
 	if (!shape->style) return NULL;
 
-	if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-		if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
-	}
-	if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-		if (art_svp_point_wind (shape->stroke_svp, x, y)) return item;
-	}
-	if (delta > 1e-3) {
+	if (0 && (item->state & NR_ARENA_ITEM_STATE_RENDER)) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-			if (art_svp_point_dist (shape->fill_svp, x, y) <= delta) return item;
+			if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
 		}
 		if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-			if (art_svp_point_dist (shape->stroke_svp, x, y) <= delta) return item;
+			if (art_svp_point_wind (shape->stroke_svp, x, y)) return item;
 		}
+		if (delta > 1e-3) {
+			if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
+				if (art_svp_point_dist (shape->fill_svp, x, y) <= delta) return item;
+			}
+			if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
+				if (art_svp_point_dist (shape->stroke_svp, x, y) <= delta) return item;
+			}
+		}
+	} else {
+		NRMatrixF t;
+		NRPointF pt;
+		NRBPath bp;
+		float dist;
+		int wind;
+		pt.x = x;
+		pt.y = y;
+		t.c[0] = shape->ctm.c[0];
+		t.c[1] = shape->ctm.c[1];
+		t.c[2] = shape->ctm.c[2];
+		t.c[3] = shape->ctm.c[3];
+		t.c[4] = shape->ctm.c[4];
+		t.c[5] = shape->ctm.c[5];
+		bp.path = shape->curve->bpath;
+		dist = NR_HUGE_F;
+		wind = 0;
+		nr_path_matrix_f_point_f_bbox_wind_distance (&bp, &t, &pt, NULL, &wind, &dist, NR_EPSILON_F);
+		if (!shape->style->fill_rule.value) {
+			if (wind != 0) return item;
+		} else {
+			if (wind & 0x1) return item;
+		}
+		if (dist < delta) return item;
 	}
 
 	return NULL;

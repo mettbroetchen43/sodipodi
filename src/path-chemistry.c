@@ -6,7 +6,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
+ * Copyright (C) 1999-2002 Authors
  * Copyright (C) 2001-2002 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information

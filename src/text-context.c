@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtkmain.h>
 #include <gal/widgets/e-unicode.h>
 #include <helper/sp-ctrlline.h>
 #include "sp-text.h"

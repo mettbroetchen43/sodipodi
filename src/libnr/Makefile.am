@@ -4,7 +4,7 @@ noinst_LIBRARIES = libnr.a
 noinst_PROGRAMS = testnr
 
 INCLUDES = \
-	-I..
+	-I.. \
 	$(cflags) \
 	$(SODIPODI_CFLAGS)
 

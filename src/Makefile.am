@@ -20,6 +20,9 @@ INCLUDES = \
 	$(SODIPODI_CFLAGS) \
 	$(SODIPODI_BONOBO_CFLAGS)
 
+LDFLAGS = \
+	$(ldflags)
+
 bin_PROGRAMS = sodipodi
 
 sodipodi_SOURCES = \
