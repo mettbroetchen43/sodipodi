@@ -23,6 +23,7 @@
 
 typedef struct _SPMarker SPMarker;
 typedef struct _SPMarkerClass SPMarkerClass;
+typedef struct _SPMarkerView SPMarkerView;
 
 #include <libnr/nr-types.h>
 #include "svg/svg-types.h"
@@ -60,6 +61,9 @@ struct _SPMarker {
 
 	/* Child to parent additional transform */
 	NRMatrixD c2p;
+
+	/* Private views */
+	SPMarkerView *views;
 };
 
 struct _SPMarkerClass {

@@ -22,16 +22,26 @@
 #include "sp-namedview.h"
 #include "sp-marker.h"
 
+struct _SPMarkerView {
+	SPMarkerView *next;
+	unsigned int key;
+	unsigned int size;
+	NRArenaItem *items[1];
+};
+
 static void sp_marker_class_init (SPMarkerClass *klass);
 static void sp_marker_init (SPMarker *marker);
 
 static void sp_marker_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_marker_release (SPObject *object);
 static void sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
+
+static void sp_marker_view_erase (SPMarker *marker, SPMarkerView *view);
 
 static SPGroupClass *parent_class;
 
@@ -68,6 +78,7 @@ sp_marker_class_init (SPMarkerClass *klass)
 	parent_class = g_type_class_ref (SP_TYPE_GROUP);
 
 	sp_object_class->build = sp_marker_build;
+	sp_object_class->release = sp_marker_release;
 	sp_object_class->set = sp_marker_set;
 	sp_object_class->update = sp_marker_update;
 	sp_object_class->write = sp_marker_write;
@@ -104,6 +115,22 @@ sp_marker_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
+}
+
+static void
+sp_marker_release (SPObject *object)
+{
+	SPMarker *marker;
+
+	marker = (SPMarker *) object;
+
+	while (marker->views) {
+		/* Destroy all NRArenaitems etc. */
+		sp_marker_view_erase (marker, marker->views);
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void
@@ -272,10 +299,10 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 	SPItem *item;
 	SPMarker *marker;
 	SPItemCtx rctx;
-	SPItemView *v;
 	NRRectD *vb;
 	double x, y, width, height;
 	NRMatrixD q;
+	SPMarkerView *v;
 
 	item = SP_ITEM (object);
 	marker = SP_MARKER (object);
@@ -393,10 +420,13 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 		((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
 
 	/* As last step set additional transform of arena group */
-	for (v = item->display; v != NULL; v = v->next) {
+	for (v = marker->views; v != NULL; v = v->next) {
 		NRMatrixF vbf;
+		int i;
 		nr_matrix_f_from_d (&vbf, &marker->c2p);
-		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
+		for (i = 0; i < v->size; i++) {
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->items[i]), &vbf);
+		}
 	}
 }
 
@@ -515,5 +545,10 @@ sp_marker_hide (SPMarker *marker, unsigned int key)
 {
 	if (((SPItemClass *) (parent_class))->hide)
 		((SPItemClass *) (parent_class))->hide ((SPItem *) marker, key);
+}
+
+static void
+sp_marker_view_erase (SPMarker *marker, SPMarkerView *view)
+{
 }
 

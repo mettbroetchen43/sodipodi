@@ -517,8 +517,8 @@ struct _SPModulePrintPlainClass {
 
 unsigned int sp_module_print_plain_get_type (void);
 
-static void sp_module_print_plain_class_init (SPModulePrintClass *klass);
-static void sp_module_print_plain_init (SPModulePrint *fmod);
+static void sp_module_print_plain_class_init (SPModulePrintPlainClass *klass);
+static void sp_module_print_plain_init (SPModulePrintPlain *fmod);
 static void sp_module_print_plain_finalize (GObject *object);
 
 static unsigned int sp_module_print_plain_setup (SPModulePrint *mod);
@@ -532,6 +532,8 @@ static unsigned int sp_module_print_plain_stroke (SPModulePrint *mod, const NRBP
 						  const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
 static unsigned int sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 						 const NRMatrixF *transform, const SPStyle *style);
+
+static void sp_print_bpath (FILE *stream, const ArtBpath *bp);
 
 static SPModulePrintClass *print_plain_parent_class;
 
@@ -555,7 +557,7 @@ sp_module_print_plain_get_type (void)
 }
 
 static void
-sp_module_print_plain_class_init (SPModulePrintClass *klass)
+sp_module_print_plain_class_init (SPModulePrintPlainClass *klass)
 {
 	GObjectClass *g_object_class;
 	SPModulePrintClass *module_print_class;
@@ -691,6 +693,10 @@ static unsigned int
 sp_module_print_plain_finish (SPModulePrint *mod)
 {
 	int res;
+
+	SPModulePrintPlain *pmod;
+
+	pmod = (SPModulePrintPlain *) mod;
 
 	res = fprintf (pmod->stream, "showpage\n");
 
