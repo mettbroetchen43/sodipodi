@@ -2,8 +2,9 @@
 
 TODO for 0.32
 
-- Text gradients get double href and thus are built again and again
+- Text gradients get double href and thus are built again and again (DONE)
 - Text style does not respond to drags
+- Fix rendering of gradients with global opacity
 
 TODO for 0.31
 =============

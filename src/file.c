@@ -477,8 +477,6 @@ sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *dat
 	num_rows = MIN (num_rows, ebp->sheight);
 	num_rows = MIN (num_rows, ebp->height - row);
 
-	g_print ("Rendering %d + %d rows\n", row, num_rows);
-
 	/* Set area of interest */
 	bbox.x0 = 0;
 	bbox.y0 = row;
