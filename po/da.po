@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2000-08-26 14:05+0200\n"
-"PO-Revision-Date: 2000-11-03 03:30+0100\n"
+"PO-Revision-Date: 2000-11-18 13:30+0100\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1336,7 +1336,7 @@ msgid "move horizontal"
 msgstr "flyt vandret"
 
 #: glade/transformation.c:45
-msgid "move vertival"
+msgid "move vertical"
 msgstr "flyt lodret"
 
 #: glade/transformation.c:53
