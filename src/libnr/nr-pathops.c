@@ -302,15 +302,9 @@ nr_node_list_copy (const struct _NRNode *src)
 	ref = NULL;
 	for (snode = src; snode; snode = snode->next) {
 		dnode = nr_node_alloc ();
+		memcpy (dnode, snode, sizeof (struct _NRNode));
 		dnode->prev = ref;
 		if (ref) ref->next = dnode;
-		dnode->x1 = snode->x1;
-		dnode->y1 = snode->y1;
-		dnode->x2 = snode->x2;
-		dnode->y2 = snode->y2;
-		dnode->x3 = snode->x3;
-		dnode->y3 = snode->y3;
-		dnode->isline = snode->isline;
 		dnode->flats = NULL;
 		if (!first) first = dnode;
 		ref = dnode;
@@ -349,12 +343,14 @@ nr_node_path_concat (struct _NRNodePath *paths[], unsigned int npaths)
 }
 
 static unsigned int
-nr_node_list_insert_line (struct _NRNode *node, const NRPointF *p)
+nr_node_list_insert_line_round (struct _NRNode *node, float x, float y)
 {
 	struct _NRNode *nnode;
-	if ((p->x == node->x3) && (p->y == node->y3)) return 0;
-	if ((p->x == node->next->x3) && (p->y == node->next->y3)) return 0;
-	nnode = nr_node_new_line (p->x, p->y);
+	x = QROUND (x);
+	y = QROUND (y);
+	if ((x == node->x3) && (y == node->y3)) return 0;
+	if ((x == node->next->x3) && (y == node->next->y3)) return 0;
+	nnode = nr_node_new_line (x, y);
 	nnode->prev = node;
 	nnode->next = node->next;
 	node->next = nnode;
@@ -363,7 +359,7 @@ nr_node_list_insert_line (struct _NRNode *node, const NRPointF *p)
 }
 
 static unsigned int
-nr_node_list_insert_curve (struct _NRNode *node, struct _NRFlatNode *flat, const NRPointF *p)
+nr_node_list_insert_curve_round (struct _NRNode *node, struct _NRFlatNode *flat, float x, float y)
 {
 	struct _NRNode *nnode;
 	struct _NRFlatNode *nflat, *f;
@@ -371,13 +367,16 @@ nr_node_list_insert_curve (struct _NRNode *node, struct _NRFlatNode *flat, const
 	double x00t, y00t, x01t, y01t, x0tt, y0tt, x1tt, y1tt, x11t, y11t, xttt, yttt;
 	double dlen, slen, s, t;
 
+	x = QROUND (x);
+	y = QROUND (y);
+
 	/* Stop if rounded to the next node */
-	if ((p->x == flat->next->x) && (p->y == flat->next->y) && !flat->next->next) return 0;
+	if ((x == flat->next->x) && (y == flat->next->y) && !flat->next->next) return 0;
 
 	/* These kill self-interection - they are probably not needed as well (Lauris) */
 	/* if ((p->x == node->x3) && (p->y == node->y3)) return 0; */
 	/* if ((p->x == node->next->x3) && (p->y == node->next->y3)) return 0; */
-	dlen = hypot (p->x - flat->x, p->y - flat->y);
+	dlen = hypot (x - flat->x, y - flat->y);
 	slen = hypot (flat->next->x - flat->x, flat->next->y - flat->y);
 	s = flat->s + (flat->next->s - flat->s) * dlen / slen;
 	t = 1.0 - s;
@@ -405,7 +404,7 @@ nr_node_list_insert_curve (struct _NRNode *node, struct _NRFlatNode *flat, const
 	y1tt = t * y01t + s * y11t;
 	yttt = t * y0tt + s * y1tt;
 
-	nnode = nr_node_new_curve (QROUND (x00t), QROUND (y00t), QROUND (x0tt), QROUND (y0tt), p->x, p->y);
+	nnode = nr_node_new_curve (QROUND (x00t), QROUND (y00t), QROUND (x0tt), QROUND (y0tt), x, y);
 	nnode->prev = node;
 	nnode->next = node->next;
 	node->next = nnode;
@@ -416,8 +415,8 @@ nr_node_list_insert_curve (struct _NRNode *node, struct _NRFlatNode *flat, const
 	nnode->next->y2 = QROUND (y11t);
 
 	/* Insert new flat at the beginning of new seg if needed */
-	if ((p->x != flat->next->x) || (p->y != flat->next->y)) {
-		nflat = nr_flat_node_new (p->x, p->y, s);
+	if ((x != flat->next->x) || (y != flat->next->y)) {
+		nflat = nr_flat_node_new (x, y, s);
 		nflat->next = flat->next;
 		nflat->next->prev = nflat;
 		nflat->prev = NULL;
@@ -427,8 +426,8 @@ nr_node_list_insert_curve (struct _NRNode *node, struct _NRFlatNode *flat, const
 		nnode->flats->prev = NULL;
 	}
 	/* Append flat to old segment is needed */
-	if ((p->x != flat->x) || (p->y != flat->y)) {
-		nflat = nr_flat_node_new (p->x, p->y, s);
+	if ((x != flat->x) || (y != flat->y)) {
+		nflat = nr_flat_node_new (x, y, s);
 		nflat->next = NULL;
 		nflat->prev = flat;
 		flat->next = nflat;
@@ -449,7 +448,6 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 	struct _NRNode *n0_1, *n1_1;
 	NRPointF a0, a1, b0, b1;
 	NRPointD ca[2], cb[2];
-	NRPointF cp;
 	unsigned int nda, ndb;
 	n0_1 = n0_0->next;
 	n1_1 = n1_0->next;
@@ -475,6 +473,7 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 		a1.x = n0_1->x3;
 		a1.y = n0_1->y3;
 		if (n1_1->isline) {
+			/* Easiest - line with line */
 			b0.x = n1_0->x3;
 			b0.y = n1_0->y3;
 			b1.x = n1_1->x3;
@@ -482,30 +481,25 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 			if (nr_segment_find_intersections (a0, a1, b0, b1, &nda, ca, &ndb, cb)) {
 				/* Insert new nodes at ca and cb */
 				while (nda > 0) {
-					cp.x = QROUND (ca[nda - 1].x);
-					cp.y = QROUND (ca[nda - 1].y);
-					nr_node_list_insert_line (n0_0, &cp);
 					nda -= 1;
+					nr_node_list_insert_line_round (n0_0, ca[nda].x, ca[nda].y);
 				}
 				while (ndb > 0) {
-					cp.x = QROUND (cb[ndb - 1].x);
-					cp.y = QROUND (cb[ndb - 1].y);
-					nr_node_list_insert_line (n1_0, &cp);
 					ndb -= 1;
+					nr_node_list_insert_line_round (n1_0, cb[ndb].x, cb[ndb].y);
 				}
 				return 1;
 			}
 		} else {
 			struct _NRFlatNode *f0;
+			/* Line 0 with curve 1 */
 			if (!n1_0->flats) n1_0->flats = nr_node_flat_list_build (n1_0);
 			/* Iterate over flats */
 			for (f0 = n1_0->flats; f0 && f0->next; f0 = f0->next) {
 				if ((f0->prev) &&
 				    (((f0->x == a0.x) && (f0->y == a0.y)) || ((f0->x == a1.x) && (f0->y == a1.y)))) {
 					/* f0 starts at other line */
-					cp.x = f0->x;
-					cp.y = f0->y;
-					nr_node_list_insert_curve (n1_0, f0, &cp);
+					nr_node_list_insert_curve_round (n1_0, f0, f0->x, f0->y);
 				} else {
 					b0.x = f0->x;
 					b0.y = f0->y;
@@ -514,16 +508,12 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 					if (nr_segment_find_intersections (a0, a1, b0, b1, &nda, ca, &ndb, cb)) {
 						/* Insert new nodes at ca and cb */
 						while (nda > 0) {
-							cp.x = QROUND (ca[nda - 1].x);
-							cp.y = QROUND (ca[nda - 1].y);
-							nr_node_list_insert_line (n0_0, &cp);
 							nda -= 1;
+							nr_node_list_insert_line_round (n0_0, ca[nda].x, ca[nda].y);
 						}
 						while (ndb > 0) {
-							cp.x = QROUND (cb[ndb - 1].x);
-							cp.y = QROUND (cb[ndb - 1].y);
-							nr_node_list_insert_curve (n1_0, f0, &cp);
 							ndb -= 1;
+							nr_node_list_insert_curve_round (n1_0, f0, cb[ndb].x, cb[ndb].y);
 						}
 					}
 				}
@@ -542,9 +532,7 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 				if ((f0->prev) &&
 				    (((f0->x == b0.x) && (f0->y == b0.y)) || ((f0->x == b1.x) && (f0->y == b1.y)))) {
 					/* f0 starts at other line */
-					cp.x = f0->x;
-					cp.y = f0->y;
-					nr_node_list_insert_curve (n0_0, f0, &cp);
+					nr_node_list_insert_curve_round (n0_0, f0, f0->x, f0->y);
 				} else {
 					a0.x = f0->x;
 					a0.y = f0->y;
@@ -553,16 +541,12 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 					if (nr_segment_find_intersections (a0, a1, b0, b1, &nda, ca, &ndb, cb)) {
 						/* Insert new nodes at ca and cb */
 						while (nda > 0) {
-							cp.x = QROUND (ca[nda - 1].x);
-							cp.y = QROUND (ca[nda - 1].y);
-							nr_node_list_insert_curve (n0_0, f0, &cp);
 							nda -= 1;
+							nr_node_list_insert_curve_round (n0_0, f0, ca[nda].x, ca[nda].y);
 						}
 						while (ndb > 0) {
-							cp.x = QROUND (cb[ndb - 1].x);
-							cp.y = QROUND (cb[ndb - 1].y);
-							nr_node_list_insert_line (n1_0, &cp);
 							ndb -= 1;
+							nr_node_list_insert_line_round (n1_0, cb[ndb].x, cb[ndb].y);
 						}
 					}
 				}
@@ -577,15 +561,11 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 					if ((n0_0 == n1_0) && (f0 == f1)) continue;
 					if ((f0->prev) && (f0->x == f1->x) && (f0->y == f1->y)) {
 						/* f0 starts at other line */
-						cp.x = f0->x;
-						cp.y = f0->y;
-						nr_node_list_insert_curve (n0_0, f0, &cp);
+						nr_node_list_insert_curve_round (n0_0, f0, f0->x, f0->y);
 					}
 					if ((f1->prev) && (f1->x == f0->x) && (f1->y == f0->y)) {
 						/* f1 starts at other line */
-						cp.x = f1->x;
-						cp.y = f1->y;
-						nr_node_list_insert_curve (n1_0, f1, &cp);
+						nr_node_list_insert_curve_round (n1_0, f1, f1->x, f1->y);
 					}
 					/* Previous check may have clipped flat list */
 					if (!f0->next || !f1->next) continue;
@@ -601,16 +581,12 @@ nr_node_uncross (struct _NRNode *n0_0, struct _NRNode *n1_0)
 						/* Insert new nodes at ca and cb */
 						/* B has to be first for self-interect to work */
 						while (ndb > 0) {
-							cp.x = QROUND (cb[ndb - 1].x);
-							cp.y = QROUND (cb[ndb - 1].y);
-							nr_node_list_insert_curve (n1_0, f1, &cp);
 							ndb -= 1;
+							nr_node_list_insert_curve_round (n1_0, f1, cb[ndb].x, cb[ndb].y);
 						}
 						while (nda > 0) {
-							cp.x = QROUND (ca[nda - 1].x);
-							cp.y = QROUND (ca[nda - 1].y);
-							nr_node_list_insert_curve (n0_0, f0, &cp);
 							nda -= 1;
+							nr_node_list_insert_curve_round (n0_0, f0, ca[nda].x, ca[nda].y);
 						}
 					}
 				}
