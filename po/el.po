@@ -2,27 +2,28 @@
 # Greek translation for sodipodi.
 # Copyright (C) 2001 Free Software Foundation.
 # Simos Xenitellis <simos@hellug.gr>, 2001.
-# Kostas Papadimas <pkst@gnome.org>, 2003
+# Kostas Papadimas <pkst@gnome.org>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi.HEAD.el\n"
-"POT-Creation-Date: 2004-02-11 19:01+0200\n"
-"PO-Revision-Date: 2003-11-10 22:11+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-7\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.0\n"
+"POT-Creation-Date: 2004-04-18 10:28+0300\n"
+"PO-Revision-Date: 2004-04-11 11:52+0300\n"
+"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
+"Language-Team: Greek <gnomehellas@gmx.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
 msgstr "SVG Vector Illustrator"
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:144
+#: src/toolbox.c:178
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
@@ -33,266 +34,268 @@ msgstr ""
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr "Δεν ήταν δυνατή η δημιουργία του εργοστασίου sodipodi-svg-doc "
+msgstr "Ξ”ΞµΞ½ Ξ®Ο„Ξ±Ξ½ Ξ΄Ο…Ξ½Ξ±Ο„Ξ® Ξ· Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ο„ΞΏΟ… ΞµΟΞ³ΞΏΟƒΟ„Ξ±ΟƒΞ―ΞΏΟ… sodipodi-svg-doc "
 
-#: src/desktop.c:778
+#: src/desktop.c:959
 msgid "Zoom drawing if window size changes"
-msgstr "Μεγέθυνση σχεδίασης αν γίνει αλλαγή μεγέθους παραθύρου"
+msgstr "ΞΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ· ΟƒΟ‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·Ο‚ Ξ±Ξ½ Ξ³Ξ―Ξ½ΞµΞΉ Ξ±Ξ»Ξ»Ξ±Ξ³Ξ® ΞΌΞµΞ³Ξ­ΞΈΞΏΟ…Ο‚ Ο€Ξ±ΟΞ±ΞΈΟΟΞΏΟ…"
 
-#: src/desktop.c:860
+#: src/desktop.c:966
+msgid "Drawing target is constrained to active group"
+msgstr ""
+
+#: src/desktop.c:1059
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:989
+#: src/desktop.c:1166
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr "Το έγγραφο %s έχει μη αποθηκευμένες αλλαγές, αποθήκευση;"
+msgstr "Ξ¤ΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ %s Ξ­Ο‡ΞµΞΉ ΞΌΞ· Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟ…ΞΌΞ­Ξ½ΞµΟ‚ Ξ±Ξ»Ξ»Ξ±Ξ³Ξ­Ο‚, Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·;"
 
 #. Page page
-#: src/desktop.c:1541 src/dialogs/align.c:290
+#: src/desktop.c:1719 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:160 src/verbs.c:467
+#: src/dialogs/export.c:161 src/verbs.c:471
 msgid "Page"
-msgstr "Σελίδα"
+msgstr "Ξ£ΞµΞ»Ξ―Ξ΄Ξ±"
 
-#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
-#: src/verbs.c:468
+#: src/desktop.c:1723 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/verbs.c:472
 msgid "Drawing"
-msgstr "Σχεδίαση"
+msgstr "Ξ£Ο‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·"
 
 #. Selection submenu
-#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1727 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
-msgstr "Επιλογή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®"
 
 #
-#: src/dialogs/align.c:155 src/toolbox.c:364
+#: src/dialogs/align.c:156 src/toolbox.c:405
 msgid "Align objects"
-msgstr "Στοίχιση αντικειμένων"
+msgstr "Ξ£Ο„ΞΏΞ―Ο‡ΞΉΟƒΞ· Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
 
-#: src/dialogs/align.c:174
+#: src/dialogs/align.c:175
 msgid "Right side of aligned objects to left side of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:177
+#: src/dialogs/align.c:178
 msgid "Left side of aligned objects to left side of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:180
+#: src/dialogs/align.c:181
 msgid "Center horizontally"
-msgstr "Οριζόντιο κεντράρισμα"
+msgstr "ΞΟΞΉΞ¶ΟΞ½Ο„ΞΉΞΏ ΞΊΞµΞ½Ο„ΟΞ¬ΟΞΉΟƒΞΌΞ±"
 
-#: src/dialogs/align.c:183
+#: src/dialogs/align.c:184
 msgid "Right side of aligned objects to right side of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:186
+#: src/dialogs/align.c:187
 msgid "Left side of aligned objects to right side of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:190
+#: src/dialogs/align.c:191
 msgid "Bottom of aligned objects to top of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:193
+#: src/dialogs/align.c:194
 #, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "Προσθήκη νέου αντικειμένου στη βάση"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· Ξ½Ξ­ΞΏΟ… Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΟƒΟ„Ξ· Ξ²Ξ¬ΟƒΞ·"
 
-#: src/dialogs/align.c:196
+#: src/dialogs/align.c:197
 msgid "Center vertically"
-msgstr "Κάθετο κεντράρισμα"
+msgstr "ΞΞ¬ΞΈΞµΟ„ΞΏ ΞΊΞµΞ½Ο„ΟΞ¬ΟΞΉΟƒΞΌΞ±"
 
-#: src/dialogs/align.c:199
+#: src/dialogs/align.c:200
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:202
+#: src/dialogs/align.c:203
 #, fuzzy
 msgid "Top of aligned objects to bottom of anchor"
-msgstr "Προσθήκη νέου αντικειμένου στη βάση"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· Ξ½Ξ­ΞΏΟ… Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΟƒΟ„Ξ· Ξ²Ξ¬ΟƒΞ·"
 
-#: src/dialogs/align.c:205
+#: src/dialogs/align.c:206
 msgid "Align"
-msgstr "Στοίχιση"
+msgstr "Ξ£Ο„ΞΏΞ―Ο‡ΞΉΟƒΞ·"
 
-#: src/dialogs/align.c:223
+#: src/dialogs/align.c:224
 msgid "Distribute left sides of objects at even distances"
 msgstr ""
 
-#: src/dialogs/align.c:226
+#: src/dialogs/align.c:227
 msgid "Distribute centres of objects at even distances horizontally"
 msgstr ""
 
-#: src/dialogs/align.c:229
+#: src/dialogs/align.c:230
 msgid "Distribute right sides of objects at even distances"
 msgstr ""
 
-#: src/dialogs/align.c:232
+#: src/dialogs/align.c:233
 msgid "Distribute horizontal distance between objects equally"
 msgstr ""
 
-#: src/dialogs/align.c:236
+#: src/dialogs/align.c:237
 msgid "Distribute top sides of objects at even distances"
 msgstr ""
 
-#: src/dialogs/align.c:239
+#: src/dialogs/align.c:240
 msgid "Distribute centres of objects at even distances vertically"
 msgstr ""
 
-#: src/dialogs/align.c:242
+#: src/dialogs/align.c:243
 msgid "Distribute bottom sides of objects at even distances"
 msgstr ""
 
-#: src/dialogs/align.c:245
+#: src/dialogs/align.c:246
 msgid "Distribute vertical distance between objects equally"
 msgstr ""
 
-#: src/dialogs/align.c:248
+#: src/dialogs/align.c:249
 #, fuzzy
 msgid "Distribute"
-msgstr "Ιδιότητες"
-
-#
-#: src/dialogs/align.c:286
-msgid "Last selected"
-msgstr "Τελευταία επιλογή"
+msgstr "ΞΞ±Ο„Ξ±Ξ½ΞΏΞΌΞ®"
 
 #
 #: src/dialogs/align.c:287
-msgid "First selected"
-msgstr "Πρώτη επιλογή"
+msgid "Last selected"
+msgstr "Ξ¤ΞµΞ»ΞµΟ…Ο„Ξ±Ξ―Ξ± ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®"
 
+#
 #: src/dialogs/align.c:288
-msgid "Biggest item"
-msgstr "Μεγαλύτερο αντικείμενο"
+msgid "First selected"
+msgstr "Ξ ΟΟΟ„Ξ· ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®"
 
 #: src/dialogs/align.c:289
+msgid "Biggest item"
+msgstr "ΞΞµΞ³Ξ±Ξ»ΟΟ„ΞµΟΞΏ Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
+
+#: src/dialogs/align.c:290
 msgid "Smallest item"
-msgstr "Μικρότερο ανικείμενο"
+msgstr "ΞΞΉΞΊΟΟΟ„ΞµΟΞΏ Ξ±Ξ½ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
 #: src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
-msgstr "Ρυθμίσεις επιφάνειας εργασίας"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞµΟ€ΞΉΟ†Ξ¬Ξ½ΞµΞΉΞ±Ο‚ ΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚"
 
 #. Grid settings
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:204
 msgid "Grid"
-msgstr "Πλέγμα"
+msgstr "Ξ Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
-msgstr "Εμφάνιση πλέγματος"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ο€Ξ»Ξ­Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
-msgstr "Μετάβαση σε πλέγμα"
+msgstr "ΞΞµΟ„Ξ¬Ξ²Ξ±ΟƒΞ· ΟƒΞµ Ο€Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #: src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
-msgstr "Οριζόντιες γραμμές"
+msgstr "ΞΟΞΉΞ¶ΟΞ½Ο„ΞΉΞµΟ‚ Ξ³ΟΞ±ΞΌΞΌΞ­Ο‚"
 
 #: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
-msgstr "Κάθετες γραμμές"
+msgstr "ΞΞ¬ΞΈΞµΟ„ΞµΟ‚ Ξ³ΟΞ±ΞΌΞΌΞ­Ο‚"
 
 #: src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
-msgstr "Iso πλέγμα"
+msgstr "Iso Ο€Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #: src/dialogs/desktop-properties.c:225
 msgid "Hex grid"
-msgstr "Hex πλέγμα"
+msgstr "Hex Ο€Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #
 #: src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
-msgstr "Μονάδες πλέγματος:"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚ Ο€Ξ»Ξ­Ξ³ΞΌΞ±Ο„ΞΏΟ‚:"
 
 #: src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
-msgstr "Προέλευση X:"
+msgstr "Ξ ΟΞΏΞ­Ξ»ΞµΟ…ΟƒΞ· X:"
 
 #: src/dialogs/desktop-properties.c:235
 msgid "Origin Y:"
-msgstr "Προέλευση Y:"
+msgstr "Ξ ΟΞΏΞ­Ξ»ΞµΟ…ΟƒΞ· Y:"
 
 #
 #: src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
-msgstr "Διάστιχο X:"
+msgstr "Ξ”ΞΉΞ¬ΟƒΟ„ΞΉΟ‡ΞΏ X:"
 
 #
 #: src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
-msgstr "Διάστιχο Y:"
+msgstr "Ξ”ΞΉΞ¬ΟƒΟ„ΞΉΟ‡ΞΏ Y:"
 
 #: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
-msgstr "Μονάδες μετάβασης:"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚ ΞΌΞµΟ„Ξ¬Ξ²Ξ±ΟƒΞ·Ο‚:"
 
 #: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
 #, fuzzy
 msgid "Snap distance:"
-msgstr "Ίσες Αποστάσεις"
+msgstr "Ξ‘Ο€ΟΟƒΟ„Ξ±ΟƒΞ· Ο€ΟΞΏΟƒΞ±ΟΞΌΞΏΞ³Ξ®Ο‚ ΟƒΟ„ΞΏ Ο€Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
-msgstr "Χρώμα πλέγματος:"
+msgstr "Ξ§ΟΟΞΌΞ± Ο€Ξ»Ξ­Ξ³ΞΌΞ±Ο„ΞΏΟ‚:"
 
 #: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
-msgstr "Χρώμα πλέγματος"
+msgstr "Ξ§ΟΟΞΌΞ± Ο€Ξ»Ξ­Ξ³ΞΌΞ±Ο„ΞΏΟ‚"
 
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:254
 msgid "Guides"
-msgstr "Οδηγοί"
+msgstr "ΞΞ΄Ξ·Ξ³ΞΏΞ―"
 
 #
 #: src/dialogs/desktop-properties.c:265
 msgid "Show guides"
-msgstr "Εμφάνιση οδηγών"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· ΞΏΞ΄Ξ·Ξ³ΟΞ½"
 
 #: src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
-msgstr "Μετάβαση σε οδηγούς"
+msgstr "ΞΞµΟ„Ξ¬Ξ²Ξ±ΟƒΞ· ΟƒΞµ ΞΏΞ΄Ξ·Ξ³ΞΏΟΟ‚"
 
 #: src/dialogs/desktop-properties.c:276
 #, fuzzy
 msgid "Guides color:"
-msgstr "Χρώμα μη-ολοκληρωμένων εγγραφών:"
+msgstr "Ξ§ΟΟΞΌΞ± ΞΌΞ·-ΞΏΞ»ΞΏΞΊΞ»Ξ·ΟΟ‰ΞΌΞ­Ξ½Ο‰Ξ½ ΞµΞ³Ξ³ΟΞ±Ο†ΟΞ½:"
 
 #: src/dialogs/desktop-properties.c:277
-#, fuzzy
 msgid "Guideline color"
-msgstr "Επιλογή χρώματος"
+msgstr "Ξ§ΟΟΞΌΞ±Ο„ΞΏ ΞΏΞ΄Ξ·Ξ³ΞΏΟ"
 
 #: src/dialogs/desktop-properties.c:279
 msgid "Highlight color:"
-msgstr "Χρώμα επισήμανσης:"
+msgstr "Ξ§ΟΟΞΌΞ± ΞµΟ€ΞΉΟƒΞ®ΞΌΞ±Ξ½ΟƒΞ·Ο‚:"
 
 #: src/dialogs/desktop-properties.c:280
 #, fuzzy
 msgid "Highlighted guideline color"
-msgstr "Χρώμα Ψευδωνύμου σε Έμφαση"
+msgstr "Ξ§ΟΟΞΌΞ± Ξ¨ΞµΟ…Ξ΄Ο‰Ξ½ΟΞΌΞΏΟ… ΟƒΞµ ΞΞΌΟ†Ξ±ΟƒΞ·"
 
 #: src/dialogs/desktop-properties.c:295
 msgid "Show border"
-msgstr "Εμφάνιση πλαισίου"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: src/dialogs/desktop-properties.c:301
 #, fuzzy
 msgid "Border on top of drawing"
-msgstr "Αλλαγή κλίμακας για _ταίριασμα"
+msgstr "Ξ‘Ξ»Ξ»Ξ±Ξ³Ξ® ΞΊΞ»Ξ―ΞΌΞ±ΞΊΞ±Ο‚ Ξ³ΞΉΞ± _Ο„Ξ±Ξ―ΟΞΉΞ±ΟƒΞΌΞ±"
 
 #: src/dialogs/desktop-properties.c:306
-#, fuzzy
 msgid "Border color:"
-msgstr "Χρώμα πλέγματος:"
+msgstr "Ξ§ΟΟΞΌΞ± Ο€ΞµΟΞΉΞΈΟ‰ΟΞ―ΞΏΟ…:"
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
@@ -301,35 +304,35 @@ msgstr ""
 #: src/dialogs/desktop-properties.c:308
 #, fuzzy
 msgid "Page color:"
-msgstr "Χρώμα μη-ολοκληρωμένων εγγραφών:"
+msgstr "Ξ§ΟΟΞΌΞ± ΞΌΞ·-ΞΏΞ»ΞΏΞΊΞ»Ξ·ΟΟ‰ΞΌΞ­Ξ½Ο‰Ξ½ ΞµΞ³Ξ³ΟΞ±Ο†ΟΞ½:"
 
 #: src/dialogs/desktop-properties.c:309
 #, fuzzy
 msgid "Page color"
-msgstr "Χρώμα έναρξης"
+msgstr "Ξ§ΟΟΞΌΞ± Ξ­Ξ½Ξ±ΟΞΎΞ·Ο‚"
 
 #: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
-msgstr "Κλείσιμο"
+msgstr "ΞΞ»ΞµΞ―ΟƒΞΉΞΌΞΏ"
 
 #: src/dialogs/display-settings.c:101
 msgid "Display settings"
-msgstr "Ρυθμίσεις εμφάνισης"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞµΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ·Ο‚"
 
 #. Rendering settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:108
 msgid "Rendering"
-msgstr "Ανάλυση"
+msgstr "Ξ‘Ξ½Ξ¬Ξ»Ο…ΟƒΞ·"
 
 #: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr ""
 
 #
-#: src/dialogs/display-settings.c:125 src/verbs.c:403
+#: src/dialogs/display-settings.c:125 src/verbs.c:407
 msgid "None"
-msgstr "Κανένα"
+msgstr "ΞΞ±Ξ½Ξ­Ξ½Ξ±"
 
 #: src/dialogs/display-settings.c:128
 msgid "2x2"
@@ -347,21 +350,25 @@ msgstr "8x8"
 msgid "16x16"
 msgstr "16x16"
 
+#  Input settings
+#  Notebook tab
 #. Input settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:147
 msgid "Input"
-msgstr ""
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚"
 
 #: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
-msgstr "Εξ ορισμού ευαισθησία δρομέα:"
+msgstr "Ξ•ΞΎ ΞΏΟΞΉΟƒΞΌΞΏΟ ΞµΟ…Ξ±ΞΉΟƒΞΈΞ·ΟƒΞ―Ξ± Ξ΄ΟΞΏΞΌΞ­Ξ±:"
 
+#  Windows settings
+#  Notebook tab
 #. Windows settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "Ξ Ξ±ΟΞ¬ΞΈΟ…ΟΞ±"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
@@ -373,120 +380,119 @@ msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
-msgstr "Ρυθμίσεις εγγράφου"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ…"
 
 #: src/dialogs/document-properties.c:180
 msgid "Paper size:"
-msgstr "Μέγεθος χαρτιού:"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ Ο‡Ξ±ΟΟ„ΞΉΞΏΟ:"
 
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
 #: src/dialogs/document-properties.c:201
 msgid "Custom"
-msgstr "Προσαρμοσμένο"
+msgstr "Ξ ΟΞΏΟƒΞ±ΟΞΌΞΏΟƒΞΌΞ­Ξ½ΞΏ"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:208
 msgid "Custom paper"
-msgstr "Προσαρμοσμένο χαρτί"
+msgstr "Ξ ΟΞΏΟƒΞ±ΟΞΌΞΏΟƒΞΌΞ­Ξ½ΞΏ Ο‡Ξ±ΟΟ„Ξ―"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
-msgstr "Μονάδες:"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
-#: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:189
+#: src/dialogs/export.c:213 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:566 src/dialogs/tool-attributes.c:125
+#: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
 #: src/dyna-draw-context.c:1087
 msgid "Width:"
-msgstr "Πλάτος:"
+msgstr "Ξ Ξ»Ξ¬Ο„ΞΏΟ‚:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:197
-#: src/dialogs/export.c:220 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
+#: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
-msgstr "Ύψος:"
+msgstr "ΞΟΞΏΟ‚:"
 
-#: src/dialogs/export.c:140
+#: src/dialogs/export.c:141
 msgid "Export bitmap"
-msgstr "Εξαγωγή bitmap"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® bitmap"
 
 #. Export area frame
-#: src/dialogs/export.c:149
+#: src/dialogs/export.c:150
 msgid "Export area"
 msgstr ""
 
-#: src/dialogs/export.c:182
+#: src/dialogs/export.c:183
 msgid "x0:"
 msgstr "x0:"
 
 #
-#: src/dialogs/export.c:185
+#: src/dialogs/export.c:186
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:191
+#: src/dialogs/export.c:192
 msgid "y0:"
 msgstr "y0:"
 
 #
-#: src/dialogs/export.c:194
+#: src/dialogs/export.c:195
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:203
+#: src/dialogs/export.c:204
 msgid "Bitmap size"
-msgstr "Μέγεθος Bitmap"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ Bitmap"
 
 #
-#: src/dialogs/export.c:212 src/dialogs/export.c:220
+#: src/dialogs/export.c:213 src/dialogs/export.c:221
 msgid "pixels"
-msgstr "εικονοστοιχεία"
+msgstr "ΞµΞΉΞΊΞΏΞ½ΞΏΟƒΟ„ΞΏΞΉΟ‡ΞµΞ―Ξ±"
 
-#: src/dialogs/export.c:216 src/dialogs/export.c:224
+#: src/dialogs/export.c:217 src/dialogs/export.c:225
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:232
-#, fuzzy
+#: src/dialogs/export.c:233
 msgid "Background color"
-msgstr " Χρώμα τέλους"
+msgstr "Ξ§ΟΟΞΌΞ± Ο€Ξ±ΟΞ±ΟƒΞΊΞ·Ξ½Ξ―ΞΏΟ…"
 
-#: src/dialogs/export.c:234
+#: src/dialogs/export.c:235
 msgid "Bitmap background:"
 msgstr ""
 
-#: src/dialogs/export.c:239
+#: src/dialogs/export.c:240
 msgid "Export png file"
-msgstr "Εξαγωγή αρχείου png"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… png"
 
 #
-#: src/dialogs/export.c:266 src/verbs.c:413
+#: src/dialogs/export.c:267 src/verbs.c:417
 msgid "Export"
-msgstr "Εξαγωγή"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #: src/dialogs/export.c:401
 #, fuzzy
 msgid "Export in progress"
-msgstr "Εξαγωγή αρχείου png"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… png"
 
 #: src/dialogs/export.c:405
 #, fuzzy, c-format
 msgid "Exporting [%d x %d] %s"
-msgstr "Χρώμα εικόνας %d x %d: %s"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #: src/dialogs/fill-style.c:87
 msgid "Fill style"
-msgstr " Στυλ γεμίσματος"
+msgstr " Ξ£Ο„Ο…Ξ» Ξ³ΞµΞΌΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
-msgstr "Κανόμας γεμίσματος"
+msgstr "ΞΞ±Ξ½ΟΞΌΞ±Ο‚ Ξ³ΞµΞΌΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚"
 
 #
 #: src/dialogs/fill-style.c:138
@@ -498,57 +504,61 @@ msgid "evenodd"
 msgstr ""
 
 #
-#: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
-#: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:269
+#: src/dialogs/item-properties.c:368 src/dialogs/item-properties.c:375
 msgid "ID"
 msgstr "ID"
 
-#: src/dialogs/item-properties.c:99
+#: src/dialogs/item-properties.c:95
 msgid "Set ID"
-msgstr "Ορισμός ID"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ ID"
 
-#: src/dialogs/item-properties.c:110
+#. Sensitive
+#: src/dialogs/item-properties.c:104
 msgid "Sensitive"
-msgstr "Ευαίσθητο"
+msgstr "Ξ•Ο…Ξ±Ξ―ΟƒΞΈΞ·Ο„ΞΏ"
 
-#: src/dialogs/item-properties.c:115
+#. Visible
+#: src/dialogs/item-properties.c:109
 msgid "Visible"
-msgstr "Ορατό"
+msgstr "ΞΟΞ±Ο„Ο"
 
 #
-#: src/dialogs/item-properties.c:120
+#. Active
+#: src/dialogs/item-properties.c:114
 msgid "Active"
-msgstr "Ενεργό"
+msgstr "Ξ•Ξ½ΞµΟΞ³Ο"
 
-#: src/dialogs/item-properties.c:125
+#. Printable
+#: src/dialogs/item-properties.c:119
 msgid "Printable"
-msgstr "Εκτυπώσιμο"
+msgstr "Ξ•ΞΊΟ„Ο…Ο€ΟΟƒΞΉΞΌΞΏ"
 
 #
-#: src/dialogs/item-properties.c:136
+#: src/dialogs/item-properties.c:128
 msgid "Opacity:"
-msgstr "Διαφάνεια:"
+msgstr "Ξ”ΞΉΞ±Ο†Ξ¬Ξ½ΞµΞΉΞ±:"
 
-#: src/dialogs/item-properties.c:155
+#: src/dialogs/item-properties.c:144
 #, fuzzy
 msgid "Transformation matrix"
-msgstr "Μετασχηματισμός"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚"
 
-#: src/dialogs/item-properties.c:276
+#: src/dialogs/item-properties.c:263
 msgid "Ref"
 msgstr "Ref"
 
-#: src/dialogs/item-properties.c:358
+#: src/dialogs/item-properties.c:370
 msgid "ID invalid"
-msgstr "¶κυρη ID "
+msgstr "Ξ†ΞΊΟ…ΟΞ· ID "
 
-#: src/dialogs/item-properties.c:360
+#: src/dialogs/item-properties.c:372
 msgid "ID exists"
-msgstr "Το ID υπάρχει"
+msgstr "Ξ¤ΞΏ ID Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ"
 
-#: src/dialogs/item-properties.c:436 src/verbs.c:482
+#: src/dialogs/item-properties.c:448 src/verbs.c:487
 msgid "Item properties"
-msgstr "Ιδιότητες αντικειμένου"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #
 #: src/dialogs/object-attributes.c:34
@@ -557,16 +567,16 @@ msgstr "Href:"
 
 #: src/dialogs/object-attributes.c:35
 msgid "Target:"
-msgstr "Στόχος:"
+msgstr "Ξ£Ο„ΟΟ‡ΞΏΟ‚:"
 
 #: src/dialogs/object-attributes.c:36
 msgid "Type:"
-msgstr "Τύπος:"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚:"
 
 #
 #: src/dialogs/object-attributes.c:37
 msgid "Role:"
-msgstr "Ρόλος:"
+msgstr "Ξ΅ΟΞ»ΞΏΟ‚:"
 
 #: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
@@ -575,28 +585,28 @@ msgstr ""
 #
 #: src/dialogs/object-attributes.c:39
 msgid "Title:"
-msgstr "Τίτλος:"
+msgstr "Ξ¤Ξ―Ο„Ξ»ΞΏΟ‚:"
 
 #: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
 msgid "Show:"
-msgstr "Προβολή:"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ®:"
 
 #: src/dialogs/object-attributes.c:41
 #, fuzzy
 msgid "Actuate:"
-msgstr "Ιδιότητα:"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„Ξ±:"
 
 #: src/dialogs/object-attributes.c:46
 msgid "Sides:"
-msgstr "Πλευρές:"
+msgstr "Ξ Ξ»ΞµΟ…ΟΞ­Ο‚:"
 
 #: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
 msgid "Center X:"
-msgstr "Κέντρο  X:"
+msgstr "ΞΞ­Ξ½Ο„ΟΞΏ  X:"
 
 #: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
 msgid "Center Y:"
-msgstr "Κέντρο Y:"
+msgstr "ΞΞ­Ξ½Ο„ΟΞΏ Y:"
 
 #
 #: src/dialogs/object-attributes.c:49
@@ -626,15 +636,15 @@ msgstr ""
 #: src/spiral-context.c:351
 #, fuzzy
 msgid "Revolution:"
-msgstr "Επιλογή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®"
 
 #: src/dialogs/object-attributes.c:61
 msgid "Radius:"
-msgstr ""
+msgstr "Ξ‘ΞΊΟ„Ξ―Ξ½Ξ±:"
 
 #: src/dialogs/object-attributes.c:62
 msgid "Argument:"
-msgstr ""
+msgstr "ΞΟΞΉΟƒΞΌΞ±:"
 
 #: src/dialogs/object-attributes.c:63
 msgid "T0:"
@@ -647,12 +657,12 @@ msgstr "URL:"
 #: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
 #: src/dialogs/object-properties.c:332
 msgid "X:"
-msgstr "Χ:"
+msgstr "Ξ§:"
 
 #: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
 #: src/dialogs/object-properties.c:344
 msgid "Y:"
-msgstr "Ψ:"
+msgstr "Ξ¨:"
 
 #: src/dialogs/object-attributes.c:81
 msgid "RX:"
@@ -665,32 +675,32 @@ msgstr "RY:"
 #: src/dialogs/object-attributes.c:117
 #, c-format
 msgid "%s attributes"
-msgstr "Γνωρίσματα %s"
+msgstr "Ξ“Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„Ξ± %s"
 
 #
 #: src/dialogs/object-properties.c:113
 msgid "Object style"
-msgstr "Στυλ αντικειμένου"
+msgstr "Ξ£Ο„Ο…Ξ» Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #: src/dialogs/object-properties.c:128
 msgid "Fill"
-msgstr "Γέμισμα"
+msgstr "Ξ“Ξ­ΞΌΞΉΟƒΞΌΞ±"
 
 #: src/dialogs/object-properties.c:142
 msgid "Stroke paint"
-msgstr "Βαφή πινελιάς"
+msgstr "Ξ’Ξ±Ο†Ξ® Ο€ΞΉΞ½ΞµΞ»ΞΉΞ¬Ο‚"
 
 #: src/dialogs/object-properties.c:156
 msgid "Stroke style"
-msgstr "Στυλ πινελιάς"
+msgstr "Ξ£Ο„Ο…Ξ» Ο€ΞΉΞ½ΞµΞ»ΞΉΞ¬Ο‚"
 
 #: src/dialogs/object-properties.c:176
 msgid "Apply to:"
-msgstr "Εφαρμογή σε:"
+msgstr "Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ® ΟƒΞµ:"
 
 #: src/dialogs/object-properties.c:186
 msgid "Selected objects"
-msgstr "Επιλεγμένα αντικείμενα"
+msgstr "Ξ•Ο€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ± Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½Ξ±"
 
 #: src/dialogs/object-properties.c:189
 msgid "All shape tools"
@@ -698,103 +708,103 @@ msgstr ""
 
 #: src/dialogs/object-properties.c:192
 msgid "Rectangle tool"
-msgstr "Εργαλείο παραλληλόγραμου"
+msgstr "Ξ•ΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ο€Ξ±ΟΞ±Ξ»Ξ»Ξ·Ξ»ΟΞ³ΟΞ±ΞΌΞΏΟ…"
 
 #: src/dialogs/object-properties.c:195
 msgid "Arc tool"
-msgstr "Εργαλείο τόξου"
+msgstr "Ξ•ΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ο„ΟΞΎΞΏΟ…"
 
 #: src/dialogs/object-properties.c:198
 msgid "Star tool"
-msgstr "Εργαλείο αστεριού"
+msgstr "Ξ•ΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ξ±ΟƒΟ„ΞµΟΞΉΞΏΟ"
 
 #: src/dialogs/object-properties.c:201
 msgid "Spiral tool"
-msgstr "Εργαλείο σπειρώματος"
+msgstr "Ξ•ΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ ΟƒΟ€ΞµΞΉΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/dialogs/object-properties.c:204
 #, fuzzy
 msgid "Freehand and pen"
-msgstr "Γροιλανδία"
+msgstr "Ξ“ΟΞΏΞΉΞ»Ξ±Ξ½Ξ΄Ξ―Ξ±"
 
 #: src/dialogs/object-properties.c:207
 msgid "Calligraphic line"
-msgstr "Καλλιγραφική γραμμή"
+msgstr "ΞΞ±Ξ»Ξ»ΞΉΞ³ΟΞ±Ο†ΞΉΞΊΞ® Ξ³ΟΞ±ΞΌΞΌΞ®"
 
 #
-#: src/dialogs/object-properties.c:210 src/verbs.c:458
+#: src/dialogs/object-properties.c:210 src/verbs.c:462
 msgid "Text"
-msgstr "Κείμενο"
+msgstr "ΞΞµΞ―ΞΌΞµΞ½ΞΏ"
 
 #: src/dialogs/object-properties.c:289
 msgid "Object Size and Position"
-msgstr "Θέση και μέγεθος αντικειμένου"
+msgstr "ΞΞ­ΟƒΞ· ΞΊΞ±ΞΉ ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:477
+#: src/dialogs/object-properties.c:312 src/verbs.c:481
 msgid "Size and Position"
-msgstr "Μέγεθος και θέση"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ ΞΊΞ±ΞΉ ΞΈΞ­ΟƒΞ·"
 
-#: src/dialogs/stroke-style.c:553 src/toolbox.c:360
+#: src/dialogs/stroke-style.c:554 src/toolbox.c:401
 msgid "Stroke settings"
-msgstr "Ρυθμίσεις πινελιάς"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ο€ΞΉΞ½ΞµΞ»ΞΉΞ¬Ο‚"
 
 #
 #. Join type
-#: src/dialogs/stroke-style.c:589
+#: src/dialogs/stroke-style.c:590
 msgid "Join:"
-msgstr "Ένωση:"
+msgstr "ΞΞ½Ο‰ΟƒΞ·:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:632
+#: src/dialogs/stroke-style.c:633
 #, fuzzy
 msgid "Cap:"
-msgstr "Κυανό"
+msgstr "ΞΟ…Ξ±Ξ½Ο"
 
 #. Dash
-#: src/dialogs/stroke-style.c:675
+#: src/dialogs/stroke-style.c:676
 msgid "Pattern:"
-msgstr "Σχέδιο:"
+msgstr "Ξ£Ο‡Ξ­Ξ΄ΞΉΞΏ:"
 
 #: src/dialogs/text-edit.c:102
 msgid "Text properties"
-msgstr "Ιδιότητες κειμένου"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #. Layout
 #: src/dialogs/text-edit.c:141
 msgid "Layout"
-msgstr "Διάταξη"
+msgstr "Ξ”ΞΉΞ¬Ο„Ξ±ΞΎΞ·"
 
 #: src/dialogs/text-edit.c:149
 msgid "Alignment:"
-msgstr "Στοίχιση:"
+msgstr "Ξ£Ο„ΞΏΞ―Ο‡ΞΉΟƒΞ·:"
 
 #
 #: src/dialogs/text-edit.c:174
 msgid "Orientation:"
-msgstr "Προσανατολισμός:"
+msgstr "Ξ ΟΞΏΟƒΞ±Ξ½Ξ±Ο„ΞΏΞ»ΞΉΟƒΞΌΟΟ‚:"
 
 #
 #: src/dialogs/text-edit.c:192
 msgid "Line spacing:"
-msgstr "Διάστιχο γραμμής:"
+msgstr "Ξ”ΞΉΞ¬ΟƒΟ„ΞΉΟ‡ΞΏ Ξ³ΟΞ±ΞΌΞΌΞ®Ο‚:"
 
 #
 #: src/dialogs/text-edit.c:212
 #, fuzzy
 msgid "Spacing:"
-msgstr "Διάστιχο Y:"
+msgstr "Ξ‘Ο€ΟΟƒΟ„Ξ±ΟƒΞ·"
 
 #: src/dialogs/text-edit.c:235
 msgid "Text and font"
-msgstr "Γραμματοσειρά και κείμενο"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬ ΞΊΞ±ΞΉ ΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
 #: src/dialogs/text-edit.c:246
 msgid "Set as default"
-msgstr "Ορισμός ως προεπιλογής"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ο‰Ο‚ Ο€ΟΞΏΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:479
 msgid "Tool attributes"
-msgstr "Γνωρίσματα εργαλείου"
+msgstr "Ξ“Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„Ξ± ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏΟ…"
 
 #: src/dialogs/tool-attributes.c:95
 msgid "Expansion"
@@ -812,51 +822,51 @@ msgstr ""
 #. Magnitude
 #: src/dialogs/tool-attributes.c:105 src/star-context.c:356
 msgid "Corners:"
-msgstr "Γωνίες:"
+msgstr "Ξ“Ο‰Ξ½Ξ―ΞµΟ‚:"
 
 #: src/dialogs/tool-attributes.c:105
 msgid "Proportion"
-msgstr "Αναλογία"
+msgstr "Ξ‘Ξ½Ξ±Ξ»ΞΏΞ³Ξ―Ξ±"
 
 #: src/dialogs/tool-attributes.c:115
 msgid "Transform:"
-msgstr "Μετασχηματισμός:"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
 msgid "Mass:"
-msgstr "Μάζα:"
+msgstr "ΞΞ¬Ξ¶Ξ±:"
 
 #. Drag
 #: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
 #, fuzzy
 msgid "Drag:"
-msgstr "Συρτάρι"
+msgstr "Ξ£Ο…ΟΟ„Ξ¬ΟΞΉ"
 
 #: src/dialogs/tool-attributes.c:125
 msgid "Angle"
-msgstr "Γωνία"
+msgstr "Ξ“Ο‰Ξ½Ξ―Ξ±"
 
 #
 #: src/dialogs/tool-attributes.c:132
 msgid "Tool has no attributes"
-msgstr "Το εργαλείο δεν έχει γνωρίσματα"
+msgstr "Ξ¤ΞΏ ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΞΉ Ξ³Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„Ξ±"
 
 #: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
 msgid "No active tool"
-msgstr "Δεν υπάρχει ενεργό εργαλείο"
+msgstr "Ξ”ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ ΞµΞ½ΞµΟΞ³Ο ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:474
+#: src/dialogs/tool-options.c:47 src/verbs.c:478
 msgid "Tool options"
-msgstr "Επιλογές εργαλείου"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏΟ…"
 
 #: src/dialogs/tool-options.c:90
 msgid "Tool has no options"
-msgstr "Το εργαλείο δεν έχει επιλογές"
+msgstr "Ξ¤ΞΏ ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΞΉ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚"
 
 #: src/dialogs/transformation.c:195
 msgid "Transform selection"
-msgstr "Μετασχηματισμός επιλογής"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚"
 
 #. Apply to duplicate
 #: src/dialogs/transformation.c:216
@@ -865,16 +875,16 @@ msgstr ""
 
 #: src/dialogs/transformation.c:313
 msgid "Move"
-msgstr "Μετακίνηση"
+msgstr "ΞΞµΟ„Ξ±ΞΊΞ―Ξ½Ξ·ΟƒΞ·"
 
 #
 #: src/dialogs/transformation.c:457
 msgid "Scale"
-msgstr "Κλιμάκωση"
+msgstr "ΞΞ»ΞΉΞΌΞ¬ΞΊΟ‰ΟƒΞ·"
 
 #: src/dialogs/transformation.c:584
 msgid "Rotate"
-msgstr "Περιστροφή"
+msgstr "Ξ ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
 
 #: src/dialogs/transformation.c:602
 msgid "deg"
@@ -887,88 +897,88 @@ msgstr ""
 #: src/dialogs/xml-tree.c:170
 #, fuzzy
 msgid "New element node"
-msgstr "Έγγραφο"
+msgstr "ΞΞ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #: src/dialogs/xml-tree.c:188
 msgid "New text node"
-msgstr "Νέος κόμβος κειμένου"
+msgstr "ΞΞ­ΞΏΟ‚ ΞΊΟΞΌΞ²ΞΏΟ‚ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
-msgstr "Διπλασιασμός κόμβου"
+msgstr "Ξ”ΞΉΟ€Ξ»Ξ±ΟƒΞΉΞ±ΟƒΞΌΟΟ‚ ΞΊΟΞΌΞ²ΞΏΟ…"
 
 #
 #: src/dialogs/xml-tree.c:221
 msgid "Delete node"
-msgstr "Διαγραφή κόμβου"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞΊΟΞΌΞ²ΞΏΟ…"
 
 #: src/dialogs/xml-tree.c:234
 #, fuzzy
 msgid "Unindent node"
-msgstr "Επεξεργασία Φακέλων"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ξ¦Ξ±ΞΊΞ­Ξ»Ο‰Ξ½"
 
 #: src/dialogs/xml-tree.c:245
 #, fuzzy
 msgid "Indent node"
-msgstr "Επεξεργασία Φακέλων"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ξ¦Ξ±ΞΊΞ­Ξ»Ο‰Ξ½"
 
 #: src/dialogs/xml-tree.c:255
 msgid "Raise node"
-msgstr "Ανύψωση κόμβου"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ· ΞΊΟΞΌΞ²ΞΏΟ…"
 
 #: src/dialogs/xml-tree.c:266
 msgid "Lower node"
-msgstr "Βύθιση κόμβου"
+msgstr "Ξ’ΟΞΈΞΉΟƒΞ· ΞΊΟΞΌΞ²ΞΏΟ…"
 
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
-msgstr "Διαγραφή γνωρίσματοσ"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ³Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟƒ"
 
 #: src/dialogs/xml-tree.c:333
 msgid "Attribute name"
-msgstr "Όνομα γνωρίσματοσ"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ξ³Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟƒ"
 
 #: src/dialogs/xml-tree.c:340
 msgid "Set attribute"
-msgstr "Ορισμός γνωρίσματος"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ξ³Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/dialogs/xml-tree.c:353
 msgid "Attribute value"
-msgstr "Τιμή γνωρίσματος"
+msgstr "Ξ¤ΞΉΞΌΞ® Ξ³Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚"
 
-#: src/dialogs/xml-tree.c:832
+#: src/dialogs/xml-tree.c:833
 #, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s : Προβολή XML"
+msgstr "Sodipodi: %s : Ξ ΟΞΏΞ²ΞΏΞ»Ξ® XML"
 
-#: src/dialogs/xml-tree.c:855
+#: src/dialogs/xml-tree.c:856
 msgid "New element node..."
 msgstr ""
 
 #
-#: src/dialogs/xml-tree.c:875
+#: src/dialogs/xml-tree.c:876
 msgid "Cancel"
-msgstr "Ακύρωση"
+msgstr "Ξ‘ΞΊΟΟΟ‰ΟƒΞ·"
 
 #
-#: src/dialogs/xml-tree.c:879
+#: src/dialogs/xml-tree.c:880
 msgid "Create"
-msgstr "Δημιουργία"
-
-#: src/document.c:353
-#, c-format
-msgid "New document %d"
-msgstr "Νέο έγγραφο %d"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±"
 
 #: src/document.c:389
+#, c-format
+msgid "New document %d"
+msgstr "ΞΞ­ΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ %d"
+
+#: src/document.c:425
 #, c-format
 msgid "Memory document %d"
 msgstr ""
 
-#: src/document.c:499
+#: src/document.c:572
 #, c-format
 msgid "Unnamed document %d"
-msgstr "Ανώνυμο έγγραφο %d"
+msgstr "Ξ‘Ξ½ΟΞ½Ο…ΞΌΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ %d"
 
 #: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
@@ -981,56 +991,56 @@ msgstr ""
 #. Angle
 #: src/dyna-draw-context.c:1075
 msgid "Angle:"
-msgstr "Γωνία:"
+msgstr "Ξ“Ο‰Ξ½Ξ―Ξ±:"
 
 #. Reset
-#: src/dyna-draw-context.c:1099 src/rect-context.c:420
+#: src/dyna-draw-context.c:1099 src/rect-context.c:425
 #: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
-msgstr "Εξ ορισμού"
+msgstr "Ξ•ΞΎ ΞΏΟΞΉΟƒΞΌΞΏΟ"
 
-#: src/file.c:162 src/file.c:176 src/file.c:188
+#: src/file.c:123 src/file.c:137 src/file.c:149
 msgid "Select file to open"
-msgstr "Επιλογή αρχείου για άνοιγμα"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ³ΞΉΞ± Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ±"
 
-#: src/file.c:207 src/file.c:305
+#: src/file.c:174 src/file.c:278
 msgid "File type:"
-msgstr "Τύπος αρχείου:"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…:"
 
-#: src/file.c:290
+#: src/file.c:263
 msgid "Save file"
-msgstr "Αποθήκευση αρχείου"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…"
 
-#: src/file.c:485 src/file.c:495 src/file.c:501
+#: src/file.c:468 src/file.c:478 src/file.c:484
 msgid "Select file to import"
-msgstr "Επιλογή αρχείου για εισαγωγή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ³ΞΉΞ± ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #: src/help.c:51
 msgid "About sodipodi"
-msgstr "Περί Sodipodi"
+msgstr "Ξ ΞµΟΞ― Sodipodi"
 
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:42
 msgid "Unit"
-msgstr "Μονάδα"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄Ξ±"
 
 #: src/helper/units.c:42
 msgid "Units"
-msgstr "Μονάδες"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚"
 
 #: src/helper/units.c:43
 msgid "Point"
-msgstr "Σημείο"
+msgstr "Ξ£Ξ·ΞΌΞµΞ―ΞΏ"
 
 #: src/helper/units.c:43
 #, fuzzy
 msgid "pt"
-msgstr "στιγ."
+msgstr "Ξ ΞΏΟΟ„ΞΏΞ³Ξ±Ξ»Ξ»Ξ―Ξ±"
 
 #
 #: src/helper/units.c:43
 msgid "Points"
-msgstr "Στιγμές"
+msgstr "Ξ£Ο„ΞΉΞ³ΞΌΞ­Ο‚"
 
 #: src/helper/units.c:43
 msgid "Pt"
@@ -1038,7 +1048,7 @@ msgstr "Pt"
 
 #: src/helper/units.c:44
 msgid "Pixel"
-msgstr "Εικονοστοιχείο"
+msgstr "Ξ•ΞΉΞΊΞΏΞ½ΞΏΟƒΟ„ΞΏΞΉΟ‡ΞµΞ―ΞΏ"
 
 #: src/helper/units.c:44
 msgid "px"
@@ -1047,7 +1057,7 @@ msgstr "px"
 #
 #: src/helper/units.c:44
 msgid "Pixels"
-msgstr "Εικονοστοιχεία"
+msgstr "Ξ•ΞΉΞΊΞΏΞ½ΞΏΟƒΟ„ΞΏΞΉΟ‡ΞµΞ―Ξ±"
 
 #: src/helper/units.c:44
 msgid "Px"
@@ -1056,22 +1066,22 @@ msgstr "Px"
 #: src/helper/units.c:45
 #, fuzzy
 msgid "Userspace unit"
-msgstr "Κατειλλημένος χώρος"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄Ξ± Ξ΄ΞΉΞ±ΟƒΟ„Ξ®ΞΌΞ±Ο„ΞΏΟ‚ Ο‡ΟΞ®ΟƒΟ„Ξ·"
 
 #: src/helper/units.c:45
 msgid "User"
-msgstr " Χρήστης"
+msgstr " Ξ§ΟΞ®ΟƒΟ„Ξ·Ο‚"
 
 #: src/helper/units.c:45
 #, fuzzy
 msgid "Userspace units"
-msgstr "Κατειλλημένος χώρος"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚ Ξ΄ΞΉΞ±ΟƒΟ„Ξ®ΞΌΞ±Ο„ΞΏΟ‚ Ο‡ΟΞ®ΟƒΟ„Ξ·"
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: src/helper/units.c:48
 msgid "Percent"
-msgstr "Ποσοστό"
+msgstr "Ξ ΞΏΟƒΞΏΟƒΟ„Ο"
 
 #: src/helper/units.c:48
 msgid "%"
@@ -1079,11 +1089,11 @@ msgstr "%"
 
 #: src/helper/units.c:48
 msgid "Percents"
-msgstr "Ποσοστά"
+msgstr "Ξ ΞΏΟƒΞΏΟƒΟ„Ξ¬"
 
 #: src/helper/units.c:49
 msgid "Millimeter"
-msgstr "Χιλιοστό"
+msgstr "Ξ§ΞΉΞ»ΞΉΞΏΟƒΟ„Ο"
 
 #: src/helper/units.c:49
 msgid "mm"
@@ -1091,11 +1101,11 @@ msgstr "mm"
 
 #: src/helper/units.c:49
 msgid "Millimeters"
-msgstr "Χιλιοστά"
+msgstr "Ξ§ΞΉΞ»ΞΉΞΏΟƒΟ„Ξ¬"
 
 #: src/helper/units.c:50
 msgid "Centimeter"
-msgstr "Εκατοστό"
+msgstr "Ξ•ΞΊΞ±Ο„ΞΏΟƒΟ„Ο"
 
 #: src/helper/units.c:50
 msgid "cm"
@@ -1103,11 +1113,11 @@ msgstr "cm"
 
 #: src/helper/units.c:50
 msgid "Centimeters"
-msgstr "Εκατοστά"
+msgstr "Ξ•ΞΊΞ±Ο„ΞΏΟƒΟ„Ξ¬"
 
 #: src/helper/units.c:51
 msgid "Meter"
-msgstr "Μέτρο"
+msgstr "ΞΞ­Ο„ΟΞΏ"
 
 #: src/helper/units.c:51
 msgid "m"
@@ -1115,11 +1125,11 @@ msgstr "m"
 
 #: src/helper/units.c:51
 msgid "meters"
-msgstr "μέτρα"
+msgstr "ΞΌΞ­Ο„ΟΞ±"
 
 #: src/helper/units.c:52
 msgid "Inch"
-msgstr "ίντσα"
+msgstr "Ξ―Ξ½Ο„ΟƒΞ±"
 
 #
 #: src/helper/units.c:52
@@ -1128,138 +1138,138 @@ msgstr "in"
 
 #: src/helper/units.c:52
 msgid "Inches"
-msgstr "Ίντσες"
+msgstr "ΞΞ½Ο„ΟƒΞµΟ‚"
 
 #: src/helper/units.c:53
 #, fuzzy
 msgid "Em square"
-msgstr "Τετράγωνο"
+msgstr "Ξ¤ΞµΟ„ΟΞ¬Ξ³Ο‰Ξ½ΞΏ"
 
 #: src/helper/units.c:53
 #, fuzzy
 msgid "em"
-msgstr "Δείγμα"
+msgstr "Ξ”ΞµΞ―Ξ³ΞΌΞ±"
 
 #: src/helper/units.c:53
 #, fuzzy
 msgid "Em squares"
-msgstr "Τετράγωνο"
+msgstr "Ξ¤ΞµΟ„ΟΞ¬Ξ³Ο‰Ξ½ΞΏ"
 
 #: src/helper/units.c:54
 #, fuzzy
 msgid "Ex square"
-msgstr "Τετράγωνο"
+msgstr "Ξ¤ΞµΟ„ΟΞ¬Ξ³Ο‰Ξ½ΞΏ"
 
 #: src/helper/units.c:54
 #, fuzzy
 msgid "ex"
-msgstr "Δεκαεξαδικό"
+msgstr "Ξ”ΞµΞΊΞ±ΞµΞΎΞ±Ξ΄ΞΉΞΊΟ"
 
 #: src/helper/units.c:54
 #, fuzzy
 msgid "Ex squares"
-msgstr "Τετράγωνο"
+msgstr "Ξ¤ΞµΟ„ΟΞ¬Ξ³Ο‰Ξ½ΞΏ"
 
-#: src/interface.c:315 src/interface.c:513
+#: src/interface.c:305 src/interface.c:504
 msgid "Open Recent"
-msgstr "¶νοιγμα προσφάτου"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ± Ο€ΟΞΏΟƒΟ†Ξ¬Ο„ΞΏΟ…"
 
-#: src/interface.c:335
+#: src/interface.c:325
 msgid "Close View"
-msgstr "Κλείσιμο προβολής"
+msgstr "ΞΞ»ΞµΞ―ΟƒΞΉΞΌΞΏ Ο€ΟΞΏΞ²ΞΏΞ»Ξ®Ο‚"
 
-#: src/interface.c:338 src/interface.c:519
+#: src/interface.c:328 src/interface.c:510
 msgid "About Sodipodi"
-msgstr "Περί Sodipodi"
+msgstr "Ξ ΞµΟΞ― Sodipodi"
 
 #. Have modules about menu
-#: src/interface.c:344 src/interface.c:525
+#: src/interface.c:334 src/interface.c:516
 msgid "About Modules"
 msgstr ""
 
-#: src/interface.c:364
+#: src/interface.c:354
 msgid "Cleanup"
-msgstr "Εκκαθάριση"
+msgstr "Ξ•ΞΊΞΊΞ±ΞΈΞ¬ΟΞΉΟƒΞ·"
 
 #. View:Zoom
-#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:429 src/toolbox.c:587 src/verbs.c:463
 msgid "Zoom"
-msgstr "Εστίαση"
+msgstr "Ξ•ΟƒΟ„Ξ―Ξ±ΟƒΞ·"
 
 #. View:New View
-#: src/interface.c:451
+#: src/interface.c:441
 msgid "New View"
-msgstr "Νέα Προβολή"
+msgstr "ΞΞ­Ξ± Ξ ΟΞΏΞ²ΞΏΞ»Ξ®"
 
 #. View:New Preview
-#: src/interface.c:453
+#: src/interface.c:443
 msgid "New Preview"
-msgstr "Νέα προεπισκόπηση"
+msgstr "ΞΞ­Ξ± Ο€ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ·"
 
-#: src/interface.c:455
+#: src/interface.c:445
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:456
+#: src/interface.c:446
 #, fuzzy
 msgid "New Docked Toolbox"
-msgstr "Εμφάνιση _Εργαλειοθήκης"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· _Ξ•ΟΞ³Ξ±Ξ»ΞµΞΉΞΏΞΈΞ®ΞΊΞ·Ο‚"
 
-#: src/interface.c:457
+#: src/interface.c:447
 msgid "Remove Docked Toolbox"
 msgstr ""
 
 #
 #. File
-#: src/interface.c:510 src/verbs.c:405
+#: src/interface.c:501 src/verbs.c:409
 msgid "New"
-msgstr "Νέο"
+msgstr "ΞΞ­ΞΏ"
 
 #
-#: src/interface.c:511
+#: src/interface.c:502
 msgid "Open"
-msgstr "¶νοιγμα"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ±"
 
+#  For some reason action menu does not work on menubar :-(
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:531 src/verbs.c:414
-#, fuzzy
+#: src/interface.c:522 src/verbs.c:418
 msgid "Exit program"
-msgstr "Έξοδος από το πρόγραμμα"
+msgstr "ΞΞΎΞΏΞ΄ΞΏΟ‚ Ξ±Ο€Ο Ο„ΞΏ Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ±"
 
 #
 #. Generic menu
 #. File submenu
-#: src/interface.c:594 src/toolbox.c:270
+#: src/interface.c:585 src/toolbox.c:311
 msgid "File"
-msgstr "Αρχείο"
+msgstr "Ξ‘ΟΟ‡ΞµΞ―ΞΏ"
 
 #
 #. Edit submenu
-#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:591 src/toolbox.c:362 src/widgets/gradient-selector.c:138
 msgid "Edit"
-msgstr "Επεξεργασία"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ±"
 
 #. View submenu
-#: src/interface.c:612
+#: src/interface.c:603
 msgid "View"
-msgstr "Προβολή"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ®"
 
 #
 #. Drawing mode submenu
-#: src/interface.c:618
+#: src/interface.c:609
 msgid "Drawing Mode"
-msgstr "Λειτουργία σχεδίασης"
+msgstr "Ξ›ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± ΟƒΟ‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·Ο‚"
 
 #. Dialog submenu
-#: src/interface.c:624
+#: src/interface.c:615
 msgid "Dialogs"
-msgstr "Διάλογοι"
+msgstr "Ξ”ΞΉΞ¬Ξ»ΞΏΞ³ΞΏΞΉ"
 
 #. Have modules menu
-#: src/interface.c:633
+#: src/interface.c:624
 #, fuzzy
 msgid "Modules"
-msgstr "Λειτουργία:"
+msgstr "ΞΞΏΞ½Ξ¬Ξ΄ΞµΟ‚"
 
 #: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
@@ -1276,7 +1286,7 @@ msgstr ""
 # gconf/gconftool.c:219
 #: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
 msgid "FILENAME"
-msgstr "ΟΝΟΜΑ ΑΡΧΕΙΟΥ"
+msgstr "ΞΞΞΞΞ‘ Ξ‘Ξ΅Ξ§Ξ•Ξ™ΞΞ¥"
 
 #: src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
@@ -1284,7 +1294,7 @@ msgstr ""
 
 #: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
-msgstr "Εξαγωγή εγγράφου σε αρχείο png "
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ png "
 
 #: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
@@ -1310,7 +1320,7 @@ msgstr ""
 
 #: src/main.c:141
 msgid "WIDTH"
-msgstr "ΠΛΑΤΟΣ"
+msgstr "Ξ Ξ›Ξ‘Ξ¤ΞΞ£"
 
 #: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
@@ -1318,22 +1328,22 @@ msgstr ""
 
 #: src/main.c:143
 msgid "HEIGHT"
-msgstr "ΥΨΟΣ"
+msgstr "Ξ¥Ξ¨ΞΞ£"
 
 #: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
-"Χρώμα παρασκηνίου του εξαγόμενου bitmap (οποιοδήποτε υποστηριζόμενο χρώμα "
+"Ξ§ΟΟΞΌΞ± Ο€Ξ±ΟΞ±ΟƒΞΊΞ·Ξ½Ξ―ΞΏΟ… Ο„ΞΏΟ… ΞµΞΎΞ±Ξ³ΟΞΌΞµΞ½ΞΏΟ… bitmap (ΞΏΟ€ΞΏΞΉΞΏΞ΄Ξ®Ο€ΞΏΟ„Ξµ Ο…Ο€ΞΏΟƒΟ„Ξ·ΟΞΉΞ¶ΟΞΌΞµΞ½ΞΏ Ο‡ΟΟΞΌΞ± "
 "SVG)"
 
 #: src/main.c:145
 msgid "COLOR"
-msgstr "ΧΡΩΜΑ"
+msgstr "Ξ§Ξ΅Ξ©ΞΞ‘"
 
 #: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
-"Εξαγωγή εγγράφου σε απλό αρχείο SVG (χωρίς \"xmlns:sodipodi\" namespace)"
+"Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… ΟƒΞµ Ξ±Ο€Ξ»Ο Ξ±ΟΟ‡ΞµΞ―ΞΏ SVG (Ο‡Ο‰ΟΞ―Ο‚ \"xmlns:sodipodi\" namespace)"
 
 #: src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -1347,7 +1357,7 @@ msgstr ""
 #: src/main.c:622
 #, fuzzy
 msgid "Print sodipodi version information"
-msgstr "Προορισμός εκτύπωσης"
+msgstr "Ξ ΟΞΏΞΏΟΞΉΟƒΞΌΟΟ‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
 
 #: src/main.c:623
 msgid "Print help about command-line arguments"
@@ -1355,7 +1365,7 @@ msgstr ""
 
 #: src/main.c:772
 msgid "Untitled document"
-msgstr "Ανώνυμο έγγραφο"
+msgstr "Ξ‘Ξ½ΟΞ½Ο…ΞΌΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #. Show nice dialog box
 #: src/main.c:797
@@ -1371,43 +1381,43 @@ msgstr ""
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
-#: src/module.c:873
+#: src/module.c:898
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Scalable Vector Graphic (SVG)"
 
-#: src/module.c:873
+#: src/module.c:898
 msgid "Sodipodi native file format and W3C standard"
 msgstr ""
 
-#: src/module.c:880
+#: src/module.c:905
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr "SVG με \"xmlns:sodipodi\" namespace"
+msgstr "SVG ΞΌΞµ \"xmlns:sodipodi\" namespace"
 
-#: src/module.c:881
+#: src/module.c:906
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr ""
 
-#: src/module.c:884
+#: src/module.c:909
 msgid "Plain SVG"
-msgstr "Απλό SVG"
+msgstr "Ξ‘Ο€Ξ»Ο SVG"
 
-#: src/module.c:885
+#: src/module.c:910
 msgid "Scalable Vector Graphics format"
-msgstr "Τύπος Scalable Vector Graphics"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚ Scalable Vector Graphics"
 
 #: src/modules/gnome.c:158
 msgid "Select printer"
-msgstr "Επιλογή εκτυπωτή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΞµΞΊΟ„Ο…Ο€Ο‰Ο„Ξ®"
 
 #: src/modules/gnome.c:212
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (doc name %s..): Προεπισκόπηση Εκτύπωσης"
+msgstr "Sodipodi (doc name %s..): Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ· Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
 
 #: src/modules/kde.cpp:162
 #, fuzzy
 msgid "Document variant:"
-msgstr "Έγγραφο"
+msgstr "ΞΞ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #: src/modules/kde.cpp:172
 msgid ""
@@ -1415,218 +1425,237 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
-"*.svg *.svgz|SVG αρχεία\n"
-"*.xml|XML αρχεία\n"
-"*|All τα αρχεία"
+"*.svg *.svgz|SVG Ξ±ΟΟ‡ΞµΞ―Ξ±\n"
+"*.xml|XML Ξ±ΟΟ‡ΞµΞ―Ξ±\n"
+"*|All Ο„Ξ± Ξ±ΟΟ‡ΞµΞ―Ξ±"
 
 #: src/modules/kde.cpp:174
 msgid "Save document as"
-msgstr "Αποθήκευση εγγράφου ως"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… Ο‰Ο‚"
 
-#
-#. Print destination frame
-#: src/modules/ps.c:245 src/modules/ps.c:306
-msgid "Print destination"
-msgstr "Προορισμός εκτύπωσης"
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
+#: src/modules/ps.c:961
+msgid "write error occured"
+msgstr "ΟƒΟ…Ξ½Ξ­Ξ²Ξ·ΞΊΞµ ΟƒΟ†Ξ¬Ξ»ΞΌΞ± ΞµΞ³Ξ³ΟΞ±Ο†Ξ®Ο‚"
 
-#. Print properties frame
-#: src/modules/ps.c:256
-msgid "Print properties"
-msgstr "Ιδιότητες εκτύπωσης"
-
-#: src/modules/ps.c:264
+#: src/modules/plain.c:178 src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr ""
 
-#: src/modules/ps.c:266
+#: src/modules/plain.c:179 src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
 
-#: src/modules/ps.c:271
+#: src/modules/plain.c:184 src/modules/ps.c:271
 msgid "Print as bitmap"
-msgstr "Εκτύπωση ως bitmap"
+msgstr "Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ· Ο‰Ο‚ bitmap"
 
-#: src/modules/ps.c:273
+#: src/modules/plain.c:185 src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
 
-#: src/modules/ps.c:287
+#: src/modules/plain.c:190
+msgid "Print using PDF driver"
+msgstr ""
+
+#: src/modules/plain.c:191
+msgid "Use Portable Document Format for printing"
+msgstr ""
+
+#
+#. Print destination frame
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
+#: src/modules/ps.c:306
+msgid "Print destination"
+msgstr "Ξ ΟΞΏΞΏΟΞΉΟƒΞΌΟΟ‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
+
+#. Print properties frame
+#: src/modules/plain.c:235 src/modules/ps.c:256
+msgid "Print properties"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
+
+#: src/modules/plain.c:274 src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr "Προτιμώμενη ανάλυση (κουκίδες ανα ίντσα) του bitmap "
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΟΞΌΞµΞ½Ξ· Ξ±Ξ½Ξ¬Ξ»Ο…ΟƒΞ· (ΞΊΞΏΟ…ΞΊΞ―Ξ΄ΞµΟ‚ Ξ±Ξ½Ξ± Ξ―Ξ½Ο„ΟƒΞ±) Ο„ΞΏΟ… bitmap "
 
-#: src/modules/ps.c:302
+#: src/modules/plain.c:289 src/modules/ps.c:302
 msgid "Resolution:"
-msgstr "Ανάλυση:"
+msgstr "Ξ‘Ξ½Ξ¬Ξ»Ο…ΟƒΞ·:"
 
-#: src/modules/ps.c:312
+#: src/modules/plain.c:299 src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/modules/ps.c:961
-msgid "write error occured"
-msgstr "συνέβηκε σφάλμα εγγραφής"
-
 #. Create toplevel menuitem
 #: src/object-ui.c:108
 msgid "Item"
-msgstr "Αντικείμενο"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:482
+#: src/object-ui.c:111 src/verbs.c:487
 msgid "Item Properties"
-msgstr "Ιδιότητες αντικειμένου"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #. Select item
 #: src/object-ui.c:119
 msgid "Select this"
-msgstr "Επιλογή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®"
 
+#  Reset transformations
 #. Reset transformations
 #: src/object-ui.c:128
 msgid "Reset transformation"
-msgstr "Επαναφορά μετασχηματισμού"
+msgstr "Ξ•Ο€Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΞΌΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΞΏΟ"
 
+#  Apply transformation
 #. Apply transformation
 #: src/object-ui.c:132
-#, fuzzy
 msgid "Apply transformation"
-msgstr "Επαναφορά μετασχηματισμού"
+msgstr "Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ® ΞΌΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΞΏΟ"
 
 #: src/object-ui.c:137
 #, fuzzy
 msgid "Make sensitive"
-msgstr "Πεζά/κεφαλαία διαφέρουν"
+msgstr "Ξ ΞµΞ¶Ξ¬/ΞΊΞµΟ†Ξ±Ξ»Ξ±Ξ―Ξ± Ξ΄ΞΉΞ±Ο†Ξ­ΟΞΏΟ…Ξ½"
 
 #: src/object-ui.c:137
 #, fuzzy
 msgid "Make insensitive"
-msgstr "Πεζά/κεφαλαία διαφέρουν"
+msgstr "Ξ ΞµΞ¶Ξ¬/ΞΊΞµΟ†Ξ±Ξ»Ξ±Ξ―Ξ± Ξ΄ΞΉΞ±Ο†Ξ­ΟΞΏΟ…Ξ½"
 
 #
 #. Create link
 #: src/object-ui.c:141
 msgid "Create link"
-msgstr "Δημιουργία δεσμού"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ΄ΞµΟƒΞΌΞΏΟ"
 
-#: src/object-ui.c:261 src/verbs.c:431
+#: src/object-ui.c:273 src/verbs.c:435
 msgid "Group"
-msgstr "Ομάδα"
+msgstr "ΞΞΌΞ¬Ξ΄Ξ±"
 
 #. Group dialog
-#: src/object-ui.c:265
+#: src/object-ui.c:277
 msgid "Group Properties"
-msgstr " Ιδιότητες ομάδας"
+msgstr " Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ ΞΏΞΌΞ¬Ξ΄Ξ±Ο‚"
 
 #. "Ungroup"
-#: src/object-ui.c:278 src/verbs.c:432
+#: src/object-ui.c:288 src/verbs.c:436
 msgid "Ungroup"
-msgstr "Κατάργηση ομαδοποίησης"
+msgstr "ΞΞ±Ο„Ξ¬ΟΞ³Ξ·ΟƒΞ· ΞΏΞΌΞ±Ξ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·Ο‚"
+
+#  Dive
+#. Dive
+#: src/object-ui.c:293
+#, fuzzy
+msgid "Set as layer"
+msgstr "ΞΟΞΉΟƒΞΌΟΟ‚ Ο‰Ο‚ Ο€ΟΞΏΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚"
 
 #
 #. Create toplevel menuitem
-#: src/object-ui.c:326
+#: src/object-ui.c:338
 msgid "Link"
-msgstr "Σύνδεση"
+msgstr "Ξ£ΟΞ½Ξ΄ΞµΟƒΞ·"
 
 #. Link dialog
-#: src/object-ui.c:329
+#: src/object-ui.c:341
 msgid "Link Properties"
-msgstr "Ιδιότητες δεσμού"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ΄ΞµΟƒΞΌΞΏΟ"
 
 #. Select item
-#: src/object-ui.c:339
+#: src/object-ui.c:351
 msgid "Follow link"
-msgstr "Ακολούθηση δεσμού"
+msgstr "Ξ‘ΞΊΞΏΞ»ΞΏΟΞΈΞ·ΟƒΞ· Ξ΄ΞµΟƒΞΌΞΏΟ"
 
 #. Reset transformations
-#: src/object-ui.c:344
+#: src/object-ui.c:356
 msgid "Remove link"
-msgstr "Διαγραφή συνδέσμου"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΟƒΟ…Ξ½Ξ΄Ξ­ΟƒΞΌΞΏΟ…"
 
 #
 #. Create toplevel menuitem
-#: src/object-ui.c:407
+#: src/object-ui.c:419
 msgid "Image"
-msgstr "Εικόνα"
+msgstr "Ξ•ΞΉΞΊΟΞ½Ξ±"
 
 #. Link dialog
-#: src/object-ui.c:410
+#: src/object-ui.c:422
 msgid "Image Properties"
-msgstr "Ιδιότητες Εικόνας"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ•ΞΉΞΊΟΞ½Ξ±Ο‚"
 
 #. Autotrace dialog
-#: src/object-ui.c:418 src/sp-image.c:788
+#: src/object-ui.c:430 src/sp-image.c:762
+#, fuzzy
 msgid "Trace"
-msgstr ""
+msgstr "Trace"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:467
+#: src/object-ui.c:479
 msgid "Shape"
-msgstr "Σχήμα"
+msgstr "Ξ£Ο‡Ξ®ΞΌΞ±"
 
 #. Item dialog
-#: src/object-ui.c:470 src/toolbox.c:361
+#: src/object-ui.c:482 src/toolbox.c:402
 msgid "Fill settings"
-msgstr "Ρυθμίσεις γεμίσματος"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ³ΞµΞΌΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚"
 
 #
 #. Create toplevel menuitem
-#: src/object-ui.c:497
+#: src/object-ui.c:509
 msgid "Rect"
-msgstr "Ορθογ."
+msgstr "ΞΟΞΈΞΏΞ³."
 
 #. Link dialog
-#: src/object-ui.c:500
+#: src/object-ui.c:512
 #, fuzzy
 msgid "Rect Properties"
-msgstr " Ιδιότητες"
+msgstr " Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:533 src/verbs.c:453
+#: src/object-ui.c:545 src/verbs.c:457
 msgid "Star"
-msgstr "Αστερίσκος"
+msgstr "Ξ‘ΟƒΟ„ΞµΟΞ―ΟƒΞΊΞΏΟ‚"
 
 #. Link dialog
-#: src/object-ui.c:536
+#: src/object-ui.c:548
 msgid "Star Properties"
-msgstr "Ιδιότητες έναρξης"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ­Ξ½Ξ±ΟΞΎΞ·Ο‚"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:569 src/verbs.c:454
+#: src/object-ui.c:581 src/verbs.c:458
 msgid "Spiral"
-msgstr "Σπείρωμα"
+msgstr "Ξ£Ο€ΞµΞ―ΟΟ‰ΞΌΞ±"
 
 #. Link dialog
-#: src/object-ui.c:572
+#: src/object-ui.c:584
 msgid "Spiral Properties"
-msgstr "Ιδιότητες σπειρώματος"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ ΟƒΟ€ΞµΞΉΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #. rx_ratio
-#: src/rect-context.c:396
+#: src/rect-context.c:401
 msgid "Roundness ratio for x:"
 msgstr ""
 
 #. ry_ratio
-#: src/rect-context.c:408
+#: src/rect-context.c:413
 msgid "Roundness ratio for y:"
 msgstr ""
 
 #: src/select-context.c:570
 msgid "Visual transformation"
-msgstr "Οπτικός μετασχηματισμός"
+msgstr "ΞΟ€Ο„ΞΉΞΊΟΟ‚ ΞΌΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚"
 
 #: src/select-context.c:576
 msgid "Show content"
-msgstr "Προβολή περιεχομένου"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® Ο€ΞµΟΞΉΞµΟ‡ΞΏΞΌΞ­Ξ½ΞΏΟ…"
 
 #
 #: src/select-context.c:582
@@ -1635,15 +1664,15 @@ msgstr ""
 
 #: src/select-context.c:588
 msgid "Object transformation"
-msgstr "Μετασχηματισμός αντικειμένου"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #: src/select-context.c:594
 msgid "Optimize"
-msgstr ""
+msgstr "Ξ’ΞµΞ»Ο„ΞΉΟƒΟ„ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·"
 
 #: src/select-context.c:600
 msgid "Preserve"
-msgstr "Διατήρηση"
+msgstr "Ξ”ΞΉΞ±Ο„Ξ®ΟΞ·ΟƒΞ·"
 
 #: src/select-context.c:606
 msgid "[Tab] Cycling"
@@ -1656,11 +1685,11 @@ msgstr ""
 #: src/select-context.c:614
 #, fuzzy
 msgid "Center view to selected item"
-msgstr "Εισαγωγή νέων κόμβων σε επιλεγμένα κομμάτια"
+msgstr "Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® Ξ½Ξ­Ο‰Ξ½ ΞΊΟΞΌΞ²Ο‰Ξ½ ΟƒΞµ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ± ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉΞ±"
 
 #: src/slideshow.c:90
 msgid "Sodipodi slideshow"
-msgstr "Προβολή slides"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® slides"
 
 #: src/sodipodi.c:468
 #, c-format
@@ -1688,10 +1717,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"Το %s δεν είναι έγκυρο αρχείο προτιμήσεων sodipodi.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να φορτώσετε ή να αποθηκεύσετε\n"
-" προτιμήσεις."
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΟ‰Ξ½ sodipodi.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΟ„Ξµ Ξ® Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ\n"
+" Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚."
 
 #: src/sodipodi.c:488
 #, c-format
@@ -1700,9 +1729,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Το %s δεν είναι κανονικό αρχείο.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ ΞΊΞ±Ξ½ΞΏΞ½ΞΉΞΊΟ Ξ±ΟΟ‡ΞµΞ―ΞΏ.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:491
 #, c-format
@@ -1712,10 +1741,10 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Το %s δεν είναι έγκυρο αρχείο xml, ή\n"
-"δεν έχετε δικαιώματα ανάγνωσης πάνω του.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ xml, Ξ®\n"
+"Ξ΄ΞµΞ½ Ξ­Ο‡ΞµΟ„Ξµ Ξ΄ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± Ξ±Ξ½Ξ¬Ξ³Ξ½Ο‰ΟƒΞ·Ο‚ Ο€Ξ¬Ξ½Ο‰ Ο„ΞΏΟ….\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:495
 #, c-format
@@ -1724,9 +1753,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Το %s δεν είναι έγκυρο αρχείο επεκτάσεων sodipodi.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΟ‰Ξ½ sodipodi.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:829
 #, c-format
@@ -1736,9 +1765,9 @@ msgid ""
 "are neither able to load nor save\n"
 "%s."
 msgstr ""
-"Αδυναμία δημιουργίας καταλόγου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε ούτε να αποθηκεύσετε ούτε να φορτώσετε\n"
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ ΞΊΞ±Ο„Ξ±Ξ»ΟΞ³ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΟ„Ξµ\n"
 "%s."
 
 #: src/sodipodi.c:833
@@ -1749,10 +1778,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"Το %s δεν είναι έγκυρος κατάλογος.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε ούτε να αποθηκεύσετε ούτε να φορτώσετε\n"
-"προτιμήσεις."
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏΟ‚ ΞΊΞ±Ο„Ξ¬Ξ»ΞΏΞ³ΞΏΟ‚.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΟ„Ξµ\n"
+"Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚."
 
 #: src/sodipodi.c:837
 #, c-format
@@ -1762,10 +1791,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"Αδυναμία δημιουργίας αρχείου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε ούτε να αποθηκεύσετε ούτε να φορτώσετε\n"
-"προτιμήσεις."
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΟ„Ξµ\n"
+"Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚."
 
 #: src/sodipodi.c:841
 #, c-format
@@ -1775,10 +1804,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"Αδυναμία εγγραφής αρχείου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε ούτε να αποθηκεύσετε ούτε να φορτώσετε\n"
-"προτιμήσεις."
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± ΞµΞ³Ξ³ΟΞ±Ο†Ξ®Ο‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΞΏΟΟ„Ξµ Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΟ„Ξµ\n"
+"Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚."
 
 #: src/sodipodi.c:851
 #, c-format
@@ -1787,9 +1816,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Αδυναμία δημιουργίας καταλόγου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ ΞΊΞ±Ο„Ξ±Ξ»ΟΞ³ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:854
 #, c-format
@@ -1798,9 +1827,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Το %s δεν είναι έγκυρος κατάλογος.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ¤ΞΏ %s Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ³ΞΊΟ…ΟΞΏΟ‚ ΞΊΞ±Ο„Ξ¬Ξ»ΞΏΞ³ΞΏΟ‚.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:857
 #, c-format
@@ -1809,9 +1838,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Αδυναμία δημιουργίας αρχείου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sodipodi.c:860
 #, c-format
@@ -1820,62 +1849,62 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"Αδυναμία εγγραφής αρχείου %s.\n"
-"Αν και το sodipodi θα εκτελεσθεί, δεν\n"
-"θα μπορείτε να χρησιμοποιείτε επεκτάσεις  (plugins)\n"
+"Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± ΞµΞ³Ξ³ΟΞ±Ο†Ξ®Ο‚ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… %s.\n"
+"Ξ‘Ξ½ ΞΊΞ±ΞΉ Ο„ΞΏ sodipodi ΞΈΞ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΞΈΞµΞ―, Ξ΄ΞµΞ½\n"
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞµΞ―Ο„Ξµ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ―Ο„Ξµ ΞµΟ€ΞµΞΊΟ„Ξ¬ΟƒΞµΞΉΟ‚  (plugins)\n"
 
 #: src/sp-anchor.c:196
 #, c-format
 msgid "Link to %s"
-msgstr "Δεσμός σε %s"
+msgstr "Ξ”ΞµΟƒΞΌΟΟ‚ ΟƒΞµ %s"
 
 #
 #: src/sp-image.c:373
 #, fuzzy, c-format
 msgid "Image with bad reference: %s"
-msgstr "Προτιμίσεις Ναυτίλου"
+msgstr "Ξ ΟΞΏΟ„ΞΉΞΌΞ―ΟƒΞµΞΉΟ‚ ΞΞ±Ο…Ο„Ξ―Ξ»ΞΏΟ…"
 
 #: src/sp-image.c:375
 #, c-format
 msgid "Color image %d x %d: %s"
-msgstr "Χρώμα εικόνας %d x %d: %s"
+msgstr "Ξ§ΟΟΞΌΞ± ΞµΞΉΞΊΟΞ½Ξ±Ο‚ %d x %d: %s"
 
-#: src/sp-image.c:934
+#: src/sp-image.c:908
 #, c-format
 msgid "Error to write %s: %s"
-msgstr "Σφάλμα εγγραφής  %s: %s"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΞµΞ³Ξ³ΟΞ±Ο†Ξ®Ο‚  %s: %s"
 
-#: src/sp-image.c:968
+#: src/sp-image.c:942
 msgid "Untitled"
-msgstr "Ανώνυμο"
+msgstr "Ξ‘Ξ½ΟΞ½Ο…ΞΌΞΏ"
 
-#: src/sp-image.c:973
+#: src/sp-image.c:947
 msgid "Document Name:"
-msgstr "Όνομα εγγράφου:"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ…:"
 
-#: src/sp-image.c:986
+#: src/sp-image.c:960
 msgid "Unknown"
-msgstr "¶γνωστο"
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ"
 
 #
-#: src/sp-image.c:992
+#: src/sp-image.c:966
 msgid "Image URI:"
-msgstr "URI Εικόνας:"
+msgstr "URI Ξ•ΞΉΞΊΟΞ½Ξ±Ο‚:"
 
 #
-#: src/sp-item-group.c:462
+#: src/sp-item-group.c:483
 #, c-format
 msgid "Group of %d objects"
-msgstr "Ομάδα από %d αντικείμενα"
+msgstr "ΞΞΌΞ¬Ξ΄Ξ± Ξ±Ο€Ο %d Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½Ξ±"
 
-#: src/sp-item.c:509
+#: src/sp-item.c:554
 msgid "Unknown item :-("
-msgstr "¶γνωστο αντικείμενο :-("
+msgstr "Ξ†Ξ³Ξ½Ο‰ΟƒΟ„ΞΏ Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ :-("
 
 #. fixme:
-#: src/sp-text.c:1292
+#: src/sp-text.c:1294
 msgid "Text object"
-msgstr "Αντικείμενο  κειμένου"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ  ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #. T0
 #: src/spiral-context.c:375
@@ -1885,659 +1914,654 @@ msgstr ""
 #. Proportion
 #: src/star-context.c:368
 msgid "Proportion:"
-msgstr "Αναλογία:"
+msgstr "Ξ‘Ξ½Ξ±Ξ»ΞΏΞ³Ξ―Ξ±:"
 
 #. Making sides flat
 #: src/star-context.c:381
 #, fuzzy
 msgid "Make sides flat"
-msgstr "Πεζά/κεφαλαία διαφέρουν"
+msgstr "Ξ ΞµΞ¶Ξ¬/ΞΊΞµΟ†Ξ±Ξ»Ξ±Ξ―Ξ± Ξ΄ΞΉΞ±Ο†Ξ­ΟΞΏΟ…Ξ½"
 
 #
-#: src/toolbox.c:358
+#: src/toolbox.c:399
 msgid "Object"
-msgstr "Αντικείμενο"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
-#: src/toolbox.c:362 src/verbs.c:477
+#: src/toolbox.c:403 src/verbs.c:481
 msgid "Object size and position"
-msgstr "Θέση και μέγεθος αντικειμένου"
+msgstr "ΞΞ­ΟƒΞ· ΞΊΞ±ΞΉ ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
-#: src/toolbox.c:363
+#: src/toolbox.c:404
 msgid "Text and font settings"
-msgstr "Ρυθμίσεις κειμένου και γραμματοσειράς"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΞΊΞ±ΞΉ Ξ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬Ο‚"
 
-#: src/toolbox.c:365 src/verbs.c:478
+#: src/toolbox.c:406 src/verbs.c:482
 msgid "Object transformations"
-msgstr "Μετασχηματισμός αντικειμένου"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΞΏΞ― Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
-#: src/toolbox.c:444
+#: src/toolbox.c:485
 msgid "Draw"
-msgstr "Σχεδίαση"
+msgstr "Ξ£Ο‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·"
 
-#: src/toolbox.c:501
+#: src/toolbox.c:542
 msgid "Extension"
-msgstr "Επέκταση"
+msgstr "Ξ•Ο€Ξ­ΞΊΟ„Ξ±ΟƒΞ·"
 
-#: src/toolbox.c:583
+#: src/toolbox.c:624
 msgid "Nodes"
-msgstr "Κόμβοι"
+msgstr "ΞΟΞΌΞ²ΞΏΞΉ"
 
-#: src/toolbox.c:586
+#: src/toolbox.c:627
 msgid "Insert new nodes into selected segments"
-msgstr "Εισαγωγή νέων κόμβων σε επιλεγμένα κομμάτια"
+msgstr "Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® Ξ½Ξ­Ο‰Ξ½ ΞΊΟΞΌΞ²Ο‰Ξ½ ΟƒΞµ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ± ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉΞ±"
 
 #
-#: src/toolbox.c:588
+#: src/toolbox.c:629
 msgid "Break line at selected nodes"
-msgstr "Διάσπαση γραμμής σε επιλεγμένους κόμβους"
+msgstr "Ξ”ΞΉΞ¬ΟƒΟ€Ξ±ΟƒΞ· Ξ³ΟΞ±ΞΌΞΌΞ®Ο‚ ΟƒΞµ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½ΞΏΟ…Ο‚ ΞΊΟΞΌΞ²ΞΏΟ…Ο‚"
 
-#: src/toolbox.c:590
+#: src/toolbox.c:631
 msgid "Make selected nodes corner"
-msgstr "Μετατροπή επιλεγμένων κόμβων σε γωνία"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΟΞΌΞ²Ο‰Ξ½ ΟƒΞµ Ξ³Ο‰Ξ½Ξ―Ξ±"
 
-#: src/toolbox.c:592
+#: src/toolbox.c:633
 msgid "Make selected segments lines"
-msgstr "Μετατροπή επιλεγμένων κομματιών σε γραμμές"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½ ΟƒΞµ Ξ³ΟΞ±ΞΌΞΌΞ­Ο‚"
 
-#: src/toolbox.c:594
+#: src/toolbox.c:635
 msgid "Delete selected nodes"
-msgstr "Διαγραφή επιλεγμένων κόμβων"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΟΞΌΞ²Ο‰Ξ½"
 
 #
-#: src/toolbox.c:596
+#: src/toolbox.c:637
 msgid "Join lines at selected nodes"
-msgstr "Ένωση γραμμών στους συγκεκριμένους κόμβους"
+msgstr "ΞΞ½Ο‰ΟƒΞ· Ξ³ΟΞ±ΞΌΞΌΟΞ½ ΟƒΟ„ΞΏΟ…Ο‚ ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏΟ…Ο‚ ΞΊΟΞΌΞ²ΞΏΟ…Ο‚"
 
 #
-#: src/toolbox.c:599
+#: src/toolbox.c:640
 msgid "Join lines at selected nodes with new segment"
-msgstr "Ένωση γραμμών σε επιλεγμένους κόμβους με νέο κομμάτι"
+msgstr "ΞΞ½Ο‰ΟƒΞ· Ξ³ΟΞ±ΞΌΞΌΟΞ½ ΟƒΞµ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½ΞΏΟ…Ο‚ ΞΊΟΞΌΞ²ΞΏΟ…Ο‚ ΞΌΞµ Ξ½Ξ­ΞΏ ΞΊΞΏΞΌΞΌΞ¬Ο„ΞΉ"
 
-#: src/toolbox.c:601
+#: src/toolbox.c:642
 msgid "Make selected nodes smooth"
-msgstr "Εξομάλυνση επιλεγμένων κόμβων"
+msgstr "Ξ•ΞΎΞΏΞΌΞ¬Ξ»Ο…Ξ½ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΟΞΌΞ²Ο‰Ξ½"
 
-#: src/toolbox.c:603
+#: src/toolbox.c:644
 msgid "Make selected segments curves"
-msgstr "Μετατροπή επιλεγμένων κομματιών σε καμπύλες"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΞΏΞΌΞΌΞ±Ο„ΞΉΟΞ½ ΟƒΞµ ΞΊΞ±ΞΌΟ€ΟΞ»ΞµΟ‚"
 
-#: src/verbs.c:403
+#: src/verbs.c:407
 msgid "Does nothing"
 msgstr ""
 
-#: src/verbs.c:405
+#: src/verbs.c:409
 msgid "Create new SVG document"
-msgstr "Δημιουργία νέου εγγράφου SVG"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ½Ξ­ΞΏΟ… ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… SVG"
 
 #
-#: src/verbs.c:406
+#: src/verbs.c:410
 msgid "Open..."
-msgstr "¶νοιγμα..."
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ±..."
 
-#: src/verbs.c:406
+#: src/verbs.c:410
 msgid "Open existing SVG document"
-msgstr "¶νοιγμα υπάρχοντος εγγράφου SVG"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ± Ο…Ο€Ξ¬ΟΟ‡ΞΏΞ½Ο„ΞΏΟ‚ ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… SVG"
 
-#: src/verbs.c:407
+#: src/verbs.c:411
 msgid "Save"
-msgstr "Αποθήκευση"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·"
 
-#: src/verbs.c:407
+#: src/verbs.c:411
 msgid "Save document"
-msgstr "Αποθήκευση εγγράφου"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ…"
 
-#: src/verbs.c:408
+#: src/verbs.c:412
 msgid "Save As..."
-msgstr "Αποθήκευση ως..."
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο‰Ο‚..."
 
-#: src/verbs.c:408
+#: src/verbs.c:412
 msgid "Save document under new name"
-msgstr "Αποθήκευση εγγράφου με νέο όνομα"
-
-#: src/verbs.c:409
-msgid "Print..."
-msgstr "Εκτύπωση..."
-
-#: src/verbs.c:409
-msgid "Print document"
-msgstr "Εκτύπωση Εγγράφου"
-
-#: src/verbs.c:410
-msgid "Print Direct..."
-msgstr "Απ ευθείας εκτύπωση"
-
-#: src/verbs.c:410
-msgid "Print directly to file or pipe"
-msgstr "Απ ευθείας εκτύπωση σε αρχείο ή σωλήνωση"
-
-#: src/verbs.c:411
-msgid "Print Preview"
-msgstr "Προεπισκόπηση εκτύπωσης"
-
-#: src/verbs.c:411
-msgid "Preview document printout"
-msgstr "Προεπισκόπηση διάταξης εκτύπωσης εγγράφου"
-
-#
-#: src/verbs.c:412
-msgid "Import"
-msgstr "Εισαγωγή"
-
-#: src/verbs.c:412
-msgid "Import bitmap or SVG image into document"
-msgstr "Εισαγωγή εικόνας bitmap ή SVG στο έγγραφο"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… ΞΌΞµ Ξ½Ξ­ΞΏ ΟΞ½ΞΏΞΌΞ±"
 
 #: src/verbs.c:413
-msgid "Export document as PNG bitmap"
-msgstr "Εξαγωγή εγγράφου ως PNG bitmap"
+msgid "Print..."
+msgstr "Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ·..."
+
+#: src/verbs.c:413
+msgid "Print document"
+msgstr "Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ· Ξ•Ξ³Ξ³ΟΞ¬Ο†ΞΏΟ…"
+
+#: src/verbs.c:414
+msgid "Print Direct..."
+msgstr "Ξ‘Ο€ ΞµΟ…ΞΈΞµΞ―Ξ±Ο‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·"
+
+#: src/verbs.c:414
+msgid "Print directly to file or pipe"
+msgstr "Ξ‘Ο€ ΞµΟ…ΞΈΞµΞ―Ξ±Ο‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ· ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ® ΟƒΟ‰Ξ»Ξ®Ξ½Ο‰ΟƒΞ·"
+
+#: src/verbs.c:415
+msgid "Print Preview"
+msgstr "Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ· ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
+
+#: src/verbs.c:415
+msgid "Preview document printout"
+msgstr "Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ· Ξ΄ΞΉΞ¬Ο„Ξ±ΞΎΞ·Ο‚ ΞµΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚ ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ…"
 
 #
-#: src/verbs.c:414
-#, fuzzy
+#: src/verbs.c:416
+msgid "Import"
+msgstr "Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®"
+
+#: src/verbs.c:416
+msgid "Import bitmap or SVG image into document"
+msgstr "Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® ΞµΞΉΞΊΟΞ½Ξ±Ο‚ bitmap Ξ® SVG ΟƒΟ„ΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ"
+
+#: src/verbs.c:417
+msgid "Export document as PNG bitmap"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® ΞµΞ³Ξ³ΟΞ¬Ο†ΞΏΟ… Ο‰Ο‚ PNG bitmap"
+
+#: src/verbs.c:418
 msgid "Exit"
-msgstr "Επεξεργασία"
+msgstr "ΞΞΎΞΏΞ΄ΞΏΟ‚"
 
 #
 #. Edit
-#: src/verbs.c:416
+#: src/verbs.c:420
 msgid "Undo"
-msgstr "Αναίρεση"
+msgstr "Ξ‘Ξ½Ξ±Ξ―ΟΞµΟƒΞ·"
 
-#: src/verbs.c:416
+#: src/verbs.c:420
 msgid "Revert last action"
-msgstr "Αναστροφή προηγούμενης ενέργειας"
+msgstr "Ξ‘Ξ½Ξ±ΟƒΟ„ΟΞΏΟ†Ξ® Ο€ΟΞΏΞ·Ξ³ΞΏΟΞΌΞµΞ½Ξ·Ο‚ ΞµΞ½Ξ­ΟΞ³ΞµΞΉΞ±Ο‚"
 
 #
-#: src/verbs.c:417
+#: src/verbs.c:421
 msgid "Redo"
-msgstr "Επανεκτέλεση"
+msgstr "Ξ•Ο€Ξ±Ξ½ΞµΞΊΟ„Ξ­Ξ»ΞµΟƒΞ·"
 
-#: src/verbs.c:417
+#: src/verbs.c:421
 msgid "Do again undone action"
-msgstr "Επανάληψη εκτέλεσης ανηρημένης ενέργειας"
+msgstr "Ξ•Ο€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ· ΞµΞΊΟ„Ξ­Ξ»ΞµΟƒΞ·Ο‚ Ξ±Ξ½Ξ·ΟΞ·ΞΌΞ­Ξ½Ξ·Ο‚ ΞµΞ½Ξ­ΟΞ³ΞµΞΉΞ±Ο‚"
 
 #
-#: src/verbs.c:418
+#: src/verbs.c:422
 msgid "Cut"
-msgstr "Αποκοπή"
+msgstr "Ξ‘Ο€ΞΏΞΊΞΏΟ€Ξ®"
 
 #
-#: src/verbs.c:418
+#: src/verbs.c:422
 msgid "Cut selected objects to clipboard"
-msgstr "Αποκοπή επιλεγμένων αντικειμένων στο πρόχειρο"
+msgstr "Ξ‘Ο€ΞΏΞΊΞΏΟ€Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΟƒΟ„ΞΏ Ο€ΟΟΟ‡ΞµΞΉΟΞΏ"
 
 #
-#: src/verbs.c:419
+#: src/verbs.c:423
 msgid "Copy"
-msgstr "Αντιγραφή"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ®"
 
 #
-#: src/verbs.c:419
+#: src/verbs.c:423
 msgid "Copy selected objects to clipboard"
-msgstr "Αντιγραφή επιλεγμένων αντικειμένων στο πρόχειρο"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΟƒΟ„ΞΏ Ο€ΟΟΟ‡ΞµΞΉΟΞΏ"
 
 #
-#: src/verbs.c:420
+#: src/verbs.c:424
 msgid "Paste"
-msgstr "Επικόλληση"
+msgstr "Ξ•Ο€ΞΉΞΊΟΞ»Ξ»Ξ·ΟƒΞ·"
 
 #
-#: src/verbs.c:420
+#: src/verbs.c:424
 msgid "Paste objects from clipboard"
-msgstr "Επικόλληση αντικειμένων από το πρόχειρο"
+msgstr "Ξ•Ο€ΞΉΞΊΟΞ»Ξ»Ξ·ΟƒΞ· Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ο€Ο Ο„ΞΏ Ο€ΟΟΟ‡ΞµΞΉΟΞΏ"
 
 #
-#: src/verbs.c:421
+#: src/verbs.c:425
 msgid "Delete"
-msgstr "Διαγραφή"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ®"
 
-#: src/verbs.c:421
+#: src/verbs.c:425
 msgid "Delete selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
 
-#: src/verbs.c:422
+#: src/verbs.c:426
 msgid "Duplicate"
-msgstr "Δημιουργία αντιγράφου"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ±Ξ½Ο„ΞΉΞ³ΟΞ¬Ο†ΞΏΟ…"
 
-#: src/verbs.c:422
+#: src/verbs.c:426
 msgid "Duplicate selected objects"
-msgstr "Διπλασιασμός επιλεγμένων αντικειμένων"
+msgstr "Ξ”ΞΉΟ€Ξ»Ξ±ΟƒΞΉΞ±ΟƒΞΌΟΟ‚ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
 
 #
-#: src/verbs.c:423
+#: src/verbs.c:427
 msgid "Clear All"
-msgstr "Εκκαθάριση όλων"
+msgstr "Ξ•ΞΊΞΊΞ±ΞΈΞ¬ΟΞΉΟƒΞ· ΟΞ»Ο‰Ξ½"
 
-#: src/verbs.c:423
+#: src/verbs.c:427
 msgid "Delete all objects from document"
-msgstr "Διαγραφή όλων των αντικειμένων στο έγγραφο"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΟƒΟ„ΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #
-#: src/verbs.c:424
+#: src/verbs.c:428
 msgid "Select All"
-msgstr "Επιλογή Όλων"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΞΞ»Ο‰Ξ½"
 
-#: src/verbs.c:424
+#: src/verbs.c:428
 msgid "Select all objects in document"
-msgstr "Επιλογή όλων των αντικειμένων στο έγγραφο"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΟƒΟ„ΞΏ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ"
 
-#
-#: src/verbs.c:425
-#, fuzzy
+#: src/verbs.c:429
 msgid "Repeat"
-msgstr "Ορθογ."
+msgstr "Ξ•Ο€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ·"
 
-#: src/verbs.c:425
+#: src/verbs.c:429
 #, fuzzy
 msgid "Repeat last saved action"
-msgstr "Αναστροφή προηγούμενης ενέργειας"
+msgstr "Ξ‘Ξ½Ξ±ΟƒΟ„ΟΞΏΟ†Ξ® Ο€ΟΞΏΞ·Ξ³ΞΏΟΞΌΞµΞ½Ξ·Ο‚ ΞµΞ½Ξ­ΟΞ³ΞµΞΉΞ±Ο‚"
 
 #. Selection
-#: src/verbs.c:427
+#: src/verbs.c:431
 msgid "Bring to Front"
-msgstr "Μεταφορά σε πρώτο πλάνο"
+msgstr "ΞΞµΟ„Ξ±Ο†ΞΏΟΞ¬ ΟƒΞµ Ο€ΟΟΟ„ΞΏ Ο€Ξ»Ξ¬Ξ½ΞΏ"
 
-#: src/verbs.c:427
+#: src/verbs.c:431
 msgid "Raise selected objects to top"
-msgstr "Ανύψωση επιλεγμένων αντικειμένων προς τα πάνω"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ Ο€ΟΞΏΟ‚ Ο„Ξ± Ο€Ξ¬Ξ½Ο‰"
 
 # # FIX??  (see above)
-#: src/verbs.c:428
-msgid "Send to Back"
-msgstr "Μεταφορά στο φόντο"
-
-#
-#: src/verbs.c:428
-msgid "Lower selected objects to bottom"
-msgstr "Βύθιση επιλεγμένων αντικειμένων προς τα κάτω"
-
-#: src/verbs.c:429
-msgid "Raise"
-msgstr "Ανύψωση"
-
-#: src/verbs.c:429
-msgid "Raise selected objects one position"
-msgstr "Ανύψωση επιλεγμένων αντικειμένων μια θέση"
-
-#: src/verbs.c:430
-msgid "Lower"
-msgstr ""
-
-#
-#: src/verbs.c:430
-msgid "Lower selected objects one position"
-msgstr "Βύθιση επιλεγμένων αντικειμένων μια θέση"
-
-#
-#: src/verbs.c:431
-msgid "Group selected objects"
-msgstr "Ομαδοποίηση επιλεγμένων αντικειμένων"
-
 #: src/verbs.c:432
-msgid "Ungroup selected group"
-msgstr "Κατάργηση ομαδοποίησης επιλεγμένης ομάδας"
+msgid "Send to Back"
+msgstr "ΞΞµΟ„Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ„ΞΏ Ο†ΟΞ½Ο„ΞΏ"
+
+#
+#: src/verbs.c:432
+msgid "Lower selected objects to bottom"
+msgstr "Ξ’ΟΞΈΞΉΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ Ο€ΟΞΏΟ‚ Ο„Ξ± ΞΊΞ¬Ο„Ο‰"
 
 #: src/verbs.c:433
-msgid "Combine"
-msgstr "Συνδυασμός"
+msgid "Raise"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ·"
 
 #: src/verbs.c:433
-msgid "Combine multiple paths"
-msgstr "Συνδυασμός πολλαπλών διαδρομών"
+msgid "Raise selected objects one position"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΞΌΞΉΞ± ΞΈΞ­ΟƒΞ·"
 
 #: src/verbs.c:434
+#, fuzzy
+msgid "Lower"
+msgstr "Ξ§Ξ±ΞΌΞ·Ξ»Ξ¬"
+
+#
+#: src/verbs.c:434
+msgid "Lower selected objects one position"
+msgstr "Ξ’ΟΞΈΞΉΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΞΌΞΉΞ± ΞΈΞ­ΟƒΞ·"
+
+#
+#: src/verbs.c:435
+msgid "Group selected objects"
+msgstr "ΞΞΌΞ±Ξ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
+
+#: src/verbs.c:436
+msgid "Ungroup selected group"
+msgstr "ΞΞ±Ο„Ξ¬ΟΞ³Ξ·ΟƒΞ· ΞΏΞΌΞ±Ξ΄ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·Ο‚ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ·Ο‚ ΞΏΞΌΞ¬Ξ΄Ξ±Ο‚"
+
+#: src/verbs.c:437
+msgid "Combine"
+msgstr "Ξ£Ο…Ξ½Ξ΄Ο…Ξ±ΟƒΞΌΟΟ‚"
+
+#: src/verbs.c:437
+msgid "Combine multiple paths"
+msgstr "Ξ£Ο…Ξ½Ξ΄Ο…Ξ±ΟƒΞΌΟΟ‚ Ο€ΞΏΞ»Ξ»Ξ±Ο€Ξ»ΟΞ½ Ξ΄ΞΉΞ±Ξ΄ΟΞΏΞΌΟΞ½"
+
+#: src/verbs.c:438
 #, fuzzy
 msgid "Break Apart"
-msgstr "πραγματική διαδρομή"
+msgstr "Ο€ΟΞ±Ξ³ΞΌΞ±Ο„ΞΉΞΊΞ® Ξ΄ΞΉΞ±Ξ΄ΟΞΏΞΌΞ®"
 
-#: src/verbs.c:434
+#: src/verbs.c:438
 #, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "Επανεκκίνηση επιλεγμένων αρχείων"
+msgstr "Ξ•Ο€Ξ±Ξ½ΞµΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±ΟΟ‡ΞµΞ―Ο‰Ξ½"
 
-#: src/verbs.c:435
+#: src/verbs.c:439
 msgid "Uncross"
 msgstr ""
 
-#: src/verbs.c:435
+#: src/verbs.c:439
 #, fuzzy
 msgid "Break selected path at crossings"
-msgstr "Επανεκκίνηση επιλεγμένων αρχείων"
+msgstr "Ξ•Ο€Ξ±Ξ½ΞµΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±ΟΟ‡ΞµΞ―Ο‰Ξ½"
 
-#
-#: src/verbs.c:436
-#, fuzzy
+#: src/verbs.c:440
 msgid "Union"
-msgstr "Αναίρεση"
+msgstr "ΞΞ½Ο‰ΟƒΞ·"
 
-#: src/verbs.c:436
+#: src/verbs.c:440
 msgid "Calculate union of selected paths"
 msgstr ""
 
-#: src/verbs.c:437
+#: src/verbs.c:441
 #, fuzzy
 msgid "Intersection"
-msgstr "Επιλογή"
+msgstr "_Ξ¤ΞΏΞΌΞ®"
 
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Calculate intersection of selected paths"
 msgstr ""
 
-#
-#: src/verbs.c:438
+#: src/verbs.c:442
 #, fuzzy
 msgid "Subtraction"
-msgstr "Κορεσμός:"
+msgstr "ΞΞΏΟΞµΟƒΞΌΟΟ‚:"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Subtract paths from first"
 msgstr ""
 
-#: src/verbs.c:439
-#, fuzzy
+#: src/verbs.c:443
 msgid "Transform"
-msgstr "Μετασχηματισμός:"
-
-#: src/verbs.c:439
-#, fuzzy
-msgid "Applies transformation"
-msgstr "Επαναφορά μετασχηματισμού"
-
-#. Object
-#: src/verbs.c:441
-msgid "Rotate 90 degrees"
-msgstr "Περιστροφή 90 μοίρες"
-
-#
-#: src/verbs.c:441
-msgid "Rotates object 90 degrees clockwise"
-msgstr "Ωρολογιακή περιστροφή αντικειμένου κατά 90 μοίρες"
-
-#: src/verbs.c:442
-#, fuzzy
-msgid "Flatten object"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: src/verbs.c:442
-#, fuzzy
-msgid "Remove transformations from object"
-msgstr "Μετασχηματισμός"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚"
 
 #: src/verbs.c:443
+msgid "Applies transformation"
+msgstr "Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ® ΞΌΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΞΏΟ"
+
+#. Object
+#: src/verbs.c:445
+msgid "Rotate 90 degrees"
+msgstr "Ξ ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ® 90 ΞΌΞΏΞ―ΟΞµΟ‚"
+
+#
+#: src/verbs.c:445
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Ξ©ΟΞΏΞ»ΞΏΞ³ΞΉΞ±ΞΊΞ® Ο€ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ® Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΞΊΞ±Ο„Ξ¬ 90 ΞΌΞΏΞ―ΟΞµΟ‚"
+
+#: src/verbs.c:446
+#, fuzzy
+msgid "Flatten object"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
+
+#: src/verbs.c:446
+#, fuzzy
+msgid "Remove transformations from object"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚"
+
+#: src/verbs.c:447
 msgid "Convert to Curves"
 msgstr ""
 
 #
-#: src/verbs.c:443
-#, fuzzy
-msgid "Convert selected object to path"
-msgstr "Διαγραφή επιλεγμένου αντικειμένου"
-
-#: src/verbs.c:444
-#, fuzzy
-msgid "Flip Horizontally"
-msgstr "Οριζόντια αντιστροφή"
-
-#: src/verbs.c:445
-#, fuzzy
-msgid "Flip selected objects horizontally"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: src/verbs.c:446
-#, fuzzy
-msgid "Flip Vertically"
-msgstr "Κατακόρυφη αντιστροφή"
-
 #: src/verbs.c:447
 #, fuzzy
+msgid "Convert selected object to path"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½ΞΏΟ… Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
+
+#: src/verbs.c:448
+#, fuzzy
+msgid "Flip Horizontally"
+msgstr "ΞΟΞΉΞ¶ΟΞ½Ο„ΞΉΞ± Ξ±Ξ½Ο„ΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
+
+#: src/verbs.c:449
+#, fuzzy
+msgid "Flip selected objects horizontally"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
+
+#: src/verbs.c:450
+#, fuzzy
+msgid "Flip Vertically"
+msgstr "ΞΞ±Ο„Ξ±ΞΊΟΟΟ…Ο†Ξ· Ξ±Ξ½Ο„ΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
+
+#: src/verbs.c:451
+#, fuzzy
 msgid "Flip selected objects vertically"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
 
 #
 #. Event contexts
-#: src/verbs.c:449
+#: src/verbs.c:453
 msgid "Select"
-msgstr "Επιλογή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®"
 
-#
-#: src/verbs.c:449
-#, fuzzy
+#: src/verbs.c:453
 msgid "Select and transform objects"
-msgstr "Επιλέξτε ενέργεια"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΞΊΞ±ΞΉ ΞΌΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½"
 
-#: src/verbs.c:450
+#: src/verbs.c:454
 #, fuzzy
 msgid "Node edit"
-msgstr " Επεξεργασία "
+msgstr " Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± "
 
-#: src/verbs.c:450
+#: src/verbs.c:454
 msgid "Modify existing objects by control nodes"
 msgstr ""
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Rectangle"
-msgstr "Ορθογώνιο"
+msgstr "ΞΟΞΈΞΏΞ³ΟΞ½ΞΉΞΏ"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr ""
 
 #
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Ellipse"
-msgstr "Έλλειψη"
+msgstr "ΞΞ»Ξ»ΞµΞΉΟΞ·"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Create circles, ellipses and arcs"
-msgstr "Δημιουργία κύκλων, ελλειπτικών γραμμών και τόξων"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± ΞΊΟΞΊΞ»Ο‰Ξ½, ΞµΞ»Ξ»ΞµΞΉΟ€Ο„ΞΉΞΊΟΞ½ Ξ³ΟΞ±ΞΌΞΌΟΞ½ ΞΊΞ±ΞΉ Ο„ΟΞΎΟ‰Ξ½"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Create stars and polygons"
-msgstr "Δημιουργία αστεριών και πολυγώνων"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ±ΟƒΟ„ΞµΟΞΉΟΞ½ ΞΊΞ±ΞΉ Ο€ΞΏΞ»Ο…Ξ³ΟΞ½Ο‰Ξ½"
 
 #
-#: src/verbs.c:454
-msgid "Create spirals"
-msgstr "Δημιουργία σπειρώματος"
-
-#: src/verbs.c:455
-msgid "Pencil"
-msgstr "Μολύβι"
-
-#: src/verbs.c:455
-#, fuzzy
-msgid "Draw freehand curves and straight lines"
-msgstr "Λαβή συρταριού"
-
-#: src/verbs.c:456
-msgid "Pen"
-msgstr "Πένα"
-
-#: src/verbs.c:456
-msgid "Draw precisely positioned curved and straight lines"
-msgstr "Σχεδιασμός ίσων και καμπύλων γραμμών σε ακριβές σημείο"
-
-#: src/verbs.c:457
-msgid "Calligraphy"
-msgstr "Καλλιγραφία"
-
-#: src/verbs.c:457
-msgid "Draw calligraphic lines"
-msgstr "Σχεδιασμός καλλιγραφικών γραμμών"
-
 #: src/verbs.c:458
-msgid "Create and edit text objects"
-msgstr "Δημιουργία και επεξεργασία αντικειμένων κειμένου"
+msgid "Create spirals"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± ΟƒΟ€ΞµΞΉΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/verbs.c:459
+msgid "Pencil"
+msgstr "ΞΞΏΞ»ΟΞ²ΞΉ"
+
+#: src/verbs.c:459
+#, fuzzy
+msgid "Draw freehand curves and straight lines"
+msgstr "Ξ›Ξ±Ξ²Ξ® ΟƒΟ…ΟΟ„Ξ±ΟΞΉΞΏΟ"
+
+#: src/verbs.c:460
+msgid "Pen"
+msgstr "Ξ Ξ­Ξ½Ξ±"
+
+#: src/verbs.c:460
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Ξ£Ο‡ΞµΞ΄ΞΉΞ±ΟƒΞΌΟΟ‚ Ξ―ΟƒΟ‰Ξ½ ΞΊΞ±ΞΉ ΞΊΞ±ΞΌΟ€ΟΞ»Ο‰Ξ½ Ξ³ΟΞ±ΞΌΞΌΟΞ½ ΟƒΞµ Ξ±ΞΊΟΞΉΞ²Ξ­Ο‚ ΟƒΞ·ΞΌΞµΞ―ΞΏ"
+
+#: src/verbs.c:461
+msgid "Calligraphy"
+msgstr "ΞΞ±Ξ»Ξ»ΞΉΞ³ΟΞ±Ο†Ξ―Ξ±"
+
+#: src/verbs.c:461
+msgid "Draw calligraphic lines"
+msgstr "Ξ£Ο‡ΞµΞ΄ΞΉΞ±ΟƒΞΌΟΟ‚ ΞΊΞ±Ξ»Ξ»ΞΉΞ³ΟΞ±Ο†ΞΉΞΊΟΞ½ Ξ³ΟΞ±ΞΌΞΌΟΞ½"
+
+#: src/verbs.c:462
+msgid "Create and edit text objects"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± ΞΊΞ±ΞΉ ΞµΟ€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½Ο‰Ξ½ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
+
+#: src/verbs.c:463
 msgid "Zoom into precisely selected area"
-msgstr "Μεγέθυνση στην επιλεγμένη περιοχή"
+msgstr "ΞΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ· ΟƒΟ„Ξ·Ξ½ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ· Ο€ΞµΟΞΉΞΏΟ‡Ξ®"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "Dropper"
-msgstr "Σταγονόμετρο"
+msgstr "Ξ£Ο„Ξ±Ξ³ΞΏΞ½ΟΞΌΞµΟ„ΟΞΏ"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "Pick averaged colors from image"
 msgstr ""
 
 #. Zooming
-#: src/verbs.c:462
+#: src/verbs.c:466
 #, fuzzy
 msgid "In"
-msgstr "ίντσα"
+msgstr "Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "Zoom in drawing"
-msgstr "Μεγέθυνση σχεδίασης"
+msgstr "ΞΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ· ΟƒΟ‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·Ο‚"
 
 #
-#: src/verbs.c:463
+#: src/verbs.c:467
 #, fuzzy
 msgid "Out"
-msgstr "Αποκοπή"
+msgstr "'Ξ•ΞΎΞΏΞ΄ΞΏΟ‚"
 
-#: src/verbs.c:463
+#: src/verbs.c:467
 msgid "Zoom out drawing"
-msgstr "Σμίκρυνση σχεδίασης"
+msgstr "Ξ£ΞΌΞ―ΞΊΟΟ…Ξ½ΟƒΞ· ΟƒΟ‡ΞµΞ΄Ξ―Ξ±ΟƒΞ·Ο‚"
 
 #
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "1:1"
 msgstr "1:1"
 
 #
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Set zoom factor to 1:1"
-msgstr "Ρύθμιση παράγοντα μεγέθυνσης σε 1:1"
+msgstr "Ξ΅ΟΞΈΞΌΞΉΟƒΞ· Ο€Ξ±ΟΞ¬Ξ³ΞΏΞ½Ο„Ξ± ΞΌΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ·Ο‚ ΟƒΞµ 1:1"
 
 #
-#: src/verbs.c:465
+#: src/verbs.c:469
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:465
+#: src/verbs.c:469
 msgid "Set zoom factor to 1:2"
-msgstr "Ρύθμιση παράγοντα μεγέθυνσης σε 1:2"
+msgstr "Ξ΅ΟΞΈΞΌΞΉΟƒΞ· Ο€Ξ±ΟΞ¬Ξ³ΞΏΞ½Ο„Ξ± ΞΌΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ·Ο‚ ΟƒΞµ 1:2"
 
 #
-#: src/verbs.c:466
+#: src/verbs.c:470
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:466
+#: src/verbs.c:470
 msgid "Set zoom factor to 2:1"
-msgstr "Ρύθμιση παράγοντα μεγέθυνσης σε 2:1"
+msgstr "Ξ΅ΟΞΈΞΌΞΉΟƒΞ· Ο€Ξ±ΟΞ¬Ξ³ΞΏΞ½Ο„Ξ± ΞΌΞµΞ³Ξ­ΞΈΟ…Ξ½ΟƒΞ·Ο‚ ΟƒΞµ 2:1"
 
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Fit the whole page into window"
-msgstr "Ταίριασμα όλης της σελίδας στο παράθυρο"
+msgstr "Ξ¤Ξ±Ξ―ΟΞΉΞ±ΟƒΞΌΞ± ΟΞ»Ξ·Ο‚ Ο„Ξ·Ο‚ ΟƒΞµΞ»Ξ―Ξ΄Ξ±Ο‚ ΟƒΟ„ΞΏ Ο€Ξ±ΟΞ¬ΞΈΟ…ΟΞΏ"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Fit the whole drawing into window"
-msgstr "Ταίριασμα όλου του σχεδίου στο παράθυρο"
+msgstr "Ξ¤Ξ±Ξ―ΟΞΉΞ±ΟƒΞΌΞ± ΟΞ»ΞΏΟ… Ο„ΞΏΟ… ΟƒΟ‡ΞµΞ΄Ξ―ΞΏΟ… ΟƒΟ„ΞΏ Ο€Ξ±ΟΞ¬ΞΈΟ…ΟΞΏ"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Fit the whole selection into window"
-msgstr "Ταίριασμα όλης της επιλογής στο παράθυρο"
+msgstr "Ξ¤Ξ±Ξ―ΟΞΉΞ±ΟƒΞΌΞ± ΟΞ»Ξ·Ο‚ Ο„Ξ·Ο‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚ ΟƒΟ„ΞΏ Ο€Ξ±ΟΞ¬ΞΈΟ…ΟΞΏ"
 
 #
 #. Dialogs
-#: src/verbs.c:471
+#: src/verbs.c:475
 msgid "Display"
-msgstr "Εμφάνιση"
-
-#: src/verbs.c:471
-#, fuzzy
-msgid "Global display settings"
-msgstr "Εμφάνιση Σταθμών:"
-
-#: src/verbs.c:472
-msgid "Document"
-msgstr "Έγγραφο"
-
-#: src/verbs.c:472
-msgid "Page layout"
-msgstr "Διάταξη σελίδας"
-
-#: src/verbs.c:473
-msgid "Editing Window"
-msgstr "Παράθυρο επεξεργασίας"
-
-#: src/verbs.c:473
-msgid "Editing window properties"
-msgstr " Ιδιότητες παραθύρου επξεργασίας"
-
-#: src/verbs.c:474
-msgid "Tool Options"
-msgstr "Επιλογές εργαλείου"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ·"
 
 #: src/verbs.c:475
-msgid "Tool Attributes"
-msgstr "Γνωρίσματα εργαλείου"
+#, fuzzy
+msgid "Global display settings"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ξ£Ο„Ξ±ΞΈΞΌΟΞ½:"
 
 #: src/verbs.c:476
-msgid "Fill and Stroke"
-msgstr "Γέμισμα και πινελιά"
+msgid "Document"
+msgstr "ΞΞ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #: src/verbs.c:476
-msgid "Fill and stroke settings"
-msgstr "Ρυθμίσεις γεμίσματος και πινελιάς"
+msgid "Page layout"
+msgstr "Ξ”ΞΉΞ¬Ο„Ξ±ΞΎΞ· ΟƒΞµΞ»Ξ―Ξ΄Ξ±Ο‚"
+
+#: src/verbs.c:477
+msgid "Editing Window"
+msgstr "Ξ Ξ±ΟΞ¬ΞΈΟ…ΟΞΏ ΞµΟ€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚"
+
+#: src/verbs.c:477
+msgid "Editing window properties"
+msgstr " Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ο€Ξ±ΟΞ±ΞΈΟΟΞΏΟ… ΞµΟ€ΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚"
 
 #: src/verbs.c:478
-msgid "Transformations"
-msgstr "Μετασχηματισμοί"
+msgid "Tool Options"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏΟ…"
 
 #: src/verbs.c:479
+msgid "Tool Attributes"
+msgstr "Ξ“Ξ½Ο‰ΟΞ―ΟƒΞΌΞ±Ο„Ξ± ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏΟ…"
+
+#: src/verbs.c:480
+msgid "Fill and Stroke"
+msgstr "Ξ“Ξ­ΞΌΞΉΟƒΞΌΞ± ΞΊΞ±ΞΉ Ο€ΞΉΞ½ΞµΞ»ΞΉΞ¬"
+
+#: src/verbs.c:480
+msgid "Fill and stroke settings"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ³ΞµΞΌΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚ ΞΊΞ±ΞΉ Ο€ΞΉΞ½ΞµΞ»ΞΉΞ¬Ο‚"
+
+#: src/verbs.c:482
+msgid "Transformations"
+msgstr "ΞΞµΟ„Ξ±ΟƒΟ‡Ξ·ΞΌΞ±Ο„ΞΉΟƒΞΌΞΏΞ―"
+
+#: src/verbs.c:483
 #, fuzzy
 msgid "Align and Distribute"
-msgstr "Ιδιότητες"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚"
 
 #
-#: src/verbs.c:479
+#: src/verbs.c:483
 #, fuzzy
 msgid "Align and distribute"
-msgstr "Ιδιότητα"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„Ξ±"
 
-#: src/verbs.c:480
+#: src/verbs.c:484
 msgid "Text and Font"
-msgstr "Γραμματοσειρά και κείμενο"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬ ΞΊΞ±ΞΉ ΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
-#: src/verbs.c:480
+#: src/verbs.c:484
 msgid "Text editing and font settings"
-msgstr "Ρυθμίσεις επεξεργασίας κειμένου και γραμματοσειράς"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ ΞµΟ€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΞΊΞ±ΞΉ Ξ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬Ο‚"
 
-#: src/verbs.c:481
+#: src/verbs.c:485
+#, fuzzy
+msgid "Document Tree"
+msgstr "ΞΞ³Ξ³ΟΞ±Ο†ΞΏ"
+
+#: src/verbs.c:486
 msgid "XML Editor"
-msgstr "Επεξεργαστής XML"
+msgstr "Ξ•Ο€ΞµΞΎΞµΟΞ³Ξ±ΟƒΟ„Ξ®Ο‚ XML"
 
 #. Family frame
-#: src/widgets/font-selector.c:148
+#: src/widgets/font-selector.c:153
 msgid "Font family"
-msgstr "Οικογένεια γραμματοσειράς"
+msgstr "ΞΞΉΞΊΞΏΞ³Ξ­Ξ½ΞµΞΉΞ± Ξ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬Ο‚"
 
 #. Style frame
-#: src/widgets/font-selector.c:176
+#: src/widgets/font-selector.c:193
 msgid "Style"
-msgstr "Στυλ"
+msgstr "Ξ£Ο„Ο…Ξ»"
 
-#: src/widgets/font-selector.c:211
+#: src/widgets/font-selector.c:228
 msgid "Font size:"
-msgstr "Μέγεθος γραμματοσειράς:"
+msgstr "ΞΞ­Ξ³ΞµΞΈΞΏΟ‚ Ξ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬Ο‚:"
 
-#: src/widgets/font-selector.c:521
+#: src/widgets/font-selector.c:560
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr "ΑαΒβΓγλιΠπΔδ123456812368.;/()"
+msgstr "Ξ‘Ξ±Ξ’Ξ²Ξ“Ξ³Ξ»ΞΉΞ Ο€Ξ”Ξ΄123456812368.;/()"
 
 #
 #: src/widgets/gradient-selector.c:143
 msgid "Add"
-msgstr "Προσθήκη"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ·"
 
 #: src/widgets/gradient-selector.c:179
 #, fuzzy
 msgid "gradientUnits"
-msgstr "Βαθμίδα"
+msgstr "Ξ’Ξ±ΞΈΞΌΞ―Ξ΄Ξ±"
 
 #: src/widgets/gradient-selector.c:208
 msgid "gradientSpread"
@@ -2546,7 +2570,7 @@ msgstr ""
 #
 #: src/widgets/gradient-vector.c:250
 msgid "No document selected"
-msgstr "Δεν επιλέχθηκε έγγραφο"
+msgstr "Ξ”ΞµΞ½ ΞµΟ€ΞΉΞ»Ξ­Ο‡ΞΈΞ·ΞΊΞµ Ξ­Ξ³Ξ³ΟΞ±Ο†ΞΏ"
 
 #: src/widgets/gradient-vector.c:256
 msgid "No gradients in document"
@@ -2555,37 +2579,37 @@ msgstr ""
 #
 #: src/widgets/gradient-vector.c:262
 msgid "No gradient selected"
-msgstr "Δεν επιλέχθηκε βαθμίδα"
+msgstr "Ξ”ΞµΞ½ ΞµΟ€ΞΉΞ»Ξ­Ο‡ΞΈΞ·ΞΊΞµ Ξ²Ξ±ΞΈΞΌΞ―Ξ΄Ξ±"
 
 #: src/widgets/gradient-vector.c:417
 msgid "Start color"
-msgstr "Χρώμα έναρξης"
+msgstr "Ξ§ΟΟΞΌΞ± Ξ­Ξ½Ξ±ΟΞΎΞ·Ο‚"
 
 #: src/widgets/gradient-vector.c:427
 msgid "End color"
-msgstr " Χρώμα τέλους"
+msgstr " Ξ§ΟΟΞΌΞ± Ο„Ξ­Ξ»ΞΏΟ…Ο‚"
 
 #: src/widgets/gradient-vector.c:452
 #, fuzzy
 msgid "Gradient vector"
-msgstr "Βαθμίδα"
+msgstr "Ξ’Ξ±ΞΈΞΌΞ―Ξ΄Ξ±"
 
 #: src/widgets/paint-selector.c:622
 msgid "No objects"
-msgstr "Χωρίς αντικείμενα"
+msgstr "Ξ§Ο‰ΟΞ―Ο‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½Ξ±"
 
 #: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
-msgstr "Πολλαπλά στυλ"
+msgstr "Ξ ΞΏΞ»Ξ»Ξ±Ο€Ξ»Ξ¬ ΟƒΟ„Ο…Ξ»"
 
 #: src/widgets/paint-selector.c:650
 msgid "No paint"
-msgstr "Χωρίς μπογιά"
+msgstr "Ξ§Ο‰ΟΞ―Ο‚ ΞΌΟ€ΞΏΞ³ΞΉΞ¬"
 
 #. Label
 #: src/widgets/paint-selector.c:747
 msgid "Mode:"
-msgstr "Λειτουργία:"
+msgstr "Ξ›ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ±:"
 
 #: src/widgets/paint-selector.c:757
 msgid "RGB"
@@ -2610,73 +2634,73 @@ msgstr "CMYK Colorspace"
 #. Use dropper
 #: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
-msgstr "Λήψη από σταγονόμετρο"
+msgstr "Ξ›Ξ®ΟΞ· Ξ±Ο€Ο ΟƒΟ„Ξ±Ξ³ΞΏΞ½ΟΞΌΞµΟ„ΟΞΏ"
 
 #: src/widgets/paint-selector.c:797
 #, fuzzy
 msgid "Color paint"
-msgstr "Κολομβία"
+msgstr "ΞΞΏΞ»ΞΏΞΌΞ²Ξ―Ξ±"
 
 #
 #: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
-msgstr "Γραμμική βαθμίδα"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞΉΞΊΞ® Ξ²Ξ±ΞΈΞΌΞ―Ξ΄Ξ±"
 
 #
 #: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
-msgstr "Ακτινωτή βαθμίδα"
+msgstr "Ξ‘ΞΊΟ„ΞΉΞ½Ο‰Ο„Ξ® Ξ²Ξ±ΞΈΞΌΞ―Ξ΄Ξ±"
 
 #
 #: src/widgets/sp-color-selector.c:623
 msgid "Red:"
-msgstr "Κόκκινο:"
+msgstr "ΞΟΞΊΞΊΞΉΞ½ΞΏ:"
 
 #
 #: src/widgets/sp-color-selector.c:624
 msgid "Green:"
-msgstr "Πράσινο:"
+msgstr "Ξ ΟΞ¬ΟƒΞΉΞ½ΞΏ:"
 
 #
 #: src/widgets/sp-color-selector.c:625
 msgid "Blue:"
-msgstr "Μπλε:"
+msgstr "ΞΟ€Ξ»Ξµ:"
 
 #: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
 #: src/widgets/sp-color-selector.c:668
 msgid "Alpha:"
-msgstr "¶λφα:"
+msgstr "Ξ†Ξ»Ο†Ξ±:"
 
 #
 #: src/widgets/sp-color-selector.c:643
 msgid "Hue:"
-msgstr "Απόχρωση:"
+msgstr "Ξ‘Ο€ΟΟ‡ΟΟ‰ΟƒΞ·:"
 
 #
 #: src/widgets/sp-color-selector.c:644
 msgid "Saturation:"
-msgstr "Κορεσμός:"
+msgstr "ΞΞΏΟΞµΟƒΞΌΟΟ‚:"
 
 #
 #: src/widgets/sp-color-selector.c:645
 msgid "Value:"
-msgstr "Τιμή:"
+msgstr "Ξ¤ΞΉΞΌΞ®:"
 
 #: src/widgets/sp-color-selector.c:664
 msgid "Cyan:"
-msgstr "Κυανό:"
+msgstr "ΞΟ…Ξ±Ξ½Ο:"
 
 #: src/widgets/sp-color-selector.c:665
 msgid "Magenta:"
-msgstr "¨Μώβ"
+msgstr "ΞΟΞ²:"
 
 #: src/widgets/sp-color-selector.c:666
 msgid "Yellow:"
-msgstr "Κίτρινο:"
+msgstr "ΞΞ―Ο„ΟΞΉΞ½ΞΏ:"
 
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
-msgstr "Μαύρο:"
+msgstr "ΞΞ±ΟΟΞΏ:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
@@ -2684,17 +2708,9 @@ msgstr ""
 
 #: src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
-msgstr "Γνώρισμα"
+msgstr "Ξ“Ξ½ΟΟΞΉΟƒΞΌΞ±"
 
 #
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
-msgstr "Τιμή"
-
-#
-#~ msgid "Filters"
-#~ msgstr "Φίλτρα"
-
-#, fuzzy
-#~ msgid "Relative move"
-#~ msgstr "κάθετο"
+msgstr "Ξ¤ΞΉΞΌΞ®"
