@@ -461,6 +461,16 @@ sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
 }
 
 void
+sp_event_context_finish (SPEventContext *ec)
+{
+	g_return_if_fail (ec != NULL);
+	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
+
+	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->finish)
+		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->finish (ec);
+}
+
+void
 sp_event_context_read (SPEventContext *ec, const guchar *key)
 {
 	g_return_if_fail (ec != NULL);

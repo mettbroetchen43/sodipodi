@@ -1,3 +1,14 @@
+2002-08-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_pen_context_finish): Flush object
+	(sp_pen_context_root_handler): Added 'BackSpace', should work OK now
+
+	* src/event-context.c (sp_event_context_finish): New method and virtual method
+
+	* src/desktop.c (sp_desktop_set_event_context): Finish eventcontext
+
+	* src/helper/curve.c (sp_curve_backspace): New method
+
 2002-08-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/curve.c (sp_curve_append): Handle open/closed end and start

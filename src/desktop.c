@@ -761,6 +761,7 @@ sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *co
 	SPRepr *repr;
 
 	if (desktop->event_context) {
+		sp_event_context_finish (desktop->event_context);
 		gtk_object_unref (GTK_OBJECT (desktop->event_context));
 	}
 

@@ -40,6 +40,7 @@ struct _SPEventContext {
 struct _SPEventContextClass {
 	GtkObjectClass parent_class;
 	void (* setup) (SPEventContext *ec);
+	void (* finish) (SPEventContext *ec);
 	void (* set) (SPEventContext *ec, const guchar *key, const guchar *val);
 	gint (* root_handler) (SPEventContext *ec, GdkEvent *event);
 	gint (* item_handler) (SPEventContext *ec, SPItem *item, GdkEvent *event);
@@ -51,6 +52,8 @@ struct _SPEventContextClass {
 GtkType sp_event_context_get_type (void);
 
 SPEventContext *sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr);
+
+void sp_event_context_finish (SPEventContext *ec);
 
 void sp_event_context_read (SPEventContext *ec, const guchar *key);
 

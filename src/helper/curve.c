@@ -755,6 +755,29 @@ sp_curve_append_continuous (SPCurve *c0, SPCurve *c1, gdouble tolerance)
 	return c0;
 }
 
+void
+sp_curve_backspace (SPCurve *curve)
+{
+	g_return_if_fail (curve != NULL);
+
+	if (curve->end > 0) {
+		curve->end -= 1;
+		if (curve->end > 0) {
+			ArtBpath *p;
+			p = curve->bpath + curve->end - 1;
+			if ((p->code == ART_MOVETO) || (p->code == ART_MOVETO_OPEN)) {
+				curve->hascpt = TRUE;
+				curve->posset = TRUE;
+				curve->closed = FALSE;
+				curve->x = p->x3;
+				curve->y = p->y3;
+				curve->end -= 1;
+			}
+		}
+		curve->bpath[curve->end].code = ART_END;
+	}
+}
+
 /* Private methods */
 
 static

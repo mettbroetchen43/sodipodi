@@ -35,6 +35,7 @@ struct _SPDrawContext {
 	SPEventContext event_context;
 
 	SPSelection *selection;
+	GnomeCanvasItem *grab;
 
 	guint attach : 1;
 
@@ -112,10 +113,10 @@ typedef struct _SPPenContext SPPenContext;
 typedef struct _SPPenContextClass SPPenContextClass;
 
 enum {
-	SP_PEN_CONTEXT_IDLE,
 	SP_PEN_CONTEXT_POINT,
 	SP_PEN_CONTEXT_CONTROL,
-	SP_PEN_CONTEXT_CLOSE
+	SP_PEN_CONTEXT_CLOSE,
+	SP_PEN_CONTEXT_STOP
 };
 
 enum {
