@@ -1,3 +1,8 @@
+2000-06-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/export.c (sp_export_do_export): use pixbuf context,
+	instead of rbuf
+
 2000-06-05  Michael Meeks  <michael@helixcode.com>
 
 	* src/dialogs/export.c (sp_export_do_export): s/rbuf_rgba_new/rbuf_new/

@@ -13,7 +13,7 @@
 #include "export.h"
 
 #ifdef ENABLE_RBUF
-#include <libgnomeprint/gnome-print-rbuf.h>
+#include <libgnomeprint/gnome-print-pixbuf.h>
 #endif
 
 #define SP_EXPORT_MIN_SIZE 16.0
@@ -93,16 +93,34 @@ void sp_export_dialog (void)
 		gtk_widget_hide (dialog);
 }
 
+#ifdef ENABLE_RBUF
+static void
+sp_export_showpixbuf (GnomePrintPixbuf * gpb, GdkPixbuf * pb, gint pagenum, gpointer data)
+{
+	ArtPixBuf * apb;
+
+	apb = art_pixbuf_new_const_rgba (gdk_pixbuf_get_pixels (pb),
+		gdk_pixbuf_get_width (pb),
+		gdk_pixbuf_get_height (pb),
+		gdk_pixbuf_get_rowstride (pb));
+
+	sp_png_write_rgba ((gchar *) data, apb);
+
+	art_pixbuf_free (apb);
+}
+#endif
+
 static void
 sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
 {
 	SPDocument * doc;
+#ifdef ENABLE_RBUF
+	GnomePrintContext * pc;
+#else
 	ArtPixBuf * pixbuf;
 	art_u8 * pixels;
 	gdouble affine[6], a[6];
-#ifdef ENABLE_RBUF
-	GnomePrintContext * rbuf;
 #endif
 
 	g_return_if_fail (desktop != NULL);
@@ -112,23 +130,26 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 
 	doc = SP_DT_DOCUMENT (desktop);
 
+#ifdef ENABLE_RBUF
+
+	pc = gnome_print_pixbuf_new (x0, y0, x1, y1,
+		width * 72.0 / (x1 - x0), height * 72.0 / (y1 - y0),
+		TRUE);
+
+	gtk_signal_connect (GTK_OBJECT (pc), "showpixbuf",
+		GTK_SIGNAL_FUNC (sp_export_showpixbuf), filename);
+
+	sp_item_print (SP_ITEM (sp_document_root (doc)), pc);
+
+	gnome_print_showpage (pc);
+
+	gtk_object_destroy (GTK_OBJECT (pc));
+
+#else /* ENABLE_RBUF */
+
 	pixels = art_new (art_u8, width * height * 4);
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
-
-#ifdef ENABLE_RBUF
-
-	art_affine_translate (affine, -x0, -y1);
-	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
-	art_affine_multiply (affine, affine, a);
-
-	rbuf = gnome_print_rbuf_new (pixels, width, height, width * 4, affine, TRUE);
-
-	sp_item_print (SP_ITEM (sp_document_root (doc)), rbuf);
-
-	gtk_object_destroy (GTK_OBJECT (rbuf));
-
-#else /* ENABLE_RBUF */
 
 	sp_desktop_doc2d_affine (desktop, affine);
 	art_affine_translate (a, -x0, -y1);
@@ -138,11 +159,11 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 
 	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
-#endif /* ENABLE_RBUF */
-
 	sp_png_write_rgba (filename, pixbuf);
 
 	art_pixbuf_free (pixbuf);
+
+#endif /* ENABLE_RBUF */
 }
 
 void
