@@ -8,10 +8,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.26\n"
+"Project-Id-Version: sodipodi 0.27\n"
 "POT-Creation-Date: 2002-10-07 21:53+0200\n"
-"PO-Revision-Date: 2002-09-29 01:53+0900\n"
-"Last-Translator: Mitsuru Oka <oka326@parkcity.ne.jp>\n"
+"PO-Revision-Date: 2002-10-13 23:07+0900\n"
+"Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -550,7 +550,7 @@ msgstr "縦横比を固定"
 #. View:New Preview
 #: glade/sodipodi.glade.h:36 src/interface.c:316
 msgid "New Preview"
-msgstr "新規のプリビュー"
+msgstr "新規のプレビュー"
 
 #. View:New View
 #: glade/sodipodi.glade.h:37 src/interface.c:314
@@ -1610,7 +1610,7 @@ msgstr "ストロークスタイル"
 
 #: src/dialogs/object-properties.c:153
 msgid "Apply to:"
-msgstr ""
+msgstr "適用:"
 
 #: src/dialogs/object-properties.c:164
 msgid "Selected objects"
@@ -1659,7 +1659,7 @@ msgstr "ストローク設定"
 #. Cap type
 #: src/dialogs/stroke-style.c:623
 msgid "Cap:"
-msgstr "端点:"
+msgstr "先端:"
 
 #: src/dialogs/text-edit.c:79
 msgid "Text properties"
@@ -1918,11 +1918,11 @@ msgstr "us"
 
 #: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em squares"
-msgstr ""
+msgstr "EM スクエア"
 
 #: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em square"
-msgstr ""
+msgstr "EM スクエア"
 
 #: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "em"
@@ -1930,11 +1930,11 @@ msgstr "em"
 
 #: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex squares"
-msgstr ""
+msgstr "EX スクエア"
 
 #: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex square"
-msgstr ""
+msgstr "EX スクエア"
 
 #: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "ex"
@@ -2035,7 +2035,7 @@ msgstr "全て消去"
 
 #: src/interface.c:231
 msgid "Cleanup"
-msgstr "クリーンアップ"
+msgstr "掃除する"
 
 #. Selection:Group
 #: src/interface.c:240 src/sp-item-group.c:495
@@ -2139,7 +2139,7 @@ msgstr "X サーバを使用しません (コンソールでファイルの処理だけを行います)"
 
 #: src/main.c:108
 msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr "$DISPLAY 変数が設定されなくても X サーバの使用を試みます"
+msgstr "$DISPLAY 変数が設定されなくても X サーバの利用を試みます"
 
 #: src/main.c:111
 msgid "Open specified document(s) (option string may be excluded)"
@@ -2159,7 +2159,7 @@ msgstr "文書を PNG ファイルに出力"
 
 #: src/main.c:120
 msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
-msgstr "出力ビットマップの解像度を pixcel/inch で指定 (既定値 72.0)"
+msgstr "出力ビットマップの解像度を pixel/inch で指定 (既定値 72.0)"
 
 #: src/main.c:121
 msgid "DPI"
@@ -2188,7 +2188,7 @@ msgstr "無題文書"
 #. Show nice dialog box
 #: src/sodipodi.c:361
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr "Sodipodi は内部エラーが発生しました。今すぐ閉じます。\n"
+msgstr "Sodipodi は内部エラーが発生しました。今すぐ終了します。\n"
 
 #: src/sodipodi.c:362
 msgid ""
@@ -2318,7 +2318,7 @@ msgstr "リンクを除去"
 #: src/sp-image.c:365
 #, c-format
 msgid "Image with bad reference: %s"
-msgstr "不正な参照の画像: %s"
+msgstr "無効な参照の画像: %s"
 
 #: src/sp-image.c:367
 #, c-format
@@ -2453,22 +2453,20 @@ msgstr "描画"
 #. Family frame
 #: src/widgets/font-selector.c:143
 msgid "Font family"
-msgstr ""
+msgstr "フォントファミリー"
 
 #. Style frame
 #: src/widgets/font-selector.c:171
-#, fuzzy
 msgid "Style"
-msgstr " スタイル "
+msgstr " スタイル"
 
 #: src/widgets/font-selector.c:206
-#, fuzzy
 msgid "Font size:"
-msgstr "セーブしない"
+msgstr "フォントサイズ:"
 
 #: src/widgets/font-selector.c:519
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-vector.c:241
 msgid "No document selected"
@@ -2528,14 +2526,12 @@ msgid "Color paint"
 msgstr "カラーペイント"
 
 #: src/widgets/paint-selector.c:779
-#, fuzzy
 msgid "Linear gradient"
-msgstr "グラデーションを追加"
+msgstr "線形グラデーション"
 
 #: src/widgets/paint-selector.c:781
-#, fuzzy
 msgid "Radial gradient"
-msgstr "グラデーションを追加"
+msgstr "放射状グラデーション"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
