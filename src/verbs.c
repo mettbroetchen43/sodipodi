@@ -473,7 +473,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_CONTEXT_PEN, "DrawPen", N_("Pen"), N_("Draw precisely positioned curved and straight lines"), "draw_pen"},
 	{SP_VERB_CONTEXT_CALLIGRAPHIC, "DrawCalligrphic", N_("Calligraphy"), N_("Draw calligraphic lines"), "draw_dynahand"},
 	{SP_VERB_CONTEXT_TEXT, "DrawText", N_("Text"), N_("Create and edit text objects"), "draw_text"},
-	{SP_VERB_CONTEXT_ZOOM, "DrawZoom", N_("Zoom"), N_("Zoom into preciely selected area"), "draw_zoom"},
+	{SP_VERB_CONTEXT_ZOOM, "DrawZoom", N_("Zoom"), N_("Zoom into precisely selected area"), "draw_zoom"},
 	{SP_VERB_CONTEXT_DROPPER, "DrawDropper", N_("Dropper"), N_("Pick averaged colors from image"), "draw_dropper"},
 	/* Zooming */
 	{SP_VERB_ZOOM_IN, "ZoomIn", N_("In"), N_("Zoom in drawing"), "zoom_in"},
