@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2003-11-23 14:42+0200\n"
-"PO-Revision-Date: 2003-11-18 13:00+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-24 04:34+0100\n"
+"PO-Revision-Date: 2003-11-24 13:10+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -44,7 +44,7 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Strana"
@@ -156,133 +156,130 @@ msgstr "Největší položka"
 msgid "Smallest item"
 msgstr "Nejmenší položka"
 
-#: src/dialogs/desktop-properties.c:190
+#: src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
 msgstr "Nastavení plochy"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:199
+#: src/dialogs/desktop-properties.c:204
 msgid "Grid"
 msgstr "Mřížka"
 
-#: src/dialogs/desktop-properties.c:212
+#: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
 msgstr "Zobrazovat mřížku"
 
-#: src/dialogs/desktop-properties.c:213
+#: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
 msgstr "Uchytávat k mřížce"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
 msgstr "Vodorovné čáry"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
 msgstr "Svislé čáry"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
 msgstr "Čtverečková mřížka"
 
-#: src/dialogs/desktop-properties.c:220
+#: src/dialogs/desktop-properties.c:225
 msgid "Hex grid"
 msgstr "Šesterečková mřížka"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
 msgstr "Jednotky mřížky:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
 msgstr "Počátek X:"
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:235
 msgid "Origin Y:"
 msgstr "Počátek Y:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
 msgstr "Mezery X:"
 
-#: src/dialogs/desktop-properties.c:235
+#: src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
 msgstr "Mezery Y:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
 msgstr "Jednotky uchycení:"
 
-#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
 msgid "Snap distance:"
 msgstr "Vzdálenost uchycení:"
 
-#: src/dialogs/desktop-properties.c:244
+#: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
 msgstr "Barva mřížky:"
 
-#: src/dialogs/desktop-properties.c:245
+#: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
 msgstr "Barva mřížky"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:249
+#: src/dialogs/desktop-properties.c:254
 msgid "Guides"
 msgstr "Vodítka"
 
-#: src/dialogs/desktop-properties.c:260
+#: src/dialogs/desktop-properties.c:265
 msgid "Show guides"
 msgstr "Zobrazovat vodítka"
 
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
 msgstr "Uchytávat na vodítka"
 
-#: src/dialogs/desktop-properties.c:271
+#: src/dialogs/desktop-properties.c:276
 msgid "Guides color:"
 msgstr "Barva vodítek:"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:277
 msgid "Guideline color"
 msgstr "Barva čáry vodítka"
 
-#: src/dialogs/desktop-properties.c:274
+#: src/dialogs/desktop-properties.c:279
 msgid "Highlight color:"
 msgstr "Barva zvýraznění:"
 
-#: src/dialogs/desktop-properties.c:275
+#: src/dialogs/desktop-properties.c:280
 msgid "Highlighted guideline color"
 msgstr "Barva zvýrazněného vodítka"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:295
 msgid "Show border"
 msgstr "Zobrazovat ohraničení"
 
-#: src/dialogs/desktop-properties.c:296
+#: src/dialogs/desktop-properties.c:301
 msgid "Border on top of drawing"
 msgstr "Okraj na horní straně obrázku"
 
-#: src/dialogs/desktop-properties.c:301
-#, fuzzy
+#: src/dialogs/desktop-properties.c:306
 msgid "Border color:"
-msgstr "Barva mřížky:"
+msgstr "Barva okraje:"
 
-#: src/dialogs/desktop-properties.c:302
+#: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
-msgstr ""
+msgstr "Barva okraje stránky"
 
-#: src/dialogs/desktop-properties.c:303
-#, fuzzy
+#: src/dialogs/desktop-properties.c:308
 msgid "Page color:"
-msgstr "Barva vodítek:"
+msgstr "Barva stránky:"
 
-#: src/dialogs/desktop-properties.c:304
-#, fuzzy
+#: src/dialogs/desktop-properties.c:309
 msgid "Page color"
-msgstr "Počáteční barva"
+msgstr "Barva stránky"
 
-#: src/dialogs/desktop-properties.c:575
+#: src/dialogs/desktop-properties.c:580
 msgid "Close"
 msgstr "Zavřít"
 
@@ -330,40 +327,40 @@ msgstr "Vstup"
 msgid "Default cursor tolerance:"
 msgstr "Výchozí tolerance kurzoru:"
 
-#: src/dialogs/document-properties.c:156
+#: src/dialogs/document-properties.c:159
 msgid "Document settings"
 msgstr "Nastavení dokumentu"
 
-#: src/dialogs/document-properties.c:177
+#: src/dialogs/document-properties.c:180
 msgid "Paper size:"
 msgstr "Velikost papíru:"
 
-#: src/dialogs/document-properties.c:198
+#: src/dialogs/document-properties.c:201
 msgid "Custom"
 msgstr "Vlastní"
 
 #. Custom paper frame
-#: src/dialogs/document-properties.c:205
+#: src/dialogs/document-properties.c:208
 msgid "Custom paper"
 msgstr "Vlastní papír"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:216 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Jednotky:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:225 src/dialogs/export.c:165
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
 #: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:559 src/dialogs/tool-attributes.c:123
+#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Šířka:"
 
-#: src/dialogs/document-properties.c:240 src/dialogs/export.c:174
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
 #: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
@@ -415,68 +412,68 @@ msgstr "Exportovat soubor PNG"
 msgid "Export"
 msgstr "Export"
 
-#: src/dialogs/fill-style.c:91
+#: src/dialogs/fill-style.c:86
 msgid "Fill style"
 msgstr "Styl výplně"
 
-#: src/dialogs/fill-style.c:126
+#: src/dialogs/fill-style.c:121
 msgid "Fill Rule"
 msgstr "Pravidlo výplně"
 
-#: src/dialogs/fill-style.c:140
+#: src/dialogs/fill-style.c:135
 msgid "nonzero"
 msgstr "nenulové"
 
-#: src/dialogs/fill-style.c:145
+#: src/dialogs/fill-style.c:140
 msgid "evenodd"
 msgstr "sudéliché"
 
-#: src/dialogs/item-properties.c:80 src/dialogs/item-properties.c:277
-#: src/dialogs/item-properties.c:351 src/dialogs/item-properties.c:358
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
+#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
 msgid "ID"
 msgstr "ID"
 
-#: src/dialogs/item-properties.c:94
+#: src/dialogs/item-properties.c:98
 msgid "Set ID"
 msgstr "Nastavit ID"
 
-#: src/dialogs/item-properties.c:105
+#: src/dialogs/item-properties.c:109
 msgid "Sensitive"
 msgstr "Citlivá"
 
-#: src/dialogs/item-properties.c:110
+#: src/dialogs/item-properties.c:114
 msgid "Visible"
 msgstr "Viditelná"
 
-#: src/dialogs/item-properties.c:115
+#: src/dialogs/item-properties.c:119
 msgid "Active"
 msgstr "Aktivní"
 
-#: src/dialogs/item-properties.c:120
+#: src/dialogs/item-properties.c:124
 msgid "Printable"
 msgstr "Tisknutelná"
 
-#: src/dialogs/item-properties.c:131
+#: src/dialogs/item-properties.c:135
 msgid "Opacity:"
 msgstr "Krytí:"
 
-#: src/dialogs/item-properties.c:150
+#: src/dialogs/item-properties.c:154
 msgid "Transformation matrix"
 msgstr "Transformační matice"
 
-#: src/dialogs/item-properties.c:271
+#: src/dialogs/item-properties.c:275
 msgid "Ref"
 msgstr "Odkaz"
 
-#: src/dialogs/item-properties.c:353
+#: src/dialogs/item-properties.c:357
 msgid "ID invalid"
 msgstr "ID není platné"
 
-#: src/dialogs/item-properties.c:355
+#: src/dialogs/item-properties.c:359
 msgid "ID exists"
 msgstr "ID existuje"
 
-#: src/dialogs/item-properties.c:431 src/verbs.c:468
+#: src/dialogs/item-properties.c:435 src/verbs.c:468
 msgid "Item properties"
 msgstr "Vlastnosti položky"
 
@@ -654,51 +651,51 @@ msgstr "Velikost a umístění objektu"
 msgid "Size and Position"
 msgstr "Velikost a umístění"
 
-#: src/dialogs/stroke-style.c:546 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
 msgid "Stroke settings"
 msgstr "Nastavení tahu"
 
 #. Join type
-#: src/dialogs/stroke-style.c:582
+#: src/dialogs/stroke-style.c:588
 msgid "Join:"
 msgstr "Spojení:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:625
+#: src/dialogs/stroke-style.c:631
 msgid "Cap:"
 msgstr "Víčko:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:668
+#: src/dialogs/stroke-style.c:674
 msgid "Pattern:"
 msgstr "Vzorek:"
 
-#: src/dialogs/text-edit.c:98
+#: src/dialogs/text-edit.c:101
 msgid "Text properties"
 msgstr "Vlastnosti textu"
 
 #. Layout
-#: src/dialogs/text-edit.c:137
+#: src/dialogs/text-edit.c:140
 msgid "Layout"
 msgstr "Rozložení"
 
-#: src/dialogs/text-edit.c:145
+#: src/dialogs/text-edit.c:148
 msgid "Alignment:"
 msgstr "Zarovnání:"
 
-#: src/dialogs/text-edit.c:170
+#: src/dialogs/text-edit.c:173
 msgid "Orientation:"
 msgstr "Orientace:"
 
-#: src/dialogs/text-edit.c:188
+#: src/dialogs/text-edit.c:191
 msgid "Line spacing:"
 msgstr "Mezery mezi řádky:"
 
-#: src/dialogs/text-edit.c:213
+#: src/dialogs/text-edit.c:216
 msgid "Text and font"
 msgstr "Text a písmo"
 
-#: src/dialogs/text-edit.c:224
+#: src/dialogs/text-edit.c:227
 msgid "Set as default"
 msgstr "Nastavit jako výchozí"
 
@@ -2278,20 +2275,20 @@ msgid "XML Editor"
 msgstr "Editor XML"
 
 #. Family frame
-#: src/widgets/font-selector.c:146
+#: src/widgets/font-selector.c:148
 msgid "Font family"
 msgstr "Rodina písma"
 
 #. Style frame
-#: src/widgets/font-selector.c:174
+#: src/widgets/font-selector.c:176
 msgid "Style"
 msgstr "Styl"
 
-#: src/widgets/font-selector.c:209
+#: src/widgets/font-selector.c:211
 msgid "Font size:"
 msgstr "Velikost písma:"
 
-#: src/widgets/font-selector.c:519
+#: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQqÁáČčŠš12368.;/()"
 
@@ -2307,27 +2304,27 @@ msgstr "jednotkyPřechodu"
 msgid "gradientSpread"
 msgstr "rozloženíPřechodu"
 
-#: src/widgets/gradient-vector.c:248
+#: src/widgets/gradient-vector.c:250
 msgid "No document selected"
 msgstr "Není vybrán žádný dokument"
 
-#: src/widgets/gradient-vector.c:254
+#: src/widgets/gradient-vector.c:256
 msgid "No gradients in document"
 msgstr "V dokumentu nejsou žádné přechody"
 
-#: src/widgets/gradient-vector.c:260
+#: src/widgets/gradient-vector.c:262
 msgid "No gradient selected"
 msgstr "Nejsou vybrány žádné přechody"
 
-#: src/widgets/gradient-vector.c:415
+#: src/widgets/gradient-vector.c:417
 msgid "Start color"
 msgstr "Počáteční barva"
 
-#: src/widgets/gradient-vector.c:425
+#: src/widgets/gradient-vector.c:427
 msgid "End color"
 msgstr "Konečná barva"
 
-#: src/widgets/gradient-vector.c:450
+#: src/widgets/gradient-vector.c:452
 msgid "Gradient vector"
 msgstr "Vektor přechodu"
 
