@@ -393,6 +393,7 @@ static void sp_tspan_release (SPObject *object);
 static void sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
+static void sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_tspan_modified (SPObject *object, guint flags);
 static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -441,6 +442,7 @@ sp_tspan_class_init (SPTSpanClass *class)
 	sp_object_class->set = sp_tspan_set;
 	sp_object_class->child_added = sp_tspan_child_added;
 	sp_object_class->remove_child = sp_tspan_remove_child;
+	sp_object_class->update = sp_tspan_update;
 	sp_object_class->modified = sp_tspan_modified;
 	sp_object_class->write = sp_tspan_write;
 
@@ -599,6 +601,26 @@ sp_tspan_remove_child (SPObject *object, SPRepr *rch)
 
 	if (tspan->string && (SP_OBJECT_REPR (tspan->string) == rch)) {
 		tspan->string = sp_object_detach_unref (object, tspan->string);
+	}
+}
+
+static void
+sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPTSpan *tspan;
+
+	tspan = SP_TSPAN (object);
+
+	if (((SPObjectClass *) tspan_parent_class)->update)
+		((SPObjectClass *) tspan_parent_class)->update (object, ctx, flags);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	if (tspan->string) {
+		if (flags || (((SPObject *) tspan->string)->flags & SP_OBJECT_UPDATE_FLAG)) {
+			sp_object_invoke_update (tspan->string, ctx, flags);
+		}
 	}
 }
 

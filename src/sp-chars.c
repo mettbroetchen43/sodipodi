@@ -26,7 +26,7 @@ static void sp_chars_class_init (SPCharsClass *class);
 static void sp_chars_init (SPChars *chars);
 
 static void sp_chars_release (SPObject *object);
-static void sp_chars_style_modified (SPObject *object, guint flags);
+static void sp_chars_update (SPObject *object, SPCtx *ctx, guint flags);
 
 static void sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena, unsigned int key);
@@ -68,7 +68,7 @@ sp_chars_class_init (SPCharsClass *klass)
 	parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->release = sp_chars_release;
-	sp_object_class->style_modified = sp_chars_style_modified;
+	sp_object_class->update = sp_chars_update;
 
 	item_class->bbox = sp_chars_bbox;
 	item_class->show = sp_chars_show;
@@ -103,20 +103,21 @@ sp_chars_release (SPObject *object)
 }
 
 static void
-sp_chars_style_modified (SPObject *object, guint flags)
+sp_chars_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	SPChars *chars;
-	SPItemView *v;
 
 	chars = SP_CHARS (object);
 
 	/* Item class reads style */
-	if (((SPObjectClass *) (parent_class))->style_modified)
-		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
+	if (((SPObjectClass *) (parent_class))->update)
+		((SPObjectClass *) (parent_class))->update (object, ctx, flags);
 
-	for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
-		/* fixme: */
-		nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (v->arenaitem), object->style);
+	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
+		SPItemView *v;
+		for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
+			nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (v->arenaitem), object->style);
+		}
 	}
 }
 

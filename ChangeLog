@@ -1,5 +1,9 @@
 2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-chars.c (sp_chars_update): Implement
+
+	* src/sp-text.c (sp_tspan_update): Implement
+
 	* Makefile.am: Port back to glib gettext
 
 	* configure.in: Port back to glib gettext
