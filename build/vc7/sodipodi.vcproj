@@ -1909,6 +1909,9 @@ GnuWin32\bin\glib-genmarshal.exe --body --prefix=sp_marshal src\helper\sp-marsha
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\ChangeLog">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -144,6 +144,8 @@ sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform)
 		} else {
 			return 0; /* unknown keyword */
 		}
+		/* Skip trailing whitespace */
+		while (isspace (str[idx])) idx++;
 	}
 
 	transform->c[0] = a.c[0];

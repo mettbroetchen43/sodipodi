@@ -1,6 +1,14 @@
+2003-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/button.h: Added SELECT mode
+
+	* src/widgets/button.c (sp_button_button_release): Ditto
+	(sp_button_menu_selection_done): Ditto
+
 2003-11-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/align.c (sp_quick_align_dialog): Fixed tooltip typo
+
 2003-11-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/document-undo.c (sp_document_undo): Begin transaction

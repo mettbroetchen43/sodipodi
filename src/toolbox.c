@@ -522,24 +522,24 @@ sp_toolbox_draw_create (void)
 	tt = gtk_tooltips_new ();
 	tb = sp_toolbox_new (t, _("Draw"), "draw", "toolbox_draw", tt);
 	
-	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_SELECT, tt);
-	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_NODE, tt);
-	b = sp_button_menu_new (24, SP_BUTTON_TYPE_TOGGLE, 4, tt);
+	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_SELECT, SP_VERB_CONTEXT_SELECT, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_SELECT, SP_VERB_CONTEXT_NODE, tt);
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_SELECT, 4, tt);
 	gtk_widget_show (b);
 	sp_button_add_option (SP_BUTTON (b), 0, sp_verb_get_action (SP_VERB_CONTEXT_RECT));
 	sp_button_add_option (SP_BUTTON (b), 1, sp_verb_get_action (SP_VERB_CONTEXT_ARC));
 	sp_button_add_option (SP_BUTTON (b), 2, sp_verb_get_action (SP_VERB_CONTEXT_STAR));
 	sp_button_add_option (SP_BUTTON (b), 3, sp_verb_get_action (SP_VERB_CONTEXT_SPIRAL));
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
-	b = sp_button_menu_new (24, SP_BUTTON_TYPE_TOGGLE, 3, tt);
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_SELECT, 3, tt);
 	gtk_widget_show (b);
 	sp_button_add_option (SP_BUTTON (b), 0, sp_verb_get_action (SP_VERB_CONTEXT_PENCIL));
 	sp_button_add_option (SP_BUTTON (b), 1, sp_verb_get_action (SP_VERB_CONTEXT_PEN));
 	sp_button_add_option (SP_BUTTON (b), 2, sp_verb_get_action (SP_VERB_CONTEXT_CALLIGRAPHIC));
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
-	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_TEXT, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_ZOOM, tt);
-	sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_DROPPER, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_SELECT, SP_VERB_CONTEXT_TEXT, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_SELECT, SP_VERB_CONTEXT_ZOOM, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_SELECT, SP_VERB_CONTEXT_DROPPER, tt);
 	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
 	if (repr) {

@@ -32,7 +32,7 @@
 
 #include "shortcuts.h"
 
-enum {PRESSED, RELEASED, CLICKED, TOGGLED, LAST_SIGNAL};
+enum {PRESSED, RELEASED, CLICKED, TOGGLED, SELECTED, LAST_SIGNAL};
 
 static void sp_button_class_init (SPButtonClass *klass);
 static void sp_button_init (SPButton *button);
@@ -137,6 +137,13 @@ sp_button_class_init (SPButtonClass *klass)
 						G_OBJECT_CLASS_TYPE (object_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (SPButtonClass, toggled),
+						NULL, NULL,
+						sp_marshal_VOID__VOID,
+						G_TYPE_NONE, 0);
+	button_signals[SELECTED] = g_signal_new ("selected",
+						G_OBJECT_CLASS_TYPE (object_class),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (SPButtonClass, selected),
 						NULL, NULL,
 						sp_marshal_VOID__VOID,
 						G_TYPE_NONE, 0);
@@ -337,25 +344,37 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 	SPAction *action;
 	action = button->options[button->option].action;
 	/* Emulate button released */
+	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	button->pressed = 0;
+	button->grabbed = 0;
 	switch (button->type) {
 	case SP_BUTTON_TYPE_NORMAL:
-		button->pressed = 0;
 		button->down = 0;
-		gdk_pointer_ungrab (GDK_CURRENT_TIME);
 		sp_button_update_state (button);
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[CLICKED], 0);
 		sp_action_perform (action, NULL);
 		break;
 	case SP_BUTTON_TYPE_TOGGLE:
-		button->pressed = 0;
 		button->down = !button->initial;
-		gdk_pointer_ungrab (GDK_CURRENT_TIME);
 		sp_button_update_state (button);
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[TOGGLED], 0);
 		sp_action_set_active (action, button->down);
 		if (button->down) sp_action_perform (action, NULL);
+		break;
+	case SP_BUTTON_TYPE_SELECT:
+		button->down = 1;
+		sp_button_update_state (button);
+		g_signal_emit (button, button_signals[RELEASED], 0);
+		if (!button->initial) g_signal_emit (button, button_signals[TOGGLED], 0);
+		if (!button->initial || (button->option != button->lastoption)) {
+			g_signal_emit (button, button_signals[SELECTED], 0);
+		}
+		sp_action_set_active (action, 1);
+		if (!button->initial || (button->option != button->lastoption)) {
+			sp_action_perform (action, NULL);
+		}
 		break;
 	default:
 		break;
@@ -417,25 +436,14 @@ sp_button_button_press (GtkWidget *widget, GdkEventButton *event)
 		if (button->noptions > 1) {
 			button->timeout = gtk_timeout_add (200, sp_button_timeout, button);
 		}
-		switch (button->type) {
-		case SP_BUTTON_TYPE_NORMAL:
-			button->grabbed = 1;
-			button->pressed = 1;
-			button->down = 1;
-			sp_button_update_state (button);
-			g_signal_emit (button, button_signals[PRESSED], 0);
-			break;
-		case SP_BUTTON_TYPE_TOGGLE:
-			button->grabbed = 1;
-			button->pressed = 1;
-			button->initial = button->down;
-			button->down = 1;
-			sp_button_update_state (button);
-			g_signal_emit (button, button_signals[PRESSED], 0);
-			break;
-		default:
-			break;
-		}
+		/* This is universal for all types of buttons */
+		button->grabbed = 1;
+		button->pressed = 1;
+		button->initial = button->down;
+		button->lastoption = button->option;
+		button->down = 1;
+		sp_button_update_state (button);
+		g_signal_emit (button, button_signals[PRESSED], 0);
 	}
 
 	return TRUE;
@@ -455,25 +463,36 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 			gtk_timeout_remove (button->timeout);
 			button->timeout = 0;
 		}
+		button->pressed = 0;
+		button->grabbed = 0;
 		switch (button->type) {
 		case SP_BUTTON_TYPE_NORMAL:
-			button->pressed = 0;
 			button->down = 0;
-			button->grabbed = 0;
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[CLICKED], 0);
 			sp_action_perform (action, NULL);
 			break;
 		case SP_BUTTON_TYPE_TOGGLE:
-			button->pressed = 0;
 			button->down = !button->initial;
-			button->grabbed = 0;
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[TOGGLED], 0);
 			sp_action_set_active (action, button->down);
 			if (button->down) sp_action_perform (action, NULL);
+			break;
+		case SP_BUTTON_TYPE_SELECT:
+			button->down = 1;
+			sp_button_update_state (button);
+			g_signal_emit (button, button_signals[RELEASED], 0);
+			if (!button->initial) g_signal_emit (button, button_signals[TOGGLED], 0);
+			if (!button->initial || (button->option != button->lastoption)) {
+				g_signal_emit (button, button_signals[SELECTED], 0);
+			}
+			sp_action_set_active (action, 1);
+			if (!button->initial || (button->option != button->lastoption)) {
+				sp_action_perform (action, NULL);
+			}
 			break;
 		default:
 			break;
@@ -606,7 +625,7 @@ sp_button_action_set_active (SPAction *action, unsigned int active, void *data)
 {
 	SPButton *button;
 	button = (SPButton *) data;
-	if (button->type == SP_BUTTON_TYPE_TOGGLE) {
+	if ((button->type == SP_BUTTON_TYPE_TOGGLE) || (button->type == SP_BUTTON_TYPE_SELECT)) {
 		int aidx;
 		for (aidx = 0; aidx < button->noptions; aidx++) {
 			if (action == button->options[aidx].action) break;

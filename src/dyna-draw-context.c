@@ -284,7 +284,7 @@ sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *v
 		ddc->width = CLAMP (dval, -1000.0, 1000.0);
 	}
 
-	g_print ("DDC: %g %g %g %g\n", ddc->mass, ddc->drag, ddc->angle, ddc->width);
+	/* g_print ("DDC: %g %g %g %g\n", ddc->mass, ddc->drag, ddc->angle, ddc->width); */
 }
 
 static double

@@ -28,7 +28,8 @@ typedef struct _SPBChoiceData SPBChoiceData;
 
 enum {
 	SP_BUTTON_TYPE_NORMAL,
-	SP_BUTTON_TYPE_TOGGLE
+	SP_BUTTON_TYPE_TOGGLE,
+	SP_BUTTON_TYPE_SELECT
 };
 
 struct _SPBChoiceData {
@@ -41,6 +42,7 @@ struct _SPButton {
 
 	unsigned int noptions : 4;
 	unsigned int option : 4;
+	unsigned int lastoption : 4;
 	unsigned int type : 2;
 	unsigned int inside : 1;
 	unsigned int pressed : 1;
@@ -66,6 +68,7 @@ struct _SPButtonClass {
 	void (* released) (SPButton *button);
 	void (* clicked) (SPButton *button);
 	void (* toggled) (SPButton *button);
+	void (* selected) (SPButton *button);
 };
 
 #define SP_BUTTON_IS_DOWN(b) (SP_BUTTON (b)->down)
