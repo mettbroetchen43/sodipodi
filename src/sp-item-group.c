@@ -450,7 +450,7 @@ static gchar * sp_group_description (SPItem * item)
 	len = 0;
 	for (o = group->children; o != NULL; o = o->next) len += 1;
 
-	snprintf (c, 128, _("Group of %d objects"), len);
+	g_snprintf (c, 128, _("Group of %d objects"), len);
 
 	return g_strdup (c);
 }

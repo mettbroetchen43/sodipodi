@@ -39,7 +39,9 @@
 #include "sodipodi.h"
 #include "event-broker.h"
 #include "dialogs/object-properties.h"
+#if 0
 #include "dialogs/transformation.h"
+#endif
 #include "dialogs/text-edit.h"
 #include "dialogs/align.h"
 #include "dialogs/export.h"

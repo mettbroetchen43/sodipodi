@@ -726,7 +726,7 @@ sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * position, guint state, gb
 	SPDesktop * desktop;
 	SPSelTrans * seltrans;
 	SPSelTransHandle * handle;
-	ArtPoint s, point;
+	ArtPoint point;
 
 	if (!SP_KNOT_IS_GRABBED (knot)) return TRUE;
 
@@ -747,9 +747,7 @@ sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * position, guint state, gb
 
 	if (handle->request (seltrans, handle, position, state)) {
 	  sp_knot_set_position (knot, position, state);
-	  s.x = rint (position->x);
-	  s.y = rint (position->y);	  
-	  sp_ctrl_moveto (SP_CTRL (seltrans->grip), s.x, s.y);
+	  sp_ctrl_moveto (SP_CTRL (seltrans->grip), position->x, position->y);
 	  sp_ctrl_moveto (SP_CTRL (seltrans->norm), seltrans->origin.x, seltrans->origin.y);
 	}
 	

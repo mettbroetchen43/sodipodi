@@ -12,6 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noSP_ANCHOR_VERBOSE
+
 #include <config.h>
 #include <string.h>
 #include <glib.h>
@@ -199,9 +201,9 @@ sp_anchor_description (SPItem *item)
 	static char c[128];
 
 	anchor = SP_ANCHOR (item);
-
-	snprintf (c, 128, _("Link to %s"), anchor->href);
-
+#ifdef SP_ANCHOR_VERBOSE
+	g_snprintf (c, 128, _("Link to %s"), anchor->href);
+#endif
 	return g_strdup (c);
 }
 

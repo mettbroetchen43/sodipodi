@@ -12,6 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+/* fixme: Without that GtkText does not work in Win32 */
+#define GTK_ENABLE_BROKEN
+
 #include <config.h>
 
 #include <string.h>
@@ -291,7 +294,7 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "style", c, 256);
 		g_strdown (c);
 		sp_repr_css_set_property (css, "font-style", c);
-		snprintf (c, 64, "%g", NR_FONT_SIZE (font));
+		g_snprintf (c, 64, "%g", NR_FONT_SIZE (font));
 		sp_repr_css_set_property (css, "font-size", c);
 		nr_font_unref (font);
 		/* Layout */

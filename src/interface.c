@@ -42,7 +42,9 @@
 #include "dialogs/export.h"
 #include "dialogs/xml-tree.h"
 #include "dialogs/align.h"
+#if 0
 #include "dialogs/transformation.h"
+#endif
 #include "dialogs/object-properties.h"
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
