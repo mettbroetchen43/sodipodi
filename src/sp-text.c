@@ -1,7 +1,9 @@
 #define SP_TEXT_C
 
-#include <gnome.h>
-#include <wchar.h>
+#include <math.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <gal/unicode/gunicode.h>
 #include "svg/svg.h"
 #include "sp-text.h"
@@ -16,6 +18,7 @@ static void sp_text_read_content (SPObject * object);
 
 static char * sp_text_description (SPItem * item);
 static GSList * sp_text_snappoints (SPItem * item, GSList * points);
+static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
 static void sp_text_set_shape (SPText * text);
 
@@ -63,6 +66,7 @@ sp_text_class_init (SPTextClass *class)
 
 	item_class->description = sp_text_description;
 	item_class->snappoints = sp_text_snappoints;
+	item_class->write_transform = sp_text_write_transform;
 }
 
 static void
@@ -208,8 +212,8 @@ sp_text_set_shape (SPText * text)
 	GnomeFontFace * face;
 	guint glyph;
 	gdouble x, y;
-	double a[6], trans[6], scale[6];
-	double w;
+	gdouble a[6];
+	gdouble w;
 
 	chars = SP_CHARS (text);
 
@@ -226,7 +230,7 @@ sp_text_set_shape (SPText * text)
 	x = text->x;
 	y = text->y;
 
-	art_affine_scale (scale, text->size * 0.001, text->size * -0.001);
+	art_affine_scale (a, text->size * 0.001, text->size * -0.001);
 	if (text->text) {
 		guchar *p;
 		for (p = text->text; p && *p; p = g_utf8_next_char (p)) {
@@ -240,8 +244,8 @@ sp_text_set_shape (SPText * text)
 
 				w = gnome_font_face_get_glyph_width (face, glyph);
 				w = w * text->size / 1000.0;
-				art_affine_translate (trans, x, y);
-				art_affine_multiply (a, scale, trans);
+				a[4] = x;
+				a[5] = y;
 				sp_chars_add_element (chars, glyph, text->face, a);
 				x += w;
 			}
@@ -267,3 +271,42 @@ sp_text_snappoints (SPItem * item, GSList * points)
   g_slist_append (points, p);
   return points;
 }
+
+/*
+ * Initially we'll do:
+ * Transform x, y, set x, y, clear translation
+ */
+
+static void
+sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+{
+	SPText *text;
+	gdouble rev[6];
+	gdouble px, py;
+
+	text = SP_TEXT (item);
+
+	/* Calculate text start in parent coords */
+	px = transform[0] * text->x + transform[2] * text->y + transform[4];
+	py = transform[1] * text->x + transform[3] * text->y + transform[5];
+	/* Clear translation */
+	transform[4] = 0.0;
+	transform[5] = 0.0;
+	/* Find text start in item coords */
+	art_affine_invert (rev, transform);
+	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
+	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
+
+	if ((fabs (transform[0] - 1.0) > 1e-9) ||
+	    (fabs (transform[3] - 1.0) > 1e-9) ||
+	    (fabs (transform[1]) > 1e-9) ||
+	    (fabs (transform[2]) > 1e-9)) {
+		guchar t[80];
+		sp_svg_write_affine (t, 80, transform);
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+}
+
+

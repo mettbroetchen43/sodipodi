@@ -511,6 +511,28 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	return FALSE;
 }
 
+void
+sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+{
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+	g_return_if_fail (repr != NULL);
+
+	if (!transform) {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	} else {
+		if (((SPItemClass *) (((GtkObject *) item)->klass))->write_transform) {
+			gdouble ltrans[6];
+			memcpy (ltrans, transform, 6 * sizeof (gdouble));
+			((SPItemClass *) (((GtkObject *) item)->klass))->write_transform (item, repr, ltrans);
+		} else {
+			guchar t[80];
+			sp_svg_write_affine (t, 80, item->affine);
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		}
+	}
+}
+
 /* Sets item private transform (not propagated to repr) */
 
 void

@@ -1,5 +1,24 @@
 2001-11-08  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/svg/svg-affine.c (sp_svg_write_affine): Write scale and
+	translate, if everything can be represented by these
+
+	* src/sp-text.c (sp_text_write_transform): Implement
+
+	* src/sp-rect.c (sp_rect_write_transform): Implement
+
+	* src/sp-item.c (sp_item_write_transform): New class and virtual
+	method pair, to allow object to optimize representation (i.e.
+	rects can set x,y,width,height instead of just transformation
+
+	* src/seltrans.c (sp_sel_trans_ungrab): Use sp_item_write_transform
+
+	* src/selection-chemistry.c: Use sp_item_write_transform
+
+	* src/help.c (sp_help_about): Set title string to "Sodipodi VERSION"
+
+	* src/Makefile.am (INCLUDES): Define SODIPODI_VERSION
+
 	* src/xml/repr-io.c (repr_write): Avoid newlines in content
 
 	* src/view.c: Sorted out lot os signalling stuff

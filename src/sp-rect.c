@@ -1,6 +1,21 @@
-#define SP_RECT_C
+#define __SP_RECT_C__
 
-#include <gnome.h>
+/*
+ * SPRect
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
+
+#include <math.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
 #include "sp-rect.h"
 
@@ -19,6 +34,7 @@ static void sp_rect_read_attr (SPObject * object, const gchar * attr);
 static void sp_rect_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_rect_description (SPItem * item);
 static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
+static void sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
 static void sp_rect_set_shape (SPRect * rect);
 
@@ -74,6 +90,7 @@ sp_rect_class_init (SPRectClass *class)
 	item_class->bbox = sp_rect_bbox;
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
+	item_class->write_transform = sp_rect_write_transform;
 }
 
 static void
@@ -317,3 +334,65 @@ sp_rect_snappoints (SPItem * item, GSList * points)
 
   return points;
 }
+
+/*
+ * Initially we'll do:
+ * Transform x, y, set x, y, clear translation
+ */
+
+static void
+sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+{
+	SPRect *rect;
+	gdouble rev[6];
+	gdouble px, py, sw, sh;
+
+	rect = SP_RECT (item);
+
+	/* Calculate text start in parent coords */
+	px = transform[0] * rect->x + transform[2] * rect->y + transform[4];
+	py = transform[1] * rect->x + transform[3] * rect->y + transform[5];
+
+	/* Clear translation */
+	transform[4] = 0.0;
+	transform[5] = 0.0;
+
+	/* Scalers */
+	sw = sqrt (transform[0] * transform[0] + transform[1] * transform[1]);
+	sh = sqrt (transform[2] * transform[2] + transform[3] * transform[3]);
+	if (sw > 1e-9) {
+		transform[0] = transform[0] / sw;
+		transform[1] = transform[1] / sw;
+	} else {
+		transform[0] = 1.0;
+		transform[1] = 0.0;
+	}
+	if (sh > 1e-9) {
+		transform[2] = transform[2] / sh;
+		transform[3] = transform[3] / sh;
+	} else {
+		transform[2] = 0.0;
+		transform[3] = 1.0;
+	}
+	sp_repr_set_double_attribute (repr, "width", rect->width * sw);
+	sp_repr_set_double_attribute (repr, "height", rect->height * sh);
+
+	/* Find start in item coords */
+	art_affine_invert (rev, transform);
+	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
+	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
+
+	if ((fabs (transform[0] - 1.0) > 1e-9) ||
+	    (fabs (transform[3] - 1.0) > 1e-9) ||
+	    (fabs (transform[1]) > 1e-9) ||
+	    (fabs (transform[2]) > 1e-9)) {
+		guchar t[80];
+		sp_svg_write_affine (t, 80, transform);
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+
+}
+
+

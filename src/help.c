@@ -5,6 +5,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "document.h"
+#include "sp-object.h"
 #include "svg-view.h"
 #include "help.h"
 
@@ -18,10 +19,17 @@ void
 sp_help_about (void)
 {
 	SPDocument *doc;
+	SPObject *title;
 	GtkWidget *w, *v;
 
 	doc = sp_document_new (SODIPODI_GLADEDIR "/about.svg");
 	g_return_if_fail (doc != NULL);
+	title = sp_document_lookup_id (doc, "title");
+	if (title) {
+		gchar *t;
+		t = g_strdup_printf ("Sodipodi %s", SODIPODI_VERSION);
+		sp_repr_set_content (SP_OBJECT_REPR (title), t);
+	}
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (w), _("About sodipodi"));

@@ -12,6 +12,7 @@ gladedir = $(datadir)/sodipodi
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
 	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" 	\
+	-DSODIPODI_VERSION=\""$(VERSION)"\" \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
 	-I$(srcdir/xml) 				\
 	-I$(srcdir/svg) 				\

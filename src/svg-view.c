@@ -326,24 +326,28 @@ sp_svg_view_widget_size_request (GtkWidget *widget, GtkRequisition *req)
 
 	if (v->doc) {
 		SPSVGView *svgv;
+		GtkPolicyType hpol, vpol;
 		gdouble width, height;
 
 		svgv = SP_SVG_VIEW (v);
 		width = sp_document_width (v->doc) * svgv->hscale;
 		height = sp_document_height (v->doc) * svgv->vscale;
 
-		g_print ("request %g %g\n", width, height);
-
 		if (width <= vw->maxwidth) {
-			req->width = (gint) (width + 8.0);
+			hpol = GTK_POLICY_NEVER;
+			req->width = (gint) (width + 0.5);
 		} else {
-			req->width = (gint) (vw->maxwidth + 2.0);
+			hpol = GTK_POLICY_AUTOMATIC;
+			req->width = (gint) (vw->maxwidth + 0.5);
 		}
 		if (height <= vw->maxheight) {
+			vpol = GTK_POLICY_NEVER;
 			req->height = (gint) (height + 8.0);
 		} else {
+			vpol = GTK_POLICY_AUTOMATIC;
 			req->height = (gint) (vw->maxheight + 2.0);
 		}
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (vw->sw), hpol, vpol);
 	}
 }
 

@@ -1,5 +1,6 @@
 #define SP_SVG_AFFINE_C
 
+#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -141,12 +142,20 @@ sp_svg_read_affine (gdouble dst[], const gchar * src)
   return dst;
 }
 
+#define EQ(a,b) (fabs ((a) - (b)) < 1e-9)
+
 gint
 sp_svg_write_affine (gchar * buf, gint buflen, gdouble affine[])
 {
 	if (affine == NULL) return 0;
 
-	return snprintf (buf, buflen, "matrix(%g %g %g %g %g %g)",
-		affine[0], affine[1], affine[2], affine[3], affine[4], affine[5]);
+	/* Test, whether we are translate */
+	if (EQ (affine[0], 1.0) && EQ (affine[1], 0.0) && EQ (affine[2], 0.0) && EQ (affine[3], 1.0)) {
+		return g_snprintf (buf, buflen, "translate(%g,%g)", affine[4], affine[5]);
+	} else if (EQ (affine[1], 0.0) && EQ (affine[2], 0.0) && EQ (affine[4], 0.0) && EQ (affine[5], 0.0)) {
+		return g_snprintf (buf, buflen, "scale(%g,%g)", affine[0], affine[3]);
+	} else {
+		return snprintf (buf, buflen, "matrix(%g,%g,%g,%g,%g,%g)", affine[0], affine[1], affine[2], affine[3], affine[4], affine[5]);
+	}
 }
 

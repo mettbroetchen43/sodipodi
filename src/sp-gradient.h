@@ -10,7 +10,8 @@
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
- * Copyright (C) 200-2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL
  */

@@ -80,6 +80,9 @@ struct _SPItemClass {
 	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
 	/* give list of points for item to be considered for snapping */ 
 	GSList * (* snappoints) (SPItem * item, GSList * points);
+
+	/* Write item transform to repr optimally */
+	void (* write_transform) (SPItem *item, SPRepr *repr, gdouble *transform);
 };
 
 /* Flag testing macros */
@@ -105,6 +108,8 @@ void sp_item_hide (SPItem *item, NRArena *arena);
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 GSList * sp_item_snappoints (SPItem * item);
+
+void sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
 void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 

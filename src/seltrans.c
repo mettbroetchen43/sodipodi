@@ -273,13 +273,21 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 
 		while (l != NULL) {
 			item = SP_ITEM (l->data);
+			/* fixme: We do not have to set it here (Lauris) */
 			if (SelTransViewMode == SP_SELTRANS_OUTLINE) {
 			  sp_item_i2d_affine (item, i2d);
 			  art_affine_multiply (i2dnew, i2d, seltrans->current);
 			  sp_item_set_i2d_affine (item, i2dnew);
 			}
+#if 0
 			sp_svg_write_affine (tstr, 79, item->affine);
 			sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+#else
+			sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+			/* because item/repr affines may be out of sync, invoke reread */
+			/* fixme: We should test equality to avoid unnecessary rereads */
+			sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
+#endif
 			l = l->next;
 		}
 		p.x = seltrans->center.x;

@@ -469,13 +469,13 @@ void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
 	for (l = selection->items; l != NULL; l = l-> next) {
 		item = SP_ITEM (l->data);
 		sp_item_i2d_affine (item, curaff);
-		art_affine_multiply (newaff,curaff,affine);
+		art_affine_multiply (newaff, curaff, affine);
+		/* fixme: This is far from elegant (Lauris) */
 		sp_item_set_i2d_affine (item, newaff);    
-
-		// update repr -  needed for undo 
-		tstr[79] = '\0';
-		sp_svg_write_affine (tstr, 79, item->affine);
-		sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+		/* update repr -  needed for undo */
+		sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+		/* fixme: Check, whether anything changed */
+		sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
 	}
 }
 

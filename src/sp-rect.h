@@ -1,5 +1,17 @@
-#ifndef SP_RECT_H
-#define SP_RECT_H
+#ifndef __SP_RECT_H__
+#define __SP_RECT_H__
+
+/*
+ * SPRect
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include "sp-shape.h"
 
