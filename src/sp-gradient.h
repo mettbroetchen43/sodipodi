@@ -5,7 +5,7 @@
  * SPGradient
  *
  * TODO: Implement radial & other fancy gradients
- * TODO: Implement linking attributes
+ * TODO: Implement via SPObjectGroup
  *
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
@@ -88,8 +88,10 @@ typedef enum {
 #define SP_IS_GRADIENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_GRADIENT))
 #define SP_IS_GRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GRADIENT))
 
-/* fixme: I am absolutely not sure, whether <use> may mess things up */
-#define SP_GRADIENT_IS_PRIVATE(g) (SP_OBJECT_HREFCOUNT (g) == 1)
+#define SP_GRADIENT_STATE_IS_SET(g) (SP_GRADIENT(g)->state != SP_GRADIENT_STATE_UNKNOWN)
+#define SP_GRADIENT_IS_VECTOR(g) (SP_GRADIENT(g)->state == SP_GRADIENT_STATE_VECTOR)
+#define SP_GRADIENT_IS_PRIVATE(g) (SP_GRADIENT(g)->state == SP_GRADIENT_STATE_PRIVATE)
+#define SP_GRADIENT_HAS_STOPS(g) (SP_GRADIENT(g)->has_stops)
 
 struct _SPGradient {
 	SPPaintServer paint_server;

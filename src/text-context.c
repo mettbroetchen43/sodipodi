@@ -226,7 +226,6 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPTextContext *tc;
 	guchar *utf8;
 	const guchar *content;
-	gchar *c;
 	gint ret;
 
 	tc = SP_TEXT_CONTEXT (ec);

@@ -294,7 +294,7 @@ sp_ellipse_read_attr (SPObject * object, const gchar * attr)
 {
 	SPGenericEllipse *ellipse;
 	const gchar *astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 	double n;
 
 	ellipse = SP_GENERICELLIPSE (object);
@@ -465,7 +465,7 @@ sp_circle_read_attr (SPObject * object, const gchar * attr)
 {
 	SPGenericEllipse *circle;
 	const gchar *astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 	double n;
 
 	circle = SP_GENERICELLIPSE (object);

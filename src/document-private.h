@@ -2,6 +2,7 @@
 #define SP_DOCUMENT_PRIVATE_H
 
 #include "sp-defs.h"
+#include "sp-root.h"
 #include "document.h"
 
 typedef struct _SPAction SPAction;
@@ -62,7 +63,7 @@ struct _SPAction {
 	} act;
 };
 
-#define SP_DOCUMENT_DEFS(d) (SP_DOCUMENT (d)->private->root->defs)
+#define SP_DOCUMENT_DEFS(d) ((SPObject *) SP_DOCUMENT (d)->private->root->defs)
 
 struct _SPDocumentPrivate {
 	SPReprDoc * rdoc;	/* Our SPReprDoc */

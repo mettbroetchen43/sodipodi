@@ -180,7 +180,7 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 	SPSpiral *spiral;
 	SPShape  *shape;
 	const gchar *astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 
 	spiral = SP_SPIRAL (object);
 	shape  = SP_SHAPE (object);

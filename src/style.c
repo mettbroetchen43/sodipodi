@@ -176,7 +176,7 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 		}
 		val = sp_style_str_value (str, "stroke-miterlimit");
 		if (val) {
-			SPSVGUnit unit;
+			const SPUnit *unit;
 			/* fixme */
 			style->stroke_miterlimit = sp_svg_read_length (&unit, val, style->stroke_miterlimit);
 			style->stroke_miterlimit_set = TRUE;
@@ -188,7 +188,7 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 		}
 		val = sp_style_str_value (str, "stroke-dashoffset");
 		if (val) {
-			SPSVGUnit unit;
+			const SPUnit *unit;
 			/* fixme */
 			style->stroke_dash.offset = sp_svg_read_length (&unit, val, style->stroke_dash.offset);
 			style->stroke_dashoffset_set = TRUE;
@@ -446,7 +446,7 @@ sp_style_write_string (SPStyle *style)
 	}
 	if (style->stroke_width_set) {
 		p += g_snprintf (p, c + 4096 - p, "stroke-width:");
-		p += sp_svg_write_length (p, c + 4096 - p, style->stroke_width.distance, (SPSVGUnit) style->stroke_width.unit);
+		p += sp_svg_write_length (p, c + 4096 - p, style->stroke_width.distance, style->stroke_width.unit);
 		p += g_snprintf (p, c + 4096 - p, ";");
 	}
 	if (style->stroke_linecap_set) {
@@ -557,7 +557,7 @@ sp_style_init (SPStyle *style)
 	style->stroke.type = SP_PAINT_TYPE_NONE;
 	sp_color_set_rgb_float (&style->stroke.color, 0.0, 0.0, 0.0);
 	style->stroke.server = NULL;
-	style->stroke_width.unit = SP_UNIT_USER;
+	style->stroke_width.unit = sp_unit_get_identity (SP_UNIT_USERSPACE);
 	style->stroke_width.distance = 1.0;
 	style->absolute_stroke_width = 1.0;
 	style->user_stroke_width = 1.0;

@@ -105,7 +105,7 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		return;
 	}
 	if (strcmp (key, "offset") == 0) {
-		SPUnit unit;
+		const SPUnit *unit;
 		const guchar *val;
 		val = sp_repr_attr (object->repr, key);
 		stop->offset = sp_svg_read_length (&unit, val, 0.0);
@@ -261,17 +261,14 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
 		GtkType type;
-		SPObject * child;
+		SPObject *child;
 		type = sp_repr_type_lookup (rchild);
-		if (gtk_type_is_a (type, SP_TYPE_STOP)) {
+		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
 			child = gtk_type_new (type);
-			child->parent = object;
-			if (last) {
-				last->next = child;
-			} else {
-				gradient->stops = child;
-			}
+			(last) ? last->next : gradient->stops = sp_object_attach_reref (object, child, NULL);
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+			/* Set has_stops flag */
+			if (SP_IS_STOP (child)) gradient->has_stops = TRUE;
 			last = child;
 		}
 	}
@@ -393,6 +390,9 @@ sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 
+	/* fixme: (Lauris) */
+	if (SP_IS_STOP (ochild)) gr->has_stops = TRUE;
+
 	/* fixme: should we schedule "modified" here? */
 }
 
@@ -425,6 +425,15 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 	ochild->parent = NULL;
 	ochild->next = NULL;
 	gtk_object_unref (GTK_OBJECT (ochild));
+
+	/* fixme: (Lauris) */
+	gr->has_stops = FALSE;
+	for (ochild = gr->stops; ochild != NULL; ochild = ochild->next) {
+		if (SP_IS_STOP (ochild)) {
+			gr->has_stops = TRUE;
+			break;
+		}
+	}
 
 	/* fixme: should we schedule "modified" here? */
 }
@@ -1026,13 +1035,13 @@ static void
 sp_lineargradient_init (SPLinearGradient * lg)
 {
 	lg->x1.distance = 0.0;
-	lg->x1.unit = SP_UNIT_PERCENT;
+	lg->x1.unit = sp_unit_get_by_abbreviation ("%");
 	lg->y1.distance = 0.0;
-	lg->y1.unit = SP_UNIT_PERCENT;
-	lg->x2.distance = 1.0;
-	lg->x2.unit = SP_UNIT_PERCENT;
+	lg->y1.unit = sp_unit_get_by_abbreviation ("%");
+	lg->x2.distance = 100.0;
+	lg->x2.unit = sp_unit_get_by_abbreviation ("%");
 	lg->y2.distance = 0.0;
-	lg->y2.unit = SP_UNIT_PERCENT;
+	lg->y2.unit = sp_unit_get_by_abbreviation ("%");
 }
 
 static void
@@ -1369,15 +1378,15 @@ static void
 sp_radialgradient_init (SPRadialGradient *rg)
 {
 	rg->cx.distance = 0.5;
-	rg->cx.unit = SP_UNIT_PERCENT;
+	rg->cx.unit = sp_unit_get_by_abbreviation ("%");
 	rg->cy.distance = 0.5;
-	rg->cy.unit = SP_UNIT_PERCENT;
+	rg->cy.unit = sp_unit_get_by_abbreviation ("%");
 	rg->r.distance = 0.5;
-	rg->r.unit = SP_UNIT_PERCENT;
+	rg->r.unit = sp_unit_get_by_abbreviation ("%");
 	rg->fx.distance = 0.5;
-	rg->fx.unit = SP_UNIT_PERCENT;
+	rg->fx.unit = sp_unit_get_by_abbreviation ("%");
 	rg->fy.distance = 0.5;
-	rg->fy.unit = SP_UNIT_PERCENT;
+	rg->fy.unit = sp_unit_get_by_abbreviation ("%");
 }
 
 static void

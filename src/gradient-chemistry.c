@@ -53,7 +53,7 @@ sp_gradient_ensure_vector_normalized (SPGradient *gr)
 	g_print ("GVECTORNORM: Requested vector normalization of gradient %s\n", SP_OBJECT_ID (gr));
 
 	doc = SP_OBJECT_DOCUMENT (gr);
-	defs = SP_DOCUMENT_DEFS (doc);
+	defs = (SPDefs *) SP_DOCUMENT_DEFS (doc);
 
 	if (SP_OBJECT_PARENT (gr) != SP_OBJECT (defs)) {
 		SPGradient *new;
@@ -151,7 +151,7 @@ SPGradient *
 sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 {
 	SPDocument *doc;
-	SPDefs *defs;
+	SPObject *defs;
 
 	g_return_val_if_fail (gr != NULL, NULL);
 	g_return_val_if_fail (SP_IS_GRADIENT (gr), NULL);
@@ -238,7 +238,7 @@ sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector)
 	g_return_val_if_fail (SP_IS_GRADIENT (vector), NULL);
 	g_return_val_if_fail (vector->state == SP_GRADIENT_STATE_VECTOR, NULL);
 
-	defs = SP_DOCUMENT_DEFS (document);
+	defs = (SPDefs *) SP_DOCUMENT_DEFS (document);
 
 	for (child = defs->children; child != NULL; child = child->next) {
 		if (SP_IS_GRADIENT (child)) {
@@ -380,7 +380,7 @@ sp_document_default_gradient_vector (SPDocument *document)
 	SPRepr *repr, *stop;
 	SPGradient *gr;
 
-	defs = SP_DOCUMENT_DEFS (document);
+	defs = (SPDefs *) SP_DOCUMENT_DEFS (document);
 
 	for (child = defs->children; child != NULL; child = child->next) {
 		if (SP_IS_GRADIENT (child)) {

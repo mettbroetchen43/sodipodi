@@ -76,7 +76,7 @@ sp_text_read_selection (void)
 	GnomeFontWeight weight;
 	gboolean italic;
 	double size;
-	SPSVGUnit units;
+	const SPUnit *unit;
 	GnomeFont * font;
  
 	g_return_if_fail (dialog != NULL);
@@ -118,7 +118,7 @@ sp_text_read_selection (void)
 	str = sp_repr_css_property (settings, "font-style", "normal");
 	italic = sp_svg_read_font_italic (str);
 	str = sp_repr_css_property (settings, "font-size", "12pt");
-	size = sp_svg_read_length (&units, str, 12);
+	size = sp_svg_read_length (&unit, str, 12);
 
 	font = gnome_font_new_closest (family, weight, italic, size);
 

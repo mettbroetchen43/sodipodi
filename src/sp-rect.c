@@ -130,7 +130,7 @@ sp_rect_read_attr (SPObject * object, const gchar * attr)
 {
 	SPRect * rect;
 	const gchar * astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 	double n;
 
 	rect = SP_RECT (object);

@@ -23,17 +23,10 @@ libspchelp_a_SOURCES = \
 	canvas-grid.c canvas-grid.h \
 	canvas-bpath.c canvas-bpath.h \
 	png-write.c png-write.h \
-	unit-menu.c unit-menu.h \
 	nr-buffers.c nr-buffers.h \
 	nr-plain-stuff.c nr-plain-stuff.h \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
-	bezier-utils.c bezier-utils.h
+	bezier-utils.c bezier-utils.h \
+	units.c units.h \
+	unit-menu.c unit-menu.h
 
-#	art_rgb_affine_private.h \
-#	art-rgba-rgba-affine.c art-rgba-rgba-affine.h \
-#	art-rgba-svp.c art-rgba-svp.h \
-#	art_rgba.c art_rgba.h \
-#	art_render.c art_render.h \
-#	art_render_gradient.c art_render_gradient.h \
-#	art_render_mask.c art_render_mask.h \
-#	art_render_svp.c art_render_svp.h \

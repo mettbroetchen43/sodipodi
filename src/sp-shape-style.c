@@ -35,7 +35,7 @@ SPStroke *
 sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 {
 	const gchar * prop;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 
 	g_return_val_if_fail (stroke != NULL, NULL);
 	g_return_val_if_fail (css != NULL, NULL);
@@ -79,7 +79,7 @@ sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 	prop = sp_repr_css_property (css, "stroke-width", NULL);
 	if (prop != NULL) {
 		stroke->width = sp_svg_read_length (&unit, prop, 1.0);
-		stroke->scaled = (unit != SP_SVG_UNIT_PIXELS);
+		stroke->scaled = (unit->base != SP_UNIT_DEVICE);
 	}
 
 	return stroke;

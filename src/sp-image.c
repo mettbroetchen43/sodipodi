@@ -161,7 +161,7 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 {
 	SPImage *image;
 	const guchar *val;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 
 	image = SP_IMAGE (object);
 	val = sp_repr_attr (SP_OBJECT_REPR (object), key);

@@ -247,35 +247,49 @@ sp_item_style_changed (SPObject *object, guint flags)
 		dy = i2doc[1] + i2doc[3];
 		u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
 		a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
-		switch (style->stroke_width.unit) {
-		case SP_UNIT_PIXELS:
-			style->absolute_stroke_width = style->stroke_width.distance * 1.25;
-			style->user_stroke_width = style->absolute_stroke_width * a2u;
-			break;
-		case SP_UNIT_ABSOLUTE:
+		/* Calculate actual stroke width */
+		if (style->stroke_width.unit->base == SP_UNIT_DIMENSIONLESS) {
+			static const SPUnit *percent = NULL;
+			/* Check for percentage */
+			if (!percent) percent = sp_unit_get_by_abbreviation ("%");
+			if (style->stroke_width.unit == percent) {
+				dx = sp_document_width (object->document);
+				dy = sp_document_height (object->document);
+				style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
+				style->user_stroke_width = style->absolute_stroke_width * 0.01 * a2u;
+			} else {
+				/* Treat as points */
+				style->absolute_stroke_width = style->stroke_width.distance;
+				style->user_stroke_width = style->absolute_stroke_width * a2u;
+			}
+		} else if (style->stroke_width.unit->base == SP_UNIT_VOLATILE) {
+			static const SPUnit *em = NULL;
+			static const SPUnit *ex = NULL;
+			/* fixme: This need real care */
+			if (!em) em = sp_unit_get_by_abbreviation ("em");
+			if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
+			if (style->stroke_width.unit == em) {
+				style->user_stroke_width = style->stroke_width.distance * 12.0;
+				style->absolute_stroke_width = style->user_stroke_width * u2a;
+			} else {
+				style->user_stroke_width = style->stroke_width.distance * 10.0;
+				style->absolute_stroke_width = style->user_stroke_width * u2a;
+			}
+		} else {
+			/* Everything else can be done in one step */
+			/* We just know, that pt == 1.25 * px */
 			style->absolute_stroke_width = style->stroke_width.distance;
-			style->user_stroke_width = style->absolute_stroke_width * a2u;
-			break;
-		case SP_UNIT_USER:
-			style->user_stroke_width = style->stroke_width.distance;
-			style->absolute_stroke_width = style->user_stroke_width * u2a;
-			break;
-		case SP_UNIT_PERCENT:
-			dx = sp_document_width (object->document);
-			dy = sp_document_height (object->document);
-			style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
-			style->user_stroke_width = style->absolute_stroke_width * a2u;
-			break;
-		case SP_UNIT_EM:
-				/* fixme: */
-			style->user_stroke_width = style->stroke_width.distance * 12.0;
-			style->absolute_stroke_width = style->user_stroke_width * u2a;
-			break;
-		case SP_UNIT_EX:
-				/* fixme: */
-			style->user_stroke_width = style->stroke_width.distance * 10.0;
-			style->absolute_stroke_width = style->user_stroke_width * u2a;
-			break;
+			style->user_stroke_width = style->absolute_stroke_width;
+			sp_convert_distance_full (&style->absolute_stroke_width,
+						  style->stroke_width.unit,
+						  sp_unit_get_identity (SP_UNIT_ABSOLUTE),
+						  u2a,
+						  (1 / 1.25));
+			sp_convert_distance_full (&style->user_stroke_width,
+						  sp_unit_get_identity (SP_UNIT_USERSPACE),
+						  style->stroke_width.unit,
+						  u2a,
+						  (1 / 1.25));
 		}
 		style->real_stroke_width_set = TRUE;
 	}

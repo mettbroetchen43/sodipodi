@@ -147,7 +147,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 	SPItem * item;
 	SPRoot * root;
 	const gchar * astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 	gdouble len;
 	SPItemView * v;
 

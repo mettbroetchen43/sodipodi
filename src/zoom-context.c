@@ -20,7 +20,7 @@ static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEve
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 void sp_zoom_string (gchar * zoom_str);
-void sp_zoom_any ();
+void sp_zoom_any (void);
 
 static SPEventContextClass * parent_class;
 
@@ -332,7 +332,7 @@ sp_zoom_string (gchar * zoom_str) {
  */
 
 void
-sp_zoom_any () {
+sp_zoom_any (void) {
   gchar * zoom_str;
   zoom_str = gtk_editable_get_chars ((GtkEditable *) zoom_any, 0, 4);
   sp_zoom_string (zoom_str);

@@ -19,6 +19,7 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_dash.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
+#include "helper/units.h"
 #include "color.h"
 #include "forward.h"
 
@@ -33,6 +34,7 @@ typedef enum {
 	SP_PAINT_TYPE_PAINTSERVER
 } SPPaintType;
 
+#if 0
 typedef enum {
 	SP_UNIT_PIXELS   = (1 << 4),
 	SP_UNIT_ABSOLUTE = (1 << 5),
@@ -41,6 +43,7 @@ typedef enum {
 	SP_UNIT_EM       = (1 << 8),
 	SP_UNIT_EX       = (1 << 9)
 } SPUnit;
+#endif
 
 struct _SPPaint {
 	SPPaintType type;
@@ -49,7 +52,7 @@ struct _SPPaint {
 };
 
 struct _SPDistance {
-	SPUnit unit;
+	const SPUnit *unit;
 	gdouble distance;
 };
 

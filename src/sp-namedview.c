@@ -159,8 +159,8 @@ static void
 sp_namedview_read_attr (SPObject * object, const gchar * key)
 {
 	SPNamedView * namedview;
-	SPSVGUnit unit;
-	const gchar * astr;
+	const SPUnit *unit;
+	const gchar *astr;
 	GSList * l;
 	gdouble v;
 

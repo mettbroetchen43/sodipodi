@@ -262,7 +262,7 @@ sp_dyna_draw_context_setup (SPEventContext * event_context,
   style->fill.type = SP_PAINT_TYPE_COLOR;
   style->stroke.type = SP_PAINT_TYPE_NONE;
 #endif
-  style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+  style->stroke_width.unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
   style->stroke_width.distance = 1.0;
   style->absolute_stroke_width = 1.0;
   style->user_stroke_width = 1.0;
@@ -956,7 +956,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
       style = sp_style_new (NULL);
       style->fill.type = SP_PAINT_TYPE_NONE;
       style->stroke.type = SP_PAINT_TYPE_COLOR;
-      style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+      style->stroke_width.unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
       style->stroke_width.distance = 1.0;
       style->absolute_stroke_width = 1.0;
       style->user_stroke_width = 1.0;
@@ -1111,7 +1111,7 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc,
           style->fill.type = SP_PAINT_TYPE_COLOR;
           style->stroke.type = SP_PAINT_TYPE_NONE;
 #endif
-          style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+          style->stroke_width.unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
           style->stroke_width.distance = 1.0;
           style->absolute_stroke_width = 1.0;
           style->user_stroke_width = 1.0;

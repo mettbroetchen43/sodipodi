@@ -15,6 +15,7 @@
 
 #include <config.h>
 #include <math.h>
+#include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -169,7 +170,7 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 	SPShape *shape;
 	SPStar * star;
 	const gchar * astr;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 	double n;
 
 	shape = SP_SHAPE (object);

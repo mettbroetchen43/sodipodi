@@ -141,7 +141,7 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 	GnomeFontWeight weight;
 	gboolean italic;
 	const gchar *str;
-	SPSVGUnit unit;
+	const SPUnit *unit;
 
 	text = SP_TEXT (object);
 

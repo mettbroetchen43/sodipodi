@@ -481,7 +481,8 @@ sp_object_style_changed (SPObject *object, guint flags)
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed) (object, flags);
 
-	sp_object_request_modified (object, flags);
+	/* fixme: I think this is correct - changing parent style modifies object itself */
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 /* Modification */

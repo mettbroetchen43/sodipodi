@@ -306,6 +306,7 @@ sp_group_style_changed (SPObject *object, guint flags)
 	if (((SPObjectClass *) (parent_class))->style_changed)
 		(* ((SPObjectClass *) (parent_class))->style_changed) (object, flags);
 
+	/* fixme: I am not sure - currently we are invoking 2 cascades - style changed and mofified */
 	for (child = group->children; child != NULL; child = child->next) {
 		sp_object_style_changed (child, SP_OBJECT_PARENT_MODIFIED_FLAG);
 	}

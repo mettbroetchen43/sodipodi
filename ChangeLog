@@ -1,3 +1,56 @@
+2002-01-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/units.c: New file, ported from libgnomeprint, we collect
+	all unit management into here
+
+	* src/helper/units.h: New file
+
+	* src/svg/svg-length.c (sp_svg_write_percentage): New unit logic
+	(sp_svg_read_length): Ditto
+
+	* src/helper/unit-menu.c: Ported widget from libgnomeprint
+
+	* src/helper/unit-menu.h: Ported widget from libgnomeprint
+
+	* src/dialogs/text-edit.c (sp_text_read_selection): New unit logic
+
+	* src/dialogs/object-properties.c (sp_object_properties_apply_stroke): New
+	unit logic
+
+	* src/dialogs/gradient-selector.c (sp_gradient_widget_new): Use
+	SPGradientVectorSelector here
+
+	* src/style.c (sp_style_read_from_string): New unit logic
+	(sp_style_write_string): Ditto
+	(sp_style_init): Ditto
+
+	* src/sp-text.c (sp_text_read_attr): New unit logic
+
+	* src/sp-star.c (sp_star_read_attr): New unit logic
+
+	* src/sp-spiral.c (sp_spiral_read_attr): New unit logic
+
+	* src/sp-shape-style.c (sp_stroke_read): New unit logic
+
+	* src/sp-root.c (sp_root_read_attr): New unit logic
+
+	* src/sp-rect.c (sp_rect_read_attr): New unit logic
+
+	* src/sp-namedview.c (sp_namedview_read_attr): New unit logic
+
+	* src/sp-item.c (sp_item_style_changed): New unit logic
+
+	* src/sp-image.c (sp_image_read_attr): New unit logic
+
+	* src/sp-ellipse.c (sp_circle_read_attr): New unit logic
+
+	* src/dyna-draw-context.c (sp_dyna_draw_context_setup): New unit logic
+	(fit_and_split_line): Ditto
+	(fit_and_split_calligraphics): Ditto
+
+	* src/desktop-events.c (sp_dt_simple_guide_dialog): Use new unit widget
+	(guide_dialog_apply): Ditto
+
 2002-01-13  Wang Jian  <lark@linux.net.cn>
 
 	* configure.in(ALL_LINGUAS): Added zh_CN for Simplifed Chinese.
