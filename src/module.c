@@ -615,7 +615,7 @@ sp_modules_init (int *argc, const char ***argv, unsigned int gui)
 	SPModule *mod;
 
 #ifdef WITH_KDE
-	sp_kde_init (argc, (char **) argv, "Sodipodi");
+	sp_kde_init (*argc, (char **) argv, "Sodipodi");
 #endif
 #ifdef WIN32
 	sp_win32_init (0, NULL, "Sodipodi");

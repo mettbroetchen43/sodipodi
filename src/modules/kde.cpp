@@ -212,8 +212,6 @@ struct _SPModulePrintKDEClass {
 	SPModulePrintClass module_print_class;
 };
 
-unsigned int sp_module_print_kde_get_type (void);
-
 static void sp_module_print_kde_class_init (SPModulePrintClass *klass);
 static void sp_module_print_kde_init (SPModulePrintKDE *gpmod);
 static void sp_module_print_kde_finalize (GObject *object);
@@ -294,17 +292,17 @@ static SPRepr *
 sp_module_print_kde_write (SPModule *module, SPRepr *root)
 {
 	SPRepr *grp, *repr;
-	grp = sp_repr_lookup_child (root, "id", "printing");
+	grp = sp_repr_lookup_child (root, (const unsigned char *) "id", (const unsigned char *) "printing");
 	if (!grp) {
-		grp = sp_repr_new ("group");
-		sp_repr_set_attr (grp, "id", "printing");
-		sp_repr_set_attr (grp, "name", "Printing");
+		grp = sp_repr_new ((const unsigned char *) "group");
+		sp_repr_set_attr (grp, (const unsigned char *) "id", (const unsigned char *) "printing");
+		sp_repr_set_attr (grp, (const unsigned char *) "name", (const unsigned char *) "Printing");
 		sp_repr_append_child (root, grp);
 	}
-	repr = sp_repr_new ("module");
-	sp_repr_set_attr (repr, "id", "kde");
-	sp_repr_set_attr (repr, "name", "KDE Printing");
-	sp_repr_set_attr (repr, "action", "no");
+	repr = sp_repr_new ((const unsigned char *) "module");
+	sp_repr_set_attr (repr, (const unsigned char *) "id", (const unsigned char *) "kde");
+	sp_repr_set_attr (repr, (const unsigned char *) "name", (const unsigned char *) "KDE Printing");
+	sp_repr_set_attr (repr, (const unsigned char *) "action", (const unsigned char *) "no");
 	sp_repr_append_child (grp, repr);
 	return repr;
 }
