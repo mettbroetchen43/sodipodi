@@ -19,6 +19,21 @@
 #include "nr-type-gnome.h"
 #include "nr-type-directory.h"
 
+typedef struct _NRFamilyEntry NRFamilyEntry;
+typedef struct _NRFaceEntry NRFaceEntry;
+
+struct _NRFamilyEntry {
+	unsigned char *name;
+	NRFaceEntry *faces;
+	int nfaces;
+};
+
+struct _NRFaceEntry {
+	unsigned char *name;
+	unsigned char *style;
+	NRTypeFace *typeface;
+};
+
 static NRTypeFace *typefaces = NULL;
 
 #ifdef TFDEBUG

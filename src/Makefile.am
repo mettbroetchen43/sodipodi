@@ -107,13 +107,13 @@ sodipodi_SOURCES = \
 	gradient-chemistry.c gradient-chemistry.h \
 	sp-item-transform.c sp-item-transform.h \
 	\
-	sp-node-path-edit.c sp-node-path-edit.h \
 	zoom-context.c zoom-context.h \
 	file.c file.h \
 	interface.c interface.h \
 	\
 	preferences-skeleton.h
 
+#	sp-node-path-edit.c sp-node-path-edit.h \
 #	font-wrapper.c font-wrapper.h \
 #
 

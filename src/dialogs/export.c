@@ -103,121 +103,6 @@ void sp_export_dialog (void)
 		gtk_widget_hide (dialog);
 }
 
-#include <display/nr-arena-item.h>
-#include <display/nr-arena.h>
-
-struct SPEBP {
-	int width, height;
-	NRArenaItem *root;
-	NRBuffer *b;
-};
-
-static int
-sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *data)
-{
-	struct SPEBP *ebp;
-	NRRectL bbox;
-	NRGC gc;
-	int r;
-
-	ebp = (struct SPEBP *) data;
-
-	num_rows = MIN (num_rows, 64);
-	num_rows = MIN (num_rows, ebp->height - row);
-
-	g_print ("Rendering %d + %d rows\n", row, num_rows);
-
-	/* Set area of interest */
-	bbox.x0 = 0;
-	bbox.y0 = row;
-	bbox.x1 = ebp->width;
-	bbox.y1 = row + num_rows;
-	/* Update to renderable state */
-	art_affine_identity (gc.affine);
-	nr_arena_item_invoke_update (ebp->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
-
-	for (r = 0; r < num_rows; r++) {
-		memset (ebp->b->px + r * ebp->b->rs, 0x0, 4 * ebp->width);
-	}
-	/* Render */
-	nr_arena_item_invoke_render (ebp->root, &bbox, ebp->b);
-
-	for (r = 0; r < num_rows; r++) {
-		rows[r] = ebp->b->px + r * ebp->b->rs;
-	}
-
-	return num_rows;
-}
-
-static void
-sp_export_do_export (SPDesktop *desktop, gchar *filename, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
-{
-	SPDocument *doc;
-	gdouble affine[6], t;
-	NRArena *arena;
-	struct SPEBP ebp;
-
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (filename != NULL);
-	g_return_if_fail (width >= 16);
-	g_return_if_fail (height >= 16);
-
-	doc = SP_DT_DOCUMENT (desktop);
-
-	sp_document_ensure_up_to_date (doc);
-
-	/* Go to document coordinates */
-	t = y0;
-	y0 = sp_document_height (doc) - y1;
-	y1 = sp_document_height (doc) - t;
-
-	/*
-	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
-	 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
-	 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
-	 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
-	 * 5) a[1] = 0.0;
-	 * 6) a[2] = 0.0;
-	 *
-	 * (1,3) a[0] * x1 - a[0] * x0 = width
-	 * a[0] = width / (x1 - x0)
-	 * (2,4) a[3] * y0 - a[3] * y1 = height
-	 * a[3] = height / (y0 - y1)
-	 * (1) a[4] = -a[0] * x0
-	 * (2) a[5] = -a[3] * y1
-	 */
-
-	affine[0] = width / ((x1 - x0) * 1.25);
-	affine[1] = 0.0;
-	affine[2] = 0.0;
-	affine[3] = height / ((y1 - y0) * 1.25);
-	affine[4] = -affine[0] * x0 * 1.25;
-	affine[5] = -affine[3] * y0 * 1.25;
-
-	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
-
-	ebp.width = width;
-	ebp.height = height;
-	/* Get RGBA buffer */
-	ebp.b = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
-
-	/* Create new arena */
-	arena = gtk_type_new (NR_TYPE_ARENA);
-	/* Create ArenaItem and set transform */
-	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
-	nr_arena_item_set_transform (ebp.root, affine);
-
-
-	sp_png_write_rgba_striped (filename, width, height, sp_export_get_rows, &ebp);
-
-	/* Free Arena and ArenaItem */
-	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
-	gtk_object_unref (GTK_OBJECT (arena));
-
-	/* Release RGBA buffer */
-	nr_buffer_free (ebp.b);
-}
-
 void
 sp_export_area_x0_changed (GtkSpinButton * sb)
 {
@@ -564,5 +449,120 @@ sp_spin_button_get (GladeXML * xml, const gchar * name)
 	g_return_val_if_fail (GTK_IS_SPIN_BUTTON (sb), 1.0);
 
 	return gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (sb));
+}
+
+#include <display/nr-arena-item.h>
+#include <display/nr-arena.h>
+
+struct SPEBP {
+	int width, height;
+	NRArenaItem *root;
+	NRBuffer *b;
+};
+
+static int
+sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *data)
+{
+	struct SPEBP *ebp;
+	NRRectL bbox;
+	NRGC gc;
+	int r;
+
+	ebp = (struct SPEBP *) data;
+
+	num_rows = MIN (num_rows, 64);
+	num_rows = MIN (num_rows, ebp->height - row);
+
+	g_print ("Rendering %d + %d rows\n", row, num_rows);
+
+	/* Set area of interest */
+	bbox.x0 = 0;
+	bbox.y0 = row;
+	bbox.x1 = ebp->width;
+	bbox.y1 = row + num_rows;
+	/* Update to renderable state */
+	art_affine_identity (gc.affine);
+	nr_arena_item_invoke_update (ebp->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+
+	for (r = 0; r < num_rows; r++) {
+		memset (ebp->b->px + r * ebp->b->rs, 0x0, 4 * ebp->width);
+	}
+	/* Render */
+	nr_arena_item_invoke_render (ebp->root, &bbox, ebp->b);
+
+	for (r = 0; r < num_rows; r++) {
+		rows[r] = ebp->b->px + r * ebp->b->rs;
+	}
+
+	return num_rows;
+}
+
+static void
+sp_export_do_export (SPDesktop *desktop, gchar *filename, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
+{
+	SPDocument *doc;
+	gdouble affine[6], t;
+	NRArena *arena;
+	struct SPEBP ebp;
+
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (width >= 16);
+	g_return_if_fail (height >= 16);
+
+	doc = SP_DT_DOCUMENT (desktop);
+
+	sp_document_ensure_up_to_date (doc);
+
+	/* Go to document coordinates */
+	t = y0;
+	y0 = sp_document_height (doc) - y1;
+	y1 = sp_document_height (doc) - t;
+
+	/*
+	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
+	 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
+	 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
+	 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
+	 * 5) a[1] = 0.0;
+	 * 6) a[2] = 0.0;
+	 *
+	 * (1,3) a[0] * x1 - a[0] * x0 = width
+	 * a[0] = width / (x1 - x0)
+	 * (2,4) a[3] * y0 - a[3] * y1 = height
+	 * a[3] = height / (y0 - y1)
+	 * (1) a[4] = -a[0] * x0
+	 * (2) a[5] = -a[3] * y1
+	 */
+
+	affine[0] = width / ((x1 - x0) * 1.25);
+	affine[1] = 0.0;
+	affine[2] = 0.0;
+	affine[3] = height / ((y1 - y0) * 1.25);
+	affine[4] = -affine[0] * x0 * 1.25;
+	affine[5] = -affine[3] * y0 * 1.25;
+
+	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
+
+	ebp.width = width;
+	ebp.height = height;
+	/* Get RGBA buffer */
+	ebp.b = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
+
+	/* Create new arena */
+	arena = gtk_type_new (NR_TYPE_ARENA);
+	/* Create ArenaItem and set transform */
+	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
+	nr_arena_item_set_transform (ebp.root, affine);
+
+
+	sp_png_write_rgba_striped (filename, width, height, sp_export_get_rows, &ebp);
+
+	/* Free Arena and ArenaItem */
+	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
+	gtk_object_unref (GTK_OBJECT (arena));
+
+	/* Release RGBA buffer */
+	nr_buffer_free (ebp.b);
 }
 

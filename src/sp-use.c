@@ -313,8 +313,6 @@ sp_use_href_changed (SPUse * use)
 		use->child = sp_object_detach_unref (SP_OBJECT (use), use->child);
 	}
 
-	use->child = NULL;
-
 	if (use->href) {
 		SPObject * refobj;
 		refobj = sp_document_lookup_id (SP_OBJECT (use)->document, use->href);
