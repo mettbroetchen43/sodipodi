@@ -38,10 +38,12 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_XLINK_ACTUATE, "xlink:actuate"},
 	{SP_ATTR_TARGET, "target"},
 	/* SPRoot */
-	{SP_ATTR_SODIPODI_VERSION, "sodipodi:version"},
+	{SP_ATTR_VERSION, "version"},
 	{SP_ATTR_WIDTH, "width"},
 	{SP_ATTR_HEIGHT, "height"},
 	{SP_ATTR_VIEWBOX, "viewBox"},
+	{SP_ATTR_PRESERVEASPECTRATIO, "preserveAspectRatio"},
+	{SP_ATTR_SODIPODI_VERSION, "sodipodi:version"},
 	/* SPNamedView */
 	{SP_ATTR_VIEWONLY, "viewonly"},
 	{SP_ATTR_SHOWGRID, "showgrid"},

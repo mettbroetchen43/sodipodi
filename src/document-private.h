@@ -80,9 +80,6 @@ struct _SPAction {
 struct _SPDocumentPrivate {
 	GHashTable * iddef;	/* id dictionary */
 
-	SPAspect aspect;	/* Our aspect ratio preferences */
-	guint clip :1;		/* Whether we clip or meet outer viewport */
-
 	/* Resources */
 	/* It is GHashTable of GSLists */
 	GHashTable *resources;

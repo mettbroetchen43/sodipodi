@@ -62,7 +62,12 @@ typedef struct _SPItemCtx SPItemCtx;
 
 struct _SPItemCtx {
 	SPCtx ctx;
-	NRMatrixD ctm;
+	/* Item to document transformation */
+	NRMatrixD i2doc;
+	/* Viewport size */
+	NRRectD vp;
+	/* Item to viewport transformation */
+	NRMatrixD i2vp;
 };
 
 struct _SPItem {

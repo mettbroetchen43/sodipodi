@@ -198,6 +198,7 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	}
 
 	if (node->type == XML_COMMENT_NODE) return NULL;
+	if (node->type == XML_ENTITY_DECL) return NULL;
 
 	sp_repr_qualified_name (c, 256, node->ns, node->name, default_ns, prefix_map);
 	repr = sp_repr_new (c);

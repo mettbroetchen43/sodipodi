@@ -1,3 +1,20 @@
+2003-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Return if entity declaration
+
+	* src/sp-root.c (sp_root_init): Set correct default viewport values
+	(sp_root_build): Read 'x', 'y', 'version', 'preserveAspectRatio'
+	(sp_root_set): Parse added attributes, accept percentages for x, y, width, height
+	(sp_root_update): Set up proper transformations to support aspect ratios
+
+	* src/sp-item.h: Added viewPort and item2viewPort transformation to item context
+
+	* src/document.c (sp_document_ensure_up_to_date): Set initial viewport
+	and identity transforms in item context
+	(sp_document_idle_handler): Ditto
+
+	* src/attributes.h: Added 'version' and 'preserveAspectRatio'
+
 2003-01-31  Masatake YAMATO  <jet@gyve.org>
 
 	* src/main.c (POPT_TABLEEND): Define if it is not defined in

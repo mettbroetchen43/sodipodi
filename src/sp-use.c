@@ -359,7 +359,7 @@ sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 			if (SP_IS_ITEM (child)) {
 				SPItem *chi;
 				chi = SP_ITEM (child);
-				nr_matrix_multiply_dfd (&cctx.ctm, &chi->transform, &ictx->ctm);
+				nr_matrix_multiply_dfd (&cctx.i2doc, &chi->transform, &ictx->i2doc);
 				sp_object_invoke_update (child, (SPCtx *) &cctx, flags);
 			} else {
 				sp_object_invoke_update (child, ctx, flags);

@@ -604,7 +604,7 @@ sp_item_i2doc_affine (SPItem *item, NRMatrixF *affine)
 	root = SP_ROOT (item);
 
 	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &root->viewbox);
+	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
 	nr_matrix_multiply_ddf (&td, &td, &item->transform);
 
 	nr_matrix_f_from_d (affine, &td);
@@ -634,7 +634,7 @@ sp_item_i2root_affine (SPItem *item, NRMatrixF *affine)
 	root = SP_ROOT (item);
 
 	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &root->viewbox);
+	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
 	nr_matrix_multiply_ddf (&td, &td, &item->transform);
 
 	nr_matrix_f_from_d (affine, &td);
@@ -666,7 +666,7 @@ sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 	root = SP_ROOT (item);
 
 	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &root->viewbox);
+	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
 
 	td.c[0] /= root->width.computed;
 	td.c[1] /= root->height.computed;

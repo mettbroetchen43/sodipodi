@@ -13,29 +13,59 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libnr/nr-matrix.h>
-#include "svg/svg-types.h"
-#include "sp-item-group.h"
-
-G_BEGIN_DECLS
-
 #define SP_TYPE_ROOT (sp_root_get_type ())
 #define SP_ROOT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_ROOT, SPRoot))
 #define SP_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), SP_TYPE_ROOT, SPRootClass))
 #define SP_IS_ROOT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_ROOT))
 #define SP_IS_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), SP_TYPE_ROOT))
 
+#include <libnr/nr-matrix.h>
+#include "svg/svg-types.h"
+#include "sp-item-group.h"
+
+enum {
+	SP_ASPECT_NONE,
+	SP_ASPECT_XMIN_YMIN,
+	SP_ASPECT_XMID_YMIN,
+	SP_ASPECT_XMAX_YMIN,
+	SP_ASPECT_XMIN_YMID,
+	SP_ASPECT_XMID_YMID,
+	SP_ASPECT_XMAX_YMID,
+	SP_ASPECT_XMIN_YMAX,
+	SP_ASPECT_XMID_YMAX,
+	SP_ASPECT_XMAX_YMAX
+};
+
+enum {
+	SP_ASPECT_MEET,
+	SP_ASPECT_SLICE
+};
+
 struct _SPRoot {
 	SPGroup group;
+
+	float version;
 
 	guint svg : 8;
 	guint sodipodi : 8;
 	guint original : 8;
 
+	SPSVGLength x;
+	SPSVGLength y;
 	SPSVGLength width;
 	SPSVGLength height;
 
-	NRMatrixD viewbox;
+	/* NRMatrixD viewbox; */
+	unsigned int viewBox_set : 1;
+	NRRectD viewBox;
+
+	/* preserveAspectRatio */
+	unsigned int aspect_set : 1;
+	unsigned int aspect_align : 4;
+	unsigned int aspect_clip : 1;
+
+	/* Child to parent additional transform */
+	NRMatrixD c2p;
 
 	/* List of namedviews */
 	/* fixme: use single container instead */
@@ -49,7 +79,5 @@ struct _SPRootClass {
 };
 
 GType sp_root_get_type (void);
-
-G_BEGIN_DECLS
 
 #endif

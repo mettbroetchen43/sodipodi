@@ -105,6 +105,7 @@ struct _SPException {
 typedef struct _SPCtx SPCtx;
 
 struct _SPCtx {
+	/* Unused */
 	unsigned int flags;
 };
 

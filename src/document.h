@@ -13,18 +13,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-typedef enum {
-	SPXMinYMin,
-	SPXMidYMin,
-	SPXMaxYMin,
-	SPXMinYMid,
-	SPXMidYMid,
-	SPXMaxYMid,
-	SPXMinYMax,
-	SPXMidYMax,
-	SPXMaxYMax
-} SPAspect;
-
 #include <libnr/nr-types.h>
 #include <glib-object.h>
 #include "xml/repr.h"
