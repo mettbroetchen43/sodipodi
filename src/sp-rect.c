@@ -29,7 +29,6 @@
 
 static void sp_rect_class_init (SPRectClass *class);
 static void sp_rect_init (SPRect *rect);
-static void sp_rect_destroy (GtkObject *object);
 
 static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_rect_read_attr (SPObject *object, const gchar *attr);
@@ -82,8 +81,6 @@ sp_rect_class_init (SPRectClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-	gtk_object_class->destroy = sp_rect_destroy;
-
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->write = sp_rect_write;
 	sp_object_class->read_attr = sp_rect_read_attr;
@@ -114,16 +111,6 @@ sp_rect_init (SPRect * rect)
 	rect->rx.computed = 0.0;
 	rect->ry.set = FALSE;
 	rect->ry.computed = 0.0;
-}
-
-static void
-sp_rect_destroy (GtkObject *object)
-{
-	SPRect *rect;
-
-	rect = SP_RECT (object);
-
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void

@@ -31,7 +31,6 @@
 
 static void sp_star_class_init (SPStarClass *class);
 static void sp_star_init (SPStar *star);
-static void sp_star_destroy (GtkObject *object);
 
 static void sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_star_write (SPObject *object, SPRepr *repr, guint flags);
@@ -84,8 +83,6 @@ sp_star_class_init (SPStarClass *class)
 
 	parent_class = gtk_type_class (sp_polygon_get_type ());
 
-	gtk_object_class->destroy = sp_star_destroy;
-
 	sp_object_class->build = sp_star_build;
 	sp_object_class->write = sp_star_write;
 	sp_object_class->read_attr = sp_star_read_attr;
@@ -109,17 +106,6 @@ sp_star_init (SPStar * star)
 	star->r1 = 1.0;
 	star->r2 = 0.001;
 	star->arg1 = star->arg2 = 0.0;
-}
-
-static void
-sp_star_destroy (GtkObject *object)
-{
-	SPStar *star;
-
-	star = SP_STAR (object);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void

@@ -168,9 +168,9 @@ sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 
 static void sp_gradient_class_init (SPGradientClass *klass);
 static void sp_gradient_init (SPGradient *gr);
-static void sp_gradient_destroy (GtkObject *object);
 
 static void sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_gradient_release (SPObject *object);
 static void sp_gradient_read_attr (SPObject *object, const gchar *key);
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
@@ -216,9 +216,8 @@ sp_gradient_class_init (SPGradientClass *klass)
 
 	gradient_parent_class = gtk_type_class (SP_TYPE_PAINT_SERVER);
 
-	gtk_object_class->destroy = sp_gradient_destroy;
-
 	sp_object_class->build = sp_gradient_build;
+	sp_object_class->release = sp_gradient_release;
 	sp_object_class->read_attr = sp_gradient_read_attr;
 	sp_object_class->child_added = sp_gradient_child_added;
 	sp_object_class->remove_child = sp_gradient_remove_child;
@@ -249,46 +248,6 @@ sp_gradient_init (SPGradient *gr)
 	gr->color = NULL;
 
 	gr->len = 0.0;
-}
-
-static void
-sp_gradient_destroy (GtkObject *object)
-{
-	SPGradient * gradient;
-
-	gradient = (SPGradient *) object;
-
-	if (SP_OBJECT_DOCUMENT (object)) {
-		/* Unregister ourselves */
-		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
-	}
-
-	if (gradient->href) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);
-		gradient->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gradient->href), object);
-	}
-
-	if (gradient->color) {
-		g_free (gradient->color);
-		gradient->color = NULL;
-	}
-
-	if (gradient->vector) {
-		g_free (gradient->vector);
-		gradient->vector = NULL;
-	}
-
-	while (gradient->stops) {
-		SPObject *o;
-		o = gradient->stops;
-		gradient->stops = o->next;
-		o->parent = NULL;
-		o->next = NULL;
-		gtk_object_unref (GTK_OBJECT (o));
-	}
-
-	if (GTK_OBJECT_CLASS (gradient_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (gradient_parent_class)->destroy) (object);
 }
 
 static void
@@ -326,6 +285,41 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "gradient", object);
+}
+
+static void
+sp_gradient_release (SPObject *object)
+{
+	SPGradient *gradient;
+
+	gradient = (SPGradient *) object;
+
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
+	}
+
+	if (gradient->href) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);
+		gradient->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gradient->href), object);
+	}
+
+	if (gradient->color) {
+		g_free (gradient->color);
+		gradient->color = NULL;
+	}
+
+	if (gradient->vector) {
+		g_free (gradient->vector);
+		gradient->vector = NULL;
+	}
+
+	while (gradient->stops) {
+		gradient->stops = sp_object_detach_unref (object, gradient->stops);
+	}
+
+	if (((SPObjectClass *) gradient_parent_class)->release)
+		((SPObjectClass *) gradient_parent_class)->release (object);
 }
 
 static void
@@ -1173,9 +1167,8 @@ struct _SPLGPainter {
 
 static void sp_lineargradient_class_init (SPLinearGradientClass * klass);
 static void sp_lineargradient_init (SPLinearGradient * lg);
-static void sp_lineargradient_destroy (GtkObject * object);
 
-static void sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_lineargradient_build (SPObject *object, SPDocument * document, SPRepr * repr);
 static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -1221,8 +1214,6 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 
 	lg_parent_class = gtk_type_class (SP_TYPE_GRADIENT);
 
-	gtk_object_class->destroy = sp_lineargradient_destroy;
-
 	sp_object_class->build = sp_lineargradient_build;
 	sp_object_class->read_attr = sp_lineargradient_read_attr;
 	sp_object_class->write = sp_lineargradient_write;
@@ -1240,17 +1231,6 @@ sp_lineargradient_init (SPLinearGradient * lg)
 	sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 	sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
-}
-
-static void
-sp_lineargradient_destroy (GtkObject * object)
-{
-	SPLinearGradient * lg;
-
-	lg = (SPLinearGradient *) object;
-
-	if (GTK_OBJECT_CLASS (lg_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (lg_parent_class)->destroy) (object);
 }
 
 static void
@@ -1548,7 +1528,6 @@ struct _SPRGPainter {
 
 static void sp_radialgradient_class_init (SPRadialGradientClass *klass);
 static void sp_radialgradient_init (SPRadialGradient *rg);
-static void sp_radialgradient_destroy (GtkObject *object);
 
 static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
@@ -1596,8 +1575,6 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 
 	rg_parent_class = gtk_type_class (SP_TYPE_GRADIENT);
 
-	gtk_object_class->destroy = sp_radialgradient_destroy;
-
 	sp_object_class->build = sp_radialgradient_build;
 	sp_object_class->read_attr = sp_radialgradient_read_attr;
 	sp_object_class->write = sp_radialgradient_write;
@@ -1616,17 +1593,6 @@ sp_radialgradient_init (SPRadialGradient *rg)
 	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
-}
-
-static void
-sp_radialgradient_destroy (GtkObject *object)
-{
-	SPRadialGradient * rg;
-
-	rg = (SPRadialGradient *) object;
-
-	if (GTK_OBJECT_CLASS (rg_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (rg_parent_class)->destroy) (object);
 }
 
 static void

@@ -54,7 +54,7 @@ static double sp_round (double x, double y)
 
 static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
-static void sp_genericellipse_destroy (GtkObject *object);
+
 static void sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_genericellipse_read_attr (SPObject * object, const gchar * attr);
 
@@ -99,8 +99,6 @@ sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 
 	ge_parent_class = gtk_type_class (sp_shape_get_type ());
 
-	gtk_object_class->destroy = sp_genericellipse_destroy;
-
 	sp_object_class->build = sp_genericellipse_build;
 	sp_object_class->read_attr = sp_genericellipse_read_attr;
 
@@ -122,13 +120,6 @@ sp_genericellipse_init (SPGenericEllipse *ellipse)
 	ellipse->start = 0.0;
 	ellipse->end = SP_2PI;
 	ellipse->closed = TRUE;
-}
-
-static void
-sp_genericellipse_destroy (GtkObject *object)
-{
-	if (GTK_OBJECT_CLASS (ge_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (ge_parent_class)->destroy) (object);
 }
 
 static void
@@ -375,7 +366,6 @@ sp_genericellipse_side (SPGenericEllipse *ellipse, const ArtPoint *p)
 
 static void sp_ellipse_class_init (SPEllipseClass *class);
 static void sp_ellipse_init (SPEllipse *ellipse);
-static void sp_ellipse_destroy (GtkObject *object);
 
 static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags);
@@ -415,8 +405,6 @@ sp_ellipse_class_init (SPEllipseClass *class)
 
 	ellipse_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
 
-	gtk_object_class->destroy = sp_ellipse_destroy;
-
 	sp_object_class->build = sp_ellipse_build;
 	sp_object_class->write = sp_ellipse_write;
 	sp_object_class->read_attr = sp_ellipse_read_attr;
@@ -428,17 +416,6 @@ static void
 sp_ellipse_init (SPEllipse *ellipse)
 {
 	/* Nothing special */
-}
-
-static void
-sp_ellipse_destroy (GtkObject *object)
-{
-	SPEllipse *ellipse;
-
-	ellipse = SP_ELLIPSE (object);
-
-	if (GTK_OBJECT_CLASS (ellipse_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (ellipse_parent_class)->destroy) (object);
 }
 
 static void
@@ -555,7 +532,6 @@ sp_ellipse_set (SPEllipse *ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry
 
 static void sp_circle_class_init (SPCircleClass *class);
 static void sp_circle_init (SPCircle *circle);
-static void sp_circle_destroy (GtkObject *object);
 
 static void sp_circle_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_circle_write (SPObject *object, SPRepr *repr, guint flags);
@@ -595,8 +571,6 @@ sp_circle_class_init (SPCircleClass *class)
 
 	circle_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
 
-	gtk_object_class->destroy = sp_circle_destroy;
-
 	sp_object_class->build = sp_circle_build;
 	sp_object_class->write = sp_circle_write;
 	sp_object_class->read_attr = sp_circle_read_attr;
@@ -608,17 +582,6 @@ static void
 sp_circle_init (SPCircle *circle)
 {
 	/* Nothing special */
-}
-
-static void
-sp_circle_destroy (GtkObject *object)
-{
-	SPCircle *circle;
-
-	circle = SP_CIRCLE (object);
-
-	if (GTK_OBJECT_CLASS (circle_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (circle_parent_class)->destroy) (object);
 }
 
 static void
@@ -706,7 +669,6 @@ sp_circle_description (SPItem * item)
 
 static void sp_arc_class_init (SPArcClass *class);
 static void sp_arc_init (SPArc *arc);
-static void sp_arc_destroy (GtkObject *object);
 
 static void sp_arc_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_arc_write (SPObject *object, SPRepr *repr, guint flags);
@@ -749,8 +711,6 @@ sp_arc_class_init (SPArcClass *class)
 
 	arc_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
 
-	gtk_object_class->destroy = sp_arc_destroy;
-
 	sp_object_class->build = sp_arc_build;
 	sp_object_class->write = sp_arc_write;
 	sp_object_class->read_attr = sp_arc_read_attr;
@@ -764,17 +724,6 @@ static void
 sp_arc_init (SPArc *arc)
 {
 	arc->is_closed = TRUE;
-}
-
-static void
-sp_arc_destroy (GtkObject *object)
-{
-	SPArc *arc;
-
-	arc = SP_ARC (object);
-
-	if (GTK_OBJECT_CLASS (arc_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (arc_parent_class)->destroy) (object);
 }
 
 /* fixme: Better place (Lauris) */

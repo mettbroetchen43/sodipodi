@@ -141,7 +141,7 @@ sp_group_release (SPObject *object)
 	group = SP_GROUP (object);
 
 	while (group->children) {
-		group->children = sp_object_detach_unref (SP_OBJECT (object), group->children);
+		group->children = sp_object_detach_unref (object, group->children);
 	}
 
 	if (((SPObjectClass *) parent_class)->release)

@@ -277,19 +277,6 @@ sp_item_style_modified (SPObject *object, guint flags)
 	g_print ("S");
 #endif
 
-#if 0
-	if (!style->real_opacity_set) {
-		SPObject *parent;
-		style->real_opacity = style->opacity;
-		parent = object->parent;
-		while (parent && !parent->style) parent = parent->parent;
-		/* fixme: Currently it does not work, if parent has not set real_opacity (but it shouldn't happen) */
-		if (parent) style->real_opacity = style->real_opacity * parent->style->real_opacity;
-		style->real_opacity_set = TRUE;
-	}
-#endif
-
-
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 	}

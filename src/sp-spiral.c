@@ -39,7 +39,6 @@
 
 static void sp_spiral_class_init (SPSpiralClass *class);
 static void sp_spiral_init (SPSpiral *spiral);
-static void sp_spiral_destroy (GtkObject *object);
 
 static void sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_spiral_write (SPObject *object, SPRepr *repr, guint flags);
@@ -91,8 +90,6 @@ sp_spiral_class_init (SPSpiralClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-	gtk_object_class->destroy = sp_spiral_destroy;
-
 	sp_object_class->build = sp_spiral_build;
 	sp_object_class->write = sp_spiral_write;
 	sp_object_class->read_attr = sp_spiral_read_attr;
@@ -117,20 +114,6 @@ sp_spiral_init (SPSpiral * spiral)
 	spiral->rad        = 1.0;
 	spiral->arg        = 0.0;
 	spiral->t0         = 0.0;
-}
-
-static void
-sp_spiral_destroy (GtkObject *object)
-{
-	SPSpiral *spiral;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_SPIRAL (object));
-
-	spiral = SP_SPIRAL (object);
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void

@@ -331,7 +331,10 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 					     NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
+#if 0
+			/* We cannot assign shift for partial selects, as it is used for add mode */
 			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
+#endif
 			ret = TRUE;
 		}
 		break;
@@ -393,10 +396,11 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 				if (sp_rubberband_rect (&b)) {
 					sp_rubberband_stop ();
 					sp_sel_trans_reset_state (seltrans);
-					if (sc->button_press_shift)
+					if (sc->button_press_shift) {
 						l = sp_document_partial_items_in_box (SP_DT_DOCUMENT (desktop), &b);
-					else
+					} else {
 						l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+					}
 					if (event->button.state & GDK_SHIFT_MASK) {
 						while (l) {
 							item = SP_ITEM (l->data);
