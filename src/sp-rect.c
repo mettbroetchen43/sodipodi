@@ -159,7 +159,7 @@ g_print ("sp_rect_read_attr: attr %s\n", attr);
 static gchar *
 sp_rect_description (SPItem * item)
 {
-	return g_strdup (_("Rectangle"));
+	return g_strdup ("Rectangle");
 }
 
 #define C1 0.554

@@ -14,6 +14,7 @@ static void sp_ellipse_destroy (GtkObject *object);
 
 static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_ellipse_read_attr (SPObject * object, const gchar * attr);
+static gchar * sp_ellipse_description (SPItem * item);
 
 static void sp_ellipse_set_shape (SPEllipse * ellipse);
 
@@ -57,6 +58,8 @@ sp_ellipse_class_init (SPEllipseClass *class)
 
 	sp_object_class->build = sp_ellipse_build;
 	sp_object_class->read_attr = sp_ellipse_read_attr;
+
+	item_class->description = sp_ellipse_description;
 }
 
 static void
@@ -158,6 +161,12 @@ g_print ("sp_ellipse_read_attr: attr %s\n", attr);
 
 	if (SP_OBJECT_CLASS(parent_class)->read_attr)
 		(* SP_OBJECT_CLASS (parent_class)->read_attr) (object, attr);
+}
+
+static gchar *
+sp_ellipse_description (SPItem * item)
+{
+	return g_strdup ("Ellipse");
 }
 
 #define C1 0.552

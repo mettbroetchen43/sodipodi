@@ -65,7 +65,7 @@
       <never_floating>False</never_floating>
       <never_vertical>True</never_vertical>
       <never_horizontal>False</never_horizontal>
-      <shadow_type>GTK_SHADOW_OUT</shadow_type>
+      <shadow_type>GTK_SHADOW_NONE</shadow_type>
 
       <widget>
 	<class>GtkMenuBar</class>
@@ -1986,8 +1986,8 @@ Radial
   <modal>False</modal>
   <default_width>192</default_width>
   <default_height>120</default_height>
-  <allow_shrink>True</allow_shrink>
-  <allow_grow>True</allow_grow>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
   <auto_shrink>True</auto_shrink>
 
   <widget>
@@ -2002,13 +2002,13 @@ Radial
     <widget>
       <class>GtkButton</class>
       <name>add</name>
+      <tooltip>Include one node into selected segments</tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>sp_node_path_edit_add</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:36:04 GMT</last_modification_time>
       </signal>
-      <label>Add</label>
       <child>
 	<left_attach>0</left_attach>
 	<right_attach>1</right_attach>
@@ -2023,45 +2023,29 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
-    </widget>
 
-    <widget>
-      <class>GtkButton</class>
-      <name>delete</name>
-      <tooltip>Delete selected nodes</tooltip>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>sp_node_path_edit_delete</handler>
-	<last_modification_time>Sun, 26 Dec 1999 21:35:48 GMT</last_modification_time>
-      </signal>
-      <label>Delete</label>
-      <child>
-	<left_attach>1</left_attach>
-	<right_attach>2</right_attach>
-	<top_attach>0</top_attach>
-	<bottom_attach>1</bottom_attach>
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap5</name>
+	<filename>add.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
 	<xpad>0</xpad>
 	<ypad>0</ypad>
-	<xexpand>True</xexpand>
-	<yexpand>True</yexpand>
-	<xshrink>False</xshrink>
-	<yshrink>False</yshrink>
-	<xfill>True</xfill>
-	<yfill>True</yfill>
-      </child>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>break</name>
+      <tooltip>Break apart selected node</tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>sp_node_path_edit_break</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:36:18 GMT</last_modification_time>
       </signal>
-      <label>Break</label>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2076,33 +2060,17 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
-    </widget>
 
-    <widget>
-      <class>GtkButton</class>
-      <name>toline</name>
-      <tooltip>Convert selected segments to lines</tooltip>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>sp_node_path_edit_toline</handler>
-	<last_modification_time>Sun, 26 Dec 1999 21:44:02 GMT</last_modification_time>
-      </signal>
-      <label>To Line</label>
-      <child>
-	<left_attach>0</left_attach>
-	<right_attach>1</right_attach>
-	<top_attach>1</top_attach>
-	<bottom_attach>2</bottom_attach>
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap13</name>
+	<filename>div.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
 	<xpad>0</xpad>
 	<ypad>0</ypad>
-	<xexpand>True</xexpand>
-	<yexpand>True</yexpand>
-	<xshrink>False</xshrink>
-	<yshrink>False</yshrink>
-	<xfill>True</xfill>
-	<yfill>True</yfill>
-      </child>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
@@ -2115,7 +2083,6 @@ Radial
 	<handler>sp_node_path_edit_tocurve</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:44:15 GMT</last_modification_time>
       </signal>
-      <label>To Curve</label>
       <child>
 	<left_attach>1</left_attach>
 	<right_attach>2</right_attach>
@@ -2130,6 +2097,17 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap8</name>
+	<filename>curve.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
@@ -2142,7 +2120,6 @@ Radial
 	<handler>sp_node_path_edit_join</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:44:49 GMT</last_modification_time>
       </signal>
-      <label>Join</label>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2157,18 +2134,29 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap12</name>
+	<filename>join.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>cusp</name>
+      <tooltip>Cusp line at selected nodes</tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>sp_node_path_edit_cusp</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:41:17 GMT</last_modification_time>
       </signal>
-      <label>Cusp</label>
       <child>
 	<left_attach>0</left_attach>
 	<right_attach>1</right_attach>
@@ -2183,18 +2171,29 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap9</name>
+	<filename>cusp.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>smooth</name>
+      <tooltip>Smooth line at selected nodes</tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>sp_node_path_edit_smooth</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:41:31 GMT</last_modification_time>
       </signal>
-      <label>Smooth</label>
       <child>
 	<left_attach>1</left_attach>
 	<right_attach>2</right_attach>
@@ -2209,18 +2208,29 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap10</name>
+	<filename>smooth.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>symmetric</name>
+      <tooltip>Symmetric </tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>sp_node_path_edit_symmetric</handler>
 	<last_modification_time>Sun, 26 Dec 1999 21:41:44 GMT</last_modification_time>
       </signal>
-      <label>Symmetric</label>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2235,11 +2245,23 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap11</name>
+	<filename>sym.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>close</name>
+      <tooltip>Close dialog</tooltip>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
@@ -2261,6 +2283,80 @@ Radial
 	<xfill>True</xfill>
 	<yfill>True</yfill>
       </child>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>toline</name>
+      <tooltip>Convert selected segments to lines</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_node_path_edit_toline</handler>
+	<last_modification_time>Sun, 26 Dec 1999 21:44:02 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>0</top_attach>
+	<bottom_attach>1</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>True</xexpand>
+	<yexpand>True</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>True</xfill>
+	<yfill>True</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap7</name>
+	<filename>line.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>delete</name>
+      <tooltip>Delete selected nodes</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_node_path_edit_delete</handler>
+	<last_modification_time>Sun, 26 Dec 1999 21:35:48 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>1</top_attach>
+	<bottom_attach>2</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>True</xexpand>
+	<yexpand>True</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>True</xfill>
+	<yfill>True</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap6</name>
+	<filename>del.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
     </widget>
   </widget>
 </widget>

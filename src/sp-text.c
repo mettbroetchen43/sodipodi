@@ -1,5 +1,6 @@
 #define SP_TEXT_C
 
+#include <gnome.h>
 #include "svg/svg.h"
 #include "sp-text.h"
 
@@ -10,6 +11,8 @@ static void sp_text_destroy (GtkObject *object);
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_text_read_attr (SPObject * object, const gchar * attr);
 static void sp_text_read_content (SPObject * object);
+
+static char * sp_text_description (SPItem * item);
 
 static void sp_text_set_shape (SPText * text);
 
@@ -41,9 +44,11 @@ sp_text_class_init (SPTextClass *class)
 {
 	GtkObjectClass *object_class;
 	SPObjectClass * sp_object_class;
+	SPItemClass * item_class;
 
 	object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
+	item_class = (SPItemClass *) class;
 
 	parent_class = gtk_type_class (sp_chars_get_type ());
 
@@ -52,6 +57,8 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->build = sp_text_build;
 	sp_object_class->read_attr = sp_text_read_attr;
 	sp_object_class->read_content = sp_text_read_content;
+
+	item_class->description = sp_text_description;
 }
 
 static void
@@ -172,6 +179,20 @@ sp_text_read_content (SPObject * object)
 	sp_text_set_shape (text);
 }
 
+static char *
+sp_text_description (SPItem * item)
+{
+	SPText * text;
+
+	text = (SPText *) item;
+
+	if (text->text) {
+		return g_strdup (text->text);
+	}
+
+	return g_strdup (_("Text object"));
+}
+
 static void
 sp_text_set_shape (SPText * text)
 {
@@ -199,20 +220,14 @@ sp_text_set_shape (SPText * text)
 
 	if (text->text) {
 		for (c = text->text; *c; c++) {
-		glyph = * c;
-		switch (glyph) {
-		case '\n':
-			x = text->x;
-			y += text->size;
-			break;
-		default:
+			glyph = gnome_font_face_lookup_default (face, * c);
+
 			w = gnome_font_face_get_glyph_width (face, glyph);
 			w = w * text->size / 1000.0;
 			art_affine_translate (trans, x, y);
 			art_affine_multiply (a, scale, trans);
 			sp_chars_add_element (chars, glyph, text->face, a);
 			x += w;
-		}
 		}
 	}
 }
