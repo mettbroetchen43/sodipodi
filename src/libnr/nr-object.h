@@ -10,8 +10,6 @@
  * This code is in public domain
  */
 
-#include <libnr/nr_config.h>
-
 #define NR_TYPE_OBJECT (nr_object_get_type ())
 #define NR_OBJECT(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_OBJECT, NRObject))
 #define NR_IS_OBJECT(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_OBJECT))

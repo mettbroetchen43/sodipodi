@@ -340,6 +340,8 @@ sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
 	static const unsigned int edit_verbs[] = {
 		SP_VERB_EDIT_CUT, SP_VERB_EDIT_COPY, SP_VERB_EDIT_PASTE,
 		SP_VERB_NONE,
+		SP_VERB_EDIT_REPEAT,
+		SP_VERB_NONE,
 		SP_VERB_EDIT_DUPLICATE, SP_VERB_EDIT_DELETE,
 		SP_VERB_NONE,
 		SP_VERB_EDIT_CLEAR_ALL,

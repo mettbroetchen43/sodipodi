@@ -28,6 +28,16 @@ dnl fi
 AM_PROG_LIBTOOL
 
 dnl ******************************
+dnl Gettext stuff
+dnl ******************************
+GETTEXT_PACKAGE=sodipodi
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
+dnl Add the languages which your application supports here.
+ALL_LINGUAS="am az be ca cs da de el es et fr ga gl hu it ja nl no ru sk sl sr sr@Latn sv tr uk pl pt_BR pt zh_CN"
+AM_GLIB_GNU_GETTEXT
+
+dnl ******************************
 dnl Win32
 dnl ******************************
 AC_MSG_CHECKING([for MinGW platform])
@@ -45,27 +55,33 @@ if test x"$platform_win32" = xyes; then
   CFLAGS="$CFLAGS -mms-bitfields"
 fi
 
-
 dnl ******************************
-dnl Gettext stuff
+dnl pkg-config
 dnl ******************************
-GETTEXT_PACKAGE=sodipodi
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
-dnl Add the languages which your application supports here.
-ALL_LINGUAS="am az be ca cs da de el es et fr ga gl hu it ja nl no ru sk sl sr sr@Latn sv tr uk pl pt_BR pt zh_CN"
-AM_GLIB_GNU_GETTEXT
-
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test "x$PKG_CONFIG" = "xno"; then
 	AC_MSG_ERROR(You have to install pkg-config to compile sodipodi.)
 fi
 
+dnl ******************************
+dnl inttypes.h
+dnl ******************************
+AC_CHECK_HEADER(inttypes.h, intt_ok=yes, intt_ok=no)
+if test "x$intt_ok" = "xyes"; then
+	AC_DEFINE(HAVE_INTTYPES_H, 1, [Use inttypes.h for standard integer sizes])
+fi
+
+dnl ******************************
+dnl libpng
+dnl ******************************
 AC_CHECK_LIB(png, png_read_info, [AC_CHECK_HEADER(png.h, png_ok=yes, png_ok=no)], png_ok=no, -lz -lm)
 if test "x$png_ok" != "xyes"; then
 	AC_MSG_ERROR([Libpng is needed to compile sodipodi])
 fi
 
+dnl ******************************
+dnl Freetype2
+dnl ******************************
 AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
 if test "x$FREETYPE_CONFIG" = "xno"; then
 	AC_MSG_ERROR([Cannot find freetype-config])

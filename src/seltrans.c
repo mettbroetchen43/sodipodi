@@ -347,7 +347,6 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 {
 	SPItem * item;
 	const GSList * l;
-	gchar tstr[80];
 	NRPointD p;
 	unsigned int updh;
 
@@ -355,10 +354,8 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 
 	updh = TRUE;
 	if (!seltrans->empty && seltrans->changed) {
+
 		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
-
-		tstr[79] = '\0';
-
 		while (l != NULL) {
 			item = SP_ITEM (l->data);
 			/* fixme: We do not have to set it here (Lauris) */
@@ -373,9 +370,10 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 				/* because item/repr affines may be out of sync, invoke reread */
 				/* fixme: We should test equality to avoid unnecessary rereads */
 				/* fixme: This probably is not needed (Lauris) */
-				sp_object_read_attr (SP_OBJECT (item), "transform");
+				/* sp_object_read_attr (SP_OBJECT (item), "transform"); */
 			} else {
-				if (sp_svg_transform_write (tstr, 79, &item->transform)) {
+				unsigned char tstr[80];
+				if (sp_svg_transform_write (tstr, 80, &item->transform)) {
 					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
 				} else {
 					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);

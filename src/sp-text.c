@@ -1726,7 +1726,6 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	NRMatrixF i2p, p2i;
 	gdouble px, py, x, y;
 	SPObject *child;
-	guchar c[80];
 
 	text = SP_TEXT (item);
 

@@ -2,7 +2,13 @@ noinst_LIBRARIES = libnr.a
 
 noinst_PROGRAMS = gen_nr_config testnr
 
+BUILT_SOURCES = nr_config.h
+
+nr_config.h: gen_nr_config
+	./gen_nr_config > nr_config.h
+
 INCLUDES = \
+	-DHAVE_NR_CONFIG_H \
 	-I.. \
         -I../.. \
 	$(cflags) \
@@ -16,11 +22,6 @@ mmx_sources = \
 	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM.S \
 	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P.S
 endif
-
-BUILT_SOURCES = nr_config.h
-
-nr_config.h: gen_nr_config
-	./gen_nr_config > nr_config.h
 
 libnr_a_SOURCES = \
 	nr-types.h \

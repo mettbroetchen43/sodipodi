@@ -476,10 +476,10 @@ sp_object_layout_any_value_changed (GtkAdjustment *adj, SPWidget *spw)
 	a = gtk_object_get_data (GTK_OBJECT (spw), "height");
 	y1 = y0 + sp_units_get_points (a->value, unit);
 
-	if ((fabs (x0 - bbox.x0) > 1e-6) ||
-	    (fabs (y0 - bbox.y0) > 1e-6) ||
-	    (fabs (x1 - bbox.x1) > 1e-6) ||
-	    (fabs (y1 - bbox.y1) > 1e-6)) {
+	if ((fabs (x0 - bbox.x0) > 1e-3) ||
+	    (fabs (y0 - bbox.y0) > 1e-3) ||
+	    (fabs (x1 - bbox.x1) > 1e-3) ||
+	    (fabs (y1 - bbox.y1) > 1e-3)) {
 		NRMatrixF p2o, o2n, scale, s, t;
 		gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 		nr_matrix_f_set_translate (&p2o, -bbox.x0, -bbox.y0);

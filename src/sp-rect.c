@@ -427,7 +427,6 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	SPRect *rect;
 	NRMatrixF rev;
 	gdouble px, py, sw, sh;
-	guchar c[80];
 	SPStyle *style;
 
 	rect = SP_RECT (item);

@@ -598,7 +598,7 @@ sp_select_context_config_widget (SPEventContext *ec)
 	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_transform_toggled), sc);
 
-	f = gtk_frame_new (_("Cycling"));
+	f = gtk_frame_new (_("[Tab] Cycling"));
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
 	fb = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (f), fb);

@@ -723,7 +723,7 @@ sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, doubl
 
 
 void
-sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx, double dy)
+sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx, double dy, unsigned int duplicate)
 {
 	NRMatrixD scale, n2d, d2n, s;
 	NRMatrixF final;
@@ -735,12 +735,12 @@ sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx,
 	nr_matrix_multiply_ddd (&s, &n2d, &scale);
 	nr_matrix_multiply_fdd (&final, &s, &d2n);
 
-	sp_selection_apply_affine (selection, &final, FALSE, TRUE);
+	sp_selection_apply_affine (selection, &final, duplicate, TRUE);
 }
 
 
 void
-sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, gdouble angle)
+sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, double angle, unsigned int duplicate)
 {
 	NRMatrixD rotate, n2d, d2n, s;
 	NRMatrixF final;
@@ -752,7 +752,7 @@ sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, gdouble 
 	nr_matrix_multiply_ddd (&s, &n2d, &rotate);
 	nr_matrix_multiply_fdd (&final, &s, &d2n);
 
-	sp_selection_apply_affine (selection, &final, FALSE, TRUE);
+	sp_selection_apply_affine (selection, &final, duplicate, TRUE);
 }
 
 
@@ -780,13 +780,13 @@ sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, 
 
 
 void
-sp_selection_move_relative (SPSelection * selection, double dx, double dy)
+sp_selection_move_relative (SPSelection * selection, double dx, double dy, unsigned int duplicate)
 {
 	NRMatrixF move;
   
 	nr_matrix_f_set_translate (&move, dx, dy);
 
-	sp_selection_apply_affine (selection, &move, FALSE, TRUE);
+	sp_selection_apply_affine (selection, &move, duplicate, TRUE);
 }
 
 void
@@ -827,7 +827,7 @@ sp_selection_move_screen (gdouble sx, gdouble sy)
 	zf = SP_DESKTOP_ZOOM (desktop);
 	dx = sx / zf;
 	dy = sy / zf;
-	sp_selection_move_relative (selection,dx,dy);
+	sp_selection_move_relative (selection, dx, dy, FALSE);
 
 	//
 	sp_selection_changed (selection);

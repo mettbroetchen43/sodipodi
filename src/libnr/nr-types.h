@@ -10,7 +10,29 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_INTTYPES_H
+/* ISO C99 headers */
+#include <inttypes.h>
+typedef int8_t NRByte;
+typedef uint8_t NRUByte;
+typedef int16_t NRShort;
+typedef uint16_t NRUShort;
+typedef int32_t NRLong;
+typedef uint32_t NRULong;
+#else
+#ifdef HAVE_NR_CONFIG_H
+/* Automake based systems */
 #include <libnr/nr_config.h>
+#else
+/* Currently only Win32 */
+typedef signed char NRByte;
+typedef unsigned char NRUByte;
+typedef signed short NRShort;
+typedef unsigned short NRUShort;
+typedef signed int NRLong;
+typedef unsigned int NRULong;
+#endif
+#endif
 
 typedef struct _NRMatrixD NRMatrixD;
 typedef struct _NRMatrixF NRMatrixF;

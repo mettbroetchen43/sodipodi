@@ -1,5 +1,27 @@
 2003-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-types.h: Separate cases for HAVE_INTTYPES_H,
+	HAVE_NR_CONFIG_H and remaining (i.e. Win32)
+
+	* src/libnr/nr-compose.c: Wrap config.h into HAVE_CONFIG_H
+
+	* src/libnr/nr-compose-transform.c: Ditto
+
+	* src/dialogs/transformation.c (sp_transformation_dialog_new): Added
+	'Apply to duplicate' checkbox
+	(sp_transformation_dialog_apply): Test for duplication
+	(sp_transformation_page_move_new): Removed relative checkbox, instead
+	all moves are relative now
+
+	* src/selection-chemistry.c (sp_selection_scale_relative): Signature
+	change, support duplication
+	(sp_selection_rotate_relative): Ditto
+	(sp_selection_move_relative): Ditto
+
+	* src/interface.c (sp_ui_edit_menu): Added SP_VERB_EDIT_REPEAT
+
+	* configure.in: Check for inttypes.h header (i.e. ISO C 99)
+
 	* src/sodipodi.c (sodipodi_verb_perform): Save config
 
 	* src/selection-chemistry.c (sp_selection_action_perform): Moved here

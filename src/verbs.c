@@ -179,11 +179,11 @@ sp_verb_action_object_perform (SPAction *action, void *config, void *data)
 		sp_selected_path_to_curves ();
 		break;
 	case SP_VERB_OBJECT_FLIP_HORIZONTAL:
-		sp_selection_scale_relative (sel, &center, -1.0, 1.0);
+		sp_selection_scale_relative (sel, &center, -1.0, 1.0, FALSE);
 		sp_document_done (SP_DT_DOCUMENT (dt));
 		break;
 	case SP_VERB_OBJECT_FLIP_VERTICAL:
-		sp_selection_scale_relative (sel, &center, 1.0, -1.0);
+		sp_selection_scale_relative (sel, &center, 1.0, -1.0, FALSE);
 		sp_document_done (SP_DT_DOCUMENT (dt));
 		break;
 	default:

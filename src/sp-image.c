@@ -559,7 +559,6 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	SPImage *image;
 	NRMatrixF rev;
 	gdouble px, py, sw, sh;
-	guchar c[80];
 
 	image = SP_IMAGE (item);
 
