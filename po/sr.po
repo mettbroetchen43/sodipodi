@@ -1,5 +1,5 @@
 # Serbian translation of sodipodi
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003, 2004.
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
 #
 # This file is distributed under the same license as the sodipodi package.
 #
@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
-"POT-Creation-Date: 2004-02-11 19:01+0200\n"
-"PO-Revision-Date: 2004-01-23 12:35+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-20 09:56+0100\n"
+"PO-Revision-Date: 2004-02-20 09:56+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -35,135 +35,135 @@ msgstr "Цртање лука %s x %s"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Не може да образује производњу за sodipodi-svg-doc"
 
-#: src/desktop.c:778
+#: src/desktop.c:906
 msgid "Zoom drawing if window size changes"
 msgstr "Увећај цртеж када се промени величина прозора"
 
-#: src/desktop.c:860
+#: src/desktop.c:998
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Содиподи: %s: %s: %d"
 
-#: src/desktop.c:989
+#: src/desktop.c:1105
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Документ %s садржи несачуване измене. Сачувати их?"
 
 #. Page page
-#: src/desktop.c:1541 src/dialogs/align.c:290
+#: src/desktop.c:1656 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:160 src/verbs.c:467
+#: src/dialogs/export.c:161 src/verbs.c:467
 msgid "Page"
 msgstr "Страна"
 
-#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1660 src/dialogs/align.c:292 src/dialogs/export.c:166
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Цртеж"
 
 #. Selection submenu
-#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1664 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Избор"
 
-#: src/dialogs/align.c:155 src/toolbox.c:364
+#: src/dialogs/align.c:156 src/toolbox.c:364
 msgid "Align objects"
 msgstr "Поравнавање објеката"
 
-#: src/dialogs/align.c:174
+#: src/dialogs/align.c:175
 msgid "Right side of aligned objects to left side of anchor"
 msgstr "Десна страна поравнатих објеката уз леву страну основе"
 
-#: src/dialogs/align.c:177
+#: src/dialogs/align.c:178
 msgid "Left side of aligned objects to left side of anchor"
 msgstr "Лева страна поравнатих објеката уз десну страну основе"
 
-#: src/dialogs/align.c:180
+#: src/dialogs/align.c:181
 msgid "Center horizontally"
 msgstr "Водоравно центрирано"
 
-#: src/dialogs/align.c:183
+#: src/dialogs/align.c:184
 msgid "Right side of aligned objects to right side of anchor"
 msgstr "Десна страна поравнатих објеката уз десну страну основе"
 
-#: src/dialogs/align.c:186
+#: src/dialogs/align.c:187
 msgid "Left side of aligned objects to right side of anchor"
 msgstr "Лева страна поравнатих објеката уз леву страну основе"
 
-#: src/dialogs/align.c:190
+#: src/dialogs/align.c:191
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Дно поравнатих објеката уз врх основе"
 
-#: src/dialogs/align.c:193
+#: src/dialogs/align.c:194
 msgid "Top of aligned objects to top of anchor"
 msgstr "Врх поравнатих објеката уз врх основе"
 
-#: src/dialogs/align.c:196
+#: src/dialogs/align.c:197
 msgid "Center vertically"
 msgstr "Усправно центрирано"
 
-#: src/dialogs/align.c:199
+#: src/dialogs/align.c:200
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Дно поравнатих објеката уз дно основе"
 
-#: src/dialogs/align.c:202
+#: src/dialogs/align.c:203
 msgid "Top of aligned objects to bottom of anchor"
 msgstr "Врх поравнатих објеката уз дно основе"
 
-#: src/dialogs/align.c:205
+#: src/dialogs/align.c:206
 msgid "Align"
 msgstr "Поравнај"
 
-#: src/dialogs/align.c:223
+#: src/dialogs/align.c:224
 msgid "Distribute left sides of objects at even distances"
 msgstr "Распореди леве стране објеката на подједнака растојања"
 
-#: src/dialogs/align.c:226
+#: src/dialogs/align.c:227
 msgid "Distribute centres of objects at even distances horizontally"
 msgstr "Распореди средине објеката на подједнака водоравна растојања"
 
-#: src/dialogs/align.c:229
+#: src/dialogs/align.c:230
 msgid "Distribute right sides of objects at even distances"
 msgstr "Распореди десне стране објеката на подједнака растојања"
 
-#: src/dialogs/align.c:232
+#: src/dialogs/align.c:233
 msgid "Distribute horizontal distance between objects equally"
 msgstr "Распореди водоравни размак подједнако између објеката"
 
-#: src/dialogs/align.c:236
+#: src/dialogs/align.c:237
 msgid "Distribute top sides of objects at even distances"
 msgstr "Распореди горње стране објеката на подједнака растојања"
 
-#: src/dialogs/align.c:239
+#: src/dialogs/align.c:240
 msgid "Distribute centres of objects at even distances vertically"
 msgstr "Распореди средине објеката на подједнака усправна растојања"
 
-#: src/dialogs/align.c:242
+#: src/dialogs/align.c:243
 msgid "Distribute bottom sides of objects at even distances"
 msgstr "Распореди доње стране објеката на подједнака растојања"
 
-#: src/dialogs/align.c:245
+#: src/dialogs/align.c:246
 msgid "Distribute vertical distance between objects equally"
 msgstr "Распореди усправни размак подједнако између објеката"
 
-#: src/dialogs/align.c:248
+#: src/dialogs/align.c:249
 msgid "Distribute"
 msgstr "Расподели"
 
-#: src/dialogs/align.c:286
+#: src/dialogs/align.c:287
 msgid "Last selected"
 msgstr "Последње изабрани"
 
-#: src/dialogs/align.c:287
+#: src/dialogs/align.c:288
 msgid "First selected"
 msgstr "Први изабрани"
 
-#: src/dialogs/align.c:288
+#: src/dialogs/align.c:289
 msgid "Biggest item"
 msgstr "Највећа ставка"
 
-#: src/dialogs/align.c:289
+#: src/dialogs/align.c:290
 msgid "Smallest item"
 msgstr "Најмања ставка"
 
@@ -342,15 +342,15 @@ msgstr "Подразумевана трпељивост курзора:"
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "Прозори"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
-msgstr ""
+msgstr "Постави ознаку прозорчета у прозорчету"
 
 #: src/dialogs/display-settings.c:179
 msgid "Skip taskbar entry for dialogs"
-msgstr ""
+msgstr "Не приказуј прозорчиће међу пословима"
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -370,78 +370,78 @@ msgid "Custom paper"
 msgstr "Прилагођени папир"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Јединице: "
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
-#: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:189
+#: src/dialogs/export.c:213 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:566 src/dialogs/tool-attributes.c:125
+#: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
 #: src/dyna-draw-context.c:1087
 msgid "Width:"
 msgstr "Ширина:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:197
-#: src/dialogs/export.c:220 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
+#: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Висина:"
 
-#: src/dialogs/export.c:140
+#: src/dialogs/export.c:141
 msgid "Export bitmap"
 msgstr "Извези битмапу:"
 
 #. Export area frame
-#: src/dialogs/export.c:149
+#: src/dialogs/export.c:150
 msgid "Export area"
 msgstr "Извези површ"
 
-#: src/dialogs/export.c:182
+#: src/dialogs/export.c:183
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:185
+#: src/dialogs/export.c:186
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:191
+#: src/dialogs/export.c:192
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:194
+#: src/dialogs/export.c:195
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:203
+#: src/dialogs/export.c:204
 msgid "Bitmap size"
 msgstr "Величина битмапе"
 
-#: src/dialogs/export.c:212 src/dialogs/export.c:220
+#: src/dialogs/export.c:213 src/dialogs/export.c:221
 msgid "pixels"
 msgstr "тачака"
 
-#: src/dialogs/export.c:216 src/dialogs/export.c:224
+#: src/dialogs/export.c:217 src/dialogs/export.c:225
 msgid "dpi"
 msgstr "тпи"
 
-#: src/dialogs/export.c:232
+#: src/dialogs/export.c:233
 msgid "Background color"
 msgstr "Боја позадине"
 
-#: src/dialogs/export.c:234
+#: src/dialogs/export.c:235
 msgid "Bitmap background:"
 msgstr "Слика на позадини:"
 
-#: src/dialogs/export.c:239
+#: src/dialogs/export.c:240
 msgid "Export png file"
 msgstr "Извези PNG датотеку"
 
-#: src/dialogs/export.c:266 src/verbs.c:413
+#: src/dialogs/export.c:267 src/verbs.c:413
 msgid "Export"
 msgstr "Извези"
 
@@ -694,22 +694,22 @@ msgstr "Величина и позиција објекта"
 msgid "Size and Position"
 msgstr "Величина и позиција"
 
-#: src/dialogs/stroke-style.c:553 src/toolbox.c:360
+#: src/dialogs/stroke-style.c:554 src/toolbox.c:360
 msgid "Stroke settings"
 msgstr "Подешавања потеза"
 
 #. Join type
-#: src/dialogs/stroke-style.c:589
+#: src/dialogs/stroke-style.c:590
 msgid "Join:"
 msgstr "Прикључи:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:632
+#: src/dialogs/stroke-style.c:633
 msgid "Cap:"
 msgstr "Капица:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:675
+#: src/dialogs/stroke-style.c:676
 msgid "Pattern:"
 msgstr "Образац:"
 
@@ -883,20 +883,20 @@ msgstr "Постави особину"
 msgid "Attribute value"
 msgstr "Вредност особине"
 
-#: src/dialogs/xml-tree.c:832
+#: src/dialogs/xml-tree.c:833
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Содиподи: %s : XML преглед"
 
-#: src/dialogs/xml-tree.c:855
+#: src/dialogs/xml-tree.c:856
 msgid "New element node..."
 msgstr "Чвор за нови елемент..."
 
-#: src/dialogs/xml-tree.c:875
+#: src/dialogs/xml-tree.c:876
 msgid "Cancel"
 msgstr "Откажи"
 
-#: src/dialogs/xml-tree.c:879
+#: src/dialogs/xml-tree.c:880
 msgid "Create"
 msgstr "Направи"
 
@@ -938,19 +938,19 @@ msgstr "Угао:"
 msgid "Defaults"
 msgstr "Подразумевано"
 
-#: src/file.c:162 src/file.c:176 src/file.c:188
+#: src/file.c:123 src/file.c:137 src/file.c:149
 msgid "Select file to open"
 msgstr "Изаберите коју датотеку да отворите"
 
-#: src/file.c:207 src/file.c:305
+#: src/file.c:174 src/file.c:278
 msgid "File type:"
 msgstr "Врста датотеке:"
 
-#: src/file.c:290
+#: src/file.c:263
 msgid "Save file"
 msgstr "Сачувај датотеку"
 
-#: src/file.c:485 src/file.c:495 src/file.c:501
+#: src/file.c:468 src/file.c:478 src/file.c:484
 msgid "Select file to import"
 msgstr "Одаберите датотеку за увоз"
 
@@ -1097,96 +1097,96 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "екс квадрати"
 
-#: src/interface.c:315 src/interface.c:513
+#: src/interface.c:305 src/interface.c:503
 msgid "Open Recent"
 msgstr "Отвори скорашње"
 
-#: src/interface.c:335
+#: src/interface.c:325
 msgid "Close View"
 msgstr "Затвори преглед"
 
-#: src/interface.c:338 src/interface.c:519
+#: src/interface.c:328 src/interface.c:509
 msgid "About Sodipodi"
 msgstr "О Содиподију"
 
 #. Have modules about menu
-#: src/interface.c:344 src/interface.c:525
+#: src/interface.c:334 src/interface.c:515
 msgid "About Modules"
 msgstr "О додацима"
 
-#: src/interface.c:364
+#: src/interface.c:354
 msgid "Cleanup"
 msgstr "Очисти"
 
 #. View:Zoom
-#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Увећај"
 
 #. View:New View
-#: src/interface.c:451
+#: src/interface.c:441
 msgid "New View"
 msgstr "Нови поглед"
 
 #. View:New Preview
-#: src/interface.c:453
+#: src/interface.c:443
 msgid "New Preview"
 msgstr "Нови преглед"
 
-#: src/interface.c:455
+#: src/interface.c:445
 msgid "New Toplevel Toolbox"
 msgstr "Нови скуп алата првог нивоа"
 
-#: src/interface.c:456
+#: src/interface.c:446
 msgid "New Docked Toolbox"
 msgstr "Нови привезани скуп алата"
 
-#: src/interface.c:457
+#: src/interface.c:447
 msgid "Remove Docked Toolbox"
 msgstr "Уклони привезани скуп алата"
 
 #. File
-#: src/interface.c:510 src/verbs.c:405
+#: src/interface.c:500 src/verbs.c:405
 msgid "New"
 msgstr "Нова"
 
-#: src/interface.c:511
+#: src/interface.c:501
 msgid "Open"
 msgstr "Отвори"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:531 src/verbs.c:414
+#: src/interface.c:521 src/verbs.c:414
 msgid "Exit program"
 msgstr "Излаз из програма"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:594 src/toolbox.c:270
+#: src/interface.c:584 src/toolbox.c:270
 msgid "File"
 msgstr "Датотека"
 
 #. Edit submenu
-#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Уређивање"
 
 #. View submenu
-#: src/interface.c:612
+#: src/interface.c:602
 msgid "View"
 msgstr "Преглед"
 
 #. Drawing mode submenu
-#: src/interface.c:618
+#: src/interface.c:608
 msgid "Drawing Mode"
 msgstr "Режим цртања"
 
 #. Dialog submenu
-#: src/interface.c:624
+#: src/interface.c:614
 msgid "Dialogs"
 msgstr "Прозорчићи"
 
 #. Have modules menu
-#: src/interface.c:633
+#: src/interface.c:623
 msgid "Modules"
 msgstr "Модули"
 
@@ -1307,27 +1307,27 @@ msgstr ""
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Није успело аутоматско снимање резервних примерака:\n"
 
-#: src/module.c:873
+#: src/module.c:893
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Скалабилна векторска графика (SVG)"
 
-#: src/module.c:873
+#: src/module.c:893
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Матичан запис Содиподија и W3C стандард"
 
-#: src/module.c:880
+#: src/module.c:900
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "СВГ са простором имена „xmlns:sodipodi“"
 
-#: src/module.c:881
+#: src/module.c:901
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Скалабилни векторски графички запис за содиподијевим проширењима"
 
-#: src/module.c:884
+#: src/module.c:904
 msgid "Plain SVG"
 msgstr "Обичан СВГ"
 
-#: src/module.c:885
+#: src/module.c:905
 msgid "Scalable Vector Graphics format"
 msgstr "Скалабилни векторски графички запис"
 
@@ -1358,21 +1358,15 @@ msgstr ""
 msgid "Save document as"
 msgstr "Сачувај документ као"
 
-#. Print destination frame
-#: src/modules/ps.c:245 src/modules/ps.c:306
-msgid "Print destination"
-msgstr "Одредиште штампе"
+#: src/modules/plain-pdf.c:716 src/modules/plain-ps.c:677 src/modules/ps.c:961
+msgid "write error occured"
+msgstr "грешка при писању"
 
-#. Print properties frame
-#: src/modules/ps.c:256
-msgid "Print properties"
-msgstr "Особине штампе"
-
-#: src/modules/ps.c:264
+#: src/modules/plain.c:178 src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Штампај помоћу ПостСкрипт оператора"
 
-#: src/modules/ps.c:266
+#: src/modules/plain.c:179 src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1382,11 +1376,11 @@ msgstr ""
 "мања и моћи ће се произвољно увећавати, али провидност, обележја и обрасци "
 "ће бити изгубљени"
 
-#: src/modules/ps.c:271
+#: src/modules/plain.c:184 src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Штампај као битмапу"
 
-#: src/modules/ps.c:273
+#: src/modules/plain.c:185 src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1396,15 +1390,26 @@ msgstr ""
 "зависити од размере увећања, али сва графика ће се исцртати исто као што је "
 "приказана"
 
-#: src/modules/ps.c:287
+#. Print destination frame
+#: src/modules/plain.c:224 src/modules/plain.c:292 src/modules/ps.c:245
+#: src/modules/ps.c:306
+msgid "Print destination"
+msgstr "Одредиште штампе"
+
+#. Print properties frame
+#: src/modules/plain.c:235 src/modules/ps.c:256
+msgid "Print properties"
+msgstr "Особине штампе"
+
+#: src/modules/plain.c:273 src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Жељена резолуција (тачака по инчу) битмапе"
 
-#: src/modules/ps.c:302
+#: src/modules/plain.c:288 src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Резолуција:"
 
-#: src/modules/ps.c:312
+#: src/modules/plain.c:298 src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1413,10 +1418,6 @@ msgstr ""
 "Унесите одредишни lpr ред.\n"
 "Користите „> датотека“ да штампате у датотеку.\n"
 "Користите „| програм аргумент...“ да проследите у програм"
-
-#: src/modules/ps.c:961
-msgid "write error occured"
-msgstr "грешка при писању"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:108
@@ -1466,84 +1467,84 @@ msgid "Group Properties"
 msgstr "Особине групе"
 
 #. "Ungroup"
-#: src/object-ui.c:278 src/verbs.c:432
+#: src/object-ui.c:276 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Разгрупиши"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:326
+#: src/object-ui.c:323
 msgid "Link"
 msgstr "Веза"
 
 #. Link dialog
-#: src/object-ui.c:329
+#: src/object-ui.c:326
 msgid "Link Properties"
 msgstr "Особине везе"
 
 #. Select item
-#: src/object-ui.c:339
+#: src/object-ui.c:336
 msgid "Follow link"
 msgstr "Прати везу"
 
 #. Reset transformations
-#: src/object-ui.c:344
+#: src/object-ui.c:341
 msgid "Remove link"
 msgstr "Уклони везу"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:407
+#: src/object-ui.c:404
 msgid "Image"
 msgstr "Слика"
 
 #. Link dialog
-#: src/object-ui.c:410
+#: src/object-ui.c:407
 msgid "Image Properties"
 msgstr "Особине слике"
 
 #. Autotrace dialog
-#: src/object-ui.c:418 src/sp-image.c:788
+#: src/object-ui.c:415 src/sp-image.c:762
 msgid "Trace"
 msgstr "Траг"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:467
+#: src/object-ui.c:464
 msgid "Shape"
 msgstr "Облик"
 
 #. Item dialog
-#: src/object-ui.c:470 src/toolbox.c:361
+#: src/object-ui.c:467 src/toolbox.c:361
 msgid "Fill settings"
 msgstr "Подешавања испуњавања"
 
 # bug: cannot be easily translated; please use "rectangle"
 #. Create toplevel menuitem
-#: src/object-ui.c:497
+#: src/object-ui.c:494
 msgid "Rect"
 msgstr "Правоугаоник"
 
 # bug: rect -> rectangle
 #. Link dialog
-#: src/object-ui.c:500
+#: src/object-ui.c:497
 msgid "Rect Properties"
 msgstr "Особине правоугаоника"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:533 src/verbs.c:453
+#: src/object-ui.c:530 src/verbs.c:453
 msgid "Star"
 msgstr "Звезда"
 
 #. Link dialog
-#: src/object-ui.c:536
+#: src/object-ui.c:533
 msgid "Star Properties"
 msgstr "Особине звезде"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:569 src/verbs.c:454
+#: src/object-ui.c:566 src/verbs.c:454
 msgid "Spiral"
 msgstr "Спирала"
 
 #. Link dialog
-#: src/object-ui.c:572
+#: src/object-ui.c:569
 msgid "Spiral Properties"
 msgstr "Особине спирале"
 
@@ -1784,24 +1785,24 @@ msgstr "Слика са лошом референцом: %s"
 msgid "Color image %d x %d: %s"
 msgstr "Слика у боји %d x %d: %s"
 
-#: src/sp-image.c:934
+#: src/sp-image.c:908
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Грешка при упису %s: %s"
 
-#: src/sp-image.c:968
+#: src/sp-image.c:942
 msgid "Untitled"
 msgstr "Неименована"
 
-#: src/sp-image.c:973
+#: src/sp-image.c:947
 msgid "Document Name:"
 msgstr "Име документа:"
 
-#: src/sp-image.c:986
+#: src/sp-image.c:960
 msgid "Unknown"
 msgstr "Непознато"
 
-#: src/sp-image.c:992
+#: src/sp-image.c:966
 msgid "Image URI:"
 msgstr "Адреса слике:"
 
@@ -1811,7 +1812,7 @@ msgstr "Адреса слике:"
 msgid "Group of %d objects"
 msgstr "Група од %d објеката"
 
-#: src/sp-item.c:509
+#: src/sp-item.c:534
 msgid "Unknown item :-("
 msgstr "Непозната ставка :-("
 

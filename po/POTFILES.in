@@ -32,6 +32,9 @@ src/main.c
 src/module.c
 src/modules/gnome.c
 src/modules/kde.cpp
+src/modules/plain-pdf.c
+src/modules/plain-ps.c
+src/modules/plain.c
 src/modules/ps.c
 src/object-ui.c
 src/print.c
