@@ -1,5 +1,13 @@
 2002-09-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Generic method
+	(sp_text_edit_dialog_set_default): New method
+	(sp_text_edit_dialog_read_selection): Read defaults if no text
+	(sp_text_edit_dialog_text_changed): Update default button
+	(sp_text_edit_dialog_font_changed): Ditto
+	(sp_text_edit_dialog_any_toggled): Ditto
+	(sp_ted_get_selected_text_item): Helper
+
 	* src/dialogs/tool-options.c (sp_tool_options_dialog_setup): Implement
 	using sp_event_context_config_widget
 

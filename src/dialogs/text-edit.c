@@ -38,6 +38,7 @@
 static void sp_text_edit_dialog_modify_selection (Sodipodi *sodipodi, SPSelection *sel, guint flags, GtkWidget *dlg);
 static void sp_text_edit_dialog_change_selection (Sodipodi *sodipodi, SPSelection *sel, GtkWidget *dlg);
 
+static void sp_text_edit_dialog_set_default (GtkButton *button, GtkWidget *dlg);
 static void sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg);
 static void sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg);
 
@@ -46,6 +47,8 @@ static void sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, 
 static void sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg);
 static void sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, GtkWidget *dlg);
 static void sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg);
+
+static SPText *sp_ted_get_selected_text_item (void);
 
 static GtkWidget *dlg = NULL;
 
@@ -185,11 +188,18 @@ sp_text_edit_dialog (void)
 		/* Buttons */
 		hs = gtk_hseparator_new ();
 		gtk_widget_show (hs);
-		gtk_box_pack_start (GTK_BOX (mainvb), hs, FALSE, FALSE, 4);
+		gtk_box_pack_start (GTK_BOX (mainvb), hs, FALSE, FALSE, 0);
 
 		hb = gtk_hbox_new (FALSE, 4);
 		gtk_widget_show (hb);
+		gtk_container_set_border_width (GTK_CONTAINER (hb), 4);
 		gtk_box_pack_start (GTK_BOX (mainvb), hb, FALSE, FALSE, 0);
+
+		b = gtk_button_new_with_label (_("Set as default"));
+		gtk_widget_show (b);
+		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_set_default), dlg);
+		gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
+		gtk_object_set_data (GTK_OBJECT (dlg), "default", b);
 
 		b = gnome_stock_button (GNOME_STOCK_BUTTON_CLOSE);
 		gtk_widget_show (b);
@@ -227,37 +237,34 @@ sp_text_edit_dialog_change_selection (Sodipodi *sodipodi, SPSelection *sel, GtkW
 	sp_text_edit_dialog_read_selection (dlg, TRUE, TRUE);
 }
 
+
 static void
-sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
+sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 {
-	GtkWidget *apply;
-	SPItem *item;
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
-	gtk_widget_set_sensitive (apply, FALSE);
+	if (text) {
+		GtkWidget *textw;
+		guchar *str;
 
-	if (!SP_ACTIVE_DESKTOP) return;
-	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+		textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
 
-	if (item && SP_IS_TEXT (item)) {
-		GtkWidget *textw, *fontsel, *preview, *b;
+		/* Content */
+		str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
+		sp_text_set_repr_text_multiline (text, str);
+		g_free (str);
+	}
+
+	if (repr) {
+		GtkWidget *fontsel, *preview, *b;
 		SPCSSAttr *css;
 		GnomeFont *font;
 		gint weight;
 		const guchar *val;
-		guchar *str;
 		guchar c[64];
 
-		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
-
-		textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
 		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
 		preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
-
-		/* Content */
-		str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
-		sp_text_set_repr_text_multiline (SP_TEXT (item), str);
-		g_free (str);
 
 		css = sp_repr_css_attr_new ();
 
@@ -300,14 +307,60 @@ sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
 			sp_repr_css_set_property (css, "writing-mode", "tb");
 		}
 
-		sp_repr_css_change (SP_OBJECT_REPR (item), css, "style");
+		sp_repr_css_change (repr, css, "style");
 		sp_repr_css_attr_unref (css);
-
-		sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
-		sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (item));
-
-		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
 	}
+
+	if (text) {
+		sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
+		sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (text));
+	}
+
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
+}
+
+static void
+sp_text_edit_dialog_set_default (GtkButton *button, GtkWidget *dlg)
+{
+	GtkWidget *def;
+	SPRepr *repr;
+
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+
+	repr = sodipodi_get_repr (SODIPODI, "tools.text");
+
+	sp_text_edit_dialog_update_object (NULL, repr);
+
+	gtk_widget_set_sensitive (def, FALSE);
+}
+
+static void
+sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
+{
+	GtkWidget *apply, *def;
+	SPText *text;
+	SPRepr *repr;
+
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
+
+	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+
+	text = sp_ted_get_selected_text_item ();
+	if (text) {
+		repr = SP_OBJECT_REPR (text);
+	} else {
+		repr = sodipodi_get_repr (SODIPODI, "tools.text");
+	}
+
+	sp_text_edit_dialog_update_object (text, repr);
+
+	if (!text) {
+		gtk_widget_set_sensitive (def, FALSE);
+	}
+	gtk_widget_set_sensitive (apply, FALSE);
+
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
 }
 
 static void
@@ -317,38 +370,32 @@ sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg)
 }
 
 static void
-sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean content)
+sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean docontent)
 {
-	GtkWidget *notebook, *apply;
-	SPItem *item;
+	GtkWidget *notebook, *textw, *fontsel, *preview, *apply, *def;
+	SPText *text;
+	SPStyle *style;
 
 	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
 	notebook = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
+	textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
+	fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
+	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
 	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
 
-	if (!SP_ACTIVE_DESKTOP) {
-		gtk_widget_set_sensitive (notebook, FALSE);
+	text = sp_ted_get_selected_text_item ();
+
+	if (text) {
+		gtk_widget_set_sensitive (textw, TRUE);
 		gtk_widget_set_sensitive (apply, FALSE);
-		return;
-	}
-	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
-	if (item && SP_IS_TEXT (item)) {
-		GtkWidget *textw, *fontsel, *preview;
-		SPStyle *style;
-		GnomeFont *font;
-
-		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
-
-		style = SP_OBJECT_STYLE (item);
-
-		textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
-		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
-		preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
-
-		if (content) {
+		gtk_widget_set_sensitive (def, TRUE);
+		style = SP_OBJECT_STYLE (text);
+		if (docontent) {
 			guchar *str;
-			str = sp_text_get_string_multiline (SP_TEXT (item));
+			str = sp_text_get_string_multiline (text);
 			if (str && *str) {
 				e_utf8_gtk_editable_set_text (GTK_EDITABLE (textw), str);
 				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), str);
@@ -358,55 +405,70 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean con
 				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), NULL);
 			}
 		}
-
-		if (style) {
-			GtkWidget *b;
-			font = gnome_font_new_closest (style->text->font_family.value,
-						       sp_text_font_weight_to_gp (style->font_weight.computed),
-						       sp_text_font_italic_to_gp (style->font_style.computed),
-						       style->font_size.computed);
-			if (font) {
-				gnome_font_selection_set_font (GNOME_FONT_SELECTION (fontsel), font);
-				gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
-				gnome_font_unref (font);
-			}
-			if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_START) {
-				b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_start");
-			} else if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_MIDDLE) {
-				b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_middle");
-			} else {
-				b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_end");
-			}
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_LR) {
-				b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_lr");
-			} else {
-				b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_tb");
-			}
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
-		}
-
-		gtk_widget_set_sensitive (notebook, TRUE);
-
-		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
 	} else {
-		gtk_widget_set_sensitive (notebook, FALSE);
+		SPRepr *repr;
+		gtk_widget_set_sensitive (textw, FALSE);
+		gtk_widget_set_sensitive (apply, FALSE);
+		gtk_widget_set_sensitive (def, FALSE);
+		repr = sodipodi_get_repr (SODIPODI, "tools.text");
+		if (repr) {
+			gtk_widget_set_sensitive (notebook, TRUE);
+			style = sp_style_new ();
+			sp_style_read_from_repr (style, repr);
+		} else {
+			gtk_widget_set_sensitive (notebook, FALSE);
+			style = sp_style_new ();
+		}
 	}
 
-	gtk_widget_set_sensitive (apply, FALSE);
+	if (dostyle) {
+		GnomeFont *font;
+		GtkWidget *b;
+
+		font = gnome_font_new_closest (style->text->font_family.value,
+					       sp_text_font_weight_to_gp (style->font_weight.computed),
+					       sp_text_font_italic_to_gp (style->font_style.computed),
+					       style->font_size.computed);
+		if (font) {
+			gnome_font_selection_set_font (GNOME_FONT_SELECTION (fontsel), font);
+			gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
+			gnome_font_unref (font);
+		}
+
+		if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_START) {
+			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_start");
+		} else if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_MIDDLE) {
+			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_middle");
+		} else {
+			b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_end");
+		}
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
+		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_LR) {
+			b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_lr");
+		} else {
+			b = gtk_object_get_data (GTK_OBJECT (dlg), "writing_mode_tb");
+		}
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
+	}
+
+	gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);
 }
 
 static void
 sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 {
-	GtkWidget *textw, *apply, *preview;
+	GtkWidget *textw, *preview, *apply, *def;
+	SPText *text;
 	gchar *str;
 
 	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
 
+	text = sp_ted_get_selected_text_item ();
+
 	textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
 	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
+	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
 
 	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
 	if (str && *str) {
@@ -416,33 +478,59 @@ sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 	}
 	if (str) g_free (str);
 
-	gtk_widget_set_sensitive (apply, TRUE);
+	if (text) {
+		gtk_widget_set_sensitive (apply, TRUE);
+	}
+	gtk_widget_set_sensitive (def, TRUE);
 }
 
 static void
 sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, GtkWidget *dlg)
 {
-	GtkWidget *preview;
-	GtkWidget *apply;
+	GtkWidget *preview, *apply, *def;
+	SPText *text;
 
 	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
 
+	text = sp_ted_get_selected_text_item ();
+
 	preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
 	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
 
 	gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
 
-	gtk_widget_set_sensitive (apply, TRUE);
+	if (text) {
+		gtk_widget_set_sensitive (apply, TRUE);
+	}
+	gtk_widget_set_sensitive (def, TRUE);
 }
 
 static void
 sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg)
 {
-	GtkWidget *apply;
+	GtkWidget *apply, *def;
+	SPText *text;
 
 	if (gtk_object_get_data (GTK_OBJECT (dlg), "blocked")) return;
 
-	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	text = sp_ted_get_selected_text_item ();
 
-	gtk_widget_set_sensitive (apply, TRUE);
+	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
+	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
+
+	if (text) {
+		gtk_widget_set_sensitive (apply, TRUE);
+	}
+	gtk_widget_set_sensitive (def, TRUE);
+}
+
+static SPText *
+sp_ted_get_selected_text_item (void)
+{
+	SPItem *item;
+	if (!SP_ACTIVE_DESKTOP) return NULL;
+	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	if (item && SP_IS_TEXT (item)) return SP_TEXT (item);
+	return NULL;
 }
