@@ -12,6 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noSP_GRADIENT_VERBOSE
+
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
@@ -307,7 +309,9 @@ sp_gradient_release (SPObject *object)
 
 	gradient = (SPGradient *) object;
 
+#ifdef SP_GRADIENT_VERBOSE
 	g_print ("Releasing gradient %s\n", SP_OBJECT_ID (object));
+#endif
 
 	if (SP_OBJECT_DOCUMENT (object)) {
 		/* Unregister ourselves */

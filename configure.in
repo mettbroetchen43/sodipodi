@@ -132,10 +132,10 @@ dnl GnomePrint checking
 dnl ******************************
 
 AC_ARG_WITH(gnome-print,
-            AC_HELP_STRING([--with-gnome-print], [use gnome print font database and spooler frontend (default is auto)]),
+            AC_HELP_STRING([--with-gnome-print], [use gnome print font database and spooler frontend]),
             [with_gp=$withval], [with_gp=auto])
 
-if test "x$with_gp" != "xno"; then
+if test "x$with_gp" = "xyes"; then
 	dnl Have to test gnome-print presence
 	PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.2 >= 1.116.0  libgnomeprintui-2.2 >= 1.116.0, gp=yes, gp=no)
 	if test "x$gp" != "xyes"; then

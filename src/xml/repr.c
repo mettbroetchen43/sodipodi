@@ -12,6 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noREPR_VERBOSE
+
 #include <string.h>
 #include <stddef.h>
 
@@ -437,9 +439,11 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 			if (rl->vector->child_removed) (* rl->vector->child_removed) (repr, child, ref, rl->data);
 		}
 
+#ifdef REPR_VERBOSE
 		if (child->refcount > 1) {
 			g_warning ("Detaching repr with refcount > 1");
 		}
+#endif
 		sp_repr_unref (child);
 	}
 

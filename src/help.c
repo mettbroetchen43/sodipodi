@@ -43,6 +43,7 @@ sp_help_about (void)
 		sp_text_set_repr_text_multiline (SP_TEXT (title), t);
 		g_free (t);
 	}
+	sp_document_ensure_up_to_date (doc);
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (w), _("About sodipodi"));

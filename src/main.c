@@ -217,10 +217,7 @@ sp_main_gui (int argc, const char **argv)
 
 	gtk_init (&argc, (char ***) &argv);
 
-#ifdef WITH_MODULES
-	g_warning ("Have to autoinit modules (lauris)");
 	sp_modulesys_init();
-#endif /* WITH_MODULES */
 
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */

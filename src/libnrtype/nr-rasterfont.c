@@ -334,6 +334,12 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 	if (((flags & NR_RASTERFONT_BBOX_FLAG) && !slot->has_bbox) ||
 	    ((flags & NR_RASTERFONT_GMAP_FLAG) && !slot->has_gmap)) {
 		NRBPath gbp;
+		slot->glyph.tg.bbox.x0 = 0;
+		slot->glyph.tg.bbox.y0 = 0;
+		slot->glyph.tg.bbox.x1 = 0;
+		slot->glyph.tg.bbox.y1 = 0;
+		slot->glyph.tg.px[0] = 0;
+		slot->type = NRRF_TYPE_TINY;
 		if (nr_font_glyph_outline_get (rf->font, glyph, &gbp, 0) && (gbp.path && (gbp.path->code == ART_MOVETO))) {
 			NRSVL *svl;
 			NRSVP *svp;
@@ -351,47 +357,42 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 
 			nr_svp_bbox (svp, &bbox, TRUE);
 
-			x0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.x0);
-			y0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.y0);
-			x1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.x1);
-			y1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.y1);
-			w = NRRF_COORD_INT_SIZE (x0, x1);
-			h = NRRF_COORD_INT_SIZE (y0, y1);
-			if ((w >= NRRF_MAX_GLYPH_DIMENSION) ||
-			    (h >= NRRF_MAX_GLYPH_DIMENSION) ||
-			    ((w * h) > NRRF_MAX_GLYPH_SIZE)) {
-				slot->glyph.sg.bbox.x0 = MAX (x0, -32768);
-				slot->glyph.sg.bbox.y0 = MAX (y0, -32768);
-				slot->glyph.sg.bbox.x1 = MIN (x1, 32767);
-				slot->glyph.sg.bbox.y1 = MIN (y1, 32767);
-				slot->type = NRRF_TYPE_SVP;
-				slot->glyph.sg.svp = svp;
-			} else {
-				NRPixBlock spb;
-				slot->glyph.ig.bbox.x0 = MAX (x0, -32768);
-				slot->glyph.ig.bbox.y0 = MAX (y0, -32768);
-				slot->glyph.ig.bbox.x1 = MIN (x1, 32767);
-				slot->glyph.ig.bbox.y1 = MIN (y1, 32767);
-				slot->glyph.ig.px = nr_new (unsigned char, w * h);
-				nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
-							  NRRF_COORD_INT_LOWER (x0),
-							  NRRF_COORD_INT_LOWER (y0),
-							  NRRF_COORD_INT_UPPER (x1),
-							  NRRF_COORD_INT_UPPER (y1),
-							  slot->glyph.ig.px, w,
-							  TRUE, TRUE);
-				nr_pixblock_render_svp_mask_or (&spb, svp);
-				nr_pixblock_release (&spb);
-				nr_svp_free (svp);
-				slot->type = NRRF_TYPE_IMAGE;
+			if (!nr_rect_f_test_empty (&bbox)) {
+				x0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.x0);
+				y0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.y0);
+				x1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.x1);
+				y1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.y1);
+				w = NRRF_COORD_INT_SIZE (x0, x1);
+				h = NRRF_COORD_INT_SIZE (y0, y1);
+				if ((w >= NRRF_MAX_GLYPH_DIMENSION) ||
+				    (h >= NRRF_MAX_GLYPH_DIMENSION) ||
+				    ((w * h) > NRRF_MAX_GLYPH_SIZE)) {
+					slot->glyph.sg.bbox.x0 = MAX (x0, -32768);
+					slot->glyph.sg.bbox.y0 = MAX (y0, -32768);
+					slot->glyph.sg.bbox.x1 = MIN (x1, 32767);
+					slot->glyph.sg.bbox.y1 = MIN (y1, 32767);
+					slot->type = NRRF_TYPE_SVP;
+					slot->glyph.sg.svp = svp;
+				} else {
+					NRPixBlock spb;
+					slot->glyph.ig.bbox.x0 = MAX (x0, -32768);
+					slot->glyph.ig.bbox.y0 = MAX (y0, -32768);
+					slot->glyph.ig.bbox.x1 = MIN (x1, 32767);
+					slot->glyph.ig.bbox.y1 = MIN (y1, 32767);
+					slot->glyph.ig.px = nr_new (unsigned char, w * h);
+					nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
+								  NRRF_COORD_INT_LOWER (x0),
+								  NRRF_COORD_INT_LOWER (y0),
+								  NRRF_COORD_INT_UPPER (x1),
+								  NRRF_COORD_INT_UPPER (y1),
+								  slot->glyph.ig.px, w,
+								  TRUE, TRUE);
+					nr_pixblock_render_svp_mask_or (&spb, svp);
+					nr_pixblock_release (&spb);
+					nr_svp_free (svp);
+					slot->type = NRRF_TYPE_IMAGE;
+				}
 			}
-		} else {
-			slot->glyph.tg.bbox.x0 = 0;
-			slot->glyph.tg.bbox.y0 = 0;
-			slot->glyph.tg.bbox.x1 = 0;
-			slot->glyph.tg.bbox.y1 = 0;
-			slot->glyph.tg.px[0] = 0;
-			slot->type = NRRF_TYPE_TINY;
 		}
 		slot->has_bbox = TRUE;
 		slot->has_gmap = TRUE;
