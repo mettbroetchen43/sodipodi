@@ -19,6 +19,8 @@ void sp_selected_path_combine (void);
 void sp_selected_path_break_apart (void);
 void sp_selected_path_to_curves (void);
 
+void sp_path_reverse (SPPath *path);
+
 void sp_path_cleanup (SPPath *path);
 
 enum {

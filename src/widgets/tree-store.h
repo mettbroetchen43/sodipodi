@@ -22,7 +22,9 @@ typedef struct _SPTreeStoreClass SPTreeStoreClass;
 enum {
 	SP_TREE_STORE_COLUMN_ID,
 	SP_TREE_STORE_COLUMN_IS_ITEM,
+	SP_TREE_STORE_COLUMN_IS_GROUP,
 	SP_TREE_STORE_COLUMN_IS_VISUAL,
+	SP_TREE_STORE_COLUMN_TARGET,
 	SP_TREE_STORE_COLUMN_VISIBLE,
 	SP_TREE_STORE_COLUMN_SENSITIVE,
 	SP_TREE_STORE_COLUMN_PRINTABLE,
@@ -31,7 +33,7 @@ enum {
 
 GType sp_tree_store_get_type (void);
 
-SPTreeStore *sp_tree_store_new (SPDocument *doc, SPObject *root);
+SPTreeStore *sp_tree_store_new (SPDesktop *dektop);
 
 /* iter->user_data points to SPObject */
 

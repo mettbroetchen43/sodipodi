@@ -165,10 +165,25 @@ sp_selected_path_break_apart (void)
 }
 
 /* This function is an entry point from GUI */
+
 void
 sp_selected_path_to_curves (void)
 {
-	sp_selected_path_to_curves0(TRUE, SP_TOCURVE_INTERACTIVE);
+	sp_selected_path_to_curves0 (TRUE, SP_TOCURVE_INTERACTIVE);
+}
+
+void
+sp_path_reverse (SPPath *path)
+{
+	SPShape *shape;
+	SPCurve *rcurve;
+	char *str;
+	shape = (SPShape *) path;
+	rcurve = sp_curve_reverse (shape->curve);
+	str = sp_svg_write_path (rcurve->bpath);
+	sp_repr_set_attr (SP_OBJECT_REPR (path), "d", str);
+	sp_curve_unref (rcurve);
+	sp_document_done (SP_OBJECT_DOCUMENT (path));
 }
 
 static void

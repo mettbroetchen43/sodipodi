@@ -1,3 +1,9 @@
+2004-06-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/path-chemistry.c (sp_path_reverse): New method
+
+	* src/object-ui.c (sp_path_menu): New context menu
+
 2004-06-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/tree-store.c: Include root into tree

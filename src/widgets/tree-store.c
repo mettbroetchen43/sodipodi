@@ -13,7 +13,8 @@
 
 #include "macros.h"
 #include "document.h"
-#include "sp-item.h"
+#include "desktop.h"
+#include "sp-item-group.h"
 
 #include "tree-store.h"
 
@@ -23,6 +24,7 @@ struct _SPTreeStore {
 	int stamp;
 
 	SPDocument *doc;
+	SPDesktop *dt;
 	SPObject *root;
 };
 
@@ -304,22 +306,24 @@ sp_tree_store_doc_object_modified (SPDocument *doc, SPObject *object, unsigned i
 }
 
 SPTreeStore *
-sp_tree_store_new (SPDocument *doc, SPObject *root)
+sp_tree_store_new (SPDesktop *desktop)
 {
 	SPTreeStore *store;
 
 	store = g_object_new (SP_TYPE_TREE_STORE, NULL);
 
-	store->doc = doc;
-	store->root = root;
+	/* fixme: We need "shutodwn" signal on desktop (Lauris) */
+	store->doc = SP_VIEW_DOCUMENT (desktop);
+	store->dt = desktop;
+	store->root = (SPObject *) SP_VIEW_ROOT (desktop);
 
 	/* Attach document */
-	sp_document_set_object_signals (doc, TRUE);
-	g_signal_connect ((GObject *) doc, "destroy", (GCallback) sp_tree_store_doc_destroy, store);
-	g_signal_connect ((GObject *) doc, "object_added", (GCallback) sp_tree_store_doc_object_added, store);
-	g_signal_connect ((GObject *) doc, "object_removed", (GCallback) sp_tree_store_doc_object_removed, store);
-	g_signal_connect ((GObject *) doc, "order_changed", (GCallback) sp_tree_store_doc_order_changed, store);
-	g_signal_connect ((GObject *) doc, "object_modified", (GCallback) sp_tree_store_doc_object_modified, store);
+	sp_document_set_object_signals (store->doc, TRUE);
+	g_signal_connect ((GObject *) store->doc, "destroy", (GCallback) sp_tree_store_doc_destroy, store);
+	g_signal_connect ((GObject *) store->doc, "object_added", (GCallback) sp_tree_store_doc_object_added, store);
+	g_signal_connect ((GObject *) store->doc, "object_removed", (GCallback) sp_tree_store_doc_object_removed, store);
+	g_signal_connect ((GObject *) store->doc, "order_changed", (GCallback) sp_tree_store_doc_order_changed, store);
+	g_signal_connect ((GObject *) store->doc, "object_modified", (GCallback) sp_tree_store_doc_object_modified, store);
 
 	return store;
 }
@@ -343,6 +347,8 @@ sp_tree_store_get_column_type (GtkTreeModel *model, int idx)
 {
 	static GType types[] = {
 		G_TYPE_STRING,
+		G_TYPE_BOOLEAN,
+		G_TYPE_BOOLEAN,
 		G_TYPE_BOOLEAN,
 		G_TYPE_BOOLEAN,
 		G_TYPE_BOOLEAN,
@@ -429,6 +435,10 @@ sp_tree_store_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 		g_value_init (value, G_TYPE_STRING);
 		g_value_set_string (value, SP_OBJECT_ID (object));
 		break;
+	case SP_TREE_STORE_COLUMN_IS_GROUP:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, SP_IS_GROUP (object));
+		break;
 	case SP_TREE_STORE_COLUMN_IS_ITEM:
 		g_value_init (value, G_TYPE_BOOLEAN);
 		g_value_set_boolean (value, SP_IS_ITEM (object));
@@ -440,6 +450,10 @@ sp_tree_store_get_value (GtkTreeModel *model, GtkTreeIter *iter, int column, GVa
 			object = object->parent;
 		}
 		g_value_set_boolean (value, !object);
+		break;
+	case SP_TREE_STORE_COLUMN_TARGET:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, object == (SPObject *) store->dt->base);
 		break;
 	case SP_TREE_STORE_COLUMN_VISIBLE:
 		g_value_init (value, G_TYPE_BOOLEAN);

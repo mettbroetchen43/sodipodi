@@ -50,6 +50,7 @@ sp_object_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
+#include "path-chemistry.h"
 
 #include "dialogs/item-properties.h"
 #include "dialogs/object-attributes.h"
@@ -59,6 +60,7 @@ static void sp_item_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_group_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_anchor_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_image_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
+static void sp_path_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_shape_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_rect_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_star_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
@@ -76,6 +78,7 @@ sp_object_type_menu (GType type, SPObject *object, SPDesktop *desktop, GtkMenu *
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_ANCHOR), sp_anchor_menu);
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_IMAGE), sp_image_menu);
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_SHAPE), sp_shape_menu);
+		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_SHAPE), sp_path_menu);
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_RECT), sp_rect_menu);
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_STAR), sp_star_menu);
 		g_hash_table_insert (t2m, GUINT_TO_POINTER (SP_TYPE_SPIRAL), sp_spiral_menu);
@@ -491,6 +494,36 @@ sp_shape_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 
 	gtk_menu_append (menu, i);
 	gtk_widget_show (i);
+}
+
+/* SPPath */
+
+static void
+sp_path_menu_reverse_activate (GtkMenuItem *menuitem, SPPath *path)
+{
+	sp_path_reverse (path);
+}
+
+static void
+sp_path_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
+{
+	SPItem *item;
+	GtkWidget *i, *m, *w;
+
+	item = (SPItem *) object;
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Path"));
+	m = gtk_menu_new ();
+	/* Reverse */
+	w = gtk_menu_item_new_with_label (_("Reverse"));
+	g_signal_connect ((GObject *) w, "activate", (GCallback) sp_path_menu_reverse_activate, item);
+	gtk_menu_append (GTK_MENU (m), w);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show_all (i);
 }
 
 /* SPRect */
