@@ -25,7 +25,9 @@ Other tasks
 - Patterns (Lauris) (90% DONE)
 - Radial gradients (Lauris) (DONE)
 - Interface for clipart collections (Lauris)
+- DockBook UI for managing messy dialogs (Mitsuru)
 - Dynamic DynaLine (Mitsuru)
+- Animation support
 
 Porting to GTK+-2.0
 ===================
@@ -36,6 +38,7 @@ Porting to GTK+-2.0
 - GtkIMContext support for text-context?
 - More works for XML Editor
 - Fix unstable SPMenuButton/SPToolbox behavior
+- Fix GuideLine bug
 - Merge into HEAD tree
 
 TODO for 0.26
