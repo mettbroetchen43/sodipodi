@@ -400,15 +400,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	if (!string->uchars || !*string->uchars) return;
 	len = arikkei_ucs2_strlen (string->uchars);
 	if (!len) return;
-#else
-	if (!string->text || !*string->text) return;
-	len = g_utf8_strlen (string->text, -1);
-	if (!len) return;
-	if (string->p) g_free (string->p);
-	string->p = g_new (NRPointF, len + 1);
-#endif
 
-#ifdef SP_TEXT_NEW_CONTENT
 	/* fixme: Find a way how to manipulate these */
 	x = cp->x;
 	y = cp->y;
@@ -432,7 +424,18 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		sp_chars_add_element (chars, pglyph->glyph, font, &a);
 	}
 
+	cp->x += string->pgl->advance.x;
+	cp->y -= string->pgl->advance.y;
+
+	if (pinspace) *pinspace = inspace;
+
 #else
+	if (!string->text || !*string->text) return;
+	len = g_utf8_strlen (string->text, -1);
+	if (!len) return;
+	if (string->p) g_free (string->p);
+	string->p = g_new (NRPointF, len + 1);
+
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
