@@ -17,7 +17,6 @@
 #define SP_IS_NAMEDVIEW(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_NAMEDVIEW))
 #define SP_IS_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
-#include <libgnomeui/gnome-canvas.h>
 #include "helper/units.h"
 #include "sp-object-group.h"
 

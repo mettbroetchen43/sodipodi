@@ -233,8 +233,14 @@ sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int
 	grid->sw.y -= affine[5];
 	grid->sw.x = fabs (grid->sw.x);
 	grid->sw.y = fabs (grid->sw.y);
-	while (grid->sw.x < 8.0) grid->sw.x *= 10.0;
-	while (grid->sw.y < 8.0) grid->sw.y *= 10.0;
+	while (grid->sw.x < 8.0) {
+		grid->sw.x *= 5.0;
+		if (grid->sw.x < 8.0) grid->sw.x *= 2.0;
+	}
+	while (grid->sw.y < 8.0) {
+		grid->sw.y *= 5.0;
+		if (grid->sw.y < 8.0) grid->sw.y *= 2.0;
+	}
 
 	gnome_canvas_request_redraw (item->canvas,
 				     -1000000, -1000000,

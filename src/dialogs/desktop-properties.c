@@ -1,12 +1,27 @@
 #define SP_DESKTOP_PROPERTIES_C
 
+/*
+ * Desktop configuration dialog
+ *
+ * This file is part of Sodipodi http://www.sodipodi.com
+ * Licensed under GNU General Public License, see file
+ * COPYING for details
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) Lauris Kaplinski 2000-2002
+ */
+
 #include <config.h>
 
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#if 0
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkcheckbutton.h>
+#endif
 #include <libgnomeui/gnome-color-picker.h>
 
 #include "../helper/unit-menu.h"
@@ -83,7 +98,7 @@ sp_dtw_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	if (!dt) return;
 	doc = SP_DT_DOCUMENT (dt);
 
-	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+	repr = SP_OBJECT_REPR (dt->namedview);
 	key = gtk_object_get_data (GTK_OBJECT (adjustment), "key");
 	us = gtk_object_get_data (GTK_OBJECT (adjustment), "unit_selector");
 

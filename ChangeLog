@@ -1,5 +1,8 @@
 2002-02-08  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/dialogs/document-properties.c: Do not use glade anymore, made
+	everything dynamic
+
 	* src/helper/canvas-grid.c (sp_grid_hline): Use helpers from ctrlrect
 	(sp_grid_vline): Ditto
 	(sp_cgrid_render): Render real grid instead of dots
