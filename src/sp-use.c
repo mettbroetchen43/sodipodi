@@ -223,12 +223,9 @@ sp_use_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("use");
 	}
 
-	if (repr != SP_OBJECT_REPR (object)) {
-		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
-	}
-
-	if (((SPObjectClass *) (parent_class))->write)
-		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+	sp_repr_set_attr (repr, "id", object->id);
+	sp_repr_set_attr (repr, "xlink:href", use->href);
+	/* fixme: Implement x, y, width, height */
 
 	return repr;
 }
