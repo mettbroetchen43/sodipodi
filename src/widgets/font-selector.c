@@ -22,6 +22,8 @@
 #include <libgnome/gnome-i18n.h>
 
 #include <libnrtype/nr-type-directory.h>
+#include <libnrtype/nr-rasterfont.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkframe.h>
@@ -351,6 +353,10 @@ sp_font_selector_get_font (SPFontSelector *fsel)
 struct _SPFontPreview
 {
 	GtkDrawingArea darea;
+
+	NRFont *font;
+	NRRasterFont *rfont;
+	unsigned char *phrase;
 };
 
 
@@ -413,6 +419,19 @@ sp_font_preview_destroy (GtkObject *object)
 
 	fprev = SP_FONT_PREVIEW (object);
 
+	if (fprev->rfont) {
+		fprev->rfont = nr_rasterfont_unref (fprev->rfont);
+	}
+
+	if (fprev->font) {
+		fprev->font = nr_font_unref (fprev->font);
+	}
+
+	if (fprev->phrase) {
+		g_free (fprev->phrase);
+		fprev->phrase = NULL;
+	}
+
   	if (GTK_OBJECT_CLASS (fp_parent_class)->destroy)
 		GTK_OBJECT_CLASS (fp_parent_class)->destroy (object);
 }
@@ -425,6 +444,19 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 	fprev = SP_FONT_PREVIEW (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
+		int x, y;
+		for (y = event->area.y; y < event->area.y + event->area.height; y += 64) {
+			for (x = event->area.x; x < event->area.x + event->area.width; x += 64) {
+				int x0, y0, x1, y1;
+				
+
+				x0 = x;
+				y0 = y;
+				x1 = MIN (x0 + 64, event->area.x + event->area.width);
+				y1 = MIN (y0 + 64, event->area.y + event->area.height);
+			}
+		}
+
 		nr_gdk_draw_gray_garbage (widget->window, widget->style->black_gc,
 					  event->area.x, event->area.y,
 					  event->area.width, event->area.height);

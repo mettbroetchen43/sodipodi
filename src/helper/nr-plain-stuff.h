@@ -36,11 +36,8 @@ void nr_render_rgba32_rgba32 (guchar *px, gint w, gint h, gint rs, const guchar 
 void nr_render_r8g8b8a8_r8g8b8a8_alpha (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs, guint alpha);
 void nr_render_r8g8b8a8_rgba32_mask_a8 (guchar *px, gint w, gint h, gint rs, guint32 rgba, const guchar *src, gint srcrs);
 void nr_render_r8g8b8a8_r8g8b8a8_mask_a8 (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs, const guchar *mask, gint maskrs);
-void nr_render_r8g8b8a8_gray_garbage (guchar *px, gint w, gint h, gint rs);
 
 /* RGB target */
 void nr_render_r8g8b8_r8g8b8a8 (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs);
-
-void nr_render_gray_garbage_rgb (guchar *px, gint w, gint h, gint rs);
 
 #endif

@@ -9,6 +9,7 @@
  *
  */
 
+#include <libnr/nr-pixblock-pattern.h>
 #include <gtk/gtksignal.h>
 #include "../helper/nr-plain-stuff.h"
 #include "../helper/nr-plain-stuff-gdk.h"
@@ -260,7 +261,12 @@ sp_gradient_image_update (SPGradientImage *image)
 						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
 						     0, allocation->width, TRUE);
 	} else {
-		nr_render_gray_garbage_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
+		NRPixBlock pb;
+		nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8,
+					  0, 0, allocation->width, VBLOCK,
+					  image->px, 3 * allocation->width, TRUE, FALSE);
+		nr_pixblock_render_gray_noise (&pb, NULL);
+		nr_pixblock_release (&pb);
 	}
 
 	if (GTK_WIDGET_DRAWABLE (image)) {

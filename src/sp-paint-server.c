@@ -12,7 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "helper/nr-plain-stuff.h"
+#include <libnr/nr-pixblock-pattern.h>
 #include "sp-paint-server.h"
 
 static void sp_paint_server_class_init (SPPaintServerClass *klass);
@@ -152,7 +152,10 @@ sp_painter_free (SPPainter *painter)
 static void
 sp_painter_stale_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-	nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
+	NRPixBlock pb;
+	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
+	nr_pixblock_render_gray_noise (&pb, NULL);
+	nr_pixblock_release (&pb);
 }
 
 

@@ -13,6 +13,7 @@
  */
 
 #include <math.h>
+#include <stdlib.h>
 #include <libnr/nr-types.h>
 
 #define nr_new(t,n) ((t *) malloc ((n) * sizeof (t)))
