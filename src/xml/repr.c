@@ -7,7 +7,7 @@ static void sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_
 static void sp_repr_attr_to_list (gpointer key, gpointer value, gpointer user_data);
 static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
 
-#define DEBUG_REPR
+#define dontDEBUG_REPR
 
 #ifdef DEBUG_REPR
 	gint num_repr = 0;

@@ -46,11 +46,15 @@ sp_sm_die (GnomeClient * client, gpointer client_data)
 }
 
 
-void
+gint
 sp_sm_restore_children (void)
 {
-	gnome_mdi_restore_state (SODIPODI, "Session",
+	gint restored;
+
+	restored = gnome_mdi_restore_state (SODIPODI, "Session",
 		(GnomeMDIChildCreator) sp_sm_create_child_from_config);
+
+	return restored;
 }
 
 static GnomeMDIChild *

@@ -4,7 +4,7 @@
 
 SPStroke * default_stroke = NULL;
 
-#define DEBUG_STROKE
+#define dontDEBUG_STROKE
 
 #ifdef DEBUG_STROKE
 	gint num_stroke = 1;

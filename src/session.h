@@ -15,7 +15,7 @@ sp_sm_save_yourself (GnomeClient * client,
 gint
 sp_sm_die (GnomeClient * client, gpointer client_data);
 
-void
+gint
 sp_sm_restore_children (void);
 
 #endif
