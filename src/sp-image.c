@@ -172,25 +172,9 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 
 	switch (key) {
 	case SP_ATTR_XLINK_HREF:
-		if (image->href) {
-			g_free (image->href);
-			image->href = NULL;
-		}
-		if (image->pixbuf) {
-			/* fixme: Potential crash (Lauris) */
-			gdk_pixbuf_unref (image->pixbuf);
-			image->pixbuf = NULL;
-		}
-		if (value) {
-			GdkPixbuf *pixbuf;
-			image->href = g_strdup (value);
-			pixbuf = sp_image_repr_read_image (object->repr);
-			if (pixbuf) {
-				pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
-				image->pixbuf = pixbuf;
-			}
-		}
-		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		if (image->href) g_free (image->href);
+		image->href = (value) ? g_strdup (value) : NULL;
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_IMAGE_HREF_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_X:
 		if (sp_svg_length_read_lff (value, &unit, &image->x.value, &image->x.computed) &&
@@ -254,8 +238,27 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 static void
 sp_image_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
+	SPImage *image;
+
+	image = (SPImage *) object;
+
 	if (((SPObjectClass *) (parent_class))->update)
 		((SPObjectClass *) (parent_class))->update (object, ctx, flags);
+
+	if (flags & SP_IMAGE_HREF_MODIFIED_FLAG) {
+		if (image->pixbuf) {
+			gdk_pixbuf_unref (image->pixbuf);
+			image->pixbuf = NULL;
+		}
+		if (image->href) {
+			GdkPixbuf *pixbuf;
+			pixbuf = sp_image_repr_read_image (object->repr);
+			if (pixbuf) {
+				pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
+				image->pixbuf = pixbuf;
+			}
+		}
+	}
 
 	sp_image_update_canvas_image ((SPImage *) object);
 }

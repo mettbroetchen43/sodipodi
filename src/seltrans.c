@@ -312,25 +312,11 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 	if (seltrans->show == SP_SELTRANS_SHOW_CONTENT) {
 	        // update the content
 		int i;
-#if 0
-         	/* We accept empty lists here, as something may well remove items */
-	        /* and seltrans does not update, if frozen */
-	        l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
-	        while (l != NULL) {
-		        item = SP_ITEM (l->data);
-			sp_item_i2d_affine (item, &i2d);
-			nr_matrix_multiply_dfd (&i2current, &i2d, &current_);
-			nr_matrix_multiply_fdd (&i2dnew, &i2current, affine);
-			sp_item_set_i2d_affine (item, &i2dnew);
-			l = l->next;
-		}
-#else
 		for (i = 0; i < seltrans->nitems; i++) {
 			NRMatrixF i2dnew;
 			nr_matrix_multiply_ffd (&i2dnew, &seltrans->transforms[i], affine);
 			sp_item_set_i2d_affine (seltrans->items[i], &i2dnew);
 		}
-#endif
 	} else {
 		NRPointF p[4];
         	/* update the outline */
@@ -770,12 +756,16 @@ sp_sel_trans_handle_request (SPKnot * knot, NRPointF *position, guint state, gbo
 	sp_view_set_position (SP_VIEW (desktop), position->x, position->y);
 
 	if (state & GDK_MOD1_MASK) {
-	  sp_sel_trans_point_desktop (seltrans, &point);
-	  position->x = point.x + (position->x - point.x) / 10;
-	  position->y = point.y + (position->y - point.y) / 10;
+		sp_sel_trans_point_desktop (seltrans, &point);
+		position->x = point.x + (position->x - point.x) / 10;
+		position->y = point.y + (position->y - point.y) / 10;
 	}
-	if (state & GDK_SHIFT_MASK) seltrans->origin = seltrans->center;
-	else seltrans->origin = seltrans->opposit;
+
+	if (!(state & GDK_SHIFT_MASK) == !(seltrans->state == SP_SELTRANS_STATE_ROTATE)) {
+		seltrans->origin = seltrans->opposit;
+	} else {
+		seltrans->origin = seltrans->center;
+	}
 
 	if (handle->request (seltrans, handle, position, state)) {
 		sp_knot_set_position (knot, position, state);

@@ -13,6 +13,17 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define SP_TYPE_IMAGE (sp_image_get_type ())
+#define SP_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_IMAGE, SPImage))
+#define SP_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_IMAGE, SPImageClass))
+#define SP_IS_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_IMAGE))
+#define SP_IS_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_IMAGE))
+
+typedef struct _SPImage SPImage;
+typedef struct _SPImageClass SPImageClass;
+
+/* SPImage */
+
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -21,15 +32,7 @@ G_BEGIN_DECLS
 #include "svg/svg-types.h"
 #include "sp-item.h"
 
-#define SP_TYPE_IMAGE (sp_image_get_type ())
-#define SP_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_IMAGE, SPImage))
-#define SP_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_IMAGE, SPImageClass))
-#define SP_IS_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_IMAGE))
-#define SP_IS_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_IMAGE))
-
-
-typedef struct _SPImage SPImage;
-typedef struct _SPImageClass SPImageClass;
+#define SP_IMAGE_HREF_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
 
 struct _SPImage {
 	SPItem item;

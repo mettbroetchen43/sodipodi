@@ -137,7 +137,7 @@ AC_ARG_WITH(gnome-print,
 
 if test "x$with_gp" != "xno"; then
 	dnl Have to test gnome-print presence
-	PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.0 >= 1.116.0  libgnomeprintui-2.0 >= 1.116.0, gp=yes, gp=no)
+	PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.2 >= 1.116.0  libgnomeprintui-2.2 >= 1.116.0, gp=yes, gp=no)
 	if test "x$gp" != "xyes"; then
 		dnl No gnome-print found
 		if test "x$with_gp" = "xyes"; then

@@ -1,3 +1,12 @@
+2003-06-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-image.c (sp_image_set): Fix potential crash
+	(sp_image_update): Move code here, so canvas items do not dereference
+	destroyed pixbuf data
+
+	* src/seltrans.c (sp_sel_trans_handle_request): Reverse shift behaviour for
+	rotation (thanks to Pat)
+
 2003-06-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/verbs.c: Added 'print direct' option

@@ -28,7 +28,7 @@
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprintui/gnome-print-master-preview.h>
 #endif
-#include <libgnomeprintui/gnome-printer-dialog.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
 
 #include "helper/sp-intl.h"
 #include "enums.h"
@@ -141,7 +141,7 @@ sp_module_print_gnome_setup (SPModulePrint *mod)
 	vbox = GTK_DIALOG (dlg)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
 
-        sel = gnome_printer_selection_new (config);
+        sel = gnome_printer_selector_new (config);
 	gtk_widget_show (sel);
 	gtk_box_pack_start (GTK_BOX (vbox), sel, TRUE, TRUE, 0);
 
