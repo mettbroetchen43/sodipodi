@@ -12,6 +12,7 @@
  */
 
 #include <string.h>
+#include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <gtk/gtksignal.h>
 #include "helper/nr-plain-stuff.h"
@@ -35,6 +36,7 @@ struct _SPPatPainter {
 	SPPattern *pat;
 
 	NRMatrixF ps2px;
+	NRMatrixF px2ps;
 	NRMatrixF pcs2px;
 
 	NRArena *arena;
@@ -463,6 +465,8 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *b
 		nr_matrix_multiply_fdd (&pp->ps2px, &pat->patternTransform, (NRMatrixD *) ctm);
 	}
 
+	nr_matrix_f_invert (&pp->px2ps, &pp->ps2px);
+
 	/*
 	 * The order should be:
 	 * CTM x [BBOX] x PTRANS x VIEWBOX | UNITS
@@ -577,65 +581,20 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 static void
 sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-#if 0
-	SPLGPainter *lgp;
-	SPLinearPattern *lg;
-	SPPattern *g;
-	gdouble pos;
-	gint x, y;
-	guchar *p;
-
-	lgp = (SPLGPainter *) painter;
-	lg = lgp->lg;
-	g = (SPPattern *) lg;
-
-	if (!g->color) {
-		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
-		return;
-	}
-
-	for (y = 0; y < height; y++) {
-		p = px + y * rowstride;
-		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
-		for (x = 0; x < width; x++) {
-			gint idx;
-			if (g->spread == SP_PATTERN_SPREAD_REFLECT) {
-				idx = ((gint) pos) & (2 * NCOLORS - 1);
-				if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
-			} else if (g->spread == SP_PATTERN_SPREAD_REPEAT) {
-				idx = ((gint) pos) & (NCOLORS - 1);
-			} else {
-				idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
-			}
-			idx = idx * 4;
-			*p++ = g->color[idx];
-			*p++ = g->color[idx + 1];
-			*p++ = g->color[idx + 2];
-			*p++ = g->color[idx + 3];
-			pos += lgp->dx;
-		}
-	}
-#else
 	SPPatPainter *pp;
-	NRGC gc;
-	NRRectL area;
 	/* fixme: (Lauris) */
 	NRBuffer b;
+	NRRectF ba, psa;
+	NRRectL area;
+	float x, y;
 
 	pp = (SPPatPainter *) painter;
 
-	area.x0 = x0;
-	area.y0 = y0;
-	area.x1 = x0 + width;
-	area.y1 = y0 + height;
+	if (pp->pat->width.computed < NR_EPSILON_F) return;
+	if (pp->pat->height.computed < NR_EPSILON_F) return;
 
-#if 0
-	art_affine_identity (gc.affine);
-
-	nr_arena_item_invoke_update (pp->root, &area, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
-#endif
-
+	/* Set up buffer */
+	/* fixme: (Lauris) */
 	b.size = NR_SIZE_BIG;
 	b.mode = NR_IMAGE_R8G8B8A8;
 	b.empty = FALSE;
@@ -645,10 +604,46 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 	b.rs = rowstride;
 	b.px = px;
 
-	nr_arena_item_invoke_render (pp->root, &area, &b);
-#if 0
-	nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
-#endif
-#endif
+	/* Find buffer area in gradient space */
+	/* fixme: This is suboptimal (Lauris) */
+
+	ba.x0 = x0;
+	ba.y0 = y0;
+	ba.x1 = x0 + width;
+	ba.y1 = y0 + height;
+	nr_rect_f_matrix_f_transform (&psa, &ba, &pp->px2ps);
+
+	psa.x0 -= pp->pat->x.computed;
+	psa.y0 -= pp->pat->y.computed;
+	psa.x1 -= pp->pat->x.computed;
+	psa.y1 -= pp->pat->y.computed;
+
+	psa.x0 /= pp->pat->width.computed;
+	psa.y0 /= pp->pat->height.computed;
+	psa.x1 /= pp->pat->width.computed;
+	psa.y1 /= pp->pat->height.computed;
+
+	psa.x0 = floor (psa.x0);
+	psa.y0 = floor (psa.y0);
+	psa.x1 = ceil (psa.x1);
+	psa.y1 = ceil (psa.y1);
+
+	for (y = psa.y0; y < psa.y1; y++) {
+		for (x = psa.x0; x < psa.x1; x++) {
+			float psx, psy;
+
+			psx = x * pp->pat->width.computed;
+			psy = y * pp->pat->height.computed;
+
+			area.x0 = x0 - (pp->ps2px.c[0] * psx + pp->ps2px.c[2] * psy);
+			area.y0 = y0 - (pp->ps2px.c[1] * psx + pp->ps2px.c[3] * psy);
+			area.x1 = area.x0 + width;
+			area.y1 = area.y0 + height;
+
+			/* We do not update here anymore */
+
+			nr_arena_item_invoke_render (pp->root, &area, &b);
+		}
+	}
 }
 

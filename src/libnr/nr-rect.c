@@ -221,3 +221,67 @@ nr_rect_s_union (NRRectS *d, const NRRectS *r0, const NRRectS *r1)
 	return d;
 }
 
+NRRectD *
+nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
+{
+	if ((d != s) && nr_rect_d_test_empty (s)) {
+		nr_rect_d_set_empty (d);
+	} else {
+		double x0, y0, x1, y1, x, y;
+		x0 = x1 = m->c[0] * s->x0 + m->c[2] * s->y0 + m->c[4];
+		y0 = y1 = m->c[1] * s->x0 + m->c[3] * s->y0 + m->c[5];
+		x = m->c[0] * s->x0 + m->c[2] * s->y1 + m->c[4];
+		y = m->c[1] * s->x0 + m->c[3] * s->y1 + m->c[5];
+		x0 = MIN (x0, x);
+		y0 = MIN (y0, y);
+		x1 = MAX (x1, x);
+		y1 = MAX (y1, y);
+		x = m->c[0] * s->x1 + m->c[2] * s->y0 + m->c[4];
+		y = m->c[1] * s->x1 + m->c[3] * s->y0 + m->c[5];
+		x0 = MIN (x0, x);
+		y0 = MIN (y0, y);
+		x1 = MAX (x1, x);
+		y1 = MAX (y1, y);
+		x = m->c[0] * s->x1 + m->c[2] * s->y1 + m->c[4];
+		y = m->c[1] * s->x1 + m->c[3] * s->y1 + m->c[5];
+		d->x0 = MIN (x0, x);
+		d->y0 = MIN (y0, y);
+		d->x1 = MAX (x1, x);
+		d->y1 = MAX (y1, y);
+	}
+
+	return d;
+}
+
+NRRectF *
+nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m)
+{
+	if ((d != s) && nr_rect_d_test_empty (s)) {
+		nr_rect_f_set_empty (d);
+	} else {
+		float x0, y0, x1, y1, x, y;
+		x0 = x1 = m->c[0] * s->x0 + m->c[2] * s->y0 + m->c[4];
+		y0 = y1 = m->c[1] * s->x0 + m->c[3] * s->y0 + m->c[5];
+		x = m->c[0] * s->x0 + m->c[2] * s->y1 + m->c[4];
+		y = m->c[1] * s->x0 + m->c[3] * s->y1 + m->c[5];
+		x0 = MIN (x0, x);
+		y0 = MIN (y0, y);
+		x1 = MAX (x1, x);
+		y1 = MAX (y1, y);
+		x = m->c[0] * s->x1 + m->c[2] * s->y0 + m->c[4];
+		y = m->c[1] * s->x1 + m->c[3] * s->y0 + m->c[5];
+		x0 = MIN (x0, x);
+		y0 = MIN (y0, y);
+		x1 = MAX (x1, x);
+		y1 = MAX (y1, y);
+		x = m->c[0] * s->x1 + m->c[2] * s->y1 + m->c[4];
+		y = m->c[1] * s->x1 + m->c[3] * s->y1 + m->c[5];
+		d->x0 = MIN (x0, x);
+		d->y0 = MIN (y0, y);
+		d->x1 = MAX (x1, x);
+		d->y1 = MAX (y1, y);
+	}
+
+	return d;
+}
+
