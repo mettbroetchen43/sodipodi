@@ -294,14 +294,10 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	desktop->drawing = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), desktop);
 
-	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
-		SP_TYPE_CANVAS_GROUP, NULL);
-	desktop->guides = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
-		SP_TYPE_CANVAS_GROUP, NULL);
-	desktop->sketch = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
-		SP_TYPE_CANVAS_GROUP, NULL);
-	desktop->controls = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
-		SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->guides = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->sketch = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->controls = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
 	desktop->selection = sp_selection_new (desktop);
 
@@ -358,7 +354,14 @@ static void
 sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop)
 {
 	if (flags && SP_OBJECT_MODIFIED_FLAG) {
+		/* Recalculate snap distances */
 		sp_dt_update_snap_distances (desktop);
+		/* Show/hide page border */
+		if (nv->showborder) {
+			sp_canvas_item_show (desktop->page);
+		} else {
+			sp_canvas_item_hide (desktop->page);
+		}
 	}
 }
 

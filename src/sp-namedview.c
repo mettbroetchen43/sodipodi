@@ -6,7 +6,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
+ * Copyright (C) 1999-2002 Authors
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
@@ -61,9 +61,7 @@ sp_namedview_get_type (void)
 			sizeof (SPNamedViewClass),
 			(GtkClassInitFunc) sp_namedview_class_init,
 			(GtkObjectInitFunc) sp_namedview_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		namedview_type = gtk_type_unique (sp_objectgroup_get_type (), &namedview_info);
 	}
@@ -97,21 +95,7 @@ sp_namedview_init (SPNamedView * nv)
 	nv->snaptogrid = FALSE;
 	nv->showguides = FALSE;
 	nv->snaptoguides = FALSE;
-#if 0
-	/* Defualt will be assigned in build anyways */
-	nv->gridunit = sp_unit_get_by_abbreviation ("mm");
-	nv->gridorigin.x = nv->gridorigin.y = 0.0;
-	nv->gridspacing.x = nv->gridspacing.y = PTPERMM;
-	nv->gridtoleranceunit = sp_unit_get_identity (SP_UNIT_DEVICE);
-	nv->gridtolerance = DEFAULTTOLERANCE;
-	nv->gridtoleranceunit = sp_unit_get_identity (SP_UNIT_DEVICE);
-	nv->guidetolerance = DEFAULTTOLERANCE;
-#endif
-#if 0
-	nv->gridcolor = 0x3f3fff3f;
-	nv->guidecolor = 0x0000ff7f;
-	nv->guidehicolor = 0xff00007f;
-#endif
+	nv->showborder = TRUE;
 
 	nv->hguides = NULL;
 	nv->vguides = NULL;
@@ -148,6 +132,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_namedview_read_attr (object, "guideopacity");
 	sp_namedview_read_attr (object, "guidehicolor");
 	sp_namedview_read_attr (object, "guidehiopacity");
+	sp_namedview_read_attr (object, "showborder");
 
 	/* Construct guideline list */
 
@@ -214,24 +199,19 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	if (!strcmp (key, "viewonly")) {
 		nv->editable = (astr == NULL);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "showgrid")) {
 		nv->showgrid = sp_str_to_bool (astr);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "snaptogrid")) {
 		nv->snaptogrid = sp_str_to_bool (astr);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "showguides")) {
 		nv->showguides = sp_str_to_bool (astr);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "snaptoguides")) {
 		nv->snaptoguides = sp_str_to_bool (astr);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridtolerance")) {
 		nv->gridtoleranceunit = px;
 		nv->gridtolerance = DEFAULTTOLERANCE;
@@ -239,7 +219,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE, &nv->gridtolerance, &nv->gridtoleranceunit);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "guidetolerance")) {
 		nv->guidetoleranceunit = px;
 		nv->guidetolerance = DEFAULTTOLERANCE;
@@ -247,7 +226,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE, &nv->guidetolerance, &nv->guidetoleranceunit);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (strcmp (key, "gridoriginx") == 0) {
 		nv->gridunit = mm;
 		nv->gridoriginx = 0.0;
@@ -257,7 +235,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		sp_convert_distance (&nv->gridoriginx, nv->gridunit, pt);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridoriginy")) {
 		nv->gridunit = mm;
 		nv->gridoriginy = 0.0;
@@ -267,7 +244,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		sp_convert_distance (&nv->gridoriginy, nv->gridunit, pt);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridspacingx")) {
 		nv->gridunit = mm;
 		nv->gridspacingx = 5.0;
@@ -277,7 +253,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		sp_convert_distance (&nv->gridspacingx, nv->gridunit, pt);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridspacingy")) {
 		nv->gridunit = mm;
 		nv->gridspacingy = 5.0;
@@ -287,7 +262,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		sp_convert_distance (&nv->gridspacingy, nv->gridunit, pt);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridcolor")) {
 		nv->gridcolor = (nv->gridcolor & 0xff) | (DEFAULTGRIDCOLOR & 0xffffff00);
 		if (astr) {
@@ -295,13 +269,11 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 		}
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "gridopacity")) {
 		nv->gridcolor = (nv->gridcolor & 0xffffff00) | (DEFAULTGRIDCOLOR & 0xff);
 		sp_nv_read_opacity (astr, &nv->gridcolor);
 		sp_namedview_setup_grid (nv);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "guidecolor")) {
 		nv->guidecolor = (nv->guidecolor & 0xff) | (DEFAULTGUIDECOLOR & 0xffffff00);
 		if (astr) {
@@ -314,7 +286,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "guideopacity")) {
 		nv->guidecolor = (nv->guidecolor & 0xffffff00) | (DEFAULTGUIDECOLOR & 0xff);
 		sp_nv_read_opacity (astr, &nv->guidecolor);
@@ -325,7 +296,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "guidehicolor")) {
 		nv->guidehicolor = (nv->guidehicolor & 0xff) | (DEFAULTGUIDEHICOLOR & 0xffffff00);
 		if (astr) {
@@ -338,7 +308,6 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "guidehiopacity")) {
 		nv->guidehicolor = (nv->guidehicolor & 0xffffff00) | (DEFAULTGUIDEHICOLOR & 0xff);
 		sp_nv_read_opacity (astr, &nv->guidehicolor);
@@ -349,11 +318,13 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
+	} else if (!strcmp (key, "showborder")) {
+		nv->showborder = (astr) ? sp_str_to_bool (astr) : TRUE;
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else {
+		if (((SPObjectClass *) (parent_class))->read_attr)
+			(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 	}
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
-		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 }
 
 static void
@@ -533,9 +504,6 @@ static void
 sp_namedview_setup_grid_item (SPNamedView * nv, SPCanvasItem * item)
 {
 	const SPUnit *pt = NULL;
-#if 0
-	gdouble x0, y0, xs, ys;
-#endif
 
 	if (nv->showgrid) {
 		sp_canvas_item_show (item);
@@ -545,24 +513,6 @@ sp_namedview_setup_grid_item (SPNamedView * nv, SPCanvasItem * item)
 
 	if (!pt) pt = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
 
-#if 0
-	x0 = nv->gridoriginx;
-	sp_convert_distance (&x0, nv->gridunit, pt);
-	y0 = nv->gridoriginy;
-	sp_convert_distance (&y0, nv->gridunit, pt);
-	xs = nv->gridspacingx;
-	sp_convert_distance (&xs, nv->gridunit, pt);
-	ys = nv->gridspacingy;
-	sp_convert_distance (&ys, nv->gridunit, pt);
-
-	sp_canvas_item_set (item,
-			       "color", nv->gridcolor,
-			       "originx", x0,
-			       "originy", y0,
-			       "spacingx", xs,
-			       "spacingy", ys,
-			       NULL);
-#else
 	sp_canvas_item_set ((GtkObject *) item,
 			       "color", nv->gridcolor,
 			       "originx", nv->gridoriginx,
@@ -570,7 +520,6 @@ sp_namedview_setup_grid_item (SPNamedView * nv, SPCanvasItem * item)
 			       "spacingx", nv->gridspacingx,
 			       "spacingy", nv->gridspacingy,
 			       NULL);
-#endif
 }
 
 const gchar *

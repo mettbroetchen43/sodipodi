@@ -5,7 +5,7 @@ TODO for 0.28
 
 - Print open paths correctly (DONE)
 - Enable active desktop indicator for single new desktop (DONE)
-- Make page border togglable
+- Make page border togglable (DONE)
 - Autoconf test for popt.h (DONE)
 - Faster move
 - Direct FreeType fonts

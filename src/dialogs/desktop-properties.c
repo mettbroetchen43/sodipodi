@@ -1,16 +1,14 @@
-#define SP_DESKTOP_PROPERTIES_C
+#define __SP_DESKTOP_PROPERTIES_C__
 
 /*
  * Desktop configuration dialog
- *
- * This file is part of Sodipodi http://www.sodipodi.com
- * Licensed under GNU General Public License, see file
- * COPYING for details
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) Lauris Kaplinski 2000-2002
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -405,6 +403,23 @@ sp_desktop_dialog_new (void)
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
 	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_hi_color_set), dialog);
 
+	/* Page page */
+	l = gtk_label_new (_("Page"));
+	gtk_widget_show (l);
+	t = gtk_table_new (1, 1, FALSE);
+	gtk_widget_show (t);
+	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
+	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (t), 4);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
+
+	b = gtk_check_button_new_with_label (_("Show border"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "showborder");
+	gtk_object_set_data (GTK_OBJECT (dialog), "showborder", b);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_dtw_whatever_toggled), dialog);
+
 	/* fixme: We should listen namedview changes here as well */
 	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "activate_desktop",
 					GTK_SIGNAL_FUNC (sp_dtw_activate_desktop), dialog, GTK_OBJECT (dialog));
@@ -509,6 +524,9 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 					   (nv->guidehicolor >> 16) & 0xff,
 					   (nv->guidehicolor >> 8) & 0xff,
 					   nv->guidehicolor & 0xff);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "showborder");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showborder);
 
 		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (FALSE));
 	}

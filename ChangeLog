@@ -1,3 +1,12 @@
+2002-10-26  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/desktop-properties.c (sp_desktop_dialog_new): Added
+	togglebutton for showing/hiding page border
+
+	* src/desktop.c (sp_dt_namedview_modified): Show/hide page border
+
+	* src/sp-namedview.c (sp_namedview_read_attr): Listen to "showborder"
+
 2002-10-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/item-properties.c: Removed libglade dependency
