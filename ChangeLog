@@ -1,5 +1,7 @@
 2003-04-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/print.c (sp_module_print_plain_begin): Magic by MenTaL
+
 	* src/libnr/nr-svp-uncross.c (nr_svp_uncross_full): Works properly now for
 	all stress-tests except zap.
 

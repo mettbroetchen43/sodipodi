@@ -691,7 +691,8 @@ sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 
 	pmod = (SPModulePrintPlain *) mod;
 
-	res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
+	res = fprintf (pmod->stream, "%%!\n");
+	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
 	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
 
 	return res;

@@ -253,52 +253,55 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 					y = cs->vertex->y + r * yba;
 					y = NR_COORD_SNAP_DOWN (y);
 
-					if (y == yslice) {
-						/* Slices are very close at yslice */
-						/* Start by breaking slices */
-						csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
-						csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
-						if (cs->x != x) {
-							double x0, x1;
-							x0 = MIN (x, cs->x);
-							x1 = MAX (x, cs->x);
-							f = nr_flat_new_full (y, x0, x1);
-							nflat = nr_flat_insert_sorted (nflat, f);
-						}
-						if (ns->x != x) {
-							double x0, x1;
-							x0 = MIN (x, ns->x);
-							x1 = MAX (x, ns->x);
-							f = nr_flat_new_full (y, x0, x1);
-							nflat = nr_flat_insert_sorted (nflat, f);
-						}
-						/* Set the new starting point */
-						cs->vertex->x = x;
-						cs->x = cs->vertex->x;
-						ns->vertex->x = x;
-						ns->x = ns->vertex->x;
-						/* Reorder slices */
-						if (ss) {
-							assert (ns->next != ss);
-							ss->next = ns->next;
+					if ((y >= yslice) && (y <= cs->vertex->next->y) && (y <= ns->vertex->next->y)) {
+						if (y == yslice) {
+							/* Slices are very close at yslice */
+							/* Start by breaking slices */
+							csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
+							csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
+							if (cs->x != x) {
+								double x0, x1;
+								x0 = MIN (x, cs->x);
+								x1 = MAX (x, cs->x);
+								f = nr_flat_new_full (y, x0, x1);
+								nflat = nr_flat_insert_sorted (nflat, f);
+							}
+							if (ns->x != x) {
+								double x0, x1;
+								x0 = MIN (x, ns->x);
+								x1 = MAX (x, ns->x);
+								f = nr_flat_new_full (y, x0, x1);
+								nflat = nr_flat_insert_sorted (nflat, f);
+							}
+							/* Set the new starting point */
+							cs->vertex->x = x;
+							cs->x = cs->vertex->x;
+							ns->vertex->x = x;
+							ns->x = ns->vertex->x;
+							/* Reorder slices */
+							if (ss) {
+								assert (ns->next != ss);
+								ss->next = ns->next;
+							} else {
+								slices = ns->next;
+							}
+							slices = nr_svp_slice_insert_sorted (slices, cs);
+							slices = nr_svp_slice_insert_sorted (slices, ns);
+							CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
+							/* Start the row from the beginning */
+							ss = NULL;
+							cs = slices;
 						} else {
-							slices = ns->next;
+							if (((y < cs->vertex->next->y) || cs->vertex->next->next) &&
+							    ((y < ns->vertex->next->y) || ns->vertex->next->next)) {
+								/* Postpone by breaking svp */
+								csvp = nr_svp_slice_break_y_and_continue_x (cs, y, x, csvp, yslice, &nflat);
+								csvp = nr_svp_slice_break_y_and_continue_x (ns, y, x, csvp, yslice, &nflat);
+							}
+							/* fixme: Slight disturbance is possible so we should repeat */
+							ss = cs;
+							cs = ns;
 						}
-						slices = nr_svp_slice_insert_sorted (slices, cs);
-						slices = nr_svp_slice_insert_sorted (slices, ns);
-						CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
-						/* Start the row from the beginning */
-						ss = NULL;
-						cs = slices;
-					} else if (y > yslice) {
-						if ((y <= cs->vertex->next->y) && (y <= ns->vertex->next->y)) {
-							/* Postpone by breaking svp */
-							csvp = nr_svp_slice_break_y_and_continue_x (cs, y, x, csvp, yslice, &nflat);
-							csvp = nr_svp_slice_break_y_and_continue_x (ns, y, x, csvp, yslice, &nflat);
-						}
-						/* fixme: Slight disturbance is possible so we should repeat */
-						ss = cs;
-						cs = ns;
 					} else {
 						ss = cs;
 						cs = ns;
