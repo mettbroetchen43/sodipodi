@@ -181,6 +181,10 @@ void
 sp_text_dialog_close (void)
 {
 	sp_text_hide_dialog ();
+
+	/* Fixme: test */
+	gtk_object_destroy (GTK_OBJECT (dialog));
+	xml = NULL;
 }
 
 

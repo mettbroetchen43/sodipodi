@@ -1,3 +1,8 @@
+2000-11-17  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/dialogs/text/edit.c (sp-text-dialog-close): Destroy
+	dialog, so font listing will be regenerated
+
 2000-11-02  Michael Meeks  <michael@helixcode.com>
 
 	* configure.in: Check for bonobo >= 0.27
