@@ -1,3 +1,8 @@
+Sun Sep 22 22:21:14 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-ruler.c: Bug fixed that
+	misspelling s/GtkHRuler/SPHRuler/ and s/GtkVRuler/SPVRuler/.
+
 2002-09-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/fill-style.c (sp_fill_style_widget_new): Fill rule selector

@@ -30,7 +30,7 @@ sp_hruler_get_type (void)
     {
       static const GtkTypeInfo hruler_info =
       {
-	"GtkHRuler",
+	"SPHRuler",
 	sizeof (SPHRuler),
 	sizeof (SPHRulerClass),
 	(GtkClassInitFunc) sp_hruler_class_init,
@@ -311,7 +311,7 @@ sp_vruler_get_type (void)
     {
       static const GtkTypeInfo vruler_info =
       {
-	"GtkVRuler",
+	"SPVRuler",
 	sizeof (SPVRuler),
 	sizeof (SPVRulerClass),
 	(GtkClassInitFunc) sp_vruler_class_init,
