@@ -17,6 +17,8 @@
 	(sp_style_set_fill_color_cmyka): Ditto
 	(sp_style_set_stroke_color_rgba): Ditto
 	(sp_style_set_stroke_color_cmyka): Ditto
+	(sp_style_read_color_cmyk): Helper method here
+	(sp_style_merge_from_style_string): Renamed method
 
 	* src/style.h: Created new 30-bit scaled value type, used for opacity
 	Renamed SPPaint to SPInheritedPaint

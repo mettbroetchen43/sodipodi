@@ -341,14 +341,14 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 
 	/* Join & Cap */
 	object = SP_OBJECT (objects->data);
-	jointype = object->style->stroke_linejoin;
-	captype = object->style->stroke_linecap;
+	jointype = object->style->stroke_linejoin.value;
+	captype = object->style->stroke_linecap.value;
 
 	for (l = objects->next; l != NULL; l = l->next) {
 		SPObject *o;
 		o = SP_OBJECT (l->data);
-		if (o->style->stroke_linejoin != jointype) jointype = -1;
-		if (o->style->stroke_linecap != captype) captype = -1;
+		if (o->style->stroke_linejoin.value != jointype) jointype = -1;
+		if (o->style->stroke_linecap.value != captype) captype = -1;
 	}
 
 	switch (jointype) {

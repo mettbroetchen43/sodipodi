@@ -124,24 +124,17 @@ struct _SPStyle {
 	/* fill-opacity */
 	SPInheritedScale30 fill_opacity;
 	/* fill-rule: 0 nonzero, 1 evenodd */
-	guint fill_rule : 3;
-	guint fill_rule_set : 1;
+	SPInheritedShort fill_rule;
 
 	/* stroke */
 	SPInheritedPaint stroke;
 	/* stroke-width */
 	SPDistance stroke_width;
 	guint stroke_width_set : 1;
-	/* Computed value */
-	gdouble absolute_stroke_width;
-	gdouble user_stroke_width;
-	guint real_stroke_width_set : 1;
 	/* stroke-linecap */
-	ArtPathStrokeCapType stroke_linecap;
-	guint stroke_linecap_set : 1;
+	SPInheritedShort stroke_linecap;
 	/* stroke-linejoin */
-	ArtPathStrokeJoinType stroke_linejoin;
-	guint stroke_linejoin_set : 1;
+	SPInheritedShort stroke_linejoin;
 	/* stroke-miterlimit */
 	gdouble stroke_miterlimit;
 	guint stroke_miterlimit_set;
@@ -151,6 +144,11 @@ struct _SPStyle {
 	guint stroke_dashoffset_set : 1;
 	/* stroke-opacity */
 	SPInheritedScale30 stroke_opacity;
+	/* fixme: remove this */
+	/* Computed value */
+	gdouble absolute_stroke_width;
+	gdouble user_stroke_width;
+	guint real_stroke_width_set : 1;
 };
 
 SPStyle *sp_style_new_from_object (SPObject *object);

@@ -185,6 +185,8 @@ sp_string_set_shape (SPString *string)
 
 	sp_chars_clear (chars);
 
+	g_print ("Writing mode is %d\n", style->text->writing_mode.value);
+
 	face = gnome_font_unsized_closest (style->text->font_family.value,
 					   sp_text_font_weight_to_gp (style->text->font_weight),
 					   sp_text_font_italic_to_gp (style->text->font_style));

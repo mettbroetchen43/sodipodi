@@ -180,7 +180,7 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 		svpa = art_svp_from_vpath (pvp);
 		svpb = art_svp_uncross (svpa);
 		art_svp_free (svpa);
-		shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule);
+		shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
 		art_svp_free (svpb);
 	}
 
@@ -188,7 +188,7 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 		gdouble wx, wy;
 		wx = gc->affine[0] + gc->affine[2];
 		wy = gc->affine[1] + gc->affine[3];
-		shape->stroke_svp = art_svp_vpath_stroke (pvp, shape->style->stroke_linejoin, shape->style->stroke_linecap,
+		shape->stroke_svp = art_svp_vpath_stroke (pvp, shape->style->stroke_linejoin.value, shape->style->stroke_linecap.value,
 							  shape->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
 							  shape->style->stroke_miterlimit, 0.25);
 	}

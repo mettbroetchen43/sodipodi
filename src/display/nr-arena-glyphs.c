@@ -180,7 +180,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 		svpa = art_svp_from_vpath (pvp);
 		svpb = art_svp_uncross (svpa);
 		art_svp_free (svpa);
-		glyphs->fill_svp = art_svp_rewind_uncrossed (svpb, glyphs->style->fill_rule);
+		glyphs->fill_svp = art_svp_rewind_uncrossed (svpb, glyphs->style->fill_rule.value);
 		art_svp_free (svpb);
 	}
 
@@ -188,7 +188,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 		gdouble wx, wy;
 		wx = gc->affine[0] + gc->affine[2];
 		wy = gc->affine[1] + gc->affine[3];
-		glyphs->stroke_svp = art_svp_vpath_stroke (pvp, glyphs->style->stroke_linejoin, glyphs->style->stroke_linecap,
+		glyphs->stroke_svp = art_svp_vpath_stroke (pvp, glyphs->style->stroke_linejoin.value, glyphs->style->stroke_linecap.value,
 							  glyphs->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
 							  glyphs->style->stroke_miterlimit, 0.25);
 	}
