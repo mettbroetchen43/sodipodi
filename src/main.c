@@ -69,7 +69,7 @@ struct poptOption options[] = {
         N_("Print files to specified file (use '| program' for pipe)"),
         N_("FILENAME")
   },
-  { NULL, '\0', 0, NULL, 0 }
+  { NULL, '\0', 0, NULL, 0, NULL, NULL }
 };
 
 int
@@ -81,7 +81,7 @@ main (int argc, char *argv[])
 	SPDocument * doc;
 	SPMDIChild * child;
 
-	poptContext ctx;
+	poptContext ctx = NULL;
 
 	GSList * fl;
 	gboolean use_gui;
@@ -111,7 +111,6 @@ main (int argc, char *argv[])
 	}
 
 	if (!use_gui) {
-
 		/* We are started in text mode */
 
 		ctx = poptGetContext (NULL, argc, argv, options, 0);
@@ -181,7 +180,7 @@ main (int argc, char *argv[])
                                     	    options, 0, &ctx);
 #endif /* ENABLE_BONOBO */
 
-#if 1
+#if 0
 		fl = sp_process_args (ctx);
 #else
 		fl = NULL;
@@ -288,8 +287,9 @@ sp_process_args (poptContext ctx)
 	gint i, a;
 
 	fl = NULL;
-
+	g_warning ("start process ctx %p", ctx);
 	while ((a = poptGetNextOpt (ctx)) >= 0) {
+		g_warning ("process");
 		switch (a) {
 		case SP_ARG_FILE:
 			fn = poptGetOptArg (ctx);
@@ -301,9 +301,9 @@ sp_process_args (poptContext ctx)
 			break;
 		}
 	}
-
+	g_warning ("here 1");
 	args = poptGetArgs (ctx);
-
+	g_warning ("here 2");
 	if (args != NULL) {
 		for (i = 0; args[i] != NULL; i++) {
 			fl = g_slist_append (fl, (gpointer) args[i]);

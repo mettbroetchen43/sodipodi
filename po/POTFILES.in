@@ -1,6 +1,7 @@
 # List of source files containing translatable strings.
 glade/sodipodi-glade.c
 glade/xml-tree.c
+glade/align.c
 src/main.c
 src/bonobo/svg-doc-factory.c
 src/file.c

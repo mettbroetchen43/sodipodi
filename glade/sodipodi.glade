@@ -562,6 +562,18 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
+	      <name>align</name>
+	      <signal>
+		<name>activate</name>
+		<handler>sp_quick_align_dialog</handler>
+		<last_modification_time>Sun, 26 Dec 1999 18:57:21 GMT</last_modification_time>
+	      </signal>
+	      <label>_Align</label>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
 	      <name>menu_arrange_order</name>
 	      <label>_Order</label>
 	      <right_justify>False</right_justify>
@@ -4214,6 +4226,18 @@ inches
     <widget>
       <class>GtkMenu</class>
       <name>selection2_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>align1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_quick_align_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:56:21 GMT</last_modification_time>
+	</signal>
+	<label>_Align</label>
+	<right_justify>False</right_justify>
+      </widget>
 
       <widget>
 	<class>GtkMenuItem</class>

@@ -1,5 +1,17 @@
 2000-08-10  Lauris Kaplinski  <lauris@helixcode.com>
 
+	* src/main.c (main): Commented out arg parsing - it segfaulted for me
+
+	* glade/align.glade
+	* glade/al*
+	* src/dialogs/align.*: Alignmeant dialog by Frank Felfe <innerspace@iname.com>
+
+	* configure.in: Need bonobo >= 0.17
+
+	* src/bonobo/embeddable-document.c (sp_bonobo_stream_read): Bonobo API change
+	
+2000-08-10  Lauris Kaplinski  <lauris@helixcode.com>
+
 	* doc/architecture.txt: First step in generating developers documentation
 	
 2000-08-09  Lauris Kaplinski  <lauris@helixcode.com>

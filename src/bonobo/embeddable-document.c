@@ -112,7 +112,6 @@ static gint
 sp_bonobo_stream_read (Bonobo_Stream stream, gchar ** buffer)
 {
 	Bonobo_Stream_iobuf * iobuf;
-	CORBA_long bytes_read;
 	CORBA_Environment ev;
 	gint len;
 
@@ -122,7 +121,7 @@ sp_bonobo_stream_read (Bonobo_Stream stream, gchar ** buffer)
 	len = 0;
 
 	do {
-		bytes_read = Bonobo_Stream_read (stream, STREAM_CHUNK_SIZE, &iobuf, &ev);
+		Bonobo_Stream_read (stream, STREAM_CHUNK_SIZE, &iobuf, &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION) {
 			if (* buffer != NULL) g_free (* buffer);
@@ -135,7 +134,7 @@ sp_bonobo_stream_read (Bonobo_Stream stream, gchar ** buffer)
 
 		len += iobuf->_length;
 
-	} while (bytes_read > 0);
+	} while (iobuf->_length > 0);
 
 	CORBA_exception_free (&ev);
 

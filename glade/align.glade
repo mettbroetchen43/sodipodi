@@ -1,0 +1,436 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>Sodipodi</name>
+  <program_name>sodipodi</program_name>
+  <directory></directory>
+  <source_directory>gladesrc</source_directory>
+  <pixmaps_directory></pixmaps_directory>
+  <language>C</language>
+  <gnome_support>True</gnome_support>
+  <gettext_support>True</gettext_support>
+  <output_translatable_strings>True</output_translatable_strings>
+  <translatable_strings_file>sodipodi-glade.c</translatable_strings_file>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>quick_align</name>
+  <title>Align</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>True</auto_shrink>
+
+  <widget>
+    <class>GtkTable</class>
+    <name>table18</name>
+    <border_width>2</border_width>
+    <rows>6</rows>
+    <columns>2</columns>
+    <homogeneous>False</homogeneous>
+    <row_spacing>2</row_spacing>
+    <column_spacing>2</column_spacing>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>top_in</name>
+      <tooltip>Align inside object to top border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_top_in</handler>
+	<last_modification_time>Sat, 12 Aug 2000 23:26:56 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>0</top_attach>
+	<bottom_attach>1</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap56</name>
+	<filename>al_top_in.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>top_out</name>
+      <tooltip>Align outside object to top border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_top_out</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:55:50 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>0</top_attach>
+	<bottom_attach>1</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap28</name>
+	<filename>al_top_out.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>left_in</name>
+      <tooltip>Align inside object to left border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_left_in</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:56:41 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>1</top_attach>
+	<bottom_attach>2</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap40</name>
+	<filename>al_left_in.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>right_in</name>
+      <tooltip>Align inside object to right border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_right_in</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:57:17 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>1</top_attach>
+	<bottom_attach>2</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap32</name>
+	<filename>al_right_in.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>center_hor</name>
+      <tooltip>Align objects to horizontal mid</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_center_hor</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:57:54 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>2</top_attach>
+	<bottom_attach>3</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap38</name>
+	<filename>al_center_hor.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>center_ver</name>
+      <tooltip>Align objects to vertical mid</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_center_ver</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:58:44 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>2</top_attach>
+	<bottom_attach>3</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap39</name>
+	<filename>al_center_ver.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>left_out</name>
+      <tooltip>Align outside object to left border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_left_out</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:59:23 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>3</top_attach>
+	<bottom_attach>4</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap37</name>
+	<filename>al_left_out.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>right_out</name>
+      <tooltip>Align outside object to right border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_right_out</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:59:55 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>3</top_attach>
+	<bottom_attach>4</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap29</name>
+	<filename>al_right_out.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>bottom_in</name>
+      <tooltip>Align inside object to bottom border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_bottom_in</handler>
+	<last_modification_time>Sun, 13 Aug 2000 01:10:02 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>1</right_attach>
+	<top_attach>4</top_attach>
+	<bottom_attach>5</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap35</name>
+	<filename>al_bottom_in.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>bottom_out</name>
+      <tooltip>Align outside object to bottom border</tooltip>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_bottom_out</handler>
+	<last_modification_time>Sun, 13 Aug 2000 02:00:48 GMT</last_modification_time>
+      </signal>
+      <child>
+	<left_attach>1</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>4</top_attach>
+	<bottom_attach>5</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+
+      <widget>
+	<class>GtkPixmap</class>
+	<name>pixmap30</name>
+	<filename>al_bottom_out.xpm</filename>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<build_insensitive>True</build_insensitive>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>close</name>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>sp_quick_align_dialog_close</handler>
+	<last_modification_time>Sat, 12 Aug 2000 23:02:06 GMT</last_modification_time>
+      </signal>
+      <stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+      <child>
+	<left_attach>0</left_attach>
+	<right_attach>2</right_attach>
+	<top_attach>5</top_attach>
+	<bottom_attach>6</bottom_attach>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<xexpand>False</xexpand>
+	<yexpand>False</yexpand>
+	<xshrink>False</xshrink>
+	<yshrink>False</yshrink>
+	<xfill>False</xfill>
+	<yfill>False</yfill>
+      </child>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>
