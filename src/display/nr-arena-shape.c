@@ -15,6 +15,8 @@
 
 #include <math.h>
 #include <string.h>
+#include <libnr/nr-rect.h>
+#include <libnr/nr-matrix.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -36,9 +38,9 @@ static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
 static void nr_arena_shape_destroy (GtkObject *object);
 
-static guint nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static guint nr_arena_shape_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+static guint nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static guint nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static guint nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *shape_parent_class;
@@ -87,6 +89,8 @@ nr_arena_shape_init (NRArenaShape *shape)
 	shape->style = NULL;
 	shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
 	shape->paintbox.x1 = shape->paintbox.y1 = 256.0;
+
+	nr_matrix_d_set_identity (&shape->ctm);
 	shape->fill_painter = NULL;
 	shape->stroke_painter = NULL;
 	shape->fill_svp = NULL;
@@ -135,7 +139,7 @@ nr_arena_shape_destroy (GtkObject *object)
 }
 
 static guint
-nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaShape *shape;
 	ArtBpath *abp;
@@ -146,15 +150,18 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	/* Request repaint old area if needed */
 	/* fixme: Think about it a bit (Lauris) */
-	if (!nr_irect_is_empty (&item->bbox)) {
+	if (!nr_rect_l_test_empty (&item->bbox)) {
 		nr_arena_request_render_rect (item->arena, &item->bbox);
-		nr_irect_set_empty (&item->bbox);
+		nr_rect_l_set_empty (&item->bbox);
 	}
 
 	/* Release state data */
-	if (shape->fill_svp) {
-		art_svp_free (shape->fill_svp);
-		shape->fill_svp = NULL;
+	if (TRUE || !nr_matrix_d_test_transform_equal ((NRMatrixD *) gc->affine, &shape->ctm, NR_EPSILON_D)) {
+		/* Concept test */
+		if (shape->fill_svp) {
+			art_svp_free (shape->fill_svp);
+			shape->fill_svp = NULL;
+		}
 	}
 	if (shape->stroke_svp) {
 		art_svp_free (shape->stroke_svp);
@@ -180,12 +187,22 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 	art_free (vp);
 
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
-		ArtSVP *svpa, *svpb;
-		svpa = art_svp_from_vpath (pvp);
-		svpb = art_svp_uncross (svpa);
-		art_svp_free (svpa);
-		shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
-		art_svp_free (svpb);
+		if (!shape->fill_svp) {
+			ArtSVP *svpa, *svpb;
+			svpa = art_svp_from_vpath (pvp);
+			svpb = art_svp_uncross (svpa);
+			art_svp_free (svpa);
+			shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
+			art_svp_free (svpb);
+		} else if (!NR_DF_TEST_CLOSE (gc->affine[4], shape->ctm.c[4], NR_EPSILON_D) ||
+			   !NR_DF_TEST_CLOSE (gc->affine[5], shape->ctm.c[5], NR_EPSILON_D)) {
+			ArtSVP *svpa;
+			/* Concept test */
+			svpa = art_svp_translate (shape->fill_svp, gc->affine[4] - shape->ctm.c[4], gc->affine[5] - shape->ctm.c[5]);
+			art_svp_free (shape->fill_svp);
+			shape->fill_svp = svpa;
+		}
+		memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
 	}
 
 	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
@@ -226,7 +243,7 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 }
 
 static guint
-nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaShape *shape;
 	SPStyle *style;
@@ -316,7 +333,7 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static guint
-nr_arena_shape_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaShape *shape;
 

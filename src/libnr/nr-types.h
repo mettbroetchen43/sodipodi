@@ -1,0 +1,67 @@
+#ifndef __NR_TYPES_H__
+#define __NR_TYPES_H__
+
+/*
+ * Pixel buffer rendering library
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+
+typedef struct _NRMatrixD NRMatrixD;
+typedef struct _NRMatrixF NRMatrixF;
+typedef struct _NRPointD NRPointD;
+typedef struct _NRPointF NRPointF;
+typedef struct _NRPointL NRPointL;
+typedef struct _NRPointS NRPointS;
+typedef struct _NRRectD NRRectD;
+typedef struct _NRRectF NRRectF;
+typedef struct _NRRectL NRRectL;
+typedef struct _NRRectS NRRectS;
+
+struct _NRMatrixD {
+	double c[6];
+};
+
+struct _NRMatrixF {
+	float c[6];
+};
+
+struct _NRPointD {
+	double x, y;
+};
+
+struct _NRPointF {
+	float x, y;
+};
+
+struct _NRPointL {
+	long x, y;
+};
+
+struct _NRPointS {
+	short x, y;
+};
+
+struct _NRRectD {
+	double x0, y0, x1, y1;
+};
+
+struct _NRRectF {
+	float x0, y0, x1, y1;
+};
+
+struct _NRRectL {
+	long x0, y0, x1, y1;
+};
+
+struct _NRRectS {
+	short x0, y0, x1, y1;
+};
+
+#endif

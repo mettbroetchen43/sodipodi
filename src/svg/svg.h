@@ -17,7 +17,6 @@
 #include <libgnomeprint/gnome-font.h>
 #include "svg-types.h"
 #include "../helper/units.h"
-#include "../display/stroke.h"
 
 /* Generic */
 
@@ -65,9 +64,11 @@ gint sp_svg_write_affine (gchar * buf, gint buflen, gdouble affine[]);
 ArtBpath * sp_svg_read_path (const gchar * str);
 gchar * sp_svg_write_path (const ArtBpath * bpath);
 
+#if 0
 SPStrokeType sp_svg_read_stroke_type (const gchar * str);
 ArtPathStrokeJoinType sp_svg_read_stroke_join (const gchar * str);
 ArtPathStrokeCapType sp_svg_read_stroke_cap (const gchar * str);
+#endif
 
 GnomeFontWeight sp_svg_read_font_weight (const gchar * str);
 gboolean sp_svg_read_font_italic (const gchar * str);

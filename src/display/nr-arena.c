@@ -12,6 +12,7 @@
  *
  */
 
+#include <libnr/nr-rect.h>
 #include <gtk/gtksignal.h>
 #include "nr-arena-item.h"
 #include "nr-arena.h"
@@ -138,13 +139,13 @@ nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 }
 
 void
-nr_arena_request_render_rect (NRArena *arena, NRIRect *area)
+nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 {
 	g_return_if_fail (arena != NULL);
 	g_return_if_fail (NR_IS_ARENA (arena));
 	g_return_if_fail (area != NULL);
 
-	if (!nr_irect_is_empty (area)) {
+	if (area && !nr_rect_l_test_empty (area)) {
 		gtk_signal_emit (GTK_OBJECT (arena), signals [REQUEST_RENDER], area);
 	}
 }

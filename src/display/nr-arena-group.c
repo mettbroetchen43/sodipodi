@@ -13,6 +13,7 @@
  */
 
 #include <math.h>
+#include <libnr/nr-rect.h>
 #include "../helper/nr-plain-stuff.h"
 #include "../helper/nr-buffers.h"
 #include "nr-arena-group.h"
@@ -26,9 +27,9 @@ static void nr_arena_group_add_child (NRArenaItem *item, NRArenaItem *child, NRA
 static void nr_arena_group_remove_child (NRArenaItem *item, NRArenaItem *child);
 static void nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
-static guint nr_arena_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static guint nr_arena_group_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+static guint nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static guint nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static guint nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
@@ -178,7 +179,7 @@ nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *child, NRAren
 }
 
 static guint
-nr_arena_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
@@ -195,9 +196,9 @@ nr_arena_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 	}
 
 	if (beststate & NR_ARENA_ITEM_STATE_BBOX) {
-		nr_irect_set_empty (&item->bbox);
+		nr_rect_l_set_empty (&item->bbox);
 		for (child = group->children; child != NULL; child = child->next) {
-			nr_irect_union (&item->bbox, &item->bbox, &child->bbox);
+			nr_rect_l_union (&item->bbox, &item->bbox, &child->bbox);
 		}
 	}
 
@@ -205,7 +206,7 @@ nr_arena_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 }
 
 static guint
-nr_arena_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
@@ -247,7 +248,7 @@ nr_arena_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static guint
-nr_arena_group_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;

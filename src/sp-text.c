@@ -1344,7 +1344,7 @@ sp_text_set_shape (SPText *text)
 		isfirstline = FALSE;
 	}
 
-	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, SP_MATRIX_D_IDENTITY);
+	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, NR_MATRIX_D_IDENTITY.c);
 
 	for (child = text->children; child != NULL; child = child->next) {
 		SPString *string;
@@ -1449,7 +1449,7 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 	gnome_print_gsave (gpc);
 
 	/* fixme: Think (Lauris) */
-	sp_item_invoke_bbox (item, &pbox, SP_MATRIX_D_IDENTITY);
+	sp_item_invoke_bbox (item, &pbox, NR_MATRIX_D_IDENTITY.c);
 	sp_item_bbox_desktop (item, &bbox);
 	dbox.x0 = 0.0;
 	dbox.y0 = 0.0;

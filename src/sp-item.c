@@ -484,7 +484,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 {
 	NRArena *arena;
 	NRArenaItem *root;
-	NRIRect bbox;
+	NRRectL bbox;
 	NRGC gc;
 	NRBuffer *b;
 

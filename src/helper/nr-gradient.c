@@ -13,6 +13,7 @@
 
 #include <string.h>
 
+#include <libnr/nr-pixops.h>
 #include <libart_lgpl/art_affine.h>
 
 #include "nr-plain-stuff.h"
@@ -108,9 +109,9 @@ nr_lgradient_render_r8g8b8a8 (NRLGradientRenderer *lgr, guchar *px, gint x0, gin
 			/* Full composition */
 			s = lgr->vector + 4 * idx;
 			ca = 65025 - (255 - s[3]) * (255 - d[3]);
-			d[0] = COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
-			d[1] = COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
-			d[2] = COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
+			d[0] = NR_COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
+			d[1] = NR_COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
+			d[2] = NR_COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
 			d[3] = (ca + 127) / 255;
 			d += 4;
 			pos += lgr->dx;
@@ -152,9 +153,9 @@ nr_lgradient_render_r8g8b8 (NRLGradientRenderer *lgr, guchar *px, gint x0, gint 
 			g_assert (idx <= NRG_MASK);
 			/* Full composition */
 			s = lgr->vector + 4 * idx;
-			d[0] = COMPOSEN11 (s[0], s[3], d[0]);
-			d[1] = COMPOSEN11 (s[1], s[3], d[1]);
-			d[2] = COMPOSEN11 (s[2], s[3], d[2]);
+			d[0] = NR_COMPOSEN11 (s[0], s[3], d[0]);
+			d[1] = NR_COMPOSEN11 (s[1], s[3], d[1]);
+			d[2] = NR_COMPOSEN11 (s[2], s[3], d[2]);
 			d += 3;
 			pos += lgr->dx;
 		}

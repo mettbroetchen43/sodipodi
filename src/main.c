@@ -149,12 +149,6 @@ main (int argc, char **argv)
 
 	LIBXML_TEST_VERSION
 
-	/*
-	 * We must set LC_NUMERIC to default, or otherwise
-	 * we'll end with localised SVG files :-(
-	 */
-
-	setlocale (LC_NUMERIC, "C");
 	use_gui = (getenv ("DISPLAY") != NULL);
 
 	/* Test whether with/without GUI is forced */
@@ -194,6 +188,12 @@ sp_main_gui (int argc, char **argv)
 
 	/* Setup gnome */
 	gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv, options, 0, &ctx);
+
+	/* We must set LC_NUMERIC to default, or otherwise */
+	/* we'll end with localised SVG files :-( */
+
+	setlocale (LC_NUMERIC, "C");
+
 	/* Collect own arguments */
 	fl = sp_process_args (ctx);
 	/* Setup libglade */
@@ -271,6 +271,11 @@ sp_main_console (int argc, char **argv)
 	poptContext ctx = NULL;
 	GSList * fl;
 	guchar *printer;
+
+	/* We must set LC_NUMERIC to default, or otherwise */
+	/* we'll end with localised SVG files :-( */
+
+	setlocale (LC_NUMERIC, "C");
 
 	/* We are started in text mode */
 

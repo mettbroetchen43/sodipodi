@@ -21,13 +21,12 @@
 #include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_bpath.h>
 
-#ifdef __SP_ART_UTILS_C__
-double SP_MATRIX_D_IDENTITY[] = {1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-#else
-extern double SP_MATRIX_D_IDENTITY[];
-#endif
+#include <libnr/nr-values.h>
 
+#if 0
+#define SP_MATRIX_D_IDENTITY NR_MATRIX_D_IDENTITY.c
 #define SP_MATRIX_D_IS_IDENTITY(m) art_affine_equal (m, SP_MATRIX_D_IDENTITY);
+#endif
 
 ArtSVP *art_svp_translate (const ArtSVP *svp, double dx, double dy);
 ArtUta *art_uta_from_svp_translated (const ArtSVP *svp, double cx, double cy);

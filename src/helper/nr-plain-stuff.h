@@ -15,22 +15,6 @@
 #include <glib.h>
 #include "nr-buffers.h"
 
-#define NR_RGBA32_R(v) (((v) >> 24) & 0xff)
-#define NR_RGBA32_G(v) (((v) >> 16) & 0xff)
-#define NR_RGBA32_B(v) (((v) >> 8) & 0xff)
-#define NR_RGBA32_A(v) ((v) & 0xff)
-
-/* Pixel compositing algorithms */
-#define PREMUL(c,a) (((c) * (a) + 127) / 255)
-#define COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
-#define COMPOSEPNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 127) / a)
-#define COMPOSENNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 32512) / 65025)
-#define COMPOSEPNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 32512) / 65025)
-#define COMPOSENPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fa) * (fc) + 127) / 255)
-#define COMPOSEPPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEP11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
-
 /* Buffers */
 /* Renders buffer into another with clip */
 void nr_render_buf_buf (NRBuffer *d, gint x, gint y, gint w, gint h, NRBuffer *s, gint sx, gint sy);

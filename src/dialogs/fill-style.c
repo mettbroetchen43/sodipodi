@@ -218,7 +218,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, SP_MATRIX_D_IDENTITY);
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
 		p0.x = lg->x1.computed;
 		p0.y = lg->y1.computed;
@@ -338,7 +338,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 			/* This gives us position in document coordinates */
 			sp_paint_selector_get_gradient_position_floatv (psel, p);
 
-			sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, SP_MATRIX_D_IDENTITY);
+			sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, NR_MATRIX_D_IDENTITY.c);
 			sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 			lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));
@@ -454,7 +454,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 					/* This gives us position in document coordinates */
 					sp_paint_selector_get_gradient_position_floatv (psel, p);
 
-					sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, SP_MATRIX_D_IDENTITY);
+					sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, NR_MATRIX_D_IDENTITY.c);
 					sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 					lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));

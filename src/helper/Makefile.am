@@ -5,7 +5,7 @@
 #
 
 INCLUDES = \
-	-I$(includedir) \
+	-I.. \
 	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspchelp.a

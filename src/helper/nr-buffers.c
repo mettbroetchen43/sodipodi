@@ -117,6 +117,7 @@ nr_buffer_free (NRBuffer *b)
 	return NULL;
 }
 
+#if 0
 static GSList *bl_1_4096 = NULL;
 
 guchar *
@@ -192,3 +193,4 @@ nr_buffer_4_4096_free (guchar *buf)
 
 	bl_4_4096 = g_slist_prepend (bl_4_4096, buf);
 }
+#endif

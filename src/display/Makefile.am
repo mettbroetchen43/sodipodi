@@ -28,13 +28,12 @@ nr_sources =
 endif
 
 INCLUDES = \
-	-I$(includedir) \
+	-I.. \
 	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspdisplay.a
 
 libspdisplay_a_SOURCES = \
-	nr-primitives.c nr-primitives.h \
 	nr-arena-forward.h \
 	nr-arena.c nr-arena.h \
 	nr-arena-item.c nr-arena-item.h \
@@ -45,8 +44,8 @@ libspdisplay_a_SOURCES = \
 	canvas-arena.c canvas-arena.h \
 	cpath-component.c cpath-component.h \
 	path-archetype.c path-archetype.h \
-	fill.c fill.h \
-	stroke.c stroke.h \
 	$(nr_sources)
 
+#	fill.c fill.h \
+#	stroke.c stroke.h \
 #	canvas-shape.c canvas-shape.h

@@ -5,7 +5,7 @@ bonobo_subdirs = bonobo
 bonobo_libs = bonobo/libspbonobo.a
 endif
 
-SUBDIRS = xml svg widgets helper dialogs display $(bonobo_subdirs)
+SUBDIRS = libnr xml svg widgets helper dialogs display $(bonobo_subdirs)
 
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
@@ -14,12 +14,13 @@ CPPFLAGS = \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"
 
 INCLUDES = \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
-	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" 	\
-	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
-	-I$(srcdir/xml) 				\
-	-I$(srcdir/svg) 				\
-	$(SODIPODI_CFLAGS)				\
+	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
+	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
+	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
+	-I$(srcdir) \
+	-I$(srcdir/xml) \
+	-I$(srcdir/svg) \
+	$(SODIPODI_CFLAGS) \
 	$(SODIPODI_BONOBO_CFLAGS)
 
 bin_PROGRAMS = sodipodi
@@ -121,7 +122,8 @@ sodipodi_private_libs = \
 	svg/libspsvg.a \
 	widgets/libspwidgets.a \
 	display/libspdisplay.a \
-	helper/libspchelp.a
+	helper/libspchelp.a \
+	libnr/libnr.a
 
 
 sodipodi_LDADD = \

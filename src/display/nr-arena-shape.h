@@ -31,6 +31,7 @@ struct _NRArenaShape {
 	SPStyle *style;
 	ArtDRect paintbox;
 	/* State data */
+	NRMatrixD ctm;
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;
 	ArtSVP *fill_svp;

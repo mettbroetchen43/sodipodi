@@ -10,8 +10,8 @@
 gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
+	-I.. \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
-	-I$(includedir) \
 	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspdialogs.a

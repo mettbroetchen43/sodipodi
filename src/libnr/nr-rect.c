@@ -1,0 +1,223 @@
+#define __NR_RECT_C__
+
+/*
+ * Pixel buffer rendering library
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include "nr-rect.h"
+
+NRRectD *
+nr_rect_d_intersect (NRRectD *d, const NRRectD *r0, const NRRectD *r1)
+{
+	if (r0 && !nr_rect_d_test_empty (r0)) {
+		if (r1 && !nr_rect_d_test_empty (r1)) {
+			double t;
+			t = MAX (r0->x0, r1->x0);
+			d->x1 = MIN (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MAX (r0->y0, r1->y0);
+			d->y1 = MIN (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_d_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_d_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectF *
+nr_rect_f_intersect (NRRectF *d, const NRRectF *r0, const NRRectF *r1)
+{
+	if (r0 && !nr_rect_f_test_empty (r0)) {
+		if (r1 && !nr_rect_f_test_empty (r1)) {
+			float t;
+			t = MAX (r0->x0, r1->x0);
+			d->x1 = MIN (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MAX (r0->y0, r1->y0);
+			d->y1 = MIN (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_f_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_f_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectL *
+nr_rect_l_intersect (NRRectL *d, const NRRectL *r0, const NRRectL *r1)
+{
+	if (r0 && !nr_rect_l_test_empty (r0)) {
+		if (r1 && !nr_rect_l_test_empty (r1)) {
+			long t;
+			t = MAX (r0->x0, r1->x0);
+			d->x1 = MIN (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MAX (r0->y0, r1->y0);
+			d->y1 = MIN (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_l_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_l_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectS *
+nr_rect_s_intersect (NRRectS *d, const NRRectS *r0, const NRRectS *r1)
+{
+	if (r0 && !nr_rect_s_test_empty (r0)) {
+		if (r1 && !nr_rect_s_test_empty (r1)) {
+			short t;
+			t = MAX (r0->x0, r1->x0);
+			d->x1 = MIN (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MAX (r0->y0, r1->y0);
+			d->y1 = MIN (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_s_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_s_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectD *
+nr_rect_d_union (NRRectD *d, const NRRectD *r0, const NRRectD *r1)
+{
+	if (r0 && !nr_rect_d_test_empty (r0)) {
+		if (r1 && !nr_rect_d_test_empty (r1)) {
+			double t;
+			t = MIN (r0->x0, r1->x0);
+			d->x1 = MAX (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MIN (r0->y0, r1->y0);
+			d->y1 = MAX (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_d_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_d_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectF *
+nr_rect_f_union (NRRectF *d, const NRRectF *r0, const NRRectF *r1)
+{
+	if (r0 && !nr_rect_f_test_empty (r0)) {
+		if (r1 && !nr_rect_f_test_empty (r1)) {
+			float t;
+			t = MIN (r0->x0, r1->x0);
+			d->x1 = MAX (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MIN (r0->y0, r1->y0);
+			d->y1 = MAX (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_f_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_f_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectL *
+nr_rect_l_union (NRRectL *d, const NRRectL *r0, const NRRectL *r1)
+{
+	if (r0 && !nr_rect_l_test_empty (r0)) {
+		if (r1 && !nr_rect_l_test_empty (r1)) {
+			long t;
+			t = MIN (r0->x0, r1->x0);
+			d->x1 = MAX (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MIN (r0->y0, r1->y0);
+			d->y1 = MAX (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_l_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_l_set_empty (d);
+		}
+	}
+
+	return d;
+}
+
+NRRectS *
+nr_rect_s_union (NRRectS *d, const NRRectS *r0, const NRRectS *r1)
+{
+	if (r0 && !nr_rect_s_test_empty (r0)) {
+		if (r1 && !nr_rect_s_test_empty (r1)) {
+			short t;
+			t = MIN (r0->x0, r1->x0);
+			d->x1 = MAX (r0->x1, r1->x1);
+			d->x0 = t;
+			t = MIN (r0->y0, r1->y0);
+			d->y1 = MAX (r0->y1, r1->y1);
+			d->y0 = t;
+		} else {
+			*d = *r0;
+		}
+	} else {
+		if (r1 && !nr_rect_s_test_empty (r1)) {
+			*d = *r1;
+		} else {
+			nr_rect_s_set_empty (d);
+		}
+	}
+
+	return d;
+}
+

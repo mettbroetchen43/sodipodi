@@ -14,6 +14,7 @@
 
 #include <string.h>
 
+#include <libnr/nr-pixblock.h>
 #include "macros.h"
 #include "helper/art-utils.h"
 #include "display/nr-arena-glyphs.h"
@@ -327,7 +328,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 			gnome_print_closepath (ctx);
 			gnome_print_clip (ctx);
 
-			rgba = nr_buffer_4_4096_get (FALSE, 0x00000000);
+			rgba = nr_pixelstore_16K_new (FALSE, 0x00000000);
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
 #if 0
@@ -342,7 +343,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 					gnome_print_grestore (ctx);
 				}
 			}
-			nr_buffer_4_4096_free (rgba);
+			nr_pixelstore_16K_free (rgba);
 			gnome_print_grestore (ctx);
 			sp_painter_free (painter);
 		}

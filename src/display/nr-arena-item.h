@@ -19,6 +19,8 @@
 #define NR_IS_ARENA_ITEM(o) (GTK_CHECK_TYPE ((o), NR_TYPE_ARENA_ITEM))
 #define NR_IS_ARENA_ITEM_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_ITEM))
 
+#define NR_ARENA_ITEM_VIRTUAL(i,m) (((NRArenaItemClass *) ((GtkObject *) (i))->klass)->m)
+
 typedef struct _NRGC NRGC;
 
 /* Warning: This is UNDEFINED in NR, implementations should do that */
@@ -34,17 +36,18 @@ typedef struct _NREvent NREvent;
 #define NR_ARENA_ITEM_STATE_CLIP     (1 << 5)
 #define NR_ARENA_ITEM_STATE_MASK     (1 << 6)
 #define NR_ARENA_ITEM_STATE_PICK     (1 << 7)
+#define NR_ARENA_ITEM_STATE_IMAGE    (1 << 8)
 
-#define NR_ARENA_ITEM_STATE_NONE  0x00
-#define NR_ARENA_ITEM_STATE_ALL   0xfe
+#define NR_ARENA_ITEM_STATE_NONE  0x0000
+#define NR_ARENA_ITEM_STATE_ALL   0x01fe
 
 #define NR_ARENA_ITEM_STATE(i,s) (NR_ARENA_ITEM (i)->state & (s))
 #define NR_ARENA_ITEM_SET_STATE(i,s) (NR_ARENA_ITEM (i)->state |= (s))
 #define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ^(s))
 
+#include <libnr/nr-types.h>
 #include <gtk/gtkobject.h>
 #include "../helper/nr-buffers.h"
-#include "nr-primitives.h"
 #include "nr-arena-forward.h"
 
 struct _NRGC {
@@ -59,17 +62,19 @@ struct _NRArenaItem {
 	NRArenaItem *prev;
 
 	/* Item state */
-	guint state : 8;
+	guint state : 16;
 	guint propagate : 1;
 	guint sensitive : 1;
 	/* BBox in grid coordinates */
-	NRIRect bbox;
+	NRRectL bbox;
 	/* Our affine */
 	gdouble *affine;
 	/* Our opacity */
 	gdouble opacity;
 	/* Clip item */
 	NRArenaItem *clip;
+	/* Rendered buffer */
+	guchar *px;
 };
 
 struct _NRArenaItemClass {
@@ -80,9 +85,9 @@ struct _NRArenaItemClass {
 	void (* remove_child) (NRArenaItem *item, NRArenaItem *child);
 	void (* set_child_position) (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
-	guint (* update) (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-	guint (* render) (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-	guint (* clip) (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+	guint (* update) (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+	guint (* render) (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+	guint (* clip) (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 	gint (* event) (NRArenaItem *item, NREvent *event);
@@ -108,9 +113,9 @@ void nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NR
  * reset == 0 means no reset
  */
 
-guint nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-guint nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-guint nr_arena_item_invoke_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+guint nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 gint nr_arena_item_emit_event (NRArenaItem *item, NREvent *event);

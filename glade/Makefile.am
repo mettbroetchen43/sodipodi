@@ -172,17 +172,17 @@ pixmaps = \
 	zoom_select.xpm \
 	guide_dialog.png
 
-glade_DATA = 					\
-	align.glade 			\
-	display.glade 			\
-	desktop.glade 			\
-	document.glade 		\
-	item.glade 			\
-	object_props.glade 	\
-	sodipodi.glade 		\
-	toolbox.glade 			\
-	transformation.glade 	\
-	xml-tree.glade  \
+glade_DATA = \
+	align.glade \
+	display.glade \
+	desktop.glade \
+	document.glade \
+	item.glade \
+	object_props.glade \
+	sodipodi.glade \
+	toolbox.glade \
+	transformation.glade \
+	xml-tree.glade \
 	$(pixmaps) \
 	$(images)
 

@@ -15,6 +15,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <libnr/nr-rect.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -36,9 +37,9 @@ static void nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass);
 static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
 static void nr_arena_glyphs_destroy (GtkObject *object);
 
-static guint nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_glyphs_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static guint nr_arena_glyphs_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static guint nr_arena_glyphs_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *glyphs_parent_class;
@@ -137,7 +138,7 @@ nr_arena_glyphs_destroy (GtkObject *object)
 }
 
 static guint
-nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaGlyphs *glyphs;
 	ArtBpath *abp;
@@ -148,9 +149,9 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 
 	/* Request repaint old area if needed */
 	/* fixme: Think about it a bit (Lauris) */
-	if (!nr_irect_is_empty (&item->bbox)) {
+	if (!nr_rect_l_test_empty (&item->bbox)) {
 		nr_arena_request_render_rect (item->arena, &item->bbox);
-		nr_irect_set_empty (&item->bbox);
+		nr_rect_l_set_empty (&item->bbox);
 	}
 
 	/* Release state data */
@@ -233,7 +234,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 }
 
 static guint
-nr_arena_glyphs_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_glyphs_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 #if 0
 	NRArenaGlyphs *glyphs;
@@ -326,7 +327,7 @@ nr_arena_glyphs_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static guint
-nr_arena_glyphs_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -412,13 +413,13 @@ nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style)
 }
 
 static guint
-nr_arena_glyphs_fill_mask (NRArenaGlyphs *glyphs, NRIRect *area, NRBuffer *b)
+nr_arena_glyphs_fill_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRBuffer *b)
 {
 	NRArenaItem *item;
 
 	item = NR_ARENA_ITEM (glyphs);
 
-	if (glyphs->fill_svp && nr_irect_do_intersect (area, &item->bbox)) {
+	if (glyphs->fill_svp && nr_rect_l_test_intersect (area, &item->bbox)) {
 		NRBuffer *gb;
 		gint x, y;
 		gb = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
@@ -441,13 +442,13 @@ nr_arena_glyphs_fill_mask (NRArenaGlyphs *glyphs, NRIRect *area, NRBuffer *b)
 }
 
 static guint
-nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRIRect *area, NRBuffer *b)
+nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRBuffer *b)
 {
 	NRArenaItem *item;
 
 	item = NR_ARENA_ITEM (glyphs);
 
-	if (glyphs->stroke_svp && nr_irect_do_intersect (area, &item->bbox)) {
+	if (glyphs->stroke_svp && nr_rect_l_test_intersect (area, &item->bbox)) {
 		NRBuffer *gb;
 		gint x, y;
 		gb = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
@@ -473,8 +474,8 @@ static void nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass);
 static void nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group);
 static void nr_arena_glyphs_group_destroy (GtkObject *object);
 
-static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_glyphs_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static guint nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaGroupClass *group_parent_class;
@@ -553,7 +554,7 @@ nr_arena_glyphs_group_destroy (GtkObject *object)
 }
 
 static guint
-nr_arena_glyphs_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaGlyphsGroup *group;
 
@@ -586,7 +587,7 @@ nr_arena_glyphs_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint 
 /* This sucks - as soon, as we have inheritable renderprops, do something with that opacity */
 
 static guint
-nr_arena_glyphs_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	NRArenaGroup *group;
 	NRArenaGlyphsGroup *ggroup;

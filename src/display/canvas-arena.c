@@ -44,7 +44,7 @@ static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
 static void sp_canvas_arena_item_added (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
 static void sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
 static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
-static void sp_canvas_arena_request_render (NRArena *arena, NRIRect *area, SPCanvasArena *ca);
+static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca);
 
 static GnomeCanvasItemClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -237,7 +237,7 @@ sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 
 	for (y = buf->rect.y0; y < buf->rect.y1; y += sh) {
 		for (x = buf->rect.x0; x < buf->rect.x1; x += sw) {
-			NRIRect area;
+			NRRectL area;
 			NRBuffer *b;
 
 			area.x0 = x;
@@ -389,7 +389,7 @@ sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena
 }
 
 static void
-sp_canvas_arena_request_render (NRArena *arena, NRIRect *area, SPCanvasArena *ca)
+sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca)
 {
 	gnome_canvas_request_redraw (GNOME_CANVAS_ITEM (ca)->canvas, area->x0, area->y0, area->x1, area->y1);
 }

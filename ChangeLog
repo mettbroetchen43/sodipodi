@@ -1,6 +1,17 @@
 2002-09-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/*: Started composing sensible library at last
+
 	* src/document.c: Fix DTD typo
+
+	* src/main.c (sp_main_gui): Moved setting LC_NUMERIC after gnome init
+	(sp_main_console): Set LC_NUMERIC to "C" here too
+
+2002-09-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Version 0.26pre
+
+	* src/display/Makefile.am (libspdisplay_a_SOURCES): Removed fill.[c,h] and stroke.[c,h]
 
 2002-09-11  Lauris Kaplinski  <lauris@kaplinski.com>
 

@@ -15,6 +15,9 @@
 #define noNR_ARENA_ITEM_VERBOSE
 
 #include <string.h>
+#include <libnr/nr-rect.h>
+#include <libnr/nr-matrix.h>
+#include <libnr/nr-blit.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include "../helper/nr-plain-stuff.h"
@@ -86,6 +89,8 @@ nr_arena_item_init (NRArenaItem *item)
 	item->opacity = 1.0;
 
 	item->clip = NULL;
+
+	item->px = NULL;
 }
 
 static void
@@ -100,17 +105,21 @@ nr_arena_item_private_destroy (GtkObject *object)
 	g_assert (!item->prev);
 	g_assert (!item->next);
 
-	nr_arena_remove_item (item->arena, item);
-
-	if (item->affine) {
-		g_free (item->affine);
-		item->affine = NULL;
+	if (item->px) {
+		g_free (item->px);
+		item->px = NULL;
 	}
 
 	if (item->clip) {
 		item->clip = nr_arena_item_detach_unref (item, item->clip);
 	}
 
+	if (item->affine) {
+		g_free (item->affine);
+		item->affine = NULL;
+	}
+
+	nr_arena_remove_item (item->arena, item);
 	item->arena = NULL;
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -144,8 +153,8 @@ nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref
 	g_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
 	g_return_if_fail (!ref || (ref->parent == item));
 
-	if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->add_child)
-		((NRArenaItemClass *) ((GtkObject *) item)->klass)->add_child (item, child, ref);
+	if (NR_ARENA_ITEM_VIRTUAL (item, add_child))
+		NR_ARENA_ITEM_VIRTUAL (item, add_child) (item, child, ref);
 }
 
 void
@@ -157,8 +166,8 @@ nr_arena_item_remove_child (NRArenaItem *item, NRArenaItem *child)
 	g_return_if_fail (NR_IS_ARENA_ITEM (child));
 	g_return_if_fail (child->parent == item);
 
-	if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->remove_child)
-		((NRArenaItemClass *) ((GtkObject *) item)->klass)->remove_child (item, child);
+	if (NR_ARENA_ITEM_VIRTUAL (item, remove_child))
+		NR_ARENA_ITEM_VIRTUAL (item, remove_child) (item, child);
 }
 
 void
@@ -172,12 +181,12 @@ nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArena
 	g_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
 	g_return_if_fail (!ref || (ref->parent == item));
 
-	if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->set_child_position)
-		((NRArenaItemClass *) ((GtkObject *) item)->klass)->set_child_position (item, child, ref);
+	if (NR_ARENA_ITEM_VIRTUAL (item, set_child_position))
+		NR_ARENA_ITEM_VIRTUAL (item, set_child_position) (item, child, ref);
 }
 
 guint
-nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	guint newstate;
 	NRGC newgc;
@@ -199,6 +208,14 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint s
 	/* Reset requested flags on our state */
 	item->state &= ~reset;
 
+	if (!(item->state & NR_ARENA_ITEM_STATE_IMAGE)) {
+		/* Concept test */
+		if (item->px) {
+			g_free (item->px);
+			item->px = NULL;
+		}
+	}
+
 	/* Set up local gc */
 	if (item->affine) {
 		art_affine_multiply (newgc.affine, item->affine, gc->affine);
@@ -214,19 +231,19 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint s
 
 	if (!(item->state & NR_ARENA_ITEM_STATE_BBOX)) {
 		/* BBox state not set - need bbox level update before continuing */
-		newstate = ((NRArenaItemClass *) ((GtkObject *) item)->klass)->update (item, area, &newgc, NR_ARENA_ITEM_STATE_BBOX, reset);
+		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, NR_ARENA_ITEM_STATE_BBOX, reset);
 		g_return_val_if_fail (newstate & NR_ARENA_ITEM_STATE_BBOX, newstate);
 		item->state = newstate;
 	}
 
 	if (item->clip) {
 		/* We have do do intersect with clip bbox */
-		nr_irect_intersection (&item->bbox, &item->bbox, &item->clip->bbox);
+		nr_rect_l_intersect (&item->bbox, &item->bbox, &item->clip->bbox);
 	}
 
-	if ((~item->state & state) && (!area || nr_irect_do_intersect (area, &item->bbox))) {
+	if ((~item->state & state) && (!area || nr_rect_l_test_intersect (area, &item->bbox))) {
 		/* Need update to given state */
-		newstate = ((NRArenaItemClass *) ((GtkObject *) item)->klass)->update (item, area, &newgc, state, reset);
+		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, state, reset);
 		g_return_val_if_fail (!(~newstate & state), newstate);
 		item->state = newstate;
 	}
@@ -235,7 +252,7 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint s
 }
 
 guint
-nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
@@ -247,7 +264,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
-	if (nr_irect_do_intersect (area, &item->bbox)) {
+	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
 		/* fixme: clip updating etc. needs serious contemplation */
 		if (item->clip) {
@@ -258,7 +275,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 			ret = nr_arena_item_invoke_clip (item->clip, area, cb);
 			/* fixme: */
 			cb->empty = FALSE;
-			ret = ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, area, nb);
+			ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, area, nb);
 			/* fixme: */
 			nb->empty = FALSE;
 			if (!(ret & NR_ARENA_ITEM_STATE_INVALID)) {
@@ -270,7 +287,49 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 			nr_buffer_free (cb);
 			nr_buffer_free (nb);
 		} else {
-			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, area, b);
+			if (!item->px && ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 19384)) {
+				NRBuffer b;
+				gint ret;
+				item->px = g_new (guchar, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));
+				memset (item->px, 0x0, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));
+				/* Hack for concept testing */
+				b.size = NR_SIZE_BIG;
+				b.mode = NR_IMAGE_R8G8B8A8;
+				b.empty = 1;
+				b.premul = 1;
+				b.w = item->bbox.x1 - item->bbox.x0;
+				b.h = item->bbox.y1 - item->bbox.y0;
+				b.rs = 4 * b.w;
+				b.px = item->px;
+				ret = ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, &item->bbox, &b);
+				if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) return ret;
+			}
+			if (item->px) {
+				NRPixBlock pbb, pbi;
+				guint bmode;
+				/* Concept test */
+				/* Item px it placed at item bbox 0,0, 4 * width rowstride, premultiplied */
+				if (b->premul) {
+					bmode = NR_PIXBLOCK_MODE_R8G8B8A8P;
+				} else {
+					bmode = NR_PIXBLOCK_MODE_R8G8B8A8N;
+				}
+				nr_pixblock_setup_extern (&pbb, bmode, area->x0, area->y0, area->x1, area->y1, b->px, b->rs, b->empty, FALSE);
+				nr_pixblock_setup_extern (&pbi, NR_PIXBLOCK_MODE_R8G8B8A8P,
+							  /* fixme: This probably cannot overflow, because we render only if visible */
+							  /* fixme: and pixel cache is there only for small items */
+							  /* fixme: But this still needs extra check (Lauris) */
+							  item->bbox.x0, item->bbox.y0,
+							  item->bbox.x1, item->bbox.y1,
+							  item->px, 4 * (item->bbox.x1 - item->bbox.x0), FALSE, FALSE);
+				nr_blit_pixblock_pixblock (&pbb, &pbi);
+				nr_pixblock_release (&pbb);
+				nr_pixblock_release (&pbi);
+				b->empty = FALSE;
+				return item->state;
+			} else {
+				return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, area, b);
+			}
 		}
 	}
 
@@ -278,7 +337,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 guint
-nr_arena_item_invoke_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
@@ -290,7 +349,7 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
-	if (nr_irect_do_intersect (area, &item->bbox)) {
+	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
 		if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->clip)
 			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->clip (item, area, b);
@@ -347,10 +406,16 @@ nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 	g_return_if_fail (!(reset & NR_ARENA_ITEM_STATE_INVALID));
 
-	if (propagate && !item->propagate) item->propagate = propagate;
+	if (propagate && !item->propagate) item->propagate = TRUE;
 
 	if (item->state & reset) {
 		item->state &= ~reset;
+		if ((reset & NR_ARENA_ITEM_STATE_IMAGE) && item->px) {
+			/* Concept test */
+			/* Clear buffer */
+			g_free (item->px);
+			item->px = NULL;
+		}
 		if (item->parent) {
 			nr_arena_item_request_update (item->parent, reset, FALSE);
 		} else {
@@ -433,7 +498,7 @@ nr_arena_item_set_transform (NRArenaItem *item, const gdouble *transform)
 
 	nr_arena_item_request_render (item);
 
-	if (!transform || nr_affine_is_identity (transform)) {
+	if (nr_matrix_d_test_identity ((NRMatrixD *) transform, NR_EPSILON_D)) {
 		/* Set to identity affine */
 		if (item->affine) g_free (item->affine);
 		item->affine = NULL;

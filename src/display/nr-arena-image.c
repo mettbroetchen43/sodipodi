@@ -34,8 +34,8 @@ static void nr_arena_image_class_init (NRArenaImageClass *klass);
 static void nr_arena_image_init (NRArenaImage *image);
 static void nr_arena_image_destroy (GtkObject *object);
 
-static guint nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
+static guint nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static guint nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
@@ -103,7 +103,7 @@ nr_arena_image_destroy (GtkObject *object)
 }
 
 static guint
-nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
+nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaImage *image;
 	gdouble hscale, vscale;
@@ -175,7 +175,7 @@ nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 #define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
 
 static guint
-nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *buf)
+nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 {
 	NRArenaImage *image;
 	guint xnsample, ynsample, dsample;

@@ -129,7 +129,7 @@ sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const double *m, ArtDRect
 	b.x0 = b.y0 = 1e18;
 	b.x1 = b.y1 = -1e18;
 
-	if (!m) m = SP_MATRIX_D_IDENTITY;
+	if (!m) m = NR_MATRIX_D_IDENTITY.c;
 
 	for (p = bpath; p->code != ART_END; p+= 1) {
 		switch (p->code) {

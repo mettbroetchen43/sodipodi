@@ -19,6 +19,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libnr/nr-pixblock.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 
@@ -250,7 +251,7 @@ sp_shape_modified (SPObject *object, guint flags)
 		ArtDRect paintbox;
 		/* This is suboptimal, because changing parent style schedules recalculation */
 		/* But on the other hand - how can we know that parent does not tie style and transform */
-		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NR_MATRIX_D_IDENTITY.c);
 		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
 			nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (v->arenaitem), &paintbox);
 		}
@@ -337,7 +338,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 					gdouble ctm[6];
 					ArtDRect pbox;
 					sp_item_i2d_affine (item, ctm);
-					sp_item_invoke_bbox (item, &pbox, SP_MATRIX_D_IDENTITY);
+					sp_item_invoke_bbox (item, &pbox, NR_MATRIX_D_IDENTITY.c);
 					/* fixme: */
 					painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (object),
 									       ctm,
@@ -368,7 +369,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 						gnome_print_bpath (gpc, bpath, FALSE);
 						gnome_print_concat (gpc, d2i);
 						/* Now we are in desktop coordinates */
-						rgba = nr_buffer_4_4096_get (FALSE, 0x00000000);
+						rgba = nr_pixelstore_16K_new (FALSE, 0x0);
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {
 							for (x = ibox.x0; x < ibox.x1; x+= 64) {
 								painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
@@ -379,7 +380,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 								gnome_print_grestore (gpc);
 							}
 						}
-						nr_buffer_4_4096_free (rgba);
+						nr_pixelstore_16K_free (rgba);
 						gnome_print_grestore (gpc);
 						sp_painter_free (painter);
 					}
@@ -430,7 +431,7 @@ sp_shape_show (SPItem *item, NRArena *arena)
 		ArtDRect paintbox;
 		comp = (SPPathComp *) path->comp->data;
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
-		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NR_MATRIX_D_IDENTITY.c);
 		nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
 	}
 

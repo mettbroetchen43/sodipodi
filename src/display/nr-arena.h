@@ -19,8 +19,8 @@
 #define NR_IS_ARENA(o) (GTK_CHECK_TYPE ((o), NR_TYPE_ARENA))
 #define NR_IS_ARENA_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA))
 
+#include <libnr/nr-types.h>
 #include <gtk/gtkobject.h>
-#include "nr-primitives.h"
 #include "nr-arena-forward.h"
 
 struct _NRArena {
@@ -35,7 +35,7 @@ struct _NRArenaClass {
 	void (* remove_item) (NRArena *arena, NRArenaItem *item);
 
 	void (* request_update) (NRArena *arena, NRArenaItem *item);
-	void (* request_render) (NRArena *arena, NRIRect *area);
+	void (* request_render) (NRArena *arena, NRRectL *area);
 };
 
 GtkType nr_arena_get_type (void);
@@ -46,6 +46,6 @@ void nr_arena_item_added (NRArena *arena, NRArenaItem *item);
 void nr_arena_remove_item (NRArena *arena, NRArenaItem *item);
 
 void nr_arena_request_update (NRArena *arena, NRArenaItem *item);
-void nr_arena_request_render_rect (NRArena *arena, NRIRect *area);
+void nr_arena_request_render_rect (NRArena *arena, NRRectL *area);
 
 #endif
