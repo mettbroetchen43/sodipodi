@@ -1,3 +1,35 @@
+2002-09-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c: Port to SPSVGUnits
+
+	* src/sp-root.c: Port to SPSVGLength, use pixels as basic units from now on
+
+	* src/sp-rect.c: Port to SPSVGLength
+
+	* src/sp-image.c: Port to SPSVGLength
+
+	* src/sp-gradient.c: Port to SPSVGLength
+
+	* src/sp-ellipse.c: Port to SPSVGLength
+
+	* src/file.c (sp_do_file_print_to_printer): Fix px/pt ratio
+	(sp_do_file_print_preview): Ditto
+
+	* src/document.c (sp_document_width): Fix px/pt ratio
+	(sp_document_height): Ditto
+	(sp_document_new): Add sodipodi:version
+	(sp_document_new_from_mem): Ditto
+
+	* src/desktop.c (sp_desktop_init): Fix px/pt ratio in doc2dt matrix
+
+	* src/svg/svg-length.c (sp_svg_length_read): New method
+	(sp_svg_length_read_lff): Ditto
+	(sp_svg_length_unset): Ditto
+
+	* src/svg/svg-types.h: New file
+
+	* src/dialogs/Makefile.am (libspdialogs_a_SOURCES): Added tool-options.[c,h]
+
 2002-08-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_text_set_shape): Do layouting here, so we can handle blocks
