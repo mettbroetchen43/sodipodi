@@ -297,6 +297,7 @@ sp_font_glyph (SPFont * font, gint glyph)
 }
 #endif
 
+#if 0
 const gchar *
 sp_font_read_family (SPCSSAttr * css)
 {
@@ -348,3 +349,4 @@ sp_font_read_italic (SPCSSAttr * css)
 
 	return FALSE;
 }
+#endif

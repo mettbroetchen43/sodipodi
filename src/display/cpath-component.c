@@ -43,6 +43,9 @@ sp_cpath_comp_new (ArtBpath * bpath,
 		if (bpath[i].code == ART_MOVETO_OPEN)
 			comp->closed = FALSE;
 	}
+
+	comp->changed = FALSE;
+
 #ifdef DEBUG_PATH_COMP
 	num_comp++;
 	g_print ("num_comp = %d\n", num_comp);
@@ -89,17 +92,32 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 	ArtPoint p;
 	gint i;
 
+#if 0
+	/* comp_new & comp_change do this anyway */
 	for (i=0; comp->bpath[i].code != ART_END; i++) {
 		if (comp->bpath[i].code == ART_MOVETO_OPEN)
 			comp->closed = FALSE;
 	}
-
-	old_at = comp->archetype;
+#endif
 
 	art_affine_multiply (a, comp->affine, affine);
-	comp->archetype = sp_path_at (comp->bpath, comp->private, a, comp->stroke_width, comp->join, comp->cap);
 
-	if (old_at != NULL) sp_path_at_unref (old_at);
+	if ((comp->private) && (comp->archetype) && (!comp->changed) &&
+		(comp->stroke_width == comp->archetype->stroke_width) &&
+		(comp->join == comp->archetype->join) &&
+		(comp->cap == comp->archetype->cap) &&
+		(a[0] == comp->archetype->affine[0]) &&
+		(a[1] == comp->archetype->affine[1]) &&
+		(a[2] == comp->archetype->affine[2]) &&
+		(a[3] == comp->archetype->affine[3])) {
+		/* Nothing to do */
+	} else {
+		old_at = comp->archetype;
+		comp->archetype = sp_path_at (comp->bpath, comp->private, a, comp->stroke_width, comp->join, comp->cap);
+		if (old_at != NULL) sp_path_at_unref (old_at);
+	}
+
+	comp->changed = FALSE;
 
 	p.x = comp->affine[4];
 	p.y = comp->affine[5];
@@ -121,6 +139,7 @@ sp_cpath_comp_change (SPCPathComp * comp,
 	ArtPathStrokeJoinType join,
 	ArtPathStrokeCapType cap)
 {
+	SPPathAT * old_at;
 	gint i;
 
 #if 0
@@ -138,5 +157,12 @@ sp_cpath_comp_change (SPCPathComp * comp,
 	comp->stroke_width = stroke_width;
 	comp->join = join;
 	comp->cap = cap;
+	comp->closed = TRUE;
+	for (i=0; comp->bpath[i].code != ART_END; i++) {
+		if (comp->bpath[i].code == ART_MOVETO_OPEN)
+			comp->closed = FALSE;
+	}
+
+	comp->changed = TRUE;
 }
 

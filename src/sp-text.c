@@ -1,5 +1,6 @@
 #define SP_TEXT_C
 
+#include "svg/svg.h"
 #include "sp-text.h"
 
 static void sp_text_class_init (SPTextClass *class);
@@ -151,6 +152,8 @@ sp_text_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 	gdouble size;
 	GnomeFontWeight weight;
 	gboolean italic;
+	const gchar * str;
+	SPSVGUnit unit;
 
 	text = SP_TEXT (item);
 
@@ -173,10 +176,13 @@ sp_text_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 	}
 	if (strcmp (attr, "style") == 0) {
 		css = sp_repr_css_attr_inherited (repr, attr);
-		fontname = sp_font_read_family (css);
-		size = sp_font_read_size (css);
-		weight = sp_font_read_weight (css);
-		italic = sp_font_read_italic (css);
+		fontname = sp_repr_css_property (css, "font-family", "Helvetica");
+		str = sp_repr_css_property (css, "font-size", "12pt");
+		size = sp_svg_read_length (&unit, str);
+		str = sp_repr_css_property (css, "font-weight", "normal");
+		weight = sp_svg_read_font_weight (str);
+		str = sp_repr_css_property (css, "font-style", "normal");
+		italic = sp_svg_read_font_italic (str);
 		if (text->fontname)
 			g_free (text->fontname);
 		text->fontname = g_strdup (fontname);

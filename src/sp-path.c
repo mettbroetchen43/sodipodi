@@ -129,8 +129,10 @@ sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath
 	g_return_if_fail (l != NULL);
 
 	c = (SPPathComp *) l->data;
+#if 0
 	if ((c->private) && (c->bpath != NULL) && (c->bpath != bpath))
 		art_free (c->bpath);
+#endif
 	c->bpath = bpath;
 }
 

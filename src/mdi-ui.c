@@ -50,4 +50,5 @@ sp_mdi_dialog_handles (void)
 {
 	sp_object_fill_dialog ();
 	sp_object_stroke_dialog ();
+	sp_text_edit_dialog ();
 }

@@ -10,6 +10,4 @@
 
 void sp_text_edit_dialog (void);
 
-void sp_text_edit_selection_changed (void);
-
 #endif

@@ -2,109 +2,100 @@
 
 #include "xml/repr.h"
 #include "svg/svg.h"
-#if 0
-#include "canvas-helper/sp-canvas-util.h"
-#include "sp-repr-item.h"
-#endif
-#if 0
 #include "sp-path.h"
-#include "drawing.h"
-#include "sp-selection.h"
-#include "event-broker.h"
+#include "mdi-desktop.h"
+#include "document.h"
+#include "selection.h"
+#include "desktop-handles.h"
 #include "path-chemistry.h"
-#endif
 
 void
 sp_selected_path_combine (void)
 {
-#if 0
-	GList * l;
-	SPRepr * repr, * parent_repr;
-	SPItem * item, * parent_group;
+	SPSelection * selection;
+	GSList * il;
+	GSList * l;
+	SPRepr * repr;
+	SPItem * item;
 	SPPath * path;
 	ArtBpath * bp, * abp;
-	double i2g[6];
+	gdouble i2doc[6];
 	gchar * d, * str, * style;
 
-	l = sp_selection_list ();
-	if (g_list_length (l) < 2)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	for (l = sp_selection_list (); l != NULL; l = l->next) {
+	il = (GSList *) sp_selection_item_list (selection);
+
+	if (g_slist_length (il) < 2) return;
+
+	for (l = il; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
-		if (!SP_IS_PATH (item))
-			return;
-		if (!((SPPath *) item)->independent)
-			return;
+		if (!SP_IS_PATH (item)) return;
+		if (!((SPPath *) item)->independent) return;
 	}
 
-	sp_event_context_set_select ();
+	il = g_slist_copy (il);
 
-	parent_group = sp_drawing_current_group ();
 	d = "";
-	style = g_strdup (sp_repr_attr (((SPItem *) sp_selection_list()->data)->repr, "style"));
+	style = g_strdup (sp_repr_attr ((SP_ITEM (il->data))->repr, "style"));
 
-	for (l = sp_selection_list (); l != NULL; l = l->next) {
+	for (l = il; l != NULL; l = l->next) {
 		path = (SPPath *) l->data;
-		bp = sp_path_normalize (path);
-		gnome_canvas_item_i2i_affine ((GnomeCanvasItem *) path, (GnomeCanvasItem *) parent_group, i2g);
-		abp = art_bpath_affine_transform (bp, i2g);
+		bp = sp_path_normalized_bpath (path);
+		sp_item_i2doc_affine (SP_ITEM (path), i2doc);
+		abp = art_bpath_affine_transform (bp, i2doc);
+		art_free (bp);
 		str = sp_svg_write_path (abp);
 		art_free (abp);
 		d = g_strconcat (d, str, NULL);
 		g_free (str);
-		sp_repr_unparent_and_destroy (repr);
+		sp_repr_unparent_and_destroy (SP_ITEM (path)->repr);
 	}
 
-	repr = sp_repr_new ();
-	sp_repr_set_name (repr, "path");
+	g_slist_free (il);
+
+	repr = sp_repr_new_with_name ("path");
 	sp_repr_set_attr (repr, "style", style);
 	g_free (style);
 	sp_repr_set_attr (repr, "d", d);
 	g_free (d);
-	sp_repr_append_child (parent_repr, repr);
+	item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), repr);
 	sp_repr_unref (repr);
 
-	sp_selection_set_repr (repr);
-#endif
+	sp_selection_set_item (selection, item);
 }
 
 void
 sp_selected_path_break_apart (void)
 {
-#if 0
-	SPRepr * repr, * parent_repr;
-	SPItem * item, * parent_group;
+	SPSelection * selection;
+	SPRepr * repr;
+	SPItem * item;
 	SPPath * path;
 	ArtBpath * bpath, * abp, * nbp;
-	double i2g[6];
+	double i2doc[6];
 	gchar * style, * str;
 	gint len, pos, newpos;
 
-	repr = sp_selection_repr ();
-	if (repr == NULL)
-		return;
-	item = sp_repr_item (repr);
-	if (!SP_IS_PATH (item))
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	item = sp_selection_item (selection);
+
+	if (item == NULL) return;
+	if (!SP_IS_PATH (item)) return;
+
 	path = SP_PATH (item);
-	if (!sp_path_independent (path))
-		return;
-
-	sp_selection_empty ();
-
-	parent_repr = sp_drawing_current_group ();
-	parent_group = sp_repr_item (parent_repr);
+	if (!sp_path_independent (path)) return;
 
 	bpath = sp_path_normalized_bpath (path);
-	if (bpath == NULL)
-		return;
-	gnome_canvas_item_i2i_affine ((GnomeCanvasItem *) path, (GnomeCanvasItem *) parent_group, i2g);
-	style = g_strdup (sp_repr_attr (repr, "style"));
+	if (bpath == NULL) return;
 
-	sp_repr_unparent_and_destroy (repr);
+	sp_item_i2doc_affine (SP_ITEM (path), i2doc);
+	style = g_strdup (sp_repr_attr (item->repr, "style"));
 
-	abp = art_bpath_affine_transform (bpath, i2g);
+	sp_repr_unparent_and_destroy (item->repr);
+
+	abp = art_bpath_affine_transform (bpath, i2doc);
 	art_free (bpath);
 	for (len = 0; abp[len].code != ART_END; len++);
 	nbp = art_new (ArtBpath, len);
@@ -126,45 +117,40 @@ sp_selected_path_break_apart (void)
 		str = sp_svg_write_path (nbp);
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
-		sp_repr_append_child (parent_repr, repr);
+		item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), repr);
 		sp_repr_unref (repr);
+		sp_selection_add_item (selection, item);
 	}
 
 	art_free (nbp);
 	art_free (abp);
 	g_free (style);
-#endif
 }
 
 void
 sp_selected_path_to_curves (void)
 {
-#if 0
-	SPRepr * repr, * parent, * new;
+	SPSelection * selection;
+	SPRepr * new;
+	SPItem * item;
 	SPPath * path;
 	ArtBpath * bpath;
 	gchar * str;
 	const gchar * transform, * style;
-	gint pos;
 
-	repr = sp_selection_repr ();
-	if (repr == NULL)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	sp_selection_empty ();
+	item = sp_selection_item (selection);
+	if (item == NULL) return;
+	if (!SP_IS_PATH (item)) return;
 
-	path = (SPPath *) sp_repr_item (repr);
-	if (!SP_IS_PATH (path))
-		return;
-
-	parent = sp_repr_parent (repr);
-	pos = sp_repr_position (repr);
+	path = SP_PATH (item);
 
 	bpath = sp_path_normalized_bpath (path);
 	str = sp_svg_write_path (bpath);
 	art_free (bpath);
-	transform = sp_repr_attr (repr, "transform");
-	style = sp_repr_attr (repr, "style");
+	transform = sp_repr_attr (item->repr, "transform");
+	style = sp_repr_attr (item->repr, "style");
 
 	new = sp_repr_new_with_name ("path");
 	sp_repr_set_attr (new, "transform", transform);
@@ -173,10 +159,9 @@ sp_selected_path_to_curves (void)
 
 	g_free (str);
 
-	sp_repr_unparent_and_destroy (repr);
-	sp_repr_add_child (parent, new, pos);
+	sp_repr_unparent_and_destroy (item->repr);
+	item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), new);
 	sp_repr_unref (new);
 
-	sp_selection_set_repr (new);
-#endif
+	sp_selection_set_item (selection, item);
 }

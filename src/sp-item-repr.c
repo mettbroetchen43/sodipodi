@@ -13,8 +13,8 @@
 #include "sp-rect.h"
 #include "sp-text.h"
 #include "sp-ellipse.h"
-/* This is for silly event handlers ;-( */
-#include "event-broker.h"
+/* This is for event handlers ;-( */
+#include "desktop-events.h"
 
 #define noITEM_REPR_VERBOSE
 
@@ -66,10 +66,10 @@ sp_item_new_root (SPRepr * repr)
 
 SPItem * sp_item_new (SPRepr * repr, SPGroup * parent)
 {
-	SPItem * item;
+	SPItem * item, * sibling;
 	SPGroup * pg;
 	GnomeCanvasGroup * cg;
-	GSList * l;
+	GSList * l, * pl;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
@@ -82,15 +82,28 @@ SPItem * sp_item_new (SPRepr * repr, SPGroup * parent)
 	pg = SP_GROUP (parent);
 
 	item->parent = parent;
-	pg->children = g_slist_append (pg->children, item);
 
-	/* Silly, silly */
-	for (l = SP_ITEM (parent)->display; l != NULL; l = l->next) {
-		cg = GNOME_CANVAS_GROUP (l->data);
-		sp_item_show (item, cg, sp_event_handler);
+	pl = NULL;
+
+	for (l = parent->children; l != NULL; l = l->next) {
+		sibling = SP_ITEM (l->data);
+		if (sp_repr_compare_position (repr, sibling->repr) < 0) {
+			/* We are before that sibling */
+			break;
+		}
+		pl = l;
+	}
+	if (pl == NULL) {
+		/* we are first */
+		pg->children = g_slist_prepend (pg->children, item);
+	} else if (l == NULL) {
+		/* we are last */
+		pg->children = g_slist_append (pg->children, item);
+	} else {
+		/* we are after pl */
+		pl->next = g_slist_prepend (pl->next, item);
 	}
 
-	return item;
 
 #if 0
 /* fixme: do this right */
@@ -108,6 +121,15 @@ SPItem * sp_item_new (SPRepr * repr, SPGroup * parent)
 	g_assert (l != NULL);
 	sp_item_move_to_z (item, pos);
 #endif
+
+	/* Silly, silly */
+	for (l = SP_ITEM (parent)->display; l != NULL; l = l->next) {
+		cg = GNOME_CANVAS_GROUP (l->data);
+		sp_item_show (item, cg, sp_desktop_item_handler);
+	}
+
+	return item;
+
 }
 
 static GHashTable * hash_table_setup (void)

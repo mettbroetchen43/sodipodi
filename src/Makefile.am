@@ -41,8 +41,20 @@ sodipodi_SOURCES = \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \
+	desktop-events.h \
 	desktop-handles.c desktop-handles.h \
 	desktop-affine.c desktop-affine.h \
+	\
+	event-context.c event-context.h \
+	seltrans-handles.c seltrans-handles.h \
+	seltrans.c seltrans.h \
+	select-context.c select-context.h \
+	nodepath.c nodepath.h \
+	node-context.c node-context.h \
+	rect-context.c rect-context.h \
+	ellipse-context.c ellipse-context.h \
+	draw-context.c draw-context.h \
+	text-context.c text-context.h \
 	\
 	main.c \
 	help.c help.h \
@@ -53,15 +65,7 @@ sodipodi_SOURCES = \
 	path-chemistry.c path-chemistry.h \
 	selection-chemistry.c selection-chemistry.h \
 	\
-	seltrans-handles.c seltrans-handles.h \
-	seltrans.c seltrans.h \
-	sp-select-context.c sp-select-context.h \
-	nodepath.c nodepath.h \
 	sp-node-path-edit.c sp-node-path-edit.h \
-	sp-node-context.c sp-node-context.h \
-	object-context.c object-context.h \
-	sp-draw-context.c sp-draw-context.h \
-	text-context.c text-context.h \
 	zoom-context.c zoom-context.h \
 	font-wrapper.c font-wrapper.h \
 	file.c file.h

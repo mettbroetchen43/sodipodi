@@ -32,6 +32,7 @@ struct _SPNodePath {
 	GList * sel;
 	ArtBpath * bpath;
 	gchar * typestr;
+	guint sel_changed_id;
 };
 
 struct _SPNodeSubPath {
@@ -76,15 +77,8 @@ SPNodeSubPath * sp_nodepath_subpath_new (void);
 SPPathNode * sp_nodepath_node_new (void);
 SPPathLine * sp_nodepath_line_new (void);
 
-/*
- * Constructors
- *
- */
-
-SPNodePath * sp_nodepath_new (SPDesktop * desktop, SPItem * item);
-#if 0
-SPNodeSubPath * sp_nodepath_subpath_new (
-#endif
+void sp_nodepath_init (SPNodePath * nodepath, SPDesktop * desktop);
+void sp_nodepath_shutdown (SPNodePath * nodepath);
 
 /*
  * Destructors
@@ -133,13 +127,7 @@ void sp_node_selected_join (void);
 void sp_node_selected_set_type (SPPathNodeType type);
 void sp_node_selected_set_line_type (ArtPathcode code);
 
-#if 0
-void sp_node_ensure_ctrls (SPPathNode * node);
-#endif
-
 void sp_node_update_bpath (SPPathNode * pathnode);
 void sp_nodepath_update_bpath (SPNodePath * NodePath);
-
-void sp_nodepath_update_object (SPNodePath * nodepath);
 
 #endif

@@ -1,20 +1,34 @@
-#ifndef ZOOM_CONTEXT_H
-#define ZOOM_CONTEXT_H
+#ifndef SP_ZOOM_CONTEXT_H
+#define SP_ZOOM_CONTEXT_H
 
-#include <libgnomeui/gnome-canvas.h>
-#include "desktop.h"
+#include "event-context.h"
 
-gint sp_zoom_handler (SPDesktop * desktop, SPItem * item, GdkEvent * event);
-gint sp_zoom_root_handler (SPDesktop * desktop, GdkEvent * event);
+#define SP_TYPE_ZOOM_CONTEXT            (sp_zoom_context_get_type ())
+#define SP_ZOOM_CONTEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_ZOOM_CONTEXT, SPZoomContext))
+#define SP_ZOOM_CONTEXT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ZOOM_CONTEXT, SPZoomContextClass))
+#define SP_IS_ZOOM_CONTEXT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ZOOM_CONTEXT))
+#define SP_IS_ZOOM_CONTEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ZOOM_CONTEXT))
 
-void sp_zoom_context_set (SPDesktop * desktop);
+typedef struct _SPZoomContext SPZoomContext;
+typedef struct _SPZoomContextClass SPZoomContextClass;
 
-void sp_zoom_context_release (SPDesktop * desktop);
+struct _SPZoomContext {
+	SPEventContext event_context;
+};
 
-/* Menu handlers */
+struct _SPZoomContextClass {
+	SPEventContextClass parent_class;
+};
+
+/* Standard Gtk function */
+
+GtkType sp_zoom_context_get_type (void);
 
 void sp_zoom_selection (GtkWidget * widget);
 void sp_zoom_drawing (GtkWidget * widget);
 void sp_zoom_page (GtkWidget * widget);
+void sp_zoom_1_to_2 (GtkWidget * widget);
+void sp_zoom_1_to_1 (GtkWidget * widget);
+void sp_zoom_2_to_1 (GtkWidget * widget);
 
 #endif

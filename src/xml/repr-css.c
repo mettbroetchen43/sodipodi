@@ -10,14 +10,13 @@ struct _SPCSSAttr {
 	SPRepr repr;
 };
 
-static SPCSSAttr * sp_repr_css_new (void);
 static void sp_repr_css_add_components (SPCSSAttr * css, SPRepr * repr, const gchar * attr);
 
-static SPCSSAttr *
-sp_repr_css_new (void)
+SPCSSAttr *
+sp_repr_css_attr_new (void)
 {
 	SPRepr * css;
-	css = sp_repr_new ();
+	css = sp_repr_new_with_name ("css");
 	g_return_val_if_fail (css != NULL, NULL);
 	return (SPCSSAttr *) css;
 }
@@ -36,7 +35,7 @@ SPCSSAttr * sp_repr_css_attr (SPRepr * repr, const gchar * attr)
 	g_assert (repr != NULL);
 	g_assert (attr != NULL);
 
-	css = sp_repr_css_new ();
+	css = sp_repr_css_attr_new ();
 
 	sp_repr_css_add_components (css, repr, attr);
 
@@ -51,7 +50,7 @@ SPCSSAttr * sp_repr_css_attr_inherited (SPRepr * repr, const gchar * attr)
 	g_assert (repr != NULL);
 	g_assert (attr != NULL);
 
-	css = sp_repr_css_new ();
+	css = sp_repr_css_attr_new ();
 
 	sp_repr_css_add_components (css, repr, attr);
 	current = sp_repr_parent (repr);

@@ -55,9 +55,10 @@ void sp_repr_print (SPRepr * repr);
 
 /* CSS stuff */
 
+SPCSSAttr * sp_repr_css_attr_new (void);
+void sp_repr_css_attr_unref (SPCSSAttr * css);
 SPCSSAttr * sp_repr_css_attr (SPRepr * repr, const gchar * attr);
 SPCSSAttr * sp_repr_css_attr_inherited (SPRepr * repr, const gchar * attr);
-void sp_repr_css_attr_unref (SPCSSAttr * css);
 
 const gchar * sp_repr_css_property (SPCSSAttr * css, const gchar * name, const gchar * defval);
 void sp_repr_css_set_property (SPCSSAttr * css, const gchar * name, const gchar * value);

@@ -1,3 +1,9 @@
+2000-01-16  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Bumped version to 0.17
+    * Most things, that worked in 0.15 work again
+    * still looses selections, dialogs suck etc.
+
 2000-01-14  Lauris Kaplinski <lauris@ariman.ee>
 
     * Now uses Gnome MDI

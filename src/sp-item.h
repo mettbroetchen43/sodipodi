@@ -111,6 +111,7 @@ void sp_item_request_canvas_update (SPItem * item);
 
 gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
+gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
 
 /* group */
 

@@ -1,14 +1,28 @@
-#ifndef TEXT_CONTEXT_H
-#define TEXT_CONTEXT_H
+#ifndef SP_TEXT_CONTEXT_H
+#define SP_TEXT_CONTEXT_H
 
-#include <libgnomeui/gnome-canvas.h>
-#include "desktop-handles.h"
+#include "event-context.h"
 
-gint sp_text_handler (SPDesktop * desktop, SPItem * item, GdkEvent * event);
-gint sp_text_root_handler (SPDesktop * desktop, GdkEvent * event);
+#define SP_TYPE_TEXT_CONTEXT            (sp_text_context_get_type ())
+#define SP_TEXT_CONTEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT_CONTEXT, SPTextContext))
+#define SP_TEXT_CONTEXT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_TEXT_CONTEXT, SPTextContextClass))
+#define SP_IS_TEXT_CONTEXT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_TEXT_CONTEXT))
+#define SP_IS_TEXT_CONTEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_TEXT_CONTEXT))
 
-void sp_text_release (SPDesktop * desktop);
+typedef struct _SPTextContext SPTextContext;
+typedef struct _SPTextContextClass SPTextContextClass;
 
-void sp_text_context_set (SPDesktop * desktop);
+struct _SPTextContext {
+	SPEventContext event_context;
+	SPRepr * text;
+};
+
+struct _SPTextContextClass {
+	SPEventContextClass parent_class;
+};
+
+/* Standard Gtk function */
+
+GtkType sp_text_context_get_type (void);
 
 #endif

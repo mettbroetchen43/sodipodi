@@ -3,22 +3,36 @@
 #include <math.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
+#include "mdi-desktop.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "node-context.h"
 #include "nodepath.h"
 
 GMemChunk * nodechunk = NULL;
 
 SPPathNodeSide endside = {NULL, {0.0, 0.0}, NULL, NULL};
 
-/* fixme: remove this */
-SPNodePath * current_nodepath = NULL;
-
 static void sp_node_adjust_knot (SPPathNode * node, gint which_adjust);
 static void sp_node_adjust_knots (SPPathNode * node);
 static void sp_nodepath_ensure_ctrls (SPNodePath * nodepath);
 static void sp_node_ensure_ctrls (SPPathNode * node);
+
+static void sp_nodepath_update_object (SPNodePath * nodepath);
+static void sp_nodepath_flush (SPNodePath * nodepath);
+
+static SPNodePath *
+sp_nodepath_current (void)
+{
+	SPEventContext * event_context;
+
+	event_context = (SP_ACTIVE_DESKTOP)->event_context;
+
+	if (!SP_IS_NODE_CONTEXT (event_context)) return NULL;
+
+	return &SP_NODE_CONTEXT (event_context)->nodepath;
+}
 
 SPNodeSubPath *
 sp_nodepath_subpath_new (void)
@@ -473,7 +487,7 @@ sp_node_selected_add_node (void)
 	SPPathLine * line;
 	GList * lsp, * ll, * nll;
 
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 	if (nodepath == NULL) return;
 
 	nll = NULL;
@@ -498,11 +512,8 @@ sp_node_selected_add_node (void)
 	/* fixme: adjust ? */
 	sp_nodepath_ensure_ctrls (nodepath);
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 void
@@ -512,7 +523,7 @@ sp_node_selected_break (void)
 	SPPathNode * n, * nn;
 	GList * l;
 
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 
 	if (nodepath == NULL) return;
 
@@ -526,11 +537,8 @@ sp_node_selected_break (void)
 
 	sp_nodepath_ensure_ctrls (nodepath);
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 void
@@ -542,7 +550,7 @@ sp_node_selected_join (void)
 	gdouble x, y;
 	GList * l;
 
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 	if (nodepath == NULL) return;
 	if (g_list_length (nodepath->sel) != 2) return;
 
@@ -585,11 +593,9 @@ sp_node_selected_join (void)
 		nodepath->n_bpaths++;
 		sp_node_adjust_knots (a);
 		sp_nodepath_update_bpath (nodepath);
-#if 0
-		sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-		sp_nodepath_update_object (nodepath);
-#endif
+
+		sp_nodepath_flush (nodepath);
+
 		return;
 	}
 	/* a and b are separate subpaths */
@@ -651,11 +657,8 @@ sp_node_selected_join (void)
 
 	sp_node_adjust_knots (a);
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 void
@@ -664,7 +667,7 @@ sp_node_selected_delete (void)
 	SPNodePath * nodepath;
 	SPPathNode * node;
 
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 	if (nodepath == NULL) return;
 	if (nodepath->sel == NULL) return;
 
@@ -675,11 +678,8 @@ sp_node_selected_delete (void)
 	}
 	/* fixme: update knots? */
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 void
@@ -690,7 +690,7 @@ sp_node_selected_set_line_type (ArtPathcode code)
 	SPPathLine * line;
 	GList * ls, * ll;
 
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 	if (nodepath == NULL) return;
 
 	for (ls = nodepath->subpaths; ls != NULL; ls = ls->next) {
@@ -702,11 +702,8 @@ sp_node_selected_set_line_type (ArtPathcode code)
 		}
 	}
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 void
@@ -716,7 +713,7 @@ sp_node_selected_set_type (SPPathNodeType type)
 	GList * l;
 
 	/* fixme: do it the right way */
-	nodepath = current_nodepath;
+	nodepath = sp_nodepath_current ();
 	if (nodepath == NULL) return;
 
 	for (l = nodepath->sel; l != NULL; l = l->next) {
@@ -724,11 +721,8 @@ sp_node_selected_set_type (SPPathNodeType type)
 	}
 
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
-	sp_nodepath_update_object (nodepath);
-#endif
+
+	sp_nodepath_flush (nodepath);
 }
 
 static void
@@ -825,18 +819,12 @@ sp_node_adjust_knot (SPPathNode * node, gint which_adjust)
 		me->cpoint.x = node->pos.x + dx * len / linelen;
 		me->cpoint.y = node->pos.y + dy * len / linelen;
 		sp_node_ensure_ctrls (node);
-#if 0
-		sp_node_update_bpath (node);
-#endif
 		return;
 	}
 	if (node->type == SP_PATHNODE_SYMM) {
 		me->cpoint.x = 2 * node->pos.x - other->cpoint.x;
 		me->cpoint.y = 2 * node->pos.y - other->cpoint.y;
 		sp_node_ensure_ctrls (node);
-#if 0
-		sp_node_update_bpath (node);
-#endif
 		return;
 	}
 	/* We are smooth */
@@ -850,9 +838,6 @@ sp_node_adjust_knot (SPPathNode * node, gint which_adjust)
 		me->cpoint.x = node->pos.x - dx * len / otherlen;
 		me->cpoint.y = node->pos.y - dy * len / otherlen;
 		sp_node_ensure_ctrls (node);
-#if 0
-		sp_node_update_bpath (node);
-#endif
 }
 
 static void
@@ -920,10 +905,6 @@ sp_node_adjust_knots (SPPathNode * node)
 	node->next.cpoint.x = node->pos.x + dx * scale;
 	node->next.cpoint.y = node->pos.y + dy * scale;
 	sp_node_ensure_ctrls (node);
-#if 0
-	sp_node_update_bpath (node);
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#endif
 }
 
 static void
@@ -969,17 +950,15 @@ sp_knot_moveto (SPPathNode * node, gint which, double x, double y)
 	/* fixme: this will probably go to adjust_knots */
 	sp_node_update_bpath (node);
 	sp_node_ensure_ctrls (node);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
+
 	sp_nodepath_update_object (nodepath);
-#endif
 }
 
 static gint
 sp_knot_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	static gint dragging = FALSE;
+	static gint dragged = FALSE;
 	SPPathNode * node;
 	gint handled;
 	ArtPoint p;
@@ -998,6 +977,7 @@ sp_knot_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		switch (event->button.button) {
 		case 1:
 			dragging = TRUE;
+			dragged = FALSE;
 			break;
 		default:
 			break;
@@ -1006,6 +986,7 @@ sp_knot_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_RELEASE:
 		switch (event->button.button) {
 		case 1:
+			if (dragged) sp_nodepath_flush (node->subpath->nodepath);
 			if (! node->selected)
 				sp_nodepath_node_select (node, TRUE);
 			dragging = FALSE;
@@ -1019,6 +1000,7 @@ sp_knot_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 
 		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
 			sp_knot_moveto (node, which, p.x, p.y);
+			dragged = TRUE;
 			handled = TRUE;
 		}
 
@@ -1078,8 +1060,6 @@ sp_node_moveto (SPPathNode * node, double x, double y)
 	}
 
 	sp_node_ensure_ctrls (node);
-#if 0
-#endif
 }
 
 static void
@@ -1094,11 +1074,7 @@ sp_nodepath_selected_nodes_move (SPNodePath * nodepath, gdouble dx, gdouble dy)
 	}
 
 	sp_nodepath_update_bpath (nodepath);
-#if 0
-	sp_path_change_bpath (nodepath->path, nodepath->bpath);
-#else
 	sp_nodepath_update_object (nodepath);
-#endif
 }
 
 static gint
@@ -1140,6 +1116,8 @@ sp_node_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				} else {
 					sp_nodepath_node_select (node, FALSE);
 				}
+			} else {
+				sp_nodepath_flush (nodepath);
 			}
 			break;
 		default:
@@ -1450,71 +1428,6 @@ sp_nodepath_append_subpath (SPNodePath * nodepath, gint start, gint end, const g
 }
 
 
-SPNodePath *
-sp_nodepath_new (SPDesktop * desktop, SPItem * item)
-{
-	SPPath * path;
-	ArtBpath * bpath;
-	SPNodePath * nodepath;
-	SPNodeSubPath * subpath;
-	gint n_bpaths;
-	const gchar * rtstr;
-	gchar * typestr;
-	gint i, len, substart, subend;
-
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_PATH (item), NULL);
-	path = SP_PATH (item);
-
-	if (!sp_path_independent (path))
-		return NULL;
-
-	/* fixme: */
-	bpath = sp_path_normalize (path);
-	if (bpath == NULL)
-		return NULL;
-
-	for (n_bpaths = 0; bpath[n_bpaths].code != ART_END; n_bpaths++);
-	n_bpaths++;
-
-	typestr = g_new (gchar, n_bpaths);
-	for (i = 0; i < n_bpaths; i++) typestr[i] = 'c';
-	typestr[n_bpaths] = '\0';
-	rtstr = sp_repr_attr (item->repr, "SODIPODI-PATH-NODE-TYPES");
-	if (rtstr != NULL) {
-		len = strlen (rtstr);
-		for (i = 0; (i < len) && (i < n_bpaths); i++) typestr[i] = rtstr[i];
-	}
-
-	nodepath = g_new (SPNodePath, 1);
-	nodepath->desktop = desktop;
-	nodepath->repr = item->repr;
-	nodepath->path = path;
-	/* fixme: */
-	sp_item_i2d_affine (SP_ITEM (path), nodepath->i2d);
-	art_affine_invert (nodepath->d2i, nodepath->i2d);
-	nodepath->n_bpaths = n_bpaths;
-	nodepath->max_bpaths = n_bpaths;
-	nodepath->subpaths = NULL;
-	nodepath->sel = NULL;
-	nodepath->bpath = bpath;
-	nodepath->typestr = typestr;
-
-	substart = 0;
-	while (substart < n_bpaths - 1) {
-		for (i = substart + 1; (bpath[i].code != ART_MOVETO) && (bpath[i].code != ART_MOVETO_OPEN) && (bpath[i].code != ART_END); i++);
-		subend = i;
-		subpath = sp_nodepath_append_subpath (nodepath, substart, subend, typestr);
-		nodepath->subpaths = g_list_append (nodepath->subpaths, subpath);
-		substart = subend;
-	}
-
-	sp_nodepath_ensure_ctrls (nodepath);
-/* fixme: */
-current_nodepath = nodepath;
-	return nodepath;
-}
-
 /*
  * Destroy methods
  *
@@ -1523,26 +1436,6 @@ current_nodepath = nodepath;
  * Their main reason is freeing corresponding Canvas Items
  *
  */
-
-void
-sp_nodepath_destroy (SPNodePath * nodepath, gboolean free_bpath, gboolean free_typestr)
-{
-	g_assert (nodepath != NULL);
-
-	while (nodepath->subpaths) {
-		sp_nodepath_subpath_destroy ((SPNodeSubPath *) nodepath->subpaths->data);
-	}
-	g_assert (nodepath->sel == NULL);
-	g_assert (nodepath->n_bpaths == 1);
-
-	if (free_bpath)
-		art_free (nodepath->bpath);
-	if (free_typestr)
-		g_free (nodepath->typestr);
-	g_free (nodepath);
-/* fixme: */
-	current_nodepath = NULL;
-}
 
 void
 sp_nodepath_subpath_destroy (SPNodeSubPath * subpath)
@@ -1792,7 +1685,7 @@ sp_nodepath_update_bpath (SPNodePath * nodepath)
 	nodepath->typestr[nodepath->n_bpaths - 1] = '\0';
 }
 
-void
+static void
 sp_nodepath_update_object (SPNodePath * nodepath)
 {
 #if 1
@@ -1805,5 +1698,195 @@ sp_nodepath_update_object (SPNodePath * nodepath)
 	g_free (str);
 	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", nodepath->typestr);
 #endif
+}
+
+static void
+sp_nodepath_flush (SPNodePath * nodepath)
+{
+	ArtBpath * bpath;
+	gchar * str;
+
+	bpath = art_new (ArtBpath, nodepath->max_bpaths);
+	memcpy (bpath, nodepath->bpath, sizeof (ArtBpath) * nodepath->max_bpaths);
+#if 0
+	typestr = g_new (gchar, nodepath->max_bpaths);
+	memcpy (typestr, nodepath->typestr, sizeof (gchar) * nodepath->max_bpaths);
+#endif
+#if 0
+	sp_path_bpath_modified (nodepath->path, nodepath->bpath);
+#else
+
+	str = sp_svg_write_path (nodepath->bpath);
+	sp_repr_set_attr (nodepath->repr, "d", str);
+	g_free (str);
+	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", nodepath->typestr);
+
+	nodepath->bpath = bpath;
+g_print ("flushed\n");
+#endif
+}
+
+/*
+ * Private methods
+ *
+ */
+
+static void
+sp_nodepath_set_selection (SPNodePath * nodepath)
+{
+	SPItem * item;
+	SPPath * path;
+	ArtBpath * bpath;
+	SPNodeSubPath * subpath;
+	gint n_bpaths;
+	const gchar * rtstr;
+	gchar * typestr;
+	gint i, len, substart, subend;
+
+	item = sp_selection_item (SP_DT_SELECTION (nodepath->desktop));
+
+	if (item == NULL) return;
+	if (!SP_IS_PATH (item)) return;
+
+	path = SP_PATH (item);
+
+	if (!sp_path_independent (path)) return;
+
+	/* fixme: */
+	bpath = sp_path_normalize (path);
+	if (bpath == NULL) return;
+
+	for (n_bpaths = 0; bpath[n_bpaths].code != ART_END; n_bpaths++);
+	n_bpaths++;
+
+	typestr = g_new (gchar, n_bpaths);
+	for (i = 0; i < n_bpaths; i++) typestr[i] = 'c';
+	typestr[n_bpaths] = '\0';
+	rtstr = sp_repr_attr (item->repr, "SODIPODI-PATH-NODE-TYPES");
+	if (rtstr != NULL) {
+		len = strlen (rtstr);
+		for (i = 0; (i < len) && (i < n_bpaths); i++) typestr[i] = rtstr[i];
+	}
+
+	nodepath->repr = item->repr;
+	nodepath->path = path;
+	/* fixme: */
+	sp_item_i2d_affine (SP_ITEM (path), nodepath->i2d);
+	art_affine_invert (nodepath->d2i, nodepath->i2d);
+	nodepath->n_bpaths = n_bpaths;
+	nodepath->max_bpaths = n_bpaths;
+	nodepath->subpaths = NULL;
+	nodepath->sel = NULL;
+	nodepath->bpath = art_new (ArtBpath, n_bpaths);
+	memcpy (nodepath->bpath, bpath, sizeof (ArtBpath) * n_bpaths);
+	nodepath->typestr = typestr;
+
+	substart = 0;
+	while (substart < n_bpaths - 1) {
+		for (i = substart + 1; (bpath[i].code != ART_MOVETO) && (bpath[i].code != ART_MOVETO_OPEN) && (bpath[i].code != ART_END); i++);
+		subend = i;
+		subpath = sp_nodepath_append_subpath (nodepath, substart, subend, typestr);
+		nodepath->subpaths = g_list_append (nodepath->subpaths, subpath);
+		substart = subend;
+	}
+
+	sp_nodepath_ensure_ctrls (nodepath);
+}
+
+static void
+sp_nodepath_clean (SPNodePath * nodepath)
+{
+	g_return_if_fail (nodepath != NULL);
+
+	while (nodepath->subpaths) {
+		sp_nodepath_subpath_destroy ((SPNodeSubPath *) nodepath->subpaths->data);
+	}
+
+	g_assert (nodepath->sel == NULL);
+	g_assert (nodepath->n_bpaths == 1);
+
+	art_free (nodepath->bpath);
+	g_free (nodepath->typestr);
+
+	nodepath->repr = NULL;
+	nodepath->path = NULL;
+	nodepath->n_bpaths = 0;
+	nodepath->max_bpaths = 0;
+	nodepath->subpaths = NULL;
+	nodepath->sel = NULL;
+	nodepath->bpath = NULL;
+	nodepath->typestr = NULL;
+#if 1
+	art_free (nodepath->bpath);
+	g_free (nodepath->typestr);
+#endif
+}
+
+/*
+ * Public methods
+ *
+ */
+
+static void
+sp_nodepath_sel_changed (SPSelection * selection, gpointer data)
+{
+	SPNodePath * nodepath;
+	SPItem * item;
+
+	nodepath = (SPNodePath *) data;
+
+	item = sp_selection_item (selection);
+
+	if (nodepath->path)
+		sp_nodepath_clean (nodepath);
+
+	if (item)
+		sp_nodepath_set_selection (nodepath);
+}
+
+void
+sp_nodepath_init (SPNodePath * nodepath, SPDesktop * desktop)
+{
+	nodepath->desktop = desktop;
+	nodepath->repr = NULL;
+	nodepath->path = NULL;
+	nodepath->n_bpaths = 0;
+	nodepath->max_bpaths = 0;
+	nodepath->subpaths = NULL;
+	nodepath->sel = NULL;
+	nodepath->bpath = NULL;
+	nodepath->typestr = NULL;
+
+	nodepath->sel_changed_id = gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
+		GTK_SIGNAL_FUNC (sp_nodepath_sel_changed), nodepath);
+
+	sp_nodepath_set_selection (nodepath);
+}
+
+void
+sp_nodepath_shutdown (SPNodePath * nodepath)
+{
+	g_return_if_fail (nodepath != NULL);
+
+#if 0
+	/* nodepath is always flushed, except when dragging */
+	sp_nodepath_flush (nodepath);
+#endif
+
+	if (nodepath->sel_changed_id)
+		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (nodepath->desktop)), nodepath->sel_changed_id);
+
+	if (nodepath->path) {
+		while (nodepath->subpaths) {
+			sp_nodepath_subpath_destroy ((SPNodeSubPath *) nodepath->subpaths->data);
+		}
+
+		g_assert (nodepath->sel == NULL);
+		g_assert (nodepath->n_bpaths == 1);
+#if 1
+		art_free (nodepath->bpath);
+		g_free (nodepath->typestr);
+#endif
+	}
 }
 

@@ -18,6 +18,7 @@ struct _SPCPathComp {
 	/* identifiers */
 	ArtBpath * bpath;
 	gboolean private;
+	gboolean changed;
 	double affine[6];
 	double stroke_width;
 	ArtPathStrokeJoinType join;

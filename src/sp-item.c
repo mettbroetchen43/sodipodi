@@ -2,7 +2,7 @@
 
 #include <gnome.h>
 #include "svg/svg.h"
-
+#include "helper/sp-canvas-util.h"
 #include "sp-item.h"
 
 static void sp_item_class_init (SPItemClass * klass);
@@ -197,6 +197,7 @@ GnomeCanvasItem *
 sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 {
 	GnomeCanvasItem * ci;
+	gint pos;
 
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
@@ -206,6 +207,10 @@ sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	ci = (* SP_ITEM_CLASS (item->object.klass)->show) (item, canvas_group, handler);
 
 	if (ci != NULL) {
+		if (item->parent != NULL) {
+			pos = g_slist_index (item->parent->children, item);
+			gnome_canvas_item_move_to_z (ci, pos);
+		}
 		gnome_canvas_item_affine_absolute (ci, item->affine);
 		if (handler != NULL)
 			gtk_signal_connect (GTK_OBJECT (ci), "event",
@@ -338,5 +343,22 @@ sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
 		gnome_canvas_item_affine_absolute (ci, affine);
 	}
 #endif
+}
+
+gdouble *
+sp_item_i2doc_affine (SPItem * item, gdouble affine[])
+{
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
+	g_return_val_if_fail (affine != NULL, NULL);
+
+	art_affine_identity (affine);
+
+	while (item->parent) {
+		art_affine_multiply (affine, affine, item->affine);
+		item = (SPItem *) item->parent;
+	}
+
+	return affine;
 }
 

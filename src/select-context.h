@@ -1,0 +1,29 @@
+#ifndef SP_SELECT_CONTEXT_H
+#define SP_SELECT_CONTEXT_H
+
+#include "event-context.h"
+#include "seltrans.h"
+
+#define SP_TYPE_SELECT_CONTEXT            (sp_select_context_get_type ())
+#define SP_SELECT_CONTEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SELECT_CONTEXT, SPSelectContext))
+#define SP_SELECT_CONTEXT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SELECT_CONTEXT, SPSelectContextClass))
+#define SP_IS_SELECT_CONTEXT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SELECT_CONTEXT))
+#define SP_IS_SELECT_CONTEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SELECT_CONTEXT))
+
+typedef struct _SPSelectContext SPSelectContext;
+typedef struct _SPSelectContextClass SPSelectContextClass;
+
+struct _SPSelectContext {
+	SPEventContext event_context;
+	SPSelTrans seltrans;
+};
+
+struct _SPSelectContextClass {
+	SPEventContextClass parent_class;
+};
+
+/* Standard Gtk function */
+
+GtkType sp_select_context_get_type (void);
+
+#endif

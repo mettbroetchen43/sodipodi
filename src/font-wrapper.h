@@ -31,12 +31,13 @@ gint sp_font_glyph_width (SPFont * font, guint glyph);
 
 GList * sp_font_family_list (void);
 
+#if 0
 /* io */
 
 const gchar * sp_font_read_family (SPCSSAttr * css);
 gdouble sp_font_read_size (SPCSSAttr * css);
 GnomeFontWeight sp_font_read_weight (SPCSSAttr * css);
 gboolean sp_font_read_italic (SPCSSAttr * css);
-
+#endif
 
 #endif

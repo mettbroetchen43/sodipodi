@@ -1,8 +1,9 @@
 #ifndef SP_SVG_H
 #define SP_SVG_H
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <libart_lgpl/art_bpath.h>
+#include <libgnomeprint/gnome-font.h>
 #include "../display/fill.h"
 #include "../display/stroke.h"
 
@@ -41,5 +42,8 @@ gint sp_svg_write_fill_type (gchar * buf, gint buflen, SPFillType type, guint32 
 SPStrokeType sp_svg_read_stroke_type (const gchar * str);
 ArtPathStrokeJoinType sp_svg_read_stroke_join (const gchar * str);
 ArtPathStrokeCapType sp_svg_read_stroke_cap (const gchar * str);
+
+GnomeFontWeight sp_svg_read_font_weight (const gchar * str);
+gboolean sp_svg_read_font_italic (const gchar * str);
 
 #endif

@@ -185,119 +185,108 @@ void sp_selection_ungroup (GtkWidget * widget)
 
 void sp_selection_raise (GtkWidget * widget)
 {
-#if 0
+	SPSelection * selection;
 	SPRepr * repr;
-	GList * l;
-	GList * pl;
+	GSList * rl;
+	GSList * l;
+	GSList * pl;
 
-	if (selected == NULL)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	sp_event_context_set_select ();
+	if (sp_selection_is_empty (selection)) return;
+
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 
 	pl = NULL;
 
-	for (l = selected; l != NULL; l = l->next) {
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
-		pl = g_list_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
+		pl = g_slist_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
 	}
 
-	for (l = selected; l != NULL; l = l->next) {
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		sp_repr_set_position_absolute (repr, GPOINTER_TO_INT (pl->data) + 1);
-		pl = g_list_remove (pl, pl->data);
+		pl = g_slist_remove (pl, pl->data);
 	}
-#endif
+
+	g_slist_free (rl);
 }
 
 void sp_selection_raise_to_top (GtkWidget * widget)
 {
-#if 0
+	SPSelection * selection;
 	SPRepr * repr;
-	GList * l;
+	GSList * rl;
+	GSList * l;
 
-	if (selected == NULL)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	sp_event_context_set_select ();
+	if (sp_selection_is_empty (selection)) return;
 
-	for (l = selected; l != NULL; l = l->next) {
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
+
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		sp_repr_set_position_absolute (repr, -1);
 	}
-#endif
+
+	g_slist_free (rl);
 }
 
 void sp_selection_lower (GtkWidget * widget)
 {
-#if 0
+	SPSelection * selection;
 	SPRepr * repr;
-	GList * l;
-	GList * pl;
+	GSList * rl;
+	GSList * l;
+	GSList * pl;
 	gint pos;
 
-	if (selected == NULL)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	sp_event_context_set_select ();
+	if (sp_selection_is_empty (selection)) return;
+
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 
 	pl = NULL;
 
-	for (l = selected; l != NULL; l = l->next) {
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
-		pl = g_list_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
+		pl = g_slist_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
 	}
 
-	for (l = selected; l != NULL; l = l->next) {
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		pos = GPOINTER_TO_INT (pl->data) - 1;
 		if (pos < 0) pos = 0;
 		sp_repr_set_position_absolute (repr, pos);
-		pl = g_list_remove (pl, pl->data);
+		pl = g_slist_remove (pl, pl->data);
 	}
-#endif
+
+	g_slist_free (rl);
 }
 
 void sp_selection_lower_to_bottom (GtkWidget * widget)
 {
-#if 0
+	SPSelection * selection;
 	SPRepr * repr;
-	GList * l;
+	GSList * rl;
+	GSList * l;
 
-	if (selected == NULL)
-		return;
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	sp_event_context_set_select ();
+	if (sp_selection_is_empty (selection)) return;
 
-	for (l = g_list_last (selected); l != NULL; l = l->prev) {
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
+
+	rl = g_slist_reverse (rl);
+
+	for (l = rl; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		sp_repr_set_position_absolute (repr, 0);
 	}
-#endif
+
+	g_slist_free (rl);
 }
 
-
-#if 0
-void
-sp_selection_bbox (ArtDRect * bbox)
-{
-	ArtDRect b;
-	GList * list;
-	SPRepr * repr;
-
-	list = selected;
-
-	if (list == NULL)
-		return;
-
-	repr = (SPRepr *) list->data;
-	sp_editable_bbox (sp_repr_editable (repr), bbox);
-
-	for (list = list->next; list != NULL; list = list->next) {
-		repr = (SPRepr *) list->data;
-		sp_editable_bbox (sp_repr_editable (repr), &b);
-		art_drect_union (bbox, bbox, &b);
-	}
-}
-
-#endif

@@ -1,4 +1,4 @@
-#define OBJECT_FILL_C
+#define SP_OBJECT_FILL_C
 
 #include <gnome.h>
 #include <glade/glade.h>
@@ -32,7 +32,7 @@ static void sp_fill_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer d
 static void sp_fill_sel_changed (SPSelection * selection, gpointer data);
 static void sp_fill_sel_destroy (GtkObject * object, gpointer data);
 
-static GladeXML * xml;
+static GladeXML * xml = NULL;
 static GtkWidget * dialog = NULL;
 
 GtkColorSelection * cs;
@@ -59,7 +59,7 @@ void sp_object_fill_dialog (void)
 
 	sp_fill_read_selection ();
 	sp_fill_show_dialog ();
-};
+}
 
 static void
 sp_fill_read_selection (void)
