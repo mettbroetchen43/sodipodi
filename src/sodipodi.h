@@ -42,6 +42,19 @@ GtkType sodipodi_get_type (void);
 	extern Sodipodi * sodipodi;
 #endif
 
+Sodipodi * sodipodi_application_new (void);
+
+/* Preference management */
+/* We use '.' as separator */
+void sodipodi_set_key (Sodipodi * sodipodi, const gchar * key, const gchar * value);
+const gchar * sodipodi_get_key (Sodipodi * sodipodi, const gchar * key);
+void sodipodi_set_key_as_number (Sodipodi * sodipodi, const gchar * key, gdouble value);
+#define sodipodi_set_key_as_int(s,k,v) sodipodi_set_key_as_number (s, k, (gdouble) v)
+#define sodipodi_set_key_as_boolean(s,k,v) sodipodi_set_key_as_number (s, k, (gdouble) v)
+gdouble sodipodi_get_key_as_number (Sodipodi * sodipodi, const gchar * key);
+#define sodipodi_get_key_as_int(s,k) ((gint) sodipodi_get_key_as_number (s, k))
+#define sodipodi_get_key_as_boolean(s,k) ((gboolean) sodipodi_get_key_as_number (s, k))
+
 #define SP_ACTIVE_EVENTCONTEXT sodipodi_active_event_context ()
 SPEventContext * sodipodi_active_event_context (void);
 

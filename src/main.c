@@ -31,6 +31,7 @@
 
 #include "file.h"
 #include "toolbox.h"
+#include "interface.h"
 
 enum {SP_ARG_NONE, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_LAST};
 
@@ -62,7 +63,7 @@ struct poptOption options[] = {
         POPT_ARG_STRING,
         &sp_global_printer,
         SP_ARG_PRINT,
-        N_("Print files to specified file (use '| program' for pipe)"),
+        N_("Print files to specified output file (use '| program' for pipe)"),
         N_("FILENAME")
   },
   { NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -174,7 +175,7 @@ main (int argc, char *argv[])
                                     	    options, 0, &ctx);
 #endif /* ENABLE_BONOBO */
 
-#if 0
+#if 1
 		fl = sp_process_args (ctx);
 #else
 		fl = NULL;
@@ -265,9 +266,21 @@ main (int argc, char *argv[])
 		}
 #endif
 
-		sodipodi = gtk_type_new (SP_TYPE_SODIPODI);
+		sodipodi = sodipodi_application_new ();
 		sp_maintoolbox_create ();
 		sodipodi_unref ();
+
+		while (fl) {
+			SPDocument * doc;
+			SPDesktop * dt;
+			doc = sp_document_new ((const gchar *) fl->data);
+			if (doc) {
+				dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+				sp_document_unref (doc);
+				if (dt) sp_create_window (dt, TRUE);
+			}
+			fl = g_slist_remove (fl, fl->data);
+		}
 
 #ifdef ENABLE_BONOBO
 		}
@@ -299,9 +312,8 @@ sp_process_args (poptContext ctx)
 	gint i, a;
 
 	fl = NULL;
-	g_warning ("start process ctx %p", ctx);
+
 	while ((a = poptGetNextOpt (ctx)) >= 0) {
-		g_warning ("process");
 		switch (a) {
 		case SP_ARG_FILE:
 			fn = poptGetOptArg (ctx);
@@ -313,9 +325,7 @@ sp_process_args (poptContext ctx)
 			break;
 		}
 	}
-	g_warning ("here 1");
 	args = poptGetArgs (ctx);
-	g_warning ("here 2");
 	if (args != NULL) {
 		for (i = 0; args[i] != NULL; i++) {
 			fl = g_slist_append (fl, (gpointer) args[i]);

@@ -130,6 +130,7 @@ macros/Makefile
 src/Makefile
 src/xml/Makefile
 src/svg/Makefile
+src/widgets/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile

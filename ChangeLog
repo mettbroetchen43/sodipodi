@@ -1,3 +1,24 @@
+2001-01-02  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/widgets/sp-toolbox.*: general toolbox implementation
+
+	* src/toolbox.c: Use SPToolBox widget, load and save toolbox states
+
+	* src/sodipodi.* (sodipodi_set_key): New function for setting
+	preference values into xml tree
+	(sodipodi_get_key): Ditto
+	(sodipodi_set_key_as_number): Ditto
+	(sodipodi_get_key_as_number): Ditto
+
+	* src/xml/repr-io.c (sp_repr_read_file): Load whatever element node as root
+	(sp_repr_read_mem): Ditto
+
+2000-12-30  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/main.c (main): Reenable command-line filenames
+
+	* src/sodipodi.* (sodipodi_application_new): New function
+	
 2000-12-29  Michael Meeks  <michael@helixcode.com>
 
 	* src/bonobo/embeddable-document.c (sp_embeddable_document_factory): upd.

@@ -9,6 +9,9 @@
  *
  */
 
+#include <string.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
 #include "desktop-handles.h"
 #include "sodipodi.h"
 #include "sodipodi-private.h"
@@ -30,8 +33,11 @@ static void sodipodi_class_init (SodipodiClass * klass);
 static void sodipodi_init (SPObject * object);
 static void sodipodi_destroy (GtkObject * object);
 
+static SPRepr * sp_decode_key (Sodipodi * sodipodi, const gchar ** key);
+
 struct _Sodipodi {
 	GtkObject object;
+	SPReprDoc * preferences;
 	GSList * documents;
 	GSList * desktops;
 };
@@ -141,10 +147,19 @@ sodipodi_class_init (SodipodiClass * klass)
 static void
 sodipodi_init (SPObject * object)
 {
+	gchar * filename;
+
 	if (!sodipodi) {
 		sodipodi = (Sodipodi *) object;
 	} else {
 		g_assert_not_reached ();
+	}
+	/* fixme: */
+	filename = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
+	sodipodi->preferences = sp_repr_read_file (filename);
+	g_free (filename);
+	if (!sodipodi->preferences) {
+		sodipodi->preferences = sp_repr_document_new ("sodipodi");
 	}
 	sodipodi->documents = NULL;
 	sodipodi->desktops = NULL;
@@ -167,10 +182,79 @@ sodipodi_destroy (GtkObject * object)
 	g_assert (!sodipodi->documents);
 	g_assert (!sodipodi->desktops);
 
+	if (sodipodi->preferences) {
+		gchar * filename;
+		filename = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
+		sp_repr_save_file (sodipodi->preferences, filename);
+		g_free (filename);
+		sp_repr_document_unref (sodipodi->preferences);
+		sodipodi->preferences = NULL;
+	}
+
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 
 	gtk_main_quit ();
+}
+
+Sodipodi *
+sodipodi_application_new (void)
+{
+	return gtk_type_new (SP_TYPE_SODIPODI);
+	/* fixme: load application defaults */
+}
+
+/* Preference management */
+/* We use '.' as separator */
+
+void
+sodipodi_set_key (Sodipodi * sodipodi, const gchar * key, const gchar * value)
+{
+	SPRepr * repr;
+	const gchar *attr;
+
+	attr = key;
+
+	repr = sp_decode_key (sodipodi, &attr);
+	g_assert (attr);
+	g_assert (repr);
+
+	sp_repr_set_attr (repr, attr, value);
+}
+
+const gchar *
+sodipodi_get_key (Sodipodi * sodipodi, const gchar * key)
+{
+	SPRepr * repr;
+	const gchar *attr;
+
+	attr = key;
+
+	repr = sp_decode_key (sodipodi, &attr);
+	g_assert (attr);
+	g_assert (repr);
+
+	return sp_repr_attr (repr, attr);
+}
+
+void
+sodipodi_set_key_as_number (Sodipodi * sodipodi, const gchar * key, gdouble value)
+{
+	gchar c[32];
+
+	g_snprintf (c, 32, "%g", value);
+
+	sodipodi_set_key (sodipodi, key, c);
+}
+
+gdouble
+sodipodi_get_key_as_number (Sodipodi * sodipodi, const gchar * key)
+{
+	const gchar * value;
+
+	value = sodipodi_get_key (sodipodi, key);
+
+	return (value) ? atof (value) : 0.0;
 }
 
 void
@@ -312,6 +396,51 @@ sodipodi_active_event_context (void)
 	return NULL;
 }
 
+/* Helpers */
+
+static SPRepr *
+sp_decode_key (Sodipodi * sodipodi, const gchar ** key)
+{
+	SPRepr * repr;
+	const gchar * attr, * str, * k;
+
+	repr = sp_repr_document_root (sodipodi->preferences);
+	attr = NULL;
+	k = str = *key;
+
+	while (*str) {
+		k = str;
+		while ((*k) && (*k != '.')) k++;
+		if (*k) {
+			gint len;
+			const GList * children, * l;
+			len = MIN (k - str, 255);
+			children = sp_repr_children (repr);
+			for (l = children; l != NULL; l = l->next) {
+				if (!strncmp (sp_repr_name ((SPRepr *) l->data), str, len)) break;
+			}
+			if (l != NULL) {
+				repr = (SPRepr *) l->data;
+			} else {
+				SPRepr * newrepr;
+				gchar c[256];
+				strncpy (c, str, len);
+				c[len] = '\0';
+				newrepr = sp_repr_new (c);
+				sp_repr_append_child (repr, newrepr);
+				repr = newrepr;
+			}
+			k++;
+		}
+		attr = str;
+		str = k;
+	}
+	g_assert (attr);
+
+	*key = attr;
+
+	return repr;
+}
 
 
 

@@ -38,7 +38,7 @@ SPRepr * sp_repr_copy (SPRepr * repr);
 
 typedef struct _SPReprDoc SPReprDoc;
 
-SPReprDoc * sp_repr_document_new ();
+SPReprDoc * sp_repr_document_new (const gchar * rootname);
 void sp_repr_document_ref (SPReprDoc * doc);
 void sp_repr_document_unref (SPReprDoc * doc);
 SPRepr * sp_repr_document_root (SPReprDoc * doc);

@@ -1,6 +1,7 @@
 #ifndef SODIPODI_PRIVATE_H
 #define SODIPODI_PRIVATE_H
 
+#include "xml/repr.h"
 #include "sodipodi.h"
 
 Sodipodi * sodipodi_new ();

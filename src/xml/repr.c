@@ -1,5 +1,6 @@
 #define SP_REPR_C
 
+#include <string.h>
 #include <gtk/gtksignal.h>
 #include "repr.h"
 #include "repr-private.h"
@@ -456,18 +457,20 @@ sp_repr_attributes (SPRepr * repr)
 /* fixme: Do this somewhere, somehow The Right Way (TM) */
 
 SPReprDoc *
-sp_repr_document_new (void)
+sp_repr_document_new (const gchar * rootname)
 {
 	SPRepr * repr, * root;
 
 	repr = sp_repr_new ("?xml");
-	sp_repr_set_attr (repr, "version", "1.0");
-	sp_repr_set_attr (repr, "standalone", "no");
-	sp_repr_set_attr (repr, "doctype",
-		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
-		"\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">");
+	if (!strcmp (rootname, "svg")) {
+		sp_repr_set_attr (repr, "version", "1.0");
+		sp_repr_set_attr (repr, "standalone", "no");
+		sp_repr_set_attr (repr, "doctype",
+				  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
+				  "\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">");
+	}
 
-	root = sp_repr_new ("svg");
+	root = sp_repr_new (rootname);
 	sp_repr_add_child (repr, root, 0);
 
 	return (SPReprDoc *) repr;

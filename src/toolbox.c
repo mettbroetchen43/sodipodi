@@ -1,19 +1,31 @@
 #define SP_TOOLBOX_C
 
+/*
+ * Toolbox
+ *
+ * Authors:
+ *   Frank Felfe  <innerspace@iname.com>
+ *   Lauris Kaplinski  <lauris@helixcode.com>
+ *
+ * Copyright (C) 2000-2001 Helix Code, Inc. and authors
+ */
+
 #include <gnome.h>
+#include <libgnomeui/gnome-pixmap.h>
+#include <libgnomeui/gnome-stock.h>
 #include <glade/glade.h>
+#include "widgets/sp-toolbox.h"
 #include "sodipodi-private.h"
 #include "toolbox.h"
 #include "sodipodi.h"
 #include "event-broker.h"
-#include <libgnomeui/gnome-pixmap.h>
-#include <libgnomeui/gnome-stock.h>
 #include "dialogs/transformation.h"
 #include "zoom-context.h"
 #include "selection.h"
 #include "sp-item-transform.h"
 #include "desktop-handles.h"
 
+#if 0
 // needed for draw toolbox update
 #include "select-context.h"
 #include "node-context.h"
@@ -22,8 +34,179 @@
 #include "draw-context.h"
 #include "text-context.h"
 #include "zoom-context.h"
+#endif
+
+GtkWidget * sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name, const gchar * internalname, const gchar * pxname);
+
+static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
+
+static GladeXML  * toolbox_xml = NULL;
+static GtkWidget * toolbox = NULL;
+static GtkWidget * fh_pixmap = NULL;
+static GtkWidget * fv_pixmap = NULL;
+GtkWidget * zoom_any = NULL;
+
+typedef enum {
+  FLIP_HOR,
+  FLIP_VER,
+} SPObjectFlipMode;
+
+SPObjectFlipMode object_flip_mode = FLIP_HOR;
 
 
+void
+sp_maintoolbox_create (void)
+{
+	if (toolbox == NULL) {
+		GtkWidget * vbox, * t;
+		GladeXML * xml;
+
+	        /* Crete main toolbox */
+		toolbox_xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "maintoolbox");
+		g_return_if_fail (toolbox_xml != NULL);
+		glade_xml_signal_autoconnect (toolbox_xml);
+		toolbox = glade_xml_get_widget (toolbox_xml, "maintoolbox");
+		g_return_if_fail (toolbox != NULL);
+
+		/* Reference our sodipodi engine */
+		sodipodi_ref ();
+
+		vbox = glade_xml_get_widget (toolbox_xml, "main_vbox");
+
+		/* File */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "file_table");
+		t = sp_toolbox_create (xml, "file_table", _("File"), "file", "toolbox_file.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* Edit */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "edit_table");
+		t = sp_toolbox_create (xml, "edit_table", _("Edit"), "edit", "toolbox_edit.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* Object */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "object_table");
+		t = sp_toolbox_create (xml, "object_table", _("Object"), "object", "toolbox_object.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		fh_pixmap = glade_xml_get_widget (xml, "fh_pixmap");
+		fv_pixmap = glade_xml_get_widget (xml, "fv_pixmap");
+		object_flip_mode = FLIP_HOR;
+		gtk_widget_show (fh_pixmap);
+		/* Select */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "select_table");
+		t = sp_toolbox_create (xml, "select_table", _("Selection"), "selection", "toolbox_select.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* Draw */
+#if 0
+		draw_select = glade_xml_get_widget (draw_box.DialogXML, "draw_select");
+		draw_node = glade_xml_get_widget (draw_box.DialogXML, "draw_node");
+		draw_zoom = glade_xml_get_widget (draw_box.DialogXML, "draw_zoom");
+		draw_text = glade_xml_get_widget (draw_box.DialogXML, "draw_text");
+		draw_rect = glade_xml_get_widget (draw_box.DialogXML, "draw_rect");
+		draw_ellipse = glade_xml_get_widget (draw_box.DialogXML, "draw_ellipse");
+		draw_freehand = glade_xml_get_widget (draw_box.DialogXML, "draw_freehand");
+		gtk_toggle_button_set_active ((GtkToggleButton *) draw_select, TRUE);
+#endif
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "draw_table");
+		t = sp_toolbox_create (xml, "draw_table", _("Draw"), "draw", "toolbox_draw.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* Zoom */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "zoom_table");
+		t = sp_toolbox_create (xml, "zoom_table", _("Zoom"), "zoom", "toolbox_zoom.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* Node */
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "node_table");
+		t = sp_toolbox_create (xml, "node_table", _("Nodes"), "node", "toolbox_node.xpm");
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+
+		gtk_widget_show (toolbox);
+	}
+}
+
+GtkWidget *
+sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name, const gchar * internalname, const gchar * pxname)
+{
+	GtkWidget * t, * contents;
+	guint state;
+	char c[256];
+
+	glade_xml_signal_autoconnect (xml);
+	contents = glade_xml_get_widget (xml, widgetname);
+
+	g_snprintf (c, 256, SODIPODI_GLADEDIR "/%s", pxname);
+	t = sp_toolbox_new (contents, name, internalname, c);
+
+	g_snprintf (c, 256, "toolbox.%s.state", internalname);
+	state = sodipodi_get_key_as_int (SODIPODI, c);
+	sp_toolbox_set_state (SP_TOOLBOX (t), state);
+
+	gtk_signal_connect (GTK_OBJECT (t), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), NULL);
+
+	gtk_widget_show (t);
+
+	return t;
+}
+
+static gint
+sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data)
+{
+	char c[256];
+
+	g_snprintf (c, 256, "toolbox.%s.state", t->internalname);
+	sodipodi_set_key_as_int (SODIPODI, c, state);
+
+	return FALSE;
+}
+
+gint
+sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
+{
+	sodipodi_unref ();
+
+	return FALSE;
+}
+
+/* 
+ * object toolbox
+ */
+
+void
+object_flip (GtkWidget * widget, GdkEventButton * event) {
+  SPDesktop * desktop;
+  SPSelection * selection;
+  SPItem * item;
+  GSList * l, * l2;
+
+  //right click
+  if (event->button == 3) {
+    if (object_flip_mode == FLIP_HOR) {
+      object_flip_mode = FLIP_VER;
+      gtk_widget_hide (fh_pixmap);
+      gtk_widget_show (fv_pixmap);
+    } else {
+      object_flip_mode = FLIP_HOR;
+      gtk_widget_hide (fv_pixmap);
+      gtk_widget_show (fh_pixmap);
+    };
+  };
+
+  // left click
+  if (event->button == 1) {
+    desktop = SP_ACTIVE_DESKTOP;
+    if (!SP_IS_DESKTOP(desktop)) return;
+    selection = SP_DT_SELECTION(desktop);
+    if sp_selection_is_empty(selection) return;
+    l = selection->items;  
+    for (l2 = l; l2 != NULL; l2 = l2-> next) {
+      item = SP_ITEM (l2->data);
+      if (object_flip_mode == FLIP_HOR) sp_item_scale_rel (item,-1,1);
+      else sp_item_scale_rel (item,1,-1);
+    }
+
+    sp_selection_changed (selection);
+    sp_document_done (SP_DT_DOCUMENT (desktop));
+  }
+
+}
+
+#if 0
 static GladeXML  * main_toolbox_xml = NULL;
 static GtkWidget * main_toolbox_dialog = NULL;
 static GtkWidget * main_vbox = NULL;
@@ -51,21 +234,28 @@ typedef enum {
 SPObjectFlipMode object_flip_mode = FLIP_HOR;
 
 typedef struct _SPToolBox SPToolBox;
+
 struct _SPToolBox {
-  gboolean visible;     
-  gboolean standalone ;
-  gboolean init ;
-  gboolean inmain ;
-  char* dialog_name;
-  char* icon;
-  GtkWidget * MainVBox;
-  GtkWidget * DialogVBox;
-  GtkWidget * Dialog;
-  GtkWidget * BoxTable;
-  GtkWidget * Hide;
-  GtkWidget * Seperate;
-  GtkWidget * Close;
-  GladeXML * DialogXML;
+	const gchar * name;
+	const gchar * internalname;
+	const gchar * pixmapname;
+	SPToolBoxState state;
+#if 0
+	gboolean visible;     
+	gboolean standalone;
+	gboolean init ;
+	gboolean inmain ;
+	char* dialog_name;
+	char* icon;
+#endif
+	GtkWidget * MainVBox;
+	GtkWidget * DialogVBox;
+	GtkWidget * Dialog;
+	GtkWidget * BoxTable;
+	GtkWidget * Hide;
+	GtkWidget * Seperate;
+	GtkWidget * Close;
+	GladeXML * DialogXML;
 };
 
 void sp_toolbox_init (SPToolBox * toolbox);
@@ -89,36 +279,28 @@ static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventc
 // our toolboxen
 static SPToolBox draw_box, zoom_box, node_box, select_box, file_box, edit_box, object_box;
 
+SPToolBox * sp_toolbox_new (const gchar * name, const gchar * internalname, const gchar * widgetname, const gchar * pixmapname);
 
 void
 sp_maintoolbox_create (void)
 {
 	if (main_toolbox_dialog == NULL) {
-	        // main toolbox
+		SPToolBox * t;
+
+	        /* Crete main toolbox */
 		main_toolbox_xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "maintoolbox");
-		if (main_toolbox_xml == NULL) return;
+		g_return_if_fail (main_toolbox_xml != NULL);
 		glade_xml_signal_autoconnect (main_toolbox_xml);
 		main_toolbox_dialog = glade_xml_get_widget (main_toolbox_xml, "maintoolbox");
-		if (main_toolbox_dialog == NULL) return;
+		g_return_if_fail (main_toolbox_dialog != NULL);
 
+		/* Reference our sodipodi engine */
 		sodipodi_ref ();
 
 		main_vbox = glade_xml_get_widget (main_toolbox_xml, "main_vbox");
 
-		// file toolbox
-		file_box.DialogXML = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "file_table");
-       		glade_xml_signal_autoconnect (file_box.DialogXML);
-
-		file_box.visible = TRUE;
-		file_box.standalone = FALSE;
-		file_box.inmain = TRUE;
-		file_box.dialog_name = _("File");
-		file_box.icon = SODIPODI_GLADEDIR "/toolbox_file.xpm";
-
-		sp_toolbox_create_widgets (&file_box);
-		file_box.BoxTable = glade_xml_get_widget (file_box.DialogXML, "file_table");
-		sp_toolbox_expose (&file_box);
-
+		/* File toolbox */
+		t = sp_toolbox_create (_("File"), "file", "file_table", "toolbox_file.xpm");
 		// edit toolbox
 		edit_box.DialogXML = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "edit_table");
        		glade_xml_signal_autoconnect (edit_box.DialogXML);
@@ -223,84 +405,118 @@ sp_maintoolbox_create (void)
 	}
 }
 
+SPToolBox *
+sp_toolbox_new (const gchar * name, const gchar * internalname, const gchar * widgetname, const gchar * pixmapname)
+{
+	SPToolBox * t;
+	char c[256];
+
+	t = g_new (SPToolBox, 1);
+
+	t->name = name;
+	t->internalname = internalname;
+	t->pixmapname = pixmapname;
+
+	t->DialogXML = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", widgetname);
+	glade_xml_signal_autoconnect (t->DialogXML);
+
+	g_snprintf (c, 256, "/toolbox/%s/state", internalname);
+	t->state = sodipodi_get_key_as_int (SODIPODI, c);
+
+#if 0
+	file_box.visible = TRUE;
+	file_box.standalone = FALSE;
+	file_box.inmain = TRUE;
+	file_box.dialog_name = _("File");
+	t->icon = SODIPODI_GLADEDIR "/toolbox_file.xpm";
+#endif
+
+	sp_toolbox_create_widgets (t);
+	t->BoxTable = glade_xml_get_widget (t->DialogXML, widgetname);
+	sp_toolbox_expose (t);
+
+	return t;
+}
 
 void sp_toolbox_create_widgets (SPToolBox * toolbox) {
-  GtkWidget * vbox, * hbox;
-  GtkWidget * gnpixmap;
-  GtkWidget * sep, * label;
-  gchar * c;
+	GtkWidget * vbox, * hbox;
+	GtkWidget * gnpixmap;
+	GtkWidget * sep, * label;
+	gchar c[256];
 
-  // dialog
-  /* fixme: set atoms or something */
-  toolbox->Dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title ((GtkWindow *) toolbox->Dialog, toolbox->dialog_name);
-  gtk_window_set_policy ((GtkWindow *) toolbox->Dialog, FALSE, FALSE, FALSE);
-  c = g_strdup_printf ("toolbox_%s", toolbox->dialog_name);
-  gtk_window_set_wmclass (GTK_WINDOW (toolbox->Dialog), c, "Sodipodi");
-  g_free (c);
-  // main_vbox
-  toolbox->MainVBox = gtk_vbox_new (FALSE, 0);
-  gtk_box_pack_start ((GtkBox *) main_vbox, toolbox->MainVBox, TRUE, TRUE, 0);
-  hbox = gtk_hbox_new (FALSE, 0);
-  gtk_box_pack_start ((GtkBox *) toolbox->MainVBox, hbox, TRUE, TRUE, 0);
-  gtk_widget_show (hbox);
-  // seperate button
-  toolbox->Seperate = gtk_button_new ();
-  gtk_button_set_relief ((GtkButton *) toolbox->Seperate, GTK_RELIEF_NONE);
-  gtk_box_pack_end ((GtkBox *) hbox, toolbox->Seperate, FALSE, FALSE, 0);
-  gtk_widget_show (toolbox->Seperate);
+	/* Dialog window */
+	toolbox->Dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title ((GtkWindow *) toolbox->Dialog, toolbox->name);
+	gtk_window_set_policy ((GtkWindow *) toolbox->Dialog, FALSE, FALSE, FALSE);
+	g_snprintf (c, 256, "toolbox_%s", toolbox->internalname);
+	gtk_window_set_wmclass (GTK_WINDOW (toolbox->Dialog), c, "Sodipodi");
 
-  gnpixmap = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
-  gtk_container_add ((GtkContainer *) toolbox->Seperate, gnpixmap);
-  gtk_widget_show (gnpixmap);
-  // hide button
-  toolbox->Hide = gtk_button_new  ();
-  gtk_button_set_relief ((GtkButton *) toolbox->Hide, GTK_RELIEF_NONE);
-  gtk_box_pack_start ((GtkBox *) hbox, toolbox->Hide, TRUE, TRUE, 0);
-  gtk_widget_show (toolbox->Hide);
+	/* Main vbox */
+	toolbox->MainVBox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start ((GtkBox *) main_vbox, toolbox->MainVBox, TRUE, TRUE, 0);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start ((GtkBox *) toolbox->MainVBox, hbox, TRUE, TRUE, 0);
+	gtk_widget_show (hbox);
 
-  hbox = gtk_hbox_new (FALSE,0);
-  gtk_container_add ((GtkContainer *) toolbox->Hide, hbox);
-  gtk_widget_show (hbox);
-  gnpixmap = gnome_pixmap_new_from_file (toolbox->icon);
-  gtk_box_pack_start ((GtkBox *) hbox, gnpixmap, FALSE, FALSE, 0);
-  gtk_widget_show (gnpixmap);
-  label = gtk_label_new (toolbox->dialog_name);
-  gtk_box_pack_start ((GtkBox *) hbox, label, FALSE, FALSE, 0);
-  gtk_widget_show (label);  
-  sep = gtk_hseparator_new ();
-  gtk_box_pack_start ((GtkBox *) hbox, sep, TRUE, TRUE, 0);
-  gtk_widget_show (sep);  
-  toolbox->Hide->allocation.height = 12;
-  gtk_object_set(GTK_OBJECT(toolbox->Hide),  "GtkWidget::height", (gulong) 16, NULL);
-  // dialog vbox
-  vbox = gtk_vbox_new (FALSE, 0);
-  gtk_container_add ((GtkContainer *) toolbox->Dialog, vbox);
-  toolbox->DialogVBox = gtk_vbox_new (FALSE, 0);
-  gtk_container_add ((GtkContainer *) vbox, toolbox->DialogVBox);
-  gtk_widget_show (vbox);
-  gtk_widget_show (toolbox->DialogVBox);
-  // close button
-  toolbox->Close = gnome_stock_button ("Button_Close");
-  gtk_container_add ((GtkContainer *) vbox, toolbox->Close);
-  gtk_widget_show (toolbox->Close);
-  // signals
-  gtk_signal_connect (GTK_OBJECT (toolbox->Hide), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_main), toolbox);
-  gtk_signal_connect (GTK_OBJECT (toolbox->Seperate), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_seperate), toolbox);
-  gtk_signal_connect (GTK_OBJECT (toolbox->Close), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_seperate), toolbox);
-  gtk_signal_connect (GTK_OBJECT (toolbox->Dialog), "delete_event", GTK_SIGNAL_FUNC (toolbox_delete), toolbox);
+	/* Seperate button */
+	toolbox->Seperate = gtk_button_new ();
+	gtk_button_set_relief ((GtkButton *) toolbox->Seperate, GTK_RELIEF_NONE);
+	gtk_box_pack_end ((GtkBox *) hbox, toolbox->Seperate, FALSE, FALSE, 0);
+	gtk_widget_show (toolbox->Seperate);
+	gnpixmap = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
+	gtk_container_add ((GtkContainer *) toolbox->Seperate, gnpixmap);
+	gtk_widget_show (gnpixmap);
 
+	/* Hide button */
+	toolbox->Hide = gtk_button_new  ();
+	gtk_button_set_relief ((GtkButton *) toolbox->Hide, GTK_RELIEF_NONE);
+	gtk_box_pack_start ((GtkBox *) hbox, toolbox->Hide, TRUE, TRUE, 0);
+	gtk_widget_show (toolbox->Hide);
+
+	hbox = gtk_hbox_new (FALSE,0);
+	gtk_container_add ((GtkContainer *) toolbox->Hide, hbox);
+	gtk_widget_show (hbox);
+	gnpixmap = gnome_pixmap_new_from_file (toolbox->icon);
+	gtk_box_pack_start ((GtkBox *) hbox, gnpixmap, FALSE, FALSE, 0);
+	gtk_widget_show (gnpixmap);
+	label = gtk_label_new (toolbox->dialog_name);
+	gtk_box_pack_start ((GtkBox *) hbox, label, FALSE, FALSE, 0);
+	gtk_widget_show (label);  
+	sep = gtk_hseparator_new ();
+	gtk_box_pack_start ((GtkBox *) hbox, sep, TRUE, TRUE, 0);
+	gtk_widget_show (sep);  
+	toolbox->Hide->allocation.height = 12;
+	gtk_object_set(GTK_OBJECT(toolbox->Hide),  "GtkWidget::height", (gulong) 16, NULL);
+
+	// dialog vbox
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_add ((GtkContainer *) toolbox->Dialog, vbox);
+	toolbox->DialogVBox = gtk_vbox_new (FALSE, 0);
+	gtk_container_add ((GtkContainer *) vbox, toolbox->DialogVBox);
+	gtk_widget_show (vbox);
+	gtk_widget_show (toolbox->DialogVBox);
+
+	// close button
+	toolbox->Close = gnome_stock_button ("Button_Close");
+	gtk_container_add ((GtkContainer *) vbox, toolbox->Close);
+	gtk_widget_show (toolbox->Close);
+
+	// signals
+	gtk_signal_connect (GTK_OBJECT (toolbox->Hide), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_main), toolbox);
+	gtk_signal_connect (GTK_OBJECT (toolbox->Seperate), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_seperate), toolbox);
+	gtk_signal_connect (GTK_OBJECT (toolbox->Close), "clicked", GTK_SIGNAL_FUNC (toolbox_toggle_seperate), toolbox);
+	gtk_signal_connect (GTK_OBJECT (toolbox->Dialog), "delete_event", GTK_SIGNAL_FUNC (toolbox_delete), toolbox);
 }
 
 void sp_toolbox_expose (SPToolBox * toolbox) {
-  if (toolbox->inmain) gtk_widget_show (toolbox->MainVBox);
-  if (toolbox->standalone) {
-    gtk_box_pack_start ((GtkBox *) toolbox->DialogVBox, toolbox->BoxTable, TRUE, TRUE, 0);
-    if (toolbox->visible) gtk_widget_show (toolbox->Dialog);
-  } else {
-    gtk_box_pack_end ((GtkBox *) toolbox->MainVBox, toolbox->BoxTable, TRUE, TRUE, 0);
-    if (toolbox->visible) gtk_widget_show (toolbox->BoxTable);
-  }
+	if (toolbox->inmain) gtk_widget_show (toolbox->MainVBox);
+	if (toolbox->standalone) {
+		gtk_box_pack_start ((GtkBox *) toolbox->DialogVBox, toolbox->BoxTable, TRUE, TRUE, 0);
+		if (toolbox->visible) gtk_widget_show (toolbox->Dialog);
+	} else {
+		gtk_box_pack_end ((GtkBox *) toolbox->MainVBox, toolbox->BoxTable, TRUE, TRUE, 0);
+		if (toolbox->visible) gtk_widget_show (toolbox->BoxTable);
+	}
 }
 
 
@@ -413,49 +629,6 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 }
 
 
-/* 
- * object toolbox
- */
-
-void
-object_flip (GtkWidget * widget, GdkEventButton * event) {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  SPItem * item;
-  GSList * l, * l2;
-
-  //right click
-  if (event->button == 3) {
-    if (object_flip_mode == FLIP_HOR) {
-      object_flip_mode = FLIP_VER;
-      gtk_widget_hide (fh_pixmap);
-      gtk_widget_show (fv_pixmap);
-    } else {
-      object_flip_mode = FLIP_HOR;
-      gtk_widget_hide (fv_pixmap);
-      gtk_widget_show (fh_pixmap);
-    };
-  };
-
-  // left click
-  if (event->button == 1) {
-    desktop = SP_ACTIVE_DESKTOP;
-    if (!SP_IS_DESKTOP(desktop)) return;
-    selection = SP_DT_SELECTION(desktop);
-    if sp_selection_is_empty(selection) return;
-    l = selection->items;  
-    for (l2 = l; l2 != NULL; l2 = l2-> next) {
-      item = SP_ITEM (l2->data);
-      if (object_flip_mode == FLIP_HOR) sp_item_scale_rel (item,-1,1);
-      else sp_item_scale_rel (item,1,-1);
-    }
-
-    sp_selection_changed (selection);
-    sp_document_done (SP_DT_DOCUMENT (desktop));
-  }
-
-}
-
 void object_rotate_90 () {
   SPDesktop * desktop;
   SPSelection * selection;
@@ -476,3 +649,4 @@ void object_rotate_90 () {
   sp_document_done (SP_DT_DOCUMENT (desktop));
 
 }
+#endif

@@ -5,7 +5,7 @@ bonobo_subdirs = bonobo
 bonobo_libs = bonobo/libspbonobo.a
 endif
 
-SUBDIRS = xml svg helper dialogs display $(bonobo_subdirs)
+SUBDIRS = xml svg widgets helper dialogs display $(bonobo_subdirs)
 
 gladedir = $(datadir)/sodipodi
 
@@ -92,9 +92,10 @@ sodipodi_SOURCES = \
 #	font-wrapper.c font-wrapper.h \
 
 sodipodi_libs = \
-	xml/libspxml.a \
 	dialogs/libspdialogs.a \
+	xml/libspxml.a \
 	svg/libspsvg.a \
+	widgets/libspwidgets.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a
 

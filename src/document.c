@@ -145,7 +145,7 @@ sp_document_new (const gchar * uri)
 		/* fixme: destroy document */
 		if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
 	} else {
-		rdoc = sp_repr_document_new ();
+		rdoc = sp_repr_document_new ("svg");
 		rroot = sp_repr_document_root (rdoc);
 		g_return_val_if_fail (rroot != NULL, NULL);
 		sp_repr_set_attr (rroot, "style",

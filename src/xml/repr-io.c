@@ -1,5 +1,7 @@
 #define SP_REPR_IO_C
 
+#include <malloc.h>
+#include <string.h>
 #include <stdio.h>
 #include "repr.h"
 #include "repr-private.h"
@@ -22,15 +24,22 @@ SPReprDoc * sp_repr_read_file (const gchar * filename)
 	doc = xmlParseFile (filename);
 	if (doc == NULL) return NULL;
 
-	rdoc = sp_repr_document_new ();
+	rdoc = sp_repr_document_new ("void");
 
 	repr = NULL;
 
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
+#if 0
 		if (node->name && (strcmp (node->name, "svg") == 0)) {
 			repr = sp_repr_svg_read_node (node);
 			break;
 		}
+#else
+		if (node->type == XML_ELEMENT_NODE) {
+			repr = sp_repr_svg_read_node (node);
+			break;
+		}
+#endif
 	}
 
 	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
@@ -52,15 +61,22 @@ SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 	doc = xmlParseMemory ((gchar *) buffer, length);
 	if (doc == NULL) return NULL;
 
-	rdoc = sp_repr_document_new ();
+	rdoc = sp_repr_document_new ("void");
 
 	repr = NULL;
 
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
+#if 0
 		if (node->name && (strcmp (node->name, "svg") == 0)) {
 			repr = sp_repr_svg_read_node (node);
 			break;
 		}
+#else
+		if (node->type == XML_ELEMENT_NODE) {
+			repr = sp_repr_svg_read_node (node);
+			break;
+		}
+#endif
 	}
 
 	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
