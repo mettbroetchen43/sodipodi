@@ -351,7 +351,7 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Size and Position"), sp_object_properties_layout, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Align Objects"), sp_quick_align_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Text Editing"), sp_text_edit_dialog, NULL);
-	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Transformations"), sp_transformation_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Transformations"), sp_transformation_dialog_move, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Tool Options"), sp_tool_options_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Tool Attributes"), sp_tool_attributes_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Document"), sp_document_dialog, NULL);

@@ -1,5 +1,7 @@
 2002-11-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/interface.c (sp_ui_dialog_menu): Do not bring up > 1 transform dialogs at once
+
 	* src/seltrans.c (sp_sel_trans_stamp): Reversing still was not correct,
 	replaced it with explicit sort
 
