@@ -283,6 +283,7 @@ sp_spiral_fit_and_draw (SPSpiral *spiral,
 	NRPointF bezier[BEZIER_LENGTH];
 	double d;
 	int depth, i;
+	NRPointF dir2;
 	
 	for (d = t, i = 0; i <= SAMPLE_SIZE; d += dstep, i++) {
 		sp_spiral_get_xy (spiral, d, &darray[i]);
@@ -293,8 +294,10 @@ sp_spiral_fit_and_draw (SPSpiral *spiral,
 	/* Fixme:
 	   we should use better algorithm to specify maximum error.
 	*/
+	dir2.x = -hat2->x;
+	dir2.y = -hat2->y;
 	depth = sp_bezier_fit_cubic_full (bezier, darray, SAMPLE_SIZE,
-					  hat1, hat2,
+					  hat1, NULL, &dir2, NULL,
 					  SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
 					  FITTING_DEPTH);
 #ifdef SPIRAL_DEBUG

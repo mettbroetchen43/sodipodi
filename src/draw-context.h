@@ -87,6 +87,8 @@ GtkType sp_draw_context_get_type (void);
 typedef struct _SPPencilContext SPPencilContext;
 typedef struct _SPPencilContextClass SPPencilContextClass;
 
+#include <helper/bezier-utils.h>
+
 enum {
 	SP_PENCIL_CONTEXT_IDLE,
 	SP_PENCIL_CONTEXT_ADDLINE,
@@ -97,6 +99,21 @@ struct _SPPencilContext {
 	SPDrawContext draw_context;
 
 	guint state : 2;
+
+	/* Previous cursor position */
+	NRPointD cpos;
+	/* Timeout handler */
+	unsigned int timeout;
+
+	/* Saved force */
+	NRPointD fval;
+	/* Pen position */
+	NRPointD ppos;
+	/* Pen velocity */
+	NRPointD pvel;
+
+	struct _NRSynthesizer sz;
+	unsigned int bluestart;
 };
 
 struct _SPPencilContextClass {

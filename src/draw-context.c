@@ -22,9 +22,12 @@
 
 #include <math.h>
 #include <string.h>
+#include <assert.h>
+
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include "xml/repr-private.h"
 #include "macros.h"
 #include "xml/repr.h"
@@ -194,12 +197,14 @@ sp_draw_context_setup (SPEventContext *ec)
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
 	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), dc->red_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
+	sp_canvas_bpath_set_fill ((SPCanvasBPath *) dc->red_bpath, 0x00000000, 0);
 	/* Create red curve */
 	dc->red_curve = sp_curve_new_sized (4);
 
 	/* Create blue bpath */
 	dc->blue_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
 	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->blue_bpath), dc->blue_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
+	sp_canvas_bpath_set_fill ((SPCanvasBPath *) dc->blue_bpath, 0x00000000, 0);
 	/* Create blue curve */
 	dc->blue_curve = sp_curve_new_sized (8);
 
@@ -633,6 +638,7 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 	return active;
 }
 
+#if 0
 static void
 fit_and_split (SPDrawContext * dc)
 {
@@ -684,6 +690,7 @@ fit_and_split (SPDrawContext * dc)
 		/* dc->npoints = 2; */
 	}
 }
+#endif
 
 static void
 spdc_reset_colors (SPDrawContext *dc)
@@ -844,7 +851,6 @@ static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkE
 static void spdc_set_startpoint (SPPencilContext *dc, NRPointF *p, guint state);
 static void spdc_set_endpoint (SPPencilContext *dc, NRPointF *p, guint state);
 static void spdc_finish_endpoint (SPPencilContext *dc, NRPointF *p, gboolean snap, guint state);
-static void spdc_add_freehand_point (SPPencilContext *dc, NRPointF *p, guint state);
 
 static SPDrawContextClass *pencil_parent_class;
 
@@ -890,6 +896,8 @@ sp_pencil_context_init (SPPencilContext *pc)
 	ec = (SPEventContext *) pc;
 	ec->verb = SP_VERB_CONTEXT_PENCIL;
 	pc->state = SP_PENCIL_CONTEXT_IDLE;
+
+	nr_synthesizer_setup (&pc->sz, 64, 1.0);
 }
 
 static void
@@ -899,7 +907,162 @@ sp_pencil_context_dispose (GObject *object)
 
 	pc = SP_PENCIL_CONTEXT (object);
 
+	if (pc->timeout) {
+		gtk_timeout_remove (pc->timeout);
+		pc->timeout = 0;
+	}
+
+	nr_synthesizer_release (&pc->sz);
+
 	G_OBJECT_CLASS (pencil_parent_class)->dispose (object);
+}
+
+#ifdef __USE_ISOC99
+#define ASSERT_VAL(v) assert (isfinite (v) && ((v) > -NR_HUGE_F) && ((v) < NR_HUGE_F))
+#else
+#define ASSERT_VAL(v)
+#endif
+
+static void
+sp_pencil_context_update_curves (SPPencilContext *pc)
+{
+	SPDrawContext *dc;
+	unsigned int blen, i;
+
+	dc = (SPDrawContext *) pc;
+
+	blen = pc->sz.numcpts - pc->bluestart;
+	if (blen > 31) {
+		SPCurve *curve;
+		SPCanvasItem *cshape;
+		unsigned int pos, i;
+		/* Append new segment to green list */
+		curve = sp_curve_new ();
+		pos = pc->bluestart;
+		ASSERT_VAL (pc->sz.cpts[pos].x);
+		ASSERT_VAL (pc->sz.cpts[pos].y);
+		sp_curve_moveto (curve, pc->sz.cpts[pos].x, pc->sz.cpts[pos].y);
+		for (i = 0; i < 10; i++) {
+			pos = pc->bluestart + 1 + 3 * i;
+			ASSERT_VAL (pc->sz.cpts[pos].x);
+			ASSERT_VAL (pc->sz.cpts[pos].y);
+			ASSERT_VAL (pc->sz.cpts[pos + 1].x);
+			ASSERT_VAL (pc->sz.cpts[pos + 1].y);
+			ASSERT_VAL (pc->sz.cpts[pos + 2].x);
+			ASSERT_VAL (pc->sz.cpts[pos + 2].y);
+			sp_curve_curveto (curve,
+					  pc->sz.cpts[pos].x, pc->sz.cpts[pos].y,
+					  pc->sz.cpts[pos + 1].x, pc->sz.cpts[pos + 1].y,
+					  pc->sz.cpts[pos + 2].x, pc->sz.cpts[pos + 2].y);
+		}
+		sp_curve_append_continuous (dc->green_curve, curve, 0.0625);
+		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
+		sp_curve_unref (curve);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape),
+					    dc->green_color, 1.0,
+					    SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
+		sp_canvas_bpath_set_fill ((SPCanvasBPath *) cshape, 0x00000000, 0);
+		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
+		pc->bluestart += 30;
+	}
+
+	/* Blue */
+	sp_curve_reset (dc->blue_curve);
+	sp_curve_moveto (dc->blue_curve, pc->sz.cpts[pc->bluestart].x, pc->sz.cpts[pc->bluestart].y);
+	for (i = pc->bluestart + 1; i < pc->sz.numcpts; i += 3) {
+		ASSERT_VAL (pc->sz.cpts[i].x);
+		ASSERT_VAL (pc->sz.cpts[i].y);
+		ASSERT_VAL (pc->sz.cpts[i + 1].x);
+		ASSERT_VAL (pc->sz.cpts[i + 1].y);
+		ASSERT_VAL (pc->sz.cpts[i + 2].x);
+		ASSERT_VAL (pc->sz.cpts[i + 2].y);
+		sp_curve_curveto (dc->blue_curve,
+				  pc->sz.cpts[i].x, pc->sz.cpts[i].y,
+				  pc->sz.cpts[i + 1].x, pc->sz.cpts[i + 1].y,
+				  pc->sz.cpts[i + 2].x, pc->sz.cpts[i + 2].y);
+	}
+	sp_canvas_bpath_set_bpath ((SPCanvasBPath *) dc->blue_bpath, dc->blue_curve);
+	/* Red */
+	sp_curve_reset (dc->red_curve);
+	if (pc->sz.fsegs > 0) {
+		ASSERT_VAL (pc->sz.fpts[0].x);
+		ASSERT_VAL (pc->sz.fpts[0].y);
+		sp_curve_moveto (dc->red_curve, pc->sz.fpts[0].x, pc->sz.fpts[0].y);
+		ASSERT_VAL (pc->sz.fpts[1].x);
+		ASSERT_VAL (pc->sz.fpts[1].y);
+		ASSERT_VAL (pc->sz.fpts[2].x);
+		ASSERT_VAL (pc->sz.fpts[2].y);
+		ASSERT_VAL (pc->sz.fpts[3].x);
+		ASSERT_VAL (pc->sz.fpts[3].y);
+		sp_curve_curveto (dc->red_curve,
+				  pc->sz.fpts[1].x, pc->sz.fpts[1].y,
+				  pc->sz.fpts[2].x, pc->sz.fpts[2].y,
+				  pc->sz.fpts[3].x, pc->sz.fpts[3].y);
+	}
+	if (pc->sz.fsegs > 1) {
+		ASSERT_VAL (pc->sz.fpts[5].x);
+		ASSERT_VAL (pc->sz.fpts[5].y);
+		ASSERT_VAL (pc->sz.fpts[6].x);
+		ASSERT_VAL (pc->sz.fpts[6].y);
+		ASSERT_VAL (pc->sz.fpts[7].x);
+		ASSERT_VAL (pc->sz.fpts[7].y);
+		sp_curve_curveto (dc->red_curve,
+				  pc->sz.fpts[5].x, pc->sz.fpts[5].y,
+				  pc->sz.fpts[6].x, pc->sz.fpts[6].y,
+				  pc->sz.fpts[7].x, pc->sz.fpts[7].y);
+	}
+	sp_canvas_bpath_set_bpath ((SPCanvasBPath *) dc->red_bpath, dc->red_curve);
+}
+
+#define FLERP(f0,f1,p) ((f0) + ((f1) - (f0)) * (p))
+
+#define MASSVAL 0.01
+#define SP_PENCIL_MASS FLERP (1.0, 160.0, MASSVAL)
+#define DRAGVAL 1.0
+#define SP_PENCIL_DRAG FLERP (0.0, 0.5, DRAGVAL * DRAGVAL)
+
+#define SAMPLE_TIMEOUT 50
+
+static int
+sp_pencil_timeout (gpointer data)
+{
+	static int distance = 0;
+	SPPencilContext *pc;
+	SPDesktop *dt;
+	NRPointF p;
+	double xd, yd;
+	int x, y;
+	NRPointD fval;
+
+	pc = (SPPencilContext *) data;
+	dt = ((SPEventContext *) pc)->desktop;
+
+	gtk_widget_get_pointer ((GtkWidget *) SP_DT_CANVAS (dt), &x, &y);
+	sp_canvas_window_to_world (SP_DT_CANVAS (dt), x, y, &xd, &yd);
+
+	/* Calculate force and acceleration */
+	fval.x = xd - pc->ppos.x;
+	fval.y = yd - pc->ppos.y;
+	/* Skip if changing direction with 1 pixel force */
+	if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 2.0)) return TRUE;
+	pc->fval = fval;
+
+	pc->pvel.x += fval.x / SP_PENCIL_MASS;
+	pc->pvel.y += fval.y / SP_PENCIL_MASS;
+
+	/* Apply drag */
+	pc->pvel.x *= (1.0 - SP_PENCIL_DRAG);
+	pc->pvel.y *= (1.0 - SP_PENCIL_DRAG);
+
+	pc->ppos.x += pc->pvel.x;
+	pc->ppos.y += pc->pvel.y;
+
+	sp_desktop_w2d_xy_point (dt, &p, pc->ppos.x, pc->ppos.y);
+
+	nr_synthesizer_add_point (&pc->sz, p.x, p.y, distance++);
+	sp_pencil_context_update_curves (pc);
+
+	return TRUE;
 }
 
 gint
@@ -909,9 +1072,11 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPPencilContext *pc;
 	SPDesktop *dt;
 	NRPointF p;
-	gint ret;
+	int ret;
 	SPDrawAnchor *anchor;
-	NRPointF fp;
+	double dx, dy;
+
+	static double distance = 0.0;
 
 	dc = SP_DRAW_CONTEXT (ec);
 	pc = SP_PENCIL_CONTEXT (ec);
@@ -922,16 +1087,20 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
-			NRPointF fp;
+			NRMatrixD w2dt;
+			double tolerance;
 #if 0
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = SP_CANVAS_ITEM (dt->acetate);
 			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
+			pc->cpos.x = pc->ppos.x = event->button.x;
+			pc->cpos.y = pc->ppos.y = event->button.y;
+			pc->pvel.x = pc->pvel.y = 0.0;
+			pc->fval.x = pc->fval.y = 0.0;
 			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
-			p.x = fp.x;
-			p.y = fp.y;
+			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
+
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -946,13 +1115,29 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					p = anchor->dp;
 				}
 				dc->sa = anchor;
+
+#if 1
+				sp_desktop_w2dt_affine (dt, &w2dt);
+				tolerance = 1.0 * NR_MATRIX_DF_EXPANSION (&w2dt);
+				pc->sz.tolerance2 = tolerance * tolerance;
+				nr_synthesizer_begin (&pc->sz, p.x, p.y, distance++);
+				pc->bluestart = 0;
+#endif
+
 				spdc_set_startpoint (pc, &p, event->button.state);
+
 				ret = TRUE;
 				break;
 			}
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
+		dx = event->motion.x - pc->cpos.x;
+		dy = event->motion.y - pc->cpos.y;
+		/* Skip one-pixel noise */
+		if ((dx * dx + dy * dy) <= 2) break;
+		pc->cpos.x = event->motion.x;
+		pc->cpos.y = event->motion.y;
 #ifdef DRAW_GRAB
 		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
 			/* Grab mouse, so release will not pass unnoticed */
@@ -961,9 +1146,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 #endif
 		/* Find desktop coordinates */
-		sp_desktop_w2d_xy_point (dt, &fp, event->motion.x, event->motion.y);
-		p.x = fp.x;
-		p.y = fp.y;
+		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
 		/* Test, whether we hit any anchor */
 		anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -982,15 +1165,25 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				pc->state = SP_PENCIL_CONTEXT_FREEHAND;
 				if (!dc->sa && !dc->green_anchor) {
 					/* Create green anchor */
-					dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE, dc->p[0].x, dc->p[0].y);
+					dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE,
+									       dc->p[0].x, dc->p[0].y);
 				}
+#if 0
 				/* fixme: I am not sure, whether we want to snap to anchors in middle of freehand (Lauris) */
 				if (anchor) {
 					p = anchor->dp;
 				} else {
 					sp_desktop_free_snap (dt, &p);
 				}
+#endif
+				if (!pc->timeout) {
+					pc->timeout = gtk_timeout_add (SAMPLE_TIMEOUT, sp_pencil_timeout, pc);
+				}
+
+#if 0
 				spdc_add_freehand_point (pc, &p, event->motion.state);
+#endif
+
 				ret = TRUE;
 			}
 			break;
@@ -1024,6 +1217,11 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				ret = TRUE;
 				break;
 			case SP_PENCIL_CONTEXT_FREEHAND:
+				/* Remove timeout */
+				if (pc->timeout) {
+					gtk_timeout_remove (pc->timeout);
+					pc->timeout = 0;
+				}
 				/* Finish segment now */
 				/* fixme: Clean up what follows (Lauris) */
 				if (anchor) {
@@ -1159,6 +1357,7 @@ spdc_finish_endpoint (SPPencilContext *pc, NRPointF *p, gboolean snap, guint sta
 	}
 }
 
+#if 0
 static void
 spdc_add_freehand_point (SPPencilContext *pc, NRPointF *p, guint state)
 {
@@ -1173,6 +1372,7 @@ spdc_add_freehand_point (SPPencilContext *pc, NRPointF *p, guint state)
 		fit_and_split (dc);
 	}
 }
+#endif
 
 /* Pen context */
 

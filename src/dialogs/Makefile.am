@@ -34,9 +34,8 @@ libspdialogs_a_SOURCES = \
 	fill-style.c fill-style.h \
 	stroke-style.c stroke-style.h \
 	transformation.c transformation.h \
-	node-edit.c node-edit.h
-
-# xml-tree.c xml-tree.h
+	node-edit.c node-edit.h \
+	xml-tree.c xml-tree.h
 
 moduledir = $(libdir)/sodipodi/modules
 
@@ -46,7 +45,7 @@ libxmleditor_la_CPPFLAGS = \
 	-DSTANDALONE_MODULE
 
 libxmleditor_la_SOURCES = \
-	xml-tree.c xml-tree.h
+	xml-editor.c
 
 libxmleditor_la_LDFLAGS = \
 	-module \

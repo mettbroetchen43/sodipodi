@@ -647,7 +647,7 @@ sp_modules_init (int *argc, const char **argv, unsigned int gui)
 #ifdef WITH_KDE
 	/* KDE printing */
 	module_printing_kde = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_KDE, NULL);
-	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.gnome");
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.kde");
 	if (!repr) {
 		parent = sodipodi_get_repr (SODIPODI, "extensions");
 		repr = sp_module_write (module_printing_kde, parent);

@@ -169,6 +169,7 @@ nr_svl_stroke_build_curveto (NRSVLStrokeBuild *svlb,
 
 	if (level >= MAX_SUBDIVIDE_DEPTH) goto nosubdivide;
 
+#if 0
 	t_x0 = NR_MATRIX_DF_TRANSFORM_X (&svlb->transform, x0, y0);
 	t_y0 = NR_MATRIX_DF_TRANSFORM_Y (&svlb->transform, x0, y0);
 	t_x1 = NR_MATRIX_DF_TRANSFORM_X (&svlb->transform, x1, y1);
@@ -177,6 +178,16 @@ nr_svl_stroke_build_curveto (NRSVLStrokeBuild *svlb,
 	t_y2 = NR_MATRIX_DF_TRANSFORM_Y (&svlb->transform, x2, y2);
 	t_x3 = NR_MATRIX_DF_TRANSFORM_X (&svlb->transform, x3, y3);
 	t_y3 = NR_MATRIX_DF_TRANSFORM_Y (&svlb->transform, x3, y3);
+#else
+	t_x0 = x0;
+	t_y0 = y0;
+	t_x1 = x1;
+	t_y1 = y1;
+	t_x2 = x2;
+	t_y2 = y2;
+	t_x3 = x3;
+	t_y3 = y3;
+#endif
 
 	dx1_0 = t_x1 - t_x0;
 	dy1_0 = t_y1 - t_y0;

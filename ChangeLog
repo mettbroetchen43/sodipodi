@@ -1,3 +1,11 @@
+2004-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_pencil_context_update_curves): New method
+	(sp_pencil_timeout): Ported from dynadraw code
+	(sp_pencil_context_root_handler): Use averaged draw and path synthesizer
+
+	* src/helper/bezier-utils.c: Implemented 2-segment path synthesizer
+
 2004-02-02  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/module.c: GnomePrint support without print preview. Is this

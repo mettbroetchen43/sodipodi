@@ -18,6 +18,33 @@
 
 #include <libnr/nr-types.h>
 
+struct _NRSynthesizer {
+	double tolerance2;
+	/* Curve points (always 3n + 1) */
+	unsigned int numcpts;
+	unsigned int sizcpts;
+	NRPointF *cpts;
+	/* Vector points */
+	unsigned int numvpts;
+	unsigned int sizvpts;
+	NRPointF *vpts;
+	float *vdist;
+	/* Fitted segment */
+	unsigned int fsegs;
+	NRPointF fpts[8];
+	/* Directions */
+	NRPointF d0, d1, d2;
+	/* Midpoint */
+	unsigned int midpt;
+};
+
+void nr_synthesizer_setup (struct _NRSynthesizer *sz, unsigned int maxvpts, double tolerance);
+
+void nr_synthesizer_release (struct _NRSynthesizer *sz);
+
+void nr_synthesizer_begin (struct _NRSynthesizer *sz, float x, float y, float distance);
+void nr_synthesizer_add_point (struct _NRSynthesizer *sz, float x, float y, float distance);
+
 /* Bezier approximation utils */
 
 int sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, int len, double error);
@@ -25,7 +52,8 @@ int sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, int len, double
 int sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, int len, double error, int max_depth);
 
 int sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, int len,
-			       NRPointF *tHat1, NRPointF *tHat2, double error, int max_depth);
+			      const NRPointF *tHat1, NRPointF *d1, const NRPointF *tHat2,
+			      unsigned int *midpt, double error, int max_depth);
 
 
 /* Data array */

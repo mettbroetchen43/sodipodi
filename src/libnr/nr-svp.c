@@ -717,7 +717,10 @@ nr_svl_new (void)
 	svl = ffsvl;
 
 	if (svl == NULL) {
+		static int c = 0;
 		int i;
+		c += 1;
+		assert (c < (10000000 / (NR_SVL_ALLOC_SIZE * sizeof (NRFlat))));
 		svl = nr_new (NRSVL, NR_SVL_ALLOC_SIZE);
 		for (i = 1; i < (NR_SVL_ALLOC_SIZE - 1); i++) svl[i].next = &svl[i + 1];
 		svl[NR_SVL_ALLOC_SIZE - 1].next = NULL;
@@ -910,7 +913,10 @@ nr_flat_new_full (NRCoord y, NRCoord x0, NRCoord x1)
 	flat = ffflat;
 
 	if (!flat) {
+		static int c = 0;
 		int i;
+		c += 1;
+		assert (c < (10000000 / (NR_FLAT_ALLOC_SIZE * sizeof (NRFlat))));
 		flat = nr_new (NRFlat, NR_FLAT_ALLOC_SIZE);
 		for (i = 1; i < (NR_FLAT_ALLOC_SIZE - 1); i++) flat[i].next = &flat[i + 1];
 		flat[NR_FLAT_ALLOC_SIZE - 1].next = NULL;
