@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.22\n"
-"POT-Creation-Date: 2001-05-29 13:24+0200\n"
-"PO-Revision-Date: 2001-10-03 19:26+0900\n"
+"POT-Creation-Date: 2001-10-27 10:49+0900\n"
+"PO-Revision-Date: 2001-10-27 12:40+0900\n"
 "Last-Translator: Mitsuru Oka <oka@debian.or.jp>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -205,7 +205,7 @@ msgstr "ガイドライン"
 msgid "Millimeters"
 msgstr "ミリメートル"
 
-#: glade/display.c:20 glade/display.c:32
+#: glade/display.c:20 glade/display.c:32 src/helper/unit-menu.c:94
 msgid "Pixels"
 msgstr "ピクセル"
 
@@ -284,7 +284,7 @@ msgstr "ページ"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/item.c:7
+#: glade/item.c:7 src/dialogs/item-properties.c:340
 msgid "Item properties"
 msgstr "アイテムプロパティ"
 
@@ -312,8 +312,8 @@ msgstr "ID:"
 msgid "Opacity:"
 msgstr "半透明"
 
-#: glade/item.c:14 src/dialogs/item-properties.c:99
-#: src/dialogs/item-properties.c:236
+#: glade/item.c:14 src/dialogs/item-properties.c:180
+#: src/dialogs/item-properties.c:250 src/dialogs/item-properties.c:491
 msgid "The SVG ID of item"
 msgstr "アイテムの SVG ID"
 
@@ -337,7 +337,8 @@ msgstr "X +"
 msgid "Y +"
 msgstr "Y +"
 
-#: glade/item.c:22 src/sp-item.c:516
+#. Create toplevel menuitem
+#: glade/item.c:22 src/sp-item.c:592
 msgid "Item"
 msgstr "アイテム"
 
@@ -363,7 +364,7 @@ msgid "Scale with object"
 msgstr "オブジェクトで計測"
 
 #: glade/object_props.c:11 glade/object_props.c:29 glade/object_props.c:60
-#: glade/sodipodi-glade.c:87
+#: glade/sodipodi-glade.c:90
 msgid "Stroke"
 msgstr "ストローク"
 
@@ -471,7 +472,7 @@ msgstr "塗りつぶす色を選択"
 msgid "Pick fill color"
 msgstr "塗りつぶす色を選ぶ"
 
-#: glade/object_props.c:38
+#: glade/object_props.c:38 src/widgets/sp-color-selector.c:480
 msgid "Red:"
 msgstr "赤:"
 
@@ -479,19 +480,20 @@ msgstr "赤:"
 msgid "Fill Color:"
 msgstr "塗りつぶす色:"
 
-#: glade/object_props.c:40
+#: glade/object_props.c:40 src/widgets/sp-color-selector.c:481
 msgid "Green:"
 msgstr "緑:"
 
-#: glade/object_props.c:41
+#: glade/object_props.c:41 src/widgets/sp-color-selector.c:482
 msgid "Blue:"
 msgstr "青:"
 
-#: glade/object_props.c:42
+#: glade/object_props.c:42 src/widgets/sp-color-selector.c:483
+#: src/widgets/sp-color-selector.c:501 src/widgets/sp-color-selector.c:521
 msgid "Alpha:"
 msgstr "透明度:"
 
-#: glade/object_props.c:43 glade/object_props.c:73 glade/sodipodi-glade.c:86
+#: glade/object_props.c:43 glade/object_props.c:73 glade/sodipodi-glade.c:89
 msgid "Fill"
 msgstr "塗りつぶし"
 
@@ -599,47 +601,47 @@ msgstr ""
 "ベクタ描画プログラム\n"
 "GPL にてリリース"
 
-#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:43
 msgid "Node Edit"
 msgstr "ノードの編集"
 
-#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:44
 msgid "Include one node into selected segments"
 msgstr "ノードを選択したセグメントに含める"
 
-#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:48
 msgid "Break apart selected node"
 msgstr "選択したノードを分割する"
 
-#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:47
 msgid "Convert selected segments to curves"
 msgstr "選択したセグメントを曲線に変換"
 
-#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:49
 msgid "Join 2 selected endpoints"
 msgstr "2つの端点の結合"
 
-#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:50
 msgid "Cusp line at selected nodes"
 msgstr "選択したノードの尖った線"
 
-#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:51
 msgid "Smooth line at selected nodes"
 msgstr "選択したノードの滑らかな線"
 
-#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:52
 msgid "Symmetric "
 msgstr "左右対称"
 
-#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:54
 msgid "Close dialog"
 msgstr "ダイアログを閉じる"
 
-#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:46
 msgid "Convert selected segments to lines"
 msgstr "選択したセグメントを線に変換"
 
-#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:45
 msgid "Delete selected nodes"
 msgstr "選択したノードの削除"
 
@@ -656,8 +658,8 @@ msgid "Drawing"
 msgstr "描画"
 
 #: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
-#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
-#: src/toolbox.c:93
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:34 src/dialogs/align.c:110
+#: src/toolbox.c:95
 msgid "Selection"
 msgstr "選択"
 
@@ -729,7 +731,7 @@ msgstr "新規(_N)"
 msgid "Import"
 msgstr "読み込み"
 
-#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:57
 msgid "Export"
 msgstr "出力"
 
@@ -738,6 +740,7 @@ msgid "Duplicate"
 msgstr "複製"
 
 #: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+#: src/dialogs/gradient-selector.c:83
 msgid "Delete"
 msgstr "削除"
 
@@ -789,8 +792,8 @@ msgstr "曲線に変換(_R)"
 msgid "New View"
 msgstr "新規のビュー"
 
-#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
-#: src/desktop.c:316 src/toolbox.c:126
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:88 glade/toolbox.c:25
+#: src/desktop.c:1096 src/toolbox.c:134
 msgid "Zoom"
 msgstr "ズーム"
 
@@ -855,31 +858,43 @@ msgid "Ellipse"
 msgstr "楕円"
 
 #: glade/sodipodi-glade.c:83
+msgid "Star"
+msgstr "星"
+
+#: glade/sodipodi-glade.c:84
+msgid "Spiral"
+msgstr "螺旋"
+
+#: glade/sodipodi-glade.c:85
 msgid "Freehand"
 msgstr "フリーハンド"
+
+#: glade/sodipodi-glade.c:86
+msgid "Dynahand"
+msgstr "ダイナハンド"
 
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:87 glade/sodipodi-glade.c:91 glade/text-dialog.c:7
 msgid "Text"
 msgstr "テキスト"
 
-#: glade/sodipodi-glade.c:89 src/toolbox.c:130
+#: glade/sodipodi-glade.c:92 src/toolbox.c:138
 msgid "Nodes"
 msgstr "ノード"
 
-#: glade/sodipodi-glade.c:90
+#: glade/sodipodi-glade.c:93
 msgid "Desktop"
 msgstr "デスクトップ"
 
-#: glade/sodipodi-glade.c:91
+#: glade/sodipodi-glade.c:94
 msgid "Document"
 msgstr "ドキュメント"
 
-#: glade/sodipodi-glade.c:92
+#: glade/sodipodi-glade.c:95
 msgid "Display"
 msgstr "ディスプレイ"
 
@@ -888,7 +903,7 @@ msgstr "ディスプレイ"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+#: glade/sodipodi-glade.c:96 glade/xml-tree.c:7
 msgid "XML Tree"
 msgstr "XML ツリー"
 
@@ -929,11 +944,11 @@ msgstr "情報(_A)..."
 msgid "Drawing context"
 msgstr "描画コンテキスト"
 
-#: glade/toolbox.c:15 glade/toolbox.c:21
+#: glade/toolbox.c:15
 msgid "Edit nodes"
 msgstr "ノードの編集"
 
-#: glade/toolbox.c:16 glade/toolbox.c:25
+#: glade/toolbox.c:16 glade/toolbox.c:29
 msgid "Zoom in"
 msgstr "拡大"
 
@@ -946,200 +961,224 @@ msgid "Draw ellipse"
 msgstr "楕円の描画"
 
 #: glade/toolbox.c:19
+msgid "Select and transform"
+msgstr "選択して変形"
+
+#: glade/toolbox.c:20
 msgid "Draw freehand line"
 msgstr "フリーハンド線の描画"
 
-#: glade/toolbox.c:20
+#: glade/toolbox.c:21
+msgid "Draw dynahand line"
+msgstr "ダイナハンド線の描画"
+
+#: glade/toolbox.c:22
 msgid "Draw text"
 msgstr "テキストの描画"
 
-#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
-msgid "Zoom to 1:1"
-msgstr "1:1で拡大"
+#: glade/toolbox.c:23
+msgid "Draw star"
+msgstr "星の描画"
 
 #: glade/toolbox.c:24
+msgid "Draw spiral"
+msgstr "螺旋の描画"
+
+#: glade/toolbox.c:26
+msgid "Zoom to 2:1"
+msgstr "2:1にズーム"
+
+#: glade/toolbox.c:27
 msgid "Zoom to page"
 msgstr "ページにズーム"
 
-#: glade/toolbox.c:26
+#: glade/toolbox.c:28
 msgid "Zoom out"
 msgstr "縮小"
 
-#: glade/toolbox.c:27
+#: glade/toolbox.c:30
 msgid "Zoom to drawing"
 msgstr "描画領域にズーム"
 
-#: glade/toolbox.c:28
+#: glade/toolbox.c:31
 msgid "Zoom to selection"
 msgstr "選択領域にズーム"
 
 #: glade/toolbox.c:32
-msgid "lower selection to bottom"
-msgstr "選択部分を最背面に移動"
+msgid "Zoom to 1:1"
+msgstr "1:1にズーム"
 
 #: glade/toolbox.c:33
-msgid "Raise selection to top"
-msgstr "選択部分を最前面に移動"
-
-#: glade/toolbox.c:34
-msgid "Lower selection one layer"
-msgstr "選択部分を一つ背面に移動"
+msgid "Zoom to 1:2"
+msgstr "1:2にズーム"
 
 #: glade/toolbox.c:35
-msgid "Rise selection one layer"
-msgstr "選択部分を一つ前面に移動"
+msgid "lower selection to bottom"
+msgstr "選択領域を最背面に移動"
 
 #: glade/toolbox.c:36
+msgid "Raise selection to top"
+msgstr "選択領域を最前面に移動"
+
+#: glade/toolbox.c:37
+msgid "Lower selection one layer"
+msgstr "選択領域を一つ背面に移動"
+
+#: glade/toolbox.c:38
+msgid "Rise selection one layer"
+msgstr "選択領域を一つ前面に移動"
+
+#: glade/toolbox.c:39
 msgid "Break apart selected paths"
 msgstr "選択したパスを分割する"
 
-#: glade/toolbox.c:37
+#: glade/toolbox.c:40
 msgid "Combine selected paths"
 msgstr "選択したパスの結合"
 
-#: glade/toolbox.c:38
+#: glade/toolbox.c:41
 msgid "Group selected objects"
 msgstr "選択したオブジェクトのグループ化"
 
-#: glade/toolbox.c:39
+#: glade/toolbox.c:42
 msgid "Ungroup selected objects"
 msgstr "選択したオブジェクトのグループ解除"
 
-#: glade/toolbox.c:50
+#: glade/toolbox.c:53
 msgid "Unsymmetric"
 msgstr "非対称"
 
-#: glade/toolbox.c:52 src/toolbox.c:72
+#: glade/toolbox.c:55 src/toolbox.c:74
 msgid "File"
 msgstr "ファイル"
 
-#: glade/toolbox.c:53
+#: glade/toolbox.c:56
 msgid "New drawing"
 msgstr "新規描画"
 
-#: glade/toolbox.c:55
+#: glade/toolbox.c:58
 msgid "Open new drawing"
 msgstr "新規描画を開く"
 
-#: glade/toolbox.c:56
+#: glade/toolbox.c:59
 msgid "Import "
 msgstr "挿入 "
 
-#: glade/toolbox.c:57
+#: glade/toolbox.c:60
 msgid "Print drawing"
 msgstr "描画の印刷"
 
-#: glade/toolbox.c:58
+#: glade/toolbox.c:61
 msgid "Preview print drawing"
 msgstr "描画印刷のプレビュー"
 
-#: glade/toolbox.c:59
+#: glade/toolbox.c:62
 msgid "Save drawing "
 msgstr "描画の保存 "
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:63
 msgid "Save drawing under new filename"
 msgstr "新規ファイル名で描画を保存"
 
-#: glade/toolbox.c:61
+#: glade/toolbox.c:64
 msgid "Quit or not quit ?"
 msgstr "終了しても宜しいですか?"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:65
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "はい、直ちに sodipodi を終らせて後でまた戻ってきます。"
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:66
 msgid "Yep !"
 msgstr "はい!"
 
-#: glade/toolbox.c:64
+#: glade/toolbox.c:67
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "いいえ、また Sodipodi でもっとクールなベクタを描画します。"
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:68
 msgid "Nope !"
 msgstr "いいえ!"
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:69
 msgid "Really wanna quit sodipodi ?"
 msgstr "本当に sodipodi を終了して宜しいですか?"
 
-#: glade/toolbox.c:67 src/event-context.c:431 src/toolbox.c:85
+#: glade/toolbox.c:70 src/event-context.c:432 src/toolbox.c:87
 msgid "Object"
 msgstr "オブジェクト"
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:71
 msgid "Align dialog"
 msgstr "ダイアログの配置変更"
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:72
 msgid "Transformation dialog"
 msgstr "変形ダイアログ"
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:73
 msgid "Edit font style of selected objects"
 msgstr "オブジェクトのフォントスタイル編集"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:74
 msgid "Edit layout of selected objects"
 msgstr "オブジェクトのレイアウト編集"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:75
 msgid "Edit fill style of selected objects"
 msgstr "オブジェクトの塗りつぶしスタイル編集"
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:76
 msgid "Edit stroke style of selected objects"
 msgstr "オブジェクトのストロークスタイル編集"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:77
 msgid "Flip selected objects"
 msgstr "選択オブジェクトの反転"
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:78
 msgid "Rotate selected objects 90 clockwise"
-msgstr "選択オブジェクトを90度ずつ回転"
+msgstr "選択されたオブジェクトを90度ずつ回転"
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:79
 msgid "Remove transformation"
 msgstr "変形を戻す"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:80
 msgid "Convert selected objects to curves"
 msgstr "選択オブジェクトを曲線に変換"
 
-#: glade/toolbox.c:78 src/toolbox.c:76
+#: glade/toolbox.c:81 src/dialogs/gradient-selector.c:73 src/toolbox.c:78
 msgid "Edit"
 msgstr "編集"
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:82
 msgid "Undo "
 msgstr "元に戻す"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:83
 msgid "Redo"
 msgstr "やり直し"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:84
 msgid "Delete selection"
-msgstr "選択部分の削除"
+msgstr "選択領域の削除"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:85
 msgid "Paste from clipboard"
 msgstr "クリップボードから貼り付け"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:86
 msgid "Copy selection to clipboard"
-msgstr "クリップボードにコピー"
+msgstr "選択領域をクリップボードにコピー"
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:87
 msgid "Cut selection"
-msgstr "選択部分の切り取り"
+msgstr "選択領域の切り取り"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:88
 msgid "Duplicate selection"
-msgstr "選択部分の複製"
+msgstr "選択領域の複製"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -1235,4 +1274,613 @@ msgid "deg"
 msgstr "度"
 
 #: glade/transformation.c:31
-#, fuzzy
+msgid "Set angle to 0 degrees"
+msgstr "角度を 0 度に設定"
+
+#: glade/transformation.c:32
+msgid "Set angle to 90 degrees"
+msgstr "角度を 90 度に設定"
+
+#: glade/transformation.c:33
+msgid "Set angle to 180 degrees"
+msgstr "角度を 180 度に設定"
+
+#: glade/transformation.c:34
+msgid "Set angle to 270 degrees"
+msgstr "角度を 270 度に設定"
+
+#: glade/transformation.c:35
+msgid "Skew"
+msgstr "歪み"
+
+#: glade/transformation.c:36
+msgid "select direction (horizontal/vertical skew)"
+msgstr "方向を選択 (水平/垂直の歪み)"
+
+#: glade/transformation.c:37
+msgid "skew"
+msgstr "歪み"
+
+#: glade/transformation.c:39
+msgid "keep aspect"
+msgstr "縦横比を維持"
+
+#: glade/transformation.c:40
+msgid "Start transformation - Ctl+a"
+msgstr "変形開始 - Ctrl+a"
+
+#: glade/transformation.c:41
+msgid "Close dialog - Ctl+c"
+msgstr "ダイアログを閉じる - Ctl+c"
+
+#: glade/transformation.c:42
+msgid "Expand dialog - Ctl+e"
+msgstr "ダイアログを展開する - Ctl+e"
+
+#: glade/transformation.c:43
+msgid "Use alignment during transformation"
+msgstr "変形時に整列を用いる"
+
+#: glade/transformation.c:45
+msgid "Use center as transformation fixpoint"
+msgstr "変形時に固定点として中心を用いる"
+
+#: glade/transformation.c:46 glade/transformation.c:47
+msgid "Center"
+msgstr "中心"
+
+#: glade/transformation.c:48
+msgid "Horizontal center value"
+msgstr "水平方向の中心値"
+
+#: glade/transformation.c:49
+msgid "Vertical center value"
+msgstr "垂直方向の中心値"
+
+#: glade/transformation.c:50
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr "選択領域/デスクトップ座標の中心位置をトグル"
+
+#: glade/transformation.c:51
+msgid "desktop"
+msgstr "デスクトップ"
+
+#: glade/transformation.c:52
+msgid "Choose metric for center"
+msgstr "中心に対して距離単位を選択"
+
+#: glade/transformation.c:53
+msgid "Keep width of selection during transformation"
+msgstr "変形時に選択領域の幅を維持する"
+
+#: glade/transformation.c:54
+msgid "Keep height of selection during transformation"
+msgstr "変形時に選択領域の高さを維持する"
+
+#: glade/transformation.c:55
+msgid "Apply transformation to copy Ctl+m"
+msgstr "変換をコピーに対して適用 - Ctl+m"
+
+#: glade/transformation.c:56
+msgid "Reset dialog to default - Ctl+r"
+msgstr "ダイアログをデフォルトに戻す - Ctl+r"
+
+#: glade/transformation.c:58
+msgid "Align to top middle"
+msgstr "上端の中央に配置"
+
+#: glade/transformation.c:59
+msgid "Align to bottom right"
+msgstr "下端の右端に配置"
+
+#: glade/transformation.c:60
+msgid "Align to right middle"
+msgstr "上端の右端に配置"
+
+#: glade/transformation.c:61
+msgid "Align to top right"
+msgstr "上端の右端に配置"
+
+#: glade/transformation.c:62
+msgid "Align to left middle"
+msgstr "左端の中央に配置"
+
+#: glade/transformation.c:63
+msgid "Align to center"
+msgstr "中央に配置"
+
+#: glade/transformation.c:64
+msgid "Align to bottom middle"
+msgstr "下端の中央に配置"
+
+#: glade/transformation.c:65
+msgid "Align to bottom left"
+msgstr "下端の左端に配置"
+
+#: glade/transformation.c:66
+msgid "Align to top left"
+msgstr "上端の左端に配置"
+
+#: glade/transformation.c:67 glade/transformation.c:77
+#: glade/transformation.c:85 glade/transformation.c:95
+#: src/helper/unit-menu.c:93
+msgid "Points"
+msgstr "ポイント"
+
+#: glade/transformation.c:69 glade/transformation.c:79
+#: glade/transformation.c:87 glade/transformation.c:97
+#: src/helper/unit-menu.c:90
+msgid "Millimeter"
+msgstr "ミリメートル"
+
+#: glade/transformation.c:71 glade/transformation.c:81
+#: glade/transformation.c:89 glade/transformation.c:99
+#: src/helper/unit-menu.c:91
+msgid "Centimeter"
+msgstr "センチメートル"
+
+#: glade/transformation.c:73 glade/transformation.c:83
+#: glade/transformation.c:91 glade/transformation.c:101
+#: src/helper/unit-menu.c:92
+msgid "Inch"
+msgstr "インチ"
+
+#: glade/transformation.c:75 glade/transformation.c:93
+#: src/helper/unit-menu.c:96
+msgid "Percent"
+msgstr "パーセント"
+
+#: glade/transformation.c:76 glade/transformation.c:94
+#: src/helper/unit-menu.c:96
+#, c-format
+msgid "%"
+msgstr "%"
+
+#: glade/transformation.c:103
+msgid "Degree"
+msgstr "度"
+
+#: glade/xml-tree.c:8
+msgid "Hierarchy"
+msgstr "階層"
+
+#: glade/xml-tree.c:9
+msgid "Dup"
+msgstr "複製"
+
+#: glade/xml-tree.c:10
+msgid "New"
+msgstr "新規"
+
+#: glade/xml-tree.c:11
+msgid "Cut"
+msgstr "カット"
+
+#: glade/xml-tree.c:12
+msgid "Copy"
+msgstr "コピー"
+
+#: glade/xml-tree.c:13
+msgid "Paste"
+msgstr "貼付け"
+
+#: glade/xml-tree.c:14
+msgid "Del"
+msgstr "削除"
+
+#: glade/xml-tree.c:15
+msgid "Attributes"
+msgstr "属性"
+
+#: glade/xml-tree.c:16
+msgid "Key"
+msgstr "キー"
+
+#: glade/xml-tree.c:17 glade/xml-tree.c:34
+msgid "Value"
+msgstr "値"
+
+#: glade/xml-tree.c:19 src/dialogs/gradient-selector.c:78
+msgid "Add"
+msgstr "追加"
+
+#: glade/xml-tree.c:20 glade/xml-tree.c:22
+msgid "Change"
+msgstr "変更"
+
+#: glade/xml-tree.c:21
+msgid "Content"
+msgstr "内容"
+
+#: glade/xml-tree.c:23
+msgid "Change Attribute"
+msgstr "属性変更"
+
+#: glade/xml-tree.c:24 glade/xml-tree.c:28 src/widgets/sp-color-selector.c:500
+msgid "Value:"
+msgstr "値:"
+
+#: glade/xml-tree.c:25 glade/xml-tree.c:29 glade/xml-tree.c:32
+msgid "Attribute:"
+msgstr "属性:"
+
+#: glade/xml-tree.c:26 glade/xml-tree.c:33
+msgid "name"
+msgstr "名前"
+
+#: glade/xml-tree.c:27
+msgid "Add attribute"
+msgstr "属性追加"
+
+#: glade/xml-tree.c:30
+msgid "Delete attribute"
+msgstr "属性削除"
+
+#: glade/xml-tree.c:31
+msgid "Do you want to delete attribute?"
+msgstr "属性を削除してよろしいですか?"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "sodipodi-svg-docファクトリを作成できません"
+
+#: src/desktop.c:1212
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
+
+#: src/widgets/sp-color-selector.c:498
+msgid "Hue:"
+msgstr "色相:"
+
+#: src/widgets/sp-color-selector.c:499
+msgid "Saturation:"
+msgstr "彩度:"
+
+#: src/widgets/sp-color-selector.c:517
+msgid "Cyan:"
+msgstr "シアン:"
+
+#: src/widgets/sp-color-selector.c:518
+msgid "Magenta:"
+msgstr "マゼンタ:"
+
+#: src/widgets/sp-color-selector.c:519
+msgid "Yellow:"
+msgstr "黄:"
+
+#: src/widgets/sp-color-selector.c:520
+msgid "Black:"
+msgstr "黒:"
+
+#: src/dialogs/align.c:80
+msgid "Last selected"
+msgstr "最後の選択部分"
+
+#: src/dialogs/align.c:85
+msgid "First selected"
+msgstr "最初の選択部分"
+
+#: src/dialogs/align.c:90
+msgid "Biggest item"
+msgstr "最大の要素"
+
+#: src/dialogs/align.c:95
+msgid "Smallest item"
+msgstr "最小の要素"
+
+#: src/dialogs/display-settings.c:71
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:75
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:79
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:83
+msgid "16x16"
+msgstr "16x16"
+
+#: src/dialogs/document-properties.c:56
+msgid "Custom"
+msgstr "カスタム"
+
+#: src/dialogs/item-properties.c:174
+msgid "Item is reference"
+msgstr "要素は参照です"
+
+#: src/dialogs/item-properties.c:252 src/dialogs/item-properties.c:493
+msgid "The ID is not valid"
+msgstr "このIDは無効です"
+
+#: src/dialogs/item-properties.c:254 src/dialogs/item-properties.c:495
+msgid "The ID is already defined"
+msgstr "このIDは既に定義されています"
+
+#: src/dialogs/item-properties.c:257 src/dialogs/item-properties.c:497
+msgid "The ID is valid"
+msgstr "このIDは有効です"
+
+#. Reset button
+#: src/dialogs/gradient-selector.c:101
+msgid "Reset"
+msgstr "リセット"
+
+#: src/dialogs/gradient-vector.c:56
+msgid "Start color"
+msgstr "始点の色"
+
+#: src/dialogs/gradient-vector.c:68
+msgid "End color"
+msgstr "終点の色"
+
+#: src/dialogs/gradient-vector.c:95
+msgid "Gradient vector"
+msgstr "勾配ベクトル"
+
+#: src/file.c:84
+msgid "Select file to open"
+msgstr "開くファイルを選択"
+
+#: src/file.c:177
+msgid "Save file"
+msgstr "ファイルを保存"
+
+#: src/file.c:285
+msgid "Select file to import"
+msgstr "読み込むファイルを選択"
+
+#: src/file.c:362
+msgid "Export file"
+msgstr "ファイルを出力"
+
+#: src/file.c:426
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
+
+#: src/helper/unit-menu.c:91
+msgid "Centimeters"
+msgstr "センチメートル"
+
+#: src/helper/unit-menu.c:92
+msgid "Inches"
+msgstr "インチ"
+
+#: src/helper/unit-menu.c:92
+msgid "\""
+msgstr "\""
+
+#: src/helper/unit-menu.c:93
+msgid "Point"
+msgstr "ポイント"
+
+#: src/helper/unit-menu.c:94
+msgid "Pixel"
+msgstr "ピクセル"
+
+#: src/helper/unit-menu.c:95
+msgid "Userspace"
+msgstr "ユーザ空間"
+
+#: src/helper/unit-menu.c:95
+msgid "us"
+msgstr "us"
+
+#: src/helper/unit-menu.c:97
+msgid "Em squares"
+msgstr ""
+
+#: src/helper/unit-menu.c:97
+msgid "Em square"
+msgstr ""
+
+#: src/helper/unit-menu.c:97
+msgid "em"
+msgstr "em"
+
+#: src/helper/unit-menu.c:98
+msgid "Ex squares"
+msgstr ""
+
+#: src/helper/unit-menu.c:98
+msgid "Ex square"
+msgstr ""
+
+#: src/helper/unit-menu.c:98
+msgid "ex"
+msgstr "ex"
+
+#: src/main.c:54
+msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+msgstr "GUIを使用しません。注意! これを使用する場合は第一引数にして下さい!"
+
+#: src/main.c:63
+msgid "Open specified file (option string may be excluded)"
+msgstr "指定したファイルを開く (オプション文字列は無視されるでしょう)"
+
+#: src/main.c:64 src/main.c:73
+msgid "FILENAME"
+msgstr ""
+
+#: src/main.c:72
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr "指定された出力ファイルにファイルを印刷(パイプは '| program' で指定)"
+
+#: src/main.c:81
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "一つずつ与えられたファイルを表示。任意のキー/マウスで次にスイッチ"
+
+#: src/main.c:183
+msgid "Oaf options"
+msgstr "Oafオプション"
+
+#: src/main.c:191
+msgid "Could not initialize Bonobo"
+msgstr "Bonoboを初期化できません"
+
+#. Not a regular file
+#: src/sodipodi.c:302
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s は通常のファイルではありません。\n"
+"sodipodiは実行されますが、\n"
+"プリファレンスの読み書きはできません。\n"
+
+#. Not an valid xml file
+#: src/sodipodi.c:315
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s が有効な XML ファイルでないか\n"
+"この読み出し許可がありません。\n"
+"sodipodi は実行されますが、\n"
+"プリファレンスの読み書きはできません。"
+
+#: src/sodipodi.c:329
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s は有効な sodipodi プリファレンスファイル\n"
+"ではありません。sodopodi は実行されますが、\n"
+"プロファレンスの読み書きはできません。"
+
+#. Cannot create directory
+#: src/sodipodi.c:585
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"ディレクトリ %s を作成できません。\n"
+"sodipodi は実行されますが、\n"
+"プリファレンスの読み書きはできません。"
+
+#. Not a directory
+#: src/sodipodi.c:597
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s は有効なディレクトリではありません。\n"
+"sodipodi は実行されますが、\n"
+"プリファレンスの読み書きはできません。"
+
+#. Cannot create file
+#: src/sodipodi.c:613
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"ファイル %s を作成できません。\n"
+"sodipodi は実行されますが、\n"
+"プリファレンスは読み書きできません。"
+
+#. Cannot create file
+#: src/sodipodi.c:625
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"ファイル %s に書き込めません。\n"
+"sodipodi は実行されますが、\n"
+"プリファレンスは読み書きできません。"
+
+#: src/sp-image.c:263
+msgid "Broken bitmap"
+msgstr "ビットマップが壊れています"
+
+#: src/sp-image.c:264
+msgid "Color bitmap"
+msgstr "カラービットマップ"
+
+#: src/sp-item.c:367
+msgid "Unknown item :-("
+msgstr "未知の要素 :-("
+
+#. Item dialog
+#: src/sp-item.c:595
+msgid "Item Properties"
+msgstr "アイテムプロパティ"
+
+#. Select item
+#: src/sp-item.c:605
+msgid "Select this"
+msgstr "選択"
+
+#. Reset transformations
+#: src/sp-item.c:615
+msgid "Reset transformation"
+msgstr "変形をリセット"
+
+#: src/sp-item.c:621
+msgid "Make sensitive"
+msgstr "センシティブに設定"
+
+#: src/sp-item.c:621
+msgid "Make insensitive"
+msgstr "インセンシティブに設定"
+
+#: src/sp-item-group.c:419
+#, c-format
+msgid "Group of %d objects"
+msgstr "%d オブジェクトのグループ"
+
+#: src/sp-item-group.c:480
+msgid "Group"
+msgstr "グループ化"
+
+#. "Ungroup"
+#: src/sp-item-group.c:485
+msgid "Ungroup"
+msgstr "グループ解除"
+
+#: src/sp-shape.c:335
+msgid "A path - whatever it means"
+msgstr "どんなものでも実体はパスです"
+
+#. Create toplevel menuitem
+#: src/sp-shape.c:391
+msgid "Shape"
+msgstr "シェイプ"
+
+#. Item dialog
+#: src/sp-shape.c:394
+msgid "Fill settings"
+msgstr "塗り潰し設定"
+
+#: src/sp-text.c:201
+msgid "Text object"
+msgstr "テキストオブジェクト"
+
+#: src/toolbox.c:99
+msgid "Draw"
+msgstr "描画"
