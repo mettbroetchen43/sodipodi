@@ -1,5 +1,11 @@
 2003-03-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-object-repr.c (sp_object_type_lookup): Added marker type
+
+	* src/sp-marker.h: New file
+
+	* src/sp-marker.c: New file
+
 	* src/display/nr-arena-image.c (nr_arena_image_render): Use pixblock
 	area instead the active area (that may be bigger)
 

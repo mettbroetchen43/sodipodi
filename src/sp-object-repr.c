@@ -15,6 +15,7 @@
 #include "sp-item.h"
 #include "sp-defs.h"
 #include "sp-symbol.h"
+#include "sp-marker.h"
 #include "sp-use.h"
 #include "sp-root.h"
 #include "sp-namedview.h"
@@ -91,6 +92,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
 		g_hash_table_insert (dtable, "mask", GINT_TO_POINTER (SP_TYPE_MASK));
+		g_hash_table_insert (dtable, "marker", GINT_TO_POINTER (SP_TYPE_MARKER));
 		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_PATH));
 		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
 		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
