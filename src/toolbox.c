@@ -21,6 +21,7 @@
 #include <glade/glade.h>
 #include "widgets/sp-toolbox.h"
 #include "widgets/sp-menu-button.h"
+#include "file.h"
 #include "sodipodi-private.h"
 #include "document.h"
 #include "toolbox.h"
@@ -67,7 +68,6 @@ static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_ent
 
 static void sp_maintoolbox_open_files(gchar * buffer);
 static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
-static void sp_maintoolbox_open_one_file(gchar * svg_path);
 
 static gint
 sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer data)
@@ -79,11 +79,24 @@ sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer dat
 	return TRUE;
 }
 
+static gint
+sp_maintoolbox_menu_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	GtkWidget *m;
+
+	m = sp_ui_main_menu ();
+	gtk_widget_show (m);
+
+	gtk_menu_popup (GTK_MENU (m), NULL, NULL, NULL, NULL, event->button, event->time);
+
+	return TRUE;
+}
+
 void
 sp_maintoolbox_create (void)
 {
 	if (toolbox == NULL) {
-		GtkWidget *vbox, *mbar, *mi, *m, *t, *w;
+		GtkWidget *vbox, *mbar, *mi, *t, *w;
 		GladeXML *xml;
 
 		/* Crete main toolbox Glade XML */
@@ -106,10 +119,7 @@ sp_maintoolbox_create (void)
 		mi = gtk_menu_item_new_with_label (_("Sodipodi"));
 		gtk_widget_show (mi);
 		gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
-
-		m = sp_ui_main_menu ();
-		gtk_widget_show (m);
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (mi), m);
+		gtk_signal_connect (GTK_OBJECT (mi), "button_press_event", GTK_SIGNAL_FUNC (sp_maintoolbox_menu_button_press), NULL);
 
 #if 0
 		glade_xml_signal_autoconnect (toolbox_xml);
@@ -436,21 +446,8 @@ sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused)
 		filename_len = strlen(filename);
 		if (filename_len > svg_suffix_len
 		    && !strcmp((char *)filename + filename_len - svg_suffix_len, svg_suffix))
-		    sp_maintoolbox_open_one_file(filename);
+			sp_file_open (filename);
 	}
-}
-
-/* FIXME: The same function definition in sp-image.c:load_file. */
-static void
-sp_maintoolbox_open_one_file(gchar * svg_path)
-{
-	SPDocument * doc;
-	SPViewWidget *dtw;
-  
-	doc = sp_document_new (svg_path);
-	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
-	sp_document_unref (doc);
-	sp_create_window (dtw, TRUE);
 }
 
 /* 

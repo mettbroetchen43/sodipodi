@@ -91,7 +91,7 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>sp_file_open</handler>
+	      <handler>sp_file_open_dialog</handler>
 	      <last_modification_time>Mon, 21 Aug 2000 17:25:58 GMT</last_modification_time>
 	    </signal>
 	    <label>_Open</label>
@@ -1892,7 +1892,7 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>sp_file_open</handler>
+	    <handler>sp_file_open_dialog</handler>
 	    <last_modification_time>Wed, 23 Aug 2000 19:32:42 GMT</last_modification_time>
 	  </signal>
 	  <relief>GTK_RELIEF_NORMAL</relief>

@@ -1,3 +1,36 @@
+2002-09-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/toolbox.c (sp_maintoolbox_menu_button_press): Construct main
+	menu here dynamically
+
+	* src/main.c (sp_main_console): Hide documents for nongui, slideshow
+
+	* src/interface.c (sp_ui_file_menu): Recent list
+	(sp_ui_main_menu): Ditto
+	(sp_menu_append_recent_documents): New helper
+
+	* src/help.c (sp_help_about): Hide document from list
+
+	* src/file.c (sp_file_open): New method
+	(sp_file_open_dialog): Renamed old sp_file_open
+
+	* src/sodipodi.c (sodipodi_add_document): Emit "new_document"
+	(sodipodi_remove_document): Emit "destroy_document", update recent list
+	(sodipodi_segv_handler): Truncate filenames to sensible part
+
+	* src/toolbox.c (sp_maintoolbox_open_one_file_with_check): Use sp_file_open
+
+2002-09-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_pencil_context_root_handler): Clear anchors
+	(spdc_finish_endpoint): Ditto
+	(spdc_pen_finish): Ditto
+
+	* src/document.h: Moved uri/base/name to main structure
+
+	* src/draw-context.c (sp_pen_context_finish): Call parent method, fixes
+	habit of crashing after using pen
+
 2002-09-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/*: Started composing sensible library at last

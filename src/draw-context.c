@@ -152,7 +152,9 @@ sp_draw_context_finalize (GtkObject *object)
 
 	if (dc->grab) gnome_canvas_item_ungrab (dc->grab, gdk_time_get ());
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
+	if (dc->selection) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
+	}
 
 	spdc_free_colors (dc);
 
@@ -952,6 +954,8 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				/* Write curves to object */
 				g_print ("Finishing freehand\n");
 				spdc_concat_colors_and_flush (dc, FALSE);
+				dc->sa = NULL;
+				dc->ea = NULL;
 				if (dc->green_anchor) {
 					dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
 				}
@@ -1065,6 +1069,8 @@ spdc_finish_endpoint (SPPencilContext *pc, ArtPoint *p, gboolean snap, guint sta
 			/* Write curves to object */
 			g_print ("Finishing real red curve\n");
 			spdc_concat_colors_and_flush (dc, FALSE);
+			dc->sa = NULL;
+			dc->ea = NULL;
 		}
 	}
 }
@@ -1202,6 +1208,9 @@ static void
 sp_pen_context_finish (SPEventContext *ec)
 {
 	spdc_pen_finish (SP_PEN_CONTEXT (ec), FALSE);
+
+	if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->finish)
+		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->finish (ec);
 }
 
 static void
@@ -1627,6 +1636,8 @@ spdc_pen_finish (SPPenContext *pc, gboolean closed)
 
 	sp_curve_reset (dc->red_curve);
 	spdc_concat_colors_and_flush (dc, closed);
+	dc->sa = NULL;
+	dc->ea = NULL;
 
 	dc->npoints = 0;
 	pc->state = SP_PEN_CONTEXT_POINT;

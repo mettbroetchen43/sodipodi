@@ -18,7 +18,9 @@
 
 void sp_file_new (void);
 
-void sp_file_open (void);
+void sp_file_open (const guchar *uri);
+
+void sp_file_open_dialog (gpointer object, gpointer data);
 
 void sp_file_save (GtkWidget * widget);
 void sp_file_save_document (SPDocument *document);

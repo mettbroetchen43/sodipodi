@@ -894,12 +894,14 @@ load_splines(at_splines_type * splines)
 
 
 static void
-load_file(const guchar * filename)
+load_file (const guchar *filename)
 {
 	SPDocument * doc;
 	SPViewWidget *dtw;
   
-	doc = sp_document_new (filename);
+	/* fixme: Either use file:: method, or amke this private (Lauris) */
+	/* fixme: In latter case we may want to publish it on save (Lauris) */
+	doc = sp_document_new (filename, TRUE);
 	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 	sp_document_unref (doc);
 	sp_create_window (dtw, TRUE);

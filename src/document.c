@@ -113,19 +113,22 @@ sp_document_init (SPDocument *doc)
 {
 	SPDocumentPrivate *p;
 
+	doc->public = FALSE;
+
 	doc->modified_id = 0;
 
 	doc->rdoc = NULL;
 	doc->rroot = NULL;
 	doc->root = NULL;
 
+	doc->uri = NULL;
+	doc->base = NULL;
+	doc->name = NULL;
+
 	p = g_new (SPDocumentPrivate, 1);
 
 
 	p->iddef = g_hash_table_new (g_str_hash, g_str_equal);
-
-	p->uri = NULL;
-	p->base = NULL;
 
 	p->aspect = SPXMidYMid;
 	p->clip = FALSE;
@@ -164,10 +167,6 @@ sp_document_destroy (GtkObject *object)
 		sp_document_clear_redo (doc);
 		sp_document_clear_undo (doc);
 
-		if (private->base) g_free (private->base);
-
-		if (private->uri) g_free (private->uri);
-
 		if (doc->root) gtk_object_unref (GTK_OBJECT (doc->root));
 
 		if (private->iddef) g_hash_table_destroy (private->iddef);
@@ -182,6 +181,19 @@ sp_document_destroy (GtkObject *object)
 		doc->private = NULL;
 	}
 
+	if (doc->name) {
+		g_free (doc->name);
+		doc->name = NULL;
+	}
+	if (doc->base) {
+		g_free (doc->base);
+		doc->base = NULL;
+	}
+	if (doc->uri) {
+		g_free (doc->uri);
+		doc->uri = NULL;
+	}
+
 	if (doc->modified_id) gtk_idle_remove (doc->modified_id);
 
 	sodipodi_unref ();
@@ -191,14 +203,12 @@ sp_document_destroy (GtkObject *object)
 }
 
 SPDocument *
-sp_document_new (const gchar *uri)
+sp_document_new (const gchar *uri, gboolean public)
 {
 	SPDocument *document;
 	SPReprDoc *rdoc;
 	SPRepr *rroot;
 	guint version;
-	gchar *b;
-	gint len;
 
 	if (uri != NULL) {
 		/* Try to fetch repr from file */
@@ -218,21 +228,30 @@ sp_document_new (const gchar *uri)
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
 
+	document->public = public;
+
 	document->rdoc = rdoc;
 	document->rroot = rroot;
 
-	if (uri != NULL) {
-		b = g_strdup (uri);
-		g_return_val_if_fail (b != NULL, NULL);
-		document->private->uri = b;
-		b = g_dirname (uri);
-		g_return_val_if_fail (b != NULL, NULL);
-		len = strlen (b) + 2;
-		document->private->base = g_malloc (len);
-		g_snprintf (document->private->base, len, "%s/", b);
-		g_free (b);
+	if (uri) {
+		guchar *s, *p;
+		document->uri = g_strdup (uri);
+		/* fixme: Think, what this means for images (Lauris) */
+		s = g_strdup (uri);
+		p = strrchr (s, '/');
+		if (p) {
+			document->name = g_strdup (p + 1);
+			p[1] = '\0';
+			document->base = g_strdup (s);
+		} else {
+			document->base = NULL;
+			document->name = g_strdup (document->uri);
+		}
+		g_free (s);
 	} else {
-		document->private->uri = g_strdup_printf (_("Unnamed document %d"), ++doc_count);
+		document->uri = NULL;
+		document->base = NULL;
+		document->name = g_strdup_printf (_("New document %d"), ++doc_count);
 	}
 
 	document->root = sp_object_repr_build_tree (document, rroot);
@@ -256,7 +275,7 @@ sp_document_new (const gchar *uri)
 	if (uri) {
 		/* fixme: Think, what this means for images (Lauris) */
 		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
-		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
+		sp_repr_set_attr (rroot, "sodipodi:docbase", document->base);
 	}
 	/* End of quick hack 3 */
 	if ((version > 0) && (version < 25)) {
@@ -296,7 +315,7 @@ sp_document_new (const gchar *uri)
 }
 
 SPDocument *
-sp_document_new_from_mem (const gchar *buffer, gint length)
+sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public)
 {
 	SPDocument *document;
 	SPReprDoc *rdoc;
@@ -317,10 +336,14 @@ sp_document_new_from_mem (const gchar *buffer, gint length)
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
 
+	document->public = public;
+
 	document->rdoc = rdoc;
 	document->rroot = rroot;
 
-	document->private->uri = g_strdup_printf (_("Memory document %d"), ++doc_count);
+	document->uri = NULL;
+	document->base = NULL;
+	document->name = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
 	document->root = sp_object_repr_build_tree (document, rroot);
 	g_return_val_if_fail (document->root != NULL, NULL);
@@ -421,32 +444,47 @@ sp_document_height (SPDocument * document)
 	return SP_ROOT (document->root)->height.computed / 1.25;
 }
 
-const gchar *
-sp_document_uri (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
-
-	return document->private->uri;
-}
-
 void
-sp_document_set_uri (SPDocument *document, const guchar *uri)
+sp_document_set_uri (SPDocument *doc, const guchar *uri)
 {
-	g_return_if_fail (document != NULL);
-	g_return_if_fail (SP_IS_DOCUMENT (document));
+	g_return_if_fail (doc != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (doc));
 
-	if (document->private->uri) {
-		g_free (document->private->uri);
-		document->private->uri = NULL;
+	if (doc->name) {
+		g_free (doc->name);
+		doc->name = NULL;
+	}
+	if (doc->base) {
+		g_free (doc->base);
+		doc->base = NULL;
+	}
+	if (doc->uri) {
+		g_free (doc->uri);
+		doc->uri = NULL;
 	}
 
 	if (uri) {
-		document->private->uri = g_strdup (uri);
+		guchar *s, *p;
+		doc->uri = g_strdup (uri);
+		/* fixme: Think, what this means for images (Lauris) */
+		s = g_strdup (uri);
+		p = strrchr (s, '/');
+		if (p) {
+			doc->name = g_strdup (p + 1);
+			p[1] = '\0';
+			doc->base = g_strdup (s);
+		} else {
+			doc->base = NULL;
+			doc->name = g_strdup (doc->uri);
+		}
+		g_free (s);
+	} else {
+		doc->uri = g_strdup_printf (_("Unnamed document %d"), ++doc_count);
+		doc->base = NULL;
+		doc->name = g_strdup (doc->uri);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (document), signals [URI_SET], document->private->uri);
+	gtk_signal_emit (GTK_OBJECT (doc), signals [URI_SET], doc->uri);
 }
 
 void
@@ -458,16 +496,6 @@ sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height)
 	g_return_if_fail (height > 0.001);
 
 	gtk_signal_emit (GTK_OBJECT (doc), signals [RESIZED], width / 1.25, height / 1.25);
-}
-
-const gchar *
-sp_document_base (SPDocument * document)
-{
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
-
-	return document->private->base;
 }
 
 /* named views */

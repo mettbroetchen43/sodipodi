@@ -42,9 +42,15 @@ typedef struct _SPDocumentPrivate SPDocumentPrivate;
 struct _SPDocument {
 	GtkObject object;
 
+	guint public : 1;
+
 	SPReprDoc *rdoc; /* Our SPReprDoc */
 	SPRepr *rroot; /* Root element of SPReprDoc */
 	SPObject *root; /* Our SPRoot */
+
+	guchar *uri; /* URI string or NULL */
+	guchar *base;
+	guchar *name;
 
 	/* fixme: remove this */
 	SPDocumentPrivate * private;
@@ -66,13 +72,12 @@ struct _SPDocumentClass {
 GtkType sp_document_get_type (void);
 
 /*
- * Constructor
- *
  * Fetches document from URI, or creates new, if NULL
+ * Public document appear in document list
  */
 
-SPDocument * sp_document_new (const gchar * uri);
-SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
+SPDocument *sp_document_new (const gchar *uri, gboolean public);
+SPDocument *sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public);
 
 SPDocument *sp_document_ref (SPDocument *doc);
 SPDocument *sp_document_unref (SPDocument *doc);
@@ -88,9 +93,9 @@ SPDocument *sp_document_unref (SPDocument *doc);
 
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);
-#define SP_DOCUMENT_URI(d) sp_document_uri (d)
-const gchar * sp_document_uri (SPDocument * document);
-const gchar * sp_document_base (SPDocument * document);
+#define SP_DOCUMENT_URI(d) (SP_DOCUMENT (d)->uri)
+#define SP_DOCUMENT_NAME(d) (SP_DOCUMENT (d)->name)
+#define SP_DOCUMENT_BASE(d) (SP_DOCUMENT (d)->base)
 
 const GSList * sp_document_namedview_list (SPDocument * document);
 SPNamedView * sp_document_namedview (SPDocument * document, const gchar * name);

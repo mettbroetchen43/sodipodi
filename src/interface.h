@@ -27,4 +27,6 @@ void sp_ui_close_view (GtkWidget * widget);
 GtkWidget *sp_ui_main_menu (void);
 GtkWidget *sp_ui_generic_menu (SPView *v, SPItem *item);
 
+void sp_menu_append_recent_documents (GtkWidget *menu);
+
 #endif

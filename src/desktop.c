@@ -83,7 +83,7 @@ static void sp_desktop_zoom_update (SPDesktop * desktop);
 
 void sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw);
 
-static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
+static gint sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
 /* fixme: These are widget forward decls, that are here, until things will be sorted out */
 static void sp_desktop_widget_update_rulers (GtkWidget * widget, SPDesktopWidget *dtw);
@@ -818,10 +818,12 @@ sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y, guin
 	g_string_free (y_str, TRUE);
 }
 
-static void
+static gint
 sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	sp_event_root_menu_popup (SP_DESKTOP_WIDGET (data)->desktop, NULL, (GdkEvent *)event);
+
+	return FALSE;
 }
 
 /* SPDesktopWidget */
@@ -1121,7 +1123,7 @@ sp_desktop_widget_set_title (SPDesktopWidget *dtw)
 	window = GTK_WINDOW (gtk_object_get_data (GTK_OBJECT(dtw), "window"));
 	if (window) {
 		nv_name = sp_namedview_get_name (dtw->desktop->namedview);
-		uri = sp_document_uri (SP_VIEW_WIDGET_DOCUMENT (dtw));
+		uri = SP_DOCUMENT_NAME (SP_VIEW_WIDGET_DOCUMENT (dtw));
 		if (SPShowFullFielName) fname = uri;
 		else fname = g_basename (uri);
 		name = g_string_new ("");
@@ -1201,7 +1203,7 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 			GtkWidget *dlg;
 			gchar *msg;
 			gint b;
-			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), sp_document_uri (doc));
+			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME (doc));
 			dlg = gnome_message_box_new (msg, GNOME_MESSAGE_BOX_WARNING, _("Save"), _("Don't save"), GNOME_STOCK_BUTTON_CANCEL, NULL);
 			g_free (msg);
 			b = gnome_dialog_run_and_close (GNOME_DIALOG (dlg));

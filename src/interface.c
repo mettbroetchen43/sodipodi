@@ -166,7 +166,7 @@ sp_ui_close_view (GtkWidget * widget)
 	 * We have to fake dialog initialization, or corresponding code is
 	 * not compiled into application.
 	 */
-
+	/* fixme: Remove this if not needed anymore (Lauris) */
 	if (GTK_IS_WIDGET (SODIPODI)) fake_dialogs ();
 }
 
@@ -199,7 +199,7 @@ static void
 sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_NEW, _("New"), sp_file_new, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open_dialog, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE, _("Save"), sp_file_save, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE_AS, _("Save as"), sp_file_save_as, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
@@ -209,10 +209,11 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print"), sp_file_print, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print Preview"), sp_file_print_preview, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_ABOUT, _("About Sodipodi"), sp_help_about, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_CLOSE, _("Close View"), sp_ui_close_view, NULL);
-	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
+	sp_menu_append_recent_documents (GTK_WIDGET (fm));
+	sp_ui_menu_append_item (fm, GNOME_STOCK_MENU_CLOSE, _("Close View"), sp_ui_close_view, NULL);
+	sp_ui_menu_append_item (fm, GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
+	sp_ui_menu_append_item (fm, NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (fm, GNOME_STOCK_MENU_ABOUT, _("About Sodipodi"), sp_help_about, NULL);
 }
 
 static void
@@ -355,8 +356,9 @@ sp_ui_main_menu (void)
 	m = gtk_menu_new ();
 
 	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_NEW, _("New"), sp_file_new, NULL);
-	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open_dialog, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
+	sp_menu_append_recent_documents (m);
 	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_ABOUT, _("About Sodipodi"), sp_help_about, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
@@ -437,6 +439,30 @@ sp_ui_generic_menu (SPView *v, SPItem *item)
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 
 	return m;
+}
+
+static void
+sp_recent_open (GtkWidget *widget, const guchar *uri)
+{
+	sp_file_open (uri);
+}
+
+void
+sp_menu_append_recent_documents (GtkWidget *menu)
+{
+	SPRepr *recent;
+	recent = sodipodi_get_repr (SODIPODI, "documents.recent");
+	if (recent) {
+		SPRepr *child;
+		for (child = recent->children; child != NULL; child = child->next) {
+			const guchar *uri, *name;
+			uri = sp_repr_attr (child, "uri");
+			name = sp_repr_attr (child, "name");
+			/* fixme: I am pretty sure this is safe, but double check (Lauris) */
+			sp_ui_menu_append_item (GTK_MENU (menu), GNOME_STOCK_MENU_BLANK, name, sp_recent_open, (gpointer) uri);
+		}
+		sp_ui_menu_append_item (GTK_MENU (menu), NULL, NULL, NULL, NULL);
+	}
 }
 
 void

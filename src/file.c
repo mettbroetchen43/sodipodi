@@ -47,7 +47,23 @@ void sp_file_new (void)
 	SPDocument * doc;
 	SPViewWidget *dtw;
 
-	doc = sp_document_new (NULL);
+	doc = sp_document_new (NULL, TRUE);
+	g_return_if_fail (doc != NULL);
+
+	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
+	sp_document_unref (doc);
+	g_return_if_fail (dtw != NULL);
+
+	sp_create_window (dtw, TRUE);
+}
+
+void
+sp_file_open (const guchar *uri)
+{
+	SPDocument *doc;
+	SPViewWidget *dtw;
+
+	doc = sp_document_new (uri, TRUE);
 	g_return_if_fail (doc != NULL);
 
 	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
@@ -60,8 +76,6 @@ void sp_file_new (void)
 static void
 file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
-	SPDocument * doc;
-	SPViewWidget *dtw;
 	gchar * filename;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
@@ -74,15 +88,8 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	open_path = g_dirname (filename);
 	if (open_path) open_path = g_strconcat (open_path, "/", NULL);
 
-	doc = sp_document_new (filename);
+	sp_file_open (filename);
 	g_free (filename);
-	g_return_if_fail (doc != NULL);
-
-	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
-	sp_document_unref (doc);
-	g_return_if_fail (dtw != NULL);
-
-	sp_create_window (dtw, TRUE);
 }
 
 static void
@@ -91,7 +98,7 @@ file_open_cancel (GtkButton *b, GtkFileSelection *fs)
 	gtk_widget_destroy (GTK_WIDGET (fs));
 }
 
-void sp_file_open (void)
+void sp_file_open_dialog (gpointer object, gpointer data)
 {
 	GtkWidget * w;
 
@@ -416,7 +423,7 @@ sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 
 	sp_document_ensure_up_to_date (doc);
 
-	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
+	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
 	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
 	gnome_print_scale (gpc, 0.8, -0.8);
 	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);
@@ -457,7 +464,7 @@ sp_do_file_print_preview (SPDocument * doc)
 	g_return_if_fail (gpm != NULL);
 	g_return_if_fail (gpc != NULL);
 
-	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
+	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
 	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
 	gnome_print_scale (gpc, 0.8, -0.8);
 	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);

@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <ctype.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
@@ -43,6 +44,8 @@ enum {
 	DESTROY_DESKTOP,
 	ACTIVATE_DESKTOP,
 	DESACTIVATE_DESKTOP,
+	NEW_DOCUMENT,
+	DESTROY_DOCUMENT,
 	LAST_SIGNAL
 };
 
@@ -77,6 +80,8 @@ struct _SodipodiClass {
 	void (* destroy_desktop) (Sodipodi * sodipodi, SPDesktop * desktop);
 	void (* activate_desktop) (Sodipodi * sodipodi, SPDesktop * desktop);
 	void (* desactivate_desktop) (Sodipodi * sodipodi, SPDesktop * desktop);
+	void (* new_document) (Sodipodi *sodipodi, SPDocument *doc);
+	void (* destroy_document) (Sodipodi *sodipodi, SPDocument *doc);
 };
 
 static GtkObjectClass * parent_class;
@@ -167,6 +172,20 @@ sodipodi_class_init (SodipodiClass * klass)
 		GTK_RUN_LAST,
 		object_class->type,
 		GTK_SIGNAL_OFFSET (SodipodiClass, desactivate_desktop),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+	sodipodi_signals[NEW_DOCUMENT] = gtk_signal_new ("new_document",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SodipodiClass, new_document),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+	sodipodi_signals[DESTROY_DOCUMENT] = gtk_signal_new ("destroy_document",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SodipodiClass, destroy_document),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
@@ -270,13 +289,33 @@ sodipodi_segv_handler (int signum)
 		doc = (SPDocument *) l->data;
 		repr = sp_document_repr_root (doc);
 		if (sp_repr_attr (repr, "sodipodi:modified")) {
-			const guchar *docname;
-			gchar c[1024];
+			const guchar *docname, *d0, *d;
+			gchar n[64], c[1024];
 			FILE *file;
+#if 0
 			docname = sp_repr_attr (repr, "sodipodi:docname");
 			if (docname) {
 				docname = g_basename (docname);
 			}
+#else
+			docname = doc->name;
+			if (docname) {
+				/* fixme: Quick hack to remove emergency file suffix */
+				d0 = strrchr (docname, '.');
+				if (d0 && (d0 > docname)) {
+					d0 = strrchr (d0 - 1, '.');
+					if (d0 && (d0 > docname)) {
+						d = d0;
+						while (isdigit (*d) || (*d == '.') || (*d == '_')) d += 1;
+						if (*d) {
+							memcpy (n, docname, MIN (d0 - docname - 1, 64));
+							n[64] = '\0';
+							docname = n;
+						}
+					}
+				}
+			}
+#endif
 			if (!docname || !*docname) docname = "emergency";
 			g_snprintf (c, 1024, "%s/.sodipodi/%.256s.%s.%d", home, docname, sptstr, count);
 			file = fopen (c, "w");
@@ -640,6 +679,8 @@ sodipodi_add_document (SPDocument *document)
 	g_assert (!g_slist_find (sodipodi->documents, document));
 
 	sodipodi->documents = g_slist_append (sodipodi->documents, document);
+
+	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[NEW_DOCUMENT], document);
 }
 
 void
@@ -651,7 +692,32 @@ sodipodi_remove_document (SPDocument *document)
 
 	g_assert (g_slist_find (sodipodi->documents, document));
 
+	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESTROY_DOCUMENT], document);
+
 	sodipodi->documents = g_slist_remove (sodipodi->documents, document);
+
+	if (document->public && SP_DOCUMENT_URI (document)) {
+		SPRepr *recent;
+		recent = sodipodi_get_repr (SODIPODI, "documents.recent");
+		if (recent) {
+			SPRepr *child;
+			child = sp_repr_lookup_child (recent, "uri", SP_DOCUMENT_URI (document));
+			if (child) {
+				sp_repr_change_order (recent, child, NULL);
+			} else {
+				if (sp_repr_n_children (recent) >= 4) {
+					child = recent->children->next->next;
+					while (child->next) sp_repr_unparent (child->next);
+				}
+				child = sp_repr_new ("document");
+				/* fixme: */
+				sp_repr_set_attr (child, "id", SP_DOCUMENT_NAME (document));
+				sp_repr_set_attr (child, "uri", SP_DOCUMENT_URI (document));
+				sp_repr_add_child (recent, child, NULL);
+			}
+			sp_repr_set_attr (child, "name", SP_DOCUMENT_NAME (document));
+		}
+	}
 }
 
 SPDesktop *

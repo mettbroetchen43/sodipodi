@@ -277,7 +277,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	    break;
 	  case GDK_o: // Ctrl o - open file
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_open ();
+	      sp_file_open_dialog (NULL, NULL);
 	      ret = TRUE;
 	    }
 	    break;
