@@ -1,7 +1,7 @@
 #define __PREFERENCES_SKELETON_H__
 
 static const char preferences_skeleton[] =
-"<sodipodi version=\"" VERSION "\">"
+"<sodipodi version=\"" VERSION "\" xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\">"
 "  <interface id=\"toolboxes\">"
 "    <interface id=\"file\" state=\"1\"/>"
 "    <interface id=\"edit\" state=\"1\"/>"
