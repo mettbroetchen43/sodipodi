@@ -1,6 +1,17 @@
 #ifndef __SP_INTL_H__
 #define __SP_INTL_H__
 
+/*
+ * Wrappers around internationalization code
+ *
+ * Author:
+ *  Mitsuru Oka
+ *
+ * Copyright (C) 2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <config.h>
 
 #ifdef ENABLE_NLS

@@ -30,11 +30,20 @@
 #include <string.h>
 #include <locale.h>
 
+#ifdef WITH_POPT
 #include <popt.h>
+#endif
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <libxml/tree.h>
 #include <glib-object.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtkbox.h>
 #include "helper/sp-intl.h"
 
 #include "macros.h"
@@ -55,6 +64,7 @@
 
 #include "sodipodi-private.h"
 
+#ifdef WITH_POPT
 enum {
 	SP_ARG_NONE,
 	SP_ARG_NOGUI,
@@ -71,7 +81,9 @@ enum {
 	SP_ARG_SLIDESHOW,
 	SP_ARG_LAST
 };
+#endif
 
+#ifndef WIN32
 int sp_main_gui (int argc, const char **argv);
 int sp_main_console (int argc, const char **argv);
 static void sp_do_export_png (SPDocument *doc);
@@ -121,7 +133,33 @@ struct poptOption options[] = {
 	 N_("Show given files one-by-one, switch to next on any key/mouse event"), NULL},
 	POPT_AUTOHELP POPT_TABLEEND
 };
+#endif
 
+#ifdef WIN32
+int WINAPI
+WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nFS)
+{
+	gtk_init (&_argc, &_argv);
+
+	LIBXML_TEST_VERSION
+
+	/* We must set LC_NUMERIC to default, or otherwise */
+	/* we'll end with localised SVG files :-( */
+
+	setlocale (LC_NUMERIC, "C");
+
+	sodipodi = sodipodi_application_new ();
+	sodipodi_load_preferences (sodipodi);
+	sp_maintoolbox_create ();
+	sodipodi_unref ();
+
+	gtk_main ();
+
+	return 0;
+}
+#endif
+
+#ifndef WIN32
 int
 main (int argc, const char **argv)
 {
@@ -506,4 +544,5 @@ sp_process_args (poptContext ctx)
 
 	return fl;
 }
+#endif
 

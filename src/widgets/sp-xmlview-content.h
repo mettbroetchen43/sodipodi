@@ -15,6 +15,7 @@
 #include <config.h>
 
 #include <stdio.h>
+
 #include <gtk/gtktext.h>
 #include "../xml/repr.h"
 

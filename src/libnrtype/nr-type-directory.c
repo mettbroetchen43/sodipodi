@@ -28,6 +28,10 @@
 #ifdef WITH_GNOME_PRINT
 #include "nr-type-gnome.h"
 #endif
+#ifdef WIN32
+#include "nr-type-w32.h"
+#endif
+
 #include "nr-type-directory.h"
 
 typedef struct _NRFamilyDef NRFamilyDef;
@@ -50,6 +54,9 @@ static float nr_type_distance_family_better (const unsigned char *ask, const uns
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
 static void nr_type_read_private_list (void);
+#ifdef WIN32
+static void nr_type_read_w32_list (void);
+#endif
 #ifdef WITH_GNOME_PRINT
 static void nr_type_read_gnome_list (void);
 #endif
@@ -215,6 +222,10 @@ nr_type_directory_build (void)
 	familydict = nr_type_dict_new ();
 
 	nr_type_read_private_list ();
+
+#ifdef WIN32
+	nr_type_read_w32_list ();
+#endif
 
 #ifdef WITH_GNOME_PRINT
 	nr_type_read_gnome_list ();
@@ -441,6 +452,42 @@ nr_type_read_private_list (void)
 
 	nr_free (filename);
 }
+
+#ifdef WIN32
+static void
+nr_type_read_w32_list (void)
+{
+	NRNameList wnames, wfamilies;
+	int i, j;
+
+	nr_type_w32_typefaces_get (&wnames);
+	nr_type_w32_families_get (&wfamilies);
+
+	for (i = wnames.length - 1; i >= 0; i--) {
+		NRTypeFaceDef *tdef;
+		const unsigned char *family;
+		family = NULL;
+		for (j = wfamilies.length - 1; j >= 0; j--) {
+			int len;
+			len = strlen (wfamilies.names[j]);
+			if (!strncmp (wfamilies.names[j], wnames.names[i], len)) {
+				family = wfamilies.names[j];
+				break;
+			}
+		}
+		if (family) {
+			tdef = nr_new (NRTypeFaceDef, 1);
+			tdef->next = NULL;
+			tdef->pdef = NULL;
+			nr_type_w32_build_def (tdef, wnames.names[i], family);
+			nr_type_register (tdef);
+		}
+	}
+
+	nr_name_list_release (&wfamilies);
+	nr_name_list_release (&wnames);
+}
+#endif
 
 #ifdef WITH_GNOME_PRINT
 static void

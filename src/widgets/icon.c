@@ -248,9 +248,14 @@ sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size)
 	unsigned char *px;
 	GdkPixbuf *pb;
 
-	path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
+	path = g_strdup_printf ("%s/%s.png", SODIPODI_PIXMAPDIR, name);
 	pb = gdk_pixbuf_new_from_file (path, NULL);
 	g_free (path);
+	if (!pb) {
+		path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
+		pb = gdk_pixbuf_new_from_file (path, NULL);
+		g_free (path);
+	}
 	if (pb) {
 		unsigned char *spx;
 		int srs, y;

@@ -769,7 +769,11 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 
 	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
 	if (stat (dn, &s)) {
+#ifdef WIN32
+		if (mkdir (dn)) {
+#else
 		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP)) {
+#endif
 			/* Cannot create directory */
 			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
 						    _("Cannot create directory %s.\n"
@@ -798,7 +802,11 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 	g_free (dn);
 
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
+#ifdef WIN32
+	fh = creat (fn, S_IRUSR | S_IWUSR);
+#else
 	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
+#endif
 	if (fh < 0) {
 		/* Cannot create file */
 		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,

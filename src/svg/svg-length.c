@@ -18,6 +18,11 @@
 
 #include "svg.h"
 
+#ifdef WIN32
+#include <glib.h>
+#define snprintf g_snprintf
+#endif
+
 unsigned int
 sp_svg_number_read_f (const unsigned char *str, float *val)
 {
@@ -234,6 +239,6 @@ sp_svg_read_percentage (const char * str, double def)
 int
 sp_svg_write_percentage (char * buf, int buflen, double val)
 {
-	return snprintf (buf, buflen, "%g%%", val);
+	return snprintf (buf, buflen, "%g%%", val * 100.0);
 }
 

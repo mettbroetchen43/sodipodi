@@ -21,6 +21,7 @@
 #include <gtk/gtkstock.h>
 #include "helper/guideline.h"
 #include "helper/unit-menu.h"
+#include "widgets/icon.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
 #include "document.h"
@@ -427,7 +428,7 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 		gtk_widget_show (b2);
     
 		//pixmap
-		pix = gtk_image_new_from_file (SODIPODI_GLADEDIR "/guide_dialog.png");
+		pix = sp_icon_new (32, "guide_dialog");
 		gtk_box_pack_start (GTK_BOX (b1), pix, TRUE, TRUE, 0);
 		gtk_widget_show (pix);
 		//labels
