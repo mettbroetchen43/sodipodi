@@ -375,8 +375,8 @@ spdc_endpoint_snap (SPDrawContext *dc, NRPointF *p, guint state)
 	if (state & GDK_CONTROL_MASK) {
 		/* Constrained motion */
 		/* mirrored by fabs, so this corresponds to 15 degrees */
-		double bx = 0, by = 0; // best solution
-		double bn = 1e18; // best normal
+		double bx = 0, by = 0; /* best solution */
+		double bn = 1e18; /* best normal */
 		double bdot = 0;
 		double vx = 0, vy = 1;
 		double r00 = cos (M_PI / NUMBER_OF_TURNS), r01 = sin (M_PI / NUMBER_OF_TURNS);
@@ -386,6 +386,8 @@ spdc_endpoint_snap (SPDrawContext *dc, NRPointF *p, guint state)
 		int i;
 		for(i = 0; i < NUMBER_OF_TURNS; i++) {
 			double ndot = fabs(vy*dx-vx*dy);
+			double tx = r00*vx + r01*vy;
+			double ty = r10*vx + r11*vy;
 			if (ndot < bn) { 
 				/* I think it is better numerically to use the normal, rather than the */
 				/* dot product to assess solutions, but I haven't proven it */
@@ -394,8 +396,6 @@ spdc_endpoint_snap (SPDrawContext *dc, NRPointF *p, guint state)
 				by = vy;
 				bdot = vx*dx + vy*dy;
 			}
-			double tx = r00*vx + r01*vy;
-			double ty = r10*vx + r11*vy;
 			vx = tx;
 			vy = ty;
 		}
@@ -1054,6 +1054,8 @@ spdc_set_startpoint (SPPencilContext *pc, NRPointF *p, guint state)
 
 	dc = SP_DRAW_CONTEXT (pc);
 
+	sp_desktop_free_snap (SP_EVENT_CONTEXT_DESKTOP (dc), p);
+
 	dc->npoints = 0;
 	dc->p[dc->npoints++] = *p;
 }
@@ -1406,6 +1408,10 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		p.y = fp.y;
 		/* Test, whether we hit any anchor */
 		anchor = test_inside (dc, event->button.x, event->button.y);
+		if (!anchor) {
+			/* Snap only if not hitting anchor */
+			spdc_endpoint_snap (dc, &p, event->motion.state);
+		}
 
 		switch (pc->mode) {
 		case SP_PEN_CONTEXT_MODE_CLICK:

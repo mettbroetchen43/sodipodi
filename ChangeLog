@@ -1,3 +1,10 @@
+2003-01-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (spdc_set_startpoint): Snap startpoint (thanks to Nathan)
+	(sp_pen_context_root_handler): Ditto
+
+	* src/dialogs/transformation.c: Implement simple move dialog
+
 2003-01-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/guideline.c (sp_guideline_new): Changed signature, fixes

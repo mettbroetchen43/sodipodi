@@ -296,3 +296,24 @@ sp_unit_selector_update_test (SPUnitSelector *selector)
 	return selector->update;
 }
 
+float
+sp_unit_selector_get_value_in_points (SPUnitSelector *selector, GtkAdjustment *adj)
+{
+	const SPUnit *unit;
+
+	g_return_val_if_fail (selector != NULL, adj->value);
+	g_return_val_if_fail (SP_IS_UNIT_SELECTOR (selector), adj->value);
+
+	return sp_units_get_points (adj->value, selector->unit);
+}
+
+void
+sp_unit_selector_set_value_in_points (SPUnitSelector *selector, GtkAdjustment *adj, float value)
+{
+	g_return_if_fail (selector != NULL);
+	g_return_if_fail (SP_IS_UNIT_SELECTOR (selector));
+
+	gtk_adjustment_set_value (adj, sp_points_get_units (value, selector->unit));
+}
+
+

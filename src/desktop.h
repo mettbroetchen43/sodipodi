@@ -27,6 +27,7 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include "helper/helper-forward.h"
+#include "helper/units.h"
 #include "forward.h"
 #include "view.h"
 
@@ -106,6 +107,8 @@ void sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, f
 void sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom);
 void sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom);
 void sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy);
+
+const SPUnit *sp_desktop_get_default_unit (SPDesktop *dt);
 
 /* SPDesktopWidget */
 

@@ -407,7 +407,6 @@ sp_dt_update_snap_distances (SPDesktop *desktop)
 	sp_convert_distance_full (&desktop->gridsnap, desktop->namedview->gridtoleranceunit, px, 1.0, px2doc);
 	desktop->guidesnap = (desktop->namedview->snaptoguides) ? desktop->namedview->guidetolerance : 0.0;
 	sp_convert_distance_full (&desktop->guidesnap, desktop->namedview->guidetoleranceunit, px, 1.0, px2doc);
-	g_print ("Grid %g guides %g\n", desktop->gridsnap, desktop->guidesnap);
 }
 
 void
@@ -525,6 +524,12 @@ sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	sp_event_root_menu_popup (SP_DESKTOP_WIDGET (data)->desktop, NULL, (GdkEvent *)event);
 
 	return FALSE;
+}
+
+const SPUnit *
+sp_desktop_get_default_unit (SPDesktop *dt)
+{
+	return dt->namedview->gridunit;
 }
 
 /* SPDesktopWidget */

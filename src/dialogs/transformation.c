@@ -21,6 +21,7 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkstock.h>
@@ -30,7 +31,9 @@
 #include "widgets/icon.h"
 #include "macros.h"
 #include "sodipodi.h"
+#include "desktop.h"
 #include "selection.h"
+#include "desktop-handles.h"
 
 /* Notebook pages */
 /* These are hardcoded so do not play with them */
@@ -45,8 +48,16 @@ enum {
 static void sp_transformation_dialog_present (unsigned int page);
 static GtkWidget *sp_transformation_dialog_new (void);
 
+static void sp_transformation_dialog_apply (GObject *object, GObject *dlg);
+static void sp_transformation_dialog_close (GObject *object, GtkWidget *dlg);
+
 static GtkWidget *sp_transformation_page_move_new (GObject *obj);
-static void sp_transformation_move_update (GObject *obj, SPSelection *selection);
+static void sp_transformation_move_update (GObject *dlg, SPSelection *selection);
+static void sp_transformation_move_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
+
+static void sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
+static void sp_transformation_rotate_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
+static void sp_transformation_skew_apply (GObject *dlg, SPSelection *selection, unsigned int copy);
 
 static GtkWidget *dlg = NULL;
 
@@ -178,9 +189,11 @@ sp_transformation_dialog_new (void)
 	g_object_set_data (G_OBJECT (w), "apply", b);
 	gtk_widget_show (b);
 	gtk_box_pack_start (GTK_BOX (bb), b, TRUE, TRUE, 0);
-	b = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_transformation_dialog_apply), w);
+	b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_widget_show (b);
 	gtk_box_pack_start (GTK_BOX (bb), b, TRUE, TRUE, 0);
+	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_transformation_dialog_close), w);
 
 	/* Move page */
 	img = sp_icon_new (SP_ICON_SIZE_NOTEBOOK, "move");
@@ -188,6 +201,7 @@ sp_transformation_dialog_new (void)
 	page = sp_transformation_page_move_new (G_OBJECT (w));
 	gtk_widget_show (page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (nbook), page, img);
+	g_object_set_data (G_OBJECT (w), "move", page);
 
 	/* Connect signals */
 	g_signal_connect (G_OBJECT (w), "destroy", G_CALLBACK (sp_transformation_dialog_destroy), NULL);
@@ -198,68 +212,147 @@ sp_transformation_dialog_new (void)
 }
 
 static void
-sp_transformation_move_value_changed (GtkAdjustment *adj, GObject *obj)
+sp_transformation_dialog_apply (GObject *object, GObject *dlg)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+	GtkWidget *nbookw, *apply;
+	int page;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail (desktop != NULL);
+	selection = SP_DT_SELECTION (desktop);
+	g_return_if_fail (!sp_selection_is_empty (selection));
+
+	nbookw = g_object_get_data (dlg, "notebook");
+	page = gtk_notebook_get_current_page (GTK_NOTEBOOK (nbookw));
+	switch (page) {
+	case SP_TRANSFORMATION_MOVE:
+		sp_transformation_move_apply (dlg, selection, FALSE);
+		break;
+	case SP_TRANSFORMATION_ROTATE:
+		sp_transformation_rotate_apply (dlg, selection, FALSE);
+		break;
+	case SP_TRANSFORMATION_SCALE:
+		sp_transformation_scale_apply (dlg, selection, FALSE);
+		break;
+	case SP_TRANSFORMATION_SKEW:
+		sp_transformation_skew_apply (dlg, selection, FALSE);
+		break;
+	}
+	apply = g_object_get_data (dlg, "apply");
+	gtk_widget_set_sensitive (apply, TRUE);
+}
+
+static void
+sp_transformation_dialog_close (GObject *object, GtkWidget *dlg)
+{
+	gtk_widget_destroy (dlg);
+}
+
+static void
+sp_transformation_move_value_changed (GtkAdjustment *adj, GObject *dlg)
 {
 	GtkWidget *apply;
-	apply = g_object_get_data (obj, "apply");
+
+	if (g_object_get_data (dlg, "update")) return;
+
+	apply = g_object_get_data (dlg, "apply");
 	gtk_widget_set_sensitive (apply, TRUE);
+}
+
+static void
+sp_transformation_move_relative_toggled (GtkToggleButton *tb, GObject *dlg)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+	SPUnitSelector *us;
+	GtkAdjustment *ax, *ay;
+	NRRectF bbox;
+	float x, y;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return;
+	selection = SP_DT_SELECTION (desktop);
+	if (sp_selection_is_empty (selection)) return;
+
+	/* Read values from widget */
+	us = g_object_get_data (dlg, "move_units");
+	ax = g_object_get_data (dlg, "move_position_x");
+	ay = g_object_get_data (dlg, "move_position_y");
+	x = sp_unit_selector_get_value_in_points (us, ax);
+	y = sp_unit_selector_get_value_in_points (us, ay);
+
+	sp_selection_bbox (selection, &bbox);
+
+	g_object_set_data (dlg, "update", GUINT_TO_POINTER (TRUE));
+
+	if (gtk_toggle_button_get_active (tb)) {
+		/* From absolute to relative */
+		sp_unit_selector_set_value_in_points (us, ax, x - bbox.x0);
+		sp_unit_selector_set_value_in_points (us, ay, y - bbox.y0);
+	} else {
+		/* From relative to absolute */
+		sp_unit_selector_set_value_in_points (us, ax, bbox.x0 + x);
+		sp_unit_selector_set_value_in_points (us, ay, bbox.y0 + y);
+	}
+
+	g_object_set_data (dlg, "update", GUINT_TO_POINTER (FALSE));
 }
 
 static GtkWidget *
 sp_transformation_page_move_new (GObject *obj)
 {
-	GtkWidget *frame, *vb, *tbl, *lbl, *img, *sb, *us;
+	GtkWidget *frame, *vb, *tbl, *lbl, *img, *sb, *us, *cb;
 	GtkAdjustment *adj;
 
 	frame = gtk_frame_new (_("Move"));
 
 	vb = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
 	gtk_container_add (GTK_CONTAINER (frame), vb);
 
-	/* Current position */
-	tbl = gtk_table_new (5, 2, FALSE);
+	tbl = gtk_table_new (4, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (tbl), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (tbl), 4);
 	gtk_box_pack_start (GTK_BOX (vb), tbl, FALSE, FALSE, 0);
-	lbl = gtk_label_new (_("X:"));
-	gtk_misc_set_alignment (GTK_MISC (lbl), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (tbl), lbl, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	lbl = gtk_label_new ("");
-	gtk_misc_set_alignment (GTK_MISC (lbl), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (tbl), lbl, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	g_object_set_data (obj, "move_origin_x", lbl);
-	lbl = gtk_label_new (_("Y:"));
-	gtk_misc_set_alignment (GTK_MISC (lbl), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (tbl), lbl, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	lbl = gtk_label_new ("");
-	gtk_misc_set_alignment (GTK_MISC (lbl), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (tbl), lbl, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	g_object_set_data (obj, "move_origin_y", lbl);
 
 	/* Unit selector */
 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
 	g_object_set_data (obj, "move_units", us);
-
-	/* New position */
+	if (SP_ACTIVE_DESKTOP) {
+		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (us), sp_desktop_get_default_unit (SP_ACTIVE_DESKTOP));
+	}
+	/* Horizontal */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_hor");
-	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 2, 3, 0, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
 	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
 	g_object_set_data (obj, "move_position_x", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_move_value_changed), obj);
 	sb = gtk_spin_button_new (adj, 0.1, 2);
-	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	/* Vertical */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_ver");
-	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 3, 4, 0, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 1, 2, 0, 0, 0, 0);
 	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
 	g_object_set_data (obj, "move_position_y", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_move_value_changed), obj);
 	sb = gtk_spin_button_new (adj, 0.1, 2);
-	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	/* Unit selector */
 	lbl = gtk_label_new (_("Units:"));
 	gtk_misc_set_alignment (GTK_MISC (lbl), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (tbl), lbl, 0, 1, 4, 5, 0, 0, 0, 0);
-	gtk_table_attach (GTK_TABLE (tbl), us, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), lbl, 0, 1, 2, 3, 0, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), us, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+	/* Relative moves */
+	cb = gtk_check_button_new_with_label (_("Relative move"));
+	g_object_set_data (obj, "move_relative", cb);
+	gtk_table_attach (GTK_TABLE (tbl), cb, 1, 2, 3, 4, 0, 0, 0, 0);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb), TRUE);
+	g_signal_connect (G_OBJECT (cb), "toggled", G_CALLBACK (sp_transformation_move_relative_toggled), obj);
 
 	gtk_widget_show_all (vb);
 
@@ -267,33 +360,57 @@ sp_transformation_page_move_new (GObject *obj)
 }
 
 static void
-sp_transformation_move_update (GObject *obj, SPSelection *selection)
+sp_transformation_move_update (GObject *dlg, SPSelection *selection)
 {
-	GtkLabel *lx, *ly;
+	GtkWidget *page;
 
-	lx = g_object_get_data (obj, "move_origin_x");
-	ly = g_object_get_data (obj, "move_origin_y");
+	page = g_object_get_data (dlg, "move");
 
 	if (selection && !sp_selection_is_empty (selection)) {
-		SPUnitSelector *us;
-		const SPUnit *unit;
-		NRRectF bbox;
-		unsigned char c[64];
-		sp_selection_bbox (selection, &bbox);
-		us = g_object_get_data (obj, "move_units");
-		unit = sp_unit_selector_get_unit (us);
-		g_snprintf (c, 64, "%.2f%s", bbox.x0, unit->abbr_plural);
-		gtk_label_set (lx, c);
-		g_snprintf (c, 64, "%.2f%s", bbox.y0, unit->abbr_plural);
-		gtk_label_set (ly, c);
+		GtkToggleButton *cb;
+		cb = g_object_get_data (dlg, "move_relative");
+		if (!gtk_toggle_button_get_active (cb)) {
+			GtkAdjustment *ax, *ay;
+			SPUnitSelector *us;
+			NRRectF bbox;
+			ax = g_object_get_data (dlg, "move_position_x");
+			ay = g_object_get_data (dlg, "move_position_y");
+			us = g_object_get_data (dlg, "move_units");
+			sp_selection_bbox (selection, &bbox);
+			sp_unit_selector_set_value_in_points (us, ax, bbox.x0);
+			sp_unit_selector_set_value_in_points (us, ay, bbox.y0);
+		}
+		gtk_widget_set_sensitive (page, TRUE);
 	} else {
-		gtk_label_set (lx, "");
-		gtk_label_set (ly, "");
+		gtk_widget_set_sensitive (page, FALSE);
+	}
+}
+
+static void
+sp_transformation_move_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
+{
+	SPUnitSelector *us;
+	GtkAdjustment *ax, *ay;
+	GtkToggleButton *cb;
+	float x, y;
+
+	us = g_object_get_data (dlg, "move_units");
+	ax = g_object_get_data (dlg, "move_position_x");
+	ay = g_object_get_data (dlg, "move_position_y");
+	x = sp_unit_selector_get_value_in_points (us, ax);
+	y = sp_unit_selector_get_value_in_points (us, ay);
+
+	cb = g_object_get_data (dlg, "move_relative");
+	if (gtk_toggle_button_get_active (cb)) {
+		sp_selection_move_relative (selection, x, y);
+	} else {
+		NRRectF bbox;
+		sp_selection_bbox (selection, &bbox);
+		sp_selection_move_relative (selection, x - bbox.x0, y - bbox.y0);
 	}
 }
 
 #if 0
-
 void
 sp_transformation_display_position (ArtDRect * bbox, SPMetric metric) {
   GString * str;
@@ -306,41 +423,22 @@ sp_transformation_display_position (ArtDRect * bbox, SPMetric metric) {
   g_string_free (str, TRUE);
 }
 
-void
-sp_transformation_apply_move (SPSelection * selection) {
-  double dx, dy;
-  ArtPoint p;
-  SPMetric metric;
-  ArtDRect bbox;
-
-  g_assert (transformation_dialog != NULL);
-  g_assert (!sp_selection_is_empty (selection));
-
-  metric = sp_transformation_get_move_metric ();
-
-  dx = SP_METRIC_TO_PT (gtk_spin_button_get_value_as_float (move_hor), metric);
-  dy = SP_METRIC_TO_PT (gtk_spin_button_get_value_as_float (move_ver), metric);
-
-  switch (tr_move_type) {
-  case RELATIVE:
-    sp_selection_move_relative (selection, dx,dy);
-    break;
-  case ABSOLUTE:
-    sp_selection_bbox (selection, &bbox);
-    p.x = bbox.x0;
-    p.y = bbox.y0;
-    if (GTK_WIDGET_VISIBLE (expansion)) {
-      if (gtk_toggle_button_get_active (use_align)) sp_transformation_get_align (selection,&p);
-      if (gtk_toggle_button_get_active (use_center)) sp_transformation_get_center (selection, &p);
-    }
-    
-    dx -= p.x;
-    dy -= p.y;
-    sp_selection_move_relative (selection, dx,dy);
-    break;
-  }
-}
 #endif
+
+static void
+sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
+{
+}
+
+static void
+sp_transformation_rotate_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
+{
+}
+
+static void
+sp_transformation_skew_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
+{
+}
 
 #if 0
 
@@ -927,38 +1025,6 @@ sp_transformation_get_center_metric (void){
   return SP_PT;
 }
 
-
-void
-sp_transformation_dialog_apply (void)
-{
-  SPDesktop * desktop;
-  SPSelection * selection;
-  gint page;
-
-  g_assert (transformation_dialog != NULL);
-  desktop = SP_ACTIVE_DESKTOP;
-  g_return_if_fail (desktop != NULL);
-  selection = SP_DT_SELECTION(desktop);
-  g_return_if_fail (!sp_selection_is_empty (selection));
-
-  // sp_selection_duplicate updates undo too, thus we get 2 undo entries. This should be fixed for sane undo list!
-  if (gtk_toggle_button_get_active (make_copy)) sp_selection_duplicate ((GtkWidget *) desktop);
-
-  page = gtk_notebook_get_current_page(trans_notebook);
-    switch (page) {
-  case 0 : // move
-    sp_transformation_apply_move (selection);
-    break;
-  case 2 : // rotate
-    sp_transformation_apply_rotate (selection);
-    break;
-  case 1 : // scale
-    sp_transformation_apply_scale (selection);
-    break;
-  case 3 : // skew
-    sp_transformation_apply_skew (selection);
-    break;
-  }
 
     // update handels and undo
   sp_selection_changed (selection);
