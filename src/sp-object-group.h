@@ -2,16 +2,15 @@
 #define __SP_OBJECTGROUP_H__
 
 /*
- * Abstract base class for SPObjects with multiple children, which are not
- * items themselves (i.e. not directly renderable)
+ * Abstract base class for non-item groups
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000-2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define SP_TYPE_OBJECTGROUP (sp_objectgroup_get_type ())

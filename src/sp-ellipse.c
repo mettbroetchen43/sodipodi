@@ -965,6 +965,9 @@ sp_arc_modified (SPObject *object, guint flags)
 	if (flags & SP_OBJECT_MODIFIED_FLAG) {
 		sp_arc_set_elliptical_path_attribute (SP_ARC (object), SP_OBJECT_REPR (object));
 	}
+
+	if (((SPObjectClass *) arc_parent_class)->modified)
+		((SPObjectClass *) arc_parent_class)->modified (object, flags);
 }
 
 static gchar *

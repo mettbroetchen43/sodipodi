@@ -2,13 +2,15 @@
 #define __SP_COLOR_H__
 
 /*
- * SPColor, SPColorSpace
+ * Colors and colorspaces
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>

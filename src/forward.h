@@ -4,10 +4,13 @@
 /*
  * Forward declarations of most used objects
  *
- * Author: Lauris Kaplinski <lauris@ximian.com>
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 /* Generic containers */

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-03-10 19:12+0100\n"
+"POT-Creation-Date: 2002-10-07 21:53+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -82,7 +82,7 @@ msgid "Close window"
 msgstr "Zapri okno"
 
 #: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
-#: src/interface.c:322
+#: src/interface.c:303
 msgid "Drawing"
 msgstr "Risanje"
 
@@ -97,14 +97,14 @@ msgstr "Zadnja izbira"
 #. Page settings
 #. Notebook tab
 #: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
-#: src/dialogs/document-properties.c:144 src/interface.c:323
+#: src/dialogs/document-properties.c:144 src/interface.c:304
 msgid "Page"
 msgstr "Stran"
 
 #. Selection submenu
 #: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:111 src/interface.c:321 src/interface.c:420
-#: src/toolbox.c:95
+#: src/dialogs/align.c:111 src/interface.c:302 src/interface.c:418
+#: src/toolbox.c:166
 msgid "Selection"
 msgstr "Izbira"
 
@@ -121,11 +121,11 @@ msgid "ID:"
 msgstr "ID:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:619
+#: glade/item.glade.h:3 src/sp-item.c:744
 msgid "Item"
 msgstr "Predmet"
 
-#: glade/item.glade.h:4 src/dialogs/item-properties.c:341
+#: glade/item.glade.h:4 src/dialogs/item-properties.c:318
 msgid "Item properties"
 msgstr "Lastnosti predmeta"
 
@@ -149,8 +149,8 @@ msgstr "Natisljiv"
 msgid "Sensitive"
 msgstr "Občutljiv"
 
-#: glade/item.glade.h:10 src/dialogs/item-properties.c:181
-#: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:492
+#: glade/item.glade.h:10 src/dialogs/item-properties.c:171
+#: src/dialogs/item-properties.c:241
 msgid "The SVG ID of item"
 msgstr "ID SVG predmeta"
 
@@ -236,7 +236,7 @@ msgid "Endpoints:"
 msgstr "Končne točke:"
 
 #: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
-#: src/dialogs/object-properties.c:59
+#: src/dialogs/object-properties.c:105
 msgid "Fill"
 msgstr "Zapolni"
 
@@ -258,7 +258,7 @@ msgstr "Zelena:"
 
 #: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
 #: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-#: src/dialogs/object-properties.c:240
+#: src/dialogs/object-properties.c:360
 msgid "Height:"
 msgstr "Višina:"
 
@@ -267,11 +267,12 @@ msgid "Is stroked"
 msgstr "Je nagnjeno"
 
 #. Join type
-#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:189
+#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:580
 msgid "Join:"
 msgstr "Spoj:"
 
-#: glade/object_props.glade.h:25
+#. Layout
+#: glade/object_props.glade.h:25 src/dialogs/text-edit.c:117
 msgid "Layout"
 msgstr "Postavitev"
 
@@ -328,7 +329,6 @@ msgid "Square endpoints"
 msgstr "Kvadratne končne točke"
 
 #: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
-#: src/dialogs/object-properties.c:72
 msgid "Stroke"
 msgstr "Obroba"
 
@@ -339,17 +339,18 @@ msgstr "Nastavi širina čopiča"
 #. Stroke width
 #: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
+#: src/dialogs/object-properties.c:345 src/dialogs/stroke-style.c:557
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1063
 msgid "Width:"
 msgstr "Širina:"
 
 #: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
-#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:195
+#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:315
 msgid "X:"
 msgstr "X:"
 
 #: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
-#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:210
+#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:330
 msgid "Y:"
 msgstr "Y:"
 
@@ -414,19 +415,19 @@ msgstr "pik"
 msgid "1.0MB"
 msgstr "1.0MB"
 
-#: glade/sodipodi.glade.h:2 src/interface.c:330
+#: glade/sodipodi.glade.h:2 src/interface.c:311
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi.glade.h:3 src/interface.c:329
+#: glade/sodipodi.glade.h:3 src/interface.c:310
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi.glade.h:4 src/interface.c:331
+#: glade/sodipodi.glade.h:4 src/interface.c:312
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi.glade.h:5 src/interface.c:344
+#: glade/sodipodi.glade.h:5 src/interface.c:325
 msgid "Arc"
 msgstr "Lok"
 
@@ -462,9 +463,7 @@ msgstr "Pretvori v k_rivulje"
 msgid "Cusp line at selected nodes"
 msgstr "Poveži črto na izbranih kontrolnih točkah"
 
-#. File:Export
-#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:11 src/interface.c:247
-#: src/widgets/gradient-selector.c:145
+#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:9 src/interface.c:228
 msgid "Delete"
 msgstr "Zbriši"
 
@@ -480,7 +479,7 @@ msgstr "Namizje"
 msgid "Display"
 msgstr "Prikaz"
 
-#: glade/sodipodi.glade.h:18 src/interface.c:361
+#: glade/sodipodi.glade.h:18 src/interface.c:344
 msgid "Document"
 msgstr "Dokument"
 
@@ -488,17 +487,15 @@ msgstr "Dokument"
 msgid "Drawing Context"
 msgstr "Način Risanja"
 
-#. Edit:Duplicate
-#: glade/sodipodi.glade.h:21 src/interface.c:242
+#: glade/sodipodi.glade.h:21 src/interface.c:227
 msgid "Duplicate"
 msgstr "Podvoji"
 
-#: glade/sodipodi.glade.h:22 src/interface.c:348
+#: glade/sodipodi.glade.h:22 src/interface.c:329
 msgid "Dynahand"
 msgstr "Dynahand"
 
-#. File:Export
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:183
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:208
 msgid "Export"
 msgstr "Izvozi"
 
@@ -518,7 +515,7 @@ msgstr "Ime datoteke:"
 msgid "Forward One"
 msgstr "Naprej za eno"
 
-#: glade/sodipodi.glade.h:29 src/interface.c:347
+#: glade/sodipodi.glade.h:29 src/interface.c:328
 msgid "Freehand"
 msgstr "Prostoročno"
 
@@ -530,8 +527,7 @@ msgstr "Višina"
 msgid "Image size"
 msgstr "Velikost slike"
 
-#. File:Import
-#: glade/sodipodi.glade.h:32 src/interface.c:178
+#: glade/sodipodi.glade.h:32 src/interface.c:207
 msgid "Import"
 msgstr "Uvozi"
 
@@ -548,16 +544,16 @@ msgid "Lock aspect ratio"
 msgstr "Zakleni razmerje stranic"
 
 #. View:New Preview
-#: glade/sodipodi.glade.h:36 src/interface.c:335
+#: glade/sodipodi.glade.h:36 src/interface.c:316
 msgid "New Preview"
 msgstr "Nov predogled"
 
 #. View:New View
-#: glade/sodipodi.glade.h:37 src/interface.c:333
+#: glade/sodipodi.glade.h:37 src/interface.c:314
 msgid "New View"
 msgstr "Nov pogled"
 
-#: glade/sodipodi.glade.h:38 src/interface.c:342
+#: glade/sodipodi.glade.h:38 src/interface.c:323
 msgid "Node"
 msgstr "Točka"
 
@@ -565,12 +561,12 @@ msgstr "Točka"
 msgid "Node Edit"
 msgstr "Urejanje kontronih točk"
 
-#: glade/sodipodi.glade.h:40 src/toolbox.c:138
+#: glade/sodipodi.glade.h:40 src/toolbox.c:191
 msgid "Nodes"
 msgstr "Kontrolne točke"
 
 #. Selection:Order
-#: glade/sodipodi.glade.h:41 src/interface.c:287
+#: glade/sodipodi.glade.h:41 src/interface.c:268
 msgid "Order"
 msgstr "Vrstni red"
 
@@ -578,16 +574,16 @@ msgstr "Vrstni red"
 msgid "Png file name"
 msgstr "Ime PNG datoteke"
 
-#: glade/sodipodi.glade.h:44 src/interface.c:343
+#: glade/sodipodi.glade.h:44 src/interface.c:324
 msgid "Rectangle"
 msgstr "Pravokotnik"
 
 #: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
-#: src/interface.c:325
+#: src/interface.c:306
 msgid "Scale"
 msgstr "Spremeni velikost"
 
-#: glade/sodipodi.glade.h:46 src/interface.c:341
+#: glade/sodipodi.glade.h:46 src/interface.c:322
 msgid "Select"
 msgstr "Izberi"
 
@@ -608,12 +604,12 @@ msgid "Smooth line at selected nodes"
 msgstr "Zgladi črto na izbranih kontrolnih točkah"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/interface.c:346 src/sp-spiral.c:595
+#: glade/sodipodi.glade.h:52 src/interface.c:327 src/sp-spiral.c:623
 msgid "Spiral"
 msgstr "Spirala"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/interface.c:345 src/sp-star.c:476
+#: glade/sodipodi.glade.h:53 src/interface.c:326 src/sp-star.c:469
 msgid "Star"
 msgstr "Zvezda"
 
@@ -621,7 +617,8 @@ msgstr "Zvezda"
 msgid "Symmetric "
 msgstr "Simetrično "
 
-#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:349
+#: glade/sodipodi.glade.h:56 src/dialogs/object-properties.c:196
+#: src/interface.c:330
 msgid "Text"
 msgstr "Besedilo"
 
@@ -649,7 +646,7 @@ msgstr "X0"
 msgid "X1"
 msgstr "X1"
 
-#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:21
+#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:19
 msgid "XML Tree"
 msgstr "XML drevo"
 
@@ -662,8 +659,8 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1131
-#: src/interface.c:317 src/interface.c:350 src/toolbox.c:134
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1023
+#: src/interface.c:298 src/interface.c:331 src/toolbox.c:187
 msgid "Zoom"
 msgstr "Povečava"
 
@@ -691,7 +688,7 @@ msgstr "_Grupiraj"
 msgid "_Interactive"
 msgstr "_Interaktivno"
 
-#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:78
+#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:75
 msgid "_New"
 msgstr "_Nova"
 
@@ -710,10 +707,6 @@ msgstr "_Odgrupiraj"
 #: glade/sodipodi.glade.h:77
 msgid "dpi"
 msgstr "pik na palec"
-
-#: glade/text-dialog.glade.h:2
-msgid "Text Properties"
-msgstr "Lastnosti besedila"
 
 #: glade/toolbox.glade.h:1
 msgid "Align dialog"
@@ -780,8 +773,8 @@ msgid "Duplicate selection"
 msgstr "Podvoji izbirano"
 
 #. Edit submenu
-#: glade/toolbox.glade.h:23 src/interface.c:414 src/toolbox.c:78
-#: src/widgets/gradient-selector.c:132
+#: glade/toolbox.glade.h:23 src/interface.c:412 src/toolbox.c:148
+#: src/widgets/gradient-selector.c:128
 msgid "Edit"
 msgstr "Urejanje"
 
@@ -807,7 +800,7 @@ msgstr "Nastavi način obrobe izbranih predmetov"
 
 #. Generic menu
 #. File submenu
-#: glade/toolbox.glade.h:30 src/interface.c:408 src/toolbox.c:74
+#: glade/toolbox.glade.h:30 src/interface.c:406 src/toolbox.c:144
 msgid "File"
 msgstr "Datoteka"
 
@@ -839,7 +832,7 @@ msgstr "Ne, raje bom še naprej vektorsko risal s sodipodijem."
 msgid "Nope !"
 msgstr "Ne !"
 
-#: glade/toolbox.glade.h:41 src/event-context.c:433 src/toolbox.c:87
+#: glade/toolbox.glade.h:41 src/toolbox.c:158
 msgid "Object"
 msgstr "Predmet"
 
@@ -872,7 +865,7 @@ msgid "Really wanna quit sodipodi ?"
 msgstr "Zares želiš oditi iz sodipodija ?"
 
 #. File:Print Preview
-#: glade/toolbox.glade.h:49 src/interface.c:385
+#: glade/toolbox.glade.h:49 src/interface.c:383
 msgid "Redo"
 msgstr "Obnovi"
 
@@ -885,7 +878,8 @@ msgid "Rise selection one layer"
 msgstr "Dvigni izbrano za en sloj"
 
 #: glade/toolbox.glade.h:52
-msgid "Rotate selected objects 90° clockwise"
+#, fuzzy
+msgid "Rotate selected objects 90deg clockwise"
 msgstr "Zasukaj izbrane predmete za 90° v smeri urinega kazalca"
 
 #: glade/toolbox.glade.h:53
@@ -900,7 +894,8 @@ msgstr "Shrani risbo v novo datoteko"
 msgid "Select and transform"
 msgstr "Izberi in preoblikuj"
 
-#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1
+#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1 src/toolbox.c:115
+#: src/toolbox.c:130
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
@@ -960,27 +955,15 @@ msgstr "Povečaj na stran"
 msgid "Zoom to selection"
 msgstr "Povečaj na izbrano"
 
-#: glade/toolbox.glade.h:75
-msgid "_About ..."
-msgstr "_O ..."
-
 #: glade/toolbox.glade.h:76
-msgid "_File"
-msgstr "_Datoteka"
-
-#: glade/toolbox.glade.h:77
-msgid "_Help"
-msgstr "_Pomoč"
-
-#: glade/toolbox.glade.h:79
 msgid "_Open"
 msgstr "_Odpri"
 
-#: glade/toolbox.glade.h:80
+#: glade/toolbox.glade.h:77
 msgid "_Quit"
 msgstr "Iz_hod"
 
-#: glade/toolbox.glade.h:81
+#: glade/toolbox.glade.h:78
 msgid "lower selection to bottom"
 msgstr "spusti izbrano na dno"
 
@@ -1237,7 +1220,7 @@ msgstr "navpični premik"
 msgid "vertical scale value"
 msgstr "faktor navpične povečave"
 
-#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
+#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:134
 msgid "Add"
 msgstr "Dodaj"
 
@@ -1262,62 +1245,52 @@ msgid "Change Attribute"
 msgstr "Spremeni Atribut"
 
 #: glade/xml-tree.glade.h:7
+#, fuzzy
+msgid "Change Content"
+msgstr "Način Risanja"
+
+#: glade/xml-tree.glade.h:8
 msgid "Content"
 msgstr "Vsebina"
 
-#. Edit:Copy
-#: glade/xml-tree.glade.h:8 src/interface.c:228
-msgid "Copy"
-msgstr "Kopiraj"
-
-#. Edit:Cut
-#: glade/xml-tree.glade.h:9 src/interface.c:223
-msgid "Cut"
-msgstr "Izreži"
-
 #: glade/xml-tree.glade.h:10
-msgid "Del"
-msgstr "Briši"
-
-#: glade/xml-tree.glade.h:12
 msgid "Delete attribute"
 msgstr "Zbriši atribut"
 
-#: glade/xml-tree.glade.h:13
+#: glade/xml-tree.glade.h:11
 msgid "Do you want to delete attribute?"
 msgstr "Želite zbrisati atribut?"
 
-#: glade/xml-tree.glade.h:14
-msgid "Dup"
-msgstr "Podvoji"
+#: glade/xml-tree.glade.h:12
+msgid "Element:"
+msgstr ""
 
-#: glade/xml-tree.glade.h:15
+#: glade/xml-tree.glade.h:13
+msgid "Enter element name:"
+msgstr ""
+
+#: glade/xml-tree.glade.h:14
 msgid "Hierarchy"
 msgstr "Hierarhja"
 
-#: glade/xml-tree.glade.h:16
+#: glade/xml-tree.glade.h:15
 msgid "Key"
 msgstr "Ključ"
 
-#. File:New
-#: glade/xml-tree.glade.h:17 src/interface.c:154
-msgid "New"
-msgstr "Nova"
+#: glade/xml-tree.glade.h:16
+#, fuzzy
+msgid "New Element"
+msgstr "Nova datoteka"
 
-#. Edit:Paste
-#: glade/xml-tree.glade.h:18 src/interface.c:233
-msgid "Paste"
-msgstr "Prilepi"
-
-#: glade/xml-tree.glade.h:19
+#: glade/xml-tree.glade.h:17
 msgid "Value"
 msgstr "Vrednost"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
+#: glade/xml-tree.glade.h:18 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Vrednost:"
 
-#: glade/xml-tree.glade.h:22
+#: glade/xml-tree.glade.h:20
 msgid "name"
 msgstr "ime"
 
@@ -1331,98 +1304,97 @@ msgstr "Nisem uspel ustvariti sodipodi-svg-doc "
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1123
+#: src/desktop.c:1015
 msgid "Welcome !"
 msgstr "Dobrodošli !"
 
-#: src/desktop.c:1195
+#: src/desktop.c:1087
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1271
+#: src/desktop.c:1163
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s vsebuje neshranjene spremembe, naj jih shranim?"
 
-#. File:Save
-#: src/desktop.c:1272 src/interface.c:164
+#: src/desktop.c:1164 src/interface.c:204
 msgid "Save"
 msgstr "Shrani"
 
-#: src/desktop.c:1272
+#: src/desktop.c:1164
 msgid "Don't save"
 msgstr "Ne shrani"
 
-#: src/dialogs/desktop-properties.c:208
+#: src/dialogs/desktop-properties.c:203
 msgid "Desktop settings"
 msgstr "Nastavite namizja"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:212
 msgid "Grid"
 msgstr "Mreža"
 
 #. Checkbuttons
-#: src/dialogs/desktop-properties.c:227
+#: src/dialogs/desktop-properties.c:222
 msgid "Show grid"
 msgstr "Kaži mrežo"
 
-#: src/dialogs/desktop-properties.c:234
+#: src/dialogs/desktop-properties.c:229
 msgid "Snap to grid"
 msgstr "Preskakuj do mreže"
 
-#: src/dialogs/desktop-properties.c:241
+#: src/dialogs/desktop-properties.c:236
 msgid "Grid units:"
 msgstr "Enote mreže:"
 
-#: src/dialogs/desktop-properties.c:250
+#: src/dialogs/desktop-properties.c:245
 msgid "Origin X:"
 msgstr "Izhodišče X:"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:259
 msgid "Origin Y:"
 msgstr "Izhodišče Y:"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:273
 msgid "Spacing X:"
 msgstr "Presledek X:"
 
-#: src/dialogs/desktop-properties.c:292
+#: src/dialogs/desktop-properties.c:287
 msgid "Spacing Y:"
 msgstr "Presledek Y:"
 
-#: src/dialogs/desktop-properties.c:306 src/dialogs/desktop-properties.c:367
+#: src/dialogs/desktop-properties.c:301 src/dialogs/desktop-properties.c:362
 msgid "Snap units:"
 msgstr "Enote preskoka:"
 
-#: src/dialogs/desktop-properties.c:318 src/dialogs/desktop-properties.c:379
+#: src/dialogs/desktop-properties.c:313 src/dialogs/desktop-properties.c:374
 msgid "Snap distance:"
 msgstr "Dolžina preskokov:"
 
-#: src/dialogs/desktop-properties.c:331
+#: src/dialogs/desktop-properties.c:326
 msgid "Grid color:"
 msgstr "Barva mreže:"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:343
+#: src/dialogs/desktop-properties.c:338
 msgid "Guides"
 msgstr "Vodniške črte"
 
-#: src/dialogs/desktop-properties.c:352
+#: src/dialogs/desktop-properties.c:347
 msgid "Show guides"
 msgstr "Kaži vodniške črte"
 
-#: src/dialogs/desktop-properties.c:360
+#: src/dialogs/desktop-properties.c:355
 msgid "Snap to guides"
 msgstr "Preskakuj do vodniških črt"
 
-#: src/dialogs/desktop-properties.c:391
+#: src/dialogs/desktop-properties.c:386
 msgid "Guides color:"
 msgstr "Barva vodniških črt:"
 
-#: src/dialogs/desktop-properties.c:402
+#: src/dialogs/desktop-properties.c:397
 msgid "Highlight color:"
 msgstr "Osvetljena barva:"
 
@@ -1440,7 +1412,7 @@ msgstr "Izrisovanje"
 msgid "Oversample bitmaps:"
 msgstr "Prevzorči rastrske slike:"
 
-#: src/dialogs/display-settings.c:116 src/dialogs/fill-style.c:923
+#: src/dialogs/display-settings.c:116
 msgid "None"
 msgstr "Brez"
 
@@ -1487,60 +1459,41 @@ msgstr "Poljubno"
 msgid "Custom paper"
 msgstr "Papir po meri"
 
-#: src/dialogs/document-properties.c:196 src/dialogs/object-properties.c:183
+#: src/dialogs/document-properties.c:196 src/dialogs/object-properties.c:303
 msgid "Units:"
 msgstr "Enote:"
 
-#: src/dialogs/fill-style.c:59 src/dialogs/fill-style.c:725
+#: src/dialogs/fill-style.c:76
 msgid "Fill style"
 msgstr "Vrsta polnitve"
 
-#. Frame
-#: src/dialogs/fill-style.c:675 src/dialogs/fill-style.c:897
-msgid "Empty"
-msgstr "Prazno"
+#: src/dialogs/fill-style.c:111
+#, fuzzy
+msgid "Fill Rule"
+msgstr "Vrsta polnitve"
 
-#. Set frame label
-#: src/dialogs/fill-style.c:1067
-msgid "Solid color"
-msgstr "Barva polnenja"
+#: src/dialogs/fill-style.c:125
+#, fuzzy
+msgid "nonzero"
+msgstr "brez"
 
-#. Label
-#: src/dialogs/fill-style.c:1078 src/widgets/paint-selector.c:513
-#: src/widgets/paint-selector.c:625
-msgid "Mode:"
-msgstr "Način:"
+#: src/dialogs/fill-style.c:130
+msgid "evenodd"
+msgstr ""
 
-#: src/dialogs/fill-style.c:1085 src/widgets/paint-selector.c:523
-msgid "RGB"
-msgstr "RGB"
-
-#: src/dialogs/fill-style.c:1092 src/widgets/paint-selector.c:529
-msgid "HSV"
-msgstr "HSV"
-
-#: src/dialogs/fill-style.c:1099 src/widgets/paint-selector.c:535
-msgid "CMYK"
-msgstr "CMYK"
-
-#. Set frame label
-#: src/dialogs/fill-style.c:1167
-msgid "Gradient"
-msgstr "Preliv"
-
-#: src/dialogs/item-properties.c:175
+#: src/dialogs/item-properties.c:165
 msgid "Item is reference"
 msgstr "Predmet je referenca"
 
-#: src/dialogs/item-properties.c:253 src/dialogs/item-properties.c:494
+#: src/dialogs/item-properties.c:243
 msgid "The ID is not valid"
 msgstr "ID ni veljaven"
 
-#: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
+#: src/dialogs/item-properties.c:245
 msgid "The ID is already defined"
 msgstr "ID je že definiran"
 
-#: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
+#: src/dialogs/item-properties.c:248
 msgid "The ID is valid"
 msgstr "ID je veljaven"
 
@@ -1568,7 +1521,7 @@ msgstr "Nadvloga:"
 msgid "Title:"
 msgstr "Naziv:"
 
-#: src/dialogs/object-attributes.c:35
+#: src/dialogs/object-attributes.c:35 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr "Kaži:"
 
@@ -1604,11 +1557,14 @@ msgstr "ARG1"
 msgid "ARG2:"
 msgstr "ARG2"
 
-#: src/dialogs/object-attributes.c:54
+#. Expansion
+#: src/dialogs/object-attributes.c:54 src/spiral-context.c:363
 msgid "Expansion:"
 msgstr "Razširitev:"
 
-#: src/dialogs/object-attributes.c:55
+#. Revolution
+#: src/dialogs/object-attributes.c:55 src/dialogs/tool-attributes.c:90
+#: src/spiral-context.c:351
 msgid "Revolution:"
 msgstr "Obhod:"
 
@@ -1637,66 +1593,321 @@ msgid "RY:"
 msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:107
+#, c-format
 msgid "%s attributes"
 msgstr "Atributi %s"
 
-#: src/dialogs/object-properties.c:48
+#: src/dialogs/object-properties.c:90
 msgid "Object style"
 msgstr "Slog predmeta"
 
-#: src/dialogs/object-properties.c:148
-msgid "Object position and size"
-msgstr "Položaj in velikost predmeta"
+#: src/dialogs/object-properties.c:119
+#, fuzzy
+msgid "Stroke paint"
+msgstr "Nastavi širina čopiča"
 
-#: src/dialogs/object-properties.c:170
-msgid "Position and size"
-msgstr "Položaj in velikost"
-
-#: src/dialogs/stroke-style.c:66
+#: src/dialogs/object-properties.c:133
 msgid "Stroke style"
 msgstr "Slog obrobe"
 
-#: src/dialogs/stroke-style.c:153
+#: src/dialogs/object-properties.c:153
+msgid "Apply to:"
+msgstr ""
+
+#: src/dialogs/object-properties.c:164
+#, fuzzy
+msgid "Selected objects"
+msgstr "Prevrni izbrane predmete"
+
+#: src/dialogs/object-properties.c:168
+msgid "All shape tools"
+msgstr ""
+
+#: src/dialogs/object-properties.c:172
+#, fuzzy
+msgid "Rectangle tool"
+msgstr "Pravokotnik"
+
+#: src/dialogs/object-properties.c:176
+#, fuzzy
+msgid "Arc tool"
+msgstr "Nadvloga:"
+
+#: src/dialogs/object-properties.c:180
+#, fuzzy
+msgid "Star tool"
+msgstr "Začetna barva"
+
+#: src/dialogs/object-properties.c:184
+#, fuzzy
+msgid "Spiral tool"
+msgstr "Spirala"
+
+#: src/dialogs/object-properties.c:188
+#, fuzzy
+msgid "Freehand and pen"
+msgstr "Prostoročno"
+
+#: src/dialogs/object-properties.c:192
+msgid "Calligraphic line"
+msgstr ""
+
+#: src/dialogs/object-properties.c:268
+msgid "Object position and size"
+msgstr "Položaj in velikost predmeta"
+
+#: src/dialogs/object-properties.c:290
+msgid "Position and size"
+msgstr "Položaj in velikost"
+
+#: src/dialogs/stroke-style.c:544
 msgid "Stroke settings"
 msgstr "Nastavite obrobe"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:225
+#: src/dialogs/stroke-style.c:623
 msgid "Cap:"
 msgstr ""
 
-#: src/document.c:248
-#, c-format
-msgid "Unnamed document %d"
-msgstr "Neimenovan dokument %d"
+#: src/dialogs/text-edit.c:79
+#, fuzzy
+msgid "Text properties"
+msgstr "Lastnosti besedila"
 
-#: src/document.c:320
+#: src/dialogs/text-edit.c:127
+#, fuzzy
+msgid "Alignment:"
+msgstr "Osnova poravnave"
+
+#: src/dialogs/text-edit.c:159
+#, fuzzy
+msgid "Orientation:"
+msgstr "Barva preliva"
+
+#: src/dialogs/text-edit.c:187
+msgid "Text and font"
+msgstr ""
+
+#: src/dialogs/text-edit.c:201
+msgid "Set as default"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:45
+#, fuzzy
+msgid "Tool attributes"
+msgstr "Atributi %s"
+
+#: src/dialogs/tool-attributes.c:90
+#, fuzzy
+msgid "Expansion"
+msgstr "Razširitev:"
+
+#: src/dialogs/tool-attributes.c:90
+msgid "Inner radius"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
+#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
+msgid "Missing tool preferences"
+msgstr ""
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:100 src/star-context.c:356
+msgid "Corners:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:100
+#, fuzzy
+msgid "Proportion"
+msgstr "Položaj"
+
+#: src/dialogs/tool-attributes.c:110
+#, fuzzy
+msgid "Transform:"
+msgstr "_Preoblikuj"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1027
+msgid "Mass:"
+msgstr ""
+
+#. Drag
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
+#, fuzzy
+msgid "Drag:"
+msgstr "Risanje"
+
+#: src/dialogs/tool-attributes.c:120
+#, fuzzy
+msgid "Angle"
+msgstr "kot"
+
+#: src/dialogs/tool-attributes.c:127
+#, fuzzy
+msgid "Tool has no attributes"
+msgstr "Atributi %s"
+
+#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:92
+msgid "No active tool"
+msgstr ""
+
+#: src/dialogs/tool-options.c:48
+#, fuzzy
+msgid "Tool options"
+msgstr "Oaf možnosti"
+
+#: src/dialogs/tool-options.c:89
+#, fuzzy
+msgid "Tool has no options"
+msgstr "Oaf možnosti"
+
+#: src/dialogs/xml-tree.c:306
+#, fuzzy
+msgid "You can't delete 'id' attribute!"
+msgstr "Želite zbrisati atribut?"
+
+#: src/dialogs/xml-tree.c:313
+#, fuzzy, c-format
+msgid "Do you want to delete attribute %s?"
+msgstr "Želite zbrisati atribut?"
+
+#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
+msgid "Yes"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:319 src/dialogs/xml-tree.c:558
+#, fuzzy
+msgid "No"
+msgstr "Brez"
+
+#: src/dialogs/xml-tree.c:541
+#, c-format
+msgid "You can't delete element %s!"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:552
+#, fuzzy, c-format
+msgid "Do you want to delete element %s?"
+msgstr "Želite zbrisati atribut?"
+
+#: src/dialogs/xml-tree.c:692
+#, c-format
+msgid "You can't cut element %s!"
+msgstr ""
+
+#: src/document.c:248
+#, fuzzy, c-format
+msgid "New document %d"
+msgstr "Pomnilniški dokument %d"
+
+#: src/document.c:341
 #, c-format
 msgid "Memory document %d"
 msgstr "Pomnilniški dokument %d"
 
-#: src/file.c:98
+#: src/document.c:478
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Neimenovan dokument %d"
+
+#. Angle
+#: src/dyna-draw-context.c:1051
+#, fuzzy
+msgid "Angle:"
+msgstr "kot"
+
+#. Reset
+#: src/dyna-draw-context.c:1075 src/rect-context.c:436
+#: src/spiral-context.c:387 src/star-context.c:387
+msgid "Defaults"
+msgstr ""
+
+#. rx_ratio
+#: src/rect-context.c:412 src/rect-context.c:424
+msgid "Roundness ratio for x:"
+msgstr ""
+
+#: src/select-context.c:635
+#, fuzzy
+msgid "Visual transformation"
+msgstr "Ponastavi preoblikovanje"
+
+#: src/select-context.c:643
+#, fuzzy
+msgid "Show content"
+msgstr "Vsebina"
+
+#: src/select-context.c:650
+#, fuzzy
+msgid "Show outline"
+msgstr "Kaži vodniške črte"
+
+#: src/select-context.c:657
+#, fuzzy
+msgid "Object transformation"
+msgstr "Ponastavi preoblikovanje"
+
+#: src/select-context.c:665
+msgid "Optimize"
+msgstr ""
+
+#: src/select-context.c:672
+msgid "Preserve"
+msgstr ""
+
+#. T0
+#: src/spiral-context.c:375
+#, fuzzy
+msgid "Inner radius:"
+msgstr "Radij"
+
+#. Proportion
+#: src/star-context.c:368
+#, fuzzy
+msgid "Proportion:"
+msgstr "Položaj"
+
+#. Making sides flat
+#: src/star-context.c:381
+#, fuzzy
+msgid "Make sides flat"
+msgstr "Naredi občutljivega"
+
+#: src/file.c:113
 msgid "Select file to open"
 msgstr "Izberi datoteko za odprtje"
 
-#: src/file.c:208
+#: src/file.c:240
 msgid "Save file"
 msgstr "Shrani datoteko"
 
-#: src/file.c:320
+#: src/file.c:255
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: src/file.c:261
+msgid "Plain SVG"
+msgstr ""
+
+#: src/file.c:267
+#, fuzzy
+msgid "Save as:"
+msgstr "Shrani kot"
+
+#: src/file.c:376
 msgid "Select file to import"
 msgstr "Izberi datoteko za uvoz"
 
-#: src/file.c:397
+#: src/file.c:453
 msgid "Export file"
 msgstr "Izvozi datoteko"
 
-#: src/file.c:464
+#: src/file.c:524
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (ime dokumenta %s..): Predogled Tiskanja"
 
-#: src/help.c:36
+#: src/help.c:49
 msgid "About sodipodi"
 msgstr "O Sodipodiju"
 
@@ -1805,159 +2016,236 @@ msgstr "m"
 msgid "meters"
 msgstr "metrov"
 
-#. File:Open
-#: src/interface.c:159
+#: src/interface.c:202 src/interface.c:359
+msgid "New"
+msgstr "Nova"
+
+#: src/interface.c:203 src/interface.c:360
 msgid "Open"
 msgstr "Odpri"
 
-#. File:Save As
-#: src/interface.c:169
-msgid "Save As"
+#: src/interface.c:205
+#, fuzzy
+msgid "Save as"
 msgstr "Shrani kot"
 
-#. File:Print
-#: src/interface.c:192
+#: src/interface.c:210
 msgid "Print"
 msgstr "Natisni"
 
-#. File:Print Preview
-#: src/interface.c:197
-msgid "Print preview"
+#: src/interface.c:211
+#, fuzzy
+msgid "Print Preview"
 msgstr "Predogled tiskanja"
 
-#. File:Close
-#: src/interface.c:206
-msgid "Close view"
+#: src/interface.c:214
+#, fuzzy
+msgid "Close View"
 msgstr "Zapri pogled"
 
-#. File:Exit
-#: src/interface.c:211
-msgid "Exit"
-msgstr "Izhod"
+#: src/interface.c:215 src/interface.c:365
+msgid "Exit Program"
+msgstr ""
+
+#: src/interface.c:217 src/interface.c:363
+#, fuzzy
+msgid "About Sodipodi"
+msgstr "O Sodipodiju"
+
+#: src/interface.c:223
+msgid "Cut"
+msgstr "Izreži"
+
+#: src/interface.c:224
+msgid "Copy"
+msgstr "Kopiraj"
+
+#: src/interface.c:225
+msgid "Paste"
+msgstr "Prilepi"
+
+#: src/interface.c:230
+#, fuzzy
+msgid "Clear all"
+msgstr "Barvno polnjenje"
+
+#: src/interface.c:231
+msgid "Cleanup"
+msgstr ""
 
 #. Selection:Group
-#: src/interface.c:259 src/sp-item-group.c:497
+#: src/interface.c:240 src/sp-item-group.c:495
 msgid "Group"
 msgstr "Grupiraj"
 
 #. Selection:Ungroup
-#: src/interface.c:264 src/sp-item-group.c:514
+#: src/interface.c:245 src/sp-item-group.c:512
 msgid "Ungroup"
 msgstr "Odgrupiraj"
 
 #. Selection:Combine
-#: src/interface.c:273
+#: src/interface.c:254
 msgid "Combine"
 msgstr "Združi"
 
 #. Selection:Break apart
-#: src/interface.c:278
+#: src/interface.c:259
 msgid "Break apart"
 msgstr "Razčleni"
 
-#: src/interface.c:291
+#: src/interface.c:272
 msgid "Bring to Front"
 msgstr "Prinesi na vrh"
 
-#: src/interface.c:295
+#: src/interface.c:276
 msgid "Send to Back"
 msgstr "Pošlji na dno"
 
-#: src/interface.c:299
+#: src/interface.c:280
 msgid "Raise"
 msgstr "Dvigni"
 
-#: src/interface.c:303
+#: src/interface.c:284
 msgid "Lower"
 msgstr "Spusti"
 
-#: src/interface.c:356
+#: src/interface.c:337
 msgid "Fill and Stroke"
 msgstr "Polnenje in obroba"
 
-#: src/interface.c:357
+#: src/interface.c:338
 msgid "Size and Position"
 msgstr "Velikost in položaj"
 
-#: src/interface.c:358
+#: src/interface.c:339
 msgid "Align Objects"
 msgstr "Poravnaj predmete"
 
-#: src/interface.c:359
+#: src/interface.c:340
 msgid "Text Editing"
 msgstr "Urejanje besedila"
 
-#: src/interface.c:360
+#: src/interface.c:341
 msgid "Transformations"
 msgstr "Preoblikovanja"
 
-#: src/interface.c:362
+#: src/interface.c:342
+#, fuzzy
+msgid "Tool Options"
+msgstr "Oaf možnosti"
+
+#: src/interface.c:343
+#, fuzzy
+msgid "Tool Attributes"
+msgstr "Atributi"
+
+#: src/interface.c:345
 msgid "Editing Window"
 msgstr "Urejevalno okno"
 
-#: src/interface.c:363
+#: src/interface.c:346
 msgid "XML Editor"
 msgstr "Urejevalnik XML"
 
-#: src/interface.c:364
+#: src/interface.c:347
 msgid "Display Properties"
 msgstr "Lastnosti prikaza"
 
 #. Undo
-#: src/interface.c:383
+#: src/interface.c:381
 msgid "Undo"
 msgstr "Razveljavi"
 
 #. View submenu
-#: src/interface.c:426
+#: src/interface.c:424
 msgid "View"
 msgstr "Pogled"
 
 #. Drawing mode submenu
-#: src/interface.c:432
+#: src/interface.c:430
 msgid "Drawing Mode"
 msgstr "Način risanja"
 
 #. Dialog submenu
-#: src/interface.c:438
+#: src/interface.c:436
 msgid "Dialogs"
 msgstr "Dialogi"
 
-#: src/main.c:51
-msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+#: src/main.c:105
+msgid "Do not use X server (only process files from console)"
 msgstr ""
-"Ne uporabljajte Grafičnega umesnika. NB! če obstaja, bi moral biti PRVI "
-"argument!"
 
-#: src/main.c:60
-msgid "Open specified file (option string may be excluded)"
+#: src/main.c:108
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr ""
+
+#: src/main.c:111
+#, fuzzy
+msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Odpri izbrano datoteko (lahko je vključen niz možnosti)"
 
-#: src/main.c:61 src/main.c:70
+#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:130
 msgid "FILENAME"
 msgstr "IME DATOTEKE"
 
-#: src/main.c:69
-msgid "Print files to specified output file (use '| program' for pipe)"
+#: src/main.c:114
+#, fuzzy
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Natisni datoteke v izbrano izhodno datoteko (uporabite '| program' za cev)"
 
-#: src/main.c:78
+#: src/main.c:117
+#, fuzzy
+msgid "Export document to png file"
+msgstr "Izvozi sliko v PNG"
+
+#: src/main.c:120
+msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
+msgstr ""
+
+#: src/main.c:121
+msgid "DPI"
+msgstr ""
+
+#: src/main.c:123
+msgid "Exported area in millimeters (default is full document)"
+msgstr ""
+
+#: src/main.c:124
+msgid "x0:y0:x1:y1"
+msgstr ""
+
+#: src/main.c:129
+msgid "Export document to plain SVG file"
+msgstr ""
+
+#: src/main.c:132
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Kaži podane datoteke vsako posebaj, preklopi na naslednjo ob kateremkoli "
 "miškinem ali tipkovničnem dogodku."
 
-#: src/main.c:180
-msgid "Oaf options"
-msgstr "Oaf možnosti"
+#: src/sodipodi.c:336
+#, fuzzy
+msgid "Untitled document"
+msgstr "Neimenovan dokument %d"
 
-#: src/main.c:188
-msgid "Could not initialize Bonobo"
-msgstr "Nisem mogel inicializirati Bonoba"
+#. Show nice dialog box
+#: src/sodipodi.c:361
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: src/sodipodi.c:362
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: src/sodipodi.c:363
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
 
 #. Not a regular file
-#: src/sodipodi.c:323
+#: src/sodipodi.c:452
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1970,7 +2258,7 @@ msgstr ""
 "shranjevati nastavitev\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:336
+#: src/sodipodi.c:465
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1985,7 +2273,7 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-#: src/sodipodi.c:350
+#: src/sodipodi.c:479
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1999,7 +2287,7 @@ msgstr ""
 "shranjevati nastavitev."
 
 #. Cannot create directory
-#: src/sodipodi.c:607
+#: src/sodipodi.c:760
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -2013,7 +2301,7 @@ msgstr ""
 "shranjevati nastavitev."
 
 #. Not a directory
-#: src/sodipodi.c:619
+#: src/sodipodi.c:772
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -2027,7 +2315,7 @@ msgstr ""
 "shranjevati nastavitev."
 
 #. Cannot create file
-#: src/sodipodi.c:635
+#: src/sodipodi.c:788
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -2041,7 +2329,7 @@ msgstr ""
 "shranjevati nastavitev."
 
 #. Cannot create file
-#: src/sodipodi.c:647
+#: src/sodipodi.c:800
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -2054,189 +2342,256 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-#: src/sp-anchor.c:158
+#: src/sp-anchor.c:192
 #, c-format
 msgid "Link to %s"
 msgstr "Povezava do %s"
 
 #. Create toplevel menuitem
-#: src/sp-anchor.c:219
+#: src/sp-anchor.c:251
 msgid "Link"
 msgstr "Povezava"
 
 #. Link dialog
-#: src/sp-anchor.c:222
+#: src/sp-anchor.c:254
 msgid "Link Properties"
 msgstr "Lastnosti povezave"
 
 #. Select item
-#: src/sp-anchor.c:232
+#: src/sp-anchor.c:264
 msgid "Follow link"
 msgstr "Sledi povezavi"
 
 #. Reset transformations
-#: src/sp-anchor.c:237
+#: src/sp-anchor.c:269
 msgid "Remove link"
 msgstr "Odstrani povezavo"
 
-#: src/sp-image.c:291
-msgid "Broken bitmap"
-msgstr "Poškodovana rastrska slika"
+#: src/sp-image.c:365
+#, fuzzy, c-format
+msgid "Image with bad reference: %s"
+msgstr "Predmet je referenca"
 
-#: src/sp-image.c:292
-msgid "Color bitmap"
-msgstr "Barvna rastrska slika"
+#: src/sp-image.c:367
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr ""
 
 #. Create toplevel menuitem
-#: src/sp-image.c:508
+#: src/sp-image.c:589
 msgid "Image"
 msgstr "Slika"
 
 #. Link dialog
-#: src/sp-image.c:511
+#: src/sp-image.c:592
 msgid "Image Properties"
 msgstr "Lastnosti slike"
 
-#: src/sp-item-group.c:435
+#. Autotrace dialog
+#: src/sp-image.c:600 src/sp-image.c:799
+msgid "Trace"
+msgstr ""
+
+#: src/sp-image.c:943
+#, c-format
+msgid "Error to write %s: %s"
+msgstr ""
+
+#: src/sp-image.c:947
+msgid "Ok"
+msgstr ""
+
+#: src/sp-image.c:975
+#, fuzzy
+msgid "Untitled"
+msgstr "Enota"
+
+#: src/sp-image.c:980
+#, fuzzy
+msgid "Document Name:"
+msgstr "Dokument"
+
+#: src/sp-image.c:993
+#, fuzzy
+msgid "Unknown"
+msgstr "Neznan predmet :-("
+
+#: src/sp-image.c:999
+#, fuzzy
+msgid "Image URI:"
+msgstr "Slika"
+
+#: src/sp-item-group.c:433
 #, c-format
 msgid "Group of %d objects"
 msgstr "Skupina %d predmetov"
 
 #. Group dialog
-#: src/sp-item-group.c:501
+#: src/sp-item-group.c:499
 msgid "Group Properties"
 msgstr "Lastnosti skupine"
 
-#: src/sp-item.c:359
+#: src/sp-item.c:414
 msgid "Unknown item :-("
 msgstr "Neznan predmet :-("
 
 #. Item dialog
-#: src/sp-item.c:622
+#: src/sp-item.c:747
 msgid "Item Properties"
 msgstr "Lastnosti predmeta"
 
 #. Select item
-#: src/sp-item.c:632
+#: src/sp-item.c:757
 msgid "Select this"
 msgstr "Izberi to"
 
 #. Reset transformations
-#: src/sp-item.c:642
+#: src/sp-item.c:767
 msgid "Reset transformation"
 msgstr "Ponastavi preoblikovanje"
 
-#: src/sp-item.c:648
+#: src/sp-item.c:773
 msgid "Make sensitive"
 msgstr "Naredi občutljivega"
 
-#: src/sp-item.c:648
+#: src/sp-item.c:773
 msgid "Make insensitive"
 msgstr "Naredi neobčutljivega"
 
 #. Create link
-#: src/sp-item.c:653
+#: src/sp-item.c:778
 msgid "Create link"
 msgstr "Ustvari povezavo"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:363
+#: src/sp-rect.c:531
 msgid "Rect"
 msgstr "Pravokotnik"
 
 #. Link dialog
-#: src/sp-rect.c:366
+#: src/sp-rect.c:534
 msgid "Rect Properties"
 msgstr "Lastnosti pravokotnika"
 
-#: src/sp-shape.c:307
+#: src/sp-shape.c:399
 msgid "A path - whatever it means"
 msgstr "Pot - karkoli že pomeni"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:363
+#: src/sp-shape.c:455
 msgid "Shape"
 msgstr "Oblika"
 
 #. Item dialog
-#: src/sp-shape.c:366
+#: src/sp-shape.c:458
 msgid "Fill settings"
 msgstr "Nastavitev polnenja"
 
 #. Link dialog
-#: src/sp-spiral.c:598
+#: src/sp-spiral.c:626
 msgid "Spiral Properties"
 msgstr "Lastnosti spirale"
 
 #. Link dialog
-#: src/sp-star.c:479
+#: src/sp-star.c:472
 msgid "Star Properties"
 msgstr "Lastnosti zvezde"
 
-#: src/sp-text.c:222
+#. fixme:
+#: src/sp-text.c:1265
 msgid "Text object"
 msgstr "Predmet z besedilom"
 
-#: src/toolbox.c:99
+#: src/toolbox.c:302
 msgid "Draw"
 msgstr "Risanje"
 
-#. Reset button
-#: src/widgets/gradient-selector.c:160
-msgid "Reset"
-msgstr "Ponastavi"
+#. Family frame
+#: src/widgets/font-selector.c:143
+msgid "Font family"
+msgstr ""
 
-#: src/widgets/gradient-vector.c:243
+#. Style frame
+#: src/widgets/font-selector.c:171
+#, fuzzy
+msgid "Style"
+msgstr " Slog "
+
+#: src/widgets/font-selector.c:206
+#, fuzzy
+msgid "Font size:"
+msgstr "Ne shrani"
+
+#: src/widgets/font-selector.c:519
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr ""
+
+#: src/widgets/gradient-vector.c:241
 msgid "No document selected"
 msgstr "Izbran ni noben dokument"
 
-#: src/widgets/gradient-vector.c:249
+#: src/widgets/gradient-vector.c:247
 msgid "No gradients in document"
 msgstr "V dokumentu ni prelivov"
 
-#: src/widgets/gradient-vector.c:255
+#: src/widgets/gradient-vector.c:253
 msgid "No gradient selected"
 msgstr "Izbran ni noben preliv"
 
-#: src/widgets/gradient-vector.c:406
+#: src/widgets/gradient-vector.c:409
 msgid "Start color"
 msgstr "Začetna barva"
 
-#: src/widgets/gradient-vector.c:418
+#: src/widgets/gradient-vector.c:421
 msgid "End color"
 msgstr "Končna barva"
 
-#: src/widgets/gradient-vector.c:445
+#: src/widgets/gradient-vector.c:448
 msgid "Gradient vector"
 msgstr "Vektor preliva"
 
-#: src/widgets/paint-selector.c:396
+#: src/widgets/paint-selector.c:536
 msgid "No objects"
 msgstr "Ni predmetov"
 
-#: src/widgets/paint-selector.c:410
+#: src/widgets/paint-selector.c:550
 msgid "Multiple styles"
 msgstr "Več slogov"
 
-#: src/widgets/paint-selector.c:424
+#: src/widgets/paint-selector.c:564
 msgid "No paint"
 msgstr "Ni barve"
 
-#: src/widgets/paint-selector.c:566
+#. Label
+#: src/widgets/paint-selector.c:655
+msgid "Mode:"
+msgstr "Način:"
+
+#: src/widgets/paint-selector.c:665
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:671
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:677
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:711
 msgid "Color paint"
 msgstr "Brava risanja"
 
-#: src/widgets/paint-selector.c:636
-msgid "Linear"
-msgstr "Linearna"
+#: src/widgets/paint-selector.c:779
+#, fuzzy
+msgid "Linear gradient"
+msgstr "Dodaj nov preliv"
 
-#: src/widgets/paint-selector.c:639
-msgid "Radial"
-msgstr "Krožna"
-
-#: src/widgets/paint-selector.c:670
-msgid "Gradient paint"
-msgstr "Barva preliva"
+#: src/widgets/paint-selector.c:781
+#, fuzzy
+msgid "Radial gradient"
+msgstr "Dodaj nov preliv"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2261,6 +2616,64 @@ msgstr "Rumena:"
 #: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Črna:"
+
+#: src/draw-context.c:275
+msgid "Appending to selection. Press '+' to toggle Append/New."
+msgstr ""
+
+#: src/draw-context.c:280
+msgid "Creating new curve. Press '+' to toggle Append/New."
+msgstr ""
+
+#~ msgid "_About ..."
+#~ msgstr "_O ..."
+
+#~ msgid "_File"
+#~ msgstr "_Datoteka"
+
+#~ msgid "_Help"
+#~ msgstr "_Pomoč"
+
+#~ msgid "Del"
+#~ msgstr "Briši"
+
+#~ msgid "Dup"
+#~ msgstr "Podvoji"
+
+#~ msgid "Empty"
+#~ msgstr "Prazno"
+
+#~ msgid "Solid color"
+#~ msgstr "Barva polnenja"
+
+#~ msgid "Gradient"
+#~ msgstr "Preliv"
+
+#~ msgid "Exit"
+#~ msgstr "Izhod"
+
+#~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+#~ msgstr ""
+#~ "Ne uporabljajte Grafičnega umesnika. NB! če obstaja, bi moral biti PRVI "
+#~ "argument!"
+
+#~ msgid "Could not initialize Bonobo"
+#~ msgstr "Nisem mogel inicializirati Bonoba"
+
+#~ msgid "Broken bitmap"
+#~ msgstr "Poškodovana rastrska slika"
+
+#~ msgid "Color bitmap"
+#~ msgstr "Barvna rastrska slika"
+
+#~ msgid "Reset"
+#~ msgstr "Ponastavi"
+
+#~ msgid "Linear"
+#~ msgstr "Linearna"
+
+#~ msgid "Radial"
+#~ msgstr "Krožna"
 
 #~ msgid "Choose base unit system for grid"
 #~ msgstr "Izberi sistem enot za mrežo"
@@ -2464,9 +2877,6 @@ msgstr "Črna:"
 #~ msgid "_Arrange"
 #~ msgstr "_Uredi"
 
-#~ msgid "_Transform"
-#~ msgstr "_Preoblikuj"
-
 #~ msgid "_Order"
 #~ msgstr "Vrstni _red"
 
@@ -2475,9 +2885,6 @@ msgstr "Črna:"
 
 #~ msgid "Ungroups selected group"
 #~ msgstr "Odgrupira izbrano skupino"
-
-#~ msgid "New File"
-#~ msgstr "Nova datoteka"
 
 #~ msgid "Open File"
 #~ msgstr "Odpri datoteko"

@@ -334,11 +334,32 @@ sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector)
 			SPGradient *gr;
 			gr = SP_GRADIENT (child);
 			if (SP_OBJECT_HREFCOUNT (gr) == 0) {
-				if (gr->state == SP_GRADIENT_STATE_PRIVATE) return gr;
-				if (gr->state == SP_GRADIENT_STATE_UNKNOWN) {
+				if (gr->state == SP_GRADIENT_STATE_PRIVATE) {
+					SPRepr *repr;
+					repr = SP_OBJECT_REPR (gr);
+					sp_repr_set_attr (repr, "gradientUnits", NULL);
+					sp_repr_set_attr (repr, "gradientTransform", NULL);
+					sp_repr_set_attr (repr, "spreadMethod", NULL);
+					sp_gradient_repr_set_link (repr, vector);
+					sp_repr_set_attr (repr, "x1", NULL);
+					sp_repr_set_attr (repr, "y1", NULL);
+					sp_repr_set_attr (repr, "x2", NULL);
+					sp_repr_set_attr (repr, "y2", NULL);
+					return gr;
+				} else if (gr->state == SP_GRADIENT_STATE_UNKNOWN) {
 					/* fixme: This is plain wrong - what if out gradient is not at private position? */
 					sp_gradient_ensure_vector (gr);
-					if (!gr->has_stops) return sp_gradient_ensure_private_normalized (gr, vector);
+					if (!gr->has_stops) {
+						gr = sp_gradient_ensure_private_normalized (gr, vector);
+						sp_repr_set_attr (repr, "gradientUnits", NULL);
+						sp_repr_set_attr (repr, "gradientTransform", NULL);
+						sp_repr_set_attr (repr, "spreadMethod", NULL);
+						sp_repr_set_attr (repr, "x1", NULL);
+						sp_repr_set_attr (repr, "y1", NULL);
+						sp_repr_set_attr (repr, "x2", NULL);
+						sp_repr_set_attr (repr, "y2", NULL);
+						return gr;
+					}
 				}
 			}
 		}
@@ -381,11 +402,35 @@ sp_gradient_get_radial_private_normalized (SPDocument *document, SPGradient *vec
 			SPGradient *gr;
 			gr = SP_GRADIENT (child);
 			if (SP_OBJECT_HREFCOUNT (gr) == 0) {
-				if (gr->state == SP_GRADIENT_STATE_PRIVATE) return gr;
-				if (gr->state == SP_GRADIENT_STATE_UNKNOWN) {
+				if (gr->state == SP_GRADIENT_STATE_PRIVATE) {
+					SPRepr *repr;
+					repr = SP_OBJECT_REPR (gr);
+					sp_repr_set_attr (repr, "gradientUnits", NULL);
+					sp_repr_set_attr (repr, "gradientTransform", NULL);
+					sp_repr_set_attr (repr, "spreadMethod", NULL);
+					sp_gradient_repr_set_link (repr, vector);
+					sp_repr_set_attr (repr, "cx", NULL);
+					sp_repr_set_attr (repr, "cy", NULL);
+					sp_repr_set_attr (repr, "fx", NULL);
+					sp_repr_set_attr (repr, "fy", NULL);
+					sp_repr_set_attr (repr, "r", NULL);
+					return gr;
+				} else if (gr->state == SP_GRADIENT_STATE_UNKNOWN) {
 					/* fixme: This is plain wrong - what if out gradient is not at private position? */
 					sp_gradient_ensure_vector (gr);
-					if (!gr->has_stops) return sp_gradient_ensure_radial_private_normalized (gr, vector);
+					if (!gr->has_stops) {
+						gr = sp_gradient_ensure_radial_private_normalized (gr, vector);
+						sp_repr_set_attr (repr, "gradientUnits", NULL);
+						sp_repr_set_attr (repr, "gradientTransform", NULL);
+						sp_repr_set_attr (repr, "spreadMethod", NULL);
+						sp_gradient_repr_set_link (repr, vector);
+						sp_repr_set_attr (repr, "cx", NULL);
+						sp_repr_set_attr (repr, "cy", NULL);
+						sp_repr_set_attr (repr, "fx", NULL);
+						sp_repr_set_attr (repr, "fy", NULL);
+						sp_repr_set_attr (repr, "r", NULL);
+						return gr;
+					}
 				}
 			}
 		}

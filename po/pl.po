@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-03-24 00:56+0100\n"
+"POT-Creation-Date: 2002-10-07 21:53+0200\n"
 "PO-Revision-Date: 2002-03-24 01:22+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -21,98 +21,98 @@ msgstr ""
 msgid "Sodipodi SVG Document"
 msgstr "Sodipodi - dokument SVG"
 
-#: GNOME_Sodipodi.oaf.in.h:1
+#: GNOME_Sodipodi.oaf.in.h:2
 msgid "Sodipodi SVG Document factory"
 msgstr "Sodipodi - generator dokumentu SVG"
 
-#: glade/align.glade.h:1 glade/transformation.glade.h:1
+#: glade/align.glade.h:1 glade/transformation.glade.h:3
 msgid "Align"
 msgstr "Wyrównanie"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:2
 msgid "Align inside object to bottom border"
 msgstr "Wyrównuje do dolnej krawêdzi wewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:3
 msgid "Align inside object to left border"
 msgstr "Wyrównuje do lewej krawêdzi wewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:4
 msgid "Align inside object to right border"
 msgstr "Wyrównuje do prawej krawêdzi wewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:5
 msgid "Align inside object to top border"
 msgstr "Wyrównuje do górnej krawêdzi wewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:6
 msgid "Align objects to horizontal mid"
 msgstr "Wyrównuje obiekty wzglêdem ¶rodka w poziomie"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:7
 msgid "Align objects to vertical mid"
 msgstr "Wyrównuje obiekty wzglêdem ¶rodka w pionie"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:8
 msgid "Align outside object to bottom border"
 msgstr "Wyrównuje do dolnej krawêdzi na zewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:9
 msgid "Align outside object to left border"
 msgstr "Wyrównuje do lewej krawêdzi na zewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:10
 msgid "Align outside object to right border"
 msgstr "Wyrównuje do prawej krawêdzi na zewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:11
 msgid "Align outside object to top border"
 msgstr "Wyrównuje do górnej krawêdzi na zewn±trz obiektu"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:12
 msgid "Alignment base"
 msgstr "Podstawa wyrównania"
 
-#: glade/align.glade.h:1 src/dialogs/align.c:1
+#: glade/align.glade.h:13 src/dialogs/align.c:91
 msgid "Biggest item"
 msgstr "Najwiêkszy element"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:14
 msgid "Choose align type"
 msgstr "Wybiera typ wyrównania"
 
-#: glade/align.glade.h:1
+#: glade/align.glade.h:15
 msgid "Close window"
 msgstr "Zamyka okno"
 
-#: glade/align.glade.h:1 glade/sodipodi.glade.h:1 src/dialogs/align.c:1
-#: src/interface.c:1
+#: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
+#: src/interface.c:303
 msgid "Drawing"
 msgstr "Rysunek"
 
-#: glade/align.glade.h:1 src/dialogs/align.c:1
+#: glade/align.glade.h:17 src/dialogs/align.c:86
 msgid "First selected"
 msgstr "Pierwszy zaznaczony"
 
-#: glade/align.glade.h:1 src/dialogs/align.c:1
+#: glade/align.glade.h:18 src/dialogs/align.c:81
 msgid "Last selected"
 msgstr "Ostatni zaznaczony"
 
 #. Page settings
 #. Notebook tab
-#: glade/align.glade.h:1 glade/sodipodi.glade.h:1 src/dialogs/align.c:1
-#: src/dialogs/document-properties.c:1 src/interface.c:1
+#: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
+#: src/dialogs/document-properties.c:144 src/interface.c:304
 msgid "Page"
 msgstr "Strona"
 
 #. Selection submenu
-#: glade/align.glade.h:1 glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
-#: src/dialogs/align.c:1 src/interface.c:1 src/interface.c:1
-#: src/toolbox.c:1
+#: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
+#: src/dialogs/align.c:111 src/interface.c:302 src/interface.c:418
+#: src/toolbox.c:166
 msgid "Selection"
 msgstr "Zaznaczenie"
 
-#: glade/align.glade.h:1 src/dialogs/align.c:1
+#: glade/align.glade.h:21 src/dialogs/align.c:96
 msgid "Smallest item"
 msgstr "Najmniejszy element"
 
@@ -120,57 +120,57 @@ msgstr "Najmniejszy element"
 msgid "Active"
 msgstr "Aktywny"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:2
 msgid "ID:"
 msgstr "ID:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:1 src/sp-item.c:1
+#: glade/item.glade.h:3 src/sp-item.c:744
 msgid "Item"
 msgstr "Element"
 
-#: glade/item.glade.h:1 src/dialogs/item-properties.c:1
+#: glade/item.glade.h:4 src/dialogs/item-properties.c:318
 msgid "Item properties"
 msgstr "W³a¶ciwo¶ci elementu"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:5
 msgid "Opacity:"
 msgstr "Nieprzepuszczalno¶æ:"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:6
 msgid "Parent X ="
 msgstr "X nadrzêdnego ="
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:7
 msgid "Parent Y ="
 msgstr "Y nadrzêdnego ="
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:8
 msgid "Printable"
 msgstr "Drukowalny"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:9
 msgid "Sensitive"
 msgstr "Czu³y"
 
-#: glade/item.glade.h:1 src/dialogs/item-properties.c:1
-#: src/dialogs/item-properties.c:1 src/dialogs/item-properties.c:1
+#: glade/item.glade.h:10 src/dialogs/item-properties.c:171
+#: src/dialogs/item-properties.c:241
 msgid "The SVG ID of item"
 msgstr "ID elementu w SVG"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:11
 msgid "Transformation"
 msgstr "Przekszta³cenie"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:12
 msgid "Visible"
 msgstr "Widoczny"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:13
 msgid "X +"
 msgstr "X +"
 
-#: glade/item.glade.h:1
+#: glade/item.glade.h:14
 msgid "Y +"
 msgstr "Y +"
 
@@ -178,239 +178,240 @@ msgstr "Y +"
 msgid " Color fill "
 msgstr " Kolor wype³nienia"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:2
 msgid " General "
 msgstr " Ogólne "
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:3
 msgid " Style "
 msgstr " Styl "
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:4
 msgid "Add new gradient"
 msgstr "Dodanie nowego gradientu"
 
-#: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
-#: src/widgets/sp-color-selector.c:1 src/widgets/sp-color-selector.c:1
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
 msgid "Alpha:"
 msgstr "Alfa:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:6
 msgid "Behind fill"
 msgstr "Za wype³nieniem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:7
 msgid "Bevel join"
 msgstr "Z³±czenie na kancie"
 
-#: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
 msgid "Blue:"
 msgstr "Niebieski:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:9
 msgid "Butt endpoints"
 msgstr "Punkt koñcowy na brzegu"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:10
 msgid "Choose fill color"
 msgstr "Wybiera kolor wype³nienia"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:11
 msgid "Choose stroke color"
 msgstr "Wybiera kolor rysowania"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:12
 msgid "Color fill"
 msgstr "Wype³nienie kolorem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:13
 msgid "Color:"
 msgstr "Kolor:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:14
 msgid "Dimension"
 msgstr "Wymiar"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:15
 msgid "Edit..."
 msgstr "Zmodyfikuj..."
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:16
 msgid "Endpoints:"
 msgstr "Zakoñczenia:"
 
-#: glade/object_props.glade.h:1 glade/sodipodi.glade.h:1
-#: src/dialogs/object-properties.c:1
+#: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
+#: src/dialogs/object-properties.c:105
 msgid "Fill"
 msgstr "Wype³nienie"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:18
 msgid "Fill Color:"
 msgstr "Kolor wype³nienia:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:19
 msgid "Fractal fill"
 msgstr "Wype³nienie fraktalem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:20
 msgid "Gradient fill"
 msgstr "Wype³nienie gradientem"
 
-#: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
 msgid "Green:"
 msgstr "Zielony:"
 
-#: glade/object_props.glade.h:1 src/dialogs/document-properties.c:1
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-attributes.c:1
-#: src/dialogs/object-properties.c:1
+#: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-properties.c:360
 msgid "Height:"
 msgstr "Wysoko¶æ:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:23
 msgid "Is stroked"
 msgstr "Z kresk±"
 
 #. Join type
-#: glade/object_props.glade.h:1 src/dialogs/stroke-style.c:1
+#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:580
 msgid "Join:"
 msgstr "Z³±czenie:"
 
-#: glade/object_props.glade.h:1
+#. Layout
+#: glade/object_props.glade.h:25 src/dialogs/text-edit.c:117
 msgid "Layout"
 msgstr "Uk³ad"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:26
 msgid "Miter join"
 msgstr "Z³±czenie z k±tem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:27
 msgid "No fill"
 msgstr "Brak wype³nienia"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:28
 msgid "Pattern fill"
 msgstr "Wype³nienie deseniem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:29
 msgid "Pick a color"
 msgstr "Wybór koloru"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:30
 msgid "Pick fill color"
 msgstr "Wybór koloru wype³nienia"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:31
 msgid "Pick stroke color"
 msgstr "Wybór koloru rysowania"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:32
 msgid "Position"
 msgstr "Po³o¿enie"
 
-#: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
 msgstr "Czerwony:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:34
 msgid "Reread"
 msgstr "Od¶wie¿"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:35
 msgid "Round endpoints"
 msgstr "Punkt koñcowy z zaokr±gleniem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:36
 msgid "Round join"
 msgstr "Z³±czenie z zaokr±gleniem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:37
 msgid "Scale with object"
 msgstr "Skalowanie z obiektem"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:38
 msgid "Square endpoints"
 msgstr "Punkt koñcowy w prostok±tem"
 
-#: glade/object_props.glade.h:1 glade/sodipodi.glade.h:1
-#: src/dialogs/object-properties.c:1
+#: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
 msgid "Stroke"
 msgstr "Kreska"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:40
 msgid "Stroke width"
 msgstr "Grubo¶æ kreski"
 
 #. Stroke width
-#: glade/object_props.glade.h:1 src/dialogs/document-properties.c:1
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-attributes.c:1
-#: src/dialogs/object-properties.c:1 src/dialogs/stroke-style.c:1
+#: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:345 src/dialogs/stroke-style.c:557
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1063
 msgid "Width:"
 msgstr "Szeroko¶æ:"
 
-#: glade/object_props.glade.h:1 src/dialogs/object-attributes.c:1
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-properties.c:1
+#: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
+#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:315
 msgid "X:"
 msgstr "X:"
 
-#: glade/object_props.glade.h:1 src/dialogs/object-attributes.c:1
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-properties.c:1
+#: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
+#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:330
 msgid "Y:"
 msgstr "Y:"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:44
 msgid "centimeter"
 msgstr "centymetr"
 
-#: glade/object_props.glade.h:1 glade/transformation.glade.h:1
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: glade/object_props.glade.h:45 glade/transformation.glade.h:48
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "cm"
 msgstr "cm"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:46
 msgid "color"
 msgstr "kolor"
 
-#: glade/object_props.glade.h:1 glade/transformation.glade.h:1
-#: src/helper/units.c:1
+#: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:51
 msgid "in"
 msgstr "cal"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:48
 msgid "inches"
 msgstr "cale"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:49
 msgid "millimeters"
 msgstr "mMilimetry"
 
-#: glade/object_props.glade.h:1 glade/transformation.glade.h:1
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: glade/object_props.glade.h:50 glade/transformation.glade.h:58
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
 msgid "mm"
 msgstr "mm"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:51
 msgid "none"
 msgstr "brak"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:52
 msgid "object properties"
 msgstr "W³a¶ciwo¶ci obiektu"
 
-#: glade/object_props.glade.h:1 glade/sodipodi.glade.h:1
+#: glade/object_props.glade.h:53 glade/sodipodi.glade.h:78
 msgid "pixels"
 msgstr "piksele"
 
-#: glade/object_props.glade.h:1
+#: glade/object_props.glade.h:54
 msgid "points"
 msgstr "punkty"
 
-#: glade/object_props.glade.h:1 glade/transformation.glade.h:1
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: glade/object_props.glade.h:55 glade/transformation.glade.h:59
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "pt"
 msgstr "pkt"
 
-#: glade/object_props.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
+#: src/helper/units.c:43
 msgid "px"
 msgstr "pks"
 
@@ -418,1555 +419,1839 @@ msgstr "pks"
 msgid "1.0MB"
 msgstr "1.0MB"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:2 src/interface.c:311
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:3 src/interface.c:310
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:4 src/interface.c:312
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:5 src/interface.c:325
 msgid "Arc"
 msgstr "£uk"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:6
 msgid "Back One"
 msgstr "O jeden w _dó³"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:7 glade/toolbox.glade.h:2
 msgid "Break apart selected node"
 msgstr "Rozdziela zaznaczony wêze³"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:8
 msgid "Bring to _Front"
 msgstr "Wysuñ na _wierzch"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:4
 msgid "Close dialog"
 msgstr "Zamyka okno"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:7
 msgid "Convert selected segments to curves"
 msgstr "Konwertuje zaznaczone segmenty na krzywe"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:11 glade/toolbox.glade.h:8
 msgid "Convert selected segments to lines"
 msgstr "Konwertuje zaznaczone segmenty na linie"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:12
 msgid "Convert to Cu_rves"
 msgstr "Prze_konwertuj na krzywe"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:13 glade/toolbox.glade.h:10
 msgid "Cusp line at selected nodes"
 msgstr "Ostrze krzywej przy zaznaczonych wêz³ach"
 
-#. File:Export
-#: glade/sodipodi.glade.h:1 glade/xml-tree.glade.h:1 src/interface.c:1
-#: src/widgets/gradient-selector.c:1
+#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:9 src/interface.c:228
 msgid "Delete"
 msgstr "Usuñ"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:15 glade/toolbox.glade.h:12
 msgid "Delete selected nodes"
 msgstr "Usuwa zaznaczone wêz³y"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:16
 msgid "Desktop"
 msgstr "Biurko"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:17
 msgid "Display"
 msgstr "Wy¶wietlanie"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:18 src/interface.c:344
 msgid "Document"
 msgstr "Dokument"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:20
 msgid "Drawing Context"
 msgstr "Kontekst rysowania"
 
-#. Edit:Duplicate
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:21 src/interface.c:227
 msgid "Duplicate"
 msgstr "Zduplikuj"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:22 src/interface.c:329
 msgid "Dynahand"
 msgstr "Dynamiczna linia odrêczna"
 
-#. File:Export
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:208
 msgid "Export"
 msgstr "Eksport"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:24
 msgid "Export picture to png"
 msgstr "Eksport rysunku do obrazu png"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:25
 msgid "Exported as"
 msgstr "Parametry obrazu"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:26
 msgid "Filename:"
 msgstr "Nazwa pliku:"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:28
 msgid "Forward One"
 msgstr "O jeden w gó_rê"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:29 src/interface.c:328
 msgid "Freehand"
 msgstr "Linia odrêczna"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:30
 msgid "Height"
 msgstr "Wysoko¶æ"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:31
 msgid "Image size"
 msgstr "Rozmiar obrazu"
 
-#. File:Import
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:32 src/interface.c:207
 msgid "Import"
 msgstr "Import"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
 msgid "Include one node into selected segments"
 msgstr "Do³±cza jeden wêze³ do zaznaczonych segmentów"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
 msgid "Join 2 selected endpoints"
 msgstr "£±czy dwa zaznaczone punkty koñcowe"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:35
 msgid "Lock aspect ratio"
 msgstr "Zablokowanie wspó³czynnika proporcji"
 
 #. View:New Preview
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:36 src/interface.c:316
 msgid "New Preview"
 msgstr "Nowy podgl±d"
 
 #. View:New View
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:37 src/interface.c:314
 msgid "New View"
 msgstr "Nowy widok"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:38 src/interface.c:323
 msgid "Node"
 msgstr "Wêze³"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
 msgid "Node Edit"
 msgstr "Modyfikacja wêz³a"
 
-#: glade/sodipodi.glade.h:1 src/toolbox.c:1
+#: glade/sodipodi.glade.h:40 src/toolbox.c:191
 msgid "Nodes"
 msgstr "Wêz³y"
 
 #. Selection:Order
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:41 src/interface.c:268
 msgid "Order"
 msgstr "Kolejno¶æ"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:43
 msgid "Png file name"
 msgstr "Nazwa pliku PNG"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:44 src/interface.c:324
 msgid "Rectangle"
 msgstr "Prostok±t"
 
 # [cyba] - niejednoznaczno¶æ
 # w glade/sodipodi.glade powinno byæ "Skala"
 # w glade/transformation.glade.h powinno byæ "Skalowanie"
-#: glade/sodipodi.glade.h:1 glade/transformation.glade.h:1
-#: src/interface.c:1
+#: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
+#: src/interface.c:306
 msgid "Scale"
 msgstr "Skalowanie"
 
-#: glade/sodipodi.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:46 src/interface.c:322
 msgid "Select"
 msgstr "Zaznaczenie"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:48
 msgid "Send to _Back"
 msgstr "Przesuñ na _spód"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:49
 msgid "Set dimensions"
 msgstr "Podstawa ustalenia wymiarów"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:50
 msgid "Show Toolbox"
 msgstr "Wy¶wietl narzêdziówkê"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
 msgid "Smooth line at selected nodes"
 msgstr "Wyg³adza liniê przy zaznaczonych wêz³ach"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:1 src/interface.c:1 src/sp-spiral.c:1
+#: glade/sodipodi.glade.h:52 src/interface.c:327 src/sp-spiral.c:623
 msgid "Spiral"
 msgstr "Spirala"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:1 src/interface.c:1 src/sp-star.c:1
+#: glade/sodipodi.glade.h:53 src/interface.c:326 src/sp-star.c:469
 msgid "Star"
 msgstr "Gwiazda"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
 msgid "Symmetric "
 msgstr "Symetryczny"
 
-#: glade/sodipodi.glade.h:1 glade/text-dialog.glade.h:1 src/interface.c:1
+#: glade/sodipodi.glade.h:56 src/dialogs/object-properties.c:196
+#: src/interface.c:330
 msgid "Text"
 msgstr "Tekst"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:57
 msgid "Toggle Borders"
 msgstr "Prze³±cz krawêdzie"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:58
 msgid "Uncompressed file size:"
 msgstr "Rozmiar nieskompresowanego pliku:"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:59
 msgid "Where to export"
 msgstr "Miejsce eksportu pliku"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:60
 msgid "Width"
 msgstr "Szeroko¶æ"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:61
 msgid "X0"
 msgstr "X0"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:62
 msgid "X1"
 msgstr "X1"
 
-#: glade/sodipodi.glade.h:1 glade/xml-tree.glade.h:1
+#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:19
 msgid "XML Tree"
 msgstr "Drzewo XML-a"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:64
 msgid "Y0"
 msgstr "Y0"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:65
 msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1 src/desktop.c:1
-#: src/interface.c:1 src/interface.c:1 src/toolbox.c:1
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1023
+#: src/interface.c:298 src/interface.c:331 src/toolbox.c:187
 msgid "Zoom"
 msgstr "Powiêkszenie"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:67
 msgid "_Align"
 msgstr "_Wyrównaj"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:68
 msgid "_Break Apart"
 msgstr "R_ozdziel"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:69
 msgid "_Combine"
 msgstr "_Po³±cz"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:70
 msgid "_Drawing"
 msgstr "_Rysunek"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:71
 msgid "_Group"
 msgstr "_Zgrupuj"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:72
 msgid "_Interactive"
 msgstr "_Interaktywnie"
 
-#: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
+#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:75
 msgid "_New"
 msgstr "_Nowy"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:74
 msgid "_Page"
 msgstr "_Strona"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:75
 msgid "_Selection"
 msgstr "_Zaznaczenie"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:76
 msgid "_Ungroup"
 msgstr "_Rozgrupuj"
 
-#: glade/sodipodi.glade.h:1
+#: glade/sodipodi.glade.h:77
 msgid "dpi"
 msgstr "dpi"
-
-#: glade/text-dialog.glade.h:1
-msgid "Text Properties"
-msgstr "W³a¶ciwo¶ci tekstu"
 
 #: glade/toolbox.glade.h:1
 msgid "Align dialog"
 msgstr "Wy¶wietla okno wyrówania"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:3
 msgid "Break apart selected paths"
 msgstr "Rozdziela zaznaczone ¶cie¿ki"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:5
 msgid "Combine selected paths"
 msgstr "£±czy zaznaczone ¶cie¿ki"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:6
 msgid "Convert selected objects to curves"
 msgstr "Konwertuje zaznaczone obiekty na krzywe"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:9
 msgid "Copy selection to clipboard"
 msgstr "Kopiuje zaznaczenie do schowka"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:11
 msgid "Cut selection"
 msgstr "Wycina zaznaczenie"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:13
 msgid "Delete selection"
 msgstr "Usuwa zaznaczenie"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:14
 msgid "Draw arc"
 msgstr "Rysuje ³uk"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:15
 msgid "Draw dynahand line"
 msgstr "Rysuje dynamiczn± liniê odrêczn±"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:16
 msgid "Draw freehand line"
 msgstr "Rysuje liniê odrêczn±"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:17
 msgid "Draw rectangle"
 msgstr "Rysuje prostok±t"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:18
 msgid "Draw spiral"
 msgstr "Rysuje spiralê"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:19
 msgid "Draw star"
 msgstr "Rysuje gwiazdê"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:20
 msgid "Draw text"
 msgstr "Rysuje tekst"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:21
 msgid "Drawing context"
 msgstr "Kontekst rysowania"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:22
 msgid "Duplicate selection"
 msgstr "Duplikuje zaznaczenie"
 
 #. Edit submenu
-#: glade/toolbox.glade.h:1 src/interface.c:1 src/toolbox.c:1
-#: src/widgets/gradient-selector.c:1
+#: glade/toolbox.glade.h:23 src/interface.c:412 src/toolbox.c:148
+#: src/widgets/gradient-selector.c:128
 msgid "Edit"
 msgstr "Edycja"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:24
 msgid "Edit fill style of selected objects"
 msgstr "Zmienia styl wype³niania zaznaczonych obiektów"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:25
 msgid "Edit font style of selected objects"
 msgstr "Zmienia styl czcionki zaznaczonych obiektów"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:26
 msgid "Edit layout of selected objects"
 msgstr "Zmiania uk³ad zaznaczonych obiektów"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:27
 msgid "Edit nodes"
 msgstr "Modyfikuje wêz³y"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:28
 msgid "Edit stroke style of selected objects"
 msgstr "Zmienia styl rysowania krawêdzi zaznaczonych obiektów"
 
 #. Generic menu
 #. File submenu
-#: glade/toolbox.glade.h:1 src/interface.c:1 src/toolbox.c:1
+#: glade/toolbox.glade.h:30 src/interface.c:406 src/toolbox.c:144
 msgid "File"
 msgstr "Plik"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:31
 msgid "Flip selected objects"
 msgstr "Odwraca zaznaczone obiekty"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:32
 msgid "Group selected objects"
 msgstr "Grupuje zaznaczone obiekty"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:33
 msgid "Import "
 msgstr "Import"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:36
 msgid "Lower selection one layer"
 msgstr "Przesuwa zaznaczone obiekty o jedn± warstwê na spód"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:37
 msgid "New drawing"
 msgstr "Tworzy nowy rysunek"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:38
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "Nie. Wolê zrobiæ w Sodipodi jaki¶ fajny rysuneczek."
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:40
 msgid "Nope !"
 msgstr "Nie!"
 
-#: glade/toolbox.glade.h:1 src/event-context.c:1 src/toolbox.c:1
+#: glade/toolbox.glade.h:41 src/toolbox.c:158
 msgid "Object"
 msgstr "Obiekt"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:42
 msgid "Open new drawing"
 msgstr "Otwiera nowy rysunek"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:43
 msgid "Paste from clipboard"
 msgstr "Wkleja ze schowka"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:44
 msgid "Preview print drawing"
 msgstr "Wy¶wietla podgl±d wydruku rysunku"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:45
 msgid "Print drawing"
 msgstr "Drukuje rysunek"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:46
 msgid "Quit or not quit ?"
 msgstr "Zakoñczyæ pracê z programem?"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:47
 msgid "Raise selection to top"
 msgstr "Wysuwa zaznaczone obiekty na wierzch"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:48
 msgid "Really wanna quit sodipodi ?"
 msgstr "Czy naprawdê chcesz zakoñczyæ sodipodi?"
 
 #. File:Print Preview
-#: glade/toolbox.glade.h:1 src/interface.c:1
+#: glade/toolbox.glade.h:49 src/interface.c:383
 msgid "Redo"
 msgstr "Ponawia operacjê"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:50
 msgid "Remove transformation"
 msgstr "Usuwa przekszta³cenia"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:51
 msgid "Rise selection one layer"
 msgstr "Wysuwa zaznaczone obiekty o jedn± warstwê na wierzch"
 
-#: glade/toolbox.glade.h:1
-msgid "Rotate selected objects 90° clockwise"
+#: glade/toolbox.glade.h:52
+#, fuzzy
+msgid "Rotate selected objects 90deg clockwise"
 msgstr "Obraca zaznaczone obiekty o 90° zgodnie ze wskazówkami zegara"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:53
 msgid "Save drawing "
 msgstr "Zapisuje rysunek"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:54
 msgid "Save drawing under new filename"
 msgstr "Zapisuje rysunek pod now± nazw±"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:55
 msgid "Select and transform"
 msgstr "Zaznacza i przekszta³ca"
 
-#: glade/toolbox.glade.h:1 sodipodi.desktop.in.h:1
+#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1 src/toolbox.c:115
+#: src/toolbox.c:130
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:60
 msgid "Transformation dialog"
 msgstr "Wy¶wietla okno przekszta³ceñ"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:61
 msgid "Undo "
 msgstr "Cofa operacjê"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:62
 msgid "Ungroup selected objects"
 msgstr "Rozgrupowuje zaznaczone obiekty"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:63
 msgid "Unsymmetric"
 msgstr "Niesymetryczny"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:64
 msgid "Yep !"
 msgstr "Tak!"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:65
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Tak, szybko! Chcê teraz zakoñczyæ i wróciæ do Sodipodi pó¼niej."
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:67
 msgid "Zoom in"
 msgstr "Powiêksza"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:68
 msgid "Zoom out"
 msgstr "Pomniejszenie"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:69
 msgid "Zoom to 1:1"
 msgstr "Ustawia powiêkszenie na 1:1"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:70
 msgid "Zoom to 1:2"
 msgstr "Ustawia powiêkszenie na 1:2"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:71
 msgid "Zoom to 2:1"
 msgstr "Ustawia powiêkszenie na 2:1"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:72
 msgid "Zoom to drawing"
 msgstr "Dopasowuje powiêkszenie do rysunku"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:73
 msgid "Zoom to page"
 msgstr "Dopasowuje zaznaczenie do strony"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:74
 msgid "Zoom to selection"
 msgstr "Dopasowuje powiêkszenie do zaznaczenia"
 
-#: glade/toolbox.glade.h:1
-msgid "_About ..."
-msgstr "_Informacje o ..."
-
-#: glade/toolbox.glade.h:1
-msgid "_File"
-msgstr "_Plik"
-
-#: glade/toolbox.glade.h:1
-msgid "_Help"
-msgstr "Pomo_c"
-
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:76
 msgid "_Open"
 msgstr "_Otwórz"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:77
 msgid "_Quit"
 msgstr "Za_koñcz"
 
-#: glade/toolbox.glade.h:1
+#: glade/toolbox.glade.h:78
 msgid "lower selection to bottom"
 msgstr "Przesuwa zaznaczone obiekty na spód"
 
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:47
 #, no-c-format
 msgid "%"
 msgstr "%"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:4
 msgid "Align to bottom left"
 msgstr "Wyrównuje do lewej dolnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:5
 msgid "Align to bottom middle"
 msgstr "Wyrównuje do ¶rodkowej dolnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:6
 msgid "Align to bottom right"
 msgstr "Wyrównuje do prawej dolnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:7
 msgid "Align to center"
 msgstr "Wyrównuje do ¶rodka"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:8
 msgid "Align to left middle"
 msgstr "Wyrównuje do ¶rodkowej lewej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:9
 msgid "Align to right middle"
 msgstr "Wyrównuje do ¶rodkowej prawej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:10
 msgid "Align to top left"
 msgstr "Wyrównuje do lewej górnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:11
 msgid "Align to top middle"
 msgstr "Wyrównuje do ¶rodkowej górnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:12
 msgid "Align to top right"
 msgstr "Wyrównuje do prawej górnej czê¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:13
 msgid "Apply transformation to copy Ctl+m"
 msgstr "Prze³±cza wykonanie transformacji na kopii - Ctrl+m"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:14
 msgid "Center"
 msgstr "Wy¶rodkowanie"
 
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:49
 msgid "Centimeter"
 msgstr "Centymetr"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:16
 msgid "Choose metric for center"
 msgstr "Okre¶la jednostkê dla ¶rodka"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:17
 msgid "Close dialog - Ctl+c"
 msgstr "Zamyka okno - Ctrl+c"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:18
 msgid "Degree"
 msgstr "Stopieñ"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:19
 msgid "Expand dialog - Ctl+e"
 msgstr "Prze³±cza pomiêdzy podstawow± i rozszerzon± wersj± okna - Ctrl+e"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:20
 msgid "Height: "
 msgstr "Wysoko¶æ: "
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:21
 msgid "Horizontal center value"
 msgstr "Pozioma warto¶æ ¶rodka"
 
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:51
 msgid "Inch"
 msgstr "Cal"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:23
 msgid "Keep height of selection during transformation"
 msgstr "Zachowanie podczas przekszta³cenia wysoko¶ci zaznaczenia"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:24
 msgid "Keep width of selection during transformation"
 msgstr "Zachowanie podczas przekszta³cenia szeroko¶ci zaznaczenia"
 
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:48
 msgid "Millimeter"
 msgstr "Milimetr"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:26
 msgid "Move"
 msgstr "Przesuniêcie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:27
 msgid "Orig. Width: "
 msgstr "Oryg. Szeroko¶æ: "
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:28
 msgid "Orig. X: "
 msgstr "Oryg. X: "
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:47
 msgid "Percent"
 msgstr "Procent"
 
-#: glade/transformation.glade.h:1 src/helper/unit-menu.c:1
-#: src/helper/units.c:1
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:42
 msgid "Points"
 msgstr "Punkty"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:31
 msgid "Reset dialog to default - Ctl+r"
 msgstr "Ustawia w oknie domy¶lne warto¶ci - Ctrl+r"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:32
 msgid "Rotate"
 msgstr "Obrót"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:34
 msgid "Set angle to 0 degrees"
 msgstr "Ustawia k±t na 0 stopni"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:35
 msgid "Set angle to 180 degrees"
 msgstr "Ustawia k±t na 180 stopni"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:36
 msgid "Set angle to 270 degrees"
 msgstr "Ustawia k±t na 270 stopni"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:37
 msgid "Set angle to 90 degrees"
 msgstr "Ustawia k±t na 90 stopni"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:38
 msgid "Skew"
 msgstr "Pochylenie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:39
 msgid "Start transformation - Ctl+a"
 msgstr "Rozpoczyna transformacjê - Ctrl+a"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:40
 msgid "Toggle center given in selection/desktop coordiantes"
 msgstr "Prze³±cza pomiêdzy wspó³rzêdnymi zaznaczenia oraz wspó³rzêdnymi biurka"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:41
 msgid "Transform selection"
 msgstr "Przekszta³cenie zaznaczenia"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:42
 msgid "Use alignment during transformation"
 msgstr "Prze³±cza u¿ycie wyrównania podczas przekszta³cenia"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:43
 msgid "Use center as transformation fixpoint"
 msgstr "Prze³±cza u¿ycie ¶rodka jako sta³ego punktu transformacji"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:44
 msgid "Vertical center value"
 msgstr "Pionowa warto¶æ ¶rodka"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:45
 msgid "Y: "
 msgstr "Y: "
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:46
 msgid "absolute"
 msgstr "bezwzglêdne"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:47
 msgid "angle"
 msgstr "k±t"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:49
 msgid "deg"
 msgstr "stopnie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:50
 msgid "desktop"
 msgstr "biurko"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:51
 msgid "flip horizontal"
 msgstr "odbicie poziome"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:52
 msgid "flip vertical"
 msgstr "odbicie pionowe"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:53
 msgid "horizontal move"
 msgstr "Przesiniêcie poziome"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:54
 msgid "horizontal scale value"
 msgstr "Warto¶æ skali w poziomie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:56
 msgid "keep aspect"
 msgstr "Zachowanie proporcji"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:57
 msgid "lock/unlock horizontal and vertical scale"
 msgstr "Prze³±cza zale¿no¶æ skali w pionie od skali w poziomie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:60
 msgid "select direction"
 msgstr "Wybiera kierunek"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:61
 msgid "select direction (horizontal/vertical skew)"
 msgstr "Wybiera kierunek (pochylenie poziome lub pionowe)"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:62
 msgid "select metric for scale"
 msgstr "Wybiera jednostkê skali"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:63
 msgid "select metric for values"
 msgstr "Wybiera jednostkê warto¶ci"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:64
 msgid "skew"
 msgstr "Pochylenie"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:65
 msgid "toggle absolute/relative move"
 msgstr "Prze³±cza pomiêdzy przesuniêciem bezwzglêdnym i wzglêdnym"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:66
 msgid "toggle absolute/relative scale"
 msgstr "Prze³±cza pomiêdzy skalowaniem bezwzglêdnym i wzglêdnym"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:67
 msgid "vertical move"
 msgstr "Przesuniêcie pionowe"
 
-#: glade/transformation.glade.h:1
+#: glade/transformation.glade.h:68
 msgid "vertical scale value"
 msgstr "Warto¶æ skali w pionie"
 
-#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:1
+#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:134
 msgid "Add"
 msgstr "Dodaj"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:2
 msgid "Add attribute"
 msgstr "Dodaj atrubut"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:3
 msgid "Attribute:"
 msgstr "Atrybut:"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:4
 msgid "Attributes"
 msgstr "Atrybuty"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:5
 msgid "Change"
 msgstr "Zmieñ"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:6
 msgid "Change Attribute"
 msgstr "Zmieñ atrybut"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:7
+#, fuzzy
+msgid "Change Content"
+msgstr "Kontekst rysowania"
+
+#: glade/xml-tree.glade.h:8
 msgid "Content"
 msgstr "Zawarto¶æ"
 
-#. Edit:Copy
-#: glade/xml-tree.glade.h:1 src/interface.c:1
-msgid "Copy"
-msgstr "Skopiuj"
-
-#. Edit:Cut
-#: glade/xml-tree.glade.h:1 src/interface.c:1
-msgid "Cut"
-msgstr "Wytnij"
-
-#: glade/xml-tree.glade.h:1
-msgid "Del"
-msgstr "Usuñ"
-
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:10
 msgid "Delete attribute"
 msgstr "Usuñ atrybut"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:11
 msgid "Do you want to delete attribute?"
 msgstr "Czy na pewno chcesz usun±æ atrybut?"
 
-#: glade/xml-tree.glade.h:1
-msgid "Dup"
-msgstr "Powiel"
+#: glade/xml-tree.glade.h:12
+msgid "Element:"
+msgstr ""
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:13
+msgid "Enter element name:"
+msgstr ""
+
+#: glade/xml-tree.glade.h:14
 msgid "Hierarchy"
 msgstr "Hierarchia"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:15
 msgid "Key"
 msgstr "Klucz"
 
-#. File:New
-#: glade/xml-tree.glade.h:1 src/interface.c:1
-msgid "New"
-msgstr "Nowy"
+#: glade/xml-tree.glade.h:16
+msgid "New Element"
+msgstr ""
 
-#. Edit:Paste
-#: glade/xml-tree.glade.h:1 src/interface.c:1
-msgid "Paste"
-msgstr "Wklej"
-
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:17
 msgid "Value"
 msgstr "Warto¶æ"
 
-#: glade/xml-tree.glade.h:1 src/widgets/sp-color-selector.c:1
+#: glade/xml-tree.glade.h:18 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Warto¶æ:"
 
-#: glade/xml-tree.glade.h:1
+#: glade/xml-tree.glade.h:20
 msgid "name"
 msgstr "nazwa"
 
-#: sodipodi.desktop.in.h:1
+#: sodipodi.desktop.in.h:2
 msgid "Vector illustrator"
 msgstr "Program do tworzenia ilustracji wektorowych"
 
-#: src/bonobo/svg-doc-factory.c:1
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nie mo¿na stworzyæ generatora sodipodi-svg-doc"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1
+#: src/desktop.c:1015
 msgid "Welcome !"
 msgstr "Witaj !"
 
-#: src/desktop.c:1
+#: src/desktop.c:1087
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1
+#: src/desktop.c:1163
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s zawiera niezapisane zmiany. Czy chcesz je zapisaæ?"
 
-#. File:Save
-#: src/desktop.c:1 src/interface.c:1
+#: src/desktop.c:1164 src/interface.c:204
 msgid "Save"
 msgstr "Zapisz"
 
-#: src/desktop.c:1
+#: src/desktop.c:1164
 msgid "Don't save"
 msgstr "Nie zapisuj"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:203
 msgid "Desktop settings"
 msgstr "Ustawienia biurka"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:212
 msgid "Grid"
 msgstr "Siatka"
 
 #. Checkbuttons
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:222
 msgid "Show grid"
 msgstr "Wy¶wietlanie siatki"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:229
 msgid "Snap to grid"
 msgstr "Przyci±ganie do siatki"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:236
 msgid "Grid units:"
 msgstr "Jednostki siatki:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:245
 msgid "Origin X:"
 msgstr "Pocz±tek X:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:259
 msgid "Origin Y:"
 msgstr "Pocz±tek Y:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:273
 msgid "Spacing X:"
 msgstr "Odstêpy X:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:287
 msgid "Spacing Y:"
 msgstr "Odstêpy Y:"
 
-#: src/dialogs/desktop-properties.c:1 src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:301 src/dialogs/desktop-properties.c:362
 msgid "Snap units:"
 msgstr "Jednostki przyci±gania"
 
-#: src/dialogs/desktop-properties.c:1 src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:313 src/dialogs/desktop-properties.c:374
 msgid "Snap distance:"
 msgstr "Odleg³o¶æ przyci±gania:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:326
 msgid "Grid color:"
 msgstr "Kolor siatki:"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:338
 msgid "Guides"
 msgstr "Prowadnice"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:347
 msgid "Show guides"
 msgstr "Wy¶wietlanie prowadnic"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:355
 msgid "Snap to guides"
 msgstr "Przyci±ganie do prowadnic"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:386
 msgid "Guides color:"
 msgstr "Kolor prowadnic:"
 
-#: src/dialogs/desktop-properties.c:1
+#: src/dialogs/desktop-properties.c:397
 msgid "Highlight color:"
 msgstr "Kolor pod¶wietlenia:"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:85
 msgid "Display settings"
 msgstr "Opcje wy¶wietlania"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:93
 msgid "Rendering"
 msgstr "Renderowanie"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:105
 msgid "Oversample bitmaps:"
 msgstr "Nadpróbkowanie bitmap:"
 
-#: src/dialogs/display-settings.c:1 src/dialogs/fill-style.c:1
+#: src/dialogs/display-settings.c:116
 msgid "None"
 msgstr "Brak"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:120
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:124
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:128
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:132
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:143
 msgid "Input"
 msgstr "Wej¶cie"
 
-#: src/dialogs/display-settings.c:1
+#: src/dialogs/display-settings.c:154
 msgid "Default cursor tolerance:"
 msgstr "Domy¶lna tolerancja kursora:"
 
-#: src/dialogs/document-properties.c:1
+#: src/dialogs/document-properties.c:135
 msgid "Document settings"
 msgstr "Ustawienia dokumentu"
 
-#: src/dialogs/document-properties.c:1
+#: src/dialogs/document-properties.c:156
 msgid "Paper size:"
 msgstr "Rozmiar papieru:"
 
-#: src/dialogs/document-properties.c:1 src/dialogs/document-properties.c:1
+#: src/dialogs/document-properties.c:177 src/dialogs/document-properties.c:356
 msgid "Custom"
 msgstr "Dowolny"
 
 #. Custom paper frame
-#: src/dialogs/document-properties.c:1
+#: src/dialogs/document-properties.c:185
 msgid "Custom paper"
 msgstr "Dowolny papier"
 
-#: src/dialogs/document-properties.c:1 src/dialogs/object-properties.c:1
+#: src/dialogs/document-properties.c:196 src/dialogs/object-properties.c:303
 msgid "Units:"
 msgstr "Jednostki:"
 
-#: src/dialogs/fill-style.c:1 src/dialogs/fill-style.c:1
+#: src/dialogs/fill-style.c:76
 msgid "Fill style"
 msgstr "Styl wype³nienia"
 
-#. Frame
-#: src/dialogs/fill-style.c:1 src/dialogs/fill-style.c:1
-msgid "Empty"
-msgstr "Puste"
+#: src/dialogs/fill-style.c:111
+#, fuzzy
+msgid "Fill Rule"
+msgstr "Styl wype³nienia"
 
-#. Set frame label
-#: src/dialogs/fill-style.c:1
-msgid "Solid color"
-msgstr "Jednolity kolor"
+#: src/dialogs/fill-style.c:125
+#, fuzzy
+msgid "nonzero"
+msgstr "brak"
 
-#. Label
-#: src/dialogs/fill-style.c:1 src/widgets/paint-selector.c:1
-#: src/widgets/paint-selector.c:1
-msgid "Mode:"
-msgstr "Tryb:"
+#: src/dialogs/fill-style.c:130
+msgid "evenodd"
+msgstr ""
 
-#: src/dialogs/fill-style.c:1 src/widgets/paint-selector.c:1
-msgid "RGB"
-msgstr "RGB"
-
-#: src/dialogs/fill-style.c:1 src/widgets/paint-selector.c:1
-msgid "HSV"
-msgstr "HSV"
-
-#: src/dialogs/fill-style.c:1 src/widgets/paint-selector.c:1
-msgid "CMYK"
-msgstr "CMYK"
-
-#. Set frame label
-#: src/dialogs/fill-style.c:1
-msgid "Gradient"
-msgstr "Gradient"
-
-#: src/dialogs/item-properties.c:1
+#: src/dialogs/item-properties.c:165
 msgid "Item is reference"
 msgstr "Element jest odniesieniem"
 
-#: src/dialogs/item-properties.c:1 src/dialogs/item-properties.c:1
+#: src/dialogs/item-properties.c:243
 msgid "The ID is not valid"
 msgstr "ID jest niepoprawny"
 
-#: src/dialogs/item-properties.c:1 src/dialogs/item-properties.c:1
+#: src/dialogs/item-properties.c:245
 msgid "The ID is already defined"
 msgstr "ID zosta³ ju¿ zdefiniowany"
 
-#: src/dialogs/item-properties.c:1 src/dialogs/item-properties.c:1
+#: src/dialogs/item-properties.c:248
 msgid "The ID is valid"
 msgstr "ID jest poprawny"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:29
 msgid "Href:"
 msgstr "Adres:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:30
 msgid "Target:"
 msgstr "Cel:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:31
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:32
 msgid "Role:"
 msgstr "Rola:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:33
 msgid "Arcrole:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:34
 msgid "Title:"
 msgstr "Tytu³:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:35 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr "Wy¶wietlenie:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:36
 msgid "Actuate:"
 msgstr "Pobudzenie:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:41
 msgid "Sides:"
 msgstr "Ramiona:"
 
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:42 src/dialogs/object-attributes.c:52
 msgid "Center X:"
 msgstr "¦rodek X:"
 
-#: src/dialogs/object-attributes.c:1 src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
 msgid "Center Y:"
 msgstr "¦rodek Y:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:44
 msgid "R1:"
 msgstr "R1:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:45
 msgid "R2:"
 msgstr "R2:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:46
 msgid "ARG1:"
 msgstr "ARG1:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:47
 msgid "ARG2:"
 msgstr "ARG2:"
 
-#: src/dialogs/object-attributes.c:1
+#. Expansion
+#: src/dialogs/object-attributes.c:54 src/spiral-context.c:363
 msgid "Expansion:"
 msgstr "Ekspansja:"
 
-#: src/dialogs/object-attributes.c:1
+#. Revolution
+#: src/dialogs/object-attributes.c:55 src/dialogs/tool-attributes.c:90
+#: src/spiral-context.c:351
 msgid "Revolution:"
 msgstr "Rewolucja:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:56
 msgid "Radius:"
 msgstr "Promieñ:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:57
 msgid "Argument:"
 msgstr "Argument:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:58
 msgid "T0:"
 msgstr "T0:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:63
 msgid "URL:"
 msgstr "URL:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:76
 msgid "RX:"
 msgstr "RX:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:77
 msgid "RY:"
 msgstr "RY:"
 
-#: src/dialogs/object-attributes.c:1
+#: src/dialogs/object-attributes.c:107
 #, c-format
 msgid "%s attributes"
 msgstr "Atrybuty obiektu %s"
 
-#: src/dialogs/object-properties.c:1
+#: src/dialogs/object-properties.c:90
 msgid "Object style"
 msgstr "Styl obiektu"
 
-#: src/dialogs/object-properties.c:1
-msgid "Object position and size"
-msgstr "Po³o¿enie i rozmiar obiektu"
+#: src/dialogs/object-properties.c:119
+#, fuzzy
+msgid "Stroke paint"
+msgstr "Grubo¶æ kreski"
 
-#: src/dialogs/object-properties.c:1
-msgid "Position and size"
-msgstr "Po³o¿enie i rozmiar"
-
-#: src/dialogs/stroke-style.c:1
+#: src/dialogs/object-properties.c:133
 msgid "Stroke style"
 msgstr "Styl kreski"
 
-#: src/dialogs/stroke-style.c:1
+#: src/dialogs/object-properties.c:153
+msgid "Apply to:"
+msgstr ""
+
+#: src/dialogs/object-properties.c:164
+#, fuzzy
+msgid "Selected objects"
+msgstr "Odwraca zaznaczone obiekty"
+
+#: src/dialogs/object-properties.c:168
+msgid "All shape tools"
+msgstr ""
+
+#: src/dialogs/object-properties.c:172
+#, fuzzy
+msgid "Rectangle tool"
+msgstr "Prostok±t"
+
+#: src/dialogs/object-properties.c:176
+msgid "Arc tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:180
+#, fuzzy
+msgid "Star tool"
+msgstr "Kolor pocz±tkowy"
+
+#: src/dialogs/object-properties.c:184
+#, fuzzy
+msgid "Spiral tool"
+msgstr "Spirala"
+
+#: src/dialogs/object-properties.c:188
+#, fuzzy
+msgid "Freehand and pen"
+msgstr "Linia odrêczna"
+
+#: src/dialogs/object-properties.c:192
+msgid "Calligraphic line"
+msgstr ""
+
+#: src/dialogs/object-properties.c:268
+msgid "Object position and size"
+msgstr "Po³o¿enie i rozmiar obiektu"
+
+#: src/dialogs/object-properties.c:290
+msgid "Position and size"
+msgstr "Po³o¿enie i rozmiar"
+
+#: src/dialogs/stroke-style.c:544
 msgid "Stroke settings"
 msgstr "Ustawienia kreski"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:1
+#: src/dialogs/stroke-style.c:623
 msgid "Cap:"
 msgstr "Trzonek:"
 
-#: src/document.c:1
-#, c-format
-msgid "Unnamed document %d"
-msgstr "Dokument bez nazwy %d"
+#: src/dialogs/text-edit.c:79
+#, fuzzy
+msgid "Text properties"
+msgstr "W³a¶ciwo¶ci tekstu"
 
-#: src/document.c:1
+#: src/dialogs/text-edit.c:127
+#, fuzzy
+msgid "Alignment:"
+msgstr "Podstawa wyrównania"
+
+#: src/dialogs/text-edit.c:159
+#, fuzzy
+msgid "Orientation:"
+msgstr "Rysowanie gradientem"
+
+#: src/dialogs/text-edit.c:187
+msgid "Text and font"
+msgstr ""
+
+#: src/dialogs/text-edit.c:201
+msgid "Set as default"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:45
+#, fuzzy
+msgid "Tool attributes"
+msgstr "Atrybuty obiektu %s"
+
+#: src/dialogs/tool-attributes.c:90
+#, fuzzy
+msgid "Expansion"
+msgstr "Ekspansja:"
+
+#: src/dialogs/tool-attributes.c:90
+msgid "Inner radius"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
+#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
+msgid "Missing tool preferences"
+msgstr ""
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:100 src/star-context.c:356
+msgid "Corners:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:100
+#, fuzzy
+msgid "Proportion"
+msgstr "Po³o¿enie"
+
+#: src/dialogs/tool-attributes.c:110
+#, fuzzy
+msgid "Transform:"
+msgstr "Przekszta³cenie"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1027
+msgid "Mass:"
+msgstr ""
+
+#. Drag
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
+#, fuzzy
+msgid "Drag:"
+msgstr "Rysowanie"
+
+#: src/dialogs/tool-attributes.c:120
+#, fuzzy
+msgid "Angle"
+msgstr "k±t"
+
+#: src/dialogs/tool-attributes.c:127
+#, fuzzy
+msgid "Tool has no attributes"
+msgstr "Atrybuty obiektu %s"
+
+#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:92
+msgid "No active tool"
+msgstr ""
+
+#: src/dialogs/tool-options.c:48
+#, fuzzy
+msgid "Tool options"
+msgstr "Opcje Oafa"
+
+#: src/dialogs/tool-options.c:89
+#, fuzzy
+msgid "Tool has no options"
+msgstr "Opcje Oafa"
+
+#: src/dialogs/xml-tree.c:306
+#, fuzzy
+msgid "You can't delete 'id' attribute!"
+msgstr "Czy na pewno chcesz usun±æ atrybut?"
+
+#: src/dialogs/xml-tree.c:313
+#, fuzzy, c-format
+msgid "Do you want to delete attribute %s?"
+msgstr "Czy na pewno chcesz usun±æ atrybut?"
+
+#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
+msgid "Yes"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:319 src/dialogs/xml-tree.c:558
+#, fuzzy
+msgid "No"
+msgstr "Brak"
+
+#: src/dialogs/xml-tree.c:541
+#, c-format
+msgid "You can't delete element %s!"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:552
+#, fuzzy, c-format
+msgid "Do you want to delete element %s?"
+msgstr "Czy na pewno chcesz usun±æ atrybut?"
+
+#: src/dialogs/xml-tree.c:692
+#, c-format
+msgid "You can't cut element %s!"
+msgstr ""
+
+#: src/document.c:248
+#, fuzzy, c-format
+msgid "New document %d"
+msgstr "Dokument w pamieci %d"
+
+#: src/document.c:341
 #, c-format
 msgid "Memory document %d"
 msgstr "Dokument w pamieci %d"
 
-#: src/file.c:1
+#: src/document.c:478
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Dokument bez nazwy %d"
+
+#. Angle
+#: src/dyna-draw-context.c:1051
+#, fuzzy
+msgid "Angle:"
+msgstr "k±t"
+
+#. Reset
+#: src/dyna-draw-context.c:1075 src/rect-context.c:436
+#: src/spiral-context.c:387 src/star-context.c:387
+msgid "Defaults"
+msgstr ""
+
+#. rx_ratio
+#: src/rect-context.c:412 src/rect-context.c:424
+msgid "Roundness ratio for x:"
+msgstr ""
+
+#: src/select-context.c:635
+#, fuzzy
+msgid "Visual transformation"
+msgstr "Wyczy¶æ przekszta³cenia"
+
+#: src/select-context.c:643
+#, fuzzy
+msgid "Show content"
+msgstr "Zawarto¶æ"
+
+#: src/select-context.c:650
+#, fuzzy
+msgid "Show outline"
+msgstr "Wy¶wietlanie prowadnic"
+
+#: src/select-context.c:657
+#, fuzzy
+msgid "Object transformation"
+msgstr "Wyczy¶æ przekszta³cenia"
+
+#: src/select-context.c:665
+msgid "Optimize"
+msgstr ""
+
+#: src/select-context.c:672
+msgid "Preserve"
+msgstr ""
+
+#. T0
+#: src/spiral-context.c:375
+#, fuzzy
+msgid "Inner radius:"
+msgstr "Promieñ:"
+
+#. Proportion
+#: src/star-context.c:368
+#, fuzzy
+msgid "Proportion:"
+msgstr "Po³o¿enie"
+
+#. Making sides flat
+#: src/star-context.c:381
+#, fuzzy
+msgid "Make sides flat"
+msgstr "Ustaw jako czu³y"
+
+#: src/file.c:113
 msgid "Select file to open"
 msgstr "Wybór pliku do odczytu"
 
-#: src/file.c:1
+#: src/file.c:240
 msgid "Save file"
 msgstr "Zapis pliku"
 
-#: src/file.c:1
+#: src/file.c:255
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: src/file.c:261
+msgid "Plain SVG"
+msgstr ""
+
+#: src/file.c:267
+#, fuzzy
+msgid "Save as:"
+msgstr "Zapisz jako"
+
+#: src/file.c:376
 msgid "Select file to import"
 msgstr "Wybór pliku do importu"
 
-#: src/file.c:1
+#: src/file.c:453
 msgid "Export file"
 msgstr "Eksport pliku"
 
-#: src/file.c:1
+#: src/file.c:524
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokument %s..): Podgl±d wydruku"
 
-#: src/help.c:1
+#: src/help.c:49
 msgid "About sodipodi"
 msgstr "Informacje o Sodipodi"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
 msgid "Millimeters"
 msgstr "Milimetry"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "Centimeters"
 msgstr "Centymetry"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:356 src/helper/units.c:51
 msgid "Inches"
 msgstr "Cale"
 
-#: src/helper/unit-menu.c:1
+#: src/helper/unit-menu.c:356
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "Point"
 msgstr "Punkt"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
 msgid "Pixels"
 msgstr "Piksele"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
 msgid "Pixel"
 msgstr "Piksel"
 
-#: src/helper/unit-menu.c:1
+#: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "Przestrzeñ u¿ytkownika"
 
-#: src/helper/unit-menu.c:1
+#: src/helper/unit-menu.c:359
 msgid "us"
 msgstr "pu"
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em squares"
 msgstr ""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em square"
 msgstr ""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "em"
 msgstr ""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex squares"
 msgstr ""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex square"
 msgstr ""
 
-#: src/helper/unit-menu.c:1 src/helper/units.c:1
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "ex"
 msgstr ""
 
 #. Do not insert any elements before/between first 4
-#: src/helper/units.c:1
+#: src/helper/units.c:41
 msgid "Unit"
 msgstr "Jednostka"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:41
 msgid "Units"
 msgstr "Jednostki"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:42
 msgid "Pt"
 msgstr "Pkt"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:43
 msgid "Px"
 msgstr "Piks"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:44
 msgid "Userspace unit"
 msgstr "Jednostka u¿ytkownika"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:44
 msgid "User"
 msgstr "U¿ytkownik"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:44
 msgid "Userspace units"
 msgstr "Jednostki u¿ytkownika"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:47
 msgid "Percents"
 msgstr "Procenty"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:50
 msgid "Meter"
 msgstr "Metr"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:50
 msgid "m"
 msgstr "m"
 
-#: src/helper/units.c:1
+#: src/helper/units.c:50
 msgid "meters"
 msgstr "metry"
 
-#. File:Open
-#: src/interface.c:1
+#: src/interface.c:202 src/interface.c:359
+msgid "New"
+msgstr "Nowy"
+
+#: src/interface.c:203 src/interface.c:360
 msgid "Open"
 msgstr "Otwórz"
 
-#. File:Save As
-#: src/interface.c:1
-msgid "Save As"
+#: src/interface.c:205
+#, fuzzy
+msgid "Save as"
 msgstr "Zapisz jako"
 
-#. File:Print
-#: src/interface.c:1
+#: src/interface.c:210
 msgid "Print"
 msgstr "Wydrukuj"
 
-#. File:Print Preview
-#: src/interface.c:1
-msgid "Print preview"
+#: src/interface.c:211
+#, fuzzy
+msgid "Print Preview"
 msgstr "Podgl±d wydruku"
 
-#. File:Close
-#: src/interface.c:1
-msgid "Close view"
+#: src/interface.c:214
+#, fuzzy
+msgid "Close View"
 msgstr "Zamknij widok"
 
-#. File:Exit
-#: src/interface.c:1
-msgid "Exit"
-msgstr "Zakoñcz"
+#: src/interface.c:215 src/interface.c:365
+msgid "Exit Program"
+msgstr ""
+
+#: src/interface.c:217 src/interface.c:363
+#, fuzzy
+msgid "About Sodipodi"
+msgstr "Informacje o Sodipodi"
+
+#: src/interface.c:223
+msgid "Cut"
+msgstr "Wytnij"
+
+#: src/interface.c:224
+msgid "Copy"
+msgstr "Skopiuj"
+
+#: src/interface.c:225
+msgid "Paste"
+msgstr "Wklej"
+
+#: src/interface.c:230
+#, fuzzy
+msgid "Clear all"
+msgstr "Wype³nienie kolorem"
+
+#: src/interface.c:231
+msgid "Cleanup"
+msgstr ""
 
 #. Selection:Group
-#: src/interface.c:1 src/sp-item-group.c:1
+#: src/interface.c:240 src/sp-item-group.c:495
 msgid "Group"
 msgstr "Zgrupuj"
 
 #. Selection:Ungroup
-#: src/interface.c:1 src/sp-item-group.c:1
+#: src/interface.c:245 src/sp-item-group.c:512
 msgid "Ungroup"
 msgstr "Rozgrupuj"
 
 #. Selection:Combine
-#: src/interface.c:1
+#: src/interface.c:254
 msgid "Combine"
 msgstr "Po³±cz"
 
 #. Selection:Break apart
-#: src/interface.c:1
+#: src/interface.c:259
 msgid "Break apart"
 msgstr "Rozdziel"
 
-#: src/interface.c:1
+#: src/interface.c:272
 msgid "Bring to Front"
 msgstr "Wysuñ na wierzch"
 
-#: src/interface.c:1
+#: src/interface.c:276
 msgid "Send to Back"
 msgstr "Przesuñ na spód"
 
-#: src/interface.c:1
+#: src/interface.c:280
 msgid "Raise"
 msgstr "Wysuñ"
 
-#: src/interface.c:1
+#: src/interface.c:284
 msgid "Lower"
 msgstr "Wsuñ"
 
-#: src/interface.c:1
+#: src/interface.c:337
 msgid "Fill and Stroke"
 msgstr "Wype³nienie i kreska"
 
-#: src/interface.c:1
+#: src/interface.c:338
 msgid "Size and Position"
 msgstr "Rozmiar i po³o¿enie"
 
-#: src/interface.c:1
+#: src/interface.c:339
 msgid "Align Objects"
 msgstr "Wyrównanie obiektów"
 
-#: src/interface.c:1
+#: src/interface.c:340
 msgid "Text Editing"
 msgstr "Edycja tekstu"
 
-#: src/interface.c:1
+#: src/interface.c:341
 msgid "Transformations"
 msgstr "Przekszta³cenia"
 
-#: src/interface.c:1
+#: src/interface.c:342
+#, fuzzy
+msgid "Tool Options"
+msgstr "Opcje Oafa"
+
+#: src/interface.c:343
+#, fuzzy
+msgid "Tool Attributes"
+msgstr "Atrybuty"
+
+#: src/interface.c:345
 msgid "Editing Window"
 msgstr "Okno edycji"
 
-#: src/interface.c:1
+#: src/interface.c:346
 msgid "XML Editor"
 msgstr "Edytor XML-a"
 
-#: src/interface.c:1
+#: src/interface.c:347
 msgid "Display Properties"
 msgstr "W³a¶ciwo¶ci wy¶wietlania"
 
 #. Undo
-#: src/interface.c:1
+#: src/interface.c:381
 msgid "Undo"
 msgstr "Cofnij"
 
 #. View submenu
-#: src/interface.c:1
+#: src/interface.c:424
 msgid "View"
 msgstr "Widok"
 
 #. Drawing mode submenu
-#: src/interface.c:1
+#: src/interface.c:430
 msgid "Drawing Mode"
 msgstr "Tryb rysowania"
 
 #. Dialog submenu
-#: src/interface.c:1
+#: src/interface.c:436
 msgid "Dialogs"
 msgstr "Okna dialogowe"
 
-#: src/main.c:1
-msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+#: src/main.c:105
+msgid "Do not use X server (only process files from console)"
 msgstr ""
-"Nie wykorzystuje GUI. Je¶li opcja zostanie u¿yta, powinna pojawiæ siê jako "
-"pierwsza!"
 
-#: src/main.c:1
-msgid "Open specified file (option string may be excluded)"
+#: src/main.c:108
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr ""
+
+#: src/main.c:111
+#, fuzzy
+msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otwiera podany plik (tekst opcji mo¿e zostaæ wy³aczony)"
 
-#: src/main.c:1 src/main.c:1
+#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:130
 msgid "FILENAME"
 msgstr "NAZWA_PLIKU"
 
-#: src/main.c:1
-msgid "Print files to specified output file (use '| program' for pipe)"
+#: src/main.c:114
+#, fuzzy
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Drukuje pliki do podanego pliku wyj¶ciowego (zapis do potoku - \"| program\")"
 
-#: src/main.c:1
+#: src/main.c:117
+#, fuzzy
+msgid "Export document to png file"
+msgstr "Eksport rysunku do obrazu png"
+
+#: src/main.c:120
+msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
+msgstr ""
+
+#: src/main.c:121
+msgid "DPI"
+msgstr ""
+
+#: src/main.c:123
+msgid "Exported area in millimeters (default is full document)"
+msgstr ""
+
+#: src/main.c:124
+msgid "x0:y0:x1:y1"
+msgstr ""
+
+#: src/main.c:129
+msgid "Export document to plain SVG file"
+msgstr ""
+
+#: src/main.c:132
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Wy¶wietla kolejno podane pliki, prze³±czaj±c na kolejny po jakiejkolwiek "
 "akcji myszy lub klawiatury"
 
-#: src/main.c:1
-msgid "Oaf options"
-msgstr "Opcje Oafa"
+#: src/sodipodi.c:336
+#, fuzzy
+msgid "Untitled document"
+msgstr "Dokument bez nazwy %d"
 
-#: src/main.c:1
-msgid "Could not initialize Bonobo"
-msgstr "Nie mo¿na zainicjowaæ Bonobo"
+#. Show nice dialog box
+#: src/sodipodi.c:361
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: src/sodipodi.c:362
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: src/sodipodi.c:363
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
 
 # [cyba] - poprawiæ w ¼ród³ach!
 #. Not a regular file
-#: src/sodipodi.c:1
+#: src/sodipodi.c:452
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1979,7 +2264,7 @@ msgstr ""
 "preferencji.\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:1
+#: src/sodipodi.c:465
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1994,7 +2279,7 @@ msgstr ""
 "nie mo¿na ani odczytaæ, ani zapisaæ\n"
 "preferencji."
 
-#: src/sodipodi.c:1
+#: src/sodipodi.c:479
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -2008,7 +2293,7 @@ msgstr ""
 "preferencji."
 
 #. Cannot create directory
-#: src/sodipodi.c:1
+#: src/sodipodi.c:760
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -2022,7 +2307,7 @@ msgstr ""
 "preferencji."
 
 #. Not a directory
-#: src/sodipodi.c:1
+#: src/sodipodi.c:772
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -2036,7 +2321,7 @@ msgstr ""
 "preferencji."
 
 #. Cannot create file
-#: src/sodipodi.c:1
+#: src/sodipodi.c:788
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -2050,7 +2335,7 @@ msgstr ""
 "preferencji."
 
 #. Cannot create file
-#: src/sodipodi.c:1
+#: src/sodipodi.c:800
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -2063,240 +2348,331 @@ msgstr ""
 "nie mo¿na ani odczytaæ, ani zapisaæ\n"
 "preferencji."
 
-#: src/sp-anchor.c:1
+#: src/sp-anchor.c:192
 #, c-format
 msgid "Link to %s"
 msgstr "Odno¶nik do %s"
 
 #. Create toplevel menuitem
-#: src/sp-anchor.c:1
+#: src/sp-anchor.c:251
 msgid "Link"
 msgstr "Odno¶nik"
 
 #. Link dialog
-#: src/sp-anchor.c:1
+#: src/sp-anchor.c:254
 msgid "Link Properties"
 msgstr "W³a¶ciwo¶ci odno¶nika"
 
 #. Select item
-#: src/sp-anchor.c:1
+#: src/sp-anchor.c:264
 msgid "Follow link"
 msgstr "Uaktywnij odno¶nik"
 
 #. Reset transformations
-#: src/sp-anchor.c:1
+#: src/sp-anchor.c:269
 msgid "Remove link"
 msgstr "Usuñ odno¶nik"
 
-#: src/sp-image.c:1
-msgid "Broken bitmap"
-msgstr "Uszkodzona bitmapa"
+#: src/sp-image.c:365
+#, fuzzy, c-format
+msgid "Image with bad reference: %s"
+msgstr "Element jest odniesieniem"
 
-#: src/sp-image.c:1
-msgid "Color bitmap"
-msgstr "Kolorowa bitmapa"
+#: src/sp-image.c:367
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr ""
 
 #. Create toplevel menuitem
-#: src/sp-image.c:1
+#: src/sp-image.c:589
 msgid "Image"
 msgstr "Obraz"
 
 #. Link dialog
-#: src/sp-image.c:1
+#: src/sp-image.c:592
 msgid "Image Properties"
 msgstr "W³a¶ciwo¶ci obrazu"
 
 #. Autotrace dialog
-#: src/sp-image.c:1 src/sp-image.c:1
+#: src/sp-image.c:600 src/sp-image.c:799
 msgid "Trace"
 msgstr "¦lad"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:943
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "B³±d przy zapisie do %s: %s"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:947
 msgid "Ok"
 msgstr "Ok"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:975
 msgid "Untitled"
 msgstr "Bez nazwy"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:980
 msgid "Document Name:"
 msgstr "Nazwa dokumentu:"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:993
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: src/sp-image.c:1
+#: src/sp-image.c:999
 msgid "Image URI:"
 msgstr "URI obrazu:"
 
-#: src/sp-item-group.c:1
+#: src/sp-item-group.c:433
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupa %d obiektów"
 
 #. Group dialog
-#: src/sp-item-group.c:1
+#: src/sp-item-group.c:499
 msgid "Group Properties"
 msgstr "W³a¶ciwo¶ci grupy"
 
-#: src/sp-item.c:1
+#: src/sp-item.c:414
 msgid "Unknown item :-("
 msgstr "Nieznany element :-("
 
 #. Item dialog
-#: src/sp-item.c:1
+#: src/sp-item.c:747
 msgid "Item Properties"
 msgstr "W³a¶ciwo¶ci elementu"
 
 #. Select item
-#: src/sp-item.c:1
+#: src/sp-item.c:757
 msgid "Select this"
 msgstr "Zaznacz to"
 
 #. Reset transformations
-#: src/sp-item.c:1
+#: src/sp-item.c:767
 msgid "Reset transformation"
 msgstr "Wyczy¶æ przekszta³cenia"
 
-#: src/sp-item.c:1
+#: src/sp-item.c:773
 msgid "Make sensitive"
 msgstr "Ustaw jako czu³y"
 
-#: src/sp-item.c:1
+#: src/sp-item.c:773
 msgid "Make insensitive"
 msgstr "Ustaw jako nieczu³y"
 
 #. Create link
-#: src/sp-item.c:1
+#: src/sp-item.c:778
 msgid "Create link"
 msgstr "Stwórz odno¶nik"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:1
+#: src/sp-rect.c:531
 msgid "Rect"
 msgstr "Prostok±t"
 
 #. Link dialog
-#: src/sp-rect.c:1
+#: src/sp-rect.c:534
 msgid "Rect Properties"
 msgstr "W³a¶ciwo¶ci prostok±ta"
 
-#: src/sp-shape.c:1
+#: src/sp-shape.c:399
 msgid "A path - whatever it means"
 msgstr "¦cie¿ka - cokolwiek to oznacza"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:1
+#: src/sp-shape.c:455
 msgid "Shape"
 msgstr "Figura"
 
 #. Item dialog
-#: src/sp-shape.c:1
+#: src/sp-shape.c:458
 msgid "Fill settings"
 msgstr "Ustawienia wype³nienia"
 
 #. Link dialog
-#: src/sp-spiral.c:1
+#: src/sp-spiral.c:626
 msgid "Spiral Properties"
 msgstr "W³a¶ciwo¶ci spirali"
 
 #. Link dialog
-#: src/sp-star.c:1
+#: src/sp-star.c:472
 msgid "Star Properties"
 msgstr "W³a¶ciwo¶ci gwiazdy"
 
-#: src/sp-text.c:1
+#. fixme:
+#: src/sp-text.c:1265
 msgid "Text object"
 msgstr "Obiekt tekstowy"
 
-#: src/toolbox.c:1
+#: src/toolbox.c:302
 msgid "Draw"
 msgstr "Rysowanie"
 
-#. Reset button
-#: src/widgets/gradient-selector.c:1
-msgid "Reset"
-msgstr "Przywróæ"
+#. Family frame
+#: src/widgets/font-selector.c:143
+msgid "Font family"
+msgstr ""
 
-#: src/widgets/gradient-vector.c:1
+#. Style frame
+#: src/widgets/font-selector.c:171
+#, fuzzy
+msgid "Style"
+msgstr " Styl "
+
+#: src/widgets/font-selector.c:206
+#, fuzzy
+msgid "Font size:"
+msgstr "Nie zapisuj"
+
+#: src/widgets/font-selector.c:519
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr ""
+
+#: src/widgets/gradient-vector.c:241
 msgid "No document selected"
 msgstr "Brak zaznaczonego dokumentu"
 
-#: src/widgets/gradient-vector.c:1
+#: src/widgets/gradient-vector.c:247
 msgid "No gradients in document"
 msgstr "Brak gradientów w dokumencie"
 
-#: src/widgets/gradient-vector.c:1
+#: src/widgets/gradient-vector.c:253
 msgid "No gradient selected"
 msgstr "Brak zaznaczonego gradientu"
 
-#: src/widgets/gradient-vector.c:1
+#: src/widgets/gradient-vector.c:409
 msgid "Start color"
 msgstr "Kolor pocz±tkowy"
 
-#: src/widgets/gradient-vector.c:1
+#: src/widgets/gradient-vector.c:421
 msgid "End color"
 msgstr "Kolor koñcowy"
 
-#: src/widgets/gradient-vector.c:1
+#: src/widgets/gradient-vector.c:448
 msgid "Gradient vector"
 msgstr "Wektor gradientu"
 
-#: src/widgets/paint-selector.c:1
+#: src/widgets/paint-selector.c:536
 msgid "No objects"
 msgstr "Brak obiektów"
 
-#: src/widgets/paint-selector.c:1
+#: src/widgets/paint-selector.c:550
 msgid "Multiple styles"
 msgstr "Wiele stylów"
 
-#: src/widgets/paint-selector.c:1
+#: src/widgets/paint-selector.c:564
 msgid "No paint"
 msgstr "Bez rysowania"
 
-#: src/widgets/paint-selector.c:1
+#. Label
+#: src/widgets/paint-selector.c:655
+msgid "Mode:"
+msgstr "Tryb:"
+
+#: src/widgets/paint-selector.c:665
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:671
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:677
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:711
 msgid "Color paint"
 msgstr "Rysowanie kolorem"
 
-#: src/widgets/paint-selector.c:1
-msgid "Linear"
-msgstr "Liniowy"
+#: src/widgets/paint-selector.c:779
+#, fuzzy
+msgid "Linear gradient"
+msgstr "Dodanie nowego gradientu"
 
-#: src/widgets/paint-selector.c:1
-msgid "Radial"
-msgstr "Promienisty"
+#: src/widgets/paint-selector.c:781
+#, fuzzy
+msgid "Radial gradient"
+msgstr "Dodanie nowego gradientu"
 
-#: src/widgets/paint-selector.c:1
-msgid "Gradient paint"
-msgstr "Rysowanie gradientem"
-
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "Odcieñ:"
 
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "Nasycenie:"
 
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
 msgstr "Niebieskozielony:"
 
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:646
 msgid "Magenta:"
 msgstr "Purpurowy:"
 
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:647
 msgid "Yellow:"
 msgstr "¯ó³ty:"
 
-#: src/widgets/sp-color-selector.c:1
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Czarny:"
+
+#: src/draw-context.c:275
+msgid "Appending to selection. Press '+' to toggle Append/New."
+msgstr ""
+
+#: src/draw-context.c:280
+msgid "Creating new curve. Press '+' to toggle Append/New."
+msgstr ""
+
+#~ msgid "_About ..."
+#~ msgstr "_Informacje o ..."
+
+#~ msgid "_File"
+#~ msgstr "_Plik"
+
+#~ msgid "_Help"
+#~ msgstr "Pomo_c"
+
+#~ msgid "Del"
+#~ msgstr "Usuñ"
+
+#~ msgid "Dup"
+#~ msgstr "Powiel"
+
+#~ msgid "Empty"
+#~ msgstr "Puste"
+
+#~ msgid "Solid color"
+#~ msgstr "Jednolity kolor"
+
+#~ msgid "Gradient"
+#~ msgstr "Gradient"
+
+#~ msgid "Exit"
+#~ msgstr "Zakoñcz"
+
+#~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
+#~ msgstr ""
+#~ "Nie wykorzystuje GUI. Je¶li opcja zostanie u¿yta, powinna pojawiæ siê "
+#~ "jako pierwsza!"
+
+#~ msgid "Could not initialize Bonobo"
+#~ msgstr "Nie mo¿na zainicjowaæ Bonobo"
+
+#~ msgid "Broken bitmap"
+#~ msgstr "Uszkodzona bitmapa"
+
+#~ msgid "Color bitmap"
+#~ msgstr "Kolorowa bitmapa"
+
+#~ msgid "Reset"
+#~ msgstr "Przywróæ"
+
+#~ msgid "Linear"
+#~ msgstr "Liniowy"
+
+#~ msgid "Radial"
+#~ msgstr "Promienisty"

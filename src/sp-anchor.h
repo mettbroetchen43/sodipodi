@@ -4,11 +4,11 @@
 /*
  * SVG <a> element implementation
  *
- * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
- * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */

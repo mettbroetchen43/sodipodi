@@ -4,12 +4,12 @@
  * Gtk+ signal marshallers
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "marshal.h"

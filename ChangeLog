@@ -1,3 +1,7 @@
+2002-10-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-ellipse.c (sp_arc_modified): Continue upstream
+
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c: Moved frontends here

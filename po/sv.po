@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-09-09 01:41+0200\n"
+"POT-Creation-Date: 2002-10-07 21:53+0200\n"
 "PO-Revision-Date: 2002-09-09 01:47+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -85,7 +85,7 @@ msgid "Close window"
 msgstr "Stäng fönster"
 
 #: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
-#: src/interface.c:298
+#: src/interface.c:303
 msgid "Drawing"
 msgstr "Teckning"
 
@@ -100,14 +100,14 @@ msgstr "Senast markerad"
 #. Page settings
 #. Notebook tab
 #: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
-#: src/dialogs/document-properties.c:144 src/interface.c:299
+#: src/dialogs/document-properties.c:144 src/interface.c:304
 msgid "Page"
 msgstr "Sida"
 
 #. Selection submenu
 #: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:111 src/interface.c:297 src/interface.c:412
-#: src/toolbox.c:143
+#: src/dialogs/align.c:111 src/interface.c:302 src/interface.c:418
+#: src/toolbox.c:166
 msgid "Selection"
 msgstr "Markering"
 
@@ -124,7 +124,7 @@ msgid "ID:"
 msgstr "ID:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:680
+#: glade/item.glade.h:3 src/sp-item.c:744
 msgid "Item"
 msgstr "Objekt"
 
@@ -270,12 +270,12 @@ msgid "Is stroked"
 msgstr "Är genomstruket"
 
 #. Join type
-#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:527
+#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:580
 msgid "Join:"
 msgstr "Anslutning:"
 
 #. Layout
-#: glade/object_props.glade.h:25 src/dialogs/text-edit.c:114
+#: glade/object_props.glade.h:25 src/dialogs/text-edit.c:117
 msgid "Layout"
 msgstr "Utseende"
 
@@ -342,8 +342,8 @@ msgstr "Genomstrykningsbredd"
 #. Stroke width
 #: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:345 src/dialogs/stroke-style.c:504
-#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1068
+#: src/dialogs/object-properties.c:345 src/dialogs/stroke-style.c:557
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1063
 msgid "Width:"
 msgstr "Bredd:"
 
@@ -418,19 +418,19 @@ msgstr "px"
 msgid "1.0MB"
 msgstr "1,0 MB"
 
-#: glade/sodipodi.glade.h:2 src/interface.c:306
+#: glade/sodipodi.glade.h:2 src/interface.c:311
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi.glade.h:3 src/interface.c:305
+#: glade/sodipodi.glade.h:3 src/interface.c:310
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi.glade.h:4 src/interface.c:307
+#: glade/sodipodi.glade.h:4 src/interface.c:312
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi.glade.h:5 src/interface.c:320
+#: glade/sodipodi.glade.h:5 src/interface.c:325
 msgid "Arc"
 msgstr "Båge"
 
@@ -466,8 +466,7 @@ msgstr "Omvandla till ku_rvor"
 msgid "Cusp line at selected nodes"
 msgstr "Spetsa linjen vid markerade noder"
 
-#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:9 src/interface.c:224
-#: src/widgets/gradient-selector.c:145
+#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:9 src/interface.c:228
 msgid "Delete"
 msgstr "Ta bort"
 
@@ -483,7 +482,7 @@ msgstr "Skrivbord"
 msgid "Display"
 msgstr "Visning"
 
-#: glade/sodipodi.glade.h:18 src/interface.c:339
+#: glade/sodipodi.glade.h:18 src/interface.c:344
 msgid "Document"
 msgstr "Dokument"
 
@@ -491,15 +490,15 @@ msgstr "Dokument"
 msgid "Drawing Context"
 msgstr "Teckningssammanhang"
 
-#: glade/sodipodi.glade.h:21 src/interface.c:223
+#: glade/sodipodi.glade.h:21 src/interface.c:227
 msgid "Duplicate"
 msgstr "Mångfaldiga"
 
-#: glade/sodipodi.glade.h:22 src/interface.c:324
+#: glade/sodipodi.glade.h:22 src/interface.c:329
 msgid "Dynahand"
 msgstr "Dynahand"
 
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:205
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:208
 msgid "Export"
 msgstr "Exportera"
 
@@ -519,7 +518,7 @@ msgstr "Filnamn:"
 msgid "Forward One"
 msgstr "Flytta framåt ett steg"
 
-#: glade/sodipodi.glade.h:29 src/interface.c:323
+#: glade/sodipodi.glade.h:29 src/interface.c:328
 msgid "Freehand"
 msgstr "Frihand"
 
@@ -531,7 +530,7 @@ msgstr "Höjd"
 msgid "Image size"
 msgstr "Bildstorlek"
 
-#: glade/sodipodi.glade.h:32 src/interface.c:204
+#: glade/sodipodi.glade.h:32 src/interface.c:207
 msgid "Import"
 msgstr "Importera"
 
@@ -548,16 +547,16 @@ msgid "Lock aspect ratio"
 msgstr "Lås skala"
 
 #. View:New Preview
-#: glade/sodipodi.glade.h:36 src/interface.c:311
+#: glade/sodipodi.glade.h:36 src/interface.c:316
 msgid "New Preview"
 msgstr "Ny förhandsgranskning"
 
 #. View:New View
-#: glade/sodipodi.glade.h:37 src/interface.c:309
+#: glade/sodipodi.glade.h:37 src/interface.c:314
 msgid "New View"
 msgstr "Ny vy"
 
-#: glade/sodipodi.glade.h:38 src/interface.c:318
+#: glade/sodipodi.glade.h:38 src/interface.c:323
 msgid "Node"
 msgstr "Nod"
 
@@ -565,12 +564,12 @@ msgstr "Nod"
 msgid "Node Edit"
 msgstr "Nodredigering"
 
-#: glade/sodipodi.glade.h:40 src/toolbox.c:168
+#: glade/sodipodi.glade.h:40 src/toolbox.c:191
 msgid "Nodes"
 msgstr "Noder"
 
 #. Selection:Order
-#: glade/sodipodi.glade.h:41 src/interface.c:263
+#: glade/sodipodi.glade.h:41 src/interface.c:268
 msgid "Order"
 msgstr "Sortera"
 
@@ -578,16 +577,16 @@ msgstr "Sortera"
 msgid "Png file name"
 msgstr "Namn på png-fil"
 
-#: glade/sodipodi.glade.h:44 src/interface.c:319
+#: glade/sodipodi.glade.h:44 src/interface.c:324
 msgid "Rectangle"
 msgstr "Rektangel"
 
 #: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
-#: src/interface.c:301
+#: src/interface.c:306
 msgid "Scale"
 msgstr "Skala"
 
-#: glade/sodipodi.glade.h:46 src/interface.c:317
+#: glade/sodipodi.glade.h:46 src/interface.c:322
 msgid "Select"
 msgstr "Markera"
 
@@ -608,12 +607,12 @@ msgid "Smooth line at selected nodes"
 msgstr "Gör linjen mjukare vid markerade noder"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/interface.c:322 src/sp-spiral.c:632
+#: glade/sodipodi.glade.h:52 src/interface.c:327 src/sp-spiral.c:623
 msgid "Spiral"
 msgstr "Spiral"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/interface.c:321 src/sp-star.c:478
+#: glade/sodipodi.glade.h:53 src/interface.c:326 src/sp-star.c:469
 msgid "Star"
 msgstr "Stjärna"
 
@@ -622,7 +621,7 @@ msgid "Symmetric "
 msgstr "Symmetrisk "
 
 #: glade/sodipodi.glade.h:56 src/dialogs/object-properties.c:196
-#: src/interface.c:325
+#: src/interface.c:330
 msgid "Text"
 msgstr "Text"
 
@@ -663,8 +662,8 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1064
-#: src/interface.c:293 src/interface.c:326 src/toolbox.c:164
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1023
+#: src/interface.c:298 src/interface.c:331 src/toolbox.c:187
 msgid "Zoom"
 msgstr "Zooma"
 
@@ -777,8 +776,8 @@ msgid "Duplicate selection"
 msgstr "Mångfaldiga markering"
 
 #. Edit submenu
-#: glade/toolbox.glade.h:23 src/interface.c:406 src/toolbox.c:125
-#: src/widgets/gradient-selector.c:132
+#: glade/toolbox.glade.h:23 src/interface.c:412 src/toolbox.c:148
+#: src/widgets/gradient-selector.c:128
 msgid "Edit"
 msgstr "Redigera"
 
@@ -804,7 +803,7 @@ msgstr "Redigera genomstrykningstyp hos markerade objekt"
 
 #. Generic menu
 #. File submenu
-#: glade/toolbox.glade.h:30 src/interface.c:400 src/toolbox.c:121
+#: glade/toolbox.glade.h:30 src/interface.c:406 src/toolbox.c:144
 msgid "File"
 msgstr "Arkiv"
 
@@ -836,7 +835,7 @@ msgstr "Nej, jag vill hellre rita mer häftig vektorgrafik i sodipodi."
 msgid "Nope !"
 msgstr "Nix!"
 
-#: glade/toolbox.glade.h:41 src/toolbox.c:135
+#: glade/toolbox.glade.h:41 src/toolbox.c:158
 msgid "Object"
 msgstr "Objekt"
 
@@ -869,7 +868,7 @@ msgid "Really wanna quit sodipodi ?"
 msgstr "Vill du verkligen avsluta sodipodi?"
 
 #. File:Print Preview
-#: glade/toolbox.glade.h:49 src/interface.c:377
+#: glade/toolbox.glade.h:49 src/interface.c:383
 msgid "Redo"
 msgstr "Gör om"
 
@@ -897,8 +896,8 @@ msgstr "Spara teckning med nytt namn"
 msgid "Select and transform"
 msgstr "Markera och transformera"
 
-#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1 src/toolbox.c:95
-#: src/toolbox.c:104
+#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1 src/toolbox.c:115
+#: src/toolbox.c:130
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
@@ -1223,7 +1222,7 @@ msgstr "vertikal flytt"
 msgid "vertical scale value"
 msgstr "vertikalt skalningsvärde"
 
-#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
+#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:134
 msgid "Add"
 msgstr "Lägg till"
 
@@ -1305,97 +1304,97 @@ msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1056
+#: src/desktop.c:1015
 msgid "Welcome !"
 msgstr "Välkommen!"
 
-#: src/desktop.c:1128
+#: src/desktop.c:1087
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1204
+#: src/desktop.c:1163
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokumentet %s har osparade ändringar, spara dem?"
 
-#: src/desktop.c:1205 src/interface.c:201
+#: src/desktop.c:1164 src/interface.c:204
 msgid "Save"
 msgstr "Spara"
 
-#: src/desktop.c:1205
+#: src/desktop.c:1164
 msgid "Don't save"
 msgstr "Spara inte"
 
-#: src/dialogs/desktop-properties.c:208
+#: src/dialogs/desktop-properties.c:203
 msgid "Desktop settings"
 msgstr "Skrivbordsinställningar"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:212
 msgid "Grid"
 msgstr "Rutnät"
 
 #. Checkbuttons
-#: src/dialogs/desktop-properties.c:227
+#: src/dialogs/desktop-properties.c:222
 msgid "Show grid"
 msgstr "Visa rutnät"
 
-#: src/dialogs/desktop-properties.c:234
+#: src/dialogs/desktop-properties.c:229
 msgid "Snap to grid"
 msgstr "Fäst vid rutnät"
 
-#: src/dialogs/desktop-properties.c:241
+#: src/dialogs/desktop-properties.c:236
 msgid "Grid units:"
 msgstr "Enheter för rutnät:"
 
-#: src/dialogs/desktop-properties.c:250
+#: src/dialogs/desktop-properties.c:245
 msgid "Origin X:"
 msgstr "X-origo:"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:259
 msgid "Origin Y:"
 msgstr "Y-origo:"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:273
 msgid "Spacing X:"
 msgstr "X-avstånd:"
 
-#: src/dialogs/desktop-properties.c:292
+#: src/dialogs/desktop-properties.c:287
 msgid "Spacing Y:"
 msgstr "Y-avstånd:"
 
-#: src/dialogs/desktop-properties.c:306 src/dialogs/desktop-properties.c:367
+#: src/dialogs/desktop-properties.c:301 src/dialogs/desktop-properties.c:362
 msgid "Snap units:"
 msgstr "Enheter för fästande:"
 
-#: src/dialogs/desktop-properties.c:318 src/dialogs/desktop-properties.c:379
+#: src/dialogs/desktop-properties.c:313 src/dialogs/desktop-properties.c:374
 msgid "Snap distance:"
 msgstr "Fästavstånd:"
 
-#: src/dialogs/desktop-properties.c:331
+#: src/dialogs/desktop-properties.c:326
 msgid "Grid color:"
 msgstr "Färg på rutnät:"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:343
+#: src/dialogs/desktop-properties.c:338
 msgid "Guides"
 msgstr "Hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:352
+#: src/dialogs/desktop-properties.c:347
 msgid "Show guides"
 msgstr "Visa hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:360
+#: src/dialogs/desktop-properties.c:355
 msgid "Snap to guides"
 msgstr "Fäst vid hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:391
+#: src/dialogs/desktop-properties.c:386
 msgid "Guides color:"
 msgstr "Färg på hjälplinjer:"
 
-#: src/dialogs/desktop-properties.c:402
+#: src/dialogs/desktop-properties.c:397
 msgid "Highlight color:"
 msgstr "Markeringsfärg:"
 
@@ -1464,9 +1463,23 @@ msgstr "Egen pappersstorlek"
 msgid "Units:"
 msgstr "Enheter:"
 
-#: src/dialogs/fill-style.c:69
+#: src/dialogs/fill-style.c:76
 msgid "Fill style"
 msgstr "Fyllningsstil"
+
+#: src/dialogs/fill-style.c:111
+#, fuzzy
+msgid "Fill Rule"
+msgstr "Fyllningsstil"
+
+#: src/dialogs/fill-style.c:125
+#, fuzzy
+msgid "nonzero"
+msgstr "ingen"
+
+#: src/dialogs/fill-style.c:130
+msgid "evenodd"
+msgstr ""
 
 #: src/dialogs/item-properties.c:165
 msgid "Item is reference"
@@ -1508,7 +1521,7 @@ msgstr "Bågroll:"
 msgid "Title:"
 msgstr "Titel:"
 
-#: src/dialogs/object-attributes.c:35 src/dialogs/tool-attributes.c:109
+#: src/dialogs/object-attributes.c:35 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr "Visa:"
 
@@ -1545,13 +1558,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:54 src/spiral-context.c:356
+#: src/dialogs/object-attributes.c:54 src/spiral-context.c:363
 msgid "Expansion:"
 msgstr "Expansion:"
 
 #. Revolution
-#: src/dialogs/object-attributes.c:55 src/dialogs/tool-attributes.c:89
-#: src/spiral-context.c:344
+#: src/dialogs/object-attributes.c:55 src/dialogs/tool-attributes.c:90
+#: src/spiral-context.c:351
 msgid "Revolution:"
 msgstr "Revolution:"
 
@@ -1597,8 +1610,8 @@ msgid "Stroke style"
 msgstr "Genomstrykningsstil"
 
 #: src/dialogs/object-properties.c:153
-msgid "Style to change:"
-msgstr "Stil att ändra:"
+msgid "Apply to:"
+msgstr ""
 
 #: src/dialogs/object-properties.c:164
 msgid "Selected objects"
@@ -1640,204 +1653,233 @@ msgstr "Objektposition och -storlek"
 msgid "Position and size"
 msgstr "Position och storlek"
 
-#: src/dialogs/stroke-style.c:491
+#: src/dialogs/stroke-style.c:544
 msgid "Stroke settings"
 msgstr "Genomstrykningsinställningar"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:570
+#: src/dialogs/stroke-style.c:623
 msgid "Cap:"
 msgstr "Lock:"
 
-#: src/dialogs/text-edit.c:77
+#: src/dialogs/text-edit.c:79
 msgid "Text properties"
 msgstr "Textegenskaper"
 
-#: src/dialogs/text-edit.c:124
+#: src/dialogs/text-edit.c:127
 msgid "Alignment:"
 msgstr "Justering:"
 
-#: src/dialogs/text-edit.c:156
+#: src/dialogs/text-edit.c:159
 msgid "Orientation:"
 msgstr "Orientering:"
 
-#: src/dialogs/text-edit.c:184
+#: src/dialogs/text-edit.c:187
 msgid "Text and font"
 msgstr "Text och typsnitt"
 
-#: src/dialogs/text-edit.c:198
+#: src/dialogs/text-edit.c:201
 msgid "Set as default"
 msgstr "Ställ in som standard"
 
-#: src/dialogs/tool-attributes.c:44
+#: src/dialogs/tool-attributes.c:45
 msgid "Tool attributes"
 msgstr "Verktygsattribut"
 
-#: src/dialogs/tool-attributes.c:89
+#: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
 msgstr "Expansion"
 
-#: src/dialogs/tool-attributes.c:89
+#: src/dialogs/tool-attributes.c:90
 msgid "Inner radius"
 msgstr "Innerradie"
 
-#: src/dialogs/tool-attributes.c:93 src/dialogs/tool-attributes.c:103
-#: src/dialogs/tool-attributes.c:113 src/dialogs/tool-attributes.c:123
+#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
+#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
 msgstr "Verktygsinställningar saknas"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:99 src/star-context.c:326
+#: src/dialogs/tool-attributes.c:100 src/star-context.c:356
 msgid "Corners:"
 msgstr "Hörn:"
 
-#: src/dialogs/tool-attributes.c:99
+#: src/dialogs/tool-attributes.c:100
 msgid "Proportion"
 msgstr "Proportion"
 
-#: src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:110
 msgid "Transform:"
 msgstr "Transform:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1032
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1027
 msgid "Mass:"
 msgstr "Massa:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1044
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
 msgid "Drag:"
 msgstr "Drag:"
 
-#: src/dialogs/tool-attributes.c:119
+#: src/dialogs/tool-attributes.c:120
 msgid "Angle"
 msgstr "Vinkel"
 
-#: src/dialogs/tool-attributes.c:126
+#: src/dialogs/tool-attributes.c:127
 msgid "Tool has no attributes"
 msgstr "Verktyget har inga attribut"
 
-#: src/dialogs/tool-attributes.c:129 src/dialogs/tool-options.c:91
+#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:92
 msgid "No active tool"
 msgstr "Inget aktivt verktyg"
 
-#: src/dialogs/tool-options.c:47
+#: src/dialogs/tool-options.c:48
 msgid "Tool options"
 msgstr "Verktygsalternativ"
 
-#: src/dialogs/tool-options.c:88
+#: src/dialogs/tool-options.c:89
 msgid "Tool has no options"
 msgstr "Verktyget har inga alternativ"
 
-#: src/dialogs/xml-tree.c:305
+#: src/dialogs/xml-tree.c:306
 msgid "You can't delete 'id' attribute!"
 msgstr "Du kan inte ta bort \"id\"-attributet!"
 
-#: src/dialogs/xml-tree.c:312
+#: src/dialogs/xml-tree.c:313
 #, c-format
 msgid "Do you want to delete attribute %s?"
 msgstr "Vill du ta bort attribut %s?"
 
-#: src/dialogs/xml-tree.c:317 src/dialogs/xml-tree.c:556
+#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
 msgid "Yes"
 msgstr "Ja"
 
-#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
+#: src/dialogs/xml-tree.c:319 src/dialogs/xml-tree.c:558
 msgid "No"
 msgstr "Nej"
 
-#: src/dialogs/xml-tree.c:540
+#: src/dialogs/xml-tree.c:541
 #, c-format
 msgid "You can't delete element %s!"
 msgstr "Du kan inte ta bort element %s!"
 
-#: src/dialogs/xml-tree.c:551
+#: src/dialogs/xml-tree.c:552
 #, c-format
 msgid "Do you want to delete element %s?"
 msgstr "Vill du ta bort element %s?"
 
-#: src/dialogs/xml-tree.c:691
+#: src/dialogs/xml-tree.c:692
 #, c-format
 msgid "You can't cut element %s!"
 msgstr "Du kan inte klippa ut element %s!"
 
-#: src/document.c:234
-#, c-format
-msgid "Unnamed document %d"
-msgstr "Namnlöst dokument %d"
+#: src/document.c:248
+#, fuzzy, c-format
+msgid "New document %d"
+msgstr "Minnesdokument %d"
 
-#: src/document.c:322
+#: src/document.c:341
 #, c-format
 msgid "Memory document %d"
 msgstr "Minnesdokument %d"
 
+#: src/document.c:478
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Namnlöst dokument %d"
+
 #. Angle
-#: src/dyna-draw-context.c:1056
+#: src/dyna-draw-context.c:1051
 msgid "Angle:"
 msgstr "Vinkel:"
 
 #. Reset
-#: src/dyna-draw-context.c:1080 src/spiral-context.c:380
-#: src/star-context.c:350
+#: src/dyna-draw-context.c:1075 src/rect-context.c:436
+#: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
 msgstr "Standardalternativ"
 
-#: src/select-context.c:614
+#. rx_ratio
+#: src/rect-context.c:412 src/rect-context.c:424
+msgid "Roundness ratio for x:"
+msgstr ""
+
+#: src/select-context.c:635
 msgid "Visual transformation"
 msgstr "Visuell transformering"
 
-#: src/select-context.c:622
+#: src/select-context.c:643
 msgid "Show content"
 msgstr "Visa innehåll"
 
-#: src/select-context.c:629
+#: src/select-context.c:650
 msgid "Show outline"
 msgstr "Visa kontur"
 
-#: src/select-context.c:636
+#: src/select-context.c:657
 msgid "Object transformation"
 msgstr "Objekttransformering"
 
-#: src/select-context.c:644
+#: src/select-context.c:665
 msgid "Optimize"
 msgstr "Optimera"
 
-#: src/select-context.c:651
+#: src/select-context.c:672
 msgid "Preserve"
 msgstr "Bevara"
 
 #. T0
-#: src/spiral-context.c:368
+#: src/spiral-context.c:375
 msgid "Inner radius:"
 msgstr "Innerradie:"
 
 #. Proportion
-#: src/star-context.c:338
+#: src/star-context.c:368
 msgid "Proportion:"
 msgstr "Proportion:"
 
-#: src/file.c:98
+#. Making sides flat
+#: src/star-context.c:381
+#, fuzzy
+msgid "Make sides flat"
+msgstr "GÖr känslig"
+
+#: src/file.c:113
 msgid "Select file to open"
 msgstr "Välj fil att öppna"
 
-#: src/file.c:208
+#: src/file.c:240
 msgid "Save file"
 msgstr "Spara fil"
 
-#: src/file.c:320
+#: src/file.c:255
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: src/file.c:261
+msgid "Plain SVG"
+msgstr ""
+
+#: src/file.c:267
+#, fuzzy
+msgid "Save as:"
+msgstr "Spara som"
+
+#: src/file.c:376
 msgid "Select file to import"
 msgstr "Välj fil att importera"
 
-#: src/file.c:397
+#: src/file.c:453
 msgid "Export file"
 msgstr "Exportera fil"
 
-#: src/file.c:468
+#: src/file.c:524
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"
 
-#: src/help.c:55
+#: src/help.c:49
 msgid "About sodipodi"
 msgstr "Om sodipodi"
 
@@ -1946,228 +1988,229 @@ msgstr "m"
 msgid "meters"
 msgstr "meter"
 
-#: src/interface.c:199 src/interface.c:354
+#: src/interface.c:202 src/interface.c:359
 msgid "New"
 msgstr "Ny"
 
-#: src/interface.c:200 src/interface.c:355
+#: src/interface.c:203 src/interface.c:360
 msgid "Open"
 msgstr "Öppna"
 
-#: src/interface.c:202
+#: src/interface.c:205
 msgid "Save as"
 msgstr "Spara som"
 
-#: src/interface.c:207
+#: src/interface.c:210
 msgid "Print"
 msgstr "Skriv ut"
 
-#: src/interface.c:208
+#: src/interface.c:211
 msgid "Print Preview"
 msgstr "Förhandsgranska"
 
-#: src/interface.c:210 src/interface.c:357
-msgid "About Sodipodi"
-msgstr "Om Sodipodi"
-
-#: src/interface.c:212
+#: src/interface.c:214
 msgid "Close View"
 msgstr "Stäng vy"
 
-#: src/interface.c:213 src/interface.c:359
+#: src/interface.c:215 src/interface.c:365
 msgid "Exit Program"
 msgstr "Avsluta programmet"
 
-#: src/interface.c:219
+#: src/interface.c:217 src/interface.c:363
+msgid "About Sodipodi"
+msgstr "Om Sodipodi"
+
+#: src/interface.c:223
 msgid "Cut"
 msgstr "Klipp ut"
 
-#: src/interface.c:220
+#: src/interface.c:224
 msgid "Copy"
 msgstr "Kopiera"
 
-#: src/interface.c:221
+#: src/interface.c:225
 msgid "Paste"
 msgstr "Klistra in"
 
-#: src/interface.c:226
+#: src/interface.c:230
 msgid "Clear all"
 msgstr "Töm allt"
 
+#: src/interface.c:231
+msgid "Cleanup"
+msgstr ""
+
 #. Selection:Group
-#: src/interface.c:235 src/sp-item-group.c:458
+#: src/interface.c:240 src/sp-item-group.c:495
 msgid "Group"
 msgstr "Gruppera"
 
 #. Selection:Ungroup
-#: src/interface.c:240 src/sp-item-group.c:475
+#: src/interface.c:245 src/sp-item-group.c:512
 msgid "Ungroup"
 msgstr "Avgruppera"
 
 #. Selection:Combine
-#: src/interface.c:249
+#: src/interface.c:254
 msgid "Combine"
 msgstr "Kombinera"
 
 #. Selection:Break apart
-#: src/interface.c:254
+#: src/interface.c:259
 msgid "Break apart"
 msgstr "Dela upp"
 
-#: src/interface.c:267
+#: src/interface.c:272
 msgid "Bring to Front"
 msgstr "Flytta främst"
 
-#: src/interface.c:271
+#: src/interface.c:276
 msgid "Send to Back"
 msgstr "Skicka bakåt"
 
-#: src/interface.c:275
+#: src/interface.c:280
 msgid "Raise"
 msgstr "Höj"
 
-#: src/interface.c:279
+#: src/interface.c:284
 msgid "Lower"
 msgstr "Sänk"
 
-#: src/interface.c:332
+#: src/interface.c:337
 msgid "Fill and Stroke"
 msgstr "Fyllning och genomstrykning"
 
-#: src/interface.c:333
+#: src/interface.c:338
 msgid "Size and Position"
 msgstr "Storlek och position"
 
-#: src/interface.c:334
+#: src/interface.c:339
 msgid "Align Objects"
 msgstr "Justera objekt"
 
-#: src/interface.c:335
+#: src/interface.c:340
 msgid "Text Editing"
 msgstr "Textredigering"
 
-#: src/interface.c:336
+#: src/interface.c:341
 msgid "Transformations"
 msgstr "Transformeringar"
 
-#: src/interface.c:337
+#: src/interface.c:342
 msgid "Tool Options"
 msgstr "Verktygsalternativ"
 
-#: src/interface.c:338
+#: src/interface.c:343
 msgid "Tool Attributes"
 msgstr "Verktygsattribut"
 
-#: src/interface.c:340
+#: src/interface.c:345
 msgid "Editing Window"
 msgstr "Redigeringsfönster"
 
-#: src/interface.c:341
+#: src/interface.c:346
 msgid "XML Editor"
 msgstr "XML-redigerare"
 
-#: src/interface.c:342
+#: src/interface.c:347
 msgid "Display Properties"
 msgstr "Visningsegenskaper"
 
 #. Undo
-#: src/interface.c:375
+#: src/interface.c:381
 msgid "Undo"
 msgstr "Ångra"
 
 #. View submenu
-#: src/interface.c:418
+#: src/interface.c:424
 msgid "View"
 msgstr "Visa"
 
 #. Drawing mode submenu
-#: src/interface.c:424
+#: src/interface.c:430
 msgid "Drawing Mode"
 msgstr "Teckningsläge"
 
 # Denna meny heter också Fönster i GIMP
 #. Dialog submenu
-#: src/interface.c:430
+#: src/interface.c:436
 msgid "Dialogs"
 msgstr "Fönster"
 
-#: src/main.c:94
+#: src/main.c:105
 msgid "Do not use X server (only process files from console)"
 msgstr "Använd inte X-server (behandla endast filer från konsollen)"
 
-#: src/main.c:97
+#: src/main.c:108
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Försök att använda X-server även om $DISPLAY inte är inställd)"
 
-#: src/main.c:100
+#: src/main.c:111
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Öppna angivna dokument (flaggsträng kan utelämnas)"
 
-#: src/main.c:101 src/main.c:104 src/main.c:107
+#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:130
 msgid "FILENAME"
 msgstr "FILNAMN"
 
-#: src/main.c:103
+#: src/main.c:114
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Skriv ut dokument till angiven utdatafil (använd \"| program\" för rör)"
 
-#: src/main.c:106
+#: src/main.c:117
 msgid "Export document to png file"
 msgstr "Exportera dokument till png-fil"
 
-#: src/main.c:109
+#: src/main.c:120
 msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
 msgstr "Exporterad bitmappsupplösning i bildpunkter per tum (standard 72,0)"
 
-#: src/main.c:110
+#: src/main.c:121
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:112
+#: src/main.c:123
 msgid "Exported area in millimeters (default is full document)"
 msgstr "Exporterad area i millimeter (standard är hela dokumentet)"
 
-#: src/main.c:113
+#: src/main.c:124
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:115
+#: src/main.c:129
+#, fuzzy
+msgid "Export document to plain SVG file"
+msgstr "Exportera dokument till png-fil"
+
+#: src/main.c:132
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Visa angivna filer en och en, byt till nästa vid någon tangent- eller "
 "mushändelse"
 
-#: src/main.c:494
-msgid "Oaf options"
-msgstr "Oaf-alternativ"
-
-#: src/main.c:502
-msgid "Could not initialize Bonobo"
-msgstr "Kunde inte initiera Bonobo"
-
-#: src/sodipodi.c:297
+#: src/sodipodi.c:336
 msgid "Untitled document"
 msgstr "Namnlöst dokument"
 
 #. Show nice dialog box
-#: src/sodipodi.c:322
+#: src/sodipodi.c:361
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi påträffade ett internt fel och kommer nu att stängas.\n"
 
-#: src/sodipodi.c:323
+#: src/sodipodi.c:362
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatiska säkerhetskopior på osparade dokument gjordes på följande "
 "platser:\n"
 
-#: src/sodipodi.c:324
+#: src/sodipodi.c:363
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatisk säkerhetskopiering av följande dokument misslyckades:\n"
 
 #. Not a regular file
-#: src/sodipodi.c:413
+#: src/sodipodi.c:452
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -2179,7 +2222,7 @@ msgstr ""
 "varken läsa in eller spara inställningar\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:426
+#: src/sodipodi.c:465
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -2194,7 +2237,7 @@ msgstr ""
 "du varken att kunna läsa in eller spara\n"
 "inställningar."
 
-#: src/sodipodi.c:440
+#: src/sodipodi.c:479
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -2208,7 +2251,7 @@ msgstr ""
 "inställningar."
 
 #. Cannot create directory
-#: src/sodipodi.c:696
+#: src/sodipodi.c:760
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -2222,7 +2265,7 @@ msgstr ""
 "inställningar."
 
 #. Not a directory
-#: src/sodipodi.c:708
+#: src/sodipodi.c:772
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -2236,7 +2279,7 @@ msgstr ""
 "inställningar."
 
 #. Cannot create file
-#: src/sodipodi.c:724
+#: src/sodipodi.c:788
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -2250,7 +2293,7 @@ msgstr ""
 "inställningar."
 
 #. Cannot create file
-#: src/sodipodi.c:736
+#: src/sodipodi.c:800
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -2263,239 +2306,252 @@ msgstr ""
 "kan du varken läsa in eller spara\n"
 "inställningar."
 
-#: src/sp-anchor.c:158
+#: src/sp-anchor.c:192
 #, c-format
 msgid "Link to %s"
 msgstr "Länk till %s"
 
 #. Create toplevel menuitem
-#: src/sp-anchor.c:219
+#: src/sp-anchor.c:251
 msgid "Link"
 msgstr "Länk"
 
 #. Link dialog
-#: src/sp-anchor.c:222
+#: src/sp-anchor.c:254
 msgid "Link Properties"
 msgstr "Länkegenskaper"
 
 #. Select item
-#: src/sp-anchor.c:232
+#: src/sp-anchor.c:264
 msgid "Follow link"
 msgstr "Följ länk"
 
 #. Reset transformations
-#: src/sp-anchor.c:237
+#: src/sp-anchor.c:269
 msgid "Remove link"
 msgstr "Ta bort länk"
 
-#: src/sp-image.c:340
+#: src/sp-image.c:365
 #, c-format
 msgid "Image with bad reference: %s"
 msgstr "Bild med felaktig referens: %s"
 
-#: src/sp-image.c:342
+#: src/sp-image.c:367
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr "Färgbild %d × %d: %s"
 
 #. Create toplevel menuitem
-#: src/sp-image.c:569
+#: src/sp-image.c:589
 msgid "Image"
 msgstr "Bild"
 
 #. Link dialog
-#: src/sp-image.c:572
+#: src/sp-image.c:592
 msgid "Image Properties"
 msgstr "Bildegenskaper"
 
 #. Autotrace dialog
-#: src/sp-image.c:580 src/sp-image.c:780
+#: src/sp-image.c:600 src/sp-image.c:799
 msgid "Trace"
 msgstr "Spår"
 
-#: src/sp-image.c:927
+#: src/sp-image.c:943
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Fel vid skrivning av %s: %s"
 
-#: src/sp-image.c:931
+#: src/sp-image.c:947
 msgid "Ok"
 msgstr "OK"
 
-#: src/sp-image.c:959
+#: src/sp-image.c:975
 msgid "Untitled"
 msgstr "Namnlös"
 
-#: src/sp-image.c:964
+#: src/sp-image.c:980
 msgid "Document Name:"
 msgstr "Dokumentnamn:"
 
-#: src/sp-image.c:977
+#: src/sp-image.c:993
 msgid "Unknown"
 msgstr "Okänt"
 
-#: src/sp-image.c:983
+#: src/sp-image.c:999
 msgid "Image URI:"
 msgstr "Bild-URI:"
 
-#: src/sp-item-group.c:396
+#: src/sp-item-group.c:433
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupp med %d objekt"
 
 #. Group dialog
-#: src/sp-item-group.c:462
+#: src/sp-item-group.c:499
 msgid "Group Properties"
 msgstr "Gruppegenskaper"
 
-#: src/sp-item.c:377
+#: src/sp-item.c:414
 msgid "Unknown item :-("
 msgstr "Okänt objekt :-("
 
 #. Item dialog
-#: src/sp-item.c:683
+#: src/sp-item.c:747
 msgid "Item Properties"
 msgstr "Objektegenskaper"
 
 #. Select item
-#: src/sp-item.c:693
+#: src/sp-item.c:757
 msgid "Select this"
 msgstr "Markera detta"
 
 #. Reset transformations
-#: src/sp-item.c:703
+#: src/sp-item.c:767
 msgid "Reset transformation"
 msgstr "Återställ transformering"
 
-#: src/sp-item.c:709
+#: src/sp-item.c:773
 msgid "Make sensitive"
 msgstr "GÖr känslig"
 
-#: src/sp-item.c:709
+#: src/sp-item.c:773
 msgid "Make insensitive"
 msgstr "Gör okänslig"
 
 #. Create link
-#: src/sp-item.c:714
+#: src/sp-item.c:778
 msgid "Create link"
 msgstr "Skapa länk"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:512
+#: src/sp-rect.c:531
 msgid "Rect"
 msgstr "Rektangel"
 
 #. Link dialog
-#: src/sp-rect.c:515
+#: src/sp-rect.c:534
 msgid "Rect Properties"
 msgstr "Rektangelegenskaper"
 
-#: src/sp-shape.c:378
+#: src/sp-shape.c:399
 msgid "A path - whatever it means"
 msgstr "En väg - vad det nu än betyder"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:435
+#: src/sp-shape.c:455
 msgid "Shape"
 msgstr "Form"
 
 #. Item dialog
-#: src/sp-shape.c:438
+#: src/sp-shape.c:458
 msgid "Fill settings"
 msgstr "Fyllningsinställningar"
 
 #. Link dialog
-#: src/sp-spiral.c:635
+#: src/sp-spiral.c:626
 msgid "Spiral Properties"
 msgstr "Spiralegenskaper"
 
 #. Link dialog
-#: src/sp-star.c:481
+#: src/sp-star.c:472
 msgid "Star Properties"
 msgstr "Stjärnegenskaper"
 
 #. fixme:
-#: src/sp-text.c:1125
+#: src/sp-text.c:1265
 msgid "Text object"
 msgstr "Textobjekt"
 
-#: src/toolbox.c:279
+#: src/toolbox.c:302
 msgid "Draw"
 msgstr "Rita"
 
-#. Reset button
-#: src/widgets/gradient-selector.c:160
-msgid "Reset"
-msgstr "Återställ"
+#. Family frame
+#: src/widgets/font-selector.c:143
+msgid "Font family"
+msgstr ""
 
-#: src/widgets/gradient-vector.c:243
+#. Style frame
+#: src/widgets/font-selector.c:171
+#, fuzzy
+msgid "Style"
+msgstr " Stil "
+
+#: src/widgets/font-selector.c:206
+#, fuzzy
+msgid "Font size:"
+msgstr "Spara inte"
+
+#: src/widgets/font-selector.c:519
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr ""
+
+#: src/widgets/gradient-vector.c:241
 msgid "No document selected"
 msgstr "Inget dokument markerat"
 
-#: src/widgets/gradient-vector.c:249
+#: src/widgets/gradient-vector.c:247
 msgid "No gradients in document"
 msgstr "Inga toningar i dokument"
 
-#: src/widgets/gradient-vector.c:255
+#: src/widgets/gradient-vector.c:253
 msgid "No gradient selected"
 msgstr "Ingen toning markerad"
 
-#: src/widgets/gradient-vector.c:406
+#: src/widgets/gradient-vector.c:409
 msgid "Start color"
 msgstr "Startfärg"
 
-#: src/widgets/gradient-vector.c:418
+#: src/widgets/gradient-vector.c:421
 msgid "End color"
 msgstr "Slutfärg"
 
-#: src/widgets/gradient-vector.c:445
+#: src/widgets/gradient-vector.c:448
 msgid "Gradient vector"
 msgstr "Toningsvektor"
 
-#: src/widgets/paint-selector.c:401
+#: src/widgets/paint-selector.c:536
 msgid "No objects"
 msgstr "Inga objekt"
 
-#: src/widgets/paint-selector.c:415
+#: src/widgets/paint-selector.c:550
 msgid "Multiple styles"
 msgstr "Flera stilar"
 
-#: src/widgets/paint-selector.c:429
+#: src/widgets/paint-selector.c:564
 msgid "No paint"
 msgstr "Ingen målning"
 
 #. Label
-#: src/widgets/paint-selector.c:518 src/widgets/paint-selector.c:630
+#: src/widgets/paint-selector.c:655
 msgid "Mode:"
 msgstr "Läge:"
 
-#: src/widgets/paint-selector.c:528
+#: src/widgets/paint-selector.c:665
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:534
+#: src/widgets/paint-selector.c:671
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:540
+#: src/widgets/paint-selector.c:677
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:571
+#: src/widgets/paint-selector.c:711
 msgid "Color paint"
 msgstr "Färgmålning"
 
-#: src/widgets/paint-selector.c:641
-msgid "Linear"
-msgstr "Linjär"
+#: src/widgets/paint-selector.c:779
+#, fuzzy
+msgid "Linear gradient"
+msgstr "Lägg till ny toning"
 
-#: src/widgets/paint-selector.c:644
-msgid "Radial"
-msgstr "Radiell"
-
-#: src/widgets/paint-selector.c:675
-msgid "Gradient paint"
-msgstr "Toningsmålning"
+#: src/widgets/paint-selector.c:781
+#, fuzzy
+msgid "Radial gradient"
+msgstr "Lägg till ny toning"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2521,13 +2577,34 @@ msgstr "Gult:"
 msgid "Black:"
 msgstr "Svart:"
 
-#: src/draw-context.c:251
+#: src/draw-context.c:275
 msgid "Appending to selection. Press '+' to toggle Append/New."
 msgstr "Lägger till i markering. Tryck \"+\" för att växla Lägg till/Ny."
 
-#: src/draw-context.c:256
+#: src/draw-context.c:280
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr "Skapar ny kurva. Tryck \"+\" för att växla Lägg till/Ny."
+
+#~ msgid "Style to change:"
+#~ msgstr "Stil att ändra:"
+
+#~ msgid "Oaf options"
+#~ msgstr "Oaf-alternativ"
+
+#~ msgid "Could not initialize Bonobo"
+#~ msgstr "Kunde inte initiera Bonobo"
+
+#~ msgid "Reset"
+#~ msgstr "Återställ"
+
+#~ msgid "Linear"
+#~ msgstr "Linjär"
+
+#~ msgid "Radial"
+#~ msgstr "Radiell"
+
+#~ msgid "Gradient paint"
+#~ msgstr "Toningsmålning"
 
 #~ msgid "Rotate selected objects 90 deg clockwise"
 #~ msgstr "Rotera markerade objekt 90 grader medurs"

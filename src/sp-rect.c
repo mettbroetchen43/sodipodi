@@ -212,12 +212,12 @@ sp_rect_read_attr (SPObject *object, const gchar *attr)
 static void
 sp_rect_modified (SPObject *object, guint flags)
 {
-	if (((SPObjectClass *) parent_class)->modified)
-		((SPObjectClass *) parent_class)->modified (object, flags);
-
 	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
 		sp_rect_set_shape (SP_RECT (object));
 	}
+
+	if (((SPObjectClass *) parent_class)->modified)
+		((SPObjectClass *) parent_class)->modified (object, flags);
 }
 
 static SPRepr *

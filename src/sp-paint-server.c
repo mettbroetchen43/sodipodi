@@ -1,13 +1,13 @@
 #define __SP_PAINT_SERVER_C__
 
 /*
- * Abstract base class for different paint types
+ * Base class for gradients and patterns
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2002 Lauris Kaplinski
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */

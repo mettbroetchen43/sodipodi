@@ -5,12 +5,12 @@
  * SPTextContext
  *
  * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "event-context.h"
