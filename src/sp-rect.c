@@ -402,7 +402,7 @@ sp_rect_position_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdoubl
 	rect->width.computed = width;
 	rect->height.computed = height;
 
-	sp_rect_set_shape (rect);
+	/* sp_rect_set_shape (rect); */
 	/* fixme: (Lauris) */
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
@@ -415,7 +415,7 @@ sp_rect_set_rx (SPRect * rect, gboolean set, gdouble value)
 
 	rect->rx.set = set;
 	if (set) rect->rx.computed = value;
-	sp_rect_set_shape (rect);
+	/* sp_rect_set_shape (rect); */
 	/* fixme: (Lauris) */
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
@@ -428,7 +428,7 @@ sp_rect_set_ry (SPRect * rect, gboolean set, gdouble value)
 
 	rect->ry.set = set;
 	if (set) rect->ry.computed = value;
-	sp_rect_set_shape (rect);
+	/* sp_rect_set_shape (rect); */
 	/* fixme: (Lauris) */
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }

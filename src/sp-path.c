@@ -13,13 +13,11 @@
  */
 
 #include <string.h>
-#include <libnr/nr-path.h>
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_bpath.h>
-#include "helper/art-utils.h"
+
 #include "svg/svg.h"
 #include "attributes.h"
 #include "sp-root.h"
+
 #include "sp-path.h"
 
 #define noPATH_VERBOSE
@@ -28,7 +26,6 @@ static void sp_path_class_init (SPPathClass *class);
 static void sp_path_init (SPPath *path);
 
 static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_path_release (SPObject *object);
 static void sp_path_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static SPRepr *sp_path_write (SPObject *object, SPRepr *repr, guint flags);
@@ -67,7 +64,6 @@ sp_path_class_init (SPPathClass * klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	sp_object_class->build = sp_path_build;
-	sp_object_class->release = sp_path_release;
 	sp_object_class->set = sp_path_set;
 	sp_object_class->write = sp_path_write;
 }
@@ -118,9 +114,10 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		const guchar *val;
 		gboolean changed;
 		gboolean open;
-		shape = SP_SHAPE (path);
-		css = sp_repr_css_attr (repr, "style");
-		/* We foce style rewrite at moment (Lauris) */
+		shape = (SPShape *) path;
+		/* Remove fill from open paths for compatibility with sodipodi < 0.25 */
+		/* And set fill-rule of closed paths to evenodd */
+		/* We force style rewrite at moment (Lauris) */
 		changed = TRUE;
 		open = FALSE;
 		if (shape->curve && shape->curve->bpath) {
@@ -132,6 +129,7 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 				}
 			}
 		}
+		css = sp_repr_css_attr (repr, "style");
 		if (open) {
 			val = sp_repr_css_property (css, "fill", NULL);
 			if (val && strcmp (val, "none")) {
@@ -154,34 +152,23 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 }
 
 static void
-sp_path_release (SPObject *object)
-{
-	SPPath *path;
-
-	path = SP_PATH (object);
-
-	if (((SPObjectClass *) parent_class)->release)
-		((SPObjectClass *) parent_class)->release (object);
-}
-
-static void
 sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPPath *path;
-	ArtBpath *bpath;
-	SPCurve *curve;
 
-	path = SP_PATH (object);
+	path = (SPPath *) object;
 
 	switch (key) {
 	case SP_ATTR_D:
 		if (value) {
+			ArtBpath *bpath;
+			SPCurve *curve;
 			bpath = sp_svg_read_path (value);
 			curve = sp_curve_new_from_bpath (bpath);
-			sp_shape_set_curve (SP_SHAPE (path), curve, TRUE);
+			sp_shape_set_curve ((SPShape *) path, curve, TRUE);
 			sp_curve_unref (curve);
 		} else {
-			sp_shape_set_curve (SP_SHAPE (path), NULL, TRUE);
+			sp_shape_set_curve ((SPShape *) path, NULL, TRUE);
 		}
 		break;
 	default:
@@ -195,12 +182,10 @@ static SPRepr *
 sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPShape *shape;
-	SPPath *path;
 	ArtBpath *abp;
 	gchar *str;
 
-	shape = SP_SHAPE (object);
-	path = SP_PATH (object);
+	shape = (SPShape *) object;
 
 	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
 		repr = sp_repr_new ("path");
@@ -217,56 +202,3 @@ sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 	return repr;
 }
 
-#if 0
-void
-sp_path_bpath_modified (SPPath * path, SPCurve * curve)
-{
-	SPPathComp * comp;
-
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (curve != NULL);
-
-	g_return_if_fail (path->independent);
-	g_return_if_fail (path->comp != NULL);
-	g_return_if_fail (path->comp->next == NULL);
-
-	comp = (SPPathComp *) path->comp->data;
-
-	g_return_if_fail (comp->private);
-
-	sp_path_change_bpath (path, comp, curve);
-}
-
-/* Old SPPathComp methods */
-
-SPPathComp *
-sp_path_comp_new (SPCurve * curve, gboolean private, double affine[])
-{
-	SPPathComp * comp;
-	gint i;
-
-	g_return_val_if_fail (curve != NULL, NULL);
-
-	comp = g_new (SPPathComp, 1);
-	comp->curve = curve;
-	sp_curve_ref (curve);
-	comp->private = private;
-	if (affine != NULL) {
-		for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
-	} else {
-		nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (comp->affine));
-	}
-	return comp;
-}
-
-void
-sp_path_comp_destroy (SPPathComp * comp)
-{
-	g_assert (comp != NULL);
-
-	sp_curve_unref (comp->curve);
-
-	g_free (comp);
-}
-#endif

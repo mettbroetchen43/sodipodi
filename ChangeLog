@@ -1,3 +1,8 @@
+2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.c (sp_canvas_paint_rect): Try to fit area into pixelstore
+	instead of using default image size always
+
 2003-02-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-path.h: Turned SPPath/SPShape hierachy upside down, so they make sense

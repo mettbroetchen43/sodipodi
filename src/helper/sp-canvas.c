@@ -1517,6 +1517,7 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 {
 	GtkWidget *widget;
 	int draw_x1, draw_y1, draw_x2, draw_y2;
+	int bw, bh, sw, sh;
 
 	g_return_if_fail (!canvas->need_update);
 
@@ -1527,17 +1528,39 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 	draw_x2 = MIN (x1, draw_x1 + GTK_WIDGET (canvas)->allocation.width);
 	draw_y2 = MIN (y1, draw_y1 + GTK_WIDGET (canvas)->allocation.height);
 
+	bw = draw_x2 - draw_x1;
+	bh = draw_y2 - draw_y1;
+	if ((bw < 1) || (bh < 1)) return;
+
+	/* 65536 is max cached buffer and we need 3 channels */
+	if (bw * bh < 21845) {
+		/* We can go with single buffer */
+		sw = bw;
+		sh = bh;
+	} else if (bw <= (16 * IMAGE_WIDTH_AA)) {
+		/* Go with row buffer */
+		sw = bw;
+		sh = 21845 / bw;
+	} else if (bh <= (16 * IMAGE_HEIGHT_AA)) {
+		/* Go with column buffer */
+		sw = 21845 / bh;
+		sh = bh;
+	} else {
+		sw = IMAGE_WIDTH_AA;
+		sh = IMAGE_HEIGHT_AA;
+	}
+
 	/* As we can come from expose, we have to tile here */
-	for (y0 = draw_y1; y0 < draw_y2; y0 += IMAGE_HEIGHT_AA) {
-		y1 = MIN (y0 + IMAGE_HEIGHT_AA, draw_y2);
-		for (x0 = draw_x1; x0 < draw_x2; x0 += IMAGE_WIDTH_AA) {
+	for (y0 = draw_y1; y0 < draw_y2; y0 += sh) {
+		y1 = MIN (y0 + sh, draw_y2);
+		for (x0 = draw_x1; x0 < draw_x2; x0 += sw) {
 			SPCanvasBuf buf;
 			GdkColor *color;
 
-			x1 = MIN (x0 + IMAGE_WIDTH_AA, draw_x2);
+			x1 = MIN (x0 + sw, draw_x2);
 
 			buf.buf = nr_pixelstore_64K_new (0, 0);
-			buf.buf_rowstride = IMAGE_WIDTH_AA * 3;
+			buf.buf_rowstride = sw * 3;
 			buf.rect.x0 = x0;
 			buf.rect.y0 = y0;
 			buf.rect.x1 = x1;
@@ -1567,7 +1590,7 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 							      x1 - x0, y1 - y0,
 							      GDK_RGB_DITHER_MAX,
 							      buf.buf,
-							      IMAGE_WIDTH_AA * 3,
+							      sw * 3,
 							      x0 - canvas->x0, y0 - canvas->y0);
 			}
 			nr_pixelstore_64K_free (buf.buf);
