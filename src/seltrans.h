@@ -13,7 +13,6 @@
  */
 
 #include <libnr/nr-types.h>
-#include <glib.h>
 #include "knot.h"
 #include "desktop-handles.h"
 
@@ -34,14 +33,6 @@ enum {
 	SP_SELTRANS_STATE_ROTATE
 };
 
-#if 0
-#ifndef __SP_SELTRANS_C__
-extern SPSelTransShowType SelTransViewMode;
-#else
-SPSelTransShowType SelTransViewMode = SP_SELTRANS_CONTENT;
-#endif
-#endif
-
 #define SP_SELTRANS_SPP_SIZE 1024
 
 struct _SPSelTrans {
@@ -52,20 +43,24 @@ struct _SPSelTrans {
 	guint show : 1;
 	guint transform : 1;
 
+	unsigned int grabbed : 1;
+	unsigned int show_handles : 1;
+	unsigned int empty : 1;
+	unsigned int changed : 1;
+
+	SPItem **items;
+	NRMatrixF *transforms;
+	int nitems;
+
 	NRPointF *spp;
 	int spp_length;
 
-	gboolean grabbed;
-	gboolean show_handles;
-	gboolean empty;
-	gboolean changed;
-	gboolean sel_changed;
-	NRRectF box;
+	NRRectD box;
         NRMatrixD current;
-        NRPointF opposit;
-        NRPointF origin;
-	NRPointF point;
-	NRPointF center;
+        NRPointD opposit;
+        NRPointD origin;
+	NRPointD point;
+	NRPointD center;
 	SPKnot *shandle[8];
 	SPKnot *rhandle[8];
 	SPKnot *chandle;

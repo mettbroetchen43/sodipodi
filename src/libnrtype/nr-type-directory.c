@@ -440,7 +440,7 @@ nr_type_read_private_list (void)
 							} else {
 								face = 0;
 							}
-							printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp);
+							/* printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp); */
 							dft2 = nr_new (NRTypeFaceDefFT2, 1);
 							dft2->def.next = NULL;
 							dft2->def.pdef = NULL;

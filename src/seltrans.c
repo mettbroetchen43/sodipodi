@@ -91,6 +91,10 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	seltrans->show = SP_SELTRANS_SHOW_CONTENT;
 	seltrans->transform = SP_SELTRANS_TRANSFORM_OPTIMIZE;
 
+	seltrans->items = NULL;
+	seltrans->transforms = NULL;
+	seltrans->nitems = 0;
+
 	seltrans->spp = nr_new (NRPointF, SP_SELTRANS_SPP_SIZE);
 
 	seltrans->grabbed = FALSE;
@@ -199,6 +203,13 @@ sp_sel_trans_shutdown (SPSelTrans *seltrans)
 	}
 
 	nr_free (seltrans->spp);
+
+	if (seltrans->items) {
+		int i;
+		for (i = 0; i < seltrans->nitems; i++) sp_object_unref (SP_OBJECT (seltrans->items[i]), NULL);
+		nr_free (seltrans->items);
+	}
+	if (seltrans->transforms) nr_free (seltrans->transforms);
 }
 
 void
@@ -231,7 +242,9 @@ sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y)
 void
 sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gboolean show_handles)
 {
-	SPSelection * selection;
+	SPSelection *selection;
+	const GSList *l;
+	int n;
 
 	selection = SP_DT_SELECTION (seltrans->desktop);
 
@@ -242,9 +255,20 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 	sp_sel_trans_update_volatile_state (seltrans);
 
 	seltrans->changed = FALSE;
-	seltrans->sel_changed = FALSE;
 
 	if (seltrans->empty) return;
+
+	l = sp_selection_item_list (selection);
+	seltrans->nitems = g_slist_length ((GSList *) l);
+	seltrans->items = nr_new (SPItem *, seltrans->nitems);
+	seltrans->transforms = nr_new (NRMatrixF, seltrans->nitems);
+	n = 0;
+	while (l) {
+		seltrans->items[n] = (SPItem *) sp_object_ref (SP_OBJECT (l->data), NULL);
+		sp_item_i2d_affine (seltrans->items[n], &seltrans->transforms[n]);
+		l = l->next;
+		n += 1;
+	}
 
 	nr_matrix_d_set_identity (&seltrans->current);
 
@@ -278,22 +302,22 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 {
 	SPItem *item;
 	const GSList *l;
-	NRMatrixD current_, i2current, n2p, p2n;
+	NRMatrixD i2current, n2p, p2n;
 	NRMatrixF i2d, i2dnew;
 	gint i;
 
 	g_return_if_fail (seltrans->grabbed);
 	g_return_if_fail (!seltrans->empty);
 
-	nr_matrix_d_invert (&current_, &seltrans->current);
 	nr_matrix_d_set_translate (&n2p, norm->x, norm->y);
-	nr_matrix_d_invert (&p2n, &n2p);
+	nr_matrix_d_set_translate (&p2n, -norm->x, -norm->y);
 	nr_matrix_multiply_ddd (affine, &p2n, affine);
 	nr_matrix_multiply_ddd (affine, affine, &n2p);
 
 	if (seltrans->show == SP_SELTRANS_SHOW_CONTENT) {
 	        // update the content
-
+		int i;
+#if 0
          	/* We accept empty lists here, as something may well remove items */
 	        /* and seltrans does not update, if frozen */
 	        l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
@@ -305,6 +329,13 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 			sp_item_set_i2d_affine (item, &i2dnew);
 			l = l->next;
 		}
+#else
+		for (i = 0; i < seltrans->nitems; i++) {
+			NRMatrixF i2dnew;
+			nr_matrix_multiply_ffd (&i2dnew, &seltrans->transforms[i], &seltrans->current);
+			sp_item_set_i2d_affine (seltrans->items[i], &i2dnew);
+		}
+#endif
 	} else {
 		NRPointF p[4];
         	/* update the outline */
@@ -336,7 +367,7 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	SPItem * item;
 	const GSList * l;
 	gchar tstr[80];
-	NRPointF p;
+	NRPointD p;
 
 	g_return_if_fail (seltrans->grabbed);
 
@@ -377,15 +408,21 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 		sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
 	}
 
+	if (seltrans->items) {
+		int i;
+		for (i = 0; i < seltrans->nitems; i++) sp_object_unref (SP_OBJECT (seltrans->items[i]), NULL);
+		nr_free (seltrans->items);
+		seltrans->items = NULL;
+	}
+	if (seltrans->transforms) {
+		nr_free (seltrans->transforms);
+		seltrans->transforms = NULL;
+	}
+	seltrans->nitems = 0;
+
 	seltrans->grabbed = FALSE;
 	seltrans->show_handles = TRUE;
 	
-#if 0
-	if (seltrans->sel_changed) {
-		seltrans->state = SP_SEL_TRANS_SCALE;
-	}
-#endif
-
 	sp_canvas_item_hide (seltrans->norm);
 	sp_canvas_item_hide (seltrans->grip);
 
@@ -493,6 +530,8 @@ sp_sel_trans_origin_desktop (SPSelTrans *seltrans, NRPointF *p)
 static void
 sp_sel_trans_update_handles (SPSelTrans * seltrans)
 {
+	NRPointF p;
+
 	g_return_if_fail (seltrans != NULL);
 
       	if ((!seltrans->show_handles) || (seltrans->empty)) {
@@ -544,7 +583,9 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 			    G_CALLBACK (sp_sel_trans_handle_ungrab), (gpointer) &handle_center);
 	}
 	sp_knot_show (seltrans->chandle);
-	sp_knot_set_position (seltrans->chandle, &seltrans->center, 0);
+	p.x = seltrans->center.x;
+	p.y = seltrans->center.y;
+	sp_knot_set_position (seltrans->chandle, &p, 0);
 }
 
 static void
@@ -753,9 +794,7 @@ sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)
 
 	seltrans = (SPSelTrans *) data;
 
-	if (seltrans->grabbed) {
-		seltrans->sel_changed = TRUE;
-	} else {
+	if (!seltrans->grabbed) {
 		sp_sel_trans_update_volatile_state (seltrans);
 		seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
 		seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
@@ -771,9 +810,7 @@ sp_sel_trans_sel_modified (SPSelection *selection, guint flags, gpointer data)
 
 	seltrans = (SPSelTrans *) data;
 
-	if (seltrans->grabbed) {
-		seltrans->sel_changed = TRUE;
-	} else {
+	if (!seltrans->grabbed) {
 		sp_sel_trans_update_volatile_state (seltrans);
 		seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
 		seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
