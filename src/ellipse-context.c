@@ -172,7 +172,6 @@ sp_ellipse_drag (SPEllipseContext * ec, double x, double y, guint state)
 	if (!ec->item) {
 		SPRepr * repr;
 		repr = sp_repr_new ("ellipse");
-		sp_repr_set_attr (repr, "closed", "1");
 		ec->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 	}
@@ -264,8 +263,8 @@ sp_ellipse_finish (SPEllipseContext * ec)
 		ellipse = SP_ELLIPSE (ec->item);
 		repr = SP_OBJECT (ec->item)->repr;
 
-		sp_repr_set_double_attribute (repr, "x", ellipse->x);
-		sp_repr_set_double_attribute (repr, "y", ellipse->y);
+		sp_repr_set_double_attribute (repr, "cx", ellipse->x);
+		sp_repr_set_double_attribute (repr, "cy", ellipse->y);
 		sp_repr_set_double_attribute (repr, "rx", ellipse->rx);
 		sp_repr_set_double_attribute (repr, "ry", ellipse->ry);
 

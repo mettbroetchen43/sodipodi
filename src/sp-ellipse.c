@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <gnome.h>
+#include "svg/svg.h"
 #include "sp-ellipse.h"
 
 #define noELLIPSE_VERBOSE
@@ -93,68 +94,72 @@ sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (SP_OBJECT_CLASS(parent_class)->build)
 		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
 
-	sp_ellipse_read_attr (object, "x");
-	sp_ellipse_read_attr (object, "y");
+	sp_ellipse_read_attr (object, "cx");
+	sp_ellipse_read_attr (object, "cy");
 	sp_ellipse_read_attr (object, "rx");
 	sp_ellipse_read_attr (object, "ry");
-	sp_ellipse_read_attr (object, "start");
-	sp_ellipse_read_attr (object, "end");
-	sp_ellipse_read_attr (object, "closed");
+	sp_ellipse_read_attr (object, "sodipodi:start");
+	sp_ellipse_read_attr (object, "sodipodi:end");
+	sp_ellipse_read_attr (object, "sodipodi:open");
 }
 
 static void
 sp_ellipse_read_attr (SPObject * object, const gchar * attr)
 {
 	SPEllipse * ellipse;
+	const gchar * astr;
+	SPSVGUnit unit;
 	double n;
 
 	ellipse = SP_ELLIPSE (object);
 
 #ifdef ELLIPSE_VERBOSE
-g_print ("sp_ellipse_read_attr: attr %s\n", attr);
+	g_print ("sp_ellipse_read_attr: attr %s\n", attr);
 #endif
 
-	if (strcmp (attr, "x") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->x);
+	astr = sp_repr_attr (object->repr, attr);
+
+	if (strcmp (attr, "cx") == 0) {
+		n = sp_svg_read_length (&unit, astr);
 		ellipse->x = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
-	if (strcmp (attr, "y") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->y);
+	if (strcmp (attr, "cy") == 0) {
+		n = sp_svg_read_length (&unit, astr);
 		ellipse->y = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
 	if (strcmp (attr, "rx") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->rx);
+		n = sp_svg_read_length (&unit, astr);
 		ellipse->rx = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
 	if (strcmp (attr, "ry") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->ry);
+		n = sp_svg_read_length (&unit, astr);
 		ellipse->ry = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
-	if (strcmp (attr, "start") == 0) {
+	if (strcmp (attr, "sodipodi:start") == 0) {
 		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->start);
 		ellipse->start = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
-	if (strcmp (attr, "end") == 0) {
+	if (strcmp (attr, "sodipodi:end") == 0) {
 		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->end);
 		ellipse->end = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
-	if (strcmp (attr, "closed") == 0) {
+	if (strcmp (attr, "sodipodi:open") == 0) {
 		if (sp_repr_attr_is_set (object->repr, attr))
-			ellipse->closed = TRUE;
-		else
 			ellipse->closed = FALSE;
+		else
+			ellipse->closed = TRUE;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}

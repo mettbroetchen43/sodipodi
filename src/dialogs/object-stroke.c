@@ -190,7 +190,7 @@ sp_object_stroke_apply (GnomePropertyBox * propertybox, gint pagenum)
 	stroke_width = gtk_spin_button_get_value_as_float (sp_stroke_width);
 
 	if (gtk_toggle_button_get_active (tb_stroke_scaled)) {
-		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_USER);
+		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_ABSOLUTE);
 		sp_repr_css_set_property (css, "stroke-width", cstr);
 	} else {
 		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_PIXELS);

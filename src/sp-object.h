@@ -28,6 +28,9 @@ typedef struct _SPDocumentClass SPDocumentClass;
 #define SP_IS_OBJECT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
 #define SP_IS_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
 
+#define SP_OBJECT_CLONED_FLAG (1 << 4)
+#define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
+
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
 #include "xml/repr.h"
@@ -56,7 +59,7 @@ struct _SPObjectClass {
 
 GtkType sp_object_get_type (void);
 
-void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr);
+void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 

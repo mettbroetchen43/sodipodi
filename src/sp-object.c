@@ -95,19 +95,16 @@ sp_object_destroy (GtkObject * object)
 	spobject = (SPObject *) object;
 
 	/* Parent refcount us, so there shouldn't be any */
+	g_assert (!spobject->parent);
+	g_assert (spobject->document);
+	g_assert (spobject->repr);
+	g_assert (spobject->id);
 
-	g_assert (spobject->parent == NULL);
+	sp_document_undef_id (spobject->document, spobject->id);
+	g_free (spobject->id);
 
-	if (spobject->id) {
-		if (spobject->document)
-			sp_document_undef_id (spobject->document, spobject->id);
-		g_free (spobject->id);
-	}
-
-	if (spobject->repr) {
-		/* Signals will be disconnected, if we are destroyed */
-		sp_repr_unref (spobject->repr);
-	}
+	/* Signals will be disconnected, if we are destroyed */
+	sp_repr_unref (spobject->repr);
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
@@ -141,7 +138,7 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 }
 
 void
-sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr)
+sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned)
 {
 	const gchar * id;
 	gchar * realid;
@@ -164,16 +161,12 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	object->repr = repr;
 	sp_repr_ref (repr);
 
-	/* Define ID */
-
 	id = sp_repr_attr (repr, "id");
 	realid = sp_object_get_unique_id (object, id);
 	g_assert (realid != NULL);
 	sp_document_def_id (document, realid, object);
 	object->id = realid;
-
 	/* Redefine ID, if required */
-
 	if ((id == NULL) || (strcmp (id, realid) != 0)) {
 		ret = sp_repr_set_attr (repr, "id", realid);
 		g_assert (ret);
@@ -207,13 +200,12 @@ sp_object_read_attr (SPObject * object, const gchar * key)
 	g_assert (key != NULL);
 
 	if (strcmp (key, "id") == 0) {
+
 		id = sp_repr_attr (object->repr, "id");
 		g_assert (id != NULL);
-
 		if (strcmp (id, object->id) == 0) return;
 
 		g_assert (!sp_document_lookup_id (object->document, id));
-
 		sp_document_undef_id (object->document, object->id);
 		g_free (object->id);
 		object->id = g_strdup (id);

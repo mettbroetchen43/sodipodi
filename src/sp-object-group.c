@@ -104,7 +104,7 @@ static void sp_objectgroup_build (SPObject * object, SPDocument * document, SPRe
 			child = gtk_type_new (type);
 			child->parent = object;
 			objectgroup->children = g_slist_append (objectgroup->children, child);
-			sp_object_invoke_build (child, document, crepr);
+			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
 		}
 		l = l->next;
 	}
@@ -132,7 +132,7 @@ sp_objectgroup_add_child (SPObject * object, SPRepr * child)
 	childobject->parent = object;
 
 	objectgroup->children = g_slist_append (objectgroup->children, childobject);
-	sp_object_invoke_build (childobject, object->document, child);
+	sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
 
 	sp_objectgroup_set_order (object);
 }

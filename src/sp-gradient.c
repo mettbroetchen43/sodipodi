@@ -224,7 +224,7 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 			child = gtk_type_new (SP_TYPE_STOP);
 			child->parent = object;
 			lg->stops = g_slist_append (lg->stops, child);
-			sp_object_invoke_build (child, document, crepr);
+			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
 			l = l->next;
 		}
 	}

@@ -202,7 +202,12 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			}
 
 			if (addline) {
+				ArtBpath * bp;
 				addline = FALSE;
+				g_assert (dc->currentcurve->end > 1);
+				bp = sp_curve_last_bpath (dc->currentcurve);
+				p.x = bp->x3;
+				p.y = bp->y3;
 				/* We were in straight-line mode - draw it now */
 				concat_current (dc);
 				if (dc->cinside) {
@@ -260,8 +265,14 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			}
 			ret = TRUE;
 		} else if (addline) {
-			g_print ("toot\n");
 			g_assert (dc->npoints > 0);
+			if (event->motion.state & GDK_CONTROL_MASK) {
+				if (fabs (p.x - dc->p[0].x) > fabs (p.y - dc->p[0].y)) {
+					p.y = dc->p[0].y;
+				} else {
+					p.x = dc->p[0].x;
+				}
+			}
 			dc->p[1] = p;
 			dc->npoints = 2;
 

@@ -15,16 +15,6 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_defs_add_child (SPObject * object, SPRepr * child);
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 
-#if 0
-static void sp_defs_update (SPItem *item, gdouble affine[]);
-static void sp_defs_bbox (SPItem * item, ArtDRect * bbox);
-static void sp_defs_print (SPItem * item, GnomePrintContext * gpc);
-static gchar * sp_defs_description (SPItem * item);
-static GnomeCanvasItem * sp_defs_show (SPItem * item, GnomeCanvasDefs * canvas_defs, gpointer handler);
-static void sp_defs_hide (SPItem * item, GnomeCanvas * canvas);
-static gboolean sp_defs_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
-#endif
-
 static SPObjectClass * parent_class;
 
 GtkType
@@ -63,15 +53,6 @@ sp_defs_class_init (SPDefsClass * klass)
 	sp_object_class->build = sp_defs_build;
 	sp_object_class->add_child = sp_defs_add_child;
 	sp_object_class->remove_child = sp_defs_remove_child;
-#if 0
-	item_class->update = sp_defs_update;
-	item_class->bbox = sp_defs_bbox;
-	item_class->print = sp_defs_print;
-	item_class->description = sp_defs_description;
-	item_class->show = sp_defs_show;
-	item_class->hide = sp_defs_hide;
-	item_class->paint = sp_defs_paint;
-#endif
 }
 
 static void
@@ -118,7 +99,7 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 		child = gtk_type_new (SP_TYPE_DEFS);
 		child->parent = object;
 		defs->children = g_slist_prepend (defs->children, child);
-		sp_object_invoke_build (child, document, crepr);
+		sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
 		l = l->next;
 	}
 }
@@ -137,7 +118,7 @@ sp_defs_add_child (SPObject * object, SPRepr * child)
 	childobject = gtk_type_new (SP_TYPE_DEFS);
 	childobject->parent = object;
 	defs->children = g_slist_prepend (defs->children, childobject);
-	sp_object_invoke_build (childobject, object->document, child);
+	sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
 }
 
 static void
@@ -163,4 +144,6 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 	}
 	g_assert_not_reached ();
 }
+
+
 

@@ -1,3 +1,21 @@
+2000-09-17  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/draw-context.c (sp_draw_context_root_handler): Handle Ctrl
+	and fix an missing segment, while continuing Ctrl-aligned line.
+
+	* src/ellipse-context.c (sp_ellipse_read-attr): Use sodipodi namespace
+	for "start", "end". Replace "closed" with "open", so closed is default
+
+	* src/sp-ellipse_context.c: Ditto
+
+	* src/sp-object.c: #define SP_OBJECT_CLONED_FLAG
+
+	* src/sp-root.c (sp_root_read_attr): Tru to read "viewBox" attribute.
+	The implementation is hackish, but it works, until document size is fixed
+
+	* src/display/canvas-shape.c (sp_canvas_shape_update): Calculate correct
+	line thickness
+
 2000-09-16  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/draw-context.*: Freehand should work OK now

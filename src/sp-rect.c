@@ -1,6 +1,7 @@
 #define SP_RECT_C
 
 #include <gnome.h>
+#include "svg/svg.h"
 #include "sp-rect.h"
 
 #define noRECT_VERBOSE
@@ -150,48 +151,52 @@ static void
 sp_rect_read_attr (SPObject * object, const gchar * attr)
 {
 	SPRect * rect;
+	const gchar * astr;
+	SPSVGUnit unit;
 	double n;
 
 	rect = SP_RECT (object);
 
 #ifdef RECT_VERBOSE
-g_print ("sp_rect_read_attr: attr %s\n", attr);
+	g_print ("sp_rect_read_attr: attr %s\n", attr);
 #endif
+
+	astr = sp_repr_attr (object->repr, attr);
 
 	/* fixme: we should really collect updates */
 
 	if (strcmp (attr, "x") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->x);
+		n = sp_svg_read_length (&unit, astr);
 		rect->x = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "y") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->y);
+		n = sp_svg_read_length (&unit, astr);
 		rect->y = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "width") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->width);
+		n = sp_svg_read_length (&unit, astr);
 		rect->width = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "height") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->height);
+		n = sp_svg_read_length (&unit, astr);
 		rect->height = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "rx") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->rx);
+		n = sp_svg_read_length (&unit, astr);
 		rect->rx = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "ry") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, rect->ry);
+		n = sp_svg_read_length (&unit, astr);
 		rect->ry = n;
 		sp_rect_set_shape (rect);
 		return;

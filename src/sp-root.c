@@ -1,5 +1,6 @@
 #define SP_ROOT_C
 
+#include "svg/svg.h"
 #include "document.h"
 #include "sp-namedview.h"
 #include "sp-root.h"
@@ -82,6 +83,9 @@ sp_root_init (SPRoot *root)
 	root->group.transparent = TRUE;
 	root->width = SP_SVG_DEFAULT_WIDTH;
 	root->height = SP_SVG_DEFAULT_HEIGHT;
+	root->viewbox.x0 = root->viewbox.y0 = 0.0;
+	root->viewbox.x1 = root->width;
+	root->viewbox.y1 = root->height;
 }
 
 static void
@@ -135,6 +139,7 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	sp_root_read_attr (object, "width");
 	sp_root_read_attr (object, "height");
+	sp_root_read_attr (object, "viewBox");
 
 	for (l = group->other; l != NULL; l = l->next) {
 		if (SP_IS_NAMEDVIEW (l->data)) {
@@ -150,17 +155,24 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 {
 	SPItem * item;
 	SPRoot * root;
+	const gchar * astr;
+	SPSVGUnit unit;
+	gdouble len;
 	GSList * l;
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
 
+	astr = sp_repr_attr (object->repr, key);
+
 	if (strcmp (key, "width") == 0) {
-		root->width = sp_repr_get_double_attribute (object->repr, key, root->width);
+		len = sp_svg_read_length (&unit, astr);
+		if (len >= 1.0) root->width = len;
 		return;
 	}
 	if (strcmp (key, "height") == 0) {
-		root->height = sp_repr_get_double_attribute (object->repr, key, root->height);
+		len = sp_svg_read_length (&unit, astr);
+		if (len >= 1.0) root->height = len;
 		/* fixme: */
 		art_affine_scale (item->affine, 1.0, -1.0);
 		item->affine[5] = root->height;
@@ -168,6 +180,39 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
 		}
 		return;
+	}
+	/* fixme: */
+	if (strcmp (key, "viewBox") == 0) {
+		gdouble x, y, width, height;
+		gchar * eptr;
+		gdouble t0[6], s[6], t1[6], a[6];
+
+		if (!astr) return;
+		eptr = (gchar *) astr;
+		x = strtod (eptr, &eptr);
+		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+		y = strtod (eptr, &eptr);
+		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+		width = strtod (eptr, &eptr);
+		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+		height = strtod (eptr, &eptr);
+		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+		if ((width > 0) && (height > 0)) {
+			root->viewbox.x0 = x;
+			root->viewbox.y0 = y;
+			root->viewbox.x1 = x + width;
+			root->viewbox.y1 = y + height;
+			art_affine_translate (t0, x, y);
+			art_affine_scale (s, root->width / width, -root->height / height);
+			art_affine_translate (t1, 0, root->height);
+			art_affine_multiply (a, t0, s);
+			art_affine_multiply (a, a, t1);
+			memcpy (item->affine, a, 6 * sizeof (gdouble));
+			for (l = item->display; l != NULL; l = l->next) {
+				gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
+			}
+			return;
+		}
 	}
 
 	if (((SPObjectClass *) parent_class)->read_attr)

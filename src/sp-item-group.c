@@ -141,7 +141,7 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 			} else {
 				group->other = g_slist_append (group->other, child);
 			}
-			sp_object_invoke_build (child, document, crepr);
+			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
 		}
 		l = l->next;
 	}
@@ -192,7 +192,7 @@ sp_group_add_child (SPObject * object, SPRepr * child)
 
 	if (SP_IS_ITEM (childobject)) {
 		group->children = g_slist_append (group->children, childobject);
-		sp_object_invoke_build (childobject, object->document, child);
+		sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
 		g_print ("sp-item-group.c: Please fix signals\n");
 		for (l = SP_ITEM (object)->display; l != NULL; l = l->next) {
 			ci = sp_item_show (SP_ITEM (childobject),
@@ -201,7 +201,7 @@ sp_group_add_child (SPObject * object, SPRepr * child)
 		}
 	} else {
 		group->other = g_slist_append (group->other, childobject);
-		sp_object_invoke_build (childobject, object->document, child);
+		sp_object_invoke_build (childobject, object->document, child, SP_OBJECT_IS_CLONED (object));
 	}
 	sp_group_set_order (object);
 }

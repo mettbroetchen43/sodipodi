@@ -6,8 +6,6 @@
  *
  * SVG <defs> node implementation
  *
- * fixme: Probably we should reuse some SPGroup stuff?
- *
  * Copyright (C) Lauris Kaplinski 2000
  * Released under GNU GPL
  */

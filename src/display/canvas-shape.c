@@ -1,5 +1,6 @@
 #define SP_CANVAS_SHAPE_C
 
+#include <math.h>
 #include <gnome.h>
 #include "../helper/canvas-helper.h"
 #include "canvas-shape.h"
@@ -153,6 +154,12 @@ g_print ("sp_canvas_shape_update: entering\n");
 		comp = (SPCPathComp *) l->data;
 		if (shape->stroke->type != SP_STROKE_NONE) {
 			comp->stroke_width = shape->stroke->width;
+			if (shape->stroke->scaled) {
+				gdouble wx, wy;
+				wx = affine[0] + affine[1];
+				wy = affine[2] + affine[3];
+				comp->stroke_width *= hypot (wx, wy) / 1.414213562;
+			}
 		} else {
 			comp->stroke_width = 0.0;
 		}

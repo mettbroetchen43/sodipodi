@@ -29,6 +29,7 @@ typedef struct _SPRootClass SPRootClass;
 struct _SPRoot {
 	SPGroup group;
 	double width, height;
+	ArtDRect viewbox;
 	GSList * namedviews;
 };
 
