@@ -539,7 +539,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	bbox.y1 = buf->height;
 	/* Update to renderable state */
 	art_affine_identity (gc.affine);
-	nr_arena_item_invoke_update (root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+	nr_arena_item_invoke_update (root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
 	/* Get RGBA buffer */
 	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, buf->width, buf->height, TRUE, FALSE);
 	/* Render */

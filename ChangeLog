@@ -1,5 +1,7 @@
 2002-09-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-compose.c (nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P): Oops, evil bug
+
 	* src/libnr/nr-rect.c (nr_rect_d_matrix_d_transform): New method
 	(nr_rect_f_matrix_f_transform): Ditto
 

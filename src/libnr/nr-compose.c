@@ -55,7 +55,7 @@ nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const u
 			unsigned char *d;
 			s = spx;
 			d = px;
-			for (c = 0; c < c; r++) {
+			for (c = 0; c < w; c++) {
 				unsigned int a;
 				a = NR_PREMUL (s[3], alpha);
 				if (a == 0) {
