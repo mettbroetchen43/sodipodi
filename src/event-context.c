@@ -87,12 +87,19 @@ sp_event_context_private_setup (SPEventContext * event_context, SPDesktop * desk
 
 	event_context->desktop = desktop;
 
-	if (event_context->cursor_shape) {
-		sp_cursor_bitmap_and_mask_from_xpm (&bitmap, &mask, event_context->cursor_shape);
-		w = GTK_WIDGET (SP_DT_CANVAS (desktop));
-		event_context->cursor = gdk_cursor_new_from_pixmap (bitmap, mask,
-			&w->style->black, &w->style->white,
-			event_context->hot_x, event_context->hot_y);
+	w = GTK_WIDGET (SP_DT_CANVAS (desktop));
+	if (w->window) {
+		/* fixme: */
+		if (event_context->cursor_shape) {
+			bitmap = NULL;
+			mask = NULL;
+			sp_cursor_bitmap_and_mask_from_xpm (&bitmap, &mask, event_context->cursor_shape);
+			if ((bitmap != NULL) && (mask != NULL)) {
+				event_context->cursor = gdk_cursor_new_from_pixmap (bitmap, mask,
+					&w->style->black, &w->style->white,
+					event_context->hot_x, event_context->hot_y);
+			}
+		}
 		gdk_window_set_cursor (w->window, event_context->cursor);
 	}
 }

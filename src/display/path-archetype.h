@@ -6,6 +6,7 @@
  *
  * These are shared components for gnome canvas shapes
  * The main reason of their existence is sharing SVPs for glyphs
+ * Maybe we'll include pixmap cache one day also...
  *
  */
 
@@ -14,15 +15,16 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
+#include "../helper/curve.h"
 
 typedef struct _SPPathAT SPPathAT;
 
 struct _SPPathAT {
 	gint refcount;
 	/* identifiers */
-	ArtBpath * bpath;
-	gboolean private;
-	double affine[6];
+	SPCurve * curve;
+	guint private : 1;	/* Whether archetype can be shared */
+	double affine[4];
 	double stroke_width;
 	ArtPathStrokeJoinType join;
 	ArtPathStrokeCapType cap;
@@ -38,7 +40,7 @@ struct _SPPathAT {
  * Inreases refcount of returned at (use unref, when done with it)
  */
 
-SPPathAT * sp_path_at (ArtBpath * bpath,
+SPPathAT * sp_path_at (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,

@@ -92,34 +92,6 @@ sp_nodepath_line_new (void)
 	return (l);
 }
 
-static SPNodePath *
-sp_nodepath_request_space (SPNodePath * nodepath, gint space_needed)
-{
-	ArtBpath * bpath;
-	gint n;
-
-	g_assert (nodepath != NULL);
-	g_assert (space_needed >= 0);
-
-	n = nodepath->n_bpaths;
-
-	nodepath->n_bpaths += space_needed;
-
-	if (nodepath->n_bpaths > nodepath->max_bpaths) {
-		nodepath->max_bpaths += 16;
-		if (nodepath->n_bpaths > nodepath->max_bpaths) nodepath->max_bpaths = nodepath->n_bpaths;
-		bpath = art_new (ArtBpath, nodepath->max_bpaths);
-		g_return_val_if_fail (bpath != NULL, NULL);
-		memcpy (bpath, nodepath->bpath, n);
-		nodepath->bpath = bpath;
-		nodepath->typestr = g_realloc (nodepath->typestr, nodepath->max_bpaths);
-	}
-
-	if ((nodepath->bpath == NULL) || (nodepath->typestr == NULL)) return NULL;
-
-	return nodepath;
-}
-
 static SPPathNode *
 sp_nodepath_line_midpoint (SPPathNode * node, SPPathLine * line, gdouble t)
 {
@@ -313,8 +285,9 @@ sp_nodepath_line_add_node (SPPathLine * line, gdouble t)
 	start = line->start;
 	end = line->end;
 	sp_nodepath_subpath_slideto_last (subpath);
-	sp_nodepath_request_space (nodepath, 1);
+	sp_curve_ensure_space (nodepath->curve, 1);
 
+	nodepath->n_bpaths++;
 	subpath->n_bpaths++;
 	newnode = sp_nodepath_node_new ();
 	newline = sp_nodepath_line_new ();
@@ -388,7 +361,8 @@ sp_nodepath_node_break (SPPathNode * node)
 	/* We are on an open path ;-( */
 	if (node->next.line == NULL) return NULL;
 	if (node->prev.line == NULL) return NULL;
-	sp_nodepath_request_space (nodepath, 1);
+	sp_curve_ensure_space (nodepath->curve, 1);
+	nodepath->n_bpaths++;
 	newsubpath = g_new (SPNodeSubPath, 1);
 	newsubpath->nodepath = nodepath;
 	newsubpath->path_pos = subpath->path_pos + node->subpath_pos + 1;
@@ -1295,7 +1269,7 @@ sp_nodepath_subpath_append_node (SPNodeSubPath * subpath, gint subpath_pos, gint
 	g_assert (subpath != NULL);
 	g_assert (typestr != NULL);
 
-	bpath = subpath->nodepath->bpath + subpath->path_pos + subpath_pos;
+	bpath = subpath->nodepath->curve->bpath + subpath->path_pos + subpath_pos;
 
 	fn = NULL;
 	ln = NULL;
@@ -1399,7 +1373,7 @@ sp_nodepath_append_subpath (SPNodePath * nodepath, gint start, gint end, const g
 	g_assert (nodepath != NULL);
 	g_assert (typestr != NULL);
 
-	bpath = nodepath->bpath;
+	bpath = nodepath->curve->bpath;
 
 	subpath = sp_nodepath_subpath_new ();
 	subpath->nodepath = nodepath;
@@ -1598,33 +1572,11 @@ sp_node_update_bpath (SPPathNode * node)
 	SPNodeSubPath * subpath;
 	SPPathLine * line;
 	ArtBpath * bpath;
-	gchar * typestr, typecode;
 	gint pos, nextpos;
 
 	subpath = node->subpath;
 	nodepath = subpath->nodepath;
-	bpath = nodepath->bpath;
-	typestr = nodepath->typestr;
-
-	switch (node->type) {
-		case SP_PATHNODE_NONE:
-			typecode = 'n';
-			break;
-		case SP_PATHNODE_CUSP:
-			typecode = 'c';
-			break;
-		case SP_PATHNODE_SMOOTH:
-			typecode = 's';
-			break;
-		case SP_PATHNODE_SYMM:
-			typecode = 'y';
-			break;
-		default:
-			g_assert_not_reached ();
-			typecode = 'x';
-			break;
-	}
-
+	bpath = nodepath->curve->bpath;
 	pos = node->subpath_pos + subpath->path_pos;
 	nextpos = pos + 1;
 
@@ -1632,7 +1584,6 @@ sp_node_update_bpath (SPPathNode * node)
 		bpath[pos].code = ART_MOVETO;
 		bpath[pos].x3 = node->pos.x;
 		bpath[pos].y3 = node->pos.y;
-		typestr[pos] = typecode;
 		pos = node->subpath_end + subpath->path_pos;
 	}
 
@@ -1661,8 +1612,6 @@ sp_node_update_bpath (SPPathNode * node)
 			bpath[nextpos].y2 = line->end->prev.cpoint.y;
 		}
 	}
-
-	typestr[pos] = typecode;
 }
 
 void
@@ -1681,15 +1630,14 @@ sp_nodepath_update_bpath (SPNodePath * nodepath)
 			sp_node_update_bpath (node);
 		}
 	}
-	nodepath->bpath[nodepath->n_bpaths - 1].code = ART_END;
-	nodepath->typestr[nodepath->n_bpaths - 1] = '\0';
+	nodepath->curve->bpath[nodepath->n_bpaths - 1].code = ART_END;
 }
 
 static void
 sp_nodepath_update_object (SPNodePath * nodepath)
 {
 #if 1
-	sp_path_bpath_modified (nodepath->path, nodepath->bpath);
+	sp_path_bpath_modified (nodepath->path, nodepath->curve);
 #else
 	gchar * str;
 
@@ -1703,27 +1651,47 @@ sp_nodepath_update_object (SPNodePath * nodepath)
 static void
 sp_nodepath_flush (SPNodePath * nodepath)
 {
-	ArtBpath * bpath;
+	SPNodeSubPath * subpath;
+	SPPathNode * node;
+	GList * l, * nl;
 	gchar * str;
 
-	bpath = art_new (ArtBpath, nodepath->max_bpaths);
-	memcpy (bpath, nodepath->bpath, sizeof (ArtBpath) * nodepath->max_bpaths);
-#if 0
-	typestr = g_new (gchar, nodepath->max_bpaths);
-	memcpy (typestr, nodepath->typestr, sizeof (gchar) * nodepath->max_bpaths);
-#endif
-#if 0
-	sp_path_bpath_modified (nodepath->path, nodepath->bpath);
-#else
-
-	str = sp_svg_write_path (nodepath->bpath);
+	str = sp_svg_write_path (nodepath->curve->bpath);
 	sp_repr_set_attr (nodepath->repr, "d", str);
 	g_free (str);
-	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", nodepath->typestr);
 
-	nodepath->bpath = bpath;
-g_print ("flushed\n");
-#endif
+	str = g_new (gchar, nodepath->n_bpaths + 1);
+
+	for (l = nodepath->subpaths; l != NULL; l = l->next) {
+		subpath = (SPNodeSubPath *) l->data;
+		for (nl = subpath->nodes; nl != NULL; nl = nl->next) {
+			node = (SPPathNode *) nl->data;
+			switch (node->type) {
+			case SP_PATHNODE_NONE:
+				str[subpath->path_pos + node->subpath_pos] = 'n';
+				break;
+			case SP_PATHNODE_CUSP:
+				str[subpath->path_pos + node->subpath_pos] = 'c';
+				break;
+			case SP_PATHNODE_SMOOTH:
+				str[subpath->path_pos + node->subpath_pos] = 's';
+				break;
+			case SP_PATHNODE_SYMM:
+				str[subpath->path_pos + node->subpath_pos] = 'y';
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+			if (node->subpath_end >= 0)
+				str[subpath->path_pos + node->subpath_end] = 'n';
+		}
+	}
+
+	str[nodepath->n_bpaths] = '\0';
+
+	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", str);
+	g_free (str);
 }
 
 /*
@@ -1736,6 +1704,7 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 {
 	SPItem * item;
 	SPPath * path;
+	SPCurve * curve;
 	ArtBpath * bpath;
 	SPNodeSubPath * subpath;
 	gint n_bpaths;
@@ -1753,9 +1722,10 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 	if (!sp_path_independent (path)) return;
 
 	/* fixme: */
-	bpath = sp_path_normalize (path);
-	if (bpath == NULL) return;
+	curve = sp_path_normalize (path);
+	if (curve == NULL) return;
 
+	bpath = curve->bpath;
 	for (n_bpaths = 0; bpath[n_bpaths].code != ART_END; n_bpaths++);
 	n_bpaths++;
 
@@ -1777,9 +1747,8 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 	nodepath->max_bpaths = n_bpaths;
 	nodepath->subpaths = NULL;
 	nodepath->sel = NULL;
-	nodepath->bpath = art_new (ArtBpath, n_bpaths);
-	memcpy (nodepath->bpath, bpath, sizeof (ArtBpath) * n_bpaths);
-	nodepath->typestr = typestr;
+	nodepath->curve = curve;
+	sp_curve_ref (curve);
 
 	substart = 0;
 	while (substart < n_bpaths - 1) {
@@ -1791,6 +1760,8 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 	}
 
 	sp_nodepath_ensure_ctrls (nodepath);
+
+	g_free (typestr);
 }
 
 static void
@@ -1805,8 +1776,7 @@ sp_nodepath_clean (SPNodePath * nodepath)
 	g_assert (nodepath->sel == NULL);
 	g_assert (nodepath->n_bpaths == 1);
 
-	art_free (nodepath->bpath);
-	g_free (nodepath->typestr);
+	sp_curve_unref (nodepath->curve);
 
 	nodepath->repr = NULL;
 	nodepath->path = NULL;
@@ -1814,12 +1784,7 @@ sp_nodepath_clean (SPNodePath * nodepath)
 	nodepath->max_bpaths = 0;
 	nodepath->subpaths = NULL;
 	nodepath->sel = NULL;
-	nodepath->bpath = NULL;
-	nodepath->typestr = NULL;
-#if 1
-	art_free (nodepath->bpath);
-	g_free (nodepath->typestr);
-#endif
+	nodepath->curve = NULL;
 }
 
 /*
@@ -1854,8 +1819,7 @@ sp_nodepath_init (SPNodePath * nodepath, SPDesktop * desktop)
 	nodepath->max_bpaths = 0;
 	nodepath->subpaths = NULL;
 	nodepath->sel = NULL;
-	nodepath->bpath = NULL;
-	nodepath->typestr = NULL;
+	nodepath->curve = NULL;
 
 	nodepath->sel_changed_id = gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
 		GTK_SIGNAL_FUNC (sp_nodepath_sel_changed), nodepath);
@@ -1884,8 +1848,7 @@ sp_nodepath_shutdown (SPNodePath * nodepath)
 		g_assert (nodepath->sel == NULL);
 		g_assert (nodepath->n_bpaths == 1);
 #if 1
-		art_free (nodepath->bpath);
-		g_free (nodepath->typestr);
+		sp_curve_unref (nodepath->curve);
 #endif
 	}
 }

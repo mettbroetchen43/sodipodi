@@ -10,7 +10,6 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_rect_svp.h>
-
 #include "path-archetype.h"
 
 #define noDEBUG_PATH_AT
@@ -24,7 +23,7 @@ static gint sp_pat_equal (gconstpointer a, gconstpointer b);
 
 static void sp_pat_free_state (SPPathAT * at);
 
-static SPPathAT * sp_path_at_new (ArtBpath * bpath,
+static SPPathAT * sp_path_at_new (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
@@ -34,7 +33,7 @@ static SPPathAT * sp_path_at_new (ArtBpath * bpath,
 GHashTable * archetypes = NULL;
 
 SPPathAT *
-sp_path_at (ArtBpath * bpath,
+sp_path_at (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
@@ -44,13 +43,13 @@ sp_path_at (ArtBpath * bpath,
 	SPPathAT cat, * at;
 	gint i;
 
-	g_return_val_if_fail (bpath != NULL, NULL);
+	g_return_val_if_fail (curve != NULL, NULL);
 
 	if (archetypes == NULL)
 		archetypes = g_hash_table_new (sp_pat_hash, sp_pat_equal);
 
 	if (!private) {
-		cat.bpath = bpath;
+		cat.curve = curve;
 		for (i = 0; i < 4; i++) cat.affine[i] = affine[i];
 		cat.stroke_width = stroke_width;
 		cat.join = join;
@@ -64,7 +63,7 @@ sp_path_at (ArtBpath * bpath,
 		}
 	}
 
-	at = sp_path_at_new (bpath, private, affine, stroke_width, join, cap);
+	at = sp_path_at_new (curve, private, affine, stroke_width, join, cap);
 
 	if (!private) {
 		g_hash_table_insert (archetypes, at, at);
@@ -89,6 +88,7 @@ sp_path_at_unref (SPPathAT * at)
 	if (at->refcount < 1) {
 		if (!at->private)
 			g_hash_table_remove (archetypes, at);
+		sp_curve_unref (at->curve);
 		sp_pat_free_state (at);
 		g_free (at);
 #ifdef DEBUG_PATH_AT
@@ -99,7 +99,7 @@ sp_path_at_unref (SPPathAT * at)
 }
 
 static SPPathAT *
-sp_path_at_new (ArtBpath * bpath,
+sp_path_at_new (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
@@ -111,20 +111,25 @@ sp_path_at_new (ArtBpath * bpath,
 	ArtBpath * affine_bpath;
 	ArtVpath * perturbed_vpath;
 	ArtSVP * svpa, * svpb;
+	gdouble fa[6];
 
-	g_return_val_if_fail (bpath != NULL, NULL);
+	g_return_val_if_fail (curve != NULL, NULL);
 
 	at = g_new (SPPathAT, 1);
 	at->refcount = 1;
-	at->bpath = bpath;
+	at->curve = curve;
+	sp_curve_ref (curve);
 	at->private = private;
-	for (i = 0; i < 4; i++) at->affine[i] = affine[i];
-	at->affine[4] = at->affine[5] = 0.0;
+	for (i = 0; i < 4; i++) {
+		at->affine[i] = affine[i];
+		fa[i] = affine[i];
+	}
+	fa[4] = fa[5] = 0.0;
 	at->stroke_width = stroke_width;
 	at->join = join;
 	at->cap = cap;
 
-	affine_bpath = art_bpath_affine_transform (at->bpath, at->affine);
+	affine_bpath = art_bpath_affine_transform (at->curve->bpath, fa);
 	at->vpath = art_bez_path_to_vec (affine_bpath, 0.25);
 	art_free (affine_bpath);
 
@@ -178,7 +183,7 @@ sp_pat_hash (gconstpointer key)
 	SPPathAT * at;
 	at = (SPPathAT *) key;
 	/* fixme: */
-	return GPOINTER_TO_INT (at->bpath);
+	return GPOINTER_TO_INT (at->curve);
 }
 
 static gint
@@ -191,7 +196,7 @@ sp_pat_equal (gconstpointer a, gconstpointer b)
 	ata = (SPPathAT *) a;
 	atb = (SPPathAT *) b;
 	/* fixme: */
-	if (ata->bpath != atb->bpath)
+	if (ata->curve != atb->curve)
 		return FALSE;
 	for (i = 0; i < 4; i++) {
 		d = fabs (ata->affine[i] - atb->affine[i]);

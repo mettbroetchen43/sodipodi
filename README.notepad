@@ -1,0 +1,16 @@
+This is my notepad. Objects and API-s mentioned here, even if implemented,
+may change without notice.
+
+Special item classes
+
+SPGroup::SPBinder
+A group with special children
+For example - blender
+1. first
+2. secong
+3... intermediate
+
+
+
+Lauris Kaplinski
+<lauris@ariman.ee>

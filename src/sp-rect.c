@@ -65,7 +65,6 @@ sp_rect_init (SPRect * rect)
 	rect->x = rect->y = 0.0;
 	rect->width = rect->height = 0.0;
 	rect->rx = rect->ry = 0.0;
-	rect->bpath = NULL;
 }
 
 static void
@@ -77,12 +76,6 @@ sp_rect_destroy (GtkObject *object)
 	g_return_if_fail (SP_IS_RECT (object));
 
 	rect = SP_RECT (object);
-
-#if 0
-	/* fixme: We should make shape with private component ;-) */
-	if (rect->bpath)
-		art_free (rect->bpath);
-#endif
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -96,52 +89,13 @@ sp_rect_description (SPItem * item)
 
 #define C1 0.554
 
-static ArtBpath *
-rect_moveto (ArtBpath * bpath, gdouble x, gdouble y)
-{
-	bpath->code = ART_MOVETO;
-	bpath->x3 = x;
-	bpath->y3 = y;
-	return ++bpath;
-}
-
-static ArtBpath *
-rect_lineto (ArtBpath * bpath, gdouble x, gdouble y)
-{
-	bpath->code = ART_LINETO;
-	bpath->x3 = x;
-	bpath->y3 = y;
-	return ++bpath;
-}
-
-static ArtBpath *
-rect_curveto (ArtBpath * bpath, gdouble x1, gdouble y1, gdouble x2, gdouble y2, gdouble x3, gdouble y3)
-{
-	bpath->code = ART_CURVETO;
-	bpath->x1 = x1;
-	bpath->y1 = y1;
-	bpath->x2 = x2;
-	bpath->y2 = y2;
-	bpath->x3 = x3;
-	bpath->y3 = y3;
-	return ++bpath;
-}
-
-static ArtBpath *
-rect_end (ArtBpath * bpath)
-{
-	bpath->code = ART_END;
-	return ++bpath;
-}
-
 static void
 sp_rect_set_shape (SPRect * rect)
 {
 	double x, y, rx, ry;
-	ArtBpath * p, * bpath;
+	SPCurve * c;
 	
-	bpath = art_new (ArtBpath, 32);
-	p = bpath;
+	c = sp_curve_new ();
 
 	x = rect->x;
 	y = rect->y;
@@ -152,35 +106,32 @@ sp_rect_set_shape (SPRect * rect)
 		if (rx > rect->width / 2) rx = rect->width / 2;
 		if (ry > rect->height / 2) ry = rect->height / 2;
 
-		p = rect_moveto (p, x + rx, y + 0.0);
-		p = rect_curveto (p, x + rx * (1 - C1), y + 0.0, x + 0.0, y + ry * (1 - C1), x + 0.0, y + ry);
+		sp_curve_moveto (c, x + rx, y + 0.0);
+		sp_curve_curveto (c, x + rx * (1 - C1), y + 0.0, x + 0.0, y + ry * (1 - C1), x + 0.0, y + ry);
 		if (ry < rect->height / 2)
-			p = rect_lineto (p, x + 0.0, y + rect->height - ry);
-		p = rect_curveto (p, x + 0.0, y + rect->height - ry * (1 - C1), x + rx * (1 - C1), y + rect->height, x + rx, y + rect->height);
+			sp_curve_lineto (c, x + 0.0, y + rect->height - ry);
+		sp_curve_curveto (c, x + 0.0, y + rect->height - ry * (1 - C1), x + rx * (1 - C1), y + rect->height, x + rx, y + rect->height);
 		if (rx < rect->width / 2)
-			p = rect_lineto (p, x + rect->width - rx, y + rect->height);
-		p = rect_curveto (p, x + rect->width - rx * (1 - C1), y + rect->height, x + rect->width, y + rect->height - ry * (1 - C1), x + rect->width, y + rect->height - ry);
+			sp_curve_lineto (c, x + rect->width - rx, y + rect->height);
+		sp_curve_curveto (c, x + rect->width - rx * (1 - C1), y + rect->height, x + rect->width, y + rect->height - ry * (1 - C1), x + rect->width, y + rect->height - ry);
 		if (ry < rect->height / 2)
-			p = rect_lineto (p, x + rect->width, y + ry);
-		p = rect_curveto (p, x + rect->width, y + ry * (1 - C1), x + rect->width - rx * (1 - C1), y + 0.0, x + rect->width - rx, y + 0.0);
+			sp_curve_lineto (c, x + rect->width, y + ry);
+		sp_curve_curveto (c, x + rect->width, y + ry * (1 - C1), x + rect->width - rx * (1 - C1), y + 0.0, x + rect->width - rx, y + 0.0);
 		if (rx < rect->width / 2)
-			p = rect_lineto (p, x + rx, y + 0.0);
+			sp_curve_lineto (c, x + rx, y + 0.0);
 	} else {
-		p = rect_moveto (p, x + 0.0, y + 0.0);
-		p = rect_lineto (p, x + 0.0, y + rect->height);
-		p = rect_lineto (p, x + rect->width, y + rect->height);
-		p = rect_lineto (p, x + rect->width, y + 0.0);
-		p = rect_lineto (p, x + 0.0, y + 0.0);
+		sp_curve_moveto (c, x + 0.0, y + 0.0);
+		sp_curve_lineto (c, x + 0.0, y + rect->height);
+		sp_curve_lineto (c, x + rect->width, y + rect->height);
+		sp_curve_lineto (c, x + rect->width, y + 0.0);
+		sp_curve_lineto (c, x + 0.0, y + 0.0);
 	}
 
-	p = rect_end (p);
+	sp_curve_closepath_current (c);
 
 	sp_path_clear (SP_PATH (rect));
-#if 0
-	if (rect->bpath) art_free (rect->bpath);
-#endif
-	rect->bpath = bpath;
-	sp_path_add_bpath (SP_PATH (rect), bpath, TRUE, NULL);
+	sp_path_add_bpath (SP_PATH (rect), c, TRUE, NULL);
+	sp_curve_unref (c);
 }
 
 static void

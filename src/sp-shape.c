@@ -20,7 +20,7 @@ static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas
 
 static void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
-static void sp_shape_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath);
+static void sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
 
 static SPPathClass * parent_class;
 
@@ -115,10 +115,10 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		if (comp->bpath != NULL) {
+		if (comp->curve != NULL) {
 			gnome_print_gsave (gpc);
 			gnome_print_concat (gpc, comp->affine);
-			bpath = comp->bpath;
+			bpath = comp->curve->bpath;
 
 			gnome_print_newpath (gpc);
 			gnome_print_moveto (gpc,
@@ -261,7 +261,7 @@ sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		sp_canvas_shape_add_component (cs, comp->bpath, comp->private, comp->affine);
+		sp_canvas_shape_add_component (cs, comp->curve, comp->private, comp->affine);
 	}
 
 	return (GnomeCanvasItem *) cs;
@@ -301,7 +301,7 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 
 	for (l = item->display; l != NULL; l = l->next) {
 		cs = (SPCanvasShape *) l->data;
-		sp_canvas_shape_add_component (cs, comp->bpath, comp->private, comp->affine);
+		sp_canvas_shape_add_component (cs, comp->curve, comp->private, comp->affine);
 	}
 
 	if (SP_PATH_CLASS (parent_class)->add_comp)
@@ -309,7 +309,7 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 }
 
 static void
-sp_shape_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath)
+sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 {
 	SPItem * item;
 	SPShape * shape;
@@ -322,96 +322,12 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath)
 	/* fixme: */
 	for (l = item->display; l != NULL; l = l->next) {
 		cs = (SPCanvasShape *) l->data;
-		sp_canvas_shape_change_bpath (cs, comp->bpath);
+		sp_canvas_shape_change_bpath (cs, comp->curve);
 	}
 
 	if (SP_PATH_CLASS (parent_class)->change_bpath)
-		SP_PATH_CLASS (parent_class)->change_bpath (path, comp, bpath);
+		SP_PATH_CLASS (parent_class)->change_bpath (path, comp, curve);
 }
-
-#if 0
-/* Utility */
-
-void
-sp_shape_add_bpath (SPShape * shape, ArtBpath * bpath, double affine[])
-{
-	SPItem * item;
-	SPCanvasShape * cs;
-	SPPathComp * comp;
-	GSList * l;
-
-	g_assert (shape != NULL);
-	g_assert (bpath != NULL);
-
-	item = (SPItem *) shape;
-
-	for (l = item->display; l != NULL; l = l->next) {
-		cs = SP_CANVAS_SHAPE (l->data);
-		sp_canvas_shape_add_component (cs, bpath, FALSE, affine);
-	}
-
-	comp = sp_path_comp_new (bpath, FALSE, affine);
-	sp_path_add_component (SP_PATH (shape), comp);
-}
-
-void
-sp_shape_add_bpath_identity (SPShape * shape, ArtBpath * bpath)
-{
-	double affine[6];
-
-	art_affine_identity (affine);
-
-	sp_shape_add_bpath (shape, bpath, affine);
-}
-
-void
-sp_shape_set_bpath (SPShape * shape, ArtBpath * bpath, double affine[])
-{
-	sp_shape_clear (shape);
-	sp_shape_add_bpath (shape, bpath, affine);
-}
-
-void
-sp_shape_set_bpath_identity (SPShape * shape, ArtBpath * bpath)
-{
-	sp_shape_clear (shape);
-	sp_shape_add_bpath_identity (shape, bpath);
-}
-#endif
-
-#if 0
-void
-sp_shape_set_stroke (SPShape * shape, SPStroke * stroke)
-{
-	SPStroke * s;
-
-	s = shape->stroke;
-	shape->stroke = stroke;
-	sp_stroke_ref (stroke);
-	sp_stroke_unref (s);
-
-	gnome_canvas_item_request_update ((GnomeCanvasItem *) shape);
-}
-#endif
-
-#if 0
-void
-sp_shape_clear (SPShape * shape)
-{
-	SPItem * item;
-	SPCanvasShape * cs;
-	GSList * l;
-
-	item = (SPItem *) shape;
-
-	for (l = item->display; l != NULL; l = l->next) {
-		cs = SP_CANVAS_SHAPE (l->data);
-		sp_canvas_shape_clear (cs);
-	}
-
-	sp_path_clear (SP_PATH (shape));
-}
-#endif
 
 /* Unimplemented */
 

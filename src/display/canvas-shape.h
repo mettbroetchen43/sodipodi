@@ -41,11 +41,10 @@ GtkType sp_canvas_shape_get_type (void);
 /* Utility functions */
 
 void sp_canvas_shape_clear (SPCanvasShape * canvas_shape);
-void sp_canvas_shape_add_component (SPCanvasShape * canvas_shape, ArtBpath * bpath, gboolean private, gdouble affine[]);
-void sp_canvas_shape_set_component (SPCanvasShape * canvas_shape, ArtBpath * bpath, gboolean private, gdouble affine[]);
-/* NB! This works only for single component private shapes
- *     and g_asserts it!  */
-void sp_canvas_shape_change_bpath (SPCanvasShape * canvas_shape, ArtBpath * bpath);
+void sp_canvas_shape_add_component (SPCanvasShape * canvas_shape, SPCurve * curve, gboolean private, gdouble affine[]);
+void sp_canvas_shape_set_component (SPCanvasShape * canvas_shape, SPCurve * curve, gboolean private, gdouble affine[]);
+/* NB! This works only for single component private shapes */
+void sp_canvas_shape_change_bpath (SPCanvasShape * canvas_shape, SPCurve * curve);
 
 void sp_canvas_shape_set_fill (SPCanvasShape * shape, SPFill * fill);
 void sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke);

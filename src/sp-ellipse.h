@@ -19,7 +19,6 @@ struct _SPEllipse {
 	double rx, ry;
 	double start, end;
 	gint closed;
-	ArtBpath * bpath;
 };
 
 struct _SPEllipseClass {

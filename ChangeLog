@@ -1,3 +1,7 @@
+2000-01-23  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Uses SPCurve everywhere
+
 2000-01-19  Lauris Kaplinski <lauris@ariman.ee>
 
     * src/helper/sodipodi-ctrl.*: removed aa rendering

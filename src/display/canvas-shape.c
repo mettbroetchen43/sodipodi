@@ -358,15 +358,15 @@ sp_canvas_shape_clear (SPCanvasShape * shape)
 }
 
 void
-sp_canvas_shape_add_component (SPCanvasShape * shape, ArtBpath * bpath, gboolean private, gdouble affine[])
+sp_canvas_shape_add_component (SPCanvasShape * shape, SPCurve * curve, gboolean private, gdouble affine[])
 {
 	SPCPathComp * comp;
 
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
-	g_return_if_fail (bpath != NULL);
+	g_return_if_fail (curve != NULL);
 
-	comp = sp_cpath_comp_new (bpath, private, affine, shape->stroke->width, shape->stroke->join, shape->stroke->cap);
+	comp = sp_cpath_comp_new (curve, private, affine, shape->stroke->width, shape->stroke->join, shape->stroke->cap);
 	g_assert (comp != NULL);
 	shape->comp = g_list_prepend (shape->comp, comp);
 
@@ -374,14 +374,14 @@ sp_canvas_shape_add_component (SPCanvasShape * shape, ArtBpath * bpath, gboolean
 }
 
 void
-sp_canvas_shape_set_component (SPCanvasShape * shape, ArtBpath * bpath, gboolean private, gdouble affine[])
+sp_canvas_shape_set_component (SPCanvasShape * shape, SPCurve * curve, gboolean private, gdouble affine[])
 {
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
-	g_return_if_fail (bpath != NULL);
+	g_return_if_fail (curve != NULL);
 
 	sp_canvas_shape_clear (shape);
-	sp_canvas_shape_add_component (shape, bpath, private, affine);
+	sp_canvas_shape_add_component (shape, curve, private, affine);
 
 	gnome_canvas_item_request_update ((GnomeCanvasItem *) shape);
 }
@@ -389,17 +389,17 @@ sp_canvas_shape_set_component (SPCanvasShape * shape, ArtBpath * bpath, gboolean
 /* fixme: */
 
 void
-sp_canvas_shape_change_bpath (SPCanvasShape * shape, ArtBpath * bpath)
+sp_canvas_shape_change_bpath (SPCanvasShape * shape, SPCurve * curve)
 {
 	SPCPathComp * comp;
 
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
-	g_return_if_fail (bpath != NULL);
+	g_return_if_fail (curve != NULL);
 
 	if (shape->comp == NULL) {
 	/* zero components */
-		sp_canvas_shape_add_component (shape, bpath, TRUE, NULL);
+		sp_canvas_shape_add_component (shape, curve, TRUE, NULL);
 	} else {
 		/* single component */
 		g_assert (shape->comp->next == NULL);
@@ -408,7 +408,7 @@ sp_canvas_shape_change_bpath (SPCanvasShape * shape, ArtBpath * bpath)
 		comp = (SPCPathComp *) shape->comp->data;
 		g_assert (comp->private);
 
-		sp_cpath_comp_change (comp, bpath, TRUE, comp->affine, comp->stroke_width, comp->join, comp->cap);
+		sp_cpath_comp_change (comp, curve, TRUE, comp->affine, comp->stroke_width, comp->join, comp->cap);
 	}
 
 	gnome_canvas_item_request_update ((GnomeCanvasItem *) shape);

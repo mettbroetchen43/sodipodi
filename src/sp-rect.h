@@ -20,7 +20,6 @@ struct _SPRect {
 	double x, y;
 	double width, height;
 	double rx, ry;
-	ArtBpath * bpath;
 };
 
 struct _SPRectClass {

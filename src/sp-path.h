@@ -23,7 +23,7 @@ struct _SPPathClass {
 	SPItemClass item_class;
 	void (* remove_comp) (SPPath * path, SPPathComp * comp);
 	void (* add_comp) (SPPath * path, SPPathComp * comp);
-	void (* change_bpath) (SPPath * path, SPPathComp * comp, ArtBpath * bpath);
+	void (* change_bpath) (SPPath * path, SPPathComp * comp, SPCurve * curve);
 };
 
 
@@ -36,23 +36,23 @@ GtkType sp_path_get_type (void);
 
 void sp_path_remove_comp (SPPath * path, SPPathComp * comp);
 void sp_path_add_comp (SPPath * path, SPPathComp * comp);
-void sp_path_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath);
+void sp_path_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
 
 /* Utility */
 
 void sp_path_clear (SPPath * path);
-void sp_path_add_bpath (SPPath * path, ArtBpath * bpath, gboolean private, gdouble affine[]);
+void sp_path_add_bpath (SPPath * path, SPCurve * curve, gboolean private, gdouble affine[]);
 
 /* normalizes path - i.e. concatenates all component bpaths. */
 /* returns newly allocated bpath - caller has to manage it */
 
-ArtBpath * sp_path_normalized_bpath (SPPath * path);
+SPCurve * sp_path_normalized_bpath (SPPath * path);
 
 /* creates single component normalized path with private component */
 
-ArtBpath * sp_path_normalize (SPPath * path);
+SPCurve * sp_path_normalize (SPPath * path);
 
 /* fixme: it works only for single component (normalized) private paths? */
-void sp_path_bpath_modified (SPPath * path, ArtBpath * bpath);
+void sp_path_bpath_modified (SPPath * path, SPCurve * curve);
 
 #endif

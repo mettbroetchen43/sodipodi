@@ -6,8 +6,6 @@
 
 #define SP_CURVE_LENSTEP 32
 
-static void sp_curve_ensure_space (SPCurve * curve, gint space);
-
 static gboolean sp_bpath_good (ArtBpath * bpath);
 ArtBpath * sp_bpath_check_subpath (ArtBpath * bpath);
 static gint sp_bpath_length (ArtBpath * bpath);
@@ -141,6 +139,21 @@ sp_curve_finish (SPCurve * curve)
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
 	curve->moving = FALSE;
+}
+
+void
+sp_curve_ensure_space (SPCurve * curve, gint space)
+{
+	g_return_if_fail (curve != NULL);
+	g_return_if_fail (space > 0);
+
+	if (curve->end + space < curve->length) return;
+
+	if (space < SP_CURVE_LENSTEP) space = SP_CURVE_LENSTEP;
+
+	curve->bpath = art_renew (curve->bpath, ArtBpath, curve->length + space);
+
+	curve->length += space;
 }
 
 SPCurve *
@@ -510,21 +523,6 @@ sp_curve_first_bpath (SPCurve * curve)
 
 /* Private methods */
 
-static void
-sp_curve_ensure_space (SPCurve * curve, gint space)
-{
-	g_return_if_fail (curve != NULL);
-	g_return_if_fail (space > 0);
-
-	if (curve->end + space < curve->length) return;
-
-	if (space < SP_CURVE_LENSTEP) space = SP_CURVE_LENSTEP;
-
-	curve->bpath = art_renew (curve->bpath, ArtBpath, curve->length + space);
-
-	curve->length += space;
-}
-
 static
 gboolean sp_bpath_good (ArtBpath * bpath)
 {
@@ -563,10 +561,11 @@ sp_bpath_check_subpath (ArtBpath * bpath)
 	len = 0;
 
 	for (i = 1; (bpath[i].code != ART_END) && (bpath[i].code != ART_MOVETO) && (bpath[i].code != ART_MOVETO_OPEN); i++) {
-		switch (bpath->code) {
+		switch (bpath[i].code) {
 			case ART_LINETO:
 			case ART_CURVETO:
 				len++;
+				break;
 			default:
 				return NULL;
 		}

@@ -1,7 +1,7 @@
 #define SP_CURSOR_C
 
 #include <stdio.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <ctype.h>
 #include "sp-cursor.h"
 
 void
@@ -10,18 +10,30 @@ sp_cursor_bitmap_and_mask_from_xpm (GdkBitmap **bitmap, GdkBitmap **mask, gchar 
 	int height, width, colors;
 	char pixmap_buffer [(32 * 32)/8];
 	char mask_buffer [(32 * 32)/8];
-	int x, y, pix;
+	int i, x, y, pix;
 	int transparent_color, black_color;
+	char * p, ccode;
 	
 	sscanf (xpm [0], "%d %d %d %d", &height, &width, &colors, &pix);
 
-	g_assert (height == 32);
-	g_assert (width  == 32);
-	g_assert (colors == 3);
+	g_return_if_fail (height == 32);
+	g_return_if_fail (width == 32);
+	g_return_if_fail (colors >= 3);
 
 	transparent_color = ' ';
 	black_color = '.';
 	
+	for (i = 0; i < colors; i++) {
+		p = xpm [1 + i];
+		ccode = * p;
+		p++;
+		while (isspace (* p)) p++;
+		p++;
+		while (isspace (* p)) p++;
+		if (strcmp (p, "None") == 0) transparent_color = ccode;
+		if (strcmp (p, "#000000") == 0) black_color = ccode;
+	}
+
 	for (y = 0; y < 32; y++){
 		for (x = 0; x < 32;){
 			char value = 0, maskv = 0;
@@ -30,7 +42,7 @@ sp_cursor_bitmap_and_mask_from_xpm (GdkBitmap **bitmap, GdkBitmap **mask, gchar 
 				if (xpm [4+y][x] != transparent_color){
 					maskv |= 1 << pix;
 
-					if (xpm [4+y][x] != black_color){
+					if (xpm [4+y][x] == black_color){
 						value |= 1 << pix;
 					}
 				}

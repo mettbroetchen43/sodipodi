@@ -5,29 +5,33 @@
 #include <libart_lgpl/art_point.h>
 #include "cpath-component.h"
 
-#define DEBUG_PATH_COMP
+#define noDEBUG_PATH_COMP
 
 #ifdef DEBUG_PATH_COMP
 	gint num_comp = 0;
 #endif
 
 SPCPathComp *
-sp_cpath_comp_new (ArtBpath * bpath,
+sp_cpath_comp_new (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
 	ArtPathStrokeJoinType join,
 	ArtPathStrokeCapType cap)
 {
+	ArtBpath * bpath;
 	SPCPathComp * comp;
 	gint i;
 
-	g_return_val_if_fail (bpath != NULL, NULL);
+	g_return_val_if_fail (curve != NULL, NULL);
 	comp = g_new (SPCPathComp, 1);
 	g_return_val_if_fail (comp != NULL, NULL);
 
+	bpath = curve->bpath;
+
 	comp->refcount = 1;
-	comp->bpath = bpath;
+	comp->curve = curve;
+	sp_curve_ref (curve);
 	comp->private = private;
 	if (affine == NULL) {
 		art_affine_identity (comp->affine);
@@ -67,15 +71,8 @@ void sp_cpath_comp_unref (SPCPathComp * comp)
 	comp->refcount--;
 
 	if (comp->refcount < 1) {
-		if (comp->archetype) {
-			g_print ("comp ref 0, at ref %d\n", comp->archetype->refcount);
-			sp_path_at_unref (comp->archetype);
-			}
-#if 0
-		/* We cannot free bpath here - SPPath does it */
-		if (comp->private)
-			art_free (comp->bpath);
-#endif
+		if (comp->archetype) sp_path_at_unref (comp->archetype);
+		sp_curve_unref (comp->curve);
 #ifdef DEBUG_PATH_COMP
 		num_comp--;
 		g_print ("num_comp = %d\n", num_comp);
@@ -90,15 +87,6 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 	SPPathAT * old_at;
 	double a[6];
 	ArtPoint p;
-	gint i;
-
-#if 0
-	/* comp_new & comp_change do this anyway */
-	for (i=0; comp->bpath[i].code != ART_END; i++) {
-		if (comp->bpath[i].code == ART_MOVETO_OPEN)
-			comp->closed = FALSE;
-	}
-#endif
 
 	art_affine_multiply (a, comp->affine, affine);
 
@@ -113,7 +101,7 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 		/* Nothing to do */
 	} else {
 		old_at = comp->archetype;
-		comp->archetype = sp_path_at (comp->bpath, comp->private, a, comp->stroke_width, comp->join, comp->cap);
+		comp->archetype = sp_path_at (comp->curve, comp->private, a, comp->stroke_width, comp->join, comp->cap);
 		if (old_at != NULL) sp_path_at_unref (old_at);
 	}
 
@@ -132,34 +120,37 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 
 void
 sp_cpath_comp_change (SPCPathComp * comp,
-	ArtBpath * bpath,
+	SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
 	ArtPathStrokeJoinType join,
 	ArtPathStrokeCapType cap)
 {
+	SPCurve * old_curve;
 	SPPathAT * old_at;
+	ArtBpath * bp;
 	gint i;
 
-#if 0
-	/* We cannot free bpath here - SPPath does it */
-	if ((comp->bpath != bpath) && (comp->private)) {
-		art_free (comp->bpath);
-		/* BEWARE! at is not happy with NULL bpath. fortunately
-		 * it does not use it, so it does hear of it ;-) */
-		if (comp->archetype != NULL) comp->archetype->bpath = NULL;
-	}
-#endif
-	comp->bpath = bpath;
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (curve != NULL);
+
+	old_curve = comp->curve;
+	comp->curve = curve;
+	sp_curve_ref (curve);
+	sp_curve_unref (old_curve);
+
 	comp->private = private;
 	for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
 	comp->stroke_width = stroke_width;
 	comp->join = join;
 	comp->cap = cap;
 	comp->closed = TRUE;
-	for (i=0; comp->bpath[i].code != ART_END; i++) {
-		if (comp->bpath[i].code == ART_MOVETO_OPEN)
+
+	bp = curve->bpath;
+
+	for (i=0; bp[i].code != ART_END; i++) {
+		if (bp[i].code == ART_MOVETO_OPEN)
 			comp->closed = FALSE;
 	}
 

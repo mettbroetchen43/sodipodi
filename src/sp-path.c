@@ -19,7 +19,7 @@ static void sp_path_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 
 static void sp_path_private_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_path_private_add_comp (SPPath * path, SPPathComp * comp);
-static void sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath);
+static void sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
 
 static SPItemClass * parent_class;
 
@@ -118,7 +118,7 @@ sp_path_private_add_comp (SPPath * path, SPPathComp * comp)
 }
 
 static void
-sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath)
+sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 {
 	SPPathComp * c;
 	GSList * l;
@@ -129,11 +129,10 @@ sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath
 	g_return_if_fail (l != NULL);
 
 	c = (SPPathComp *) l->data;
-#if 0
-	if ((c->private) && (c->bpath != NULL) && (c->bpath != bpath))
-		art_free (c->bpath);
-#endif
-	c->bpath = bpath;
+
+	sp_curve_ref (curve);
+	sp_curve_unref (c->curve);
+	c->curve = curve;
 }
 
 static void
@@ -160,7 +159,7 @@ sp_path_bbox (SPItem * item, ArtDRect * bbox)
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
 		art_affine_multiply (a, comp->affine, affine);
-		abp = art_bpath_affine_transform (comp->bpath, a);
+		abp = art_bpath_affine_transform (comp->curve->bpath, a);
 		vpath = art_bez_path_to_vec (abp, 1);
 		art_free (abp);
 		for (vp = vpath; vp->code != ART_END; vp++) {
@@ -196,6 +195,7 @@ sp_path_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 	SPPath * path;
 	gchar * astr;
 	ArtBpath * bpath;
+	SPCurve * curve;
 	SPPathComp * comp;
 	double affine[6];
 
@@ -210,7 +210,8 @@ sp_path_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
 			/* fixme: */
 			sp_path_clear (path);
 			bpath = sp_svg_read_path (astr);
-			comp = sp_path_comp_new (bpath, TRUE, affine);
+			curve = sp_curve_new_from_bpath (bpath);
+			comp = sp_path_comp_new (curve, TRUE, affine);
 			sp_path_add_comp (path, comp);
 		}
 		return;
@@ -244,15 +245,15 @@ sp_path_add_comp (SPPath * path, SPPathComp * comp)
 }
 
 void
-sp_path_change_bpath (SPPath * path, SPPathComp * comp, ArtBpath * bpath)
+sp_path_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 {
 	g_return_if_fail (path != NULL);
 	g_return_if_fail (SP_IS_PATH (path));
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (g_slist_find (path->comp, comp) != NULL);
-	g_return_if_fail (path != NULL);
+	g_return_if_fail (curve != NULL);
 
-	(* SP_PATH_CLASS (GTK_OBJECT (path)->klass)->change_bpath) (path, comp, bpath);
+	(* SP_PATH_CLASS (GTK_OBJECT (path)->klass)->change_bpath) (path, comp, curve);
 }
 
 void
@@ -267,20 +268,20 @@ sp_path_clear (SPPath * path)
 }
 
 void
-sp_path_add_bpath (SPPath * path, ArtBpath * bpath, gboolean private, gdouble affine[])
+sp_path_add_bpath (SPPath * path, SPCurve * curve, gboolean private, gdouble affine[])
 {
 	SPPathComp * comp;
 
 	g_return_if_fail (path != NULL);
 	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (bpath != NULL);
+	g_return_if_fail (curve != NULL);
 
-	comp = sp_path_comp_new (bpath, private, affine);
+	comp = sp_path_comp_new (curve, private, affine);
 
 	sp_path_add_comp (path, comp);
 }
 
-ArtBpath *
+SPCurve *
 sp_path_normalized_bpath (SPPath * path)
 {
 	SPPathComp * comp;
@@ -294,8 +295,8 @@ sp_path_normalized_bpath (SPPath * path)
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		if (comp->bpath != NULL) {
-			for (i = 0; (comp->bpath + i)->code != ART_END; i++)
+		if (comp->curve != NULL) {
+			for (i = 0; (comp->curve->bpath + i)->code != ART_END; i++)
 				n_nodes++;
 		}
 	}
@@ -309,9 +310,9 @@ sp_path_normalized_bpath (SPPath * path)
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		if (comp->bpath != NULL) {
-			for (i = 0; (comp->bpath + i)->code != ART_END; i++) {
-				bp = comp->bpath + i;
+		if (comp->curve != NULL) {
+			for (i = 0; (comp->curve->bpath + i)->code != ART_END; i++) {
+				bp = comp->curve->bpath + i;
 				bpath[n_nodes].code = bp->code;
 				if (bp->code == ART_CURVETO) {
 					p.x = bp->x1;
@@ -337,37 +338,36 @@ sp_path_normalized_bpath (SPPath * path)
 
 	bpath[n_nodes].code = ART_END;
 
-	return bpath;
+	return sp_curve_new_from_bpath (bpath);
 }
 
-ArtBpath *
+SPCurve *
 sp_path_normalize (SPPath * path)
 {
 	SPPathComp * comp;
-	ArtBpath * bpath;
+	SPCurve * curve;
 
 	g_assert (path->independent);
 
-	bpath = sp_path_normalized_bpath (path);
+	curve = sp_path_normalized_bpath (path);
 
-	if (bpath == NULL)
-		return NULL;
+	if (curve == NULL) return NULL;
 
 	sp_path_clear (path);
-	comp = sp_path_comp_new (bpath, TRUE, NULL);
+	comp = sp_path_comp_new (curve, TRUE, NULL);
 	sp_path_add_comp (path, comp);
 
-	return bpath;
+	return curve;
 }
 
 void
-sp_path_bpath_modified (SPPath * path, ArtBpath * bpath)
+sp_path_bpath_modified (SPPath * path, SPCurve * curve)
 {
 	SPPathComp * comp;
 
 	g_return_if_fail (path != NULL);
 	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (bpath != NULL);
+	g_return_if_fail (curve != NULL);
 
 	g_return_if_fail (path->independent);
 	g_return_if_fail (path->comp != NULL);
@@ -377,5 +377,5 @@ sp_path_bpath_modified (SPPath * path, ArtBpath * bpath)
 
 	g_return_if_fail (comp->private);
 
-	sp_path_change_bpath (path, comp, bpath);
+	sp_path_change_bpath (path, comp, curve);
 }

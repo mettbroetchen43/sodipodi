@@ -80,7 +80,7 @@ sp_chars_set_shape (SPChars * chars)
 	SPShape * shape;
 	GList * list;
 	SPCharElement * el;
-	ArtBpath * bpath;
+	SPCurve * curve;
 
 	shape = (SPShape *) chars;
 
@@ -88,9 +88,9 @@ sp_chars_set_shape (SPChars * chars)
 
 	for (list = chars->element; list != NULL; list = list->next) {
 		el = (SPCharElement *) list->data;
-		bpath = sp_font_glyph_outline (el->font, el->glyph);
-		if (bpath != NULL)
-			sp_path_add_bpath (SP_PATH (chars), bpath, FALSE, el->affine);
+		curve = sp_font_glyph_outline (el->font, el->glyph);
+		if (curve != NULL)
+			sp_path_add_bpath (SP_PATH (chars), curve, FALSE, el->affine);
 	}
 }
 

@@ -16,28 +16,26 @@ typedef struct _SPCPathComp SPCPathComp;
 struct _SPCPathComp {
 	gint refcount;
 	/* identifiers */
-	ArtBpath * bpath;
-	gboolean private;
-	gboolean changed;
+	SPCurve * curve;
+	guint private : 1;
+	guint changed : 1;
 	double affine[6];
 	double stroke_width;
 	ArtPathStrokeJoinType join;
 	ArtPathStrokeCapType cap;
 	/* state */
 	SPPathAT * archetype;
-	gint closed;
+	guint closed : 1;
 	gint cx, cy;			/* svp position in canvas_coords */
 	ArtDRect bbox;
 };
 
 /*
  * Creates new component with given bpath, affine & stroke settings
- * NB! if component is private, it frees bpath, when destroyed. Otherwise
- *     bpath creator (SPObject ..., font ...) should do it.
  * archetype is initially NULL
  */
 
-SPCPathComp * sp_cpath_comp_new (ArtBpath * bpath,
+SPCPathComp * sp_cpath_comp_new (SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,
@@ -63,7 +61,7 @@ void sp_cpath_comp_update (SPCPathComp * comp, double affine[]);
  */
 
 void sp_cpath_comp_change (SPCPathComp * comp,
-	ArtBpath * bpath,
+	SPCurve * curve,
 	gboolean private,
 	double affine[],
 	double stroke_width,

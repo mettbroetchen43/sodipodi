@@ -18,7 +18,8 @@ sp_selected_path_combine (void)
 	SPRepr * repr;
 	SPItem * item;
 	SPPath * path;
-	ArtBpath * bp, * abp;
+	SPCurve * c;
+	ArtBpath * abp;
 	gdouble i2doc[6];
 	gchar * d, * str, * style;
 
@@ -41,10 +42,10 @@ sp_selected_path_combine (void)
 
 	for (l = il; l != NULL; l = l->next) {
 		path = (SPPath *) l->data;
-		bp = sp_path_normalized_bpath (path);
+		c = sp_path_normalized_bpath (path);
 		sp_item_i2doc_affine (SP_ITEM (path), i2doc);
-		abp = art_bpath_affine_transform (bp, i2doc);
-		art_free (bp);
+		abp = art_bpath_affine_transform (c->bpath, i2doc);
+		sp_curve_unref (c);
 		str = sp_svg_write_path (abp);
 		art_free (abp);
 		d = g_strconcat (d, str, NULL);
@@ -72,10 +73,11 @@ sp_selected_path_break_apart (void)
 	SPRepr * repr;
 	SPItem * item;
 	SPPath * path;
-	ArtBpath * bpath, * abp, * nbp;
+	SPCurve * curve;
+	ArtBpath * abp;
 	double i2doc[6];
 	gchar * style, * str;
-	gint len, pos, newpos;
+	GSList * list, * l;
 
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
@@ -87,34 +89,29 @@ sp_selected_path_break_apart (void)
 	path = SP_PATH (item);
 	if (!sp_path_independent (path)) return;
 
-	bpath = sp_path_normalized_bpath (path);
-	if (bpath == NULL) return;
+	curve = sp_path_normalized_bpath (path);
+	if (curve == NULL) return;
 
 	sp_item_i2doc_affine (SP_ITEM (path), i2doc);
 	style = g_strdup (sp_repr_attr (item->repr, "style"));
 
+	abp = art_bpath_affine_transform (curve->bpath, i2doc);
+
+	sp_curve_unref (curve);
 	sp_repr_unparent_and_destroy (item->repr);
 
-	abp = art_bpath_affine_transform (bpath, i2doc);
-	art_free (bpath);
-	for (len = 0; abp[len].code != ART_END; len++);
-	nbp = art_new (ArtBpath, len);
+	curve = sp_curve_new_from_bpath (abp);
 
-	pos = 0;
-	while (pos < len) {
-		newpos = 0;
-		do {
-			nbp[newpos] = abp[pos];
-			pos++;
-			newpos++;
-		} while ((abp[pos].code != ART_MOVETO) &&
-			(abp[pos].code != ART_MOVETO_OPEN) &&
-			(abp[pos].code != ART_END));
-		nbp[newpos].code = ART_END;
+	list = sp_curve_split (curve);
+
+	sp_curve_unref (curve);
+
+	for (l = list; l != NULL; l = l->next) {
+		curve = (SPCurve *) l->data;
 
 		repr = sp_repr_new_with_name ("path");
 		sp_repr_set_attr (repr, "style", style);
-		str = sp_svg_write_path (nbp);
+		str = sp_svg_write_path (curve->bpath);
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
 		item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), repr);
@@ -122,8 +119,7 @@ sp_selected_path_break_apart (void)
 		sp_selection_add_item (selection, item);
 	}
 
-	art_free (nbp);
-	art_free (abp);
+	g_slist_free (list);
 	g_free (style);
 }
 
@@ -134,7 +130,7 @@ sp_selected_path_to_curves (void)
 	SPRepr * new;
 	SPItem * item;
 	SPPath * path;
-	ArtBpath * bpath;
+	SPCurve * curve;
 	gchar * str;
 	const gchar * transform, * style;
 
@@ -146,9 +142,9 @@ sp_selected_path_to_curves (void)
 
 	path = SP_PATH (item);
 
-	bpath = sp_path_normalized_bpath (path);
-	str = sp_svg_write_path (bpath);
-	art_free (bpath);
+	curve = sp_path_normalized_bpath (path);
+	str = sp_svg_write_path (curve->bpath);
+	sp_curve_unref (curve);
 	transform = sp_repr_attr (item->repr, "transform");
 	style = sp_repr_attr (item->repr, "style");
 

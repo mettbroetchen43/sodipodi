@@ -66,7 +66,6 @@ sp_ellipse_init (SPEllipse *ellipse)
 	ellipse->start = 0.0;
 	ellipse->end = SP_2PI;
 	ellipse->closed = TRUE;
-	ellipse->bpath = NULL;
 }
 
 static void
@@ -79,12 +78,6 @@ sp_ellipse_destroy (GtkObject *object)
 
 	ellipse = SP_ELLIPSE (object);
 
-#if 0
-	/* fixme: use private component */
-	if (ellipse->bpath)
-		art_free (ellipse->bpath);
-#endif
-
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -94,7 +87,8 @@ sp_ellipse_destroy (GtkObject *object)
 static void sp_ellipse_set_shape (SPEllipse * ellipse)
 {
 	SPPath * path;
-	ArtBpath bpath[16];
+	SPCurve * c;
+	ArtBpath bpath[16], * abp;
 
 	double cx, cy, rx, ry, s, e;
 	double x0, y0, x1, y1, x2, y2, x3, y3;
@@ -104,10 +98,6 @@ static void sp_ellipse_set_shape (SPEllipse * ellipse)
 	gint i;
 
 	path = SP_PATH (ellipse);
-
-#if 0
-	if (ellipse->bpath) art_free (ellipse->bpath);
-#endif
 
 	if (ellipse->start > ellipse->end) {
 		e = ellipse->end;
@@ -186,9 +176,12 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 
 	bpath[i].code = ART_END;
 
+	abp = art_bpath_affine_transform (bpath, affine);
+
+	c = sp_curve_new_from_bpath (abp);
 	sp_path_clear (SP_PATH (ellipse));
-	ellipse->bpath = art_bpath_affine_transform (bpath, affine);
-	sp_path_add_bpath (SP_PATH (ellipse), ellipse->bpath, TRUE, NULL);
+	sp_path_add_bpath (SP_PATH (ellipse), c, TRUE, NULL);
+	sp_curve_unref (c);
 }
 
 static void

@@ -357,7 +357,7 @@ sp_draw_path_endline (SPDrawContext * draw_context, double x, double y)
 	}
 	sp_curve_lineto (draw_context->curve, x, y);
 	/* fixme: all these */
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve);
 	sp_draw_move_ctrl (draw_context, x, y);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 	return;
@@ -367,7 +367,7 @@ static void
 sp_draw_path_lineendpoint (SPDrawContext * draw_context, double x, double y)
 {
 	sp_curve_lineto_moving (draw_context->curve, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve);
 	sp_draw_move_ctrl (draw_context, draw_context->curve->bpath->x3, draw_context->curve->bpath->y3);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
@@ -376,7 +376,7 @@ static void
 sp_draw_path_freehand (SPDrawContext * draw_context, double x, double y)
 {
 	sp_curve_lineto (draw_context->curve, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve);
 	sp_draw_move_ctrl (draw_context, draw_context->curve->bpath->x3, draw_context->curve->bpath->y3);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
@@ -400,7 +400,7 @@ sp_draw_path_endfreehand (SPDrawContext * draw_context, double x, double y)
 		return;
 	}
 	sp_curve_lineto (draw_context->curve, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve);
 	sp_draw_move_ctrl (draw_context, x, y);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }

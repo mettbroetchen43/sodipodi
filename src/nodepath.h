@@ -30,8 +30,7 @@ struct _SPNodePath {
 	gint max_bpaths;
 	GList * subpaths;
 	GList * sel;
-	ArtBpath * bpath;
-	gchar * typestr;
+	SPCurve * curve;
 	guint sel_changed_id;
 };
 

@@ -5,13 +5,16 @@
 #include "sp-path-component.h"
 
 SPPathComp *
-sp_path_comp_new (ArtBpath * bpath, gboolean private, double affine[])
+sp_path_comp_new (SPCurve * curve, gboolean private, double affine[])
 {
 	SPPathComp * comp;
 	gint i;
 
+	g_return_val_if_fail (curve != NULL, NULL);
+
 	comp = g_new (SPPathComp, 1);
-	comp->bpath = bpath;
+	comp->curve = curve;
+	sp_curve_ref (curve);
 	comp->private = private;
 	if (affine != NULL) {
 		for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
@@ -26,8 +29,7 @@ sp_path_comp_destroy (SPPathComp * comp)
 {
 	g_assert (comp != NULL);
 
-	if ((comp->private) && (comp->bpath != NULL))
-		art_free (comp->bpath);
+	sp_curve_unref (comp->curve);
 
 	g_free (comp);
 }

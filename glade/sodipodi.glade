@@ -634,7 +634,7 @@
 	<name>toolbar1</name>
 	<border_width>1</border_width>
 	<orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-	<type>GTK_TOOLBAR_BOTH</type>
+	<type>GTK_TOOLBAR_ICONS</type>
 	<space_size>16</space_size>
 	<space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
 	<relief>GTK_RELIEF_NONE</relief>
@@ -718,7 +718,7 @@
 	<name>toolbar_edit</name>
 	<border_width>1</border_width>
 	<orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-	<type>GTK_TOOLBAR_BOTH</type>
+	<type>GTK_TOOLBAR_ICONS</type>
 	<space_size>16</space_size>
 	<space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
 	<relief>GTK_RELIEF_NONE</relief>
@@ -805,7 +805,7 @@
 	    <last_modification_time>Wed, 15 Dec 1999 17:49:23 GMT</last_modification_time>
 	  </signal>
 	  <label>To Front</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_TOP</stock_pixmap>
+	  <icon>tofront.xpm</icon>
 	</widget>
 
 	<widget>
@@ -819,7 +819,7 @@
 	    <last_modification_time>Wed, 15 Dec 1999 17:49:38 GMT</last_modification_time>
 	  </signal>
 	  <label>To Back</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_BOTTOM</stock_pixmap>
+	  <icon>toback.xpm</icon>
 	</widget>
 
 	<widget>
@@ -833,7 +833,7 @@
 	    <last_modification_time>Wed, 15 Dec 1999 17:49:50 GMT</last_modification_time>
 	  </signal>
 	  <label>Up</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_UP</stock_pixmap>
+	  <icon>forward.xpm</icon>
 	</widget>
 
 	<widget>
@@ -847,7 +847,7 @@
 	    <last_modification_time>Wed, 15 Dec 1999 17:50:02 GMT</last_modification_time>
 	  </signal>
 	  <label>Down</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_DOWN</stock_pixmap>
+	  <icon>back.xpm</icon>
 	</widget>
       </widget>
     </widget>
@@ -882,7 +882,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_select</name>
-	  <tooltip>Select and modify</tooltip>
+	  <tooltip>Select and transform objects and groups</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_select</handler>
@@ -896,7 +896,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_node_edit</name>
-	  <tooltip>Node editing</tooltip>
+	  <tooltip>Edit objects using control nodes</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_node_edit</handler>
@@ -910,7 +910,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_rect</name>
-	  <tooltip>New Rectangle</tooltip>
+	  <tooltip>Draw rectangles</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_rect</handler>
@@ -924,7 +924,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_ellipse</name>
-	  <tooltip>New Ellipse</tooltip>
+	  <tooltip>Draw ellipses</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_ellipse</handler>
@@ -938,7 +938,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_freehand</name>
-	  <tooltip>Freehand</tooltip>
+	  <tooltip>Draw freeform lines</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_freehand</handler>
@@ -952,7 +952,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>button_text</name>
-	  <tooltip>Text</tooltip>
+	  <tooltip>Write text</tooltip>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>sp_event_context_set_text</handler>
@@ -1046,7 +1046,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>7.7069</position>
+	<position>5.14039</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -1070,7 +1070,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>2.91391</position>
+	<position>0.596026</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>0</left_attach>

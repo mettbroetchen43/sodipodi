@@ -13,7 +13,7 @@
 #define DEBUG_GLYPH_INFO
 
 typedef struct {
-	ArtBpath * bpath;
+	SPCurve * curve;
 	double wx;
 } SPGlyphInfo;
 
@@ -166,9 +166,10 @@ sp_font_default (void)
 	return default_font;
 }
 
-ArtBpath * sp_font_glyph_outline (SPFont * font, guint glyph)
+SPCurve * sp_font_glyph_outline (SPFont * font, guint glyph)
 {
 	SPGlyphInfo * gi;
+	ArtBpath * bpath;
 
 	g_return_val_if_fail (font != NULL, NULL);
 
@@ -185,19 +186,21 @@ ArtBpath * sp_font_glyph_outline (SPFont * font, guint glyph)
 #endif
 
 		if (glyph != 32) {
-			gi->bpath = gt1_get_glyph_outline (font->gtfont, glyph, &gi->wx);
+			bpath = gt1_get_glyph_outline (font->gtfont, glyph, &gi->wx);
+			gi->curve = sp_curve_new_from_bpath (bpath);
 		} else {
-			gi->bpath = NULL;
+			gi->curve = NULL;
 		}
 		g_hash_table_insert (font->outlines, GINT_TO_POINTER (glyph), gi);
 	}
 
-	return gi->bpath;
+	return gi->curve;
 }
 
 gint sp_font_glyph_width (SPFont * font, guint glyph)
 {
 	SPGlyphInfo * gi;
+	ArtBpath * bpath;
 
 	g_return_val_if_fail (font != NULL, 0);
 
@@ -210,7 +213,8 @@ gint sp_font_glyph_width (SPFont * font, guint glyph)
 	n_gi++;
 	g_print ("num_glyph_info = %d\n", n_gi);
 #endif
-		gi->bpath = gt1_get_glyph_outline (font->gtfont, glyph, &gi->wx);
+		bpath = gt1_get_glyph_outline (font->gtfont, glyph, &gi->wx);
+		gi->curve = sp_curve_new_from_bpath (bpath);
 
 		g_hash_table_insert (font->outlines, GINT_TO_POINTER (glyph), gi);
 	}
@@ -221,7 +225,7 @@ gint sp_font_glyph_width (SPFont * font, guint glyph)
 static void
 free_glyph_info (gpointer key, gpointer value, gpointer data)
 {
-	art_free (((SPGlyphInfo *) value)->bpath);
+	sp_curve_unref (((SPGlyphInfo *) value)->curve);
 	g_free (value);
 #ifdef DEBUG_GLYPH_INFO
 	n_gi--;
@@ -289,64 +293,3 @@ sp_font_family_list (void)
 	return fontlist;
 }
 
-#if 0
-gint
-sp_font_glyph (SPFont * font, gint glyph)
-{
-	return gnome_font_unsized_get_glyph (font->gnomefont, glyph);
-}
-#endif
-
-#if 0
-const gchar *
-sp_font_read_family (SPCSSAttr * css)
-{
-	const gchar * family;
-
-	g_assert (css != NULL);
-
-	family = sp_repr_css_property (css, "font-family", "Helvetica");
-
-	return family;
-}
-
-gdouble
-sp_font_read_size (SPCSSAttr * css)
-{
-	gdouble size;
-
-	g_assert (css != NULL);
-
-	size = sp_repr_css_double_property (css, "font-size", 12.0);
-
-	return size;
-}
-
-GnomeFontWeight
-sp_font_read_weight (SPCSSAttr * css)
-{
-	const gchar * weight;
-
-	g_assert (css != NULL);
-
-	weight = sp_repr_css_property (css, "font-weight", "normal");
-	if (strcmp (weight, "bold") == 0)
-		return GNOME_FONT_BOLD;
-
-	return GNOME_FONT_BOOK;
-}
-
-gboolean
-sp_font_read_italic (SPCSSAttr * css)
-{
-	const gchar * italic;
-
-	g_assert (css != NULL);
-
-	italic = sp_repr_css_property (css, "font-style", "normal");
-	if (strcmp (italic, "italic") == 0)
-		return TRUE;
-
-	return FALSE;
-}
-#endif

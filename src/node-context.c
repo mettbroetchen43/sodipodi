@@ -8,6 +8,7 @@
 #include "desktop.h"
 #include "desktop-affine.h"
 #include "nodepath.h"
+#include "pixmaps/cursor-node.xpm"
 #include "node-context.h"
 
 static void sp_node_context_class_init (SPNodeContextClass * klass);
@@ -65,6 +66,13 @@ sp_node_context_class_init (SPNodeContextClass * klass)
 static void
 sp_node_context_init (SPNodeContext * node_context)
 {
+	SPEventContext * event_context;
+	
+	event_context = SP_EVENT_CONTEXT (node_context);
+
+	event_context->cursor_shape = cursor_node_xpm;
+	event_context->hot_x = 1;
+	event_context->hot_y = 1;
 }
 
 static void

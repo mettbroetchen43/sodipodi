@@ -187,10 +187,6 @@ sp_desktop_new (SPDocument * document)
 	desktop->document = document;
 	gtk_object_ref (GTK_OBJECT (document));
 
-	desktop->selection = sp_selection_new ();
-
-	desktop->event_context = sp_event_context_new (desktop, SP_TYPE_SELECT_CONTEXT);
-
 	desktop->hscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "hscrollbar");
 	desktop->vscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "vscrollbar");
 	desktop->hruler = (GtkRuler *) glade_xml_get_widget (xml, "hruler");
@@ -215,6 +211,10 @@ sp_desktop_new (SPDocument * document)
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->controls = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
+
+	desktop->selection = sp_selection_new ();
+
+	desktop->event_context = sp_event_context_new (desktop, SP_TYPE_SELECT_CONTEXT);
 
 	/* fixme: Setup display rectangle */
 

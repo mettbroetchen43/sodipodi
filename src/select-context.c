@@ -6,6 +6,7 @@
 #include "selection.h"
 #include "desktop-affine.h"
 #include "seltrans-handles.h"
+#include "pixmaps/cursor-select.xpm"
 #include "select-context.h"
 
 static void sp_select_context_class_init (SPSelectContextClass * klass);

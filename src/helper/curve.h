@@ -36,6 +36,7 @@ SPCurve * sp_curve_new_from_foreign_bpath (ArtBpath * bpath);
 
 void sp_curve_ref (SPCurve * curve);
 void sp_curve_finish (SPCurve * curve);
+void sp_curve_ensure_space (SPCurve * curve, gint space);
 SPCurve * sp_curve_copy (SPCurve * curve);
 SPCurve * sp_curve_concat (const GSList * list);
 GSList * sp_curve_split (SPCurve * curve);
