@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.1\n"
-"POT-Creation-Date: 2002-02-04 23:54+0000\n"
-"PO-Revision-Date: 2002-02-04 23:55+0000\n"
+"POT-Creation-Date: 2002-02-28 01:38+0000\n"
+"PO-Revision-Date: 2002-02-28 01:45+0000\n"
 "Last-Translator: Álvaro Lopes <alvieboy@alvie.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -93,8 +93,10 @@ msgstr "Primeiro seleccionado"
 msgid "Last selected"
 msgstr "Último seleccionado"
 
-#: glade/align.glade.h:19 glade/document.glade.h:8 glade/sodipodi.glade.h:42
-#: src/dialogs/align.c:101
+#. Page settings
+#. Notebook tab
+#: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
+#: src/dialogs/document-properties.c:144
 msgid "Page"
 msgstr "Página"
 
@@ -106,203 +108,6 @@ msgstr "Selecção"
 #: glade/align.glade.h:21 src/dialogs/align.c:96
 msgid "Smallest item"
 msgstr "Item menor"
-
-#: glade/desktop.glade.h:1 glade/display.glade.h:1
-msgid "Choose base unit system for grid"
-msgstr "Escolha a unidade base para a grelha"
-
-#: glade/desktop.glade.h:2 glade/display.glade.h:2
-msgid "Choose color for grid"
-msgstr "Escolha a cor para a grelha"
-
-#: glade/desktop.glade.h:3 glade/display.glade.h:3
-msgid "Choose color for guidelines"
-msgstr "Escolha a cor para as guias"
-
-#: glade/desktop.glade.h:4 glade/display.glade.h:4
-msgid "Choose color for highlighted guidelines"
-msgstr "Escolha a cor para as guias seleccionadas"
-
-#: glade/desktop.glade.h:5 glade/display.glade.h:5
-msgid "Choose unit system for grid snapping"
-msgstr "Escolha a unidade para o ajuste à grelha"
-
-#: glade/desktop.glade.h:6 glade/display.glade.h:6
-msgid "Choose unit system for guideline snapping"
-msgstr "Escolha a unidade para o ajuste às guias"
-
-#: glade/desktop.glade.h:7 glade/display.glade.h:7
-msgid "Desktop settings"
-msgstr "Preferências da Área de Trabalho"
-
-#: glade/desktop.glade.h:8 glade/display.glade.h:9
-msgid "Grid"
-msgstr "Grelha"
-
-#: glade/desktop.glade.h:9 glade/display.glade.h:10
-msgid "Grid color"
-msgstr "Cor da grelha"
-
-#: glade/desktop.glade.h:10 glade/display.glade.h:11
-msgid "Grid color:"
-msgstr "Cor da grelha:"
-
-#: glade/desktop.glade.h:11 glade/display.glade.h:12
-msgid "Grid units:"
-msgstr "Unidade da grelha:"
-
-#: glade/desktop.glade.h:12 glade/display.glade.h:13
-msgid "Guideline color"
-msgstr "Cor das guias"
-
-#: glade/desktop.glade.h:13 glade/display.glade.h:14
-msgid "Guides"
-msgstr "Guias"
-
-#: glade/desktop.glade.h:14 glade/display.glade.h:15
-msgid "Guides color:"
-msgstr "Cor das guias:"
-
-#: glade/desktop.glade.h:15 glade/display.glade.h:16
-msgid "Highlight color:"
-msgstr "Cor de selecção:"
-
-#: glade/desktop.glade.h:16 glade/display.glade.h:17
-msgid "Highlited guideline color"
-msgstr "Cor das guias seleccionadas"
-
-#: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:354 src/helper/units.c:41
-msgid "Millimeters"
-msgstr "Milímetros"
-
-#: glade/desktop.glade.h:18 glade/display.glade.h:20
-msgid "Origin X:"
-msgstr "Origem X:"
-
-#: glade/desktop.glade.h:19 glade/display.glade.h:21
-msgid "Origin Y:"
-msgstr "Origem Y:"
-
-#: glade/desktop.glade.h:20 glade/display.glade.h:23
-#: src/helper/unit-menu.c:358 src/helper/units.c:36
-msgid "Pixels"
-msgstr "Pixels"
-
-#: glade/desktop.glade.h:21 glade/display.glade.h:25
-msgid "Set distance between horizontal grid lines"
-msgstr "Especifica a distância entre as linhas horizontais da grelha"
-
-#: glade/desktop.glade.h:22 glade/display.glade.h:26
-msgid "Set distance between vertical grid lines"
-msgstr "Especifica a distância entre as linhas verticais da grelha"
-
-#: glade/desktop.glade.h:23 glade/display.glade.h:27
-msgid "Set maximum distance for grid snapping"
-msgstr "Especifica a distância máxima para o ajuste à grelha"
-
-#: glade/desktop.glade.h:24 glade/display.glade.h:28
-msgid "Set maximum distance for guideline snapping"
-msgstr "Especifica a distância máxima para o ajuste às guias"
-
-#: glade/desktop.glade.h:25 glade/display.glade.h:29
-msgid "Set origin of page coordinate system"
-msgstr "Especificar origem das coordenadas da página"
-
-#: glade/desktop.glade.h:26 glade/display.glade.h:30
-msgid "Show grid"
-msgstr "Mostrar grelha"
-
-#: glade/desktop.glade.h:27 glade/display.glade.h:31
-msgid "Show guides"
-msgstr "Mostar guias"
-
-#: glade/desktop.glade.h:28 glade/display.glade.h:32
-msgid "Snap distance:"
-msgstr "Distância de ajuste:"
-
-#: glade/desktop.glade.h:29 glade/display.glade.h:33
-msgid "Snap to grid"
-msgstr "Ajustar à grelha"
-
-#: glade/desktop.glade.h:30 glade/display.glade.h:34
-msgid "Snap to guides"
-msgstr "Ajustar às guias"
-
-#: glade/desktop.glade.h:31 glade/display.glade.h:35
-msgid "Snap units:"
-msgstr "Unidade de ajuste:"
-
-#: glade/desktop.glade.h:32 glade/display.glade.h:36
-msgid "Spacing X:"
-msgstr "Espaçamento X:"
-
-#: glade/desktop.glade.h:33 glade/display.glade.h:37
-msgid "Spacing Y:"
-msgstr "Espaçamento Y:"
-
-#: glade/display.glade.h:8
-msgid "Display settings"
-msgstr "Preferências de visualização"
-
-#: glade/display.glade.h:19 src/dialogs/display-settings.c:68
-#: src/dialogs/fill-style.c:404
-msgid "None"
-msgstr "Nenhum"
-
-#: glade/display.glade.h:22
-msgid "Oversample bitmaps:"
-msgstr "Re-amostrar as imagens por:"
-
-#: glade/display.glade.h:24
-msgid "Rendering"
-msgstr "Finalizar"
-
-#: glade/document.glade.h:1
-msgid "A4"
-msgstr "A4"
-
-#: glade/document.glade.h:2
-msgid "Choose paper size"
-msgstr "Escolha o tamanho do papel"
-
-#: glade/document.glade.h:3
-msgid "Choose unit system"
-msgstr "Escolha a unidade de medida"
-
-#: glade/document.glade.h:4
-msgid "Custom paper"
-msgstr "Papel customizado"
-
-#: glade/document.glade.h:5
-msgid "Document settings"
-msgstr "Preferências do documento"
-
-#: glade/document.glade.h:6 glade/object_props.glade.h:22
-#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-msgid "Height:"
-msgstr "Altura:"
-
-#: glade/document.glade.h:9
-msgid "Paper size:"
-msgstr "Tamanho do papel:"
-
-#: glade/document.glade.h:10
-msgid "Set page height"
-msgstr "Alterar altura da página"
-
-#: glade/document.glade.h:11
-msgid "Set page width"
-msgstr "Alterar largura da página"
-
-#: glade/document.glade.h:12
-msgid "Units:"
-msgstr "Unidade:"
-
-#: glade/document.glade.h:13 glade/object_props.glade.h:41
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-msgid "Width:"
-msgstr "Largura:"
 
 #: glade/item.glade.h:1
 msgid "Active"
@@ -428,6 +233,7 @@ msgid "Endpoints:"
 msgstr "Terminações:"
 
 #: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
+#: src/dialogs/object-properties.c:59
 msgid "Fill"
 msgstr "Preenchimento"
 
@@ -447,11 +253,18 @@ msgstr "Preencher com Gradiente"
 msgid "Green:"
 msgstr "Verde:"
 
+#: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-properties.c:240
+msgid "Height:"
+msgstr "Altura:"
+
 #: glade/object_props.glade.h:23
 msgid "Is stroked"
 msgstr "Rasurado"
 
-#: glade/object_props.glade.h:24
+#. Join type
+#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:189
 msgid "Join:"
 msgstr "Conexão:"
 
@@ -512,6 +325,7 @@ msgid "Square endpoints"
 msgstr "Terminação quadrada"
 
 #: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
+#: src/dialogs/object-properties.c:72
 msgid "Stroke"
 msgstr "Rasura"
 
@@ -519,13 +333,20 @@ msgstr "Rasura"
 msgid "Stroke width"
 msgstr "Largura da rasura"
 
+#. Stroke width
+#: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
+msgid "Width:"
+msgstr "Largura:"
+
 #: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
-#: src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:195
 msgid "X:"
 msgstr "X:"
 
 #: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
-#: src/dialogs/object-attributes.c:73
+#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:210
 msgid "Y:"
 msgstr "Y:"
 
@@ -534,7 +355,7 @@ msgid "centimeter"
 msgstr "centímetros"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:355 src/helper/units.c:42
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "cm"
 msgstr "cm"
 
@@ -543,7 +364,7 @@ msgid "color"
 msgstr "cor"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
-#: src/helper/units.c:44
+#: src/helper/units.c:51
 msgid "in"
 msgstr "polegadas"
 
@@ -556,7 +377,7 @@ msgid "millimeters"
 msgstr "milímetros"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:354 src/helper/units.c:41
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
 msgid "mm"
 msgstr "mm"
 
@@ -577,11 +398,12 @@ msgid "points"
 msgstr "pontos"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:357
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "pt"
 msgstr "pt"
 
 #: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
+#: src/helper/units.c:43
 msgid "px"
 msgstr "px"
 
@@ -634,7 +456,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Remover suavização nos nós seleccionados"
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:115
+#: src/widgets/gradient-selector.c:145
 msgid "Delete"
 msgstr "Apagar"
 
@@ -828,7 +650,7 @@ msgstr "Y0"
 msgid "Y1"
 msgstr "Y1"
 
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1090
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1137
 #: src/toolbox.c:134
 msgid "Zoom"
 msgstr "Zoom"
@@ -945,8 +767,8 @@ msgstr "Contexto de desenho"
 msgid "Duplicate selection"
 msgstr "Duplicar selecção"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
-#: src/dialogs/gradient-vector.c:107 src/toolbox.c:78
+#: glade/toolbox.glade.h:23 src/toolbox.c:78
+#: src/widgets/gradient-selector.c:132
 msgid "Edit"
 msgstr "Editar"
 
@@ -1148,7 +970,7 @@ msgid "lower selection to bottom"
 msgstr "enviar selecção para o fundo"
 
 #: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
-#: src/helper/units.c:40
+#: src/helper/units.c:47
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1198,7 +1020,7 @@ msgid "Center"
 msgstr "Centrar"
 
 #: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
-#: src/helper/units.c:42
+#: src/helper/units.c:49
 msgid "Centimeter"
 msgstr "Centímetro"
 
@@ -1227,7 +1049,7 @@ msgid "Horizontal center value"
 msgstr "Valor horizontal do centro"
 
 #: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
-#: src/helper/units.c:44
+#: src/helper/units.c:51
 msgid "Inch"
 msgstr "Polegada"
 
@@ -1240,7 +1062,7 @@ msgid "Keep width of selection during transformation"
 msgstr "Manter largura da selecção durante a transformação"
 
 #: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
-#: src/helper/units.c:41
+#: src/helper/units.c:48
 msgid "Millimeter"
 msgstr "Milímetro"
 
@@ -1259,12 +1081,12 @@ msgstr "Orig. X: "
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
-#: src/helper/units.c:40
+#: src/helper/units.c:47
 msgid "Percent"
 msgstr "Percentual"
 
 #: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
-#: src/helper/units.c:35
+#: src/helper/units.c:42
 msgid "Points"
 msgstr "Pontos"
 
@@ -1400,8 +1222,7 @@ msgstr "mover verticalmente"
 msgid "vertical scale value"
 msgstr "valor do escalamento vertical"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
-#: src/dialogs/gradient-vector.c:111
+#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
 msgid "Add"
 msgstr "Adicionar"
 
@@ -1491,105 +1312,191 @@ msgstr "Não foi possível criar a factory sodipodi-svg-doc"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1082
+#: src/desktop.c:1129
 msgid "Welcome !"
 msgstr "Bem Vindo !"
 
-#: src/desktop.c:1156
+#: src/desktop.c:1201
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1216
+#: src/desktop.c:1261
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "O documento %s foi alterado, deseja gravá-lo?"
 
-#: src/desktop.c:1217
+#: src/desktop.c:1262
 msgid "Save"
 msgstr "Gravar"
 
-#: src/desktop.c:1217
+#: src/desktop.c:1262
 msgid "Don't save"
 msgstr "Não gravar"
 
-#: src/dialogs/display-settings.c:72
+#: src/dialogs/desktop-properties.c:208
+msgid "Desktop settings"
+msgstr "Preferências da Área de Trabalho"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:217
+msgid "Grid"
+msgstr "Grelha"
+
+#. Checkbuttons
+#: src/dialogs/desktop-properties.c:227
+msgid "Show grid"
+msgstr "Mostrar grelha"
+
+#: src/dialogs/desktop-properties.c:234
+msgid "Snap to grid"
+msgstr "Ajustar à grelha"
+
+#: src/dialogs/desktop-properties.c:241
+msgid "Grid units:"
+msgstr "Unidade da grelha:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Origin X:"
+msgstr "Origem X:"
+
+#: src/dialogs/desktop-properties.c:264
+msgid "Origin Y:"
+msgstr "Origem Y:"
+
+#: src/dialogs/desktop-properties.c:278
+msgid "Spacing X:"
+msgstr "Espaçamento X:"
+
+#: src/dialogs/desktop-properties.c:292
+msgid "Spacing Y:"
+msgstr "Espaçamento Y:"
+
+#: src/dialogs/desktop-properties.c:306 src/dialogs/desktop-properties.c:367
+msgid "Snap units:"
+msgstr "Unidade de ajuste:"
+
+#: src/dialogs/desktop-properties.c:318 src/dialogs/desktop-properties.c:379
+msgid "Snap distance:"
+msgstr "Distância de ajuste:"
+
+#: src/dialogs/desktop-properties.c:331
+msgid "Grid color:"
+msgstr "Cor da grelha:"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:343
+msgid "Guides"
+msgstr "Guias"
+
+#: src/dialogs/desktop-properties.c:352
+msgid "Show guides"
+msgstr "Mostar guias"
+
+#: src/dialogs/desktop-properties.c:360
+msgid "Snap to guides"
+msgstr "Ajustar às guias"
+
+#: src/dialogs/desktop-properties.c:391
+msgid "Guides color:"
+msgstr "Cor das guias:"
+
+#: src/dialogs/desktop-properties.c:402
+msgid "Highlight color:"
+msgstr "Cor de selecção:"
+
+#: src/dialogs/display-settings.c:76
+msgid "Display settings"
+msgstr "Preferências de visualização"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:85
+msgid "Rendering"
+msgstr "Finalizar"
+
+#: src/dialogs/display-settings.c:97
+msgid "Oversample bitmaps:"
+msgstr "Re-amostrar as imagens por:"
+
+#: src/dialogs/display-settings.c:108 src/dialogs/fill-style.c:923
+msgid "None"
+msgstr "Nenhum"
+
+#: src/dialogs/display-settings.c:112
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:76
+#: src/dialogs/display-settings.c:116
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:80
+#: src/dialogs/display-settings.c:120
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:84
+#: src/dialogs/display-settings.c:124
 msgid "16x16"
 msgstr "16x16"
 
-#: src/dialogs/document-properties.c:57
+#: src/dialogs/document-properties.c:135
+msgid "Document settings"
+msgstr "Preferências do documento"
+
+#: src/dialogs/document-properties.c:156
+msgid "Paper size:"
+msgstr "Tamanho do papel:"
+
+#: src/dialogs/document-properties.c:177 src/dialogs/document-properties.c:356
 msgid "Custom"
 msgstr "Personalizado"
 
-#. Frame
-#: src/dialogs/fill-style.c:156 src/dialogs/fill-style.c:378
-msgid "Empty"
-msgstr "Vazio"
+#. Custom paper frame
+#: src/dialogs/document-properties.c:185
+msgid "Custom paper"
+msgstr "Papel customizado"
 
-#: src/dialogs/fill-style.c:206
+#: src/dialogs/document-properties.c:196 src/dialogs/object-properties.c:183
+msgid "Units:"
+msgstr "Unidade:"
+
+#: src/dialogs/fill-style.c:59 src/dialogs/fill-style.c:725
 msgid "Fill style"
 msgstr "Estilo preenchimento"
 
+#. Frame
+#: src/dialogs/fill-style.c:675 src/dialogs/fill-style.c:897
+msgid "Empty"
+msgstr "Vazio"
+
 #. Set frame label
-#: src/dialogs/fill-style.c:548
+#: src/dialogs/fill-style.c:1067
 msgid "Solid color"
 msgstr "Cor sólida"
 
 #. Label
-#: src/dialogs/fill-style.c:559
+#: src/dialogs/fill-style.c:1078 src/widgets/paint-selector.c:513
+#: src/widgets/paint-selector.c:625
 msgid "Mode:"
 msgstr "Modo:"
 
-#: src/dialogs/fill-style.c:566
+#: src/dialogs/fill-style.c:1085 src/widgets/paint-selector.c:523
 msgid "RGB"
 msgstr "RGB"
 
-#: src/dialogs/fill-style.c:573
+#: src/dialogs/fill-style.c:1092 src/widgets/paint-selector.c:529
 msgid "HSV"
 msgstr "HSV"
 
-#: src/dialogs/fill-style.c:580
+#: src/dialogs/fill-style.c:1099 src/widgets/paint-selector.c:535
 msgid "CMYK"
 msgstr "CMYK"
 
 #. Set frame label
-#: src/dialogs/fill-style.c:648
+#: src/dialogs/fill-style.c:1167
 msgid "Gradient"
 msgstr "Gradiente"
-
-#. Reset button
-#: src/dialogs/gradient-selector.c:115
-msgid "Reset"
-msgstr "Repor"
-
-#. No document or no gradients
-#: src/dialogs/gradient-vector.c:242
-msgid "No gradients defined"
-msgstr "Nenhum gradiente definido"
-
-#: src/dialogs/gradient-vector.c:473
-msgid "Start color"
-msgstr "Cor inicial"
-
-#: src/dialogs/gradient-vector.c:485
-msgid "End color"
-msgstr "Cor final"
-
-#: src/dialogs/gradient-vector.c:512
-msgid "Gradient vector"
-msgstr "Vector do gradiente"
 
 #: src/dialogs/item-properties.c:175
 msgid "Item is reference"
@@ -1704,17 +1611,37 @@ msgstr "RY:"
 msgid "%s attributes"
 msgstr "%s atributos"
 
-#. Do some evil things
-#: src/dialogs/object-properties.c:209
-msgid "Dynamic fill"
-msgstr "Preenchimento dinâmico"
+#: src/dialogs/object-properties.c:48
+msgid "Object style"
+msgstr "Estilo objecto"
 
-#: src/document.c:235
+#: src/dialogs/object-properties.c:148
+msgid "Object position and size"
+msgstr "Tamanho e posição objecto"
+
+#: src/dialogs/object-properties.c:170
+msgid "Position and size"
+msgstr "Tamanho e posição"
+
+#: src/dialogs/stroke-style.c:66
+msgid "Stroke style"
+msgstr "Estilo pincelada"
+
+#: src/dialogs/stroke-style.c:153
+msgid "Stroke settings"
+msgstr "Preferências pincelada"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:225
+msgid "Cap:"
+msgstr "Capa:"
+
+#: src/document.c:248
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Documento sem nome %d"
 
-#: src/document.c:307
+#: src/document.c:320
 #, c-format
 msgid "Memory document %d"
 msgstr "Documento em memória %d"
@@ -1744,11 +1671,15 @@ msgstr "Sodipodi (documento %s..): Pré-visualização"
 msgid "About sodipodi"
 msgstr "Sobre sodipodi"
 
-#: src/helper/unit-menu.c:355 src/helper/units.c:42
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
+msgid "Millimeters"
+msgstr "Milímetros"
+
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: src/helper/unit-menu.c:356 src/helper/units.c:44
+#: src/helper/unit-menu.c:356 src/helper/units.c:51
 msgid "Inches"
 msgstr "Polegadas"
 
@@ -1756,11 +1687,15 @@ msgstr "Polegadas"
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:357 src/helper/units.c:35
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "Point"
 msgstr "Pontos"
 
-#: src/helper/unit-menu.c:358 src/helper/units.c:36
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
+msgid "Pixels"
+msgstr "Pixels"
+
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
 msgid "Pixel"
 msgstr "Pixel"
 
@@ -1772,72 +1707,72 @@ msgstr "Espaço de utilizador"
 msgid "us"
 msgstr "us"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em squares"
 msgstr "Quadrados em"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em square"
 msgstr "Quadrado em"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "em"
 msgstr "em"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex squares"
 msgstr "Quadrados ex"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex square"
 msgstr "Quadrado ex"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "ex"
 msgstr "ex"
 
 #. Do not insert any elements before/between first 4
-#: src/helper/units.c:34
+#: src/helper/units.c:41
 msgid "Unit"
 msgstr "Unidade"
 
-#: src/helper/units.c:34
+#: src/helper/units.c:41
 msgid "Units"
 msgstr "Unidades"
 
-#: src/helper/units.c:35
+#: src/helper/units.c:42
 msgid "Pt"
 msgstr "Pt"
 
-#: src/helper/units.c:36
+#: src/helper/units.c:43
 msgid "Px"
 msgstr "Px"
 
-#: src/helper/units.c:37
+#: src/helper/units.c:44
 msgid "Userspace unit"
 msgstr "Unidade de espaço de utilizador"
 
-#: src/helper/units.c:37
+#: src/helper/units.c:44
 msgid "User"
 msgstr "Utilizador"
 
-#: src/helper/units.c:37
+#: src/helper/units.c:44
 msgid "Userspace units"
 msgstr "Unidades de espaço de utilizador"
 
-#: src/helper/units.c:40
+#: src/helper/units.c:47
 msgid "Percents"
 msgstr "Percento"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "Meter"
 msgstr "Metro"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "m"
 msgstr "m"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "meters"
 msgstr "metros"
 
@@ -1876,7 +1811,7 @@ msgid "Could not initialize Bonobo"
 msgstr "Não foi possível inicializar o Bonobo"
 
 #. Not a regular file
-#: src/sodipodi.c:305
+#: src/sodipodi.c:323
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1888,7 +1823,7 @@ msgstr ""
 "nem abrir nem gravar preferências\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:318
+#: src/sodipodi.c:336
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1902,7 +1837,7 @@ msgstr ""
 "Apesar do sodipodi correr, não vai ser possível\n"
 "nem abrir nem gravar preferências."
 
-#: src/sodipodi.c:332
+#: src/sodipodi.c:350
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1915,7 +1850,7 @@ msgstr ""
 "nem abrir nem gravar preferências."
 
 #. Cannot create directory
-#: src/sodipodi.c:588
+#: src/sodipodi.c:607
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1928,7 +1863,7 @@ msgstr ""
 "nem abrir nem gravar preferências."
 
 #. Not a directory
-#: src/sodipodi.c:600
+#: src/sodipodi.c:619
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1941,7 +1876,7 @@ msgstr ""
 "nem abrir nem gravar preferências."
 
 #. Cannot create file
-#: src/sodipodi.c:616
+#: src/sodipodi.c:635
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1954,7 +1889,7 @@ msgstr ""
 "nem abrir nem gravar preferências."
 
 #. Cannot create file
-#: src/sodipodi.c:628
+#: src/sodipodi.c:647
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -2070,17 +2005,17 @@ msgstr "Rectângulo"
 msgid "Rect Properties"
 msgstr "Propriedades do rectângulo"
 
-#: src/sp-shape.c:364
+#: src/sp-shape.c:307
 msgid "A path - whatever it means"
 msgstr "Um caminho - o que quer que isso signifique"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:420
+#: src/sp-shape.c:363
 msgid "Shape"
 msgstr "Forma"
 
 #. Item dialog
-#: src/sp-shape.c:423
+#: src/sp-shape.c:366
 msgid "Fill settings"
 msgstr "Preenchimento"
 
@@ -2101,6 +2036,63 @@ msgstr "Objecto de texto"
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Desenhar"
+
+#. Reset button
+#: src/widgets/gradient-selector.c:160
+msgid "Reset"
+msgstr "Repor"
+
+#: src/widgets/gradient-vector.c:243
+msgid "No document selected"
+msgstr "Nenhum documento seleccionado"
+
+#: src/widgets/gradient-vector.c:249
+msgid "No gradients in document"
+msgstr "Nenhum gradiente no documento"
+
+#: src/widgets/gradient-vector.c:255
+msgid "No gradient selected"
+msgstr "Nenhum gradiente seleccionado"
+
+#: src/widgets/gradient-vector.c:406
+msgid "Start color"
+msgstr "Cor inicial"
+
+#: src/widgets/gradient-vector.c:418
+msgid "End color"
+msgstr "Cor final"
+
+#: src/widgets/gradient-vector.c:445
+msgid "Gradient vector"
+msgstr "Vector do gradiente"
+
+#: src/widgets/paint-selector.c:396
+msgid "No objects"
+msgstr "Nenhum objecto"
+
+#: src/widgets/paint-selector.c:410
+msgid "Multiple styles"
+msgstr "Estilos múltiplos"
+
+#: src/widgets/paint-selector.c:424
+msgid "No paint"
+msgstr "Nenhuma pintura"
+
+#: src/widgets/paint-selector.c:566
+msgid "Color paint"
+msgstr "Pintura a cores"
+
+#: src/widgets/paint-selector.c:636
+msgid "Linear"
+msgstr "Linear"
+
+#: src/widgets/paint-selector.c:639
+msgid "Radial"
+msgstr "Radial"
+
+#: src/widgets/paint-selector.c:670
+msgid "Gradient paint"
+msgstr "Pintura gradiente"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2125,6 +2117,66 @@ msgstr "Amarelo:"
 #: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Preto:"
+
+#~ msgid "Choose base unit system for grid"
+#~ msgstr "Escolha a unidade base para a grelha"
+
+#~ msgid "Choose color for grid"
+#~ msgstr "Escolha a cor para a grelha"
+
+#~ msgid "Choose color for guidelines"
+#~ msgstr "Escolha a cor para as guias"
+
+#~ msgid "Choose color for highlighted guidelines"
+#~ msgstr "Escolha a cor para as guias seleccionadas"
+
+#~ msgid "Choose unit system for grid snapping"
+#~ msgstr "Escolha a unidade para o ajuste à grelha"
+
+#~ msgid "Choose unit system for guideline snapping"
+#~ msgstr "Escolha a unidade para o ajuste às guias"
+
+#~ msgid "Grid color"
+#~ msgstr "Cor da grelha"
+
+#~ msgid "Guideline color"
+#~ msgstr "Cor das guias"
+
+#~ msgid "Highlited guideline color"
+#~ msgstr "Cor das guias seleccionadas"
+
+#~ msgid "Set distance between horizontal grid lines"
+#~ msgstr "Especifica a distância entre as linhas horizontais da grelha"
+
+#~ msgid "Set distance between vertical grid lines"
+#~ msgstr "Especifica a distância entre as linhas verticais da grelha"
+
+#~ msgid "Set maximum distance for grid snapping"
+#~ msgstr "Especifica a distância máxima para o ajuste à grelha"
+
+#~ msgid "Set maximum distance for guideline snapping"
+#~ msgstr "Especifica a distância máxima para o ajuste às guias"
+
+#~ msgid "Set origin of page coordinate system"
+#~ msgstr "Especificar origem das coordenadas da página"
+
+#~ msgid "A4"
+#~ msgstr "A4"
+
+#~ msgid "Choose paper size"
+#~ msgstr "Escolha o tamanho do papel"
+
+#~ msgid "Choose unit system"
+#~ msgstr "Escolha a unidade de medida"
+
+#~ msgid "Set page height"
+#~ msgstr "Alterar altura da página"
+
+#~ msgid "Set page width"
+#~ msgstr "Alterar largura da página"
+
+#~ msgid "Dynamic fill"
+#~ msgstr "Preenchimento dinâmico"
 
 #~ msgid "Millimeters\n"
 #~ msgstr "Milímetros\n"
