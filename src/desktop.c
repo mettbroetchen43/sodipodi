@@ -545,14 +545,19 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
 
+	sp_namedview_hide (desktop->namedview, desktop);
 	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
 
 	gtk_object_ref (GTK_OBJECT (document));
 	gtk_object_unref (GTK_OBJECT (desktop->document));
 
 	desktop->document = document;
+	desktop->namedview = sp_document_namedview (document, NULL);
 
 	sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
+	sp_namedview_show (desktop->namedview, desktop);
+	/* Ugly hack */
+	sp_desktop_activate_guides (desktop, TRUE);
 }
 
 #if 0

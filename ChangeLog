@@ -1,5 +1,9 @@
 2001-01-09  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/desktop (sp_desktop_change_document): Update namedviews aslo
+
+2001-01-09  Lauris Kaplinski  <lauris@ximian.com>
+
 	* samples/mangatips1.svg: New file
 	* samples/mangatips2.svg: New file
 

@@ -15,4 +15,5 @@ noinst_LIBRARIES = libspwidgets.a
 
 libspwidgets_a_SOURCES = \
 	sp-toolbox.c sp-toolbox.h
+#	sp-colorsel.c sp-colorsel.h
 
