@@ -1,3 +1,9 @@
+2003-02-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_paint_changed): Set CMYK before RGB
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_changed): Set CMYK before RGB
+
 2003-02-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-gradient.c (sp_gradient_rebuild_vector): Fix crash if 2 stops coincide
