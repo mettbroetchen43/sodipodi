@@ -138,6 +138,9 @@ sp_verb_action_edit_perform (SPAction *action, void *data)
 	case SP_VERB_EDIT_DUPLICATE:
 		sp_selection_duplicate (NULL, NULL);
 		break;
+	case SP_VERB_EDIT_CLEAR_ALL:
+	  	sp_edit_clear_all (NULL, NULL);
+		break;
 	default:
 		break;
 	}
@@ -400,7 +403,7 @@ static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_per
 static SPActionEventVector action_dialog_vector = {{NULL}, sp_verb_action_dialog_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
-#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
+#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_SELECT_ALL))
 #define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_BREAK_APART))
 #define SP_VERB_IS_OBJECT(v) ((v >= SP_VERB_OBJECT_ROTATE_90) && (v <= SP_VERB_OBJECT_FLIP_VERTICAL))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
