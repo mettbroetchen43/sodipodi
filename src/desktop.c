@@ -1,5 +1,17 @@
 #define SP_DESKTOP_C
 
+/*
+ * SPDesktop
+ *
+ * This is infinite drawing board in device (gnome-print, PS) coords - i.e.
+ *   Y grows UPWARDS, X to RIGHT
+ * For both Canvas and SVG the coordinate space has to be flipped - this
+ *   is normally done by SPRoot item.
+ * SPRoot is the only child of SPDesktop->main canvas group and should be
+ *   the parent of all "normal" drawing items
+ *
+ */
+
 #include <math.h>
 #include <gnome.h>
 #include <glade/glade.h>
@@ -16,13 +28,14 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
-static void sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition);
-static void sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation);
-
 static void sp_desktop_update_rulers (SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 
-GtkBoxClass * parent_class;
+/* Signal handlers */
+
+gint sp_desktop_activate (GtkWidget * widget, GdkEventCrossing * event, gpointer data);
+
+GtkEventBoxClass * parent_class;
 
 GtkType
 sp_desktop_get_type (void)
@@ -41,7 +54,7 @@ sp_desktop_get_type (void)
 			(GtkClassInitFunc) NULL
 		};
 
-		desktop_type = gtk_type_unique (gtk_box_get_type (), &desktop_info);
+		desktop_type = gtk_type_unique (GTK_TYPE_EVENT_BOX, &desktop_info);
 	}
 
 	return desktop_type;
@@ -53,15 +66,12 @@ sp_desktop_class_init (SPDesktopClass * klass)
 	GtkObjectClass * object_class;
 	GtkWidgetClass * widget_class;
 
-	parent_class = gtk_type_class (gtk_box_get_type ());
+	parent_class = gtk_type_class (GTK_TYPE_EVENT_BOX);
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
 
 	object_class->destroy = sp_desktop_destroy;
-
-	widget_class->size_request = sp_desktop_size_request;
-	widget_class->size_allocate = sp_desktop_size_allocate;
 }
 
 static void
@@ -77,12 +87,62 @@ sp_desktop_init (SPDesktop * desktop)
 	desktop->drawing = NULL;
 	desktop->sketch = NULL;
 	desktop->controls = NULL;
-	desktop->hscrollbar = NULL;
-	desktop->vscrollbar = NULL;
-	desktop->hruler = NULL;
-	desktop->vruler = NULL;
 	art_affine_identity (desktop->d2w);
 	art_affine_identity (desktop->w2d);
+
+	desktop->decorations = TRUE;
+
+	desktop->table = GTK_TABLE (gtk_table_new (3, 3, FALSE));
+	gtk_widget_show (GTK_WIDGET (desktop->table));
+	gtk_container_add (GTK_CONTAINER (desktop), GTK_WIDGET (desktop->table));
+
+	desktop->hscrollbar = GTK_SCROLLBAR (gtk_hscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
+		0.0, 8000.0, 10.0, 100.0, 4.0))));
+	gtk_widget_show (GTK_WIDGET (desktop->hscrollbar));
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (desktop->hscrollbar),
+		1,2,2,3,
+		GTK_EXPAND | GTK_FILL,
+		GTK_FILL,
+		0,0);
+	desktop->vscrollbar = GTK_SCROLLBAR (gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
+		0.0, 8000.0, 10.0, 100.0, 4.0))));
+	gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (desktop->vscrollbar),
+		2,3,1,2,
+		GTK_FILL,
+		GTK_EXPAND | GTK_FILL,
+		0,0);
+	desktop->hruler = GTK_RULER (gtk_hruler_new ());
+	gtk_widget_show (GTK_WIDGET (desktop->hruler));
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (desktop->hruler),
+		1,2,0,1,
+		GTK_FILL,
+		GTK_FILL,
+		0,0);
+	desktop->vruler = GTK_RULER (gtk_vruler_new ());
+	gtk_widget_show (GTK_WIDGET (desktop->vruler));
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (desktop->vruler),
+		0,1,1,2,
+		GTK_FILL,
+		GTK_FILL,
+		0,0);
+	gtk_widget_push_visual (gdk_rgb_get_visual ());
+	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
+	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
+	gtk_widget_pop_colormap ();
+	gtk_widget_pop_visual ();
+	gtk_widget_show (GTK_WIDGET (desktop->canvas));
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (desktop->canvas),
+		1,2,1,2,
+		GTK_EXPAND | GTK_FILL,
+		GTK_EXPAND | GTK_FILL,
+		0,0);
+
 }
 
 static void
@@ -108,6 +168,7 @@ sp_desktop_destroy (GtkObject * object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
 sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition)
 {
@@ -127,7 +188,9 @@ sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition)
 	requisition->width += GTK_CONTAINER (box)->border_width * 2;
 	requisition->height += GTK_CONTAINER (box)->border_width * 2;
 }
+#endif
 
+#if 0
 static void
 sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
 {
@@ -150,6 +213,7 @@ sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
 		gtk_widget_size_allocate (child, &child_allocation);
 	}
 }
+#endif
 
 /* Constructor */
 
@@ -170,32 +234,17 @@ sp_desktop_new (SPDocument * document)
 
 	/* Setup widget */
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "desktop");
-	g_return_val_if_fail (xml != NULL, NULL);
-	glade_xml_signal_autoconnect (xml);
-
 	desktop = (SPDesktop *) gtk_type_new (sp_desktop_get_type ());
 
-	GTK_BOX (desktop)->spacing = 4;
-	GTK_BOX (desktop)->homogeneous = TRUE;
-
-	dwidget = glade_xml_get_widget (xml, "desktop");
-	gtk_object_set_data (GTK_OBJECT (dwidget), "SPDesktop", desktop);
-	gtk_box_pack_start_defaults (GTK_BOX (desktop), dwidget);
+	gtk_signal_connect (GTK_OBJECT (desktop), "enter_notify_event",
+		GTK_SIGNAL_FUNC (sp_desktop_activate), desktop);
 
 	/* Setup document */
 
 	desktop->document = document;
 	gtk_object_ref (GTK_OBJECT (document));
 
-	desktop->hscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "hscrollbar");
-	desktop->vscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "vscrollbar");
-	desktop->hruler = (GtkRuler *) glade_xml_get_widget (xml, "hruler");
-	desktop->vruler = (GtkRuler *) glade_xml_get_widget (xml, "vruler");
-
 	/* Setup Canvas */
-
-	desktop->canvas = (GnomeCanvas *) glade_xml_get_widget (xml, "canvas");
 	gtk_object_set_data (GTK_OBJECT (desktop->canvas), "SPDesktop", desktop);
 
 	style = gtk_style_copy (GTK_WIDGET (desktop->canvas)->style);
@@ -256,6 +305,29 @@ sp_desktop_new (SPDocument * document)
 	ci = sp_item_show (SP_ITEM (desktop->document->root), desktop->drawing, sp_desktop_item_handler);
 
 	return desktop;
+}
+
+void
+sp_desktop_show_decorations (SPDesktop * desktop, gboolean show)
+{
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+
+	if (desktop->decorations == show) return;
+
+	desktop->decorations = show;
+
+	if (show) {
+		gtk_widget_show (GTK_WIDGET (desktop->hscrollbar));
+		gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
+		gtk_widget_show (GTK_WIDGET (desktop->hruler));
+		gtk_widget_show (GTK_WIDGET (desktop->vruler));
+	} else {
+		gtk_widget_hide (GTK_WIDGET (desktop->hscrollbar));
+		gtk_widget_hide (GTK_WIDGET (desktop->vscrollbar));
+		gtk_widget_hide (GTK_WIDGET (desktop->hruler));
+		gtk_widget_hide (GTK_WIDGET (desktop->vruler));
+	}
 }
 
 void
@@ -564,6 +636,34 @@ sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data
 	desktop = SP_DESKTOP (ddata);
 
 	sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
+}
+
+/* Signal handlers */
+
+gint
+sp_desktop_activate (GtkWidget * widget, GdkEventCrossing * event, gpointer data)
+{
+	g_assert (data != NULL);
+	g_assert (SP_IS_DESKTOP (data));
+
+	sp_active_desktop_set (SP_DESKTOP (data));
+
+	return FALSE;
+}
+
+
+/* fixme: this is UI functions - find a better place */
+
+void
+sp_desktop_toggle_borders (GtkWidget * widget)
+{
+	SPDesktop * desktop;
+
+	desktop = SP_ACTIVE_DESKTOP;
+
+	if (desktop == NULL) return;
+
+	sp_desktop_show_decorations (desktop, !desktop->decorations);
 }
 
 #if 0

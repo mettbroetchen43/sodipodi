@@ -1,11 +1,13 @@
 #define SP_EMBEDDABLE_DESKTOP_C
 
+#include "../sodipodi.h"
 #include "../desktop.h"
 #include "embeddable-desktop.h"
 
 static void sp_embeddable_desktop_class_init (GtkObjectClass * klass);
 static void sp_embeddable_desktop_init (GtkObject * object);
 
+static void sp_embeddable_desktop_destroyed (SPEmbeddableDesktop * desktop);
 static void sp_embeddable_desktop_activate (BonoboView * view, gboolean activate, gpointer data);
 
 GtkType
@@ -61,12 +63,20 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	desktop->document = SP_EMBEDDABLE_DOCUMENT (embeddable);
 	desktop->desktop = sp_desktop_new (desktop->document->document);
 
+	/* Hide scrollbars and rulers */
+
+	sp_desktop_show_decorations (desktop->desktop, FALSE);
+
 	bonobo_view_construct (BONOBO_VIEW (desktop),
 		corba_desktop,
 		GTK_WIDGET (desktop->desktop));
 
-	gtk_widget_show_all (GTK_WIDGET (desktop->desktop));
+	gtk_widget_show (GTK_WIDGET (desktop->desktop));
 
+	gnome_mdi_register (SODIPODI, GTK_OBJECT (desktop));
+
+	gtk_signal_connect (GTK_OBJECT (desktop), "destroy",
+		GTK_SIGNAL_FUNC (sp_embeddable_desktop_destroyed), NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop), "activate",
 		GTK_SIGNAL_FUNC (sp_embeddable_desktop_activate), NULL);
 
@@ -74,8 +84,20 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 }
 
 static void
+sp_embeddable_desktop_destroyed (SPEmbeddableDesktop * desktop)
+{
+	gnome_mdi_unregister (SODIPODI, GTK_OBJECT (desktop));
+}
+
+static void
 sp_embeddable_desktop_activate (BonoboView * view, gboolean activate, gpointer data)
 {
+	SPEmbeddableDesktop * desktop;
+
+	desktop = SP_EMBEDDABLE_DESKTOP (view);
+
+	sp_desktop_show_decorations (desktop->desktop, activate);
+
 	bonobo_view_activate_notify (view, activate);
 }
 

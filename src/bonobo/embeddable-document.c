@@ -2,6 +2,7 @@
 
 #include <config.h>
 #include "../sp-object.h"
+#include "../sp-item.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "sodipodi-bonobo.h"
@@ -12,10 +13,13 @@
 static void sp_embeddable_document_class_init (GtkObjectClass * klass);
 static void sp_embeddable_document_init (GtkObject * object);
 
+#if 0
 static void sp_embeddable_document_destroyed (SPEmbeddableDocument * document);
+#endif
 
 int sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure);
 static int sp_embeddable_document_pf_save (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure);
+static void sp_embeddable_document_print (GnomePrintContext * ctx, gdouble width, gdouble height, const Bonobo_PrintScissor * scissor, gpointer data);
 
 GtkType
 sp_embeddable_document_get_type (void)
@@ -59,6 +63,7 @@ sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
 #if 0
 	BonoboPersistStream * pstream;
 #endif
+	BonoboPrint * print;
 
 	document = gtk_type_new (SP_EMBEDDABLE_DOCUMENT_TYPE);
 
@@ -87,19 +92,31 @@ sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
 	}
 
 	bonobo_object_add_interface (BONOBO_OBJECT (document), BONOBO_OBJECT (pfile));
+#if 0
+	print = bonobo_print_new (sp_embeddable_document_print, document);
 
+	if (print == NULL) {
+		gtk_object_unref (GTK_OBJECT (document));
+		return CORBA_OBJECT_NIL;
+	}
+
+	bonobo_object_add_interface (BONOBO_OBJECT (document), BONOBO_OBJECT (print));
+#endif
+
+#if 0
 #if 0
 	sp_bonobo_objects++;
 #else
 	gnome_mdi_register (SODIPODI, GTK_OBJECT (document));
 #endif
-
 	gtk_signal_connect (GTK_OBJECT (document), "destroy",
 		GTK_SIGNAL_FUNC (sp_embeddable_document_destroyed), NULL);
+#endif
 
 	return BONOBO_OBJECT (document);
 }
 
+#if 0
 static void
 sp_embeddable_document_destroyed (SPEmbeddableDocument * document)
 {
@@ -113,6 +130,7 @@ sp_embeddable_document_destroyed (SPEmbeddableDocument * document)
 	gnome_mdi_unregister (SODIPODI, GTK_OBJECT (document));
 #endif
 }
+#endif
 
 int
 sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure)
@@ -150,5 +168,18 @@ sp_embeddable_document_pf_save (BonoboPersistFile * pfile, const CORBA_char * fi
 	sp_repr_save_file (SP_OBJECT (document->document->root)->repr, filename);
 
 	return 0;
+}
+
+static void
+sp_embeddable_document_print (GnomePrintContext * ctx,
+	gdouble width, gdouble height,
+	const Bonobo_PrintScissor * scissor,
+	gpointer data)
+{
+	SPEmbeddableDocument * document;
+
+	document = SP_EMBEDDABLE_DOCUMENT (data);
+
+	sp_item_print (SP_ITEM (document->document), ctx);
 }
 

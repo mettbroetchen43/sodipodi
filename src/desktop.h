@@ -30,12 +30,17 @@ typedef struct _SPDesktopClass SPDesktopClass;
 #endif
 
 struct _SPDesktop {
-	GtkBox box;
+	GtkEventBox eventbox;
+	guint decorations :1;
+	GtkTable * table;
+	GtkScrollbar * hscrollbar;
+	GtkScrollbar * vscrollbar;
+	GtkRuler * hruler;
+	GtkRuler * vruler;
+
 	SPDocument * document;
 	SPSelection * selection;
 	SPEventContext * event_context;
-	GtkScrollbar * hscrollbar, * vscrollbar;
-	GtkRuler * hruler, * vruler;
 	GnomeCanvas * canvas;
 	GnomeCanvasItem * acetate;
 	GnomeCanvasGroup * main;
@@ -48,7 +53,7 @@ struct _SPDesktop {
 };
 
 struct _SPDesktopClass {
-	GtkBoxClass parent_class;
+	GtkEventBoxClass parent_class;
 };
 
 /* Standard Gtk function */
@@ -58,6 +63,10 @@ GtkType sp_desktop_get_type (void);
 /* Constructor */
 
 SPDesktop * sp_desktop_new (SPDocument * document);
+
+/* Show/hide rulers & scrollbars */
+
+void sp_desktop_show_decorations (SPDesktop * desktop, gboolean show);
 
 void sp_desktop_change_document (SPDesktop * desktop, SPDocument * document);
 

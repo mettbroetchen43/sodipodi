@@ -20,4 +20,6 @@ typedef struct _SPDesktopClass SPDesktopClass;
 
 SPDesktop * sp_active_desktop (GnomeMDI * mdi);
 
+void sp_active_desktop_set (SPDesktop * desktop);
+
 #endif

@@ -1,3 +1,12 @@
+2000-04-20  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* glade/sodipodi.glade: toggling rulers and scrollbars on/off
+	* desktop.c: construct it by hand, borders can be removed
+	* mdi-desktop.c: new logic for activating desktops (bonobo needed it)
+	* bonobo/embeddable-document.c: removed MDI refcounting
+	* bonobo/embeddable-desktop.c: added MDI refcounting, active desktop
+	  management and hiding borders, if not active
+
 2000-04-20  Andreas Hyden  <a.hyden@cyberpoint.se>
 
 	* sodipodi.desktop: Added Swedish translation.
