@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-15 22:26+0100\n"
-"PO-Revision-Date: 2003-11-15 22:27+0100\n"
+"POT-Creation-Date: 2003-11-16 05:58+0100\n"
+"PO-Revision-Date: 2003-11-16 05:58+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -47,18 +47,18 @@ msgstr "Dokument %s sadrži nesačuvane izmene. Sačuvati ih?"
 #. Page page
 #: src/desktop.c:1505 src/dialogs/align.c:286
 #: src/dialogs/desktop-properties.c:275 src/dialogs/document-properties.c:163
-#: src/dialogs/export.c:135 src/verbs.c:484
+#: src/dialogs/export.c:135 src/verbs.c:453
 msgid "Page"
 msgstr "Strana"
 
 #: src/desktop.c:1509 src/dialogs/align.c:287 src/dialogs/export.c:140
-#: src/verbs.c:485
+#: src/verbs.c:454
 msgid "Drawing"
 msgstr "Crtež"
 
 #. Selection submenu
 #: src/desktop.c:1513 src/dialogs/align.c:288 src/dialogs/export.c:145
-#: src/interface.c:576 src/toolbox.c:487 src/verbs.c:486
+#: src/interface.c:576 src/toolbox.c:487 src/verbs.c:455
 msgid "Selection"
 msgstr "Izbor"
 
@@ -283,7 +283,7 @@ msgstr "Iscrtavanje"
 msgid "Oversample bitmaps:"
 msgstr "Previše uvećaj bitmapu:"
 
-#: src/dialogs/display-settings.c:116 src/verbs.c:427
+#: src/dialogs/display-settings.c:116 src/verbs.c:394
 msgid "None"
 msgstr "Ništa"
 
@@ -332,7 +332,7 @@ msgstr "Prilagođeni papir"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:214 src/dialogs/export.c:153
-#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:401
+#: src/dialogs/object-properties.c:320 src/dialogs/transformation.c:401
 #: src/dialogs/transformation.c:576
 msgid "Units:"
 msgstr "Jedinice: "
@@ -340,7 +340,7 @@ msgstr "Jedinice: "
 #. Stroke width
 #: src/dialogs/document-properties.c:223 src/dialogs/export.c:163
 #: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
+#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:353
 #: src/dialogs/stroke-style.c:556 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1079
 msgid "Width:"
@@ -348,7 +348,7 @@ msgstr "Širina:"
 
 #: src/dialogs/document-properties.c:238 src/dialogs/export.c:172
 #: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
-#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
+#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:365
 msgid "Height:"
 msgstr "Visina:"
 
@@ -394,7 +394,7 @@ msgstr "tpi"
 msgid "Export png file"
 msgstr "Izvezi PNG datoteku"
 
-#: src/dialogs/export.c:235 src/verbs.c:437
+#: src/dialogs/export.c:235 src/verbs.c:404
 msgid "Export"
 msgstr "Izvezi"
 
@@ -459,7 +459,7 @@ msgstr "Neispravan ID"
 msgid "ID exists"
 msgstr "ID postoji"
 
-#: src/dialogs/item-properties.c:428 src/verbs.c:499
+#: src/dialogs/item-properties.c:428 src/verbs.c:468
 msgid "Item properties"
 msgstr "Svojstva stavke"
 
@@ -552,12 +552,12 @@ msgid "URL:"
 msgstr "Adresa:"
 
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:330
+#: src/dialogs/object-properties.c:329
 msgid "X:"
 msgstr "X:"
 
 #: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-#: src/dialogs/object-properties.c:345
+#: src/dialogs/object-properties.c:341
 msgid "Y:"
 msgstr "Y:"
 
@@ -626,15 +626,15 @@ msgstr "Slobodna ruka i olovka"
 msgid "Calligraphic line"
 msgstr "Kaligrafska linija"
 
-#: src/dialogs/object-properties.c:207 src/verbs.c:475
+#: src/dialogs/object-properties.c:207 src/verbs.c:444
 msgid "Text"
 msgstr "Tekst"
 
-#: src/dialogs/object-properties.c:283
+#: src/dialogs/object-properties.c:286
 msgid "Object Size and Position"
 msgstr "Veličina i pozicija objekta"
 
-#: src/dialogs/object-properties.c:305 src/verbs.c:494
+#: src/dialogs/object-properties.c:309 src/verbs.c:463
 msgid "Size and Position"
 msgstr "Veličina i pozicija"
 
@@ -686,7 +686,7 @@ msgstr "Tekst i font"
 msgid "Set as default"
 msgstr "Postavi kao podrazumevano"
 
-#: src/dialogs/tool-attributes.c:45 src/verbs.c:492
+#: src/dialogs/tool-attributes.c:45 src/verbs.c:461
 msgid "Tool attributes"
 msgstr "Osobine alata"
 
@@ -738,7 +738,7 @@ msgstr "Alat nema osobine"
 msgid "No active tool"
 msgstr "Nema aktivnog alata"
 
-#: src/dialogs/tool-options.c:44 src/verbs.c:491
+#: src/dialogs/tool-options.c:44 src/verbs.c:460
 msgid "Tool options"
 msgstr "Opcije alata"
 
@@ -1071,7 +1071,7 @@ msgid "Cleanup"
 msgstr "Očisti"
 
 #. View:Zoom
-#: src/interface.c:420 src/toolbox.c:619 src/verbs.c:476
+#: src/interface.c:420 src/toolbox.c:619 src/verbs.c:445
 msgid "Zoom"
 msgstr "Uvećaj"
 
@@ -1098,7 +1098,7 @@ msgid "Remove Docked Toolbox"
 msgstr "Ukloni privezani skup alata"
 
 #. File
-#: src/interface.c:483 src/verbs.c:429
+#: src/interface.c:483 src/verbs.c:396
 msgid "New"
 msgstr "Nova"
 
@@ -1335,7 +1335,7 @@ msgid "Item"
 msgstr "Stavka"
 
 #. Item dialog
-#: src/object-ui.c:108 src/verbs.c:499
+#: src/object-ui.c:108 src/verbs.c:468
 msgid "Item Properties"
 msgstr "Osobine stavke"
 
@@ -1362,7 +1362,7 @@ msgstr "Učini neosetljivim"
 msgid "Create link"
 msgstr "Napravi vezu"
 
-#: src/object-ui.c:251 src/verbs.c:453
+#: src/object-ui.c:251 src/verbs.c:421
 msgid "Group"
 msgstr "Grupiši"
 
@@ -1372,7 +1372,7 @@ msgid "Group Properties"
 msgstr "Osobine grupe"
 
 #. "Ungroup"
-#: src/object-ui.c:268 src/verbs.c:454
+#: src/object-ui.c:268 src/verbs.c:422
 msgid "Ungroup"
 msgstr "Razgrupiši"
 
@@ -1407,7 +1407,7 @@ msgid "Image Properties"
 msgstr "Osobine slike"
 
 #. Autotrace dialog
-#: src/object-ui.c:408 src/sp-image.c:780
+#: src/object-ui.c:408 src/sp-image.c:774
 msgid "Trace"
 msgstr "Trag"
 
@@ -1434,7 +1434,7 @@ msgid "Rect Properties"
 msgstr "Osobine pravougaonika"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:523 src/verbs.c:470
+#: src/object-ui.c:523 src/verbs.c:439
 msgid "Star"
 msgstr "Zvezda"
 
@@ -1444,7 +1444,7 @@ msgid "Star Properties"
 msgstr "Osobine zvezde"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:559 src/verbs.c:471
+#: src/object-ui.c:559 src/verbs.c:440
 msgid "Spiral"
 msgstr "Spirala"
 
@@ -1503,27 +1503,27 @@ msgstr "Centriraj pogled na izabranu stavku"
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi automatski prikaz"
 
-#: src/sodipodi.c:395
+#: src/sodipodi.c:403
 msgid "Untitled document"
 msgstr "Neimenovani dokument"
 
 #. Show nice dialog box
-#: src/sodipodi.c:420
+#: src/sodipodi.c:428
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi je naišao na unutrašnju grešku i sada će se zatvoriti.\n"
 
-#: src/sodipodi.c:421
+#: src/sodipodi.c:429
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatski rezervni primerci nesačuvanih dokumenata su smešteni u naredne "
 "putanje:\n"
 
-#: src/sodipodi.c:422
+#: src/sodipodi.c:430
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Nije uspelo automatsko snimanje rezervnih primeraka:\n"
 
-#: src/sodipodi.c:561
+#: src/sodipodi.c:569
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1534,7 +1534,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete moći\n"
 "ni da učitate ni da sačuvate postavke\n"
 
-#: src/sodipodi.c:564
+#: src/sodipodi.c:572
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1549,7 +1549,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:569
+#: src/sodipodi.c:577
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1562,7 +1562,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:581
+#: src/sodipodi.c:589
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1573,7 +1573,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:584
+#: src/sodipodi.c:592
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1586,7 +1586,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:588
+#: src/sodipodi.c:596
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1598,7 +1598,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:927
+#: src/sodipodi.c:935
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1611,7 +1611,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "%s."
 
-#: src/sodipodi.c:931
+#: src/sodipodi.c:939
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1624,7 +1624,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:935
+#: src/sodipodi.c:943
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1637,7 +1637,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:939
+#: src/sodipodi.c:947
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1650,7 +1650,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:949
+#: src/sodipodi.c:957
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1661,7 +1661,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:952
+#: src/sodipodi.c:960
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1672,7 +1672,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:955
+#: src/sodipodi.c:963
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1683,7 +1683,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:958
+#: src/sodipodi.c:966
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1709,24 +1709,24 @@ msgstr "Slika sa lošom referencom: %s"
 msgid "Color image %d x %d: %s"
 msgstr "Slika u boji %d x %d: %s"
 
-#: src/sp-image.c:926
+#: src/sp-image.c:920
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Greška pri upisu %s: %s"
 
-#: src/sp-image.c:960
+#: src/sp-image.c:954
 msgid "Untitled"
 msgstr "Neimenovana"
 
-#: src/sp-image.c:965
+#: src/sp-image.c:959
 msgid "Document Name:"
 msgstr "Ime dokumenta:"
 
-#: src/sp-image.c:978
+#: src/sp-image.c:972
 msgid "Unknown"
 msgstr "Nepoznato"
 
-#: src/sp-image.c:984
+#: src/sp-image.c:978
 msgid "Image URI:"
 msgstr "Adresa slike:"
 
@@ -1764,7 +1764,7 @@ msgstr "Učini stranice ravnim"
 msgid "Object"
 msgstr "Objekat"
 
-#: src/toolbox.c:445 src/verbs.c:494
+#: src/toolbox.c:445 src/verbs.c:463
 msgid "Object size and position"
 msgstr "Veličina i pozicija objekta"
 
@@ -1772,7 +1772,7 @@ msgstr "Veličina i pozicija objekta"
 msgid "Text and font settings"
 msgstr "Podešavanja teksta i fonta"
 
-#: src/toolbox.c:448 src/verbs.c:495
+#: src/toolbox.c:448 src/verbs.c:464
 msgid "Object transformations"
 msgstr "Transformacije objekta"
 
@@ -1825,441 +1825,457 @@ msgstr "Napravi glatku krivu od izabranih čvorova"
 msgid "Make selected segments curves"
 msgstr "Napravi krivu od izabranih delova"
 
-#: src/verbs.c:427
+#: src/verbs.c:394
 msgid "Does nothing"
 msgstr "Ne čini ništa"
 
-#: src/verbs.c:429
+#: src/verbs.c:396
 msgid "Create new SVG document"
 msgstr "Napravi novi SVG dokument"
 
-#: src/verbs.c:430
+#: src/verbs.c:397
 msgid "Open..."
 msgstr "Otvori..."
 
-#: src/verbs.c:430
+#: src/verbs.c:397
 msgid "Open existing SVG document"
 msgstr "Otvori postojeći SVG dokument"
 
-#: src/verbs.c:431
+#: src/verbs.c:398
 msgid "Save"
 msgstr "Sačuvaj"
 
-#: src/verbs.c:431
+#: src/verbs.c:398
 msgid "Save document"
 msgstr "Sačuvaj dokument"
 
-#: src/verbs.c:432
+#: src/verbs.c:399
 msgid "Save As..."
 msgstr "Sačuvaj kao..."
 
-#: src/verbs.c:432
+#: src/verbs.c:399
 msgid "Save document under new name"
 msgstr "Sačuvaj dokument pod novim imenom"
 
-#: src/verbs.c:433
+#: src/verbs.c:400
 msgid "Print..."
 msgstr "Štampaj..."
 
-#: src/verbs.c:433
+#: src/verbs.c:400
 msgid "Print document"
 msgstr "Štampaj dokument"
 
-#: src/verbs.c:434
+#: src/verbs.c:401
 msgid "Print Direct..."
 msgstr "Štampaj neposredno..."
 
-#: src/verbs.c:434
+#: src/verbs.c:401
 msgid "Print directly to file or pipe"
 msgstr "Štampaj neposredno u datoteku ili cev"
 
-#: src/verbs.c:435
+#: src/verbs.c:402
 msgid "Print Preview"
 msgstr "Pregled pred štampu"
 
-#: src/verbs.c:435
+#: src/verbs.c:402
 msgid "Preview document printout"
 msgstr "Pregledaj izlaz dokumenta sa štampe"
 
-#: src/verbs.c:436
+#: src/verbs.c:403
 msgid "Import"
 msgstr "Uvezi"
 
-#: src/verbs.c:436
+#: src/verbs.c:403
 msgid "Import bitmap or SVG image into document"
 msgstr "Uvezi bitmapu ili SVG sliku u dokument"
 
-#: src/verbs.c:437
+#: src/verbs.c:404
 msgid "Export document as PNG bitmap"
 msgstr "Izvezi dokument kao PNG sliku"
 
 #. Edit
-#: src/verbs.c:439
+#: src/verbs.c:406
 msgid "Undo"
 msgstr "Opozovi"
 
-#: src/verbs.c:439
+#: src/verbs.c:406
 msgid "Revert last action"
 msgstr "Poništi poslednju akciju"
 
-#: src/verbs.c:440
+#: src/verbs.c:407
 msgid "Redo"
 msgstr "Ponovi"
 
-#: src/verbs.c:440
+#: src/verbs.c:407
 msgid "Do again undone action"
 msgstr "Ponovi opozvanu akciju"
 
-#: src/verbs.c:441
+#: src/verbs.c:408
 msgid "Cut"
 msgstr "Iseci"
 
-#: src/verbs.c:441
+#: src/verbs.c:408
 msgid "Cut selected objects to clipboard"
 msgstr "Iseci izabrane objekte i smesti među isečke"
 
-#: src/verbs.c:442
+#: src/verbs.c:409
 msgid "Copy"
 msgstr "Umnoži"
 
-#: src/verbs.c:442
+#: src/verbs.c:409
 msgid "Copy selected objects to clipboard"
 msgstr "Umnoži izabrane objekte u spisak isečaka"
 
-#: src/verbs.c:443
+#: src/verbs.c:410
 msgid "Paste"
 msgstr "Ubaci"
 
-#: src/verbs.c:443
+#: src/verbs.c:410
 msgid "Paste objects from clipboard"
 msgstr "Ubaci objekte iz spiska isečaka"
 
-#: src/verbs.c:444
+#: src/verbs.c:411
 msgid "Delete"
 msgstr "Obriši"
 
-#: src/verbs.c:444
+#: src/verbs.c:411
 msgid "Delete selected objects"
 msgstr "Obriši izabrane objekte"
 
-#: src/verbs.c:445
+#: src/verbs.c:412
 msgid "Duplicate"
 msgstr "Udvostruči"
 
-#: src/verbs.c:445
+#: src/verbs.c:412
 msgid "Duplicate selected objects"
 msgstr "Udvostruči izabrane objekte"
 
-#: src/verbs.c:446
+#: src/verbs.c:413
 msgid "Clear All"
 msgstr "Očisti sve"
 
-#: src/verbs.c:446
+#: src/verbs.c:413
 msgid "Delete all objects from document"
 msgstr "Obriši sve objekte iz dokumenta"
 
-#: src/verbs.c:447
+#: src/verbs.c:414
 msgid "Select All"
 msgstr "Izaberi sve"
 
-#: src/verbs.c:447
+#: src/verbs.c:414
 msgid "Select all objects in document"
 msgstr "Izaberi sve objekte iz dokumenta"
 
+#: src/verbs.c:415
+msgid "Repeat"
+msgstr "Ponovi"
+
+#: src/verbs.c:415
+msgid "Repeat last saved action"
+msgstr "Ponovi poslednje sačuvanu akciju"
+
 #. Selection
-#: src/verbs.c:449
+#: src/verbs.c:417
 msgid "Bring to Front"
 msgstr "Postavi ispred"
 
-#: src/verbs.c:449
+#: src/verbs.c:417
 msgid "Raise selected objects to top"
 msgstr "Izdigni izabrane objekte ispred ostalih"
 
-#: src/verbs.c:450
+#: src/verbs.c:418
 msgid "Send to Back"
 msgstr "Pošalji u pozadinu"
 
-#: src/verbs.c:450
+#: src/verbs.c:418
 msgid "Lower selected objects to bottom"
 msgstr "Postavi izabrane objekte iza ostalih"
 
-#: src/verbs.c:451
+#: src/verbs.c:419
 msgid "Raise"
 msgstr "Izdigni"
 
-#: src/verbs.c:451
+#: src/verbs.c:419
 msgid "Raise selected objects one position"
 msgstr "Izdigni izabrane objekte za jedan nivo"
 
-#: src/verbs.c:452
+#: src/verbs.c:420
 msgid "Lower"
 msgstr "Spusti"
 
-#: src/verbs.c:452
+#: src/verbs.c:420
 msgid "Lower selected objects one position"
 msgstr "Spusti izabrane objekte za jedan nivo"
 
-#: src/verbs.c:453
+#: src/verbs.c:421
 msgid "Group selected objects"
 msgstr "Grupiši izabrane objekte"
 
-#: src/verbs.c:454
+#: src/verbs.c:422
 msgid "Ungroup selected group"
 msgstr "Razgrupiši izabrane objekte"
 
-#: src/verbs.c:455
+#: src/verbs.c:423
 msgid "Combine"
 msgstr "Spoji"
 
-#: src/verbs.c:455
+#: src/verbs.c:423
 msgid "Combine multiple paths"
 msgstr "Spoji više putanja"
 
-#: src/verbs.c:456
+#: src/verbs.c:424
 msgid "Break Apart"
 msgstr "Razdvoj"
 
-#: src/verbs.c:456
+#: src/verbs.c:424
 msgid "Break selected path to subpaths"
 msgstr "Razdvoj izabranu putanju na podputanje"
 
+#: src/verbs.c:425
+msgid "Transform"
+msgstr "Transformiši"
+
+#: src/verbs.c:425
+msgid "Applies transformation"
+msgstr "Primeni transformaciju"
+
 #. Object
-#: src/verbs.c:458
+#: src/verbs.c:427
 msgid "Rotate 90 degrees"
 msgstr "Rotiraj za 90 stepeni"
 
-#: src/verbs.c:458
+#: src/verbs.c:427
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Rotira za 90 stepeni u pravcu kazaljke na satu"
 
-#: src/verbs.c:459
+#: src/verbs.c:428
 msgid "Flatten object"
 msgstr "Izravnaj objekat"
 
-#: src/verbs.c:459
+#: src/verbs.c:428
 msgid "Remove transformations from object"
 msgstr "Ukloni transformacije objekta"
 
-#: src/verbs.c:460
+#: src/verbs.c:429
 msgid "Convert to Curves"
 msgstr "Pretvori u krive"
 
-#: src/verbs.c:460
+#: src/verbs.c:429
 msgid "Convert selected object to path"
 msgstr "Pretvori izabrani objekat u putanju"
 
-#: src/verbs.c:461
+#: src/verbs.c:430
 msgid "Flip Horizontally"
 msgstr "Obrni vodoravno"
 
-#: src/verbs.c:462
+#: src/verbs.c:431
 msgid "Flip selected objects horizontally"
 msgstr "Obrni izabrane objekte vodoravno"
 
-#: src/verbs.c:463
+#: src/verbs.c:432
 msgid "Flip Vertically"
 msgstr "Obrni uspravno"
 
-#: src/verbs.c:464
+#: src/verbs.c:433
 msgid "Flip selected objects vertically"
 msgstr "Obrni izabrane objekte uspravno"
 
 #. Event contexts
-#: src/verbs.c:466
+#: src/verbs.c:435
 msgid "Select"
 msgstr "Izaberi"
 
-#: src/verbs.c:466
+#: src/verbs.c:435
 msgid "Select and transform objects"
 msgstr "Izaberi i transformiši objekte"
 
-#: src/verbs.c:467
+#: src/verbs.c:436
 msgid "Node edit"
 msgstr "Izmena čvora"
 
-#: src/verbs.c:467
+#: src/verbs.c:436
 msgid "Modify existing objects by control nodes"
 msgstr "Izmeni postojeće objekte pomoću kontrolnih čvorova"
 
-#: src/verbs.c:468
+#: src/verbs.c:437
 msgid "Rectangle"
 msgstr "Pravougaonik"
 
-#: src/verbs.c:468
+#: src/verbs.c:437
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr "Napravi pravougaonike i kvadrate sa (po izboru) zaobljenim ćoškovima"
 
-#: src/verbs.c:469
+#: src/verbs.c:438
 msgid "Ellipse"
 msgstr "Elipsa"
 
-#: src/verbs.c:469
+#: src/verbs.c:438
 msgid "Create circles, ellipses and arcs"
 msgstr "Napravi krugove, elipse i lukove"
 
-#: src/verbs.c:470
+#: src/verbs.c:439
 msgid "Create stars and polygons"
 msgstr "Napravi zvezde i poligone"
 
-#: src/verbs.c:471
+#: src/verbs.c:440
 msgid "Create spirals"
 msgstr "Napravi spirale"
 
-#: src/verbs.c:472
+#: src/verbs.c:441
 msgid "Pencil"
 msgstr "Gruba olovka"
 
-#: src/verbs.c:472
+#: src/verbs.c:441
 msgid "Draw freehand curves and straight lines"
 msgstr "Crtajte krive slobodnom rukom i prave linije"
 
-#: src/verbs.c:473
+#: src/verbs.c:442
 msgid "Pen"
 msgstr "Olovka"
 
-#: src/verbs.c:473
+#: src/verbs.c:442
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Crtajte precizno razmeštene krive i prave linije"
 
-#: src/verbs.c:474
+#: src/verbs.c:443
 msgid "Calligraphy"
 msgstr "Kaligrafija"
 
-#: src/verbs.c:474
+#: src/verbs.c:443
 msgid "Draw calligraphic lines"
 msgstr "Crtajte kaligrafske linie"
 
-#: src/verbs.c:475
+#: src/verbs.c:444
 msgid "Create and edit text objects"
 msgstr "Napravite i izmenite objekte za tekst"
 
-#: src/verbs.c:476
+#: src/verbs.c:445
 msgid "Zoom into precisely selected area"
 msgstr "Uvećajte tačno izabranu površinu"
 
-#: src/verbs.c:477
+#: src/verbs.c:446
 msgid "Dropper"
 msgstr "Birač boja"
 
-#: src/verbs.c:477
+#: src/verbs.c:446
 msgid "Pick averaged colors from image"
 msgstr "Izaberite usrednjene boje sa slike"
 
 #. Zooming
-#: src/verbs.c:479
+#: src/verbs.c:448
 msgid "In"
 msgstr "Uvećaj"
 
-#: src/verbs.c:479
+#: src/verbs.c:448
 msgid "Zoom in drawing"
 msgstr "Uvećaj crtež"
 
-#: src/verbs.c:480
+#: src/verbs.c:449
 msgid "Out"
 msgstr "Umanji"
 
-#: src/verbs.c:480
+#: src/verbs.c:449
 msgid "Zoom out drawing"
 msgstr "Umanji crtež"
 
-#: src/verbs.c:481
+#: src/verbs.c:450
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:481
+#: src/verbs.c:450
 msgid "Set zoom factor to 1:1"
 msgstr "Postavi razmeru na 1:1"
 
-#: src/verbs.c:482
+#: src/verbs.c:451
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:482
+#: src/verbs.c:451
 msgid "Set zoom factor to 1:2"
 msgstr "Postavi razmeru na 1:2"
 
-#: src/verbs.c:483
+#: src/verbs.c:452
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:483
+#: src/verbs.c:452
 msgid "Set zoom factor to 2:1"
 msgstr "Postavi razmeru na 2:1"
 
-#: src/verbs.c:484
+#: src/verbs.c:453
 msgid "Fit the whole page into window"
 msgstr "Uklopi celu stranicu u prozor"
 
-#: src/verbs.c:485
+#: src/verbs.c:454
 msgid "Fit the whole drawing into window"
 msgstr "Uklopi ceo crtež u prozor"
 
-#: src/verbs.c:486
+#: src/verbs.c:455
 msgid "Fit the whole selection into window"
 msgstr "Uklopi ceo izbor u prozor"
 
 #. Dialogs
-#: src/verbs.c:488
+#: src/verbs.c:457
 msgid "Display"
 msgstr "Prikaz"
 
-#: src/verbs.c:488
+#: src/verbs.c:457
 msgid "Global display settings"
 msgstr "Opšta podešavanja prikaza"
 
-#: src/verbs.c:489
+#: src/verbs.c:458
 msgid "Document"
 msgstr "Dokument"
 
-#: src/verbs.c:489
+#: src/verbs.c:458
 msgid "Page layout"
 msgstr "Izgled strane"
 
-#: src/verbs.c:490
+#: src/verbs.c:459
 msgid "Editing Window"
 msgstr "Prozor za uređivanje"
 
-#: src/verbs.c:490
+#: src/verbs.c:459
 msgid "Editing window properties"
 msgstr "Osobine prozora za uređivanje"
 
-#: src/verbs.c:491
+#: src/verbs.c:460
 msgid "Tool Options"
 msgstr "Opcije alata"
 
-#: src/verbs.c:492
+#: src/verbs.c:461
 msgid "Tool Attributes"
 msgstr "Osobine alata"
 
-#: src/verbs.c:493
+#: src/verbs.c:462
 msgid "Fill and Stroke"
 msgstr "Ispunjavanje i potezi"
 
-#: src/verbs.c:493
+#: src/verbs.c:462
 msgid "Fill and stroke settings"
 msgstr "Podešavanja ispunjavanja i poteza"
 
-#: src/verbs.c:495
+#: src/verbs.c:464
 msgid "Transformations"
 msgstr "Transformacije"
 
-#: src/verbs.c:496
+#: src/verbs.c:465
 msgid "Align and Distribute"
 msgstr "Poravnaj i rasporedi"
 
-#: src/verbs.c:496
+#: src/verbs.c:465
 msgid "Align and distribute"
 msgstr "Poravnaj i rasporedi"
 
-#: src/verbs.c:497
+#: src/verbs.c:466
 msgid "Text and Font"
 msgstr "Tekst i font"
 
-#: src/verbs.c:497
+#: src/verbs.c:466
 msgid "Text editing and font settings"
 msgstr "Podešavanja za uređivanje teksta i font"
 
-#: src/verbs.c:498
+#: src/verbs.c:467
 msgid "XML Editor"
 msgstr "XML uređivač"
 
