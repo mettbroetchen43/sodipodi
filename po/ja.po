@@ -32,7 +32,7 @@ msgstr "sodipodi-svg-docファクトリを作成できません"
 
 #: src/desktop.c:750
 msgid "Zoom drawing if window size changes"
-msgstr ""
+msgstr "ウィンドウサイズの変更で画像も拡大/縮小"
 
 #: src/desktop.c:830
 #, c-format
@@ -1075,11 +1075,11 @@ msgstr "ドックツールボックスの削除"
 #. File
 #: src/interface.c:468 src/verbs.c:429
 msgid "New"
-msgstr "新規(_N)"
+msgstr "新規"
 
 #: src/interface.c:469
 msgid "Open"
-msgstr "開く(_O)"
+msgstr "開く"
 
 #. Generic menu
 #. File submenu
@@ -1121,7 +1121,7 @@ msgstr "$DISPLAY 変数が設定されなくても X サーバの利用を試み
 
 #: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "指定した文書を開く (オプション文字列は無視されるでしょう)"
+msgstr "指定したドキュメントを開く (オプション文字列は無視されるでしょう)"
 
 #: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
@@ -1129,11 +1129,11 @@ msgstr "FILENAME"
 
 #: src/main.c:135
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr "指定された出力ファイルに文書を印刷 (パイプは '| program' で指定)"
+msgstr "指定された出力ファイルにドキュメントを印刷 (パイプは '| program' で指定)"
 
 #: src/main.c:138
 msgid "Export document to png file"
-msgstr "文書を PNG ファイルに出力"
+msgstr "ドキュメントを PNG ファイルに出力"
 
 #: src/main.c:141
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
@@ -1182,7 +1182,7 @@ msgstr "色"
 #: src/main.c:153
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
-"文書を標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
+"ドキュメントを標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
 
 #: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -1215,7 +1215,7 @@ msgstr "プリンタの選択"
 #: src/modules/gnome.c:187
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
+msgstr "Sodipodi (ドキュメント名 %s..): 印刷プレビュー"
 
 #: src/modules/kde.cpp:159
 msgid "Document variant:"
@@ -1457,7 +1457,7 @@ msgstr "Sodipodi: スライドショー"
 
 #: src/sodipodi.c:398
 msgid "Untitled document"
-msgstr "無題文書"
+msgstr "無題ドキュメント"
 
 #. Show nice dialog box
 #: src/sodipodi.c:423
@@ -1467,11 +1467,11 @@ msgstr "Sodipodi は内部エラーが発生しました。今すぐ終了しま
 #: src/sodipodi.c:424
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
-msgstr "未保存文書の自動バックアップを次の場所に行いました:\n"
+msgstr "未保存ドキュメントの自動バックアップを次の場所に行いました:\n"
 
 #: src/sodipodi.c:425
 msgid "Automatic backup of following documents failed:\n"
-msgstr "次の文書の自動バックアップに失敗しました:\n"
+msgstr "次のドキュメントの自動バックアップに失敗しました:\n"
 
 #: src/sodipodi.c:564
 #, c-format
@@ -1655,7 +1655,7 @@ msgstr "無題"
 
 #: src/sp-image.c:961
 msgid "Document Name:"
-msgstr "文書名:"
+msgstr "ドキュメント名:"
 
 #: src/sp-image.c:974
 msgid "Unknown"
@@ -1760,7 +1760,7 @@ msgstr "何もしない"
 
 #: src/verbs.c:429
 msgid "Create new SVG document"
-msgstr "新規 SVG 文書を作成"
+msgstr "新規 SVG ドキュメントを作成"
 
 #: src/verbs.c:430
 msgid "Open..."
@@ -1768,7 +1768,7 @@ msgstr "開く(_O)..."
 
 #: src/verbs.c:430
 msgid "Open existing SVG document"
-msgstr "既存の SVG 文書を開く"
+msgstr "既存の SVG ドキュメントを開く"
 
 #: src/verbs.c:431
 msgid "Save"
@@ -1776,7 +1776,7 @@ msgstr "保存"
 
 #: src/verbs.c:431
 msgid "Save document"
-msgstr "文書の保存"
+msgstr "ドキュメントの保存"
 
 #: src/verbs.c:432
 msgid "Save As..."
@@ -1784,7 +1784,7 @@ msgstr "名前をつけて保存..."
 
 #: src/verbs.c:432
 msgid "Save document under new name"
-msgstr "新規ファイル名で文書を保存"
+msgstr "新規ファイル名でドキュメントを保存"
 
 #: src/verbs.c:433
 msgid "Print..."
@@ -1792,7 +1792,7 @@ msgstr "印刷..."
 
 #: src/verbs.c:433
 msgid "Print document"
-msgstr "文書を印刷"
+msgstr "ドキュメントを印刷"
 
 #: src/verbs.c:434
 msgid "Print Direct..."
@@ -1808,7 +1808,7 @@ msgstr "印刷プレビュー"
 
 #: src/verbs.c:435
 msgid "Preview document printout"
-msgstr "印刷文書のプレビュー"
+msgstr "印刷ドキュメントのプレビュー"
 
 #: src/verbs.c:436
 msgid "Import"
@@ -1816,11 +1816,11 @@ msgstr "読み込み"
 
 #: src/verbs.c:436
 msgid "Import bitmap or SVG image into document"
-msgstr "ビットマップまたはSVGイメージを文書に取り込む"
+msgstr "ビットマップまたはSVGイメージをドキュメントに取り込む"
 
 #: src/verbs.c:437
 msgid "Export document as PNG bitmap"
-msgstr "文書を PNG ビットマップとして出力"
+msgstr "ドキュメントを PNG ビットマップとして出力"
 
 #. Edit
 #: src/verbs.c:439
@@ -2068,11 +2068,11 @@ msgstr "選択した領域を拡大します"
 
 #: src/verbs.c:477
 msgid "Dropper"
-msgstr ""
+msgstr "dropper"
 
 #: src/verbs.c:477
 msgid "Pick averaged colors from image"
-msgstr ""
+msgstr "画像から色を平均して取得"
 
 #. Zooming
 #: src/verbs.c:479
@@ -2228,11 +2228,11 @@ msgstr "gradientSpread"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
-msgstr "文書が選択されていません"
+msgstr "ドキュメントが選択されていません"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
-msgstr "文書中にグラデーションがありません"
+msgstr "ドキュメント中にグラデーションがありません"
 
 #: src/widgets/gradient-vector.c:257
 msgid "No gradient selected"
@@ -2273,7 +2273,7 @@ msgstr "RGB"
 
 #: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
 msgid "RGB Colorspace"
-msgstr ""
+msgstr "RGBカラースペース"
 
 #: src/widgets/paint-selector.c:749
 msgid "HSV"
@@ -2285,12 +2285,12 @@ msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:750
 msgid "CMYK colospace"
-msgstr ""
+msgstr "CMYKカラースペース"
 
 #. Use dropper
 #: src/widgets/paint-selector.c:757
 msgid "Get from dropper"
-msgstr ""
+msgstr "dropperから取得"
 
 #: src/widgets/paint-selector.c:788
 msgid "Color paint"
@@ -2351,7 +2351,7 @@ msgstr "黒:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr ""
+msgstr "分割ウィンドウとメインツールボックスの配置を入れ換え"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
