@@ -1146,7 +1146,7 @@ msgstr "Prevrni izbrane predmete"
 
 #: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
-msgstr "Obrni izbrane predmete za 90° v smeri urinega kazalca"
+msgstr "Zasukaj izbrane predmete za 90° v smeri urinega kazalca"
 
 #: glade/toolbox.c:76
 msgid "Remove transformation"
@@ -1263,7 +1263,7 @@ msgstr "prevrni navpièno"
 
 #: glade/transformation.c:27
 msgid "Rotate"
-msgstr "Zavrti"
+msgstr "Zasukaj"
 
 #: glade/transformation.c:28
 msgid "select direction"
@@ -1673,7 +1673,7 @@ msgstr "Najmanj¹i predmet"
 #~ "palci\n"
 
 #~ msgid " Rotate "
-#~ msgstr " Zavrti "
+#~ msgstr " Zasukaj "
 
 #~ msgid "90°"
 #~ msgstr "90°"
