@@ -1,19 +1,19 @@
-# Translation of cs.po to Czech
+# Translation of sodipodi to Czech
 # This file is distributed under the same license as the Sodipodi package.
 # Copyright (C) 2003 Free Software Foundation
 # Michal Bukovjan <bukm@centrum.cz>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cs\n"
-"POT-Creation-Date: 2003-06-20 13:56+0300\n"
-"PO-Revision-Date: 2003-06-18 22:01GMT\n"
-"Last-Translator: Michal Bukovjan <bukm@centrum.cz>\n"
+"Project-Id-Version: sodipodi VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-06-27 05:11+0200\n"
+"PO-Revision-Date: 2003-06-27 23:42+0200\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.1\n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -28,34 +28,34 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:737
+#: src/desktop.c:748
 msgid "Zoom drawing if window size changes"
 msgstr "Zvětšit či zmenšit kresbu při změně velikosti okna"
 
-#: src/desktop.c:817
+#: src/desktop.c:828
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:946
+#: src/desktop.c:957
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
 #. Page page
-#: src/desktop.c:1468 src/dialogs/align.c:286
-#: src/dialogs/desktop-properties.c:422 src/dialogs/document-properties.c:163
+#: src/desktop.c:1479 src/dialogs/align.c:286
+#: src/dialogs/desktop-properties.c:385 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:478
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1472 src/dialogs/align.c:287 src/dialogs/export.c:140
+#: src/desktop.c:1483 src/dialogs/align.c:287 src/dialogs/export.c:140
 #: src/verbs.c:479
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1476 src/dialogs/align.c:288 src/dialogs/export.c:145
+#: src/desktop.c:1487 src/dialogs/align.c:288 src/dialogs/export.c:145
 #: src/interface.c:553 src/toolbox.c:485 src/verbs.c:480
 msgid "Selection"
 msgstr "Výběr"
@@ -156,95 +156,99 @@ msgstr "Největší položka"
 msgid "Smallest item"
 msgstr "Nejmenší položka"
 
-#: src/dialogs/desktop-properties.c:222
+#: src/dialogs/desktop-properties.c:185
 msgid "Desktop settings"
 msgstr "Nastavení plochy"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:231
+#: src/dialogs/desktop-properties.c:194
 msgid "Grid"
 msgstr "Mřížka"
 
 #. Checkbuttons
-#: src/dialogs/desktop-properties.c:241
+#: src/dialogs/desktop-properties.c:204
 msgid "Show grid"
 msgstr "Zobrazovat mřížku"
 
-#: src/dialogs/desktop-properties.c:248
+#: src/dialogs/desktop-properties.c:211
 msgid "Snap to grid"
 msgstr "Uchytávat k mřížce"
 
-#: src/dialogs/desktop-properties.c:255
+#: src/dialogs/desktop-properties.c:218
 msgid "Grid units:"
 msgstr "Jednotky mřížky:"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:227
 msgid "Origin X:"
 msgstr "Počátek X:"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:241
 msgid "Origin Y:"
 msgstr "Počátek Y:"
 
-#: src/dialogs/desktop-properties.c:292
+#: src/dialogs/desktop-properties.c:255
 msgid "Spacing X:"
 msgstr "Mezery X:"
 
-#: src/dialogs/desktop-properties.c:306
+#: src/dialogs/desktop-properties.c:269
 msgid "Spacing Y:"
 msgstr "Mezery Y:"
 
-#: src/dialogs/desktop-properties.c:320 src/dialogs/desktop-properties.c:379
+#: src/dialogs/desktop-properties.c:283 src/dialogs/desktop-properties.c:342
 msgid "Snap units:"
 msgstr "Jednotky uchycení:"
 
-#: src/dialogs/desktop-properties.c:332 src/dialogs/desktop-properties.c:391
+#: src/dialogs/desktop-properties.c:295 src/dialogs/desktop-properties.c:354
 msgid "Snap distance:"
 msgstr "Vzdálenost uchycení:"
 
-#: src/dialogs/desktop-properties.c:345
+#: src/dialogs/desktop-properties.c:308
 msgid "Grid color:"
 msgstr "Barva mřížky:"
 
-#: src/dialogs/desktop-properties.c:349
+#: src/dialogs/desktop-properties.c:312
 msgid "Grid color"
 msgstr "Barva mřížky"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:355
+#: src/dialogs/desktop-properties.c:318
 msgid "Guides"
 msgstr "Vodítka"
 
-#: src/dialogs/desktop-properties.c:364
+#: src/dialogs/desktop-properties.c:327
 msgid "Show guides"
 msgstr "Zobrazovat vodítka"
 
-#: src/dialogs/desktop-properties.c:372
+#: src/dialogs/desktop-properties.c:335
 msgid "Snap to guides"
 msgstr "Uchytávat na vodítka"
 
-#: src/dialogs/desktop-properties.c:403
+#: src/dialogs/desktop-properties.c:366
 msgid "Guides color:"
 msgstr "Barva vodítek:"
 
-#: src/dialogs/desktop-properties.c:407
+#: src/dialogs/desktop-properties.c:370
 msgid "Guideline color"
 msgstr "Barva čáry vodítka"
 
-#: src/dialogs/desktop-properties.c:412
+#: src/dialogs/desktop-properties.c:375
 msgid "Highlight color:"
 msgstr "Barva zvýraznění:"
 
-#: src/dialogs/desktop-properties.c:416
+#: src/dialogs/desktop-properties.c:379
 msgid "Highlighted guideline color"
 msgstr "Barva zvýrazněného vodítka"
 
-#: src/dialogs/desktop-properties.c:431
+#: src/dialogs/desktop-properties.c:394
 msgid "Show border"
 msgstr "Zobrazovat ohraničení"
 
-#: src/dialogs/desktop-properties.c:675
+#: src/dialogs/desktop-properties.c:401
+msgid "Border on top of drawing"
+msgstr "Okraj na horní straně obrázku"
+
+#: src/dialogs/desktop-properties.c:647
 msgid "Close"
 msgstr "Zavřít"
 
@@ -813,17 +817,17 @@ msgstr "Zrušit"
 msgid "Create"
 msgstr "Vytvořit"
 
-#: src/document.c:340
+#: src/document.c:339
 #, c-format
 msgid "New document %d"
 msgstr "Nový dokument %d"
 
-#: src/document.c:369
+#: src/document.c:368
 #, c-format
 msgid "Memory document %d"
 msgstr "Dokument v paměti %d"
 
-#: src/document.c:455
+#: src/document.c:454
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Nepojmenovaný dokument %d"
@@ -1101,41 +1105,41 @@ msgstr "Dialogy"
 msgid "Filters"
 msgstr "Filtry"
 
-#: src/main.c:122
+#: src/main.c:126
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívat X server (pouze zpracovat soubory z konzole)"
 
-#: src/main.c:125
+#: src/main.c:129
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY"
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
-#: src/main.c:129 src/main.c:132 src/main.c:135 src/main.c:149
+#: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
 msgstr "SOUBOR"
 
-#: src/main.c:131
+#: src/main.c:135
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
 "program')"
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:137
+#: src/main.c:141
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
-#: src/main.c:138
+#: src/main.c:142
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:140
+#: src/main.c:144
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1143,48 +1147,48 @@ msgstr ""
 "Exportovaná oblast v milimetrech (výchozí je celý dokument, 0,0 představuje "
 "spodní levý roh)"
 
-#: src/main.c:141
+#: src/main.c:145
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:145
+#: src/main.c:149
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
-#: src/main.c:145
+#: src/main.c:149
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:147
+#: src/main.c:151
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
 
-#: src/main.c:147
+#: src/main.c:151
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:149
+#: src/main.c:153
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:151
+#: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Zobrazit zadané soubory jeden po druhém, přepnout na další při jakékoli "
 "události myši nebo klávesnice"
 
-#: src/main.c:153
+#: src/main.c:157
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávat přednost bitmapovým ikonám (XPM) před SVG"
 
