@@ -1,3 +1,8 @@
+2003-01-31  Masatake YAMATO  <jet@gyve.org>
+
+	* src/main.c (POPT_TABLEEND): Define if it is not defined in
+	popt.h. copied from forntline.
+
 2003-01-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/guideline.c (sp_guideline_render): Do not round int

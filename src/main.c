@@ -32,6 +32,9 @@
 
 #ifdef WITH_POPT
 #include <popt.h>
+#ifndef POPT_TABLEEND
+#define POPT_TABLEEND { NULL, '\0', 0, 0, 0, NULL, NULL }
+#endif /* Not def: POPT_TABLEEND */
 #endif
 
 #ifdef WIN32
