@@ -26,6 +26,17 @@
 #include "path-chemistry.h"
 #include "desktop.h"
 
+/* Helper functions for sp_selected_path_to_curves */
+static void sp_selected_path_to_curves0 (gboolean do_document_done, guint32 text_grouping_policy);
+static SPRepr * sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy);
+enum {				
+  /* Not used yet. This is the placeholder of Lauris's idea. */
+	SP_TOCURVE_INTERACTIVE       = 1 << 0,
+	SP_TOCURVE_GROUPING_BY_WORD  = 1 << 1,
+	SP_TOCURVE_GROUPING_BY_LINE  = 1 << 2,
+	SP_TOCURVE_GROUPING_BY_WHOLE = 1 << 3,
+};
+
 void
 sp_selected_path_combine (void)
 {
@@ -40,6 +51,8 @@ sp_selected_path_combine (void)
 	ArtBpath * abp;
 	gdouble i2root[6];
 	gchar * d, * str, * style;
+
+	sp_selected_path_to_curves0 (FALSE, 0);
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (!SP_IS_DESKTOP(desktop)) return;
@@ -149,53 +162,83 @@ sp_selected_path_break_apart (void)
 	g_free (style);
 }
 
+/* This function is an entry point from GUI */
 void
 sp_selected_path_to_curves (void)
 {
+	sp_selected_path_to_curves0(TRUE, SP_TOCURVE_INTERACTIVE);
+}
+
+static void
+sp_selected_path_to_curves0 (gboolean do_document_done, guint32 text_grouping_policy)
+{
 	SPDesktop *dt;
 	SPItem *item;
-	SPCurve *curve;
-
+	SPRepr  *repr;
+	
+	GSList * il;
+	GSList * l;
+	SPObject *parent;
+	
 	dt = SP_ACTIVE_DESKTOP;
 	if (!dt) return;
-	item = sp_selection_item (SP_DT_SELECTION (dt));
-	if (!item) return;
+	il = (GSList *) sp_selection_item_list (SP_DT_SELECTION (dt));
+	if (!il) return;
 
-	if (SP_IS_PATH (item) && !SP_PATH (item)->independent) {
-		curve = sp_path_normalized_bpath (SP_PATH (item));
-	} else if (SP_IS_TEXT (item)) {
-		curve = sp_text_normalized_bpath (SP_TEXT (item));
-	} else {
-		curve = NULL;
-	}
-
-	if (curve) {
-		SPObject *parent;
-		SPRepr *new;
-		guchar *str;
-
+	l = il;
+	while (l) {
+		item = (SPItem *)l->data;
+		l    = l->next;
+		repr = sp_selected_item_to_curved_repr (item, 0);
+		if (!repr)
+			continue;
 		parent = SP_OBJECT_PARENT (item);
-
-		new = sp_repr_new ("path");
-		/* Transformation */
-		sp_repr_set_attr (new, "transform", sp_repr_attr (SP_OBJECT_REPR (item), "transform"));
-		/* Style */
-		str = sp_style_write_difference (SP_OBJECT_STYLE (item), SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
-		sp_repr_set_attr (new, "style", str);
-		g_free (str);
-		/* Definition */
-		str = sp_svg_write_path (curve->bpath);
-		sp_repr_set_attr (new, "d", str);
-		g_free (str);
-		sp_curve_unref (curve);
-
-		sp_repr_add_child (SP_OBJECT_REPR (parent), new, SP_OBJECT_REPR (item));
+		sp_repr_add_child (SP_OBJECT_REPR (parent), 
+				   repr, SP_OBJECT_REPR (item));
 		sp_repr_unparent (SP_OBJECT_REPR (item));
-
-		sp_document_done (SP_DT_DOCUMENT (dt));
-		sp_selection_set_repr (SP_DT_SELECTION (dt), new);
-		sp_repr_unref (new);
+		sp_selection_add_repr (SP_DT_SELECTION (dt), repr);
+		sp_repr_unref(repr);
 	}
+	if (do_document_done)
+		sp_document_done (SP_DT_DOCUMENT (dt));
+}
+
+static SPRepr *
+sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy)
+{
+	SPCurve *curve;
+	SPRepr  *repr;
+	guchar  *style_str;
+	guchar  *def_str;
+	
+	if (!item)
+		return NULL;
+		
+	if (SP_IS_PATH (item) && !SP_PATH (item)->independent) 
+		curve = sp_path_normalized_bpath (SP_PATH (item));
+	else if (SP_IS_TEXT (item))
+		curve = sp_text_normalized_bpath (SP_TEXT (item));
+	else
+		curve = NULL;
+	
+	if (!curve)
+		return NULL;
+	
+	repr = sp_repr_new ("path");
+	/* Transformation */
+	sp_repr_set_attr (repr, "transform", 
+			  sp_repr_attr (SP_OBJECT_REPR (item), "transform"));
+	/* Style */
+	style_str = sp_style_write_difference (SP_OBJECT_STYLE (item), 
+					       SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+	sp_repr_set_attr (repr, "style", style_str);
+	g_free (style_str);
+	/* Definition */
+	def_str = sp_svg_write_path (curve->bpath);
+	sp_repr_set_attr (repr, "d", def_str);
+	g_free (def_str);
+	sp_curve_unref (curve);
+	return repr;
 }
 
 void

@@ -1,3 +1,12 @@
+2002-11-06  Masatake YAMATO  <jet@gyve.org>
+
+	Added functions that converts multiple items to curves.
+	* src/path-chemistry.c (sp_selected_item_to_curved_repr): 
+	Use sp_selected_item_to_curved_repr0.
+	(sp_selected_path_to_curves0): New function.
+	(sp_selected_path_to_curves): New function.
+	(SP_TOCURVE_*): Placeholders.
+
 2002-11-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c: Made glade-free dialog
