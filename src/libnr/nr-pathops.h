@@ -47,6 +47,8 @@ struct _NRNodePath *nr_node_path_concat (struct _NRNodePath *paths[], unsigned i
 
 struct _NRNodePath *nr_node_path_uncross (struct _NRNodePath *path);
 
+struct _NRNodePath *nr_node_path_rewind (struct _NRNodePath *path);
+
 /*
  * Returns TRUE if segments intersect
  * nda and ndb are number of intersection points on segment a and b
@@ -56,6 +58,15 @@ struct _NRNodePath *nr_node_path_uncross (struct _NRNodePath *path);
 
 unsigned int nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b1,
 					    unsigned int *nda, NRPointD *ca, unsigned int *ndb, NRPointD *cb);
+
+/*
+ * Returns left winding count of point and segment
+ *
+ * + is forward, - is reverse
+ * exact determines wheter exact match counts
+ */
+
+int nr_segment_find_wind (NRPointF a, NRPointF b, NRPointF p, unsigned int exact);
 
 /* Memory management */
 

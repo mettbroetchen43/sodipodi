@@ -706,6 +706,67 @@ nr_node_path_uncross (struct _NRNodePath *path)
 	return npath;
 }
 
+static int
+nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
+{
+	struct _NRNodeSeg *s0, *s1;
+	s0 = path->segs + seg;
+	s1 = path->segs + other;
+	if ((s0->nodes->x3 == s1->nodes->x3) || (s0->nodes->y3 == s1->nodes->y3)) {
+		/* Initial points are coincident */
+		/* Whether initial point counts depends on directional order */
+		/* If they are coincident then of segment order */
+		/* Exact match should not happen because of uncross */
+	} else {
+		/* Determine normal winding count */
+		/* Exact match should not happen because of uncross */
+	}
+#if 0
+	if (seg == other) {
+		struct _NRNode *n;
+		float y0;
+		/* Find initial direction */
+		n = s0->nodes;
+		y0 = n->y3;
+		for (n = n->next; n; n = n->next) {
+			if (n->isline) {
+				if (n->y3 > y0) return 1;
+				if (n->y3 < y0) return -1;
+			} else {
+				struct _NRFlatNode *f;
+				if (!n->flats) n->flats = nr_node_flat_list_build (n);
+				for (f = n->flats; f; f = f->next) {
+					if (f->y > y0) return 1;
+					if (f->y < y0) return -1;
+				}
+			}
+		}
+		return 0;
+#endif
+	return 0;
+}
+
+struct _NRNodePath *
+nr_node_path_rewind (struct _NRNodePath *path)
+{
+	int *winds;
+	int i, j;
+	winds = (int *) malloc (path->nsegs * path->nsegs);
+	for (i = 0; i < path->nsegs; i++) {
+		for (j = 0; j < path->nsegs; j++) {
+			winds[i * path->nsegs + j] = nr_node_path_seg_get_wind (path, i, j);
+		}
+	}
+	return NULL;
+}
+
+/*
+ * Returns TRUE if segments intersect
+ * nda and ndb are number of intersection points on segment a and b
+ * (0-1 if intersect, 0-2 if coincident)
+ * ca and cb are ordered arrays of intersection points
+ */
+
 unsigned int
 nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b1,
 			       unsigned int *nda, NRPointD *ca, unsigned int *ndb, NRPointD *cb)
@@ -844,6 +905,32 @@ nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b
 		}
 		return (*nda > 0) || (*ndb > 0);
 	}
+}
+
+/*
+ * Returns left winding count of point and segment
+ *
+ * + is forward, - is reverse
+ * exact determines wheter exact match counts
+ */
+
+int
+nr_segment_find_wind (NRPointF a, NRPointF b, NRPointF p, unsigned int exact)
+{
+	double dx, dy;
+	double qdy, pdy;
+	dx = b.x - a.x;
+	dy = b.y - a.y;
+	qdy = dx * p.x + dy * a.x - dx * a.y;
+	pdy = p.x * dy;
+	if (dy > 0.0) {
+		/* Raising slope */
+		if ((qdy < pdy) || (exact && (qdy <= pdy))) return 1;
+	} else if (dy < 0.0) {
+		/* Descending slope */
+		if ((qdy > pdy) || (exact && (qdy >= pdy))) return -1;
+	}
+	return 0;
 }
 
 /* Memory management */
