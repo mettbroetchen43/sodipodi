@@ -325,24 +325,10 @@ set_tree_desktop (SPDesktop * desktop)
 	}
 	current_desktop = desktop;
 	if (desktop) {
-#if 0
-		GtkWidget * parent;
-#endif
 		gtk_signal_connect (GTK_OBJECT (desktop), "destroy", on_desktop_destroy, dialog);
 		gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed", on_desktop_selection_changed, dialog);
 		set_tree_document (SP_DT_DOCUMENT (desktop));
-#if 0
-		/* fixme: Really have to think, what to do with this (Lauris) */
-		/* fixme: Transients are not handled the right way by some window managers (Lauris) */
-		/* fixme: In theory windowless desktop is also possible (Lauris) */
-		parent = GTK_WIDGET (desktop->owner);
-		while (parent && !GTK_IS_WINDOW (parent)) parent = parent->parent;
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
-#endif
 	} else {
-#if 0
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), NULL);
-#endif
 		set_tree_document (NULL);
 	}
 }
@@ -456,12 +442,11 @@ set_dt_select (SPRepr *repr)
 		object = NULL;
 	}
 
-	if (!blocked++) {
-		if ( object && SP_IS_ITEM (object) ) {
-			sp_selection_set_item (selection, SP_ITEM (object));
-		} else {
-			sp_selection_empty (selection);
-		}
+	blocked++;
+	if ( object && SP_IS_ITEM (object) ) {
+		sp_selection_set_item (selection, SP_ITEM (object));
+	} else {
+		sp_selection_empty (selection);
 	}
 	blocked--;
 }
