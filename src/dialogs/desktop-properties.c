@@ -92,6 +92,26 @@ sp_dtw_whatever_toggled (GtkToggleButton *tb, GtkWidget *dialog)
 }
 
 static void
+sp_dtw_border_layer_toggled (GtkToggleButton *tb, GtkWidget *dialog)
+{
+	SPDesktop *dt;
+	SPDocument *doc;
+	SPRepr *repr;
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	doc = SP_DT_DOCUMENT (dt);
+
+	repr = SP_OBJECT_REPR (dt->namedview);
+
+	sp_document_set_undo_sensitive (doc, FALSE);
+	sp_repr_set_attr (repr, "borderlayer", gtk_toggle_button_get_active (tb) ? "top" : NULL);
+	sp_document_set_undo_sensitive (doc, TRUE);
+}
+
+static void
 sp_dtw_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 {
 	SPDesktop *dt;
@@ -137,25 +157,6 @@ sp_dtw_grid_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	sp_repr_set_attr (repr, "gridtolerance", c);
 }
 
-#if 0
-static void
-sp_dtw_grid_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
-{
-	SPRepr *repr;
-	guchar c[32];
-
-	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
-
-	if (!SP_ACTIVE_DESKTOP) return;
-
-	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
-
-	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
-	sp_repr_set_attr (repr, "gridcolor", c);
-	sp_repr_set_double (repr, "gridopacity", (a / 65535.0));
-}
-#endif
-
 static void
 sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 {
@@ -174,44 +175,6 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
 	sp_repr_set_attr (repr, "guidetolerance", c);
 }
-
-#if 0
-static void
-sp_dtw_guides_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
-{
-	SPRepr *repr;
-	guchar c[32];
-
-	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
-
-	if (!SP_ACTIVE_DESKTOP) return;
-
-	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
-
-	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
-	sp_repr_set_attr (repr, "guidecolor", c);
-	sp_repr_set_double (repr, "guideopacity", (a / 65535.0));
-}
-#endif
-
-#if 0
-static void
-sp_dtw_guides_hi_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
-{
-	SPRepr *repr;
-	guchar c[32];
-
-	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
-
-	if (!SP_ACTIVE_DESKTOP) return;
-
-	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
-
-	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
-	sp_repr_set_attr (repr, "guidehicolor", c);
-	sp_repr_set_double (repr, "guidehiopacity", (a / 65535.0));
-}
-#endif
 
 static GtkWidget *
 sp_desktop_dialog_new (void)
@@ -421,7 +384,7 @@ sp_desktop_dialog_new (void)
 	/* Page page */
 	l = gtk_label_new (_("Page"));
 	gtk_widget_show (l);
-	t = gtk_table_new (1, 1, FALSE);
+	t = gtk_table_new (2, 1, FALSE);
 	gtk_widget_show (t);
 	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
@@ -434,6 +397,12 @@ sp_desktop_dialog_new (void)
 	gtk_object_set_data (GTK_OBJECT (b), "key", "showborder");
 	gtk_object_set_data (GTK_OBJECT (dialog), "showborder", b);
 	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
+
+	b = gtk_check_button_new_with_label (_("Border on top of drawing"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "borderlayer", b);
+	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_border_layer_toggled), dialog);
 
 	/* fixme: We should listen namedview changes here as well */
 	g_signal_connect (G_OBJECT (SODIPODI), "activate_desktop", G_CALLBACK (sp_dtw_activate_desktop), dialog);
@@ -545,6 +514,9 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "showborder");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showborder);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "borderlayer");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), (nv->borderlayer == SP_BORDER_LAYER_TOP));
 
 		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (FALSE));
 	}

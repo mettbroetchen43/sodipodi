@@ -151,18 +151,17 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 
 	svgview = SP_SVG_VIEW (view);
 
-	if (!svgview->dkey) svgview->dkey = sp_item_display_key_new (1);
+	if (view->doc) {
+		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (view))), svgview->dkey);
+	}
 
-	if (svgview->drawing) {
-		sp_item_invoke_hide (SP_ITEM (sp_document_root (view->doc)), svgview->dkey);
-		gtk_object_destroy (GTK_OBJECT (svgview->drawing));
-		svgview->drawing = NULL;
+	if (!svgview->drawing) {
+		svgview->drawing = sp_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
+		g_signal_connect (G_OBJECT (svgview->drawing), "arena_event", G_CALLBACK (arena_handler), svgview);
 	}
 
 	if (doc) {
 		NRArenaItem *ai;
-		svgview->drawing = sp_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
-		g_signal_connect (G_OBJECT (svgview->drawing), "arena_event", G_CALLBACK (arena_handler), svgview);
 		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena,
 					  svgview->dkey, SP_ITEM_SHOW_PRINT);
 		if (ai) {

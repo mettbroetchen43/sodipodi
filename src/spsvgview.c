@@ -24,7 +24,12 @@
 
 #include <config.h>
 
+#include <string.h>
+#include <sys/stat.h>
 #include <locale.h>
+
+#include <libnr/nr-macros.h>
+
 #include <libxml/tree.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
@@ -37,20 +42,28 @@
 #include "document.h"
 #include "svg-view.h"
 
-static GtkWidget *sp_svgview_control_show (void);
+struct _SPSlideShow {
+	char **slides;
+	int size;
+	int length;
+	int current;
+	SPDocument *doc;
+	GtkWidget *view;
+};
 
-static int numdocs = 0;
+static GtkWidget *sp_svgview_control_show (struct _SPSlideShow *ss);
+static void sp_svgview_show_next (struct _SPSlideShow *ss);
+static void sp_svgview_show_prev (struct _SPSlideShow *ss);
 
 static int
-sp_svgview_main_delete (GtkWidget *widget, GdkEvent *event, SPDocument *doc)
+sp_svgview_main_delete (GtkWidget *widget, GdkEvent *event, struct _SPSlideShow *ss)
 {
-	numdocs -= 1;
-	if (numdocs < 1) gtk_main_quit ();
+	gtk_main_quit ();
 	return FALSE;
 }
 
 static int
-sp_svgview_main_key_press (GtkWidget *widget, GdkEventKey *event, SPDocument *doc)
+sp_svgview_main_key_press (GtkWidget *widget, GdkEventKey *event, struct _SPSlideShow *ss)
 {
 	switch (event->keyval) {
 	case GDK_f:
@@ -62,7 +75,13 @@ sp_svgview_main_key_press (GtkWidget *widget, GdkEventKey *event, SPDocument *do
 		}
 		break;
 	case GDK_Return:
-		sp_svgview_control_show ();
+		sp_svgview_control_show (ss);
+		break;
+	case GDK_Right:
+		sp_svgview_show_next (ss);
+		break;
+	case GDK_Left:
+		sp_svgview_show_prev (ss);
 		break;
 	default:
 		break;
@@ -73,6 +92,8 @@ sp_svgview_main_key_press (GtkWidget *widget, GdkEventKey *event, SPDocument *do
 int
 main (int argc, const char **argv)
 {
+	struct _SPSlideShow ss;
+	GtkWidget *w;
 	int i;
 
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -93,33 +114,55 @@ main (int argc, const char **argv)
 
 	setlocale (LC_NUMERIC, "C");
 
+	ss.size = 32;
+	ss.length = 0;
+	ss.current = 0;
+	ss.slides = nr_new (char *, ss.size);
+	ss.current = 0;
+	ss.doc = NULL;
+	ss.view = NULL;
+
 	for (i = 1; i < argc; i++) {
-		SPDocument *doc;
-		doc = sp_document_new (argv[i], TRUE, TRUE);
-		if (doc) {
-			GtkWidget *w, *v;
-			w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-			gtk_window_set_title (GTK_WINDOW (w), SP_DOCUMENT_NAME (doc));
-			gtk_window_set_default_size (GTK_WINDOW (w), sp_document_width (doc), sp_document_height (doc));
-			gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, FALSE);
-
-			g_signal_connect (G_OBJECT (w), "delete_event", (GCallback) sp_svgview_main_delete, doc);
-			g_signal_connect (G_OBJECT (w), "key_press_event", (GCallback) sp_svgview_main_key_press, doc);
-
-			v = sp_svg_view_widget_new (doc);
-			sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (v), FALSE, sp_document_width (doc), sp_document_height (doc));
-			sp_document_unref (doc);
-			gtk_widget_show (v);
-			gtk_container_add (GTK_CONTAINER (w), v);
-
-			gtk_widget_show (w);
-			numdocs += 1;
+		struct stat st;
+		if (!stat (argv[i], &st) && S_ISREG (st.st_mode) && (st.st_size > 64)) {
+			/* Append to list */
+			if (ss.length >= ss.size) {
+				/* Expand */
+				ss.size <<= 1;
+				ss.slides = nr_renew (ss.slides, char *, ss.size);
+			}
+			ss.slides[ss.length++] = strdup (argv[i]);
 		}
 	}
 
-	if (numdocs > 0) {
-		gtk_main ();
+	while (!ss.doc) {
+		ss.doc = sp_document_new (ss.slides[ss.current], TRUE, TRUE);
+		if (!ss.doc && (++ss.current >= ss.length)) {
+			/* No loadable documents */
+			return 1;
+		}
 	}
+
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (w), SP_DOCUMENT_NAME (ss.doc));
+	gtk_window_set_default_size (GTK_WINDOW (w),
+				     MIN (sp_document_width (ss.doc), gdk_screen_width () - 64),
+				     MIN (sp_document_height (ss.doc), gdk_screen_height () - 64));
+	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, FALSE);
+
+	g_signal_connect (G_OBJECT (w), "delete_event", (GCallback) sp_svgview_main_delete, &ss);
+	g_signal_connect (G_OBJECT (w), "key_press_event", (GCallback) sp_svgview_main_key_press, &ss);
+
+	ss.view = sp_svg_view_widget_new (ss.doc);
+	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (ss.view), FALSE, sp_document_width (ss.doc), sp_document_height (ss.doc));
+	sp_document_ensure_up_to_date (ss.doc);
+	sp_document_unref (ss.doc);
+	gtk_widget_show (ss.view);
+	gtk_container_add (GTK_CONTAINER (w), ss.view);
+
+	gtk_widget_show (w);
+
+	gtk_main ();
 
 	return 0;
 }
@@ -134,7 +177,7 @@ sp_svgview_ctrlwin_delete (GtkWidget *widget, GdkEvent *event, void *data)
 }
 
 static GtkWidget *
-sp_svgview_control_show (void)
+sp_svgview_control_show (struct _SPSlideShow *ss)
 {
 	if (!ctrlwin) {
 		GtkWidget *t, *b;
@@ -144,6 +187,7 @@ sp_svgview_control_show (void)
 		gtk_container_add ((GtkContainer *) ctrlwin, t);
 		b = gtk_button_new_from_stock (GTK_STOCK_GOTO_FIRST);
 		gtk_table_attach ((GtkTable *) t, b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+		/* g_signal_connect ((GObject *) b, "clicked", (GCallback) sp_svgview_goto_first, ss); */
 		b = gtk_button_new_from_stock (GTK_STOCK_GO_BACK);
 		gtk_table_attach ((GtkTable *) t, b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 		b = gtk_button_new_from_stock (GTK_STOCK_GO_FORWARD);
@@ -156,6 +200,42 @@ sp_svgview_control_show (void)
 	}
 
 	return NULL;
+}
+
+static void
+sp_svgview_show_next (struct _SPSlideShow *ss)
+{
+	SPDocument *doc;
+	int current;
+	doc = NULL;
+	current = ss->current;
+	while (!doc && (current < (ss->length - 1))) {
+		doc = sp_document_new (ss->slides[++current], TRUE, TRUE);
+	}
+	if (doc) {
+		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
+		sp_document_ensure_up_to_date (doc);
+		ss->doc = doc;
+		ss->current = current;
+	}
+}
+
+static void
+sp_svgview_show_prev (struct _SPSlideShow *ss)
+{
+	SPDocument *doc;
+	int current;
+	doc = NULL;
+	current = ss->current;
+	while (!doc && (current > 0)) {
+		doc = sp_document_new (ss->slides[--current], TRUE, TRUE);
+	}
+	if (doc) {
+		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
+		sp_document_ensure_up_to_date (doc);
+		ss->doc = doc;
+		ss->current = current;
+	}
 }
 
 Sodipodi *sodipodi;

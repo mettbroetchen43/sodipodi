@@ -138,6 +138,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "guidehicolor");
 	sp_object_read_attr (object, "guidehiopacity");
 	sp_object_read_attr (object, "showborder");
+	sp_object_read_attr (object, "borderlayer");
 
 	/* Construct guideline list */
 
@@ -340,6 +341,11 @@ sp_namedview_set (SPObject *object, unsigned int key, const unsigned char *value
 		break;
 	case SP_ATTR_SHOWBORDER:
 		nv->showborder = (value) ? sp_str_to_bool (value) : TRUE;
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_BORDERLAYER:
+		nv->borderlayer = SP_BORDER_LAYER_BOTTOM;
+		if (value && !strcasecmp (value, "top")) nv->borderlayer = SP_BORDER_LAYER_TOP;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:

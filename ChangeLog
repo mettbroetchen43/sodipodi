@@ -1,3 +1,19 @@
+2003-06-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/desktop-properties.c (sp_dtw_border_layer_toggled): New callback
+	(sp_desktop_dialog_new): Added border layer
+	(sp_dtw_update): Track border layer
+
+	* src/spsvgview.c: Implement slideshow
+
+	* src/sp-namedview.c (sp_namedview_set): Track borderlayer
+
+	* src/desktop.c (sp_desktop_new): Add page border directly to
+	main group
+	(sp_dt_namedview_modified): Track border layer
+
+	* src/attributes.c: Added "borderlayer"
+
 2003-06-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-pattern.c (sp_pattern_update): Implemented, patterns show up again

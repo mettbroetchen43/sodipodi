@@ -267,7 +267,8 @@ static SPView *
 sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 {
 	SPDesktop *desktop;
-	SPCanvasGroup *root, *page;
+	SPCanvasGroup *root;
+	/* *page; */
 	NRArenaItem *ai;
 	gdouble dw, dh;
 	SPDocument *document;
@@ -298,7 +299,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	desktop->main = (SPCanvasGroup *) sp_canvas_item_new (root, SP_TYPE_CANVAS_GROUP, NULL);
 	g_signal_connect (G_OBJECT (desktop->main), "event", G_CALLBACK (sp_desktop_root_handler), desktop);
 	/* fixme: */
-	page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
+	/* page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL); */
+	desktop->page = sp_canvas_item_new (desktop->main, SP_TYPE_CTRLRECT, NULL);
 
 	desktop->drawing = sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	g_signal_connect (G_OBJECT (desktop->drawing), "arena_event", G_CALLBACK (arena_handler), desktop);
@@ -317,7 +319,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
 
-	desktop->page = sp_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL);
+	/* desktop->page = sp_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL); */
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, sp_document_width (document), sp_document_height (document));
 	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 
@@ -393,7 +395,16 @@ sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop)
 		sp_dt_update_snap_distances (desktop);
 		/* Show/hide page border */
 		if (nv->showborder) {
+			int order;
 			sp_canvas_item_show (desktop->page);
+			order = sp_canvas_item_order (desktop->page);
+			if (nv->borderlayer == SP_BORDER_LAYER_BOTTOM) {
+				if (order) sp_canvas_item_lower (desktop->page, order);
+			} else {
+				int morder;
+				morder = sp_canvas_item_order (desktop->drawing);
+				if (morder > order) sp_canvas_item_raise (desktop->page, morder - order);
+			}
 		} else {
 			sp_canvas_item_hide (desktop->page);
 		}

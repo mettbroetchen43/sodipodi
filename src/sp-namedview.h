@@ -21,14 +21,20 @@
 #include "helper/units.h"
 #include "sp-object-group.h"
 
+enum {
+	SP_BORDER_LAYER_BOTTOM,
+	SP_BORDER_LAYER_TOP
+};
+
 struct _SPNamedView {
 	SPObjectGroup objectgroup;
-	guint editable : 1;
-	guint showgrid : 1;
-	guint snaptogrid : 1;
-	guint showguides : 1;
-	guint snaptoguides : 1;
-	guint showborder : 1;
+	unsigned int editable : 1;
+	unsigned int showgrid : 1;
+	unsigned int snaptogrid : 1;
+	unsigned int showguides : 1;
+	unsigned int snaptoguides : 1;
+	unsigned int showborder : 1;
+	unsigned int borderlayer : 2;
 
 	const SPUnit *gridunit;
 	/* Grid data is in points regardless of unit */

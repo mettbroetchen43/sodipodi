@@ -63,6 +63,7 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_GUIDEHICOLOR, "guidehicolor"},
 	{SP_ATTR_GUIDEHIOPACITY, "guidehiopacity"},
 	{SP_ATTR_SHOWBORDER, "showborder"},
+	{SP_ATTR_BORDERLAYER, "borderlayer"},
 	/* SPGuide */
 	{SP_ATTR_ORIENTATION, "orientation"},
 	{SP_ATTR_POSITION, "position"},
