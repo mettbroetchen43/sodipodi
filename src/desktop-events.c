@@ -40,10 +40,10 @@ static void sp_dt_simple_guide_dialog (SPGuide * guide, SPDesktop * desktop);
 /* Root item handler */
 
 
-void
+int
 sp_desktop_root_handler (SPCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
-	sp_event_context_root_handler (desktop->event_context, event);
+	return sp_event_context_root_handler (desktop->event_context, event);
 }
 
 /*
@@ -52,7 +52,7 @@ sp_desktop_root_handler (SPCanvasItem * item, GdkEvent * event, SPDesktop * desk
  *
  */
 
-void
+int
 sp_desktop_item_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	gpointer ddata;
@@ -63,7 +63,7 @@ sp_desktop_item_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 
 	desktop = SP_DESKTOP (ddata);
 
-	sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
+	return sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
 }
 
 

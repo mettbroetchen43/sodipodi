@@ -34,7 +34,7 @@ sp_window_new (const unsigned char *title, unsigned int resizeable)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title ((GtkWindow *) window, title);
 	gtk_window_set_resizable ((GtkWindow *) window, resizeable);
-	g_signal_connect ((GObject *) window, "key_press_event", (GCallback) sp_window_key_press, NULL);
+	g_signal_connect_after ((GObject *) window, "key_press_event", (GCallback) sp_window_key_press, NULL);
 
 	return window;
 }

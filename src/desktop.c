@@ -255,12 +255,10 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *ai, GdkEvent *event, SPDesktop
 	if (ai) {
 		SPItem *spi;
 		spi = NR_ARENA_ITEM_GET_DATA (ai);
-		sp_event_context_item_handler (desktop->event_context, spi, event);
+		return sp_event_context_item_handler (desktop->event_context, spi, event);
 	} else {
-		sp_event_context_root_handler (desktop->event_context, event);
+		return sp_event_context_root_handler (desktop->event_context, event);
 	}
-
-	return TRUE;
 }
 
 /* Constructor */
@@ -604,6 +602,8 @@ static void sp_desktop_widget_destroy (GtkObject *object);
 static void sp_desktop_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
 static void sp_desktop_widget_realize (GtkWidget *widget);
 
+static gint sp_desktop_widget_enter_notify (GtkWidget *widget, GdkEventCrossing *event);
+
 static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
 
 static void sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpointer data);
@@ -656,6 +656,7 @@ sp_desktop_widget_class_init (SPDesktopWidgetClass *klass)
 
 	widget_class->size_allocate = sp_desktop_widget_size_allocate;
 	widget_class->realize = sp_desktop_widget_realize;
+	widget_class->enter_notify_event = sp_desktop_widget_enter_notify;
 }
 
 static void
@@ -776,9 +777,6 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	g_signal_connect (G_OBJECT (dtw->hadj), "value-changed", G_CALLBACK (sp_desktop_widget_adjustment_value_changed), dtw);
 	g_signal_connect (G_OBJECT (dtw->vadj), "value-changed", G_CALLBACK (sp_desktop_widget_adjustment_value_changed), dtw);
 
-#if 1
-        gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
-#endif
 	/* Be cautious about decorations (Lauris) */
 	gtk_widget_show_all (tbl);
 }
@@ -907,6 +905,15 @@ sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dt
 	return FALSE;
 }
 
+static gint
+sp_desktop_widget_enter_notify (GtkWidget *widget, GdkEventCrossing *event)
+{
+	gtk_widget_grab_focus ((GtkWidget *) ((SPDesktopWidget *) widget)->canvas);
+	if (((GtkWidgetClass *) dtw_parent_class)->enter_notify_event)
+		return ((GtkWidgetClass *) dtw_parent_class)->enter_notify_event (widget, event);
+	return FALSE;
+}
+
 static void
 sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpointer data)
 {
@@ -1015,6 +1022,8 @@ sp_desktop_widget_new (SPNamedView *namedview)
 
 	/* Listen on namedview modification */
 	g_signal_connect (G_OBJECT (namedview), "modified", G_CALLBACK (sp_desktop_widget_namedview_modified), dtw);
+
+	gtk_widget_grab_focus ((GtkWidget *) dtw->canvas);
 
 	return SP_VIEW_WIDGET (dtw);
 }
