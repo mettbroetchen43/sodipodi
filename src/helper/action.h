@@ -25,7 +25,8 @@ typedef struct _SPActionEventVector SPActionEventVector;
 
 struct _SPActionEventVector {
 	NRObjectEventVector object_vector;
-	void (* perform) (SPAction *action, void *data);
+	/* Config is meant to pass parameters to action, data is callback data */
+	void (* perform) (SPAction *action, void *config, void *data);
 	void (* set_active) (SPAction *action, unsigned int active, void *data);
 	void (* set_sensitive) (SPAction *action, unsigned int sensitive, void *data);
 	void (* set_shortcut) (SPAction *action, unsigned int shortcut, void *data);
@@ -54,7 +55,8 @@ SPAction *sp_action_setup (SPAction *action,
 			   const unsigned char *tip,
 			   const unsigned char *image);
 
-void sp_action_perform (SPAction *action);
+/* Config is meant to pass parameters to action */
+void sp_action_perform (SPAction *action, void *config);
 void sp_action_set_active (SPAction *action, unsigned int active);
 void sp_action_set_sensitive (SPAction *action, unsigned int sensitive);
 void sp_action_set_shortcut (SPAction *action, unsigned int shortcut);

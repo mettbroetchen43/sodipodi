@@ -4,10 +4,11 @@
 /*
  * Sodipodi Widget Utilities
  *
- * Author:
+ * Authors:
  *   Bryce W. Harrington <brycehar@bryceharrington.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  * 
- * Copyright (C) 2003 Bryce Harrington
+ * Copyright (C) 2003 Authors
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
@@ -33,5 +34,11 @@ void
 spw_unit_selector(GtkWidget * dialog, GtkWidget * t,
 		  const guchar * label, guchar * key, int row,
 		  GtkWidget * us, GCallback cb);
+
+/* Config widgets */
+
+GtkWidget *sp_config_check_button_new (const unsigned char *text,
+				       const unsigned char *path, const unsigned char *key,
+				       const unsigned char *trueval, const unsigned char *falseval);
 
 #endif

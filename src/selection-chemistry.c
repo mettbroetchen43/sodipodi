@@ -775,6 +775,32 @@ sp_selection_move_screen (gdouble sx, gdouble sy)
   sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
+static unsigned int
+sp_cycle_is_global (void)
+{
+	SPRepr *repr;
+	const unsigned char *val;
+
+	repr = sodipodi_get_repr (SODIPODI, "tools.select.cycling");
+	if (!repr) return TRUE;
+	val = sp_repr_attr (repr, "scope");
+	if (!val) return TRUE;
+	return strcmp (val, "visible");
+}
+
+static unsigned int
+sp_cycle_keep_focus (void)
+{
+	SPRepr *repr;
+	const unsigned char *val;
+
+	repr = sodipodi_get_repr (SODIPODI, "tools.select.cycling");
+	if (!repr) return TRUE;
+	val = sp_repr_attr (repr, "focus");
+	if (!val) return TRUE;
+	return strcmp (val, "follow");
+}
+
 void
 sp_selection_item_next (void)
 {
@@ -793,20 +819,20 @@ sp_selection_item_next (void)
 	selection = SP_DT_SELECTION(desktop);
 	g_return_if_fail(selection!=NULL);
   
-	// get item list
-	if (SP_CYCLING == SP_CYCLE_VISIBLE) {
+	/* Cycling type */
+	if (sp_cycle_is_global ()) {
+		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+	} else {
 		NRRectD d;
 		sp_desktop_get_display_area (desktop, &dbox);
 		d.x0 = dbox.x0;
 		d.y0 = dbox.y0;
 		d.x1 = dbox.x1;
 		d.y1 = dbox.y1;
-		children = sp_document_items_in_box (document, &d);
-	} else {
-		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+		children = sp_document_partial_items_in_box (document, &d);
 	}
 
-	// compute next item
+	/* compute next item */
 	if (children == NULL) return;
 	if sp_selection_is_empty(selection) {
 		item = children->data;
@@ -819,7 +845,7 @@ sp_selection_item_next (void)
 		}
 	}
 
-	// set selection to item
+	/* set selection to item */
 	if (item != NULL) {
 		sp_selection_set_item (selection, item);
 	} else {
@@ -828,9 +854,9 @@ sp_selection_item_next (void)
 
 	g_slist_free (children);
 
-	// adjust visible area to see whole new selection
-	if (SP_CYCLING == SP_CYCLE_FOCUS) {
+	if (!sp_cycle_keep_focus ()) {
 		NRRectF bbox;
+		/* adjust visible area to see whole new selection */
 		sp_item_bbox_desktop (item, &bbox);
 		if (!nr_rect_f_test_empty (&bbox)) {
 			sp_desktop_scroll_absolute_center_desktop (desktop, 0.5 * (bbox.x0 + bbox.x1), 0.5 * (bbox.y0 + bbox.y1));
@@ -856,20 +882,20 @@ sp_selection_item_prev (void)
 	selection = SP_DT_SELECTION(desktop);
 	g_return_if_fail(selection!=NULL);
   
-	// get item list
-	if (SP_CYCLING == SP_CYCLE_VISIBLE) {
+	/* Cycling type */
+	if (sp_cycle_is_global ()) {
+		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+	} else {
 		NRRectD d;
 		sp_desktop_get_display_area (desktop, &dbox);
 		d.x0 = dbox.x0;
 		d.y0 = dbox.y0;
 		d.x1 = dbox.x1;
 		d.y1 = dbox.y1;
-		children = sp_document_items_in_box (document, &d);
-	} else {
-		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+		children = sp_document_partial_items_in_box (document, &d);
 	}
   
-	// compute prev item
+	/* compute prev item */
 	if (children == NULL) return;
 	if sp_selection_is_empty(selection) {
 		item = SP_ITEM (g_slist_last (children)->data);
@@ -882,16 +908,16 @@ sp_selection_item_prev (void)
 		item = SP_ITEM (l->data);
 	}
 
-	// set selection to item
+	/* set selection to item */
 	if (item == NULL) return;
 
 	sp_selection_set_item (selection, item);
   
 	g_slist_free (children);
 
-	// adjust visible area to see whole new selection
-	if (SP_CYCLING == SP_CYCLE_FOCUS) {
+	if (!sp_cycle_keep_focus ()) {
 		NRRectF bbox;
+		/* adjust visible area to see whole new selection */
 		sp_item_bbox_desktop (item, &bbox);
 		if (!nr_rect_f_test_empty (&bbox)) {
 			sp_desktop_scroll_absolute_center_desktop (desktop, 0.5 * (bbox.x0 + bbox.x1), 0.5 * (bbox.y0 + bbox.y1));

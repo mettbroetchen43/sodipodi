@@ -49,8 +49,8 @@ void sp_selection_move_screen (gdouble sx, gdouble sy);
 void sp_selection_item_next (void);
 void sp_selection_item_prev (void);
 
+#if 0
 /* selection cycling */
-
 typedef enum
 {
 	SP_CYCLE_SIMPLE,
@@ -63,6 +63,7 @@ typedef enum
 extern SPCycleType SP_CYCLING;
 #else
 SPCycleType SP_CYCLING = SP_CYCLE_FOCUS;
+#endif
 #endif
 
 #endif

@@ -40,8 +40,11 @@ static const char preferences_skeleton[] =
 "                  style=\"fill:black;stroke:none;font-family:helvetica;font-style:normal;font-weight:normal;font-size:12px;\"/>"
 "    <eventcontext id=\"nodes\"/>"
 "    <eventcontext id=\"zoom\"/>"
-"    <eventcontext id=\"select\"/>"
+"    <eventcontext id=\"select\">"
+"      <function id=\"cycling\" scope=\"global\" focus=\"preserve\"/>"
+"    </eventcontext>"
 "  </group>"
+
 "  <group id=\"palette\">"
 "    <group id=\"dashes\">"
 "      <dash id=\"solid\" style=\"stroke-dasharray:none;\"/>"
@@ -55,6 +58,7 @@ static const char preferences_skeleton[] =
 "      <dash id=\"dash-4-2-1-2\" style=\"stroke-dasharray:4 2 1 2;\"/>"
 "    </group>"
 "  </group>"
+
 "  <group id=\"printing\">"
 "    <settings id=\"ps\"/>"
 "  </group>"

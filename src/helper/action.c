@@ -90,7 +90,7 @@ sp_action_setup (SPAction *action,
 }
 
 void
-sp_action_perform (SPAction *action)
+sp_action_perform (SPAction *action, void *config)
 {
 	NRActiveObject *aobject;
 
@@ -106,7 +106,7 @@ sp_action_perform (SPAction *action)
 			listener = aobject->callbacks->listeners + i;
 			avector = (SPActionEventVector *) listener->vector;
 			if ((listener->size >= sizeof (SPActionEventVector)) && avector->perform) {
-				avector->perform (action, listener->data);
+				avector->perform (action, config, listener->data);
 			}
 		}
 	}

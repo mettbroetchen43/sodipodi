@@ -1,5 +1,20 @@
 2003-11-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/spw-utilities.c (sp_config_check_button_new): New
+	helper, builds widget that follows and triggers config tree mutations
+
+	* src/selection-chemistry.c (sp_cycle_is_global): Read config
+	value from sodipodi config tree
+	(sp_cycle_keep_focus): Ditto
+	(sp_selection_item_next): Use config tree
+	(sp_selection_item_prev): Ditto
+
+	* src/select-context.c (sp_select_context_config_widget): Added
+	TAB cycling settings
+
+	* src/helper/action.h (sp_action_set_shortcut): Changed ::perform
+	signature, so we can attach configuration data to actions
+
 	* src/modules/mlview/Makefile.am: This is mostly placeholder by
 	now, but brave peole may try to get it compiling
 

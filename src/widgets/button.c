@@ -345,7 +345,7 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 		sp_button_update_state (button);
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[CLICKED], 0);
-		sp_action_perform (action);
+		sp_action_perform (action, NULL);
 		break;
 	case SP_BUTTON_TYPE_TOGGLE:
 		button->pressed = 0;
@@ -355,7 +355,7 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[TOGGLED], 0);
 		sp_action_set_active (action, button->down);
-		if (button->down) sp_action_perform (action);
+		if (button->down) sp_action_perform (action, NULL);
 		break;
 	default:
 		break;
@@ -463,7 +463,7 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[CLICKED], 0);
-			sp_action_perform (action);
+			sp_action_perform (action, NULL);
 			break;
 		case SP_BUTTON_TYPE_TOGGLE:
 			button->pressed = 0;
@@ -473,7 +473,7 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[TOGGLED], 0);
 			sp_action_set_active (action, button->down);
-			if (button->down) sp_action_perform (action);
+			if (button->down) sp_action_perform (action, NULL);
 			break;
 		default:
 			break;

@@ -72,7 +72,7 @@ sp_verb_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data
 }
 
 static void
-sp_verb_action_file_perform (SPAction *action, void *data)
+sp_verb_action_file_perform (SPAction *action, void *config, void *data)
 {
 
 	switch ((int) data) {
@@ -109,7 +109,7 @@ sp_verb_action_file_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_edit_perform (SPAction *action, void *data)
+sp_verb_action_edit_perform (SPAction *action, void *config, void *data)
 {
 	SPDesktop *dt;
 
@@ -150,7 +150,7 @@ sp_verb_action_edit_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_selection_perform (SPAction *action, void *data)
+sp_verb_action_selection_perform (SPAction *action, void *config, void *data)
 {
 	SPDesktop *dt;
 
@@ -188,7 +188,7 @@ sp_verb_action_selection_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_object_perform (SPAction *action, void *data)
+sp_verb_action_object_perform (SPAction *action, void *config, void *data)
 {
 	SPDesktop *dt;
 	SPSelection *sel;
@@ -227,7 +227,7 @@ sp_verb_action_object_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_ctx_perform (SPAction *action, void *data)
+sp_verb_action_ctx_perform (SPAction *action, void *config, void *data)
 {
 	SPDesktop *dt;
 	unsigned int verb;
@@ -309,7 +309,7 @@ sp_verb_action_ctx_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_zoom_perform (SPAction *action, void *data)
+sp_verb_action_zoom_perform (SPAction *action, void *config, void *data)
 {
 	SPDesktop *dt;
 	NRRectF d;
@@ -353,7 +353,7 @@ sp_verb_action_zoom_perform (SPAction *action, void *data)
 }
 
 static void
-sp_verb_action_dialog_perform (SPAction *action, void *data)
+sp_verb_action_dialog_perform (SPAction *action, void *config, void *data)
 {
 	switch ((int) data) {
 	case SP_VERB_DIALOG_DISPLAY:

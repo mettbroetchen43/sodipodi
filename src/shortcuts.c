@@ -27,7 +27,7 @@ sp_shortcut_run (unsigned int shortcut)
 		SPAction *action;
 		action = sp_verb_get_action (verb);
 		if (action) {
-			sp_action_perform (action);
+			sp_action_perform (action, NULL);
 			return TRUE;
 		}
 	}

@@ -5,8 +5,9 @@
  * 
  * Authors:
  *   Bryce W. Harrington <brycehar@bryceharrington.com>
- *
- * Copyright (C) 2003 Bryce W. Harrington
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ * 
+ * Copyright (C) 2003 Authors
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
@@ -32,6 +33,8 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkframe.h>
  
+#include "xml/repr-private.h"
+
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 #include "widgets/button.h"
@@ -100,4 +103,81 @@ spw_unit_selector(GtkWidget * dialog, GtkWidget * t,
   g_signal_connect (G_OBJECT (a), "value_changed", cb, dialog);
 }
 
+
+/* Config widgets */
+
+static void
+sp_config_check_button_destroy (GObject *object, SPRepr *repr)
+{
+	sp_repr_remove_listener_by_data (repr, object);
+	sp_repr_unref (repr);
+}
+
+static void
+sp_config_check_button_repr_attr_changed (SPRepr *repr,
+					  const unsigned char *key,
+					  const unsigned char *oldval, const unsigned char *newval,
+					  void *data)
+{
+	const unsigned char *ownkey, *trueval;
+	unsigned int active;
+	ownkey = g_object_get_data ((GObject *) data, "key");
+	if (strcmp (key, ownkey)) return;
+	trueval = g_object_get_data ((GObject *) data, "trueval");
+	active = (!trueval && !newval) || (trueval && newval && !strcmp (newval, trueval));
+	gtk_toggle_button_set_active ((GtkToggleButton *) data, active);
+}
+
+SPReprEventVector sp_config_check_button_event_vector = {
+	NULL, /* Destroy */
+	NULL, /* Add child */
+	NULL, /* Child added */
+	NULL, /* Remove child */
+	NULL, /* Child removed */
+	NULL, /* Change attribute */
+	sp_config_check_button_repr_attr_changed,
+	NULL, /* Change content */
+	NULL, /* Content changed */
+	NULL, /* Change_order */
+	NULL /* Order changed */
+};
+
+void
+sp_config_check_button_toggled (GtkToggleButton *button, SPRepr *repr)
+{
+	const unsigned char *key, *val;
+	key = g_object_get_data ((GObject *) button, "key");
+	if (gtk_toggle_button_get_active (button)) {
+		val = g_object_get_data ((GObject *) button, "trueval");
+	} else {
+		val = g_object_get_data ((GObject *) button, "falseval");
+	}
+	printf ("Setting '%s' to '%s'\n", key, val);
+	sp_repr_set_attr (repr, key, val);
+}
+
+GtkWidget *
+sp_config_check_button_new (const unsigned char *text,
+			    const unsigned char *path, const unsigned char *key,
+			    const unsigned char *trueval, const unsigned char *falseval)
+{
+	GtkWidget *w;
+	SPRepr *repr;
+	w = gtk_check_button_new_with_label (text);
+	repr = sodipodi_get_repr (SODIPODI, path);
+	if (repr) {
+		sp_repr_ref (repr);
+		g_object_set_data ((GObject *) w, "repr", (gpointer) repr);
+		g_object_set_data ((GObject *) w, "key", (gpointer) key);
+		g_object_set_data ((GObject *) w, "trueval", (gpointer) trueval);
+		g_object_set_data ((GObject *) w, "falseval", (gpointer) falseval);
+		/* Connect destroy signal */
+		g_signal_connect ((GObject *) w, "destroy", (GCallback) sp_config_check_button_destroy, repr);
+		/* Connect repr change_attr event */
+		sp_repr_add_listener (repr, &sp_config_check_button_event_vector, w);
+		/* Connect toggled signal */
+		g_signal_connect ((GObject *) w, "toggled", (GCallback) sp_config_check_button_toggled, repr);
+	}
+	return w;
+}
 

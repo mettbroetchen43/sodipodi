@@ -209,7 +209,7 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 static void
 sp_ui_menu_activate (void *object, SPAction *action)
 {
-	sp_action_perform (action);
+	sp_action_perform (action, NULL);
 }
 
 static void

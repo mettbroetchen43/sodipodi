@@ -34,6 +34,7 @@
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
 #include "desktop.h"
+#include "widgets/spw-utilities.h"
 #include "dialogs/object-properties.h"
 #include "sp-metrics.h"
 #include "sp-item.h"
@@ -562,48 +563,54 @@ sp_select_context_config_widget (SPEventContext *ec)
 	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
 
 	f = gtk_frame_new (_("Visual transformation"));
-	gtk_widget_show (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
 
 	fb = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (fb);
 	gtk_container_add (GTK_CONTAINER (f), fb);
 
 	b = gtk_radio_button_new_with_label (NULL, _("Show content"));
-	gtk_widget_show (b);
 	gtk_object_set_data (GTK_OBJECT (b), "value", "content");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.show == SP_SELTRANS_SHOW_CONTENT);
 	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_show_toggled), sc);
 
 	b = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (b)), _("Show outline"));
-	gtk_widget_show (b);
 	gtk_object_set_data (GTK_OBJECT (b), "value", "outline");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.show == SP_SELTRANS_SHOW_OUTLINE);
 	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_show_toggled), sc);
 
 	f = gtk_frame_new (_("Object transformation"));
-	gtk_widget_show (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
 
 	fb = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (fb);
 	gtk_container_add (GTK_CONTAINER (f), fb);
 
 	b = gtk_radio_button_new_with_label (NULL, _("Optimize"));
-	gtk_widget_show (b);
 	gtk_object_set_data (GTK_OBJECT (b), "value", "optimize");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.transform == SP_SELTRANS_TRANSFORM_OPTIMIZE);
 	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_transform_toggled), sc);
 
 	b = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (b)), _("Preserve"));
-	gtk_widget_show (b);
 	gtk_object_set_data (GTK_OBJECT (b), "value", "keep");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.transform == SP_SELTRANS_TRANSFORM_KEEP);
 	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_transform_toggled), sc);
+
+	f = gtk_frame_new (_("Cycling"));
+	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
+	fb = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (f), fb);
+
+	b = sp_config_check_button_new (_("Cycle only among visible items"),
+					"tools.select.cycling", "scope", "visible", "global");
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+	b = sp_config_check_button_new (_("Center view to selected item"),
+					"tools.select.cycling", "focus", "follow", "preserve");
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (vb);
 
 	return vb;
 }
