@@ -14,7 +14,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkbutton.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
@@ -42,12 +41,11 @@ static void sp_gvs_defs_modified (SPObject *defs, guint flags, SPGradientVectorS
 static void sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs);
 static void sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs);
 
+#if 0
 static void sp_gvs_gradient_edit_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
 static void sp_gvs_gradient_add_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
 static void sp_gvs_gradient_delete_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
-
-/* fixme: This is not the right place */
-static void sp_gradient_vector_dialog (SPGradient *gradient);
+#endif
 
 static GtkVBoxClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -94,32 +92,12 @@ sp_gradient_vector_selector_class_init (SPGradientVectorSelectorClass *klass)
 static void
 sp_gradient_vector_selector_init (SPGradientVectorSelector *gvs)
 {
-	GtkWidget *t;
-
-	t = gtk_table_new (2, 3, TRUE);
-	gtk_widget_show (t);
-	gtk_box_pack_start (GTK_BOX (gvs), t, FALSE, FALSE, 0);
+	gvs->doc = NULL;
+	gvs->gr = NULL;
 
 	gvs->menu = gtk_option_menu_new ();
 	gtk_widget_show (gvs->menu);
-	gtk_table_attach (GTK_TABLE (t), gvs->menu, 0, 3, 0, 1, 0, 0, 0, 0);
-
-	gvs->chg = gtk_button_new_with_label (_("Edit"));
-	gtk_widget_show (gvs->chg);
-	gtk_table_attach (GTK_TABLE (t), gvs->chg, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-	gvs->add = gtk_button_new_with_label (_("Add"));
-	gtk_widget_show (gvs->add);
-	gtk_table_attach (GTK_TABLE (t), gvs->add, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-	gvs->del = gtk_button_new_with_label (_("Delete"));
-	gtk_widget_show (gvs->del);
-	gtk_table_attach (GTK_TABLE (t), gvs->del, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-	/* Connect signals */
-	gtk_signal_connect (GTK_OBJECT (gvs->chg), "clicked", GTK_SIGNAL_FUNC (sp_gvs_gradient_edit_clicked), gvs);
-	gtk_signal_connect (GTK_OBJECT (gvs->add), "clicked", GTK_SIGNAL_FUNC (sp_gvs_gradient_add_clicked), gvs);
-	gtk_signal_connect (GTK_OBJECT (gvs->del), "clicked", GTK_SIGNAL_FUNC (sp_gvs_gradient_delete_clicked), gvs);
+	gtk_box_pack_start (GTK_BOX (gvs), gvs->menu, FALSE, FALSE, 0);
 }
 
 static void
@@ -134,9 +112,9 @@ sp_gradient_vector_selector_destroy (GtkObject *object)
 		gvs->gr = NULL;
 	}
 
-	if (gvs->defs) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->defs), gvs);
-		gvs->defs = NULL;
+	if (gvs->doc) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs);
+		gvs->doc = NULL;
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -144,63 +122,69 @@ sp_gradient_vector_selector_destroy (GtkObject *object)
 }
 
 GtkWidget *
-sp_gradient_vector_selector_new (SPGradient *gradient)
+sp_gradient_vector_selector_new (SPDocument *doc, SPGradient *gr)
 {
 	GtkWidget *gvs;
 
-	/* fixme: Do we allow zero gradient? (Lauris) */
-	g_return_val_if_fail (!gradient || SP_IS_GRADIENT (gradient), NULL);
+	g_return_val_if_fail (!doc || SP_IS_DOCUMENT (doc), NULL);
+	g_return_val_if_fail (!gr || (doc != NULL), NULL);
+	g_return_val_if_fail (!gr || SP_IS_GRADIENT (gr), NULL);
+	g_return_val_if_fail (!gr || (SP_OBJECT_DOCUMENT (gr) == doc), NULL);
 
 	gvs = gtk_type_new (SP_TYPE_GRADIENT_VECTOR_SELECTOR);
 
-	sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (gvs), gradient);
+	if (doc) {
+		sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (gvs), doc, gr);
+	} else {
+		sp_gvs_rebuild_gui_full (SP_GRADIENT_VECTOR_SELECTOR (gvs));
+	}
 
 	return gvs;
 }
 
 void
-sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPGradient *gr)
+sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocument *doc, SPGradient *gr)
 {
-	SPObject *defs;
+	static gboolean suppress = FALSE;
 
 	g_return_if_fail (gvs != NULL);
 	g_return_if_fail (SP_IS_GRADIENT_VECTOR_SELECTOR (gvs));
-	/* fixme: Do we allow zero gradient? (Lauris) */
+	g_return_if_fail (!doc || SP_IS_DOCUMENT (doc));
+	g_return_if_fail (!gr || (doc != NULL));
 	g_return_if_fail (!gr || SP_IS_GRADIENT (gr));
+	g_return_if_fail (!gr || (SP_OBJECT_DOCUMENT (gr) == doc));
+	g_return_if_fail (!gr || SP_GRADIENT_HAS_STOPS (gr));
 
-	/* fixme: Check for has_stops? (Lauris) */
-
-	defs = (gr) ? SP_DOCUMENT_DEFS (SP_OBJECT_DOCUMENT (gr)) : NULL;
-
-	if ((!gr && gvs->gr) || (gr && !gvs->gr) || (gr && (SP_OBJECT_DOCUMENT (gr) != SP_OBJECT_DOCUMENT (gvs->gr)))) {
-		/* Somewhat easier case - switch document */
-		/* Detach old */
+	if (doc != gvs->doc) {
+		/* Disconnect signals */
 		if (gvs->gr) {
 			gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
 			gvs->gr = NULL;
 		}
-		if (gvs->defs) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->defs), gvs);
-			gvs->defs = NULL;
+		if (gvs->doc) {
+			gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs);
+			gvs->doc = NULL;
 		}
-		/* Attach new */
-		if (defs) {
-			gtk_signal_connect (GTK_OBJECT (defs), "destroy", GTK_SIGNAL_FUNC (sp_gvs_defs_destroy), gvs);
-			gtk_signal_connect (GTK_OBJECT (defs), "modified", GTK_SIGNAL_FUNC (sp_gvs_defs_modified), gvs);
-			gvs->defs = defs;
+		/* Connect signals */
+		if (doc) {
+			gtk_signal_connect (GTK_OBJECT (SP_DOCUMENT_DEFS (doc)), "destroy", GTK_SIGNAL_FUNC (sp_gvs_defs_destroy), gvs);
+			gtk_signal_connect (GTK_OBJECT (SP_DOCUMENT_DEFS (doc)), "modified", GTK_SIGNAL_FUNC (sp_gvs_defs_modified), gvs);
 		}
 		if (gr) {
 			gtk_signal_connect (GTK_OBJECT (gr), "destroy", GTK_SIGNAL_FUNC (sp_gvs_gradient_destroy), gvs);
-			/* fixme: Connect 'modified'? (Lauris) */
-			/* fixme: I think we do not need it (Lauris) */
-			gvs->gr = gr;
 		}
+		gvs->doc = doc;
+		gvs->gr = gr;
 		sp_gvs_rebuild_gui_full (gvs);
-	} else if (gr != NULL) {
+		if (!suppress) gtk_signal_emit (GTK_OBJECT (gvs), signals[VECTOR_SET], gr);
+	} else if (gr != gvs->gr) {
 		/* Harder case - keep document, rebuild menus and stuff */
 		/* fixme: (Lauris) */
-		sp_gradient_vector_selector_set_gradient (gvs, NULL);
-		sp_gradient_vector_selector_set_gradient (gvs, gr);
+		suppress = TRUE;
+		sp_gradient_vector_selector_set_gradient (gvs, NULL, NULL);
+		sp_gradient_vector_selector_set_gradient (gvs, doc, gr);
+		suppress = FALSE;
+		gtk_signal_emit (GTK_OBJECT (gvs), signals[VECTOR_SET], gr);
 	}
 	/* The case of setting NULL -> NULL is not very interesting */
 }
@@ -236,17 +220,24 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 
 	pos = idx = 0;
 
-	if (!gl || !gvs->gr) {
+	if (!gvs->doc) {
 		GtkWidget *i;
-		/* No document or no gradients */
-		i = gtk_menu_item_new_with_label (_("No gradients defined"));
+		i = gtk_menu_item_new_with_label (_("No document selected"));
 		gtk_widget_show (i);
 		gtk_menu_append (GTK_MENU (m), i);
-		/* Set sensitivity */
-		/* fixme: */
 		gtk_widget_set_sensitive (gvs->menu, FALSE);
-		gtk_widget_set_sensitive (gvs->chg, FALSE);
-		gtk_widget_set_sensitive (gvs->del, FALSE);
+	} else if (!gl) {
+		GtkWidget *i;
+		i = gtk_menu_item_new_with_label (_("No gradients in document"));
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+		gtk_widget_set_sensitive (gvs->menu, FALSE);
+	} else if (!gvs->gr) {
+		GtkWidget *i;
+		i = gtk_menu_item_new_with_label (_("No gradient selected"));
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+		gtk_widget_set_sensitive (gvs->menu, FALSE);
 	} else {
 		while (gl) {
 			SPGradient *gr;
@@ -260,8 +251,7 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 			i = gtk_menu_item_new ();
 			gtk_widget_show (i);
 			gtk_object_set_data (GTK_OBJECT (i), "gradient", gr);
-			gtk_signal_connect (GTK_OBJECT (i), "activate",
-					    GTK_SIGNAL_FUNC (sp_gvs_gradient_activate), gvs);
+			gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_gvs_gradient_activate), gvs);
 
 			hb = gtk_hbox_new (FALSE, 4);
 			gtk_widget_show (hb);
@@ -280,11 +270,7 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 			if (gr == gvs->gr) pos = idx;
 			idx += 1;
 		}
-		/* Set sensitivity */
-		/* fixme: */
 		gtk_widget_set_sensitive (gvs->menu, TRUE);
-		gtk_widget_set_sensitive (gvs->chg, TRUE);
-		gtk_widget_set_sensitive (gvs->del, TRUE);
 	}
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (gvs->menu), m);
@@ -298,13 +284,15 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 	SPGradient *gr, *norm;
 
 	gr = gtk_object_get_data (GTK_OBJECT (mi), "gradient");
-	g_assert (gr != NULL);
-	g_assert (SP_IS_GRADIENT (gr));
 	/* Hmmm... bad things may happen here, if actual gradient is something new */
 	/* Namely - menuitems etc. will be fucked up */
 	/* Hmmm - probably we can just re-set it as menuitem data (Lauris) */
+
+	g_print ("SPGradientVectorSelector: gradient %s activated\n", SP_OBJECT_ID (gr));
+
 	norm = sp_gradient_ensure_vector_normalized (gr);
 	if (norm != gr) {
+		g_print ("SPGradientVectorSelector: become %s after normalization\n", SP_OBJECT_ID (norm));
 		/* But be careful that we do not have gradient saved anywhere else */
 		gtk_object_set_data (GTK_OBJECT (mi), "gradient", norm);
 	}
@@ -343,7 +331,7 @@ sp_gvs_gradient_destroy (SPGradient *gr, SPGradientVectorSelector *gvs)
 static void
 sp_gvs_defs_destroy (SPObject *defs, SPGradientVectorSelector *gvs)
 {
-	gvs->defs = NULL;
+	gvs->doc = NULL;
 	/* Disconnect gradient as well */
 	if (gvs->gr) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
@@ -362,81 +350,8 @@ sp_gvs_defs_modified (SPObject *defs, guint flags, SPGradientVectorSelector *gvs
 	/* fixme: Not exactly sure, what we have to do here (Lauris) */
 }
 
-static void
-sp_gvs_gradient_edit_clicked (GtkWidget *w, SPGradientVectorSelector *gvs)
-{
-	if (gvs->gr) {
-		g_print ("Edit clicked\n");
-#if 1
-		sp_gradient_vector_dialog (gvs->gr);
-#endif
-	}
-}
 
-static void
-sp_gvs_gradient_add_clicked (GtkWidget *w, SPGradientVectorSelector *gvs)
-{
-	SPObject *gr;
-	SPRepr *repr;
-
-	/* Return if no document */
-	if (!gvs->defs) return;
-
-	if (gvs->gr) {
-		repr = sp_repr_duplicate (SP_OBJECT_REPR (gvs->gr));
-	} else {
-		SPRepr *stop;
-		repr = sp_repr_new ("linearGradient");
-		stop = sp_repr_new ("stop");
-		sp_repr_set_attr (stop, "offset", "0");
-		sp_repr_set_attr (stop, "style", "stop-color:#000;stop-opacity:1;");
-		sp_repr_append_child (repr, stop);
-		sp_repr_unref (stop);
-		stop = sp_repr_new ("stop");
-		sp_repr_set_attr (stop, "offset", "1");
-		sp_repr_set_attr (stop, "style", "stop-color:#fff;stop-opacity:1;");
-		sp_repr_append_child (repr, stop);
-		sp_repr_unref (stop);
-	}
-
-	sp_repr_add_child (SP_OBJECT_REPR (gvs->defs), repr, NULL);
-	sp_repr_unref (repr);
-
-#if 0
-	/* fixme: */
-	sp_gradient_selector_vector_menu_refresh (gtk_object_get_data (GTK_OBJECT (spw), "vectors"), spw);
-	/* fixme: */
-	if (spw->desktop) sp_gradient_selector_load_selection (spw, SP_DT_SELECTION (spw->desktop));
-#endif
-
-	gr = sp_document_lookup_id (SP_OBJECT_DOCUMENT (gvs->defs), sp_repr_attr (repr, "id"));
-	sp_gradient_vector_selector_set_gradient (gvs, SP_GRADIENT (gr));
-}
-
-static void
-sp_gvs_gradient_delete_clicked (GtkWidget *w, SPGradientVectorSelector *gvs)
-{
-	if (gvs->gr) {
-		sp_gradient_vector_release_references (gvs->gr);
-		if (SP_OBJECT_HREFCOUNT (gvs->gr) < 1) {
-			/* fixme: need repick */
-			sp_repr_unparent (SP_OBJECT_REPR (gvs->gr));
-		}
-	}
-}
-
-#if 0
-#include <stdlib.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkwindow.h>
-#endif
 #include "../widgets/sp-color-selector.h"
-#if 0
-#include "../widgets/gradient-image.h"
-#include "../gradient-chemistry.h"
-#include "gradient-vector.h"
-#endif
 
 #define PAD 4
 
@@ -501,8 +416,8 @@ sp_gradient_vector_widget_new (SPGradient *gradient)
 	return vb;
 }
 
-static void
-sp_gradient_vector_dialog (SPGradient *gradient)
+GtkWidget *
+sp_gradient_vector_editor_new (SPGradient *gradient)
 {
 	static GtkWidget *dialog = NULL;
 
@@ -523,7 +438,7 @@ sp_gradient_vector_dialog (SPGradient *gradient)
 		sp_gradient_vector_widget_load_gradient (w, gradient);
 	}
 
-	gtk_widget_show (dialog);
+	return dialog;
 }
 
 static void

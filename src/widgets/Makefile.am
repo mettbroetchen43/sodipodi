@@ -18,7 +18,11 @@ libspwidgets_a_SOURCES = \
 	sp-color-slider.c sp-color-slider.h \
 	sp-color-selector.c sp-color-selector.h \
 	gradient-image.c gradient-image.h \
-	gradient-position.c gradient-position.h
+	gradient-position.c gradient-position.h \
+	paint-selector.c paint-selector.h \
+	gradient-selector.c gradient-selector.h \
+	gradient-vector.c gradient-vector.h \
+	sp-widget.c sp-widget.h
 
 #	sp-value-winder.c sp-value-winder.h
 #	sp-spin-button.c sp-spin-button.h

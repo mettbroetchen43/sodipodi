@@ -20,7 +20,7 @@ BEGIN_GNOME_DECLS
 
 GtkWidget *sp_fill_style_widget_new (void);
 
-void sp_fill_style_dialog (SPItem *item);
+void sp_fill_style_dialog (void);
 
 END_GNOME_DECLS
 

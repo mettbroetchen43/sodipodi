@@ -53,6 +53,12 @@ void sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gradien
 
 SPGradient *sp_document_default_gradient_vector (SPDocument *document);
 
+/*
+ * Get vector gradient of given gradient
+ */
+
+SPGradient *sp_gradient_get_vector (SPGradient *gradient, gboolean force_private);
+
 void sp_object_ensure_fill_gradient_normalized (SPObject *object);
 void sp_object_ensure_stroke_gradient_normalized (SPObject *object);
 

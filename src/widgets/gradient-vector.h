@@ -30,15 +30,16 @@ typedef struct _SPGradientVectorSelectorClass SPGradientVectorSelectorClass;
 struct _SPGradientVectorSelector {
 	GtkVBox vbox;
 
-	/* Our gradient */
+	SPDocument *doc;
 	SPGradient *gr;
-	/* Parent document <defs> node */
-	SPObject *defs;
 
 	/* Vector menu */
 	GtkWidget *menu;
+#if 0
+	/* fixme: Move these back to gradient editor */
 	/* Buttons */
 	GtkWidget *chg, *add, *del;
+#endif
 };
 
 struct _SPGradientVectorSelectorClass {
@@ -49,14 +50,12 @@ struct _SPGradientVectorSelectorClass {
 
 GtkType sp_gradient_vector_selector_get_type (void);
 
-GtkWidget *sp_gradient_vector_selector_new (SPGradient *gradient);
+GtkWidget *sp_gradient_vector_selector_new (SPDocument *doc, SPGradient *gradient);
 
-void sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPGradient *gr);
+void sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocument *doc, SPGradient *gr);
 
-#if 0
 /* fixme: rethink this (Lauris) */
-void sp_gradient_vector_dialog (SPGradient *gradient);
-#endif
+GtkWidget *sp_gradient_vector_editor_new (SPGradient *gradient);
 
 END_GNOME_DECLS
 

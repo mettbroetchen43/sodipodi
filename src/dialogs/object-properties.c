@@ -5,6 +5,7 @@
 #include <glade/glade.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
+#include "../widgets/paint-selector.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
@@ -206,6 +207,14 @@ void sp_object_properties_dialog (void)
 		dimension_height = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_height"); 
 
 		/* Do some evil things */
+#if 0
+		w = gtk_label_new (_("Test"));
+		gtk_widget_show (w);
+		p = sp_paint_selector_new ();
+		gtk_widget_show (p);
+		gtk_notebook_append_page (prop_notebook, p, w);
+#endif
+
 		w = gtk_label_new (_("Dynamic fill"));
 		gtk_widget_show (w);
 		p = sp_fill_style_widget_new ();

@@ -22,13 +22,13 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include "../svg/svg.h"
+#include "../widgets/sp-widget.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection.h"
 #include "../sp-item.h"
 #include "../style.h"
-#include "sp-widget.h"
 #include "item-properties.h"
 
 /* fixme: This sucks, we should really use per-widget xml */

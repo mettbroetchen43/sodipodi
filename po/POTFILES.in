@@ -17,8 +17,6 @@ src/dialogs/desktop-properties.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
 src/dialogs/fill-style.c
-src/dialogs/gradient-selector.c
-src/dialogs/gradient-vector.c
 src/dialogs/item-properties.c
 src/dialogs/object-attributes.c
 src/dialogs/object-properties.c
@@ -41,4 +39,7 @@ src/sp-spiral.c
 src/sp-star.c
 src/sp-text.c
 src/toolbox.c
+src/widgets/gradient-selector.c
+src/widgets/gradient-vector.c
+src/widgets/paint-selector.c
 src/widgets/sp-color-selector.c

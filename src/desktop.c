@@ -1169,8 +1169,6 @@ sp_desktop_widget_destroy (GtkObject *object)
 
 	dtw = SP_DESKTOP_WIDGET (object);
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), object);
-
 	if (dtw->desktop) {
 		gtk_object_unref (GTK_OBJECT (dtw->desktop));
 		dtw->desktop = NULL;

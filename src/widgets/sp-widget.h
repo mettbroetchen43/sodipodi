@@ -56,6 +56,8 @@ GtkWidget *sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *de
 void sp_widget_set_dirty (SPWidget *spw, gboolean dirty);
 void sp_widget_set_autoupdate (SPWidget *spw, gboolean autoupdate);
 
+const GSList *sp_widget_get_item_list (SPWidget *spw);
+
 END_GNOME_DECLS
 
 #endif

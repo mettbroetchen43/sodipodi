@@ -26,6 +26,8 @@ static void sp_action_redo_chgattr (SPDocument *doc, SPAction *action);
 static void sp_action_redo_chgcontent (SPDocument *doc, SPAction *action);
 static void sp_action_redo_chgorder (SPDocument *doc, SPAction *action);
 
+static void sp_action_print_list (SPAction *action);
+
 static SPAction *sp_action_new (SPActionType type, const guchar *id);
 static void sp_action_free (SPAction *action);
 
@@ -88,7 +90,12 @@ sp_document_undo (SPDocument *doc)
 	g_assert (SP_IS_DOCUMENT (doc));
 	g_assert (doc->private != NULL);
 	g_assert (doc->private->sensitive);
-	g_assert (doc->private->actions == NULL);
+
+	if (doc->private->actions) {
+		g_warning ("Document Undo: Last operation did not flush cache");
+		sp_action_print_list (doc->private->actions);
+		return;
+	}
 
 	if (doc->private->undo == NULL) return;
 
@@ -511,6 +518,43 @@ sp_action_redo_chgorder (SPDocument *doc, SPAction *action)
 	ref = (action->act.chgorder.newref) ? sp_document_lookup_id (doc, action->act.chgorder.newref) : NULL;
 
 	sp_repr_change_order (object->repr, child->repr, (ref) ? ref->repr : NULL);
+}
+
+static void
+sp_action_print_list (SPAction *action)
+{
+	while (action) {
+		g_print ("SPAction: Id %s\n", action->id);
+		switch (action->type) {
+		case SP_ACTION_ADD:
+			g_print ("SPAction: Add ref %s\n", action->act.add.ref);
+			break;
+		case SP_ACTION_DEL:
+			g_print ("SPAction: Del ref %s\n", action->act.del.ref);
+			break;
+		case SP_ACTION_CHGATTR:
+			g_print ("SPAction: ChgAttr %s: %s -> %s\n",
+				 g_quark_to_string (action->act.chgattr.key),
+				 action->act.chgattr.oldval,
+				 action->act.chgattr.newval);
+			break;
+		case SP_ACTION_CHGCONTENT:
+			g_print ("SPAction: ChgContent %s -> %s\n",
+				 action->act.chgcontent.oldval,
+				 action->act.chgcontent.newval);
+			break;
+		case SP_ACTION_CHGORDER:
+			g_print ("SPAction: ChgOrder %s: %s -> %s\n",
+				 action->act.chgorder.child,
+				 action->act.chgorder.oldref,
+				 action->act.chgorder.newref);
+			break;
+		default:
+			g_print ("SPAction: Invalid action type %d\n", action->type);
+			break;
+		}
+		action = action->next;
+	}
 }
 
 #define SP_ACTION_ALLOC_SIZE 256

@@ -656,3 +656,35 @@ sp_style_str_value (const guchar *str, const guchar *key)
 	return NULL;
 }
 
+void
+sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set)
+{
+	g_return_if_fail (style != NULL);
+
+	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+		gtk_object_unref (GTK_OBJECT (style->fill.server));
+	}
+
+	style->fill_set = fill_set;
+	style->fill.type = SP_PAINT_TYPE_COLOR;
+	sp_color_set_rgb_float (&style->fill.color, r, g, b);
+	style->fill_opacity_set = opacity_set;
+	style->fill_opacity = a;
+}
+
+void
+sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set)
+{
+	g_return_if_fail (style != NULL);
+
+	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+		gtk_object_unref (GTK_OBJECT (style->fill.server));
+	}
+
+	style->fill_set = fill_set;
+	style->fill.type = SP_PAINT_TYPE_COLOR;
+	sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
+	style->fill_opacity_set = opacity_set;
+	style->fill_opacity = a;
+}
+

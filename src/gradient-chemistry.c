@@ -449,6 +449,21 @@ sp_document_default_gradient_vector (SPDocument *document)
 }
 
 /*
+ * Get private vector of given gradient
+ */
+
+SPGradient *
+sp_gradient_get_vector (SPGradient *gradient, gboolean force_private)
+{
+	g_return_val_if_fail (gradient != NULL, NULL);
+	g_return_val_if_fail (SP_IS_GRADIENT (gradient), NULL);
+
+	while (!SP_GRADIENT_HAS_STOPS (gradient) && gradient->href) gradient = gradient->href;
+
+	return (force_private) ? sp_gradient_ensure_vector_normalized (gradient) : gradient;
+}
+
+/*
  * We take dumb approach currently
  *
  * Just ensure gradient href == 1, and flatten it

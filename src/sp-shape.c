@@ -405,7 +405,7 @@ sp_shape_fill_settings (GtkMenuItem *menuitem, SPItem *item)
 
 	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
 
-	sp_fill_style_dialog (item);
+	sp_fill_style_dialog ();
 }
 
 static void

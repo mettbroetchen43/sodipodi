@@ -1,5 +1,7 @@
 #define SP_STROKE_C
 
+#include <string.h>
+
 #include "stroke.h"
 
 SPStroke * default_stroke = NULL;

@@ -1,5 +1,7 @@
 #define SP_FILL_C
 
+#include <string.h>
+
 #include "fill.h"
 
 SPFill * default_fill = NULL;

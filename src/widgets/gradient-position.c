@@ -496,6 +496,15 @@ sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]
 	}
 }
 
+void
+sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos)
+{
+	pos[0] = gp->p0.x;
+	pos[1] = gp->p0.y;
+	pos[2] = gp->p1.x;
+	pos[3] = gp->p1.y;
+}
+
 static void
 sp_gradient_position_update (SPGradientPosition *pos)
 {

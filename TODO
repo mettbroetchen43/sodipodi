@@ -1,6 +1,22 @@
+09/02/2002
+
+TODO for 0.25
+
+- Dynamic stroke dialog (1 day)
+- Replace static fill dialog with dynamic one (1 day)
+- Fix stack order undo (1 day)
+- Pen tool (3 days)
+- Tool options (2 days)
+- Fix style/font mess (1 day)
+- Miscellaneous cleanups (5 days)
+- Fix bonobo embedding (3 days)
+
+
+Miscellaneous ideas
+
 Tier 1 TODO items
 
-* Gradients
+* Gradients (linear ones mostly work, have to dor radial ones too)
 * CORBA based plugins
 * Accesible groups - i.e. instead of layers, we can edit different groups
 * Bonobo container - we can get rid of images and still be SVG :)
@@ -39,4 +55,4 @@ Done
 * Aligning
 
 Lauris Kaplinski
-<lauris@helixcode.com>
+<lauris@ximian.com>

@@ -59,6 +59,7 @@ void sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble
 void sp_gradient_position_set_vector (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]);
 
+void sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos);
 
 
 #endif

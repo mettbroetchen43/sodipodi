@@ -23,10 +23,6 @@ dnl GNOME_PRINT_CHECK(0.21)
 GNOME_PRINT_LIBS=`gnome-config --libs print`
 AC_SUBST(GNOME_PRINT_LIBS)
 
-AC_CHECK_HEADER(libgnomeprint/gnome-print-frgba.h,AC_DEFINE(ENABLE_FRGBA))
-AC_CHECK_HEADER(libgnomeprint/gnome-print-rbuf.h,AC_DEFINE(ENABLE_RBUF))
-AC_CHECK_HEADER(libgnomeprint/gnome-font-face.h,AC_DEFINE(NEW_FONT_MODEL))
-
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sl sv tr uk pl pt_BR pt zh_CN"
 AM_GNU_GETTEXT
@@ -137,17 +133,6 @@ AC_ARG_WITH(new-render,
 )
 AM_CONDITIONAL(WITH_NEW_RENDER, $use_new_render)
 AC_SUBST(WITH_NEW_RENDER)
-
-use_arena=false
-AC_ARG_WITH(arena,
-	[--{with,without}-arena Compile with experimental canvas engine],
-	if test x$withval = xyes; then
-		use_arena=true
-		AC_DEFINE(ARENA)
-	fi
-)
-AM_CONDITIONAL(WITH_ARENA, $use_arena)
-AC_SUBST(WITH_ARENA)
 
 XML_KEY=xml
 AC_ARG_WITH(gnome-xml2,

@@ -1,4 +1,17 @@
+2002-02-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/widgets/paint-selector.c: Lot of rearrangements everywhere -
+	I am too tired to write all these down. Basically we have one frontend
+	megawidget SPPaintSelector, that interfaces to colors, gradient and more.
+
+2002-02-10  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/desktop.c (sp_desktop_widget_destroy): Removed stale signal
+	disconnect (no idea what it was originally for)
+
 2002-02-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Removed rbuf, frgba, new font checks and arena switch
 
 	* src/sp-namedview.c (sp_namedview_setup_grid_item): Grid settings are
 	always in points, units are there just for user preference

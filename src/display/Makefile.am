@@ -5,9 +5,9 @@
 # Here are major objects, used for displaying things
 #
 
-if WITH_ARENA
-SUBDIRS = nr
-endif
+#if WITH_ARENA
+#SUBDIRS = nr
+#endif
 
 if WITH_NEW_RENDER
 nr_sources = \

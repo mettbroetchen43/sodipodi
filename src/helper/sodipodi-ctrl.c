@@ -428,6 +428,9 @@ sp_ctrl_build_cache (SPCtrl *ctrl)
 	
 }
 
+#define COMPOSEP11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
+#define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
+
 static void
 sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
@@ -458,17 +461,18 @@ sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 			a = *(q + 3);
 			switch (ctrl->mode) {
 			case SP_CTRL_MODE_COLOR:
-				*p++ = (*p * (0xff - a) + *q++ * a) >> 8;
-				*p++ = (*p * (0xff - a) + *q++ * a) >> 8;
-				*p++ = (*p * (0xff - a) + *q++ * a) >> 8;
-				q++;
+				p[0] = COMPOSEN11 (q[0], a, p[0]);
+				p[1] = COMPOSEN11 (q[1], a, p[1]);
+				p[2] = COMPOSEN11 (q[2], a, p[2]);
+				q += 4;
+				p += 3;
 				break;
 			case SP_CTRL_MODE_XOR:
-				*p++ = (*p * (0xff - a) + (*p ^ *q++) * a) >> 8;
-				*p++ = (*p * (0xff - a) + (*p ^ *q++) * a) >> 8;
-				*p++ = (*p * (0xff - a) + (*p ^ *q++) * a) >> 8;
-				q++;
-				
+				p[0] = COMPOSEN11 (q[0], a, p[0] ^ q[0]);
+				p[1] = COMPOSEN11 (q[1], a, p[1] ^ q[1]);
+				p[2] = COMPOSEN11 (q[2], a, p[2] ^ q[2]);
+				q += 4;
+				p += 3;
 				break;
 			}
 		}

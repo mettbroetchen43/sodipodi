@@ -15,6 +15,7 @@
 #include <gtk/gtksignal.h>
 #include "../sodipodi.h"
 #include "../desktop.h"
+#include "../selection.h"
 #include "../document.h"
 #include "sp-widget.h"
 
@@ -76,29 +77,29 @@ sp_widget_class_init (SPWidgetClass *klass)
 
 	object_class->destroy = sp_widget_destroy;
 
-	signals[MODIFY_SELECTION] = gtk_signal_new ("change_selection",
-						    GTK_RUN_LAST,
+	signals[CHANGE_SELECTION] = gtk_signal_new ("change_selection",
+						    GTK_RUN_FIRST,
 						    object_class->type,
 						    GTK_SIGNAL_OFFSET (SPWidgetClass, change_selection),
 						    gtk_marshal_NONE__POINTER,
 						    GTK_TYPE_NONE, 1,
 						    GTK_TYPE_POINTER);
-	signals[CHANGE_SELECTION] = gtk_signal_new ("modify_selection",
-						    GTK_RUN_LAST,
+	signals[MODIFY_SELECTION] = gtk_signal_new ("modify_selection",
+						    GTK_RUN_FIRST,
 						    object_class->type,
 						    GTK_SIGNAL_OFFSET (SPWidgetClass, modify_selection),
 						    gtk_marshal_NONE__POINTER_UINT,
 						    GTK_TYPE_NONE, 1,
 						    GTK_TYPE_POINTER, GTK_TYPE_UINT);
 	signals[SET_SELECTION] =    gtk_signal_new ("set_selection",
-						    GTK_RUN_LAST,
+						    GTK_RUN_FIRST,
 						    object_class->type,
 						    GTK_SIGNAL_OFFSET (SPWidgetClass, set_selection),
 						    gtk_marshal_NONE__POINTER,
 						    GTK_TYPE_NONE, 1,
 						    GTK_TYPE_POINTER);
 	signals[SET_DIRTY] =        gtk_signal_new ("set_dirty",
-						    GTK_RUN_LAST,
+						    GTK_RUN_FIRST,
 						    object_class->type,
 						    GTK_SIGNAL_OFFSET (SPWidgetClass, set_dirty),
 						    gtk_marshal_NONE__BOOL,
@@ -296,6 +297,12 @@ sp_widget_set_autoupdate (SPWidget *spw, gboolean autoupdate)
 {
 	if (autoupdate && spw->dirty) spw->dirty = FALSE;
 	spw->autoupdate = autoupdate;
+}
+
+const GSList *
+sp_widget_get_item_list (SPWidget *spw)
+{
+	return sp_selection_item_list (spw->desktop->selection);
 }
 
 

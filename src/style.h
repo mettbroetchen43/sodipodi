@@ -34,17 +34,6 @@ typedef enum {
 	SP_PAINT_TYPE_PAINTSERVER
 } SPPaintType;
 
-#if 0
-typedef enum {
-	SP_UNIT_PIXELS   = (1 << 4),
-	SP_UNIT_ABSOLUTE = (1 << 5),
-	SP_UNIT_USER     = (1 << 6),
-	SP_UNIT_PERCENT  = (1 << 7),
-	SP_UNIT_EM       = (1 << 8),
-	SP_UNIT_EX       = (1 << 9)
-} SPUnit;
-#endif
-
 struct _SPPaint {
 	SPPaintType type;
 	SPColor color;
@@ -55,6 +44,11 @@ struct _SPDistance {
 	const SPUnit *unit;
 	gdouble distance;
 };
+
+#define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.server)
+#define SP_STYLE_STROKE_SERVER(s) (((SPStyle *) (s))->stroke.server)
+#define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
+#define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
 
 struct _SPStyle {
 	gint refcount;
@@ -123,6 +117,9 @@ void sp_style_read_from_object (SPStyle *style, SPObject *object);
 void sp_style_merge_from_object (SPStyle *style, SPObject *object);
 
 guchar *sp_style_write_string (SPStyle *style);
+
+void sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
+void sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
 
 END_GNOME_DECLS
 
