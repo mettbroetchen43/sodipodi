@@ -1,3 +1,11 @@
+2004-01-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-text.c: Removed non SP_TEXT_NEW_CONTENT codes
+
+	* src/sp-text.h: Ditto
+
+	* src/testing.h: Ditto
+
 2004-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp.c (nr_svl_from_path): Use iterators

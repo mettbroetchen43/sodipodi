@@ -14,6 +14,4 @@
 
 #define noNR_TESTING_PATH
 
-#define SP_TEXT_NEW_CONTENT
-
 #endif

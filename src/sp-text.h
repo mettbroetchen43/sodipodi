@@ -74,19 +74,12 @@ struct _SPString {
 	/* Link to parent layout */
 	SPLayoutData *ly;
 
-#ifdef SP_TEXT_NEW_CONTENT
 	/* New content stuff */
 	NRUShort *uchars;
 	unsigned int ulen;
 	NRPGL *pgl;
 	unsigned int spstart : 1;
 	unsigned int spend : 1;
-#else
-	/* Content */
-	guchar *text;
-	guint length;
-	NRPointF *p;
-#endif
 
 	/* Bookkeeping */
 	guint start;
