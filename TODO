@@ -4,6 +4,9 @@ TODO for 0.34
 
 - File/Exit does not save preferences
 - Remove file extension check from xft
+- Fix to handle white space for SPStirng correctly
+- Fix cursor position for empty text
+
 
 22/02/2003
 
