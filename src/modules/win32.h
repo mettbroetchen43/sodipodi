@@ -23,6 +23,13 @@
 
 #include <module.h>
 
+/* Initialization */
+
+void sp_win32_init (int argc, char **argv, const char *name);
+void sp_win32_finish (void);
+
+/* Printing */
+
 #define SP_TYPE_MODULE_PRINT_WIN32 (sp_module_print_win32_get_type())
 #define SP_MODULE_PRINT_WIN32(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT_WIN32, SPModulePrintWin32))
 #define SP_IS_MODULE_PRINT_WIN32(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_PRINT_WIN32))
@@ -45,5 +52,12 @@ struct _SPModulePrintWin32Class {
 };
 
 unsigned int sp_module_print_win32_get_type (void);
+
+/* File dialogs */
+
+char *sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
+char *sp_win32_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
+
+char *sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns);
 
 #endif

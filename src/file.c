@@ -51,6 +51,9 @@
 #ifdef WITH_KDE
 #include "modules/kde.h"
 #endif
+#ifdef WIN32
+#include "modules/win32.h"
+#endif
 
 gchar *open_path = NULL;
 gchar *save_path = NULL;
@@ -150,6 +153,17 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 		g_free (filename);
 	}
 #else
+#ifdef WIN32
+	char *filename;
+	filename = sp_win32_get_open_filename (open_path, "SVG files\0*.svg;*.svgz\0All files\0*\0", _("Select file to open"));
+	if (filename) {
+		if (open_path) g_free (open_path);
+		open_path = g_dirname (filename);
+		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
+		sp_file_open (filename, NULL);
+		g_free (filename);
+	}
+#else
 	GtkFileSelection *fsel;
 	GtkWidget *hb, *l, *om, *m;
 
@@ -181,6 +195,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	gtk_widget_show_all (hb);
 
 	gtk_widget_show ((GtkWidget *) fsel);
+#endif
 #endif
 }
 
@@ -257,6 +272,18 @@ sp_file_save_dialog (SPDocument *doc)
 		g_free (filename);
 	}
 #else
+#ifdef WIN32
+	char *filename;
+	unsigned int spns;
+	filename = sp_win32_get_save_filename (save_path, &spns);
+	if (filename && *filename) {
+		sp_file_do_save (doc, filename, (spns) ? SP_MODULE_KEY_OUTPUT_SVG_SODIPODI : SP_MODULE_KEY_OUTPUT_SVG);
+		if (save_path) g_free (save_path);
+		save_path = g_dirname (filename);
+		save_path = g_strdup (save_path);
+		g_free (filename);
+	}
+#else
 	GtkFileSelection *fsel;
 	GtkWidget *dlg, *hb, *l, *om, *menu;
 	int b;
@@ -294,6 +321,7 @@ sp_file_save_dialog (SPDocument *doc)
 	}
 
 	gtk_widget_destroy (dlg);
+#endif
 #endif
 }
 
@@ -440,17 +468,17 @@ void sp_file_import (GtkWidget * widget)
 	w = gtk_file_selection_new (_("Select file to import"));
 	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
 	if (import_path) gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), import_path);
-	gtk_dialog_set_modal (GTK_DIALOG (w), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (w), TRUE);
 
-	b = gtk_dialog_run (GTK_DIALOG (q));
+	b = gtk_dialog_run (GTK_DIALOG (w));
 
 	if (b == GTK_RESPONSE_OK) {
 		const gchar *filename;
-		filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (dlg));
+		filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (w));
 		sp_file_do_import (doc, filename);
 	}
 
-	gtk_widget_destroy (dlg);
+	gtk_widget_destroy (w);
 #endif
 }
 

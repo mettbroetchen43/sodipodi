@@ -9,7 +9,7 @@
  * This code is in public domain
  */
 
-#define USE_TIMER
+#define dontUSE_TIMER
 
 #include <config.h>
 
@@ -21,6 +21,65 @@
 #include "document.h"
 
 #include "win32.h"
+
+/* Initialization */
+
+static unsigned int SPWin32Modal = FALSE;
+
+static void
+sp_win32_gdk_event_handler (GdkEvent *event)
+{
+	if (SPWin32Modal) {
+		/* Win32 widget is modal, filter events */
+		switch (event->type) {
+		case GDK_NOTHING:
+		case GDK_DELETE:
+		case GDK_SCROLL:
+		case GDK_BUTTON_PRESS:
+		case GDK_2BUTTON_PRESS:
+		case GDK_3BUTTON_PRESS:
+		case GDK_BUTTON_RELEASE:
+		case GDK_KEY_PRESS:
+		case GDK_KEY_RELEASE:
+		case GDK_DRAG_STATUS:
+		case GDK_DRAG_ENTER:
+		case GDK_DRAG_LEAVE:
+		case GDK_DRAG_MOTION:
+		case GDK_DROP_START:
+		case GDK_DROP_FINISHED:
+			return;
+			break;
+		default:
+			break;
+		}
+	}
+	gtk_main_do_event (event);
+}
+
+void
+sp_win32_init (int argc, char **argv, const char *name)
+{
+	gdk_event_handler_set ((GdkEventFunc) sp_win32_gdk_event_handler, NULL, NULL);
+}
+
+void
+sp_win32_finish (void)
+{
+}
+
+#define SP_FOREIGN_MAX_ITER 10
+
+VOID CALLBACK
+sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	int cdown = 0;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+}
+
+/* Printing */
 
 static void sp_module_print_win32_class_init (SPModulePrintWin32Class *klass);
 static void sp_module_print_win32_init (SPModulePrintWin32 *pmod);
@@ -90,18 +149,6 @@ sp_module_print_win32_finalize (GObject *object)
 
 #ifdef USE_TIMER
 
-#define SP_FOREIGN_MAX_ITER 10
-
-VOID CALLBACK
-sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
-{
-	int cdown = 0;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
-		gtk_main_iteration_do (FALSE);
-	}
-	gtk_main_iteration_do (FALSE);
-}
-
 UINT_PTR CALLBACK
 sp_w32_print_hook (HWND hdlg, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -141,6 +188,7 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
+	SPWin32Modal = TRUE;
 #ifdef USE_TIMER
 	pd.Flags |= PD_ENABLEPRINTHOOK;
 	pd.lpfnPrintHook = sp_w32_print_hook;
@@ -152,6 +200,7 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 #ifdef USE_TIMER
 	KillTimer (NULL, timer);
 #endif
+	SPWin32Modal = FALSE;
 
 	if (!res) return FALSE;
 
@@ -194,9 +243,12 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 
 	di.lpszDocName = SP_DOCUMENT_NAME (doc);
 
-	res = StartDoc (w32mod->hDC, &di);
+	SPWin32Modal = TRUE;
 
+	res = StartDoc (w32mod->hDC, &di);
 	res = StartPage (w32mod->hDC);
+
+	SPWin32Modal = FALSE;
 
 	return 0;
 }
@@ -235,6 +287,8 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 	int res;
 
 	w32mod = (SPModulePrintWin32 *) mod;
+
+	SPWin32Modal = TRUE;
 
 	// Number of pixels per logical inch
 	dpiX = (float) GetDeviceCaps (w32mod->hDC, LOGPIXELSX);
@@ -303,41 +357,10 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		bmInfo.bmiHeader.biWidth = bbox.x1 - bbox.x0;
 		bmInfo.bmiHeader.biHeight = -(bbox.y1 - bbox.y0);
 
-#if 0
-		res = SetDIBitsToDevice (w32mod->hDC,
-						   0, row, width, num_rows,
-						   0, 0, 0, num_rows, px, &bmInfo, DIB_RGB_COLORS);
-#endif
-#if 0
-		for (i = 0; i < (4 * width * num_rows); i++) {
-			px[i] = (i * 3) & 0xff;
-		}
-#endif
-
 		memset (px, 0xff, 4 * num_rows * width);
 		/* Render */
 		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
 
-#if 0
-		wrect.left = bbox.x0;
-		wrect.top = bbox.y0;
-		wrect.right = bbox.x1;
-		wrect.bottom = bbox.y1;
-		FillRect (w32mod->hDC, &wrect, (HBRUSH) GetStockObject (WHITE_BRUSH));
-		FillRect (w32mod->hDC, &wrect, (HBRUSH) GetStockObject (WHITE_BRUSH));
-#endif
-#if 0
-
-		SelectObject (w32mod->hDC, (HGDIOBJ) GetStockObject (WHITE_BRUSH));
-		SelectObject (w32mod->hDC, (HGDIOBJ) GetStockObject (BLACK_PEN));
-		Rectangle (w32mod->hDC, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
-#endif
-#if 0
-		res = SetDIBitsToDevice (w32mod->hDC,
-						   0, row, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
-						   0, 0, 0, num_rows, px, &bmInfo, DIB_RGB_COLORS);
-#else
-#if 1
 		SetStretchBltMode(w32mod->hDC, COLORONCOLOR);
 		res = StretchDIBits (w32mod->hDC,
 						bbox.x0 - x0, bbox.y0 - y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
@@ -346,8 +369,6 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 						&bmInfo,
                         DIB_RGB_COLORS,
                         SRCCOPY);
-#endif
-#endif
 
 		/* Blitter ends here */
 
@@ -359,77 +380,120 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 	res = EndPage (w32mod->hDC);
 	res = EndDoc (w32mod->hDC);
 
+	SPWin32Modal = FALSE;
+
 	return 0;
 }
 
-#if 0
-void
-SPKDEBridge::EventHook (void) {
-	int cdown = 0;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
-		gtk_main_iteration_do (FALSE);
-	}
-	gtk_main_iteration_do (FALSE);
-}
+/* File dialogs */
 
-void
-SPKDEBridge::TimerHook (void) {
-	int cdown = 10;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
-		gtk_main_iteration_do (FALSE);
-	}
-	gtk_main_iteration_do (FALSE);
-}
-
-static KApplication *KDESodipodi = NULL;
-static SPKDEBridge *Bridge = NULL;
-static bool SPKDEModal = FALSE;
-
-static void
-sp_kde_gdk_event_handler (GdkEvent *event)
+char *
+sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
 {
-	if (SPKDEModal) {
-		// KDE widget is modal, filter events
-		switch (event->type) {
-		case GDK_NOTHING:
-		case GDK_DELETE:
-		case GDK_SCROLL:
-		case GDK_BUTTON_PRESS:
-		case GDK_2BUTTON_PRESS:
-		case GDK_3BUTTON_PRESS:
-		case GDK_BUTTON_RELEASE:
-		case GDK_KEY_PRESS:
-		case GDK_KEY_RELEASE:
-		case GDK_DRAG_STATUS:
-		case GDK_DRAG_ENTER:
-		case GDK_DRAG_LEAVE:
-		case GDK_DRAG_MOTION:
-		case GDK_DROP_START:
-		case GDK_DROP_FINISHED:
-			return;
-			break;
-		default:
-			break;
-		}
-	}
-	gtk_main_do_event (event);
-}
-
-void
-sp_kde_init (int argc, char **argv, const char *name)
-{
-	KDESodipodi = new KApplication (argc, argv, name);
-	Bridge = new SPKDEBridge ("KDE Bridge");
-
-	QObject::connect (KDESodipodi, SIGNAL (guiThreadAwake ()), Bridge, SLOT (EventHook ()));
-
-	gdk_event_handler_set ((GdkEventFunc) sp_kde_gdk_event_handler, NULL, NULL);
-}
-
-void
-sp_kde_finish (void)
-{
-	delete Bridge;
-	delete KDESodipodi;
-}
+	char fnbuf[4096] = {0};
+	OPENFILENAME ofn = {
+		sizeof (OPENFILENAME),
+		NULL, /* hwndOwner */
+		NULL, /* hInstance */
+		filter, /* lpstrFilter */
+		NULL, /* lpstrCustomFilter */
+		0, /* nMaxCustFilter  */
+		1, /* nFilterIndex */
+		fnbuf, /* lpstrFile */
+		sizeof (fnbuf), /* nMaxFile */
+		NULL, /* lpstrFileTitle */
+		0, /* nMaxFileTitle */
+		dir, /* lpstrInitialDir */
+		title, /* lpstrTitle */
+		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY, /* Flags */
+		0, /* nFileOffset */
+		0, /* nFileExtension */
+		NULL, /* lpstrDefExt */
+		0, /* lCustData */
+		NULL, /* lpfnHook */
+		NULL /* lpTemplateName */
+	};
+	int retval;
+#ifdef USE_TIMER
+	UINT_PTR timer;
 #endif
+
+	SPWin32Modal = TRUE;
+#ifdef USE_TIMER
+	timer = SetTimer (NULL, 0, 40, sp_win32_timer);
+#endif
+
+	retval = GetOpenFileName (&ofn);
+
+#ifdef USE_TIMER
+	KillTimer (NULL, timer);
+#endif
+	SPWin32Modal = FALSE;
+
+	if (!retval) {
+		int errcode;
+		errcode = CommDlgExtendedError();
+		return NULL;
+    }
+	return g_strdup (fnbuf);
+}
+
+char *
+sp_win32_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
+{
+	return NULL;
+}
+
+char *
+sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
+{
+	char fnbuf[4096] = {0};
+	OPENFILENAME ofn = {
+		sizeof (OPENFILENAME),
+		NULL, /* hwndOwner */
+		NULL, /* hInstance */
+		"SVG with sodipodi namespace\0*\0Standard SVG\0*\0", /* lpstrFilter */
+		NULL, /* lpstrCustomFilter */
+		0, /* nMaxCustFilter  */
+		1, /* nFilterIndex */
+		fnbuf, /* lpstrFile */
+		sizeof (fnbuf), /* nMaxFile */
+		NULL, /* lpstrFileTitle */
+		0, /* nMaxFileTitle */
+		dir, /* lpstrInitialDir */
+		"Save document to file", /* lpstrTitle */
+		OFN_HIDEREADONLY, /* Flags */
+		0, /* nFileOffset */
+		0, /* nFileExtension */
+		NULL, /* lpstrDefExt */
+		0, /* lCustData */
+		NULL, /* lpfnHook */
+		NULL /* lpTemplateName */
+	};
+	int retval;
+#ifdef USE_TIMER
+	UINT_PTR timer;
+#endif
+
+	SPWin32Modal = TRUE;
+#ifdef USE_TIMER
+	timer = SetTimer (NULL, 0, 40, sp_win32_timer);
+#endif
+
+	retval = GetSaveFileName (&ofn);
+
+#ifdef USE_TIMER
+	KillTimer (NULL, timer);
+#endif
+	SPWin32Modal = FALSE;
+
+	if (!retval) {
+		int errcode;
+		errcode = CommDlgExtendedError();
+		return NULL;
+    }
+	*spns = (ofn.nFilterIndex != 2);
+	return g_strdup (fnbuf);
+}
+
+
