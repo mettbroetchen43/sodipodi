@@ -1,4 +1,23 @@
+2002-10-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-rasterfont.c: Made working
+
+	* src/libnrtype/nr-font.c (nr_font_new_default): Do linking
+	(nr_font_unref): Ditto
+
+	* src/libnrtype/nr-type-directory.c (nr_typeface_unref): Moved here, implemented list
+
+	* src/display/nr-arena-glyphs.c (nr_arena_glyphs_update): Port to rfont
+	(nr_arena_glyphs_pick): Ditto (placeholder)
+	(nr_arena_glyphs_set_path): Ditto
+	(nr_arena_glyphs_fill_mask): Ditto
+
+	* src/libnr/nr-matrix.h (NR_MATRIX_DF_EXPANSION): New macro
+	(NR_MATRIX_DF_EXPANSION2): Ditto
+
 2002-10-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c (sp_text_set_shape): Make document insensitive temporarily
 
 	* src/text-context.c (sp_text_context_root_handler): Allow entering
 	unicode mode by Ctrl-u

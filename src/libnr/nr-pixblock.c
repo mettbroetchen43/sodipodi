@@ -31,20 +31,20 @@ nr_pixblock_setup_fast (NRPixBlock *pb, int mode, int x0, int y0, int x1, int y1
 
 	if (size <= NR_TINY_MAX) {
 		pb->size = NR_PIXBLOCK_SIZE_TINY;
-		if (clear) memset (&pb->px, 0x0, size);
+		if (clear) memset (pb->data.p, 0x0, size);
 	} else if (size <= 4096) {
 		pb->size = NR_PIXBLOCK_SIZE_4K;
-		pb->px = nr_pixelstore_4K_new (clear, 0x0);
+		pb->data.px = nr_pixelstore_4K_new (clear, 0x0);
 	} else if (size <= 16384) {
 		pb->size = NR_PIXBLOCK_SIZE_16K;
-		pb->px = nr_pixelstore_16K_new (clear, 0x0);
-	} else if (size <= 4096) {
+		pb->data.px = nr_pixelstore_16K_new (clear, 0x0);
+	} else if (size <= 65536) {
 		pb->size = NR_PIXBLOCK_SIZE_64K;
-		pb->px = nr_pixelstore_64K_new (clear, 0x0);
+		pb->data.px = nr_pixelstore_64K_new (clear, 0x0);
 	} else {
 		pb->size = NR_PIXBLOCK_SIZE_BIG;
-		pb->px = nr_new (unsigned char, size);
-		if (clear) memset (pb->px, 0x0, size);
+		pb->data.px = nr_new (unsigned char, size);
+		if (clear) memset (pb->data.px, 0x0, size);
 	}
 
 	pb->mode = mode;
@@ -69,11 +69,11 @@ nr_pixblock_setup (NRPixBlock *pb, int mode, int x0, int y0, int x1, int y1, int
 
 	if (size <= NR_TINY_MAX) {
 		pb->size = NR_PIXBLOCK_SIZE_TINY;
-		if (clear) memset (&pb->px, 0x0, size);
+		if (clear) memset (pb->data.p, 0x0, size);
 	} else {
 		pb->size = NR_PIXBLOCK_SIZE_BIG;
-		pb->px = nr_new (unsigned char, size);
-		if (clear) memset (pb->px, 0x0, size);
+		pb->data.px = nr_new (unsigned char, size);
+		if (clear) memset (pb->data.px, 0x0, size);
 	}
 
 	pb->mode = mode;
@@ -100,12 +100,12 @@ nr_pixblock_setup_extern (NRPixBlock *pb, int mode, int x0, int y0, int x1, int 
 	pb->area.y0 = y0;
 	pb->area.x1 = x1;
 	pb->area.y1 = y1;
-	pb->px = px;
+	pb->data.px = px;
 	pb->rs = rs;
 
 	if (clear) {
 		for (y = y0; y < y1; y++) {
-			memset (pb->px + (y - y0) * rs, 0x0, bpp * w);
+			memset (pb->data.px + (y - y0) * rs, 0x0, bpp * w);
 		}
 	}
 }
@@ -117,16 +117,16 @@ nr_pixblock_release (NRPixBlock *pb)
 	case NR_PIXBLOCK_SIZE_TINY:
 		break;
 	case NR_PIXBLOCK_SIZE_4K:
-		nr_pixelstore_4K_free (pb->px);
+		nr_pixelstore_4K_free (pb->data.px);
 		break;
 	case NR_PIXBLOCK_SIZE_16K:
-		nr_pixelstore_16K_free (pb->px);
+		nr_pixelstore_16K_free (pb->data.px);
 		break;
 	case NR_PIXBLOCK_SIZE_64K:
-		nr_pixelstore_64K_free (pb->px);
+		nr_pixelstore_64K_free (pb->data.px);
 		break;
 	case NR_PIXBLOCK_SIZE_BIG:
-		nr_free (pb->px);
+		nr_free (pb->data.px);
 		break;
 	case NR_PIXBLOCK_SIZE_STATIC:
 		break;

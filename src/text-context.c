@@ -163,6 +163,7 @@ sp_text_context_setup (SPEventContext *ec)
 	tc->cursor = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
 	gnome_canvas_item_hide (tc->cursor);
+
 	tc->timeout = gtk_timeout_add (250, (GtkFunction) sp_text_context_timeout, ec);
 
 #ifdef SP_TC_XIM
@@ -338,6 +339,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, "\302\240", TRUE);
 				break;
 			case GDK_u:
+				/* fixme: We need indication etc. for unicode mode */
 				if (tc->unimode) {
 					tc->unimode = FALSE;
 				} else {

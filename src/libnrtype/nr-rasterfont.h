@@ -23,6 +23,7 @@ NRRasterFont *nr_rasterfont_ref (NRRasterFont *rf);
 NRRasterFont *nr_rasterfont_unref (NRRasterFont *rf);
 
 NRPointF *nr_rasterfont_get_glyph_advance (NRRasterFont *rf, int glyph, NRPointF *adv);
+NRRectF *nr_rasterfont_get_glyph_area (NRRasterFont *rf, int glyph, NRRectF *area);
 
 NRFont *nr_rasterfont_get_font (NRRasterFont *rf);
 NRTypeFace *nr_rasterfont_get_typeface (NRRasterFont *rf);

@@ -1480,8 +1480,10 @@ sp_text_set_shape (SPText *text)
 				}
 				/* fixme: This is extremely (EXTREMELY) dangerous (Lauris) */
 				/* fixme: Our only hope is to ensure LINE tspans do not request ::modified */
+				sp_document_set_undo_sensitive (SP_OBJECT_DOCUMENT (tspan), FALSE);
 				sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", cp.x);
 				sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp.y);
+				sp_document_set_undo_sensitive (SP_OBJECT_DOCUMENT (tspan), TRUE);
 				break;
 			case SP_TSPAN_ROLE_UNSPECIFIED:
 				if (tspan->ly.x.set) {

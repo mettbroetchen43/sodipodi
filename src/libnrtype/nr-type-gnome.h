@@ -12,21 +12,27 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libnrtype/nr-font.h>
+#include <libnrtype/nr-rasterfont.h>
 #include <libgnomeprint/gnome-font.h>
 
 struct _NRTypeFace {
+	NRTypeFace *prev, *next;
 	unsigned int refcount;
 	GnomeFontFace *face;
 	unsigned int nglyphs;
+	NRFont *fonts;
 };
 
 struct _NRFont {
+	NRFont *prev, *next;
 	unsigned int refcount;
 	NRTypeFace *face;
 	unsigned int metrics : 2;
+	float size;
 	GnomeFont *font;
 	unsigned int nglyphs;
+
+	NRRasterFont *rfonts;
 };
 
 #endif

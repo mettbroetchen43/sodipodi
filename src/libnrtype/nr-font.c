@@ -11,22 +11,44 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noFDEBUG
+
 #include <libnr/nr-macros.h>
 #include "nr-type-gnome.h"
 #include "nr-font.h"
+
+#ifdef FDEBUG
+static int numfonts = 0;
+#endif
 
 NRFont *
 nr_font_new_default (NRTypeFace *tf, unsigned int metrics, float size)
 {
 	NRFont *font;
 
+	for (font = tf->fonts; font != NULL; font = font->next) {
+		if (font->size == size) return nr_font_ref (font);
+	}
+
 	font = nr_new (NRFont, 1);
 
 	font->refcount = 1;
 	font->metrics = metrics;
+	font->size = size;
 	font->face = nr_typeface_ref (tf);
 	font->font = gnome_font_face_get_font_default (tf->face, size);
 	font->nglyphs = tf->nglyphs;
+
+	font->rfonts = NULL;
+
+	font->prev = NULL;
+	font->next = tf->fonts;
+	if (font->next) font->next->prev = font;
+	tf->fonts = font;
+
+#ifdef FDEBUG
+	numfonts += 1;
+#endif
 
 	return font;
 }
@@ -39,15 +61,31 @@ nr_font_ref (NRFont *font)
 	return font;
 }
 
+#ifdef FDEBUG
+#include <stdio.h>
+#endif
+
 NRFont *
 nr_font_unref (NRFont *font)
 {
 	font->refcount -= 1;
 
 	if (font->refcount < 1) {
-		nr_typeface_unref (font->face);
 		gnome_font_unref (font->font);
+
+		if (font->prev) {
+			font->prev->next = font->next;
+		} else {
+			font->face->fonts = font->next;
+		}
+		if (font->next) font->next->prev = font->prev;
+
+		nr_typeface_unref (font->face);
 		nr_free (font);
+#ifdef FDEBUG
+		numfonts -= 1;
+		printf ("Num fonts %d\n", numfonts);
+#endif
 	}
 
 	return NULL;

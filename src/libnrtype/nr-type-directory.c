@@ -11,11 +11,19 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noTFDEBUG
+
 #include <string.h>
 #include <ctype.h>
 #include <libnr/nr-macros.h>
 #include "nr-type-gnome.h"
 #include "nr-type-directory.h"
+
+static NRTypeFace *typefaces = NULL;
+
+#ifdef TFDEBUG
+static int numfaces = 0;
+#endif
 
 void
 nr_name_list_release (NRNameList *list)
@@ -31,6 +39,7 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	NRTypeFace *face;
 	unsigned int weight;
 	unsigned int italic;
+	GnomeFontFace *gff;
 
 	italic = FALSE;
 	weight = GNOME_FONT_BOOK;
@@ -43,14 +52,61 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 		if (strstr (s, "bold")) weight = GNOME_FONT_BOLD;
 		g_free (s);
 	}
+	gff = gnome_font_unsized_closest (family, weight, italic);
+	for (face = typefaces; face != NULL; face = face->next) {
+		if (face->face == gff) {
+			gnome_font_face_unref (gff);
+			return nr_typeface_ref (face);
+		}
+	}
 
 	face = nr_new (NRTypeFace, 1);
 
 	face->refcount = 1;
-	face->face = gnome_font_unsized_closest (family, weight, italic);
+	face->face = gff;
 	face->nglyphs = gnome_font_face_get_num_glyphs (face->face);
+	face->fonts = NULL;
+
+	face->prev = NULL;
+	face->next = typefaces;
+	if (face->next) face->next->prev = face;
+	typefaces = face;
+
+#ifdef TFDEBUG
+	numfaces += 1;
+#endif
 
 	return face;
+}
+
+#ifdef TFDEBUG
+#include <stdio.h>
+#endif
+
+NRTypeFace *
+nr_typeface_unref (NRTypeFace *tf)
+{
+	tf->refcount -= 1;
+
+	if (tf->refcount < 1) {
+		gnome_font_face_unref (tf->face);
+
+		if (tf->prev) {
+			tf->prev->next = tf->next;
+		} else {
+			typefaces = tf->next;
+		}
+		if (tf->next) tf->next->prev = tf->prev;
+
+		nr_free (tf);
+
+#ifdef TFDEBUG
+		numfaces -= 1;
+		printf ("Num typefaces %d\n", numfaces);
+#endif
+	}
+
+	return NULL;
 }
 
 static void

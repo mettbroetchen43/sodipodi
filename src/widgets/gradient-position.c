@@ -748,7 +748,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 				nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, FALSE);
 
 				/* Draw checkerboard */
-				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
+				nr_render_checkerboard_rgb (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, x, y);
 
 				/* Render gradient */
 				nr_render ((NRRenderer *) &gp->renderer.lgr, &pb, NULL);
@@ -822,7 +822,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 				nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, FALSE);
 
 				/* Draw checkerboard */
-				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
+				nr_render_checkerboard_rgb (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, x, y);
 
 				/* Render gradient */
 				nr_render ((NRRenderer *) &gp->renderer.rgr, &pb, NULL);

@@ -24,18 +24,7 @@ nr_typeface_ref (NRTypeFace *tf)
 	return tf;
 }
 
-NRTypeFace *
-nr_typeface_unref (NRTypeFace *tf)
-{
-	tf->refcount -= 1;
-
-	if (tf->refcount < 1) {
-		gnome_font_face_unref (tf->face);
-		nr_free (tf);
-	}
-
-	return NULL;
-}
+/* Unref is in type directory module */
 
 const unsigned char *
 nr_typeface_get_family_name (NRTypeFace *tf)

@@ -19,7 +19,7 @@
 #define NR_IS_ARENA_GLYPHS(obj) (GTK_CHECK_TYPE ((obj), NR_TYPE_ARENA_GLYPHS))
 #define NR_IS_ARENA_GLYPHS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_GLYPHS))
 
-#include <libnrtype/nr-font.h>
+#include <libnrtype/nr-rasterfont.h>
 
 #include "nr-arena-item.h"
 #include "cpath-component.h"
@@ -32,8 +32,13 @@ struct _NRArenaGlyphs {
 	/* Glyphs data */
 	SPCurve *curve;
 	SPStyle *style;
+	NRMatrixF transform;
+	NRFont *font;
+	gint glyph;
 
-	ArtSVP *fill_svp;
+	NRRasterFont *rfont;
+	float x, y;
+
 	ArtSVP *stroke_svp;
 };
 
@@ -43,7 +48,10 @@ struct _NRArenaGlyphsClass {
 
 GtkType nr_arena_glyphs_get_type (void);
 
-void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, const NRMatrixF *transform);
+void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs,
+			       SPCurve *curve, gboolean private,
+			       NRFont *font, gint glyph,
+			       const NRMatrixF *transform);
 void nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style);
 
 /* Integrated group of component glyphss */
