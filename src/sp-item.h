@@ -49,7 +49,6 @@ typedef struct _SPItemView SPItemView;
 struct _SPItemView {
 	SPItemView *next;
 	unsigned int key;
-	unsigned int pkey;
 	/* SPItem *item; */
 	NRArenaItem *arenaitem;
 };

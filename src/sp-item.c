@@ -151,11 +151,11 @@ sp_item_release (SPObject * object)
 
 	while (item->display) {
 		if (item->clip) {
-			sp_clippath_hide (SP_CLIPPATH (item->clip), item->display->pkey);
+			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
 			nr_arena_item_set_clip (item->display->arenaitem, NULL);
 		}
 		if (item->mask) {
-			sp_mask_hide (SP_MASK (item->mask), item->display->pkey);
+			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
 			nr_arena_item_set_mask (item->display->arenaitem, NULL);
 		}
 		nr_arena_item_destroy (item->display->arenaitem);
@@ -183,7 +183,7 @@ sp_item_clip_release (SPClipPath *cp, SPItem *item)
 		SPItemView *v;
 		/* Hide clippath */
 		for (v = item->display; v != NULL; v = v->next) {
-			sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 			nr_arena_item_set_clip (v->arenaitem, NULL);
 		}
 		/* Detach clippath */
@@ -206,7 +206,7 @@ sp_item_mask_release (SPMask *mask, SPItem *item)
 		SPItemView *v;
 		/* Hide mask */
 		for (v = item->display; v != NULL; v = v->next) {
-			sp_mask_hide (SP_MASK (item->mask), v->pkey);
+			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 			nr_arena_item_set_mask (v->arenaitem, NULL);
 		}
 		/* Detach mask */
@@ -250,7 +250,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_signal_disconnect_by_data (item->clip, item);
 				/* Hide clippath */
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+					sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					nr_arena_item_set_clip (v->arenaitem, NULL);
 				}
 				item->clip = sp_object_hunref (item->clip, object);
@@ -264,11 +264,13 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new (3);
-					ai = sp_clippath_show (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					if (!v->arenaitem->key) NR_ARENA_ITEM_SET_KEY (v->arenaitem, sp_item_display_key_new (3));
+					ai = sp_clippath_show (SP_CLIPPATH (item->clip),
+							       NR_ARENA_ITEM_ARENA (v->arenaitem),
+							       NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					nr_arena_item_set_clip (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
-					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
 				}
 			}
 		}
@@ -284,7 +286,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_signal_disconnect_by_data (item->mask, item);
 				/* Hide mask */
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_mask_hide (SP_MASK (item->mask), v->pkey);
+					sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					nr_arena_item_set_mask (v->arenaitem, NULL);
 				}
 				item->mask = sp_object_hunref (item->mask, object);
@@ -298,11 +300,13 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new (3);
-					ai = sp_mask_show (SP_MASK (item->mask), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					if (!v->arenaitem->key) NR_ARENA_ITEM_SET_KEY (v->arenaitem, sp_item_display_key_new (3));
+					ai = sp_mask_show (SP_MASK (item->mask),
+							   NR_ARENA_ITEM_ARENA (v->arenaitem),
+							   NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					nr_arena_item_set_mask (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
-					sp_mask_set_bbox (SP_MASK (item->mask), v->pkey, &bbox);
+					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
 				}
 			}
 		}
@@ -354,12 +358,12 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 			sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 			if (item->clip) {
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
 				}
 			}
 			if (item->mask) {
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_mask_set_bbox (SP_MASK (item->mask), v->pkey, &bbox);
+					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
 				}
 			}
 		}
@@ -577,15 +581,15 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;
-			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new (3);
-			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, item->display->pkey);
+			if (!item->display->arenaitem->key) NR_ARENA_ITEM_SET_KEY (item->display->arenaitem, sp_item_display_key_new (3));
+			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
 		if (item->mask) {
 			NRArenaItem *ac;
-			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new (3);
-			ac = sp_mask_show (SP_MASK (item->mask), arena, item->display->pkey);
+			if (!item->display->arenaitem->key) NR_ARENA_ITEM_SET_KEY (item->display->arenaitem, sp_item_display_key_new (3));
+			ac = sp_mask_show (SP_MASK (item->mask), arena, NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
 			nr_arena_item_set_mask (ai, ac);
 			nr_arena_item_unref (ac);
 		}
@@ -603,11 +607,11 @@ sp_item_private_hide (SPItem * item, unsigned int key)
 	for (v = item->display; v != NULL; v = v->next) {
 		if (v->key == key) {
 			if (item->clip) {
-				sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+				sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 				nr_arena_item_set_clip (v->arenaitem, NULL);
 			}
 			if (item->mask) {
-				sp_mask_hide (SP_MASK (item->mask), v->pkey);
+				sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 				nr_arena_item_set_mask (v->arenaitem, NULL);
 			}
 			nr_arena_item_destroy (v->arenaitem);
@@ -1005,7 +1009,6 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int key, NR
 
 	new->next = list;
 	new->key = key;
-	new->pkey = 0;
 	new->arenaitem = arenaitem;
 
 	return new;

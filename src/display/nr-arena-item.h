@@ -23,8 +23,10 @@
 
 typedef struct _NRGC NRGC;
 
+#if 0
 /* Warning: This is UNDEFINED in NR, implementations should do that */
 typedef struct _NREvent NREvent;
+#endif
 
 /*
  * NRArenaItem state flags
@@ -59,9 +61,9 @@ typedef struct _NREvent NREvent;
 
 #define NR_ARENA_ITEM_RENDER_NO_CACHE (1 << 0)
 
-#include <glib-object.h>
 #include <libnr/nr-types.h>
 #include <libnr/nr-pixblock.h>
+#include "nr-object.h"
 #include "nr-arena-forward.h"
 
 struct _NRGC {
@@ -69,7 +71,7 @@ struct _NRGC {
 };
 
 struct _NRArenaItem {
-	GObject object;
+	NRObject object;
 	NRArena *arena;
 	NRArenaItem *parent;
 	NRArenaItem *next;
@@ -83,6 +85,10 @@ struct _NRArenaItem {
 	unsigned int render_opacity : 1;
 	/* Opacity itself */
 	unsigned int opacity : 8;
+
+	/* Key for secondary rendering */
+	unsigned int key;
+
 	/* BBox in grid coordinates */
 	NRRectL bbox;
 	/* Our affine */
@@ -99,7 +105,7 @@ struct _NRArenaItem {
 };
 
 struct _NRArenaItemClass {
-	GObjectClass parent_class;
+	NRObjectClass parent_class;
 
 	NRArenaItem * (* children) (NRArenaItem *item);
 	void (* add_child) (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -110,13 +116,11 @@ struct _NRArenaItemClass {
 	unsigned int (* render) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 	guint (* clip) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
-
-	gint (* event) (NRArenaItem *item, NREvent *event);
 };
 
 #define NR_ARENA_ITEM_ARENA(ai) (NR_ARENA_ITEM (ai)->arena)
 
-GType nr_arena_item_get_type (void);
+unsigned int nr_arena_item_get_type (void);
 
 NRArenaItem *nr_arena_item_ref (NRArenaItem *item);
 NRArenaItem *nr_arena_item_unref(NRArenaItem *item);
@@ -148,7 +152,9 @@ unsigned int nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPi
 guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
+#if 0
 gint nr_arena_item_emit_event (NRArenaItem *item, NREvent *event);
+#endif
 
 void nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate);
 void nr_arena_item_request_render (NRArenaItem *item);
@@ -174,5 +180,8 @@ NRArenaItem *nr_arena_item_detach_unref (NRArenaItem *parent, NRArenaItem *child
 
 #define NR_ARENA_ITEM_SET_DATA(i,v) (((NRArenaItem *) (i))->data = (v))
 #define NR_ARENA_ITEM_GET_DATA(i) (((NRArenaItem *) (i))->data)
+
+#define NR_ARENA_ITEM_SET_KEY(i,k) (((NRArenaItem *) (i))->key = (k))
+#define NR_ARENA_ITEM_GET_KEY(i) (((NRArenaItem *) (i))->key)
 
 #endif

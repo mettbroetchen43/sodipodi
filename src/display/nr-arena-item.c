@@ -20,24 +20,16 @@
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
 #include <libnr/nr-pixops.h>
-#include <glib-object.h>
-#include "helper/sp-marshal.h"
 #include "nr-arena.h"
 #include "nr-arena-item.h"
-
-enum {
-	EVENT,
-	LAST_SIGNAL
-};
 
 static void nr_arena_item_class_init (NRArenaItemClass *klass);
 static void nr_arena_item_init (NRArenaItem *item);
 static void nr_arena_item_private_finalize (GObject *object);
 
 static GObjectClass *parent_class;
-static guint signals[LAST_SIGNAL] = {0};
 
-GType
+unsigned int
 nr_arena_item_get_type (void)
 {
 	static GType type = 0;
@@ -64,14 +56,6 @@ nr_arena_item_class_init (NRArenaItemClass *klass)
 	object_class = (GObjectClass *) klass;
 
 	parent_class = g_type_class_peek_parent (klass);
-
-	signals[EVENT] = g_signal_new ("event",
-				       G_TYPE_FROM_CLASS (klass),
-				       G_SIGNAL_RUN_LAST,
-				       G_STRUCT_OFFSET (NRArenaItemClass, event),
-				       NULL, NULL,
-				       sp_marshal_BOOLEAN__POINTER,
-				       G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
 
 	object_class->finalize = nr_arena_item_private_finalize;
 }
@@ -497,21 +481,6 @@ nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delt
 	}
 
 	return NULL;
-}
-
-gint
-nr_arena_item_emit_event (NRArenaItem *item, NREvent *event)
-{
-	gint ret;
-
-	g_return_val_if_fail (item != NULL, TRUE);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), TRUE);
-
-	ret = FALSE;
-
-	g_signal_emit (G_OBJECT (item), signals[EVENT], 0, event, &ret);
-
-	return ret;
 }
 
 void

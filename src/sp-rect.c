@@ -108,18 +108,13 @@ sp_rect_class_init (SPRectClass *class)
 static void
 sp_rect_init (SPRect * rect)
 {
-	rect->x.set = FALSE;
-	rect->x.computed = 0.0;
-	rect->y.set = FALSE;
-	rect->y.computed = 0.0;
-	rect->width.set = FALSE;
-	rect->width.computed = 0.0;
-	rect->height.set = FALSE;
-	rect->height.computed = 0.0;
-	rect->rx.set = FALSE;
-	rect->rx.computed = 0.0;
-	rect->ry.set = FALSE;
-	rect->ry.computed = 0.0;
+	/* Initializing to zero is automatic */
+	/* sp_svg_length_unset (&rect->x, SP_SVG_UNIT_NONE, 0.0, 0.0); */
+	/* sp_svg_length_unset (&rect->y, SP_SVG_UNIT_NONE, 0.0, 0.0); */
+	/* sp_svg_length_unset (&rect->width, SP_SVG_UNIT_NONE, 0.0, 0.0); */
+	/* sp_svg_length_unset (&rect->height, SP_SVG_UNIT_NONE, 0.0, 0.0); */
+	/* sp_svg_length_unset (&rect->rx, SP_SVG_UNIT_NONE, 0.0, 0.0); */
+	/* sp_svg_length_unset (&rect->ry, SP_SVG_UNIT_NONE, 0.0, 0.0); */
 }
 
 /* fixme: Better place (Lauris) */

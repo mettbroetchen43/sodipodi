@@ -380,10 +380,12 @@ sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event)
 
 	ret = FALSE;
 
+#if 0
 	if (arena->active) {
 		/* Send event to active item */
 		ret = nr_arena_item_emit_event (arena->active, (NREvent *) event);
 	}
+#endif
 	if (!ret) {
 		/* Send event to arena */
 		gtk_signal_emit (GTK_OBJECT (arena), signals[ARENA_EVENT], arena->active, event, &ret);

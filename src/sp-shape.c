@@ -54,8 +54,11 @@ static void sp_shape_modified (SPObject *object, unsigned int flags);
 static void sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_shape_hide (SPItem *item, unsigned int key);
 
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+
+static void sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai);
 
 static SPItemClass *parent_class;
 
@@ -99,6 +102,7 @@ sp_shape_class_init (SPShapeClass *klass)
 	item_class->bbox = sp_shape_bbox;
 	item_class->print = sp_shape_print;
 	item_class->show = sp_shape_show;
+	item_class->hide = sp_shape_hide;
 	item_class->menu = sp_shape_menu;
 }
 
@@ -173,20 +177,32 @@ sp_shape_build (SPObject *object, SPDocument *document, SPRepr *repr)
 static void
 sp_shape_release (SPObject *object)
 {
+	SPItem *item;
 	SPShape *shape;
+	SPItemView *v;
 
+	item = (SPItem *) object;
 	shape = (SPShape *) object;
 
 	if (shape->marker_start) {
 		sp_signal_disconnect_by_data (shape->marker_start, object);
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_start, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
 		shape->marker_start = sp_object_hunref (shape->marker_start, object);
 	}
 	if (shape->marker_mid) {
 		sp_signal_disconnect_by_data (shape->marker_mid, object);
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_mid, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
 		shape->marker_mid = sp_object_hunref (shape->marker_mid, object);
 	}
 	if (shape->marker_end) {
 		sp_signal_disconnect_by_data (shape->marker_end, object);
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_end, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
 		shape->marker_end = sp_object_hunref (shape->marker_end, object);
 	}
 	if (shape->curve) {
@@ -258,45 +274,56 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 		}
 		/* Dimension marker views */
 		for (v = item->display; v != NULL; v = v->next) {
-			if (!v->pkey) v->pkey = sp_item_display_key_new (3);
-			if (shape->marker_start) sp_marker_show_dimension ((SPMarker *) shape->marker_start, v->pkey + SP_MARKER_START, nstart);
-			if (shape->marker_mid) sp_marker_show_dimension ((SPMarker *) shape->marker_mid, v->pkey + SP_MARKER_MID, nmid);
-			if (shape->marker_end) sp_marker_show_dimension ((SPMarker *) shape->marker_end, v->pkey + SP_MARKER_END, nend);
+			if (!v->arenaitem->key) NR_ARENA_ITEM_SET_KEY (v->arenaitem, sp_item_display_key_new (3));
+			if (shape->marker_start) sp_marker_show_dimension ((SPMarker *) shape->marker_start,
+									   NR_ARENA_ITEM_GET_KEY (v->arenaitem) + SP_MARKER_START,
+									   nstart);
+			if (shape->marker_mid) sp_marker_show_dimension ((SPMarker *) shape->marker_mid,
+									 NR_ARENA_ITEM_GET_KEY (v->arenaitem) + SP_MARKER_MID,
+									 nmid);
+			if (shape->marker_end) sp_marker_show_dimension ((SPMarker *) shape->marker_end,
+									 NR_ARENA_ITEM_GET_KEY (v->arenaitem) + SP_MARKER_END,
+									 nend);
 		}
-		nstart = 0;
-		nmid = 0;
-		nend = 0;
-		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
-			NRMatrixF m;
-			nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
-			if (shape->marker_start && ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN))) {
-				for (v = item->display; v != NULL; v = v->next) {
-					/* NRArenaItem *ai; */
-					sp_marker_show_instance ((SPMarker *) shape->marker_start, v->arenaitem,
-								 v->pkey + SP_MARKER_START, nstart,
-								 &m, object->style->stroke_width.computed);
-					/* nr_arena_item_set_transform (ai, &m); */
-				}
-				nstart += 1;
-			} else if (shape->marker_end && ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO))) {
-				for (v = item->display; v != NULL; v = v->next) {
-					/* NRArenaItem *ai; */
-					sp_marker_show_instance ((SPMarker *) shape->marker_end, v->arenaitem,
-								 v->pkey + SP_MARKER_END, nend,
-								 &m, object->style->stroke_width.computed);
-					/* nr_arena_item_set_transform (ai, &m); */
-				}
-				nend += 1;
-			} else if (shape->marker_mid) {
-				for (v = item->display; v != NULL; v = v->next) {
-					/* NRArenaItem *ai; */
-					sp_marker_show_instance ((SPMarker *) shape->marker_mid, v->arenaitem,
-								 v->pkey + SP_MARKER_MID, nmid,
-								 &m, object->style->stroke_width.computed);
-					/* nr_arena_item_set_transform (ai, &m); */
-				}
-				nmid += 1;
-			}
+		/* Update marker views */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_shape_update_marker_view (shape, v->arenaitem);
+		}
+	}
+}
+
+/* Marker views have to be scaled already */
+
+static void
+sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai)
+{
+	SPStyle *style;
+	int nstart, nmid, nend;
+	ArtBpath *bp;
+
+	style = ((SPObject *) shape)->style;
+
+	nstart = 0;
+	nmid = 0;
+	nend = 0;
+	for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+		NRMatrixF m;
+		nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+		if (shape->marker_start && ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN))) {
+			sp_marker_show_instance ((SPMarker *) shape->marker_start, ai,
+						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_START, nstart,
+						 &m, style->stroke_width.computed);
+			nstart += 1;
+		} else if (shape->marker_end && ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO))) {
+			sp_marker_show_instance ((SPMarker *) shape->marker_end, ai,
+						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_END, nend,
+						 &m, style->stroke_width.computed);
+			nend += 1;
+		} else if (shape->marker_mid) {
+			sp_marker_show_instance ((SPMarker *) shape->marker_mid, ai,
+						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_MID, nmid,
+						 &m, style->stroke_width.computed);
+			nmid += 1;
 		}
 	}
 }
@@ -385,10 +412,69 @@ sp_shape_show (SPItem *item, NRArena *arena, unsigned int key)
 	sp_item_invoke_bbox (item, &paintbox, NULL, TRUE);
 	nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
 
+	if (shape->curve && (shape->marker_start || shape->marker_mid || shape->marker_end)) {
+		ArtBpath *bp;
+		int nstart, nmid, nend;
+		/* Determine the number of markers needed */
+		nstart = 0;
+		nmid = 0;
+		nend = 0;
+		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+			if ((bp[0].code == ART_MOVETO) || (bp[0].code == ART_MOVETO_OPEN)) {
+				nstart += 1;
+			} else if ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO)) {
+				nend += 1;
+			} else {
+				nmid += 1;
+			}
+		}
+		/* Dimension marker views */
+		if (!arenaitem->key) NR_ARENA_ITEM_SET_KEY (arenaitem, sp_item_display_key_new (3));
+		if (shape->marker_start) sp_marker_show_dimension ((SPMarker *) shape->marker_start,
+								   NR_ARENA_ITEM_GET_KEY (arenaitem) + SP_MARKER_START,
+								   nstart);
+		if (shape->marker_mid) sp_marker_show_dimension ((SPMarker *) shape->marker_mid,
+								 NR_ARENA_ITEM_GET_KEY (arenaitem) + SP_MARKER_MID,
+								 nmid);
+		if (shape->marker_end) sp_marker_show_dimension ((SPMarker *) shape->marker_end,
+								 NR_ARENA_ITEM_GET_KEY (arenaitem) + SP_MARKER_END,
+								 nend);
+		/* Update marker views */
+		sp_shape_update_marker_view (shape, arenaitem);
+	}
+
 	/* fixme: (Lauris) */
 	/* sp_object_request_update ((SPObject *) item, SP_OBJECT_MODIFIED_FLAG); */
 
 	return arenaitem;
+}
+
+static void
+sp_shape_hide (SPItem *item, unsigned int key)
+{
+	SPShape *shape;
+	SPItemView *v;
+
+	shape = (SPShape *) item;
+
+	if (shape->marker_start) {
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_start, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
+	}
+	if (shape->marker_mid) {
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_mid, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
+	}
+	if (shape->marker_end) {
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) shape->marker_end, NR_ARENA_ITEM_GET_KEY (v->arenaitem));
+		}
+	}
+
+	if (((SPItemClass *) parent_class)->hide)
+		((SPItemClass *) parent_class)->hide (item, key);
 }
 
 /* Generate context menu item section */
@@ -448,7 +534,7 @@ sp_shape_marker_release (SPObject *marker, SPShape *shape)
 		SPItemView *v;
 		/* Hide marker */
 		for (v = item->display; v != NULL; v = v->next) {
-			sp_marker_hide ((SPMarker *) (shape->marker_start), v->pkey);
+			sp_marker_hide ((SPMarker *) (shape->marker_start), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 			/* fixme: Do we need explicit remove here? (Lauris) */
 			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 		}
@@ -460,7 +546,7 @@ sp_shape_marker_release (SPObject *marker, SPShape *shape)
 		SPItemView *v;
 		/* Hide marker */
 		for (v = item->display; v != NULL; v = v->next) {
-			sp_marker_hide ((SPMarker *) (shape->marker_mid), v->pkey);
+			sp_marker_hide ((SPMarker *) (shape->marker_mid), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 			/* fixme: Do we need explicit remove here? (Lauris) */
 			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 		}
@@ -472,7 +558,7 @@ sp_shape_marker_release (SPObject *marker, SPShape *shape)
 		SPItemView *v;
 		/* Hide marker */
 		for (v = item->display; v != NULL; v = v->next) {
-			sp_marker_hide ((SPMarker *) (shape->marker_end), v->pkey);
+			sp_marker_hide ((SPMarker *) (shape->marker_end), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 			/* fixme: Do we need explicit remove here? (Lauris) */
 			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 		}
@@ -509,7 +595,7 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 				sp_signal_disconnect_by_data (shape->marker_start, item);
 				/* Hide marker */
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_marker_hide ((SPMarker *) (shape->marker_start), v->pkey);
+					sp_marker_hide ((SPMarker *) (shape->marker_start), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					/* fixme: Do we need explicit remove here? (Lauris) */
 					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 				}
@@ -532,7 +618,7 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 				sp_signal_disconnect_by_data (shape->marker_mid, item);
 				/* Hide marker */
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_marker_hide ((SPMarker *) (shape->marker_mid), v->pkey);
+					sp_marker_hide ((SPMarker *) (shape->marker_mid), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					/* fixme: Do we need explicit remove here? (Lauris) */
 					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 				}
@@ -555,7 +641,7 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 				sp_signal_disconnect_by_data (shape->marker_end, item);
 				/* Hide marker */
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_marker_hide ((SPMarker *) (shape->marker_end), v->pkey);
+					sp_marker_hide ((SPMarker *) (shape->marker_end), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
 					/* fixme: Do we need explicit remove here? (Lauris) */
 					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
 				}

@@ -33,20 +33,18 @@ static void nr_arena_dispose (GObject *object);
 static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
-GType
+unsigned int
 nr_arena_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArena),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_init,
 		};
 		type = g_type_register_static (G_TYPE_OBJECT, "NRArena", &info, 0);

@@ -1,3 +1,9 @@
+2003-03-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-item.c: Removed ::event signal
+
+	* src/display/nr-object.h: Frontend for future glib-free object system
+
 2003-03-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-shape.c (sp_shape_update): Update marker properly

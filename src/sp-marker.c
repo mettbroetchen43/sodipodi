@@ -43,7 +43,7 @@ static void sp_marker_private_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
-static void sp_marker_view_erase (SPMarker *marker, SPMarkerView *view);
+static void sp_marker_view_erase (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems);
 
 static SPGroupClass *parent_class;
 
@@ -128,13 +128,13 @@ sp_marker_release (SPObject *object)
 
 	marker = (SPMarker *) object;
 
-	while (marker->views) {
-		/* Destroy all NRArenaitems etc. */
-		sp_marker_view_erase (marker, marker->views);
-	}
-
 	if (((SPObjectClass *) parent_class)->release)
 		((SPObjectClass *) parent_class)->release (object);
+
+	while (marker->views) {
+		/* Destroy all NRArenaitems etc. */
+		sp_marker_view_erase (marker, marker->views, FALSE);
+	}
 }
 
 static void
@@ -608,14 +608,31 @@ sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 void
 sp_marker_hide (SPMarker *marker, unsigned int key)
 {
-	while (marker->views) {
-		/* Destroy all NRArenaitems etc. */
-		sp_marker_view_erase (marker, marker->views);
+	SPMarkerView *v;
+
+	for (v = marker->views; v != NULL; v = v->next) {
+		if (v->key == key) {
+			int i;
+			for (i = 0; i < v->size; i++) {
+				if (v->items[i]) {
+					SPGroup *group;
+					SPObject *o;
+					group = SP_GROUP (marker);
+					for (o = group->children; o != NULL; o = o->next) {
+						if (SP_IS_ITEM (o)) {
+							sp_item_hide ((SPItem *) o, key);
+						}
+					}
+				}
+			}
+			sp_marker_view_erase (marker, v, TRUE);
+			return;
+		}
 	}
 }
 
 static void
-sp_marker_view_erase (SPMarker *marker, SPMarkerView *view)
+sp_marker_view_erase (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems)
 {
 	int i;
 	if (view == marker->views) {
@@ -625,8 +642,10 @@ sp_marker_view_erase (SPMarker *marker, SPMarkerView *view)
 		for (v = marker->views; v->next != view; v = v->next) if (!v->next) return;
 		v->next = view->next;
 	}
-	for (i = 0; i < view->size; i++) {
-		if (view->items[i]) nr_arena_item_destroy (view->items[i]);
+	if (destroyitems) {
+		for (i = 0; i < view->size; i++) {
+			if (view->items[i]) nr_arena_item_destroy (view->items[i]);
+		}
 	}
 	g_free (view);
 }
