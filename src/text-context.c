@@ -110,6 +110,10 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
+		if (!SP_TEXT_CONTEXT (event_context)->text) {
+			ret = FALSE;
+			break;
+		}
 		if (event->key.keyval == GDK_Return) {
 			k[0] = '\n';
 		} else {
@@ -122,6 +126,7 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 		if (c == NULL) c = "";
 		c = g_strconcat (c, &k, NULL);
 		sp_repr_set_content (SP_TEXT_CONTEXT (event_context)->text, c);
+		sp_document_done (SP_DT_DOCUMENT (event_context->desktop));
 
 		ret = TRUE;
 		break;

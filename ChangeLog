@@ -1,3 +1,8 @@
+2000-10-13  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/text-context.c (sp_text_context_item_handler): Return
+	if repr == NULL; Commit changes to undo stack.
+
 2000-10-11  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/draw-context.c (sp_draw_context-destroy): Detach signal
