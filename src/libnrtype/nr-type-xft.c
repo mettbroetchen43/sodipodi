@@ -146,8 +146,8 @@ nr_type_xft_init (void)
 	NRXftTypefaces.length = NRXftPatterns->nfont;
 	NRXftTypefaces.names = nr_new (unsigned char *, NRXftTypefaces.length);
 	NRXftTypefaces.destructor = NULL;
-	arikkei_dict_setup (&NRXftNamedict, 2777);
-	arikkei_dict_setup (&NRXftFamilydict, 173);
+	arikkei_dict_setup_string (&NRXftNamedict, 2777);
+	arikkei_dict_setup_string (&NRXftFamilydict, 173);
 
 	if (debug) {
 		fprintf (stderr, "Read %lu fonts\n", NRXftTypefaces.length);

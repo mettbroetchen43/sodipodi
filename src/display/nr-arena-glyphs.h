@@ -46,7 +46,7 @@ struct _NRArenaGlyphsClass {
 	NRArenaItemClass parent_class;
 };
 
-NRType nr_arena_glyphs_get_type (void);
+unsigned int nr_arena_glyphs_get_type (void);
 
 void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs,
 			       SPCurve *curve, unsigned int private,
@@ -78,7 +78,7 @@ struct _NRArenaGlyphsGroupClass {
 	NRArenaGroupClass parent_class;
 };
 
-NRType nr_arena_glyphs_group_get_type (void);
+unsigned int nr_arena_glyphs_group_get_type (void);
 
 /* Utility functions */
 

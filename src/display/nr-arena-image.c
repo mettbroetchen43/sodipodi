@@ -36,10 +36,10 @@ static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, double x, double y, 
 
 static NRArenaItemClass *parent_class;
 
-NRType
+unsigned int
 nr_arena_image_get_type (void)
 {
-	static NRType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
 						"NRArenaImage",

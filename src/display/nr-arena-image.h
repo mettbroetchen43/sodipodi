@@ -39,7 +39,7 @@ struct _NRArenaImageClass {
 	NRArenaItemClass parent_class;
 };
 
-NRType nr_arena_image_get_type (void);
+unsigned int nr_arena_image_get_type (void);
 
 void nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigned int pxw, unsigned int pxh, unsigned int pxrs);
 void nr_arena_image_set_geometry (NRArenaImage *image, double x, double y, double width, double height);

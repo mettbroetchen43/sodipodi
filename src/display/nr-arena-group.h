@@ -31,7 +31,7 @@ struct _NRArenaGroupClass {
 	NRArenaItemClass parent_class;
 };
 
-NRType nr_arena_group_get_type (void);
+unsigned int nr_arena_group_get_type (void);
 
 void nr_arena_group_set_transparent (NRArenaGroup *group, unsigned int transparent);
 

@@ -24,7 +24,7 @@ static void sp_action_finalize (NRObject *object);
 
 static NRActiveObjectClass *parent_class;
 
-NRType
+unsigned int
 sp_action_get_type (void)
 {
 	static unsigned int type = 0;
