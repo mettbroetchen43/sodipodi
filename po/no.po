@@ -1178,7 +1178,7 @@ msgstr "Vend valgte objekter"
 
 #: glade/toolbox.c:85
 msgid "Rotate selected objects 90° clockwise"
-msgstr "Rotér valgte objekter 90 med klokken"
+msgstr "Rotér valgte objekter 90° med klokken"
 
 #: glade/toolbox.c:86
 msgid "Remove transformation"
@@ -1271,11 +1271,11 @@ msgstr "90°"
 
 #: glade/transformation.c:21
 msgid "180°"
-msgstr ""
+msgstr "180°"
 
 #: glade/transformation.c:22
 msgid "270°"
-msgstr ""
+msgstr "270°"
 
 #: glade/transformation.c:23
 msgid "any"
