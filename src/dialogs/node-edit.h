@@ -13,8 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-void sp_node_path_edit_dialog (void);
-void sp_node_path_edit_dialog_close (void);
+/* fixme: This is not the right place for these frontends (Lauris) */
+
 void sp_node_path_edit_add (void);
 void sp_node_path_edit_delete (void);
 void sp_node_path_edit_break (void);

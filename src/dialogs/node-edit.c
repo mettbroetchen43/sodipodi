@@ -12,36 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glade/glade.h>
 #include "../nodepath.h"
 #include "node-edit.h"
-
-GladeXML * node_path_xml = NULL;
-GtkWidget * node_path_dialog = NULL;
-
-void
-sp_node_path_edit_dialog (void)
-{
-	if (node_path_dialog == NULL) {
-		node_path_xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "window_node_path");
-		if (node_path_xml == NULL) return;
-		glade_xml_signal_autoconnect (node_path_xml);
-		node_path_dialog = glade_xml_get_widget (node_path_xml, "window_node_path");
-		if (node_path_dialog == NULL) return;
-	} else {
-		if (!GTK_WIDGET_VISIBLE (node_path_dialog))
-			gtk_widget_show (node_path_dialog);
-	}
-}
-
-void
-sp_node_path_edit_dialog_close (void)
-{
-	g_assert (node_path_dialog != NULL);
-
-	if (GTK_WIDGET_VISIBLE (node_path_dialog))
-		gtk_widget_hide (node_path_dialog);
-}
 
 void
 sp_node_path_edit_add (void)

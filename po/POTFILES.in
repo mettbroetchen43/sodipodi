@@ -15,6 +15,7 @@ src/dialogs/align.c
 src/dialogs/desktop-properties.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
+src/dialogs/export.c
 src/dialogs/fill-style.c
 src/dialogs/item-properties.c
 src/dialogs/object-attributes.c

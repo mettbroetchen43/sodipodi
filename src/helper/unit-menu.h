@@ -38,46 +38,7 @@ void sp_unit_selector_set_unit (SPUnitSelector *selector, const SPUnit *unit);
 void sp_unit_selector_add_adjustment (SPUnitSelector *selector, GtkAdjustment *adjustment);
 void sp_unit_selector_remove_adjustment (SPUnitSelector *selector, GtkAdjustment *adjustment);
 
-
-#if 0
-
-#define SP_TYPE_UNITMENU            (sp_unitmenu_get_type ())
-#define SP_UNITMENU(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_UNITMENU, SPUnitMenu))
-#define SP_UNITMENU_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_UNITMENU, SPUnitMenuClass))
-#define SP_IS_UNITMENU(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_UNITMENU))
-#define SP_IS_UNITMENU_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_UNITMENU))
-
-
-typedef struct _SPUnitMenu SPUnitMenu;
-typedef struct _SPUnitMenuClass SPUnitMenuClass;
-
-struct _SPUnitMenu {
-	GtkOptionMenu optionmenu;
-	SPSVGUnit system;
-	SPMetric metric;
-};
-
-struct _SPUnitMenuClass {
-	GtkOptionMenuClass parent_class;
-	void (* set_unit) (SPUnitMenu * unitmenu, SPSVGUnit system, SPMetric metric);
-};
-
-
-typedef enum {
-	SP_UNIT_SINGULAR,
-	SP_UNIT_PLURAL,
-	SP_UNIT_ABBREVIATION
-} SPUnitLabelType;
-
-
-/* Standard Gtk function */
-GtkType sp_unitmenu_get_type (void);
-
-GtkWidget * sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric, SPUnitLabelType label);
-SPSVGUnit sp_unitmenu_get_system (SPUnitMenu * unitmenu);
-SPMetric sp_unitmenu_get_metric (SPUnitMenu * unitmenu);
-
-#endif
+gboolean sp_unit_selector_update_test (SPUnitSelector *selector);
 
 END_GNOME_DECLS
 

@@ -1,11 +1,17 @@
 #define __SP_UNIT_MENU_C__
 
 /*
- * SPUnitMenu
+ * Unit selector with autupdate capability
  *
- * Copyright (C) Lauris Kaplinski 2000
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2000-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
+
+#define noUNIT_SELECTOR_VERBOSE
 
 #include <config.h>
 #include <gtk/gtksignal.h>
@@ -26,6 +32,8 @@ struct _SPUnitSelector {
 	gdouble ctmscale, devicescale;
 	guint plural : 1;
 	guint abbr : 1;
+
+	guint update : 1;
 
 	GSList *adjustments;
 };
@@ -140,10 +148,14 @@ spus_unit_activate (GtkWidget *widget, SPUnitSelector *us)
 	unit = gtk_object_get_data (GTK_OBJECT (widget), "unit");
 	g_return_if_fail (unit != NULL);
 
+#ifdef UNIT_SELECTOR_VERBOSE
 	g_print ("Old unit %s new unit %s\n", us->unit->name, unit->name);
+#endif
 
 	old = us->unit;
 	us->unit = unit;
+
+	us->update = TRUE;
 
 	/* Recalculate adjustments */
 	for (l = us->adjustments; l != NULL; l = l->next) {
@@ -151,11 +163,17 @@ spus_unit_activate (GtkWidget *widget, SPUnitSelector *us)
 		gdouble val;
 		adj = GTK_ADJUSTMENT (l->data);
 		val = adj->value;
+#ifdef UNIT_SELECTOR_VERBOSE
 		g_print ("Old val %g ... ", val);
+#endif
 		sp_convert_distance_full (&val, old, unit, us->ctmscale, us->devicescale);
+#ifdef UNIT_SELECTOR_VERBOSE
 		g_print ("new val %g\n", val);
+#endif
 		gtk_adjustment_set_value (adj, val);
 	}
+
+	us->update = FALSE;
 }
 
 static void
@@ -269,6 +287,14 @@ sp_unit_selector_remove_adjustment (SPUnitSelector *us, GtkAdjustment *adj)
 	gtk_object_unref (GTK_OBJECT (adj));
 }
 
+gboolean
+sp_unit_selector_update_test (SPUnitSelector *selector)
+{
+	g_return_if_fail (selector != NULL);
+	g_return_if_fail (SP_IS_UNIT_SELECTOR (selector));
+
+	return selector->update;
+}
 
 #if 0
 

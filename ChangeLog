@@ -1,3 +1,15 @@
+2002-11-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/export.c: Made glade-free dialog
+
+	* src/file.c (sp_export_png_file): Make filename const
+
+	* configure.in (CFLAGS): Added GCC warnings
+
+2002-11-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/node-edit.c: Removed unused glade stuff
+
 2002-11-04  Masatake YAMATO  <jet@gyve.org>
 
 	* src/dialogs/xml-tree.c (sp_xml_tree_dialog): Added vpaned

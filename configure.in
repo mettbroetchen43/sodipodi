@@ -11,6 +11,8 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
+CFLAGS="$CFLAGS -Wall -Wunused"
+
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sk sl sv tr uk pl pt_BR pt zh_CN"
 AM_GNU_GETTEXT
