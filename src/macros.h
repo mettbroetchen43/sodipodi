@@ -28,6 +28,7 @@
 #define SP_PRINT_IRECT_WH(s,r) g_print ("%s (%d %d %d %d)\n", (s), (r)->x0, (r)->y0, (r)->x1 - (r)->x0, (r)->y1 - (r)->y0)
 #endif
 
-#define sp_signal_disconnect_by_data(o,d) g_signal_handlers_disconnect_matched (o, G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, d)
+#define sp_signal_disconnect_by_data(o,d) g_signal_handlers_disconnect_matched ((o), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (d))
+#define sp_signal_disconnect_by_id(o,i) g_signal_handler_disconnect ((o), (i))
 
 #endif

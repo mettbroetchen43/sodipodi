@@ -37,10 +37,12 @@ struct _SPDesktop {
 
 	/* Local pointer to root */
 	SPItem *root;
+	int rootmodsig;
 	/* Namedview defines guides grids and such */
 	SPNamedView *namedview;
 	/* Base group where items are created */
 	SPGroup *base;
+	int basemodsig;
 
 	SPSelection *selection;
 	SPEventContext *event_context;

@@ -489,7 +489,8 @@ static void
 sp_desktop_private_detach_base (SPDesktop *dt)
 {
 	assert (dt->base);
-	sp_signal_disconnect_by_data ((GObject *) dt->base, dt);
+	sp_signal_disconnect_by_id ((GObject *) dt->base, dt->basemodsig);
+	dt->basemodsig = 0;
 	if (dt->base != (SPGroup *) ((SPView *) dt)->root) {
 		/* fixme: I really do not like the logic here (Lauris) */
 		sp_group_set_transparent (dt->base, FALSE);
@@ -510,6 +511,8 @@ static void
 sp_desktop_private_detach_root (SPDesktop *dt)
 {
 	assert (dt->root);
+	sp_signal_disconnect_by_id ((GObject *) dt->root, dt->rootmodsig);
+	dt->rootmodsig = 0;
 	sp_desktop_private_detach_base (dt);
 	sp_desktop_private_detach_namedview (dt);
 	sp_item_invoke_hide (dt->root, dt->dkey);
@@ -519,73 +522,73 @@ sp_desktop_private_detach_root (SPDesktop *dt)
 static void
 sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 {
-	SPDesktop *desktop;
+	SPDesktop *dt;
 
-	desktop = (SPDesktop *) view;
+	dt = (SPDesktop *) view;
 
-	if ((SPNamedView *) layout == desktop->namedview) {
+	if ((SPNamedView *) layout == dt->namedview) {
 		/* NOP */
-		assert (root == desktop->root);
+		assert (root == dt->root);
 		return;
 	}
 
-	if (root == desktop->root) {
+	if (root == dt->root) {
 		assert (layout != NULL);
 		/* Detach old namedview */
-		if (desktop->namedview) {
-			sp_desktop_private_detach_namedview (desktop);
+		if (dt->namedview) {
+			sp_desktop_private_detach_namedview (dt);
 		}
 		/* Attach new namedview */
 		/* fixme: */
-		desktop->namedview = (SPNamedView *) layout;
-		g_signal_connect (G_OBJECT (desktop->namedview), "modified", (GCallback) sp_dt_namedview_modified, desktop);
-		desktop->number = sp_namedview_viewcount (desktop->namedview);
+		dt->namedview = (SPNamedView *) layout;
+		g_signal_connect (G_OBJECT (dt->namedview), "modified", (GCallback) sp_dt_namedview_modified, dt);
+		dt->number = sp_namedview_viewcount (dt->namedview);
 		/* Update namedview an such */
-		sp_namedview_show (desktop->namedview, desktop);
+		sp_namedview_show (dt->namedview, dt);
 		/* Ugly hack */
-		sp_desktop_activate_guides (desktop, TRUE);
+		sp_desktop_activate_guides (dt, TRUE);
 		/* Ugly hack */
-		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+		sp_dt_namedview_modified (dt->namedview, SP_OBJECT_MODIFIED_FLAG, dt);
 		return;
 	}
 
 	/* Detach old root */
-	if (desktop->root) {
-		sp_desktop_private_detach_root (desktop);
+	if (dt->root) {
+		sp_desktop_private_detach_root (dt);
 	}
 	if (root) {
 		NRArenaItem *aitem;
 		assert (layout != NULL);
 		/* Keep local copy */
-		desktop->root = root;
+		dt->root = root;
 		/* Listen to root ::modified signal */
 		/* Fixme: maybe implement as view virtual instead (Lauris) */
-		g_signal_connect ((GObject *) desktop->root, "modified", (GCallback) sp_desktop_root_modified, desktop);
+		dt->rootmodsig = g_signal_connect ((GObject *) dt->root, "modified", (GCallback) sp_desktop_root_modified, dt);
 		/* Attach new namedview */
 		/* fixme: */
-		desktop->namedview = (SPNamedView *) layout;
-		g_signal_connect (G_OBJECT (desktop->namedview), "modified", (GCallback) sp_dt_namedview_modified, desktop);
-		desktop->number = sp_namedview_viewcount (desktop->namedview);
+		dt->namedview = (SPNamedView *) layout;
+		g_signal_connect (G_OBJECT (dt->namedview), "modified", (GCallback) sp_dt_namedview_modified, dt);
+		dt->number = sp_namedview_viewcount (dt->namedview);
 		/* Update namedview an such */
-		sp_namedview_show (desktop->namedview, desktop);
+		sp_namedview_show (dt->namedview, dt);
 		/* Set up drawing */
-		aitem = sp_item_invoke_show (desktop->root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
+		aitem = sp_item_invoke_show (dt->root, SP_CANVAS_ARENA (dt->drawing)->arena, dt->dkey, SP_ITEM_SHOW_DISPLAY);
 		if (aitem) {
-			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, aitem, NULL);
+			nr_arena_item_add_child (SP_CANVAS_ARENA (dt->drawing)->root, aitem, NULL);
 			nr_arena_item_unref (aitem);
 		}
 		/* Ugly hack */
-		sp_desktop_activate_guides (desktop, TRUE);
+		sp_desktop_activate_guides (dt, TRUE);
 		/* Ugly hack */
-		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+		sp_dt_namedview_modified (dt->namedview, SP_OBJECT_MODIFIED_FLAG, dt);
 
 		/* fixme: Is it safe to emit this without base set? (Lauris) */
-		g_signal_emit (G_OBJECT (desktop), signals[ROOT_SET], 0, desktop->root);
+		g_signal_emit (G_OBJECT (dt), signals[ROOT_SET], 0, dt->root);
 
 		/* Attach root */
 		/* fixme: view->root should really be set before this */
 		/* fixme: What to do if root is not group? */
-		sp_desktop_set_base (desktop, (SPGroup *) (SPGroup *) desktop->root);
+		sp_desktop_set_base (dt, (SPGroup *) (SPGroup *) dt->root);
 	}
 }
 
@@ -598,7 +601,7 @@ sp_desktop_base_release (SPObject *object, SPDesktop *dt)
 	sp_desktop_private_detach_base (dt);
 	if (dt->root) {
 		dt->base = (SPGroup *) ((SPView *) dt)->root;
-		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
+		dt->basemodsig = g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
 }
 
@@ -615,7 +618,7 @@ sp_desktop_set_base (SPDesktop *dt, SPGroup *base)
 	dt->base = base;
 	if (dt->base) {
 		sp_group_set_transparent (dt->base, TRUE);
-		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
+		dt->basemodsig = g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
 	g_signal_emit (G_OBJECT (dt), signals[BASE_SET], 0, dt->base, oldbase);
 	if (oldbase) sp_object_unref ((SPObject *) oldbase, NULL);
