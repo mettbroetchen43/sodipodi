@@ -5,8 +5,9 @@
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   MenTaLguY <mental@rydia.net>
  *
- * Copyright (C) 1999-2002 authors
+ * Copyright (C) 1999-2003 authors
  * Copyright (C) 2000-2002 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
@@ -19,47 +20,67 @@
 
 #include <glib.h>
 
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#ifndef TRUE
-#define TRUE (!FALSE)
-#endif
-
 #include "repr-private.h"
 
 typedef struct _SPReprListener SPListener;
 
-static SPRepr * sp_repr_new_from_code (int code);
+static void repr_init (SPRepr *repr);
+static void repr_doc_init (SPRepr *repr);
+
+static void repr_copy (SPRepr *to, const SPRepr *from);
+static void repr_doc_copy (SPRepr *to, const SPRepr *from);
+
+static void repr_finalize (SPRepr *repr);
+static void repr_doc_finalize (SPRepr *repr);
+
+static void bind_document (SPReprDoc *doc, SPRepr *repr);
+
+SPReprClass _sp_repr_xml_document_class = {
+	sizeof (SPReprDoc),
+	NULL,
+	repr_doc_init,
+	repr_doc_copy,
+	repr_doc_finalize
+};
+
+SPReprClass _sp_repr_xml_element_class = {
+	sizeof (SPRepr),
+	NULL,
+	repr_init,
+	repr_copy,
+	repr_finalize
+};
+
+SPReprClass _sp_repr_xml_text_class = {
+	sizeof (SPRepr),
+	NULL,
+	repr_init,
+	repr_copy,
+	repr_finalize
+};
+
+static SPRepr *sp_repr_new_from_code (SPReprClass *type, int code);
 static void sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr);
-static void sp_node_remove_listener (SPXMLNode *node, SPListener *listener);
+static void sp_repr_remove_listener (SPRepr *repr, SPListener *listener);
 
-static SPXMLAttribute *sp_attribute_duplicate (const SPXMLAttribute *attr);
-static SPXMLAttribute *sp_attribute_new_from_quark (int key, const unsigned char *value);
+static SPReprAttr *sp_attribute_duplicate (const SPReprAttr *attr);
+static SPReprAttr *sp_attribute_new_from_code (int key, const unsigned char *value);
 
-/* Helpers */
-static SPXMLNode * sp_node_alloc (void);
-static void sp_node_free (SPXMLNode *node);
-static SPXMLAttribute * sp_attribute_alloc (void);
-static void sp_attribute_free (SPXMLAttribute *attribute);
+static SPRepr * sp_repr_alloc (SPReprClass *type);
+static void sp_repr_free (SPRepr *repr);
+static SPReprAttr * sp_attribute_alloc (void);
+static void sp_attribute_free (SPReprAttr *attribute);
 static SPListener *sp_listener_alloc (void);
 static void sp_listener_free (SPListener *listener);
 
-SPRepr *
-sp_repr_new_from_code (int code)
+static SPRepr *
+sp_repr_new_from_code (SPReprClass *type, int code)
 {
 	SPRepr * repr;
 
-	repr = sp_node_alloc ();
-
-	repr->refcount = 1;
+	repr = sp_repr_alloc (type);
 	repr->name = code;
-	repr->type = SP_XML_ELEMENT_NODE;
-	repr->parent = repr->next = repr->children = NULL;
-	repr->attributes = NULL;
-	repr->listeners = NULL;
-	repr->content = NULL;
+	repr->type->init (repr);
 
 	return repr;
 }
@@ -70,7 +91,7 @@ sp_repr_new (const unsigned char *name)
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (*name != '\0', NULL);
 
-	return sp_repr_new_from_code (g_quark_from_string (name));
+	return sp_repr_new_from_code (SP_XML_ELEMENT_NODE, g_quark_from_string (name));
 }
 
 SPRepr *
@@ -78,10 +99,33 @@ sp_repr_new_text (const unsigned char *content)
 {
 	SPRepr * repr;
 	g_return_val_if_fail (content != NULL, NULL);
-	repr = sp_repr_new_from_code (g_quark_from_string ("text"));
+	repr = sp_repr_new_from_code (SP_XML_TEXT_NODE, g_quark_from_static_string ("text"));
 	repr->content = g_strdup (content);
 	repr->type = SP_XML_TEXT_NODE;
 	return repr;
+}
+
+static void
+repr_init (SPRepr *repr)
+{
+	repr->refcount = 1;
+	repr->doc = NULL;
+	repr->parent = repr->next = repr->children = NULL;
+	repr->attributes = NULL;
+	repr->listeners = NULL;
+	repr->content = NULL;
+}
+
+static void
+repr_doc_init (SPRepr *repr)
+{
+	SPReprDoc *doc=(SPReprDoc *)repr;
+
+	repr_init (repr);
+
+	repr->doc = doc;
+	doc->log = NULL;
+	doc->is_logging = 0;
 }
 
 SPRepr *
@@ -104,21 +148,40 @@ sp_repr_unref (SPRepr *repr)
 	repr->refcount -= 1;
 
 	if (repr->refcount < 1) {
-		SPReprListener *rl;
-		/* Parents reference children */
-		g_assert (repr->parent == NULL);
-		g_assert (repr->next == NULL);
-		for (rl = repr->listeners; rl; rl = rl->next) {
-			if (rl->vector->destroy) (* rl->vector->destroy) (repr, rl->data);
-		}
-		while (repr->children) sp_repr_remove_child (repr, repr->children);
-		while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
-		if (repr->content) g_free (repr->content);
-		while (repr->listeners) sp_node_remove_listener (repr, repr->listeners);
-		sp_node_free (repr);
+		repr->type->finalize (repr);
+		sp_repr_free (repr);
 	}
 
 	return NULL;
+}
+
+static void
+repr_finalize (SPRepr *repr)
+{
+	SPReprListener *rl;
+	/* Parents reference children */
+	g_assert (repr->parent == NULL);
+	g_assert (repr->next == NULL);
+	repr->doc = NULL;
+
+	for (rl = repr->listeners; rl; rl = rl->next) {
+		if (rl->vector->destroy) (* rl->vector->destroy) (repr, rl->data);
+	}
+	while (repr->children) sp_repr_remove_child (repr, repr->children);
+	while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
+	if (repr->content) g_free (repr->content);
+	while (repr->listeners) sp_repr_remove_listener (repr, repr->listeners);
+}
+
+static void
+repr_doc_finalize (SPRepr *repr)
+{
+	SPReprDoc *doc = (SPReprDoc *)repr;
+	if (doc->log) {
+		sp_repr_free_log (doc->log);
+		doc->log = NULL;
+	}
+	repr_finalize (repr);
 }
 
 static SPRepr *
@@ -127,6 +190,7 @@ sp_repr_attach (SPRepr *parent, SPRepr *child)
 	g_assert (parent != NULL);
 	g_assert (child != NULL);
 	g_assert (child->parent == NULL);
+	g_assert (child->doc == NULL && parent->doc == NULL);
 
 	child->parent = parent;
 
@@ -137,35 +201,50 @@ SPRepr *
 sp_repr_duplicate (const SPRepr *repr)
 {
 	SPRepr *new;
+
+	new = sp_repr_new_from_code (repr->type, repr->name);
+
+	repr->type->copy (new, repr);
+
+	return new;
+}
+
+void
+repr_copy (SPRepr *to, const SPRepr *from)
+{
 	SPRepr *child, *lastchild;
 	SPReprAttr *attr, *lastattr;
 
-	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_if_fail (from != NULL);
 
-	new = sp_repr_new_from_code (repr->name);
-	new->type = repr->type;
-
-	if (repr->content != NULL) new->content = g_strdup (repr->content);
+	if (from->content != NULL) to->content = g_strdup (from->content);
 
 	lastchild = NULL;
-	for (child = repr->children; child != NULL; child = child->next) {
+	for (child = from->children; child != NULL; child = child->next) {
 		if (lastchild) {
-			lastchild = lastchild->next = sp_repr_attach (new, sp_repr_duplicate (child));
+			lastchild = lastchild->next = sp_repr_attach (to, sp_repr_duplicate (child));
 		} else {
-			lastchild = new->children = sp_repr_attach (new, sp_repr_duplicate (child));
+			lastchild = to->children = sp_repr_attach (to, sp_repr_duplicate (child));
 		}
 	}
 
 	lastattr = NULL;
-	for (attr = repr->attributes; attr != NULL; attr = attr->next) {
+	for (attr = from->attributes; attr != NULL; attr = attr->next) {
 		if (lastattr) {
 			lastattr = lastattr->next = sp_attribute_duplicate (attr);
 		} else {
-			lastattr = new->attributes = sp_attribute_duplicate (attr);
+			lastattr = to->attributes = sp_attribute_duplicate (attr);
 		}
 	}
+}
 
-	return new;
+void
+repr_doc_copy (SPRepr *to, const SPRepr *from)
+{
+	SPReprDoc *to_doc=(SPReprDoc *)to;
+	repr_copy (to, from);
+	to_doc->log = NULL;
+	to_doc->is_logging = 0;
 }
 
 const unsigned char *
@@ -222,10 +301,15 @@ sp_repr_set_content (SPRepr *repr, const unsigned char *newcontent)
 		} else {
 			repr->content = NULL;
 		}
+		if ( repr->doc && repr->doc->is_logging ) {
+			repr->doc->log = sp_repr_log_chgcontent (repr->doc->log, repr, oldcontent, newcontent);
+		}
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 			if (rl->vector->content_changed) (* rl->vector->content_changed) (repr, oldcontent, newcontent, rl->data);
 		}
-		if (oldcontent) g_free (oldcontent);
+		if ( oldcontent && ( !repr->doc || !repr->doc->is_logging ) ) {
+			g_free (oldcontent);
+		}
 	}
 
 	return allowed;
@@ -265,8 +349,14 @@ sp_repr_del_attr (SPRepr *repr, const unsigned char *key)
 				repr->attributes = attr->next;
 			}
 
+			if ( repr->doc && repr->doc->is_logging ) {
+				repr->doc->log = sp_repr_log_chgattr (repr->doc->log, repr, q, oldval, NULL);
+			}
 			for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 				if (rl->vector->attr_changed) (* rl->vector->attr_changed) (repr, key, oldval, NULL, rl->data);
+			}
+			if ( repr->doc && repr->doc->is_logging ) {
+				attr->value = NULL;
 			}
 
 			sp_attribute_free (attr);
@@ -307,7 +397,7 @@ sp_repr_chg_attr (SPRepr *repr, const unsigned char *key, const unsigned char *v
 		if (attr) {
 			attr->value = g_strdup (value);
 		} else {
-			attr = sp_attribute_new_from_quark (q, value);
+			attr = sp_attribute_new_from_code (q, value);
 			if (prev) {
 				prev->next = attr;
 			} else {
@@ -315,11 +405,17 @@ sp_repr_chg_attr (SPRepr *repr, const unsigned char *key, const unsigned char *v
 			}
 		}
 
+		if ( repr->doc && repr->doc->is_logging ) {
+			repr->doc->log = sp_repr_log_chgattr (repr->doc->log, repr, q, oldval, value);
+		}
+
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 			if (rl->vector->attr_changed) (* rl->vector->attr_changed) (repr, key, oldval, value, rl->data);
 		}
 
-		if (oldval) g_free (oldval);
+		if ( oldval && ( !repr->doc || !repr->doc->is_logging ) ) {
+			g_free (oldval);
+		}
 	}
 
 	return allowed;
@@ -378,6 +474,7 @@ sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 	g_assert (child != NULL);
 	g_assert (!ref || ref->parent == repr);
 	g_assert (child->parent == NULL);
+	g_assert (child->doc == NULL || child->doc == repr->doc);
 
 	allowed = TRUE;
 	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
@@ -396,12 +493,32 @@ sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 		child->parent = repr;
 		sp_repr_ref (child);
 
+		if (child->doc == NULL) bind_document (repr->doc, child);
+
+		if ( repr->doc && repr->doc->is_logging ) {
+			repr->doc->log = sp_repr_log_add (repr->doc->log, repr, child, ref);
+		}
+
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 			if (rl->vector->child_added) (* rl->vector->child_added) (repr, child, ref, rl->data);
 		}
 	}
 
 	return allowed;
+}
+
+static void
+bind_document (SPReprDoc *doc, SPRepr *repr)
+{
+	SPRepr *child;
+
+	g_assert (repr->doc == NULL);
+
+	repr->doc = doc;
+
+	for ( child = repr->children ; child != NULL ; child = child->next ) {
+		bind_document (doc, child);
+	}
 }
 
 unsigned int
@@ -434,6 +551,10 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 		}
 		child->parent = NULL;
 		child->next = NULL;
+
+		if ( repr->doc && repr->doc->is_logging ) {
+			repr->doc->log = sp_repr_log_remove (repr->doc->log, repr, child, ref);
+		}
 
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
 			if (rl->vector->child_removed) (* rl->vector->child_removed) (repr, child, ref, rl->data);
@@ -482,6 +603,10 @@ sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref)
 		} else {
 			child->next = repr->children;
 			repr->children = child;
+		}
+
+		if ( repr->doc && repr->doc->is_logging ) {
+			repr->doc->log = sp_repr_log_chgorder (repr->doc->log, repr, child, prev, ref);
 		}
 
 		for (rl = repr->listeners; rl != NULL; rl = rl->next) {
@@ -568,13 +693,13 @@ sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data
 }
 
 static void
-sp_node_remove_listener (SPXMLNode *node, SPListener *listener)
+sp_repr_remove_listener (SPRepr *repr, SPListener *listener)
 {
-	if (listener == node->listeners) {
-		node->listeners = listener->next;
+	if (listener == repr->listeners) {
+		repr->listeners = listener->next;
 	} else {
 		SPListener *prev;
-		prev = node->listeners;
+		prev = repr->listeners;
 		while (prev->next != listener) prev = prev->next;
 		prev->next = listener->next;
 	}
@@ -623,24 +748,26 @@ sp_repr_nth_child (const SPRepr * repr, int n)
 SPReprDoc *
 sp_repr_document_new (const char *rootname)
 {
-	SPRepr * repr, * root;
+	SPReprDoc * doc;
+	SPRepr * root;
 
-	repr = sp_repr_new ("xml");
+	doc = (SPReprDoc *)sp_repr_new_from_code (SP_XML_DOCUMENT_NODE, g_quark_from_static_string ("xml"));
 	if (!strcmp (rootname, "svg")) {
-		sp_repr_set_attr (repr, "version", "1.0");
-		sp_repr_set_attr (repr, "standalone", "no");
-		sp_repr_set_attr (repr, "doctype",
+		sp_repr_set_attr (&doc->repr, "version", "1.0");
+		sp_repr_set_attr (&doc->repr, "standalone", "no");
+		sp_repr_set_attr (&doc->repr, "doctype",
 				  "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\"\n"
 				  "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
-		sp_repr_set_attr (repr, "comment",
+		sp_repr_set_attr (&doc->repr, "comment",
 				  "<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n");
 	}
 
 	root = sp_repr_new (rootname);
-	sp_repr_add_child (repr, root, 0);
+
+	sp_repr_add_child (&doc->repr, root, 0);
 	sp_repr_unref (root);
 
-	return (SPReprDoc *) repr;
+	return doc;
 }
 
 void
@@ -658,37 +785,26 @@ sp_repr_document_unref (SPReprDoc * doc)
 void
 sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr)
 {
-	SPRepr * rdoc;
-
 	g_assert (doc != NULL);
 	g_assert (repr != NULL);
+	g_assert (doc->repr.children != NULL);
+	g_assert (repr->doc == NULL || repr->doc == doc);
 
-	rdoc = (SPRepr *) doc;
-
-	g_assert (rdoc->children != NULL);
-
-	sp_repr_remove_child (rdoc, rdoc->children);
-	sp_repr_add_child (rdoc, repr, NULL);
+	sp_repr_remove_child (&doc->repr, doc->repr.children);
+	sp_repr_add_child (&doc->repr, repr, NULL);
 }
 
 SPReprDoc *
 sp_repr_document (const SPRepr *repr)
 {
-	/* fixme: */
-	while (repr->parent) repr = repr->parent;
-
-	return (SPReprDoc *) repr;
+	return repr->doc;
 }
 
 SPRepr *
 sp_repr_document_root (const SPReprDoc *doc)
 {
-	SPRepr * repr;
-
-	repr = (SPRepr *) doc;
-	g_return_val_if_fail (repr->children != NULL, NULL);
-
-	return repr->children;
+	g_assert (doc != NULL);
+	return doc->repr.children;
 }
 
 /*
@@ -701,7 +817,7 @@ sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const unsigned cha
 {
 	SPRepr *rdoc;
 	const SPRepr *rsrc;
-	
+
 	g_return_val_if_fail (doc != NULL, FALSE);
 	g_return_val_if_fail (src != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -760,10 +876,10 @@ sp_repr_merge (SPRepr *repr, const SPRepr *src, const unsigned char *key)
 	return TRUE;
 }
 
-static SPXMLAttribute *
-sp_attribute_duplicate (const SPXMLAttribute *attr)
+static SPReprAttr *
+sp_attribute_duplicate (const SPReprAttr *attr)
 {
-	SPXMLAttribute *new;
+	SPReprAttr *new;
 
 	new = sp_attribute_alloc ();
 
@@ -774,10 +890,10 @@ sp_attribute_duplicate (const SPXMLAttribute *attr)
 	return new;
 }
 
-static SPXMLAttribute *
-sp_attribute_new_from_quark (int key, const unsigned char *value)
+static SPReprAttr *
+sp_attribute_new_from_code (int key, const unsigned char *value)
 {
-	SPXMLAttribute *new;
+	SPReprAttr *new;
 
 	new = sp_attribute_alloc ();
 
@@ -788,50 +904,62 @@ sp_attribute_new_from_quark (int key, const unsigned char *value)
 	return new;
 }
 
-/* Helpers */
-#define SP_NODE_ALLOC_SIZE 32
-static SPXMLNode *free_node = NULL;
+#define SP_REPR_CHUNK_SIZE 32
 
-static SPXMLNode *
-sp_node_alloc (void)
+static SPRepr *
+sp_repr_alloc (SPReprClass *type)
 {
-	SPXMLNode *node;
-	int i;
+	SPRepr *repr;
 
-	if (free_node) {
-		node = free_node;
-		free_node = free_node->next;
+	if (type->pool) {
+		repr = type->pool;
+		type->pool = repr->next;
 	} else {
-		node = g_new (SPXMLNode, SP_NODE_ALLOC_SIZE);
-		for (i = 1; i < SP_NODE_ALLOC_SIZE - 1; i++) node[i].next = node + i + 1;
-		node[SP_NODE_ALLOC_SIZE - 1].next = NULL;
-		free_node = node + 1;
-	}
+		char *chunk;
+		size_t max, offset;
 
-	return node;
+		chunk = (char *)g_malloc (type->size * SP_REPR_CHUNK_SIZE);
+
+		max = type->size * ( SP_REPR_CHUNK_SIZE - 1 );
+		for ( offset = type->size ;
+		      offset < max ;
+		      offset += type->size )
+		{
+			repr = (SPRepr *)(chunk+offset);
+			repr->next = (SPRepr *)(chunk+offset+type->size);
+		}
+
+		((SPRepr *)(chunk+offset))->next = NULL;
+		type->pool = (SPRepr *)(chunk+type->size);
+
+		repr = (SPRepr *)chunk;
+	}
+	repr->type = type;
+
+	return repr;
 }
 
 static void
-sp_node_free (SPXMLNode *node)
+sp_repr_free (SPRepr *repr)
 {
-	node->next = free_node;
-	free_node = node;
+	repr->next = repr->type->pool;
+	repr->type->pool = repr;
 }
 
 #define SP_ATTRIBUTE_ALLOC_SIZE 32
-static SPXMLAttribute *free_attribute = NULL;
+static SPReprAttr *free_attribute = NULL;
 
-static SPXMLAttribute *
+static SPReprAttr *
 sp_attribute_alloc (void)
 {
-	SPXMLAttribute *attribute;
+	SPReprAttr *attribute;
 	int i;
 
 	if (free_attribute) {
 		attribute = free_attribute;
 		free_attribute = free_attribute->next;
 	} else {
-		attribute = g_new (SPXMLAttribute, SP_ATTRIBUTE_ALLOC_SIZE);
+		attribute = g_new (SPReprAttr, SP_ATTRIBUTE_ALLOC_SIZE);
 		for (i = 1; i < SP_ATTRIBUTE_ALLOC_SIZE - 1; i++) attribute[i].next = attribute + i + 1;
 		attribute[SP_ATTRIBUTE_ALLOC_SIZE - 1].next = NULL;
 		free_attribute = attribute + 1;
@@ -841,7 +969,7 @@ sp_attribute_alloc (void)
 }
 
 static void
-sp_attribute_free (SPXMLAttribute *attribute)
+sp_attribute_free (SPReprAttr *attribute)
 {
 	attribute->next = free_attribute;
 	free_attribute = attribute;

@@ -33,7 +33,6 @@
 
 #include "repr-private.h"
 
-static void sp_repr_transfer_ids (SPRepr *new_repr, SPRepr *repr);
 static void sp_xml_ns_register_defaults ();
 static char *sp_xml_ns_auto_prefix (const char *uri);
 
@@ -655,67 +654,5 @@ sp_repr_set_double_default (SPRepr *repr, const unsigned char *key, double val, 
 	} else {
 		return sp_repr_set_double (repr, key, val);
 	}
-}
-
-void
-sp_repr_transfer_ids (SPRepr *new_repr, SPRepr *repr)
-{
-	SPRepr *new_child, *child;
-
-	for ( new_child = new_repr->children, child = repr->children ;
-	      new_child && child ;
-	      new_child = new_child->next, child = child->next )
-	{
-		sp_repr_transfer_ids (new_child, child);
-	}
-
-	sp_repr_set_attr (new_repr, "id", sp_repr_attr (repr, "id"));
-}
-
-SPRepr *
-sp_repr_move (SPRepr *to, SPRepr *repr, SPRepr *ref)
-{
-	SPRepr * new_repr;
-
-	g_assert (repr != NULL);
-
-	if ( to == repr->parent ) {
-		if (sp_repr_change_order(repr->parent, repr, ref)) {
-			return repr;
-		} else {
-			return NULL;
-		}
-	} else if ( to == NULL ) {
-		if (sp_repr_remove_child(repr->parent, repr)) {
-			return repr;
-		} else {
-			return NULL;
-		}
-	}
-
-	new_repr = sp_repr_duplicate (repr);
-	g_return_val_if_fail (new_repr != NULL, NULL);
-
-	if (!sp_repr_add_child(to, new_repr, ref)) {
-		sp_repr_unref (new_repr);
-		return NULL;
-	}
-	sp_repr_unref (new_repr);
-
-	if ( repr->parent != NULL ) {
-		sp_repr_ref (repr);
-		if (!sp_repr_remove_child (repr->parent, repr)) {
-			sp_repr_remove_child (to, new_repr);
-			sp_repr_unref (repr);
-			return NULL;
-		}
-		sp_repr_transfer_ids (new_repr, repr);
-		sp_repr_unref (repr);
-	} else {
-		sp_repr_transfer_ids (new_repr, repr);
-	}
-
-	g_assert ( new_repr->refcount > 0 );
-	return new_repr;
 }
 

@@ -15,16 +15,20 @@
  */
 
 #include "repr.h"
+#include "repr-action.h"
 
+typedef struct _SPReprClass SPReprClass;
 typedef struct _SPReprAttr SPReprAttr;
 typedef struct _SPReprListener SPReprListener;
 typedef struct _SPReprEventVector SPReprEventVector;
 
-typedef enum {
-	SP_XML_INVALID_NODE,
-	SP_XML_ELEMENT_NODE,
-	SP_XML_TEXT_NODE
-} SPXMLNodeType;
+struct _SPReprClass {
+	size_t size;
+	SPRepr *pool;
+	void (*init)(SPRepr *repr);
+	void (*copy)(SPRepr *to, const SPRepr *from);
+	void (*finalize)(SPRepr *repr);
+};
 
 struct _SPReprAttr {
 	SPReprAttr *next;
@@ -54,21 +58,30 @@ struct _SPReprEventVector {
 };
 
 struct _SPRepr {
+	SPReprClass *type;
 	int refcount;
+
 	int name;
-	int type;
+
+	SPReprDoc *doc;
 	SPRepr *parent;
 	SPRepr *next;
 	SPRepr *children;
+
 	SPReprAttr *attributes;
 	SPReprListener *listeners;
 	unsigned char *content;
 };
 
+struct _SPReprDoc {
+	SPRepr repr;
+	unsigned int is_logging;
+	SPReprAction *log;
+};
+
 struct _SPXMLNs {
 	SPXMLNs *next;
-	unsigned int uri;
-	unsigned int prefix;
+	unsigned int uri, prefix;
 };
 
 #define SP_REPR_NAME(r) g_quark_to_string ((r)->name)
@@ -76,6 +89,14 @@ struct _SPXMLNs {
 #define SP_REPR_CONTENT(r) ((r)->content)
 #define SP_REPR_ATTRIBUTE_KEY(a) g_quark_to_string ((a)->key)
 #define SP_REPR_ATTRIBUTE_VALUE(a) ((a)->value)
+
+extern SPReprClass _sp_repr_xml_document_class;
+extern SPReprClass _sp_repr_xml_element_class;
+extern SPReprClass _sp_repr_xml_text_class;
+
+#define SP_XML_DOCUMENT_NODE &_sp_repr_xml_document_class
+#define SP_XML_ELEMENT_NODE &_sp_repr_xml_element_class
+#define SP_XML_TEXT_NODE &_sp_repr_xml_text_class
 
 SPRepr *sp_repr_nth_child (const SPRepr *repr, int n);
 
@@ -87,6 +108,5 @@ void sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void *
 void sp_repr_remove_listener_by_data (SPRepr *repr, void * data);
 
 void sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr);
-
 
 #endif

@@ -17,5 +17,6 @@ libspxml_a_SOURCES = \
 	repr-private.h \
 	repr-util.c \
 	repr-io.c \
-	repr-css.c
+	repr-css.c \
+	repr-action.c repr-action.h
 

@@ -56,8 +56,6 @@ static GtkCTreeNode * ref_to_sibling (GtkCTreeNode * parent, SPRepr * ref);
 static GtkCTreeNode * repr_to_child (GtkCTreeNode * parent, SPRepr * repr);
 static SPRepr * sibling_to_ref (GtkCTreeNode * parent, GtkCTreeNode * sibling);
 
-static void repoint_nodes (GtkCTreeNode * node, SPRepr * new_repr);
-
 static gint match_node_data_by_repr(gconstpointer data_p, gconstpointer repr);
 
 static const SPReprEventVector element_repr_events = {
@@ -199,10 +197,12 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 
 	gtk_ctree_node_set_row_data_full (GTK_CTREE (tree), data->node, data, node_data_free);
 
-	switch (SP_REPR_TYPE (repr)) {
-	  case SP_XML_TEXT_NODE: vec = &text_repr_events; break;
-	  case SP_XML_ELEMENT_NODE: vec = &element_repr_events; break;
-	  default: vec = NULL;
+	if ( SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE ) {
+		vec = &text_repr_events;
+	} else if ( SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE ) {
+		vec = &element_repr_events;
+	} else {
+		vec = NULL;
 	}
 
 	if (vec) {
@@ -322,30 +322,11 @@ text_content_changed (SPRepr * repr, const guchar * old_content, const guchar * 
 }
 
 void
-repoint_nodes (GtkCTreeNode * node, SPRepr * new_repr) {
-	GtkCTreeNode *child_node;
-	SPRepr *child_repr;
-
-	for ( child_node = GTK_CTREE_ROW (node)->children,
-	      child_repr = new_repr->children ;
-	      child_node && child_repr ;
-	      child_node = GTK_CTREE_ROW (child_node)->sibling,
-	      child_repr = child_repr->next )
-	{
-		repoint_nodes (child_node, child_repr);
-	}
-
-	sp_repr_ref (new_repr);
-	sp_repr_unref (NODE_DATA (node)->repr);
-	NODE_DATA (node)->repr = new_repr;
-}
-
-void
 tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkCTreeNode * new_sibling)
 {
 	GtkCTreeNode * old_parent;
 	SPRepr * ref;
-	SPRepr * new_repr;
+	int ok;
 
 	old_parent = GTK_CTREE_ROW (node)->parent;
 	if ( !old_parent || !new_parent ) return;
@@ -355,13 +336,15 @@ tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkC
 	gtk_clist_freeze (GTK_CLIST (tree));
 
 	SP_XMLVIEW_TREE (tree)->blocked++;
-	new_repr = sp_repr_move (NODE_DATA (new_parent)->repr, NODE_DATA (node)->repr, ref);
+	if (new_parent == old_parent) {
+		ok = sp_repr_change_order (NODE_DATA (old_parent)->repr, NODE_DATA (node)->repr, ref);
+	} else {
+		ok = sp_repr_remove_child (NODE_DATA (old_parent)->repr, NODE_DATA (node)->repr) &&
+		     sp_repr_add_child (NODE_DATA (new_parent)->repr, NODE_DATA (node)->repr, ref);
+	}
 	SP_XMLVIEW_TREE (tree)->blocked--;
 
-	if (new_repr) {
-		if ( new_repr != NODE_DATA (node)->repr ) {
-			repoint_nodes (node, new_repr);
-		}
+	if (ok) {
 		parent_class->tree_move (tree, node, new_parent, new_sibling);
 	}
 
@@ -437,3 +420,4 @@ match_node_data_by_repr(gconstpointer data_p, gconstpointer repr)
 {
 	return ((const NodeData *)data_p)->repr != (const SPRepr *)repr;
 }
+

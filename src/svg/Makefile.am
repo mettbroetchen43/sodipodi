@@ -8,6 +8,7 @@
 
 INCLUDES = \
 	-I.. \
+	-I$(top_srcdir)/src \
 	$(SODIPODI_CFLAGS) \
 	-I$(includedir)
 

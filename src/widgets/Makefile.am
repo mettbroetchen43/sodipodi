@@ -7,6 +7,7 @@ gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
 	-I.. \
+	-I$(top_srcdir)/src \
 	$(SODIPODI_CFLAGS) \
 	-DSODIPODI_PIXMAPDIR=\""$(gladedir)"\"
 
@@ -31,6 +32,7 @@ libspwidgets_a_SOURCES = \
 	sp-xmlview-tree.c sp-xmlview-tree.h \
 	sp-xmlview-attr-list.c sp-xmlview-attr-list.h \
 	sp-xmlview-content.c sp-xmlview-content.h \
+	spw-utilities.c spw-utilities.h \
 	sp-widget.c sp-widget.h
 
 #	sp-value-winder.c sp-value-winder.h
