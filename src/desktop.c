@@ -520,7 +520,7 @@ sp_desktop_set_event_context (SPDesktop *dt, GtkType type, const unsigned char *
 		g_object_unref (G_OBJECT (ec));
 	}
 
-	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
+	repr = sp_config_node_get (config, TRUE);
 	ec = sp_event_context_new (type, dt, repr, SP_EVENT_CONTEXT_STATIC);
 	ec->next = dt->event_context;
 	dt->event_context = ec;
@@ -808,8 +808,8 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	gtk_spin_button_set_update_policy (GTK_SPIN_BUTTON (dtw->zoom_status), GTK_UPDATE_ALWAYS);
 	g_signal_connect (G_OBJECT (dtw->zoom_status), "input", G_CALLBACK (sp_dtw_zoom_input), dtw);
 	g_signal_connect (G_OBJECT (dtw->zoom_status), "output", G_CALLBACK (sp_dtw_zoom_output), dtw);
-	dtw->zoom_update = g_signal_connect (G_OBJECT (dtw->zoom_status), "value_changed", G_CALLBACK (sp_dtw_zoom_value_changed), dtw);
-	dtw->zoom_update = g_signal_connect (G_OBJECT (dtw->zoom_status), "populate_popup", G_CALLBACK (sp_dtw_zoom_populate_popup), dtw);
+	dtw->zoom_update_id = g_signal_connect (G_OBJECT (dtw->zoom_status), "value_changed", G_CALLBACK (sp_dtw_zoom_value_changed), dtw);
+	dtw->zoom_update_id = g_signal_connect (G_OBJECT (dtw->zoom_status), "populate_popup", G_CALLBACK (sp_dtw_zoom_populate_popup), dtw);
 	gtk_box_pack_end (GTK_BOX (hbox), dtw->zoom_status, FALSE, FALSE, 0);
 
 	/* connecting canvas, scrollbars, rulers, statusbar */
@@ -1109,14 +1109,14 @@ sp_desktop_widget_namedview_modified (SPNamedView *nv, guint flags, SPDesktopWid
 static void
 sp_desktop_widget_adjustment_value_changed (GtkAdjustment *adj, SPDesktopWidget *dtw)
 {
-	if (dtw->update) return;
+	if (dtw->scroll_update) return;
 
-	dtw->update = 1;
+	dtw->scroll_update = 1;
 
 	sp_canvas_scroll_to (dtw->canvas, dtw->hadj->value, dtw->vadj->value, FALSE);
 	sp_desktop_widget_update_rulers (dtw);
 
-	dtw->update = 0;
+	dtw->scroll_update = 0;
 }
 
 /* we make the desktop window with focus active, signal is connected in interface.c */
@@ -1422,8 +1422,8 @@ sp_desktop_update_scrollbars (SPDesktop *dt)
 	dtw = g_object_get_data (G_OBJECT (dt), "widget");
 	if (!dtw) return;
 
-	if (dtw->update) return;
-	dtw->update = 1;
+	if (dtw->scroll_update) return;
+	dtw->scroll_update = 1;
 
 	doc = SP_VIEW_DOCUMENT (dt);
 	scale = SP_DESKTOP_ZOOM (dt);
@@ -1458,7 +1458,7 @@ sp_desktop_update_scrollbars (SPDesktop *dt)
 			(viewbox.y1 - viewbox.y0));
 	gtk_adjustment_set_value (dtw->vadj, viewbox.y0);
 
-	dtw->update = 0;
+	dtw->scroll_update = 0;
 }
 
 static void
@@ -1487,19 +1487,23 @@ void
 sp_dtw_zoom_value_changed (GtkSpinButton *spin, gpointer data)
 {
 	NRRectF d;
-	float zoom_factor;
+	double zoom, newzoom, delta;
 	SPDesktop *desktop;
 	SPDesktopWidget *dtw;
-
-	zoom_factor = pow (2, gtk_spin_button_get_value (spin));
 
 	dtw = SP_DESKTOP_WIDGET (data);
 	desktop = dtw->desktop;
 
-	sp_desktop_get_display_area (desktop, &d);
-	g_signal_handler_block (spin, dtw->zoom_update);
-	sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, zoom_factor);
-	g_signal_handler_unblock (spin, dtw->zoom_update);
+	zoom = SP_DESKTOP_ZOOM (desktop);
+	newzoom = pow (2, gtk_spin_button_get_value (spin));
+	delta = zoom / newzoom - 1.0;
+
+	if (fabs (delta) > 0.001) {
+		sp_desktop_get_display_area (desktop, &d);
+		g_signal_handler_block (spin, dtw->zoom_update_id);
+		sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, newzoom);
+		g_signal_handler_unblock (spin, dtw->zoom_update_id);
+	}
 }
 
 void

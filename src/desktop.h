@@ -128,14 +128,15 @@ unsigned int sp_desktop_write_length (SPDesktop *dt, unsigned char *c, unsigned 
 struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
 
-	unsigned int update : 1;
+	unsigned int scroll_update : 1;
+	unsigned int zoom_update : 1;
 
 	unsigned int decorations : 1;
 	unsigned int statusbar : 1;
 
 	SPDesktop *desktop;
 
-        GtkWidget *mbtn;
+	GtkWidget *mbtn;
 
 	GtkWidget *hscrollbar, *vscrollbar;
 
@@ -146,11 +147,11 @@ struct _SPDesktopWidget {
 
 	GtkWidget *sticky_zoom;
 	GtkWidget *coord_status;
-        GtkWidget *select_status;
-        GtkWidget *zoom_status;
-	gulong zoom_update;
+	GtkWidget *select_status;
+	GtkWidget *zoom_status;
+	gulong zoom_update_id;
 
-        gint coord_status_id, select_status_id;
+	gint coord_status_id, select_status_id;
 
 	SPCanvas *canvas;
 
