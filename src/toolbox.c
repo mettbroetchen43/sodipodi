@@ -59,8 +59,10 @@ static GtkWidget *sp_toolbox_edit_create (void);
 static GtkWidget *sp_toolbox_draw_create (void);
 static GtkWidget *sp_toolbox_object_create (void);
 static GtkWidget *sp_toolbox_selection_create (void);
+#ifndef WITH_MODULES
 #ifdef WITH_EXTENSIONS_TOOLBOX
 static GtkWidget *sp_toolbox_extension_create (void);
+#endif
 #endif
 static GtkWidget *sp_toolbox_zoom_create (void);
 static GtkWidget *sp_toolbox_node_create (void);
@@ -168,11 +170,13 @@ sp_maintoolbox_new (void)
 		}
 	}
 	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
+#ifndef WITH_MODULES
 #ifdef WITH_EXTENSIONS_TOOLBOX
 	/* Extension */
 	t = sp_toolbox_extension_create ();
 	gtk_widget_show (t);
 	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+#endif
 #endif
 	/* Zoom */
 	t = sp_toolbox_zoom_create ();
@@ -535,6 +539,7 @@ sp_toolbox_draw_create (void)
 	return tb;
 }
 
+#ifndef WITH_MODULES
 #ifdef WITH_EXTENSIONS_TOOLBOX
 
 static GtkWidget *
@@ -586,6 +591,7 @@ sp_toolbox_extension_create (void)
 	return tb;
 }
 #endif
+#endif /* !WITH_MODULES */
 
 static GtkWidget *
 sp_toolbox_zoom_create (void)
@@ -705,7 +711,7 @@ sp_maintoolbox_open_one_file_with_check (gpointer filename, gpointer unused)
 		int len;
 		len = strlen (filename);
 		if (len > 4 && !strcmp ((char *) filename + len - 4, svg_suffix)) {
-			sp_file_open (filename);
+			sp_file_open (filename, NULL);
 		}
 	}
 }

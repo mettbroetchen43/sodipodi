@@ -25,6 +25,8 @@ typedef struct _SPMenuClass SPMenuClass;
 struct _SPMenu {
 	GtkMenu menu;
 
+	gpointer activedata;
+
 	GtkTooltips *tt;
 };
 

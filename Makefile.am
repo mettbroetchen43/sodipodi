@@ -1,6 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src glade po
+if USE_MODULES
+extensions_subdirs = extensions
+endif
+
+SUBDIRS = src glade po $(extensions_subdirs)
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png

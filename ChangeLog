@@ -1,5 +1,11 @@
 2003-03-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* extensions/*: Put various unsorted extensions stuff here
+
+	* src/module.c: New file
+
+	* src/module.h: New file
+
 	* src/draw-context.c (sp_draw_context_root_handler): Use 'a' instead of '+'
 	as append/new toggle
 	(spdc_concat_colors_and_flush): Cut continuation tolerance to avoid extra points at corners

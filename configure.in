@@ -176,6 +176,17 @@ PKG_CHECK_MODULES(SODIPODI, gtk+-2.0 >= 2.0.0  libart-2.0 >= 2.3.10  libxml-2.0 
 SODIPODI_LIBS="$SODIPODI_LIBS $POPT_LIBS -lpng -lz"
 
 dnl ******************************
+dnl   Plugin Support
+dnl ******************************
+
+AC_ARG_WITH(modules, AC_HELP_STRING([--with-modules], [Compile with plugin support (experimental)]), [mod=$withval], [mod=no])
+
+AM_CONDITIONAL(USE_MODULES, test "x$mod" = "xyes")
+if test "x$mod" = "xyes"; then
+	AC_DEFINE(WITH_MODULES, 1, [Use experimental module support])
+fi
+
+dnl ******************************
 dnl Frontline/Autotrace support
 dnl ******************************
 dnl ifdef([AM_PATH_FRONTLINE],
@@ -244,6 +255,8 @@ fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
+dnl Have to add module makefiles (lauris)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
@@ -255,6 +268,8 @@ src/widgets/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
+src/modules/Makefile
+extensions/Makefile
 po/Makefile.in
 glade/Makefile
 sodipodi.spec
@@ -272,5 +287,6 @@ Configuration:
         Use Xft font database:    ${xft_ok}
         Use gnome-print:          ${gp}
         Use MMX optimizations:    ${use_mmx_asm}
+	Use modules:              ${mod}
 "
 

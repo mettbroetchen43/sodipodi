@@ -283,6 +283,18 @@ sodipodi_dispose (GObject *object)
 	gtk_main_quit ();
 }
 
+void
+sodipodi_ref (void)
+{
+	g_object_ref (G_OBJECT (sodipodi));
+}
+
+void
+sodipodi_unref (void)
+{
+	g_object_unref (G_OBJECT (sodipodi));
+}
+
 static void
 sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop)
 {

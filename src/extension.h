@@ -14,7 +14,6 @@
 
 void sp_extension(GtkWidget * widget);
 
-
 #endif
 
 

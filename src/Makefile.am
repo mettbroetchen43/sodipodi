@@ -1,11 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-#if BONOBO
-#bonobo_subdirs = bonobo
-#bonobo_libs = bonobo/libspbonobo.a
-#endif
+if USE_MODULES
+module_subdirs = modules
+module_libs = modules/libspmodules.a
+module_src = module.c module.h
+else
+extensions_src = extension.c extension.h
+endif
 
-SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display
+SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
 
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
@@ -116,7 +119,8 @@ sodipodi_SOURCES = \
 	print.c print.h \
 	interface.c interface.h \
 	slideshow.c slideshow.h \
-	extension.c extension.h \
+	$(module_src) \
+	$(extensions_src) \
 	\
 	preferences-skeleton.h \
 	extensions-skeleton.h
@@ -130,7 +134,8 @@ sodipodi_private_libs = \
 	helper/libspchelp.a \
 	libnrtype/libnrtype.a \
 	libnr/libnr.a \
-	libnrtype/libnrtype.a
+	libnrtype/libnrtype.a \
+	$(module_libs)
 
 
 sodipodi_LDADD = \
