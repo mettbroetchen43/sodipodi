@@ -39,9 +39,12 @@ struct _NRLGradientRenderer {
 	float dx, dy;
 };
 
-/* v2px is from 0,1 normalized vector space */
-
-NRLGradientRenderer *nr_lgradient_renderer_setup (NRLGradientRenderer *lgr, const unsigned char *cv, unsigned int spread, const NRMatrixF *v2px);
+NRLGradientRenderer *nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
+						  const unsigned char *cv, 
+						  unsigned int spread, 
+						  const NRMatrixF *gs2px,
+						  float x0, float y0,
+						  float x1, float y1);
 
 void nr_lgradient_render (NRLGradientRenderer *lgr, NRPixBlock *pb);
 

@@ -543,7 +543,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 {
 	GtkWidget *widget;
 	gdouble xs, ys, xp, yp;
-	gdouble v2bb[6], bb2d[6], n2d[6];
+	gdouble bb2d[6], n2d[6];
 	NRMatrixF v2px;
 
 	widget = GTK_WIDGET (pos);
@@ -577,6 +577,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	if (!pos->cv) pos->cv = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
 	sp_gradient_render_vector_line_rgba (pos->gradient, pos->cv, NR_GRADIENT_VECTOR_LENGTH, 0 , NR_GRADIENT_VECTOR_LENGTH);
 
+#if 0
 	/* Vector -> BBox */
 	v2bb[0] = pos->p1.x - pos->p0.x;
 	v2bb[1] = pos->p1.y - pos->p0.y;
@@ -584,6 +585,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	v2bb[3] = pos->p0.x - pos->p1.x;
 	v2bb[4] = pos->p0.x;
 	v2bb[5] = pos->p0.y;
+#endif
 	/* BBox -> buffer */
 	bb2d[0] = pos->vbox.x1 - pos->vbox.x0;
 	bb2d[1] = 0.0;
@@ -591,8 +593,12 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	bb2d[3] = pos->vbox.y1 - pos->vbox.y0;
 	bb2d[4] = pos->vbox.x0;
 	bb2d[5] = pos->vbox.y0;
+#if 0
 	art_affine_multiply (n2d, v2bb, pos->transform);
 	art_affine_multiply (n2d, n2d, bb2d);
+#else
+	art_affine_multiply (n2d, pos->transform, bb2d);
+#endif
 
 	v2px.c[0] = n2d[0];
 	v2px.c[1] = n2d[1];
@@ -601,7 +607,8 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	v2px.c[4] = n2d[4];
 	v2px.c[5] = n2d[5];
 
-	nr_lgradient_renderer_setup (&pos->lgr, pos->cv, pos->spread, &v2px);
+	nr_lgradient_renderer_setup (&pos->lgr, pos->cv, pos->spread, &v2px,
+				     pos->p0.x, pos->p0.y, pos->p1.x, pos->p1.y);
 }
 
 static void

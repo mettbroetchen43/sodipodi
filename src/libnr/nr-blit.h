@@ -16,4 +16,6 @@
 
 void nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s);
 
+void nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRPixBlock *spb, const unsigned char *s);
+
 #endif

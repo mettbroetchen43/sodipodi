@@ -970,12 +970,12 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 			for (x = 0; x < width; x++) {
 				gint a, fc;
 				a = t[3];
-				fc = (t[0] - *buf) * a;
-				buf[0] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
-				fc = (t[1] - *buf) * a;
-				buf[1] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
-				fc = (t[2] - *buf) * a;
-				buf[2] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[0] - buf[0]) * a;
+				buf[0] = buf[0] + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[1] - buf[1]) * a;
+				buf[1] = buf[1] + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[2] - buf[2]) * a;
+				buf[2] = buf[2] + ((fc + (fc >> 8) + 0x80) >> 8);
 				buf += 3;
 				t += 4;
 			}
@@ -992,12 +992,12 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 			for (x = 0; x < width; x++) {
 				gint a, fc;
 				a = t[3];
-				fc = (t[0] - *buf) * a;
-				buf[0] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
-				fc = (t[1] - *buf) * a;
-				buf[1] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
-				fc = (t[2] - *buf) * a;
-				buf[2] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[0] - buf[0]) * a;
+				buf[0] = buf[0] + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[1] - buf[1]) * a;
+				buf[1] = buf[1] + ((fc + (fc >> 8) + 0x80) >> 8);
+				fc = (t[2] - buf[2]) * a;
+				buf[2] = buf[2] + ((fc + (fc >> 8) + 0x80) >> 8);
 			}
 		}
 	}
@@ -1196,6 +1196,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		gdouble norm2pos[6], bbox2user[6];
 		gdouble color2pos[6], color2tpos[6], color2user[6];
 
+#if 0
 		/* This is easy case, as we can just ignore percenting here */
 		/* fixme: Still somewhat tricky, but I think I got it correct (lauris) */
 		norm2pos[0] = lg->x2.computed - lg->x1.computed;
@@ -1205,6 +1206,9 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		norm2pos[4] = lg->x1.computed;
 		norm2pos[5] = lg->y1.computed;
 		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
+#else
+		art_affine_identity (norm2pos);
+#endif
 
 		/* gradientTransform goes here (Lauris) */
 		SP_PRINT_TRANSFORM ("gradientTransform", gr->transform);
@@ -1244,6 +1248,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		/* Problem: What to do, if we have mixed lengths and percentages? */
 		/* Currently we do ignore percentages at all, but that is not good (lauris) */
 
+#if 0
 		/* fixme: Do percentages (Lauris) */
 		norm2pos[0] = lg->x2.computed - lg->x1.computed;
 		norm2pos[1] = lg->y2.computed - lg->y1.computed;
@@ -1252,6 +1257,9 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		norm2pos[4] = lg->x1.computed;
 		norm2pos[5] = lg->y1.computed;
 		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
+#else
+		art_affine_identity (norm2pos);
+#endif
 
 		/* gradientTransform goes here (Lauris) */
 		SP_PRINT_TRANSFORM ("gradientTransform", gr->transform);
@@ -1283,7 +1291,8 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 	v2px.c[4] = color2px[4];
 	v2px.c[5] = color2px[5];
 
-	nr_lgradient_renderer_setup (&lgp->lgr, gr->color, gr->spread, &v2px);
+	nr_lgradient_renderer_setup (&lgp->lgr, gr->color, gr->spread, &v2px,
+				     lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
 
 	return (SPPainter *) lgp;
 }

@@ -1,3 +1,13 @@
+2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-gradient.c (nr_lgradient_renderer_setup): Use gradientspace
+	(nr_lgradient_render_block): Use generic renderer, if no specific one
+	(nr_lgradient_render_generic): Implement
+
+	* src/sp-gradient.c (sp_gradient_render_vector_block_rgb): Compose correctly
+
+	* src/libnr/nr-blit.c (nr_compose_pixblock_pixblock_pixel): Generic pixel composer
+
 2002-09-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-gradient.c: New file
