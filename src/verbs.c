@@ -432,6 +432,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_SELECTION_UNGROUP, "SelectionUnGroup", N_("Ungroup"), N_("Ungroup selected group"), "selection_ungroup"},
 	{SP_VERB_SELECTION_COMBINE, "SelectionCombine", N_("Combine"), N_("Combine multiple paths"), "selection_combine"},
 	{SP_VERB_SELECTION_BREAK_APART, "SelectionBreakApart", N_("Break Apart"), N_("Break selected path to subpaths"), "selection_break"},
+	{SP_VERB_SELECTION_UNCROSS, "SelectionUncross", N_("Uncross"), N_("Break selected path at crossings"), "selection_uncross"},
 	{SP_VERB_SELECTION_TRANSFORM, "SelectionTransform", N_("Transform"), N_("Applies transformation"), "selection_transform"},
 	/* Object */
 	{SP_VERB_OBJECT_ROTATE_90, "ObjectRotate90", N_("Rotate 90 degrees"), N_("Rotates object 90 degrees clockwise"), "object_rotate"},

@@ -7,9 +7,8 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2004 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
- * Copyright (C) 2002 Lauris Kaplinski
  *
  * Released under GNU GPL
  */
@@ -29,7 +28,7 @@ typedef struct _SPDrawContext SPDrawContext;
 typedef struct _SPDrawContextClass SPDrawContextClass;
 typedef struct _SPDrawAnchor SPDrawAnchor;
 
-#define SP_DRAW_POINTS_MAX 16
+#define SP_DRAW_POINTS_MAX 1024
 
 struct _SPDrawContext {
 	SPEventContext event_context;
@@ -37,7 +36,8 @@ struct _SPDrawContext {
 	SPSelection *selection;
 	SPCanvasItem *grab;
 
-	guint attach : 1;
+	unsigned int attach : 1;
+	unsigned int max_points : 16;
 
 	guint32 red_color;
 	guint32 blue_color;
@@ -67,7 +67,7 @@ struct _SPDrawContext {
 	SPDrawAnchor *ea;
 
 	NRPointF p[SP_DRAW_POINTS_MAX];
-	gint npoints;
+	int npoints;
 };
 
 struct _SPDrawContextClass {

@@ -10,68 +10,60 @@
  * This code is in public domain
  */
 
+#include <libnr/nr-types.h>
 #include <libnr/nr-path.h>
 
-typedef struct _NRNodePathGroup NRNodePathGroup;
-typedef struct _NRNodePath NRNodePath;
-typedef struct _NRNode NRNode;
-typedef struct _NRConnection NRConnection;
-
-struct _NRConnection {
-	NRNode *node;
-	unsigned int isline : 1;
-	double x, y;
+struct _NRFlatNode {
+	struct _NRFlatNode *next;
+	struct _NRFlatNode *prev;
+	double s;
+	float x, y;
 };
 
 struct _NRNode {
-	/* Linking is only used to temporarily join coincident nodes */
-	NRNode *next;
-	NRNode *prev;
-	unsigned int value : 24;
-	unsigned int isfirst : 1;
-	unsigned int islast : 1;
-	double x, y;
-	unsigned int nconnections;
-	NRConnection connections[2];
+	struct _NRNode *next;
+	struct _NRNode *prev;
+	float x1, y1, x2, y2, x3, y3;
+	unsigned int isline : 1;
+	struct _NRFlatNode *flats;
+};
+
+struct _NRNodeSeg {
+	struct _NRNode *nodes;
+	struct _NRNode *last;
+	unsigned int closed : 1;
+	unsigned int value : 8;
 };
 
 struct _NRNodePath {
-	NRNode *nodes;
-	unsigned int value : 24;
-	unsigned int closed : 1;
+	unsigned int nsegs;
+	struct _NRNodeSeg segs[1];
 };
 
-struct _NRNodePathGroup {
-	unsigned int npaths;
-	NRNodePath paths[1];
-};
+struct _NRNodePath *nr_node_path_new_from_path (const NRPath *path, unsigned int value);
+void nr_node_path_free (struct _NRNodePath *npath);
 
-NRNodePathGroup *nr_node_path_group_from_path (NRPath *path);
-NRNodePathGroup *nr_node_path_group_free (NRNodePathGroup *npg);
+struct _NRNodePath *nr_node_path_concat (struct _NRNodePath *paths[], unsigned int npaths);
 
-void nr_node_path_group_join_coincident (NRNodePathGroup *npg);
+struct _NRNodePath *nr_node_path_uncross (struct _NRNodePath *path);
 
-NRPath *nr_path_new_from_node_path_group (NRNodePathGroup *npg);
+/*
+ * Returns TRUE if segments intersect
+ * nda and ndb are number of intersection points on segment a and b
+ * (0-1 if intersect, 0-2 if coincident)
+ * ca and cb are ordered arrays of intersection points
+ */
 
-/* Lala */
+unsigned int nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b1,
+					    unsigned int *nda, NRPointD *ca, unsigned int *ndb, NRPointD *cb);
 
-int nr_path_intersect_self (double path[], double pos[], double tolerance);
+/* Memory management */
 
-typedef struct _NRPathSeg NRPathSeg;
+struct _NRNode *nr_node_new_line (float x3, float y3);
+struct _NRNode *nr_node_new_curve (float x1, float y1, float x2, float y2, float x3, float y3);
+void nr_node_free (struct _NRNode *node);
 
-struct _NRPathSeg {
-	NRPathSeg *next;
-	unsigned int value : 24;
-	unsigned int iscurve : 1;
-	unsigned int isfirst : 1;
-	unsigned int islast : 1;
-	double x0, y0, x1, y1, x2, y2;
-};
-
-NRPathSeg *nr_path_seg_new_curve (NRPathSeg *next, unsigned int value, unsigned int isfirst, unsigned int islast,
-				  double x0, double y0, double x1, double y1, double x2, double y2);
-NRPathSeg *nr_path_seg_new_line (NRPathSeg *next, unsigned int value, unsigned int isfirst, unsigned int islast,
-				 double x0, double y0);
-void nr_path_seg_free (NRPathSeg *seg);
+struct _NRFlatNode *nr_flat_node_new (float x, float y, double s);
+void nr_flat_node_free (struct _NRFlatNode *node);
 
 #endif

@@ -24,15 +24,18 @@
 
 #include <math.h>
 #include <stdlib.h>
+
+#include <glib.h>
+
 #include "bezier-utils.h"
 
-typedef NRPointF * BezierCurve;
+/* typedef NRPointF * BezierCurve; */
 
 /* Forward declarations */
-static void GenerateBezier (NRPointF *b, const NRPointF *d, gdouble *uPrime, gint len, const NRPointF *tHat1, const NRPointF *tHat2);
-static gdouble * Reparameterize(const NRPointF * d, gint first, gint last, gdouble * u, BezierCurve bezCurve);
-static gdouble NewtonRaphsonRootFind(BezierCurve Q, NRPointF P, gdouble u);
-static void BezierII (gint degree, NRPointF * V, gdouble t, NRPointF *result);
+static void GenerateBezier (NRPointF *b, const NRPointF *d, double *uPrime, int len, const NRPointF *tHat1, const NRPointF *tHat2);
+static void Reparameterize (const NRPointF *d, double *u, int first, int last, NRPointF *bezCurve);
+static double NewtonRaphsonRootFind (NRPointF *Q, NRPointF P, double u);
+static void BezierII (int degree, const NRPointF *bezCurve, double t, NRPointF *result);
 
 /*
  *  B0, B1, B2, B3 : Bezier multipliers
@@ -43,14 +46,14 @@ static void BezierII (gint degree, NRPointF * V, gdouble t, NRPointF *result);
 #define B2(u) (3 * u * u * (1.0 - u))
 #define B3(u) (u * u * u)
 
-static void ChordLengthParameterize(const NRPointF *d, gdouble *u, gint len);
-static gdouble ComputeMaxError (const NRPointF *d, gdouble *u, gint len, const BezierCurve bezCurve, gint *splitPoint);
+static void ChordLengthParameterize (const NRPointF *d, double *u, int len);
+static double ComputeMaxError (const NRPointF *d, double *u, int len, const NRPointF *bezCurve, int *splitPoint);
 
 /* Vector operations */
 
 static void sp_vector_add (const NRPointF *a, const NRPointF *b, NRPointF *result);
 static void sp_vector_sub (const NRPointF *a, const NRPointF *b, NRPointF *result);
-static void sp_vector_scale (const NRPointF *v, gdouble s, NRPointF *result);
+static void sp_vector_scale (const NRPointF *v, double s, NRPointF *result);
 static unsigned int sp_vector_normalize (NRPointF *v);
 static void sp_vector_negate (NRPointF *v);
 
@@ -79,25 +82,39 @@ static void sp_vector_negate (NRPointF *v);
  * Returns number of segments generated or -1 on error
  */
 
-gint
-sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble error)
+int
+sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, int len, double error)
 {
-	NRPointF    tHat1;
-	NRPointF    tHat2;
-	gint        fill;
-	
+	NRPointF tHat1;
+	NRPointF tHat2;
+	int fill;
+#ifdef __USE_ISOC99
+	int i;
+#endif
+
 	g_return_val_if_fail (bezier != NULL, -1);
 	g_return_val_if_fail (data != NULL, -1);
 	g_return_val_if_fail (len > 0, -1);
 
+#ifdef __USE_ISOC99
+	for (i = 0; i < len; i++) {
+		g_assert (isfinite (data[i].x));
+		g_assert (isfinite (data[i].y));
+	}
+#endif
+
 	if (len < 2) return 0;
+
+	if ((len == 3) && (data[0].x == data[2].x) && (data[0].y == data[2].y)) {
+		g_warning ("Gotcha\n");
+	}
 
 	if (!sp_darray_left_tangent (data, 0, len, &tHat1)) return 0;
 	if (!sp_darray_right_tangent (data, len - 1, len, &tHat2)) return 0;
 	
 	/* call fit-cubic function without recursion */
-	fill = sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2,error, 1);
-	
+	fill = sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2, error, 1);
+
 	return fill;
 }
 
@@ -113,16 +130,26 @@ sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble e
  *        where 1 block size = 4 * sizeof(NRPointF)
  *      -1 if failed.
  */
-gint
-sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, gint len, gdouble error, gint max_depth)
+int
+sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, int len, double error, int max_depth)
 {
-	NRPointF    tHat1;
-	NRPointF    tHat2;
+	NRPointF tHat1;
+	NRPointF tHat2;
+#ifdef __USE_ISOC99
+	int i;
+#endif
 	
 	g_return_val_if_fail (bezier != NULL, -1);
 	g_return_val_if_fail (data != NULL, -1);
 	g_return_val_if_fail (len > 0, -1);
 	g_return_val_if_fail (max_depth >= 0, -1);
+
+#ifdef __USE_ISOC99
+	for (i = 0; i < len; i++) {
+		g_assert (isfinite (data[i].x));
+		g_assert (isfinite (data[i].y));
+	}
+#endif
 
 	if (len < 2) return 0;
 
@@ -133,13 +160,13 @@ sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, gint len, gdouble
 	return sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2, error, max_depth);
 }
 
-gint
-sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
-			  NRPointF *tHat1, NRPointF *tHat2, gdouble error, gint max_depth)
+int
+sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, int len,
+			  NRPointF *tHat1, NRPointF *tHat2, double error, int max_depth)
 {
 	double *u;		/* Parameter values for point */
-	double *u_alloca;	/* Just for memory management */
-	double *uPrime;		/* Improved parameter values */
+	/* double *u_alloca; */ /* Just for memory management */
+	/* double *uPrime; */ /* Improved parameter values */
 	double maxError;	/* Maximum fitting error */
 	int splitPoint;		/* Point to split point set at */
 	double iterationError;  /* Error below which you try iterating (squared) */
@@ -153,6 +180,13 @@ sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
 	g_return_val_if_fail (tHat1 != NULL, -1);
 	g_return_val_if_fail (tHat2 != NULL, -1);
 	g_return_val_if_fail (max_depth >= 0, -1);
+
+#ifdef __USE_ISOC99
+	for (i = 0; i < len; i++) {
+		g_assert (isfinite (data[i].x));
+		g_assert (isfinite (data[i].y));
+	}
+#endif
 
 	if (len < 2) return 0;
 
@@ -173,7 +207,7 @@ sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
 	}
 	
 	/*  Parameterize points, and attempt to fit curve */
-	u = alloca (len * sizeof (gdouble));
+	u = alloca (len * sizeof (double));
 	ChordLengthParameterize (data, u, len);
 	GenerateBezier (bezier, data, u, len, tHat1, tHat2);
 	
@@ -187,24 +221,26 @@ sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
 
 	/*  If error not too large, try some reparameterization  */
 	/*  and iteration */
-	u_alloca = u;
+
+	/* u_alloca = u; */
 	if (maxError < iterationError) {
 		for (i = 0; i < maxIterations; i++) {
-			uPrime = Reparameterize(data, 0, len - 1, u, bezier);
-			GenerateBezier (bezier, data, uPrime, len, tHat1, tHat2);
-			maxError = ComputeMaxError(data, uPrime, len, bezier, &splitPoint);
-			if (u != u_alloca)
-				g_free(u);
+			/* uPrime = Reparameterize (data, 0, len - 1, u, bezier); */
+			Reparameterize (data, u, 0, len - 1, bezier);
+			/* GenerateBezier (bezier, data, uPrime, len, tHat1, tHat2); */
+			GenerateBezier (bezier, data, u, len, tHat1, tHat2);
+			/* maxError = ComputeMaxError(data, uPrime, len, bezier, &splitPoint); */
+			maxError = ComputeMaxError(data, u, len, bezier, &splitPoint);
+			/* if (u != u_alloca) g_free(u); */
 			if (maxError < error) {
 				BEZIER_ASSERT (bezier);
-				g_free (uPrime);
+				/* g_free (uPrime); */
 				return 1;
 			}
-			u = uPrime;
+			/* u = uPrime; */
 		}
 	}
-	if (u != u_alloca)
-		g_free(u);
+	/* if (u != u_alloca) g_free(u); */
 	
 	if (max_depth > 1)
 	{
@@ -212,7 +248,7 @@ sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
 		 *  Fitting failed -- split at max error point and fit recursively
 		 */
 		NRPointF	tHatCenter; /* Unit tangent vector at splitPoint */
-		gint  depth1, depth2;
+		int  depth1, depth2;
 		
 		max_depth--;
 		
@@ -251,7 +287,7 @@ sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
  *
  */
 static void
-GenerateBezier (NRPointF *bezier, const NRPointF *data, gdouble *uPrime, gint len, const NRPointF *tHat1, const NRPointF *tHat2)
+GenerateBezier (NRPointF *bezier, const NRPointF *data, double *uPrime, int len, const NRPointF *tHat1, const NRPointF *tHat2)
 {
 	int 	i;
 	NRPointF 	A[MAXPOINTS][2]; /* Precomputed rhs for eqn	*/
@@ -320,7 +356,7 @@ GenerateBezier (NRPointF *bezier, const NRPointF *data, gdouble *uPrime, gint le
 	/* (if alpha is 0, you get coincident control points that lead to
 	 * divide by zero in any subsequent NewtonRaphsonRootFind() call. */
 	if (alpha_l < 1.0e-6 || alpha_r < 1.0e-6) {
-		gdouble dist;
+		double dist;
 		
 		dist = hypot (data[len - 1].x - data[0].x, data[len - 1].y - data[0].y) / 3.0;
 		
@@ -343,34 +379,17 @@ GenerateBezier (NRPointF *bezier, const NRPointF *data, gdouble *uPrime, gint le
 }
 
 /*
- *  Reparameterize:
- *	Given set of points and their parameterization, try to find
- *   a better parameterization.
- *
+ * Given set of points and their parameterization, try to find a better parameterization.
  */
-static gdouble *
-Reparameterize(const NRPointF *d,
-	       gint            first,
-	       gint            last,
-	       gdouble        *u,
-	       BezierCurve     bezCurve)
+
+static void
+Reparameterize (const NRPointF *d, double *u, int first, int last, NRPointF *bezCurve)
 {
-#if 0
-	Point2	*d;		/*  Array of digitized points	*/
-	int	 first, last; /*  Indices defining region	*/
-	double	*u;		/*  Current parameter values	*/
-	BezierCurve	bezCurve; /*  Current fitted curve	*/
-#endif
-	int 	nPts = last-first+1;	
-	int 	i;
-	gdouble	*uPrime;	/*  New parameter values	*/
-	
-	uPrime = g_new (gdouble, nPts);
+	int i;
 	
 	for (i = first; i <= last; i++) {
-		uPrime[i-first] = NewtonRaphsonRootFind(bezCurve, d[i], u[i- first]);
+		u[i] = NewtonRaphsonRootFind (bezCurve, d[i], u[i]);
 	}
-	return (uPrime);
 }
 
 /*
@@ -383,19 +402,19 @@ Reparameterize(const NRPointF *d,
  *  Return value:
  *      Improved u
  */
-static gdouble
-NewtonRaphsonRootFind(BezierCurve Q, NRPointF P, gdouble u)
+static double
+NewtonRaphsonRootFind (NRPointF *Q, NRPointF P, double u)
 {
-	double 		numerator, denominator;
-	NRPointF 		Q1[3], Q2[2];	/*  Q' and Q''			*/
-	NRPointF		Q_u, Q1_u, Q2_u; /*u evaluated at Q, Q', & Q''	*/
-	double 		uPrime;		/*  Improved u			*/
-	int 		i;
+	double numerator, denominator;
+	NRPointF Q1[3], Q2[2];	/*  Q' and Q''			*/
+	NRPointF Q_u, Q1_u, Q2_u; /*u evaluated at Q, Q', & Q''	*/
+	double uPrime;		/*  Improved u			*/
+	int i;
 
 	DOUBLE_ASSERT (u);
 	
 	/* Compute Q(u)	*/
-	BezierII(3, Q, u, &Q_u);
+	BezierII (3, Q, u, &Q_u);
 	
 	/* Generate control vertices for Q'	*/
 	for (i = 0; i <= 2; i++) {
@@ -421,38 +440,31 @@ NewtonRaphsonRootFind(BezierCurve Q, NRPointF P, gdouble u)
 	/* u = u - f(u)/f'(u) */
 	uPrime = u - (numerator/denominator);
 	DOUBLE_ASSERT (uPrime);
-	return (uPrime);
+	return uPrime;
 }
 
 /*
- *  Bezier :
- *  	Evaluate a Bezier curve at a particular parameter value
- * 
+ * Evaluate a Bezier curve at a particular parameter value
  */
+
 static void
-BezierII (gint degree, NRPointF * V, gdouble t, NRPointF *Q)
+BezierII (int degree, const NRPointF *bezCurve, double t, NRPointF *Q)
 {
-	/* NRPointF 	Q;	        Point on curve at parameter t	*/
-	int 	i, j;		
-	NRPointF 	*Vtemp;	/* Local copy of control points		*/
+	int i, j;		
+	NRPointF *Vtemp;
 	
-	/* Copy array	*/
-	Vtemp = g_new (NRPointF, degree + 1);
-	
-	for (i = 0; i <= degree; i++) {
-		Vtemp[i] = V[i];
-	}
+	Vtemp = alloca ((degree + 1) * sizeof (NRPointF));
+	for (i = 0; i <= degree; i++) Vtemp[i] = bezCurve[i];
 	
 	/* Triangle computation	*/
 	for (i = 1; i <= degree; i++) {	
-		for (j = 0; j <= degree-i; j++) {
-			Vtemp[j].x = (1.0 - t) * Vtemp[j].x + t * Vtemp[j+1].x;
-			Vtemp[j].y = (1.0 - t) * Vtemp[j].y + t * Vtemp[j+1].y;
+		for (j = 0; j <= degree - i; j++) {
+			Vtemp[j].x = (1.0 - t) * Vtemp[j].x + t * Vtemp[j + 1].x;
+			Vtemp[j].y = (1.0 - t) * Vtemp[j].y + t * Vtemp[j + 1].y;
 		}
 	}
 
 	*Q = Vtemp[0];
-	g_free (Vtemp);
 }
 
 /*
@@ -491,7 +503,7 @@ sp_darray_right_tangent (const NRPointF *d, int last, int len, NRPointF *tHat)
 
 void
 sp_darray_center_tangent (const NRPointF *d,
-			  gint            center,
+			  int            center,
 			  NRPointF       *tHatCenter)
 {
 	NRPointF	V1, V2;
@@ -511,9 +523,9 @@ sp_darray_center_tangent (const NRPointF *d,
  * Parameter array u has to be allocated with the same length as data
  */
 static void
-ChordLengthParameterize(const NRPointF *d, gdouble *u, gint len)
+ChordLengthParameterize(const NRPointF *d, double *u, int len)
 {
-	gint i;	
+	int i;	
 	
 	u[0] = 0.0;
 
@@ -541,8 +553,8 @@ ChordLengthParameterize(const NRPointF *d, gdouble *u, gint len)
  *	Find the maximum squared distance of digitized points
  *	to fitted curve.
 */
-static gdouble
-ComputeMaxError (const NRPointF *d, gdouble *u, gint len, const BezierCurve bezCurve, gint *splitPoint)
+static double
+ComputeMaxError (const NRPointF *d, double *u, int len, const NRPointF *bezCurve, int *splitPoint)
 {
 	int i;
 	double maxDist; /* Maximum error */
@@ -581,7 +593,7 @@ sp_vector_sub (const NRPointF *a, const NRPointF *b, NRPointF *c)
 }
 
 static void
-sp_vector_scale (const NRPointF *v, gdouble s, NRPointF *result)
+sp_vector_scale (const NRPointF *v, double s, NRPointF *result)
 {
 	result->x = v->x * s;
 	result->y = v->y * s;
@@ -590,7 +602,7 @@ sp_vector_scale (const NRPointF *v, gdouble s, NRPointF *result)
 static unsigned int
 sp_vector_normalize (NRPointF *v)
 {
-	gdouble len;
+	double len;
 
 	len = hypot (v->x, v->y);
 

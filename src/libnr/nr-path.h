@@ -41,7 +41,7 @@ union _NRPathElement {
 #define NR_PATH_ELEMENT_VALUE(e) ((e)->fval)
 
 #define NR_PATH_ELEMENT_SET_LENGTH(e,v) ((e)->uval = (((e)->uval & 0xff000000) | ((v) & 0xffffff)))
-#define NR_PATH_ELEMENT_SET_CLOSED(e,v) ((e)->uval = (((e)->uval & 0xfeffffff) | (v) ? 0x1000000 : 0))
+#define NR_PATH_ELEMENT_SET_CLOSED(e,v) ((e)->uval = (((e)->uval & 0xfeffffff) | ((v) ? 0x1000000 : 0)))
 #define NR_PATH_ELEMENT_SET_CODE(e,v) ((e)->uval = (((e)->uval & 0x01ffffff) | ((v) << 25)))
 #define NR_PATH_ELEMENT_SET_VALUE(e,v) ((e)->fval = (v))
 

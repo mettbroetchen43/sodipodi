@@ -299,3 +299,112 @@ sp_path_cleanup (SPPath *path)
 	sp_curve_unref (curve);
 }
 
+#include <libnr/nr-pathops.h>
+
+void
+sp_selected_path_uncross (void)
+{
+	SPDesktop *desktop;
+	SPSelection * selection;
+	GSList * il;
+	GSList * l;
+	SPRepr * repr;
+	SPItem * item;
+	SPPath * path;
+	SPCurve * c;
+	ArtBpath * abp;
+	gchar *str, * style;
+	struct _NRNodePath **npaths;
+	struct _NRNodePath *np, *nnp;
+	int numpaths, i;
+
+	sp_selected_path_to_curves0 (FALSE, 0);
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!SP_IS_DESKTOP(desktop)) return;
+	selection = SP_DT_SELECTION (desktop);
+
+	il = (GSList *) sp_selection_item_list (selection);
+
+	if (g_slist_length (il) < 2) return;
+
+	for (l = il; l != NULL; l = l->next) {
+		item = (SPItem *) l->data;
+		if (!SP_IS_SHAPE (item)) return;
+	}
+
+	il = g_slist_copy (il);
+
+	style = g_strdup (sp_repr_get_attr ((SP_OBJECT (il->data))->repr, "style"));
+
+	numpaths = g_slist_length (il);
+	npaths = g_new (struct _NRNodePath *, numpaths);
+
+	i = 0;
+	for (l = il; l != NULL; l = l->next) {
+		NRPath *nrp;
+
+		NRMatrixF i2root;
+		NRMatrixD i2rootd;
+
+		path = (SPPath *) l->data;
+		c = sp_shape_get_curve (SP_SHAPE (path));
+		sp_item_i2root_affine (SP_ITEM (path), &i2root);
+		nr_matrix_d_from_f (&i2rootd, &i2root);
+		abp = art_bpath_affine_transform (c->bpath, NR_MATRIX_D_TO_DOUBLE (&i2rootd));
+		sp_curve_unref (c);
+		nrp = nr_path_new_from_art_bpath (abp);
+		art_free (abp);
+
+		npaths[i] = nr_node_path_new_from_path (nrp, 0);
+
+		free (nrp);
+		sp_repr_unparent (SP_OBJECT_REPR (path));
+		i += 1;
+	}
+	g_slist_free (il);
+
+	np = nr_node_path_concat (npaths, numpaths);
+	for (i = 0; i < numpaths; i++) nr_node_path_free (npaths[i]);
+
+	g_free (npaths);
+
+	nnp = nr_node_path_uncross (np);
+	nr_node_path_free (np);
+	np = nnp;
+
+	c = sp_curve_new ();
+	for (i = 0; i < np->nsegs; i++) {
+		struct _NRNode *n;
+		n = np->segs[i].nodes;
+		sp_curve_moveto (c, n->x3, n->y3);
+		while (n->next) {
+			n = n->next;
+			if (n->isline) {
+				sp_curve_lineto (c, n->x3, n->y3);
+			} else {
+				sp_curve_curveto (c, n->x1, n->y1, n->x2, n->y2, n->x3, n->y3);
+			}
+		}
+#if 0
+		if (np->segs[i].closed) {
+			sp_curve_closepath (c);
+		}
+#endif
+	}
+	nr_node_path_free (np);
+	str = sp_svg_write_path (c->bpath);
+	sp_curve_unref (c);
+
+	repr = sp_repr_new ("path");
+	sp_repr_set_attr (repr, "style", style);
+	g_free (style);
+	sp_repr_set_attr (repr, "d", str);
+	g_free (str);
+	item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
+	sp_repr_unref (repr);
+
+	sp_selection_set_item (selection, item);
+}
+

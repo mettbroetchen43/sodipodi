@@ -730,7 +730,7 @@ nr_dynamic_path_ensure_space (NRDynamicPath *dpath, unsigned int req)
 unsigned int
 nr_dynamic_path_lineto (NRDynamicPath *dpath, float x1, float y1)
 {
-	NRPathElement *el;
+	NRPathElement *el, *sel;
 	if (!dpath->hascpt) return FALSE;
 	if (dpath->segstart == (dpath->path->offset + dpath->path->nelements)) {
 		/* Segment is not started yet */
@@ -770,13 +770,15 @@ nr_dynamic_path_lineto (NRDynamicPath *dpath, float x1, float y1)
 		NR_PATH_ELEMENT_SET_LENGTH (el, NR_PATH_ELEMENT_LENGTH (el) + 1);
 		dpath->path->nelements += 2;
 	}
+	sel = &dpath->path->elements[dpath->segstart];
+	NR_PATH_ELEMENT_SET_LENGTH (sel, dpath->path->nelements - dpath->segstart);
 	return TRUE;
 }
 
 unsigned int
 nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1, float x2, float y2)
 {
-	NRPathElement *el;
+	NRPathElement *el, *sel;
 	if (!dpath->hascpt) return FALSE;
 	if (dpath->segstart == (dpath->path->offset + dpath->path->nelements)) {
 		/* Segment is not started yet */
@@ -788,7 +790,7 @@ nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		NR_PATH_ELEMENT_SET_VALUE (el + 1, dpath->cpx);
 		NR_PATH_ELEMENT_SET_VALUE (el + 2, dpath->cpy);
 		NR_PATH_ELEMENT_SET_LENGTH (el + 3, 1);
-		NR_PATH_ELEMENT_SET_CODE (el + 3, NR_PATH_LINETO);
+		NR_PATH_ELEMENT_SET_CODE (el + 3, NR_PATH_CURVETO2);
 		NR_PATH_ELEMENT_SET_VALUE (el + 4, x1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 5, y1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 6, x2);
@@ -796,13 +798,13 @@ nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		dpath->codepos = (dpath->path->offset + dpath->path->nelements) + 3;
 		dpath->path->nelements += 8;
 		dpath->path->nsegments += 1;
-	} else if (NR_PATH_ELEMENT_CODE (&dpath->path->elements[dpath->codepos]) != NR_PATH_LINETO) {
+	} else if (NR_PATH_ELEMENT_CODE (&dpath->path->elements[dpath->codepos]) != NR_PATH_CURVETO2) {
 		/* Have to start new lineto */
-		/* Need LINETO, x1, y1 x2 y2 */
+		/* Need CURVETO2, x1, y1 x2 y2 */
 		nr_dynamic_path_ensure_space (dpath, 5);
 		el = &dpath->path->elements[dpath->path->offset + dpath->path->nelements];
 		NR_PATH_ELEMENT_SET_LENGTH (el, 1);
-		NR_PATH_ELEMENT_SET_CODE (el, NR_PATH_LINETO);
+		NR_PATH_ELEMENT_SET_CODE (el, NR_PATH_CURVETO2);
 		NR_PATH_ELEMENT_SET_VALUE (el + 1, x1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 2, y1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 3, x2);
@@ -822,17 +824,19 @@ nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		NR_PATH_ELEMENT_SET_LENGTH (el, NR_PATH_ELEMENT_LENGTH (el) + 1);
 		dpath->path->nelements += 4;
 	}
+	sel = &dpath->path->elements[dpath->segstart];
+	NR_PATH_ELEMENT_SET_LENGTH (sel, dpath->path->nelements - dpath->segstart);
 	return TRUE;
 }
 
 unsigned int
 nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, float y2, float x3, float y3)
 {
-	NRPathElement *el;
+	NRPathElement *el, *sel;
 	if (!dpath->hascpt) return FALSE;
 	if (dpath->segstart == (dpath->path->offset + dpath->path->nelements)) {
 		/* Segment is not started yet */
-		/* Need len, x0, y0, CURVETO2, x1, y1 x2 y2 x3 y3 */
+		/* Need len, x0, y0, CURVETO3, x1, y1 x2 y2 x3 y3 */
 		nr_dynamic_path_ensure_space (dpath, 10);
 		el = &dpath->path->elements[dpath->path->offset + dpath->path->nelements];
 		NR_PATH_ELEMENT_SET_LENGTH (el, 10);
@@ -840,7 +844,7 @@ nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		NR_PATH_ELEMENT_SET_VALUE (el + 1, dpath->cpx);
 		NR_PATH_ELEMENT_SET_VALUE (el + 2, dpath->cpy);
 		NR_PATH_ELEMENT_SET_LENGTH (el + 3, 1);
-		NR_PATH_ELEMENT_SET_CODE (el + 3, NR_PATH_LINETO);
+		NR_PATH_ELEMENT_SET_CODE (el + 3, NR_PATH_CURVETO3);
 		NR_PATH_ELEMENT_SET_VALUE (el + 4, x1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 5, y1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 6, x2);
@@ -850,13 +854,13 @@ nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		dpath->codepos = (dpath->path->offset + dpath->path->nelements) + 3;
 		dpath->path->nelements += 10;
 		dpath->path->nsegments += 1;
-	} else if (NR_PATH_ELEMENT_CODE (&dpath->path->elements[dpath->codepos]) != NR_PATH_LINETO) {
+	} else if (NR_PATH_ELEMENT_CODE (&dpath->path->elements[dpath->codepos]) != NR_PATH_CURVETO3) {
 		/* Have to start new lineto */
 		/* Need LINETO, x1, y1 x2 y2 x3 y3 */
 		nr_dynamic_path_ensure_space (dpath, 7);
 		el = &dpath->path->elements[dpath->path->offset + dpath->path->nelements];
 		NR_PATH_ELEMENT_SET_LENGTH (el, 1);
-		NR_PATH_ELEMENT_SET_CODE (el, NR_PATH_LINETO);
+		NR_PATH_ELEMENT_SET_CODE (el, NR_PATH_CURVETO3);
 		NR_PATH_ELEMENT_SET_VALUE (el + 1, x1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 2, y1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 3, x2);
@@ -874,12 +878,14 @@ nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, fl
 		NR_PATH_ELEMENT_SET_VALUE (el + 1, y1);
 		NR_PATH_ELEMENT_SET_VALUE (el + 2, x2);
 		NR_PATH_ELEMENT_SET_VALUE (el + 3, y2);
-		NR_PATH_ELEMENT_SET_VALUE (el + 2, x3);
-		NR_PATH_ELEMENT_SET_VALUE (el + 3, y3);
+		NR_PATH_ELEMENT_SET_VALUE (el + 4, x3);
+		NR_PATH_ELEMENT_SET_VALUE (el + 5, y3);
 		el = &dpath->path->elements[dpath->codepos];
 		NR_PATH_ELEMENT_SET_LENGTH (el, NR_PATH_ELEMENT_LENGTH (el) + 1);
 		dpath->path->nelements += 6;
 	}
+	sel = &dpath->path->elements[dpath->segstart];
+	NR_PATH_ELEMENT_SET_LENGTH (sel, dpath->path->nelements - dpath->segstart);
 	return TRUE;
 }
 

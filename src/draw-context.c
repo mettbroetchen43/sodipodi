@@ -6,14 +6,15 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2004 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
- * Copyright (C) 2002 Lauris Kaplinski
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define DRAW_VERBOSE
+
+#define noDRAW_GRAB
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -140,7 +141,8 @@ sp_draw_context_class_init (SPDrawContextClass *klass)
 static void
 sp_draw_context_init (SPDrawContext *dc)
 {
-	dc->attach = FALSE;
+	dc->attach = 0;
+	dc->max_points = 32;
 
 	dc->red_color = 0xff00007f;
 	dc->blue_color = 0x0000ff7f;
@@ -207,6 +209,8 @@ sp_draw_context_setup (SPEventContext *ec)
 	dc->green_anchor = NULL;
 
 	spdc_set_attach (dc, FALSE);
+
+	dc->npoints = 0;
 }
 
 static void
@@ -218,6 +222,7 @@ sp_draw_context_finish (SPEventContext *ec)
 
 	if (dc->grab) {
 		sp_canvas_item_ungrab (dc->grab, GDK_CURRENT_TIME);
+		dc->grab = NULL;
 	}
 
 	if (dc->selection) {
@@ -267,9 +272,8 @@ sp_draw_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		break;
 	}
 
-	if (!ret) {
-		if (((SPEventContextClass *) draw_parent_class)->root_handler)
-			ret = ((SPEventContextClass *) draw_parent_class)->root_handler (ec, event);
+	if (!ret && ((SPEventContextClass *) draw_parent_class)->root_handler) {
+		ret = ((SPEventContextClass *) draw_parent_class)->root_handler (ec, event);
 	}
 
 	return ret;
@@ -632,16 +636,27 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 static void
 fit_and_split (SPDrawContext * dc)
 {
-	NRPointF b[4];
-	gdouble tolerance;
+	NRPointF b[8];
+	int nsegs;
+	double tolerance;
 
 	g_assert (dc->npoints > 1);
+
+	if (dc->npoints == 2) {
+		/* Update existing red curve */
+		sp_curve_reset (dc->red_curve);
+		sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+		sp_curve_curveto (dc->red_curve, dc->p[0].x, dc->p[0].y, dc->p[1].x, dc->p[1].y, dc->p[1].x, dc->p[1].y);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+		return;
+	}
 
 	tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE;
 	tolerance = tolerance * tolerance;
 
-	if (sp_bezier_fit_cubic (b, dc->p, dc->npoints, tolerance) > 0 && dc->npoints < SP_DRAW_POINTS_MAX) {
-		/* Fit and draw and reset state */
+	nsegs = sp_bezier_fit_cubic (b, dc->p, dc->npoints, tolerance);
+	if ((nsegs == 1) && (dc->npoints <= dc->max_points)) {
+		/* Update existing red curve */
 		sp_curve_reset (dc->red_curve);
 		sp_curve_moveto (dc->red_curve, b[0].x, b[0].y);
 		sp_curve_curveto (dc->red_curve, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
@@ -649,21 +664,24 @@ fit_and_split (SPDrawContext * dc)
 	} else {
 		SPCurve *curve;
 		SPCanvasItem *cshape;
-		/* Fit and draw and copy last point */
+		/* Append curve to green path and list */
 		g_assert (!sp_curve_empty (dc->red_curve));
 		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 0.0625);
 		curve = sp_curve_copy (dc->red_curve);
-
-		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
-
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape),
+					    dc->green_color, 1.0,
+					    SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
-
-		dc->p[0] = dc->p[dc->npoints - 2];
-		dc->p[1] = dc->p[dc->npoints - 1];
-		dc->npoints = 2;
+		/* Reset existing red curve */
+		sp_curve_reset (dc->red_curve);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+		/* Copy last point as first */
+		dc->p[0] = dc->p[dc->npoints - 1];
+		dc->npoints = 1;
+		/* dc->p[1] = dc->p[dc->npoints - 1]; */
+		/* dc->npoints = 2; */
 	}
 }
 
@@ -935,7 +953,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-#if 1
+#ifdef DRAW_GRAB
 		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = SP_CANVAS_ITEM (dt->acetate);
@@ -1026,13 +1044,11 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			default:
 				break;
 			}
-#if 1
 			if (dc->grab) {
 				/* Release grab now */
 				sp_canvas_item_ungrab (dc->grab, event->button.time);
 				dc->grab = NULL;
 			}
-#endif
 			dc->grab = NULL;
 			ret = TRUE;
 		}
@@ -1326,11 +1342,6 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
-#if 0
-			/* Grab mouse, so release will not pass unnoticed */
-			dc->grab = SP_CANVAS_ITEM (dt->acetate);
-			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
-#endif
 			/* Find desktop coordinates */
 			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
 			p.x = fp.x;
@@ -1399,7 +1410,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-#if 0
+#ifdef DRAW_GRAB
 		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = SP_CANVAS_ITEM (dt->acetate);
@@ -1541,13 +1552,11 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			default:
 				break;
 			}
-#if 1
 			if (dc->grab) {
 				/* Release grab now */
 				sp_canvas_item_ungrab (dc->grab, event->button.time);
 				dc->grab = NULL;
 			}
-#endif
 			ret = TRUE;
 		}
 		break;

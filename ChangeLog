@@ -1,3 +1,17 @@
+2004-01-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/path-chemistry.c (sp_selected_path_uncross): New method
+
+	* src/interface.c (sp_ui_selection_menu): Added uncross
+
+	* src/verbs.c: Added SP_VERB_SELECTION_UNCROSS
+
+	* src/verbs.h: Added SP_VERB_SELECTION_UNCROSS
+
+	* src/libnr/nr-pathops.c: Working uncross code
+
+	* src/libnr/nr-pathops.h: Working uncross code
+
 2004-01-18  Changwoo Ryu  <cwryu@debian.org>
 
 	* configure.in: Added "ko" to ALL_LINGUAS.

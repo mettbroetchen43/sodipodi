@@ -10,8 +10,8 @@
    sodipodi:version="0.34-pre"
    width="256pt"
    height="256pt"
-   sodipodi:docbase="../glade/"
-   sodipodi:docname="../glade/icons.svg">
+   sodipodi:docbase="/home/lauris/cvs/sodipodi/glade/"
+   sodipodi:docname="/home/lauris/cvs/sodipodi/glade/icons.svg">
   <defs
      id="defs3">
     <linearGradient
@@ -157,8 +157,12 @@
        gradientTransform="translate(-4.65217e-07,-1.09616e-06)"
        spreadMethod="pad" />
     <linearGradient
-       xlink:href="#linearGradient500"
-       id="linearGradient1011" />
+       xlink:href="#linearGradient700"
+       id="linearGradient1011"
+       x1="0.50387782"
+       y1="5.46846315e-2"
+       x2="0.50387633"
+       y2="0.65624946" />
     <radialGradient
        xlink:href="#linearGradient500"
        id="radialGradient501"
@@ -179,6 +183,13 @@
        r="0.5"
        gradientUnits="objectBoundingBox"
        spreadMethod="pad" />
+    <linearGradient
+       xlink:href="#linearGradient700"
+       id="linearGradient1213"
+       x1="0.48936027"
+       y1="0.19531159"
+       x2="0.48936090"
+       y2="0.90624905" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -3770,5 +3781,62 @@
        d="M 291.2932 165.6250 L 291.2932 172.5000 L 299.4182 172.5000 L 299.4182 165.6250 "
        id="path1157"
        sodipodi:nodetypes="ccccc" />
+  </g>
+  <g
+     id="selection_uncross">
+    <rect
+       style="font-size:12.000;fill:none;fill-rule:evenodd;stroke-width:0.052083;fill-opacity:0.1931;"
+       id="rect1182"
+       width="25.000004"
+       height="24.999990"
+       x="24.999998"
+       y="219.999988"
+       transform="translate(252.5000,-25.00000)" />
+    <path
+       sodipodi:type="arc"
+       style="fill-rule:evenodd;stroke:#000000;fill:url(#linearGradient1011);fill-opacity:0.1922;stroke-opacity:1.0000;stroke-width:0.9443;stroke-linejoin:miter;stroke-linecap:butt;stroke-dasharray:none;"
+       id="path1195"
+       d="M 296.8750 205.3125 A 8.125000 7.812500 0 1 0 280.6250 205.3125 A 8.125000 7.812500 0 1 0  296.8750 205.3125 z"
+       sodipodi:cx="288.750000"
+       sodipodi:cy="205.312500"
+       sodipodi:rx="8.12500000"
+       sodipodi:ry="7.81250000"
+       transform="matrix(1.038450,0,0,1.080000,-12.04013,-16.42502)" />
+    <rect
+       style="font-size:12.000;fill:url(#linearGradient1213);fill-rule:evenodd;stroke-width:1;stroke:#000000;stroke-opacity:1.0000;stroke-dasharray:none;"
+       id="rect1196"
+       width="16.8750000"
+       height="15.6250000"
+       x="283.750000"
+       y="202.500000"
+       transform="matrix(0.888889,0,0,0.880000,33.40277,26.17500)" />
+    <path
+       style="font-size:12.000;fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1.250000;"
+       d="M 281.2500 210.6250 L 285.6250 215 M 285.6250 210.6250 L 281.2500 215 "
+       id="path1210"
+       sodipodi:nodetypes="cccc"
+       transform="translate(2.500000,0.625000)" />
+    <rect
+       style="font-size:12.000;fill:#ffff00;fill-rule:evenodd;stroke-width:1.000000;fill-opacity:1.0000;"
+       id="rect1206"
+       width="1.87500000"
+       height="1.87500000"
+       x="282.500000"
+       y="211.875000"
+       transform="matrix(0.721275,0.692649,-0.692649,0.721275,228.9056,-136.3815)" />
+    <path
+       style="font-size:12.000;fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1.250000;"
+       d="M 281.2500 210.6250 L 285.6250 215 M 285.6250 210.6250 L 281.2500 215 "
+       id="path1211"
+       sodipodi:nodetypes="cccc"
+       transform="translate(12.50000,-8.124999)" />
+    <rect
+       style="font-size:12.000;fill:#ffff00;fill-rule:evenodd;stroke-width:1.000000;fill-opacity:1.0000;"
+       id="rect1212"
+       width="1.87500000"
+       height="1.87500000"
+       x="282.500000"
+       y="211.875000"
+       transform="matrix(0.721275,0.692649,-0.692649,0.721275,238.9056,-145.1315)" />
   </g>
 </svg>

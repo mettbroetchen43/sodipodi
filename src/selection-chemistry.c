@@ -89,6 +89,9 @@ sp_selection_action_perform (SPAction *action, void *config, void *data)
 	case SP_VERB_SELECTION_BREAK_APART:
 		sp_selected_path_break_apart ();
 		break;
+	case SP_VERB_SELECTION_UNCROSS:
+		sp_selected_path_uncross ();
+		break;
 	case SP_VERB_SELECTION_TRANSFORM:
 		sp_selection_perform_transform (dt, (SPRepr *) config);
 		break;

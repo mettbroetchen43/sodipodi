@@ -17,22 +17,21 @@
  */
 
 #include <libnr/nr-types.h>
-#include <glib.h>
 
 /* Bezier approximation utils */
 
-gint sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble error);
+int sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, int len, double error);
 
-gint sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, gint len, gdouble error, gint max_depth);
+int sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, int len, double error, int max_depth);
 
-gint sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
-			       NRPointF *tHat1, NRPointF *tHat2, gdouble error, gint max_depth);
+int sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, int len,
+			       NRPointF *tHat1, NRPointF *tHat2, double error, int max_depth);
 
 
 /* Data array */
 
 unsigned int sp_darray_left_tangent (const NRPointF *d, int first, int length, NRPointF *tHat1);
 unsigned int sp_darray_right_tangent (const NRPointF *d, int last, int length, NRPointF *tHat2);
-void sp_darray_center_tangent (const NRPointF *d, gint center, NRPointF *tHatCenter);
+void sp_darray_center_tangent (const NRPointF *d, int center, NRPointF *tHatCenter);
 
 #endif /* __SP_BEZIER_UTILS_H__ */

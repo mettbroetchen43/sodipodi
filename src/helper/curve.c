@@ -362,6 +362,11 @@ sp_curve_moveto (SPCurve * curve, gdouble x, gdouble y)
 	g_return_if_fail (!curve->sbpath);
 	g_return_if_fail (!curve->moving);
 
+#ifdef __USE_ISOC99
+	g_return_if_fail (isfinite (x));
+	g_return_if_fail (isfinite (y));
+#endif
+
 	curve->substart = curve->end;
 	curve->hascpt = TRUE;
 	curve->posset = TRUE;
@@ -377,6 +382,11 @@ sp_curve_lineto (SPCurve * curve, gdouble x, gdouble y)
 	g_return_if_fail (curve != NULL);
 	g_return_if_fail (!curve->sbpath);
 	g_return_if_fail (curve->hascpt);
+
+#ifdef __USE_ISOC99
+	g_return_if_fail (isfinite (x));
+	g_return_if_fail (isfinite (y));
+#endif
 
 	if (curve->moving) {
 		/* simply fix endpoint */
@@ -430,6 +440,11 @@ sp_curve_lineto_moving (SPCurve * curve, gdouble x, gdouble y)
 	g_return_if_fail (curve != NULL);
 	g_return_if_fail (!curve->sbpath);
 	g_return_if_fail (curve->hascpt);
+
+#ifdef __USE_ISOC99
+	g_return_if_fail (isfinite (x));
+	g_return_if_fail (isfinite (y));
+#endif
 
 	if (curve->moving) {
 		/* simply change endpoint */
@@ -485,6 +500,15 @@ sp_curve_curveto (SPCurve * curve, gdouble x0, gdouble y0, gdouble x1, gdouble y
 	g_return_if_fail (!curve->sbpath);
 	g_return_if_fail (curve->hascpt);
 	g_return_if_fail (!curve->moving);
+
+#ifdef __USE_ISOC99
+	g_return_if_fail (isfinite (x0));
+	g_return_if_fail (isfinite (y0));
+	g_return_if_fail (isfinite (x1));
+	g_return_if_fail (isfinite (y1));
+	g_return_if_fail (isfinite (x2));
+	g_return_if_fail (isfinite (y2));
+#endif
 
 	if (curve->posset) {
 		/* start a new segment */

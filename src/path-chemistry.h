@@ -21,4 +21,6 @@ void sp_selected_path_to_curves (void);
 
 void sp_path_cleanup (SPPath *path);
 
+void sp_selected_path_uncross (void);
+
 #endif
