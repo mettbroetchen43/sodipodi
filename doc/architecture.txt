@@ -1,0 +1,210 @@
+Sodipodi internal layout
+
+1. Document
+
+We use Model-View-Controller architecture with model split to two levels - type agnostic and typed tree.
+
+1.1. Type agnostic model tree
+
+It implements SVG xml tree in-memory. Being agnostic means, that it does not know anything about the document semantics - only its syntax.
+
+<svg>
+  <g style="fill:red">
+    <rect x="0" y="0" width="100" height="100">
+  </g>
+</svg>
+
+In future it will be possibly implemented using Gnome DOM library. At moment I have developed lightweight objects, implementing most basic xml entities.
+
+SPRepr - basic node of sodipodi xml tree
+
+SPRepr has:
+- attributes (keyword/value) pairs (value is fully textual here)
+- content (text)
+- child nodes
+
+Repr library does not distinguish more complex css attributes, but there are convenience functions to break those into property/value pairs and compose from those.
+Repr tree is built, whenever document is loaded or created. Both SVG saving and loading are done agnostically - i.e. simply dumping repr tree into file, or creating from it.
+
+Each SPRepr is derived from GtkObject, and implements handful of signals, if modified:
+
+void (* destroy) (GtkObject * object)
+ - standard Gtk+ signal
+void (* child_added) (SPRepr * parent, SPRepr * child)
+ - invoked after child has been added to tree
+void (* child_removed) (SPRepr * parent, SPRepr * child)
+ - invoked after child has been removed from tree
+gint (* change_attr) (SPRepr * repr, const gchar * key, const gchar * value)
+ - invoked if controller wants to modify attribute. If handler returns TRUE, modification is allowed
+ - at moment the only occasion, modification is not granted, is if you want to set "id" attribute to
+ - already existing value
+void (* attr_changed) (SPRepr * repr, const gchar * key)
+ - invoked after successful attribute modification
+gint (* change content) (SPRepr * repr, const gchar * content);
+ - invoked if request to content modification is done, returns TRUE if allowed
+void (* content_changed) (SPRepr * repr)
+ - invoked after successful content change
+gint (* change_order) (SPRepr * repr, gint order)
+ - invoked on request of changing repr order in group, returns TRUE if allowed
+void (* order_changed) (SPRepr * repr)
+ - invoked after successful order change
+
+Repr tree is changed and queried via set of methods (reprs are opaque datatypes), like:
+
+gint sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value);
+const gchar * sp_repr_get_attr (SPRepr * repr, const gchar * key);
+...
+
+Repr trees can exist entirely on their own. There are separate minitrees for clipboard, undo history & so on.
+
+1.2. Typed model tree
+
+After typeless xml node tree is generated either from file, or as new, it is bound to SPDocument.
+
+1.2.1. SPDocument
+
+SPDocument represent sodipodi general idea about SVG file in work, holding such things as:
+
+- agnostic SPRepr tree
+- tree of SPObjects
+- undo stack
+- id dictionary (every repr will have unique "id" attribute. Id generation is only automatic change in faile structure, sodipodi does)
+
+Most document level functions, like print, save and export expect SPDocument as argument.
+
+During document creation agnostic SPRepr tree is parsed, and typed SPObject tree generated.
+
+1.2.2. SPObject tree
+
+It is tree of Gtk+ objects, implementing various SVG basic datatypes.
+
+Structure (after object is SVG datatype)
+
+SPObject
+  SPObjectGroup
+    SPNamedView
+  SPGuide
+  SPGradient
+    SPLinearGradient <lineargradient>
+  SPDefs <defs>
+  SPItem
+    SPGroup <g>
+      SPRoot <svg>
+  SPImage
+  SPPath
+    SPShape <path>
+      SPEllipse <ellipse>
+      SPRect <rect>
+      SPChars <chars>
+      SPText <text>
+
+1.2.3. SPObject
+
+SPObject is abstract base class for all datatypes, encountered in file, including nongeometric ones.
+
+struct _SPObject {
+	GtkObject object;
+	SPDocument * document;		/* Document we are part of */
+	SPObject * parent;		/* Our parent (only one allowed) */
+	SPRepr * repr;			/* Our xml representation */
+	gchar * id;			/* Our very own unique id */
+	const gchar * title;		/* Our title, if any */
+	const gchar * description;	/* Our description, if any */
+};
+
+struct _SPObjectClass {
+	GtkObjectClass parent_class;
+
+	void (* build) (SPObject * object, SPDocument * document, SPRepr * repr);
+
+	void (* read_attr) (SPObject * object, const gchar * key);
+	void (* read_content) (SPObject * object);
+	void (* set_order) (SPObject * object);
+	void (* add_child) (SPObject * object, SPRepr * child);
+	void (* remove_child) (SPObject * object, SPRepr * child);
+};
+
+Every SPObject has a link to SPRepr it is created from. It has also parent document, parent objects (except SPRoot) and unique id.
+
+Class methods:
+
+build - asks SPObject implementation (usually some derived object) to (re)read its parameters from corresponding repr
+read_attr - asks SPObject implementation (usually some derived object) to reread its parameter(s) corresponding to given attribute name.
+read_content - reread repr content
+set_order - reread sibling ordering (usually will be handled by parent object)
+add_child - child is added to corresponding repr
+remove child - child is removed from corresponding repr
+
+SPObject tree is built from document and repr tree:
+
+SPObject * sp_object_repr_build_tree (SPDocument * document, SPRepr * repr);
+
+Which simply creates SPRoot object from rootmost node (must be <svg>) and invokes its ::build() class method. Every group object (and SPRoot is group) then reads their state, reads child reprs, generates corresponding objects and invokes ::build() of those objects.
+
+1.2.4. SPItem
+
+SPItem is base class for geometric datatypes. It implements set of additional functions, most interesting of those being:
+
+GnomeCanvasItem * (* show) (SPItem * item, GnomeCanvasGroup * parent, gpointer handler)
+void (* hide) (SPItem * item, GnomeCanvas * canvas)
+
+show - asks item to generate GnomeCanvasItem in given GnomeCanvasGroup, optionally assigning "event" signal handler to it. There can be many canvasitems on different canvases for each SPItem - to implement multiple views. If group is showed, is asks its children to show themselves as well.
+hide - asks item to destroy GnomeCanvasItem for given canvas
+
+
+2. View
+
+View is simply implemented as custom canvas items, generated in SPItem ::show() method. View is contained and handled by SPDesktop.
+
+2.1. SPDesktop
+
+SPDesktop is complex GtkWidget, implementing:
+
+- canvas, onto items are shown
+- several canvas groups for guidelines, grid, etc.
+- rulers and scrollbars
+
+New view is added to document via funtion:
+
+SPDesktop * sp_desktop_new (SPDocument * document, SPNamedView * namedview)
+
+Named views are currently unimplemented and so ignored by desktop.
+It generates widget, initializes its coordinate system (we use standard PostScript coordinates), finds SPRoot of given document and invokes root item ::show() method (connecting signals to its private handlers)
+
+
+3. Controller
+
+3.1. Why we need two-level model tree?
+
+The typed tree is certainly needed, as we want to exploit powerful Gtk+ type system for doing many tasks, like:
+
+- display
+- print
+- show context menu
+
+Using inherited classes allows us easily reuse code here. For example neither SPRect nor SPEllipse do not implement their own ::show() or ::print() method, but instead use more general SPShape one. SVG attributes are also inheritable, so many general things like styles and transforms are handled by abstract base objects, letting actual objects to handle only their very specific attributes.
+
+There are also areas, where typed object structure would make things more complex. For example, to implement copy buffer we have to save the full state of copied objects. It could be done with separate class method, but instead we can take simpler approach.
+
+SPRepr * sp_repr_duplicate (SPRepr * repr)
+
+It gives us exact copy of given node. As SPObjects are built from reprs, we can use repr duplicate later to generate identical SPObject (or SPObject tree). Similar approach is used in undo stack and object duplication.
+
+SPObjects are read from reprs, but reprs do not know anything about objects. So all editing has to be done to reprs, setting, clearing and modifying nodes and attributes. This gives us yet one conveninent feature:
+
+Say you want to drag object to other place. You want to be able to undo that action, but only as one full step - all motions between mousebutton press and release has to be sythesized into one undoable action, yet shown as continuos while dragging. We do it as follows:
+
+While mouse button is pressed, we grab object. During drag we use SPItems (typed object) methods, to show incremental motion. As object changes are never propagated to reprs, document structure is not changed yet.
+If user releases mouse button, we read final position (transformation matrix), translate it into SVG value and set "transform" attribute of affected SPRepr.
+SPDocument has installed handlers, listening all changes in repr tree structure. Now it gets "change_attr" signal and pushes simple <repr, attribute, oldvalue, newvalue> structure into undo stack. Without needing to know, what is affected object type, or what that change actually means.
+
+Most one-shot changes (setting colors, line attributes) are done modifying repr tree directly. Continuous changes are usually done to object tree, and only final state copied to repr tree.
+
+4. SPEventContext
+
+5. SPSelection
+
+
+10. August 2000
+Lauris Kaplinski
+<lauris@helixcode.com>
