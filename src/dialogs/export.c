@@ -122,7 +122,7 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
 	art_affine_multiply (affine, affine, a);
 
-	rbuf = gnome_print_rbuf_rgba_new (pixels, width, height, width * 4, affine);
+	rbuf = gnome_print_rbuf_new (pixels, width, height, width * 4, affine, TRUE);
 
 	sp_item_print (SP_ITEM (sp_document_root (doc)), rbuf);
 
