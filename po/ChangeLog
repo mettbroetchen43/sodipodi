@@ -1,3 +1,10 @@
+2001-09-10  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* ga.po: Updated Irish file
+	* pt_BR.po: corrected charset entry in header (portuguese doesn't
+	use cyrillic!!!)
+	* pl.po: Enabled header
+
 2001-09-09  Carlos Perelló Marín <carlos@gnome-db.org>
 
         * es.po: Updated Spanish translation by Jose Antonio
