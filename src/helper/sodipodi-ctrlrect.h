@@ -15,7 +15,7 @@
  */
 
 #include <libart_lgpl/art_rect.h>
-#include <libgnomeui/gnome-canvas.h>
+#include "sp-canvas.h"
 
 BEGIN_GNOME_DECLS
 

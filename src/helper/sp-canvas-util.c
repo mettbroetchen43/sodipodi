@@ -15,9 +15,49 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_rgb_svp.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
 #include "sp-canvas-util.h"
+
+void
+gnome_canvas_update_bbox (GnomeCanvasItem *item, int x1, int y1, int x2, int y2)
+{
+	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	item->x1 = x1;
+	item->y1 = y1;
+	item->x2 = x2;
+	item->y2 = y2;
+	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+}
+
+void
+gnome_canvas_item_reset_bounds (GnomeCanvasItem *item)
+{
+	item->x1 = 0.0;
+	item->y1 = 0.0;
+	item->x2 = 0.0;
+	item->y2 = 0.0;
+}
+
+void
+gnome_canvas_buf_ensure_buf (GnomeCanvasBuf *buf)
+{
+	if (!buf->is_buf) {
+		unsigned int r, g, b;
+		int x, y;
+		r = buf->bg_color >> 16;
+		g = (buf->bg_color >> 8) & 0xff;
+		b = buf->bg_color & 0xff;
+		for (y = buf->rect.y0; y < buf->rect.y1; y++) {
+			guchar *p;
+			p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride;
+			for (x = buf->rect.x0; x < buf->rect.x1; x++) {
+				*p++ = r;
+				*p++ = g;
+				*p++ = b;
+			}
+		}
+		buf->is_buf = 1;
+	}
+}
 
 /*
  * Grabs canvas item, but unlike the original method does not pass
@@ -177,7 +217,7 @@ void gnome_canvas_item_set_i2w_affine (GnomeCanvasItem * item, double i2w[])
 
 gint gnome_canvas_item_order (GnomeCanvasItem * item)
 {
-	return g_list_index (GNOME_CANVAS_GROUP (item->parent)->item_list, item);
+	return g_list_index (GNOME_CANVAS_GROUP (item->parent)->items, item);
 }
 
 void gnome_canvas_item_move_to_z (GnomeCanvasItem * item, gint z)

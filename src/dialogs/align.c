@@ -2,7 +2,9 @@
 
 #include <config.h>
 #include <math.h>
-#include <gnome.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>
 #include "../sodipodi.h"
 #include "../document.h"

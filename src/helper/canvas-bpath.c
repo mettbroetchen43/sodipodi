@@ -20,8 +20,9 @@
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_point.h>
 #include <libart_lgpl/art_rect_svp.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
+#include <libart_lgpl/art_rgb_svp.h>
+#include "sp-canvas.h"
+#include "sp-canvas-util.h"
 #include "canvas-bpath.h"
 
 static void sp_canvas_bpath_class_init (SPCanvasBPathClass *klass);
@@ -191,11 +192,15 @@ sp_canvas_bpath_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	cbp = SP_CANVAS_BPATH (item);
 
 	if (cbp->fill_svp) {
-		gnome_canvas_render_svp (buf, cbp->fill_svp, cbp->fill_rgba);
+		art_rgb_svp_alpha (cbp->fill_svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, cbp->fill_rgba,
+				   buf->buf, buf->buf_rowstride,
+				   NULL);
 	}
 
 	if (cbp->stroke_svp) {
-		gnome_canvas_render_svp (buf, cbp->stroke_svp, cbp->stroke_rgba);
+		art_rgb_svp_alpha (cbp->stroke_svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, cbp->stroke_rgba,
+				   buf->buf, buf->buf_rowstride,
+				   NULL);
 	}
 }
 

@@ -1,7 +1,13 @@
 #define SP_XML_TREE_C
 
 #include <config.h>
-#include <gnome.h>
+#include <string.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-messagebox.h>
 #include <glade/glade.h>
 #include "../xml/repr-private.h"
 #include "../sodipodi.h"

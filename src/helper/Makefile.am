@@ -11,6 +11,7 @@ INCLUDES = \
 noinst_LIBRARIES = libspchelp.a
 
 libspchelp_a_SOURCES = \
+	sp-canvas.c sp-canvas.h \
 	art-utils.c art-utils.h \
 	sp-canvas-util.c sp-canvas-util.h \
 	curve.c curve.h \

@@ -18,15 +18,17 @@
  */
 
 #include <math.h>
-#include <gtk/gtk.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
+#include "sp-canvas.h"
+#include "sp-canvas-util.h"
 #include "sp-ctrlline.h"
 
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
+#include <libart_lgpl/art_rgb_svp.h>
+#include <libart_lgpl/art_rect.h>
+#include <libart_lgpl/art_rect_svp.h>
 
 static void sp_ctrlline_class_init (SPCtrlLineClass *klass);
 static void sp_ctrlline_init (SPCtrlLine *ctrlline);
@@ -113,7 +115,10 @@ sp_ctrlline_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	ctrlline = SP_CTRLLINE (item);
 
 	if (ctrlline->svp) {
-		gnome_canvas_render_svp (buf, ctrlline->svp, ctrlline->rgba);
+		gnome_canvas_buf_ensure_buf (buf);
+		art_rgb_svp_alpha (ctrlline->svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, ctrlline->rgba,
+				   buf->buf, buf->buf_rowstride,
+				   NULL);
 	}
 }
 
@@ -124,8 +129,12 @@ sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, in
 	ArtPoint p;
 	ArtVpath vpath[3];
 	ArtSVP *svp;
+	ArtDRect dbox;
+	ArtIRect ibox;
 
 	cl = SP_CTRLLINE (item);
+
+	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	if (parent_class->update)
 		(* parent_class->update) (item, affine, clip_path, flags);
@@ -151,8 +160,17 @@ sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, in
 	vpath[2].code = ART_END;
 
 	svp = art_svp_vpath_stroke (vpath, ART_PATH_STROKE_CAP_BUTT, ART_PATH_STROKE_JOIN_MITER, 1, 4, 0.25);
-	gnome_canvas_item_update_svp_clip (item, &cl->svp, svp, clip_path);
-	gnome_canvas_item_request_redraw_svp (item, cl->svp);
+	cl->svp = svp;
+
+	art_drect_svp (&dbox, cl->svp);
+	art_drect_to_irect (&ibox, &dbox);
+
+	item->x1 = ibox.x0;
+	item->y1 = ibox.y0;
+	item->x2 = ibox.x1;
+	item->y2 = ibox.y1;
+
+	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
 
 #if 0
@@ -170,8 +188,10 @@ sp_ctrlline_set_rgba32 (SPCtrlLine *cl, guint32 rgba)
 	g_return_if_fail (SP_IS_CTRLLINE (cl));
 
 	if (rgba != cl->rgba) {
+		GnomeCanvasItem *item;
 		cl->rgba = rgba;
-		if (cl->svp) gnome_canvas_item_request_redraw_svp (GNOME_CANVAS_ITEM (cl), cl->svp);
+		item = GNOME_CANVAS_ITEM (cl);
+		gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 	}
 }
 

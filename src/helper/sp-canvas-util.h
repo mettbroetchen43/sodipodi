@@ -13,10 +13,13 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnomeui/gnome-canvas.h>
+#include "sp-canvas.h"
 
 /* Miscellaneous utility & convenience functions for general canvas objects */
 
+void gnome_canvas_update_bbox (GnomeCanvasItem *item, int x1, int y1, int x2, int y2);
+void gnome_canvas_item_reset_bounds (GnomeCanvasItem *item);
+void gnome_canvas_buf_ensure_buf (GnomeCanvasBuf *buf);
 /*
  * Grabs canvas item, but unlike the original method does not pass
  * illegal key event mask to canvas, who passes it ahead to Gdk, but

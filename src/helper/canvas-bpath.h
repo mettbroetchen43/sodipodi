@@ -31,7 +31,7 @@ typedef struct _SPCanvasBPathClass SPCanvasBPathClass;
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
-#include <libgnomeui/gnome-canvas.h>
+#include "sp-canvas.h"
 #include "curve.h"
 
 struct _SPCanvasBPath {

@@ -14,7 +14,9 @@
 
 
 #include <config.h>
-#include <gnome.h>
+#include <string.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade.h>
 #include "../macros.h"
 #include "../helper/png-write.h"

@@ -8,7 +8,7 @@
  */
 
 #include <gtk/gtkpacker.h>
-#include <libgnomeui/gnome-canvas.h>
+#include "sp-canvas.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 BEGIN_GNOME_DECLS

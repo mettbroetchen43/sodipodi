@@ -14,8 +14,7 @@
  */
 
 #include <math.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
+#include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sodipodi-ctrlrect.h"
 

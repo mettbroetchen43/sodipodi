@@ -12,7 +12,7 @@
  * Released under GNU GPL
  */
 
-#include <libgnomeui/gnome-canvas.h>
+#include "sp-canvas.h"
 
 BEGIN_GNOME_DECLS
 

@@ -284,12 +284,20 @@ nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 		rgr->renderer.render = nr_rgradient_render_block_symmetric;
 
 		nr_matrix_f_invert (&rgr->px2gs, gs2px);
+		rgr->px2gs.c[0] *= (NR_GRADIENT_VECTOR_LENGTH / r);
+		rgr->px2gs.c[1] *= (NR_GRADIENT_VECTOR_LENGTH / r);
+		rgr->px2gs.c[2] *= (NR_GRADIENT_VECTOR_LENGTH / r);
+		rgr->px2gs.c[3] *= (NR_GRADIENT_VECTOR_LENGTH / r);
+		rgr->px2gs.c[4] -= cx;
+		rgr->px2gs.c[5] -= cy;
+		rgr->px2gs.c[4] *= (NR_GRADIENT_VECTOR_LENGTH / r);
+		rgr->px2gs.c[5] *= (NR_GRADIENT_VECTOR_LENGTH / r);
 
-		rgr->cx = cx;
-		rgr->cy = cy;
-		rgr->fx = fx;
-		rgr->fy = fy;
-		rgr->r = r;
+		rgr->cx = 0.0;
+		rgr->cy = 0.0;
+		rgr->fx = rgr->cx;
+		rgr->fy = rgr->cy;
+		rgr->r = 1.0;
 	} else {
 		NRMatrixF n2gs, n2px;
 		double df;
@@ -390,24 +398,24 @@ nr_rgradient_render_block_end (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m)
 static void
 nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 {
+	double dx, dy;
 	int x, y;
 	unsigned char *d;
 	const unsigned char *s;
 	int idx;
 
+	dx = rgr->px2gs.c[0];
+	dy = rgr->px2gs.c[1];
+
 	if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 		for (y = pb->area.y0; y < pb->area.y1; y++) {
+			double gx, gy;
 			d = NR_PIXBLOCK_PX (pb) + (y - pb->area.y0) * pb->rs;
+			gx = rgr->px2gs.c[0] * pb->area.x0 + rgr->px2gs.c[2] * y + rgr->px2gs.c[4];
+			gy = rgr->px2gs.c[1] * pb->area.x0 + rgr->px2gs.c[3] * y + rgr->px2gs.c[5];
 			for (x = pb->area.x0; x < pb->area.x1; x++) {
-				double gx, gy;
-				double r, pos;
-
-				gx = rgr->px2gs.c[0] * x + rgr->px2gs.c[2] * y + rgr->px2gs.c[4];
-				gy = rgr->px2gs.c[1] * x + rgr->px2gs.c[3] * y + rgr->px2gs.c[5];
-
-				r = MAX (rgr->r, 1e-9);
-				pos = hypot (gx - rgr->cx, gy - rgr->cy) * NR_GRADIENT_VECTOR_LENGTH / r;
-
+				double pos;
+				pos = hypot (gx, gy);
 				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
 					idx = ((int) pos) & NRG_2MASK;
 					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
@@ -422,18 +430,13 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 				d[2] = NR_COMPOSENPP (s[2], s[3], d[2], d[3]);
 				d[3] = (65025 - (255 - s[3]) * (255 - d[3]) + 127) / 255;
 				d += 4;
+				gx += dx;
+				gy += dy;
 			}
 		}
 	} else {
 		NRPixBlock spb;
-		int x0, y0, width, height, rs;
 		int bpp;
-
-		x0 = pb->area.x0;
-		y0 = pb->area.y0;
-		width = pb->area.x1 - pb->area.x0;
-		height = pb->area.y1 - pb->area.y0;
-		rs = pb->rs;
 
 		nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_R8G8B8A8N, 0, 0, NR_GRADIENT_VECTOR_LENGTH, 1,
 					  (unsigned char *) rgr->vector,
@@ -441,18 +444,14 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 					  0, 0);
 		bpp = (pb->mode == NR_PIXBLOCK_MODE_A8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
 
-		for (y = 0; y < height; y++) {
-			d = NR_PIXBLOCK_PX (pb) + y * rs;
-			for (x = 0; x < width; x++) {
-				double gx, gy;
-				double r, pos;
-
-				gx = rgr->px2gs.c[0] * (x + x0) + rgr->px2gs.c[2] * (y + y0) + rgr->px2gs.c[4];
-				gy = rgr->px2gs.c[1] * (x + x0) + rgr->px2gs.c[3] * (y + y0) + rgr->px2gs.c[5];
-
-				r = MAX (rgr->r, 1e-9);
-				pos = hypot (gx - rgr->cx, gy - rgr->cy) * NR_GRADIENT_VECTOR_LENGTH / r;
-
+		for (y = pb->area.y0; y < pb->area.y1; y++) {
+			double gx, gy;
+			d = NR_PIXBLOCK_PX (pb) + (y - pb->area.y0) * pb->rs;
+			gx = rgr->px2gs.c[0] * pb->area.x0 + rgr->px2gs.c[2] * y + rgr->px2gs.c[4];
+			gy = rgr->px2gs.c[1] * pb->area.x0 + rgr->px2gs.c[3] * y + rgr->px2gs.c[5];
+			for (x = pb->area.x0; x < pb->area.x1; x++) {
+				double pos;
+				pos = hypot (gx, gy);
 				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
 					idx = ((int) pos) & NRG_2MASK;
 					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
@@ -464,6 +463,8 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 				s = rgr->vector + 4 * idx;
 				nr_compose_pixblock_pixblock_pixel (pb, d, &spb, s);
 				d += bpp;
+				gx += dx;
+				gy += dy;
 			}
 		}
 
@@ -513,7 +514,7 @@ nr_rgradient_render_generic_optimized (NRRGradientRenderer *rgr, NRPixBlock *pb)
 			gxy2 = gx2 + gy * gy;
 			qgx2_4 = gx2 - rgr->C * gxy2;
 			/* INVARIANT: qgx2_4 >= 0.0 */
-			qgx2_4 = MAX (qgx2_4, 0.0);
+			/* qgx2_4 = MAX (qgx2_4, 0.0); */
 			pxgx = gx + sqrt (qgx2_4);
 			if (fabs (pxgx) > NR_EPSILON_F) {
 				pos = gxy2 / pxgx * NR_GRADIENT_VECTOR_LENGTH;
