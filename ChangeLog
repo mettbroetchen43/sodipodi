@@ -1,3 +1,15 @@
+2002-11-02  Masatake YAMATO  <jet@gyve.org>
+
+	* README: removed GYVE.
+
+	* doc/keybindings.txt: added a item for stamping.
+
+	* doc/architecture.txt: Fix a typo in a document.
+	/ is forgotten in a sample svg.
+
+	* src/rect-context.c (sp_rect_context_config_widget): Fix a typo in a 
+	label.
+
 2002-11-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.h: s/GtkEventBoxClass/SPViewClass/; thanks to MenTaLguY

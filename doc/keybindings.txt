@@ -78,7 +78,8 @@ Ctrl K - break apart
 
 Tab - cycle items in desktop forward
 Shift-Tab - cycle items in desktop backward
- 
+
+Space - stamp (duplicating the selected object)
 
 * modifier for mouse drag
 

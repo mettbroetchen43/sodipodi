@@ -427,7 +427,7 @@ sp_rect_context_config_widget (SPEventContext *ec)
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_rc_rx_ratio_value_changed), rc);
 
 	/* ry_ratio */
-	l = gtk_label_new (_("Roundness ratio for x:"));
+	l = gtk_label_new (_("Roundness ratio for y:"));
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 0, 0);
