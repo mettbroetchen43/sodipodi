@@ -1,5 +1,11 @@
 2001-09-29  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/selection-chemistry.c (sp_selection_lower_to_bottom): Do not lower
+	behind non-items (i.e. base <defs> object)
+	(sp_selection_lower): Ditto
+
+	* configure.in: Version 0.24.1
+
 	* src/document.c (sp_document_new): Set xmlns:xlink
 	(sp_document_new_from_mem): Ditto
 

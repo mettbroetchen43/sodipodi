@@ -295,9 +295,19 @@ void sp_selection_lower (GtkWidget * widget)
 	}
 
 	for (l = rl; l != NULL; l = l->next) {
+		gint minpos;
+		SPObject *pp, *pc;
 		repr = (SPRepr *) l->data;
+		pp = sp_document_lookup_id (document, sp_repr_attr (sp_repr_parent (repr), "id"));
+		minpos = 0;
+		g_assert (SP_IS_GROUP (pp));
+		pc = SP_GROUP (pp)->children;
+		while (!SP_IS_ITEM (pc)) {
+			minpos += 1;
+			pc = pc->next;
+		}
 		pos = GPOINTER_TO_INT (pl->data) - 1;
-		if (pos < 0) pos = 0;
+		if (pos < minpos) pos = minpos;
 		sp_repr_set_position_absolute (repr, pos);
 		pl = g_slist_remove (pl, pl->data);
 	}
@@ -328,8 +338,18 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 	rl = g_slist_reverse (rl);
 
 	for (l = rl; l != NULL; l = l->next) {
+		gint minpos;
+		SPObject *pp, *pc;
 		repr = (SPRepr *) l->data;
-		sp_repr_set_position_absolute (repr, 0);
+		pp = sp_document_lookup_id (document, sp_repr_attr (sp_repr_parent (repr), "id"));
+		minpos = 0;
+		g_assert (SP_IS_GROUP (pp));
+		pc = SP_GROUP (pp)->children;
+		while (!SP_IS_ITEM (pc)) {
+			minpos += 1;
+			pc = pc->next;
+		}
+		sp_repr_set_position_absolute (repr, minpos);
 	}
 
 	g_slist_free (rl);
