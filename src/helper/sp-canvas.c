@@ -1483,10 +1483,11 @@ sp_canvas_button (GtkWidget *widget, GdkEventButton *event)
 }
 
 /* Motion event handler for the canvas */
-static gint
+static int
 sp_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 {
 	SPCanvas *canvas;
+	int ret;
 
 	canvas = SP_CANVAS (widget);
 
@@ -1495,11 +1496,15 @@ sp_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 	if (canvas->grabbed_event_mask & GDK_POINTER_MOTION_HINT_MASK) {
 		gint x, y;
 		gdk_window_get_pointer (widget->window, &x, &y, 0);
+		event->x = x;
+		event->y = y;
 	}
 
 	canvas->state = event->state;
 	pick_current_item (canvas, (GdkEvent *) event);
-	return emit_event (canvas, (GdkEvent *) event);
+	ret = emit_event (canvas, (GdkEvent *) event);
+
+	return ret;
 }
 
 /* We have to fit into pixelstore 64K */
@@ -1600,6 +1605,8 @@ sp_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 			sp_canvas_paint_rect (canvas, rect.x0, rect.y0, rect.x1, rect.y1);
 		}
 	}
+
+	if (n_rects > 0) g_free (rects);
 
 	return FALSE;
 }

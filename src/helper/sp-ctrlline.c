@@ -136,7 +136,6 @@ sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	SPCtrlLine *cl;
 	ArtPoint p;
 	ArtVpath vpath[3];
-	ArtSVP *svp;
 	ArtDRect dbox;
 	ArtIRect ibox;
 
@@ -148,6 +147,11 @@ sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 		(* parent_class->update) (item, affine, flags);
 
 	sp_canvas_item_reset_bounds (item);
+
+	if (cl->svp) {
+		art_svp_free (cl->svp);
+		cl->svp = NULL;
+	}
 
 	p.x = cl->s.x;
 	p.y = cl->s.y;
@@ -167,8 +171,7 @@ sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	vpath[2].code = ART_END;
 
-	svp = art_svp_vpath_stroke (vpath, ART_PATH_STROKE_CAP_BUTT, ART_PATH_STROKE_JOIN_MITER, 1, 4, 0.25);
-	cl->svp = svp;
+	cl->svp = art_svp_vpath_stroke (vpath, ART_PATH_STROKE_CAP_BUTT, ART_PATH_STROKE_JOIN_MITER, 1, 4, 0.25);
 
 	art_drect_svp (&dbox, cl->svp);
 	art_drect_to_irect (&ibox, &dbox);

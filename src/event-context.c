@@ -158,7 +158,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			s.y = event->button.y;
 			panning = TRUE;
 			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
-					     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+					     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK,
 					     NULL, event->button.time);
 
 			ret = TRUE;

@@ -1,5 +1,7 @@
 2002-12-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/sp-canvas.c (sp_canvas_expose): Free rects
+
 	* src/attributes.h: Added animation-specific attributes
 
 	* src/sp-animation.c: New file, only skeleton at moment

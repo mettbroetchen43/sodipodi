@@ -42,12 +42,6 @@ static void sp_dt_simple_guide_dialog (SPGuide * guide, SPDesktop * desktop);
 void
 sp_desktop_root_handler (SPCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
-	if (event->type == GDK_ENTER_NOTIFY) {
-		/* fixme: should it go here? 
-		   moved it to sp_desktop_set_focus (Frank)
-	  sp_canvas_item_grab_focus ((SPCanvasItem *) desktop->main); 
-		*/
-	}
 	sp_event_context_root_handler (desktop->event_context, event);
 }
 
@@ -200,7 +194,7 @@ sp_dt_guide_event (SPCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
 			dragging = TRUE;
-			sp_canvas_item_grab (item, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+			sp_canvas_item_grab (item, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK,
 						NULL, event->button.time);
 			ret = TRUE;
 		}
