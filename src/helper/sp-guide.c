@@ -83,6 +83,7 @@ sp_guideline_init (SPGuideLine *guideline)
 	guideline->color = 0x0000ff7f;
 	guideline->orientation = SP_GUIDELINE_ORIENTATION_HORIZONTAL;
 	guideline->shown = FALSE;
+	guideline->sensitive = FALSE;
 }
 
 static void
@@ -253,6 +254,8 @@ sp_guideline_point (GnomeCanvasItem *item, double x, double y,
 
 	guideline = SP_GUIDELINE (item);
 
+	if (!guideline->sensitive) return 1e18;
+
 	* actual_item = item;
 
 	if (guideline->orientation == SP_GUIDELINE_ORIENTATION_HORIZONTAL) {
@@ -273,3 +276,14 @@ sp_guideline_moveto (SPGuideLine * guideline, double x, double y)
 
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (guideline), affine);
 }
+
+void
+sp_guideline_sensitize (SPGuideLine * guideline, gboolean sensitive)
+{
+	g_assert (guideline != NULL);
+	g_assert (SP_IS_GUIDELINE (guideline));
+
+	guideline->sensitive = sensitive;
+}
+
+

@@ -50,6 +50,7 @@ sodipodi_SOURCES = \
 	desktop-events.c desktop-events.h \
 	desktop-handles.c desktop-handles.h \
 	desktop-affine.c desktop-affine.h \
+	desktop-snap.c desktop-snap.h \
 	toolbox.c toolbox.h \
 	\
 	event-context.c event-context.h \

@@ -10,6 +10,7 @@
 #include "dialogs/xml-tree.h"
 #include "dialogs/align.h"
 #include "dialogs/transformation.h"
+#include "dialogs/desktop-properties.h"
 
 static void fake_dialogs (void);
 
@@ -75,6 +76,7 @@ fake_dialogs (void)
 	sp_xml_tree_dialog ();
 	sp_quick_align_dialog ();
 	sp_transformation_dialog ();
+	sp_guides_dialog ();
 }
 
 

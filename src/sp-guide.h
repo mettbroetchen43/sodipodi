@@ -40,8 +40,13 @@ struct _SPGuideClass {
 
 GtkType sp_guide_get_type (void);
 
-void sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group);
+void sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler);
+void sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas);
+void sp_guide_sensitize (SPGuide * guide, GnomeCanvas * canvas, gboolean sensitive);
+
+void sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y);
 
 gint sp_guide_compare (gconstpointer a, gconstpointer b);
 
 #endif
+

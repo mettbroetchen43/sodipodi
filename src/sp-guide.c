@@ -1,5 +1,6 @@
 #define SP_GUIDE_C
 
+#include <gtk/gtksignal.h>
 #include "helper/sp-guide.h"
 #include "sp-guide.h"
 
@@ -63,7 +64,10 @@ sp_guide_destroy (GtkObject * object)
 
 	guide = (SPGuide *) object;
 
-	/* fixme: destroy views */
+	while (guide->views) {
+		gtk_object_destroy (GTK_OBJECT (guide->views->data));
+		guide->views = g_slist_remove_link (guide->views, guide->views);
+	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
@@ -107,20 +111,71 @@ sp_guide_read_attr (SPObject * object, const gchar * key)
 }
 
 void
-sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group)
+sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler)
 {
 	GnomeCanvasItem * item;
 
-	item = gnome_canvas_item_new (group,
-		SP_TYPE_GUIDELINE,
-		"orientation", guide->orientation,
-		NULL);
-
+	item = gnome_canvas_item_new (group, SP_TYPE_GUIDELINE,
+		"orientation", guide->orientation, NULL);
 	g_assert (item != NULL);
+	gtk_signal_connect (GTK_OBJECT (item), "event",
+			    GTK_SIGNAL_FUNC (handler), guide);
 
 	sp_guideline_moveto ((SPGuideLine *) item, guide->position, guide->position);
 
 	guide->views = g_slist_prepend (guide->views, item);
+}
+
+void
+sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas)
+{
+	GSList * l;
+
+	g_assert (guide != NULL);
+	g_assert (SP_IS_GUIDE (guide));
+	g_assert (canvas != NULL);
+	g_assert (GNOME_IS_CANVAS (canvas));
+
+	for (l = guide->views; l != NULL; l = l->next) {
+		if (canvas == GNOME_CANVAS_ITEM (l->data)->canvas) {
+			gtk_object_destroy (GTK_OBJECT (l->data));
+			guide->views = g_slist_remove_link (guide->views, l);
+			return;
+		}
+	}
+	g_assert_not_reached ();
+}
+
+void
+sp_guide_sensitize (SPGuide * guide, GnomeCanvas * canvas, gboolean sensitive)
+{
+	GSList * l;
+
+	g_assert (guide != NULL);
+	g_assert (SP_IS_GUIDE (guide));
+	g_assert (canvas != NULL);
+	g_assert (GNOME_IS_CANVAS (canvas));
+
+	for (l = guide->views; l != NULL; l = l->next) {
+		if (canvas == GNOME_CANVAS_ITEM (l->data)->canvas) {
+			sp_guideline_sensitize (SP_GUIDELINE (l->data), sensitive);
+			return;
+		}
+	}
+	g_assert_not_reached ();
+}
+
+void
+sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y)
+{
+	GSList * l;
+
+	g_assert (guide != NULL);
+	g_assert (SP_IS_GUIDE (guide));
+
+	for (l = guide->views; l != NULL; l = l->next) {
+		sp_guideline_moveto (SP_GUIDELINE (l->data), x, y);
+	}
 }
 
 gint

@@ -1,5 +1,12 @@
 2000-09-09  Lauris Kaplinski  <lauris@helixcode.com>
 
+	* src/*.c, glade/desktop.*, src/dialog/desktop-properties.*:
+	Hacked together a preliminary guideline support stuff.	It
+	sucks really for anything other than scaling, but now we have
+	at least something to improve in future.
+
+2000-09-09  Lauris Kaplinski  <lauris@helixcode.com>
+
 	* sodipodi.c, sodipodi-private.h: New filed. Bye-bye to
 	Gnome-MDI interface, instead we have much more convenient
 	sodipodi object.

@@ -79,17 +79,20 @@ sp_desktop_class_init (SPDesktopClass * klass)
 	object_class->destroy = sp_desktop_destroy;
 
 	widget_class->enter_notify_event = sp_desktop_enter_notify;
+#if 0
 	widget_class->button_press_event = sp_desktop_button_press;
 	widget_class->button_release_event = sp_desktop_button_release;
 	widget_class->motion_notify_event = sp_desktop_motion_notify;
+#endif
 }
 
 static void
 sp_desktop_init (SPDesktop * desktop)
 {
-  GtkWidget * menu_button;
-  GtkWidget * menu_arrow;
-  GtkWidget * hbox; 
+	GtkWidget * menu_button;
+	GtkWidget * menu_arrow;
+	GtkWidget * hbox; 
+	GtkWidget * eventbox;
 
 	desktop->document = NULL;
 	desktop->namedview = NULL;
@@ -106,11 +109,13 @@ sp_desktop_init (SPDesktop * desktop)
 	art_affine_identity (desktop->w2d);
 
 	desktop->decorations = TRUE;
+	desktop->guides_active = FALSE;
 
 	desktop->table = GTK_TABLE (gtk_table_new (3, 3, FALSE));
 	gtk_widget_show (GTK_WIDGET (desktop->table));
 	gtk_container_add (GTK_CONTAINER (desktop), GTK_WIDGET (desktop->table));
 
+	/* Horizontal scrollbar */
 	desktop->hscrollbar = GTK_SCROLLBAR (gtk_hscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
 		0.0, 8000.0, 10.0, 100.0, 4.0))));
 	gtk_widget_show (GTK_WIDGET (desktop->hscrollbar));
@@ -120,6 +125,7 @@ sp_desktop_init (SPDesktop * desktop)
 		GTK_EXPAND | GTK_FILL,
 		GTK_FILL,
 		0,0);
+	/* Vertical scrollbar */
 	desktop->vscrollbar = GTK_SCROLLBAR (gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
 		0.0, 8000.0, 10.0, 100.0, 4.0))));
 	gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
@@ -129,22 +135,43 @@ sp_desktop_init (SPDesktop * desktop)
 		GTK_FILL,
 		GTK_EXPAND | GTK_FILL,
 		0,0);
+	/* Horizonatl ruler */
+	eventbox = gtk_event_box_new ();
+	gtk_widget_show (eventbox);
 	desktop->hruler = GTK_RULER (gtk_hruler_new ());
 	gtk_widget_show (GTK_WIDGET (desktop->hruler));
+	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->hruler));
 	gtk_table_attach (desktop->table,
-		GTK_WIDGET (desktop->hruler),
+		eventbox,
 		1,2,0,1,
 		GTK_FILL,
 		GTK_FILL,
 		0,0);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "button_press_event",
+			    GTK_SIGNAL_FUNC (sp_dt_hruler_event), desktop);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "button_release_event",
+			    GTK_SIGNAL_FUNC (sp_dt_hruler_event), desktop);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "motion_notify_event",
+			    GTK_SIGNAL_FUNC (sp_dt_hruler_event), desktop);
+	/* Vertical ruler */
+	eventbox = gtk_event_box_new ();
+	gtk_widget_show (eventbox);
 	desktop->vruler = GTK_RULER (gtk_vruler_new ());
 	gtk_widget_show (GTK_WIDGET (desktop->vruler));
+	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->vruler));
 	gtk_table_attach (desktop->table,
-		GTK_WIDGET (desktop->vruler),
+		eventbox,
 		0,1,1,2,
 		GTK_FILL,
 		GTK_FILL,
 		0,0);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "button_press_event",
+			    GTK_SIGNAL_FUNC (sp_dt_vruler_event), desktop);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "button_release_event",
+			    GTK_SIGNAL_FUNC (sp_dt_vruler_event), desktop);
+	gtk_signal_connect (GTK_OBJECT (eventbox), "motion_notify_event",
+			    GTK_SIGNAL_FUNC (sp_dt_vruler_event), desktop);
+	/* Canvas */
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
@@ -203,8 +230,10 @@ sp_desktop_destroy (GtkObject * object)
 		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
 
 	if (desktop->document) {
-		if (desktop->canvas)
+		if (desktop->canvas) {
+			sp_namedview_hide (desktop->namedview, desktop);
 			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
+		}
 		gtk_object_unref (GTK_OBJECT (desktop->document));
 	}
 
@@ -310,7 +339,9 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 
 	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
 
-	sp_namedview_show (desktop->namedview, desktop->guides);
+	sp_namedview_show (desktop->namedview, desktop);
+	/* Ugly hack */
+	sp_desktop_activate_guides (desktop, TRUE);
 
 	// ?
 	// sp_active_desktop_set (desktop);
@@ -340,6 +371,13 @@ sp_desktop_show_decorations (SPDesktop * desktop, gboolean show)
 		gtk_widget_hide (GTK_WIDGET (desktop->hruler));
 		gtk_widget_hide (GTK_WIDGET (desktop->vruler));
 	}
+}
+
+void
+sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate)
+{
+	desktop->guides_active = activate;
+	sp_namedview_activate_guides (desktop->namedview, desktop, activate);
 }
 
 void

@@ -37,6 +37,7 @@ struct _SPGuideLine {
 
 	gint position;
 	gboolean shown;
+	gboolean sensitive;
 };
 
 struct _SPGuideLineClass {
@@ -48,6 +49,7 @@ struct _SPGuideLineClass {
 GtkType sp_guideline_get_type (void);
 
 void sp_guideline_moveto (SPGuideLine * guideline, double x, double y);
+void sp_guideline_sensitize (SPGuideLine * guideline, gboolean sensitive);
 
 END_GNOME_DECLS
 

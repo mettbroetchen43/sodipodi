@@ -15,6 +15,8 @@
 #include "desktop-affine.h"
 #include "knot.h"
 
+#include "sp-guide.h"
+
 enum {
 	ARG_NONE,
 	ARG_SIZE,
@@ -454,6 +456,13 @@ sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
 	/* If user did not complete, we simply move knot to new position */
 
 	if (!done) {
+#if 0
+		/* Try the logic */
+		GSList * l;
+		for (l = knot->desktop->namedview->hguides; l != NULL; l = l->next) {
+			if (fabs (p->y - SP_GUIDE (l->data)->position) < 10.0) p->y = SP_GUIDE (l->data)->position;
+		}
+#endif
 		sp_knot_set_position (knot, p, state);
 	}
 }

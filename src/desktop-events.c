@@ -3,10 +3,9 @@
 #include "helper/sp-guide.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
+#include "sp-guide.h"
 #include "desktop-affine.h"
 #include "desktop-events.h"
-
-static gboolean sp_inside_widget (GtkWidget * widget, gint x, gint y);
 
 /* Root item handler */
 
@@ -39,129 +38,144 @@ sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data
 gint
 sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 {
-#if 0
-	sp_active_desktop_set (SP_DESKTOP (widget));
-#endif
 	sodipodi_activate_desktop (SP_DESKTOP (widget));
 
 	return FALSE;
 }
 
-typedef enum {
-	SP_DT_NONE,
-	SP_DT_HGUIDE,
-	SP_DT_VGUIDE
-} SPDTStateType;
-
-static SPDTStateType state = SP_DT_NONE;
-static SPGuideLine * hguide = NULL;
-static SPGuideLine * vguide = NULL;
-
-gint
-sp_desktop_button_press (GtkWidget * widget, GdkEventButton * event)
+static gint
+sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean horiz)
 {
+	static gboolean dragging = FALSE;
+	static GnomeCanvasItem * guide = NULL;
+	static ArtPoint p;
 	SPDesktop * desktop;
 
-	if (event->button == 1) {
-		desktop = SP_DESKTOP (widget);
-		if (sp_inside_widget (GTK_WIDGET (desktop->hruler), event->x, event->y)) {
+	desktop = SP_DESKTOP (data);
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			dragging = TRUE;
+			guide = gnome_canvas_item_new (desktop->guides, SP_TYPE_GUIDELINE,
+						       "orientation",
+						       horiz ? SP_GUIDELINE_ORIENTATION_HORIZONTAL : SP_GUIDELINE_ORIENTATION_VERTICAL,
+						       NULL);
 			gdk_pointer_grab (widget->window, FALSE,
-				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				NULL, NULL,
-				event->time);
-			state = SP_DT_HGUIDE;
-			if (hguide == NULL) {
-				hguide = (SPGuideLine *) gnome_canvas_item_new (desktop->guides,
-					SP_TYPE_GUIDELINE,
-					"orientation", SP_GUIDELINE_ORIENTATION_HORIZONTAL,
-					NULL);
-			}
-			gnome_canvas_item_show (GNOME_CANVAS_ITEM (hguide));
-			return FALSE;
+					  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK,
+					  NULL, NULL,
+					  event->button.time);
 		}
-		if (sp_inside_widget (GTK_WIDGET (desktop->vruler), event->x, event->y)) {
-			gdk_pointer_grab (widget->window, FALSE,
-				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
-				NULL, NULL,
-				event->time);
-			state = SP_DT_VGUIDE;
-			if (vguide == NULL) {
-				vguide = (SPGuideLine *) gnome_canvas_item_new (desktop->guides,
-					SP_TYPE_GUIDELINE,
-					"orientation", SP_GUIDELINE_ORIENTATION_VERTICAL,
-					NULL);
-			}
-			gnome_canvas_item_show (GNOME_CANVAS_ITEM (vguide));
-			return FALSE;
+		break;
+	case GDK_MOTION_NOTIFY:
+		if (dragging) {
+			gnome_canvas_window_to_world (desktop->canvas,
+						      horiz ? 0 : event->motion.x - widget->allocation.width,
+						      horiz ? event->motion.y - widget->allocation.height : 0,
+						      &p.x, &p.y);
+			sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
+			sp_guideline_moveto ((SPGuideLine *) guide, p.x, p.y);
 		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (dragging && event->button.button == 1) {
+			gdk_pointer_ungrab (event->button.time);
+			dragging = FALSE;
+			gtk_object_destroy (GTK_OBJECT (guide));
+			guide = NULL;
+			if ((horiz && (event->button.y > widget->allocation.height)) ||
+				(!horiz && (event->button.x > widget->allocation.width))) {
+				SPRepr * repr;
+				repr = sp_repr_new ("sodipodi:guide");
+				sp_repr_set_attr (repr, "orientation", horiz ? "horizontal" : "vertical");
+				sp_repr_set_double_attribute (repr, "position", horiz ? p.y : p.x);
+				sp_repr_append_child (SP_OBJECT (desktop->namedview)->repr, repr);
+				sp_repr_unref (repr);
+			}
+		}
+	default:
+		break;
 	}
 	return FALSE;
 }
 
 gint
-sp_desktop_button_release (GtkWidget * widget, GdkEventButton * event)
+sp_dt_hruler_event (GtkWidget * widget, GdkEvent * event, gpointer data)
 {
-	SPDesktop * desktop;
-
-	if (event->button == 1) {
-		desktop = SP_DESKTOP (widget);
-		switch (state) {
-		case SP_DT_HGUIDE:
-			gdk_pointer_ungrab (event->time);
-			gnome_canvas_item_hide (GNOME_CANVAS_ITEM (hguide));
-			break;
-		case SP_DT_VGUIDE:
-			gdk_pointer_ungrab (event->time);
-			gnome_canvas_item_hide (GNOME_CANVAS_ITEM (vguide));
-			break;
-		default:
-			break;
-		}
-		state = SP_DT_NONE;
-	}
-	return FALSE;
+	return sp_dt_ruler_event (widget, event, data, TRUE);
 }
 
 gint
-sp_desktop_motion_notify (GtkWidget * widget, GdkEventMotion * event)
+sp_dt_vruler_event (GtkWidget * widget, GdkEvent * event, gpointer data)
 {
+	return sp_dt_ruler_event (widget, event, data, FALSE);
+}
+
+/* Guides */
+
+void
+sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+{
+	static gboolean dragging = FALSE;
+	SPGuide * guide;
 	SPDesktop * desktop;
 	ArtPoint p;
 
-	desktop = SP_DESKTOP (widget);
+	guide = SP_GUIDE (data);
+	desktop = SP_DESKTOP (gtk_object_get_data (GTK_OBJECT (item->canvas), "SPDesktop"));
 
-	switch (state) {
-	case SP_DT_HGUIDE:
-		gnome_canvas_window_to_world (desktop->canvas,
-			0, event->y - GTK_WIDGET (desktop->canvas)->allocation.y,
-			&p.x, &p.y);
-		sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
-		sp_guideline_moveto (hguide, p.x, p.y);
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			dragging = TRUE;
+			gnome_canvas_item_grab (item, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK,
+					  NULL, event->button.time);
+		}
 		break;
-	case SP_DT_VGUIDE:
-		gnome_canvas_window_to_world (desktop->canvas,
-			event->x - GTK_WIDGET (desktop->canvas)->allocation.x, 0,
-			&p.x, &p.y);
-		sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
-		sp_guideline_moveto (vguide, p.x, p.y);
+	case GDK_MOTION_NOTIFY:
+		if (dragging) {
+#if 0
+			gnome_canvas_window_to_world (desktop->canvas,
+						      event->motion.x, event->motion.y,
+						      &p.x, &p.y);
+#endif
+			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
+			sp_guide_moveto (guide, p.x, p.y);
+		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (dragging && event->button.button == 1) {
+			GtkWidget * w;
+			gnome_canvas_item_ungrab (item, event->button.time);
+			dragging = FALSE;
+			w = GTK_WIDGET (item->canvas);
+			if ((event->button.x >= 0) && (event->button.y >= 0) &&
+			    (event->button.x < w->allocation.width) &&
+			    (event->button.y < w->allocation.height)) {
+#if 0
+				gnome_canvas_window_to_world (item->canvas,
+							      event->button.x, event->button.y,
+							      &p.x, &p.y);
+#endif
+				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
+				sp_repr_set_double_attribute (SP_OBJECT (data)->repr,
+							      "position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? p.y : p.x);
+			} else {
+				sp_repr_unparent (SP_OBJECT (guide)->repr);
+			}
+		}
+	case GDK_ENTER_NOTIFY:
+		gnome_canvas_item_set (item, "color", 0xff0000ff, NULL);
+		break;
+	case GDK_LEAVE_NOTIFY:
+		gnome_canvas_item_set (item, "color", 0x0000ffff, NULL);
 		break;
 	default:
 		break;
 	}
-
-	return FALSE;
 }
 
-static gboolean
-sp_inside_widget (GtkWidget * widget, gint x, gint y)
-{
-	if (!GTK_WIDGET_VISIBLE (widget)) return FALSE;
-	x -= widget->allocation.x;
-	y -= widget->allocation.y;
-	if (x < 0) return FALSE;
-	if (y < 0) return FALSE;
-	if (x >= widget->allocation.width) return FALSE;
-	if (y >= widget->allocation.height) return FALSE;
-	return TRUE;
-}
+
+
+
 

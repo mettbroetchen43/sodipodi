@@ -32,7 +32,8 @@ typedef struct _SPDesktopClass SPDesktopClass;
 
 struct _SPDesktop {
 	GtkEventBox eventbox;
-	guint decorations :1;
+	guint decorations : 1;
+	guint guides_active : 1;
 	GtkTable * table;
 	GtkScrollbar * hscrollbar;
 	GtkScrollbar * vscrollbar;
@@ -71,6 +72,7 @@ SPDesktop * sp_desktop_new (SPDocument * document, SPNamedView * namedview);
 /* Show/hide rulers & scrollbars */
 
 void sp_desktop_show_decorations (SPDesktop * desktop, gboolean show);
+void sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate);
 
 void sp_desktop_change_document (SPDesktop * desktop, SPDocument * document);
 

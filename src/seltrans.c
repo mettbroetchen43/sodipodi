@@ -6,6 +6,7 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "desktop-snap.h"
 #include "select-context.h"
 #include "seltrans-handles.h"
 #include "seltrans.h"
@@ -422,14 +423,21 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 static gboolean
 sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 {
+#if 0
 	ArtPoint s;
+#endif
 
+	sp_desktop_free_snap (knot->desktop, p);
+#if 0
 	s.x = rint (p->x);
 	s.y = rint (p->y);
 
 	sp_knot_set_position (knot, &s, state);
 
 	return TRUE;
+#else
+	return FALSE;
+#endif
 }
 
 static void

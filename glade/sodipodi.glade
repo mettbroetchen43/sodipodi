@@ -4149,6 +4149,18 @@ Radial
 	<label>Nodes</label>
 	<right_justify>False</right_justify>
       </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>guides</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_guides_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
+	</signal>
+	<label>Guidelines</label>
+	<right_justify>False</right_justify>
+      </widget>
     </widget>
   </widget>
 

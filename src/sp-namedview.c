@@ -1,6 +1,9 @@
 #define SP_NAMEDVIEW_C
 
+#include "svg/svg.h"
 #include "document.h"
+#include "desktop.h"
+#include "desktop-events.h"
 #include "sp-guide.h"
 #include "sp-namedview.h"
 
@@ -89,7 +92,9 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) (parent_class))->build)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	sp_namedview_read_attr (object, "editable");
+	sp_namedview_read_attr (object, "viewonly");
+	sp_namedview_read_attr (object, "snaptoguides");
+	sp_namedview_read_attr (object, "guidetolerance");
 
 	/* Construct guideline list */
 
@@ -100,7 +105,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			if (g->orientation == SP_GUIDE_HORIZONTAL) {
 				nv->hguides = g_slist_prepend (nv->hguides, g);
 			} else {
-				nv->vguides = g_slist_prepend (nv->hguides, g);
+				nv->vguides = g_slist_prepend (nv->vguides, g);
 			}
 		}
 	}
@@ -110,14 +115,23 @@ static void
 sp_namedview_read_attr (SPObject * object, const gchar * key)
 {
 	SPNamedView * namedview;
+	SPSVGUnit unit;
 	const gchar * astr;
 
 	namedview = SP_NAMEDVIEW (object);
 
 	astr = sp_repr_attr (object->repr, key);
 
-	if (strcmp (key, "editable") == 0) {
-		namedview->editable = (astr != NULL);
+	if (strcmp (key, "viewonly") == 0) {
+		namedview->editable = (astr == NULL);
+		return;
+	}
+	if (strcmp (key, "snaptoguides") == 0) {
+		namedview->snaptoguides = (astr != NULL);
+		return;
+	}
+	if (strcmp (key, "guidetolerance") == 0) {
+		namedview->guidetolerance = sp_svg_read_length (&unit, astr);
 		return;
 	}
 
@@ -149,10 +163,13 @@ sp_namedview_add_child (SPObject * object, SPRepr * child)
 		if (g->orientation == SP_GUIDE_HORIZONTAL) {
 			nv->hguides = g_slist_prepend (nv->hguides, g);
 		} else {
-			nv->vguides = g_slist_prepend (nv->hguides, g);
+			nv->vguides = g_slist_prepend (nv->vguides, g);
 		}
-		for (l = nv->views; l != NULL; l = l->next) {
-			sp_guide_show (g, GNOME_CANVAS_GROUP (l->data));
+		if (nv->editable) {
+			for (l = nv->views; l != NULL; l = l->next) {
+				sp_guide_show (g, SP_DESKTOP (l->data)->guides, sp_dt_guide_event);
+				if (SP_DESKTOP (l->data)->guides_active) sp_guide_sensitize (g, SP_DESKTOP (l->data)->canvas, TRUE);
+			}
 		}
 	}
 }
@@ -186,18 +203,71 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 }
 
 void
-sp_namedview_show (SPNamedView * namedview, GnomeCanvasGroup * group)
+sp_namedview_show (SPNamedView * namedview, gpointer desktop)
 {
+	SPDesktop * dt;
 	GSList * l;
 
+	dt = SP_DESKTOP (desktop);
+
 	for (l = namedview->hguides; l != NULL; l = l->next) {
-g_print ("show h\n");
-		sp_guide_show (SP_GUIDE (l->data), group);
+		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
+		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
 	}
 
 	for (l = namedview->vguides; l != NULL; l = l->next) {
-g_print ("show v\n");
-		sp_guide_show (SP_GUIDE (l->data), group);
+		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
+		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
+	}
+
+	namedview->views = g_slist_prepend (namedview->views, desktop);
+}
+
+void
+sp_namedview_hide (SPNamedView * nv, gpointer desktop)
+{
+	SPDesktop * dt;
+	GSList * l;
+
+	g_assert (nv != NULL);
+	g_assert (SP_IS_NAMEDVIEW (nv));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (g_slist_find (nv->views, desktop));
+
+	dt = SP_DESKTOP (desktop);
+
+	for (l = nv->hguides; l != NULL; l = l->next) {
+		sp_guide_hide (SP_GUIDE (l->data), dt->canvas);
+	}
+
+	for (l = nv->vguides; l != NULL; l = l->next) {
+		sp_guide_hide (SP_GUIDE (l->data), dt->canvas);
+	}
+
+	nv->views = g_slist_remove (nv->views, desktop);
+}
+
+void
+sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean active)
+{
+	SPDesktop * dt;
+	GSList * l;
+
+	g_assert (nv != NULL);
+	g_assert (SP_IS_NAMEDVIEW (nv));
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (g_slist_find (nv->views, desktop));
+
+	dt = SP_DESKTOP (desktop);
+
+	for (l = nv->hguides; l != NULL; l = l->next) {
+		sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, active);
+	}
+
+	for (l = nv->vguides; l != NULL; l = l->next) {
+		sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, active);
 	}
 }
 

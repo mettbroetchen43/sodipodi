@@ -126,6 +126,7 @@ sp_objectgroup_add_child (SPObject * object, SPRepr * child)
 	name = sp_repr_name (child);
 	g_assert (name != NULL);
 	type = sp_object_type_lookup (name);
+	g_return_if_fail (type > GTK_TYPE_NONE);
 
 	childobject = gtk_type_new (type);
 	childobject->parent = object;
@@ -154,9 +155,6 @@ sp_objectgroup_remove_child (SPObject * object, SPRepr * child)
 			objectgroup->children = g_slist_remove (objectgroup->children, childobject);
 			childobject->parent = NULL;
 			gtk_object_unref (GTK_OBJECT (childobject));
-#if 0
-			sp_objectgroup_set_order (object);
-#endif
 			return;
 		}
 	}

@@ -25,7 +25,9 @@ typedef struct _SPNamedViewClass SPNamedViewClass;
 
 struct _SPNamedView {
 	SPObjectGroup objectgroup;
-	gboolean editable;
+	guint editable : 1;
+	guint snaptoguides : 1;
+	gdouble guidetolerance;
 	GSList * hguides;
 	GSList * vguides;
 	GSList * views;
@@ -37,6 +39,13 @@ struct _SPNamedViewClass {
 
 GtkType sp_namedview_get_type (void);
 
-void sp_namedview_show (SPNamedView * namedview, GnomeCanvasGroup * group);
+void sp_namedview_show (SPNamedView * namedview, gpointer desktop);
+void sp_namedview_hide (SPNamedView * namedview, gpointer desktop);
+
+void sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean active);
 
 #endif
+
+
+
+
