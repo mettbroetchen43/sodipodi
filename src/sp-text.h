@@ -55,15 +55,9 @@ struct _SPLayoutData {
 	SPSVGLength y;
 	SPSVGLength dx;
 	SPSVGLength dy;
-	unsigned int xml_space : 1;
 	unsigned int rotate_set : 1;
 	float rotate;
 	float linespacing;
-};
-
-enum {
-	SP_XML_SPACE_DEFAULT,
-	SP_XML_SPACE_PRESERVE
 };
 
 

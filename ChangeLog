@@ -1,3 +1,16 @@
+2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-object.c (sp_object_build): Parse xml:space
+	(sp_object_private_set): Ditto
+	(sp_xml_get_space_string): New helper
+	(sp_object_private_write): Write xml:space
+
+	* src/sp-object.h: Added xml:space attribute
+
+	* src/sp-text.c: Handle xml:space
+
+	* src/xml/repr-io.c: Parse xml:space
+
 2003-11-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/desktop-properties.c (sp_dtw_update): Added page and

@@ -187,13 +187,18 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	if (node->type == XML_TEXT_NODE || node->type == XML_CDATA_SECTION_NODE)
 	{
 		xmlChar *p;
+		gboolean preserve;
+
+		preserve = xmlNodeGetSpacePreserve (node);
+
 		for (p = node->content; p && *p; p++) {
-			if (!isspace (*p)) {
+			if (!isspace (*p) || preserve) {
 				xmlChar *e;
 				unsigned char *s;
 				SPRepr *rdoc;
 				e = p + strlen (p) - 1;
-				while (*e && isspace (*e)) e -= 1;
+				if (! preserve)
+					while (*e && isspace (*e)) e -= 1;
 				s = g_new (unsigned char, e - p + 2);
 				memcpy (s, p, e - p + 1);
 				s[e - p + 1] = '\0';

@@ -166,7 +166,7 @@ sp_string_read_content (SPObject *object)
 		unsigned int unival;
 		unsigned int preserve, inspace, intext;
 		int pos;
-		preserve = (string->ly->xml_space == SP_XML_SPACE_PRESERVE);
+		preserve = (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE);
 		inspace = FALSE;
 		intext = FALSE;
 		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
@@ -286,8 +286,9 @@ sp_string_calculate_dimensions (SPString *string)
 
 	if (string->text) {
 		const guchar *p;
-		gboolean inspace, intext;
+		gboolean preserve, inspace, intext;
 
+		preserve = (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE);
 		inspace = FALSE;
 		intext = FALSE;
 
@@ -297,12 +298,11 @@ sp_string_calculate_dimensions (SPString *string)
 			unival = g_utf8_get_char (p);
 
 			if (g_unichar_isspace(unival)) {
-				if (string->ly->xml_space == SP_XML_SPACE_PRESERVE) {
+				if (preserve) {
 					string->advance.x += spadv.x;
 					string->advance.y -= spadv.y;
-				}  else if (unival != '\n') { /* SP_XML_SPACE_DEFAULT */
-					if (intext) inspace = TRUE;
 				}
+				if (unival != '\n' && unival != '\r') inspace = TRUE;
 			} else {
 				NRRectF bbox;
 				NRPointF adv;
@@ -310,10 +310,9 @@ sp_string_calculate_dimensions (SPString *string)
 
 				glyph = nr_typeface_lookup_default (face, unival);
 
-				if (inspace) {
+				if (!preserve && inspace && intext) {
 					string->advance.x += spadv.x;
 					string->advance.y -= spadv.y;
-					inspace = FALSE;
 				}
 
 				if (nr_font_glyph_area_get (font, glyph, &bbox)) {
@@ -326,6 +325,7 @@ sp_string_calculate_dimensions (SPString *string)
 					string->advance.x += adv.x;
 					string->advance.y -= adv.y;
 				}
+				inspace = FALSE;
 				intext = TRUE;
 			}
 		}
@@ -352,15 +352,22 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	NRTypeFace *face;
 	NRFont *font;
 	gdouble size;
-	gint spglyph;
 	gdouble x, y;
 	NRMatrixF a;
 	const guchar *p;
+	gboolean preserve;
 	gboolean inspace;
 	gboolean intext;
 	gint len, pos;
 	unsigned int metrics;
+#ifdef SP_TEXT_NEW_CONTENT
+	NRPGL *pgl;
+	NRMatrixF gtr;
+	gint i;
+#else
+	gint spglyph;
 	NRPointF spadv;
+#endif
 
 	chars = SP_CHARS (string);
 	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
@@ -422,11 +429,13 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	nr_matrix_f_set_scale (&a, 1.0, -1.0);
 
 	intext = FALSE;
-	inspace = (pinspace && (string->ly->xml_space == SP_XML_SPACE_DEFAULT)) ? *pinspace : FALSE;
+	preserve = (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE);
+	inspace = pinspace ? *pinspace : FALSE;
 	pos = 0;
 	for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
 		gunichar unival;
-		if (inspace) {  /* && SP_XML_SPACE_DEFAULT */
+		if (!preserve && inspace && intext) {
+			/* SP_XML_SPACE_DEFAULT */
 			string->p[pos].x = x + spadv.x;
 			string->p[pos].y = y - spadv.y;
 		} else {
@@ -436,22 +445,20 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		unival = g_utf8_get_char (p);
 
 		if (g_unichar_isspace(unival)) {
-			if (string->ly->xml_space == SP_XML_SPACE_PRESERVE) {
+			if (preserve) {
 				x += spadv.x;
 				y -= spadv.y;
-			}  else if (unival != '\n') { /* SP_XML_SPACE_DEFAULT */
-				if (intext) inspace = TRUE;
 			}
+			if (unival != '\n' && unival != '\r') inspace = TRUE;
 		} else {
 			NRPointF adv;
 			gint glyph;
 
 			glyph = nr_typeface_lookup_default (face, unival);
 
-			if (inspace) {
+			if (!preserve && inspace && intext) {
 				x += spadv.x;
 				y -= spadv.y;
-				inspace = FALSE;
 			}
 
 			a.c[4] = x;
@@ -462,6 +469,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 				x += adv.x;
 				y -= adv.y;
 			}
+			inspace = FALSE;
 			intext = TRUE;
 		}
 		pos += 1;
@@ -562,7 +570,6 @@ sp_tspan_init (SPTSpan *tspan)
 	sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	tspan->ly.linespacing = 1.0;
-	tspan->ly.xml_space = SP_XML_SPACE_DEFAULT;
 	tspan->string = NULL;
 }
 
@@ -584,7 +591,6 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_object_read_attr (object, "dy");
 	sp_object_read_attr (object, "rotate");
 	sp_object_read_attr (object, "sodipodi:role");
-	sp_object_read_attr (object, "xml:space");
 
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
 		if (rch->type == SP_XML_TEXT_NODE) break;
@@ -665,13 +671,6 @@ sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value)
 			tspan->role = SP_TSPAN_ROLE_LINE;
 		} else {
 			tspan->role = SP_TSPAN_ROLE_UNSPECIFIED;
-		}
-		break;
-	case SP_ATTR_XML_SPACE:
-		if (value && !strcmp (value, "preserve")) {
-			tspan->ly.xml_space = SP_XML_SPACE_PRESERVE;
-		} else {
-			tspan->ly.xml_space = SP_XML_SPACE_DEFAULT;
 		}
 		break;
 	default:
@@ -770,20 +769,6 @@ sp_tspan_modified (SPObject *object, unsigned int flags)
 	}
 }
 
-static const gchar*
-sp_text_get_xml_space_string(unsigned int space)
-{
-	switch(space)
-	{
-	case SP_XML_SPACE_DEFAULT:
-		return "default";
-	case SP_XML_SPACE_PRESERVE:
-		return "preserve";
-	default:
-		return NULL;
-	}
-}
-
 static SPRepr *
 sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 {
@@ -803,8 +788,6 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 	if (flags & SP_OBJECT_WRITE_SODIPODI) {
 		sp_repr_set_attr (repr, "sodipodi:role", (tspan->role != SP_TSPAN_ROLE_UNSPECIFIED) ? "line" : NULL);
 	}
-	if (tspan->ly.xml_space != SP_XML_SPACE_DEFAULT)
-		sp_repr_set_attr (repr, "xml:space", sp_text_get_xml_space_string(tspan->ly.xml_space));
 
 	if (flags & SP_OBJECT_WRITE_BUILD) {
 		SPRepr *rstr;
@@ -972,7 +955,6 @@ sp_text_init (SPText *text)
 	sp_svg_length_unset (&text->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	text->ly.linespacing = 1.0;
-	text->ly.xml_space = SP_XML_SPACE_DEFAULT;
 }
 
 /* fixme: Better place (Lauris) */
@@ -1003,14 +985,12 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	if (((SPObjectClass *) text_parent_class)->build)
 		((SPObjectClass *) text_parent_class)->build (object, doc, repr);
-
 	sp_object_read_attr (object, "x");
 	sp_object_read_attr (object, "y");
 	sp_object_read_attr (object, "dx");
 	sp_object_read_attr (object, "dy");
 	sp_object_read_attr (object, "rotate");
 	sp_object_read_attr (object, "sodipodi:linespacing");
-	sp_object_read_attr (object, "xml:space");
 
 	version = sp_text_find_version (object);
 
@@ -1119,13 +1099,6 @@ sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 			text->ly.linespacing = CLAMP (text->ly.linespacing, 0.01, 10.0);
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
-		break;
-	case SP_ATTR_XML_SPACE:
-		if (value && !strcmp (value, "preserve")) {
-			text->ly.xml_space = SP_XML_SPACE_PRESERVE;
-		} else {
-			text->ly.xml_space = SP_XML_SPACE_DEFAULT;
-		}
 		break;
 	default:
 		if (((SPObjectClass *) text_parent_class)->set)
@@ -1374,8 +1347,6 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 	if (text->ly.dx.set) sp_repr_set_double_attribute (repr, "dx", text->ly.dx.computed);
 	if (text->ly.dy.set) sp_repr_set_double_attribute (repr, "dy", text->ly.dy.computed);
 	if (text->ly.rotate_set) sp_repr_set_double_attribute (repr, "rotate", text->ly.rotate);
-	if (text->ly.xml_space != SP_XML_SPACE_DEFAULT)
-		sp_repr_set_attr (repr, "xml:space", sp_text_get_xml_space_string(text->ly.xml_space));
 
 	if (((SPObjectClass *) (text_parent_class))->write)
 		((SPObjectClass *) (text_parent_class))->write (object, repr, flags);
@@ -1759,6 +1730,7 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 			}
 		}
 	}
+	*t = i2p;
 }
 
 static void
