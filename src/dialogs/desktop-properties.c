@@ -1,259 +1,494 @@
 #define SP_DESKTOP_PROPERTIES_C
 
-#include <glade/glade.h>
+#include <config.h>
+
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtkcheckbutton.h>
 #include <libgnomeui/gnome-color-picker.h>
+
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
-#include "../forward.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop.h"
 #include "../desktop-handles.h"
 #include "../sp-namedview.h"
+
 #include "desktop-properties.h"
 
-/*
- * Very-very basic desktop properties dialog
- *
- */ 
+static GtkWidget *sp_desktop_dialog_new (void);
 
-#define MM2PT(v) ((v) * 72.0 / 25.4)
-#define PT2MM(v) ((v) * 25.4 / 72.0)
+static void sp_dtw_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
+static void sp_dtw_desactivate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
+static void sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop);
 
-static GladeXML  * xml = NULL;
-static GtkWidget * dialog = NULL;
+static GtkWidget *dialog = NULL;
 
-static void sp_desktop_dialog_setup (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
-
-static gint sp_desktop_dialog_delete (GtkWidget *widget, GdkEvent *event);
-
-#if 0
-static void grid_unit_set (SPUnitMenu * menu, SPSVGUnit system, SPMetric metric, gpointer data);
-#endif
+static void
+sp_dtw_dialog_destroy (GtkObject *object, gpointer data)
+{
+	dialog = NULL;
+}
 
 void
 sp_desktop_dialog (void)
 {
-#if 0
-	GtkWidget * t, * o, * u;
-#endif
-
-	if (dialog == NULL) {
-		g_assert (xml == NULL);
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/desktop.glade", "desktop_dialog");
-		glade_xml_signal_autoconnect (xml);
-		dialog = glade_xml_get_widget (xml, "desktop_dialog");
-		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event",
-				    GTK_SIGNAL_FUNC (sp_desktop_dialog_delete), NULL);
-#if 0		
-		/* fixme: experimental */
-		t = glade_xml_get_widget (xml, "grid_table");
-		o = glade_xml_get_widget (xml, "grid_units");
-		u = sp_unitmenu_new (SP_SVG_UNIT_ABSOLUTE, SP_SVG_UNIT_ABSOLUTE, SP_MM, TRUE);
-		gtk_widget_show (u);
-		gtk_widget_unparent (o);
-		gtk_table_attach (GTK_TABLE (t), u, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-		gtk_signal_connect (GTK_OBJECT (u), "set_unit",
-				    GTK_SIGNAL_FUNC (grid_unit_set), dialog);
-#endif
-		gtk_signal_connect_while_alive (GTK_OBJECT (sodipodi), "activate_desktop",
-						GTK_SIGNAL_FUNC (sp_desktop_dialog_setup), NULL,
-						GTK_OBJECT (dialog));
-	} else {
-		if (!GTK_WIDGET_VISIBLE (dialog))
-			gtk_widget_show (dialog);
+	if (!dialog) {
+		dialog = sp_desktop_dialog_new ();
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+				    GTK_SIGNAL_FUNC (sp_dtw_dialog_destroy), NULL);
 	}
 
-	sp_desktop_dialog_setup (SODIPODI, SP_ACTIVE_DESKTOP, NULL);
+	gtk_widget_show (dialog);
 }
 
+static void
+sp_dtw_whatever_toggled (GtkToggleButton *tb, GtkWidget *dialog)
+{
+	SPDesktop *dt;
+	SPDocument *doc;
+	SPRepr *repr;
+	const guchar *key;
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	doc = SP_DT_DOCUMENT (dt);
+
+	repr = SP_OBJECT_REPR (dt->namedview);
+	key = gtk_object_get_data (GTK_OBJECT (tb), "key");
+
+	sp_document_set_undo_sensitive (doc, FALSE);
+	sp_repr_set_boolean (repr, key, gtk_toggle_button_get_active (tb));
+	sp_document_set_undo_sensitive (doc, TRUE);
+}
+
+static void
+sp_dtw_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
+{
+	SPDesktop *dt;
+	SPDocument *doc;
+	SPRepr *repr;
+	SPUnitSelector *us;
+	const guchar *key;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	doc = SP_DT_DOCUMENT (dt);
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+	key = gtk_object_get_data (GTK_OBJECT (adjustment), "key");
+	us = gtk_object_get_data (GTK_OBJECT (adjustment), "unit_selector");
+
+	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+
+	sp_document_set_undo_sensitive (doc, FALSE);
+	sp_repr_set_attr (repr, key, c);
+	sp_document_set_undo_sensitive (doc, TRUE);
+}
+
+static void
+sp_dtw_grid_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
+{
+	SPRepr *repr;
+	SPUnitSelector *us;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+
+	us = gtk_object_get_data (GTK_OBJECT (dialog), "grid_snap_units");
+
+	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+	sp_repr_set_attr (repr, "gridtolerance", c);
+}
+
+static void
+sp_dtw_grid_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
+{
+	SPRepr *repr;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+
+	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
+	sp_repr_set_attr (repr, "gridcolor", c);
+	sp_repr_set_double (repr, "gridopacity", (a / 65535.0));
+}
+
+static void
+sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
+{
+	SPRepr *repr;
+	SPUnitSelector *us;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+
+	us = gtk_object_get_data (GTK_OBJECT (dialog), "guide_snap_units");
+
+	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+	sp_repr_set_attr (repr, "guidetolerance", c);
+}
+
+static void
+sp_dtw_guides_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
+{
+	SPRepr *repr;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+
+	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
+	sp_repr_set_attr (repr, "guidecolor", c);
+	sp_repr_set_double (repr, "guideopacity", (a / 65535.0));
+}
+
+static void
+sp_dtw_guides_hi_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
+{
+	SPRepr *repr;
+	guchar c[32];
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+
+	repr = SP_OBJECT_REPR (SP_ACTIVE_DESKTOP->namedview);
+
+	sp_svg_write_color (c, 32, ((r << 16) & 0xff000000) | ((g << 8) & 0xff0000) | (b & 0xff00));
+	sp_repr_set_attr (repr, "guidehicolor", c);
+	sp_repr_set_double (repr, "guidehiopacity", (a / 65535.0));
+}
+
+static GtkWidget *
+sp_desktop_dialog_new (void)
+{
+	GtkWidget *dialog, *nb, *l, *t, *b, *us, *sb, *cp;
+	GtkObject *a;
+
+	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Desktop settings"));
+
+	nb = gtk_notebook_new ();
+	gtk_widget_show (nb);
+	gtk_container_add (GTK_CONTAINER (dialog), nb);
+
+	/* Grid settings */
+
+	/* Notebook tab */
+	l = gtk_label_new (_("Grid"));
+	gtk_widget_show (l);
+	t = gtk_table_new (9, 2, FALSE);
+	gtk_widget_show (t);
+	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
+	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (t), 4);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
+
+	/* Checkbuttons */
+	b = gtk_check_button_new_with_label (_("Show grid"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "showgrid");
+	gtk_object_set_data (GTK_OBJECT (dialog), "showgrid", b);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_dtw_whatever_toggled), dialog);
+
+	b = gtk_check_button_new_with_label (_("Snap to grid"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "snaptogrid");
+	gtk_object_set_data (GTK_OBJECT (dialog), "snaptogrid", b);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_dtw_whatever_toggled), dialog);
+
+	l = gtk_label_new (_("Grid units:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
+	gtk_widget_show (us);
+	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "grid_units", us);
+
+	l = gtk_label_new (_("Origin X:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (a), "key", "gridoriginx");
+	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridoriginx", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_whatever_changed), dialog);
+
+	l = gtk_label_new (_("Origin Y:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (a), "key", "gridoriginy");
+	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridoriginy", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_whatever_changed), dialog);
+
+	l = gtk_label_new (_("Spacing X:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (a), "key", "gridspacingx");
+	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridspacingx", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_whatever_changed), dialog);
+
+	l = gtk_label_new (_("Spacing Y:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (a), "key", "gridspacingy");
+	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridspacingy", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_whatever_changed), dialog);
+
+	l = gtk_label_new (_("Snap units:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 6, 7, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE);
+	gtk_widget_show (us);
+	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 6, 7, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 #if 0
-static void
-grid_unit_set (SPUnitMenu * menu, SPSVGUnit system, SPMetric metric, gpointer data)
-{
-	g_print ("System %d metric %d\n", system, metric);
-}
+	gtk_signal_connect (GTK_OBJECT (us), "set_unit", GTK_SIGNAL_FUNC (sp_dtw_grid_snap_units_set), dialog);
 #endif
+	gtk_object_set_data (GTK_OBJECT (dialog), "grid_snap_units", us);
 
-/*
- * Fill entries etc. with default values
- */
+	l = gtk_label_new (_("Snap distance:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 7, 8, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridtolerance", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (sb), GTK_ADJUSTMENT (a));
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 7, 8, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_grid_snap_distance_changed), dialog);
+
+	l = gtk_label_new (_("Grid color:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	cp = gnome_color_picker_new ();
+	gtk_widget_show (cp);
+	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "gridcolor", cp);
+	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_grid_color_set), dialog);
+
+	/* Guidelines page */
+	l = gtk_label_new (_("Guides"));
+	gtk_widget_show (l);
+	t = gtk_table_new (5, 2, FALSE);
+	gtk_widget_show (t);
+	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
+	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (t), 4);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
+
+	b = gtk_check_button_new_with_label (_("Show guides"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "showguides");
+	gtk_object_set_data (GTK_OBJECT (dialog), "showguides", b);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_dtw_whatever_toggled), dialog);
+	gtk_widget_set_sensitive (b, FALSE);
+
+	b = gtk_check_button_new_with_label (_("Snap to guides"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "snaptoguides");
+	gtk_object_set_data (GTK_OBJECT (dialog), "snaptoguides", b);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_dtw_whatever_toggled), dialog);
+
+	l = gtk_label_new (_("Snap units:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE);
+	gtk_widget_show (us);
+	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (us), "set_unit", GTK_SIGNAL_FUNC (sp_dtw_guides_snap_units_set), dialog);
+#endif
+	gtk_object_set_data (GTK_OBJECT (dialog), "guide_snap_units", us);
+
+	l = gtk_label_new (_("Snap distance:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "guidetolerance", a);
+	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
+	gtk_widget_show (sb);
+	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_dtw_guides_snap_distance_changed), dialog);
+
+	l = gtk_label_new (_("Guides color:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	cp = gnome_color_picker_new ();
+	gtk_widget_show (cp);
+	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "guidecolor", cp);
+	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_color_set), dialog);
+
+	l = gtk_label_new (_("Highlight color:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	cp = gnome_color_picker_new ();
+	gtk_widget_show (cp);
+	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
+	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_hi_color_set), dialog);
+
+	/* fixme: We should listen namedview changes here as well */
+	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "activate_desktop",
+					GTK_SIGNAL_FUNC (sp_dtw_activate_desktop), dialog, GTK_OBJECT (dialog));
+	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "desactivate_desktop",
+					GTK_SIGNAL_FUNC (sp_dtw_desactivate_desktop), dialog, GTK_OBJECT (dialog));
+	sp_dtw_update (dialog, SP_ACTIVE_DESKTOP);
+
+	return dialog;
+}
 
 static void
-sp_desktop_dialog_setup (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
+sp_dtw_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog)
 {
-	SPNamedView * nv;
-	GtkWidget * w;
-
-	g_assert (sodipodi != NULL);
-	g_assert (SP_IS_SODIPODI (sodipodi));
-	g_assert (dialog != NULL);
-
-	if (!desktop) return;
-
-	nv = desktop->namedview;
-
-	/* Show grid */
-	w = glade_xml_get_widget (xml, "show_grid");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), nv->showgrid);
-
-	/* Snap to grid */
-	w = glade_xml_get_widget (xml, "snap_to_grid");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), nv->snaptogrid);
-
-	/* Origin */
-	w = glade_xml_get_widget (xml, "grid_origin_x");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), PT2MM (nv->gridorigin.x));
-	w = glade_xml_get_widget (xml, "grid_origin_y");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), PT2MM (nv->gridorigin.y));
-
-	/* Spacing */
-	w = glade_xml_get_widget (xml, "grid_spacing_x");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), PT2MM (nv->gridspacing.x));
-	w = glade_xml_get_widget (xml, "grid_spacing_y");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), PT2MM (nv->gridspacing.y));
-
-	/* Tolerance */
-	w = glade_xml_get_widget (xml, "grid_snap_distance");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), nv->gridtolerance);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "grid_color");
-	gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (w),
-				   (nv->gridcolor >> 24) & 0xff,
-				   (nv->gridcolor >> 16) & 0xff,
-				   (nv->gridcolor >> 8) & 0xff,
-				   nv->gridcolor & 0xff);
-
-	/* Show guides */
-	w = glade_xml_get_widget (xml, "show_guides");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), nv->showguides);
-
-	/* Snap to grid */
-	w = glade_xml_get_widget (xml, "snap_to_guides");
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), nv->snaptoguides);
-
-	/* Tolerance */
-	w = glade_xml_get_widget (xml, "guide_snap_distance");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), nv->guidetolerance);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "guide_color");
-	gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (w),
-				   (nv->guidecolor >> 24) & 0xff,
-				   (nv->guidecolor >> 16) & 0xff,
-				   (nv->guidecolor >> 8) & 0xff,
-				   nv->guidecolor & 0xff);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "guide_hicolor");
-	gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (w),
-				   (nv->guidehicolor >> 24) & 0xff,
-				   (nv->guidehicolor >> 16) & 0xff,
-				   (nv->guidehicolor >> 8) & 0xff,
-				   nv->guidehicolor & 0xff);
+	sp_dtw_update (dialog, desktop);
 }
 
-void
-sp_desktop_dialog_close (GtkWidget * widget)
+static void
+sp_dtw_desactivate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog)
 {
-	g_assert (dialog != NULL);
-
-	if (GTK_WIDGET_VISIBLE (dialog))
-		gtk_widget_hide (dialog);
+	sp_dtw_update (dialog, NULL);
 }
 
-static gint
-sp_desktop_dialog_delete (GtkWidget *widget, GdkEvent *event)
+static void
+sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 {
-	sp_desktop_dialog_close (widget);
+	if (!desktop) {
+		gtk_widget_set_sensitive (dialog, FALSE);
+	} else {
+		SPNamedView *nv;
+		GtkObject *o;
 
-	return TRUE;
+		nv = desktop->namedview;
+
+		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (TRUE));
+		gtk_widget_set_sensitive (dialog, TRUE);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "showgrid");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showgrid);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "snaptogrid");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->snaptogrid);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "grid_units");
+		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (o), nv->gridunit);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridoriginx");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridoriginx);
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridoriginy");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridoriginy);
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridspacingx");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridspacingx);
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridspacingy");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridspacingy);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "grid_snap_units");
+		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (o), nv->gridtoleranceunit);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridtolerance");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridtolerance);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridcolor");
+		gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (o),
+					   (nv->gridcolor >> 24) & 0xff,
+					   (nv->gridcolor >> 16) & 0xff,
+					   (nv->gridcolor >> 8) & 0xff,
+					   nv->gridcolor & 0xff);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "showguides");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showgrid);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "snaptoguides");
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->snaptogrid);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "guide_snap_units");
+		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (o), nv->guidetoleranceunit);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "guidetolerance");
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->guidetolerance);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "guidecolor");
+		gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (o),
+					   (nv->guidecolor >> 24) & 0xff,
+					   (nv->guidecolor >> 16) & 0xff,
+					   (nv->guidecolor >> 8) & 0xff,
+					   nv->guidecolor & 0xff);
+
+		o = gtk_object_get_data (GTK_OBJECT (dialog), "guidehicolor");
+		gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (o),
+					   (nv->guidehicolor >> 24) & 0xff,
+					   (nv->guidehicolor >> 16) & 0xff,
+					   (nv->guidehicolor >> 8) & 0xff,
+					   nv->guidehicolor & 0xff);
+
+		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (FALSE));
+	}
 }
-
-void
-sp_desktop_dialog_apply (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-	SPRepr * repr;
-	GtkWidget * w;
-	gdouble t;
-	guint8 r, g, b, a;
-	gchar color[32];
-
-	g_assert (dialog != NULL);
-
-	desktop = SP_ACTIVE_DESKTOP;
-
-	/* Fixme: Implement setting defaults */
-	g_return_if_fail (desktop != NULL);
-
-	repr = SP_OBJECT (desktop->namedview)->repr;
-
-	/* Show grid */
-	w = glade_xml_get_widget (xml, "show_grid");
-	sp_repr_set_attr (repr, "showgrid", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? "true" : NULL);
-
-	/* Snap to grid */
-	w = glade_xml_get_widget (xml, "snap_to_grid");
-	sp_repr_set_attr (repr, "snaptogrid", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? "true" : NULL);
-
-	/* Origin */
-	w = glade_xml_get_widget (xml, "grid_origin_x");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "gridoriginx", MM2PT (t));
-	w = glade_xml_get_widget (xml, "grid_origin_y");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "gridoriginy", MM2PT (t));
-
-	/* Spacing */
-	w = glade_xml_get_widget (xml, "grid_spacing_x");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "gridspacingx", MM2PT (t));
-	w = glade_xml_get_widget (xml, "grid_spacing_y");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "gridspacingy", MM2PT (t));
-
-	/* Tolerance */
-	w = glade_xml_get_widget (xml, "grid_snap_distance");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "gridtolerance", t);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "grid_color");
-	gnome_color_picker_get_i8 (GNOME_COLOR_PICKER (w), &r, &g, &b, &a);
-	sp_svg_write_color (color, 32, (r << 24) | (g << 16) | (b << 8));
-	sp_repr_set_attr (repr, "gridcolor", color);
-	sp_repr_set_double_attribute (repr, "gridopacity", (gdouble) a / 255.0);
-
-	/* Show guides */
-	w = glade_xml_get_widget (xml, "show_guides");
-	sp_repr_set_attr (repr, "showguides", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? "true" : NULL);
-
-	/* Snap to grid */
-	w = glade_xml_get_widget (xml, "snap_to_guides");
-	sp_repr_set_attr (repr, "snaptoguides", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? "true" : NULL);
-
-	/* Tolerance */
-	w = glade_xml_get_widget (xml, "guide_snap_distance");
-	t = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));
-	sp_repr_set_double_attribute (repr, "guidetolerance", t);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "guide_color");
-	gnome_color_picker_get_i8 (GNOME_COLOR_PICKER (w), &r, &g, &b, &a);
-	sp_svg_write_color (color, 32, (r << 24) | (g << 16) | (b << 8));
-	sp_repr_set_attr (repr, "guidecolor", color);
-	sp_repr_set_double_attribute (repr, "guideopacity", (gdouble) a / 255.0);
-
-	/* Color */
-	w = glade_xml_get_widget (xml, "guide_hicolor");
-	gnome_color_picker_get_i8 (GNOME_COLOR_PICKER (w), &r, &g, &b, &a);
-	sp_svg_write_color (color, 32, (r << 24) | (g << 16) | (b << 8));
-	sp_repr_set_attr (repr, "guidehicolor", color);
-	sp_repr_set_double_attribute (repr, "guidehiopacity", (gdouble) a / 255.0);
-
-	sp_document_done (SP_DT_DOCUMENT (desktop));
-}
-
 

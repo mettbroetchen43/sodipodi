@@ -9,21 +9,6 @@
 #include "../display/fill.h"
 #include "../display/stroke.h"
 
-/* fixme: Currently we copy SPUnit, but this should be removed */
-
-#if 0
-typedef enum {
-	SP_SVG_UNIT_PIXELS   = (1 << 4),
-	SP_SVG_UNIT_ABSOLUTE = (1 << 5),
-	SP_SVG_UNIT_USER     = (1 << 6),
-	SP_SVG_UNIT_PERCENT  = (1 << 7),
-	SP_SVG_UNIT_EM       = (1 << 8),
-	SP_SVG_UNIT_EX       = (1 << 9)
-} SPSVGUnit;
-
-#define SP_SVG_UNIT_MASK 0x3f0
-#endif
-
 /* General CSS Properties */
 /* length */
 

@@ -286,3 +286,104 @@ sp_repr_lookup_child (SPRepr       *repr,
 
 	return NULL;
 }
+
+/* Convenience */
+gboolean
+sp_repr_get_boolean (SPRepr *repr, const guchar *key, gboolean *val)
+{
+	const guchar *v;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (val != NULL, FALSE);
+
+	v = sp_repr_attr (repr, key);
+
+	if (v != NULL) {
+		if (!strcasecmp (v, "true") ||
+		    !strcasecmp (v, "yes") ||
+		    !strcasecmp (v, "y") ||
+		    (atoi (v) != 0)) {
+			*val = TRUE;
+		} else {
+			*val = FALSE;
+		}
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+sp_repr_get_int (SPRepr *repr, const guchar *key, gint *val)
+{
+	const guchar *v;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (val != NULL, FALSE);
+
+	v = sp_repr_attr (repr, key);
+
+	if (v != NULL) {
+		*val = atoi (v);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+sp_repr_get_double (SPRepr *repr, const guchar *key, gdouble *val)
+{
+	const guchar *v;
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (val != NULL, FALSE);
+
+	v = sp_repr_attr (repr, key);
+
+	if (v != NULL) {
+		*val = atof (v);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+sp_repr_set_boolean (SPRepr *repr, const guchar *key, gboolean val)
+{
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+
+	return sp_repr_set_attr (repr, key, (val) ? "true" : "false");
+}
+
+gboolean
+sp_repr_set_int (SPRepr *repr, const guchar *key, gint val)
+{
+	guchar c[32];
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+
+	g_snprintf (c, 32, "%d", val);
+
+	return sp_repr_set_attr (repr, key, c);
+}
+
+gboolean
+sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
+{
+	guchar c[32];
+
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+
+	g_snprintf (c, 32, "%g", val);
+
+	return sp_repr_set_attr (repr, key, c);
+}
+

@@ -37,6 +37,9 @@ sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def)
 	} else if (strncmp (u, "cm", 2) == 0) {
 		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
 		v *= (72.0 / 2.54);
+	} else if (strncmp (u, "m", 1) == 0) {
+		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
+		v *= (72.0 / 0.0254);
 	} else if (strncmp (u, "in", 2) == 0) {
 		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
 		v *= 72.0;

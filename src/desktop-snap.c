@@ -27,9 +27,10 @@ sp_desktop_free_snap (SPDesktop * desktop, ArtPoint * req)
 	return 1e18;
 }
 
+/* snap a point in horizontal direction */
+
 gdouble
 sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
-/* snap a point in horizontal direction */
 {
 	SPNamedView * nv;
 	ArtPoint actual;
@@ -60,15 +61,15 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 	if (nv->snaptogrid) {
 		gdouble p;
 		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
-		p = nv->gridorigin.x + floor ((req->x - nv->gridorigin.x) / nv->gridspacing.x) * nv->gridspacing.x;
+		p = nv->gridoriginx + floor ((req->x - nv->gridoriginx) / nv->gridspacingx) * nv->gridspacingx;
 		if (fabs (req->x - p) < best) {
 			best = fabs (req->x - p);
 			actual.x = p;
 			snapped = TRUE;
 		}
-		if (fabs (nv->gridspacing.x - (req->x - p)) < best) {
-			best = fabs (nv->gridspacing.x - (req->x - p));
-			actual.x = nv->gridspacing.x + p;
+		if (fabs (nv->gridspacingx - (req->x - p)) < best) {
+			best = fabs (nv->gridspacingx - (req->x - p));
+			actual.x = nv->gridspacingx + p;
 			snapped = TRUE;
 		}
 	}
@@ -80,9 +81,10 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 	return dist;
 }
 
+/* snap a point in vertical direction */
+
 gdouble
 sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
-/* snap a point in vertical direction */
 {
 	SPNamedView * nv;
 	ArtPoint actual;
@@ -113,15 +115,15 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 	if (nv->snaptogrid) {
 		gdouble p;
 		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
-		p = nv->gridorigin.y + floor ((req->y - nv->gridorigin.y) / nv->gridspacing.y) * nv->gridspacing.y;
+		p = nv->gridoriginy + floor ((req->y - nv->gridoriginy) / nv->gridspacingy) * nv->gridspacingy;
 		if (fabs (req->y - p) < best) {
 			best = fabs (req->y - p);
 			actual.y = p;
 			snapped = TRUE;
 		}
-		if (fabs (nv->gridspacing.y - (req->y - p)) < best) {
-			best = fabs (nv->gridspacing.y - (req->y - p));
-			actual.y = nv->gridspacing.y + p;
+		if (fabs (nv->gridspacingy - (req->y - p)) < best) {
+			best = fabs (nv->gridspacingy - (req->y - p));
+			actual.y = nv->gridspacingy + p;
 			snapped = TRUE;
 		}
 	}
@@ -133,9 +135,10 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 	return dist;
 }
 
+/* look for snappoint along a line given by req and the vector (dx,dy) */
+
 gdouble
 sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble dy)
-/* look for snappoint along a line given by req and the vector (dx,dy) */
 {
 	SPNamedView * nv;
 	ArtPoint actual;
@@ -192,8 +195,8 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
 
 		if (fabs (dx) > 1e-15) {
-		  p1 = nv->gridorigin.x + floor ((req->x - nv->gridorigin.x) / nv->gridspacing.x) * nv->gridspacing.x;
-		  p2 = p1 + nv->gridspacing.x;
+		  p1 = nv->gridoriginx + floor ((req->x - nv->gridoriginx) / nv->gridspacingx) * nv->gridspacingx;
+		  p2 = p1 + nv->gridspacingx;
 
 		  delta = p1 - req->x;
 		  dist = hypot (delta, delta * dy / dx);
@@ -214,8 +217,8 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 		}
 
 		if (fabs (dy) > 1e-15) { 
-		  p1 = nv->gridorigin.y + floor ((req->y - nv->gridorigin.y) / nv->gridspacing.y) * nv->gridspacing.y;
-		  p2 = p1 + nv->gridspacing.y;
+		  p1 = nv->gridoriginy + floor ((req->y - nv->gridoriginy) / nv->gridspacingy) * nv->gridspacingy;
+		  p2 = p1 + nv->gridspacingy;
 
 		  delta = p1 - req->y;
 		  dist = hypot (delta, delta * dx / dy);
@@ -243,9 +246,10 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 	return 1e18;
 }
 
+/* look for snappoint on a circle given by center (cx,cy) and distance center-req) */
+
 gdouble
 sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdouble cy)
-/* look for snappoint on a circle given by center (cx,cy) and distance center-req) */
 {
 	SPNamedView * nv;
 	ArtPoint actual;
@@ -330,8 +334,8 @@ sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdoub
 		  best *= best; // best is sqare of best distance 
 		}
 		// horizontal gridlines
-       		p1 = nv->gridorigin.x + floor ((req->x - nv->gridorigin.x) / nv->gridspacing.x) * nv->gridspacing.x;
-		p2 = p1 + nv->gridspacing.x;
+       		p1 = nv->gridoriginx + floor ((req->x - nv->gridoriginx) / nv->gridspacingx) * nv->gridspacingx;
+		p2 = p1 + nv->gridspacingx;
 		// lower gridline
 		dx = fabs(p1 - cx);
 		if (dx * dx <= h) {
@@ -376,8 +380,8 @@ sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdoub
 		}
 		
 		// vertical gridline
-		p1 = nv->gridorigin.y + floor ((req->y - nv->gridorigin.y) / nv->gridspacing.y) * nv->gridspacing.y;
-		p2 = p1 + nv->gridspacing.y;
+		p1 = nv->gridoriginy + floor ((req->y - nv->gridoriginy) / nv->gridspacingy) * nv->gridspacingy;
+		p2 = p1 + nv->gridspacingy;
 		//lower gridline
 		dy = fabs(p1 - cy);
 		if (dy * dy <= h) {

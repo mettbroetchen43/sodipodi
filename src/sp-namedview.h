@@ -18,6 +18,7 @@
 #define SP_IS_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
 #include <libgnomeui/gnome-canvas.h>
+#include "helper/units.h"
 #include "sp-object-group.h"
 
 struct _SPNamedView {
@@ -27,10 +28,19 @@ struct _SPNamedView {
 	guint snaptogrid : 1;
 	guint showguides : 1;
 	guint snaptoguides : 1;
+
+	const SPUnit *gridunit;
+	gdouble gridoriginx;
+	gdouble gridoriginy;
+	gdouble gridspacingx;
+	gdouble gridspacingy;
+
+	const SPUnit *gridtoleranceunit;
 	gdouble gridtolerance;
+
+	const SPUnit *guidetoleranceunit;
 	gdouble guidetolerance;
-	ArtPoint gridorigin;
-	ArtPoint gridspacing;
+
 	guint32 gridcolor;
 	guint32 guidecolor;
 	guint32 guidehicolor;

@@ -13,6 +13,7 @@
  * Licensed under GNU GPL
  */
 
+#include <string.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtklabel.h>
@@ -105,7 +106,7 @@ sp_attribute_widget_changed (GtkEditable *editable)
 	spaw = SP_ATTRIBUTE_WIDGET (editable);
 
 	if (!spaw->blocked && spaw->object) {
-		const guchar *text;
+		const gchar *text;
 		spaw->blocked = TRUE;
 		text = gtk_entry_get_text (GTK_ENTRY (spaw));
 		if (!*text) text = NULL;
@@ -165,7 +166,7 @@ sp_attribute_widget_set_object (SPAttributeWidget *spaw, SPObject *object, const
 		spaw->attribute = g_strdup (attribute);
 
 		val = sp_repr_attr (SP_OBJECT_REPR (object), attribute);
-		gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : "");
+		gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : (const guchar *) "");
 		spaw->blocked = FALSE;
 	}
 
@@ -183,7 +184,7 @@ sp_attribute_widget_object_modified (SPObject *object, guint flags, SPAttributeW
 			if (!val || !text || strcmp (val, text)) {
 				/* We are different */
 				spaw->blocked = TRUE;
-				gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : "");
+				gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : (const guchar *) "");
 				spaw->blocked = FALSE;
 			}
 		}
@@ -366,7 +367,7 @@ sp_attribute_table_set_object (SPAttributeTable *spat, SPObject *object, gint nu
 			w = gtk_entry_new ();
 			gtk_widget_show (w);
 			val = sp_repr_attr (SP_OBJECT_REPR (object), attributes[i]);
-			gtk_entry_set_text (GTK_ENTRY (w), val ? val : "");
+			gtk_entry_set_text (GTK_ENTRY (w), val ? val : (const guchar *) "");
 			gtk_table_attach (GTK_TABLE (spat->table), w, 1, 2, i, i + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			spat->entries[i] = w;
 			gtk_signal_connect (GTK_OBJECT (w), "changed",
@@ -394,7 +395,7 @@ sp_attribute_table_object_modified (SPObject *object, guint flags, SPAttributeTa
 				if (!val || !text || strcmp (val, text)) {
 					/* We are different */
 					spat->blocked = TRUE;
-					gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), val ? val : "");
+					gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), val ? val : (const guchar *) "");
 					spat->blocked = FALSE;
 				}
 			}
@@ -422,7 +423,7 @@ sp_attribute_table_entry_changed (GtkEditable *editable, SPAttributeTable *spat)
 				if (!sp_repr_set_attr (SP_OBJECT_REPR (spat->object), spat->attributes[i], text)) {
 					/* Cannot set attribute */
 					text = sp_repr_attr (SP_OBJECT_REPR (spat->object), spat->attributes[i]);
-					gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), text ? text : "");
+					gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), text ? text : (const guchar *) "");
 				}
 				sp_document_done (SP_OBJECT_DOCUMENT (spat->object));
 				spat->blocked = FALSE;

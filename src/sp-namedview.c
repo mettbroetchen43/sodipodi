@@ -1,6 +1,7 @@
 #define SP_NAMEDVIEW_C
 
 #include <string.h>
+#include <ctype.h>
 #include "helper/canvas-grid.h"
 #include "svg/svg.h"
 #include "document.h"
@@ -11,7 +12,11 @@
 #include "sp-namedview.h"
 
 #define PTPERMM (72.0 / 25.4)
+
 #define DEFAULTTOLERANCE 5.0
+#define DEFAULTGRIDCOLOR 0x3f3fff3f
+#define DEFAULTGUIDECOLOR 0x0000ff7f
+#define DEFAULTGUIDEHICOLOR 0xff00007f
 
 static void sp_namedview_class_init (SPNamedViewClass * klass);
 static void sp_namedview_init (SPNamedView * namedview);
@@ -24,6 +29,10 @@ static void sp_namedview_remove_child (SPObject * object, SPRepr * child);
 
 static void sp_namedview_setup_grid (SPNamedView * nv);
 static void sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item);
+
+static gboolean sp_str_to_bool (const guchar *str);
+static gboolean sp_nv_read_length (const guchar *str, guint base, gdouble *val, const SPUnit **unit);
+static gboolean sp_nv_read_opacity (const guchar *str, guint32 *color);
 
 static SPObjectGroupClass * parent_class;
 
@@ -74,13 +83,21 @@ sp_namedview_init (SPNamedView * nv)
 	nv->snaptogrid = FALSE;
 	nv->showguides = FALSE;
 	nv->snaptoguides = FALSE;
-	nv->gridtolerance = DEFAULTTOLERANCE;
-	nv->guidetolerance = DEFAULTTOLERANCE;
+#if 0
+	/* Defualt will be assigned in build anyways */
+	nv->gridunit = sp_unit_get_by_abbreviation ("mm");
 	nv->gridorigin.x = nv->gridorigin.y = 0.0;
 	nv->gridspacing.x = nv->gridspacing.y = PTPERMM;
+	nv->gridtoleranceunit = sp_unit_get_identity (SP_UNIT_DEVICE);
+	nv->gridtolerance = DEFAULTTOLERANCE;
+	nv->gridtoleranceunit = sp_unit_get_identity (SP_UNIT_DEVICE);
+	nv->guidetolerance = DEFAULTTOLERANCE;
+#endif
+#if 0
 	nv->gridcolor = 0x3f3fff3f;
 	nv->guidecolor = 0x0000ff7f;
 	nv->guidehicolor = 0xff00007f;
+#endif
 
 	nv->hguides = NULL;
 	nv->vguides = NULL;
@@ -158,140 +175,135 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_namedview_read_attr (SPObject * object, const gchar * key)
 {
-	SPNamedView * namedview;
-	const SPUnit *unit;
+	SPNamedView *nv;
 	const gchar *astr;
+	const SPUnit *px = NULL;
+	const SPUnit *mm = NULL;
 	GSList * l;
-	gdouble v;
 
-	namedview = SP_NAMEDVIEW (object);
+	nv = SP_NAMEDVIEW (object);
+
+	if (!px) px = sp_unit_get_by_abbreviation ("px");
+	if (!mm) mm = sp_unit_get_by_abbreviation ("mm");
 
 	astr = sp_repr_attr (object->repr, key);
 
-	if (strcmp (key, "viewonly") == 0) {
-		namedview->editable = (astr == NULL);
+	if (!strcmp (key, "viewonly")) {
+		nv->editable = (astr == NULL);
 		return;
-	}
-	if (strcmp (key, "showgrid") == 0) {
-		namedview->showgrid = (astr != NULL);
-		sp_namedview_setup_grid (namedview);
+	} else if (!strcmp (key, "showgrid")) {
+		nv->showgrid = sp_str_to_bool (astr);
+		sp_namedview_setup_grid (nv);
 		return;
-	}
-	if (strcmp (key, "snaptogrid") == 0) {
-		namedview->snaptogrid = (astr != NULL);
+	} else if (!strcmp (key, "snaptogrid")) {
+		nv->snaptogrid = sp_str_to_bool (astr);
 		return;
-	}
-	if (strcmp (key, "showguides") == 0) {
-		namedview->showguides = (astr != NULL);
+	} else if (!strcmp (key, "showguides")) {
+		nv->showguides = sp_str_to_bool (astr);
 		return;
-	}
-	if (strcmp (key, "snaptoguides") == 0) {
-		namedview->snaptoguides = (astr != NULL);
+	} else if (!strcmp (key, "snaptoguides")) {
+		nv->snaptoguides = sp_str_to_bool (astr);
 		return;
-	}
-	if (strcmp (key, "gridtolerance") == 0) {
+	} else if (!strcmp (key, "gridtolerance")) {
+		nv->gridtoleranceunit = px;
+		nv->gridtolerance = DEFAULTTOLERANCE;
 		if (astr) {
-			namedview->gridtolerance = sp_svg_read_length (&unit, astr, 5.0);
-		} else {
-			namedview->gridtolerance = DEFAULTTOLERANCE;
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE, &nv->gridtolerance, &nv->gridtoleranceunit);
 		}
 		return;
-	}
-	if (strcmp (key, "guidetolerance") == 0) {
+	} else if (!strcmp (key, "guidetolerance")) {
+		nv->guidetoleranceunit = px;
+		nv->guidetolerance = DEFAULTTOLERANCE;
 		if (astr) {
-			namedview->guidetolerance = sp_svg_read_length (&unit, astr, 5.0);
-		} else {
-			namedview->guidetolerance = DEFAULTTOLERANCE;
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE, &nv->guidetolerance, &nv->guidetoleranceunit);
 		}
 		return;
-	}
-	if (strcmp (key, "gridoriginx") == 0) {
-		namedview->gridorigin.x = sp_svg_read_length (&unit, astr, 0.0);
-		sp_namedview_setup_grid (namedview);
-		return;
-	}
-	if (strcmp (key, "gridoriginy") == 0) {
-		namedview->gridorigin.y = sp_svg_read_length (&unit, astr, 0.0);
-		sp_namedview_setup_grid (namedview);
-		return;
-	}
-	if (strcmp (key, "gridspacingx") == 0) {
+	} else if (strcmp (key, "gridoriginx") == 0) {
+		nv->gridunit = mm;
+		nv->gridoriginx = 0.0;
 		if (astr) {
-			namedview->gridspacing.x = sp_svg_read_length (&unit, astr, 16.0);
-		} else {
-			namedview->gridspacing.x = PTPERMM;
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE, &nv->gridoriginx, &nv->gridunit);
 		}
-		sp_namedview_setup_grid (namedview);
+		sp_namedview_setup_grid (nv);
 		return;
-	}
-	if (strcmp (key, "gridspacingy") == 0) {
+	} else if (!strcmp (key, "gridoriginy")) {
+		nv->gridunit = mm;
+		nv->gridoriginy = 0.0;
 		if (astr) {
-			namedview->gridspacing.y = sp_svg_read_length (&unit, astr, 16.0);
-		} else {
-			namedview->gridspacing.y = PTPERMM;
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE, &nv->gridoriginy, &nv->gridunit);
 		}
-		sp_namedview_setup_grid (namedview);
+		sp_namedview_setup_grid (nv);
 		return;
-	}
-	if (strcmp (key, "gridcolor") == 0) {
+	} else if (!strcmp (key, "gridspacingx")) {
+		nv->gridunit = mm;
+		nv->gridspacingx = 5.0;
 		if (astr) {
-			namedview->gridcolor = (namedview->gridcolor & 0xff) | sp_svg_read_color (astr, 0x0000ff00);
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE, &nv->gridspacingx, &nv->gridunit);
 		}
-		sp_namedview_setup_grid (namedview);
+		sp_namedview_setup_grid (nv);
 		return;
-	}
-	if (strcmp (key, "gridopacity") == 0) {
-		v = sp_repr_get_double_attribute (object->repr, key, 0.25);
-		v = CLAMP (v, 0.0, 1.0);
-		namedview->gridcolor = (namedview->gridcolor & 0xffffff00) | (guint) (v * 255.0);
-		sp_namedview_setup_grid (namedview);
-		return;
-	}
-	if (strcmp (key, "guidecolor") == 0) {
+	} else if (!strcmp (key, "gridspacingy")) {
+		nv->gridunit = mm;
+		nv->gridspacingy = 5.0;
 		if (astr) {
-			namedview->guidecolor = (namedview->guidecolor & 0xff) | sp_svg_read_color (astr, 0xff000000);
-			for (l = namedview->hguides; l != NULL; l = l->next) {
-				gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
-			}
-			for (l = namedview->vguides; l != NULL; l = l->next) {
-				gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
-			}
+			sp_nv_read_length (astr, SP_UNIT_ABSOLUTE, &nv->gridspacingy, &nv->gridunit);
 		}
+		sp_namedview_setup_grid (nv);
 		return;
-	}
-	if (strcmp (key, "guideopacity") == 0) {
-		v = sp_repr_get_double_attribute (object->repr, key, 0.5);
-		v = CLAMP (v, 0.0, 1.0);
-		namedview->guidecolor = (namedview->guidecolor & 0xffffff00) | (guint) (v * 255.0);
-		for (l = namedview->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
-		}
-		for (l = namedview->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
-		}
-		return;
-	}
-	if (strcmp (key, "guidehicolor") == 0) {
+	} else if (!strcmp (key, "gridcolor")) {
+		nv->gridcolor = (nv->gridcolor & 0xff) | (DEFAULTGRIDCOLOR & 0xffffff00);
 		if (astr) {
-			namedview->guidehicolor = (namedview->guidehicolor & 0xff) | sp_svg_read_color (astr, 0x7f7fff00);
-			for (l = namedview->hguides; l != NULL; l = l->next) {
-				gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
-			}
-			for (l = namedview->vguides; l != NULL; l = l->next) {
-				gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
-			}
+			nv->gridcolor = (nv->gridcolor & 0xff) | sp_svg_read_color (astr, nv->gridcolor);
+		}
+		sp_namedview_setup_grid (nv);
+		return;
+	} else if (!strcmp (key, "gridopacity")) {
+		nv->gridcolor = (nv->gridcolor & 0xffffff00) | (DEFAULTGRIDCOLOR & 0xff);
+		sp_nv_read_opacity (astr, &nv->gridcolor);
+		sp_namedview_setup_grid (nv);
+		return;
+	} else if (!strcmp (key, "guidecolor")) {
+		nv->guidecolor = (nv->guidecolor & 0xff) | (DEFAULTGUIDECOLOR & 0xffffff00);
+		if (astr) {
+			nv->guidecolor = (nv->guidecolor & 0xff) | sp_svg_read_color (astr, nv->guidecolor);
+		}
+		for (l = nv->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+		}
+		for (l = nv->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		return;
-	}
-	if (strcmp (key, "guidehiopacity") == 0) {
-		v = sp_repr_get_double_attribute (object->repr, key, 0.5);
-		v = CLAMP (v, 0.0, 1.0);
-		namedview->guidehicolor = (namedview->guidehicolor & 0xffffff00) | (guint) (v * 255.0);
-		for (l = namedview->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+	} else if (!strcmp (key, "guideopacity")) {
+		nv->guidecolor = (nv->guidecolor & 0xffffff00) | (DEFAULTGUIDECOLOR & 0xff);
+		sp_nv_read_opacity (astr, &nv->guidecolor);
+		for (l = nv->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
-		for (l = namedview->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
+		for (l = nv->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+		}
+		return;
+	} else if (!strcmp (key, "guidehicolor")) {
+		nv->guidehicolor = (nv->guidehicolor & 0xff) | (DEFAULTGUIDEHICOLOR & 0xffffff00);
+		if (astr) {
+			nv->guidehicolor = (nv->guidehicolor & 0xff) | sp_svg_read_color (astr, nv->guidehicolor);
+		}
+		for (l = nv->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+		}
+		for (l = nv->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+		}
+		return;
+	} else if (!strcmp (key, "guidehiopacity")) {
+		nv->guidehicolor = (nv->guidehicolor & 0xffffff00) | (DEFAULTGUIDEHICOLOR & 0xff);
+		sp_nv_read_opacity (astr, &nv->guidehicolor);
+		for (l = nv->hguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+		}
+		for (l = nv->vguides; l != NULL; l = l->next) {
+			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		return;
 	}
@@ -458,18 +470,32 @@ sp_namedview_setup_grid (SPNamedView * nv)
 static void
 sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 {
+	const SPUnit *pt = NULL;
+	gdouble x0, y0, xs, ys;
+
 	if (nv->showgrid) {
 		gnome_canvas_item_show (item);
 	} else {
 		gnome_canvas_item_hide (item);
 	}
 
+	if (!pt) pt = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
+
+	x0 = nv->gridoriginx;
+	sp_convert_distance (&x0, nv->gridunit, pt);
+	y0 = nv->gridoriginy;
+	sp_convert_distance (&y0, nv->gridunit, pt);
+	xs = nv->gridspacingx;
+	sp_convert_distance (&xs, nv->gridunit, pt);
+	ys = nv->gridspacingy;
+	sp_convert_distance (&ys, nv->gridunit, pt);
+
 	gnome_canvas_item_set (item,
 			       "color", nv->gridcolor,
-			       "originx", nv->gridorigin.x,
-			       "originy", nv->gridorigin.y,
-			       "spacingx", nv->gridspacing.x,
-			       "spacingy", nv->gridspacing.y,
+			       "originx", x0,
+			       "originy", y0,
+			       "spacingx", xs,
+			       "spacingy", ys,
 			       NULL);
 }
 
@@ -502,3 +528,97 @@ sp_namedview_view_list (SPNamedView * nv)
  return nv->views;
 }
 
+/* This should be moved somewhere */
+
+static gboolean
+sp_str_to_bool (const guchar *str)
+{
+	if (str) {
+		if (!strcasecmp (str, "true") ||
+		    !strcasecmp (str, "yes") ||
+		    !strcasecmp (str, "y") ||
+		    (atoi (str) != 0)) return TRUE;
+	}
+
+	return FALSE;
+}
+
+/* fixme: Collect all these length parsing methods and think common sane API */
+
+static gboolean
+sp_nv_read_length (const guchar *str, guint base, gdouble *val, const SPUnit **unit)
+{
+	gdouble v;
+	gchar *u;
+
+	if (!str) return FALSE;
+
+	v = strtod (str, &u);
+	if (!u) return FALSE;
+	while (isspace (*u)) u += 1;
+
+	if (!*u) {
+		/* No unit specified - keep default */
+		*val = v;
+		return TRUE;
+	}
+
+	if (base & SP_UNIT_DEVICE) {
+		if (u[0] && u[1] && !isalnum (u[2]) && !strncmp (u, "px", 2)) {
+			static const SPUnit *device = NULL;
+			if (!device) device = sp_unit_get_identity (SP_UNIT_DEVICE);
+			*unit = device;
+			*val = v;
+			return TRUE;
+		}
+	}
+
+	if (base & SP_UNIT_ABSOLUTE) {
+		static const SPUnit *pt = NULL;
+		static const SPUnit *mm = NULL;
+		static const SPUnit *cm = NULL;
+		static const SPUnit *m = NULL;
+		static const SPUnit *in = NULL;
+		if (!pt) {
+			pt = sp_unit_get_by_abbreviation ("pt");
+			mm = sp_unit_get_by_abbreviation ("mm");
+			cm = sp_unit_get_by_abbreviation ("cm");
+			m = sp_unit_get_by_abbreviation ("m");
+			in = sp_unit_get_by_abbreviation ("in");
+		}
+		if (!strncmp (u, "pt", 2)) {
+			*unit = pt;
+		} else if (!strncmp (u, "mm", 2)) {
+			*unit = mm;
+		} else if (!strncmp (u, "cm", 2)) {
+			*unit = cm;
+		} else if (!strncmp (u, "m", 1)) {
+			*unit = m;
+		} else if (!strncmp (u, "in", 2)) {
+			*unit = in;
+		} else {
+			return FALSE;
+		}
+		*val = v;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+sp_nv_read_opacity (const guchar *str, guint32 *color)
+{
+	gdouble v;
+	gchar *u;
+
+	if (!str) return FALSE;
+
+	v = strtod (str, &u);
+	if (!u) return FALSE;
+	v = CLAMP (v, 0.0, 1.0);
+
+	*color = (*color & 0xffffff00) | (guint32) floor (v * 255.9999);
+
+	return TRUE;
+}

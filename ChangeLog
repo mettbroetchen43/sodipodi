@@ -1,3 +1,40 @@
+2002-02-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-util.c (sp_repr_get_boolean): Saner conveninence method
+	(sp_repr_get_int): Ditto
+	(sp_repr_get_double): Ditto
+	(sp_repr_set_boolean): Ditto
+	(sp_repr_set_int): Ditto
+	(sp_repr_set_double): Ditto
+
+	* src/svg/svg-length.c (sp_svg_read_length): Added meter
+
+	* src/dialogs/sp-attribute-widget.c (sp_attribute_widget_changed): Kill warning
+	(sp_attribute_widget_set_object): Ditto
+	(sp_attribute_widget_object_modified): Ditto
+	(sp_attribute_table_set_object): Ditto
+	(sp_attribute_table_object_modified): Ditto
+	(sp_attribute_table_entry_changed): Ditto
+
+	* src/dialogs/desktop-properties.c: Do not use glade anymore, made
+	everything dynamic
+
+	* src/sp-namedview.c (sp_namedview_init): Do not init distances here,
+	as ::build invokes full reread anyways
+	(sp_namedview_read_attr): Use saner structure and read measured distances
+	(sp_namedview_setup_grid_item): Convert distances to points here
+	(sp_str_to_bool): Convenience stuff (should be moved to some central place)
+	(sp_nv_read_length): Ditto
+	(sp_nv_read_opacity): Ditto
+
+	* src/sp-namedview.h: Use real units for distances, some cleanup
+
+	* src/desktop-snap.c (sp_desktop_horizontal_snap): Ported to namedview
+	changed internals
+	(sp_desktop_vertical_snap): Ditto
+	(sp_desktop_vector_snap): Ditto
+	(sp_desktop_circular_snap): Ditto
+
 2002-02-04 Frank Felfe <innerspace@iname.com>
 
 	* src/sp-item.c (sp_item_distance_to_svg_bbox): Fix compilation error
