@@ -22,6 +22,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkwindow.h>
+#include "macros.h"
 #include "../helper/sp-intl.h"
 #include "../widgets/gradient-image.h"
 #include "../sodipodi.h"
@@ -108,14 +109,12 @@ sp_gradient_vector_selector_destroy (GtkObject *object)
 	gvs = SP_GRADIENT_VECTOR_SELECTOR (object);
 
 	if (gvs->gr) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
+  		sp_signal_disconnect_by_data (gvs->gr, gvs);
 		gvs->gr = NULL;
 	}
 
 	if (gvs->doc) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(SP_DOCUMENT_DEFS(gvs->doc)), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
+  		sp_signal_disconnect_by_data (SP_DOCUMENT_DEFS (gvs->doc), gvs);
 		gvs->doc = NULL;
 	}
 
@@ -160,13 +159,12 @@ sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocum
 	if (doc != gvs->doc) {
 		/* Disconnect signals */
 		if (gvs->gr) {
-/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
+  			sp_signal_disconnect_by_data (gvs->gr, gvs);
 		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 			gvs->gr = NULL;
 		}
 		if (gvs->doc) {
-/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs); */
-			g_signal_handlers_disconnect_matched (G_OBJECT(SP_DOCUMENT_DEFS(gvs->doc)), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
+  			sp_signal_disconnect_by_data (SP_DOCUMENT_DEFS (gvs->doc), gvs);
 			gvs->doc = NULL;
 		}
 		/* Connect signals */
@@ -180,7 +178,7 @@ sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocum
 		gvs->doc = doc;
 		gvs->gr = gr;
 		sp_gvs_rebuild_gui_full (gvs);
-		if (!suppress) gtk_signal_emit (GTK_OBJECT (gvs), signals[VECTOR_SET], gr);
+		if (!suppress) g_signal_emit (G_OBJECT (gvs), signals[VECTOR_SET], 0, gr);
 	} else if (gr != gvs->gr) {
 		/* Harder case - keep document, rebuild menus and stuff */
 		/* fixme: (Lauris) */
@@ -188,7 +186,7 @@ sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocum
 		sp_gradient_vector_selector_set_gradient (gvs, NULL, NULL);
 		sp_gradient_vector_selector_set_gradient (gvs, doc, gr);
 		suppress = FALSE;
-		gtk_signal_emit (GTK_OBJECT (gvs), signals[VECTOR_SET], gr);
+		g_signal_emit (G_OBJECT (gvs), signals[VECTOR_SET], 0, gr);
 	}
 	/* The case of setting NULL -> NULL is not very interesting */
 }
@@ -272,8 +270,8 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 			/* Gradient name change */
 			i = gtk_menu_item_new ();
 			gtk_widget_show (i);
-			gtk_object_set_data (GTK_OBJECT (i), "gradient", gr);
-			gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_gvs_gradient_activate), gvs);
+			g_object_set_data (G_OBJECT (i), "gradient", gr);
+			g_signal_connect (G_OBJECT (i), "activate", G_CALLBACK (sp_gvs_gradient_activate), gvs);
 
 			w = sp_gradient_image_new (gr);
 			gtk_widget_show (w);
@@ -310,7 +308,7 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 {
 	SPGradient *gr, *norm;
 
-	gr = gtk_object_get_data (GTK_OBJECT (mi), "gradient");
+	gr = g_object_get_data (G_OBJECT (mi), "gradient");
 	/* Hmmm... bad things may happen here, if actual gradient is something new */
 	/* Namely - menuitems etc. will be fucked up */
 	/* Hmmm - probably we can just re-set it as menuitem data (Lauris) */
@@ -321,14 +319,13 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 	if (norm != gr) {
 		g_print ("SPGradientVectorSelector: become %s after normalization\n", SP_OBJECT_ID (norm));
 		/* But be careful that we do not have gradient saved anywhere else */
-		gtk_object_set_data (GTK_OBJECT (mi), "gradient", norm);
+		g_object_set_data (G_OBJECT (mi), "gradient", norm);
 	}
 
 	/* fixme: Really we would want to use _set_vector */
 	/* Detach old */
 	if (gvs->gr) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
+  		sp_signal_disconnect_by_data (gvs->gr, gvs);
 		gvs->gr = NULL;
 	}
 	/* Attach new */
@@ -339,7 +336,7 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 		gvs->gr = norm;
 	}
 
-	gtk_signal_emit (GTK_OBJECT (gvs), signals[VECTOR_SET], norm);
+	g_signal_emit (G_OBJECT (gvs), signals[VECTOR_SET], 0, norm);
 
 	if (norm != gr) {
 		/* We do extra undo push here */
@@ -362,8 +359,7 @@ sp_gvs_defs_release (SPObject *defs, SPGradientVectorSelector *gvs)
 	gvs->doc = NULL;
 	/* Disconnect gradient as well */
 	if (gvs->gr) {
-		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
+  		sp_signal_disconnect_by_data (gvs->gr, gvs);
 		gvs->gr = NULL;
 	}
 
@@ -406,11 +402,10 @@ sp_gradient_vector_widget_new (SPGradient *gradient)
 	g_return_val_if_fail (!gradient || SP_IS_GRADIENT (gradient), NULL);
 
 	vb = gtk_vbox_new (FALSE, PAD);
-	gtk_signal_connect (GTK_OBJECT (vb), "destroy",
-			    GTK_SIGNAL_FUNC (sp_gradient_vector_widget_destroy), NULL);
+	g_signal_connect (G_OBJECT (vb), "destroy", G_CALLBACK (sp_gradient_vector_widget_destroy), NULL);
 
 	w = sp_gradient_image_new (gradient);
-	gtk_object_set_data (GTK_OBJECT (vb), "preview", w);
+	g_object_set_data (G_OBJECT (vb), "preview", w);
 	gtk_widget_show (w);
 	gtk_box_pack_start (GTK_BOX (vb), w, TRUE, TRUE, PAD);
 
@@ -418,25 +413,21 @@ sp_gradient_vector_widget_new (SPGradient *gradient)
 	gtk_widget_show (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, TRUE, TRUE, PAD);
 	csel = sp_color_selector_new ();
-	gtk_object_set_data (GTK_OBJECT (vb), "start", csel);
+	g_object_set_data (G_OBJECT (vb), "start", csel);
 	gtk_widget_show (csel);
 	gtk_container_add (GTK_CONTAINER (f), csel);
-	gtk_signal_connect (GTK_OBJECT (csel), "dragged",
-			    GTK_SIGNAL_FUNC (sp_gradient_vector_color_dragged), vb);
-	gtk_signal_connect (GTK_OBJECT (csel), "changed",
-			    GTK_SIGNAL_FUNC (sp_gradient_vector_color_changed), vb);
+	g_signal_connect (G_OBJECT (csel), "dragged", G_CALLBACK (sp_gradient_vector_color_dragged), vb);
+	g_signal_connect (G_OBJECT (csel), "changed", G_CALLBACK (sp_gradient_vector_color_changed), vb);
 
 	f = gtk_frame_new (_("End color"));
 	gtk_widget_show (f);
 	gtk_box_pack_start (GTK_BOX (vb), f, TRUE, TRUE, PAD);
 	csel = sp_color_selector_new ();
-	gtk_object_set_data (GTK_OBJECT (vb), "end", csel);
+	g_object_set_data (G_OBJECT (vb), "end", csel);
 	gtk_widget_show (csel);
 	gtk_container_add (GTK_CONTAINER (f), csel);
-	gtk_signal_connect (GTK_OBJECT (csel), "dragged",
-			    GTK_SIGNAL_FUNC (sp_gradient_vector_color_dragged), vb);
-	gtk_signal_connect (GTK_OBJECT (csel), "changed",
-			    GTK_SIGNAL_FUNC (sp_gradient_vector_color_changed), vb);
+	g_signal_connect (G_OBJECT (csel), "dragged", G_CALLBACK (sp_gradient_vector_color_dragged), vb);
+	g_signal_connect (G_OBJECT (csel), "changed", G_CALLBACK (sp_gradient_vector_color_changed), vb);
 
 	gtk_widget_show (vb);
 
@@ -455,15 +446,15 @@ sp_gradient_vector_editor_new (SPGradient *gradient)
 		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Gradient vector"));
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), PAD);
-		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event", GTK_SIGNAL_FUNC (sp_gradient_vector_dialog_delete), dialog);
+		g_signal_connect (G_OBJECT (dialog), "delete_event", G_CALLBACK (sp_gradient_vector_dialog_delete), dialog);
 		w = sp_gradient_vector_widget_new (gradient);
-		gtk_object_set_data (GTK_OBJECT (dialog), "gradient-vector-widget", w);
+		g_object_set_data (G_OBJECT (dialog), "gradient-vector-widget", w);
 		/* Connect signals */
 		gtk_widget_show (w);
 		gtk_container_add (GTK_CONTAINER (dialog), w);
 	} else {
 		GtkWidget *w;
-		w = gtk_object_get_data (GTK_OBJECT (dialog), "gradient-vector-widget");
+		w = g_object_get_data (G_OBJECT (dialog), "gradient-vector-widget");
 		sp_gradient_vector_widget_load_gradient (w, gradient);
 	}
 
@@ -477,21 +468,18 @@ sp_gradient_vector_widget_load_gradient (GtkWidget *widget, SPGradient *gradient
 	GtkWidget *w;
 	guint32 cs, ce;
 
-	old = gtk_object_get_data (GTK_OBJECT (widget), "gradient");
+	old = g_object_get_data (G_OBJECT (widget), "gradient");
 	if (old != gradient) {
 		if (old) {
-			g_signal_handlers_disconnect_matched (G_OBJECT(old), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, widget);
-/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (old), widget); */
+  			sp_signal_disconnect_by_data (old, widget);
 		}
 		if (gradient) {
-			g_signal_connect (G_OBJECT (gradient), "release",
-					  G_CALLBACK (sp_gradient_vector_gradient_release), widget);
-			g_signal_connect (G_OBJECT (gradient), "modified",
-					  G_CALLBACK (sp_gradient_vector_gradient_modified), widget);
+			g_signal_connect (G_OBJECT (gradient), "release", G_CALLBACK (sp_gradient_vector_gradient_release), widget);
+			g_signal_connect (G_OBJECT (gradient), "modified", G_CALLBACK (sp_gradient_vector_gradient_modified), widget);
 		}
 	}
 
-	gtk_object_set_data (GTK_OBJECT (widget), "gradient", gradient);
+	g_object_set_data (G_OBJECT (widget), "gradient", gradient);
 
 	if (gradient) {
 		sp_gradient_ensure_vector (gradient);
@@ -499,16 +487,16 @@ sp_gradient_vector_widget_load_gradient (GtkWidget *widget, SPGradient *gradient
 		ce = sp_color_get_rgba32_falpha (&gradient->vector->stops[1].color, gradient->vector->stops[1].opacity);
 
 		/* Set color selector values */
-		w = gtk_object_get_data (GTK_OBJECT (widget), "start");
+		w = g_object_get_data (G_OBJECT (widget), "start");
 		sp_color_selector_set_any_rgba32 (SP_COLOR_SELECTOR (w), cs);
-		w = gtk_object_get_data (GTK_OBJECT (widget), "end");
+		w = g_object_get_data (G_OBJECT (widget), "end");
 		sp_color_selector_set_any_rgba32 (SP_COLOR_SELECTOR (w), ce);
 
 		/* Fixme: Sensitivity */
 	}
 
 	/* Fill preview */
-	w = gtk_object_get_data (GTK_OBJECT (widget), "preview");
+	w = g_object_get_data (G_OBJECT (widget), "preview");
 	sp_gradient_image_set_gradient (SP_GRADIENT_IMAGE (w), gradient);
 }
 
@@ -533,13 +521,12 @@ sp_gradient_vector_widget_destroy (GtkObject *object, gpointer data)
 {
 	GObject *gradient;
 
-	gradient = gtk_object_get_data (object, "gradient");
+	gradient = g_object_get_data (G_OBJECT (object), "gradient");
 
 	if (gradient) {
 		/* Remove signals connected to us */
 		/* fixme: may use _connect_while_alive as well */
-		g_signal_handlers_disconnect_matched (gradient, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, object);
-/*  		gtk_signal_disconnect_by_data (gradient, object); */
+  		sp_signal_disconnect_by_data (gradient, object);
 	}
 }
 
@@ -568,7 +555,7 @@ sp_gradient_vector_color_dragged (SPColorSelector *csel, GtkObject *object)
 
 	if (blocked) return;
 
-	gradient = gtk_object_get_data (object, "gradient");
+	gradient = g_object_get_data (G_OBJECT (object), "gradient");
 	if (!gradient) return;
 
 	blocked = TRUE;
@@ -586,12 +573,12 @@ sp_gradient_vector_color_dragged (SPColorSelector *csel, GtkObject *object)
 	vector->start = ngr->vector->start;
 	vector->end = ngr->vector->end;
 
-	csel = gtk_object_get_data (object, "start");
+	csel = g_object_get_data (G_OBJECT (object), "start");
 	sp_color_selector_get_rgba_floatv (csel, c);
 	vector->stops[0].offset = 0.0;
 	sp_color_set_rgb_float (&vector->stops[0].color, c[0], c[1], c[2]);
 	vector->stops[0].opacity = c[3];
-	csel = gtk_object_get_data (object, "end");
+	csel = g_object_get_data (G_OBJECT (object), "end");
 	sp_color_selector_get_rgba_floatv (csel, c);
 	vector->stops[1].offset = 1.0;
 	sp_color_set_rgb_float (&vector->stops[1].color, c[0], c[1], c[2]);
@@ -613,7 +600,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 
 	if (blocked) return;
 
-	gradient = gtk_object_get_data (object, "gradient");
+	gradient = g_object_get_data (G_OBJECT (object), "gradient");
 	if (!gradient) return;
 
 	blocked = TRUE;
@@ -636,7 +623,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	}
 	g_return_if_fail (child != NULL);
 
-	csel = gtk_object_get_data (object, "start");
+	csel = g_object_get_data (G_OBJECT (object), "start");
 	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", start);
@@ -648,7 +635,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	}
 	g_return_if_fail (child != NULL);
 
-	csel = gtk_object_get_data (object, "end");
+	csel = g_object_get_data (G_OBJECT (object), "end");
 	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", end);

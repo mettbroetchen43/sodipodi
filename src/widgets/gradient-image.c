@@ -14,6 +14,7 @@
 
 #include <libnr/nr-pixblock-pattern.h>
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "../helper/nr-plain-stuff.h"
 #include "../helper/nr-plain-stuff-gdk.h"
 #include "gradient-image.h"
@@ -91,8 +92,7 @@ sp_gradient_image_destroy (GtkObject *object)
 	image = SP_GRADIENT_IMAGE (object);
 
 	if (image->gradient) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(image->gradient), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, image);
+  		sp_signal_disconnect_by_data (image->gradient, image);
 		image->gradient = NULL;
 	}
 
@@ -217,17 +217,14 @@ void
 sp_gradient_image_set_gradient (SPGradientImage *image, SPGradient *gradient)
 {
 	if (image->gradient) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(image->gradient), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, image);
+  		sp_signal_disconnect_by_data (image->gradient, image);
 	}
 
 	image->gradient = gradient;
 
 	if (gradient) {
-		g_signal_connect (G_OBJECT (gradient), "release",
-				  G_CALLBACK (sp_gradient_image_gradient_release), image);
-		g_signal_connect (G_OBJECT (gradient), "modified",
-				  G_CALLBACK (sp_gradient_image_gradient_modified), image);
+		g_signal_connect (G_OBJECT (gradient), "release", G_CALLBACK (sp_gradient_image_gradient_release), image);
+		g_signal_connect (G_OBJECT (gradient), "modified", G_CALLBACK (sp_gradient_image_gradient_modified), image);
 	}
 
 	sp_gradient_image_update (image);
@@ -237,8 +234,7 @@ static void
 sp_gradient_image_gradient_release (SPGradient *gradient, SPGradientImage *image)
 {
 	if (image->gradient) {
-/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(image->gradient), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, image);
+  		sp_signal_disconnect_by_data (image->gradient, image);
 	}
 
 	image->gradient = NULL;

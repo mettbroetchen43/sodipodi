@@ -308,7 +308,7 @@ sp_gradient_release (SPObject *object)
 	}
 
 	if (gradient->href) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);
+		sp_signal_disconnect_by_data (gradient->href, gradient);
 		gradient->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gradient->href), object);
 	}
 
@@ -381,8 +381,7 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		return;
 	} else if (!strcmp (key, "xlink:href")) {
 		if (gr->href) {
-/* 			gtk_signal_disconnect_by_data (GTK_OBJECT (gr->href), gr); */
-			g_signal_handlers_disconnect_matched (G_OBJECT(gr->href), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gr);
+ 			sp_signal_disconnect_by_data (gr->href, gr);
 			gr->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gr->href), object);
 		}
 		if (val && *val == '#') {
@@ -390,8 +389,8 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			href = sp_document_lookup_id (object->document, val + 1);
 			if (SP_IS_GRADIENT (href)) {
 				gr->href = (SPGradient *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "release", G_CALLBACK (sp_gradient_href_release), gr);
-				gtk_signal_connect (GTK_OBJECT (href), "modified", G_CALLBACK (sp_gradient_href_modified), gr);
+				g_signal_connect (G_OBJECT (href), "release", G_CALLBACK (sp_gradient_href_release), gr);
+				g_signal_connect (G_OBJECT (href), "modified", G_CALLBACK (sp_gradient_href_modified), gr);
 			}
 		}
 		sp_gradient_invalidate_vector (gr);

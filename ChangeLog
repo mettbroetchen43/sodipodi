@@ -1,3 +1,19 @@
+2002-12-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-gradient.c: GtkObject/GObject cleanup
+
+	* src/widgets/sp-widget.c: Ditto
+
+	* src/widgets/gradient-selector.c: Ditto
+
+	* src/widgets/gradient-vector.c: Ditto
+
+	* src/widgets/gradient-position.c: Ditto
+
+	* src/widgets/gradient-image.c: Ditto
+
+	* src/dialogs/fill-style.c: Ditto
+
 2002-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/view.h: Derive directly from GObject

@@ -126,7 +126,7 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 	sel->vectors = sp_gradient_vector_selector_new (NULL, NULL);
 	gtk_widget_show (sel->vectors);
 	gtk_box_pack_start (GTK_BOX (sel), sel->vectors, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (sel->vectors), "vector_set", GTK_SIGNAL_FUNC (sp_gradient_selector_vector_set), sel);
+	g_signal_connect (G_OBJECT (sel->vectors), "vector_set", G_CALLBACK (sp_gradient_selector_vector_set), sel);
 
 	/* Create box for buttons */
 	hb = gtk_hbox_new (FALSE, 0);
@@ -134,12 +134,12 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 
 	sel->edit = gtk_button_new_with_label (_("Edit"));
 	gtk_box_pack_start (GTK_BOX (hb), sel->edit, TRUE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (sel->edit), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), sel);
+	g_signal_connect (G_OBJECT (sel->edit), "clicked", G_CALLBACK (sp_gradient_selector_edit_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->edit, FALSE);
 
 	sel->add = gtk_button_new_with_label (_("Add"));
 	gtk_box_pack_start (GTK_BOX (hb), sel->add, TRUE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (sel->add), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), sel);
+	g_signal_connect (G_OBJECT (sel->add), "clicked", G_CALLBACK (sp_gradient_selector_add_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->add, FALSE);
 
 	gtk_widget_show_all (hb);
@@ -148,8 +148,8 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 	sel->position = sp_gradient_position_new (NULL);
 	gtk_widget_show (sel->position);
 	gtk_box_pack_start (GTK_BOX (sel), sel->position, TRUE, TRUE, 4);
-	gtk_signal_connect (GTK_OBJECT (sel->position), "dragged", GTK_SIGNAL_FUNC (sp_gradient_selector_position_dragged), sel);
-	gtk_signal_connect (GTK_OBJECT (sel->position), "changed", GTK_SIGNAL_FUNC (sp_gradient_selector_position_changed), sel);
+	g_signal_connect (G_OBJECT (sel->position), "dragged", G_CALLBACK (sp_gradient_selector_position_dragged), sel);
+	g_signal_connect (G_OBJECT (sel->position), "changed", G_CALLBACK (sp_gradient_selector_position_changed), sel);
 
 	/* Unit and spread selectors */
 	hb = gtk_hbox_new (FALSE, 0);
@@ -163,12 +163,12 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 	m = gtk_menu_new ();
 	mi = gtk_menu_item_new_with_label ("objectBoundingBox");
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "gradientUnits", GUINT_TO_POINTER (SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX));
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_gradient_selector_units_activate), sel);
+	g_object_set_data (G_OBJECT (mi), "gradientUnits", GUINT_TO_POINTER (SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX));
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_gradient_selector_units_activate), sel);
 	mi = gtk_menu_item_new_with_label ("userSpaceOnUse");
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "gradientUnits", GUINT_TO_POINTER (SP_GRADIENT_UNITS_USERSPACEONUSE));
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_gradient_selector_units_activate), sel);
+	g_object_set_data (G_OBJECT (mi), "gradientUnits", GUINT_TO_POINTER (SP_GRADIENT_UNITS_USERSPACEONUSE));
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_gradient_selector_units_activate), sel);
 	gtk_widget_show_all (m);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (sel->units), m);
@@ -188,15 +188,15 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 	m = gtk_menu_new ();
 	mi = gtk_menu_item_new_with_label ("pad");
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_PAD));
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_gradient_selector_spread_activate), sel);
+	g_object_set_data (G_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_PAD));
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_gradient_selector_spread_activate), sel);
 	mi = gtk_menu_item_new_with_label ("reflect");
-	gtk_object_set_data (GTK_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_REFLECT));
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_gradient_selector_spread_activate), sel);
+	g_object_set_data (G_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_REFLECT));
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_gradient_selector_spread_activate), sel);
 	gtk_menu_append (GTK_MENU (m), mi);
 	mi = gtk_menu_item_new_with_label ("repeat");
-	gtk_object_set_data (GTK_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_REPEAT));
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_gradient_selector_spread_activate), sel);
+	g_object_set_data (G_OBJECT (mi), "gradientSpread", GUINT_TO_POINTER (SP_GRADIENT_SPREAD_REPEAT));
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_gradient_selector_spread_activate), sel);
 	gtk_menu_append (GTK_MENU (m), mi);
 	gtk_widget_show_all (m);
 
@@ -374,7 +374,7 @@ sp_gradient_selector_vector_set (SPGradientVectorSelector *gvs, SPGradient *gr, 
 		blocked = TRUE;
 		gr = sp_gradient_ensure_vector_normalized (gr);
 		sp_gradient_selector_set_vector (sel, (gr) ? SP_OBJECT_DOCUMENT (gr) : NULL, gr);
-		gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED], gr);
+		g_signal_emit (G_OBJECT (sel), signals[CHANGED], 0, gr);
 		blocked = FALSE;
 	}
 }
@@ -382,13 +382,13 @@ sp_gradient_selector_vector_set (SPGradientVectorSelector *gvs, SPGradient *gr, 
 static void
 sp_gradient_selector_position_dragged (SPGradientPosition *pos, SPGradientSelector *sel)
 {
-	gtk_signal_emit (GTK_OBJECT (sel), signals[DRAGGED]);
+	g_signal_emit (G_OBJECT (sel), signals[DRAGGED], 0);
 }
 
 static void
 sp_gradient_selector_position_changed (SPGradientPosition *pos, SPGradientSelector *sel)
 {
-	gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED]);
+	g_signal_emit (G_OBJECT (sel), signals[CHANGED], 0);
 }
 
 static void
@@ -440,17 +440,17 @@ sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 static void
 sp_gradient_selector_units_activate (GtkWidget *widget, SPGradientSelector *sel)
 {
-	sel->gradientUnits = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (widget), "gradientUnits"));
+	sel->gradientUnits = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "gradientUnits"));
 
-	gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED]);
+	g_signal_emit (G_OBJECT (sel), signals[CHANGED], 0);
 }
 
 static void
 sp_gradient_selector_spread_activate (GtkWidget *widget, SPGradientSelector *sel)
 {
-	sel->gradientSpread = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (widget), "gradientSpread"));
+	sel->gradientSpread = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "gradientSpread"));
 	sp_gradient_position_set_spread (SP_GRADIENT_POSITION (sel->position), sel->gradientSpread);
 
-	gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED]);
+	g_signal_emit (G_OBJECT (sel), signals[CHANGED], 0);
 }
 

@@ -49,7 +49,7 @@ static gint sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton
 static gint sp_gradient_position_button_release (GtkWidget *widget, GdkEventButton *event);
 static gint sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event);
 
-static void sp_gradient_position_gradient_destroy (SPGradient *gr, SPGradientPosition *im);
+static void sp_gradient_position_gradient_release (SPGradient *gr, SPGradientPosition *im);
 static void sp_gradient_position_gradient_modified (SPGradient *gr, guint flags, SPGradientPosition *im);
 static void sp_gradient_position_update (SPGradientPosition *img);
 
@@ -161,7 +161,7 @@ sp_gradient_position_destroy (GtkObject *object)
 	sp_gradient_position_free_image_data (pos);
 
 	if (pos->gradient) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (pos->gradient), pos);
+		sp_signal_disconnect_by_data (pos->gradient, pos);
 		pos->gradient = NULL;
 	}
 
@@ -290,24 +290,28 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 			if (event->state & GDK_CONTROL_MASK) {
 				pos->dragging = TRUE;
 				pos->changed = FALSE;
-				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+				gdk_pointer_grab (widget->window, FALSE,
+						  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						  NULL, NULL, event->time);
 			} else {
 				float x1, y1;
 				pos->dragging = TRUE;
 				pos->changed = FALSE;
-				gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+				g_signal_emit (G_OBJECT (pos), position_signals[GRABBED], 0);
 				x1 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				y1 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 				if (!NR_DF_TEST_CLOSE (x1, pos->gdata.linear.x1, NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (y1, pos->gdata.linear.y1, NR_EPSILON_F)) {
 					pos->gdata.linear.x1 = x1;
 					pos->gdata.linear.y1 = y1;
-					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+					g_signal_emit (G_OBJECT (pos), position_signals[DRAGGED], 0);
 					pos->changed = TRUE;
 					pos->need_update = TRUE;
 					if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 				}
-				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+				gdk_pointer_grab (widget->window, FALSE,
+						  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						  NULL, NULL, event->time);
 			}
 		}
 	} else {
@@ -316,29 +320,33 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 			if (event->state & GDK_CONTROL_MASK) {
 				pos->dragging = TRUE;
 				pos->changed = FALSE;
-				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+				gdk_pointer_grab (widget->window, FALSE,
+						  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						  NULL, NULL, event->time);
 			} else if (event->state & GDK_SHIFT_MASK) {
 				float fx, fy;
 				pos->dragging = TRUE;
 				pos->changed = FALSE;
-				gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+				g_signal_emit (G_OBJECT (pos), position_signals[GRABBED], 0);
 				fx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 				if (!NR_DF_TEST_CLOSE (fx, pos->gdata.radial.fx, NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (fy, pos->gdata.radial.fy, NR_EPSILON_F)) {
 					pos->gdata.radial.fx = fx;
 					pos->gdata.radial.fy = fy;
-					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+					g_signal_emit (G_OBJECT (pos), position_signals[DRAGGED], 0);
 					pos->changed = TRUE;
 					pos->need_update = TRUE;
 					if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 				}
-				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+				gdk_pointer_grab (widget->window, FALSE,
+						  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						  NULL, NULL, event->time);
 			} else {
 				float cx, cy;
 				pos->dragging = TRUE;
 				pos->changed = FALSE;
-				gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+				g_signal_emit (G_OBJECT (pos), position_signals[GRABBED], 0);
 				cx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				cy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 				if (!NR_DF_TEST_CLOSE (cx, pos->gdata.radial.cx, NR_EPSILON_F) ||
@@ -347,12 +355,14 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 					pos->gdata.radial.cy = cy;
 					pos->gdata.radial.fx = cx;
 					pos->gdata.radial.fy = cy;
-					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+					g_signal_emit (G_OBJECT (pos), position_signals[DRAGGED], 0);
 					pos->changed = TRUE;
 					pos->need_update = TRUE;
 					if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 				}
-				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+				gdk_pointer_grab (widget->window, FALSE,
+						  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						  NULL, NULL, event->time);
 			}
 		}
 	}
@@ -368,9 +378,9 @@ sp_gradient_position_button_release (GtkWidget *widget, GdkEventButton *event)
 	pos = SP_GRADIENT_POSITION (widget);
 
 	if ((event->button == 1) && pos->dragging) {
-		gtk_signal_emit (GTK_OBJECT (pos), position_signals[RELEASED]);
+		g_signal_emit (G_OBJECT (pos), position_signals[RELEASED], 0);
 		if (pos->changed) {
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[CHANGED]);
+			g_signal_emit (G_OBJECT (pos), position_signals[CHANGED], 0);
 			pos->changed = FALSE;
 		}
 		gdk_pointer_ungrab (event->time);
@@ -438,7 +448,7 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 				pos->gdata.linear.x2 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				pos->gdata.linear.y2 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 			}
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+			g_signal_emit (G_OBJECT (pos), position_signals[DRAGGED], 0);
 			pos->changed = TRUE;
 			pos->need_update = TRUE;
 			if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -496,7 +506,7 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 				pos->gdata.radial.r = hypot (x - cx, y - cy);
 			}
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+			g_signal_emit (G_OBJECT (pos), position_signals[DRAGGED], 0);
 			pos->changed = TRUE;
 			pos->need_update = TRUE;
 			if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -522,16 +532,14 @@ void
 sp_gradient_position_set_gradient (SPGradientPosition *pos, SPGradient *gradient)
 {
 	if (pos->gradient) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (pos->gradient), pos);
+		sp_signal_disconnect_by_data (pos->gradient, pos);
 	}
 
 	pos->gradient = gradient;
 
 	if (gradient) {
-		gtk_signal_connect (GTK_OBJECT (gradient), "destroy",
-				    GTK_SIGNAL_FUNC (sp_gradient_position_gradient_destroy), pos);
-		gtk_signal_connect (GTK_OBJECT (gradient), "modified",
-				    GTK_SIGNAL_FUNC (sp_gradient_position_gradient_modified), pos);
+		g_signal_connect (G_OBJECT (gradient), "release", G_CALLBACK (sp_gradient_position_gradient_release), pos);
+		g_signal_connect (G_OBJECT (gradient), "modified", G_CALLBACK (sp_gradient_position_gradient_modified), pos);
 	}
 
 	pos->need_update = TRUE;
@@ -541,7 +549,7 @@ sp_gradient_position_set_gradient (SPGradientPosition *pos, SPGradient *gradient
 }
 
 static void
-sp_gradient_position_gradient_destroy (SPGradient *gradient, SPGradientPosition *pos)
+sp_gradient_position_gradient_release (SPGradient *gradient, SPGradientPosition *pos)
 {
 	sp_gradient_position_set_gradient (pos, NULL);
 }

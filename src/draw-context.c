@@ -810,7 +810,7 @@ sp_pencil_context_get_type (void)
 			4,
 			(GInstanceInitFunc) sp_pencil_context_init,
 		};
-		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPPencilContext", &info, 0);
+		type = g_type_register_static (SP_TYPE_DRAW_CONTEXT, "SPPencilContext", &info, 0);
 	}
 	return type;
 }
@@ -1152,7 +1152,7 @@ sp_pen_context_get_type (void)
 			4,
 			(GInstanceInitFunc) sp_pen_context_init,
 		};
-		type = g_type_register_static (SP_TYPE_EVENT_CONTEXT, "SPPenContext", &info, 0);
+		type = g_type_register_static (SP_TYPE_DRAW_CONTEXT, "SPPenContext", &info, 0);
 	}
 	return type;
 }

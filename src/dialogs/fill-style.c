@@ -89,7 +89,7 @@ sp_fill_style_dialog (void)
 
 		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Fill style"));
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (sp_fill_style_dialog_destroy), NULL);
+		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_fill_style_dialog_destroy), NULL);
 
 		fs = sp_fill_style_widget_new ();
 		gtk_widget_show (fs);
@@ -113,11 +113,11 @@ sp_fill_style_widget_new (void)
 	psel = sp_paint_selector_new ();
 	gtk_widget_show (psel);
 	gtk_box_pack_start (GTK_BOX (vb), psel, TRUE, TRUE, 0);
-	gtk_object_set_data (GTK_OBJECT (spw), "paint-selector", psel);
+	g_object_set_data (G_OBJECT (spw), "paint-selector", psel);
 
-	gtk_signal_connect (GTK_OBJECT (psel), "mode_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_mode_changed), spw);
-	gtk_signal_connect (GTK_OBJECT (psel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_dragged), spw);
-	gtk_signal_connect (GTK_OBJECT (psel), "changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_changed), spw);
+	g_signal_connect (G_OBJECT (psel), "mode_changed", G_CALLBACK (sp_fill_style_widget_paint_mode_changed), spw);
+	g_signal_connect (G_OBJECT (psel), "dragged", G_CALLBACK (sp_fill_style_widget_paint_dragged), spw);
+	g_signal_connect (G_OBJECT (psel), "changed", G_CALLBACK (sp_fill_style_widget_paint_changed), spw);
 
 	hb = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (hb);
@@ -131,7 +131,7 @@ sp_fill_style_widget_new (void)
 	om = gtk_option_menu_new ();
 	gtk_widget_show (om);
 	gtk_box_pack_start (GTK_BOX (hb), om, FALSE, FALSE, 0);
-	gtk_object_set_data (GTK_OBJECT (spw), "fill-rule", om);
+	g_object_set_data (G_OBJECT (spw), "fill-rule", om);
 
 	/* 0 - nonzero 1 - evenodd */
 	m = gtk_menu_new ();
@@ -140,20 +140,20 @@ sp_fill_style_widget_new (void)
 	mi = gtk_menu_item_new_with_label (_("nonzero"));
 	gtk_widget_show (mi);
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "fill-rule", "nonzero");
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_fill_style_widget_fill_rule_activate), spw);
+	g_object_set_data (G_OBJECT (mi), "fill-rule", "nonzero");
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_fill_style_widget_fill_rule_activate), spw);
 	mi = gtk_menu_item_new_with_label (_("evenodd"));
 	gtk_widget_show (mi);
 	gtk_menu_append (GTK_MENU (m), mi);
-	gtk_object_set_data (GTK_OBJECT (mi), "fill-rule", "evenodd");
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_fill_style_widget_fill_rule_activate), spw);
+	g_object_set_data (G_OBJECT (mi), "fill-rule", "evenodd");
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_fill_style_widget_fill_rule_activate), spw);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
 
-	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_fill_style_widget_construct), psel);
-	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_modify_selection), psel);
-	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_change_selection), psel);
-	gtk_signal_connect (GTK_OBJECT (spw), "attr_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_attr_changed), psel);
+	g_signal_connect (G_OBJECT (spw), "construct", G_CALLBACK (sp_fill_style_widget_construct), psel);
+	g_signal_connect (G_OBJECT (spw), "modify_selection", G_CALLBACK (sp_fill_style_widget_modify_selection), psel);
+	g_signal_connect (G_OBJECT (spw), "change_selection", G_CALLBACK (sp_fill_style_widget_change_selection), psel);
+	g_signal_connect (G_OBJECT (spw), "attr_changed", G_CALLBACK (sp_fill_style_widget_attr_changed), psel);
 
 	sp_fill_style_widget_update (SP_WIDGET (spw), SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 
@@ -216,16 +216,16 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	NRMatrixF fctm, gs2d;
 	NRRectF fbb;
 
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 
-	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 
-	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
+	psel = g_object_get_data (G_OBJECT (spw), "paint-selector");
 
 	if (!sel || sp_selection_is_empty (sel)) {
 		/* No objects, set empty */
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_EMPTY);
-		gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+		g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 		return;
 	}
 
@@ -239,7 +239,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		if (nextmode != pselmode) {
 			/* Multiple styles */
 			sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
-			gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+			g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 			return;
 		}
 	}
@@ -271,7 +271,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (next)), FALSE) != vector) {
 				/* Multiple vectors */
 				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
-				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+				g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 				return;
 			}
 		}
@@ -309,7 +309,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (next)), FALSE) != vector) {
 				/* Multiple vectors */
 				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
-				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+				g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 				return;
 			}
 		}
@@ -341,10 +341,10 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		break;
 	}
 
-	fillrule = gtk_object_get_data (GTK_OBJECT (spw), "fill-rule");
+	fillrule = g_object_get_data (G_OBJECT (spw), "fill-rule");
 	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), (SP_OBJECT_STYLE (object)->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
 
-	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
 static void
@@ -356,11 +356,11 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	SPStyle *style;
 	gfloat c[5];
 
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 
-	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 
-	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
+	psel = g_object_get_data (G_OBJECT (spw), "paint-selector");
 
 	style = sp_style_new ();
 	sp_style_read_from_repr (style, repr);
@@ -392,18 +392,18 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 		break;
 	}
 
-	fillrule = gtk_object_get_data (GTK_OBJECT (spw), "fill-rule");
+	fillrule = g_object_get_data (G_OBJECT (spw), "fill-rule");
 	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), (style->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
 
 	sp_style_unref (style);
 
-	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
 static void
 sp_fill_style_widget_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw)
 {
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 
 	/* fixme: Does this work? */
 	/* fixme: Not really, here we have to get old color back from object */
@@ -419,7 +419,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 	gfloat c[5];
 
 	if (!spw->sodipodi) return;
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 #ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint dragged\n");
 #endif
@@ -479,7 +479,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	SPGradient *vector;
 	guchar b[64];
 
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 #ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint changed\n");
 #endif
@@ -598,7 +598,7 @@ sp_fill_style_widget_fill_rule_activate (GtkWidget *w, SPWidget *spw)
 	GSList *reprs;
 	SPCSSAttr *css;
 
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 
 	if (spw->sodipodi) {
 		reprs = NULL;
@@ -612,7 +612,7 @@ sp_fill_style_widget_fill_rule_activate (GtkWidget *w, SPWidget *spw)
 	}
 
 	css = sp_repr_css_attr_new ();
-	sp_repr_css_set_property (css, "fill-rule", gtk_object_get_data (GTK_OBJECT (w), "fill-rule"));
+	sp_repr_css_set_property (css, "fill-rule", g_object_get_data (G_OBJECT (w), "fill-rule"));
 	for (r = reprs; r != NULL; r = r->next) {
 		sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
 	}

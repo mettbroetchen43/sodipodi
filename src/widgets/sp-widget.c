@@ -13,6 +13,7 @@
  */
 
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "../xml/repr-private.h"
 #include "../sodipodi.h"
 #include "../desktop.h"
@@ -59,7 +60,7 @@ spw_repr_destroy (SPRepr *repr, gpointer data)
 static void
 spw_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
 {
-	gtk_signal_emit (GTK_OBJECT (data), signals[ATTR_CHANGED], key, oldval, newval);
+	g_signal_emit (G_OBJECT (data), signals[ATTR_CHANGED], 0, key, oldval, newval);
 }
 
 static void
@@ -185,7 +186,7 @@ sp_widget_destroy (GtkObject *object)
 		/* This happens in ::hide (Lauris) */
 		/* It seems it does not (Lauris) */
 		/* Disconnect signals */
-		gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+		sp_signal_disconnect_by_data (sodipodi, spw);
 #endif
 		spw->sodipodi = NULL;
 	}
@@ -213,9 +214,9 @@ sp_widget_show (GtkWidget *widget)
 
 	if (spw->sodipodi) {
 		/* Connect signals */
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "modify_selection", G_CALLBACK (sp_widget_modify_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "change_selection", G_CALLBACK (sp_widget_change_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "set_selection", G_CALLBACK (sp_widget_set_selection), spw);
 	}
 
 	if (spw->repr) {
@@ -235,7 +236,7 @@ sp_widget_hide (GtkWidget *widget)
 
 	if (spw->sodipodi) {
 		/* Disconnect signals */
-		gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+		sp_signal_disconnect_by_data (sodipodi, spw);
 	}
 
 	if (spw->repr) {
@@ -346,12 +347,12 @@ sp_widget_construct_global (SPWidget *spw, Sodipodi *sodipodi)
 
 	spw->sodipodi = sodipodi;
 	if (GTK_WIDGET_VISIBLE (spw)) {
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "modify_selection", G_CALLBACK (sp_widget_modify_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "change_selection", G_CALLBACK (sp_widget_change_selection), spw);
+		g_signal_connect (G_OBJECT (sodipodi), "set_selection", G_CALLBACK (sp_widget_set_selection), spw);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (spw), signals[CONSTRUCT]);
+	g_signal_emit (G_OBJECT (spw), signals[CONSTRUCT], 0);
 
 	return (GtkWidget *) spw;
 }
@@ -373,7 +374,7 @@ sp_widget_construct_repr (SPWidget *spw, SPRepr *repr)
 	}
 	if (spw->sodipodi) {
 		if (GTK_WIDGET_VISIBLE (spw)) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+			sp_signal_disconnect_by_data (sodipodi, spw);
 		}
 		spw->sodipodi = NULL;
 	}
@@ -383,7 +384,7 @@ sp_widget_construct_repr (SPWidget *spw, SPRepr *repr)
 		sp_repr_add_listener (spw->repr, &spw_event_vector, spw);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (spw), signals[CONSTRUCT]);
+	g_signal_emit (G_OBJECT (spw), signals[CONSTRUCT], 0);
 
 	return (GtkWidget *) spw;
 }
@@ -391,20 +392,20 @@ sp_widget_construct_repr (SPWidget *spw, SPRepr *repr)
 static void
 sp_widget_modify_selection (Sodipodi *sodipodi, SPSelection *selection, guint flags, SPWidget *spw)
 {
-	gtk_signal_emit (GTK_OBJECT (spw), signals[MODIFY_SELECTION], selection, flags);
+	g_signal_emit (G_OBJECT (spw), signals[MODIFY_SELECTION], 0, selection, flags);
 }
 
 static void
 sp_widget_change_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw)
 {
-	gtk_signal_emit (GTK_OBJECT (spw), signals[CHANGE_SELECTION], selection);
+	g_signal_emit (G_OBJECT (spw), signals[CHANGE_SELECTION], 0, selection);
 }
 
 static void
 sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw)
 {
 	/* Emit "set_selection" signal */
-	gtk_signal_emit (GTK_OBJECT (spw), signals[SET_SELECTION], selection);
+	g_signal_emit (G_OBJECT (spw), signals[SET_SELECTION], 0, selection);
 	/* Sodipodi will force "change_selection" anyways */
 }
 
@@ -414,12 +415,12 @@ sp_widget_set_dirty (SPWidget *spw, gboolean dirty)
 	if (dirty && !spw->dirty) {
 		spw->dirty = TRUE;
 		if (!spw->autoupdate) {
-			gtk_signal_emit (GTK_OBJECT (spw), signals[SET_DIRTY], TRUE);
+			g_signal_emit (G_OBJECT (spw), signals[SET_DIRTY], 0, TRUE);
 		}
 	} else if (!dirty && spw->dirty) {
 		spw->dirty = FALSE;
 		if (!spw->autoupdate) {
-			gtk_signal_emit (GTK_OBJECT (spw), signals[SET_DIRTY], FALSE);
+			g_signal_emit (G_OBJECT (spw), signals[SET_DIRTY], 0, FALSE);
 		}
 	}
 }
