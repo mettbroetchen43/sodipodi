@@ -191,7 +191,6 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 		/* Create object */
 		repr = sp_repr_new ("path");
                 sp_repr_set_attr (repr, "sodipodi:type", "spiral");
-                sp_repr_set_attr (repr, "sodipodi:hand", "right"); /* avoid error */
 		/* Set style */
 		style = sodipodi_get_repr (SODIPODI, "paint.spiral");
 		if (style) {
@@ -223,13 +222,12 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 	spiral = SP_SPIRAL(sc->item);
 
 	dx = p1.x - p0.x;
-	dy = - (p1.y - p0.y)
-		* (spiral->hand == SP_SPIRAL_HAND_LEFT ? -1.0 : 1.0);
+	dy = - (p1.y - p0.y);
 	rad = hypot (dx, dy);
 	arg = atan2 (dy, dx) - 2.0*M_PI*spiral->revolution;
 	
         /* Fixme: these parameters should be got from dialog box */
-	sp_spiral_set (spiral, p0.x, p0.y, SP_SPIRAL_HAND_RIGHT,
+	sp_spiral_set (spiral, p0.x, p0.y,
 		       /*expansion*/ spiral->expansion,
 		       /*revolution*/ spiral->revolution,
 		       rad, arg,
@@ -262,7 +260,7 @@ sp_spiral_finish (SPSpiralContext * sc)
 		repr = SP_OBJECT (sc->item)->repr;
 
 #if 1 /* d="" */
-		sp_spiral_set_shape(spiral); /* Fixme: ??? */
+		sp_shape_set_shape(SP_SHAPE(spiral));
 		g_assert (SP_PATH(spiral)->comp);
 		g_assert (SP_PATH(spiral)->comp->data);
 		pathcomp = (SPPathComp *)SP_PATH(spiral)->comp->data;
@@ -274,7 +272,7 @@ sp_spiral_finish (SPSpiralContext * sc)
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
 #endif
-		sp_spiral_to_repr (spiral, repr);
+		sp_spiral_build_repr (spiral, repr);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

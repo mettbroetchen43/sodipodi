@@ -83,6 +83,7 @@ sp_item_class_init (SPItemClass * klass)
 	klass->description = sp_item_private_description;
 	klass->show = sp_item_private_show;
 	klass->hide = sp_item_private_hide;
+	klass->knot_holder = NULL;
 	klass->menu = sp_item_private_menu;
 	klass->snappoints = sp_item_private_snappoints;
 }
@@ -305,6 +306,21 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox)
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox) (item, bbox);
+}
+
+SPKnotHolder *
+sp_item_knot_holder (SPItem    *item,
+	       SPDesktop *desktop)
+{
+	SPKnotHolder *knot_holder = NULL;
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+
+	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->knot_holder)
+		knot_holder = (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->knot_holder) (item, desktop);
+
+	return knot_holder;
 }
 
 static GSList * 

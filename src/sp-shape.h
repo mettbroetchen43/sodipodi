@@ -16,11 +16,17 @@ struct _SPShape {
 
 struct _SPShapeClass {
 	SPPathClass parent_class;
+
+	/* build bpath from extra shape attributes */
+	void	(* set_shape) (SPShape	*shape);
 };
 
 
 /* Standard Gtk function */
 GtkType sp_shape_get_type (void);
+
+/* Method */
+void	sp_shape_set_shape (SPShape *shape);
 
 /* Utility */
 

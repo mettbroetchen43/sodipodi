@@ -106,6 +106,8 @@ sp_shape_class_init (SPShapeClass * klass)
 	path_class->remove_comp = sp_shape_remove_comp;
 	path_class->add_comp = sp_shape_add_comp;
 	path_class->change_bpath = sp_shape_change_bpath;
+
+	klass->set_shape = NULL;
 }
 
 static void
@@ -464,3 +466,13 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 		SP_PATH_CLASS (parent_class)->change_bpath (path, comp, curve);
 }
 
+/* Shape section */
+void
+sp_shape_set_shape (SPShape *shape)
+{
+	g_return_if_fail (shape != NULL);
+	g_return_if_fail (SP_IS_SHAPE (shape));
+
+	if (SP_SHAPE_CLASS (GTK_OBJECT(shape)->klass)->set_shape)
+		SP_SHAPE_CLASS (GTK_OBJECT(shape)->klass)->set_shape (shape);
+}

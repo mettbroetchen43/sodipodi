@@ -1,3 +1,33 @@
+2001-10-30 Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/knotholder.c: New file
+	We can manage plural SPKnot in one SPKnotHolder.
+	SPKnotHolder is created by SPItem::knot_holder virtual function.
+	Moving SPKnot is propageted to another SPKnot.
+	* src/knotholder.h: Ditto
+
+	* src/node-context.c: Added SPKnotHolder
+	* src/node-context.h: Ditto
+	
+	* src/sp-item.c: Added knot_holder virtual function.
+	* src/sp-item.h: Ditto
+
+	* src/sp-shape.c: Added set_shape virtual function.
+	It is used to build bpath from extra shape attributes.
+
+	* src/sp-shape.h: Ditto
+
+	* src/sp-star.c: Added knot_holder and set_shape implementations.
+	(sp_star_build_repr): Modified function name.
+	* src/sp-star.h: Ditto
+
+	* src/sp-spiral.c: Added set_shape implementation.
+	(sp_spiral_build_repr): Modified function name.
+	* src/sp-spiral.h: Ditto
+
+	* src/star-context.c: Modified build_repr function name.
+	* src/spiral-context.c: Ditto
+
 2001-10-29  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/desktop.c (sp_desktop_coordinate_status): Free allocated memory

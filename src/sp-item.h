@@ -27,6 +27,7 @@
 #include "display/nr-arena-forward.h"
 #include "forward.h"
 #include "sp-object.h"
+#include "knotholder.h"
 
 #define SP_TYPE_ITEM (sp_item_get_type ())
 #define SP_ITEM(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
@@ -56,10 +57,14 @@ struct _SPItem {
 struct _SPItemClass {
 	SPObjectClass parent_class;
 
+	/* Update indicates that affine is changed */
 	void (* update) (SPItem * item, gdouble affine[]);
 
 	/* BBox in desktop coordinates */
 	void (* bbox) (SPItem * item, ArtDRect * bbox);
+
+	/* Give list of points for item to be controled */
+	SPKnotHolder *(* knot_holder) (SPItem *item, SPDesktop *desktop);
 
 	/* Printing method. Assumes ctm is set to item affine matrix */
 	void (* print) (SPItem * item, GnomePrintContext * gpc);
@@ -73,8 +78,8 @@ struct _SPItemClass {
 
 	/* Append to context menu */
 	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
-        /* give list of points for item to be considered for snapping */ 
-        GSList * (* snappoints) (SPItem * item, GSList * points);
+	/* give list of points for item to be considered for snapping */ 
+	GSList * (* snappoints) (SPItem * item, GSList * points);
 };
 
 /* Flag testing macros */
@@ -89,6 +94,7 @@ GtkType sp_item_get_type (void);
 
 void sp_item_update (SPItem * item, gdouble affine[]);
 void sp_item_bbox (SPItem * item, ArtDRect * bbox);
+SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
 

@@ -10,6 +10,7 @@
 #include "desktop-affine.h"
 #include "selection.h"
 #include "nodepath.h"
+#include "knotholder.h"
 #include "pixmaps/cursor-node.xpm"
 #include "node-context.h"
 #include "sp-cursor.h"
@@ -95,6 +96,7 @@ sp_node_context_destroy (GtkObject * object)
 	nc = SP_NODE_CONTEXT (object);
 
 	if (nc->nodepath) sp_nodepath_destroy (nc->nodepath);
+	if (nc->knot_holder) sp_knot_holder_destroy (nc->knot_holder);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -103,8 +105,8 @@ sp_node_context_destroy (GtkObject * object)
 static void
 sp_node_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 {
-	SPNodeContext * nc;
-	SPItem * item;
+	SPNodeContext *nc;
+	SPItem        *item;
 
 	nc = SP_NODE_CONTEXT (event_context);
 
@@ -115,24 +117,30 @@ sp_node_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 					GTK_SIGNAL_FUNC (sp_node_context_selection_changed), nc,
 					GTK_OBJECT (nc));
 
-	item = sp_selection_item (SP_DT_SELECTION (event_context->desktop));
+	item = sp_selection_item (SP_DT_SELECTION (desktop));
 
+	nc->nodepath = NULL;
+	nc->knot_holder = NULL;
 	if (item) {
-		nc->nodepath = sp_nodepath_new (event_context->desktop, item);
-	} else {
-		nc->nodepath = NULL;
+		nc->nodepath = sp_nodepath_new (desktop, item);
+		if (! nc->nodepath) {
+			nc->knot_holder = sp_item_knot_holder (item, desktop);
+		}
 	}
 }
 
 static gint
 sp_node_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
 {
+	SPNodeContext *nc;
 	SPDesktop * desktop;
 	gint ret;
 
 	ret = FALSE;
 
 	desktop = event_context->desktop;
+
+	nc = SP_NODE_CONTEXT (event_context);
 
 	switch (event->type) {
 		case GDK_BUTTON_RELEASE:
@@ -264,17 +272,22 @@ static void
 sp_node_context_selection_changed (SPSelection * selection, gpointer data)
 {
 	SPNodeContext * nc;
+	SPDesktop *desktop;
 	SPItem * item;
 
 	nc = SP_NODE_CONTEXT (data);
 
 	if (nc->nodepath) sp_nodepath_destroy (nc->nodepath);
+	if (nc->knot_holder) sp_knot_holder_destroy (nc->knot_holder);
 
 	item = sp_selection_item (selection);
-
+	
+	desktop = selection->desktop;
+	nc->nodepath = NULL;
+	nc->knot_holder = NULL;
 	if (item) {
-		nc->nodepath = sp_nodepath_new (selection->desktop, item);
-	} else {
-		nc->nodepath = NULL;
+		nc->nodepath = sp_nodepath_new (desktop, item);
+		if (! nc->nodepath)
+			nc->knot_holder = sp_item_knot_holder (item, desktop);
 	}
 }

@@ -3,6 +3,7 @@
 
 #include "event-context.h"
 #include "nodepath.h"
+#include "knotholder.h"
 
 #define SP_TYPE_NODE_CONTEXT            (sp_node_context_get_type ())
 #define SP_NODE_CONTEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_NODE_CONTEXT, SPNodeContext))
@@ -16,6 +17,7 @@ typedef struct _SPNodeContextClass SPNodeContextClass;
 struct _SPNodeContext {
 	SPEventContext event_context;
 	SPNodePath * nodepath;
+	SPKnotHolder *knot_holder;
 };
 
 struct _SPNodeContextClass {

@@ -43,9 +43,7 @@ void    sp_star_set             (SPStar         *star,
                                  gdouble         arg1,
                                  gdouble         arg2);
 
-void    sp_star_set_shape       (SPStar         *star);
-
-void    sp_star_to_repr         (SPStar         *star,
+void    sp_star_build_repr      (SPStar         *star,
                                  SPRepr         *repr);
 
 END_GNOME_DECLS

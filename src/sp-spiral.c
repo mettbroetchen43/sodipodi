@@ -3,6 +3,7 @@
 #include <gnome.h>
 #include <math.h>
 #include "svg/svg.h"
+#include "sp-shape.h"
 #include "sp-spiral.h"
 #include "helper/bezier-utils.h"
 
@@ -23,8 +24,7 @@ static void sp_spiral_read_attr (SPObject * object, const gchar * attr);
 static void sp_spiral_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_spiral_description (SPItem * item);
 static GSList * sp_spiral_snappoints (SPItem * item, GSList * points);
-
-static SPSpiralHand sp_spiral_read_type (const gchar *str);
+static void sp_spiral_set_shape (SPShape *shape);
 
 
 static SPShapeClass *parent_class;
@@ -56,10 +56,12 @@ sp_spiral_class_init (SPSpiralClass *class)
 	GtkObjectClass * gtk_object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
+	SPShapeClass *shape_class;
 
 	gtk_object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
+	shape_class = (SPShapeClass *) class;
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
@@ -71,6 +73,8 @@ sp_spiral_class_init (SPSpiralClass *class)
 	item_class->bbox = sp_spiral_bbox;
 	item_class->description = sp_spiral_description;
 	item_class->snappoints = sp_spiral_snappoints;
+
+	shape_class->set_shape = sp_spiral_set_shape;
 }
 
 static void
@@ -80,7 +84,6 @@ sp_spiral_init (SPSpiral * spiral)
 	
 	spiral->cx         = 0.0;
 	spiral->cy         = 0.0;
-	spiral->hand       = SP_SPIRAL_HAND_RIGHT;
 	spiral->expansion  = 1.0;
 	spiral->revolution = 3.0;
 	spiral->radius     = 0.0;
@@ -110,7 +113,6 @@ sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
 	sp_spiral_read_attr (object, "sodipodi:cx");
 	sp_spiral_read_attr (object, "sodipodi:cy");
-	sp_spiral_read_attr (object, "sodipodi:hand");
 	sp_spiral_read_attr (object, "sodipodi:expansion");
 	sp_spiral_read_attr (object, "sodipodi:revolution");
 	sp_spiral_read_attr (object, "sodipodi:radius");
@@ -121,11 +123,13 @@ sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_spiral_read_attr (SPObject * object, const gchar * attr)
 {
-	SPSpiral * spiral;
-	const gchar * astr;
+	SPSpiral *spiral;
+	SPShape  *shape;
+	const gchar *astr;
 	SPSVGUnit unit;
 
 	spiral = SP_SPIRAL (object);
+	shape  = SP_SHAPE (object);
 
 #ifdef SPIRAL_VERBOSE
 	g_print ("sp_spiral_read_attr: attr %s\n", attr);
@@ -137,42 +141,37 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 
 	if (strcmp (attr, "sodipodi:cx") == 0) {
 		spiral->cx = sp_svg_read_length (&unit, astr, 0.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:cy") == 0) {
 		spiral->cy = sp_svg_read_length (&unit, astr, 0.0);
-		sp_spiral_set_shape (spiral);
-		return;
-	}
-	if (strcmp (attr, "sodipodi:hand") == 0) {
-		spiral->hand = sp_spiral_read_type (astr);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:expansion") == 0) {
 		spiral->expansion = sp_svg_read_length (&unit, astr, 1.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:revolution") == 0) {
 		spiral->revolution = sp_svg_read_length (&unit, astr, 3.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:radius") == 0) {
 		spiral->radius = sp_svg_read_length (&unit, astr, 0.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:argument") == 0) {
 		spiral->argument = sp_svg_read_length (&unit, astr, 0.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 	if (strcmp (attr, "sodipodi:t0") == 0) {
 		spiral->t0 = sp_svg_read_length (&unit, astr, 0.0);
-		sp_spiral_set_shape (spiral);
+		sp_shape_set_shape (shape);
 		return;
 	}
 
@@ -186,19 +185,21 @@ sp_spiral_description (SPItem * item)
 	return g_strdup ("Spiral");
 }
 
-void
-sp_spiral_set_shape (SPSpiral * spiral)
+static void
+sp_spiral_set_shape (SPShape *shape)
 {
+#define FITTING_DEPTH 2
+	SPSpiral       *spiral;
 	ArtPoint	darray[SAMPLE_SIZE + 1];
 	ArtPoint	hat1, hat2;
-	ArtPoint	bezier[4];
+	ArtPoint	bezier[4 * FITTING_DEPTH];
 	gint		i;
 	gdouble		tstep,  t;
 	gdouble		dstep, d;
 	SPCurve	       *c;
 
-	
-	sp_path_clear (SP_PATH (spiral));
+	spiral = SP_SPIRAL(shape);
+	sp_path_clear (SP_PATH (shape));
 	
 	if (spiral->radius < 1e-12) return;
 	
@@ -219,7 +220,7 @@ sp_spiral_set_shape (SPSpiral * spiral)
 	dstep = tstep/(SAMPLE_SIZE - 1.0);
 
 	for (d = spiral->t0 - dstep, i = 0; i < 2; d += dstep, i++)
-		sp_spiral_get_xy (spiral, d, &darray[i].x, &darray[i].y);
+		sp_spiral_get_xy (spiral, d, &darray[i]);
 
 	if (spiral->t0 - dstep >= 0.0) {
 		sp_darray_center_tangent (darray, 1, &hat1);
@@ -234,26 +235,30 @@ sp_spiral_set_shape (SPSpiral * spiral)
 	/* Fixme: there is a rest spiral */
 	for (t = spiral->t0; t < 1.0; t += tstep)
 	{
+		gint depth, j;
+
 		for (d = t - dstep, i = 0; i <= SAMPLE_SIZE; d += dstep, i++)
-			sp_spiral_get_xy (spiral, d, &darray[i].x, &darray[i].y);
+			sp_spiral_get_xy (spiral, d, &darray[i]);
 		
 		sp_darray_center_tangent (darray, SAMPLE_SIZE - 1, &hat2);
 
 		/* Fixme:
 		   we shuld specify a maximum error using better algorithm.
 		*/
-		if (sp_bezier_fit_cubic_full (bezier, darray, 0, SAMPLE_SIZE - 1,
-					      &hat1, &hat2,
-					      SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
-					      1) != -1) {
-			sp_curve_curveto (c, bezier[1].x, bezier[1].y,
-					  bezier[2].x, bezier[2].y,
-					  bezier[3].x, bezier[3].y);
+		depth = sp_bezier_fit_cubic_full (bezier, darray, 0, SAMPLE_SIZE - 1,
+						  &hat1, &hat2,
+						  SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
+						  FITTING_DEPTH);
+		if (depth != -1) {
+			for (j = 0; j < 4*depth; j += 4)
+				sp_curve_curveto (c, bezier[j + 1].x, bezier[j + 1].y,
+						  bezier[j + 2].x, bezier[j + 2].y,
+						  bezier[j + 3].x, bezier[j + 3].y);
 		} else {
 #ifdef SPIRAL_VERBOSE
 			g_print ("cant_fit_cubic: t=%g\n", t);
 #endif
-			for (i = 1; i<SAMPLE_SIZE; i++)
+			for (i = 1; i < SAMPLE_SIZE; i++)
 				sp_curve_lineto (c, darray[i].x, darray[i].y);
 		}
 
@@ -276,7 +281,6 @@ void
 sp_spiral_set       (SPSpiral          *spiral,
 		     gdouble            cx,
 		     gdouble            cy,
-		     SPSpiralHand       hand,
 		     gdouble            expansion,
 		     gdouble            revolution,
 		     gdouble            radius,
@@ -288,14 +292,14 @@ sp_spiral_set       (SPSpiral          *spiral,
 	
 	spiral->cx         = cx;
 	spiral->cy         = cy;
-	spiral->hand       = hand;
 	spiral->expansion  = expansion;
 	spiral->revolution = revolution;
 	spiral->radius     = radius;
 	spiral->argument   = argument;
 	spiral->t0         = t0;
 	
-	sp_spiral_set_shape (spiral);
+	sp_shape_set_shape (SP_SHAPE(spiral));
+/*  	sp_spiral_set_shape (spiral); */
 }
 
 static GSList * 
@@ -307,9 +311,9 @@ sp_spiral_snappoints (SPItem * item, GSList * points)
 	
 	spiral = SP_SPIRAL(item);
 	
-	sp_spiral_get_xy (spiral, 0.0, &p1.x, &p1.y);
-	sp_spiral_get_xy (spiral, spiral->t0, &p2.x, &p2.y);
-	sp_spiral_get_xy (spiral, 1.0, &p3.x, &p3.y);
+	sp_spiral_get_xy (spiral, 0.0, &p1);
+	sp_spiral_get_xy (spiral, spiral->t0, &p2);
+	sp_spiral_get_xy (spiral, 1.0, &p3);
 	
 	sp_item_i2d_affine (item, affine);
 	
@@ -328,41 +332,26 @@ sp_spiral_snappoints (SPItem * item, GSList * points)
 	return points;
 }
 
-static SPSpiralHand
-sp_spiral_read_type (const gchar *str)
-{
-	g_return_val_if_fail (str != NULL, SP_SPIRAL_HAND_RIGHT);
-	
-	if (strcmp (str, "left") == 0)
-		return SP_SPIRAL_HAND_LEFT;
-	
-	return SP_SPIRAL_HAND_RIGHT;
-}
-
 void
 sp_spiral_get_xy (SPSpiral *spiral,
 		  gdouble   t,
-		  gdouble  *x,
-		  gdouble  *y)
+		  ArtPoint *p)
 {
 	gdouble rad = spiral->radius * pow(t, spiral->expansion);
 	gdouble arg = 2.0 * M_PI * spiral->revolution * t + spiral->argument;
 	
-	*x = spiral->cx + rad * cos (arg);
-	*y = spiral->cy - rad * sin (arg)
-		* (spiral->hand == SP_SPIRAL_HAND_LEFT ? -1.0 : 1.0);
+	p->x = spiral->cx + rad * cos (arg);
+	p->y = spiral->cy - rad * sin (arg);
 }
 
 void
-sp_spiral_to_repr (SPSpiral *spiral,
-		   SPRepr   *repr)
+sp_spiral_build_repr (SPSpiral *spiral,
+		      SPRepr   *repr)
 {
 	g_return_if_fail (spiral != NULL);
 	
 	sp_repr_set_double_attribute (repr, "sodipodi:cx", spiral->cx);
 	sp_repr_set_double_attribute (repr, "sodipodi:cy", spiral->cy);
-	sp_repr_set_attr (repr, "sodipodi:hand",
-			  (spiral->hand == SP_SPIRAL_HAND_LEFT ? "left" : "right"));
 	sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->expansion);
 	sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revolution);
 	sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->radius);

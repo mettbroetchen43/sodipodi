@@ -248,7 +248,6 @@ sp_star_finish (SPStarContext * sc)
 #if 1  /* d="" */
                 SPPathComp *pathcomp;
                 ArtBpath *abp;
-                gdouble d2doc[6];
                 gchar * str;
 #endif
 
@@ -257,8 +256,7 @@ sp_star_finish (SPStarContext * sc)
 		repr = SP_OBJECT (sc->item)->repr;
 
 #if 1 /* d="" */
-                sp_star_set_shape(star); /* Fixme: ??? */
-                sp_desktop_d2doc_affine (desktop, d2doc);
+                sp_shape_set_shape(SP_SHAPE(star));
                 g_assert (SP_PATH(star)->comp);
                 g_assert (SP_PATH(star)->comp->data);
                 pathcomp = (SPPathComp *)SP_PATH(star)->comp->data;
@@ -270,7 +268,7 @@ sp_star_finish (SPStarContext * sc)
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
 #endif
-                sp_star_to_repr (star, repr);
+                sp_star_build_repr (star, repr);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));
