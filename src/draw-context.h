@@ -104,6 +104,8 @@ struct _SPPencilContext {
 	NRPointD cpos;
 	/* Timeout handler */
 	unsigned int timeout;
+	/* Previous event time */
+	double tval;
 
 	/* Saved force */
 	NRPointD fval;

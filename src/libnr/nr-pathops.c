@@ -804,7 +804,7 @@ nr_node_equal (struct _NRNode *n0, struct _NRNode *n1)
 		struct _NRFlatNode *f0, *f1;
 		if (!n0->flats) n0->flats = nr_node_flat_list_build (n0);
 		if (n1->next->isline) {
-			if (!n1->flats->next->next) return 1;
+			if (!n0->flats->next->next) return 1;
 			return 0;
 		} else {
 			if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);

@@ -1016,35 +1016,36 @@ sp_pencil_context_update_curves (SPPencilContext *pc)
 
 #define FLERP(f0,f1,p) ((f0) + ((f1) - (f0)) * (p))
 
-#define MASSVAL 0.01
-#define SP_PENCIL_MASS FLERP (1.0, 160.0, MASSVAL)
-#define DRAGVAL 1.0
-#define SP_PENCIL_DRAG FLERP (0.0, 0.5, DRAGVAL * DRAGVAL)
+#define MASSVAL 0.0
+#define SP_PENCIL_MASS FLERP (0.05, 160.0, MASSVAL)
+#define DRAGVAL 0.85
+#define SP_PENCIL_DRAG FLERP (0.0, 1.0, DRAGVAL * DRAGVAL)
 
 #define SAMPLE_TIMEOUT 50
 
-static int
-sp_pencil_timeout (gpointer data)
+static void
+sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 {
 	static int distance = 0;
-	SPPencilContext *pc;
 	SPDesktop *dt;
-	NRPointF p;
-	double xd, yd;
-	int x, y;
 	NRPointD fval;
+	NRPointF p;
+	double len;
+	double dtime;
 
-	pc = (SPPencilContext *) data;
 	dt = ((SPEventContext *) pc)->desktop;
 
-	gtk_widget_get_pointer ((GtkWidget *) SP_DT_CANVAS (dt), &x, &y);
-	sp_canvas_window_to_world (SP_DT_CANVAS (dt), x, y, &xd, &yd);
+	dtime = (time - pc->tval);
+	if (dtime <= 0.0) return;
+	if (dtime > 1.0) dtime = 1.0;
 
 	/* Calculate force and acceleration */
 	fval.x = xd - pc->ppos.x;
 	fval.y = yd - pc->ppos.y;
-	/* Skip if changing direction with 1 pixel force */
-	if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 2.0)) return TRUE;
+	len = hypot (fval.x, fval.y);
+	/* if (len < 4.0) return; */
+	/* Skip if changing direction with 2 pixel force */
+	if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
 	pc->fval = fval;
 
 	pc->pvel.x += fval.x / SP_PENCIL_MASS;
@@ -1054,13 +1055,31 @@ sp_pencil_timeout (gpointer data)
 	pc->pvel.x *= (1.0 - SP_PENCIL_DRAG);
 	pc->pvel.y *= (1.0 - SP_PENCIL_DRAG);
 
-	pc->ppos.x += pc->pvel.x;
-	pc->ppos.y += pc->pvel.y;
+	pc->ppos.x += dtime * pc->pvel.x;
+	pc->ppos.y += dtime * pc->pvel.y;
+
+	pc->tval = time;
 
 	sp_desktop_w2d_xy_point (dt, &p, pc->ppos.x, pc->ppos.y);
-
 	nr_synthesizer_add_point (&pc->sz, p.x, p.y, distance++);
 	sp_pencil_context_update_curves (pc);
+}
+
+static int
+sp_pencil_timeout (gpointer data)
+{
+	SPPencilContext *pc;
+	SPDesktop *dt;
+	double xd, yd;
+	int x, y;
+
+	pc = (SPPencilContext *) data;
+	dt = ((SPEventContext *) pc)->desktop;
+
+	gtk_widget_get_pointer ((GtkWidget *) SP_DT_CANVAS (dt), &x, &y);
+	sp_canvas_window_to_world (SP_DT_CANVAS (dt), x, y, &xd, &yd);
+
+	sp_pencil_draw (pc, xd, yd, sp_document_get_time (SP_DT_DOCUMENT (dt)));
 
 	return TRUE;
 }
@@ -1094,6 +1113,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			dc->grab = SP_CANVAS_ITEM (dt->acetate);
 			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
+			pc->tval = sp_document_get_time (SP_DT_DOCUMENT (dt));
 			pc->cpos.x = pc->ppos.x = event->button.x;
 			pc->cpos.y = pc->ppos.y = event->button.y;
 			pc->pvel.x = pc->pvel.y = 0.0;
@@ -1179,7 +1199,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				if (!pc->timeout) {
 					pc->timeout = gtk_timeout_add (SAMPLE_TIMEOUT, sp_pencil_timeout, pc);
 				}
-
+				sp_pencil_draw (pc, event->motion.x, event->motion.y, sp_document_get_time (SP_DT_DOCUMENT (dt)));
 #if 0
 				spdc_add_freehand_point (pc, &p, event->motion.state);
 #endif

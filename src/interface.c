@@ -320,13 +320,13 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append (fm, file_verbs_two, FALSE);
 
 #ifdef WIN32
-	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT, FALSE);
 #endif
 #ifdef WITH_KDE
-	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT, FALSE);
 #endif
 #ifdef WITH_GNOME_PRINT
-	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT, FALSE);
 #endif
 	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_PREVIEW, FALSE);
 

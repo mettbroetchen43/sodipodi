@@ -345,6 +345,7 @@ sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, int len, double err
 
 	if ((len == 3) && (data[0].x == data[2].x) && (data[0].y == data[2].y)) {
 		g_warning ("Gotcha\n");
+		return 0;
 	}
 
 	if (!sp_darray_left_tangent (data, 0, len, &tHat1)) return 0;
