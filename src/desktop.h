@@ -119,6 +119,10 @@ void sp_desktop_scroll_relative_canvas (SPDesktop *dt, float dx, float dy);
 
 const SPUnit *sp_desktop_get_default_unit (SPDesktop *dt);
 
+/* Pure utility */
+
+unsigned int sp_desktop_write_length (SPDesktop *dt, unsigned char *c, unsigned int length, float val);
+
 /* SPDesktopWidget */
 
 struct _SPDesktopWidget {

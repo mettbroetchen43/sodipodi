@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <libarikkei/arikkei-strlib.h>
 #include <libnr/nr-matrix.h>
 #include <glib.h>
 #include "svg.h"
@@ -68,16 +69,16 @@ sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform)
 
 		for (n_args = 0; ; n_args++) {
 			char c;
-			char *end_ptr;
 
 			/* skip whitespace */
 			while (isspace (str[idx])) idx++;
 			c = str[idx];
 			if (isdigit (c) || c == '+' || c == '-' || c == '.') {
+				int len;
 				if (n_args == sizeof (args) / sizeof (args[0])) return 0; /* Too many args */
-				args[n_args] = strtod (str + idx, &end_ptr);
-				idx = end_ptr - (char *) str;
-
+				len = arikkei_strtod_exp (str + idx, 256, &args[n_args]);
+				if (!len) return 0;
+				idx += len;
 				while (isspace (str[idx])) idx++;
 
 				/* skip optional comma */

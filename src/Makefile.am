@@ -22,6 +22,7 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(datadir)/sodipodi"\" \
 	-DDATADIR=\""$(datadir)"\" \
+	-DSP_MACROS_SILENT \
 	-I$(srcdir) \
 	-I$(srcdir/xml) \
 	-I$(srcdir/svg) \

@@ -142,21 +142,21 @@ sp_shape_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		val = sp_repr_css_property (css, "opacity", NULL);
 		if (val && strchr (val, '%')) {
 			dval = sp_svg_read_percentage (val, 1.0);
-			g_snprintf (c, 32, "%g", dval);
+			sp_svg_number_write_d (c, dval, 4, 2, FALSE);
 			sp_repr_css_set_property (css, "opacity", c);
 			changed = TRUE;
 		}
 		val = sp_repr_css_property (css, "fill-opacity", NULL);
 		if (val && strchr (val, '%')) {
 			dval = sp_svg_read_percentage (val, 1.0);
-			g_snprintf (c, 32, "%g", dval);
+			sp_svg_number_write_d (c, dval, 4, 2, FALSE);
 			sp_repr_css_set_property (css, "fill-opacity", c);
 			changed = TRUE;
 		}
 		val = sp_repr_css_property (css, "stroke-opacity", NULL);
 		if (val && strchr (val, '%')) {
 			dval = sp_svg_read_percentage (val, 1.0);
-			g_snprintf (c, 32, "%g", dval);
+			sp_svg_number_write_d (c, dval, 4, 2, FALSE);
 			sp_repr_css_set_property (css, "stroke-opacity", c);
 			changed = TRUE;
 		}

@@ -904,14 +904,18 @@ sp_style_write_string (SPStyle *style)
 			gint i;
 			p += g_snprintf (p, c + BMAX - p, "stroke-dasharray:");
 			for (i = 0; i < style->stroke_dash.n_dash; i++) {
-				p += g_snprintf (p, c + BMAX - p, "%g ", style->stroke_dash.dash[i]);
+				unsigned char b[32];
+				sp_svg_number_write_d (b, style->stroke_dash.dash[i], 4, 2, FALSE);
+				p += g_snprintf (p, c + BMAX - p, "%s ", b);
 			}
 			p += g_snprintf (p, c + BMAX - p, ";");
 		}
 	}
 	/* fixme: */
 	if (style->stroke_dashoffset_set) {
-		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%g;", style->stroke_dash.offset);
+		unsigned char b[32];
+		sp_svg_number_write_d (b, style->stroke_dash.offset, 4, 2, FALSE);
+		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%s;", b);
 	}
 	p += sp_style_write_iscale24 (p, c + BMAX - p, "stroke-opacity", &style->stroke_opacity, NULL, SP_STYLE_FLAG_IFSET);
 
@@ -964,14 +968,18 @@ sp_style_write_difference (SPStyle *from, SPStyle *to)
 			gint i;
 			p += g_snprintf (p, c + BMAX - p, "stroke-dasharray:");
 			for (i = 0; i < from->stroke_dash.n_dash; i++) {
-				p += g_snprintf (p, c + BMAX - p, "%g ", from->stroke_dash.dash[i]);
+				unsigned char b[32];
+				sp_svg_number_write_d (b, from->stroke_dash.dash[i], 4, 2, FALSE);
+				p += g_snprintf (p, c + BMAX - p, "%s ", b);
 			}
 			p += g_snprintf (p, c + BMAX - p, ";");
 		}
 	}
 	/* fixme: */
 	if (from->stroke_dashoffset_set) {
-		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%g;", from->stroke_dash.offset);
+		unsigned char b[32];
+		sp_svg_number_write_d (b, from->stroke_dash.offset, 4, 2, FALSE);
+		p += g_snprintf (p, c + BMAX - p, "stroke-dashoffset:%s;", b);
 	}
 	p += sp_style_write_iscale24 (p, c + BMAX - p, "stroke-opacity", &from->stroke_opacity, &to->stroke_opacity, SP_STYLE_FLAG_IFDIFF);
 
@@ -1545,7 +1553,9 @@ sp_style_write_ifloat (guchar *p, gint len, const guchar *key, SPIFloat *val, SP
 		if (val->inherit) {
 			return g_snprintf (p, len, "%s:inherit;", key);
 		} else {
-			return g_snprintf (p, len, "%s:%g;", key, val->value);
+			char b[32];
+			sp_svg_number_write_d (b, val->value, 6, 2, FALSE);
+			return g_snprintf (p, len, "%s:%s;", key, b);
 		}
 	}
 	return 0;
@@ -1559,7 +1569,9 @@ sp_style_write_iscale24 (guchar *p, gint len, const guchar *key, SPIScale24 *val
 		if (val->inherit) {
 			return g_snprintf (p, len, "%s:inherit;", key);
 		} else {
-			return g_snprintf (p, len, "%s:%g;", key, SP_SCALE24_TO_FLOAT (val->value));
+			char b[32];
+			sp_svg_number_write_d (b, SP_SCALE24_TO_FLOAT (val->value), 6, 2, FALSE);
+			return g_snprintf (p, len, "%s:%s;", key, b);
 		}
 	}
 	return 0;
@@ -1617,41 +1629,56 @@ sp_style_write_ilength (guchar *p, gint len, const guchar *key, SPILength *val, 
 		if (val->inherit) {
 			return g_snprintf (p, len, "%s:inherit;", key);
 		} else {
+			float r;
+			const unsigned char *u;
+			unsigned char b[32];
 			switch (val->unit) {
 			case SP_CSS_UNIT_NONE:
-				return g_snprintf (p, len, "%s:%g;", key, val->computed);
+				r = val->computed;
+				u = "";
 				break;
 			case SP_CSS_UNIT_PX:
-				return g_snprintf (p, len, "%s:%gpx;", key, val->computed);
+				r = val->computed;
+				u = "px";
 				break;
 			case SP_CSS_UNIT_PT:
-				return g_snprintf (p, len, "%s:%gpt;", key, val->computed / 1.25);
+				r = val->computed / 1.25;
+				u = "pt";
 				break;
 			case SP_CSS_UNIT_PC:
-				return g_snprintf (p, len, "%s:%gpc;", key, val->computed / 15.0);
+				r = val->computed / 15.0;
+				u = "pc";
 				break;
 			case SP_CSS_UNIT_MM:
-				return g_snprintf (p, len, "%s:%gmm;", key, val->computed / 3.543307);
+				r = val->computed / 3.543307;
+				u = "mm";
 				break;
 			case SP_CSS_UNIT_CM:
-				return g_snprintf (p, len, "%s:%gmm;", key, val->computed / 35.43307);
+				r = val->computed / 35.43307;
+				u = "cm";
 				break;
 			case SP_CSS_UNIT_IN:
-				return g_snprintf (p, len, "%s:%gin;", key, val->computed / 90.0);
+				r = val->computed / 90.0;
+				u = "in";
 				break;
 			case SP_CSS_UNIT_EM:
-				return g_snprintf (p, len, "%s:%gem;", key, val->value);
+				r = val->value;
+				u = "em";
 				break;
 			case SP_CSS_UNIT_EX:
-				return g_snprintf (p, len, "%s:%gex;", key, val->value);
+				r = val->value;
+				u = "ex";
 				break;
 			case SP_CSS_UNIT_PERCENT:
-				return g_snprintf (p, len, "%s:%g%%;", key, val->value);
+				r = val->value;
+				u = "%";
 				break;
 			default:
 				/* Invalid */
 				break;
 			}
+			sp_svg_number_write_d (b, r, 6, 2, FALSE);
+			return g_snprintf (p, len, "%s:%s;", key, b);
 		}
 	}
 	return 0;
@@ -1722,9 +1749,13 @@ sp_style_write_ifontsize (guchar *p, gint len, const guchar *key, SPIFontSize *v
 				}
 			}
 		} else if (val->type == SP_FONT_SIZE_LENGTH) {
-			return g_snprintf (p, len, "%s:%g;", key, val->computed);
+			unsigned char b[32];
+			sp_svg_number_write_d (b, val->computed, 4, 2, FALSE);
+			return g_snprintf (p, len, "%s:%s;", key, b);
 		} else if (val->type == SP_FONT_SIZE_PERCENTAGE) {
-			return g_snprintf (p, len, "%s:%g%%;", key, SP_F8_16_TO_FLOAT (val->value) * 100.0);
+			unsigned char b[32];
+			sp_svg_number_write_d (b, SP_F8_16_TO_FLOAT (val->value) * 100.0, 4, 2, FALSE);
+			return g_snprintf (p, len, "%s:%s%%;", key, b);
 		}
 	}
 	return 0;

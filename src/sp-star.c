@@ -216,7 +216,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		return;
 	case SP_ATTR_SODIPODI_ARG1:
 		if (value) {
-			star->arg1 = atof (value);
+			star->arg1 = sp_svg_atof (value);
 		} else {
 			star->arg1 = 0.0;
 		}
@@ -224,7 +224,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_ARG2:
 		if (value) {
-			star->arg2 = atof (value);
+			star->arg2 = sp_svg_atof (value);
 		} else {
 			star->arg2 = 0.0;
 		}

@@ -711,15 +711,17 @@ sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
  * See SVG 1.0 Specification W3C Recommendation
  * ``F.6 Ellptical arc implementation notes'' for more detail.
  */
+
+#define ARC_BUFSIZE 1024
+
 static gboolean
 sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 {
-#define ARC_BUFSIZE 256
 	SPGenericEllipse *ge;
 	NRPointF p1, p2;
 	gint fa, fs;
 	gdouble  dt;
-	gchar c[ARC_BUFSIZE];
+	unsigned char c[ARC_BUFSIZE];
 
 	ge = SP_GENERICELLIPSE (arc);
 
@@ -729,16 +731,56 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 	dt = fmod (ge->end - ge->start, SP_2PI);
 	if (fabs (dt) < 1e-6) {
 		NRPointF ph;
+		int pos = 0;
 		sp_arc_get_xy (arc, (ge->start + ge->end) / 2.0, &ph);
-		g_snprintf (c, ARC_BUFSIZE, "M %f %f A %f %f 0 %d %d %f,%f A %g %g 0 %d %d %g %g L %f %f z",
-			    p1.x, p1.y,
-			    ge->rx.computed, ge->ry.computed,
-			    1, (dt > 0),
-			    ph.x, ph.y,
-			    ge->rx.computed, ge->ry.computed,
-			    1, (dt > 0),
-			    p2.x, p2.y,
-			    ge->cx.computed, ge->cy.computed);
+		c[pos++] = 'M';
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, p1.x, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, p1.y, 6, 0, FALSE);
+		c[pos++] = ' ';
+		c[pos++] = 'A';
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->rx.computed, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->ry.computed, 6, 0, FALSE);
+		c[pos++] = ' ';
+		c[pos++] = '0';
+		c[pos++] = ' ';
+		c[pos++] = '1';
+		c[pos++] = ' ';
+		c[pos++] = (dt > 0) ? '1' : 0;
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ph.x, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ph.y, 6, 0, FALSE);
+
+		c[pos++] = ' ';
+		c[pos++] = 'A';
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->rx.computed, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->ry.computed, 6, 0, FALSE);
+		c[pos++] = ' ';
+		c[pos++] = '0';
+		c[pos++] = ' ';
+		c[pos++] = '1';
+		c[pos++] = ' ';
+		c[pos++] = (dt > 0) ? '1' : 0;
+		c[pos++] = ' ';
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, p2.y, 6, 0, FALSE);
+
+		c[pos++] = ' ';
+		c[pos++] = 'L';
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->cx.computed, 6, 0, FALSE);
+		c[pos++] = ' ';
+		pos += sp_svg_number_write_d (c + pos, ge->cy.computed, 6, 0, FALSE);
+		c[pos++] = 'z';
+		c[pos++] = '\0';
 	} else {
 		fa = (fabs (dt) > M_PI) ? 1 : 0;
 		fs = (dt > 0) ? 1 : 0;
@@ -746,17 +788,63 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 		g_print ("start:%g end:%g fa=%d fs=%d\n", ge->start, ge->end, fa, fs);
 #endif
 		if (ge->closed) {
-			g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
-				    p1.x, p1.y,
-				    ge->rx.computed, ge->ry.computed,
-				    fa, fs,
-				    p2.x, p2.y,
-				    ge->cx.computed, ge->cy.computed);
+			int pos = 0;
+			c[pos++] = 'M';
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p1.x, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p1.y, 6, 0, FALSE);
+			
+			c[pos++] = ' ';
+			c[pos++] = 'A';
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->rx.computed, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->ry.computed, 6, 0, FALSE);
+			c[pos++] = ' ';
+			c[pos++] = '0';
+			c[pos++] = ' ';
+			c[pos++] = (fabs (dt) > M_PI) ? 1 : 0;
+			c[pos++] = ' ';
+			c[pos++] = (dt > 0) ? '1' : 0;
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p2.y, 6, 0, FALSE);
+
+			c[pos++] = ' ';
+			c[pos++] = 'L';
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->cx.computed, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->cy.computed, 6, 0, FALSE);
+			c[pos++] = 'z';
+			c[pos++] = '\0';
 		} else {
-			g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f",
-				    p1.x, p1.y,
-				    ge->rx.computed, ge->ry.computed,
-				    fa, fs, p2.x, p2.y);
+			int pos = 0;
+			c[pos++] = 'M';
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p1.x, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p1.y, 6, 0, FALSE);
+			
+			c[pos++] = ' ';
+			c[pos++] = 'A';
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->rx.computed, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, ge->ry.computed, 6, 0, FALSE);
+			c[pos++] = ' ';
+			c[pos++] = '0';
+			c[pos++] = ' ';
+			c[pos++] = (fabs (dt) > M_PI) ? 1 : 0;
+			c[pos++] = ' ';
+			c[pos++] = (dt > 0) ? '1' : 0;
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
+			c[pos++] = ' ';
+			pos += sp_svg_number_write_d (c + pos, p2.y, 6, 0, FALSE);
+			c[pos++] = '\0';
 		}
 	}
 

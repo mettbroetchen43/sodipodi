@@ -29,6 +29,8 @@ unsigned int sp_svg_boolean_read (const unsigned char *str, unsigned int *val);
 unsigned int sp_svg_number_read_f (const unsigned char *str, float *val);
 unsigned int sp_svg_number_read_d (const unsigned char *str, double *val);
 
+double sp_svg_atof (const unsigned char *str);
+
 /*
  * No buffer overflow checking is done, so better wrap them if needed
  */

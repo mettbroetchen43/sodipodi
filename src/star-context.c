@@ -146,7 +146,7 @@ sp_star_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 		sc->magnitude = (val) ? atoi (val) : 5;
 		sc->magnitude = CLAMP (sc->magnitude, 3, 32);
 	} else if (!strcmp (key, "proportion")) {
-		sc->proportion = (val) ? atof (val) : 0.5;
+		sc->proportion = (val) ? sp_svg_atof (val) : 0.5;
 		sc->proportion = CLAMP (sc->proportion, 0.01, 1.0);
 	}
 }

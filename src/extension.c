@@ -85,7 +85,7 @@ void sp_extension(GtkWidget * widget)
 	repr = sodipodi_get_repr (SODIPODI, path);
 	g_free (path);
 	if (! repr) {
-	  printf("Error: invalid extension %s\n", extension_name);
+		/* printf("Error: invalid extension %s\n", extension_name); */
 	  /* Todo:  Popup error dialog box */
 	  return;
 	}

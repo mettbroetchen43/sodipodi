@@ -201,7 +201,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_EXPANSION:
 		if (value) {
-			spiral->exp = atof (value);
+			spiral->exp = sp_svg_atof (value);
 			spiral->exp = CLAMP (spiral->exp, 0.0, 1000.0);
 		} else {
 			spiral->exp = 1.0;
@@ -210,7 +210,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_REVOLUTION:
 		if (value) {
-			spiral->revo = atof (value);
+			spiral->revo = sp_svg_atof (value);
 			spiral->revo = CLAMP (spiral->revo, 0.05, 20.0);
 		} else {
 			spiral->revo = 3.0;
@@ -228,7 +228,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_ARGUMENT:
 		if (value) {
-			spiral->arg = atof (value);
+			spiral->arg = sp_svg_atof (value);
 		} else {
 			spiral->arg = 0.0;
 		}
@@ -236,7 +236,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_T0:
 		if (value) {
-			spiral->t0 = atof (value);
+			spiral->t0 = sp_svg_atof (value);
 			spiral->t0 = CLAMP (spiral->t0, -1.0, 0.999);
 		} else {
 			spiral->t0 = 0.0;

@@ -662,7 +662,7 @@ sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_ROTATE:
 		/* fixme: Implement SVGNumber or something similar (Lauris) */
-		tspan->ly.rotate = (value) ? atof (value) : 0.0;
+		tspan->ly.rotate = (value) ? sp_svg_atof (value) : 0.0;
 		tspan->ly.rotate_set = (value != NULL);
 		/* fixme: Re-layout it */
 		break;
@@ -1088,7 +1088,7 @@ sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_ROTATE:
 		/* fixme: Implement SVGNumber or something similar (Lauris) */
-		text->ly.rotate = (value) ? atof (value) : 0.0;
+		text->ly.rotate = (value) ? sp_svg_atof (value) : 0.0;
 		text->ly.rotate_set = (value != NULL);
 		/* fixme: Re-layout it */
 		break;

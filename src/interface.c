@@ -37,6 +37,7 @@
 #include "interface.h"
 #include "toolbox.h"
 #include "desktop.h"
+#include "sp-namedview.h"
 #include "object-ui.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"

@@ -16,21 +16,18 @@
 #endif
 
 #include <math.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include "svg.h"
 
 #ifdef WIN32
-#include <glib.h>
-#define snprintf g_snprintf
 #define strcasecmp _stricmp
-#endif
-
-#ifndef MAX
-#define MAX(a,b) ((a < b) ? (b) : (a))
 #endif
 
 unsigned int
@@ -56,109 +53,49 @@ sp_svg_boolean_read (const unsigned char *str, unsigned int *val)
 }
 
 unsigned int
-sp_svg_number_read_f (const unsigned char *str, float *val)
+sp_svg_number_read_d (const unsigned char *str, double *val)
 {
-	char *e;
-	float v;
-
-	if (!str) return 0;
-	v = strtod (str, &e);
-	if ((const unsigned char *) e == str) return 0;
-	*val = v;
-	return 1;
+	unsigned int len;
+	len = arikkei_strtod_exp (str, 256, val);
+	return len != 0;
 }
 
 unsigned int
-sp_svg_number_read_d (const unsigned char *str, double *val)
+sp_svg_number_read_f (const unsigned char *str, float *val)
 {
-	char *e;
-	double v;
-
-	if (!str) return 0;
-	v = strtod (str, &e);
-	if ((const unsigned char *) e == str) return 0;
-	*val = v;
+	double dval;
+	unsigned int len;
+	len = arikkei_strtod_exp (str, 256, &dval);
+	if (!len) return 0;
+	*val = dval;
 	return 1;
+}
+
+double
+sp_svg_atof (const unsigned char *str)
+{
+	double val;
+	val = 0.0;
+	arikkei_strtod_exp (str, 256, &val);
+	return val;
 }
 
 unsigned int
 sp_svg_number_write_i (unsigned char *buf, int val)
 {
-	char c[32];
-	int p, i;
-	p = 0;
-	if (val < 0) {
-		buf[p++] = '-';
-		val = -val;
-	}
-	i = 0;
-	do {
-		c[32 - (++i)] = '0' + (val % 10);
-		val /= 10;
-	} while (val > 0);
-	memcpy (buf + p, &c[32 - i], i);
-	p += i;
-	buf[p] = 0;
-	return p;
+	return arikkei_itoa (buf, 256, val);
 }
 
 unsigned int
 sp_svg_number_write_d (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
 {
-	double dival, fval;
-	int idigits, ival, i;
-	i = 0;
-	/* Process sign */
-	if (val < 0.0) {
-		buf[i++] = '-';
-		val = fabs (val);
-	}
-	/* Determine number of integral digits */
-	if (val >= 1.0) {
-		idigits = (int) floor (log10 (val));
-	} else {
-		idigits = 0;
-	}
-	/* Determine the actual number of fractional digits */
-	fprec = MAX (fprec, tprec - idigits);
-	/* Round value */
-	val += 0.5 * pow (10.0, - ((double) fprec));
-	/* Extract integral and fractional parts */
-	dival = floor (val);
-	ival = (int) dival;
-	fval = val - dival;
-	/* Write integra */
-	i += sp_svg_number_write_i (buf + i, ival);
-	if ((fprec > 0) && (padf || (fval > 0.0))) {
-		buf[i++] = '.';
-		while ((fprec > 0) && (padf || (fval > 0.0))) {
-			fval *= 10.0;
-			dival = floor (fval);
-			fval -= dival;
-			buf[i++] = '0' + (int) dival;
-			fprec -= 1;
-		}
-
-	}
-	buf[i] = 0;
-	return i;
+	return arikkei_dtoa_simple (buf, 256, val, tprec, fprec, padf);
 }
 
 unsigned int
 sp_svg_number_write_de (unsigned char *buf, double val, unsigned int tprec, unsigned int padf)
 {
-	if ((val == 0.0) || ((fabs (val) >= 0.1) && (fabs(val) < 10000000))) {
-		return sp_svg_number_write_d (buf, val, tprec, 0, padf);
-	} else {
-		double eval;
-		int p;
-		eval = floor (log10 (fabs (val)));
-		val = val / pow (10.0, eval);
-		p = sp_svg_number_write_d (buf, val, tprec, 0, padf);
-		buf[p++] = 'e';
-		p += sp_svg_number_write_i (buf + p, (int) eval);
-		return p;
-	}
+	return arikkei_dtoa_exp (buf, 256, val, tprec, padf);
 }
 
 /* Length */
@@ -187,11 +124,15 @@ unsigned int
 sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *val, float *computed)
 {
 	const unsigned char *e;
+	double dval;
+	unsigned int len;
 	float v;
 
 	if (!str) return 0;
-	v = strtod (str, (char **) &e);
-	if (e == str) return 0;
+	len = arikkei_strtod_exp (str, 256, &dval);
+	if (!len) return 0;
+	v = dval;
+	e = str + len;
 	if (!e[0]) {
 		/* Unitless */
 		if (unit) *unit = SP_SVG_UNIT_NONE;
@@ -293,12 +234,15 @@ sp_svg_length_update (SPSVGLength *length, double em, double ex, double scale)
 double
 sp_svg_read_percentage (const char * str, double def)
 {
-	char * u;
+	unsigned int len;
+	const char * u;
 	double v;
 
 	if (str == NULL) return def;
 
-	v = strtod (str, &u);
+	len = arikkei_strtod_exp ((const unsigned char *) str, 256, &v);
+	if (!len) return def;
+	u = str + len;
 	while (isspace (*u)) {
 		if (*u == '\0') return v;
 		u++;
@@ -311,6 +255,8 @@ sp_svg_read_percentage (const char * str, double def)
 int
 sp_svg_write_percentage (char * buf, int buflen, double val)
 {
-	return snprintf (buf, buflen, "%g%%", val * 100.0);
+	unsigned char c[32];
+	sp_svg_number_write_d (c, val * 100.0, 4, 1, 0);
+	return snprintf (buf, buflen, "%s%%", c);
 }
 

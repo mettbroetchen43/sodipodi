@@ -145,13 +145,13 @@ sp_spiral_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 	sc = SP_SPIRAL_CONTEXT (ec);
 
 	if (!strcmp (key, "expansion")) {
-		sc->exp = (val) ? atof (val) : 1.0;
+		sc->exp = (val) ? sp_svg_atof (val) : 1.0;
 		sc->exp = CLAMP (sc->exp, 0.0, 1000.0);
 	} else if (!strcmp (key, "revolution")) {
-		sc->revo = (val) ? atof (val) : 3.0;
+		sc->revo = (val) ? sp_svg_atof (val) : 3.0;
 		sc->revo = CLAMP (sc->revo, 0.05, 20.0);
 	} else if (!strcmp (key, "t0")) {
-		sc->t0 = (val) ? atof (val) : 0.0;
+		sc->t0 = (val) ? sp_svg_atof (val) : 0.0;
 		sc->t0 = CLAMP (sc->t0, 0.0, 0.999);
 	}
 }

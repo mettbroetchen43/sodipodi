@@ -30,7 +30,9 @@
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
 
+#ifndef SP_MACROS_SILENT
 #define SP_MACROS_SILENT
+#endif
 #include "macros.h"
 
 /* Has to be power of 2 */
@@ -148,7 +150,7 @@ static SPRepr *
 sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPStop *stop;
-	unsigned char c[64], s[1024];
+	unsigned char c0[64], c1[32], s[1024];
 
 	stop = SP_STOP (object);
 
@@ -156,8 +158,9 @@ sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("stop");
 	}
 
-	sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&stop->color, 255));
-	g_snprintf (s, 1024, "stop-color:%s;stop-opacity:%g;", c, stop->opacity);
+	sp_svg_write_color (c0, 64, sp_color_get_rgba32_ualpha (&stop->color, 255));
+	sp_svg_number_write_d (c1, stop->opacity, 4, 2, FALSE);
+	g_snprintf (s, 1024, "stop-color:%s;stop-opacity:%s;", c0, c1);
 	sp_repr_set_attr (repr, "style", s);
 	sp_repr_set_attr (repr, "stop-color", NULL);
 	sp_repr_set_attr (repr, "stop-opacity", NULL);
@@ -684,12 +687,13 @@ sp_gradient_repr_set_vector (SPGradient *gr, SPRepr *repr, SPGradientVector *vec
 	if (vector) {
 		for (i = 0; i < vector->nstops; i++) {
 			SPRepr *child;
-			guchar c[64], s[256];
+			guchar c0[64], c1[32], s[256];
 			child = sp_repr_new ("stop");
 			sp_repr_set_double_attribute (child, "offset",
 						      vector->stops[i].offset * (vector->end - vector->start) + vector->start);
-			sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&vector->stops[i].color, 0x00));
-			g_snprintf (s, 256, "stop-color:%s;stop-opacity:%g;", c, vector->stops[i].opacity);
+			sp_svg_write_color (c0, 64, sp_color_get_rgba32_ualpha (&vector->stops[i].color, 0x00));
+			sp_svg_number_write_d (c1, vector->stops[i].opacity, 4, 2, FALSE);
+			g_snprintf (s, 256, "stop-color:%s;stop-opacity:%s;", c0, c1);
 			sp_repr_set_attr (child, "style", s);
 			/* Order will be reversed here */
 			cl = g_slist_prepend (cl, child);

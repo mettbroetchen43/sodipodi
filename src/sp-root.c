@@ -188,14 +188,14 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 	switch (key) {
 	case SP_ATTR_VERSION:
 		if (value) {
-			root->version = atof (value);
+			root->version = sp_svg_atof (value);
 		} else {
 			root->version = 1.0;
 		}
 		break;
 	case SP_ATTR_SODIPODI_VERSION:
 		if (value) {
-			root->sodipodi = (guint) (atof (value) * 100.0 + 0.5);
+			root->sodipodi = (guint) (sp_svg_atof (value) * 100.0 + 0.5);
 		} else {
 			root->sodipodi = root->original;
 		}

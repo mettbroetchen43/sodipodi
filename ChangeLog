@@ -1,3 +1,10 @@
+2003-11-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libarikkei/arikkei-strlib.c: New file, implement localeless
+	strtod and dtostr here
+
+	* src/libarikkei/arikkei-strlib.h: New file
+
 2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-object.c (sp_object_build): Parse xml:space

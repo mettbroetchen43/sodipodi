@@ -16,10 +16,12 @@
  */
 
 #include <math.h>
+#include "helper/sp-intl.h"
 #include "helper/sp-canvas.h"
 #include "sodipodi.h"
 #include "sp-ellipse.h"
 #include "document.h"
+#include "desktop.h"
 #include "selection.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
@@ -196,8 +198,7 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	SPDesktop * desktop;
 	NRPointF p0, p1;
 	gdouble x0, y0, x1, y1;
-	GString * xs, * ys;
-	gchar status[80];
+	unsigned char c0[32], c1[32], c[256];
 	NRPointF fp;
 
 	desktop = SP_EVENT_CONTEXT (ac)->desktop;
@@ -297,13 +298,10 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 
 	sp_arc_position_set (SP_ARC (ac->item), (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2);
 
-	// status text
-	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
-	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
-	sprintf (status, "Draw arc  %s x %s", xs->str, ys->str);
-	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
-	g_string_free (xs, FALSE);
-	g_string_free (ys, FALSE);
+	sp_desktop_write_length (desktop, c0, 32, fabs (x1 - x0));
+	sp_desktop_write_length (desktop, c1, 32, fabs (y1 - y0));
+	g_snprintf (c, 256, _("Drawing arc %s x %s"), c0, c1);
+	sp_view_set_status (SP_VIEW (desktop), c, FALSE);
 }
 
 static void

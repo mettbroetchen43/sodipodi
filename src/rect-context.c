@@ -143,10 +143,10 @@ sp_rect_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 	rc = SP_RECT_CONTEXT (ec);
 
 	if (!strcmp (key, "rx_ratio")) {
-		rc->rx_ratio = (val) ? atof (val) : 0.0;
+		rc->rx_ratio = (val) ? sp_svg_atof (val) : 0.0;
 		rc->rx_ratio = CLAMP (rc->rx_ratio, 0.0, 1.0);
 	} else if (!strcmp (key, "ry_ratio")) {
-		rc->ry_ratio = (val) ? atof (val) : 0.0;
+		rc->ry_ratio = (val) ? sp_svg_atof (val) : 0.0;
 		rc->ry_ratio = CLAMP (rc->ry_ratio, 0.0, 1.0);
 	}
 }

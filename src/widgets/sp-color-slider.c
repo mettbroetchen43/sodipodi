@@ -505,11 +505,12 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 
 	if (gdk_rectangle_intersect (area, &aarea, &apaint)) {
 		/* Draw arrow */
-		gtk_draw_arrow (widget->style, widget->window,
-				widget->state, GTK_SHADOW_OUT,
-				GTK_ARROW_UP, TRUE,
-				aarea.x, aarea.y,
-				ARROW_SIZE, ARROW_SIZE);
+		gtk_paint_arrow (widget->style, widget->window,
+				 widget->state, GTK_SHADOW_IN,
+				 area, widget, "colorslider",
+				 GTK_ARROW_UP, TRUE,
+				 aarea.x, aarea.y,
+				 ARROW_SIZE, ARROW_SIZE);
 	}
 }
 

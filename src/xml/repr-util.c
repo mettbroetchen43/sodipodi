@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include <glib.h>
 
 #ifndef FALSE
@@ -225,9 +227,11 @@ int sp_repr_attr_is_set (SPRepr * repr, const char * key)
 	return (result != NULL);
 }
 
-double sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def)
+double
+sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def)
 {
-	char * result;
+	char *result;
+	double val;
 
 	g_return_val_if_fail (repr != NULL, def);
 	g_return_val_if_fail (key != NULL, def);
@@ -236,7 +240,9 @@ double sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def
 
 	if (result == NULL) return def;
 
-	return atof (result);
+	val = def;
+	arikkei_strtod_exp (result, 256, &val);
+	return val;
 }
 
 int sp_repr_get_int_attribute (SPRepr * repr, const char * key, int def)
@@ -544,8 +550,7 @@ sp_repr_get_double (SPRepr *repr, const unsigned char *key, double *val)
 	v = sp_repr_attr (repr, key);
 
 	if (v != NULL) {
-		*val = atof (v);
-		return TRUE;
+		return arikkei_strtod_exp (v, 256, val);
 	}
 
 	return FALSE;
@@ -574,63 +579,6 @@ sp_repr_set_int (SPRepr *repr, const unsigned char *key, int val)
 }
 
 unsigned int
-sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
-{
-	double dival, fval, epsilon;
-	int idigits, ival, i;
-	i = 0;
-	if (val < 0.0) {
-		buf[i++] = '-';
-		val = fabs (val);
-	}
-	/* Determine number of integral digits */
-	if (val >= 1.0) {
-		idigits = (int) floor (log10 (val));
-	} else {
-		idigits = 0;
-	}
-	/* Determine the actual number of fractional digits */
-	fprec = MAX (fprec, tprec - idigits);
-	/* Find epsilon */
-	epsilon = 0.5 * pow (10.0, - (double) fprec);
-	/* Round value */
-	val += epsilon;
-	/* Extract integral and fractional parts */
-	dival = floor (val);
-	ival = (int) dival;
-	fval = val - dival;
-	/* Write integra */
-	if (ival > 0) {
-		char c[32];
-		int j;
-		j = 0;
-		while (ival > 0) {
-			c[32 - (++j)] = '0' + (ival % 10);
-			ival /= 10;
-		}
-		memcpy (buf + i, &c[32 - j], j);
-		i += j;
-		tprec -= j;
-	} else {
-		buf[i++] = '0';
-		tprec -= 1;
-	}
-	if ((fprec > 0) && (padf || (fval > epsilon))) {
-		buf[i++] = '.';
-		while ((fprec > 0) && (padf || (fval > epsilon))) {
-			fval *= 10.0;
-			dival = floor (fval);
-			fval -= dival;
-			buf[i++] = '0' + (int) dival;
-			fprec -= 1;
-		}
-
-	}
-	buf[i] = 0;
-	return i;
-}
-
-unsigned int
 sp_repr_set_double (SPRepr *repr, const unsigned char *key, double val)
 {
 	unsigned char c[32];
@@ -638,7 +586,7 @@ sp_repr_set_double (SPRepr *repr, const unsigned char *key, double val)
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	sp_xml_dtoa (c, val, 8, 0, FALSE);
+	arikkei_dtoa_exp (c, val, 8, 0, FALSE);
 
 	return sp_repr_set_attr (repr, key, c);
 }

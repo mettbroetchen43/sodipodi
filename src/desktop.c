@@ -19,6 +19,7 @@
 #endif
 
 #include <math.h>
+#include <string.h>
 
 #include <glib.h>
 
@@ -610,6 +611,16 @@ sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y, guin
 #endif
 }
 
+/* Pure utility */
+
+unsigned int
+sp_desktop_write_length (SPDesktop *dt, unsigned char *c, unsigned int length, float val)
+{
+	return g_snprintf (c, length, "%.2f%s",
+			   sp_points_get_units (val, dt->namedview->gridunit),
+			   dt->namedview->gridunit->abbr);
+}
+
 static gint
 sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
@@ -1050,7 +1061,7 @@ sp_desktop_widget_new (SPNamedView *namedview)
 static void
 sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDesktopWidget *dtw)
 {
-	guchar cstr[64];
+	guchar c0[32], c1[32], c[64];
 
 	/* fixme: */
 	GTK_RULER (dtw->hruler)->position = dtw->dt2r * (x - dtw->rx0);
@@ -1058,8 +1069,10 @@ sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDeskt
 	GTK_RULER (dtw->vruler)->position = dtw->dt2r * (y - dtw->ry0);
 	gtk_ruler_draw_pos (GTK_RULER (dtw->vruler));
 
-	g_snprintf (cstr, 64, "%6.1f, %6.1f", dtw->dt2r * (x - dtw->rx0), dtw->dt2r * (y - dtw->ry0));
-	gtk_label_set_text (GTK_LABEL (dtw->coord_status), cstr);
+	sp_desktop_write_length ((SPDesktop *) view, c0, 32, x - dtw->rx0);
+	sp_desktop_write_length ((SPDesktop *) view, c1, 32, y - dtw->ry0);
+	g_snprintf (c, 64, "%s, %s", c0, c1);
+	gtk_label_set_text (GTK_LABEL (dtw->coord_status), c);
 }
 
 /*

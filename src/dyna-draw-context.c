@@ -270,17 +270,17 @@ sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *v
 	ddc = SP_DYNA_DRAW_CONTEXT (ec);
 
 	if (!strcmp (key, "mass")) {
-		dval = (val) ? atof (val) : 0.2;
+		dval = (val) ? sp_svg_atof (val) : 0.2;
 		ddc->mass = CLAMP (dval, -1000.0, 1000.0);
 	} else if (!strcmp (key, "drag")) {
-		dval = (val) ? atof (val) : DRAG_DEFAULT;
+		dval = (val) ? sp_svg_atof (val) : DRAG_DEFAULT;
 		ddc->drag = CLAMP (dval, DRAG_MIN, DRAG_MAX);
 	} else if (!strcmp (key, "angle")) {
-		dval = (val) ? atof (val) : 0.5;
+		dval = (val) ? sp_svg_atof (val) : 0.5;
 		dval = fmod (dval, 360.0);
 		ddc->angle = (dval > 0) ? dval : dval + 360.0;
 	} else if (!strcmp (key, "width")) {
-		dval = (val) ? atof (val) : 0.1;
+		dval = (val) ? sp_svg_atof (val) : 0.1;
 		ddc->width = CLAMP (dval, -1000.0, 1000.0);
 	}
 

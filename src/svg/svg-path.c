@@ -1108,25 +1108,32 @@ sp_svg_write_path (const ArtBpath * bpath)
 	result = g_string_sized_new (40);
 
 	for (i = 0; bpath[i].code != ART_END; i++){
+		unsigned char c0[32], c1[32], c2[32], c3[32], c4[32], c5[32];
 		switch (bpath [i].code){
 		case ART_LINETO:
-			g_string_sprintfa (result, "L %g %g ", bpath [i].x3, bpath [i].y3);
+			sp_svg_number_write_d (c0, bpath[i].x3, 6, 0, 0);
+			sp_svg_number_write_d (c1, bpath[i].y3, 6, 0, 0);
+			g_string_sprintfa (result, "L %s %s ", c0, c1);
 			break;
 
 		case ART_CURVETO:
+			sp_svg_number_write_d (c0, bpath[i].x1, 6, 0, 0);
+			sp_svg_number_write_d (c1, bpath[i].y1, 6, 0, 0);
+			sp_svg_number_write_d (c2, bpath[i].x2, 6, 0, 0);
+			sp_svg_number_write_d (c3, bpath[i].y2, 6, 0, 0);
+			sp_svg_number_write_d (c4, bpath[i].x3, 6, 0, 0);
+			sp_svg_number_write_d (c5, bpath[i].y3, 6, 0, 0);
 			g_string_sprintfa (
-				result, "C %g %g %g %g %g %g ",
-				bpath [i].x1, bpath [i].y1,
-				bpath [i].x2, bpath [i].y2,
-				bpath [i].x3, bpath [i].y3);
+				result, "C %s %s %s %s %s %s ", c0, c1, c2, c3, c4, c5);
 			break;
 
 		case ART_MOVETO_OPEN:
 		case ART_MOVETO:
-			if (closed)
-				g_string_append  (result, "z ");
+			if (closed) g_string_append  (result, "z ");
 			closed = (bpath [i].code == ART_MOVETO);
-			g_string_sprintfa (result, "M %g %g ", bpath [i].x3, bpath [i].y3);
+			sp_svg_number_write_d (c0, bpath[i].x3, 6, 0, 0);
+			sp_svg_number_write_d (c1, bpath[i].y3, 6, 0, 0);
+			g_string_sprintfa (result, "M %s %s ", c0, c1);
 			break;
 		default:
 			g_assert_not_reached ();
@@ -1135,7 +1142,7 @@ sp_svg_write_path (const ArtBpath * bpath)
 	if (closed)
 		g_string_append (result, "z ");
 	res = result->str;
-	g_string_free (result, FALSE);
+	g_string_free (result, 0);
 
 	return res;
 }

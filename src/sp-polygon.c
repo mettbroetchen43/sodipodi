@@ -15,6 +15,10 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
+#include "svg/svg.h"
 #include "attributes.h"
 #include "sp-polygon.h"
 #include "helper/sp-intl.h"
@@ -103,12 +107,15 @@ sp_svg_write_polygon (const ArtBpath * bpath)
 
 	result = g_string_sized_new (40);
 
-	for (i = 0; bpath[i].code != ART_END; i++){
+	for (i = 0; bpath[i].code != ART_END; i++) {
+		unsigned char c0[32], c1[32];
 		switch (bpath [i].code){
 		case ART_LINETO:
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			g_string_sprintfa (result, "%g,%g ", bpath [i].x3, bpath [i].y3);
+			sp_svg_number_write_d (c0, bpath[i].x3, 6, 1, FALSE);
+			sp_svg_number_write_d (c1, bpath[i].y3, 6, 1, FALSE);
+			g_string_sprintfa (result, "%s,%s ", c0, c1);
 			break;
 
 		case ART_CURVETO:
@@ -157,39 +164,45 @@ sp_polygon_set (SPObject *object, unsigned int key, const unsigned char *value)
 	switch (key) {
 	case SP_ATTR_POINTS: {
 		SPCurve * curve;
-		const gchar * cptr;
-		char * eptr;
-		gboolean hascpt;
+		const unsigned char *p;
+		unsigned int hascpt, hasshape;
 
 		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
+		hasshape = FALSE;
 
-		cptr = value;
-		eptr = NULL;
+		p = value;
 
 		while (TRUE) {
-			gdouble x, y;
-
-			x = strtod (cptr, &eptr);
-			if (eptr == cptr) break;
-			cptr = strchr (eptr, ',');
-			if (!cptr) break;
-			cptr++;
-			y = strtod (cptr, &eptr);
-			if (eptr == cptr) break;
-			cptr = eptr;
+			double x, y;
+			int len;
+			len = arikkei_strtod_exp (p, 256, &x);
+			if (!len) break;
+			p += len;
+			p = strchr (p, ',');
+			if (!p) break;
+			p += 1;
+			len = arikkei_strtod_exp (p, 256, &y);
+			if (!len) break;
+			p += len;
+			/* fixme: Is comma allowed here? */
 			if (hascpt) {
 				sp_curve_lineto (curve, x, y);
+				hasshape = TRUE;
 			} else {
 				sp_curve_moveto (curve, x, y);
 				hascpt = TRUE;
 			}
 		}
-		
-		sp_curve_closepath (curve);
-		sp_shape_set_curve (SP_SHAPE (polygon), curve, TRUE);
-		sp_curve_unref (curve);
+		if (hasshape) {
+			sp_curve_closepath (curve);
+			sp_shape_set_curve (SP_SHAPE (polygon), curve, TRUE);
+			sp_curve_unref (curve);
+		} else {
+			sp_shape_set_curve (SP_SHAPE (polygon), NULL, TRUE);
+			sp_curve_unref (curve);
+		}
 		break;
 	}
 	default:

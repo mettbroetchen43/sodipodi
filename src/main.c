@@ -289,7 +289,9 @@ sp_main_gui (int argc, const char **argv)
 			if (ss) gtk_widget_show (ss);
 			sodipodi_unref ();
 		} else {
+#ifdef VERBOSE
 			fprintf (stderr, "No slides to display\n");
+#endif
 			exit (0);
 		}
 	}
