@@ -1,3 +1,7 @@
+200-04-05  Kjartan Maraas  <kmaraas@online.no>
+
+	* no.po: Added no to ALL_LINGUAS.
+	
 2000-04-05  Lauris Kaplinski <lauris@ariman.ee>
 
     * sp-document.c, sp-file.c, sp-image.c: removed namespace. How to
