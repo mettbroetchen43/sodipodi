@@ -1,5 +1,7 @@
 2002-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_tspan_build): Ensure there is always text child
+
 	* src/sp-item-group.c (sp_group_bbox): Do not set bbox to 0,0,0,0
 
 	* src/select-context.c (sp_select_context_root_handler): Set grabbed to NULL on release

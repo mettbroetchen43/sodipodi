@@ -551,6 +551,7 @@ static void
 sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
 	SPTSpan *tspan;
+	SPString *string;
 	SPRepr *rch;
 
 	tspan = SP_TSPAN (object);
@@ -562,14 +563,16 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		if (rch->type == SP_XML_TEXT_NODE) break;
 	}
 
-	if (rch) {
-		SPString *string;
-		/* fixme: We should really pick up first child always */
-		string = gtk_type_new (SP_TYPE_STRING);
-		tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
-		string->ly = &tspan->ly;
-		sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
+	if (!rch) {
+		rch = sp_xml_document_createTextNode (sp_repr_document (repr), "");
+		sp_repr_add_child (repr, rch, NULL);
 	}
+
+	/* fixme: We should really pick up first child always */
+	string = gtk_type_new (SP_TYPE_STRING);
+	tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+	string->ly = &tspan->ly;
+	sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
 
 	sp_tspan_read_attr (object, "x");
 	sp_tspan_read_attr (object, "y");
