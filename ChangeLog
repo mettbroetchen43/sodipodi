@@ -1,3 +1,13 @@
+2003-11-03  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/text-context.c: (sp_text_context_root_handler): Add
+	GDK_Home, GDK_End key binding
+
+	* src/sp-text.c: (sp_text_start_of_line): New method
+	(sp_text_end_of_line): New method
+
+	* src/sp-text.h: Ditto
+
 2003-10-31  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-glyphs.h: New file

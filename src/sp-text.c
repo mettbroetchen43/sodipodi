@@ -32,9 +32,6 @@
 #include <libnrtype/nr-font.h>
 #include <libnrtype/nr-glyphs.h>
 
-/* #include <glib.h> */
-/* #include <gtk/gtk.h> */
-
 #include "helper/sp-intl.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
@@ -2300,6 +2297,32 @@ sp_text_down (SPText *text, gint pos)
 	col = MIN (col, string->length);
 
 	return string->start + col;
+}
+
+gint
+sp_text_start_of_line (SPText *text, gint pos)
+{
+	SPObject *child;
+	SPString *string;
+
+	child = sp_text_get_child_by_position (text, pos);
+	if (!child || !child->next) return pos;
+	string = SP_TEXT_CHILD_STRING (child);
+
+	return string->start;
+}
+
+gint
+sp_text_end_of_line (SPText *text, gint pos)
+{
+	SPObject *child;
+	SPString *string;
+
+	child = sp_text_get_child_by_position (text, pos);
+	if (!child || !child->next) return sp_text_get_length (text);
+	string = SP_TEXT_CHILD_STRING (child);
+
+	return string->start + string->length;
 }
 
 void
