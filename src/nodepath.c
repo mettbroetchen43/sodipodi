@@ -56,6 +56,7 @@ static gchar * parse_nodetypes (const gchar * types, gint length);
 
 static void update_object (SPNodePath * np);
 static void update_repr (SPNodePath * np);
+static void stamp_repr  (SPNodePath * np);
 static SPCurve * create_curve (SPNodePath * np);
 static gchar * create_typestr (SPNodePath * np);
 
@@ -283,6 +284,38 @@ update_repr (SPNodePath * np)
 
 	sp_document_done (SP_DT_DOCUMENT (np->desktop));
 
+	g_free (svgpath);
+	g_free (typestr);
+	sp_curve_unref (curve);
+}
+
+static void
+stamp_repr  (SPNodePath * np)
+{
+	SPCurve * curve;
+	gchar * typestr;
+	gchar * svgpath;
+	SPRepr * old_repr;
+	SPRepr * new_repr;
+	
+	g_assert (np);
+
+	old_repr = SP_OBJECT (np->path)->repr;
+	new_repr = sp_repr_duplicate(old_repr);
+	
+	curve = create_curve (np);
+	typestr = create_typestr (np);
+
+	svgpath = sp_svg_write_path (curve->bpath);
+
+	sp_repr_set_attr (new_repr, "d", svgpath);
+	sp_repr_set_attr (new_repr, "sodipodi:nodetypes", typestr);
+
+	sp_document_add_repr(SP_DT_DOCUMENT (np->desktop),
+			     new_repr);
+	sp_document_done (SP_DT_DOCUMENT (np->desktop));
+
+	sp_repr_unref (new_repr);
 	g_free (svgpath);
 	g_free (typestr);
 	sp_curve_unref (curve);
@@ -1248,6 +1281,7 @@ sp_node_adjust_knots (SPPathNode * node)
 static gboolean
 node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
 {
+	gboolean ret = FALSE;
 	switch (event->type) {
 	case GDK_ENTER_NOTIFY:
 		active_node = n;
@@ -1255,11 +1289,25 @@ node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
 	case GDK_LEAVE_NOTIFY:
 		active_node = NULL;
 		break;
+	case GDK_KEY_PRESS:
+		switch (event->key.keyval) {
+		case GDK_space:
+			if (event->key.state & GDK_BUTTON1_MASK) {
+				SPNodePath * nodepath;
+				nodepath = n->subpath->nodepath;
+				stamp_repr(nodepath);
+				ret = TRUE;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
 	default:
 		break;
 	}
 
-	return FALSE;
+	return ret;
 }
 
 gboolean node_key (GdkEvent * event)
@@ -1468,6 +1516,32 @@ node_ctrl_moved (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 	sp_desktop_set_coordinate_status (knot->desktop, p->x, p->y, 0);
 }
 
+static gboolean
+node_ctrl_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
+{
+	gboolean ret = FALSE;
+	switch (event->type) {
+	case GDK_KEY_PRESS:
+		switch (event->key.keyval) {
+		case GDK_space:
+			if (event->key.state & GDK_BUTTON1_MASK) {
+				SPNodePath * nodepath;
+				nodepath = n->subpath->nodepath;
+				stamp_repr(nodepath);
+				ret = TRUE;
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return ret;
+}
+
 /*
  * Constructors and destructors
  */
@@ -1645,6 +1719,9 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 			    GTK_SIGNAL_FUNC (node_ctrl_request), n);
 	gtk_signal_connect (GTK_OBJECT (n->p.knot), "moved",
 			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
+	gtk_signal_connect (GTK_OBJECT (n->p.knot), "event",
+			    GTK_SIGNAL_FUNC (node_ctrl_event), n);
+	
 	sp_knot_hide (n->p.knot);
 	n->p.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
 					       SP_TYPE_CTRLLINE, NULL);
@@ -1673,6 +1750,8 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 			    GTK_SIGNAL_FUNC (node_ctrl_request), n);
 	gtk_signal_connect (GTK_OBJECT (n->n.knot), "moved",
 			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
+	gtk_signal_connect (GTK_OBJECT (n->n.knot), "event",
+			    GTK_SIGNAL_FUNC (node_ctrl_event), n);
 	sp_knot_hide (n->n.knot);
 	n->n.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
 					       SP_TYPE_CTRLLINE, NULL);

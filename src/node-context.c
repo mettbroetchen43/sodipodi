@@ -28,6 +28,7 @@
 #include "sp-cursor.h"
 #include "pixmaps/cursor-node-m.xpm"
 #include "pixmaps/cursor-node-d.xpm"
+#include "document.h"
 
 static void sp_node_context_class_init (SPNodeContextClass * klass);
 static void sp_node_context_init (SPNodeContext * node_context);
@@ -38,6 +39,7 @@ static gint sp_node_context_root_handler (SPEventContext * event_context, GdkEve
 static gint sp_node_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static void sp_node_context_selection_changed (SPSelection * selection, gpointer data);
+static gboolean sp_node_context_stamp (SPNodeContext * node_context);
 
 static SPEventContextClass * parent_class;
 GdkCursor * CursorNodeMouseover = NULL, * CursorNodeDragging = NULL;
@@ -268,8 +270,19 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				break;
 			}
 		}
-		if (!(event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) 
-			ret = node_key (event);
+		if (!(event->key.state & GDK_SHIFT_MASK) && !(event->key.state & GDK_CONTROL_MASK)) {
+			switch (event->key.keyval) {
+			case GDK_space:
+				if ((event->key.state & GDK_BUTTON1_MASK)
+				    && (nc->nodepath == NULL)) {
+					ret = sp_node_context_stamp(nc);
+				}
+				break;
+			default:
+				ret = node_key (event);
+				break;
+			}
+		}
 
 
 		break;
@@ -307,4 +320,33 @@ sp_node_context_selection_changed (SPSelection * selection, gpointer data)
 		if (! nc->nodepath)
 			nc->knot_holder = sp_item_knot_holder (item, desktop);
 	}
+}
+
+static gboolean
+sp_node_context_stamp (SPNodeContext * nc)
+{
+	SPItem * original_item, * copy_item;
+	SPRepr * original_repr, * copy_repr;
+	gdouble * new_affine;
+	gchar tstr[80];
+	SPEventContext * ec;
+	
+	ec = SP_EVENT_CONTEXT(nc);
+	original_item = sp_selection_item (SP_DT_SELECTION (ec->desktop));
+	if (original_item) {
+		original_repr = (SPRepr *)(SP_OBJECT (original_item)->repr);
+		copy_repr = sp_repr_duplicate (original_repr);
+		copy_item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), 
+							     copy_repr);
+		
+		new_affine = original_item->affine;
+		if (sp_svg_write_affine (tstr, 79, new_affine)) 
+			sp_repr_set_attr (copy_repr, "transform", tstr);
+		else
+			sp_repr_set_attr (copy_repr, "transform", NULL);
+		
+		sp_repr_unref (copy_repr);
+		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+	}
+	return TRUE;
 }

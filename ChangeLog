@@ -1,6 +1,17 @@
 2002-11-23  Masatake YAMATO  <jet@gyve.org>
 
-	* src/helper/bezier-utils.c (sp_bezier_fit_cubic_full): fix memry leaks(u, uPrime).
+	* src/node-context.c: Inlucde document.h.
+	(sp_node_context_stamp): New function.
+	(sp_node_context_root_handler): Do stamp if space key
+	is pressed during dragging.
+
+	* src/nodepath.c (stamp_repr): New function.
+	(node_event): Do stamp if the space key is pressed.
+	(node_ctrl_event): New function.
+	(sp_nodepath_node_new): Connected node_ctrl_event to n->p.knot::event.
+	Connected node_ctrl_event to n->n.knot::event. 
+
+	* src/helper/bezier-utils.c (sp_bezier_fit_cubic_full): Fix memry leaks(u, uPrime).
 	This leaks are reported by Michel Schinz <Michel.Schinz@epfl.ch>.
 
 2002-11-22  Lauris Kaplinski  <lauris@kaplinski.com>
