@@ -7,7 +7,7 @@ TODO for 0.29
 - Write replacement for color picker
 - Write replacement for combo text
 - GtkIMContext support for text-context (?)
-- More works for XML Editor (?)
+- More works for XML Editor (DONE?)
 - Fix unstable SPMenuButton/SPToolbox behavior
 - Fix GuideLine bug
 - Test gnome-print support

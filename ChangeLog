@@ -1,3 +1,8 @@
+2002-12-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/paint-selector.c (sp_paint_selector_style_button_add): Changed
+	SODIPODI_GLADEDIR -> SODIPODI_PIXAMPDIR (Thanks to Ted Gould)
+
 2002-12-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-guide.c (sp_guide_class_init): Removed translatability of properties
