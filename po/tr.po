@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2001-05-17 03:12+0200\n"
+"POT-Creation-Date: 2001-05-17 19:58+0200\n"
 "PO-Revision-Date: 2000-12-1 16:37+0200\n"
 "Last-Translator: Mufit Eribol <meribol@ere.com.tr>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -208,6 +208,7 @@ msgid "Display settings"
 msgstr "Dolgu ayarlarý"
 
 #: glade/display.c:45 glade/object_props.c:34
+#: src/dialogs/display-settings.c:67
 msgid "None"
 msgstr "Yok"
 
@@ -269,15 +270,16 @@ msgstr "Birimler:"
 msgid "Choose unit system"
 msgstr "Birim sistemini seçiniz"
 
-#: glade/document.c:19 glade/sodipodi-glade.c:12 glade/sodipodi-glade.c:54
+#: glade/document.c:19
 msgid "Width:"
 msgstr "Geniþlik:"
 
-#: glade/document.c:20 glade/sodipodi-glade.c:55
+#: glade/document.c:20
 msgid "Height:"
 msgstr "Yükseklik:"
 
-#: glade/document.c:21 src/dialogs/align.c:100
+#: glade/document.c:21 glade/sodipodi-glade.c:24 glade/sodipodi-glade.c:51
+#: src/dialogs/align.c:100
 msgid "Page"
 msgstr "Sayfa"
 
@@ -296,11 +298,11 @@ msgid "Sensitive"
 msgstr ""
 
 #: glade/item.c:9
-msgid "Visible"
+msgid "Active"
 msgstr ""
 
 #: glade/item.c:10
-msgid "Active"
+msgid "Visible"
 msgstr ""
 
 #: glade/item.c:11
@@ -309,31 +311,40 @@ msgid "Printable"
 msgstr "Dosyayý yazdýr"
 
 #: glade/item.c:12
-msgid "Opacity:"
+msgid "ID:"
 msgstr ""
 
 #: glade/item.c:13
+msgid "Opacity:"
+msgstr ""
+
+#: glade/item.c:14 src/dialogs/item-properties.c:99
+#: src/dialogs/item-properties.c:236
+msgid "The SVG ID of item"
+msgstr ""
+
+#: glade/item.c:15
 #, fuzzy
 msgid "Transformation"
 msgstr "Dönüþtürme diyalogu"
 
-#: glade/item.c:14
+#: glade/item.c:16
 msgid "Parent X ="
 msgstr ""
 
-#: glade/item.c:15
+#: glade/item.c:17
 msgid "Parent Y ="
 msgstr ""
 
-#: glade/item.c:16 glade/item.c:17
+#: glade/item.c:18 glade/item.c:19
 msgid "X +"
 msgstr ""
 
-#: glade/item.c:18 glade/item.c:19
+#: glade/item.c:20 glade/item.c:21
 msgid "Y +"
 msgstr ""
 
-#: glade/item.c:20 src/sp-item.c:471
+#: glade/item.c:22 src/sp-item.c:471
 msgid "Item"
 msgstr ""
 
@@ -342,19 +353,19 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/object_props.c:7 glade/sodipodi-glade.c:7
+#: glade/object_props.c:7
 msgid "object properties"
 msgstr "nesne özellikleri"
 
-#: glade/object_props.c:8 glade/sodipodi-glade.c:83
+#: glade/object_props.c:8
 msgid " General "
 msgstr " Genel "
 
-#: glade/object_props.c:9 glade/sodipodi-glade.c:9
+#: glade/object_props.c:9
 msgid "Is stroked"
 msgstr "Baskýlý"
 
-#: glade/object_props.c:10 glade/sodipodi-glade.c:8
+#: glade/object_props.c:10
 msgid "Behind fill"
 msgstr "Dolgu arkasý"
 
@@ -362,7 +373,7 @@ msgstr "Dolgu arkasý"
 msgid "Stroke color : "
 msgstr "Baský rengi : "
 
-#: glade/object_props.c:12 glade/sodipodi-glade.c:29
+#: glade/object_props.c:12
 msgid "Valige värv"
 msgstr "Valige (?)"
 
@@ -371,7 +382,7 @@ msgid " Width "
 msgstr " Geniþlik "
 
 #: glade/object_props.c:14 glade/object_props.c:44 glade/object_props.c:53
-#: glade/object_props.c:72 glade/sodipodi-glade.c:72
+#: glade/object_props.c:72
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -433,8 +444,7 @@ msgstr "alt"
 msgid "sqare"
 msgstr "kare"
 
-#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:11
-#: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
+#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:87
 msgid "Stroke"
 msgstr "Baský"
 
@@ -454,7 +464,7 @@ msgstr "Motif"
 msgid "Fractal"
 msgstr "Fraktal"
 
-#: glade/object_props.c:39 glade/sodipodi-glade.c:36
+#: glade/object_props.c:39
 msgid " Color fill "
 msgstr " Renkli dolgu "
 
@@ -463,18 +473,14 @@ msgid "Fill Color : "
 msgstr "Dolgu rengi : "
 
 #: glade/object_props.c:41 glade/object_props.c:64 glade/object_props.c:79
-#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:64
-#: glade/sodipodi-glade.c:79
 msgid "Pick a color"
 msgstr "Renk seçiniz"
 
-#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:44
-#: glade/sodipodi-glade.c:78
+#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:86
 msgid "Fill"
 msgstr "Dolgu"
 
-#: glade/object_props.c:43 glade/object_props.c:71 glade/sodipodi-glade.c:45
-#: glade/sodipodi-glade.c:71
+#: glade/object_props.c:43 glade/object_props.c:71
 msgid "Position"
 msgstr "Konum"
 
@@ -486,7 +492,7 @@ msgstr "x"
 msgid "y"
 msgstr "y"
 
-#: glade/object_props.c:52 glade/sodipodi-glade.c:53
+#: glade/object_props.c:52
 msgid "Dimension"
 msgstr "Boyut"
 
@@ -498,15 +504,15 @@ msgstr "Geniþlik "
 msgid "Height "
 msgstr "Yükseklik "
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:61
+#: glade/object_props.c:61
 msgid "Layout"
 msgstr "Konumlama"
 
-#: glade/object_props.c:62 glade/sodipodi-glade.c:62
+#: glade/object_props.c:62
 msgid "Reread"
 msgstr "Yeniden oku"
 
-#: glade/object_props.c:65 glade/sodipodi-glade.c:65
+#: glade/object_props.c:65
 msgid ""
 "px\n"
 "mm\n"
@@ -520,175 +526,328 @@ msgstr ""
 "pt\n"
 "in\n"
 
-#: glade/object_props.c:80 glade/sodipodi-glade.c:80
+#: glade/object_props.c:80
 msgid "none"
 msgstr "yok"
 
-#: glade/object_props.c:81 glade/sodipodi-glade.c:81
+#: glade/object_props.c:81
 msgid "color"
 msgstr "renk"
-
-#: glade/sodipodi-glade.c:10
-#, fuzzy
-msgid "Scale with object"
-msgstr "Resimle boyutla"
-
-#: glade/sodipodi-glade.c:13
-#, fuzzy
-msgid "Color:"
-msgstr "Renk"
-
-#: glade/sodipodi-glade.c:14
-#, fuzzy
-msgid "Stroke width"
-msgstr "Sayfa geniþliðini ayarla"
-
-#: glade/sodipodi-glade.c:15
-#, fuzzy
-msgid ""
-"px\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"pt\n"
-"in\n"
-
-#: glade/sodipodi-glade.c:20
-#, fuzzy
-msgid "Join:"
-msgstr " Ekle "
-
-#: glade/sodipodi-glade.c:21
-msgid "Bevel join"
-msgstr ""
-
-#: glade/sodipodi-glade.c:22
-msgid "Round join"
-msgstr ""
-
-#: glade/sodipodi-glade.c:23
-msgid "Mitter join"
-msgstr ""
-
-#: glade/sodipodi-glade.c:24
-msgid "Butt endpoints"
-msgstr ""
-
-#: glade/sodipodi-glade.c:25
-#, fuzzy
-msgid "Round endpoints"
-msgstr "2 seçili bitiþ noktasýný birleþtir"
-
-#: glade/sodipodi-glade.c:26
-msgid "Square endpoints"
-msgstr ""
-
-#: glade/sodipodi-glade.c:27
-#, fuzzy
-msgid "Endpoints:"
-msgstr "Birimler:"
-
-#: glade/sodipodi-glade.c:28
-#, fuzzy
-msgid "Choose stroke color"
-msgstr "Baský rengi : "
-
-#: glade/sodipodi-glade.c:31
-#, fuzzy
-msgid "No fill"
-msgstr " Renkli dolgu "
-
-#: glade/sodipodi-glade.c:32
-#, fuzzy
-msgid "Color fill"
-msgstr " Renkli dolgu "
-
-#: glade/sodipodi-glade.c:33
-#, fuzzy
-msgid "Gradient fill"
-msgstr "Geçiþim"
-
-#: glade/sodipodi-glade.c:34
-#, fuzzy
-msgid "Pattern fill"
-msgstr "Motif"
-
-#: glade/sodipodi-glade.c:35
-#, fuzzy
-msgid "Fractal fill"
-msgstr "Fraktal"
-
-#: glade/sodipodi-glade.c:37
-#, fuzzy
-msgid "Choose fill color"
-msgstr "Izgara rengini seçiniz"
-
-#: glade/sodipodi-glade.c:39
-#, fuzzy
-msgid "Red:"
-msgstr "Yeniden yap"
-
-#: glade/sodipodi-glade.c:40
-#, fuzzy
-msgid "Fill Color:"
-msgstr "Dolgu rengi : "
-
-#: glade/sodipodi-glade.c:41
-msgid "Green:"
-msgstr ""
-
-#: glade/sodipodi-glade.c:42
-#, fuzzy
-msgid "Blue:"
-msgstr "Deðer:"
-
-#: glade/sodipodi-glade.c:43
-msgid "Alpha:"
-msgstr ""
-
-#: glade/sodipodi-glade.c:46
-msgid "X:"
-msgstr ""
-
-#: glade/sodipodi-glade.c:47
-msgid "Y:"
-msgstr ""
-
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
-#, fuzzy
-msgid ""
-"pt\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"pt\n"
-"in\n"
-
-#: glade/sodipodi-glade.c:82
-msgid "window1"
-msgstr ""
-
-#: glade/sodipodi-glade.c:84
-#, fuzzy
-msgid " Style "
-msgstr " Boyutla "
 
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:7
+msgid "Copyright Lauris Kaplinski 1999-2000."
+msgstr "Telif hakký Lauris Kaplinski 1999-2000"
+
+#: glade/sodipodi-glade.c:8
+msgid ""
+"A Vector Drawing Program.\n"
+"Released under GPL"
+msgstr ""
+"Bir Vektör Çizim Programý.\n"
+"GPL'e göre yayýnlanmýþtýr"
+
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+msgid "Node Edit"
+msgstr "Noktayý Deðiþtir"
+
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+msgid "Include one node into selected segments"
+msgstr "Seçili bölümlere bir nokta koy"
+
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+msgid "Break apart selected node"
+msgstr "Seçili noktadan kopart"
+
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+msgid "Convert selected segments to curves"
+msgstr "Seçili bölümleri eðrilere dönüþtür"
+
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+msgid "Join 2 selected endpoints"
+msgstr "2 seçili bitiþ noktasýný birleþtir"
+
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+msgid "Cusp line at selected nodes"
+msgstr "Seçili noktalardaki çizgiyi tepele"
+
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+msgid "Smooth line at selected nodes"
+msgstr "Seçili noktalardaki çizgiyi düzelt"
+
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+msgid "Symmetric "
+msgstr "Simetrik"
+
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+msgid "Close dialog"
+msgstr "Diyalogu kapat"
+
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+msgid "Convert selected segments to lines"
+msgstr "Seçili bölümleri çizgilere dönüþtür"
+
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+msgid "Delete selected nodes"
+msgstr "Seçili noktalarý sil"
+
+#: glade/sodipodi-glade.c:21
+msgid "Export picture to png"
+msgstr "Resmi png olarak ithal et"
+
+#: glade/sodipodi-glade.c:22
+msgid "Set dimensions"
+msgstr "Boyutlarý belirle"
+
+#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:49 src/dialogs/align.c:105
+msgid "Drawing"
+msgstr "Boyama"
+
+#: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
+msgid "Selection"
+msgstr "Seçim"
+
+#: glade/sodipodi-glade.c:26
+msgid "Where to export"
+msgstr "Ýthal edilecek yer"
+
+#: glade/sodipodi-glade.c:27
+msgid "Filename:"
+msgstr "Dosya adý:"
+
+#: glade/sodipodi-glade.c:28
+msgid "Png file name"
+msgstr "Png dosya adý"
+
+#: glade/sodipodi-glade.c:29
+msgid "Image size"
+msgstr "Resim boyutu"
+
+#: glade/sodipodi-glade.c:30
+msgid "X0"
+msgstr "X0"
+
+#: glade/sodipodi-glade.c:31
+msgid "Y0"
+msgstr "Y0"
+
+#: glade/sodipodi-glade.c:32
+msgid "X1"
+msgstr "X1"
+
+#: glade/sodipodi-glade.c:33
+msgid "Y1"
+msgstr "Y1"
+
+#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:37
+msgid "Width"
+msgstr "Geniþlik"
+
+#: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:38
+msgid "Height"
+msgstr "Yükseklik"
+
+#: glade/sodipodi-glade.c:36
+msgid "Exported as"
+msgstr "Ýhraç ediliþ þekli"
+
+#: glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+msgid "pixels"
+msgstr "piksel"
+
+#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
+msgid "dpi"
+msgstr "dpi"
+
+#: glade/sodipodi-glade.c:43
+msgid "Lock aspect ratio"
+msgstr "Resim oranlarýný kitle"
+
+#: glade/sodipodi-glade.c:44
+msgid "1.0MB"
+msgstr "1.0 MB"
+
+#: glade/sodipodi-glade.c:45
+msgid "Uncompressed file size:"
+msgstr "Sýkýþtýrýlmamýþ dosya boyutu:"
+
+#: glade/sodipodi-glade.c:46 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Yeni"
+
+#: glade/sodipodi-glade.c:47
+msgid "Import"
+msgstr "Ýthal et"
+
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+msgid "Export"
+msgstr "Ýhraç et"
+
+#: glade/sodipodi-glade.c:52
+msgid "Duplicate"
+msgstr "Klonla"
+
+#: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+msgid "Delete"
+msgstr "Sil"
+
+#: glade/sodipodi-glade.c:55
+msgid "_Align"
+msgstr "_Hizala"
+
+#: glade/sodipodi-glade.c:56
+msgid "Order"
+msgstr "Sýrala"
+
+#: glade/sodipodi-glade.c:57
+msgid "Bring to _Front"
+msgstr "Ö_ne Getir"
+
+#: glade/sodipodi-glade.c:58
+msgid "Send to _Back"
+msgstr "Arka_ya it"
+
+#: glade/sodipodi-glade.c:59
+msgid "Forward One"
+msgstr "Bir ileri"
+
+#: glade/sodipodi-glade.c:60
+msgid "Back One"
+msgstr "Bir geri"
+
+#: glade/sodipodi-glade.c:61
+#, fuzzy
+msgid "_Group"
+msgstr "_Grup"
+
+#: glade/sodipodi-glade.c:62
+#, fuzzy
+msgid "_Ungroup"
+msgstr "Gr_ubu çöz"
+
+#: glade/sodipodi-glade.c:63
+msgid "_Combine"
+msgstr "_Birleþtir"
+
+#: glade/sodipodi-glade.c:64
+msgid "_Break Apart"
+msgstr "_Kopar"
+
+#: glade/sodipodi-glade.c:65
+msgid "Convert to Cu_rves"
+msgstr "_Eðrilere Dönüþtür"
+
+#: glade/sodipodi-glade.c:66
+msgid "New View"
+msgstr "Yeni Görünüm"
+
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
+msgid "Zoom"
+msgstr "Büyüt"
+
+#: glade/sodipodi-glade.c:68 glade/transformation.c:16
+msgid "Scale"
+msgstr "Boyutla"
+
+#: glade/sodipodi-glade.c:69
+msgid "1:2"
+msgstr "1:2"
+
+#: glade/sodipodi-glade.c:70
+msgid "1:1"
+msgstr "1:1"
+
+#: glade/sodipodi-glade.c:71
+msgid "2:1"
+msgstr "2:1"
+
+#: glade/sodipodi-glade.c:72
+msgid "_Interactive"
+msgstr "_Interaktif"
+
+#: glade/sodipodi-glade.c:73
+msgid "_Selection"
+msgstr "_Seçim"
+
+#: glade/sodipodi-glade.c:74
+msgid "_Drawing"
+msgstr "_Çizim"
+
+#: glade/sodipodi-glade.c:75
+msgid "_Page"
+msgstr "S_ayfa"
+
+#: glade/sodipodi-glade.c:76
+msgid "Toggle Borders"
+msgstr "Kenarlarý aç/kapat"
+
+#: glade/sodipodi-glade.c:77
+msgid "Show Toolbox"
+msgstr ""
+
+#: glade/sodipodi-glade.c:78
+msgid "Drawing Context"
+msgstr "Çizim Kapsamý"
+
+#: glade/sodipodi-glade.c:79
+msgid "Select"
+msgstr "Seç"
+
+#: glade/sodipodi-glade.c:80
+msgid "Node"
+msgstr "Nokta"
+
+#: glade/sodipodi-glade.c:81
+msgid "Rectangle"
+msgstr "Dörtgen"
+
+#: glade/sodipodi-glade.c:82
+msgid "Ellipse"
+msgstr "Elips"
+
+#: glade/sodipodi-glade.c:83
+msgid "Freehand"
+msgstr "Serbest"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
 msgid "Text"
 msgstr "Metin"
+
+#: glade/sodipodi-glade.c:89
+msgid "Nodes"
+msgstr "Noktalar"
+
+#: glade/sodipodi-glade.c:90
+msgid "Desktop"
+msgstr "Masaüstü"
+
+#: glade/sodipodi-glade.c:91
+msgid "Document"
+msgstr "Belge"
+
+#: glade/sodipodi-glade.c:92
+#, fuzzy
+msgid "Display"
+msgstr "Dolgu ayarlarý"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+msgid "XML Tree"
+msgstr "XML Aðacý"
 
 #: glade/text-dialog.c:8
 #, fuzzy
@@ -707,10 +866,6 @@ msgstr "Sodipodi"
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Dosya"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Yeni"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -756,10 +911,6 @@ msgstr "Serbest þekiller çiz"
 msgid "Draw text"
 msgstr "Metin çiz"
 
-#: glade/toolbox.c:22
-msgid "Zoom"
-msgstr "Büyüt"
-
 #: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "1:1 göster"
@@ -779,10 +930,6 @@ msgstr "Çizimi göster"
 #: glade/toolbox.c:28
 msgid "Zoom to selection"
 msgstr "Seçileni göster"
-
-#: glade/toolbox.c:31 src/dialogs/align.c:110
-msgid "Selection"
-msgstr "Seçim"
 
 #: glade/toolbox.c:32
 msgid "lower selection to bottom"
@@ -816,53 +963,9 @@ msgstr "Seçili nesneleri grupla"
 msgid "Ungroup selected objects"
 msgstr "Seçili nesneleri çöz"
 
-#: glade/toolbox.c:40
-msgid "Node Edit"
-msgstr "Noktayý Deðiþtir"
-
-#: glade/toolbox.c:41
-msgid "Include one node into selected segments"
-msgstr "Seçili bölümlere bir nokta koy"
-
-#: glade/toolbox.c:42
-msgid "Delete selected nodes"
-msgstr "Seçili noktalarý sil"
-
-#: glade/toolbox.c:43
-msgid "Convert selected segments to lines"
-msgstr "Seçili bölümleri çizgilere dönüþtür"
-
-#: glade/toolbox.c:44
-msgid "Convert selected segments to curves"
-msgstr "Seçili bölümleri eðrilere dönüþtür"
-
-#: glade/toolbox.c:45
-msgid "Break apart selected node"
-msgstr "Seçili noktadan kopart"
-
-#: glade/toolbox.c:46
-msgid "Join 2 selected endpoints"
-msgstr "2 seçili bitiþ noktasýný birleþtir"
-
-#: glade/toolbox.c:47
-msgid "Cusp line at selected nodes"
-msgstr "Seçili noktalardaki çizgiyi tepele"
-
-#: glade/toolbox.c:48
-msgid "Smooth line at selected nodes"
-msgstr "Seçili noktalardaki çizgiyi düzelt"
-
-#: glade/toolbox.c:49
-msgid "Symmetric "
-msgstr "Simetrik"
-
 #: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Asimetrik"
-
-#: glade/toolbox.c:51
-msgid "Close dialog"
-msgstr "Diyalogu kapat"
 
 #: glade/toolbox.c:52
 msgid "File"
@@ -871,10 +974,6 @@ msgstr "Dosya"
 #: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Yeni çizim"
-
-#: glade/toolbox.c:54
-msgid "Export"
-msgstr "Ýhraç et"
 
 #: glade/toolbox.c:55
 msgid "Open new drawing"
@@ -1044,10 +1143,6 @@ msgstr "Yapýþ"
 #: glade/transformation.c:15
 msgid "select metric for values"
 msgstr ""
-
-#: glade/transformation.c:16
-msgid "Scale"
-msgstr "Boyutla"
 
 #: glade/transformation.c:17
 #, fuzzy
@@ -1310,15 +1405,6 @@ msgstr "% "
 msgid "Degree"
 msgstr "derece"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: glade/xml-tree.c:7
-msgid "XML Tree"
-msgstr "XML Aðacý"
-
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
 msgstr "Hiyerarþi"
@@ -1358,10 +1444,6 @@ msgstr "Anahtar"
 #: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
 msgstr "Deðer"
-
-#: glade/xml-tree.c:18
-msgid "Delete"
-msgstr "Sil"
 
 #: glade/xml-tree.c:19
 msgid "Add"
@@ -1533,30 +1615,140 @@ msgstr "En büyük birim"
 msgid "Smallest item"
 msgstr "En küçük birim"
 
-#: src/dialogs/align.c:105
-msgid "Drawing"
-msgstr "Boyama"
+#: src/dialogs/display-settings.c:71
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:75
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:79
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:83
+msgid "16x16"
+msgstr ""
+
+#: src/dialogs/item-properties.c:93
+msgid "Item is reference"
+msgstr ""
+
+#: src/dialogs/item-properties.c:238
+msgid "The ID is not valid"
+msgstr ""
+
+#: src/dialogs/item-properties.c:240
+msgid "The ID is already defined"
+msgstr ""
+
+#: src/dialogs/item-properties.c:242
+msgid "The ID is valid"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Scale with object"
+#~ msgstr "Resimle boyutla"
+
+#, fuzzy
+#~ msgid "Color:"
+#~ msgstr "Renk"
+
+#, fuzzy
+#~ msgid "Stroke width"
+#~ msgstr "Sayfa geniþliðini ayarla"
+
+#, fuzzy
+#~ msgid ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "pt\n"
+#~ "in\n"
+
+#, fuzzy
+#~ msgid "Join:"
+#~ msgstr " Ekle "
+
+#, fuzzy
+#~ msgid "Round endpoints"
+#~ msgstr "2 seçili bitiþ noktasýný birleþtir"
+
+#, fuzzy
+#~ msgid "Endpoints:"
+#~ msgstr "Birimler:"
+
+#, fuzzy
+#~ msgid "Choose stroke color"
+#~ msgstr "Baský rengi : "
+
+#, fuzzy
+#~ msgid "No fill"
+#~ msgstr " Renkli dolgu "
+
+#, fuzzy
+#~ msgid "Color fill"
+#~ msgstr " Renkli dolgu "
+
+#, fuzzy
+#~ msgid "Gradient fill"
+#~ msgstr "Geçiþim"
+
+#, fuzzy
+#~ msgid "Pattern fill"
+#~ msgstr "Motif"
+
+#, fuzzy
+#~ msgid "Fractal fill"
+#~ msgstr "Fraktal"
+
+#, fuzzy
+#~ msgid "Choose fill color"
+#~ msgstr "Izgara rengini seçiniz"
+
+#, fuzzy
+#~ msgid "Red:"
+#~ msgstr "Yeniden yap"
+
+#, fuzzy
+#~ msgid "Fill Color:"
+#~ msgstr "Dolgu rengi : "
+
+#, fuzzy
+#~ msgid "Blue:"
+#~ msgstr "Deðer:"
+
+#, fuzzy
+#~ msgid ""
+#~ "pt\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "pt\n"
+#~ "in\n"
+
+#, fuzzy
+#~ msgid " Style "
+#~ msgstr " Boyutla "
 
 #~ msgid "_New File"
 #~ msgstr "_Yeni Dosya"
-
-#~ msgid "New View"
-#~ msgstr "Yeni Görünüm"
 
 #~ msgid "_Import"
 #~ msgstr "_Ýthal et"
 
 #~ msgid "_Export"
 #~ msgstr "_Ýhraç et"
-
-#~ msgid "_Drawing"
-#~ msgstr "_Çizim"
-
-#~ msgid "_Selection"
-#~ msgstr "_Seçim"
-
-#~ msgid "_Page"
-#~ msgstr "S_ayfa"
 
 #~ msgid "Print Pre_view"
 #~ msgstr "Önizlemeyi _Yazdýr"
@@ -1570,18 +1762,6 @@ msgstr "Boyama"
 #~ msgid "Node Editing..."
 #~ msgstr "Nokta Deðiþtirmesi ..."
 
-#~ msgid "1:2"
-#~ msgstr "1:2"
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
-
-#~ msgid "2:1"
-#~ msgstr "2:1"
-
-#~ msgid "_Interactive"
-#~ msgstr "_Interaktif"
-
 #~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
 #~ msgstr "Masaüstü kenarlarý aç/kapat (cetvel ve çubuklarý aç/kapat )"
 
@@ -1591,41 +1771,17 @@ msgstr "Boyama"
 #~ msgid "_Arrange"
 #~ msgstr "_Ayarla"
 
-#~ msgid "_Align"
-#~ msgstr "_Hizala"
-
 #~ msgid "_Transform"
 #~ msgstr "_Dönüþtür"
 
 #~ msgid "_Order"
 #~ msgstr "_Sýrala"
 
-#~ msgid "Bring to _Front"
-#~ msgstr "Ö_ne Getir"
-
-#~ msgid "Send to _Back"
-#~ msgstr "Arka_ya it"
-
-#~ msgid "Forward One"
-#~ msgstr "Bir ileri"
-
-#~ msgid "Back One"
-#~ msgstr "Bir geri"
-
 #~ msgid "Groups selected items"
 #~ msgstr "Seçili birimlrý gruplar"
 
 #~ msgid "Ungroups selected group"
 #~ msgstr "Seçili grubu çözer"
-
-#~ msgid "_Combine"
-#~ msgstr "_Birleþtir"
-
-#~ msgid "_Break Apart"
-#~ msgstr "_Kopar"
-
-#~ msgid "Convert to Cu_rves"
-#~ msgstr "_Eðrilere Dönüþtür"
 
 #~ msgid "New File"
 #~ msgstr "Yeni dosya"
@@ -1690,14 +1846,8 @@ msgstr "Boyama"
 #~ msgid "Select and transform objects and groups"
 #~ msgstr "Nesne ve gruplarý seç ve deðiþtir"
 
-#~ msgid "Select"
-#~ msgstr "Seç"
-
 #~ msgid "Edit objects using control nodes"
 #~ msgstr "Nesneleri kontrol noktalarýyla deðiþtir"
-
-#~ msgid "Node"
-#~ msgstr "Nokta"
 
 #~ msgid "Draw rectangles"
 #~ msgstr "Dörtgen çiz"
@@ -1707,9 +1857,6 @@ msgstr "Boyama"
 
 #~ msgid "Draw ellipses"
 #~ msgstr "Elips çiz"
-
-#~ msgid "Ellipse"
-#~ msgstr "Elips"
 
 #~ msgid "Draw freeform lines"
 #~ msgstr "Serbest þekil çiz"
@@ -1722,100 +1869,6 @@ msgstr "Boyama"
 
 #~ msgid "Left button zooms in, right out"
 #~ msgstr "Farenin sol tuþu büyültür, sað tuþu küçültür"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Telif hakký Lauris Kaplinski 1999-2000"
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Bir Vektör Çizim Programý.\n"
-#~ "GPL'e göre yayýnlanmýþtýr"
-
-#~ msgid "Export picture to png"
-#~ msgstr "Resmi png olarak ithal et"
-
-#~ msgid "Set dimensions"
-#~ msgstr "Boyutlarý belirle"
-
-#~ msgid "Where to export"
-#~ msgstr "Ýthal edilecek yer"
-
-#~ msgid "Filename:"
-#~ msgstr "Dosya adý:"
-
-#~ msgid "Png file name"
-#~ msgstr "Png dosya adý"
-
-#~ msgid "Image size"
-#~ msgstr "Resim boyutu"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "Width"
-#~ msgstr "Geniþlik"
-
-#~ msgid "Height"
-#~ msgstr "Yükseklik"
-
-#~ msgid "Exported as"
-#~ msgstr "Ýhraç ediliþ þekli"
-
-#~ msgid "pixels"
-#~ msgstr "piksel"
-
-#~ msgid "dpi"
-#~ msgstr "dpi"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "Resim oranlarýný kitle"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0 MB"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "Sýkýþtýrýlmamýþ dosya boyutu:"
-
-#~ msgid "Import"
-#~ msgstr "Ýthal et"
-
-#~ msgid "Duplicate"
-#~ msgstr "Klonla"
-
-#~ msgid "Order"
-#~ msgstr "Sýrala"
-
-#~ msgid "Toggle Borders"
-#~ msgstr "Kenarlarý aç/kapat"
-
-#~ msgid "Drawing Context"
-#~ msgstr "Çizim Kapsamý"
-
-#~ msgid "Rectangle"
-#~ msgstr "Dörtgen"
-
-#~ msgid "Freehand"
-#~ msgstr "Serbest"
-
-#~ msgid "Nodes"
-#~ msgstr "Noktalar"
-
-#~ msgid "Desktop"
-#~ msgstr "Masaüstü"
-
-#~ msgid "Document"
-#~ msgstr "Belge"
 
 #~ msgid "_Uus"
 #~ msgstr "_Biz"

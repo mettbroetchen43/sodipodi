@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2001-05-17 03:12+0200\n"
+"POT-Creation-Date: 2001-05-17 19:58+0200\n"
 "PO-Revision-Date: 2000-12-28 23:49+01:00\n"
 "Last-Translator: Brisa Francesco <fbrisa@yahoo.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -207,6 +207,7 @@ msgid "Display settings"
 msgstr "Parametri del desktop"
 
 #: glade/display.c:45 glade/object_props.c:34
+#: src/dialogs/display-settings.c:67
 msgid "None"
 msgstr "Nessuno"
 
@@ -268,15 +269,16 @@ msgstr "Unitá:"
 msgid "Choose unit system"
 msgstr "Scegli il sistema di misura"
 
-#: glade/document.c:19 glade/sodipodi-glade.c:12 glade/sodipodi-glade.c:54
+#: glade/document.c:19
 msgid "Width:"
 msgstr "Larghezza:"
 
-#: glade/document.c:20 glade/sodipodi-glade.c:55
+#: glade/document.c:20
 msgid "Height:"
 msgstr "Altezza:"
 
-#: glade/document.c:21 src/dialogs/align.c:100
+#: glade/document.c:21 glade/sodipodi-glade.c:24 glade/sodipodi-glade.c:51
+#: src/dialogs/align.c:100
 msgid "Page"
 msgstr "Pagina"
 
@@ -295,11 +297,11 @@ msgid "Sensitive"
 msgstr ""
 
 #: glade/item.c:9
-msgid "Visible"
+msgid "Active"
 msgstr ""
 
 #: glade/item.c:10
-msgid "Active"
+msgid "Visible"
 msgstr ""
 
 #: glade/item.c:11
@@ -308,32 +310,41 @@ msgid "Printable"
 msgstr "Esporta il file"
 
 #: glade/item.c:12
-msgid "Opacity:"
+msgid "ID:"
 msgstr ""
 
 #: glade/item.c:13
+msgid "Opacity:"
+msgstr ""
+
+#: glade/item.c:14 src/dialogs/item-properties.c:99
+#: src/dialogs/item-properties.c:236
+msgid "The SVG ID of item"
+msgstr ""
+
+#: glade/item.c:15
 #, fuzzy
 msgid "Transformation"
 msgstr "Trasformazione"
 
-#: glade/item.c:14
+#: glade/item.c:16
 msgid "Parent X ="
 msgstr ""
 
-#: glade/item.c:15
+#: glade/item.c:17
 msgid "Parent Y ="
 msgstr ""
 
-#: glade/item.c:16 glade/item.c:17
+#: glade/item.c:18 glade/item.c:19
 msgid "X +"
 msgstr ""
 
-#: glade/item.c:18 glade/item.c:19
+#: glade/item.c:20 glade/item.c:21
 #, fuzzy
 msgid "Y +"
 msgstr "Y: "
 
-#: glade/item.c:20 src/sp-item.c:471
+#: glade/item.c:22 src/sp-item.c:471
 msgid "Item"
 msgstr ""
 
@@ -342,19 +353,19 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/object_props.c:7 glade/sodipodi-glade.c:7
+#: glade/object_props.c:7
 msgid "object properties"
 msgstr "proprietá dell'oggetto"
 
-#: glade/object_props.c:8 glade/sodipodi-glade.c:83
+#: glade/object_props.c:8
 msgid " General "
 msgstr " Generale "
 
-#: glade/object_props.c:9 glade/sodipodi-glade.c:9
+#: glade/object_props.c:9
 msgid "Is stroked"
 msgstr "Stroke"
 
-#: glade/object_props.c:10 glade/sodipodi-glade.c:8
+#: glade/object_props.c:10
 msgid "Behind fill"
 msgstr "Riempi sfondo"
 
@@ -362,7 +373,7 @@ msgstr "Riempi sfondo"
 msgid "Stroke color : "
 msgstr "Colore stroke:"
 
-#: glade/object_props.c:12 glade/sodipodi-glade.c:29
+#: glade/object_props.c:12
 msgid "Valige värv"
 msgstr ""
 
@@ -371,7 +382,7 @@ msgid " Width "
 msgstr " Larghezza "
 
 #: glade/object_props.c:14 glade/object_props.c:44 glade/object_props.c:53
-#: glade/object_props.c:72 glade/sodipodi-glade.c:72
+#: glade/object_props.c:72
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -433,8 +444,7 @@ msgstr ""
 msgid "sqare"
 msgstr ""
 
-#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:11
-#: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
+#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:87
 msgid "Stroke"
 msgstr "Stroke"
 
@@ -454,7 +464,7 @@ msgstr "Motivo"
 msgid "Fractal"
 msgstr "Frattale"
 
-#: glade/object_props.c:39 glade/sodipodi-glade.c:36
+#: glade/object_props.c:39
 msgid " Color fill "
 msgstr " Riempi con il colore "
 
@@ -463,18 +473,14 @@ msgid "Fill Color : "
 msgstr "Colore di riempimento : "
 
 #: glade/object_props.c:41 glade/object_props.c:64 glade/object_props.c:79
-#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:64
-#: glade/sodipodi-glade.c:79
 msgid "Pick a color"
 msgstr "Seleziona un colore"
 
-#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:44
-#: glade/sodipodi-glade.c:78
+#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:86
 msgid "Fill"
 msgstr "Riempi"
 
-#: glade/object_props.c:43 glade/object_props.c:71 glade/sodipodi-glade.c:45
-#: glade/sodipodi-glade.c:71
+#: glade/object_props.c:43 glade/object_props.c:71
 msgid "Position"
 msgstr "Posizione"
 
@@ -486,7 +492,7 @@ msgstr "x"
 msgid "y"
 msgstr "y"
 
-#: glade/object_props.c:52 glade/sodipodi-glade.c:53
+#: glade/object_props.c:52
 msgid "Dimension"
 msgstr "Dimensione"
 
@@ -498,15 +504,15 @@ msgstr "Larghezza "
 msgid "Height "
 msgstr "Altezza "
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:61
+#: glade/object_props.c:61
 msgid "Layout"
 msgstr "Apparenza"
 
-#: glade/object_props.c:62 glade/sodipodi-glade.c:62
+#: glade/object_props.c:62
 msgid "Reread"
 msgstr "Rileggi"
 
-#: glade/object_props.c:65 glade/sodipodi-glade.c:65
+#: glade/object_props.c:65
 msgid ""
 "px\n"
 "mm\n"
@@ -520,166 +526,310 @@ msgstr ""
 "pt\n"
 "in\n"
 
-#: glade/object_props.c:80 glade/sodipodi-glade.c:80
+#: glade/object_props.c:80
 msgid "none"
 msgstr "nessun"
 
-#: glade/object_props.c:81 glade/sodipodi-glade.c:81
+#: glade/object_props.c:81
 msgid "color"
 msgstr "colore"
 
-#: glade/sodipodi-glade.c:10
-#, fuzzy
-msgid "Scale with object"
-msgstr "Scala con l'immagine"
-
-#: glade/sodipodi-glade.c:13
-#, fuzzy
-msgid "Color:"
-msgstr "Colore"
-
-#: glade/sodipodi-glade.c:14
-#, fuzzy
-msgid "Stroke width"
-msgstr "Imposta la larghezza della pagina"
-
-#: glade/sodipodi-glade.c:15
-#, fuzzy
-msgid ""
-"px\n"
-"mm\n"
-"cm\n"
-"in\n"
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:7
+msgid "Copyright Lauris Kaplinski 1999-2000."
 msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"pt\n"
-"in\n"
 
-#: glade/sodipodi-glade.c:20
-#, fuzzy
-msgid "Join:"
-msgstr " Unisci "
+#: glade/sodipodi-glade.c:8
+msgid ""
+"A Vector Drawing Program.\n"
+"Released under GPL"
+msgstr ""
+
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+msgid "Node Edit"
+msgstr "Modifica del nodo"
+
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+msgid "Include one node into selected segments"
+msgstr "Includi un nodo nei segmenti selezionati"
+
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+msgid "Break apart selected node"
+msgstr "Spezza via il nodo selezionato"
+
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+msgid "Convert selected segments to curves"
+msgstr "Converti i segmenti selezionati in curve"
+
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+msgid "Join 2 selected endpoints"
+msgstr "Unisci le due estremità di linea selezionate"
+
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+msgid "Cusp line at selected nodes"
+msgstr "Aguzza le linee ai nodi selezionati"
+
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+msgid "Smooth line at selected nodes"
+msgstr "Smussa la linea ai nodi selezionati"
+
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+msgid "Symmetric "
+msgstr "Simmetrico "
+
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+msgid "Close dialog"
+msgstr "Chiudi dialogo"
+
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+msgid "Convert selected segments to lines"
+msgstr "Converti i segmenti selezionati in linee"
+
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+msgid "Delete selected nodes"
+msgstr "Cancella i nodi selezionati"
 
 #: glade/sodipodi-glade.c:21
-msgid "Bevel join"
+msgid "Export picture to png"
 msgstr ""
 
 #: glade/sodipodi-glade.c:22
-msgid "Round join"
-msgstr ""
-
-#: glade/sodipodi-glade.c:23
-msgid "Mitter join"
-msgstr ""
-
-#: glade/sodipodi-glade.c:24
-msgid "Butt endpoints"
-msgstr ""
-
-#: glade/sodipodi-glade.c:25
 #, fuzzy
-msgid "Round endpoints"
-msgstr "Unisci le due estremità di linea selezionate"
+msgid "Set dimensions"
+msgstr "Dimensione"
+
+#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:49 src/dialogs/align.c:105
+msgid "Drawing"
+msgstr "Disegno"
+
+#: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
+msgid "Selection"
+msgstr "Selezione"
 
 #: glade/sodipodi-glade.c:26
-msgid "Square endpoints"
-msgstr ""
+#, fuzzy
+msgid "Where to export"
+msgstr "Disegna il testo"
 
 #: glade/sodipodi-glade.c:27
 #, fuzzy
-msgid "Endpoints:"
-msgstr "Unitá:"
+msgid "Filename:"
+msgstr "File"
 
 #: glade/sodipodi-glade.c:28
 #, fuzzy
-msgid "Choose stroke color"
-msgstr "Colore stroke:"
+msgid "Png file name"
+msgstr "File"
+
+#: glade/sodipodi-glade.c:29
+#, fuzzy
+msgid "Image size"
+msgstr "Dimensione del foglio:"
+
+#: glade/sodipodi-glade.c:30
+msgid "X0"
+msgstr ""
 
 #: glade/sodipodi-glade.c:31
-#, fuzzy
-msgid "No fill"
-msgstr " Riempi con il colore "
+msgid "Y0"
+msgstr ""
 
 #: glade/sodipodi-glade.c:32
-#, fuzzy
-msgid "Color fill"
-msgstr " Riempi con il colore "
+msgid "X1"
+msgstr ""
 
 #: glade/sodipodi-glade.c:33
-#, fuzzy
-msgid "Gradient fill"
-msgstr "Gradiente"
-
-#: glade/sodipodi-glade.c:34
-#, fuzzy
-msgid "Pattern fill"
-msgstr "Motivo"
-
-#: glade/sodipodi-glade.c:35
-#, fuzzy
-msgid "Fractal fill"
-msgstr "Frattale"
-
-#: glade/sodipodi-glade.c:37
-#, fuzzy
-msgid "Choose fill color"
-msgstr "Scegli il colore della griglia"
-
-#: glade/sodipodi-glade.c:39
-#, fuzzy
-msgid "Red:"
-msgstr "Rifai"
-
-#: glade/sodipodi-glade.c:40
-#, fuzzy
-msgid "Fill Color:"
-msgstr "Colore di riempimento : "
-
-#: glade/sodipodi-glade.c:41
-msgid "Green:"
+msgid "Y1"
 msgstr ""
 
-#: glade/sodipodi-glade.c:42
+#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:37
 #, fuzzy
-msgid "Blue:"
-msgstr "Valore :"
+msgid "Width"
+msgstr "Larghezza:"
+
+#: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:38
+#, fuzzy
+msgid "Height"
+msgstr "Altezza:"
+
+#: glade/sodipodi-glade.c:36
+#, fuzzy
+msgid "Exported as"
+msgstr "Esporta"
+
+#: glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+#, fuzzy
+msgid "pixels"
+msgstr "Pixels\n"
+
+#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
+msgid "dpi"
+msgstr ""
 
 #: glade/sodipodi-glade.c:43
-msgid "Alpha:"
+msgid "Lock aspect ratio"
 msgstr ""
 
-#: glade/sodipodi-glade.c:46
-msgid "X:"
+#: glade/sodipodi-glade.c:44
+msgid "1.0MB"
 msgstr ""
+
+#: glade/sodipodi-glade.c:45
+msgid "Uncompressed file size:"
+msgstr ""
+
+#: glade/sodipodi-glade.c:46 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Nuovo"
 
 #: glade/sodipodi-glade.c:47
 #, fuzzy
-msgid "Y:"
-msgstr "Y: "
+msgid "Import"
+msgstr "Importa "
 
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+msgid "Export"
+msgstr "Esporta"
+
+#: glade/sodipodi-glade.c:52
 #, fuzzy
-msgid ""
-"pt\n"
-"mm\n"
-"cm\n"
-"in\n"
+msgid "Duplicate"
+msgstr "Duplica la selezione"
+
+#: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+msgid "Delete"
+msgstr "Cancella"
+
+#: glade/sodipodi-glade.c:55
+#, fuzzy
+msgid "_Align"
+msgstr "Allinea"
+
+#: glade/sodipodi-glade.c:56
+msgid "Order"
 msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"pt\n"
-"in\n"
+
+#: glade/sodipodi-glade.c:57
+msgid "Bring to _Front"
+msgstr ""
+
+#: glade/sodipodi-glade.c:58
+msgid "Send to _Back"
+msgstr ""
+
+#: glade/sodipodi-glade.c:59
+msgid "Forward One"
+msgstr ""
+
+#: glade/sodipodi-glade.c:60
+msgid "Back One"
+msgstr ""
+
+#: glade/sodipodi-glade.c:61
+msgid "_Group"
+msgstr ""
+
+#: glade/sodipodi-glade.c:62
+msgid "_Ungroup"
+msgstr ""
+
+#: glade/sodipodi-glade.c:63
+msgid "_Combine"
+msgstr ""
+
+#: glade/sodipodi-glade.c:64
+msgid "_Break Apart"
+msgstr ""
+
+#: glade/sodipodi-glade.c:65
+#, fuzzy
+msgid "Convert to Cu_rves"
+msgstr "Converti gli oggetti selezionati in curve"
+
+#: glade/sodipodi-glade.c:66
+#, fuzzy
+msgid "New View"
+msgstr "File"
+
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
+msgid "Zoom"
+msgstr "Ingrandimento"
+
+#: glade/sodipodi-glade.c:68 glade/transformation.c:16
+msgid "Scale"
+msgstr "Scala"
+
+#: glade/sodipodi-glade.c:69
+msgid "1:2"
+msgstr ""
+
+#: glade/sodipodi-glade.c:70
+msgid "1:1"
+msgstr ""
+
+#: glade/sodipodi-glade.c:71
+msgid "2:1"
+msgstr ""
+
+#: glade/sodipodi-glade.c:72
+msgid "_Interactive"
+msgstr ""
+
+#: glade/sodipodi-glade.c:73
+#, fuzzy
+msgid "_Selection"
+msgstr "Selezione"
+
+#: glade/sodipodi-glade.c:74
+#, fuzzy
+msgid "_Drawing"
+msgstr "Disegno"
+
+#: glade/sodipodi-glade.c:75
+#, fuzzy
+msgid "_Page"
+msgstr "Pagina"
+
+#: glade/sodipodi-glade.c:76
+msgid "Toggle Borders"
+msgstr ""
+
+#: glade/sodipodi-glade.c:77
+msgid "Show Toolbox"
+msgstr ""
+
+#: glade/sodipodi-glade.c:78
+#, fuzzy
+msgid "Drawing Context"
+msgstr "Contesto del disegno"
+
+#: glade/sodipodi-glade.c:79
+#, fuzzy
+msgid "Select"
+msgstr "Selezione"
+
+#: glade/sodipodi-glade.c:80
+#, fuzzy
+msgid "Node"
+msgstr "Nessuno"
+
+#: glade/sodipodi-glade.c:81
+#, fuzzy
+msgid "Rectangle"
+msgstr "angolo"
 
 #: glade/sodipodi-glade.c:82
 #, fuzzy
-msgid "window1"
-msgstr "Chiudi finestra di dialogo"
+msgid "Ellipse"
+msgstr "Disegna un elisse"
 
-#: glade/sodipodi-glade.c:84
-msgid " Style "
+#: glade/sodipodi-glade.c:83
+msgid "Freehand"
 msgstr ""
 
 #.
@@ -687,9 +837,38 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
 msgid "Text"
 msgstr "Testo"
+
+#: glade/sodipodi-glade.c:89
+#, fuzzy
+msgid "Nodes"
+msgstr "Nessuno"
+
+#: glade/sodipodi-glade.c:90
+#, fuzzy
+msgid "Desktop"
+msgstr "desktop"
+
+#: glade/sodipodi-glade.c:91
+#, fuzzy
+msgid "Document"
+msgstr "Impostazioni del documento"
+
+#: glade/sodipodi-glade.c:92
+#, fuzzy
+msgid "Display"
+msgstr "Parametri del desktop"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+msgid "XML Tree"
+msgstr "Albero XML"
 
 #: glade/text-dialog.c:8
 msgid "Text Properties"
@@ -707,10 +886,6 @@ msgstr "Sodipodi"
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_File"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Nuovo"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -756,10 +931,6 @@ msgstr "Disegna una linea a mano libera"
 msgid "Draw text"
 msgstr "Disegna il testo"
 
-#: glade/toolbox.c:22
-msgid "Zoom"
-msgstr "Ingrandimento"
-
 #: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "Porta a 1:1"
@@ -779,10 +950,6 @@ msgstr "Adatta al disegno"
 #: glade/toolbox.c:28
 msgid "Zoom to selection"
 msgstr "Adatta alla selezione"
-
-#: glade/toolbox.c:31 src/dialogs/align.c:110
-msgid "Selection"
-msgstr "Selezione"
 
 #: glade/toolbox.c:32
 msgid "lower selection to bottom"
@@ -816,53 +983,9 @@ msgstr "Raggruppa le parti selezionate"
 msgid "Ungroup selected objects"
 msgstr "Degruppa le parti selezionate"
 
-#: glade/toolbox.c:40
-msgid "Node Edit"
-msgstr "Modifica del nodo"
-
-#: glade/toolbox.c:41
-msgid "Include one node into selected segments"
-msgstr "Includi un nodo nei segmenti selezionati"
-
-#: glade/toolbox.c:42
-msgid "Delete selected nodes"
-msgstr "Cancella i nodi selezionati"
-
-#: glade/toolbox.c:43
-msgid "Convert selected segments to lines"
-msgstr "Converti i segmenti selezionati in linee"
-
-#: glade/toolbox.c:44
-msgid "Convert selected segments to curves"
-msgstr "Converti i segmenti selezionati in curve"
-
-#: glade/toolbox.c:45
-msgid "Break apart selected node"
-msgstr "Spezza via il nodo selezionato"
-
-#: glade/toolbox.c:46
-msgid "Join 2 selected endpoints"
-msgstr "Unisci le due estremità di linea selezionate"
-
-#: glade/toolbox.c:47
-msgid "Cusp line at selected nodes"
-msgstr "Aguzza le linee ai nodi selezionati"
-
-#: glade/toolbox.c:48
-msgid "Smooth line at selected nodes"
-msgstr "Smussa la linea ai nodi selezionati"
-
-#: glade/toolbox.c:49
-msgid "Symmetric "
-msgstr "Simmetrico "
-
 #: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Asimmetrico"
-
-#: glade/toolbox.c:51
-msgid "Close dialog"
-msgstr "Chiudi dialogo"
 
 #: glade/toolbox.c:52
 msgid "File"
@@ -871,10 +994,6 @@ msgstr "File"
 #: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Nuovo disegno"
-
-#: glade/toolbox.c:54
-msgid "Export"
-msgstr "Esporta"
 
 #: glade/toolbox.c:55
 msgid "Open new drawing"
@@ -1040,10 +1159,6 @@ msgstr "assoluto"
 #: glade/transformation.c:15
 msgid "select metric for values"
 msgstr "seleziona metrica per i valori"
-
-#: glade/transformation.c:16
-msgid "Scale"
-msgstr "Scala"
 
 #: glade/transformation.c:17
 msgid "Orig. Width: "
@@ -1278,15 +1393,6 @@ msgstr "%"
 msgid "Degree"
 msgstr "Gradi"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: glade/xml-tree.c:7
-msgid "XML Tree"
-msgstr "Albero XML"
-
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
 msgstr "Gerarchia"
@@ -1326,10 +1432,6 @@ msgstr "Chiave"
 #: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
 msgstr "Valore"
-
-#: glade/xml-tree.c:18
-msgid "Delete"
-msgstr "Cancella"
 
 #: glade/xml-tree.c:19
 msgid "Add"
@@ -1499,9 +1601,135 @@ msgstr "L'elemento piú grosso"
 msgid "Smallest item"
 msgstr "L'elemento piú piccolo"
 
-#: src/dialogs/align.c:105
-msgid "Drawing"
-msgstr "Disegno"
+#: src/dialogs/display-settings.c:71
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:75
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:79
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:83
+msgid "16x16"
+msgstr ""
+
+#: src/dialogs/item-properties.c:93
+msgid "Item is reference"
+msgstr ""
+
+#: src/dialogs/item-properties.c:238
+msgid "The ID is not valid"
+msgstr ""
+
+#: src/dialogs/item-properties.c:240
+msgid "The ID is already defined"
+msgstr ""
+
+#: src/dialogs/item-properties.c:242
+msgid "The ID is valid"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Scale with object"
+#~ msgstr "Scala con l'immagine"
+
+#, fuzzy
+#~ msgid "Color:"
+#~ msgstr "Colore"
+
+#, fuzzy
+#~ msgid "Stroke width"
+#~ msgstr "Imposta la larghezza della pagina"
+
+#, fuzzy
+#~ msgid ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "pt\n"
+#~ "in\n"
+
+#, fuzzy
+#~ msgid "Join:"
+#~ msgstr " Unisci "
+
+#, fuzzy
+#~ msgid "Round endpoints"
+#~ msgstr "Unisci le due estremità di linea selezionate"
+
+#, fuzzy
+#~ msgid "Endpoints:"
+#~ msgstr "Unitá:"
+
+#, fuzzy
+#~ msgid "Choose stroke color"
+#~ msgstr "Colore stroke:"
+
+#, fuzzy
+#~ msgid "No fill"
+#~ msgstr " Riempi con il colore "
+
+#, fuzzy
+#~ msgid "Color fill"
+#~ msgstr " Riempi con il colore "
+
+#, fuzzy
+#~ msgid "Gradient fill"
+#~ msgstr "Gradiente"
+
+#, fuzzy
+#~ msgid "Pattern fill"
+#~ msgstr "Motivo"
+
+#, fuzzy
+#~ msgid "Fractal fill"
+#~ msgstr "Frattale"
+
+#, fuzzy
+#~ msgid "Choose fill color"
+#~ msgstr "Scegli il colore della griglia"
+
+#, fuzzy
+#~ msgid "Red:"
+#~ msgstr "Rifai"
+
+#, fuzzy
+#~ msgid "Fill Color:"
+#~ msgstr "Colore di riempimento : "
+
+#, fuzzy
+#~ msgid "Blue:"
+#~ msgstr "Valore :"
+
+#, fuzzy
+#~ msgid "Y:"
+#~ msgstr "Y: "
+
+#, fuzzy
+#~ msgid ""
+#~ "pt\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "pt\n"
+#~ "in\n"
+
+#, fuzzy
+#~ msgid "window1"
+#~ msgstr "Chiudi finestra di dialogo"
 
 #, fuzzy
 #~ msgid "_New File"
@@ -1514,18 +1742,6 @@ msgstr "Disegno"
 #, fuzzy
 #~ msgid "_Export"
 #~ msgstr "Esporta"
-
-#, fuzzy
-#~ msgid "_Drawing"
-#~ msgstr "Disegno"
-
-#, fuzzy
-#~ msgid "_Selection"
-#~ msgstr "Selezione"
-
-#, fuzzy
-#~ msgid "_Page"
-#~ msgstr "Pagina"
 
 #, fuzzy
 #~ msgid "D_uplicate"
@@ -1544,10 +1760,6 @@ msgstr "Disegno"
 #~ msgstr "angolo"
 
 #, fuzzy
-#~ msgid "_Align"
-#~ msgstr "Allinea"
-
-#, fuzzy
 #~ msgid "_Transform"
 #~ msgstr "Trasforma la selezione"
 
@@ -1558,14 +1770,6 @@ msgstr "Disegno"
 #, fuzzy
 #~ msgid "Ungroups selected group"
 #~ msgstr "Degruppa le parti selezionate"
-
-#, fuzzy
-#~ msgid "Convert to Cu_rves"
-#~ msgstr "Converti gli oggetti selezionati in curve"
-
-#, fuzzy
-#~ msgid "New File"
-#~ msgstr "File"
 
 #, fuzzy
 #~ msgid "Open File"
@@ -1624,14 +1828,6 @@ msgstr "Disegno"
 #~ msgstr "Alza la selezione al punto piú alto"
 
 #, fuzzy
-#~ msgid "Select"
-#~ msgstr "Selezione"
-
-#, fuzzy
-#~ msgid "Node"
-#~ msgstr "Nessuno"
-
-#, fuzzy
 #~ msgid "Draw rectangles"
 #~ msgstr "Disegna rettangolo"
 
@@ -1644,76 +1840,12 @@ msgstr "Disegno"
 #~ msgstr "Disegna un elisse"
 
 #, fuzzy
-#~ msgid "Ellipse"
-#~ msgstr "Disegna un elisse"
-
-#, fuzzy
 #~ msgid "Draw freeform lines"
 #~ msgstr "Disegna una linea a mano libera"
 
 #, fuzzy
 #~ msgid "Draw\t"
 #~ msgstr "Disegno"
-
-#, fuzzy
-#~ msgid "Write text"
-#~ msgstr "Disegna il testo"
-
-#, fuzzy
-#~ msgid "Set dimensions"
-#~ msgstr "Dimensione"
-
-#, fuzzy
-#~ msgid "Filename:"
-#~ msgstr "File"
-
-#, fuzzy
-#~ msgid "Image size"
-#~ msgstr "Dimensione del foglio:"
-
-#, fuzzy
-#~ msgid "Width"
-#~ msgstr "Larghezza:"
-
-#, fuzzy
-#~ msgid "Height"
-#~ msgstr "Altezza:"
-
-#, fuzzy
-#~ msgid "Exported as"
-#~ msgstr "Esporta"
-
-#, fuzzy
-#~ msgid "pixels"
-#~ msgstr "Pixels\n"
-
-#, fuzzy
-#~ msgid "Import"
-#~ msgstr "Importa "
-
-#, fuzzy
-#~ msgid "Duplicate"
-#~ msgstr "Duplica la selezione"
-
-#, fuzzy
-#~ msgid "Drawing Context"
-#~ msgstr "Contesto del disegno"
-
-#, fuzzy
-#~ msgid "Rectangle"
-#~ msgstr "angolo"
-
-#, fuzzy
-#~ msgid "Nodes"
-#~ msgstr "Nessuno"
-
-#, fuzzy
-#~ msgid "Desktop"
-#~ msgstr "desktop"
-
-#, fuzzy
-#~ msgid "Document"
-#~ msgstr "Impostazioni del documento"
 
 #~ msgid "Alignment base"
 #~ msgstr "Allineamento base"

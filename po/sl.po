@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-05-18 00:43+0200\n"
+"POT-Creation-Date: 2001-05-17 19:58+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -204,6 +204,7 @@ msgid "Display settings"
 msgstr "Nastavitve prikaza"
 
 #: glade/display.c:45 glade/object_props.c:34
+#: src/dialogs/display-settings.c:67
 msgid "None"
 msgstr "Brez"
 
@@ -264,15 +265,16 @@ msgstr "Enote:"
 msgid "Choose unit system"
 msgstr "Izberi sistem enot"
 
-#: glade/document.c:19 glade/sodipodi-glade.c:12 glade/sodipodi-glade.c:54
+#: glade/document.c:19
 msgid "Width:"
 msgstr "©irina:"
 
-#: glade/document.c:20 glade/sodipodi-glade.c:55
+#: glade/document.c:20
 msgid "Height:"
 msgstr "Vi¹ina:"
 
-#: glade/document.c:21 src/dialogs/align.c:100
+#: glade/document.c:21 glade/sodipodi-glade.c:24 glade/sodipodi-glade.c:51
+#: src/dialogs/align.c:100
 msgid "Page"
 msgstr "Stran"
 
@@ -290,42 +292,51 @@ msgid "Sensitive"
 msgstr "Obèutljiv"
 
 #: glade/item.c:9
-msgid "Visible"
-msgstr "Viden"
-
-#: glade/item.c:10
 msgid "Active"
 msgstr "Aktiven"
+
+#: glade/item.c:10
+msgid "Visible"
+msgstr "Viden"
 
 #: glade/item.c:11
 msgid "Printable"
 msgstr "Natisljiv"
 
 #: glade/item.c:12
+msgid "ID:"
+msgstr ""
+
+#: glade/item.c:13
 msgid "Opacity:"
 msgstr "Prosojnost:"
 
-#: glade/item.c:13
+#: glade/item.c:14 src/dialogs/item-properties.c:99
+#: src/dialogs/item-properties.c:236
+msgid "The SVG ID of item"
+msgstr ""
+
+#: glade/item.c:15
 msgid "Transformation"
 msgstr "Preoblikovanje"
 
-#: glade/item.c:14
+#: glade/item.c:16
 msgid "Parent X ="
 msgstr "X star¹a ="
 
-#: glade/item.c:15
+#: glade/item.c:17
 msgid "Parent Y ="
 msgstr "Y star¹a ="
 
-#: glade/item.c:16 glade/item.c:17
+#: glade/item.c:18 glade/item.c:19
 msgid "X +"
 msgstr "X +"
 
-#: glade/item.c:18 glade/item.c:19
+#: glade/item.c:20 glade/item.c:21
 msgid "Y +"
 msgstr "Y +"
 
-#: glade/item.c:20 src/sp-item.c:471
+#: glade/item.c:22 src/sp-item.c:471
 msgid "Item"
 msgstr "Predmet"
 
@@ -334,19 +345,19 @@ msgstr "Predmet"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/object_props.c:7 glade/sodipodi-glade.c:7
+#: glade/object_props.c:7
 msgid "object properties"
 msgstr "lastnosti predmeta"
 
-#: glade/object_props.c:8 glade/sodipodi-glade.c:83
+#: glade/object_props.c:8
 msgid " General "
 msgstr " Splo¹no "
 
-#: glade/object_props.c:9 glade/sodipodi-glade.c:9
+#: glade/object_props.c:9
 msgid "Is stroked"
 msgstr "Je nagnjeno"
 
-#: glade/object_props.c:10 glade/sodipodi-glade.c:8
+#: glade/object_props.c:10
 msgid "Behind fill"
 msgstr "Polnjenje od zadaj"
 
@@ -354,7 +365,7 @@ msgstr "Polnjenje od zadaj"
 msgid "Stroke color : "
 msgstr "Barva nagnjenja : "
 
-#: glade/object_props.c:12 glade/sodipodi-glade.c:29
+#: glade/object_props.c:12
 msgid "Valige värv"
 msgstr "Valige värv"
 
@@ -363,7 +374,7 @@ msgid " Width "
 msgstr " ©irina "
 
 #: glade/object_props.c:14 glade/object_props.c:44 glade/object_props.c:53
-#: glade/object_props.c:72 glade/sodipodi-glade.c:72
+#: glade/object_props.c:72
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -425,8 +436,7 @@ msgstr "konec"
 msgid "sqare"
 msgstr "kvadrat"
 
-#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:11
-#: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
+#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:87
 msgid "Stroke"
 msgstr "Obroba"
 
@@ -446,7 +456,7 @@ msgstr "Vzorec"
 msgid "Fractal"
 msgstr "Fraktalni"
 
-#: glade/object_props.c:39 glade/sodipodi-glade.c:36
+#: glade/object_props.c:39
 msgid " Color fill "
 msgstr " Barvno polnjenje "
 
@@ -455,18 +465,14 @@ msgid "Fill Color : "
 msgstr "Barva polnjenja : "
 
 #: glade/object_props.c:41 glade/object_props.c:64 glade/object_props.c:79
-#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:64
-#: glade/sodipodi-glade.c:79
 msgid "Pick a color"
 msgstr "Izberi barvo"
 
-#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:44
-#: glade/sodipodi-glade.c:78
+#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:86
 msgid "Fill"
 msgstr "Zapolni"
 
-#: glade/object_props.c:43 glade/object_props.c:71 glade/sodipodi-glade.c:45
-#: glade/sodipodi-glade.c:71
+#: glade/object_props.c:43 glade/object_props.c:71
 msgid "Position"
 msgstr "Polo¾aj"
 
@@ -478,7 +484,7 @@ msgstr "x"
 msgid "y"
 msgstr "y"
 
-#: glade/object_props.c:52 glade/sodipodi-glade.c:53
+#: glade/object_props.c:52
 msgid "Dimension"
 msgstr "Dimenzije"
 
@@ -490,15 +496,15 @@ msgstr "©irina "
 msgid "Height "
 msgstr "Vi¹ina "
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:61
+#: glade/object_props.c:61
 msgid "Layout"
 msgstr "Postavitev"
 
-#: glade/object_props.c:62 glade/sodipodi-glade.c:62
+#: glade/object_props.c:62
 msgid "Reread"
 msgstr "Vnoviè preberi"
 
-#: glade/object_props.c:65 glade/sodipodi-glade.c:65
+#: glade/object_props.c:65
 msgid ""
 "px\n"
 "mm\n"
@@ -512,154 +518,328 @@ msgstr ""
 "pt\n"
 "in\n"
 
-#: glade/object_props.c:80 glade/sodipodi-glade.c:80
+#: glade/object_props.c:80
 msgid "none"
 msgstr "brez"
 
-#: glade/object_props.c:81 glade/sodipodi-glade.c:81
+#: glade/object_props.c:81
 msgid "color"
 msgstr "barva"
-
-#: glade/sodipodi-glade.c:10
-msgid "Scale with object"
-msgstr "Raztegni sliko"
-
-#: glade/sodipodi-glade.c:13
-msgid "Color:"
-msgstr "Barva:"
-
-#: glade/sodipodi-glade.c:14
-msgid "Stroke width"
-msgstr "Nastavi ¹irina èopièa"
-
-#: glade/sodipodi-glade.c:15
-msgid ""
-"px\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"in\n"
-
-#: glade/sodipodi-glade.c:20
-msgid "Join:"
-msgstr "Spoj:"
-
-#: glade/sodipodi-glade.c:21
-msgid "Bevel join"
-msgstr "Nagnjen spoj"
-
-#: glade/sodipodi-glade.c:22
-msgid "Round join"
-msgstr "Zaobljen spoj"
-
-#: glade/sodipodi-glade.c:23
-msgid "Mitter join"
-msgstr "Spoj pod kotom"
-
-#: glade/sodipodi-glade.c:24
-msgid "Butt endpoints"
-msgstr "Konène toèke"
-
-#: glade/sodipodi-glade.c:25
-msgid "Round endpoints"
-msgstr "Zaokro¾i konène toèke"
-
-#: glade/sodipodi-glade.c:26
-msgid "Square endpoints"
-msgstr "Kvadratne konène toèke"
-
-#: glade/sodipodi-glade.c:27
-msgid "Endpoints:"
-msgstr "Konène toèke:"
-
-#: glade/sodipodi-glade.c:28
-msgid "Choose stroke color"
-msgstr "Izberi barvo èopièa"
-
-#: glade/sodipodi-glade.c:31
-msgid "No fill"
-msgstr "Brez polnjenja"
-
-#: glade/sodipodi-glade.c:32
-msgid "Color fill"
-msgstr "Barvno polnjenje"
-
-#: glade/sodipodi-glade.c:33
-msgid "Gradient fill"
-msgstr "Prelivno polnjenje"
-
-#: glade/sodipodi-glade.c:34
-msgid "Pattern fill"
-msgstr "Polnjenje z vzorcem"
-
-#: glade/sodipodi-glade.c:35
-msgid "Fractal fill"
-msgstr "Fraktalno polnjenje"
-
-#: glade/sodipodi-glade.c:37
-msgid "Choose fill color"
-msgstr "Izberi barvo polnjenja"
-
-#: glade/sodipodi-glade.c:39
-msgid "Red:"
-msgstr "Rdeèa:"
-
-#: glade/sodipodi-glade.c:40
-msgid "Fill Color:"
-msgstr "Barva polnjenja :"
-
-#: glade/sodipodi-glade.c:41
-msgid "Green:"
-msgstr "Zelena:"
-
-#: glade/sodipodi-glade.c:42
-msgid "Blue:"
-msgstr "Modra:"
-
-#: glade/sodipodi-glade.c:43
-msgid "Alpha:"
-msgstr "Alfa:"
-
-#: glade/sodipodi-glade.c:46
-msgid "X:"
-msgstr "X:"
-
-#: glade/sodipodi-glade.c:47
-msgid "Y:"
-msgstr "Y:"
-
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
-msgid ""
-"pt\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"toèk\n"
-"mm\n"
-"cm\n"
-"in\n"
-
-#: glade/sodipodi-glade.c:82
-msgid "window1"
-msgstr "okno1"
-
-#: glade/sodipodi-glade.c:84
-msgid " Style "
-msgstr " Slog "
 
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:7
+msgid "Copyright Lauris Kaplinski 1999-2000."
+msgstr "Avtorske pravice pridr¾ane Lauris Kaplinski 1999-2000."
+
+#: glade/sodipodi-glade.c:8
+msgid ""
+"A Vector Drawing Program.\n"
+"Released under GPL"
+msgstr ""
+"Program za Vektorsko Risanje.\n"
+"Dostopen pod GNU Splo¹no Javno Licenco"
+
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+msgid "Node Edit"
+msgstr "Urejanje kontronih toèk"
+
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+msgid "Include one node into selected segments"
+msgstr "Vstavi kontrolno toèko v izbrane segmente"
+
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+msgid "Break apart selected node"
+msgstr "Loèi izbrano kontrolno toèko"
+
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+msgid "Convert selected segments to curves"
+msgstr "Pretvori izbrane segmente v krivulje"
+
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+msgid "Join 2 selected endpoints"
+msgstr "Spoji 2 izbrani konèni toèki"
+
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+msgid "Cusp line at selected nodes"
+msgstr "Pove¾i èrto na izbranih kontrolnih toèkah"
+
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+msgid "Smooth line at selected nodes"
+msgstr "Zgladi èrto na izbranih kontrolnih toèkah"
+
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+msgid "Symmetric "
+msgstr "Simetrièno "
+
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+msgid "Close dialog"
+msgstr "Zapri dialog"
+
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+msgid "Convert selected segments to lines"
+msgstr "Pretvori izbrane segmente v èrte"
+
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+msgid "Delete selected nodes"
+msgstr "Zbri¹i izbrane toèke"
+
+#: glade/sodipodi-glade.c:21
+msgid "Export picture to png"
+msgstr "Izvozi sliko v PNG"
+
+#: glade/sodipodi-glade.c:22
+msgid "Set dimensions"
+msgstr "Nastavi dimenzije"
+
+#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:49 src/dialogs/align.c:105
+msgid "Drawing"
+msgstr "Risanje"
+
+#: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
+msgid "Selection"
+msgstr "Izbira"
+
+#: glade/sodipodi-glade.c:26
+msgid "Where to export"
+msgstr "Kam izvoziti"
+
+#: glade/sodipodi-glade.c:27
+msgid "Filename:"
+msgstr "Ime datoteke:"
+
+#: glade/sodipodi-glade.c:28
+msgid "Png file name"
+msgstr "Ime PNG datoteke"
+
+#: glade/sodipodi-glade.c:29
+msgid "Image size"
+msgstr "Velikost slike"
+
+#: glade/sodipodi-glade.c:30
+msgid "X0"
+msgstr "X0"
+
+#: glade/sodipodi-glade.c:31
+msgid "Y0"
+msgstr "Y0"
+
+#: glade/sodipodi-glade.c:32
+msgid "X1"
+msgstr "X1"
+
+#: glade/sodipodi-glade.c:33
+msgid "Y1"
+msgstr "Y1"
+
+#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:37
+msgid "Width"
+msgstr "©irina"
+
+#: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:38
+msgid "Height"
+msgstr "Vi¹ina"
+
+#: glade/sodipodi-glade.c:36
+msgid "Exported as"
+msgstr "Izvo¾eno kot"
+
+#: glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+msgid "pixels"
+msgstr "pikslov"
+
+#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
+msgid "dpi"
+msgstr "pik na palec"
+
+#: glade/sodipodi-glade.c:43
+msgid "Lock aspect ratio"
+msgstr "Zakleni razmerje stranic"
+
+#: glade/sodipodi-glade.c:44
+msgid "1.0MB"
+msgstr "1.0MB"
+
+#: glade/sodipodi-glade.c:45
+msgid "Uncompressed file size:"
+msgstr "Velikost nekomprimirane datoteke:"
+
+#: glade/sodipodi-glade.c:46 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Nova"
+
+#: glade/sodipodi-glade.c:47
+msgid "Import"
+msgstr "Uvozi"
+
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+msgid "Export"
+msgstr "Izvozi"
+
+#: glade/sodipodi-glade.c:52
+msgid "Duplicate"
+msgstr "Podvoji"
+
+#: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+msgid "Delete"
+msgstr "Zbri¹i"
+
+#: glade/sodipodi-glade.c:55
+msgid "_Align"
+msgstr "_Poravnava"
+
+#: glade/sodipodi-glade.c:56
+msgid "Order"
+msgstr "Vrstni red"
+
+#: glade/sodipodi-glade.c:57
+msgid "Bring to _Front"
+msgstr "Prinesi na _vrh"
+
+#: glade/sodipodi-glade.c:58
+msgid "Send to _Back"
+msgstr "Po¹lji na _dno"
+
+#: glade/sodipodi-glade.c:59
+msgid "Forward One"
+msgstr "Naprej za eno"
+
+#: glade/sodipodi-glade.c:60
+msgid "Back One"
+msgstr "Nazaj za eno"
+
+#: glade/sodipodi-glade.c:61
+#, fuzzy
+msgid "_Group"
+msgstr "Grupiraj"
+
+#: glade/sodipodi-glade.c:62
+#, fuzzy
+msgid "_Ungroup"
+msgstr "Odgrupiraj"
+
+#: glade/sodipodi-glade.c:63
+msgid "_Combine"
+msgstr "_Zdru¾i"
+
+#: glade/sodipodi-glade.c:64
+msgid "_Break Apart"
+msgstr "_Razèleni"
+
+#: glade/sodipodi-glade.c:65
+msgid "Convert to Cu_rves"
+msgstr "Pretvori v k_rivulje"
+
+#: glade/sodipodi-glade.c:66
+msgid "New View"
+msgstr "Nov pogled"
+
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
+msgid "Zoom"
+msgstr "Poveèava"
+
+#: glade/sodipodi-glade.c:68 glade/transformation.c:16
+msgid "Scale"
+msgstr "Faktor poveèave"
+
+#: glade/sodipodi-glade.c:69
+msgid "1:2"
+msgstr "1:2"
+
+#: glade/sodipodi-glade.c:70
+msgid "1:1"
+msgstr "1:1"
+
+#: glade/sodipodi-glade.c:71
+msgid "2:1"
+msgstr "2:1"
+
+#: glade/sodipodi-glade.c:72
+msgid "_Interactive"
+msgstr "_Interaktivno"
+
+#: glade/sodipodi-glade.c:73
+msgid "_Selection"
+msgstr "_Izbiro"
+
+#: glade/sodipodi-glade.c:74
+msgid "_Drawing"
+msgstr "_Sliko"
+
+#: glade/sodipodi-glade.c:75
+msgid "_Page"
+msgstr "_Stran"
+
+#: glade/sodipodi-glade.c:76
+msgid "Toggle Borders"
+msgstr "Preklopi Robove"
+
+#: glade/sodipodi-glade.c:77
+msgid "Show Toolbox"
+msgstr ""
+
+#: glade/sodipodi-glade.c:78
+msgid "Drawing Context"
+msgstr "Naèin Risanja"
+
+#: glade/sodipodi-glade.c:79
+msgid "Select"
+msgstr "Izberi"
+
+#: glade/sodipodi-glade.c:80
+msgid "Node"
+msgstr "Toèka"
+
+#: glade/sodipodi-glade.c:81
+msgid "Rectangle"
+msgstr "Pravokotnik"
+
+#: glade/sodipodi-glade.c:82
+msgid "Ellipse"
+msgstr "Elipsa"
+
+#: glade/sodipodi-glade.c:83
+msgid "Freehand"
+msgstr "Prostoroèno"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
 msgid "Text"
 msgstr "Besedilo"
+
+#: glade/sodipodi-glade.c:89
+msgid "Nodes"
+msgstr "Kontrolne toèke"
+
+#: glade/sodipodi-glade.c:90
+msgid "Desktop"
+msgstr "Namizje"
+
+#: glade/sodipodi-glade.c:91
+msgid "Document"
+msgstr "Dokument"
+
+#: glade/sodipodi-glade.c:92
+#, fuzzy
+msgid "Display"
+msgstr "Nastavitve prikaza"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+msgid "XML Tree"
+msgstr "XML drevo"
 
 #: glade/text-dialog.c:8
 msgid "Text Properties"
@@ -677,10 +857,6 @@ msgstr "Sodipodi"
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Datoteka"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Nova"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -726,10 +902,6 @@ msgstr "Ri¹i prosto èrto"
 msgid "Draw text"
 msgstr "Ri¹i besedilo"
 
-#: glade/toolbox.c:22
-msgid "Zoom"
-msgstr "Poveèava"
-
 #: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "Poveèaj na 1:1"
@@ -749,10 +921,6 @@ msgstr "Poveèaj na risbo"
 #: glade/toolbox.c:28
 msgid "Zoom to selection"
 msgstr "Poveèaj na izbrano"
-
-#: glade/toolbox.c:31 src/dialogs/align.c:110
-msgid "Selection"
-msgstr "Izbira"
 
 #: glade/toolbox.c:32
 msgid "lower selection to bottom"
@@ -786,53 +954,9 @@ msgstr "Grupiraj izbrane predmete"
 msgid "Ungroup selected objects"
 msgstr "Odgrupiraj izbrane premete"
 
-#: glade/toolbox.c:40
-msgid "Node Edit"
-msgstr "Urejanje kontronih toèk"
-
-#: glade/toolbox.c:41
-msgid "Include one node into selected segments"
-msgstr "Vstavi kontrolno toèko v izbrane segmente"
-
-#: glade/toolbox.c:42
-msgid "Delete selected nodes"
-msgstr "Zbri¹i izbrane toèke"
-
-#: glade/toolbox.c:43
-msgid "Convert selected segments to lines"
-msgstr "Pretvori izbrane segmente v èrte"
-
-#: glade/toolbox.c:44
-msgid "Convert selected segments to curves"
-msgstr "Pretvori izbrane segmente v krivulje"
-
-#: glade/toolbox.c:45
-msgid "Break apart selected node"
-msgstr "Loèi izbrano kontrolno toèko"
-
-#: glade/toolbox.c:46
-msgid "Join 2 selected endpoints"
-msgstr "Spoji 2 izbrani konèni toèki"
-
-#: glade/toolbox.c:47
-msgid "Cusp line at selected nodes"
-msgstr "Pove¾i èrto na izbranih kontrolnih toèkah"
-
-#: glade/toolbox.c:48
-msgid "Smooth line at selected nodes"
-msgstr "Zgladi èrto na izbranih kontrolnih toèkah"
-
-#: glade/toolbox.c:49
-msgid "Symmetric "
-msgstr "Simetrièno "
-
 #: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Nesimetrièno"
-
-#: glade/toolbox.c:51
-msgid "Close dialog"
-msgstr "Zapri dialog"
 
 #: glade/toolbox.c:52
 msgid "File"
@@ -841,10 +965,6 @@ msgstr "Datoteka"
 #: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Nova risba"
-
-#: glade/toolbox.c:54
-msgid "Export"
-msgstr "Izvozi"
 
 #: glade/toolbox.c:55
 msgid "Open new drawing"
@@ -1010,10 +1130,6 @@ msgstr "absolutno"
 #: glade/transformation.c:15
 msgid "select metric for values"
 msgstr "izberi enote za vrednosti"
-
-#: glade/transformation.c:16
-msgid "Scale"
-msgstr "Faktor poveèave"
 
 #: glade/transformation.c:17
 msgid "Orig. Width: "
@@ -1248,15 +1364,6 @@ msgstr "%"
 msgid "Degree"
 msgstr "Stopinje"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: glade/xml-tree.c:7
-msgid "XML Tree"
-msgstr "XML drevo"
-
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
 msgstr "Hierarhja"
@@ -1296,10 +1403,6 @@ msgstr "Kljuè"
 #: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
 msgstr "Vrednost"
-
-#: glade/xml-tree.c:18
-msgid "Delete"
-msgstr "Zbri¹i"
 
 #: glade/xml-tree.c:19
 msgid "Add"
@@ -1471,30 +1574,149 @@ msgstr "Najveèji predmet"
 msgid "Smallest item"
 msgstr "Najmanj¹i predmet"
 
-#: src/dialogs/align.c:105
-msgid "Drawing"
-msgstr "Risanje"
+#: src/dialogs/display-settings.c:71
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:75
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:79
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:83
+msgid "16x16"
+msgstr ""
+
+#: src/dialogs/item-properties.c:93
+msgid "Item is reference"
+msgstr ""
+
+#: src/dialogs/item-properties.c:238
+msgid "The ID is not valid"
+msgstr ""
+
+#: src/dialogs/item-properties.c:240
+msgid "The ID is already defined"
+msgstr ""
+
+#: src/dialogs/item-properties.c:242
+msgid "The ID is valid"
+msgstr ""
+
+#~ msgid "Scale with object"
+#~ msgstr "Raztegni sliko"
+
+#~ msgid "Color:"
+#~ msgstr "Barva:"
+
+#~ msgid "Stroke width"
+#~ msgstr "Nastavi ¹irina èopièa"
+
+#~ msgid ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+
+#~ msgid "Join:"
+#~ msgstr "Spoj:"
+
+#~ msgid "Bevel join"
+#~ msgstr "Nagnjen spoj"
+
+#~ msgid "Round join"
+#~ msgstr "Zaobljen spoj"
+
+#~ msgid "Mitter join"
+#~ msgstr "Spoj pod kotom"
+
+#~ msgid "Butt endpoints"
+#~ msgstr "Konène toèke"
+
+#~ msgid "Round endpoints"
+#~ msgstr "Zaokro¾i konène toèke"
+
+#~ msgid "Square endpoints"
+#~ msgstr "Kvadratne konène toèke"
+
+#~ msgid "Endpoints:"
+#~ msgstr "Konène toèke:"
+
+#~ msgid "Choose stroke color"
+#~ msgstr "Izberi barvo èopièa"
+
+#~ msgid "No fill"
+#~ msgstr "Brez polnjenja"
+
+#~ msgid "Color fill"
+#~ msgstr "Barvno polnjenje"
+
+#~ msgid "Gradient fill"
+#~ msgstr "Prelivno polnjenje"
+
+#~ msgid "Pattern fill"
+#~ msgstr "Polnjenje z vzorcem"
+
+#~ msgid "Fractal fill"
+#~ msgstr "Fraktalno polnjenje"
+
+#~ msgid "Choose fill color"
+#~ msgstr "Izberi barvo polnjenja"
+
+#~ msgid "Red:"
+#~ msgstr "Rdeèa:"
+
+#~ msgid "Fill Color:"
+#~ msgstr "Barva polnjenja :"
+
+#~ msgid "Green:"
+#~ msgstr "Zelena:"
+
+#~ msgid "Blue:"
+#~ msgstr "Modra:"
+
+#~ msgid "Alpha:"
+#~ msgstr "Alfa:"
+
+#~ msgid "X:"
+#~ msgstr "X:"
+
+#~ msgid "Y:"
+#~ msgstr "Y:"
+
+#~ msgid ""
+#~ "pt\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "toèk\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+
+#~ msgid "window1"
+#~ msgstr "okno1"
+
+#~ msgid " Style "
+#~ msgstr " Slog "
 
 #~ msgid "_New File"
 #~ msgstr "_Nova datoteka"
-
-#~ msgid "New View"
-#~ msgstr "Nov pogled"
 
 #~ msgid "_Import"
 #~ msgstr "_Uvozi"
 
 #~ msgid "_Export"
 #~ msgstr "_Izvozi"
-
-#~ msgid "_Drawing"
-#~ msgstr "_Sliko"
-
-#~ msgid "_Selection"
-#~ msgstr "_Izbiro"
-
-#~ msgid "_Page"
-#~ msgstr "_Stran"
 
 #~ msgid "Print Pre_view"
 #~ msgstr "_Predogled tiskanja"
@@ -1508,18 +1730,6 @@ msgstr "Risanje"
 #~ msgid "Node Editing..."
 #~ msgstr "Urejanje kontrolnih toèk..."
 
-#~ msgid "1:2"
-#~ msgstr "1:2"
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
-
-#~ msgid "2:1"
-#~ msgstr "2:1"
-
-#~ msgid "_Interactive"
-#~ msgstr "_Interaktivno"
-
 #~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
 #~ msgstr "Vklopi/izklopi rob delovne pov¹rine (ravnila in drsnike)"
 
@@ -1529,41 +1739,17 @@ msgstr "Risanje"
 #~ msgid "_Arrange"
 #~ msgstr "_Uredi"
 
-#~ msgid "_Align"
-#~ msgstr "_Poravnava"
-
 #~ msgid "_Transform"
 #~ msgstr "_Preoblikuj"
 
 #~ msgid "_Order"
 #~ msgstr "Vrstni _red"
 
-#~ msgid "Bring to _Front"
-#~ msgstr "Prinesi na _vrh"
-
-#~ msgid "Send to _Back"
-#~ msgstr "Po¹lji na _dno"
-
-#~ msgid "Forward One"
-#~ msgstr "Naprej za eno"
-
-#~ msgid "Back One"
-#~ msgstr "Nazaj za eno"
-
 #~ msgid "Groups selected items"
 #~ msgstr "Grupira izbrane predmete"
 
 #~ msgid "Ungroups selected group"
 #~ msgstr "Odgrupira izbrano skupino"
-
-#~ msgid "_Combine"
-#~ msgstr "_Zdru¾i"
-
-#~ msgid "_Break Apart"
-#~ msgstr "_Razèleni"
-
-#~ msgid "Convert to Cu_rves"
-#~ msgstr "Pretvori v k_rivulje"
 
 #~ msgid "New File"
 #~ msgstr "Nova datoteka"
@@ -1628,14 +1814,8 @@ msgstr "Risanje"
 #~ msgid "Select and transform objects and groups"
 #~ msgstr "Izberi in preoblikuj predmete in skupine"
 
-#~ msgid "Select"
-#~ msgstr "Izberi"
-
 #~ msgid "Edit objects using control nodes"
 #~ msgstr "Spremeni predmete s pomoèjo kontrolnih toèk"
-
-#~ msgid "Node"
-#~ msgstr "Toèka"
 
 #~ msgid "Draw rectangles"
 #~ msgstr "Ri¹i pravokotnike"
@@ -1645,9 +1825,6 @@ msgstr "Risanje"
 
 #~ msgid "Draw ellipses"
 #~ msgstr "Ri¹i elipse"
-
-#~ msgid "Ellipse"
-#~ msgstr "Elipsa"
 
 #~ msgid "Draw freeform lines"
 #~ msgstr "Ri¹i proste èrte"
@@ -1660,100 +1837,6 @@ msgstr "Risanje"
 
 #~ msgid "Left button zooms in, right out"
 #~ msgstr "Lev gumb poveèa, desni pomanj¹a"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Avtorske pravice pridr¾ane Lauris Kaplinski 1999-2000."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Program za Vektorsko Risanje.\n"
-#~ "Dostopen pod GNU Splo¹no Javno Licenco"
-
-#~ msgid "Export picture to png"
-#~ msgstr "Izvozi sliko v PNG"
-
-#~ msgid "Set dimensions"
-#~ msgstr "Nastavi dimenzije"
-
-#~ msgid "Where to export"
-#~ msgstr "Kam izvoziti"
-
-#~ msgid "Filename:"
-#~ msgstr "Ime datoteke:"
-
-#~ msgid "Png file name"
-#~ msgstr "Ime PNG datoteke"
-
-#~ msgid "Image size"
-#~ msgstr "Velikost slike"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "Width"
-#~ msgstr "©irina"
-
-#~ msgid "Height"
-#~ msgstr "Vi¹ina"
-
-#~ msgid "Exported as"
-#~ msgstr "Izvo¾eno kot"
-
-#~ msgid "pixels"
-#~ msgstr "pikslov"
-
-#~ msgid "dpi"
-#~ msgstr "pik na palec"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "Zakleni razmerje stranic"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0MB"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "Velikost nekomprimirane datoteke:"
-
-#~ msgid "Import"
-#~ msgstr "Uvozi"
-
-#~ msgid "Duplicate"
-#~ msgstr "Podvoji"
-
-#~ msgid "Order"
-#~ msgstr "Vrstni red"
-
-#~ msgid "Toggle Borders"
-#~ msgstr "Preklopi Robove"
-
-#~ msgid "Drawing Context"
-#~ msgstr "Naèin Risanja"
-
-#~ msgid "Rectangle"
-#~ msgstr "Pravokotnik"
-
-#~ msgid "Freehand"
-#~ msgstr "Prostoroèno"
-
-#~ msgid "Nodes"
-#~ msgstr "Kontrolne toèke"
-
-#~ msgid "Desktop"
-#~ msgstr "Namizje"
-
-#~ msgid "Document"
-#~ msgstr "Dokument"
 
 #~ msgid ""
 #~ "10%\n"

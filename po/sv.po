@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-05-17 23:30+0200\n"
+"POT-Creation-Date: 2001-05-17 19:58+0200\n"
 "PO-Revision-Date: 2001-05-17 23:54+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -207,6 +207,7 @@ msgid "Display settings"
 msgstr "Visningsinställningar"
 
 #: glade/display.c:45 glade/object_props.c:34
+#: src/dialogs/display-settings.c:67
 msgid "None"
 msgstr "Ingen"
 
@@ -267,15 +268,16 @@ msgstr "Enheter:"
 msgid "Choose unit system"
 msgstr "Välj enhetssystem"
 
-#: glade/document.c:19 glade/sodipodi-glade.c:12 glade/sodipodi-glade.c:54
+#: glade/document.c:19
 msgid "Width:"
 msgstr "Bredd:"
 
-#: glade/document.c:20 glade/sodipodi-glade.c:55
+#: glade/document.c:20
 msgid "Height:"
 msgstr "Höjd:"
 
-#: glade/document.c:21 src/dialogs/align.c:100
+#: glade/document.c:21 glade/sodipodi-glade.c:24 glade/sodipodi-glade.c:51
+#: src/dialogs/align.c:100
 msgid "Page"
 msgstr "Sida"
 
@@ -293,42 +295,51 @@ msgid "Sensitive"
 msgstr "Känslig"
 
 #: glade/item.c:9
-msgid "Visible"
-msgstr "Synlig"
-
-#: glade/item.c:10
 msgid "Active"
 msgstr "Aktiv"
+
+#: glade/item.c:10
+msgid "Visible"
+msgstr "Synlig"
 
 #: glade/item.c:11
 msgid "Printable"
 msgstr "Utskrivbar"
 
 #: glade/item.c:12
+msgid "ID:"
+msgstr ""
+
+#: glade/item.c:13
 msgid "Opacity:"
 msgstr "Opacitet:"
 
-#: glade/item.c:13
+#: glade/item.c:14 src/dialogs/item-properties.c:99
+#: src/dialogs/item-properties.c:236
+msgid "The SVG ID of item"
+msgstr ""
+
+#: glade/item.c:15
 msgid "Transformation"
 msgstr "Transformering"
 
-#: glade/item.c:14
+#: glade/item.c:16
 msgid "Parent X ="
 msgstr "Förälder X ="
 
-#: glade/item.c:15
+#: glade/item.c:17
 msgid "Parent Y ="
 msgstr "Förälder Y ="
 
-#: glade/item.c:16 glade/item.c:17
+#: glade/item.c:18 glade/item.c:19
 msgid "X +"
 msgstr "X +"
 
-#: glade/item.c:18 glade/item.c:19
+#: glade/item.c:20 glade/item.c:21
 msgid "Y +"
 msgstr "Y +"
 
-#: glade/item.c:20 src/sp-item.c:471
+#: glade/item.c:22 src/sp-item.c:471
 msgid "Item"
 msgstr "Objekt"
 
@@ -337,19 +348,19 @@ msgstr "Objekt"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/object_props.c:7 glade/sodipodi-glade.c:7
+#: glade/object_props.c:7
 msgid "object properties"
 msgstr "objektegenskaper"
 
-#: glade/object_props.c:8 glade/sodipodi-glade.c:83
+#: glade/object_props.c:8
 msgid " General "
 msgstr " Allmänt "
 
-#: glade/object_props.c:9 glade/sodipodi-glade.c:9
+#: glade/object_props.c:9
 msgid "Is stroked"
 msgstr "Är genomstruket"
 
-#: glade/object_props.c:10 glade/sodipodi-glade.c:8
+#: glade/object_props.c:10
 msgid "Behind fill"
 msgstr "Bakom fyllning"
 
@@ -357,7 +368,7 @@ msgstr "Bakom fyllning"
 msgid "Stroke color : "
 msgstr "Genomstrykningsfärg: "
 
-#: glade/object_props.c:12 glade/sodipodi-glade.c:29
+#: glade/object_props.c:12
 msgid "Valige värv"
 msgstr "Valige värv"
 
@@ -366,7 +377,7 @@ msgid " Width "
 msgstr " Bredd "
 
 #: glade/object_props.c:14 glade/object_props.c:44 glade/object_props.c:53
-#: glade/object_props.c:72 glade/sodipodi-glade.c:72
+#: glade/object_props.c:72
 msgid ""
 "pixels\n"
 "millimeters\n"
@@ -428,8 +439,7 @@ msgstr "skottavla"
 msgid "sqare"
 msgstr "fyrkant"
 
-#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:11
-#: glade/sodipodi-glade.c:30 glade/sodipodi-glade.c:63
+#: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:87
 msgid "Stroke"
 msgstr "Genomstrykning"
 
@@ -449,7 +459,7 @@ msgstr "Mönster"
 msgid "Fractal"
 msgstr "Fraktal"
 
-#: glade/object_props.c:39 glade/sodipodi-glade.c:36
+#: glade/object_props.c:39
 msgid " Color fill "
 msgstr " Färgfyllning "
 
@@ -458,18 +468,14 @@ msgid "Fill Color : "
 msgstr "Fyllningsfärg: "
 
 #: glade/object_props.c:41 glade/object_props.c:64 glade/object_props.c:79
-#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:64
-#: glade/sodipodi-glade.c:79
 msgid "Pick a color"
 msgstr "Välj en färg"
 
-#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:44
-#: glade/sodipodi-glade.c:78
+#: glade/object_props.c:42 glade/object_props.c:78 glade/sodipodi-glade.c:86
 msgid "Fill"
 msgstr "Fyll"
 
-#: glade/object_props.c:43 glade/object_props.c:71 glade/sodipodi-glade.c:45
-#: glade/sodipodi-glade.c:71
+#: glade/object_props.c:43 glade/object_props.c:71
 msgid "Position"
 msgstr "Position"
 
@@ -481,7 +487,7 @@ msgstr "x"
 msgid "y"
 msgstr "y"
 
-#: glade/object_props.c:52 glade/sodipodi-glade.c:53
+#: glade/object_props.c:52
 msgid "Dimension"
 msgstr "Mått"
 
@@ -493,15 +499,15 @@ msgstr "Bredd "
 msgid "Height "
 msgstr "Höjd "
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:61
+#: glade/object_props.c:61
 msgid "Layout"
 msgstr "Utseende"
 
-#: glade/object_props.c:62 glade/sodipodi-glade.c:62
+#: glade/object_props.c:62
 msgid "Reread"
 msgstr "Läs om"
 
-#: glade/object_props.c:65 glade/sodipodi-glade.c:65
+#: glade/object_props.c:65
 msgid ""
 "px\n"
 "mm\n"
@@ -515,154 +521,329 @@ msgstr ""
 "pt\n"
 "tum\n"
 
-#: glade/object_props.c:80 glade/sodipodi-glade.c:80
+#: glade/object_props.c:80
 msgid "none"
 msgstr "ingen"
 
-#: glade/object_props.c:81 glade/sodipodi-glade.c:81
+#: glade/object_props.c:81
 msgid "color"
 msgstr "färg"
-
-#: glade/sodipodi-glade.c:10
-msgid "Scale with object"
-msgstr "Skala med objekt"
-
-#: glade/sodipodi-glade.c:13
-msgid "Color:"
-msgstr "Färg:"
-
-#: glade/sodipodi-glade.c:14
-msgid "Stroke width"
-msgstr "Penselbredd"
-
-#: glade/sodipodi-glade.c:15
-msgid ""
-"px\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"px\n"
-"mm\n"
-"cm\n"
-"tum\n"
-
-#: glade/sodipodi-glade.c:20
-msgid "Join:"
-msgstr "Anslutning:"
-
-#: glade/sodipodi-glade.c:21
-msgid "Bevel join"
-msgstr "Avfasad anslutning"
-
-#: glade/sodipodi-glade.c:22
-msgid "Round join"
-msgstr "Rund anslutning"
-
-#: glade/sodipodi-glade.c:23
-msgid "Mitter join"
-msgstr "Mitteranslutning"
-
-#: glade/sodipodi-glade.c:24
-msgid "Butt endpoints"
-msgstr "Skottavleändpunkter"
-
-#: glade/sodipodi-glade.c:25
-msgid "Round endpoints"
-msgstr "Runda ändpunkter"
-
-#: glade/sodipodi-glade.c:26
-msgid "Square endpoints"
-msgstr "Fyrkantiga ändpunkter"
-
-#: glade/sodipodi-glade.c:27
-msgid "Endpoints:"
-msgstr "Ändpunkter:"
-
-#: glade/sodipodi-glade.c:28
-msgid "Choose stroke color"
-msgstr "Välj genomstrykningsfärg "
-
-#: glade/sodipodi-glade.c:31
-msgid "No fill"
-msgstr "Ingen fyllning"
-
-#: glade/sodipodi-glade.c:32
-msgid "Color fill"
-msgstr "Färgfyllning"
-
-#: glade/sodipodi-glade.c:33
-msgid "Gradient fill"
-msgstr "Toningsfyllning"
-
-#: glade/sodipodi-glade.c:34
-msgid "Pattern fill"
-msgstr "Mönsterfyllning"
-
-#: glade/sodipodi-glade.c:35
-msgid "Fractal fill"
-msgstr "Fraktalfyllning"
-
-#: glade/sodipodi-glade.c:37
-msgid "Choose fill color"
-msgstr "Välj fyllningsfärg"
-
-#: glade/sodipodi-glade.c:39
-msgid "Red:"
-msgstr "Röd:"
-
-#: glade/sodipodi-glade.c:40
-msgid "Fill Color:"
-msgstr "Fyllningsfärg:"
-
-#: glade/sodipodi-glade.c:41
-msgid "Green:"
-msgstr "Grön:"
-
-#: glade/sodipodi-glade.c:42
-msgid "Blue:"
-msgstr "Blå:"
-
-#: glade/sodipodi-glade.c:43
-msgid "Alpha:"
-msgstr "Alfa:"
-
-#: glade/sodipodi-glade.c:46
-msgid "X:"
-msgstr "X:"
-
-#: glade/sodipodi-glade.c:47
-msgid "Y:"
-msgstr "Y:"
-
-#: glade/sodipodi-glade.c:48 glade/sodipodi-glade.c:56
-msgid ""
-"pt\n"
-"mm\n"
-"cm\n"
-"in\n"
-msgstr ""
-"pt\n"
-"mm\n"
-"cm\n"
-"tum\n"
-
-#: glade/sodipodi-glade.c:82
-msgid "window1"
-msgstr "window1"
-
-#: glade/sodipodi-glade.c:84
-msgid " Style "
-msgstr " Stil "
 
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:7
+msgid "Copyright Lauris Kaplinski 1999-2000."
+msgstr "Copyright Lauris Kaplinski 1999-2000."
+
+#: glade/sodipodi-glade.c:8
+msgid ""
+"A Vector Drawing Program.\n"
+"Released under GPL"
+msgstr ""
+"Ett vektorbaserat ritprogram.\n"
+"Släppt under GPL"
+
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+msgid "Node Edit"
+msgstr "Nodredigering"
+
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+msgid "Include one node into selected segments"
+msgstr "Inkludera en nod i markerade segment"
+
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+msgid "Break apart selected node"
+msgstr "Dela upp markerad nod"
+
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+msgid "Convert selected segments to curves"
+msgstr "Konvertera markerade segment till kurvor"
+
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+msgid "Join 2 selected endpoints"
+msgstr "Anslut två markerade ändpunkter"
+
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+msgid "Cusp line at selected nodes"
+msgstr "Spetsa linjen vid markerade noder"
+
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+msgid "Smooth line at selected nodes"
+msgstr "Gör linjen mjukare vid markerade noder"
+
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+msgid "Symmetric "
+msgstr "Symmetrisk "
+
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+msgid "Close dialog"
+msgstr "Stäng dialogfönster"
+
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+msgid "Convert selected segments to lines"
+msgstr "Konvertera markerade segment till linjer"
+
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+msgid "Delete selected nodes"
+msgstr "Ta bort markerade noder"
+
+#: glade/sodipodi-glade.c:21
+msgid "Export picture to png"
+msgstr "Exportera bild till png"
+
+#: glade/sodipodi-glade.c:22
+msgid "Set dimensions"
+msgstr "Ställ in mått"
+
+#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:49 src/dialogs/align.c:105
+msgid "Drawing"
+msgstr "Teckning"
+
+#: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
+msgid "Selection"
+msgstr "Markering"
+
+#: glade/sodipodi-glade.c:26
+msgid "Where to export"
+msgstr "Vart det ska exporteras"
+
+#: glade/sodipodi-glade.c:27
+msgid "Filename:"
+msgstr "Filnamn:"
+
+#: glade/sodipodi-glade.c:28
+msgid "Png file name"
+msgstr "Namn på png-fil"
+
+#: glade/sodipodi-glade.c:29
+msgid "Image size"
+msgstr "Bildstorlek"
+
+#: glade/sodipodi-glade.c:30
+msgid "X0"
+msgstr "X0"
+
+#: glade/sodipodi-glade.c:31
+msgid "Y0"
+msgstr "Y0"
+
+#: glade/sodipodi-glade.c:32
+msgid "X1"
+msgstr "X1"
+
+#: glade/sodipodi-glade.c:33
+msgid "Y1"
+msgstr "Y1"
+
+#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:37
+msgid "Width"
+msgstr "Bredd"
+
+#: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:38
+msgid "Height"
+msgstr "Höjd"
+
+#: glade/sodipodi-glade.c:36
+msgid "Exported as"
+msgstr "Exportera som"
+
+#: glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+msgid "pixels"
+msgstr "pixlar"
+
+#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
+msgid "dpi"
+msgstr "punkter/tum"
+
+#: glade/sodipodi-glade.c:43
+msgid "Lock aspect ratio"
+msgstr "Lås skala"
+
+#: glade/sodipodi-glade.c:44
+msgid "1.0MB"
+msgstr "1,0 MB"
+
+#: glade/sodipodi-glade.c:45
+msgid "Uncompressed file size:"
+msgstr "Okomprimerad filstorlek:"
+
+#: glade/sodipodi-glade.c:46 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Ny"
+
+#: glade/sodipodi-glade.c:47
+msgid "Import"
+msgstr "Importera"
+
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+msgid "Export"
+msgstr "Exportera"
+
+#: glade/sodipodi-glade.c:52
+msgid "Duplicate"
+msgstr "Mångfaldiga"
+
+#: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+msgid "Delete"
+msgstr "Ta bort"
+
+#: glade/sodipodi-glade.c:55
+msgid "_Align"
+msgstr "_Justera"
+
+#: glade/sodipodi-glade.c:56
+msgid "Order"
+msgstr "Sortera"
+
+#: glade/sodipodi-glade.c:57
+msgid "Bring to _Front"
+msgstr "Flytta _främst"
+
+#: glade/sodipodi-glade.c:58
+msgid "Send to _Back"
+msgstr "Skicka _bakåt"
+
+#: glade/sodipodi-glade.c:59
+msgid "Forward One"
+msgstr "Flytta framåt ett steg"
+
+#: glade/sodipodi-glade.c:60
+msgid "Back One"
+msgstr "Flytta bakåt ett steg"
+
+#: glade/sodipodi-glade.c:61
+#, fuzzy
+msgid "_Group"
+msgstr "Gruppera"
+
+#: glade/sodipodi-glade.c:62
+#, fuzzy
+msgid "_Ungroup"
+msgstr "Avgruppera"
+
+#: glade/sodipodi-glade.c:63
+msgid "_Combine"
+msgstr "_Kombinera"
+
+#: glade/sodipodi-glade.c:64
+msgid "_Break Apart"
+msgstr "_Dela upp"
+
+#: glade/sodipodi-glade.c:65
+msgid "Convert to Cu_rves"
+msgstr "Omvandla till ku_rvor"
+
+#: glade/sodipodi-glade.c:66
+msgid "New View"
+msgstr "Ny vy"
+
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
+msgid "Zoom"
+msgstr "Zooma"
+
+#: glade/sodipodi-glade.c:68 glade/transformation.c:16
+msgid "Scale"
+msgstr "Skala"
+
+#: glade/sodipodi-glade.c:69
+msgid "1:2"
+msgstr "1:2"
+
+#: glade/sodipodi-glade.c:70
+msgid "1:1"
+msgstr "1:1"
+
+#: glade/sodipodi-glade.c:71
+msgid "2:1"
+msgstr "2:1"
+
+#: glade/sodipodi-glade.c:72
+msgid "_Interactive"
+msgstr "_Interaktiv"
+
+#: glade/sodipodi-glade.c:73
+msgid "_Selection"
+msgstr "_Markering"
+
+#: glade/sodipodi-glade.c:74
+msgid "_Drawing"
+msgstr "_Teckning"
+
+#: glade/sodipodi-glade.c:75
+msgid "_Page"
+msgstr "_Sida"
+
+#: glade/sodipodi-glade.c:76
+msgid "Toggle Borders"
+msgstr "Växla kanter"
+
+#: glade/sodipodi-glade.c:77
+msgid "Show Toolbox"
+msgstr ""
+
+#: glade/sodipodi-glade.c:78
+msgid "Drawing Context"
+msgstr "Teckningssammanhang"
+
+#: glade/sodipodi-glade.c:79
+msgid "Select"
+msgstr "Markera"
+
+#: glade/sodipodi-glade.c:80
+msgid "Node"
+msgstr "Nod"
+
+#: glade/sodipodi-glade.c:81
+msgid "Rectangle"
+msgstr "Rektangel"
+
+#: glade/sodipodi-glade.c:82
+msgid "Ellipse"
+msgstr "Ellips"
+
+#: glade/sodipodi-glade.c:83
+msgid "Freehand"
+msgstr "Frihand"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
 msgid "Text"
 msgstr "Text"
+
+#: glade/sodipodi-glade.c:89
+msgid "Nodes"
+msgstr "Noder"
+
+#: glade/sodipodi-glade.c:90
+#, fuzzy
+msgid "Desktop"
+msgstr "skrivbord"
+
+#: glade/sodipodi-glade.c:91
+msgid "Document"
+msgstr "Dokument"
+
+#: glade/sodipodi-glade.c:92
+#, fuzzy
+msgid "Display"
+msgstr "Visningsinställningar"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+msgid "XML Tree"
+msgstr "XML-träd"
 
 #: glade/text-dialog.c:8
 msgid "Text Properties"
@@ -680,10 +861,6 @@ msgstr "Sodipodi"
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Arkiv"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Ny"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -729,10 +906,6 @@ msgstr "Rita linje på fri hand"
 msgid "Draw text"
 msgstr "Rita text"
 
-#: glade/toolbox.c:22
-msgid "Zoom"
-msgstr "Zooma"
-
 #: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "Zooma till 1:1"
@@ -752,10 +925,6 @@ msgstr "Zooma till teckning"
 #: glade/toolbox.c:28
 msgid "Zoom to selection"
 msgstr "Zooma till markering"
-
-#: glade/toolbox.c:31 src/dialogs/align.c:110
-msgid "Selection"
-msgstr "Markering"
 
 #: glade/toolbox.c:32
 msgid "lower selection to bottom"
@@ -789,53 +958,9 @@ msgstr "Gruppera markerade objekt"
 msgid "Ungroup selected objects"
 msgstr "Avgruppera markerade objekt"
 
-#: glade/toolbox.c:40
-msgid "Node Edit"
-msgstr "Nodredigering"
-
-#: glade/toolbox.c:41
-msgid "Include one node into selected segments"
-msgstr "Inkludera en nod i markerade segment"
-
-#: glade/toolbox.c:42
-msgid "Delete selected nodes"
-msgstr "Ta bort markerade noder"
-
-#: glade/toolbox.c:43
-msgid "Convert selected segments to lines"
-msgstr "Konvertera markerade segment till linjer"
-
-#: glade/toolbox.c:44
-msgid "Convert selected segments to curves"
-msgstr "Konvertera markerade segment till kurvor"
-
-#: glade/toolbox.c:45
-msgid "Break apart selected node"
-msgstr "Dela upp markerad nod"
-
-#: glade/toolbox.c:46
-msgid "Join 2 selected endpoints"
-msgstr "Anslut två markerade ändpunkter"
-
-#: glade/toolbox.c:47
-msgid "Cusp line at selected nodes"
-msgstr "Spetsa linjen vid markerade noder"
-
-#: glade/toolbox.c:48
-msgid "Smooth line at selected nodes"
-msgstr "Gör linjen mjukare vid markerade noder"
-
-#: glade/toolbox.c:49
-msgid "Symmetric "
-msgstr "Symmetrisk "
-
 #: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Osymmetrisk"
-
-#: glade/toolbox.c:51
-msgid "Close dialog"
-msgstr "Stäng dialogfönster"
 
 #: glade/toolbox.c:52
 msgid "File"
@@ -844,10 +969,6 @@ msgstr "Arkiv"
 #: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Ny teckning"
-
-#: glade/toolbox.c:54
-msgid "Export"
-msgstr "Exportera"
 
 #: glade/toolbox.c:55
 msgid "Open new drawing"
@@ -1013,10 +1134,6 @@ msgstr "absolut"
 #: glade/transformation.c:15
 msgid "select metric for values"
 msgstr "välj metric för värden"
-
-#: glade/transformation.c:16
-msgid "Scale"
-msgstr "Skala"
 
 #: glade/transformation.c:17
 msgid "Orig. Width: "
@@ -1251,15 +1368,6 @@ msgstr "%"
 msgid "Degree"
 msgstr "Grad"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: glade/xml-tree.c:7
-msgid "XML Tree"
-msgstr "XML-träd"
-
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
 msgstr "Hierarki"
@@ -1299,10 +1407,6 @@ msgstr "Nyckel"
 #: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
 msgstr "Värde"
-
-#: glade/xml-tree.c:18
-msgid "Delete"
-msgstr "Ta bort"
 
 #: glade/xml-tree.c:19
 msgid "Add"
@@ -1471,30 +1575,149 @@ msgstr "Största objekt"
 msgid "Smallest item"
 msgstr "Minsta objekt"
 
-#: src/dialogs/align.c:105
-msgid "Drawing"
-msgstr "Teckning"
+#: src/dialogs/display-settings.c:71
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:75
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:79
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:83
+msgid "16x16"
+msgstr ""
+
+#: src/dialogs/item-properties.c:93
+msgid "Item is reference"
+msgstr ""
+
+#: src/dialogs/item-properties.c:238
+msgid "The ID is not valid"
+msgstr ""
+
+#: src/dialogs/item-properties.c:240
+msgid "The ID is already defined"
+msgstr ""
+
+#: src/dialogs/item-properties.c:242
+msgid "The ID is valid"
+msgstr ""
+
+#~ msgid "Scale with object"
+#~ msgstr "Skala med objekt"
+
+#~ msgid "Color:"
+#~ msgstr "Färg:"
+
+#~ msgid "Stroke width"
+#~ msgstr "Penselbredd"
+
+#~ msgid ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "px\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "tum\n"
+
+#~ msgid "Join:"
+#~ msgstr "Anslutning:"
+
+#~ msgid "Bevel join"
+#~ msgstr "Avfasad anslutning"
+
+#~ msgid "Round join"
+#~ msgstr "Rund anslutning"
+
+#~ msgid "Mitter join"
+#~ msgstr "Mitteranslutning"
+
+#~ msgid "Butt endpoints"
+#~ msgstr "Skottavleändpunkter"
+
+#~ msgid "Round endpoints"
+#~ msgstr "Runda ändpunkter"
+
+#~ msgid "Square endpoints"
+#~ msgstr "Fyrkantiga ändpunkter"
+
+#~ msgid "Endpoints:"
+#~ msgstr "Ändpunkter:"
+
+#~ msgid "Choose stroke color"
+#~ msgstr "Välj genomstrykningsfärg "
+
+#~ msgid "No fill"
+#~ msgstr "Ingen fyllning"
+
+#~ msgid "Color fill"
+#~ msgstr "Färgfyllning"
+
+#~ msgid "Gradient fill"
+#~ msgstr "Toningsfyllning"
+
+#~ msgid "Pattern fill"
+#~ msgstr "Mönsterfyllning"
+
+#~ msgid "Fractal fill"
+#~ msgstr "Fraktalfyllning"
+
+#~ msgid "Choose fill color"
+#~ msgstr "Välj fyllningsfärg"
+
+#~ msgid "Red:"
+#~ msgstr "Röd:"
+
+#~ msgid "Fill Color:"
+#~ msgstr "Fyllningsfärg:"
+
+#~ msgid "Green:"
+#~ msgstr "Grön:"
+
+#~ msgid "Blue:"
+#~ msgstr "Blå:"
+
+#~ msgid "Alpha:"
+#~ msgstr "Alfa:"
+
+#~ msgid "X:"
+#~ msgstr "X:"
+
+#~ msgid "Y:"
+#~ msgstr "Y:"
+
+#~ msgid ""
+#~ "pt\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "in\n"
+#~ msgstr ""
+#~ "pt\n"
+#~ "mm\n"
+#~ "cm\n"
+#~ "tum\n"
+
+#~ msgid "window1"
+#~ msgstr "window1"
+
+#~ msgid " Style "
+#~ msgstr " Stil "
 
 #~ msgid "_New File"
 #~ msgstr "_Ny fil"
-
-#~ msgid "New View"
-#~ msgstr "Ny vy"
 
 #~ msgid "_Import"
 #~ msgstr "_Importera"
 
 #~ msgid "_Export"
 #~ msgstr "_Exportera"
-
-#~ msgid "_Drawing"
-#~ msgstr "_Teckning"
-
-#~ msgid "_Selection"
-#~ msgstr "_Markering"
-
-#~ msgid "_Page"
-#~ msgstr "_Sida"
 
 #~ msgid "Print Pre_view"
 #~ msgstr "Förhands_granska"
@@ -1508,18 +1731,6 @@ msgstr "Teckning"
 #~ msgid "Node Editing..."
 #~ msgstr "Nodredigering..."
 
-#~ msgid "1:2"
-#~ msgstr "1:2"
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
-
-#~ msgid "2:1"
-#~ msgstr "2:1"
-
-#~ msgid "_Interactive"
-#~ msgstr "_Interaktiv"
-
 #~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
 #~ msgstr "Växlar skrivbordskanter (slå på/av linjaler och rullningslister)"
 
@@ -1529,41 +1740,17 @@ msgstr "Teckning"
 #~ msgid "_Arrange"
 #~ msgstr "_Arrangera"
 
-#~ msgid "_Align"
-#~ msgstr "_Justera"
-
 #~ msgid "_Transform"
 #~ msgstr "_Transformera"
 
 #~ msgid "_Order"
 #~ msgstr "_Sortera"
 
-#~ msgid "Bring to _Front"
-#~ msgstr "Flytta _främst"
-
-#~ msgid "Send to _Back"
-#~ msgstr "Skicka _bakåt"
-
-#~ msgid "Forward One"
-#~ msgstr "Flytta framåt ett steg"
-
-#~ msgid "Back One"
-#~ msgstr "Flytta bakåt ett steg"
-
 #~ msgid "Groups selected items"
 #~ msgstr "Grupperar markerade objekt"
 
 #~ msgid "Ungroups selected group"
 #~ msgstr "Avgruppera markerad grupp"
-
-#~ msgid "_Combine"
-#~ msgstr "_Kombinera"
-
-#~ msgid "_Break Apart"
-#~ msgstr "_Dela upp"
-
-#~ msgid "Convert to Cu_rves"
-#~ msgstr "Omvandla till ku_rvor"
 
 #~ msgid "New File"
 #~ msgstr "Ny fil"
@@ -1625,14 +1812,8 @@ msgstr "Teckning"
 #~ msgid "Select and transform objects and groups"
 #~ msgstr "Markera och transformera objekt och grupper"
 
-#~ msgid "Select"
-#~ msgstr "Markera"
-
 #~ msgid "Edit objects using control nodes"
 #~ msgstr "Redigera objekt genom att använda kontrollnoder"
-
-#~ msgid "Node"
-#~ msgstr "Nod"
 
 #~ msgid "Draw rectangles"
 #~ msgstr "Rita rektanglar"
@@ -1642,9 +1823,6 @@ msgstr "Teckning"
 
 #~ msgid "Draw ellipses"
 #~ msgstr "Rita ellipser"
-
-#~ msgid "Ellipse"
-#~ msgstr "Ellips"
 
 #~ msgid "Draw freeform lines"
 #~ msgstr "Rita linjer på fri hand"
@@ -1657,97 +1835,6 @@ msgstr "Teckning"
 
 #~ msgid "Left button zooms in, right out"
 #~ msgstr "Vänsterknappen zommar in, högerknappen zommar ut"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Copyright Lauris Kaplinski 1999-2000."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Ett vektorbaserat ritprogram.\n"
-#~ "Släppt under GPL"
-
-#~ msgid "Export picture to png"
-#~ msgstr "Exportera bild till png"
-
-#~ msgid "Set dimensions"
-#~ msgstr "Ställ in mått"
-
-#~ msgid "Where to export"
-#~ msgstr "Vart det ska exporteras"
-
-#~ msgid "Filename:"
-#~ msgstr "Filnamn:"
-
-#~ msgid "Png file name"
-#~ msgstr "Namn på png-fil"
-
-#~ msgid "Image size"
-#~ msgstr "Bildstorlek"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "Width"
-#~ msgstr "Bredd"
-
-#~ msgid "Height"
-#~ msgstr "Höjd"
-
-#~ msgid "Exported as"
-#~ msgstr "Exportera som"
-
-#~ msgid "pixels"
-#~ msgstr "pixlar"
-
-#~ msgid "dpi"
-#~ msgstr "punkter/tum"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "Lås skala"
-
-#~ msgid "1.0MB"
-#~ msgstr "1,0 MB"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "Okomprimerad filstorlek:"
-
-#~ msgid "Import"
-#~ msgstr "Importera"
-
-#~ msgid "Duplicate"
-#~ msgstr "Mångfaldiga"
-
-#~ msgid "Order"
-#~ msgstr "Sortera"
-
-#~ msgid "Toggle Borders"
-#~ msgstr "Växla kanter"
-
-#~ msgid "Drawing Context"
-#~ msgstr "Teckningssammanhang"
-
-#~ msgid "Rectangle"
-#~ msgstr "Rektangel"
-
-#~ msgid "Freehand"
-#~ msgstr "Frihand"
-
-#~ msgid "Nodes"
-#~ msgstr "Noder"
-
-#~ msgid "Document"
-#~ msgstr "Dokument"
 
 #~ msgid "Alignment base"
 #~ msgstr "Justeringsbas"
