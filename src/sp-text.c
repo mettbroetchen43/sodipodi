@@ -460,6 +460,7 @@ sp_tspan_init (SPTSpan *tspan)
 	sp_svg_length_unset (&tspan->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	tspan->ly.linespacing = 1.0;
 	tspan->string = NULL;
 }
 
@@ -842,6 +843,7 @@ sp_text_init (SPText *text)
 	sp_svg_length_unset (&text->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&text->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	text->ly.linespacing = 1.0;
 	text->children = NULL;
 }
 
@@ -922,6 +924,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_object_read_attr (object, "dx");
 	sp_object_read_attr (object, "dy");
 	sp_object_read_attr (object, "rotate");
+	sp_object_read_attr (object, "sodipodi:linespacing");
 
 	sp_text_update_immediate_state (text);
 }
@@ -954,14 +957,12 @@ sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 		if (!sp_svg_length_read (value, &text->ly.x)) {
 			sp_svg_length_unset (&text->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		/* fixme: Re-layout it */
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_Y:
 		if (!sp_svg_length_read (value, &text->ly.y)) {
 			sp_svg_length_unset (&text->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		/* fixme: Re-layout it */
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_DX:
@@ -981,6 +982,14 @@ sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 		text->ly.rotate = (value) ? atof (value) : 0.0;
 		text->ly.rotate_set = (value != NULL);
 		/* fixme: Re-layout it */
+		break;
+	case SP_ATTR_SODIPODI_LINESPACING:
+		text->ly.linespacing = 1.0;
+		if (value) {
+			text->ly.linespacing = sp_svg_read_percentage (value, 1.0);
+			text->ly.linespacing = CLAMP (text->ly.linespacing, 0.01, 10.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) text_parent_class)->set)
@@ -1408,11 +1417,11 @@ sp_text_set_shape (SPText *text)
 			case SP_TSPAN_ROLE_LINE:
 				if (!isfirstline) {
 					if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-						cp.x -= child->style->font_size.computed;
+						cp.x -= child->style->font_size.computed * text->ly.linespacing;
 						cp.y = text->ly.y.computed;
 					} else {
 						cp.x = text->ly.x.computed;
-						cp.y += child->style->font_size.computed;
+						cp.y += child->style->font_size.computed * text->ly.linespacing;
 					}
 				}
 				/* fixme: This is extremely (EXTREMELY) dangerous (Lauris) */

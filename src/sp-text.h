@@ -53,8 +53,9 @@ struct _SPLayoutData {
 	SPSVGLength y;
 	SPSVGLength dx;
 	SPSVGLength dy;
-	guint rotate_set : 1;
-	gfloat rotate;
+	unsigned int rotate_set : 1;
+	float rotate;
+	float linespacing;
 };
 
 /*

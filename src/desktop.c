@@ -346,6 +346,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
 	sp_desktop_activate_guides (desktop, TRUE);
+	/* Ugly hack */
+	sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
 
 	// ?
 	// sp_active_desktop_set (desktop);

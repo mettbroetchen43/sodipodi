@@ -110,6 +110,8 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_DY, "dy"},
 	{SP_ATTR_ROTATE, "rotate"},
 	{SP_ATTR_SODIPODI_ROLE, "sodipodi:role"},
+	/* SPText */
+	{SP_ATTR_SODIPODI_LINESPACING, "sodipodi:linespacing"},
 	/* SPStop */
 	{SP_ATTR_OFFSET, "offset"},
 	/* SPGradient */
