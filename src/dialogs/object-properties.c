@@ -57,6 +57,10 @@ GtkToggleButton * line_double;
 GnomeColorPicker * cs;
 GtkToggleButton * fill_none;
 GtkToggleButton * fill_color;
+GtkAdjustment * fill_red;
+GtkAdjustment * fill_green;
+GtkAdjustment * fill_blue;
+GtkAdjustment * fill_alpha;
 
 // layout
 GtkSpinButton * position_hor;
@@ -74,47 +78,53 @@ gboolean fill_reread = FALSE;
 gboolean layout_changed = FALSE;
 gboolean layout_reread = FALSE;
 
+static void sp_object_fill_adjustment_changed (GtkAdjustment * adjustment, gpointer data);
+static void sp_object_fill_picker_changed (void);
+
 /*
  * dialog invoking functions
  */
 
-void sp_object_properties_stroke (void) {
-  if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
-  gtk_notebook_set_page (prop_notebook, 0);
-  sp_object_properties_reread_page ();
-  if (sel_changed_id < 1) {
-    sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-					"change_selection",
-					GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
-					NULL);
-  }
-  gtk_widget_show (dialog);
+void sp_object_properties_stroke (void)
+{
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+	gtk_notebook_set_page (prop_notebook, 0);
+	sp_object_properties_reread_page ();
+	if (sel_changed_id < 1) {
+		sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
+						    "change_selection",
+						    GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
+						    NULL);
+	}
+	gtk_widget_show (dialog);
 }
 
-void sp_object_properties_fill (void) {
-  if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
-  gtk_notebook_set_page (prop_notebook, 1);
-  sp_object_properties_reread_page ();
-  if (sel_changed_id < 1) {
-    sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-					"change_selection",
-					GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
-					NULL);
-  }
-  gtk_widget_show (dialog);
+void sp_object_properties_fill (void)
+{
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+	gtk_notebook_set_page (prop_notebook, 1);
+	sp_object_properties_reread_page ();
+	if (sel_changed_id < 1) {
+		sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
+						    "change_selection",
+						    GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
+						    NULL);
+	}
+	gtk_widget_show (dialog);
 }
 
-void sp_object_properties_layout (void) {
-  if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
-  gtk_notebook_set_page (prop_notebook, 2);
-  sp_object_properties_reread_page ();
-  if (sel_changed_id < 1) {
-    sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
-					"change_selection",
-					GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
-					NULL);
-  }
-  gtk_widget_show (dialog);
+void sp_object_properties_layout (void)
+{
+	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog ();
+	gtk_notebook_set_page (prop_notebook, 2);
+	sp_object_properties_reread_page ();
+	if (sel_changed_id < 1) {
+		sel_changed_id= gtk_signal_connect (GTK_OBJECT (SODIPODI),
+						    "change_selection",
+						    GTK_SIGNAL_FUNC (sp_object_properties_selection_changed),
+						    NULL);
+	}
+	gtk_widget_show (dialog);
 }
 
 
@@ -125,6 +135,8 @@ void sp_object_properties_layout (void) {
 void sp_object_properties_dialog (void)
 {
 	if (xml == NULL) {
+		GtkWidget * w;
+
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/object_props.glade", "properties");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "properties");
@@ -155,16 +167,45 @@ void sp_object_properties_dialog (void)
 		cs = (GnomeColorPicker *) glade_xml_get_widget (xml, "fill_dialog_color");
 		fill_none = (GtkToggleButton *) glade_xml_get_widget (xml, "fill_type_none");
 		fill_color = (GtkToggleButton *) glade_xml_get_widget (xml, "fill_type_color");
+		fill_red = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		gtk_signal_connect (GTK_OBJECT (fill_red), "value_changed",
+				    GTK_SIGNAL_FUNC (sp_object_fill_adjustment_changed), dialog);
+		w = glade_xml_get_widget (xml, "r_scale");
+		gtk_range_set_adjustment (GTK_RANGE (w), fill_red);
+		w = glade_xml_get_widget (xml, "r_spin");
+		gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (w), fill_red);
+		fill_green = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		gtk_signal_connect (GTK_OBJECT (fill_green), "value_changed",
+				    GTK_SIGNAL_FUNC (sp_object_fill_adjustment_changed), dialog);
+		w = glade_xml_get_widget (xml, "g_scale");
+		gtk_range_set_adjustment (GTK_RANGE (w), fill_green);
+		w = glade_xml_get_widget (xml, "g_spin");
+		gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (w), fill_green);
+		fill_blue = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		gtk_signal_connect (GTK_OBJECT (fill_blue), "value_changed",
+				    GTK_SIGNAL_FUNC (sp_object_fill_adjustment_changed), dialog);
+		w = glade_xml_get_widget (xml, "b_scale");
+		gtk_range_set_adjustment (GTK_RANGE (w), fill_blue);
+		w = glade_xml_get_widget (xml, "b_spin");
+		gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (w), fill_blue);
+		fill_alpha = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		gtk_signal_connect (GTK_OBJECT (fill_alpha), "value_changed",
+				    GTK_SIGNAL_FUNC (sp_object_fill_adjustment_changed), dialog);
+		w = glade_xml_get_widget (xml, "a_scale");
+		gtk_range_set_adjustment (GTK_RANGE (w), fill_alpha);
+		w = glade_xml_get_widget (xml, "a_spin");
+		gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (w), fill_alpha);
 
-		// alyout dialog
+		// layout dialog
 		position_hor = (GtkSpinButton *) glade_xml_get_widget (xml, "position_hor"); 
 		position_ver = (GtkSpinButton *) glade_xml_get_widget (xml, "position_ver"); 
 		dimension_width = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_width"); 
 		dimension_height = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_height"); 
 	}
-    sp_object_properties_reread_stroke ();
-    sp_object_properties_reread_fill ();
-    sp_object_properties_reread_layout ();
+
+	sp_object_properties_reread_stroke ();
+	sp_object_properties_reread_fill ();
+	sp_object_properties_reread_layout ();
 }
 
 /*
@@ -172,48 +213,49 @@ void sp_object_properties_dialog (void)
  */
 
 void
-sp_object_properties_selection_changed (void) {
-  SPDesktop * desktop;
-  SPSelection * selection;
+sp_object_properties_selection_changed (void)
+{
+	SPDesktop * desktop;
+	SPSelection * selection;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  if (!(desktop == NULL)) {
-    selection = SP_DT_SELECTION (desktop);
-    if (!sp_selection_is_empty(selection)) {
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop != NULL) {
+		selection = SP_DT_SELECTION (desktop);
+		if (!sp_selection_is_empty(selection)) {
 
-      // we really have a selection !!
+			// we really have a selection !!
       
-      stroke_reread = TRUE;
-      fill_reread = TRUE;
-      layout_reread = TRUE;
+			stroke_reread = TRUE;
+			fill_reread = TRUE;
+			layout_reread = TRUE;
 
-      sp_object_properties_reread_page ();
-      return;
-    }
-  }
+			sp_object_properties_reread_page ();
+			return;
+		}
+	}
 
-  gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
-  gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
-
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
 }
 
 
 void
-sp_object_properties_reread_page (void) {
-  gint page;
+sp_object_properties_reread_page (void)
+{
+	gint page;
 
-  page = gtk_notebook_get_current_page(prop_notebook);
-  switch (page) {
-  case 0:
-    sp_object_properties_reread_stroke ();
-    break;
-  case 1:
-    sp_object_properties_reread_fill ();
-    break;
-  case 2:
-    sp_object_properties_reread_layout ();
-    break;
-  }
+	page = gtk_notebook_get_current_page(prop_notebook);
+	switch (page) {
+	case 0:
+		sp_object_properties_reread_stroke ();
+		break;
+	case 1:
+		sp_object_properties_reread_fill ();
+		break;
+	case 2:
+		sp_object_properties_reread_layout ();
+		break;
+	}
 }
 
 void
@@ -256,46 +298,46 @@ sp_object_properties_page_changed (GtkNotebook * notebook,
 }
 
 void
-sp_object_properties_close (void) {
-  g_assert (dialog != NULL);
+sp_object_properties_close (void)
+{
+	g_assert (dialog != NULL);
 
-  gtk_widget_hide (dialog);
-  if (sel_changed_id > 0) {
-    gtk_signal_disconnect (GTK_OBJECT (sodipodi), sel_changed_id);
-    sel_changed_id = 0;
-  }
+	gtk_widget_hide (dialog);
+	if (sel_changed_id > 0) {
+		gtk_signal_disconnect (GTK_OBJECT (sodipodi), sel_changed_id);
+		sel_changed_id = 0;
+	}
 }
 
 void
-sp_object_properties_apply (void) {
-  gint page;
+sp_object_properties_apply (void)
+{
+	gint page;
 
-  page = gtk_notebook_get_current_page(prop_notebook);
-  switch (page) {
-  case 0:
-    sp_object_properties_apply_stroke ();
+	page = gtk_notebook_get_current_page(prop_notebook);
+	switch (page) {
+	case 0:
+		sp_object_properties_apply_stroke ();
 
-    stroke_changed = FALSE;
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
-    break;
-  case 1:
-    sp_object_properties_apply_fill ();
+		stroke_changed = FALSE;
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
+		break;
+	case 1:
+		sp_object_properties_apply_fill ();
 
-    fill_changed = FALSE;
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
-    break;
-  case 2:
-    sp_object_properties_apply_layout ();
+		fill_changed = FALSE;
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
+		break;
+	case 2:
+		sp_object_properties_apply_layout ();
 
-    layout_changed = FALSE;
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
-    break;
-  }
-
-  
+		layout_changed = FALSE;
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
+		break;
+	}
 }
 
 /*
@@ -542,6 +584,8 @@ sp_object_properties_reread_fill (void)
 				(f_color >> 16) & 0xff,
 				(f_color >>  8) & 0xff,
 				((guint) (opacity * 255 + 0.5)) & 0xff);
+			/* fixme: */
+			sp_object_fill_picker_changed ();
 			break;
 		default:
 #if 0
@@ -614,10 +658,34 @@ apply_fill (SPCSSAttr * fill_css)
 }
 
 void
-sp_object_fill_changed (void) {
- fill_changed = TRUE;
- gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), TRUE);
- gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), TRUE);
+sp_object_fill_changed (void)
+{
+	sp_object_fill_picker_changed ();
+	fill_changed = TRUE;
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), TRUE);
+}
+
+static void
+sp_object_fill_adjustment_changed (GtkAdjustment * adjustment, gpointer data)
+{
+	gnome_color_picker_set_d (cs, fill_red->value, fill_green->value, fill_blue->value, fill_alpha->value);
+	fill_changed = TRUE;
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), TRUE);
+}
+
+static void
+sp_object_fill_picker_changed (void)
+{
+	gdouble r, g, b, a;
+
+	gnome_color_picker_get_d (cs, &r, &g, &b, &a);
+
+	gtk_adjustment_set_value (fill_red, r);
+	gtk_adjustment_set_value (fill_green, g);
+	gtk_adjustment_set_value (fill_blue, b);
+	gtk_adjustment_set_value (fill_alpha, a);
 }
 
 /*

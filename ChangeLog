@@ -1,3 +1,13 @@
+2001-02-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/object-properties.c: Added channel sliders
+	* glade/object_props.glade: Ditto
+	* samples/mangatips6.svg: New file
+	* samples/mangatips7.svg: New file
+	* samples/mangatips8.svg: New file
+	* samples/mangatips9.svg: New file
+	* samples/mangatips10.svg: New file
+	
 2001-02-06  Lauris Kaplinski  <lauris@ximian.com>
 
 	* samples/mangatips3.svg: New file

@@ -4,171 +4,81 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Sodipodi");
-gchar *s = N_("_New File");
-gchar *s = N_("New View");
-gchar *s = N_("_Import");
-gchar *s = N_("_Export");
-gchar *s = N_("_Drawing");
-gchar *s = N_("_Selection");
-gchar *s = N_("_Page");
-gchar *s = N_("Print Pre_view");
-gchar *s = N_("D_uplicate");
-gchar *s = N_("_Delete");
-gchar *s = N_("Node Editing...");
-gchar *s = N_("XML Tree");
-gchar *s = N_("Zoom");
-gchar *s = N_("Scale");
-gchar *s = N_("1:2");
-gchar *s = N_("1:1");
-gchar *s = N_("2:1");
-gchar *s = N_("_Interactive");
-gchar *s = N_("_Selection");
-gchar *s = N_("_Drawing");
-gchar *s = N_("_Page");
-gchar *s = N_("Toggles desktop borders (rulers and scrollbars on and off)");
-gchar *s = N_("Toggle borders");
-gchar *s = N_("_Arrange");
-gchar *s = N_("_Align");
-gchar *s = N_("_Transform");
-gchar *s = N_("_Order");
-gchar *s = N_("Bring to _Front");
-gchar *s = N_("Send to _Back");
-gchar *s = N_("Forward One");
-gchar *s = N_("Back One");
-gchar *s = N_("Groups selected items");
-gchar *s = N_("_Group");
-gchar *s = N_("Ungroups selected group");
-gchar *s = N_("_Ungroup");
-gchar *s = N_("_Combine");
-gchar *s = N_("_Break Apart");
-gchar *s = N_("Convert to Cu_rves");
-gchar *s = N_("New File");
-gchar *s = N_("New");
-gchar *s = N_("Open File");
-gchar *s = N_("Open");
-gchar *s = N_("Save File");
-gchar *s = N_("Save\t");
-gchar *s = N_("Print file");
-gchar *s = N_("Print");
-gchar *s = N_("Undo");
-gchar *s = N_("Undo");
-gchar *s = N_("Redo");
-gchar *s = N_("Redo");
-gchar *s = N_("Fill settings");
-gchar *s = N_("Fill");
-gchar *s = N_("Stroke settings");
+gchar *s = N_("object properties");
+gchar *s = N_("Behind fill");
+gchar *s = N_("Is stroked");
+gchar *s = N_("Scale with object");
 gchar *s = N_("Stroke");
-gchar *s = N_("Font settings");
-gchar *s = N_("Text");
-gchar *s = N_("Delete selected object(s)");
-gchar *s = N_("Delete");
-gchar *s = N_("Duplicate selected object(s)");
-gchar *s = N_("Duplic\t");
-gchar *s = N_("Raise selected object(s) to top");
-gchar *s = N_("To Front");
-gchar *s = N_("Lower selected object(s) to bottom");
-gchar *s = N_("To Back");
-gchar *s = N_("Raise one position");
-gchar *s = N_("Up");
-gchar *s = N_("Lower one position");
-gchar *s = N_("Down");
-gchar *s = N_("Select and transform objects and groups");
-gchar *s = N_("Select");
-gchar *s = N_("Edit objects using control nodes");
-gchar *s = N_("Node");
-gchar *s = N_("Draw rectangles");
-gchar *s = N_("Rect");
-gchar *s = N_("Draw ellipses");
-gchar *s = N_("Ellipse");
-gchar *s = N_("Draw freeform lines");
-gchar *s = N_("Draw\t");
-gchar *s = N_("Write text");
-gchar *s = N_("Text");
-gchar *s = N_("Left button zooms in, right out");
-gchar *s = N_("Zoom");
-gchar *s = N_("Copyright Lauris Kaplinski 1999-2000.");
-gchar *s = N_("A Vector Drawing Program.\n"
-              "Released under GPL");
-gchar *s = N_("Node Edit");
-gchar *s = N_("Include one node into selected segments");
-gchar *s = N_("Break apart selected node");
-gchar *s = N_("Convert selected segments to curves");
-gchar *s = N_("Join 2 selected endpoints");
-gchar *s = N_("Cusp line at selected nodes");
-gchar *s = N_("Smooth line at selected nodes");
-gchar *s = N_("Symmetric ");
-gchar *s = N_("Close dialog");
-gchar *s = N_("Convert selected segments to lines");
-gchar *s = N_("Delete selected nodes");
-gchar *s = N_("Export picture to png");
-gchar *s = N_("Set dimensions");
-gchar *s = N_("Drawing");
-gchar *s = N_("Page");
-gchar *s = N_("Selection");
-gchar *s = N_("Where to export");
-gchar *s = N_("Filename:");
-gchar *s = N_("Png file name");
-gchar *s = N_("Image size");
-gchar *s = N_("X0");
-gchar *s = N_("Y0");
-gchar *s = N_("X1");
-gchar *s = N_("Y1");
-gchar *s = N_("Width");
-gchar *s = N_("Height");
-gchar *s = N_("Exported as");
-gchar *s = N_("Width");
-gchar *s = N_("Height");
-gchar *s = N_("pixels");
-gchar *s = N_("pixels");
-gchar *s = N_("dpi");
-gchar *s = N_("dpi");
-gchar *s = N_("Lock aspect ratio");
-gchar *s = N_("1.0MB");
-gchar *s = N_("Uncompressed file size:");
-gchar *s = N_("_New");
-gchar *s = N_("Import");
-gchar *s = N_("Export");
-gchar *s = N_("Drawing");
-gchar *s = N_("Selection");
-gchar *s = N_("Page");
-gchar *s = N_("Duplicate");
-gchar *s = N_("Delete");
-gchar *s = N_("Selection");
-gchar *s = N_("_Align");
-gchar *s = N_("Order");
-gchar *s = N_("Bring to _Front");
-gchar *s = N_("Send to _Back");
-gchar *s = N_("Forward One");
-gchar *s = N_("Back One");
-gchar *s = N_("_Group");
-gchar *s = N_("_Ungroup");
-gchar *s = N_("_Combine");
-gchar *s = N_("_Break Apart");
-gchar *s = N_("Convert to Cu_rves");
-gchar *s = N_("New View");
-gchar *s = N_("Zoom");
-gchar *s = N_("Scale");
-gchar *s = N_("1:2");
-gchar *s = N_("1:1");
-gchar *s = N_("2:1");
-gchar *s = N_("_Interactive");
-gchar *s = N_("_Selection");
-gchar *s = N_("_Drawing");
-gchar *s = N_("_Page");
-gchar *s = N_("Toggle Borders");
-gchar *s = N_("Drawing Context");
-gchar *s = N_("Select");
-gchar *s = N_("Node");
-gchar *s = N_("Rectangle");
-gchar *s = N_("Ellipse");
-gchar *s = N_("Freehand");
-gchar *s = N_("Text");
-gchar *s = N_("Zoom");
-gchar *s = N_("Fill");
+gchar *s = N_("Width:");
+gchar *s = N_("Color:");
+gchar *s = N_("Stroke width");
+gchar *s = N_("px\n"
+              "mm\n"
+              "cm\n"
+              "in\n"
+              "");
+gchar *s = N_("Join:");
+gchar *s = N_("Bevel join");
+gchar *s = N_("Round join");
+gchar *s = N_("Mitter join");
+gchar *s = N_("Butt endpoints");
+gchar *s = N_("Round endpoints");
+gchar *s = N_("Square endpoints");
+gchar *s = N_("Endpoints:");
+gchar *s = N_("Choose stroke color");
+gchar *s = N_("Valige värv");
 gchar *s = N_("Stroke");
-gchar *s = N_("Text");
-gchar *s = N_("Nodes");
-gchar *s = N_("Desktop");
-gchar *s = N_("Document");
-gchar *s = N_("XML Tree");
+gchar *s = N_("No fill");
+gchar *s = N_("Color fill");
+gchar *s = N_("Gradient fill");
+gchar *s = N_("Pattern fill");
+gchar *s = N_("Fractal fill");
+gchar *s = N_(" Color fill ");
+gchar *s = N_("Choose fill color");
+gchar *s = N_("Pick a color");
+gchar *s = N_("Red:");
+gchar *s = N_("Fill Color:");
+gchar *s = N_("Green:");
+gchar *s = N_("Blue:");
+gchar *s = N_("Alpha:");
+gchar *s = N_("Fill");
+gchar *s = N_("Position");
+gchar *s = N_("X:");
+gchar *s = N_("Y:");
+gchar *s = N_("pt\n"
+              "mm\n"
+              "cm\n"
+              "in\n"
+              "");
+gchar *s = N_("Dimension");
+gchar *s = N_("Width:");
+gchar *s = N_("Height:");
+gchar *s = N_("pt\n"
+              "mm\n"
+              "cm\n"
+              "in\n"
+              "");
+gchar *s = N_("Layout");
+gchar *s = N_("Reread");
+gchar *s = N_("Stroke");
+gchar *s = N_("Pick a color");
+gchar *s = N_("px\n"
+              "mm\n"
+              "cm\n"
+              "pt\n"
+              "in\n"
+              "");
+gchar *s = N_("Position");
+gchar *s = N_("pixels\n"
+              "millimeters\n"
+              "centimeter\n"
+              "points\n"
+              "inches\n"
+              "");
+gchar *s = N_("Fill");
+gchar *s = N_("Pick a color");
+gchar *s = N_("none");
+gchar *s = N_("color");
+gchar *s = N_("window1");
+gchar *s = N_(" General ");
+gchar *s = N_(" Style ");
