@@ -1,3 +1,9 @@
+200-04-09  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* document.c: Removed bad memory corruption bug in ::destroy
+	* embeddable-document.c: Added PersistentFile interface
+	* embeddable-drawing.*: Added BonoboCanvasComponent interface
+	
 200-04-08  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* Makefile.am: create sodipodi-bonobo symlink if we use bonobo

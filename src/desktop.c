@@ -258,6 +258,24 @@ sp_desktop_new (SPDocument * document)
 	return desktop;
 }
 
+void
+sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
+{
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+
+	sp_item_hide (SP_ITEM (desktop->document->root), desktop->canvas);
+
+	gtk_object_ref (GTK_OBJECT (document));
+	gtk_object_unref (GTK_OBJECT (desktop->document));
+
+	desktop->document = document;
+
+	sp_item_show (SP_ITEM (desktop->document->root), desktop->drawing, sp_desktop_item_handler);
+}
+
 #if 0
 /* Private handler */
 static void

@@ -86,18 +86,17 @@ sp_document_destroy (GtkObject * object)
 	sp_document_clear_redo (document);
 	sp_document_clear_undo (document);
 
-
 	if (document->base)
 		g_free (document->base);
 
 	if (document->uri)
 		g_free (document->uri);
 
-	if (document->iddef)
-		g_hash_table_destroy (document->iddef);
-
 	if (document->root)
 		gtk_object_unref (GTK_OBJECT (document->root));
+
+	if (document->iddef)
+		g_hash_table_destroy (document->iddef);
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);

@@ -4,6 +4,7 @@
 #include <glade/glade.h>
 #include "mdi.h"
 
+static void sp_mdi_destroy (GnomeMDI * mdi);
 static gint sp_mdi_add_child (GnomeMDI * mdi, GnomeMDIChild * child, gpointer data);
 static gint sp_mdi_remove_child (GnomeMDI * mdi, GnomeMDIChild * child, gpointer data);
 static gint sp_mdi_add_view (GnomeMDI * mdi, GtkWidget * view, gpointer data);
@@ -19,6 +20,8 @@ sp_mdi_create (void)
 {
 	sodipodi = GNOME_MDI (gnome_mdi_new ("Sodipodi", "Sodipodi"));
 
+	gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
+		GTK_SIGNAL_FUNC (sp_mdi_destroy), NULL);
 	gtk_signal_connect (GTK_OBJECT (sodipodi), "add_child",
 		GTK_SIGNAL_FUNC (sp_mdi_add_child), NULL);
 	gtk_signal_connect (GTK_OBJECT (sodipodi), "remove_child",
@@ -134,6 +137,12 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
 			"sp_mdi_app_created: cannot create context toolbar\n");
 	}
+}
+
+static void
+sp_mdi_destroy (GnomeMDI * mdi)
+{
+	gtk_main_quit ();
 }
 
 

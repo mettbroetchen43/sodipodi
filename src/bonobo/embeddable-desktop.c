@@ -79,3 +79,13 @@ sp_embeddable_desktop_activate (BonoboView * view, gboolean activate, gpointer d
 	bonobo_view_activate_notify (view, activate);
 }
 
+void
+sp_embeddable_desktop_new_doc (BonoboView * view, gpointer data)
+{
+	SPEmbeddableDesktop * desktop;
+
+	desktop = SP_EMBEDDABLE_DESKTOP (view);
+
+	sp_desktop_change_document (desktop->desktop, desktop->document->document);
+}
+

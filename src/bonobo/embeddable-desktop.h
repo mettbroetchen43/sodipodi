@@ -45,4 +45,10 @@ GtkType sp_embeddable_desktop_get_type (void);
 BonoboView * sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	const Bonobo_ViewFrame view_frame, gpointer data);
 
+/*
+ * Notify desktop, that underlying SPDocument has changed
+ */
+
+void sp_embeddable_desktop_new_doc (BonoboView * view, gpointer data);
+
 #endif

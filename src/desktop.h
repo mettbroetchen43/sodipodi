@@ -59,6 +59,8 @@ GtkType sp_desktop_get_type (void);
 
 SPDesktop * sp_desktop_new (SPDocument * document);
 
+void sp_desktop_change_document (SPDesktop * desktop, SPDocument * document);
+
 /* Zooming, viewport, position & similar */
 
 void sp_desktop_set_position (SPDesktop * desktop, gdouble x, gdouble y);
