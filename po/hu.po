@@ -1575,11 +1575,11 @@ msgstr ""
 
 #: src/main.c:168
 msgid "Oaf options"
-msgstr ""
+msgstr "Oaf beállítások"
 
 #: src/main.c:176
 msgid "Could not initialize Bonobo"
-msgstr ""
+msgstr "A Bonobo inicializálása nem sikerült"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
