@@ -25,6 +25,7 @@
 #include "file.h"
 #include "help.h"
 #include "interface.h"
+#include "toolbox.h"
 #include "desktop.h"
 #include "sp-item.h"
 #include "selection-chemistry.h"
@@ -76,7 +77,7 @@ static void sp_ui_drag_data_received (GtkWidget * widget,
 void
 sp_create_window (SPViewWidget *vw, gboolean editable)
 {
-	GtkWidget *w;
+	GtkWidget *w, *hb;
 
 	g_return_if_fail (vw != NULL);
 	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
@@ -84,6 +85,11 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	g_object_set_data (G_OBJECT (vw), "window", w);
 	g_object_set_data (G_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
+
+	hb = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hb);
+	gtk_container_add (GTK_CONTAINER (w), hb);
+	g_object_set_data (G_OBJECT (w), "hbox", hb);
 
 	/* fixme: */
 	if (editable) {
@@ -99,7 +105,7 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 		gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, TRUE);
 	}
 
-	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (vw));
+	gtk_box_pack_end (GTK_BOX (hb), GTK_WIDGET (vw), TRUE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (vw));
 
 #if 0
@@ -297,6 +303,50 @@ sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
 }
 
 static void
+sp_ui_view_show_toolbox (GObject *object, gpointer data)
+{
+	sp_maintoolbox_create_toplevel ();
+}
+
+static void
+sp_ui_view_dock_toolbox (GObject *object, gpointer data)
+{
+	GObject *w;
+	GtkWidget *hb, *tb, *f;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+	w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
+	if (!w) return;
+	tb = g_object_get_data (w, "toolbox");
+	if (tb) return;
+	hb = g_object_get_data (w, "hbox");
+	if (!hb) return;
+	f = gtk_frame_new (NULL);
+	gtk_frame_set_shadow_type (GTK_FRAME (f), GTK_SHADOW_OUT);
+	gtk_widget_show (f);
+	gtk_box_pack_start (GTK_BOX (hb), f, FALSE, FALSE, 0);
+	tb = sp_maintoolbox_new ();
+	gtk_widget_show (tb);
+	gtk_container_add (GTK_CONTAINER (f), tb);
+	g_object_set_data (w, "toolbox", f);
+}
+
+static void
+sp_ui_view_remove_toolbox (GObject *object, gpointer data)
+{
+	GObject *w;
+	GtkWidget *tb;
+
+	if (!SP_ACTIVE_DESKTOP) return;
+	w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
+	if (!w) return;
+	tb = g_object_get_data (w, "toolbox");
+	if (!tb) return;
+	gtk_widget_destroy (tb);
+	g_object_set_data (w, "toolbox", NULL);
+}
+
+static void
 sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 {
 	GtkWidget *zm, *zi, *sm, *si;
@@ -321,6 +371,10 @@ sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item (menu, NULL, _("New View"), G_CALLBACK(sp_ui_new_view), NULL);
 	/* View:New Preview*/
 	sp_ui_menu_append_item (menu, NULL, _("New Preview"), G_CALLBACK(sp_ui_new_view_preview), NULL);
+	sp_ui_menu_append_item (menu, NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (menu, NULL, _("New Toplevel Toolbox"), G_CALLBACK (sp_ui_view_show_toolbox), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("New Docked Toolbox"), G_CALLBACK (sp_ui_view_dock_toolbox), NULL);
+	sp_ui_menu_append_item (menu, NULL, _("Remove Docked Toolbox"), G_CALLBACK (sp_ui_view_remove_toolbox), NULL);
 }
 
 static void

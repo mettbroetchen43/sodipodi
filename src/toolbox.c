@@ -68,11 +68,13 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 					       guint info,
 					       guint event_time,
 					       gpointer user_data);
-static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
+static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox);
 
 static void sp_toolbox_object_flip_clicked (SPButton *button, gpointer data);
 
-static GtkWidget *toolbox = NULL;
+#if 0
+static GtkWidget *mtoolbox = NULL;
+#endif
 
 /* Drag and Drop */
 typedef enum {
@@ -93,8 +95,10 @@ static void
 sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 {
 	sp_signal_disconnect_by_data (sodipodi, object);
+	sodipodi_unref ();
 }
 
+#if 0
 static gint
 sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
@@ -106,6 +110,7 @@ sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer dat
 
 	return TRUE;
 }
+#endif
 
 #if 0
 static gint
@@ -123,88 +128,99 @@ sp_maintoolbox_menu_button_press (GtkWidget *widget, GdkEventButton *event, gpoi
 #endif
 
 void
-sp_maintoolbox_create (void)
+sp_maintoolbox_create_toplevel (void)
 {
-	if (toolbox == NULL) {
-		GtkWidget *vbox, *mbar, *mi, *t, *w;
+	GtkWidget *window, *toolbox;
 
-		/* Create window */
-		toolbox = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
-		gtk_window_set_resizable (GTK_WINDOW (toolbox), FALSE);
-		g_signal_connect (G_OBJECT (toolbox), "destroy", G_CALLBACK (sp_maintoolbox_destroy), NULL);
-		g_signal_connect (G_OBJECT (toolbox), "delete_event", G_CALLBACK (sp_maintoolbox_delete_event), NULL);
-		g_signal_connect (G_OBJECT (toolbox), "drag_data_received", G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
-				    
-		vbox = gtk_vbox_new (FALSE, 0);
-		gtk_widget_show (vbox);
-		gtk_container_add (GTK_CONTAINER (toolbox), vbox);
-		mbar = gtk_menu_bar_new ();
-		gtk_widget_show (mbar);
-		gtk_box_pack_start (GTK_BOX (vbox), mbar, FALSE, FALSE, 0);
+	/* Create window */
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (window), _("Sodipodi"));
+	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 
-		mi = gtk_menu_item_new_with_label (_("Sodipodi"));
-		gtk_widget_show (mi);
-		gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi), sp_ui_main_menu ());
-/*  		gtk_signal_connect (GTK_OBJECT (mi), "button_press_event", GTK_SIGNAL_FUNC (sp_maintoolbox_menu_button_press), NULL); */
+	toolbox = sp_maintoolbox_new ();
+	gtk_widget_show (toolbox);
+	gtk_container_add (GTK_CONTAINER (window), toolbox);
 
-		/* File */
-		t = sp_toolbox_file_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		/* Edit */
-		t = sp_toolbox_edit_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		/* fixme: Freehand does not need this anymore, remove if node editing is fixed (Lauris) */
-		gtk_object_set_data (GTK_OBJECT (toolbox), "edit", t);
-		/* Object */
-		t = sp_toolbox_object_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		/* Select */
-		t = sp_toolbox_selection_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		/* Draw */
-		t = sp_toolbox_draw_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	gtk_widget_show (window);
+};
 
-		if (SP_ACTIVE_DESKTOP) {
-			const gchar * tname;
-			tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
-			w = gtk_object_get_data (GTK_OBJECT (t), tname);
-			if (w != NULL) {
-				sp_button_toggle_set_down (SP_BUTTON (w), TRUE, TRUE);
-				gtk_object_set_data (GTK_OBJECT (t), "active", t);
-			}
+GtkWidget *
+sp_maintoolbox_new (void)
+{
+	GtkWidget *toolbox, *vbox, *mbar, *mi, *t, *w;
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	toolbox = vbox;
+
+	mbar = gtk_menu_bar_new ();
+	gtk_widget_show (mbar);
+	gtk_box_pack_start (GTK_BOX (vbox), mbar, FALSE, FALSE, 0);
+
+	mi = gtk_menu_item_new_with_label (_("Sodipodi"));
+	gtk_widget_show (mi);
+	gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi), sp_ui_main_menu ());
+	/* gtk_signal_connect (GTK_OBJECT (mi), "button_press_event", GTK_SIGNAL_FUNC (sp_maintoolbox_menu_button_press), NULL); */
+
+	/* File */
+	t = sp_toolbox_file_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	/* Edit */
+	t = sp_toolbox_edit_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	/* fixme: Freehand does not need this anymore, remove if node editing is fixed (Lauris) */
+	gtk_object_set_data (GTK_OBJECT (toolbox), "edit", t);
+	/* Object */
+	t = sp_toolbox_object_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	/* Select */
+	t = sp_toolbox_selection_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	/* Draw */
+	t = sp_toolbox_draw_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	g_object_set_data (G_OBJECT (toolbox), "draw", t);
+	
+	if (SP_ACTIVE_DESKTOP) {
+		const gchar * tname;
+		tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
+		w = g_object_get_data (G_OBJECT (t), tname);
+		if (w != NULL) {
+			sp_button_toggle_set_down (SP_BUTTON (w), TRUE, TRUE);
+			g_object_set_data (G_OBJECT (t), "active", w);
 		}
-		g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), t);
-
-		/* Zoom */
-		t = sp_toolbox_zoom_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		/* Node */
-		t = sp_toolbox_node_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 	}
+	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
 
-/* 	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox)); */
-	gtk_drag_dest_set(toolbox, 
+	/* Zoom */
+	t = sp_toolbox_zoom_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+	/* Node */
+	t = sp_toolbox_node_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+
+	/* gnome_window_icon_set_from_default (GTK_WINDOW (toolbox)); */
+	gtk_drag_dest_set (toolbox, 
 			  GTK_DEST_DEFAULT_ALL,
 			  toolbox_drop_target_entries,
 			  ntoolbox_drop_target_entries,
 			  GDK_ACTION_COPY);
 
-	if (!GTK_WIDGET_VISIBLE (toolbox)) {
-		/* Reference our sodipodi engine */
-		sodipodi_ref ();
-		gtk_widget_show (toolbox);
-	}
+	g_signal_connect (G_OBJECT (toolbox), "destroy", G_CALLBACK (sp_maintoolbox_destroy), NULL);
+	/* g_signal_connect (G_OBJECT (toolbox), "delete_event", G_CALLBACK (sp_maintoolbox_delete_event), NULL); */
+	g_signal_connect (G_OBJECT (toolbox), "drag_data_received", G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
+
+	/* Reference our sodipodi engine */
+	sodipodi_ref ();
+
+	return toolbox;
 }
 
 enum {
@@ -689,18 +705,20 @@ sp_toolbox_object_flip_clicked (SPButton *button, gpointer data)
 }
 
 static void 
-sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data)
+sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox)
 {
+	GObject *draw;
 	const gchar * tname;
 	gpointer active, new, e, w;
 
 	tname = NULL;
 
-	active = gtk_object_get_data (GTK_OBJECT (data), "active");
+	draw = g_object_get_data (toolbox, "draw");
+	active = g_object_get_data (draw, "active");
 
 	if (eventcontext != NULL) {
 		tname = gtk_type_name (GTK_OBJECT_TYPE (eventcontext));
-		new = gtk_object_get_data (GTK_OBJECT (data), tname);
+		new = g_object_get_data (G_OBJECT (draw), tname);
 	} else {
 		new = NULL;
 	}
@@ -712,7 +730,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 		if (new && !SP_BUTTON_IS_DOWN (SP_BUTTON (new))) {
 			sp_button_toggle_set_down (SP_BUTTON (new), TRUE, TRUE);
 		}
-		gtk_object_set_data (GTK_OBJECT (data), "active", new);
+		g_object_set_data (draw, "active", new);
 		if (tname && !strcmp (tname, "SPNodeContext")) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
 			w = gtk_object_get_data (GTK_OBJECT (e), "undo");

@@ -15,6 +15,7 @@
 
 #include <config.h>
 
+#include <math.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -49,6 +50,7 @@ struct _NRTypePosDef {
 	unsigned int italic : 1;
 	unsigned int oblique : 1;
 	unsigned int weight : 8;
+	unsigned int stretch : 8;
 };
 
 static void nr_type_directory_build (void);
@@ -324,10 +326,45 @@ nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name)
 
 	pdef->italic = (strstr (c, "italic") != NULL);
 	pdef->oblique = (strstr (c, "oblique") != NULL);
-	if (strstr (c, "bold")) {
+	if (strstr (c, "thin")) {
+		pdef->weight = 32;
+	} else if (strstr (c, "extra light")) {
+		pdef->weight = 64;
+	} else if (strstr (c, "ultra light")) {
+		pdef->weight = 64;
+	} else if (strstr (c, "light")) {
+		pdef->weight = 96;
+	} else if (strstr (c, "book")) {
+		pdef->weight = 128;
+	} else if (strstr (c, "medium")) {
+		pdef->weight = 144;
+	} else if (strstr (c, "semi bold")) {
+		pdef->weight = 160;
+	} else if (strstr (c, "semibold")) {
+		pdef->weight = 160;
+	} else if (strstr (c, "demi bold")) {
+		pdef->weight = 160;
+	} else if (strstr (c, "demibold")) {
+		pdef->weight = 160;
+	} else if (strstr (c, "bold")) {
 		pdef->weight = 192;
+	} else if (strstr (c, "ultra bold")) {
+		pdef->weight = 224;
+	} else if (strstr (c, "extra bold")) {
+		pdef->weight = 224;
+	} else if (strstr (c, "black")) {
+		pdef->weight = 255;
 	} else {
 		pdef->weight = 128;
+	}
+	if (strstr (c, "narrow")) {
+		pdef->stretch = 64;
+	} else if (strstr (c, "condensed")) {
+		pdef->stretch = 64;
+	} else if (strstr (c, "wide")) {
+		pdef->stretch = 192;
+	} else {
+		pdef->stretch = 128;
 	}
 }
 
@@ -353,18 +390,20 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 #define NR_TYPE_ITALIC_SCALE 10000.0
 #define NR_TYPE_OBLIQUE_SCALE 1000.0
 #define NR_TYPE_WEIGHT_SCALE 100.0
+#define NR_TYPE_STRETCH_SCALE 2000.0
 
 static float
 nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best)
 {
-	float ditalic, doblique, dweight;
+	float ditalic, doblique, dweight, dstretch;
 	float dist;
 
-	ditalic = NR_TYPE_ITALIC_SCALE * (ask->italic - bid->italic);
-	doblique = NR_TYPE_OBLIQUE_SCALE * (ask->oblique - bid->oblique);
-	dweight = NR_TYPE_WEIGHT_SCALE * (ask->weight - bid->weight);
+	ditalic = NR_TYPE_ITALIC_SCALE * ((int) ask->italic - (int) bid->italic);
+	doblique = NR_TYPE_OBLIQUE_SCALE * ((int) ask->oblique - (int) bid->oblique);
+	dweight = NR_TYPE_WEIGHT_SCALE * ((int) ask->weight - (int) bid->weight);
+	dstretch = NR_TYPE_STRETCH_SCALE * ((int) ask->stretch - (int) bid->stretch);
 
-	dist = sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight);
+	dist = sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight + dstretch * dstretch);
 
 	return MIN (dist, best);
 }

@@ -41,10 +41,10 @@
     <linearGradient
        xlink:href="#linearGradient1417"
        id="linearGradient1420"
-       x1="0.505814"
-       y1="0.976563"
-       x2="0.517442"
-       y2="0.117188"
+       x1="0.518797"
+       y1="0.320312"
+       x2="0.541353"
+       y2="0.867188"
        gradientUnits="objectBoundingBox"
        spreadMethod="pad" />
     <linearGradient
@@ -70,61 +70,12 @@
   <rect
      style="fill:url(#linearGradient1420);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-opacity:1;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;"
      id="rect216"
-     x="0.996678"
-     y="0.996666"
-     width="801.328857"
-     height="601.993408" />
-  <a
-     xlink:href="http://www.sodipodi.com/"
-     style="font-size:12;fill:#3a3a3a;fill-opacity:1;"
-     id="a89">
-    <text
-       x="17.543915"
-       y="579.274475"
-       style="font-size:24;font-weight:bold;fill:#3a3a3a;fill-opacity:1;fill-rule:evenodd;stroke-width:1pt;font-family:Helvetica;"
-       id="text1192">
-      <tspan
-         x="17.543900"
-         y="579.273987"
-         id="tspan1313"
-         style="fill:#3a3a3a;fill-opacity:1;">
-Sodipodi</tspan>
-    </text>
-  </a>
-  <a
-     xlink:href="http://www.w3.org/TR/SVG/"
-     style="font-size:12;fill:#3a3a3a;fill-opacity:1;"
-     id="a93">
-    <text
-       x="159.064377"
-       y="579.274475"
-       style="font-size:24;font-weight:bold;fill:#3a3a3a;fill-opacity:1;fill-rule:evenodd;stroke-width:1pt;font-family:Helvetica;"
-       id="text1315">
-      <tspan
-         x="159.063995"
-         y="579.273987"
-         id="tspan1318"
-         style="fill:#3a3a3a;fill-opacity:1;">
-SVG</tspan>
-    </text>
-  </a>
-  <a
-     xlink:href="http://www.gnome.org/"
-     style="font-size:12;fill:#3a3a3a;fill-opacity:1;"
-     id="a97">
-    <text
-       x="246.783676"
-       y="579.274475"
-       style="font-size:24;font-weight:bold;fill:#3a3a3a;fill-opacity:1;fill-rule:evenodd;stroke-width:1pt;font-family:Helvetica;"
-       id="text1320">
-      <tspan
-         x="246.783997"
-         y="579.273987"
-         id="tspan1323"
-         style="fill:#3a3a3a;fill-opacity:1;">
-GNOME</tspan>
-    </text>
-  </a>
+     x="-755.502221"
+     y="-816.292290"
+     width="2314.326588"
+     height="2236.571233"
+     rx="0.000000"
+     ry="0.000000" />
   <g
      id="g192"
      style="opacity:0.129836;">
@@ -168,7 +119,7 @@ GNOME</tspan>
   <text
      x="400"
      y="127.245"
-     style="font-size:72;font-weight:bold;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1pt;font-family:Helvetica;text-anchor:middle;fill-opacity:1;"
+     style="font-size:96;font-weight:bold;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1pt;font-family:Arija;text-anchor:middle;fill-opacity:1;"
      id="title">
     <tspan
        x="400"
@@ -178,29 +129,46 @@ GNOME</tspan>
 Sodipodi 0.26</tspan>
   </text>
   <text
-     x="10.5848"
-     y="529.976"
+     x="23.4419"
+     y="521.404"
      style="font-size:18;font-weight:bold;fill:#ffffff;fill-rule:evenodd;stroke-width:1pt;font-family:Courier;fill-opacity:1;font-style:normal;text-anchor:start;writing-mode:lr;"
      id="text1187">
     <tspan
-       x="10.5848"
-       y="529.976"
+       x="23.4419"
+       y="521.404"
        sodipodi:role="line"
-       id="tspan200"
-       style="fill:#ffffff;fill-opacity:1;">
-Lauris Kaplinski, Mitsuru Oka, Frank Felfe, Raph Levien, Masatake Yamato</tspan>
+       id="tspan197">
+Brought to you by Lauris Kaplinski, Mitsuru Oka, Frank Felfe,</tspan>
+    <tspan
+       x="23.4419"
+       y="539.404"
+       sodipodi:role="line"
+       id="tspan199">
+Raph Levien, Masatake Yamato, MenTaLguY</tspan>
   </text>
   <text
-     x="46.2569"
-     y="509.157"
+     x="24.0539"
+     y="485.586"
      style="font-size:18;font-weight:bold;fill:#ffffff;fill-rule:evenodd;stroke-width:1pt;font-family:Courier;fill-opacity:1;font-style:normal;text-anchor:start;writing-mode:lr;"
      id="text1180">
     <tspan
-       x="46.2569"
-       y="509.157"
+       x="24.0539"
+       y="485.586"
        sodipodi:role="line"
        id="tspan202"
        style="fill:#ffffff;fill-opacity:1;">
 A drawing application with style</tspan>
+  </text>
+  <text
+     x="23.4419"
+     y="573.903"
+     style="font-size:18;font-weight:bold;fill:#ffffff;fill-rule:evenodd;stroke-width:1pt;font-family:Courier;fill-opacity:1;font-style:normal;text-anchor:start;writing-mode:lr;"
+     id="text183">
+    <tspan
+       x="23.4419"
+       y="573.903"
+       sodipodi:role="line"
+       id="tspan192">
+Copyright © 1999-2003 The Sodipodi Team</tspan>
   </text>
 </svg>

@@ -14,6 +14,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-void sp_maintoolbox_create (void);
+GtkWidget *sp_maintoolbox_new (void);
+
+void sp_maintoolbox_create_toplevel (void);
 
 #endif

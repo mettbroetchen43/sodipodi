@@ -1,3 +1,24 @@
+2003-01-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-w32.c: Implement ANSI charset and styles
+
+	* src/libnrtype/nr-type-directory.c (nr_type_directory_build): Honour
+	stretch attribute in searches
+
+	* src/toolbox.c (sp_maintoolbox_create_toplevel): Broke constructor
+	into two parts to allow multiple toolboxes
+
+	* src/interface.c (sp_ui_view_show_toolbox): New method
+	(sp_ui_view_dock_toolbox): Ditto
+	(sp_ui_view_remove_toolbox): Ditto
+	(sp_ui_view_menu): Added menu items for creating toolboxes
+	(sp_create_window): Pack toplevel hbox into window
+
+2003-01-26  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/art-utils.c (sp_vpath_from_bpath_transform_closepath): Moved
+	array expansion to the right place (thanks to Lynn Kerby)
+
 2003-01-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/xml-tree.c (sp_xml_tree_dialog): Allow horizontal scrollbar

@@ -17,6 +17,7 @@
 /* fixme: */
 #include <glib.h>
 
+#include "codepages.h"
 #include "nr-type-w32.h"
 
 #define NR_SLOTS_BLOCK 32
@@ -175,22 +176,52 @@ nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	} else if (!strcmp (key, "family")) {
 		val = tf->def->family;
 	} else if (!strcmp (key, "weight")) {
-		/* fixme: */
+        switch (tfw32->logfont->lfWeight) {
+        case FW_THIN:
+                val = "thin";
+                break;
+        case FW_ULTRALIGHT:
+                val = "ultra light";
+                break;
+        case FW_LIGHT:
+                val = "light";
+                break;
+        case FW_NORMAL:
+                val = "normal";
+                break;
+        case FW_MEDIUM:
+                val = "medium";
+                break;
+        case FW_DEMIBOLD:
+                val = "demi bold";
+                break;
+        case FW_BOLD:
+                val = "bold";
+                break;
+        case FW_ULTRABOLD:
+                val = "ultra bold";
+                break;
+        case FW_BLACK:
+                val = "black";
+                break;
+        default:
   		val = "normal";
+  		        break;
+  		}
 	} else if (!strcmp (key, "style")) {
+	    if (tfw32->logfont->lfItalic) {
+                val = "italic";
+        } else {
 		/* fixme: */
 		val = "normal";
+        }
 	} else {
 		val = "";
 	}
 
 	len = MIN (size - 1, strlen (val));
-	if (len > 0) {
-		memcpy (str, val, len);
-	}
-	if (size > 0) {
-		str[len] = '\0';
-	}
+	if (len > 0) memcpy (str, val, len);
+	if (size > 0) str[len] = '\0';
 
 	return strlen (val);
 }
@@ -263,13 +294,45 @@ unsigned int
 nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 {
 	NRTypeFaceW32 *tfw32;
+	const unsigned short *uc2cp;
+	unsigned int uc2cp_size;
+	unsigned int vval;
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
-	unival = CLAMP (unival, 0, tf->nglyphs);
+	uc2cp = tt_cp1250;
+	uc2cp_size = tt_cp1250_size;
 
+	switch (tfw32->logfont->lfCharSet) {
+	    case ANSI_CHARSET:
+	         uc2cp = tt_cp1252;
+	         uc2cp_size = tt_cp1252_size;
+	         break;
+	    case BALTIC_CHARSET:
+	    case CHINESEBIG5_CHARSET:
+	    case DEFAULT_CHARSET:
+	    case EASTEUROPE_CHARSET:
+	    case GB2312_CHARSET:
+	    case GREEK_CHARSET:
+	    case HANGUL_CHARSET:
+	    case MAC_CHARSET:
+	    case OEM_CHARSET:
+	    case RUSSIAN_CHARSET:
+	    case SHIFTJIS_CHARSET:
+	    case SYMBOL_CHARSET:
+	    case TURKISH_CHARSET:
+	    case VIETNAMESE_CHARSET:
+	         break;
+	    default:
+	         break;
+	}
+
+	if (unival >= uc2cp_size) unival = 0;
+	vval = uc2cp[unival];
+	vval = CLAMP (vval, tfw32->otm->otmTextMetrics.tmFirstChar, tfw32->otm->otmTextMetrics.tmLastChar);
+	/* printf ("unival %x is vendor %x\n", unival, vval); */
 	/* fixme: Use real lookup tables etc. */
-    return unival - tfw32->otm->otmTextMetrics.tmFirstChar;
+    return vval - tfw32->otm->otmTextMetrics.tmFirstChar;
 }
 
 

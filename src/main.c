@@ -244,7 +244,7 @@ sp_main_gui (int argc, const char **argv)
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
-		sp_maintoolbox_create ();
+		sp_maintoolbox_create_toplevel ();
 		sodipodi_unref ();
 
 		while (fl) {
@@ -265,7 +265,7 @@ sp_main_gui (int argc, const char **argv)
 		/* fixme: This is terrible hack */
 		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
-		sp_maintoolbox_create ();
+		sp_maintoolbox_create_toplevel ();
 		sodipodi_unref ();
 		
 		while (fl) {
