@@ -141,7 +141,6 @@ static void sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *
 
 static void sp_gradient_invalidate_vector (SPGradient *gr);
 static void sp_gradient_rebuild_vector (SPGradient *gr);
-static void sp_gradient_write_colors (SPGradient *gradient);
 
 static SPPaintServerClass * gradient_parent_class;
 
@@ -723,8 +722,8 @@ sp_gradient_rebuild_vector (SPGradient *gr)
 	}
 }
 
-static void
-sp_gradient_write_colors (SPGradient *gr)
+void
+sp_gradient_ensure_colors (SPGradient *gr)
 {
 	gint i;
 
@@ -811,7 +810,7 @@ sp_gradient_render_vector_line_rgba (SPGradient *gradient, guchar *buf, gint len
 	g_return_if_fail (span > 0);
 
 	if (!gradient->color) {
-		sp_gradient_write_colors (gradient);
+		sp_gradient_ensure_colors (gradient);
 	}
 
 	idx = (pos * 1024 << 8) / span;
@@ -840,7 +839,7 @@ sp_gradient_render_vector_line_rgb (SPGradient *gradient, guchar *buf, gint len,
 	g_return_if_fail (span > 0);
 
 	if (!gradient->color) {
-		sp_gradient_write_colors (gradient);
+		sp_gradient_ensure_colors (gradient);
 	}
 
 	idx = (pos * 1024 << 8) / span;
@@ -1121,7 +1120,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opaci
 	gr = SP_GRADIENT (ps);
 
 	if (!gr->color) {
-		sp_gradient_write_colors (gr);
+		sp_gradient_ensure_colors (gr);
 	}
 
 	lgp = g_new (SPLGPainter, 1);
@@ -1265,7 +1264,7 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 
 	if (!g->color) {
 		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		sp_gradient_write_colors (g);
+		sp_gradient_ensure_colors (g);
 	}
 
 	for (y = 0; y < height; y++) {
@@ -1467,7 +1466,7 @@ sp_radialgradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opaci
 	gr = SP_GRADIENT (ps);
 
 	if (!gr->color) {
-		sp_gradient_write_colors (gr);
+		sp_gradient_ensure_colors (gr);
 	}
 
 	rgp = g_new (SPRGPainter, 1);
@@ -1599,7 +1598,7 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 
 	if (!g->color) {
 		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		sp_gradient_write_colors (g);
+		sp_gradient_ensure_colors (g);
 	}
 
 	for (y = 0; y < height; y++) {

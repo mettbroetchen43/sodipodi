@@ -46,6 +46,7 @@ static void sp_gradient_position_gradient_destroy (SPGradient *gr, SPGradientPos
 static void sp_gradient_position_gradient_modified (SPGradient *gr, guint flags, SPGradientPosition *im);
 static void sp_gradient_position_update (SPGradientPosition *img);
 
+static void sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area);
 static void sp_gradient_position_free_image_data (SPGradientPosition *pos);
 
 static GtkWidgetClass *parent_class;
@@ -131,15 +132,14 @@ sp_gradient_position_init (SPGradientPosition *pos)
 	pos->need_update = TRUE;
 
 	pos->gradient = NULL;
-	pos->painter = NULL;
 	pos->bbox.x0 = pos->bbox.y0 = pos->bbox.x1 = pos->bbox.y1 = 0.0;
 	pos->p0.x = pos->p0.y = 0.0;
 	pos->p1.x = pos->p1.y = 1.0;
 	art_affine_identity (pos->transform);
+	pos->spread = NR_GRADIENT_SPREAD_PAD;
+
 	pos->gc = NULL;
 	pos->px = NULL;
-	pos->rgb = NULL;
-	pos->rgba = NULL;
 }
 
 static void
@@ -246,15 +246,7 @@ sp_gradient_position_draw (GtkWidget *widget, GdkRectangle *area)
 	pos = SP_GRADIENT_POSITION (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-		if (pos->need_update) {
-			sp_gradient_position_update (pos);
-		}
-		gdk_gc_set_function (pos->gc, GDK_COPY);
-		gdk_draw_pixmap (widget->window, pos->gc,
-				 pos->px,
-				 area->x, area->y,
-				 area->x, area->y,
-				 area->width, area->height);
+		sp_gradient_position_paint (widget, area);
 	}
 }
 
@@ -266,7 +258,7 @@ sp_gradient_position_expose (GtkWidget *widget, GdkEventExpose *event)
 	pos = SP_GRADIENT_POSITION (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-		sp_gradient_position_draw (widget, &event->area);
+		sp_gradient_position_paint (widget, &event->area);
 	}
 
 	return TRUE;
@@ -319,30 +311,36 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 		dx = event->x - x;
 		dy = event->y - y;
 		if ((dx * dx + dy * dy) < ((RADIUS + 1) * (RADIUS + 1))) {
-			/* Calculate mouse coordinates in bbox */
-			x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
-			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
 			/* Grab start */
 			pos->dragging = TRUE;
 			pos->position = 0;
 			pos->pold = pos->p0;
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
-			if ((x != pos->p0.x) || (y != pos->p0.y)) {
-				/* Write coords and emit "dragged" */
-				pos->p0.x = x;
-				pos->p0.y = y;
-				pos->need_update = TRUE;
-				if (GTK_WIDGET_DRAWABLE (pos)) {
-					gtk_widget_queue_draw (GTK_WIDGET (pos));
-				}
-				gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
-			}
-			gdk_pointer_grab (widget->window, FALSE,
-					  GDK_POINTER_MOTION_MASK |
-					  GDK_BUTTON_RELEASE_MASK,
-					  NULL, NULL, event->time);
-			return FALSE;
+		} else {
+			/* Grab end */
+			pos->dragging = TRUE;
+			pos->position = 1;
+			pos->pold = pos->p1;
 		}
+		gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+		/* Calculate mouse coordinates in bbox */
+		x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
+		y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
+		if ((x != pos->p0.x) || (y != pos->p0.y)) {
+			/* Write coords and emit "dragged" */
+			pos->p0.x = x;
+			pos->p0.y = y;
+			pos->need_update = TRUE;
+			if (GTK_WIDGET_DRAWABLE (pos)) {
+				gtk_widget_queue_draw (GTK_WIDGET (pos));
+			}
+			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+		}
+		gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+		gdk_pointer_grab (widget->window, FALSE,
+				  GDK_POINTER_MOTION_MASK |
+				  GDK_BUTTON_RELEASE_MASK,
+				  NULL, NULL, event->time);
+		return FALSE;
 	}
 
 	return FALSE;
@@ -497,6 +495,18 @@ sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]
 }
 
 void
+sp_gradient_position_set_spread (SPGradientPosition *pos, NRGradientSpreadType spread)
+{
+	if (spread != pos->spread) {
+		pos->spread = spread;
+		pos->need_update = TRUE;
+		if (GTK_WIDGET_DRAWABLE (pos)) {
+			gtk_widget_queue_draw (GTK_WIDGET (pos));
+		}
+	}
+}
+
+void
 sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos)
 {
 	pos[0] = gp->p0.x;
@@ -509,33 +519,19 @@ static void
 sp_gradient_position_update (SPGradientPosition *pos)
 {
 	GtkWidget *widget;
-	gint x, y;
-	guchar *p;
 	gdouble xs, ys, xp, yp;
-	ArtDRect bbox;
-	gdouble id[6];
-	gint x0, y0, x1, y1;
-	guchar *t;
+	gdouble v2bb[6], bb2d[6], n2d[6];
 
 	widget = GTK_WIDGET (pos);
 
 	pos->need_update = FALSE;
 
 	/* Create image data */
-	if (!pos->rgba) pos->rgba = g_new (guchar, 4 * widget->allocation.height * widget->allocation.width);
-	if (!pos->rgb) pos->rgb = g_new (guchar, 3 * widget->allocation.height * widget->allocation.width);
-	if (!pos->px) pos->px = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
+	if (!pos->px) pos->px = gdk_pixmap_new (widget->window, 64, 64, -1);
 	if (!pos->gc) pos->gc = gdk_gc_new (widget->window);
-	g_assert (!pos->painter);
-
-	if (!pos->gradient ||
-	    (pos->bbox.x0 >= pos->bbox.x1) ||
-	    (pos->bbox.y0 >= pos->bbox.y1) ||
-	    (widget->allocation.width < 1) ||
-	    (widget->allocation.height < 1)) {
-		/* Draw empty thing */
-		nr_gdk_draw_gray_garbage (pos->px, pos->gc, 0, 0, widget->allocation.width, widget->allocation.height);
-		return;
+	if (pos->lgr) {
+		nr_lgradient_renderer_destroy (pos->lgr);
+		pos->lgr = NULL;
 	}
 
 	/* Calculate bbox */
@@ -557,79 +553,31 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	pos->vbox.y0 = yp;
 	pos->vbox.x1 = widget->allocation.width - pos->vbox.x0;
 	pos->vbox.y1 = widget->allocation.height - pos->vbox.y0;
-	/* Draw checkerboard */
-	/* fixme: Get rid of uint32 stuff */
-	nr_render_checkerboard_rgb (pos->rgb, widget->allocation.width, widget->allocation.height, 3 * widget->allocation.width, 0, 0);
-	/* Create painter */
-	art_affine_identity (id);
-	bbox.x0 = xp;
-	bbox.y0 = yp;
-	bbox.x1 = widget->allocation.width - xp;
-	bbox.y1 = widget->allocation.height - yp;
-	pos->painter = sp_paint_server_painter_new (SP_PAINT_SERVER (pos->gradient), id, 1.0, &bbox);
-	/* Paint rgb buffer */
-	pos->painter->fill (pos->painter, pos->rgba, 0, 0, widget->allocation.width, widget->allocation.height, 4 * widget->allocation.width);
-	pos->painter = sp_painter_free (pos->painter);
-	for (y = 0; y < widget->allocation.height; y++) {
-		t = pos->rgba + 4 * y * widget->allocation.width;
-		p = pos->rgb + 3 * y * widget->allocation.width;
-		for (x = 0; x < widget->allocation.width; x++) {
-			guint a, fc;
-			a = t[3];
-			fc = (t[0] - *p) * a;
-			p[0] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			fc = (t[1] - *p) * a;
-			p[1] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			fc = (t[2] - *p) * a;
-			p[2] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			p += 3;
-			t += 4;
-		}
-	}
-	/* Draw pixmap */
-	gdk_gc_set_function (pos->gc, GDK_COPY);
-	gdk_draw_rgb_image (pos->px, pos->gc,
-			    0, 0,
-			    widget->allocation.width, widget->allocation.height,
-			    GDK_RGB_DITHER_MAX,
-			    pos->rgb, widget->allocation.width * 3);
-	/* Draw start */
-	gdk_gc_set_function (pos->gc, GDK_INVERT);
-	x0 = bbox.x0 + pos->p0.x * (bbox.x1 - bbox.x0);
-	y0 = bbox.y0 + pos->p0.y * (bbox.y1 - bbox.y0);
-	gdk_draw_arc (pos->px, pos->gc, FALSE, x0 - RADIUS, y0 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-	/* Draw end */
-	x1 = bbox.x0 + pos->p1.x * (bbox.x1 - bbox.x0);
-	y1 = bbox.y0 + pos->p1.y * (bbox.y1 - bbox.y0);
-	gdk_draw_arc (pos->px, pos->gc, FALSE, x1 - RADIUS, y1 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-	/* Draw line */
-	if (((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)) > (RADIUS * RADIUS)) {
-		gdouble dx, dy, len;
-		dx = x1 - x0;
-		dy = y1 - y0;
-		len = sqrt (dx * dx + dy * dy);
-		x0 += dx * RADIUS / len;
-		y0 += dy * RADIUS / len;
-		x1 -= dx * RADIUS / len;
-		y1 -= dy * RADIUS / len;
-		gdk_draw_line (pos->px, pos->gc, x0, y0, x1, y1);
-	}
-	/* Draw bbox */
-	gdk_draw_rectangle (pos->px, pos->gc, FALSE,
-			    floor (xp), floor (yp), floor (xs * (pos->bbox.x1 - pos->bbox.x0)), floor (ys * (pos->bbox.y1 - pos->bbox.y0)));
+
+	sp_gradient_ensure_colors (pos->gradient);
+
+	/* Vector -> BBox */
+	v2bb[0] = pos->p1.x - pos->p0.x;
+	v2bb[1] = pos->p1.y - pos->p0.y;
+	v2bb[2] = pos->p1.y - pos->p0.y;
+	v2bb[3] = pos->p0.x - pos->p1.x;
+	v2bb[4] = pos->p0.x;
+	v2bb[5] = pos->p0.y;
+	/* BBox -> buffer */
+	bb2d[0] = pos->vbox.x1 - pos->vbox.x0;
+	bb2d[1] = 0.0;
+	bb2d[2] = 0.0;
+	bb2d[3] = pos->vbox.y1 - pos->vbox.y0;
+	bb2d[4] = pos->vbox.x0;
+	bb2d[5] = pos->vbox.y0;
+	art_affine_multiply (n2d, pos->transform, v2bb);
+	art_affine_multiply (n2d, n2d, bb2d);
+	pos->lgr = nr_lgradient_renderer_new_r8g8b8 (pos->gradient->color, pos->spread, n2d);
 }
 
 static void
 sp_gradient_position_free_image_data (SPGradientPosition *pos)
 {
-	if (pos->rgba) {
-		g_free (pos->rgba);
-		pos->rgba = NULL;
-	}
-	if (pos->rgb) {
-		g_free (pos->rgb);
-		pos->rgb = NULL;
-	}
 	if (pos->px) {
 		gdk_pixmap_unref (pos->px);
 		pos->px = NULL;
@@ -638,6 +586,80 @@ sp_gradient_position_free_image_data (SPGradientPosition *pos)
 		gdk_gc_unref (pos->gc);
 		pos->gc = NULL;
 	}
-	if (pos->painter) pos->painter = sp_painter_free (pos->painter);
+	if (pos->lgr) {
+		nr_lgradient_renderer_destroy (pos->lgr);
+		pos->lgr = NULL;
+	}
 }
 
+static void
+sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
+{
+	static guchar *rgb = NULL;
+	SPGradientPosition *gp;
+	gint x, y;
+
+	gp = SP_GRADIENT_POSITION (widget);
+
+	if (!gp->gradient ||
+	    (gp->bbox.x0 >= gp->bbox.x1) ||
+	    (gp->bbox.y0 >= gp->bbox.y1) ||
+	    (widget->allocation.width < 1) ||
+	    (widget->allocation.height < 1)) {
+		/* Draw empty thing */
+		nr_gdk_draw_gray_garbage (widget->window, gp->gc, area->x, area->y, area->width, area->height);
+		return;
+	}
+
+	if (gp->need_update) {
+		sp_gradient_position_update (gp);
+	}
+
+	if (!rgb) rgb = g_new (guchar, 64 * 64 * 3);
+
+	for (y = area->y; y < area->y + area->height; y += 64) {
+		for (x = area->x; x < area->x + area->width; x += 64) {
+			gint x0, y0, x1, y1, w, h;
+
+			w = MIN (x + 64, area->x + area->width) - x;
+			h = MIN (y + 64, area->y + area->height) - y;
+
+			/* Draw checkerboard */
+			nr_render_checkerboard_rgb (rgb, w, h, 3 * w, x, y);
+			nr_lgradient_render (gp->lgr, rgb, x, y, w, h, 3 * w);
+
+			/* Draw pixmap */
+			gdk_gc_set_function (gp->gc, GDK_COPY);
+			gdk_draw_rgb_image (gp->px, gp->gc, 0, 0, w, h, GDK_RGB_DITHER_MAX, rgb, 3 * w);
+			/* Draw start */
+			gdk_gc_set_function (gp->gc, GDK_INVERT);
+			x0 = gp->vbox.x0 + gp->p0.x * (gp->vbox.x1 - gp->vbox.x0) - x;
+			y0 = gp->vbox.y0 + gp->p0.y * (gp->vbox.y1 - gp->vbox.y0) - y;
+			gdk_draw_arc (gp->px, gp->gc, FALSE, x0 - RADIUS, y0 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
+			/* Draw end */
+			x1 = gp->vbox.x0 + gp->p1.x * (gp->vbox.x1 - gp->vbox.x0) - x;
+			y1 = gp->vbox.y0 + gp->p1.y * (gp->vbox.y1 - gp->vbox.y0) - y;
+			gdk_draw_arc (gp->px, gp->gc, FALSE, x1 - RADIUS, y1 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
+			/* Draw line */
+			if (((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)) > (RADIUS * RADIUS)) {
+				gdouble dx, dy, len;
+				dx = x1 - x0;
+				dy = y1 - y0;
+				len = sqrt (dx * dx + dy * dy);
+				x0 += dx * RADIUS / len;
+				y0 += dy * RADIUS / len;
+				x1 -= dx * RADIUS / len;
+				y1 -= dy * RADIUS / len;
+				gdk_draw_line (gp->px, gp->gc, x0, y0, x1, y1);
+			}
+			/* Draw bbox */
+			gdk_draw_rectangle (gp->px, gp->gc, FALSE,
+					    gp->vbox.x0 - x, gp->vbox.y0 - y,
+					    gp->vbox.x1 - gp->vbox.x0, gp->vbox.y1 - gp->vbox.y0);
+			/* Copy to window */
+			gdk_gc_set_function (gp->gc, GDK_COPY);
+			gdk_draw_pixmap (widget->window, gp->gc,
+					 gp->px, 0, 0, x, y, w, h);
+		}
+	}
+}

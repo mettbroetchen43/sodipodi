@@ -1001,6 +1001,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
+	gnome_canvas_set_dither (GNOME_CANVAS (desktop->canvas), GDK_RGB_DITHER_MAX);
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
 	style = gtk_style_copy (GTK_WIDGET (desktop->canvas)->style);

@@ -19,6 +19,7 @@
 #include <gtk/gtkbutton.h>
 
 #include "../document.h"
+#include "../document-private.h"
 #include "../gradient-chemistry.h"
 
 #include "gradient-vector.h"
@@ -298,15 +299,16 @@ sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 static void
 sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 {
-#if 0
-	SPObject *gr;
+	SPDocument *doc;
+	SPGradient *gr;
 	SPRepr *repr;
 
-	/* Return if no document */
-	if (!gvs->defs) return;
+	doc = sp_gradient_vector_selector_get_document (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors));
+	if (!doc) return;
+	gr = sp_gradient_vector_selector_get_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors));
 
-	if (gvs->gr) {
-		repr = sp_repr_duplicate (SP_OBJECT_REPR (gvs->gr));
+	if (gr) {
+		repr = sp_repr_duplicate (SP_OBJECT_REPR (gr));
 	} else {
 		SPRepr *stop;
 		repr = sp_repr_new ("linearGradient");
@@ -322,33 +324,26 @@ sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 		sp_repr_unref (stop);
 	}
 
-	sp_repr_add_child (SP_OBJECT_REPR (gvs->defs), repr, NULL);
+	sp_repr_add_child (SP_OBJECT_REPR (SP_DOCUMENT_DEFS (doc)), repr, NULL);
 	sp_repr_unref (repr);
 
-#if 0
-	/* fixme: */
-	sp_gradient_selector_vector_menu_refresh (gtk_object_get_data (GTK_OBJECT (spw), "vectors"), spw);
-	/* fixme: */
-	if (spw->desktop) sp_gradient_selector_load_selection (spw, SP_DT_SELECTION (spw->desktop));
-#endif
-
-	gr = sp_document_lookup_id (SP_OBJECT_DOCUMENT (gvs->defs), sp_repr_attr (repr, "id"));
-	sp_gradient_vector_selector_set_gradient (gvs, SP_GRADIENT (gr));
-#endif
+	gr = (SPGradient *) sp_document_lookup_id (doc, sp_repr_attr (repr, "id"));
+	sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors), doc, gr);
 }
 
 static void
 sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 {
-#if 0
-	if (gvs->gr) {
-		sp_gradient_vector_release_references (gvs->gr);
-		if (SP_OBJECT_HREFCOUNT (gvs->gr) < 1) {
+	SPGradient *gr;
+
+	gr = sp_gradient_vector_selector_get_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors));
+	if (gr) {
+		sp_gradient_vector_release_references (gr);
+		if (SP_OBJECT_HREFCOUNT (gr) < 1) {
 			/* fixme: need repick */
-			sp_repr_unparent (SP_OBJECT_REPR (gvs->gr));
+			sp_repr_unparent (SP_OBJECT_REPR (gr));
 		}
 	}
-#endif
 }
 
 static void

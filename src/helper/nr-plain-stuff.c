@@ -19,11 +19,6 @@
 #define NR_DEFAULT_CHECKERCOLOR0 0xbfbfbfff
 #define NR_DEFAULT_CHECKERCOLOR1 0x7f7f7fff
 
-#define NR_RGBA32_R(v) ((v) >> 24)
-#define NR_RGBA32_G(v) (((v) >> 16) & 0xff)
-#define NR_RGBA32_B(v) (((v) >> 8) & 0xff)
-#define NR_RGBA32_A(v) ((v) & 0xff)
-
 /* Pixel ops - FINAL DST SRC */
 
 static void nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N (guchar *px, gint w, gint h, gint rs, const guchar *spx, gint srs, guint alpha);
@@ -544,18 +539,6 @@ nr_render_r8g8b8_buf (guchar *px, gint rs, gint w, gint h, NRBuffer *s, gint sx,
 		nr_R8G8B8_R8G8B8_R8G8B8A8_N (px, w, h, rs, s->px + sy * s->rs + 4 * sx, s->rs);
 	}
 }
-
-/* Elementary renderers */
-
-#define PREMUL(c,a) (((c) * (a) + 127) / 255)
-#define COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
-#define COMPOSEPNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 127) / a)
-#define COMPOSENNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 32512) / 65025)
-#define COMPOSEPNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 32512) / 65025)
-#define COMPOSENPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fa) * (fc) + 127) / 255)
-#define COMPOSEPPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEP11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
 
 #define COMPOSE4(bc,fc,ba,fa,da) (((255 - fa) * (bc * ba) + fa * 255 * fc) / da)
 

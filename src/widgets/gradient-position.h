@@ -11,6 +11,7 @@
  */
 
 #include <gtk/gtkwidget.h>
+#include "../helper/nr-gradient.h"
 #include "../sp-gradient.h"
 
 typedef struct _SPGradientPosition SPGradientPosition;
@@ -28,15 +29,15 @@ struct _SPGradientPosition {
 	guint dragging : 1;
 	guint position : 2;
 	SPGradient *gradient;
-	SPPainter *painter;
 	ArtDRect bbox; /* BBox in format, expected by gradient */
 	ArtDRect vbox; /* BBox in widget coordinates */
 	ArtPoint p0, p1, pold;
 	gdouble transform[6];
 	GdkGC *gc;
 	GdkPixmap *px;
-	guchar *rgb;
-	guchar *rgba;
+
+	NRGradientSpreadType spread;
+	NRLGradientRenderer *lgr;
 };
 
 struct _SPGradientPositionClass {
@@ -58,6 +59,7 @@ void sp_gradient_position_set_gradient (SPGradientPosition *pos, SPGradient *gra
 void sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_vector (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]);
+void sp_gradient_position_set_spread (SPGradientPosition *pos, NRGradientSpreadType spread);
 
 void sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos);
 

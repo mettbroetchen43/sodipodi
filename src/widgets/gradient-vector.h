@@ -54,6 +54,9 @@ GtkWidget *sp_gradient_vector_selector_new (SPDocument *doc, SPGradient *gradien
 
 void sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocument *doc, SPGradient *gr);
 
+SPDocument *sp_gradient_vector_selector_get_document (SPGradientVectorSelector *gvs);
+SPGradient *sp_gradient_vector_selector_get_gradient (SPGradientVectorSelector *gvs);
+
 /* fixme: rethink this (Lauris) */
 GtkWidget *sp_gradient_vector_editor_new (SPGradient *gradient);
 

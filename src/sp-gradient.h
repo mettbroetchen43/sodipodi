@@ -130,6 +130,8 @@ GtkType sp_gradient_get_type (void);
 
 /* Forces vector to be built, if not present (i.e. changed) */
 void sp_gradient_ensure_vector (SPGradient *gradient);
+/* Ensures that color array is populated */
+void sp_gradient_ensure_colors (SPGradient *gradient);
 /* Sets gradient vector to given value, does not update reprs */
 void sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector);
 

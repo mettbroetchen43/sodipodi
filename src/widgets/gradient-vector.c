@@ -189,6 +189,24 @@ sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocum
 	/* The case of setting NULL -> NULL is not very interesting */
 }
 
+SPDocument *
+sp_gradient_vector_selector_get_document (SPGradientVectorSelector *gvs)
+{
+	g_return_val_if_fail (gvs != NULL, NULL);
+	g_return_val_if_fail (SP_IS_GRADIENT_VECTOR_SELECTOR (gvs), NULL);
+
+	return gvs->doc;
+}
+
+SPGradient *
+sp_gradient_vector_selector_get_gradient (SPGradientVectorSelector *gvs)
+{
+	g_return_val_if_fail (gvs != NULL, NULL);
+	g_return_val_if_fail (SP_IS_GRADIENT_VECTOR_SELECTOR (gvs), NULL);
+
+	return gvs->gr;
+}
+
 static void
 sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 {
