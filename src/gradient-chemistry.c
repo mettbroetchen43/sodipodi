@@ -164,7 +164,7 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 	g_return_val_if_fail (vector->state == SP_GRADIENT_STATE_VECTOR, NULL);
 
 	/* If we are already normalized private, change href and return */
-	if ((gr->state == SP_GRADIENT_STATE_PRIVATE) && (SP_OBJECT_HREFCOUNT (gr) > 1)) {
+	if ((gr->state == SP_GRADIENT_STATE_PRIVATE) && (SP_OBJECT_HREFCOUNT (gr) == 1)) {
 #if 0
 		/* fixme: Have to remove this, because duplicating object clones gradient also */
 		/* This assertion is dangerous - we have to be very-very strict about it */

@@ -49,6 +49,8 @@ struct _SPPaintSelector {
 	GtkWidget *style;
 	GtkWidget *none, *solid, *gradient, *pattern, *fractal;
 	GtkWidget *frame, *selector;
+
+	guint32 rgba;
 };
 
 struct _SPPaintSelectorClass {

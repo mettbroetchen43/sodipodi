@@ -273,23 +273,27 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 
 	sp_style_clear (style);
 
-	/* 1. Presentation-only attributes */
-	/* CMYK has precedence and can only be presentation attribute */
-	val = sp_repr_attr (repr, "fill-cmyk");
-	if (val && sp_style_read_color_cmyk (&style->fill.value.color, val)) {
-		style->fill.set = TRUE;
-		style->fill.inherit = FALSE;
-	}
-	val = sp_repr_attr (repr, "stroke-cmyk");
-	if (val && sp_style_read_color_cmyk (&style->stroke.value.color, val)) {
-		style->stroke.set = TRUE;
-		style->stroke.inherit = FALSE;
-	}
-
-	/* 2. Style itself */
+	/* 1. Style itself */
 	val = sp_repr_attr (repr, "style");
 	if (val != NULL) {
 		sp_style_merge_from_style_string (style, val);
+	}
+
+	/* 2. Presentation-only attributes */
+	/* CMYK has precedence and can only be presentation attribute */
+	if (!style->fill.set || (style->fill.type == SP_PAINT_TYPE_COLOR)) {
+		val = sp_repr_attr (repr, "fill-cmyk");
+		if (val && sp_style_read_color_cmyk (&style->fill.value.color, val)) {
+			style->fill.set = TRUE;
+			style->fill.inherit = FALSE;
+		}
+	}
+	if (!style->stroke.set || (style->stroke.type == SP_PAINT_TYPE_COLOR)) {
+		val = sp_repr_attr (repr, "stroke-cmyk");
+		if (val && sp_style_read_color_cmyk (&style->stroke.value.color, val)) {
+			style->stroke.set = TRUE;
+			style->stroke.inherit = FALSE;
+		}
 	}
 
 	/* fixme: CSS etc. parsing goes here */

@@ -1,3 +1,10 @@
+2002-09-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_private_normalized): Only keep
+	if hrefcount == 1 (fixed bug)
+
+	* src/style.c (sp_style_read): Only parse CMYK if RGBA present
+
 2002-09-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-ellipse.c (sp_arc_set_elliptical_path_attribute): Lay 2PI arcs as 2 segments

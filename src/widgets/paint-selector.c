@@ -174,6 +174,9 @@ sp_paint_selector_init (SPPaintSelector *psel)
 	gtk_widget_show (psel->frame);
 	gtk_container_set_border_width (GTK_CONTAINER (psel->frame), 4);
 	gtk_box_pack_start (GTK_BOX (psel), psel->frame, TRUE, TRUE, 0);
+
+	/* Last used color */
+	psel->rgba = 0x000000ff;
 }
 
 static void
@@ -485,6 +488,8 @@ sp_paint_selector_color_released (SPColorSelector *csel, SPPaintSelector *psel)
 static void
 sp_paint_selector_color_changed (SPColorSelector *csel, SPPaintSelector *psel)
 {
+	psel->rgba = sp_color_selector_get_rgba32 (csel);
+
 	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
 }
 
@@ -558,6 +563,9 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 		/* Pack everything to frame */
 		gtk_container_add (GTK_CONTAINER (psel->frame), vb);
 		psel->selector = vb;
+
+		/* Set color */
+		sp_color_selector_set_rgba32 (SP_COLOR_SELECTOR (csel), psel->rgba);
 	}
 
 	if (mode == SP_PAINT_SELECTOR_MODE_COLOR_RGB) {

@@ -165,7 +165,7 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 	type = gtk_object_get_data (GTK_OBJECT (fs), "type");
-	spns = (type && strcmp (type, "svg"));
+	spns = !(type && !strcmp (type, "svg"));
 
 	gtk_widget_destroy (GTK_WIDGET (fs));
 
@@ -255,6 +255,7 @@ sp_file_save_as (GtkWidget * widget)
 	gtk_widget_show (mi);
 	gtk_menu_append (GTK_MENU (m), mi);
 	gtk_object_set_data (GTK_OBJECT (mi), "type", "sodipodi");
+	gtk_object_set_data (GTK_OBJECT (dlg), "type", "sodipodi");
 	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_file_save_type_activate), dlg);
 	mi = gtk_menu_item_new_with_label (_("Plain SVG"));
 	gtk_widget_show (mi);
