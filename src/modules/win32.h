@@ -10,7 +10,9 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifndef WIN32
 #error "This file is only usable for Windows"

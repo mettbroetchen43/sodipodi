@@ -10,7 +10,9 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #define SP_TYPE_MODULE_PRINT_PLAIN (sp_module_print_plain_get_type())
 #define SP_MODULE_PRINT_PLAIN(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT_PLAIN, SPModulePrintPlain))

@@ -13,7 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
@@ -29,6 +31,7 @@
 #include <gtk/gtkimage.h>
 #include "helper/sp-intl.h"
 #include "helper/window.h"
+#include "widgets/icon.h"
 #include "widgets/sp-widget.h"
 #include "macros.h"
 #include "sodipodi.h"
@@ -125,7 +128,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Fill"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_fill.xpm");
+		px = sp_icon_new (SP_ICON_SIZE_BUTTON, "properties_fill");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_fill_style_widget_new ();
@@ -139,7 +142,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Stroke paint"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		px = sp_icon_new (SP_ICON_SIZE_BUTTON, "properties_stroke");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_stroke_style_paint_widget_new ();
@@ -153,7 +156,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Stroke style"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		px = sp_icon_new (SP_ICON_SIZE_BUTTON, "properties_stroke");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_stroke_style_line_widget_new ();
@@ -324,7 +327,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), us, 2, 3, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "units", us);
 
-	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/arrows_hor.xpm");
+	px = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_hor");
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 1, 2, 0, 0, 0, 0);
 	l = gtk_label_new (_("X:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
@@ -336,7 +339,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/arrows_ver.xpm");
+	px = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_ver");
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 2, 3, 0, 0, 0, 0);
 	l = gtk_label_new (_("Y:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
@@ -348,7 +351,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/dimension_hor.xpm");
+	px = sp_icon_new (SP_ICON_SIZE_BUTTON, "dimension_hor");
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 3, 4, 0, 0, 0, 0);
 	l = gtk_label_new (_("Width:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
@@ -360,7 +363,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/dimension_ver.xpm");
+	px = sp_icon_new (SP_ICON_SIZE_BUTTON, "dimension_ver");
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 4, 5, 0, 0, 0, 0);
 	l = gtk_label_new (_("Height:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);

@@ -14,7 +14,10 @@
 
 #define noSP_ANCHOR_VERBOSE
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <string.h>
 
 #include "helper/sp-intl.h"

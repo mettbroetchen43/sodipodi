@@ -18,7 +18,7 @@ NRPGL *
 nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMatrixF *transform)
 {
 	NRPGL *pgl;
-	int i;
+	unsigned int i;
 
 	pgl = (NRPGL *) malloc (sizeof (NRPGL) + (length - 1) * sizeof (struct _NRPosGlyph));
 

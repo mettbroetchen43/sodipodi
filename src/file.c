@@ -13,7 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 #include <time.h>
@@ -212,52 +214,10 @@ sp_file_do_save (SPDocument *doc, const unsigned char *uri, const unsigned char 
 	if (!doc) return;
 	if (!uri) return;
 
-#ifdef WITH_MODULES
 	if (!key) key = SP_MODULE_KEY_OUTPUT_DEFAULT;
 	mod = sp_module_system_get (key);
 	if (mod) sp_module_output_document_save (SP_MODULE_OUTPUT (mod), doc, uri);
 	sp_module_unref (mod);
-#else
-	spns = (!key || !strcmp (key, SP_MODULE_KEY_OUTPUT_SVG_SODIPODI));
-	if (spns) {
-		char *dirname;
-		rdoc = NULL;
-		repr = sp_document_repr_root (doc);
-		dirname = g_dirname (uri);
-		sp_repr_set_attr (repr, "sodipodi:docbase", dirname);
-		g_free (dirname);
-		sp_repr_set_attr (repr, "sodipodi:docname", uri);
-	} else {
-		rdoc = sp_repr_document_new ("svg");
-		repr = sp_repr_document_root (rdoc);
-		repr = sp_object_invoke_write (sp_document_root (doc), repr, SP_OBJECT_WRITE_BUILD);
-	}
-
-	images = sp_document_get_resource_list (doc, "image");
-	for (l = images; l != NULL; l = l->next) {
-		SPRepr *ir;
-		const guchar *href, *relname;
-		ir = SP_OBJECT_REPR (l->data);
-		href = sp_repr_attr (ir, "xlink:href");
-		if (spns && !g_path_is_absolute (href)) {
-			href = sp_repr_attr (ir, "sodipodi:absref");
-		}
-		if (href && g_path_is_absolute (href)) {
-			relname = sp_relative_path_from_path (href, save_path);
-			sp_repr_set_attr (ir, "xlink:href", relname);
-		}
-	}
-
-	/* fixme: */
-	sp_document_set_undo_sensitive (doc, FALSE);
-	sp_repr_set_attr (repr, "sodipodi:modified", NULL);
-	sp_document_set_undo_sensitive (doc, TRUE);
-
-	sp_repr_save_file (sp_repr_document (repr), uri);
-	sp_document_set_uri (doc, uri);
-
-	if (!spns) sp_repr_document_unref (rdoc);
-#endif
 }
 
 static void

@@ -92,9 +92,9 @@ nr_svl_stroke_build_lineto (NRSVLStrokeBuild *svlb, float x, float y)
 			/* Second point on line */
 			svlb->x[1] = x;
 			svlb->y[1] = y;
-			len = hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
-			dx = (svlb->x[1] - svlb->x[0]) / len;
-			dy = (svlb->y[1] - svlb->y[0]) / len;
+			len = (float) hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+			dx = (float) (svlb->x[1] - svlb->x[0]) / len;
+			dy = (float) (svlb->y[1] - svlb->y[0]) / len;
 			if (!svlb->closed) {
 				/* Draw cap[0,1] if open */
 				nr_svl_build_moveto (&svlb->left, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
@@ -129,7 +129,7 @@ nr_svl_stroke_build_finish_subpath (NRSVLStrokeBuild *svlb)
 		/* Draw 2->3 + join 2->3->1 */
 		nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], svlb->x[1], svlb->y[1]);
 		/* And finsih possibly open paths */
-		len = hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+		len = (float) hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
 		dx = (svlb->x[1] - svlb->x[0]) / len;
 		dy = (svlb->y[1] - svlb->y[0]) / len;
 		nr_svl_build_lineto (&svlb->left, svlb->x[0] - dy * svlb->width_2, svlb->y[0] + dx * svlb->width_2);

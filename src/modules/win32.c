@@ -10,9 +10,11 @@
  */
 
 #define USE_TIMER
-#define GLOBAL_USE_TIMER
+#define noGLOBAL_USE_TIMER
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>

@@ -1,11 +1,14 @@
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "system.h"
 #include "view.h"
 #include "document.h"
 #include "sp-object.h"
@@ -53,9 +56,12 @@ static void sp_modulesys_builtin_init (void) {
 
 /* TODO: This should be done by a configuration file
  *       but right now it's hard coded :(  */
-static void sp_modulesys_ext_init (void) {
-	SPModule * this_plug;
-	SPModuleExecExt * ext;
+static void
+sp_modulesys_ext_init (void)
+{
+	unsigned char *path;
+	SPModule *this_plug;
+	SPModuleExecExt *ext;
 	SPRepr *r;
 
 	r = sp_repr_new ("input");
@@ -67,19 +73,25 @@ static void sp_modulesys_ext_init (void) {
 
 	ext = sp_module_exec_ext_new();
 	sp_module_set_exec(this_plug, SP_MODULE_EXEC(ext));
-	sp_module_exec_ext_set_command(ext, SODIPODI_EXTENSIONDIR "/ill2svg.pl -l \"mac\"");
-	sp_modulesys_list_add(this_plug);
+	path = g_build_filename (SODIPODI_EXTENSIONDIR, "ill2svg.pl -l \"mac\"", NULL);
+	sp_module_exec_ext_set_command (ext, path);
+	g_free (path);
+	sp_modulesys_list_add (this_plug);
 
 	r = sp_repr_new ("filter");
 	sp_repr_set_attr (r, "id", "modules.filters.Roundhole");
 	sp_repr_set_attr (r, "name", "Roundhole");
 	sp_repr_set_attr (r, "toolbox", "true");
-	sp_repr_set_attr (r, "icon", SODIPODI_EXTENSIONDATADIR "/roundhole.xpm");
+	path = g_build_filename (SODIPODI_EXTENSIONDIR, "roundhole.xpm", NULL);
+	sp_repr_set_attr (r, "icon", path);
+	g_free (path);
 	this_plug = sp_module_filter_new(r);
 	sp_repr_unref (r);
 
 	ext = sp_module_exec_ext_new();
-	sp_module_exec_ext_set_command(ext, SODIPODI_EXTENSIONDIR "/roundhole");
+	path = g_build_filename (SODIPODI_EXTENSIONDIR, "roundhole", NULL);
+	sp_module_exec_ext_set_command(ext, path);
+	g_free (path);
 	sp_module_set_exec(this_plug, SP_MODULE_EXEC(ext));
 	sp_modulesys_list_add(this_plug);
 

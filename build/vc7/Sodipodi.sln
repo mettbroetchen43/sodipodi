@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libarikkei", "libarikkei.vcproj", "{89C6F4DF-0678-4D42-8219-705F4BD61FBC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libnr", "libnr.vcproj", "{08D68E2B-1652-46CA-A327-CA32E47D3694}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libnrtype", "libnrtype.vcproj", "{7760B440-3FD1-4F26-9B1E-A067B226040D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libspxml", "libspxml.vcproj", "{371EBE20-C852-4235-9558-95EC63257096}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sodipodi", "sodipodi.vcproj", "{1E25B459-D73A-40D1-98A0-C1E91ED9E033}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{89C6F4DF-0678-4D42-8219-705F4BD61FBC}.Debug.ActiveCfg = Debug|Win32
+		{89C6F4DF-0678-4D42-8219-705F4BD61FBC}.Debug.Build.0 = Debug|Win32
+		{89C6F4DF-0678-4D42-8219-705F4BD61FBC}.Release.ActiveCfg = Release|Win32
+		{89C6F4DF-0678-4D42-8219-705F4BD61FBC}.Release.Build.0 = Release|Win32
+		{08D68E2B-1652-46CA-A327-CA32E47D3694}.Debug.ActiveCfg = Debug|Win32
+		{08D68E2B-1652-46CA-A327-CA32E47D3694}.Debug.Build.0 = Debug|Win32
+		{08D68E2B-1652-46CA-A327-CA32E47D3694}.Release.ActiveCfg = Release|Win32
+		{08D68E2B-1652-46CA-A327-CA32E47D3694}.Release.Build.0 = Release|Win32
+		{7760B440-3FD1-4F26-9B1E-A067B226040D}.Debug.ActiveCfg = Debug|Win32
+		{7760B440-3FD1-4F26-9B1E-A067B226040D}.Debug.Build.0 = Debug|Win32
+		{7760B440-3FD1-4F26-9B1E-A067B226040D}.Release.ActiveCfg = Release|Win32
+		{7760B440-3FD1-4F26-9B1E-A067B226040D}.Release.Build.0 = Release|Win32
+		{371EBE20-C852-4235-9558-95EC63257096}.Debug.ActiveCfg = Debug|Win32
+		{371EBE20-C852-4235-9558-95EC63257096}.Debug.Build.0 = Debug|Win32
+		{371EBE20-C852-4235-9558-95EC63257096}.Release.ActiveCfg = Release|Win32
+		{371EBE20-C852-4235-9558-95EC63257096}.Release.Build.0 = Release|Win32
+		{1E25B459-D73A-40D1-98A0-C1E91ED9E033}.Debug.ActiveCfg = Debug|Win32
+		{1E25B459-D73A-40D1-98A0-C1E91ED9E033}.Debug.Build.0 = Debug|Win32
+		{1E25B459-D73A-40D1-98A0-C1E91ED9E033}.Release.ActiveCfg = Release|Win32
+		{1E25B459-D73A-40D1-98A0-C1E91ED9E033}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

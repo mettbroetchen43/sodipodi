@@ -12,9 +12,14 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
+
+#include "system.h"
 #include "document.h"
 #include "sp-text.h"
 #include "svg-view.h"
@@ -33,13 +38,16 @@ sp_help_about (void)
 	SPDocument *doc;
 	SPObject *title;
 	GtkWidget *w, *v;
+	char *path;
 
-	doc = sp_document_new (SODIPODI_PIXMAPDIR "/about.svg", FALSE, TRUE);
+	path = g_build_filename (SODIPODI_PIXMAPDIR, "about.svg", NULL);
+	doc = sp_document_new (path, FALSE, TRUE);
+	g_free (path);
 	g_return_if_fail (doc != NULL);
 	title = sp_document_lookup_id (doc, "title");
 	if (title && SP_IS_TEXT (title)) {
 		gchar *t;
-		t = g_strdup_printf ("Sodipodi %s", SODIPODI_VERSION);
+		t = g_strdup_printf ("Sodipodi %s", VERSION);
 		sp_text_set_repr_text_multiline (SP_TEXT (title), t);
 		g_free (t);
 	}

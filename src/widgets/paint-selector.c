@@ -11,7 +11,9 @@
 
 #define noSP_PS_VERBOSE
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <math.h>
 #include <string.h>
@@ -27,13 +29,15 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
-#include "menu.h"
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkimage.h>
 
+#include "../helper/sp-intl.h"
+
+#include "icon.h"
+#include "menu.h"
 #include "../sp-item.h"
 #include "../sp-gradient.h"
-#include "../helper/sp-intl.h"
 
 #include "sp-color-selector.h"
 /* fixme: Move it from dialogs to here */
@@ -150,18 +154,18 @@ sp_paint_selector_init (SPPaintSelector *psel)
 	gtk_box_pack_start (GTK_BOX (psel), psel->style, FALSE, FALSE, 0);
 
 	/* Buttons */
-	psel->none = sp_paint_selector_style_button_add (psel, "fill_none.xpm",
+	psel->none = sp_paint_selector_style_button_add (psel, "fill_none",
 							 SP_PAINT_SELECTOR_MODE_NONE, NULL);
-	psel->solid = sp_paint_selector_style_button_add (psel, "fill_solid.xpm",
+	psel->solid = sp_paint_selector_style_button_add (psel, "fill_solid",
 							  SP_PAINT_SELECTOR_MODE_COLOR_RGB, GTK_RADIO_BUTTON (psel->none));
-	psel->gradient = sp_paint_selector_style_button_add (psel, "fill_gradient.xpm",
+	psel->gradient = sp_paint_selector_style_button_add (psel, "fill_gradient",
 							     SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR, GTK_RADIO_BUTTON (psel->solid));
-	psel->radial = sp_paint_selector_style_button_add (psel, "fill_radial.xpm",
+	psel->radial = sp_paint_selector_style_button_add (psel, "fill_radial",
 							   SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL, GTK_RADIO_BUTTON (psel->gradient));
-	psel->pattern = sp_paint_selector_style_button_add (psel, "fill_pattern.xpm",
+	psel->pattern = sp_paint_selector_style_button_add (psel, "fill_pattern",
 							    SP_PAINT_SELECTOR_MODE_PATTERN, GTK_RADIO_BUTTON (psel->radial));
 	gtk_widget_hide (psel->pattern);
-	psel->fractal = sp_paint_selector_style_button_add (psel, "fill_fractal.xpm",
+	psel->fractal = sp_paint_selector_style_button_add (psel, "fill_fractal",
 							    SP_PAINT_SELECTOR_MODE_FRACTAL, GTK_RADIO_BUTTON (psel->pattern));
 	gtk_widget_hide (psel->fractal);
 
@@ -195,15 +199,12 @@ static GtkWidget *
 sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap, SPPaintSelectorMode mode, GtkRadioButton *last)
 {
 	GtkWidget *b, *w;
-	gchar *path;
 
 	b = gtk_radio_button_new ((last) ? gtk_radio_button_group (last) : NULL);
 	gtk_widget_show (b);
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 	gtk_object_set_data (GTK_OBJECT (b), "mode", GUINT_TO_POINTER (mode));
-	path = g_build_filename (SODIPODI_PIXMAPDIR, pixmap, NULL);
-	w = gtk_image_new_from_file (path);
-	g_free (path);
+	w = sp_icon_new (SP_ICON_SIZE_BUTTON, pixmap);
 	gtk_widget_show (w);
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_box_pack_start (GTK_BOX (psel->style), b, FALSE, FALSE, 0);

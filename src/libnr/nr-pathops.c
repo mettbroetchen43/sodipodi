@@ -47,7 +47,7 @@ NRNodePathGroup *
 nr_node_path_group_from_path (NRPath *path)
 {
 	NRNodePathGroup *npg;
-	int sidx, seg;
+	unsigned int sidx, seg;
 	double x, y, sx, sy;
 
 	npg = (NRNodePathGroup *) malloc (sizeof (NRNodePathGroup) + (path->nsegments - 1) * sizeof (NRNodePath));
@@ -59,7 +59,7 @@ nr_node_path_group_from_path (NRPath *path)
 	for (sidx = 0; sidx < path->nelements; sidx += path->elements[sidx].code.length) {
 		NRPathElement *sel;
 		NRNode *cnode, *nnode;
-		int nnodes, idx;
+		unsigned int nnodes, idx;
 
 		sel = path->elements + sidx;
 
@@ -147,7 +147,7 @@ nr_node_path_group_from_path (NRPath *path)
 NRNodePathGroup *
 nr_node_path_group_free (NRNodePathGroup *npg)
 {
-	int pidx;
+	unsigned int pidx;
 	for (pidx = 0; pidx < npg->npaths; pidx++) {
 		NRNodePath *np;
 		np = npg->paths + pidx;
@@ -166,7 +166,7 @@ nr_node_path_group_free (NRNodePathGroup *npg)
 void
 nr_node_path_group_join_coincident (NRNodePathGroup *npg)
 {
-	int pidx, qidx;
+	unsigned int pidx, qidx;
 	/* Iterate over subpaths */
 	for (pidx = 0; pidx < npg->npaths; pidx++) {
 		NRNode *node;
@@ -200,7 +200,7 @@ nr_node_path_group_join_coincident (NRNodePathGroup *npg)
 
 void nr_node_path_group_break_at_nodes (NRNodePathGroup *npg)
 {
-	int pidx, qidx;
+	unsigned int pidx, qidx;
 	/* Iterate over subpaths */
 	for (pidx = 0; pidx < npg->npaths; pidx++) {
 		NRNode *node;
@@ -255,7 +255,7 @@ void nr_node_path_group_break_at_nodes (NRNodePathGroup *npg)
 NRPath *
 nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
 {
-	int nelements, pidx, nidx;
+	unsigned int nelements, pidx, nidx;
 
 	nelements = 0;
 	for (pidx = 0; pidx < ngr->npaths; pidx++) {
@@ -294,8 +294,8 @@ nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
 		nidx += 1;
 		node = np->nodes;
 		/* Initial moveto */
-		path->elements[nidx].value = node->x;
-		path->elements[nidx + 1].value = node->y;
+		path->elements[nidx].value = (float) node->x;
+		path->elements[nidx + 1].value = (float) node->y;
 		nidx += 2;
 		do {
 			NRNode *other;
@@ -304,19 +304,19 @@ nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
 				/* Append lineto x y */
 				path->elements[nidx].code.length = 1;
 				path->elements[nidx].code.code = NR_PATH_LINETO;
-				path->elements[nidx + 1].value = other->x;
-				path->elements[nidx + 2].value = other->y;
+				path->elements[nidx + 1].value = (float) other->x;
+				path->elements[nidx + 2].value = (float) other->y;
 				nidx += 3;
 			} else {
 				/* Append curveto x1 y1 x2 y2 x y */
 				path->elements[nidx].code.length = 1;
 				path->elements[nidx].code.code = NR_PATH_CURVETO;
-				path->elements[nidx + 1].value = node->connections[1].x;
-				path->elements[nidx + 2].value = node->connections[1].y;
-				path->elements[nidx + 3].value = other->connections[0].x;
-				path->elements[nidx + 4].value = other->connections[0].y;
-				path->elements[nidx + 5].value = other->x;
-				path->elements[nidx + 6].value = other->y;
+				path->elements[nidx + 1].value = (float) node->connections[1].x;
+				path->elements[nidx + 2].value = (float) node->connections[1].y;
+				path->elements[nidx + 3].value = (float) other->connections[0].x;
+				path->elements[nidx + 4].value = (float) other->connections[0].y;
+				path->elements[nidx + 5].value = (float) other->x;
+				path->elements[nidx + 6].value = (float) other->y;
 				nidx += 7;
 			}
 			node = other;

@@ -105,7 +105,9 @@ static void sp_module_exec_ext_finalize (GObject * object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-gchar * sp_module_exec_ext_set_command (SPModuleExecExt * object, gchar * command) {
+gchar *
+sp_module_exec_ext_set_command (SPModuleExecExt * object, gchar * command)
+{
 	g_return_val_if_fail(SP_IS_MODULE_EXEC_EXT(object), NULL);
 	g_return_val_if_fail(command != NULL, NULL);
 

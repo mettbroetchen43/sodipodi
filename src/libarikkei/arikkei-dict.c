@@ -87,7 +87,7 @@ arikkei_int_equal (const void *l, const void *r)
 void
 arikkei_dict_setup_common (ArikkeiDict *dict, unsigned int hashsize)
 {
-	int i;
+	unsigned int i;
 	if (hashsize < 1) hashsize = 1;
 	dict->size = hashsize << 1;
 	dict->hashsize = hashsize;

@@ -414,7 +414,7 @@ nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, uns
 	double x, y, sx, sy;
 	NRSVL *svl;
 	NRFlat *flats;
-	int sidx;
+	unsigned int sidx;
 
 	/* Initialize NRSVLBuild */
 	svl = NULL;
@@ -433,7 +433,7 @@ nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, uns
 
 	for (sidx = 0; sidx < path->nelements; sidx += path->elements[sidx].code.length) {
 		NRPathElement *sel;
-		int idx;
+		unsigned int idx;
 		/* Start new path */
 		sel = path->elements + sidx;
 		if (transform) {

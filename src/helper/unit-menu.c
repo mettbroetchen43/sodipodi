@@ -13,7 +13,10 @@
 
 #define noUNIT_SELECTOR_VERBOSE
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkhbox.h>

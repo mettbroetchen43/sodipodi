@@ -12,7 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 #include <libnrtype/nr-type-directory.h>
@@ -36,7 +38,8 @@
 #include "macros.h"
 #include "helper/sp-intl.h"
 #include "helper/window.h"
-#include "../widgets/font-selector.h"
+#include "widgets/icon.h"
+#include "widgets/font-selector.h"
 #include "../forward.h"
 #include "../sodipodi.h"
 #include "../document.h"
@@ -167,14 +170,14 @@ sp_text_edit_dialog (void)
 		l = gtk_label_new (_("Orientation:"));
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 		gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 4, 0);
-		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_lr.xpm");
+		px = sp_icon_new (SP_ICON_SIZE_BUTTON, "writing_mode_lr");
 		b = gtk_radio_button_new (NULL);
 		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 1, 2, 0, 0, 0, 0);
 		g_object_set_data (G_OBJECT (dlg), "writing_mode_lr", b);
-		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_tb.xpm");
+		px = sp_icon_new (SP_ICON_SIZE_BUTTON, "writing_mode_tb");
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);

@@ -89,7 +89,7 @@ nr_font_generic_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform)
 	fg->font.next = NULL;
 	fg->font.face = nr_typeface_ref (tf);
 	fg->font.metrics = metrics;
-	fg->font.size = NR_MATRIX_DF_EXPANSION (transform);
+	fg->font.size = (float) NR_MATRIX_DF_EXPANSION (transform);
 
 	fg->rfonts = NULL;
 	fg->outlines = NULL;
@@ -101,11 +101,11 @@ void
 nr_font_generic_free (NRFont *font)
 {
 	NRFontGeneric *fg;
-	int i;
 
 	fg = (NRFontGeneric *) font;
 
 	if (fg->outlines) {
+		unsigned int i;
 		for (i = 0; i < font->face->nglyphs; i++) {
 			if (fg->outlines[i].path) nr_free (fg->outlines[i].path);
 		}
@@ -132,7 +132,7 @@ nr_font_generic_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *d,
 		NRBPath tfgol;
 		if (nr_typeface_glyph_outline_get (font->face, glyph, font->metrics, &tfgol, 0)) {
 			NRMatrixF scale;
-			nr_matrix_f_set_scale (&scale, font->size / 1000.0, font->size / 1000.0);
+			nr_matrix_f_set_scale (&scale, font->size / 1000.0F, font->size / 1000.0F);
 			nr_path_duplicate_transform (&fg->outlines[glyph], &tfgol, &scale);
 		}
 	}
@@ -153,8 +153,8 @@ nr_font_generic_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *a
 {
 	((NRTypeFaceClass *) ((NRObject *) font->face)->klass)->glyph_advance_get (font->face, glyph, font->metrics, adv);
 
-	adv->x *= (font->size / 1000.0);
-	adv->y *= (font->size / 1000.0);
+	adv->x *= (font->size / 1000.0F);
+	adv->y *= (font->size / 1000.0F);
 
 	return adv;
 }

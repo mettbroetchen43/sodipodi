@@ -22,7 +22,7 @@ arikkei_token_set_from_string (ArikkeiToken *this, const unsigned char *text)
 {
 	this->cdata = text;
 	this->start = 0;
-	this->end = (text) ? strlen (text) : 0;
+	this->end = (text) ? (int) strlen (text) : 0;
 	return this;
 }
 
@@ -110,12 +110,12 @@ arikkei_token_strncpy (const ArikkeiToken *this, unsigned char *b, size_t size)
 {
 	if (size < 1) return 0;
 	if (arikkei_token_is_valid (this) && (size > 1)) {
-		int len;
+		size_t len;
 		len = this->end - this->start;
 		if (len > (size - 1)) len = size - 1;
 		if (len) strncpy (b, this->cdata + this->start, len);
 		b[len] = 0;
-		return len;
+		return (int) len;
 	} else {
 		b[0] = 0;
 		return 0;
@@ -139,7 +139,7 @@ arikkei_token_strncmp (const ArikkeiToken *this, const unsigned char *b, size_t 
 	if (!arikkei_token_is_valid (this)) return -1;
 	if (!arikkei_token_is_empty (this)) {
 		if (size > 0) {
-			int len, clen, cval;
+			size_t len, clen, cval;
 			len = this->end - this->start;
 			clen = (len < size) ? len : size;
 			cval = strncmp (this->cdata + this->start, b, clen);
@@ -268,7 +268,7 @@ arikkei_token_tokenize_ws (ArikkeiToken *this, ArikkeiToken *tokens, int maxtoke
 {
 	int len, ntokens, s;
 	if (arikkei_token_is_empty (this)) return 0;
-	len = strlen (ws);
+	len = (int) strlen (ws);
 	ntokens = 0;
 	s = this->start;
 	while ((s < this->end) && (ntokens < maxtokens)) {
@@ -321,7 +321,7 @@ ArikkeiToken *
 arikkei_token_strip_start_ws (ArikkeiToken *this, ArikkeiToken *dst, const unsigned char *ws)
 {
 	int len, s;
-	len = strlen (ws);
+	len = (int) strlen (ws);
 	s = this->start;
 	if (this->cdata) {
 		while (s < this->end) {
@@ -355,7 +355,7 @@ ArikkeiToken *
 arikkei_token_strip_end_ws (ArikkeiToken *this, ArikkeiToken *dst, const unsigned char *ws)
 {
 	int len, e;
-	len = strlen (ws);
+	len = (int) strlen (ws);
 	e = this->end - 1;
 	if (this->cdata) {
 		while (e >= this->start) {
@@ -391,7 +391,7 @@ ArikkeiToken *
 arikkei_token_strip_ws (ArikkeiToken *this, ArikkeiToken *dst, const unsigned char *ws)
 {
 	int len, s, e;
-	len = strlen (ws);
+	len = (int) strlen (ws);
 	s = this->start;
 	e = this->end - 1;
 	if (this->cdata) {
@@ -421,7 +421,7 @@ arikkei_token_strconcat (const ArikkeiToken *tokens, int size, const unsigned ch
 {
 	unsigned char *str, *p;
 	int slen, len, i;
-	slen = strlen (separator);
+	slen = (int) strlen (separator);
 	len = 1;
 	for (i = 0; i < size; i++) len += (tokens[i].end - tokens[i].start);
 	len += (size - 1) * slen;

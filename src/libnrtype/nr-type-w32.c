@@ -12,8 +12,15 @@
 #include <windows.h>
 #include <windowsx.h>
 
+#include <stdio.h>
+
 /* fixme: */
+#if 0
 #include <glib.h>
+#endif
+
+#include <libarikkei/arikkei-dict.h>
+
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_bpath.h>
@@ -97,10 +104,15 @@ static unsigned int w32i = FALSE;
 
 static HDC hdc = NULL;
 
-static GHashTable *namedict = NULL;
-static GSList *namelist = NULL;
-static GHashTable *familydict = NULL;
-static GSList *familylist = NULL;
+static ArikkeiDict namedict;
+static ArikkeiDict familydict;
+
+static char **names = NULL;
+static int names_size = 0;
+static int names_len = 0;
+static char **families = NULL;
+static int families_size = 0;
+static int families_len = 0;
 
 static NRNameList NRW32Typefaces = {0, NULL, NULL};
 static NRNameList NRW32Families = {0, NULL, NULL};
@@ -131,8 +143,8 @@ void
 nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family)
 {
     def->type = NR_TYPE_TYPEFACE_W32;
-    def->name = g_strdup (name);
-    def->family = g_strdup (family);
+    def->name = strdup (name);
+    def->family = strdup (family);
     def->typeface = NULL;
 }
 
@@ -150,7 +162,7 @@ nr_type_read_w32_list (void)
 		const unsigned char *family;
 		family = NULL;
 		for (j = wfamilies.length - 1; j >= 0; j--) {
-			int len;
+			size_t len;
 			len = strlen (wfamilies.names[j]);
 			if (!strncmp (wfamilies.names[j], wnames.names[i], len)) {
 				family = wfamilies.names[j];
@@ -181,7 +193,7 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 	((NRTypeFaceClass *) (parent_class))->setup (tface, def);
 
 	tfw32->fonts = NULL;
-	tfw32->logfont = g_hash_table_lookup (namedict, def->name);
+	tfw32->logfont = arikkei_dict_lookup (&namedict, def->name);
 	tfw32->logfont->lfHeight = 1000;
 	tfw32->logfont->lfWidth = 0;
 	tfw32->hfont = CreateFontIndirect (tfw32->logfont);
@@ -320,13 +332,13 @@ nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 		val = "";
 	}
 
-	len = MIN (size - 1, strlen (val));
+	len = MIN (size - 1, (int) strlen (val));
 	if (len > 0) memcpy (str, val, len);
 
 	if (size > 0) str[len] = '\0';
 
 
-	return strlen (val);
+	return (unsigned int) strlen (val);
 }
 
 static NRBPath *
@@ -631,46 +643,51 @@ static int CALLBACK
 nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD fontType, LPARAM lParam)
 {
     unsigned char *name;
+	int fnlen, stylelen;
 
 	switch (elfex->elfLogFont.lfCharSet) {
-
 	    case MAC_CHARSET:
-
 	    case OEM_CHARSET:
-
 	    case SYMBOL_CHARSET:
-
 	         return 1;
-
 	         break;
-
 	    default:
-
 	         break;
-
 	}
 
-
-
-    if (!g_hash_table_lookup (familydict, elfex->elfLogFont.lfFaceName)) {
+    if (!arikkei_dict_lookup (&familydict, elfex->elfLogFont.lfFaceName)) {
         unsigned char *s;
         /* Register family */
-        s = g_strdup (elfex->elfLogFont.lfFaceName);
-        familylist = g_slist_prepend (familylist, s);
-        g_hash_table_insert (familydict, s, GUINT_TO_POINTER (TRUE));
+        s = strdup (elfex->elfLogFont.lfFaceName);
+		if (families_len >= families_size) {
+			families_size = MIN (families_size << 1, 16);
+			families = nr_renew (families, char *, families_size);
+		}
+		families[families_len++] = s;
+		arikkei_dict_insert (&familydict, s, (void *) 1);
     }
 
-    name = g_strdup_printf ("%s %s", elfex->elfLogFont.lfFaceName, elfex->elfStyle);
-    if (!g_hash_table_lookup (namedict, name)) {
+	fnlen = (int) strlen (elfex->elfLogFont.lfFaceName);
+	stylelen = (int) strlen (elfex->elfStyle);
+	name = nr_new (char, fnlen + stylelen + 2);
+	strncpy (name, elfex->elfLogFont.lfFaceName, fnlen);
+	name[fnlen] = ' ';
+	strncpy (name + fnlen + 1, elfex->elfStyle, stylelen);
+	name[fnlen + 1 + stylelen] = '\0';
+    if (!arikkei_dict_lookup (&namedict, name)) {
         LOGFONT *plf;
-        plf = g_new (LOGFONT, 1);
+        plf = nr_new (LOGFONT, 1);
         *plf = elfex->elfLogFont;
-        namelist = g_slist_prepend (namelist, name);
-        g_hash_table_insert (namedict, name, plf);
 
-        g_print ("%s | ", name);
+		if (names_len >= names_size) {
+			names_size = MIN (names_size << 1, 16);
+			names = nr_renew (names, char *, names_size);
+		}
+		names[names_len++] = name;
+		arikkei_dict_insert (&namedict, name, plf);
+        /* g_print ("%s | ", name); */
     } else {
-        g_free (name);
+        nr_free (name);
     }
 
     return 1;
@@ -694,15 +711,14 @@ static void
 nr_type_w32_init (void)
 {
     LOGFONT logfont;
-    GSList *l;
-    int pos;
+    int pos, i;
 
-    g_print ("Loading W32 type directory...\n");
+	/* g_print ("Loading W32 type directory...\n"); */
 
     hdc = CreateDC ("DISPLAY", NULL, NULL, NULL);
 
-    familydict = g_hash_table_new (g_str_hash, g_str_equal);
-    namedict = g_hash_table_new (g_str_hash, g_str_equal);
+	arikkei_dict_setup_string (&familydict, 131);
+	arikkei_dict_setup_string (&namedict, 537);
 
     /* read system font directory */
     memset (&logfont, 0, sizeof (LOGFONT));
@@ -710,19 +726,16 @@ nr_type_w32_init (void)
     EnumFontFamiliesExA (hdc, &logfont, (FONTENUMPROC) nr_type_w32_typefaces_enum_proc, 0, 0);
 
     /* Fill in lists */
-    NRW32Families.length = g_slist_length (familylist);
-    NRW32Families.names = g_new (unsigned char *, NRW32Families.length);
-    pos = 0;
-    for (l = familylist; l != NULL; l = l->next) {
-        NRW32Families.names[pos] = (unsigned char *) l->data;
-        pos += 1;
+    NRW32Families.length = families_len;
+    NRW32Families.names = nr_new (unsigned char *, NRW32Families.length);
+	for (i = 0; i < families_len; i++) {
+        NRW32Families.names[i] = (unsigned char *) families[i];
     }
-    NRW32Typefaces.length = g_slist_length (namelist);
-    NRW32Typefaces.names = g_new (unsigned char *, NRW32Typefaces.length);
+    NRW32Typefaces.length = names_len;
+    NRW32Typefaces.names = nr_new (unsigned char *, NRW32Typefaces.length);
     pos = 0;
-    for (l = namelist; l != NULL; l = l->next) {
-        NRW32Typefaces.names[pos] = (unsigned char *) l->data;
-        pos += 1;
+	for (i = 0; i < names_len; i++) {
+        NRW32Typefaces.names[i] = (unsigned char *) names[i];
     }
 
     w32i = TRUE;
@@ -809,18 +822,12 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 
 
 		if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
-
-			slot->area.x0 = -0.5 * gmetrics.gmBlackBoxX;
-
-			slot->area.x1 =  0.5 * gmetrics.gmBlackBoxX;
-
-			slot->area.y1 = gmetrics.gmptGlyphOrigin.y - 1000.0;
-
+			slot->area.x0 = -0.5F * gmetrics.gmBlackBoxX;
+			slot->area.x1 =  0.5F * gmetrics.gmBlackBoxX;
+			slot->area.y1 = gmetrics.gmptGlyphOrigin.y - 1000.0F;
 			slot->area.y0 = slot->area.y1 - gmetrics.gmBlackBoxY;
-
 			slot->advance.x = 0.0;
-
-        		slot->advance.y = -1000.0;
+        	slot->advance.y = -1000.0;
 
 		} else {
 			slot->area.x0 = (float) gmetrics.gmptGlyphOrigin.x;

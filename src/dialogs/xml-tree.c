@@ -12,7 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 #include <glib.h>
@@ -33,17 +35,19 @@
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 #include "macros.h"
-#include "../sodipodi.h"
-#include "../document.h"
-#include "../desktop-handles.h"
-#include "../selection.h"
-#include "../sp-item.h"
+#include "system.h"
+#include "sodipodi.h"
+#include "document.h"
+#include "desktop-handles.h"
+#include "selection.h"
+#include "sp-item.h"
 
 #include "../xml/repr-private.h"
 
-#include "../widgets/sp-xmlview-tree.h"
-#include "../widgets/sp-xmlview-content.h"
-#include "../widgets/sp-xmlview-attr-list.h"
+#include "widgets/icon.h"
+#include "widgets/sp-xmlview-tree.h"
+#include "widgets/sp-xmlview-content.h"
+#include "widgets/sp-xmlview-attr-list.h"
 
 typedef struct _EditableDest {
 	GtkEditable * editable;
@@ -170,7 +174,7 @@ sp_xml_tree_dialog (void)
 						  NULL,
 						  _("New element node"),
 						  NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/add_xml_element_node.xpm"),
+						  sp_icon_new (SP_ICON_SIZE_BUTTON, "add_xml_element_node"),
 						  G_CALLBACK (cmd_new_element_node),
 						  NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
@@ -187,7 +191,7 @@ sp_xml_tree_dialog (void)
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
 						  NULL, _("New text node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/add_xml_text_node.xpm"),
+						  sp_icon_new (SP_ICON_SIZE_BUTTON, "add_xml_text_node"),
 						  G_CALLBACK (cmd_new_text_node),
 						  NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
@@ -204,7 +208,7 @@ sp_xml_tree_dialog (void)
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
 						  NULL, _("Duplicate node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/duplicate_xml_node.xpm"),
+						  sp_icon_new (SP_ICON_SIZE_BUTTON, "duplicate_xml_node"),
 						  G_CALLBACK (cmd_duplicate_node),
 						  NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
@@ -220,7 +224,7 @@ sp_xml_tree_dialog (void)
 		gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/delete_xml_node.xpm"),
+						  sp_icon_new (SP_ICON_SIZE_BUTTON, "delete_xml_node"),
 						  G_CALLBACK (cmd_delete_node), NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
 						G_CALLBACK (on_tree_select_row_enable_if_non_root),
@@ -302,7 +306,7 @@ sp_xml_tree_dialog (void)
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 0);
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete attribute"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/delete_xml_attribute.xpm"),
+						  sp_icon_new (SP_ICON_SIZE_BUTTON, "delete_xml_attribute"),
 						  (GCallback) cmd_delete_attr, NULL);
 
 		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "select_row",
@@ -339,7 +343,7 @@ sp_xml_tree_dialog (void)
 
 		set_attr = gtk_button_new ();
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (set_attr), _("Set attribute"), NULL);
-		gtk_container_add (GTK_CONTAINER (set_attr), gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/set.xpm"));
+		gtk_container_add (GTK_CONTAINER (set_attr), sp_icon_new (SP_ICON_SIZE_BUTTON, "set"));
 		gtk_signal_connect (GTK_OBJECT (set_attr), "clicked", (GCallback) cmd_set_attr, NULL);
 		gtk_signal_connect (GTK_OBJECT (attr_name), "changed", (GCallback) on_editable_changed_enable_if_valid_xml_name, set_attr);
 		gtk_widget_set_sensitive (GTK_WIDGET (set_attr), FALSE);

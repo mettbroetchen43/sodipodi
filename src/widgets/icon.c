@@ -11,7 +11,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <string.h>
 #include <sys/stat.h>
@@ -26,6 +28,7 @@
 #include <gtk/gtkiconfactory.h>
 
 #include "forward.h"
+#include "system.h"
 #include "sodipodi-private.h"
 #include "document.h"
 #include "sp-item.h"
@@ -366,13 +369,16 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size, unsigned i
 
 	/* Try to load from document */
 	if (!edoc && !doc) {
+		unsigned char *path;
 		struct stat st;
 		if (!stat ("glade/icons.svg", &st) && S_ISREG (st.st_mode)) {
 			doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
 		}
-		if (!doc && !stat (SODIPODI_PIXMAPDIR "/icons.svg", &st) && S_ISREG (st.st_mode)) {
-			doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
+		path = g_build_filename (SODIPODI_PIXMAPDIR, "icons.svg", NULL);
+		if (!doc && !stat (path, &st) && S_ISREG (st.st_mode)) {
+			doc = sp_document_new (path, FALSE, FALSE);
 		}
+		g_free (path);
 		if (doc) {
 			unsigned int visionkey;
 			sp_document_ensure_up_to_date (doc);

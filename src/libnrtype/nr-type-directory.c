@@ -11,7 +11,9 @@
 
 #define noTFDEBUG
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <math.h>
 
@@ -390,15 +392,15 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 	blen = strlen (bid);
 
 #ifndef WIN32
-	if ((blen < alen) && !strncasecmp (ask, bid, blen)) return MIN (best, 1.0);
-	if (!strcasecmp (bid, "bitstream cyberbit")) return MIN (best, 10.0);
-	if (!strcasecmp (bid, "arial")) return MIN (best, 100.0);
-	if (!strcasecmp (bid, "helvetica")) return MIN (best, 1000.0);
+	if ((blen < alen) && !strncasecmp (ask, bid, blen)) return MIN (best, 1.0F);
+	if (!strcasecmp (bid, "bitstream cyberbit")) return MIN (best, 10.0F);
+	if (!strcasecmp (bid, "arial")) return MIN (best, 100.0F);
+	if (!strcasecmp (bid, "helvetica")) return MIN (best, 1000.0F);
 #else
-	if ((blen < alen) && !strnicmp (ask, bid, blen)) return MIN (best, 1.0);
-	if (!stricmp (bid, "bitstream cyberbit")) return MIN (best, 10.0);
-	if (!stricmp (bid, "arial")) return MIN (best, 100.0);
-	if (!stricmp (bid, "helvetica")) return MIN (best, 1000.0);
+	if ((blen < alen) && !strnicmp (ask, bid, blen)) return MIN (best, 1.0F);
+	if (!stricmp (bid, "bitstream cyberbit")) return MIN (best, 10.0F);
+	if (!stricmp (bid, "arial")) return MIN (best, 100.0F);
+	if (!stricmp (bid, "helvetica")) return MIN (best, 1000.0F);
 #endif
 
 	return 10000.0;
