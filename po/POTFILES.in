@@ -1,4 +1,6 @@
 # List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+GNOME_Sodipodi.oaf.in
 glade/align.glade
 glade/desktop.glade
 glade/display.glade
@@ -10,15 +12,16 @@ glade/text-dialog.glade
 glade/toolbox.glade
 glade/transformation.glade
 glade/xml-tree.glade
+sodipodi.desktop.in
 src/bonobo/svg-doc-factory.c
 src/desktop.c
 src/dialogs/align.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
 src/dialogs/fill-style.c
-src/dialogs/item-properties.c
 src/dialogs/gradient-selector.c
 src/dialogs/gradient-vector.c
+src/dialogs/item-properties.c
 src/dialogs/object-attributes.c
 src/dialogs/object-properties.c
 src/document.c
@@ -26,19 +29,18 @@ src/event-context.c
 src/file.c
 src/help.c
 src/helper/unit-menu.c
+src/helper/units.c
 src/interface.c
 src/main.c
 src/sodipodi.c
+src/sp-anchor.c
 src/sp-image.c
-src/sp-item.c
 src/sp-item-group.c
+src/sp-item.c
 src/sp-rect.c
 src/sp-shape.c
 src/sp-spiral.c
 src/sp-star.c
 src/sp-text.c
-src/sp-anchor.c
 src/toolbox.c
 src/widgets/sp-color-selector.c
-GNOME_Sodipodi.oaf.in
-sodipodi.desktop.in

@@ -1,3 +1,8 @@
+2002-01-21  Christian Rose  <menthos@menthos.com>
+
+	* POTFILES.in: Sorted and added a missing file.
+	* sv.po: Updated Swedish translation.
+
 2002-01-13  Wang Jian  <lark@linux.net.cn>
 
 	* zh_CN.po: Added Simplified Chinese translation by

@@ -8,13 +8,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-01-05 14:43+0100\n"
-"PO-Revision-Date: 2002-01-05 14:43+0100\n"
+"POT-Creation-Date: 2002-01-21 19:06+0100\n"
+"PO-Revision-Date: 2002-01-21 19:06+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Sodipodi SVG-dokument"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Sodipodi SVG-dokumentfabrik"
 
 #: glade/align.glade.h:1 glade/transformation.glade.h:3
 msgid "Align"
@@ -167,7 +175,7 @@ msgid "Highlited guideline color"
 msgstr "Färg på markerade hjälplinjer"
 
 #: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "Millimeters"
 msgstr "Millimeter"
 
@@ -179,7 +187,8 @@ msgstr "X-origo:"
 msgid "Origin Y:"
 msgstr "Y-origo:"
 
-#: glade/desktop.glade.h:20 glade/display.glade.h:23 src/helper/unit-menu.c:95
+#: glade/desktop.glade.h:20 glade/display.glade.h:23
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixels"
 msgstr "Bildpunkter"
 
@@ -307,7 +316,7 @@ msgid "ID:"
 msgstr "ID:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:646
+#: glade/item.glade.h:3 src/sp-item.c:660
 msgid "Item"
 msgstr "Objekt"
 
@@ -372,8 +381,8 @@ msgstr " Stil "
 msgid "Add new gradient"
 msgstr "Lägg till ny toning"
 
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:610
-#: src/widgets/sp-color-selector.c:630 src/widgets/sp-color-selector.c:652
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
 msgid "Alpha:"
 msgstr "Alfa:"
 
@@ -385,7 +394,7 @@ msgstr "Bakom fyllning"
 msgid "Bevel join"
 msgstr "Avfasad anslutning"
 
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:609
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
 msgid "Blue:"
 msgstr "Blå:"
 
@@ -437,7 +446,7 @@ msgstr "Fraktalfyllning"
 msgid "Gradient fill"
 msgstr "Toningsfyllning"
 
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:608
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
 msgid "Green:"
 msgstr "Grön:"
 
@@ -481,7 +490,7 @@ msgstr "Välj en genomstrykningsfärg"
 msgid "Position"
 msgstr "Position"
 
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:607
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
 msgstr "Röd:"
 
@@ -528,7 +537,7 @@ msgid "centimeter"
 msgstr "centimeter"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "cm"
 msgstr "cm"
 
@@ -537,6 +546,7 @@ msgid "color"
 msgstr "färg"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:44
 msgid "in"
 msgstr "tum"
 
@@ -549,7 +559,7 @@ msgid "millimeters"
 msgstr "millimeter"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "mm"
 msgstr "mm"
 
@@ -570,11 +580,11 @@ msgid "points"
 msgstr "punkter"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357
 msgid "pt"
 msgstr "pt"
 
-#: glade/object_props.glade.h:56 src/helper/unit-menu.c:95
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
 msgid "px"
 msgstr "px"
 
@@ -627,7 +637,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Spetsa linjen vid markerade noder"
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:84
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:106
 msgid "Delete"
 msgstr "Ta bort"
 
@@ -773,7 +783,7 @@ msgid "Spiral"
 msgstr "Spiral"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/sp-star.c:475
+#: glade/sodipodi.glade.h:53 src/sp-star.c:476
 msgid "Star"
 msgstr "Stjärna"
 
@@ -938,8 +948,8 @@ msgstr "Teckningssammanhang"
 msgid "Duplicate selection"
 msgstr "Mångfaldiga markering"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:74
-#: src/toolbox.c:78
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
+#: src/dialogs/gradient-vector.c:98 src/toolbox.c:78
 msgid "Edit"
 msgstr "Redigera"
 
@@ -1139,7 +1149,8 @@ msgstr "_Avsluta"
 msgid "lower selection to bottom"
 msgstr "placera markeringen nederst"
 
-#: glade/transformation.glade.h:2 src/helper/unit-menu.c:97
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1188,7 +1199,8 @@ msgstr "Verkställ transformeringen för att kopiera Ctrl+m"
 msgid "Center"
 msgstr "Mittpunkt"
 
-#: glade/transformation.glade.h:15 src/helper/unit-menu.c:92
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:42
 msgid "Centimeter"
 msgstr "Centimeter"
 
@@ -1216,7 +1228,8 @@ msgstr "Höjd: "
 msgid "Horizontal center value"
 msgstr "Horisontellt mittpunktsvärde"
 
-#: glade/transformation.glade.h:22 src/helper/unit-menu.c:93
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:44
 msgid "Inch"
 msgstr "Tum"
 
@@ -1228,7 +1241,8 @@ msgstr "Behåll höjden på markeringen under transformeringen"
 msgid "Keep width of selection during transformation"
 msgstr "Behåll bredden på markeringen under transformeringen"
 
-#: glade/transformation.glade.h:25 src/helper/unit-menu.c:91
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:41
 msgid "Millimeter"
 msgstr "Millimeter"
 
@@ -1244,11 +1258,15 @@ msgstr "Originalbredd: "
 msgid "Orig. X: "
 msgstr "Orig. X: "
 
-#: glade/transformation.glade.h:29 src/helper/unit-menu.c:97
+#. Volatiles do not have default, so there are not here
+#. You can add new elements from this point forward
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 msgid "Percent"
 msgstr "Procent"
 
-#: glade/transformation.glade.h:30 src/helper/unit-menu.c:94
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:35
 msgid "Points"
 msgstr "Punkter"
 
@@ -1384,7 +1402,8 @@ msgstr "vertikal flytt"
 msgid "vertical scale value"
 msgstr "vertikalt skalningsvärde"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:79
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
+#: src/dialogs/gradient-vector.c:102
 msgid "Add"
 msgstr "Lägg till"
 
@@ -1456,13 +1475,17 @@ msgstr "Klistra in"
 msgid "Value"
 msgstr "Värde"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:629
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Värde:"
 
 #: glade/xml-tree.glade.h:22
 msgid "name"
 msgstr "namn"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "Vektorillustrationsprogram"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1548,6 +1571,28 @@ msgstr "CMYK"
 msgid "Gradient"
 msgstr "Toning"
 
+#. Reset button
+#: src/dialogs/gradient-selector.c:115
+msgid "Reset"
+msgstr "Återställ"
+
+#. No document or no gradients
+#: src/dialogs/gradient-vector.c:225
+msgid "No gradients defined"
+msgstr "Inga toningar är angivna"
+
+#: src/dialogs/gradient-vector.c:378
+msgid "Start color"
+msgstr "Startfärg"
+
+#: src/dialogs/gradient-vector.c:390
+msgid "End color"
+msgstr "Slutfärg"
+
+#: src/dialogs/gradient-vector.c:417
+msgid "Gradient vector"
+msgstr "Toningsvektor"
+
 #: src/dialogs/item-properties.c:175
 msgid "Item is reference"
 msgstr "Objekt är referens"
@@ -1563,23 +1608,6 @@ msgstr "ID:t är redan definierat"
 #: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
 msgid "The ID is valid"
 msgstr "ID:t är giltigt"
-
-#. Reset button
-#: src/dialogs/gradient-selector.c:102
-msgid "Reset"
-msgstr "Återställ"
-
-#: src/dialogs/gradient-vector.c:58
-msgid "Start color"
-msgstr "Startfärg"
-
-#: src/dialogs/gradient-vector.c:70
-msgid "End color"
-msgstr "Slutfärg"
-
-#: src/dialogs/gradient-vector.c:97
-msgid "Gradient vector"
-msgstr "Toningsvektor"
 
 #: src/dialogs/object-attributes.c:29
 msgid "Href:"
@@ -1718,57 +1746,102 @@ msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"
 msgid "About sodipodi"
 msgstr "Om sodipodi"
 
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "Centimeters"
 msgstr "Centimeter"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356 src/helper/units.c:44
 msgid "Inches"
 msgstr "Tum"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
 msgid "Point"
 msgstr "Punkter"
 
-#: src/helper/unit-menu.c:95
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixel"
 msgstr "Bildpunkt"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "Användarkoordinater"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "us"
 msgstr "anvkoord"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em squares"
 msgstr "Emmfyrkanter"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em square"
 msgstr "Emmfyrkant"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "em"
 msgstr "emm"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex squares"
 msgstr "exfyrkanter"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex square"
 msgstr "exfyrkant"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "ex"
 msgstr "ex"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:34
+msgid "Unit"
+msgstr "Enhet"
+
+#: src/helper/units.c:34
+msgid "Units"
+msgstr "Enheter"
+
+#: src/helper/units.c:35
+msgid "Pt"
+msgstr "pt"
+
+#: src/helper/units.c:36
+msgid "Userspace unit"
+msgstr "Användarenhet"
+
+#: src/helper/units.c:36
+msgid "User"
+msgstr "Användare"
+
+#: src/helper/units.c:36
+msgid "Userspace units"
+msgstr "Användarenheter"
+
+#: src/helper/units.c:37
+msgid "Px"
+msgstr "bp"
+
+#: src/helper/units.c:40
+msgid "Percents"
+msgstr "procent"
+
+#: src/helper/units.c:43
+msgid "Meter"
+msgstr "meter"
+
+#: src/helper/units.c:43
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:43
+msgid "meters"
+msgstr "meter"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
@@ -1897,6 +1970,31 @@ msgstr ""
 "kan du varken läsa in eller spara\n"
 "inställningar."
 
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "Länk till %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "Länk"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "Länkegenskaper"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "Följ länk"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "Ta bort länk"
+
 #: src/sp-image.c:291
 msgid "Broken bitmap"
 msgstr "Trasig bitmappsbild"
@@ -1915,56 +2013,56 @@ msgstr "Bild"
 msgid "Image Properties"
 msgstr "Bildegenskaper"
 
-#: src/sp-item.c:386
-msgid "Unknown item :-("
-msgstr "Okänt objekt :-("
-
-#. Item dialog
-#: src/sp-item.c:649
-msgid "Item Properties"
-msgstr "Objektegenskaper"
-
-#. Select item
-#: src/sp-item.c:659
-msgid "Select this"
-msgstr "Markera detta"
-
-#. Reset transformations
-#: src/sp-item.c:669
-msgid "Reset transformation"
-msgstr "Återställ transformering"
-
-#: src/sp-item.c:675
-msgid "Make sensitive"
-msgstr "GÖr känslig"
-
-#: src/sp-item.c:675
-msgid "Make insensitive"
-msgstr "Gör okänslig"
-
-#. Create link
-#: src/sp-item.c:680
-msgid "Create link"
-msgstr "Skapa länk"
-
-#: src/sp-item-group.c:434
+#: src/sp-item-group.c:435
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupp med %d objekt"
 
-#: src/sp-item-group.c:496
+#: src/sp-item-group.c:497
 msgid "Group"
 msgstr "Gruppera"
 
 #. Group dialog
-#: src/sp-item-group.c:500
+#: src/sp-item-group.c:501
 msgid "Group Properties"
 msgstr "Gruppegenskaper"
 
 #. "Ungroup"
-#: src/sp-item-group.c:513
+#: src/sp-item-group.c:514
 msgid "Ungroup"
 msgstr "Avgruppera"
+
+#: src/sp-item.c:400
+msgid "Unknown item :-("
+msgstr "Okänt objekt :-("
+
+#. Item dialog
+#: src/sp-item.c:663
+msgid "Item Properties"
+msgstr "Objektegenskaper"
+
+#. Select item
+#: src/sp-item.c:673
+msgid "Select this"
+msgstr "Markera detta"
+
+#. Reset transformations
+#: src/sp-item.c:683
+msgid "Reset transformation"
+msgstr "Återställ transformering"
+
+#: src/sp-item.c:689
+msgid "Make sensitive"
+msgstr "GÖr känslig"
+
+#: src/sp-item.c:689
+msgid "Make insensitive"
+msgstr "Gör okänslig"
+
+#. Create link
+#: src/sp-item.c:694
+msgid "Create link"
+msgstr "Skapa länk"
 
 #. Create toplevel menuitem
 #: src/sp-rect.c:363
@@ -1996,7 +2094,7 @@ msgid "Spiral Properties"
 msgstr "Spiralegenskaper"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:479
 msgid "Star Properties"
 msgstr "Stjärnegenskaper"
 
@@ -2004,70 +2102,33 @@ msgstr "Stjärnegenskaper"
 msgid "Text object"
 msgstr "Textobjekt"
 
-#: src/sp-anchor.c:158
-#, c-format
-msgid "Link to %s"
-msgstr "Länk till %s"
-
-#. Create toplevel menuitem
-#: src/sp-anchor.c:219
-msgid "Link"
-msgstr "Länk"
-
-#. Link dialog
-#: src/sp-anchor.c:222
-msgid "Link Properties"
-msgstr "Länkegenskaper"
-
-#. Select item
-#: src/sp-anchor.c:232
-msgid "Follow link"
-msgstr "Följ länk"
-
-#. Reset transformations
-#: src/sp-anchor.c:237
-msgid "Remove link"
-msgstr "Ta bort länk"
-
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Rita"
 
-#: src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "Nyans:"
 
-#: src/widgets/sp-color-selector.c:628
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "Mättnad:"
 
-#: src/widgets/sp-color-selector.c:648
+#: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
 msgstr "Cyan"
 
-#: src/widgets/sp-color-selector.c:649
+#: src/widgets/sp-color-selector.c:646
 msgid "Magenta:"
 msgstr "Magenta:"
 
-#: src/widgets/sp-color-selector.c:650
+#: src/widgets/sp-color-selector.c:647
 msgid "Yellow:"
 msgstr "Gult:"
 
-#: src/widgets/sp-color-selector.c:651
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Svart:"
-
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr "Sodipodi SVG-dokument"
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr "Sodipodi SVG-dokumentfabrik"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "Vektorillustrationsprogram"
 
 #~ msgid "Millimeters\n"
 #~ msgstr "Millimeter\n"
@@ -2120,9 +2181,6 @@ msgstr "Vektorillustrationsprogram"
 
 #~ msgid "round"
 #~ msgstr "rund"
-
-#~ msgid "miter"
-#~ msgstr "miter"
 
 #~ msgid " Cap "
 #~ msgstr " Slå "
