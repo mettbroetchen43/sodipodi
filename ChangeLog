@@ -1,3 +1,9 @@
+2001-10-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document.c (sp_document_new): Force "height" and "width" attributes,
+	if not present already
+	(sp_document_new_from_mem): Ditto
+
 2001-10-04  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/xml/repr-io.c (sp_repr_save_stream): Correct header

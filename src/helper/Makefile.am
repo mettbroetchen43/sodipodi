@@ -6,7 +6,7 @@
 
 INCLUDES = \
 	-I$(includedir) \
-	-I$(GNOME_INCLUDEDIR)
+	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspchelp.a
 

@@ -8,7 +8,6 @@ gladedir = $(datadir)/sodipodi
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
 	$(SODIPODI_CFLAGS) \
-	$(GNOME_INCLUDEDIR) \
 	-I$(includedir)
 
 noinst_LIBRARIES = libspwidgets.a

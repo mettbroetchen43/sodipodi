@@ -5,7 +5,7 @@
 
 INCLUDES = \
 	-I$(includedir) \
-	-I$(GNOME_INCLUDEDIR)
+	-I$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspbonobo.a
 

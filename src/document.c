@@ -191,6 +191,10 @@ sp_document_new (const gchar * uri)
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
 	/* End of quick hack */
+	/* Quick hack 2 - get default image size into document */
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_double_attribute (rroot, "width", A4_WIDTH);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_double_attribute (rroot, "height", A4_HEIGHT);
+	/* End of quick hack 2 */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
@@ -270,6 +274,10 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
 	/* End of quick hack */
+	/* Quick hack 2 - get default image size into document */
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_double_attribute (rroot, "width", A4_WIDTH);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_double_attribute (rroot, "height", A4_HEIGHT);
+	/* End of quick hack 2 */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);

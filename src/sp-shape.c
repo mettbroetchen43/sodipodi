@@ -300,6 +300,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 						} else {
 							gnome_print_clip (gpc);
 						}
+						gnome_print_bpath (gpc, bpath, FALSE);
 						gnome_print_concat (gpc, d2i);
 						/* Now we are in desktop coordinates */
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {

@@ -18,10 +18,6 @@ INCLUDES = \
 	$(SODIPODI_CFLAGS)				\
 	$(SODIPODI_BONOBO_CFLAGS)
 
-#	-I$(top_srcdir)/intl 				\
-#	$(GNOME_INCLUDEDIR)				\
-#	$(SODIPODI_XML_CFLAGS)
-
 bin_PROGRAMS = sodipodi
 
 sodipodi_SOURCES = \

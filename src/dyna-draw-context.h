@@ -24,14 +24,15 @@ struct _SPDynaDrawContext
 
   SPCurve *accumulated;
   GSList *segments;
-  SPCurve *currentcurve;
+  /* current shape and curves */
   SPCanvasShape *currentshape;
-  /* normal and caligraphic stroke */
+  SPCurve *currentcurve;
+  SPCurve *cal1;
+  SPCurve *cal2;
+  /* temporary work area */
   ArtPoint point1[SAMPLING_SIZE];
   ArtPoint point2[SAMPLING_SIZE];
   gint npoints;
-  SPCurve *cal1;
-  SPCurve *cal2;
 
   /* repr */
   SPRepr *repr;
@@ -58,6 +59,7 @@ struct _SPDynaDrawContext
   guint dragging : 1;           /* mouse state: mouse is dragging */
   guint dynahand : 1;           /* mouse state: mouse is in draw */
   guint firstdragging : 1;
+  guint use_timeout : 1;
   guint use_caligraphic : 1;
   guint fixed_angle : 1;
   double mass, drag;

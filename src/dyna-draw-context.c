@@ -19,11 +19,18 @@
  */
 #define SP_DYNA_DRAW_CONTEXT_C
 
+/*
+ * TODO: Tue Oct  2 22:57:15 2001
+ *  - Decide control point behavior when use_caligraphic==1.
+ *  - Option dialog box support if it is availabe.
+ *  - Decide to use NORMALIZED_COORDINATE or not.
+ *  - Remove hard coded sytle attributes and move to customizable style.
+ *  - Bug fix.
+ */
+
+#define noDYNA_DRAW_DEBUG
 #define noDYNA_DRAW_VERBOSE
 #define NORMALIZED_COORDINATE
-#define TIMEOUT_DRIVEN
-#define DD_FILL SP_PAINT_TYPE_COLOR
-#define DD_STROKE SP_PAINT_TYPE_NONE
 
 
 #include <math.h>
@@ -46,7 +53,13 @@
 
 #define SAMPLE_TIMEOUT            10
 #define TOLERANCE_LINE            1.0
-#define TOLERANCE_CALIGRAPHIC     5.0
+#define TOLERANCE_CALIGRAPHIC     3.0
+#define DYNA_EPSILON   1.0e-6
+#ifdef NORMALIZED_COORDINATE
+#define DYNA_MIN_WIDTH 1.0e-6
+#else
+#define DYNA_MIN_WIDTH 1.0
+#endif
 
 
 /*  #define hypot(a,b) sqrt ((a) * (a) + (b) * (b)) */
@@ -66,7 +79,6 @@ static void clear_current (SPDynaDrawContext * dc);
 static void set_to_accumulated (SPDynaDrawContext * dc);
 static void concat_current_line (SPDynaDrawContext * dc);
 static void accumulate_caligraphic (SPDynaDrawContext * dc);
-/*  static void concat_current_polygon (SPDynaDrawContext * dc); */
 
 static void test_inside (SPDynaDrawContext * dc, double x, double y);
 static void move_ctrl (SPDynaDrawContext * dc, double x, double y);
@@ -155,14 +167,7 @@ sp_dyna_draw_context_init (SPDynaDrawContext * dc)
   dc->ccolor = 0xff0000ff;
   dc->cinside = -1;
 
-#ifdef TIMEOUT_DRIVEN
-  dc->timer_id = 0;
-  dc->dragging = FALSE;
-  dc->dynahand = FALSE;
-#endif
-  dc->firstdragging = FALSE;
-
-  /* DynaDraw attributes */
+  /* DynaDraw values */
   dc->curx = 0.0;
   dc->cury = 0.0;
   dc->lastx = 0.0;
@@ -175,13 +180,22 @@ sp_dyna_draw_context_init (SPDynaDrawContext * dc)
   dc->angy = 0.0;
   dc->delx = 0.0;
   dc->dely = 0.0;
+
+  /* attributes */
   dc->fixed_angle = FALSE;
+  dc->use_timeout = TRUE;
   dc->use_caligraphic = TRUE;
+  dc->timer_id = 0;
+  dc->dragging = FALSE;
+  dc->dynahand = FALSE;
+#if 0
+  dc->firstdragging = FALSE;
+#endif
 #ifdef NORMALIZED_COORDINATE
-  dc->mass = 0.5;
+  dc->mass = 0.3;
   dc->drag = 0.5;
   dc->angle = 30.0;
-  dc->width = 0.5;
+  dc->width = 0.2;
 #else
   dc->mass = 0.2;
   dc->drag = 0.5;
@@ -250,8 +264,14 @@ sp_dyna_draw_context_setup (SPEventContext * event_context,
 
   /* fixme: */
   style = sp_style_new (NULL);
-  style->fill.type = DD_FILL;
-  style->stroke.type = DD_STROKE;
+  /* these style should be changed when dc->use_caligraphc is touched */  
+#ifdef DYNA_DRAW_DEBUG
+  style->fill.type = SP_PAINT_TYPE_NONE;
+  style->stroke.type = SP_PAINT_TYPE_COLOR;
+#else
+  style->fill.type = SP_PAINT_TYPE_COLOR;
+  style->stroke.type = SP_PAINT_TYPE_NONE;
+#endif
   style->stroke_width.unit = SP_UNIT_ABSOLUTE;
   style->stroke_width.distance = 1.0;
   style->absolute_stroke_width = 1.0;
@@ -280,13 +300,6 @@ sp_dyna_draw_context_item_handler (SPEventContext * event_context,
 
   return ret;
 }
-
-#define DYNA_EPSILON   1.0e-6
-#ifdef NORMALIZED_COORDINATE
-#define DYNA_MIN_WIDTH 1.0e-6
-#else
-#define DYNA_MIN_WIDTH 1.0
-#endif
 
 static double
 flerp (double f0, double f1, double p)
@@ -378,7 +391,7 @@ sp_dyna_draw_reset (SPDynaDrawContext * dc, double x, double y)
   dc->dely = 0.0;
 }
 
-static int
+static gboolean
 sp_dyna_draw_apply (SPDynaDrawContext * dc, double x, double y)
 {
   double mass, drag;
@@ -414,12 +427,10 @@ sp_dyna_draw_apply (SPDynaDrawContext * dc, double x, double y)
     }
   else
     {
-      dc->angx = -dc->vely;
-      dc->angy = dc->velx;
       if (dc->vel < DYNA_EPSILON)
         return FALSE;
-      dc->angx /= dc->vel;
-      dc->angy /= dc->vel;
+      dc->angx = -dc->vely / dc->vel;
+      dc->angy =  dc->velx / dc->vel;
     }
 
   /* Apply drag */
@@ -486,7 +497,6 @@ sp_dyna_draw_brush (SPDynaDrawContext *dc,
   dc->npoints ++;
 }
 
-#ifdef TIMEOUT_DRIVEN
 static gint
 sp_dyna_draw_timeout_handler (gpointer data)
 {
@@ -500,16 +510,17 @@ sp_dyna_draw_timeout_handler (gpointer data)
   desktop = SP_EVENT_CONTEXT(dc)->desktop;
   canvas = GNOME_CANVAS (desktop->canvas);
 
+  dc->dragging = TRUE;
+  dc->dynahand = TRUE;
+  
   gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
   gnome_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
   sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
 /*    g_print ("(%d %d)=>(%g %g)\n", x, y, p.x, p.y); */
-  sp_dyna_draw_apply (dc, p.x, p.y);
+  if (! sp_dyna_draw_apply (dc, p.x, p.y))
+    return TRUE;
   sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
   test_inside (dc, p.x, p.y);
-  
-  dc->dragging = TRUE;
-  dc->dynahand = TRUE;
   
   g_assert (dc->npoints > 0);
   
@@ -524,19 +535,16 @@ sp_dyna_draw_timeout_handler (gpointer data)
       g_assert (dc->npoints > 1);
       fit_and_split (dc, FALSE);
     }
+#if 0
   dc->firstdragging = FALSE;
+#endif
   return TRUE;
 }
-#endif
 
 gint
 sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 				   GdkEvent * event)
 {
-#ifndef TIMEOUT_DRIVEN
-  static gboolean dragging = FALSE;
-  static gboolean dynahand = FALSE;
-#endif
   SPDynaDrawContext *dc;
   SPDesktop *desktop;
   ArtPoint p;
@@ -555,7 +563,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	  sp_desktop_w2d_xy_point (desktop, &p, event->button.x,
 				   event->button.y);
 	  sp_dyna_draw_reset (dc, p.x, p.y);
-	  sp_dyna_draw_apply (dc, p.x, p.y);
+          sp_dyna_draw_apply (dc, p.x, p.y);
           sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
 	  test_inside (dc, p.x, p.y);
@@ -584,7 +592,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	    }
 	  else
 	    {
-              dc->firstdragging = TRUE;
+/*                dc->firstdragging = TRUE; */
 	      ret = TRUE;
 	      break;
 	    }
@@ -592,37 +600,45 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	  /* initialize first point */
           sp_dyna_draw_brush (dc, TRUE);
          
-	  gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-				  GDK_BUTTON_RELEASE_MASK |
-#ifndef TIMEOUT_DRIVEN
-				  GDK_POINTER_MOTION_MASK |
-#endif
-				  GDK_BUTTON_PRESS_MASK, NULL,
-				  event->button.time);
-#ifdef TIMEOUT_DRIVEN
-          if (! dc->timer_id)
+          if (dc->use_timeout)
+            gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+                                    GDK_BUTTON_RELEASE_MASK |
+                                    GDK_BUTTON_PRESS_MASK, NULL,
+                                    event->button.time);
+          else
+            gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+                                    GDK_BUTTON_RELEASE_MASK |
+                                    GDK_POINTER_MOTION_MASK |
+                                    GDK_BUTTON_PRESS_MASK, NULL,
+                                    event->button.time);
+
+          if (dc->use_timeout && !dc->timer_id)
             dc->timer_id = gtk_timeout_add (SAMPLE_TIMEOUT, sp_dyna_draw_timeout_handler, dc);
-#endif
+#if 0
           dc->firstdragging = TRUE;
+#endif
 	  ret = TRUE;
 	}
       break;
-#ifndef TIMEOUT_DRIVEN
     case GDK_MOTION_NOTIFY:
-      if (event->motion.state & GDK_BUTTON1_MASK)
+      if (!dc->use_timeout && (event->motion.state & GDK_BUTTON1_MASK))
 	{
+	  dc->dragging = TRUE;
+	  dc->dynahand = TRUE;
+
           sp_desktop_w2d_xy_point (desktop, &p, event->motion.x,
                                    event->motion.y);
 #if 0
           g_print ("(%g %g)=>(%g %g)\n", event->motion.x, event->motion.y, p.x, p.y);
 #endif
-          sp_dyna_draw_apply (dc, p.x, p.y);
+	  if (! sp_dyna_draw_apply (dc, p.x, p.y))
+            {
+              ret = TRUE;
+              break;
+            }
           sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
           test_inside (dc, p.x, p.y);
-
-	  dragging = TRUE;
-	  dynahand = TRUE;
 
           g_assert (dc->npoints > 0);
 
@@ -637,33 +653,28 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
               g_assert (dc->npoints > 1);
               fit_and_split (dc, FALSE);
 	    }
-          firstdragging = FALSE;
+#if 0
+          dc->firstdragging = FALSE;
+#endif
 	  ret = TRUE;
 	}
       break;
-#endif
+
     case GDK_BUTTON_RELEASE:
-#ifdef TIMEOUT_DRIVEN
+      if (event->button.button == 1 &&
+          dc->use_timeout && dc->timer_id != 0)
+        {
+          gtk_timeout_remove (dc->timer_id);
+          dc->timer_id = 0;
+        }
       if (dc->dragging && event->button.button == 1)
 	{
 	  dc->dragging = FALSE;
 
 /*            g_print ("[release]\n"); */
-          gtk_timeout_remove (dc->timer_id);
-          dc->timer_id = 0;
-
 	  if (dc->dynahand)
 	    {
 	      dc->dynahand = FALSE;
-#else
-      if (dragging && event->button.button == 1)
-	{
-	  dragging = FALSE;
-
-	  if (dynahand)
-	    {
-	      dynahand = FALSE;
-#endif
 	      /* Remove all temporary line segments */
 	      while (dc->segments)
 		{
@@ -686,7 +697,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
                     }
                 }
               set_to_accumulated (dc); /* temporal implementation */
-              if (dc->cinside)
+              if (dc->use_caligraphic || dc->cinside)
                 {
                   /* reset accumulated curve */
                   sp_curve_reset (dc->accumulated);
@@ -725,17 +736,15 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 static void
 clear_current (SPDynaDrawContext * dc)
 {
+  g_print ("[clear_current]\n");
+  /* reset canvas_shape */
   sp_canvas_shape_clear (dc->currentshape);
   /* reset curve */
   sp_curve_reset (dc->currentcurve);
+  sp_curve_reset (dc->cal1);
+  sp_curve_reset (dc->cal2);
   /* reset points */
-/*    if (dc->use_caligraphic) */
-/*      { */
-/*        dc->npoints1 = 0; */
-/*        dc->npoints2 = 0; */
-/*      } */
-/*    else */
-    dc->npoints = 0;
+  dc->npoints = 0;
 }
 
 static void
@@ -801,11 +810,6 @@ set_to_accumulated (SPDynaDrawContext * dc)
     }
 
   sp_document_done (SP_DT_DOCUMENT (desktop));
-
-#if 1
-  /* Hide currentshape */
-  clear_current (dc);
-#endif
 }
 
 #if 0
@@ -949,9 +953,7 @@ fit_and_split (SPDynaDrawContext *dc,
     }
   else
     {
-/*        g_print ("npoints = %d\n", dc->npoints); */
-/*        if (release || (dc->npoints == SAMPLING_SIZE - 1)) */
-        fit_and_split_line (dc, release);
+      fit_and_split_line (dc, release);
     }
 }
 
@@ -994,8 +996,8 @@ fit_and_split_line (SPDynaDrawContext *dc,
       curve = sp_curve_copy (dc->currentcurve);
       /* fixme: */
       style = sp_style_new (NULL);
-      style->fill.type = DD_FILL;
-      style->stroke.type = DD_STROKE;
+      style->fill.type = SP_PAINT_TYPE_NONE;
+      style->stroke.type = SP_PAINT_TYPE_COLOR;
       style->stroke_width.unit = SP_UNIT_ABSOLUTE;
       style->stroke_width.distance = 1.0;
       style->absolute_stroke_width = 1.0;
@@ -1055,25 +1057,19 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
 #endif
 
       /* Current caligraphic */
+#if 0
       if (dc->firstdragging==TRUE || dc->cal1->end==0 || dc->cal2->end==0)
+#else
+      if (dc->cal1->end==0 || dc->cal2->end==0)
+#endif
         {
           /* dc->npoints > 0 */
 /*            g_print ("caligraphics(1|2) reset\n"); */
           sp_curve_reset (dc->cal1);
           sp_curve_reset (dc->cal2);
           
-#if 0
-#if 0
-          sp_curve_moveto (dc->cal1, b1[3].x, b1[3].y);
-          sp_curve_moveto (dc->cal2, b2[3].x, b2[3].y);
-#else
-          sp_curve_moveto (dc->cal1, b1[0].x, b1[0].y);
-          sp_curve_moveto (dc->cal2, b2[0].x, b2[0].y);
-#endif
-#else
           sp_curve_moveto (dc->cal1, dc->point1[0].x, dc->point1[0].y);
           sp_curve_moveto (dc->cal2, dc->point2[0].x, dc->point2[0].y);
-#endif
         }
 
       nb1 = sp_bezier_fit_cubic_r (b1, dc->point1, 0, dc->npoints-1,
@@ -1088,29 +1084,32 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
           g_print ("nb1:%d nb2:%d\n", nb1, nb2);
 #endif
           /* CanvasShape */
-          sp_curve_reset (dc->currentcurve);
-          sp_curve_moveto (dc->currentcurve, b1[0].x, b1[0].y);
-          for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
+          if (! release)
             {
-              BEZIER_ASSERT (bp1);
-
-              sp_curve_curveto (dc->currentcurve, bp1[1].x, bp1[1].y,
-                                bp1[2].x, bp1[2].y, bp1[3].x, bp1[3].y);
-
+              sp_curve_reset (dc->currentcurve);
+              sp_curve_moveto (dc->currentcurve, b1[0].x, b1[0].y);
+              for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
+                {
+                  BEZIER_ASSERT (bp1);
+                  
+                  sp_curve_curveto (dc->currentcurve, bp1[1].x, bp1[1].y,
+                                    bp1[2].x, bp1[2].y, bp1[3].x, bp1[3].y);
+                  
+                }
+              sp_curve_lineto (dc->currentcurve,
+                               b2[BEZIER_SIZE*(nb2-1) + 3].x,
+                               b2[BEZIER_SIZE*(nb2-1) + 3].y);
+              for (bp2 = b2 + BEZIER_SIZE*(nb2-1); bp2 >= b2; bp2 -= BEZIER_SIZE)
+                {
+                  BEZIER_ASSERT (bp2);
+                  
+                  sp_curve_curveto (dc->currentcurve, bp2[2].x, bp2[2].y,
+                                    bp2[1].x, bp2[1].y, bp2[0].x, bp2[0].y);
+                }
+              sp_curve_closepath (dc->currentcurve);
+              sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
             }
-          sp_curve_lineto (dc->currentcurve,
-                           b2[BEZIER_SIZE*(nb2-1) + 3].x,
-                           b2[BEZIER_SIZE*(nb2-1) + 3].y);
-          for (bp2 = b2 + BEZIER_SIZE*(nb2-1); bp2 >= b2; bp2 -= BEZIER_SIZE)
-            {
-              BEZIER_ASSERT (bp2);
-
-              sp_curve_curveto (dc->currentcurve, bp2[2].x, bp2[2].y,
-                                bp2[1].x, bp2[1].y, bp2[0].x, bp2[0].y);
-            }
-          sp_curve_closepath (dc->currentcurve);
-          sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
-
+          
           /* Current caligraphic */
           for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
             {
@@ -1142,42 +1141,40 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
 #ifdef DYNA_DRAW_VERBOSE
       g_print ("[%d]Yup\n", dc->npoints);
 #endif
-      g_assert (!sp_curve_empty (dc->currentcurve));
-      curve = sp_curve_copy (dc->currentcurve);
-      /* fixme: */
-      style = sp_style_new (NULL);
-      style->fill.type = DD_FILL;
-      style->stroke.type = DD_STROKE;
-      style->stroke_width.unit = SP_UNIT_ABSOLUTE;
-      style->stroke_width.distance = 1.0;
-      style->absolute_stroke_width = 1.0;
-      style->user_stroke_width = 1.0;
-      cshape =
-	(SPCanvasShape *)
-	gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
-			       SP_TYPE_CANVAS_SHAPE, NULL);
-      sp_canvas_shape_set_style (cshape, style);
-      sp_style_unref (style);
-      gtk_signal_connect (GTK_OBJECT (cshape), "event",
-			  GTK_SIGNAL_FUNC (sp_desktop_root_handler),
-			  SP_EVENT_CONTEXT (dc)->desktop);
-
-      if (!release) {
-	      sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
-      }
-      sp_curve_unref (curve);
-
-      dc->segments = g_slist_prepend (dc->segments, cshape);
-
-#if 1
-      dc->point1[0] = dc->point1[dc->npoints - 2];
-      dc->point1[1] = dc->point1[dc->npoints - 1];
-      dc->point2[0] = dc->point2[dc->npoints - 2];
-      dc->point2[1] = dc->point2[dc->npoints - 1];
+      if (! release)
+        {
+          g_assert (!sp_curve_empty (dc->currentcurve));
+          curve = sp_curve_copy (dc->currentcurve);
+          /* fixme: */
+          style = sp_style_new (NULL);
+          /* these style should be changed when dc->use_caligraphc is touched */
+#ifdef DYNA_DRAW_DEBUG
+          style->fill.type = SP_PAINT_TYPE_NONE;
+          style->stroke.type = SP_PAINT_TYPE_COLOR;
 #else
+          style->fill.type = SP_PAINT_TYPE_COLOR;
+          style->stroke.type = SP_PAINT_TYPE_NONE;
+#endif
+          style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+          style->stroke_width.distance = 1.0;
+          style->absolute_stroke_width = 1.0;
+          style->user_stroke_width = 1.0;
+          cshape = (SPCanvasShape *)
+            gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
+                                   SP_TYPE_CANVAS_SHAPE, NULL);
+          sp_canvas_shape_set_style (cshape, style);
+          sp_style_unref (style);
+          gtk_signal_connect (GTK_OBJECT (cshape), "event",
+                              GTK_SIGNAL_FUNC (sp_desktop_root_handler),
+                              SP_EVENT_CONTEXT (dc)->desktop);
+          
+          sp_canvas_shape_add_component (cshape, curve, TRUE, NULL);
+          sp_curve_unref (curve);
+          dc->segments = g_slist_prepend (dc->segments, cshape);
+        }
+
       dc->point1[0] = dc->point1[dc->npoints - 1];
       dc->point2[0] = dc->point2[dc->npoints - 1];
-#endif
       dc->npoints = 1;
     }
   else if (dc->npoints < SAMPLING_SIZE-1)
