@@ -130,9 +130,7 @@ AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
 AC_DEFINE(GTK_ENABLE_BROKEN,1,[Use broken and deprectaded Gtk stuff])
 
-AC_OUTPUT([ intl/Makefile m4/Makefile 
-m4/Makefile
-intl/Makefile 
+AC_OUTPUT([
 Makefile
 src/Makefile
 src/libnr/Makefile
@@ -145,6 +143,8 @@ src/dialogs/Makefile
 src/display/Makefile
 glade/Makefile
 po/Makefile.in
+m4/Makefile
+intl/Makefile 
 sodipodi.spec
 sodipodi.1
 ])
