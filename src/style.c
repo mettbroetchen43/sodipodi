@@ -42,11 +42,15 @@ static void sp_style_privatize_text (SPStyle *style);
 
 static gint sp_style_property_index (const guchar *str);
 
+static void sp_style_read_inherited_float (SPInheritedFloat *val, const guchar *str);
 static void sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str);
 static void sp_style_read_inherited_enum (SPInheritedShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
+static void sp_style_read_inherited_string (SPInheritedString *val, const guchar *str);
 static void sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
+static gint sp_style_write_inherited_float (guchar *p, gint len, const guchar *key, SPInheritedFloat *val);
 static gint sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val);
 static gint sp_style_write_inherited_enum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPInheritedShort *val);
+static gint sp_style_write_inherited_string (guchar *p, gint len, const guchar *key, SPInheritedString *val);
 static gint sp_style_write_inherited_paint (guchar *b, gint len, const guchar *key, SPInheritedPaint *paint);
 
 static SPColor *sp_style_read_color_cmyk (SPColor *color, const guchar *str);
@@ -241,6 +245,23 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		}
 	}
 
+	/* font-family */
+	if (!style->text_private || !style->text->font_family.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_string (&style->text->font_family, val);
+		}
+	}
+	/* font-size */
+	/* fixme: Really we should parse distances, percentages and so on (Lauris) */
+	if (!style->text_private || !style->text->font_size.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_float (&style->text->font_size, val);
+		}
+	}
 	/* writing-mode */
 	if (!style->text_private || !style->text->writing_mode.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
@@ -248,16 +269,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			if (!style->text_private) sp_style_privatize_text (style);
 			sp_style_read_inherited_enum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
 		}
-	}
-
-	/* fixme: */
-	if (!style->text->font_family.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
-		if (val) sp_style_merge_property (style, SP_PROP_FONT_FAMILY, val);
-	}
-	if (!style->text->font_size_set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
-		if (val) sp_style_merge_property (style, SP_PROP_FONT_SIZE, val);
 	}
 
 	if (object->parent) {
@@ -282,30 +293,16 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	switch (id) {
 	/* CSS2 */
 	/* Font */
-	case SP_PROP_FONT:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font.set) {
-			if (style->text->font.value) g_free (style->text->font.value);
-			style->text->font.value = g_strdup (val);
-			style->text->font.set = TRUE;
-			style->text->font.inherit = (val && !strcmp (val, "inherit"));
-		}
-		break;
 	case SP_PROP_FONT_FAMILY:
 		if (!style->text_private) sp_style_privatize_text (style);
 		if (!style->text->font_family.set) {
-			if (style->text->font_family.value) g_free (style->text->font_family.value);
-			style->text->font_family.value = g_strdup (val);
-			style->text->font_family.set = TRUE;
-			style->text->font_family.inherit = (val && !strcmp (val, "inherit"));
+			sp_style_read_inherited_string (&style->text->font_family, val);
 		}
 		break;
 	case SP_PROP_FONT_SIZE:
 		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_size_set) {
-			if (sp_svg_read_number_f (val, &style->text->font_size)) {
-				style->text->font_size_set = TRUE;
-			}
+		if (!style->text->font_size.set) {
+			sp_style_read_inherited_float (&style->text->font_size, val);
 		}
 		break;
 	case SP_PROP_FONT_SIZE_ADJUST:
@@ -325,6 +322,15 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 			/* fixme: */
 			style->text->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
 			style->text->font_weight_set = TRUE;
+		}
+		break;
+	case SP_PROP_FONT:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font.set) {
+			if (style->text->font.value) g_free (style->text->font.value);
+			style->text->font.value = g_strdup (val);
+			style->text->font.set = TRUE;
+			style->text->font.inherit = (val && !strcmp (val, "inherit"));
 		}
 		break;
 	/* Text */
@@ -590,12 +596,15 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 		}
 
 		if (style->text && object->style->text) {
+			if (!style->text->font_family.set || style->text->font_family.inherit) {
+				if (style->text->font_family.value) g_free (style->text->font_family.value);
+				style->text->font_family.value = g_strdup (object->style->text->font_family.value);
+			}
+			if (!style->text->font_size.set || style->text->font_size.inherit) {
+				style->text->font_size.value = object->style->text->font_size.value;
+			}
 			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
 				style->text->writing_mode.value = object->style->text->writing_mode.value;
-			}
-
-			if (!style->text->font_size_set) {
-				style->text->font_size = object->style->text->font_size;
 			}
 		}
 	}
@@ -766,11 +775,11 @@ sp_style_clear (SPStyle *style)
 	style->text = text;
 	style->text_private = text_private;
 	/* fixme: */
-	style->text->font.set = FALSE;
 	style->text->font_family.set = FALSE;
+	style->text->font_size.set = FALSE;
 	style->text->font_style_set = FALSE;
 	style->text->font_weight_set = FALSE;
-	style->text->font_size_set = FALSE;
+	style->text->font.set = FALSE;
 
 	style->opacity.value = SP_SCALE30_MAX;
 	style->display = TRUE;
@@ -833,12 +842,6 @@ sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gflo
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 	}
 
-#if 0
-	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		gtk_object_unref (GTK_OBJECT (style->fill.server));
-	}
-#endif
-
 	style->fill.set = fill_set;
 	style->fill.inherit = FALSE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
@@ -859,12 +862,6 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 		sp_object_hunref (SP_OBJECT (style->fill.server), style);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 	}
-
-#if 0
-	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		gtk_object_unref (GTK_OBJECT (style->fill.server));
-	}
-#endif
 
 	style->fill.set = fill_set;
 	style->fill.inherit = FALSE;
@@ -887,12 +884,6 @@ sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gf
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 	}
 
-#if 0
-	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-		gtk_object_unref (GTK_OBJECT (style->stroke.server));
-	}
-#endif
-
 	style->stroke.set = stroke_set;
 	style->stroke.inherit = FALSE;
 	style->stroke.type = SP_PAINT_TYPE_COLOR;
@@ -913,12 +904,6 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 	}
-
-#if 0
-	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-		gtk_object_unref (GTK_OBJECT (style->stroke.server));
-	}
-#endif
 
 	style->stroke.set = stroke_set;
 	style->stroke.inherit = FALSE;
@@ -958,7 +943,7 @@ sp_text_style_new (void)
 
 	ts->font.value = g_strdup ("Bitstream Cyberbit 12");
 	ts->font_family.value = g_strdup ("Bitstream Cyberbit");
-	ts->font_size = 12.0;
+	ts->font_size.value = 12.0;
 	ts->font_style = SP_CSS_FONT_STYLE_NORMAL;
 	ts->font_variant = SP_CSS_FONT_VARIANT_NORMAL;
 	ts->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
@@ -974,7 +959,7 @@ sp_text_style_clear (SPTextStyle *ts)
 {
 	ts->font.set = FALSE;
 	ts->font_family.set = FALSE;
-	ts->font_size_set = FALSE;
+	ts->font_size.set = FALSE;
 	ts->font_size_adjust_set = FALSE;
 	ts->font_stretch_set = FALSE;
 	ts->font_style_set = FALSE;
@@ -1064,11 +1049,10 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 	d = 0;
 
 	if (st->font_family.set) {
-		d += sp_text_style_write_property (p + d, len - d, "font-family", st->font_family.value);
+		d += sp_style_write_inherited_string (p + d, len - d, "font-family", &st->font_family);
 	}
-
-	if (st->font_size_set) {
-		d += g_snprintf (p + d, len - d, "font-size:%g;", st->font_size);
+	if (st->font_size.set) {
+		d += sp_style_write_inherited_float (p + d, len - d, "font-size", &st->font_size);
 	}
 
 	if (st->font_style_set) {
@@ -1199,6 +1183,22 @@ sp_style_property_index (const guchar *str)
 }
 
 static void
+sp_style_read_inherited_float (SPInheritedFloat *val, const guchar *str)
+{
+	if (!strcmp (str, "inherit")) {
+		val->set = TRUE;
+		val->inherit = TRUE;
+	} else {
+		gfloat value;
+		if (sp_svg_read_number_f (str, &value)) {
+			val->set = TRUE;
+			val->inherit = FALSE;
+			val->value = value;
+		}
+	}
+}
+
+static void
 sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str)
 {
 	if (!strcmp (str, "inherit")) {
@@ -1230,6 +1230,22 @@ sp_style_read_inherited_enum (SPInheritedShort *val, const guchar *str, const SP
 				break;
 			}
 		}
+	}
+}
+
+static void
+sp_style_read_inherited_string (SPInheritedString *val, const guchar *str)
+{
+	if (val->value) g_free (val->value);
+
+	if (!strcmp (str, "inherit")) {
+		val->set = TRUE;
+		val->inherit = TRUE;
+		val->value = NULL;
+	} else {
+		val->set = TRUE;
+		val->inherit = FALSE;
+		val->value = g_strdup (str);
 	}
 }
 
@@ -1275,6 +1291,16 @@ sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPSty
 }
 
 static gint
+sp_style_write_inherited_float (guchar *p, gint len, const guchar *key, SPInheritedFloat *val)
+{
+	if (val->inherit) {
+		return g_snprintf (p, len, "%s:inherit;", key);
+	} else {
+		return g_snprintf (p, len, "%s:%g;", key, val->value);
+	}
+}
+
+static gint
 sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val)
 {
 	if (val->inherit) {
@@ -1296,6 +1322,16 @@ sp_style_write_inherited_enum (guchar *p, gint len, const guchar *key, const SPS
 	}
 
 	return 0;
+}
+
+static gint
+sp_style_write_inherited_string (guchar *p, gint len, const guchar *key, SPInheritedString *val)
+{
+	if (val->inherit) {
+		return g_snprintf (p, len, "%s:inherit;", key);
+	} else {
+		return g_snprintf (p, len, "%s:%s;", key, val->value);
+	}
 }
 
 static gint

@@ -162,7 +162,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	face = gnome_font_unsized_closest (style->text->font_family.value,
 					   sp_text_font_weight_to_gp (style->text->font_weight),
 					   sp_text_font_italic_to_gp (style->text->font_style));
-	size = style->text->font_size;
+	size = style->text->font_size.value;
 
 	/* fixme: Find a way how to manipulate these */
 	x = cp->x;
@@ -787,12 +787,12 @@ sp_text_modified (SPObject *object, guint flags)
 	SPText *text;
 	SPObject *child;
 	GSList *l;
-	gboolean relayout;
+	guint cflags;
 
 	text = SP_TEXT (object);
 
-	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	flags &= SP_OBJECT_MODIFIED_CASCADE;
+	cflags = (flags & SP_OBJECT_MODIFIED_CASCADE);
+	if (flags & SP_OBJECT_MODIFIED_FLAG) cflags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 
 	/* Create temporary list of children */
 	l = NULL;
@@ -801,20 +801,16 @@ sp_text_modified (SPObject *object, guint flags)
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
-	relayout = FALSE;
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_STATE)) {
-			relayout = TRUE;
-		}
-		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, flags);
+		if (cflags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_modified (child, cflags);
 		}
 		sp_object_unref (SP_OBJECT (child), object);
 	}
 
-	if (relayout || text->relayout || (flags & SP_OBJECT_STYLE_MODIFIED_FLAG)) {
+	if (text->relayout || (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 		/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
 		/* fixme: Even now it may not work, as we are delayed */
 		/* fixme: So check modification flag everywhere immediate state is used */
@@ -1122,12 +1118,15 @@ void
 sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 {
 	SPRepr *repr;
+	SPStyle *style;
 	guchar *content, *p;
+	ArtPoint cp;
 
 	g_return_if_fail (text != NULL);
 	g_return_if_fail (SP_IS_TEXT (text));
 
 	repr = SP_OBJECT_REPR (text);
+	style = SP_OBJECT_STYLE (text);
 
 	while (repr->children) {
 		sp_repr_remove_child (repr, repr->children);
@@ -1138,19 +1137,34 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	content = g_strdup (str);
 	p = content;
 
+	cp.x = text->ly.x;
+	cp.y = text->ly.y;
+
 	while (p) {
-		SPRepr *rch, *rstr;
+		SPRepr *rtspan, *rstr;
 		guchar *e;
 		e = strchr (p, '\n');
 		if (e) *e = '\0';
-		rch = sp_repr_new ("tspan");
+		rtspan = sp_repr_new ("tspan");
+		sp_repr_set_double (rtspan, "x", cp.x);
+		sp_repr_set_double (rtspan, "y", cp.y);
+		if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+			/* fixme: real line height */
+			/* fixme: What to do with mixed direction tspans? */
+			cp.x -= style->text->font_size.value;
+		} else {
+			cp.y += style->text->font_size.value;
+		}
+		sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 		rstr = sp_xml_document_createTextNode (sp_repr_document (repr), p);
-		sp_repr_add_child (rch, rstr, NULL);
-		sp_repr_append_child (repr, rch);
+		sp_repr_add_child (rtspan, rstr, NULL);
+		sp_repr_append_child (repr, rtspan);
 		p = (e) ? e + 1 : NULL;
 	}
 
 	g_free (content);
+
+	/* fixme: Calculate line positions (Lauris) */
 }
 
 SPTSpan *
@@ -1185,11 +1199,11 @@ sp_text_append_line (SPText *text)
 	if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
 		/* fixme: real line height */
 		/* fixme: What to do with mixed direction tspans? */
-		sp_repr_set_double (rtspan, "x", cp.x - style->text->font_size);
+		sp_repr_set_double (rtspan, "x", cp.x - style->text->font_size.value);
 		sp_repr_set_double (rtspan, "y", cp.y);
 	} else {
 		sp_repr_set_double (rtspan, "x", cp.x);
-		sp_repr_set_double (rtspan, "y", cp.y + style->text->font_size);
+		sp_repr_set_double (rtspan, "y", cp.y + style->text->font_size.value);
 	}
 	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 

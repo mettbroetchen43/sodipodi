@@ -1,3 +1,16 @@
+2002-08-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c (sp_style_read_from_object): Cleanup font-family and font-size
+	(sp_style_merge_property): Ditto
+	(sp_style_merge_from_object_parent): Ditto
+	(sp_text_style_write): Ditto
+	(sp_style_read_inherited_float): New helper
+	(sp_style_read_inherited_string): Ditto
+	(sp_style_write_inherited_float): Ditto
+	(sp_style_write_inherited_string): Ditto
+
+	* src/sp-text.c (sp_text_set_repr_text_multiline): Set roles and line positions
+
 2002-08-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_text_read_attr): Request relayout
