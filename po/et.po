@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
 "POT-Creation-Date: 2004-02-27 04:33+0100\n"
-"PO-Revision-Date: 2004-04-07 00:01+0300\n"
+"PO-Revision-Date: 2004-04-07 08:47+0300\n"
 "Last-Translator: Priit Laes <amd@tt.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -68,9 +68,8 @@ msgstr "Lehekülg"
 #: src/dialogs/align.c:292
 #: src/dialogs/export.c:166
 #: src/verbs.c:472
-#, fuzzy
 msgid "Drawing"
-msgstr "StarDraw joonistus"
+msgstr "Joonistus"
 
 #  Selection submenu
 #: src/desktop.c:1727
@@ -84,9 +83,8 @@ msgstr "Valik"
 
 #: src/dialogs/align.c:156
 #: src/toolbox.c:405
-#, fuzzy
 msgid "Align objects"
-msgstr "Objektide uuendamine"
+msgstr "Objektide joondamine"
 
 #: src/dialogs/align.c:175
 msgid "Right side of aligned objects to left side of anchor"
@@ -97,9 +95,8 @@ msgid "Left side of aligned objects to left side of anchor"
 msgstr ""
 
 #: src/dialogs/align.c:181
-#, fuzzy
 msgid "Center horizontally"
-msgstr "Peegelda horisontaalselt"
+msgstr "horisontaalselt"
 
 #: src/dialogs/align.c:184
 msgid "Right side of aligned objects to right side of anchor"
@@ -121,7 +118,7 @@ msgstr "Tee jooneks"
 #: src/dialogs/align.c:197
 #, fuzzy
 msgid "Center vertically"
-msgstr "Peegelda vertikaalselt"
+msgstr " vertikaalselt"
 
 #: src/dialogs/align.c:200
 msgid "Bottom of aligned objects to bottom of anchor"
@@ -173,14 +170,12 @@ msgid "Distribute"
 msgstr ""
 
 #: src/dialogs/align.c:287
-#, fuzzy
 msgid "Last selected"
-msgstr "valitud keel %s"
+msgstr "Viimati valitud"
 
 #: src/dialogs/align.c:288
-#, fuzzy
 msgid "First selected"
-msgstr "valitud keel %s"
+msgstr "Esimesena valitud"
 
 #: src/dialogs/align.c:289
 msgid "Biggest item"
@@ -207,17 +202,14 @@ msgid "Show grid"
 msgstr "Alusvõrgu näitamine"
 
 #: src/dialogs/desktop-properties.c:218
-#, fuzzy
 msgid "Snap to grid"
-msgstr "&Tõmme koordinaatvõrgule"
+msgstr "Tõmme alusvõrgule"
 
 #: src/dialogs/desktop-properties.c:221
-#, fuzzy
 msgid "Horizontal lines"
 msgstr "Horisontaalsed jooned"
 
 #: src/dialogs/desktop-properties.c:222
-#, fuzzy
 msgid "Vertical lines"
 msgstr "Vertikaalsed jooned"
 
@@ -232,29 +224,24 @@ msgid "Hex grid"
 msgstr "_Alusvõrk"
 
 #: src/dialogs/desktop-properties.c:231
-#, fuzzy
 msgid "Grid units:"
-msgstr "_Koordinaatteljestiku mõõtühik:"
+msgstr "Alusteljestiku mõõtühik:"
 
 #: src/dialogs/desktop-properties.c:233
-#, fuzzy
 msgid "Origin X:"
-msgstr "Algallikas"
+msgstr "Algne X:"
 
 #: src/dialogs/desktop-properties.c:235
-#, fuzzy
 msgid "Origin Y:"
-msgstr "Algallikas"
+msgstr "Algne Y:"
 
 #: src/dialogs/desktop-properties.c:238
-#, fuzzy
 msgid "Spacing X:"
-msgstr "Täheruum:"
+msgstr "X samm:"
 
 #: src/dialogs/desktop-properties.c:240
-#, fuzzy
 msgid "Spacing Y:"
-msgstr "Täheruum:"
+msgstr "Y samm:"
 
 #: src/dialogs/desktop-properties.c:244
 #: src/dialogs/desktop-properties.c:271
@@ -264,9 +251,8 @@ msgstr "_Koordinaatteljestiku mõõtühik:"
 
 #: src/dialogs/desktop-properties.c:246
 #: src/dialogs/desktop-properties.c:273
-#, fuzzy
 msgid "Snap distance:"
-msgstr "Kauguse eksponent:"
+msgstr "Kauguse:"
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
@@ -282,9 +268,8 @@ msgid "Guides"
 msgstr "Abijooned"
 
 #: src/dialogs/desktop-properties.c:265
-#, fuzzy
 msgid "Show guides"
-msgstr "Sp_ikrite näitamine"
+msgstr "Abijoonte näitamine"
 
 #: src/dialogs/desktop-properties.c:266
 #, fuzzy
@@ -292,54 +277,44 @@ msgid "Snap to guides"
 msgstr "&Tõmme koordinaatvõrgule"
 
 #: src/dialogs/desktop-properties.c:276
-#, fuzzy
 msgid "Guides color:"
-msgstr "Taustavärv"
+msgstr "Abijoonte värv:"
 
 #: src/dialogs/desktop-properties.c:277
-#, fuzzy
 msgid "Guideline color"
-msgstr "Taustavärv"
+msgstr "Abijoone värv"
 
 #: src/dialogs/desktop-properties.c:279
-#, fuzzy
 msgid "Highlight color:"
 msgstr "Esiletõstmise värv:"
 
 #: src/dialogs/desktop-properties.c:280
-#, fuzzy
 msgid "Highlighted guideline color"
-msgstr "Esiletõstetud teksti värv"
+msgstr "Esiletõstetud abijoone värv"
 
 #: src/dialogs/desktop-properties.c:295
-#, fuzzy
 msgid "Show border"
-msgstr "&Ikoonipiirde näitamine"
+msgstr "Piirde näitamine"
 
 #: src/dialogs/desktop-properties.c:301
-#, fuzzy
 msgid "Border on top of drawing"
-msgstr "Deemon &peatatakse väljumisel"
+msgstr ""
 
 #: src/dialogs/desktop-properties.c:306
-#, fuzzy
 msgid "Border color:"
-msgstr "Päise, piirjoone ja eraldaja värv"
+msgstr "Piirjoone värv:"
 
 #: src/dialogs/desktop-properties.c:307
-#, fuzzy
 msgid "Page border color"
-msgstr "Päise, piirjoone ja eraldaja värv"
+msgstr "Lehekülje piirjoone värv"
 
 #: src/dialogs/desktop-properties.c:308
-#, fuzzy
 msgid "Page color:"
-msgstr "Lehekülje vaikimisi taustavärv"
+msgstr "Lehekülje värv:"
 
 #: src/dialogs/desktop-properties.c:309
-#, fuzzy
 msgid "Page color"
-msgstr "Lehekülje vaikimisi taustavärv"
+msgstr "Lehekülje värv"
 
 #: src/dialogs/desktop-properties.c:580
 #: src/widgets/sp-color-preview.c:424
@@ -347,16 +322,14 @@ msgid "Close"
 msgstr "Sulge"
 
 #: src/dialogs/display-settings.c:101
-#, fuzzy
 msgid "Display settings"
-msgstr "Vaateseadistused"
+msgstr "Vaate seadistused"
 
-#. Rendering settings
-#. Notebook tab
+#  Rendering settings
+#  Notebook tab
 #: src/dialogs/display-settings.c:108
-#, fuzzy
 msgid "Rendering"
-msgstr "R&enderdamise taustarakendus"
+msgstr "Viimistluse visualiseerimine"
 
 #: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
@@ -398,12 +371,11 @@ msgstr "Vaikimisi kursor negatiivis"
 
 #  Windows settings
 #  Notebook tab
-#. Windows settings
-#. Notebook tab
+#  Windows settings
+#  Notebook tab
 #: src/dialogs/display-settings.c:169
-#, fuzzy
 msgid "Windows"
-msgstr "Windows"
+msgstr "Aknad"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
@@ -414,25 +386,21 @@ msgid "Skip taskbar entry for dialogs"
 msgstr ""
 
 #: src/dialogs/document-properties.c:159
-#, fuzzy
 msgid "Document settings"
-msgstr "Vaikimisi sätted"
+msgstr "Dokumendi sätted"
 
 #: src/dialogs/document-properties.c:180
-#, fuzzy
 msgid "Paper size:"
-msgstr "Paberi _suurus:"
+msgstr "Paberi suurus:"
 
 #: src/dialogs/document-properties.c:201
-#, fuzzy
 msgid "Custom"
 msgstr "Kohandatud"
 
-#. Custom paper frame
+#  Custom paper frame
 #: src/dialogs/document-properties.c:208
-#, fuzzy
 msgid "Custom paper"
-msgstr "Paberi _suurus:"
+msgstr "Kohandatud paberisuurus"
 
 #  Unit selector
 #: src/dialogs/document-properties.c:219
@@ -471,11 +439,10 @@ msgstr "Kõrgus:"
 msgid "Export bitmap"
 msgstr "Skaleeritav bitmap"
 
-#. Export area frame
+#  Export area frame
 #: src/dialogs/export.c:150
-#, fuzzy
 msgid "Export area"
-msgstr "Teateala"
+msgstr "Eksporditav ala"
 
 #: src/dialogs/export.c:183
 msgid "x0:"
@@ -487,13 +454,13 @@ msgstr "x1:"
 
 #: src/dialogs/export.c:192
 msgid "y0:"
-msgstr "y:"
+msgstr "y0:"
 
 #: src/dialogs/export.c:195
 msgid "y1:"
 msgstr "y1:"
 
-#. Bitmap size frame
+#  Bitmap size frame
 #: src/dialogs/export.c:204
 #, fuzzy
 msgid "Bitmap size"
@@ -519,9 +486,8 @@ msgid "Bitmap background:"
 msgstr "Tausta_pilt:"
 
 #: src/dialogs/export.c:240
-#, fuzzy
 msgid "Export png file"
-msgstr "Faili eksportimine kui"
+msgstr "Png faili eksportimine"
 
 #: src/dialogs/export.c:267
 #: src/verbs.c:417
@@ -534,9 +500,9 @@ msgid "Export in progress"
 msgstr "Operatsioon on töös"
 
 #: src/dialogs/export.c:405
-#, fuzzy, c-format
+#, c-format
 msgid "Exporting [%d x %d] %s"
-msgstr "Ekspordin"
+msgstr "Ekspordin [%d x %d] %s"
 
 #: src/dialogs/fill-style.c:87
 #, fuzzy
@@ -570,30 +536,25 @@ msgstr "Määra _kasutaja ID"
 
 #  Sensitive
 #: src/dialogs/item-properties.c:104
-#, fuzzy
 msgid "Sensitive"
-msgstr "Tundlik"
+msgstr "Tundlikkus"
 
 #  Visible
 #: src/dialogs/item-properties.c:109
-#, fuzzy
 msgid "Visible"
-msgstr "Nähtav"
+msgstr "Nähtavus"
 
 #  Active
 #: src/dialogs/item-properties.c:114
-#, fuzzy
 msgid "Active"
-msgstr "Aktiivne"
+msgstr "Aktiivsus"
 
 #  Printable
 #: src/dialogs/item-properties.c:119
-#, fuzzy
 msgid "Printable"
-msgstr "Quoted Printable"
+msgstr "Prinditavus"
 
 #: src/dialogs/item-properties.c:128
-#, fuzzy
 msgid "Opacity:"
 msgstr "Katvus:"
 
@@ -624,9 +585,8 @@ msgid "Item properties"
 msgstr "Käivitaja häälestus"
 
 #: src/dialogs/object-attributes.c:34
-#, fuzzy
 msgid "Href:"
-msgstr "   <a href=\"%1\">[Omadused]</a>"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:35
 #, fuzzy
@@ -634,60 +594,51 @@ msgid "Target:"
 msgstr "Eesmärk"
 
 #: src/dialogs/object-attributes.c:36
-#, fuzzy
 msgid "Type:"
-msgstr "Liik:"
+msgstr "Tüüp:"
 
 #: src/dialogs/object-attributes.c:37
-#, fuzzy
 msgid "Role:"
-msgstr "Amet:"
+msgstr "Roll:"
 
 #: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
 msgstr ""
 
 #: src/dialogs/object-attributes.c:39
-#, fuzzy
 msgid "Title:"
 msgstr "Pealkiri:"
 
 #: src/dialogs/object-attributes.c:40
 #: src/dialogs/tool-attributes.c:115
-#, fuzzy
 msgid "Show:"
-msgstr "Näita:"
+msgstr "Kuva:"
 
 #: src/dialogs/object-attributes.c:41
 msgid "Actuate:"
 msgstr ""
 
 #: src/dialogs/object-attributes.c:46
-#, fuzzy
 msgid "Sides:"
-msgstr "Vaheta &pooli"
+msgstr "Pooled:"
 
 #: src/dialogs/object-attributes.c:47
 #: src/dialogs/object-attributes.c:57
-#, fuzzy
 msgid "Center X:"
-msgstr "Tsenter"
+msgstr "X keskmine:"
 
 #: src/dialogs/object-attributes.c:48
 #: src/dialogs/object-attributes.c:58
-#, fuzzy
 msgid "Center Y:"
-msgstr "Tsenter"
+msgstr "Y keskmine:"
 
 #: src/dialogs/object-attributes.c:49
-#, fuzzy
 msgid "R1:"
-msgstr "1:1"
+msgstr "R1:"
 
 #: src/dialogs/object-attributes.c:50
-#, fuzzy
 msgid "R2:"
-msgstr "2:1"
+msgstr "R2:"
 
 #: src/dialogs/object-attributes.c:51
 msgid "ARG1:"
@@ -717,9 +668,8 @@ msgid "Radius:"
 msgstr "Raadius:"
 
 #: src/dialogs/object-attributes.c:62
-#, fuzzy
 msgid "Argument:"
-msgstr "argument %1"
+msgstr "Argument"
 
 #: src/dialogs/object-attributes.c:63
 msgid "T0:"
@@ -750,14 +700,13 @@ msgid "RY:"
 msgstr ""
 
 #: src/dialogs/object-attributes.c:117
-#, fuzzy, c-format
+#, c-format
 msgid "%s attributes"
-msgstr "Atribuut"
+msgstr "%s atribuudid"
 
 #: src/dialogs/object-properties.c:113
-#, fuzzy
 msgid "Object style"
-msgstr "Kirjalaad"
+msgstr "Objekti laad"
 
 #: src/dialogs/object-properties.c:128
 msgid "Fill"
@@ -774,49 +723,41 @@ msgid "Stroke style"
 msgstr "Kirjalaad"
 
 #: src/dialogs/object-properties.c:176
-#, fuzzy
 msgid "Apply to:"
-msgstr "&Rakenda: "
+msgstr "Rakenda:"
 
 #: src/dialogs/object-properties.c:186
-#, fuzzy
 msgid "Selected objects"
-msgstr "Kustutan valitud objektid"
+msgstr "Valitud objektid"
 
 #: src/dialogs/object-properties.c:189
-#, fuzzy
 msgid "All shape tools"
-msgstr "GNOME'i süsteemitööriistad"
+msgstr "Kõik kujunditööriistad"
 
 #: src/dialogs/object-properties.c:192
-#, fuzzy
 msgid "Rectangle tool"
-msgstr "tööriistariba"
+msgstr "Ristkülikuriist"
 
 #: src/dialogs/object-properties.c:195
-#, fuzzy
 msgid "Arc tool"
-msgstr "tööriistariba"
+msgstr "Kaareriist"
 
 #: src/dialogs/object-properties.c:198
-#, fuzzy
 msgid "Star tool"
-msgstr "tööriistariba"
+msgstr "Täheriist"
 
 #: src/dialogs/object-properties.c:201
-#, fuzzy
 msgid "Spiral tool"
-msgstr "tööriistariba"
+msgstr "Spiraaliriist"
 
 #: src/dialogs/object-properties.c:204
-#, fuzzy
 msgid "Freehand and pen"
-msgstr "_Tekst ja ikoon"
+msgstr "Vabakäsi ja sulepea"
 
 #: src/dialogs/object-properties.c:207
 #, fuzzy
 msgid "Calligraphic line"
-msgstr " valiku rida,"
+msgstr "Ilukirja,"
 
 #: src/dialogs/object-properties.c:210
 #: src/verbs.c:462
@@ -830,68 +771,58 @@ msgstr "Lähim sobiv suurus ja äralõige"
 
 #: src/dialogs/object-properties.c:312
 #: src/verbs.c:481
-#, fuzzy
 msgid "Size and Position"
-msgstr "Lähim sobiv suurus ja äralõige"
+msgstr "Suurus ja asukoht"
 
 #: src/dialogs/stroke-style.c:554
 #: src/toolbox.c:401
 msgid "Stroke settings"
 msgstr "Piirjoon"
 
-#. Join type
+#  Join type
 #: src/dialogs/stroke-style.c:590
-#, fuzzy
 msgid "Join:"
-msgstr "Liit&u"
+msgstr "Liida:"
 
-#. Cap type
+#  Cap type
 #: src/dialogs/stroke-style.c:633
 #, fuzzy
 msgid "Cap:"
 msgstr "Pildista&mise režiim:"
 
-#. Dash
+#  Dash
 #: src/dialogs/stroke-style.c:676
-#, fuzzy
 msgid "Pattern:"
 msgstr "Muster:"
 
 #: src/dialogs/text-edit.c:102
-#, fuzzy
 msgid "Text properties"
-msgstr "Käivitaja häälestus"
+msgstr "Teksti häälestus"
 
-#. Layout
+#  Layout
 #: src/dialogs/text-edit.c:141
-#, fuzzy
 msgid "Layout"
 msgstr "Paigutus"
 
 #: src/dialogs/text-edit.c:149
-#, fuzzy
 msgid "Alignment:"
-msgstr "Joondus"
+msgstr "Joondus:"
 
 #: src/dialogs/text-edit.c:174
-#, fuzzy
 msgid "Orientation:"
 msgstr "Suund:"
 
 #: src/dialogs/text-edit.c:192
-#, fuzzy
 msgid "Line spacing:"
-msgstr "&Reavahe:"
+msgstr "Reavahe:"
 
 #: src/dialogs/text-edit.c:212
-#, fuzzy
 msgid "Spacing:"
 msgstr "Täheruum:"
 
 #: src/dialogs/text-edit.c:235
-#, fuzzy
 msgid "Text and font"
-msgstr "Originaaltekst:"
+msgstr "Tekst ja kirjatüüp:"
 
 #: src/dialogs/text-edit.c:246
 #, fuzzy
@@ -910,9 +841,8 @@ msgid "Expansion"
 msgstr "Laienemisalgoritm"
 
 #: src/dialogs/tool-attributes.c:95
-#, fuzzy
 msgid "Inner radius"
-msgstr "Aatomiraadius"
+msgstr "Sisemine raadius"
 
 #: src/dialogs/tool-attributes.c:99
 #: src/dialogs/tool-attributes.c:109
@@ -922,40 +852,35 @@ msgstr "Aatomiraadius"
 msgid "Missing tool preferences"
 msgstr "Akende nimistu omadused"
 
-#. Magnitude
+#  Magnitude
 #: src/dialogs/tool-attributes.c:105
 #: src/star-context.c:356
-#, fuzzy
 msgid "Corners:"
-msgstr "Nurgad"
+msgstr "Nurgad:"
 
 #: src/dialogs/tool-attributes.c:105
 msgid "Proportion"
 msgstr ""
 
 #: src/dialogs/tool-attributes.c:115
-#, fuzzy
 msgid "Transform:"
-msgstr "&Teisenda"
+msgstr "Teisenda:"
 
-#. Mass
+#  Mass
 #: src/dialogs/tool-attributes.c:125
 #: src/dyna-draw-context.c:1051
-#, fuzzy
 msgid "Mass:"
-msgstr "<B>Mass-skaneerimine</B>"
+msgstr ""
 
-#. Drag
+#  Drag
 #: src/dialogs/tool-attributes.c:125
 #: src/dyna-draw-context.c:1063
-#, fuzzy
 msgid "Drag:"
-msgstr "Lohista"
+msgstr "Lohista:"
 
 #: src/dialogs/tool-attributes.c:125
-#, fuzzy
 msgid "Angle"
-msgstr "&Nurk"
+msgstr "Nurk"
 
 #: src/dialogs/tool-attributes.c:132
 #, fuzzy
@@ -970,28 +895,25 @@ msgstr "Aktiivseid ülesandeid pole"
 
 #: src/dialogs/tool-options.c:47
 #: src/verbs.c:478
-#, fuzzy
 msgid "Tool options"
-msgstr "Valikuvõimaluste menüü"
+msgstr "Tööriista häälestus"
 
 #: src/dialogs/tool-options.c:90
-#, fuzzy
 msgid "Tool has no options"
-msgstr "Sellel tööriistal pole nõuannet"
+msgstr "Tööriistal häälestused puuduvad"
 
 #: src/dialogs/transformation.c:195
 #, fuzzy
 msgid "Transform selection"
 msgstr "Kopeeri valik"
 
-#. Apply to duplicate
+#  Apply to duplicate
 #: src/dialogs/transformation.c:216
 #, fuzzy
 msgid "Apply to duplicate"
 msgstr "Rakenda sissetulevatele"
 
 #: src/dialogs/transformation.c:313
-#, fuzzy
 msgid "Move"
 msgstr "Liiguta"
 
@@ -1000,9 +922,8 @@ msgid "Scale"
 msgstr "Skaala"
 
 #: src/dialogs/transformation.c:584
-#, fuzzy
 msgid "Rotate"
-msgstr "Pööramine"
+msgstr "Pööra"
 
 #: src/dialogs/transformation.c:602
 msgid "deg"
@@ -1014,14 +935,12 @@ msgid "Drag to reorder nodes"
 msgstr "(järjekorra muutmiseks lohista kirjet)"
 
 #: src/dialogs/xml-tree.c:170
-#, fuzzy
 msgid "New element node"
-msgstr "    -n, --node            DECneti võrgusõlme nimi\n"
+msgstr "Uus elemendisõlm"
 
 #: src/dialogs/xml-tree.c:188
-#, fuzzy
 msgid "New text node"
-msgstr "_Sisesta uus tekst:"
+msgstr "Uus tekstisõlm"
 
 #: src/dialogs/xml-tree.c:205
 #, fuzzy
@@ -1029,9 +948,8 @@ msgid "Duplicate node"
 msgstr "Sõlme nimi:"
 
 #: src/dialogs/xml-tree.c:221
-#, fuzzy
 msgid "Delete node"
-msgstr "Sõlme nimi:"
+msgstr "Sõlme kustutamine"
 
 #: src/dialogs/xml-tree.c:234
 #, fuzzy
@@ -1039,39 +957,32 @@ msgid "Unindent node"
 msgstr "Sõlme nimi:"
 
 #: src/dialogs/xml-tree.c:245
-#, fuzzy
 msgid "Indent node"
-msgstr "Sõlme nimi:"
+msgstr "Sõlme joondamine"
 
 #: src/dialogs/xml-tree.c:255
-#, fuzzy
 msgid "Raise node"
-msgstr "Sõlme nimi:"
+msgstr "Sõlme tõstmine"
 
 #: src/dialogs/xml-tree.c:266
-#, fuzzy
 msgid "Lower node"
-msgstr "Sõlme nimi:"
+msgstr "Alumine sõlm"
 
 #: src/dialogs/xml-tree.c:303
-#, fuzzy
 msgid "Delete attribute"
-msgstr "Ootamatu tunnus %s::%s == '%s'."
+msgstr "Atribuudi kustutamine"
 
 #: src/dialogs/xml-tree.c:333
-#, fuzzy
 msgid "Attribute name"
 msgstr "Atribuudi nimi"
 
 #: src/dialogs/xml-tree.c:340
-#, fuzzy
 msgid "Set attribute"
-msgstr "Ootamatu tunnus %s::%s == '%s'."
+msgstr ""
 
 #: src/dialogs/xml-tree.c:353
-#, fuzzy
 msgid "Attribute value"
-msgstr "vigane $ väärtus"
+msgstr "Atribuudi väärtus"
 
 #: src/dialogs/xml-tree.c:833
 #, fuzzy, c-format
@@ -1084,19 +995,17 @@ msgid "New element node..."
 msgstr "    -n, --node            DECneti võrgusõlme nimi\n"
 
 #: src/dialogs/xml-tree.c:876
-#, fuzzy
 msgid "Cancel"
 msgstr "Katkesta"
 
 #: src/dialogs/xml-tree.c:880
-#, fuzzy
 msgid "Create"
 msgstr "Loo"
 
 #: src/document.c:389
-#, fuzzy, c-format
+#, c-format
 msgid "New document %d"
-msgstr "[Uus dokument]"
+msgstr "Uus dokument %d"
 
 #: src/document.c:425
 #, fuzzy, c-format
@@ -1104,9 +1013,9 @@ msgid "Memory document %d"
 msgstr "Dokumendi URI"
 
 #: src/document.c:572
-#, fuzzy, c-format
+#, c-format
 msgid "Unnamed document %d"
-msgstr "Dokumendi URI"
+msgstr "Nimetud dokumendi %d"
 
 #: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
@@ -1116,54 +1025,46 @@ msgstr ""
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr ""
 
-#. Angle
+#  Angle
 #: src/dyna-draw-context.c:1075
-#, fuzzy
 msgid "Angle:"
 msgstr "Nurk:"
 
-#. Reset
+#  Reset
 #: src/dyna-draw-context.c:1099
 #: src/rect-context.c:425
 #: src/spiral-context.c:387
 #: src/star-context.c:387
-#, fuzzy
 msgid "Defaults"
 msgstr "Vaikimisi"
 
 #: src/file.c:123
 #: src/file.c:137
 #: src/file.c:149
-#, fuzzy
 msgid "Select file to open"
 msgstr "Vali fail, mida avada"
 
 #: src/file.c:174
 #: src/file.c:278
-#, fuzzy
 msgid "File type:"
 msgstr "Faili tüüp:"
 
 #: src/file.c:263
-#, fuzzy
 msgid "Save file"
 msgstr "Salvesta fail"
 
 #: src/file.c:468
 #: src/file.c:478
 #: src/file.c:484
-#, fuzzy
 msgid "Select file to import"
 msgstr "Vali fail, mida importida"
 
 #: src/help.c:51
-#, fuzzy
 msgid "About sodipodi"
-msgstr "Name=Sodipodi"
+msgstr "Sodipodist"
 
-#. Do not insert any elements before/between first 4
+#  Do not insert any elements before/between first 4
 #: src/helper/units.c:42
-#, fuzzy
 msgid "Unit"
 msgstr "Ühik"
 
@@ -1204,7 +1105,6 @@ msgid "Px"
 msgstr "Px"
 
 #: src/helper/units.c:45
-#, fuzzy
 msgid "Userspace unit"
 msgstr "Kasutajaruumi ühik"
 
@@ -1213,29 +1113,24 @@ msgid "User"
 msgstr "Kasutaja"
 
 #: src/helper/units.c:45
-#, fuzzy
 msgid "Userspace units"
 msgstr "Kasutajaruumi ühikud"
 
-#. Volatiles do not have default, so there are none here
-#. You can add new elements from this point forward
+#  Volatiles do not have default, so there are none here
+#  You can add new elements from this point forward
 #: src/helper/units.c:48
-#, fuzzy
 msgid "Percent"
 msgstr "Protsent"
 
 #: src/helper/units.c:48
-#, fuzzy
 msgid "%"
 msgstr "%"
 
 #: src/helper/units.c:48
-#, fuzzy
 msgid "Percents"
 msgstr "Protsenti"
 
 #: src/helper/units.c:49
-#, fuzzy
 msgid "Millimeter"
 msgstr "Millimeeter"
 
@@ -1289,56 +1184,46 @@ msgid "Em square"
 msgstr "Ruutpseudotoonimine"
 
 #: src/helper/units.c:53
-#, fuzzy
 msgid "em"
-msgstr "— (&#8212;) pikk mõttekriips"
+msgstr ""
 
 #: src/helper/units.c:53
-#, fuzzy
 msgid "Em squares"
-msgstr "L&isa 4 välja"
+msgstr ""
 
 #: src/helper/units.c:54
-#, fuzzy
 msgid "Ex square"
-msgstr "Ruutpseudotoonimine"
+msgstr ""
 
 #: src/helper/units.c:54
-#, fuzzy
 msgid "ex"
-msgstr "Tekst"
+msgstr ""
 
 #: src/helper/units.c:54
-#, fuzzy
 msgid "Ex squares"
-msgstr "L&isa 4 välja"
+msgstr ""
 
 #: src/interface.c:305
 #: src/interface.c:504
-#, fuzzy
 msgid "Open Recent"
 msgstr "Ava hiljutine"
 
 #: src/interface.c:325
-#, fuzzy
 msgid "Close View"
-msgstr "Sulge &aktiivne vaade"
+msgstr "Sulge vaade"
 
 #: src/interface.c:328
 #: src/interface.c:510
-#, fuzzy
 msgid "About Sodipodi"
-msgstr "Name=Sodipodi"
+msgstr "Sodipodist"
 
-#. Have modules about menu
+#  Have modules about menu
 #: src/interface.c:334
 #: src/interface.c:516
-#, fuzzy
 msgid "About Modules"
-msgstr "Perli moodulid"
+msgstr "Moodulitest"
 
 #: src/interface.c:354
-#, fuzzy
 msgid "Cleanup"
 msgstr "Puhastus"
 
@@ -1354,7 +1239,7 @@ msgstr "Suurendus"
 msgid "New View"
 msgstr "Uus aken"
 
-#. View:New Preview
+#  View:New Preview
 #: src/interface.c:443
 #, fuzzy
 msgid "New Preview"
@@ -1405,13 +1290,12 @@ msgstr "Fail"
 msgid "Edit"
 msgstr "Redigeerimine"
 
-#. View submenu
+#  View submenu
 #: src/interface.c:603
-#, fuzzy
 msgid "View"
 msgstr "Vaade"
 
-#. Drawing mode submenu
+#  Drawing mode submenu
 #: src/interface.c:609
 #, fuzzy
 msgid "Drawing Mode"
@@ -1420,7 +1304,7 @@ msgstr "vigane mood `%s'"
 #  Dialog submenu
 #: src/interface.c:615
 msgid "Dialogs"
-msgstr ""
+msgstr "Dialoogid"
 
 #  Have modules menu
 #: src/interface.c:624
@@ -1466,9 +1350,8 @@ msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
 #: src/main.c:136
-#, fuzzy
 msgid "DPI"
-msgstr " dpi"
+msgstr "DPI"
 
 #: src/main.c:138
 #: src/main.c:617
@@ -1485,7 +1368,6 @@ msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
 #: src/main.c:141
-#, fuzzy
 msgid "WIDTH"
 msgstr "LAIUS"
 
@@ -1495,7 +1377,6 @@ msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
 #: src/main.c:143
-#, fuzzy
 msgid "HEIGHT"
 msgstr "KÕRGUS"
 
@@ -1505,9 +1386,8 @@ msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
 #: src/main.c:145
-#, fuzzy
 msgid "COLOR"
-msgstr "Värv"
+msgstr "VÄRV"
 
 #: src/main.c:147
 #: src/main.c:621
@@ -1523,18 +1403,16 @@ msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
 #: src/main.c:622
-#, fuzzy
 msgid "Print sodipodi version information"
-msgstr "      --version  väljasta versiooniinfo ja lõpeta töö\n"
+msgstr "Väljasta sodipodi versiooniinfo"
 
 #: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr ""
 
 #: src/main.c:772
-#, fuzzy
 msgid "Untitled document"
-msgstr "Dokumendi URI"
+msgstr "Nimetu dokument"
 
 #  Show nice dialog box
 #: src/main.c:797
@@ -1550,9 +1428,8 @@ msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
 #: src/module.c:898
-#, fuzzy
 msgid "Scalable Vector Graphic (SVG)"
-msgstr "Name=Skaleeritav vektorgraafika (SVG)"
+msgstr "Skaleeritav vektorgraafika (SVG)"
 
 #: src/module.c:898
 msgid "Sodipodi native file format and W3C standard"
@@ -1567,19 +1444,16 @@ msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr ""
 
 #: src/module.c:909
-#, fuzzy
 msgid "Plain SVG"
-msgstr "SVG kunst"
+msgstr "Tavaline SVG"
 
 #: src/module.c:910
-#, fuzzy
 msgid "Scalable Vector Graphics format"
-msgstr "Comment=Scalable Vector Graphics"
+msgstr "Skaleeritava vektorgraafika vorming"
 
 #: src/modules/gnome.c:158
-#, fuzzy
 msgid "Select printer"
-msgstr "&Vali printer"
+msgstr "Printeri valimine"
 
 #: src/modules/gnome.c:212
 #, c-format
@@ -1592,24 +1466,24 @@ msgid "Document variant:"
 msgstr "Paigutuse variant:"
 
 #: src/modules/kde.cpp:172
-#, fuzzy
 msgid ""
 "*.svg *.svgz|SVG files\n"
 "*.xml|XML files\n"
 "*|All files"
-msgstr "*.png *.xpm *.svg *.svgz|Ikoonide failid (*.png *.xpm *.svg *.svgz)"
+msgstr ""
+"*.svg *.svgz|SVG failid\n"
+"*.xml|XML failid\n"
+"*|Kõik failid"
 
 #: src/modules/kde.cpp:174
-#, fuzzy
 msgid "Save document as"
-msgstr "Dokumendi salvestamine kui..."
+msgstr "Salvesta dokument kui"
 
 #: src/modules/plain-pdf.c:1049
 #: src/modules/plain-ps.c:651
 #: src/modules/ps.c:961
-#, fuzzy
 msgid "write error occured"
-msgstr "Tekkis tundmatu viga."
+msgstr "tekkis viga kirjutamisel"
 
 #: src/modules/plain.c:178
 #: src/modules/ps.c:264
@@ -1642,7 +1516,7 @@ msgstr "Trükkimisel kasuta halli varjutamist"
 msgid "Use Portable Document Format for printing"
 msgstr ""
 
-#. Print destination frame
+#  Print destination frame
 #: src/modules/plain.c:224
 #: src/modules/plain.c:293
 #: src/modules/ps.c:245
@@ -1651,7 +1525,7 @@ msgstr ""
 msgid "Print destination"
 msgstr "Vigane sihtkoht"
 
-#. Print properties frame
+#  Print properties frame
 #: src/modules/plain.c:235
 #: src/modules/ps.c:256
 #, fuzzy
@@ -1665,7 +1539,6 @@ msgstr ""
 
 #: src/modules/plain.c:289
 #: src/modules/ps.c:302
-#, fuzzy
 msgid "Resolution:"
 msgstr "Resolutsioon:"
 
@@ -1677,48 +1550,43 @@ msgid ""
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#. Create toplevel menuitem
+#  Create toplevel menuitem
 #: src/object-ui.c:108
-#, fuzzy
 msgid "Item"
 msgstr "Element"
 
-#. Item dialog
+#  Item dialog
 #: src/object-ui.c:111
 #: src/verbs.c:487
-#, fuzzy
 msgid "Item Properties"
-msgstr "Käivitaja häälestus"
+msgstr "Elemendi häälestus"
 
-#. Select item
+#  Select item
 #: src/object-ui.c:119
-#, fuzzy
 msgid "Select this"
-msgstr "Vali see nurk"
+msgstr "Vali see"
 
-#. Reset transformations
+#  Reset transformations
 #: src/object-ui.c:128
 #, fuzzy
 msgid "Reset transformation"
 msgstr "Algväärtusta"
 
-#. Apply transformation
+#  Apply transformation
 #: src/object-ui.c:132
 #, fuzzy
 msgid "Apply transformation"
 msgstr "Rakenda _joondus"
 
 #: src/object-ui.c:137
-#, fuzzy
 msgid "Make sensitive"
-msgstr "_Tõstutundlik"
+msgstr "Tee tundlikuks"
 
 #: src/object-ui.c:137
-#, fuzzy
 msgid "Make insensitive"
-msgstr "Tõstutundetu"
+msgstr "Tee tundetuks"
 
-#. Create link
+#  Create link
 #: src/object-ui.c:141
 #, fuzzy
 msgid "Create link"
@@ -1726,48 +1594,46 @@ msgstr "ei õnnestu luua viidet %s"
 
 #: src/object-ui.c:273
 #: src/verbs.c:435
-#, fuzzy
 msgid "Group"
 msgstr "Grupeeri"
 
-#. Group dialog
+#  Group dialog
 #: src/object-ui.c:277
 #, fuzzy
 msgid "Group Properties"
 msgstr "Grupi omadused"
 
-#. "Ungroup"
+#  "Ungroup"
 #: src/object-ui.c:288
 #: src/verbs.c:436
-#, fuzzy
 msgid "Ungroup"
 msgstr "Grupeeri lahti"
 
-#. Dive
+#  Dive
 #: src/object-ui.c:293
 #, fuzzy
 msgid "Set as layer"
 msgstr "Sea _taustapildiks"
 
-#. Create toplevel menuitem
+#  Create toplevel menuitem
 #: src/object-ui.c:338
 #, fuzzy
 msgid "Link"
 msgstr "Link"
 
-#. Link dialog
+#  Link dialog
 #: src/object-ui.c:341
 #, fuzzy
 msgid "Link Properties"
 msgstr "_Lingi omadused"
 
-#. Select item
+#  Select item
 #: src/object-ui.c:351
 #, fuzzy
 msgid "Follow link"
 msgstr "Viidet ei õnnestu järgida"
 
-#. Reset transformations
+#  Reset transformations
 #: src/object-ui.c:356
 #, fuzzy
 msgid "Remove link"
@@ -1778,13 +1644,12 @@ msgstr "Eemalda viit"
 msgid "Image"
 msgstr "Pilt"
 
-#. Link dialog
+#  Link dialog
 #: src/object-ui.c:422
-#, fuzzy
 msgid "Image Properties"
 msgstr "Pildi omadused"
 
-#. Autotrace dialog
+#  Autotrace dialog
 #: src/object-ui.c:430
 #: src/sp-image.c:762
 #, fuzzy
@@ -1796,24 +1661,22 @@ msgstr "Trasseerimine väljas!"
 msgid "Shape"
 msgstr "Kuju"
 
-#. Item dialog
+#  Item dialog
 #: src/object-ui.c:482
 #: src/toolbox.c:402
 #, fuzzy
 msgid "Fill settings"
 msgstr "Vaikimisi sätted"
 
-#. Create toplevel menuitem
+#  Create toplevel menuitem
 #: src/object-ui.c:509
-#, fuzzy
 msgid "Rect"
-msgstr "Lehekülg"
+msgstr "Ristkülik"
 
-#. Link dialog
+#  Link dialog
 #: src/object-ui.c:512
-#, fuzzy
 msgid "Rect Properties"
-msgstr "Käivitaja häälestus"
+msgstr "Ristküliku häälestus"
 
 #  Create toplevel menuitem
 #: src/object-ui.c:545
@@ -1821,11 +1684,10 @@ msgstr "Käivitaja häälestus"
 msgid "Star"
 msgstr "Täht"
 
-#. Link dialog
+#  Link dialog
 #: src/object-ui.c:548
-#, fuzzy
 msgid "Star Properties"
-msgstr "Käivitaja häälestus"
+msgstr "Tähe häälestus"
 
 #  Create toplevel menuitem
 #: src/object-ui.c:581
@@ -1833,19 +1695,18 @@ msgstr "Käivitaja häälestus"
 msgid "Spiral"
 msgstr "Spiraal"
 
-#. Link dialog
+#  Link dialog
 #: src/object-ui.c:584
-#, fuzzy
 msgid "Spiral Properties"
-msgstr "Käivitaja häälestus"
+msgstr "Spiraali häälestus"
 
-#. rx_ratio
+#  rx_ratio
 #: src/rect-context.c:401
 #, fuzzy
 msgid "Roundness ratio for x:"
 msgstr "segane argument %s %s'le"
 
-#. ry_ratio
+#  ry_ratio
 #: src/rect-context.c:413
 #, fuzzy
 msgid "Roundness ratio for y:"
@@ -1895,9 +1756,8 @@ msgid "Center view to selected item"
 msgstr "Kasuta \"%s\" avamaks valitud elementi"
 
 #: src/slideshow.c:90
-#, fuzzy
 msgid "Sodipodi slideshow"
-msgstr "Rekursiivne slaidiseanss"
+msgstr "Sodipodi slaidiseanss"
 
 #: src/sodipodi.c:468
 #, c-format
@@ -2044,18 +1904,16 @@ msgid "Untitled"
 msgstr "Nimetu"
 
 #: src/sp-image.c:947
-#, fuzzy
 msgid "Document Name:"
-msgstr "Dokumendi nime kasutamine"
+msgstr "Dokumendi nimi:"
 
 #: src/sp-image.c:960
 msgid "Unknown"
 msgstr "Tundmatu"
 
 #: src/sp-image.c:966
-#, fuzzy
 msgid "Image URI:"
-msgstr "Dokumendi URI"
+msgstr "Pildi URI"
 
 #: src/sp-item-group.c:483
 #, fuzzy, c-format
@@ -2063,28 +1921,26 @@ msgid "Group of %d objects"
 msgstr "Objektide uuendamine"
 
 #: src/sp-item.c:554
-#, fuzzy
 msgid "Unknown item :-("
-msgstr "Kustuta"
+msgstr "Tundmatu element :-("
 
-#. fixme:
+#  fixme:
 #: src/sp-text.c:1294
 #, fuzzy
 msgid "Text object"
 msgstr "Kustuta objekt"
 
-#. T0
+#  T0
 #: src/spiral-context.c:375
-#, fuzzy
 msgid "Inner radius:"
-msgstr "Aatomiraadius"
+msgstr "Sisemine raadius"
 
 #  Proportion
 #: src/star-context.c:368
 msgid "Proportion:"
 msgstr "Proportsioon:"
 
-#. Making sides flat
+#  Making sides flat
 #: src/star-context.c:381
 #, fuzzy
 msgid "Make sides flat"
@@ -2112,18 +1968,16 @@ msgid "Object transformations"
 msgstr "Kustuta objekt"
 
 #: src/toolbox.c:485
-#, fuzzy
 msgid "Draw"
-msgstr "Jaga"
+msgstr "Joonista"
 
 #: src/toolbox.c:542
 msgid "Extension"
 msgstr "Laiendus"
 
 #: src/toolbox.c:624
-#, fuzzy
 msgid "Nodes"
-msgstr "Väikesõlmed"
+msgstr "Sõlmed"
 
 #: src/toolbox.c:627
 #, fuzzy
@@ -2243,8 +2097,9 @@ msgid "Import bitmap or SVG image into document"
 msgstr ""
 
 #: src/verbs.c:417
+#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr ""
+msgstr "Expordi dokument PNG"
 
 #: src/verbs.c:418
 msgid "Exit"
@@ -2341,7 +2196,7 @@ msgstr "Korduv"
 msgid "Repeat last saved action"
 msgstr "Taasta viimati sooritatud tegevus"
 
-#. Selection
+#  Selection
 #: src/verbs.c:431
 #, fuzzy
 msgid "Bring to Front"
