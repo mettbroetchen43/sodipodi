@@ -189,7 +189,7 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 	if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) {
 		/* fixme: This is not implemented yet (Lauris) */
 		/* nr_R8G8B8_R8G8B8_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE); */
-	} else if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
+	} else if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 		nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
 	} else if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 		nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
