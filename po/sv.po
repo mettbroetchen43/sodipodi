@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-10-13 22:33+0200\n"
-"PO-Revision-Date: 2000-10-13 22:33+0200\n"
+"POT-Creation-Date: 2000-10-14 12:09+0200\n"
+"PO-Revision-Date: 2000-10-14 12:10+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -797,7 +797,7 @@ msgstr "Anslut två markerade ändpunkter"
 
 #: glade/sodipodi-glade.c:98 glade/toolbox.c:57
 msgid "Cusp line at selected nodes"
-msgstr "Kuspa linjen vid markerade noder"
+msgstr "Spetsa linjen vid markerade noder"
 
 #: glade/sodipodi-glade.c:99 glade/toolbox.c:58
 msgid "Smooth line at selected nodes"
