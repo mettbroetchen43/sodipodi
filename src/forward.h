@@ -58,6 +58,12 @@ typedef struct _SPPathClass SPPathClass;
 typedef struct _SPShape SPShape;
 typedef struct _SPShapeClass SPShapeClass;
 
+typedef struct _SPEllipse SPEllipse;
+typedef struct _SPEllipseClass SPEllipseClass;
+
+typedef struct _SPCircle SPCircle;
+typedef struct _SPCircleClass SPCircleClass;
+
 typedef struct _SPChars SPChars;
 typedef struct _SPCharsClass SPCharsClass;
 

@@ -284,11 +284,11 @@ sp_ellipse_finish (SPEllipseContext * ec)
 {
 	if (ec->item != NULL) {
 		SPDesktop * desktop;
-		SPEllipse * ellipse;
+		SPGenericEllipse * ellipse;
 		SPRepr * repr;
 
 		desktop = SP_EVENT_CONTEXT (ec)->desktop;
-		ellipse = SP_ELLIPSE (ec->item);
+		ellipse = SP_GENERICELLIPSE (ec->item);
 		repr = SP_OBJECT (ec->item)->repr;
 
 		sp_repr_set_double_attribute (repr, "cx", ellipse->x);

@@ -95,6 +95,32 @@ nr_render_rgba32_rgb (guchar *px, gint w, gint h, gint rs, guint32 c)
 	nr_render_checkerboard_rgb_custom (px, w, h, rs, c0, c1, NR_DEFAULT_CHECKERSIZEP2);
 }
 
+void
+nr_render_rgba32_rgba32 (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs)
+{
+	gint x, y;
+
+	g_return_if_fail (px != NULL);
+	g_return_if_fail (src != NULL);
+
+	for (y = 0; y < h; y++) {
+		const guchar *s;
+		guchar *p;
+		p = px;
+		s = src;
+		for (x = 0; x < w; x++) {
+			p[0] = p[0] + (p[0] - s[0]) * s[3] / 255;
+			p[1] = p[1] + (p[1] - s[1]) * s[3] / 255;
+			p[2] = p[2] + (p[2] - s[2]) * s[3] / 255;
+			p[3] = p[3] + (0xff - p[3]) * s[3] / 255;
+			p += 4;
+			s += 4;
+		}
+		px += rs;
+		src += srcrs;
+	}
+}
+
 #define NR_GARBAGE_SIZE 1024
 
 void

@@ -1,4 +1,22 @@
+2001-10-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/nr-buffers.h: New file
+
+	* src/helper/nr-buffers.c: New file
+
+	* src/helper/nr-plain-stuff.c (nr_render_rgba32_rgba32): New method
+
+2001-10-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item.c (sp_item_read_attr): Query presentation attributes
+
+	* src/style.c (sp_style_read_from_object): Added some presentation attributes
+
 2001-10-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-use.c (sp_use_build): Reinclude, change 'href' to 'xlink:href'
+
+	* src/sp-object.c (sp_object_style_changed): Use SP_OBJECT_MODIFIED_FLAG
 
 	* src/document.c (sp_document_new): Force "height" and "width" attributes,
 	if not present already

@@ -355,7 +355,8 @@ sp_object_read_attr (SPObject * object, const gchar * key)
 	const gchar * id;
 
 	g_assert (SP_IS_DOCUMENT (object->document));
-	g_assert (object->id != NULL);
+	/* fixme: rething that cloning issue */
+	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
 	g_assert (key != NULL);
 
 	if (strcmp (key, "id") == 0) {
@@ -383,7 +384,8 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 
 	g_assert (SP_IS_DOCUMENT (object->document));
 	g_assert (object->repr != NULL);
-	g_assert (object->id != NULL);
+	/* fixme: rething that cloning issue */
+	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr) (object, key);

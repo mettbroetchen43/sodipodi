@@ -169,31 +169,28 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_use_read_attr (object, "y");
 	sp_use_read_attr (object, "width");
 	sp_use_read_attr (object, "height");
-	sp_use_read_attr (object, "href");
+	sp_use_read_attr (object, "xlink:href");
 
-#if 0
 	if (use->href) {
-		SPObject * refobj;
+		SPObject *refobj;
 		refobj = sp_document_lookup_id (document, use->href);
 		if (refobj) {
-			SPRepr * childrepr;
-			const gchar * name;
+			SPRepr *childrepr;
+			const gchar *name;
 			GtkType type;
-			childrepr = refobj->repr;
+			childrepr = SP_OBJECT_REPR (refobj);
 			name = sp_repr_name (childrepr);
 			g_assert (name != NULL);
 			type = sp_object_type_lookup (name);
 			g_return_if_fail (type > GTK_TYPE_NONE);
 			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
-				SPObject * childobj;
+				SPObject *childobj;
 				childobj = gtk_type_new (type);
-				childobj->parent = object;
-				use->child = SP_ITEM (childobj);
+				use->child = (SPItem *) sp_object_attach_reref (object, childobj, NULL);
 				sp_object_invoke_build (childobj, document, childrepr, TRUE);
 			}
 		}
 	}
-#endif
 }
 
 static void
@@ -230,7 +227,7 @@ sp_use_read_attr (SPObject * object, const gchar * attr)
 		sp_use_changed (use);
 		return;
 	}
-	if (strcmp (attr, "href") == 0) {
+	if (strcmp (attr, "xlink:href") == 0) {
 		const gchar * newref;
 		newref = sp_repr_attr (object->repr, attr);
 		if (newref) {

@@ -19,6 +19,8 @@ void nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, gui
 
 void nr_render_rgba32_rgb (guchar *px, gint w, gint h, gint rs, guint32 c);
 
+void nr_render_rgba32_rgba32 (guchar *px, gint w, gint h, gint rs, const guchar *src, gint srcrs);
+
 void nr_render_gray_garbage_rgb (guchar *px, gint w, gint h, gint rs);
 
 #endif

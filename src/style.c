@@ -214,6 +214,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	str = sp_repr_attr (object->repr, "style");
 	sp_style_read_from_string (style, str, object->document);
 	/* fixme */
+	/* CMYK has precedence here */
 	str = sp_repr_attr (object->repr, "fill-cmyk");
 	if (str) {
 		gdouble c, m, y, k;
@@ -236,6 +237,29 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 		if (eptr != cptr) {
 			style->fill_set = TRUE;
 			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
+		}
+	}
+	/* fixme */
+	if (!style->opacity_set) {
+		str = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
+		if (str) {
+			style->opacity = sp_svg_read_percentage (str, style->opacity);
+			style->opacity_set = TRUE;
+			style->real_opacity_set = FALSE;
+		}
+	}
+	if (!style->fill_set) {
+		str = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
+		if (str) {
+			sp_style_read_paint (style, &style->fill, str, SP_OBJECT_DOCUMENT (object));
+			style->fill_set = TRUE;
+		}
+	}
+	if (!style->stroke_set) {
+		str = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
+		if (str) {
+			sp_style_read_paint (style, &style->stroke, str, SP_OBJECT_DOCUMENT (object));
+			style->stroke_set = TRUE;
 		}
 	}
 

@@ -26,6 +26,7 @@ libspchelp_a_SOURCES = \
 	canvas-grid.c canvas-grid.h \
 	png-write.c png-write.h \
 	unit-menu.c unit-menu.h \
+	nr-buffers.c nr-buffers.h \
 	nr-plain-stuff.c nr-plain-stuff.h \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
 	bezier-utils.c bezier-utils.h
