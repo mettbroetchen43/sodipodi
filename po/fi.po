@@ -1,0 +1,2449 @@
+# translation of fi.po to Finnish
+# Norwegian translation of sodipodi (bokmål dialect).
+# Copyright © 2000-2002 Free Software Foundation, Inc.
+# Kjartan Maraas <kmaraas@gnome.org>, 2000-2002.
+# Jaakko H Kyro <jkyro@pp.htv.fi>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: fi\n"
+"POT-Creation-Date: 2003-11-30 17:37+0200\n"
+"PO-Revision-Date: 2004-01-05 18:14+0200\n"
+"Last-Translator: Jaakko H Kyro <jkyro@pp.htv.fi>\n"
+"Language-Team: Finnish <fi@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3\n"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "SVG - Vektoripiirrokset"
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Ei voitu luoda sodipodi-svg-doc -tehdasta"
+
+#: src/arc-context.c:303
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "Kaaren piirto %s x %s"
+
+#: src/desktop.c:778
+msgid "Zoom drawing if window size changes"
+msgstr "Suurenna piirrosta jos ikkunan koko muuttuu"
+
+#: src/desktop.c:858
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: %s: %d"
+
+#: src/desktop.c:987
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "Asiakirjassa %s on tallentamattomia muutoksia,tallennetaanko?"
+
+#. Page page
+#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:137 src/verbs.c:453
+msgid "Page"
+msgstr "Sivu"
+
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/verbs.c:454
+msgid "Drawing"
+msgstr "Piirros"
+
+#. Selection submenu
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+msgid "Selection"
+msgstr "Valinta"
+
+#: src/dialogs/align.c:155 src/toolbox.c:449
+msgid "Align objects"
+msgstr "Linjaa objekteja"
+
+#: src/dialogs/align.c:174
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Tasattavien objektien oikea reuna kiintopisteen vasempaan reunaan"
+
+#: src/dialogs/align.c:177
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "Tasattavien objektien vasen reuna kiintopisteen vasempaan reunaan"
+
+#: src/dialogs/align.c:180
+msgid "Center horizontally"
+msgstr "Keskitä vaakasuunnassa"
+
+#: src/dialogs/align.c:183
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Tasattavien objektien oikea reuna kiintopisteen oikeaan reunaan"
+
+#: src/dialogs/align.c:186
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "Tasattavien objektien vasen reuna kiintopisteen oikeaan reunaan"
+
+#: src/dialogs/align.c:190
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "Tasattavien objektien alareuna kiintopisteen yläreunan tasalle"
+
+#: src/dialogs/align.c:193
+msgid "Top of aligned objects to top of anchor"
+msgstr "Tasattavien objektien yläreuna kiintopisteen alareunan tasalle"
+
+#: src/dialogs/align.c:196
+msgid "Center vertically"
+msgstr "Keskitys vaakasuunnassa"
+
+#: src/dialogs/align.c:199
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Tasattavien objektien alareuna kiintopisteen alareunan tasalle"
+
+#: src/dialogs/align.c:202
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Tasattavien objektien yläreuna kiintopisteen alareunan tasalle"
+
+#: src/dialogs/align.c:205
+msgid "Align"
+msgstr "Linjaus"
+
+#: src/dialogs/align.c:223
+msgid "Distribute left sides of objects at even distances"
+msgstr "Tasaa etäisyydet objektien vasempien reunojen välillä"
+
+#: src/dialogs/align.c:226
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "Tasaa etäisyydet objektien keskipisteiden välillä vaakasuunnassa"
+
+#: src/dialogs/align.c:229
+msgid "Distribute right sides of objects at even distances"
+msgstr "Tasaa objektien etäisyydet oikeiden reunojen välillä"
+
+#: src/dialogs/align.c:232
+msgid "Distribute horizontal distance between objects equally"
+msgstr "Tasaa objektien välimatkat vaakasuunnassa"
+
+#: src/dialogs/align.c:236
+msgid "Distribute top sides of objects at even distances"
+msgstr "Tasaa objektien etäisyydet yläreunojen välillä"
+
+#: src/dialogs/align.c:239
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "Tasaa objektien etäisyydet keskikohtien välillä pystysuunnassa"
+
+#: src/dialogs/align.c:242
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "Tasaa objektien etäisyydet alareunojen välillä"
+
+#: src/dialogs/align.c:245
+msgid "Distribute vertical distance between objects equally"
+msgstr "Tasaa objektien välimatkat pystysuunnassa"
+
+#: src/dialogs/align.c:248
+msgid "Distribute"
+msgstr "Tasaus"
+
+#: src/dialogs/align.c:284
+msgid "Last selected"
+msgstr "Viimeksi valittu"
+
+#: src/dialogs/align.c:285
+msgid "First selected"
+msgstr "Ensiksi valittu"
+
+#: src/dialogs/align.c:286
+msgid "Biggest item"
+msgstr "Suurin olio"
+
+#: src/dialogs/align.c:287
+msgid "Smallest item"
+msgstr "Pienin olio"
+
+#: src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr "Työtilan asetukset"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "Viivasto"
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr "Näytä viivasto"
+
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "Napsahda viivastoon"
+
+#: src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr "Vaakaviivat"
+
+#: src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr "Pystyviivat"
+
+#: src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr "Suorakulmainen viivasto"
+
+#: src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr "Kuusikulmainen viivasto"
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr "Viivaston yksikkö"
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr "Alkuperäinen X:"
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr "Alkuperäinen Y:"
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr "Väli X:"
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr "Väli Y:"
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr "Napsahduksen yksikkö:"
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr "Napsahduksen etäisyys:"
+
+#: src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr "Viivaston väri:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "Viivaston väri"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "Apuviivat"
+
+#: src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr "Näytä apuviivat"
+
+#: src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr "Napsahda apuviivoihin"
+
+#: src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr "Apuviivojen väri:"
+
+#: src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr "Apuviivan väri:"
+
+#: src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr "Korostusväri:"
+
+#: src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr "Korostetun apuviivan väri"
+
+#: src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr "Näytä reunus"
+
+#: src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr "Reunus piirroksen päälle"
+
+#: src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr "Reunuksen väri:"
+
+#: src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr "Sivun reunuksen väri"
+
+#: src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr "Sivun väri:"
+
+#: src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr "Sivun väri"
+
+#: src/dialogs/desktop-properties.c:580
+msgid "Close"
+msgstr "Sulje"
+
+#: src/dialogs/display-settings.c:88
+msgid "Display settings"
+msgstr "Näyttöasetukset"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:96
+msgid "Rendering"
+msgstr "Kuvan muodostus"
+
+#: src/dialogs/display-settings.c:108
+msgid "Oversample bitmaps:"
+msgstr "Ylinäytteistä bittikartat:"
+
+#: src/dialogs/display-settings.c:119 src/verbs.c:394
+msgid "None"
+msgstr "Ei mikään"
+
+#: src/dialogs/display-settings.c:123
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:127
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:131
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:135
+msgid "16x16"
+msgstr "16x16"
+
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:146
+msgid "Input"
+msgstr "Syöte"
+
+#: src/dialogs/display-settings.c:157
+msgid "Default cursor tolerance:"
+msgstr "Oletusarvoinen kursorin toleranssi"
+
+#: src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr "Asiakirjan asetukset"
+
+#: src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr "Paperikoko"
+
+#: src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr "Oma"
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr "Oma paperi"
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr "Yksikkö:"
+
+#. Stroke width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
+#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
+#: src/dyna-draw-context.c:1082
+msgid "Width:"
+msgstr "Leveys:"
+
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
+#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "Korkeus:"
+
+#: src/dialogs/export.c:117
+msgid "Export bitmap"
+msgstr "Vie bittikartta"
+
+#. Export area frame
+#: src/dialogs/export.c:126
+msgid "Export area"
+msgstr "Vie alue"
+
+#: src/dialogs/export.c:159
+msgid "x0:"
+msgstr "x0:"
+
+#: src/dialogs/export.c:162
+msgid "x1:"
+msgstr "x1:"
+
+#: src/dialogs/export.c:168
+msgid "y0:"
+msgstr "y0:"
+
+#: src/dialogs/export.c:171
+msgid "y1:"
+msgstr "y1:"
+
+#. Bitmap size frame
+#: src/dialogs/export.c:180
+msgid "Bitmap size"
+msgstr "Bittikartan koko"
+
+#: src/dialogs/export.c:189 src/dialogs/export.c:197
+msgid "pixels"
+msgstr "pikseliä"
+
+#: src/dialogs/export.c:193 src/dialogs/export.c:201
+msgid "dpi"
+msgstr "dpi"
+
+#: src/dialogs/export.c:208
+msgid "Export png file"
+msgstr "Vienti png-tiedostoon"
+
+#: src/dialogs/export.c:237 src/verbs.c:404
+msgid "Export"
+msgstr "Vienti"
+
+#: src/dialogs/fill-style.c:86
+msgid "Fill style"
+msgstr "Täytön tyyli"
+
+#: src/dialogs/fill-style.c:121
+msgid "Fill Rule"
+msgstr "Täytön säännöt"
+
+#: src/dialogs/fill-style.c:135
+msgid "nonzero"
+msgstr "ei nolla"
+
+#: src/dialogs/fill-style.c:140
+msgid "evenodd"
+msgstr "parillinen-pariton"
+
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
+#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
+msgid "ID"
+msgstr "Tunnus"
+
+#: src/dialogs/item-properties.c:98
+msgid "Set ID"
+msgstr "Tunnuksen asetus"
+
+#: src/dialogs/item-properties.c:109
+msgid "Sensitive"
+msgstr "Herkkä"
+
+#: src/dialogs/item-properties.c:114
+msgid "Visible"
+msgstr "Näkyvissä"
+
+#: src/dialogs/item-properties.c:119
+msgid "Active"
+msgstr "Aktiivinen"
+
+#: src/dialogs/item-properties.c:124
+msgid "Printable"
+msgstr "Tulostettava"
+
+#: src/dialogs/item-properties.c:135
+msgid "Opacity:"
+msgstr "Läpinäkyvyys:"
+
+#: src/dialogs/item-properties.c:154
+msgid "Transformation matrix"
+msgstr "Muunnosmatriisi"
+
+#: src/dialogs/item-properties.c:275
+msgid "Ref"
+msgstr "Viite"
+
+#: src/dialogs/item-properties.c:357
+msgid "ID invalid"
+msgstr "Kelvoton tunnus"
+
+#: src/dialogs/item-properties.c:359
+msgid "ID exists"
+msgstr "Tunnus on olemassa"
+
+#: src/dialogs/item-properties.c:435 src/verbs.c:468
+msgid "Item properties"
+msgstr "Olion ominaisuudet"
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr "Href:"
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "Kohde"
+
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "Tyyppi:"
+
+#: src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr "Rooli:"
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr "Arkusrooli:"
+
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "Otsikko:"
+
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
+msgid "Show:"
+msgstr "Näyttö:"
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr "Liikutus:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr "Sivut:"
+
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr "Keski-X:"
+
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr "Keski-Y:"
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr "R1:"
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr "R2:"
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr "ARG1:"
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr "ARG2:"
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
+msgid "Expansion:"
+msgstr "Laajennus:"
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:93
+#: src/spiral-context.c:353
+msgid "Revolution:"
+msgstr "Kierto:"
+
+#: src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr "Säde:"
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr "Argumentti:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr "X:"
+
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr "Y:"
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr "%s:n ominaisuudet"
+
+#: src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr "Objektin tyyli"
+
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "Täyttö"
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr "Reunan piirto"
+
+#: src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr "Reunan tyyli"
+
+#: src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr "Kohteet:"
+
+#: src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr "Valitut objektit"
+
+#: src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr "Kaikki muodot"
+
+#: src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr "Nelikulmiot"
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr "Kaaret"
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr "Tähdet"
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr "Spiraalit"
+
+#: src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr "Vapaa kynä"
+
+#: src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr "Kalligrafia"
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:444
+msgid "Text"
+msgstr "Teksti"
+
+#: src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr "Objektin koko ja paikka"
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:463
+msgid "Size and Position"
+msgstr "Koko ja paikka"
+
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
+msgid "Stroke settings"
+msgstr "Reunan asetukset"
+
+#. Join type
+#: src/dialogs/stroke-style.c:588
+msgid "Join:"
+msgstr "Liitos:"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:631
+msgid "Cap:"
+msgstr "Pääty:"
+
+#. Dash
+#: src/dialogs/stroke-style.c:674
+msgid "Pattern:"
+msgstr "Malli:"
+
+#: src/dialogs/text-edit.c:101
+msgid "Text properties"
+msgstr "Tekstin ominaisuudet"
+
+#. Layout
+#: src/dialogs/text-edit.c:140
+msgid "Layout"
+msgstr "Asettelu"
+
+#: src/dialogs/text-edit.c:148
+msgid "Alignment:"
+msgstr "Tasaus:"
+
+#: src/dialogs/text-edit.c:173
+msgid "Orientation:"
+msgstr "Suunta:"
+
+#: src/dialogs/text-edit.c:191
+msgid "Line spacing:"
+msgstr "Riviväli:"
+
+#: src/dialogs/text-edit.c:216
+msgid "Text and font"
+msgstr "Teksti ja kirjasin"
+
+#: src/dialogs/text-edit.c:227
+msgid "Set as default"
+msgstr "Asetus oletukseksi"
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
+msgid "Tool attributes"
+msgstr "Työkalun asetukset"
+
+#: src/dialogs/tool-attributes.c:93
+msgid "Expansion"
+msgstr "Laajennus"
+
+#: src/dialogs/tool-attributes.c:93
+msgid "Inner radius"
+msgstr "Sisäpuolen säde"
+
+#: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
+#: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
+msgid "Missing tool preferences"
+msgstr "Puuttuvat työkalun asetukset"
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:103 src/star-context.c:358
+msgid "Corners:"
+msgstr "Kulmat:"
+
+#: src/dialogs/tool-attributes.c:103
+msgid "Proportion"
+msgstr "Murto-osa"
+
+#: src/dialogs/tool-attributes.c:113
+msgid "Transform:"
+msgstr "Muunnos:"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1046
+msgid "Mass:"
+msgstr "Massa:"
+
+#. Drag
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1058
+msgid "Drag:"
+msgstr "Veto:"
+
+#: src/dialogs/tool-attributes.c:123
+msgid "Angle"
+msgstr "Kulma:"
+
+#: src/dialogs/tool-attributes.c:130
+msgid "Tool has no attributes"
+msgstr "Työkalulla ei ole asetuksia"
+
+#: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
+msgid "No active tool"
+msgstr "Ei aktiivista työkalua"
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:460
+msgid "Tool options"
+msgstr "Työkalun valinnat"
+
+#: src/dialogs/tool-options.c:88
+msgid "Tool has no options"
+msgstr "Työkalulla ei ole valintoja"
+
+#: src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr "Valinnan muunnos"
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "Toteutus kopiolle"
+
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "Siirto"
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "Skaalaus"
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "Kierto"
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr "aste"
+
+#: src/dialogs/xml-tree.c:162
+msgid "Drag to reorder nodes"
+msgstr "Veto järjestää solmut uudelleen"
+
+#: src/dialogs/xml-tree.c:175
+msgid "New element node"
+msgstr "Uusi elementtisolmu"
+
+#: src/dialogs/xml-tree.c:193
+msgid "New text node"
+msgstr "Uusi tekstisolmu"
+
+#: src/dialogs/xml-tree.c:210
+msgid "Duplicate node"
+msgstr "Kahdenna solmu"
+
+#: src/dialogs/xml-tree.c:226
+msgid "Delete node"
+msgstr "Poista solmu"
+
+#: src/dialogs/xml-tree.c:239
+msgid "Unindent node"
+msgstr "Sisennyksen poisto"
+
+#: src/dialogs/xml-tree.c:250
+msgid "Indent node"
+msgstr "Sisennys"
+
+#: src/dialogs/xml-tree.c:260
+msgid "Raise node"
+msgstr "Kohotus"
+
+#: src/dialogs/xml-tree.c:271
+msgid "Lower node"
+msgstr "Lasku"
+
+#: src/dialogs/xml-tree.c:308
+msgid "Delete attribute"
+msgstr "Attribuutin poisto"
+
+#: src/dialogs/xml-tree.c:338
+msgid "Attribute name"
+msgstr "Attribuutin nimi"
+
+#: src/dialogs/xml-tree.c:345
+msgid "Set attribute"
+msgstr "Aseta attribuutti"
+
+#: src/dialogs/xml-tree.c:358
+msgid "Attribute value"
+msgstr "Attribuutin arvo"
+
+#: src/dialogs/xml-tree.c:830
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "Sodipodi: %s: XML-näkymä"
+
+#: src/dialogs/xml-tree.c:853
+msgid "New element node..."
+msgstr "Uusi elementtisolmu..."
+
+#: src/dialogs/xml-tree.c:873
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: src/dialogs/xml-tree.c:877
+msgid "Create"
+msgstr "Luonti"
+
+#: src/document.c:343
+#, c-format
+msgid "New document %d"
+msgstr "Uusi asiakirja %d"
+
+#: src/document.c:372
+#, c-format
+msgid "Memory document %d"
+msgstr "Asiakirja muistissa %d"
+
+#: src/document.c:458
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Nimetön asiakirja %d"
+
+#: src/draw-context.c:283
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "Lisätään valintaan. Paina 'a' vaihtaaksesi Lisäys/Uusi"
+
+#: src/draw-context.c:288
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "Luodaan uusi käyrä. Paina 'a' valitaksesi Lisää/Uusi."
+
+#. Angle
+#: src/dyna-draw-context.c:1070
+msgid "Angle:"
+msgstr "Kulma:"
+
+#. Reset
+#: src/dyna-draw-context.c:1094 src/rect-context.c:424
+#: src/spiral-context.c:389 src/star-context.c:389
+msgid "Defaults"
+msgstr "Oletusten palautus"
+
+#: src/file.c:157 src/file.c:169 src/file.c:183
+msgid "Select file to open"
+msgstr "Valitse avattava tiedosto"
+
+#: src/file.c:200 src/module.c:550
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Skaalattava vektorikuva (SVG)"
+
+#: src/file.c:200 src/module.c:550
+msgid "Sodipodi native file format and W3C standard"
+msgstr "Sodipodin oma tiedostomuoto ja W3C-standardi"
+
+#: src/file.c:206 src/file.c:280
+msgid "File type:"
+msgstr "Tiedoston tyyppi:"
+
+#: src/file.c:265
+msgid "Save file"
+msgstr "Tallennus"
+
+#: src/file.c:443 src/file.c:453 src/file.c:459
+msgid "Select file to import"
+msgstr "Valitse tuotava tiedosto"
+
+#: src/help.c:57
+msgid "About sodipodi"
+msgstr "Tietoja Sodipodista"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+msgid "Unit"
+msgstr "Yksikkö"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr "Yksiköt"
+
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "Piste"
+
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "pt"
+
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "Pisteet"
+
+#: src/helper/units.c:43
+msgid "Pt"
+msgstr "Pt"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr "Pikseli"
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr "px"
+
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "Pikselit"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:45
+msgid "Userspace unit"
+msgstr "Käyttäjätilan yksikkö"
+
+#: src/helper/units.c:45
+msgid "User"
+msgstr "Käyttäjä"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr "Käyttäjätilan yksiköt"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "Prosentti"
+
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr "Prosentit"
+
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "Millimetri"
+
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "mm"
+
+#: src/helper/units.c:49
+msgid "Millimeters"
+msgstr "Millimetriä"
+
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "Senttimetri"
+
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "cm"
+
+#: src/helper/units.c:50
+msgid "Centimeters"
+msgstr "Senttimetriä"
+
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "Metri"
+
+#: src/helper/units.c:51
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr "metriä"
+
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "Tuuma"
+
+#: src/helper/units.c:52
+msgid "in"
+msgstr "in"
+
+#: src/helper/units.c:52
+msgid "Inches"
+msgstr "Tuumaa"
+
+#: src/helper/units.c:53
+msgid "Em square"
+msgstr "Em neliö"
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr "em"
+
+#: src/helper/units.c:53
+msgid "Em squares"
+msgstr "Em neliöt"
+
+#: src/helper/units.c:54
+msgid "Ex square"
+msgstr "Ex neliö"
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr "ex"
+
+#: src/helper/units.c:54
+msgid "Ex squares"
+msgstr "Ex neliöt"
+
+#: src/interface.c:309 src/interface.c:491
+msgid "Open Recent"
+msgstr "Avaa viimeksi avattu"
+
+#: src/interface.c:329
+msgid "Close View"
+msgstr "Näkymän sulkeminen"
+
+#: src/interface.c:330 src/interface.c:506
+msgid "Exit Program"
+msgstr "Lopetus"
+
+#: src/interface.c:332 src/interface.c:498
+msgid "About Sodipodi"
+msgstr "Tietoja Sodipodista"
+
+#. Modules need abouts too
+#: src/interface.c:335 src/interface.c:501
+msgid "About Modules"
+msgstr "Tietoja Moduleista"
+
+#: src/interface.c:355
+msgid "Cleanup"
+msgstr "Siivous"
+
+#. View:Zoom
+#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+msgid "Zoom"
+msgstr "Suurennus"
+
+#. View:New View
+#: src/interface.c:437
+msgid "New View"
+msgstr "Uusi näkymä"
+
+#. View:New Preview
+#: src/interface.c:439
+msgid "New Preview"
+msgstr "Uusi esikatselu"
+
+#: src/interface.c:441
+msgid "New Toplevel Toolbox"
+msgstr "Uusi päätason työkaluikkuna"
+
+#: src/interface.c:442
+msgid "New Docked Toolbox"
+msgstr "Uusi työkalupalkki työtilaikkunaan"
+
+#: src/interface.c:443
+msgid "Remove Docked Toolbox"
+msgstr "Työtilaikkunan työkalupalkin poisto"
+
+#. File
+#: src/interface.c:488 src/verbs.c:396
+msgid "New"
+msgstr "Uusi"
+
+#: src/interface.c:489
+msgid "Open"
+msgstr "Avaus"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:569 src/toolbox.c:361
+msgid "File"
+msgstr "Tiedosto"
+
+#. Edit submenu
+#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "Muokkaus"
+
+#. View submenu
+#: src/interface.c:587
+msgid "View"
+msgstr "Esitys"
+
+#. Drawing mode submenu
+#: src/interface.c:593
+msgid "Drawing Mode"
+msgstr "Piirtotila"
+
+#. Dialog submenu
+#: src/interface.c:599
+msgid "Dialogs"
+msgstr "Valintaikkunat"
+
+#: src/interface.c:606
+msgid "Filters"
+msgstr "Suodattimet"
+
+#: src/main.c:130 src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr "Älä käytä X-palvelinta (käsittele tiedostot konsolilla)"
+
+#: src/main.c:133 src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "Kokeile käyttää X-palvelinta vaikka $DISPLAY ei ole asetettu)"
+
+#: src/main.c:136 src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Avaa annetut tiedosto(t) (valinnaiset voidaan jättää huomiotta)"
+
+#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
+msgid "FILENAME"
+msgstr "TIEDOSTONIMI"
+
+#: src/main.c:139
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "Tulosta asiakirja annettuun tiedostoon (käytä '| komento' putkitukseen)"
+
+#: src/main.c:142 src/main.c:615
+msgid "Export document to png file"
+msgstr "Vie asiakirja PNG-tiedostoksi"
+
+#: src/main.c:145 src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "Bittikarttamuunnoksessa käytettävä tarkkuus (oletus 72.0)"
+
+#: src/main.c:146
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:148 src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr "Vietävä alue millimetreinä (oletus on koko asiakirja, 0,0 on vasen alakulma)"
+
+#: src/main.c:149
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:151 src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "Tuotettavan bittikartan leveys pikseleinä (ohittaa dpi-asetuksen)"
+
+#: src/main.c:151
+msgid "WIDTH"
+msgstr "LEVEYS"
+
+#: src/main.c:153 src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "Tuotettavan bittikartan korkeus pikseleinä (ohittaa dpi-asetuksen)"
+
+#: src/main.c:153
+msgid "HEIGHT"
+msgstr "KORKEUS"
+
+#: src/main.c:155 src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "Tuotettavan bittikartan taustaväri (mikä tahansa SVG:ssä tuettu väri)"
+
+#: src/main.c:155
+msgid "COLOR"
+msgstr "VÄRI"
+
+#: src/main.c:157 src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr "Vie asiakirja perus-SVG:ksi (ei \"xmlns:sodipodi\" -nimiavaruutta)"
+
+#: src/main.c:159
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "Näytä annetut tiedostot yksi kerrallaan, siirtyminen seuraavaan hiiren/näppäimen painalluksella"
+
+#: src/main.c:161
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "Käytä bittikarttakuvakkeita SVG:n sijaan"
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "Näytä sodipodin versiotiedot"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "Näytä Apua tietoja komentoriviargumentit"
+
+#: src/module.c:558
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "SVG sodipodi-laajennusten kanssa"
+
+#: src/module.c:559
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "SVG -muoto sodipodi -laajennuksin"
+
+#: src/module.c:562
+msgid "Plain SVG"
+msgstr "Pelkkä SVG"
+
+#: src/module.c:563
+msgid "Scalable Vector Graphics format"
+msgstr "Scalable Vector Graphics -muoto"
+
+#: src/modules/gnome.c:133
+msgid "Select printer"
+msgstr "Tulostimen valinta"
+
+#: src/modules/gnome.c:187
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (asiakirja %s..): Esikatselu"
+
+#: src/modules/kde.cpp:159
+msgid "Document variant:"
+msgstr "Asiakirjan variantti:"
+
+#: src/modules/kde.cpp:169
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.svg *.svgz|SVG-tiedostot\n"
+"*.xml|XML-tiedostot\n"
+"*|Kaikki tiedostot"
+
+#: src/modules/kde.cpp:171
+msgid "Save document as"
+msgstr "Tallennus nimellä"
+
+#. Print destination frame
+#: src/modules/ps.c:167 src/modules/ps.c:228
+msgid "Print destination"
+msgstr "Tulostuskohde"
+
+#. Print properties frame
+#: src/modules/ps.c:178
+msgid "Print properties"
+msgstr "Tulostusasetukset"
+
+#: src/modules/ps.c:186
+msgid "Print using PostScript operators"
+msgstr "Tulosta käyttäen PostScript-operaattoreita"
+
+#: src/modules/ps.c:188
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr ""
+"Käytä PostScript -vektorioperaattoreita, tulos on (useimmiten) "
+"pienempi ja sitä voi skaalata, mutta alfa-läpinäkyvyys, merkinnät ja mallit katoavat"
+
+#: src/modules/ps.c:193
+msgid "Print as bitmap"
+msgstr "Vie bittikartaksi"
+
+#: src/modules/ps.c:195
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr "Tulosta kaikki bittikarttana, tulos on (useimmiten) suurempi ja sen laatu riippuu suurennuksesta. Tuloste on identtinen näkymän kanssa."
+
+#: src/modules/ps.c:209
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "Suositeltava bittikartan tarkkuus (DPI)"
+
+#: src/modules/ps.c:224
+msgid "Resolution:"
+msgstr "Tarkkuus:"
+
+#: src/modules/ps.c:234
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+"Anna lpr-kohdejono.\n"
+"Käytä '> tiedostonimi' tiedostoon tulostamiseksi.\n"
+"Käytä '| komento ...' putkitukseen."
+
+#: src/modules/ps.c:868
+msgid "write error occured"
+msgstr "Kirjoitusvirhe"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:107
+msgid "Item"
+msgstr "Olio"
+
+#. Item dialog
+#: src/object-ui.c:110 src/verbs.c:468
+msgid "Item Properties"
+msgstr "Olion ominaisudet"
+
+#. Select item
+#: src/object-ui.c:120
+msgid "Select this"
+msgstr "Valitse tämä"
+
+#. Reset transformations
+#: src/object-ui.c:130
+msgid "Reset transformation"
+msgstr "Peru muunnos"
+
+#: src/object-ui.c:136
+msgid "Make sensitive"
+msgstr "Herkistys"
+
+#: src/object-ui.c:136
+msgid "Make insensitive"
+msgstr "Epäherkistys"
+
+#. Create link
+#: src/object-ui.c:141
+msgid "Create link"
+msgstr "Luo linkki"
+
+#: src/object-ui.c:253 src/verbs.c:421
+msgid "Group"
+msgstr "Ryhmitys"
+
+#. Group dialog
+#: src/object-ui.c:257
+msgid "Group Properties"
+msgstr "Ryhmän ominaisuudet"
+
+#. "Ungroup"
+#: src/object-ui.c:270 src/verbs.c:422
+msgid "Ungroup"
+msgstr "Poista ryhmitys"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:318
+msgid "Link"
+msgstr "Linkki"
+
+#. Link dialog
+#: src/object-ui.c:321
+msgid "Link Properties"
+msgstr "Linkin ominaisuudet"
+
+#. Select item
+#: src/object-ui.c:331
+msgid "Follow link"
+msgstr "Seuraa linkkiä"
+
+#. Reset transformations
+#: src/object-ui.c:336
+msgid "Remove link"
+msgstr "Poista linkki"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:399
+msgid "Image"
+msgstr "Kuva"
+
+#. Link dialog
+#: src/object-ui.c:402
+msgid "Image Properties"
+msgstr "Kuvan ominaisuudet"
+
+#. Autotrace dialog
+#: src/object-ui.c:410 src/sp-image.c:776
+msgid "Trace"
+msgstr "Etsi vektosimuotoja"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:459
+msgid "Shape"
+msgstr "Muoto"
+
+#. Item dialog
+#: src/object-ui.c:462 src/toolbox.c:446
+msgid "Fill settings"
+msgstr "Täytön asetukset"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:489
+msgid "Rect"
+msgstr "Nelikulmio"
+
+#. Link dialog
+#: src/object-ui.c:492
+msgid "Rect Properties"
+msgstr "Nelikulmion ominaisuudet"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:525 src/verbs.c:439
+msgid "Star"
+msgstr "Tähti"
+
+#. Link dialog
+#: src/object-ui.c:528
+msgid "Star Properties"
+msgstr "Tähden ominaisuudet"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:561 src/verbs.c:440
+msgid "Spiral"
+msgstr "Spiraali"
+
+#. Link dialog
+#: src/object-ui.c:564
+msgid "Spiral Properties"
+msgstr "Spiraalin ominaisuudet"
+
+#. rx_ratio
+#: src/rect-context.c:400
+msgid "Roundness ratio for x:"
+msgstr "X-pyöristyssuhde:"
+
+#. ry_ratio
+#: src/rect-context.c:412
+msgid "Roundness ratio for y:"
+msgstr "Y-pyöristyssuhde:"
+
+#: src/select-context.c:569
+msgid "Visual transformation"
+msgstr "Näkyvä muunnos"
+
+#: src/select-context.c:575
+msgid "Show content"
+msgstr "Näytä sisältö"
+
+#: src/select-context.c:581
+msgid "Show outline"
+msgstr "Näytä reuna"
+
+#: src/select-context.c:587
+msgid "Object transformation"
+msgstr "Olion muunnos"
+
+#: src/select-context.c:593
+msgid "Optimize"
+msgstr "Optimointi"
+
+#: src/select-context.c:599
+msgid "Preserve"
+msgstr "Säilytys"
+
+#: src/select-context.c:605
+msgid "[Tab] Cycling"
+msgstr "[Tab] Kierrätys"
+
+#: src/select-context.c:610
+msgid "Cycle only among visible items"
+msgstr "Kierrätä vain näkyviä"
+
+#: src/select-context.c:613
+msgid "Center view to selected item"
+msgstr "Keskitä näkymä valittuun"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "Sodipodi -katselu"
+
+#: src/sodipodi.c:406
+msgid "Untitled document"
+msgstr "Nimetön"
+
+#. Show nice dialog box
+#: src/sodipodi.c:431
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Sodipodi sai paskahalvauksen ja sulkeutuu. Hyvää päivänjatkoa!\n"
+
+#: src/sodipodi.c:432
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "Juujuu, automaattiset varmistukset löytyy (jos löytyy) täältä:\n"
+
+#: src/sodipodi.c:433
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Automaattinen varmistus epäonnistui:\n"
+
+#: src/sodipodi.c:572
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s ei ole tavallinen tiedosto.\n"
+"Vaikka sodipodi toimii,et voi\n"
+"ladata tai tallentaa asetuksia.\n"
+
+#: src/sodipodi.c:575
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ei ole kelvollinen XML-tiedosto, tai\n"
+"sen lukeminen on estetty.\n"
+"Asetuksia ei voi ladata\n"
+"eikä tallentaa\n"
+"Juu."
+
+#: src/sodipodi.c:580
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ei ole kelvollinen sodipodin asetustiedosto.\n"
+"Asetuksia ei voi ladata\n"
+"eikä tallentaa\n"
+"Juu."
+
+#: src/sodipodi.c:592
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ei ole tavallinen tiedosto.\n"
+"Laajennukset (plugins) eivät ole käytettävissä.\n"
+"\n"
+
+#: src/sodipodi.c:595
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ei ole kelvollinen XML-tiedosto, tai.\n"
+"tiedoston lukeminen on estetty.\n"
+"Laajennukset (plugins) eivät ole käytettävissä.\n"
+"\n"
+
+#: src/sodipodi.c:599
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ei ole kelvollinen sodipodin laajennustiedosto.\n"
+"Laajennukset (plugins) eivät ole käytettävissä.\n"
+"\n"
+
+#: src/sodipodi.c:938
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+"Hakemistoa %s ei voi luoda. \n"
+"Asetuksia ei voi ladata\n"
+"tai tallentaa\n"
+"%s."
+
+#: src/sodipodi.c:942
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ei ole hakemisto. \n"
+"Asetuksia ei voi ladata\n"
+"tai tallentaa\n"
+"höh."
+
+#: src/sodipodi.c:946
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Tiedostoa %s ei voida luoda.\n"
+"Asetuksia ei voi ladata\n"
+"tai tallentaa\n"
+"joopa joo."
+
+#: src/sodipodi.c:950
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Tiedostoa %s ei voida kirjoittaa. \n"
+"Asetuksia ei voi ladata\n"
+"tai tallentaa\n"
+"niin niin."
+
+#: src/sodipodi.c:960
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Hakemistoa %s ei voida luoda. \n"
+"Laajennukset (plugins) eivät ole \n"
+"käytettävissä.\n"
+
+#: src/sodipodi.c:963
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ei ole hakemisto. \n"
+"Laajennukset (plugins) eivät ole \n"
+"käytettävissä.\n"
+
+#: src/sodipodi.c:966
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Tiedostoa %s ei voida luoda. \n"
+"Laajennukset (plugins) eivät ole \n"
+"käytettävissä.\n"
+
+#: src/sodipodi.c:969
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ei voida kirjoittaa. \n"
+"Laajennukset (plugins) eivät ole \n"
+"käytettävissä.\n"
+
+#: src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "Linkki kohteeseen %s"
+
+#: src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "Kuvassa on kelvoton viite: %s"
+
+#: src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "Värikuva %d x %d:%s"
+
+#: src/sp-image.c:922
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "%s:n kirjoitus epäonnistui: %s"
+
+#: src/sp-image.c:956
+msgid "Untitled"
+msgstr "Nimetön"
+
+#: src/sp-image.c:961
+msgid "Document Name:"
+msgstr "Asiakirjan nimi:"
+
+#: src/sp-image.c:974
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: src/sp-image.c:980
+msgid "Image URI:"
+msgstr "Kuvan URI:"
+
+#: src/sp-item-group.c:457
+#, c-format
+msgid "Group of %d objects"
+msgstr "%d objektin ryhmä"
+
+#: src/sp-item.c:503
+msgid "Unknown item :-("
+msgstr "Ihme ölliäinen :-("
+
+#. fixme:
+#: src/sp-text.c:1428
+msgid "Text object"
+msgstr "Tekstiolio"
+
+#. T0
+#: src/spiral-context.c:377
+msgid "Inner radius:"
+msgstr "Sisäpuolen säde"
+
+#. Proportion
+#: src/star-context.c:370
+msgid "Proportion:"
+msgstr "Osuus:"
+
+#. Making sides flat
+#: src/star-context.c:383
+msgid "Make sides flat"
+msgstr "Suorista sivut"
+
+#: src/toolbox.c:443
+msgid "Object"
+msgstr "Objekti"
+
+#: src/toolbox.c:447 src/verbs.c:463
+msgid "Object size and position"
+msgstr "Objektin koko ja paikka"
+
+#: src/toolbox.c:448
+msgid "Text and font settings"
+msgstr "Tekstin ja kirjasimen asetukset"
+
+#: src/toolbox.c:450 src/verbs.c:464
+msgid "Object transformations"
+msgstr "Objektin muunnokset"
+
+#: src/toolbox.c:523
+msgid "Draw"
+msgstr "Piirto"
+
+#: src/toolbox.c:578
+msgid "Extension"
+msgstr "Laajennus"
+
+#: src/toolbox.c:655
+msgid "Nodes"
+msgstr "Solmut"
+
+#: src/toolbox.c:658
+msgid "Insert new nodes into selected segments"
+msgstr "Lisää uusia solmuja valittuihin blaa"
+
+#: src/toolbox.c:660
+msgid "Break line at selected nodes"
+msgstr "Katkaise viiva valituissa solmuissa"
+
+#: src/toolbox.c:662
+msgid "Make selected nodes corner"
+msgstr "Tee valitut solmut kulmikkaiksi"
+
+#: src/toolbox.c:664
+msgid "Make selected segments lines"
+msgstr "Tee valituista janoista viivoja"
+
+#: src/toolbox.c:666
+msgid "Delete selected nodes"
+msgstr "Poista valitut solmut"
+
+#: src/toolbox.c:668
+msgid "Join lines at selected nodes"
+msgstr "Yhdistä viivat valituissa solmuissa"
+
+#: src/toolbox.c:671
+msgid "Join lines at selected nodes with new segment"
+msgstr "Yhdistä viivat valituissa solmuissa uudella janalla"
+
+#: src/toolbox.c:673
+msgid "Make selected nodes smooth"
+msgstr "Pyöristä valitut solmut"
+
+#: src/toolbox.c:675
+msgid "Make selected segments curves"
+msgstr "Tee valituista käyriä"
+
+#: src/verbs.c:394
+msgid "Does nothing"
+msgstr "Ei mittään"
+
+#: src/verbs.c:396
+msgid "Create new SVG document"
+msgstr "Luo uusi SVG-asiakirja"
+
+#: src/verbs.c:397
+msgid "Open..."
+msgstr "Avaa..."
+
+#: src/verbs.c:397
+msgid "Open existing SVG document"
+msgstr "Avaa SVG-asiakirja"
+
+#: src/verbs.c:398
+msgid "Save"
+msgstr "Tallenna"
+
+#: src/verbs.c:398
+msgid "Save document"
+msgstr "Tallenna asiakirja"
+
+#: src/verbs.c:399
+msgid "Save As..."
+msgstr "Tallenna nimellä"
+
+#: src/verbs.c:399
+msgid "Save document under new name"
+msgstr "Tallenna asiakirja eri nimellä"
+
+#: src/verbs.c:400
+msgid "Print..."
+msgstr "Tulosta..."
+
+#: src/verbs.c:400
+msgid "Print document"
+msgstr "Tulosta asiakirja"
+
+#: src/verbs.c:401
+msgid "Print Direct..."
+msgstr "Suora tulostus..."
+
+#: src/verbs.c:401
+msgid "Print directly to file or pipe"
+msgstr "Tulosta suoraan tiedostoon tai putkeen"
+
+#: src/verbs.c:402
+msgid "Print Preview"
+msgstr "Tulosteen esikatselu"
+
+#: src/verbs.c:402
+msgid "Preview document printout"
+msgstr "Esikatselun tulostus"
+
+#: src/verbs.c:403
+msgid "Import"
+msgstr "Tuonti"
+
+#: src/verbs.c:403
+msgid "Import bitmap or SVG image into document"
+msgstr "Tuo bittikartta tai SVG-kuva asiakirjain"
+
+#: src/verbs.c:404
+msgid "Export document as PNG bitmap"
+msgstr "Vie png-kuvaksi"
+
+#. Edit
+#: src/verbs.c:406
+msgid "Undo"
+msgstr "Peru"
+
+#: src/verbs.c:406
+msgid "Revert last action"
+msgstr "Peru viimeinen toiminta"
+
+#: src/verbs.c:407
+msgid "Redo"
+msgstr "Tee uudelleen"
+
+#: src/verbs.c:407
+msgid "Do again undone action"
+msgstr "Suorita peruttu toiminta uudelleen"
+
+#: src/verbs.c:408
+msgid "Cut"
+msgstr "Leikkaa"
+
+#: src/verbs.c:408
+msgid "Cut selected objects to clipboard"
+msgstr "Leikkaa valitut objektit leikepöydälle"
+
+#: src/verbs.c:409
+msgid "Copy"
+msgstr "Kopioi"
+
+#: src/verbs.c:409
+msgid "Copy selected objects to clipboard"
+msgstr "Kopioi valitut objektit leikepöydälle"
+
+#: src/verbs.c:410
+msgid "Paste"
+msgstr "Liitä"
+
+#: src/verbs.c:410
+msgid "Paste objects from clipboard"
+msgstr "Liitä leikepöydän objektit"
+
+#: src/verbs.c:411
+msgid "Delete"
+msgstr "Poista"
+
+#: src/verbs.c:411
+msgid "Delete selected objects"
+msgstr "Poista valitut objektit"
+
+#: src/verbs.c:412
+msgid "Duplicate"
+msgstr "Kahdenna"
+
+#: src/verbs.c:412
+msgid "Duplicate selected objects"
+msgstr "Kahdenna valitut objektit"
+
+#: src/verbs.c:413
+msgid "Clear All"
+msgstr "Tyhjennä"
+
+#: src/verbs.c:413
+msgid "Delete all objects from document"
+msgstr "Poista kaikki objektit asiakirjasta"
+
+#: src/verbs.c:414
+msgid "Select All"
+msgstr "Valitse kaikki"
+
+#: src/verbs.c:414
+msgid "Select all objects in document"
+msgstr "Valitse asiakirjan kaikki objektit"
+
+#: src/verbs.c:415
+msgid "Repeat"
+msgstr "Toista"
+
+#: src/verbs.c:415
+msgid "Repeat last saved action"
+msgstr "Toista viimeksi tallennettu toiminta"
+
+#. Selection
+#: src/verbs.c:417
+msgid "Bring to Front"
+msgstr "Tuo edustalle"
+
+#: src/verbs.c:417
+msgid "Raise selected objects to top"
+msgstr "Nosta valitut päällimmäiseksi"
+
+#: src/verbs.c:418
+msgid "Send to Back"
+msgstr "Taustalle"
+
+#: src/verbs.c:418
+msgid "Lower selected objects to bottom"
+msgstr "Vie valitut objektit alimmaiseksi"
+
+#: src/verbs.c:419
+msgid "Raise"
+msgstr "Nosta"
+
+#: src/verbs.c:419
+msgid "Raise selected objects one position"
+msgstr "Nosta valittuja objekteja yksi taso"
+
+#: src/verbs.c:420
+msgid "Lower"
+msgstr "Laske"
+
+#: src/verbs.c:420
+msgid "Lower selected objects one position"
+msgstr "Laske valittuja objekteja yksi taso"
+
+#: src/verbs.c:421
+msgid "Group selected objects"
+msgstr "Muodosta ryhmä"
+
+#: src/verbs.c:422
+msgid "Ungroup selected group"
+msgstr "Poista ryhmitys"
+
+#: src/verbs.c:423
+msgid "Combine"
+msgstr "Yhdistä"
+
+#: src/verbs.c:423
+msgid "Combine multiple paths"
+msgstr "Yhdistä useita polkuja"
+
+#: src/verbs.c:424
+msgid "Break Apart"
+msgstr "Katkaise"
+
+#: src/verbs.c:424
+msgid "Break selected path to subpaths"
+msgstr "Jaa valitut polut alipoluiksi"
+
+#: src/verbs.c:425
+msgid "Transform"
+msgstr "Muunnos"
+
+#: src/verbs.c:425
+msgid "Applies transformation"
+msgstr "Suorittaa muunnoksen"
+
+#. Object
+#: src/verbs.c:427
+msgid "Rotate 90 degrees"
+msgstr "Kierrä 90 astetta"
+
+#: src/verbs.c:427
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Kiertää objektia 90 astetta myötäpäivään"
+
+#: src/verbs.c:428
+msgid "Flatten object"
+msgstr "Yhdistä tasot"
+
+#: src/verbs.c:428
+msgid "Remove transformations from object"
+msgstr "Poista muunnoksia objektista"
+
+#: src/verbs.c:429
+msgid "Convert to Curves"
+msgstr "Muunna käyriksi"
+
+#: src/verbs.c:429
+msgid "Convert selected object to path"
+msgstr "Muunna valittu objekti käyräksi"
+
+#: src/verbs.c:430
+msgid "Flip Horizontally"
+msgstr "Vaakavippaus"
+
+#: src/verbs.c:431
+msgid "Flip selected objects horizontally"
+msgstr "Vippaa valitut objektit vaakatasossa"
+
+#: src/verbs.c:432
+msgid "Flip Vertically"
+msgstr "Pystyvippaus"
+
+#: src/verbs.c:433
+msgid "Flip selected objects vertically"
+msgstr "Vippaa valitut objektit pystytasossa"
+
+#. Event contexts
+#: src/verbs.c:435
+msgid "Select"
+msgstr "Valinta"
+
+#: src/verbs.c:435
+msgid "Select and transform objects"
+msgstr "Valitse ja muunna objekteja"
+
+#: src/verbs.c:436
+msgid "Node edit"
+msgstr "Kontrollipisteiden muokkaus"
+
+#: src/verbs.c:436
+msgid "Modify existing objects by control nodes"
+msgstr "Muokkaa objekteja kontrollipisteiden kautta"
+
+#: src/verbs.c:437
+msgid "Rectangle"
+msgstr "Suorakulmio"
+
+#: src/verbs.c:437
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "Luo suorakulmioita ja neliöitä"
+
+#: src/verbs.c:438
+msgid "Ellipse"
+msgstr "Ellipsi"
+
+#: src/verbs.c:438
+msgid "Create circles, ellipses and arcs"
+msgstr "Luo ympyröitä, ellipsejä ja kaaria"
+
+#: src/verbs.c:439
+msgid "Create stars and polygons"
+msgstr "Luo tähtiä ja monikulmioita"
+
+#: src/verbs.c:440
+msgid "Create spirals"
+msgstr "Luo spiraaleja"
+
+#: src/verbs.c:441
+msgid "Pencil"
+msgstr "Lyijykynä"
+
+#: src/verbs.c:441
+msgid "Draw freehand curves and straight lines"
+msgstr "Vapaa/viivan piirto"
+
+#: src/verbs.c:442
+msgid "Pen"
+msgstr "Kynä"
+
+#: src/verbs.c:442
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Piirrä suoria ja käyriä"
+
+#: src/verbs.c:443
+msgid "Calligraphy"
+msgstr "Kalligrafia"
+
+#: src/verbs.c:443
+msgid "Draw calligraphic lines"
+msgstr "Kalligrafia"
+
+#: src/verbs.c:444
+msgid "Create and edit text objects"
+msgstr "Luo ja muokkaa tekstiobjekteja"
+
+#: src/verbs.c:445
+msgid "Zoom into precisely selected area"
+msgstr "Suurenna valittuun alueeseen"
+
+#: src/verbs.c:446
+msgid "Dropper"
+msgstr "Pipetti"
+
+#: src/verbs.c:446
+msgid "Pick averaged colors from image"
+msgstr "Valitse keskimääräisiä värejä kuvasta"
+
+#. Zooming
+#: src/verbs.c:448
+msgid "In"
+msgstr "Sisään"
+
+#: src/verbs.c:448
+msgid "Zoom in drawing"
+msgstr "Suurenna näkymää"
+
+#: src/verbs.c:449
+msgid "Out"
+msgstr "Ulos"
+
+#: src/verbs.c:449
+msgid "Zoom out drawing"
+msgstr "Pienennä näkymää"
+
+#: src/verbs.c:450
+msgid "1:1"
+msgstr "1:1"
+
+#: src/verbs.c:450
+msgid "Set zoom factor to 1:1"
+msgstr "Aseta suurennussuhteeksi 1:1"
+
+#: src/verbs.c:451
+msgid "1:2"
+msgstr "1:2"
+
+#: src/verbs.c:451
+msgid "Set zoom factor to 1:2"
+msgstr "Aseta suurennussuhteeksi 1:2"
+
+#: src/verbs.c:452
+msgid "2:1"
+msgstr "2:1"
+
+#: src/verbs.c:452
+msgid "Set zoom factor to 2:1"
+msgstr "Aseta suurennussuhteeksi 2:1"
+
+#: src/verbs.c:453
+msgid "Fit the whole page into window"
+msgstr "Sovita koko sivu ikkunaan"
+
+#: src/verbs.c:454
+msgid "Fit the whole drawing into window"
+msgstr "Sovita koko piirros ikkunaan"
+
+#: src/verbs.c:455
+msgid "Fit the whole selection into window"
+msgstr "Sovita koko valinta ikkunaan"
+
+#. Dialogs
+#: src/verbs.c:457
+msgid "Display"
+msgstr "Näyttö"
+
+#: src/verbs.c:457
+msgid "Global display settings"
+msgstr "Yleiset näyttöasetukset"
+
+#: src/verbs.c:458
+msgid "Document"
+msgstr "Asiakirja"
+
+#: src/verbs.c:458
+msgid "Page layout"
+msgstr "Sivun asetukset"
+
+#: src/verbs.c:459
+msgid "Editing Window"
+msgstr "Toimitusikkuna"
+
+#: src/verbs.c:459
+msgid "Editing window properties"
+msgstr "Toimitusikkunan asetukset"
+
+#: src/verbs.c:460
+msgid "Tool Options"
+msgstr "Työkalun valinnat"
+
+#: src/verbs.c:461
+msgid "Tool Attributes"
+msgstr "Työkalun asetukset"
+
+#: src/verbs.c:462
+msgid "Fill and Stroke"
+msgstr "Täyttö ja reuna"
+
+#: src/verbs.c:462
+msgid "Fill and stroke settings"
+msgstr "Täytön ja reunan asetukset"
+
+#: src/verbs.c:464
+msgid "Transformations"
+msgstr "Muunnokset"
+
+#: src/verbs.c:465
+msgid "Align and Distribute"
+msgstr "Tasaus ja Jako"
+
+#: src/verbs.c:465
+msgid "Align and distribute"
+msgstr "Tasaus ja jako"
+
+#: src/verbs.c:466
+msgid "Text and Font"
+msgstr "Teksti ja kirjasin"
+
+#: src/verbs.c:466
+msgid "Text editing and font settings"
+msgstr "Tekstin toimitus- ja kirjasinasetukset"
+
+#: src/verbs.c:467
+msgid "XML Editor"
+msgstr "XML -toimitin"
+
+#. Family frame
+#: src/widgets/font-selector.c:148
+msgid "Font family"
+msgstr "Kirjasinperhe"
+
+#. Style frame
+#: src/widgets/font-selector.c:176
+msgid "Style"
+msgstr "Tyyli"
+
+#: src/widgets/font-selector.c:211
+msgid "Font size:"
+msgstr "Kirjasinkoko"
+
+#: src/widgets/font-selector.c:521
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "AaBbCcIiPpQq12368.;/()"
+
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "Lisää"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "gradientUnits"
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "gradientSpread"
+
+#: src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "Ei asiakirjaa"
+
+#: src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "Ei liukumia"
+
+#: src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "Ei liukumaa"
+
+#: src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "Alkuväri"
+
+#: src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "Loppuväri"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "Liukumavektori"
+
+#: src/widgets/paint-selector.c:621
+msgid "No objects"
+msgstr "Ei objekteja"
+
+#: src/widgets/paint-selector.c:635
+msgid "Multiple styles"
+msgstr "Useat tyylit"
+
+#: src/widgets/paint-selector.c:649
+msgid "No paint"
+msgstr "Ei väriä"
+
+#. Label
+#: src/widgets/paint-selector.c:739
+msgid "Mode:"
+msgstr "Moodi:"
+
+#: src/widgets/paint-selector.c:749
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+msgid "RGB Colorspace"
+msgstr "RGB -värikartta"
+
+#: src/widgets/paint-selector.c:750
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:751
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:751
+msgid "CMYK Colorspace"
+msgstr "CMYK värikartta"
+
+#. Use dropper
+#: src/widgets/paint-selector.c:758
+msgid "Get from dropper"
+msgstr "Valitse pipetillä"
+
+#: src/widgets/paint-selector.c:789
+msgid "Color paint"
+msgstr "Väritäyttö"
+
+#: src/widgets/paint-selector.c:859
+msgid "Linear gradient"
+msgstr "Suora liukuma"
+
+#: src/widgets/paint-selector.c:862
+msgid "Radial gradient"
+msgstr "Säteittäinen liukuma"
+
+#: src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "Punainen:"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "Vihreä:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "Sininen:"
+
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "Alpha:"
+
+#: src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "Glød:"
+
+#: src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "Värikylläisyys:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "Arvo:"
+
+#: src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "Syaani:"
+
+#: src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "Magenta:"
+
+#: src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "Keltainen:"
+
+#: src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "Musta:"
+
+#: src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr "Vaihda upotetuksi tai erilliseen ikkunaan"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Attribute"
+msgstr "Attribuutti"
+
+#: src/widgets/sp-xmlview-attr-list.c:56
+msgid "Value"
+msgstr "Arvo"
+

@@ -141,7 +141,7 @@ sp_text_edit_dialog (void)
 		f = gtk_frame_new (_("Layout"));
 		gtk_box_pack_start (GTK_BOX (hb), f, FALSE, FALSE, 4);
 
-		tbl = gtk_table_new (3, 4, FALSE);
+		tbl = gtk_table_new (4, 4, FALSE);
 		gtk_table_set_row_spacings (GTK_TABLE (tbl), 4);
 		gtk_table_set_col_spacings (GTK_TABLE (tbl), 4);
 		gtk_container_add (GTK_CONTAINER (f), tbl);
@@ -208,6 +208,24 @@ sp_text_edit_dialog (void)
 		g_signal_connect ((GObject *) ((GtkCombo *) c)->entry, "changed", (GCallback) sp_text_edit_dialog_line_spacing_changed, dlg);
 		gtk_table_attach (GTK_TABLE (tbl), c, 1, 4, 2, 3, 0, 0, 4, 0);
 		g_object_set_data (G_OBJECT (dlg), "line_spacing", c);
+
+		l = gtk_label_new (_("Spacing:"));
+		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+		gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 3, 4, 0, 0, 4, 0);
+		px = sp_icon_new_scaled (SP_ICON_SIZE_BUTTON, "space_default");
+		b = gtk_radio_button_new (NULL);
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
+		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
+		gtk_container_add (GTK_CONTAINER (b), px);
+		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 3, 4, 0, 0, 0, 0);
+		g_object_set_data (G_OBJECT (dlg), "space_default", b);
+		px = sp_icon_new_scaled (SP_ICON_SIZE_BUTTON, "space_preserve");
+		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
+		g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_text_edit_dialog_any_toggled), dlg);
+		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
+		gtk_container_add (GTK_CONTAINER (b), px);
+		gtk_table_attach (GTK_TABLE (tbl), b, 2, 3, 3, 4, 0, 0, 0, 0);
+		g_object_set_data (G_OBJECT (dlg), "space_preserve", b);
 
 		/* Font preview */
 		preview = sp_font_preview_new ();
@@ -332,6 +350,12 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		combo = g_object_get_data ((GObject *) dlg, "line_spacing");
 		sstr = gtk_entry_get_text ((GtkEntry *) ((GtkCombo *) (combo))->entry);
 		sp_repr_set_attr (repr, "sodipodi:linespacing", sstr);
+		b = g_object_get_data (G_OBJECT (dlg), "space_preserve");
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) {
+			sp_repr_set_attr (repr, "xml:space", "preserve");
+		} else {
+			sp_repr_set_attr (repr, "xml:space", "default");
+		}
 
 		sp_repr_css_change (repr, css, "style");
 		sp_repr_css_attr_unref (css);
@@ -575,8 +599,15 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 		}
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
 		combo = g_object_get_data (G_OBJECT (dlg), "line_spacing");
-		sstr = (repr) ? sp_repr_attr (repr, "sodipodi:linespacing") : NULL;
+		sstr = (repr) ? sp_repr_get_attr (repr, "sodipodi:linespacing") : NULL;
 		gtk_entry_set_text ((GtkEntry *) ((GtkCombo *) (combo))->entry, (sstr) ? sstr : (const unsigned char *) "100%");
+		if (text &&
+			SP_OBJECT(text)->xml_space.value == SP_XML_SPACE_PRESERVE) {
+			b = g_object_get_data (G_OBJECT (dlg), "space_preserve");
+		} else {
+			b = g_object_get_data (G_OBJECT (dlg), "space_default");
+		}
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), TRUE);
 	}
 
 	g_object_set_data (G_OBJECT (dlg), "blocked", NULL);
