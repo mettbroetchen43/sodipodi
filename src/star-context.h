@@ -32,6 +32,8 @@ struct _SPStarContext {
 
 	/* Number of corners */
 	gint magnitude;
+	/* Outer/inner radius ratio */
+	gdouble proportion;
 };
 
 struct _SPStarContextClass {

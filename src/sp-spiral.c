@@ -114,7 +114,7 @@ sp_spiral_init (SPSpiral * spiral)
 	spiral->cy         = 0.0;
 	spiral->exp        = 1.0;
 	spiral->revo       = 3.0;
-	spiral->rad        = 0.0;
+	spiral->rad        = 1.0;
 	spiral->arg        = 0.0;
 	spiral->t0         = 0.0;
 }
@@ -225,7 +225,7 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 	} else if (!strcmp (attr, "sodipodi:expansion")) {
 		if (str) {
 			spiral->exp = atof (str);
-			spiral->exp = MAX (spiral->exp, 0.0);
+			spiral->exp = CLAMP (spiral->exp, 0.0, 1000.0);
 		} else {
 			spiral->exp = 1.0;
 		}
@@ -243,7 +243,7 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 		    (unit != SP_SVG_UNIT_EM) ||
 		    (unit != SP_SVG_UNIT_EX) ||
 		    (unit != SP_SVG_UNIT_PERCENT)) {
-			spiral->rad = MAX (spiral->rad, 0.0);
+			spiral->rad = MAX (spiral->rad, 0.001);
 		}
 		sp_shape_set_shape (shape);
 	} else if (strcmp (attr, "sodipodi:argument") == 0) {
@@ -256,7 +256,7 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 	} else if (strcmp (attr, "sodipodi:t0") == 0) {
 		if (str) {
 			spiral->t0 = atof (str);
-			spiral->t0 = CLAMP (spiral->t0, -1.0, 1.0);
+			spiral->t0 = CLAMP (spiral->t0, -1.0, 0.999);
 		} else {
 			spiral->t0 = 0.0;
 		}
@@ -345,7 +345,9 @@ sp_spiral_set_shape (SPShape *shape)
 
 	sp_path_clear (SP_PATH (shape));
 	
+#if 0
 	if (spiral->rad < SP_EPSILON) return;
+#endif
 	
 	c = sp_curve_new ();
 	
@@ -460,7 +462,7 @@ sp_spiral_outer_set (SPItem   *item,
 	dx = p->x - spiral->cx;
 	dy = p->y - spiral->cy;
 	spiral->arg = atan2(dy, dx) - 2.0*M_PI*spiral->revo;
-	spiral->rad = hypot(dx, dy);
+	spiral->rad = MAX (hypot (dx, dy), 0.001);
 #if 0
  /* we need round function */
 /*  	arg  = -atan2(p->y, p->x) - spiral->arg; */
@@ -531,7 +533,7 @@ sp_spiral_set       (SPSpiral          *spiral,
 	spiral->cy         = cy;
 	spiral->exp        = exp;
 	spiral->revo       = revo;
-	spiral->rad        = rad;
+	spiral->rad        = MAX (rad, 0.001);
 	spiral->arg        = arg;
 	spiral->t0         = t0;
 	

@@ -17,6 +17,9 @@ struct _SPSpiralContext {
 	SPEventContext event_context;
 	SPItem * item;
 	ArtPoint center;
+	gdouble revo;
+	gdouble exp;
+	gdouble t0;
 };
 
 struct _SPSpiralContextClass {

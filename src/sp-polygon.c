@@ -142,23 +142,25 @@ sp_svg_write_polygon (const ArtBpath * bpath)
 }
 
 static void
-sp_polygon_write_repr (SPObject * object, SPRepr * repr)
+sp_polygon_write_repr (SPObject *object, SPRepr *repr)
 {
-        SPPath     *path;
+        SPPath *path;
         SPPathComp *pathcomp;
-        ArtBpath   *abp;
-        gchar      *str;
+        ArtBpath *abp;
+        gchar *str;
 
-        path = SP_PATH(object);
-        g_assert (path->comp);
-        g_assert (path->comp->data);
-        pathcomp = path->comp->data;
-        g_assert (pathcomp);
-        abp = sp_curve_first_bpath (pathcomp->curve);
-	str = sp_svg_write_polygon (abp);
-	sp_repr_set_attr (repr, "points", str);
-	g_free (str);
+        path = SP_PATH (object);
 
+	if (path->comp) {
+		pathcomp = path->comp->data;
+		abp = sp_curve_first_bpath (pathcomp->curve);
+		str = sp_svg_write_polygon (abp);
+		sp_repr_set_attr (repr, "points", str);
+		g_free (str);
+	} else {
+		g_warning ("SPPolygon has NULL path");
+		sp_repr_set_attr (repr, "points", "0,0,1,0,1,1,0,1");
+	}
 #if 0
 	/* stop to propagete to parent class.
 	 * we don't need to generate d="" attribute.

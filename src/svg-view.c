@@ -234,8 +234,8 @@ sp_svg_view_rescale (SPSVGView *svgview, gboolean event)
 
 	if (svgview->rescale) {
 		gdouble hscale, vscale;
-		hscale = svgview->width / sp_document_width (doc);
-		vscale = svgview->height / sp_document_height (doc);
+		hscale = svgview->width / (sp_document_width (doc) * 1.25);
+		vscale = svgview->height / (sp_document_height (doc) * 1.25);
 		if (svgview->keepaspect) {
 			if (hscale > vscale) {
 				hscale = vscale;
@@ -254,7 +254,9 @@ sp_svg_view_rescale (SPSVGView *svgview, gboolean event)
 	}
 
 	if (event) {
-		sp_view_emit_resized (SP_VIEW (svgview), sp_document_width (doc) * svgview->hscale, sp_document_height (doc) * svgview->vscale);
+		sp_view_emit_resized (SP_VIEW (svgview),
+				      sp_document_width (doc) * 1.25 * svgview->hscale,
+				      sp_document_height (doc) * 1.25 * svgview->vscale);
 	}
 }
 
@@ -383,8 +385,8 @@ sp_svg_view_widget_size_request (GtkWidget *widget, GtkRequisition *req)
 		gdouble width, height;
 
 		svgv = SP_SVG_VIEW (v);
-		width = sp_document_width (v->doc) * svgv->hscale;
-		height = sp_document_height (v->doc) * svgv->vscale;
+		width = sp_document_width (v->doc) * 1.25 * svgv->hscale;
+		height = sp_document_height (v->doc) * 1.25 * svgv->vscale;
 
 		if (width <= vw->maxwidth) {
 			hpol = GTK_POLICY_NEVER;

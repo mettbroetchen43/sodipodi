@@ -6,7 +6,6 @@
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
- *   Frank Felfe <innerspace@iname.com>
  *
  * Copyright (C) 1999-2002 authors
  * Copyright (C) 2000-2002 Ximian, Inc.
@@ -94,14 +93,19 @@ GList * sp_repr_attributes (SPRepr * repr);
 void sp_repr_set_data (SPRepr * repr, gpointer data);
 gpointer sp_repr_data (SPRepr * repr);
 
-SPRepr * sp_repr_parent (SPRepr * repr);
-const GList * sp_repr_children (SPRepr * repr);
-gint sp_repr_n_children (SPRepr * repr);
+/* Tree */
+SPRepr *sp_repr_parent (SPRepr *repr);
+SPRepr *sp_repr_children (SPRepr *repr);
+SPRepr *sp_repr_next (SPRepr *repr);
+
 gboolean sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref);
 gboolean sp_repr_remove_child (SPRepr * repr, SPRepr * child);
+
 #if 0
-void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data);
+const GList *sp_repr_get_children_list (SPRepr * repr);
 #endif
+gint sp_repr_n_children (SPRepr * repr);
+
 /* IO */
 
 SPReprDoc * sp_repr_read_file (const gchar * filename);

@@ -66,6 +66,22 @@ sp_xml_element_setAttributeNS (SPXMLElement *element, const guchar *nr, const gu
 	sp_repr_set_attr (element, qname, val);
 }
 
+SPRepr *
+sp_repr_children (SPRepr *repr)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	return repr->children;
+}
+
+SPRepr *
+sp_repr_next (SPRepr *repr)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	return repr->children;
+}
+
 gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
 {
 	gchar * result;

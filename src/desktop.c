@@ -81,10 +81,6 @@ static void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * sel
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 static void sp_desktop_zoom_update (SPDesktop * desktop);
 
-#if 0
-static gint select_set_id =0;
-#endif
-
 void sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw);
 
 static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
@@ -182,12 +178,13 @@ sp_desktop_destroy (GtkObject *object)
 	sodipodi_remove_desktop (desktop);
 
 	if (desktop->event_context) {
-		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+		sp_event_context_finish (desktop->event_context);
+		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
 		desktop->event_context = NULL;
 	}
 
 	if (desktop->selection) {
-		gtk_object_unref (GTK_OBJECT (desktop->selection));
+		gtk_object_destroy (GTK_OBJECT (desktop->selection));
 		desktop->selection = NULL;
 	}
 
@@ -309,7 +306,12 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 
 	desktop->selection = sp_selection_new (desktop);
 
+#if 0
 	desktop->event_context = sp_event_context_new (SP_TYPE_SELECT_CONTEXT, desktop, NULL);
+#else
+	/* fixme: I think it is safe, but is it nice? (Lauris) */
+	sp_desktop_set_event_context (desktop, SP_TYPE_SELECT_CONTEXT, "tools.select");
+#endif
 
 	/* fixme: Setup display rectangle */
 
@@ -334,13 +336,7 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 	gnome_canvas_set_scroll_region (canvas, -SP_DESKTOP_SCROLL_LIMIT, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
 
 	gtk_signal_connect (GTK_OBJECT (canvas), "size-allocate", GTK_SIGNAL_FUNC (sp_desktop_size_allocate), desktop);
-#if 0
-	if (select_set_id<1) select_set_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", 
-								 GTK_SIGNAL_FUNC (sp_desktop_update_scrollbars),NULL);
-#else
-	gtk_signal_connect (GTK_OBJECT (desktop->selection), "modified", 
-			    GTK_SIGNAL_FUNC (sp_desktop_selection_modified), desktop);
-#endif
+	gtk_signal_connect (GTK_OBJECT (desktop->selection), "modified", GTK_SIGNAL_FUNC (sp_desktop_selection_modified), desktop);
 
 	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
 	if (ai) {
@@ -480,12 +476,6 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   SPDesktop * desktop;
 
   if (selection == NULL) {
-#if 0
-    if (select_set_id>0) {
-      gtk_signal_disconnect (GTK_OBJECT (sodipodi), select_set_id);
-      select_set_id = 0;
-    }
-#endif
     return;
   }
 
@@ -759,7 +749,7 @@ sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *co
 
 	if (desktop->event_context) {
 		sp_event_context_finish (desktop->event_context);
-		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
 	}
 
 	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
@@ -1108,7 +1098,7 @@ sp_desktop_widget_destroy (GtkObject *object)
 	dtw = SP_DESKTOP_WIDGET (object);
 
 	if (dtw->desktop) {
-		gtk_object_unref (GTK_OBJECT (dtw->desktop));
+		gtk_object_destroy (GTK_OBJECT (dtw->desktop));
 		dtw->desktop = NULL;
 	}
 

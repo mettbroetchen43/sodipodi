@@ -82,13 +82,23 @@ sp_tool_attributes_dialog_setup (SPEventContext *ec)
 	if (ec) {
 		const gchar *typename;
 		typename = gtk_type_name (GTK_OBJECT_TYPE (ec));
-		if (!strcmp (typename, "SPStarContext")) {
+		if (!strcmp (typename, "SPSpiralContext")) {
+			SPRepr *repr;
+			repr = sodipodi_get_repr (SODIPODI, "tools.shapes.spiral");
+			if (repr) {
+				guchar *labels[] = {N_("Revolution:"), N_("Expansion"), N_("Inner radius")};
+				guchar *attrs[] = {"revolution", "expansion", "t0"};
+				tbl = sp_attribute_table_new_repr (repr, 3, (const guchar **) labels, (const guchar **) attrs);
+			} else {
+				tbl = gtk_label_new (_("Missing tool preferences"));
+			}
+		} else if (!strcmp (typename, "SPStarContext")) {
 			SPRepr *repr;
 			repr = sodipodi_get_repr (SODIPODI, "tools.shapes.star");
 			if (repr) {
-				guchar *labels[] = {N_("Number of corners:")};
-				guchar *attrs[] = {"magnitude"};
-				tbl = sp_attribute_table_new_repr (repr, 1, (const guchar **) labels, (const guchar **) attrs);
+				guchar *labels[] = {N_("Corners:"), N_("Proportion")};
+				guchar *attrs[] = {"magnitude", "proportion"};
+				tbl = sp_attribute_table_new_repr (repr, 2, (const guchar **) labels, (const guchar **) attrs);
 			} else {
 				tbl = gtk_label_new (_("Missing tool preferences"));
 			}

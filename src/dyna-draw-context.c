@@ -1025,6 +1025,8 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	ddc = SP_DYNA_DRAW_CONTEXT (ec);
 
 	tbl = gtk_table_new (5, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (tbl), 4);
+	gtk_table_set_row_spacings (GTK_TABLE (tbl), 4);
 
 	/* Mass */
 	l = gtk_label_new (_("Mass:"));

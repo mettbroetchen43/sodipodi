@@ -1,3 +1,7 @@
+2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* POTFILES.in: Added more files
+
 2002-09-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* POTFILES.in: Added src/dyna-draw-context.c

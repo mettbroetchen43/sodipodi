@@ -13,7 +13,10 @@
 
 #include <math.h>
 #include <string.h>
+#include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "rubberband.h"
 #include "sodipodi-private.h"
 #include "document.h"
@@ -44,6 +47,8 @@ static void sp_select_context_setup (SPEventContext *ec);
 static void sp_select_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 static gint sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
+
+static GtkWidget *sp_select_context_config_widget (SPEventContext *ec);
 
 static void sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state);
 
@@ -93,6 +98,7 @@ sp_select_context_class_init (SPSelectContextClass * klass)
 	event_context_class->set = sp_select_context_set;
 	event_context_class->root_handler = sp_select_context_root_handler;
 	event_context_class->item_handler = sp_select_context_item_handler;
+	event_context_class->config_widget = sp_select_context_config_widget;
 
 	// cursors in select context
 	CursorSelectMouseover = sp_cursor_new_from_xpm (cursor_select_m_xpm , 1, 1); 
@@ -572,3 +578,82 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	g_string_free (ys, FALSE);
 }
 
+/* Gtk styff */
+
+static void
+sp_select_context_show_toggled (GtkToggleButton *button, SPSelectContext *sc)
+{
+	if (gtk_toggle_button_get_active (button)) {
+		const gchar *val;
+		val = gtk_object_get_data (GTK_OBJECT (button), "value");
+		sp_repr_set_attr (SP_EVENT_CONTEXT_REPR (sc), "show", val);
+	}
+}
+
+static void
+sp_select_context_transform_toggled (GtkToggleButton *button, SPSelectContext *sc)
+{
+	if (gtk_toggle_button_get_active (button)) {
+		const gchar *val;
+		val = gtk_object_get_data (GTK_OBJECT (button), "value");
+		sp_repr_set_attr (SP_EVENT_CONTEXT_REPR (sc), "transform", val);
+	}
+}
+
+static GtkWidget *
+sp_select_context_config_widget (SPEventContext *ec)
+{
+	SPSelectContext *sc;
+	GtkWidget *vb, *f, *fb, *b;
+
+	sc = SP_SELECT_CONTEXT (ec);
+
+	vb = gtk_vbox_new (FALSE, 4);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
+
+	f = gtk_frame_new (_("Visual transformation"));
+	gtk_widget_show (f);
+	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
+
+	fb = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (fb);
+	gtk_container_add (GTK_CONTAINER (f), fb);
+
+	b = gtk_radio_button_new_with_label (NULL, _("Show content"));
+	gtk_widget_show (b);
+	gtk_object_set_data (GTK_OBJECT (b), "value", "content");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.show == SP_SELTRANS_SHOW_CONTENT);
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_show_toggled), sc);
+
+	b = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (b)), _("Show outline"));
+	gtk_widget_show (b);
+	gtk_object_set_data (GTK_OBJECT (b), "value", "outline");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.show == SP_SELTRANS_SHOW_OUTLINE);
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_show_toggled), sc);
+
+	f = gtk_frame_new (_("Object transformation"));
+	gtk_widget_show (f);
+	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
+
+	fb = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (fb);
+	gtk_container_add (GTK_CONTAINER (f), fb);
+
+	b = gtk_radio_button_new_with_label (NULL, _("Optimize"));
+	gtk_widget_show (b);
+	gtk_object_set_data (GTK_OBJECT (b), "value", "optimize");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.transform == SP_SELTRANS_TRANSFORM_OPTIMIZE);
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_transform_toggled), sc);
+
+	b = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (b)), _("Preserve"));
+	gtk_widget_show (b);
+	gtk_object_set_data (GTK_OBJECT (b), "value", "keep");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), sc->seltrans.transform == SP_SELTRANS_TRANSFORM_KEEP);
+	gtk_box_pack_start (GTK_BOX (fb), b, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_select_context_transform_toggled), sc);
+
+	return vb;
+}

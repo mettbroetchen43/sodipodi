@@ -106,7 +106,8 @@ sp_star_init (SPStar * star)
 	star->sides = 5;
 	star->cx = 0.0;
 	star->cy = 0.0;
-	star->r1 = star->r2 = 0.0;
+	star->r1 = 1.0;
+	star->r2 = 0.001;
 	star->arg1 = star->arg2 = 0.0;
 }
 
@@ -207,8 +208,9 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 		    (unit == SP_SVG_UNIT_EM) ||
 		    (unit == SP_SVG_UNIT_EX) ||
 		    (unit == SP_SVG_UNIT_PERCENT)) {
-			star->r1 = 0.0;
+			star->r1 = 1.0;
 		}
+		/* fixme: Need CLAMP (Lauris) */
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:r2")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r2) ||
@@ -262,8 +264,10 @@ sp_star_set_shape (SPShape *shape)
 
 	sp_path_clear (SP_PATH (shape));
 	
-	if ((star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
+#if 0
+	if (star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
 	if (star->sides < 3) return;
+#endif
 	
 	c = sp_curve_new ();
 	
@@ -274,7 +278,7 @@ sp_star_set_shape (SPShape *shape)
 	sp_curve_moveto (c, p.x, p.y);
 	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, &p);
 	sp_curve_lineto (c, p.x, p.y);
-	for (i = 1; i<sides; i++) {
+	for (i = 1; i < sides; i++) {
 		sp_star_get_xy (star, SP_STAR_POINT_KNOT1, i, &p);
 		sp_curve_lineto (c, p.x, p.y);
 		sp_star_get_xy (star, SP_STAR_POINT_KNOT2, i, &p);
@@ -385,20 +389,16 @@ sp_star_knot_holder (SPItem *item, SPDesktop *desktop)
 }
 
 void
-sp_star_set (SPStar * star,
-	     gint sides,
-	     gdouble cx, gdouble cy,
-	     gdouble r1, gdouble r2,
-	     gdouble arg1, gdouble arg2)
+sp_star_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble r1, gdouble r2, gdouble arg1, gdouble arg2)
 {
 	g_return_if_fail (star != NULL);
 	g_return_if_fail (SP_IS_STAR (star));
 	
-	star->sides = sides;
+	star->sides = CLAMP (sides, 3, 16);
 	star->cx = cx;
 	star->cy = cy;
-	star->r1 = r1;
-	star->r2 = r2;
+	star->r1 = MAX (r1, 0.001);
+	star->r2 = CLAMP (r2, 0.0, star->r1);
 	star->arg1 = arg1;
 	star->arg2 = arg2;
 	
@@ -442,26 +442,24 @@ sp_star_snappoints (SPItem * item, GSList * points)
  *
  * Initial item coordinate system is same as document coordinate system.
  */
+
 void
-sp_star_get_xy (SPStar     *star,
-		SPStarPoint point,
-		gint        index,
-		ArtPoint   *p)
+sp_star_get_xy (SPStar *star, SPStarPoint point, gint index, ArtPoint *p)
 {
 	gdouble arg, darg;
 
-	darg = 2.0*M_PI/(double)star->sides;
+	darg = 2.0 * M_PI / (double) star->sides;
 
 	switch (point) {
 	case SP_STAR_POINT_KNOT1:
 		arg = star->arg1 + index * darg;
-		p->x = star->r1 * cos(arg) + star->cx;
-		p->y = star->r1 * sin(arg) + star->cy;
+		p->x = star->r1 * cos (arg) + star->cx;
+		p->y = star->r1 * sin (arg) + star->cy;
 		break;
 	case SP_STAR_POINT_KNOT2:
 		arg = star->arg2 + index * darg;
-		p->x = star->r2 * cos(arg) + star->cx;
-		p->y = star->r2 * sin(arg) + star->cy;
+		p->x = star->r2 * cos (arg) + star->cx;
+		p->y = star->r2 * sin (arg) + star->cy;
 		break;
 	}
 }

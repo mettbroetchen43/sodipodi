@@ -1,5 +1,22 @@
 2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/help.c (sp_help_about): Use document width and height
+
+	* src/svg-view.c (sp_svg_view_rescale): Use pixel coords
+	(sp_svg_view_widget_size_request): Ditto
+
+	* src/spiral-context.c (sp_spiral_context_config_widget): Implement
+	(sp_spiral_context_setup): Ditto
+	(sp_spiral_context_set): Ditto
+
+	* src/star-context.c (sp_star_context_config_widget): Implement
+
+	* src/desktop.c (sp_desktop_new): Use repr key for initial select context
+
+	* src/select-context.c (sp_select_context_config_widget): Implement
+	(sp_select_context_transform_toggled): Helper
+	(sp_select_context_show_toggled): Ditto
+
 	* src/display/nr-arena-shape.c (nr_arena_shape_update): Do not stroke,
 	if width < 0.125
 
