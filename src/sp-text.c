@@ -174,7 +174,8 @@ sp_string_read_content (SPObject *object)
 		unsigned int unival;
 		unsigned int preserve, inspace, intext;
 		int pos;
-		preserve = (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE);
+
+		preserve = SP_STRING_IS_SPACE_PRESERVE(string);
 		inspace = FALSE;
 		intext = FALSE;
 		for (p = t; p && *p; p = g_utf8_next_char (p)) {
@@ -191,6 +192,8 @@ sp_string_read_content (SPObject *object)
 				intext = TRUE;
 			}
 		}
+		if (!preserve && inspace && intext) string->ulen += 1;
+
 		string->uchars = nr_new (NRUShort, string->ulen + 1);
 		string->spstart = FALSE;
 		string->spend = FALSE;
@@ -212,7 +215,9 @@ sp_string_read_content (SPObject *object)
 				intext = TRUE;
 			}
 		}
-		string->uchars[pos] = 0;
+		if (!preserve && inspace && intext) string->uchars[pos++] = 32;
+
+		string->uchars[pos] = '\0';
 		string->spend = inspace;
 	}
 
@@ -289,7 +294,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 {
 	SPChars *chars;
 	SPStyle *style;
-	/* const guchar *p; */
 	gint len;
 	NRMatrixF a;
 	gdouble x, y;
@@ -1992,15 +1996,87 @@ sp_text_append (SPText *text, const guchar *utf8)
 	return string->start + cchars + uchars;
 }
 
-/* Returns position after inserted */
+static NRUShort *
+ucs2_concat_ws (NRUShort *d, NRUShort *s, int len)
+{
+	NRUShort *dp, *sp, *spacep;
+	gboolean inspace, intext;
 
+	g_assert (d);
+
+	dp = d;
+	inspace = FALSE;
+	intext = FALSE;
+	while (*dp) {
+		if (g_unichar_isspace (*dp)) {
+			if (!inspace) spacep = dp;
+			inspace = TRUE;
+		} else {
+			inspace = FALSE;
+			intext = TRUE;
+		}
+		dp++;
+	}
+	if (inspace) dp = spacep;
+
+	if (!s || len == 0) {
+		if (inspace && intext) *dp++ = ' ';
+		*dp = '\0';
+		return dp;
+	}
+
+	sp = s;
+	if (len < 0) {
+		while (*sp) {
+			if (g_unichar_isspace (*sp)) {
+				inspace = TRUE;
+				sp++;
+			} else {
+				if (inspace && intext) *dp++ = ' ';
+				*dp++ = *sp++;
+				inspace = FALSE;
+				intext = TRUE;
+			}
+		}
+	} else {
+		int i;
+		for (i = 0; *sp && (i < len); i++) {
+			if (g_unichar_isspace (*sp)) {
+				inspace = TRUE;
+				sp++;
+			} else {
+				if (inspace) *dp++ = ' ';
+				*dp++ = *sp++;
+				inspace = FALSE;
+				intext = TRUE;
+			}
+		}
+	}
+
+	if (inspace && intext) *dp++ = ' ';
+	*dp = '\0';
+
+#if 0
+	guchar *utf8;
+	utf8 = arikkei_ucs2_utf8_strdup (d);
+	g_print ("d[%s] ", utf8);
+	g_free (utf8);
+	utf8 = arikkei_ucs2_utf8_strdup (s);
+	g_print ("s[%s]\n", utf8);
+	g_free (utf8);
+#endif
+
+	return dp;
+}
+
+/* Returns position after inserted */
 gint
 sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 {
 	SPObject *child;
 	SPString *string;
 	NRUShort *ucs2, *new, *ip;
-	int slen, ulen, i;
+	int slen, ulen, newpos, i;
 
 	g_return_val_if_fail (text != NULL, -1);
 	g_return_val_if_fail (SP_IS_TEXT (text), -1);
@@ -2024,6 +2100,39 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	ucs2 = g_utf8_to_utf16 (utf8, -1, NULL, NULL, NULL);
 	new = g_new (NRUShort, arikkei_ucs2_strlen (string->uchars) + ulen + 1);
 
+#if 1
+	if (SP_STRING_IS_SPACE_PRESERVE (string)) {
+		/* Copy start */
+		arikkei_ucs2_strncpy (string->uchars, new, slen);
+		/* Copy string */
+		arikkei_ucs2_strncpy (ucs2, new + slen, ulen);
+		for (i = slen; i < slen + ulen; i++) {
+			if ((new[i] < 32) && ((new[i] != 9) && (new[i] != 10) && (new[i] != 13))) new[i] = 32;
+		}
+		/* Copy end */
+		arikkei_ucs2_strncpy (ip, new + slen + ulen, -1);
+
+		newpos = pos + ulen;
+	} else {
+		NRUShort *p1, *p2;
+		new[0] = '\0';
+
+		/* Copy start */
+		p1 = ucs2_concat_ws (new, string->uchars, slen);
+		/* Copy string */
+		p2 = ucs2_concat_ws (new, ucs2, -1); /* ulen */
+		/* Copy end */
+		ucs2_concat_ws (new, ip, -1);
+
+		newpos = pos + (int)(p2 - p1);
+	}
+	
+	sp_repr_set_content_ucs2 (SP_OBJECT_REPR (string), new);
+	g_free (new);
+	g_free (ucs2);
+
+	return newpos;
+#else
 	/* Copy start */
 	arikkei_ucs2_strncpy (string->uchars, new, slen);
 	/* Copy string */
@@ -2039,6 +2148,8 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	g_free (ucs2);
 
 	return pos + ulen;
+/* 	return CLAMP (pos + ulen, string->start, string->start + string->ulen); */
+#endif
 }
 
 /* Returns start position */
@@ -2177,7 +2288,6 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 	SPObject *child;
 	SPString *string;
 	gfloat x, y;
-	NRRasterFont *rfont;
 	NRPosGlyph *pglyph;
 	/* NRRectF area; */
 	/* NRPointF adv; */
@@ -2185,10 +2295,14 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 	child = sp_text_get_child_by_position (text, position);
 	string = SP_TEXT_CHILD_STRING (child);
 
-	rfont = string->pgl->rfont;
-	pglyph = &string->pgl->glyphs[position - string->start];
-	x = pglyph->x;
-	y = pglyph->y;
+	if (string->ulen > 0 && string->pgl) {
+		pglyph = &string->pgl->glyphs[position - string->start];
+		x = pglyph->x;
+		y = pglyph->y;
+	} else {
+		x = string->ly->x.computed;
+		y = string->ly->y.computed;
+	}
 
 	if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		p0->x = x - child->style->font_size.computed / 2.0;

@@ -94,6 +94,7 @@ struct _SPStringClass {
 
 #define SP_STRING_TEXT(s) (SP_STRING (s)->text)
 #define SP_STRING_UCHARS(s) (SP_STRING (s)->uchars)
+#define SP_STRING_IS_SPACE_PRESERVE(s) (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE)
 
 GType sp_string_get_type (void);
 
