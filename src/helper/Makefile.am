@@ -12,6 +12,7 @@ INCLUDES = \
 noinst_LIBRARIES = libspchelp.a libspgt1.a
 
 libspchelp_a_SOURCES = \
+	canvas-helper.h \
 	art-utils.c art-utils.h \
 	art-rgba-svp.c art-rgba-svp.h \
 	art_rgb_affine_private.h \
@@ -22,7 +23,8 @@ libspchelp_a_SOURCES = \
 	sodipodi-ctrl.c sodipodi-ctrl.h \
 	sodipodi-ctrlrect.c sodipodi-ctrlrect.h \
 	sp-ctrlline.c sp-ctrlline.h \
-	png-write.c png-write.h
+	png-write.c png-write.h \
+	print-bpath.c print-bpath.h
 
 libspgt1_a_SOURCES = \
 	gt1.h \

@@ -46,4 +46,5 @@ src/dialogs/Makefile
 src/display/Makefile
 intl/Makefile
 po/Makefile.in
+sodipodi.spec
 ])

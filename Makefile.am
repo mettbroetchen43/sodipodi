@@ -5,10 +5,10 @@ SUBDIRS = intl po macros src
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/glade; then \
-	  $(mkinstalldirs) $(DESTDIR)@PACKAGE_GLADE_DIR@; \
+	  $(mkinstalldirs) $(datadir)/sodipodi; \
 	  for uifile in $(srcdir)/glade/*; do \
 	    if test -f $$uifile; then \
-	      $(INSTALL_DATA) $$uifile $(DESTDIR)@PACKAGE_GLADE_DIR@; \
+	      $(INSTALL_DATA) $$uifile $(datadir)/sodipodi; \
 	    fi \
 	  done \
 	fi

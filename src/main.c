@@ -9,8 +9,14 @@
 #  include <config.h>
 #endif
 
+#include <locale.h>
+
 #include <gnome.h>
 #include <glade/glade.h>
+
+#ifdef __FreeBSD__
+#include <floatingpoint.h>
+#endif
 
 #include "sodipodi.h"
 #include "mdi.h"
@@ -86,6 +92,10 @@ main (int argc, char *argv[])
 	gchar *filename = NULL;
 	gchar *to_filename = NULL;
 
+#ifdef __FreeBSD__
+	fpsetmask(fpgetmask() & ~(FP_X_DZ|FP_X_INV));
+#endif
+
 	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
 	textdomain (PACKAGE);
 
@@ -101,6 +111,8 @@ main (int argc, char *argv[])
 
 		gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv,
                                     	    options, 0, &pctx);
+
+		setlocale (LC_NUMERIC, "C");
 
 		/* Would normally check args here, but extract_args has
 		 * already done that, and we just needed to use
@@ -142,6 +154,8 @@ main (int argc, char *argv[])
 
 		gtk_type_init();
 
+		setlocale (LC_NUMERIC, "C");
+
                 doc = sp_document_new_from_file (filename);
                 g_assert (doc != NULL);
 
@@ -158,6 +172,10 @@ main (int argc, char *argv[])
                 }
 	}
 
+#ifdef __FreeBSD__
+	fpresetsticky(FP_X_DZ|FP_X_INV);
+	fpsetmask(FP_X_DZ|FP_X_INV);
+#endif
 	return 0;
 }
 

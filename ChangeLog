@@ -1,3 +1,8 @@
+2000-03-27  Lauris Kaplinski <lauris@ariman.ee>
+
+    * main.c: Applied Yukihiro Nakai FreeBSD patches
+    * main.c: Set LC_NUMERIC to "C", to avoid localisation of SVG files :-(
+
 2000-01-25  Lauris Kaplinski <lauris@ariman.ee>
 
     * dialogs/export.*: a bit better png exporting, still sucks

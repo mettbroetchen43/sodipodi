@@ -12,10 +12,11 @@ INCLUDES = \
 noinst_LIBRARIES = libspsvg.a
 
 libspsvg_a_SOURCES = \
-	svg-length.c svg-length.h \
-	svg-color.c svg-color.h \
-	svg-affine.c svg-affine.h \
-	svg-path.c svg-path.h \
+	svg.h \
+	svg-length.c \
+	svg-color.c \
+	svg-affine.c \
+	svg-path.c \
 	gnome-canvas-bpath-util.c gnome-canvas-bpath-util.h \
 	svg-fill.c \
 	svg-stroke.c \

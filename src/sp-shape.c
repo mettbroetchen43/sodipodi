@@ -10,6 +10,8 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 
+#include "helper/print-bpath.h"
+
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
 #include "sp-path-component.h"
@@ -132,6 +134,9 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			gnome_print_concat (gpc, comp->affine);
 			bpath = comp->curve->bpath;
 
+			gnome_print_bpath (gpc, bpath, FALSE);
+
+#if 0
 			gnome_print_newpath (gpc);
 			gnome_print_moveto (gpc,
 				bpath->x3,
@@ -169,6 +174,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 				}
 			}
 			gnome_print_closepath (gpc);
+#endif
 
 			if (shape->fill->type == SP_FILL_COLOR) {
 				r = (double) ((shape->fill->color >> 24) & 0xff) / 255.0;
@@ -297,7 +303,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
 		if (comp->curve != NULL) {
-			art_affine_multiply (a, affine, comp->affine);
+			art_affine_multiply (a, comp->affine, affine);
 			abp = art_bpath_affine_transform (comp->curve->bpath, a);
 			vp = art_bez_path_to_vec (abp, 0.25);
 			art_free (abp);

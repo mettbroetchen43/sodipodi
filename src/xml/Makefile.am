@@ -13,7 +13,8 @@ noinst_LIBRARIES = libspxml.a
 
 libspxml_a_SOURCES = \
 	repr.c repr.h \
-	repr-util.c repr-util.h \
-	repr-io.c repr-io.h \
-	repr-css.c repr-css.h
+	repr-private.h \
+	repr-util.c \
+	repr-io.c \
+	repr-css.c
 

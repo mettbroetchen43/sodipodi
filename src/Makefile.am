@@ -90,3 +90,8 @@ sodipodi_LDADD = \
 	$(GNOMEUI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(INTLLIBS)
+
+EXTRA_DIST = \
+	pixmaps/*.xpm \
+	brokenimage.xpm
+
