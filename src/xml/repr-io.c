@@ -120,6 +120,7 @@ static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 	SPRepr *repr, *crepr;
 	xmlAttrPtr prop;
 	xmlNodePtr child;
+	xmlNsPtr ns;
 	gchar c[256];
 
 #ifdef SP_REPR_IO_VERBOSE
@@ -155,6 +156,16 @@ static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 			sp_repr_set_attr (repr, c, prop->val->content);
 		}
 	}
+
+	/* This is fuzzy piece of code, that adds namespaces back to tree */
+	/* We really should go more serious with XML */
+        for (ns = node->nsDef; ns; ns = ns->next) {
+                if (ns->prefix && strcmp (ns->prefix, "sodipodi") &&
+                                strcmp (ns->prefix, "xlink")) {
+                        snprintf (c, 256, "xlink:%s", ns->prefix);
+                        sp_repr_set_attr (repr, c, ns->href);
+                }
+        }
 
 	if (node->content)
 		sp_repr_set_content (repr, node->content);

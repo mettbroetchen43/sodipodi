@@ -525,9 +525,13 @@ sp_document_undef_id (SPDocument * document, const gchar * id)
 }
 
 SPObject *
-sp_document_lookup_id (SPDocument * document, const gchar * id)
+sp_document_lookup_id (SPDocument *doc, const gchar *id)
 {
-	return g_hash_table_lookup (document->private->iddef, id);
+	g_return_val_if_fail (doc != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
+	g_return_val_if_fail (id != NULL, NULL);
+
+	return g_hash_table_lookup (doc->private->iddef, id);
 }
 
 /* Object modification root handler */

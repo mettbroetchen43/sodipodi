@@ -1,3 +1,12 @@
+2002-05-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Add namespaces back -
+	thanks to Pawel
+
+	* src/dialogs/xml-tree.c: Complete refactoring by Pawel Palucha
+
+	* src/document.c (sp_document_lookup_id): Check values
+
 2002-04-21  Masatake YAMATO  <jet@gyve.org>
 
         * src/toolbox.c (sp_maintoolbox_open_files): Use 
