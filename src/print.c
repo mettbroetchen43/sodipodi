@@ -336,6 +336,43 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 	}
 
 	gnome_print_grestore (ctx->gpc);
+#else
+	int r;
+
+	fprintf (ctx->stream, "gsave\n");
+	fprintf (ctx->stream, "/rowdata %d string def\n", 3 * w);
+	fprintf (ctx->stream, "[%g %g %g %g %g %g] concat\n",
+		 transform->c[0],
+		 transform->c[1],
+		 transform->c[2],
+		 transform->c[3],
+		 transform->c[4],
+		 transform->c[5]);
+	fprintf (ctx->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", w, h, w, h, h);
+	fprintf (ctx->stream, "{currentfile rowdata readhexstring pop}\n");
+	fprintf (ctx->stream, "false 3 colorimage\n");
+
+	for (r = 0; r < h; r++) {
+		unsigned char *s;
+		int c0, c1, c;
+		s = px + r * rs;
+		for (c0 = 0; c0 < w; c0 += 24) {
+			c1 = MIN (w, c0 + 24);
+			for (c = c0; c < c1; c++) {
+				static const char xtab[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+				fputc (xtab[s[0] >> 4], ctx->stream);
+				fputc (xtab[s[0] & 0xf], ctx->stream);
+				fputc (xtab[s[1] >> 4], ctx->stream);
+				fputc (xtab[s[1] & 0xf], ctx->stream);
+				fputc (xtab[s[2] >> 4], ctx->stream);
+				fputc (xtab[s[2] & 0xf], ctx->stream);
+				s += 4;
+			}
+			fputs ("\n", ctx->stream);
+		}
+	}
+
+	fprintf (ctx->stream, "grestore\n");
 #endif
 
 	return 0;
@@ -408,6 +445,8 @@ sp_print_document (SPDocument *doc)
 	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
+#else
+	/* Implement plain PS dialog here */
 #endif
 }
 
