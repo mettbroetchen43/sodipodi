@@ -10,6 +10,7 @@
  */
 
 #define noNR_EXTRA_CHECK
+#define noNR_VERBOSE
 
 #define NR_QUANT_Y 4.0
 #define NR_COORD_SNAP(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
@@ -227,6 +228,7 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 							/* fixme: Slight disturbance is possible so we should repeat */
 						}
 					}
+					order = nr_svl_slice_compare (cs, ns);
 				}
 				if (order > 0.0) {
 					/* Ensure break */
@@ -251,7 +253,7 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 					ss = cs;
 					cs = ns;
 				}
-			} else if ((ns->x - cs->x) <= NR_EPSILON_F) {
+			} else if ((ns->x - cs->x) <= NR_COORD_TOLERANCE) {
 				/* Slices are very close at yslice */
 				/* Start by breaking slices */
 				csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
@@ -376,10 +378,13 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 		fl = NULL;
 		for (f = nflat; f && (f->y == yslice); f = f->next) {
 			for (s = slices; s != NULL; s = s->next) {
+				double x0, x1;
 				assert (s->vertex->y <= yslice);
 				assert (s->vertex->next->y > yslice);
 				/* fixme: We can safely use EPSILON here */
-				if ((s->x >= f->x0) && (s->x <= f->x1)) {
+				x0 = f->x0 - NR_COORD_TOLERANCE;
+				x1 = f->x1 + NR_COORD_TOLERANCE;
+				if ((s->x >= x0) && (s->x <= x1)) {
 					if (s->vertex->y < yslice) {
 						/* Mid-segment intersection */
 						/* Create continuation svl */
@@ -450,9 +455,10 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 				}
 			}
 			wind = cwind;
-			/* printf ("Wind: %g %s %d %d\n", s->y, s->y == s->svl->vertex->y ? "+" : " ", s->svl->wind, wind); */
 		}
+#ifdef NR_VERBOSE
 		if (wind & 1) printf ("Weird final wind: %d\n", wind);
+#endif
 		/* Calculate next yslice */
 		ynew = 1e18;
 		for (s = slices; s != NULL; s = s->next) {

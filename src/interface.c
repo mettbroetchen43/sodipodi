@@ -23,6 +23,9 @@
 #ifdef WITH_MODULES
 #include "modules/sp-module-sys.h"
 #endif /* WITH_MODULES */
+
+#include "verbs.h"
+
 #include "document.h"
 #include "desktop-handles.h"
 #include "file.h"
@@ -212,6 +215,30 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 }
 
 static void
+sp_ui_menu_activate (void *object, SPAction *action)
+{
+	sp_action_perform (action);
+}
+
+static GtkWidget *
+sp_ui_menu_append_item_from_verb (GtkMenu *menu, unsigned int verb)
+{
+	SPAction *action;
+	GtkWidget *item;
+
+	action = sp_verb_get_action (verb);
+	if (!action) return NULL;
+	/* fixme: Handle stock somehow (Lauris) */
+	item = gtk_menu_item_new_with_label (action->name);
+	gtk_widget_show (item);
+	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_ui_menu_activate), action);
+	gtk_menu_append (GTK_MENU (menu), item);
+
+	return item;
+}
+
+
+static void
 sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
 	sp_ui_menu_append_item (GTK_MENU (fm), GTK_STOCK_NEW, _("New"), G_CALLBACK(sp_file_new), NULL);
@@ -363,17 +390,17 @@ sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 	zm = gtk_menu_new ();
 	gtk_widget_show (zm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (zi), zm);
-	sp_ui_menu_append_item (GTK_MENU (zm), NULL, _("Selection"), G_CALLBACK(sp_zoom_selection), NULL);
-	sp_ui_menu_append_item (GTK_MENU (zm), NULL, _("Drawing"), G_CALLBACK(sp_zoom_drawing), NULL);
-	sp_ui_menu_append_item (GTK_MENU (zm), NULL, _("Page"), G_CALLBACK(sp_zoom_page), NULL);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_SELECTION);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_DRAWING);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (zm), SP_VERB_ZOOM_PAGE);
 	sp_ui_menu_append_item (GTK_MENU (zm), NULL, NULL, NULL, NULL);
 	si = sp_ui_menu_append_item (GTK_MENU (zm), NULL, _("Scale"), NULL, NULL);
 	sm = gtk_menu_new ();
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (si), sm);
-	sp_ui_menu_append_item (GTK_MENU (sm), NULL, _("1:2"), G_CALLBACK(sp_zoom_1_to_2), NULL);
-	sp_ui_menu_append_item (GTK_MENU (sm), NULL, _("1:1"), G_CALLBACK(sp_zoom_1_to_1), NULL);
-	sp_ui_menu_append_item (GTK_MENU (sm), NULL, _("2:1"), G_CALLBACK(sp_zoom_2_to_1), NULL);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_1_2);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_1_1);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (sm), SP_VERB_ZOOM_2_1);
 	/* View:New View*/
 	sp_ui_menu_append_item (menu, NULL, _("New View"), G_CALLBACK(sp_ui_new_view), NULL);
 	/* View:New Preview*/

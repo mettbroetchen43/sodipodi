@@ -18,9 +18,13 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
 #include "sp-cursor.h"
+
+#include "verbs.h"
+
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
@@ -209,46 +213,37 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		}
 		break;
         case GDK_KEY_PRESS:
-		switch (event->key.keyval) {  
+		switch (event->key.keyval) {
+			SPAction *action;
+			unsigned int shortcut, verb;
 		case GDK_Tab: // disable tab/shift-tab which cycle widget focus
 		case GDK_ISO_Left_Tab: // they will get different functions
 			ret = TRUE;
 			break;
-		case GDK_F1: // F1 - select context 
-			sp_event_context_set_select(NULL);
-			ret = TRUE;
-			break;
-		case GDK_F2: // F2 - node edit context 
-			sp_event_context_set_node_edit(NULL);	    
-			ret = TRUE;
-			break;
-		case GDK_F3: // F3 - zoom context
-			sp_event_context_set_zoom(NULL);	    
-			ret = TRUE;
-			break;
-		case GDK_F4: // F4 - rect context
-			sp_event_context_set_rect(NULL);	    
-			ret = TRUE;
-			break;
-		case GDK_F5: // F5 - arc context
-			sp_event_context_set_arc(NULL);	    
-			ret = TRUE;
-			break;
-		case GDK_F6: // F6 - frehand line context
-			sp_event_context_set_freehand(NULL);	    
-			ret = TRUE;
-			break;
-		case GDK_F7: // F7 - text context
-			sp_event_context_set_text(NULL);	    
-			ret = TRUE;
-			break;
-
+		case GDK_F1:
+		case GDK_F2:
+		case GDK_F3:
+		case GDK_F4:
+		case GDK_F5:
+		case GDK_F6:
+		case GDK_F7:
 		case GDK_F8:
-			sp_event_context_set_dropper (NULL, NULL);
-			ret = TRUE;
+		case GDK_equal:
+		case GDK_plus:
+		case GDK_minus:
+		case GDK_0:
+		case GDK_1:
+			shortcut = event->key.keyval;
+			if (event->key.state & GDK_SHIFT_MASK) shortcut |= SP_ACTION_SHIFT_MASK;
+			if (event->key.state & GDK_CONTROL_MASK) shortcut |= SP_ACTION_CONTROL_MASK;
+			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_ACTION_ALT_MASK;
+			verb = sp_shortcut_get_verb (shortcut);
+			if (verb) {
+				action = sp_verb_get_action (verb);
+				if (action) sp_action_perform (action);
+			}
 			break;
-
-
+#if 0
 		case GDK_equal:
 		case GDK_plus:
 			/* '+' & '=' Zoom in */
@@ -270,6 +265,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			sp_zoom_1_to_1 (NULL, NULL);
 			ret = TRUE;
 			break;
+#endif
 		case GDK_Z:
 		case GDK_z:
 			/* Undo */

@@ -32,15 +32,4 @@ struct _SPZoomContextClass {
 
 unsigned int sp_zoom_context_get_type (void);
 
-/* UI handlers */
-
-void sp_zoom_selection (gpointer object, gpointer data);
-void sp_zoom_drawing (gpointer object, gpointer data);
-void sp_zoom_page (gpointer object, gpointer data);
-void sp_zoom_1_to_2 (gpointer object, gpointer data);
-void sp_zoom_1_to_1 (gpointer object, gpointer data);
-void sp_zoom_2_to_1 (gpointer object, gpointer data);
-void sp_zoom_in (gpointer object, gpointer data);
-void sp_zoom_out (gpointer object, gpointer data);
-
 #endif

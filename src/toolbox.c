@@ -30,6 +30,16 @@
 #include "widgets/icon.h"
 #include "widgets/button.h"
 #include "widgets/sp-toolbox.h"
+
+#include "dialogs/object-properties.h"
+#include "dialogs/transformation.h"
+#include "dialogs/text-edit.h"
+#include "dialogs/align.h"
+#include "dialogs/export.h"
+#include "dialogs/node-edit.h"
+
+#include "verbs.h"
+
 #include "file.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
@@ -37,12 +47,6 @@
 #include "document.h"
 #include "sodipodi.h"
 #include "event-broker.h"
-#include "dialogs/object-properties.h"
-#include "dialogs/transformation.h"
-#include "dialogs/text-edit.h"
-#include "dialogs/align.h"
-#include "dialogs/export.h"
-#include "dialogs/node-edit.h"
 #include "zoom-context.h"
 #include "selection.h"
 #include "extension.h"
@@ -290,6 +294,33 @@ sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSi
 	ypos = pos / 4;
 	gtk_table_attach (GTK_TABLE (t), b, xpos, xpos + 1, ypos, ypos + 1, 0, 0, 0, 0);
 
+	return b;
+}
+
+static void
+sp_toolbox_button_clicked (void *object, SPAction *action)
+{
+	sp_action_perform (action);
+}
+
+static GtkWidget *
+sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int verb, GtkTooltips *tt)
+{
+	SPAction *action;
+	GtkWidget *b;
+	int xpos, ypos;
+
+	action = sp_verb_get_action (verb);
+	if (!action) return NULL;
+	/* fixme: Handle sensitive/unsensitive */
+	/* fixme: Implement sp_button_new_from_action */
+	b = sp_button_new (24, action->image, action->tip);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	gtk_widget_show (b);
+	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_toolbox_button_clicked), action);
+	xpos = pos % 4;
+	ypos = pos / 4;
+	gtk_table_attach (GTK_TABLE (t), b, xpos, xpos + 1, ypos, ypos + 1, 0, 0, 0, 0);
 	return b;
 }
 
@@ -616,14 +647,14 @@ sp_toolbox_zoom_create (void)
 	tb = sp_toolbox_new (t, _("Zoom"), "zoom", "toolbox_zoom");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "zoom_in", GTK_SIGNAL_FUNC (sp_zoom_in), tt, _("Zoom in drawing"));
-	sp_toolbox_button_new (t, 1, "zoom_2_to_1", GTK_SIGNAL_FUNC (sp_zoom_2_to_1), tt, _("Set zoom factor to 2:1"));
-	sp_toolbox_button_new (t, 2, "zoom_1_to_1", GTK_SIGNAL_FUNC (sp_zoom_1_to_1), tt, _("Set zoom factor to 1:1"));
-	sp_toolbox_button_new (t, 3, "zoom_1_to_2", GTK_SIGNAL_FUNC (sp_zoom_1_to_2), tt, _("Set zoom factor to 1:2"));
-	sp_toolbox_button_new (t, 4, "zoom_out", GTK_SIGNAL_FUNC (sp_zoom_out), tt, _("Zoom out drawing"));
-	sp_toolbox_button_new (t, 5, "zoom_page", GTK_SIGNAL_FUNC (sp_zoom_page), tt, _("Fit the whole page into window"));
-	sp_toolbox_button_new (t, 6, "zoom_draw", GTK_SIGNAL_FUNC (sp_zoom_drawing), tt, _("Fit the whole drawing into window"));
-	sp_toolbox_button_new (t, 7, "zoom_select", GTK_SIGNAL_FUNC (sp_zoom_selection), tt, _("Fit the whole selection into window"));
+	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_ZOOM_IN, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_ZOOM_2_1, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_ZOOM_1_1, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_ZOOM_1_2, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_ZOOM_OUT, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_ZOOM_PAGE, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_ZOOM_DRAWING, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_ZOOM_SELECTION, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.zoom");
 	if (repr) {

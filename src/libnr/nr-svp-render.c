@@ -9,6 +9,8 @@
  * This code is in public domain
  */
 
+#define noNR_VERBOSE
+
 #include "nr-macros.h"
 #include "nr-pixops.h"
 #include "nr-svp-render.h"
@@ -550,9 +552,11 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 			if (fill) {
 				if (cr) rx1 = MIN (rx1, (int) floor (cr->x0));
 			}
+#ifdef NR_VERBOSE
 			if ((localval < -0.01) || (localval > 1.01)) {
 				printf ("Weird localval %g : gv %g\n", localval, globalval);
 			}
+#endif
 			localval = CLAMP (localval, 0.0, 1.0);
 			c24 = (int) floor (16777215 * localval + 0.5);
 			if (fill && (rx1 > ix1)) {

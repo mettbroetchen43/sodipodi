@@ -95,6 +95,7 @@ sodipodi_SOURCES = \
 	sp-metrics.c sp-metrics.h \
 	toolbox.c toolbox.h \
 	\
+	verbs.c verbs.h \
 	event-context.c event-context.h \
 	seltrans-handles.c seltrans-handles.h \
 	seltrans.c seltrans.h \

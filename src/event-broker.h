@@ -7,25 +7,22 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
- * Copyright (C) 2002 Lauris Kaplinski
+ * Copyright (C) 1999-2003 Lauris Kaplinski
  *
  * Released under GNU GPL
  */
 
-#include <glib.h>
-
-void sp_event_context_set_select (gpointer data);
-void sp_event_context_set_node_edit (gpointer data);
-void sp_event_context_set_rect (gpointer data);
-void sp_event_context_set_arc (gpointer data);
-void sp_event_context_set_star (gpointer data);
-void sp_event_context_set_spiral (gpointer data);
-void sp_event_context_set_freehand (gpointer data);
-void sp_event_context_set_pen (gpointer data);
-void sp_event_context_set_dynahand (gpointer data);
-void sp_event_context_set_text (gpointer data);
-void sp_event_context_set_zoom (gpointer data);
-void sp_event_context_set_dropper (gpointer object, gpointer data);
+void sp_event_context_set_select (void * data);
+void sp_event_context_set_node_edit (void * data);
+void sp_event_context_set_rect (void * data);
+void sp_event_context_set_arc (void * data);
+void sp_event_context_set_star (void * data);
+void sp_event_context_set_spiral (void * data);
+void sp_event_context_set_freehand (void * data);
+void sp_event_context_set_pen (void * data);
+void sp_event_context_set_dynahand (void * data);
+void sp_event_context_set_text (void * data);
+void sp_event_context_set_zoom (void * data);
+void sp_event_context_set_dropper (void * object, void * data);
 
 #endif

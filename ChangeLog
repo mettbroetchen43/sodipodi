@@ -1,3 +1,28 @@
+2003-05-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/zoom-context.c: Removed bogus zoom ui handlers
+
+	* src/sodipodi.c (sodipodi_init): Initialize some shortcuts
+
+	* src/toolbox.c (sp_toolbox_button_clicked): New callback
+	(sp_toolbox_button_new_from_verb): New method
+	(sp_toolbox_zoom_create): Use verbs
+
+	* src/interface.c (sp_ui_menu_activate): Universal callback
+	(sp_ui_menu_append_item_from_verb): New method
+	(sp_ui_view_menu): Use verbs for zoom menu items
+
+	* src/event-context.c (sp_event_context_private_root_handler): Use actions for
+	certain keycodes
+
+	* src/verbs.c: New file
+
+	* src/verbs.h: New file
+
+	* src/helper/action.c: New file
+
+	* src/helper/action.h: New file
+
 2003-05-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-uncross.c (nr_svl_uncross_full): Break slice endpoints if

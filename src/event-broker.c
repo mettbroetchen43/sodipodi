@@ -29,7 +29,7 @@
 #include "event-broker.h"
 
 void
-sp_event_context_set_select (gpointer data)
+sp_event_context_set_select (void * data)
 {
 	if (SP_ACTIVE_DESKTOP) {
 		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SELECT_CONTEXT, "tools.select");
@@ -40,7 +40,7 @@ sp_event_context_set_select (gpointer data)
 }
 
 void
-sp_event_context_set_node_edit (gpointer data)
+sp_event_context_set_node_edit (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT, "tools.nodes");
@@ -50,7 +50,7 @@ sp_event_context_set_node_edit (gpointer data)
 }
 
 void
-sp_event_context_set_rect (gpointer data)
+sp_event_context_set_rect (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_RECT_CONTEXT, "tools.shapes.rect");
@@ -60,7 +60,7 @@ sp_event_context_set_rect (gpointer data)
 }
 
 void
-sp_event_context_set_arc (gpointer data)
+sp_event_context_set_arc (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ARC_CONTEXT, "tools.shapes.arc");
@@ -70,7 +70,7 @@ sp_event_context_set_arc (gpointer data)
 }
 
 void
-sp_event_context_set_star (gpointer data)
+sp_event_context_set_star (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_STAR_CONTEXT, "tools.shapes.star");
@@ -80,7 +80,7 @@ sp_event_context_set_star (gpointer data)
 }
 
 void
-sp_event_context_set_spiral (gpointer data)
+sp_event_context_set_spiral (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SPIRAL_CONTEXT, "tools.shapes.spiral");
@@ -90,7 +90,7 @@ sp_event_context_set_spiral (gpointer data)
 }
 
 void
-sp_event_context_set_freehand (gpointer data)
+sp_event_context_set_freehand (void * data)
 {
 	if (SP_ACTIVE_DESKTOP) {
 		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PENCIL_CONTEXT, "tools.freehand.pencil");
@@ -100,7 +100,7 @@ sp_event_context_set_freehand (gpointer data)
 }
 
 void
-sp_event_context_set_pen (gpointer data)
+sp_event_context_set_pen (void * data)
 {
 	if (SP_ACTIVE_DESKTOP) {
 		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PEN_CONTEXT, "tools.freehand.pen");
@@ -111,7 +111,7 @@ sp_event_context_set_pen (gpointer data)
 }
 
 void
-sp_event_context_set_dynahand (gpointer data)
+sp_event_context_set_dynahand (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT, "tools.calligraphic");
@@ -121,7 +121,7 @@ sp_event_context_set_dynahand (gpointer data)
 }
 
 void
-sp_event_context_set_text (gpointer data)
+sp_event_context_set_text (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_TEXT_CONTEXT, "tools.text");
@@ -131,7 +131,7 @@ sp_event_context_set_text (gpointer data)
 }
 
 void
-sp_event_context_set_zoom (gpointer data)
+sp_event_context_set_zoom (void * data)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ZOOM_CONTEXT, "tools.zoom");
@@ -141,7 +141,7 @@ sp_event_context_set_zoom (gpointer data)
 }
 
 void
-sp_event_context_set_dropper (gpointer object, gpointer data)
+sp_event_context_set_dropper (void *object, void *data)
 {
 	if (SP_ACTIVE_DESKTOP) {
 		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DROPPER_CONTEXT, "tools.dropper");

@@ -9,6 +9,8 @@
  * This code is in public domain
  */
 
+#define noNR_VERBOSE
+
 #define NR_SVP_LENGTH_MAX 128
 
 #include <assert.h>
@@ -20,7 +22,7 @@
 #include "nr-svp-uncross.h"
 #include "nr-svp.h"
 
-#define NR_QUANT_X 64.0
+#define NR_QUANT_X 16.0
 #define NR_QUANT_Y 4.0
 #define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
 #define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
@@ -679,7 +681,6 @@ nr_vertex_new (void)
 
 	if (v == NULL) {
 		int i;
-		printf ("Mallocing\n");
 		v = nr_new (NRVertex, NR_VERTEX_ALLOC_SIZE);
 		for (i = 1; i < (NR_VERTEX_ALLOC_SIZE - 1); i++) v[i].next = &v[i + 1];
 		v[NR_VERTEX_ALLOC_SIZE - 1].next = NULL;
