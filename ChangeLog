@@ -1,5 +1,8 @@
 2002-11-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnrtype/nr-type-gnome.c (nr_typeface_gnome_lookup): Added all
+	glyphs to 0xe000 private plane as well.
+
 	* src/widgets/gradient-selector.c (sp_gradient_selector_set_spread): Set
 	position widget spread as well
 	(sp_gradient_selector_spread_activate): Ditto

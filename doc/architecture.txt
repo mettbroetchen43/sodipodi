@@ -58,6 +58,9 @@ thus ensuring display is always up to date.
 
 1.4. Controllers
 
+Like the model suggests, controllers can be
+implemented acting on different layers.
+
 
 1. Document
 
