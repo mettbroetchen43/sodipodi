@@ -54,21 +54,6 @@ art_svp_translate (const ArtSVP * svp, double dx, double dy)
 	return new;
 }
 
-ArtUta *
-art_uta_from_svp_translated (const ArtSVP * svp, double x, double y)
-{
-	ArtSVP * tsvp;
-	ArtUta * uta;
-
-	tsvp = art_svp_translate (svp, x, y);
-
-	uta = art_uta_from_svp (tsvp);
-
-	art_svp_free (tsvp);
-
-	return uta;
-}
-
 /* --------------- Cut'n'paste from libart -------------------- */
 
 #define VPATH_BLOCK_SIZE 64
@@ -278,7 +263,7 @@ art_vpath_render_bez (ArtVpath **p_vpath, int *pn, int *pn_max,
 }
 
 ArtVpath *
-sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness)
+sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, int perturb, double flatness)
 {
 	const ArtBpath *bp;
 	ArtVpath *vpath;
@@ -371,6 +356,28 @@ sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *trans
 	if (vpath_len >= vpath_size) art_expand (vpath, ArtVpath, vpath_size);
 	vpath[vpath_len].code = ART_END;
 
+	if (perturb) {
+		ArtVpath *vp;
+		for (vp = vpath; vp->code != ART_END; vp++) {
+			int closed;
+			switch (vp->code) {
+			case ART_MOVETO:
+				closed = TRUE;
+				break;
+			case ART_MOVETO_OPEN:
+				closed = FALSE;
+				break;
+			case ART_LINETO:
+				if (!closed || vp[1].code == ART_LINETO) {
+					vp->x += 0.5 * flatness * (((double) rand () / RAND_MAX) - 0.5);
+					vp->y += 0.5 * flatness * (((double) rand () / RAND_MAX) - 0.5);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	return vpath;
 }
-

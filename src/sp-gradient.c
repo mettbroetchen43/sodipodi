@@ -23,7 +23,6 @@
 
 #include "svg/svg.h"
 #include "xml/repr-private.h"
-#include "helper/nr-plain-stuff.h"
 #include "attributes.h"
 #include "document-private.h"
 #include "sp-object-repr.h"

@@ -29,8 +29,6 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_point.h>
 #include <libart_lgpl/art_gray_svp.h>
-#include "../helper/nr-buffers.h"
-#include "../helper/nr-plain-stuff.h"
 #include "../helper/art-utils.h"
 #include "../style.h"
 #include "nr-arena.h"
@@ -214,13 +212,11 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
 				ArtSVP *svpa, *svpb;
-				abp = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
-				vp = sp_vpath_from_bpath_transform_closepath (abp, NULL, TRUE, 0.25);
-				art_free (abp);
-				pvp = art_vpath_perturb (vp);
+				NRMatrixF ctmf;
+				nr_matrix_f_from_d (&ctmf, &gc->transform);
+				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, TRUE, 0.25);
+				svpa = art_svp_from_vpath (vp);
 				art_free (vp);
-				svpa = art_svp_from_vpath (pvp);
-				art_free (pvp);
 				svpb = art_svp_uncross (svpa);
 				art_svp_free (svpa);
 				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);

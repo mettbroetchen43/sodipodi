@@ -16,7 +16,6 @@
 #include <libnr/nr-matrix.h>
 #include <gtk/gtksignal.h>
 #include "macros.h"
-#include "helper/nr-plain-stuff.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "display/nr-arena.h"

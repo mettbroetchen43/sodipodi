@@ -20,8 +20,6 @@
 #include <gtk/gtkmenuitem.h>
 
 #include "macros.h"
-#include "helper/art-utils.h"
-#include "helper/nr-plain-stuff.h"
 #include "svg/svg.h"
 #include "print.h"
 #include "display/nr-arena.h"

@@ -26,13 +26,8 @@
 #include <libart_lgpl/art_bpath.h>
 
 ArtSVP *art_svp_translate (const ArtSVP *svp, double dx, double dy);
-ArtUta *art_uta_from_svp_translated (const ArtSVP *svp, double cx, double cy);
 
-#define sp_distance_d_matrix_d_transform(d,m) (d * sqrt (fabs ((m)[0] * (m)[3] - (m)[1] * (m)[2])))
-
-ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness);
-
-ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness);
+ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, int perturb, double flatness);
 
 #endif
 

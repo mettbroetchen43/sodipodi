@@ -18,14 +18,14 @@
 void
 nr_gdk_draw_rgba32_solid (GdkDrawable *drawable, GdkGC *gc, gint x, gint y, gint w, gint h, guint32 rgba)
 {
-	NRBuffer *b;
+	NRPixBlock pb;
 
-	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, w, h, TRUE, FALSE);
+	nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, 0, 0, w, h, FALSE);
 
-	nr_render_rgba32_rgb (b->px, b->w, b->h, b->rs, x, y, rgba);
-	gdk_draw_rgb_image (drawable, gc, x, y, w, h, GDK_RGB_DITHER_MAX, b->px, b->rs);
+	nr_render_rgba32_rgb (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, x, y, rgba);
+	gdk_draw_rgb_image (drawable, gc, x, y, w, h, GDK_RGB_DITHER_MAX, NR_PIXBLOCK_PX (&pb), pb.rs);
 
-	nr_buffer_free (b);
+	nr_pixblock_release (&pb);
 }
 
 void
