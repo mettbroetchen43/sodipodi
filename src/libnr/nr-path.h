@@ -25,28 +25,25 @@ enum {
 
 #include <libnr/nr-types.h>
 
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-
-typedef struct _NRPathCode NRPathCode;
 typedef union _NRPathElement NRPathElement;
 typedef struct _NRPathGVector NRPathGVector;
 
-struct _NRPathCode {
-	unsigned int length : 24;
-	unsigned int closed : 1;
-	unsigned int code : 7;
-};
+/* Bits 0-23 value; 24 closed; 25-31 code */
 
 union _NRPathElement {
-	NRPathCode code;
-	float value;
+	unsigned int uval;
+	float fval;
 };
 
-#define NR_PATH_ELEMENT_LENGTH(e) ((e)->code.length)
-#define NR_PATH_ELEMENT_CLOSED(e) ((e)->code.closed)
-#define NR_PATH_ELEMENT_CODE(e) ((e)->code.code)
-#define NR_PATH_ELEMENT_VALUE(e) ((e)->value)
+#define NR_PATH_ELEMENT_LENGTH(e) ((e)->uval & 0x00ffffff)
+#define NR_PATH_ELEMENT_CLOSED(e) ((e)->uval & 0x01000000)
+#define NR_PATH_ELEMENT_CODE(e) (((e)->uval & 0xfe000000) >> 25)
+#define NR_PATH_ELEMENT_VALUE(e) ((e)->fval)
+
+#define NR_PATH_ELEMENT_SET_LENGTH(e,v) ((e)->uval = (((e)->uval & 0xff000000) | ((v) & 0xffffff)))
+#define NR_PATH_ELEMENT_SET_CLOSED(e,v) ((e)->uval = (((e)->uval & 0xfeffffff) | (v) ? 0x1000000 : 0))
+#define NR_PATH_ELEMENT_SET_CODE(e,v) ((e)->uval = (((e)->uval & 0x01ffffff) | ((v) << 25)))
+#define NR_PATH_ELEMENT_SET_VALUE(e,v) ((e)->fval = (v))
 
 /* Return value FALSE means error and stops processing */
 
@@ -61,7 +58,7 @@ struct _NRPathGVector {
 				   unsigned int flags, void *data);
 	unsigned int (* curveto3) (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
 				   unsigned int flags, void *data);
-	unsigned int (* closepath) (float ex, float ey, float sx, float sy, unsigned int flags, void *data);
+	unsigned int (* endpath) (float ex, float ey, float sx, float sy, unsigned int flags, void *data);
 };
 
 /*
@@ -72,34 +69,59 @@ struct _NRPathGVector {
  */
 
 struct _NRPath {
-	unsigned int nelements;
+	/* Maximum is 2e30 elements */
+	unsigned int nelements : 30;
+	/* Number of reserved elements */
+	unsigned int offset : 2;
+	/* Number of path segments (fixme) */
 	unsigned int nsegments;
 	NRPathElement elements[1];
 };
-
-NRPath *nr_path_new_from_art_bpath (const ArtBpath *bpath);
 
 unsigned int nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
 unsigned int nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance,
 				  const NRPathGVector *gv, void *data);
 
 /* Temporary */
+#include <libart_lgpl/art_vpath.h>
+#include <libart_lgpl/art_bpath.h>
+
+NRPath *nr_path_new_from_art_bpath (const ArtBpath *bpath);
 unsigned int nr_path_forall_art (const ArtBpath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
 unsigned int nr_path_forall_art_flat (const ArtBpath *path, NRMatrixF *transform, float tolerance,
 				      const NRPathGVector *gv, void *data);
 unsigned int nr_path_forall_art_vpath (const ArtVpath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
 
-#if 0
+typedef struct _NRDynamicPath NRDynamicPath;
+
 struct _NRDynamicPath {
+	/* Reference count */
 	unsigned int refcount;
-	unsigned int nelements;
+	/* Number of allocated elements */
+	unsigned int size;
+	/* Whether data is owned by us */
+	unsigned int isstatic : 1;
+	/* Whether currentpoint is defined */
 	unsigned int hascpt : 1;
 	float cpx, cpy;
+	/* Start of current segment */
+	unsigned int segstart;
+	/* Current pathcode position */
+	unsigned int codepos;
+	/* Our own path structure */
 	NRPath *path;
 };
 
 NRDynamicPath *nr_dynamic_path_new (unsigned int nelements);
-#endif
+NRDynamicPath *nr_dynamic_path_ref (NRDynamicPath *dpath);
+NRDynamicPath *nr_dynamic_path_unref (NRDynamicPath *dpath);
+
+/* Return TRUE on success */
+unsigned int nr_dynamic_path_moveto (NRDynamicPath *dpath, float x0, float y0);
+unsigned int nr_dynamic_path_lineto (NRDynamicPath *dpath, float x1, float y1);
+unsigned int nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1, float x2, float y2);
+unsigned int nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, float y2, float x3, float y3);
+unsigned int nr_dynamic_path_closepath (NRDynamicPath *dpath);
 
 /* fixme: Get rid of this (Lauris) */
 

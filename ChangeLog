@@ -1,3 +1,7 @@
+2004-01-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Added "fi" to ALL_LINGUAS, thanks to Jaakko H Kyro
+
 2004-01-11  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/text-context.c (sp_text_context_selection_changed): Previous
@@ -17,6 +21,11 @@
 	* src/text-context.c (sp_text_context_selection_changed):
 	Fixed C-x segv bug. It was called sp_repr_unparent twice for empty
 	text.
+
+2004-01-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item.c (sp_item_i2root_affine): Do not apply root
+	viewbox transform to cascade
 
 2004-01-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
 

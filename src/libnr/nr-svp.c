@@ -374,11 +374,11 @@ nr_svl_path_lineto (float x0, float y0, float x1, float y1, unsigned int flags, 
 }
 
 static unsigned int
-nr_svl_path_closepath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
+nr_svl_path_endpath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
 {
 	NRSVLBuild *svlb;
 	svlb = (NRSVLBuild *) data;
-	if ((ex != sx) || (ey != sy)) {
+	if ((flags && NR_PATH_CLOSED) && ((ex != sx) || (ey != sy))) {
 		nr_svl_build_lineto (svlb, sx, sy);
 	}
 	return TRUE;
@@ -389,7 +389,7 @@ static NRPathGVector pbpgv = {
 	nr_svl_path_lineto,
 	NULL,
 	NULL,
-	nr_svl_path_closepath
+	nr_svl_path_endpath
 };
 
 /* fixme: 'close' is unused (Lauris) */

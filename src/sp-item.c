@@ -703,7 +703,9 @@ NRMatrixF *
 sp_item_i2root_affine (SPItem *item, NRMatrixF *affine)
 {
 	NRMatrixD td;
+#if 0
 	SPRoot *root;
+#endif
 
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
@@ -718,11 +720,13 @@ sp_item_i2root_affine (SPItem *item, NRMatrixF *affine)
 
 	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
 
+#if 0
 	root = SP_ROOT (item);
 
 	/* fixme: (Lauris) */
 	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
 	nr_matrix_multiply_ddf (&td, &td, &item->transform);
+#endif
 
 	nr_matrix_f_from_d (affine, &td);
 

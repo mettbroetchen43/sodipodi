@@ -253,11 +253,11 @@ nr_pb_path_draw_lineto (float x0, float y0, float x1, float y1, unsigned int fla
 }
 
 static unsigned int
-nr_pb_path_draw_closepath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
+nr_pb_path_draw_endpath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
 {
 	struct _NRPBPathData *pbdata;
 	pbdata = (struct _NRPBPathData *) data;
-	if ((ex != sx) || (ey != sy)) {
+	if ((flags & NR_PATH_CLOSED) && ((ex != sx) || (ey != sy))) {
 		nr_pixblock_draw_line_rgba32 (pbdata->pb,
 					      (int) floor (ex + 0.5), (int) floor (ey + 0.5),
 					      (int) floor (sx + 0.5), (int) floor (sy + 0.5),
@@ -271,7 +271,7 @@ static NRPathGVector pbpgv = {
 	nr_pb_path_draw_lineto,
 	NULL,
 	NULL,
-	nr_pb_path_draw_closepath
+	nr_pb_path_draw_endpath
 };
 
 void
