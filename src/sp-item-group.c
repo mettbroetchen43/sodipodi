@@ -492,9 +492,21 @@ sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu * menu)
 		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
 
 	i = gtk_menu_item_new_with_label (_("Group"));
-
 	m = gtk_menu_new ();
 
+	/* Group dialog */
+	w = gtk_menu_item_new_with_label (_("Group Properties"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
+#endif
+	gtk_widget_set_sensitive (w, FALSE);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Separator */
+	w = gtk_menu_item_new ();
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
 	/* "Ungroup" */
 	w = gtk_menu_item_new_with_label (_("Ungroup"));
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
@@ -545,7 +557,7 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 	gitem = SP_ITEM (group);
 
 	grepr = ((SPObject *) gitem)->repr;
-	g_return_if_fail (!strcmp (sp_repr_name (grepr), "g"));
+	g_return_if_fail (!strcmp (sp_repr_name (grepr), "g") || !strcmp (sp_repr_name (grepr), "a"));
 	if (gitem->affine) {
 		memcpy (gtrans, gitem->affine, 6 * sizeof (gdouble));
 	} else {

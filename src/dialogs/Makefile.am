@@ -18,6 +18,7 @@ noinst_LIBRARIES = libspdialogs.a
 
 libspdialogs_a_SOURCES = \
 	sp-widget.c sp-widget.h \
+	sp-attribute-widget.c sp-attribute-widget.h \
 	text-edit.c text-edit.h \
 	export.c export.h \
 	xml-tree.c xml-tree.h \
@@ -28,6 +29,7 @@ libspdialogs_a_SOURCES = \
 	document-properties.c document-properties.h \
 	object-properties.c object-properties.h \
 	item-properties.c item-properties.h \
+	object-attributes.c object-attributes.h \
 	fill-style.c fill-style.h \
 	gradient-vector.c gradient-vector.h \
 	gradient-selector.c gradient-selector.h

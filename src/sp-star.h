@@ -1,5 +1,18 @@
-#ifndef SP_STAR_H
-#define SP_STAR_H
+#ifndef __SP_STAR_H__
+#define __SP_STAR_H__
+
+/*
+ * SPStar
+ *
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Mitsuru Oka
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
 
 #include "sp-polygon.h"
 

@@ -14,9 +14,6 @@
 
 #include "sp-item-group.h"
 
-typedef struct _SPAnchor SPAnchor;
-typedef struct _SPAnchorClass SPAnchorClass;
-
 #define SP_TYPE_ANCHOR (sp_anchor_get_type ())
 #define SP_ANCHOR(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ANCHOR, SPAnchor))
 #define SP_ANCHOR_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ANCHOR, SPAnchorClass))

@@ -18,6 +18,8 @@
 #include "style.h"
 /* fixme: I do not like that (Lauris) */
 #include "dialogs/item-properties.h"
+#include "dialogs/object-attributes.h"
+#include "sp-anchor.h"
 #include "sp-clippath.h"
 #include "sp-item.h"
 
@@ -40,6 +42,7 @@ static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_select_this (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
+static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
 static SPObjectClass * parent_class;
 
@@ -673,6 +676,13 @@ sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
+	/* Create link */
+	w = gtk_menu_item_new_with_label (_("Create link"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_create_link), item);
+	gtk_widget_set_sensitive (w, !SP_IS_ANCHOR (item));
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
 	/* Show menu */
 	gtk_widget_show (m);
 
@@ -747,6 +757,34 @@ sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
 	}
 	sp_repr_set_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive", val);
 	sp_document_done (SP_OBJECT_DOCUMENT (item));
+}
+
+static void
+sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
+{
+	SPRepr *repr, *child;
+	SPObject *object;
+	SPDesktop *desktop;
+
+	g_assert (SP_IS_ITEM (item));
+	g_assert (!SP_IS_ANCHOR (item));
+
+	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	repr = sp_repr_new ("a");
+	sp_repr_add_child (SP_OBJECT_REPR (SP_OBJECT_PARENT (item)), repr, SP_OBJECT_REPR (item));
+	object = sp_document_lookup_id (SP_OBJECT_DOCUMENT (item), sp_repr_attr (repr, "id"));
+	g_return_if_fail (SP_IS_ANCHOR (object));
+	child = sp_repr_duplicate (SP_OBJECT_REPR (item));
+	sp_repr_unparent (SP_OBJECT_REPR (item));
+	sp_repr_add_child (repr, child, NULL);
+	sp_document_done (SP_OBJECT_DOCUMENT (object));
+
+	sp_object_attributes_dialog (object, "SPAnchor");
+
+	sp_selection_set_item (SP_DT_SELECTION (desktop), SP_ITEM (object));
 }
 
 /* Item views */

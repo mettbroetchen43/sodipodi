@@ -424,12 +424,12 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
             ret = TRUE;
             break;
 	  case GDK_Delete: // Del - delete selection
-	    sp_selection_delete (GTK_WIDGET(desktop));
+	    sp_selection_delete (NULL);
 	    ret = TRUE;
 	    break;
 	  case GDK_d: // Ctrl d - duplicate selection
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_duplicate (GTK_WIDGET(desktop));
+	      sp_selection_duplicate (NULL);
 	      ret = TRUE;
 	    }
 	    break;

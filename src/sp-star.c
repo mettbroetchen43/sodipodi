@@ -1,4 +1,17 @@
-#define SP_STAR_C
+#define __SP_STAR_C__
+
+/*
+ * SPStar
+ *
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Mitsuru Oka
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
 
 #include <gnome.h>
 #include <math.h>
@@ -6,6 +19,7 @@
 #include "sp-star.h"
 #include "desktop.h"
 #include "desktop-affine.h"
+#include "dialogs/object-attributes.h"
 
 #define noSTAR_VERBOSE
 
@@ -21,8 +35,11 @@ static void sp_star_bbox (SPItem * item, ArtDRect * bbox);
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
 static GSList * sp_star_snappoints (SPItem * item, GSList * points);
+static void sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+
 static void sp_star_set_shape (SPShape *shape);
 
+static void sp_star_star_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPPolygonClass *parent_class;
 
@@ -72,6 +89,7 @@ sp_star_class_init (SPStarClass *class)
 	item_class->knot_holder = sp_star_knot_holder;
 	item_class->description = sp_star_description;
 	item_class->snappoints = sp_star_snappoints;
+	item_class->menu = sp_star_menu;
 
 	shape_class->set_shape = sp_star_set_shape;
 }
@@ -157,41 +175,35 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 	
 	if (strcmp (attr, "sodipodi:sides") == 0) {
 		if (astr)
-			star->sides = (gint)strtol (astr, NULL, 10);
+			star->sides = (gint) strtol (astr, NULL, 10);
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:cx") == 0) {
+	} else if (strcmp (attr, "sodipodi:cx") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->center.x = n;
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:cy") == 0) {
+	} else if (strcmp (attr, "sodipodi:cy") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->center.y = n;
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:r1") == 0) {
+	} else if (strcmp (attr, "sodipodi:r1") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->r1 = n;
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:r2") == 0) {
+	} else if (strcmp (attr, "sodipodi:r2") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->r2 = n;
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:arg1") == 0) {
+	} else if (strcmp (attr, "sodipodi:arg1") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->arg1 = n;
 		sp_shape_set_shape (shape);
 		return;
-	}
-	if (strcmp (attr, "sodipodi:arg2") == 0) {
+	} else if (strcmp (attr, "sodipodi:arg2") == 0) {
 		n = sp_svg_read_length (&unit, astr, 0.0);
 		star->arg2 = n;
 		sp_shape_set_shape (shape);
@@ -218,15 +230,19 @@ sp_star_set_shape (SPShape *shape)
 	gdouble cx, cy, r1, r2, arg1, arg2, darg;
 	SPCurve * c;
 	
-	sp_path_clear (SP_PATH (shape));
 	star = SP_STAR (shape);
+
+	sp_object_request_modified (SP_OBJECT (star), SP_OBJECT_MODIFIED_FLAG);
+
+	sp_path_clear (SP_PATH (shape));
 	
 	if ((star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
+	if (star->sides < 3) return;
 	
 	c = sp_curve_new ();
 	
 	sides = star->sides;
-	g_assert (sides > 2);
+
 	cx = star->center.x;
 	cy = star->center.y;
 	r1 = star->r1;
@@ -428,3 +444,38 @@ sp_star_snappoints (SPItem * item, GSList * points)
 	
 	return points;
 }
+
+/* Generate context menu item section */
+
+static void
+sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
+{
+	GtkWidget *i, *m, *w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Star"));
+	m = gtk_menu_new ();
+	/* Link dialog */
+	w = gtk_menu_item_new_with_label (_("Star Properties"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_star_star_properties), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
+}
+
+static void
+sp_star_star_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
+{
+	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPStar");
+}
+

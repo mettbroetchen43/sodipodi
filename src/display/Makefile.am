@@ -36,7 +36,7 @@ endif
 
 INCLUDES = \
 	-I$(includedir) \
-	$(GNOME_INCLUDEDIR)
+	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspdisplay.a
 

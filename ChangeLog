@@ -1,5 +1,31 @@
 2001-11-10  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sp-anchor.c (sp_anchor_menu): New method
+	(sp_anchor_link_properties): Ditto
+	(sp_anchor_link_follow): Ditto
+	(sp_anchor_link_remove): Ditto
+
+	* src/sp-star.c (sp_star_menu): New method
+	(sp_star_star_properties): Ditto
+
+	* src/sp-item.c (sp_item_create_link): New method
+
+	* src/sp-item-group.c (sp_item_group_ungroup): Ungroup anchors too
+
+	* src/forward.h: Added SPAnchor
+
+	* src/dialogs/sp-attribute-widget.h: New file, implement generic
+	asynchronous attribute widget, and table of attribute widgets
+
+	* src/dialogs/sp-attribute-widget.c: New file
+
+	* src/dialogs/object-attributes.h: New file, implement generic
+	asynchronous object attribute dialog
+
+	* src/dialogs/object-attributes.c: New file
+
+	* src/display/Makefile.am (INCLUDES): Added SODIPODI_CFLAGS
+
 	* src/sp-anchor.c: New file, implement SVG <a> element. Actual event
 	code is pure experimental and need some serious thinking.
 
