@@ -18,6 +18,7 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-path.h>
+#include <libnr/nr-blit.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -40,8 +41,8 @@ static void nr_arena_shape_init (NRArenaShape *shape);
 static void nr_arena_shape_dispose (GObject *object);
 
 static guint nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
-static guint nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static unsigned int nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+static guint nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *shape_parent_class;
@@ -53,13 +54,11 @@ nr_arena_shape_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaShapeClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_shape_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaShape),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_shape_init,
 		};
 		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaShape", &info, 0);
@@ -156,7 +155,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	if (!(state & NR_ARENA_ITEM_STATE_RENDER)) {
 		/* We do not have to create rendering structures */
-		memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
+		shape->ctm = gc->transform;
 		if (state & NR_ARENA_ITEM_STATE_BBOX) {
 			if (shape->curve) {
 				NRMatrixF ctm;
@@ -165,12 +164,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				/* fixme: */
 				bbox.x0 = bbox.y0 = NR_HUGE_F;
 				bbox.x1 = bbox.y1 = -NR_HUGE_F;
-				ctm.c[0] = gc->affine[0];
-				ctm.c[1] = gc->affine[1];
-				ctm.c[2] = gc->affine[2];
-				ctm.c[3] = gc->affine[3];
-				ctm.c[4] = gc->affine[4];
-				ctm.c[5] = gc->affine[5];
+				nr_matrix_f_from_d (&ctm, &gc->transform);
 				bp.path = shape->curve->bpath;
 				nr_path_matrix_f_bbox_f_union (&bp, &ctm, &bbox, 1.0);
 				item->bbox.x0 = bbox.x0 - 1.0;
@@ -191,7 +185,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	}
 
 	/* Release state data */
-	if (TRUE || !nr_matrix_d_test_transform_equal ((NRMatrixD *) gc->affine, &shape->ctm, NR_EPSILON_D)) {
+	if (TRUE || !nr_matrix_d_test_transform_equal (&gc->transform, &shape->ctm, NR_EPSILON_D)) {
 		/* Concept test */
 		if (shape->fill_svp) {
 			art_svp_free (shape->fill_svp);
@@ -220,7 +214,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
 				ArtSVP *svpa, *svpb;
-				abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
+				abp = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
 				vp = sp_vpath_from_bpath_transform_closepath (abp, NULL, TRUE, 0.25);
 				art_free (abp);
 				pvp = art_vpath_perturb (vp);
@@ -231,27 +225,28 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				art_svp_free (svpa);
 				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
 				art_svp_free (svpb);
-			} else if (!NR_DF_TEST_CLOSE (gc->affine[4], shape->ctm.c[4], NR_EPSILON_D) ||
-				   !NR_DF_TEST_CLOSE (gc->affine[5], shape->ctm.c[5], NR_EPSILON_D)) {
+			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
 				ArtSVP *svpa;
 				/* Concept test */
-				svpa = art_svp_translate (shape->fill_svp, gc->affine[4] - shape->ctm.c[4], gc->affine[5] - shape->ctm.c[5]);
+				svpa = art_svp_translate (shape->fill_svp,
+							  gc->transform.c[4] - shape->ctm.c[4],
+							  gc->transform.c[5] - shape->ctm.c[5]);
 				art_svp_free (shape->fill_svp);
 				shape->fill_svp = svpa;
 			}
-			memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
+			shape->ctm = gc->transform;
 		}
 	}
 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
 		double width, scale, dlen;
 		int i;
-		abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
+		abp = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
 		vp = art_bez_path_to_vec (abp, 0.25);
 		art_free (abp);
 		pvp = art_vpath_perturb (vp);
 		art_free (vp);
-		scale = sp_distance_d_matrix_d_transform (1.0, gc->affine);
+		scale = NR_MATRIX_DF_EXPANSION (&gc->transform);
 		width = MAX (0.125, style->stroke_width.computed * scale);
 		dlen = 0.0;
 		for (i = 0; i < style->stroke_dash.n_dash; i++) dlen += style->stroke_dash.dash[i] * scale;
@@ -290,18 +285,20 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style), gc->affine, &shape->paintbox);
+		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style),
+								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style), gc->affine, &shape->paintbox);
+		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style),
+								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;
 }
 
-static guint
-nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+static unsigned int
+nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaShape *shape;
 	SPStyle *style;
@@ -314,84 +311,82 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 	style = shape->style;
 
 	if (shape->fill_svp) {
-		NRBuffer *m;
+		NRPixBlock m;
 		guint32 rgba;
 
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, m->px, m->rs);
-		m->empty = FALSE;
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+		m.empty = FALSE;
 
 		switch (style->fill.type) {
 		case SP_PAINT_TYPE_COLOR:
 			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
 							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
+			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);
+			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:
 			if (shape->fill_painter) {
-				NRBuffer *pb;
+				NRPixBlock cb;
 				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				shape->fill_painter->fill (shape->fill_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
+				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
+				shape->fill_painter->fill (shape->fill_painter, NR_PIXBLOCK_PX (&cb),
+							   area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				cb.empty = FALSE;
 				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
+				nr_blit_pixblock_pixblock_mask (pb, &cb, &m);
+				pb->empty = FALSE;
+				nr_pixblock_release (&cb);
 			}
 			break;
 		default:
 			break;
 		}
-		nr_buffer_free (m);
+		nr_pixblock_release (&m);
 	}
 
 	if (shape->stroke_svp) {
-		NRBuffer *m;
+		NRPixBlock m;
 		guint32 rgba;
 
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		art_gray_svp_aa (shape->stroke_svp, area->x0, area->y0, area->x1, area->y1, m->px, m->rs);
-		m->empty = FALSE;
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		art_gray_svp_aa (shape->stroke_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+		m.empty = FALSE;
 
 		switch (style->stroke.type) {
 		case SP_PAINT_TYPE_COLOR:
 			rgba = sp_color_get_rgba32_falpha (&style->stroke.value.color,
 							   SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
+			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);
+			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:
 			if (shape->stroke_painter) {
-				NRBuffer *pb;
+				NRPixBlock cb;
 				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				shape->stroke_painter->fill (shape->stroke_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
+				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
+				shape->stroke_painter->fill (shape->stroke_painter, NR_PIXBLOCK_PX (&cb),
+							     area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				cb.empty = FALSE;
 				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
+				nr_blit_pixblock_pixblock_mask (pb, &cb, &m);
+				pb->empty = FALSE;
+				nr_pixblock_release (&cb);
 			}
 			break;
 		default:
 			break;
 		}
-		nr_buffer_free (m);
+		nr_pixblock_release (&m);
 	}
 
 	return item->state;
 }
 
 static guint
-nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	NRArenaShape *shape;
 
@@ -400,8 +395,8 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 	if (!shape->curve) return item->state;
 
 	if (shape->fill_svp) {
-		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, b->px, b->rs);
-		b->empty = FALSE;
+		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (pb), pb->rs);
+		pb->empty = FALSE;
 	}
 
 	return item->state;

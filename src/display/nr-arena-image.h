@@ -25,7 +25,11 @@
 struct _NRArenaImage {
 	NRArenaItem item;
 
-	GdkPixbuf *pixbuf;
+	unsigned char *px;
+	unsigned int pxw;
+	unsigned int pxh;
+	unsigned int pxrs;
+
 	gdouble x, y;
 	gdouble width, height;
 
@@ -39,7 +43,7 @@ struct _NRArenaImageClass {
 
 GType nr_arena_image_get_type (void);
 
-void nr_arena_image_set_pixbuf (NRArenaImage *image, GdkPixbuf *pixbuf);
+void nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigned int pxw, unsigned int pxh, unsigned int pxrs);
 void nr_arena_image_set_geometry (NRArenaImage *image, gdouble x, gdouble y, gdouble width, gdouble height);
 
 #endif

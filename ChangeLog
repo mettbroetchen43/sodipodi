@@ -1,3 +1,8 @@
+2002-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-item.h: Ported rendering from NRBuffer to NRPixBlock,
+	involves changes in most Arena objects. Added NO_CACHE flag to rendering.
+
 2002-12-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/paint-selector.c (sp_paint_selector_style_button_add): Changed

@@ -17,12 +17,13 @@
 #include "nr-blit.h"
 
 void
-nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s)
+nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alpha)
 {
 	NRRectS clip;
 	unsigned char *dpx, *spx;
 	int w, h;
 
+	if (alpha == 0) return;
 	if (s->empty) return;
 	/* fixme: */
 	if (s->mode == NR_PIXBLOCK_MODE_A8) return;
@@ -61,22 +62,121 @@ nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s)
 	w = clip.x1 - clip.x0;
 	h = clip.y1 - clip.y0;
 
+	switch (d->mode) {
+	case NR_PIXBLOCK_MODE_A8:
+		/* No rendering into alpha at moment */
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8:
+		if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+			nr_R8G8B8_R8G8B8_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+		} else {
+			nr_R8G8B8_R8G8B8_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+		}
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8P:
+		if (d->empty) {
+			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+				/* Case 8 */
+				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* Case C */
+				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
+		} else {
+			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+				/* case A */
+				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* case E */
+				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
+		}
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8N:
+		if (d->empty) {
+			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+				/* Case 9 */
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* Case D */
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
+		} else {
+			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+				/* case B */
+				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* case F */
+				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
+		}
+		break;
+	}
+}
+
+void
+nr_blit_pixblock_pixblock_mask (NRPixBlock *d, NRPixBlock *s, NRPixBlock *m)
+{
+	NRRectS clip;
+	unsigned char *dpx, *spx, *mpx;
+	int w, h;
+
+	if (s->empty) return;
+	/* fixme: */
+	if (s->mode == NR_PIXBLOCK_MODE_A8) return;
+	/* fixme: */
+	if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) return;
+
+	/*
+	 * Possible variants as of now:
+	 *
+	 * 0. SRC EP - DST EP *
+	 * 1. SRC EP - DST EN *
+	 * 2. SRC EP - DST  P *
+	 * 3. SRC EP - DST  N *
+	 * 4. SRC EN - DST EP *
+	 * 5. SRC EN - DST EN *
+	 * 6. SRC EN - DST  P *
+	 * 7. SRC EN - DST  N *
+	 * 8. SRC  P - DST EP *
+	 * 9. SRC  P - DST EN *
+	 * A. SRC  P - DST  P *
+	 * B. SRC  P - DST  N *
+	 * C. SRC  N - DST EP *
+	 * D. SRC  N - DST EN *
+	 * E. SRC  N - DST  P *
+	 * F. SRC  N - DST  N *
+	 *
+	 */
+
+	nr_rect_s_intersect (&clip, &d->area, &s->area);
+	nr_rect_s_intersect (&clip, &clip, &m->area);
+
+	if (nr_rect_s_test_empty (&clip)) return;
+
+	/* Pointers */
+	dpx = NR_PIXBLOCK_PX (d) + (clip.y0 - d->area.y0) * d->rs + 4 * (clip.x0 - d->area.x0);
+	spx = NR_PIXBLOCK_PX (s) + (clip.y0 - s->area.y0) * s->rs + 4 * (clip.x0 - s->area.x0);
+	mpx = NR_PIXBLOCK_PX (m) + (clip.y0 - m->area.y0) * m->rs + 1 * (clip.x0 - m->area.x0);
+	w = clip.x1 - clip.x0;
+	h = clip.y1 - clip.y0;
+
 	if (d->empty) {
 		if (d->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* Case 8 */
-				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			} else {
 				/* Case C */
-				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			}
 		} else {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* Case 9 */
-				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			} else {
 				/* Case D */
-				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			}
 		}
 		d->empty = 0;
@@ -84,18 +184,18 @@ nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s)
 		if (d->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* case A */
-				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			} else {
 				/* case E */
-				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			}
 		} else {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* case B */
-				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			} else {
 				/* case F */
-				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, 255);
+				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			}
 		}
 	}

@@ -15,9 +15,7 @@
 #include <math.h>
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
-#include <libart_lgpl/art_affine.h>
-#include "../helper/nr-plain-stuff.h"
-#include "../helper/nr-buffers.h"
+#include <libnr/nr-blit.h>
 #include "nr-arena-group.h"
 
 static void nr_arena_group_class_init (NRArenaGroupClass *klass);
@@ -30,8 +28,8 @@ static void nr_arena_group_remove_child (NRArenaItem *item, NRArenaItem *child);
 static void nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
 static guint nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
-static guint nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static unsigned int nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+static guint nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
@@ -43,11 +41,9 @@ nr_arena_group_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaGroupClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_group_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaGroup),
 			16,
 			(GInstanceInitFunc) nr_arena_group_init,
@@ -86,7 +82,7 @@ nr_arena_group_init (NRArenaGroup *group)
 	group->transparent = FALSE;
 	group->children = NULL;
 	group->last = NULL;
-	nr_matrix_d_set_identity (&group->child_transform);
+	nr_matrix_f_set_identity (&group->child_transform);
 }
 
 static void
@@ -197,7 +193,7 @@ nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	for (child = group->children; child != NULL; child = child->next) {
 		NRGC cgc;
-		art_affine_multiply (cgc.affine, group->child_transform.c, gc->affine);
+		nr_matrix_multiply_dfd (&cgc.transform, &group->child_transform, &gc->transform);
 		newstate = nr_arena_item_invoke_update (child, area, &cgc, state, reset);
 #if 0
 		g_return_val_if_fail (!(~newstate & state), newstate);
@@ -215,8 +211,8 @@ nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	return beststate;
 }
 
-static guint
-nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+static unsigned int
+nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
@@ -229,42 +225,32 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 	if (item->opacity == 1.0) {
 		/* Just compose children into parent buffer */
 		for (child = group->children; child != NULL; child = child->next) {
-			ret = nr_arena_item_invoke_render (child, area, b);
-#if 0
-			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) break;
-#endif
+			ret = nr_arena_item_invoke_render (child, area, pb, flags);
+			if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
 		}
 	} else {
-		NRBuffer *nb;
+		NRPixBlock nb;
 		/* Need intermediate composing */
 		/* fixme: */
-		nb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
+		nr_pixblock_setup_fast (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P, area->x0, area->y0, area->x1, area->y1, TRUE);
 		/* fixme: */
-		nb->empty = FALSE;
+		nb.empty = FALSE;
 		for (child = group->children; child != NULL; child = child->next) {
-			ret = nr_arena_item_invoke_render (child, area, nb);
-#if 0
-			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) break;
-#endif
+			ret = nr_arena_item_invoke_render (child, area, &nb, flags);
+			if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
 		}
-		if (1 && (ret & NR_ARENA_ITEM_STATE_RENDER)) {
+		if (!(ret & NR_ARENA_ITEM_STATE_INVALID)) {
 			/* Compose */
-			nr_render_buf_buf_alpha (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-						 nb, 0, 0,
-						 (guint) floor (item->opacity * 255.9999));
+			nr_blit_pixblock_pixblock_alpha (pb, &nb, (unsigned int) (item->opacity * 255.9999));
 		}
-		nr_buffer_free (nb);
+		nr_pixblock_release (&nb);
 	}
-
-#if 0
-	g_return_val_if_fail (ret & NR_ARENA_ITEM_STATE_RENDER, ret);
-#endif
 
 	return ret;
 }
 
 static guint
-nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
@@ -276,11 +262,9 @@ nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 
 	/* Just compose children into parent buffer */
 	for (child = group->children; child != NULL; child = child->next) {
-		ret = nr_arena_item_invoke_clip (child, area, b);
+		ret = nr_arena_item_invoke_clip (child, area, pb);
 		if (!(ret & NR_ARENA_ITEM_STATE_CLIP)) break;
 	}
-
-	g_return_val_if_fail (ret & NR_ARENA_ITEM_STATE_CLIP, ret);
 
 	return ret;
 }
@@ -311,7 +295,7 @@ nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent)
 }
 
 void
-nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixD *t)
+nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixF *t)
 {
 	group->child_transform = *t;
 

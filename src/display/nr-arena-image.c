@@ -13,12 +13,9 @@
  */
 
 #include <math.h>
+#include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-compose-transform.h>
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_affine.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nr-arena-image.h"
 
 gint nr_arena_image_x_sample = 1;
@@ -37,7 +34,7 @@ static void nr_arena_image_init (NRArenaImage *image);
 static void nr_arena_image_dispose (GObject *object);
 
 static guint nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static unsigned int nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
@@ -49,13 +46,11 @@ nr_arena_image_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaImageClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_image_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaImage),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_image_init,
 		};
 		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaImage", &info, 0);
@@ -84,9 +79,8 @@ nr_arena_image_class_init (NRArenaImageClass *klass)
 static void
 nr_arena_image_init (NRArenaImage *image)
 {
-	image->pixbuf = NULL;
-	image->x = image->y = 0.0;
-	image->width = image->height = 1.0;
+	image->width = 256.0;
+	image->height = 256.0;
 
 	nr_matrix_f_set_identity (&image->grid2px);
 }
@@ -98,13 +92,9 @@ nr_arena_image_dispose (GObject *object)
 
 	image = NR_ARENA_IMAGE (object);
 
-	if (image->pixbuf) {
-		gdk_pixbuf_unref (image->pixbuf);
-		image->pixbuf = NULL;
-	}
+	image->px = NULL;
 
-	if (G_OBJECT_CLASS (parent_class)->dispose)
-		G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static guint
@@ -112,7 +102,7 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 {
 	NRArenaImage *image;
 	gdouble hscale, vscale;
-	gdouble grid2px[6];
+	NRMatrixD grid2px;
 
 	image = NR_ARENA_IMAGE (item);
 
@@ -120,42 +110,42 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	nr_arena_item_request_render (item);
 
 	/* Copy affine */
-	art_affine_invert (grid2px, gc->affine);
-	if (image->pixbuf) {
-		hscale = (fabs (image->width > 1e-9)) ? gdk_pixbuf_get_width (image->pixbuf) / image->width : 1e9;
-		vscale = (fabs (image->height > 1e-9)) ? gdk_pixbuf_get_height (image->pixbuf) / image->height : 1e9;
+	nr_matrix_d_invert (&grid2px, &gc->transform);
+	if (image->px) {
+		hscale = image->pxw / image->width;
+		vscale = image->pxh / image->height;
 	} else {
-		hscale = 1e9;
-		vscale = 1e9;
+		hscale = 1.0;
+		vscale = 1.0;
 	}
 
-	image->grid2px.c[0] = grid2px[0] * hscale;
-	image->grid2px.c[2] = grid2px[2] * hscale;
-	image->grid2px.c[4] = grid2px[4] * hscale;
-	image->grid2px.c[1] = grid2px[1] * vscale;
-	image->grid2px.c[3] = grid2px[3] * vscale;
-	image->grid2px.c[5] = grid2px[5] * vscale;
+	image->grid2px.c[0] = grid2px.c[0] * hscale;
+	image->grid2px.c[2] = grid2px.c[2] * hscale;
+	image->grid2px.c[4] = grid2px.c[4] * hscale;
+	image->grid2px.c[1] = grid2px.c[1] * vscale;
+	image->grid2px.c[3] = grid2px.c[3] * vscale;
+	image->grid2px.c[5] = grid2px.c[5] * vscale;
 
 	image->grid2px.c[4] -= image->x * hscale;
 	image->grid2px.c[5] -= image->y * vscale;
 
 	/* Calculate bbox */
-	if (image->pixbuf) {
-		ArtDRect dim, bbox;
+	if (image->px) {
+		NRRectD bbox;
 
-		dim.x0 = image->x;
-		dim.y0 = image->y;
-		dim.x1 = image->x + image->width;
-		dim.y1 = image->y + image->height;
-		art_drect_affine_transform (&bbox, &dim, gc->affine);
+		bbox.x0 = image->x;
+		bbox.y0 = image->y;
+		bbox.x1 = image->x + image->width;
+		bbox.y1 = image->y + image->height;
+		nr_rect_d_matrix_d_transform (&bbox, &bbox, &gc->transform);
 
 		item->bbox.x0 = (gint) floor (bbox.x0);
 		item->bbox.y0 = (gint) floor (bbox.y0);
 		item->bbox.x1 = (gint) ceil (bbox.x1);
 		item->bbox.y1 = (gint) ceil (bbox.y1);
 	} else {
-		item->bbox.x0 = (gint) gc->affine[4];
-		item->bbox.y0 = (gint) gc->affine[5];
+		item->bbox.x0 = (gint) gc->transform.c[4];
+		item->bbox.y0 = (gint) gc->transform.c[5];
 		item->bbox.x1 = item->bbox.x0 - 1;
 		item->bbox.y1 = item->bbox.y0 - 1;
 	}
@@ -170,8 +160,8 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 #define YSAMPLE nr_arena_image_y_sample
 #define b2i (image->grid2px)
 
-static guint
-nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
+static unsigned int
+nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaImage *image;
 	guint32 Falpha;
@@ -181,21 +171,20 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 
 	image = NR_ARENA_IMAGE (item);
 
-	if (!image->pixbuf) return item->state;
+	if (!image->px) return item->state;
 
 	Falpha = (guint32) floor (item->opacity * 255.9999);
 	if (Falpha < 1) return item->state;
 
-	dpx = buf->px;
-	drs = buf->rs;
+	dpx = NR_PIXBLOCK_PX (pb);
+	drs = pb->rs;
 	dw = area->x1 - area->x0;
 	dh = area->y1 - area->y0;
 
-	spx = gdk_pixbuf_get_pixels (image->pixbuf);
-	srs = gdk_pixbuf_get_rowstride (image->pixbuf);
-	/* Width in bytes */
-	sw = gdk_pixbuf_get_width (image->pixbuf);
-	sh = gdk_pixbuf_get_height (image->pixbuf);
+	spx = image->px;
+	srs = image->pxrs;
+	sw = image->pxw;
+	sh = image->pxh;
 
 	d2s.c[0] = b2i.c[0];
 	d2s.c[1] = b2i.c[1];
@@ -204,13 +193,13 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 	d2s.c[4] = b2i.c[0] * area->x0 + b2i.c[2] * area->y0 + b2i.c[4];
 	d2s.c[5] = b2i.c[1] * area->x0 + b2i.c[3] * area->y0 + b2i.c[5];
 
-	if (buf->premul) {
+	if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 		nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
-	} else {
+	} else if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 		nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
 	}
 
-	buf->empty = FALSE;
+	pb->empty = FALSE;
 
 	return item->state;
 }
@@ -219,19 +208,19 @@ static NRArenaItem *
 nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	NRArenaImage *image;
-	art_u8 *p;
+	unsigned char *p;
 	gint ix, iy;
 	guchar *pixels;
 	gint width, height, rowstride;
 
 	image = NR_ARENA_IMAGE (item);
 
-	if (!image->pixbuf) return NULL;
+	if (!image->px) return NULL;
 
-	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
-	width = gdk_pixbuf_get_width (image->pixbuf);
-	height = gdk_pixbuf_get_height (image->pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
+	pixels = image->px;
+	width = image->pxw;
+	height = image->pxh;
+	rowstride = image->pxrs;
 	ix = x * image->grid2px.c[0] + y * image->grid2px.c[2] + image->grid2px.c[4];
 	iy = x * image->grid2px.c[1] + y * image->grid2px.c[3] + image->grid2px.c[5];
 
@@ -245,20 +234,17 @@ nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 /* Utility */
 
 void
-nr_arena_image_set_pixbuf (NRArenaImage *image, GdkPixbuf * pixbuf)
+nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigned int pxw, unsigned int pxh, unsigned int pxrs)
 {
 	g_return_if_fail (image != NULL);
 	g_return_if_fail (NR_IS_ARENA_IMAGE (image));
 
-	if (pixbuf != image->pixbuf) {
-		gdk_pixbuf_ref (pixbuf);
-		if (image->pixbuf) {
-			gdk_pixbuf_unref (image->pixbuf);
-			image->pixbuf = NULL;
-		}
-		image->pixbuf = pixbuf;
-		nr_arena_item_request_update (NR_ARENA_ITEM (image), NR_ARENA_ITEM_STATE_ALL, FALSE);
-	}
+	image->px = (unsigned char *) px;
+	image->pxw = pxw;
+	image->pxh = pxh;
+	image->pxrs = pxrs;
+
+	nr_arena_item_request_update (NR_ARENA_ITEM (image), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }
 
 void

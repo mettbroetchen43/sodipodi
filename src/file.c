@@ -429,7 +429,7 @@ struct SPEBP {
 	int width, height;
 	unsigned char r, g, b, a;
 	NRArenaItem *root;
-	NRBuffer *buf;
+	NRPixBlock pb;
 };
 
 static int
@@ -453,12 +453,12 @@ sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *dat
 	bbox.x1 = ebp->width;
 	bbox.y1 = row + num_rows;
 	/* Update to renderable state */
-	art_affine_identity (gc.affine);
+	nr_matrix_d_set_identity (&gc.transform);
 	nr_arena_item_invoke_update (ebp->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 
 	for (r = 0; r < num_rows; r++) {
 		unsigned char *p;
-		p = ebp->buf->px + r * ebp->buf->rs;
+		p = NR_PIXBLOCK_PX (&ebp->pb) + r * ebp->pb.rs;
 		for (c = 0; c < ebp->width; c++) {
 			*p++ = ebp->r;
 			*p++ = ebp->g;
@@ -466,11 +466,17 @@ sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *dat
 			*p++ = ebp->a;
 		}
 	}
+
+	ebp->pb.area.x0 = bbox.x0;
+	ebp->pb.area.y0 = bbox.y0;
+	ebp->pb.area.x1 = bbox.x1;
+	ebp->pb.area.y1 = bbox.y1;
+
 	/* Render */
-	nr_arena_item_invoke_render (ebp->root, &bbox, ebp->buf);
+	nr_arena_item_invoke_render (ebp->root, &bbox, &ebp->pb, 0);
 
 	for (r = 0; r < num_rows; r++) {
-		rows[r] = ebp->buf->px + r * ebp->buf->rs;
+		rows[r] = NR_PIXBLOCK_PX (&ebp->pb) + r * ebp->pb.rs;
 	}
 
 	return num_rows;
@@ -531,8 +537,9 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	ebp.g = NR_RGBA32_G (bgcolor);
 	ebp.b = NR_RGBA32_B (bgcolor);
 	ebp.a = NR_RGBA32_A (bgcolor);
+
 	/* Get RGBA buffer */
-	ebp.buf = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
+	nr_pixblock_setup_fast (&ebp.pb, NR_PIXBLOCK_MODE_R8G8B8A8N, 0, 0, 64, 64, FALSE);
 
 	/* Create new arena */
 	arena = g_object_new (NR_TYPE_ARENA, NULL);
@@ -547,7 +554,6 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
 	g_object_unref (G_OBJECT (arena));
 
-	/* Release RGBA buffer */
-	nr_buffer_free (ebp.buf);
+	nr_pixblock_release (&ebp.pb);
 }
 

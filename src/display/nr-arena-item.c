@@ -18,10 +18,8 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
-#include <libart_lgpl/art_affine.h>
 #include <glib-object.h>
-#include <gtk/gtkmarshal.h>
-#include "../helper/nr-plain-stuff.h"
+#include "helper/sp-marshal.h"
 #include "nr-arena.h"
 #include "nr-arena-item.h"
 
@@ -72,8 +70,8 @@ nr_arena_item_class_init (NRArenaItemClass *klass)
 				       G_SIGNAL_RUN_LAST,
 				       G_STRUCT_OFFSET (NRArenaItemClass, event),
 				       NULL, NULL,
-				       gtk_marshal_INT__POINTER,
-				       G_TYPE_INT, 1, G_TYPE_POINTER);
+				       sp_marshal_BOOLEAN__POINTER,
+				       G_TYPE_BOOLEAN, 1, G_TYPE_POINTER);
 
 	object_class->dispose = nr_arena_item_private_dispose;
 }
@@ -89,7 +87,7 @@ nr_arena_item_init (NRArenaItem *item)
 	item->state = NR_ARENA_ITEM_STATE_NONE;
 	item->sensitive = TRUE;
 	/* fixme: Initialize bbox */
-	item->affine = NULL;
+	item->transform = NULL;
 	item->opacity = 1.0;
 
 	item->clip = NULL;
@@ -118,9 +116,9 @@ nr_arena_item_private_dispose (GObject *object)
 		item->clip = nr_arena_item_detach_unref (item, item->clip);
 	}
 
-	if (item->affine) {
-		g_free (item->affine);
-		item->affine = NULL;
+	if (item->transform) {
+		nr_free (item->transform);
+		item->transform = NULL;
 	}
 
 	nr_arena_remove_item (item->arena, item);
@@ -189,6 +187,22 @@ nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArena
 		NR_ARENA_ITEM_VIRTUAL (item, set_child_position) (item, child, ref);
 }
 
+NRArenaItem *
+nr_arena_item_ref (NRArenaItem *item)
+{
+	g_object_ref (G_OBJECT (item));
+
+	return item;
+}
+
+NRArenaItem *
+nr_arena_item_unref(NRArenaItem *item)
+{
+	g_object_unref (G_OBJECT (item));
+
+	return NULL;
+}
+
 guint
 nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
@@ -221,10 +235,10 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	}
 
 	/* Set up local gc */
-	if (item->affine) {
-		art_affine_multiply (newgc.affine, item->affine, gc->affine);
+	if (item->transform) {
+		nr_matrix_multiply_dfd (&newgc.transform, item->transform, &gc->transform);
 	} else {
-		memcpy (newgc.affine, gc->affine, 6 * sizeof (gdouble));
+		newgc.transform = gc->transform;
 	}
 
 	if (item->clip) {
@@ -257,8 +271,8 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	return item->state;
 }
 
-guint
-nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+unsigned int
+nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
@@ -266,8 +280,8 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 #if 0
 	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_RENDER, item->state);
 #endif
-	g_return_val_if_fail (b->w >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (b->h >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
+	g_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
+	g_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 
 #ifdef NR_ARENA_ITEM_VERBOSE
 	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
@@ -277,53 +291,41 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 		/* Need render that item */
 		/* fixme: clip updating etc. needs serious contemplation */
 		if (item->clip) {
-			NRBuffer *nb, *cb;
+			NRPixBlock nb, cb;
 			guint ret;
-			nb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-			cb = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-			ret = nr_arena_item_invoke_clip (item->clip, area, cb);
+			nr_pixblock_setup_fast (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P, area->x0, area->y0, area->x1, area->y1, TRUE);
+			nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+			ret = nr_arena_item_invoke_clip (item->clip, area, &cb);
 			/* fixme: */
-			cb->empty = FALSE;
-			ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, area, nb);
+			cb.empty = FALSE;
+			ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, area, &nb, flags);
 			/* fixme: */
-			nb->empty = FALSE;
+			nb.empty = FALSE;
 			if (!(ret & NR_ARENA_ITEM_STATE_INVALID)) {
 				/* Compose */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							nb, 0, 0,
-							cb, 0, 0);
+				nr_blit_pixblock_pixblock_mask (pb, &nb, &cb);
 			}
-			nr_buffer_free (cb);
-			nr_buffer_free (nb);
+			nr_pixblock_release (&cb);
+			nr_pixblock_release (&nb);
 		} else {
-			if (!item->px && ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 4096)) {
-				NRBuffer b;
+			if (!(flags & NR_ARENA_ITEM_RENDER_NO_CACHE) &&
+			    !item->px &&
+			    ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 4096)) {
+				NRPixBlock nb;
 				gint ret;
 				item->px = g_new (guchar, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));
-				memset (item->px, 0x0, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));
 				/* Hack for concept testing */
-				b.size = NR_SIZE_BIG;
-				b.mode = NR_IMAGE_R8G8B8A8;
-				b.empty = 1;
-				b.premul = 1;
-				b.w = item->bbox.x1 - item->bbox.x0;
-				b.h = item->bbox.y1 - item->bbox.y0;
-				b.rs = 4 * b.w;
-				b.px = item->px;
-				ret = ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->render (item, &item->bbox, &b);
-				if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) return ret;
+				nr_pixblock_setup_extern (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P,
+							  item->bbox.x0, item->bbox.y0, item->bbox.x1, item->bbox.y1,
+							  item->px, 4 * (item->bbox.x1 - item->bbox.x0),
+							  TRUE, TRUE);
+				ret = NR_ARENA_ITEM_VIRTUAL (item, render) (item, &item->bbox, &nb, flags & NR_ARENA_ITEM_RENDER_NO_CACHE);
+				if (ret & NR_ARENA_ITEM_STATE_INVALID) return ret;
 			}
-			if (item->px) {
-				NRPixBlock pbb, pbi;
-				guint bmode;
+			if (!(flags & NR_ARENA_ITEM_RENDER_NO_CACHE) && item->px) {
+				NRPixBlock pbi;
 				/* Concept test */
 				/* Item px it placed at item bbox 0,0, 4 * width rowstride, premultiplied */
-				if (b->premul) {
-					bmode = NR_PIXBLOCK_MODE_R8G8B8A8P;
-				} else {
-					bmode = NR_PIXBLOCK_MODE_R8G8B8A8N;
-				}
-				nr_pixblock_setup_extern (&pbb, bmode, area->x0, area->y0, area->x1, area->y1, b->px, b->rs, b->empty, FALSE);
 				nr_pixblock_setup_extern (&pbi, NR_PIXBLOCK_MODE_R8G8B8A8P,
 							  /* fixme: This probably cannot overflow, because we render only if visible */
 							  /* fixme: and pixel cache is there only for small items */
@@ -331,13 +333,12 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 							  item->bbox.x0, item->bbox.y0,
 							  item->bbox.x1, item->bbox.y1,
 							  item->px, 4 * (item->bbox.x1 - item->bbox.x0), FALSE, FALSE);
-				nr_blit_pixblock_pixblock (&pbb, &pbi);
-				nr_pixblock_release (&pbb);
+				nr_blit_pixblock_pixblock (pb, &pbi);
 				nr_pixblock_release (&pbi);
-				b->empty = FALSE;
+				pb->empty = FALSE;
 				return item->state;
 			} else {
-				return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->render (item, area, b);
+				return ((NRArenaItemClass *) G_OBJECT_GET_CLASS (item))->render (item, area, pb, flags);
 			}
 		}
 	}
@@ -346,13 +347,13 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 }
 
 guint
-nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_CLIP, item->state);
-	g_return_val_if_fail (b->w >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (b->h >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
+	g_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
+	g_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 
 #ifdef NR_ARENA_ITEM_VERBOSE
 	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
@@ -361,7 +362,7 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
 		if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip)
-			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip (item, area, b);
+			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip (item, area, pb);
 	}
 
 	return item->state;
@@ -509,11 +510,11 @@ nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 
 	if (nr_matrix_f_test_identity (transform, NR_EPSILON_F)) {
 		/* Set to identity affine */
-		if (item->affine) g_free (item->affine);
-		item->affine = NULL;
+		if (item->transform) g_free (item->transform);
+		item->transform = NULL;
 	} else {
-		if (!item->affine) item->affine = g_new (gdouble, 6);
-		nr_matrix_d_from_f (NR_MATRIX_D_FROM_DOUBLE (item->affine), transform);
+		if (!item->transform) item->transform = nr_new (NRMatrixF, 1);
+		*item->transform = *transform;
 	}
 
 	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);

@@ -255,15 +255,8 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 			arena = g_object_new (NR_TYPE_ARENA, NULL);
 			/* Create ArenaItem and set transform */
 			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena);
-
 			/* Set up matrix */
-			affine.c[0] = 0.8;
-			affine.c[1] = 0.0;
-			affine.c[2] = 0.0;
-			affine.c[3] = 0.8;
-			affine.c[4] = 0.0;
-			affine.c[5] = 0.0;
-
+			nr_matrix_f_set_scale (&affine, 0.8, 0.8);
 			nr_arena_item_set_transform (root, &affine);
 		} else {
 			edoc = TRUE;
@@ -279,7 +272,7 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 			if (!nr_rect_f_test_empty (&area)) {
 				NRRectF bbox;
 				NRGC gc;
-				NRBuffer B;
+				NRPixBlock B;
 				NRRectL ua;
 				px = nr_new (unsigned char, 4 * size * size);
 				memset (px, 0xff, 4 * size * size);
@@ -289,7 +282,7 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 				bbox.x1 = area.x1 * 1.0;
 				bbox.y1 = (sp_document_height (doc) - area.y0) * 1.0;
 				/* Update to renderable state */
-				nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (gc.affine));
+				nr_matrix_d_set_identity (&gc.transform);
 				ua.x0 = (bbox.x0 + 0.0625);
 				ua.y0 = (bbox.y0 + 0.0625);
 				ua.x1 = ua.x0 + size;
@@ -297,16 +290,9 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 				nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 
 				/* Render */
-				B.size = NR_SIZE_BIG;
-				B.mode = NR_IMAGE_R8G8B8A8;
-				B.empty = FALSE;
-				B.premul = FALSE;
-				B.w = size;
-				B.h = size;
-				B.rs = 4 * size;
-				B.px = px;
-
-				nr_arena_item_invoke_render (root, &ua, &B);
+				nr_pixblock_setup_extern (&B, NR_PIXBLOCK_MODE_R8G8B8A8N, ua.x0, ua.y0, ua.x1, ua.y1, px, 4 * size, FALSE, FALSE);
+				nr_arena_item_invoke_render (root, &ua, &B, NR_ARENA_ITEM_RENDER_NO_CACHE);
+				nr_pixblock_release (&B);
 				return px;
 			}
 		}

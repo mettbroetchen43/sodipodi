@@ -13,11 +13,10 @@
  */
 
 #include <string.h>
+#include <libnr/nr-blit.h>
 #include <gtk/gtksignal.h>
 #include "../helper/sp-canvas.h"
 #include "../helper/sp-canvas-util.h"
-#include "../helper/nr-buffers.h"
-#include "../helper/nr-plain-stuff.h"
 #include "../helper/sp-marshal.h"
 #include "nr-arena.h"
 #include "nr-arena-group.h"
@@ -153,7 +152,7 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	if (((SPCanvasItemClass *) parent_class)->update)
 		(* ((SPCanvasItemClass *) parent_class)->update) (item, affine, flags);
 
-	memcpy (arena->gc.affine, affine, 6 * sizeof (double));
+	memcpy (NR_MATRIX_D_TO_DOUBLE (&arena->gc.transform), affine, 6 * sizeof (double));
 
 #if 1
 	if (flags & SP_CANVAS_UPDATE_AFFINE) {
@@ -247,22 +246,28 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	for (y = buf->rect.y0; y < buf->rect.y1; y += sh) {
 		for (x = buf->rect.x0; x < buf->rect.x1; x += sw) {
 			NRRectL area;
-			NRBuffer *b;
+			NRPixBlock pb, cb;
 
 			area.x0 = x;
 			area.y0 = y;
 			area.x1 = MIN (x + sw, buf->rect.x1);
 			area.y1 = MIN (y + sh, buf->rect.y1);
 
-			b = nr_buffer_get (NR_IMAGE_R8G8B8A8, area.x1 - area.x0, area.y1 - area.y0, TRUE, TRUE);
+			nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8P, area.x0, area.y0, area.x1, area.y1, TRUE);
 			/* fixme: */
-			b->empty = FALSE;
+			pb.empty = FALSE;
 
-			nr_arena_item_invoke_render (arena->root, &area, b);
-			nr_render_r8g8b8_buf (buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0),
-					      buf->buf_rowstride,
-					      area.x1 - area.x0, area.y1 - area.y0, b, 0, 0);
-			nr_buffer_free (b);
+			nr_arena_item_invoke_render (arena->root, &area, &pb, 0);
+
+			nr_pixblock_setup_extern (&cb, NR_PIXBLOCK_MODE_R8G8B8, area.x0, area.y0, area.x1, area.y1,
+						  buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0),
+						  buf->buf_rowstride,
+						  FALSE, FALSE);
+
+			nr_blit_pixblock_pixblock (&cb, &pb);
+
+			nr_pixblock_release (&cb);
+			nr_pixblock_release (&pb);
 		}
 	}
 }

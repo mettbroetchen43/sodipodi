@@ -237,7 +237,9 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 			root->viewbox.c[4] = -x * root->viewbox.c[0];
 			root->viewbox.c[5] = -y * root->viewbox.c[3];
 			for (v = item->display; v != NULL; v = v->next) {
-				nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &root->viewbox);
+				NRMatrixF vbf;
+				nr_matrix_f_from_d (&vbf, &root->viewbox);
+				nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
 			}
 			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		}
@@ -380,7 +382,9 @@ sp_root_show (SPItem *item, NRArena *arena)
 	if (((SPItemClass *) (parent_class))->show) {
 		ai = ((SPItemClass *) (parent_class))->show (item, arena);
 		if (ai) {
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &root->viewbox);
+			NRMatrixF vbf;
+			nr_matrix_f_from_d (&vbf, &root->viewbox);
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
 		}
 	} else {
 		ai = NULL;

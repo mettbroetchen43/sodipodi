@@ -121,10 +121,6 @@ sp_image_init (SPImage *image)
 	sp_svg_length_unset (&image->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&image->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&image->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
-
-	image->href = NULL;
-
-	image->pixbuf = NULL;
 }
 
 static void
@@ -184,6 +180,7 @@ sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 			image->href = NULL;
 		}
 		if (image->pixbuf) {
+			/* fixme: Potential crash (Lauris) */
 			gdk_pixbuf_unref (image->pixbuf);
 			image->pixbuf = NULL;
 		}
@@ -417,7 +414,11 @@ sp_image_show (SPItem *item, NRArena *arena)
 
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
 
-	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (ai), image->pixbuf);
+	nr_arena_image_set_pixels (NR_ARENA_IMAGE (ai),
+				   gdk_pixbuf_get_pixels (image->pixbuf),
+				   gdk_pixbuf_get_width (image->pixbuf),
+				   gdk_pixbuf_get_height (image->pixbuf),
+				   gdk_pixbuf_get_rowstride (image->pixbuf));
 	nr_arena_image_set_geometry (NR_ARENA_IMAGE (ai), image->x.computed, image->y.computed, image->width.computed, image->height.computed);
 
 	return ai;
@@ -512,7 +513,11 @@ sp_image_update_canvas_image (SPImage *image)
 	}
 
 	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (v->arenaitem), image->pixbuf);
+		nr_arena_image_set_pixels (NR_ARENA_IMAGE (v->arenaitem),
+					   gdk_pixbuf_get_pixels (image->pixbuf),
+					   gdk_pixbuf_get_width (image->pixbuf),
+					   gdk_pixbuf_get_height (image->pixbuf),
+					   gdk_pixbuf_get_rowstride (image->pixbuf));
 		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v->arenaitem),
 					     image->x.computed, image->y.computed,
 					     image->width.computed, image->height.computed);

@@ -104,8 +104,13 @@ nr_pixblock_setup_extern (NRPixBlock *pb, int mode, int x0, int y0, int x1, int 
 	pb->rs = rs;
 
 	if (clear) {
-		for (y = y0; y < y1; y++) {
-			memset (pb->data.px + (y - y0) * rs, 0x0, bpp * w);
+		if (rs == bpp * w) {
+			memset (pb->data.px, 0x0, bpp * (y1 - y0) * w);
+		} else {
+			int y;
+			for (y = y0; y < y1; y++) {
+				memset (pb->data.px + (y - y0) * rs, 0x0, bpp * w);
+			}
 		}
 	}
 }

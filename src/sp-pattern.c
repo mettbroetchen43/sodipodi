@@ -551,12 +551,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *b
 		}
 	}
 
-	gc.affine[0] = pp->pcs2px.c[0];
-	gc.affine[1] = pp->pcs2px.c[1];
-	gc.affine[2] = pp->pcs2px.c[2];
-	gc.affine[3] = pp->pcs2px.c[3];
-	gc.affine[4] = pp->pcs2px.c[4];
-	gc.affine[5] = pp->pcs2px.c[5];
+	nr_matrix_d_from_f (&gc.transform, &pp->pcs2px);
 
 	nr_arena_item_invoke_update (pp->root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
 
@@ -595,8 +590,6 @@ static void
 sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
 	SPPatPainter *pp;
-	/* fixme: (Lauris) */
-	NRBuffer b;
 	NRRectF ba, psa;
 	NRRectL area;
 	float x, y;
@@ -605,17 +598,6 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 
 	if (pp->pat->width.computed < NR_EPSILON_F) return;
 	if (pp->pat->height.computed < NR_EPSILON_F) return;
-
-	/* Set up buffer */
-	/* fixme: (Lauris) */
-	b.size = NR_SIZE_BIG;
-	b.mode = NR_IMAGE_R8G8B8A8;
-	b.empty = FALSE;
-	b.premul = FALSE;
-	b.w = width;
-	b.h = height;
-	b.rs = rowstride;
-	b.px = px;
 
 	/* Find buffer area in gradient space */
 	/* fixme: This is suboptimal (Lauris) */
@@ -633,6 +615,7 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 
 	for (y = psa.y0; y < psa.y1; y++) {
 		for (x = psa.x0; x < psa.x1; x++) {
+			NRPixBlock pb;
 			float psx, psy;
 
 			psx = x * pp->pat->width.computed;
@@ -645,7 +628,15 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 
 			/* We do not update here anymore */
 
-			nr_arena_item_invoke_render (pp->root, &area, &b);
+			/* Set up buffer */
+			/* fixme: (Lauris) */
+			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, area.x0, area.y0, area.x1, area.y1,
+						  px, rowstride,
+						  FALSE, FALSE);
+
+			nr_arena_item_invoke_render (pp->root, &area, &pb, 0);
+
+			nr_pixblock_release (&pb);
 		}
 	}
 }

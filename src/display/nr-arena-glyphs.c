@@ -17,6 +17,7 @@
 #include <string.h>
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
+#include <libnr/nr-blit.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -27,9 +28,6 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_point.h>
 #include <libart_lgpl/art_gray_svp.h>
-#include "../helper/nr-buffers.h"
-#include "../helper/nr-plain-stuff.h"
-#include "../helper/art-utils.h"
 #include "../style.h"
 #include "nr-arena.h"
 #include "nr-arena-glyphs.h"
@@ -39,7 +37,7 @@ static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
 static void nr_arena_glyphs_dispose (GObject *object);
 
 static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *glyphs_parent_class;
@@ -51,13 +49,11 @@ nr_arena_glyphs_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaGlyphsClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_glyphs_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaGlyphs),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_glyphs_init,
 		};
 		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaGlyphs", &info, 0);
@@ -157,14 +153,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 
 	if (glyphs->style->fill.type != SP_PAINT_TYPE_NONE) {
 		NRRectF area;
-
-		t.c[0] = gc->affine[0];
-		t.c[1] = gc->affine[1];
-		t.c[2] = gc->affine[2];
-		t.c[3] = gc->affine[3];
-		t.c[4] = gc->affine[4];
-		t.c[5] = gc->affine[5];
-		nr_matrix_multiply_fff (&t, &glyphs->transform, &t);
+		nr_matrix_multiply_ffd (&t, &glyphs->transform, &gc->transform);
 		rfont = nr_rasterfont_new (glyphs->font, &t);
 		if (glyphs->rfont) glyphs->rfont = nr_rasterfont_unref (glyphs->rfont);
 		glyphs->rfont = rfont;
@@ -179,7 +168,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 
 	if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
 		/* Build state data */
-		abp = art_bpath_affine_transform (glyphs->curve->bpath, gc->affine);
+		abp = art_bpath_affine_transform (glyphs->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
 		vp = art_bez_path_to_vec (abp, 0.25);
 		art_free (abp);
 		pvp = art_vpath_perturb (vp);
@@ -187,14 +176,13 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 
 		if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
 			gdouble width;
-			width = sp_distance_d_matrix_d_transform (glyphs->style->stroke_width.computed, gc->affine);
-			if (width > 0.125) {
-				glyphs->stroke_svp = art_svp_vpath_stroke (pvp,
-									   glyphs->style->stroke_linejoin.value,
-									   glyphs->style->stroke_linecap.value,
-									   width,
-									   glyphs->style->stroke_miterlimit.value, 0.25);
-			}
+			width = glyphs->style->stroke_width.computed * NR_MATRIX_DF_EXPANSION (&gc->transform);
+			width = MAX (0.125, width);
+			glyphs->stroke_svp = art_svp_vpath_stroke (pvp,
+								   glyphs->style->stroke_linejoin.value,
+								   glyphs->style->stroke_linecap.value,
+								   width,
+								   glyphs->style->stroke_miterlimit.value, 0.25);
 		}
 
 		art_free (pvp);
@@ -213,7 +201,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 }
 
 static guint
-nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -328,29 +316,29 @@ nr_arena_glyphs_fill_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m)
 }
 
 static guint
-nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRBuffer *b)
+nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m)
 {
 	NRArenaItem *item;
 
 	item = NR_ARENA_ITEM (glyphs);
 
 	if (glyphs->stroke_svp && nr_rect_l_test_intersect (area, &item->bbox)) {
-		NRBuffer *gb;
+		NRPixBlock gb;
 		gint x, y;
-		gb = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		art_gray_svp_aa (glyphs->stroke_svp, area->x0, area->y0, area->x1, area->y1, gb->px, gb->rs);
+		nr_pixblock_setup_fast (&gb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		art_gray_svp_aa (glyphs->stroke_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&gb), gb.rs);
 		for (y = area->y0; y < area->y1; y++) {
 			guchar *d, *s;
-			d = b->px + (y - area->y0) * b->rs;
-			s = gb->px + (y - area->y0) * b->rs;
+			d = NR_PIXBLOCK_PX (m) + (y - area->y0) * m->rs;
+			s = NR_PIXBLOCK_PX (&gb) + (y - area->y0) * gb.rs;
 			for (x = area->x0; x < area->x1; x++) {
 				*d = (*d) + ((255 - *d) * (*s) / 255);
 				d += 1;
 				s += 1;
 			}
 		}
-		nr_buffer_free (gb);
-		b->empty = FALSE;
+		nr_pixblock_release (&gb);
+		m->empty = FALSE;
 	}
 
 	return item->state;
@@ -361,7 +349,7 @@ static void nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group);
 static void nr_arena_glyphs_group_dispose (GObject *object);
 
 static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+static unsigned int nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaGroupClass *group_parent_class;
@@ -373,13 +361,11 @@ nr_arena_glyphs_group_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (NRArenaGlyphsGroupClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) nr_arena_glyphs_group_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (NRArenaGlyphsGroup),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) nr_arena_glyphs_group_init,
 		};
 		type = g_type_register_static (NR_TYPE_ARENA_GROUP, "NRArenaGlyphsGroup", &info, 0);
@@ -460,11 +446,13 @@ nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint 
 	}
 
 	if (group->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		group->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (group->style), gc->affine, &group->paintbox);
+		group->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (group->style),
+								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), &group->paintbox);
 	}
 
 	if (group->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-		group->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (group->style), gc->affine, &group->paintbox);
+		group->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (group->style),
+								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), &group->paintbox);
 	}
 
 	if (((NRArenaItemClass *) group_parent_class)->update)
@@ -475,8 +463,8 @@ nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint 
 
 /* This sucks - as soon, as we have inheritable renderprops, do something with that opacity */
 
-static guint
-nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
+static unsigned int
+nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaGroup *group;
 	NRArenaGlyphsGroup *ggroup;
@@ -493,61 +481,55 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 	/* Fill */
 	if (style->fill.type != SP_PAINT_TYPE_NONE) {
 		NRPixBlock mb;
-		NRBuffer *m;
 		guint32 rgba;
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		nr_pixblock_setup_extern (&mb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, m->px, m->rs, FALSE, FALSE);
+		nr_pixblock_setup_fast (&mb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		/* Render children fill mask */
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_glyphs_fill_mask (NR_ARENA_GLYPHS (child), area, &mb);
 			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) {
 				nr_pixblock_release (&mb);
-				nr_buffer_free (m);
 				return ret;
 			}
 		}
-		m->empty = mb.empty;
-		nr_pixblock_release (&mb);
 		/* Composite into buffer */
 		switch (style->fill.type) {
 		case SP_PAINT_TYPE_COLOR:
 			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
 							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
+			nr_blit_pixblock_mask_rgba32 (pb, &mb, rgba);
+			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:
 			if (ggroup->fill_painter) {
-				NRBuffer *pb;
+				NRPixBlock cb;
 				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				ggroup->fill_painter->fill (ggroup->fill_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
+				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
+				ggroup->fill_painter->fill (ggroup->fill_painter, NR_PIXBLOCK_PX (&cb),
+							    area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				cb.empty = FALSE;
 				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
+				nr_blit_pixblock_pixblock_mask (pb, &cb, &mb);
+				pb->empty = FALSE;
+				nr_pixblock_release (&cb);
 			}
 			break;
 		default:
 			break;
 		}
-		nr_buffer_free (m);
+		nr_pixblock_release (&mb);
 	}
 
 	/* Stroke */
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-		NRBuffer *m;
+		NRPixBlock m;
 		guint32 rgba;
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		/* Render children stroke mask */
 		for (child = group->children; child != NULL; child = child->next) {
-			ret = nr_arena_glyphs_stroke_mask (NR_ARENA_GLYPHS (child), area, m);
+			ret = nr_arena_glyphs_stroke_mask (NR_ARENA_GLYPHS (child), area, &m);
 			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) {
-				nr_buffer_free (m);
+				nr_pixblock_release (&m);
 				return ret;
 			}
 		}
@@ -557,28 +539,27 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 			rgba = sp_color_get_rgba32_falpha (&style->stroke.value.color,
 							   SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
+			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);
+			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:
 			if (ggroup->stroke_painter) {
-				NRBuffer *pb;
+				NRPixBlock cb;
 				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				ggroup->stroke_painter->fill (ggroup->stroke_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
+				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
+				ggroup->stroke_painter->fill (ggroup->stroke_painter, NR_PIXBLOCK_PX (&cb),
+							    area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				cb.empty = FALSE;
 				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
+				nr_blit_pixblock_pixblock_mask (pb, &cb, &m);
+				pb->empty = FALSE;
+				nr_pixblock_release (&cb);
 			}
 			break;
 		default:
 			break;
 		}
-		nr_buffer_free (m);
+		nr_pixblock_release (&m);
 	}
 
 	return ret;

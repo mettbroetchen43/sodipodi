@@ -45,13 +45,15 @@ typedef struct _NREvent NREvent;
 #define NR_ARENA_ITEM_SET_STATE(i,s) (NR_ARENA_ITEM (i)->state |= (s))
 #define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ^(s))
 
+#define NR_ARENA_ITEM_RENDER_NO_CACHE (1 << 0)
+
 #include <glib-object.h>
 #include <libnr/nr-types.h>
-#include "../helper/nr-buffers.h"
+#include <libnr/nr-pixblock.h>
 #include "nr-arena-forward.h"
 
 struct _NRGC {
-	gdouble affine[6];
+	NRMatrixD transform;
 };
 
 struct _NRArenaItem {
@@ -68,13 +70,13 @@ struct _NRArenaItem {
 	/* BBox in grid coordinates */
 	NRRectL bbox;
 	/* Our affine */
-	gdouble *affine;
+	NRMatrixF *transform;
 	/* Our opacity */
-	gdouble opacity;
+	float opacity;
 	/* Clip item */
 	NRArenaItem *clip;
 	/* Rendered buffer */
-	guchar *px;
+	unsigned char *px;
 };
 
 struct _NRArenaItemClass {
@@ -86,8 +88,8 @@ struct _NRArenaItemClass {
 	void (* set_child_position) (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
 	guint (* update) (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-	guint (* render) (NRArenaItem *item, NRRectL *area, NRBuffer *b);
-	guint (* clip) (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+	unsigned int (* render) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+	guint (* clip) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 	gint (* event) (NRArenaItem *item, NREvent *event);
@@ -95,8 +97,8 @@ struct _NRArenaItemClass {
 
 GType nr_arena_item_get_type (void);
 
-#define nr_arena_item_ref(i) g_object_ref (G_OBJECT (i))
-#define nr_arena_item_unref(i) g_object_unref (G_OBJECT (i))
+NRArenaItem *nr_arena_item_ref (NRArenaItem *item);
+NRArenaItem *nr_arena_item_unref(NRArenaItem *item);
 
 NRArenaItem *nr_arena_item_children (NRArenaItem *item);
 void nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -114,8 +116,8 @@ void nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NR
  */
 
 guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-guint nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
-guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
+unsigned int nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
+guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 gint nr_arena_item_emit_event (NRArenaItem *item, NREvent *event);
