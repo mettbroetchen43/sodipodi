@@ -529,8 +529,11 @@ sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 			((SPItemClass *) (((GtkObject *) item)->klass))->write_transform (item, repr, ltrans);
 		} else {
 			guchar t[80];
-			sp_svg_write_affine (t, 80, item->affine);
-			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+			if (sp_svg_write_affine (t, 80, item->affine)) {
+				sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+			} else {
+				sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+			}
 		}
 	}
 }

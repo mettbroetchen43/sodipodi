@@ -63,6 +63,7 @@ static void sp_draw_context_finalize (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext *ec);
 static void sp_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *value);
+static void sp_draw_context_finish (SPEventContext *ec);
 
 static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
@@ -126,6 +127,7 @@ sp_draw_context_class_init (SPDrawContextClass *klass)
 
 	ec_class->setup = sp_draw_context_setup;
 	ec_class->set = sp_draw_context_set;
+	ec_class->finish = sp_draw_context_finish;
 	ec_class->root_handler = sp_draw_context_root_handler;
 }
 
@@ -193,6 +195,25 @@ sp_draw_context_setup (SPEventContext *ec)
 	dc->green_anchor = NULL;
 
 	spdc_set_attach (dc, FALSE);
+}
+
+static void
+sp_draw_context_finish (SPEventContext *ec)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (ec);
+
+	if (dc->grab) {
+		gnome_canvas_item_ungrab (dc->grab, gdk_time_get ());
+	}
+
+	if (dc->selection) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
+		dc->selection = NULL;
+	}
+
+	spdc_free_colors (dc);
 }
 
 static void

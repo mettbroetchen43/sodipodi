@@ -30,8 +30,11 @@ sp_item_rotate_rel (SPItem * item, double angle)
   sp_item_set_i2d_affine (item, newaff);    
 
   //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  if (sp_svg_write_affine (tstr, 79, item->affine)) {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  } else {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+  }
 }
 
 void
@@ -57,8 +60,11 @@ sp_item_scale_rel (SPItem * item, double dx, double dy) {
   art_affine_multiply (newaff, v, s);
   sp_item_set_i2d_affine (item, newaff);    
   //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  if (sp_svg_write_affine (tstr, 79, item->affine)) {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  } else {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+  }
 } 
 
 void
@@ -95,8 +101,11 @@ sp_item_skew_rel (SPItem * item, double dx, double dy) {
   art_affine_multiply (newaff, v, s);
   sp_item_set_i2d_affine (item, newaff);    
   //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  if (sp_svg_write_affine (tstr, 79, item->affine)) {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  } else {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+  }
 } 
 
 void
@@ -113,7 +122,10 @@ sp_item_move_rel (SPItem * item, double dx, double dy) {
   sp_item_set_i2d_affine (item, newaff);    
 
   //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  if (sp_svg_write_affine (tstr, 79, item->affine)) {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+  } else {
+	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+  }
 } 
 

@@ -151,6 +151,10 @@ sp_svg_write_affine (gchar * buf, gint buflen, gdouble affine[])
 
 	/* Test, whether we are translate */
 	if (EQ (affine[0], 1.0) && EQ (affine[1], 0.0) && EQ (affine[2], 0.0) && EQ (affine[3], 1.0)) {
+		if (EQ (affine[4], 0.0) && EQ (affine[5], 0.0)) {
+			*buf = '\0';
+			return 0;
+		}
 		return g_snprintf (buf, buflen, "translate(%g,%g)", affine[4], affine[5]);
 	} else if (EQ (affine[1], 0.0) && EQ (affine[2], 0.0) && EQ (affine[4], 0.0) && EQ (affine[5], 0.0)) {
 		return g_snprintf (buf, buflen, "scale(%g,%g)", affine[0], affine[3]);

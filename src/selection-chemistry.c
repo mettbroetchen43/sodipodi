@@ -20,9 +20,12 @@
 #include "sodipodi.h"
 #include "desktop.h"
 #include "desktop-handles.h"
-#include "selection-chemistry.h"
 #include "sp-item-transform.h" 
 #include "sp-item-group.h"
+#include "sp-path.h"
+#include "path-chemistry.h"
+
+#include "selection-chemistry.h"
 
 /* fixme: find a better place */
 GSList *clipboard = NULL;
@@ -124,6 +127,60 @@ sp_edit_clear_all (gpointer data)
 		sp_repr_unparent (SP_OBJECT_REPR (items->data));
 		items = g_slist_remove (items, items->data);
 	}
+
+	sp_document_done (doc);
+}
+
+static void
+sp_group_cleanup (SPGroup *group)
+{
+	SPObject *child;
+	GSList *l;
+
+	l = NULL;
+	for (child = group->children; child != NULL; child = child->next) {
+		sp_object_ref (child, NULL);
+		l = g_slist_prepend (l, child);
+	}
+
+	while (l) {
+		if (SP_IS_GROUP (l->data)) {
+			sp_group_cleanup (SP_GROUP (l->data));
+		} else if (SP_IS_PATH (l->data)) {
+			sp_path_cleanup (SP_PATH (l->data));
+		}
+		sp_object_unref (SP_OBJECT (l->data), NULL);
+		l = g_slist_remove (l, l->data);
+	}
+
+
+	if (!strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) {
+		gint numitems;
+		numitems = 0;
+		for (child = group->children; child != NULL; child = child->next) {
+			if (SP_IS_ITEM (child)) numitems += 1;
+		}
+		if (numitems <= 1) {
+			sp_item_group_ungroup (group, NULL);
+		}
+	}
+}
+
+void
+sp_edit_cleanup (gpointer data)
+{
+	SPDocument *doc;
+	SPGroup *root;
+
+	doc = SP_ACTIVE_DOCUMENT;
+	if (!doc) return;
+	if (SP_ACTIVE_DESKTOP) {
+		sp_selection_empty (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	}
+
+	root = SP_GROUP (SP_DOCUMENT_ROOT (doc));
+
+	sp_group_cleanup (root);
 
 	sp_document_done (doc);
 }

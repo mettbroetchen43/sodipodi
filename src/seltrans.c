@@ -329,8 +329,11 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 				/* fixme: This probably is not needed (Lauris) */
 				sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
 			} else {
-				sp_svg_write_affine (tstr, 79, item->affine);
-				sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+				if (sp_svg_write_affine (tstr, 79, item->affine)) {
+					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+				} else {
+					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+				}
 			}
 			l = l->next;
 		}

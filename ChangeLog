@@ -1,5 +1,20 @@
 2002-09-10  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/selection-chemistry.c (sp_group_cleanup): Helper
+	(sp_edit_cleanup): New method
+
+	* src/path-chemistry.c (sp_path_cleanup): New method
+
+	* src/draw-context.c (sp_draw_context_finish): Implement
+
+	* src/seltrans.c (sp_sel_trans_ungrab): Do not set identity
+
+	* src/sp-item-transform.c: Do not set identity transform
+
+	* src/sp-text.c (sp_text_write_transform): Do not write identity
+
+	* src/sp-rect.c (sp_rect_write_transform): Do not write identity
+
 	* src/xml/repr.c (sp_repr_remove_listener_by_data): Oops, removed excess step
 
 	* src/sp-shape.c (sp_shape_build): Force style rewrite for old versions

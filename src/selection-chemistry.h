@@ -16,6 +16,8 @@
 
 #include "selection.h"
 
+void sp_edit_cleanup (gpointer data);
+
 void sp_selection_delete (GtkWidget * widget);
 void sp_selection_duplicate (GtkWidget * widget);
 void sp_edit_clear_all (gpointer data);

@@ -420,6 +420,7 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	SPRect *rect;
 	gdouble rev[6];
 	gdouble px, py, sw, sh;
+	guchar t[80];
 
 	rect = SP_RECT (item);
 
@@ -459,12 +460,7 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
 	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
 
-	if ((fabs (transform[0] - 1.0) > 1e-9) ||
-	    (fabs (transform[3] - 1.0) > 1e-9) ||
-	    (fabs (transform[1]) > 1e-9) ||
-	    (fabs (transform[2]) > 1e-9)) {
-		guchar t[80];
-		sp_svg_write_affine (t, 80, transform);
+	if (sp_svg_write_affine (t, 80, transform)) {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
 	} else {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);

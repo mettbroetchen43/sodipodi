@@ -1386,6 +1386,7 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 {
 	SPText *text;
 	gdouble d;
+	guchar t[80];
 
 	text = SP_TEXT (item);
 
@@ -1428,13 +1429,8 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	transform[4] = 0.0;
 	transform[5] = 0.0;
 
-	if ((fabs (transform[0] - 1.0) > 1e-9) ||
-	    (fabs (transform[3] - 1.0) > 1e-9) ||
-	    (fabs (transform[1]) > 1e-9) ||
-	    (fabs (transform[2]) > 1e-9)) {
-		guchar str[80];
-		sp_svg_write_affine (str, 80, transform);
-		sp_repr_set_attr (repr, "transform", str);
+	if (sp_svg_write_affine (t, 80, transform)) {
+		sp_repr_set_attr (repr, "transform", t);
 	} else {
 		sp_repr_set_attr (repr, "transform", NULL);
 	}

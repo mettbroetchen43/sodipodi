@@ -226,6 +226,7 @@ sp_ui_edit_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Delete"), sp_selection_delete, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Clear all"), sp_edit_clear_all, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Cleanup"), sp_edit_cleanup, NULL);
 }
 
 static void

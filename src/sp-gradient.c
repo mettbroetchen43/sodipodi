@@ -502,8 +502,11 @@ sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missi
 
 	if (set_missing || gr->transform_set) {
 		gchar c[256];
-		sp_svg_write_affine (c, 256, gr->transform);
-		sp_repr_set_attr (repr, "gradientTransform", c);
+		if (sp_svg_write_affine (c, 256, gr->transform)) {
+			sp_repr_set_attr (repr, "gradientTransform", c);
+		} else {
+			sp_repr_set_attr (repr, "gradientTransform", NULL);
+		}
 	}
 
 	if (set_missing || gr->spread_set) {

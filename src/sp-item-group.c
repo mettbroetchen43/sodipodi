@@ -540,9 +540,11 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 			nrepr = sp_repr_duplicate (crepr);
 
 			art_affine_multiply (ctrans, citem->affine, gitem->affine);
-			sp_svg_write_affine (affinestr, 79, ctrans);
-			affinestr[79] = '\0';
-			sp_repr_set_attr (nrepr, "transform", affinestr);
+			if (sp_svg_write_affine (affinestr, 79, ctrans)) {
+				sp_repr_set_attr (nrepr, "transform", affinestr);
+			} else {
+				sp_repr_set_attr (nrepr, "transform", NULL);
+			}
 
 			/* Merging of style */
 			/* fixme: We really should respect presentation attributes too */

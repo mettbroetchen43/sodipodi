@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <string.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "sp-path.h"
@@ -196,49 +197,49 @@ sp_selected_path_to_curves (void)
 	}
 }
 
-#if 0
-	SPSelection * selection;
-	SPRepr * new;
-	SPPath * path;
-	gchar * str;
-	const gchar * transform, * style;
-	GSList * l, * sl = NULL, * nl = NULL;
-	
-	selection = SP_DT_SELECTION (desktop);
+void
+sp_path_cleanup (SPPath *path)
+{
+	SPCurve *curve;
+	GSList *curves, *c;
+	SPStyle *style;
 
-	sl = (GSList *) sp_selection_item_list (selection);
-	l = g_slist_copy (sl);
-	sp_selection_empty (selection);
+	if (strcmp (sp_repr_name (SP_OBJECT_REPR (path)), "path")) return;
 
-	for (; l != NULL; l = l->next) {
-		item = (SPItem *) l->data;
-		
-		if (item == NULL) continue;
-		if (!SP_IS_PATH (item)) continue;
+	style = SP_OBJECT_STYLE (path);
+	if (style->fill.type == SP_PAINT_TYPE_NONE) return;
 
-		path = SP_PATH (item);
+	curve = sp_path_normalized_bpath (path);
+	if (!curve) return;
+	c = sp_curve_split (curve);
+	sp_curve_unref (curve);
 
-		curve = sp_path_normalized_bpath (path);
-		str = sp_svg_write_path (curve->bpath);
-		sp_curve_unref (curve);
-		transform = sp_repr_attr (SP_OBJECT (item)->repr, "transform");
-		style = sp_repr_attr (SP_OBJECT (item)->repr, "style");
-
-		new = sp_repr_new ("path");
-		sp_repr_set_attr (new, "transform", transform);
-		sp_repr_set_attr (new, "style", style);
-		sp_repr_set_attr (new, "d", str);
-
-		g_free (str);
-
-		sp_repr_unparent (SP_OBJECT_REPR (item));
-		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
-		sp_repr_unref (new);
-		
-		nl = g_slist_append (nl, (gpointer)item);
+	curves = NULL;
+	while (c) {
+		curve = (SPCurve *) c->data;
+		if (curve->closed) {
+			curves = g_slist_prepend (curves, curve);
+		} else {
+			sp_curve_unref (curve);
+		}
+		c = g_slist_remove (c, c->data);
 	}
-	sp_document_done (SP_DT_DOCUMENT (desktop));
+	curves = g_slist_reverse (curves);
 
-	sp_selection_set_item_list (selection, nl);
+	curve = sp_curve_concat (curves);
+
+	while (curves) {
+		sp_curve_unref ((SPCurve *) curves->data);
+		curves = g_slist_remove (curves, curves->data);
+	}
+
+	if (sp_curve_is_empty (curve)) {
+		sp_repr_unparent (SP_OBJECT_REPR (path));
+	} else {
+		guchar *svgpath;
+		svgpath = sp_svg_write_path (curve->bpath);
+		sp_repr_set_attr (SP_OBJECT_REPR (path), "d", svgpath);
+		g_free (svgpath);
+	}
 }
-#endif
+
