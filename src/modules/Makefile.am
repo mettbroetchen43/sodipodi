@@ -47,14 +47,14 @@ libspmodules_a_SOURCES = \
 	sp-module.h \
 	sp-module-sys.c \
 	sp-module-sys.h \
-	ps.c ps.h \
 	plain.c plain.h \
 	plain-ps.c plain-ps.h \
+	plain-pdf.c plain-pdf.h \
 	${win32_source} \
 	$(gnome_print_sources) \
 	$(kdesources)
 
-#	plain-pdf.c plain-pdf.h \
+#	ps.c ps.h \
 #
 
 EXTRA_DIST = \

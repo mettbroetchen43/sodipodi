@@ -67,8 +67,6 @@ struct _SPPrintPlainPDFDriver {
 	unsigned int color_set_stroke : 1;
 	unsigned int color_set_fill : 1;
 	/* Objects Ids */
-/* 	int catalog_id; */
-/* 	int pages_id; */
 	int page_id;				/* single page support */
 	int contents_id;
 	int resources_id;
@@ -141,8 +139,7 @@ sp_plain_pdf_initialize (SPPrintPlainDriver *driver)
 	pdf->offset = 0;
 	pdf->color_set_stroke = FALSE;
 	pdf->color_set_fill = FALSE;
-/* 	pdf->catalog_id = 0; */
-/* 	pdf->pages_id = 0; */
+
 	pdf->contents_id = 0;
 	pdf->resources_id = 0;
 }
@@ -170,7 +167,6 @@ sp_plain_pdf_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 {
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPDFDriver *pdf;
-/* 	unsigned char c[32]; */
 	int res;
 
 	pdf = (SPPrintPlainPDFDriver *)driver;
@@ -195,12 +191,10 @@ sp_plain_pdf_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 	pmod->width = sp_document_width (doc);
 	pmod->height = sp_document_height (doc);
 
-/* fixme:
-	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
-	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
-*/
+	sp_plain_pdf_stream_fprintf (pdf, "0.8 0 0 -0.8 0.0 ");
+	sp_plain_pdf_stream_fprint_double (pdf, pmod->height);
+	res = sp_plain_pdf_stream_fprintf (pdf, " cm" PDF_EOL);
 
-	/* Page */
 	pdf->page_id = sp_plain_pdf_object_new (pdf);
 	pdf->contents_id = sp_plain_pdf_object_new (pdf);
 	pdf->resources_id = sp_plain_pdf_object_new (pdf);
@@ -278,21 +272,22 @@ sp_plain_pdf_bind (SPPrintPlainDriver *driver, const NRMatrixF *transform, float
 {
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPDFDriver *pdf;
-	int res;
+	unsigned int i;
+	unsigned int res;
 
 	pdf = (SPPrintPlainPDFDriver *)driver;
 	pmod = pdf->module;
 
 	if (!pmod->stream) return -1;
 
-	res = sp_plain_pdf_stream_fprintf (pdf, "q" PDF_EOL);
+	sp_plain_pdf_stream_fprintf (pdf, "q" PDF_EOL);
 
-#if 0
-	res = fprintf (pmod->stream, "q [%g %g %g %g %g %g] concat\n",
-			transform->c[0], transform->c[1],
-			transform->c[2], transform->c[3],
-			transform->c[4], transform->c[5]);
-#endif
+	for (i = 0; i < 6; i++) {
+		sp_plain_pdf_stream_fprint_double (pdf, transform->c[i]);
+		sp_plain_pdf_stream_fprintf (pdf, " ");
+	}
+	res = sp_plain_pdf_stream_fprintf (pdf, "cm" PDF_EOL);
+
 	return res;
 }
 
@@ -336,11 +331,15 @@ sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMat
 		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
 
 		/* Set fill color */
-		if (pdf->color_set_fill && (
-				(pdf->fill_rgb[0] != rgb[0]) ||
-				(pdf->fill_rgb[1] != rgb[1]) ||
-				(pdf->fill_rgb[2] != rgb[2]))) {
+		if (! (pdf->color_set_fill &&
+			   (pdf->fill_rgb[0] == rgb[0]) &&
+			   (pdf->fill_rgb[1] == rgb[1]) &&
+			   (pdf->fill_rgb[2] == rgb[2]))) {
 			sp_plain_pdf_stream_fprintf (pdf, "%g %g %g rg" PDF_EOL, rgb[0], rgb[1], rgb[2]);
+			pdf->fill_rgb[0] = rgb[0];
+			pdf->fill_rgb[1] = rgb[1];
+			pdf->fill_rgb[2] = rgb[2];
+			pdf->color_set_fill = TRUE;
 		}
 		sp_plain_pdf_print_bpath (pdf, bpath->path);
 
@@ -376,10 +375,10 @@ sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRM
 		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
 
 		/* Set stroke color */
-		if (pdf->color_set_stroke && (
-				(pdf->stroke_rgb[0] != rgb[0]) ||
-				(pdf->stroke_rgb[1] != rgb[1]) ||
-				(pdf->stroke_rgb[2] != rgb[2]))) {
+		if (! (pdf->color_set_stroke && 
+			   (pdf->stroke_rgb[0] != rgb[0]) &&
+			   (pdf->stroke_rgb[1] != rgb[1]) &&
+			   (pdf->stroke_rgb[2] != rgb[2]))) {
 			sp_plain_pdf_stream_fprintf (pdf, "%.3g %.3g %.3g RG" PDF_EOL, rgb[0], rgb[1], rgb[2]);
 			pdf->stroke_rgb[0] = rgb[0];
 			pdf->stroke_rgb[1] = rgb[1];
