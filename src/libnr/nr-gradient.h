@@ -7,13 +7,9 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001-2002 Lauris Kaplinski
- * Copyright (C) 2001-2002 Ximian, Inc.
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
-typedef struct _NRLGradientRenderer NRLGradientRenderer;
 typedef struct _NRRGradientRenderer NRRGradientRenderer;
 
 #include <libnr/nr-types.h>
@@ -26,23 +22,6 @@ enum {
 	NR_GRADIENT_SPREAD_REFLECT,
 	NR_GRADIENT_SPREAD_REPEAT
 };
-
-/* Linear */
-
-struct _NRLGradientRenderer {
-	NRRenderer renderer;
-	const unsigned char *vector;
-	unsigned int spread;
-	int x0, y0;
-	float dx, dy;
-};
-
-NRRenderer *nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
-					 const unsigned char *cv, 
-					 unsigned int spread, 
-					 const NRMatrixF *gs2px,
-					 float x0, float y0,
-					 float x1, float y1);
 
 /* Radial */
 
