@@ -106,26 +106,6 @@ sp_repr_position (SPRepr * repr)
 }
 
 void
-sp_repr_set_position_absolute (SPRepr * repr, gint pos)
-{
-	SPRepr * parent;
-	gint n_sib;
-
-	g_assert (repr != NULL);
-	parent = sp_repr_parent (repr);
-	g_assert (parent != NULL);
-
-	n_sib = sp_repr_n_children (parent);
-	if ((pos < 0) || (pos > (n_sib - 1)))
-		pos = n_sib - 1;
-
-	sp_repr_ref (repr);
-	sp_repr_remove_child (parent, repr);
-	sp_repr_add_child (parent, repr, pos);
-	sp_repr_unref (repr);
-}
-
-void
 sp_repr_set_position_relative (SPRepr * repr, gint pos)
 {
 	gint cpos;
@@ -195,9 +175,10 @@ sp_repr_remove_signals (SPRepr * repr)
 
 	sp_repr_set_signal (repr, "destroy", NULL, NULL);
 	sp_repr_set_signal (repr, "child_added", NULL, NULL);
-	sp_repr_set_signal (repr, "unparented", NULL, NULL);
+	sp_repr_set_signal (repr, "child_removed", NULL, NULL);
 	sp_repr_set_signal (repr, "attr_changed", NULL, NULL);
 	sp_repr_set_signal (repr, "content_changed", NULL, NULL);
+	sp_repr_set_signal (repr, "order_changed", NULL, NULL);
 }
 
 const gchar *

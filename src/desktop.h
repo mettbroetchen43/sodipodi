@@ -26,8 +26,8 @@
 #ifndef SP_DESKTOP_DEFINED
 #define SP_DESKTOP_DEFINED
 typedef struct _SPDesktop SPDesktop;
-#endif
 typedef struct _SPDesktopClass SPDesktopClass;
+#endif
 
 struct _SPDesktop {
 	GtkBox box;

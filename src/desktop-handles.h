@@ -16,6 +16,7 @@ typedef struct _SPSelection SPSelection;
 #ifndef SP_DESKTOP_DEFINED
 #define SP_DESKTOP_DEFINED
 typedef struct _SPDesktop SPDesktop;
+typedef struct _SPDesktopClass SPDesktopClass;
 #endif
 
 #define SP_DT_SELECTION(d) sp_desktop_selection (d)

@@ -13,6 +13,7 @@
 #ifndef SP_DESKTOP_DEFINED
 #define SP_DESKTOP_DEFINED
 typedef struct _SPDesktop SPDesktop;
+typedef struct _SPDesktopClass SPDesktopClass;
 #endif
 
 #define SP_ACTIVE_DESKTOP (sp_active_desktop (SODIPODI))

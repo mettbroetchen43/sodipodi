@@ -367,3 +367,15 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 	return affine;
 }
 
+void
+sp_item_raise_canvasitem_to_top (SPItem * item)
+{
+	GSList * l;
+
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+
+	for (l = item->display; l != NULL; l = l->next) {
+		gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM (l->data));
+	}
+}

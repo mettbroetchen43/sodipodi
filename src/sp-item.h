@@ -118,6 +118,8 @@ gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
 gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
 
+void sp_item_raise_canvasitem_to_top (SPItem * item);
+
 /* group */
 
 #define SP_TYPE_GROUP            (sp_group_get_type ())

@@ -22,6 +22,7 @@
 #ifndef SP_DESKTOP_DEFINED
 #define SP_DESKTOP_DEFINED
 typedef struct _SPDesktop SPDesktop;
+typedef struct _SPDesktopClass SPDesktopClass;
 #endif
 
 gdouble * sp_desktop_w2d_affine (SPDesktop * desktop, gdouble w2d[]);

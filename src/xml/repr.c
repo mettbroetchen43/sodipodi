@@ -146,15 +146,16 @@ sp_repr_set_content (SPRepr * repr, const gchar * content)
 {
 	g_assert (repr != NULL);
 
-	if (repr->content)
-		g_free (repr->content);
+	if (repr->content) g_free (repr->content);
 
-	repr->content = g_strdup (content);
+	if (content) {
+		repr->content = g_strdup (content);
+	} else {
+		repr->content = NULL;
+	}
 
 	if (repr->content_changed)
 		repr->content_changed (repr, repr->content_changed_data);
-
-	return;
 }
 
 const gchar *
@@ -182,13 +183,10 @@ void sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
 		g_hash_table_insert (repr->attr, GINT_TO_POINTER (q), g_strdup (value));
 	}
 
-	if (old_value)
-		g_free (old_value);
+	if (old_value) g_free (old_value);
 
 	if (repr->attr_changed)
 		repr->attr_changed (repr, key, repr->attr_changed_data);
-
-	return;
 }
 
 const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
@@ -238,7 +236,7 @@ void sp_repr_add_child (SPRepr * repr, SPRepr * child, gint position)
 	g_return_if_fail (child != NULL);
 	g_return_if_fail (child->parent == NULL);
 	g_return_if_fail (position >= 0);
-	g_return_if_fail (position <= sp_repr_n_children (repr));
+	g_return_if_fail (position <= g_list_length (repr->children));
 
 	repr->children = g_list_insert (repr->children, child, position);
 	child->parent = repr;
@@ -248,7 +246,8 @@ void sp_repr_add_child (SPRepr * repr, SPRepr * child, gint position)
 		repr->child_added (repr, child, repr->child_added_data);
 }
 
-void sp_repr_remove_child (SPRepr * repr, SPRepr * child)
+void
+sp_repr_remove_child (SPRepr * repr, SPRepr * child)
 {
 	g_return_if_fail (repr != NULL);
 	g_return_if_fail (child != NULL);
@@ -261,6 +260,28 @@ void sp_repr_remove_child (SPRepr * repr, SPRepr * child)
 	child->parent = NULL;
 	sp_repr_unref (child);
 }
+
+void
+sp_repr_set_position_absolute (SPRepr * repr, gint pos)
+{
+	SPRepr * parent;
+	gint nsiblings;
+
+	g_return_if_fail (repr != NULL);
+	g_return_if_fail (repr->parent != NULL);
+	parent = repr->parent;
+
+	nsiblings = g_list_length (parent->children);
+	if ((pos < 0) || (pos >= nsiblings)) pos = nsiblings - 1;
+	if (pos == sp_repr_position (repr)) return;
+
+	parent->children = g_list_remove (parent->children, repr);
+	parent->children = g_list_insert (parent->children, repr, pos);
+
+	if (parent->order_changed)
+		parent->order_changed (parent, parent->order_changed_data);
+}
+
 
 void
 sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data)

@@ -30,9 +30,9 @@ static gchar * sp_shape_description (SPItem * item);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
-static void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
-static void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
-static void sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
+void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
+void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
+void sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
 
 static SPPathClass * parent_class;
 
@@ -343,7 +343,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 	}
 }
 
-static void
+void
 sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 {
 	SPItem * item;
@@ -364,7 +364,7 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 		SP_PATH_CLASS (parent_class)->remove_comp (path, comp);
 }
 
-static void
+void
 sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 {
 	SPItem * item;
@@ -384,7 +384,7 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 		SP_PATH_CLASS (parent_class)->add_comp (path, comp);
 }
 
-static void
+void
 sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 {
 	SPItem * item;

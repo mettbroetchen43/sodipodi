@@ -1,3 +1,7 @@
+2000-04-01  Lauris Kaplinski <lauris@ariman.ee>
+
+    * sp-item-group.c: cleaned up signals, reordering should work now
+
 2000-03-31  Lauris Kaplinski <lauris@ariman.ee>
 
     * Basically completed rewrite, most things do not work
