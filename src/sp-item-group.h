@@ -1,9 +1,16 @@
-#ifndef SP_ITEM_GROUP_H
-#define SP_ITEM_GROUP_H
+#ifndef __SP_ITEM_GROUP_H__
+#define __SP_ITEM_GROUP_H__
 
 /*
  * SPItemGroup
  *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
  */
 
 #include "sp-item.h"
@@ -24,13 +31,10 @@ struct _SPGroupClass {
 	SPItemClass parent_class;
 };
 
-
-/* Standard Gtk function */
-
 GtkType sp_group_get_type (void);
 
 void sp_item_group_ungroup (SPGroup *group, GSList **children);
 
-GSList * sp_item_group_item_list (SPGroup * group);
+GSList *sp_item_group_item_list (SPGroup * group);
 
 #endif

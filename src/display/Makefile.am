@@ -49,8 +49,6 @@ libspdisplay_a_SOURCES = \
 	nr-arena-image.c nr-arena-image.h \
 	nr-arena-shape.c nr-arena-shape.h \
 	canvas-arena.c canvas-arena.h \
-	canvas-bgroup.c canvas-bgroup.h \
-	canvas-image.c canvas-image.h \
 	cpath-component.c cpath-component.h \
 	path-archetype.c path-archetype.h \
 	canvas-shape.c canvas-shape.h \
@@ -58,3 +56,5 @@ libspdisplay_a_SOURCES = \
 	stroke.c stroke.h \
 	$(nr_sources)
 
+#	canvas-bgroup.c canvas-bgroup.h \
+#	canvas-image.c canvas-image.h \

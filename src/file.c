@@ -1,4 +1,17 @@
-#define SP_FILE_C
+#define __SP_FILE_C__
+
+/*
+ * Basic operations from file menu
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ *
+ */
 
 #include <config.h>
 #include <gnome.h>
@@ -259,12 +272,21 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	    (strcmp (e, "gif") == 0) ||
 	    (strcmp (e, "tiff") == 0) ||
 	    (strcmp (e, "xpm") == 0)) {
-		repr = sp_repr_new ("image");
-		sp_repr_set_attr (repr, "xlink:href", relname);
-		sp_repr_set_attr (repr, "sodipodi:absref", filename);
-		sp_document_add_repr (doc, repr);
-		sp_repr_unref (repr);
-		sp_document_done (doc);
+		/* Try pixbuf */
+		GdkPixbuf *pb;
+		pb = gdk_pixbuf_new_from_file (filename);
+		if (pb) {
+			/* We are readable */
+			repr = sp_repr_new ("image");
+			sp_repr_set_attr (repr, "xlink:href", relname);
+			sp_repr_set_attr (repr, "sodipodi:absref", filename);
+			sp_repr_set_double_attribute (repr, "width", gdk_pixbuf_get_width (pb));
+			sp_repr_set_double_attribute (repr, "height", gdk_pixbuf_get_height (pb));
+			sp_document_add_repr (doc, repr);
+			sp_repr_unref (repr);
+			sp_document_done (doc);
+			gdk_pixbuf_unref (pb);
+		}
 	}
 }
 

@@ -25,20 +25,20 @@ struct _NRArenaImage {
 	NRArenaItem item;
 
 	GdkPixbuf *pixbuf;
-	/* Inverse TOGRID */
-	gdouble grid2item[6];
+	gdouble x, y;
+	gdouble width, height;
+
+	/* From GRID to PIXELS */
+	gdouble grid2px[6];
 };
 
 struct _NRArenaImageClass {
 	NRArenaItemClass parent_class;
 };
 
-
-/* Standard Gtk function */
 GtkType nr_arena_image_get_type (void);
 
-/* Utility */
 void nr_arena_image_set_pixbuf (NRArenaImage *image, GdkPixbuf *pixbuf);
-void nr_arena_image_set_sensitive (NRArenaImage *image, gboolean sensitive);
+void nr_arena_image_set_geometry (NRArenaImage *image, gdouble x, gdouble y, gdouble width, gdouble height);
 
 #endif

@@ -80,7 +80,10 @@ static void
 nr_arena_image_init (NRArenaImage *image)
 {
 	image->pixbuf = NULL;
-	/* fixme: affine */
+	image->x = image->y = 0.0;
+	image->width = image->height = 1.0;
+
+	art_affine_identity (image->grid2px);
 }
 
 static void
@@ -103,49 +106,39 @@ static guint
 nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaImage *image;
+	gdouble hscale, vscale;
 
 	image = NR_ARENA_IMAGE (item);
 
 	/* Copy affine */
-	art_affine_invert (image->grid2item, gc->affine);
+	art_affine_invert (image->grid2px, gc->affine);
+	if (image->pixbuf) {
+		hscale = (fabs (image->width > 1e-9)) ? gdk_pixbuf_get_width (image->pixbuf) / image->width : 1e9;
+		vscale = (fabs (image->height > 1e-9)) ? gdk_pixbuf_get_height (image->pixbuf) / image->height : 1e9;
+	} else {
+		hscale = 1e9;
+		vscale = 1e9;
+	}
+
+	image->grid2px[0] *= hscale;
+	image->grid2px[2] *= hscale;
+	image->grid2px[4] *= hscale;
+	image->grid2px[1] *= vscale;
+	image->grid2px[3] *= vscale;
+	image->grid2px[5] *= vscale;
+
+	image->grid2px[4] -= image->x * hscale;
+	image->grid2px[5] -= image->y * vscale;
 
 	/* Calculate bbox */
 	if (image->pixbuf) {
-		ArtDRect bbox;
-		ArtPoint p;
-		gint w, h;
+		ArtDRect dim, bbox;
 
-		w = gdk_pixbuf_get_width (image->pixbuf);
-		h = gdk_pixbuf_get_height (image->pixbuf);
-
-		p.x = 0.0;
-		p.y = 0.0;
-		art_affine_point (&p, &p, gc->affine);
-		bbox.x0 = p.x;
-		bbox.y0 = p.y;
-		bbox.x1 = p.x;
-		bbox.y1 = p.y;
-		p.x = w;
-		p.y = 0.0;
-		art_affine_point (&p, &p, gc->affine);
-		bbox.x0 = MIN (bbox.x0, p.x);
-		bbox.y0 = MIN (bbox.y0, p.y);
-		bbox.x1 = MAX (bbox.x1, p.x);
-		bbox.y1 = MAX (bbox.y1, p.y);
-		p.x = w;
-		p.y = h;
-		art_affine_point (&p, &p, gc->affine);
-		bbox.x0 = MIN (bbox.x0, p.x);
-		bbox.y0 = MIN (bbox.y0, p.y);
-		bbox.x1 = MAX (bbox.x1, p.x);
-		bbox.y1 = MAX (bbox.y1, p.y);
-		p.x = 0.0;
-		p.y = h;
-		art_affine_point (&p, &p, gc->affine);
-		bbox.x0 = MIN (bbox.x0, p.x);
-		bbox.y0 = MIN (bbox.y0, p.y);
-		bbox.x1 = MAX (bbox.x1, p.x);
-		bbox.y1 = MAX (bbox.y1, p.y);
+		dim.x0 = image->x;
+		dim.y0 = image->y;
+		dim.x1 = image->x + image->width;
+		dim.y1 = image->y + image->height;
+		art_drect_affine_transform (&bbox, &dim, gc->affine);
 
 		item->bbox.x0 = (gint) floor (bbox.x0);
 		item->bbox.y0 = (gint) floor (bbox.y0);
@@ -166,7 +159,7 @@ nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 #define FBITS 12
 #define XSAMPLE nr_arena_image_x_sample
 #define YSAMPLE nr_arena_image_y_sample
-#define b2i (image->grid2item)
+#define b2i (image->grid2px)
 
 #define PREMUL(c,a) (((c) * (a) + 127) / 255)
 #define COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
@@ -335,8 +328,8 @@ nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
 	width = gdk_pixbuf_get_width (image->pixbuf);
 	height = gdk_pixbuf_get_height (image->pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
-	ix = x * image->grid2item[0] + y * image->grid2item[2] + image->grid2item[4];
-	iy = x * image->grid2item[1] + y * image->grid2item[3] + image->grid2item[5];
+	ix = x * image->grid2px[0] + y * image->grid2px[2] + image->grid2px[4];
+	iy = x * image->grid2px[1] + y * image->grid2px[3] + image->grid2px[5];
 
 	if ((ix < 0) || (iy < 0) || (ix >= width) || (iy >= height)) return NULL;
 
@@ -350,6 +343,9 @@ nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
 void
 nr_arena_image_set_pixbuf (NRArenaImage *image, GdkPixbuf * pixbuf)
 {
+	g_return_if_fail (image != NULL);
+	g_return_if_fail (NR_IS_ARENA_IMAGE (image));
+
 	if (pixbuf != image->pixbuf) {
 		gdk_pixbuf_ref (pixbuf);
 		if (image->pixbuf) {
@@ -362,11 +358,16 @@ nr_arena_image_set_pixbuf (NRArenaImage *image, GdkPixbuf * pixbuf)
 }
 
 void
-nr_arena_image_set_sensitive (NRArenaImage *image, gboolean sensitive)
+nr_arena_image_set_geometry (NRArenaImage *image, gdouble x, gdouble y, gdouble width, gdouble height)
 {
-#if 0
-	g_assert (NR_IS_ARENA_IMAGE (image));
+	g_return_if_fail (image != NULL);
+	g_return_if_fail (NR_IS_ARENA_IMAGE (image));
 
-	image->sensitive = sensitive;
-#endif
+	image->x = x;
+	image->y = y;
+	image->width = width;
+	image->height = height;
+
+	nr_arena_item_request_update (NR_ARENA_ITEM (image), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }
+

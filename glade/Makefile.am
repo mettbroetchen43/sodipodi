@@ -1,6 +1,8 @@
 
 gladedir = $(datadir)/sodipodi
 
+images = about.svg
+
 pixmaps = \
 	add.xpm \
 	al_bottom_in.xpm \
@@ -179,7 +181,8 @@ glade_DATA = 					\
 	toolbox.glade toolbox.c			\
 	transformation.glade transformation.c	\
 	xml-tree.glade xml-tree.c \
-	$(pixmaps)
+	$(pixmaps) \
+	$(images)
 
 EXTRA_DIST = $(glade_DATA)
 

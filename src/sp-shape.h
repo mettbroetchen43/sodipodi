@@ -1,5 +1,17 @@
-#ifndef SP_SHAPE_H
-#define SP_SHAPE_H
+#ifndef __SP_SHAPE_H__
+#define __SP_SHAPE_H__
+
+/*
+ * SPShape
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include <libart_lgpl/art_bpath.h>
 #include "sp-path.h"

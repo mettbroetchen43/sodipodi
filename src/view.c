@@ -106,18 +106,19 @@ sp_view_set_document (SPView *view, SPDocument *doc)
 	g_return_if_fail (SP_IS_VIEW (view));
 	g_return_if_fail (!doc || SP_IS_DOCUMENT (doc));
 
+	if (((SPViewClass *) ((GtkObject *) view)->klass)->set_document)
+		((SPViewClass *) ((GtkObject *) view)->klass)->set_document (view, doc);
+
 	if (view->doc) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (view->doc), view);
 		view->doc = sp_document_unref (view->doc);
 	}
+
 	if (doc) {
 		view->doc = sp_document_ref (doc);
 		gtk_signal_connect (GTK_OBJECT (doc), "uri_set", GTK_SIGNAL_FUNC (sp_view_document_uri_set), view);
 		gtk_signal_connect (GTK_OBJECT (doc), "resized", GTK_SIGNAL_FUNC (sp_view_document_resized), view);
 	}
-
-	if (((SPViewClass *) ((GtkObject *) view)->klass)->set_document)
-		((SPViewClass *) ((GtkObject *) view)->klass)->set_document (view, doc);
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], (doc) ? SP_DOCUMENT_URI (doc) : NULL);
 }

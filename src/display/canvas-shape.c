@@ -6,7 +6,6 @@
 #include <libart_lgpl/art_alphagamma.h>
 #include "../helper/canvas-helper.h"
 #include "../style.h"
-#include "canvas-bgroup.h"
 #include "canvas-shape.h"
 
 #include <libart_lgpl/art_bpath.h>

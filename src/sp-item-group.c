@@ -1,4 +1,16 @@
-#define SP_GROUP_C
+#define __SP_GROUP_C__
+
+/*
+ * SPItemGroup
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include <glib.h>
 #include <libgnome/gnome-defs.h>

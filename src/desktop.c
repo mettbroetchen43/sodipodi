@@ -51,9 +51,9 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
+static void sp_desktop_set_document (SPView *view, SPDocument *doc);
 static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
-static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
 static void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
@@ -70,7 +70,8 @@ void sp_desktop_toggle_borders (GtkWidget * widget);
 
 static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
-
+/* fixme: These are widget forward decls, that are here, until things will be sorted out */
+static void sp_desktop_widget_update_rulers (GtkWidget * widget, SPDesktopWidget *dtw);
 
 SPViewClass * parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -114,6 +115,7 @@ sp_desktop_class_init (SPDesktopClass *klass)
 
 	object_class->destroy = sp_desktop_destroy;
 
+	view_class->set_document = sp_desktop_set_document;
 	view_class->document_resized = sp_desktop_document_resized;
 }
 
@@ -122,7 +124,6 @@ sp_desktop_init (SPDesktop *desktop)
 {
 	desktop->owner = NULL;
 
-	desktop->document = NULL;
 	desktop->namedview = NULL;
 	desktop->selection = NULL;
 	desktop->event_context = NULL;
@@ -148,18 +149,20 @@ sp_desktop_destroy (GtkObject *object)
 
 	sodipodi_remove_desktop (desktop);
 
-	if (desktop->event_context)
+	if (desktop->event_context) {
 		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+		desktop->event_context = NULL;
+	}
 
-	if (desktop->selection)
+	if (desktop->selection) {
 		gtk_object_unref (GTK_OBJECT (desktop->selection));
+		desktop->selection = NULL;
+	}
 
-	if (desktop->document) {
-		if (desktop->owner && desktop->owner->canvas) {
-			sp_namedview_hide (desktop->namedview, desktop);
-			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
-		}
-		gtk_object_unref (GTK_OBJECT (desktop->document));
+	if (desktop->drawing) {
+		sp_namedview_hide (desktop->namedview, desktop);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
+		desktop->drawing = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -201,21 +204,13 @@ SPView *
 sp_desktop_new (SPDesktopWidget *widget)
 {
 	SPDesktop *desktop;
-	GtkStyle *style;
 	GnomeCanvasGroup * root;
 	NRArenaItem *ai;
-	GtkAdjustment * hadj, * vadj;
 	gdouble dw, dh;
 	ArtDRect pdim;
 	SPDocument *document;
 	SPNamedView *namedview;
 
-#if 0
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (namedview != NULL, NULL);
-	g_return_val_if_fail (SP_IS_NAMEDVIEW (namedview), NULL);
-#endif
 	document = widget->document;
 	namedview = widget->namedview;
 
@@ -228,17 +223,12 @@ sp_desktop_new (SPDesktopWidget *widget)
 
 	/* Connect document */
 	sp_view_set_document (SP_VIEW (desktop), document);
-	desktop->document = sp_document_ref (document);
 
 	desktop->namedview = namedview;
 	desktop->number = sp_namedview_viewcount (namedview);
 
 	/* Setup Canvas */
 	gtk_object_set_data (GTK_OBJECT (desktop->owner->canvas), "SPDesktop", desktop);
-
-	style = gtk_style_copy (GTK_WIDGET (desktop->owner->canvas)->style);
-	style->bg[GTK_STATE_NORMAL] = style->white;
-	gtk_widget_set_style (GTK_WIDGET (desktop->owner->canvas), style);
 
 	root = gnome_canvas_root (desktop->owner->canvas);
 
@@ -294,18 +284,11 @@ sp_desktop_new (SPDesktopWidget *widget)
 		SP_DESKTOP_SCROLL_LIMIT,
 		SP_DESKTOP_SCROLL_LIMIT);
 
-	// connecting canvas, scrollbars, rulers, statusbar
-	hadj = gtk_range_get_adjustment (GTK_RANGE (desktop->owner->hscrollbar));
-	vadj = gtk_range_get_adjustment (GTK_RANGE (desktop->owner->vscrollbar));
-	gtk_layout_set_hadjustment (GTK_LAYOUT (desktop->owner->canvas), hadj);
-	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->owner->canvas), vadj);
-	gtk_signal_connect (GTK_OBJECT (hadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
-	gtk_signal_connect (GTK_OBJECT (vadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
 	gtk_signal_connect (GTK_OBJECT (desktop->owner->canvas), "size-allocate", GTK_SIGNAL_FUNC (sp_desktop_size_allocate), desktop);
 	if (select_set_id<1) select_set_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", 
 								 GTK_SIGNAL_FUNC (sp_desktop_update_scrollbars),NULL);
 
-	ai = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
+	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
 	if (ai) {
 		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 		gtk_object_unref (GTK_OBJECT(ai));
@@ -384,57 +367,47 @@ sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate)
 	sp_namedview_activate_guides (desktop->namedview, desktop, activate);
 }
 
-void
-sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
+static void
+sp_desktop_set_document (SPView *view, SPDocument *doc)
 {
-	NRArenaItem *ai;
+	SPDesktop *desktop;
 
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
+	desktop = SP_DESKTOP (view);
 
-	sp_namedview_hide (desktop->namedview, desktop);
-	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
-
-	gtk_object_ref (GTK_OBJECT (document));
-	gtk_object_unref (GTK_OBJECT (desktop->document));
-
-	desktop->document = document;
-	desktop->namedview = sp_document_namedview (document, NULL);
-
-	ai = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
-	if (ai) {
-		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
-		gtk_object_unref (GTK_OBJECT(ai));
+	if (view->doc) {
+		sp_namedview_hide (desktop->namedview, desktop);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
 	}
-	sp_namedview_show (desktop->namedview, desktop);
-	/* Ugly hack */
-	sp_desktop_activate_guides (desktop, TRUE);
+
+	/* fixme: */
+	if (desktop->drawing) {
+		NRArenaItem *ai;
+
+		desktop->namedview = sp_document_namedview (doc, NULL);
+
+		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena);
+		if (ai) {
+			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
+			gtk_object_unref (GTK_OBJECT(ai));
+		}
+		sp_namedview_show (desktop->namedview, desktop);
+		/* Ugly hack */
+		sp_desktop_activate_guides (desktop, TRUE);
+	}
+}
+
+void
+sp_desktop_change_document (SPDesktop *desktop, SPDocument *document)
+{
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+	g_return_if_fail (document != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (document));
+
+	sp_view_set_document (SP_VIEW (desktop), document);
 }
 
 /* Private methods */
-
-static void
-sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop)
-{
-	ArtPoint p0, p1;
-
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	gnome_canvas_window_to_world (desktop->owner->canvas,
-		0.0, 0.0, &p0.x, &p0.y);
-	gnome_canvas_window_to_world (desktop->owner->canvas,
-		((GtkWidget *) desktop->owner->canvas)->allocation.width,
-		((GtkWidget *) desktop->owner->canvas)->allocation.height,
-		&p1.x, &p1.y);
-	art_affine_point (&p0, &p0, desktop->w2d);
-	art_affine_point (&p1, &p1, desktop->w2d);
-
-	gtk_ruler_set_range (desktop->owner->hruler, p0.x, p1.x, desktop->owner->hruler->position, p1.x);
-	gtk_ruler_set_range (desktop->owner->vruler, p0.y, p1.y, desktop->owner->vruler->position, p1.y);
-}
 
 // redraw the scrollbars in the desktop window and set the adjustments to <reasonable> values
 static 
@@ -458,7 +431,7 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   g_return_if_fail (SP_IS_SELECTION (selection));
   desktop = selection->desktop;
   g_return_if_fail (SP_IS_DESKTOP (desktop));
-  docitem = SP_ITEM (sp_document_root (desktop->document));
+  docitem = SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop)));
   g_return_if_fail (docitem != NULL);
 
   hadj = gtk_range_get_adjustment (GTK_RANGE (desktop->owner->hscrollbar));
@@ -472,8 +445,8 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   // add document area / document coordinates
   if (d.x0 > 0) d.x0 = 0;
   if (d.y0 > 0) d.y0 = 0;
-  dw = sp_document_width (desktop->document);
-  dh = sp_document_height (desktop->document);
+  dw = sp_document_width (SP_VIEW_DOCUMENT (desktop));
+  dh = sp_document_height (SP_VIEW_DOCUMENT (desktop));
   if (d.x1 < dw) d.x1 = dw;
   if (d.y1 < dh) d.y1 = dh;
   // add border around drawing / document coordinates
@@ -516,7 +489,7 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
 static 
 void sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop) 
 {
-  sp_desktop_update_rulers (widget, desktop);
+  sp_desktop_widget_update_rulers (widget, desktop->owner);
   sp_desktop_update_scrollbars (SODIPODI, SP_DT_SELECTION (desktop));
 }
 
@@ -749,7 +722,7 @@ sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
     ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height + 1;
     gnome_canvas_scroll_to (desktop->owner->canvas, x - cw / 2, y - ch / 2);
 
-    sp_desktop_update_rulers (NULL, desktop);
+    sp_desktop_widget_update_rulers (NULL, desktop->owner);
     sp_desktop_update_scrollbars (SODIPODI, SP_DT_SELECTION (desktop));
 }
 
@@ -914,6 +887,8 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	GtkWidget * hbox, * widget, * zoom, * entry; 
 	GtkWidget * eventbox;
 	GtkTable * table;
+	GtkStyle *style;
+	GtkAdjustment *hadj, *vadj;
 	//	GList * zoom_list = NULL;
 
 	desktop->document = NULL;
@@ -964,6 +939,9 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
+	style = gtk_style_copy (GTK_WIDGET (desktop->canvas)->style);
+	style->bg[GTK_STATE_NORMAL] = style->white;
+	gtk_widget_set_style (GTK_WIDGET (desktop->canvas), style);
 
 	gtk_signal_connect (GTK_OBJECT (desktop->canvas), "event",
 			    GTK_SIGNAL_FUNC (sp_desktop_widget_event), desktop);
@@ -1115,6 +1093,14 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
                             TRUE,
                           0);
 
+	// connecting canvas, scrollbars, rulers, statusbar
+	hadj = gtk_range_get_adjustment (GTK_RANGE (desktop->hscrollbar));
+	vadj = gtk_range_get_adjustment (GTK_RANGE (desktop->vscrollbar));
+	gtk_layout_set_hadjustment (GTK_LAYOUT (desktop->canvas), hadj);
+	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->canvas), vadj);
+	gtk_signal_connect (GTK_OBJECT (hadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_update_rulers), desktop);
+	gtk_signal_connect (GTK_OBJECT (vadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_update_rulers), desktop);
+
         gtk_widget_grab_focus (GTK_WIDGET (desktop->canvas));
 }
 
@@ -1259,6 +1245,23 @@ sp_desktop_widget_new (SPDocument *document, SPNamedView *namedview)
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
 
 	return SP_VIEW_WIDGET (dtw);
+}
+
+static void
+sp_desktop_widget_update_rulers (GtkWidget * widget, SPDesktopWidget *dtw)
+{
+	ArtPoint p0, p1;
+
+	gnome_canvas_window_to_world (dtw->canvas, 0.0, 0.0, &p0.x, &p0.y);
+	gnome_canvas_window_to_world (dtw->canvas,
+		((GtkWidget *) dtw->canvas)->allocation.width,
+		((GtkWidget *) dtw->canvas)->allocation.height,
+		&p1.x, &p1.y);
+	art_affine_point (&p0, &p0, dtw->desktop->w2d);
+	art_affine_point (&p1, &p1, dtw->desktop->w2d);
+
+	gtk_ruler_set_range (dtw->hruler, p0.x, p1.x, dtw->hruler->position, p1.x);
+	gtk_ruler_set_range (dtw->vruler, p0.y, p1.y, dtw->vruler->position, p1.y);
 }
 
 

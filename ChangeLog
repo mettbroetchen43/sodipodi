@@ -1,3 +1,25 @@
+2001-11-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/display/nr-arena-image.c (nr_arena_image_update): Implemented
+	explicit geometry
+	(nr_arena_image_set_geometry): New method
+
+	* src/sp-image.c: Implemented "x", "y", "width", "height"
+	(sp_image_read_attr): Ditto
+	(sp_image_bbox): Ditto
+	(sp_image_print): Ditto
+	(sp_image_show): Ditto
+	(sp_image_write_transform): Implement
+
+	* src/file.c (file_import_ok): Try to load pixbuf and set
+	"width" and "height" attributes
+
+	* src/desktop.c: Some cleanups of View/Widget structure
+
+	* src/desktop.h: Ditto
+
+	* glade/Makefile.am (images): Added about.svg
+
 2001-11-08  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/svg/svg-affine.c (sp_svg_write_affine): Write scale and

@@ -13,9 +13,6 @@ noinst_LIBRARIES = libspchelp.a
 libspchelp_a_SOURCES = \
 	canvas-helper.h \
 	art-utils.c art-utils.h \
-	art-rgba-svp.c art-rgba-svp.h \
-	art_rgb_affine_private.h \
-	art-rgba-rgba-affine.c art-rgba-rgba-affine.h \
 	sp-canvas-util.c sp-canvas-util.h \
 	curve.c curve.h \
 	gnome-canvas-acetate.c gnome-canvas-acetate.h \
@@ -31,6 +28,9 @@ libspchelp_a_SOURCES = \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
 	bezier-utils.c bezier-utils.h
 
+#	art_rgb_affine_private.h \
+#	art-rgba-rgba-affine.c art-rgba-rgba-affine.h \
+#	art-rgba-svp.c art-rgba-svp.h \
 #	art_rgba.c art_rgba.h \
 #	art_render.c art_render.h \
 #	art_render_gradient.c art_render_gradient.h \

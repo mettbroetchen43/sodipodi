@@ -38,7 +38,6 @@ struct _SPDesktop {
 
 	SPDesktopWidget *owner;
 
-	SPDocument * document;
 	SPNamedView * namedview;
 	SPSelection * selection;
 	SPEventContext * event_context;
@@ -132,7 +131,7 @@ struct _SPDesktopWidget {
         gint coord_status_id, select_status_id;
         GtkWidget * zoom;
 
-	GnomeCanvas * canvas;
+	GnomeCanvas *canvas;
 };
 
 struct _SPDesktopWidgetClass {

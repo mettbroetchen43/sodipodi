@@ -1,26 +1,26 @@
-#define SP_SHAPE_C
+#define __SP_SHAPE_C__
 
-#include <config.h>
+/*
+ * SPShape
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
+
 #include <math.h>
-#include <gnome.h>
-
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
-#if 0
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#include <libart_lgpl/art_rgb_svp.h>
-#include <libart_lgpl/art_gray_svp.h>
-#include <libart_lgpl/art_rect_svp.h>
-#endif
 
+#include "svg/svg.h"
 #include "dialogs/fill-style.h"
-#if 0
-#include "helper/art-rgba-svp.h"
-#endif
 #include "display/nr-arena-shape.h"
 #include "document.h"
 #include "desktop.h"

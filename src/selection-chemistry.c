@@ -461,7 +461,6 @@ void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
 	SPItem * item;
 	GSList * l;
 	double curaff[6], newaff[6];
-	char tstr[80];
 
 	g_assert (SP_IS_SELECTION (selection));
 

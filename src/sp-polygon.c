@@ -118,7 +118,6 @@ sp_svg_write_polygon (const ArtBpath * bpath)
 {
 	GString *result;
 	int i;
-	int closed = 0;
 	char *res;
 	
 	g_return_val_if_fail (bpath != NULL, NULL);

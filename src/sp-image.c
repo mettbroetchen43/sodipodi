@@ -1,11 +1,26 @@
-#define SP_IMAGE_C
+#define __SP_IMAGE_C__
 
+/*
+ * SPRect
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
+
+#include <math.h>
+#include <string.h>
 #include <ctype.h>
-#include <gnome.h>
-#include <libart_lgpl/art_rgb_rgba_affine.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
-#include "helper/art-rgba-rgba-affine.h"
 #include "display/nr-arena-image.h"
+#include "svg/svg.h"
 #include "style.h"
 #include "brokenimage.xpm"
 #include "sp-image.h"
@@ -21,12 +36,12 @@ static void sp_image_destroy (GtkObject * object);
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_image_read_attr (SPObject * object, const gchar * key);
 
-static void sp_image_update (SPItem * item, gdouble affine[]);
 static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
+static void sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
@@ -77,17 +92,23 @@ sp_image_class_init (SPImageClass * klass)
 	sp_object_class->build = sp_image_build;
 	sp_object_class->read_attr = sp_image_read_attr;
 
-	item_class->update = sp_image_update;
 	item_class->bbox = sp_image_bbox;
 	item_class->print = sp_image_print;
 	item_class->description = sp_image_description;
 	item_class->show = sp_image_show;
 	item_class->snappoints = sp_image_snappoints;
+	item_class->write_transform = sp_image_write_transform;
 }
 
 static void
 sp_image_init (SPImage *image)
 {
+	image->width_set = FALSE;
+	image->height_set = FALSE;
+	image->href = NULL;
+	image->x = image->y = 0.0;
+	image->width = image->height = 0.0;
+
 	image->pixbuf = NULL;
 }
 
@@ -97,6 +118,11 @@ sp_image_destroy (GtkObject *object)
 	SPImage *image;
 
 	image = SP_IMAGE (object);
+
+	if (image->href) {
+		g_free (image->href);
+		image->href = NULL;
+	}
 
 	if (image->pixbuf) {
 		gdk_pixbuf_unref (image->pixbuf);
@@ -114,92 +140,85 @@ sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
 
 	sp_image_read_attr (object, "xlink:href");
+	sp_image_read_attr (object, "x");
+	sp_image_read_attr (object, "y");
+	sp_image_read_attr (object, "width");
+	sp_image_read_attr (object, "height");
 }
 
 static void
-sp_image_read_attr (SPObject * object, const gchar * key)
+sp_image_read_attr (SPObject * object, const gchar *key)
 {
-	SPImage * image;
-	GdkPixbuf * pixbuf;
+	SPImage *image;
+	const guchar *val;
+	SPSVGUnit unit;
 
 	image = SP_IMAGE (object);
+	val = sp_repr_attr (SP_OBJECT_REPR (object), key);
 
-	pixbuf = NULL;
-
-	if (strcmp (key, "xlink:href") == 0) {
-		/* Free old pixbuf */
+	if (!strcmp (key, "xlink:href")) {
+		if (image->href) {
+			g_free (image->href);
+			image->href = NULL;
+		}
 		if (image->pixbuf) {
 			gdk_pixbuf_unref (image->pixbuf);
 			image->pixbuf = NULL;
 		}
-		pixbuf = sp_image_repr_read_image (object->repr);
-		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
-		image->pixbuf = pixbuf;
+		if (val) {
+			GdkPixbuf *pixbuf;
+			image->href = g_strdup (val);
+			pixbuf = sp_image_repr_read_image (object->repr);
+			if (pixbuf) {
+				pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
+				image->pixbuf = pixbuf;
+			}
+		}
+		sp_image_update_canvas_image (image);
+		return;
+	} else if (!strcmp (key, "x")) {
+		image->x = sp_svg_read_length (&unit, val, 0.0);
+		sp_image_update_canvas_image (image);
+		return;
+	} else if (!strcmp (key, "y")) {
+		image->y = sp_svg_read_length (&unit, val, 0.0);
+		sp_image_update_canvas_image (image);
+		return;
+	} else if (!strcmp (key, "width")) {
+		image->width = sp_svg_read_length (&unit, val, -1.0);
+		image->width_set = (image->width >= 0.0) ? TRUE : FALSE;
+		sp_image_update_canvas_image (image);
+		return;
+	} else if (!strcmp (key, "height")) {
+		image->height = sp_svg_read_length (&unit, val, -1.0);
+		image->height_set = (image->height >= 0.0) ? TRUE : FALSE;
 		sp_image_update_canvas_image (image);
 		return;
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
-
-
-	if (!strcmp (key, "style")) {
-#if 0
-		/* fixme: */
-		sp_image_update_canvas_image (image);
-#endif
-	}
 }
 
 static void
-sp_image_update (SPItem * item, gdouble * affine)
+sp_image_bbox (SPItem *item, ArtDRect *bbox)
 {
-	if (SP_ITEM_CLASS (parent_class)->update)
-		(* SP_ITEM_CLASS (parent_class)->update) (item, affine);
-}
-
-static void
-sp_image_bbox (SPItem * item, ArtDRect * bbox)
-{
-	SPImage * image;
-	double a[6];
-	ArtPoint p;
+	SPImage *image;
 
 	image = SP_IMAGE (item);
 
-	sp_item_i2d_affine (item, a);
+	if ((image->width > 0.0) && (image->height > 0.0)) {
+		gdouble a[6];
+		ArtDRect dim;
 
-	p.x = 0.0;
-	p.y = 0.0;
-	art_affine_point (&p, &p, a);
-	bbox->x0 = bbox->x1 = p.x;
-	bbox->y0 = bbox->y1 = p.y;
+		sp_item_i2d_affine (item, a);
+		dim.x0 = image->x;
+		dim.y0 = image->y;
+		dim.x1 = image->x + image->width;
+		dim.y1 = image->y + image->height;
 
-	if (image->pixbuf == NULL) return;
-
-	p.x = 0.0;
-	p.y = gdk_pixbuf_get_height (image->pixbuf);
-	art_affine_point (&p, &p, a);
-	bbox->x0 = MIN (bbox->x0, p.x);
-	bbox->y0 = MIN (bbox->y0, p.y);
-	bbox->x1 = MAX (bbox->x1, p.x);
-	bbox->y1 = MAX (bbox->y1, p.y);
-
-	p.x = gdk_pixbuf_get_width (image->pixbuf);
-	p.y = gdk_pixbuf_get_height (image->pixbuf);
-	art_affine_point (&p, &p, a);
-	bbox->x0 = MIN (bbox->x0, p.x);
-	bbox->y0 = MIN (bbox->y0, p.y);
-	bbox->x1 = MAX (bbox->x1, p.x);
-	bbox->y1 = MAX (bbox->y1, p.y);
-
-	p.x = gdk_pixbuf_get_width (image->pixbuf);
-	p.y = 0.0;
-	art_affine_point (&p, &p, a);
-	bbox->x0 = MIN (bbox->x0, p.x);
-	bbox->y0 = MIN (bbox->y0, p.y);
-	bbox->x1 = MAX (bbox->x1, p.x);
-	bbox->y1 = MAX (bbox->y1, p.y);
+		art_drect_affine_transform (bbox, &dim, a);
+	}
 }
 
 static void
@@ -207,7 +226,6 @@ sp_image_print (SPItem * item, GnomePrintContext * gpc)
 {
 	SPObject *object;
 	SPImage *image;
-	double affine[6];
 	guchar * pixels;
 	gint width, height, rowstride;
 
@@ -215,6 +233,7 @@ sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	image = SP_IMAGE (item);
 
 	if (!image->pixbuf) return;
+	if ((image->width <= 0.0) || (image->height <= 0.0)) return;
 
 	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
 	width = gdk_pixbuf_get_width (image->pixbuf);
@@ -223,10 +242,9 @@ sp_image_print (SPItem * item, GnomePrintContext * gpc)
 
 	gnome_print_gsave (gpc);
 
-	art_affine_scale (affine, width, -height);
-	gnome_print_concat (gpc, affine);
-	art_affine_translate (affine, 0.0, -1.0);
-	gnome_print_concat (gpc, affine);
+	gnome_print_translate (gpc, image->x, image->y);
+	gnome_print_scale (gpc, image->width, -image->height);
+	gnome_print_translate (gpc, 0.0, -1.0);
 
 	if (object->style->opacity != 1.0) {
 		guchar *px, *d, *s;
@@ -267,18 +285,17 @@ sp_image_description (SPItem * item)
 static NRArenaItem *
 sp_image_show (SPItem *item, NRArena *arena)
 {
-	SPObject *object;
 	SPImage * image;
-	NRArenaItem *arenaitem;
+	NRArenaItem *ai;
 
-	object = SP_OBJECT (item);
 	image = (SPImage *) item;
 
-	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
+	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
 
-	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (arenaitem), image->pixbuf);
+	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (ai), image->pixbuf);
+	nr_arena_image_set_geometry (NR_ARENA_IMAGE (ai), image->x, image->y, image->width, image->height);
 
-	return arenaitem;
+	return ai;
 }
 
 /*
@@ -354,42 +371,42 @@ sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf)
 static void
 sp_image_update_canvas_image (SPImage *image)
 {
-	SPObject *object;
 	SPItem *item;
 	SPItemView *v;
 
-	object = SP_OBJECT (image);
 	item = SP_ITEM (image);
 
-	if (!image->pixbuf) return;
+	if (image->pixbuf) {
+		if (!image->width_set) image->width = gdk_pixbuf_get_width (image->pixbuf);
+		if (!image->height_set) image->height = gdk_pixbuf_get_height (image->pixbuf);
+	}
 
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (v->arenaitem), image->pixbuf);
+		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v->arenaitem), image->x, image->y, image->width, image->height);
 	}
 }
 
 static GSList * 
 sp_image_snappoints (SPItem * item, GSList * points)
 {
-  ArtPoint * p, p1, p2, p3, p4;
-  gdouble affine[6], w, h;
-  SPImage * image;
+  ArtPoint *p, p1, p2, p3, p4;
+  gdouble affine[6];
+  SPImage *image;
 
   image = SP_IMAGE (item);
 
-  w = gdk_pixbuf_get_width (image->pixbuf);
-  h = gdk_pixbuf_get_height (image->pixbuf);
+  sp_item_i2d_affine (item, affine);
 
   /* we use corners of image only */
-  p1.x = 0.0;
-  p1.y = 0.0;
-  p2.x = w;
-  p2.y = 0.0;
-  p3.x = 0.0;
-  p3.y = h;
-  p4.x = w;
-  p4.y = h;
-  sp_item_i2d_affine (item, affine);
+  p1.x = image->x;
+  p1.y = image->y;
+  p2.x = image->x + image->width;
+  p2.y = image->y;
+  p3.x = image->x;
+  p3.y = image->y + image->height;
+  p4.x = image->x + image->width;
+  p4.y = image->y + image->height;
 
   p = g_new (ArtPoint,1);
   art_affine_point (p, &p1, affine);
@@ -405,6 +422,66 @@ sp_image_snappoints (SPItem * item, GSList * points)
   points = g_slist_append (points, p);
 
   return points;
+}
+
+/*
+ * Initially we'll do:
+ * Transform x, y, set x, y, clear translation
+ */
+
+static void
+sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
+{
+	SPImage *image;
+	gdouble rev[6];
+	gdouble px, py, sw, sh;
+
+	image = SP_IMAGE (item);
+
+	/* Calculate text start in parent coords */
+	px = transform[0] * image->x + transform[2] * image->y + transform[4];
+	py = transform[1] * image->x + transform[3] * image->y + transform[5];
+
+	/* Clear translation */
+	transform[4] = 0.0;
+	transform[5] = 0.0;
+
+	/* Scalers */
+	sw = sqrt (transform[0] * transform[0] + transform[1] * transform[1]);
+	sh = sqrt (transform[2] * transform[2] + transform[3] * transform[3]);
+	if (sw > 1e-9) {
+		transform[0] = transform[0] / sw;
+		transform[1] = transform[1] / sw;
+	} else {
+		transform[0] = 1.0;
+		transform[1] = 0.0;
+	}
+	if (sh > 1e-9) {
+		transform[2] = transform[2] / sh;
+		transform[3] = transform[3] / sh;
+	} else {
+		transform[2] = 0.0;
+		transform[3] = 1.0;
+	}
+	sp_repr_set_double_attribute (repr, "width", image->width * sw);
+	sp_repr_set_double_attribute (repr, "height", image->height * sh);
+
+	/* Find start in item coords */
+	art_affine_invert (rev, transform);
+	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
+	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
+
+	if ((fabs (transform[0] - 1.0) > 1e-9) ||
+	    (fabs (transform[3] - 1.0) > 1e-9) ||
+	    (fabs (transform[1]) > 1e-9) ||
+	    (fabs (transform[2]) > 1e-9)) {
+		guchar t[80];
+		sp_svg_write_affine (t, 80, transform);
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+
 }
 
 static GdkPixbuf *
@@ -545,3 +622,4 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 
 	return pixbuf;
 }
+

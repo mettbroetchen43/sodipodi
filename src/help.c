@@ -33,12 +33,14 @@ sp_help_about (void)
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (w), _("About sodipodi"));
-	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, TRUE);
+#if 1
+	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, FALSE);
+#endif
 	gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_help_about_delete), NULL);
 
 	v = sp_svg_view_widget_new (doc);
 	sp_document_unref (doc);
-	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (v), TRUE, 600.0, 400.0);
+	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (v), FALSE, 600.0, 400.0);
 	gtk_widget_show (v);
 	gtk_container_add (GTK_CONTAINER (w), v);
 

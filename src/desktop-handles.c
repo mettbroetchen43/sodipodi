@@ -27,7 +27,7 @@ sp_desktop_document (SPDesktop * desktop)
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 
-	return desktop->document;
+	return SP_VIEW_DOCUMENT (desktop);
 }
 
 GnomeCanvas *

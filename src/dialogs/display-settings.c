@@ -24,8 +24,8 @@ static GladeXML * xml = NULL;
 static GtkWidget * dialog = NULL;
 static gint oversample = 0;
 
-extern gint sp_canvas_image_x_sample;
-extern gint sp_canvas_image_y_sample;
+extern gint nr_arena_image_x_sample;
+extern gint nr_arena_image_y_sample;
 
 static void sp_display_dialog_setup (void);
 
@@ -87,7 +87,7 @@ sp_display_dialog_setup (void)
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (w), m);
 
-	gtk_option_menu_set_history (GTK_OPTION_MENU (w), sp_canvas_image_x_sample);
+	gtk_option_menu_set_history (GTK_OPTION_MENU (w), nr_arena_image_x_sample);
 }
 
 void
@@ -109,8 +109,8 @@ sp_display_dialog_delete (GtkWidget *widget, GdkEvent *event)
 void
 sp_display_dialog_apply (GtkWidget * widget)
 {
-	sp_canvas_image_x_sample = oversample;
-	sp_canvas_image_y_sample = oversample;
+	nr_arena_image_x_sample = oversample;
+	nr_arena_image_y_sample = oversample;
 
 	/* fixme: update display */
 }
