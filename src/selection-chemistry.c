@@ -393,7 +393,9 @@ sp_selection_delete (gpointer object, gpointer data)
 	sp_selection_empty (selection);
 
 	while (selected) {
-		sp_repr_unparent ((SPRepr *) selected->data);
+		SPRepr *repr;
+		repr = (SPRepr *) selected->data;
+		if (sp_repr_parent (repr)) sp_repr_unparent (repr);
 		selected = g_slist_remove (selected, selected->data);
 	}
 

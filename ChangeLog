@@ -1,3 +1,11 @@
+2004-01-11  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/text-context.c (sp_text_context_selection_changed): Previous
+	fix was not so good, i.e., empty text was remained.
+	
+	* src/selection-chemistry.c (sp_selection_delete): So I modified
+	this method instead
+
 2004-01-10  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/text-context.c (sp_text_context_selection_changed):
