@@ -766,7 +766,6 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 /* GnomeMessageBox */
 #include <libgnomeui/libgnomeui.h>
 
-static void object_destroyed (GtkObject *object, GtkWidget *widget);
 static at_bitmap_type * gdk_pixbuf_to_at_bitmap (GdkPixbuf * pixbuf);
 static void load_trace_result(FrontlineDialog * fl_dialog, gpointer user_data);
 static void load_splines(at_splines_type * splines);
@@ -786,14 +785,15 @@ autotrace_dialog(SPImage * img)
 
 	trace_dialog = frontline_dialog_new();
 	gtk_window_set_title (GTK_WINDOW (trace_dialog), title);
-	gtk_signal_connect_while_alive (GTK_OBJECT (img), "destroy",
-					GTK_SIGNAL_FUNC (object_destroyed), 
-					trace_dialog, 
-					GTK_OBJECT (trace_dialog));
-	gtk_signal_connect(GTK_OBJECT(FRONTLINE_DIALOG(trace_dialog)->close_button),
-			   "clicked",
-			   GTK_SIGNAL_FUNC (object_destroyed), 
-			   trace_dialog);
+
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (img), 
+					       "destroy",
+					       GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					       GTK_OBJECT (trace_dialog));
+	gtk_signal_connect_object (GTK_OBJECT(FRONTLINE_DIALOG(trace_dialog)->close_button),
+				   "clicked",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+				   GTK_OBJECT(trace_dialog));
 	gtk_signal_connect(GTK_OBJECT(trace_dialog),
 			   "trace_done",
 			   GTK_SIGNAL_FUNC (load_trace_result), 
@@ -814,12 +814,6 @@ autotrace_dialog(SPImage * img)
 	frontline_dialog_set_bitmap(FRONTLINE_DIALOG(trace_dialog), bitmap);
 	
 	gtk_widget_show (trace_dialog);
-}
-
-static void
-object_destroyed (GtkObject *object, GtkWidget *widget)
-{
-	gtk_widget_destroy (widget);
 }
 
 static at_bitmap_type *
@@ -864,8 +858,8 @@ load_trace_result(FrontlineDialog * fl_dialog, gpointer user_data)
 	
 	if (!trace_dialog->splines) 
 	  return;
-	
-	load_splines(trace_dialog->splines);
+	if (fl_ask(GTK_WINDOW(trace_dialog), trace_dialog->splines))
+	  load_splines(trace_dialog->splines);
 }
 
 
@@ -992,4 +986,5 @@ build_header_area(SPRepr *repr)
 	
 	return vbox;
 }
+
 #endif /* Def: ENABLE_AUTOTRACE */
