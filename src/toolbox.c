@@ -10,6 +10,8 @@
  * Copyright (C) 2000-2001 Frank Felfe
  * Copyright (C) 2001-2002 Ximian, Inc.
  * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
  */
 
 #include <config.h>

@@ -1,3 +1,15 @@
+2002-08-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c (sp_style_merge_from_style_string): Accept (although warn)
+	properties without end marker
+
+	* src/dialogs/export.c (sp_export_do_export): Use correct transformation
+
+	* src/main.c: Added command-line export functionality
+	(main): Cleanup
+	(sp_main_gui): Broke GUI-specific stuff here
+	(sp_main_console): Same for console mode, implement export, use current dor for print
+
 2002-08-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/toolbox.c (sp_maintoolbox_create): Moved draw toolbox to separate method

@@ -1,7 +1,18 @@
-#ifndef SODIPODI_PRIVATE_H
-#define SODIPODI_PRIVATE_H
+#ifndef __SODIPODI_PRIVATE_H__
+#define __SODIPODI_PRIVATE_H__
 
-#include "xml/repr.h"
+/*
+ * Some forward declarations
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include "sodipodi.h"
 
 Sodipodi * sodipodi_new ();

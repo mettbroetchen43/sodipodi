@@ -1,4 +1,17 @@
-#define SP_EXPORT_C
+#define __SP_EXPORT_C__
+
+/*
+ * PNG export dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 
 #include <config.h>
 #include <gnome.h>
@@ -124,7 +137,7 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 #else
 	ArtPixBuf * pixbuf;
 	art_u8 * pixels;
-	gdouble affine[6], a[6];
+	gdouble affine[6];
 #endif
 
 	g_return_if_fail (desktop != NULL);
@@ -155,11 +168,28 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
-	sp_desktop_doc2d_affine (desktop, affine);
-	art_affine_translate (a, -x0, -y1);
-	art_affine_multiply (affine, affine, a);
-	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
-	art_affine_multiply (affine, affine, a);
+	/*
+	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
+	 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
+	 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
+	 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
+	 * 5) a[1] = 0.0;
+	 * 6) a[2] = 0.0;
+	 *
+	 * (1,3) a[0] * x1 - a[0] * x0 = width
+	 * a[0] = width / (x1 - x0)
+	 * (2,4) a[3] * y0 - a[3] * y1 = height
+	 * a[3] = height / (y0 - y1)
+	 * (1) a[4] = -a[0] * x0
+	 * (2) a[5] = -a[3] * y1
+	 */
+
+	affine[0] = width / (x1 - x0);
+	affine[1] = 0.0;
+	affine[2] = 0.0;
+	affine[3] = height / (y0 - y1);
+	affine[4] = -affine[0] * x0;
+	affine[5] = -affine[3] * y1;
 
 	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 

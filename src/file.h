@@ -1,6 +1,19 @@
 #ifndef __SP_FILE_H__
 #define __SP_FILE_H__
 
+/*
+ * File/Print operations
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Chema Celorio <chema@celorio.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include "forward.h"
 
 void sp_file_new (void);

@@ -596,7 +596,7 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 		e = strchr (p, ';');
 		if (!e) {
 			g_warning ("No end marker at style at: %s", p);
-			return;
+			e = p + strlen (p);
 		}
 		len = MIN (s - p, 4095);
 		if (len < 1) {
@@ -614,6 +614,7 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 		} else {
 			g_warning ("Unknown style property at: %s", p);
 		}
+		if (!*e) return;
 		p = e + 1;
 	}
 }
