@@ -2,16 +2,15 @@
 #define __SP_PAINT_SERVER_H__
 
 /*
- * SPPaintServer
- *
  * Abstract base class for different paint types
  *
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
+ * Copyright (C) 2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>
@@ -55,17 +54,19 @@ struct _SPPaintServer {
 struct _SPPaintServerClass {
 	SPObjectClass sp_object_class;
 	/* Get SPPaint instance */
-	SPPainter * (* painter_new) (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
+	SPPainter * (* painter_new) (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
 	/* Free SPPaint instance */
 	void (* painter_free) (SPPaintServer *ps, SPPainter *painter);
 };
 
 GtkType sp_paint_server_get_type (void);
 
-SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
+SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
+
 #if 0
 void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
 #endif
+
 SPPainter *sp_painter_free (SPPainter *painter);
 
 END_GNOME_DECLS

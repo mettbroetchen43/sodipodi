@@ -1075,16 +1075,26 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 {
 	SPText *text;
 	SPObject *ch;
+	gdouble ctm[6];
+	ArtDRect dbox, bbox;
 
 	text = SP_TEXT (item);
 
 	gnome_print_gsave (gpc);
 
+	/* fixme: Think (Lauris) */
+	sp_item_bbox_desktop (item, &bbox);
+	dbox.x0 = 0.0;
+	dbox.y0 = 0.0;
+	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
+	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
+	sp_item_i2d_affine (item, ctm);
+
 	for (ch = text->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
-			sp_item_print (SP_ITEM (SP_TSPAN (ch)->string), gpc);
+			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), gpc, ctm, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
-			sp_item_print (SP_ITEM (ch), gpc);
+			sp_chars_do_print (SP_CHARS (ch), gpc, ctm, &dbox, &bbox);
 		}
 	}
 

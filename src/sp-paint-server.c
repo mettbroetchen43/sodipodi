@@ -1,16 +1,15 @@
 #define __SP_PAINT_SERVER_C__
 
 /*
- * SPPaintServer
- *
  * Abstract base class for different paint types
  *
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
+ * Copyright (C) 2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "helper/nr-plain-stuff.h"
@@ -84,7 +83,7 @@ sp_paint_server_destroy (GtkObject *object)
 }
 
 SPPainter *
-sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox)
+sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox)
 {
 	SPPainter *painter;
 

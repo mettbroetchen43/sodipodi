@@ -430,6 +430,7 @@ sp_gradient_repr_set_link (SPRepr *repr, SPGradient *link)
 static void
 sp_item_repr_set_style_gradient (SPRepr *repr, const guchar *property, SPGradient *gr)
 {
+#if 0
 	const guchar *sstr;
 	guchar *val, *newval;
 
@@ -443,6 +444,21 @@ sp_item_repr_set_style_gradient (SPRepr *repr, const guchar *property, SPGradien
 	g_free (val);
 	sp_repr_set_attr (repr, "style", newval);
 	g_free (newval);
+#else
+	SPCSSAttr *css;
+	guchar *val;
+
+	g_return_if_fail (repr != NULL);
+	g_return_if_fail (gr != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gr));
+
+	val = g_strdup_printf ("url(#%s)", SP_OBJECT_ID (gr));
+	css = sp_repr_css_attr_new ();
+	sp_repr_css_set_property (css, property, val);
+	g_free (val);
+	sp_repr_css_change_recursive (repr, css, "style");
+	sp_repr_css_attr_unref (css);
+#endif
 }
 
 /*

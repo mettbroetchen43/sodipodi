@@ -6,17 +6,17 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
- * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include "display/nr-arena-shape.h"
+#include "style.h"
 #include "sp-chars.h"
 
 static void sp_chars_class_init (SPCharsClass *class);
@@ -27,7 +27,6 @@ static void sp_chars_style_modified (SPObject *object, guint flags);
 
 static void sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena);
-void sp_chars_print (SPItem * item, GnomePrintContext * gpc);
 
 static SPItemClass *parent_class;
 
@@ -68,7 +67,6 @@ sp_chars_class_init (SPCharsClass *klass)
 
 	item_class->bbox = sp_chars_bbox;
 	item_class->show = sp_chars_show;
-	item_class->print = sp_chars_print;
 }
 
 static void
@@ -176,12 +174,6 @@ sp_chars_show (SPItem *item, NRArena *arena)
 }
 
 void
-sp_chars_print (SPItem *item, GnomePrintContext *gpc)
-{
-	g_warning ("SPChars::print not implemented");
-}
-
-void
 sp_chars_clear (SPChars *chars)
 {
 	SPItem *item;
@@ -273,3 +265,112 @@ sp_chars_normalized_bpath (SPChars *chars)
 
 	return curve;
 }
+
+/* This is completely unrelated to SPItem::print */
+
+static void
+sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPStyle *style,
+		      const gdouble *ctm, const ArtDRect *dbox, const ArtDRect *bbox)
+{
+	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
+		gfloat rgb[3], opacity;
+
+		sp_color_get_rgb_floatv (&style->fill.color, rgb);
+		/* fixme: This is not correct, we should fall back to bitmap here instead */
+		opacity = SP_SCALE30_TO_FLOAT (style->fill_opacity.value) * SP_SCALE30_TO_FLOAT (style->opacity.value);
+		/* Printing code */
+		gnome_print_gsave (ctx);
+		gnome_print_setrgbcolor (ctx, rgb[0], rgb[1], rgb[2]);
+		gnome_print_setopacity (ctx, opacity);
+		gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
+		if (style->fill_rule.value == 1) {
+			gnome_print_eofill (ctx);
+		} else {
+			gnome_print_fill (ctx);
+		}
+		gnome_print_grestore (ctx);
+
+	} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+		SPPainter *painter;
+		static gdouble id[6] = {1,0,0,1,0,0};
+		/* fixme: */
+		painter = sp_paint_server_painter_new (style->fill.server, id, SP_SCALE30_TO_FLOAT (style->opacity.value), bbox);
+		if (painter) {
+			ArtDRect cbox, pbox;
+			ArtIRect ibox;
+			ArtBpath *abp;
+			ArtVpath *vpath;
+			gdouble d2i[6];
+			gint x, y;
+			guchar *rgba;
+
+			/* Find path bbox */
+			abp = art_bpath_affine_transform (bpath, ctm);
+			vpath = art_bez_path_to_vec (abp, 0.25);
+			art_free (abp);
+			art_vpath_bbox_drect (vpath, &pbox);
+			art_free (vpath);
+
+			art_drect_intersect (&cbox, dbox, &pbox);
+			art_drect_to_irect (&ibox, &cbox);
+			art_affine_invert (d2i, ctm);
+
+			gnome_print_gsave (ctx);
+
+			gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
+			if (style->fill_rule.value == 1) {
+				gnome_print_eoclip (ctx);
+			} else {
+				gnome_print_clip (ctx);
+			}
+			gnome_print_concat (ctx, d2i);
+
+			/* Now we are in desktop coordinates */
+			gnome_print_newpath (ctx);
+			gnome_print_moveto (ctx, cbox.x0, cbox.y0);
+			gnome_print_lineto (ctx, cbox.x1, cbox.y0);
+			gnome_print_lineto (ctx, cbox.x1, cbox.y1);
+			gnome_print_lineto (ctx, cbox.x0, cbox.y1);
+			gnome_print_closepath (ctx);
+			gnome_print_clip (ctx);
+
+			rgba = nr_buffer_4_4096_get (FALSE, 0x00000000);
+			for (y = ibox.y0; y < ibox.y1; y+= 64) {
+				for (x = ibox.x0; x < ibox.x1; x+= 64) {
+					painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 4 * 64);
+					gnome_print_gsave (ctx);
+					gnome_print_translate (ctx, x, y);
+					gnome_print_scale (ctx, 64, 64);
+					gnome_print_rgbaimage (ctx, rgba, 64, 64, 4 * 64);
+					gnome_print_grestore (ctx);
+				}
+			}
+			nr_buffer_4_4096_free (rgba);
+			gnome_print_grestore (ctx);
+			sp_painter_free (painter);
+		}
+	}
+}
+
+void
+sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, const ArtDRect *dbox, const ArtDRect *bbox)
+{
+	SPCharElement *el;
+
+	for (el = chars->elements; el != NULL; el = el->next) {
+		gdouble chela[6];
+		const ArtBpath *bpath;
+		ArtBpath *abp;
+		gint i;
+
+		for (i = 0; i < 6; i++) chela[i] = el->affine[i];
+		bpath = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
+		abp = art_bpath_affine_transform (bpath, chela);
+
+		sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, dbox, bbox);
+
+		art_free (abp);
+	}
+}
+
+

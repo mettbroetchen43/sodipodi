@@ -980,7 +980,7 @@ static void sp_lineargradient_destroy (GtkObject * object);
 static void sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
 
-static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
+static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_lineargradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
@@ -1110,7 +1110,7 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 }
 
 static SPPainter *
-sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox)
+sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox)
 {
 	SPLinearGradient *lg;
 	SPGradient *gr;
@@ -1323,7 +1323,7 @@ static void sp_radialgradient_destroy (GtkObject *object);
 static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
 
-static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
+static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_radialgradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
@@ -1456,7 +1456,7 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 }
 
 static SPPainter *
-sp_radialgradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox)
+sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble opacity, const ArtDRect *bbox)
 {
 	SPRadialGradient *rg;
 	SPGradient *gr;
