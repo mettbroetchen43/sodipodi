@@ -88,12 +88,13 @@ sp_document_undo (SPDocument * document)
 		action = (SPRepr *) l->data;
 		name = sp_repr_name (action);
 		if (strcmp (name, "add") == 0) {
+			/* Undoing add is del */
 			children = sp_repr_children (action);
 			repr = (SPRepr *) children->data;
 			id = sp_repr_attr (repr, "id");
 			g_assert (id != NULL);
 			object = sp_document_lookup_id (document, id);
-			g_assert (id != NULL);
+			g_assert (object != NULL);
 			sp_repr_unparent (object->repr);
 		}
 		if (strcmp (name, "del") == 0) {
@@ -270,7 +271,9 @@ sp_document_add_repr (SPDocument * document, SPRepr * repr)
 
 	object = sp_document_lookup_id (document, id);
 	g_assert (object != NULL);
+#if 0
 	g_assert (SP_IS_ITEM (object));
+#endif
 
 	return SP_ITEM (object);
 }

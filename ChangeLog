@@ -1,3 +1,12 @@
+2001-01-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document-undo.c (sp_document_add_repr): Do not expect repr
+	always correspond to item
+
+	* src/toolbox.c (sp_maintoolbox_create): Save edit/undo/redo widgets
+	(sp_update_draw_toolbox): Unsensitize undo/redo for draw and node
+	contexts
+
 2001-01-09  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/desktop (sp_desktop_change_document): Update namedviews aslo
