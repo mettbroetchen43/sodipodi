@@ -1,0 +1,123 @@
+Building Sodipodi with MS Visual Studio .NET
+
+I have hacked together solution and project files
+for building sodipodi under MS Visual Studio .NET.
+
+Prerequisites:
+
+1. Sodipodi from CVS
+Checkout somewhere. Some other build packages have to
+be installed into topmost sodipodi directory (from
+now I call it $TOPDIR - for example, sources are
+$TOPDIR\src and document $TOPDIR\doc).
+
+2. Sodipodi codepages
+Download from
+http://sourceforge.net/project/showfiles.php?group_id=4054
+(it is under release 0.29). Unpack into
+$TOPDIR\src\libnrtype subdirectory (i.e. there
+should be file $TOPDIR\src\libnrtype\cp1250.c)
+
+3. Gtk+ 2.x binaries
+Download from http://www.dropline.net/gtk/ and install
+anywhere. Sodipodi should be able to determine the
+location of libraries during installation time.
+
+4. Gtk+ 2.x development packages
+Download and install into $TOPDIR\GnuWin32. I.e. there
+should be directories $TOPDIR\GnuWin32\bin,
+$TOPDIR\GnuWin32\include and so on
+
+5. FreeType2 development packages
+Download from GnuWin32 project
+http://gnuwin32.sourceforge.net/packages.html
+and install into $TOPDIR\GnuWin32
+
+6. LibXML2 development packages
+Download from GnuWin32 project
+http://gnuwin32.sourceforge.net/packages.html
+and install into $TOPDIR\GnuWin32
+
+7. FreeType2 development packages
+Download from GnuWin32 project
+http://gnuwin32.sourceforge.net/packages.html
+and install into $TOPDIR\GnuWin32
+
+8. Libart development packages
+Download from GnuWin32 project
+http://gnuwin32.sourceforge.net/packages.html
+Unpack (or install), and copy as libart_lgpl
+directory under $TOPDIR\src. I.e. there should
+be files, like $TOPDIR\src\libart_lgpl\art_misc.h
+
+9. Libpng development packages
+Download from GnuWin32 project
+http://gnuwin32.sourceforge.net/packages.html
+Unpack (or install), and copy sources as libpng
+directory under $TOPDIR\src. I.e. there should
+be files, like $TOPDIR\src\libpng\png.h
+It should theoretically be possible to compile
+sodipodi with installed libpng DLL, but it had
+bad habit of crashing during bitmap export for me
+:-(
+
+10. MinGW
+Download from
+http://www.mingw.org/download.shtml
+(full MinGW package, around 14MB exe). Install
+into $TOPDIR\MinGW. I.e. there should be file
+$TOPDIR\MinGW\bin\as.exe
+This package is only needed for GNU assembler
+(what is needed to compile MMX assembler code). So
+you can skip this step if you remove mmx code from
+libnr project, and undef WITH_MMX in properties.
+
+
+
+Compilation
+
+Open solution:
+$TOPDIR\build\vc7\sodipodi.sln
+Compile it and keep eye on error messages. Libnr and
+libnrtype are known to emit loads of warning about
+converting between different datatypes, but everything
+else should be clean.
+Compiled source does not run from inside Visual Studio,
+unless you have hacked your PATH to inlude all
+installed libraries (Gtk+, FreeType...)
+If compilation succeeds, build and install SodiSetup
+project. That should do the magic necessary for you :-)
+
+
+
+Remarks
+
+Installation path is kept in HKLM and HKCU,
+Software\Sodipodi\Ichigo value Path
+Default document directory should be
+$HOME\My Documents (whatever glib thinks $HOME is).
+Icons, some libraries and localization files are
+installed into sodipodi program directory
+UNIXish tree (bin, lib, share)
+Configuration is kept in $APPDATADIR\Sodipodi
+
+
+
+Known issues
+
+Only default codepage is used for fonts. This will be
+fixed, if I learn how to properly add unicode support
+(so it still runs under Win9X).
+Font sizes are known to be somewhat incorrect. I hope to
+fix this for release time.
+It uses very hackish way to keep display updated while
+being in Windows dialog, or resizing windows. If there
+are probelms, please report back ;-/
+
+
+
+Have fun
+Lauris Kaplinski
+
+
+

@@ -189,7 +189,11 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 		xmlChar *p;
 		gboolean preserve;
 
+#if 0
 		preserve = xmlNodeGetSpacePreserve (node);
+#else
+		preserve = 0;
+#endif
 
 		for (p = node->content; p && *p; p++) {
 			if (!isspace (*p) || preserve) {
@@ -321,23 +325,30 @@ sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
 		repr_quote_write (file, val);
 		putc ('"', file);
 	}
-	
-	if (repr->children || sp_repr_content (repr)) {
+	loose = TRUE;
+	for (child = repr->children; child != NULL; child = child->next) {
+		if (child->type == SP_XML_TEXT_NODE) {
+			loose = FALSE;
+			break;
+		}
+	}
+	if (repr->children /* || sp_repr_content (repr) */ ) {
+#if 0
 		if (sp_repr_content (repr)) {
 			fputs (">", file);
 			repr_quote_write (file, sp_repr_content (repr));
 		} else {
 			fputs (">\n", file);
 		}
-
-		loose = TRUE;
+#else
+		fputs (">", file);
+		if (loose) fputs ("\n", file);
+#endif
 		for (child = repr->children; child != NULL; child = child->next) {
 			if (child->type == SP_XML_TEXT_NODE) {
 				repr_quote_write (file, sp_repr_content (child));
-				loose = FALSE;
 			} else {
 				sp_repr_write_stream (child, file, (loose) ? (level + 1) : 0);
-				loose = TRUE;
 			}
 		}
 		
