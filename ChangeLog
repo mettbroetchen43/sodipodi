@@ -1,3 +1,10 @@
+2002-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/main.c (sp_do_export_png): Initialize y0
+
+	* src/file.c (sp_export_png_file): Use pixelstore, export min 64 rows at once,
+	fix miscalculated rowstride
+
 2002-12-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-directory.c (nr_type_read_w32_list): Use

@@ -13,20 +13,33 @@
  */
 
 typedef struct _NRTypeFaceW32 NRTypeFaceW32;
+typedef struct _NRTypeFaceGlyphW32 NRTypeFaceGlyphW32;
 
 #include <windows.h>
 
 #include <libnrtype/nr-type-primitives.h>
 #include <libnrtype/nr-typeface.h>
 
+struct _NRTypeFaceGlyphW32 {
+	NRRectF area;
+	NRPointF advance;
+	int olref;
+	NRBPath outline;
+};
+
 struct _NRTypeFaceW32 {
-    NRTypeFace typeface;
+	NRTypeFace typeface;
 
-    NRFont *fonts;
+	NRFont *fonts;
 
-    HFONT hfont;
+	int *gidx;
+	NRTypeFaceGlyphW32 *slots;
+	unsigned int slots_length;
+	unsigned int slots_size;
 
-    LPOUTLINETEXTMETRIC otm;
+	LOGFONT *logfont;
+	HFONT hfont;
+	LPOUTLINETEXTMETRIC otm;
 };
 
 void nr_type_w32_typefaces_get (NRNameList *names);

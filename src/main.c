@@ -407,7 +407,7 @@ sp_do_export_png (SPDocument *doc)
 	} else {
 		/* Export the whole document */
 		area.x0 = 0.0;
-		area.x1 = 0.0;
+		area.y0 = 0.0;
 		area.x1 = sp_document_width (doc);
 		area.y1 = sp_document_height (doc);
 	}

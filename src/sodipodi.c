@@ -23,6 +23,10 @@
 #include <signal.h>
 #include <ctype.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <glib.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -450,7 +454,11 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 	SPReprDoc * doc;
 	SPRepr * root;
 
+#ifdef WIN32
+	fn = g_strdup ("sodipodi/preferences");
+#else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
+#endif
 	if (stat (fn, &s)) {
 		/* No such file */
 		sodipodi_init_preferences (sodipodi);
@@ -512,7 +520,11 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 {
 	gchar * fn;
 
+#ifdef WIN32
+	fn = g_strdup ("sodipodi/preferences");
+#else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
+#endif
 
 	sp_repr_save_file (sodipodi->preferences, fn);
 
@@ -767,10 +779,14 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 	gchar * m;
 	GtkWidget * w;
 
+#ifdef WIN32
+	dn = g_strdup ("sodipodi");
+#else
 	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
+#endif
 	if (stat (dn, &s)) {
 #ifdef WIN32
-		if (mkdir (dn)) {
+		if (!CreateDirectory (dn, NULL)) {
 #else
 		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP)) {
 #endif
@@ -801,10 +817,11 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 	}
 	g_free (dn);
 
-	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 #ifdef WIN32
+	fn = g_strdup ("sodipodi/preferences");
 	fh = creat (fn, S_IRUSR | S_IWUSR);
 #else
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
 #endif
 	if (fh < 0) {
@@ -813,7 +830,7 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 					    _("Cannot create file %s.\n"
 					      "Although sodipodi will run, you\n"
 					      "are neither able to load nor save\n"
-					      "preferences."), dn);
+					      "preferences."), fn);
 		g_free (m);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
@@ -826,7 +843,7 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 					    _("Cannot write file %s.\n"
 					      "Although sodipodi will run, you\n"
 					      "are neither able to load nor save\n"
-					      "preferences."), dn);
+					      "preferences."), fn);
 		g_free (m);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
