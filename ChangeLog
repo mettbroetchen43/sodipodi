@@ -1,3 +1,7 @@
+2001-10-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-io.c (sp_repr_save_stream): Correct header
+
 2001-10-02  Peter Moulder <pmoulder@csse.monash.edu.au>
 
 	* src/xml/repr-io.c (repr_quote_write): New method, quotes
