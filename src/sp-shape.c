@@ -122,6 +122,7 @@ sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
 
 	sp_shape_read_attr (object, "style");
+	sp_shape_read_attr (object, "insensitive");
 }
 
 static void
@@ -158,7 +159,20 @@ g_print ("sp_shape_read_attr: %s\n", attr);
 			sp_canvas_shape_set_stroke (cs, shape->stroke);
 		}
 		return;
+	} else if (strcmp (attr, "insensitive") == 0) {
+		const gchar * val;
+		gboolean sensitive;
+		SPItemView * v;
+
+		val = sp_repr_attr (object->repr, attr);
+		sensitive = (val == NULL);
+
+		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
+			sp_canvas_shape_set_sensitive (SP_CANVAS_SHAPE (v->canvasitem), sensitive);
+		}
+		return;
 	}
+
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);

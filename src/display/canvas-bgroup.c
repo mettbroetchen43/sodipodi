@@ -2,6 +2,9 @@
 
 #include "canvas-bgroup.h"
 
+/* fixme: This should go to common header */
+#define SP_CANVAS_STICKY_FLAG (1 << 16)
+
 static void sp_canvas_bgroup_class_init (SPCanvasBgroupClass * klass);
 static void sp_canvas_bgroup_init (SPCanvasBgroup * group);
 static void sp_canvas_bgroup_destroy (GtkObject * object);
@@ -51,6 +54,7 @@ static void
 sp_canvas_bgroup_init (SPCanvasBgroup * group)
 {
 	group->transparent = FALSE;
+	group->sensitive = TRUE;
 }
 
 static void
@@ -69,6 +73,8 @@ static double sp_canvas_bgroup_point (GnomeCanvasItem *item, double x, double y,
 
 	group = (SPCanvasBgroup *) item;
 
+	if (!group->sensitive && !(GTK_OBJECT_FLAGS (item->canvas) & SP_CANVAS_STICKY_FLAG)) return 1e18;
+
 	if (GNOME_CANVAS_ITEM_CLASS (parent_class)->point)
 		dist = (* GNOME_CANVAS_ITEM_CLASS (parent_class)->point) (item, x, y, cx, cy, actual_item);
 
@@ -76,4 +82,12 @@ static double sp_canvas_bgroup_point (GnomeCanvasItem *item, double x, double y,
 		* actual_item = item;
 
 	return dist;
+}
+
+void
+sp_canvas_bgroup_set_sensitive (SPCanvasBgroup * group, gboolean sensitive)
+{
+	g_assert (SP_IS_CANVAS_BGROUP (group));
+
+	group->sensitive = sensitive;
 }

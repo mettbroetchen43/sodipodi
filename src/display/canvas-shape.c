@@ -15,6 +15,9 @@
 #include "nr-svp-render.h"
 #endif
 
+/* fixme: This should go to common header */
+#define SP_CANVAS_STICKY_FLAG (1 << 16)
+
 #define noCANVAS_SHAPE_VERBOSE
 
 static void sp_canvas_shape_class_init (SPCanvasShapeClass *class);
@@ -75,6 +78,7 @@ sp_canvas_shape_init (SPCanvasShape * shape)
 	shape->stroke = sp_stroke_default ();
 	sp_stroke_ref (shape->stroke);
 	shape->comp = NULL;
+	shape->sensitive = TRUE;
 }
 
 static void
@@ -371,6 +375,7 @@ sp_canvas_shape_point (GnomeCanvasItem * item, double x, double y,
 	int wind;
 
 	shape = (SPCanvasShape *) item;
+	if (!shape->sensitive && !(GTK_OBJECT_FLAGS (item->canvas) & SP_CANVAS_STICKY_FLAG)) return 1e18;
 
 	best = 1e36;
 
@@ -515,4 +520,11 @@ sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke)
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (shape));
 }
 
+void
+sp_canvas_shape_set_sensitive (SPCanvasShape * shape, gboolean sensitive)
+{
+	g_assert (SP_IS_CANVAS_SHAPE (shape));
+
+	shape->sensitive = sensitive;
+}
 

@@ -28,6 +28,7 @@ struct _SPCanvasShape {
 	SPFill * fill;
 	SPStroke * stroke;
 	GList * comp;
+	gboolean sensitive;
 };
 
 struct _SPCanvasShapeClass {
@@ -49,5 +50,6 @@ void sp_canvas_shape_change_bpath (SPCanvasShape * canvas_shape, SPCurve * curve
 void sp_canvas_shape_set_fill (SPCanvasShape * shape, SPFill * fill);
 void sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke);
 
+void sp_canvas_shape_set_sensitive (SPCanvasShape * shape, gboolean sensitive);
 
 #endif

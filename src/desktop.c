@@ -34,11 +34,15 @@
 #include <gal/widgets/gtk-combo-text.h>
 #include <gal/widgets/gtk-combo-stack.h>
 
+#define SP_CANVAS_STICKY_FLAG (1 << 16)
+
 static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
 static void sp_desktop_realize (GtkWidget * widget);
+
+static gint sp_desktop_event (GtkWidget * widget, GdkEvent * event);
 
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_resized (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
@@ -97,10 +101,12 @@ sp_desktop_class_init (SPDesktopClass * klass)
 	object_class->destroy = sp_desktop_destroy;
 
 	widget_class->realize = sp_desktop_realize;
+
 #if 0
+	widget_class->event = sp_desktop_event;
+
       	widget_class->enter_notify_event = sp_desktop_enter_notify;
 
-	widget_class->button_press_event = sp_desktop_button_press;
 	widget_class->button_release_event = sp_desktop_button_release;
 	widget_class->motion_notify_event = sp_desktop_motion_notify;
 #endif
@@ -172,6 +178,10 @@ sp_desktop_init (SPDesktop * desktop)
 	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
+
+	gtk_signal_connect (GTK_OBJECT (desktop->canvas), "event",
+			    GTK_SIGNAL_FUNC (sp_desktop_event), NULL);
+
 	gtk_widget_show (GTK_WIDGET (desktop->canvas));
 	widget = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (widget), GTK_SHADOW_IN);
@@ -368,6 +378,26 @@ sp_desktop_realize (GtkWidget * widget)
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
 	sp_desktop_show_region (dt, d.x0, d.y0, d.x1, d.y1, 10);
+}
+
+static gint
+sp_desktop_event (GtkWidget * widget, GdkEvent * event)
+{
+	if ((event->type == GDK_BUTTON_PRESS) && (event->button.button == 3)) {
+		SPDesktop *dt;
+		dt = (SPDesktop *) widget;
+		g_print ("Button\n");
+		if (event->button.state & GDK_SHIFT_MASK) {
+			GTK_OBJECT_SET_FLAGS (widget, SP_CANVAS_STICKY_FLAG);
+		} else {
+			GTK_OBJECT_UNSET_FLAGS (widget, SP_CANVAS_STICKY_FLAG);
+		}
+	}
+
+	if (GTK_WIDGET_CLASS (parent_class)->event)
+		return (* GTK_WIDGET_CLASS (parent_class)->event) (widget, event);
+
+	return FALSE;
 }
 
 /* Constructor */

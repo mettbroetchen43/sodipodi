@@ -389,8 +389,9 @@ static void
 sp_item_private_menu (SPItem * item, GtkMenu * menu)
 {
 	GtkWidget * i, * m, * w;
+	gboolean insensitive;
 
-	i = gtk_menu_item_new_with_label ("Item");
+	i = gtk_menu_item_new_with_label (_("Item"));
 
 	/* Reset transformations */
 	m = gtk_menu_new ();
@@ -400,8 +401,9 @@ sp_item_private_menu (SPItem * item, GtkMenu * menu)
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Toggle sensitivity */
-	/* "sensitive" attribute is handled in shape & image */
-	w = gtk_menu_item_new_with_label (_("Toggle sensitivity"));
+	insensitive = sp_repr_get_int_attribute (((SPObject *) item)->repr, "insensitive", FALSE);
+	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
+	/* fixme: should we add data to menuitem? */
 	gtk_signal_connect (GTK_OBJECT (w), "activate",
 			    GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
 	gtk_widget_show (w);

@@ -14,6 +14,9 @@
 
 #include "canvas-image.h"
 
+/* fixme: This should go to common header */
+#define SP_CANVAS_STICKY_FLAG (1 << 16)
+
 /*
  * SPCanvasCanvasImage
  *
@@ -167,7 +170,8 @@ sp_canvas_image_point (GnomeCanvasItem *item, double x, double y,
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
-	if (!canvas_image->sensitive) return 1e18;
+	if (!canvas_image->sensitive && !(GTK_OBJECT_FLAGS (item->canvas) & SP_CANVAS_STICKY_FLAG)) return 1e18;
+
 	if (canvas_image->pixbuf == NULL) return 1e18;
 
 	pixels = gdk_pixbuf_get_pixels (canvas_image->pixbuf);

@@ -1,3 +1,27 @@
+2001-03-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item-group.c (sp_group_menu): Add "Ungroup" item (does nothing at moment)
+
+	* src/display/canvas-bgroup.c (sp_canvas_bgroup_point): Test sensitivity and stickyness
+	(sp_canvas_bgroup_set_sensitive): New function
+
+	* src/display/canvas-shape.c (sp_canvas_shape_point): Test sensitivity and stickyness
+	(sp_canvas_shape_set_sensitive): New function
+
+	* src/sp-item-group.c (sp_group_read_attr): Read "insensitive" too
+
+	* src/sp-shape.c (sp_shape_read_attr): Read "insensitive" too
+
+	* src/sp-item.c (sp_item_private_menu): Set menuitem label depending on sensibility
+
+	* src/desktop.c (sp_desktop_init): Bind "event" to manipulate sticky state
+
+	* src/display/canvas-image.c (sp_canvas_image_point): Check for
+	SP_CANVAS_STICKY_FLAG
+
+	* src/desktop.c (sp_desktop_event): New function, Set SP_CANVAS_STICKY_FLAG if
+	user holds Shift key
+
 2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
 
 	* glade/Makefile.am (pixmaps): Added all pixmaps to dist

@@ -16,6 +16,7 @@ struct _SPCanvasBgroup {
 	GnomeCanvasGroup group;
 	/* Controls, whether events belong to canvas_bgroup or childrens */
 	gboolean transparent;
+	gboolean sensitive;
 };
 
 struct _SPCanvasBgroupClass {
@@ -26,5 +27,7 @@ struct _SPCanvasBgroupClass {
 /* Standard Gtk function */
 
 GtkType sp_canvas_bgroup_get_type (void);
+
+void sp_canvas_bgroup_set_sensitive (SPCanvasBgroup * bgroup, gboolean sensitive);
 
 #endif

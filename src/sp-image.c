@@ -130,9 +130,7 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 
 		sp_item_request_canvas_update (SP_ITEM (image));
 		return;
-	}
-
-	if (strcmp (key, "insensitive") == 0) {
+	} else if (strcmp (key, "insensitive") == 0) {
 		const gchar * val;
 		gboolean sensitive;
 		SPItemView * v;

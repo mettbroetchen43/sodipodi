@@ -25,6 +25,7 @@ static gchar * sp_group_description (SPItem * item);
 static GnomeCanvasItem * sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static void sp_group_hide (SPItem * item, SPDesktop * desktop);
 static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
+static void sp_group_menu (SPItem * item, GtkMenu * menu);
 
 static SPItemClass * parent_class;
 
@@ -76,6 +77,7 @@ sp_group_class_init (SPGroupClass *klass)
 	item_class->show = sp_group_show;
 	item_class->hide = sp_group_hide;
 	item_class->paint = sp_group_paint;
+	item_class->menu = sp_group_menu;
 }
 
 static void
@@ -145,6 +147,8 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 		}
 		l = l->next;
 	}
+
+	sp_group_read_attr (object, "insensitive");
 }
 
 static void
@@ -161,7 +165,20 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 		for (l = group->children; l != NULL; l = l->next) {
 			sp_object_invoke_read_attr (SP_OBJECT (l->data), attr);
 		}
+	} else if (strcmp (attr, "insensitive") == 0) {
+		const gchar * val;
+		gboolean sensitive;
+		SPItemView * v;
+
+		val = sp_repr_attr (object->repr, attr);
+		sensitive = (val == NULL);
+
+		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
+			sp_canvas_bgroup_set_sensitive (SP_CANVAS_BGROUP (v->canvasitem), sensitive);
+		}
+		return;
 	}
+
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
@@ -411,6 +428,32 @@ sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 	}
 
 	return FALSE;
+}
+
+static void
+sp_group_menu (SPItem * item, GtkMenu * menu)
+{
+	GtkWidget * i, * m, * w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, menu);
+
+	i = gtk_menu_item_new_with_label (_("Group"));
+
+	m = gtk_menu_new ();
+	w = gtk_menu_item_new_with_label (_("Ungroup"));
+#if 0
+	gtk_signal_connect (GTK_OBJECT (w), "activate",
+			    GTK_SIGNAL_FUNC (sp_group_ungroup), item);
+#endif
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
 }
 
 
