@@ -192,7 +192,7 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
         for (ns = node->nsDef; ns; ns = ns->next) {
                 if (ns->prefix && strcmp (ns->prefix, "sodipodi") &&
                                 strcmp (ns->prefix, "xlink")) {
-                        snprintf (c, 256, "xlink:%s", ns->prefix);
+                        g_snprintf (c, 256, "xlink:%s", ns->prefix);
                         sp_repr_set_attr (repr, c, ns->href);
                 }
         }
