@@ -137,7 +137,7 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 #else
 	ArtPixBuf * pixbuf;
 	art_u8 * pixels;
-	gdouble affine[6];
+	gdouble affine[6], t;
 #endif
 
 	g_return_if_fail (desktop != NULL);
@@ -167,6 +167,11 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	pixels = art_new (art_u8, width * height * 4);
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
+
+	/* Go to document coordinates */
+	t = y0;
+	y0 = sp_document_height (doc) - y1;
+	y1 = sp_document_height (doc) - t;
 
 	/*
 	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0

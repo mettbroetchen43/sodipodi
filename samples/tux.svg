@@ -2,30 +2,30 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
 "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg
-   width="595.7"
-   height="841.89"
-   sodipodi:docname="samples/tux.svg"
-   sodipodi:docbase="samples/"
-   transform="matrix (1.0 0.0 0.0 -1.0 0.0 841.889764)"
-   id="svg2"
+   style="fill:#000000;fill-opacity:1;stroke:none"
+   width="595.275591"
+   height="841.889764"
+   id="svg75"
+   sodipodi:docbase="/home/lauris/cvs/sodipodi/samples/"
+   sodipodi:docname="/home/lauris/cvs/sodipodi/samples/tux.svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs
-     id="defs74" />
+     id="defs77" />
   <sodipodi:namedview
      id="base" />
   <g
-     id="g3"
-     transform="matrix(1,0,0,-1,7.30281e-12,827.501)">
+     id="g289">
     <path
-       transform="matrix(1.000000 0.000000 0.000000 1.000000 -188.771027 11.293993)"
+       transform="translate(-188.771,11.2936)"
        id="path4"
-       style="stroke-width:1; stroke:none; fill-opacity:100%; fill:#ffffff; "
+       style="stroke-width:1; stroke:none; fill-opacity:1; fill:#ffffff; "
        d="M 344.427 534.692 L 396.057 616.976 L 463.014 650.858 L 564.66 617.783 L 625.97 522.591 L 619.517 433.852 L 569.5 322.526 L 546.106 278.157 L 421.065 279.77 L 414.611 317.686 L 371.049 391.096 L 342.007 470.961 L 344.427 534.692 z " />
     <g
-       transform="matrix(1.000000 0.000000 0.000000 1.000000 107.656192 -154.860742)"
-       id="g5">
+       transform="translate(107.656,-154.861)"
+       id="g5"
+       style="fill:#000000; fill-opacity:1; stroke:none; ">
       <g
          id="g6"
          style="fill: #c1c1bf">

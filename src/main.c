@@ -343,34 +343,39 @@ sp_main_console (int argc, char **argv)
 				if ((width >= 16) || (height >= 16) || (width < 65536) || (height < 65536)) {
 					ArtPixBuf *pixbuf;
 					art_u8 *pixels;
-					gdouble affine[6];
+					gdouble affine[6], t;
 					/* fixme: Move this to helper */
 					pixels = art_new (art_u8, width * height * 4);
 					memset (pixels, 0, width * height * 4);
 					pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
-					/*
-					 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
-					 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
-					 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
-					 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
+					/* Go to document coordinates */
+					t = area.y0;
+					area.y0 = sp_document_height (doc) - area.y1;
+					area.y1 = sp_document_height (doc) - t;
+
+					/* In document coordinates
+					 * 1) a[0] * x0 + a[2] * y0 + a[4] = 0.0
+					 * 2) a[1] * x0 + a[3] * y0 + a[5] = 0.0
+					 * 3) a[0] * x1 + a[2] * y0 + a[4] = width
+					 * 4) a[1] * x0 + a[3] * y1 + a[5] = height
 					 * 5) a[1] = 0.0;
 					 * 6) a[2] = 0.0;
 					 *
 					 * (1,3) a[0] * x1 - a[0] * x0 = width
 					 * a[0] = width / (x1 - x0)
-					 * (2,4) a[3] * y0 - a[3] * y1 = height
-					 * a[3] = height / (y0 - y1)
+					 * (2,4) a[3] * y1 - a[3] * y0 = height
+					 * a[3] = height / (y1 - y0)
 					 * (1) a[4] = -a[0] * x0
-					 * (2) a[5] = -a[3] * y1
+					 * (2) a[5] = -a[3] * y0
 					 */
 
 					affine[0] = width / (area.x1 - area.x0);
 					affine[1] = 0.0;
 					affine[2] = 0.0;
-					affine[3] = height / (area.y0 - area.y1);
+					affine[3] = height / (area.y1 - area.y0);
 					affine[4] = -affine[0] * area.x0;
-					affine[5] = -affine[3] * area.y1;
+					affine[5] = -affine[3] * area.y0;
 
 					sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
