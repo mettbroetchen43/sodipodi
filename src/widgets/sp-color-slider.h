@@ -9,8 +9,7 @@
  *
  * Copyright (C) 2001-2002 Lauris Kaplinski
  *
- * Released under GNU Lesser General Public License
- * Read the file 'COPYING.LIB' for more information
+ * This code is in public domain
  */
 
 #include <gtk/gtkwidget.h>

@@ -8,7 +8,7 @@
  *
  * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 #include <gtk/gtkmenuitem.h>

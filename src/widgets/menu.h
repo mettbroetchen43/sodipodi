@@ -9,7 +9,7 @@
  *
  * Copyright (C) 2003 Lauris Kaplinski
  *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 typedef struct _SPMenu SPMenu;

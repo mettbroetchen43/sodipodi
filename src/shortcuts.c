@@ -16,7 +16,7 @@
 
 #include "shortcuts.h"
 
-/* Returns TRUE is action was performed */
+/* Returns TRUE if action was performed */
 
 unsigned int
 sp_shortcut_run (unsigned int shortcut)
@@ -44,6 +44,10 @@ sp_shortcut_table_load (const unsigned char *name)
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_O, SP_VERB_FILE_OPEN, FALSE);
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_s, SP_VERB_FILE_SAVE, TRUE);
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_S, SP_VERB_FILE_SAVE, FALSE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_p, SP_VERB_FILE_PRINT, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_P, SP_VERB_FILE_PRINT, FALSE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_p, SP_VERB_FILE_PRINT_PREVIEW, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_P, SP_VERB_FILE_PRINT_PREVIEW, FALSE);
 	/* Event contexts */
 	sp_shortcut_set_verb (GDK_F1, SP_VERB_CONTEXT_SELECT, TRUE);
 	sp_shortcut_set_verb (GDK_F2, SP_VERB_CONTEXT_NODE, TRUE);
@@ -78,6 +82,14 @@ sp_shortcut_table_load (const unsigned char *name)
 	sp_shortcut_set_verb (GDK_End, SP_VERB_SELECTION_TO_BACK, TRUE);
 	sp_shortcut_set_verb (GDK_Page_Up, SP_VERB_SELECTION_RAISE, TRUE);
 	sp_shortcut_set_verb (GDK_Page_Down, SP_VERB_SELECTION_LOWER, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_g, SP_VERB_SELECTION_GROUP, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_G, SP_VERB_SELECTION_GROUP, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_g, SP_VERB_SELECTION_UNGROUP, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_G, SP_VERB_SELECTION_UNGROUP, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_k, SP_VERB_SELECTION_COMBINE, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_K, SP_VERB_SELECTION_COMBINE, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_k, SP_VERB_SELECTION_BREAK_APART, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_K, SP_VERB_SELECTION_BREAK_APART, TRUE);
 }
 
 static GHashTable *scdict = NULL;

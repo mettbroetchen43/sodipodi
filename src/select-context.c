@@ -427,30 +427,6 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  
-	  case GDK_g: // Ctrl g - group
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_group (NULL, NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_G: // Ctrl G - ungroup
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_ungroup (NULL, NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_k: // Ctrl k - combine (shift - break appart)
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selected_path_combine();
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_K: // Ctrl K - break appart
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selected_path_break_apart();
-	      ret = TRUE;
-	    }
-	    break;
 	  case GDK_Left: // Left - move selection left
 	    if (event->key.state != GDK_CONTROL_MASK) {
 	      if (event->key.state == GDK_SHIFT_MASK) sp_selection_move_screen (-1,0);

@@ -14,6 +14,7 @@
 #include <config.h>
 
 #include <string.h>
+#include <sys/stat.h>
 
 #include <libnr/nr-macros.h>
 #include <libnr/nr-rect.h>
@@ -340,8 +341,13 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 
 	/* Try to load from document */
 	if (!edoc && !doc) {
-		doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
-		if (!doc) doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
+		struct stat st;
+		if (!stat ("glade/icons.svg", &st) && S_ISREG (st.st_mode)) {
+			doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
+		}
+		if (!doc && !stat (SODIPODI_PIXMAPDIR "/icons.svg", &st) && S_ISREG (st.st_mode)) {
+			doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
+		}
 		if (doc) {
 			unsigned int visionkey;
 			NRGC gc;

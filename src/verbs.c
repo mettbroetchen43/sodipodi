@@ -31,6 +31,7 @@
 #include "file.h"
 #include "document.h"
 #include "desktop.h"
+#include "selection.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
 #include "shortcuts.h"
@@ -165,6 +166,45 @@ sp_verb_action_selection_perform (SPAction *action, void *data)
 }
 
 static void
+sp_verb_action_object_perform (SPAction *action, void *data)
+{
+	SPDesktop *dt;
+	SPSelection *sel;
+	NRRectF bbox;
+	NRPointF center;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	sel = SP_DT_SELECTION (dt);
+	if (sp_selection_is_empty (sel)) return;
+	sp_selection_bbox (sel, &bbox);
+	center.x = 0.5 * (bbox.x0 + bbox.x1);
+	center.y = 0.5 * (bbox.y0 + bbox.y1);
+
+	switch ((int) data) {
+	case SP_VERB_OBJECT_ROTATE_90:
+		sp_selection_rotate_90 ();
+		break;
+	case SP_VERB_OBJECT_FLATTEN:
+		sp_selection_remove_transform ();
+		break;
+	case SP_VERB_OBJECT_TO_CURVE:
+		sp_selected_path_to_curves ();
+		break;
+	case SP_VERB_OBJECT_FLIP_HORIZONTAL:
+		sp_selection_scale_relative (sel, &center, -1.0, 1.0);
+		sp_document_done (SP_DT_DOCUMENT (dt));
+		break;
+	case SP_VERB_OBJECT_FLIP_VERTICAL:
+		sp_selection_scale_relative (sel, &center, 1.0, -1.0);
+		sp_document_done (SP_DT_DOCUMENT (dt));
+		break;
+	default:
+		break;
+	}
+}
+
+static void
 sp_verb_action_ctx_perform (SPAction *action, void *data)
 {
 	SPDesktop *dt;
@@ -174,8 +214,6 @@ sp_verb_action_ctx_perform (SPAction *action, void *data)
 	dt = SP_ACTIVE_DESKTOP;
 	if (!dt) return;
 	verb = (unsigned int) data;
-
-	g_printf ("Setting context %d %s\n", verb, action->name);
 
 	for (vidx = SP_VERB_CONTEXT_SELECT; vidx <= SP_VERB_CONTEXT_DROPPER; vidx++) {
 		sp_action_set_active (&verb_actions[vidx], vidx == verb);
@@ -295,12 +333,14 @@ sp_verb_action_zoom_perform (SPAction *action, void *data)
 static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_object_vector = {{NULL}, sp_verb_action_object_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
 #define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
 #define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_BREAK_APART))
+#define SP_VERB_IS_OBJECT(v) ((v >= SP_VERB_OBJECT_ROTATE_90) && (v <= SP_VERB_OBJECT_FLIP_VERTICAL))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
 #define SP_VERB_IS_ZOOM(v) ((v >= SP_VERB_ZOOM_IN) && (v <= SP_VERB_ZOOM_SELECTION))
 
@@ -344,6 +384,14 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_SELECTION_UNGROUP, "SelectionUnGroup", N_("Ungroup"), N_("Ungroup selected group"), "selection_ungroup"},
 	{SP_VERB_SELECTION_COMBINE, "SelectionCombine", N_("Combine"), N_("Combine multiple paths"), "selection_combine"},
 	{SP_VERB_SELECTION_BREAK_APART, "SelectionBreakApart", N_("Break Apart"), N_("Break selected path to subpaths"), "selection_break"},
+	/* Object */
+	{SP_VERB_OBJECT_ROTATE_90, "ObjectRotate90", N_("Rotate 90 degrees"), N_("Rotates object 90 degrees clockwise"), "object_rotate"},
+	{SP_VERB_OBJECT_FLATTEN, "ObjectFlatten", N_("Flatten object"), N_("Remove transformations from object"), "object_reset"},
+	{SP_VERB_OBJECT_TO_CURVE, "ObjectToCurve", N_("Convert to Curves"), N_("Convert selected object to path"), "object_tocurve"},
+	{SP_VERB_OBJECT_FLIP_HORIZONTAL, "ObjectFlipHorizontally", N_("Flip Horizontally"),
+	 N_("Flip selected objects horizontally"), "object_flip_hor"},
+	{SP_VERB_OBJECT_FLIP_VERTICAL, "ObjectFlipVertically", N_("Flip Vertically"),
+	 N_("Flip selected objects vertically"), "object_flip_ver"},
 	/* Event contexts */
 	{SP_VERB_CONTEXT_SELECT, "DrawSelect", N_("Select"), N_("Select and transform objects"), "draw_select"},
 	{SP_VERB_CONTEXT_NODE, "DrawNode", N_("Node edit"), N_("Modify existing objects by control nodes"), "draw_node"},
@@ -392,6 +440,11 @@ sp_verbs_init (void)
 		} else if (SP_VERB_IS_SELECTION (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
 						       (NRObjectEventVector *) &action_selection_vector,
+						       sizeof (SPActionEventVector),
+						       (void *) v);
+		} else if (SP_VERB_IS_OBJECT (v)) {
+			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
+						       (NRObjectEventVector *) &action_object_vector,
 						       sizeof (SPActionEventVector),
 						       (void *) v);
 		} else if (SP_VERB_IS_CONTEXT (v)) {

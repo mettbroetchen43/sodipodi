@@ -1,3 +1,8 @@
+2003-05-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/button.c (sp_button_set_composed_tooltip): Add primary shortcut
+	dynamically to tooltip
+
 2003-05-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/toolbox.c (sp_maintoolbox_create_toplevel): Use sp_window_new

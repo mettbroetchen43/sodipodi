@@ -8,7 +8,7 @@
  *
  * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 #include <string.h>
@@ -20,6 +20,7 @@
 #include <libnr/nr-pixblock-pattern.h>
 #include <libnr/nr-pixops.h>
 
+#include <gdk/gdkkeys.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenuitem.h>
 
@@ -33,6 +34,8 @@
 
 #include "icon.h"
 #include "button.h"
+
+#include "shortcuts.h"
 
 enum {PRESSED, RELEASED, CLICKED, TOGGLED, LAST_SIGNAL};
 
@@ -58,6 +61,8 @@ static void sp_button_paint_arrow (NRRectL *iarea, int x0, int y0, int x1, int y
 static void sp_button_action_set_active (SPAction *action, unsigned int active, void *data);
 static void sp_button_action_set_sensitive (SPAction *action, unsigned int sensitive, void *data);
 static void sp_button_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data);
+
+static void sp_button_set_composed_tooltip (SPButton *button, GtkWidget *widget, SPAction *action);
 
 static GtkWidgetClass *parent_class;
 static guint button_signals[LAST_SIGNAL];
@@ -328,11 +333,6 @@ static void
 sp_button_menu_activate (GObject *object, SPButton *button)
 {
 	button->option = GPOINTER_TO_INT (g_object_get_data (object, "option"));
-#if 0
-	if (button->tooltips) {
-		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), button->options[button->option].action->tip, NULL);
-	}
-#endif
 	gtk_widget_queue_draw (GTK_WIDGET (button));
 }
 
@@ -366,7 +366,7 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 		break;
 	}
 	if (button->tooltips) {
-		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
+		sp_button_set_composed_tooltip (button, (GtkWidget *) button, action);
 	}
 }
 
@@ -396,7 +396,7 @@ sp_button_timeout (gpointer data)
 		gtk_menu_append (GTK_MENU (button->menu), mi);
 		g_object_set_data (G_OBJECT (mi), "option", GINT_TO_POINTER (i));
 		if (button->tooltips) {
-			gtk_tooltips_set_tip (button->tooltips, mi, button->options[i].action->tip, NULL);
+			sp_button_set_composed_tooltip (button, mi, button->options[i].action);
 		}
 		g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_button_menu_activate), button);
 	}
@@ -581,7 +581,7 @@ sp_button_add_option (SPButton *button, unsigned int option, SPAction *action)
 				       button);
 
 	if ((option == button->option) && button->tooltips) {
-		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
+		sp_button_set_composed_tooltip (button, (GtkWidget *) button, action);
 	}
 }
 
@@ -600,7 +600,7 @@ sp_button_set_option (SPButton *button, unsigned int option)
 		action = button->options[button->option].action;
 		gtk_widget_queue_draw (GTK_WIDGET (button));
 		if (button->tooltips) {
-			gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
+			sp_button_set_composed_tooltip (button, (GtkWidget *) button, action);
 		}
 	}
 
@@ -636,6 +636,29 @@ sp_button_action_set_sensitive (SPAction *action, unsigned int sensitive, void *
 static void
 sp_button_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data)
 {
+	SPButton *button;
+	SPAction *ba;
+	button = (SPButton *) data;
+	ba = button->options[button->option].action;
+	if (button->tooltips && (action == ba)) {
+		sp_button_set_composed_tooltip (button, (GtkWidget *) button, action);
+	}
+}
+
+static void
+sp_button_set_composed_tooltip (SPButton *button, GtkWidget *widget, SPAction *action)
+{
+	if (action->shortcut) {
+		unsigned char c[16384];
+		unsigned char *as, *cs, *ss;
+		as = (action->shortcut & SP_SHORTCUT_ALT_MASK) ? "Alt+" : "";
+		cs = (action->shortcut & SP_SHORTCUT_CONTROL_MASK) ? "Ctrl+" : "";
+		ss = (action->shortcut & SP_SHORTCUT_SHIFT_MASK) ? "Shift+" : "";
+		g_snprintf (c, 16384, "%s [%s%s%s%s]", action->tip, as, cs, ss, gdk_keyval_name (action->shortcut & 0xffffff));
+		gtk_tooltips_set_tip (button->tooltips, widget, c, NULL);
+	} else {
+		gtk_tooltips_set_tip (button->tooltips, widget, action->tip, NULL);
+	}
 }
 
 static void

@@ -214,42 +214,9 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		break;
         case GDK_KEY_PRESS:
 		switch (event->key.keyval) {
-			unsigned int shortcut;
 		case GDK_Tab: // disable tab/shift-tab which cycle widget focus
 		case GDK_ISO_Left_Tab: // they will get different functions
 			ret = TRUE;
-			break;
-		case GDK_F1:
-		case GDK_F2:
-		case GDK_F3:
-		case GDK_F4:
-		case GDK_F5:
-		case GDK_F6:
-		case GDK_F7:
-		case GDK_F8:
-		case GDK_equal:
-		case GDK_plus:
-		case GDK_minus:
-		case GDK_0:
-		case GDK_1:
-		case GDK_Z:
-		case GDK_z:
-		case GDK_R:
-		case GDK_r:
-		case GDK_X:
-		case GDK_x:
-		case GDK_C:
-		case GDK_c:
-		case GDK_V:
-		case GDK_v:
-		case GDK_Delete:
-		case GDK_D:
-		case GDK_d:
-			shortcut = event->key.keyval;
-			if (event->key.state & GDK_SHIFT_MASK) shortcut |= SP_SHORTCUT_SHIFT_MASK;
-			if (event->key.state & GDK_CONTROL_MASK) shortcut |= SP_SHORTCUT_CONTROL_MASK;
-			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_SHORTCUT_ALT_MASK;
-			ret = sp_shortcut_run (shortcut);
 			break;
 		case GDK_W:
 		case GDK_w:
@@ -259,74 +226,12 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret = TRUE;
 			}
 			break;
-#if 0
-		case GDK_N: // Ctrl N - new view
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_ui_new_view (NULL);
-				ret = TRUE;
-			}
-			break;
-#endif
-#if 0
-		case GDK_N:
-		case GDK_n:
-			/* New */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_new ();
-			}
-			break;
-		case GDK_O:
-		case GDK_o:
-			/* Open */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_file_open_dialog (NULL, NULL);
-				ret = TRUE;
-			}
-			break;
-		case GDK_S:
-		case GDK_s:
-			/* Save */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_save (NULL, NULL);
-			}
-			break;
-#endif
-#if 0
-		case GDK_e: // Ctrl e - export file
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_file_export (NULL);
-				ret = TRUE;
-			}
-			break;
-#endif
 		case GDK_i: // Ctrl i - import file
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_file_import (NULL);
 				ret = TRUE;
 			}
 			break;
-		case GDK_p: // Crtl p - print document
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_print (NULL, NULL);
-			}
-			break;
-		case GDK_P: // Crtl P - print preview
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_print_preview (NULL, NULL);
-			}
-			break;
-#if 0
-		case GDK_S: // Crtl S - save file as
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_save_as (NULL, NULL);
-			}
-			break;
-#endif
 	  case GDK_q: // Ctrl q - quit
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_file_exit ();
