@@ -17,6 +17,7 @@ struct _SPSelectContext {
 	SPEventContext event_context;
 	guint dragging : 1;
 	guint moved : 1;
+	guint button_press_shift : 1;
 	SPItem *item;
 	GnomeCanvasItem *grabbed;
 	SPSelTrans seltrans;

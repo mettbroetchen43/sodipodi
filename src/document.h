@@ -137,6 +137,7 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  */
 
 GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
+GSList * sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box);
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size (SPDocument *doc, gdouble width, gdouble height);

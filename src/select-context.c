@@ -104,6 +104,7 @@ sp_select_context_init (SPSelectContext * sc)
 {
 	sc->dragging = FALSE;
 	sc->moved = FALSE;
+	sc->button_press_shift = FALSE;
 }
 
 static void
@@ -275,6 +276,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
+			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
 			ret = TRUE;
 		}
 		break;
@@ -336,7 +338,10 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 				if (sp_rubberband_rect (&b)) {
 					sp_rubberband_stop ();
 					sp_sel_trans_reset_state (seltrans);
-					l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+					if (sc->button_press_shift)
+						l = sp_document_partial_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+					else
+						l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
 					if (event->button.state & GDK_SHIFT_MASK) {
 						while (l) {
 							item = SP_ITEM (l->data);
@@ -362,6 +367,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
 			}
 		}
+		sc->button_press_shift = FALSE;
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  

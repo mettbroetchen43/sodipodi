@@ -1,3 +1,15 @@
+Sun Mar 10 21:00:01 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/document.c (sp_document_partial_items_in_box):
+	New method. Return list of items, that the parts of the item
+	containd in box.
+
+	* select-context.h: Add button_press_shift attribute
+
+	* select-context.c: (sp_select_context_root_handler):
+	New feature to select items which is partially contained in
+	rubberband box with shift key.
+
 Wed Mar  6 01:52:09 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* Support open/closed arc feature. We can edit it on node edit.
