@@ -82,11 +82,12 @@ sp_toolbox_class_init (SPToolBoxClass * klass)
 static void
 sp_toolbox_init (SPToolBox * toolbox)
 {
-	toolbox->state = 7;//SP_TOOLBOX_VISIBLE;
+	toolbox->state = 1;//SP_TOOLBOX_VISIBLE;
 
 	toolbox->contents = NULL;
 	toolbox->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	toolbox->windowvbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (toolbox->windowvbox);
 	gtk_container_add (GTK_CONTAINER (toolbox->window), toolbox->windowvbox);
 
 	toolbox->width = 0;

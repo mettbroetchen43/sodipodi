@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noSP_DOCUMENT_DEBUG_IDLE
 #define noSP_DOCUMENT_DEBUG_UNDO
 
 #include <config.h>
@@ -574,12 +575,25 @@ sp_document_idle_handler (gpointer data)
 	}
 	/* ------------------------- */
 #endif
+
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print ("->\n");
+#endif
+
 	/* Emit "modified" signal on objects */
 	sp_object_modified (doc->root, 0);
+
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print ("\n->");
+#endif
+
 	/* Emit our own "modified" signal */
 	gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 
+#ifdef SP_DOCUMENT_DEBUG_IDLE
+	g_print (" S ->\n");
+#endif
 	return FALSE;
 }
 

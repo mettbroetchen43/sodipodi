@@ -38,6 +38,8 @@
 #include "sp-clippath.h"
 #include "sp-item.h"
 
+#define noSP_ITEM_DEBUG_IDLE
+
 static void sp_item_class_init (SPItemClass * klass);
 static void sp_item_init (SPItem * item);
 static void sp_item_destroy (GtkObject * object);
@@ -243,7 +245,11 @@ sp_item_modified (SPObject *object, guint flags)
 	item = SP_ITEM (object);
 	style = SP_OBJECT_STYLE (object);
 
-	if (!style->stroke_width.unit == SP_CSS_UNIT_PERCENT) {
+#ifdef SP_ITEM_DEBUG_IDLE
+	g_print ("M");
+#endif
+
+	if (style->stroke_width.unit == SP_CSS_UNIT_PERCENT) {
 		gdouble i2vp[6], vp2i[6];
 		gdouble aw, ah;
 		/* fixme: It is somewhat dangerous, yes (lauris) */
@@ -267,6 +273,10 @@ sp_item_style_modified (SPObject *object, guint flags)
 	style = object->style;
 
 	/* Set up inherited/relative style properties */
+
+#ifdef SP_ITEM_DEBUG_IDLE
+	g_print ("S");
+#endif
 
 #if 0
 	if (!style->real_opacity_set) {

@@ -12,6 +12,8 @@
  *
  */
 
+#define noNR_ARENA_ITEM_VERBOSE
+
 #include <string.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>

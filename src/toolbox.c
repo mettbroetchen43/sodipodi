@@ -93,7 +93,9 @@ sp_maintoolbox_create (void)
 		/* Create window */
 		toolbox = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
+		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (toolbox), "delete_event", GTK_SIGNAL_FUNC (sp_maintoolbox_delete_event), NULL);
+
 		vbox = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vbox);
 		gtk_container_add (GTK_CONTAINER (toolbox), vbox);

@@ -514,7 +514,7 @@ sp_object_modified (SPObject *object, guint flags)
 	/* I am not sure, whether we should check only propagated flag */
 	/* We are currently assuming, that style parsing is done immediately */
 	/* I think this is correct (Lauris) */
-	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
+	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		if (object->style && object->parent) {
 			sp_style_merge_from_parent (object->style, object->parent->style);
 		}
@@ -528,7 +528,7 @@ sp_object_modified (SPObject *object, guint flags)
 	/* It is pure convenience, and should be used with caution */
 	/* The cascade is created solely by modified method plus appropriate flag */
 	/* Also, it merely signals, that actual style object has changed */
-	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
+	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
 			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
 	}

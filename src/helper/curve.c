@@ -21,6 +21,7 @@
 #define SP_CURVE_LENSTEP 32
 
 static gboolean sp_bpath_good (ArtBpath * bpath);
+static ArtBpath *sp_bpath_clean (ArtBpath *bpath);
 ArtBpath * sp_bpath_check_subpath (ArtBpath * bpath);
 static gint sp_bpath_length (ArtBpath * bpath);
 static gboolean sp_bpath_closed (ArtBpath * bpath);
@@ -62,11 +63,19 @@ sp_curve_new_sized (gint length)
 }
 
 SPCurve *
-sp_curve_new_from_bpath (ArtBpath * bpath)
+sp_curve_new_from_bpath (ArtBpath *bpath)
 {
-	SPCurve * curve;
+	SPCurve *curve;
 
-	g_return_val_if_fail (sp_bpath_good (bpath), NULL);
+	g_return_val_if_fail (bpath != NULL, NULL);
+
+	if (!sp_bpath_good (bpath)) {
+		ArtBpath *new;
+		new = sp_bpath_clean (bpath);
+		g_return_val_if_fail (new != NULL, NULL);
+		art_free (bpath);
+		bpath = new;
+	}
 
 	curve = g_new (SPCurve, 1);
 
@@ -87,9 +96,20 @@ SPCurve *
 sp_curve_new_from_static_bpath (ArtBpath * bpath)
 {
 	SPCurve *curve;
+	gboolean sbpath;
 	gint i;
 
-	g_return_val_if_fail (sp_bpath_good (bpath), NULL);
+	g_return_val_if_fail (bpath != NULL, NULL);
+
+	if (!sp_bpath_good (bpath)) {
+		ArtBpath *new;
+		new = sp_bpath_clean (bpath);
+		g_return_val_if_fail (new != NULL, NULL);
+		sbpath = FALSE;
+		bpath = new;
+	} else {
+		sbpath = TRUE;
+	}
 
 	curve = g_new (SPCurve, 1);
 
@@ -99,7 +119,7 @@ sp_curve_new_from_static_bpath (ArtBpath * bpath)
 	curve->end = curve->length - 1;
 	for (i = curve->end; i > 0; i--) if ((curve->bpath[i].code == ART_MOVETO) || (curve->bpath[i].code == ART_MOVETO_OPEN)) break;
 	curve->substart = i;
-	curve->sbpath = TRUE;
+	curve->sbpath = sbpath;
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
 	curve->moving = FALSE;
@@ -111,20 +131,24 @@ sp_curve_new_from_static_bpath (ArtBpath * bpath)
 SPCurve *
 sp_curve_new_from_foreign_bpath (ArtBpath * bpath)
 {
-	SPCurve * curve;
-	gint length;
-	gint i;
+	SPCurve *curve;
+	ArtBpath *new;
 
-	g_return_val_if_fail (sp_bpath_good (bpath), NULL);
+	g_return_val_if_fail (bpath != NULL, NULL);
 
-	length = sp_bpath_length (bpath);
+	if (!sp_bpath_good (bpath)) {
+		new = sp_bpath_clean (bpath);
+		g_return_val_if_fail (new != NULL, NULL);
+	} else {
+		gint len;
+		len = sp_bpath_length (bpath);
+		new = art_new (ArtBpath, len);
+		memcpy (new, bpath, len * sizeof (ArtBpath));
+	}
 
-	curve = sp_curve_new_sized (length);
-	memcpy (curve->bpath, bpath, sizeof (ArtBpath) * length);
-	curve->end = length - 1;
-	for (i = curve->end; i > 0; i--) if ((curve->bpath[i].code == ART_MOVETO) || (curve->bpath[i].code == ART_MOVETO_OPEN)) break;
-	curve->substart = i;
-	curve->closed = sp_bpath_closed (bpath);
+	curve = sp_curve_new_from_bpath (new);
+
+	if (!curve) art_free (new);
 
 	return curve;
 }
@@ -780,8 +804,8 @@ sp_curve_backspace (SPCurve *curve)
 
 /* Private methods */
 
-static
-gboolean sp_bpath_good (ArtBpath * bpath)
+static gboolean
+sp_bpath_good (ArtBpath *bpath)
 {
 	ArtBpath * bp;
 
@@ -797,6 +821,43 @@ gboolean sp_bpath_good (ArtBpath * bpath)
 	}
 
 	return TRUE;
+}
+
+static ArtBpath *
+sp_bpath_clean (ArtBpath *bpath)
+{
+	ArtBpath *new, *bp, *np;
+	gint len;
+
+	len = 0;
+	while (bpath[len].code != ART_END) len += 1;
+
+	new = art_new (ArtBpath, len + 1);
+
+	bp = bpath;
+	np = new;
+
+	while (bp->code != ART_END) {
+		if (sp_bpath_check_subpath (bp)) {
+			*np++ = *bp++;
+			while ((bp->code == ART_LINETO) || (bp->code == ART_CURVETO)) *np++ = *bp++;
+		} else {
+			*bp++;
+			while ((bp->code == ART_LINETO) || (bp->code == ART_CURVETO)) *bp++;
+		}
+	}
+
+	if (np == new) {
+		g_free (new);
+		return NULL;
+	}
+
+	np->code = ART_END;
+	np += 1;
+
+	new = art_renew (new, ArtBpath, np - new);
+
+	return new;
 }
 
 ArtBpath *

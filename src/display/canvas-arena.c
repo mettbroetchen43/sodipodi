@@ -301,6 +301,8 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 			}
 			arena->cursor = TRUE;
 			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
+			/* fixme: Not sure abut this, but seems the right thing (Lauris) */
+			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
 			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
 			ret = sp_canvas_arena_send_event (arena, event);
@@ -316,6 +318,8 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 		break;
 	case GDK_MOTION_NOTIFY:
 		gnome_canvas_w2c_d (item->canvas, event->motion.x, event->motion.y, &arena->cx, &arena->cy);
+		/* fixme: Not sure abut this, but seems the right thing (Lauris) */
+		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
 		if (new != arena->active) {
 			GdkEventCrossing ec;

@@ -1,3 +1,22 @@
+2002-09-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/node-context.c (sp_node_context_item_handler): Do not
+	select, if rubberband has been dragged
+
+	* src/widgets/sp-menu-button.c (sp_menu_button_draw): Implement,
+	draw small indication arrow here
+	(sp_menu_button_expose): Ditto
+
+	* src/helper/curve.c (sp_bpath_clean): New method
+	(sp_curve_new_from_bpath): Clean bpath, if not good
+	(sp_curve_new_from_static_bpath): Ditto
+	(sp_curve_new_from_foreign_bpath): Ditto
+
+	* src/macros.h: Some new macros
+
+	* src/sp-object.c (sp_object_modified): Oops! Replaced '&&' with '&',
+	this fixed super-slow rendering during drag bug
+
 2002-09-10  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/selection-chemistry.c (sp_group_cleanup): Helper

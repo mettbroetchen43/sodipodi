@@ -27,7 +27,9 @@ static void sp_menu_button_class_init (SPMenuButtonClass *klass);
 static void sp_menu_button_init (SPMenuButton *mb);
 static void sp_menu_button_destroy (GtkObject *object);
 
+static void sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area);
 static void sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req);
+static gint sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event);
 static gint sp_menu_button_button_press (GtkWidget *widget, GdkEventButton *event);
 static gint sp_menu_button_button_release (GtkWidget *widget, GdkEventButton *event);
 static void sp_menu_button_released (GtkButton *button);
@@ -40,7 +42,6 @@ static void sp_menu_button_menu_position (GtkMenu *menu, gint *x, gint *y, gpoin
 #if 0
 static void sp_menu_button_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
 static void sp_menu_button_paint (GtkWidget *widget, GdkRectangle *area);
-static void sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area);
 static gint sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event);
 static gint sp_menu_button_key_press (GtkWidget *widget, GdkEventKey *event);
 static void sp_menu_button_deactivate (GtkMenuShell *menu_shell, SPMenuButton *menu_button);
@@ -100,7 +101,9 @@ sp_menu_button_class_init (SPMenuButtonClass *klass)
 
 	gtk_object_class_add_signals (object_class, button_signals, LAST_SIGNAL);
 
+	widget_class->draw = sp_menu_button_draw;
 	widget_class->size_request = sp_menu_button_size_request;
+	widget_class->expose_event = sp_menu_button_expose;
 	widget_class->button_press_event = sp_menu_button_button_press;
 	widget_class->button_release_event = sp_menu_button_button_release;
 
@@ -147,6 +150,30 @@ sp_menu_button_destroy (GtkObject *object)
 
 }
 
+#define ASIZE 8
+
+static void
+sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area)
+{
+	if (GTK_WIDGET_CLASS (parent_class)->draw)
+		GTK_WIDGET_CLASS (parent_class)->draw (widget, area);
+
+	if (GTK_WIDGET_DRAWABLE (widget)) {
+		gint w, h, bw, tx, ty;
+		w = widget->allocation.width;
+		h = widget->allocation.height;
+		bw = GTK_CONTAINER (widget)->border_width;
+		tx = widget->style->klass->xthickness;
+		ty = widget->style->klass->ythickness;
+		gtk_draw_arrow (widget->style, widget->window,
+				widget->state, GTK_SHADOW_IN,
+				GTK_ARROW_DOWN, TRUE,
+				tx,
+				h - 2 * bw - ty - ASIZE,
+				ASIZE, ASIZE);
+	}
+}
+
 static void
 sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req)
 {
@@ -161,6 +188,35 @@ sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req)
 		if (GTK_WIDGET_CLASS (parent_class)->size_request)
 			GTK_WIDGET_CLASS (parent_class)->size_request (widget, req);
 	}
+}
+
+static gint
+sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event)
+{
+	gint ret;
+
+	if (GTK_WIDGET_CLASS (parent_class)->expose_event) {
+		ret = GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
+	} else {
+		ret = NULL;
+	}
+
+	if (GTK_WIDGET_DRAWABLE (widget)) {
+		gint w, h, bw, tx, ty;
+		w = widget->allocation.width;
+		h = widget->allocation.height;
+		bw = GTK_CONTAINER (widget)->border_width;
+		tx = widget->style->klass->xthickness;
+		ty = widget->style->klass->ythickness;
+		gtk_draw_arrow (widget->style, widget->window,
+				widget->state, GTK_SHADOW_IN,
+				GTK_ARROW_DOWN, TRUE,
+				tx,
+				h - 2 * bw - ty - ASIZE,
+				ASIZE, ASIZE);
+	}
+
+	return ret;
 }
 
 static gint

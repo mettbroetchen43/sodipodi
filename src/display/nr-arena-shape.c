@@ -86,7 +86,7 @@ nr_arena_shape_init (NRArenaShape *shape)
 	shape->curve = NULL;
 	shape->style = NULL;
 	shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
-	shape->paintbox.x1 = shape->paintbox.y1 = 1.0;
+	shape->paintbox.x1 = shape->paintbox.y1 = 256.0;
 	shape->fill_painter = NULL;
 	shape->stroke_painter = NULL;
 	shape->fill_svp = NULL;
@@ -407,10 +407,14 @@ nr_arena_shape_set_paintbox (NRArenaShape *shape, const ArtDRect *pbox)
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (NR_IS_ARENA_SHAPE (shape));
 	g_return_if_fail (pbox != NULL);
-	g_return_if_fail (pbox->x1 > pbox->x0);
-	g_return_if_fail (pbox->y1 > pbox->y0);
 
-	memcpy (&shape->paintbox, pbox, sizeof (ArtDRect));
+	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
+		memcpy (&shape->paintbox, pbox, sizeof (ArtDRect));
+	} else {
+		/* fixme: We kill warning, although not sure what to do here (Lauris) */
+		shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
+		shape->paintbox.x1 = shape->paintbox.y1 = 256.0;
+	}
 
 	nr_arena_item_request_update (NR_ARENA_ITEM (shape), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }

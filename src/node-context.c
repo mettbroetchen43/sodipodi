@@ -144,8 +144,14 @@ sp_node_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 
 	switch (event->type) {
 		case GDK_BUTTON_RELEASE:
-			sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-			ret = TRUE;
+			if (event->button.button == 1) {
+				if (!nc->drag) {
+					sp_selection_set_item (SP_DT_SELECTION (desktop), item);
+					ret = TRUE;
+				}
+				break;
+			}
+			break;
 		default:
 			break;
 	}
@@ -188,12 +194,12 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		if (event->motion.state & GDK_BUTTON1_MASK) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
 			sp_rubberband_move (p.x, p.y);
+			nc->drag = TRUE;
 			ret = TRUE;
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		switch (event->button.button) {
-		case 1:
+		if (event->button.button == 1) {
 			if (sp_rubberband_rect (&b)) {
 				sp_rubberband_stop ();
 				if (nc->nodepath) {
@@ -201,8 +207,7 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				}
 				ret = TRUE;
 			}
-			break;
-		default:
+			nc->drag = FALSE;
 			break;
 		}
 		break;

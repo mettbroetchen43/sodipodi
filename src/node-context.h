@@ -16,7 +16,10 @@ typedef struct _SPNodeContextClass SPNodeContextClass;
 
 struct _SPNodeContext {
 	SPEventContext event_context;
-	SPNodePath * nodepath;
+
+	guint drag : 1;
+
+	SPNodePath *nodepath;
 	SPKnotHolder *knot_holder;
 };
 

@@ -15,9 +15,15 @@
 #ifdef SP_MACROS_SILENT
 #define SP_PRINT_TRANSFORM(s,t)
 #define SP_PRINT_DRECT(s,r)
+#define SP_PRINT_DRECT_WH(s,r)
+#define SP_PRINT_IRECT(s,r)
+#define SP_PRINT_IRECT_WH(s,r)
 #else
 #define SP_PRINT_TRANSFORM(s,t) g_print ("%s (%g %g %g %g %g %g)\n", (s), (t)[0], (t)[1], (t)[2], (t)[3], (t)[4], (t)[5])
 #define SP_PRINT_DRECT(s,r) g_print ("%s (%g %g %g %g)\n", (s), (r)->x0, (r)->y0, (r)->x1, (r)->y1)
+#define SP_PRINT_DRECT_WH(s,r) g_print ("%s (%g %g %g %g)\n", (s), (r)->x0, (r)->y0, (r)->x1 - (r)->x0, (r)->y1 - (r)->y0)
+#define SP_PRINT_IRECT(s,r) g_print ("%s (%d %d %d %d)\n", (s), (r)->x0, (r)->y0, (r)->x1, (r)->y1)
+#define SP_PRINT_IRECT_WH(s,r) g_print ("%s (%d %d %d %d)\n", (s), (r)->x0, (r)->y0, (r)->x1 - (r)->x0, (r)->y1 - (r)->y0)
 #endif
 
 #endif
