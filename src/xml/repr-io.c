@@ -1,5 +1,16 @@
 #define __SP_REPR_IO_C__
 
+/*
+ * Dirty DOM-like  tree
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <malloc.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,6 +21,16 @@
 #include <parser.h>
 #include <tree.h>
 
+static const guchar *sp_svg_doctype_str =
+"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
+"\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\"\n"
+"[\n"
+" <!ATTLIST svg\n"
+"  xmlns:xlink CDATA #FIXED \"http://www.w3.org/1999/xlink\">\n"
+"]>\n";
+static const guchar *sp_comment_str =
+"<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n";
+
 static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
 
@@ -18,7 +39,8 @@ static xmlDocPtr sp_wmf_convert (const char * file_name);
 static char * sp_wmf_image_name (void * context);
 #endif /* HAVE_LIBWMF */
 
-SPReprDoc * sp_repr_read_file (const gchar * filename)
+SPReprDoc *
+sp_repr_read_file (const gchar * filename)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
@@ -48,27 +70,28 @@ SPReprDoc * sp_repr_read_file (const gchar * filename)
 	repr = NULL;
 
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
-#if 0
-		if (node->name && (strcmp (node->name, "svg") == 0)) {
-			repr = sp_repr_svg_read_node (rdoc, node);
-			break;
-		}
-#else
 		if (node->type == XML_ELEMENT_NODE) {
 			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
-#endif
 	}
 
-	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
+	if (repr != NULL) {
+		sp_repr_document_set_root (rdoc, repr);
+		/* fixme: Another quick hack (Lauris) */
+		if (!strcmp (sp_repr_name (repr), "svg")) {
+			sp_repr_set_attr ((SPRepr *) rdoc, "doctype", sp_svg_doctype_str);
+			sp_repr_set_attr ((SPRepr *) rdoc, "comment", sp_comment_str);
+		}
+	}
 
 	xmlFreeDoc (doc);
 
 	return rdoc;
 }
 
-SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
+SPReprDoc *
+sp_repr_read_mem (const gchar * buffer, gint length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
@@ -85,20 +108,20 @@ SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 	repr = NULL;
 
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
-#if 0
-		if (node->name && (strcmp (node->name, "svg") == 0)) {
-			repr = sp_repr_svg_read_node (rdoc, node);
-			break;
-		}
-#else
 		if (node->type == XML_ELEMENT_NODE) {
 			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
-#endif
 	}
 
-	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
+	if (repr != NULL) {
+		sp_repr_document_set_root (rdoc, repr);
+		/* fixme: Another quick hack (Lauris) */
+		if (!strcmp (sp_repr_name (repr), "svg")) {
+			sp_repr_set_attr ((SPRepr *) rdoc, "doctype", sp_svg_doctype_str);
+			sp_repr_set_attr ((SPRepr *) rdoc, "comment", sp_comment_str);
+		}
+	}
 
 	xmlFreeDoc (doc);
 
@@ -194,15 +217,19 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 }
 
 void
-sp_repr_save_stream (SPReprDoc * doc, FILE *fp)
+sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 {
 	SPRepr *repr;
+	const guchar *str;
+
 	/* fixme: do this The Right Way */
 
 	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n", fp);
-	fputs ("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n", fp);
-	fputs ("\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n", fp);
-	fputs ("<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n", fp);
+
+	str = sp_repr_attr ((SPRepr *) doc, "doctype");
+	if (str) fputs (str, fp);
+	str = sp_repr_attr ((SPRepr *) doc, "comment");
+	if (str) fputs (str, fp);
 
 	repr = sp_repr_document_root (doc);
 
@@ -210,7 +237,7 @@ sp_repr_save_stream (SPReprDoc * doc, FILE *fp)
 }
 
 void
-sp_repr_save_file (SPReprDoc * doc, const gchar * filename)
+sp_repr_save_file (SPReprDoc *doc, const gchar *filename)
 {
 	FILE * file;
 

@@ -2,7 +2,7 @@
 
 TODO for 0.26
 
-- Cursor placement and Backspace in text context (2 days)
+- Cursor placement and Backspace in text context (DONE)
 - Save as plain SVG (DONE)
 - Recently opened file list (DONE)
 - Cleanups

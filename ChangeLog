@@ -1,3 +1,11 @@
+2002-09-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr.c (sp_repr_document_new): Set doctype and comment
+
+	* src/xml/repr-io.c (sp_repr_read_file): Set doctype and comment if SVG
+	(sp_repr_read_mem): Ditto
+	(sp_repr_save_stream): Save doctype and comment
+
 2002-09-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_string_set_shape): Update position array
