@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-07 04:24+0200\n"
-"PO-Revision-Date: 2004-06-07 11:15+0200\n"
+"POT-Creation-Date: 2004-09-12 12:21+0200\n"
+"PO-Revision-Date: 2004-09-12 15:06+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "Ilustrátor vektorů SVG"
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/arc-context.c:302
+#: src/arc-context.c:254
 #, c-format
 msgid "Drawing arc %s x %s"
 msgstr "Kreslím oblouk %s × %s"
@@ -36,20 +36,20 @@ msgstr "Kreslím oblouk %s × %s"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:991
+#: src/desktop.c:990
 msgid "Zoom drawing if window size changes"
 msgstr "Zvětšit či zmenšit kresbu při změně velikosti okna"
 
-#: src/desktop.c:998
+#: src/desktop.c:997
 msgid "Drawing target is constrained to active group"
 msgstr "Cíl kreslení je omezen na aktivní skupinu"
 
-#: src/desktop.c:1091
+#: src/desktop.c:1089
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1198
+#: src/desktop.c:1196
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
@@ -57,19 +57,19 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 #. Page page
 #. Page settings
 #. Notebook tab
-#: src/desktop.c:1751 src/dialogs/align.c:291
+#: src/desktop.c:1776 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:161 src/verbs.c:471
+#: src/dialogs/export.c:161 src/verbs.c:471 src/widgets/sp-dock-notebook.c:135
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1755 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/desktop.c:1780 src/dialogs/align.c:292 src/dialogs/export.c:166
 #: src/verbs.c:472
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1759 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/desktop.c:1784 src/dialogs/align.c:293 src/dialogs/export.c:171
 #: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
 msgstr "Výběr"
@@ -399,6 +399,10 @@ msgstr "Šířka:"
 msgid "Height:"
 msgstr "Výška:"
 
+#: src/dialogs/document-tree.c:60 src/verbs.c:476
+msgid "Document"
+msgstr "Dokument"
+
 #: src/dialogs/export.c:141
 msgid "Export bitmap"
 msgstr "Exportovat bitmapu"
@@ -493,7 +497,7 @@ msgid "Sensitive"
 msgstr "Citlivá"
 
 #. Visible
-#: src/dialogs/item-properties.c:109
+#: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
 msgid "Visible"
 msgstr "Viditelná"
 
@@ -592,13 +596,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
 msgid "Expansion:"
 msgstr "Rozšíření:"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
-#: src/spiral-context.c:351
+#: src/spiral-context.c:331
 msgid "Revolution:"
 msgstr "Otáčení:"
 
@@ -775,7 +779,7 @@ msgid "Missing tool preferences"
 msgstr "Chybí nastavení nástroje"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:343
 msgid "Corners:"
 msgstr "Rohy:"
 
@@ -940,8 +944,8 @@ msgid "Angle:"
 msgstr "Úhel:"
 
 #. Reset
-#: src/dyna-draw-context.c:1099 src/rect-context.c:425
-#: src/spiral-context.c:387 src/star-context.c:387
+#: src/dyna-draw-context.c:1099 src/rect-context.c:382
+#: src/spiral-context.c:367 src/star-context.c:374
 msgid "Defaults"
 msgstr "Výchozí"
 
@@ -1433,7 +1437,7 @@ msgstr ""
 "Použijte '| prog arg...', chcete-li směrovat tisk do programu"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:111
+#: src/object-ui.c:111 src/widgets/sp-dock-layout.c:741
 msgid "Item"
 msgstr "Položka"
 
@@ -1575,12 +1579,12 @@ msgid "Spiral Properties"
 msgstr "Vlastnosti spirály"
 
 #. rx_ratio
-#: src/rect-context.c:401
+#: src/rect-context.c:358
 msgid "Roundness ratio for x:"
 msgstr "Poměr zaoblení pro X:"
 
 #. ry_ratio
-#: src/rect-context.c:413
+#: src/rect-context.c:370
 msgid "Roundness ratio for y:"
 msgstr "Poměr zaoblení pro Y:"
 
@@ -1835,22 +1839,22 @@ msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
 #. fixme:
-#: src/sp-text.c:1294
+#: src/sp-text.c:1293
 msgid "Text object"
 msgstr "Textový objekt"
 
 #. T0
-#: src/spiral-context.c:375
+#: src/spiral-context.c:355
 msgid "Inner radius:"
 msgstr "Vnitřní poloměr:"
 
 #. Proportion
-#: src/star-context.c:368
+#: src/star-context.c:355
 msgid "Proportion:"
 msgstr "Proporce:"
 
 #. Making sides flat
-#: src/star-context.c:381
+#: src/star-context.c:368
 msgid "Make sides flat"
 msgstr "Placaté strany"
 
@@ -2353,10 +2357,6 @@ msgid "Global display settings"
 msgstr "Globální nastavení zobrazení"
 
 #: src/verbs.c:476
-msgid "Document"
-msgstr "Dokument"
-
-#: src/verbs.c:476
 msgid "Page layout"
 msgstr "Rozvržení stránky"
 
@@ -2564,6 +2564,334 @@ msgstr "Žlutá:"
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
 msgstr "Černá:"
+
+#: src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "Orientace"
+
+#: src/widgets/sp-dock-item.c:244
+msgid "Orientation of the docking item"
+msgstr "Orientace dokující položky"
+
+#: src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr "Lze měnit velikost"
+
+#: src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr "Je-li nastaveno, velikost položky doku lze měnit, když je zadokovaná v panelu"
+
+#: src/widgets/sp-dock-item.c:267
+msgid "Item behavior"
+msgstr "Chování položky"
+
+#: src/widgets/sp-dock-item.c:268
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr "Obecné chování položky doku (např. jestli může plavat, jestli je zamčená apod.)"
+
+#: src/widgets/sp-dock-item.c:276
+msgid "Grip size"
+msgstr "Velikost úchytu"
+
+#: src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr "Velikost úchytu pro přetahování položky doku v pixelech"
+
+#: src/widgets/sp-dock-item.c:283 src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "Zamčena"
+
+#: src/widgets/sp-dock-item.c:284
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "Je-li nastaveno, položku doku nelze přetahovat a nezobrazuje úchyt"
+
+#: src/widgets/sp-dock-item.c:292
+msgid "Preferred width"
+msgstr "Preferovaná šířka"
+
+#: src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr "Preferovaná šířka položky doku"
+
+#: src/widgets/sp-dock-item.c:299
+msgid "Preferred height"
+msgstr "Preferovaná výška"
+
+#: src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr "Preferovaná výška položky doku"
+
+#: src/widgets/sp-dock-item.c:547
+#, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr "Nemůžete přidat položku doku (%p typu %s) do %s. Použijte SPDock nebo jiný objekt složeného doku."
+
+#: src/widgets/sp-dock-item.c:554
+#, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr "Pokouším se přidat widget typu %s do %s, ale ten může obsahovat jen jeden widget; již obsahuje widget typu %s"
+
+#: src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr "Nepodporovaná strategie dokování %s v objektu doku typu %s"
+
+#. Hide menuitem.
+#: src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "Skrýt"
+
+#. Lock menuitem
+#: src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr "Zamknout"
+
+#: src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr "Pokus připojit odpojenou položku %p"
+
+#: src/widgets/sp-dock-layout.c:144
+msgid "Master"
+msgstr "Master"
+
+#: src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr "Objekt SPDockMaster, ke kterému je připojen objekt rozložení"
+
+#: src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr "Změněn"
+
+#: src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr "True, pokud se rozložení změnila a je třeba je zapsat do souboru"
+
+#: src/widgets/sp-dock-layout.c:500
+msgid "You must provide a name for the layout"
+msgstr "Musíte zadat název rozložení"
+
+#. FIXME: pop up an error dialog
+#: src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr "Nemohu načíst soubor rozložení uživatelského rozhraní '%s'"
+
+#: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "Název"
+
+#: src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr "Položky doku"
+
+#: src/widgets/sp-dock-layout.c:836
+msgid "Saved layouts"
+msgstr "Uložená rozložení"
+
+#: src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr "Při načítání rozložení: nevím, jak vytvořit objekt doku s přezdívkou '%s'"
+
+#: src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr "Správa rozložení"
+
+#: src/widgets/sp-dock-master.c:142 src/widgets/sp-dock.c:184
+msgid "Default title"
+msgstr "Implicitní nadpis"
+
+#: src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr "Implicitní nadpis nově vytvářených plovoucích doků"
+
+#: src/widgets/sp-dock-master.c:150
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr "Je-li nastaveno na 1, všechny položky doku připojené k masteru jsou zamknuty; je-li 0, všechny jsou odemčeny; -1 znamená rozdíly mezi položkami"
+
+#: src/widgets/sp-dock-master.c:741
+#, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr "master %p: nemohu přidat objekt %p[%s] do hashe. Již tam je položka (%p) s tímto názvem."
+
+#: src/widgets/sp-dock-master.c:906
+#, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr "Nový doku controller %p je automatický. Jen objekty ručního doku by měly být nazvány controller."
+
+#: src/widgets/sp-dock-notebook.c:136
+msgid "The index of the current page"
+msgstr "Index aktuální stránky"
+
+#: src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr "Jedinečný název pro identifikaci objektu doku"
+
+#: src/widgets/sp-dock-object.c:131
+msgid "Long name"
+msgstr "Dlouhý název"
+
+#: src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr "Člověkem čitelný název pro objekt doku"
+
+#: src/widgets/sp-dock-object.c:138
+msgid "Dock master"
+msgstr "Master doku"
+
+#: src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr "Master doku, ke kterému je připojen tento objekt doku"
+
+#: src/widgets/sp-dock-object.c:408
+#, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr "Volání sp_dock_object_dock v objektu doku %p (typ objektu je %s), který tuto metodu neimplementoval"
+
+#: src/widgets/sp-dock-object.c:537
+#, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr "Operace doku vyžadována v nepřipojeném objektu %p. Aplikace možná spadne"
+
+#: src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr "Nemohu zadokovat %p do %p, protože patří k různým masterům"
+
+#: src/widgets/sp-dock-object.c:586
+#, c-format
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr "Pokus připojit k %p již připojený objekt doku %p (současný master: %p)"
+
+#: src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "Umístění"
+
+#: src/widgets/sp-dock-paned.c:135
+msgid "Position of the divider in pixels"
+msgstr "Umístění rozdělovače v pixelech"
+
+#: src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr "Lepivý"
+
+#: src/widgets/sp-dock-placeholder.c:126
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr "Jestli se zástupný symbol přilepí ke svému hostiteli nebo posune v hierarchii nahoru, když je hostitel předokován"
+
+#: src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "Hostitel"
+
+#: src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr "Objekt doku, ke kterému je připojen tento zástupný symbol"
+
+#: src/widgets/sp-dock-placeholder.c:141
+msgid "Next placement"
+msgstr "Následující umístění"
+
+#: src/widgets/sp-dock-placeholder.c:142
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr "Umístění, do kterého bude položka zadokována do našeho hostitele, když vznikne požadavek zadokovat se do nás"
+
+#: src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr "Pokus zadokovat objekt doku k nepřipojenému zástupnému symbolu"
+
+#: src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr "Dostal jsem signál detach od objektu (%p), který není náš hostitel %p"
+
+#: src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr "Stalo se něco divného při získávání umístní potomka pro %p od rodiče %p"
+
+#: src/widgets/sp-dock-tablabel.c:131
+msgid "Controlling dock item"
+msgstr "Řídicí položka doku"
+
+#: src/widgets/sp-dock-tablabel.c:132
+msgid "Dockitem which 'owns' this tablabel"
+msgstr "Položka doku, která 'vlastní' tuto jmenovku záložky"
+
+#: src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "Plovoucí"
+
+#: src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr "Jestli je dok plovoucí ve svém vlastním okně"
+
+#: src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr "Implicitní nadpis nově vytvářených plovoucích doků"
+
+#: src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "Šířka"
+
+#: src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr "Šířka doku, když je plovoucí"
+
+#: src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "Výška"
+
+#: src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr "Výška doku, když je plovoucí"
+
+#: src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr "Plovoucí X"
+
+#: src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr "Souřadnice X plovoucího doku"
+
+#: src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr "Plovoucí Y"
+
+#: src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr "Souřadnice Y plovoucího doku"
+
+#: src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr "Dok č. %d"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
