@@ -1698,18 +1698,13 @@ gnome_canvas_button (GtkWidget *widget, GdkEventButton *event)
 	int mask;
 	int retval;
 
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_CANVAS (widget), FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
+	canvas = GNOME_CANVAS (widget);
 
 	retval = FALSE;
 
-	canvas = GNOME_CANVAS (widget);
-
 	/* dispatch normally regardless of the event's window if an item has
 	   has a pointer grab in effect */
-	if (!canvas->grabbed_item && event->window != canvas->layout.bin_window)
-		return retval;
+	if (!canvas->grabbed_item && event->window != canvas->layout.bin_window) return retval;
 
 	switch (event->button) {
 	case 1:
@@ -1769,10 +1764,6 @@ gnome_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 {
 	GnomeCanvas *canvas;
 
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_CANVAS (widget), FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
-
 	canvas = GNOME_CANVAS (widget);
 
 	if (event->window != canvas->layout.bin_window)
@@ -1783,17 +1774,12 @@ gnome_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 	return emit_event (canvas, (GdkEvent *) event);
 }
 
-/* Expose handler for the canvas */
 static gint
 gnome_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	GnomeCanvas *canvas;
 	ArtIRect rect;
 	ArtUta *uta;
-
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_CANVAS (widget), FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
 
 	canvas = GNOME_CANVAS (widget);
 
@@ -1807,22 +1793,19 @@ gnome_canvas_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	uta = art_uta_from_irect (&rect);
 	gnome_canvas_request_redraw_uta (canvas, uta);
+#if 0
 	gnome_canvas_update_now (canvas);
-
+#endif
 	return FALSE;
 }
 
-/* Key event handler for the canvas */
 static gint
 gnome_canvas_key (GtkWidget *widget, GdkEventKey *event)
 {
 	GnomeCanvas *canvas;
 
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_CANVAS (widget), FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
-
 	canvas = GNOME_CANVAS (widget);
+
 	return emit_event (canvas, (GdkEvent *) event);
 }
 
@@ -1831,10 +1814,6 @@ static gint
 gnome_canvas_crossing (GtkWidget *widget, GdkEventCrossing *event)
 {
 	GnomeCanvas *canvas;
-
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GNOME_IS_CANVAS (widget), FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
 
 	canvas = GNOME_CANVAS (widget);
 
@@ -1876,9 +1855,6 @@ gnome_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 	else
 		return FALSE;
 }
-
-#define IMAGE_WIDTH 512
-#define IMAGE_HEIGHT 512
 
 #define IMAGE_WIDTH_AA 256
 #define IMAGE_HEIGHT_AA 64
@@ -2161,23 +2137,13 @@ gnome_canvas_get_scroll_offsets (GnomeCanvas *canvas, int *cx, int *cy)
 	if (cy) *cy = canvas->layout.vadjustment->value;
 }
 
-/**
- * gnome_canvas_update_now:
- * @canvas: A canvas.
- *
- * Forces an immediate update and redraw of a canvas.  If the canvas does not
- * have any pending update or redraw requests, then no action is taken.  This is
- * typically only used by applications that need explicit control of when the
- * display is updated, like games.  It is not needed by normal applications.
- */
 void
 gnome_canvas_update_now (GnomeCanvas *canvas)
 {
 	g_return_if_fail (canvas != NULL);
 	g_return_if_fail (GNOME_IS_CANVAS (canvas));
 
-	if (!(canvas->need_update || canvas->need_redraw))
-		return;
+	if (!(canvas->need_update || canvas->need_redraw)) return;
 
 	remove_idle (canvas);
 	do_update (canvas);
