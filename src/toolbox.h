@@ -18,4 +18,6 @@ GtkWidget *sp_maintoolbox_new (void);
 
 void sp_maintoolbox_create_toplevel (void);
 
+void sp_maintoolbox_close_all (void);
+
 #endif

@@ -29,26 +29,6 @@
 #include "module.h"
 #include "print.h"
 
-#include <modules/ps.h>
-
-#ifdef WIN32
-#include <modules/win32.h>
-#endif
-
-#ifdef WITH_GNOME_PRINT
-#include <modules/gnome.h>
-#endif
-
-#ifdef WITH_KDE
-#include <modules/kde.h>
-#endif
-
-/* Identity typedef */
-
-struct _SPPrintContext {
-	SPModulePrint module;
-};
-
 unsigned int
 sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 {
@@ -98,6 +78,19 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 	return 0;
 }
 
+#ifndef WITHOUT_PRINT_UI
+
+#ifdef WIN32
+#include <modules/win32.h>
+#endif
+
+#ifdef WITH_GNOME_PRINT
+#include <modules/gnome.h>
+#endif
+
+#ifdef WITH_KDE
+#include <modules/kde.h>
+#endif
 
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
@@ -112,20 +105,18 @@ sp_print_preview_document (SPDocument *doc)
 
 	sp_document_ensure_up_to_date (doc);
 
+	mod = NULL;
 #ifdef WIN32
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
-#else
-// Some unix probably
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_WIN32);
+#endif
 #ifdef WITH_KDE
-	mod = sp_kde_get_module_print ();
-#else
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_KDE);
+#endif
 #ifdef WITH_GNOME_PRINT
-	mod = (SPModulePrint *) sp_module_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
-#else
-	mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_GNOME);
 #endif
-#endif
-#endif
+	/* Still nothing, fall back to plain */
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
 
 	ret = FALSE;
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->set_preview)
@@ -165,17 +156,17 @@ sp_print_document (SPDocument *doc, unsigned int direct)
 	sp_document_ensure_up_to_date (doc);
 
 	mod = NULL;
-	if (direct) mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
+	if (direct) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
 #ifdef WIN32
-	if (!direct) mod = g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_WIN32);
 #endif
 #ifdef WITH_KDE
-	if (!direct) mod = sp_kde_get_module_print ();
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_KDE);
 #endif
 #ifdef WITH_GNOME_PRINT
-	if (!direct) mod = g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_GNOME);
 #endif
-	if (!mod) mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
 
 	ret = FALSE;
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
@@ -251,3 +242,4 @@ sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 #endif
 }
 
+#endif

@@ -467,9 +467,7 @@ sp_repr_set_attr_recursive (SPRepr *repr, const unsigned char *key, const unsign
  * lookup child by (@key, @value)
  */
 SPRepr *
-sp_repr_lookup_child (SPRepr       *repr,
-                      const unsigned char *key,
-                      const unsigned char *value)
+sp_repr_lookup_child (SPRepr *repr, const unsigned char *key, const unsigned char *value)
 {
 	SPRepr *child;
 	SPReprAttr *attr;
@@ -487,6 +485,24 @@ sp_repr_lookup_child (SPRepr       *repr,
 		for (attr = child->attributes; attr != NULL; attr = attr->next) {
 			if ((attr->key == quark) && !strcmp (attr->value, value)) return child;
 		}
+	}
+
+	return NULL;
+}
+
+SPRepr *
+sp_repr_lookup_child_by_name (SPRepr *repr, const unsigned char *name)
+{
+	SPRepr *child;
+	unsigned int quark;
+
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	quark = g_quark_from_string (name);
+
+	for (child = repr->children; child != NULL; child = child->next) {
+		if (child->name == quark) return child;
 	}
 
 	return NULL;

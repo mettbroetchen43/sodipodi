@@ -101,15 +101,15 @@ struct _SPItemClass {
 	/* BBox union in given coordinate system */
 	void (* bbox) (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 
-	/* Printing method. Assumes ctm is set to item affine matrix */
-	/* fixme: Think about it, and maybe implement generic export method instead (Lauris) */
-	void (* print) (SPItem *item, SPPrintContext *ctx);
-
 	/* Give short description of item (for status display) */
 	gchar * (* description) (SPItem * item);
 
 	NRArenaItem * (* show) (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 	void (* hide) (SPItem *item, unsigned int key);
+
+	/* Printing method. Assumes ctm is set to item affine matrix */
+	/* fixme: Think about it, and maybe implement generic export method instead (Lauris) */
+	void (* print) (SPItem *item, SPPrintContext *ctx);
 
 	/* Returns a number of points used */ 
 	int (* snappoints) (SPItem *item, NRPointF *points, int size);
@@ -130,8 +130,8 @@ struct _SPItemClass {
 void sp_item_invoke_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int clear);
 void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags, unsigned int clear);
 
-gchar * sp_item_description (SPItem * item);
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
+unsigned char * sp_item_description (SPItem * item);
 
 /* Shows/Hides item on given arena display list */
 unsigned int sp_item_display_key_new (unsigned int numkeys);

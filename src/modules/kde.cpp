@@ -30,6 +30,9 @@
 #include "kde.h"
 #include "kde-private.h"
 
+// Include kde-private.cpp here to make dependencies cleaner
+#include "kde-private.cpp"
+
 #define SP_FOREIGN_FREQ 32
 #define SP_FOREIGN_MAX_ITER 4
 
@@ -195,13 +198,6 @@ G_BEGIN_DECLS
 #include "document.h"
 G_END_DECLS
 
-#define SP_TYPE_MODULE_PRINT_KDE (sp_module_print_kde_get_type())
-#define SP_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT_KDE, SPModulePrintKDE))
-#define SP_IS_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_PRINT_KDE))
-
-typedef struct _SPModulePrintKDE SPModulePrintKDE;
-typedef struct _SPModulePrintKDEClass SPModulePrintKDEClass;
-
 struct _SPModulePrintKDE {
 	SPModulePrint module;
 
@@ -222,6 +218,8 @@ static void sp_module_print_kde_class_init (SPModulePrintClass *klass);
 static void sp_module_print_kde_init (SPModulePrintKDE *gpmod);
 static void sp_module_print_kde_finalize (GObject *object);
 
+static SPRepr *sp_module_print_kde_write (SPModule *module, SPRepr *root);
+
 static unsigned int sp_module_print_kde_setup (SPModulePrint *mod);
 static unsigned int sp_module_print_kde_set_preview (SPModulePrint *mod);
 static unsigned int sp_module_print_kde_begin (SPModulePrint *mod, SPDocument *doc);
@@ -238,7 +236,7 @@ static unsigned int sp_module_print_kde_image (SPModulePrint *mod, unsigned char
 
 static SPModulePrintClass *print_kde_parent_class;
 
-unsigned int
+GType
 sp_module_print_kde_get_type (void)
 {
 	static GType type = 0;
@@ -261,14 +259,18 @@ static void
 sp_module_print_kde_class_init (SPModulePrintClass *klass)
 {
 	GObjectClass *g_object_class;
+	SPModuleClass *module_class;
 	SPModulePrintClass *module_print_class;
 
 	g_object_class = (GObjectClass *)klass;
+	module_class = (SPModuleClass *) klass;
 	module_print_class = (SPModulePrintClass *) klass;
 
 	print_kde_parent_class = (SPModulePrintClass *) g_type_class_peek_parent (klass);
 
 	g_object_class->finalize = sp_module_print_kde_finalize;
+
+	module_class->write = sp_module_print_kde_write;
 
 	module_print_class->setup = sp_module_print_kde_setup;
 	module_print_class->set_preview = sp_module_print_kde_set_preview;
@@ -300,6 +302,25 @@ sp_module_print_kde_finalize (GObject *object)
 	delete kpmod->kprinter;
 
 	G_OBJECT_CLASS (print_kde_parent_class)->finalize (object);
+}
+
+static SPRepr *
+sp_module_print_kde_write (SPModule *module, SPRepr *root)
+{
+	SPRepr *grp, *repr;
+	grp = sp_repr_lookup_child (root, "id", "printing");
+	if (!grp) {
+		grp = sp_repr_new ("group");
+		sp_repr_set_attr (grp, "id", "printing");
+		sp_repr_set_attr (grp, "name", "Printing");
+		sp_repr_append_child (root, grp);
+	}
+	repr = sp_repr_new ("module");
+	sp_repr_set_attr (repr, "id", "kde");
+	sp_repr_set_attr (repr, "name", "KDE Printing");
+	sp_repr_set_attr (repr, "action", "no");
+	sp_repr_append_child (grp, repr);
+	return repr;
 }
 
 static unsigned int
@@ -504,10 +525,10 @@ sp_module_print_kde_image (SPModulePrint *mod, unsigned char *px, unsigned int w
 	return 0;
 }
 
+#if 0
 SPModulePrint *
 sp_kde_get_module_print (void)
 {
 	return (SPModulePrint *) g_object_new (SP_TYPE_MODULE_PRINT_KDE, NULL);
 }
-
-
+#endif

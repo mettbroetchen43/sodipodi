@@ -51,11 +51,7 @@
 /* fixme: (Lauris) */
 #include "sp-namedview.h"
 
-#ifdef WITH_MODULES
 #include "module.h"
-#include "modules/sp-module-sys.h"
-#include "modules/sp-module-doc.h"
-#endif /* WITH_MODULES */
 
 #ifdef WITH_KDE
 #include "modules/kde.h"
@@ -91,8 +87,10 @@ sp_file_open (const unsigned char *uri, const unsigned char *key)
 	SPModule *mod;
 
 	doc = NULL;
+	/* Get preferred module key */
 	if (!key) key = SP_MODULE_KEY_INPUT_DEFAULT;
-	mod = sp_module_system_get (key);
+	mod = sp_module_find (key);
+	/* Open file with given module */
 	if (mod) doc = sp_module_input_document_open (SP_MODULE_INPUT (mod), uri, TRUE, TRUE);
 	sp_module_unref (mod);
 	if (doc) {
@@ -223,7 +221,7 @@ sp_file_do_save (SPDocument *doc, const unsigned char *uri, const unsigned char 
 	if (!uri) return;
 
 	if (!key) key = SP_MODULE_KEY_OUTPUT_DEFAULT;
-	mod = sp_module_system_get (key);
+	mod = sp_module_find (key);
 	if (mod) sp_module_output_document_save (SP_MODULE_OUTPUT (mod), doc, uri);
 	sp_module_unref (mod);
 }
@@ -502,12 +500,14 @@ sp_file_print_preview (gpointer object, gpointer data)
 	}
 }
 
+#if 0
 void sp_file_exit (void)
 {
 	if (sp_ui_close_all ()) {
 		sodipodi_exit (SODIPODI);
 	}
 }
+#endif
 
 void
 sp_file_export_dialog (void *widget)

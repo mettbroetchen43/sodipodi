@@ -25,6 +25,7 @@ static GList * module_list = NULL;
 #if 0
 static void       sp_modulesys_test_init          (void);
 #endif
+#if 0
 static void       sp_modulesys_init_svg_in        (void);
 static void       sp_modulesys_init_svg_out       (void);
 static void       sp_modulesys_init_svg_nons_out  (void);
@@ -35,25 +36,35 @@ static void       sp_modulesys_ext_init           (void);
 static void       sp_modulesys_builtin_init       (void);
 void              sp_modulesys_do_filter          (gpointer in_unused,
                                                    gpointer in_module);
+#endif
 
+#if 0
 /* Module system */
 void sp_modulesys_init (void) {
+#if 0
 	sp_modulesys_builtin_init();
+#endif
+#if 0
 	sp_modulesys_ext_init();
+#endif
 #if 0
 	sp_modulesys_test_init();
 #endif
 
 	return;
 }
+#endif
 
+#if 0
 static void sp_modulesys_builtin_init (void) {
 	sp_modulesys_init_svg_in();
 	sp_modulesys_init_svg_out();
 	sp_modulesys_init_svg_nons_out();
 	return;
 }
+#endif
 
+#if 0
 /* TODO: This should be done by a configuration file
  *       but right now it's hard coded :(  */
 static void
@@ -97,6 +108,7 @@ sp_modulesys_ext_init (void)
 
 	return;
 }
+#endif
 
 SPModule * sp_modulesys_list_add (SPModule * in_module) {
 	g_return_val_if_fail(SP_IS_MODULE(in_module), NULL);
@@ -137,6 +149,7 @@ static void sp_modulesys_test_init (void) {
 }
 #endif
 
+#if 0
 static void module_about (gpointer widget, gpointer in_module) {
 #if 0
 	SPModule * module = (SPModule *)in_module;
@@ -323,7 +336,9 @@ GtkMenu * sp_modulesys_menu_filter (void) {
 	gtk_widget_show (menu);
 	return GTK_MENU(menu);
 }
+#endif
 
+#if 0
 SPDocument * sp_modulesys_do_open (SPModule * object, SPModuleDoc * doc) {
 	SPModuleExecClass * myclass;
 
@@ -438,7 +453,9 @@ void sp_module_sys_prefs_complete (SPModule * object, SPModuleDoc * doc, gboolea
 		myclass->exec(object, doc);
 	}
 }
+#endif
 
+#if 0
 typedef struct _modulesys_autodetect_t modulesys_autodetect_t;
 struct _modulesys_autodetect_t {
 	gchar * extention;
@@ -498,7 +515,9 @@ static SPModule * sp_modulesys_autodetect (GtkType in_type, SPModuleDoc * in_doc
 
 	return localstruct.module;
 }
+#endif
 
+#if 0
 /* SVG in module - it's a built in */
 
 static void svg_in_exec (SPModule *, SPModuleDoc *,  gpointer data);
@@ -686,3 +705,4 @@ svg_nons_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer in_data
 	sp_repr_document_unref (rdoc);
 	return;
 }
+#endif

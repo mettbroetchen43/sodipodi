@@ -248,5 +248,18 @@ void sodipodi_unref (void) {}
 void sodipodi_add_document (SPDocument *document) {}
 void sodipodi_remove_document (SPDocument *document) {}
 SPRepr *sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key) {return NULL;}
+#if 0
 #include "widgets/menu.h"
 void sp_menu_append (SPMenu *menu, const unsigned char *name, const unsigned char *tip, const void *data) {}
+#endif
+
+#include <libnr/nr-path.h>
+unsigned int sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity) {return 0;}
+unsigned int sp_print_release (SPPrintContext *ctx) {return 0;}
+unsigned int sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox) {return 0;}
+unsigned int sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+			      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox) {return 0;}
+unsigned int sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
+					unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+					const NRMatrixF *transform, const SPStyle *style) {return 0;}

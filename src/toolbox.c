@@ -91,11 +91,12 @@ static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_ent
 static void sp_maintoolbox_open_files(gchar * buffer);
 static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
 
+static GSList *toolboxes = NULL;
+
 static void
-sp_maintoolbox_destroy (GtkObject *object, gpointer data)
+sp_maintoolbox_window_destroy (void)
 {
-	sp_signal_disconnect_by_data (sodipodi, object);
-	sodipodi_unref ();
+	toolboxes = g_slist_remove (toolboxes, toolboxes->data);
 }
 
 void
@@ -105,13 +106,25 @@ sp_maintoolbox_create_toplevel (void)
 
 	/* Create window */
 	window = sp_window_new (_("Sodipodi"), FALSE);
+	g_signal_connect (G_OBJECT (window), "destroy", G_CALLBACK (sp_maintoolbox_window_destroy), NULL);
 
 	toolbox = sp_maintoolbox_new ();
 	gtk_widget_show (toolbox);
 	gtk_container_add (GTK_CONTAINER (window), toolbox);
 
 	gtk_widget_show (window);
+
+	/* Reference our sodipodi engine */
+	toolboxes = g_slist_prepend (toolboxes, window);
 };
+
+static void
+sp_maintoolbox_destroy (GtkObject *object, gpointer data)
+{
+	/* Disconnect tool tracking signals */
+	sp_signal_disconnect_by_data (sodipodi, object);
+	sodipodi_unref ();
+}
 
 GtkWidget *
 sp_maintoolbox_new (void)
@@ -187,10 +200,18 @@ sp_maintoolbox_new (void)
 	/* g_signal_connect (G_OBJECT (toolbox), "delete_event", G_CALLBACK (sp_maintoolbox_delete_event), NULL); */
 	g_signal_connect (G_OBJECT (toolbox), "drag_data_received", G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
 
-	/* Reference our sodipodi engine */
+	/* Keep sodipodi alive */
 	sodipodi_ref ();
 
 	return toolbox;
+}
+
+void
+sp_maintoolbox_close_all (void)
+{
+	while (toolboxes) {
+		gtk_widget_destroy ((GtkWidget *) toolboxes->data);
+	}
 }
 
 enum {

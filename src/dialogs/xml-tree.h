@@ -1,18 +1,27 @@
-#ifndef SP_XML_TREE_H
-#define SP_XML_TREE_H
+#ifndef __SP_XML_TREE_H__
+#define __SP_XML_TREE_H__
 
 /*
  * XML tree editing dialog for Sodipodi
  *
- * Copyright Lauris Kaplinski, 2000
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Released under GNU General Public License.
+ * Copyright (C) 2000-2003 Authors
  *
- * This is XML tree editor, which allows direct modifying of all elements
- *   of Sodipodi document, including foreign ones.
+ * Released under GNU GPL, read the file 'COPYING' for more information
  *
  */
 
 void sp_xml_tree_dialog (void);
+
+/* Experimental */
+
+#include <module.h>
+
+/* Get new reference */
+SPModule *sp_xml_module_load (void);
+/* Unref module */
+void sp_xml_module_unload (SPModule *module);
 
 #endif

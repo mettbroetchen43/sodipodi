@@ -76,13 +76,12 @@ sodipodilib_src = \
 	document-undo.c \
 	uri-references.c uri-references.h
 
+
 noinst_LTLIBRARIES = libsodipodi.la
 libsodipodi_la_SOURCES = $(sodipodilib_src)
 spproglibs = libsodipodi.la
 
 sodipodi_SOURCES = \
-	$(spprogsrc) \
-	\
 	sodipodi.c sodipodi.h sodipodi-private.h \
 	\
 	sp-namedview.c sp-namedview.h \
@@ -158,7 +157,6 @@ sodipodi_private_libs = \
 	libarikkei/libarikkei.a \
 	$(module_libs)
 
-
 sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(SODIPODI_LIBS) \
@@ -172,19 +170,17 @@ sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
 noinst_PROGRAMS = spsvgview
 
+spsvgview_CPPFLAGS = \
+	-DWITHOUT_PRINT_UI
+
 spsvgview_SOURCES = \
 	spsvgview.c \
 	view.c view.h \
 	svg-view.c svg-view.h \
-	dir-util.c dir-util.h \
-	modules/ps.c modules/ps.h \
-	module.c module.h \
-	print.c print.h
+	dir-util.c dir-util.h
 
 spsvgview_LDADD = \
-	$(module_libs) \
 	$(spproglibs) \
-	$(module_libs) \
 	xml/libspxml.a \
 	svg/libspsvg.a \
 	display/libspdisplay.a \
@@ -193,12 +189,13 @@ spsvgview_LDADD = \
 	libnr/libnr.a \
 	libarikkei/libarikkei.a \
 	$(SODIPODI_LIBS) \
-	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
 	$(kdeldadd) \
 	${win32_ldflags}
 
+# $(module_libs)
+# $(GNOME_PRINT_LIBS)
 # widgets/libspwidgets.a
 # dialogs/libspdialogs.a
 

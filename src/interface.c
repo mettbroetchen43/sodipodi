@@ -169,18 +169,15 @@ sp_ui_close_view (GtkWidget * widget)
 	gtk_widget_destroy (w);
 }
 
-unsigned int
+#if 0
+static void
 sp_ui_close_all (void)
 {
-	while (SP_ACTIVE_DESKTOP) {
-		GtkWidget *w;
-		w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
-		if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return FALSE;
-		gtk_widget_destroy (w);
-	}
-
-	return TRUE;
+	if (!sodipodi_shutdown_all_views ()) return;
+	/* All views successfully closed */
+	sodipodi_exit ();
 }
+#endif
 
 static gint
 sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view)
@@ -288,8 +285,7 @@ sp_ui_menu_append (GtkMenu *menu, const unsigned int *verbs)
 static void
 sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
- 	GtkWidget *item_recent;
- 	GtkWidget *menu_recent;
+ 	GtkWidget *item, *menu;
 
 	static const unsigned int file_verbs_one[] = {
 		SP_VERB_FILE_NEW, SP_VERB_FILE_OPEN, SP_VERB_LAST
@@ -306,10 +302,10 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 
 	sp_ui_menu_append (fm, file_verbs_one);
 
- 	item_recent = sp_ui_menu_append_item (fm, NULL, _("Open Recent"), NULL, NULL);
- 	menu_recent = gtk_menu_new ();
- 	sp_menu_append_recent_documents (GTK_WIDGET (menu_recent));
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item_recent), menu_recent);
+ 	item = sp_ui_menu_append_item (fm, NULL, _("Open Recent"), NULL, NULL);
+ 	menu = gtk_menu_new ();
+ 	sp_menu_append_recent_documents (GTK_WIDGET (menu));
+	gtk_menu_item_set_submenu ((GtkMenuItem *) item, menu);
 
 	sp_ui_menu_append (fm, file_verbs_two);
 
@@ -327,14 +323,17 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item_from_verb (fm, SP_VERB_NONE);
 
 	sp_ui_menu_append_item (fm, GTK_STOCK_CLOSE, _("Close View"), G_CALLBACK (sp_ui_close_view), NULL);
-	sp_ui_menu_append_item (fm, GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK (sp_file_exit), NULL);
+	sp_ui_menu_append_item_from_verb (GTK_MENU (fm), SP_VERB_FILE_EXIT);
 	sp_ui_menu_append_item (fm, NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (fm, NULL, _("About Sodipodi"), G_CALLBACK(sp_help_about), NULL);
-#ifdef WITH_MODULES
-	/* Modules need abouts too */
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM(sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("About Modules"), NULL, NULL)),
-			                   GTK_WIDGET(sp_modulesys_menu_about()));
-#endif /* WITH_MODULES */
+
+	/* Modules about menu */
+	menu = sp_modules_menu_about_new ();
+	if (menu) {
+		/* Have modules about menu */
+		item = sp_ui_menu_append_item (GTK_MENU (fm), NULL, _("About Modules"), NULL, NULL);
+		gtk_menu_item_set_submenu ((GtkMenuItem *) item, menu);
+	}
 }
 
 static void
@@ -480,30 +479,41 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 /* Menus */
 
 static void
-sp_ui_populate_main_menu(GtkWidget *m)
+sp_ui_exit (GtkWidget *widget)
 {
-	GtkWidget *item_recent;
-	GtkWidget *menu_recent;
+	SPAction *action;
+	/* This HAS to go through verb */
+	action = sp_verb_get_action (SP_VERB_FILE_EXIT);
+	if (action) sp_action_perform (action, NULL);
+}
+
+static void
+sp_ui_populate_main_menu (GtkWidget *m)
+{
+	GtkWidget *i, *sm;
 
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_NEW, _("New"), G_CALLBACK(sp_file_new), NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_OPEN, _("Open"), G_CALLBACK(sp_file_open_dialog), NULL);
         
-	item_recent = sp_ui_menu_append_item (GTK_MENU (m), NULL, _("Open Recent"), NULL, NULL);
-	menu_recent = gtk_menu_new ();
-
-	sp_menu_append_recent_documents (GTK_WIDGET (menu_recent));
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item_recent), menu_recent); 
+	i = sp_ui_menu_append_item (GTK_MENU (m), NULL, _("Open Recent"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_menu_append_recent_documents (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm); 
 
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Sodipodi"), G_CALLBACK(sp_help_about), NULL);
-#ifdef lalaWITH_MODULES
-	/* Modules need abouts too */
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM(sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Modules"), NULL, NULL)),
-			                   GTK_WIDGET(sp_modulesys_menu_about()));
-#endif /* WITH_MODULES */
+
+	/* Modules about menu */
+	sm = sp_modules_menu_about_new ();
+	if (sm) {
+		/* Have modules about menu */
+		i = sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Modules"), NULL, NULL);
+		gtk_menu_item_set_submenu ((GtkMenuItem *) i, sm);
+	}
 
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK(sp_file_exit), NULL);
+	/* For some reason action menu does not work on menubar :-( */
+	sp_ui_menu_append_item ((GtkMenu *) m, GTK_STOCK_QUIT, _("Exit program"), G_CALLBACK (sp_ui_exit), NULL);
 }
 
 static void
@@ -601,11 +611,14 @@ sp_ui_generic_menu (SPView *v, SPItem *item)
 	sp_ui_dialog_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
-	/* Filters submenu */
-#ifdef lalaWITH_MODULES
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM(sp_ui_menu_append_item (GTK_MENU (m), NULL, _("Filters"), NULL, NULL)),
-			                   GTK_WIDGET(sp_modulesys_menu_filter()));
-#endif /* WITH_MODULES */
+	/* Modules submenu */
+	sm = sp_modules_menu_new ();
+	if (sm) {
+		/* Have modules menu */
+		i = sp_ui_menu_append_item (GTK_MENU (m), NULL, _("Modules"), NULL, NULL);
+		gtk_widget_show (sm);
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	}
 
 	return m;
 }

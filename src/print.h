@@ -25,10 +25,11 @@ unsigned int sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 					unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 					const NRMatrixF *transform, const SPStyle *style);
 
-
-/* UI */
+#ifndef WITHOUT_PRINT_UI
+/* UI frontend */
 void sp_print_preview_document (SPDocument *doc);
 void sp_print_document (SPDocument *doc, unsigned int direct);
 void sp_print_document_to_file (SPDocument *doc, const unsigned char *filename);
+#endif
 
 #endif

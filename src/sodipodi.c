@@ -18,9 +18,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <time.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <ctype.h>
 
 #include "monostd.h"
@@ -66,10 +64,15 @@ enum {
 	LAST_SIGNAL
 };
 
+#define SP_TYPE_SODIPODI (sodipodi_get_type ())
+#define SP_SODIPODI(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
+#define SP_IS_SODIPODI(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
+
 #define DESKTOP_IS_ACTIVE(d) ((d) && (sodipodi->desktops) && (d) == sodipodi->desktops->data)
 
 static void sodipodi_class_init (SodipodiClass *klass);
 static void sodipodi_init (SPObject *object);
+static void sodipodi_finalize (GObject *object);
 static void sodipodi_dispose (GObject *object);
 
 static void sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
@@ -83,7 +86,7 @@ static void sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, cons
 static void sodipodi_init_preferences (Sodipodi *sodipodi);
 static void sodipodi_init_extensions (Sodipodi *sodipodi);
 
-static void sodipodi_init_preferences (Sodipodi * sodipodi);
+void sodipodi_save_extensions (Sodipodi * sodipodi);
 
 struct _Sodipodi {
 	GObject object;
@@ -119,9 +122,7 @@ static guint sodipodi_signals[LAST_SIGNAL] = {0};
 
 Sodipodi *sodipodi = NULL;
 
-static void (* segv_handler) (int) = NULL;
-
-GType
+static GType
 sodipodi_get_type (void)
 {
 	static GType type = 0;
@@ -238,6 +239,7 @@ sodipodi_class_init (SodipodiClass * klass)
 							   G_TYPE_NONE, 2,
 							   G_TYPE_POINTER, G_TYPE_DOUBLE);
 
+	object_class->finalize = sodipodi_finalize;
 	object_class->dispose = sodipodi_dispose;
 
 	klass->activate_desktop = sodipodi_activate_desktop_private;
@@ -249,32 +251,52 @@ sodipodi_init (SPObject * object)
 {
 	g_assert (!sodipodi);
 
+	/* Set static object */
 	sodipodi = (Sodipodi *) object;
+
+	/* Initialize preferences to default tree */
 	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
+	/* Initialize extensions to default tree */
 	sodipodi->extensions = sp_repr_read_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
 
-	/* Initialize shortcuts */
+	/* Initialize shortcut table */
 	sp_shortcut_table_load (NULL);
 }
 
 static void
+sodipodi_finalize (GObject *object)
+{
+	g_assert (object == (GObject *) sodipodi);
+
+	sodipodi = NULL;
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+
+	gtk_main_quit ();
+}
+
+/* fixme: We need to use ::dispose because document want to ref sodipodi */
+
+static void
 sodipodi_dispose (GObject *object)
 {
-	Sodipodi *sodipodi;
+	g_assert (object == (GObject *) sodipodi);
+	g_assert (!sodipodi->desktops);
 
-	sodipodi = (Sodipodi *) object;
+	/* fixme: This is uttermost crap (Lauris) */
+	while (sodipodi->documents) {
+		g_object_unref ((GObject *) sodipodi->documents->data);
+		/* Only private documents can exist at this step */
+		g_assert (sodipodi);
+	}
 
 	if (sodipodi->action_config) {
 		sodipodi->action_config = sp_repr_unref (sodipodi->action_config);
 	}
 
-	while (sodipodi->documents) {
-		g_object_unref (G_OBJECT (sodipodi->documents->data));
-	}
-
-	g_assert (!sodipodi->desktops);
-
 	if (sodipodi->extensions) {
+		/* fixme: This is not the best place */
+		sodipodi_save_extensions (sodipodi);
 		sp_repr_document_unref (sodipodi->extensions);
 		sodipodi->extensions = NULL;
 	}
@@ -287,20 +309,6 @@ sodipodi_dispose (GObject *object)
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
-
-	gtk_main_quit ();
-}
-
-void
-sodipodi_ref (void)
-{
-	g_object_ref (G_OBJECT (sodipodi));
-}
-
-void
-sodipodi_unref (void)
-{
-	g_object_unref (G_OBJECT (sodipodi));
 }
 
 static void
@@ -315,166 +323,6 @@ sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop)
 	sp_desktop_set_active (desktop, FALSE);
 }
 
-/* fixme: This is EVIL, and belongs to main after all */
-
-#define SP_INDENT 8
-
-static void
-sodipodi_segv_handler (int signum)
-{
-	static gint recursion = FALSE;
-	GSList *savednames, *failednames, *l;
-	const gchar *home;
-	gchar *istr, *sstr, *fstr, *b;
-	gint count, nllen, len, pos;
-	time_t sptime;
-	struct tm *sptm;
-	char sptstr[256];
-	GtkWidget *msgbox;
-
-	/* Kill loops */
-	if (recursion) abort ();
-	recursion = TRUE;
-
-	g_warning ("Emergency save activated");
-
-	home = g_get_home_dir ();
-	sptime = time (NULL);
-	sptm = localtime (&sptime);
-	strftime (sptstr, 256, "%Y_%m_%d_%H_%M_%S", sptm);
-
-	count = 0;
-	savednames = NULL;
-	failednames = NULL;
-	for (l = sodipodi->documents; l != NULL; l = l->next) {
-		SPDocument *doc;
-		SPRepr *repr;
-		doc = (SPDocument *) l->data;
-		repr = sp_document_repr_root (doc);
-		if (sp_repr_attr (repr, "sodipodi:modified")) {
-			const guchar *docname, *d0, *d;
-			gchar n[64], c[1024];
-			FILE *file;
-#if 0
-			docname = sp_repr_attr (repr, "sodipodi:docname");
-			if (docname) {
-				docname = g_basename (docname);
-			}
-#else
-			docname = doc->name;
-			if (docname) {
-				/* fixme: Quick hack to remove emergency file suffix */
-				d0 = strrchr (docname, '.');
-				if (d0 && (d0 > docname)) {
-					d0 = strrchr (d0 - 1, '.');
-					if (d0 && (d0 > docname)) {
-						d = d0;
-						while (isdigit (*d) || (*d == '.') || (*d == '_')) d += 1;
-						if (*d) {
-							memcpy (n, docname, MIN (d0 - docname - 1, 64));
-							n[64] = '\0';
-							docname = n;
-						}
-					}
-				}
-			}
-#endif
-			if (!docname || !*docname) docname = "emergency";
-			g_snprintf (c, 1024, "%s/.sodipodi/%.256s.%s.%d", home, docname, sptstr, count);
-			file = fopen (c, "w");
-			if (!file) {
-				g_snprintf (c, 1024, "%s/sodipodi-%.256s.%s.%d", home, docname, sptstr, count);
-				file = fopen (c, "w");
-			}
-			if (!file) {
-				g_snprintf (c, 1024, "/tmp/sodipodi-%.256s.%s.%d", docname, sptstr, count);
-				file = fopen (c, "w");
-			}
-			if (file) {
-				sp_repr_save_stream (sp_repr_document (repr), file);
-				savednames = g_slist_prepend (savednames, g_strdup (c));
-				fclose (file);
-			} else {
-				docname = sp_repr_attr (repr, "sodipodi:docname");
-				failednames = g_slist_prepend (failednames, (docname) ? g_strdup (docname) : g_strdup (_("Untitled document")));
-			}
-			count++;
-		}
-	}
-
-	savednames = g_slist_reverse (savednames);
-	failednames = g_slist_reverse (failednames);
-	if (savednames) {
-		fprintf (stderr, "\nEmergency save locations:\n");
-		for (l = savednames; l != NULL; l = l->next) {
-			fprintf (stderr, "  %s\n", (gchar *) l->data);
-		}
-	}
-	if (failednames) {
-		fprintf (stderr, "Failed to do emergency save for:\n");
-		for (l = failednames; l != NULL; l = l->next) {
-			fprintf (stderr, "  %s\n", (gchar *) l->data);
-		}
-	}
-
-	g_warning ("Emergency save completed, now crashing...");
-
-	/* Show nice dialog box */
-
-	istr = N_("Sodipodi encountered an internal error and will close now.\n");
-	sstr = N_("Automatic backups of unsaved documents were done to following locations:\n");
-	fstr = N_("Automatic backup of following documents failed:\n");
-	nllen = strlen ("\n");
-	len = strlen (istr) + strlen (sstr) + strlen (fstr);
-	for (l = savednames; l != NULL; l = l->next) {
-		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
-	}
-	for (l = failednames; l != NULL; l = l->next) {
-		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
-	}
-	len += 1;
-	b = g_new (gchar, len);
-	pos = 0;
-	len = strlen (istr);
-	memcpy (b + pos, istr, len);
-	pos += len;
-	if (savednames) {
-		len = strlen (sstr);
-		memcpy (b + pos, sstr, len);
-		pos += len;
-		for (l = savednames; l != NULL; l = l->next) {
-			memset (b + pos, ' ', SP_INDENT);
-			pos += SP_INDENT;
-			len = strlen ((gchar *) l->data);
-			memcpy (b + pos, l->data, len);
-			pos += len;
-			memcpy (b + pos, "\n", nllen);
-			pos += nllen;
-		}
-	}
-	if (failednames) {
-		len = strlen (fstr);
-		memcpy (b + pos, fstr, len);
-		pos += len;
-		for (l = failednames; l != NULL; l = l->next) {
-			memset (b + pos, ' ', SP_INDENT);
-			pos += SP_INDENT;
-			len = strlen ((gchar *) l->data);
-			memcpy (b + pos, l->data, len);
-			pos += len;
-			memcpy (b + pos, "\n", nllen);
-			pos += nllen;
-		}
-	}
-	*(b + pos) = '\0';
-	msgbox = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", b);
-	gtk_dialog_run (GTK_DIALOG (msgbox));
-	gtk_widget_destroy (msgbox);
-	g_free (b);
-
-	(* segv_handler) (signum);
-}
-
 Sodipodi *
 sodipodi_application_new (void)
 {
@@ -482,12 +330,6 @@ sodipodi_application_new (void)
 
 	sp = g_object_new (SP_TYPE_SODIPODI, NULL);
 	/* fixme: load application defaults */
-
-#ifndef WIN32
-	segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
-	signal (SIGFPE, sodipodi_segv_handler);
-	signal (SIGILL, sodipodi_segv_handler);
-#endif
 
 	return sp;
 }
@@ -606,6 +448,22 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 #endif
 
 	sp_repr_save_file (sodipodi->preferences, fn);
+
+	g_free (fn);
+}
+
+void
+sodipodi_save_extensions (Sodipodi * sodipodi)
+{
+	gchar * fn;
+
+#ifdef WIN32
+	fn = g_build_filename (SODIPODI_APPDATADIR, "preferences", NULL);
+#else
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi/extensions", NULL);
+#endif
+
+	sp_repr_save_file (sodipodi->extensions, fn);
 
 	g_free (fn);
 }
@@ -996,9 +854,31 @@ sodipodi_refresh_display (Sodipodi *sodipodi)
 	}
 }
 
-void
-sodipodi_exit (Sodipodi *sodipodi)
+unsigned int
+sodipodi_shutdown_all_views (void)
 {
-	gtk_main_quit ();
+	GSList *views;
+	views = g_slist_copy (sodipodi->desktops);
+	while (views) {
+		if (sp_view_shutdown ((SPView *) views->data)) {
+			g_slist_free (views);
+			return FALSE;
+		}
+		views = g_slist_remove (views, views->data);
+	}
+	return TRUE;
+}
+
+void
+sodipodi_exit (void)
+{
+	while (sodipodi && sodipodi->documents) g_object_unref ((GObject *) sodipodi->documents->data);
+	while (sodipodi) sodipodi_unref ();
+}
+
+const GSList *
+sodipodi_get_document_list (void)
+{
+	return sodipodi->documents;
 }
 

@@ -72,6 +72,10 @@ void sodipodi_refresh_display (Sodipodi *sodipodi);
  * fixme: This also
  */
 
-void sodipodi_exit (Sodipodi *sodipodi);
+/* Return TRUE if successful */
+unsigned int sodipodi_shutdown_all_views (void);
+void sodipodi_exit (void);
+
+const GSList *sodipodi_get_document_list (void);
 
 #endif

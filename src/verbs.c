@@ -41,6 +41,7 @@
 #include "dropper-context.h"
 
 #include "sodipodi-private.h"
+#include "toolbox.h"
 #include "file.h"
 #include "document.h"
 #include "desktop.h"
@@ -102,6 +103,14 @@ sp_verb_action_file_perform (SPAction *action, void *config, void *data)
 		break;
 	case SP_VERB_FILE_EXPORT:
 		sp_file_export_dialog (NULL);
+		break;
+	case SP_VERB_FILE_EXIT:
+		/* Try to close all views */
+		if (!sodipodi_shutdown_all_views ()) return;
+		/* Close toolboxes */
+		sp_maintoolbox_close_all ();
+		/* Everything closed so exit now */
+		sodipodi_exit ();
 		break;
 	default:
 		break;
@@ -372,7 +381,7 @@ static SPActionEventVector action_dialog_vector = {{NULL}, sp_verb_action_dialog
 /* This one is from selection-chemistry */
 static SPActionEventVector action_selection_vector = {{NULL}, sp_selection_action_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
-#define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
+#define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXIT))
 #define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_REPEAT))
 #define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_TRANSFORM))
 #define SP_VERB_IS_OBJECT(v) ((v >= SP_VERB_OBJECT_ROTATE_90) && (v <= SP_VERB_OBJECT_FLIP_VERTICAL))
@@ -402,6 +411,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_FILE_PRINT_PREVIEW, "FilePrintPreview", N_("Print Preview"), N_("Preview document printout"), GTK_STOCK_PRINT_PREVIEW },
 	{SP_VERB_FILE_IMPORT, "FileImport", N_("Import"), N_("Import bitmap or SVG image into document"), "file_import"},
 	{SP_VERB_FILE_EXPORT, "FileExport", N_("Export"), N_("Export document as PNG bitmap"), "file_export"},
+	{SP_VERB_FILE_EXIT, "FileExit", N_("Exit"), N_("Exit program"), GTK_STOCK_QUIT},
 	/* Edit */
 	{SP_VERB_EDIT_UNDO, "EditUndo", N_("Undo"), N_("Revert last action"), GTK_STOCK_UNDO},
 	{SP_VERB_EDIT_REDO, "EditRedo", N_("Redo"), N_("Do again undone action"), GTK_STOCK_REDO},

@@ -22,7 +22,9 @@ void sp_ui_new_view (GtkWidget *widget);
 void sp_ui_new_view_preview (GtkWidget *widget);
 void sp_ui_close_view (GtkWidget *widget);
 
+#if 0
 unsigned int sp_ui_close_all (void);
+#endif
 
 /* I am not sure, what is the right place for that (Lauris) */
 

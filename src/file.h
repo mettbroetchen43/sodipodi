@@ -37,8 +37,9 @@ void sp_file_print_preview (gpointer object, gpointer data);
 void sp_do_file_print (SPDocument *doc);
 void sp_do_file_print_to_file (SPDocument * doc, gchar *filename);
 #endif
-
+#if 0
 void sp_file_exit (void);
+#endif
 
 void sp_file_export_dialog (void *widget);
 void sp_export_png_file (SPDocument *doc, const unsigned char *filename,

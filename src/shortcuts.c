@@ -50,6 +50,8 @@ sp_shortcut_table_load (const unsigned char *name)
 	sp_shortcut_set_verb (SP_SHORTCUT_SHIFT_MASK | SP_SHORTCUT_CONTROL_MASK | GDK_P, SP_VERB_FILE_PRINT_PREVIEW, FALSE);
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_e, SP_VERB_FILE_EXPORT, TRUE);
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_E, SP_VERB_FILE_EXPORT, FALSE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_q, SP_VERB_FILE_EXIT, TRUE);
+	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_Q, SP_VERB_FILE_EXIT, FALSE);
 	/* Event contexts */
 	sp_shortcut_set_verb (GDK_F1, SP_VERB_CONTEXT_SELECT, TRUE);
 	sp_shortcut_set_verb (GDK_F2, SP_VERB_CONTEXT_NODE, TRUE);

@@ -112,6 +112,8 @@ static void sp_module_print_win32_class_init (SPModulePrintWin32Class *klass);
 static void sp_module_print_win32_init (SPModulePrintWin32 *pmod);
 static void sp_module_print_win32_finalize (GObject *object);
 
+static SPRepr *sp_module_print_win32_write (SPModule *module, SPRepr *root);
+
 static unsigned int sp_module_print_win32_setup (SPModulePrint *mod);
 static unsigned int sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_win32_finish (SPModulePrint *mod);
@@ -141,14 +143,18 @@ static void
 sp_module_print_win32_class_init (SPModulePrintWin32Class *klass)
 {
 	GObjectClass *g_object_class;
+	SPModuleClass *module_class;
 	SPModulePrintClass *module_print_class;
 
 	g_object_class = (GObjectClass *)klass;
+	module_class = (SPModuleClass *) klass;
 	module_print_class = (SPModulePrintClass *) klass;
 
 	print_win32_parent_class = g_type_class_peek_parent (klass);
 
 	g_object_class->finalize = sp_module_print_win32_finalize;
+
+	module_class->write = sp_module_print_win32_write;
 
 	module_print_class->setup = sp_module_print_win32_setup;
 	module_print_class->begin = sp_module_print_win32_begin;
@@ -172,6 +178,25 @@ sp_module_print_win32_finalize (GObject *object)
 	DeleteDC (w32mod->hDC);
 
 	G_OBJECT_CLASS (print_win32_parent_class)->finalize (object);
+}
+
+static SPRepr *
+sp_module_print_win32_write (SPModule *module, SPRepr *root)
+{
+	SPRepr *grp, *repr;
+	grp = sp_repr_lookup_child (root, "id", "printing");
+	if (!grp) {
+		grp = sp_repr_new ("group");
+		sp_repr_set_attr (grp, "id", "printing");
+		sp_repr_set_attr (grp, "name", "Printing");
+		sp_repr_append_child (root, grp);
+	}
+	repr = sp_repr_new ("module");
+	sp_repr_set_attr (repr, "id", "win32");
+	sp_repr_set_attr (repr, "name", "Windows Printing");
+	sp_repr_set_attr (repr, "action", "no");
+	sp_repr_append_child (grp, repr);
+	return repr;
 }
 
 #ifdef USE_TIMER

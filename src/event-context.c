@@ -243,12 +243,14 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret = TRUE;
 			}
 			break;
+#if 0
 		case GDK_q: // Ctrl q - quit
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_file_exit ();
 				ret = TRUE;
 			}
 			break;
+#endif
 		case GDK_Left: // Ctrl Left 
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_desktop_scroll_relative_canvas (event_context->desktop, 10, 0);

@@ -30,7 +30,7 @@
 #include <floatingpoint.h>
 #endif
 #include <string.h>
-#include <locale.h>
+#include <signal.h>
 
 #ifdef WITH_POPT
 #include <popt.h>
@@ -65,16 +65,7 @@
 #include "sp-guide.h"
 #include "sp-object-repr.h"
 
-#ifdef WITH_MODULES
-#include "modules/sp-module-sys.h"
-#endif /* WITH_MODULES */
-
-#ifdef WITH_KDE
-#include "modules/kde.h"
-#endif
-#ifdef WIN32
-#include "modules/win32.h"
-#endif
+#include "module.h"
 
 #include "helper/sp-intl.h"
 
@@ -124,7 +115,6 @@ static const unsigned char *sp_export_background = NULL;
 static const unsigned char *sp_export_svg = NULL;
 
 #ifdef WITH_POPT
-static GSList *sp_process_args (poptContext ctx);
 struct poptOption options[] = {
 	{"without-gui", 'z', POPT_ARG_NONE, NULL, SP_ARG_NOGUI,
 	 N_("Do not use X server (only process files from console)"),
@@ -162,9 +152,14 @@ struct poptOption options[] = {
 	 NULL},
 	POPT_AUTOHELP POPT_TABLEEND
 };
-#else
-// Non-popt argument parser
+#endif
+
 static GSList *sp_process_args (int argc, const char **argv);
+
+#ifndef WIN32
+/* Private segv handler */
+static void sodipodi_segv_handler (int signum);
+static void (* segv_handler) (int) = NULL;
 #endif
 
 int
@@ -229,46 +224,29 @@ main (int argc, const char **argv)
 int
 sp_main_gui (int argc, const char **argv)
 {
-#if WITH_POPT
-	poptContext ctx;
-#endif
 	GSList *fl = NULL;
 
 	gtk_init (&argc, (char ***) &argv);
 
-	sp_modulesys_init();
+	sodipodi_application_new ();
+	sp_modules_init (&argc, &argv, TRUE);
 
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
 	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
 
-#if WITH_POPT
-	ctx = poptGetContext (NULL, argc, argv, options, 0);
-	g_return_val_if_fail (ctx != NULL, 1);
-	/* Collect own arguments */
-	fl = sp_process_args (ctx);
-	poptFreeContext (ctx);
-#else
 	fl = sp_process_args (argc, argv);
 	if (stop) exit (1);
-#endif
-
-#ifdef WITH_KDE
-	sp_kde_init (argc, (char **) argv, "Sodipodi");
-#endif
-#ifdef WIN32
-	sp_win32_init (0, NULL, "Sodipodi");
-#endif
 
 #ifdef DATADIR
 	/* Set default icon */
+	/* fixme: use system.h */
 	if (g_file_test (DATADIR "/pixmaps/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
 		gtk_window_set_default_icon_from_file (DATADIR "/pixmaps/sodipodi.png", NULL);
 	}
 #endif
 
 	if (!sp_global_slideshow) {
-		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
 		sodipodi_load_extensions (sodipodi);
 		sp_maintoolbox_create_toplevel ();
@@ -289,10 +267,15 @@ sp_main_gui (int argc, const char **argv)
 			}
 			fl = g_slist_remove (fl, fl->data);
 		}
+#ifndef WIN32
+		/* We have opened all documents and ready to enter main loop */
+		segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
+		signal (SIGFPE, sodipodi_segv_handler);
+		signal (SIGILL, sodipodi_segv_handler);
+#endif
 	} else {
 		if (fl) {
 			GtkWidget *ss;
-			sodipodi = sodipodi_application_new ();
 			sodipodi_load_preferences (sodipodi);
 			sodipodi_load_extensions (sodipodi);
 			ss = sp_slideshow_new (fl);
@@ -306,14 +289,9 @@ sp_main_gui (int argc, const char **argv)
 		}
 	}
 
-	gtk_main ();
+	/* sp_modules_menu_about_new (); */
 
-#ifdef WITH_KDE
-	sp_kde_finish ();
-#endif
-#ifdef WIN32
-	sp_win32_finish ();
-#endif
+	gtk_main ();
 
 	return 0;
 }
@@ -321,9 +299,6 @@ sp_main_gui (int argc, const char **argv)
 int
 sp_main_console (int argc, const char **argv)
 {
-#ifdef WITH_POPT
-	poptContext ctx = NULL;
-#endif
 	GSList * fl = NULL;
 	guchar *printer;
 
@@ -335,15 +310,8 @@ sp_main_console (int argc, const char **argv)
 	gdk_init (&argc, (char ***) &argv);
 #endif
 
-#ifdef WITH_POPT
-	ctx = poptGetContext (NULL, argc, argv, options, 0);
-	g_return_val_if_fail (ctx != NULL, 1);
-	fl = sp_process_args (ctx);
-	poptFreeContext (ctx);
-#else
 	fl = sp_process_args (argc, argv);
 	if (stop) exit (1);
-#endif
 
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
@@ -370,7 +338,7 @@ sp_main_console (int argc, const char **argv)
 
 	/* Start up g type system, without requiring X */
 	g_type_init();
-	sodipodi = sodipodi_application_new ();
+	sodipodi_application_new ();
 	sodipodi_load_preferences (sodipodi);
 	sodipodi_load_extensions (sodipodi);
 
@@ -499,11 +467,18 @@ sp_do_export_png (SPDocument *doc)
 
 #ifdef WITH_POPT
 static GSList *
-sp_process_args (poptContext ctx)
+sp_process_args (int argc, const char **argv)
 {
+	poptContext ctx;
 	GSList * fl;
 	const gchar ** args, *fn;
 	gint i, a;
+
+	ctx = poptGetContext (NULL, argc, argv, options, 0);
+	if (!ctx) {
+		stop = TRUE;
+		return NULL;
+	}
 
 	fl = NULL;
 
@@ -525,6 +500,8 @@ sp_process_args (poptContext ctx)
 			fl = g_slist_append (fl, (gpointer) args[i]);
 		}
 	}
+
+	poptFreeContext (ctx);
 
 	return fl;
 }
@@ -686,3 +663,163 @@ sp_process_args (int argc, const char **argv)
 
 #endif
 
+#ifndef WIN32
+
+#include <time.h>
+#include <ctype.h>
+#include <gtk/gtkmessagedialog.h>
+#include "sodipodi-private.h"
+
+#define SP_INDENT 8
+
+static void
+sodipodi_segv_handler (int signum)
+{
+	static gint recursion = FALSE;
+	GSList *savednames, *failednames;
+	const GSList *l;
+	const gchar *home;
+	gchar *istr, *sstr, *fstr, *b;
+	gint count, nllen, len, pos;
+	time_t sptime;
+	struct tm *sptm;
+	char sptstr[256];
+	GtkWidget *msgbox;
+
+	/* Kill loops */
+	if (recursion) abort ();
+	recursion = TRUE;
+
+	g_warning ("Emergency save activated");
+
+	home = g_get_home_dir ();
+	sptime = time (NULL);
+	sptm = localtime (&sptime);
+	strftime (sptstr, 256, "%Y_%m_%d_%H_%M_%S", sptm);
+
+	count = 0;
+	savednames = NULL;
+	failednames = NULL;
+	for (l = sodipodi_get_document_list (); l != NULL; l = l->next) {
+		SPDocument *doc;
+		SPRepr *repr;
+		doc = (SPDocument *) l->data;
+		repr = sp_document_repr_root (doc);
+		if (sp_repr_attr (repr, "sodipodi:modified")) {
+			const guchar *docname, *d0, *d;
+			gchar n[64], c[1024];
+			FILE *file;
+			docname = doc->name;
+			if (docname) {
+				/* fixme: Quick hack to remove emergency file suffix */
+				d0 = strrchr (docname, '.');
+				if (d0 && (d0 > docname)) {
+					d0 = strrchr (d0 - 1, '.');
+					if (d0 && (d0 > docname)) {
+						d = d0;
+						while (isdigit (*d) || (*d == '.') || (*d == '_')) d += 1;
+						if (*d) {
+							memcpy (n, docname, MIN (d0 - docname - 1, 64));
+							n[64] = '\0';
+							docname = n;
+						}
+					}
+				}
+			}
+			if (!docname || !*docname) docname = "emergency";
+			g_snprintf (c, 1024, "%s/.sodipodi/%.256s.%s.%d", home, docname, sptstr, count);
+			file = fopen (c, "w");
+			if (!file) {
+				g_snprintf (c, 1024, "%s/sodipodi-%.256s.%s.%d", home, docname, sptstr, count);
+				file = fopen (c, "w");
+			}
+			if (!file) {
+				g_snprintf (c, 1024, "/tmp/sodipodi-%.256s.%s.%d", docname, sptstr, count);
+				file = fopen (c, "w");
+			}
+			if (file) {
+				sp_repr_save_stream (sp_repr_document (repr), file);
+				savednames = g_slist_prepend (savednames, g_strdup (c));
+				fclose (file);
+			} else {
+				docname = sp_repr_attr (repr, "sodipodi:docname");
+				failednames = g_slist_prepend (failednames, (docname) ? g_strdup (docname) : g_strdup (_("Untitled document")));
+			}
+			count++;
+		}
+	}
+
+	savednames = g_slist_reverse (savednames);
+	failednames = g_slist_reverse (failednames);
+	if (savednames) {
+		fprintf (stderr, "\nEmergency save locations:\n");
+		for (l = savednames; l != NULL; l = l->next) {
+			fprintf (stderr, "  %s\n", (gchar *) l->data);
+		}
+	}
+	if (failednames) {
+		fprintf (stderr, "Failed to do emergency save for:\n");
+		for (l = failednames; l != NULL; l = l->next) {
+			fprintf (stderr, "  %s\n", (gchar *) l->data);
+		}
+	}
+
+	g_warning ("Emergency save completed, now crashing...");
+
+	/* Show nice dialog box */
+
+	istr = N_("Sodipodi encountered an internal error and will close now.\n");
+	sstr = N_("Automatic backups of unsaved documents were done to following locations:\n");
+	fstr = N_("Automatic backup of following documents failed:\n");
+	nllen = strlen ("\n");
+	len = strlen (istr) + strlen (sstr) + strlen (fstr);
+	for (l = savednames; l != NULL; l = l->next) {
+		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
+	}
+	for (l = failednames; l != NULL; l = l->next) {
+		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
+	}
+	len += 1;
+	b = g_new (gchar, len);
+	pos = 0;
+	len = strlen (istr);
+	memcpy (b + pos, istr, len);
+	pos += len;
+	if (savednames) {
+		len = strlen (sstr);
+		memcpy (b + pos, sstr, len);
+		pos += len;
+		for (l = savednames; l != NULL; l = l->next) {
+			memset (b + pos, ' ', SP_INDENT);
+			pos += SP_INDENT;
+			len = strlen ((gchar *) l->data);
+			memcpy (b + pos, l->data, len);
+			pos += len;
+			memcpy (b + pos, "\n", nllen);
+			pos += nllen;
+		}
+	}
+	if (failednames) {
+		len = strlen (fstr);
+		memcpy (b + pos, fstr, len);
+		pos += len;
+		for (l = failednames; l != NULL; l = l->next) {
+			memset (b + pos, ' ', SP_INDENT);
+			pos += SP_INDENT;
+			len = strlen ((gchar *) l->data);
+			memcpy (b + pos, l->data, len);
+			pos += len;
+			memcpy (b + pos, "\n", nllen);
+			pos += nllen;
+		}
+	}
+	*(b + pos) = '\0';
+	msgbox = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", b);
+	gtk_dialog_run (GTK_DIALOG (msgbox));
+	gtk_widget_destroy (msgbox);
+	g_free (b);
+
+	(* segv_handler) (signum);
+}
+
+#endif

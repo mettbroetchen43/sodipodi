@@ -49,7 +49,6 @@ libspmodules_a_SOURCES = \
 	ps.c ps.h \
 	${win32_source} \
 	$(gnome_print_sources) \
-	$(kdeprivsources) \
 	$(kdesources)
 
 EXTRA_DIST = \
@@ -57,3 +56,5 @@ EXTRA_DIST = \
 	$(kdesources) \
 	win32.c win32.h
 
+DISTCLEANFILES = \
+	$(kdeprivsources)

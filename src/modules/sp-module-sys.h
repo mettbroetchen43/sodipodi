@@ -1,6 +1,7 @@
 #ifndef __SODIPODI_MODULE_SYS_H__
 #define __SODIPODI_MODULE_SYS_H__
 
+#if 0
 #include <gtk/gtk.h>
 
 #include "document.h"
@@ -25,6 +26,7 @@ SPModule *   sp_modulesys_get_open_module (void);
 SPModule *   sp_modulesys_get_save_module (void);
 
 void sp_module_sys_prefs_complete (SPModule * object, SPModuleDoc * doc, gboolean success);
+#endif
 
 
 #endif /* __SODIPODI_MODULE_SYS_H__ */

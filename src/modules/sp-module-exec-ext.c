@@ -1,3 +1,5 @@
+#if 0
+
 #define __SP_EXTENSION_C__
 
 /*
@@ -358,3 +360,4 @@ sp_extension(SPModule * in_plug, SPModuleDoc * in_doc)
 <bryce> probably not a problem tho
 */
 
+#endif

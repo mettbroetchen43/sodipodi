@@ -113,7 +113,7 @@ sp_menu_append (SPMenu *menu, const unsigned char *label, const unsigned char *t
 	gtk_widget_show (mi);
 	g_object_set_data (G_OBJECT (mi), "itemdata", (gpointer) data);
 	gtk_menu_append (GTK_MENU (menu), mi);
-	gtk_tooltips_set_tip (menu->tt, GTK_WIDGET (mi), tip, NULL);
+	if (tip) gtk_tooltips_set_tip (menu->tt, GTK_WIDGET (mi), tip, NULL);
 	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_menu_item_activate), menu);
 
 	/* Set data if we are the first item */

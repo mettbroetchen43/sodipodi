@@ -1,3 +1,5 @@
+#if 0
+
 
 #include "sp-module-sys.h"
 #include "sp-module-exec.h"
@@ -286,3 +288,6 @@ void sp_module_exec_builtin_set_exec (SPModuleExecBuiltin * object,
 
     return;
 }
+
+
+#endif

@@ -13,12 +13,16 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define SP_MODULE_KEY_INPUT_SVG "modules.input.SVG"
-#define SP_MODULE_KEY_INPUT_AI "modules.input.AdobeIllustrator"
+#define SP_MODULE_KEY_INPUT_SVG "input.SVG"
+#define SP_MODULE_KEY_INPUT_AI "input.AdobeIllustrator"
 #define SP_MODULE_KEY_INPUT_DEFAULT SP_MODULE_KEY_INPUT_SVG
-#define SP_MODULE_KEY_OUTPUT_SVG "modules.output.SVG.plain"
-#define SP_MODULE_KEY_OUTPUT_SVG_SODIPODI "modules.output.SVG.sodipodi"
+#define SP_MODULE_KEY_OUTPUT_SVG "output.SVG.plain"
+#define SP_MODULE_KEY_OUTPUT_SVG_SODIPODI "output.SVG.sodipodi"
 #define SP_MODULE_KEY_OUTPUT_DEFAULT SP_MODULE_KEY_OUTPUT_SVG_SODIPODI
+#define SP_MODULE_KEY_PRINT_WIN32 "printing.win32"
+#define SP_MODULE_KEY_PRINT_KDE "printing.kde"
+#define SP_MODULE_KEY_PRINT_GNOME "printing.gnome"
+#define SP_MODULE_KEY_PRINT_PLAIN "printing.ps"
 
 #define SP_TYPE_MODULE (sp_module_get_type ())
 #define SP_MODULE(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE, SPModule))
@@ -26,13 +30,6 @@
 
 typedef struct _SPModule SPModule;
 typedef struct _SPModuleClass SPModuleClass;
-
-#define SP_TYPE_MODULE_HANDLER (sp_module_handler_get_type ())
-#define SP_MODULE_HANDLER(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_HANDLER, SPModuleHandler))
-#define SP_IS_MODULE_HANDLER(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_HANDLER))
-
-typedef struct _SPModuleHandler SPModuleHandler;
-typedef struct _SPModuleHandlerClass SPModuleHandlerClass;
 
 #define SP_TYPE_MODULE_INPUT (sp_module_input_get_type ())
 #define SP_MODULE_INPUT(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_INPUT, SPModuleInput))
@@ -81,7 +78,7 @@ struct _SPModule {
 	gchar *copyright;
 	gchar *description;
 	gboolean about;
-	SPModuleHandler *exec;
+
 	gboolean toolbox;
 	gchar *icon;
 };
@@ -89,18 +86,36 @@ struct _SPModule {
 struct _SPModuleClass {
 	GObjectClass parent_class;
 
-	void (*build) (SPModule *module, SPRepr *repr);
+	/* Read config and attach module to repr */
+	void (*setup) (SPModule *module, SPRepr *repr);
+	/* Detach module from repr */
+	void (*release) (SPModule *module);
+	/* Creates or updates config repr */
+	SPRepr * (*write) (SPModule *module, SPRepr *root);
+	/* Execute default action of module */
+	unsigned int (*execute) (SPModule *module, SPRepr *config);
 };
 
 GType sp_module_get_type (void);
 
 #define SP_MODULE_ID(m) (((SPModule *) (m))->id)
 
-SPModule *sp_module_new (GType type, SPRepr *repr);
 SPModule *sp_module_new_from_path (GType type, const unsigned char *path);
 
 SPModule *sp_module_ref (SPModule *mod);
 SPModule *sp_module_unref (SPModule *mod);
+
+/* Registers module */
+unsigned int sp_module_setup (SPModule *module, SPRepr *repr, const unsigned char *key);
+/* Unregisters module */
+unsigned int sp_module_release (SPModule *module);
+/* Creates config repr */
+SPRepr *sp_module_write (SPModule *module, SPRepr *root);
+/* Executes default action of module */
+unsigned int sp_module_invoke (SPModule *module, SPRepr *config);
+
+/* Returns new reference to module */
+SPModule *sp_module_find (const unsigned char *key);
 
 /* ModuleInput */
 
@@ -186,7 +201,10 @@ GType sp_module_print_get_type (void);
 
 /* Global methods */
 
-SPModule *sp_module_system_get (const unsigned char *key);
+unsigned int sp_modules_init (int *argc, const char ***argv, unsigned int gui);
+
+GtkWidget *sp_modules_menu_new (void);
+GtkWidget *sp_modules_menu_about_new (void);
 
 void sp_module_system_menu_open (SPMenu *menu);
 void sp_module_system_menu_save (SPMenu *menu);

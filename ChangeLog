@@ -1,3 +1,27 @@
+2003-12-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr-util.c (sp_repr_lookup_child_by_name): New method
+
+	* src/main.c (sodipodi_segv_handler): Moved here
+
+	* src/modules/gnome.c (sp_module_print_gnome_write): Implement
+
+	* src/modules/kde.cpp (sp_module_print_kde_write): Implement
+
+	* src/modules/win32.c (sp_module_print_win32_write): Implement
+
+	* src/modules/ps.c (sp_module_print_plain_write): Implement
+
+	* src/module.c (sp_modules_menu_new): New method
+	(sp_modules_menu_about_new): Ditto
+	(sp_modules_menu_append_node): Ditto
+	(sp_modules_menu_about_append): Ditto
+	(sp_modules_menu_action_append): Ditto
+	(sp_modules_menu_action_activate): Ditto
+	(sp_modules_init): Register everything internal
+	(sp_module_setup): New method
+	(sp_module_write): Ditto
+
 2003-12-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/desktop.c (sp_desktop_prepare_shutdown): Fixed a bug which

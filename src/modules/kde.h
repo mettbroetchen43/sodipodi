@@ -26,7 +26,18 @@ char *sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsi
 
 char *sp_kde_get_save_filename (unsigned char *dir, unsigned int *spns);
 
+#define SP_TYPE_MODULE_PRINT_KDE (sp_module_print_kde_get_type())
+#define SP_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT_KDE, SPModulePrintKDE))
+#define SP_IS_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_PRINT_KDE))
+
+typedef struct _SPModulePrintKDE SPModulePrintKDE;
+typedef struct _SPModulePrintKDEClass SPModulePrintKDEClass;
+
+GType sp_module_print_kde_get_type (void);
+
+#if 0
 SPModulePrint *sp_kde_get_module_print (void);
+#endif
 
 G_END_DECLS
 

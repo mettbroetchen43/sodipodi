@@ -1,15 +1,16 @@
 #define __SP_XMLVIEW_TREE_C__
 
 /*
- * XML View
+ * XML tree editing dialog for Sodipodi
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *   MenTaLguY <mental@rydia.net>
  *
- * Copyright (C) 1999-2002 Authors
+ * Copyright (C) 2000-2003 Authors
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -54,7 +55,7 @@ typedef struct _EditableDest {
 	gchar * text;
 } EditableDest;
 
-static GtkWidget * dialog = NULL;
+static GtkWidget *dialog = NULL;
 static GtkTooltips * tooltips = NULL;
 static GtkEditable * attr_name = NULL;
 static GtkTextView *attr_value = NULL;
@@ -1088,4 +1089,111 @@ cmd_unindent_node (GtkObject * object, gpointer data)
 		sp_document_cancel (current_document);
 	}
 }
+
+/* Experimental */
+
+#include <module.h>
+
+#define SP_TYPE_MODULE_XML_EDITOR (sp_module_xml_editor_get_type())
+#define SP_MODULE_XML_EDITOR(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_XML_EDITOR, SPModuleXMLEditor))
+#define SP_IS_MODULE_XML_EDITOR(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_XML_EDITOR))
+
+typedef struct _SPModuleXMLEditor SPModuleXMLEditor;
+typedef struct _SPModuleXMLEditorClass SPModuleXMLEditorClass;
+
+struct _SPModuleXMLEditor {
+	SPModule module;
+};
+
+struct _SPModuleXMLEditorClass {
+	SPModuleClass module_class;
+};
+
+static void sp_module_xml_editor_class_init (SPModuleXMLEditorClass *klass);
+static void sp_module_xml_editor_init (SPModuleXMLEditor *fmod);
+static void sp_module_xml_editor_finalize (GObject *object);
+
+static unsigned int sp_module_xml_editor_execute (SPModule *module, SPRepr *config);
+
+static SPModuleClass *xml_editor_parent_class = NULL;
+
+static SPModuleXMLEditor *xml_editor_module = NULL;
+
+static GType
+sp_module_xml_editor_get_type (void)
+{
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
+			sizeof (SPModuleXMLEditorClass),
+			NULL, NULL,
+			(GClassInitFunc) sp_module_xml_editor_class_init,
+			NULL, NULL,
+			sizeof (SPModuleXMLEditor),
+			16,
+			(GInstanceInitFunc) sp_module_xml_editor_init,
+		};
+		type = g_type_register_static (SP_TYPE_MODULE, "SPModuleXMLEditor", &info, 0);
+	}
+	return type;
+}
+
+static void
+sp_module_xml_editor_class_init (SPModuleXMLEditorClass *klass)
+{
+	GObjectClass *g_object_class;
+	SPModuleClass *module_class;
+
+	g_object_class = (GObjectClass *) klass;
+	module_class = (SPModuleClass *) klass;
+
+	xml_editor_parent_class = g_type_class_peek_parent (klass);
+
+	g_object_class->finalize = sp_module_xml_editor_finalize;
+
+	module_class->execute = sp_module_xml_editor_execute;
+}
+
+static void
+sp_module_xml_editor_init (SPModuleXMLEditor *module)
+{
+	xml_editor_module = module;
+}
+
+static void
+sp_module_xml_editor_finalize (GObject *object)
+{
+	g_assert (xml_editor_module);
+	xml_editor_module = NULL;
+
+	G_OBJECT_CLASS (xml_editor_parent_class)->finalize (object);
+}
+
+static unsigned int
+sp_module_xml_editor_execute (SPModule *module, SPRepr *config)
+{
+	sp_xml_tree_dialog ();
+
+	return TRUE;
+}
+
+/* Get new reference */
+SPModule *
+sp_xml_module_load (void)
+{
+	if (!xml_editor_module) {
+		g_object_new (SP_TYPE_MODULE_XML_EDITOR, NULL);
+	} else {
+		g_object_ref ((GObject *) xml_editor_module);
+	}
+	return (SPModule *) xml_editor_module;
+}
+
+/* Unref module */
+void
+sp_xml_module_unload (SPModule *module)
+{
+	g_object_unref ((GObject *) xml_editor_module);
+}
+
 

@@ -13,20 +13,12 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define SP_TYPE_SODIPODI (sodipodi_get_type ())
-#define SP_SODIPODI(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
-#define SP_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SODIPODI, SodipodiClass))
-#define SP_IS_SODIPODI(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
-#define SP_IS_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SODIPODI))
-
 #include "sodipodi.h"
 
-GType sodipodi_get_type (void);
+/* Sodipodi *sodipodi_new (); */
 
-Sodipodi *sodipodi_new ();
-
-void sodipodi_ref (void);
-void sodipodi_unref (void);
+#define sodipodi_ref() g_object_ref ((GObject *) sodipodi)
+#define sodipodi_unref() g_object_unref ((GObject *) sodipodi)
 
 /*
  * These are meant solely for desktop, document etc. implementations

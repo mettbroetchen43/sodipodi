@@ -24,8 +24,8 @@
 #include <string.h>
 
 #include "macros.h"
+#include "helper/sp-intl.h"
 #include "svg/svg.h"
-#include "print.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
 #include "attributes.h"
@@ -34,7 +34,7 @@
 
 #include "selection.h"
 #include "style.h"
-#include "helper/sp-intl.h"
+#include "print.h"
 #include "sp-root.h"
 #include "sp-anchor.h"
 #include "sp-clippath.h"
@@ -408,6 +408,23 @@ sp_item_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 void
+sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
+{
+	if (item->printable) {
+		if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->print) {
+			if (!nr_matrix_f_test_identity (&item->transform, NR_EPSILON_F) ||
+			    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
+				sp_print_bind (ctx, &item->transform, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
+				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
+				sp_print_release (ctx);
+			} else {
+				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
+			}
+		}
+	}
+}
+
+void
 sp_item_invoke_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int clear)
 {
 	sp_item_invoke_bbox_full (item, bbox, transform, 0, clear);
@@ -480,30 +497,13 @@ sp_item_snappoints (SPItem *item, NRPointF *p, int size)
 	return 0;
 }
 
-void
-sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
-{
-	if (item->printable) {
-		if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->print) {
-			if (!nr_matrix_f_test_identity (&item->transform, NR_EPSILON_F) ||
-			    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
-				sp_print_bind (ctx, &item->transform, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
-				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
-				sp_print_release (ctx);
-			} else {
-				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
-			}
-		}
-	}
-}
-
 static gchar *
 sp_item_private_description (SPItem * item)
 {
 	return g_strdup (_("Unknown item :-("));
 }
 
-gchar *
+unsigned char *
 sp_item_description (SPItem * item)
 {
 	g_assert (item != NULL);
@@ -738,9 +738,7 @@ sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 	nr_matrix_d_set_identity (&td);
 
 	while (SP_OBJECT_PARENT (item)) {
-		if (!SP_IS_ITEM (item)) {
-			g_print ("Lala\n");
-		}
+		/* if (!SP_IS_ITEM (item)) { g_print ("Lala\n"); } */
 		nr_matrix_multiply_ddf (&td, &td, &item->transform);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}

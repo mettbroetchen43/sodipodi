@@ -42,6 +42,8 @@ static void sp_module_print_gnome_class_init (SPModulePrintClass *klass);
 static void sp_module_print_gnome_init (SPModulePrintGnome *gpmod);
 static void sp_module_print_gnome_finalize (GObject *object);
 
+static SPRepr *sp_module_print_gnome_write (SPModule *module, SPRepr *root);
+
 static unsigned int sp_module_print_gnome_setup (SPModulePrint *mod);
 static unsigned int sp_module_print_gnome_set_preview (SPModulePrint *mod);
 
@@ -82,14 +84,18 @@ static void
 sp_module_print_gnome_class_init (SPModulePrintClass *klass)
 {
 	GObjectClass *g_object_class;
+	SPModuleClass *module_class;
 	SPModulePrintClass *module_print_class;
 
 	g_object_class = (GObjectClass *)klass;
+	module_class = (SPModuleClass *) klass;
 	module_print_class = (SPModulePrintClass *) klass;
 
 	print_gnome_parent_class = g_type_class_peek_parent (klass);
 
 	g_object_class->finalize = sp_module_print_gnome_finalize;
+
+	module_class->write = sp_module_print_gnome_write;
 
 	module_print_class->setup = sp_module_print_gnome_setup;
 	module_print_class->set_preview = sp_module_print_gnome_set_preview;
@@ -116,6 +122,25 @@ sp_module_print_gnome_finalize (GObject *object)
 	gpmod = (SPModulePrintGnome *) object;
 	
 	G_OBJECT_CLASS (print_gnome_parent_class)->finalize (object);
+}
+
+static SPRepr *
+sp_module_print_gnome_write (SPModule *module, SPRepr *root)
+{
+	SPRepr *grp, *repr;
+	grp = sp_repr_lookup_child (root, "id", "printing");
+	if (!grp) {
+		grp = sp_repr_new ("group");
+		sp_repr_set_attr (grp, "id", "printing");
+		sp_repr_set_attr (grp, "name", "Printing");
+		sp_repr_append_child (root, grp);
+	}
+	repr = sp_repr_new ("module");
+	sp_repr_set_attr (repr, "id", "gnome");
+	sp_repr_set_attr (repr, "name", "Gnome Printing");
+	sp_repr_set_attr (repr, "action", "no");
+	sp_repr_append_child (grp, repr);
+	return repr;
 }
 
 static unsigned int

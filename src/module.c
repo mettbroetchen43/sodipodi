@@ -19,7 +19,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <gtk/gtkimagemenuitem.h>
+
 #include "helper/sp-intl.h"
+#include "widgets/menu.h"
+#include "xml/repr-private.h"
+#include "modules/ps.h"
 #include "dir-util.h"
 #include "sodipodi.h"
 #include "sp-object.h"
@@ -32,7 +37,7 @@ static void sp_module_class_init (SPModuleClass *klass);
 static void sp_module_init (SPModule *module);
 static void sp_module_finalize (GObject *object);
 
-static void sp_module_private_build (SPModule *module, SPRepr *repr);
+static void sp_module_private_setup (SPModule *module, SPRepr *repr);
 
 static const unsigned char *sp_module_get_unique_id (unsigned char *c, int len, const unsigned char *val);
 static void sp_module_register (SPModule *module);
@@ -70,7 +75,7 @@ sp_module_class_init (SPModuleClass *klass)
 
 	g_object_class->finalize = sp_module_finalize;
 
-	klass->build = sp_module_private_build;
+	klass->setup = sp_module_private_setup;
 }
 
 static void
@@ -92,21 +97,17 @@ sp_module_finalize (GObject *object)
 
 	/* fixme: Free everything */
 	if (module->name) {
-		g_free (module->name);
+		free (module->name);
 	}
 
 	G_OBJECT_CLASS (module_parent_class)->finalize (object);
 }
 
 static void
-sp_module_private_build (SPModule *module, SPRepr *repr)
+sp_module_private_setup (SPModule *module, SPRepr *repr)
 {
 	if (repr) {
 		const unsigned char *val;
-		unsigned char c[256];
-		val = sp_repr_attr (repr, "id");
-		val = sp_module_get_unique_id (c, 256, val);
-		module->id = g_strdup (val);
 		val = sp_repr_attr (repr, "name");
 		if (val) {
 			module->name = g_strdup (val);
@@ -117,35 +118,26 @@ sp_module_private_build (SPModule *module, SPRepr *repr)
 			module->icon = g_strdup (val);
 		}
 		sp_repr_get_boolean (repr, "toolbox", &module->toolbox);
-		sp_module_register (module);
 	}
-}
-
-SPModule *
-sp_module_new (GType type, SPRepr *repr)
-{
-	SPModule *module;
-
-	module = g_object_new (type, NULL);
-
-	if (module) {
-		if (repr) sp_repr_ref (repr);
-		module->repr = repr;
-		if (((SPModuleClass *) G_OBJECT_GET_CLASS (module))->build)
-			((SPModuleClass *) G_OBJECT_GET_CLASS (module))->build (module, repr);
-	}
-
-	return module;
 }
 
 SPModule *
 sp_module_new_from_path (GType type, const unsigned char *path)
 {
+	SPModule *module;
 	SPRepr *repr;
 
+	module = NULL;
 	repr = sodipodi_get_repr (SODIPODI, path);
-
-	return sp_module_new (type, repr);
+	if (repr) {
+		const unsigned char *id;
+		id = sp_repr_attr (repr, "id");
+		if (id) {
+			module = g_object_new (type, NULL);
+			if (module) sp_module_setup (module, repr, id);
+		}
+	}
+	return module;
 }
 
 SPModule *
@@ -163,6 +155,62 @@ sp_module_unref (SPModule *mod)
 }
 
 static GHashTable *moduledict = NULL;
+
+/* Registers module */
+unsigned int
+sp_module_setup (SPModule *module, SPRepr *repr, const unsigned char *key)
+{
+	unsigned char c[256];
+	key = sp_module_get_unique_id (c, 256, key);
+	module->id = strdup (key);
+	if (repr) sp_repr_ref (repr);
+	module->repr = repr;
+	if (((SPModuleClass *) G_OBJECT_GET_CLASS (module))->setup)
+		((SPModuleClass *) G_OBJECT_GET_CLASS (module))->setup (module, repr);
+	sp_module_register (module);
+	return TRUE;
+}
+
+/* Unregisters module */
+unsigned int
+sp_module_release (SPModule *module)
+{
+	return TRUE;
+}
+
+/* Creates config repr */
+
+SPRepr *
+sp_module_write (SPModule *module, SPRepr *repr)
+{
+	if (((SPModuleClass *) G_OBJECT_GET_CLASS (module))->write)
+		return ((SPModuleClass *) G_OBJECT_GET_CLASS (module))->write (module, repr);
+
+	return NULL;
+}
+
+/* Executes default action of module */
+
+unsigned int
+sp_module_invoke (SPModule *module, SPRepr *config)
+{
+	if (((SPModuleClass *) G_OBJECT_GET_CLASS (module))->execute)
+		return ((SPModuleClass *) G_OBJECT_GET_CLASS (module))->execute (module, config);
+
+	return FALSE;
+}
+
+/* Returns new reference to module */
+
+SPModule *
+sp_module_find (const unsigned char *key)
+{
+	SPModule *mod;
+	if (!moduledict) moduledict = g_hash_table_new (g_str_hash, g_str_equal);
+	mod = g_hash_table_lookup (moduledict, key);
+	if (mod) sp_module_ref (mod);
+	return mod;
+}
 
 static const unsigned char *
 sp_module_get_unique_id (unsigned char *c, int len, const unsigned char *val)
@@ -194,7 +242,7 @@ static void sp_module_input_class_init (SPModuleInputClass *klass);
 static void sp_module_input_init (SPModuleInput *object);
 static void sp_module_input_finalize (GObject *object);
 
-static void sp_module_input_build (SPModule *module, SPRepr *repr);
+static void sp_module_input_setup (SPModule *module, SPRepr *repr);
 
 static SPModuleClass *input_parent_class;
 
@@ -230,7 +278,7 @@ sp_module_input_class_init (SPModuleInputClass *klass)
 
 	g_object_class->finalize = sp_module_input_finalize;
 
-	module_class->build = sp_module_input_build;
+	module_class->setup = sp_module_input_setup;
 }
 
 static void
@@ -258,14 +306,14 @@ sp_module_input_finalize (GObject *object)
 }
 
 static void
-sp_module_input_build (SPModule *module, SPRepr *repr)
+sp_module_input_setup (SPModule *module, SPRepr *repr)
 {
 	SPModuleInput *imod;
 
 	imod = (SPModuleInput *) module;
 
-	if (((SPModuleClass *) input_parent_class)->build)
-		((SPModuleClass *) input_parent_class)->build (module, repr);
+	if (((SPModuleClass *) input_parent_class)->setup)
+		((SPModuleClass *) input_parent_class)->setup (module, repr);
 
 	if (repr) {
 		const unsigned char *val;
@@ -292,7 +340,7 @@ static void sp_module_output_class_init (SPModuleOutputClass *klass);
 static void sp_module_output_init (SPModuleOutput *omod);
 static void sp_module_output_finalize (GObject *object);
 
-static void sp_module_output_build (SPModule *module, SPRepr *repr);
+static void sp_module_output_setup (SPModule *module, SPRepr *repr);
 
 static SPModuleClass *output_parent_class;
 
@@ -326,7 +374,7 @@ sp_module_output_class_init (SPModuleOutputClass *klass)
 
 	g_object_class->finalize = sp_module_output_finalize;
 
-	module_class->build = sp_module_output_build;
+	module_class->setup = sp_module_output_setup;
 }
 
 static void
@@ -346,14 +394,14 @@ sp_module_output_finalize (GObject *object)
 }
 
 static void
-sp_module_output_build (SPModule *module, SPRepr *repr)
+sp_module_output_setup (SPModule *module, SPRepr *repr)
 {
 	SPModuleOutput *mo;
 
 	mo = (SPModuleOutput *) module;
 
-	if (((SPModuleClass *) output_parent_class)->build)
-		((SPModuleClass *) output_parent_class)->build (module, repr);
+	if (((SPModuleClass *) output_parent_class)->setup)
+		((SPModuleClass *) output_parent_class)->setup (module, repr);
 
 	if (repr) {
 		const unsigned char *val;
@@ -477,6 +525,10 @@ sp_module_filter_finalize (GObject *object)
 
 /* ModulePrint */
 
+struct _SPPrintContext {
+	SPModulePrint module;
+};
+
 static void sp_module_print_class_init (SPModulePrintClass *klass);
 static void sp_module_print_init (SPModulePrint *fmod);
 static void sp_module_print_finalize (GObject *object);
@@ -530,18 +582,227 @@ sp_module_print_finalize (GObject *object)
 	G_OBJECT_CLASS (print_parent_class)->finalize (object);
 }
 
+
 /* Global methods */
 
-#include "modules/sp-module-sys.h"
+#ifdef WITH_KDE
+#include "modules/kde.h"
+#endif
+#ifdef WIN32
+#include "modules/win32.h"
+#endif
 
-SPModule *
-sp_module_system_get (const unsigned char *key)
+#include "dialogs/xml-tree.h"
+
+static SPModule *module_xml_editor = NULL;
+static SPModule *module_printing_ps = NULL;
+#ifdef WIN32
+static SPModule *module_printing_win32 = NULL;
+#endif
+#ifdef WITH_KDE
+static SPModule *module_printing_kde = NULL;
+#endif
+#ifdef WITH_GNOME_PRINT
+static SPModule *module_printing_gnome = NULL;
+#endif
+
+unsigned int
+sp_modules_init (int *argc, const char ***argv, unsigned int gui)
 {
+	SPRepr *repr, *parent;
 	SPModule *mod;
-	if (!moduledict) moduledict = g_hash_table_new (g_str_hash, g_str_equal);
-	mod = g_hash_table_lookup (moduledict, key);
-	if (mod) sp_module_ref (mod);
-	return mod;
+
+#ifdef WITH_KDE
+	sp_kde_init (argc, (char **) argv, "Sodipodi");
+#endif
+#ifdef WIN32
+	sp_win32_init (0, NULL, "Sodipodi");
+#endif
+
+
+	/* Register plain printing module */
+	module_printing_ps = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.ps");
+	if (!repr) {
+		parent = sodipodi_get_repr (SODIPODI, "extensions");
+		repr = sp_module_write (module_printing_ps, parent);
+	}
+	sp_module_setup (module_printing_ps, repr, "printing.ps");
+
+#ifdef WIN32
+	/* Windows printing */
+	module_printing_win32 = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.win32");
+	if (!repr) {
+		parent = sodipodi_get_repr (SODIPODI, "extensions");
+		repr = sp_module_write (module_printing_win32, parent);
+	}
+	sp_module_setup (module_printing_win32, repr, "printing.win32");
+#endif
+
+#ifdef WITH_KDE
+	/* KDE printing */
+	module_printing_kde = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_KDE, NULL);
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.gnome");
+	if (!repr) {
+		parent = sodipodi_get_repr (SODIPODI, "extensions");
+		repr = sp_module_write (module_printing_kde, parent);
+	}
+	sp_module_setup (module_printing_kde, repr, "printing.kde");
+#endif
+
+#ifdef WITH_GNOME_PRINT
+	/* KDE printing */
+	module_printing_gnome = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.gnome");
+	if (!repr) {
+		parent = sodipodi_get_repr (SODIPODI, "extensions");
+		repr = sp_module_write (module_printing_gnome, parent);
+	}
+	sp_module_setup (module_printing_gnome, repr, "printing.gnome");
+#endif
+
+	/* XML editor module */
+	module_xml_editor = sp_xml_module_load ();
+	sp_module_setup (module_xml_editor, repr, "xmleditor");
+
+	/* Default input */
+	mod = g_object_new (SP_TYPE_MODULE_INPUT, NULL);
+	sp_module_setup (mod, NULL, SP_MODULE_KEY_INPUT_SVG);
+
+	/* Default output */
+	mod = g_object_new (SP_TYPE_MODULE_OUTPUT, NULL);
+	sp_module_setup (mod, NULL, SP_MODULE_KEY_OUTPUT_SVG);
+	mod = g_object_new (SP_TYPE_MODULE_OUTPUT, NULL);
+	sp_module_setup (mod, NULL, SP_MODULE_KEY_OUTPUT_SVG_SODIPODI);
+
+	return TRUE;
+}
+
+unsigned int
+sp_modules_finish (void)
+{
+#ifdef WITH_KDE
+	sp_kde_finish ();
+#endif
+#ifdef WIN32
+	sp_win32_finish ();
+#endif
+	module_printing_ps = sp_module_unref (module_printing_ps);
+
+	return TRUE;
+}
+
+static void
+sp_modules_menu_action_activate (GtkWidget *widget, SPRepr *repr)
+{
+	const unsigned char *type;
+	SPRepr *actrepr;
+	actrepr = sp_repr_lookup_child_by_name (repr, "action");
+	if (!actrepr) return;
+	type = sp_repr_attr (actrepr, "type");
+	if (!type) return;
+	if (!strcmp (type, "internal")) {
+		const unsigned char *path;
+		SPModule *module;
+		path = sp_repr_attr (actrepr, "path");
+		if (!path) return;
+		module = sp_module_find (path);
+		if (!module) return;
+		sp_module_invoke (module, repr);
+		sp_module_unref (module);
+	}
+}
+
+static SPMenu *
+sp_modules_menu_action_append (SPMenu *menu, SPRepr *repr, const unsigned char *name)
+{
+	unsigned int bval;
+	GtkWidget *item;
+	if (!sp_repr_get_boolean (repr, "action", &bval) || !bval) return menu;
+	if (!menu) menu = (SPMenu *) sp_menu_new ();
+	item = gtk_image_menu_item_new_with_label (name);
+	g_signal_connect ((GObject *) item, "activate", (GCallback) sp_modules_menu_action_activate, repr);
+	gtk_widget_show (item);
+	gtk_menu_append ((GtkMenu *) menu, item);
+	return menu;
+}
+
+static SPMenu *
+sp_modules_menu_about_append (SPMenu *menu, SPRepr *repr, const unsigned char *name)
+{
+	GtkWidget *item;
+	if (!menu) menu = (SPMenu *) sp_menu_new ();
+	item = gtk_image_menu_item_new_with_label (name);
+	gtk_widget_show (item);
+	gtk_menu_append ((GtkMenu *) menu, item);
+	return menu;
+}
+
+static GtkWidget *
+sp_modules_menu_append_node (SPMenu *menu, SPRepr *repr, SPMenu * (*callback) (SPMenu *, SPRepr *, const unsigned char *))
+{
+	const unsigned char *name;
+	name = sp_repr_attr (repr, "name");
+	if (name) {
+		if (!strcmp (sp_repr_name (repr), "group")) {
+			SPRepr *child;
+			GtkWidget *chmenu;
+			chmenu = NULL;
+			child = sp_repr_children (repr);
+			while (child) {
+				chmenu = sp_modules_menu_append_node ((SPMenu *) chmenu, child, callback);
+				child = child->next;
+			}
+			if (chmenu) {
+				GtkWidget *item;
+				if (!menu) menu = (SPMenu *) sp_menu_new ();
+				item = gtk_image_menu_item_new_with_label (name);
+				gtk_widget_show (item);
+				gtk_menu_item_set_submenu ((GtkMenuItem *) item, chmenu);
+				gtk_menu_append ((GtkMenu *) menu, item);
+			}
+		} else if (!strcmp (sp_repr_name (repr), "module")) {
+			menu = callback (menu, repr, name);
+		}
+	}
+	return (GtkWidget *) menu;
+}
+
+GtkWidget *
+sp_modules_menu_new (void)
+{
+	SPRepr *repr;
+	GtkWidget *menu;
+	menu = NULL;
+	repr = sodipodi_get_repr (SODIPODI, "extensions");
+	if (repr) {
+		SPRepr *child;
+		child = sp_repr_children (repr);
+		while (child) {
+			menu = sp_modules_menu_append_node ((SPMenu *) menu, child, sp_modules_menu_action_append);
+			child = child->next;
+		}
+	}
+	return (GtkWidget *) menu;
+}
+
+GtkWidget *
+sp_modules_menu_about_new (void)
+{
+	SPRepr *repr;
+	GtkWidget *menu;
+	menu = NULL;
+	repr = sodipodi_get_repr (SODIPODI, "extensions");
+	if (repr) {
+		SPRepr *child;
+		child = sp_repr_children (repr);
+		while (child) {
+			menu = sp_modules_menu_append_node ((SPMenu *) menu, child, sp_modules_menu_about_append);
+			child = child->next;
+		}
+	}
+	return (GtkWidget *) menu;
 }
 
 void

@@ -57,6 +57,8 @@ static void sp_module_print_plain_class_init (SPModulePrintPlainClass *klass);
 static void sp_module_print_plain_init (SPModulePrintPlain *fmod);
 static void sp_module_print_plain_finalize (GObject *object);
 
+static SPRepr *sp_module_print_plain_write (SPModule *module, SPRepr *root);
+
 static unsigned int sp_module_print_plain_setup (SPModulePrint *mod);
 static unsigned int sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_plain_finish (SPModulePrint *mod);
@@ -98,14 +100,18 @@ static void
 sp_module_print_plain_class_init (SPModulePrintPlainClass *klass)
 {
 	GObjectClass *g_object_class;
+	SPModuleClass *module_class;
 	SPModulePrintClass *module_print_class;
 
-	g_object_class = (GObjectClass *)klass;
+	g_object_class = (GObjectClass *) klass;
+	module_class = (SPModuleClass *) klass;
 	module_print_class = (SPModulePrintClass *) klass;
 
 	print_plain_parent_class = g_type_class_peek_parent (klass);
 
 	g_object_class->finalize = sp_module_print_plain_finalize;
+
+	module_class->write = sp_module_print_plain_write;
 
 	module_print_class->setup = sp_module_print_plain_setup;
 	module_print_class->begin = sp_module_print_plain_begin;
@@ -139,6 +145,25 @@ sp_module_print_plain_finalize (GObject *object)
 #endif
 
 	G_OBJECT_CLASS (print_plain_parent_class)->finalize (object);
+}
+
+static SPRepr *
+sp_module_print_plain_write (SPModule *module, SPRepr *root)
+{
+	SPRepr *grp, *repr;
+	grp = sp_repr_lookup_child (root, "id", "printing");
+	if (!grp) {
+		grp = sp_repr_new ("group");
+		sp_repr_set_attr (grp, "id", "printing");
+		sp_repr_set_attr (grp, "name", "Printing");
+		sp_repr_append_child (root, grp);
+	}
+	repr = sp_repr_new ("module");
+	sp_repr_set_attr (repr, "id", "ps");
+	sp_repr_set_attr (repr, "name", "PostScript Printing");
+	sp_repr_set_attr (repr, "action", "no");
+	sp_repr_append_child (grp, repr);
+	return repr;
 }
 
 static unsigned int
@@ -218,7 +243,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	if (repr) {
 		const unsigned char *val;
 		val = sp_repr_attr (repr, "resolution");
-		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (combo)->entry), val);
+		if (val) gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (combo)->entry), val);
 	}
 	gtk_box_pack_end (GTK_BOX (hb), combo, FALSE, FALSE, 0);
 	l = gtk_label_new (_("Resolution:"));
@@ -240,7 +265,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	if (repr && sp_repr_attr (repr, "destination")) {
 		const unsigned char *val;
 		val = sp_repr_attr (repr, "destination");
-		gtk_entry_set_text (GTK_ENTRY (e), val);
+		if (val) gtk_entry_set_text (GTK_ENTRY (e), val);
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (e), "lp");
 	}

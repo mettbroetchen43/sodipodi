@@ -1,5 +1,6 @@
 #include "sp-module-exec.h"
 
+#if 0
 SPModuleHandler *
 sp_module_set_exec (SPModule * object, 
 		                           SPModuleHandler * exec) {
@@ -14,6 +15,7 @@ sp_module_set_exec (SPModule * object,
 
 	return exec;
 }
+#endif
 
 /* Module Input */
 
