@@ -387,10 +387,10 @@ sp_main_console (int argc, const char **argv)
 			if (sp_export_svg) {
 				SPReprDoc *rdoc;
 				SPRepr *repr;
-				rdoc = sp_repr_document_new ("svg");
-				repr = sp_repr_document_root (rdoc);
+				rdoc = sp_repr_doc_new ("svg");
+				repr = sp_repr_doc_get_root (rdoc);
 				repr = sp_object_invoke_write (sp_document_root (doc), repr, SP_OBJECT_WRITE_BUILD);
-				sp_repr_save_file (sp_repr_document (repr), sp_export_svg);
+				sp_repr_doc_write_file (sp_repr_get_doc (repr), sp_export_svg);
 			}
 		}
 		fl = g_slist_remove (fl, fl->data);
@@ -738,7 +738,7 @@ sodipodi_segv_handler (int signum)
 		SPRepr *repr;
 		doc = (SPDocument *) l->data;
 		repr = sp_document_repr_root (doc);
-		if (sp_repr_attr (repr, "sodipodi:modified")) {
+		if (sp_repr_get_attr (repr, "sodipodi:modified")) {
 			const guchar *docname, *d0, *d;
 			gchar n[64], c[1024];
 			FILE *file;
@@ -771,11 +771,11 @@ sodipodi_segv_handler (int signum)
 				file = fopen (c, "w");
 			}
 			if (file) {
-				sp_repr_save_stream (sp_repr_document (repr), file);
+				sp_repr_doc_write_stream (sp_repr_get_doc (repr), file);
 				savednames = g_slist_prepend (savednames, g_strdup (c));
 				fclose (file);
 			} else {
-				docname = sp_repr_attr (repr, "sodipodi:docname");
+				docname = sp_repr_get_attr (repr, "sodipodi:docname");
 				failednames = g_slist_prepend (failednames, (docname) ? g_strdup (docname) : g_strdup (_("Untitled document")));
 			}
 			count++;

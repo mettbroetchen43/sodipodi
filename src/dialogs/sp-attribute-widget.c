@@ -123,14 +123,14 @@ sp_attribute_widget_changed (GtkEditable *editable)
 		if (spaw->hasobj && spaw->src.object) {
 			if (!sp_repr_set_attr (SP_OBJECT_REPR (spaw->src.object), spaw->attribute, text)) {
 				/* Cannot set attribute */
-				text = sp_repr_attr (SP_OBJECT_REPR (spaw->src.object), spaw->attribute);
+				text = sp_repr_get_attr (SP_OBJECT_REPR (spaw->src.object), spaw->attribute);
 				gtk_entry_set_text (GTK_ENTRY (spaw), text ? text : "");
 			}
 			sp_document_done (SP_OBJECT_DOCUMENT (spaw->src.object));
 		} else if (spaw->src.repr) {
 			if (!sp_repr_set_attr (spaw->src.repr, spaw->attribute, text)) {
 				/* Cannot set attribute */
-				text = sp_repr_attr (spaw->src.repr, spaw->attribute);
+				text = sp_repr_get_attr (spaw->src.repr, spaw->attribute);
 				gtk_entry_set_text (GTK_ENTRY (spaw), text ? text : "");
 			}
 			/* fixme: Warning! Undo will not be flushed in given case */
@@ -203,7 +203,7 @@ sp_attribute_widget_set_object (SPAttributeWidget *spaw, SPObject *object, const
 
 		spaw->attribute = g_strdup (attribute);
 
-		val = sp_repr_attr (SP_OBJECT_REPR (object), attribute);
+		val = sp_repr_get_attr (SP_OBJECT_REPR (object), attribute);
 		gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : (const guchar *) "");
 		spaw->blocked = FALSE;
 	}
@@ -243,7 +243,7 @@ sp_attribute_widget_set_repr (SPAttributeWidget *spaw, SPRepr *repr, const gucha
 		spaw->src.repr = sp_repr_ref (repr);
 		spaw->attribute = g_strdup (attribute);
 
-		val = sp_repr_attr (repr, attribute);
+		val = sp_repr_get_attr (repr, attribute);
 		gtk_entry_set_text (GTK_ENTRY (spaw), val ? val : (const guchar *) "");
 		spaw->blocked = FALSE;
 	}
@@ -256,7 +256,7 @@ sp_attribute_widget_object_modified (SPObject *object, guint flags, SPAttributeW
 {
 	if (flags && SP_OBJECT_MODIFIED_FLAG) {
 		const guchar *val, *text;
-		val = sp_repr_attr (SP_OBJECT_REPR (spaw->src.object), spaw->attribute);
+		val = sp_repr_get_attr (SP_OBJECT_REPR (spaw->src.object), spaw->attribute);
 		text = gtk_entry_get_text (GTK_ENTRY (spaw));
 		if (val || text) {
 			if (!val || !text || strcmp (val, text)) {
@@ -471,7 +471,7 @@ sp_attribute_table_set_object (SPAttributeTable *spat, SPObject *object, gint nu
 			gtk_table_attach (GTK_TABLE (spat->table), w, 0, 1, i, i + 1, GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			w = gtk_entry_new ();
 			gtk_widget_show (w);
-			val = sp_repr_attr (SP_OBJECT_REPR (object), attributes[i]);
+			val = sp_repr_get_attr (SP_OBJECT_REPR (object), attributes[i]);
 			gtk_entry_set_text (GTK_ENTRY (w), val ? val : (const guchar *) "");
 			gtk_table_attach (GTK_TABLE (spat->table), w, 1, 2, i, i + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			spat->entries[i] = w;
@@ -551,7 +551,7 @@ sp_attribute_table_set_repr (SPAttributeTable *spat, SPRepr *repr, gint num_attr
 			gtk_table_attach (GTK_TABLE (spat->table), w, 0, 1, i, i + 1, GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			w = gtk_entry_new ();
 			gtk_widget_show (w);
-			val = sp_repr_attr (repr, attributes[i]);
+			val = sp_repr_get_attr (repr, attributes[i]);
 			gtk_entry_set_text (GTK_ENTRY (w), val ? val : (const guchar *) "");
 			gtk_table_attach (GTK_TABLE (spat->table), w, 1, 2, i, i + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			spat->entries[i] = w;
@@ -573,7 +573,7 @@ sp_attribute_table_object_modified (SPObject *object, guint flags, SPAttributeTa
 		gint i;
 		for (i = 0; i < spat->num_attr; i++) {
 			const guchar *val, *text;
-			val = sp_repr_attr (SP_OBJECT_REPR (spat->src.object), spat->attributes[i]);
+			val = sp_repr_get_attr (SP_OBJECT_REPR (spat->src.object), spat->attributes[i]);
 			text = gtk_entry_get_text (GTK_ENTRY (spat->entries[i]));
 			if (val || text) {
 				if (!val || !text || strcmp (val, text)) {
@@ -607,14 +607,14 @@ sp_attribute_table_entry_changed (GtkEditable *editable, SPAttributeTable *spat)
 				if (spat->hasobj && spat->src.object) {
 					if (!sp_repr_set_attr (SP_OBJECT_REPR (spat->src.object), spat->attributes[i], text)) {
 						/* Cannot set attribute */
-						text = sp_repr_attr (SP_OBJECT_REPR (spat->src.object), spat->attributes[i]);
+						text = sp_repr_get_attr (SP_OBJECT_REPR (spat->src.object), spat->attributes[i]);
 						gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), text ? text : (const guchar *) "");
 					}
 					sp_document_done (SP_OBJECT_DOCUMENT (spat->src.object));
 				} else if (spat->src.repr) {
 					if (!sp_repr_set_attr (spat->src.repr, spat->attributes[i], text)) {
 						/* Cannot set attribute */
-						text = sp_repr_attr (spat->src.repr, spat->attributes[i]);
+						text = sp_repr_get_attr (spat->src.repr, spat->attributes[i]);
 						gtk_entry_set_text (GTK_ENTRY (spat->entries[i]), text ? text : (const guchar *) "");
 					}
 					/* fixme: Warning! Undo will not be flushed in given case */

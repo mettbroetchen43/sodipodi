@@ -1,3 +1,7 @@
+2003-12-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/api.h: New file
+
 2003-12-22  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/libnr/nr-rect.c (nr_rect_d_translate_xy): New function

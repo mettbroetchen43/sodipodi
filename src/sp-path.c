@@ -16,6 +16,7 @@
 
 #include <libnr/nr-path.h>
 
+#include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "attributes.h"
 #include "style.h"
@@ -107,7 +108,7 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	if ((version > 0) && (version < 25)) {
 		const guchar *str;
-		str = sp_repr_attr (repr, "SODIPODI-PATH-NODE-TYPES");
+		str = sp_repr_get_attr (repr, "SODIPODI-PATH-NODE-TYPES");
 		sp_repr_set_attr (repr, "sodipodi:nodetypes", str);
 		sp_repr_set_attr (repr, "SODIPODI-PATH-NODE-TYPES", NULL);
 	}

@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include "helper/sp-canvas.h"
+#include "xml/repr-private.h"
 #include "sp-rect.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -339,8 +340,8 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
 	g_snprintf (status, 80, "Draw rectangle  %s x %s", xs->str, ys->str);
 	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
-	g_string_free (xs, FALSE);
-	g_string_free (ys, FALSE);
+	g_string_free (xs, TRUE);
+	g_string_free (ys, TRUE);
 }
 
 static void

@@ -56,8 +56,8 @@ SPEventContext * sodipodi_active_event_context (void);
 #define SP_ACTIVE_DOCUMENT sodipodi_active_document ()
 SPDocument * sodipodi_active_document (void);
 
-#define SP_ACTIVE_DESKTOP sodipodi_active_desktop ()
-SPDesktop * sodipodi_active_desktop (void);
+#define SP_ACTIVE_DESKTOP sodipodi_get_active_desktop ()
+SPDesktop * sodipodi_get_active_desktop (void);
 
 void sodipodi_verb_perform (unsigned int verb, void *config);
 void sodipodi_verb_repeat (void);

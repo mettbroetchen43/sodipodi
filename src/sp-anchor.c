@@ -153,7 +153,7 @@ sp_anchor_set (SPObject *object, unsigned int key, const unsigned char *value)
 	}
 }
 
-#define COPY_ATTR(rd,rs,key) sp_repr_set_attr ((rd), (key), sp_repr_attr (rs, key));
+#define COPY_ATTR(rd,rs,key) sp_repr_set_attr ((rd), (key), sp_repr_get_attr (rs, key));
 
 
 static SPRepr *

@@ -15,30 +15,14 @@
 
 #include <glib-object.h>
 
+#include "api.h"
+
 /* Generic containers */
 
 typedef struct _Sodipodi Sodipodi;
 typedef struct _SodipodiClass SodipodiClass;
 
-/* Editing window */
-
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-
-#define SP_TYPE_DESKTOP (sp_desktop_get_type ())
-#define SP_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
-#define SP_IS_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_DESKTOP))
-
-GType sp_desktop_get_type (void);
-
-typedef struct _SPSelection SPSelection;
-typedef struct _SPSelectionClass SPSelectionClass;
-
-#define SP_TYPE_SELECTION (sp_selection_get_type ())
-#define SP_SELECTION(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_SELECTION, SPSelection))
-#define SP_IS_SELECTION(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_SELECTION))
-
-GType sp_selection_get_type (void);
+/* Editing Window */
 
 typedef struct _SPEventContext SPEventContext;
 typedef struct _SPEventContextClass SPEventContextClass;
@@ -49,36 +33,7 @@ typedef struct _SPEventContextClass SPEventContextClass;
 
 GType sp_event_context_get_type (void);
 
-/* Document tree */
-
-typedef struct _SPDocument SPDocument;
-typedef struct _SPDocumentClass SPDocumentClass;
-
-#define SP_TYPE_DOCUMENT (sp_document_get_type ())
-#define SP_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
-#define SP_IS_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_DOCUMENT))
-
-GType sp_document_get_type (void);
-
 /* Objects */
-
-typedef struct _SPObject SPObject;
-typedef struct _SPObjectClass SPObjectClass;
-
-#define SP_TYPE_OBJECT (sp_object_get_type ())
-#define SP_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_OBJECT, SPObject))
-#define SP_IS_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_OBJECT))
-
-GType sp_object_get_type (void);
-
-typedef struct _SPItem SPItem;
-typedef struct _SPItemClass SPItemClass;
-
-#define SP_TYPE_ITEM (sp_item_get_type ())
-#define SP_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_ITEM, SPItem))
-#define SP_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_ITEM))
-
-GType sp_item_get_type (void);
 
 typedef struct _SPGroup SPGroup;
 typedef struct _SPGroupClass SPGroupClass;

@@ -34,6 +34,7 @@
 #include "helper/action.h"
 #include "xml/repr-private.h"
 
+#include "api.h"
 #include "system.h"
 #include "verbs.h"
 #include "shortcuts.h"
@@ -255,9 +256,9 @@ sodipodi_init (SPObject * object)
 	sodipodi = (Sodipodi *) object;
 
 	/* Initialize preferences to default tree */
-	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
+	sodipodi->preferences = sp_repr_doc_new_from_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
 	/* Initialize extensions to default tree */
-	sodipodi->extensions = sp_repr_read_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
+	sodipodi->extensions = sp_repr_doc_new_from_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
 
 	/* Initialize shortcut table */
 	sp_shortcut_table_load (NULL);
@@ -297,14 +298,14 @@ sodipodi_dispose (GObject *object)
 	if (sodipodi->extensions) {
 		/* fixme: This is not the best place */
 		sodipodi_save_extensions (sodipodi);
-		sp_repr_document_unref (sodipodi->extensions);
+		sp_repr_doc_unref (sodipodi->extensions);
 		sodipodi->extensions = NULL;
 	}
 
 	if (sodipodi->preferences) {
 		/* fixme: This is not the best place */
 		sodipodi_save_preferences (sodipodi);
-		sp_repr_document_unref (sodipodi->preferences);
+		sp_repr_doc_unref (sodipodi->preferences);
 		sodipodi->preferences = NULL;
 	}
 
@@ -373,7 +374,7 @@ sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const un
 		return;
 	}
 
-	doc = sp_repr_read_file (fn, NULL);
+	doc = sp_repr_doc_new_from_file (fn, NULL);
 	if (doc == NULL) {
 		/* Not an valid xml file */
 		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notxml, fn);
@@ -383,18 +384,18 @@ sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const un
 		return;
 	}
 
-	root = sp_repr_document_root (doc);
+	root = sp_repr_doc_get_root (doc);
 	if (strcmp (sp_repr_name (root), "sodipodi")) {
 		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notsp, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
-		sp_repr_document_unref (doc);
+		sp_repr_doc_unref (doc);
 		g_free (fn);
 		return;
 	}
 
-	sp_repr_document_merge (config, doc, "id");
-	sp_repr_document_unref (doc);
+	sp_repr_doc_merge (config, doc, "id");
+	sp_repr_doc_unref (doc);
 	g_free (fn);
 }
 
@@ -447,7 +448,7 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 #endif
 
-	sp_repr_save_file (sodipodi->preferences, fn);
+	sp_repr_doc_write_file (sodipodi->preferences, fn);
 
 	g_free (fn);
 }
@@ -463,7 +464,7 @@ sodipodi_save_extensions (Sodipodi * sodipodi)
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/extensions", NULL);
 #endif
 
-	sp_repr_save_file (sodipodi->extensions, fn);
+	sp_repr_doc_write_file (sodipodi->extensions, fn);
 
 	g_free (fn);
 }
@@ -479,11 +480,11 @@ sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key)
 	if (key == NULL) return NULL;
 
 	if (!strncmp (key, "extensions", 10) && (!key[10] || (key[10] == '.'))) {
-		repr = sp_repr_document_root (sodipodi->extensions);
+		repr = sp_repr_doc_get_root (sodipodi->extensions);
 	} else {
-		repr = sp_repr_document_root (sodipodi->preferences);
+		repr = sp_repr_doc_get_root (sodipodi->preferences);
 	}
-	g_assert (!(strcmp (sp_repr_name (repr), "sodipodi")));
+	g_assert (!(strcmp (sp_repr_get_name (repr), "sodipodi")));
 
 	s = key;
 	while ((s) && (*s)) {
@@ -691,14 +692,6 @@ sodipodi_set_color (SPColor *color, float opacity)
 	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[COLOR_SET], 0, color, (double) opacity);
 }
 
-SPDesktop *
-sodipodi_active_desktop (void)
-{
-	if (sodipodi->desktops == NULL) return NULL;
-
-	return (SPDesktop *) sodipodi->desktops->data;
-}
-
 SPDocument *
 sodipodi_active_document (void)
 {
@@ -880,5 +873,13 @@ const GSList *
 sodipodi_get_document_list (void)
 {
 	return sodipodi->documents;
+}
+
+SPDesktop *
+sodipodi_get_active_desktop (void)
+{
+	if (sodipodi->desktops == NULL) return NULL;
+
+	return (SPDesktop *) sodipodi->desktops->data;
 }
 

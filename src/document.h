@@ -75,6 +75,8 @@ SPDocument *sp_document_unref (SPDocument *doc);
  * Access methods
  */
 
+SPReprDoc *sp_document_get_repr_doc (SPDocument *doc);
+SPRepr *sp_document_get_repr_root (SPDocument *doc);
 #define sp_document_repr_doc(d) (SP_DOCUMENT (d)->rdoc)
 #define sp_document_repr_root(d) (SP_DOCUMENT (d)->rroot)
 #define sp_document_root(d) (SP_DOCUMENT (d)->root)
@@ -82,14 +84,11 @@ SPDocument *sp_document_unref (SPDocument *doc);
 
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);
+const unsigned char *sp_document_get_uri (SPDocument *doc);
+const unsigned char *sp_document_get_name (SPDocument *doc);
 #define SP_DOCUMENT_URI(d) (SP_DOCUMENT (d)->uri)
 #define SP_DOCUMENT_NAME(d) (SP_DOCUMENT (d)->name)
 #define SP_DOCUMENT_BASE(d) (SP_DOCUMENT (d)->base)
-
-#if 0
-const GSList * sp_document_namedview_list (SPDocument * document);
-SPNamedView *sp_document_namedview (SPDocument * document, const gchar * name);
-#endif
 
 /*
  * Dictionary
@@ -97,7 +96,9 @@ SPNamedView *sp_document_namedview (SPDocument * document, const gchar * name);
 
 void sp_document_def_id (SPDocument * document, const gchar * id, SPObject * object);
 void sp_document_undef_id (SPDocument * document, const gchar * id);
-SPObject * sp_document_lookup_id (SPDocument * document, const gchar * id);
+SPObject *sp_document_get_object_from_id (SPDocument *doc, const unsigned char *id);
+SPObject *sp_document_get_object_from_repr (SPDocument *doc, SPRepr *repr);
+#define sp_document_lookup_id sp_document_get_object_from_id
 
 /*
  * Undo & redo
@@ -120,8 +121,7 @@ gint sp_document_ensure_up_to_date (SPDocument *doc);
 
 /* Save all previous actions to stack, as one undo step */
 void sp_document_done (SPDocument *document);
-void sp_document_maybe_done (SPDocument *document, const guchar *key);
-
+void sp_document_maybe_done (SPDocument *document, const unsigned char *key);
 /* Cancel (and revert) current unsaved actions */
 void sp_document_cancel (SPDocument *document);
 

@@ -250,6 +250,7 @@ sp_quick_align_dialog (void)
 		gtk_notebook_append_page (GTK_NOTEBOOK (nb), vb, l);
 
 		gtk_widget_show_all (nb);
+                gtk_object_sink(GTK_OBJECT(tt));
 	}
 
 	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);

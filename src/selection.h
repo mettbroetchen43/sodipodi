@@ -56,12 +56,14 @@ void sp_selection_remove_item (SPSelection * selection, SPItem * item);
 void sp_selection_remove_repr (SPSelection * selection, SPRepr * repr);
 void sp_selection_set_item_list (SPSelection * selection, const GSList * list);
 void sp_selection_set_repr_list (SPSelection * selection, const GSList * list);
-#define sp_selection_set_empty(s) sp_selection_empty (s)
-void sp_selection_empty (SPSelection * selection);
+void sp_selection_set_empty (SPSelection *selection);
+#define sp_selection_empty(s) sp_selection_set_empty (s)
 const GSList *sp_selection_item_list (SPSelection * selection);
 const GSList *sp_selection_repr_list (SPSelection * selection);
-SPItem *sp_selection_item (SPSelection * selection);
-SPRepr *sp_selection_repr (SPSelection * selection);
+SPItem *sp_selection_get_item (SPSelection *selection);
+#define sp_selection_item sp_selection_get_item
+SPRepr *sp_selection_get_repr (SPSelection *selection);
+#define sp_selection_repr sp_selection_get_repr
 
 NRRectF *sp_selection_bbox (SPSelection *selection, NRRectF *bbox);
 NRRectF *sp_selection_bbox_full (SPSelection *selection, NRRectF *bbox, unsigned int flags);

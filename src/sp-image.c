@@ -430,8 +430,8 @@ sp_image_repr_read_image (SPRepr * repr)
 	gchar * fullname;
 	GdkPixbuf * pixbuf;
 
-	filename = sp_repr_attr (repr, "xlink:href");
-	if (filename == NULL) filename = sp_repr_attr (repr, "href"); /* FIXME */
+	filename = sp_repr_get_attr (repr, "xlink:href");
+	if (filename == NULL) filename = sp_repr_get_attr (repr, "href"); /* FIXME */
 	if (filename != NULL) {
 		if (strncmp (filename,"file:",5) == 0) {
 			fullname = g_filename_from_uri(filename, NULL, NULL);
@@ -447,7 +447,7 @@ sp_image_repr_read_image (SPRepr * repr)
 			if (pixbuf != NULL) return pixbuf;
 		} else if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
-			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
+			docbase = sp_repr_get_attr (sp_repr_doc_get_root (sp_repr_get_doc (repr)), "sodipodi:docbase");
 			if (!docbase) docbase = "./";
 			fullname = g_strconcat (docbase, filename, NULL);
 			pixbuf = gdk_pixbuf_new_from_utf8_file (fullname, NULL);
@@ -460,7 +460,7 @@ sp_image_repr_read_image (SPRepr * repr)
 		}
 	}
 	/* at last try to load from sp absolute path name */
-	filename = sp_repr_attr (repr, "sodipodi:absref");
+	filename = sp_repr_get_attr (repr, "sodipodi:absref");
 	if (filename != NULL) {
 		pixbuf = gdk_pixbuf_new_from_utf8_file (filename, NULL);
 		if (pixbuf != NULL) return pixbuf;
@@ -602,13 +602,13 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 		t->c[2] = 0.0;
 		t->c[3] = 1.0;
 	}
-	sp_repr_set_double_attribute (repr, "width", image->width.computed * sw);
-	sp_repr_set_double_attribute (repr, "height", image->height.computed * sh);
+	sp_repr_set_double (repr, "width", image->width.computed * sw);
+	sp_repr_set_double (repr, "height", image->height.computed * sh);
 
 	/* Find start in item coords */
 	nr_matrix_f_invert (&rev, t);
-	sp_repr_set_double_attribute (repr, "x", px * rev.c[0] + py * rev.c[2]);
-	sp_repr_set_double_attribute (repr, "y", px * rev.c[1] + py * rev.c[3]);
+	sp_repr_set_double (repr, "x", px * rev.c[0] + py * rev.c[2]);
+	sp_repr_set_double (repr, "y", px * rev.c[1] + py * rev.c[3]);
 }
 
 #ifdef ENABLE_AUTOTRACE

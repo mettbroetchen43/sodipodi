@@ -124,6 +124,11 @@ sp_ctrl_destroy (GtkObject *object)
 
 	ctrl = SP_CTRL (object);
 
+        if (ctrl->cache) {
+          g_free (ctrl->cache);
+          ctrl->cache = NULL;
+        }
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }

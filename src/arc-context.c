@@ -18,6 +18,7 @@
 #include <math.h>
 #include "helper/sp-intl.h"
 #include "helper/sp-canvas.h"
+#include "xml/repr-private.h"
 #include "sodipodi.h"
 #include "sp-ellipse.h"
 #include "document.h"
@@ -316,10 +317,10 @@ sp_arc_finish (SPArcContext * ac)
 		ellipse = SP_GENERICELLIPSE (ac->item);
 		repr = SP_OBJECT (ac->item)->repr;
 
-		sp_repr_set_double_attribute (repr, "sodipodi:cx", ellipse->cx.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:cy", ellipse->cy.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:rx", ellipse->rx.computed);
-		sp_repr_set_double_attribute (repr, "sodipodi:ry", ellipse->ry.computed);
+		sp_repr_set_double (repr, "sodipodi:cx", ellipse->cx.computed);
+		sp_repr_set_double (repr, "sodipodi:cy", ellipse->cy.computed);
+		sp_repr_set_double (repr, "sodipodi:rx", ellipse->rx.computed);
+		sp_repr_set_double (repr, "sodipodi:ry", ellipse->ry.computed);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), ac->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

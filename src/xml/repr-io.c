@@ -44,7 +44,7 @@ static char * sp_wmf_image_name (void * context);
 #endif /* HAVE_LIBWMF */
 
 SPReprDoc *
-sp_repr_read_file (const gchar * filename, const gchar *default_ns)
+sp_repr_doc_new_from_file (const unsigned char *filename, const unsigned char *default_ns)
 {
 	const unsigned char *cdata;
 	int size;
@@ -92,7 +92,7 @@ sp_repr_read_file (const gchar * filename, const gchar *default_ns)
 
 
 SPReprDoc *
-sp_repr_read_mem (const gchar * buffer, gint length, const gchar *default_ns)
+sp_repr_doc_new_from_mem (const unsigned char *buffer, unsigned int length, const unsigned char *default_ns)
 {
 	xmlDocPtr doc;
 	SPReprDoc * rdoc;
@@ -121,7 +121,7 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 	if (doc == NULL) return NULL;
 	node = xmlDocGetRootElement (doc);
 	if (node == NULL) return NULL;
-	rdoc = sp_repr_document_new ("void");
+	rdoc = sp_repr_doc_new ("void");
 
 
 	prefix_map = g_hash_table_new (g_str_hash, g_str_equal);
@@ -142,7 +142,7 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 		/* always include Sodipodi namespace */
 		sp_repr_set_xmlns_attr (sp_xml_ns_uri_prefix (SP_SODIPODI_NS_URI, "sodipodi"), SP_SODIPODI_NS_URI, repr);
 
-		if (!strcmp (sp_repr_name (repr), "svg") && default_ns && !strcmp (default_ns, SP_SVG_NS_URI)) {
+		if (!strcmp (sp_repr_get_name (repr), "svg") && default_ns && !strcmp (default_ns, SP_SVG_NS_URI)) {
 			
 			sp_repr_set_attr ((SPRepr *) rdoc, "doctype", sp_svg_doctype_str);
 			sp_repr_set_attr ((SPRepr *) rdoc, "comment", sp_comment_str);
@@ -257,8 +257,8 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	return repr;
 }
 
-void
-sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
+unsigned int
+sp_repr_doc_write_stream (SPReprDoc *doc, FILE *fp)
 {
 	SPRepr *repr;
 	const unsigned char *str;
@@ -272,9 +272,11 @@ sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 	str = sp_repr_attr ((SPRepr *) doc, "comment");
 	if (str) fputs (str, fp);
 
-	repr = sp_repr_document_root (doc);
+	repr = sp_repr_doc_get_root (doc);
 
 	sp_repr_write_stream (repr, fp, 0);
+
+	return 1;
 }
 
 #ifdef WIN32
@@ -282,8 +284,8 @@ sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 #include <tchar.h>
 #endif
 
-void
-sp_repr_save_file (SPReprDoc *doc, const char *filename)
+unsigned int
+sp_repr_doc_write_file (SPReprDoc *doc, const unsigned char *filename)
 {
 #ifdef WIN32
 	TCHAR *tfilename;
@@ -302,13 +304,13 @@ sp_repr_save_file (SPReprDoc *doc, const char *filename)
 	file = fopen (filename, "w");
 #endif
 
-	g_return_if_fail (file != NULL);
+	g_return_val_if_fail (file != NULL, 0);
 
-	sp_repr_save_stream (doc, file);
+	sp_repr_doc_write_stream (doc, file);
 
 	fclose (file);
 
-	return;
+	return 1;
 }
 
 void
@@ -334,8 +336,8 @@ repr_quote_write (FILE * file, const gchar * val)
 	}
 }
 
-void
-sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
+unsigned int
+sp_repr_write_stream (SPRepr *repr, FILE * file, unsigned int level)
 {
 	SPReprAttr *attr;
 	SPRepr *child;
@@ -343,8 +345,8 @@ sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
 	gboolean loose;
 	gint i;
 
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (file != NULL);
+	g_return_val_if_fail (repr != NULL, 0);
+	g_return_val_if_fail (file != NULL, 0);
 
 	if (level > 16) level = 16;
 	for (i = 0; i < level; i++) fputs ("  ", file);
@@ -393,6 +395,8 @@ sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
 	} else {
 		fputs (" />\n", file);
 	}
+
+	return 1;
 }
 
 #ifdef HAVE_LIBWMF

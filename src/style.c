@@ -276,7 +276,7 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	sp_style_clear (style);
 
 	/* 1. Style itself */
-	val = sp_repr_attr (repr, "style");
+	val = sp_repr_get_attr (repr, "style");
 	if (val != NULL) {
 		sp_style_merge_from_style_string (style, val);
 	}
@@ -285,12 +285,12 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	/* CMYK has precedence and can only be presentation attribute */
 	if (!style->fill.set || (style->fill.type == SP_PAINT_TYPE_COLOR)) {
 		/* backwards-compatability */
-		val = sp_repr_attr (repr, "fill-cmyk");
+		val = sp_repr_get_attr (repr, "fill-cmyk");
 		if (val) {
 			sp_repr_set_attr (repr, "sodipodi:fill-cmyk", val);
 			sp_repr_set_attr (repr, "fill-cmyk", NULL);
 		}
-		val = sp_repr_attr (repr, "sodipodi:fill-cmyk");
+		val = sp_repr_get_attr (repr, "sodipodi:fill-cmyk");
 		if (val && sp_style_read_color_cmyk (&style->fill.value.color, val)) {
 			style->fill.set = TRUE;
 			style->fill.inherit = FALSE;
@@ -298,12 +298,12 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	}
 	if (!style->stroke.set || (style->stroke.type == SP_PAINT_TYPE_COLOR)) {
 		/* backwards-compatability */
-		val = sp_repr_attr (repr, "stroke-cmyk");
+		val = sp_repr_get_attr (repr, "stroke-cmyk");
 		if (val) {
 			sp_repr_set_attr (repr, "sodipodi:stroke-cmyk", val);
 			sp_repr_set_attr (repr, "stroke-cmyk", NULL);
 		}
-		val = sp_repr_attr (repr, "sodipodi:stroke-cmyk");
+		val = sp_repr_get_attr (repr, "sodipodi:stroke-cmyk");
 		if (val && sp_style_read_color_cmyk (&style->stroke.value.color, val)) {
 			style->stroke.set = TRUE;
 			style->stroke.inherit = FALSE;
@@ -323,14 +323,14 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	SPS_READ_PENUM_IF_UNSET (&style->font_stretch, repr, "font-stretch", enum_font_stretch, TRUE);
 	/* opacity */
 	if (!style->opacity.set) {
-		val = sp_repr_attr (repr, "opacity");
+		val = sp_repr_get_attr (repr, "opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->opacity, val);
 		}
 	}
 	/* color */
 	if (!style->color.set) {
-		val = sp_repr_attr (repr, "color");
+		val = sp_repr_get_attr (repr, "color");
 		if (val) {
 			/* fixme: Disallow parsing paintservers */
 			sp_style_read_icolor (&style->color, val, style, (object) ? SP_OBJECT_DOCUMENT (object) : NULL);
@@ -338,14 +338,14 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	}
 	/* fill */
 	if (!style->fill.set) {
-		val = sp_repr_attr (repr, "fill");
+		val = sp_repr_get_attr (repr, "fill");
 		if (val) {
 			sp_style_read_ipaint (&style->fill, val, style, (object) ? SP_OBJECT_DOCUMENT (object) : NULL);
 		}
 	}
 	/* fill-opacity */
 	if (!style->fill_opacity.set) {
-		val = sp_repr_attr (repr, "fill-opacity");
+		val = sp_repr_get_attr (repr, "fill-opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->fill_opacity, val);
 		}
@@ -354,7 +354,7 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	SPS_READ_PENUM_IF_UNSET (&style->fill_rule, repr, "fill-rule", enum_fill_rule, TRUE);
 	/* stroke */
 	if (!style->stroke.set) {
-		val = sp_repr_attr (repr, "stroke");
+		val = sp_repr_get_attr (repr, "stroke");
 		if (val) {
 			sp_style_read_ipaint (&style->stroke, val, style, (object) ? SP_OBJECT_DOCUMENT (object) : NULL);
 		}
@@ -364,19 +364,19 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	SPS_READ_PENUM_IF_UNSET (&style->stroke_linejoin, repr, "stroke-linejoin", enum_stroke_linejoin, TRUE);
 	/* stroke-opacity */
 	if (!style->stroke_opacity.set) {
-		val = sp_repr_attr (repr, "stroke-opacity");
+		val = sp_repr_get_attr (repr, "stroke-opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->stroke_opacity, val);
 		}
 	}
 	if (!style->stroke_dasharray_set) {
-		val = sp_repr_attr (repr, "stroke-dasharray");
+		val = sp_repr_get_attr (repr, "stroke-dasharray");
 		sp_style_read_dash (&style->stroke_dash, val);
 		style->stroke_dasharray_set = TRUE;
 	}
 	if (!style->stroke_dashoffset_set) {
 		/* fixme */
-		val = sp_repr_attr (repr, "stroke-dashoffset");
+		val = sp_repr_get_attr (repr, "stroke-dashoffset");
 		if (sp_svg_number_read_d (val, &style->stroke_dash.offset)) {
 			style->stroke_dashoffset_set = TRUE;
 		} else {
@@ -386,7 +386,7 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 
 	/* font-family */
 	if (!style->text_private || !style->text->font_family.set) {
-		val = sp_repr_attr (repr, "font-family");
+		val = sp_repr_get_attr (repr, "font-family");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
 			sp_style_read_istring (&style->text->font_family, val);
@@ -402,11 +402,11 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 			sp_style_merge_from_parent (style, SP_OBJECT_STYLE (object->parent));
 		}
 	} else {
-		if (sp_repr_parent (repr)) {
+		if (sp_repr_get_parent (repr)) {
 			SPStyle *parent;
 			/* fixme: This is not the prettiest thing (Lauris) */
 			parent = sp_style_new ();
-			sp_style_read (parent, NULL, sp_repr_parent (repr));
+			sp_style_read (parent, NULL, sp_repr_get_parent (repr));
 			sp_style_merge_from_parent (style, parent);
 			sp_style_unref (parent);
 		}
@@ -1570,7 +1570,7 @@ static void
 sp_style_read_pfloat (SPIFloat *val, SPRepr *repr, const guchar *key)
 {
 	const guchar *str;
-	str = sp_repr_attr (repr, key);
+	str = sp_repr_get_attr (repr, key);
 	if (str) {
 		sp_style_read_ifloat (val, str);
 	}
@@ -1581,7 +1581,7 @@ static void
 sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, unsigned int inherit)
 {
 	const guchar *str;
-	str = sp_repr_attr (repr, key);
+	str = sp_repr_get_attr (repr, key);
 	if (str) {
 		sp_style_read_ienum (val, str, dict, inherit);
 	}
@@ -1591,7 +1591,7 @@ static void
 sp_style_read_plength (SPILength *val, SPRepr *repr, const guchar *key)
 {
 	const guchar *str;
-	str = sp_repr_attr (repr, key);
+	str = sp_repr_get_attr (repr, key);
 	if (str) {
 		sp_style_read_ilength (val, str);
 	}
@@ -1601,7 +1601,7 @@ static void
 sp_style_read_pfontsize (SPIFontSize *val, SPRepr *repr, const guchar *key)
 {
 	const guchar *str;
-	str = sp_repr_attr (repr, key);
+	str = sp_repr_get_attr (repr, key);
 	if (str) {
 		sp_style_read_ifontsize (val, str);
 	}

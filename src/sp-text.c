@@ -605,7 +605,7 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	}
 
 	if (!rch) {
-		rch = sp_xml_document_createTextNode (sp_repr_document (repr), "");
+		rch = sp_xml_document_createTextNode (sp_repr_get_doc (repr), "");
 		sp_repr_add_child (repr, rch, NULL);
 	}
 
@@ -793,11 +793,11 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("tspan");
 	}
 
-	if (tspan->ly.x.set) sp_repr_set_double_attribute (repr, "x", tspan->ly.x.computed);
-	if (tspan->ly.y.set) sp_repr_set_double_attribute (repr, "y", tspan->ly.y.computed);
-	if (tspan->ly.dx.set) sp_repr_set_double_attribute (repr, "dx", tspan->ly.dx.computed);
-	if (tspan->ly.dy.set) sp_repr_set_double_attribute (repr, "dy", tspan->ly.dy.computed);
-	if (tspan->ly.rotate_set) sp_repr_set_double_attribute (repr, "rotate", tspan->ly.rotate);
+	if (tspan->ly.x.set) sp_repr_set_double (repr, "x", tspan->ly.x.computed);
+	if (tspan->ly.y.set) sp_repr_set_double (repr, "y", tspan->ly.y.computed);
+	if (tspan->ly.dx.set) sp_repr_set_double (repr, "dx", tspan->ly.dx.computed);
+	if (tspan->ly.dy.set) sp_repr_set_double (repr, "dy", tspan->ly.dy.computed);
+	if (tspan->ly.rotate_set) sp_repr_set_double (repr, "rotate", tspan->ly.rotate);
 	if (flags & SP_OBJECT_WRITE_SODIPODI) {
 		sp_repr_set_attr (repr, "sodipodi:role", (tspan->role != SP_TSPAN_ROLE_UNSPECIFIED) ? "line" : NULL);
 	}
@@ -805,7 +805,7 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 	if (flags & SP_OBJECT_WRITE_BUILD) {
 		SPRepr *rstr;
 		/* TEXT element */
-		rstr = sp_xml_document_createTextNode (sp_repr_document (repr), SP_STRING_TEXT (tspan->string));
+		rstr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), SP_STRING_TEXT (tspan->string));
 		sp_repr_append_child (repr, rstr);
 		sp_repr_unref (rstr);
 	} else {
@@ -1342,7 +1342,7 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 				crepr = sp_object_invoke_write (child, NULL, flags);
 				if (crepr) l = g_slist_prepend (l, crepr);
 			} else {
-				crepr = sp_xml_document_createTextNode (sp_repr_document (repr), SP_STRING_TEXT (child));
+				crepr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), SP_STRING_TEXT (child));
 			}
 		}
 		while (l) {
@@ -1360,11 +1360,11 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 		}
 	}
 
-	if (text->ly.x.set) sp_repr_set_double_attribute (repr, "x", text->ly.x.computed);
-	if (text->ly.y.set) sp_repr_set_double_attribute (repr, "y", text->ly.y.computed);
-	if (text->ly.dx.set) sp_repr_set_double_attribute (repr, "dx", text->ly.dx.computed);
-	if (text->ly.dy.set) sp_repr_set_double_attribute (repr, "dy", text->ly.dy.computed);
-	if (text->ly.rotate_set) sp_repr_set_double_attribute (repr, "rotate", text->ly.rotate);
+	if (text->ly.x.set) sp_repr_set_double (repr, "x", text->ly.x.computed);
+	if (text->ly.y.set) sp_repr_set_double (repr, "y", text->ly.y.computed);
+	if (text->ly.dx.set) sp_repr_set_double (repr, "dx", text->ly.dx.computed);
+	if (text->ly.dy.set) sp_repr_set_double (repr, "dy", text->ly.dy.computed);
+	if (text->ly.rotate_set) sp_repr_set_double (repr, "rotate", text->ly.rotate);
 
 	if (((SPObjectClass *) (text_parent_class))->write)
 		((SPObjectClass *) (text_parent_class))->write (object, repr, flags);
@@ -1888,7 +1888,7 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 			cp.y += style->font_size.computed;
 		}
 		sp_repr_set_attr (rtspan, "sodipodi:role", "line");
-		rstr = sp_xml_document_createTextNode (sp_repr_document (repr), p);
+		rstr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), p);
 		sp_repr_add_child (rtspan, rstr, NULL);
 		sp_repr_append_child (repr, rtspan);
 		p = (e) ? e + 1 : NULL;
@@ -2036,7 +2036,7 @@ sp_text_append_line (SPText *text)
 	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 
 	/* Create TEXT */
-	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+	rstring = sp_xml_document_createTextNode (sp_repr_get_doc (rtspan), "");
 	sp_repr_add_child (rtspan, rstring, NULL);
 	sp_repr_unref (rstring);
 	/* Append to text */
@@ -2065,7 +2065,7 @@ sp_text_insert_line (SPText *text, gint pos)
 	rtspan = sp_repr_new ("tspan");
 	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 	/* Create TEXT */
-	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+	rstring = sp_xml_document_createTextNode (sp_repr_get_doc (rtspan), "");
 	sp_repr_add_child (rtspan, rstring, NULL);
 	sp_repr_unref (rstring);
 
@@ -2100,7 +2100,7 @@ sp_text_append (SPText *text, const guchar *utf8)
 		/* Create <tspan> */
 		rtspan = sp_repr_new ("tspan");
 		/* Create TEXT */
-		rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+		rstring = sp_xml_document_createTextNode (sp_repr_get_doc (rtspan), "");
 		sp_repr_add_child (rtspan, rstring, NULL);
 		sp_repr_unref (rstring);
 		/* Add string */

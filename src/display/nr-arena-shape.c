@@ -24,6 +24,7 @@
 #include <libnr/nr-blit.h>
 #include <libnr/nr-stroke.h>
 #include <libnr/nr-svp-render.h>
+#include <libnr/nr-pixblock-line.h>
 
 #include <libnr/nr-svp-private.h>
 
@@ -120,6 +121,11 @@ nr_arena_shape_finalize (NRObject *object)
 		shape->markers = nr_arena_item_detach_unref (item, shape->markers);
 	}
 
+	if (shape->path.elements) {
+		nr_path_release (&shape->path);
+		shape->path.elements = NULL;
+	}
+
 	if (shape->fill_svp) nr_svp_free (shape->fill_svp);
 	if (shape->stroke_svp) nr_svp_free (shape->stroke_svp);
 	if (shape->fill_painter) sp_painter_free (shape->fill_painter);
@@ -214,6 +220,11 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	beststate = NR_ARENA_ITEM_STATE_ALL;
 
+	if (shape->path.elements) {
+		nr_path_release (&shape->path);
+		shape->path.elements = NULL;
+	}
+
 	for (child = shape->markers; child != NULL; child = child->next) {
 		newstate = nr_arena_item_invoke_update (child, area, gc, state, reset);
 		beststate = beststate & newstate;
@@ -279,7 +290,10 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (sp_curve_is_empty (shape->curve)) return NR_ARENA_ITEM_STATE_ALL;
 	if ((shape->style->fill.type == SP_PAINT_TYPE_NONE) && (shape->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
 
-		/* Build state data */
+	/* Build state data */
+	shape->ctm = gc->transform;
+	nr_path_setup_from_art_bpath (&shape->path, shape->curve->bpath);
+
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
@@ -316,7 +330,6 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				shape->fill_svp = svpa;
 #endif
 			}
-			shape->ctm = gc->transform;
 		}
 	}
 
@@ -421,6 +434,16 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 	if (!shape->style) return item->state;
 
 	style = shape->style;
+
+	if (flags & NR_ARENA_ITEM_RENDER_WIREFRAME) {
+		if (shape->path.elements) {
+			NRMatrixF ctmf;
+			nr_matrix_f_from_d (&ctmf, &shape->ctm);
+			nr_pixblock_draw_path_rgba32 (pb, &shape->path, &ctmf, 0x000000ff);
+			pb->empty = FALSE;
+		}
+		return item->state;
+	}
 
 	if (shape->fill_svp) {
 		NRPixBlock m;

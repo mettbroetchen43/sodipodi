@@ -203,7 +203,7 @@ sp_xml_element_setAttributeNS (SPXMLElement *element, const unsigned char *nr, c
 }
 
 SPRepr *
-sp_repr_children (SPRepr *repr)
+sp_repr_get_children (SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
 
@@ -211,7 +211,7 @@ sp_repr_children (SPRepr *repr)
 }
 
 SPRepr *
-sp_repr_next (SPRepr *repr)
+sp_repr_get_next (SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
 
@@ -222,11 +222,46 @@ int sp_repr_attr_is_set (SPRepr * repr, const char * key)
 {
 	char * result;
 
-	result = (char *) sp_repr_attr (repr, key);
+	result = (char *) sp_repr_get_attr (repr, key);
 
 	return (result != NULL);
 }
 
+SPReprAttr *
+sp_repr_attr_get_first (SPRepr *repr)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	return repr->attributes;
+}
+
+SPReprAttr *
+sp_repr_attr_get_next (SPRepr *repr, SPReprAttr *ref)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	return (ref) ? ref->next : repr->attributes;
+}
+
+const unsigned char *
+sp_repr_attr_get_key (SPRepr *repr, SPReprAttr *attr)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (attr != NULL, NULL);
+
+	return SP_REPR_ATTRIBUTE_KEY (attr);
+}
+
+const unsigned char *
+sp_repr_attr_get_value (SPRepr *repr, SPReprAttr *attr)
+{
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (attr != NULL, NULL);
+
+	return SP_REPR_ATTRIBUTE_VALUE (attr);
+}
+
+#if 0
 double
 sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def)
 {
@@ -284,20 +319,21 @@ sp_repr_set_int_attribute (SPRepr * repr, const char * key, int value)
 
 	return sp_repr_set_attr (repr, key, c);
 }
+#endif
 
 const char *
 sp_repr_doc_attr (SPRepr * repr, const char * key)
 {
 	SPRepr * p;
 
-	p = sp_repr_parent (repr);
+	p = sp_repr_get_parent (repr);
 
 	while (p != NULL) {
 		repr = p;
-		p = sp_repr_parent (p);
+		p = sp_repr_get_parent (p);
 	}
 
-	return sp_repr_attr (repr, key);
+	return sp_repr_get_attr (repr, key);
 }
 
 int
@@ -306,8 +342,8 @@ sp_repr_compare_position (SPRepr * first, SPRepr * second)
 	SPRepr * parent;
 	int p1, p2;
 
-	parent = sp_repr_parent (first);
-	g_assert (parent == sp_repr_parent (second));
+	parent = sp_repr_get_parent (first);
+	g_assert (parent == sp_repr_get_parent (second));
 
 	p1 = sp_repr_position (first);
 	p2 = sp_repr_position (second);
@@ -325,7 +361,7 @@ sp_repr_position (SPRepr * repr)
 	int pos;
 
 	g_assert (repr != NULL);
-	parent = sp_repr_parent (repr);
+	parent = sp_repr_get_parent (repr);
 	g_assert (parent != NULL);
 
 	pos = 0;
@@ -364,13 +400,13 @@ sp_repr_n_children (SPRepr * repr)
 	return n;
 }
 
-void
+unsigned int
 sp_repr_append_child (SPRepr * repr, SPRepr * child)
 {
 	SPRepr * ref;
 
-	g_assert (repr != NULL);
-	g_assert (child != NULL);
+	g_return_val_if_fail (repr != NULL, 0);
+	g_return_val_if_fail (child != NULL, 0);
 
 	ref = NULL;
 	if (repr->children) {
@@ -378,19 +414,16 @@ sp_repr_append_child (SPRepr * repr, SPRepr * child)
 		while (ref->next) ref = ref->next;
 	}
 
-	sp_repr_add_child (repr, child, ref);
+	return sp_repr_add_child (repr, child, ref);
 }
 
-void sp_repr_unparent (SPRepr * repr)
+unsigned int
+sp_repr_unparent (SPRepr *repr)
 {
-	SPRepr * parent;
+	g_return_val_if_fail (repr != NULL, 0);
+	g_return_val_if_fail (repr->parent != NULL, 0);
 
-	g_assert (repr != NULL);
-
-	parent = sp_repr_parent (repr);
-	g_assert (parent != NULL);
-
-	sp_repr_remove_child (parent, repr);
+	return sp_repr_remove_child (repr->parent, repr);
 }
 
 SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr)
@@ -399,7 +432,7 @@ SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr)
 
 	g_assert (repr != NULL);
 
-	parent = sp_repr_parent (repr);
+	parent = sp_repr_get_parent (repr);
 	g_assert (parent != NULL);
 
 	new = sp_repr_duplicate (repr);
@@ -436,8 +469,8 @@ sp_repr_attr_inherited (SPRepr *repr, const unsigned char *key)
 	g_assert (repr != NULL);
 	g_assert (key != NULL);
 
-	for (current = repr; current != NULL; current = sp_repr_parent (current)) {
-		val = sp_repr_attr (current, key);
+	for (current = repr; current != NULL; current = sp_repr_get_parent (current)) {
+		val = sp_repr_get_attr (current, key);
 		if (val != NULL)
 			return val;
 	}
@@ -518,7 +551,7 @@ sp_repr_get_boolean (SPRepr *repr, const unsigned char *key, unsigned int *val)
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (val != NULL, FALSE);
 
-	v = sp_repr_attr (repr, key);
+	v = sp_repr_get_attr (repr, key);
 
 	if (v != NULL) {
 		if (!g_strcasecmp (v, "true") ||
@@ -544,7 +577,7 @@ sp_repr_get_int (SPRepr *repr, const unsigned char *key, int *val)
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (val != NULL, FALSE);
 
-	v = sp_repr_attr (repr, key);
+	v = sp_repr_get_attr (repr, key);
 
 	if (v != NULL) {
 		*val = atoi (v);
@@ -563,7 +596,7 @@ sp_repr_get_double (SPRepr *repr, const unsigned char *key, double *val)
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (val != NULL, FALSE);
 
-	v = sp_repr_attr (repr, key);
+	v = sp_repr_get_attr (repr, key);
 
 	if (v != NULL) {
 		return arikkei_strtod_exp (v, 256, val);

@@ -15,26 +15,8 @@
 
 /* SPObject flags */
 
-/* Async modification flags */
-#define SP_OBJECT_MODIFIED_FLAG (1 << 0)
-#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 1)
-#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 2)
-#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 3)
-#define SP_OBJECT_VIEWPORT_MODIFIED_FLAG (1 << 4)
-#define SP_OBJECT_USER_MODIFIED_FLAG_A (1 << 5)
-#define SP_OBJECT_USER_MODIFIED_FLAG_B (1 << 6)
-#define SP_OBJECT_USER_MODIFIED_FLAG_C (1 << 7)
-
 /* Conveneience */
 #define SP_OBJECT_FLAGS_ALL 0xff
-
-/* Flags that mark object as modified */
-/* Object, Child, Style, Viewport, User */
-#define SP_OBJECT_MODIFIED_STATE (SP_OBJECT_FLAGS_ALL & ~(SP_OBJECT_PARENT_MODIFIED_FLAG))
-
-/* Flags that will propagate downstreams */
-/* Parent, Style, Viewport, User */
-#define SP_OBJECT_MODIFIED_CASCADE (SP_OBJECT_FLAGS_ALL & ~(SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))
 
 /* Generic */
 #define SP_OBJECT_IS_CLONED(o) (((SPObject *) (o))->cloned)

@@ -53,6 +53,7 @@ typedef struct _NRGC NRGC;
 #define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ~(s))
 
 #define NR_ARENA_ITEM_RENDER_NO_CACHE (1 << 0)
+#define NR_ARENA_ITEM_RENDER_WIREFRAME (1 << 1)
 
 #include <libnr/nr-types.h>
 #include <libnr/nr-pixblock.h>

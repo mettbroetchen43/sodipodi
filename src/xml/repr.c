@@ -198,7 +198,7 @@ sp_repr_attach (SPRepr *parent, SPRepr *child)
 }
 
 SPRepr *
-sp_repr_duplicate (const SPRepr *repr)
+sp_repr_duplicate (SPRepr *repr)
 {
 	SPRepr *new;
 
@@ -248,7 +248,7 @@ repr_doc_copy (SPRepr *to, const SPRepr *from)
 }
 
 const unsigned char *
-sp_repr_name (const SPRepr *repr)
+sp_repr_get_name (SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
 
@@ -256,15 +256,15 @@ sp_repr_name (const SPRepr *repr)
 }
 
 const unsigned char *
-sp_repr_content (const SPRepr *repr)
+sp_repr_get_content (SPRepr *repr)
 {
-	g_assert (repr != NULL);
+	g_return_val_if_fail (repr != NULL, NULL);
 
 	return SP_REPR_CONTENT (repr);
 }
 
 const unsigned char *
-sp_repr_attr (const SPRepr *repr, const unsigned char *key)
+sp_repr_get_attr (SPRepr *repr, const unsigned char *key)
 {
 	SPReprAttr *ra;
 	unsigned int q;
@@ -457,7 +457,7 @@ sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr)
 }
 
 SPRepr *
-sp_repr_parent (SPRepr * repr)
+sp_repr_get_parent (SPRepr * repr)
 {
 	g_assert (repr != NULL);
 
@@ -746,7 +746,7 @@ sp_repr_nth_child (const SPRepr * repr, int n)
 /* fixme: Do this somewhere, somehow The Right Way (TM) */
 
 SPReprDoc *
-sp_repr_document_new (const char *rootname)
+sp_repr_doc_new (const unsigned char *rootname)
 {
 	SPReprDoc * doc;
 	SPRepr * root;
@@ -771,13 +771,13 @@ sp_repr_document_new (const char *rootname)
 }
 
 void
-sp_repr_document_ref (SPReprDoc * doc)
+sp_repr_doc_ref (SPReprDoc * doc)
 {
 	sp_repr_ref ((SPRepr *) doc);
 }
 
 void
-sp_repr_document_unref (SPReprDoc * doc)
+sp_repr_doc_unref (SPReprDoc * doc)
 {
 	sp_repr_unref ((SPRepr *) doc);
 }
@@ -795,13 +795,13 @@ sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr)
 }
 
 SPReprDoc *
-sp_repr_document (const SPRepr *repr)
+sp_repr_get_doc (SPRepr *repr)
 {
 	return repr->doc;
 }
 
 SPRepr *
-sp_repr_document_root (const SPReprDoc *doc)
+sp_repr_doc_get_root (SPReprDoc *doc)
 {
 	g_assert (doc != NULL);
 	return doc->repr.children;
@@ -813,17 +813,17 @@ sp_repr_document_root (const SPReprDoc *doc)
  */
 
 unsigned int
-sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const unsigned char *key)
+sp_repr_doc_merge (SPReprDoc *doc, SPReprDoc *src, const unsigned char *key)
 {
 	SPRepr *rdoc;
-	const SPRepr *rsrc;
+	SPRepr *rsrc;
 
 	g_return_val_if_fail (doc != NULL, FALSE);
 	g_return_val_if_fail (src != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	rdoc = sp_repr_document_root (doc);
-	rsrc = sp_repr_document_root (src);
+	rdoc = sp_repr_doc_get_root (doc);
+	rsrc = sp_repr_doc_get_root (src);
 	
 	return sp_repr_merge (rdoc, rsrc, key);
 }
@@ -834,7 +834,7 @@ sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const unsigned cha
  */
 
 unsigned int
-sp_repr_merge (SPRepr *repr, const SPRepr *src, const unsigned char *key)
+sp_repr_merge (SPRepr *repr, SPRepr *src, const unsigned char *key)
 {
 	SPRepr *child;
 	SPReprAttr *attr;
@@ -854,7 +854,7 @@ sp_repr_merge (SPRepr *repr, const SPRepr *src, const unsigned char *key)
 	for (child = src->children; child != NULL; child = child->next) {
 		SPRepr *rch;
 		const unsigned char *id;
-		id = sp_repr_attr (child, key);
+		id = sp_repr_get_attr (child, key);
 		if (id) {
 			rch = sp_repr_lookup_child (repr, key, id);
 			if (rch) {
@@ -1002,5 +1002,17 @@ sp_listener_free (SPListener *listener)
 {
 	listener->next = free_listener;
 	free_listener = listener;
+}
+
+unsigned int
+sp_repr_is_element (SPRepr *repr)
+{
+	return SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE;
+}
+
+unsigned int
+sp_repr_is_text (SPRepr *repr)
+{
+	return SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE;
 }
 

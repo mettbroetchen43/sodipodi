@@ -78,7 +78,10 @@ sp_menu_destroy (GtkObject *object)
 
 	menu = SP_MENU (object);
 
-	/* fixme: Tooltips */
+        if (menu->tt) {
+          gtk_object_sink(GTK_OBJECT(menu->tt));
+          menu->tt = NULL;
+        }
 
 	((GtkObjectClass *) (parent_class))->destroy (object);
 }

@@ -23,8 +23,11 @@
 #include <glib.h>
 #include <gtk/gtkmain.h>
 #include <xml/repr.h>
+
 #include "helper/sp-marshal.h"
 #include "helper/sp-intl.h"
+
+#include "api.h"
 #include "sodipodi-private.h"
 #include "sp-object-repr.h"
 #include "sp-root.h"
@@ -180,7 +183,7 @@ sp_document_dispose (GObject *object)
 
 		if (priv->iddef) g_hash_table_destroy (priv->iddef);
 
-		if (doc->rdoc) sp_repr_document_unref (doc->rdoc);
+		if (doc->rdoc) sp_repr_doc_unref (doc->rdoc);
 
 		/* Free resources */
 		g_hash_table_foreach_remove (priv->resources, sp_document_resource_list_free, doc);
@@ -228,7 +231,7 @@ sp_document_create (SPReprDoc *rdoc,
 	SPRepr *rroot;
 	guint version;
 
-	rroot = sp_repr_document_root (rdoc);
+	rroot = sp_repr_doc_get_root (rdoc);
 
 	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
 
@@ -260,8 +263,8 @@ sp_document_create (SPReprDoc *rdoc,
 	sp_repr_set_attr (rroot, "xmlns:xlink", SP_NAMESPACE_XLINK);
 	/* End of quick hack */
 	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
+	if (!sp_repr_get_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
+	if (!sp_repr_get_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
 	/* Quick hack 3 - Set uri attributes */
 	if (uri) {
@@ -319,13 +322,13 @@ sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepaliv
 		SPRepr *rroot;
 		unsigned char *s, *p;
 		/* Try to fetch repr from file */
-		rdoc = sp_repr_read_file (uri, SP_SVG_NS_URI);
+		rdoc = sp_repr_doc_new_from_file (uri, SP_SVG_NS_URI);
 		/* If file cannot be loaded, return NULL without warning */
 		if (rdoc == NULL) return NULL;
-		rroot = sp_repr_document_root (rdoc);
+		rroot = sp_repr_doc_get_root (rdoc);
 		/* If xml file is not svg, return NULL without warning */
 		/* fixme: destroy document */
-		if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
+		if (strcmp (sp_repr_get_name (rroot), "svg") != 0) return NULL;
 		s = g_strdup (uri);
 		p = strrchr (s, '/');
 		if (p) {
@@ -338,7 +341,7 @@ sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepaliv
 		}
 		g_free (s);
 	} else {
-		rdoc = sp_repr_document_new ("svg");
+		rdoc = sp_repr_doc_new ("svg");
 		base = NULL;
 		name = g_strdup_printf (_("New document %d"), ++doc_count);
 	}
@@ -359,15 +362,15 @@ sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int adverti
 	SPRepr *rroot;
 	unsigned char *name;
 
-	rdoc = sp_repr_read_mem (buffer, length, SP_SVG_NS_URI);
+	rdoc = sp_repr_doc_new_from_mem (buffer, length, SP_SVG_NS_URI);
 
 	/* If it cannot be loaded, return NULL without warning */
 	if (rdoc == NULL) return NULL;
 
-	rroot = sp_repr_document_root (rdoc);
+	rroot = sp_repr_doc_get_root (rdoc);
 	/* If xml file is not svg, return NULL without warning */
 	/* fixme: destroy document */
-	if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
+	if (strcmp (sp_repr_get_name (rroot), "svg") != 0) return NULL;
 
 	name = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
@@ -418,6 +421,30 @@ sp_document_height (SPDocument * document)
 	g_return_val_if_fail (document->root != NULL, 0.0);
 
 	return SP_ROOT (document->root)->height.computed / 1.25;
+}
+
+const unsigned char *
+sp_document_get_uri (SPDocument *doc)
+{
+	return doc->uri;
+}
+
+const unsigned char *
+sp_document_get_name (SPDocument *doc)
+{
+	return doc->name;
+}
+
+SPReprDoc *
+sp_document_get_repr_doc (SPDocument *doc)
+{
+	return doc->rdoc;
+}
+
+SPRepr *
+sp_document_get_repr_root (SPDocument *doc)
+{
+	return doc->rroot;
 }
 
 void
@@ -525,13 +552,25 @@ sp_document_undef_id (SPDocument * document, const gchar * id)
 }
 
 SPObject *
-sp_document_lookup_id (SPDocument *doc, const gchar *id)
+sp_document_get_object_from_id (SPDocument *doc, const unsigned char *id)
 {
 	g_return_val_if_fail (doc != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
 	g_return_val_if_fail (id != NULL, NULL);
 
 	return g_hash_table_lookup (doc->priv->iddef, id);
+}
+
+SPObject *
+sp_document_get_object_from_repr (SPDocument *doc, SPRepr *repr)
+{
+	const unsigned char *id;
+	g_return_val_if_fail (doc != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	id = sp_repr_get_attr (repr, "id");
+	return sp_document_get_object_from_id (doc, id);
 }
 
 /* Object modification root handler */
@@ -651,7 +690,7 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 		sp_repr_append_child (SP_OBJECT_REPR (SP_DOCUMENT_DEFS(document)), repr);
 	}
 
-	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
+	return sp_document_lookup_id (document, sp_repr_get_attr (repr, "id"));
 }
 
 /* Returns the sequence number of object */

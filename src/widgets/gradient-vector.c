@@ -631,7 +631,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	csel = g_object_get_data (G_OBJECT (object), "start");
 	color = sp_color_selector_get_rgba32 (csel);
 
-	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", start);
+	sp_repr_set_double (SP_OBJECT_REPR (child), "offset", start);
 	arikkei_dtoa_simple (c0, 32, (double) (color & 0xff) / 255.0, 4, 0, FALSE);
 	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%s;", color >> 8, c0);
 	sp_repr_set_attr (SP_OBJECT_REPR (child), "style", c);
@@ -644,7 +644,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	csel = g_object_get_data (G_OBJECT (object), "end");
 	color = sp_color_selector_get_rgba32 (csel);
 
-	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", end);
+	sp_repr_set_double (SP_OBJECT_REPR (child), "offset", end);
 	arikkei_dtoa_simple (c0, 32, (double) (color & 0xff) / 255.0, 4, 0, FALSE);
 	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%s;", color >> 8, c0);
 	sp_repr_set_attr (SP_OBJECT_REPR (child), "style", c);

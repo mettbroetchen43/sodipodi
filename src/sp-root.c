@@ -125,7 +125,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	group = (SPGroup *) object;
 	root = (SPRoot *) object;
 
-	if (sp_repr_attr (repr, "sodipodi:docname") || sp_repr_attr (repr, "SP-DOCNAME")) {
+	if (sp_repr_get_attr (repr, "sodipodi:docname") || sp_repr_get_attr (repr, "SP-DOCNAME")) {
 		/* This is ugly, but works */
 		root->original = 1;
 	}
@@ -370,7 +370,7 @@ sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	if (((SPObjectClass *) (parent_class))->child_added)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	id = sp_repr_attr (child, "id");
+	id = sp_repr_get_attr (child, "id");
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
@@ -405,7 +405,7 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 
 	root = (SPRoot *) object;
 
-	id = sp_repr_attr (child, "id");
+	id = sp_repr_get_attr (child, "id");
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
@@ -627,7 +627,7 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_double (repr, "y", root->y.computed);
 	sp_repr_set_double (repr, "width", root->width.computed);
 	sp_repr_set_double (repr, "height", root->height.computed);
-	sp_repr_set_attr (repr, "viewBox", sp_repr_attr (object->repr, "viewBox"));
+	sp_repr_set_attr (repr, "viewBox", sp_repr_get_attr (object->repr, "viewBox"));
 
 	if (((SPObjectClass *) (parent_class))->write)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags);

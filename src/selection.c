@@ -13,8 +13,10 @@
  */
 
 #include <gtk/gtkmain.h>
+
 #include "macros.h"
 #include "helper/sp-marshal.h"
+#include "api.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -298,7 +300,7 @@ sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (repr != NULL);
 
-	id = sp_repr_attr (repr, "id");
+	id = sp_repr_get_attr (repr, "id");
 	g_return_if_fail (id != NULL);
 
 	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
@@ -331,7 +333,7 @@ sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (repr != NULL);
 
-	id = sp_repr_attr (repr, "id");
+	id = sp_repr_get_attr (repr, "id");
 	g_return_if_fail (id != NULL);
 
 	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
@@ -369,7 +371,7 @@ sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (repr != NULL);
 
-	id = sp_repr_attr (repr, "id");
+	id = sp_repr_get_attr (repr, "id");
 	g_return_if_fail (id != NULL);
 
 	object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
@@ -422,7 +424,7 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 	for (l = list; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		g_return_if_fail (repr != NULL);
-		id = sp_repr_attr (repr, "id");
+		id = sp_repr_get_attr (repr, "id");
 		g_return_if_fail (id != NULL);
 
 		object = sp_document_lookup_id (SP_DT_DOCUMENT (selection->desktop), id);
@@ -438,7 +440,7 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 }
 
 void
-sp_selection_empty (SPSelection * selection)
+sp_selection_set_empty (SPSelection * selection)
 {
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -478,7 +480,7 @@ sp_selection_repr_list (SPSelection * selection)
 }
 
 SPItem *
-sp_selection_item (SPSelection * selection)
+sp_selection_get_item (SPSelection *selection)
 {
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
@@ -490,7 +492,7 @@ sp_selection_item (SPSelection * selection)
 }
 
 SPRepr *
-sp_selection_repr (SPSelection * selection)
+sp_selection_get_repr (SPSelection *selection)
 {
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);

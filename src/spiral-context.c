@@ -26,6 +26,7 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtklabel.h>
 #include "helper/sp-canvas.h"
+#include "xml/repr-private.h"
 #include "sp-spiral.h"
 #include "sodipodi.h"
 #include "document.h"

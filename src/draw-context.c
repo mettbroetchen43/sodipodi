@@ -24,6 +24,7 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include "xml/repr-private.h"
 #include "macros.h"
 #include "xml/repr.h"
 #include "svg/svg.h"

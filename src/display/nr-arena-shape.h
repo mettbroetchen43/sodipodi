@@ -38,6 +38,9 @@ struct _NRArenaShape {
 	NRSVP *stroke_svp;
 	/* Markers */
 	NRArenaItem *markers;
+
+	/* Experimental */
+	NRPath path;
 };
 
 struct _NRArenaShapeClass {

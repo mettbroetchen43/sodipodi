@@ -384,12 +384,15 @@ sp_toolbox_file_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.file");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -417,12 +420,15 @@ sp_toolbox_edit_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.edit");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -464,12 +470,15 @@ sp_toolbox_object_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.object");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -498,12 +507,15 @@ sp_toolbox_selection_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.selection");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -542,12 +554,15 @@ sp_toolbox_draw_create (void)
 	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -593,12 +608,15 @@ sp_toolbox_extension_create (void)
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.extension");
 
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 
 		gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
 	}
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -628,12 +646,15 @@ sp_toolbox_zoom_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.zoom");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -673,12 +694,15 @@ sp_toolbox_node_create (void)
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.node");
 	if (repr) {
-		gint state;
-		state = sp_repr_get_int_attribute (repr, "state", 0);
+		int state;
+		state = 0;
+		sp_repr_get_int (repr, "state", &state);
 		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 
 	return tb;
 }
@@ -686,11 +710,11 @@ sp_toolbox_node_create (void)
 static gint
 sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data)
 {
-	SPRepr * repr;
+	SPRepr *repr;
 
 	repr = (SPRepr *) data;
 
-	sp_repr_set_int_attribute (repr, "state", state);
+	sp_repr_set_int (repr, "state", state);
 
 	return FALSE;
 }

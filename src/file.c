@@ -340,7 +340,7 @@ sp_file_save_document (SPDocument *doc)
 		sp_document_set_undo_sensitive (doc, FALSE);
 		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 		sp_document_set_undo_sensitive (doc, TRUE);
-		sp_repr_save_file (sp_document_repr_doc (doc), fn);
+		sp_repr_doc_write_file (sp_document_repr_doc (doc), fn);
 	}
 }
 
@@ -395,9 +395,9 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 		const gchar * style;
 		SPRepr * child;
 
-		rnewdoc = sp_repr_read_file (filename, SP_SVG_NS_URI);
+		rnewdoc = sp_repr_doc_new_from_file (filename, SP_SVG_NS_URI);
 		if (rnewdoc == NULL) return;
-		repr = sp_repr_document_root (rnewdoc);
+		repr = sp_repr_doc_get_root (rnewdoc);
 		style = sp_repr_attr (repr, "style");
 
 		newgroup = sp_repr_new ("g");
@@ -409,7 +409,7 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 			sp_repr_append_child (newgroup, newchild);
 		}
 
-		sp_repr_document_unref (rnewdoc);
+		sp_repr_doc_unref (rnewdoc);
 
 		sp_document_add_repr (doc, newgroup);
 		sp_repr_unref (newgroup);
@@ -436,8 +436,8 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 			repr = sp_repr_new ("image");
 			sp_repr_set_attr (repr, "xlink:href", relname);
 			sp_repr_set_attr (repr, "sodipodi:absref", filename);
-			sp_repr_set_double_attribute (repr, "width", gdk_pixbuf_get_width (pb));
-			sp_repr_set_double_attribute (repr, "height", gdk_pixbuf_get_height (pb));
+			sp_repr_set_double (repr, "width", gdk_pixbuf_get_width (pb));
+			sp_repr_set_double (repr, "height", gdk_pixbuf_get_height (pb));
 			sp_document_add_repr (doc, repr);
 			sp_repr_unref (repr);
 			sp_document_done (doc);

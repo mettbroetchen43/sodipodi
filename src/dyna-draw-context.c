@@ -58,6 +58,7 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtklabel.h>
+#include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "helper/sp-intl.h"
 #include "helper/curve.h"

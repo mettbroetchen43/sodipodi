@@ -7,8 +7,6 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2002 Lauris Kaplinski
- *
  * This code is in public domain
  */
 

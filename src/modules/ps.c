@@ -242,7 +242,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	g_list_free (sl);
 	if (repr) {
 		const unsigned char *val;
-		val = sp_repr_attr (repr, "resolution");
+		val = sp_repr_get_attr (repr, "resolution");
 		if (val) gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (combo)->entry), val);
 	}
 	gtk_box_pack_end (GTK_BOX (hb), combo, FALSE, FALSE, 0);
@@ -262,9 +262,9 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	gtk_box_pack_start (GTK_BOX (vb), l, FALSE, FALSE, 0);
 
 	e = gtk_entry_new ();
-	if (repr && sp_repr_attr (repr, "destination")) {
+	if (repr && sp_repr_get_attr (repr, "destination")) {
 		const unsigned char *val;
-		val = sp_repr_attr (repr, "destination");
+		val = sp_repr_get_attr (repr, "destination");
 		if (val) gtk_entry_set_text (GTK_ENTRY (e), val);
 	} else {
 		gtk_entry_set_text (GTK_ENTRY (e), "lp");

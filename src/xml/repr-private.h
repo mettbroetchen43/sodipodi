@@ -17,10 +17,15 @@
 #include "repr.h"
 #include "repr-action.h"
 
+typedef struct _SPRepr SPXMLNode;
+typedef struct _SPRepr SPXMLText;
+typedef struct _SPRepr SPXMLElement;
+typedef struct _SPReprAttr SPXMLAttribute;
+typedef struct _SPReprDoc SPXMLDocument;
+typedef struct _SPXMLNs SPXMLNs;
+
 typedef struct _SPReprClass SPReprClass;
-typedef struct _SPReprAttr SPReprAttr;
 typedef struct _SPReprListener SPReprListener;
-typedef struct _SPReprEventVector SPReprEventVector;
 
 struct _SPReprClass {
 	size_t size;
@@ -40,21 +45,6 @@ struct _SPReprListener {
 	SPReprListener *next;
 	const SPReprEventVector *vector;
 	void * data;
-};
-
-struct _SPReprEventVector {
-	/* Immediate signals */
-	void (* destroy) (SPRepr *repr, void * data);
-	unsigned int (* add_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, void * data);
-	void (* child_added) (SPRepr *repr, SPRepr *child, SPRepr *ref, void * data);
-	unsigned int (* remove_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, void * data);
-	void (* child_removed) (SPRepr *repr, SPRepr *child, SPRepr *ref, void * data);
-	unsigned int (* change_attr) (SPRepr *repr, const unsigned char *key, const unsigned char *oldval, const unsigned char *newval, void * data);
-	void (* attr_changed) (SPRepr *repr, const unsigned char *key, const unsigned char *oldval, const unsigned char *newval, void * data);
-	unsigned int (* change_content) (SPRepr *repr, const unsigned char *oldcontent, const unsigned char *newcontent, void * data);
-	void (* content_changed) (SPRepr *repr, const unsigned char *oldcontent, const unsigned char *newcontent, void * data);
-	unsigned int (* change_order) (SPRepr *repr, SPRepr *child, SPRepr *oldref, SPRepr *newref, void * data);
-	void (* order_changed) (SPRepr *repr, SPRepr *child, SPRepr *oldref, SPRepr *newref, void * data);
 };
 
 struct _SPRepr {
@@ -100,13 +90,89 @@ extern SPReprClass _sp_repr_xml_text_class;
 
 SPRepr *sp_repr_nth_child (const SPRepr *repr, int n);
 
-unsigned int sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref);
-
 void sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void * data);
 
-void sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data);
-void sp_repr_remove_listener_by_data (SPRepr *repr, void * data);
-
 void sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr);
+
+/* Stuff from repr.h */
+
+/* SPXMLNs */
+
+const unsigned char *sp_xml_ns_uri_prefix (const unsigned char *uri, const unsigned char *suggested);
+const unsigned char *sp_xml_ns_prefix_uri (const unsigned char *prefix);
+
+/* SPXMLDocument */
+
+SPXMLText *sp_xml_document_createTextNode (SPXMLDocument *doc, const unsigned char *content);
+SPXMLElement *sp_xml_document_createElement (SPXMLDocument *doc, const unsigned char *name);
+SPXMLElement *sp_xml_document_createElementNS (SPXMLDocument *doc, const unsigned char *ns, const unsigned char *qname);
+
+/* SPXMLNode */
+
+SPXMLDocument *sp_xml_node_get_Document (SPXMLNode *node);
+
+/* SPXMLElement */
+
+void sp_xml_element_setAttributeNS (SPXMLElement *element, const unsigned char *ns, const unsigned char *qname, const unsigned char *val);
+
+/* IO */
+
+
+void sp_repr_print (SPRepr * repr);
+
+/* CSS stuff */
+
+typedef struct _SPCSSAttr SPCSSAttr;
+
+SPCSSAttr * sp_repr_css_attr_new (void);
+void sp_repr_css_attr_unref (SPCSSAttr * css);
+SPCSSAttr * sp_repr_css_attr (SPRepr * repr, const char * attr);
+SPCSSAttr * sp_repr_css_attr_inherited (SPRepr * repr, const char * attr);
+
+const char * sp_repr_css_property (SPCSSAttr * css, const char * name, const char * defval);
+void sp_repr_css_set_property (SPCSSAttr * css, const char * name, const char * value);
+double sp_repr_css_double_property (SPCSSAttr * css, const char * name, double defval);
+
+void sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const char * key);
+void sp_repr_css_change (SPRepr * repr, SPCSSAttr * css, const char * key);
+void sp_repr_css_change_recursive (SPRepr * repr, SPCSSAttr * css, const char * key);
+
+/* Utility finctions */
+
+int sp_repr_attr_is_set (SPRepr * repr, const char * key);
+
+/* Defaults */
+unsigned int sp_repr_set_double_default (SPRepr *repr, const unsigned char *key, double val, double def, double e);
+
+#if 0
+/* Deprecated */
+double sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def);
+int sp_repr_get_int_attribute (SPRepr * repr, const char * key, int def);
+unsigned int sp_repr_set_double_attribute (SPRepr * repr, const char * key, double value);
+unsigned int sp_repr_set_int_attribute (SPRepr * repr, const char * key, int value);
+#endif
+
+int sp_repr_compare_position (SPRepr * first, SPRepr * second);
+
+int sp_repr_position (SPRepr * repr);
+void sp_repr_set_position_absolute (SPRepr * repr, int pos);
+void sp_repr_set_position_relative (SPRepr * repr, int pos);
+int sp_repr_n_children (SPRepr * repr);
+
+const char *sp_repr_doc_attr (SPRepr * repr, const char * key);
+
+SPRepr *sp_repr_duplicate_and_parent (SPRepr * repr);
+
+void sp_repr_remove_signals (SPRepr * repr);
+
+const unsigned char *sp_repr_attr_inherited (SPRepr *repr, const unsigned char *key);
+unsigned int sp_repr_set_attr_recursive (SPRepr *repr, const unsigned char *key, const unsigned char *value);
+
+unsigned int sp_repr_overwrite (SPRepr *repr, const SPRepr *src, const unsigned char *key);
+
+#define sp_repr_attr sp_repr_get_attr
+#define sp_repr_parent sp_repr_get_parent
+#define sp_repr_name sp_repr_get_name
+#define sp_repr_content sp_repr_get_content
 
 #endif

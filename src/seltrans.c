@@ -16,7 +16,9 @@
 #include <libnr/nr-matrix.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+
 #include "macros.h"
+#include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "sodipodi-private.h"
 #include "sodipodi.h"

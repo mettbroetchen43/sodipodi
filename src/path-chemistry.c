@@ -69,7 +69,7 @@ sp_selected_path_combine (void)
 	il = g_slist_copy (il);
 
 	d = "";
-	style = g_strdup (sp_repr_attr ((SP_OBJECT (il->data))->repr, "style"));
+	style = g_strdup (sp_repr_get_attr ((SP_OBJECT (il->data))->repr, "style"));
 
 	for (l = il; l != NULL; l = l->next) {
 		NRMatrixF i2root;
@@ -133,7 +133,7 @@ sp_selected_path_break_apart (void)
 
 	sp_item_i2root_affine (SP_ITEM (path), &i2root);
 	nr_matrix_d_from_f (&d, &i2root);
-	style = g_strdup (sp_repr_attr (SP_OBJECT (item)->repr, "style"));
+	style = g_strdup (sp_repr_get_attr (SP_OBJECT (item)->repr, "style"));
 
 	abp = art_bpath_affine_transform (curve->bpath, NR_MATRIX_D_TO_DOUBLE (&d));
 
@@ -234,7 +234,7 @@ sp_selected_item_to_curved_repr (SPItem * item, guint32 text_grouping_policy)
 	repr = sp_repr_new ("path");
 	/* Transformation */
 	sp_repr_set_attr (repr, "transform", 
-			  sp_repr_attr (SP_OBJECT_REPR (item), "transform"));
+			  sp_repr_get_attr (SP_OBJECT_REPR (item), "transform"));
 	/* Style */
 	style_str = sp_style_write_difference (SP_OBJECT_STYLE (item), 
 					       SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
@@ -256,7 +256,7 @@ sp_path_cleanup (SPPath *path)
 	SPStyle *style;
 	gboolean dropped;
 
-	if (strcmp (sp_repr_name (SP_OBJECT_REPR (path)), "path")) return;
+	if (strcmp (sp_repr_get_name (SP_OBJECT_REPR (path)), "path")) return;
 
 	style = SP_OBJECT_STYLE (path);
 	if (style->fill.type == SP_PAINT_TYPE_NONE) return;

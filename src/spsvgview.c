@@ -139,7 +139,7 @@ main (int argc, const char **argv)
 	}
 
 	while (!ss.doc) {
-		ss.doc = sp_document_new (ss.slides[ss.current], TRUE, TRUE);
+		ss.doc = sp_document_new (ss.slides[ss.current], FALSE, FALSE);
 		if (!ss.doc && (++ss.current >= ss.length)) {
 			/* No loadable documents */
 			return 1;
@@ -213,7 +213,7 @@ sp_svgview_show_next (struct _SPSlideShow *ss)
 	doc = NULL;
 	current = ss->current;
 	while (!doc && (current < (ss->length - 1))) {
-		doc = sp_document_new (ss->slides[++current], TRUE, TRUE);
+		doc = sp_document_new (ss->slides[++current], FALSE, FALSE);
 	}
 	if (doc) {
 		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
@@ -231,7 +231,7 @@ sp_svgview_show_prev (struct _SPSlideShow *ss)
 	doc = NULL;
 	current = ss->current;
 	while (!doc && (current > 0)) {
-		doc = sp_document_new (ss->slides[--current], TRUE, TRUE);
+		doc = sp_document_new (ss->slides[--current], FALSE, FALSE);
 	}
 	if (doc) {
 		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);

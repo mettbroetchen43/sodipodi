@@ -22,6 +22,7 @@
 #include <helper/sp-ctrlline.h>
 #include <helper/sodipodi-ctrlrect.h>
 #include <gtk/gtkimmulticontext.h>
+#include "xml/repr-private.h"
 #include "macros.h"
 #include "sp-text.h"
 #include "sodipodi.h"
@@ -282,14 +283,14 @@ sp_text_context_setup_text (SPTextContext *tc)
 		sp_repr_css_set (rtext, css, "style");
 		sp_repr_css_attr_unref (css);
 	}
-	sp_repr_set_double_attribute (rtext, "x", tc->pdoc.x);
-	sp_repr_set_double_attribute (rtext, "y", tc->pdoc.y);
+	sp_repr_set_double (rtext, "x", tc->pdoc.x);
+	sp_repr_set_double (rtext, "y", tc->pdoc.y);
 	/* Create <tspan> */
 	rtspan = sp_repr_new ("tspan");
 	sp_repr_add_child (rtext, rtspan, NULL);
 	sp_repr_unref (rtspan);
 	/* Create TEXT */
-	rstring = sp_xml_document_createTextNode (sp_repr_document (rtext), "");
+	rstring = sp_xml_document_createTextNode (sp_repr_get_doc (rtext), "");
 	sp_repr_add_child (rtspan, rstring, NULL);
 	sp_repr_unref (rstring);
 	sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);

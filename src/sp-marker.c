@@ -500,8 +500,8 @@ sp_marker_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_set_attr (repr, "orient", NULL);
 	}
 	/* fixme: */
-	sp_repr_set_attr (repr, "viewBox", sp_repr_attr (object->repr, "viewBox"));
-	sp_repr_set_attr (repr, "preserveAspectRatio", sp_repr_attr (object->repr, "preserveAspectRatio"));
+	sp_repr_set_attr (repr, "viewBox", sp_repr_get_attr (object->repr, "viewBox"));
+	sp_repr_set_attr (repr, "preserveAspectRatio", sp_repr_get_attr (object->repr, "preserveAspectRatio"));
 
 	if (((SPObjectClass *) (parent_class))->write)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags);

@@ -36,6 +36,7 @@
 
 #include "helper/sp-intl.h"
 #include "helper/window.h"
+#include "xml/repr-private.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"

@@ -403,7 +403,7 @@ sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	if (((SPObjectClass *) (parent_class))->child_added)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	id = sp_repr_attr (child, "id");
+	id = sp_repr_get_attr (child, "id");
 	no = sp_document_lookup_id (object->document, id);
 	g_assert (SP_IS_OBJECT (no));
 
@@ -434,7 +434,7 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 
 	nv = (SPNamedView *) object;
 
-	id = sp_repr_attr (child, "id");
+	id = sp_repr_get_attr (child, "id");
 	no = sp_document_lookup_id (object->document, id);
 	g_assert (no != NULL);
 

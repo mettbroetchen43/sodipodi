@@ -36,14 +36,17 @@
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 #include "macros.h"
+
+#include "api.h"
+
+#if 0
 #include "system.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "desktop-handles.h"
 #include "selection.h"
-#include "sp-item.h"
-
 #include "../xml/repr-private.h"
+#endif
 
 #include "widgets/icon.h"
 #include "widgets/sp-xmlview-tree.h"
@@ -133,7 +136,7 @@ sp_xml_tree_dialog (void)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_ACTIVE_DESKTOP;
+	desktop = sodipodi_get_active_desktop ();
 	if (!desktop) return;
 	g_assert (SP_IS_DESKTOP (desktop));
 
@@ -404,16 +407,22 @@ set_tree_desktop (SPDesktop * desktop)
 {
 	if ( desktop == current_desktop ) return;
 	if (current_desktop) {
-		if (SP_DT_SELECTION (current_desktop)) {
-			sp_signal_disconnect_by_data (SP_DT_SELECTION (current_desktop), dialog);
+		SPSelection *sel;
+		sel = sp_desktop_get_selection (current_desktop);
+		if (sel) {
+			sp_signal_disconnect_by_data (sel, dialog);
 		}
 		sp_signal_disconnect_by_data (current_desktop, dialog);
 	}
 	current_desktop = desktop;
 	if (desktop) {
+		SPDocument *doc;
+		SPSelection *sel;
+		sel = sp_desktop_get_selection (desktop);
 		g_signal_connect (G_OBJECT (desktop), "shutdown", G_CALLBACK (on_desktop_shutdown), dialog);
-		g_signal_connect (G_OBJECT (SP_DT_SELECTION (desktop)), "changed", G_CALLBACK (on_desktop_selection_changed), dialog);
-		set_tree_document (SP_DT_DOCUMENT (desktop));
+		g_signal_connect ((GObject *) sel, "changed", G_CALLBACK (on_desktop_selection_changed), dialog);
+		doc = sp_desktop_get_document (desktop);
+		set_tree_document (doc);
 	} else {
 		set_tree_document (NULL);
 	}
@@ -429,8 +438,8 @@ set_tree_document (SPDocument * document)
 	current_document = document;
 	if (current_document) {
 		g_signal_connect (G_OBJECT (current_document), "uri_set", G_CALLBACK (on_document_uri_set), dialog);
-		on_document_uri_set (current_document, SP_DOCUMENT_URI (current_document), dialog);
-		set_tree_repr (sp_document_repr_root (current_document));
+		on_document_uri_set (current_document, sp_document_get_uri (current_document), dialog);
+		set_tree_repr (sp_document_get_repr_root (current_document));
 	} else {
 		set_tree_repr (NULL);
 	}
@@ -489,12 +498,12 @@ set_tree_select (SPRepr * repr)
 void
 propagate_tree_select (SPRepr * repr)
 {
-	if (repr && SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
+	if (repr && sp_repr_is_element (repr)) {
 		sp_xmlview_attr_list_set_repr (attributes, repr);
 	} else {
 		sp_xmlview_attr_list_set_repr (attributes, NULL);
 	}
-	if (repr && SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE) {
+	if (repr && sp_repr_is_text (repr)) {
 		sp_xmlview_content_set_repr (content, repr);
 	} else {
 		sp_xmlview_content_set_repr (content, NULL);
@@ -506,7 +515,7 @@ get_dt_select (void)
 {
 	if (!current_desktop) return NULL;
 
-	return sp_selection_repr (SP_DT_SELECTION (current_desktop));
+	return sp_selection_get_repr (sp_desktop_get_selection (current_desktop));
 }
 
 void
@@ -514,16 +523,14 @@ set_dt_select (SPRepr *repr)
 {
 	SPSelection *selection;
 	SPObject *object;
-	const gchar *id;
 	
 	if (!current_desktop) return;
-	selection = SP_DT_SELECTION (current_desktop);
+	selection = sp_desktop_get_selection (current_desktop);
 
 	if (repr) {
-		while ( ( SP_REPR_TYPE(repr) != SP_XML_ELEMENT_NODE ) && sp_repr_parent(repr) ) repr = sp_repr_parent(repr);
+		while ((!sp_repr_is_element (repr)) && sp_repr_get_parent (repr)) repr = sp_repr_get_parent (repr);
 
-		id = sp_repr_attr(repr, "id");
-		object = (id) ? sp_document_lookup_id (SP_DT_DOCUMENT (current_desktop), id) : NULL;
+		object = sp_document_get_object_from_repr (sp_desktop_get_document (current_desktop), repr);
 	} else {
 		object = NULL;
 	}
@@ -532,7 +539,7 @@ set_dt_select (SPRepr *repr)
 	if (object && SP_IS_ITEM (object)) {
 		sp_selection_set_item (selection, SP_ITEM (object));
 	} else {
-		sp_selection_empty (selection);
+		sp_selection_set_empty (selection);
 	}
 	blocked--;
 }
@@ -593,6 +600,7 @@ on_destroy (GtkObject * object, gpointer data)
 {
 	set_tree_desktop (NULL);
 	gtk_object_destroy (GTK_OBJECT (tooltips));
+        tooltips = NULL;
 	dialog = NULL;
 }
 
@@ -607,7 +615,7 @@ on_tree_select_row_enable_if_element (GtkCTree * tree, GtkCTreeNode * node, gint
 {
 	SPRepr * repr;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if (SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
+	if (sp_repr_is_element (repr)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
@@ -619,7 +627,7 @@ on_tree_select_row_show_if_element (GtkCTree * tree, GtkCTreeNode * node, gint c
 {
 	SPRepr * repr;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if (SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
+	if (sp_repr_is_element (repr)) {
 		gtk_widget_show (GTK_WIDGET (data));
 	} else {
 		gtk_widget_hide (GTK_WIDGET (data));
@@ -631,7 +639,7 @@ on_tree_select_row_show_if_text (GtkCTree * tree, GtkCTreeNode * node, gint colu
 {
 	SPRepr * repr;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if (SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE) {
+	if (sp_repr_is_text (repr)) {
 		gtk_widget_show (GTK_WIDGET (data));
 	} else {
 		gtk_widget_hide (GTK_WIDGET (data));
@@ -705,22 +713,22 @@ on_attr_select_row_set_value_content (GtkCList *list, gint row, gint column, Gdk
 	const guchar *name, *value;
 	tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data));
 	name = g_quark_to_string (sp_xmlview_attr_list_get_row_key (list, row));
-	value = sp_repr_attr (selected_repr, name);
+	value = sp_repr_get_attr (selected_repr, name);
 	gtk_text_buffer_set_text (tb, value, strlen (value));
 }
 
 void
 on_tree_select_row_enable_if_indentable (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
-	SPRepr * repr, * prev;
+	SPRepr *repr, *parent, *prev;
 	gboolean indentable;
 	indentable = FALSE;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if ( repr->parent && repr != repr->parent->children ) {
-		g_assert (repr->parent->children);
-		for ( prev = repr->parent->children ; prev != repr ;
-		      prev = prev->next );
-		if (SP_REPR_TYPE (prev) == SP_XML_ELEMENT_NODE) {
+	parent = sp_repr_get_parent (repr);
+	if (parent && repr != sp_repr_get_children (parent)) {
+		g_assert (sp_repr_get_children (parent));
+		for (prev = sp_repr_get_children (parent) ; prev != repr; prev = sp_repr_get_next (prev));
+		if (sp_repr_is_element (prev)) {
 			indentable = TRUE;
 		}
 	}
@@ -730,9 +738,10 @@ on_tree_select_row_enable_if_indentable (GtkCTree * tree, GtkCTreeNode * node, g
 void
 on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
-	SPRepr * repr;
+	SPRepr *repr, *parent;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if ( repr->parent && repr != repr->parent->children ) {
+	parent = sp_repr_get_parent (repr);
+	if (parent && repr != sp_repr_get_children (parent)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
@@ -742,9 +751,10 @@ on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * no
 void
 on_tree_select_row_enable_if_not_last_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
-	SPRepr * repr;
+	SPRepr *repr, *parent;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
-	if ( repr->parent && repr->parent->parent && repr->next ) {
+	parent = sp_repr_get_parent (repr);
+	if (parent && sp_repr_get_parent (parent) && sp_repr_get_next (repr)) {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
@@ -828,7 +838,7 @@ void
 on_document_uri_set (SPDocument * document, const guchar * uri, gpointer data)
 {
 	guchar * title;
-	title = g_strdup_printf (_("Sodipodi: %s : XML View"), SP_DOCUMENT_NAME (document));
+	title = g_strdup_printf (_("Sodipodi: %s : XML View"), sp_document_get_name (document));
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
 	g_free (title);
 }
@@ -930,7 +940,7 @@ cmd_duplicate_node (GtkObject * object, gpointer data)
 
 	g_assert (selected_repr != NULL);
 
-	parent = sp_repr_parent (selected_repr);
+	parent = sp_repr_get_parent (selected_repr);
 	dup = sp_repr_duplicate (selected_repr);
 	sp_repr_add_child (parent, dup, selected_repr);
 
@@ -993,15 +1003,15 @@ cmd_raise_node (GtkObject * object, gpointer data)
 	SPRepr * before, * parent, * ref;
 	g_assert (selected_repr != NULL);
 
-	parent = sp_repr_parent (selected_repr);
+	parent = sp_repr_get_parent (selected_repr);
 	g_return_if_fail (parent != NULL);
-	g_return_if_fail (parent->children != selected_repr);
+	g_return_if_fail (sp_repr_get_children (parent) != selected_repr);
 
 	ref = NULL;
-	before = parent->children;
-	while (before && before->next != selected_repr) {
+	before = sp_repr_get_children (parent);
+	while (before && sp_repr_get_next (before) != selected_repr) {
 		ref = before;
-		before = before->next;
+		before = sp_repr_get_next (before);
 	}
 
 	sp_repr_change_order (parent, selected_repr, ref);
@@ -1017,10 +1027,10 @@ cmd_lower_node (GtkObject * object, gpointer data)
 {
 	SPRepr * parent;
 	g_assert (selected_repr != NULL);
-	g_return_if_fail (selected_repr->next != NULL);
-	parent = sp_repr_parent (selected_repr);
+	g_return_if_fail (sp_repr_get_next (selected_repr) != NULL);
+	parent = sp_repr_get_parent (selected_repr);
 
-	sp_repr_change_order (parent, selected_repr, selected_repr->next);
+	sp_repr_change_order (parent, selected_repr, sp_repr_get_next (selected_repr));
 
 	sp_document_done (current_document);
 
@@ -1036,19 +1046,19 @@ cmd_indent_node (GtkObject * object, gpointer data)
 
 	repr = selected_repr;
 	g_assert (repr != NULL);
-	parent = sp_repr_parent (repr);
+	parent = sp_repr_get_parent (repr);
 	g_return_if_fail (parent != NULL);
-	g_return_if_fail (parent->children != repr);
+	g_return_if_fail (sp_repr_get_children (parent) != repr);
 
-	prev = parent->children;
-	while (prev && prev->next != repr) {
-	      prev = prev->next;
+	prev = sp_repr_get_children (parent);
+	while (prev && sp_repr_get_next (prev) != repr) {
+	      prev = sp_repr_get_next (prev);
 	}
 	g_return_if_fail (prev != NULL);
-	g_return_if_fail (SP_REPR_TYPE (prev) == SP_XML_ELEMENT_NODE);
+	g_return_if_fail (sp_repr_is_element (prev));
 
-	if (prev->children) {
-		for ( ref = prev->children ; ref->next ; ref = ref->next );
+	if (sp_repr_get_children (prev)) {
+		for (ref = sp_repr_get_children (prev) ; sp_repr_get_next (ref) ; ref = sp_repr_get_next (ref));
 	} else {
 		ref = NULL;
 	}
@@ -1073,9 +1083,9 @@ cmd_unindent_node (GtkObject * object, gpointer data)
 
 	repr = selected_repr;
 	g_assert (repr != NULL);
-	parent = sp_repr_parent (repr);
+	parent = sp_repr_get_parent (repr);
 	g_return_if_fail (parent);
-	grandparent = sp_repr_parent (parent);
+	grandparent = sp_repr_get_parent (parent);
 	g_return_if_fail (grandparent);
 	
 	ok = sp_repr_remove_child (parent, repr) &&

@@ -133,7 +133,7 @@ sp_item_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_apply_transformation), item);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Toggle sensitivity */
-	insensitive = (sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive") != NULL);
+	insensitive = (sp_repr_get_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive") != NULL);
 	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
 	gtk_menu_append (GTK_MENU (m), w);
@@ -208,7 +208,7 @@ sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
 	g_assert (SP_IS_ITEM (item));
 
 	/* fixme: reprs suck */
-	val = sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive");
+	val = sp_repr_get_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive");
 	if (val != NULL) {
 		val = NULL;
 	} else {
@@ -234,7 +234,7 @@ sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
 
 	repr = sp_repr_new ("a");
 	sp_repr_add_child (SP_OBJECT_REPR (SP_OBJECT_PARENT (item)), repr, SP_OBJECT_REPR (item));
-	object = sp_document_lookup_id (SP_OBJECT_DOCUMENT (item), sp_repr_attr (repr, "id"));
+	object = sp_document_lookup_id (SP_OBJECT_DOCUMENT (item), sp_repr_get_attr (repr, "id"));
 	g_return_if_fail (SP_IS_ANCHOR (object));
 	child = sp_repr_duplicate (SP_OBJECT_REPR (item));
 	sp_repr_unparent (SP_OBJECT_REPR (item));

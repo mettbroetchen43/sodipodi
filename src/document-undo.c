@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include "xml/repr-private.h"
 #include "xml/repr-action.h"
+#include "api.h"
 #include "sp-object.h"
 #include "sp-item.h"
 #include "document-private.h"

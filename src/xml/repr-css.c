@@ -135,7 +135,9 @@ sp_repr_css_double_property (SPCSSAttr * css, const char * name, double defval)
 	g_assert (css != NULL);
 	g_assert (name != NULL);
 
-	return sp_repr_get_double_attribute ((SPRepr *) css, name, defval);
+	sp_repr_get_double ((SPRepr *) css, name, &defval);
+
+	return defval;
 }
 
 void

@@ -716,9 +716,9 @@ sp_ui_import_one_file(gchar * filename)
 		const gchar * style;
 		SPRepr * child;
 
-		rnewdoc = sp_repr_read_file (filename, SP_SVG_NS_URI);
+		rnewdoc = sp_repr_doc_new_from_file (filename, SP_SVG_NS_URI);
 		if (rnewdoc == NULL) return;
-		repr = sp_repr_document_root (rnewdoc);
+		repr = sp_repr_doc_get_root (rnewdoc);
 		style = sp_repr_attr (repr, "style");
 
 		newgroup = sp_repr_new ("g");
@@ -730,7 +730,7 @@ sp_ui_import_one_file(gchar * filename)
 			sp_repr_append_child (newgroup, newchild);
 		}
 
-		sp_repr_document_unref (rnewdoc);
+		sp_repr_doc_unref (rnewdoc);
 
 		sp_document_add_repr (doc, newgroup);
 		sp_repr_unref (newgroup);
@@ -753,8 +753,8 @@ sp_ui_import_one_file(gchar * filename)
 			repr = sp_repr_new ("image");
 			sp_repr_set_attr (repr, "xlink:href", relname);
 			sp_repr_set_attr (repr, "sodipodi:absref", filename);
-			sp_repr_set_double_attribute (repr, "width", gdk_pixbuf_get_width (pb));
-			sp_repr_set_double_attribute (repr, "height", gdk_pixbuf_get_height (pb));
+			sp_repr_set_double (repr, "width", gdk_pixbuf_get_width (pb));
+			sp_repr_set_double (repr, "height", gdk_pixbuf_get_height (pb));
 			sp_document_add_repr (doc, repr);
 			sp_repr_unref (repr);
 			sp_document_done (doc);

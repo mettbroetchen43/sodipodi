@@ -19,8 +19,8 @@
 #define SP_DT_IS_EDITABLE(d) (TRUE)
 
 #define SP_DT_EVENTCONTEXT(d) sp_desktop_event_context (d)
-#define SP_DT_SELECTION(d) sp_desktop_selection (d)
-#define SP_DT_DOCUMENT(d) sp_desktop_document (d)
+#define SP_DT_SELECTION(d) sp_desktop_get_selection (d)
+#define SP_DT_DOCUMENT(d) sp_desktop_get_document (d)
 #define SP_DT_CANVAS(d) sp_desktop_canvas (d)
 #define SP_DT_ACETATE(d) sp_desktop_acetate (d)
 #define SP_DT_MAIN(d) sp_desktop_main (d)
@@ -31,8 +31,8 @@
 #define SP_DT_CONTROLS(d) sp_desktop_controls (d)
 
 SPEventContext * sp_desktop_event_context (SPDesktop * desktop);
-SPSelection * sp_desktop_selection (SPDesktop * desktop);
-SPDocument * sp_desktop_document (SPDesktop * desktop);
+SPSelection * sp_desktop_get_selection (SPDesktop * desktop);
+SPDocument * sp_desktop_get_document (SPDesktop * desktop);
 SPCanvas * sp_desktop_canvas (SPDesktop * desktop);
 SPCanvasItem * sp_desktop_acetate (SPDesktop * desktop);
 SPCanvasGroup * sp_desktop_main (SPDesktop * desktop);

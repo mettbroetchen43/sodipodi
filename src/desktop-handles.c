@@ -13,6 +13,7 @@
  */
 
 #include "helper/sp-canvas.h"
+#include "api.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 
@@ -26,7 +27,7 @@ sp_desktop_event_context (SPDesktop * desktop)
 }
 
 SPSelection *
-sp_desktop_selection (SPDesktop * desktop)
+sp_desktop_get_selection (SPDesktop *desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
@@ -35,7 +36,7 @@ sp_desktop_selection (SPDesktop * desktop)
 }
 
 SPDocument *
-sp_desktop_document (SPDesktop * desktop)
+sp_desktop_get_document (SPDesktop *desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);

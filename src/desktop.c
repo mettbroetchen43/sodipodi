@@ -818,6 +818,8 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 
 	/* Be cautious about decorations (Lauris) */
 	gtk_widget_show_all (tbl);
+
+        gtk_object_sink(GTK_OBJECT(tt));
 }
 
 static void
@@ -980,7 +982,7 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 	doc = SP_VIEW_DOCUMENT (view);
 
 	if (doc && (((GObject *) doc)->ref_count == 1)) {
-		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
+		if (sp_repr_get_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
 			GtkWidget *dlg;
 			gint b;
 			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,

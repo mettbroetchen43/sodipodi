@@ -42,6 +42,7 @@
 
 #include "helper/sp-intl.h"
 #include "helper/unit-menu.h"
+#include "xml/repr-private.h"
 #include "../svg/svg.h"
 #include "widgets/icon.h"
 #include "widgets/sp-widget.h"

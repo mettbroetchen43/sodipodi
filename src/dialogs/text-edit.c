@@ -43,6 +43,7 @@
 #include "helper/window.h"
 #include "widgets/icon.h"
 #include "widgets/font-selector.h"
+#include "xml/repr-private.h"
 #include "../forward.h"
 #include "../sodipodi.h"
 #include "../document.h"

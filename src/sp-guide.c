@@ -258,8 +258,8 @@ sp_guide_position_set (SPGuide * guide, gdouble x, gdouble y)
 	g_assert (SP_IS_GUIDE (guide));
 
 	sp_guide_moveto (guide, x, y);
-	sp_repr_set_double_attribute (SP_OBJECT (guide)->repr,
-				      "position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? y : x);
+	sp_repr_set_double (SP_OBJECT (guide)->repr,
+			    "position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? y : x);
 }
 
 void

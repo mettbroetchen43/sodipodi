@@ -437,8 +437,8 @@ sp_module_output_document_save (SPModuleOutput *mod, SPDocument *doc, const unsi
 		sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 		sp_repr_set_attr (repr, "sodipodi:docname", uri);
 	} else {
-		rdoc = sp_repr_document_new ("svg");
-		repr = sp_repr_document_root (rdoc);
+		rdoc = sp_repr_doc_new ("svg");
+		repr = sp_repr_doc_get_root (rdoc);
 		repr = sp_object_invoke_write (sp_document_root (doc), repr, SP_OBJECT_WRITE_BUILD);
 	}
 
@@ -462,10 +462,10 @@ sp_module_output_document_save (SPModuleOutput *mod, SPDocument *doc, const unsi
 	sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 	sp_document_set_undo_sensitive (doc, TRUE);
 
-	sp_repr_save_file (sp_repr_document (repr), uri);
+	sp_repr_doc_write_file (sp_repr_get_doc (repr), uri);
 	sp_document_set_uri (doc, uri);
 
-	if (!spns) sp_repr_document_unref (rdoc);
+	if (!spns) sp_repr_doc_unref (rdoc);
 }
 
 /* ModuleFilter */
@@ -596,7 +596,7 @@ sp_module_print_finalize (GObject *object)
 
 #include "dialogs/xml-tree.h"
 
-static SPModule *module_xml_editor = NULL;
+/* static SPModule *module_xml_editor = NULL; */
 static SPModule *module_printing_ps = NULL;
 #ifdef WIN32
 static SPModule *module_printing_win32 = NULL;
@@ -786,7 +786,7 @@ sp_modules_menu_append_node (SPMenu *menu, SPRepr *repr, SPMenu * (*callback) (S
 			SPRepr *child;
 			GtkWidget *chmenu;
 			chmenu = NULL;
-			child = sp_repr_children (repr);
+			child = sp_repr_get_children (repr);
 			while (child) {
 				chmenu = sp_modules_menu_append_node ((SPMenu *) chmenu, child, callback);
 				child = child->next;
@@ -818,7 +818,7 @@ sp_modules_menu_new (void)
 	repr = sodipodi_get_repr (SODIPODI, "extensions");
 	if (repr) {
 		SPRepr *child;
-		child = sp_repr_children (repr);
+		child = sp_repr_get_children (repr);
 		while (child) {
 			menu = sp_modules_menu_append_node ((SPMenu *) menu, child, sp_modules_menu_action_append);
 			child = child->next;
@@ -836,7 +836,7 @@ sp_modules_menu_about_new (void)
 	repr = sodipodi_get_repr (SODIPODI, "extensions");
 	if (repr) {
 		SPRepr *child;
-		child = sp_repr_children (repr);
+		child = sp_repr_get_children (repr);
 		while (child) {
 			menu = sp_modules_menu_append_node ((SPMenu *) menu, child, sp_modules_menu_about_append);
 			child = child->next;

@@ -120,7 +120,7 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 
 	bpath = sp_curve_first_bpath (curve);
 	length = curve->end;
-	nodetypes = sp_repr_attr (SP_OBJECT (item)->repr, "sodipodi:nodetypes");
+	nodetypes = sp_repr_get_attr (SP_OBJECT (item)->repr, "sodipodi:nodetypes");
 	typestr = parse_nodetypes (nodetypes, length);
 
 	np = g_new (SPNodePath, 1);

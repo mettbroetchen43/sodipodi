@@ -38,7 +38,7 @@ sp_filename_from_path (const gchar * path)
 	p = path;
 	while (* p != '\0') p++;
 
-	while ((* p != G_DIR_SEPARATOR) && (p >= path)) p--;
+	while ((p >= path) && (* p != G_DIR_SEPARATOR)) p--;
 	p++;
 
 	return p;
