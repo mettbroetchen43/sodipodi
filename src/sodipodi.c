@@ -247,21 +247,14 @@ sodipodi_class_init (SodipodiClass * klass)
 static void
 sodipodi_init (SPObject * object)
 {
-	if (!sodipodi) {
-		sodipodi = (Sodipodi *) object;
-	} else {
-		g_assert_not_reached ();
-	}
+	g_assert (!sodipodi);
 
+	sodipodi = (Sodipodi *) object;
 	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
-
 	sodipodi->extensions = sp_repr_read_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
 
 	/* Initialize shortcuts */
 	sp_shortcut_table_load (NULL);
-
-	sodipodi->documents = NULL;
-	sodipodi->desktops = NULL;
 }
 
 static void

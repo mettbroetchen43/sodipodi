@@ -74,8 +74,7 @@ sodipodilib_src = \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \
-	uri-references.c uri-references.h \
-	extension.h
+	uri-references.c uri-references.h
 
 noinst_LTLIBRARIES = libsodipodi.la
 libsodipodi_la_SOURCES = $(sodipodilib_src)
@@ -204,6 +203,7 @@ spsvgview_LDADD = \
 # dialogs/libspdialogs.a
 
 EXTRA_DIST = \
+	winmain.c \
 	brokenimage.xpm
 
 dist-hook:

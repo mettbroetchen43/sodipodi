@@ -6,6 +6,8 @@
 
 noinst_LIBRARIES = libspchelp.a
 
+BUILT_SOURCES = sp-marshal.c sp-marshal.h
+
 INCLUDES = \
 	-I.. \
 	-I$(top_srcdir)/src \
@@ -14,7 +16,7 @@ INCLUDES = \
 
 libspchelp_a_SOURCES = \
 	sp-intl.h \
-	sp-marshal.c sp-marshal.h \
+	marshaller.c \
 	helper-forward.h \
 	window.c window.h \
 	sp-canvas.c sp-canvas.h \

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.50)
-AC_INIT(sodipodi, 0.33)
+AC_INIT(sodipodi, 0.34-pre)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE
 
@@ -34,7 +34,7 @@ GETTEXT_PACKAGE=sodipodi
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="am az be ca cs da de el es et fr ga gl hu it ja nl no ru sk sl sr sr@Latn sv tr uk pl pt_BR pt zh_CN"
+ALL_LINGUAS="am az be ca cs da de el es et fr ga gl hr hu it ja mk nl no pl pt_BR pt ru sk sl sr sr@Latn sv tr uk zh_CN"
 AM_GLIB_GNU_GETTEXT
 
 dnl ******************************
@@ -359,6 +359,8 @@ src/modules/Makefile
 extensions/Makefile
 po/Makefile.in
 glade/Makefile
+build/Makefile
+build/vc7/Makefile
 sodipodi.spec
 sodipodi.1
 ])

@@ -48,11 +48,6 @@
 #include "sodipodi-private.h"
 #include "document.h"
 #include "sodipodi.h"
-#if 0
-#include "event-broker.h"
-#include "zoom-context.h"
-#endif
-#include "extension.h"
 #include "sp-item-transform.h"
 #include "desktop-handles.h"
 #include "interface.h"
@@ -66,11 +61,6 @@ static GtkWidget *sp_toolbox_edit_create (void);
 static GtkWidget *sp_toolbox_draw_create (void);
 static GtkWidget *sp_toolbox_object_create (void);
 static GtkWidget *sp_toolbox_selection_create (void);
-#ifndef WITH_MODULES
-#ifdef WITH_EXTENSIONS_TOOLBOX
-static GtkWidget *sp_toolbox_extension_create (void);
-#endif
-#endif
 static GtkWidget *sp_toolbox_zoom_create (void);
 static GtkWidget *sp_toolbox_node_create (void);
 
@@ -85,10 +75,6 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 
 /* fixme: Move this to some sensible place (Lauris) */
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox);
-
-#if 0
-static void sp_toolbox_object_flip_clicked (SPButton *button, gpointer data);
-#endif
 
 /* Drag and Drop */
 typedef enum {
@@ -181,14 +167,6 @@ sp_maintoolbox_new (void)
 
 	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
 
-#ifndef WITH_MODULES
-#ifdef WITH_EXTENSIONS_TOOLBOX
-	/* Extension */
-	t = sp_toolbox_extension_create ();
-	gtk_widget_show (t);
-	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-#endif
-#endif
 	/* Zoom */
 	t = sp_toolbox_zoom_create ();
 	gtk_widget_show (t);
@@ -553,8 +531,7 @@ sp_toolbox_draw_create (void)
 	return tb;
 }
 
-#ifndef WITH_MODULES
-#ifdef WITH_EXTENSIONS_TOOLBOX
+#if 0
 
 static GtkWidget *
 sp_toolbox_extension_create (void)
@@ -605,7 +582,6 @@ sp_toolbox_extension_create (void)
 	return tb;
 }
 #endif
-#endif /* !WITH_MODULES */
 
 static GtkWidget *
 sp_toolbox_zoom_create (void)

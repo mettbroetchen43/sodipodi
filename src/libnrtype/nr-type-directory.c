@@ -29,6 +29,7 @@
 
 #include <libarikkei/arikkei-token.h>
 #include <libarikkei/arikkei-strlib.h>
+#include <libarikkei/arikkei-iolib.h>
 
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
@@ -460,24 +461,11 @@ nr_type_read_private_list (void)
 #endif
 
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
-		unsigned char *cdata;
+		const unsigned char *cdata;
+		int size;
 		ArikkeiToken ft, lt;
-#ifdef WIN32
-#ifdef _UNICODE
-		TCHAR *tfn;
-		tfn = arikkei_utf8_ucs2_strdup (filename);
-		cdata = nr_w32_mmap (tfn, st.st_size, TEXT ("PrivateFonts"));
-		free (tfn);
-#else
-		cdata = nr_w32_mmap (filename, st.st_size, TEXT ("PrivateFonts"));
-#endif
-#else
-		int fd;
-		fd = open (filename, O_RDONLY | O_BINARY);
-		if (!fd) return;
-		cdata = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
-		close (fd);
-#endif
+
+		cdata = arikkei_mmap (filename, &size, NULL);
 		if ((cdata == NULL) || (cdata == (unsigned char *) -1)) return;
 		arikkei_token_set_from_data (&ft, cdata, 0, st.st_size);
 		arikkei_token_get_first_line (&ft, &lt);
@@ -518,11 +506,7 @@ nr_type_read_private_list (void)
 			}
 			arikkei_token_next_line (&ft, &lt, &lt);
 		}
-#ifdef WIN32
-		nr_w32_munmap (cdata, st.st_size);
-#else
-		munmap (cdata, st.st_size);
-#endif
+		arikkei_munmap (cdata, size);
 	}
 
 	nr_free (filename);

@@ -75,6 +75,7 @@ pixmaps = \
 	file_new.xpm \
 	file_open.xpm \
 	file_print.xpm \
+	file_print_direct.xpm \
 	file_print_preview.xpm \
 	file_save.xpm \
 	file_save_as.xpm \
