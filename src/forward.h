@@ -41,8 +41,8 @@ typedef struct _SPDocument SPDocument;
 typedef struct _SPDocumentClass SPDocumentClass;
 
 #define SP_TYPE_DOCUMENT (sp_document_get_type ())
-#define SP_DOCUMENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
-#define SP_IS_DOCUMENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
+#define SP_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
+#define SP_IS_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_DOCUMENT))
 
 unsigned int sp_document_get_type (void);
 

@@ -1,3 +1,16 @@
+2002-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.c (sp_canvas_item_dispose): Set xform to NULL
+
+	* src/display/canvas-arena.c (sp_canvas_arena_destroy): Fixed typo, so
+	multiple destroys are allowed
+
+	* src/nodepath.c: Removed external cursor pointers
+
+	* src/knot.c (sp_knot_set_property): Ref new cursors
+
+	* src/document.c (sp_document_get_type): Inherit directly from GObject
+
 2002-11-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/knot.c (sp_knot_handler): Signature change, return correct value as it should

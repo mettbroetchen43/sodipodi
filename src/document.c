@@ -17,11 +17,9 @@
 
 #include <config.h>
 #include <string.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <xml/repr.h>
 #include <glib.h>
-#include <gtk/gtk.h>
+#include <gtk/gtkmain.h>
+#include <xml/repr.h>
 #include "helper/sp-marshal.h"
 #include "helper/sp-intl.h"
 #include "sodipodi-private.h"
@@ -48,8 +46,8 @@ enum {
 };
 
 static void sp_document_class_init (SPDocumentClass * klass);
-static void sp_document_init (SPDocument * document);
-static void sp_document_destroy (GtkObject * object);
+static void sp_document_init (SPDocument *document);
+static void sp_document_dispose (GObject *object);
 
 static gint sp_document_idle_handler (gpointer data);
 
@@ -59,57 +57,63 @@ gboolean sp_document_resource_list_free (gpointer key, gpointer value, gpointer 
 static gboolean sp_document_warn_undo_stack (SPDocument *doc);
 #endif
 
-static GtkObjectClass * parent_class;
-static guint signals[LAST_SIGNAL] = { 0 };
+static GObjectClass * parent_class;
+static guint signals[LAST_SIGNAL] = {0};
 static gint doc_count = 0;
 
 unsigned int
 sp_document_get_type (void)
 {
-	static GtkType document_type = 0;
-	if (!document_type) {
-		GtkTypeInfo document_info = {
-			"SPDocument",
-			sizeof (SPDocument),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPDocumentClass),
-			(GtkClassInitFunc) sp_document_class_init,
-			(GtkObjectInitFunc) sp_document_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_document_class_init,
+			NULL, NULL,
+			sizeof (SPDocument),
+			4,
+			(GInstanceInitFunc) sp_document_init,
 		};
-		document_type = gtk_type_unique (gtk_object_get_type (), &document_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPDocument", &info, 0);
 	}
-	return document_type;
+	return type;
 }
 
 static void
 sp_document_class_init (SPDocumentClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_peek_parent (klass);
 
-	signals[MODIFIED] = gtk_signal_new ("modified",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET(SPDocumentClass, modified),
-					    gtk_marshal_NONE__UINT,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-	signals[URI_SET] =  gtk_signal_new ("uri_set",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET(SPDocumentClass, uri_set),
-					    gtk_marshal_NONE__STRING,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[RESIZED] =  gtk_signal_new ("resized",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET(SPDocumentClass, resized),
+	signals[MODIFIED] = g_signal_new ("modified",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, modified),
+					    NULL, NULL,
+					    sp_marshal_NONE__UINT,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_UINT);
+	signals[URI_SET] =    g_signal_new ("uri_set",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, uri_set),
+					    NULL, NULL,
+					    sp_marshal_NONE__POINTER,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_POINTER);
+	signals[RESIZED] =    g_signal_new ("resized",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, uri_set),
+					    NULL, NULL,
 					    sp_marshal_NONE__DOUBLE_DOUBLE,
-					    GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
-
-	object_class->destroy = sp_document_destroy;
+					    G_TYPE_NONE, 2,
+					    G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+	object_class->dispose = sp_document_dispose;
 }
 
 static void
@@ -148,7 +152,7 @@ sp_document_init (SPDocument *doc)
 }
 
 static void
-sp_document_destroy (GtkObject *object)
+sp_document_dispose (GObject *object)
 {
 	SPDocument *doc;
 	SPDocumentPrivate * private;
@@ -193,12 +197,14 @@ sp_document_destroy (GtkObject *object)
 		doc->uri = NULL;
 	}
 
-	if (doc->modified_id) gtk_idle_remove (doc->modified_id);
+	if (doc->modified_id) {
+		gtk_idle_remove (doc->modified_id);
+		doc->modified_id = 0;
+	}
 
 	sodipodi_unref ();
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 SPDocument *
@@ -223,7 +229,7 @@ sp_document_new (const gchar *uri, gboolean public)
 		rroot = sp_repr_document_root (rdoc);
 	}
 
-	document = gtk_type_new (SP_TYPE_DOCUMENT);
+	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
 	g_return_val_if_fail (document != NULL, NULL);
 
 	document->public = public;
@@ -332,7 +338,7 @@ sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public)
 	/* fixme: destroy document */
 	if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
 
-	document = gtk_type_new (SP_TYPE_DOCUMENT);
+	document = g_object_new (SP_TYPE_DOCUMENT, NULL);
 	g_return_val_if_fail (document != NULL, NULL);
 
 	document->public = public;
@@ -406,7 +412,7 @@ sp_document_ref (SPDocument *doc)
 	g_return_val_if_fail (doc != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
 
-	gtk_object_ref (GTK_OBJECT (doc));
+	g_object_ref (G_OBJECT (doc));
 
 	return doc;
 }
@@ -417,7 +423,7 @@ sp_document_unref (SPDocument *doc)
 	g_return_val_if_fail (doc != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
 
-	gtk_object_unref (GTK_OBJECT (doc));
+	g_object_unref (G_OBJECT (doc));
 
 	return NULL;
 }
@@ -484,7 +490,7 @@ sp_document_set_uri (SPDocument *doc, const guchar *uri)
 		doc->name = g_strdup (doc->uri);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (doc), signals [URI_SET], doc->uri);
+	g_signal_emit (G_OBJECT (doc), signals [URI_SET], 0, doc->uri);
 }
 
 void
@@ -495,7 +501,7 @@ sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height)
 	g_return_if_fail (width > 0.001);
 	g_return_if_fail (height > 0.001);
 
-	gtk_signal_emit (GTK_OBJECT (doc), signals [RESIZED], width / 1.25, height / 1.25);
+	g_signal_emit (G_OBJECT (doc), signals [RESIZED], 0, width / 1.25, height / 1.25);
 }
 
 /* named views */
@@ -576,8 +582,8 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		/* Emit "modified" signal on objects */
 		sp_object_modified (doc->root, 0);
 		/* Emit our own "modified" signal */
-		gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
-				 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+		g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
+			       SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 		return TRUE;
 	}
 
@@ -616,7 +622,7 @@ sp_document_idle_handler (gpointer data)
 #endif
 
 	/* Emit our own "modified" signal */
-	gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
+	g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
 
 #ifdef SP_DOCUMENT_DEBUG_IDLE

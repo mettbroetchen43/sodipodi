@@ -13,6 +13,7 @@
  */
 
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "helper/sp-marshal.h"
 #include "document.h"
 #include "view.h"
@@ -111,7 +112,7 @@ sp_view_destroy (GtkObject *object)
 	view = SP_VIEW (object);
 
 	if (view->doc) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (view->doc), view);
+		sp_signal_disconnect_by_data (view->doc, view);
 		view->doc = sp_document_unref (view->doc);
 	}
 
@@ -155,14 +156,14 @@ sp_view_set_document (SPView *view, SPDocument *doc)
 		((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_document (view, doc);
 
 	if (view->doc) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (view->doc), view);
+		sp_signal_disconnect_by_data (view->doc, view);
 		view->doc = sp_document_unref (view->doc);
 	}
 
 	if (doc) {
 		view->doc = sp_document_ref (doc);
-		gtk_signal_connect (GTK_OBJECT (doc), "uri_set", GTK_SIGNAL_FUNC (sp_view_document_uri_set), view);
-		gtk_signal_connect (GTK_OBJECT (doc), "resized", GTK_SIGNAL_FUNC (sp_view_document_resized), view);
+		g_signal_connect (G_OBJECT (doc), "uri_set", G_CALLBACK (sp_view_document_uri_set), view);
+		g_signal_connect (G_OBJECT (doc), "resized", G_CALLBACK (sp_view_document_resized), view);
 	}
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], (doc) ? SP_DOCUMENT_URI (doc) : NULL);

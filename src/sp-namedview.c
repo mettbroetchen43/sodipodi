@@ -466,7 +466,7 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 
 	g_assert (l);
 
-	g_object_unref (G_OBJECT (l->data));
+	gtk_object_destroy (GTK_OBJECT (l->data));
 	nv->gridviews = g_slist_remove (nv->gridviews, l->data);
 }
 

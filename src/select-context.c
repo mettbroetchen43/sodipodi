@@ -54,7 +54,8 @@ static void sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guin
 
 static SPEventContextClass * parent_class;
 
-GdkCursor * CursorSelectMouseover = NULL, * CursorSelectDragging = NULL;
+static GdkCursor *CursorSelectMouseover = NULL;
+static GdkCursor *CursorSelectDragging = NULL;
 GdkPixbuf * handles[13];
 
 GtkType

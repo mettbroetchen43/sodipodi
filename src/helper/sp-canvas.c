@@ -182,8 +182,9 @@ sp_canvas_item_construct (SPCanvasItem *item, SPCanvasGroup *parent, const gchar
 static void
 redraw_if_visible (SPCanvasItem *item)
 {
-	if (item->object.flags & SP_CANVAS_ITEM_VISIBLE)
+	if (item->object.flags & SP_CANVAS_ITEM_VISIBLE) {
 		sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2 + 1, item->y2 + 1);
+	}
 }
 
 static void
@@ -194,6 +195,7 @@ sp_canvas_item_dispose (GObject *object)
 	item = SP_CANVAS_ITEM (object);
 
 	redraw_if_visible (item);
+	item->object.flags &= ~SP_CANVAS_ITEM_VISIBLE;
 
 	if (item == item->canvas->current_item) {
 		item->canvas->current_item = NULL;
@@ -213,11 +215,14 @@ sp_canvas_item_dispose (GObject *object)
 	if (item == item->canvas->focused_item)
 		item->canvas->focused_item = NULL;
 
-	if (item->parent)
+	if (item->parent) {
 		group_remove (SP_CANVAS_GROUP (item->parent), item);
+	}
 
-	if (item->xform)
+	if (item->xform) {
 		g_free (item->xform);
+		item->xform = NULL;
+	}
 
 	G_OBJECT_CLASS (item_parent_class)->dispose (object);
 }
@@ -855,7 +860,7 @@ group_remove (SPCanvasGroup *group, SPCanvasItem *item)
 	g_return_if_fail (SP_IS_CANVAS_GROUP (group));
 	g_return_if_fail (item != NULL);
 
-	for (children = group->items; children; children = children->next)
+	for (children = group->items; children; children = children->next) {
 		if (children->data == item) {
 
 			/* Unparent the child */
@@ -871,6 +876,7 @@ group_remove (SPCanvasGroup *group, SPCanvasItem *item)
 			g_list_free (children);
 			break;
 		}
+	}
 }
 
 /* SPCanvas */

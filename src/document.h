@@ -25,8 +25,7 @@ typedef enum {
 	SPXMaxYMax
 } SPAspect;
 
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 #include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 #include "forward.h"
@@ -34,7 +33,7 @@ typedef enum {
 typedef struct _SPDocumentPrivate SPDocumentPrivate;
 
 struct _SPDocument {
-	GtkObject object;
+	GObject object;
 
 	guint public : 1;
 
@@ -56,7 +55,7 @@ struct _SPDocument {
 };
 
 struct _SPDocumentClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (* modified) (SPDocument *document, guint flags);
 	void (* uri_set) (SPDocument *document, const guchar *uri);

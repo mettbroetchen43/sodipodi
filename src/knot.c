@@ -352,13 +352,14 @@ sp_knot_dispose (GObject * object)
 		gtk_object_destroy (GTK_OBJECT (knot->item));
 		knot->item = NULL;
 	}
+
 	for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
-	  
 		if (knot->cursor[i]) {
 			gdk_cursor_unref (knot->cursor[i]);
 			knot->cursor[i] = NULL;
 		}
 	}
+
 	if (((GObjectClass *) (parent_class))->dispose)
 		(* ((GObjectClass *) (parent_class))->dispose) (object);
 }
@@ -425,6 +426,7 @@ sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GPar
 		for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
 			if (knot->cursor[i]) gdk_cursor_unref (knot->cursor[i]);
 			knot->cursor[i] = cursor;
+			if (cursor) gdk_cursor_ref (cursor);
 		}
 		break;
 	case PROP_CURSOR_MOUSEOVER:
@@ -433,6 +435,7 @@ sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GPar
 			gdk_cursor_unref (knot->cursor[SP_KNOT_STATE_MOUSEOVER]);
 		}
 		knot->cursor[SP_KNOT_STATE_MOUSEOVER] = cursor;
+		if (cursor) gdk_cursor_ref (cursor);
 		break;
 	case PROP_CURSOR_DRAGGING:
 		cursor = g_value_get_boxed (value);
@@ -440,6 +443,7 @@ sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GPar
 			gdk_cursor_unref (knot->cursor[SP_KNOT_STATE_DRAGGING]);
 		}
 		knot->cursor[SP_KNOT_STATE_DRAGGING] = cursor;
+		if (cursor) gdk_cursor_ref (cursor);
 		break;
 	case PROP_PIXBUF:
 	        knot->pixbuf = g_value_get_pointer (value);

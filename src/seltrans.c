@@ -46,8 +46,7 @@ static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 static void sp_sel_trans_sel_modified (SPSelection * selection, guint flags, gpointer data);
 
-extern GdkCursor * CursorSelectMouseover, * CursorSelectDragging;
-extern GdkPixbuf * handles[];
+extern GdkPixbuf *handles[];
 
 static gboolean
 sp_seltrans_handle_event (SPKnot *knot, GdkEvent *event, gpointer data)
@@ -534,8 +533,10 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 			  //"stroke", 0xFFb0b0ff,
 			  //"stroke_mouseover", 0xffffffFF,
 			"pixbuf", handles[handle_center.control],
+#if 0
 			"cursor_mouseover", CursorSelectMouseover,
 			"cursor_dragging", CursorSelectDragging,
+#endif
 			NULL);
 	  g_signal_connect (G_OBJECT (seltrans->chandle), "request",
 			    G_CALLBACK (sp_sel_trans_handle_request), (gpointer) &handle_center);
@@ -608,8 +609,10 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 					//"stroke", 0xFFFFFFff,
 					//"stroke_mouseover", 0xb0b0b0FF,
 					"pixbuf", handles[handle[i].control],
+#if 0
 					"cursor_mouseover", CursorSelectMouseover,
 					"cursor_dragging", CursorSelectDragging,
+#endif
 					NULL);
 
 			g_signal_connect (G_OBJECT (knot[i]), "request",

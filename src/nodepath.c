@@ -14,7 +14,6 @@
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include <libart_lgpl/art_affine.h>
-#include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
 #include "helper/sp-ctrlline.h"
@@ -102,7 +101,6 @@ static ArtPathcode sp_node_path_code_from_side (SPPathNode * node, SPPathNodeSid
 
 // active_node indicates mouseover node
 static SPPathNode * active_node = NULL;
-extern GdkCursor * CursorNodeMouseover, * CursorNodeDragging;
 
 /* Creation from object */
 
@@ -652,9 +650,9 @@ sp_nodepath_set_node_type (SPPathNode * node, SPPathNodeType type)
 	node->type = type;
 
 	if (node->type == SP_PATHNODE_CUSP) {
-		gtk_object_set (GTK_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
+		g_object_set (G_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
 	} else {
-		gtk_object_set (GTK_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
+		g_object_set (G_OBJECT (node->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
 	}
 
 	sp_node_adjust_knots (node);
@@ -1040,19 +1038,19 @@ sp_node_set_selected (SPPathNode * node, gboolean selected)
 	node->selected = selected;
 
 	if (selected) {
-		gtk_object_set (GTK_OBJECT (node->knot),
-			"fill", NODE_FILL_SEL,
-			"fill_mouseover", NODE_FILL_SEL_HI,
-			"stroke", NODE_STROKE_SEL,
-			"stroke_mouseover", NODE_STROKE_SEL_HI,
-			NULL);
+		g_object_set (G_OBJECT (node->knot),
+			      "fill", NODE_FILL_SEL,
+			      "fill_mouseover", NODE_FILL_SEL_HI,
+			      "stroke", NODE_STROKE_SEL,
+			      "stroke_mouseover", NODE_STROKE_SEL_HI,
+			      NULL);
 	} else {
-		gtk_object_set (GTK_OBJECT (node->knot),
-			"fill", NODE_FILL,
-			"fill_mouseover", NODE_FILL_HI,
-			"stroke", NODE_STROKE,
-			"stroke_mouseover", NODE_STROKE_HI,
-			NULL);
+		g_object_set (G_OBJECT (node->knot),
+			      "fill", NODE_FILL,
+			      "fill_mouseover", NODE_FILL_HI,
+			      "stroke", NODE_STROKE,
+			      "stroke_mouseover", NODE_STROKE_HI,
+			      NULL);
 	}
 
 	sp_node_ensure_ctrls (node);
@@ -1670,57 +1668,50 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 
 	n->knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->knot, pos, 0);
-	gtk_object_set (GTK_OBJECT (n->knot),
-			"anchor", GTK_ANCHOR_CENTER,
-			"fill", NODE_FILL,
-			"fill_mouseover", NODE_FILL_HI,
-			"stroke", NODE_STROKE,
-			"stroke_mouseover", NODE_STROKE_HI,
-			"cursor_mouseover", CursorNodeMouseover,
-			"cursor_dragging", CursorNodeDragging,
-			NULL);
+	g_object_set (G_OBJECT (n->knot),
+		      "anchor", GTK_ANCHOR_CENTER,
+		      "fill", NODE_FILL,
+		      "fill_mouseover", NODE_FILL_HI,
+		      "stroke", NODE_STROKE,
+		      "stroke_mouseover", NODE_STROKE_HI,
+#if 0
+		      "cursor_mouseover", CursorNodeMouseover,
+		      "cursor_dragging", CursorNodeDragging,
+#endif
+		      NULL);
 	if (n->type == SP_PATHNODE_CUSP) {
-		gtk_object_set (GTK_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
+		g_object_set (G_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_DIAMOND, "size", 9, NULL);
 	} else {
-		gtk_object_set (GTK_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
+		g_object_set (G_OBJECT (n->knot), "shape", SP_KNOT_SHAPE_SQUARE, "size", 7, NULL);
 	}
-	gtk_signal_connect (GTK_OBJECT (n->knot), "event",
-			    GTK_SIGNAL_FUNC (node_event), n);
-	gtk_signal_connect (GTK_OBJECT (n->knot), "clicked",
-			    GTK_SIGNAL_FUNC (node_clicked), n);
-	gtk_signal_connect (GTK_OBJECT (n->knot), "grabbed",
-			    GTK_SIGNAL_FUNC (node_grabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->knot), "ungrabbed",
-			    GTK_SIGNAL_FUNC (node_ungrabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->knot), "request",
-			    GTK_SIGNAL_FUNC (node_request), n);
+	g_signal_connect (G_OBJECT (n->knot), "event", G_CALLBACK (node_event), n);
+	g_signal_connect (G_OBJECT (n->knot), "clicked", G_CALLBACK (node_clicked), n);
+	g_signal_connect (G_OBJECT (n->knot), "grabbed", G_CALLBACK (node_grabbed), n);
+	g_signal_connect (G_OBJECT (n->knot), "ungrabbed", G_CALLBACK (node_ungrabbed), n);
+	g_signal_connect (G_OBJECT (n->knot), "request", G_CALLBACK (node_request), n);
 	sp_knot_show (n->knot);
 
 	n->p.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->p.knot, ppos, 0);
-	gtk_object_set (GTK_OBJECT (n->p.knot),
-			"shape", SP_KNOT_SHAPE_CIRCLE,
-			"size", 7,
-			"anchor", GTK_ANCHOR_CENTER,
-			"fill", KNOT_FILL,
-			"fill_mouseover", KNOT_FILL_HI,
-			"stroke", KNOT_STROKE,
-			"stroke_mouseover", KNOT_STROKE_HI,
-			"cursor_mouseover", CursorNodeMouseover,
-			"cursor_dragging", CursorNodeDragging,
-			NULL);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "clicked",
-			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "grabbed",
-			    GTK_SIGNAL_FUNC (node_ctrl_grabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "ungrabbed",
-			    GTK_SIGNAL_FUNC (node_ctrl_ungrabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "request",
-			    GTK_SIGNAL_FUNC (node_ctrl_request), n);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "moved",
-			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
-	gtk_signal_connect (GTK_OBJECT (n->p.knot), "event",
-			    GTK_SIGNAL_FUNC (node_ctrl_event), n);
+	g_object_set (G_OBJECT (n->p.knot),
+		      "shape", SP_KNOT_SHAPE_CIRCLE,
+		      "size", 7,
+		      "anchor", GTK_ANCHOR_CENTER,
+		      "fill", KNOT_FILL,
+		      "fill_mouseover", KNOT_FILL_HI,
+		      "stroke", KNOT_STROKE,
+		      "stroke_mouseover", KNOT_STROKE_HI,
+#if 0
+		      "cursor_mouseover", CursorNodeMouseover,
+		      "cursor_dragging", CursorNodeDragging,
+#endif
+		      NULL);
+	g_signal_connect (G_OBJECT (n->p.knot), "clicked", G_CALLBACK (node_ctrl_clicked), n);
+	g_signal_connect (G_OBJECT (n->p.knot), "grabbed", G_CALLBACK (node_ctrl_grabbed), n);
+	g_signal_connect (G_OBJECT (n->p.knot), "ungrabbed", G_CALLBACK (node_ctrl_ungrabbed), n);
+	g_signal_connect (G_OBJECT (n->p.knot), "request", G_CALLBACK (node_ctrl_request), n);
+	g_signal_connect (G_OBJECT (n->p.knot), "moved", G_CALLBACK (node_ctrl_moved), n);
+	g_signal_connect (G_OBJECT (n->p.knot), "event", G_CALLBACK (node_ctrl_event), n);
 	
 	sp_knot_hide (n->p.knot);
 	n->p.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
@@ -1729,29 +1720,25 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 
 	n->n.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->n.knot, npos, 0);
-	gtk_object_set (GTK_OBJECT (n->n.knot),
-			"shape", SP_KNOT_SHAPE_CIRCLE,
-			"size", 7,
-			"anchor", GTK_ANCHOR_CENTER,
-			"fill", KNOT_FILL,
-			"fill_mouseover", KNOT_FILL_HI,
-			"stroke", KNOT_STROKE,
-			"stroke_mouseover", KNOT_STROKE_HI,
-			"cursor_mouseover", CursorNodeMouseover,
-			"cursor_dragging", CursorNodeDragging,
-			NULL);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "clicked",
-			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "grabbed",
-			    GTK_SIGNAL_FUNC (node_ctrl_grabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "ungrabbed",
-			    GTK_SIGNAL_FUNC (node_ctrl_ungrabbed), n);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "request",
-			    GTK_SIGNAL_FUNC (node_ctrl_request), n);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "moved",
-			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
-	gtk_signal_connect (GTK_OBJECT (n->n.knot), "event",
-			    GTK_SIGNAL_FUNC (node_ctrl_event), n);
+	g_object_set (G_OBJECT (n->n.knot),
+		      "shape", SP_KNOT_SHAPE_CIRCLE,
+		      "size", 7,
+		      "anchor", GTK_ANCHOR_CENTER,
+		      "fill", KNOT_FILL,
+		      "fill_mouseover", KNOT_FILL_HI,
+		      "stroke", KNOT_STROKE,
+		      "stroke_mouseover", KNOT_STROKE_HI,
+#if 0
+		      "cursor_mouseover", CursorNodeMouseover,
+		      "cursor_dragging", CursorNodeDragging,
+#endif
+		      NULL);
+	g_signal_connect (G_OBJECT (n->n.knot), "clicked", G_CALLBACK (node_ctrl_clicked), n);
+	g_signal_connect (G_OBJECT (n->n.knot), "grabbed", G_CALLBACK (node_ctrl_grabbed), n);
+	g_signal_connect (G_OBJECT (n->n.knot), "ungrabbed", G_CALLBACK (node_ctrl_ungrabbed), n);
+	g_signal_connect (G_OBJECT (n->n.knot), "request", G_CALLBACK (node_ctrl_request), n);
+	g_signal_connect (G_OBJECT (n->n.knot), "moved", G_CALLBACK (node_ctrl_moved), n);
+	g_signal_connect (G_OBJECT (n->n.knot), "event", G_CALLBACK (node_ctrl_event), n);
 	sp_knot_hide (n->n.knot);
 	n->n.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
 					       SP_TYPE_CTRLLINE, NULL);
@@ -1787,10 +1774,11 @@ sp_nodepath_node_destroy (SPPathNode * node)
 	sp_knot_hide (node->p.knot);
 	sp_knot_hide (node->n.knot);
 	*/
-	gtk_object_destroy (GTK_OBJECT (node->knot));
-	gtk_object_destroy (GTK_OBJECT (node->p.knot));
+	g_object_unref (G_OBJECT (node->knot));
+	g_object_unref (G_OBJECT (node->p.knot));
+	g_object_unref (G_OBJECT (node->n.knot));
+
 	gtk_object_destroy (GTK_OBJECT (node->p.line));
-	gtk_object_destroy (GTK_OBJECT (node->n.knot));
 	gtk_object_destroy (GTK_OBJECT (node->n.line));
 	
 	if (sp->nodes) {

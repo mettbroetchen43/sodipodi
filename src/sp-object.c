@@ -16,6 +16,7 @@
 #include <glib-object.h>
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
+#include "helper/sp-marshal.h"
 #include "xml/repr-private.h"
 #include "document.h"
 #include "style.h"
@@ -30,7 +31,9 @@ static void sp_object_dispose (GObject * object);
 static void sp_object_finalize (GObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
+#if 0
 static void sp_object_release (SPObject *object);
+#endif
 
 static void sp_object_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint flags);
@@ -103,21 +106,23 @@ sp_object_class_init (SPObjectClass * klass)
 						G_SIGNAL_RUN_CLEANUP | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
 						G_STRUCT_OFFSET (SPObjectClass, release),
 						NULL, NULL,
-						g_cclosure_marshal_VOID__VOID,
+						sp_marshal_VOID__VOID,
 						G_TYPE_NONE, 0);
 	object_signals[MODIFIED] = g_signal_new ("modified",
                                                  G_TYPE_FROM_CLASS (klass),
                                                  G_SIGNAL_RUN_FIRST,
                                                  G_STRUCT_OFFSET (SPObjectClass, modified),
                                                  NULL, NULL,
-                                                 gtk_marshal_NONE__UINT,
+                                                 sp_marshal_NONE__UINT,
                                                  G_TYPE_NONE, 1, G_TYPE_UINT);
 
 	object_class->dispose = sp_object_dispose;
 	object_class->finalize = sp_object_finalize;
 
 	klass->build = sp_object_build;
+#if 0
 	klass->release = sp_object_release;
+#endif
 	klass->read_attr = sp_object_read_attr;
 	klass->write = sp_object_private_write;
 }
@@ -312,6 +317,7 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 #endif
 }
 
+#if 0
 static void
 sp_object_release (SPObject * object)
 {
@@ -340,6 +346,7 @@ sp_object_release (SPObject * object)
 	object->document = NULL;
 	object->repr = NULL;
 }
+#endif
 
 void
 sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned)
@@ -408,7 +415,7 @@ sp_object_invoke_release (SPObject *object)
 	g_assert (object->document);
 	g_assert (object->repr);
 
-	gtk_signal_emit (GTK_OBJECT (object), object_signals[RELEASE]);
+	g_signal_emit (G_OBJECT (object), object_signals[RELEASE], 0);
 
 	/* href holders HAVE to release it in signal handler */
 	g_assert (object->hrefcount == 0);
