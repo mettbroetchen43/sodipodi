@@ -104,12 +104,7 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 		SPObject * child;
 		type = sp_object_type_lookup (sp_repr_name (rchild));
 		child = gtk_type_new (type);
-		child->parent = object;
-		if (last) {
-			last->next = child;
-		} else {
-			defs->children = child;
-		}
+		last ? last->next : defs->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}

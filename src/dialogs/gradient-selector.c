@@ -10,9 +10,13 @@
  *
  */
 
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
 #include "../widgets/gradient-image.h"
@@ -24,22 +28,39 @@
 #include "../sp-item.h"
 #include "../gradient-chemistry.h"
 #include "sp-widget.h"
+#include "gradient-vector.h"
 #include "gradient-selector.h"
 
 static GtkWidget *sp_gradient_selector_vector_menu_new (SPWidget *spw);
 static void sp_gradient_selector_vector_menu_refresh (GtkOptionMenu *vectors, SPWidget *spw);
 static void sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw);
+static void sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPWidget *spw);
 
 GtkWidget *
 sp_gradient_widget_new (void)
 {
-	GtkWidget *spw, *vectors;
+	GtkWidget *spw, *vb, *hb, *b, *vectors;
 
 	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
 
+	vb = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show (vb);
+	gtk_container_add (GTK_CONTAINER (spw), vb);
+
 	vectors = sp_gradient_selector_vector_menu_new (SP_WIDGET (spw));
 	gtk_widget_show (vectors);
-	gtk_container_add (GTK_CONTAINER (spw), vectors);
+	gtk_box_pack_start (GTK_BOX (vb), vectors, FALSE, FALSE, 4);
+	gtk_object_set_data (GTK_OBJECT (spw), "vectors", vectors);
+
+	hb = gtk_hbox_new (TRUE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
+
+	b = gtk_button_new_with_label (_("Edit vector"));
+	gtk_widget_show (b);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_signal_connect (GTK_OBJECT (b), "clicked",
+			    GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), spw);
 
 	return spw;
 }
@@ -125,7 +146,10 @@ sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw)
 	gr = gtk_object_get_data (GTK_OBJECT (mi), "gradient");
 	g_assert (gr != NULL);
 	g_assert (SP_IS_GRADIENT (gr));
+	/* Hmmm... bad things may happen here, as actual gradient is something new */
 	gr = sp_gradient_ensure_vector_normalized (gr);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "gradient", gr);
 
 	selected = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
 
@@ -133,3 +157,14 @@ sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw)
 		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), gr);
 	}
 }
+
+static void
+sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPWidget *spw)
+{
+	SPGradient *gradient;
+
+	gradient = gtk_object_get_data (GTK_OBJECT (spw), "gradient");
+
+	sp_gradient_vector_dialog (gradient);
+}
+

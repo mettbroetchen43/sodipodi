@@ -119,6 +119,8 @@ GtkType sp_gradient_get_type (void);
 
 void sp_gradient_ensure_vector (SPGradient *gradient);
 
+void sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector);
+
 /*
  * Renders gradient vector to buffer
  *

@@ -1,3 +1,29 @@
+2001-09-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/gradient-vector.c (sp_gradient_vector_widget_destroy): Handler
+	(sp_gradient_vector_gradient_destroy): Ditto
+	(sp_gradient_vector_gradient_modified): Ditto
+	(sp_gradient_vector_color_dragged): Ditto
+	(sp_gradient_vector_color_changed): Ditto
+	(sp_gradient_vector_widget_load_gradient): Connect/disconnect signals,
+	handle NULL gradient etc.
+
+	* src/sp-gradient.c (sp_gradient_set_vector): New method
+
+	* src/widgets/gradient-image.c (sp_gradient_image_update): New method
+	(sp_gradient_image_gradient_modified): Handler
+	(sp_gradient_image_gradient_destroy): Ditto
+	(sp_gradient_image_set_gradient): New method
+	(sp_gradient_image_unrealize): Implement
+	(sp_gradient_image_realize): Ditto
+
+2001-09-16  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/gradient-selector.c (sp_gradient_widget_new): Added buttons
+	(sp_gradient_selector_edit_vector_clicked): Handler
+
+	* src/sp-defs.c (sp_defs_build): Use attach method
+
 2001-09-15  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-gradient.c: Added radial gradient

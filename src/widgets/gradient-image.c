@@ -9,6 +9,7 @@
  *
  */
 
+#include <gtk/gtksignal.h>
 #include "gradient-image.h"
 
 #define VBLOCK 8
@@ -17,9 +18,15 @@ static void sp_gradient_image_class_init (SPGradientImageClass *klass);
 static void sp_gradient_image_init (SPGradientImage *image);
 static void sp_gradient_image_destroy (GtkObject *object);
 
+static void sp_gradient_image_realize (GtkWidget *widget);
+static void sp_gradient_image_unrealize (GtkWidget *widget);
 static void sp_gradient_image_size_request (GtkWidget *widget, GtkRequisition *requisition);
 static void sp_gradient_image_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
 static gint sp_gradient_image_expose (GtkWidget *widget, GdkEventExpose *event);
+
+static void sp_gradient_image_gradient_destroy (SPGradient *gr, SPGradientImage *im);
+static void sp_gradient_image_gradient_modified (SPGradient *gr, guint flags, SPGradientImage *im);
+static void sp_gradient_image_update (SPGradientImage *img);
 
 static GtkWidgetClass *parent_class;
 
@@ -54,6 +61,8 @@ sp_gradient_image_class_init (SPGradientImageClass *klass)
 
 	object_class->destroy = sp_gradient_image_destroy;
 
+	widget_class->realize = sp_gradient_image_realize;
+	widget_class->unrealize = sp_gradient_image_unrealize;
 	widget_class->size_request = sp_gradient_image_size_request;
 	widget_class->size_allocate = sp_gradient_image_size_allocate;
 	widget_class->expose_event = sp_gradient_image_expose;
@@ -75,13 +84,43 @@ sp_gradient_image_destroy (GtkObject *object)
 
 	image = SP_GRADIENT_IMAGE (object);
 
-	if (image->px) {
-		g_free (image->px);
-		image->px = NULL;
+	if (image->gradient) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image);
+		image->gradient = NULL;
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+}
+
+static void
+sp_gradient_image_realize (GtkWidget *widget)
+{
+	SPGradientImage *image;
+
+	image = SP_GRADIENT_IMAGE (widget);
+
+	if (((GtkWidgetClass *) parent_class)->realize)
+		(* ((GtkWidgetClass *) parent_class)->realize) (widget);
+
+	g_assert (!image->px);
+	image->px = g_new (guchar, 3 * VBLOCK * widget->allocation.width);
+	sp_gradient_image_update (image);
+}
+
+static void
+sp_gradient_image_unrealize (GtkWidget *widget)
+{
+	SPGradientImage *image;
+
+	image = SP_GRADIENT_IMAGE (widget);
+
+	if (((GtkWidgetClass *) parent_class)->unrealize)
+		(* ((GtkWidgetClass *) parent_class)->unrealize) (widget);
+
+	g_assert (image->px);
+	g_free (image->px);
+	image->px = NULL;
 }
 
 static void
@@ -104,17 +143,12 @@ sp_gradient_image_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 	widget->allocation = *allocation;
 
-	if (image->px) {
-		g_free (image->px);
-		image->px = NULL;
+	if (GTK_WIDGET_REALIZED (widget)) {
+		if (image->px) g_free (image->px);
+		image->px = g_new (guchar, 3 * VBLOCK * allocation->width);
 	}
 
-	if (image->gradient) {
-		image->px = g_new (guchar, 3 * VBLOCK * allocation->width);
-		sp_gradient_render_vector_block_rgb (image->gradient,
-						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
-						     0, allocation->width, TRUE);
-	}
+	sp_gradient_image_update (image);
 }
 
 static gint
@@ -161,8 +195,89 @@ sp_gradient_image_new (SPGradient *gradient)
 
 	image = gtk_type_new (SP_TYPE_GRADIENT_IMAGE);
 
-	image->gradient = gradient;
+	sp_gradient_image_set_gradient (image, gradient);
 
 	return (GtkWidget *) image;
 }
 
+void
+sp_gradient_image_set_gradient (SPGradientImage *image, SPGradient *gradient)
+{
+	if (image->gradient) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image);
+	}
+
+	image->gradient = gradient;
+
+	if (gradient) {
+		gtk_signal_connect (GTK_OBJECT (gradient), "destroy",
+				    GTK_SIGNAL_FUNC (sp_gradient_image_gradient_destroy), image);
+		gtk_signal_connect (GTK_OBJECT (gradient), "modified",
+				    GTK_SIGNAL_FUNC (sp_gradient_image_gradient_modified), image);
+	}
+
+	sp_gradient_image_update (image);
+}
+
+static void
+sp_gradient_image_gradient_destroy (SPGradient *gradient, SPGradientImage *image)
+{
+	if (image->gradient) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (image->gradient), image);
+	}
+
+	image->gradient = NULL;
+
+	sp_gradient_image_update (image);
+}
+
+static void
+sp_gradient_image_gradient_modified (SPGradient *gradient, guint flags, SPGradientImage *image)
+{
+	sp_gradient_image_update (image);
+}
+
+static void
+sp_gradient_image_update (SPGradientImage *image)
+{
+	GtkAllocation *allocation;
+
+	if (!image->px) return;
+
+	allocation = &((GtkWidget *) image)->allocation;
+
+	if (image->gradient) {
+		gint x, y;
+		guchar *p;
+		for (y = 0; y < VBLOCK; y++) {
+			p = image->px + y * 3 * allocation->width;
+			for (x = 0; x < allocation->width; x++) {
+				guchar v;
+				v = (((x >> 2) + (y >> 2)) & 1) ? 0xbf : 0x7f;
+				*p++ = v;
+				*p++ = v;
+				*p++ = v;
+			}
+		}
+		sp_gradient_render_vector_block_rgb (image->gradient,
+						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
+						     0, allocation->width, TRUE);
+	} else {
+		gint x, y;
+		guchar *p;
+		for (y = 0; y < VBLOCK; y++) {
+			p = image->px + y * 3 * allocation->width;
+			for (x = 0; x < allocation->width; x++) {
+				guchar v;
+				v = ((x + y) & 1) ? 0xff : 0x00;
+				*p++ = v;
+				*p++ = v;
+				*p++ = v;
+			}
+		}
+	}
+
+	if (GTK_WIDGET_DRAWABLE (image)) {
+		gtk_widget_queue_draw (GTK_WIDGET (image));
+	}
+}

@@ -127,6 +127,7 @@ static void sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *r
 static void sp_gradient_read_attr (SPObject *object, const gchar *key);
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
+static void sp_gradient_modified (SPObject *object, guint flags);
 
 static void sp_gradient_href_destroy (SPObject *href, SPGradient *gradient);
 static void sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient);
@@ -172,6 +173,7 @@ sp_gradient_class_init (SPGradientClass *klass)
 	sp_object_class->read_attr = sp_gradient_read_attr;
 	sp_object_class->child_added = sp_gradient_child_added;
 	sp_object_class->remove_child = sp_gradient_remove_child;
+	sp_object_class->modified = sp_gradient_modified;
 }
 
 static void
@@ -334,6 +336,30 @@ sp_gradient_ensure_vector (SPGradient *gradient)
 	}
 }
 
+void
+sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector)
+{
+	g_return_if_fail (gradient != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gradient));
+	g_return_if_fail (vector != NULL);
+
+	if (gradient->color) {
+		g_free (gradient->color);
+		gradient->color = NULL;
+	}
+
+	if (gradient->vector && (gradient->vector->nstops != vector->nstops)) {
+		g_free (gradient->vector);
+		gradient->vector = NULL;
+	}
+	if (!gradient->vector) {
+		gradient->vector = g_malloc (sizeof (SPGradientVector) + (vector->nstops - 1) * sizeof (SPGradientStop));
+	}
+	memcpy (gradient->vector, vector, sizeof (SPGradientVector) + (vector->nstops - 1) * sizeof (SPGradientStop));
+
+	sp_object_request_modified (SP_OBJECT (gradient), SP_OBJECT_MODIFIED_FLAG);
+}
+
 static void
 sp_gradient_href_destroy (SPObject *href, SPGradient *gradient)
 {
@@ -354,19 +380,103 @@ sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient)
 static void
 sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
+	SPGradient *gr;
+	GtkType type;
+	SPObject * ochild, * prev;
+
+	gr = SP_GRADIENT (object);
+
 	if (((SPObjectClass *) gradient_parent_class)->child_added)
 		(* ((SPObjectClass *) gradient_parent_class)->child_added) (object, child, ref);
 
-	sp_gradient_invalidate_vector (SP_GRADIENT (object));
+	sp_gradient_invalidate_vector (gr);
+
+	type = sp_object_type_lookup (sp_repr_name (child));
+	ochild = gtk_type_new (type);
+	ochild->parent = object;
+
+	prev = NULL;
+	if (ref) {
+		prev = gr->stops;
+		while (prev->repr != ref) prev = prev->next;
+	}
+
+	if (!prev) {
+		ochild->next = gr->stops;
+		gr->stops = ochild;
+	} else {
+		ochild->next = prev->next;
+		prev->next = ochild;
+	}
+
+	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
+
+	/* fixme: should we schedule "modified" here? */
 }
 
 static void
 sp_gradient_remove_child (SPObject *object, SPRepr *child)
 {
+	SPGradient *gr;
+	SPObject *prev, *ochild;
+
+	gr = SP_GRADIENT (object);
+
 	if (((SPObjectClass *) gradient_parent_class)->remove_child)
 		(* ((SPObjectClass *) gradient_parent_class)->remove_child) (object, child);
 
-	sp_gradient_invalidate_vector (SP_GRADIENT (object));
+	sp_gradient_invalidate_vector (gr);
+
+	prev = NULL;
+	ochild = gr->stops;
+	while (ochild->repr != child) {
+		prev = ochild;
+		ochild = ochild->next;
+	}
+
+	if (prev) {
+		prev->next = ochild->next;
+	} else {
+		gr->stops = ochild->next;
+	}
+
+	ochild->parent = NULL;
+	ochild->next = NULL;
+	gtk_object_unref (GTK_OBJECT (ochild));
+
+	/* fixme: should we schedule "modified" here? */
+}
+
+static void
+sp_gradient_modified (SPObject *object, guint flags)
+{
+	SPGradient *gr;
+	SPObject *child;
+	GSList *l;
+
+	gr = SP_GRADIENT (object);
+
+	if (flags & SP_OBJECT_CHILD_MODIFIED_FLAG) {
+		sp_gradient_invalidate_vector (gr);
+	}
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+
+	l = NULL;
+	for (child = gr->stops; child != NULL; child = child->next) {
+		gtk_object_ref (GTK_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_modified (child, flags);
+		}
+		gtk_object_unref (GTK_OBJECT (child));
+	}
 }
 
 static void
