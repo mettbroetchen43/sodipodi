@@ -60,9 +60,14 @@ sp_shortcut_table_load (const unsigned char *name)
 	/* Zooming */
 	sp_shortcut_set_verb (GDK_plus, SP_VERB_ZOOM_IN, TRUE);
 	sp_shortcut_set_verb (GDK_equal, SP_VERB_ZOOM_IN, FALSE);
+	sp_shortcut_set_verb (GDK_KP_Add, SP_VERB_ZOOM_IN, FALSE);
 	sp_shortcut_set_verb (GDK_minus, SP_VERB_ZOOM_OUT, TRUE);
+	sp_shortcut_set_verb (GDK_KP_Subtract, SP_VERB_ZOOM_OUT, FALSE);
 	sp_shortcut_set_verb (GDK_0, SP_VERB_ZOOM_PAGE, TRUE);
+	sp_shortcut_set_verb (GDK_KP_0, SP_VERB_ZOOM_PAGE, FALSE);
 	sp_shortcut_set_verb (GDK_1, SP_VERB_ZOOM_1_1, TRUE);
+	sp_shortcut_set_verb (GDK_KP_1, SP_VERB_ZOOM_1_1, FALSE);
+	sp_shortcut_set_verb (GDK_KP_5, SP_VERB_ZOOM_DRAWING, TRUE);
 	/* Edit */
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_z, SP_VERB_EDIT_UNDO, TRUE);
 	sp_shortcut_set_verb (SP_SHORTCUT_CONTROL_MASK | GDK_Z, SP_VERB_EDIT_UNDO, FALSE);
