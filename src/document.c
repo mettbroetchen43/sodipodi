@@ -547,7 +547,7 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		gtk_idle_remove (doc->modified_id);
 		doc->modified_id = 0;
 		/* Process updates */
-		if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) {
+		if (doc->root->uflags) {
 			SPItemCtx ctx;
 			ctx.ctx.flags = 0;
 			nr_matrix_d_set_identity (&ctx.i2doc);
@@ -558,7 +558,6 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 			ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
 			nr_matrix_d_set_identity (&ctx.i2vp);
 			sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
-			g_assert (!(SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG));
 		}
 		/* Emit "modified" signal on objects */
 		sp_object_invoke_modified (doc->root, 0);
@@ -596,7 +595,7 @@ sp_document_idle_handler (gpointer data)
 #endif
 
 	/* Process updates */
-	if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) {
+	if (doc->root->uflags) {
 		SPItemCtx ctx;
 		ctx.ctx.flags = 0;
 		nr_matrix_d_set_identity (&ctx.i2doc);
@@ -607,7 +606,7 @@ sp_document_idle_handler (gpointer data)
 		ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
 		nr_matrix_d_set_identity (&ctx.i2vp);
 		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
-		if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) return FALSE;
+		if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return FALSE;
 	}
 
 	/* Emit "modified" signal on objects */

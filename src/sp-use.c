@@ -388,7 +388,7 @@ sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 
 	if (use->child) {
 		g_object_ref (G_OBJECT (use->child));
-		if (flags || (SP_OBJECT_FLAGS (use->child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (use->child->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			if (SP_IS_ITEM (use->child)) {
 				SPItem *chi;
 				chi = SP_ITEM (use->child);
@@ -424,7 +424,7 @@ sp_use_modified (SPObject *object, guint flags)
 	child = use_obj->child;
 	if (child) {
 		g_object_ref (G_OBJECT (child));
-		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (child->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));

@@ -31,6 +31,9 @@
  * Lauris
  */
 
+static SPGradient *sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector);
+static SPGradient *sp_gradient_get_radial_private_normalized (SPDocument *document, SPGradient *vector);
+
 static void sp_gradient_repr_set_link (SPRepr *repr, SPGradient *gr);
 static void sp_item_repr_set_style_gradient (SPRepr *repr, const guchar *property, SPGradient *gr);
 static guchar *sp_style_change_property (const guchar *sstr, const guchar *key, const guchar *value);
@@ -182,6 +185,7 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 	    (gr->state != SP_GRADIENT_STATE_UNKNOWN) ||
 	    (SP_OBJECT_PARENT (gr) != SP_OBJECT (defs)) ||
 	    (SP_OBJECT_HREFCOUNT (gr) > 1)) {
+#if 0
 		SPRepr *repr;
 		/* We are either in some lonely place, or have multiple refs, or vector or whatever, so clone */
 		/* fixme: no 'linear' please */
@@ -197,6 +201,9 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 		/* fixme: Maybe add extra sanity check here */
 		gr->state = SP_GRADIENT_STATE_PRIVATE;
 		return gr;
+#else
+		return sp_gradient_get_private_normalized (SP_OBJECT_DOCUMENT (gr), vector);
+#endif
 	} else {
 		SPObject *sibling;
 		/* We still have to determine, whether we have to change our position */
@@ -248,6 +255,7 @@ sp_gradient_ensure_radial_private_normalized (SPGradient *gr, SPGradient *vector
 	    (gr->state != SP_GRADIENT_STATE_UNKNOWN) ||
 	    (SP_OBJECT_PARENT (gr) != SP_OBJECT (defs)) ||
 	    (SP_OBJECT_HREFCOUNT (gr) > 1)) {
+#if 0
 		SPRepr *repr;
 		/* We are either in some lonely place, or have multiple refs, or vector or whatever, so clone */
 		/* fixme: no 'linear' please */
@@ -263,6 +271,9 @@ sp_gradient_ensure_radial_private_normalized (SPGradient *gr, SPGradient *vector
 		/* fixme: Maybe add extra sanity check here */
 		gr->state = SP_GRADIENT_STATE_PRIVATE;
 		return gr;
+#else
+		return sp_gradient_get_radial_private_normalized (SP_OBJECT_DOCUMENT (gr), vector);
+#endif
 	} else {
 		SPObject *sibling;
 		/* We still have to determine, whether we have to change our position */

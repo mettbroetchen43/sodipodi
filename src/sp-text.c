@@ -632,7 +632,7 @@ sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags)
 	sp_text_update_length (&tspan->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
 
 	if (tspan->string) {
-		if (flags || (((SPObject *) tspan->string)->flags & SP_OBJECT_UPDATE_FLAG)) {
+		if (flags || (tspan->string->uflags & SP_OBJECT_MODIFIED_FLAG)) {
 			sp_object_invoke_update (tspan->string, ctx, flags);
 		}
 	}
@@ -652,7 +652,9 @@ sp_tspan_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	if (tspan->string) {
-		sp_object_invoke_modified (tspan->string, flags);
+		if (flags || (tspan->string->mflags & SP_OBJECT_MODIFIED_FLAG)) {
+			sp_object_invoke_modified (tspan->string, flags);
+		}
 	}
 }
 
@@ -1110,7 +1112,7 @@ sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (cflags || (SP_OBJECT_FLAGS (child) & SP_OBJECT_UPDATE_FLAG)) {
+		if (cflags || (child->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			/* fixme: Do we need transform? */
 			sp_object_invoke_update (child, ctx, cflags);
 		}
@@ -1146,7 +1148,7 @@ sp_text_modified (SPObject *object, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (cflags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (cflags || (child->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_invoke_modified (child, cflags);
 		}
 		sp_object_unref (SP_OBJECT (child), object);

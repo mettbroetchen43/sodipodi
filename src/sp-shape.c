@@ -45,7 +45,7 @@ static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * r
 static void sp_shape_release (SPObject *object);
 
 static void sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags);
-static void sp_shape_style_modified (SPObject *object, guint flags);
+static void sp_shape_modified (SPObject *object, unsigned int flags);
 
 #if 0
 static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
@@ -98,9 +98,8 @@ sp_shape_class_init (SPShapeClass *klass)
 
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->release = sp_shape_release;
-
 	sp_object_class->update = sp_shape_update;
-	sp_object_class->style_modified = sp_shape_style_modified;
+	sp_object_class->modified = sp_shape_modified;
 
 	item_class->bbox = sp_shape_bbox;
 	item_class->print = sp_shape_print;
@@ -201,7 +200,7 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	if (((SPObjectClass *) (parent_class))->update)
 		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
 
-	if ((flags & SP_OBJECT_MODIFIED_FLAG) | (flags & SP_OBJECT_PARENT_MODIFIED_FLAG)) {
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG)) {
 		SPItemView *v;
 		NRRectF paintbox;
 		/* This is suboptimal, because changing parent style schedules recalculation */
@@ -217,19 +216,20 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 }
 
 static void
-sp_shape_style_modified (SPObject *object, guint flags)
+sp_shape_modified (SPObject *object, unsigned int flags)
 {
 	SPShape *shape;
-	SPItemView *v;
 
 	shape = SP_SHAPE (object);
 
-	/* Item class reads style */
-	if (((SPObjectClass *) (parent_class))->style_modified)
-		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
+	if (((SPObjectClass *) (parent_class))->modified)
+		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
 
-	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
-		nr_arena_shape_set_style (NR_ARENA_SHAPE (v->arenaitem), object->style);
+	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
+		SPItemView *v;
+		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+			nr_arena_shape_set_style (NR_ARENA_SHAPE (v->arenaitem), object->style);
+		}
 	}
 }
 

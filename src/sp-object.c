@@ -303,7 +303,7 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	object->document = document;
 	object->repr = repr;
 	sp_repr_ref (repr);
-	if (cloned) SP_OBJECT_SET_FLAGS (object, SP_OBJECT_CLONED_FLAG);
+	object->cloned = cloned;
 
 	/* If we are not cloned, force unique id */
 	if (!SP_OBJECT_IS_CLONED (object)) {
@@ -588,10 +588,10 @@ sp_object_request_update (SPObject *object, unsigned int flags)
 
 	/* Check for propagate before we set any flags */
 	/* Propagate means, that object is not passed through by modification request cascade yet */
-	propagate = (!(SP_OBJECT_FLAGS (object) & SP_OBJECT_UPDATE_FLAG));
+	propagate = (!(object->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)));
 
 	/* Just set object flags safe even if some have been set before */
-	SP_OBJECT_SET_FLAGS (object, flags | SP_OBJECT_UPDATE_FLAG);
+	object->uflags |= flags;
 
 	if (propagate) {
 		if (object->parent) {
@@ -613,8 +613,12 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	g_print("Update %s:%s %x %x\n", g_type_name_from_instance ((GTypeInstance *) object), SP_OBJECT_ID (object), flags, object->flags);
 #endif
 
-	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
-	g_return_if_fail (flags != 0);
+	/* Get object flags */
+	flags |= object->uflags;
+	/* Copy flags to modified cascade for later processing */
+	object->mflags |= object->uflags;
+	/* We have to clear flags here to allow rescheduling update */
+	object->uflags = 0;
 
 	/* Merge style if we have good reasons to think that parent style is changed */
 	/* I am not sure, whether we should check only propagated flag */
@@ -625,10 +629,6 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 			sp_style_merge_from_parent (object->style, object->parent->style);
 		}
 	}
-
-	/* We have to clear flags here to allow rescheduling update */
-
-	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_UPDATE_FLAG);
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update)
 		((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update (object, ctx, flags);
@@ -647,10 +647,10 @@ sp_object_request_modified (SPObject *object, unsigned int flags)
 
 	/* Check for propagate before we set any flags */
 	/* Propagate means, that object is not passed through by modification request cascade yet */
-	propagate = (!(SP_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)));
+	propagate = (!(object->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)));
 
 	/* Just set object flags safe even if some have been set before */
-	SP_OBJECT_SET_FLAGS (object, flags);
+	object->mflags |= flags;
 
 	if (propagate) {
 		if (object->parent) {
@@ -672,17 +672,16 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 	g_print("Modified %s:%s %x %x\n", g_type_name_from_instance ((GTypeInstance *) object), SP_OBJECT_ID (object), flags, object->flags);
 #endif
 
-	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
-	g_return_if_fail (flags != 0);
-
+	/* Get object flags */
+	flags |= object->mflags;
 	/* We have to clear flags here to allow rescheduling modified */
-
-	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
+	object->mflags = 0;
 
 	g_object_ref (G_OBJECT (object));
 	g_signal_emit (G_OBJECT (object), object_signals[MODIFIED], 0, flags);
 	g_object_unref (G_OBJECT (object));
 
+#if 0
 	/* If style is modified, invoke style_modified virtual method */
 	/* It is pure convenience, and should be used with caution */
 	/* The cascade is created solely by modified method plus appropriate flag */
@@ -691,6 +690,7 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 		if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified)
 			(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified) (object, flags);
 	}
+#endif
 }
 
 /* Sequence */

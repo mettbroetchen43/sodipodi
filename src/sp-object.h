@@ -14,41 +14,30 @@
  */
 
 /* SPObject flags */
-/* Generic */
-#define SP_OBJECT_CLONED_FLAG (1 << 0)
 
 /* Async modification flags */
-#define SP_OBJECT_MODIFIED_FLAG (1 << 5)
-#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 6)
-#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 7)
-#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 8)
-#define SP_OBJECT_VIEWPORT_MODIFIED_FLAG (1 << 9)
-#define SP_OBJECT_USER_MODIFIED_FLAG_A (1 << 10)
-#define SP_OBJECT_USER_MODIFIED_FLAG_B (1 << 11)
-#define SP_OBJECT_USER_MODIFIED_FLAG_C (1 << 12)
-#define SP_OBJECT_USER_MODIFIED_FLAG_D (1 << 13)
-#define SP_OBJECT_USER_MODIFIED_FLAG_E (1 << 14)
-#define SP_OBJECT_USER_MODIFIED_FLAG_F (1 << 15)
+#define SP_OBJECT_MODIFIED_FLAG (1 << 0)
+#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 1)
+#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 2)
+#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 3)
+#define SP_OBJECT_VIEWPORT_MODIFIED_FLAG (1 << 4)
+#define SP_OBJECT_USER_MODIFIED_FLAG_A (1 << 5)
+#define SP_OBJECT_USER_MODIFIED_FLAG_B (1 << 6)
+#define SP_OBJECT_USER_MODIFIED_FLAG_C (1 << 7)
 
-/* Update */
-#define SP_OBJECT_UPDATE_FLAG (1 << 16)
+/* Conveneience */
+#define SP_OBJECT_FLAGS_ALL 0xff
 
 /* Flags that mark object as modified */
 /* Object, Child, Style, Viewport, User */
-#define SP_OBJECT_MODIFIED_STATE 0xff60
+#define SP_OBJECT_MODIFIED_STATE (SP_OBJECT_FLAGS_ALL & ~(SP_OBJECT_PARENT_MODIFIED_FLAG))
 
 /* Flags that will propagate downstreams */
 /* Parent, Style, Viewport, User */
-#define SP_OBJECT_MODIFIED_CASCADE 0xff80
+#define SP_OBJECT_MODIFIED_CASCADE (SP_OBJECT_FLAGS_ALL & ~(SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))
 
 /* Generic */
-#define SP_OBJECT_FLAGS(obj) (SP_OBJECT(obj)->flags)
-#define SP_OBJECT_SET_FLAGS(obj,flag) G_STMT_START{ (SP_OBJECT_FLAGS (obj) |= (flag)); }G_STMT_END
-#define SP_OBJECT_UNSET_FLAGS(obj,flag) G_STMT_START{ (SP_OBJECT_FLAGS (obj) &= ~(flag)); }G_STMT_END
-
-#define SP_OBJECT_IS_CLONED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
-#define SP_OBJECT_IS_MODIFIED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
-#define SP_OBJECT_CHILD_IS_MODIFIED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
+#define SP_OBJECT_IS_CLONED(o) (SP_OBJECT (o)->cloned)
 
 /* Write flags */
 #define SP_OBJECT_WRITE_BUILD (1 << 0)
@@ -108,8 +97,10 @@ struct _SPCtx {
 
 struct _SPObject {
 	GObject object;
-	guint hrefcount; /* number os xlink:href references */
-	guint32 flags;
+	unsigned int cloned : 1;
+	unsigned int uflags : 8;
+	unsigned int mflags : 8;
+	unsigned int hrefcount; /* number os xlink:href references */
 	SPDocument *document; /* Document we are part of */
 	SPObject *parent; /* Our parent (only one allowed) */
 	SPObject *next; /* Next object in linked list */
@@ -137,15 +128,13 @@ struct _SPObjectClass {
 	/* Update handler */
 	void (* update) (SPObject *object, SPCtx *ctx, unsigned int flags);
 	/* Modification handler */
-	void (* modified) (SPObject *object, guint flags);
-	/* Style change notifier */
-	void (* style_modified) (SPObject *object, guint flags);
+	void (* modified) (SPObject *object, unsigned int flags);
 
 	/* Compute next sequence number */
 	gint (* sequence) (SPObject *object, gint seq);
 	void (* forall) (SPObject *object, SPObjectMethod func, gpointer data);
 
-	SPRepr * (* write) (SPObject *object, SPRepr *repr, guint flags);
+	SPRepr * (* write) (SPObject *object, SPRepr *repr, unsigned int flags);
 };
 
 /*
@@ -192,7 +181,7 @@ gint sp_object_sequence (SPObject *object, gint seq);
 
 void sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data);
 /* Write object to repr */
-SPRepr *sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags);
+SPRepr *sp_object_invoke_write (SPObject *object, SPRepr *repr, unsigned int flags);
 
 /*
  * Get and set descriptive parameters

@@ -15,6 +15,7 @@
 
 #include <glib.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkarrow.h>
 #include <gtk/gtklabel.h>
@@ -336,7 +337,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	/* Window vbox */
 	gtk_widget_show (t->windowvbox);
 	/* Close button */
-	b = gtk_button_new_from_stock ("Button_Close");
+	b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_box_pack_end (GTK_BOX (t->windowvbox), b, TRUE, TRUE, 0);
 	gtk_widget_show (b);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_close), t);

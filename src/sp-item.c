@@ -52,7 +52,6 @@ static void sp_item_release (SPObject *object);
 static void sp_item_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_item_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_item_modified (SPObject *object, guint flags);
-static void sp_item_style_modified (SPObject *object, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
@@ -105,7 +104,6 @@ sp_item_class_init (SPItemClass *klass)
 	sp_object_class->set = sp_item_set;
 	sp_object_class->update = sp_item_update;
 	sp_object_class->modified = sp_item_modified;
-	sp_object_class->style_modified = sp_item_style_modified;
 	sp_object_class->write = sp_item_write;
 
 	klass->description = sp_item_private_description;
@@ -349,15 +347,14 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
 
 	if (flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)) {
+		SPItemView *v;
 		if (flags & SP_OBJECT_MODIFIED_FLAG) {
-			SPItemView *v;
 			for (v = item->display; v != NULL; v = v->next) {
 				nr_arena_item_set_transform (v->arenaitem, &item->transform);
 			}
 		}
 		if ((item->clip) || (item->mask)) {
 			NRRectF bbox;
-			SPItemView *v;
 			sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 			if (item->clip) {
 				for (v = item->display; v != NULL; v = v->next) {
@@ -368,6 +365,11 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 				for (v = item->display; v != NULL; v = v->next) {
 					sp_mask_set_bbox (SP_MASK (item->mask), v->pkey, &bbox);
 				}
+			}
+		}
+		if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
+			for (v = item->display; v != NULL; v = v->next) {
+				nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 			}
 		}
 	}
@@ -394,27 +396,6 @@ sp_item_modified (SPObject *object, guint flags)
 		nr_matrix_f_invert (&vp2i, &i2vp);
 		aw = NR_MATRIX_DF_EXPANSION (&vp2i);
 		style->stroke_width.computed = style->stroke_width.value * aw;
-	}
-}
-
-static void
-sp_item_style_modified (SPObject *object, guint flags)
-{
-	SPItem *item;
-	SPStyle *style;
-	SPItemView *v;
-
-	item = SP_ITEM (object);
-	style = object->style;
-
-	/* Set up inherited/relative style properties */
-
-#ifdef SP_ITEM_DEBUG_IDLE
-	g_print ("S");
-#endif
-
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 	}
 }
 

@@ -1,3 +1,23 @@
+2003-02-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/document.c (sp_document_idle_handler): Use new flags signature
+	(sp_document_ensure_up_to_date): Ditto
+
+	* src/sp-shape.c (sp_shape_modified): Removed style_modified, instead set
+	style here, if flags indicate the need
+
+	* src/sp-text.c (sp_tspan_update): Calculate relative distances here
+	(sp_text_update): Ditto
+
+	* src/sp-object.h: Split update and modified flags, involves changes in
+	most places actually using them
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_private_normalized): Recycle
+	available gradients, instead of always creating new
+	(sp_gradient_ensure_radial_private_normalized): Ditto
+
+	* configure.in: Version 0.32pre
+
 2003-02-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_text_set_shape): Honour single dx and dy attributes

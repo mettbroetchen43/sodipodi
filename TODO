@@ -1,4 +1,9 @@
-03/02/2003
+22/02/2003
+
+TODO for 0.32
+
+- Text gradients get double href and thus are built again and again
+- Text style does not respond to drags
 
 TODO for 0.31
 =============

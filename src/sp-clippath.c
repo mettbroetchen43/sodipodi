@@ -225,7 +225,7 @@ sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (SP_OBJECT_FLAGS (child) & SP_OBJECT_UPDATE_FLAG)) {
+		if (flags || (child->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_invoke_update (child, ctx, flags);
 		}
 		g_object_unref (G_OBJECT (child));
@@ -267,7 +267,7 @@ sp_clippath_modified (SPObject *object, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (child->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));
