@@ -1,3 +1,22 @@
+2002-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/xml-tree.c (cmd_set_attr): Use gal unicode wrappers
+
+	* src/widgets/sp-xmlview-attr-list.c (event_attr_changed): Use gal unicode wrappers
+
+	* src/widgets/sp-xmlview-content.c (event_content_changed): Use gal unicode wrappers
+	(sp_xmlview_content_changed): Ditto
+
+	* src/widgets/sp-xmlview-tree.c (element_attr_changed): Use gal unicode wrapper
+	(text_content_changed): Ditto
+
+	* src/dialogs/xml-tree.c: Sorted out includes a bit
+	(set_tree_desktop): Comment aout transient, as some WMs do not do it proper
+	(on_desktop_selection_changed): Set/release block
+	(on_tree_unselect_row): Ditto
+	(on_tree_select_row): Ditto
+	(get_dt_select): Use selection helper methods
+
 2002-11-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-gnome.c (nr_typeface_gnome_glyph_outline_get): Use

@@ -19,6 +19,7 @@
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtklist.h>
 #include <gtk/gtkadjustment.h>
+#include <gal/widgets/e-unicode.h>
 #include "../xml/repr.h"
 #include "../xml/repr-private.h"
 #include "sp-xmlview-attr-list.h"
@@ -140,16 +141,20 @@ event_attr_changed (SPRepr * repr, const guchar * name, const guchar * old_value
 {
 	gint row;
 	SPXMLViewAttrList * list;
+	gchar *gtktext;
+
 	list = SP_XMLVIEW_ATTR_LIST (data);
 
 	gtk_clist_freeze (GTK_CLIST (list));
+
+	gtktext = (new_value) ? e_utf8_from_gtk_string (GTK_WIDGET (list), new_value) : NULL;
 
 	if (old_value) {
 		row = gtk_clist_find_row_from_data (GTK_CLIST (list), GINT_TO_POINTER (g_quark_from_string (name)));
 		g_assert (row != -1);
 
 		if (new_value) {
-			gtk_clist_set_text (GTK_CLIST (list), row, 1, new_value);
+			gtk_clist_set_text (GTK_CLIST (list), row, 1, gtktext);
 		} else {
 			gtk_clist_remove (GTK_CLIST (list), row);
 		}
@@ -159,11 +164,13 @@ event_attr_changed (SPRepr * repr, const guchar * name, const guchar * old_value
 		g_assert (new_value != NULL);
 
 		text[0] = name;
-		text[1] = new_value;
+		text[1] = gtktext;
 
 		row = gtk_clist_append (GTK_CLIST (list), (gchar **)text);
 		gtk_clist_set_row_data (GTK_CLIST (list), row, GINT_TO_POINTER (g_quark_from_string (name)));
 	}
+
+	if (gtktext) g_free (gtktext);
 
 	gtk_clist_thaw (GTK_CLIST (list));
 }

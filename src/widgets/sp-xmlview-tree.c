@@ -20,6 +20,7 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcontainer.h>
+#include <gal/widgets/e-unicode.h>
 #include "../xml/repr.h"
 #include "../xml/repr-private.h"
 #include "sp-xmlview-tree.h"
@@ -259,7 +260,7 @@ void
 element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_value, const guchar * new_value, gpointer ptr)
 {
 	NodeData * data;
-	gchar * label;
+	gchar *label, *gtkstr;
 
 	data = (NodeData *) ptr;
 
@@ -267,7 +268,9 @@ element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_valu
 
 	if (strcmp (key, "id")) return;
 
-	label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), new_value);
+	gtkstr = e_utf8_to_gtk_string (GTK_WIDGET (data->tree), new_value);
+	label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), gtkstr);
+	g_free (gtkstr);
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }
@@ -309,14 +312,16 @@ element_order_changed (SPRepr * repr, SPRepr * child, SPRepr * oldref, SPRepr * 
 void
 text_content_changed (SPRepr * repr, const guchar * old_content, const guchar * new_content, gpointer ptr)
 {
-	NodeData * data;
-	gchar * label;
+	NodeData *data;
+	gchar *label, *gtkstr;
 
 	data = (NodeData *) ptr;
 
 	if (data->tree->blocked) return;
 
-	label = g_strdup_printf ("\"%s\"", new_content);
+	gtkstr = e_utf8_to_gtk_string (GTK_WIDGET (data->tree), new_content);
+	label = g_strdup_printf ("\"%s\"", gtkstr);
+	g_free (gtkstr);
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }
@@ -347,7 +352,12 @@ tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkC
 			success = sp_repr_add_child (NODE_DATA (new_parent)->repr, NODE_DATA (node)->repr, ref);
 			if (!success) {
 				SPRepr * lost_repr;
-				/* fixme: unfortunately, there's no way to know beforehand that this would happen -- until it's too late.  We need an equivalent of the add_child/remove_child repr events that doesn't have side-effects, so we can check beforehand. */
+				/* fixme: unfortunately, there's no way to know beforehand that this would happen -- until it's too late. */
+				/* We need an equivalent of the add_child/remove_child repr events that doesn't have side-effects, */
+				/* so we can check beforehand. */
+				/* fixme: The cleaner alternative is to do repr_duplicate, and if insertion is successful change ids (Lauris) */
+				/* Do not expect it to be perfect in any way, because such messing with tree can have all kinds of nasty */
+				/* side-effect on document tree anyways */
 				SP_XMLVIEW_TREE (tree)->blocked--;
 				lost_repr = NODE_DATA (node)->repr;
 				gtk_ctree_remove_node (tree, node);
