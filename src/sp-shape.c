@@ -1,5 +1,6 @@
 #define SP_SHAPE_C
 
+#include <config.h>
 #include <gnome.h>
 
 #include <libart_lgpl/art_misc.h>
@@ -166,7 +167,7 @@ void
 sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 {
 
-	double r, g, b;
+	double r, g, b, opacity;
 
 	SPPath *path;
 	SPShape * shape;
@@ -176,6 +177,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 
 	path = SP_PATH (item);
 	shape = SP_SHAPE (item);
+
+#ifndef ENABLE_FRGBA
 
 	if ((shape->fill->type == SP_FILL_COLOR) && ((shape->fill->color & 0xff) != 255)) {
 		gdouble i2d[6], doc2d[6], doc2buf[6], d2buf[6], i2buf[6], d2i[6];
@@ -224,6 +227,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 		return;
 	}
 
+#endif /* ENABLE_FRGBA */
+
 	gnome_print_gsave (gpc);
 
 	for (l = path->comp; l != NULL; l = l->next) {
@@ -239,8 +244,10 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 				r = (double) ((shape->fill->color >> 24) & 0xff) / 255.0;
 				g = (double) ((shape->fill->color >> 16) & 0xff) / 255.0;
 				b = (double) ((shape->fill->color >>  8) & 0xff) / 255.0;
+				opacity = (double) ((shape->fill->color) & 0xff) / 255.0;
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, r, g, b);
+				gnome_print_setopacity (gpc, opacity);
 				gnome_print_eofill (gpc);
 				gnome_print_grestore (gpc);
 			}
@@ -248,12 +255,13 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 				r = (double) ((shape->stroke->color >> 24) & 0xff) / 255.0;
 				g = (double) ((shape->stroke->color >> 16) & 0xff) / 255.0;
 				b = (double) ((shape->stroke->color >>  8) & 0xff) / 255.0;
+				opacity = (double) ((shape->stroke->color) & 0xff) / 255.0;
+				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, r, g, b);
-
+				gnome_print_setopacity (gpc, opacity);
 				gnome_print_setlinewidth (gpc, shape->stroke->width);
 				gnome_print_setlinejoin (gpc, shape->stroke->join);
 				gnome_print_setlinecap (gpc, shape->stroke->cap);
-				gnome_print_gsave (gpc);
 				gnome_print_stroke (gpc);
 				gnome_print_grestore (gpc);
 			}

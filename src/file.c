@@ -1,5 +1,6 @@
 #define SP_FILE_C
 
+#include <config.h>
 #include <gnome.h>
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
@@ -13,6 +14,8 @@
 #include "mdi-document.h"
 #include "sp-image.h"
 #include "file.h"
+
+#include <libgnomeprint/gnome-print-frgba.h>
 
 gchar * open_path = NULL;
 gchar * save_path = NULL;
@@ -307,15 +310,21 @@ void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 {
         GnomePrintContext * gpc;
 
+#ifdef ENABLE_FRGBA
+        GnomePrintFRGBA * frgba;
+#endif
+
         gpc = gnome_print_context_new (printer);
 
+#ifdef ENABLE_FRGBA
+	frgba = gnome_print_frgba_new (gpc);
+        sp_item_print (SP_ITEM (doc->root), GNOME_PRINT_CONTEXT (frgba));
+        gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
+        gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
+#else
         sp_item_print (SP_ITEM (doc->root), gpc);
-
         gnome_print_showpage (gpc);
-
         gnome_print_context_close (gpc);
-#if 0
-        gnome_print_context_free (gpc);
 #endif
 }
 

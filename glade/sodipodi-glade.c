@@ -168,3 +168,4 @@ gchar *s = N_("dpi");
 gchar *s = N_("Lock aspect ratio");
 gchar *s = N_("1.0MB");
 gchar *s = N_("Uncompressed file size:");
+gchar *s = N_("_Uus");

@@ -1,5 +1,6 @@
 #define SP_EXPORT_C
 
+#include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
 #include "../helper/png-write.h"
@@ -10,6 +11,10 @@
 #include "../desktop-handles.h"
 #include "../desktop-affine.h"
 #include "export.h"
+
+#ifdef ENABLE_RBUF
+#include <libgnomeprint/gnome-print-rbuf.h>
+#endif
 
 #define SP_EXPORT_MIN_SIZE 16.0
 
@@ -96,6 +101,9 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	ArtPixBuf * pixbuf;
 	art_u8 * pixels;
 	gdouble affine[6], a[6];
+#ifdef ENABLE_RBUF
+	GnomePrintContext * rbuf;
+#endif
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (filename != NULL);
@@ -108,6 +116,20 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
+#ifdef ENABLE_RBUF
+
+	art_affine_translate (affine, -x0, -y1);
+	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
+	art_affine_multiply (affine, affine, a);
+
+	rbuf = gnome_print_rbuf_rgba_new (pixels, width, height, width * 4, affine);
+
+	sp_item_print (SP_ITEM (doc->root), rbuf);
+
+	gtk_object_destroy (GTK_OBJECT (rbuf));
+
+#else /* ENABLE_RBUF */
+
 	sp_desktop_doc2d_affine (desktop, affine);
 	art_affine_translate (a, -x0, -y1);
 	art_affine_multiply (affine, affine, a);
@@ -115,6 +137,8 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	art_affine_multiply (affine, affine, a);
 
 	sp_item_paint (SP_ITEM (doc->root), pixbuf, affine);
+
+#endif /* ENABLE_RBUF */
 
 	sp_png_write_rgba (filename, pixbuf);
 

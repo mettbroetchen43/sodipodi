@@ -223,7 +223,7 @@ sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf)
 {
 
 	gdk_pixbuf_ref (pixbuf);
-	gdk_pixbuf_unref (image->pixbuf);
+	if (image->pixbuf) gdk_pixbuf_unref (image->pixbuf);
 
 	image->pixbuf = pixbuf;
 

@@ -1165,7 +1165,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>5.43062</position>
+	<position>8.42105</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -1189,7 +1189,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>4.2328</position>
+	<position>4.39153</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>0</left_attach>
@@ -3797,6 +3797,67 @@ inches
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
 	<stock_button>GNOME_STOCK_BUTTON_CANCEL</stock_button>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>menu1</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>menu_file</name>
+    <stock_item>GNOMEUIINFO_MENU_FILE_TREE</stock_item>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>fail1_menu</name>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>uus1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_new</handler>
+	  <last_modification_time>Mon, 17 Apr 2000 14:39:27 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_NEW_ITEM</stock_item>
+	<label>_Uus</label>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>ava1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_open</handler>
+	  <last_modification_time>Mon, 17 Apr 2000 14:39:44 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_OPEN_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>salvesta1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_save</handler>
+	  <last_modification_time>Mon, 17 Apr 2000 14:39:56 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_SAVE_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>salvesta_kui1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_save_as</handler>
+	  <last_modification_time>Mon, 17 Apr 2000 14:40:14 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_SAVE_AS_ITEM</stock_item>
       </widget>
     </widget>
   </widget>

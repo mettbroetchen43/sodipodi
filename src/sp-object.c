@@ -233,6 +233,8 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 		if (sp_document_lookup_id (object->document, b) == NULL) {
 			realid = g_strdup (b);
 			g_assert (realid != NULL);
+		} else {
+			count++;
 		}
 	}
 

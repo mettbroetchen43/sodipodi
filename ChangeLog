@@ -1,3 +1,11 @@
+2000-04-19  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* configure.in: Added chack for GnomePrintRBuf and GnomePrintFRGBA
+	* sp-shape.c: if FRGBA is present, do not emulate alpha
+	* file.c: print via FRGBA, if present
+	* dialogs/export.c: export via RBuf, if present
+	* sp-object.c: fixed infinite loop in allocating id-s
+
 2000-04-17  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/sp-image.c: completed migration to new gdk-pixbuf
