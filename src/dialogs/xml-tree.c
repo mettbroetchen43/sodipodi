@@ -219,6 +219,44 @@ sp_xml_tree_add_attribute (GtkWidget * widget, gpointer data)
 void
 sp_xml_tree_change_attribute (GtkWidget * widget, gpointer data)
 {
-	g_warning ("xml_tree_change_attribute is unimplemented");
+	static GladeXML * xml = NULL;
+	static GtkWidget * dialog, * label, * entry;
+	const gchar * attr, * value;
+	gchar * newval;
+	gint b;
+
+	if (selected_repr == NULL) return;
+	if (selected_row < 0) return;
+
+	attr = gtk_clist_get_row_data (attributes, selected_row);
+	value = sp_repr_attr (selected_repr, attr);
+
+	if (xml == NULL) {
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/xml-tree.glade", "change_attribute");
+		g_assert (xml != NULL);
+		dialog = glade_xml_get_widget (xml, "change_attribute");
+		g_assert (dialog != NULL);
+		g_assert (GNOME_IS_DIALOG (dialog));
+		label = glade_xml_get_widget (xml, "change_attr_attribute");
+		g_assert (label != NULL);
+		g_assert (GTK_IS_LABEL (label));
+		entry = glade_xml_get_widget (xml, "change_attr_value");
+		g_assert (entry != NULL);
+		g_assert (GTK_IS_ENTRY (entry));
+	}
+
+	gtk_label_set_text (GTK_LABEL (label), attr);
+	gtk_entry_set_text (GTK_ENTRY (entry), value);
+
+	b = gnome_dialog_run (GNOME_DIALOG (dialog));
+
+	if (b == 0) {
+		newval = gtk_entry_get_text (GTK_ENTRY (entry));
+		if (sp_repr_set_attr (selected_repr, attr, newval)) {
+			gtk_clist_set_text (attributes, selected_row, 1, newval);
+		}
+	}
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 

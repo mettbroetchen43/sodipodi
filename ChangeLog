@@ -1,3 +1,10 @@
+2000-04-28  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* glade/Makefile.am: Added xml-tree.glade
+
+	* src/dialogs/xml-tree.c (sp_xml_tree_change_attribute): implemented
+	this
+
 2000-04-27  Miguel de Icaza  <miguel@helixcode.com>
 
 	* glade/Makefile.am: New file.

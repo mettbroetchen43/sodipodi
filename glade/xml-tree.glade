@@ -51,10 +51,11 @@
     </child>
 
     <widget>
-      <class>GtkHBox</class>
-      <name>hbox1</name>
-      <homogeneous>False</homogeneous>
-      <spacing>8</spacing>
+      <class>GtkHPaned</class>
+      <name>hpaned1</name>
+      <handle_size>10</handle_size>
+      <gutter_size>6</gutter_size>
+      <position>1</position>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
@@ -64,13 +65,13 @@
       <widget>
 	<class>GtkFrame</class>
 	<name>frame3</name>
+	<border_width>4</border_width>
 	<label>Hierarchy</label>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
+	  <shrink>True</shrink>
+	  <resize>False</resize>
 	</child>
 
 	<widget>
@@ -102,16 +103,16 @@
 	<class>GtkVBox</class>
 	<name>vbox1</name>
 	<homogeneous>False</homogeneous>
-	<spacing>8</spacing>
+	<spacing>0</spacing>
 	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
+	  <shrink>True</shrink>
+	  <resize>True</resize>
 	</child>
 
 	<widget>
 	  <class>GtkFrame</class>
 	  <name>frame2</name>
+	  <border_width>4</border_width>
 	  <label>Attributes</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -122,130 +123,143 @@
 	  </child>
 
 	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>scrolledwindow2</name>
-	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+	    <class>GtkVBox</class>
+	    <name>vbox2</name>
+	    <border_width>4</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>4</spacing>
 
 	    <widget>
-	      <class>GtkCList</class>
-	      <name>attributes</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>select_row</name>
-		<handler>sp_xml_tree_select_attribute</handler>
-		<last_modification_time>Thu, 27 Apr 2000 22:31:20 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>unselect_row</name>
-		<handler>sp_xml_tree_unselect_attribute</handler>
-		<last_modification_time>Thu, 27 Apr 2000 22:33:12 GMT</last_modification_time>
-	      </signal>
-	      <columns>2</columns>
-	      <column_widths>67,186</column_widths>
-	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	      <show_titles>True</show_titles>
-	      <shadow_type>GTK_SHADOW_IN</shadow_type>
+	      <class>GtkScrolledWindow</class>
+	      <name>scrolledwindow2</name>
+	      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+	      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+	      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+	      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
 
 	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>label2</name>
-		<label>Key</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
+		<class>GtkCList</class>
+		<name>attributes</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>select_row</name>
+		  <handler>sp_xml_tree_select_attribute</handler>
+		  <last_modification_time>Thu, 27 Apr 2000 22:31:20 GMT</last_modification_time>
+		</signal>
+		<signal>
+		  <name>unselect_row</name>
+		  <handler>sp_xml_tree_unselect_attribute</handler>
+		  <last_modification_time>Thu, 27 Apr 2000 22:33:12 GMT</last_modification_time>
+		</signal>
+		<columns>2</columns>
+		<column_widths>67,186</column_widths>
+		<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+		<show_titles>True</show_titles>
+		<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <child_name>CList:title</child_name>
+		  <name>label2</name>
+		  <label>Key</label>
+		  <justify>GTK_JUSTIFY_CENTER</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <child_name>CList:title</child_name>
+		  <name>label3</name>
+		  <label>Value</label>
+		  <justify>GTK_JUSTIFY_CENTER</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>0</xpad>
+		  <ypad>0</ypad>
+		</widget>
 	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkAlignment</class>
+	      <name>alignment1</name>
+	      <xalign>1</xalign>
+	      <yalign>0.5</yalign>
+	      <xscale>0</xscale>
+	      <yscale>1</yscale>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
 
 	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>label3</name>
-		<label>Value</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
+		<class>GtkHBox</class>
+		<name>hbox2</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>del_attr_button</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>sp_xml_tree_delete_attribute</handler>
+		    <last_modification_time>Thu, 27 Apr 2000 22:29:35 GMT</last_modification_time>
+		  </signal>
+		  <label>Delete</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>add_attr_button</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>sp_xml_tree_add_attribute</handler>
+		    <last_modification_time>Thu, 27 Apr 2000 22:29:55 GMT</last_modification_time>
+		  </signal>
+		  <label>Add</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>change_attr_button</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>sp_xml_tree_change_attribute</handler>
+		    <last_modification_time>Thu, 27 Apr 2000 22:30:14 GMT</last_modification_time>
+		  </signal>
+		  <label>Change</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
 	      </widget>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkAlignment</class>
-	  <name>alignment1</name>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xscale>0</xscale>
-	  <yscale>1</yscale>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>hbox2</name>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button5</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>sp_xml_tree_delete_attribute</handler>
-		<last_modification_time>Thu, 27 Apr 2000 22:29:35 GMT</last_modification_time>
-	      </signal>
-	      <label>Delete</label>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button6</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>sp_xml_tree_add_attribute</handler>
-		<last_modification_time>Thu, 27 Apr 2000 22:29:55 GMT</last_modification_time>
-	      </signal>
-	      <label>Add</label>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button7</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>sp_xml_tree_change_attribute</handler>
-		<last_modification_time>Thu, 27 Apr 2000 22:30:14 GMT</last_modification_time>
-	      </signal>
-	      <label>Change</label>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
 	    </widget>
 	  </widget>
 	</widget>
@@ -253,6 +267,7 @@
 	<widget>
 	  <class>GtkFrame</class>
 	  <name>frame1</name>
+	  <border_width>4</border_width>
 	  <label>Content</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -263,52 +278,65 @@
 	  </child>
 
 	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>scrolledwindow1</name>
-	    <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+	    <class>GtkVBox</class>
+	    <name>vbox3</name>
+	    <border_width>4</border_width>
+	    <homogeneous>False</homogeneous>
+	    <spacing>4</spacing>
 
 	    <widget>
-	      <class>GtkText</class>
-	      <name>content</name>
-	      <can_focus>True</can_focus>
-	      <editable>False</editable>
-	      <text></text>
+	      <class>GtkScrolledWindow</class>
+	      <name>scrolledwindow1</name>
+	      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+	      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+	      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkText</class>
+		<name>content</name>
+		<can_focus>True</can_focus>
+		<editable>False</editable>
+		<text></text>
+	      </widget>
 	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkAlignment</class>
-	  <name>alignment2</name>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xscale>0</xscale>
-	  <yscale>1</yscale>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>hbox3</name>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
 
 	    <widget>
-	      <class>GtkButton</class>
-	      <name>button8</name>
-	      <can_focus>True</can_focus>
-	      <label>Change</label>
+	      <class>GtkAlignment</class>
+	      <name>alignment2</name>
+	      <xalign>1</xalign>
+	      <yalign>0.5</yalign>
+	      <xscale>0</xscale>
+	      <yscale>1</yscale>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
 		<fill>False</fill>
 	      </child>
+
+	      <widget>
+		<class>GtkHBox</class>
+		<name>hbox3</name>
+		<homogeneous>True</homogeneous>
+		<spacing>0</spacing>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>change_content_button</name>
+		  <can_focus>True</can_focus>
+		  <label>Change</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+	      </widget>
 	    </widget>
 	  </widget>
 	</widget>
@@ -414,7 +442,7 @@
 
       <widget>
 	<class>GtkEntry</class>
-	<name>value</name>
+	<name>change_attr_value</name>
 	<can_focus>True</can_focus>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
@@ -490,7 +518,7 @@
 
       <widget>
 	<class>GtkLabel</class>
-	<name>label7</name>
+	<name>change_attr_attribute</name>
 	<label>name</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
