@@ -44,9 +44,11 @@ struct _SPPrintContext {
 };
 #else
 struct _SPPrintContext {
-	gpointer dummy;
+	FILE *stream;
 };
 #endif
+
+static void sp_print_bpath (FILE *stream, const ArtBpath *bp);
 
 unsigned int
 sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
@@ -66,6 +68,16 @@ sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 	gnome_print_concat (ctx->gpc, t);
 
 	/* fixme: Opacity? (lauris) */
+#else
+	if (!ctx->stream) return -1;
+
+	fprintf (ctx->stream, "gsave [%g %g %g %g %g %g] concat\n",
+		 transform->c[0],
+		 transform->c[1],
+		 transform->c[2],
+		 transform->c[3],
+		 transform->c[4],
+		 transform->c[5]);
 #endif
 
 	return 0;
@@ -76,6 +88,10 @@ sp_print_release (SPPrintContext *ctx)
 {
 #ifdef WITH_GNOME_PRINT
 	gnome_print_grestore (ctx->gpc);
+#else
+	if (!ctx->stream) return -1;
+
+	fprintf (ctx->stream, "grestore\n");
 #endif
 
 	return 0;
@@ -181,6 +197,24 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			sp_painter_free (painter);
 		}
 	}
+#else
+	if (!ctx->stream) return -1;
+
+	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
+		float rgb[3];
+
+		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
+
+		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+
+		sp_print_bpath (ctx->stream, bpath->path);
+
+		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
+			fprintf (ctx->stream, "eofill\n");
+		} else {
+			fprintf (ctx->stream, "fill\n");
+		}
+	}
 #endif
 
 	return 0;
@@ -225,6 +259,35 @@ sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm
 		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 
 		gnome_print_stroke (ctx->gpc);
+	}
+#else
+	if (!ctx->stream) return -1;
+
+	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
+		float rgb[3];
+
+		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
+
+		fprintf (ctx->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
+
+		sp_print_bpath (ctx->stream, bpath->path);
+
+		if (style->stroke_dash.n_dash > 0) {
+			int i;
+			fprintf (ctx->stream, "[");
+			for (i = 0; i < style->stroke_dash.n_dash; i++) {
+				fprintf (ctx->stream, (i) ? " %g" : "%g", style->stroke_dash.dash[i]);
+			}
+			fprintf (ctx->stream, "] %g setdash\n", style->stroke_dash.offset);
+		} else {
+			fprintf (ctx->stream, "[] 0 setdash\n");
+		}
+
+		fprintf (ctx->stream, "%g setlinewidth\n", style->stroke_width.computed);
+		fprintf (ctx->stream, "%d setlinejoin\n", style->stroke_linejoin.computed);
+		fprintf (ctx->stream, "%d setlinecap\n", style->stroke_linecap.computed);
+
+		fprintf (ctx->stream, "stroke\n");
 	}
 #endif
 
@@ -374,6 +437,58 @@ sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
+#else
+	SPPrintContext ctx;
+
+	ctx.stream = fopen (filename, "w");
+	if (ctx.stream) {
+		sp_document_ensure_up_to_date (doc);
+		fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
+		fprintf (ctx.stream, "0.8 -0.8 scale\n");
+		sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+		fprintf (ctx.stream, "showpage\n");
+		fclose (ctx.stream);
+	}
 #endif
 }
 
+/* PostScript helpers */
+
+static void
+sp_print_bpath (FILE *stream, const ArtBpath *bp)
+{
+	unsigned int closed;
+
+	fprintf (stream, "newpath\n");
+	closed = FALSE;
+	while (bp->code != ART_END) {
+		switch (bp->code) {
+		case ART_MOVETO:
+			if (closed) {
+				fprintf (stream, "closepath\n");
+			}
+			closed = TRUE;
+			fprintf (stream, "%g %g moveto\n", bp->x3, bp->y3);
+			break;
+		case ART_MOVETO_OPEN:
+			if (closed) {
+				fprintf (stream, "closepath\n");
+			}
+			closed = FALSE;
+			fprintf (stream, "%g %g moveto\n", bp->x3, bp->y3);
+			break;
+		case ART_LINETO:
+			fprintf (stream, "%g %g lineto\n", bp->x3, bp->y3);
+			break;
+		case ART_CURVETO:
+			fprintf (stream, "%g %g %g %g %g %g curveto\n", bp->x1, bp->y1, bp->x2, bp->y2, bp->x3, bp->y3);
+			break;
+		default:
+			break;
+		}
+		bp += 1;
+	}
+	if (closed) {
+		fprintf (stream, "closepath\n");
+	}
+}

@@ -1,5 +1,11 @@
 2002-12-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/print.c (sp_print_bpath): Helper
+	(sp_print_bind): Implement non-gnome-print version
+	(sp_print_release): Ditto
+	(sp_print_fill): Ditto
+	(sp_print_stroke): Implement non-gnome-print version
+
 	* src/widgets/icon.c (sp_icon_image_load): Generic image loader
 
 	* src/desktop.c (sp_desktop_widget_update_zoom): Make working again
