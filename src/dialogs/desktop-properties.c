@@ -15,6 +15,8 @@
 #include <config.h>
 #endif
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
@@ -123,7 +125,7 @@ sp_dtw_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	SPRepr *repr;
 	SPUnitSelector *us;
 	const guchar *key;
-	guchar c[32];
+	guchar c0[32], c[32];
 
 	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
@@ -135,7 +137,8 @@ sp_dtw_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	key = gtk_object_get_data (GTK_OBJECT (adjustment), "key");
 	us = gtk_object_get_data (GTK_OBJECT (adjustment), "unit_selector");
 
-	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+	arikkei_dtoa_simple (c0, 32, adjustment->value, 6, 0, FALSE);
+	g_snprintf (c, 32, "%s%s", c0, sp_unit_selector_get_unit (us)->abbr);
 
 	sp_document_set_undo_sensitive (doc, FALSE);
 	sp_repr_set_attr (repr, key, c);
@@ -147,7 +150,7 @@ sp_dtw_grid_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 {
 	SPRepr *repr;
 	SPUnitSelector *us;
-	guchar c[32];
+	guchar c0[32], c[32];
 
 	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
@@ -157,7 +160,8 @@ sp_dtw_grid_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 
 	us = gtk_object_get_data (GTK_OBJECT (dialog), "grid_snap_units");
 
-	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+	arikkei_dtoa_simple (c0, 32, adjustment->value, 6, 0, FALSE);
+	g_snprintf (c, 32, "%s%s", c0, sp_unit_selector_get_unit (us)->abbr);
 	sp_repr_set_attr (repr, "gridtolerance", c);
 }
 
@@ -166,7 +170,7 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 {
 	SPRepr *repr;
 	SPUnitSelector *us;
-	guchar c[32];
+	guchar c0[32], c[32];
 
 	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
@@ -176,7 +180,8 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 
 	us = gtk_object_get_data (GTK_OBJECT (dialog), "guide_snap_units");
 
-	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
+	arikkei_dtoa_simple (c0, 32, adjustment->value, 6, 0, FALSE);
+	g_snprintf (c, 32, "%s%s", c0, sp_unit_selector_get_unit (us)->abbr);
 	sp_repr_set_attr (repr, "guidetolerance", c);
 }
 

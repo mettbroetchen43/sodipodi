@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
 
@@ -367,7 +369,7 @@ sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font)
 		if (i >= fsel->styles.length) return;
 		gtk_clist_select_row (scl, i, 0);
 
-		g_snprintf (s, 8, "%.2g", NR_FONT_SIZE (font));
+		arikkei_dtoa_simple (s, 8, NR_FONT_SIZE (font), 3, 2, TRUE);
 		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (fsel->size)->entry), s);
 	}
 }

@@ -19,6 +19,9 @@
 
 #include <math.h>
 #include <string.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <glib.h>
 
 #include "macros.h"
@@ -128,7 +131,7 @@ sp_doc_dialog_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	SPRepr *repr;
 	SPUnitSelector *us;
 	const guchar *key;
-	guchar c[32];
+	guchar c0[32], c[32];
 
 	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
@@ -140,8 +143,8 @@ sp_doc_dialog_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	key = gtk_object_get_data (GTK_OBJECT (adjustment), "key");
 	us = gtk_object_get_data (GTK_OBJECT (adjustment), "unit_selector");
 
-	g_snprintf (c, 32, "%g%s", adjustment->value, sp_unit_selector_get_unit (us)->abbr);
-
+	arikkei_dtoa_simple (c0, 32, adjustment->value, 6, 0, FALSE);
+	g_snprintf (c, 32, "%s%s", c0, sp_unit_selector_get_unit (us)->abbr);
 	sp_repr_set_attr (repr, key, c);
 
 	sp_document_done (doc);

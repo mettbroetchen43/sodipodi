@@ -16,6 +16,8 @@
 #include <config.h>
 #endif
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -599,7 +601,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	gdouble start, end;
 	SPObject *child;
 	guint32 color;
-	gchar c[256];
+	gchar c[256], c0[32];
 
 	if (blocked) return;
 
@@ -630,7 +632,8 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", start);
-	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%g;", color >> 8, (gdouble) (color & 0xff) / 255.0);
+	arikkei_dtoa_simple (c0, 32, (double) (color & 0xff) / 255.0, 4, 0, FALSE);
+	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%s;", color >> 8, c0);
 	sp_repr_set_attr (SP_OBJECT_REPR (child), "style", c);
 
 	for (child = child->next; child != NULL; child = child->next) {
@@ -642,7 +645,8 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", end);
-	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%g;", color >> 8, (gdouble) (color & 0xff) / 255.0);
+	arikkei_dtoa_simple (c0, 32, (double) (color & 0xff) / 255.0, 4, 0, FALSE);
+	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%s;", color >> 8, c0);
 	sp_repr_set_attr (SP_OBJECT_REPR (child), "style", c);
 
 	/* Remove other stops */

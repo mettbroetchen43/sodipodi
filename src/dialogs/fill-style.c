@@ -20,6 +20,9 @@
 #endif
 
 #include <string.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmisc.h>
 #include <gtk/gtklabel.h>
@@ -32,14 +35,6 @@
 #include <gtk/gtkmenuitem.h>
 
 #include <libnr/nr-values.h>
-
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
-
-#include <libnr/nr-values.h>
-
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
 
 #include "../helper/sp-intl.h"
 #include "../helper/window.h"
@@ -337,7 +332,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	}
 
 	fillrule = g_object_get_data (G_OBJECT (spw), "fill-rule");
-	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), (SP_OBJECT_STYLE (object)->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
+	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), SP_OBJECT_STYLE (object)->fill_rule.computed);
 
 	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
@@ -391,7 +386,7 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	}
 
 	fillrule = g_object_get_data (G_OBJECT (spw), "fill-rule");
-	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), (style->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
+	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), style->fill_rule.computed);
 
 	sp_style_unref (style);
 
@@ -480,7 +475,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	SPCSSAttr *css;
 	gfloat rgba[4], cmyka[5];
 	SPGradient *vector;
-	guchar b[64];
+	guchar b[64], c0[32], c1[32], c2[32], c3[32];
 
 	if (g_object_get_data (G_OBJECT (spw), "update")) return;
 	g_object_set_data (G_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
@@ -523,7 +518,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_paint_selector_get_rgba_floatv (psel, rgba);
 		sp_svg_write_color (b, 64, SP_RGBA32_F_COMPOSE (rgba[0], rgba[1], rgba[2], 0.0));
 		sp_repr_css_set_property (css, "fill", b);
-		g_snprintf (b, 64, "%g", rgba[3]);
+		arikkei_dtoa_simple (b, 64, rgba[3], 4, 0, FALSE);
 		sp_repr_css_set_property (css, "fill-opacity", b);
 		for (r = reprs; r != NULL; r = r->next) {
 			sp_repr_set_attr_recursive ((SPRepr *) r->data, "sodipodi:fill-cmyk", NULL);
@@ -538,9 +533,13 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_color_cmyk_to_rgb_floatv (rgba, cmyka[0], cmyka[1], cmyka[2], cmyka[3]);
 		sp_svg_write_color (b, 64, SP_RGBA32_F_COMPOSE (rgba[0], rgba[1], rgba[2], 0.0));
 		sp_repr_css_set_property (css, "fill", b);
-		g_snprintf (b, 64, "%g", cmyka[4]);
+		arikkei_dtoa_simple (b, 64, cmyka[4], 4, 0, FALSE);
 		sp_repr_css_set_property (css, "fill-opacity", b);
-		g_snprintf (b, 64, "(%g %g %g %g)", cmyka[0], cmyka[1], cmyka[2], cmyka[3]);
+		arikkei_dtoa_simple (c0, 32, cmyka[0], 4, 0, FALSE);
+		arikkei_dtoa_simple (c1, 32, cmyka[1], 4, 0, FALSE);
+		arikkei_dtoa_simple (c2, 32, cmyka[2], 4, 0, FALSE);
+		arikkei_dtoa_simple (c3, 32, cmyka[3], 4, 0, FALSE);
+		g_snprintf (b, 64, "(%s %s %s %s)", c0, c1, c2, c3);
 		for (r = reprs; r != NULL; r = r->next) {
 			sp_repr_set_attr_recursive ((SPRepr *) r->data, "sodipodi:fill-cmyk", b);
 			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");

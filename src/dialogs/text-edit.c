@@ -17,6 +17,9 @@
 #endif
 
 #include <string.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <libnrtype/nr-type-directory.h>
 
 #include <glib.h>
@@ -304,7 +307,7 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "style", c, 256);
 		g_strdown (c);
 		sp_repr_css_set_property (css, "font-style", c);
-		g_snprintf (c, 64, "%g", NR_FONT_SIZE (font));
+		arikkei_dtoa_simple (c, 64, NR_FONT_SIZE (font), 6, 0, FALSE);
 		sp_repr_css_set_property (css, "font-size", c);
 		nr_font_unref (font);
 		/* Layout */
