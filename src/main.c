@@ -226,15 +226,29 @@ sp_main_gui (int argc, const char **argv)
 {
 	GSList *fl = NULL;
 
+#ifdef _DEBUG
+	g_print ("Initializing Gtk+...\n");
+#endif
 	gtk_init (&argc, (char ***) &argv);
-
+#ifdef _DEBUG
+	g_print ("Creating new application...\n");
+#endif
 	sodipodi_application_new ();
+#ifdef _DEBUG
+	g_print ("Initializing modules...\n");
+#endif
 	sp_modules_init (&argc, &argv, TRUE);
 
+#ifdef _DEBUG
+	g_print ("Registering objects...\n");
+#endif
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
 	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
 
+#ifdef _DEBUG
+	g_print ("Collecting arguments...\n");
+#endif
 	fl = sp_process_args (argc, argv);
 	if (stop) exit (1);
 
@@ -247,9 +261,21 @@ sp_main_gui (int argc, const char **argv)
 #endif
 
 	if (!sp_global_slideshow) {
+#ifdef _DEBUG
+	g_print ("Loading preferences...\n");
+#endif
 		sodipodi_load_preferences (sodipodi);
+#ifdef _DEBUG
+	g_print ("Loading extensions...\n");
+#endif
 		sodipodi_load_extensions (sodipodi);
+#ifdef _DEBUG
+	g_print ("Creating main toolbox...\n");
+#endif
 		sp_maintoolbox_create_toplevel ();
+#ifdef _DEBUG
+	g_print ("Unrefing application...\n");
+#endif
 		sodipodi_unref ();
 
 		while (fl) {
@@ -290,7 +316,9 @@ sp_main_gui (int argc, const char **argv)
 	}
 
 	/* sp_modules_menu_about_new (); */
-
+#ifdef _DEBUG
+	g_print ("Entering main loop...\n");
+#endif
 	gtk_main ();
 
 	return 0;

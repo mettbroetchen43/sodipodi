@@ -23,10 +23,13 @@
 #endif
 
 #include <tchar.h>
+#include <direct.h>
 
 #include <libarikkei/arikkei-strlib.h>
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
+
+#include <gtk/gtkmain.h>
 
 #include "display/nr-arena-item.h"
 #include "display/nr-arena.h"
@@ -239,7 +242,9 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 #ifdef USE_TIMER
 	UINT_PTR timer;
 #endif
+#if 0
 	int caps;
+#endif
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
@@ -351,7 +356,9 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		},
 		{0, 0, 0, 0} /* bmiColors */
 	};
+#if 0
 	RECT wrect;
+#endif
 	int res;
 
 	w32mod = (SPModulePrintWin32 *) mod;
@@ -405,7 +412,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		NRRectL bbox;
 		NRGC gc;
 		int num_rows;
-		int i, x, y;
+		int x, y;
 
 		num_rows = sheight;
 		if ((row + num_rows) > height) num_rows = height - row;
@@ -637,8 +644,6 @@ sp_win32_ichigo (void)
 	static unsigned char *ichigo = NULL;
 	TCHAR pathval[4096];
     DWORD len = 4096;
-    HKEY hKey;
-    LONG ret;
 
 	if (ichigo) return ichigo;
 

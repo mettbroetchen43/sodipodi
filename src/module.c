@@ -726,7 +726,7 @@ sp_modules_menu_action_activate (GtkWidget *widget, SPRepr *repr)
 			sp_module_invoke (module, repr);
 			sp_module_unref (module);
 		} else {
-			const unsigned char *path, *dllpath;
+			const unsigned char *dllpath;
 			dllpath = sp_repr_attr (actrepr, "dllpath");
 			/* fixme: Set as invalid instead */
 			if (!dllpath) return;

@@ -279,7 +279,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (sp_curve_is_empty (shape->curve)) return NR_ARENA_ITEM_STATE_ALL;
 	if ((shape->style->fill.type == SP_PAINT_TYPE_NONE) && (shape->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
 
-	/* Build state data */
+		/* Build state data */
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {

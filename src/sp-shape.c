@@ -400,7 +400,7 @@ sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 		nr_matrix_f_from_d (&a, transform);
 		bp.path = SP_CURVE_BPATH (shape->curve);
 
-                style = SP_OBJECT_STYLE (item);
+		style = SP_OBJECT_STYLE (item);
 		if (flags & SP_ITEM_BBOX_VISUAL) {
 			/* Need visual bbox */
 			if (style->stroke.type != SP_PAINT_TYPE_NONE) {

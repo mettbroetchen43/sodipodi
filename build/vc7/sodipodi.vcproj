@@ -25,9 +25,11 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
-				WarningLevel="1"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="3"
+				CompileAs="1"
+				DisableSpecificWarnings="4018;4244;4305"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -327,9 +329,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\sp-polygon.c">
 			</File>
 			<File
-				RelativePath="..\..\src\sp-polyline.c">
-			</File>
-			<File
 				RelativePath="..\..\src\sp-rect.c">
 			</File>
 			<File
@@ -608,9 +607,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			</File>
 			<File
 				RelativePath="..\..\src\sp-polygon.h">
-			</File>
-			<File
-				RelativePath="..\..\src\sp-polyline.h">
 			</File>
 			<File
 				RelativePath="..\..\src\sp-rect.h">

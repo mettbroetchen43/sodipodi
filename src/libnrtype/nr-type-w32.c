@@ -371,9 +371,11 @@ static unsigned int
 nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 {
 	NRTypeFaceW32 *tfw32;
+	unsigned int vval;
+#ifndef _UNICODE
 	const unsigned short *uc2cp;
 	unsigned int uc2cp_size;
-	unsigned int vval;
+#endif
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
