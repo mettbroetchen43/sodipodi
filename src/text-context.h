@@ -36,6 +36,10 @@ struct _SPTextContext {
 	/* Insertion point position */
 	gint ipos;
 
+	guchar uni[5];
+	guchar unimode;
+	guchar unipos;
+
 	GnomeCanvasItem *cursor;
 	gint timeout;
 	guint show : 1;

@@ -13,6 +13,7 @@
  */
 
 #include <math.h>
+#include <ctype.h>
 #include <gdk/gdkkeysyms.h>
 #include <gal/widgets/e-unicode.h>
 #include <helper/sp-ctrlline.h>
@@ -102,6 +103,8 @@ sp_text_context_init (SPTextContext *tc)
 	tc->pdoc.x = 0.0;
 	tc->pdoc.y = 0.0;
 	tc->ipos = 0;
+
+	tc->unimode = FALSE;
 
 	tc->cursor = NULL;
 	tc->timeout = 0;
@@ -328,64 +331,97 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		g_assert (tc->text != NULL);
 		style = SP_OBJECT_STYLE (tc->text);
 
-		switch (event->key.keyval) {
-		case GDK_Return:
-			/* Append new line */
-			/* fixme: Has to be insert here */
-			new = sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
-			tc->ipos += 1;
-			break;
-		case GDK_space:
-			if (event->key.state & GDK_CONTROL_MASK) {
+		if (event->key.state & GDK_CONTROL_MASK) {
+			switch (event->key.keyval) {
+			case GDK_space:
 				/* Nonbreaking space */
 				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, "\302\240", TRUE);
-			} else {
+				break;
+			case GDK_u:
+				if (tc->unimode) {
+					tc->unimode = FALSE;
+				} else {
+					tc->unimode = TRUE;
+					tc->unipos = 0;
+				}
+				break;
+			default:
+				if (event->key.string) {
+					utf8 = e_utf8_from_locale_string (event->key.string);
+					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
+					if (utf8) g_free (utf8);
+				}
+				break;
+			}
+		} else {
+			switch (event->key.keyval) {
+			case GDK_Return:
+				new = sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
+				tc->ipos += 1;
+				break;
+			case GDK_space:
 				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, " ", FALSE);
+				break;
+			case GDK_BackSpace:
+				tc->ipos = sp_text_delete (SP_TEXT (tc->text), MAX (tc->ipos - 1, 0), tc->ipos);
+				break;
+			case GDK_Delete:
+				tc->ipos = sp_text_delete (SP_TEXT (tc->text), tc->ipos, MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text))));
+				break;
+			case GDK_Left:
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
+				} else {
+					tc->ipos = MAX (tc->ipos - 1, 0);
+				}
+				sp_text_context_update_cursor (tc);
+				break;
+			case GDK_Right:
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
+				} else {
+					tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
+				}
+				sp_text_context_update_cursor (tc);
+				break;
+			case GDK_Up:
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					tc->ipos = MAX (tc->ipos - 1, 0);
+				} else {
+					tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
+				}
+				sp_text_context_update_cursor (tc);
+				break;
+			case GDK_Down:
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
+				} else {
+					tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
+				}
+				sp_text_context_update_cursor (tc);
+				break;
+			default:
+				if (tc->unimode && isxdigit (event->key.keyval)) {
+					tc->uni[tc->unipos] = event->key.keyval;
+					if (tc->unipos == 3) {
+						guchar u[7];
+						guint uv, len;
+						sscanf (tc->uni, "%x", &uv);
+						len = g_unichar_to_utf8 (uv, u);
+						u[len] = '\0';
+						tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, u, FALSE);
+						tc->unipos = 0;
+					} else {
+						tc->unipos += 1;
+					}
+				} else {
+					tc->unimode = FALSE;
+					utf8 = e_utf8_from_locale_string (event->key.string);
+					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
+					if (utf8) g_free (utf8);
+					break;
+				}
 			}
-			break;
-		case GDK_BackSpace:
-			tc->ipos = sp_text_delete (SP_TEXT (tc->text), MAX (tc->ipos - 1, 0), tc->ipos);
-			break;
-		case GDK_Delete:
-			tc->ipos = sp_text_delete (SP_TEXT (tc->text), tc->ipos, MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text))));
-			break;
-		case GDK_Left:
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
-			} else {
-				tc->ipos = MAX (tc->ipos - 1, 0);
-			}
-			sp_text_context_update_cursor (tc);
-			break;
-		case GDK_Right:
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
-			} else {
-				tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
-			}
-			sp_text_context_update_cursor (tc);
-			break;
-		case GDK_Up:
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				tc->ipos = MAX (tc->ipos - 1, 0);
-			} else {
-				tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
-			}
-			sp_text_context_update_cursor (tc);
-			break;
-		case GDK_Down:
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
-			} else {
-				tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
-			}
-			sp_text_context_update_cursor (tc);
-			break;
-		default:
-			utf8 = e_utf8_from_locale_string (event->key.string);
-			tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
-			if (utf8) g_free (utf8);
-			break;
 		}
 
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
