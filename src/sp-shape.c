@@ -368,6 +368,13 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 							rgba,
 							buf->pixels, buf->rowstride, NULL);
 					}
+				} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+#if 0
+					SPPainter *painter;
+					ArtDRect bbox;
+					sp_item_bbox (item, &bbox);
+					painter = sp_paint_server_painter_new (style->fill.server, affine, style->real_opacity, &bbox);
+#endif
 				}
 				art_svp_free (svp);
 			}

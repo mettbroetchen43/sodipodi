@@ -17,8 +17,8 @@ libspwidgets_a_SOURCES = \
 	sp-toolbox.c sp-toolbox.h \
 	sp-color-slider.c sp-color-slider.h \
 	sp-color-selector.c sp-color-selector.h \
-	gradient-image.c gradient-image.h
-#	sp-colorsel.c sp-colorsel.h
+	gradient-image.c gradient-image.h \
+	gradient-position.c gradient-position.h
 
 noinst_PROGRAMS = test-widgets
 

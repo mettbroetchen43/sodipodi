@@ -253,7 +253,7 @@ sp_gradient_image_update (SPGradientImage *image)
 			p = image->px + y * 3 * allocation->width;
 			for (x = 0; x < allocation->width; x++) {
 				guchar v;
-				v = (((x >> 2) + (y >> 2)) & 1) ? 0xbf : 0x7f;
+				v = ((x ^ y) & 0x8) ? 0xbf : 0x7f;
 				*p++ = v;
 				*p++ = v;
 				*p++ = v;

@@ -169,6 +169,8 @@ struct _SPLinearGradientClass {
 
 GtkType sp_lineargradient_get_type (void);
 
+void sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
+
 /* Builds flattened repr tree of gradient - i.e. no href */
 
 SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector);

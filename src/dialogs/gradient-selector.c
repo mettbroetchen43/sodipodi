@@ -20,6 +20,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
 #include "../widgets/gradient-image.h"
+#include "../widgets/gradient-position.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
@@ -45,10 +46,13 @@ static void sp_gradient_selector_change_selection (SPWidget *spw, SPSelection *s
 
 static void sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection);
 
+static void sp_gradient_selection_position_dragged (SPGradientPosition *pos, SPWidget *spw);
+static void sp_gradient_selection_position_changed (SPGradientPosition *pos, SPWidget *spw);
+
 GtkWidget *
 sp_gradient_widget_new (void)
 {
-	GtkWidget *spw, *vb, *hb, *b, *vectors;
+	GtkWidget *spw, *vb, *hb, *b, *vectors, *pos;
 
 	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
 
@@ -61,25 +65,36 @@ sp_gradient_widget_new (void)
 	gtk_box_pack_start (GTK_BOX (vb), vectors, FALSE, FALSE, 4);
 	gtk_object_set_data (GTK_OBJECT (spw), "vectors", vectors);
 
-	hb = gtk_hbox_new (TRUE, 4);
+	hb = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (hb);
 	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
 
-	b = gtk_button_new_with_label (_("Edit vector"));
+	b = gtk_button_new_with_label (_("Edit"));
 	gtk_widget_show (b);
-	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked",
 			    GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), spw);
-	b = gtk_button_new_with_label (_("Add vector"));
+	b = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (b);
-	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked",
 			    GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), spw);
-	b = gtk_button_new_with_label (_("Delete vector"));
+	b = gtk_button_new_with_label (_("Delete"));
+	gtk_widget_set_sensitive (b, FALSE);
 	gtk_widget_show (b);
-	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked",
 			    GTK_SIGNAL_FUNC (sp_gradient_selector_delete_vector_clicked), spw);
+
+	/* Create gradient position widget */
+	pos = sp_gradient_position_new (NULL);
+	gtk_widget_show (pos);
+	gtk_box_pack_start (GTK_BOX (vb), pos, TRUE, TRUE, 4);
+	gtk_object_set_data (GTK_OBJECT (spw), "position", pos);
+	gtk_signal_connect (GTK_OBJECT (pos), "dragged",
+			    GTK_SIGNAL_FUNC (sp_gradient_selection_position_dragged), spw);
+	gtk_signal_connect (GTK_OBJECT (pos), "changed",
+			    GTK_SIGNAL_FUNC (sp_gradient_selection_position_changed), spw);
 
 	/* Connect selection tracking signal */
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection",
@@ -156,7 +171,7 @@ sp_gradient_selector_vector_menu_refresh (GtkOptionMenu *vectors, SPWidget *spw)
 
 		g = sp_gradient_image_new (gr);
 		gtk_widget_show (g);
-		gtk_box_pack_start (GTK_BOX (hb), g, TRUE, TRUE, 4);
+		gtk_box_pack_start (GTK_BOX (hb), g, FALSE, FALSE, 4);
 
 		gtk_menu_append (GTK_MENU (menu), i);
 	}
@@ -246,10 +261,12 @@ static void
 sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection)
 {
 	SPGradient *gradient;
-	GtkWidget *vectors, *menu;
+	GtkWidget *vectors, *menu, *position;
 	const GSList *items, *i;
 	GList *children, *l;
 	gint pos;
+	ArtDRect bbox;
+	SPLinearGradient *lg;
 
 	if (!selection) return;
 
@@ -289,4 +306,85 @@ sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection)
 
 	gtk_object_set_data (GTK_OBJECT (spw), "gradient", gradient);
 	gtk_option_menu_set_history (GTK_OPTION_MENU (vectors), pos);
+
+	/* Update position */
+	position = gtk_object_get_data (GTK_OBJECT (spw), "position");
+	gradient = NULL;
+	for (i = items; i != NULL; i = i->next) {
+		SPStyle *style;
+		style = SP_OBJECT_STYLE (i->data);
+		if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && SP_IS_LINEARGRADIENT (style->fill.server)) {
+			gradient = SP_GRADIENT (style->fill.server);
+			break;
+		}
+	}
+	g_assert (gradient != NULL);
+	sp_gradient_position_set_gradient (SP_GRADIENT_POSITION (position), SP_GRADIENT (gradient));
+	sp_selection_bbox (selection, &bbox);
+	sp_gradient_position_set_bbox (SP_GRADIENT_POSITION (position), bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+	lg = SP_LINEARGRADIENT (gradient);
+	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (position), lg->x1.distance, lg->y1.distance, lg->x2.distance, lg->y2.distance);
 }
+
+static void
+sp_gradient_selection_position_dragged (SPGradientPosition *pos, SPWidget *spw)
+{
+	SPSelection *sel;
+	const GSList *items, *l;
+	SPGradient *vector;
+
+	if (!spw->desktop) return;
+	sel = SP_DT_SELECTION (spw->desktop);
+
+	items = sp_selection_item_list (sel);
+	if (!items) return;
+
+	vector = gtk_object_get_data (GTK_OBJECT (spw), "gradient");
+	if (!vector) return;
+	vector = sp_gradient_ensure_vector_normalized (vector);
+	gtk_object_set_data (GTK_OBJECT (spw), "gradient", vector);
+
+	for (l = items; l != NULL; l = l->next) {
+		SPStyle *style;
+		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), vector);
+		style = SP_OBJECT_STYLE (l->data);
+		g_return_if_fail (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
+		/* fixme: Managing selection bbox/item bbox stuff is big mess */
+		sp_lineargradient_set_position (SP_LINEARGRADIENT (style->fill.server), pos->p0.x, pos->p0.y, pos->p1.x, pos->p1.y);
+	}
+}
+
+static void
+sp_gradient_selection_position_changed (SPGradientPosition *pos, SPWidget *spw)
+{
+	SPSelection *sel;
+	const GSList *items, *l;
+	SPGradient *vector;
+
+	if (!spw->desktop) return;
+	sel = SP_DT_SELECTION (spw->desktop);
+
+	items = sp_selection_item_list (sel);
+	if (!items) return;
+
+	vector = gtk_object_get_data (GTK_OBJECT (spw), "gradient");
+	if (!vector) return;
+	vector = sp_gradient_ensure_vector_normalized (vector);
+	gtk_object_set_data (GTK_OBJECT (spw), "gradient", vector);
+
+	for (l = items; l != NULL; l = l->next) {
+		SPStyle *style;
+		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), vector);
+		style = SP_OBJECT_STYLE (l->data);
+		g_return_if_fail (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
+		/* fixme: Managing selection bbox/item bbox stuff is big mess */
+		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "x1", pos->p0.x);
+		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "y1", pos->p0.y);
+		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "x2", pos->p1.x);
+		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "y2", pos->p1.y);
+		sp_lineargradient_set_position (SP_LINEARGRADIENT (style->fill.server), pos->p0.x, pos->p0.y, pos->p1.x, pos->p1.y);
+	}
+
+	sp_document_done (spw->document);
+}
+

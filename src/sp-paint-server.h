@@ -66,7 +66,7 @@ SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdou
 #if 0
 void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
 #endif
-void sp_painter_free (SPPainter *painter);
+SPPainter *sp_painter_free (SPPainter *painter);
 
 END_GNOME_DECLS
 

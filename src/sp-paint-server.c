@@ -133,10 +133,10 @@ sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter)
 	g_assert_not_reached ();
 }
 
-void
+SPPainter *
 sp_painter_free (SPPainter *painter)
 {
-	g_return_if_fail (painter != NULL);
+	g_return_val_if_fail (painter != NULL, NULL);
 
 	if (painter->server) {
 		sp_paint_server_painter_free (painter->server, painter);
@@ -145,6 +145,8 @@ sp_painter_free (SPPainter *painter)
 			(* ((SPPaintServerClass *) gtk_type_class (painter->type))->painter_free) (NULL, painter);
 		stale_painters = g_slist_remove (stale_painters, painter);
 	}
+
+	return NULL;
 }
 
 static void

@@ -225,7 +225,9 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 	g_return_if_fail (SP_IS_GRADIENT (gr));
 	g_return_if_fail (gr->state == SP_GRADIENT_STATE_VECTOR);
 
+#if 0
 	g_print ("Changing item %s gradient vector to %s requested\n", SP_OBJECT_ID (item), SP_OBJECT_ID (gr));
+#endif
 
 	style = SP_OBJECT_STYLE (item);
 	g_assert (style != NULL);

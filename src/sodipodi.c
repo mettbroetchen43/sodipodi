@@ -216,9 +216,13 @@ sodipodi_destroy (GtkObject * object)
 static void
 sodipodi_segv_handler (int signum)
 {
+	static gint recursion = FALSE;
 	GSList *l;
 	gchar *home;
 	gint count, date;
+
+	if (recursion) abort ();
+	recursion = TRUE;
 
 	g_warning ("Emergency save activated");
 

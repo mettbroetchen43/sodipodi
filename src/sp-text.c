@@ -113,24 +113,27 @@ sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_text_read_attr (SPObject * object, const gchar * attr)
 {
-	SPText * text;
+	SPText *text;
+	const guchar *astr;
 	SPCSSAttr * css;
 	const gchar * fontname;
 	gdouble size;
 	GnomeFontWeight weight;
 	gboolean italic;
-	const gchar * str;
+	const gchar *str;
 	SPSVGUnit unit;
 
 	text = SP_TEXT (object);
 
 	if (strcmp (attr, "x") == 0) {
-		text->x = sp_repr_get_double_attribute (object->repr, attr, text->y);
+		astr = sp_repr_attr (SP_OBJECT_REPR (object), attr);
+		text->x = sp_svg_read_length (&unit, astr, 0.0);
 		sp_text_set_shape (text);
 		return;
 	}
 	if (strcmp (attr, "y") == 0) {
-		text->y = sp_repr_get_double_attribute (object->repr, attr, text->y);
+		astr = sp_repr_attr (SP_OBJECT_REPR (object), attr);
+		text->y = sp_svg_read_length (&unit, astr, 0.0);
 		sp_text_set_shape (text);
 		return;
 	}

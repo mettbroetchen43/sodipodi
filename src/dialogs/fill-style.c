@@ -591,7 +591,7 @@ sp_fill_style_set_solid (SPWidget *spw)
 		gtk_box_pack_start (GTK_BOX (hb), w, FALSE, FALSE, 0);
 		/* Color selector */
 		gtk_widget_show (csel);
-		gtk_box_pack_start (GTK_BOX (vb), csel, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (vb), csel, FALSE, FALSE, 0);
 		gtk_object_set_data (GTK_OBJECT (spw), "rgb-selector", csel);
 		gtk_signal_connect (GTK_OBJECT (csel), "changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_rgba_changed), spw);
 		gtk_signal_connect (GTK_OBJECT (csel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_rgba_dragged), spw);

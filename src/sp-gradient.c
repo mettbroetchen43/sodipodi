@@ -1068,6 +1068,21 @@ sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter)
 	g_free (lgp);
 }
 
+void
+sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2)
+{
+	g_return_if_fail (lg != NULL);
+	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
+
+	/* fixme: units */
+	lg->x1.distance = x1;
+	lg->y1.distance = y1;
+	lg->x2.distance = x2;
+	lg->y2.distance = y2;
+
+	sp_object_request_modified (SP_OBJECT (lg), SP_OBJECT_MODIFIED_FLAG);
+}
+
 /* Builds flattened repr tree of gradient - i.e. no href */
 
 SPRepr *

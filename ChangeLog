@@ -1,3 +1,22 @@
+2001-09-27  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/widgets/gradient-position.c: New file and widget
+
+	* src/widgets/gradient-position.h: New file and widget
+
+	* src/dialogs/gradient-selector.c (sp_gradient_widget_new): Make
+	delete vector inactive, shorter button names, create gradient
+	positioning widget
+	(sp_gradient_selector_load_selection): Update positioning widget
+	(sp_gradient_selection_position_dragged): Implement
+	(sp_gradient_selection_position_changed): Implement
+
+	* src/sodipodi.c (sodipodi_segv_handler): Abort on recursion
+
+2001-09-26  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-text.c (sp_text_read_attr): Use unit-loading method for x & y
+
 2001-09-25  Christopher R. Gabriel  <cgabriel@cgabriel.org>
 
 	* sodipodi.1.in: new man page
