@@ -1,8 +1,8 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 sodipodi.desktop.in
-src/bonobo/svg-doc-factory.c
 src/arc-context.c
+src/bonobo/svg-doc-factory.c
 src/desktop.c
 src/dialogs/align.c
 src/dialogs/desktop-properties.c
@@ -52,6 +52,7 @@ src/widgets/font-selector.c
 src/widgets/gradient-selector.c
 src/widgets/gradient-vector.c
 src/widgets/paint-selector.c
+src/widgets/sp-color-preview.c
 src/widgets/sp-color-selector.c
 src/widgets/sp-toolbox.c
 src/widgets/sp-xmlview-attr-list.c

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-07 23:15+0100\n"
-"PO-Revision-Date: 2003-12-07 23:17+0100\n"
+"POT-Creation-Date: 2003-12-14 13:47+0100\n"
+"PO-Revision-Date: 2003-12-14 13:47+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,14 +26,14 @@ msgstr "SVG vektorsko crtanje"
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/bonobo/svg-doc-factory.c:35
-msgid "Could not create sodipodi-svg-doc factory"
-msgstr "Ne može da obrazuje proizvodnju za sodipodi-svg-doc"
-
 #: src/arc-context.c:303
 #, c-format
 msgid "Drawing arc %s x %s"
 msgstr "Crtanje luka %s x %s"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Ne može da obrazuje proizvodnju za sodipodi-svg-doc"
 
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
@@ -52,17 +52,17 @@ msgstr "Dokument %s sadrži nesačuvane izmene. Sačuvati ih?"
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:137 src/verbs.c:463
+#: src/dialogs/export.c:143 src/verbs.c:463
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:148
 #: src/verbs.c:464
 msgid "Drawing"
 msgstr "Crtež"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:153
 #: src/interface.c:591 src/toolbox.c:488 src/verbs.c:465
 msgid "Selection"
 msgstr "Izbor"
@@ -290,7 +290,7 @@ msgstr "Boja stranice:"
 msgid "Page color"
 msgstr "Boja stranice"
 
-#: src/dialogs/desktop-properties.c:580
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
 msgstr "Zatvori"
 
@@ -356,72 +356,89 @@ msgid "Custom paper"
 msgstr "Prilagođeni papir"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:161
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Jedinice: "
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
-#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:171
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
 #: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Širina:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
-#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:180
+#: src/dialogs/export.c:203 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Visina:"
 
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:123
 msgid "Export bitmap"
 msgstr "Izvezi bitmapu:"
 
 #. Export area frame
-#: src/dialogs/export.c:126
+#: src/dialogs/export.c:132
 msgid "Export area"
 msgstr "Izvezi površ"
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:165
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:162
+#: src/dialogs/export.c:168
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:168
+#: src/dialogs/export.c:174
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:171
+#: src/dialogs/export.c:177
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:180
+#: src/dialogs/export.c:186
 msgid "Bitmap size"
 msgstr "Veličina bitmape"
 
-#: src/dialogs/export.c:189 src/dialogs/export.c:197
+#: src/dialogs/export.c:195 src/dialogs/export.c:203
 msgid "pixels"
 msgstr "tačaka"
 
-#: src/dialogs/export.c:193 src/dialogs/export.c:201
+#: src/dialogs/export.c:199 src/dialogs/export.c:207
 msgid "dpi"
 msgstr "tpi"
 
-#: src/dialogs/export.c:208
+#: src/dialogs/export.c:215
+msgid "Background color"
+msgstr "Boja pozadine"
+
+#: src/dialogs/export.c:217
+msgid "Bitmap background:"
+msgstr "Slika na pozadini:"
+
+#: src/dialogs/export.c:222
 msgid "Export png file"
 msgstr "Izvezi PNG datoteku"
 
-#: src/dialogs/export.c:237 src/verbs.c:413
+#: src/dialogs/export.c:249 src/verbs.c:413
 msgid "Export"
 msgstr "Izvezi"
+
+#: src/dialogs/export.c:360
+msgid "Export in progress"
+msgstr "Izvoz u toku"
+
+#: src/dialogs/export.c:364
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Izvozim [%d x %d] %s"
 
 #: src/dialogs/fill-style.c:86
 msgid "Fill style"
@@ -907,15 +924,15 @@ msgstr "Podrazumevano"
 msgid "Select file to open"
 msgstr "Izaberite koju datoteku da otvorite"
 
-#: src/file.c:207 src/file.c:307
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
 msgstr "Vrsta datoteke:"
 
-#: src/file.c:292
+#: src/file.c:290
 msgid "Save file"
 msgstr "Sačuvaj datoteku"
 
-#: src/file.c:474 src/file.c:484 src/file.c:490
+#: src/file.c:472 src/file.c:482 src/file.c:488
 msgid "Select file to import"
 msgstr "Odaberite datoteku za uvoz"
 
@@ -1155,17 +1172,17 @@ msgstr "Prozorčići"
 msgid "Modules"
 msgstr "Moduli"
 
-#: src/main.c:120 src/main.c:589
+#: src/main.c:120 src/main.c:617
 msgid "Do not use X server (only process files from console)"
 msgstr "Ne koristi X server (samo obrađuj datoteke preko konzole)"
 
 # bug: unmatched parenthesis??
-#: src/main.c:123 src/main.c:590
+#: src/main.c:123 src/main.c:618
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 "Pokušaj da koristiš X server čak iako promenljiva $DISPLAY nije postavljena)"
 
-#: src/main.c:126 src/main.c:591
+#: src/main.c:126 src/main.c:619
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otvori navedene dokumente (niska sa opcija se može preskočiti)"
 
@@ -1179,11 +1196,11 @@ msgstr ""
 "Štampaj dokumente u navedenu izlaznu datoteku (koristite „| program“ za "
 "cevku)"
 
-#: src/main.c:132 src/main.c:592
+#: src/main.c:132 src/main.c:620
 msgid "Export document to png file"
 msgstr "Izvezi dokument u PNG datoteku"
 
-#: src/main.c:135 src/main.c:593
+#: src/main.c:135 src/main.c:621
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "Rezolucija koja se koristi za pretvaranje SVG-a u bitmapu (podrazumevano 72,0)"
@@ -1192,7 +1209,7 @@ msgstr ""
 msgid "DPI"
 msgstr "TPI"
 
-#: src/main.c:138 src/main.c:594
+#: src/main.c:138 src/main.c:622
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1204,7 +1221,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:595
+#: src/main.c:141 src/main.c:623
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Širina obrazovane bitmape u tačkama (prepisuje TPI)"
 
@@ -1212,7 +1229,7 @@ msgstr "Širina obrazovane bitmape u tačkama (prepisuje TPI)"
 msgid "WIDTH"
 msgstr "ŠIRINA"
 
-#: src/main.c:143 src/main.c:596
+#: src/main.c:143 src/main.c:624
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Visina obrazovane bitmape u tačkama (prepisuje TPI)"
 
@@ -1220,7 +1237,7 @@ msgstr "Visina obrazovane bitmape u tačkama (prepisuje TPI)"
 msgid "HEIGHT"
 msgstr "VISINA"
 
-#: src/main.c:145 src/main.c:597
+#: src/main.c:145 src/main.c:625
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Boja pozadine izvezene bitmape (bilo koja oznaka boje koju podržava SVG)"
@@ -1229,7 +1246,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "BOJA"
 
-#: src/main.c:147 src/main.c:598
+#: src/main.c:147 src/main.c:626
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Izvezi dokument u običnu SVG datoteku (bez prostora imena „xmlns:sodipodi“)"
@@ -1244,55 +1261,55 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Daj prvenstvo bitmapiranim (XPM) ikonama u odnosu na SVG ikone"
 
-#: src/main.c:599
+#: src/main.c:627
 msgid "Print sodipodi version information"
 msgstr "Ispiši podatke o izdanju Sodipodija"
 
-#: src/main.c:600
+#: src/main.c:628
 msgid "Print help about command-line arguments"
 msgstr "Ispiši pomoć za argumente naredbe"
 
-#: src/main.c:749
+#: src/main.c:777
 msgid "Untitled document"
 msgstr "Neimenovani dokument"
 
 #. Show nice dialog box
-#: src/main.c:774
+#: src/main.c:802
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi je naišao na unutrašnju grešku i sada će se zatvoriti.\n"
 
-#: src/main.c:775
+#: src/main.c:803
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatski rezervni primerci nesačuvanih dokumenata su smešteni u naredne "
 "putanje:\n"
 
-#: src/main.c:776
+#: src/main.c:804
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Nije uspelo automatsko snimanje rezervnih primeraka:\n"
 
-#: src/module.c:811
+#: src/module.c:852
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Skalabilna vektorska grafika (SVG)"
 
-#: src/module.c:811
+#: src/module.c:852
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Matičan zapis Sodipodija i W3C standard"
 
-#: src/module.c:818
+#: src/module.c:859
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG sa prostorom imena „xmlns:sodipodi“"
 
-#: src/module.c:819
+#: src/module.c:860
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Skalabilni vektorski grafički zapis za sodipodijevim proširenjima"
 
-#: src/module.c:822
+#: src/module.c:863
 msgid "Plain SVG"
 msgstr "Običan SVG"
 
-#: src/module.c:823
+#: src/module.c:864
 msgid "Scalable Vector Graphics format"
 msgstr "Skalabilni vektorski grafički zapis"
 
@@ -1384,30 +1401,35 @@ msgid "write error occured"
 msgstr "greška pri pisanju"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr "Stavka"
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:478
 msgid "Item Properties"
 msgstr "Osobine stavke"
 
 #. Select item
-#: src/object-ui.c:120
+#: src/object-ui.c:119
 msgid "Select this"
 msgstr "Izaberi ovo"
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr "Poništi transformaciju"
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr "Primeni transformaciju"
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr "Učini osetljivim"
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr "Učini neosetljivim"
 
@@ -1416,94 +1438,94 @@ msgstr "Učini neosetljivim"
 msgid "Create link"
 msgstr "Napravi vezu"
 
-#: src/object-ui.c:253 src/verbs.c:431
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
 msgstr "Grupiši"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
 msgstr "Osobine grupe"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:432
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Razgrupiši"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr "Veza"
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr "Osobine veze"
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr "Prati vezu"
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr "Ukloni vezu"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
+#: src/object-ui.c:407
 msgid "Image"
 msgstr "Slika"
 
 #. Link dialog
-#: src/object-ui.c:402
+#: src/object-ui.c:410
 msgid "Image Properties"
 msgstr "Osobine slike"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:788
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr "Trag"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
+#: src/object-ui.c:467
 msgid "Shape"
 msgstr "Oblik"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:445
+#: src/object-ui.c:470 src/toolbox.c:445
 msgid "Fill settings"
 msgstr "Podešavanja ispunjavanja"
 
 # bug: cannot be easily translated; please use "rectangle"
 #. Create toplevel menuitem
-#: src/object-ui.c:489
+#: src/object-ui.c:497
 msgid "Rect"
 msgstr "Pravougaonik"
 
 # bug: rect -> rectangle
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr "Osobine pravougaonika"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:449
 msgid "Star"
 msgstr "Zvezda"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
 msgstr "Osobine zvezde"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:450
 msgid "Spiral"
 msgstr "Spirala"
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr "Osobine spirale"
 
@@ -1766,17 +1788,17 @@ msgid "Image URI:"
 msgstr "Adresa slike:"
 
 # bug: plural-forms
-#: src/sp-item-group.c:457
+#: src/sp-item-group.c:462
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupa od %d objekata"
 
-#: src/sp-item.c:503
+#: src/sp-item.c:509
 msgid "Unknown item :-("
 msgstr "Nepoznata stavka :-("
 
 #. fixme:
-#: src/sp-text.c:1441
+#: src/sp-text.c:1450
 msgid "Text object"
 msgstr "Objekat za tekst"
 
@@ -2373,57 +2395,57 @@ msgstr "Završna boja"
 msgid "Gradient vector"
 msgstr "Pravac preliva"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr "Nema objekata"
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr "Više stilova"
 
-#: src/widgets/paint-selector.c:649
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
 msgstr "Nema farbe"
 
 #. Label
-#: src/widgets/paint-selector.c:739
+#: src/widgets/paint-selector.c:747
 msgid "Mode:"
 msgstr "Mod:"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:757
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr "RGB boje"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
 msgstr "CMYK boje"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr "Uzmi iz birača boje"
 
-#: src/widgets/paint-selector.c:789
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
 msgstr "Farba u boji"
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr "Linijski preliv"
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr "Kružni preliv"
 
