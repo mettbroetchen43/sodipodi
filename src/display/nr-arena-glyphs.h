@@ -23,10 +23,10 @@
 
 #include <libnrtype/nr-rasterfont.h>
 
+#include "helper/curve.h"
+#include "forward.h"
+#include "sp-paint-server.h"
 #include "nr-arena-item.h"
-#include "cpath-component.h"
-#include "../forward.h"
-#include "../sp-paint-server.h"
 
 struct _NRArenaGlyphs {
 	NRArenaItem item;

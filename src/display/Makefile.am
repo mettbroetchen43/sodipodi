@@ -41,10 +41,4 @@ libspdisplay_a_SOURCES = \
 	nr-arena-image.c nr-arena-image.h \
 	nr-arena-shape.c nr-arena-shape.h \
 	nr-arena-glyphs.c nr-arena-glyphs.h \
-	canvas-arena.c canvas-arena.h \
-	cpath-component.c cpath-component.h \
-	path-archetype.c path-archetype.h
-
-#	fill.c fill.h \
-#	stroke.c stroke.h \
-#	canvas-shape.c canvas-shape.h
+	canvas-arena.c canvas-arena.h

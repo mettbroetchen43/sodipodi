@@ -19,10 +19,10 @@
 #define NR_IS_ARENA_SHAPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_SHAPE))
 #define NR_IS_ARENA_SHAPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_SHAPE))
 
+#include "helper/curve.h"
+#include "forward.h"
+#include "sp-paint-server.h"
 #include "nr-arena-item.h"
-#include "cpath-component.h"
-#include "../forward.h"
-#include "../sp-paint-server.h"
 
 struct _NRArenaShape {
 	NRArenaItem item;
