@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
+"POT-Creation-Date: 2004-02-11 19:01+0200\n"
 "PO-Revision-Date: 2003-11-02 16:43+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -911,12 +911,12 @@ msgstr "Skapa"
 msgid "New document %d"
 msgstr "Nytt dokument %d"
 
-#: src/document.c:382
+#: src/document.c:389
 #, c-format
 msgid "Memory document %d"
 msgstr "Minnesdokument %d"
 
-#: src/document.c:492
+#: src/document.c:499
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Namnlöst dokument %d"
@@ -952,7 +952,7 @@ msgstr "Filtyp:"
 msgid "Save file"
 msgstr "Spara fil"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:485 src/file.c:495 src/file.c:501
 msgid "Select file to import"
 msgstr "Välj fil att importera"
 
@@ -1195,15 +1195,15 @@ msgstr "Fönster"
 msgid "Modules"
 msgstr "Om moduler"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "Använd inte X-server (behandla endast filer från konsollen)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Försök att använda X-server även om $DISPLAY inte är inställd)"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Öppna angivna dokument (flaggsträng kan utelämnas)"
 
@@ -1216,11 +1216,11 @@ msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Skriv ut dokument till angiven utdatafil (använd \"| program\" för rör)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
 msgstr "Exportera dokument till png-fil"
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "Upplösningen som används för konvertering av SVG till bitmappsbild "
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1242,7 +1242,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "Bredden på den genererade bimappsbilden i bildpunkter (åsidosätter dpi)"
@@ -1251,7 +1251,7 @@ msgstr ""
 msgid "WIDTH"
 msgstr "BREDD"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Höjden på den genererade bimappsbilden i bildpunkter (åsidosätter dpi)"
 
@@ -1259,7 +1259,7 @@ msgstr "Höjden på den genererade bimappsbilden i bildpunkter (åsidosätter dp
 msgid "HEIGHT"
 msgstr "HÖJD"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Bakgrundsfärg för den exporterade bitmappsbilden (godtycklig färgsträng som "
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "FÄRG"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportera dokument till vanlig SVG-fil (inget \"xmlns:sodipodi\"-namnutrymme)"
@@ -1284,32 +1284,32 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Föredra bitmappsikoner (xpm) över SVG-ikoner"
 
-#: src/main.c:621
+#: src/main.c:622
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Utskriftsdestination"
 
-#: src/main.c:622
+#: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/main.c:771
+#: src/main.c:772
 msgid "Untitled document"
 msgstr "Namnlöst dokument"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi påträffade ett internt fel och kommer nu att stängas.\n"
 
-#: src/main.c:797
+#: src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatiska säkerhetskopior på osparade dokument gjordes på följande "
 "platser:\n"
 
-#: src/main.c:798
+#: src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatisk säkerhetskopiering av följande dokument misslyckades:\n"
 

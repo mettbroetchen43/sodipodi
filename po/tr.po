@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
+"POT-Creation-Date: 2004-02-11 19:01+0200\n"
 "PO-Revision-Date: 2003-02-03 02:18+0200\n"
 "Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -919,12 +919,12 @@ msgstr "Yarat"
 msgid "New document %d"
 msgstr "Yeni döküman %d"
 
-#: src/document.c:382
+#: src/document.c:389
 #, c-format
 msgid "Memory document %d"
 msgstr "Hafıza dökümanı %d"
 
-#: src/document.c:492
+#: src/document.c:499
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Adlandırılmamış döküman %d"
@@ -963,7 +963,7 @@ msgstr "Doldurma stili"
 msgid "Save file"
 msgstr "Dosyayı kaydet"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:485 src/file.c:495 src/file.c:501
 msgid "Select file to import"
 msgstr "İçeri aktarılacak dosyayı seçin"
 
@@ -1205,15 +1205,15 @@ msgstr "Pencereler"
 msgid "Modules"
 msgstr "Mod:"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "X sunucusunu kullanma (dosyaları sadece konsoldan sürdür)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "$DISPLAY atanmamışsa bile X sunucusunu kullanmaya çalış)"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Belirtilen döküman(lar)ı aç (seçenekler dahil olmayacaktır)"
 
@@ -1227,11 +1227,11 @@ msgstr ""
 "Dökümanları belirtilen dosyaya yazdur (başka programa yönlendirmek için '|' "
 "kullanın)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
 msgstr "Resmi png olarak aktar"
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "SVG'den bitmap'e çevirim için kullanılacak çözünürlük (öntanımlı 72.0)"
 
@@ -1239,7 +1239,7 @@ msgstr "SVG'den bitmap'e çevirim için kullanılacak çözünürlük (öntanım
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1251,7 +1251,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Yaratılan bitmap'in piksel değerinde genişliği (dpi üzerine yazar)"
 
@@ -1259,7 +1259,7 @@ msgstr "Yaratılan bitmap'in piksel değerinde genişliği (dpi üzerine yazar)"
 msgid "WIDTH"
 msgstr "GENİŞLİK"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Yaratılan bitmap'in piksel değerinde yüksekliği (dpi üzerine yazar)"
 
@@ -1267,7 +1267,7 @@ msgstr "Yaratılan bitmap'in piksel değerinde yüksekliği (dpi üzerine yazar)
 msgid "HEIGHT"
 msgstr "YÜKSEKLİK"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr "Dışarı aktarılan birmap'in arkaplanı (SVG destekli herhangi bir renk)"
 
@@ -1275,7 +1275,7 @@ msgstr "Dışarı aktarılan birmap'in arkaplanı (SVG destekli herhangi bir ren
 msgid "COLOR"
 msgstr "RENK"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr "Dökümanı düz SVG dosyasına aktar (\"xmlns:sodipodi\" alan boşluğu yok)"
 
@@ -1289,31 +1289,31 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
-#: src/main.c:621
+#: src/main.c:622
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Hedefi yazdır"
 
-#: src/main.c:622
+#: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/main.c:771
+#: src/main.c:772
 msgid "Untitled document"
 msgstr "Başlıksız döküman"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi, dahili bir hata karşılaştı ve şimdi kapatılacak.\n"
 
-#: src/main.c:797
+#: src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Kaydedilmeyen dökümanların otomatik yedekleri aşağıdaki konuma alınacak.\n"
 
-#: src/main.c:798
+#: src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Aşağıdaki dökümanların otomatik yedekleri alınırken hata oluştu.\n"
 

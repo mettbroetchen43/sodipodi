@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
+"POT-Creation-Date: 2004-02-11 19:01+0200\n"
 "PO-Revision-Date: 2004-01-23 22:29+0100\n"
 "Last-Translator: Jeroen van der Vegt <jeroen (at) dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -905,12 +905,12 @@ msgstr "Aanmaken"
 msgid "New document %d"
 msgstr "Nieuw document %d"
 
-#: src/document.c:382
+#: src/document.c:389
 #, c-format
 msgid "Memory document %d"
 msgstr "Geheugen gebruik document %d"
 
-#: src/document.c:492
+#: src/document.c:499
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Naamloos document %d"
@@ -946,7 +946,7 @@ msgstr "Bestandstype:"
 msgid "Save file"
 msgstr "Bestand opslaan"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:485 src/file.c:495 src/file.c:501
 msgid "Select file to import"
 msgstr "Selecteer een bestand om te importeren"
 
@@ -1186,15 +1186,15 @@ msgstr "Weergeven"
 msgid "Modules"
 msgstr "Modules"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "X-server niet gebruiken (verwerk alleen bestanden van de terminal)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Probeer X-server te gebruiken zelfs als $DISPLAY geen waarde heeft"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Open de aangeduidde documenten (optie-tekenreeks hoeft niet te worden "
@@ -1210,11 +1210,11 @@ msgstr ""
 "Druk de documenten af naar het opgegeven bestand (gebruik '| programma' voor "
 "een pipe)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
 msgstr "Document exporteren naar .png bestand."
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "De resolutie die gebruikt is om SVG naar bitmap om te zeten (standaard 72.0)"
@@ -1223,7 +1223,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1235,7 +1235,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De breedte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
@@ -1244,7 +1244,7 @@ msgstr ""
 msgid "WIDTH"
 msgstr "BREEDTE"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De hoogte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
@@ -1253,7 +1253,7 @@ msgstr ""
 msgid "HEIGHT"
 msgstr "HOOGTE"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Achtergrondkleur van de geëxporteerde bitmap (kan iedere door SVG "
@@ -1263,7 +1263,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "KLEUR"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Document exporteren naar gewoon SVG bestand (geen \"xmlns:sodipodi\" "
@@ -1279,32 +1279,32 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Geef bitmap (xpm) pictogrammen de voorkeur boven de SVG versies."
 
-#: src/main.c:621
+#: src/main.c:622
 msgid "Print sodipodi version information"
 msgstr "Geef Sodipodi versie informatie"
 
-#: src/main.c:622
+#: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr "Hulp weergeven over de opdracht-regel argumenten"
 
-#: src/main.c:771
+#: src/main.c:772
 msgid "Untitled document"
 msgstr "Naamloos document"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Er is een fout op getreden in Sodipodi, en het zal nu worden afgesloten.\n"
 
-#: src/main.c:797
+#: src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatische reservekopieën van niet opgeslagen documenten werden gemaakt op "
 "de volgende lokaties:\n"
 
-#: src/main.c:798
+#: src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Het automatisch maken van een reservekopie is mislukt voor de volgende "

@@ -14,26 +14,8 @@
    sodipodi:docname="/home/lauris/cvs/sodipodi/glade/about.svg">
   <defs
      id="defs590">
-    <linearGradient
-       id="linearGradient620">
-      <stop
-         offset="0"
-         style="stop-color:#b88db5;stop-opacity:1;"
-         id="stop621" />
-      <stop
-         offset="1"
-         style="stop-color:#ffffff;stop-opacity:1;"
-         id="stop622" />
-    </linearGradient>
     <sodipodi:namedview
        id="namedview609" />
-    <linearGradient
-       xlink:href="#linearGradient620"
-       id="linearGradient619"
-       x1="0.47239262"
-       y1="0.4453125"
-       x2="0.5582822"
-       y2="0.6015625" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -41,46 +23,38 @@
      bordercolor="#000000"
      borderopacity="0.37254902" />
   <rect
-     style="font-size:12.000;fill:url(#linearGradient619);fill-rule:evenodd;stroke-width:1.000000;fill-opacity:1.0000;"
+     style="font-size:12.000;fill:#000000;fill-rule:evenodd;stroke-width:1.000000;fill-opacity:1;"
      id="rect662"
-     width="8869.46387"
-     height="7006.02979"
-     x="-4114.07617"
-     y="-3151.06934" />
-  <text
-     style="fill:#ffffff;stroke:#0e0382;font-family:Nimbus Sans L;font-style:normal;font-weight:bold;font-size:72;fill-opacity:1.0000;stroke-opacity:1.0000;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;text-anchor:middle;writing-mode:lr;"
-     x="399.999946"
-     y="100.042860"
-     id="title"
-     sodipodi:linespacing="100%">
-    <tspan
-       x="399.999939"
-       y="100.042862"
-       sodipodi:role="line"
-       id="tspan602"
-       style="fill:#ffffff;fill-opacity:1.0000;stroke:#0e0382;stroke-opacity:1.0000;">Sodipodi 0.34</tspan>
-  </text>
-  <text
-     style="font-size:16.00000;font-weight:bold;stroke-width:1.000000;font-family:Arial;text-anchor:middle;fill:#000000;fill-opacity:1;font-style:normal;writing-mode:lr;stroke:none;stroke-opacity:1.0000;"
-     x="391.946144"
-     y="576.235023"
-     id="text769"
-     sodipodi:linespacing="100%">
-    <tspan
-       x="391.946136"
-       y="576.235046"
-       sodipodi:role="line"
-       id="tspan595"
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1.0000;">Brought to you by Lauris Kaplinski, Mitsuru Oka, Masatake Yamato, Frank Felfe, MenTaLguY</tspan>
-  </text>
-  <text
-     style="fill:#861d1d;stroke:none;font-family:helvetica;font-style:normal;font-weight:normal;font-size:12px;fill-opacity:1;stroke-opacity:1;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;"
-     x="-21.0179564"
-     y="62.2461018"
-     id="text623"
-     transform="matrix(6.962379,-3.860365,3.860366,6.962377,0,0)">
-    <tspan
-       id="tspan624"
-       style="fill:#861d1d;fill-opacity:1;">BETA VERSION</tspan>
-  </text>
+     width="12389.4628"
+     height="11166.0295"
+     x="-5874.07569"
+     y="-5231.06928" />
+  <g
+     id="g644"
+     transform="matrix(0.867839,0,0,0.867839,208.6986,4.627643)"
+     style="font-size:12.000;fill:#ffffff;">
+    <g
+       id="g625"
+       transform="matrix(1.013292,0.000000,0.000000,1.013292,-68.80601,-358.7903)"
+       style="fill:#ffffff;fill-opacity:1;">
+      <path
+         style="font-size:48;font-weight:bold;stroke-width:1pt;font-family:Bad Seed;stroke:none;stroke-opacity:1;fill:#ffffff;fill-opacity:1;"
+         d="M 329.221 577.955 L 247.549 727.637 L 240.566 732.798 L 247.549 706.687 L 191.684 789.877 L 165.574 806.576 L 280.036 582.51 L 291.573 577.348 L 281.858 598.905 L 303.718 569.454 L 317.077 561.56 L 304.629 581.599 L 331.65 558.524 L 329.221 577.955 z "
+         id="path622" />
+      <path
+         style="font-size:48;font-weight:bold;stroke-width:1pt;font-family:Bad Seed;stroke:none;stroke-opacity:1;fill:#ffffff;fill-opacity:1;"
+         d="M 367.476 812.648 L 310.701 669.95 L 322.238 679.666 L 294.002 595.565 L 294.913 567.633 L 411.5 812.648 L 394.802 801.415 L 380.835 782.894 L 383.264 794.128 L 371.12 784.716 L 378.103 801.415 L 367.476 812.648 z "
+         id="path623" />
+      <path
+         style="font-size:48;font-weight:bold;stroke-width:1pt;font-family:Bad Seed;stroke:none;stroke-opacity:1;fill:#ffffff;fill-opacity:1;"
+         d="M 420.002 691.81 L 404.214 689.989 L 411.5 695.454 L 439.433 699.704 L 389.64 710.027 L 409.679 715.492 L 405.428 718.832 L 208.383 679.666 L 216.277 672.683 L 199.578 664.789 L 428.806 685.738 L 420.002 691.81 z "
+         id="path624"
+         transform="translate(-23.31184,0.832565)" />
+    </g>
+    <path
+       style="font-size:48;font-weight:bold;stroke-width:1pt;font-family:Bad Seed;fill:#ffffff;fill-opacity:1;"
+       d="M 193.943 430.211 C 186.187 425.848 177.826 420.759 168.857 414.941 C 155.285 406.216 146.68 396.884 143.045 386.948 C 129.23 362.952 122.322 339.321 122.322 316.053 C 123.534 312.66 125.837 306.359 129.23 297.148 C 134.319 284.302 141.469 274.366 150.68 267.337 L 178.309 257.157 C 193.337 251.582 207.273 248.796 220.119 248.796 C 227.148 248.796 232.601 249.402 236.479 250.613 C 254.172 256.188 267.26 261.399 275.744 266.246 C 285.438 271.82 295.497 280.667 305.919 292.786 L 316.826 322.961 C 319.249 329.747 320.461 339.442 320.461 352.046 C 320.461 355.681 320.34 359.681 320.097 364.043 C 317.19 374.949 314.765 382.342 312.826 386.22 C 309.917 392.037 304.707 398.218 297.194 404.762 C 277.077 421.97 256.475 430.574 235.389 430.574 C 217.937 430.574 202.305 425.485 188.49 415.304 L 193.943 430.211 z M 333.273 386.441 C 333.475 379.964 333.577 373.993 333.577 368.528 C 333.577 339.988 327.605 311.246 315.663 282.302 C 303.924 265.3 292.589 253.054 281.659 245.565 C 272.146 239.088 254.941 230.789 230.044 220.669 C 221.543 220.061 213.953 219.758 207.274 219.758 C 189.259 219.758 174.888 222.085 164.16 226.741 C 160.922 228.158 147.563 234.331 124.084 245.261 C 112.141 255.989 104.247 267.02 100.402 278.355 C 99.3896 281.189 95.5439 293.839 88.8644 316.307 C 89.0668 336.548 91.0909 353.651 94.9367 367.617 C 97.7704 378.345 104.247 395.651 114.368 419.535 C 119.833 428.846 126.715 436.942 135.014 443.824 C 138.657 446.658 145.235 452.022 154.748 459.916 L 168.715 462.345 C 176.811 463.761 184.604 464.47 192.093 464.47 C 203.833 464.47 215.572 462.952 227.312 459.916 C 237.432 459.916 249.577 457.588 263.746 452.933 L 298.965 441.395 C 310.097 432.287 317.283 423.887 320.521 416.195 L 333.273 386.441 z "
+       id="path633"
+       transform="matrix(0.758753,-0.651378,0.651378,0.758753,-164.8980,224.7287)" />
+  </g>
 </svg>

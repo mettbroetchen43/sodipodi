@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: be\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
+"POT-Creation-Date: 2004-02-11 19:01+0200\n"
 "PO-Revision-Date: 2003-07-20 16:00+0300\n"
 "Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -920,12 +920,12 @@ msgstr "Стварыць"
 msgid "New document %d"
 msgstr "Новы дакумэнт %d"
 
-#: src/document.c:382
+#: src/document.c:389
 #, c-format
 msgid "Memory document %d"
 msgstr "Запомніць дакумэнт %d"
 
-#: src/document.c:492
+#: src/document.c:499
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Дакумэнт бяз назвы %d"
@@ -967,7 +967,7 @@ msgstr "Тып файла:"
 msgid "Save file"
 msgstr "Захаваць файл"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:485 src/file.c:495 src/file.c:501
 msgid "Select file to import"
 msgstr "Выбярыце файл для імпартаваньня"
 
@@ -1209,16 +1209,16 @@ msgstr "Дыялёгі"
 msgid "Modules"
 msgstr "Пра модулі"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "Не выкарыстоўваць паслужнік Х (толькі апрацоўваць файл з кансолі)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 "Працягваць спрабаваць выкарыстоўваць паслужнік Х калі $DISPLAY не ўсталявана)"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Адкрывае пазначаныя дакумэнты (выбар радка можа быць выключаны)"
 
@@ -1232,11 +1232,11 @@ msgstr ""
 "Друкуе дакумэнт(ы) у пазначаны выходны файл (выкарыстоўвайце '| праграма' "
 "для стварэньня канала)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:615
 msgid "Export document to png file"
 msgstr "Экспартаваць дакумэнт у файл png"
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Разрозьненьне для канвэртацыі SVG у растар (дапомна 72,0)"
 
@@ -1244,7 +1244,7 @@ msgstr "Разрозьненьне для канвэртацыі SVG у раст
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1256,7 +1256,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Шырыня генераванага растра ў піксэлях (перазапіс dpi)"
 
@@ -1264,7 +1264,7 @@ msgstr "Шырыня генераванага растра ў піксэлях (
 msgid "WIDTH"
 msgstr "ШЫРЫНЯ"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Вышыня генераванага растра ў піксэлях (перазапіс dpi)"
 
@@ -1272,7 +1272,7 @@ msgstr "Вышыня генераванага растра ў піксэлях (
 msgid "HEIGHT"
 msgstr "ВЫШЫНЯ"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Колер тла экспартаванага растра (толькі радок колера, які падтрымлівае SVG)"
@@ -1281,7 +1281,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "КОЛЕР"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Экспартаваньне дакумэнта ў звычайны файл SVG (без прасторы імёнаў \"xmlns:"
@@ -1297,32 +1297,32 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
-#: src/main.c:621
+#: src/main.c:622
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Друк"
 
-#: src/main.c:622
+#: src/main.c:623
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/main.c:771
+#: src/main.c:772
 msgid "Untitled document"
 msgstr "Дакумэнт бяз назвы"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi сустрэла памылку й будзе зараз закрыта.\n"
 
-#: src/main.c:797
+#: src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Азтаматычнае рэзэрваваньне незахаваных дакумэнтаў выканана ў наступныя "
 "мейсцы:\n"
 
-#: src/main.c:798
+#: src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Збой аўтаматычнага рэзэрваваньня наступных дакумэнтаў:\n"
 
