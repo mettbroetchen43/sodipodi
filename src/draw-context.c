@@ -23,6 +23,7 @@
 #include <libgnome/gnome-i18n.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
+#include "helper/art-utils.h"
 #include "helper/curve.h"
 #include "helper/bezier-utils.h"
 #include "helper/sodipodi-ctrl.h"
@@ -37,6 +38,7 @@
 #include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "desktop-snap.h"
+#include "style.h"
 #include "draw-context.h"
 
 #define TOLERANCE 1.0
@@ -59,6 +61,7 @@ static void sp_draw_context_init (SPDrawContext *dc);
 static void sp_draw_context_finalize (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext *ec);
+static void sp_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *value);
 
 static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
@@ -121,6 +124,7 @@ sp_draw_context_class_init (SPDrawContextClass *klass)
 	object_class->finalize = sp_draw_context_finalize;
 
 	ec_class->setup = sp_draw_context_setup;
+	ec_class->set = sp_draw_context_set;
 	ec_class->root_handler = sp_draw_context_root_handler;
 }
 
@@ -128,6 +132,10 @@ static void
 sp_draw_context_init (SPDrawContext *dc)
 {
 	dc->attach = FALSE;
+
+	dc->red_color = 0xff00007f;
+	dc->blue_color = 0x0000ff7f;
+	dc->green_color = 0x00ff007f;
 
 	dc->npoints = 0;
 }
@@ -168,13 +176,13 @@ sp_draw_context_setup (SPEventContext *ec)
 
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), 0xff00007f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), dc->red_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* Create red curve */
 	dc->red_curve = sp_curve_new_sized (4);
 
 	/* Create blue bpath */
 	dc->blue_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->blue_bpath), 0x0000ff7f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->blue_bpath), dc->blue_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* Create blue curve */
 	dc->blue_curve = sp_curve_new_sized (8);
 
@@ -184,6 +192,14 @@ sp_draw_context_setup (SPEventContext *ec)
 	dc->green_anchor = NULL;
 
 	spdc_set_attach (dc, FALSE);
+}
+
+static void
+sp_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *value)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (ec);
 }
 
 gint
@@ -577,7 +593,7 @@ fit_and_split (SPDrawContext * dc)
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 
 		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
 
@@ -1565,7 +1581,7 @@ spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state)
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 
 		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
 

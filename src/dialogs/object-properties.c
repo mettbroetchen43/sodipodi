@@ -153,7 +153,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Style to change:"));
 		gtk_widget_show (l);
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 4);
 		om = gtk_option_menu_new ();
 		gtk_widget_show (om);
 		gtk_box_pack_start (GTK_BOX (hb), om, TRUE, TRUE, 0);

@@ -39,6 +39,10 @@ struct _SPDrawContext {
 
 	guint attach : 1;
 
+	guint32 red_color;
+	guint32 blue_color;
+	guint32 green_color;
+
 	/* Red */
 	GnomeCanvasItem *red_bpath;
 	SPCurve *red_curve;

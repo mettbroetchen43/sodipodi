@@ -205,25 +205,6 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
-static SPStyle *
-sp_stroke_style_repr_get_style (SPRepr *repr)
-{
-	SPStyle *style;
-
-	style = sp_style_new ();
-	sp_style_read_from_repr (style, repr);
-
-	if (sp_repr_parent (repr)) {
-		SPStyle *parent;
-		/* fixme: This is not the prettiest thing (Lauris) */
-		parent = sp_stroke_style_repr_get_style (sp_repr_parent (repr));
-		sp_style_merge_from_parent (style, parent);
-		sp_style_unref (parent);
-	}
-
-	return style;
-}
-
 static void
 sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
 {
@@ -238,7 +219,8 @@ sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
 
 	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
 
-	style = sp_stroke_style_repr_get_style (repr);
+	style = sp_style_new ();
+	sp_style_read_from_repr (style, repr);
 
 	pselmode = sp_stroke_style_determine_paint_selector_mode (style);
 
@@ -252,13 +234,13 @@ sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
 	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_RGB);
 		sp_color_get_rgb_floatv (&style->stroke.value.color, c);
-		c[3] += SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
+		c[3] = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
 		sp_paint_selector_set_color_rgba_floatv (psel, c);
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_CMYK);
 		sp_color_get_cmyk_floatv (&style->stroke.value.color, c);
-		c[4] += SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
+		c[4] = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
 		sp_paint_selector_set_color_cmyka_floatv (psel, c);
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
@@ -592,14 +574,6 @@ sp_stroke_style_line_widget_new (void)
 }
 
 static void
-sp_stroke_style_line_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data)
-{
-	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG)) {
-		sp_stroke_style_line_update (spw, selection);
-	}
-}
-
-static void
 sp_stroke_style_line_construct (SPWidget *spw, gpointer data)
 {
 	g_print ("Stroke style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
@@ -608,6 +582,14 @@ sp_stroke_style_line_construct (SPWidget *spw, gpointer data)
 		sp_stroke_style_line_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 	} else if (spw->repr) {
 		sp_stroke_style_line_update_repr (spw, spw->repr);
+	}
+}
+
+static void
+sp_stroke_style_line_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data)
+{
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG)) {
+		sp_stroke_style_line_update (spw, selection);
 	}
 }
 
@@ -751,7 +733,8 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 	width = gtk_object_get_data (GTK_OBJECT (spw), "width");
 	units = gtk_object_get_data (GTK_OBJECT (spw), "units");
 
-	style = sp_stroke_style_repr_get_style (repr);
+	style = sp_style_new ();
+	sp_style_read_from_repr (style, repr);
 
 	if (style->stroke.type == SP_PAINT_TYPE_NONE) {
 		gtk_widget_set_sensitive (sset, FALSE);

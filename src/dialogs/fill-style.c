@@ -223,25 +223,6 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
-static SPStyle *
-sp_fill_style_repr_get_style (SPRepr *repr)
-{
-	SPStyle *style;
-
-	style = sp_style_new ();
-	sp_style_read_from_repr (style, repr);
-
-	if (sp_repr_parent (repr)) {
-		SPStyle *parent;
-		/* fixme: This is not the prettiest thing (Lauris) */
-		parent = sp_fill_style_repr_get_style (sp_repr_parent (repr));
-		sp_style_merge_from_parent (style, parent);
-		sp_style_unref (parent);
-	}
-
-	return style;
-}
-
 static void
 sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 {
@@ -256,7 +237,8 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 
 	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
 
-	style = sp_fill_style_repr_get_style (repr);
+	style = sp_style_new ();
+	sp_style_read_from_repr (style, repr);
 
 	pselmode = sp_fill_style_determine_paint_selector_mode (style);
 
@@ -270,41 +252,16 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_RGB);
 		sp_color_get_rgb_floatv (&style->fill.value.color, c);
-		c[3] += SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
+		c[3] = SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
 		sp_paint_selector_set_color_rgba_floatv (psel, c);
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_CMYK);
 		sp_color_get_cmyk_floatv (&style->fill.value.color, c);
-		c[4] += SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
+		c[4] = SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
 		sp_paint_selector_set_color_cmyka_floatv (psel, c);
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
-#if 0
-		/* fixme: Think about it (Lauris) */
-		object = SP_OBJECT (objects->data);
-		/* We know that all objects have lineargradient fill style */
-		vector = sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object)), FALSE);
-		for (l = objects->next; l != NULL; l = l->next) {
-			SPObject *next;
-			next = SP_OBJECT (l->data);
-			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (next)), FALSE) != vector) {
-				/* Multiple vectors */
-				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
-				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
-				return;
-			}
-		}
-		/* fixme: Probably we should set multiple mode here too */
-		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
-		sp_paint_selector_set_gradient_linear (psel, vector);
-		sp_selection_bbox (sel, &bbox);
-		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
-		/* fixme: This is plain wrong */
-		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
-		/* fixme: Take units into account! */
-		sp_paint_selector_set_gradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
-#endif
 		break;
 	}
 
