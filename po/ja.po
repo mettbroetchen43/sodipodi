@@ -1218,9 +1218,8 @@ msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
 
 #: src/modules/kde.cpp:159
-#, fuzzy
 msgid "Document variant:"
-msgstr "文書名:"
+msgstr "ドキュメントの種類:"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1601,7 +1600,6 @@ msgstr ""
 "拡張機能(プラグイン)は使えません。\n"
 
 #: src/sodipodi.c:955
-#, fuzzy, c-format
 msgid ""
 "%s is not a valid directory.\n"
 "Although sodipodi will run, you are\n"
@@ -1609,7 +1607,7 @@ msgid ""
 msgstr ""
 "%s は有効なディレクトリではありません。\n"
 "sodipodi は実行されますが、\n"
-"拡張機能(プラグイン)は使えません。\n"
+"拡張機能(プラグイン)は使えません\n"
 
 #: src/sodipodi.c:958
 msgid ""
@@ -2078,18 +2076,16 @@ msgstr ""
 
 #. Zooming
 #: src/verbs.c:479
-#, fuzzy
 msgid "In"
-msgstr "インチ"
+msgstr "(拡大)"
 
 #: src/verbs.c:479
 msgid "Zoom in drawing"
 msgstr "描画領域にズーム"
 
 #: src/verbs.c:480
-#, fuzzy
 msgid "Out"
-msgstr "カット"
+msgstr "(縮小)"
 
 #: src/verbs.c:480
 msgid "Zoom out drawing"
@@ -2137,9 +2133,8 @@ msgid "Display"
 msgstr "ディスプレイ"
 
 #: src/verbs.c:488
-#, fuzzy
 msgid "Global display settings"
-msgstr "表示設定"
+msgstr "グローバル表示設定"
 
 #: src/verbs.c:489
 msgid "Document"
@@ -2147,16 +2142,15 @@ msgstr "ドキュメント"
 
 #: src/verbs.c:489
 msgid "Page layout"
-msgstr ""
+msgstr "ページレイアウト"
 
 #: src/verbs.c:490
 msgid "Editing Window"
 msgstr "編集ウィンドウ"
 
 #: src/verbs.c:490
-#, fuzzy
 msgid "Editing window properties"
-msgstr "編集ウィンドウ"
+msgstr "編集ウィンドウのプロパティ"
 
 #: src/verbs.c:491
 msgid "Tool Options"
@@ -2171,9 +2165,8 @@ msgid "Fill and Stroke"
 msgstr "フィルとストローク"
 
 #: src/verbs.c:493
-#, fuzzy
 msgid "Fill and stroke settings"
-msgstr "ストローク設定"
+msgstr "フィルとストローク設定"
 
 #: src/verbs.c:494
 msgid "Size and Position"
@@ -2184,24 +2177,20 @@ msgid "Transformations"
 msgstr "変形"
 
 #: src/verbs.c:496
-#, fuzzy
 msgid "Align and Distribute"
-msgstr "属性"
+msgstr "配置と間隔"
 
 #: src/verbs.c:496
-#, fuzzy
 msgid "Align and distribute"
-msgstr "属性追加"
+msgstr "配置と間隔"
 
 #: src/verbs.c:497
-#, fuzzy
 msgid "Text and Font"
 msgstr "テキストとフォント"
 
 #: src/verbs.c:497
-#, fuzzy
 msgid "Text editing and font settings"
-msgstr "テキストとフォント設定"
+msgstr "テキスト編集とフォントの設定"
 
 #: src/verbs.c:498
 msgid "XML Editor"
@@ -2371,844 +2360,3 @@ msgstr "属性"
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
 msgstr "値"
-
-#~ msgid "Break apart"
-#~ msgstr "分割"
-
-#~ msgid "Order"
-#~ msgstr "整列"
-
-#~ msgid "Node"
-#~ msgstr "ノード"
-
-#~ msgid "Arc"
-#~ msgstr "アーク"
-
-#~ msgid "Freehand"
-#~ msgstr "フリーハンド"
-
-#~ msgid "Dynahand"
-#~ msgstr "ダイナハンド"
-
-#~ msgid "Align Objects"
-#~ msgstr "オブジェクトの配置"
-
-#~ msgid "Text Editing"
-#~ msgstr "テキスト編集"
-
-#~ msgid "Display Properties"
-#~ msgstr "表示設定"
-
-#~ msgid "Convert object to curve"
-#~ msgstr "オブジェクトを曲線に変換"
-
-#~ msgid "Raise selected objects one level"
-#~ msgstr "選択オブジェクトを1レベル前面に移動"
-
-#~ msgid "Lower selected objects one level"
-#~ msgstr "選択オブジェクトを1レベル背面に移動"
-
-#~ msgid "Select tool - select and transform objects"
-#~ msgstr "選択ツール - オブジェクトを選択して変形"
-
-#~ msgid "Node tool - modify different aspects of existing objects"
-#~ msgstr "ノードツール - 実在するオブジェクトの様々な外観を修正"
-
-#~ msgid "Spiral tool - create spirals"
-#~ msgstr "スパイラルツール - 螺旋形を作成"
-
-#~ msgid "Calligraphic tool - draw calligraphic lines"
-#~ msgstr "カリグラフィックツール - カリグラフ線を描画"
-
-#~ msgid "Zoom tool - zoom into choosen area"
-#~ msgstr "ズームツール - 選択領域にズーム"
-
-#~ msgid "Save as:"
-#~ msgstr "名前を付けて保存"
-
-#~ msgid "Whether zoom follows window size"
-#~ msgstr "ウィンドウサイズに従ってズームするかどうか"
-
-#~ msgid "A path - whatever it means"
-#~ msgstr "どんなものでも実体はパスです"
-
-#~ msgid "Welcome !"
-#~ msgstr "ようこそ！"
-
-#~ msgid "Sodipodi SVG Document"
-#~ msgstr "Sodipodi SVG 文書"
-
-#~ msgid "Sodipodi SVG Document factory"
-#~ msgstr "Sodipodi SVG 文書ファクトリ"
-
-#~ msgid "Align objects to horizontal mid"
-#~ msgstr "オブジェクトを水平中心位置に配置する"
-
-#~ msgid "Align objects to vertical mid"
-#~ msgstr "オブジェクトを垂直中心位置に配置する"
-
-#~ msgid "Align outside object to bottom border"
-#~ msgstr "外部オブジェクトを下の境界に配置する"
-
-#~ msgid "Align outside object to left border"
-#~ msgstr "外部オブジェクトを左の境界に配置する"
-
-#~ msgid "Align outside object to right border"
-#~ msgstr "外部オブジェクトを右の境界に配置する"
-
-#~ msgid "Align outside object to top border"
-#~ msgstr "外部オブジェクトを上の境界に配置する"
-
-#~ msgid "Alignment base"
-#~ msgstr "整列基準"
-
-#~ msgid "Choose align type"
-#~ msgstr "配置方法を選択"
-
-#~ msgid "Close window"
-#~ msgstr "ウィンドウを閉じる"
-
-#~ msgid "ID:"
-#~ msgstr "ID:"
-
-#~ msgid "Parent X ="
-#~ msgstr "親 X ="
-
-#~ msgid "Parent Y ="
-#~ msgstr "親 Y ="
-
-#~ msgid "Transformation"
-#~ msgstr "変形"
-
-#~ msgid "X +"
-#~ msgstr "X +"
-
-#~ msgid "Y +"
-#~ msgstr "Y +"
-
-#~ msgid " Color fill "
-#~ msgstr " カラーフィル "
-
-#~ msgid " General "
-#~ msgstr " 一般 "
-
-#~ msgid " Style "
-#~ msgstr " スタイル "
-
-#~ msgid "Add new gradient"
-#~ msgstr "グラデーションを追加"
-
-#~ msgid "Behind fill"
-#~ msgstr "背景フィル"
-
-#~ msgid "Bevel join"
-#~ msgstr "傾斜部の結合"
-
-#~ msgid "Butt endpoints"
-#~ msgstr "終点を●"
-
-#~ msgid "Choose fill color"
-#~ msgstr "塗り潰す色を選択"
-
-#~ msgid "Choose stroke color"
-#~ msgstr "ストロークの色を選択"
-
-#~ msgid "Color fill"
-#~ msgstr "カラーフィル"
-
-#~ msgid "Color:"
-#~ msgstr "色:"
-
-#~ msgid "Dimension"
-#~ msgstr "次元"
-
-#~ msgid "Edit..."
-#~ msgstr "編集..."
-
-#~ msgid "Endpoints:"
-#~ msgstr "終点:"
-
-#~ msgid "Fill Color:"
-#~ msgstr "塗り潰す色:"
-
-#~ msgid "Fractal fill"
-#~ msgstr "フラクタルフィル"
-
-#~ msgid "Gradient fill"
-#~ msgstr "グラデーションフィル"
-
-#~ msgid "Is stroked"
-#~ msgstr "ストローク"
-
-#~ msgid "Miter join"
-#~ msgstr "マイター結合"
-
-#~ msgid "No fill"
-#~ msgstr "フィル無し"
-
-#~ msgid "Pattern fill"
-#~ msgstr "パターンフィル"
-
-#~ msgid "Pick a color"
-#~ msgstr "カラーをピックアップ"
-
-#~ msgid "Pick fill color"
-#~ msgstr "フィルの色を選ぶ"
-
-#~ msgid "Pick stroke color"
-#~ msgstr "ストロークの色を選ぶ"
-
-#~ msgid "Position"
-#~ msgstr "位置"
-
-#~ msgid "Reread"
-#~ msgstr "再読込"
-
-#~ msgid "Round endpoints"
-#~ msgstr "終点を○"
-
-#~ msgid "Round join"
-#~ msgstr "円の結合"
-
-#~ msgid "Scale with object"
-#~ msgstr "オブジェクトで計測"
-
-#~ msgid "Square endpoints"
-#~ msgstr "終点を■"
-
-#~ msgid "Stroke"
-#~ msgstr "ストローク"
-
-#~ msgid "Stroke width"
-#~ msgstr "ストローク幅"
-
-#~ msgid "centimeter"
-#~ msgstr "センチメートル"
-
-#~ msgid "color"
-#~ msgstr "カラー"
-
-#~ msgid "inches"
-#~ msgstr "インチ"
-
-#~ msgid "millimeters"
-#~ msgstr "ミリメートル"
-
-#~ msgid "none"
-#~ msgstr "なし"
-
-#~ msgid "object properties"
-#~ msgstr "オブジェクトプロパティ"
-
-#~ msgid "points"
-#~ msgstr "ポイント"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0MB"
-
-#~ msgid "Back One"
-#~ msgstr "1つ分だけ後ろに"
-
-#~ msgid "Break apart selected node"
-#~ msgstr "選択したノードを分割する"
-
-#~ msgid "Bring to _Front"
-#~ msgstr "前面に持ってくる(_F)"
-
-#~ msgid "Close dialog"
-#~ msgstr "ダイアログを閉じる"
-
-#~ msgid "Convert selected segments to curves"
-#~ msgstr "選択したセグメントを曲線に変換"
-
-#~ msgid "Convert selected segments to lines"
-#~ msgstr "選択したセグメントを線に変換"
-
-#~ msgid "Cusp line at selected nodes"
-#~ msgstr "選択したノードの尖った線"
-
-#~ msgid "Desktop"
-#~ msgstr "デスクトップ"
-
-#~ msgid "Drawing Context"
-#~ msgstr "描画コンテキスト"
-
-#~ msgid "Export picture to png"
-#~ msgstr "絵画を PNG に出力"
-
-#~ msgid "Exported as"
-#~ msgstr "名前をつけて出力"
-
-#~ msgid "Filename:"
-#~ msgstr "ファイル名:"
-
-#~ msgid "Forward One"
-#~ msgstr "1つ分だけ前に"
-
-#~ msgid "Height"
-#~ msgstr "高さ"
-
-#~ msgid "Image size"
-#~ msgstr "画像サイズ"
-
-#~ msgid "Include one node into selected segments"
-#~ msgstr "ノードを選択したセグメントに含める"
-
-#~ msgid "Join 2 selected endpoints"
-#~ msgstr "2つの端点の結合"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "縦横比を固定"
-
-#~ msgid "Png file name"
-#~ msgstr "PNGファイル名"
-
-#~ msgid "Send to _Back"
-#~ msgstr "背後に持っていく(_B)"
-
-#~ msgid "Set dimensions"
-#~ msgstr "次元を設定"
-
-#~ msgid "Smooth line at selected nodes"
-#~ msgstr "選択したノードの滑らかな線"
-
-#~ msgid "Symmetric "
-#~ msgstr "左右対称"
-
-#~ msgid "Toggle Borders"
-#~ msgstr "ボーダーをトグル"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "未圧縮のファイルサイズ:"
-
-#~ msgid "Where to export"
-#~ msgstr "出力先"
-
-#~ msgid "Width"
-#~ msgstr "幅"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "XML Tree"
-#~ msgstr "XML ツリー"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "_Align"
-#~ msgstr "配置(_A)"
-
-#~ msgid "_Combine"
-#~ msgstr "連結(_C)"
-
-#~ msgid "_Drawing"
-#~ msgstr "描画(_D)"
-
-#~ msgid "_Group"
-#~ msgstr "グループ化(_G)"
-
-#~ msgid "_Interactive"
-#~ msgstr "対話的(_I)"
-
-#~ msgid "_New"
-#~ msgstr "新規(_N)"
-
-#~ msgid "_Page"
-#~ msgstr "ページ(_P)"
-
-#~ msgid "_Selection"
-#~ msgstr "選択(_S)"
-
-#~ msgid "_Ungroup"
-#~ msgstr "グループ解除(_U)"
-
-#~ msgid "Align dialog"
-#~ msgstr "配置ダイアログ"
-
-#~ msgid "Break apart selected paths"
-#~ msgstr "選択したパスを分割する"
-
-#~ msgid "Combine selected paths"
-#~ msgstr "選択したパスの結合"
-
-#~ msgid "Copy selection to clipboard"
-#~ msgstr "選択領域をクリップボードにコピー"
-
-#~ msgid "Cut selection"
-#~ msgstr "選択領域の切り取り"
-
-#~ msgid "Delete selection"
-#~ msgstr "選択領域の削除"
-
-#~ msgid "Draw arc"
-#~ msgstr "弧の描画"
-
-#~ msgid "Draw dynahand line"
-#~ msgstr "ダイナハンド線の描画"
-
-#~ msgid "Draw freehand line"
-#~ msgstr "フリーハンド線の描画"
-
-#~ msgid "Draw rectangle"
-#~ msgstr "矩形の描画"
-
-#~ msgid "Draw star"
-#~ msgstr "星の描画"
-
-#~ msgid "Draw text"
-#~ msgstr "テキストの描画"
-
-#~ msgid "Drawing context"
-#~ msgstr "描画コンテキスト"
-
-#~ msgid "Duplicate selection"
-#~ msgstr "選択領域の複製"
-
-#~ msgid "Edit fill style of selected objects"
-#~ msgstr "オブジェクトのフィルスタイルを編集"
-
-#~ msgid "Edit font style of selected objects"
-#~ msgstr "オブジェクトのフォントスタイルを編集"
-
-#~ msgid "Edit layout of selected objects"
-#~ msgstr "オブジェクトのレイアウトを編集"
-
-#~ msgid "Edit nodes"
-#~ msgstr "ノードの編集"
-
-#~ msgid "Edit stroke style of selected objects"
-#~ msgstr "オブジェクトのストロークスタイルを編集"
-
-#~ msgid "Import "
-#~ msgstr "挿入 "
-
-#~ msgid "Lower selection one layer"
-#~ msgstr "選択領域を一つ背面に移動"
-
-#~ msgid "New drawing"
-#~ msgstr "新規図面"
-
-#~ msgid "No I'd rather do some more cool vector drawing with sodipodi."
-#~ msgstr "いいえ、また Sodipodi でもっとクールなベクタを描画します。"
-
-#~ msgid "Nope !"
-#~ msgstr "いいえ!"
-
-#~ msgid "Open new drawing"
-#~ msgstr "新規図面を開く"
-
-#~ msgid "Paste from clipboard"
-#~ msgstr "クリップボードから貼り付け"
-
-#~ msgid "Preview print drawing"
-#~ msgstr "図面印刷のプレビュー"
-
-#~ msgid "Quit or not quit ?"
-#~ msgstr "終了しても宜しいですか?"
-
-#~ msgid "Raise selection to top"
-#~ msgstr "選択領域を最前面に移動"
-
-#~ msgid "Really wanna quit sodipodi ?"
-#~ msgstr "本当に sodipodi を終了して宜しいですか?"
-
-#~ msgid "Remove transformation"
-#~ msgstr "変形を戻す"
-
-#~ msgid "Rise selection one layer"
-#~ msgstr "選択領域を一つ前面に移動"
-
-#~ msgid "Rotate selected objects 90deg clockwise"
-#~ msgstr "選択オブジェクトを時計向きに90度回転"
-
-#~ msgid "Save drawing "
-#~ msgstr "図面の保存 "
-
-#~ msgid "Save drawing under new filename"
-#~ msgstr "新規ファイル名を使って図面を保存"
-
-#~ msgid "Transformation dialog"
-#~ msgstr "変形ダイアログ"
-
-#~ msgid "Undo "
-#~ msgstr "元に戻す"
-
-#~ msgid "Ungroup selected objects"
-#~ msgstr "選択したオブジェクトのグループ解除"
-
-#~ msgid "Unsymmetric"
-#~ msgstr "非対称"
-
-#~ msgid "Yep !"
-#~ msgstr "はい!"
-
-#~ msgid "Yes quick! I want to leave sodipodi and come back later."
-#~ msgstr "はい、直ちに sodipodi を終らせて後でまた戻ってきます。"
-
-#~ msgid "Zoom in"
-#~ msgstr "拡大"
-
-#~ msgid "Zoom out"
-#~ msgstr "縮小"
-
-#~ msgid "Zoom to 1:1"
-#~ msgstr "1:1にズーム"
-
-#~ msgid "Zoom to 1:2"
-#~ msgstr "1:2にズーム"
-
-#~ msgid "Zoom to 2:1"
-#~ msgstr "2:1にズーム"
-
-#~ msgid "Zoom to page"
-#~ msgstr "ページにズーム"
-
-#~ msgid "Zoom to selection"
-#~ msgstr "選択領域にズーム"
-
-#~ msgid "_Open"
-#~ msgstr "開く(_O)"
-
-#~ msgid "_Quit"
-#~ msgstr "終了(_Q)"
-
-#~ msgid "lower selection to bottom"
-#~ msgstr "選択領域を最背面に移動"
-
-#~ msgid "Align to bottom left"
-#~ msgstr "下端の左端に配置する"
-
-#~ msgid "Align to bottom middle"
-#~ msgstr "下端の中央に配置する"
-
-#~ msgid "Align to bottom right"
-#~ msgstr "下端の右端に配置する"
-
-#~ msgid "Align to center"
-#~ msgstr "中央に配置する"
-
-#~ msgid "Align to left middle"
-#~ msgstr "左端の中央に配置する"
-
-#~ msgid "Align to right middle"
-#~ msgstr "上端の右端に配置する"
-
-#~ msgid "Align to top left"
-#~ msgstr "上端の左端に配置する"
-
-#~ msgid "Align to top middle"
-#~ msgstr "上端の中央に配置する"
-
-#~ msgid "Align to top right"
-#~ msgstr "上端の右端に配置する"
-
-#~ msgid "Apply transformation to copy Ctl+m"
-#~ msgstr "変換をコピーに対して適用 - Ctl+m"
-
-#~ msgid "Center"
-#~ msgstr "中心"
-
-#~ msgid "Choose metric for center"
-#~ msgstr "中心に対して距離単位を選択"
-
-#~ msgid "Close dialog - Ctl+c"
-#~ msgstr "ダイアログを閉じる - Ctl+c"
-
-#~ msgid "Degree"
-#~ msgstr "度"
-
-#~ msgid "Expand dialog - Ctl+e"
-#~ msgstr "ダイアログを展開する - Ctl+e"
-
-#~ msgid "Height: "
-#~ msgstr "高さ:"
-
-#~ msgid "Horizontal center value"
-#~ msgstr "水平方向の中心値"
-
-#~ msgid "Keep height of selection during transformation"
-#~ msgstr "変形時に選択領域の高さを維持する"
-
-#~ msgid "Keep width of selection during transformation"
-#~ msgstr "変形時に選択領域の幅を維持する"
-
-#~ msgid "Orig. Width: "
-#~ msgstr "前の幅: "
-
-#~ msgid "Orig. X: "
-#~ msgstr "前の X: "
-
-#~ msgid "Reset dialog to default - Ctl+r"
-#~ msgstr "ダイアログをデフォルトに戻す - Ctl+r"
-
-#~ msgid "Set angle to 0 degrees"
-#~ msgstr "角度を 0 度に設定"
-
-#~ msgid "Set angle to 180 degrees"
-#~ msgstr "角度を 180 度に設定"
-
-#~ msgid "Set angle to 270 degrees"
-#~ msgstr "角度を 270 度に設定"
-
-#~ msgid "Skew"
-#~ msgstr "歪み"
-
-#~ msgid "Start transformation - Ctl+a"
-#~ msgstr "変形開始 - Ctrl+a"
-
-#~ msgid "Toggle center given in selection/desktop coordiantes"
-#~ msgstr "選択領域/デスクトップ座標の中心位置をトグル"
-
-#~ msgid "Use alignment during transformation"
-#~ msgstr "変形時に整列を用いる"
-
-#~ msgid "Use center as transformation fixpoint"
-#~ msgstr "変形時に固定点として中心を用いる"
-
-#~ msgid "Vertical center value"
-#~ msgstr "垂直方向の中心値"
-
-#~ msgid "Y: "
-#~ msgstr "Y: "
-
-#~ msgid "absolute"
-#~ msgstr "全て"
-
-#~ msgid "angle"
-#~ msgstr "角度"
-
-#~ msgid "desktop"
-#~ msgstr "デスクトップ"
-
-#~ msgid "horizontal move"
-#~ msgstr "水平方向に移動"
-
-#~ msgid "horizontal scale value"
-#~ msgstr "水平方向のスケール値"
-
-#~ msgid "keep aspect"
-#~ msgstr "縦横比を維持"
-
-#~ msgid "lock/unlock horizontal and vertical scale"
-#~ msgstr "水平/垂直スケールのロック/ロック解除"
-
-#~ msgid "select direction"
-#~ msgstr "方向の選択"
-
-#~ msgid "select direction (horizontal/vertical skew)"
-#~ msgstr "方向を選択 (水平/垂直の歪み)"
-
-#~ msgid "select metric for scale"
-#~ msgstr "スケール単位の選択"
-
-#~ msgid "select metric for values"
-#~ msgstr "数値単位の選択"
-
-#~ msgid "skew"
-#~ msgstr "歪み"
-
-#~ msgid "toggle absolute/relative move"
-#~ msgstr "移動対象を全て/一部の切り替え"
-
-#~ msgid "toggle absolute/relative scale"
-#~ msgstr "全て/一部のスケール切り替え"
-
-#~ msgid "vertical scale value"
-#~ msgstr "垂直方向のスケール値"
-
-#~ msgid "Attribute:"
-#~ msgstr "属性:"
-
-#~ msgid "Change"
-#~ msgstr "変更"
-
-#~ msgid "Change Attribute"
-#~ msgstr "属性変更"
-
-#~ msgid "Change Content"
-#~ msgstr "内容を変更します"
-
-#~ msgid "Content"
-#~ msgstr "内容"
-
-#~ msgid "Do you want to delete attribute?"
-#~ msgstr "属性を削除してよろしいですか?"
-
-#~ msgid "Element:"
-#~ msgstr "要素:"
-
-#~ msgid "Enter element name:"
-#~ msgstr "要素名を入力:"
-
-#~ msgid "Hierarchy"
-#~ msgstr "階層"
-
-#~ msgid "Key"
-#~ msgstr "キー"
-
-#~ msgid "New Element"
-#~ msgstr "新しい要素:"
-
-#~ msgid "name"
-#~ msgstr "名前"
-
-#~ msgid "Don't save"
-#~ msgstr "セーブしない"
-
-#~ msgid "Ok"
-#~ msgstr "了解"
-
-#~ msgid "You can't delete 'id' attribute!"
-#~ msgstr "'id' 属性は削除できません!"
-
-#~ msgid "Do you want to delete attribute %s?"
-#~ msgstr "%s 属性を削除してよろしいですか?"
-
-#~ msgid "Yes"
-#~ msgstr "はい"
-
-#~ msgid "No"
-#~ msgstr "いいえ"
-
-#~ msgid "You can't delete element %s!"
-#~ msgstr "%s 要素を削除できません!"
-
-#~ msgid "Do you want to delete element %s?"
-#~ msgstr "%s 属性を削除してよろしいですか?"
-
-#~ msgid "You can't cut element %s!"
-#~ msgstr "%s 要素を切取ることはできません!"
-
-#~ msgid "\""
-#~ msgstr "\""
-
-#~ msgid "Userspace"
-#~ msgstr "ユーザ空間"
-
-#~ msgid "us"
-#~ msgstr "us"
-
-#~ msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
-#~ msgstr "出力ビットマップの解像度を pixel/inch で指定 (既定値 72.0)"
-
-#~ msgid "Style to change:"
-#~ msgstr "変更するスタイル:"
-
-#~ msgid "Reset"
-#~ msgstr "リセット"
-
-#~ msgid "Linear"
-#~ msgstr "線形"
-
-#~ msgid "Radial"
-#~ msgstr "円形"
-
-#~ msgid "Empty"
-#~ msgstr "空"
-
-#~ msgid "Solid color"
-#~ msgstr "ソリッドカラー"
-
-#~ msgid "Exit"
-#~ msgstr "終了"
-
-#~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
-#~ msgstr "GUIを使用しません。注意! これを使用する場合は第一引数にして下さい!"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "Bonoboを初期化できません"
-
-#~ msgid "Broken bitmap"
-#~ msgstr "ビットマップが壊れています"
-
-#~ msgid "Choose base unit system for grid"
-#~ msgstr "グリッドのベースユニットシステムの選択"
-
-#~ msgid "Millimeters\n"
-#~ msgstr "ミリメートル\n"
-
-#~ msgid "Choose color for grid"
-#~ msgstr "グリッドのカラーの選択"
-
-#~ msgid "Set maximum distance for grid snapping"
-#~ msgstr "グリッドに合わせる最大距離を設定する"
-
-#~ msgid "Choose unit system for grid snapping"
-#~ msgstr "グリッドに合わせるユニットシステムの選択"
-
-#~ msgid "Pixels\n"
-#~ msgstr "ピクセル\n"
-
-#~ msgid "Set distance between vertical grid lines"
-#~ msgstr "グリッド線の垂直方向の距離を設定"
-
-#~ msgid "Set distance between horizontal grid lines"
-#~ msgstr "グリッド線の水平方向の距離を設定"
-
-#~ msgid "Set origin of page coordinate system"
-#~ msgstr "ページの始点の設定"
-
-#~ msgid "Choose unit system for guideline snapping"
-#~ msgstr "ガイドラインにあわせるユニットシステムの選択"
-
-#~ msgid "Set maximum distance for guideline snapping"
-#~ msgstr "ガイドラインに合わせる最大距離の設定"
-
-#~ msgid "Choose color for guidelines"
-#~ msgstr "ガイドラインのカラーの選択"
-
-#~ msgid "Choose color for highlighted guidelines"
-#~ msgstr "ハイライトされたガイドラインのカラーを選択します"
-
-#~ msgid "Choose paper size"
-#~ msgstr "用紙サイズの選択"
-
-#~ msgid "A4\n"
-#~ msgstr "A4\n"
-
-#~ msgid "Set page width"
-#~ msgstr "ページ幅の設定"
-
-#~ msgid "Set page height"
-#~ msgstr "ページ高さの設定"
-
-#~ msgid "window1"
-#~ msgstr "window1"
-
-#~ msgid "window2"
-#~ msgstr "window2"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Copyright Lauris Kaplinski 1999-2000."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "ベクタ描画プログラム\n"
-#~ "GPL にてリリース"
-
-#~ msgid "_File"
-#~ msgstr "ファイル(_F)"
-
-#~ msgid "_Help"
-#~ msgstr "ヘルプ(_H)"
-
-#~ msgid "_About ..."
-#~ msgstr "情報(_A)..."
-
-#~ msgid "Draw ellipse"
-#~ msgstr "楕円の描画"
-
-#~ msgid "Dup"
-#~ msgstr "複製"
-
-#~ msgid "Del"
-#~ msgstr "削除"
