@@ -89,7 +89,6 @@ void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
 void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 
-void sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy);
 ArtDRect *sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
 
 /* fixme: */
@@ -106,15 +105,18 @@ void sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y,
 void sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float y1, float border);
 void sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom);
 void sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom);
+void sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy);
 
 /* SPDesktopWidget */
 
 struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
 
+	unsigned int update : 1;
+	unsigned int decorations : 1;
+
 	SPDesktop *desktop;
 
-	gint decorations : 1;
 	GtkWidget *table;
 	GtkWidget *hscrollbar, *vscrollbar;
 

@@ -294,6 +294,7 @@ sp_image_write (SPObject *object, SPRepr *repr, guint flags)
 static void
 sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
+	ArtDRect bb;
 	SPImage *image;
 
 	image = SP_IMAGE (item);
@@ -306,8 +307,10 @@ sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		dim.x1 = dim.x0 + image->width.computed;
 		dim.y1 = dim.y0 + image->height.computed;
 
-		art_drect_affine_transform (bbox, &dim, transform);
+		art_drect_affine_transform (&bb, &dim, transform);
 	}
+
+	art_drect_union (bbox, bbox, &bb);
 }
 
 static void

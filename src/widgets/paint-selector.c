@@ -503,7 +503,7 @@ sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient 
 	/* Now position */
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
 	/* Calculate raw gradient transform */
-	sp_item_invoke_bbox (item, &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+	sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 	sp_item_i2doc_affine (item, ctm);
 	fctm.c[0] = ctm[0];
 	fctm.c[1] = ctm[1];
@@ -561,7 +561,7 @@ sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient 
 	/* Now position */
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
 	/* Calculate raw gradient transform */
-	sp_item_invoke_bbox (item, &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+	sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 	sp_item_i2doc_affine (item, ctm);
 	fctm.c[0] = ctm[0];
 	fctm.c[1] = ctm[1];

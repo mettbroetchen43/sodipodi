@@ -320,15 +320,18 @@ sp_item_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 void
-sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const double *transform, unsigned int clear)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 	g_assert (bbox != NULL);
-	g_assert (transform != NULL);
 
-	bbox->x0 = bbox->y0 = 1e18;
-	bbox->x1 = bbox->y1 = -1e18;
+	if (clear) {
+		bbox->x0 = bbox->y0 = 1e18;
+		bbox->x1 = bbox->y1 = -1e18;
+	}
+
+	if (!transform) transform = NR_MATRIX_D_TO_DOUBLE (&NR_MATRIX_D_IDENTITY);
 
 	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->bbox)
 		SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->bbox (item, bbox, transform);
@@ -345,7 +348,7 @@ sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox)
 
 	sp_item_i2d_affine (item, i2d);
 
-	sp_item_invoke_bbox (item, bbox, i2d);
+	sp_item_invoke_bbox (item, bbox, i2d, TRUE);
 }
 
 SPKnotHolder *
@@ -373,7 +376,7 @@ sp_item_private_snappoints (SPItem * item, GSList * points)
 	g_assert (SP_IS_ITEM (item));
 
 	sp_item_i2d_affine (item, i2d);
-	sp_item_invoke_bbox (item, &bbox, i2d);
+	sp_item_invoke_bbox (item, &bbox, i2d, TRUE);
 
 	p = g_new (ArtPoint,1);
 	p->x = bbox.x0;

@@ -658,7 +658,7 @@ sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	tspan = SP_TSPAN (item);
 
 	if (tspan->string) {
-		sp_item_invoke_bbox (SP_ITEM (tspan->string), bbox, transform);
+		sp_item_invoke_bbox (SP_ITEM (tspan->string), bbox, transform, FALSE);
 	}
 }
 
@@ -1118,7 +1118,6 @@ sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPText *text;
 	SPItem *child;
-	ArtDRect child_bbox;
 	SPObject *o;
 
 	text = SP_TEXT (item);
@@ -1127,8 +1126,7 @@ sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		gdouble a[6];
 		child = SP_ITEM (o);
 		art_affine_multiply (a, child->affine, transform);
-		sp_item_invoke_bbox (child, &child_bbox, a);
-		art_drect_union (bbox, bbox, &child_bbox);
+		sp_item_invoke_bbox (child, bbox, a, FALSE);
 	}
 }
 
@@ -1454,7 +1452,7 @@ sp_text_set_shape (SPText *text)
 		isfirstline = FALSE;
 	}
 
-	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, NR_MATRIX_D_IDENTITY.c);
+	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, NULL, TRUE);
 
 	for (child = text->children; child != NULL; child = child->next) {
 		SPString *string;
@@ -1557,7 +1555,7 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 	text = SP_TEXT (item);
 
 	/* fixme: Think (Lauris) */
-	sp_item_invoke_bbox (item, &pbox, NR_MATRIX_D_IDENTITY.c);
+	sp_item_invoke_bbox (item, &pbox, NULL, TRUE);
 	sp_item_bbox_desktop (item, &bbox);
 	dbox.x0 = 0.0;
 	dbox.y0 = 0.0;

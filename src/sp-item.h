@@ -13,12 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <gtk/gtkmenu.h>
-#if 0
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_pixbuf.h>
-#endif
 #include <libart_lgpl/art_rect.h>
+#include <gtk/gtkmenu.h>
 #include "helper/units.h"
 #include "display/nr-arena-forward.h"
 #include "forward.h"
@@ -117,7 +113,7 @@ GType sp_item_get_type (void);
 
 /* Methods */
 
-void sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+void sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const double *transform, unsigned int clear);
 SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);

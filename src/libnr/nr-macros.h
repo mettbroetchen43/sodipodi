@@ -49,4 +49,7 @@
 #define NR_RECT_DF_POINT_DF_TEST_INSIDE(r,p) (((p)->x >= (r)->x0) && ((p)->x < (r)->x1) && ((p)->y >= (r)->y0) && ((p)->y < (r)->y1))
 #define NR_RECT_LS_POINT_LS_TEST_INSIDE(r,p) (((p)->x >= (r)->x0) && ((p)->x < (r)->x1) && ((p)->y >= (r)->y0) && ((p)->y < (r)->y1))
 
+#define NR_MATRIX_D_TO_DOUBLE(m) ((double *) (m))
+#define NR_MATRIX_D_FROM_DOUBLE(d) ((NRMatrixD *) (d))
+
 #endif

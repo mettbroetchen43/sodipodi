@@ -218,7 +218,7 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
 		fctm.c[0] = ctm[0];
 		fctm.c[1] = ctm[1];
@@ -255,7 +255,7 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
 		/* fixme: This is plain wrong */
 		rg = SP_RADIALGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
-		sp_item_invoke_bbox (SP_ITEM (object), &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NULL, TRUE);
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
 		fctm.c[0] = ctm[0];
 		fctm.c[1] = ctm[1];

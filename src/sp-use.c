@@ -237,10 +237,7 @@ sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	use = SP_USE (item);
 
 	if (use->child) {
-		sp_item_invoke_bbox (SP_ITEM (use->child), bbox, transform);
-	} else {
-		bbox->x0 = bbox->y0 = 0.0;
-		bbox->x1 = bbox->y1 = 0.0;
+		sp_item_invoke_bbox (SP_ITEM (use->child), bbox, transform, FALSE);
 	}
 }
 

@@ -1,6 +1,13 @@
 2002-11-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/sp-canvas.c (scroll_to): Blit window, unless explicitly forbidden
+	(sp_canvas_size_allocate): Update onlu changed areas
+
+	* src/sp-item.c (sp_item_invoke_bbox): Signature change
+
 	* src/desktop.c (sp_desktop_widget_update_rulers): Reenabled it
+	(sp_desktop_set_display_area): Only update canvas root if zoom factor changes
+	(sp_desktop_update_scrollbars): Working
 
 	* src/helper/sp-canvas.c (paint): use full visible are for clipping, fixed
 	type on specifying area dimensionf in event

@@ -629,15 +629,10 @@ sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox)
 	bbox->x1 = bbox->y1 = -1e18;
 
 	for (l = selection->items; l != NULL; l = l-> next) {
-		ArtDRect bb;
 		gdouble i2doc[6];
 
 		sp_item_i2doc_affine (SP_ITEM (l->data), i2doc);
-		sp_item_invoke_bbox (SP_ITEM (l->data), &bb, i2doc);
-		if (bb.x0 < bbox->x0) bbox->x0 = bb.x0;
-		if (bb.y0 < bbox->y0) bbox->y0 = bb.y0;
-		if (bb.x1 > bbox->x1) bbox->x1 = bb.x1;
-		if (bb.y1 > bbox->y1) bbox->y1 = bb.y1;
+		sp_item_invoke_bbox (SP_ITEM (l->data), bbox, i2doc, FALSE);
 	}
 
 	return bbox;

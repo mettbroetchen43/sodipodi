@@ -246,7 +246,7 @@ sp_shape_modified (SPObject *object, guint flags)
 		ArtDRect paintbox;
 		/* This is suboptimal, because changing parent style schedules recalculation */
 		/* But on the other hand - how can we know that parent does not tie style and transform */
-		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NR_MATRIX_D_IDENTITY.c);
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NULL, TRUE);
 		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
 			nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (v->arenaitem), &paintbox);
 		}
@@ -286,7 +286,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	if (!comp->curve) return;
 
 	/* fixme: Think (Lauris) */
-	sp_item_invoke_bbox (item, &box, NR_MATRIX_D_IDENTITY.c);
+	sp_item_invoke_bbox (item, &box, NULL, TRUE);
 	pbox.x0 = box.x0;
 	pbox.y0 = box.y0;
 	pbox.x1 = box.x1;
@@ -344,7 +344,7 @@ sp_shape_show (SPItem *item, NRArena *arena)
 		ArtDRect paintbox;
 		comp = (SPPathComp *) path->comp->data;
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
-		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NR_MATRIX_D_IDENTITY.c);
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, NULL, TRUE);
 		nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
 	}
 
