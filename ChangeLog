@@ -1,5 +1,7 @@
 2002-11-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* configure.in (FREETYPE_LIBS): Added direct freetype check
+
 	* src/widgets/dash-selector.c (sp_dash_selector_menu_item_new): Use created
 	GC, as widget is not mapped yet
 	(sp_dash_selector_new): Load stroke definitions from preferences

@@ -129,6 +129,7 @@ sodipodi_private_libs = \
 sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
+	$(FREETYPE_LIBS) \
 	$(SODIPODI_LIBS) \
 	$(SODIPODI_GNOME_PRINT_LIBS) \
 	$(SODIPODI_BONOBO_LIBS)

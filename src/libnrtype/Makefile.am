@@ -3,6 +3,7 @@ noinst_LIBRARIES = libnrtype.a
 INCLUDES = \
 	-I.. \
 	$(cflags) \
+	$(FREETYPE_CFLAGS) \
 	$(SODIPODI_CFLAGS) \
 	$(SODIPODI_GNOME_PRINT_CFLAGS)
 
