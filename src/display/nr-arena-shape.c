@@ -395,7 +395,7 @@ nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 	if (!shape->curve) return NULL;
 	if (!shape->style) return NULL;
 
-	if (0 && (item->state & NR_ARENA_ITEM_STATE_RENDER)) {
+	if (item->state & NR_ARENA_ITEM_STATE_RENDER) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
 			if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
 		}
@@ -428,12 +428,17 @@ nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 		dist = NR_HUGE_F;
 		wind = 0;
 		nr_path_matrix_f_point_f_bbox_wind_distance (&bp, &t, &pt, NULL, &wind, &dist, NR_EPSILON_F);
-		if (!shape->style->fill_rule.value) {
-			if (wind != 0) return item;
-		} else {
-			if (wind & 0x1) return item;
+		if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
+			if (!shape->style->fill_rule.value) {
+				if (wind != 0) return item;
+			} else {
+				if (wind & 0x1) return item;
+			}
 		}
-		if (dist < delta) return item;
+		if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
+			/* fixme: We do not take stroke width into account here (Lauris) */
+			if (dist < delta) return item;
+		}
 	}
 
 	return NULL;

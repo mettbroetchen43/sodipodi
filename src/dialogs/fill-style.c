@@ -284,13 +284,8 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		fbb.y1 = bbox.y1;
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
-#if 0
-		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, lg->x1.computed, lg->y1.computed);
-		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, lg->x2.computed, lg->y2.computed);
-		sp_paint_selector_set_lgradient_position (psel, p0.x, p0.y, p1.x, p1.y);
-#else
+		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (lg), SP_GRADIENT_SPREAD (lg));
 		sp_paint_selector_set_lgradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
-#endif
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
 		object = SP_OBJECT (objects->data);
@@ -326,14 +321,8 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		fbb.y1 = bbox.y1;
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
-#if 0
-		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p0, rg->cx.computed, rg->cy.computed);
-		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p1, rg->fx.computed, rg->fy.computed);
-		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p2, rg->cx.computed + rg->r.computed, rg->cy.computed);
-		sp_paint_selector_set_rgradient_position (psel, p0.x, p0.y, p1.x, p1.y, hypot (p2.x - p0.x, p2.y - p0.y));
-#else
+		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (rg), SP_GRADIENT_SPREAD (rg));
 		sp_paint_selector_set_rgradient_position (psel, rg->cx.computed, rg->cy.computed, rg->fx.computed, rg->fy.computed, rg->r.computed);
-#endif
 		break;
 	default:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);

@@ -196,7 +196,7 @@ nr_matrix_d_invert (NRMatrixD *d, const NRMatrixD *m)
 	if (m) {
 		double det;
 		det = m->c[0] * m->c[3] - m->c[1] * m->c[2];
-		if (!NR_DF_TEST_CLOSE (det, 1.0, NR_EPSILON_D)) {
+		if (!NR_DF_TEST_CLOSE (det, 0.0, NR_EPSILON_D)) {
 			double rdet, t;
 			rdet = 1.0 / det;
 			t = m->c[3] * rdet;
@@ -223,7 +223,7 @@ nr_matrix_f_invert (NRMatrixF *d, const NRMatrixF *m)
 	if (m) {
 		float det;
 		det = m->c[0] * m->c[3] - m->c[1] * m->c[2];
-		if (!NR_DF_TEST_CLOSE (det, 1.0, NR_EPSILON_F)) {
+		if (!NR_DF_TEST_CLOSE (det, 0.0, NR_EPSILON_F)) {
 			float rdet, t;
 			rdet = 1.0 / det;
 			t = m->c[3] * rdet;

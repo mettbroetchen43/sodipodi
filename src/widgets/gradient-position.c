@@ -455,28 +455,40 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 				pos->gdata.radial.fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 			} else {
 				float x, y;
-				if (!NR_DF_TEST_CLOSE (pos->w2gs.c[0], pos->w2gs.c[3], NR_EPSILON_F) ||
+#if 0
+				if (1 || !NR_DF_TEST_CLOSE (pos->w2gs.c[0], pos->w2gs.c[3], NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (pos->w2gs.c[1], 0.0, NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (pos->w2gs.c[2], 0.0, NR_EPSILON_F)) {
-					double ex, cxw, cyw, dxw, dyw;
-					/* Have to make transform rectilinear */
-					ex = NR_MATRIX_DF_EXPANSION (&pos->w2gs);
+					double ex, cxw, cyw, fxw, fyw, dxw, dyw, s;
+					ex = NR_MATRIX_DF_EXPANSION (&pos->gs2w);
 					cxw = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2w, cx, cy);
 					cyw = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2w, cx, cy);
+					fxw = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2w, fx, fy);
+					fyw = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2w, fx, fy);
 					dxw = fabs (event->x - cxw);
 					dyw = fabs (event->y - cyw);
 					dxw = MAX (dxw, 1.0);
 					dyw = MAX (dyw, 1.0);
-					r = CLAMP (r, 0.001, 1000.0);
-					pos->w2gs.c[0] = r / dxw;
-					pos->w2gs.c[1] = 0.0;
-					pos->w2gs.c[2] = 0.0;
-					pos->w2gs.c[3] = r / dyw;
-					pos->w2gs.c[4] = cx - pos->w2gs.c[0] * cxw;
-					pos->w2gs.c[5] = cy - pos->w2gs.c[3] * cyw;
+					s = dxw / dyw;
+					pos->w2gs.c[0] *= s;
+					pos->w2gs.c[1] *= s;
+					pos->w2gs.c[2] *= s;
+					pos->w2gs.c[3] *= s;
+					printf ("ex %f pp %f %f %f %f %f %f\n", ex,
+						pos->w2gs.c[0],
+						pos->w2gs.c[1],
+						pos->w2gs.c[2],
+						pos->w2gs.c[3],
+						pos->w2gs.c[4],
+						pos->w2gs.c[5]);
 					nr_matrix_f_invert (&pos->gs2w, &pos->w2gs);
 					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
+					pos->gdata.radial.cx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, cxw, cyw);
+					pos->gdata.radial.cy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, cxw, cyw);
+					pos->gdata.radial.fx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, fxw, fyw);
+					pos->gdata.radial.fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, fxw, fyw);
 				}
+#endif
 
 				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
