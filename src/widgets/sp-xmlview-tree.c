@@ -198,16 +198,11 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 
 	gtk_ctree_node_set_row_data_full (GTK_CTREE (tree), data->node, data, node_data_free);
 
-	if (sp_repr_is_text (repr)) {
-		SPReprAttr *attr;
+	if (sp_repr_is_text (repr) || sp_repr_is_cdata (repr)) {
 		gtk_clist_freeze (GTK_CLIST (tree));
 		sp_repr_add_listener (repr, &text_repr_events, data);
 		/* Emulate content_changed event */
-		attr = sp_repr_attr_get_first (repr);
-		while (attr) {
-			text_content_changed (repr, NULL, sp_repr_get_content (repr), data);
-			attr = sp_repr_attr_get_next (repr, attr);
-		}
+		text_content_changed (repr, NULL, sp_repr_get_content (repr), data);
 		gtk_clist_thaw (GTK_CLIST (tree));
 	} else if (sp_repr_is_element (repr)) {
 		SPRepr *child, *ref;
@@ -274,9 +269,9 @@ element_child_added (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer ptr)
 }
 
 void
-element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_value, const guchar * new_value, gpointer ptr)
+element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_value, const guchar *new_value, gpointer ptr)
 {
-	NodeData * data;
+	NodeData *data;
 	gchar *label;
 
 	data = (NodeData *) ptr;
@@ -325,16 +320,33 @@ element_order_changed (SPRepr * repr, SPRepr * child, SPRepr * oldref, SPRepr * 
 }
 
 void
-text_content_changed (SPRepr * repr, const guchar * old_content, const guchar * new_content, gpointer ptr)
+text_content_changed (SPRepr *repr, const guchar * old_content, const guchar * new_content, gpointer ptr)
 {
 	NodeData *data;
-	gchar *label;
+	unsigned char c[64];
+	unsigned char *label;
+	int i;
 
 	data = (NodeData *) ptr;
 
 	if (data->tree->blocked) return;
 
-	label = g_strdup_printf ("\"%s\"", new_content);
+	if (!new_content) new_content = "";
+	if (strlen (new_content) < 64) {
+		strcpy (c, new_content);
+	} else {
+		strncpy (c, new_content, 32);
+		strncpy (c + 32, " ... ", 5);
+		strncpy (c + 37, new_content + strlen (new_content) - 26, 26);
+		c[63] = 0;
+	}
+	for (i = 0; c[i]; i++) if (c[i] < ' ') c[i] = ' ';
+
+	if (sp_repr_is_text (repr)) {
+		label = g_strdup_printf ("\"%s\"", c);
+	} else {
+		label = g_strdup_printf ("<![CDATA[%s]]>", c);
+	}
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }

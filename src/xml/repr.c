@@ -59,6 +59,14 @@ SPReprClass _sp_repr_xml_text_class = {
 	repr_finalize
 };
 
+SPReprClass _sp_repr_xml_cdata_class = {
+	sizeof (SPRepr),
+	NULL,
+	repr_init,
+	repr_copy,
+	repr_finalize
+};
+
 SPReprClass _sp_repr_xml_comment_class = {
 	sizeof (SPRepr),
 	NULL,
@@ -109,6 +117,16 @@ sp_repr_new_text (const unsigned char *content)
 	repr = sp_repr_new_from_code (SP_XML_TEXT_NODE, g_quark_from_static_string ("text"));
 	repr->content = g_strdup (content);
 	repr->type = SP_XML_TEXT_NODE;
+	return repr;
+}
+
+SPRepr *
+sp_repr_new_cdata (const unsigned char *content)
+{
+	SPRepr *repr;
+	repr = sp_repr_new_from_code (SP_XML_CDATA_NODE, g_quark_from_static_string ("cdata"));
+	repr->content = g_strdup (content);
+	repr->type = SP_XML_CDATA_NODE;
 	return repr;
 }
 
@@ -1010,5 +1028,11 @@ unsigned int
 sp_repr_is_text (SPRepr *repr)
 {
 	return SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE;
+}
+
+unsigned int
+sp_repr_is_cdata (SPRepr *repr)
+{
+	return SP_REPR_TYPE (repr) == SP_XML_CDATA_NODE;
 }
 

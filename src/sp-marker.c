@@ -242,7 +242,7 @@ sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value)
 	case SP_ATTR_PRESERVEASPECTRATIO:
 		/* Do setup before, so we can use break to escape */
 		marker->aspect_set = FALSE;
-		marker->aspect_align = SP_ASPECT_NONE;
+		marker->aspect_align = SP_ASPECT_XMID_YMID;
 		marker->aspect_clip = SP_ASPECT_MEET;
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		if (value) {

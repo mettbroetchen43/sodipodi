@@ -295,8 +295,12 @@ sp_document_create (SPReprDoc *rdoc,
 	/* Namedviews */
 	if (!sp_item_group_get_child_by_name ((SPGroup *) document->root, NULL, "sodipodi:namedview")) {
 		SPRepr *r;
-		r = sodipodi_get_repr (SODIPODI, "template.sodipodi:namedview");
-		if (!r) r = sp_repr_new ("sodipodi:namedview");
+		r = sp_config_node_get ("template.sodipodi:namedview", FALSE);
+		if (!r || strcmp (sp_repr_get_name (r), "sodipodi:namedview")) {
+			r = sp_repr_new ("sodipodi:namedview");
+		} else {
+			r = sp_repr_duplicate (r);
+		}
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);

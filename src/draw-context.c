@@ -96,7 +96,7 @@ static void spdc_free_colors (SPDrawContext *dc);
 static SPDrawAnchor *test_inside (SPDrawContext * dc, gdouble wx, gdouble wy);
 static SPDrawAnchor *sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean activate);
 
-static void fit_and_split (SPDrawContext * dc);
+/* static void fit_and_split (SPDrawContext * dc); */
 
 static SPDrawAnchor *sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble x, gdouble y);
 static SPDrawAnchor *sp_draw_anchor_destroy (SPDrawAnchor *anchor);

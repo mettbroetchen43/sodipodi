@@ -243,7 +243,7 @@ sp_svgview_show_prev (struct _SPSlideShow *ss)
 
 Sodipodi *sodipodi;
 
-SPRepr *sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key) {return NULL;}
+SPRepr *sp_config_node_get (const unsigned char *key, unsigned int create) {return NULL;}
 
 #include <libnr/nr-path.h>
 unsigned int sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity) {return 0;}

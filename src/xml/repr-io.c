@@ -205,13 +205,10 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	g_print ("Node %d %s contains %s\n", node->type, node->name, node->content);
 #endif
 
-	if (node->type == XML_TEXT_NODE || node->type == XML_CDATA_SECTION_NODE)
-	{
+	if (node->type == XML_TEXT_NODE) {
 		xmlChar *p;
 		gboolean preserve;
-
 		preserve = (xmlNodeGetSpacePreserve (node) == 1);
-
 		for (p = node->content; p && *p; p++) {
 			if (!isspace (*p) || preserve) {
 				xmlChar *e;
@@ -229,6 +226,12 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 			}
 		}
 		return NULL;
+	}
+
+	if (node->type == XML_CDATA_SECTION_NODE) {
+		SPRepr *rdoc;
+		rdoc = sp_repr_new_cdata (node->content);
+		return rdoc;
 	}
 
 	if (node->type == XML_COMMENT_NODE) return NULL;
@@ -339,6 +342,7 @@ sp_repr_print (SPRepr * repr)
 static void
 repr_quote_write (FILE * file, const gchar * val)
 {
+	if (!val) return;
 	for (; *val != '\0'; val++) {
 		switch (*val) {
 		case '"': fputs ("&quot;", file); break;
@@ -348,6 +352,15 @@ repr_quote_write (FILE * file, const gchar * val)
 		default: putc (*val, file); break;
 		}
 	}
+}
+
+static void
+repr_cdata_write (FILE *ofs, const unsigned char *val)
+{
+	if (!val) return;
+	fputs ("<![CDATA[", ofs);
+	fputs (val, ofs);
+	fputs ("]]>", ofs);
 }
 
 unsigned int
@@ -396,7 +409,13 @@ sp_repr_write_stream (SPRepr *repr, FILE * file, unsigned int level)
 #endif
 		for (child = repr->children; child != NULL; child = child->next) {
 			if (child->type == SP_XML_TEXT_NODE) {
-				repr_quote_write (file, sp_repr_content (child));
+				repr_quote_write (file, child->content);
+			} else if (child->type == SP_XML_CDATA_NODE) {
+				if (child->content && !strstr (child->content, "]]>")) {
+					repr_cdata_write (file, child->content);
+				} else {
+					repr_quote_write (file, child->content);
+				}
 			} else {
 				sp_repr_write_stream (child, file, (loose) ? (level + 1) : 0);
 				if (loose) fputs ("\n", file);

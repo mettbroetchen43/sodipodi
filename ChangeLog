@@ -1,3 +1,15 @@
+2004-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr.c (sp_repr_is_cdata): New method
+	(sp_repr_new_cdata): Ditto
+
+	* src/xml/repr-io.c (repr_cdata_write): New method
+	(sp_repr_svg_read_node): Preserve CDATA
+	(sp_repr_write_stream): Ditto
+
+	* src/widgets/sp-xmlview-tree.c (text_content_changed): Support CDATA
+	(add_node): Ditto
+
 2004-02-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sodipodi.c (sodipodi_load_config): Translate filenames to OS

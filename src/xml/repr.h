@@ -35,6 +35,7 @@ typedef enum {
 
 SPRepr *sp_repr_new (const unsigned char *name);
 SPRepr *sp_repr_new_text (const unsigned char *content);
+SPRepr *sp_repr_new_cdata (const unsigned char *content);
 SPRepr *sp_repr_new_comment (const unsigned char *content);
 SPRepr *sp_repr_ref (SPRepr *repr);
 SPRepr *sp_repr_unref (SPRepr *repr);
@@ -50,6 +51,7 @@ const unsigned char *sp_repr_get_attr (SPRepr *repr, const unsigned char *key);
 
 unsigned int sp_repr_is_element (SPRepr *repr);
 unsigned int sp_repr_is_text (SPRepr *repr);
+unsigned int sp_repr_is_cdata (SPRepr *repr);
 
 /* Return TRUE is change succeeded */
 unsigned int sp_repr_set_content (SPRepr *repr, const unsigned char *content);

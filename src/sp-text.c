@@ -175,7 +175,7 @@ sp_string_read_content (SPObject *object)
 		unsigned int preserve, inspace, intext;
 		int pos;
 
-		preserve = SP_STRING_IS_SPACE_PRESERVE(string);
+		preserve = SP_STRING_IS_SPACE_PRESERVE (string);
 		inspace = FALSE;
 		intext = FALSE;
 		for (p = t; p && *p; p = g_utf8_next_char (p)) {
@@ -435,7 +435,8 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_object_read_attr (object, "sodipodi:role");
 
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
-		if (rch->type == SP_XML_TEXT_NODE) break;
+		if (sp_repr_is_text (rch)) break;
+		if (sp_repr_is_cdata (rch)) break;
 	}
 
 	if (!rch) {
@@ -532,7 +533,7 @@ sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	if (((SPObjectClass *) tspan_parent_class)->child_added)
 		((SPObjectClass *) tspan_parent_class)->child_added (object, rch, ref);
 
-	if (!tspan->string && rch->type == SP_XML_TEXT_NODE) {
+	if (!tspan->string && (sp_repr_is_text (rch) || sp_repr_is_cdata (rch))) {
 		SPString *string;
 		/* fixme: We should really pick up first child always */
 		string = g_object_new (SP_TYPE_STRING, 0);
@@ -849,7 +850,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		const guchar *content;
 		/* Old sodipodi */
 		for (rch = repr->children; rch != NULL; rch = rch->next) {
-			if (rch->type == SP_XML_TEXT_NODE) {
+			if (sp_repr_is_text (rch) || sp_repr_is_cdata (rch)) {
 				content = sp_repr_content (rch);
 				sp_text_set_repr_text_multiline (text, content);
 				break;
@@ -860,7 +861,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	ref = NULL;
 
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
-		if (rch->type == SP_XML_TEXT_NODE) {
+		if (sp_repr_is_text (rch) || sp_repr_is_cdata (rch)) {
 			SPString *string;
 			string = g_object_new (SP_TYPE_STRING, 0);
 			if (ref) {
@@ -979,7 +980,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		while (prev && (prev->repr != ref)) prev = prev->next;
 	}
 
-	if (rch->type == SP_XML_TEXT_NODE) {
+	if (sp_repr_is_text (rch) || sp_repr_is_cdata (rch)) {
 		SPString *string;
 		string = g_object_new (SP_TYPE_STRING, 0);
 		if (prev) {
