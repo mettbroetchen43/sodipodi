@@ -40,6 +40,9 @@ typedef struct _SPDefsClass SPDefsClass;
 typedef struct _SPRoot SPRoot;
 typedef struct _SPRootClass SPRootClass;
 
+typedef struct _SPHeader SPHeader;
+typedef struct _SPHeaderClass SPHeaderClass;
+
 typedef struct _SPNamedView SPNamedView;
 typedef struct _SPNamedViewClass SPNamedViewClass;
 

@@ -17,11 +17,14 @@
 #include <math.h>
 #include <string.h>
 #include <libart_lgpl/art_affine.h>
+#include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "xml/repr-private.h"
 #include "document-private.h"
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
+
+#define NCOLORS 1024
 
 static void sp_stop_class_init (SPStopClass * klass);
 static void sp_stop_init (SPStop * stop);
@@ -63,11 +66,10 @@ sp_stop_class_init (SPStopClass * klass)
 }
 
 static void
-sp_stop_init (SPStop * stop)
+sp_stop_init (SPStop *stop)
 {
-	stop->next = NULL;
 	stop->offset = 0.0;
-	stop->color = 0x000000ff;
+	sp_color_set_rgb_rgba32 (&stop->color, 0x000000ff);
 }
 
 static void
@@ -93,11 +95,10 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		const guchar *p;
 		p = sp_object_get_style_property (object, "stop-color", "black");
 		color = sp_svg_read_color (p, 0x00000000);
+		sp_color_set_rgb_rgba32 (&stop->color, color);
 		p = sp_object_get_style_property (object, "stop-opacity", "1");
 		opacity = sp_svg_read_percentage (p, 1.0);
-
-		color = (color & 0xffffff00) | ((guint32) (opacity * 255));
-		stop->color = color;
+		stop->opacity = opacity;
 		return;
 	}
 	if (strcmp (key, "offset") == 0) {
@@ -122,9 +123,14 @@ static void sp_gradient_destroy (GtkObject *object);
 
 static void sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_gradient_read_attr (SPObject *object, const gchar *key);
+static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
+static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
 
-static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
+static void sp_gradient_href_destroy (SPObject *href, SPGradient *gradient);
+static void sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient);
 
+static void sp_gradient_invalidate_vector (SPGradient *gr);
+static void sp_gradient_rebuild_vector (SPGradient *gr);
 static void sp_gradient_write_colors (SPGradient *gradient);
 
 static SPPaintServerClass * gradient_parent_class;
@@ -162,21 +168,19 @@ sp_gradient_class_init (SPGradientClass *klass)
 
 	sp_object_class->build = sp_gradient_build;
 	sp_object_class->read_attr = sp_gradient_read_attr;
+	sp_object_class->child_added = sp_gradient_child_added;
+	sp_object_class->remove_child = sp_gradient_remove_child;
 }
 
 static void
 sp_gradient_init (SPGradient *gradient)
 {
-	gint i;
-
 	gradient->spread = SP_GRADIENT_SPREAD_PAD;
 	gradient->spread_set = FALSE;
 	gradient->stops = NULL;
 
-	for (i = 0; i < 1024; i++) {
-		/* Transparent black */
-		gradient->color[i] = 0x00000000;
-	}
+	gradient->vector = NULL;
+	gradient->color = NULL;
 
 	gradient->len = 0.0;
 }
@@ -190,6 +194,21 @@ sp_gradient_destroy (GtkObject *object)
 
 	/* Unregister ourselves */
 	sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
+
+	if (gradient->href) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);
+		gradient->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gradient->href), object);
+	}
+
+	if (gradient->color) {
+		g_free (gradient->color);
+		gradient->color = NULL;
+	}
+
+	if (gradient->vector) {
+		g_free (gradient->vector);
+		gradient->vector = NULL;
+	}
 
 	while (gradient->stops) {
 		SPObject *o;
@@ -234,6 +253,7 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		}
 	}
 
+	sp_gradient_read_attr (object, "xlink:href");
 	sp_gradient_read_attr (object, "spreadMethod");
 
 	/* Register ourselves */
@@ -251,7 +271,26 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 	val = sp_repr_attr (object->repr, key);
 
 	/* fixme: We should unset properties, if val == NULL */
-	if (!strcmp (key, "spreadMethod")) {
+	if (!strcmp (key, "xlink:href")) {
+		if (gradient->href) {
+			gtk_signal_disconnect_by_data (GTK_OBJECT (gradient->href), gradient);
+			gradient->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gradient->href), object);
+		}
+		if (val && *val == '#') {
+			SPObject *href;
+			href = sp_document_lookup_id (object->document, val + 1);
+			if (SP_IS_GRADIENT (href)) {
+				gradient->href = (SPGradient *) sp_object_href (href, object);
+				gtk_signal_connect (GTK_OBJECT (href), "destroy",
+						    GTK_SIGNAL_FUNC (sp_gradient_href_destroy), gradient);
+				gtk_signal_connect (GTK_OBJECT (href), "modified",
+						    GTK_SIGNAL_FUNC (sp_gradient_href_modified), gradient);
+			}
+		}
+		sp_gradient_invalidate_vector (gradient);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		return;
+	} else if (!strcmp (key, "spreadMethod")) {
 		if (val) {
 			if (!strcmp (val, "reflect")) {
 				gradient->spread = SP_GRADIENT_SPREAD_REFLECT;
@@ -271,88 +310,206 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		(* SP_OBJECT_CLASS (gradient_parent_class)->read_attr) (object, key);
 }
 
+/* Forces vector to be built, if not present (i.e. changed) */
+
+void
+sp_gradient_ensure_vector (SPGradient *gradient)
+{
+	g_return_if_fail (gradient != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gradient));
+
+	if (!gradient->vector) {
+		sp_gradient_rebuild_vector (gradient);
+	}
+}
+
+static void
+sp_gradient_href_destroy (SPObject *href, SPGradient *gradient)
+{
+	gradient->href = (SPGradient *) sp_object_hunref (href, gradient);
+	sp_gradient_invalidate_vector (gradient);
+	sp_object_request_modified (SP_OBJECT (gradient), SP_OBJECT_MODIFIED_FLAG);
+}
+
+static void
+sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient)
+{
+	sp_gradient_invalidate_vector (gradient);
+	sp_object_request_modified (SP_OBJECT (gradient), SP_OBJECT_MODIFIED_FLAG);
+}
+
+/* Creates normalized color vector */
+
+static void
+sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
+{
+	if (((SPObjectClass *) gradient_parent_class)->child_added)
+		(* ((SPObjectClass *) gradient_parent_class)->child_added) (object, child, ref);
+
+	sp_gradient_invalidate_vector (SP_GRADIENT (object));
+}
+
+static void
+sp_gradient_remove_child (SPObject *object, SPRepr *child)
+{
+	if (((SPObjectClass *) gradient_parent_class)->remove_child)
+		(* ((SPObjectClass *) gradient_parent_class)->remove_child) (object, child);
+
+	sp_gradient_invalidate_vector (SP_GRADIENT (object));
+}
+
+static void
+sp_gradient_invalidate_vector (SPGradient *gr)
+{
+	if (gr->color) {
+		g_free (gr->color);
+		gr->color = NULL;
+	}
+
+	if (gr->vector) {
+		g_free (gr->vector);
+		gr->vector = NULL;
+	}
+}
+
+static void
+sp_gradient_rebuild_vector (SPGradient *gr)
+{
+	SPObject *child;
+	SPColor color;
+	gfloat opacity;
+	gdouble offsets, offsete, offset;
+	gboolean oset;
+	gint len, vlen, pos;
+
+	len = 0;
+	sp_color_set_rgb_rgba32 (&color, 0x00000000);
+	opacity = 0.0;
+	offsets = offsete = 0.0;
+	oset = FALSE;
+	for (child = gr->stops; child != NULL; child = child->next) {
+		if (SP_IS_STOP (child)) {
+			SPStop *stop;
+			stop = SP_STOP (child);
+			if (!oset) {
+				oset = TRUE;
+				offsets = offsete = stop->offset;
+				len += 1;
+			} else if (stop->offset > (offsete + 1e-9)) {
+				offsete = stop->offset;
+				len += 1;
+			}
+			sp_color_copy (&color, &stop->color);
+			opacity = stop->opacity;
+		}
+	}
+
+	if ((len == 0) && (gr->href)) {
+		/* Copy vector from parent */
+		sp_gradient_ensure_vector (gr->href);
+		if (!gr->vector || (gr->vector->nstops != gr->href->vector->nstops)) {
+			if (gr->vector) g_free (gr->vector);
+			gr->vector = g_malloc (sizeof (SPGradientVector) + (gr->href->vector->nstops - 1) * sizeof (SPGradientStop));
+			gr->vector->nstops = gr->href->vector->nstops;
+		}
+		memcpy (gr->vector, gr->href->vector, sizeof (SPGradientVector) + (gr->vector->nstops - 1) * sizeof (SPGradientStop));
+		return;
+	}
+
+	vlen = MAX (len, 2);
+
+	if (!gr->vector || gr->vector->nstops != vlen) {
+		if (gr->vector) g_free (gr->vector);
+		gr->vector = g_malloc (sizeof (SPGradientVector) + (vlen - 1) * sizeof (SPGradientStop));
+		gr->vector->nstops = vlen;
+	}
+
+	if (len < 2) {
+		gr->vector->start = 0.0;
+		gr->vector->end = 1.0;
+		gr->vector->stops[0].offset = 0.0;
+		sp_color_copy (&gr->vector->stops[0].color, &color);
+		gr->vector->stops[0].opacity = opacity;
+		gr->vector->stops[1].offset = 1.0;
+		sp_color_copy (&gr->vector->stops[1].color, &color);
+		gr->vector->stops[1].opacity = opacity;
+		return;
+	}
+
+	/* o' = (o - oS) / (oE - oS) */
+	gr->vector->start = offsets;
+	gr->vector->end = offsete;
+
+	pos = 0;
+	offset = offsets;
+	gr->vector->stops[0].offset = 0.0;
+	for (child = gr->stops; child != NULL; child = child->next) {
+		if (SP_IS_STOP (child)) {
+			SPStop *stop;
+			stop = SP_STOP (child);
+			if (stop->offset > (offset + 1e-9)) {
+				pos += 1;
+				gr->vector->stops[pos].offset = (stop->offset - offsets) / (offsete - offsets);
+			}
+			sp_color_copy (&gr->vector->stops[pos].color, &stop->color);
+			gr->vector->stops[pos].opacity = stop->opacity;
+		}
+	}
+}
+
 static void
 sp_gradient_write_colors (SPGradient *gr)
 {
-	SPObject *o;
-	gdouble start, end, last;
-	guint32 color;
-	guint32 r0, g0, b0, a0;
+	gint i;
 
-	gr->len = 1.0;
-
-	/* If there are no stops, use transparent black */
-	if (!gr->stops) {
-		gint i;
-		for (i = 0; i < 1024; i++) gr->color[i] = 0x00000000;
-		return;
+	if (!gr->vector) {
+		sp_gradient_rebuild_vector (gr);
 	}
 
-	/* If there is single stop, fill everything with its color */
-	if (!gr->stops->next) {
-		gint i;
-		for (i = 0; i < 1024; i++) gr->color[i] = ((SPStop *) gr->stops)->color;
-		return;
+	if (!gr->color) {
+		gr->color = g_new (guint32, NCOLORS);
 	}
 
-	start = ((SPStop *) gr->stops)->offset;
-	end = start;
-	color = 0x0;
-	for (o = gr->stops; o != NULL; o = o->next) {
-		end = MAX (end, ((SPStop *) o)->offset);
-		color = ((SPStop *) o)->color;
-	}
-
-	/* Treat zero-length gradient fector, as of single point */
-	if ((end - start) < 1e-6) {
-		gint i;
-		for (i = 0; i < 1024; i++) gr->color[i] = color;
-		return;
-	}
-
-	gr->len = end - start;
-
-	last = ((SPStop *) gr->stops)->offset;
-	color = ((SPStop *) gr->stops)->color;
-	r0 = (color >> 24) & 0xff;
-	g0 = (color >> 16) & 0xff;
-	b0 = (color >> 8) & 0xff;
-	a0 = (color) & 0xff;
-	for (o = gr->stops; o != NULL; o = o->next) {
-		SPStop *stop;
-		stop = SP_STOP (o);
-		if (stop->offset > last) {
-			gint s, e, l;
-			guint32 r1, g1, b1, a1;
-			s = (gint) floor ((last - start) * 1023.9999 / gr->len);
-			e = (gint) floor ((stop->offset - start) * 1023.9999 / gr->len);
-			l = e - s;
-			r1 = (stop->color >> 24) & 0xff;
-			g1 = (stop->color >> 16) & 0xff;
-			b1 = (stop->color >> 8) & 0xff;
-			a1 = (stop->color) & 0xff;
-			if (l > 0) {
-				gint i;
-				for (i = 0; i <= l; i++) {
-					guint32 r, g, b, a;
-					r = ((l - i) * r0 + i * r1) / l;
-					g = ((l - i) * g0 + i * g1) / l;
-					b = ((l - i) * b0 + i * b1) / l;
-					a = ((l - i) * a0 + i * a1) / l;
-					gr->color[s + i] = (r << 24) | (g << 16) | (b << 8) | a;
-				}
-			} else {
-				gr->color[e] = stop->color;
-			}
-			r0 = r1;
-			g0 = g1;
-			b0 = b1;
-			a0 = a1;
+	for (i = 0; i < gr->vector->nstops - 1; i++) {
+		guint32 color;
+		gint r0, g0, b0, a0;
+		gint r1, g1, b1, a1;
+		gint dr, dg, db, da;
+		gint r, g, b, a;
+		gint o0, o1;
+		gint j;
+		color = sp_color_get_rgba32_falpha (&gr->vector->stops[i].color, gr->vector->stops[i].opacity);
+		r0 = (color >> 24) & 0xff;
+		g0 = (color >> 16) & 0xff;
+		b0 = (color >> 8) & 0xff;
+		a0 = color & 0xff;
+		color = sp_color_get_rgba32_falpha (&gr->vector->stops[i + 1].color, gr->vector->stops[i + 1].opacity);
+		r1 = (color >> 24) & 0xff;
+		g1 = (color >> 16) & 0xff;
+		b1 = (color >> 8) & 0xff;
+		a1 = color & 0xff;
+		o0 = (gint) floor (gr->vector->stops[i].offset * (NCOLORS + 0.9999));
+		o1 = (gint) floor (gr->vector->stops[i + 1].offset * (NCOLORS + 0.9999));
+		dr = ((r1 - r0) << 16) / (o1 - o0);
+		dg = ((g1 - g0) << 16) / (o1 - o0);
+		db = ((b1 - b0) << 16) / (o1 - o0);
+		da = ((a1 - a0) << 16) / (o1 - o0);
+		r = r0 << 16;
+		g = g0 << 16;
+		b = b0 << 16;
+		a = a0 << 16;
+		g_print ("from %d to %d: %x %x %x %x\n", o0, o1, dr, dg, db, da);
+		for (j = o0; j < o1 + 1; j++) {
+			gr->color[j] = ((r & 0xff0000) << 8) | (g & 0xff0000) | ((b & 0xff0000) >> 8) | (a >> 16);
+			g_print ("%x\n", gr->color[j]);
+			r += dr;
+			g += dg;
+			b += db;
+			a += da;
 		}
-		last = stop->offset;
-		color = stop->color;
 	}
 
+	gr->len = gr->vector->end - gr->vector->start;
 }
 
 /*
@@ -378,7 +535,9 @@ sp_gradient_render_vector_line_rgba (SPGradient *gradient, guchar *buf, gint len
 	g_return_if_fail (pos + len <= span);
 	g_return_if_fail (span > 0);
 
-	sp_gradient_write_colors (gradient);
+	if (!gradient->color) {
+		sp_gradient_write_colors (gradient);
+	}
 
 	idx = (pos * 1024 << 8) / span;
 	didx = (1024 << 8) / span;
@@ -407,7 +566,9 @@ sp_gradient_render_vector_line_rgb (SPGradient *gradient, guchar *buf, gint len,
 	g_return_if_fail (pos + len <= span);
 	g_return_if_fail (span > 0);
 
-	sp_gradient_write_colors (gradient);
+	if (!gradient->color) {
+		sp_gradient_write_colors (gradient);
+	}
 
 	idx = (pos * 1024 << 8) / span;
 	didx = (1024 << 8) / span;
@@ -696,13 +857,15 @@ static SPPainter *
 sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox)
 {
 	SPLinearGradient *lg;
-	SPGradient *g;
+	SPGradient *gr;
 	SPLGPainter *lgp;
 
 	lg = SP_LINEARGRADIENT (ps);
-	g = SP_GRADIENT (ps);
+	gr = SP_GRADIENT (ps);
 
-	sp_gradient_write_colors (g);
+	if (!gr->color) {
+		sp_gradient_write_colors (gr);
+	}
 
 	lgp = g_new (SPLGPainter, 1);
 
@@ -716,10 +879,10 @@ sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opaci
 	if (lg->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
 		gdouble b2c[6], vec2b[6], norm2vec[6], norm2c[6], c2norm[6];
 		/* fixme: we should use start & end here */
-		norm2vec[0] = g->len / 1023.9999;
+		norm2vec[0] = gr->len / 1023.9999;
 		norm2vec[1] = 0.0;
 		norm2vec[2] = 0.0;
-		norm2vec[3] = g->len / 1023.9999;
+		norm2vec[3] = gr->len / 1023.9999;
 		norm2vec[4] = 0.0;
 		norm2vec[5] = 0.0;
 #if 0
@@ -775,6 +938,52 @@ sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter)
 	lgp = (SPLGPainter *) painter;
 
 	g_free (lgp);
+}
+
+/* Builds flattened repr tree of gradient - i.e. no href */
+
+SPRepr *
+sp_lineargradient_build_repr (SPLinearGradient *lg)
+{
+	SPGradient *gr;
+	SPRepr *repr;
+	gchar c[256];
+	gint i;
+
+	gr = SP_GRADIENT (lg);
+
+	repr = sp_repr_new ("linearGradient");
+	sp_repr_set_attr (repr, "spreadMethod",
+			  (gr->spread == SP_GRADIENT_SPREAD_PAD) ? "pad" :
+			  (gr->spread == SP_GRADIENT_SPREAD_REFLECT) ? "reflect" : "repeat");
+	sp_repr_set_attr (repr, "gradientUnits",
+			  (lg->units == SP_GRADIENT_UNITS_USERSPACEONUSE) ? "userSpaceOnUse" : "objectBoundingBox");
+
+	sp_svg_write_affine (c, 256, lg->transform);
+	sp_repr_set_attr (repr, "gradientTransform", c);
+	sp_repr_set_double_attribute (repr, "x1", lg->x1.distance);
+	sp_repr_set_double_attribute (repr, "y1", lg->y1.distance);
+	sp_repr_set_double_attribute (repr, "x2", lg->x2.distance);
+	sp_repr_set_double_attribute (repr, "y2", lg->y2.distance);
+
+	/* fixme: Always */
+	if (gr->vector) {
+		for (i = gr->vector->nstops - 1; i >= 0; i--) {
+			SPRepr *child;
+			gchar *p;
+			child = sp_repr_new ("stop");
+			sp_repr_set_double_attribute (child, "offset",
+						      gr->vector->stops[i].offset * (gr->vector->end - gr->vector->start) + gr->vector->start);
+			sp_svg_write_color (c, 256, sp_color_get_rgba32_ualpha (&gr->vector->stops[i].color, 0x00));
+			p = g_strdup_printf ("stop-color:%s;stop-opacity:%g;", c, gr->vector->stops[i].opacity);
+			sp_repr_set_attr (child, "style", p);
+			g_free (p);
+			sp_repr_add_child (repr, child, NULL);
+			sp_repr_unref (child);
+		}
+	}
+
+	return repr;
 }
 
 static void

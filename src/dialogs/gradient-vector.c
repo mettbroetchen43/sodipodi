@@ -104,10 +104,10 @@ sp_gradient_vector_widget_load_gradient (GtkWidget *widget, SPGradient *gradient
 		ce = 0x00000000;
 	} else {
 		SPObject *o;
-		cs = ((SPStop *) gradient->stops)->color;
+		cs = sp_color_get_rgba32_ualpha (&((SPStop *) gradient->stops)->color, 0x00);
 		o = gradient->stops;
 		while (o->next) o = o->next;
-		ce = ((SPStop *) o)->color;
+		ce = sp_color_get_rgba32_ualpha (&((SPStop *) o)->color, 0x00);
 	}
 
 	/* Set color selector values */

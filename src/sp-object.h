@@ -34,6 +34,7 @@
 #define SP_OBJECT_REPR(o) (SP_OBJECT (o)->repr)
 #define SP_OBJECT_DOCUMENT(o) (SP_OBJECT (o)->document)
 #define SP_OBJECT_PARENT(o) (SP_OBJECT (o)->parent)
+#define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
@@ -66,10 +67,11 @@ struct _SPException {
 };
 
 #define SP_EXCEPTION_INIT(ex) {(ex)->code = SP_NO_EXCEPTION;}
-#define SP_EXCEPTION_IS_OK(ex) ((ex)->code == SP_NO_EXCEPTION)
+#define SP_EXCEPTION_IS_OK(ex) (!(ex) || ((ex)->code == SP_NO_EXCEPTION))
 
 struct _SPObject {
 	GtkObject object;
+	guint hrefcount; /* number os xlink:href references */
 	SPDocument *document; /* Document we are part of */
 	SPObject *parent; /* Our parent (only one allowed) */
 	SPObject *next; /* Next object in linked list */
@@ -113,6 +115,9 @@ GtkType sp_object_get_type (void);
 
 SPObject *sp_object_ref (SPObject *object, SPObject *owner);
 SPObject *sp_object_unref (SPObject *object, SPObject *owner);
+
+SPObject *sp_object_href (SPObject *object, gpointer owner);
+SPObject *sp_object_hunref (SPObject *object, gpointer owner);
 
 /*
  * Attaching/detaching

@@ -22,8 +22,13 @@
          id="stop5">
       </stop>
       <stop
+         offset="50%"
+         style="stop-color:#ff6"
+         id="stop6">
+      </stop>
+      <stop
          offset="95%"
-         style="stop-color:#06f"
+         style="stop-color:#6f6"
          id="stop6">
       </stop>
 

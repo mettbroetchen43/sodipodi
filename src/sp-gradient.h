@@ -31,9 +31,9 @@
 
 struct _SPStop {
 	SPObject object;
-	SPStop *next;
 	gdouble offset;
-	guint32 color;
+	SPColor color;
+	gfloat opacity;
 };
 
 struct _SPStopClass {
@@ -48,6 +48,21 @@ GtkType sp_stop_get_type (void);
  * Implement spread, stops list
  * fixme: Implement more here (Lauris)
  */
+
+typedef struct _SPGradientStop SPGradientStop;
+typedef struct _SPGradientVector SPGradientVector;
+
+struct _SPGradientStop {
+	gdouble offset;
+	SPColor color;
+	gfloat opacity;
+};
+
+struct _SPGradientVector {
+	gint nstops;
+	gdouble start, end;
+	SPGradientStop stops[1];
+};
 
 typedef enum {
 	SP_GRADIENT_UNITS_USERSPACEONUSE,
@@ -66,15 +81,21 @@ typedef enum {
 #define SP_IS_GRADIENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_GRADIENT))
 #define SP_IS_GRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GRADIENT))
 
+/* fixme: I am absolutely not sure, whether <use> may mess things up */
+#define SP_GRADIENT_IS_PRIVATE(g) (SP_OBJECT_HREFCOUNT (g) == 1)
+
 struct _SPGradient {
 	SPPaintServer paint_server;
+	/* Reference (href) */
+	SPGradient *href;
 	SPGradientSpread spread;
 	guint spread_set : 1;
-	SPGradient *href;
 	/* Gradient stops */
 	SPObject *stops;
-	/* Color array */
-	guint32 color[1024];
+	/* Composed vector */
+	SPGradientVector *vector;
+	/* Rendered color array */
+	guint32 *color;
 	/* Length of vector */
 	gdouble len;
 };
@@ -84,6 +105,10 @@ struct _SPGradientClass {
 };
 
 GtkType sp_gradient_get_type (void);
+
+/* Forces vector to be built, if not present (i.e. changed) */
+
+void sp_gradient_ensure_vector (SPGradient *gradient);
 
 /*
  * Renders gradient vector to buffer
@@ -132,5 +157,9 @@ struct _SPLinearGradientClass {
 };
 
 GtkType sp_lineargradient_get_type (void);
+
+/* Builds flattened repr tree of gradient - i.e. no href */
+
+SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg);
 
 #endif

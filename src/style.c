@@ -71,9 +71,11 @@ sp_style_unref (SPStyle *style)
 	if (--style->refcount < 1) {
 		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style);
 		if (style->fill.server) {
+			sp_object_hunref (SP_OBJECT (style->fill.server), style);
 			gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 		}
 		if (style->stroke.server) {
+			sp_object_hunref (SP_OBJECT (style->stroke.server), style);
 			gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 		}
 		if (style->stroke_dash.dash) {
@@ -319,11 +321,13 @@ sp_style_paint_server_destroy (SPPaintServer *server, SPStyle *style)
 	if (server == style->fill.server) {
 		g_assert (style->fill_set);
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
+		sp_object_hunref (SP_OBJECT (style->fill.server), style);
 		style->fill.type = SP_PAINT_TYPE_NONE;
 		style->fill.server = NULL;
 	} else if (server == style->stroke.server) {
 		g_assert (style->stroke_set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
+		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
 		style->stroke.type = SP_PAINT_TYPE_NONE;
 		style->stroke.server = NULL;
 	} else {
@@ -363,6 +367,7 @@ sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent)
 	case SP_PAINT_TYPE_PAINTSERVER:
 		paint->server = parent->server;
 		if (paint->server) {
+			sp_object_href (SP_OBJECT (paint->server), style);
 			gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
 					    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
 			gtk_signal_connect (GTK_OBJECT (paint->server), "modified",
@@ -486,9 +491,11 @@ sp_style_init (SPStyle *style)
 	g_return_if_fail (style != NULL);
 
 	if (style->fill.server) {
+		sp_object_hunref (SP_OBJECT (style->fill.server), style);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 	}
 	if (style->stroke.server) {
+		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 	}
 	if (style->stroke_dash.dash) {
@@ -566,6 +573,7 @@ sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocume
 		}
 		paint->type = SP_PAINT_TYPE_PAINTSERVER;
 		paint->server = SP_PAINT_SERVER (ps);
+		sp_object_href (SP_OBJECT (paint->server), style);
 		gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
 				    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
 		gtk_signal_connect (GTK_OBJECT (paint->server), "modified",

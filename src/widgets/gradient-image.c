@@ -19,7 +19,6 @@ static void sp_gradient_image_destroy (GtkObject *object);
 
 static void sp_gradient_image_size_request (GtkWidget *widget, GtkRequisition *requisition);
 static void sp_gradient_image_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
-static void sp_gradient_image_draw (GtkWidget *widget, GdkRectangle *area);
 static gint sp_gradient_image_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static GtkWidgetClass *parent_class;
@@ -57,9 +56,6 @@ sp_gradient_image_class_init (SPGradientImageClass *klass)
 
 	widget_class->size_request = sp_gradient_image_size_request;
 	widget_class->size_allocate = sp_gradient_image_size_allocate;
-#if 0
-	widget_class->draw = sp_gradient_image_draw;
-#endif
 	widget_class->expose_event = sp_gradient_image_expose;
 }
 
@@ -119,25 +115,6 @@ sp_gradient_image_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
 						     0, allocation->width, TRUE);
 	}
-}
-
-static void
-sp_gradient_image_draw (GtkWidget *widget, GdkRectangle *area)
-{
-#if 0
-	SPGradientImage *image;
-
-	image = SP_GRADIENT_IMAGE (widget);
-
-	if (GTK_WIDGET_DRAWABLE (widget)) {
-		if (image->px) {
-		} else {
-			gdk_draw_rectangle (widget->window, widget->style->black_gc,
-					    widget->allocation.x, widget->allocation.y,
-					    widget->allocation.width, widget->allocation.height, TRUE);
-		}
-	}
-#endif
 }
 
 static gint

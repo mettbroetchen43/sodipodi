@@ -1,3 +1,17 @@
+2001-09-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/zoom-context.c (sp_zoom_2_to_1): Noop if no active desktop
+	(sp_zoom_1_to_2): Ditto
+
+2001-09-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-header.c: New file, implements document header, consisting
+	of nested <defs> nodes, for different resource definitions
+
+	* src/sp-header.h: New file
+
+	* src/forward.h: Added SPHeader forward typedefs
+
 2001-09-05  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/document.c (sp_document_del_repr): Moved here, commented out

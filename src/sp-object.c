@@ -103,6 +103,7 @@ sp_object_class_init (SPObjectClass * klass)
 static void
 sp_object_init (SPObject * object)
 {
+	object->hrefcount = 0;
 	object->document = NULL;
 	object->parent = object->next = NULL;
 	object->repr = NULL;
@@ -124,6 +125,8 @@ sp_object_destroy (GtkObject * object)
 	g_assert (!spobject->next);
 	g_assert (spobject->document);
 	g_assert (spobject->repr);
+	/* href holders HAVE to release it in "destroy" signal handler */
+	g_assert (spobject->hrefcount == 0);
 
 	if (spobject->style) {
 		sp_style_unref (spobject->style);
@@ -172,6 +175,29 @@ sp_object_unref (SPObject *object, SPObject *owner)
 	g_return_val_if_fail (!owner || SP_IS_OBJECT (owner), NULL);
 
 	gtk_object_unref (GTK_OBJECT (object));
+
+	return NULL;
+}
+
+SPObject *
+sp_object_href (SPObject *object, gpointer owner)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+
+	object->hrefcount++;
+
+	return object;
+}
+
+SPObject *
+sp_object_hunref (SPObject *object, gpointer owner)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (object->hrefcount > 0, NULL);
+
+	object->hrefcount--;
 
 	return NULL;
 }
