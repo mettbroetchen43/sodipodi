@@ -1,3 +1,6 @@
+2003-11-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/align.c (sp_quick_align_dialog): Fixed tooltip typo
 2003-11-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/document-undo.c (sp_document_undo): Begin transaction
