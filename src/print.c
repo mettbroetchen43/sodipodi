@@ -27,10 +27,10 @@
 #include "module.h"
 #include "print.h"
 
+#include <modules/ps.h>
+
 #ifdef WIN32
 #include <modules/win32.h>
-#else
-#include <modules/ps.h>
 #endif
 
 #ifdef WITH_GNOME_PRINT

@@ -39,6 +39,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtktooltips.h>
 
 #include "helper/sp-intl.h"
 #include "display/nr-arena-item.h"
@@ -136,6 +137,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	static const guchar *pdr[] = {"72", "75", "100", "144", "150", "200", "300", "360", "600", "1200", "2400", NULL};
 	SPModulePrintPlain *pmod;
 	GtkWidget *dlg, *vbox, *f, *vb, *rb, *hb, *combo, *l, *e;
+	GtkTooltips *tt;
 	GList *sl;
 	int i;
 	int response;
@@ -149,6 +151,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	ret = FALSE;
 
 	/* Create dialog */
+	tt = gtk_tooltips_new ();
 	dlg = gtk_dialog_new_with_buttons (_("Print destination"), NULL,
 					   GTK_DIALOG_MODAL,
 					   GTK_STOCK_PRINT,
@@ -169,9 +172,17 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	p2bm = FALSE;
 	if (repr) sp_repr_get_boolean (repr, "bitmap", &p2bm);
 	rb = gtk_radio_button_new_with_label (NULL, _("Print using PostScript operators"));
+	gtk_tooltips_set_tip ((GtkTooltips *) tt, rb,
+						  _("Use PostScript vector operators, resulting image will be (usually) smaller "
+						    "and can be arbitrarily scaled, but alpha transparency, "
+							"markers and patterns will be lost"), NULL);
 	if (!p2bm) gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
 	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
 	rb = gtk_radio_button_new_with_label (gtk_radio_button_get_group ((GtkRadioButton *) rb), _("Print as bitmap"));
+	gtk_tooltips_set_tip ((GtkTooltips *) tt, rb,
+						  _("Print everything as bitmap, resulting image will be (usualy) larger "
+						    "and it quality depends on zoom factor, but all graphics "
+							"will be rendered identical to display"), NULL);
 	if (p2bm) gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
 	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
 	/* Resolution */
@@ -182,6 +193,8 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	gtk_combo_set_use_arrows (GTK_COMBO (combo), TRUE);
 	gtk_combo_set_use_arrows_always (GTK_COMBO (combo), TRUE);
 	gtk_widget_set_usize (combo, 64, -1);
+	gtk_tooltips_set_tip ((GtkTooltips *) tt, GTK_COMBO (combo)->entry,
+						  _("Preferred resolution (dots per inch) of bitmap"), NULL);
 	/* Setup strings */
 	sl = NULL;
 	for (i = 0; pdr[i] != NULL; i++) {
@@ -224,6 +237,8 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	gtk_widget_show_all (vbox);
 	
 	response = gtk_dialog_run (GTK_DIALOG (dlg));
+
+	g_object_unref ((GObject *) tt);
 
 	if (response == GTK_RESPONSE_OK) {
 		const unsigned char *fn;
@@ -339,6 +354,7 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 			NRRectL bbox;
 			NRGC gc;
 			NRMatrixF imgt;
+			NRPixBlock pb;
 			/* Set area of interest */
 			bbox.x0 = 0;
 			bbox.y0 = y;
@@ -348,7 +364,6 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 			nr_matrix_d_set_identity (&gc.transform);
 			nr_arena_item_invoke_update (mod->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 			/* Render */
-			NRPixBlock pb;
 			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N,
 						  bbox.x0, bbox.y0, bbox.x1, bbox.y1,
 						  px, 4 * width, FALSE, FALSE);
