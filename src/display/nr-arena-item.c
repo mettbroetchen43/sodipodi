@@ -287,7 +287,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 			nr_buffer_free (cb);
 			nr_buffer_free (nb);
 		} else {
-			if (!item->px && ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 19384)) {
+			if (!item->px && ((item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0) < 4096)) {
 				NRBuffer b;
 				gint ret;
 				item->px = g_new (guchar, 4 * (item->bbox.x1 - item->bbox.x0) * (item->bbox.y1 - item->bbox.y0));

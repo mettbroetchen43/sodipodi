@@ -22,6 +22,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libnr/nr-values.h>
+
 #include "../helper/art-utils.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"

@@ -177,19 +177,20 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	}
 
 	if (!shape->curve || !shape->style) return NR_ARENA_ITEM_STATE_ALL;
+	if (sp_curve_is_empty (shape->curve)) return NR_ARENA_ITEM_STATE_ALL;
 	if ((shape->style->fill.type == SP_PAINT_TYPE_NONE) && (shape->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
 
 	/* Build state data */
-	abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
-	vp = art_bez_path_to_vec (abp, 0.25);
-	art_free (abp);
-	pvp = art_vpath_perturb (vp);
-	art_free (vp);
-
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
-		if (!shape->fill_svp) {
+		if (TRUE || !shape->fill_svp) {
 			ArtSVP *svpa, *svpb;
+			abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
+			vp = sp_vpath_from_bpath_closepath (abp, 0.25);
+			art_free (abp);
+			pvp = art_vpath_perturb (vp);
+			art_free (vp);
 			svpa = art_svp_from_vpath (pvp);
+			art_free (pvp);
 			svpb = art_svp_uncross (svpa);
 			art_svp_free (svpa);
 			shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
@@ -207,17 +208,20 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
 		gdouble width;
+		abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
+		vp = art_bez_path_to_vec (abp, 0.25);
+		art_free (abp);
+		pvp = art_vpath_perturb (vp);
+		art_free (vp);
 		width = sp_distance_d_matrix_d_transform (shape->style->stroke_width.computed, gc->affine);
-		if (width > 0.125) {
-			shape->stroke_svp = art_svp_vpath_stroke (pvp,
-								  shape->style->stroke_linejoin.value,
-								  shape->style->stroke_linecap.value,
-								  width,
-								  shape->style->stroke_miterlimit.value, 0.25);
-		}
+		width = MAX (width, 0.125);
+		shape->stroke_svp = art_svp_vpath_stroke (pvp,
+							  shape->style->stroke_linejoin.value,
+							  shape->style->stroke_linecap.value,
+							  width,
+							  shape->style->stroke_miterlimit.value, 0.25);
+		art_free (pvp);
 	}
-
-	art_free (pvp);
 
 	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
 	if (shape->stroke_svp) art_drect_svp_union (&bbox, shape->stroke_svp);

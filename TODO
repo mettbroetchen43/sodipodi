@@ -8,8 +8,9 @@ TODO for 0.26
 - Cleanups
 - Speedups
 - double click on pen bug (DONE)
-- dirty fill of open paths bug
+- dirty fill of open paths bug (DONE)
 - viewbox not applied bug (DONE)
+- fill style -> CMYK -> gradient bug
 
 TODO for 0.25
 

@@ -1,3 +1,11 @@
+2002-09-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/art-utils.c (sp_vpath_from_bpath_closepath): New method,
+	borrowed relevant helpers from libart code
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Closeall if filled,
+	limit min width to 0.125 instead of cutting it to 0
+
 2002-09-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/event-context.c (sp_event_context_destroy): Do not disconnect

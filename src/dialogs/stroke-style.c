@@ -19,6 +19,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libnr/nr-values.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkwindow.h>
