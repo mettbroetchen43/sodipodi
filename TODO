@@ -12,14 +12,6 @@ Tier 2
 * Aligning
 * etc. etc.
 
-Idea for next major rewrite - Middle object level
-This is partially implemented (2000/01/09)
+Middle object level is finally implemented
 
-Currently we have 2 levels of objects - untyped reprs and typed editables.
-Actually the basic state preserving level should go to intermediate typed
-layer. Canvas items should be only paper-thin wrappers and reprs will be
-what they are. Among other thing this allows multiple displays (i.e. multiple
-canvases) & seems generally a cleaner design.
-All methods not directly concerend with canvas will go to intermediate
-object hierarchy (print, bbox, read etc.)
-
+Lauris Kaplinski
