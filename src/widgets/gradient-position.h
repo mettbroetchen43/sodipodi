@@ -2,12 +2,15 @@
 #define __SP_GRADIENT_POSITION_H__
 
 /*
- * SPGradientPosition
+ * Gradient positioning widget
  *
- * A simple preview for gradient vector
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 2001
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define SP_TYPE_GRADIENT_POSITION (sp_gradient_position_get_type ())

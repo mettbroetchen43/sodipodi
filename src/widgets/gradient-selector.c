@@ -1,13 +1,15 @@
 #define __SP_GRADIENT_SELECTOR_C__
 
 /*
- * A simple OptionMenu for choosing gradient vectors visually
+ * Gradient vector and position widget
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>

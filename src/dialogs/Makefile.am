@@ -32,7 +32,8 @@ libspdialogs_a_SOURCES = \
 	tool-options.c tool-options.h \
 	tool-attributes.c tool-attributes.h \
 	fill-style.c fill-style.h \
-	stroke-style.c stroke-style.h
+	stroke-style.c stroke-style.h \
+	node-edit.c node-edit.h
 
 #	sp-widget.c sp-widget.h \
 #	gradient-vector.c gradient-vector.h \

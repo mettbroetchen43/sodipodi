@@ -1,5 +1,9 @@
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c: Moved frontends here
+
+	* src/dialogs/node-edit.h: Moved declarations here
+
 	* src/desktop.c (sp_desktop_widget_view_position_set): Use grid placement
 	(sp_desktop_widget_namedview_modified): Read grid placement
 	(sp_desktop_widget_update_rulers): Use grid placement

@@ -50,6 +50,7 @@
 #include "dialogs/display-settings.h"
 #include "dialogs/tool-options.h"
 #include "dialogs/tool-attributes.h"
+#include "dialogs/node-edit.h"
 
 void fake_dialogs (void);
 
@@ -479,6 +480,16 @@ fake_dialogs (void)
 	sp_desktop_dialog ();
 	sp_document_dialog ();
 	sp_display_dialog ();
+
+	sp_node_path_edit_add ();
+	sp_node_path_edit_delete ();
+	sp_node_path_edit_break ();
+	sp_node_path_edit_join ();
+	sp_node_path_edit_toline ();
+	sp_node_path_edit_tocurve ();
+	sp_node_path_edit_cusp ();
+	sp_node_path_edit_smooth ();
+	sp_node_path_edit_symmetric ();
 }
 
 /* Drag and Drop */
