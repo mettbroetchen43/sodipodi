@@ -170,7 +170,8 @@ main (int argc, char *argv[])
                                     	    options, 0, &ctx);
 #endif /* ENABLE_BONOBO */
 
-		fl = sp_process_args (ctx);
+/*		fl = sp_process_args (ctx);*/
+		fl = NULL;
 
 		glade_gnome_init ();
 

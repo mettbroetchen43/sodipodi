@@ -15,7 +15,10 @@
 #include "sp-image.h"
 #include "file.h"
 
+#include <libgnomeprint/gnome-print-pixbuf.h>
+#ifdef ENABLE_FRGBA
 #include <libgnomeprint/gnome-print-frgba.h>
+#endif
 
 gchar * open_path = NULL;
 gchar * save_path = NULL;

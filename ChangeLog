@@ -1,3 +1,17 @@
+2000-04-21  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* configure.in: removed plugins/Makefile (not yet folks!)
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_factory):
+	switched to original gnome-print-context instead of FRGBA
+
+2000-04-21  Michael Meeks  <michael@helixcode.com>
+
+	* configure.in (have_bonobo): add -lbonobo-print
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_factory):
+	add the print interface.
+
 2000-04-21  Fatih Demir	<kabalak@gmx.net>
 
 	* configure.in : Added tr to ALL_LINGUAS .

@@ -1,6 +1,10 @@
 #define SP_EMBEDDABLE_DOCUMENT_C
 
 #include <config.h>
+#include <bonobo.h>
+#include <bonobo/bonobo-print.h>
+#include <libgnomeprint/gnome-print.h>
+
 #include "../sp-object.h"
 #include "../sp-item.h"
 #include "../sodipodi.h"
@@ -67,9 +71,7 @@ sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
 	Bonobo_Embeddable corba_document;
 	BonoboPersistFile * pfile;
 	BonoboPersistStream * pstream;
-#if 0
 	BonoboPrint * print;
-#endif
 
 	document = gtk_type_new (SP_EMBEDDABLE_DOCUMENT_TYPE);
 
@@ -97,27 +99,33 @@ sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
 		return CORBA_OBJECT_NIL;
 	}
 
-	bonobo_object_add_interface (BONOBO_OBJECT (document), BONOBO_OBJECT (pfile));
+	bonobo_object_add_interface (BONOBO_OBJECT (document),
+				     BONOBO_OBJECT (pfile));
 
 	pstream = bonobo_persist_stream_new (sp_embeddable_document_ps_load,
 		sp_embeddable_document_ps_save, document);
 
 	if (pstream == NULL) {
 		gtk_object_unref (GTK_OBJECT (document));
+		bonobo_object_unref (BONOBO_OBJECT (pfile));
 		return CORBA_OBJECT_NIL;
 	}
 
-	bonobo_object_add_interface (BONOBO_OBJECT (document), BONOBO_OBJECT (pstream));
-#if 0
+	bonobo_object_add_interface (BONOBO_OBJECT (document),
+				     BONOBO_OBJECT (pstream));
+
 	print = bonobo_print_new (sp_embeddable_document_print, document);
 
-	if (print == NULL) {
+	if (!print) {
 		gtk_object_unref (GTK_OBJECT (document));
+		bonobo_object_unref (BONOBO_OBJECT (pfile));
+		bonobo_object_unref (BONOBO_OBJECT (pstream));
 		return CORBA_OBJECT_NIL;
 	}
 
-	bonobo_object_add_interface (BONOBO_OBJECT (document), BONOBO_OBJECT (print));
-#endif
+	bonobo_object_add_interface (BONOBO_OBJECT (document),
+				     BONOBO_OBJECT (print));
+
 
 #if 0
 #if 0
@@ -226,15 +234,16 @@ sp_embeddable_document_ps_save (BonoboPersistStream * ps, Bonobo_Stream stream, 
 
 static void
 sp_embeddable_document_print (GnomePrintContext * ctx,
-	gdouble width, gdouble height,
-	const Bonobo_PrintScissor * scissor,
-	gpointer data)
+				gdouble width,
+				gdouble height,
+				const Bonobo_PrintScissor * scissor,
+				gpointer data)
 {
 	SPEmbeddableDocument * document;
 
 	document = SP_EMBEDDABLE_DOCUMENT (data);
 
-	sp_item_print (SP_ITEM (document->document), ctx);
+	sp_item_print (SP_ITEM (document->document->root), ctx);
 }
 
 static gint
