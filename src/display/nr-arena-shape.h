@@ -29,7 +29,7 @@ struct _NRArenaShape {
 	/* Shape data */
 	SPCurve *curve;
 	SPStyle *style;
-	NRRectD paintbox;
+	NRRectF paintbox;
 	/* State data */
 	NRMatrixD ctm;
 	SPPainter *fill_painter;

@@ -340,7 +340,6 @@ sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
 static void
 sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
 {
-	GtkWidget *i, *sm;
 	static const unsigned int select_verbs[] = {
 		SP_VERB_SELECTION_GROUP, SP_VERB_SELECTION_UNGROUP,
 		SP_VERB_NONE,
@@ -402,7 +401,7 @@ sp_ui_view_remove_toolbox (GObject *object, gpointer data)
 static void
 sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 {
-	GtkWidget *zm, *zi, *sm, *si;
+	GtkWidget *zm, *zi;
 
 	/* View:Zoom */
 	zi = sp_ui_menu_append_item (menu, NULL, _("Zoom"), NULL, NULL);

@@ -51,14 +51,14 @@ struct _SPPaintServer {
 struct _SPPaintServerClass {
 	SPObjectClass sp_object_class;
 	/* Get SPPaint instance */
-	SPPainter * (* painter_new) (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
+	SPPainter * (* painter_new) (SPPaintServer *ps, const gdouble *affine, const NRRectF *bbox);
 	/* Free SPPaint instance */
 	void (* painter_free) (SPPaintServer *ps, SPPainter *painter);
 };
 
 GType sp_paint_server_get_type (void);
 
-SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
+SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectF *bbox);
 
 SPPainter *sp_painter_free (SPPainter *painter);
 

@@ -14,6 +14,11 @@ typedef struct _NRVPath NRVPath;
 typedef struct _NRBPath NRBPath;
 
 enum {
+	NR_PATH_LINETO,
+	NR_PATH_CURVETO
+};
+
+enum {
 	NR_WIND_RULE_NONZERO,
 	NR_WIND_RULE_EVENODD
 };
@@ -29,6 +34,7 @@ typedef union _NRPathElement NRPathElement;
 struct _NRPathCode {
 	unsigned int length : 24;
 	unsigned int closed : 1;
+	unsigned int code : 1;
 };
 
 union _NRPathElement {

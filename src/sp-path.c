@@ -14,8 +14,11 @@
 
 #include <string.h>
 
+#include <libnr/nr-path.h>
+
 #include "svg/svg.h"
 #include "attributes.h"
+#include "style.h"
 #include "sp-root.h"
 
 #include "sp-path.h"
@@ -29,6 +32,7 @@ static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_path_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static SPRepr *sp_path_write (SPObject *object, SPRepr *repr, guint flags);
+static void sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 
 static SPShapeClass *parent_class;
 
@@ -66,6 +70,8 @@ sp_path_class_init (SPPathClass * klass)
 	sp_object_class->build = sp_path_build;
 	sp_object_class->set = sp_path_set;
 	sp_object_class->write = sp_path_write;
+
+	item_class->write_transform = sp_path_write_transform;
 }
 
 static void
@@ -212,58 +218,44 @@ sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 	return repr;
 }
 
-#if 0
 static void
-sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
+sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
 {
 	SPPath *path;
 	SPShape *shape;
+	NRBPath dpath, spath;
+	double ex;
+	unsigned char *svgpath;
+	SPStyle *style;
 
-	path = SP_PATH (item);
-	shape = SP_SHAPE (item);
+	path = (SPPath *) item;
+	shape = (SPShape *) item;
 
-	if (path->independent) {
-		SPPathComp *comp;
-		NRBPath dpath, spath;
-		NRMatrixF ctm;
-		double ex;
-		gchar *svgpath;
-		SPStyle *style;
-		ex = NR_MATRIX_DF_EXPANSION (transform);
-		comp = (SPPathComp *) path->comp->data;
-		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &item->transform);
-		spath.path = comp->curve->bpath;
-		nr_path_duplicate_transform (&dpath, &spath, &ctm);
-		svgpath = sp_svg_write_path (dpath.path);
-		sp_repr_set_attr (repr, "d", svgpath);
-		g_free (svgpath);
-		nr_free (dpath.path);
-		/* And last but not least */
-		style = SP_OBJECT_STYLE (item);
-		if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-			if (!NR_DF_TEST_CLOSE (ex, 1.0, NR_EPSILON_D)) {
-				guchar *str;
-				/* Scale changed, so we have to adjust stroke width */
-				style->stroke_width.computed *= ex;
-				if (style->stroke_dash.n_dash != 0) {
-					int i;
-					for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= ex;
-					style->stroke_dash.offset *= ex;
-				}
-				str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
-				sp_repr_set_attr (repr, "style", str);
-				g_free (str);
+	ex = NR_MATRIX_DF_EXPANSION (transform);
+
+	spath.path = shape->curve->bpath;
+	nr_path_duplicate_transform (&dpath, &spath, transform);
+	svgpath = sp_svg_write_path (dpath.path);
+	sp_repr_set_attr (repr, "d", svgpath);
+	g_free (svgpath);
+	nr_free (dpath.path);
+	/* And last but not least */
+	style = SP_OBJECT_STYLE (item);
+	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+		if (!NR_DF_TEST_CLOSE (ex, 1.0, NR_EPSILON_D)) {
+			guchar *str;
+			/* Scale changed, so we have to adjust stroke width */
+			style->stroke_width.computed *= ex;
+			if (style->stroke_dash.n_dash != 0) {
+				int i;
+				for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= ex;
+				style->stroke_dash.offset *= ex;
 			}
-		}
-		sp_repr_set_attr (repr, "transform", NULL);
-	} else {
-		guchar t[80];
-		if (sp_svg_transform_write (t, 80, &item->transform)) {
-			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
-		} else {
-			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+			str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+			sp_repr_set_attr (repr, "style", str);
+			g_free (str);
 		}
 	}
+	sp_repr_set_attr (repr, "transform", NULL);
 }
-#endif
 

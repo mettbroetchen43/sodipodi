@@ -161,7 +161,17 @@ nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 		fprintf (stderr, "Typeface %s does not have unicode charmap", def->name);
 #endif
 	} else {
+		int cp, nglyphs;
 		tff->unimap = 1;
+		tff->freelo = 1;
+		nglyphs = MIN (tff->typeface.nglyphs, 0x1900);
+		/* Check whether we have free U+E000 - U+F8FF */
+		for (cp = 0; cp < nglyphs; cp++) {
+			if (FT_Get_Char_Index (tff->ft_face, 0xe000 + cp)) {
+				tff->freelo = 0;
+				break;
+			}
+		}
 	}
 
 	tff->ft2ps = 1000.0 / tff->ft_face->units_per_EM;
@@ -309,7 +319,11 @@ nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	tff = (NRTypeFaceFT2 *) tf;
 
 	if (rule == NR_TYPEFACE_LOOKUP_RULE_DEFAULT) {
-		if (!tff->unimap || ((unival >= 0xe000) && (unival <= 0xf8ff))) {
+		if (unival > 0xf0000) {
+			unsigned int idx;
+			idx = CLAMP (unival, 0xf0000, 0x1ffff) - 0xf0000;
+			return MIN (idx, tf->nglyphs - 1);
+		} else if (!tff->unimap || (tff->freelo && (unival >= 0xe000) && (unival <= 0xf8ff))) {
 			unsigned int idx;
 			idx = CLAMP (unival, 0xe000, 0xf8ff) - 0xe000;
 			return MIN (idx, tf->nglyphs - 1);

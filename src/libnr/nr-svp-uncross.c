@@ -48,6 +48,7 @@ static NRSVLSlice *nr_svl_slice_insert_sorted (NRSVLSlice *start, NRSVLSlice *sl
 static NRSVLSlice *nr_svl_slice_stretch_list (NRSVLSlice *slices, NRCoord y);
 
 static double nr_vertex_segment_distance2 (NRVertex *v, NRVertex *s);
+static double nr_segment_intersection (NRVertex *s0, NRVertex *s1, double *x, double *y);
 
 #ifdef NR_EXTRA_CHECK
 static void
@@ -293,6 +294,68 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 				cs = ns;
 			} else if ((cs->x > ns->vertex->next->x) || (ns->x < cs->vertex->next->x) ||
 				   (cs->vertex->next->x > ns->vertex->next->x)) {
+				double d, x, y;
+				d = nr_segment_intersection (cs->vertex, ns->vertex, &x, &y);
+				if ((d >= 0.0) && (d < NR_COORD_TOLERANCE) && (y >= yslice)) {
+					y = NR_COORD_SNAP_DOWN (y);
+					/* fixme: */
+					if (y <= yslice) {
+						/* Slices are very close at yslice */
+						/* Start by breaking slices */
+						csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+						csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
+						if ((ns->x - cs->x) <= NR_COORD_TOLERANCE) {
+							/* Merge intersection into cs */
+							x = cs->x;
+						}
+						if (cs->x != x) {
+							double x0, x1;
+							x0 = MIN (x, cs->x);
+							x1 = MAX (x, cs->x);
+							f = nr_flat_new_full (yslice, x0, x1);
+							nflat = nr_flat_insert_sorted (nflat, f);
+						}
+						if (ns->x != cs->x) {
+							double x0, x1;
+							x0 = MIN (x, ns->x);
+							x1 = MAX (x, ns->x);
+							f = nr_flat_new_full (yslice, x0, x1);
+							nflat = nr_flat_insert_sorted (nflat, f);
+						}
+						/* Set the new starting point */
+						cs->vertex->x = x;
+						cs->x = cs->vertex->x;
+						ns->vertex->x = cs->x;
+						ns->x = ns->vertex->x;
+						/* Reorder slices */
+						if (ss) {
+							assert (ns->next != ss);
+							ss->next = ns->next;
+						} else {
+							slices = ns->next;
+						}
+						slices = nr_svl_slice_insert_sorted (slices, cs);
+						slices = nr_svl_slice_insert_sorted (slices, ns);
+						CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
+						/* Start the row from the beginning */
+						ss = NULL;
+						cs = slices;
+					} else if ((y <= cs->vertex->next->y) && (y <= ns->vertex->next->y)) {
+						if (((y < cs->vertex->next->y) || cs->vertex->next->next) &&
+						    ((y < ns->vertex->next->y) || ns->vertex->next->next)) {
+							/* Postpone by breaking svl */
+							csvl = nr_svl_slice_break_y_and_continue_x (cs, y, x, csvl, yslice, &nflat);
+							csvl = nr_svl_slice_break_y_and_continue_x (ns, y, x, csvl, yslice, &nflat);
+						}
+						/* fixme: Slight disturbance is possible so we should repeat */
+						ss = cs;
+						cs = ns;
+					}
+				} else {
+					ss = cs;
+					cs = ns;
+				}
+#if 0
 				/* (MAX (cs->x, cs->vertex->next->x) > MIN (ns->x, ns->vertex->next->x)) */
 				/* Potential intersection */
 				double xba, yba, xdc, ydc;
@@ -307,7 +370,7 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 
 				if (fabs (d) > NR_EPSILON_F) {
 					double xac, yac, numr, nums;
-					double r, s, x, y;
+					double r, s, x, y, dr, ds, dr2, ds2;
 
 					/* Not parallel */
 					xac = cs->vertex->x - ns->vertex->x;
@@ -318,9 +381,18 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 					s = nums / d;
 					x = cs->vertex->x + r * xba;
 					y = cs->vertex->y + r * yba;
+					dr = 0.0;
+					if (r < 0.0) dr = -r;
+					if (r > 1.0) dr = r - 1.0;
+					dr2 = dr * xba * xba + yba * yba;
+					ds = 0.0;
+					if (s < 0.0) ds = -s;
+					if (s > 1.0) ds = s - 1.0;
+					ds2 = ds * xdc * xdc + ydc * ydc;
 					y = NR_COORD_SNAP_DOWN (y);
-
-					if ((y >= yslice) && (y <= cs->vertex->next->y) && (y <= ns->vertex->next->y)) {
+					/* fixme: */
+					if ((dr2 < NR_COORD_TOLERANCE2) && (ds2 < NR_COORD_TOLERANCE2) &&
+					    (y >= yslice) && (y <= cs->vertex->next->y) && (y <= ns->vertex->next->y)) {
 						if (y == yslice) {
 							/* Slices are very close at yslice */
 							/* Start by breaking slices */
@@ -381,6 +453,7 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 					ss = cs;
 					cs = ns;
 				}
+#endif
 			} else {
 				ss = cs;
 				cs = ns;
@@ -901,6 +974,46 @@ nr_vertex_segment_distance2 (NRVertex *vx, NRVertex *seg)
 		dist2 = (Px - Qx) * (Px - Qx) + (Py - Qy) * (Py - Qy);
 	}
 	return dist2;
+}
+
+static double
+nr_segment_intersection (NRVertex *s0, NRVertex *s1, double *x, double *y)
+{
+	double xba, yba, xdc, ydc, xac, yac;
+	double d, numr, nums, r, s;
+	double dr, ds, d0_2, d1_2, d_2;
+
+	xba = s0->next->x - s0->x;
+	yba = s0->next->y - s0->y;
+	xdc = s1->next->x - s1->x;
+	ydc = s1->next->y - s1->y;
+	d = xba * ydc - yba * xdc;
+ 
+	/* Check for parallel */
+	if (fabs (d) < NR_EPSILON_F) return -NR_HUGE_F;
+
+	xac = s0->x - s1->x;
+	yac = s0->y - s1->y;
+
+	numr = yac * xdc - xac * ydc;
+	nums = yac * xba - xac * yba;
+	r = numr / d;
+	s = nums / d;
+	*x = s0->x + r * xba;
+	*y = s0->y + r * yba;
+
+	dr = 0.0;
+	if (r < 0.0) dr = -r;
+	if (r > 1.0) dr = r - 1.0;
+	d0_2 = dr * (xba * xba + yba * yba);
+	ds = 0.0;
+	if (s < 0.0) ds = -s;
+	if (s > 1.0) ds = s - 1.0;
+	d1_2 = ds * (xdc * xdc + ydc * ydc);
+
+	d_2 = MAX (d0_2, d1_2);
+
+	return sqrt (d_2);
 }
 
 /*

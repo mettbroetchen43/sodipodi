@@ -389,8 +389,8 @@ static void
 nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group)
 {
 	group->style = NULL;
-	group->paintbox.x0 = group->paintbox.y0 = 0.0;
-	group->paintbox.x1 = group->paintbox.y1 = 1.0;
+	group->paintbox.x0 = group->paintbox.y0 = 0.0F;
+	group->paintbox.x1 = group->paintbox.y1 = 1.0F;
 
 	group->fill_painter = NULL;
 	group->stroke_painter = NULL;
@@ -441,13 +441,13 @@ nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint 
 	item->render_opacity = TRUE;
 	if (group->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		group->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (group->style),
-								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &group->paintbox);
+								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), &group->paintbox);
 	item->render_opacity = FALSE;
 	}
 
 	if (group->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		group->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (group->style),
-								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &group->paintbox);
+								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), &group->paintbox);
 	item->render_opacity = FALSE;
 	}
 
@@ -671,11 +671,14 @@ nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *gg, const ArtDRect *pbox
 	nr_return_if_fail (pbox != NULL);
 
 	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
-		memcpy (&gg->paintbox, pbox, sizeof (ArtDRect));
+		gg->paintbox.x0 = pbox->x0;
+		gg->paintbox.y0 = pbox->y0;
+		gg->paintbox.x1 = pbox->x1;
+		gg->paintbox.y1 = pbox->y1;
 	} else {
 		/* fixme: We kill warning, although not sure what to do here (Lauris) */
-		gg->paintbox.x0 = gg->paintbox.y0 = 0.0;
-		gg->paintbox.x1 = gg->paintbox.y1 = 256.0;
+		gg->paintbox.x0 = gg->paintbox.y0 = 0.0F;
+		gg->paintbox.x1 = gg->paintbox.y1 = 256.0F;
 	}
 
 	nr_arena_item_request_update (NR_ARENA_ITEM (gg), NR_ARENA_ITEM_STATE_ALL, FALSE);

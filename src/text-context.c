@@ -20,6 +20,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <helper/sp-ctrlline.h>
+#include <helper/sodipodi-ctrlrect.h>
 #include <gtk/gtkimmulticontext.h>
 #include "macros.h"
 #include "sp-text.h"
@@ -120,6 +121,7 @@ sp_text_context_init (SPTextContext *tc)
 	tc->unimode = FALSE;
 
 	tc->cursor = NULL;
+	tc->indicator = NULL;
 	tc->timeout = 0;
 	tc->show = FALSE;
 	tc->phase = 0;
@@ -148,6 +150,11 @@ sp_text_context_setup (SPEventContext *ec)
 	tc->cursor = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
 	sp_canvas_item_hide (tc->cursor);
+
+	tc->indicator = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLRECT, NULL);
+	sp_ctrlrect_set_area (SP_CTRLRECT (tc->indicator), 0, 0, 100, 100);
+	sp_ctrlrect_set_color(SP_CTRLRECT (tc->indicator), 0x0000ff7f, FALSE, 0);
+	sp_canvas_item_hide (tc->indicator);
 
 	tc->timeout = gtk_timeout_add (250, (GtkFunction) sp_text_context_timeout, ec);
 
@@ -203,6 +210,11 @@ sp_text_context_finish (SPEventContext *ec)
 		tc->cursor = NULL;
 	}
 
+	if (tc->indicator) {
+		gtk_object_destroy (GTK_OBJECT (tc->indicator));
+		tc->indicator = NULL;
+	}
+
 	if (ec->desktop) {
   		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
   		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
@@ -226,6 +238,17 @@ sp_text_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 				sp_selection_set_item (SP_DT_SELECTION (ec->desktop), item);
 				ret = TRUE;
 			}
+		}
+		break;
+	case GDK_MOTION_NOTIFY:
+		if (SP_IS_TEXT (item)) {
+			NRRectF bbox;
+			sp_item_bbox_desktop(item, &bbox);
+			sp_canvas_item_show (tc->indicator);
+			sp_ctrlrect_set_area (SP_CTRLRECT (tc->indicator), 
+					      bbox.x0, bbox.y0, 
+					      bbox.x1, bbox.y1);
+			ret = TRUE;
 		}
 		break;
 	default:
@@ -282,6 +305,8 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPStyle *style;
 
 	tc = SP_TEXT_CONTEXT (ec);
+
+	sp_canvas_item_hide (tc->indicator);
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:

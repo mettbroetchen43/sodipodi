@@ -68,7 +68,7 @@ typedef struct _NRArenaGlyphsGroupClass NRArenaGlyphsGroupClass;
 struct _NRArenaGlyphsGroup {
 	NRArenaGroup group;
 	SPStyle *style;
-	ArtDRect paintbox;
+	NRRectF paintbox;
 	/* State data */
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;

@@ -43,6 +43,7 @@ struct _SPTextContext {
 	unsigned char unipos;
 
 	SPCanvasItem *cursor;
+	SPCanvasItem *indicator;
 	gint timeout;
 	guint show : 1;
 	guint phase : 1;

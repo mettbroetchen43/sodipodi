@@ -66,8 +66,9 @@ static int
 sp_svgview_main_key_press (GtkWidget *widget, GdkEventKey *event, struct _SPSlideShow *ss)
 {
 	switch (event->keyval) {
-	case GDK_f:
-	case GDK_F:
+ 	case GDK_space:
+ 	case GDK_f:
+ 	case GDK_F:
 		if (event->state & GDK_SHIFT_MASK) {
 			gtk_window_unfullscreen ((GtkWindow *) widget);
 		} else {

@@ -95,8 +95,8 @@ nr_arena_shape_init (NRArenaShape *shape)
 {
 	shape->curve = NULL;
 	shape->style = NULL;
-	shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
-	shape->paintbox.x1 = shape->paintbox.y1 = 256.0;
+	shape->paintbox.x0 = shape->paintbox.y0 = 0.0F;
+	shape->paintbox.x1 = shape->paintbox.y1 = 256.0F;
 
 	nr_matrix_d_set_identity (&shape->ctm);
 	shape->fill_painter = NULL;
@@ -373,15 +373,13 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	item->render_opacity = TRUE;
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style),
-								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
+								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
 		item->render_opacity = FALSE;
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style),
-								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
+								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
 		item->render_opacity = FALSE;
 	}
 
@@ -625,14 +623,11 @@ nr_arena_shape_set_paintbox (NRArenaShape *shape, const NRRectF *pbox)
 	g_return_if_fail (pbox != NULL);
 
 	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
-		shape->paintbox.x0 = pbox->x0;
-		shape->paintbox.y0 = pbox->y0;
-		shape->paintbox.x1 = pbox->x1;
-		shape->paintbox.y1 = pbox->y1;
+		shape->paintbox = *pbox;
 	} else {
 		/* fixme: We kill warning, although not sure what to do here (Lauris) */
-		shape->paintbox.x0 = shape->paintbox.y0 = 0.0;
-		shape->paintbox.x1 = shape->paintbox.y1 = 256.0;
+		shape->paintbox.x0 = shape->paintbox.y0 = 0.0F;
+		shape->paintbox.x1 = shape->paintbox.y1 = 256.0F;
 	}
 
 	nr_arena_item_request_update (NR_ARENA_ITEM (shape), NR_ARENA_ITEM_STATE_ALL, FALSE);

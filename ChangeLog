@@ -1,3 +1,10 @@
+2003-08-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-ft2.c (nr_typeface_ft2_setup): Check whether font
+	has assigned code points on BMP private area
+	(nr_typeface_ft2_lookup): Map BMP private area directly to glyph index only
+	if it is free, use planes F and 10 for direct mapping
+
 2003-08-17  Danilo Šegan  <dsegan@gmx.net>
 
 	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.

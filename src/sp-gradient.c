@@ -1226,7 +1226,7 @@ static void sp_lineargradient_build (SPObject *object, SPDocument * document, SP
 static void sp_lineargradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags);
 
-static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const double *affine, const NRRectD *bbox);
+static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const double *affine, const NRRectF *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_lg_fill (SPPainter *painter, NRPixBlock *pb);
@@ -1373,7 +1373,7 @@ sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags)
  */
 
 static SPPainter *
-sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bbox)
+sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectF *bbox)
 {
 	SPLinearGradient *lg;
 	SPGradient *gr;
@@ -1568,7 +1568,7 @@ static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPR
 static void sp_radialgradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags);
 
-static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
+static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectF *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static void sp_rg_fill (SPPainter *painter, NRPixBlock *pb);
@@ -1721,7 +1721,7 @@ sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static SPPainter *
-sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bbox)
+sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectF *bbox)
 {
 	SPRadialGradient *rg;
 	SPGradient *gr;
