@@ -52,6 +52,10 @@ guidelines and grid are quite useful now.
 Francis contributed several bugfixes and also Base64 inline image
 support.
 
+There is global opacity setting implemented. It can currently only
+be acessed from context menu. Same stands for object sensitivity.
+Hint - to select insensitive objects, use rubberband or Shift-click.
+
 Many other people have contributed to sodipodi. Big thanks to
 everybody!
 

@@ -169,7 +169,7 @@ sp_repr_save_stream (SPReprDoc * doc, FILE * to_file)
 	/* fixme: do this The Right Way */
 
 	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n"
-	       "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\""
+	       "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\"\n"
 	       "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n",
 	       to_file);
 
