@@ -123,9 +123,49 @@ sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 	sodipodi_unref ();
 }
 
+#ifdef WITH_DOCK
+#include <widgets/sp-dock.h>
+#include <widgets/sp-dock-item.h>
+#include <widgets/sp-dock-notebook.h>
+#endif
+
 GtkWidget *
 sp_maintoolbox_new (void)
 {
+#ifdef WITH_DOCK
+	GtkWidget *toolbox, *vbox, *mbar, *mi, *dock, *t, *item;
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	toolbox = vbox;
+
+	mbar = gtk_menu_bar_new ();
+	gtk_box_pack_start (GTK_BOX (vbox), mbar, FALSE, FALSE, 0);
+
+	mi = gtk_menu_item_new_with_label (_("Sodipodi"));
+	gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM(mi), sp_ui_main_menu ());
+
+	dock = sp_dock_new ();
+	gtk_box_pack_start (GTK_BOX (vbox), dock, FALSE, FALSE, 0);
+
+	t = sp_toolbox_file_create ();
+	/* item = sp_dock_item_new ("file", "File Toolbox", SP_DOCK_ITEM_BEH_NORMAL); */
+	item = sp_dock_notebook_new ();
+	gtk_container_add (GTK_CONTAINER (item), t);
+	sp_dock_add_item (SP_DOCK (dock), SP_DOCK_ITEM (item), SP_DOCK_TOP);
+
+	t = sp_toolbox_edit_create ();
+	item = sp_dock_item_new ("edit", "Edit Toolbox", SP_DOCK_ITEM_BEH_NORMAL);
+	gtk_container_add (GTK_CONTAINER (item), t);
+	sp_dock_add_item (SP_DOCK (dock), SP_DOCK_ITEM (item), SP_DOCK_TOP);
+
+	t = sp_toolbox_object_create ();
+	item = sp_dock_item_new ("object", "Object Toolbox", SP_DOCK_ITEM_BEH_NORMAL);
+	gtk_container_add (GTK_CONTAINER (item), t);
+	sp_dock_add_item (SP_DOCK (dock), SP_DOCK_ITEM (item), SP_DOCK_TOP);
+
+	gtk_widget_show_all (vbox);
+#else
 	GtkWidget *toolbox, *vbox, *mbar, *mi, *t, *w;
 
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -183,6 +223,7 @@ sp_maintoolbox_new (void)
 	t = sp_toolbox_node_create ();
 	gtk_widget_show (t);
 	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+#endif
 
 	/* gnome_window_icon_set_from_default (GTK_WINDOW (toolbox)); */
 	gtk_drag_dest_set (toolbox, 

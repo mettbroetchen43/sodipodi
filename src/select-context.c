@@ -333,10 +333,10 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 					     NULL, event->button.time);
 			sc->grabbed = SP_CANVAS_ITEM (desktop->acetate);
-#if 0
+
 			/* We cannot assign shift for partial selects, as it is used for add mode */
-			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
-#endif
+			sc->button_press_shift = (event->button.state & GDK_CONTROL_MASK) ? TRUE : FALSE;
+
 			ret = TRUE;
 		}
 		break;

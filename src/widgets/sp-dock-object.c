@@ -29,10 +29,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <helper/sp-marshal.h>
+
 #include "sp-dock-object.h"
 #include "sp-dock-master.h"
 #include "sp-dock-typebuiltins.h"
-#include <helper/sp-marshal.h>
 
 /* for later use by the registry */
 #include "sp-dock.h"
@@ -41,10 +42,11 @@
 #include "sp-dock-notebook.h"
 #include "sp-dock-placeholder.h"
 
-typedef struct _SPDockObjectPrivate {
+#if 0
+struct _SPDockObjectPrivate {
 	gpointer unused;
 };
-
+#endif
 
 /* ----- Private prototypes ----- */
 

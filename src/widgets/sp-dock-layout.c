@@ -71,17 +71,17 @@ enum {
 
 struct _SPDockLayoutPrivate {
 #ifdef USE_REPR
-	SPReprDoc		 *doc;
+	SPReprDoc *doc;
 #else
-    xmlDocPtr         doc;
+	xmlDocPtr doc;
 #endif
 	
-    /* layout list models */
-    GtkListStore     *items_model;
-    GtkListStore     *layouts_model;
+	/* layout list models */
+	GtkListStore *items_model;
+	GtkListStore *layouts_model;
 
-    /* idle control */
-    gboolean          idle_save_pending;
+	/* idle control */
+	gboolean idle_save_pending;
 };
 
 typedef struct _SPDockLayoutUIData SPDockLayoutUIData;
@@ -900,7 +900,7 @@ sp_dock_layout_setup_object (SPDockMaster *master,
 #endif
         if (object_type == G_TYPE_NONE) {
             g_warning (_("While loading layout: don't know how to create "
-                         "a dock object whose nick is '%s'"), node->name);
+                         "a dock object whose nick is '%s'"), sp_repr_get_name (node));
         }
     }
     
@@ -1475,14 +1475,18 @@ gboolean
 sp_dock_layout_load_from_file (SPDockLayout *layout,
                                 const gchar   *filename)
 {
-    gboolean retval = FALSE;
+	gboolean retval = FALSE;
 
-    if (layout->_priv->doc) {
-        xmlFreeDoc (layout->_priv->doc);
-        layout->_priv->doc = NULL;
-        layout->dirty = FALSE;
-        g_object_notify (G_OBJECT (layout), "dirty");
-    }
+	if (layout->_priv->doc) {
+#ifdef USE_REPR
+		sp_repr_doc_unref (layout->_priv->doc);
+#else
+		xmlFreeDoc (layout->_priv->doc);
+#endif
+		layout->_priv->doc = NULL;
+		layout->dirty = FALSE;
+		g_object_notify (G_OBJECT (layout), "dirty");
+	}
 
     /* FIXME: cannot open symlinks */
     if (g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
@@ -1516,36 +1520,36 @@ sp_dock_layout_load_from_file (SPDockLayout *layout,
 }
 
 gboolean
-sp_dock_layout_save_to_file (SPDockLayout *layout,
-                              const gchar   *filename)
+sp_dock_layout_save_to_file (SPDockLayout *layout, const gchar *filename)
 {
-    FILE     *file_handle;
-    int       bytes;
-    gboolean  retval = FALSE;
+	FILE *file_handle;
+#ifndef USE_REPR
+	int bytes;
+#endif
+	gboolean retval = FALSE;
 
-    g_return_val_if_fail (layout != NULL, FALSE);
-    g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (layout != NULL, FALSE);
+	g_return_val_if_fail (filename != NULL, FALSE);
 
-    /* if there is still no xml doc, create an empty one */
-    if (!layout->_priv->doc)
-        sp_dock_layout_build_doc (layout);
+	/* if there is still no xml doc, create an empty one */
+	if (!layout->_priv->doc) sp_dock_layout_build_doc (layout);
 
-    file_handle = fopen (filename, "w");
-    if (file_handle) {
+	file_handle = fopen (filename, "w");
+	if (file_handle) {
 #ifdef USE_REPR
 		sp_repr_doc_write_stream (layout->_priv->doc, file_handle);
 		layout->dirty = FALSE;
 		g_object_notify (G_OBJECT (layout), "dirty");
 		retval = TRUE;
 #else
-        bytes = xmlDocDump (file_handle, layout->_priv->doc);
-        if (bytes >= 0) {
-            layout->dirty = FALSE;
-            g_object_notify (G_OBJECT (layout), "dirty");
-            retval = TRUE;
-        };
+		bytes = xmlDocDump (file_handle, layout->_priv->doc);
+		if (bytes >= 0) {
+			layout->dirty = FALSE;
+			g_object_notify (G_OBJECT (layout), "dirty");
+			retval = TRUE;
+		};
 #endif
-        fclose (file_handle);
+		fclose (file_handle);
     };
 	
     return retval;

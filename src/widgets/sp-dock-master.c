@@ -27,7 +27,16 @@
 
 #include <helper/sp-intl.h>
 #include "sp-dock-macros.h"
+
+#ifdef GDK_MULTIHEAD_SAFE
+#undef GDK_MULTIHEAD_SAFE
+#endif
+
+#ifdef WIN32
+#include <gdk/gdkwin32.h>
+#else
 #include <gdk/gdkx.h>
+#endif
 
 #include "sp-dock-master.h"
 #include "sp-dock.h"
@@ -581,7 +590,11 @@ sp_dock_master_xor_rect (SPDockMaster *master)
     }
     
     rect = &master->_priv->drag_request->rect;
+#if 0
     window = gdk_window_lookup (gdk_x11_get_default_root_xwindow ());
+#else
+    window = gdk_window_lookup (GDK_ROOT_WINDOW ());
+#endif
 
     if (!master->_priv->root_xor_gc) {
         GdkGCValues values;
