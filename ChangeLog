@@ -1,5 +1,9 @@
 2002-12-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/icon.c (sp_icon_image_load): Generic image loader
+
+	* src/desktop.c (sp_desktop_widget_update_zoom): Make working again
+
 	* src/widgets/button.c: New file
 
 	* src/widgets/button.h: New file

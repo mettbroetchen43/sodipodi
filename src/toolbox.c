@@ -30,7 +30,6 @@
 #include "widgets/icon.h"
 #include "widgets/button.h"
 #include "widgets/sp-toolbox.h"
-#include "widgets/sp-menu-button.h"
 #include "widgets/sp-hwrap-box.h"
 #include "file.h"
 #include "selection-chemistry.h"
@@ -237,20 +236,21 @@ enum {
 	SP_TOOLBOX_DRAW_RECT,
 	SP_TOOLBOX_DRAW_ARC,
 	SP_TOOLBOX_DRAW_STAR,
-	SP_TOOLBOX_DRAW_SPIRAL,
+	SP_TOOLBOX_DRAW_SPIRAL
+};
+
+enum {
 	SP_TOOLBOX_DRAW_FREEHAND,
 	SP_TOOLBOX_DRAW_PEN,
 	SP_TOOLBOX_DRAW_DYNAHAND
 };
 
 static void
-sp_toolbox_draw_set_object (GtkButton *button, gpointer itemdata, gpointer data)
+sp_toolbox_draw_set_object (SPButton *button, gpointer data)
 {
-	guint mode;
+	unsigned int mode;
 
-	mode = GPOINTER_TO_UINT (itemdata);
-
-	g_print ("Draw toolbox set object: %d\n", mode);
+	mode = sp_button_get_option (button);
 
 	switch (mode) {
 	case SP_TOOLBOX_DRAW_RECT:
@@ -265,6 +265,20 @@ sp_toolbox_draw_set_object (GtkButton *button, gpointer itemdata, gpointer data)
 	case SP_TOOLBOX_DRAW_SPIRAL:
 		sp_event_context_set_spiral (NULL);
 		break;
+	default:
+		g_warning ("Illegal draw code %d", mode);
+		break;
+	}
+}
+
+static void
+sp_toolbox_draw_set_freehand (SPButton *button, gpointer data)
+{
+	unsigned int mode;
+
+	mode = sp_button_get_option (button);
+
+	switch (mode) {
 	case SP_TOOLBOX_DRAW_FREEHAND:
 		sp_event_context_set_freehand (NULL);
 		break;
@@ -451,7 +465,7 @@ sp_toolbox_selection_create (void)
 static GtkWidget *
 sp_toolbox_draw_create (void)
 {
-	GtkWidget *tb, *t, *ev, *b;
+	GtkWidget *tb, *t, *b;
 	SPRepr *repr;
 	GtkTooltips *tt;
 	
@@ -502,7 +516,7 @@ sp_toolbox_draw_create (void)
 	sp_button_add_option (SP_BUTTON (b), 0, "draw_freehand", _("Pencil tool - draw freehand lines and straight segments"));
 	sp_button_add_option (SP_BUTTON (b), 1, "draw_pen", _("Pen tool - draw exactly positioned curved lines"));
 	sp_button_add_option (SP_BUTTON (b), 2, "draw_dynahand", _("Calligraphic tool - draw calligraphic lines"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_freehand), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
@@ -739,21 +753,19 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 
 	if (tname) {
 		if (!strcmp (tname, "SPRectContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_RECT);
 		} else if (!strcmp (tname, "SPArcContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_ARC);
 		} else if (!strcmp (tname, "SPStarContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_STAR);
 		} else if (!strcmp (tname, "SPSpiralContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_SPIRAL);
 		} else if (!strcmp (tname, "SPPencilContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_FREEHAND);
 		} else if (!strcmp (tname, "SPPenContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_PEN);
 		} else if (!strcmp (tname, "SPDynaDrawContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
-		} else if (!strcmp (tname, "SPPenContext")) {
-			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
+			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_DYNAHAND);
 		}
 	}
 }

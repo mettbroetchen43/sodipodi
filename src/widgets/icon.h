@@ -46,4 +46,8 @@ GType sp_icon_get_type (void);
 GtkWidget *sp_icon_new (unsigned int size, const unsigned char *name);
 GtkWidget *sp_icon_new_from_data (unsigned int size, const unsigned char *px);
 
+/* This is unrelated, but can as well be here */
+
+unsigned char *sp_icon_image_load (const unsigned char *name, unsigned int size);
+
 #endif

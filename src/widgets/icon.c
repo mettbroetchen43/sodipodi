@@ -39,7 +39,8 @@ static int sp_icon_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static void sp_icon_paint (SPIcon *icon, GdkRectangle *area);
 
-static unsigned char *sp_icon_get_image (const unsigned char *name, unsigned int size);
+static unsigned char *sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size);
+static unsigned char *sp_icon_image_load_svg (const unsigned char *name, unsigned int size);
 
 static GtkWidgetClass *parent_class;
 
@@ -143,7 +144,7 @@ sp_icon_new (unsigned int size, const unsigned char *name)
 	icon->size = CLAMP (size, 1, 128);
 
 	GTK_OBJECT_UNSET_FLAGS (icon, SP_ICON_FLAG_STATIC_DATA);
-	icon->px = sp_icon_get_image (name, icon->size);
+	icon->px = sp_icon_image_load (name, icon->size);
 
 	return (GtkWidget *) icon;
 }
@@ -161,6 +162,17 @@ sp_icon_new_from_data (unsigned int size, const unsigned char *px)
 	icon->px = (unsigned char *) px;
 
 	return (GtkWidget *) icon;
+}
+
+unsigned char *
+sp_icon_image_load (const unsigned char *name, unsigned int size)
+{
+	unsigned char *px;
+
+	px = sp_icon_image_load_pixmap (name, size);
+	if (!px) px = sp_icon_image_load_svg (name, size);
+
+	return px;
 }
 
 
@@ -230,15 +242,47 @@ sp_icon_paint (SPIcon *icon, GdkRectangle *area)
 }
 
 static unsigned char *
-sp_icon_get_image (const unsigned char *name, unsigned int size)
+sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size)
+{
+	unsigned char *path;
+	unsigned char *px;
+	GdkPixbuf *pb;
+
+	path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
+	pb = gdk_pixbuf_new_from_file (path, NULL);
+	g_free (path);
+	if (pb) {
+		unsigned char *spx;
+		int srs, y;
+		if (!gdk_pixbuf_get_has_alpha (pb)) gdk_pixbuf_add_alpha (pb, FALSE, 0, 0, 0);
+		if ((gdk_pixbuf_get_width (pb) != size) || (gdk_pixbuf_get_height (pb) != size)) {
+			GdkPixbuf *spb;
+			spb = gdk_pixbuf_scale_simple (pb, size, size, GDK_INTERP_HYPER);
+			g_object_unref (G_OBJECT (pb));
+			pb = spb;
+		}
+		spx = gdk_pixbuf_get_pixels (pb);
+		srs = gdk_pixbuf_get_rowstride (pb);
+		px = nr_new (unsigned char, 4 * size * size);
+		for (y = 0; y < size; y++) {
+			memcpy (px + 4 * y * size, spx + y * srs, 4 * size);
+		}
+		g_object_unref (G_OBJECT (pb));
+
+		return px;
+	}
+
+	return NULL;
+}
+
+static unsigned char *
+sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 {
 	static SPDocument *doc = NULL;
 	static NRArena *arena = NULL;
 	static NRArenaItem *root = NULL;
 	static unsigned int edoc = FALSE;
-	unsigned char *path;
 	unsigned char *px;
-	GdkPixbuf *pb;
 
 	/* Try to load from document */
 	if (!edoc && !doc) {
@@ -273,7 +317,7 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 				NRPixBlock B;
 				NRRectL ua;
 				px = nr_new (unsigned char, 4 * size * size);
-				memset (px, 0xff, 4 * size * size);
+				memset (px, 0x00, 4 * size * size);
 				/* Set up area of interest */
 				bbox.x0 = area.x0 * 1.0;
 				bbox.y0 = (sp_document_height (doc) - area.y1) * 1.0;
@@ -294,30 +338,6 @@ sp_icon_get_image (const unsigned char *name, unsigned int size)
 				return px;
 			}
 		}
-	}
-
-	path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
-	pb = gdk_pixbuf_new_from_file (path, NULL);
-	g_free (path);
-	if (pb) {
-		unsigned char *spx;
-		int srs, y;
-		if (!gdk_pixbuf_get_has_alpha (pb)) gdk_pixbuf_add_alpha (pb, FALSE, 0, 0, 0);
-		if ((gdk_pixbuf_get_width (pb) != size) || (gdk_pixbuf_get_height (pb) != size)) {
-			GdkPixbuf *spb;
-			spb = gdk_pixbuf_scale_simple (pb, size, size, GDK_INTERP_HYPER);
-			g_object_unref (G_OBJECT (pb));
-			pb = spb;
-		}
-		spx = gdk_pixbuf_get_pixels (pb);
-		srs = gdk_pixbuf_get_rowstride (pb);
-		px = nr_new (unsigned char, 4 * size * size);
-		for (y = 0; y < size; y++) {
-			memcpy (px + 4 * y * size, spx + y * srs, 4 * size);
-		}
-		g_object_unref (G_OBJECT (pb));
-
-		return px;
 	}
 
 	return NULL;

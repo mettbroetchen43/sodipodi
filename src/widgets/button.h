@@ -48,6 +48,7 @@ struct _SPButton {
 
 	SPBImageData *options;
 
+	GtkWidget *menu;
 	GtkTooltips *tooltips;
 
 	int timeout;

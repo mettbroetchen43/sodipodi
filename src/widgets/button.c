@@ -54,8 +54,6 @@ static int sp_button_button_press (GtkWidget *widget, GdkEventButton *event);
 
 static void sp_button_paint (SPButton *button, GdkRectangle *area);
 
-static unsigned char *sp_button_get_image (const unsigned char *name, unsigned int size);
-
 static GtkWidgetClass *parent_class;
 static guint button_signals[LAST_SIGNAL];
 
@@ -148,6 +146,11 @@ sp_button_destroy (GtkObject *object)
 	if (button->timeout) {
 		gtk_timeout_remove (button->timeout);
 		button->timeout = 0;
+	}
+
+	if (button->menu) {
+		gtk_widget_destroy (button->menu);
+		button->menu = NULL;
 	}
 
 	if (button->options) {
@@ -319,7 +322,7 @@ sp_button_menu_activate (GObject *object, SPButton *button)
 }
 
 static void
-sp_button_menu_destroy (GObject *object, SPButton *button)
+sp_button_menu_selection_done (GObject *object, SPButton *button)
 {
 	/* Emulate button released */
 	switch (button->type) {
@@ -348,15 +351,18 @@ static int
 sp_button_timeout (gpointer data)
 {
 	SPButton *button;
-	GtkWidget *menu;
 	int i;
 
 	button = SP_BUTTON (data);
 
 	button->timeout = 0;
 
-	menu = gtk_menu_new ();
-	gtk_widget_show (menu);
+	if (button->menu) {
+		gtk_widget_destroy (button->menu);
+		button->menu = NULL;
+	}
+	button->menu = gtk_menu_new ();
+	gtk_widget_show (button->menu);
 	for (i = 0; i < button->noptions; i++) {
 		GtkWidget *icon, *mi;
 		icon = sp_icon_new_from_data (button->size, button->options[i].px);
@@ -364,16 +370,16 @@ sp_button_timeout (gpointer data)
 		mi = gtk_menu_item_new ();
 		gtk_widget_show (mi);
 		gtk_container_add (GTK_CONTAINER (mi), icon);
-		gtk_menu_append (GTK_MENU (menu), mi);
+		gtk_menu_append (GTK_MENU (button->menu), mi);
 		g_object_set_data (G_OBJECT (mi), "option", GINT_TO_POINTER (i));
 		if (button->tooltips) {
 			gtk_tooltips_set_tip (button->tooltips, mi, button->options[i].tip, NULL);
 		}
 		g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_button_menu_activate), button);
 	}
-	g_signal_connect (G_OBJECT (menu), "destroy", G_CALLBACK (sp_button_menu_destroy), button);
+	g_signal_connect (G_OBJECT (button->menu), "selection_done", G_CALLBACK (sp_button_menu_selection_done), button);
 
-	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 1, GDK_CURRENT_TIME);
+	gtk_menu_popup (GTK_MENU (button->menu), NULL, NULL, NULL, NULL, 1, GDK_CURRENT_TIME);
 
 	return FALSE;
 }
@@ -490,7 +496,7 @@ sp_button_new (unsigned int size, const unsigned char *name, const unsigned char
 	button->noptions = 1;
 	button->size = CLAMP (size, 1, 128);
 	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_button_get_image (name, button->size);
+	button->options[0].px = sp_icon_image_load (name, button->size);
 	button->options[0].tip = g_strdup (tip);
 
 	return (GtkWidget *) button;
@@ -507,7 +513,7 @@ sp_button_toggle_new (unsigned int size, const unsigned char *name, const unsign
 	button->type = SP_BUTTON_TYPE_TOGGLE;
 	button->size = CLAMP (size, 1, 128);
 	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_button_get_image (name, button->size);
+	button->options[0].px = sp_icon_image_load (name, button->size);
 	button->options[0].tip = g_strdup (tip);
 
 	return (GtkWidget *) button;
@@ -565,7 +571,7 @@ sp_button_toggle_set_down (SPButton *button, unsigned int down, unsigned int sig
 void
 sp_button_add_option (SPButton *button, unsigned int option, const unsigned char *name, const unsigned char *tip)
 {
-	button->options[option].px = sp_button_get_image (name, button->size);
+	button->options[option].px = sp_icon_image_load (name, button->size);
 	button->options[option].tip = g_strdup (tip);
 
 	if ((option == button->option) && button->tooltips) {
@@ -657,6 +663,10 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 				nr_pixblock_render_gray_noise (&bpb, NULL);
 			}
 
+			if (button->noptions > 0) {
+				/* Render arrow */
+			}
+
 			gdk_draw_rgb_image (widget->window, widget->style->black_gc,
 					    x, y,
 					    xe - x, ye - y,
@@ -666,118 +676,5 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 			nr_pixblock_release (&bpb);
 		}
 	}
-}
-
-static unsigned char *
-sp_button_get_image_pixmap (const unsigned char *name, unsigned int size)
-{
-	unsigned char *path;
-	unsigned char *px;
-	GdkPixbuf *pb;
-
-	path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
-	pb = gdk_pixbuf_new_from_file (path, NULL);
-	g_free (path);
-	if (pb) {
-		unsigned char *spx;
-		int srs, y;
-		if (!gdk_pixbuf_get_has_alpha (pb)) gdk_pixbuf_add_alpha (pb, FALSE, 0, 0, 0);
-		if ((gdk_pixbuf_get_width (pb) != size) || (gdk_pixbuf_get_height (pb) != size)) {
-			GdkPixbuf *spb;
-			spb = gdk_pixbuf_scale_simple (pb, size, size, GDK_INTERP_HYPER);
-			g_object_unref (G_OBJECT (pb));
-			pb = spb;
-		}
-		spx = gdk_pixbuf_get_pixels (pb);
-		srs = gdk_pixbuf_get_rowstride (pb);
-		px = nr_new (unsigned char, 4 * size * size);
-		for (y = 0; y < size; y++) {
-			memcpy (px + 4 * y * size, spx + y * srs, 4 * size);
-		}
-		g_object_unref (G_OBJECT (pb));
-
-		return px;
-	}
-
-	return NULL;
-}
-
-static unsigned char *
-sp_button_get_image_svg (const unsigned char *name, unsigned int size)
-{
-	static SPDocument *doc = NULL;
-	static NRArena *arena = NULL;
-	static NRArenaItem *root = NULL;
-	static unsigned int edoc = FALSE;
-	unsigned char *px;
-
-	/* Try to load from document */
-	if (!edoc && !doc) {
-		doc = sp_document_new (SODIPODI_PIXMAPDIR "/icons.svg", FALSE, FALSE);
-		if (!doc) doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
-		if (doc) {
-			NRMatrixF affine;
-
-			sp_document_ensure_up_to_date (doc);
-
-			/* Create new arena */
-			arena = g_object_new (NR_TYPE_ARENA, NULL);
-			/* Create ArenaItem and set transform */
-			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena);
-			/* Set up matrix */
-			nr_matrix_f_set_scale (&affine, 0.8, 0.8);
-			nr_arena_item_set_transform (root, &affine);
-		} else {
-			edoc = TRUE;
-		}
-	}
-
-	if (!edoc && doc) {
-		SPObject *object;
-		object = sp_document_lookup_id (doc, name);
-		if (object && SP_IS_ITEM (object)) {
-			NRRectF area;
-			sp_item_bbox_desktop (SP_ITEM (object), &area);
-			if (!nr_rect_f_test_empty (&area)) {
-				NRRectF bbox;
-				NRGC gc;
-				NRPixBlock B;
-				NRRectL ua;
-				px = nr_new (unsigned char, 4 * size * size);
-				memset (px, 0x00, 4 * size * size);
-				/* Set up area of interest */
-				bbox.x0 = area.x0 * 1.0;
-				bbox.y0 = (sp_document_height (doc) - area.y1) * 1.0;
-				bbox.x1 = area.x1 * 1.0;
-				bbox.y1 = (sp_document_height (doc) - area.y0) * 1.0;
-				/* Update to renderable state */
-				nr_matrix_d_set_identity (&gc.transform);
-				ua.x0 = (bbox.x0 + 0.0625);
-				ua.y0 = (bbox.y0 + 0.0625);
-				ua.x1 = ua.x0 + size;
-				ua.y1 = ua.y0 + size;
-				nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
-
-				/* Render */
-				nr_pixblock_setup_extern (&B, NR_PIXBLOCK_MODE_R8G8B8A8N, ua.x0, ua.y0, ua.x1, ua.y1, px, 4 * size, FALSE, FALSE);
-				nr_arena_item_invoke_render (root, &ua, &B, NR_ARENA_ITEM_RENDER_NO_CACHE);
-				nr_pixblock_release (&B);
-				return px;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-static unsigned char *
-sp_button_get_image (const unsigned char *name, unsigned int size)
-{
-	unsigned char *px;
-
-	px = sp_button_get_image_pixmap (name, size);
-	if (!px) px = sp_button_get_image_svg (name, size);
-
-	return px;
 }
 
