@@ -64,7 +64,7 @@
 #endif /* WITH_MODULES */
 
 #ifdef WITH_KDE
-#include "helper/kde.h"
+#include "modules/kde.h"
 #endif
 
 /* fixme: (Lauris) */

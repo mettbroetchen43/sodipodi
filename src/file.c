@@ -76,19 +76,13 @@ void
 sp_file_open (const unsigned char *uri, const unsigned char *key)
 {
 	SPDocument *doc;
-#ifdef WITH_MODULES
 	SPModule *mod;
-#endif
 
-#ifdef WITH_MODULES
 	doc = NULL;
 	if (!key) key = SP_MODULE_KEY_INPUT_DEFAULT;
 	mod = sp_module_system_get (key);
 	if (mod) doc = sp_module_input_document_open (SP_MODULE_INPUT (mod), uri, TRUE, TRUE);
 	sp_module_unref (mod);
-#else
-	doc = sp_document_new (uri, TRUE, TRUE);
-#endif
 	if (doc) {
 		SPViewWidget *dtw;
 		dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));

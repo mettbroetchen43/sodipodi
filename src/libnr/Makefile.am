@@ -42,6 +42,7 @@ libnr_a_SOURCES = \
 	nr-svp.c nr-svp.h \
 	nr-svp-uncross.c nr-svp-uncross.h \
 	nr-svp-render.c nr-svp-render.h \
+	nr-stroke.c nr-stroke.h \
 	nr-object.c nr-object.h \
 	$(mmx_sources)
 

@@ -172,13 +172,17 @@ SODIPODI_LIBS="$SODIPODI_LIBS $POPT_LIBS -lpng -lz"
 dnl ******************************
 dnl   Plugin Support
 dnl ******************************
+dnl
+dnl UPDATE: This is unconditional now (Lauris)
+dnl
+dnl AC_ARG_WITH(modules, AC_HELP_STRING([--with-modules], [Compile with plugin support (experimental)]), [mod=$withval], [mod=yes])
+dnl
+dnl AM_CONDITIONAL(USE_MODULES, test "x$mod" = "xyes")
+dnl if test "x$mod" = "xyes"; then
+dnl 	AC_DEFINE(WITH_MODULES, 1, [Use experimental module support])
+dnl fi
 
-AC_ARG_WITH(modules, AC_HELP_STRING([--with-modules], [Compile with plugin support (experimental)]), [mod=$withval], [mod=yes])
-
-AM_CONDITIONAL(USE_MODULES, test "x$mod" = "xyes")
-if test "x$mod" = "xyes"; then
-	AC_DEFINE(WITH_MODULES, 1, [Use experimental module support])
-fi
+AC_DEFINE(WITH_MODULES, 1, [Use experimental module support])
 
 dnl ******************************
 dnl   libsodipodi

@@ -244,6 +244,74 @@ nr_rect_s_union (NRRectS *d, const NRRectS *r0, const NRRectS *r1)
 }
 
 NRRectD *
+nr_rect_d_union_xy (NRRectD *d, double x, double y)
+{
+	if (d) {
+		if ((d->x0 <= d->x1) && (d->y0 <= d->y1)) {
+			d->x0 = MIN (d->x0, x);
+			d->y0 = MIN (d->y0, y);
+			d->x1 = MAX (d->x1, x);
+			d->y1 = MAX (d->y1, y);
+		} else {
+			d->x0 = d->x1 = x;
+			d->y0 = d->y1 = y;
+		}
+	}
+	return d;
+}
+
+NRRectF *
+nr_rect_f_union_xy (NRRectF *d, float x, float y)
+{
+	if (d) {
+		if ((d->x0 <= d->x1) && (d->y0 <= d->y1)) {
+			d->x0 = MIN (d->x0, x);
+			d->y0 = MIN (d->y0, y);
+			d->x1 = MAX (d->x1, x);
+			d->y1 = MAX (d->y1, y);
+		} else {
+			d->x0 = d->x1 = x;
+			d->y0 = d->y1 = y;
+		}
+	}
+	return d;
+}
+
+NRRectL *
+nr_rect_l_union_xy (NRRectL *d, NRLong x, NRLong y)
+{
+	if (d) {
+		if ((d->x0 <= d->x1) && (d->y0 <= d->y1)) {
+			d->x0 = MIN (d->x0, x);
+			d->y0 = MIN (d->y0, y);
+			d->x1 = MAX (d->x1, x);
+			d->y1 = MAX (d->y1, y);
+		} else {
+			d->x0 = d->x1 = x;
+			d->y0 = d->y1 = y;
+		}
+	}
+	return d;
+}
+
+NRRectS *
+nr_rect_s_union_xy (NRRectS *d, NRShort x, NRShort y)
+{
+	if (d) {
+		if ((d->x0 <= d->x1) && (d->y0 <= d->y1)) {
+			d->x0 = MIN (d->x0, x);
+			d->y0 = MIN (d->y0, y);
+			d->x1 = MAX (d->x1, x);
+			d->y1 = MAX (d->y1, y);
+		} else {
+			d->x0 = d->x1 = x;
+			d->y0 = d->y1 = y;
+		}
+	}
+	return d;
+}
+
+NRRectD *
 nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
 {
 	if (nr_rect_d_test_empty (s)) {

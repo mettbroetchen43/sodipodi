@@ -1,19 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-if USE_MODULES
-module_subdirs = modules
 module_libs = modules/libspmodules.a
 module_src = module.c module.h
-else
-extensions_src = extension.c extension.h
-endif
 
 if USE_KDE
 kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT)
 kdeldflags = $(KDE_RPATH)
 endif
 
-SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
+SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display modules
 
 AM_CPPFLAGS = \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"

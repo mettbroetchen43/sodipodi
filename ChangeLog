@@ -1,3 +1,11 @@
+2003-06-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c: Only high-level stuff
+
+	* src/modules/gnome.c: Moved gnome print frontend here
+
+	* src/modules/ps.*: Moved plain print frontend here
+
 2003-05-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-item.h: Removed ::menu and ::knot_holder virtual methods
