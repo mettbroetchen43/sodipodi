@@ -3,6 +3,37 @@
 	* src/libnrtype/nr-type-xft.c (nr_type_xft_init): Removed CORE, so Xft fontlist
 	should now be read properly with Debian PPC and or fontconfig systems
 
+2003-01-15  MenTaLguY  <mental@rydia.net>
+
+	* src/sp-object.c (sp_object_get_unique_id): don't include namespace prefix when generating ids
+
+2003-01-15  MenTaLguY  <mental@rydia.net>
+
+	* src/widgets/sp-xmlview-tree.c (add_node): tree nodes associated with elements pretend they initially have a NULL id
+	(element_attr_changed): display elements with a NULL id properly
+
+2003-01-15  MenTaLguY  <mental@rydia.net>
+
+	* src/xml/repr-private.h: added SPXMLNs structure
+
+	* src/xml/repr.h: added decls for sp_xml_ns_uri_prefix() and sp_xml_ns_prefix_uri()
+
+	* src/xml/repr-io.c: improved handling of namespace prefixes
+	(sp_repr_qualified_name): added hashtable to keep track of NS prefixes used
+	(sp_repr_read_node): Ditto
+	(sp_repr_do_read): Ditto + replaced if cascade with calls to sp_xml_ns_uri_prefix()
+	(sp_repr_set_xmlns_attr): helper to set xmlns attributes
+
+	* src/xml/repr-util.c: added namespaces list
+	(sp_xml_ns_register_defaults): procedure to initialize namespace mapping list
+	(sp_xml_ns_auto_prefix): helper routine to automatically select a "good" prefix for a given namespace URI
+	(sp_xml_ns_uri_prefix): returns a prefix to use for a given namespace URI, registering a mapping automatically if necessary
+	(sp_xml_ns_prefix_uri): returns the namespace URI registered for a given prefix
+
+2003-01-13  MenTaLguY  <mental@rydia.net>
+
+	* src/desktop.c (sp_dtw_desktop_shutdown): rearranged close confirmation buttons according to the Gnome HIG
+ 
 2003-01-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/seltrans.c (sp_sel_trans_grab): Build array of selected item transformations

@@ -833,6 +833,7 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 {
 	static gint count = 0;
 	const gchar * name;
+	const gchar * local;
 	gchar * realid;
 	gchar * b;
 	gint len;
@@ -844,6 +845,12 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 
 	name = sp_repr_name (object->repr);
 	g_assert (name != NULL);
+
+	local = strchr (name, ':');
+	if (local) {
+		name = local + 1;
+	}
+
 	len = strlen (name) + 17;
 	b = alloca (len);
 	g_assert (b != NULL);

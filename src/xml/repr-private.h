@@ -65,6 +65,12 @@ struct _SPRepr {
 	guchar *content;
 };
 
+struct _SPXMLNs {
+	SPXMLNs *next;
+	GQuark uri;
+	GQuark prefix;
+};
+
 #define SP_REPR_NAME(r) g_quark_to_string ((r)->name)
 #define SP_REPR_TYPE(r) ((r)->type)
 #define SP_REPR_CONTENT(r) ((r)->content)

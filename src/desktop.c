@@ -845,12 +845,12 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 	if (doc && (((GObject *) doc)->ref_count == 1)) {
 		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
 			GtkWidget *dlg;
-			gchar *msg;
 			gint b;
-			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME (doc));
-			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO, msg);
-			gtk_dialog_add_button (GTK_DIALOG(dlg), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-			g_free (msg);
+			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, _("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME(doc));
+			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_NO, GTK_RESPONSE_NO);
+			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_SAVE, GTK_RESPONSE_YES);
+			gtk_dialog_set_default_response (GTK_DIALOG (dlg), GTK_RESPONSE_YES);
 			b = gtk_dialog_run (GTK_DIALOG(dlg));
 			gtk_widget_destroy(dlg);
 			switch (b) {

@@ -207,6 +207,9 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 
 	if (vec) {
 		gtk_clist_freeze (GTK_CLIST (tree));
+		if (SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
+			element_attr_changed (repr, "id", NULL, NULL, data);
+		}
 		sp_repr_add_listener (repr, vec, data);
 		sp_repr_synthesize_events (repr, vec, data);
 		gtk_clist_thaw (GTK_CLIST (tree));
@@ -263,8 +266,12 @@ element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_valu
 	if (data->tree->blocked) return;
 
 	if (strcmp (key, "id")) return;
-
-	label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), new_value);
+	
+	if (new_value) {
+		label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), new_value);
+	} else {
+		label = g_strdup_printf ("<%s>", SP_REPR_NAME (repr));
+	}
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }

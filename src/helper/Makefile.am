@@ -43,3 +43,6 @@ sp-marshal.h: sp-marshal.list
 sp-marshal.c: sp-marshal.h sp-marshal.list
 	rm -f $@
 	glib-genmarshal --prefix=sp_marshal --body sp-marshal.list > $@
+
+EXTRA_DIST = sp-marshal.list
+

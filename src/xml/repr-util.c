@@ -19,6 +19,123 @@
 #include "repr-private.h"
 
 static void sp_repr_transfer_ids (SPRepr *new_repr, SPRepr *repr);
+static void sp_xml_ns_register_defaults ();
+static gchar *sp_xml_ns_auto_prefix (const gchar *uri);
+
+/* SPXMLNs */
+
+static SPXMLNs *namespaces=NULL;
+
+void
+sp_xml_ns_register_defaults ()
+{
+	static SPXMLNs defaults[3];
+	defaults[0].uri = g_quark_from_static_string (SP_SODIPODI_NS_URI);
+	defaults[0].prefix = g_quark_from_static_string ("sodipodi");
+	defaults[0].next = &defaults[1];
+	defaults[1].uri = g_quark_from_static_string (SP_XLINK_NS_URI);
+	defaults[1].prefix = g_quark_from_static_string ("xlink");
+	defaults[1].next = &defaults[2];
+	defaults[2].uri = g_quark_from_static_string (SP_SVG_NS_URI);
+	defaults[2].prefix = g_quark_from_static_string ("svg");
+	defaults[2].next = NULL;
+	namespaces = &defaults[0];
+}
+
+gchar *
+sp_xml_ns_auto_prefix (const gchar *uri)
+{
+	const gchar *start, *end;
+	gchar *new_prefix;
+	start = uri;
+	while ((end = strpbrk (start, ":/"))) {
+		start = end + 1;
+	}
+	end = start + strspn (start, "abcdefghijklmnopqrstuvwxyz");
+	if (end == start) {
+		start = "ns";
+		end = start + 2;
+	}
+	new_prefix = g_strndup (start, end - start);
+	if (sp_xml_ns_prefix_uri (new_prefix)) {
+		gchar *temp;
+		int counter=0;
+		do {
+			temp = g_strdup_printf ("%s%d", new_prefix, counter++);
+		} while (sp_xml_ns_prefix_uri (temp));
+		g_free (new_prefix);
+		new_prefix = temp;
+	}
+	return new_prefix;
+}
+
+const gchar *
+sp_xml_ns_uri_prefix (const gchar *uri, const gchar *suggested)
+{
+	GQuark key;
+	SPXMLNs *iter;
+	const gchar *prefix;
+
+	if (!uri) return NULL;
+
+	if (!namespaces) {
+		sp_xml_ns_register_defaults ();
+	}
+
+	key = g_quark_from_string (uri);
+	prefix = NULL;
+	for ( iter = namespaces ; iter ; iter = iter->next ) {
+		if ( iter->uri == key ) {
+			prefix = g_quark_to_string (iter->prefix);
+			break;
+		}
+	}
+	if (!prefix) {
+		const gchar *new_prefix;
+		SPXMLNs *ns;
+		if (suggested) {
+			new_prefix = suggested;
+		} else {
+			new_prefix = sp_xml_ns_auto_prefix (uri);
+		}
+		ns = g_new (SPXMLNs, 1);
+		if (ns) {
+			ns->uri = g_quark_from_string (uri);
+			ns->prefix = g_quark_from_string (new_prefix);
+			ns->next = namespaces;
+			namespaces = ns;
+			prefix = g_quark_to_string (ns->prefix);
+		}
+		if (!suggested) {
+			g_free ((gchar *)new_prefix);
+		}
+	}
+	return prefix;
+}
+
+const gchar *
+sp_xml_ns_prefix_uri (const gchar *prefix)
+{
+	GQuark key;
+	SPXMLNs *iter;
+	const gchar *uri;
+
+	if (!prefix) return NULL;
+
+	if (!namespaces) {
+		sp_xml_ns_register_defaults ();
+	}
+
+	key = g_quark_from_string (prefix);
+	uri = NULL;
+	for ( iter = namespaces ; iter ; iter = iter->next ) {
+		if ( iter->prefix == key ) {
+			uri = g_quark_to_string (iter->uri);
+			break;
+		}
+	}
+	return uri;
+}
 
 /* SPXMLDocument */
 

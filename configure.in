@@ -125,6 +125,9 @@ fi
 AC_SUBST(GNOME_PRINT_CFLAGS)
 AC_SUBST(GNOME_PRINT_LIBS)
 
+dnl fixme:
+gp=no
+
 AM_CONDITIONAL(USE_GNOME_PRINT, test "x$gp" == "xyes")
 if test "x$gp" == "xyes"; then
 	AC_DEFINE(WITH_GNOME_PRINT, 1, [Use gnome print font database and spooler frontend])

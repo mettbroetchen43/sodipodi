@@ -29,7 +29,12 @@ typedef struct _SPRepr SPXMLText;
 typedef struct _SPRepr SPXMLElement;
 typedef struct _SPReprAttr SPXMLAttribute;
 typedef struct _SPReprDoc SPXMLDocument;
+typedef struct _SPXMLNs SPXMLNs;
 
+/* SPXMLNs */
+
+const gchar *sp_xml_ns_uri_prefix (const gchar *uri, const gchar *suggested);
+const gchar *sp_xml_ns_prefix_uri (const gchar *prefix);
 
 /* SPXMLDocument */
 
