@@ -49,6 +49,7 @@ typedef struct _SPGroupClass SPGroupClass;
 
 struct _SPItem {
 	SPObject object;
+	guint stop_paint: 1;	/* If set, ::paint returns TRUE */
 	double affine[6];
 	GSList * display;
 };
@@ -78,19 +79,16 @@ struct _SPItemClass {
 	 * Is used for rendering buffer fills & exporting raster images
 	 */
 
-	void (* paint) (SPItem * item, ArtPixBuf * buf, gdouble * affine);
+	gboolean (* paint) (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 };
+
+/* Flag testing macros */
+
+#define SP_ITEM_STOP_PAINT(i) (SP_ITEM (i)->stop_paint)
 
 /* Standard Gtk function */
 
 GtkType sp_item_get_type (void);
-
-#if 0
-/* Constructors */
-
-SPItem * sp_item_new_root (SPRepr * repr);
-SPItem * sp_item_new (SPRepr * repr, SPGroup * parent);
-#endif
 
 /* Methods */
 
@@ -99,14 +97,9 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
 
-#if 0
-void sp_item_read (SPItem * item, SPRepr * repr);
-void sp_item_read_attr (SPItem * item, SPRepr * repr, const gchar * key);
-#endif
-
 GnomeCanvasItem * sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 void sp_item_hide (SPItem * item, GnomeCanvas * canvas);
-void sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
+gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 /* Utility */
 

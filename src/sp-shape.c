@@ -28,7 +28,7 @@ static void sp_shape_read_attr (SPObject * object, const gchar * attr);
 static void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-static void sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
+static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
 void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
@@ -287,7 +287,7 @@ sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	return (GnomeCanvasItem *) cs;
 }
 
-static void
+static gboolean
 sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 {
 	SPPath *path;
@@ -310,21 +310,23 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 			vp = art_bez_path_to_vec (abp, 0.25);
 			art_free (abp);
 
-			perturbed_vpath = art_vpath_perturb (vp);
-			svpa = art_svp_from_vpath (perturbed_vpath);
-			art_free (perturbed_vpath);
-			svpb = art_svp_uncross (svpa);
-			art_svp_free (svpa);
-			svp = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
-			art_svp_free (svpb);
+			if (comp->curve->closed) {
+				perturbed_vpath = art_vpath_perturb (vp);
+				svpa = art_svp_from_vpath (perturbed_vpath);
+				art_free (perturbed_vpath);
+				svpb = art_svp_uncross (svpa);
+				art_svp_free (svpa);
+				svp = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+				art_svp_free (svpb);
 
-			if (shape->fill->type == SP_FILL_COLOR) {
-				art_rgba_svp_alpha (svp,
-					0, 0, buf->width, buf->height,
-					shape->fill->color,
-					buf->pixels, buf->rowstride, NULL);
+				if (shape->fill->type == SP_FILL_COLOR) {
+					art_rgba_svp_alpha (svp,
+						0, 0, buf->width, buf->height,
+						shape->fill->color,
+						buf->pixels, buf->rowstride, NULL);
+				}
+				art_svp_free (svp);
 			}
-			art_svp_free (svp);
 
 			if (shape->stroke->type == SP_STROKE_COLOR) {
 				svp = art_svp_vpath_stroke (vp,
@@ -341,6 +343,8 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 			art_free (vp);
 		}
 	}
+
+	return FALSE;
 }
 
 void

@@ -17,7 +17,7 @@ static void sp_text_hide_dialog (void);
 
 /* glade gui handlers */
 
-void sp_text_dialog_apply (void);
+void sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum);
 void sp_text_dialog_close (void);
 
 void sp_text_family_select_row (GtkCList * c, gint row, gint column);
@@ -137,7 +137,7 @@ sp_text_read_selection (void)
 }
 
 void
-sp_text_dialog_apply (void)
+sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum)
 {
 	SPRepr * repr;
 	gchar * str;

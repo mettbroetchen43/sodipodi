@@ -23,7 +23,7 @@ static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
 static GnomeCanvasItem * sp_group_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_group_hide (SPItem * item, GnomeCanvas * canvas);
-static void sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
+static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 static SPItemClass * parent_class;
 
@@ -333,24 +333,30 @@ sp_group_hide (SPItem * item, GnomeCanvas * canvas)
 		(* SP_ITEM_CLASS (parent_class)->hide) (item, canvas);
 }
 
-static void
+static gboolean
 sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 {
 	SPGroup * group;
 	SPItem * child;
 	gdouble a[6];
 	GSList * l;
+	gboolean ret;
 
 	group = (SPGroup *) item;
+
+	if (SP_ITEM_CLASS (parent_class)->paint)
+		(* SP_ITEM_CLASS (parent_class)->paint) (item, buf, affine);
+
+	ret = FALSE;
 
 	for (l = group->children; l != NULL; l = l->next) {
 		child = (SPItem *) l->data;
 		art_affine_multiply (a, child->affine, affine);
-		sp_item_paint (child, buf, a);
+		ret = sp_item_paint (child, buf, a);
+		if (ret) return TRUE;
 	}
 
-	if (SP_ITEM_CLASS (parent_class)->paint)
-		(* SP_ITEM_CLASS (parent_class)->paint) (item, buf, affine);
+	return FALSE;
 }
 
 

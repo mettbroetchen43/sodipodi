@@ -1,6 +1,10 @@
 2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
 
     * xml/repr-io.c: A very quick hack to load real svg code (DTD & stuff).
+    * sp-shape.c: Fixed bug in exporting open paths, so they are not filled
+      anymore.
+    * sp-image.c: We can print semitransparent images, although better do not
+      stretch these very much
 
 2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
 

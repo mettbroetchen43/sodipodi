@@ -22,7 +22,7 @@ static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
 static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
-static void sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
+static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 static GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf * sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
@@ -190,15 +190,16 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	SPImage * image;
 	ArtPixBuf * abp;
 	double affine[6];
-	art_u8 * buf, * sptr, * dptr;
+	art_u8 * buf, * tbuf, * sptr, * dptr;
 	gint x, y;
+	gboolean has_alpha;
 
 	image = SP_IMAGE (item);
 
-	if (image->pixbuf == NULL)
-		return;
+	if (image->pixbuf == NULL) return;
 
 	abp = image->pixbuf->art_pixbuf;
+	tbuf = NULL;	/* Keep gcc happy ;-) */
 
 	gnome_print_gsave (gpc);
 
@@ -207,7 +208,39 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	art_affine_translate (affine, 0.0, -1.0);
 	gnome_print_concat (gpc, affine);
 
-	buf = abp->pixels;
+	has_alpha = FALSE;
+
+	for (y = 0; y < abp->height; y++) {
+		sptr = abp->pixels + y * abp->rowstride + 3;
+		for (x = 0; x < abp->width; x++) {
+			if (*sptr != 255) {has_alpha = TRUE; break;}
+			sptr += 3;
+		}
+		if (has_alpha) break;
+	}
+
+	if (has_alpha) {
+		gdouble a[6], aa[6];
+
+		/* Chemistry ;-( */
+		sp_item_i2doc_affine (item, a);
+		art_affine_invert (aa, a);
+
+		tbuf = art_new (art_u8, abp->width * abp->height * 4);
+		memset (tbuf, 255, abp->width * abp->height * 4);
+		abp = art_pixbuf_new_rgba (tbuf, abp->width, abp->height, abp->width * 4);
+
+		item->stop_paint = TRUE;
+		sp_item_paint (SP_ITEM (SP_OBJECT (item)->document->root), abp, aa);
+
+		art_affine_identity (a);
+		art_rgba_rgba_affine (abp->pixels,
+			0, 0, abp->width, abp->height, abp->rowstride,
+			image->pixbuf->art_pixbuf->pixels, abp->width, abp->height,
+			image->pixbuf->art_pixbuf->rowstride,
+			a,
+			ART_FILTER_NEAREST, NULL);
+	}
 
 	buf = g_new (art_u8, abp->width * abp->height * 3);
 
@@ -225,6 +258,10 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	gnome_print_rgbimage (gpc, buf, abp->width, abp->height, abp->width * 3);
 
 	g_free (buf);
+
+	if (has_alpha) {
+		art_pixbuf_free (abp);
+	}
 
 	gnome_print_grestore (gpc);
 }
@@ -256,7 +293,7 @@ sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 	return (GnomeCanvasItem *) ci;
 }
 
-static void
+static gboolean
 sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 {
 	SPImage * image;
@@ -265,13 +302,15 @@ sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 	image = SP_IMAGE (item);
 	ipb = image->pixbuf->art_pixbuf;
 
-	if (ipb->n_channels != 4) return;
+	if (ipb->n_channels != 4) return FALSE;
 
 	art_rgba_rgba_affine (pixbuf->pixels,
 		0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
 		ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
 		affine,
 		ART_FILTER_NEAREST, NULL);
+
+	return FALSE;
 }
 
 /*

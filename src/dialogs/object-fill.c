@@ -17,7 +17,7 @@ static void sp_fill_hide_dialog (void);
 
 /* glade gui handlers */
 
-void sp_object_fill_apply (void);
+void sp_object_fill_apply (GnomePropertyBox * propertybox, gint pagenum);
 void sp_object_fill_close (void);
 void sp_object_fill_color_changed (void);
 void sp_object_fill_none (void);
@@ -121,12 +121,14 @@ sp_fill_read_selection (void)
 }
 
 void
-sp_object_fill_apply (void)
+sp_object_fill_apply (GnomePropertyBox * propertybox, gint pagenum)
 {
 	gdouble color[4];
 	guint32 fill_color;
 	SPFillType fill_type;
 	gchar cstr[80];
+
+	if (pagenum != 0) return;
 
 	/* fixme: */
 	if (css == NULL) return;
@@ -152,6 +154,8 @@ sp_object_fill_apply (void)
 	sp_repr_css_set_property (css, "fill-opacity", cstr);
 
 	apply_fill ();
+
+	gnome_property_box_set_modified (GNOME_PROPERTY_BOX (dialog), FALSE);
 }
 
 void

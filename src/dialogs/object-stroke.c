@@ -17,7 +17,7 @@ static void sp_stroke_hide_dialog (void);
 
 /* glade_gui_handlers */
 
-void sp_object_stroke_apply (void);
+void sp_object_stroke_apply (GnomePropertyBox * propertybox, gint pagenum);
 void sp_object_stroke_close (void);
 
 void sp_object_stroke_changed (void);
@@ -165,10 +165,12 @@ sp_stroke_read_selection (void)
 }
 
 void
-sp_object_stroke_apply (void)
+sp_object_stroke_apply (GnomePropertyBox * propertybox, gint pagenum)
 {
 	gdouble stroke_width;
 	gchar cstr[80];
+
+	if (pagenum != 0) return;
 
 	/* fixme: */
 	if (css == NULL) return;

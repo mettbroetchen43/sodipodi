@@ -12,15 +12,7 @@ static void sp_item_destroy (GtkObject * object);
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_read_attr (SPObject * object, const gchar * key);
 
-#if 0
-static void sp_item_set_order (SPObject * object);
-#endif
-
 static gchar * sp_item_private_description (SPItem * item);
-
-#if 0
-static void sp_item_private_read (SPItem * item, SPRepr * repr);
-#endif
 
 static GnomeCanvasItem * sp_item_private_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_item_private_hide (SPItem * item, GnomeCanvas * canvas);
@@ -257,15 +249,19 @@ void sp_item_hide (SPItem * item, GnomeCanvas * canvas)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, canvas);
 }
 
-void sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
+gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 	g_assert (buf != NULL);
 	g_assert (affine != NULL);
 
+	if (SP_ITEM_STOP_PAINT (item)) return TRUE;
+
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint) (item, buf, affine);
+		return (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint) (item, buf, affine);
+
+	return FALSE;
 }
 
 GnomeCanvasItem *
