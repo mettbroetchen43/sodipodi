@@ -1,3 +1,8 @@
+2000-11-17  Yuri Syrota  <rasta@renome.rovno.ua>
+
+	* glade/transformation.c
+	* glade/transformation.glade: correct "vertival move" to "vertical move"
+	
 2000-11-17  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/dialogs/text/edit.c (sp-text-dialog-close): Destroy

@@ -105,19 +105,19 @@ msgstr "Кол╕р с╕тки"
 
 #: glade/desktop.c:17 glade/desktop.c:36
 msgid "Snap distance:"
-msgstr ""
+msgstr "В╕дстань при╓днання:"
 
 #: glade/desktop.c:18
 msgid "Set maximum distance for grid snapping"
-msgstr ""
+msgstr "Встановити максимальну в╕дстань для при╓днанн до с╕тки"
 
 #: glade/desktop.c:19 glade/desktop.c:32
 msgid "Snap units:"
-msgstr ""
+msgstr "Одиниц╕ при╓днання:"
 
 #: glade/desktop.c:20
 msgid "Choose unit system for grid snapping"
-msgstr ""
+msgstr "Вибрати одиниц╕ вим╕ру для при╓днання до с╕тки"
 
 #: glade/desktop.c:21 glade/desktop.c:34
 msgid "Pixels\n"
@@ -125,31 +125,31 @@ msgstr "П╕ксел╕\n"
 
 #: glade/desktop.c:23
 msgid "Spacing Y:"
-msgstr ""
+msgstr "╤нтервал по Y:"
 
 #: glade/desktop.c:24
 msgid "Set distance between vertical grid lines"
-msgstr ""
+msgstr "Встановити в╕дстань м╕ж вертикальними л╕н╕ями с╕тки"
 
 #: glade/desktop.c:25
 msgid "Spacing X:"
-msgstr ""
+msgstr "╤нтервал по X:"
 
 #: glade/desktop.c:26
 msgid "Set distance between horizontal grid lines"
-msgstr ""
+msgstr "Встановити в╕дстань м╕ж горизонтальними л╕н╕ями с╕тки"
 
 #: glade/desktop.c:27
 msgid "Origin X:"
-msgstr ""
+msgstr "Початок по X:"
 
 #: glade/desktop.c:28
 msgid "Origin Y:"
-msgstr ""
+msgstr "Почиток по Y:"
 
 #: glade/desktop.c:29 glade/desktop.c:30
 msgid "Set origin of page coordinate system"
-msgstr ""
+msgstr "Встановити початок системи координат стор╕нки"
 
 #: glade/desktop.c:31
 msgid "Grid"
@@ -157,11 +157,11 @@ msgstr "С╕тка"
 
 #: glade/desktop.c:33
 msgid "Choose unit system for guideline snapping"
-msgstr ""
+msgstr "Вибрати одиниц╕ вим╕ру для при╓днання до направляючих"
 
 #: glade/desktop.c:37
 msgid "Set maximum distance for guideline snapping"
-msgstr ""
+msgstr "Встановити максимальну в╕дстань для при╓днання до направляючих"
 
 #: glade/desktop.c:38
 msgid "Guides color:"
@@ -272,7 +272,7 @@ msgstr "Обведено"
 
 #: glade/object_props.c:10
 msgid "Behind fill"
-msgstr ""
+msgstr "Перед заповненням"
 
 #: glade/object_props.c:11
 msgid "Stroke color : "
