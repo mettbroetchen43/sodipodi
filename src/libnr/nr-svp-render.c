@@ -338,9 +338,9 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 	/* Find starting pixel row */
 	/* g_assert (svl->bbox.y0 == svl->vertex->y); */
 	sidx = 0;
-	while (!svp->segments[sidx].length && (sidx < svp->length)) sidx += 1;
+	while (NR_SVPSEG_IS_FLAT (svp, sidx) && (sidx < svp->length)) sidx += 1;
 	if (sidx >= svp->length) return;
-	ystart = (int) NR_SVPSEG_Y0 (svp, sidx);
+	ystart = (int) floor (NR_SVPSEG_Y0 (svp, sidx));
 	if (ystart > iY0) {
 		if (ystart >= iY1) return;
 		px += (ystart - iY0) * rs;
@@ -354,14 +354,19 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 
 	/* Construct initial slice list */
 	slices = NULL;
-	while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) <= dY0)) {
-		NRSVPSegment *seg;
-		seg = svp->segments + sidx;
-		/* g_assert (nsvl->bbox.y0 == nsvl->vertex->y); */
-		if (seg->wind && (NR_SVPSEG_Y1 (svp, sidx) > dY0)) {
-			NRSlice *newslice;
-			newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, dY0);
-			slices = nr_slice_insert_sorted (slices, newslice);
+	while (sidx < svp->length) {
+		if (!NR_SVPSEG_IS_FLAT (svp, sidx)) {
+			NRSVPSegment *seg;
+			/* It is real renderable segment */
+			/* Postpone if starts above initial slice */
+			if (NR_SVPSEG_Y0 (svp, sidx) > dY0) break;
+			seg = svp->segments + sidx;
+			if (seg->wind && (NR_SVPSEG_Y1 (svp, sidx) > dY0)) {
+				/* We are renderable and cross initial slice */
+				NRSlice *newslice;
+				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, dY0);
+				slices = nr_slice_insert_sorted (slices, newslice);
+			}
 		}
 		sidx += 1;
 	}
@@ -385,16 +390,22 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		dy1 = dy0 + 1.0;
 
 		/* Add possible new svls to slice list */
-		while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) < dy1)) {
-			NRSVPSegment *seg;
-			seg = svp->segments + sidx;
-			if (seg->wind) {
-				double y;
-				NRSlice *newslice;
-				/* fixme: we should use safely nsvl->vertex->y here */
-				y = MAX (dy0, NR_SVPSEG_Y0 (svp, sidx));
-				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y);
-				slices = nr_slice_insert_sorted (slices, newslice);
+		while (sidx < svp->length) {
+			if (!NR_SVPSEG_IS_FLAT (svp, sidx)) {
+				NRSVPSegment *seg;
+				/* It is real renderable segment */
+				/* Postpone if starts above ending slice */
+				if (NR_SVPSEG_Y0 (svp, sidx) > dy1) break;
+				seg = svp->segments + sidx;
+				if (seg->wind) {
+					double y;
+					NRSlice *newslice;
+					/* We are renderable */
+					/* fixme: we should use safely nsvl->vertex->y here */
+					y = MAX (dy0, NR_SVPSEG_Y0 (svp, sidx));
+					newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y);
+					slices = nr_slice_insert_sorted (slices, newslice);
+				}
 			}
 			sidx += 1;
 		}
@@ -414,10 +425,11 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 				if (cs->points[cs->current + 1].y > dy1) {
 					/* The same slice continues */
 					rx1 = rx0 + (dy1 - ry0) * cs->stepx;
-					ry1 = dy0 + 1;
+					ry1 = dy0 + 1.0;
 					cs->x = rx1;
 					cs->y = ry1;
 				} else {
+					/* Subpixel height run */
 					cs->current += 1;
 					rx1 = cs->points[cs->current].x;
 					ry1 = cs->points[cs->current].y;
@@ -446,11 +458,11 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		}
 		/* Slices are expanded to next scanline */
 		/* Run list is generated */
-		/* find initial value */
+		/* Globalval is the sum of all finished runs */
 		globalval = 0.0;
 		if ((runs) && (dX0 < runs->x0)) {
 			/* First run starts right from x0 */
-			xstart = (int) runs->x0;
+			xstart = (int) floor (runs->x0);
 		} else {
 			NRRun *sr, *cr;
 			/* First run starts left from x0 */
@@ -486,7 +498,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 			float localval;
 			unsigned int fill;
 			float fillstep;
-			int xstop;
+			int rx1;
 			int c24;
 
 			dx0 = ix0;
@@ -494,13 +506,12 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 			ix1 = ix0 + 1;
 
 			/* process runs */
-			/* fixme: generate fills */
 			localval = globalval;
 			sr = NULL;
 			cr = runs;
 			fill = TRUE;
 			fillstep = 0.0;
-			xstop = iX1;
+			rx1 = iX1;
 			while ((cr) && (cr->x0 < dx1)) {
 				if (cr->x1 <= dx1) {
 					/* Run ends here */
@@ -525,7 +536,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 						if (cr->x0 > ix0) {
 							fill = FALSE;
 						} else {
-							xstop = MIN (xstop, (int) floor (cr->x1));
+							rx1 = MIN (rx1, (int) floor (cr->x1));
 							fillstep += cr->step;
 						}
 					}
@@ -537,18 +548,24 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 				}
 			}
 			if (fill) {
-				if (cr) xstop = MIN (xstop, (int) floor (cr->x0));
+				if (cr) rx1 = MIN (rx1, (int) floor (cr->x0));
 			}
 			localval = CLAMP (localval, 0.0, 1.0);
-			c24 = (int) (16777215 * localval + 0.5);
-			if (fill && (xstop > ix1)) {
+			c24 = (int) floor (16777215 * localval + 0.5);
+			if (fill && (rx1 > ix1)) {
+				NRRun *r;
 				int s24;
-				s24 = (int) (16777215 * fillstep + 0.5);
+				s24 = (int) floor (16777215 * fillstep + 0.5);
 				if ((s24 != 0) || (c24 > 65535)) {
-					run (d, xstop - ix0, c24, s24, data);
+					run (d, rx1 - ix0, c24, s24, data);
 				}
-				d += bpp * (xstop - ix0);
-				ix0 = xstop - 1;
+				/* We have to rewind run positions as well */
+				for (r = runs; r && (r->x0 < dx1); r = r->next) {
+					r->x = rx1;
+					r->value = (rx1 - r->x0) * r->step;
+				}
+				d += bpp * (rx1 - ix0);
+				ix0 = rx1 - 1;
 			} else {
 				run (d, 1, c24, 0, data);
 				d += bpp;

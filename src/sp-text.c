@@ -59,7 +59,7 @@ static void sp_string_init (SPString *string);
 static void sp_string_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_string_release (SPObject *object);
 static void sp_string_read_content (SPObject *object);
-static void sp_string_modified (SPObject *object, guint flags);
+static void sp_string_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 
 static void sp_string_calculate_dimensions (SPString *string);
 static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
@@ -101,7 +101,7 @@ sp_string_class_init (SPStringClass *class)
 	sp_object_class->build = sp_string_build;
 	sp_object_class->release = sp_string_release;
 	sp_object_class->read_content = sp_string_read_content;
-	sp_object_class->modified = sp_string_modified;
+	sp_object_class->update = sp_string_update;
 }
 
 static void
@@ -160,17 +160,17 @@ sp_string_read_content (SPObject *object)
 
 	/* Is this correct? I think so (Lauris) */
 	/* Virtual method will be invoked BEFORE signal, so we can update there */
-	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 /* This happen before parent does layouting but after styles have been set */
 /* So it is the right place to calculate untransformed string dimensions */
 
 static void
-sp_string_modified (SPObject *object, guint flags)
+sp_string_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
-	if (((SPObjectClass *) string_parent_class)->modified)
-		((SPObjectClass *) string_parent_class)->modified (object, flags);
+	if (((SPObjectClass *) string_parent_class)->update)
+		((SPObjectClass *) string_parent_class)->update (object, ctx, flags);
 
 	if (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG)) {
 		/* Parent style or we ourselves changed, so recalculate */
@@ -395,7 +395,7 @@ static void sp_tspan_set (SPObject *object, unsigned int key, const unsigned cha
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
 static void sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags);
-static void sp_tspan_modified (SPObject *object, guint flags);
+static void sp_tspan_modified (SPObject *object, unsigned int flags);
 static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
@@ -529,14 +529,14 @@ sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value)
 			sp_svg_length_unset (&tspan->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_Y:
 		if (!sp_svg_length_read (value, &tspan->ly.y)) {
 			sp_svg_length_unset (&tspan->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_DX:
 		if (!sp_svg_length_read (value, &tspan->ly.dx)) {
@@ -638,11 +638,13 @@ sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags)
 }
 
 static void
-sp_tspan_modified (SPObject *object, guint flags)
+sp_tspan_modified (SPObject *object, unsigned int flags)
 {
 	SPTSpan *tspan;
+	SPStyle *style;
 
 	tspan = SP_TSPAN (object);
+	style = SP_OBJECT_STYLE (object);
 
 	if (((SPObjectClass *) tspan_parent_class)->modified)
 		((SPObjectClass *) tspan_parent_class)->modified (object, flags);
@@ -953,14 +955,14 @@ sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 			sp_svg_length_unset (&text->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_Y:
 		if (!sp_svg_length_read (value, &text->ly.y)) {
 			sp_svg_length_unset (&text->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_DX:
 		if (!sp_svg_length_read (value, &text->ly.dx)) {
@@ -1125,9 +1127,15 @@ sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 		}
 		sp_object_unref (SP_OBJECT (child), object);
 	}
+	if (text->relayout || (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG))) {
+		/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
+		/* fixme: Even now it may not work, as we are delayed */
+		/* fixme: So check modification flag everywhere immediate state is used */
+		sp_text_update_immediate_state (text);
+		sp_text_set_shape (text);
+		text->relayout = FALSE;
+	}
 }
-
-/* fixme: This is wrong, as we schedule relayout every time something changes */
 
 static void
 sp_text_modified (SPObject *object, guint flags)
@@ -1159,15 +1167,6 @@ sp_text_modified (SPObject *object, guint flags)
 			sp_object_invoke_modified (child, cflags);
 		}
 		sp_object_unref (SP_OBJECT (child), object);
-	}
-
-	if (text->relayout || (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG))) {
-		/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
-		/* fixme: Even now it may not work, as we are delayed */
-		/* fixme: So check modification flag everywhere immediate state is used */
-		sp_text_update_immediate_state (text);
-		sp_text_set_shape (text);
-		text->relayout = FALSE;
 	}
 }
 
@@ -1821,7 +1820,7 @@ sp_text_request_relayout (SPText *text, guint flags)
 {
 	text->relayout = TRUE;
 
-	sp_object_request_modified (SP_OBJECT (text), flags);
+	sp_object_request_update (SP_OBJECT (text), flags);
 }
 
 /* fixme: Think about these (Lauris) */

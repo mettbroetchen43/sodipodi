@@ -42,10 +42,17 @@ struct _NRSVP {
 	NRSVPSegment segments[1];
 };
 
-#define NR_SVPSEG_X0(svp,sidx) ((svp)->segments[sidx].x0)
-#define NR_SVPSEG_Y0(svp,sidx) ((svp)->points[(svp)->segments[sidx].start].y)
-#define NR_SVPSEG_X1(svp,sidx) ((svp)->segments[sidx].x1)
-#define NR_SVPSEG_Y1(svp,sidx) ((svp)->points[(svp)->segments[sidx].start + (svp)->segments[sidx].length - 1].y)
+#define NR_SVPSEG_LENGTH(s,i) ((s)->segments[i].length)
+#define NR_SVPSEG_IS_FLAT(s,i) (!(s)->segments[i].length)
+
+#define NR_SVPSEG_X0(s,i) ((s)->segments[i].x0)
+#define NR_SVPSEG_Y0(s,i) ((s)->points[(s)->segments[i].start].y)
+#define NR_SVPSEG_X1(s,i) ((s)->segments[i].x1)
+#define NR_SVPSEG_Y1(s,i) ((s)->points[(s)->segments[i].start + (s)->segments[i].length - 1].y)
+
+#define NR_SVPFLAT_X0(s,i) (((NRSVPFlat *) (s)->segments + i)->x0)
+#define NR_SVPFLAT_X1(s,i) (((NRSVPFlat *) (s)->segments + i)->x1)
+#define NR_SVPFLAT_Y(s,i) (((NRSVPFlat *) (s)->segments + i)->y)
 
 void nr_svp_free (NRSVP *svp);
 
