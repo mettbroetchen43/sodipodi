@@ -336,6 +336,8 @@ sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, cons
 	return b;
 }
 
+#include <gtk/gtkstock.h>
+
 static GtkWidget *
 sp_toolbox_file_create (void)
 {
@@ -349,17 +351,17 @@ sp_toolbox_file_create (void)
 	tb = sp_toolbox_new (t, _("File"), "file", "toolbox_file");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "file_new", GTK_SIGNAL_FUNC (sp_file_new), tt, _("Create new SVG document"));
-	sp_toolbox_button_new (t, 4, "file_open", GTK_SIGNAL_FUNC (sp_file_open_dialog), tt, _("Open existing SVG document"));
-	sp_toolbox_button_new (t, 1, "file_save", GTK_SIGNAL_FUNC (sp_file_save), tt, _("Save document"));
-	sp_toolbox_button_new (t, 5, "file_save_as", GTK_SIGNAL_FUNC (sp_file_save_as), tt, _("Save document under new name"));
-	b = sp_toolbox_button_new (t, 2, "file_print", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
-	b = sp_toolbox_button_new (t, 6, "file_print_preview", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
+	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_FILE_NEW, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_FILE_OPEN, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_FILE_SAVE, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_FILE_SAVE_AS, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_FILE_PRINT, tt);
+	b = sp_toolbox_button_new_from_verb (t, 6, SP_VERB_FILE_PRINT_PREVIEW, tt);
 #ifndef WITH_GNOME_PRINT
 	gtk_widget_set_sensitive (b, FALSE);
 #endif
-	sp_toolbox_button_new (t, 3, "file_import", GTK_SIGNAL_FUNC (sp_file_import), tt, _("Import bitmap or SVG image into document"));
-	sp_toolbox_button_new (t, 7, "file_export", GTK_SIGNAL_FUNC (sp_file_export_dialog), tt, _("Export document as PNG bitmap"));
+	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_FILE_IMPORT, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_FILE_EXPORT, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.file");
 	if (repr) {
@@ -388,11 +390,11 @@ sp_toolbox_edit_create (void)
 
 	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_EDIT_UNDO, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_EDIT_REDO, tt);
-	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_EDIT_DELETE, tt);
-	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_EDIT_CUT, tt);
-	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_EDIT_COPY, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_EDIT_PASTE, tt);
-	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_EDIT_DUPLICATE, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_EDIT_DELETE, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_EDIT_CUT, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_EDIT_COPY, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_EDIT_PASTE, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_EDIT_DUPLICATE, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.edit");
 	if (repr) {

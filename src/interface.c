@@ -23,6 +23,7 @@
 #ifdef WITH_MODULES
 #include "modules/sp-module-sys.h"
 #endif /* WITH_MODULES */
+#include "widgets/icon.h"
 
 #include "verbs.h"
 
@@ -201,7 +202,7 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 	if (stock) {
 		item = gtk_image_menu_item_new_from_stock (stock, NULL);
 	} else if (label) {
-		item = gtk_menu_item_new_with_label (label);
+		item = gtk_image_menu_item_new_with_label (label);
 	} else {
 		item = gtk_separator_menu_item_new ();
 	}
@@ -224,13 +225,16 @@ static GtkWidget *
 sp_ui_menu_append_item_from_verb (GtkMenu *menu, unsigned int verb)
 {
 	SPAction *action;
-	GtkWidget *item;
+	GtkWidget *item, *icon;
 
 	action = sp_verb_get_action (verb);
 	if (!action) return NULL;
 	/* fixme: Handle stock somehow (Lauris) */
-	item = gtk_menu_item_new_with_label (action->name);
+	item = gtk_image_menu_item_new_with_label (action->name);
 	gtk_widget_show (item);
+	icon = sp_icon_new (20, action->image);
+	gtk_widget_show (icon);
+	gtk_image_menu_item_set_image ((GtkImageMenuItem *) item, icon);
 	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_ui_menu_activate), action);
 	gtk_menu_append (GTK_MENU (menu), item);
 
@@ -414,16 +418,17 @@ sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
 static void
 sp_ui_event_context_menu (GtkMenu *menu, SPDocument *doc)
 {
-	sp_ui_menu_append_item (menu, NULL, _("Select"), G_CALLBACK(sp_event_context_set_select), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Node"), G_CALLBACK(sp_event_context_set_node_edit), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Rectangle"), G_CALLBACK(sp_event_context_set_rect), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Arc"), G_CALLBACK(sp_event_context_set_arc), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Star"), G_CALLBACK(sp_event_context_set_star), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Spiral"), G_CALLBACK(sp_event_context_set_spiral), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Freehand"), G_CALLBACK(sp_event_context_set_freehand), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Dynahand"), G_CALLBACK(sp_event_context_set_dynahand), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Text"), G_CALLBACK(sp_event_context_set_text), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Zoom"), G_CALLBACK(sp_event_context_set_zoom), NULL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_SELECT);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_NODE);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_RECT);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_ARC);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_STAR);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_SPIRAL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_PEN);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_PENCIL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_CALLIGRAPHIC);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_TEXT);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_CONTEXT_ZOOM);
 }
 
 static void

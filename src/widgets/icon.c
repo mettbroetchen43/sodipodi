@@ -22,6 +22,8 @@
 #include <libnr/nr-pixblock-pattern.h>
 #include <libnr/nr-pixops.h>
 
+#include <gtk/gtkiconfactory.h>
+
 #include "forward.h"
 #include "sodipodi-private.h"
 #include "document.h"
@@ -149,7 +151,7 @@ sp_icon_new (unsigned int size, const unsigned char *name)
 	icon->size = CLAMP (size, 1, 128);
 
 	GTK_OBJECT_FLAGS (icon) &= ~SP_ICON_FLAG_STATIC_DATA;
-	icon->px = sp_icon_image_load (name, icon->size);
+	icon->px = sp_icon_image_load_gtk ((GtkWidget *) icon, name, icon->size);
 
 	return (GtkWidget *) icon;
 }
@@ -185,6 +187,43 @@ sp_icon_image_load (const unsigned char *name, unsigned int size)
 	return px;
 }
 
+int
+sp_icon_get_gtk_size (int size)
+{
+	static int map[64] = {0};
+	size = CLAMP (size, 4, 63);
+	if (!map[size]) {
+		static int count = 0;
+		char c[64];
+		g_snprintf (c, 64, "SodipodiIcon%d", count++);
+		map[size] = gtk_icon_size_register (c, size, size);
+	}
+	return map[size];
+}
+
+unsigned char *
+sp_icon_image_load_gtk (GtkWidget *widget, const unsigned char *name, unsigned int size)
+{
+	/* fixme: Make stock/nonstock configurable */
+	if (!strncmp (name, "gtk-", 4)) {
+		GdkPixbuf *pb;
+		unsigned char *px, *spx;
+		int gtksize, srs, y;
+		gtksize = sp_icon_get_gtk_size (size);
+		pb = gtk_widget_render_icon (widget, name, gtksize, NULL);
+		if (!gdk_pixbuf_get_has_alpha (pb)) gdk_pixbuf_add_alpha (pb, FALSE, 0, 0, 0);
+		spx = gdk_pixbuf_get_pixels (pb);
+		srs = gdk_pixbuf_get_rowstride (pb);
+		px = nr_new (unsigned char, 4 * size * size);
+		for (y = 0; y < size; y++) {
+			memcpy (px + 4 * y * size, spx + y * srs, 4 * size);
+		}
+		g_object_unref ((GObject *) pb);
+		return px;
+	} else {
+		return sp_icon_image_load (name, size);
+	}
+}
 
 static void
 sp_icon_paint (SPIcon *icon, GdkRectangle *area)

@@ -497,7 +497,7 @@ sp_button_new (unsigned int size, const unsigned char *name, const unsigned char
 	button->noptions = 1;
 	button->size = CLAMP (size, 1, 128);
 	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_icon_image_load (name, button->size);
+	button->options[0].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
 	button->options[0].tip = g_strdup (tip);
 
 	return (GtkWidget *) button;
@@ -514,7 +514,7 @@ sp_button_toggle_new (unsigned int size, const unsigned char *name, const unsign
 	button->type = SP_BUTTON_TYPE_TOGGLE;
 	button->size = CLAMP (size, 1, 128);
 	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_icon_image_load (name, button->size);
+	button->options[0].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
 	button->options[0].tip = g_strdup (tip);
 
 	return (GtkWidget *) button;
@@ -572,7 +572,7 @@ sp_button_toggle_set_down (SPButton *button, unsigned int down, unsigned int sig
 void
 sp_button_add_option (SPButton *button, unsigned int option, const unsigned char *name, const unsigned char *tip)
 {
-	button->options[option].px = sp_icon_image_load (name, button->size);
+	button->options[option].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
 	button->options[option].tip = g_strdup (tip);
 
 	if ((option == button->option) && button->tooltips) {

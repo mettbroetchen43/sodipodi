@@ -11,6 +11,8 @@
 
 #include <assert.h>
 
+#include <gtk/gtkstock.h>
+
 #include "helper/sp-intl.h"
 
 #include "select-context.h"
@@ -26,6 +28,7 @@
 #include "dropper-context.h"
 
 #include "sodipodi-private.h"
+#include "file.h"
 #include "document.h"
 #include "desktop.h"
 #include "selection-chemistry.h"
@@ -51,6 +54,40 @@ sp_verb_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data
 	verb = (unsigned int) data;
 	ex = sp_shortcut_get_verb (shortcut);
 	if (verb != ex) sp_shortcut_set_verb (shortcut, verb, FALSE);
+}
+
+static void
+sp_verb_action_file_perform (SPAction *action, void *data)
+{
+
+	switch ((int) data) {
+	case SP_VERB_FILE_NEW:
+		sp_file_new ();
+		break;
+	case SP_VERB_FILE_OPEN:
+		sp_file_open_dialog (NULL, NULL);
+		break;
+	case SP_VERB_FILE_SAVE:
+		sp_file_save (NULL, NULL);
+		break;
+	case SP_VERB_FILE_SAVE_AS:
+		sp_file_save_as (NULL, NULL);
+		break;
+	case SP_VERB_FILE_PRINT:
+		sp_file_print (NULL, NULL);
+		break;
+	case SP_VERB_FILE_PRINT_PREVIEW:
+		sp_file_print_preview (NULL, NULL);
+		break;
+	case SP_VERB_FILE_IMPORT:
+		sp_file_import (NULL);
+		break;
+	case SP_VERB_FILE_EXPORT:
+		sp_file_export_dialog (NULL);
+		break;
+	default:
+		break;
+	}
 }
 
 static void
@@ -207,10 +244,12 @@ sp_verb_action_edit_perform (SPAction *action, void *data)
 	}
 }
 
+static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, sp_verb_action_set_shortcut};
 
+#define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
 #define SP_VERB_IS_ZOOM(v) ((v >= SP_VERB_ZOOM_IN) && (v <= SP_VERB_ZOOM_SELECTION))
 #define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
@@ -227,6 +266,15 @@ static const SPVerbActionDef props[] = {
 	/* Header */
 	{SP_VERB_INVALID, NULL, NULL, NULL, NULL},
 	{SP_VERB_NONE, "None", N_("None"), N_("Does nothing"), NULL},
+	/* File */
+	{SP_VERB_FILE_NEW, "FileNew", N_("New"), N_("Create new SVG document"), GTK_STOCK_NEW },
+	{SP_VERB_FILE_OPEN, "FileOpen", N_("Open..."), N_("Open existing SVG document"), GTK_STOCK_OPEN },
+	{SP_VERB_FILE_SAVE, "FileSave", N_("Save"), N_("Save document"), GTK_STOCK_SAVE },
+	{SP_VERB_FILE_SAVE_AS, "FileSaveAs", N_("Save As..."), N_("Save document under new name"), GTK_STOCK_SAVE_AS },
+	{SP_VERB_FILE_PRINT, "FilePrint", N_("Print..."), N_("Print document"), GTK_STOCK_PRINT },
+	{SP_VERB_FILE_PRINT_PREVIEW, "FilePrintPreview", N_("Print Preview"), N_("Preview document printout"), GTK_STOCK_PRINT_PREVIEW },
+	{SP_VERB_FILE_IMPORT, "FileImport", N_("Import"), N_("Import bitmap or SVG image into document"), "file_import"},
+	{SP_VERB_FILE_EXPORT, "FileExport", N_("Export"), N_("Export document as PNG bitmap"), "file_export"},
 	/* Event contexts */
 	{SP_VERB_CONTEXT_SELECT, "DrawSelect", N_("Select"), N_("Select and transform objects"), "draw_select"},
 	{SP_VERB_CONTEXT_NODE, "DrawNode", N_("Node edit"), N_("Modify existing objects by control nodes"), "draw_node"},
@@ -250,12 +298,12 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_ZOOM_DRAWING, "ZoomDrawing", N_("Drawing"), N_("Fit the whole drawing into window"), "zoom_draw"},
 	{SP_VERB_ZOOM_SELECTION, "ZoomSelection", N_("Selection"), N_("Fit the whole selection into window"), "zoom_select"},
 	/* Edit */
-	{SP_VERB_EDIT_UNDO, "EditUndo", N_("Undo"), N_("Revert last action"), "edit_undo"},
-	{SP_VERB_EDIT_REDO, "EditRedo", N_("Redo"), N_("Do again undone action"), "edit_redo"},
-	{SP_VERB_EDIT_CUT, "EditCut", N_("Cut"), N_("Cut selected objects to clipboard"), "edit_cut"},
-	{SP_VERB_EDIT_COPY, "EditCopy", N_("Copy"), N_("Copy selected objects to clipboard"), "edit_copy"},
-	{SP_VERB_EDIT_PASTE, "EditPaste", N_("Paste"), N_("Paste objects from clipboard"), "edit_paste"},
-	{SP_VERB_EDIT_DELETE, "EditDelete", N_("Delete"), N_("Delete selected objects"), "edit_delete"},
+	{SP_VERB_EDIT_UNDO, "EditUndo", N_("Undo"), N_("Revert last action"), GTK_STOCK_UNDO},
+	{SP_VERB_EDIT_REDO, "EditRedo", N_("Redo"), N_("Do again undone action"), GTK_STOCK_REDO},
+	{SP_VERB_EDIT_CUT, "EditCut", N_("Cut"), N_("Cut selected objects to clipboard"), GTK_STOCK_CUT},
+	{SP_VERB_EDIT_COPY, "EditCopy", N_("Copy"), N_("Copy selected objects to clipboard"), GTK_STOCK_COPY},
+	{SP_VERB_EDIT_PASTE, "EditPaste", N_("Paste"), N_("Paste objects from clipboard"), GTK_STOCK_PASTE},
+	{SP_VERB_EDIT_DELETE, "EditDelete", N_("Delete"), N_("Delete selected objects"), GTK_STOCK_DELETE},
 	{SP_VERB_EDIT_DUPLICATE, "EditDuplicate", N_("Duplicate"), N_("Duplicate selected objects"), "edit_duplicate"},
 	/* Footer */
 	{SP_VERB_LAST, NULL, NULL, NULL, NULL}
@@ -270,7 +318,12 @@ sp_verbs_init (void)
 		assert (props[v].code == v);
 		sp_action_setup (&verb_actions[v], props[v].id, props[v].name, props[v].tip, props[v].image);
 		/* fixme: Make more elegant (Lauris) */
-		if (SP_VERB_IS_CONTEXT (v)) {
+		if (SP_VERB_IS_FILE (v)) {
+			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
+						       (NRObjectEventVector *) &action_file_vector,
+						       sizeof (SPActionEventVector),
+						       (void *) v);
+		} else if (SP_VERB_IS_CONTEXT (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
 						       (NRObjectEventVector *) &action_ctx_vector,
 						       sizeof (SPActionEventVector),
