@@ -1,11 +1,11 @@
 #
 # Sodipodi bonobo embeddable
-# Author: Lauris Kaplinski <lauris@ariman.ee>
+# Author: Lauris Kaplinski <lauris@ximian.com>
 #
 
 INCLUDES = \
 	-I$(includedir) \
-	-I$(SODIPODI_CFLAGS)
+	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspbonobo.a
 

@@ -248,49 +248,8 @@ sp_item_style_changed (SPObject *object, guint flags)
 		u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
 		a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
 		/* Calculate actual stroke width */
-		if (style->stroke_width.unit->base == SP_UNIT_DIMENSIONLESS) {
-			static const SPUnit *percent = NULL;
-			/* Check for percentage */
-			if (!percent) percent = sp_unit_get_by_abbreviation ("%");
-			if (style->stroke_width.unit == percent) {
-				dx = sp_document_width (object->document);
-				dy = sp_document_height (object->document);
-				style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
-				style->user_stroke_width = style->absolute_stroke_width * 0.01 * a2u;
-			} else {
-				/* Treat as points */
-				style->absolute_stroke_width = style->stroke_width.distance;
-				style->user_stroke_width = style->absolute_stroke_width * a2u;
-			}
-		} else if (style->stroke_width.unit->base == SP_UNIT_VOLATILE) {
-			static const SPUnit *em = NULL;
-			static const SPUnit *ex = NULL;
-			/* fixme: This need real care */
-			if (!em) em = sp_unit_get_by_abbreviation ("em");
-			if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
-			if (style->stroke_width.unit == em) {
-				style->user_stroke_width = style->stroke_width.distance * 12.0;
-				style->absolute_stroke_width = style->user_stroke_width * u2a;
-			} else {
-				style->user_stroke_width = style->stroke_width.distance * 10.0;
-				style->absolute_stroke_width = style->user_stroke_width * u2a;
-			}
-		} else {
-			/* Everything else can be done in one step */
-			/* We just know, that pt == 1.25 * px */
-			style->absolute_stroke_width = style->stroke_width.distance;
-			style->user_stroke_width = style->absolute_stroke_width;
-			sp_convert_distance_full (&style->absolute_stroke_width,
-						  style->stroke_width.unit,
-						  sp_unit_get_identity (SP_UNIT_ABSOLUTE),
-						  u2a,
-						  (1 / 1.25));
-			sp_convert_distance_full (&style->user_stroke_width,
-						  sp_unit_get_identity (SP_UNIT_USERSPACE),
-						  style->stroke_width.unit,
-						  u2a,
-						  (1 / 1.25));
-		}
+		style->absolute_stroke_width = sp_item_distance_to_svg_viewport (item, style->stroke_width.distance, style->stroke_width.unit);
+		style->user_stroke_width = style->absolute_stroke_width * a2u;
 		style->real_stroke_width_set = TRUE;
 	}
 
@@ -850,5 +809,113 @@ sp_item_view_list_remove (SPItemView * list, SPItemView * view)
 
 	g_assert_not_reached ();
 	return NULL;
+}
+
+/* Convert distances into SVG units */
+
+static const SPUnit *absolute = NULL;
+static const SPUnit *percent = NULL;
+static const SPUnit *em = NULL;
+static const SPUnit *ex = NULL;
+
+gdouble
+sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *unit)
+{
+	gdouble i2doc[6], dx, dy;
+	gdouble a2u, u2a;
+
+	g_return_val_if_fail (item != NULL, distance);
+	g_return_val_if_fail (SP_IS_ITEM (item), distance);
+	g_return_val_if_fail (unit != NULL, distance);
+
+	sp_item_i2doc_affine (item, i2doc);
+	dx = i2doc[0] + i2doc[2];
+	dy = i2doc[1] + i2doc[3];
+	u2a = sqrt (dx * dx + dy * dy) * M_SQRT1_2;
+	a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
+
+	if (unit->base == SP_UNIT_DIMENSIONLESS) {
+		/* Check for percentage */
+		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
+		if (unit == percent) {
+			/* Percentage of viewport */
+			/* fixme: full viewport support (Lauris) */
+			dx = sp_document_width (SP_OBJECT_DOCUMENT (item));
+			dy = sp_document_height (SP_OBJECT_DOCUMENT (item));
+			return 0.01 * distance * sqrt (dx * dx + dy * dy) * M_SQRT1_2;
+		} else {
+			/* Treat as userspace */
+			return distance * unit->unittobase * u2a;
+		}
+	} else if (unit->base == SP_UNIT_VOLATILE) {
+		/* Either em or ex */
+		/* fixme: This need real care */
+		if (!em) em = sp_unit_get_by_abbreviation ("em");
+		if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
+		if (unit == em) {
+			return distance * 12.0;
+		} else {
+			return distance * 10.0;
+		}
+	} else {
+		/* Everything else can be done in one step */
+		/* We just know, that pt == 1.25 * px */
+		if (!absolute) absolute = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
+		sp_convert_distance_full (&distance, unit, absolute, u2a, 0.8);
+		return distance;
+	}
+}
+
+gdouble
+sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit)
+{
+	g_return_val_if_fail (item != NULL, distance);
+	g_return_val_if_fail (SP_IS_ITEM (item), distance);
+	g_return_val_if_fail (unit != NULL, distance);
+
+	gdouble i2doc[6], dx, dy;
+	gdouble a2u, u2a;
+
+	g_return_val_if_fail (item != NULL, distance);
+	g_return_val_if_fail (SP_IS_ITEM (item), distance);
+	g_return_val_if_fail (unit != NULL, distance);
+
+	sp_item_i2doc_affine (item, i2doc);
+	dx = i2doc[0] + i2doc[2];
+	dy = i2doc[1] + i2doc[3];
+	u2a = sqrt (dx * dx + dy * dy) * M_SQRT1_2;
+	a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
+
+	if (unit->base == SP_UNIT_DIMENSIONLESS) {
+		/* Check for percentage */
+		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
+		if (unit == percent) {
+			/* Percentage of viewport */
+			/* fixme: full viewport support (Lauris) */
+			g_warning ("file %s: line %d: Implement real item bbox percentage etc.", __FILE__, __LINE__);
+			dx = sp_document_width (SP_OBJECT_DOCUMENT (item));
+			dy = sp_document_height (SP_OBJECT_DOCUMENT (item));
+			return 0.01 * distance * sqrt (dx * dx + dy * dy) * M_SQRT1_2;
+		} else {
+			/* Treat as userspace */
+			return distance * unit->unittobase * u2a;
+		}
+	} else if (unit->base == SP_UNIT_VOLATILE) {
+		/* Either em or ex */
+		/* fixme: This need real care */
+		if (!em) em = sp_unit_get_by_abbreviation ("em");
+		if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
+		if (unit == em) {
+			return distance * 12.0;
+		} else {
+			return distance * 10.0;
+		}
+	} else {
+		/* Everything else can be done in one step */
+		/* We just know, that pt == 1.25 * px */
+		if (!absolute) absolute = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
+		sp_convert_distance_full (&distance, unit, absolute, u2a, 0.8);
+		return distance;
+	}
 }
 

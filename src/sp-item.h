@@ -1,5 +1,5 @@
-#ifndef SP_ITEM_H
-#define SP_ITEM_H
+#ifndef __SP_ITEM_H__
+#define __SP_ITEM_H__
 
 /*
  * SPItem - the base item of new hierarchy
@@ -12,7 +12,6 @@
  *               caller has to free string
  * show
  * hide
- * paint
  */
 
 /*
@@ -24,6 +23,7 @@
 #include <libgnomeprint/gnome-print.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_pixbuf.h>
+#include "helper/units.h"
 #include "display/nr-arena-forward.h"
 #include "forward.h"
 #include "sp-object.h"
@@ -156,5 +156,10 @@ void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, NRArena *arena, NRArenaItem *arenaitem);
 SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
+
+/* Convert distances into SVG units */
+
+gdouble sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *unit);
+gdouble sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit);
 
 #endif

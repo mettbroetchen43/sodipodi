@@ -54,7 +54,11 @@ sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def)
 gint
 sp_svg_write_length (gchar * buf, gint buflen, gdouble val, const SPUnit *unit)
 {
-	return snprintf (buf, buflen, "%g%s", val, unit->abbr);
+	if (unit->base != SP_UNIT_USERSPACE) {
+		return snprintf (buf, buflen, "%g%s", val, unit->abbr);
+	} else {
+		return snprintf (buf, buflen, "%g", val);
+	}
 }
 
 gdouble
