@@ -5,7 +5,8 @@ endif
 
 if USE_KDE
 kdeincludes = $(all_includes)
-kdesources = kde-private.cpp kde-private.h kde.cpp kde.h
+kdesources = kde-private.h kde.cpp kde.h
+kdeprivsources = kde-private.cpp
 kde-private.cpp: kde-private.h
 	$(MOC) kde-private.h -o kde-private.cpp
 endif
@@ -36,6 +37,7 @@ libspmodules_a_SOURCES = \
 	sp-module-sys.h \
 	ps.c ps.h \
 	$(gnome_print_sources) \
+	$(kdeprivsources) \
 	$(kdesources)
 
 EXTRA_DIST = \
