@@ -13,6 +13,26 @@
 #include <libnr/nr-path.h>
 #include <libnr/nr-svp.h>
 
-NRSVL *nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float flatness);
+enum {
+	NR_STROKE_CAP_BUTT,
+	NR_STROKE_CAP_ROUND,
+	NR_STROKE_CAP_SQUARE
+};
+
+enum {
+	NR_STROKE_JOIN_MITER,
+	NR_STROKE_JOIN_ROUND,
+	NR_STROKE_JOIN_BEVEL
+};
+
+NRSVL *nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
+			float width,
+			unsigned int cap, unsigned int join, float miterlimit,
+			float flatness);
+
+NRSVL *nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
+			float width,
+			unsigned int cap, unsigned int join, float miterlimit,
+			float flatness);
 
 #endif

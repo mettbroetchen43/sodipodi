@@ -20,6 +20,8 @@
 #include <libnr/nr-svp.h>
 #include <libnr/nr-svp-render.h>
 
+#include <libnr/nr-svp-private.h>
+
 #include "nr-rasterfont.h"
 
 NRRasterFont *

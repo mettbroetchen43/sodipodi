@@ -577,7 +577,7 @@ sp_repr_set_int (SPRepr *repr, const unsigned char *key, int val)
 unsigned int
 sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
 {
-	double dival, fval;
+	double dival, fval, epsilon;
 	int idigits, ival, i;
 	i = 0;
 	if (val < 0.0) {
@@ -592,8 +592,10 @@ sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fp
 	}
 	/* Determine the actual number of fractional digits */
 	fprec = MAX (fprec, tprec - idigits);
+	/* Find epsilon */
+	epsilon = 0.5 * pow (10.0, - (double) fprec);
 	/* Round value */
-	val += 0.5 * pow (10.0, - ((double) fprec));
+	val += epsilon;
 	/* Extract integral and fractional parts */
 	dival = floor (val);
 	ival = (int) dival;
@@ -614,9 +616,9 @@ sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fp
 		buf[i++] = '0';
 		tprec -= 1;
 	}
-	if ((fprec > 0) && (padf || (fval > 0.0))) {
+	if ((fprec > 0) && (padf || (fval > epsilon))) {
 		buf[i++] = '.';
-		while ((fprec > 0) && (padf || (fval > 0.0))) {
+		while ((fprec > 0) && (padf || (fval > epsilon))) {
 			fval *= 10.0;
 			dival = floor (fval);
 			fval -= dival;

@@ -386,11 +386,15 @@ sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flag
 
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
 
-	nr_arena_image_set_pixels (NR_ARENA_IMAGE (ai),
-				   gdk_pixbuf_get_pixels (image->pixbuf),
-				   gdk_pixbuf_get_width (image->pixbuf),
-				   gdk_pixbuf_get_height (image->pixbuf),
-				   gdk_pixbuf_get_rowstride (image->pixbuf));
+	if (image->pixbuf) {
+		nr_arena_image_set_pixels (NR_ARENA_IMAGE (ai),
+					   gdk_pixbuf_get_pixels (image->pixbuf),
+					   gdk_pixbuf_get_width (image->pixbuf),
+					   gdk_pixbuf_get_height (image->pixbuf),
+					   gdk_pixbuf_get_rowstride (image->pixbuf));
+	} else {
+		nr_arena_image_set_pixels (NR_ARENA_IMAGE (ai), NULL, 0, 0, 0);
+	}
 	nr_arena_image_set_geometry (NR_ARENA_IMAGE (ai), image->x.computed, image->y.computed, image->width.computed, image->height.computed);
 
 	return ai;

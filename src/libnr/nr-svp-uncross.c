@@ -12,11 +12,10 @@
 #define noNR_EXTRA_CHECK
 #define noNR_VERBOSE
 
-#define NR_QUANT_Y 4.0
 #define NR_COORD_SNAP(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
 #define NR_COORD_SNAP_UP(v) (ceil (NR_QUANT_Y * (v)) / NR_QUANT_Y)
 #define NR_COORD_SNAP_DOWN(v) (floor (NR_QUANT_Y * (v)) / NR_QUANT_Y)
-#define NR_COORD_TOLERANCE 0.01
+#define NR_COORD_TOLERANCE (1.0F / NR_QUANT_X)
 #define NR_COORD_TOLERANCE2 (NR_COORD_TOLERANCE * NR_COORD_TOLERANCE)
 
 #include <math.h>
@@ -25,6 +24,7 @@
 
 #include "nr-macros.h"
 #include "nr-values.h"
+#include "nr-svp-private.h"
 #include "nr-svp-uncross.h"
 
 typedef struct _NRSVLSlice NRSVLSlice;
@@ -215,15 +215,15 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 						}
 					} else {
 						/* ns is equal or shorter */
-						dist2 = nr_vertex_segment_distance2 (cs->vertex->next, ns->vertex);
+						dist2 = nr_vertex_segment_distance2 (ns->vertex->next, cs->vertex);
 						if (dist2 < NR_COORD_TOLERANCE2) {
 							csvl = nr_svl_slice_break_y_and_continue_x (cs,
-												    cs->vertex->next->y,
-												    cs->vertex->next->x,
+												    ns->vertex->next->y,
+												    ns->vertex->next->x,
 												    csvl, yslice, &nflat);
 							csvl = nr_svl_slice_break_y_and_continue_x (ns,
-												    cs->vertex->next->y,
-												    cs->vertex->next->x,
+												    ns->vertex->next->y,
+												    ns->vertex->next->x,
 												    csvl, yslice, &nflat);
 							/* fixme: Slight disturbance is possible so we should repeat */
 						}
@@ -277,6 +277,20 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 				CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
 				ss = NULL;
 				cs = slices;
+			} else if ((cs->vertex->next->y == ns->vertex->next->y) &&
+				   ((ns->vertex->next->x - cs->vertex->next->x) <= NR_COORD_TOLERANCE) &&
+				   ((cs->vertex->next->x - ns->vertex->next->x) <= NR_COORD_TOLERANCE)) {
+				/* Coincident next vertices */
+				csvl = nr_svl_slice_break_y_and_continue_x (cs,
+									    cs->vertex->next->y,
+									    cs->vertex->next->x,
+									    csvl, yslice, &nflat);
+				csvl = nr_svl_slice_break_y_and_continue_x (ns,
+									    cs->vertex->next->y,
+									    cs->vertex->next->x,
+									    csvl, yslice, &nflat);
+				ss = cs;
+				cs = ns;
 			} else if ((cs->x > ns->vertex->next->x) || (ns->x < cs->vertex->next->x) ||
 				   (cs->vertex->next->x > ns->vertex->next->x)) {
 				/* (MAX (cs->x, cs->vertex->next->x) > MIN (ns->x, ns->vertex->next->x)) */
@@ -349,8 +363,8 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 							ss = NULL;
 							cs = slices;
 						} else {
-							if (((y < cs->vertex->next->y) || cs->vertex->next->next) &&
-							    ((y < ns->vertex->next->y) || ns->vertex->next->next)) {
+							if (((y <= cs->vertex->next->y) || cs->vertex->next->next) &&
+							    ((y <= ns->vertex->next->y) || ns->vertex->next->next)) {
 								/* Postpone by breaking svl */
 								csvl = nr_svl_slice_break_y_and_continue_x (cs, y, x, csvl, yslice, &nflat);
 								csvl = nr_svl_slice_break_y_and_continue_x (ns, y, x, csvl, yslice, &nflat);

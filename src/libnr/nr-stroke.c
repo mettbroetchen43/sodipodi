@@ -9,79 +9,87 @@
  * This code is in public domain
  */
 
+#define noNR_STROKE_VERBOSE
+
 #include <math.h>
 
 #include "nr-rect.h"
 #include "nr-matrix.h"
 #include "nr-svp-uncross.h"
+#include "nr-svp-private.h"
+
+#ifdef NR_STROKE_VERBOSE
+#include <stdio.h>
+#endif
 
 #include "nr-stroke.h"
 
-#define NR_QUANT_X 16.0F
-#define NR_QUANT_Y 4.0F
-#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5F) / NR_QUANT_X)
-#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5F) / NR_QUANT_Y)
-#define NR_COORD_TO_ART(v) (v)
+typedef struct _NRSVLStrokeBuild NRSVLStrokeBuild;
 
-typedef struct _NRSVLBuild NRSVLBuild;
-typedef struct _NRSVLSide NRSVLSide;
-
-struct _NRSVLSide {
-	/* Vertex list */
-	NRVertex *vx;
-	/* Direction */
-	int dir;
-	/* Start coordinates */
-	NRCoord sx, sy;
-};
-
-struct _NRSVLBuild {
+struct _NRSVLStrokeBuild {
 	NRSVL *svl;
 	NRFlat *flats;
 	NRMatrixF transform;
 	unsigned int closed : 1;
+	unsigned int cap : 2;
+	unsigned int join : 2;
+	float width_2;
+	double cosml;
 	int npoints;
 	NRRectF bbox;
 	NRCoord x[4];
 	NRCoord y[4];
-	NRSVLSide left, right;
+	NRSVLBuild left, right;
 };
 
+static void nr_svl_stroke_build_draw_cap (NRSVLStrokeBuild *svlb, float x0, float y0, float x1, float y1, unsigned int finish);
+static void nr_svl_stroke_build_draw_join (NRSVLStrokeBuild *svlb, float x0, float y0, float x1, float y1, float x2, float y2);
+
+#if 0
 static void
-nr_svl_build_finish_left (NRSVLBuild *svlb)
+nr_svl_build_finish_left (NRSVLSBuild *svlb)
 {
 	if (svlb->left.vx) {
 		NRSVL *new;
+#ifdef NR_STROKE_VERBOSE
+		printf ("LF\n");
+#endif
 		/* We have running segment */
 		if (svlb->left.dir > 0) {
 			/* We are upwards, prepended, so reverse */
 			svlb->left.vx = nr_vertex_reverse_list (svlb->left.vx);
 		}
-		new = nr_svl_new_full (svlb->left.vx, &svlb->bbox, svlb->left.dir);
+		new = nr_svl_new_full (svlb->left.vx, &svlb->left.bbox, svlb->left.dir);
 		svlb->svl = nr_svl_insert_sorted (svlb->svl, new);
 	}
 	svlb->left.vx = NULL;
 }
 
 static void
-nr_svl_build_finish_right (NRSVLBuild *svlb)
+nr_svl_build_finish_right (NRSVLSBuild *svlb)
 {
 	if (svlb->right.vx) {
 		NRSVL *new;
+#ifdef NR_STROKE_VERBOSE
+		printf ("RF\n");
+#endif
 		/* We have running segment */
 		if (svlb->right.dir > 0) {
 			/* We are upwards, prepended, so reverse */
 			svlb->right.vx = nr_vertex_reverse_list (svlb->right.vx);
 		}
-		new = nr_svl_new_full (svlb->right.vx, &svlb->bbox, svlb->right.dir);
+		new = nr_svl_new_full (svlb->right.vx, &svlb->right.bbox, -svlb->right.dir);
 		svlb->svl = nr_svl_insert_sorted (svlb->svl, new);
 	}
 	svlb->right.vx = NULL;
 }
 
 static void
-nr_svl_build_moveto_left (NRSVLBuild *svlb, float x, float y)
+nr_svl_build_moveto_left (NRSVLSBuild *svlb, float x, float y)
 {
+#ifdef NR_STROKE_VERBOSE
+	printf ("LM %g %g\n", x, y);
+#endif
 	nr_svl_build_finish_left (svlb);
 	svlb->left.sx = NR_COORD_X_FROM_ART (x);
 	svlb->left.sy = NR_COORD_Y_FROM_ART (y);
@@ -89,8 +97,11 @@ nr_svl_build_moveto_left (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_moveto_right (NRSVLBuild *svlb, float x, float y)
+nr_svl_build_moveto_right (NRSVLSBuild *svlb, float x, float y)
 {
+#ifdef NR_STROKE_VERBOSE
+	printf ("RM %g %g\n", x, y);
+#endif
 	nr_svl_build_finish_right (svlb);
 	svlb->right.sx = NR_COORD_X_FROM_ART (x);
 	svlb->right.sy = NR_COORD_Y_FROM_ART (y);
@@ -98,8 +109,11 @@ nr_svl_build_moveto_right (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_lineto_left (NRSVLBuild *svlb, float x, float y)
+nr_svl_build_lineto_left (NRSVLSBuild *svlb, float x, float y)
 {
+#ifdef NR_STROKE_VERBOSE
+	printf ("LL %g %g\n", x, y);
+#endif
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
 	if (y != svlb->left.sy) {
@@ -114,14 +128,15 @@ nr_svl_build_lineto_left (NRSVLBuild *svlb, float x, float y)
 		}
 		if (!svlb->left.vx) {
 			svlb->left.vx = nr_vertex_new_xy (svlb->left.sx, svlb->left.sy);
-			nr_rect_f_union_xy (&svlb->bbox, svlb->left.sx, svlb->left.sy);
+			svlb->left.bbox.x0 = svlb->left.bbox.x1 = svlb->left.sx;
+			svlb->left.bbox.y0 = svlb->left.bbox.y1 = svlb->left.sy;
 		}
 		/* Add vertex to list */
 		vertex = nr_vertex_new_xy (x, y);
 		vertex->next = svlb->left.vx;
 		svlb->left.vx = vertex;
 		/* Stretch bbox */
-		nr_rect_f_union_xy (&svlb->bbox, x, y);
+		nr_rect_f_union_xy (&svlb->left.bbox, x, y);
 		svlb->left.sx = x;
 		svlb->left.sy = y;
 	} else if (x != svlb->left.sx) {
@@ -138,8 +153,11 @@ nr_svl_build_lineto_left (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_lineto_rigth (NRSVLBuild *svlb, float x, float y)
+nr_svl_build_lineto_right (NRSVLSBuild *svlb, float x, float y)
 {
+#ifdef NR_STROKE_VERBOSE
+	printf ("RL %g %g\n", x, y);
+#endif
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
 	if (y != svlb->right.sy) {
@@ -149,25 +167,26 @@ nr_svl_build_lineto_rigth (NRSVLBuild *svlb, float x, float y)
 		newdir = (y > svlb->right.sy) ? 1 : -1;
 		if (newdir != svlb->right.dir) {
 			/* We have either start or turn */
-			nr_svl_build_finish_left (svlb);
+			nr_svl_build_finish_right (svlb);
 			svlb->right.dir = newdir;
 		}
 		if (!svlb->right.vx) {
 			svlb->right.vx = nr_vertex_new_xy (svlb->right.sx, svlb->right.sy);
-			nr_rect_f_union_xy (&svlb->bbox, svlb->right.sx, svlb->right.sy);
+			svlb->right.bbox.x0 = svlb->right.bbox.x1 = svlb->right.sx;
+			svlb->right.bbox.y0 = svlb->right.bbox.y1 = svlb->right.sy;
 		}
 		/* Add vertex to list */
 		vertex = nr_vertex_new_xy (x, y);
 		vertex->next = svlb->right.vx;
 		svlb->right.vx = vertex;
 		/* Stretch bbox */
-		nr_rect_f_union_xy (&svlb->bbox, x, y);
+		nr_rect_f_union_xy (&svlb->right.bbox, x, y);
 		svlb->right.sx = x;
 		svlb->right.sy = y;
 	} else if (x != svlb->right.sx) {
 		NRFlat *flat;
 		/* Horizontal line ends running segment */
-		nr_svl_build_finish_left (svlb);
+		nr_svl_build_finish_right (svlb);
 		svlb->right.dir = 0;
 		/* Add horizontal lines to flat list */
 		flat = nr_flat_new_full (y, MIN (svlb->right.sx, x), MAX (svlb->right.sx, x));
@@ -176,12 +195,16 @@ nr_svl_build_lineto_rigth (NRSVLBuild *svlb, float x, float y)
 		/* sy = y ;-) */
 	}
 }
+#endif
 
 static void
-nr_svl_build_start_closed_subpath (NRSVLBuild *svlb, float x, float y)
+nr_svl_stroke_build_start_closed_subpath (NRSVLStrokeBuild *svlb, float x, float y)
 {
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
+#ifdef NR_STROKE_VERBOSE
+	printf ("CLOSED %g %g\n", x, y);
+#endif
 	svlb->closed = TRUE;
 	svlb->x[0] = svlb->x[3] = x;
 	svlb->y[0] = svlb->y[3] = y;
@@ -189,10 +212,13 @@ nr_svl_build_start_closed_subpath (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_start_open_subpath (NRSVLBuild *svlb, float x, float y)
+nr_svl_stroke_build_start_open_subpath (NRSVLStrokeBuild *svlb, float x, float y)
 {
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
+#ifdef NR_STROKE_VERBOSE
+	printf ("OPEN %g %g\n", x, y);
+#endif
 	svlb->closed = FALSE;
 	svlb->x[0] = svlb->x[3] = x;
 	svlb->y[0] = svlb->y[3] = y;
@@ -200,24 +226,46 @@ nr_svl_build_start_open_subpath (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
+nr_svl_stroke_build_lineto (NRSVLStrokeBuild *svlb, float x, float y)
 {
 	x = (float) NR_COORD_X_FROM_ART (x);
 	y = (float) NR_COORD_Y_FROM_ART (y);
+#ifdef NR_STROKE_VERBOSE
+	printf ("LINETO %g %g\n", x, y);
+#endif
 	if ((x != svlb->x[3]) || (y != svlb->y[3])) {
 		if (svlb->npoints == 1) {
 			/* Second point on line */
 			svlb->x[1] = x;
 			svlb->y[1] = y;
-			/* Draw cap if open */
+			if (!svlb->closed) {
+				float len, dx, dy;
+				/* Draw cap[0,1] if open */
+				len = hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+				dx = (svlb->x[1] - svlb->x[0]) / len;
+				dy = (svlb->y[1] - svlb->y[0]) / len;
+				nr_svl_build_moveto (&svlb->left, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
+				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
+				nr_svl_stroke_build_draw_cap (svlb, svlb->x[0], svlb->y[0], svlb->x[1], svlb->y[1], FALSE);
+			}
 		} else if (svlb->npoints == 2) {
 			if (svlb->closed) {
-				/* Draw join */
+				float len, dx, dy;
+				/* Set starting point */
+				len = hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+				dx = (svlb->x[1] - svlb->x[0]) / len;
+				dy = (svlb->y[1] - svlb->y[0]) / len;
+				nr_svl_build_moveto (&svlb->left, svlb->x[0] - dy * svlb->width_2, svlb->y[0] + dx * svlb->width_2);
+				nr_svl_build_moveto (&svlb->right, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
+				/* Draw 2->3 + join 2->3->CP */
+				nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], x, y);
 			} else {
-				/* Draw 2->3 plus join */
+				/* Draw 2->3 + join 2->3->CP*/
+				nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], x, y);
 			}
 		} else {
-			/* Draw 2->3 plus join */
+			/* Draw 2->3 + join 2->3->CP */
+			nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], x, y);
 		}
 		svlb->x[2] = svlb->x[3];
 		svlb->y[2] = svlb->y[3];
@@ -228,23 +276,39 @@ nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 }
 
 static void
-nr_svl_build_finish_subpath (NRSVLBuild *svlb)
+nr_svl_stroke_build_finish_subpath (NRSVLStrokeBuild *svlb)
 {
+#ifdef NR_STROKE_VERBOSE
+	printf ("FINISH\n");
+#endif
+	if (svlb->npoints < 1) return;
 	if (svlb->closed) {
-		/* Draw 2->3 plus join 0->1 */
-		/* Draw 0->1 */
+		float len, dx, dy;
+		/* Draw 2->3 + join 2->3->1 */
+		nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], svlb->x[1], svlb->y[1]);
+		/* And finsih possibly open paths */
+		len = hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+		dx = (svlb->x[1] - svlb->x[0]) / len;
+		dy = (svlb->y[1] - svlb->y[0]) / len;
+		nr_svl_build_lineto (&svlb->left, svlb->x[0] - dy * svlb->width_2, svlb->y[0] + dx * svlb->width_2);
+		nr_svl_build_lineto (&svlb->right, svlb->x[0] + dy * svlb->width_2, svlb->y[0] - dx * svlb->width_2);
 	} else {
-		/* Draw 2->3 plus cap */
+		/* Draw 2->3 plus cap 2->3 */
+		nr_svl_stroke_build_draw_cap (svlb, svlb->x[3], svlb->y[3], svlb->x[2], svlb->y[2], TRUE);
 	}
 }
 
 static void
-nr_svl_build_finish_segment (NRSVLBuild *svlb)
+nr_svl_stroke_build_finish_segment (NRSVLStrokeBuild *svlb)
 {
+	nr_svl_build_finish_segment (&svlb->left);
+	nr_svl_build_finish_segment (&svlb->right);
 }
 
 static void
-nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3, float flatness)
+nr_svl_stroke_build_curveto (NRSVLStrokeBuild *svlb,
+			     double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
+			     float flatness)
 {
 	double t_x0, t_y0, t_x1, t_y1, t_x2, t_y2, t_x3, t_y3;
 	double dx1_0, dy1_0, dx2_0, dy2_0, dx3_0, dy3_0, dx2_3, dy2_3, d3_0_2;
@@ -294,7 +358,7 @@ nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double 
 	if (s1_q >= s2_q) goto subdivide;
 
  nosubdivide:
-	nr_svl_build_lineto (svlb, (float) x3, (float) y3);
+	nr_svl_stroke_build_lineto (svlb, (float) x3, (float) y3);
 	return;
 
  subdivide:
@@ -309,14 +373,17 @@ nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double 
 	xttt = (x0tt + x1tt) * 0.5;
 	yttt = (y0tt + y1tt) * 0.5;
 
-	nr_svl_build_curveto (svlb, x0, y0, x00t, y00t, x0tt, y0tt, xttt, yttt, flatness);
-	nr_svl_build_curveto (svlb, xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, flatness);
+	nr_svl_stroke_build_curveto (svlb, x0, y0, x00t, y00t, x0tt, y0tt, xttt, yttt, flatness);
+	nr_svl_stroke_build_curveto (svlb, xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, flatness);
 }
 
 NRSVL *
-nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float flatness)
+nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
+		 float width,
+		 unsigned int cap, unsigned int join, float miterlimit,
+		 float flatness)
 {
-	NRSVLBuild svlb;
+	NRSVLStrokeBuild svlb;
 	ArtBpath *bp;
 	double x, y, sx, sy;
 
@@ -329,14 +396,27 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float f
 		nr_matrix_f_set_identity (&svlb.transform);
 	}
 	svlb.closed = FALSE;
+	svlb.width_2 = width / 2.0;
+	svlb.cap = cap;
+	svlb.join = join;
+	svlb.cosml = MIN (cos (miterlimit), 0.9998477);
 	svlb.npoints = 0;
-	nr_rect_f_set_empty (&svlb.bbox);
-	svlb.left.vx = NULL;
+
+	svlb.left.svl = &svlb.svl;
+	svlb.left.flats = &svlb.flats;
+	svlb.left.refvx = NULL;
 	svlb.left.dir = 0;
+	svlb.left.reverse = FALSE;
 	svlb.left.sx = svlb.left.sy = 0.0;
-	svlb.right.vx = NULL;
+	nr_rect_f_set_empty (&svlb.left.bbox);
+
+	svlb.right.svl = &svlb.svl;
+	svlb.right.flats = &svlb.flats;
+	svlb.right.refvx = NULL;
 	svlb.right.dir = 0;
+	svlb.right.reverse = TRUE;
 	svlb.right.sx = svlb.left.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.right.bbox);
 
 	x = y = 0.0;
 	sx = sy = 0.0;
@@ -344,26 +424,26 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float f
 	for (bp = path->path; bp->code != ART_END; bp++) {
 		switch (bp->code) {
 		case ART_MOVETO:
-			nr_svl_build_finish_subpath (&svlb);
+			nr_svl_stroke_build_finish_subpath (&svlb);
 			sx = x = bp->x3;
 			sy = y = bp->y3;
-			nr_svl_build_start_closed_subpath (&svlb, (float) x, (float) y);
+			nr_svl_stroke_build_start_closed_subpath (&svlb, (float) x, (float) y);
 			break;
 		case ART_MOVETO_OPEN:
-			nr_svl_build_finish_subpath (&svlb);
+			nr_svl_stroke_build_finish_subpath (&svlb);
 			sx = x = bp->x3;
 			sy = y = bp->y3;
-			nr_svl_build_start_open_subpath (&svlb, (float) x, (float) y);
+			nr_svl_stroke_build_start_open_subpath (&svlb, (float) x, (float) y);
 			break;
 		case ART_LINETO:
 			sx = x = bp->x3;
 			sy = y = bp->y3;
-			nr_svl_build_lineto (&svlb, (float) x, (float) y);
+			nr_svl_stroke_build_lineto (&svlb, (float) x, (float) y);
 			break;
 		case ART_CURVETO:
 			x = bp->x3;
 			y = bp->y3;
-			nr_svl_build_curveto (&svlb, sx, sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y, flatness);
+			nr_svl_stroke_build_curveto (&svlb, sx, sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y, flatness);
 			sx = x;
 			sy = y;
 			break;
@@ -373,8 +453,8 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float f
 			break;
 		}
 	}
-	nr_svl_build_finish_subpath (&svlb);
-	nr_svl_build_finish_segment (&svlb);
+	nr_svl_stroke_build_finish_subpath (&svlb);
+	nr_svl_stroke_build_finish_segment (&svlb);
 	if (svlb.svl) {
 		/* NRSVL *s; */
 		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, NR_WIND_RULE_NONZERO);
@@ -387,5 +467,255 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform, float width, float f
 	return svlb.svl;
 }
 
+NRSVL *
+nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
+		 float width,
+		 unsigned int cap, unsigned int join, float miterlimit,
+		 float flatness)
+{
+	NRSVLStrokeBuild svlb;
+	const ArtVpath *p;
+	double x, y, sx, sy;
+
+	/* Initialize NRSVLBuilds */
+	svlb.svl = NULL;
+	svlb.flats = NULL;
+	if (transform) {
+		svlb.transform = *transform;
+	} else {
+		nr_matrix_f_set_identity (&svlb.transform);
+	}
+	svlb.closed = FALSE;
+	svlb.width_2 = width / 2.0;
+	svlb.cap = cap;
+	svlb.join = join;
+	svlb.cosml = MIN (cos (miterlimit), 0.9998477);
+	svlb.npoints = 0;
+
+	svlb.left.svl = &svlb.svl;
+	svlb.left.flats = &svlb.flats;
+	svlb.left.refvx = NULL;
+	svlb.left.dir = 0;
+	svlb.left.reverse = FALSE;
+	svlb.left.sx = svlb.left.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.left.bbox);
+
+	svlb.right.svl = &svlb.svl;
+	svlb.right.flats = &svlb.flats;
+	svlb.right.refvx = NULL;
+	svlb.right.dir = 0;
+	svlb.right.reverse = TRUE;
+	svlb.right.sx = svlb.left.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.right.bbox);
+
+	x = y = 0.0;
+	sx = sy = 0.0;
+
+	for (p = path; p->code != ART_END; p++) {
+		switch (p->code) {
+		case ART_MOVETO:
+			nr_svl_stroke_build_finish_subpath (&svlb);
+			sx = x = p->x;
+			sy = y = p->y;
+			nr_svl_stroke_build_start_closed_subpath (&svlb, (float) x, (float) y);
+			break;
+		case ART_MOVETO_OPEN:
+			nr_svl_stroke_build_finish_subpath (&svlb);
+			sx = x = p->x;
+			sy = y = p->y;
+			nr_svl_stroke_build_start_open_subpath (&svlb, (float) x, (float) y);
+			break;
+		case ART_LINETO:
+			sx = x = p->x;
+			sy = y = p->y;
+			nr_svl_stroke_build_lineto (&svlb, (float) x, (float) y);
+			break;
+		default:
+			/* fixme: free lists */
+			return NULL;
+			break;
+		}
+	}
+	nr_svl_stroke_build_finish_subpath (&svlb);
+	nr_svl_stroke_build_finish_segment (&svlb);
+	if (svlb.svl) {
+		/* NRSVL *s; */
+		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, NR_WIND_RULE_NONZERO);
+	} else {
+		nr_flat_free_list (svlb.flats);
+	}
+	/* This happnes in uncross */
+	/* nr_flat_free_list (flats); */
+
+	return svlb.svl;
+}
+
+static void
+nr_svl_stroke_build_draw_cap (NRSVLStrokeBuild *svlb, float x0, float y0, float x1, float y1, unsigned int finish)
+{
+	float len, dx, dy;
+	len = hypot (x1 - x0, y1 - y0);
+	dx = (x1 - x0) / len;
+	dy = (y1 - y0) / len;
+	if (svlb->cap == NR_STROKE_CAP_BUTT) {
+		/* Butt */
+		nr_svl_build_lineto (&svlb->left,
+				     x0 + dy * svlb->width_2,
+				     y0 - dx * svlb->width_2);
+		nr_svl_build_lineto (&svlb->left,
+				     x0 - dy * svlb->width_2,
+				     y0 + dx * svlb->width_2);
+		if (finish) {
+			nr_svl_build_lineto (&svlb->right,
+					     x0 - dy * svlb->width_2,
+					     y0 + dx * svlb->width_2);
+		}
+	} else if (svlb->cap == NR_STROKE_CAP_ROUND) {
+		float theta;
+		/* Round */
+		nr_svl_build_lineto (&svlb->left,
+				     x0 + dy * svlb->width_2,
+				     y0 - dx * svlb->width_2);
+		for (theta = 0.0; theta < M_PI; theta += (M_PI / 32.0)) {
+			float ct, st;
+			ct = cos (theta);
+			st = sin (theta);
+			nr_svl_build_lineto (&svlb->left,
+					     x0 + ct * dy * svlb->width_2 - st * dx * svlb->width_2,
+					     y0 - ct * dx * svlb->width_2 - st * dy * svlb->width_2);
+		}
+		nr_svl_build_lineto (&svlb->left,
+				     x0 - dy * svlb->width_2,
+				     y0 + dx * svlb->width_2);
+		if (finish) {
+			nr_svl_build_lineto (&svlb->right,
+					     x0 - dy * svlb->width_2,
+					     y0 + dx * svlb->width_2);
+		}
+	} else {
+		/* Square */
+		nr_svl_build_lineto (&svlb->left,
+				     x0 + dy * svlb->width_2 - dx * svlb->width_2,
+				     y0 - dx * svlb->width_2 - dy * svlb->width_2);
+		nr_svl_build_lineto (&svlb->left,
+				     x0 - dy * svlb->width_2 - dx * svlb->width_2,
+				     y0 + dx * svlb->width_2 - dy * svlb->width_2);
+		if (finish) {
+			nr_svl_build_lineto (&svlb->right,
+					     x0 - dy * svlb->width_2 - dx * svlb->width_2,
+					     y0 + dx * svlb->width_2 - dy * svlb->width_2);
+		}
+	}
+}
+
+#define NR_STRAIGHT_TRESHOLD -0.99999848
+#define SIN_R 0.09801714
+#define COS_R 0.99518473
+
+static void
+nr_svl_stroke_build_draw_join (NRSVLStrokeBuild *svlb, float x0, float y0, float x1, float y1, float x2, float y2)
+{
+	float len0, dx0, dy0, px0, py0;
+	float len1, dx1, dy1, px1, py1;
+	double costheta;
+	len0 = hypot (x1 - x0, y1 - y0);
+	dx0 = (x1 - x0) / len0;
+	dy0 = (y1 - y0) / len0;
+	px0 = dy0 * svlb->width_2;
+	py0 = -dx0 * svlb->width_2;
+	len1 = hypot (x2 - x1, y2 - y1);
+	dx1 = (x2 - x1) / len1;
+	dy1 = (y2 - y1) / len1;
+	px1 = dy1 * svlb->width_2;
+	py1 = -dx1 * svlb->width_2;
+	costheta = -dx0 * dx1 + -dy0 * dy1;
+	if (costheta > NR_STRAIGHT_TRESHOLD) {
+		unsigned int join;
+		double dir;
+		join = svlb->join;
+		if ((join == NR_STROKE_JOIN_MITER) && (costheta > svlb->cosml)) join = NR_STROKE_JOIN_BEVEL;
+		dir = dx0 * dy1 - dx1 * dy0;
+		if (dir > 0.0) {
+			/* Left is inner */
+			/* Draw left side */
+			nr_svl_build_lineto (&svlb->left, x1 - px0, y1 - py0);
+			nr_svl_build_lineto (&svlb->left, x1 - px1, y1 - py1);
+			/* Draw right side */
+			if (join == NR_STROKE_JOIN_MITER) {
+				double dx, dy, d2, D_d;
+				/* Miter */
+				dx = (px0 + px1) / 2.0;
+				dy = (py0 + py1) / 2.0;
+				d2 = dx * dx + dy * dy;
+				D_d = svlb->width_2 * svlb->width_2 / d2;
+				nr_svl_build_lineto (&svlb->right, x1 + dx * D_d, y1 + dy * D_d);
+			} else if (join == NR_STROKE_JOIN_ROUND) {
+				double px, py;
+				/* Round */
+				nr_svl_build_lineto (&svlb->right, x1 + px0, y1 + py0);
+				px = COS_R * px0 + -SIN_R * py0;
+				py = SIN_R * px0 + COS_R * py0;
+				while ((px * py1 - py * px1) > 0.0) {
+					double sx, sy;
+					nr_svl_build_lineto (&svlb->right, x1 + px, y1 + py);
+					sx = COS_R * px + -SIN_R * py;
+					sy = SIN_R * px + COS_R * py;
+					px = sx;
+					py = sy;
+				}
+				nr_svl_build_lineto (&svlb->right, x1 + px1, y1 + py1);
+			} else {
+				/* Bevel */
+				nr_svl_build_lineto (&svlb->right, x1 + px0, y1 + py0);
+				nr_svl_build_lineto (&svlb->right, x1 + px1, y1 + py1);
+			}
+		} else {
+			/* Right is inner */
+			/* Draw right side */
+			nr_svl_build_lineto (&svlb->right, x1 + px0, y1 + py0);
+			nr_svl_build_lineto (&svlb->right, x1 + px1, y1 + py1);
+			/* Draw left side */
+			if (join == NR_STROKE_JOIN_MITER) {
+				double dx, dy, d2, D_d;
+				/* Miter */
+				dx = (-px0 - px1) / 2.0;
+				dy = (-py0 - py1) / 2.0;
+				d2 = dx * dx + dy * dy;
+				D_d = svlb->width_2 * svlb->width_2 / d2;
+				nr_svl_build_lineto (&svlb->left, x1 + dx * D_d, y1 + dy * D_d);
+			} else if (join == NR_STROKE_JOIN_ROUND) {
+				double px, py;
+				/* Round */
+				nr_svl_build_lineto (&svlb->left, x1 - px0, y1 - py0);
+				px = COS_R * -px0 + SIN_R * -py0;
+				py = -SIN_R * -px0 + COS_R * -py0;
+				while ((px * -py1 - py * -px1) < 0.0) {
+					double sx, sy;
+					nr_svl_build_lineto (&svlb->left, x1 + px, y1 + py);
+					sx = COS_R * px + SIN_R * py;
+					sy = -SIN_R * px + COS_R * py;
+					px = sx;
+					py = sy;
+				}
+				nr_svl_build_lineto (&svlb->left, x1 - px1, y1 - py1);
+			} else {
+				/* Bevel */
+				/* fixme: */
+				nr_svl_build_lineto (&svlb->left, x1 - px0, y1 - py0);
+				nr_svl_build_lineto (&svlb->left, x1 - px1, y1 - py1);
+			}
+		}
+	} else {
+		/* Straight */
+		/* Draw right side */
+		nr_svl_build_lineto (&svlb->right,
+				     x1 + 0.5 * (dy0 + dy1) * svlb->width_2,
+				     y1 - 0.5 * (dx0 + dx1) * svlb->width_2);
+		/* Draw left side */
+		nr_svl_build_lineto (&svlb->left,
+				     x1 - 0.5 * (dy0 + dy1) * svlb->width_2,
+				     y1 + 0.5 * (dx0 + dx1) * svlb->width_2);
+	}
+}
 
 

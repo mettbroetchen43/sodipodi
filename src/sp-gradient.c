@@ -45,23 +45,21 @@ static SPRepr *sp_stop_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectClass * stop_parent_class;
 
-GType
+unsigned int
 sp_stop_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPStopClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_stop_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPStop),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_stop_init,
 		};
-		type = g_type_register_static (sp_object_get_type (), "SPStop", &info, 0);
+		type = g_type_register_static (SP_TYPE_OBJECT, "SPStop", &info, 0);
 	}
 	return type;
 }
@@ -194,20 +192,18 @@ static void sp_gradient_rebuild_vector (SPGradient *gr);
 
 static SPPaintServerClass * gradient_parent_class;
 
-GType
+unsigned int
 sp_gradient_get_type (void)
 {
-	static GType gradient_type = 0;
+	static unsigned int gradient_type = 0;
 	if (!gradient_type) {
 		GTypeInfo gradient_info = {
 			sizeof (SPGradientClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_gradient_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPGradient),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_gradient_init,
 		};
 		gradient_type = g_type_register_static (SP_TYPE_PAINT_SERVER, "SPGradient", &gradient_info, 0);
@@ -653,19 +649,6 @@ sp_gradient_set_spread (SPGradient *gr, unsigned int spread)
 		gr->spread_set = TRUE;
 		sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
 	}
-}
-
-/* Gradient repr methods */
-void
-sp_gradient_repr_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
-{
-	unsigned int flags;
-	g_return_if_fail (gr != NULL);
-	g_return_if_fail (SP_IS_GRADIENT (gr));
-	g_return_if_fail (repr != NULL);
-	flags = SP_OBJECT_WRITE_SODIPODI;
-	if (set_missing) flags |= SP_OBJECT_WRITE_ALL;
-	sp_object_invoke_write ((SPObject *) gr, repr, flags);
 }
 
 void
@@ -1250,25 +1233,23 @@ static void sp_lg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *lg_parent_class;
 
-GType
+unsigned int
 sp_lineargradient_get_type (void)
 {
-	static GType lineargradient_type = 0;
-	if (!lineargradient_type) {
-		GTypeInfo lineargradient_info = {
+	static unsigned int type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPLinearGradientClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_lineargradient_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPLinearGradient),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_lineargradient_init,
 		};
-		lineargradient_type = g_type_register_static (SP_TYPE_GRADIENT, "SPLinearGradient", &lineargradient_info, 0);
+		type = g_type_register_static (SP_TYPE_GRADIENT, "SPLinearGradient", &info, 0);
 	}
-	return lineargradient_type;
+	return type;
 }
 
 static void
@@ -1548,11 +1529,11 @@ sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector)
 
 	repr = sp_repr_new ("linearGradient");
 
-	sp_gradient_repr_flatten_attributes (SP_GRADIENT (lg), repr, TRUE);
+	sp_object_invoke_write ((SPObject *) lg, repr, SP_OBJECT_WRITE_SODIPODI | SP_OBJECT_WRITE_ALL);
 
 	if (vector) {
-		sp_gradient_ensure_vector (SP_GRADIENT (lg));
-		sp_gradient_repr_set_vector (SP_GRADIENT (lg), repr, SP_GRADIENT (lg)->vector);
+		sp_gradient_ensure_vector ((SPGradient *) lg);
+		sp_gradient_repr_set_vector ((SPGradient *) lg, repr, ((SPGradient *) lg)->vector);
 	}
 
 	return repr;
@@ -1594,25 +1575,23 @@ static void sp_rg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *rg_parent_class;
 
-GType
+unsigned int
 sp_radialgradient_get_type (void)
 {
-	static GType radialgradient_type = 0;
-	if (!radialgradient_type) {
-		GTypeInfo radialgradient_info = {
+	static unsigned int type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPRadialGradientClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_radialgradient_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPRadialGradient),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_radialgradient_init,
 		};
-		radialgradient_type = g_type_register_static (SP_TYPE_GRADIENT, "SPRadialGradient", &radialgradient_info, 0);
+		type = g_type_register_static (SP_TYPE_GRADIENT, "SPRadialGradient", &info, 0);
 	}
-	return radialgradient_type;
+	return type;
 }
 
 static void
@@ -1840,11 +1819,11 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 
 	repr = sp_repr_new ("radialGradient");
 
-	sp_gradient_repr_flatten_attributes (SP_GRADIENT (rg), repr, TRUE);
+	sp_object_invoke_write ((SPObject *) rg, repr, SP_OBJECT_WRITE_SODIPODI | SP_OBJECT_WRITE_ALL);
 
 	if (vector) {
-		sp_gradient_ensure_vector (SP_GRADIENT (rg));
-		sp_gradient_repr_set_vector (SP_GRADIENT (rg), repr, SP_GRADIENT (rg)->vector);
+		sp_gradient_ensure_vector ((SPGradient *) rg);
+		sp_gradient_repr_set_vector ((SPGradient *) rg, repr, ((SPGradient *) rg)->vector);
 	}
 
 	return repr;

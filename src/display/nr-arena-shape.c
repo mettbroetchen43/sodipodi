@@ -20,7 +20,10 @@
 #include <libnr/nr-path.h>
 #include <libnr/nr-pixops.h>
 #include <libnr/nr-blit.h>
+#include <libnr/nr-stroke.h>
 #include <libnr/nr-svp-render.h>
+
+#include <libnr/nr-svp-private.h>
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
@@ -201,8 +204,6 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	NRArenaShape *shape;
 	NRArenaItem *child;
 	SPStyle *style;
-	ArtBpath *abp;
-	ArtVpath *vp, *pvp;
 	NRRectF bbox;
 	unsigned int newstate, beststate;
 
@@ -304,43 +305,55 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	}
 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-		double width, scale, dlen;
-		int i;
-		ArtSVP *asvp;
+
+		NRBPath bp;
+		float width, scale;
 		NRSVL *svl;
-		abp = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
-		vp = art_bez_path_to_vec (abp, 0.25);
-		art_free (abp);
-		pvp = art_vpath_perturb (vp);
-		art_free (vp);
 		scale = NR_MATRIX_DF_EXPANSION (&gc->transform);
 		width = MAX (0.125, style->stroke_width.computed * scale);
-		dlen = 0.0;
-		for (i = 0; i < style->stroke_dash.n_dash; i++) dlen += style->stroke_dash.dash[i] * scale;
-		if (dlen >= 1.0) {
-			ArtVpathDash dash;
+		bp.path = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
+		if (!style->stroke_dash.n_dash) {
+			svl = nr_bpath_stroke (&bp, NULL, width,
+					       shape->style->stroke_linecap.value,
+					       shape->style->stroke_linejoin.value,
+					       shape->style->stroke_miterlimit.value * M_PI / 180.0,
+					       0.25);
+		} else {
+			double dlen;
 			int i;
-			dash.offset = style->stroke_dash.offset * scale;
-			dash.n_dash = style->stroke_dash.n_dash;
-			dash.dash = g_new (double, dash.n_dash);
-			for (i = 0; i < dash.n_dash; i++) {
-				dash.dash[i] = style->stroke_dash.dash[i] * scale;
+			ArtVpath *vp, *pvp;
+			ArtSVP *asvp;
+			vp = art_bez_path_to_vec (bp.path, 0.25);
+			pvp = art_vpath_perturb (vp);
+			art_free (vp);
+			dlen = 0.0;
+			for (i = 0; i < style->stroke_dash.n_dash; i++) dlen += style->stroke_dash.dash[i] * scale;
+			if (dlen >= 1.0) {
+				ArtVpathDash dash;
+				int i;
+				dash.offset = style->stroke_dash.offset * scale;
+				dash.n_dash = style->stroke_dash.n_dash;
+				dash.dash = g_new (double, dash.n_dash);
+				for (i = 0; i < dash.n_dash; i++) {
+					dash.dash[i] = style->stroke_dash.dash[i] * scale;
+				}
+				vp = art_vpath_dash (pvp, &dash);
+				art_free (pvp);
+				pvp = vp;
+				g_free (dash.dash);
 			}
-			vp = art_vpath_dash (pvp, &dash);
+			asvp = art_svp_vpath_stroke (pvp,
+						     shape->style->stroke_linejoin.value,
+						     shape->style->stroke_linecap.value,
+						     width,
+						     shape->style->stroke_miterlimit.value, 0.25);
 			art_free (pvp);
-			pvp = vp;
-			g_free (dash.dash);
+			svl = nr_svl_from_art_svp (asvp);
+			art_svp_free (asvp);
 		}
-		asvp = art_svp_vpath_stroke (pvp,
-					     shape->style->stroke_linejoin.value,
-					     shape->style->stroke_linecap.value,
-					     width,
-					     shape->style->stroke_miterlimit.value, 0.25);
-		art_free (pvp);
-		svl = nr_svl_from_art_svp (asvp);
-		art_svp_free (asvp);
 		shape->stroke_svp = nr_svp_from_svl (svl, NULL);
 		nr_svl_free_list (svl);
+		art_free (bp.path);
 	}
 
 	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;

@@ -41,6 +41,13 @@ list and IRC.
 - autotrace
 - ja.po
 
+* MenTaLguY <mental@rydia.net>
+- usability/UI
+- XML and CSS compliance
+- boolean path operations
+- architecture and janitorial work
+- whatever strikes his fancy this week ^_-
+ 
 CVS write account
 -----------------
 After reading http://developer.gnome.org/tools/cvs.html, contact with 

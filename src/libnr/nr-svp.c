@@ -18,15 +18,10 @@
 
 #include "nr-values.h"
 #include "nr-macros.h"
+#include "nr-rect.h"
 #include "nr-matrix.h"
 #include "nr-svp-uncross.h"
-#include "nr-svp.h"
-
-#define NR_QUANT_X 16.0F
-#define NR_QUANT_Y 4.0F
-#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5F) / NR_QUANT_X)
-#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5F) / NR_QUANT_Y)
-#define NR_COORD_TO_ART(v) (v)
+#include "nr-svp-private.h"
 
 /* Sorted vector paths */
 
@@ -286,18 +281,7 @@ nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear)
 
 #include <libart_lgpl/art_misc.h>
 
-typedef struct _NRSVLBuild NRSVLBuild;
-
-struct _NRSVLBuild {
-	NRSVL *svl;
-	NRFlat *flats;
-	NRVertex *refvx;
-	NRRectF bbox;
-	int dir;
-	NRCoord sx, sy;
-};
-
-static void
+void
 nr_svl_build_finish_segment (NRSVLBuild *svlb)
 {
 	if (svlb->refvx) {
@@ -307,22 +291,22 @@ nr_svl_build_finish_segment (NRSVLBuild *svlb)
 			/* We are upwards, prepended, so reverse */
 			svlb->refvx = nr_vertex_reverse_list (svlb->refvx);
 		}
-		new = nr_svl_new_full (svlb->refvx, &svlb->bbox, svlb->dir);
-		svlb->svl = nr_svl_insert_sorted (svlb->svl, new);
+		new = nr_svl_new_full (svlb->refvx, &svlb->bbox, (!svlb->reverse) ? svlb->dir : -svlb->dir);
+		*svlb->svl = nr_svl_insert_sorted (*svlb->svl, new);
 	}
 	svlb->refvx = NULL;
 }
 
-static void
+void
 nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y)
 {
+	nr_svl_build_finish_segment (svlb);
 	svlb->sx = NR_COORD_X_FROM_ART (x);
 	svlb->sy = NR_COORD_Y_FROM_ART (y);
-	nr_svl_build_finish_segment (svlb);
 	svlb->dir = 0;
 }
 
-static void
+void
 nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 {
 	x = (float) NR_COORD_X_FROM_ART (x);
@@ -347,10 +331,7 @@ nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 		vertex->next = svlb->refvx;
 		svlb->refvx = vertex;
 		/* Stretch bbox */
-		svlb->bbox.x0 = MIN (svlb->bbox.x0, x);
-		svlb->bbox.y0 = MIN (svlb->bbox.y0, y);
-		svlb->bbox.x1 = MAX (svlb->bbox.x1, x);
-		svlb->bbox.y1 = MAX (svlb->bbox.y1, y);
+		nr_rect_f_union_xy (&svlb->bbox, x, y);
 		svlb->sx = x;
 		svlb->sy = y;
 	} else if (x != svlb->sx) {
@@ -360,13 +341,13 @@ nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 		svlb->dir = 0;
 		/* Add horizontal lines to flat list */
 		flat = nr_flat_new_full (y, MIN (svlb->sx, x), MAX (svlb->sx, x));
-		svlb->flats = nr_flat_insert_sorted (svlb->flats, flat);
+		*svlb->flats = nr_flat_insert_sorted (*svlb->flats, flat);
 		svlb->sx = x;
 		/* sy = y ;-) */
 	}
 }
 
-static void
+void
 nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3, float flatness)
 {
 	double dx1_0, dy1_0, dx2_0, dy2_0, dx3_0, dy3_0, dx2_3, dy2_3, d3_0_2;
@@ -459,14 +440,14 @@ nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 	nr_svl_build_finish_segment (&svlb);
 	if (svlb.svl) {
 		/* NRSVL *s; */
-		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, windrule);
+		*svlb.svl = nr_svl_uncross_full (*svlb.svl, *svlb.flats, windrule);
 	} else {
-		nr_flat_free_list (svlb.flats);
+		nr_flat_free_list (*svlb.flats);
 	}
 	/* This happnes in uncross */
 	/* nr_flat_free_list (flats); */
 
-	return svlb.svl;
+	return *svlb.svl;
 }
 
 NRSVL *
@@ -475,14 +456,19 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 	NRSVLBuild svlb;
 	ArtBpath *bp;
 	double x, y, sx, sy;
+	NRSVL *svl;
+	NRFlat *flats;
 
 	/* Initialize NRSVLBuild */
-	svlb.svl = NULL;
-	svlb.flats = NULL;
+	svl = NULL;
+	flats = NULL;
+	svlb.svl = &svl;
+	svlb.flats = &flats;
 	svlb.refvx = NULL;
 	svlb.bbox.x0 = svlb.bbox.y0 = NR_HUGE_F;
 	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
 	svlb.dir = 0;
+	svlb.reverse = FALSE;
 	svlb.sx = svlb.sy = 0.0;
 
 	x = y = 0.0;
@@ -546,14 +532,14 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 	nr_svl_build_finish_segment (&svlb);
 	if (svlb.svl) {
 		/* NRSVL *s; */
-		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, windrule);
+		*svlb.svl = nr_svl_uncross_full (*svlb.svl, *svlb.flats, windrule);
 	} else {
-		nr_flat_free_list (svlb.flats);
+		nr_flat_free_list (*svlb.flats);
 	}
 	/* This happnes in uncross */
 	/* nr_flat_free_list (flats); */
 
-	return svlb.svl;
+	return *svlb.svl;
 }
 
 NRSVL *

@@ -62,7 +62,7 @@ struct _SPStopClass {
 	SPObjectClass parent_class;
 };
 
-GType sp_stop_get_type (void);
+unsigned int sp_stop_get_type (void);
 
 /*
  * Gradient
@@ -140,7 +140,7 @@ struct _SPGradientClass {
 	SPPaintServerClass parent_class;
 };
 
-GType sp_gradient_get_type (void);
+unsigned int sp_gradient_get_type (void);
 
 /* Forces vector to be built, if not present (i.e. changed) */
 void sp_gradient_ensure_vector (SPGradient *gradient);
@@ -153,7 +153,6 @@ void sp_gradient_set_units (SPGradient *gr, unsigned int units);
 void sp_gradient_set_spread (SPGradient *gr, unsigned int spread);
 
 /* Gradient repr methods */
-void sp_gradient_repr_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 void sp_gradient_repr_set_vector (SPGradient *gradient, SPRepr *repr, SPGradientVector *vector);
 
 /*
@@ -194,7 +193,7 @@ struct _SPLinearGradientClass {
 	SPGradientClass parent_class;
 };
 
-GType sp_lineargradient_get_type (void);
+unsigned int sp_lineargradient_get_type (void);
 
 void sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
 
@@ -220,9 +219,7 @@ struct _SPRadialGradientClass {
 	SPGradientClass parent_class;
 };
 
-GType sp_radialgradient_get_type (void);
-
-void sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r);
+unsigned int sp_radialgradient_get_type (void);
 
 void sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r);
 

@@ -1,3 +1,18 @@
+2003-07-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr-util.c (sp_xml_dtoa): Do not print trailing zeroes
+
+	* src/xml/repr.c (sp_repr_document_new): Removed ATTLIST xmlns:xlink
+
+	* src/libnr/nr-svp-private.h: New file
+
+2003-07-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-stroke.c: Implement most functionality
+
+	* src/libnr/nr-svp-uncross.c (nr_svl_uncross_full): Process some corner cases
+	properly
+
 2003-07-07  Masatake YAMATO  <jet@gyve.org>
 
 	* src/shortcuts.c (sp_shortcut_table_load): set shortcut
