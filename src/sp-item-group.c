@@ -521,3 +521,23 @@ sp_item_group_ungroup (SPGroup *group)
 #endif
 }
 
+/*
+ * some API for list aspect of SPGroup
+ */
+
+GSList * 
+sp_item_group_item_list (SPGroup * group)
+{
+        GSList * s;
+	SPObject * o;
+
+	g_return_val_if_fail (group != NULL, NULL);
+	g_return_val_if_fail (SP_IS_GROUP (group), NULL);
+
+	s = NULL;
+
+	for (o = group->children; o != NULL; o = o->next) 
+		if (SP_IS_ITEM (o)) s = g_slist_append (s, o);
+
+	return s;
+}

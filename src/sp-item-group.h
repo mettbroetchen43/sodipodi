@@ -31,4 +31,6 @@ GtkType sp_group_get_type (void);
 
 void sp_item_group_ungroup (SPGroup *group);
 
+GSList * sp_item_group_item_list (SPGroup * group);
+
 #endif

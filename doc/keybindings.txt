@@ -76,7 +76,8 @@ Ctrl G - ungroup
 Ctrl k - kombine paths
 Ctrl K - break apart
 
-Tab - cycle items in desktop
+Tab - cycle items in desktop forward
+Shift-Tab - cycle items in desktop backward
  
 
 * modifier for mouse drag

@@ -54,11 +54,21 @@ struct _SPDesktop {
 	GnomeCanvasGroup * controls;
 	GnomeCanvasItem * page;
 	gdouble d2w[6], w2d[6];
+        gint number;
 };
 
 struct _SPDesktopClass {
 	GtkEventBoxClass parent_class;
 };
+
+#ifndef SP_DESKTOP_C
+extern gboolean SPShowFullFielName;
+#else
+gboolean SPShowFullFielName = TRUE;
+#endif
+
+
+
 
 /* Standard Gtk function */
 
@@ -94,13 +104,8 @@ gint sp_desktop_set_focus (GtkWidget * widget, GtkWidget * widget2, SPDesktop * 
 
 void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);
 
-#if 0
+void sp_desktop_set_title (SPDesktop * desktop);
 
-/* FIXME reimplement this somehow */
-
-void sp_desktop_set_title (const gchar * title);
-
-#endif
 
 // statusbars
 void sp_desktop_default_status (SPDesktop *desktop, const gchar * text);

@@ -154,9 +154,7 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 		sp_document_set_undo_sensitive (doc, TRUE);
 
 		sp_repr_save_file (sp_document_repr_doc (doc), filename);
-#if 0
-		sp_desktop_set_title (sp_filename_from_path (filename));
-#endif
+		sp_document_set_uri (doc, filename);
 	}
 
 	gtk_main_quit ();

@@ -38,6 +38,7 @@ struct _SPNamedView {
 	GSList * vguides;
 	GSList * views;
 	GSList * gridviews;
+        gint viewcount;
 };
 
 struct _SPNamedViewClass {
@@ -50,6 +51,11 @@ void sp_namedview_show (SPNamedView * namedview, gpointer desktop);
 void sp_namedview_hide (SPNamedView * namedview, gpointer desktop);
 
 void sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean active);
+guint sp_namedview_viewcount (SPNamedView * nv);
+const gchar * sp_namedview_get_name (SPNamedView * nv);
+const GSList * sp_namedview_view_list (SPNamedView * nv);
+
+
 
 #endif
 

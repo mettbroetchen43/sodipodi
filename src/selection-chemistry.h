@@ -38,6 +38,7 @@ void sp_selection_move_relative (SPSelection * selection, double dx, double dy);
 void sp_selection_rotate_90 (void);
 void sp_selection_move_screen (gdouble sx, gdouble sy);
 void sp_selection_item_next (void);
+void sp_selection_item_prev (void);
 
 
 
@@ -50,7 +51,11 @@ typedef enum
   SP_CYCLE_FOCUS =2      // readjust visible area to view selected item
 } SP_Cycle_Type;
 
-#define SP_CYCLING SP_CYCLE_FOCUS
+#ifndef SP_SELECTION_CHEMISTRY_C
+extern SP_Cycle_Type  SP_CYCLING;
+#else
+SP_Cycle_Type SP_CYCLING = SP_CYCLE_FOCUS;
+#endif
 
 #endif
 

@@ -17,6 +17,7 @@
 #include "sp-root.h"
 #include "sp-namedview.h"
 #include "document-private.h"
+#include "desktop.h"
 
 #define A4_WIDTH  (21.0 * 72.0 / 2.54)
 #define A4_HEIGHT (29.7 * 72.0 / 2.54)
@@ -323,6 +324,21 @@ sp_document_uri (SPDocument * document)
 	g_return_val_if_fail (document->private != NULL, NULL);
 
 	return document->private->uri;
+}
+
+void
+sp_document_set_uri (SPDocument * document, const gchar * uri)
+{
+  const GSList * l, * m;
+
+  g_assert (SP_IS_DOCUMENT (document));
+
+  g_free (document->private->uri);
+  document->private->uri = g_strdup (uri);
+
+  for (l = sp_document_namedview_list (document); l != NULL; l = l->next)
+    for (m = sp_namedview_view_list(SP_NAMEDVIEW(l->data)); m != NULL; m = m->next) 
+      sp_desktop_set_title (SP_DESKTOP (m->data));
 }
 
 const gchar *

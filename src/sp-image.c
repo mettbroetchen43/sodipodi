@@ -1,7 +1,9 @@
 #define SP_IMAGE_C
 
+#include <ctype.h>
 #include <gnome.h>
 #include <libart_lgpl/art_rgb_rgba_affine.h>
+#include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include "helper/art-rgba-rgba-affine.h"
 #include "display/canvas-image.h"
 #include "style.h"
@@ -30,6 +32,8 @@ static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * aff
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
 static void sp_image_update_canvas_image (SPImage *image);
+static GdkPixbuf * sp_image_repr_read_dataURI (const gchar * uri_data);
+static GdkPixbuf * sp_image_repr_read_b64 (const gchar * uri_data);
 
 static SPItemClass *parent_class;
 
@@ -358,9 +362,15 @@ sp_image_repr_read_image (SPRepr * repr)
 	GdkPixbuf * pixbuf;
 
 	filename = sp_repr_attr (repr, "xlink:href");
-
+	if (filename == NULL) filename = sp_repr_attr (repr, "href"); /* FIXME */
 	if (filename != NULL) {
-		if (!g_path_is_absolute (filename)) {
+		if (strncmp (filename,"data:",5) == 0) {
+			/* data URI - embedded image */
+			filename += 5;
+			pixbuf = sp_image_repr_read_dataURI (filename);
+			if (pixbuf != NULL) return pixbuf;
+		}
+		else if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
 			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
 			if (docbase != NULL) {
@@ -460,4 +470,143 @@ sp_image_snappoints (SPItem * item, GSList * points)
   points = g_slist_append (points, p);
 
   return points;
+}
+
+static GdkPixbuf *
+sp_image_repr_read_dataURI (const gchar * uri_data)
+{	GdkPixbuf * pixbuf = NULL;
+
+	gint data_is_image = 0;
+	gint data_is_base64 = 0;
+
+	const gchar * data = uri_data;
+
+	while (*data) {
+		if (strncmp (data,"base64",6) == 0) {
+			/* base64-encoding */
+			data_is_base64 = 1;
+			data += 6;
+		}
+		else if (strncmp (data,"image/png",9) == 0) {
+			/* PNG image */
+			data_is_image = 1;
+			data += 9;
+		}
+		else if (strncmp (data,"image/jpg",9) == 0) {
+			/* JPEG image */
+			data_is_image = 1;
+			data += 9;
+		}
+		else if (strncmp (data,"image/jpeg",10) == 0) {
+			/* JPEG image */
+			data_is_image = 1;
+			data += 10;
+		}
+		else { /* unrecognized option; skip it */
+			while (*data) {
+				if (((*data) == ';') || ((*data) == ',')) break;
+				data++;
+			}
+		}
+		if ((*data) == ';') {
+			data++;
+			continue;
+		}
+		if ((*data) == ',') {
+			data++;
+			break;
+		}
+	}
+
+	if ((*data) && data_is_image && data_is_base64) {
+		pixbuf = sp_image_repr_read_b64 (data);
+	}
+
+	return pixbuf;
+}
+
+static GdkPixbuf *
+sp_image_repr_read_b64 (const gchar * uri_data)
+{	GdkPixbuf * pixbuf = NULL;
+	GdkPixbufLoader * loader = NULL;
+
+	gint j;
+	gint k;
+	gint l;
+	gint b;
+	gint len;
+	gint eos = 0;
+	gint failed = 0;
+
+	guint32 bits;
+
+	static const gchar B64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+	const gchar* btr = uri_data;
+
+	gchar ud[4];
+
+	guchar bd[57];
+
+	loader = gdk_pixbuf_loader_new ();
+
+	if (loader == NULL) return NULL;
+
+	while (eos == 0) {
+		l = 0;
+		for (j = 0; j < 19; j++) {
+			len = 0;
+			for (k = 0; k < 4; k++) {
+				while (isspace ((int) (*btr))) {
+					if ((*btr) == '\0') break;
+					btr++;
+				}
+				if (eos) {
+					ud[k] = 0;
+					continue;
+				}
+				if (((*btr) == '\0') || ((*btr) == '=')) {
+					eos = 1;
+					ud[k] = 0;
+					continue;
+				}
+				ud[k] = 64;
+				for (b = 0; b < 64; b++) { /* There must a faster way to do this... ?? */
+					if (B64[b] == (*btr)) {
+						ud[k] = (gchar) b;
+						break;
+					}
+				}
+				if (ud[k] == 64) { /* data corruption ?? */
+					eos = 1;
+					ud[k] = 0;
+					continue;
+				}
+				btr++;
+				len++;
+			}
+			bits = (guint32) ud[0];
+			bits = (bits << 6) | (guint32) ud[1];
+			bits = (bits << 6) | (guint32) ud[2];
+			bits = (bits << 6) | (guint32) ud[3];
+			bd[l++] = (guchar) ((bits & 0xff0000) >> 16);
+			if (len > 2) {
+				bd[l++] = (guchar) ((bits & 0xff00) >>  8);
+			}
+			if (len > 3) {
+				bd[l++] = (guchar)  (bits & 0xff);
+			}
+		}
+
+		if (!gdk_pixbuf_loader_write (loader, (const guchar *) bd, (size_t) l)) {
+			failed = 1;
+			break;
+		}
+	}
+
+	gdk_pixbuf_loader_close (loader);
+
+	if (!failed) pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+
+	return pixbuf;
 }

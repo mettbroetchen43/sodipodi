@@ -158,6 +158,63 @@ AC_ARG_WITH(gnome-xml2,
 SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
 SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
 SODIPODI_LIBS="$SODIPODI_LIBS -lpng -lz"
+
+dnl ******************************
+dnl system libwmf support
+dnl ******************************
+
+dnl Check for libwmf-0.2.1 or higher (experimental)
+
+_cppflags=$CPPFLAGS
+_ldflags=$LDFLAGS
+
+have_libwmf=no
+
+AC_ARG_WITH(libwmf,
+	[--{with,without}-libwmf=DIR use libwmf(2) in DIR (experimental)],[
+	if [ test "x$withval" != "xno" ]; then
+		if [ test "x$withval" != "xyes" ]; then
+			LIBWMF_DIR=$withval
+		fi
+		search_for_libwmf=yes
+	else
+		search_for_libwmf=no
+	fi
+],[	search_for_libwmf=no
+])
+
+if [ test $search_for_libwmf != no ]; then
+	if [ test -n "$LIBWMF_DIR" ]; then
+		AC_PATH_PROG(LIBWMF_CONFIG,libwmf-config, ,[$LIBWMF_DIR/bin:$PATH])
+	else
+		AC_PATH_PROG(LIBWMF_CONFIG,libwmf-config)
+	fi
+
+	if [ test -n "$LIBWMF_CONFIG" ]; then
+		libwmf_cflags=`$LIBWMF_CONFIG --cflags`
+		libwmf_libs=`$LIBWMF_CONFIG --libs`
+	else
+		AC_MSG_ERROR(* * * unable to find libwmf-config; unable to continue * * *)
+	fi
+
+	CPPFLAGS="$CPPFLAGS $libwmf_cflags"
+	LDFLAGS="$LDFLAGS $libwmf_libs"
+
+	AC_CHECK_HEADER(libwmf/svg.h,[
+		AC_CHECK_LIB(wmf,wmf_stream_create,have_libwmf=yes,[
+			AC_MSG_ERROR(* * * libwmf version 0.2.1 or later * * *)
+		])
+	])
+
+	if [ test $have_libwmf != no]; then
+		SODIPODI_LIBS="$SODIPODI_LIBS $libwmf_libs"
+		SODIPODI_CFLAGS="$SODIPODI_CFLAGS $libwmf_cflags -DHAVE_LIBWMF=1"
+	fi
+fi
+
+CPPFLAGS=$_cppflags
+LDFLAGS=$_ldflags
+
 AC_SUBST(SODIPODI_CFLAGS)
 AC_SUBST(SODIPODI_LIBS)
 

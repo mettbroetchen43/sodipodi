@@ -394,6 +394,10 @@ sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event
 	    sp_selection_item_next ();
 	    ret = TRUE;
 	    break;
+	  case GDK_ISO_Left_Tab: // Tab - cycle selection backward
+	    sp_selection_item_prev ();
+	    ret = TRUE;
+	    break;
           }
 	  break;
 	default:

@@ -20,6 +20,7 @@
  * For other changes there should be other methods
  */
 
+#include <gtk/gtkmenu.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libart_lgpl/art_pixbuf.h>

@@ -1,3 +1,52 @@
+2001-07-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Preserve namespaces for
+	everything but "svg"
+
+2001-07-07  F.J.Franklin  <F.J.Franklin@sheffield.ac.uk>
+
+	* src/svg/svg-color.c (sp_svg_read_color): Accept ';' as
+	terminator
+
+	* src/sp_image.c (sp_image_repr_read_dataURI): New function
+	(sp_image_repr_read_b64): New function
+	(sp_image_read_attr): Accept embedded data
+
+	* configure.in: Added --with-libwmf switch
+
+	* src/xml/repr-io.c (sp_repr_read_file): Read *.wmf using libwmf
+	(sp_wmf_convert): New function
+	(sp_wmf_image_name): New function
+	
+2001-07-07  Frank Felfe  <innerspace@iname.com>
+
+	* src/desktop.h: Added number field
+
+	* src/desktop.c (sp_desktop_new): Initialize number from
+	namedview viewcount
+	(sp_desktop_set_title): Compose name from uri, nameview and number
+
+	* src/document.c (sp_document_set_uri): New method
+
+	* src/file.c (file_save_ok): Set ducument uri
+
+	* src/interface.c (sp_create_window): Set desktop title
+
+	* src/select-context.c (sp_select_context_root_handler): Added
+	backward cycling
+
+	* src/selection-chemistry.c (sp_selection_item_next): Cleared
+	list mess
+	(sp_selection_item_prev): New function
+
+	* src/sp-item-group.c (sp_item_group_item_list): New function
+
+	* src/sp-namedview.h: Added viewcount field
+
+	* src/sp-namedview.c (sp_namedview_get_name): New method
+	
+	* doc/keybindings.txt: Added Shift-Tab
+
 2001-06-07  Lauris Kaplinski  <lauris@ximian.com>
 
 	* configure.in: Version 0.24

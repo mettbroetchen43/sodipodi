@@ -84,6 +84,7 @@ sp_namedview_init (SPNamedView * nv)
 
 	nv->hguides = NULL;
 	nv->vguides = NULL;
+	nv->viewcount = 0;
 }
 
 static void
@@ -472,4 +473,28 @@ sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 			       NULL);
 }
 
+const gchar *
+sp_namedview_get_name (SPNamedView * nv)
+{
+  gchar * name;
+  
+  name = (gchar *)sp_object_getAttribute (SP_OBJECT (nv), "id", NULL);
+  return name;
+}
+
+guint
+sp_namedview_viewcount (SPNamedView * nv)
+{
+ g_assert (SP_IS_NAMEDVIEW (nv));
+
+ return ++nv->viewcount;
+}
+
+const GSList *
+sp_namedview_view_list (SPNamedView * nv)
+{
+ g_assert (SP_IS_NAMEDVIEW (nv));
+
+ return nv->views;
+}
 

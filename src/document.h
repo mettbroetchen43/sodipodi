@@ -123,6 +123,7 @@ void sp_document_del_repr (SPDocument * document, SPRepr * repr);
  */
 
 GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
+void sp_document_set_uri (SPDocument * document, const gchar * uri);
 
 
 #endif

@@ -50,6 +50,10 @@ sp_svg_read_color (const guchar *str, guint32 def)
 			colors = sp_svg_create_color_hash ();
 		}
 		for (i = 0; i < 31; i++) {
+			if (str[i] == ';') {
+				c[i] = '\0';
+				break;
+			}
 			c[i] = tolower (str[i]);
 			if (!str[i]) break;
 		}

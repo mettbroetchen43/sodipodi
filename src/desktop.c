@@ -428,6 +428,7 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	gtk_object_ref (GTK_OBJECT (document));
 
 	desktop->namedview = namedview;
+	desktop->number = sp_namedview_viewcount (namedview);
 
 	/* Setup Canvas */
 	gtk_object_set_data (GTK_OBJECT (desktop->canvas), "SPDesktop", desktop);
@@ -957,17 +958,33 @@ sp_desktop_toggle_borders (GtkWidget * widget)
 	sp_desktop_show_decorations (desktop, !desktop->decorations);
 }
 
-#if 0
-
-/* fixme: */
-
+/*
+ * set the title in the desktop-window (if desktop has an own window)
+ * the title has form sodipodi: file name: namedview name: desktop number
+ * the file name is read from the respective document
+ */
 void
-sp_desktop_set_title (const gchar * title)
+sp_desktop_set_title (SPDesktop * desktop)
 {
-	gtk_window_set_title (main_window, title);
-}
+  GString * name;
+  const gchar * nv_name, * uri, * fname;
+  GtkWindow * window;
 
-#endif
+  g_return_if_fail (desktop != NULL);
+  g_return_if_fail (SP_IS_DESKTOP (desktop));
+  
+  window = GTK_WINDOW (gtk_object_get_data (GTK_OBJECT(desktop), "window"));
+  if (window) {
+    nv_name = sp_namedview_get_name (desktop->namedview);
+    uri = sp_document_uri (desktop->document);
+    if (SPShowFullFielName) fname = uri;
+    else fname = g_basename (uri);
+    name = g_string_new ("");
+    g_string_sprintf (name, "Sodipodi: %s: %s: %d", fname, nv_name, desktop->number);
+    gtk_window_set_title (window, name->str);
+    g_string_free (name, TRUE);
+  }
+}
 
 
 /*

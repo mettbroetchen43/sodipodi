@@ -18,6 +18,7 @@
 #include <glade/glade.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkspinbutton.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 #include "../svg/svg.h"
 #include "../document.h"

@@ -1,7 +1,18 @@
+2001-07-08  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+<<<<<<< ChangeLog
+2001-06-09  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+=======
 2001-06-24  Matthias Warkus  <mawarkus@gnome.org>
 
 	* de.po: Updated.
 
+>>>>>>> 1.84
 2001-05-29  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* ja.po: Update to get rid of warnings in status script.

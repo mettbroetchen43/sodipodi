@@ -134,6 +134,7 @@ sp_maintoolbox_create (void)
 	/* Reference our sodipodi engine */
 	if (!GTK_WIDGET_VISIBLE (toolbox)) sodipodi_ref ();
 
+	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox));
 	gtk_widget_show (toolbox);
 }
 

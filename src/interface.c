@@ -11,6 +11,7 @@
 #include "desktop-handles.h"
 #include "file.h"
 #include "interface.h"
+#include "desktop.h"
 
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
@@ -35,12 +36,12 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (w), sp_document_uri (SP_DT_DOCUMENT (desktop)));
 	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
 	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
         gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), desktop);
         gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), desktop);
+	sp_desktop_set_title (desktop);
 
 	vb = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vb);
