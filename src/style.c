@@ -191,7 +191,7 @@ static const SPStyleEnum enum_writing_mode[] = {
 };
 
 static void
-sp_style_object_destroyed (GtkObject *object, SPStyle *style)
+sp_style_object_released (GtkObject *object, SPStyle *style)
 {
 	style->object = NULL;
 }
@@ -224,7 +224,7 @@ sp_style_new_from_object (SPObject *object)
 	style = sp_style_new ();
 
 	style->object = object;
-	gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
+	gtk_signal_connect (GTK_OBJECT (object), "release", GTK_SIGNAL_FUNC (sp_style_object_released), style);
 
 	return style;
 }
@@ -785,7 +785,7 @@ sp_style_merge_from_parent (SPStyle *style, SPStyle *parent)
 }
 
 static void
-sp_style_paint_server_destroy (SPPaintServer *server, SPStyle *style)
+sp_style_paint_server_release (SPPaintServer *server, SPStyle *style)
 {
 	if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && (server == style->fill.value.server)) {
 		sp_style_paint_clear (style, &style->fill, TRUE, FALSE);
@@ -828,8 +828,8 @@ sp_style_merge_ipaint (SPStyle *style, SPIPaint *paint, SPIPaint *parent)
 		paint->value.server = parent->value.server;
 		if (paint->value.server) {
 			sp_object_href (SP_OBJECT (paint->value.server), style);
-			gtk_signal_connect (GTK_OBJECT (paint->value.server), "destroy",
-					    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+			gtk_signal_connect (GTK_OBJECT (paint->value.server), "release",
+					    GTK_SIGNAL_FUNC (sp_style_paint_server_release), style);
 			gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
 					    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
 		}
@@ -1503,8 +1503,8 @@ sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocu
 				paint->type = SP_PAINT_TYPE_PAINTSERVER;
 				paint->value.server = SP_PAINT_SERVER (ps);
 				sp_object_href (SP_OBJECT (paint->value.server), style);
-				gtk_signal_connect (GTK_OBJECT (paint->value.server), "destroy",
-						    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+				gtk_signal_connect (GTK_OBJECT (paint->value.server), "release",
+						    GTK_SIGNAL_FUNC (sp_style_paint_server_release), style);
 				gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
 						    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
 				paint->set = TRUE;

@@ -160,9 +160,9 @@ sp_item_release (SPObject * object)
 }
 
 static void
-sp_item_clip_destroyed (SPClipPath *cp, SPItem *item)
+sp_item_clip_released (SPClipPath *cp, SPItem *item)
 {
-	g_warning ("Item %s clip path %s destroyed", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
+	g_warning ("Item %s clip path %s released", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
 }
 
 static void
@@ -198,10 +198,8 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 		if (SP_IS_CLIPPATH (cp)) {
 			SPItemView *v;
 			item->clip = (SPClipPath *) sp_object_href (cp, object);
-			gtk_signal_connect (GTK_OBJECT (item->clip), "destroy",
-					    GTK_SIGNAL_FUNC (sp_item_clip_destroyed), item);
-			gtk_signal_connect (GTK_OBJECT (item->clip), "modified",
-					    GTK_SIGNAL_FUNC (sp_item_clip_modified), item);
+			gtk_signal_connect (GTK_OBJECT (item->clip), "release", GTK_SIGNAL_FUNC (sp_item_clip_released), item);
+			gtk_signal_connect (GTK_OBJECT (item->clip), "modified", GTK_SIGNAL_FUNC (sp_item_clip_modified), item);
 			for (v = item->display; v != NULL; v = v->next) {
 				NRArenaItem *ai;
 				ai = sp_clippath_show (item->clip, v->arena);

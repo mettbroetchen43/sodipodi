@@ -179,7 +179,7 @@ static SPRepr *sp_gradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_gradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 
-static void sp_gradient_href_destroy (SPObject *href, SPGradient *gradient);
+static void sp_gradient_href_release (SPObject *href, SPGradient *gradient);
 static void sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient);
 
 static void sp_gradient_invalidate_vector (SPGradient *gr);
@@ -381,10 +381,8 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			href = sp_document_lookup_id (object->document, val + 1);
 			if (SP_IS_GRADIENT (href)) {
 				gr->href = (SPGradient *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "destroy",
-						    GTK_SIGNAL_FUNC (sp_gradient_href_destroy), gr);
-				gtk_signal_connect (GTK_OBJECT (href), "modified",
-						    GTK_SIGNAL_FUNC (sp_gradient_href_modified), gr);
+				gtk_signal_connect (GTK_OBJECT (href), "release", GTK_SIGNAL_FUNC (sp_gradient_href_release), gr);
+				gtk_signal_connect (GTK_OBJECT (href), "modified", GTK_SIGNAL_FUNC (sp_gradient_href_modified), gr);
 			}
 		}
 		sp_gradient_invalidate_vector (gr);
@@ -676,7 +674,7 @@ sp_gradient_repr_set_vector (SPGradient *gr, SPRepr *repr, SPGradientVector *vec
 }
 
 static void
-sp_gradient_href_destroy (SPObject *href, SPGradient *gradient)
+sp_gradient_href_release (SPObject *href, SPGradient *gradient)
 {
 	gradient->href = (SPGradient *) sp_object_hunref (href, gradient);
 	sp_gradient_invalidate_vector (gradient);

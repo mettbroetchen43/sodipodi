@@ -794,7 +794,7 @@ static void handle_msg(at_string msg, at_msg_type msg_type, at_address client_da
 static GtkWidget *  build_header_area(SPRepr *repr);
 
 static void
-autotrace_dialog(SPImage * img)
+autotrace_dialog (SPImage * img)
 {
 	gchar *title = _("Trace");
 
@@ -807,8 +807,8 @@ autotrace_dialog(SPImage * img)
 	gtk_window_set_title (GTK_WINDOW (trace_dialog), title);
 
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (img), 
-					       "destroy",
-					       GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					       "release",
+					       GTK_SIGNAL_FUNC (gtk_widget_destroy),
 					       GTK_OBJECT (trace_dialog));
 	gtk_signal_connect_object (GTK_OBJECT(FRONTLINE_DIALOG(trace_dialog)->close_button),
 				   "clicked",

@@ -1,3 +1,19 @@
+2002-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/gradient-position.c (sp_gradient_position_motion_notify): Reset
+	gradient relative transform to symmetric rectilinear if dragging
+
+	* src/style.c (sp_style_merge_ipaint): Use "release" signal
+	(sp_style_read_ipaint): Ditto
+
+	* src/sp-pattern.c (sp_pattern_read_attr): Use "release" signal
+
+	* src/sp-item.c (sp_item_read_attr): Use "release" signal
+
+	* src/sp-image.c (autotrace_dialog): Connect "release" instead of "destroy"
+
+	* src/sp-gradient.c (sp_gradient_href_release): Use "release" instead of "destroy"
+
 2002-10-06  suzuki toshiya <mpsuzuki@hiroshima-u.ac.jp>
 
 	* src/libnr/Makefile.am (libnr_a_SOURCES): added

@@ -53,7 +53,7 @@ static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_modified (SPObject *object, guint flags);
 
-static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
+static void sp_pattern_href_release (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
 
 static SPPainter *sp_pattern_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
@@ -277,7 +277,7 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			href = sp_document_lookup_id (object->document, val + 1);
 			if (SP_IS_PATTERN (href)) {
 				pat->href = (SPPattern *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "destroy", GTK_SIGNAL_FUNC (sp_pattern_href_destroy), pat);
+				gtk_signal_connect (GTK_OBJECT (href), "release", GTK_SIGNAL_FUNC (sp_pattern_href_release), pat);
 				gtk_signal_connect (GTK_OBJECT (href), "modified", GTK_SIGNAL_FUNC (sp_pattern_href_modified), pat);
 			}
 		}
@@ -399,7 +399,7 @@ sp_pattern_modified (SPObject *object, guint flags)
 }
 
 static void
-sp_pattern_href_destroy (SPObject *href, SPPattern *pattern)
+sp_pattern_href_release (SPObject *href, SPPattern *pattern)
 {
 	pattern->href = (SPPattern *) sp_object_hunref (href, pattern);
 	sp_object_request_modified (SP_OBJECT (pattern), SP_OBJECT_MODIFIED_FLAG);
