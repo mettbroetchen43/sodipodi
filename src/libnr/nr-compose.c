@@ -95,7 +95,7 @@ nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const u
 void
 nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -119,7 +119,7 @@ nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const u
 void
 nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -148,7 +148,7 @@ nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const u
 void
 nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -185,7 +185,7 @@ nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, co
 void
 nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -235,7 +235,7 @@ nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, co
 void
 nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -269,7 +269,7 @@ nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, co
 void
 nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s;
@@ -317,7 +317,7 @@ nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, co
 void
 nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int x, y;
+	int x, y;
 
 	for (y = 0; y < h; y++) {
 		unsigned char *d, *s, *m;
@@ -342,7 +342,7 @@ nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, cons
 void
 nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int x, y;
+	int x, y;
 
 	for (y = 0; y < h; y++) {
 		unsigned char *d, *s, *m;
@@ -373,7 +373,7 @@ nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, cons
 void
 nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -400,7 +400,7 @@ nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, cons
 void
 nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -432,7 +432,7 @@ nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, cons
 void
 nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -472,7 +472,7 @@ nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs,
 void
 nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -525,7 +525,7 @@ nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs,
 void
 nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -562,7 +562,7 @@ nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs,
 void
 nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
 {
-	unsigned int r, c;
+	int r, c;
 
 	for (r = 0; r < h; r++) {
 		unsigned char *d, *s, *m;
@@ -615,7 +615,7 @@ void
 nr_R8G8B8_EMPTY_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *mpx, int mrs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
@@ -647,7 +647,7 @@ void
 nr_R8G8B8A8_N_EMPTY_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
@@ -677,7 +677,7 @@ void
 nr_R8G8B8A8_P_EMPTY_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
@@ -722,7 +722,7 @@ void
 nr_R8G8B8_R8G8B8_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *mpx, int mrs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
@@ -753,7 +753,7 @@ void
 nr_R8G8B8A8_N_R8G8B8A8_N_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
@@ -798,7 +798,7 @@ void
 nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned long rgba)
 {
 	unsigned int r, g, b, a;
-	unsigned int x, y;
+	int x, y;
 
 	if (!rgba & 0xff) return;
 

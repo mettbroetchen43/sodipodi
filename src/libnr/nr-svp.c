@@ -22,10 +22,10 @@
 #include "nr-svp-uncross.h"
 #include "nr-svp.h"
 
-#define NR_QUANT_X 16.0
-#define NR_QUANT_Y 4.0
-#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
-#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
+#define NR_QUANT_X 16.0F
+#define NR_QUANT_Y 4.0F
+#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5F) / NR_QUANT_X)
+#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5F) / NR_QUANT_Y)
 #define NR_COORD_TO_ART(v) (v)
 
 /* Sorted vector paths */
@@ -90,9 +90,9 @@ nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
 				flat = (NRSVPFlat *) svp->segments + sidx;
 				flat->wind = 0;
 				flat->length = 0;
-				flat->y = fi->y;
-				flat->x0 = fi->x0;
-				flat->x1 = fi->x1;
+				flat->y = (float) fi->y;
+				flat->x0 = (float) fi->x0;
+				flat->x1 = (float) fi->x1;
 				sidx += 1;
 				fi = fi->next;
 			}
@@ -106,8 +106,8 @@ nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
 				seg->x1 = si->bbox.x1;
 				sidx += 1;
 				for (vi = si->vertex; vi; vi = vi->next) {
-					svp->points[pidx].x = vi->x;
-					svp->points[pidx].y = vi->y;
+					svp->points[pidx].x = (float) vi->x;
+					svp->points[pidx].y = (float) vi->y;
 					seg->length += 1;
 					pidx += 1;
 					if ((seg->length == NR_SVP_LENGTH_MAX) && vi->next) {
@@ -233,7 +233,7 @@ nr_svp_point_distance (NRSVP *svp, float x, float y)
 				}
 			} else {
 				unsigned int pidx;
-				for (pidx = 0; pidx < seg->length - 1; pidx++) {
+				for (pidx = 0; pidx < (unsigned int) seg->length - 1; pidx++) {
 					NRPointF *pt;
 					double dist2;
 					pt = svp->points + seg->start + pidx;
@@ -325,8 +325,8 @@ nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y)
 static void
 nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 {
-	x = NR_COORD_X_FROM_ART (x);
-	y = NR_COORD_Y_FROM_ART (y);
+	x = (float) NR_COORD_X_FROM_ART (x);
+	y = (float) NR_COORD_Y_FROM_ART (y);
 	if (y != svlb->sy) {
 		NRVertex *vertex;
 		int newdir;
@@ -339,8 +339,8 @@ nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
 		}
 		if (!svlb->refvx) {
 			svlb->refvx = nr_vertex_new_xy (svlb->sx, svlb->sy);
-			svlb->bbox.x0 = svlb->bbox.x1 = svlb->sx;
-			svlb->bbox.y0 = svlb->bbox.y1 = svlb->sy;
+			svlb->bbox.x0 = svlb->bbox.x1 = (float) svlb->sx;
+			svlb->bbox.y0 = svlb->bbox.y1 = (float) svlb->sy;
 		}
 		/* Add vertex to list */
 		vertex = nr_vertex_new_xy (x, y);
@@ -407,7 +407,7 @@ nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double 
 	if (s1_q >= s2_q) goto subdivide;
 
  nosubdivide:
-	nr_svl_build_lineto (svlb, x3, y3);
+	nr_svl_build_lineto (svlb, (float) x3, (float) y3);
 	return;
 
  subdivide:
@@ -445,10 +445,10 @@ nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 		switch (s->code) {
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			nr_svl_build_moveto (&svlb, s->x, s->y);
+			nr_svl_build_moveto (&svlb, (float) s->x, (float) s->y);
 			break;
 		case ART_LINETO:
-			nr_svl_build_lineto (&svlb, s->x, s->y);
+			nr_svl_build_lineto (&svlb, (float) s->x, (float) s->y);
 			break;
 		default:
 			/* fixme: free lists */
@@ -494,7 +494,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 		case ART_MOVETO_OPEN:
 			if (close && ((x != sx) || (y != sy))) {
 				/* Add closepath */
-				nr_svl_build_lineto (&svlb, sx, sy);
+				nr_svl_build_lineto (&svlb, (float) sx, (float) sy);
 			}
 			if (transform) {
 				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
@@ -503,7 +503,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 				sx = x = bp->x3;
 				sy = y = bp->y3;
 			}
-			nr_svl_build_moveto (&svlb, x, y);
+			nr_svl_build_moveto (&svlb, (float) x, (float) y);
 			break;
 		case ART_LINETO:
 			if (transform) {
@@ -513,7 +513,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 				x = bp->x3;
 				y = bp->y3;
 			}
-			nr_svl_build_lineto (&svlb, x, y);
+			nr_svl_build_lineto (&svlb, (float) x, (float) y);
 			break;
 		case ART_CURVETO:
 			if (transform) {
@@ -541,7 +541,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 	}
 	if (close && ((x != sx) || (y != sy))) {
 		/* Add closepath */
-		nr_svl_build_lineto (&svlb, sx, sy);
+		nr_svl_build_lineto (&svlb, (float) sx, (float) sy);
 	}
 	nr_svl_build_finish_segment (&svlb);
 	if (svlb.svl) {
@@ -578,10 +578,10 @@ nr_svl_from_art_svp (ArtSVP *asvp)
 		}
 		svl->dir = seg->dir ? 1 : -1;
 		svl->wind = svl->dir;
-		svl->bbox.x0 = seg->bbox.x0;
-		svl->bbox.y0 = seg->bbox.y0;
-		svl->bbox.x1 = seg->bbox.x1;
-		svl->bbox.y1 = seg->bbox.y1;
+		svl->bbox.x0 = (float) seg->bbox.x0;
+		svl->bbox.y0 = (float) seg->bbox.y0;
+		svl->bbox.x1 = (float) seg->bbox.x1;
+		svl->bbox.y1 = (float) seg->bbox.y1;
 	}
 	return svl;
 }
@@ -655,7 +655,7 @@ nr_svl_point_wind (NRSVL *svl, float x, float y)
 				for (vx = s->vertex; vx && vx->next && (vx->y <= y); vx = vx->next) {
 					if (vx->next->y > y) {
 						float cxy;
-						cxy = vx->x + (vx->next->x - vx->x) * (y - vx->y) / (vx->next->y - vx->y);
+						cxy = (float) (vx->x + (vx->next->x - vx->x) * (y - vx->y) / (vx->next->y - vx->y));
 						if (cxy < x) wind += s->wind;
 						break;
 					}
@@ -921,10 +921,10 @@ nr_svl_compare (NRSVL *l, NRSVL *r)
 
 	/* Y is same, X is same, checking for line orders */
 
-	xx0 = l->vertex->next->x - r->vertex->x;
-	yy0 = l->vertex->next->y - r->vertex->y;
-	x1x0 = r->vertex->next->x - r->vertex->x;
-	y1y0 = r->vertex->next->y - r->vertex->y;
+	xx0 = (float) (l->vertex->next->x - r->vertex->x);
+	yy0 = (float) (l->vertex->next->y - r->vertex->y);
+	x1x0 = (float) (r->vertex->next->x - r->vertex->x);
+	y1y0 = (float) (r->vertex->next->y - r->vertex->y);
 
 	d = xx0 * y1y0 - yy0 * x1x0;
 
@@ -940,14 +940,14 @@ nr_svl_calculate_bbox (NRSVL *svl)
 {
 	NRVertex * v;
 
-	svl->bbox.x0 = svl->bbox.y0 = 1e18;
-	svl->bbox.x1 = svl->bbox.y1 = -1e18;
+	svl->bbox.x0 = svl->bbox.y0 = 1e18F;
+	svl->bbox.x1 = svl->bbox.y1 = -1e18F;
 
 	for (v = svl->vertex; v != NULL; v = v->next) {
-		svl->bbox.x0 = MIN (svl->bbox.x0, v->x);
-		svl->bbox.y0 = MIN (svl->bbox.y0, v->y);
-		svl->bbox.x1 = MAX (svl->bbox.x1, v->x);
-		svl->bbox.y1 = MAX (svl->bbox.y1, v->y);
+		svl->bbox.x0 = (float) MIN (svl->bbox.x0, v->x);
+		svl->bbox.y0 = (float) MIN (svl->bbox.y0, v->y);
+		svl->bbox.x1 = (float) MAX (svl->bbox.x1, v->x);
+		svl->bbox.y1 = (float) MAX (svl->bbox.y1, v->y);
 	}
 }
 

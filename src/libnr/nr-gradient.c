@@ -365,8 +365,8 @@ nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 
 		df = hypot (fx - cx, fy - cy);
 		if (df >= r) {
-			fx = cx + (fx - cx ) * r / df;
-			fy = cy + (fy - cy ) * r / df;
+			fx = cx + (fx - cx ) * r / (float) df;
+			fy = cy + (fy - cy ) * r / (float) df;
 		}
 
 		n2gs.c[0] = cx - fx;
@@ -383,8 +383,8 @@ nr_rgradient_renderer_setup (NRRGradientRenderer *rgr,
 		rgr->cy = 0.0;
 		rgr->fx = 0.0;
 		rgr->fy = 0.0;
-		rgr->r = r / hypot (fx - cx, fy - cy);
-		rgr->C = 1.0 - rgr->r * rgr->r;
+		rgr->r = r / (float) hypot (fx - cx, fy - cy);
+		rgr->C = 1.0F - rgr->r * rgr->r;
 		/* INVARIANT: C < 0 */
 		rgr->C = MIN (rgr->C, -NR_EPSILON_F);
 	}

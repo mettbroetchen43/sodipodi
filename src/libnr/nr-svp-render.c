@@ -294,8 +294,8 @@ typedef struct _NRRun NRRun;
 struct _NRRun {
 	NRRun *next;
 	double x0, y0, x1, y1;
-	double step;
-	double final;
+	float step;
+	float final;
 	double x;
 	double value;
 };
@@ -330,7 +330,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 {
 	double dX0, dY0, dX1, dY1;
 	NRSlice *slices;
-	int sidx;
+	unsigned int sidx;
 	int ystart;
 	unsigned char *rowbuffer;
 	int iy0;
@@ -522,9 +522,9 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 					/* Continue with final value */
 					globalval += cr->final;
 					/* Add initial trapezoid */
-					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
+					localval += (float) (0.5 * (cr->x1 - cr->x) * (cr->value + cr->final));
 					/* Add final rectangle */
-					localval += (dx1 - cr->x1) * cr->final;
+					localval += (float) ((dx1 - cr->x1) * cr->final);
 					/* Remove exhausted run */
 					cr = nr_run_free_one (cr);
 					if (sr) {
@@ -542,7 +542,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 							fillstep += cr->step;
 						}
 					}
-					localval += (dx1 - cr->x) * (cr->value + (dx1 - cr->x) * cr->step / 2.0);
+					localval += (float) ((dx1 - cr->x) * (cr->value + (dx1 - cr->x) * cr->step / 2.0));
 					cr->x = dx1;
 					cr->value = (dx1 - cr->x0) * cr->step;
 					sr = cr;
@@ -557,7 +557,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 				printf ("Weird localval %g : gv %g\n", localval, globalval);
 			}
 #endif
-			localval = CLAMP (localval, 0.0, 1.0);
+			localval = CLAMP (localval, 0.0F, 1.0F);
 			c24 = (int) floor (16777215 * localval + 0.5);
 			if (fill && (rx1 > ix1)) {
 				NRRun *r;
@@ -696,7 +696,7 @@ nr_slice_compare (NRSlice *l, NRSlice *r)
 		if (l->stepx < r->stepx) return -1;
 		if (l->stepx > r->stepx) return 1;
 	} else if (l->y > r->y) {
-		int pidx;
+		unsigned int pidx;
 		NRPointF *p;
 		double x, ldx, rdx;
 		/* This is bitch - we have to determine r values at l->y */
@@ -717,7 +717,7 @@ nr_slice_compare (NRSlice *l, NRSlice *r)
 		if (ldx < rdx) return -1;
 		if (ldx > rdx) return 1;
 	} else {
-		int pidx;
+		unsigned int pidx;
 		NRPointF *p;
 		double x, ldx, rdx;
 		/* This is bitch - we have to determine l value at r->y */
@@ -904,7 +904,7 @@ nr_svl_render (NRSVL *svl, unsigned char *px, unsigned int bpp, unsigned int rs,
 			int xstop;
 			int c24;
 
-			xnext = x + 1.0;
+			xnext = x + 1.0F;
 			/* process runs */
 			/* fixme: generate fills */
 			localval = globalval;
@@ -921,9 +921,9 @@ nr_svl_render (NRSVL *svl, unsigned char *px, unsigned int bpp, unsigned int rs,
 					/* Continue with final value */
 					globalval += cr->final;
 					/* Add initial trapezoid */
-					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
+					localval += (float) ((cr->x1 - cr->x) * (cr->value + cr->final) / 2.0);
 					/* Add final rectangle */
-					localval += (xnext - cr->x1) * cr->final;
+					localval += (float) ((xnext - cr->x1) * cr->final);
 					/* Remove exhausted run */
 					cr = nr_run_free_one (cr);
 					if (sr) {
@@ -941,7 +941,7 @@ nr_svl_render (NRSVL *svl, unsigned char *px, unsigned int bpp, unsigned int rs,
 							fillstep += cr->step;
 						}
 					}
-					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
+					localval += (float) ((xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0));
 					cr->x = xnext;
 					cr->value = (xnext - cr->x0) * cr->step;
 					sr = cr;
@@ -951,7 +951,7 @@ nr_svl_render (NRSVL *svl, unsigned char *px, unsigned int bpp, unsigned int rs,
 			if (fill) {
 				if (cr) xstop = MIN (xstop, (int) floor (cr->x0));
 			}
-			localval = CLAMP (localval, 0.0, 1.0);
+			localval = CLAMP (localval, 0.0F, 1.0F);
 			c24 = (int) (16777215 * localval + 0.5);
 			if (fill && (xstop > xnext)) {
 				int s24;
@@ -1155,16 +1155,16 @@ nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, int wind)
 		r->x1 = x1;
 		r->y0 = y0;
 		r->y1 = y1;
-		r->step = (x0 == x1) ? 0.0 : wind * (y1 - y0) / (x1 - x0);
+		r->step = (x0 == x1) ? 0.0F : (float) (wind * (y1 - y0) / (x1 - x0));
 	} else {
 		r->x0 = x1;
 		r->x1 = x0;
 		r->y0 = y1;
 		r->y1 = y0;
-		r->step = wind * (y1 - y0) / (x0 - x1);
+		r->step = (float) (wind * (y1 - y0) / (x0 - x1));
 	}
 
-	r->final = wind * (y1 - y0);
+	r->final = (float) (wind * (y1 - y0));
 
 	r->value = 0.0;
 	r->x = r->x0;

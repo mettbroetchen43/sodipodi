@@ -51,19 +51,19 @@ nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath)
 			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
 			sidx = idx;
 			d->elements[idx++].code.closed = TRUE;
-			d->elements[idx++].value = avp->x;
-			d->elements[idx++].value = avp->y;
+			d->elements[idx++].value = (float) avp->x;
+			d->elements[idx++].value = (float) avp->y;
 			break;
 		case ART_MOVETO_OPEN:
 			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
 			sidx = idx;
 			d->elements[idx++].code.closed = FALSE;
-			d->elements[idx++].value = avp->x;
-			d->elements[idx++].value = avp->y;
+			d->elements[idx++].value = (float) avp->x;
+			d->elements[idx++].value = (float) avp->y;
 			break;
 		case ART_LINETO:
-			d->elements[idx++].value = avp->x;
-			d->elements[idx++].value = avp->y;
+			d->elements[idx++].value = (float) avp->x;
+			d->elements[idx++].value = (float) avp->y;
 			break;
 		default:
 			break;
@@ -142,7 +142,7 @@ nr_line_wind_distance (double x0, double y0, double x1, double y1, NRPointF *pt,
 			dist2 = (Px - Qx) * (Px - Qx) + (Py - Qy) * (Py - Qy);
 		}
 
-		if (dist2 < (*best * *best)) *best = sqrt (dist2);
+		if (dist2 < (*best * *best)) *best = (float) sqrt (dist2);
 	}
 
 	if (wind) {
@@ -207,9 +207,9 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 	if (best) {
 		/* Quicly adjust to endpoints */
 		len2 = (x000 - Px) * (x000 - Px) + (y000 - Py) * (y000 - Py);
-		if (len2 < (*best * *best)) *best = sqrt (len2);
+		if (len2 < (*best * *best)) *best = (float) sqrt (len2);
 		len2 = (x111 - Px) * (x111 - Px) + (y111 - Py) * (y111 - Py);
-		if (len2 < (*best * *best)) *best = sqrt (len2);
+		if (len2 < (*best * *best)) *best = (float) sqrt (len2);
 
 		if (((x0 - Px) < *best) && ((y0 - Py) < *best) && ((Px - x1) < *best) && ((Py - y1) < *best)) {
 			/* Point is inside sloppy bbox */
@@ -290,20 +290,20 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 			x0 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
 			y0 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
 			if (bbox) {
-				bbox->x0 = MIN (bbox->x0, x0);
-				bbox->y0 = MIN (bbox->y0, y0);
-				bbox->x1 = MAX (bbox->x1, x0);
-				bbox->y1 = MAX (bbox->y1, y0);
+				bbox->x0 = (float) MIN (bbox->x0, x0);
+				bbox->y0 = (float) MIN (bbox->y0, y0);
+				bbox->x1 = (float) MAX (bbox->x1, x0);
+				bbox->y1 = (float) MAX (bbox->y1, y0);
 			}
 			break;
 		case ART_LINETO:
 			x3 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
 			y3 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
 			if (bbox) {
-				bbox->x0 = MIN (bbox->x0, x3);
-				bbox->y0 = MIN (bbox->y0, y3);
-				bbox->x1 = MAX (bbox->x1, x3);
-				bbox->y1 = MAX (bbox->y1, y3);
+				bbox->x0 = (float) MIN (bbox->x0, x3);
+				bbox->y0 = (float) MIN (bbox->y0, y3);
+				bbox->x1 = (float) MAX (bbox->x1, x3);
+				bbox->y1 = (float) MAX (bbox->y1, y3);
 			}
 			if (dist || wind) {
 				nr_line_wind_distance (x0, y0, x3, y3, pt, wind, dist);
@@ -339,10 +339,10 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 {
 	double a, b, c, D;
 
-	bbox->x0 = MIN (bbox->x0, x111);
-	bbox->y0 = MIN (bbox->y0, y111);
-	bbox->x1 = MAX (bbox->x1, x111);
-	bbox->y1 = MAX (bbox->y1, y111);
+	bbox->x0 = (float) MIN (bbox->x0, x111);
+	bbox->y0 = (float) MIN (bbox->y0, y111);
+	bbox->x1 = (float) MAX (bbox->x1, x111);
+	bbox->y1 = (float) MAX (bbox->y1, y111);
 
 	/*
 	 * xttt = s * (s * (s * x000 + t * x001) + t * (s * x001 + t * x011)) + t * (s * (s * x001 + t * x011) + t * (s * x011 + t * x111))
@@ -379,15 +379,15 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 		if ((s > 0.0) && (s < 1.0)) {
 			t = 1.0 - s;
 			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
-			bbox->x0 = MIN (bbox->x0, xttt);
-			bbox->x1 = MAX (bbox->x1, xttt);
+			bbox->x0 = (float) MIN (bbox->x0, xttt);
+			bbox->x1 = (float) MAX (bbox->x1, xttt);
 		}
 		s = (-b - d) / (2 * a);
 		if ((s > 0.0) && (s < 1.0)) {
 			t = 1.0 - s;
 			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
-			bbox->x0 = MIN (bbox->x0, xttt);
-			bbox->x1 = MAX (bbox->x1, xttt);
+			bbox->x0 = (float) MIN (bbox->x0, xttt);
+			bbox->x1 = (float) MAX (bbox->x1, xttt);
 		}
 	}
 
@@ -405,15 +405,15 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 		if ((s > 0.0) && (s < 1.0)) {
 			t = 1.0 - s;
 			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
-			bbox->y0 = MIN (bbox->y0, yttt);
-			bbox->y1 = MAX (bbox->y1, yttt);
+			bbox->y0 = (float) MIN (bbox->y0, yttt);
+			bbox->y1 = (float) MAX (bbox->y1, yttt);
 		}
 		s = (-b - d) / (2 * a);
 		if ((s > 0.0) && (s < 1.0)) {
 			t = 1.0 - s;
 			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
-			bbox->y0 = MIN (bbox->y0, yttt);
-			bbox->y1 = MAX (bbox->y1, yttt);
+			bbox->y0 = (float) MIN (bbox->y0, yttt);
+			bbox->y1 = (float) MAX (bbox->y1, yttt);
 		}
 	}
 }
@@ -439,18 +439,18 @@ nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 		case ART_MOVETO:
 			x0 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
 			y0 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
-			bbox->x0 = MIN (bbox->x0, x0);
-			bbox->y0 = MIN (bbox->y0, y0);
-			bbox->x1 = MAX (bbox->x1, x0);
-			bbox->y1 = MAX (bbox->y1, y0);
+			bbox->x0 = (float) MIN (bbox->x0, x0);
+			bbox->y0 = (float) MIN (bbox->y0, y0);
+			bbox->x1 = (float) MAX (bbox->x1, x0);
+			bbox->y1 = (float) MAX (bbox->y1, y0);
 			break;
 		case ART_LINETO:
 			x3 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
 			y3 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
-			bbox->x0 = MIN (bbox->x0, x3);
-			bbox->y0 = MIN (bbox->y0, y3);
-			bbox->x1 = MAX (bbox->x1, x3);
-			bbox->y1 = MAX (bbox->y1, y3);
+			bbox->x0 = (float) MIN (bbox->x0, x3);
+			bbox->y0 = (float) MIN (bbox->y0, y3);
+			bbox->x1 = (float) MAX (bbox->x1, x3);
+			bbox->y1 = (float) MAX (bbox->y1, y3);
 			x0 = x3;
 			y0 = y3;
 			break;
