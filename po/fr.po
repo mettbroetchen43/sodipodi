@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.32pre\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-18 02:16+0200\n"
+"POT-Creation-Date: 2003-06-20 13:56+0300\n"
 "PO-Revision-Date: 2003-06-18 02:14+0200\n"
 "Last-Translator: raymond ostertag <r.ostertag@caramail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 #, fuzzy
@@ -44,116 +44,116 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Le document %s a des changements non enregistrés, les enregistrer ?"
 
 #. Page page
-#: src/desktop.c:1468 src/dialogs/align.c:265
+#: src/desktop.c:1468 src/dialogs/align.c:286
 #: src/dialogs/desktop-properties.c:422 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:478
 msgid "Page"
 msgstr "Page"
 
-#: src/desktop.c:1472 src/dialogs/align.c:266 src/dialogs/export.c:140
+#: src/desktop.c:1472 src/dialogs/align.c:287 src/dialogs/export.c:140
 #: src/verbs.c:479
 msgid "Drawing"
 msgstr "Dessin"
 
 #. Selection submenu
-#: src/desktop.c:1476 src/dialogs/align.c:267 src/dialogs/export.c:145
-#: src/interface.c:568 src/toolbox.c:487 src/verbs.c:480
+#: src/desktop.c:1476 src/dialogs/align.c:288 src/dialogs/export.c:145
+#: src/interface.c:553 src/toolbox.c:485 src/verbs.c:480
 msgid "Selection"
 msgstr "Sélection"
 
-#: src/dialogs/align.c:150 src/toolbox.c:448
+#: src/dialogs/align.c:153 src/toolbox.c:445
 msgid "Align objects"
 msgstr "Aligner les objets"
 
-#: src/dialogs/align.c:169
+#: src/dialogs/align.c:172
 msgid "Right side of aligned objects to left side of anchor"
 msgstr "Aligner le coté droit de l'objet au coté gauche de l'ancre"
 
-#: src/dialogs/align.c:171
+#: src/dialogs/align.c:175
 msgid "Left side of aligned objects to left side of anchor"
 msgstr "Aligner le coté gauche de l'objet au coté gauche de l'ancre"
 
-#: src/dialogs/align.c:173
+#: src/dialogs/align.c:178
 msgid "Center horizontally"
 msgstr "Centrer horizontalement"
 
-#: src/dialogs/align.c:175
+#: src/dialogs/align.c:181
 msgid "Right side of aligned objects to right side of anchor"
 msgstr "Aligner coté droit de l'objet au coté droit de l'ancre"
 
-#: src/dialogs/align.c:177
+#: src/dialogs/align.c:184
 msgid "Left side of aligned objects to right side of anchor"
 msgstr "Aligner le coté gauche de l'objet au coté droit de l'ancre"
 
-#: src/dialogs/align.c:180
+#: src/dialogs/align.c:188
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Aligner le bas de l'objet avec le haut de l'ancre"
 
-#: src/dialogs/align.c:182 src/dialogs/align.c:188
+#: src/dialogs/align.c:191 src/dialogs/align.c:200
 msgid "Top of aligned objects to top of anchor"
 msgstr "Aligner le haut de l'objet avec le haut de l'ancre"
 
-#: src/dialogs/align.c:184
+#: src/dialogs/align.c:194
 msgid "Center vertically"
 msgstr "Centrer verticalement"
 
-#: src/dialogs/align.c:186
+#: src/dialogs/align.c:197
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Aligner le bas de l'objet avec le bas de l'ancre"
 
-#: src/dialogs/align.c:190
+#: src/dialogs/align.c:203
 msgid "Align"
 msgstr "Aligner"
 
-#: src/dialogs/align.c:208
+#: src/dialogs/align.c:221
 msgid "Distribute left sides of objects at even distances"
 msgstr "Distribue les cotés gauches de l'objet à distances égales"
 
-#: src/dialogs/align.c:210
+#: src/dialogs/align.c:224
 msgid "Distribute centres of objects at even distances horizontally"
 msgstr "Distribue les centres des objets horizontalement à distances égales"
 
-#: src/dialogs/align.c:212
+#: src/dialogs/align.c:227
 msgid "Distribute right sides of objects at even distances"
 msgstr "Distribue les cotés droits des objets à distances égales"
 
-#: src/dialogs/align.c:214
+#: src/dialogs/align.c:230
 msgid "Distribute horizontal distance between objects equally"
 msgstr "Distribue horizontalement des distances égales entre les objets"
 
-#: src/dialogs/align.c:217
+#: src/dialogs/align.c:234
 msgid "Distribute top sides of objects at even distances"
 msgstr "Distribue les cotés hauts des objest à distances égales"
 
-#: src/dialogs/align.c:219
+#: src/dialogs/align.c:237
 msgid "Distribute centres of objects at even distances vertically"
 msgstr "Distribue verticalement les centres des objets à distances égales"
 
-#: src/dialogs/align.c:221
+#: src/dialogs/align.c:240
 msgid "Distribute bottom sides of objects at even distances"
 msgstr "Distribue les cotés bas des objets à égales distances"
 
-#: src/dialogs/align.c:223
+#: src/dialogs/align.c:243
 msgid "Distribute vertical distance between objects equally"
 msgstr "Distribue verticalement des distances égales entre les objets"
 
-#: src/dialogs/align.c:225
+#: src/dialogs/align.c:246
 msgid "Distribute"
 msgstr "Distribuer"
 
-#: src/dialogs/align.c:261
+#: src/dialogs/align.c:282
 msgid "Last selected"
 msgstr "Dernier sélectionné"
 
-#: src/dialogs/align.c:262
+#: src/dialogs/align.c:283
 msgid "First selected"
 msgstr "Premier sélectionné"
 
-#: src/dialogs/align.c:263
+#: src/dialogs/align.c:284
 msgid "Biggest item"
 msgstr "Élément le plus gros"
 
-#: src/dialogs/align.c:264
+#: src/dialogs/align.c:285
 msgid "Smallest item"
 msgstr "Élément le plus petit"
 
@@ -245,7 +245,7 @@ msgstr "Ligne de guide surbrillante"
 msgid "Show border"
 msgstr "Montrer les contours"
 
-#: src/dialogs/desktop-properties.c:669
+#: src/dialogs/desktop-properties.c:675
 msgid "Close"
 msgstr "Fermer"
 
@@ -312,7 +312,7 @@ msgstr "Papier personalisé"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:214 src/dialogs/export.c:153
-#: src/dialogs/object-properties.c:316 src/dialogs/transformation.c:401
+#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:401
 #: src/dialogs/transformation.c:576
 msgid "Units:"
 msgstr "Unités :"
@@ -320,7 +320,7 @@ msgstr "Unités :"
 #. Stroke width
 #: src/dialogs/document-properties.c:223 src/dialogs/export.c:163
 #: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:358
+#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
 #: src/dialogs/stroke-style.c:556 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1079
 msgid "Width:"
@@ -328,7 +328,7 @@ msgstr "Largeur :"
 
 #: src/dialogs/document-properties.c:238 src/dialogs/export.c:172
 #: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
-#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:373
+#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
 msgid "Height:"
 msgstr "Hauteur :"
 
@@ -530,12 +530,12 @@ msgid "URL:"
 msgstr "URL :"
 
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:328
+#: src/dialogs/object-properties.c:330
 msgid "X:"
 msgstr "X :"
 
 #: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-#: src/dialogs/object-properties.c:343
+#: src/dialogs/object-properties.c:345
 msgid "Y:"
 msgstr "Y :"
 
@@ -552,71 +552,71 @@ msgstr "RY :"
 msgid "%s attributes"
 msgstr "%s attributs"
 
-#: src/dialogs/object-properties.c:108
+#: src/dialogs/object-properties.c:110
 msgid "Object style"
 msgstr "Style de l'objet"
 
-#: src/dialogs/object-properties.c:123
+#: src/dialogs/object-properties.c:125
 msgid "Fill"
 msgstr "Remplir"
 
-#: src/dialogs/object-properties.c:137
+#: src/dialogs/object-properties.c:139
 msgid "Stroke paint"
 msgstr "Peinture du tracé"
 
-#: src/dialogs/object-properties.c:151
+#: src/dialogs/object-properties.c:153
 msgid "Stroke style"
 msgstr "Style du tracé"
 
-#: src/dialogs/object-properties.c:171
+#: src/dialogs/object-properties.c:173
 msgid "Apply to:"
 msgstr "Appliquer à :"
 
-#: src/dialogs/object-properties.c:181
+#: src/dialogs/object-properties.c:183
 msgid "Selected objects"
 msgstr "Objets sélectionnés"
 
-#: src/dialogs/object-properties.c:184
+#: src/dialogs/object-properties.c:186
 msgid "All shape tools"
 msgstr "Outils toutes formes"
 
-#: src/dialogs/object-properties.c:187
+#: src/dialogs/object-properties.c:189
 msgid "Rectangle tool"
 msgstr "Outil Rectangle"
 
-#: src/dialogs/object-properties.c:190
+#: src/dialogs/object-properties.c:192
 msgid "Arc tool"
 msgstr "Outil Arc"
 
-#: src/dialogs/object-properties.c:193
+#: src/dialogs/object-properties.c:195
 msgid "Star tool"
 msgstr "Outil Étoile"
 
-#: src/dialogs/object-properties.c:196
+#: src/dialogs/object-properties.c:198
 msgid "Spiral tool"
 msgstr "Outil Spirale"
 
-#: src/dialogs/object-properties.c:199
+#: src/dialogs/object-properties.c:201
 msgid "Freehand and pen"
 msgstr "Crayon et Main levée"
 
-#: src/dialogs/object-properties.c:202
+#: src/dialogs/object-properties.c:204
 msgid "Calligraphic line"
 msgstr "Ligne calligraphique"
 
-#: src/dialogs/object-properties.c:205 src/verbs.c:469
+#: src/dialogs/object-properties.c:207 src/verbs.c:469
 msgid "Text"
 msgstr "Texte"
 
-#: src/dialogs/object-properties.c:281
+#: src/dialogs/object-properties.c:283
 msgid "Object position and size"
 msgstr "Position et taille de l'objet"
 
-#: src/dialogs/object-properties.c:303
+#: src/dialogs/object-properties.c:305
 msgid "Position and size"
 msgstr "Position et taille"
 
-#: src/dialogs/stroke-style.c:543 src/toolbox.c:444
+#: src/dialogs/stroke-style.c:543 src/toolbox.c:441
 msgid "Stroke settings"
 msgstr "Paramètres du tracé"
 
@@ -733,7 +733,7 @@ msgstr "Déplacer"
 msgid "Relative move"
 msgstr "Déplacement relatif"
 
-#: src/dialogs/transformation.c:539 src/interface.c:426
+#: src/dialogs/transformation.c:539
 msgid "Scale"
 msgstr "Échelle"
 
@@ -872,7 +872,7 @@ msgstr "Enregistre le fichier"
 msgid "Select file to import"
 msgstr "Sélectionnez un fichier à importer"
 
-#: src/help.c:48
+#: src/help.c:49
 msgid "About sodipodi"
 msgstr "À propos de Sodipodi"
 
@@ -1019,16 +1019,16 @@ msgstr "Ex carrés"
 msgid "Close View"
 msgstr "Fermer la vue"
 
-#: src/interface.c:314 src/interface.c:493
+#: src/interface.c:314 src/interface.c:478
 msgid "Exit Program"
 msgstr "Quitter le programme"
 
-#: src/interface.c:316 src/interface.c:486
+#: src/interface.c:316 src/interface.c:471
 msgid "About Sodipodi"
 msgstr "À propos de Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:319 src/interface.c:489
+#: src/interface.c:319 src/interface.c:474
 msgid "About Modules"
 msgstr "À propos des Modules"
 
@@ -1036,74 +1036,69 @@ msgstr "À propos des Modules"
 msgid "Cleanup"
 msgstr "Nettoyage"
 
-#. Selection:Order
-#: src/interface.c:359
-msgid "Order"
-msgstr "Ordonner"
-
 #. View:Zoom
-#: src/interface.c:418 src/toolbox.c:619 src/verbs.c:470
+#: src/interface.c:407 src/toolbox.c:617 src/verbs.c:470
 msgid "Zoom"
 msgstr "Zoom"
 
 #. View:New View
-#: src/interface.c:434
+#: src/interface.c:419
 msgid "New View"
 msgstr "Nouvelle vue"
 
 #. View:New Preview
-#: src/interface.c:436
+#: src/interface.c:421
 msgid "New Preview"
 msgstr "Nouvel aperçu"
 
-#: src/interface.c:438
+#: src/interface.c:423
 msgid "New Toplevel Toolbox"
 msgstr "Nouvelle boîte à outils de premier rang"
 
-#: src/interface.c:439
+#: src/interface.c:424
 msgid "New Docked Toolbox"
 msgstr "Nouvelle boite à outils accrochée"
 
-#: src/interface.c:440
+#: src/interface.c:425
 msgid "Remove Docked Toolbox"
 msgstr "Enlever la boite à outils accrochée"
 
 #. File
-#: src/interface.c:482 src/verbs.c:423
+#: src/interface.c:467 src/verbs.c:423
 msgid "New"
 msgstr "Nouveau"
 
-#: src/interface.c:483
+#: src/interface.c:468
 msgid "Open"
 msgstr "Ouvrir"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:556 src/toolbox.c:347
+#: src/interface.c:541 src/toolbox.c:348
 msgid "File"
 msgstr "Fichier"
 
 #. Edit submenu
-#: src/interface.c:562 src/toolbox.c:407 src/widgets/gradient-selector.c:135
+#: src/interface.c:547 src/toolbox.c:405 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Édition"
 
 #. View submenu
-#: src/interface.c:574
+#: src/interface.c:559
 msgid "View"
 msgstr "Vue"
 
 #. Drawing mode submenu
-#: src/interface.c:580
+#: src/interface.c:565
 msgid "Drawing Mode"
 msgstr "Mode de dessin"
 
 #. Dialog submenu
-#: src/interface.c:586
+#: src/interface.c:571
 msgid "Dialogs"
 msgstr "Dialogues"
 
-#: src/interface.c:593
+#: src/interface.c:578
 msgid "Filters"
 msgstr "Filtres"
 
@@ -1384,7 +1379,7 @@ msgid "Shape"
 msgstr "Profil"
 
 #. Item dialog
-#: src/object-ui.c:460 src/toolbox.c:445
+#: src/object-ui.c:460 src/toolbox.c:442
 msgid "Fill settings"
 msgstr "Réglages du remplissage"
 
@@ -1707,67 +1702,63 @@ msgstr "Proportion :"
 msgid "Make sides flat"
 msgstr "Rendre les cotés plats"
 
-#: src/toolbox.c:441
+#: src/toolbox.c:439
 msgid "Object"
 msgstr "Objet"
 
-#: src/toolbox.c:446 src/verbs.c:488
+#: src/toolbox.c:443 src/verbs.c:488
 msgid "Object size and position"
 msgstr "Taille et Position de l'objet"
 
-#: src/toolbox.c:447
+#: src/toolbox.c:444
 msgid "Text and font settings"
 msgstr "Réglages des textes et polices"
 
-#: src/toolbox.c:449 src/verbs.c:489
+#: src/toolbox.c:446 src/verbs.c:489
 msgid "Object transformations"
 msgstr "Transformation d'objet"
 
-#: src/toolbox.c:520
+#: src/toolbox.c:519
 msgid "Draw"
 msgstr "Dessiner"
 
-#. Todo:  Generalize all the toolbox routines to have general purpose
-#. routine for creating them
-#. Create the extension toolbox
-#. Todo: Make it able to create required boxes dynamically
-#: src/toolbox.c:576
+#: src/toolbox.c:574
 msgid "Extension"
 msgstr "Extension"
 
-#: src/toolbox.c:653
+#: src/toolbox.c:651
 msgid "Nodes"
 msgstr "Noeuds"
 
-#: src/toolbox.c:656
+#: src/toolbox.c:653
 msgid "Insert new nodes into selected segments"
 msgstr "Inclure de nouveaux noeuds dans les segments sélectionnés"
 
-#: src/toolbox.c:657
+#: src/toolbox.c:654
 msgid "Break line at selected nodes"
 msgstr "Briser la ligne aux noeuds sélectionnés"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:655
 msgid "Make selected nodes corner"
 msgstr "Faire des coins aux noeuds sélectionnés"
 
-#: src/toolbox.c:659
+#: src/toolbox.c:656
 msgid "Make selected segments lines"
 msgstr "Faire des lignes des segments sélectionnés"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:657
 msgid "Delete selected nodes"
 msgstr "Supprimer les noeuds sélectionnés"
 
-#: src/toolbox.c:661
+#: src/toolbox.c:658
 msgid "Join lines at selected nodes"
 msgstr "Joindre les lignes aux noeuds sélectionnés"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:659
 msgid "Make selected nodes smooth"
 msgstr "Adoucir les noeuds sélectionnés"
 
-#: src/toolbox.c:663
+#: src/toolbox.c:660
 msgid "Make selected segments curves"
 msgstr "Convertir les segments sélectionnés en courbes"
 
@@ -2409,7 +2400,7 @@ msgstr "Jaune :"
 msgid "Black:"
 msgstr "Noir :"
 
-#: src/widgets/sp-toolbox.c:301
+#: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
 msgstr "(Dés)Active le placement séparé de la boite à outils et de la fenêtre"
 
@@ -2420,6 +2411,9 @@ msgstr "Attribut"
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
 msgstr "Valeur"
+
+#~ msgid "Order"
+#~ msgstr "Ordonner"
 
 #~ msgid "Open SVG file"
 #~ msgstr "Ouvrir fichier SVG"
