@@ -15,7 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
 #: sodipodi.desktop.in.h:1 src/toolbox.c:134 src/toolbox.c:147
 msgid "Sodipodi"
 msgstr "ሶዲፖዲ"
@@ -1207,7 +1206,7 @@ msgstr ""
 
 #: src/interface.c:353
 msgid "XML Editor"
-msgstr "የXML አርትዒ"
+msgstr "የXML ማቀናጃ"
 
 #: src/interface.c:354
 msgid "Display Properties"
