@@ -660,7 +660,7 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
         /* Register family */
         s = strdup (elfex->elfLogFont.lfFaceName);
 		if (families_len >= families_size) {
-			families_size = MIN (families_size << 1, 16);
+			families_size = MAX (families_size << 1, 16);
 			families = nr_renew (families, char *, families_size);
 		}
 		families[families_len++] = s;
@@ -680,7 +680,7 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
         *plf = elfex->elfLogFont;
 
 		if (names_len >= names_size) {
-			names_size = MIN (names_size << 1, 16);
+			names_size = MAX (names_size << 1, 16);
 			names = nr_renew (names, char *, names_size);
 		}
 		names[names_len++] = name;

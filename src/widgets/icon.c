@@ -168,7 +168,7 @@ sp_icon_new_full (unsigned int size, unsigned int scale, const unsigned char *na
 		g_hash_table_insert (iconlib, g_strdup (c), icon->px);
 	}
 
-	GTK_OBJECT_FLAGS (icon) &= ~SP_ICON_FLAG_STATIC_DATA;
+	GTK_OBJECT_FLAGS (icon) |= SP_ICON_FLAG_STATIC_DATA;
 
 	return (GtkWidget *) icon;
 }
@@ -322,15 +322,19 @@ sp_icon_paint (SPIcon *icon, GdkRectangle *area)
 static unsigned char *
 sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size, unsigned int scale)
 {
-	unsigned char *path;
+	unsigned char *path, *fn;
 	unsigned char *px;
 	GdkPixbuf *pb;
 
-	path = (unsigned char *) g_strdup_printf ("%s/%s.png", SODIPODI_PIXMAPDIR, name);
+	fn = g_strdup_printf ("%s.png", name);
+	path = (unsigned char *) g_build_filename (SODIPODI_PIXMAPDIR, fn, NULL);
+	g_free (fn);
 	pb = gdk_pixbuf_new_from_file ((const char *) path, NULL);
 	g_free (path);
 	if (!pb) {
-		path = (unsigned char *) g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
+		fn = g_strdup_printf ("%s.xpm", name);
+		path = (unsigned char *) g_build_filename (SODIPODI_PIXMAPDIR, fn, NULL);
+		g_free (fn);
 		pb = gdk_pixbuf_new_from_file ((const char *) path, NULL);
 		g_free (path);
 	}

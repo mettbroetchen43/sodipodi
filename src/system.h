@@ -24,6 +24,30 @@
 #endif
 #endif
 
+#ifndef SODIPODI_APPDATADIR
+#ifdef WIN32
+#define SODIPODI_APPDATADIR sp_win32_get_appdata_dir ()
+#else
+#define SODIPODI_APPDATADIR g_get_home_dir ()
+#endif
+#endif
+
+#ifndef SODIPODI_DOCDIR
+#ifdef WIN32
+#define SODIPODI_DOCDIR sp_win32_get_doc_dir ()
+#else
+#define SODIPODI_DOCDIR g_get_home_dir ()
+#endif
+#endif
+
+#ifndef PACKAGE_LOCALE_DIR
+#ifdef WIN32
+#define PACKAGE_LOCALE_DIR sp_win32_get_locale_dir ()
+#else
+#define PACKAGE_LOCALE_DIR (exit (1),(const unsigned char *) "")
+#endif
+#endif
+
 #ifndef SODIPODI_EXTENSIONDIR
 #define SODIPODI_EXTENSIONDIR (exit (1),(const unsigned char *) "")
 #endif

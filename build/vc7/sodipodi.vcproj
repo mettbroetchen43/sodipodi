@@ -19,8 +19,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
+				AdditionalIncludeDirectories="..\..\src;..\..\src\libpng;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -32,7 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libpng.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
+				AdditionalDependencies="libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
 				OutputFile="$(OutDir)/sodipodi.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\GnuWin32\lib"
@@ -1409,6 +1409,490 @@
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\libart-features.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="po"
+			Filter="">
+			<File
+				RelativePath="..\..\po\am.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\am.mo po\am.po
+"
+						Outputs="..\..\po\am.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\az.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\az.mo po\az.po
+"
+						Outputs="..\..\po\az.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\be.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\be.mo po\be.po
+"
+						Outputs="..\..\po\be.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\ca.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\ca.mo po\ca.po
+"
+						Outputs="..\..\po\ca.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\cs.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\cs.mo po\cs.po
+"
+						Outputs="..\..\po\cs.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\da.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\da.mo po\da.po
+"
+						Outputs="..\..\po\da.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\de.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\de.mo po\de.po
+"
+						Outputs="..\..\po\de.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\el.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\el.mo po\el.po
+"
+						Outputs="..\..\po\el.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\es.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\es.mo po\es.po
+"
+						Outputs="..\..\po\es.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\et.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\et.mo po\et.po
+"
+						Outputs="..\..\po\et.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\fr.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\fr.mo po\fr.po
+"
+						Outputs="..\..\po\fr.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\ga.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\ga.mo po\ga.po
+"
+						Outputs="..\..\po\ga.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\gl.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\gl.mo po\gl.po
+"
+						Outputs="..\..\po\gl.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\hr.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\hr.mo po\hr.po
+"
+						Outputs="..\..\po\hr.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\hu.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\hu.mo po\hu.po
+"
+						Outputs="..\..\po\hu.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\it.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\it.mo po\it.po
+"
+						Outputs="..\..\po\it.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\ja.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\ja.mo po\ja.po
+"
+						Outputs="..\..\po\ja.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\mk.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\mk.mo po\mk.po
+"
+						Outputs="..\..\po\mk.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\nl.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\nl.mo po\nl.po
+"
+						Outputs="..\..\po\nl.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\no.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\no.mo po\no.po
+"
+						Outputs="..\..\po\no.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\pl.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\pl.mo po\pl.po
+"
+						Outputs="..\..\po\pl.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\pt.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\pt.mo po\pt.po
+"
+						Outputs="..\..\po\pt.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\pt_BR.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\pt_BR.mo po\pt_BR.po
+"
+						Outputs="..\..\po\pt_BR.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\ru.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\ru.mo po\ru.po
+"
+						Outputs="..\..\po\ru.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\sk.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\sk.mo po\sk.po
+"
+						Outputs="..\..\po\sk.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\sl.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\sl.mo po\sl.po
+"
+						Outputs="..\..\po\sl.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\sr.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\sr.mo po\sr.po
+"
+						Outputs="..\..\po\sr.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\sr@Latn.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\sr@Latn.mo po\sr@Latn.po
+"
+						Outputs="..\..\po\sr@Latn.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\sv.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\sv.mo po\sv.po
+"
+						Outputs="..\..\po\sv.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\tr.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\tr.mo po\tr.po
+"
+						Outputs="..\..\po\tr.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\uk.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\uk.mo po\uk.po
+"
+						Outputs="..\..\po\uk.mo"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\po\zh_CN.po">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\msgfmt -o po\zh_CN.mo po\zh_CN.po
+"
+						Outputs="..\..\po\zh_CN.mo"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="libpng"
+			Filter="">
+			<File
+				RelativePath="..\..\src\libpng\png.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\png.h">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngasmrd.h">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngconf.h">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngerror.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pnggccrd.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngget.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngmem.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngpread.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngread.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngrio.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngrtran.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngrutil.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngset.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngtrans.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngvcrd.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngwio.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngwrite.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngwtran.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libpng\pngwutil.c">
 			</File>
 		</Filter>
 	</Files>

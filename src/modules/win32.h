@@ -67,5 +67,8 @@ char *sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns);
 /* fixme: */
 
 const char *sp_win32_get_data_dir (void);
+const char *sp_win32_get_doc_dir (void);
+const char *sp_win32_get_locale_dir (void);
+const char *sp_win32_get_appdata_dir (void);
 
 #endif

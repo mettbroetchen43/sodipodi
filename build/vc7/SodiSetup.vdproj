@@ -15,9 +15,351 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0383BDA0513E47B3AC312E970CD397DC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\WRITING_MODE_TB.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0773BF5E5F37415289D70715AA3CC604"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\SL.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_07F98E38B9AA4A548DD2680A999EF0DD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\HU.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0BD3D2DAD26C46E6A5034190BB7A9072"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_TOP_IN.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0E5E8432E3FE44299602C8B751352EC9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\JOIN_BEVEL.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_11757878B5674F25852577B5371DECE1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\DIMENSION_HOR.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_151C02B5E56741648919C2388C2CE58A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\SR@LATN.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_176E9384013642908697C0C1FB9B5993"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\DA.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1ABE6D1AE9B54B64B7770AE13583202E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\ZH_CN.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1B20B6F312574351A0AB783931E27BC4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ADD_XML_TEXT_NODE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1F9621F269CC426496D55BE51F192E32"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GNUWIN32\\BIN\\LIBXML2.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2360B21BF3744DB89780DBF07B9F51FC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\IT.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_242CED30BEDC42CABF7C6ED00D96715E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\JOIN_ROUND.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_26160E98A1E34ADC81273D38132C7249"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\JOIN_MITER.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_26DD16C6508C441B8A54D2DD1250D4F5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\SCALE_VER.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_28CAA59CA14848A9B3455F20B1FB5C98"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\FR.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_290D933FAC504A16ABF7E8A2BCB679CA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_EDIT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2B80862C3EDE40F1A884C16F93BC715B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\NO.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2F5BFEE71CBB4FD09950B493793F5A59"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\RU.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_31F38CE6406946709692D3B3C2715880"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ARROWS_VER.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_335A3F0ACADE4DAC92461017157D7337"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_BOTTOM_IN.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_377138D31E2E425DBF5AF16D7BA2A3F3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILL_NONE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_37BE5E9CAE974B709A9918EFC60D04CA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ROTATE_RIGHT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_39AFFD897B84405686D89276C04E1ADE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\CAP_ROUND.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3ED1BB5DCDBA4689AC80D2F0C7AA1238"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\CAP_BUTT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_418901CE284C4244B38B25C83209CB71"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ARROWS_HOR.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_43D828667C2B4A08B3BDED1B10F7A404"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_CENTER_HOR.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_44527DD3A1D447D9B72066A82E5BA0C8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\CS.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_484BBBF386244F4AA3A973B5B312E765"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\DIMENSION_VER.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4DCFD40FC87E412795FB8A091B901FC7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_SELECT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4E919CFA08D04AFDBC44D05444A4B664"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ROTATE_LEFT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4FF43BCD0DD842CAAF2444FE5B41A8C0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_RIGHT_OUT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5014C4CB6A97454EAF62EEC4CBE4D18D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\GA.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_548F9FA50E504F458F41AE6BB8882AE1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_RIGHT_IN.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_62D6AC12E498497AB8D27DBF0F9FB7B7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILE_EXPORT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_670CC0644B6544FCBA237B23ABF100E0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ROTATE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_675F1FD367B448C899B89C6C3F46DFE3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\SK.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_67952E0CFA734F1E8B3494D0066100DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\AM.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6D996F1432F0401FB4491345124250D1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_NODE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6FC59821A04E43C9930653232442EA78"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\SR.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_74AC99F8B0524B9AB228F5906D23AC67"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\CAP_SQUARE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_74FF52F4A52841C889D5E55D8F51A54E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\SV.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7C4EF4A9E75E40D0A26B4EB1DFA9163A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILL_GRADIENT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7FBF98C975C74DC5B3BDD5D3977BAF1F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GNUWIN32\\LIB\\ICONV.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_81FEC22F30A7481AB6B9525940E18A04"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\ES.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8291ECA0649D49059DB07E8F92250889"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\MK.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_831D576FDD2F41F7AE4850827E24E28F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_FILE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8705357B77F541899FC2414B9D5A4756"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\ET.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8777DFE499B446A3BCC4E768D525947F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\SCALE_HOR.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8855EF9E77C54D6EBEFC61F3A8E0F545"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\SEPERATE_TOOL.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8973C2F4E41A437DAF36E47A60778699"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\PL.MO"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8C966FAD38A44EBE83E025DC11CE6018"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ICONS.SVG"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8DF351783A4A4713B876B2EB3364111B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\DE.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9048D97351A4434D9E4E60CA62545D12"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GNUWIN32\\BIN\\FREETYPE-6.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9352D02413A640EC9AC22122992A92A6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\AZ.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_939F7A36727F48FD811930AA86A551DD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_OBJECT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_963D7CB1E88A499EA19C199B29969E05"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILE_IMPORT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9B38E52D8A9541CDA0096A21BCB69860"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\DELETE_XML_NODE.XPM"
         }
         "Entry"
         {
@@ -27,15 +369,201 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9F1078DFD99C456AB38612CDE57D5061"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\SCALE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9FF7204BD4EC43668A34EBEDDD9B53F3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_LEFT_OUT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A03CBDF22E6E4451B016DC7C45AD2E1D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\BE.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A1AFAE537E964BDFADD5C53C6DABD1A9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\UK.MO"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\BUILD\\VC7\\DEBUG\\SODIPODI.EXE"
         }
         "Entry"
         {
+        "MsmKey" = "8:_A482D5D153C94D2F8EC0FDD0E36B716D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_TOP_OUT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A6AC73C3C7C54681801C1F1631211C89"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\ADD_XML_ELEMENT_NODE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A9C107E600804F28B68F9EFA92060D4B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\HR.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_ADB3B948682040C2ADAB66FC8F89CB28"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILL_RADIAL.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B15E8FE6335A49BB992886AF7048D640"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GNUWIN32\\LIB\\ZLIB.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B2F8F1217EAB41B5B2CF8DA98AF4FA2A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\PROPERTIES_STROKE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B5778F9C6E7B4B86B8EF0E370BD0819E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\TR.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B7689B24AB08409CBABBB9514C82ED75"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\JA.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B7ACEB9A46264F57A7EFA1E3F1873C77"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILE_PRINT_DIRECT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8BFE8B839E04597AE561775AD234163"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\MOVE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B9274F1A26044117B649C79ED65C0A5A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_ZOOM.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C0AA412223B34A47AD9838AEA5F06861"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\PT.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C0CF8A91796F49358720323A1CE2736C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\EL.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C335D9F0BF7F497B95CBE61171BF0449"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\PT_BR.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C3C6506E31AC41079399383990CBB8B2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_LEFT_IN.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C82486F49DE645379DEE3197221FA497"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\CA.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CC39D053BDFF40F2BAF6C5D14005D755"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_CENTER_VER.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2D91699AF514471A37979F34F3143E0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\AL_BOTTOM_OUT.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D769A41D7F5149B2BBA2145598DEB319"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\PROPERTIES_FILL.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D7DD6509F033472D88D38BB4078D7112"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\WRITING_MODE_LR.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E12D2FEE05DD46B190607C75C552BA02"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\GL.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E4B168BAF6834E3589B83ED594CE55CA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\DELETE_XML_ATTRIBUTE.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EE4153EB6AA5494085BB39E0A2090594"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\TOOLBOX_DRAW.XPM"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EF45E2D4AC6345BF9235EF19B2B37DD3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\PO\\NL.MO"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F49183120CC84DA4A8CCDC5294891722"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GNUWIN32\\LIB\\LIBPNG.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FB556E22210B41A8842956E80813FB0B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\FILL_SOLID.XPM"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FBE2B4B23C4700E09BB781CFF58896A6"
         "OwnerKey" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
         "MsmSig" = "8:E:\\WINNT\\SYSTEM32\\COMDLG32.DLL"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FF2A8008A4194949ABB71B843979905A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:E:\\LAURIS\\SODIPODI\\GLADE\\DUPLICATE_XML_NODE.XPM"
         }
     }
     "Configurations"
@@ -89,12 +617,1152 @@
         }
         "File"
         {
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_0383BDA0513E47B3AC312E970CD397DC"
+            {
+            "SourcePath" = "8:..\\..\\glade\\writing_mode_tb.xpm"
+            "TargetName" = "8:writing_mode_tb.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_0773BF5E5F37415289D70715AA3CC604"
+            {
+            "SourcePath" = "8:..\\..\\po\\sl.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_B2B0623F27B2423194E340EA4C77C0A1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_07F98E38B9AA4A548DD2680A999EF0DD"
+            {
+            "SourcePath" = "8:..\\..\\po\\hu.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_974B3F39F571478AAD07ED23E816E08B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_0BD3D2DAD26C46E6A5034190BB7A9072"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_top_in.xpm"
+            "TargetName" = "8:al_top_in.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_0E5E8432E3FE44299602C8B751352EC9"
+            {
+            "SourcePath" = "8:..\\..\\glade\\join_bevel.xpm"
+            "TargetName" = "8:join_bevel.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_11757878B5674F25852577B5371DECE1"
+            {
+            "SourcePath" = "8:..\\..\\glade\\dimension_hor.xpm"
+            "TargetName" = "8:dimension_hor.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_151C02B5E56741648919C2388C2CE58A"
+            {
+            "SourcePath" = "8:..\\..\\po\\sr@Latn.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_527541E8418B4A83AEA1420C810705FA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_176E9384013642908697C0C1FB9B5993"
+            {
+            "SourcePath" = "8:..\\..\\po\\da.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_58BD361B6621419E868F09188D11FA44"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_1ABE6D1AE9B54B64B7770AE13583202E"
+            {
+            "SourcePath" = "8:..\\..\\po\\zh_CN.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_7D3EC2C848104B609928C2FFF7D61F94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_1B20B6F312574351A0AB783931E27BC4"
+            {
+            "SourcePath" = "8:..\\..\\glade\\add_xml_text_node.xpm"
+            "TargetName" = "8:add_xml_text_node.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_1F9621F269CC426496D55BE51F192E32"
+            {
+            "SourcePath" = "8:..\\..\\GnuWin32\\bin\\libxml2.dll"
+            "TargetName" = "8:libxml2.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_621566201E394E838C266F6287A60A33"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_2360B21BF3744DB89780DBF07B9F51FC"
+            {
+            "SourcePath" = "8:..\\..\\po\\it.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_50AAB0F382BA46C18EEDA0FC348E51DE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_242CED30BEDC42CABF7C6ED00D96715E"
+            {
+            "SourcePath" = "8:..\\..\\glade\\join_round.xpm"
+            "TargetName" = "8:join_round.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_26160E98A1E34ADC81273D38132C7249"
+            {
+            "SourcePath" = "8:..\\..\\glade\\join_miter.xpm"
+            "TargetName" = "8:join_miter.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_26DD16C6508C441B8A54D2DD1250D4F5"
+            {
+            "SourcePath" = "8:..\\..\\glade\\scale_ver.xpm"
+            "TargetName" = "8:scale_ver.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_28CAA59CA14848A9B3455F20B1FB5C98"
+            {
+            "SourcePath" = "8:..\\..\\po\\fr.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_6451BBCB04D447AB84577605BC1372C9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_290D933FAC504A16ABF7E8A2BCB679CA"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_edit.xpm"
+            "TargetName" = "8:toolbox_edit.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_2B80862C3EDE40F1A884C16F93BC715B"
+            {
+            "SourcePath" = "8:..\\..\\po\\no.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_8E4959A41F2940578E24C4B732E0C476"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_2F5BFEE71CBB4FD09950B493793F5A59"
+            {
+            "SourcePath" = "8:..\\..\\po\\ru.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_4448B2CA66D6467384D7B4402FAE7CCC"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_31F38CE6406946709692D3B3C2715880"
+            {
+            "SourcePath" = "8:..\\..\\glade\\arrows_ver.xpm"
+            "TargetName" = "8:arrows_ver.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_335A3F0ACADE4DAC92461017157D7337"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_bottom_in.xpm"
+            "TargetName" = "8:al_bottom_in.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_377138D31E2E425DBF5AF16D7BA2A3F3"
+            {
+            "SourcePath" = "8:..\\..\\glade\\fill_none.xpm"
+            "TargetName" = "8:fill_none.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_37BE5E9CAE974B709A9918EFC60D04CA"
+            {
+            "SourcePath" = "8:..\\..\\glade\\rotate_right.xpm"
+            "TargetName" = "8:rotate_right.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_39AFFD897B84405686D89276C04E1ADE"
+            {
+            "SourcePath" = "8:..\\..\\glade\\cap_round.xpm"
+            "TargetName" = "8:cap_round.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_3ED1BB5DCDBA4689AC80D2F0C7AA1238"
+            {
+            "SourcePath" = "8:..\\..\\glade\\cap_butt.xpm"
+            "TargetName" = "8:cap_butt.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_418901CE284C4244B38B25C83209CB71"
+            {
+            "SourcePath" = "8:..\\..\\glade\\arrows_hor.xpm"
+            "TargetName" = "8:arrows_hor.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_43D828667C2B4A08B3BDED1B10F7A404"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_center_hor.xpm"
+            "TargetName" = "8:al_center_hor.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_44527DD3A1D447D9B72066A82E5BA0C8"
+            {
+            "SourcePath" = "8:..\\..\\po\\cs.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_4F287A04B458418BA458E7E174DEB52D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_484BBBF386244F4AA3A973B5B312E765"
+            {
+            "SourcePath" = "8:..\\..\\glade\\dimension_ver.xpm"
+            "TargetName" = "8:dimension_ver.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_4DCFD40FC87E412795FB8A091B901FC7"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_select.xpm"
+            "TargetName" = "8:toolbox_select.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_4E919CFA08D04AFDBC44D05444A4B664"
+            {
+            "SourcePath" = "8:..\\..\\glade\\rotate_left.xpm"
+            "TargetName" = "8:rotate_left.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_4FF43BCD0DD842CAAF2444FE5B41A8C0"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_right_out.xpm"
+            "TargetName" = "8:al_right_out.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_5014C4CB6A97454EAF62EEC4CBE4D18D"
+            {
+            "SourcePath" = "8:..\\..\\po\\ga.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_5E617CF7D39E4312A5D1C301F1D57207"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_548F9FA50E504F458F41AE6BB8882AE1"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_right_in.xpm"
+            "TargetName" = "8:al_right_in.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_62D6AC12E498497AB8D27DBF0F9FB7B7"
+            {
+            "SourcePath" = "8:..\\..\\glade\\file_export.xpm"
+            "TargetName" = "8:file_export.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_670CC0644B6544FCBA237B23ABF100E0"
+            {
+            "SourcePath" = "8:..\\..\\glade\\rotate.xpm"
+            "TargetName" = "8:rotate.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_675F1FD367B448C899B89C6C3F46DFE3"
+            {
+            "SourcePath" = "8:..\\..\\po\\sk.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_03C05299FFE949848665E6F42ED425B5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_67952E0CFA734F1E8B3494D0066100DE"
+            {
+            "SourcePath" = "8:..\\..\\po\\am.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_CB105D3A826549F8B69AAB207C47AF9B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_6D996F1432F0401FB4491345124250D1"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_node.xpm"
+            "TargetName" = "8:toolbox_node.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_6FC59821A04E43C9930653232442EA78"
+            {
+            "SourcePath" = "8:..\\..\\po\\sr.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_54330E9E5E084FD0A7DAFA2026C43606"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_74AC99F8B0524B9AB228F5906D23AC67"
+            {
+            "SourcePath" = "8:..\\..\\glade\\cap_square.xpm"
+            "TargetName" = "8:cap_square.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_74FF52F4A52841C889D5E55D8F51A54E"
+            {
+            "SourcePath" = "8:..\\..\\po\\sv.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_34DAC6B94C704CFC91DF558417078B11"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_7C4EF4A9E75E40D0A26B4EB1DFA9163A"
+            {
+            "SourcePath" = "8:..\\..\\glade\\fill_gradient.xpm"
+            "TargetName" = "8:fill_gradient.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_7FBF98C975C74DC5B3BDD5D3977BAF1F"
+            {
+            "SourcePath" = "8:..\\..\\GnuWin32\\lib\\iconv.dll"
+            "TargetName" = "8:iconv.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_AF8DE57F62AE4D56BE85334530AA0EDA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_81FEC22F30A7481AB6B9525940E18A04"
+            {
+            "SourcePath" = "8:..\\..\\po\\es.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_9D7C3B5F1ED544F1A0E5ED5711826901"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8291ECA0649D49059DB07E8F92250889"
+            {
+            "SourcePath" = "8:..\\..\\po\\mk.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_617BF8B0014E4BE9A5A8BC29F89A931F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_831D576FDD2F41F7AE4850827E24E28F"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_file.xpm"
+            "TargetName" = "8:toolbox_file.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8705357B77F541899FC2414B9D5A4756"
+            {
+            "SourcePath" = "8:..\\..\\po\\et.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_AA00950F4E9C40E8A779F8BAAFEED09F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8777DFE499B446A3BCC4E768D525947F"
+            {
+            "SourcePath" = "8:..\\..\\glade\\scale_hor.xpm"
+            "TargetName" = "8:scale_hor.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8855EF9E77C54D6EBEFC61F3A8E0F545"
+            {
+            "SourcePath" = "8:..\\..\\glade\\seperate_tool.xpm"
+            "TargetName" = "8:seperate_tool.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8973C2F4E41A437DAF36E47A60778699"
+            {
+            "SourcePath" = "8:..\\..\\po\\pl.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_CA83EE6FA7D448239D1BD3275F707215"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8C966FAD38A44EBE83E025DC11CE6018"
             {
             "SourcePath" = "8:..\\..\\glade\\icons.svg"
             "TargetName" = "8:icons.svg"
             "Tag" = "8:"
-            "Folder" = "8:_02B0763ADC434CABBCECBE69C25E5E7E"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_8DF351783A4A4713B876B2EB3364111B"
+            {
+            "SourcePath" = "8:..\\..\\po\\de.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_054FBDE154E64B1EA30EC60BA77D4D37"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_9048D97351A4434D9E4E60CA62545D12"
+            {
+            "SourcePath" = "8:..\\..\\GnuWin32\\bin\\freetype-6.dll"
+            "TargetName" = "8:freetype-6.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_621566201E394E838C266F6287A60A33"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_9352D02413A640EC9AC22122992A92A6"
+            {
+            "SourcePath" = "8:..\\..\\po\\az.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_480E8AD6D6634EB0A9EF8A303CB9A412"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_939F7A36727F48FD811930AA86A551DD"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_object.xpm"
+            "TargetName" = "8:toolbox_object.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_963D7CB1E88A499EA19C199B29969E05"
+            {
+            "SourcePath" = "8:..\\..\\glade\\file_import.xpm"
+            "TargetName" = "8:file_import.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_9B38E52D8A9541CDA0096A21BCB69860"
+            {
+            "SourcePath" = "8:..\\..\\glade\\delete_xml_node.xpm"
+            "TargetName" = "8:delete_xml_node.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -114,7 +1782,607 @@
             "SourcePath" = "8:..\\..\\glade\\about.svg"
             "TargetName" = "8:about.svg"
             "Tag" = "8:"
-            "Folder" = "8:_02B0763ADC434CABBCECBE69C25E5E7E"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_9F1078DFD99C456AB38612CDE57D5061"
+            {
+            "SourcePath" = "8:..\\..\\glade\\scale.xpm"
+            "TargetName" = "8:scale.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_9FF7204BD4EC43668A34EBEDDD9B53F3"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_left_out.xpm"
+            "TargetName" = "8:al_left_out.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_A03CBDF22E6E4451B016DC7C45AD2E1D"
+            {
+            "SourcePath" = "8:..\\..\\po\\be.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_699697315BD94C4287A7BFB4EDD95FCE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_A1AFAE537E964BDFADD5C53C6DABD1A9"
+            {
+            "SourcePath" = "8:..\\..\\po\\uk.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_F4F7D07EF84E44E2A0FD2205D6A75DEE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_A482D5D153C94D2F8EC0FDD0E36B716D"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_top_out.xpm"
+            "TargetName" = "8:al_top_out.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_A6AC73C3C7C54681801C1F1631211C89"
+            {
+            "SourcePath" = "8:..\\..\\glade\\add_xml_element_node.xpm"
+            "TargetName" = "8:add_xml_element_node.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_A9C107E600804F28B68F9EFA92060D4B"
+            {
+            "SourcePath" = "8:..\\..\\po\\hr.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_D3BD2586C40242819B428F5FBB20D48F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_ADB3B948682040C2ADAB66FC8F89CB28"
+            {
+            "SourcePath" = "8:..\\..\\glade\\fill_radial.xpm"
+            "TargetName" = "8:fill_radial.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B15E8FE6335A49BB992886AF7048D640"
+            {
+            "SourcePath" = "8:..\\..\\GnuWin32\\lib\\zlib.dll"
+            "TargetName" = "8:zlib.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_AF8DE57F62AE4D56BE85334530AA0EDA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B2F8F1217EAB41B5B2CF8DA98AF4FA2A"
+            {
+            "SourcePath" = "8:..\\..\\glade\\properties_stroke.xpm"
+            "TargetName" = "8:properties_stroke.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B5778F9C6E7B4B86B8EF0E370BD0819E"
+            {
+            "SourcePath" = "8:..\\..\\po\\tr.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_27FE87FBD22C43B7AC3FFA450AB8DCD5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B7689B24AB08409CBABBB9514C82ED75"
+            {
+            "SourcePath" = "8:..\\..\\po\\ja.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_C2A32E46F1AB45789366415F7471CD58"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B7ACEB9A46264F57A7EFA1E3F1873C77"
+            {
+            "SourcePath" = "8:..\\..\\glade\\file_print_direct.xpm"
+            "TargetName" = "8:file_print_direct.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B8BFE8B839E04597AE561775AD234163"
+            {
+            "SourcePath" = "8:..\\..\\glade\\move.xpm"
+            "TargetName" = "8:move.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_B9274F1A26044117B649C79ED65C0A5A"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_zoom.xpm"
+            "TargetName" = "8:toolbox_zoom.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_C0AA412223B34A47AD9838AEA5F06861"
+            {
+            "SourcePath" = "8:..\\..\\po\\pt.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_3A08E090973F404AAEC0B944AE40346C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_C0CF8A91796F49358720323A1CE2736C"
+            {
+            "SourcePath" = "8:..\\..\\po\\el.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_9A48BCBFEA414A7582D688B11F7C4623"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_C335D9F0BF7F497B95CBE61171BF0449"
+            {
+            "SourcePath" = "8:..\\..\\po\\pt_BR.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_3806BCB61DD4411AAC48DD77EF559096"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_C3C6506E31AC41079399383990CBB8B2"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_left_in.xpm"
+            "TargetName" = "8:al_left_in.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_C82486F49DE645379DEE3197221FA497"
+            {
+            "SourcePath" = "8:..\\..\\po\\ca.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_46C82D80A07E461C82D0D9E5061D1A31"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_CC39D053BDFF40F2BAF6C5D14005D755"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_center_ver.xpm"
+            "TargetName" = "8:al_center_ver.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_D2D91699AF514471A37979F34F3143E0"
+            {
+            "SourcePath" = "8:..\\..\\glade\\al_bottom_out.xpm"
+            "TargetName" = "8:al_bottom_out.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_D769A41D7F5149B2BBA2145598DEB319"
+            {
+            "SourcePath" = "8:..\\..\\glade\\properties_fill.xpm"
+            "TargetName" = "8:properties_fill.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_D7DD6509F033472D88D38BB4078D7112"
+            {
+            "SourcePath" = "8:..\\..\\glade\\writing_mode_lr.xpm"
+            "TargetName" = "8:writing_mode_lr.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_E12D2FEE05DD46B190607C75C552BA02"
+            {
+            "SourcePath" = "8:..\\..\\po\\gl.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_FA6E09AFDF354F699138CAF4F257BDDA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_E4B168BAF6834E3589B83ED594CE55CA"
+            {
+            "SourcePath" = "8:..\\..\\glade\\delete_xml_attribute.xpm"
+            "TargetName" = "8:delete_xml_attribute.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_EE4153EB6AA5494085BB39E0A2090594"
+            {
+            "SourcePath" = "8:..\\..\\glade\\toolbox_draw.xpm"
+            "TargetName" = "8:toolbox_draw.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_EF45E2D4AC6345BF9235EF19B2B37DD3"
+            {
+            "SourcePath" = "8:..\\..\\po\\nl.mo"
+            "TargetName" = "8:sodipodi.mo"
+            "Tag" = "8:"
+            "Folder" = "8:_B4D93A7CB4BE4878AE36117515B0F83D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_F49183120CC84DA4A8CCDC5294891722"
+            {
+            "SourcePath" = "8:..\\..\\GnuWin32\\lib\\libpng.dll"
+            "TargetName" = "8:libpng.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_AF8DE57F62AE4D56BE85334530AA0EDA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_FB556E22210B41A8842956E80813FB0B"
+            {
+            "SourcePath" = "8:..\\..\\glade\\fill_solid.xpm"
+            "TargetName" = "8:fill_solid.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -131,7 +2399,7 @@
             }
             "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_FBE2B4B23C4700E09BB781CFF58896A6"
             {
-            "Signature" = "8:20000000c010086f24a1c301befdfa6695afc3010070c1b09536c3010000000010af0300000000000000000043004f004d0044004c004700330032002e0044004c004c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            "Signature" = "8:20000000c010086f24a1c30160ec458f81b0c3010070c1b09536c3010000000010af0300000000000000000043004f004d0044004c004700330032002e0044004c004c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
             "SourcePath" = "8:comdlg32.dll"
             "TargetName" = "8:comdlg32.dll"
             "Tag" = "8:"
@@ -150,32 +2418,29 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{54DA9790-1474-11D3-8E00-00C04F6837D0}:_FF2A8008A4194949ABB71B843979905A"
+            {
+            "SourcePath" = "8:..\\..\\glade\\duplicate_xml_node.xpm"
+            "TargetName" = "8:duplicate_xml_node.xpm"
+            "Tag" = "8:"
+            "Folder" = "8:_26D8A02F204E42C683502157F69A491E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
-            "{72DA7347-184D-11D3-8D6D-00A0C9CFCEE6}:_47172B86C5EF48258E78382D2F8D84BD"
-            {
-            "Name" = "8:SVG Graphic"
-            "Description" = "8:Scalable Vector Graphic file"
-            "Extensions" = "8:svg svgz"
-            "MIME" = "8:image/x-svg"
-            "Icon" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
-            "IconIndex" = "3:101"
-                "Command"
-                {
-                "Command" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
-                }
-                "Verbs"
-                {
-                    "{B4FB8011-185E-11D3-8D6D-00A0C9CFCEE6}:_969D328A72784CE9B348D15B1AFDFB93"
-                    {
-                    "Command" = "8:&Open"
-                    "Verb" = "8:open"
-                    "Arguments" = "8:\"%1\""
-                    "Order" = "3:0"
-                    }
-                }
-            }
         }
         "Folder"
         {
@@ -214,7 +2479,7 @@
             }
             "{EE62640D-12F2-11D3-8D6C-00A0C9CFCEE6}:_D02EDF2F5E7742F196733B295435A8CB"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -222,13 +2487,761 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_02B0763ADC434CABBCECBE69C25E5E7E"
+                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_04183AA2607D497E8D2EEDE0B9BB6A1F"
                     {
-                    "Name" = "8:Data"
+                    "Name" = "8:share"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
-                    "Property" = "8:_9A777D2DDC244354B50B45A72947E6C6"
+                    "Property" = "8:_7201D455B9064DD1A1D9EAE9271B7876"
+                        "Folders"
+                        {
+                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_26D8A02F204E42C683502157F69A491E"
+                            {
+                            "Name" = "8:sodipodi"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_CFD9A059BEC14D0896725D82655BDC45"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_BBF882EA31104D15A31B65CA17449039"
+                            {
+                            "Name" = "8:locale"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_2FEBE8A6D36A49AA8BACA07C9461AE78"
+                                "Folders"
+                                {
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_0ADC7202356A47EF8E64BB44B6618732"
+                                    {
+                                    "Name" = "8:am"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_144801640C004FF3A4943502141C9CA3"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_CB105D3A826549F8B69AAB207C47AF9B"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_8E928969AECC4B7EAD763911C861E6C3"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_1DCB9F5F1DC84C77B897B623EC140204"
+                                    {
+                                    "Name" = "8:nl"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_F6C104437E584966B84F0F3F9F59E091"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_B4D93A7CB4BE4878AE36117515B0F83D"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_190AFC8F465A4D9CB24407AD8AB07FFE"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_1ECABD9727924504B40A2089E6C07D47"
+                                    {
+                                    "Name" = "8:no"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_506F4EC39E6A4017B38882E05DDFB9AB"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_8E4959A41F2940578E24C4B732E0C476"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_838EFF7BE46D422588D2495C5CF8A53C"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_27732AE6F13D43D4A05C94BB43B54215"
+                                    {
+                                    "Name" = "8:gl"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_155A349F461F4CA4B0DA989ECB860798"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_FA6E09AFDF354F699138CAF4F257BDDA"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_C1E4A15C16EE410A982E925B8F0F201D"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_2DDA9C7B02024889A9AC5B341800C842"
+                                    {
+                                    "Name" = "8:de"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_4D9AA11C25DA4E7683A0BC05EAF2B954"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_054FBDE154E64B1EA30EC60BA77D4D37"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_EBCAE036CB24462A963CC3FA11913495"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_2E8144AEDE98450CA4B6402C3A321245"
+                                    {
+                                    "Name" = "8:da"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_2DCA4F61DF914E41A09AED4B91D7D3C3"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_58BD361B6621419E868F09188D11FA44"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_053B45067EB341FEA39FDD8B4111BCDB"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_3E736F2D14B64A2AAC4D6F653561B7C7"
+                                    {
+                                    "Name" = "8:sv"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_70F3F4262C80429EBBE526B892DB12C7"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_34DAC6B94C704CFC91DF558417078B11"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_9A5C8C9575814CC49B942999E9CAD4F8"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_42C649011E004B9699533B9A122CA5DE"
+                                    {
+                                    "Name" = "8:hr"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_CB422F71A90749C49EDC2B27056E6B06"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_D3BD2586C40242819B428F5FBB20D48F"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_085F6FAC4BA546428D3464E839CEBEF9"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_42EF2716E2A1477482E467FD5961F417"
+                                    {
+                                    "Name" = "8:hu"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_BA0875F92AC3407BAA3915A904D1CD98"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_974B3F39F571478AAD07ED23E816E08B"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_F85937DF61144105B00E23C5D3155C4F"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_44814254BB1F43C8BBAA409CADC9649E"
+                                    {
+                                    "Name" = "8:mk"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_A1131C64D61A49FEBFAB3219D4923B3D"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_617BF8B0014E4BE9A5A8BC29F89A931F"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_761557D4733541AF9F491501E4AF94EB"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_4AD37FE0D65345E6B8B5F8FD58256022"
+                                    {
+                                    "Name" = "8:ca"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_2A5A451803C749C7963FE9C706683C15"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_46C82D80A07E461C82D0D9E5061D1A31"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_82A654649FD345C4B7FA11D8553F20C6"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_4D7F3D4926F342DBA6964BABB7EE75C7"
+                                    {
+                                    "Name" = "8:el"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_0ABCA81D65134335A22A966EE48DB039"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_9A48BCBFEA414A7582D688B11F7C4623"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_4ED0B0EFDBBE486380A6CF71DD487686"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_52C6E64968B7443E93B7D2677DEFE04C"
+                                    {
+                                    "Name" = "8:uk"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_048BB2A24D044A2A9FF2579C2CB13924"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_F4F7D07EF84E44E2A0FD2205D6A75DEE"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_D49F44B230FE401DB3686622ACC55F96"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_6CD7929A6FF543A5B2DA3C6807B010BB"
+                                    {
+                                    "Name" = "8:pt_BR"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_1E53097990D74DE7A2813EED68F697A3"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_3806BCB61DD4411AAC48DD77EF559096"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_844A4F9BDCDB4F55B58B18AF257A5273"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_807933F2CB724AA1BA0A31CF44E918B2"
+                                    {
+                                    "Name" = "8:it"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_2A2771583C2C4B66B9EFE82763F45B8F"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_50AAB0F382BA46C18EEDA0FC348E51DE"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_6BAA13F724024DB39B7A2EBE2C1BDEA6"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_81502D558E6B4EAFAA20E7CA2643C6ED"
+                                    {
+                                    "Name" = "8:ru"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_41CAED7C2322448E9C5E3694616BC54C"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_4448B2CA66D6467384D7B4402FAE7CCC"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_70144F7E442244B992D9BF8FFE86995A"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_839CAA422FC94E96A29A860687A3C468"
+                                    {
+                                    "Name" = "8:sl"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_5311D52A1C0C4E019B8B477EAEC374CE"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_B2B0623F27B2423194E340EA4C77C0A1"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_0D872AD529D848CAA4D039D478F33692"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_98D03432FFA24C3E96C69D0E90B811BD"
+                                    {
+                                    "Name" = "8:tr"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_B9AACF0747B34EF88E09302D9A3B7D2A"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_27FE87FBD22C43B7AC3FFA450AB8DCD5"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_942D4D1A429746EDB93797C61A4A858A"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_A2A6178EE4CF4E94961805A23BCFD569"
+                                    {
+                                    "Name" = "8:pt"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_010DE75CDB2A49EF855CC07840B82C8E"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_3A08E090973F404AAEC0B944AE40346C"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_9768EF09766B4654B56AB87DD12B5775"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_AB2F2C2D0BD74349BE0FFCD6A83A58E4"
+                                    {
+                                    "Name" = "8:fr"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_69F19936A51545D79F4A6234477FF808"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_6451BBCB04D447AB84577605BC1372C9"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_868BE556CA3047D894FD7EE10B6CFFBF"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_AB567B99540A4C669587D261243E28E3"
+                                    {
+                                    "Name" = "8:ja"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_5368F4CA3C75459AB20224B03F991997"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_C2A32E46F1AB45789366415F7471CD58"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_6843891EBF964650B169BCD864FB1F6A"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_C61C8AF954C84D0B912987AB8E5E6B45"
+                                    {
+                                    "Name" = "8:pl"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_0A28B3BE2A974AA2A3FE875930FC9413"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_CA83EE6FA7D448239D1BD3275F707215"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_FDC7A79EE8B9473E99AB8C8820BCE776"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_C74CBC51DF344766BBDA8E70498B2141"
+                                    {
+                                    "Name" = "8:zh_CN"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_658EA61D346C46A9A26E63400B1FCC96"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_7D3EC2C848104B609928C2FFF7D61F94"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_90F6380E44E946CDBA079B45B13DCCAB"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_D07E02AED98948C6A690F30F2EE1160A"
+                                    {
+                                    "Name" = "8:sr@Latn"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_52F6A8FEEA6F425CADF581BE51D075EF"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_527541E8418B4A83AEA1420C810705FA"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_FB34FBD008F94C6E8E802A159F82DC05"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_D7D83A5A1DE84002A8359C02EC9DE7C5"
+                                    {
+                                    "Name" = "8:ga"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_5EBF685EBB264145AA27E0775F7382F9"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_5E617CF7D39E4312A5D1C301F1D57207"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_BEAB74BAAFED4364A74A5A2C85E2C530"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_E42B6481BA2E48D284AB5936B34D5799"
+                                    {
+                                    "Name" = "8:sk"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_BA596A61E2854B6EAEA873B9B24DBA4D"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_03C05299FFE949848665E6F42ED425B5"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_99BCBE22AAE7437596A9D39C09C11E37"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_EB1A70B790204323B274BB0D2195BB16"
+                                    {
+                                    "Name" = "8:et"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_B0AF590BF21E4DDDA0F42251E9AEBFC5"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_AA00950F4E9C40E8A779F8BAAFEED09F"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_9B2221900DF942369264BC716921DE7F"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_EF606AC2BDD64ED4B07E201AC23A7D25"
+                                    {
+                                    "Name" = "8:az"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_0DAA54A96B5F4E90AB651136E036256D"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_480E8AD6D6634EB0A9EF8A303CB9A412"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_BF306CC49D6F45ACB9F723FCDFE08D05"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_F646CD7A28CA4C5D9E6CB11C0FC0D56F"
+                                    {
+                                    "Name" = "8:es"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_CEE0DF6208A942288F52738EDCB6CC60"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_9D7C3B5F1ED544F1A0E5ED5711826901"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_C86ADFC055DD4E4EAF6C446461E80209"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_F8978EC893684D2C87B3FFB21469D0DB"
+                                    {
+                                    "Name" = "8:cs"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_B64D1CB0E0A940459D285C913E6C0E3C"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_4F287A04B458418BA458E7E174DEB52D"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_BA245C19EE45460CA95D84A8E1C99F64"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_FD8E36F8CA084FDF8ED966C76C173A7B"
+                                    {
+                                    "Name" = "8:be"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_6424321F247B491FB3A8B68528FBA76A"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_699697315BD94C4287A7BFB4EDD95FCE"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_039200C0CFAE49BF87C0D20148A68508"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_FF6131E9E5784D5F8D38EBFA9AE48561"
+                                    {
+                                    "Name" = "8:sr"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_63C000A4A51C4A49BFE3DD85149996F1"
+                                        "Folders"
+                                        {
+                                            "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_54330E9E5E084FD0A7DAFA2026C43606"
+                                            {
+                                            "Name" = "8:LC_MESSAGES"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_0535C54BAAFC4223B831DDA6A0D3021C"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_621566201E394E838C266F6287A60A33"
+                    {
+                    "Name" = "8:bin"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_B55F19520A454418AC40F92FDD99C238"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{461E96AF-1495-11D3-8D6C-00A0C9CFCEE6}:_AF8DE57F62AE4D56BE85334530AA0EDA"
+                    {
+                    "Name" = "8:lib"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_3BB22985288D49BE8E302DFC05125A72"
                         "Folders"
                         {
                         }
@@ -238,9 +3251,23 @@
         }
         "LaunchCondition"
         {
+            "{B26CFB94-18E3-45BF-8D42-933BDAF5E76C}:_AD24F1EBB89E4921B581E99723A7B3E7"
+            {
+            "Name" = "8:GtkNotFound"
+            "Condition" = "8:GTKDLLPATH"
+            "Message" = "8:Gtk+ library not found. Please download and install it from http://www.dropline.net/gtk/"
+            }
         }
         "Locator"
         {
+            "{328616F4-3D88-44AA-B041-F8100F0FDCF1}:_7D0CF15C0D4E41DD8F34C32A11F9A442"
+            {
+            "Name" = "8:Search for Gtk"
+            "Root" = "2:1"
+            "RegKey" = "8:Software\\GTK\\2.0"
+            "Value" = "8:DllPath"
+            "Property" = "8:GTKDLLPATH"
+            }
         }
         "Shortcut"
         {
@@ -248,14 +3275,14 @@
             {
             "Name" = "8:Sodipodi"
             "Arguments" = "8:"
-            "Description" = "8:"
+            "Description" = "8:Vector Graphics Editor"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:101"
             "Transitive" = "11:FALSE"
             "Target" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
             "Folder" = "8:_402971BC52184E5A8FE2E15904AFA8D3"
             "WorkingFolder" = "8:_D02EDF2F5E7742F196733B295435A8CB"
-            "Icon" = "8:"
+            "Icon" = "8:_A37B626D6DE44B01B413DE18B3FAE030"
             "Feature" = "8:"
             }
         }
@@ -277,6 +3304,92 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
+                            "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_14C8CF09D92648CCBD7E50CDD61F4A7E"
+                            {
+                            "Name" = "8:Microsoft"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_A4BB9667EE824E6EABE2F677E3D62C8B"
+                                    {
+                                    "Name" = "8:Windows"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_873647C348D34084AEBAA6AEED08EA62"
+                                            {
+                                            "Name" = "8:CurrentVersion"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_A1DCAF16A4EE4161BA48FB9C0F1612F7"
+                                                    {
+                                                    "Name" = "8:App Paths"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_F0A3300F68784841B843392EACA9BD2B"
+                                                            {
+                                                            "Name" = "8:Sodipodi.exe"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                    "{B73D4F5A-FF29-11D2-8D6B-00A0C9CFCEE6}:_5A395BF723704A3BACAD0D552B48A5FC"
+                                                                    {
+                                                                    "Name" = "8:Path"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:[GTKDLLPATH];[TARGETDIR]bin;[TARGETDIR]lib"
+                                                                    }
+                                                                    "{B73D4F5A-FF29-11D2-8D6B-00A0C9CFCEE6}:_8F4F7EDBD9E640C29CE17E1163BC2DA3"
+                                                                    {
+                                                                    "Name" = "8:"
+                                                                    "Condition" = "8:"
+                                                                    "Transitive" = "11:FALSE"
+                                                                    "ValueTypes" = "3:1"
+                                                                    "Value" = "8:[TARGETPATH]"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
                             "{7DF0CD0A-FF27-11D2-8D6B-00A0C9CFCEE6}:_3230EFED924142EFABC0CB037815DAD1"
                             {
                             "Name" = "8:Sodipodi"
@@ -431,13 +3544,13 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sodipodi"
-        "ProductCode" = "8:{629E62E2-909D-427C-B62A-3AC23A8CD9F2}"
-        "PackageCode" = "8:{649B38BC-1E54-46A6-AF83-594B448EF8C5}"
+        "ProductCode" = "8:{E7EB2597-176D-4FFF-884A-799FA53E6439}"
+        "PackageCode" = "8:{9DDBB5EA-0D78-4F61-9D88-C847391BEC31}"
         "UpgradeCode" = "8:{CF5B3218-5E61-4556-951D-EF6295E57B6F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:0.33"
+        "ProductVersion" = "8:0.33.0"
         "Manufacturer" = "8:Sodipodi"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.sodipodi.com/"

@@ -36,6 +36,7 @@
 #include "helper/action.h"
 #include "xml/repr-private.h"
 
+#include "system.h"
 #include "verbs.h"
 #include "shortcuts.h"
 #include "document.h"
@@ -512,7 +513,7 @@ sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const un
 	SPRepr * root;
 
 #ifdef WIN32
-	fn = g_strdup_printf ("sodipodi/%s", filename);
+	fn = g_build_filename (SODIPODI_APPDATADIR, filename, NULL);
 #else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi", filename, NULL);
 #endif
@@ -606,7 +607,7 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 	gchar * fn;
 
 #ifdef WIN32
-	fn = g_strdup ("sodipodi/preferences");
+	fn = g_build_filename (SODIPODI_APPDATADIR, "preferences", NULL);
 #else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 #endif
@@ -875,7 +876,7 @@ sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *ske
 	GtkWidget * w;
 
 #ifdef WIN32
-	dn = g_strdup ("sodipodi");
+	dn = g_strdup (SODIPODI_APPDATADIR);
 #else
 	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
 #endif
@@ -900,7 +901,7 @@ sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *ske
 	g_free (dn);
 
 #ifdef WIN32
-	fn = g_strdup_printf ("sodipodi/%s", config_name);
+	fn = g_build_filename (SODIPODI_APPDATADIR, config_name, NULL);
 	fh = creat (fn, S_IREAD | S_IWRITE);
 #else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi", config_name, NULL);

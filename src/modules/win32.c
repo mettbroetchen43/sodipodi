@@ -537,8 +537,66 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
  * images: HKEY_CURRENT_USER\\Software\\Sodipodi\\Ichigo Path
  */
 
+static const char *
+sp_win32_ichigo (void)
+{
+	static char *ichigo = NULL;
+	TCHAR pathval [4096];
+    DWORD len = 4096;
+    HKEY hKey;
+    LONG ret;
+
+	if (ichigo) return ichigo;
+
+	ret = RegOpenKeyEx (HKEY_LOCAL_MACHINE, TEXT ("Software\\Sodipodi\\Ichigo"), 0, KEY_QUERY_VALUE, &hKey);
+	if (ret != ERROR_SUCCESS) {
+		ichigo = ".";
+		return ichigo;
+	}
+
+	ret = RegQueryValueEx(hKey, TEXT ("Path"), NULL, NULL, (LPBYTE) pathval, &len);
+
+    RegCloseKey(hKey);
+
+	if(ret != ERROR_SUCCESS) {
+		ichigo = ".";
+		return ichigo;
+	}
+
+	ichigo = strdup (pathval);
+
+	return ichigo;
+}
+
 const char *
 sp_win32_get_data_dir (void)
+{
+	static char *path = NULL;
+	if (path) return path;
+	path = g_build_filename (sp_win32_ichigo (), "share\\sodipodi", NULL);
+	return path;
+} 
+
+const char *
+sp_win32_get_doc_dir (void)
+{
+	static char *path = NULL;
+	if (path) return path;
+	path = g_build_filename (g_get_home_dir (), "My Documents", NULL);
+	return path;
+} 
+
+const char *
+sp_win32_get_locale_dir (void)
+{
+	static char *path = NULL;
+	if (path) return path;
+	path = g_build_filename (sp_win32_ichigo (), "share\\locale", NULL);
+	return path;
+} 
+
+const char *
+sp_win32_get_appdata_dir (void)
 {
 	static char *path = NULL;
 	TCHAR pathval [4096];
@@ -548,23 +606,23 @@ sp_win32_get_data_dir (void)
 
 	if (path) return path;
 
-	ret = RegOpenKeyEx (HKEY_LOCAL_MACHINE, TEXT ("Software\\Sodipodi\\Ichigo"), 0, KEY_QUERY_VALUE, &hKey);
+	ret = RegOpenKeyEx (HKEY_CURRENT_USER, TEXT ("Volatile Environment"), 0, KEY_QUERY_VALUE, &hKey);
 	if (ret != ERROR_SUCCESS) {
-		path = "sodipodi";
+		path = ".";
 		return path;
 	}
 
-	ret = RegQueryValueEx(hKey, TEXT ("Path"), NULL, NULL, (LPBYTE) pathval, &len);
+	ret = RegQueryValueEx(hKey, TEXT ("APPDATA"), NULL, NULL, (LPBYTE) pathval, &len);
 
     RegCloseKey(hKey);
 
 	if(ret != ERROR_SUCCESS) {
-		path = "sodipodi";
+		path = ".";
 		return path;
 	}
 
-	path = strdup (pathval);
+	path = g_build_filename (pathval, "Sodipodi", NULL);
 
 	return path;
-} 
+}
 

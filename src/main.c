@@ -47,6 +47,7 @@
 #include <gtk/gtkbox.h>
 
 #include "macros.h"
+#include "system.h"
 #include "file.h"
 #include "document.h"
 #include "desktop.h"
