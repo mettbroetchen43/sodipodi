@@ -1,0 +1,22 @@
+Source: sodipodi
+Section: graphics 
+Priority: optional
+Maintainer: Davide Puricelli (evo) <evo@debian.org>
+Standards-Version: 3.2.1
+Build-Depends: debhelper, gettext, libtool, libpopt-dev, libaudiofile-dev, libesd0-dev, autoconf, libgnome-dev, libbonobo-dev, libefs-dev, libgdk-pixbuf-dev, libglade-gnome0-dev, libglade0-dev, libglib1.2-dev, libgtk1.2-dev, libgnomeprint-dev, libjpeg62-dev, liboaf-dev, liborbit-dev, libpng2-dev, libtiff3g-dev, libunicode-dev, libxml-dev, xlibs-dev, zlib1g-dev
+
+Package: sodipodi
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Vector based drawing program.
+ It loads and saves subset of SVG (Scalable Vector Graphics) format,
+ a standard maintained by the WWW consortium.         
+ .
+ Sodipodi user interface should be familiar from CorelDraw and similar
+ drawing programs. There are rectangles, ellipses, text items, bitmap
+ images and freehand curves.
+ As an added bonus both vector and bitmap objects can have alpha
+ transparency and can be arbitrarily transformed.
+ .
+ Sodipodi supports multiple opened files and multiple views per file.
+ Graphics can be printed and exported to png bitmaps.

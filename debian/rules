@@ -1,0 +1,49 @@
+#!/usr/bin/make -f
+
+tmp:=$(shell pwd)/debian/tmp
+
+CFLAGS := -O2
+ifneq "$(findstring debug,$(DEB_BUILD_OPTIONS))" ""
+CFLAGS += -g
+endif
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --sysconfdir=/etc --with-gtk-prefix=/usr
+	$(MAKE)
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -f build-stamp
+	dh_clean 
+
+binary-indep: 
+
+binary-arch: build 
+	dh_testdir
+	dh_testroot
+	$(MAKE) install prefix=$(tmp)/usr sysconfdir=$(tmp)/etc
+	find $(tmp)/usr -name "Makefile*" | xargs -r rm -f
+	dh_installdocs README
+	dh_installmenu
+	dh_installexamples samples/*.svg
+	dh_installchangelogs ChangeLog
+	dh_undocumented sodipodi.1 sodipodi-bonobo.1
+	dh_link
+ifeq "$(findstring nostrip,$(DEB_BUILD_OPTIONS))" ""
+	dh_strip
+endif
+	dh_compress -X.svg
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary 
