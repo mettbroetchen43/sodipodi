@@ -137,12 +137,13 @@ gint
 sp_bezier_fit_cubic_full (ArtPoint *bezier, const ArtPoint *data, gint len,
 			  ArtPoint *tHat1, ArtPoint *tHat2, gdouble error, gint max_depth)
 {
-	double *u; /* Parameter values for point */
-	double *uPrime;	/* Improved parameter values */
-	double maxError; /* Maximum fitting error */
-	int splitPoint; /* Point to split point set at */
-	double iterationError; /* Error below which you try iterating (squared) */
-	int maxIterations = 4; /* Max times to try iterating */
+	double *u;		/* Parameter values for point */
+	double *u_alloca;	/* Just for memory management */
+	double *uPrime;		/* Improved parameter values */
+	double maxError;	/* Maximum fitting error */
+	int splitPoint;		/* Point to split point set at */
+	double iterationError;  /* Error below which you try iterating (squared) */
+	int maxIterations = 4;	/* Max times to try iterating */
 	
 	int i;
 	
@@ -186,11 +187,14 @@ sp_bezier_fit_cubic_full (ArtPoint *bezier, const ArtPoint *data, gint len,
 
 	/*  If error not too large, try some reparameterization  */
 	/*  and iteration */
+	u_alloca = u;
 	if (maxError < iterationError) {
 		for (i = 0; i < maxIterations; i++) {
 			uPrime = Reparameterize(data, 0, len - 1, u, bezier);
 			GenerateBezier (bezier, data, uPrime, len, tHat1, tHat2);
 			maxError = ComputeMaxError(data, uPrime, len, bezier, &splitPoint);
+			if (u != u_alloca)
+				g_free(u);
 			if (maxError < error) {
 				BEZIER_ASSERT (bezier);
 				g_free (uPrime);
@@ -199,6 +203,8 @@ sp_bezier_fit_cubic_full (ArtPoint *bezier, const ArtPoint *data, gint len,
 			u = uPrime;
 		}
 	}
+	if (u != u_alloca)
+		g_free(u);
 	
 	if (max_depth > 1)
 	{
