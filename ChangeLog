@@ -1,5 +1,23 @@
 2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/paint-selector.c (sp_paint_selector_set_gradient_radial): New method
+
+	* src/widgets/gradient-position.c (sp_gradient_position_set_mode): New method
+	(sp_gradient_position_update): Setup linear/radial renderer as needed
+
+	* src/widgets/gradient-selector.c (sp_gradient_selector_set_mode): New method
+	(sp_gradient_selector_set_lgradient_position): Renamed method
+	(sp_gradient_selector_set_rgradient_position): Ditto
+	(sp_gradient_selector_get_lgradient_position_floatv): Renamed method
+	(sp_gradient_selector_get_rgradient_position_floatv): Ditto
+
+	* src/libnr/nr-pixblock-pixel.c (nr_compose_pixblock_pixblock_pixel): Fixed
+	R8G8B8 target to render channels separately
+
+	* src/sp-gradient.c (sp_gradient_from_position_xy): Made gradient method,
+	changed signature, added gradientTransform to list
+	(sp_gradient_to_position_xy): Ditto
+
 	* src/libnr/nr-pixblock-pixel.c: New file
 
 	* src/libnr/nr-pixblock-pixel.h: New file
@@ -11,6 +29,12 @@
 	* src/sp-gradient.c (sp_gradient_render_vector_block_rgb): Compose correctly
 
 	* src/libnr/nr-blit.c (nr_compose_pixblock_pixblock_pixel): Generic pixel composer
+
+2002-09-26  Masatake YAMATO  <jet@gyve.org>
+
+        * src/select-context.c (sp_select_context_root_handler):
+        used sp_canvas_item_grab where I want to receive key_press event.
+        (sp_select_context_item_handler): Ditto.
 
 2002-09-26  Lauris Kaplinski  <lauris@kaplinski.com>
 

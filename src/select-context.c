@@ -211,13 +211,10 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 			sc->dragging = TRUE;
 			sc->moved = FALSE;
 			sc->item = item;
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->drawing),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
+			sp_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->drawing),
+					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+					     NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->drawing);
-			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
-			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
-			sc->grabbed->canvas->grabbed_event_mask |= GDK_KEY_PRESS_MASK;
 			ret = TRUE;
 		}
 		break;
@@ -329,13 +326,10 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 		if (event->button.button == 1) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 			sp_rubberband_start (desktop, p.x, p.y);
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
+			sp_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+					     NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
-			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
-			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
-			sc->grabbed->canvas->grabbed_event_mask |= GDK_KEY_PRESS_MASK;
 			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
 			ret = TRUE;
 		}
