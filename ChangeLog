@@ -1,3 +1,7 @@
+2001-02-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Added es to ALL_LINGUAS
+	
 2001-02-07  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/object-properties.c: Added channel sliders
