@@ -1202,12 +1202,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\libart_lgpl\art_rect_uta.h">
 			</File>
 			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp.h">
-			</File>
-			<File
 				RelativePath="..\..\src\libart_lgpl\art_uta.c">
 			</File>
 			<File
@@ -1218,18 +1212,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_uta_rect.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_svp.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_vpath.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_vpath.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_vpath.c">
@@ -1248,12 +1230,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_vpath_dash.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_vpath_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_vpath_svp.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\config.h">

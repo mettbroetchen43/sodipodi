@@ -20,7 +20,7 @@
 SPDesktop * sp_rb_desktop = NULL;
 SPCtrlRect * sp_rb = NULL;
 gboolean sp_rb_dragging = FALSE;
-ArtDRect sp_rb_rect;
+NRRectF sp_rb_rect;
 
 void
 sp_rubberband_start (SPDesktop * desktop, double x, double y)

@@ -12,9 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkscrolledwindow.h>
+
 #include "display/canvas-arena.h"
 #include "document.h"
 #include "sp-item.h"
@@ -253,9 +253,9 @@ sp_svg_view_rescale (SPSVGView *svgview, gboolean event)
 	}
 
 	if (svgview->drawing) {
-		gdouble affine[6];
-		art_affine_scale (affine, svgview->hscale, svgview->vscale);
-		sp_canvas_item_affine_absolute (svgview->drawing, affine);
+		NRMatrixD affine;
+		nr_matrix_d_set_scale (&affine, svgview->hscale, svgview->vscale);
+		sp_canvas_item_affine_absolute (svgview->drawing, &affine);
 	}
 
 	if (event) {

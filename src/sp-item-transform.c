@@ -14,6 +14,7 @@
 
 #include <libnr/nr-matrix.h>
 #include "svg/svg.h"
+#include "sp-item.h"
 #include "sp-item-transform.h"
 
 #include <libart_lgpl/art_affine.h>
@@ -21,40 +22,39 @@
 void art_affine_skew (double dst[6], double dx, double dy);
 
 void
-sp_item_rotate_rel (SPItem * item, double angle)
+sp_item_rotate_relative (SPItem *item, float theta_deg, unsigned int commit)
 {
 	NRRectF b;
-	NRMatrixF curaff, f;
-  double rotate[6], s[6], t[6], u[6], v[6], newaff[6];
-  double x,y;
-  char tstr[80];
+	NRMatrixF curt, newt;
+	NRMatrixD rotation, s, d2n, u, v;
+	double x,y;
+	char tstr[80];
 
-  sp_item_bbox_desktop (item, &b);
+	sp_item_bbox_desktop (item, &b);
 
-  x = b.x0 + (b.x1 - b.x0)/2;
-  y = b.y0 + (b.y1 - b.y0)/2;
+	x = b.x0 + (b.x1 - b.x0) / 2.0F;
+	y = b.y0 + (b.y1 - b.y0) / 2.0F;
 
-  art_affine_rotate (rotate,angle);
-  nr_matrix_d_set_translate (NR_MATRIX_D_FROM_DOUBLE (s),x,y);
-  nr_matrix_d_set_translate (NR_MATRIX_D_FROM_DOUBLE (t),-x,-y);
+	nr_matrix_d_set_rotate (&rotation, theta_deg);
+	nr_matrix_d_set_translate (&s, x, y);
+	nr_matrix_d_set_translate (&d2n, -x, -y);
 
 
-  tstr[79] = '\0';
+	tstr[79] = '\0';
 
-  // rotate item
-  sp_item_i2d_affine (item, &curaff);
-  nr_matrix_multiply_dfd (NR_MATRIX_D_FROM_DOUBLE (u), &curaff, NR_MATRIX_D_FROM_DOUBLE (t));
-  art_affine_multiply (v, u, rotate);
-  art_affine_multiply (newaff, v, s);
-  nr_matrix_f_from_d (&f, NR_MATRIX_D_FROM_DOUBLE (newaff));
-  sp_item_set_i2d_affine (item, &f);
+	/* rotate item */
+	sp_item_i2d_affine (item, &curt);
+	nr_matrix_multiply_dfd (&u, &curt, &d2n);
+	nr_matrix_multiply_ddd (&v, &u, &rotation);
+	nr_matrix_multiply_fdd (&newt, &v, &s);
+	sp_item_set_i2d_affine (item, &newt);
 
-  //update repr
-  if (sp_svg_transform_write (tstr, 80, &item->transform)) {
-	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-  } else {
-	  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
-  }
+	/* update repr */
+	if (sp_svg_transform_write (tstr, 80, &item->transform)) {
+		sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+	} else {
+		sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", NULL);
+	}
 }
 
 void

@@ -153,7 +153,7 @@ sp_dropper_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			nr_matrix_d_set_scale (&sm, scale, scale);
 			sm.c[4] = cd.x;
 			sm.c[5] = cd.y;
-			sp_canvas_item_affine_absolute (dc->area, NR_MATRIX_D_TO_DOUBLE (&sm));
+			sp_canvas_item_affine_absolute (dc->area, &sm);
 			sp_canvas_item_show (dc->area);
 			/* Get buffer */
 			x0 = (int) floor (dc->centre.x - rw);

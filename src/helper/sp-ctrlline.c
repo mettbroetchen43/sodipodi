@@ -26,17 +26,6 @@
 #include "sp-canvas-util.h"
 #include "sp-ctrlline.h"
 
-#if 0
-#include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
-#include <libart_lgpl/art_rgb_svp.h>
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_rect_svp.h>
-#endif
-
 struct _SPCtrlLine {
 	SPCanvasItem item;
 
@@ -54,7 +43,7 @@ static void sp_ctrlline_class_init (SPCtrlLineClass *klass);
 static void sp_ctrlline_init (SPCtrlLine *ctrlline);
 static void sp_ctrlline_destroy (GtkObject *object);
 
-static void sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_ctrlline_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
 static SPCanvasItemClass *parent_class;
@@ -128,7 +117,7 @@ sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 }
 
 static void
-sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_ctrlline_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPCtrlLine *cline;
 
@@ -136,14 +125,14 @@ sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
-	if (parent_class->update) parent_class->update (item, affine, flags);
+	if (parent_class->update) parent_class->update (item, ctm, flags);
 
 	sp_canvas_item_reset_bounds (item);
 
-	cline->ix0 = (int) (NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x0, cline->y0) + 0.5);
-	cline->iy0 = (int) (NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x0, cline->y0) + 0.5);
-	cline->ix1 = (int) (NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x1, cline->y1) + 0.5);
-	cline->iy1 = (int) (NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x1, cline->y1) + 0.5);
+	cline->ix0 = (int) (NR_MATRIX_DF_TRANSFORM_X (ctm, cline->x0, cline->y0) + 0.5);
+	cline->iy0 = (int) (NR_MATRIX_DF_TRANSFORM_Y (ctm, cline->x0, cline->y0) + 0.5);
+	cline->ix1 = (int) (NR_MATRIX_DF_TRANSFORM_X (ctm, cline->x1, cline->y1) + 0.5);
+	cline->iy1 = (int) (NR_MATRIX_DF_TRANSFORM_Y (ctm, cline->x1, cline->y1) + 0.5);
 
 	item->x1 = MIN (cline->ix0, cline->ix1);
 	item->y1 = MIN (cline->iy0, cline->iy1);

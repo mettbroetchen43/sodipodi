@@ -312,7 +312,7 @@ nr_rect_s_union_xy (NRRectS *d, NRShort x, NRShort y)
 }
 
 NRRectD *
-nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
+nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, const NRMatrixD *m)
 {
 	if (nr_rect_d_test_empty (s)) {
 		nr_rect_d_set_empty (d);
@@ -343,7 +343,7 @@ nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
 }
 
 NRRectF *
-nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m)
+nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, const NRMatrixF *m)
 {
 	if (nr_rect_f_test_empty (s)) {
 		nr_rect_f_set_empty (d);

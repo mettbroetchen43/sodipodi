@@ -27,7 +27,7 @@ static void sp_canvas_bpath_class_init (SPCanvasBPathClass *klass);
 static void sp_canvas_bpath_init (SPCanvasBPath *path);
 static void sp_canvas_bpath_destroy (GtkObject *object);
 
-static void sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_canvas_bpath_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf);
 static double sp_canvas_bpath_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
  
@@ -111,7 +111,7 @@ sp_canvas_bpath_destroy (GtkObject *object)
 }
 
 static void
-sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_canvas_bpath_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPCanvasBPath *cbp;
 	NRRectF bbox;
@@ -121,7 +121,7 @@ sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	if (((SPCanvasItemClass *) parent_class)->update)
-		((SPCanvasItemClass *) parent_class)->update (item, affine, flags);
+		((SPCanvasItemClass *) parent_class)->update (item, ctm, flags);
 
 	sp_canvas_item_reset_bounds (item);
 
@@ -141,7 +141,7 @@ sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	if ((cbp->fill_rgba & 0xff) || (cbp->stroke_rgba & 0xff)) {
 		NRMatrixF ctmf;
-		nr_matrix_f_from_d (&ctmf, NR_MATRIX_D_FROM_DOUBLE (affine));
+		nr_matrix_f_from_d (&ctmf, ctm);
 		if ((cbp->fill_rgba & 0xff) && (cbp->curve->end > 2)) {
 			NRSVL *svl;
 			svl = nr_svl_from_art_bpath (cbp->curve->bpath, &ctmf, NR_WIND_RULE_EVENODD, TRUE, 0.25);

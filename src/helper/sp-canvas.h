@@ -19,6 +19,7 @@
 
 G_BEGIN_DECLS
 
+#include <libnr/nr-matrix.h>
 #include <libnr/nr-pixblock.h>
 
 #include <libart_lgpl/art_misc.h>
@@ -49,13 +50,13 @@ struct _SPCanvasItem {
 	SPCanvasItem *parent;
 
 	double x1, y1, x2, y2;
-	double *xform;
+	NRMatrixD *xform;
 };
 
 struct _SPCanvasItemClass {
 	GtkObjectClass parent_class;
 
-	void (* update) (SPCanvasItem *item, double *affine, unsigned int flags);
+	void (* update) (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 
 	void (* render) (SPCanvasItem *item, SPCanvasBuf *buf);
 	double (* point) (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
@@ -68,7 +69,7 @@ void sp_canvas_item_construct (SPCanvasItem *item, SPCanvasGroup *parent, const 
 
 #define sp_canvas_item_set gtk_object_set
 
-void sp_canvas_item_affine_absolute (SPCanvasItem *item, const double affine[6]);
+void sp_canvas_item_affine_absolute (SPCanvasItem *item, const NRMatrixD *transform);
 
 void sp_canvas_item_raise (SPCanvasItem *item, int positions);
 void sp_canvas_item_lower (SPCanvasItem *item, int positions);
@@ -77,9 +78,9 @@ void sp_canvas_item_hide (SPCanvasItem *item);
 int sp_canvas_item_grab (SPCanvasItem *item, unsigned int event_mask, GdkCursor *cursor, guint32 etime);
 void sp_canvas_item_ungrab (SPCanvasItem *item, guint32 etime);
 
-void sp_canvas_item_w2i (SPCanvasItem *item, double *x, double *y);
-void sp_canvas_item_i2w (SPCanvasItem *item, double *x, double *y);
-void sp_canvas_item_i2w_affine (SPCanvasItem *item, double affine[6]);
+void sp_canvas_get_item_w2i (SPCanvasItem *item, double *x, double *y);
+void sp_canvas_get_item_i2w (SPCanvasItem *item, double *x, double *y);
+void sp_canvas_get_item_i2w_affine (SPCanvasItem *item, NRMatrixD *transform);
 
 void sp_canvas_item_grab_focus (SPCanvasItem *item);
 

@@ -23,7 +23,7 @@ static void sp_guideline_class_init (SPGuideLineClass *klass);
 static void sp_guideline_init (SPGuideLine *guideline);
 static void sp_guideline_destroy (GtkObject *object);
 
-static void sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_guideline_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
 static double sp_guideline_point (SPCanvasItem *item, double x, double y, SPCanvasItem ** actual_item);
@@ -128,20 +128,20 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 }
 
 static void
-sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_guideline_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPGuideLine *gl;
 
 	gl = SP_GUIDELINE (item);
 
 	if (((SPCanvasItemClass *) parent_class)->update)
-		((SPCanvasItemClass *) parent_class)->update (item, affine, flags);
+		((SPCanvasItemClass *) parent_class)->update (item, ctm, flags);
 
 	if (gl->vertical) {
-		gl->position = (int) (affine[4] + 0.5);
+		gl->position = (int) (ctm->c[4] + 0.5);
 		sp_canvas_update_bbox (item, gl->position, -1000000, gl->position + 1, 1000000);
 	} else {
-		gl->position = (int) (affine[5] + 0.5);
+		gl->position = (int) (ctm->c[5] + 0.5);
 		sp_canvas_update_bbox (item, -1000000, gl->position, 1000000, gl->position + 1);
 	}
 }
@@ -187,7 +187,7 @@ sp_guideline_set_position (SPGuideLine *gl, double position)
 
 	nr_matrix_d_set_translate (&i2b, position, position);
 
-	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (gl), NR_MATRIX_D_TO_DOUBLE (&i2b));
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (gl), &i2b);
 }
 
 void

@@ -14,6 +14,9 @@
  */
 
 #include <math.h>
+
+#include <libnr/nr-rect.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sodipodi-ctrlrect.h"
@@ -29,7 +32,7 @@ static void sp_ctrlrect_class_init (SPCtrlRectClass *klass);
 static void sp_ctrlrect_init (SPCtrlRect *ctrlrect);
 static void sp_ctrlrect_destroy (GtkObject *object);
 
-static void sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_ctrlrect_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_ctrlrect_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
 static SPCanvasItemClass *parent_class;
@@ -140,15 +143,15 @@ sp_ctrlrect_render (SPCanvasItem *item, SPCanvasBuf *buf)
 }
 
 static void
-sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_ctrlrect_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPCtrlRect *cr;
-	ArtDRect bbox;
+	NRRectD bbox;
 
 	cr = SP_CTRLRECT (item);
 
 	if (((SPCanvasItemClass *) parent_class)->update)
-		((SPCanvasItemClass *) parent_class)->update (item, affine, flags);
+		((SPCanvasItemClass *) parent_class)->update (item, ctm, flags);
 
 	sp_canvas_item_reset_bounds (item);
 
@@ -176,7 +179,7 @@ sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 	}
 
-	art_drect_affine_transform (&bbox, &cr->rect, affine);
+	nr_rect_d_matrix_d_transform (&bbox, &cr->rect, ctm);
 
 	cr->area.x0 = (int) (bbox.x0 + 0.5);
 	cr->area.y0 = (int) (bbox.y0 + 0.5);
@@ -255,7 +258,7 @@ sp_ctrlrect_set_shadow (SPCtrlRect *cr, gint shadow_size, guint32 shadow_color)
 }
 
 void
-sp_ctrlrect_set_rect (SPCtrlRect * cr, ArtDRect * r)
+sp_ctrlrect_set_rect (SPCtrlRect *cr, NRRectF *r)
 {
 	cr->rect.x0 = MIN (r->x0, r->x1);
 	cr->rect.y0 = MIN (r->y0, r->y1);

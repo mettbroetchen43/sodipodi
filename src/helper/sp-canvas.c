@@ -20,18 +20,19 @@
 
 #include <libnr/nr-values.h>
 #include <libnr/nr-macros.h>
+#include <libnr/nr-rect.h>
 #include <libnr/nr-pixblock.h>
 
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
 #include <libart_lgpl/art_misc.h>
+#if 0
 #include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_svp.h>
+#endif
 #include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_rect_uta.h>
 #include <libart_lgpl/art_uta_rect.h>
-
 
 #include "sp-marshal.h"
 
@@ -233,20 +234,20 @@ sp_canvas_item_dispose (GObject *object)
 /* NB! affine is parent2canvas */
 
 static void
-sp_canvas_item_invoke_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_canvas_item_invoke_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	int child_flags;
-	double *child_affine;
-	double new_affine[6];
+	const NRMatrixD *chctm;
 
 	child_flags = flags;
 
 	/* Apply the child item's transform */
 	if (item->xform == NULL) {
-		child_affine = affine;
+		chctm = ctm;
 	} else {
-		art_affine_multiply (new_affine, item->xform, affine);
-		child_affine = new_affine;
+		NRMatrixD newctm;
+		nr_matrix_multiply_ddd (&newctm, item->xform, ctm);
+		chctm = &newctm;
 	}
 
 	/* apply object flags to child flags */
@@ -260,7 +261,7 @@ sp_canvas_item_invoke_update (SPCanvasItem *item, double *affine, unsigned int f
 
 	if (child_flags & (SP_CANVAS_UPDATE_REQUESTED | SP_CANVAS_UPDATE_AFFINE)) {
 		if (SP_CANVAS_ITEM_GET_CLASS (item)->update)
-			SP_CANVAS_ITEM_GET_CLASS (item)->update (item, child_affine, child_flags);
+			SP_CANVAS_ITEM_GET_CLASS (item)->update (item, chctm, child_flags);
 	}
 
 	GTK_OBJECT_UNSET_FLAGS (item, SP_CANVAS_ITEM_NEED_UPDATE);
@@ -271,6 +272,7 @@ sp_canvas_item_invoke_update (SPCanvasItem *item, double *affine, unsigned int f
  * be in the parent's item-relative coordinate system.  This routine applies the
  * inverse of the item's transform, maintaining the affine invariant.
  */
+
 static double
 sp_canvas_item_invoke_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
@@ -288,16 +290,16 @@ sp_canvas_item_invoke_point (SPCanvasItem *item, double x, double y, SPCanvasIte
  * Makes the item's affine transformation matrix be equal to the specified
  * matrix.
  **/
-void
-sp_canvas_item_affine_absolute (SPCanvasItem *item, const double affine[6])
-{
-	int i;
 
-	if (item->xform == NULL) {
-		item->xform = g_new (double, 6);
-	}
-	for (i = 0; i < 6; i++) {
-		item->xform[i] = affine[i];
+void
+sp_canvas_item_affine_absolute (SPCanvasItem *item, const NRMatrixD *i2p)
+{
+	if (i2p) {
+		if (!item->xform) item->xform = g_new (NRMatrixD, 1);
+		*item->xform = *i2p;
+	} else if (item->xform) {
+		g_free (item->xform);
+		item->xform = NULL;
 	}
 
 	if (!(item->object.flags & SP_CANVAS_ITEM_NEED_AFFINE)) {
@@ -521,17 +523,17 @@ sp_canvas_item_ungrab (SPCanvasItem *item, guint32 etime)
 
 
 void
-sp_canvas_item_i2w_affine (SPCanvasItem *item, double affine[6])
+sp_canvas_item_get_i2w_affine (SPCanvasItem *item, NRMatrixD *i2w)
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_CANVAS_ITEM (item));
-	g_return_if_fail (affine != NULL);
+	g_return_if_fail (i2w != NULL);
 
-	art_affine_identity (affine);
+	nr_matrix_d_set_identity (i2w);
 
 	while (item) {
-		if (item->xform != NULL) {
-			art_affine_multiply (affine, affine, item->xform);
+		if (item->xform) {
+			nr_matrix_multiply_ddd (i2w, i2w, item->xform);
 		}
 		item = item->parent;
 	}
@@ -540,7 +542,7 @@ sp_canvas_item_i2w_affine (SPCanvasItem *item, double affine[6])
 void
 sp_canvas_item_w2i (SPCanvasItem *item, double *x, double *y)
 {
-	double i2w[6], w2i[6];
+	NRMatrixD i2w, w2i;
 	double px, py;
 
 	g_return_if_fail (item != NULL);
@@ -548,20 +550,20 @@ sp_canvas_item_w2i (SPCanvasItem *item, double *x, double *y)
 	g_return_if_fail (x != NULL);
 	g_return_if_fail (y != NULL);
 
-	sp_canvas_item_i2w_affine (item, i2w);
-	art_affine_invert (w2i, i2w);
+	sp_canvas_item_get_i2w_affine (item, &i2w);
+	nr_matrix_d_invert (&w2i, &i2w);
 
 	px = *x;
 	py = *y;
 
-	*x = w2i[0] * px + w2i[2] * py + w2i[4];
-	*y = w2i[1] * px + w2i[3] * py + w2i[5];
+	*x = w2i.c[0] * px + w2i.c[2] * py + w2i.c[4];
+	*y = w2i.c[1] * px + w2i.c[3] * py + w2i.c[5];
 }
 
 void
 sp_canvas_item_i2w (SPCanvasItem *item, double *x, double *y)
 {
-	double i2w[6];
+	NRMatrixD i2w;
 	double px, py;
 
 	g_return_if_fail (item != NULL);
@@ -569,13 +571,13 @@ sp_canvas_item_i2w (SPCanvasItem *item, double *x, double *y)
 	g_return_if_fail (x != NULL);
 	g_return_if_fail (y != NULL);
 
-	sp_canvas_item_i2w_affine (item, i2w);
+	sp_canvas_item_get_i2w_affine (item, &i2w);
 
 	px = *x;
 	py = *y;
 
-	*x = i2w[0] * px + i2w[2] * py + i2w[4];
-	*y = i2w[1] * px + i2w[3] * py + i2w[5];
+	*x = i2w.c[0] * px + i2w.c[2] * py + i2w.c[4];
+	*y = i2w.c[1] * px + i2w.c[3] * py + i2w.c[5];
 }
 
 static int
@@ -656,7 +658,7 @@ static void sp_canvas_group_class_init (SPCanvasGroupClass *class);
 static void sp_canvas_group_init (SPCanvasGroup *group);
 static void sp_canvas_group_destroy (GtkObject *object);
 
-static void sp_canvas_group_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_canvas_group_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static double sp_canvas_group_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
 static void sp_canvas_group_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
@@ -734,12 +736,12 @@ sp_canvas_group_destroy (GtkObject *object)
 
 /* Update handler for canvas groups */
 static void
-sp_canvas_group_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_canvas_group_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPCanvasGroup *group;
 	GList *list;
 	SPCanvasItem *i;
-	ArtDRect bbox, child_bbox;
+	NRRectF bbox, child_bbox;
 
 	group = SP_CANVAS_GROUP (item);
 
@@ -751,13 +753,13 @@ sp_canvas_group_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	for (list = group->items; list; list = list->next) {
 		i = list->data;
 
-		sp_canvas_item_invoke_update (i, affine, flags);
+		sp_canvas_item_invoke_update (i, ctm, flags);
 
 		child_bbox.x0 = i->x1;
 		child_bbox.y0 = i->y1;
 		child_bbox.x1 = i->x2;
 		child_bbox.y1 = i->y2;
-		art_drect_union (&bbox, &bbox, &child_bbox);
+		nr_rect_f_union (&bbox, &bbox, &child_bbox);
 	}
 	item->x1 = bbox.x0;
 	item->y1 = bbox.y0;
@@ -1782,9 +1784,9 @@ paint (SPCanvas *canvas)
 	widget = GTK_WIDGET (canvas);
 
 	if (canvas->need_update) {
-		double affine[6];
-		art_affine_identity (affine);
-		sp_canvas_item_invoke_update (canvas->root, affine, 0);
+		NRMatrixD ctm;
+		nr_matrix_d_set_identity (&ctm);
+		sp_canvas_item_invoke_update (canvas->root, &ctm, 0);
 		canvas->need_update = FALSE;
 	}
 
@@ -1819,9 +1821,9 @@ do_update (SPCanvas *canvas)
 {
 	/* Cause the update if necessary */
 	if (canvas->need_update) {
-		double affine[6];
-		art_affine_identity (affine);
-		sp_canvas_item_invoke_update (canvas->root, affine, 0);
+		NRMatrixD ctm;
+		nr_matrix_d_set_identity (&ctm);
+		sp_canvas_item_invoke_update (canvas->root, &ctm, 0);
 		canvas->need_update = FALSE;
 	}
 

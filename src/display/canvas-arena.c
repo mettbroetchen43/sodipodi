@@ -36,7 +36,7 @@ static void sp_canvas_arena_class_init (SPCanvasArenaClass * klass);
 static void sp_canvas_arena_init (SPCanvasArena * group);
 static void sp_canvas_arena_destroy (GtkObject * object);
 
-static void sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_canvas_arena_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf);
 static double sp_canvas_arena_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
 static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
@@ -161,7 +161,7 @@ sp_canvas_arena_destroy (GtkObject *object)
 }
 
 static void
-sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
+sp_canvas_arena_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
 	SPCanvasArena *arena;
 	guint reset;
@@ -169,9 +169,9 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	arena = SP_CANVAS_ARENA (item);
 
 	if (((SPCanvasItemClass *) parent_class)->update)
-		(* ((SPCanvasItemClass *) parent_class)->update) (item, affine, flags);
+		(* ((SPCanvasItemClass *) parent_class)->update) (item, ctm, flags);
 
-	memcpy (NR_MATRIX_D_TO_DOUBLE (&arena->gc.transform), affine, 6 * sizeof (double));
+	arena->gc.transform = *ctm;
 
 	if (flags & SP_CANVAS_UPDATE_AFFINE) {
 		reset = NR_ARENA_ITEM_STATE_ALL;

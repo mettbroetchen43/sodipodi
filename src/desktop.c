@@ -232,7 +232,7 @@ sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdoub
 
 	desktop->doc2dt[5] = height;
 
-	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
 
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, width, height);
 }
@@ -328,13 +328,13 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* Connect event for page resize */
 	desktop->doc2dt[5] = sp_document_height (document);
-	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
 
 	/* Fixme: Setup initial zooming */
 	nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), 1.0, -1.0);
 	desktop->d2w[5] = dh;
 	nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (desktop->w2d), NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
-	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
+	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
 
 	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
@@ -1219,7 +1219,7 @@ sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float 
 		/* Set zoom factors */
 		nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (dt->d2w), newscale, -newscale);
 		nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (dt->w2d), NR_MATRIX_D_FROM_DOUBLE (dt->d2w));
-		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (dt->main), dt->d2w);
+		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (dt->main), NR_MATRIX_D_FROM_DOUBLE (dt->d2w));
 		clear = TRUE;
 	} else {
 		clear = FALSE;

@@ -45,7 +45,7 @@ void sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, 
 
 void sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx, double dy, unsigned int duplicate);
 void sp_selection_move_relative (SPSelection *selection, double dx, double dy, unsigned int duplicate);
-void sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, double angle, unsigned int duplicate);
+void sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, double theta_deg, unsigned int duplicate);
 
 void sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, double dy);
 

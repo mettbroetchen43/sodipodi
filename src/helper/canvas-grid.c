@@ -30,7 +30,7 @@ static void sp_cgrid_init (SPCGrid *grid);
 static void sp_cgrid_destroy (GtkObject *object);
 static void sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
-static void sp_cgrid_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_cgrid_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags);
 static void sp_cgrid_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
 static SPCanvasItemClass * parent_class;
@@ -162,9 +162,8 @@ sp_cgrid_render (SPCanvasItem * item, SPCanvasBuf * buf)
 }
 
 static void
-sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
+sp_cgrid_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags)
 {
-	NRMatrixD *ctmd;
 	SPCGrid * grid;
 	GtkWidget * w;
 
@@ -172,15 +171,14 @@ sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
 	w = GTK_WIDGET (item->canvas);
 
 	if (parent_class->update)
-		(* parent_class->update) (item, affine, flags);
+		(* parent_class->update) (item, ctm, flags);
 
-	ctmd = NR_MATRIX_D_FROM_DOUBLE (affine);
-	grid->ow.x = NR_MATRIX_DF_TRANSFORM_X (ctmd, grid->origin.x, grid->origin.y);
-	grid->ow.y = NR_MATRIX_DF_TRANSFORM_Y (ctmd, grid->origin.x, grid->origin.y);
-	grid->sw.x = NR_MATRIX_DF_TRANSFORM_X (ctmd, grid->spacing.x, grid->spacing.y);
-	grid->sw.y = NR_MATRIX_DF_TRANSFORM_Y (ctmd, grid->spacing.x, grid->spacing.y);
-	grid->sw.x -= affine[4];
-	grid->sw.y -= affine[5];
+	grid->ow.x = NR_MATRIX_DF_TRANSFORM_X (ctm, grid->origin.x, grid->origin.y);
+	grid->ow.y = NR_MATRIX_DF_TRANSFORM_Y (ctm, grid->origin.x, grid->origin.y);
+	grid->sw.x = NR_MATRIX_DF_TRANSFORM_X (ctm, grid->spacing.x, grid->spacing.y);
+	grid->sw.y = NR_MATRIX_DF_TRANSFORM_Y (ctm, grid->spacing.x, grid->spacing.y);
+	grid->sw.x -= ctm->c[4];
+	grid->sw.y -= ctm->c[5];
 	grid->sw.x = fabs (grid->sw.x);
 	grid->sw.y = fabs (grid->sw.y);
 	while (grid->sw.x < 8.0) {

@@ -58,8 +58,8 @@ NRRectF *nr_rect_f_union_xy (NRRectF *d, float x, float y);
 NRRectL *nr_rect_l_union_xy (NRRectL *d, NRLong x, NRLong y);
 NRRectS *nr_rect_s_union_xy (NRRectS *d, NRShort x, NRShort y);
 
-NRRectD *nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m);
-NRRectF *nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m);
+NRRectD *nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, const NRMatrixD *m);
+NRRectF *nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, const NRMatrixF *m);
 
 NRRectD *nr_rect_d_translate_xy (NRRectD *d, double x, double y);
 NRRectF *nr_rect_f_translate_xy (NRRectF *d, double x, double y);

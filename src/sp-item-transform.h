@@ -13,9 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "sp-item.h"
+#include "forward.h"
 
-void sp_item_rotate_rel (SPItem * item, double angle);
+void sp_item_rotate_relative (SPItem *item, float theta_deg, unsigned int commit);
 void sp_item_scale_rel (SPItem * item, double dx, double dy);
 void sp_item_skew_rel (SPItem * item, double dx, double dy); 
 void sp_item_move_rel (SPItem * item, double dx, double dy);
