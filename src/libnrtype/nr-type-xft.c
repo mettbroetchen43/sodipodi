@@ -205,8 +205,8 @@ nr_type_xft_init (void)
 				char *name;
 				int weight;
 				int slant;
-                                NRTypeFaceSlant nrSlant;
-                                NRTypeFaceWeight nrWeight;
+				unsigned int nrSlant;
+                                unsigned int nrWeight;
 #ifdef WITH_FONTCONFIG
 				FcChar8 *fn, *wn, *sn;
 				if (debug) {
@@ -257,8 +257,8 @@ nr_type_xft_init (void)
 					break;
 				}
 
-                                wn=(FcChar8*)nrTypefaceWeightToStr(nrWeight);
-                                sn=(FcChar8*)nrTypefaceSlantToStr(nrSlant);
+                                wn = (FcChar8*) nr_type_weight_to_string (nrWeight);
+                                sn = (FcChar8*) nr_type_slant_to_string (nrSlant);
 
 #else
 				const unsigned char *fn, *wn, *sn;
@@ -303,8 +303,8 @@ nr_type_xft_init (void)
 					break;
 				}
 
-                                wn=nrTypefaceWeightToStr(nrWeight);
-                                sn=nrTypefaceSlantToStr(nrSlant);
+                                wn = nr_type_weight_to_string (nrWeight);
+                                sn = nr_type_slant_to_string (nrSlant);
 #endif
 
                                 if (debug) {

@@ -51,7 +51,7 @@ arikkei_utf8_multibyte_strdup (const unsigned char *utf8)
 #endif
 
 const unsigned char *
-arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *name)
+arikkei_mmap (const unsigned char *filename, unsigned int *size, const unsigned char *name)
 {
 #ifdef WIN32
 	// nr_w32_mmap (const TCHAR *filename, int size, LPCTSTR name)
@@ -144,7 +144,7 @@ arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *nam
 }
 
 void
-arikkei_munmap (const unsigned char *cdata, int size)
+arikkei_munmap (const unsigned char *cdata, unsigned int size)
 {
 #ifdef WIN32
 	/* Release data */

@@ -32,13 +32,13 @@ static unsigned int nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule,
 static NRFont *nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
 static void nr_typeface_gnome_font_free (NRFont *font);
 
-static NRTypeFaceWeight gnome_to_nr_weight (int weight_code);
-static NRTypeFaceSlant gnome_to_nr_slant (int isItalic,
+static unsigned int gnome_to_nr_weight (int weight_code);
+static unsigned int gnome_to_nr_slant (int isItalic,
                                           const unsigned char *name);
 
 static NRTypeFaceClass *parent_class;
 
-static NRTypeFaceWeight
+static unsigned int
 gnome_to_nr_weight (int weight_code)
 {
         if (weight_code >= GNOME_FONT_BOLD)
@@ -47,7 +47,7 @@ gnome_to_nr_weight (int weight_code)
                 return NR_TYPEFACE_WEIGHT_NORMAL;
 }
 
-static NRTypeFaceSlant
+static unsigned int
 gnome_to_nr_slant (int isItalic,
                    const unsigned char *name)
 {
