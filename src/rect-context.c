@@ -233,6 +233,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	if (!rc->item) {
 		SPRepr * repr, * style;
 		SPCSSAttr * css;
+		NRMatrixF i2root, root2i;
 		/* Create object */
 		repr = sp_repr_new ("rect");
 		/* Set style */
@@ -242,8 +243,13 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 			sp_repr_css_set (repr, css, "style");
 			sp_repr_css_attr_unref (css);
 		}
-		rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+		/* rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr); */
+		sp_repr_append_child (SP_OBJECT_REPR (desktop->base), repr);
+		rc->item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (desktop), sp_repr_get_attr (repr, "id"));
 		sp_repr_unref (repr);
+		sp_item_i2root_affine (rc->item, &i2root);
+		nr_matrix_f_invert (&root2i, &i2root);
+		sp_item_set_item_transform (rc->item, &root2i);
 	}
 
 	/* This is bit ugly, but so we are */
@@ -325,14 +331,12 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	h  = y1 - y0;
 
 	sp_rect_position_set (SP_RECT (rc->item), x0, y0, w, h);
-	if (rc->rx_ratio != 0.0)
-		sp_rect_set_rx(SP_RECT (rc->item), TRUE, 0.5 * rc->rx_ratio * w); 
-	if (rc->ry_ratio != 0.0)
-		sp_rect_set_ry(SP_RECT (rc->item), TRUE, 0.5 * rc->ry_ratio * h); 
+	if (rc->rx_ratio != 0.0) sp_rect_set_rx ((SPRect *) rc->item, TRUE, 0.5 * rc->rx_ratio * w); 
+	if (rc->ry_ratio != 0.0) sp_rect_set_ry ((SPRect *) rc->item, TRUE, 0.5 * rc->ry_ratio * h); 
 
-	// status text
-	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
-	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
+	/* status text */
+	xs = SP_PT_TO_METRIC_STRING (fabs (x1-x0), SP_DEFAULT_METRIC);
+	ys = SP_PT_TO_METRIC_STRING (fabs (y1-y0), SP_DEFAULT_METRIC);
 	g_snprintf (status, 80, "Draw rectangle  %s x %s", xs->str, ys->str);
 	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
 	g_string_free (xs, TRUE);

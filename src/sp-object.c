@@ -374,7 +374,7 @@ sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer d
 	object = SP_OBJECT (data);
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->child_added)
-		(*((SPObjectClass *)G_OBJECT_GET_CLASS(object))->child_added) (object, child, ref);
+		((SPObjectClass *) G_OBJECT_GET_CLASS(object))->child_added (object, child, ref);
 }
 
 static unsigned int
@@ -405,7 +405,7 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 	object = SP_OBJECT (data);
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->order_changed)
-		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->order_changed) (object, child, old, new);
+		((SPObjectClass *)G_OBJECT_GET_CLASS(object))->order_changed (object, child, old, new);
 }
 
 static void
@@ -429,6 +429,7 @@ sp_object_private_set (SPObject *object, unsigned int key, const unsigned char *
 		} else {
 			g_warning ("ID of cloned object changed, so document is out of sync");
 		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_XML_SPACE:
 		if (value && !strcmp (value, "preserve")) {
@@ -735,6 +736,9 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 	g_signal_emit (G_OBJECT (object), object_signals[MODIFIED], 0, flags);
 	g_object_unref (G_OBJECT (object));
 
+	if (object->document->object_signals) {
+		sp_document_invoke_object_modified (object->document, object, flags);
+	}
 #if 0
 	/* If style is modified, invoke style_modified virtual method */
 	/* It is pure convenience, and should be used with caution */

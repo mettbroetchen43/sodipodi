@@ -251,6 +251,18 @@ sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
 static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group);
 
 static void
+sp_item_group_set_layer_activate (GtkMenuItem *menuitem, SPGroup *group)
+{
+	SPDesktop *dt;
+
+	dt = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (dt != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (dt));
+
+	sp_desktop_set_base (dt, group);
+}
+
+static void
 sp_group_menu (SPObject *object, SPDesktop *desktop, GtkMenu * menu)
 {
 	SPItem *item;
@@ -276,8 +288,13 @@ sp_group_menu (SPObject *object, SPDesktop *desktop, GtkMenu * menu)
 	w = gtk_menu_item_new_with_label (_("Ungroup"));
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_group_ungroup_activate), item);
-
 	gtk_menu_append (GTK_MENU (m), w);
+	/* Dive */
+	w = gtk_menu_item_new_with_label (_("Set as layer"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	g_signal_connect ((GObject *) w, "activate", (GCallback) sp_item_group_set_layer_activate, item);
+	gtk_menu_append (GTK_MENU (m), w);
+
 	gtk_widget_show_all (m);
 
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
@@ -291,8 +308,6 @@ sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group)
 {
 	SPDesktop *desktop;
 	GSList *children;
-
-	g_assert (SP_IS_GROUP (group));
 
 	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
 	g_return_if_fail (desktop != NULL);

@@ -42,6 +42,10 @@ struct _SPGroupClass {
 
 GType sp_group_get_type (void);
 
+/* fixme: This is potentially dangerous (Lauris) */
+/* Be extra careful what happens, if playing with <svg> */
+void sp_group_set_transparent (SPGroup *group, unsigned int transparent);
+
 void sp_item_group_ungroup (SPGroup *group, GSList **children);
 GSList *sp_item_group_item_list (SPGroup *group);
 SPObject *sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned char *name);

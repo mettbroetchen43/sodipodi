@@ -45,6 +45,8 @@ struct _SPDocument {
 
 	/* Last action key */
 	const guchar *actionkey;
+	/* Whether to emit mutation signals */
+	unsigned int object_signals;
 
 	/* Handler ID */
 	/* guint modified_id; */
@@ -58,9 +60,18 @@ struct _SPDocumentClass {
 
 	void (* destroy) (SPDocument *document);
 
+	/* Golbal signals */
 	void (* modified) (SPDocument *document, guint flags);
 	void (* uri_set) (SPDocument *document, const guchar *uri);
 	void (* resized) (SPDocument *document, gdouble width, gdouble height);
+	/* Tree mutation signals */
+	/* Actual object inserted or moved is ref->next */
+	/* While invoking removation signal child does not exist anymore */
+	void (* object_added) (SPDocument *doc, SPObject *parent, SPObject *ref);
+	void (* object_removed) (SPDocument *doc, SPObject *parent, SPObject *ref);
+	void (* order_changed) (SPDocument *doc, SPObject *parent, SPObject *oldref, SPObject *ref);
+	/* Asynchronous signal */
+	void (* object_modified) (SPDocument *doc, SPObject *object, unsigned int flags);
 	/* Timer events */
 	void (* begin) (SPDocument *doc, double dtime);
 	void (* end) (SPDocument *doc, double dtime);
@@ -98,9 +109,7 @@ const unsigned char *sp_document_get_name (SPDocument *doc);
 
 #define sp_document_set_advertize(d,v) (((SPDocument *)(d))->advertize = ((v) != 0))
 
-/*
- * Dictionary
- */
+/* Dictionary */
 
 void sp_document_def_id (SPDocument * document, const gchar * id, SPObject * object);
 void sp_document_undef_id (SPDocument * document, const gchar * id);
@@ -108,20 +117,22 @@ SPObject *sp_document_get_object_from_id (SPDocument *doc, const unsigned char *
 SPObject *sp_document_get_object_from_repr (SPDocument *doc, SPRepr *repr);
 #define sp_document_lookup_id sp_document_get_object_from_id
 
-/*
- * Undo & redo
- */
+/* Undo & redo */
 
 void sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive);
 
 void sp_document_clear_undo (SPDocument * document);
 void sp_document_clear_redo (SPDocument * document);
 
-void sp_document_child_added (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *ref);
-void sp_document_child_removed (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *ref);
-void sp_document_attr_changed (SPDocument *doc, SPObject *object, const guchar *key, const guchar *oldval, const guchar *newval);
-void sp_document_content_changed (SPDocument *doc, SPObject *object, const guchar *oldcontent, const guchar *newcontent);
-void sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *oldref, SPRepr *newref);
+/* Tree mutation signals */
+
+void sp_document_set_object_signals (SPDocument *doc, unsigned int enable);
+
+void sp_document_invoke_object_added (SPDocument *doc, SPObject *parent, SPObject *ref);
+void sp_document_invoke_object_removed (SPDocument *doc, SPObject *parent, SPObject *ref);
+void sp_document_invoke_order_changed (SPDocument *doc, SPObject *parent, SPObject *oldref, SPObject *ref);
+
+void sp_document_invoke_object_modified (SPDocument *doc, SPObject *object, unsigned int flags);
 
 /* Object modification root handler */
 void sp_document_request_modified (SPDocument *doc);
@@ -163,15 +174,6 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  * Repr::reparent method :( [Or was it ;)]
  *
  */
-
-#if 0
-/*
- * Misc
- */
-
-GSList *sp_document_items_in_box (SPDocument *document, NRRectD *box);
-GSList *sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
-#endif
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);

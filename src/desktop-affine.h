@@ -28,6 +28,9 @@ NRMatrixD *sp_desktop_doc2w_affine (SPDesktop *desktop, NRMatrixD *doc2w);
 NRMatrixD *sp_desktop_root2dt_affine (SPDesktop *dt, NRMatrixD *root2dt);
 NRMatrixD *sp_desktop_dt2root_affine (SPDesktop *dt, NRMatrixD *dt2root);
 
+NRMatrixD *sp_desktop_base2dt_affine (SPDesktop *dt, NRMatrixD *base2dt);
+NRMatrixD *sp_desktop_dt2base_affine (SPDesktop *dt, NRMatrixD *dt2base);
+
 NRPointF *sp_desktop_w2d_xy_point (SPDesktop *desktop, NRPointF *p, float x, float y);
 NRPointF *sp_desktop_d2w_xy_point (SPDesktop *desktop, NRPointF *p, float x, float y);
 NRPointF *sp_desktop_w2doc_xy_point (SPDesktop *desktop, NRPointF *p, float x, float y);
@@ -37,5 +40,8 @@ NRPointF *sp_desktop_doc2d_xy_point (SPDesktop *desktop, NRPointF *p, float x, f
 
 NRPointF *sp_desktop_root2dt_xy_point (SPDesktop *dt, NRPointF *p, float x, float y);
 NRPointF *sp_desktop_dt2root_xy_point (SPDesktop *dt, NRPointF *p, float x, float y);
+
+NRPointF *sp_desktop_base2dt_xy_point (SPDesktop *dt, NRPointF *p, float x, float y);
+NRPointF *sp_desktop_dt2base_xy_point (SPDesktop *dt, NRPointF *p, float x, float y);
 
 #endif

@@ -1,6 +1,6 @@
 #
 # Widgets for sodipodi
-# Author: Lauris Kaplinski <lauris@ximian.com>
+# Author: Lauris Kaplinski <lauris@kaplinski.com>
 #
 
 gladedir = $(datadir)/sodipodi
@@ -13,9 +13,9 @@ INCLUDES = \
 
 noinst_LIBRARIES = libspwidgets.a
 
-BUILT_SOURCES = sp-dock-typebuiltins.c sp-dock-typebuiltins.h
-
-CLEANFILES = sp-dock-typebuiltins.c sp-dock-typebuiltins.h
+# fixme: This have to be uncommented with dock sources (Lauris)
+# BUILT_SOURCES = sp-dock-typebuiltins.c sp-dock-typebuiltins.h
+# CLEANFILES = sp-dock-typebuiltins.c sp-dock-typebuiltins.h
 
 libspwidgets_a_SOURCES = \
 	icon.c icon.h \
@@ -36,9 +36,11 @@ libspwidgets_a_SOURCES = \
 	sp-xmlview-tree.c sp-xmlview-tree.h \
 	sp-xmlview-attr-list.c sp-xmlview-attr-list.h \
 	sp-xmlview-content.c sp-xmlview-content.h \
+	tree-store.c tree-store.h \
 	spw-utilities.c spw-utilities.h \
-	sp-widget.c sp-widget.h \
-	$(spdock_headers) $(spdock_sources)
+	sp-widget.c sp-widget.h
+
+#	$(spdock_headers) $(spdock_sources)
 
 spdock_headers = \
 	sp-dock-object.h \

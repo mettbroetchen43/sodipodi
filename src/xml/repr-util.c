@@ -295,66 +295,6 @@ sp_repr_set_xml_space (SPRepr *repr, SPReprXmlSpaceType space)
 	sp_repr_set_attr (repr, "xml:space", space_str);
 }
 
-#if 0
-double
-sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def)
-{
-	char *result;
-	double val;
-
-	g_return_val_if_fail (repr != NULL, def);
-	g_return_val_if_fail (key != NULL, def);
-
-	result = (char *) sp_repr_attr (repr, key);
-
-	if (result == NULL) return def;
-
-	val = def;
-	arikkei_strtod_exp (result, 256, &val);
-	return val;
-}
-
-int sp_repr_get_int_attribute (SPRepr * repr, const char * key, int def)
-{
-	char * result;
-
-	g_return_val_if_fail (repr != NULL, def);
-	g_return_val_if_fail (key != NULL, def);
-
-	result = (char *) sp_repr_attr (repr, key);
-
-	if (result == NULL) return def;
-
-	return atoi (result);
-}
-
-unsigned int
-sp_repr_set_double_attribute (SPRepr * repr, const char * key, double value)
-{
-	char c[32];
-
-	g_return_val_if_fail (repr != NULL, FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
-
-	arikkei_dtoa_exp (c, 32, value, 6, FALSE);
-
-	return sp_repr_set_attr (repr, key, c);
-}
-
-unsigned int
-sp_repr_set_int_attribute (SPRepr * repr, const char * key, int value)
-{
-	char c[32];
-
-	g_return_val_if_fail (repr != NULL, FALSE);
-	g_return_val_if_fail (key != NULL, FALSE);
-
-	g_snprintf (c, 32, "%d", value);
-
-	return sp_repr_set_attr (repr, key, c);
-}
-#endif
-
 const char *
 sp_repr_doc_attr (SPRepr * repr, const char * key)
 {
@@ -590,7 +530,6 @@ sp_repr_get_boolean (SPRepr *repr, const unsigned char *key, unsigned int *val)
 	if (v != NULL) {
 		if (!g_strcasecmp (v, "true") ||
 		    !g_strcasecmp (v, "yes") ||
-		    !g_strcasecmp (v, "y") ||
 		    (atoi (v) != 0)) {
 			*val = TRUE;
 		} else {

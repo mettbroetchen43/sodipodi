@@ -1769,7 +1769,7 @@ sp_style_write_ilength (guchar *p, gint len, const guchar *key, SPILength *val, 
 				break;
 			}
 			sp_svg_number_write_d (b, r, 6, 2, FALSE);
-			return g_snprintf (p, len, "%s:%s;", key, b);
+			return g_snprintf (p, len, "%s:%s%s;", key, b, u);
 		}
 	}
 	return 0;

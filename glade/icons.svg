@@ -7,7 +7,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    id="svg1"
-   sodipodi:version="0.34-beta1"
+   sodipodi:version="0.35pre"
    width="256pt"
    height="256pt"
    sodipodi:docbase="/home/lauris/cvs/sodipodi/glade/"
@@ -3936,5 +3936,32 @@
        d="M 218.5625 179.375 L 208.125 179.375 L 208.125 188.3125 C 204.5 187.5 201.875 184.25 201.875 180.3125 C 201.875 175.625 205.625 171.875 210.3125 171.875 C 214.6875 171.875 218.1875 175.125 218.5625 179.375 z "
        id="path1311"
        sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+     id="sub_document_base">
+    <rect
+       style="font-size:12;fill:none;fill-opacity:0.25;fill-rule:evenodd;stroke:#000000;stroke-width:0.093728;stroke-opacity:0.531373;"
+       id="rect1207"
+       x="0.001633"
+       y="142.499995"
+       width="14.998365"
+       height="14.994604"
+       rx="0"
+       ry="0"
+       transform="translate(16.24837,0)" />
+    <path
+       style="font-size:12;fill:#ff3f3f;fill-rule:evenodd;stroke:#3f0000;stroke-width:1.25;fill-opacity:1;stroke-opacity:1;"
+       d="M 21.875 148.75 L 21.875 155 L 26.875 155 L 26.875 148.75 L 21.875 148.75 z "
+       id="path1227"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#ff3f3f;fill-rule:evenodd;stroke:#3f0000;stroke-opacity:1;stroke-width:1pt;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;"
+       d="M 20.625 145.625 L 20.625 151.875 L 25.625 151.875 L 25.625 145.625 L 20.625 145.625 z "
+       id="path1225"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="font-size:12;fill:none;fill-rule:evenodd;stroke:#7f7f7f;stroke-width:1.25;stroke-dasharray:none;stroke-opacity:1;"
+       d="M 18.125 156.875 L 18.125 143.125 L 25.625 143.125 L 29.375 146.875 L 29.375 156.875 L 18.125 156.875 z M 25.625 143.125 L 25.625 146.875 L 29.375 146.875 "
+       id="path1230" />
   </g>
 </svg>

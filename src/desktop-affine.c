@@ -123,6 +123,26 @@ sp_desktop_dt2root_affine (SPDesktop *dt, NRMatrixD *dt2root)
 	return dt2root;
 }
 
+NRMatrixD *
+sp_desktop_base2dt_affine (SPDesktop *dt, NRMatrixD *base2dt)
+{
+	NRMatrixF b2d;
+	sp_desktop_get_i2d_transform_f (dt, (SPItem *) dt->base, &b2d);
+	nr_matrix_d_from_f (base2dt, &b2d);
+	return base2dt;
+}
+
+NRMatrixD *
+sp_desktop_dt2base_affine (SPDesktop *dt, NRMatrixD *dt2base)
+{
+	NRMatrixD base2dt;
+	NRMatrixF b2d;
+	sp_desktop_get_i2d_transform_f (dt, (SPItem *) dt->base, &b2d);
+	nr_matrix_d_from_f (&base2dt, &b2d);
+	nr_matrix_d_invert (dt2base, &base2dt);
+	return dt2base;
+}
+
 NRPointF *
 sp_desktop_w2d_xy_point (SPDesktop *dt, NRPointF *p, float x, float y)
 {
@@ -241,4 +261,26 @@ sp_desktop_dt2root_xy_point (SPDesktop *dt, NRPointF *p, float x, float y)
 
 	return p;
 }
+
+NRPointF *
+sp_desktop_base2dt_xy_point (SPDesktop *dt, NRPointF *p, float x, float y)
+{
+	NRMatrixF b2d;
+	sp_desktop_get_i2d_transform_f (dt, (SPItem *) dt->base, &b2d);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&b2d, x, y);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&b2d, x, y);
+	return p;
+}
+
+NRPointF *
+sp_desktop_dt2base_xy_point (SPDesktop *dt, NRPointF *p, float x, float y)
+{
+	NRMatrixF b2d, d2b;
+	sp_desktop_get_i2d_transform_f (dt, (SPItem *) dt->base, &b2d);
+	nr_matrix_f_invert (&d2b, &b2d);
+	p->x = NR_MATRIX_DF_TRANSFORM_X (&d2b, x, y);
+	p->y = NR_MATRIX_DF_TRANSFORM_Y (&d2b, x, y);
+	return p;
+}
+
 

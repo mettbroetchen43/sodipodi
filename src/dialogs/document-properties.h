@@ -1,10 +1,17 @@
-#ifndef SP_DOCUMENT_PROPERTIES_H
-#define SP_DOCUMENT_PROPERTIES_H
+#ifndef __SP_DOCUMENT_PROPERTIES_H__
+#define __SP_DOCUMENT_PROPERTIES_H__
 
-#include <gtk/gtk.h>
+/*
+ * Document configuration dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) Lauris Kaplinski 2000-2004
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 void sp_document_dialog (void);
-void sp_document_dialog_apply (GtkWidget * widget);
-void sp_document_dialog_close (GtkWidget * widget);
 
 #endif

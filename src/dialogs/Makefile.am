@@ -35,7 +35,8 @@ libspdialogs_a_SOURCES = \
 	stroke-style.c stroke-style.h \
 	transformation.c transformation.h \
 	node-edit.c node-edit.h \
-	xml-tree.c xml-tree.h
+	xml-tree.c xml-tree.h \
+	document-tree.c document-tree.h
 
 moduledir = $(libdir)/sodipodi/modules
 

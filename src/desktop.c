@@ -525,7 +525,9 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 		/* Ugly hack */
 		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
 		/* Attach root */
-		sp_desktop_set_base (desktop, (SPItem *) ((SPView *) desktop)->root);
+		/* fixme: view->root should really be set before this */
+		/* fixme: What to do if root is not group? */
+		sp_desktop_set_base (desktop, (SPGroup *) (SPGroup *) root);
 	}
 }
 
@@ -535,7 +537,7 @@ static void
 sp_desktop_root_release (SPObject *object, SPDesktop *dt)
 {
 	if (((SPView *) dt)->root) {
-		dt->base = (SPItem *) ((SPView *) dt)->root;
+		dt->base = (SPGroup *) ((SPView *) dt)->root;
 	}
 	if (dt->base) {
 		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
@@ -543,13 +545,19 @@ sp_desktop_root_release (SPObject *object, SPDesktop *dt)
 }
 
 void
-sp_desktop_set_base (SPDesktop *dt, SPItem *base)
+sp_desktop_set_base (SPDesktop *dt, SPGroup *base)
 {
+	if (base == dt->base) return;
 	if (dt->base) {
+		if (dt->base != (SPGroup *) ((SPView *) dt)->root) {
+			/* fixme: I really do not like the logic here (Lauris) */
+			sp_group_set_transparent (dt->base, FALSE);
+		}
 		sp_signal_disconnect_by_data ((GObject *) dt->base, dt);
 	}
 	dt->base = base;
 	if (dt->base) {
+		sp_group_set_transparent (dt->base, TRUE);
 		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
 	}
 }
@@ -826,6 +834,16 @@ sp_desktop_widget_class_init (SPDesktopWidgetClass *klass)
 	widget_class->realize = sp_desktop_widget_realize;
 }
 
+/* fixme: Move out of class declaration (Lauris) */
+
+static void
+sp_dtw_sdb_toggled (SPButton *button, SPDesktopWidget *dtw)
+{
+	if (!button->down) {
+		sp_desktop_set_base (dtw->desktop, (SPGroup *) ((SPView *) dtw->desktop)->root);
+	}
+}
+
 static void
 sp_desktop_widget_init (SPDesktopWidget *dtw)
 {
@@ -906,6 +924,14 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 						    _("Zoom drawing if window size changes"),
 						    tt);
 	gtk_table_attach (GTK_TABLE (tbl), dtw->sticky_zoom, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	/* Sub-document base */
+	dtw->sub_document_base = sp_button_new_from_data (SP_ICON_SIZE_BUTTON,
+							  SP_BUTTON_TYPE_TOGGLE,
+							  "sub_document_base",
+							  _("Drawing target is constrained to active group"),
+							  tt);
+	gtk_table_attach (GTK_TABLE (tbl), dtw->sub_document_base, 2, 3, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+	g_signal_connect ((GObject *) dtw->sub_document_base, "toggled", (GCallback) sp_dtw_sdb_toggled, dtw);
 
 	/* Status bars */
        	hbox = gtk_hbox_new (FALSE,0);
@@ -1264,6 +1290,7 @@ sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show)
 			gtk_widget_show (GTK_WIDGET (dtw->vruler));
 			gtk_widget_show (GTK_WIDGET (dtw->mbtn));
 			gtk_widget_show (GTK_WIDGET (dtw->sticky_zoom));
+			gtk_widget_show (GTK_WIDGET (dtw->sub_document_base));
 		} else {
 			gtk_widget_hide (GTK_WIDGET (dtw->hscrollbar));
 			gtk_widget_hide (GTK_WIDGET (dtw->vscrollbar));
@@ -1271,6 +1298,7 @@ sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show)
 			gtk_widget_hide (GTK_WIDGET (dtw->vruler));
 			gtk_widget_hide (GTK_WIDGET (dtw->mbtn));
 			gtk_widget_hide (GTK_WIDGET (dtw->sticky_zoom));
+			gtk_widget_hide (GTK_WIDGET (dtw->sub_document_base));
 		}
 	}
 }

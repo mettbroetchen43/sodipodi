@@ -32,8 +32,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#ifdef SP_MACROS_SILENT
-#undef SP_MACROS_SILENT
+#ifndef SP_MACROS_SILENT
+#define SP_MACROS_SILENT
 #endif
 
 #include <libart_lgpl/art_affine.h>

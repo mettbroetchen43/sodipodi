@@ -47,16 +47,6 @@ struct _SPEvent {
 
 typedef struct _NRArenaItem SPItemView;
 
-#if 0
-struct _SPItemView {
-	SPItemView *next;
-	unsigned int flags;
-	unsigned int key;
-	/* SPItem *item; */
-	NRArenaItem *arenaitem;
-};
-#endif
-
 /* flags */
 
 #define SP_ITEM_BBOX_VISUAL 1
@@ -86,6 +76,7 @@ struct _SPItem {
 	SPObject object;
 
 	unsigned int sensitive : 1;
+	unsigned int visible : 1;
 	unsigned int printable : 1;
 	/* unsigned int stop_paint: 1; */
 

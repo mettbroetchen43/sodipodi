@@ -35,6 +35,7 @@ sp_svg_boolean_read (const unsigned char *str, unsigned int *val)
 {
 	unsigned int v;
 	char *e;
+	if (!str || !*str) return 0;
 	if (!val) return 0;
 	if (!strcasecmp (str, "true") || !strcasecmp (str, "yes")) {
 		*val = 1;

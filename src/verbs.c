@@ -24,6 +24,7 @@
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
 #include "dialogs/display-settings.h"
+#include "dialogs/document-tree.h"
 #include "dialogs/tool-options.h"
 #include "dialogs/tool-attributes.h"
 #include "dialogs/item-properties.h"
@@ -360,6 +361,9 @@ sp_verb_action_dialog_perform (SPAction *action, void *config, void *data)
 	case SP_VERB_DIALOG_TEXT:
 		sp_text_edit_dialog ();
 		break;
+	case SP_VERB_DIALOG_DOCUMENT_TREE:
+		sp_document_tree_dialog ();
+		break;
 	case SP_VERB_DIALOG_XML_EDITOR:
 		sp_xml_tree_dialog ();
 		break;
@@ -478,6 +482,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_DIALOG_TRANSFORM, "DialogTransform", N_("Transformations"), N_("Object transformations"), "object_trans"},
 	{SP_VERB_DIALOG_ALIGN_DISTRIBUTE, "DialogAlignDistribute", N_("Align and Distribute"), N_("Align and distribute"), "object_align"},
 	{SP_VERB_DIALOG_TEXT, "Dialogtext", N_("Text and Font"), N_("Text editing and font settings"), "object_font"},
+	{SP_VERB_DIALOG_DOCUMENT_TREE, "DialogDocumentTree", N_("Document Tree"), N_("Document Tree"), NULL},
 	{SP_VERB_DIALOG_XML_EDITOR, "DialogXMLEditor", N_("XML Editor"), N_("XML Editor"), NULL},
 	{SP_VERB_DIALOG_ITEM, "DialogItem", N_("Item Properties"), N_("Item properties"), NULL},
 	/* Footer */

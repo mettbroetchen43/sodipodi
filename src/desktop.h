@@ -38,7 +38,7 @@ struct _SPDesktop {
 	/* Namedview defines guides grids and such */
 	SPNamedView *namedview;
 	/* Base group where items are created */
-	SPItem *base;
+	SPGroup *base;
 
 	SPSelection *selection;
 	SPEventContext *event_context;
@@ -85,12 +85,8 @@ void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
 void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
-#if 0
-void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
-#endif
-
 /* Set base group */
-void sp_desktop_set_base (SPDesktop *dt, SPItem *base);
+void sp_desktop_set_base (SPDesktop *dt, SPGroup *base);
 
 /* Event context */
 void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config);
@@ -151,6 +147,7 @@ struct _SPDesktopWidget {
 	double rx0, ry0;
 
 	GtkWidget *sticky_zoom;
+	GtkWidget *sub_document_base;
 	GtkWidget *coord_status;
 	GtkWidget *select_status;
 	GtkWidget *zoom_status;

@@ -107,16 +107,16 @@ sp_group_init (SPGroup *group)
 	/* Nothing here */
 }
 
-static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * repr)
+static void sp_group_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
-	SPGroup * group;
-	SPObject * last;
-	SPRepr * rchild;
+	SPGroup *group;
+	SPObject *last;
+	SPRepr *rchild;
 
 	group = SP_GROUP (object);
 
 	if (((SPObjectClass *) (parent_class))->build)
-		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
+		((SPObjectClass *) (parent_class))->build (object, doc, repr);
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
@@ -129,7 +129,12 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 		} else {
 			object->children = sp_object_attach_reref (object, child, NULL);
 		}
-		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+		/* fixme: This is bad because we emit object_added with unbuilt object */
+		/* Demo, sikata nai, we have to have it done before ::build emits the same for children */
+		if (doc->object_signals) {
+			sp_document_invoke_object_added (doc, object, last);
+		}
+		sp_object_invoke_build (child, doc, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
 }
@@ -143,6 +148,11 @@ sp_group_release (SPObject *object)
 
 	while (object->children) {
 		object->children = sp_object_detach_unref (object, object->children);
+#if 0
+		if (object->document->object_signals) {
+			sp_document_invoke_object_removed (object->document, object, NULL);
+		}
+#endif
 	}
 
 	if (((SPObjectClass *) parent_class)->release)
@@ -183,7 +193,11 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	} else {
 		object->children = sp_object_attach_reref (object, ochild, object->children);
 	}
-
+	/* fixme: This is bad because we emit object_added with unbuilt object */
+	/* Demo, sikata nai, we have to have it done before ::build emits the same for children */
+	if (object->document->object_signals) {
+		sp_document_invoke_object_added (object->document, object, prev);
+	}
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 
 	if (SP_IS_ITEM (ochild)) {
@@ -229,6 +243,9 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		prev->next = sp_object_detach_unref (object, ochild);
 	} else {
 		object->children = sp_object_detach_unref (object, ochild);
+	}
+	if (object->document->object_signals) {
+		sp_document_invoke_object_removed (object->document, object, prev);
 	}
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 
@@ -279,6 +296,9 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 	} else {
 		childobj->next = object->children;
 		object->children = childobj;
+	}
+	if (object->document->object_signals) {
+		sp_document_invoke_order_changed (object->document, object, oldobj, newobj);
 	}
 
 	if (SP_IS_ITEM (childobj)) {
@@ -447,7 +467,8 @@ sp_group_print (SPItem * item, SPPrintContext *ctx)
 	}
 }
 
-static gchar * sp_group_description (SPItem * item)
+static gchar *
+sp_group_description (SPItem * item)
 {
 	SPGroup * group;
 	SPObject * o;
@@ -511,6 +532,20 @@ sp_group_hide (SPItem *item, unsigned int key)
 
 	if (((SPItemClass *) parent_class)->hide)
 		((SPItemClass *) parent_class)->hide (item, key);
+}
+
+/* fixme: This is potentially dangerous (Lauris) */
+/* Be extra careful what happens, if playing with <svg> */
+void
+sp_group_set_transparent (SPGroup *group, unsigned int transparent)
+{
+	SPItem *item;
+	SPItemView *v;
+	item = (SPItem *) group;
+	group->transparent = transparent;
+	for (v = item->display; v != NULL; v = v->view.next) {
+		nr_arena_group_set_transparent (NR_ARENA_GROUP (v), group->transparent);
+	}
 }
 
 void

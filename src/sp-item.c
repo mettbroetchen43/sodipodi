@@ -55,12 +55,6 @@ static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 
-#if 0
-static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item,
-					     unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
-static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
-#endif
-
 static SPObjectClass *parent_class;
 
 GType
@@ -111,6 +105,7 @@ sp_item_init (SPItem *item)
 	object = SP_OBJECT (item);
 
 	item->sensitive = TRUE;
+	item->visible = TRUE;
 	item->printable = TRUE;
 
 	nr_matrix_f_set_identity (&item->transform);
@@ -134,6 +129,7 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "clip-path");
 	sp_object_read_attr (object, "mask");
 	sp_object_read_attr (object, "sodipodi:insensitive");
+	sp_object_read_attr (object, "sodipodi:invisible");
 	sp_object_read_attr (object, "sodipodi:nonprintable");
 }
 
@@ -224,6 +220,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
 	SPItemView *v;
+	unsigned int bval;
 
 	item = (SPItem *) object;
 
@@ -272,6 +269,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				}
 			}
 		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	}
 	case SP_PROP_MASK: {
@@ -308,21 +306,42 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				}
 			}
 		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	}
 	case SP_ATTR_SODIPODI_INSENSITIVE:
-		item->sensitive = !value;
+		item->sensitive = TRUE;
+		if (value && sp_svg_boolean_read (value, &bval)) {
+			item->sensitive = !bval;
+		}
 		for (v = item->display; v != NULL; v = v->view.next) {
 			nr_arena_item_set_sensitive (v, item->sensitive);
 		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_SODIPODI_INVISIBLE:
+		item->visible = TRUE;
+		if (value && sp_svg_boolean_read (value, &bval)) {
+			item->visible = !bval;
+		}
+		for (v = item->display; v != NULL; v = v->view.next) {
+			if (!(v->view.flags & SP_ITEM_SHOW_PRINT)) {
+				nr_arena_item_set_visible (v, item->visible);
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_NONPRINTABLE:
-		item->printable = !value;
+		item->printable = TRUE;
+		if (value && sp_svg_boolean_read (value, &bval)) {
+			item->printable = !bval;
+		}
 		for (v = item->display; v != NULL; v = v->view.next) {
 			if (v->view.flags & SP_ITEM_SHOW_PRINT) {
 				nr_arena_item_set_visible (v, item->printable);
 			}
 		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_STYLE:
 		sp_style_read_from_object (object->style, object);
@@ -579,6 +598,8 @@ sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned in
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (flags & SP_ITEM_SHOW_PRINT) {
 			nr_arena_item_set_visible (ai, item->printable);
+		} else {
+			nr_arena_item_set_visible (ai, item->visible);
 		}
 		if (item->clip) {
 			NRArenaItem *ac;

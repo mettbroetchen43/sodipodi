@@ -49,6 +49,10 @@ enum {
 	MODIFIED,
 	URI_SET,
 	RESIZED,
+	OBJECT_ADDED,
+	OBJECT_REMOVED,
+	ORDER_CHANGED,
+	OBJECT_MODIFIED,
 	BEGIN,
 	END,
 	LAST_SIGNAL
@@ -132,6 +136,38 @@ sp_document_class_init (SPDocumentClass * klass)
 					    sp_marshal_NONE__DOUBLE_DOUBLE,
 					    G_TYPE_NONE, 2,
 					    G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+	signals[OBJECT_ADDED] = g_signal_new ("object_added",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, object_added),
+					    NULL, NULL,
+					    sp_marshal_NONE__OBJECT_OBJECT,
+					    G_TYPE_NONE, 2,
+					    G_TYPE_OBJECT, G_TYPE_OBJECT);
+	signals[OBJECT_REMOVED] = g_signal_new ("object_removed",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, object_removed),
+					    NULL, NULL,
+					    sp_marshal_NONE__OBJECT_OBJECT,
+					    G_TYPE_NONE, 2,
+					    G_TYPE_OBJECT, G_TYPE_OBJECT);
+	signals[ORDER_CHANGED] = g_signal_new ("order_changed",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, order_changed),
+					    NULL, NULL,
+					    sp_marshal_NONE__OBJECT_OBJECT_OBJECT,
+					    G_TYPE_NONE, 3,
+					    G_TYPE_OBJECT, G_TYPE_OBJECT, G_TYPE_OBJECT);
+	signals[OBJECT_MODIFIED] = g_signal_new ("object_modified",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPDocumentClass, object_modified),
+					    NULL, NULL,
+					    sp_marshal_NONE__POINTER_UINT,
+					    G_TYPE_NONE, 2,
+					    G_TYPE_POINTER, G_TYPE_UINT);
 	signals[BEGIN] =      g_signal_new ("begin",
 					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
@@ -140,7 +176,7 @@ sp_document_class_init (SPDocumentClass * klass)
 					    sp_marshal_NONE__DOUBLE,
 					    G_TYPE_NONE, 1,
 					    G_TYPE_DOUBLE);
-	signals[BEGIN] =      g_signal_new ("end",
+	signals[END] =        g_signal_new ("end",
 					    G_TYPE_FROM_CLASS (klass),
 					    G_SIGNAL_RUN_FIRST,
 					    G_STRUCT_OFFSET (SPDocumentClass, end),
@@ -415,6 +451,43 @@ sp_document_unref (SPDocument *doc)
 	return NULL;
 }
 
+/* Tree mutation signals */
+
+void
+sp_document_set_object_signals (SPDocument *doc, unsigned int enable)
+{
+	if (enable) {
+		doc->object_signals += 1;
+	} else {
+		g_return_if_fail (doc->object_signals > 0);
+		doc->object_signals -= 1;
+	}
+}
+
+void
+sp_document_invoke_object_added (SPDocument *doc, SPObject *parent, SPObject *ref)
+{
+	g_signal_emit (G_OBJECT (doc), signals [OBJECT_ADDED], 0, parent, ref);
+}
+
+void
+sp_document_invoke_object_removed (SPDocument *doc, SPObject *parent, SPObject *ref)
+{
+	g_signal_emit (G_OBJECT (doc), signals [OBJECT_REMOVED], 0, parent, ref);
+}
+
+void
+sp_document_invoke_order_changed (SPDocument *doc, SPObject *parent, SPObject *oldref, SPObject *ref)
+{
+	g_signal_emit (G_OBJECT (doc), signals [ORDER_CHANGED], 0, parent, oldref, ref);
+}
+
+void
+sp_document_invoke_object_modified (SPDocument *doc, SPObject *object, unsigned int flags)
+{
+	g_signal_emit (G_OBJECT (doc), signals [OBJECT_MODIFIED], 0, object, flags);
+}
+
 gdouble
 sp_document_width (SPDocument * document)
 {
@@ -633,89 +706,6 @@ sp_document_object_sequence_get (SPDocument *doc, SPObject *object)
 
 	return seq;
 }
-
-#if 0
-/*
- * Return list of items, contained in box
- *
- * Assumes box is normalized (and g_asserts it!)
- *
- */
-
-GSList *
-sp_document_items_in_box (SPDocument *document, NRRectD *box)
-{
-	SPGroup * group;
-	SPItem * child;
-	SPObject * o;
-	NRRectF b;
-	GSList * s;
-
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->priv != NULL, NULL);
-	g_return_val_if_fail (box != NULL, NULL);
-
-	group = SP_GROUP (document->root);
-
-	s = NULL;
-
-	for (o = ((SPObject *) group)->children; o != NULL; o = o->next) {
-		if (SP_IS_ITEM (o)) {
-			child = SP_ITEM (o);
-			sp_item_bbox_desktop (child, &b);
-			if ((b.x0 > box->x0) && (b.x1 < box->x1) &&
-			    (b.y0 > box->y0) && (b.y1 < box->y1)) {
-				s = g_slist_append (s, child);
-			}
-		}
-	}
-
-	return s;
-}
-
-/*
- * Return list of items, that the parts of the item contained in box
- *
- * Assumes box is normalized (and g_asserts it!)
- *
- */
-
-GSList *
-sp_document_partial_items_in_box (SPDocument *document, NRRectD *box)
-{
-	SPGroup * group;
-	SPItem * child;
-	SPObject * o;
-	NRRectF b;
-	GSList * s;
-
-	g_return_val_if_fail (document != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->priv != NULL, NULL);
-	g_return_val_if_fail (box != NULL, NULL);
-
-	group = SP_GROUP (document->root);
-
-	s = NULL;
-
-	for (o = ((SPObject *) group)->children; o != NULL; o = o->next) {
-		if (SP_IS_ITEM (o)) {
-			child = SP_ITEM (o);
-			sp_item_bbox_desktop (child, &b);
-			if ((((b.x0 > box->x0) && (b.x0 < box->x1)) ||
-			     ((b.x1 > box->x0) && (b.x1 < box->x1)))
-			    &&
-			    (((b.y0 > box->y0) && (b.y0 < box->y1)) ||
-			     ((b.y1 > box->y0) && (b.y1 < box->y1)))) {
-				s = g_slist_append (s, child);
-			}
-		}
-	}
-
-	return s;
-}
-#endif
 
 /* Resource management */
 

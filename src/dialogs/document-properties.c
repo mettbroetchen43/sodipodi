@@ -22,7 +22,7 @@
 
 #include <libarikkei/arikkei-strlib.h>
 
-#include <glib.h>
+#include <gtk/gtk.h>
 
 #include "macros.h"
 

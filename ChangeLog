@@ -1,3 +1,20 @@
+2004-02-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item.c (sp_item_set): Parse visibility
+	(sp_item_invoke_show): Use visibility
+
+	* src/sp-item.h: Added visibility
+
+	* src/attributes.h: Added sodipodi:invisible
+
+	* src/widgets/tree-store.h: New file
+
+	* src/widgets/tree-store.c: New file
+
+	* src/dialogs/document-tree.h: New file
+
+	* src/dialogs/document-tree.c: New file
+
 2004-02-29  Michael Schumacher <schumaml@cvs.gnome.org>
 
 	* autogen.sh: addedd check for automake-1.8
