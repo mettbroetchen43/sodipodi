@@ -201,7 +201,7 @@ msgstr "Razveljavi"
 
 #: glade/sodipodi-glade.c:54 glade/sodipodi-glade.c:55
 msgid "Redo"
-msgstr "Ponovi"
+msgstr "Obnovi"
 
 #: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:97
 msgid "Fill settings"
