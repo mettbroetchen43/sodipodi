@@ -1,3 +1,8 @@
+2002-12-03  Masatake YAMATO  <jet@gyve.org>
+
+	* tools-version.sh (TOOLS): Added automake-1.6 and
+	aclocal-1.6. Suggested by MenTaLguY.
+
 2002-12-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.h: Made scrolling offsets integers

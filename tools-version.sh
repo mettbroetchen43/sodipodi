@@ -5,7 +5,7 @@
 # distro web page: http://distro.pipfield.ca/ 
 
 # Please add a tool you want to check
-TOOLS="m4 automake autoheader aclocal autoconf intltoolize gettextize libtoolize "
+TOOLS="m4 autoconf autoheader automake automake-1.6 aclocal aclocal-1.6 intltoolize gettextize libtoolize "
 ENVPATTERN='PATH\|FLAGS\|LANG'
 
 srcdir=`dirname $0`
