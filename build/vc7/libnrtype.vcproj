@@ -51,19 +51,22 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\src;..\..\GnuWin32\include;..\..\GnuWin32\include\freetype2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="4"
+				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				WarningLevel="1"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -85,34 +88,6 @@
 		</Configuration>
 	</Configurations>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
-			<File
-				RelativePath="..\..\src\libnrtype\nr-font.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-glyphs.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-rasterfont.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-type-directory.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-type-ft2.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-type-primitives.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-type-w32.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libnrtype\nr-typeface.c">
-			</File>
-		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
@@ -144,6 +119,34 @@
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="..\..\src\libnrtype\nr-font.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-glyphs.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-rasterfont.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-type-directory.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-type-ft2.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-type-primitives.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-type-w32.c">
+			</File>
+			<File
+				RelativePath="..\..\src\libnrtype\nr-typeface.c">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

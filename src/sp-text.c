@@ -280,9 +280,7 @@ sp_string_calculate_dimensions (SPString *string)
 		spadv.y = 0.0;
 	}
 	spglyph = nr_typeface_lookup_default (face, ' ');
-	if (spglyph > 0) {
-		nr_font_glyph_advance_get (font, spglyph, &spadv);
-	}
+	nr_font_glyph_advance_get (font, spglyph, &spadv);
 
 	if (string->text) {
 		const guchar *p;
@@ -417,9 +415,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		spadv.y = 0.0;
 	}
 	spglyph = nr_typeface_lookup_default (face, ' ');
-	if (spglyph > 0) {
-		nr_font_glyph_advance_get (font, spglyph, &spadv);
-	}
+	nr_font_glyph_advance_get (font, spglyph, &spadv);
 
 	/* fixme: Find a way how to manipulate these */
 	x = cp->x;

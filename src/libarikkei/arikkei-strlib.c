@@ -322,7 +322,7 @@ arikkei_ucs2_utf8_strdup (const unsigned short *s)
 	unsigned char *d;
 	int len;
 	len = arikkei_ucs2_utf8_bytelen (s);
-	d = malloc (len * sizeof (unsigned char) + 1);
+	d = malloc ((len + 1) * sizeof (unsigned char));
 	arikkei_ucs2_utf8_strcpy (s, d);
 	return d;
 }

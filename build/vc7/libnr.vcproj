@@ -51,19 +51,22 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				AdditionalIncludeDirectories="..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;WITH_MMX"
 				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="4"
+				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				WarningLevel="1"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -237,8 +240,14 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_e.obj
-"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_e.obj"
+						Outputs="$(InputDir)\mmx_e.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_e.obj"
 						Outputs="$(InputDir)\mmx_e.obj"/>
 				</FileConfiguration>
 			</File>
@@ -248,8 +257,14 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_c.obj
-"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_c.obj"
+						Outputs="$(InputDir)\mmx_c.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_c.obj"
 						Outputs="$(InputDir)\mmx_c.obj"/>
 				</FileConfiguration>
 			</File>
@@ -259,8 +274,14 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_d.obj
-"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_d.obj"
+						Outputs="$(InputDir)\mmx_d.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_d.obj"
 						Outputs="$(InputDir)\mmx_d.obj"/>
 				</FileConfiguration>
 			</File>
@@ -270,8 +291,14 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_a.obj
-"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_a.obj"
+						Outputs="$(InputDir)\mmx_a.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_a.obj"
 						Outputs="$(InputDir)\mmx_a.obj"/>
 				</FileConfiguration>
 			</File>
@@ -281,8 +308,14 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_b.obj
-"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_b.obj"
+						Outputs="$(InputDir)\mmx_b.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_b.obj"
 						Outputs="$(InputDir)\mmx_b.obj"/>
 				</FileConfiguration>
 			</File>

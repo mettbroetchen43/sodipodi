@@ -169,7 +169,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 		open_path = g_dirname (filename);
 		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
 		sp_file_open (filename, NULL);
-		g_free (filename);
+		free (filename);
 	}
 #else
 	GtkFileSelection *fsel;
@@ -251,7 +251,7 @@ sp_file_save_dialog (SPDocument *doc)
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
 		save_path = g_strdup (save_path);
-		g_free (filename);
+		free (filename);
 	}
 #else
 	GtkFileSelection *fsel;
@@ -450,7 +450,7 @@ void sp_file_import (GtkWidget * widget)
 					     "All files|*|", _("Select file to import"));
 	if (filename) {
 		sp_file_do_import (doc, filename);
-		g_free (filename);
+		free (filename);
 	}
 #else
 	w = gtk_file_selection_new (_("Select file to import"));

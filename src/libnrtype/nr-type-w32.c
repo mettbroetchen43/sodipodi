@@ -537,8 +537,8 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
 	strncpy (name, fnutf8, fnlen);
 	name[fnlen] = ' ';
 	strncpy (name + fnlen + 1, styleutf8, stylelen);
-	g_free (styleutf8);
-	g_free (fnutf8);
+	free (styleutf8);
+	free (fnutf8);
 	name[fnlen + 1 + stylelen] = '\0';
 	/* g_print ("Trying '%s' %d\n", name, elfex->elfLogFont.lfCharSet); */
     if (!arikkei_dict_lookup (&namedict, name)) {

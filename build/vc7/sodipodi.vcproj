@@ -26,7 +26,7 @@
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
 				WarningLevel="1"
-				Detect64BitPortabilityProblems="FALSE"
+				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -62,26 +62,31 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="..\..\src;..\..\src\libpng;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				StringPooling="TRUE"
+				ExceptionHandling="FALSE"
 				RuntimeLibrary="4"
+				BufferSecurityCheck="TRUE"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				WarningLevel="1"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="unicows.lib libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
 				OutputFile="$(OutDir)/sodipodi.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\GnuWin32\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -1898,6 +1903,17 @@ GnuWin32\bin\msgfmt -o po\zh_CN.mo po\zh_CN.po
 				RelativePath="..\..\src\helper\sp-marshal.list">
 				<FileConfiguration
 					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\glib-genmarshal.exe --header --prefix=sp_marshal src\helper\sp-marshal.list &gt; src\helper\sp-marshal.h
+GnuWin32\bin\glib-genmarshal.exe --body --prefix=sp_marshal src\helper\sp-marshal.list &gt; src\helper\sp-marshal.c
+"
+						Outputs="..\..\src\helper\sp-marshal.c;..\..\src\helper\sp-marshal.h;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="cd ..\..

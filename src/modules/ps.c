@@ -133,8 +133,10 @@ sp_module_print_plain_finalize (GObject *object)
 	/* fixme: should really use pclose for popen'd streams */
 	if (gpmod->stream) fclose (gpmod->stream);
 
+#ifndef WIN32
 	/* restore default signal handling for SIGPIPE */
 	(void) signal(SIGPIPE, SIG_DFL);
+#endif
 
 	G_OBJECT_CLASS (print_plain_parent_class)->finalize (object);
 }
@@ -295,8 +297,10 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 			}
 		}
 		if (pmod->stream) {
+#ifndef WIN32
 			/* fixme: this is kinda icky */
 			(void) signal(SIGPIPE, SIG_IGN);
+#endif
 			ret = TRUE;
 		}
 	}
@@ -316,17 +320,17 @@ sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 
 	res = fprintf (pmod->stream, "%%!\n");
 	/* flush this to test output stream as early as possible */
-	if (fflush(pmod->stream)) {
-/*		g_print("caught error in sp_module_print_plain_begin\n");*/
-		if (ferror(pmod->stream)) {
+	if (fflush (pmod->stream)) {
+	/* g_print("caught error in sp_module_print_plain_begin\n");*/
+		if (ferror (pmod->stream)) {
 			g_print("Error %d on output stream: %s\n", errno,
 				g_strerror(errno));
 		}
-		g_print("Printing failed\n");
+		g_print ("Printing failed\n");
 		/* fixme: should use pclose() for pipes */
-		fclose(pmod->stream);
+		fclose (pmod->stream);
 		pmod->stream = NULL;
-		fflush(stdout);
+		fflush (stdout);
 		return 0;
 	}
 	pmod->width = sp_document_width (doc);

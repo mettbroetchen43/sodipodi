@@ -13,7 +13,11 @@
  */
 
 #include <png.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <glib.h>
+
 #include "png-write.h"
 
 /* This is an example of how to use libpng to read and write PNG files.
@@ -216,11 +220,19 @@ sp_png_write_rgba (const unsigned char *filename, const unsigned char *px, int w
 }
 #endif
 
+#ifdef WIN32
+#include <windows.h>
+#include <tchar.h>
+#endif
+
 int
 sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 			   int (* get_rows) (const unsigned char **rows, int row, int num_rows, void *data),
 			   void *data)
 {
+#ifdef WIN32
+	TCHAR *tfilename;
+#endif
 	FILE *fp;
 	png_structp png_ptr;
 	png_infop info_ptr;
@@ -231,8 +243,13 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 	g_return_val_if_fail (filename != NULL, FALSE);
 
 	/* open the file */
-
+#ifdef WIN32
+	tfilename = arikkei_utf8_ucs2_strdup (filename);
+	fp = _tfopen (tfilename, TEXT("wb"));
+	free (tfilename);
+#else
 	fp = fopen (filename, "wb");
+#endif
 	g_return_val_if_fail (fp != NULL, FALSE);
 
 	/* Create and initialize the png_struct with the desired error handler
