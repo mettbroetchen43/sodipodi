@@ -809,7 +809,7 @@ msgstr ""
 
 #: glade/sodipodi-glade.c:101 glade/toolbox.c:61
 msgid "Close dialog"
-msgstr ""
+msgstr "Закрити д╕алог"
 
 #: glade/sodipodi-glade.c:102 glade/toolbox.c:53
 msgid "Convert selected segments to lines"
@@ -821,7 +821,7 @@ msgstr "Стерти вибран╕ вузли"
 
 #: glade/sodipodi-glade.c:104
 msgid "Export picture to png"
-msgstr ""
+msgstr "Експортувати малюнок у PNG"
 
 #: glade/sodipodi-glade.c:105
 msgid "Set dimensions"
@@ -1485,15 +1485,15 @@ msgstr "Експортувати файл"
 #: src/file.c:383
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr ""
+msgstr "Sodipodi (документ %s..): Перегляд друку"
 
 #: src/sp-image.c:225
 msgid "Broken bitmap"
-msgstr ""
+msgstr "З╕псована б╕това мапа"
 
 #: src/sp-image.c:226
 msgid "Color bitmap"
-msgstr ""
+msgstr "Кольорова б╕това мапа"
 
 #: src/sp-item.c:168
 msgid "Unknown item :-("
@@ -1506,7 +1506,7 @@ msgstr "Зрупа з %d елемент╕в"
 
 #: src/sp-shape.c:278
 msgid "A path - whatever it means"
-msgstr ""
+msgstr "Контур - що б це не значило"
 
 #: src/sp-text.c:193
 msgid "Text object"
