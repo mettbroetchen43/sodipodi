@@ -121,8 +121,6 @@ GType sp_tspan_get_type (void);
 
 /* SPText */
 
-/* fixme: It should inherit from SPTSpan or SPBaseText class
-   and then share common feature. (oka326) */
 struct _SPText {
 	SPItem item;
 
