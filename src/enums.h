@@ -40,6 +40,13 @@ enum {
 	SP_CONTENT_UNITS_OBJECTBOUNDINGBOX
 };
 
+/* markerUnits */
+
+enum {
+	SP_MARKER_UNITS_STROKEWIDTH,
+	SP_MARKER_UNITS_USERSPACEONUSE
+};
+
 /* stroke-linejoin */
 
 enum {

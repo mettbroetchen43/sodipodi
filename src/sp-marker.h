@@ -32,6 +32,23 @@ typedef struct _SPMarkerClass SPMarkerClass;
 struct _SPMarker {
 	SPGroup group;
 
+	/* units */
+	unsigned int markerUnits_set : 1;
+	unsigned int markerUnits : 1;
+
+	/* reference point */
+	SPSVGLength refX;
+	SPSVGLength refY;
+
+	/* dimensions */
+	SPSVGLength markerWidth;
+	SPSVGLength markerHeight;
+
+	/* orient */
+	unsigned int orient_set : 1;
+	unsigned int orient_auto : 1;
+	float orient;
+
 	/* viewBox; */
 	unsigned int viewBox_set : 1;
 	NRRectD viewBox;

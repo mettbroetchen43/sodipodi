@@ -128,6 +128,9 @@ if test "x$with_gp" != "xno"; then
 		if test "x$with_gp" = "xyes"; then
 			dnl Gnome-print was explicitly asked, so stop
 			AC_MSG_ERROR([--with-gnome-print was specified, but appropriate libgnomeprint development packages could not found])
+		else 
+			# gp is no, tell us for the log file 
+			AC_MSG_RESULT($gp)
 		fi
 	fi
 else

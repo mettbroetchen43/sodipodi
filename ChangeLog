@@ -1,3 +1,7 @@
+2003-03-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-marker.c (sp_marker_set): Implement all attributes
+
 2003-03-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-object-repr.c (sp_object_type_lookup): Added marker type

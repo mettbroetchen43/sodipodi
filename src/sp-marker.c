@@ -26,10 +26,7 @@ static void sp_marker_class_init (SPMarkerClass *klass);
 static void sp_marker_init (SPMarker *marker);
 
 static void sp_marker_build (SPObject *object, SPDocument *document, SPRepr *repr);
-static void sp_marker_release (SPObject *object);
 static void sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value);
-static void sp_marker_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
-static void sp_marker_remove_child (SPObject *object, SPRepr *child);
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_marker_modified (SPObject *object, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
@@ -74,10 +71,7 @@ sp_marker_class_init (SPMarkerClass *klass)
 	parent_class = g_type_class_ref (SP_TYPE_GROUP);
 
 	sp_object_class->build = sp_marker_build;
-	sp_object_class->release = sp_marker_release;
 	sp_object_class->set = sp_marker_set;
-	sp_object_class->child_added = sp_marker_child_added;
-	sp_object_class->remove_child = sp_marker_remove_child;
 	sp_object_class->update = sp_marker_update;
 	sp_object_class->modified = sp_marker_modified;
 	sp_object_class->write = sp_marker_write;
@@ -105,22 +99,17 @@ sp_marker_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	group = (SPGroup *) object;
 	marker = (SPMarker *) object;
 
+	sp_object_read_attr (object, "markerUnits");
+	sp_object_read_attr (object, "refX");
+	sp_object_read_attr (object, "refY");
+	sp_object_read_attr (object, "markerWidth");
+	sp_object_read_attr (object, "markerHeight");
+	sp_object_read_attr (object, "orient");
 	sp_object_read_attr (object, "viewBox");
 	sp_object_read_attr (object, "preserveAspectRatio");
 
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
-}
-
-static void
-sp_marker_release (SPObject *object)
-{
-	SPMarker * marker;
-
-	marker = (SPMarker *) object;
-
-	if (((SPObjectClass *) parent_class)->release)
-		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void
@@ -133,7 +122,59 @@ sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value)
 	marker = SP_MARKER (object);
 
 	switch (key) {
+	case SP_ATTR_MARKERUNITS:
+		marker->markerUnits_set = FALSE;
+		marker->markerUnits = SP_MARKER_UNITS_STROKEWIDTH;
+		if (value) {
+			if (!strcmp (value, "strokeWidth")) {
+				marker->markerUnits_set = TRUE;
+			} else if (!strcmp (value, "userSpaceOnUse")) {
+				marker->markerUnits = SP_MARKER_UNITS_USERSPACEONUSE;
+				marker->markerUnits_set = TRUE;
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_REFX:
+		if (!sp_svg_length_read (value, &marker->refX)) {
+			sp_svg_length_unset (&marker->refX, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_REFY:
+		if (!sp_svg_length_read (value, &marker->refY)) {
+			sp_svg_length_unset (&marker->refX, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_MARKERWIDTH:
+		if (!sp_svg_length_read (value, &marker->markerWidth)) {
+			sp_svg_length_unset (&marker->markerWidth, SP_SVG_UNIT_NONE, 3.0, 3.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_MARKERHEIGHT:
+		if (!sp_svg_length_read (value, &marker->markerHeight)) {
+			sp_svg_length_unset (&marker->markerHeight, SP_SVG_UNIT_NONE, 3.0, 3.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_ORIENT:
+		marker->orient_set = FALSE;
+		marker->orient_auto = FALSE;
+		marker->orient = 0.0;
+		if (value) {
+			if (!strcmp (value, "auto")) {
+				marker->orient_auto = TRUE;
+				marker->orient_set = TRUE;
+			} else if (sp_svg_number_read_f (value, &marker->orient)) {
+				marker->orient_set = TRUE;
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
 	case SP_ATTR_VIEWBOX:
+		marker->viewBox_set = FALSE;
 		if (value) {
 			double x, y, width, height;
 			char *eptr;
@@ -155,11 +196,7 @@ sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value)
 				marker->viewBox.x1 = x + width;
 				marker->viewBox.y1 = y + height;
 				marker->viewBox_set = TRUE;
-			} else {
-				marker->viewBox_set = FALSE;
 			}
-		} else {
-			marker->viewBox_set = FALSE;
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		break;
@@ -228,30 +265,6 @@ sp_marker_set (SPObject *object, unsigned int key, const unsigned char *value)
 			((SPObjectClass *) parent_class)->set (object, key, value);
 		break;
 	}
-}
-
-static void
-sp_marker_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
-{
-	SPMarker *marker;
-	SPGroup *group;
-
-	marker = (SPMarker *) object;
-	group = (SPGroup *) object;
-
-	if (((SPObjectClass *) (parent_class))->child_added)
-		((SPObjectClass *) (parent_class))->child_added (object, child, ref);
-}
-
-static void
-sp_marker_remove_child (SPObject * object, SPRepr * child)
-{
-	SPMarker *marker;
-
-	marker = (SPMarker *) object;
-
-	if (((SPObjectClass *) (parent_class))->remove_child)
-		((SPObjectClass *) (parent_class))->remove_child (object, child);
 }
 
 static void
