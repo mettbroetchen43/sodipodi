@@ -143,7 +143,7 @@ sp_desktop_vertical_snap (SPDesktop *desktop, NRPointF *req)
 		}
 	}
 
-	dist = (snapped) ? fabs (actual.x - req->x) : 1e18;
+	dist = (snapped) ? fabs (actual.y - req->y) : 1e18;
 
 	*req = actual;
 
