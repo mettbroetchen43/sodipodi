@@ -66,7 +66,7 @@ SPCurve *
 sp_curve_new_from_bpath (ArtBpath *bpath)
 {
 	SPCurve *curve;
-
+	gint i;
 	g_return_val_if_fail (bpath != NULL, NULL);
 
 	if (!sp_bpath_good (bpath)) {
@@ -83,6 +83,8 @@ sp_curve_new_from_bpath (ArtBpath *bpath)
 	curve->bpath = bpath;
 	curve->length = sp_bpath_length (bpath);
 	curve->end = curve->length - 1;
+	for (i = curve->end; i > 0; i--) if ((curve->bpath[i].code == ART_MOVETO) || (curve->bpath[i].code == ART_MOVETO_OPEN)) break;
+	curve->substart = i;
 	curve->sbpath = FALSE;
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
@@ -635,7 +637,7 @@ sp_curve_reverse (SPCurve *curve)
 
   new_curve = sp_curve_new_sized (curve->length);
 
-  g_assert (bs->code == ART_MOVETO_OPEN);
+  g_assert (bs->code == ART_MOVETO_OPEN || bs->code == ART_MOVETO);
   g_assert ((be+1)->code == ART_END);
 
   sp_curve_moveto (new_curve, be->x3, be->y3);

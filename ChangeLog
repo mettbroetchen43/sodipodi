@@ -1,5 +1,10 @@
 2002-11-06  Masatake YAMATO  <jet@gyve.org>
 
+	* src/helper/curve.c (sp_curve_new_from_bpath): Initialize substart
+	field.
+	(sp_curve_reverse): assert if bs->code is ART_MOVETO_OPEN 
+	or ART_MOVETO.
+
 	Added functions that converts multiple items to curves.
 	* src/path-chemistry.c (sp_selected_item_to_curved_repr): 
 	Use sp_selected_item_to_curved_repr0.
