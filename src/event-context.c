@@ -149,7 +149,13 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 
 	switch (event->type) {
 	case GDK_2BUTTON_PRESS:
-		sp_desktop_dialog (NULL, NULL);
+		if (panning) {
+			panning = 0;
+			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
+			ret = TRUE;
+		} else {
+			sp_desktop_dialog (NULL, NULL);
+		}
 		break;
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {
@@ -183,8 +189,16 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (panning) {
-			sp_desktop_scroll_world (event_context->desktop, event->motion.x - s.x, event->motion.y - s.y);
-			ret = TRUE;
+			if (((panning == 2) && !(event->motion.state & GDK_BUTTON2_MASK)) ||
+			    ((panning == 3) && !(event->motion.state & GDK_BUTTON3_MASK))) {
+				/* Gdk seems to lose button release for us sometimes :-( */
+				panning = 0;
+				sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
+				ret = TRUE;
+			} else {
+				sp_desktop_scroll_world (event_context->desktop, event->motion.x - s.x, event->motion.y - s.y);
+				ret = TRUE;
+			}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:

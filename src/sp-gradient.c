@@ -1698,11 +1698,19 @@ sp_radialgradient_set (SPObject *object, unsigned int key, const unsigned char *
 		if (!sp_svg_length_read (value, &rg->cx)) {
 			sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
+		if (!rg->fx.set) {
+			rg->fx.value = rg->cx.value;
+			rg->fx.computed = rg->cx.computed;
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_CY:
 		if (!sp_svg_length_read (value, &rg->cy)) {
 			sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+		}
+		if (!rg->fy.set) {
+			rg->fy.value = rg->cy.value;
+			rg->fy.computed = rg->cy.computed;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
@@ -1714,13 +1722,13 @@ sp_radialgradient_set (SPObject *object, unsigned int key, const unsigned char *
 		break;
 	case SP_ATTR_FX:
 		if (!sp_svg_length_read (value, &rg->fx)) {
-			sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+			sp_svg_length_unset (&rg->fx, rg->cx.unit, rg->cx.value, rg->cx.computed);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_FY:
 		if (!sp_svg_length_read (value, &rg->fy)) {
-			sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+			sp_svg_length_unset (&rg->fy, rg->cy.unit, rg->cy.value, rg->cy.computed);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;

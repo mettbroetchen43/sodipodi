@@ -197,7 +197,9 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 
 	switch (event->type) {
 	case GDK_2BUTTON_PRESS:
-		ret = TRUE;
+		if (event->button.button == 1) {
+			ret = TRUE;
+		}
 		break;
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
