@@ -92,12 +92,20 @@ nr_canvas_item_new (NRCanvasItem * parent, GtkType type)
 	if (((NRCanvasClass *) ((GtkObject *) canvas)->klass)->create_item) {
 		item = (* ((NRCanvasClass *) ((GtkObject *) canvas)->klass)->create_item) (canvas, parent, type);
 	} else {
+		/* fixme: */
 		item = gtk_type_new (type);
 	}
 
-	item->canvas = canvas;
+	if (((NRCanvasItemClass *) ((GtkObject *) parent)->klass)->add_child) {
+		(* ((NRCanvasItemClass *) ((GtkObject *) parent)->klass)->add_child) (parent, item, -1);
+	} else {
+		/* Every container HAS TO implement ::add_child () */
+		g_assert_not_reached ();
+	}
 
-	/* parent-child relationship */
+	item->canvas = canvas;
+	/* fixme: */
+	gtk_object_unref ((GtkObject *) item);
 
 	return item;
 }

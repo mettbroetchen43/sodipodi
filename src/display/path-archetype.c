@@ -1,5 +1,6 @@
 #define SP_PATH_ARCHETYPE_C
 
+#include <config.h>
 #include <math.h>
 #include <glib.h>
 #include <libart_lgpl/art_misc.h>

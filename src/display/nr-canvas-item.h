@@ -22,18 +22,26 @@ typedef struct _NRCanvasItemClass NRCanvasItemClass;
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
+#include "nr-primitives.h"
 #include "nr-canvas.h"
 
 struct _NRCanvasItem {
 	GtkObject object;
 	NRCanvas * canvas;
 	NRCanvasItem * parent;
+	NRIRect bbox;
+	NRAffine * transform;
 };
 
 struct _NRCanvasItemClass {
 	GtkObjectClass parent_class;
+	/* To be used by NRCanvas */
+	void (* add_child) (NRCanvasItem * item, NRCanvasItem * child, gint position);
+	void (* remove_child) (NRCanvasItem * item, NRCanvasItem * child);
 };
 
 GtkType nr_canvas_item_get_type (void);
+
+void nr_canvas_item_set_transform (NRCanvasItem * item, NRAffine * transform);
 
 #endif
