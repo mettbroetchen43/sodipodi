@@ -1,11 +1,14 @@
 #define SP_ROOT_C
 
+#include "document.h"
+#include "sp-namedview.h"
 #include "sp-root.h"
 
 enum {
 	ARG_0,
 	ARG_WIDTH,
-	ARG_HEIGHT
+	ARG_HEIGHT,
+	ARG_NAMEDVIEWS
 };
 
 #define SP_SVG_DEFAULT_WIDTH 595.27
@@ -18,6 +21,8 @@ static void sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id);
 
 static void sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_root_read_attr (SPObject * object, const gchar * key);
+static void sp_root_add_child (SPObject * object, SPRepr * child);
+static void sp_root_remove_child (SPObject * object, SPRepr * child);
 
 static void sp_root_print (SPItem * item, GnomePrintContext * gpc);
 
@@ -58,12 +63,15 @@ sp_root_class_init (SPRootClass *klass)
 
 	gtk_object_add_arg_type ("SPRoot::width", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_WIDTH);
 	gtk_object_add_arg_type ("SPRoot::height", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_HEIGHT);
+	gtk_object_add_arg_type ("SPRoot::namedviews", GTK_TYPE_POINTER, GTK_ARG_READABLE, ARG_NAMEDVIEWS);
 
 	gtk_object_class->destroy = sp_root_destroy;
 	gtk_object_class->get_arg = sp_root_get_arg;
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->read_attr = sp_root_read_attr;
+	sp_object_class->add_child = sp_root_add_child;
+	sp_object_class->remove_child = sp_root_remove_child;
 
 	item_class->print = sp_root_print;
 }
@@ -83,6 +91,8 @@ sp_root_destroy (GtkObject *object)
 
 	root = (SPRoot *) object;
 
+	g_slist_free (root->namedviews);
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -101,6 +111,9 @@ sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id)
 	case ARG_HEIGHT:
 		GTK_VALUE_DOUBLE (* arg) = root->height;
 		break;
+	case ARG_NAMEDVIEWS:
+		GTK_VALUE_POINTER (* arg) = root->namedviews;
+		break;
 	default:
 		arg->type = GTK_TYPE_INVALID;
 		break;
@@ -110,11 +123,26 @@ sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id)
 static void
 sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
+	SPGroup * group;
+	SPRoot * root;
+	GSList * l;
+
+	group = (SPGroup *) object;
+	root = (SPRoot *) object;
+
 	if (((SPObjectClass *) parent_class)->build)
 		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
 
 	sp_root_read_attr (object, "width");
 	sp_root_read_attr (object, "height");
+
+	for (l = group->other; l != NULL; l = l->next) {
+		if (SP_IS_NAMEDVIEW (l->data)) {
+			root->namedviews = g_slist_prepend (root->namedviews, l->data);
+		}
+	}
+
+	root->namedviews = g_slist_reverse (root->namedviews);
 }
 
 static void
@@ -144,6 +172,51 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 
 	if (((SPObjectClass *) parent_class)->read_attr)
 		(* ((SPObjectClass *) parent_class)->read_attr) (object, key);
+}
+
+static void
+sp_root_add_child (SPObject * object, SPRepr * child)
+{
+	SPRoot * root;
+	SPObject * co;
+	const gchar * id;
+
+	root = (SPRoot *) object;
+
+	if (SP_OBJECT_CLASS (parent_class)->add_child)
+		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
+
+	/* Hope, parent invoked children's ::build method */
+
+	id = sp_repr_attr (child, "id");
+	co = sp_document_lookup_id (object->document, id);
+	g_assert (co != NULL);
+
+	if (SP_IS_NAMEDVIEW (co)) {
+		root->namedviews = g_slist_append (root->namedviews, co);
+	}
+}
+
+static void
+sp_root_remove_child (SPObject * object, SPRepr * child)
+{
+	SPRoot * root;
+	SPObject * co;
+	const gchar * id;
+
+	root = (SPRoot *) object;
+
+	id = sp_repr_attr (child, "id");
+	co = sp_document_lookup_id (object->document, id);
+	g_assert (co != NULL);
+
+	if (SP_IS_NAMEDVIEW (co)) {
+		root->namedviews = g_slist_remove (root->namedviews, co);
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->remove_child)
+		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
+
 }
 
 static void

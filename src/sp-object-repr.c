@@ -1,5 +1,6 @@
 #define SP_OBJECT_REPR_C
 
+#include "document.h"
 #include "sp-item.h"
 #include "sp-defs.h"
 #include "sp-root.h"

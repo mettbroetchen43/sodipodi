@@ -53,6 +53,7 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 {
 	SPEmbeddableDesktop * desktop;
 	Bonobo_Embeddable corba_desktop;
+	SPNamedView * namedview;
 
 	desktop = gtk_type_new (SP_EMBEDDABLE_DESKTOP_TYPE);
 
@@ -64,7 +65,13 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	}
 
 	desktop->document = SP_EMBEDDABLE_DOCUMENT (embeddable);
-	desktop->desktop = sp_desktop_new (desktop->document->document);
+
+	/* Create SPesktop */
+
+	namedview = sp_document_namedview (desktop->document->document, NULL);
+	g_assert (namedview != NULL);
+
+	desktop->desktop = sp_desktop_new (desktop->document->document, namedview);
 
 	/* Hide scrollbars and rulers */
 

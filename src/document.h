@@ -11,11 +11,6 @@
  *
  */
 
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkobject.h>
-#include <libart_lgpl/art_rect.h>
-#include "xml/repr.h"
-
 typedef enum {
 	SPXMinYMin,
 	SPXMidYMin,
@@ -60,6 +55,12 @@ typedef struct _SPDocumentPrivate SPDocumentPrivate;
 #define SP_IS_DOCUMENT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
 #define SP_IS_DOCUMENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DOCUMENT))
 
+#include <gtk/gtktypeutils.h>
+#include <gtk/gtkobject.h>
+#include <libart_lgpl/art_rect.h>
+#include "xml/repr.h"
+#include "sp-namedview.h"
+
 struct _SPDocument {
 	GtkObject object;
 
@@ -93,6 +94,9 @@ gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);
 const gchar * sp_document_uri (SPDocument * document);
 const gchar * sp_document_base (SPDocument * document);
+
+const GSList * sp_document_namedview_list (SPDocument * document);
+SPNamedView * sp_document_namedview (SPDocument * document, const gchar * name);
 
 /*
  * Dictionary

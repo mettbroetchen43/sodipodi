@@ -9,6 +9,7 @@
  *
  */
 
+#include "document.h"
 #include "sp-object.h"
 
 static void sp_object_class_init (SPObjectClass * klass);

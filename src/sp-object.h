@@ -10,14 +10,16 @@
  *
  */
 
-#include <gtk/gtktypeutils.h>
-#include "xml/repr.h"
-#include "document.h"
-
 #ifndef SP_OBJECT_DEFINED
 #define SP_OBJECT_DEFINED
 typedef struct _SPObject SPObject;
 typedef struct _SPObjectClass SPObjectClass;
+#endif
+
+#ifndef SP_DOCUMENT_DEFINED
+#define SP_DOCUMENT_DEFINED
+typedef struct _SPDocument SPDocument;
+typedef struct _SPDocumentClass SPDocumentClass;
 #endif
 
 #define SP_TYPE_OBJECT            (sp_object_get_type ())
@@ -25,6 +27,10 @@ typedef struct _SPObjectClass SPObjectClass;
 #define SP_OBJECT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
 #define SP_IS_OBJECT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
 #define SP_IS_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
+
+#include <gtk/gtktypeutils.h>
+#include <gtk/gtkobject.h>
+#include "xml/repr.h"
 
 struct _SPObject {
 	GtkObject object;

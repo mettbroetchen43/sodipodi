@@ -11,8 +11,6 @@
  *
  */
 
-#include "sp-object-group.h"
-
 typedef struct _SPNamedView SPNamedView;
 typedef struct _SPNamedViewClass SPNamedViewClass;
 
@@ -22,11 +20,15 @@ typedef struct _SPNamedViewClass SPNamedViewClass;
 #define SP_IS_NAMEDVIEW(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_NAMEDVIEW))
 #define SP_IS_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
+#include <libgnomeui/gnome-canvas.h>
+#include "sp-object-group.h"
+
 struct _SPNamedView {
 	SPObjectGroup objectgroup;
 	gboolean editable;
 	GSList * hguides;
 	GSList * vguides;
+	GSList * views;
 };
 
 struct _SPNamedViewClass {
@@ -34,5 +36,7 @@ struct _SPNamedViewClass {
 };
 
 GtkType sp_namedview_get_type (void);
+
+void sp_namedview_show (SPNamedView * namedview, GnomeCanvasGroup * group);
 
 #endif

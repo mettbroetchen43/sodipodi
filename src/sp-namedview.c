@@ -1,5 +1,6 @@
 #define SP_NAMEDVIEW_C
 
+#include "document.h"
 #include "sp-guide.h"
 #include "sp-namedview.h"
 
@@ -130,6 +131,7 @@ sp_namedview_add_child (SPObject * object, SPRepr * child)
 	SPNamedView * nv;
 	SPObject * no;
 	const gchar * id;
+	GSList * l;
 
 	nv = (SPNamedView *) object;
 
@@ -148,6 +150,9 @@ sp_namedview_add_child (SPObject * object, SPRepr * child)
 			nv->hguides = g_slist_prepend (nv->hguides, g);
 		} else {
 			nv->vguides = g_slist_prepend (nv->hguides, g);
+		}
+		for (l = nv->views; l != NULL; l = l->next) {
+			sp_guide_show (g, GNOME_CANVAS_GROUP (l->data));
 		}
 	}
 }
@@ -179,3 +184,21 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 	if (((SPObjectClass *) (parent_class))->remove_child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 }
+
+void
+sp_namedview_show (SPNamedView * namedview, GnomeCanvasGroup * group)
+{
+	GSList * l;
+
+	for (l = namedview->hguides; l != NULL; l = l->next) {
+g_print ("show h\n");
+		sp_guide_show (SP_GUIDE (l->data), group);
+	}
+
+	for (l = namedview->vguides; l != NULL; l = l->next) {
+g_print ("show v\n");
+		sp_guide_show (SP_GUIDE (l->data), group);
+	}
+}
+
+

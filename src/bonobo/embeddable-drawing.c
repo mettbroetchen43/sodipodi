@@ -1,6 +1,7 @@
 #define SP_EMBEDDABLE_DRAWING_C
 
 #include "../sp-item.h"
+#include "../document.h"
 #include "canvas-translator.h"
 #include "embeddable-drawing.h"
 

@@ -1,5 +1,13 @@
 2000-07-01  Lauris Kaplinski  <lauris@helixcode.com>
 
+	* src/sp-namedview.c (and everywhere else): Guides are visible,
+	  although not functional yet.
+
+	* src/desktop.c (sp_desktop_new): Use document + namedview
+	  combination for creating desktop.
+
+2000-07-01  Lauris Kaplinski  <lauris@helixcode.com>
+
 	* src/file.c (sp_do_file_print_preview): Don't use FRGBA, as
 	  print preview can handle alpha itself
 

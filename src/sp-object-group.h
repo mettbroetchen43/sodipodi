@@ -11,8 +11,6 @@
  *
  */
 
-#include "sp-object.h"
-
 typedef struct _SPObjectGroup SPObjectGroup;
 typedef struct _SPObjectGroupClass SPObjectGroupClass;
 
@@ -21,6 +19,8 @@ typedef struct _SPObjectGroupClass SPObjectGroupClass;
 #define SP_OBJECTGROUP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECTGROUP, SPObjectGroupClass))
 #define SP_IS_OBJECTGROUP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECTGROUP))
 #define SP_IS_OBJECTGROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECTGROUP))
+
+#include "sp-object.h"
 
 struct _SPObjectGroup {
 	SPObject object;

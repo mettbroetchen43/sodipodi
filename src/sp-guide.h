@@ -10,6 +10,7 @@
  *
  */
 
+#include <libgnomeui/gnome-canvas.h>
 #include "sp-object.h"
 
 typedef enum {
@@ -30,6 +31,7 @@ struct _SPGuide {
 	SPObject object;
 	SPGuideOrientation orientation;
 	gdouble position;
+	GSList * views;
 };
 
 struct _SPGuideClass {
@@ -37,6 +39,8 @@ struct _SPGuideClass {
 };
 
 GtkType sp_guide_get_type (void);
+
+void sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group);
 
 gint sp_guide_compare (gconstpointer a, gconstpointer b);
 

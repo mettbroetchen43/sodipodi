@@ -177,6 +177,16 @@ sp_document_new (const gchar * uri)
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
 	}
 
+	/* Namedviews */
+
+	if (!document->private->root->namedviews) {
+		SPRepr * r;
+		r = sp_repr_new ("sodipodi:namedview");
+		sp_repr_set_attr (r, "id", "base");
+		sp_repr_add_child (rroot, r, 0);
+		g_assert (document->private->root->namedviews);
+	}
+
 	return document;
 }
 
@@ -217,6 +227,16 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	document->private->root = SP_ROOT (object);
 
 	/* fixme: docbase */
+
+	/* Namedviews */
+
+	if (!document->private->root->namedviews) {
+		SPRepr * r;
+		r = sp_repr_new ("sodipodi:namedview");
+		sp_repr_set_attr (r, "id", "base");
+		sp_repr_add_child (rroot, r, 0);
+		g_assert (document->private->root->namedviews);
+	}
 
 	return document;
 }
@@ -297,6 +317,43 @@ sp_document_base (SPDocument * document)
 	g_return_val_if_fail (document->private != NULL, NULL);
 
 	return document->private->base;
+}
+
+/* named views */
+
+const GSList *
+sp_document_namedview_list (SPDocument * document)
+{
+	const GSList * l;
+
+	g_return_val_if_fail (document != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+
+	gtk_object_get (GTK_OBJECT (document->private->root), "namedviews", &l, NULL);
+	g_assert (l != NULL);
+
+	return l;
+}
+
+SPNamedView *
+sp_document_namedview (SPDocument * document, const gchar * id)
+{
+	const GSList * nvl, * l;
+
+	g_return_val_if_fail (document != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+
+	gtk_object_get (GTK_OBJECT (document->private->root), "namedviews", &nvl, NULL);
+	g_assert (nvl != NULL);
+
+	if (id == NULL) return SP_NAMEDVIEW (nvl->data);
+
+	for (l = nvl; l != NULL; l = l->next) {
+		if (strcmp (id, SP_OBJECT (l->data)->id) == 0)
+			return SP_NAMEDVIEW (l->data);
+	}
+
+	return NULL;
 }
 
 void

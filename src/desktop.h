@@ -11,12 +11,11 @@
  *
  */
 
-#include <gtk/gtk.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-appbar.h>
-#include "document.h"
-#include "selection.h"
-#include "event-context.h"
+#ifndef SP_DESKTOP_DEFINED
+#define SP_DESKTOP_DEFINED
+typedef struct _SPDesktop SPDesktop;
+typedef struct _SPDesktopClass SPDesktopClass;
+#endif
 
 #define SP_TYPE_DESKTOP            (sp_desktop_get_type ())
 #define SP_DESKTOP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DESKTOP, SPDesktop))
@@ -24,11 +23,12 @@
 #define SP_IS_DESKTOP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DESKTOP))
 #define SP_IS_DESKTOP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DESKTOP))
 
-#ifndef SP_DESKTOP_DEFINED
-#define SP_DESKTOP_DEFINED
-typedef struct _SPDesktop SPDesktop;
-typedef struct _SPDesktopClass SPDesktopClass;
-#endif
+#include <gtk/gtk.h>
+#include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-appbar.h>
+#include "document.h"
+#include "selection.h"
+#include "event-context.h"
 
 struct _SPDesktop {
 	GtkEventBox eventbox;
@@ -40,6 +40,7 @@ struct _SPDesktop {
 	GtkRuler * vruler;
 
 	SPDocument * document;
+	SPNamedView * namedview;
 	SPSelection * selection;
 	SPEventContext * event_context;
 	GnomeCanvas * canvas;
@@ -63,7 +64,7 @@ GtkType sp_desktop_get_type (void);
 
 /* Constructor */
 
-SPDesktop * sp_desktop_new (SPDocument * document);
+SPDesktop * sp_desktop_new (SPDocument * document, SPNamedView * namedview);
 
 /* Show/hide rulers & scrollbars */
 

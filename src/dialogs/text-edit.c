@@ -8,6 +8,7 @@
 #include "../mdi-desktop.h"
 #include "../selection.h"
 #include "../desktop-handles.h"
+#include "../document.h"
 #include "text-edit.h"
 
 static void sp_text_read_selection (void);

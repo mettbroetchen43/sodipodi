@@ -20,6 +20,7 @@ struct _SPDocumentPrivate {
 	GSList * namedviews;	/* Our NamedViews */
 
 	/* State */
+
 	guint sensitive: 1;	/* If we save actions to undo stack */
 	GSList * undo;		/* Undo stack of reprs */
 	GSList * redo;		/* Redo stack of reprs */

@@ -7,6 +7,7 @@
 #include "../mdi-desktop.h"
 #include "../selection.h"
 #include "../desktop-handles.h"
+#include "../document.h"
 #include "object-stroke.h"
 
 static void apply_stroke (void);

@@ -1,5 +1,6 @@
 #define SP_GUIDE_C
 
+#include "helper/sp-guide.h"
 #include "sp-guide.h"
 
 static void sp_guide_class_init (SPGuideClass * klass);
@@ -62,6 +63,8 @@ sp_guide_destroy (GtkObject * object)
 
 	guide = (SPGuide *) object;
 
+	/* fixme: destroy views */
+
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
@@ -101,6 +104,23 @@ sp_guide_read_attr (SPObject * object, const gchar * key)
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
+}
+
+void
+sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group)
+{
+	GnomeCanvasItem * item;
+
+	item = gnome_canvas_item_new (group,
+		SP_TYPE_GUIDELINE,
+		"orientation", guide->orientation,
+		NULL);
+
+	g_assert (item != NULL);
+
+	sp_guideline_moveto ((SPGuideLine *) item, guide->position, guide->position);
+
+	guide->views = g_slist_prepend (guide->views, item);
 }
 
 gint

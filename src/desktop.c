@@ -8,7 +8,8 @@
  * For both Canvas and SVG the coordinate space has to be flipped - this
  *   is normally done by SPRoot item.
  * SPRoot is the only child of SPDesktop->main canvas group and should be
- *   the parent of all "normal" drawing items
+ *   the parent of all "normal" drawing items - this is quite normal, as
+ *   SPRoot is rendered from <svg> node.
  *
  */
 
@@ -79,6 +80,7 @@ static void
 sp_desktop_init (SPDesktop * desktop)
 {
 	desktop->document = NULL;
+	desktop->namedview = NULL;
 	desktop->selection = NULL;
 	desktop->canvas = NULL;
 	desktop->acetate = NULL;
@@ -172,7 +174,7 @@ sp_desktop_destroy (GtkObject * object)
 /* Constructor */
 
 SPDesktop *
-sp_desktop_new (SPDocument * document)
+sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 {
 	SPDesktop * desktop;
 	GtkStyle * style;
@@ -183,6 +185,8 @@ sp_desktop_new (SPDocument * document)
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (namedview != NULL, NULL);
+	g_return_val_if_fail (SP_IS_NAMEDVIEW (namedview), NULL);
 
 	/* Setup widget */
 
@@ -192,6 +196,8 @@ sp_desktop_new (SPDocument * document)
 
 	desktop->document = document;
 	gtk_object_ref (GTK_OBJECT (document));
+
+	desktop->namedview = namedview;
 
 	/* Setup Canvas */
 	gtk_object_set_data (GTK_OBJECT (desktop->canvas), "SPDesktop", desktop);
@@ -252,6 +258,8 @@ sp_desktop_new (SPDocument * document)
 	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->canvas), vadj);
 
 	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
+
+	sp_namedview_show (desktop->namedview, desktop->guides);
 
 	return desktop;
 }

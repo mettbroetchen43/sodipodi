@@ -105,11 +105,15 @@ static GtkWidget *
 sp_mdi_child_create_view (GnomeMDIChild * mdi_child, gpointer data)
 {
 	SPMDIChild * app_child;
+	SPNamedView * namedview;
 	GtkWidget * desktop;
 
 	app_child = SP_MDI_CHILD (mdi_child);
 
-	desktop = (GtkWidget *) sp_desktop_new (app_child->document);
+	namedview = sp_document_namedview (app_child->document, NULL);
+	g_assert (namedview != NULL);
+
+	desktop = (GtkWidget *) sp_desktop_new (app_child->document, namedview);
 
 	return desktop;
 }
