@@ -299,6 +299,7 @@ sp_use_show (SPItem *item, NRArena *arena)
 		ac = sp_item_show (use->child, arena);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
+			gtk_object_unref (GTK_OBJECT(ac));
 		}
 		return ai;
 	}
@@ -359,6 +360,7 @@ sp_use_href_changed (SPUse * use)
 					ai = sp_item_show (SP_ITEM (childobj), v->arena);
 					if (ai) {
 						nr_arena_item_add_child (v->arenaitem, ai, NULL);
+						gtk_object_unref (GTK_OBJECT(ai));
 					}
 				}
 			}

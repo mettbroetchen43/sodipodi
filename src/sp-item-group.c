@@ -190,6 +190,7 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 			ac = sp_item_show (SP_ITEM (ochild), v->arena);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
+				gtk_object_unref (GTK_OBJECT(ac));
 				nr_arena_item_set_order (ac, position);
 			}
 		}
@@ -441,6 +442,7 @@ sp_group_show (SPItem *item, NRArena *arena)
 			ac = sp_item_show (child, arena);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
+				gtk_object_unref (GTK_OBJECT(ac));
 				ar = ac;
 			}
 		}

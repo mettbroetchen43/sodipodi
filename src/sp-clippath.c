@@ -104,6 +104,7 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena)
 			ac = sp_item_show (SP_ITEM (child), arena);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
+				gtk_object_unref (GTK_OBJECT(ac));
 				ar = ac;
 			}
 		}
