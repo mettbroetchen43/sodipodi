@@ -30,7 +30,7 @@ struct _NRArenaGlyphs {
 	NRArenaItem item;
 
 	/* Glyphs data */
-	SPCurve *curve;
+	NRPath *path;
 	SPStyle *style;
 	NRMatrixF transform;
 	NRFont *font;
@@ -49,7 +49,7 @@ struct _NRArenaGlyphsClass {
 unsigned int nr_arena_glyphs_get_type (void);
 
 void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs,
-			       SPCurve *curve, unsigned int private,
+			       NRPath *path, unsigned int private,
 			       NRFont *font, int glyph,
 			       const NRMatrixF *transform);
 void nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style);

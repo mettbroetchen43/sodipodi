@@ -236,7 +236,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				bbox.x1 = bbox.y1 = -NR_HUGE_F;
 				nr_matrix_f_from_d (&ctm, &gc->transform);
 				bp.path = shape->curve->bpath;
-				nr_path_matrix_f_bbox_f_union (&bp, &ctm, &bbox, 1.0);
+				nr_bpath_matrix_f_bbox_f_union (&bp, &ctm, &bbox, 1.0);
 				item->bbox.x0 = bbox.x0 - 1.0F;
 				item->bbox.y0 = bbox.y0 - 1.0F;
 				item->bbox.x1 = bbox.x1 + 1.9999F;

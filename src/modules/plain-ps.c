@@ -56,7 +56,7 @@ struct _SPPrintPlainPSDriver {
 
 
 static unsigned int sp_ps_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs, const NRMatrixF *transform);
-static void sp_print_bpath (FILE *stream, const ArtBpath *bp);
+static void sp_print_path (FILE *stream, const NRPath *path);
 
 static void
 sp_plain_ps_initialize (SPPrintPlainDriver *driver)
@@ -228,13 +228,13 @@ sp_plain_ps_release (SPPrintPlainDriver *driver)
 }
 
 static unsigned int
-sp_plain_ps_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_plain_ps_fill (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPSDriver *driverps;
 
-	driverps = (SPPrintPlainPSDriver *)driver;
+	driverps = (SPPrintPlainPSDriver *) driver;
 	pmod = driverps->module;
 
 	if (!pmod->stream) return -1;
@@ -247,7 +247,7 @@ sp_plain_ps_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatr
 
 		fprintf (pmod->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
 
-		sp_print_bpath (pmod->stream, bpath->path);
+		sp_print_path (pmod->stream, path);
 
 		if (style->fill_rule.value == SP_WIND_RULE_EVENODD) {
 			fprintf (pmod->stream, "eofill\n");
@@ -260,7 +260,7 @@ sp_plain_ps_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatr
 }
 
 static unsigned int
-sp_plain_ps_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_plain_ps_stroke (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
@@ -279,7 +279,7 @@ sp_plain_ps_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMa
 
 		fprintf (pmod->stream, "%g %g %g setrgbcolor\n", rgb[0], rgb[1], rgb[2]);
 
-		sp_print_bpath (pmod->stream, bpath->path);
+		sp_print_path (pmod->stream, path);
 
 		if (style->stroke_dash.n_dash > 0) {
 			int i;
@@ -358,9 +358,102 @@ sp_plain_ps_image (SPPrintPlainDriver *driver, unsigned char *px, unsigned int w
 
 /* PostScript helpers */
 
-static void
-sp_print_bpath (FILE *stream, const ArtBpath *bp)
+static unsigned int
+sp_print_path_moveto (float x0, float y0, unsigned int flags, void *data)
 {
+	FILE *stream;
+	unsigned char c[256];
+	unsigned int p;
+	stream = (FILE *) data;
+	p = 0;
+	p += arikkei_dtoa_simple (c + p, 32, x0, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y0, 6, 0, FALSE);
+	fprintf (stream, "%s moveto\n", c);
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
+{
+	FILE *stream;
+	stream = (FILE *) data;
+	unsigned char c[256];
+	unsigned int p;
+	p = 0;
+	p += arikkei_dtoa_simple (c + p, 32, x1, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y1, 6, 0, FALSE);
+	fprintf (stream, "%s lineto\n", c);
+	if ((flags & NR_PATH_CLOSED) && (flags & NR_PATH_LAST)) {
+		fprintf (stream, "closepath\n");
+	}
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
+			  unsigned int flags, void *data)
+{
+	FILE *stream;
+	stream = (FILE *) data;
+	unsigned char c[256];
+	unsigned int p;
+	p = 0;
+	p += arikkei_dtoa_simple (c + p, 32, x1 + (x0 - x1) / 3.0, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y1 + (y0 - y1) / 3.0, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, x1 + (x2 - x1) / 3.0, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y1 + (y2 - y1) / 3.0, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, x2, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y2, 6, 0, FALSE);
+	fprintf (stream, "%s curveto\n", c);
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+			unsigned int flags, void *data)
+{
+	FILE *stream;
+	stream = (FILE *) data;
+	unsigned char c[256];
+	unsigned int p;
+	p = 0;
+	p += arikkei_dtoa_simple (c + p, 32, x1, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y1, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, x2, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y2, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, x3, 6, 0, FALSE);
+	c[p++] = ' ';
+	p += arikkei_dtoa_simple (c + p, 32, y3, 6, 0, FALSE);
+	fprintf (stream, "%s curveto\n", c);
+	return TRUE;
+}
+
+static NRPathGVector pspgv = {
+	sp_print_path_moveto,
+	sp_print_path_lineto,
+	sp_print_path_curveto2,
+	sp_print_path_curveto3,
+	NULL
+};
+
+static void
+sp_print_path (FILE *stream, const NRPath *path)
+{
+#if 1
+	fprintf (stream, "newpath\n");
+	nr_path_forall (path, NULL, &pspgv, stream);
+#else
 	unsigned int closed;
 
 	fprintf (stream, "newpath\n");
@@ -395,6 +488,7 @@ sp_print_bpath (FILE *stream, const ArtBpath *bp)
 	if (closed) {
 		fprintf (stream, "closepath\n");
 	}
+#endif
 }
 
 /* The following code is licensed under GNU GPL */

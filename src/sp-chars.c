@@ -132,11 +132,12 @@ sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 	chars = SP_CHARS (item);
 
 	for (el = chars->elements; el != NULL; el = el->next) {
-		NRBPath bpath;
-		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
+		NRPath *path;
+		path = nr_font_glyph_outline_get (el->font, el->glyph, FALSE);
+		if (path) {
 			NRMatrixF a;
 			nr_matrix_multiply_ffd (&a, &el->transform, transform);
-			nr_path_matrix_f_bbox_f_union (&bpath, &a, bbox, 0.25);
+			nr_path_matrix_f_bbox_f_union (path, &a, bbox, 0.25);
 		}
 	}
 }
@@ -218,16 +219,14 @@ sp_chars_normalized_bpath_list (SPChars *chars)
 
 	cc = NULL;
 	for (el = chars->elements; el != NULL; el = el->next) {
-		NRBPath bp;
-		ArtBpath *abp;
+		NRPath *bp;
 		SPCurve *c;
-		gdouble a[6];
-		gint i;
-		for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-		if (nr_font_glyph_outline_get (el->font, el->glyph, &bp, FALSE)) {
-			abp = art_bpath_affine_transform (bp.path, a);
-			c = sp_curve_new_from_foreign_bpath (abp);
-			art_free (abp);
+		bp = nr_font_glyph_outline_get (el->font, el->glyph, FALSE);
+		if (bp) {
+			NRPath *tpath;
+			tpath = nr_path_duplicate_transform (bp, &el->transform);
+			c = sp_curve_new_from_nr_path (tpath);
+			free (tpath);
 			if (c) cc = g_slist_prepend (cc, c);
 		}
 	}
@@ -251,15 +250,15 @@ sp_chars_normalized_bpath_list (SPChars *chars)
 /* This is completely unrelated to SPItem::print */
 
 static void
-sp_chars_print_bpath (SPPrintContext *ctx, const NRBPath *bpath, const SPStyle *style, const NRMatrixF *ctm,
+sp_chars_print_bpath (SPPrintContext *ctx, const NRPath *path, const SPStyle *style, const NRMatrixF *ctm,
 		      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	if (style->fill.type != SP_PAINT_TYPE_NONE) {
-		sp_print_fill (ctx, bpath, ctm, style, pbox, dbox, bbox);
+		sp_print_fill (ctx, path, ctm, style, pbox, dbox, bbox);
 	}
 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-		sp_print_stroke (ctx, bpath, ctm, style, pbox, dbox, bbox);
+		sp_print_stroke (ctx, path, ctm, style, pbox, dbox, bbox);
 	}
 }
 
@@ -275,16 +274,13 @@ sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const NRMatrixF *ctm, co
 	SPCharElement *el;
 
 	for (el = chars->elements; el != NULL; el = el->next) {
-		gdouble chela[6];
-		NRBPath bpath;
-		gint i;
-
-		for (i = 0; i < 6; i++) chela[i] = el->transform.c[i];
-		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
-			NRBPath abp;
-			abp.path = art_bpath_affine_transform (bpath.path, chela);
-			sp_chars_print_bpath (ctx, &abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
-			art_free (abp.path);
+		NRPath *path;
+		path = nr_font_glyph_outline_get (el->font, el->glyph, FALSE);
+		if (path) {
+			NRPath *tbp;
+			tbp = nr_path_duplicate_transform (path, &el->transform);
+			sp_chars_print_bpath (ctx, tbp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
+			free (tbp);
 		}
 	}
 }

@@ -117,10 +117,10 @@ nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned ch
 	return ((NRTypeFaceClass *) ((NRObject *) tf)->klass)->attribute_get (tf, key, str, size);
 }
 
-NRBPath *
-nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+NRPath *
+nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref)
 {
-	return ((NRTypeFaceClass *) ((NRObject *) tf)->klass)->glyph_outline_get (tf, glyph, metrics, d, ref);
+	return ((NRTypeFaceClass *) ((NRObject *) tf)->klass)->glyph_outline_get (tf, glyph, metrics, ref);
 }
 
 void
@@ -173,7 +173,7 @@ static void nr_typeface_empty_init (NRTypeFaceEmpty *tfe);
 static void nr_typeface_empty_finalize (NRObject *object);
 
 static unsigned int nr_typeface_empty_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-static NRBPath *nr_typeface_empty_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static NRPath *nr_typeface_empty_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref);
 static void nr_typeface_empty_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 static NRPointF *nr_typeface_empty_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 static unsigned int nr_typeface_empty_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
@@ -272,26 +272,25 @@ nr_typeface_empty_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 	return strlen (val);
 }
 
-static NRBPath *
-nr_typeface_empty_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+static NRPath *
+nr_typeface_empty_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref)
 {
-	static const ArtBpath gol[] = {
-		{ART_MOVETO, 0, 0, 0, 0, 100.0, 100.0},
-		{ART_LINETO, 0, 0, 0, 0, 100.0, 900.0},
-		{ART_LINETO, 0, 0, 0, 0, 900.0, 900.0},
-		{ART_LINETO, 0, 0, 0, 0, 900.0, 100.0},
-		{ART_LINETO, 0, 0, 0, 0, 100.0, 100.0},
-		{ART_MOVETO, 0, 0, 0, 0, 150.0, 150.0},
-		{ART_LINETO, 0, 0, 0, 0, 850.0, 150.0},
-		{ART_LINETO, 0, 0, 0, 0, 850.0, 850.0},
-		{ART_LINETO, 0, 0, 0, 0, 150.0, 850.0},
-		{ART_LINETO, 0, 0, 0, 0, 150.0, 150.0},
-		{ART_END, 0, 0, 0, 0, 0, 0}
+	static NRDynamicPath *dpath = NULL;
+	if (!dpath) {
+		dpath = nr_dynamic_path_new (64);
+		nr_dynamic_path_moveto (dpath, 100.0, 100.0);
+		nr_dynamic_path_lineto (dpath, 100.0, 900.0);
+		nr_dynamic_path_lineto (dpath, 900.0, 900.0);
+		nr_dynamic_path_lineto (dpath, 900.0, 100.0);
+		nr_dynamic_path_closepath (dpath);
+		nr_dynamic_path_moveto (dpath, 150.0, 150.0);
+		nr_dynamic_path_lineto (dpath, 150.0, 850.0);
+		nr_dynamic_path_lineto (dpath, 850.0, 850.0);
+		nr_dynamic_path_lineto (dpath, 850.0, 150.0);
+		nr_dynamic_path_closepath (dpath);
 	};
 
-	d->path = (ArtBpath *) gol;
-
-	return d;
+	return dpath->path;
 }
 
 static void

@@ -50,21 +50,21 @@ sp_print_release (SPPrintContext *ctx)
 }
 
 unsigned int
-sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_print_fill (SPPrintContext *ctx, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 	       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->fill)
-		return ((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->fill (SP_MODULE_PRINT (ctx), bpath, ctm, style, pbox, dbox, bbox);
+		return ((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->fill (SP_MODULE_PRINT (ctx), path, ctm, style, pbox, dbox, bbox);
 
 	return 0;
 }
 
 unsigned int
-sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_print_stroke (SPPrintContext *ctx, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 		 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->stroke)
-		return ((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->stroke (SP_MODULE_PRINT (ctx), bpath, ctm, style, pbox, dbox, bbox);
+		return ((SPModulePrintClass *) G_OBJECT_GET_CLASS (ctx))->stroke (SP_MODULE_PRINT (ctx), path, ctm, style, pbox, dbox, bbox);
 
 	return 0;
 }

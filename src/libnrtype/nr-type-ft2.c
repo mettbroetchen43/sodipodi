@@ -31,7 +31,7 @@ static void nr_typeface_ft2_finalize (NRObject *object);
 
 static void nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def);
 static unsigned int nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-static NRBPath *nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static NRPath *nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref);
 static void nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 static NRPointF *nr_typeface_ft2_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 static unsigned int nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
@@ -104,8 +104,8 @@ nr_typeface_ft2_finalize (NRObject *object)
 		if (tff->slots) {
 			unsigned int i;
 			for (i = 0; i < tff->slots_length; i++) {
-				if (tff->slots[i].outline.path) {
-					nr_free (tff->slots[i].outline.path);
+				if (tff->slots[i].outline) {
+					nr_free (tff->slots[i].outline);
 #ifdef NRTFFT2_DEBUG
 					olcount -= 1;
 					printf ("finalize - outlines %d\n", olcount);
@@ -194,7 +194,7 @@ nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 
 static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_h (NRTypeFaceFT2 *tff, unsigned int glyph);
 static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph);
-static NRBPath *nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, unsigned int glyph, unsigned int metrics);
+static NRPath *nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, unsigned int glyph, unsigned int metrics);
 
 void
 nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
@@ -272,8 +272,8 @@ nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	return strlen (val);
 }
 
-static NRBPath *
-nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+static NRPath *
+nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref)
 {
 	NRTypeFaceFT2 *tff;
 	NRTypeFaceGlyphFT2 *slot;
@@ -289,12 +289,10 @@ nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 	if (slot) {
 		if (!slot->olref) nr_typeface_ft2_ensure_outline (tff, slot, glyph, metrics);
 		if (ref) slot->olref += 1;
-		*d = slot->outline;
-	} else {
-		d->path = NULL;
+		return slot->outline;
 	}
 
-	return d;
+	return NULL;
 }
 
 static void
@@ -314,8 +312,8 @@ nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 	if (slot && slot->olref > 0) {
 		slot->olref -= 1;
 		if (slot->olref < 1) {
-			nr_free (slot->outline.path);
-			slot->outline.path = NULL;
+			nr_free (slot->outline);
+			slot->outline = NULL;
 #ifdef NRTFFT2_DEBUG
 			olcount -= 1;
 			printf ("outline unref - outlines %d\n", olcount);
@@ -449,7 +447,7 @@ nr_typeface_ft2_ensure_slot_h (NRTypeFaceFT2 *tff, unsigned int glyph)
 		slot->advance.y = 0.0;
 
 		slot->olref = 0;
-		slot->outline.path = NULL;
+		slot->outline = NULL;
 		tff->hgidx[glyph] = tff->slots_length;
 		tff->slots_length += 1;
 	}
@@ -503,7 +501,7 @@ nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph)
 		}
 
 		slot->olref = 0;
-		slot->outline.path = NULL;
+		slot->outline = NULL;
 		tff->vgidx[glyph] = tff->slots_length;
 		tff->slots_length += 1;
 	}
@@ -513,6 +511,224 @@ nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph)
 
 /* Outline conversion */
 
+#if 1
+static NRPath *tff_ol2bp (FT_Outline *ol, float transform[]);
+
+static NRPath *
+nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, unsigned int glyph, unsigned int metrics)
+{
+	float a[6];
+
+	FT_Load_Glyph (tff->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
+
+	a[0] = a[3] = tff->ft2ps;
+	a[1] = a[2] = 0.0;
+
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+#if 0
+		FT_BBox bbox;
+		/* Metrics are always loaded if we have slot */
+		FT_Outline_Get_BBox (&tff->ft_face->glyph->outline, &bbox);
+		a[4] = slot->area.x0 - bbox.xMin * tff->ft2ps;
+		a[5] = slot->area.y0 - bbox.yMin * tff->ft2ps;
+#else
+		a[4] = slot->area.x0 - tff->ft_face->glyph->metrics.horiBearingX * tff->ft2ps;
+		a[5] = slot->area.y1 - tff->ft_face->glyph->metrics.horiBearingY * tff->ft2ps;
+#endif
+	} else {
+		a[4] = 0.0;
+		a[5] = 0.0;
+	}
+
+	slot->outline = tff_ol2bp (&tff->ft_face->glyph->outline, a);
+	slot->olref = 1;
+#ifdef NRTFFT2_DEBUG
+	if (slot->outline) {
+		olcount += 1;
+		printf ("ensure outline - outlines %d\n", olcount);
+	}
+#endif
+
+	return slot->outline;
+}
+
+/* Bpath methods */
+
+#if 0
+typedef struct {
+	ArtBpath *bp;
+	int start, end;
+	float *t;
+} TFFT2OutlineData;
+#endif
+
+static int
+tfft2_move_to (FT_Vector * to, void * user)
+{
+#if 1
+	NRDynamicPath *dpath;
+	dpath = (NRDynamicPath *) user;
+	if (dpath->hascpt) nr_dynamic_path_closepath (dpath);
+	nr_dynamic_path_moveto (dpath, to->x, to->y);
+#else
+	TFFT2OutlineData * od;
+	NRPointF p;
+
+	od = (TFFT2OutlineData *) user;
+
+	p.x = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	p.y = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+
+	if (od->end == 0 ||
+	    p.x != od->bp[od->end - 1].x3 ||
+	    p.y != od->bp[od->end - 1].y3) {
+		od->bp[od->end].code = ART_MOVETO;
+		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+		od->end++;
+	}
+#endif
+	return 0;
+}
+
+static int tfft2_line_to (FT_Vector * to, void * user)
+{
+#if 1
+	NRDynamicPath *dpath;
+	dpath = (NRDynamicPath *) user;
+	nr_dynamic_path_lineto (dpath, to->x, to->y);
+#else
+	TFFT2OutlineData * od;
+	ArtBpath *s;
+	NRPointF p;
+
+	od = (TFFT2OutlineData *) user;
+
+	s = &od->bp[od->end - 1];
+
+	p.x = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	p.y = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+
+	if ((p.x != s->x3) || (p.y != s->y3)) {
+		od->bp[od->end].code = ART_LINETO;
+		od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+		od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+		od->end++;
+	}
+#endif
+	return 0;
+}
+
+static int tfft2_conic_to (FT_Vector *control, FT_Vector *to, void *user)
+{
+#if 1
+	NRDynamicPath *dpath;
+	dpath = (NRDynamicPath *) user;
+	nr_dynamic_path_curveto2 (dpath, control->x, control->y, to->x, to->y);
+#else
+	TFFT2OutlineData *od;
+	ArtBpath *s, *e;
+	NRPointF c;
+
+	od = (TFFT2OutlineData *) user;
+
+	s = &od->bp[od->end - 1];
+	e = &od->bp[od->end];
+
+	e->code = ART_CURVETO;
+
+	c.x = control->x * od->t[0] + control->y * od->t[2] + od->t[4];
+	c.y = control->x * od->t[1] + control->y * od->t[3] + od->t[5];
+	e->x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	e->y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+
+	od->bp[od->end].x1 = c.x - (c.x - s->x3) / 3;
+	od->bp[od->end].y1 = c.y - (c.y - s->y3) / 3;
+	od->bp[od->end].x2 = c.x + (e->x3 - c.x) / 3;
+	od->bp[od->end].y2 = c.y + (e->y3 - c.y) / 3;
+	od->end++;
+#endif
+	return 0;
+}
+
+static int tfft2_cubic_to (FT_Vector *control1, FT_Vector *control2, FT_Vector *to, void *user)
+{
+#if 1
+	NRDynamicPath *dpath;
+	dpath = (NRDynamicPath *) user;
+	nr_dynamic_path_curveto3 (dpath, control1->x, control1->y, control2->x, control2->y, to->x, to->y);
+#else
+	TFFT2OutlineData * od;
+
+	od = (TFFT2OutlineData *) user;
+
+	od->bp[od->end].code = ART_CURVETO;
+	od->bp[od->end].x1 = control1->x * od->t[0] + control1->y * od->t[2] + od->t[4];
+	od->bp[od->end].y1 = control1->x * od->t[1] + control1->y * od->t[3] + od->t[5];
+	od->bp[od->end].x2 = control2->x * od->t[0] + control2->y * od->t[2] + od->t[4];
+	od->bp[od->end].y2 = control2->x * od->t[1] + control2->y * od->t[3] + od->t[5];
+	od->bp[od->end].x3 = to->x * od->t[0] + to->y * od->t[2] + od->t[4];
+	od->bp[od->end].y3 = to->x * od->t[1] + to->y * od->t[3] + od->t[5];
+	od->end++;
+#endif
+	return 0;
+}
+
+FT_Outline_Funcs tfft2_outline_funcs = {
+	tfft2_move_to,
+	tfft2_line_to,
+	tfft2_conic_to,
+	tfft2_cubic_to,
+	0, 0
+};
+
+/*
+ * We support only 4x4 matrix here (do you need more?)
+ */
+
+static NRPath *
+tff_ol2bp (FT_Outline * ol, float transform[])
+{
+#if 1
+	NRDynamicPath *dpath;
+	NRMatrixF m;
+	NRPath *path;
+
+
+	dpath = nr_dynamic_path_new (256);
+	FT_Outline_Decompose (ol, &tfft2_outline_funcs, dpath);
+	if (dpath->hascpt) nr_dynamic_path_closepath (dpath);
+	memcpy (&m, transform, 6 * sizeof (float));
+	path = nr_path_duplicate_transform (dpath->path, &m);
+
+	return path;
+#else
+	TFFT2OutlineData od;
+
+	/* lalalalalalalala */
+	/* transform path here (Lauris) */
+
+	od.bp = nr_new (ArtBpath, ol->n_points * 2 + ol->n_contours + 1);
+	od.start = od.end = 0;
+	od.t = transform;
+
+	FT_Outline_Decompose (ol, &tfft2_outline_funcs, &od);
+
+	od.bp[od.end].code = ART_END;
+
+	od.bp = nr_renew (od.bp, ArtBpath, od.end + 1);
+
+	return od.bp;
+#endif
+}
+
+
+
+
+
+
+
+#else
 static ArtBpath *tff_ol2bp (FT_Outline *ol, float transform[]);
 
 static NRBPath *
@@ -680,6 +896,7 @@ tff_ol2bp (FT_Outline * ol, float transform[])
 
 	return od.bp;
 }
+#endif
 
 
 

@@ -62,9 +62,9 @@ static unsigned int sp_module_print_plain_begin (SPModulePrint *mod, SPDocument 
 static unsigned int sp_module_print_plain_finish (SPModulePrint *mod);
 static unsigned int sp_module_print_plain_bind (SPModulePrint *mod, const NRMatrixF *transform, float opacity);
 static unsigned int sp_module_print_plain_release (SPModulePrint *mod);
-static unsigned int sp_module_print_plain_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+static unsigned int sp_module_print_plain_fill (SPModulePrint *mod, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 						const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
-static unsigned int sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+static unsigned int sp_module_print_plain_stroke (SPModulePrint *mod, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 						  const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
 static unsigned int sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 						 const NRMatrixF *transform, const SPStyle *style);
@@ -503,7 +503,7 @@ sp_module_print_plain_release (SPModulePrint *mod)
 }
 
 static unsigned int
-sp_module_print_plain_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_module_print_plain_fill (SPModulePrint *mod, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
@@ -515,13 +515,13 @@ sp_module_print_plain_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMa
 	if (!pmod->stream) return -1;
 
 	if (driver->fill)
-		driver->fill (driver, bpath, ctm, style, pbox, dbox, bbox);
+		driver->fill (driver, path, ctm, style, pbox, dbox, bbox);
 
 	return 0;
 }
 
 static unsigned int
-sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_module_print_plain_stroke (SPModulePrint *mod, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
@@ -533,7 +533,7 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 	if (!pmod->stream) return -1;
 
 	if (driver->stroke)
-		driver->stroke (driver, bpath, ctm, style, pbox, dbox, bbox);
+		driver->stroke (driver, path, ctm, style, pbox, dbox, bbox);
 
 	return 0;
 }

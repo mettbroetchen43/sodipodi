@@ -14,6 +14,8 @@
  * Released under GNU GPL
  */
 
+#include <libnr/nr-path.h>
+
 #include <glib.h>
 #include <libart_lgpl/art_bpath.h>
 
@@ -43,6 +45,8 @@ SPCurve * sp_curve_new_sized (gint length);
 SPCurve * sp_curve_new_from_bpath (ArtBpath * bpath);
 SPCurve * sp_curve_new_from_static_bpath (ArtBpath * bpath);
 SPCurve * sp_curve_new_from_foreign_bpath (ArtBpath * bpath);
+
+SPCurve *sp_curve_new_from_nr_path (NRPath *path);
 
 SPCurve *sp_curve_ref (SPCurve *curve);
 SPCurve *sp_curve_unref (SPCurve *curve);

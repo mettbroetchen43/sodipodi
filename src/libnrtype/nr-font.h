@@ -30,7 +30,7 @@ struct _NRFont {
 NRFont *nr_font_ref (NRFont *font);
 NRFont *nr_font_unref (NRFont *font);
 
-NRBPath *nr_font_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *d, unsigned int ref);
+NRPath *nr_font_glyph_outline_get (NRFont *font, unsigned int glyph, unsigned int ref);
 void nr_font_glyph_outline_unref (NRFont *font, unsigned int glyph);
 
 NRPointF *nr_font_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *adv);
@@ -43,7 +43,7 @@ NRRasterFont *nr_rasterfont_new (NRFont *font, NRMatrixF *transform);
 NRFont *nr_font_generic_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
 void nr_font_generic_free (NRFont *font);
 
-NRBPath *nr_font_generic_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *d, unsigned int ref);
+NRPath *nr_font_generic_glyph_outline_get (NRFont *font, unsigned int glyph, unsigned int ref);
 void nr_font_generic_glyph_outline_unref (NRFont *font, unsigned int glyph);
 NRPointF *nr_font_generic_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *adv);
 NRRectF *nr_font_generic_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area);

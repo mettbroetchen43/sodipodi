@@ -118,8 +118,8 @@ nr_arena_glyphs_finalize (NRObject *object)
 		glyphs->style = NULL;
 	}
 
-	if (glyphs->curve) {
-		glyphs->curve = sp_curve_unref (glyphs->curve);
+	if (glyphs->path) {
+		free (glyphs->path);
 	}
 
 	((NRObjectClass *) glyphs_parent_class)->finalize (object);
@@ -148,7 +148,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 		glyphs->stroke_svp = NULL;
 	}
 
-	if (!glyphs->font || !glyphs->curve || !glyphs->style) return NR_ARENA_ITEM_STATE_ALL;
+	if (!glyphs->font || !glyphs->path || !glyphs->style) return NR_ARENA_ITEM_STATE_ALL;
 	if ((glyphs->style->fill.type == SP_PAINT_TYPE_NONE) && (glyphs->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
 
 	bbox.x0 = bbox.y0 = NR_HUGE_F;
@@ -170,19 +170,17 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 	}
 
 	if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
-		NRBPath bp;
 		NRMatrixF ctmf;
 		float width, scale;
 		NRSVL *svl;
 		/* Build state data */
 		scale = NR_MATRIX_DF_EXPANSION (&gc->transform);
 		width = MAX (0.125, glyphs->style->stroke_width.computed * scale);
-		bp.path = glyphs->curve->bpath;
 		nr_matrix_f_from_d (&ctmf, &gc->transform);
-		svl = nr_bpath_stroke (&bp, &ctmf, width,
-								   glyphs->style->stroke_linejoin.value,
-								   glyphs->style->stroke_linecap.value,
-								   glyphs->style->stroke_miterlimit.value, 0.25);
+		svl = nr_path_stroke (glyphs->path, &ctmf, width,
+				      glyphs->style->stroke_linejoin.value,
+				      glyphs->style->stroke_linecap.value,
+				      glyphs->style->stroke_miterlimit.value, 0.25);
 		glyphs->stroke_svp = nr_svp_from_svl (svl, NULL);
 		nr_svl_free_list (svl);
 	}
@@ -205,7 +203,7 @@ nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 
 	glyphs = NR_ARENA_GLYPHS (item);
 
-	if (!glyphs->font || !glyphs->curve) return item->state;
+	if (!glyphs->font || !glyphs->path) return item->state;
 
 #if 0
 	/* fixme: Implement */
@@ -225,7 +223,7 @@ nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, un
 
 	glyphs = NR_ARENA_GLYPHS (item);
 
-	if (!glyphs->font || !glyphs->curve) return NULL;
+	if (!glyphs->font || !glyphs->path) return NULL;
 	if (!glyphs->style) return NULL;
 
 	/* fixme: */
@@ -244,37 +242,25 @@ nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, un
 }
 
 void
-nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, unsigned int private, NRFont *font, gint glyph, const NRMatrixF *transform)
+nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, NRPath *path, unsigned int private, NRFont *font, gint glyph, const NRMatrixF *transform)
 {
 	nr_return_if_fail (glyphs != NULL);
 	nr_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
 
 	nr_arena_item_request_render (NR_ARENA_ITEM (glyphs));
 
-	if (glyphs->curve) {
-		sp_curve_unref (glyphs->curve);
-		glyphs->curve = NULL;
+	if (glyphs->path) {
+		free (glyphs->path);
+		glyphs->path = NULL;
 	}
 
-	if (curve) {
+	if (path) {
 		if (transform) {
-			ArtBpath *abp;
-			double a[6];
-			a[0] = transform->c[0];
-			a[1] = transform->c[1];
-			a[2] = transform->c[2];
-			a[3] = transform->c[3];
-			a[4] = transform->c[4];
-			a[5] = transform->c[5];
-			abp = art_bpath_affine_transform (curve->bpath, a);
-			curve = sp_curve_new_from_bpath (abp);
-			glyphs->curve = curve;
 			glyphs->transform = *transform;
 		} else {
-			glyphs->curve = curve;
-			sp_curve_ref (curve);
 			nr_matrix_f_set_identity (&glyphs->transform);
 		}
+		glyphs->path = nr_path_duplicate_transform (path, transform);
 	}
 
 	if (glyphs->font) glyphs->font = nr_font_unref (glyphs->font);
@@ -605,19 +591,19 @@ void
 nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int glyph, const NRMatrixF *transform)
 {
 	NRArenaGroup *group;
-	NRBPath bpath;
+	NRPath *path;
 
 	group = NR_ARENA_GROUP (sg);
 
-	if (nr_font_glyph_outline_get (font, glyph, &bpath, FALSE) && bpath.path) {
-		SPCurve *curve;
+	path = nr_font_glyph_outline_get (font, glyph, FALSE);
+	if (path) {
+		NRArenaItem *new;
 #ifdef AG_DEBUG_BBOX
 		NRRectF area;
 		NRPointF adv;
 #endif
 		nr_arena_item_request_render (NR_ARENA_ITEM (group));
 
-		curve = sp_curve_new_from_foreign_bpath (bpath.path);
 #ifdef AG_DEBUG_BBOX
 		if (curve && nr_font_glyph_area_get (font, glyph, &area)) {
 			sp_curve_moveto (curve, area.x0, area.y0);
@@ -631,15 +617,11 @@ nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int g
 			sp_curve_lineto (curve, adv.x, adv.y);
 		}
 #endif
-		if (curve) {
-			NRArenaItem *new;
-			new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_GLYPHS);
-			nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
-			nr_arena_item_unref (new);
-			nr_arena_glyphs_set_path (NR_ARENA_GLYPHS (new), curve, FALSE, font, glyph, transform);
-			nr_arena_glyphs_set_style (NR_ARENA_GLYPHS (new), sg->style);
-			sp_curve_unref (curve);
-		}
+		new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_GLYPHS);
+		nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
+		nr_arena_item_unref (new);
+		nr_arena_glyphs_set_path (NR_ARENA_GLYPHS (new), path, FALSE, font, glyph, transform);
+		nr_arena_glyphs_set_style (NR_ARENA_GLYPHS (new), sg->style);
 	}
 
 }

@@ -194,9 +194,9 @@ struct _SPModulePrintClass {
 	/* Rendering methods */
 	unsigned int (* bind) (SPModulePrint *modp, const NRMatrixF *transform, float opacity);
 	unsigned int (* release) (SPModulePrint *modp);
-	unsigned int (* fill) (SPModulePrint *modp, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+	unsigned int (* fill) (SPModulePrint *modp, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
-	unsigned int (* stroke) (SPModulePrint *modp, const NRBPath *bpath, const NRMatrixF *transform, const SPStyle *style,
+	unsigned int (* stroke) (SPModulePrint *modp, const NRPath *path, const NRMatrixF *transform, const SPStyle *style,
 				 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
 	unsigned int (* image) (SPModulePrint *modp, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 				const NRMatrixF *transform, const SPStyle *style);

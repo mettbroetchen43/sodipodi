@@ -22,6 +22,13 @@ enum {
 	MULTI_CURVE3
 };
 
+static void
+nr_curve_bbox (double x000, double y000,
+	       double x001, double y001,
+	       double x011, double y011,
+	       double x111, double y111,
+	       NRRectF *bbox);
+
 #ifdef LIBNR_LIBART
 NRPath *
 nr_path_new_from_art_bpath (const ArtBpath *bpath)
@@ -179,6 +186,94 @@ nr_path_new_from_art_bpath (const ArtBpath *bpath)
 #endif
 }
 #endif
+
+NRPath *
+nr_path_duplicate_transform (const NRPath *path, const NRMatrixF *transform)
+{
+	NRPath *newpath;
+	int nelements;
+	nelements = path->nelements;
+	newpath = (NRPath *) malloc (sizeof (NRPath) + nelements * sizeof (NRPathElement) - sizeof (NRPathElement));
+	if (transform) {
+		unsigned int sstart;
+		memcpy (newpath, path, sizeof (NRPath) - sizeof (NRPathElement));
+		sstart = path->offset;
+		while (sstart < path->nelements) {
+			const NRPathElement *ss;
+			NRPathElement *ds;
+			unsigned int slen, idx;
+
+			ss = path->elements + sstart;
+			ds = newpath->elements + sstart;
+			slen = NR_PATH_ELEMENT_LENGTH (ss);
+
+			/* Start new subpath */
+			ds[0] = ss[0];
+			ds[1].fval = NR_MATRIX_DF_TRANSFORM_X (transform, ss[1].fval, ss[2].fval);
+			ds[2].fval = NR_MATRIX_DF_TRANSFORM_Y (transform, ss[1].fval, ss[2].fval);
+			idx = 3;
+			while (idx < slen) {
+				int nmulti, i;
+				ds[idx] = ss[idx];
+				nmulti = NR_PATH_ELEMENT_LENGTH (ss + idx);
+				switch (NR_PATH_ELEMENT_CODE (ss + idx)) {
+				case NR_PATH_LINETO:
+					idx += 1;
+					for (i = 0; i < nmulti; i++) {
+						ds[idx + 0].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						ds[idx + 1].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						idx += 2;
+					}
+					break;
+				case NR_PATH_CURVETO2:
+					idx += 1;
+					for (i = 0; i < nmulti; i++) {
+						ds[idx + 0].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						ds[idx + 1].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						ds[idx + 2].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx + 2].fval, ss[idx + 3].fval);
+						ds[idx + 3].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx + 2].fval, ss[idx + 3].fval);
+						idx += 4;
+					}
+					break;
+				case NR_PATH_CURVETO3:
+					idx += 1;
+					for (i = 0; i < nmulti; i++) {
+						ds[idx + 0].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						ds[idx + 1].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx].fval, ss[idx + 1].fval);
+						ds[idx + 2].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx + 2].fval, ss[idx + 3].fval);
+						ds[idx + 3].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx + 2].fval, ss[idx + 3].fval);
+						ds[idx + 4].fval = NR_MATRIX_DF_TRANSFORM_X (transform,
+											ss[idx + 4].fval, ss[idx + 5].fval);
+						ds[idx + 5].fval = NR_MATRIX_DF_TRANSFORM_Y (transform,
+											ss[idx + 4].fval, ss[idx + 5].fval);
+						idx += 6;
+					}
+					break;
+			default:
+				fprintf (stderr, "Invalid path code '%d'\n", NR_PATH_ELEMENT_CODE (ss + idx));
+				free (newpath);
+				return NULL;
+				break;
+				}
+			}
+			/* Finish path */
+			sstart += slen;
+		}
+	} else {
+		memcpy (newpath, path, sizeof (NRPath) + nelements * sizeof (NRPathElement) - sizeof (NRPathElement));
+	}
+	return newpath;
+}
 
 unsigned int
 nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data)
@@ -465,6 +560,68 @@ nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance, 
 	fdata.tolerance2 = tolerance * tolerance;
 
 	return nr_path_forall (path, transform, &fpgv, &fdata);
+}
+
+static unsigned int
+nr_path_bbox_moveto (float x0, float y0, unsigned int flags, void *data)
+{
+	NRRectF *bbox;
+	bbox = (NRRectF *) data;
+	bbox->x0 = MIN (bbox->x0, x0);
+	bbox->y0 = MIN (bbox->y0, y0);
+	bbox->x1 = MAX (bbox->x1, x0);
+	bbox->y1 = MAX (bbox->y1, y0);
+	return TRUE;
+}
+
+static unsigned int
+nr_path_bbox_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
+{
+	NRRectF *bbox;
+	bbox = (NRRectF *) data;
+	bbox->x0 = MIN (bbox->x0, x1);
+	bbox->y0 = MIN (bbox->y0, y1);
+	bbox->x1 = MAX (bbox->x1, x1);
+	bbox->y1 = MAX (bbox->y1, y1);
+	return TRUE;
+}
+
+static unsigned int
+nr_path_bbox_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
+		       unsigned int flags, void *data)
+{
+	NRRectF *bbox;
+	bbox = (NRRectF *) data;
+	nr_curve_bbox (x0, y0,
+		       x1 + (x0 - x1) / 3, y1 + (y0 - y1) / 3,
+		       x1 + (x2 - x1) / 3, y1 + (y2 - y1) / 3,
+		       x2, y2,
+		       bbox);
+	return TRUE;
+}
+
+static unsigned int
+nr_path_bbox_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+			  unsigned int flags, void *data)
+{
+	NRRectF *bbox;
+	bbox = (NRRectF *) data;
+	nr_curve_bbox (x0, y0, x1, y1, x2, y2, x3, y3, bbox);
+	return TRUE;
+}
+
+static NRPathGVector bboxpgv = {
+	nr_path_bbox_moveto,
+	nr_path_bbox_lineto,
+	nr_path_bbox_curveto2,
+	nr_path_bbox_curveto3,
+	NULL
+};
+
+void
+nr_path_matrix_f_bbox_f_union (NRPath *path, NRMatrixF *m, NRRectF *bbox, float tolerance)
+{
+	nr_path_forall (path, m, &bboxpgv, bbox);
 }
 
 #ifdef LIBNR_LIBART
@@ -918,7 +1075,7 @@ static void nr_curve_bbox (double x000, double y000, double x001, double y001, d
 
 #ifdef LIBNR_LIBART
 NRBPath *
-nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
+nr_bpath_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 {
 	int i;
 
@@ -1279,7 +1436,7 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 
 #ifdef LIBNR_LIBART
 void
-nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
+nr_bpath_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 			       NRRectF *bbox,
 			       float tolerance)
 {

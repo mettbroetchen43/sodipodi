@@ -74,6 +74,7 @@ struct _NRPathGVector {
 
 struct _NRPath {
 	/* Maximum is 2e30 elements */
+	/* Number of elements, including reserved ones */
 	unsigned int nelements : 30;
 	/* Number of reserved elements */
 	unsigned int offset : 2;
@@ -82,9 +83,13 @@ struct _NRPath {
 	NRPathElement elements[1];
 };
 
+NRPath *nr_path_duplicate_transform (const NRPath *path, const NRMatrixF *transform);
+
 unsigned int nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
 unsigned int nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance,
 				  const NRPathGVector *gv, void *data);
+
+void nr_path_matrix_f_bbox_f_union (NRPath *path, NRMatrixF *m, NRRectF *bbox, float tolerance);
 
 #ifdef LIBNR_LIBART
 /* Temporary */
@@ -138,13 +143,13 @@ struct _NRBPath {
 	ArtBpath *path;
 };
 
-NRBPath *nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform);
+NRBPath *nr_bpath_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform);
 
 void nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPointF *pt,
 						  NRRectF *bbox, int *wind, float *dist,
 						  float tolerance);
 
-void nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m, NRRectF *bbox, float tolerance);
+void nr_bpath_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m, NRRectF *bbox, float tolerance);
 #endif
 
 #endif

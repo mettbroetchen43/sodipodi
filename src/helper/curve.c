@@ -155,6 +155,73 @@ sp_curve_new_from_foreign_bpath (ArtBpath * bpath)
 	return curve;
 }
 
+static unsigned int
+nr_path_curve_moveto (float x0, float y0, unsigned int flags, void *data)
+{
+	SPCurve *curve;
+	curve = (SPCurve *) data;
+	sp_curve_moveto (curve, x0, y0);
+	return TRUE;
+}
+
+static unsigned int
+nr_path_curve_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
+{
+	SPCurve *curve;
+	curve = (SPCurve *) data;
+	sp_curve_lineto (curve, x0, y0);
+	if ((flags & NR_PATH_CLOSED) && (flags & NR_PATH_LAST)) {
+		sp_curve_closepath (curve);
+	}
+	return TRUE;
+}
+
+static unsigned int
+nr_path_curve_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
+			unsigned int flags, void *data)
+{
+	SPCurve *curve;
+	curve = (SPCurve *) data;
+	sp_curve_curveto (curve,
+			  x1 + (x0 - x1) / 3.0, y1 + (y0 - y1) / 3.0,
+			  x1 + (x2 - x1) / 3.0, y1 + (y2 - y1) / 3.0,
+			  x2, y2);
+	if ((flags & NR_PATH_CLOSED) && (flags & NR_PATH_LAST)) {
+		sp_curve_closepath (curve);
+	}
+	return TRUE;
+}
+
+static unsigned int
+nr_path_curve_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+			  unsigned int flags, void *data)
+{
+	SPCurve *curve;
+	curve = (SPCurve *) data;
+	sp_curve_curveto (curve, x1, y1, x2, y2, x3, y3);
+	if ((flags & NR_PATH_CLOSED) && (flags & NR_PATH_LAST)) {
+		sp_curve_closepath (curve);
+	}
+	return TRUE;
+}
+
+static NRPathGVector cpgv = {
+	nr_path_curve_moveto,
+	nr_path_curve_lineto,
+	nr_path_curve_curveto2,
+	nr_path_curve_curveto3,
+	NULL
+};
+
+SPCurve *
+sp_curve_new_from_nr_path (NRPath *path)
+{
+	SPCurve *curve;
+	curve = sp_curve_new_sized (path->nelements / 2);
+	nr_path_forall (path, NULL, &cpgv, curve);
+	return curve;
+}
+
 SPCurve *
 sp_curve_ref (SPCurve * curve)
 {

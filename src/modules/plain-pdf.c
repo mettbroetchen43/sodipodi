@@ -99,7 +99,7 @@ struct _SPPDFBuffer {
 };
 
 
-static void sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp);
+static void sp_plain_pdf_print_path (SPPrintPlainPDFDriver *pdf, const NRPath *path);
 static unsigned int sp_pdf_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs, const NRMatrixF *transform);
 
 static int sp_plain_pdf_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...);
@@ -314,7 +314,7 @@ sp_plain_pdf_release (SPPrintPlainDriver *driver)
 }
 
 static unsigned int
-sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
@@ -341,7 +341,7 @@ sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMat
 			pdf->fill_rgb[2] = rgb[2];
 			pdf->color_set_fill = TRUE;
 		}
-		sp_plain_pdf_print_bpath (pdf, bpath->path);
+		sp_plain_pdf_print_path (pdf, path);
 
 		switch (style->fill_rule.value) {
 		case SP_WIND_RULE_NONZERO:
@@ -358,7 +358,7 @@ sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMat
 }
 
 static unsigned int
-sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	SPModulePrintPlain *pmod;
@@ -408,7 +408,7 @@ sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRM
 		sp_plain_pdf_stream_fprintf (pdf, " M" PDF_EOL);
 
 		/* Path */
-		sp_plain_pdf_print_bpath (pdf, bpath->path);
+		sp_plain_pdf_print_path (pdf, path);
 
 		/* Stroke */
 		sp_plain_pdf_stream_fprintf (pdf, "S" PDF_EOL);
@@ -434,9 +434,64 @@ sp_plain_pdf_image (SPPrintPlainDriver *driver, unsigned char *px, unsigned int 
 
 /* PDF helpers */
 
-static void
-sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp)
+static unsigned int
+sp_print_path_moveto (float x0, float y0, unsigned int flags, void *data)
 {
+	SPPrintPlainPDFDriver *pdf;
+	pdf = (SPPrintPlainPDFDriver *) data;
+	sp_plain_pdf_stream_fprintf (pdf, "%g %g m\n", x0, y0);
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
+{
+	SPPrintPlainPDFDriver *pdf;
+	pdf = (SPPrintPlainPDFDriver *) data;
+	sp_plain_pdf_stream_fprintf (pdf, "%g %g l\n", x1, y1);
+	if ((flags & NR_PATH_CLOSED) && (flags & NR_PATH_LAST)) {
+		sp_plain_pdf_stream_fprintf (pdf, "h\n");
+	}
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
+			  unsigned int flags, void *data)
+{
+	SPPrintPlainPDFDriver *pdf;
+	pdf = (SPPrintPlainPDFDriver *) data;
+	sp_plain_pdf_stream_fprintf (pdf, "%g %g %g %g %g %g c\n",
+		 x1 + (x0 - x1) / 3.0, y1 + (y0 - y1) / 3.0,
+		 x1 + (x2 - x1) / 3.0, y1 + (y2 - y1) / 3.0,
+		 x2, y2);
+	return TRUE;
+}
+
+static unsigned int
+sp_print_path_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+			unsigned int flags, void *data)
+{
+	SPPrintPlainPDFDriver *pdf;
+	pdf = (SPPrintPlainPDFDriver *) data;
+	sp_plain_pdf_stream_fprintf (pdf, "%g %g %g %g %g %g c\n", x1, y1, x2, y2, x3, y3);
+	return TRUE;
+}
+
+static NRPathGVector pdfpgv = {
+	sp_print_path_moveto,
+	sp_print_path_lineto,
+	sp_print_path_curveto2,
+	sp_print_path_curveto3,
+	NULL
+};
+
+static void
+sp_plain_pdf_print_path (SPPrintPlainPDFDriver *pdf, const NRPath *path)
+{
+#if 1
+	nr_path_forall (path, NULL, &pdfpgv, pdf);
+#else
 	unsigned int started, closed;
 
 	started = FALSE;
@@ -473,6 +528,7 @@ sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp)
 	if (started && closed) {
 		sp_plain_pdf_stream_fprintf (pdf, "h" PDF_EOL);
 	}
+#endif
 }
 
 static int

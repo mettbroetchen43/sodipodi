@@ -55,9 +55,9 @@ struct _SPPrintPlainDriver {
 
 	unsigned int (* bind) (SPPrintPlainDriver *driver, const NRMatrixF *transform, float opacity);
 	unsigned int (* release) (SPPrintPlainDriver *driver);
-	unsigned int (* fill) (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+	unsigned int (* fill) (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *ctm, const SPStyle *style,
 			       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
-	unsigned int (* stroke) (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMatrixF *transform, const SPStyle *style,
+	unsigned int (* stroke) (SPPrintPlainDriver *driver, const NRPath *path, const NRMatrixF *transform, const SPStyle *style,
 				 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
 	unsigned int (* image) (SPPrintPlainDriver *driver, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 				const NRMatrixF *transform, const SPStyle *style);

@@ -235,7 +235,7 @@ sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
 	ex = NR_MATRIX_DF_EXPANSION (transform);
 
 	spath.path = shape->curve->bpath;
-	nr_path_duplicate_transform (&dpath, &spath, transform);
+	nr_bpath_duplicate_transform (&dpath, &spath, transform);
 	svgpath = sp_svg_write_path (dpath.path);
 	sp_repr_set_attr (repr, "d", svgpath);
 	g_free (svgpath);

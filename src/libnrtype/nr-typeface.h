@@ -78,14 +78,14 @@ struct _NRTypeFaceClass {
 	void (* setup) (NRTypeFace *tface, NRTypeFaceDef *def);
 
 	unsigned int (* attribute_get) (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-	NRBPath *(* glyph_outline_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *path, unsigned int ref);
+	NRPath *(* glyph_outline_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref);
 	void (* glyph_outline_unref) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 	NRPointF *(* glyph_advance_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 	unsigned int (* lookup) (NRTypeFace *tf, unsigned int rule, unsigned int glyph);
 	NRFont *(* font_new) (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
 
 	void (* font_free) (NRFont *font);
-	NRBPath *(* font_glyph_outline_get) (NRFont *font, unsigned int glyph, NRBPath *path, unsigned int ref);
+	NRPath *(* font_glyph_outline_get) (NRFont *font, unsigned int glyph, unsigned int ref);
 	void (* font_glyph_outline_unref) (NRFont *font, unsigned int glyph);
 	NRPointF *(* font_glyph_advance_get) (NRFont *font, unsigned int glyph, NRPointF *adv);
 	NRRectF *(* font_glyph_area_get) (NRFont *font, unsigned int glyph, NRRectF *area);
@@ -123,7 +123,7 @@ unsigned int nr_typeface_name_get (NRTypeFace *tf, unsigned char *str, unsigned 
 unsigned int nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
 unsigned int nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
 
-NRBPath *nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+NRPath *nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref);
 void nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 NRPointF *nr_typeface_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 

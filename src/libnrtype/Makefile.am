@@ -1,8 +1,8 @@
 noinst_LIBRARIES = libnrtype.a
 
-if USE_GNOME_PRINT
-gnome_print_sources = nr-type-gnome.c nr-type-gnome.h
-endif
+# if USE_GNOME_PRINT
+# gnome_print_sources = nr-type-gnome.c nr-type-gnome.h
+# endif
 
 if USE_XFT
 xft_sources = nr-type-xft.c nr-type-xft.h
@@ -21,9 +21,10 @@ INCLUDES = \
 	-I$(top_srcdir)/src \
 	$(FREETYPE_CFLAGS) \
 	$(SODIPODI_CFLAGS) \
-	$(GNOME_PRINT_CFLAGS) \
 	$(XFT_CFLAGS) \
 	$(LIBNR_CFLAGS)
+
+#	$(GNOME_PRINT_CFLAGS)
 
 libnrtype_a_SOURCES = \
 	nr-type-primitives.c nr-type-primitives.h \
@@ -34,11 +35,13 @@ libnrtype_a_SOURCES = \
 	nr-glyphs.c nr-glyphs.h \
 	nr-type-ft2.c nr-type-ft2.h \
 	${win32_source} \
-	$(gnome_print_sources) \
 	$(xft_sources)
+
+#	$(gnome_print_sources)
 
 EXTRA_DIST = \
 	nr-type-xft.c nr-type-xft.h \
-	nr-type-gnome.c nr-type-gnome.h \
 	nr-type-w32.c nr-type-w32.h \
 	codepages.h
+
+#	nr-type-gnome.c nr-type-gnome.h

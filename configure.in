@@ -215,6 +215,7 @@ dnl ******************************
 
 PKG_CHECK_MODULES(LIBNR, libart-2.0 >= 2.3.10)
 AC_SUBST(LIBNR_CFLAGS)
+AC_DEFINE(LIBNR_LIBART, 1, [Use libart support code in libnr])
 
 PKG_CHECK_MODULES(SODIPODI, gtk+-2.0 >= 2.0.0  libart-2.0 >= 2.3.10  libxml-2.0 >= 2-2.4.24)
 SODIPODI_LIBS="$SODIPODI_LIBS $POPT_LIBS -lpng -lz"

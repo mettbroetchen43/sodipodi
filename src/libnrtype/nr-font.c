@@ -36,10 +36,10 @@ nr_font_unref (NRFont *font)
 	return NULL;
 }
 
-NRBPath *
-nr_font_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *path, unsigned int ref)
+NRPath *
+nr_font_glyph_outline_get (NRFont *font, unsigned int glyph, unsigned int ref)
 {
-	return ((NRTypeFaceClass *) ((NRObject *) font->face)->klass)->font_glyph_outline_get (font, glyph, path, ref);
+	return ((NRTypeFaceClass *) ((NRObject *) font->face)->klass)->font_glyph_outline_get (font, glyph, ref);
 }
 
 void
@@ -75,7 +75,7 @@ struct _NRFontGeneric {
 
 	NRRasterFont *rfonts;
 
-	NRBPath *outlines;
+	NRPath **outlines;
 };
 
 NRFont *
@@ -107,7 +107,7 @@ nr_font_generic_free (NRFont *font)
 	if (fg->outlines) {
 		unsigned int i;
 		for (i = 0; i < font->face->nglyphs; i++) {
-			if (fg->outlines[i].path) nr_free (fg->outlines[i].path);
+			if (fg->outlines[i]) free (fg->outlines[i]);
 		}
 		nr_free (fg->outlines);
 	}
@@ -116,30 +116,29 @@ nr_font_generic_free (NRFont *font)
 	nr_free (font);
 }
 
-NRBPath *
-nr_font_generic_glyph_outline_get (NRFont *font, unsigned int glyph, NRBPath *d, unsigned int ref)
+NRPath *
+nr_font_generic_glyph_outline_get (NRFont *font, unsigned int glyph, unsigned int ref)
 {
 	NRFontGeneric *fg;
 
 	fg = (NRFontGeneric *) font;
 
 	if (!fg->outlines) {
-		fg->outlines = nr_new (NRBPath, font->face->nglyphs);
-		memset (fg->outlines, 0x0, font->face->nglyphs * sizeof (NRBPath));
+		fg->outlines = nr_new (NRPath *, font->face->nglyphs);
+		memset (fg->outlines, 0x0, font->face->nglyphs * sizeof (NRPath *));
 	}
 
-	if (!fg->outlines[glyph].path) {
-		NRBPath tfgol;
-		if (nr_typeface_glyph_outline_get (font->face, glyph, font->metrics, &tfgol, 0)) {
+	if (!fg->outlines[glyph]) {
+		NRPath *tfgol;
+		tfgol = nr_typeface_glyph_outline_get (font->face, glyph, font->metrics, 0);
+		if (tfgol) {
 			NRMatrixF scale;
 			nr_matrix_f_set_scale (&scale, font->size / 1000.0F, font->size / 1000.0F);
-			nr_path_duplicate_transform (&fg->outlines[glyph], &tfgol, &scale);
+			fg->outlines[glyph] = nr_path_duplicate_transform (tfgol, &scale);
 		}
 	}
 
-	*d = fg->outlines[glyph];
-
-	return d;
+	return fg->outlines[glyph];
 }
 
 void
@@ -162,12 +161,13 @@ nr_font_generic_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *a
 NRRectF *
 nr_font_generic_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area)
 {
-	NRBPath bpath;
+	NRPath *path;
 
-	if (!nr_font_glyph_outline_get (font, glyph, &bpath, 0)) return NULL;
+	path = nr_font_glyph_outline_get (font, glyph, 0);
+	if (!path) return NULL;
 	area->x0 = area->y0 = NR_HUGE_F;
 	area->x1 = area->y1 = -NR_HUGE_F;
-	nr_path_matrix_f_bbox_f_union (&bpath, NULL, area, 0.25);
+	nr_path_matrix_f_bbox_f_union (path, NULL, area, 0.25);
 
 	return !nr_rect_f_test_empty (area) ? area : NULL;
 }

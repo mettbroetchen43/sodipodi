@@ -10,6 +10,7 @@ nr_config.h: gen_nr_config
 INCLUDES = \
 	-DHAVE_NR_CONFIG_H \
 	-I$(top_srcdir) \
+	-I$(top_srcdir)/src \
 	$(LIBNR_CFLAGS)
 
 if USE_MMX

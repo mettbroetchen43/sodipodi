@@ -29,6 +29,11 @@ enum {
 	NR_STROKE_JOIN_BEVEL
 };
 
+NRSVL *nr_path_stroke (const NRPath *path, NRMatrixF *transform,
+		       float width,
+		       unsigned int cap, unsigned int join, float miterlimit,
+		       float flatness);
+
 #ifdef LIBNR_LIBART
 NRSVL *nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 			float width,

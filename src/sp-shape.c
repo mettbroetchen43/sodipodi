@@ -418,7 +418,7 @@ sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 							    0.25);
 			} else if (style->fill.type != SP_PAINT_TYPE_NONE) {
 				/* Have fill */
-				nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
+				nr_bpath_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
 			}
 			/* Markers only attribute to visual bbox */
 			if (shape->marker_start || shape->marker_mid || shape->marker_end) {
@@ -468,7 +468,7 @@ sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 			}
 		} else {
 			/* Logical bbox */
-			nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
+			nr_bpath_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
 		}
 	}
 }
@@ -494,15 +494,17 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	sp_item_i2doc_affine (item, &i2d);
 
 	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
-		NRBPath bp;
-		bp.path = shape->curve->bpath;
-		sp_print_fill (ctx, &bp, &i2d, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
+		NRPath *nrpath;
+		nrpath = nr_path_new_from_art_bpath (shape->curve->bpath);
+		sp_print_fill (ctx, nrpath, &i2d, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
+		free (nrpath);
 	}
 
 	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {
-		NRBPath bp;
-		bp.path = shape->curve->bpath;
-		sp_print_stroke (ctx, &bp, &i2d, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
+		NRPath *nrpath;
+		nrpath = nr_path_new_from_art_bpath (shape->curve->bpath);
+		sp_print_stroke (ctx, nrpath, &i2d, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
+		free (nrpath);
 	}
 }
 
