@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libnr/nr_config.h>
 
 typedef struct _NRMatrixD NRMatrixD;
 typedef struct _NRMatrixF NRMatrixF;
@@ -41,11 +42,11 @@ struct _NRPointF {
 };
 
 struct _NRPointL {
-	long x, y;
+	NRLong x, y;
 };
 
 struct _NRPointS {
-	short x, y;
+	NRShort x, y;
 };
 
 struct _NRRectD {
@@ -57,11 +58,11 @@ struct _NRRectF {
 };
 
 struct _NRRectL {
-	long x0, y0, x1, y1;
+	NRLong x0, y0, x1, y1;
 };
 
 struct _NRRectS {
-	short x0, y0, x1, y1;
+	NRShort x0, y0, x1, y1;
 };
 
 #endif

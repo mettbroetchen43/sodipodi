@@ -1,5 +1,15 @@
 2003-03-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/sp-color-slider.h: Use LGPL
+
+	* src/widgets/sp-color-slider.c: Use LGPL
+
+	* src/libnr/nr-rect.h: Use sensible NULL/empty semantics for union and intersection
+
+	* src/libnr/nr-rect.c: Ditto
+
+	* src/libnr/gen_nr_config.c: Generate basic typedefs (borrowed fromlibart)
+
 	* src/display/nr-arena-item.c (nr_arena_item_invoke_update): Cleanup
 	(nr_arena_item_invoke_render): Ditto
 

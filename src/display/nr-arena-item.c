@@ -281,7 +281,10 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 #endif
 
 	/* If we are outside bbox just return successfully */
+#if 0
+	/* Shouldn't be needed anymore with new rect logic (Lauris) */
 	if (NR_RECT_DFLS_TEST_EMPTY (&item->bbox)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
+#endif
 	nr_rect_l_intersect (&carea, area, &item->bbox);
 	if (nr_rect_l_test_empty (&carea)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
 
@@ -414,7 +417,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 					}
 				}
 			}
-			/* Compose renderind pixblock int destination */
+			/* Compose rendering pixblock int destination */
 			nr_blit_pixblock_pixblock_mask (dpb, &ipb, &mpb);
 			nr_pixblock_release (&mpb);
 		} else {
@@ -422,6 +425,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 			nr_blit_pixblock_pixblock_alpha (dpb, &ipb, (int) (item->opacity * 255.9999));
 		}
 		nr_pixblock_release (&ipb);
+		dpb->empty = FALSE;
 	} else {
 		/* Just render */
 		state = NR_ARENA_ITEM_VIRTUAL (item, render) (item, &carea, dpb, flags);

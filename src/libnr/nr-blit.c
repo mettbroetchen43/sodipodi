@@ -52,9 +52,9 @@ nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alph
 	 *
 	 */
 
-	if (!nr_rect_s_test_intersect (&d->area, &s->area)) return;
-
 	nr_rect_s_intersect (&clip, &d->area, &s->area);
+
+	if (nr_rect_s_test_empty (&clip)) return;
 
 	/* Pointers */
 	dpx = NR_PIXBLOCK_PX (d) + (clip.y0 - d->area.y0) * d->rs + 4 * (clip.x0 - d->area.x0);

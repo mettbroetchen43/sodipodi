@@ -15,23 +15,33 @@
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
 
+/* NULL rect is infinite */
+
 #define nr_rect_d_set_empty(r) (*(r) = NR_RECT_D_EMPTY)
 #define nr_rect_f_set_empty(r) (*(r) = NR_RECT_F_EMPTY)
 #define nr_rect_l_set_empty(r) (*(r) = NR_RECT_L_EMPTY)
 #define nr_rect_s_set_empty(r) (*(r) = NR_RECT_S_EMPTY)
 
-#define nr_rect_d_test_empty(r) (!(r) || NR_RECT_DFLS_TEST_EMPTY (r))
-#define nr_rect_f_test_empty(r) (!(r) || NR_RECT_DFLS_TEST_EMPTY (r))
-#define nr_rect_l_test_empty(r) (!(r) || NR_RECT_DFLS_TEST_EMPTY (r))
-#define nr_rect_s_test_empty(r) (!(r) || NR_RECT_DFLS_TEST_EMPTY (r))
+#define nr_rect_d_test_empty(r) ((r) && NR_RECT_DFLS_TEST_EMPTY (r))
+#define nr_rect_f_test_empty(r) ((r) && NR_RECT_DFLS_TEST_EMPTY (r))
+#define nr_rect_l_test_empty(r) ((r) && NR_RECT_DFLS_TEST_EMPTY (r))
+#define nr_rect_s_test_empty(r) ((r) && NR_RECT_DFLS_TEST_EMPTY (r))
 
-#define nr_rect_d_test_intersect(r0,r1) ((r0) && (r1) && NR_RECT_DFLS_TEST_INTERSECT (r0, r1))
-#define nr_rect_f_test_intersect(r0,r1) ((r0) && (r1) && NR_RECT_DFLS_TEST_INTERSECT (r0, r1))
-#define nr_rect_l_test_intersect(r0,r1) ((r0) && (r1) && NR_RECT_DFLS_TEST_INTERSECT (r0, r1))
-#define nr_rect_s_test_intersect(r0,r1) ((r0) && (r1) && NR_RECT_DFLS_TEST_INTERSECT (r0, r1))
+#define nr_rect_d_test_intersect(r0,r1) \
+	(!nr_rect_d_test_empty (r0) && !nr_rect_d_test_empty (r1) && \
+	 !((r0) && (r1) && !NR_RECT_DFLS_TEST_INTERSECT (r0, r1)))
+#define nr_rect_f_test_intersect(r0,r1) \
+	(!nr_rect_f_test_empty (r0) && !nr_rect_f_test_empty (r1) && \
+	 !((r0) && (r1) && !NR_RECT_DFLS_TEST_INTERSECT (r0, r1)))
+#define nr_rect_l_test_intersect(r0,r1) \
+	(!nr_rect_l_test_empty (r0) && !nr_rect_l_test_empty (r1) && \
+	 !((r0) && (r1) && !NR_RECT_DFLS_TEST_INTERSECT (r0, r1)))
+#define nr_rect_s_test_intersect(r0,r1) \
+	(!nr_rect_s_test_empty (r0) && !nr_rect_s_test_empty (r1) && \
+	 !((r0) && (r1) && !NR_RECT_DFLS_TEST_INTERSECT (r0, r1)))
 
-#define nr_rect_d_point_d_test_inside(r,p) ((r) && (p) && !NR_RECT_DFLS_TEST_EMPTY (r) && NR_RECT_DF_POINT_DF_TEST_INSIDE (r,p))
-#define nr_rect_f_point_f_test_inside(r,p) ((r) && (p) && !NR_RECT_DFLS_TEST_EMPTY (r) && NR_RECT_DF_POINT_DF_TEST_INSIDE (r,p))
+#define nr_rect_d_point_d_test_inside(r,p) ((p) && (!(r) || (!NR_RECT_DF_TEST_EMPTY (r) && NR_RECT_DF_POINT_DF_TEST_INSIDE (r,p))))
+#define nr_rect_f_point_f_test_inside(r,p) ((p) && (!(r) || (!NR_RECT_DF_TEST_EMPTY (r) && NR_RECT_DF_POINT_DF_TEST_INSIDE (r,p))))
 
 /* NULL values are OK for r0 and r1, but not for d */
 

@@ -9,7 +9,8 @@
  *
  * Copyright (C) 2001-2002 Lauris Kaplinski
  *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * Released under GNU Lesser General Public License
+ * Read the file 'COPYING.LIB' for more information
  */
 
 #include <gtk/gtkwidget.h>
