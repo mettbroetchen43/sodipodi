@@ -1,3 +1,11 @@
+2002-12-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/align.c (sp_align_arrange_clicked): Collected all
+	arrangement methods into generic one
+	(create_base_menu): Compact
+	(sp_align_add_menuitem): New helper
+	(sp_quick_align_dialog): Use value matrix instead of different callbacks
+
 2002-12-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.c (sp_canvas_expose): Free rects

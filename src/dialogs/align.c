@@ -50,21 +50,36 @@ enum {
 	SP_ALIGN_SELECTION,
 };
 
-void sp_quick_align_top_in (void);
-void sp_quick_align_top_out (void);
-void sp_quick_align_bottom_in (void);
-void sp_quick_align_bottom_out (void);
-void sp_quick_align_left_in (void);
-void sp_quick_align_left_out (void);
-void sp_quick_align_right_in (void);
-void sp_quick_align_right_out (void);
-void sp_quick_align_center_hor (void);
-void sp_quick_align_center_ver (void);
+enum {
+	SP_ALIGN_TOP_IN,
+	SP_ALIGN_TOP_OUT,
+	SP_ALIGN_RIGHT_IN,
+	SP_ALIGN_RIGHT_OUT,
+	SP_ALIGN_BOTTOM_IN,
+	SP_ALIGN_BOTTOM_OUT,
+	SP_ALIGN_LEFT_IN,
+	SP_ALIGN_LEFT_OUT,
+	SP_ALIGN_CENTER_HOR,
+	SP_ALIGN_CENTER_VER,
+};
+
+static const unsigned char aligns[10][8] = {
+	{0, 0, 0, 2, 0, 0, 0, 2},
+	{0, 0, 0, 2, 0, 0, 2, 0},
+	{0, 2, 0, 0, 0, 2, 0, 0},
+	{0, 2, 0, 0, 2, 0, 0, 0},
+	{0, 0, 2, 0, 0, 0, 2, 0},
+	{0, 0, 2, 0, 0, 0, 0, 2},
+	{2, 0, 0, 0, 2, 0, 0, 0},
+	{2, 0, 0, 0, 0, 2, 0, 0},
+	{1, 1, 0, 0, 1, 1, 0, 0},
+	{0, 0, 1, 1, 0, 0, 1, 1}
+};
+
+void sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns);
 
 void sp_quick_align_dialog_close (void);
 
-static void sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
-				    gdouble sx0, gdouble sx1, gdouble sy0, gdouble sy1);
 static GtkWidget * create_base_menu (void);
 static void set_base (GtkMenuItem * menuitem, gpointer data);
 static SPItem * sp_quick_align_find_master (const GSList * slist, gboolean horizontal);
@@ -82,7 +97,7 @@ sp_quick_align_dialog_delete (void)
 }
 
 static void
-sp_align_add_button (GtkWidget *t, int col, int row, GtkSignalFunc handler, const unsigned char *pxname)
+sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, const unsigned char *pxname)
 {
 	GtkWidget *pm, *b;
 	unsigned char c[1024];
@@ -93,7 +108,7 @@ sp_align_add_button (GtkWidget *t, int col, int row, GtkSignalFunc handler, cons
 	b = gtk_button_new ();
 	gtk_widget_show (b);
 	gtk_container_add (GTK_CONTAINER (b), pm);
-	if (handler) gtk_signal_connect (GTK_OBJECT (b), "clicked", handler, NULL);
+	if (handler) g_signal_connect (G_OBJECT (b), "clicked", handler, (gpointer) data);
 	gtk_table_attach (GTK_TABLE (t), b, col, col + 1, row, row + 1, 0, 0, 0, 0);
 }
 
@@ -105,7 +120,7 @@ sp_quick_align_dialog (void)
 
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Align objects"));
-		gtk_signal_connect (GTK_OBJECT (dlg), "delete_event", GTK_SIGNAL_FUNC (sp_quick_align_dialog_delete), NULL);
+		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
 
 		vb = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vb);
@@ -120,17 +135,17 @@ sp_quick_align_dialog (void)
 		gtk_widget_show (t);
 		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
 
-		sp_align_add_button (t, 0, 0, GTK_SIGNAL_FUNC (sp_quick_align_left_out), "al_left_out.xpm");
-		sp_align_add_button (t, 1, 0, GTK_SIGNAL_FUNC (sp_quick_align_left_in), "al_left_in.xpm");
-		sp_align_add_button (t, 2, 0, GTK_SIGNAL_FUNC (sp_quick_align_center_hor), "al_center_hor.xpm");
-		sp_align_add_button (t, 3, 0, GTK_SIGNAL_FUNC (sp_quick_align_right_in), "al_right_in.xpm");
-		sp_align_add_button (t, 4, 0, GTK_SIGNAL_FUNC (sp_quick_align_right_out), "al_right_out.xpm");
+		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_OUT], "al_left_out.xpm");
+		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_IN], "al_left_in.xpm");
+		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_HOR], "al_center_hor.xpm");
+		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_IN], "al_right_in.xpm");
+		sp_align_add_button (t, 4, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_OUT], "al_right_out.xpm");
 
-		sp_align_add_button (t, 0, 1, GTK_SIGNAL_FUNC (sp_quick_align_top_out), "al_top_out.xpm");
-		sp_align_add_button (t, 1, 1, GTK_SIGNAL_FUNC (sp_quick_align_top_in), "al_top_in.xpm");
-		sp_align_add_button (t, 2, 1, GTK_SIGNAL_FUNC (sp_quick_align_center_ver), "al_center_ver.xpm");
-		sp_align_add_button (t, 3, 1, GTK_SIGNAL_FUNC (sp_quick_align_bottom_in), "al_bottom_in.xpm");
-		sp_align_add_button (t, 4, 1, GTK_SIGNAL_FUNC (sp_quick_align_bottom_out), "al_bottom_out.xpm");
+		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_OUT], "al_top_out.xpm");
+		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_IN], "al_top_in.xpm");
+		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_VER], "al_center_ver.xpm");
+		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_IN], "al_bottom_in.xpm");
+		sp_align_add_button (t, 4, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_OUT], "al_bottom_out.xpm");
 	}
 
 	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);
@@ -144,49 +159,31 @@ sp_quick_align_dialog_close (void)
 	if (GTK_WIDGET_VISIBLE (dlg)) gtk_widget_hide (dlg);
 }
 
+static void
+sp_align_add_menuitem (GtkWidget *menu, const unsigned char *label, GCallback handler, int value)
+{
+	GtkWidget *menuitem;
+
+	menuitem = gtk_menu_item_new_with_label (label);
+	gtk_widget_show (menuitem);
+	if (handler) g_signal_connect (G_OBJECT (menuitem), "activate", handler, GINT_TO_POINTER (value));
+	gtk_menu_append (GTK_MENU (menu), menuitem);
+}
+
 static GtkWidget *
 create_base_menu (void)
 {
-	GtkWidget * menu;
-	GtkWidget * menuitem;
+	GtkWidget *menu;
 
 	menu = gtk_menu_new ();
 
-	menuitem = gtk_menu_item_new_with_label (_("Last selected"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_LAST));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("First selected"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_FIRST));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("Biggest item"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_BIGGEST));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("Smallest item"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_SMALLEST));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("Page"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_PAGE));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("Drawing"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_DRAWING));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
-	menuitem = gtk_menu_item_new_with_label (_("Selection"));
-	gtk_widget_show (menuitem);
-	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-			    GTK_SIGNAL_FUNC (set_base), GINT_TO_POINTER (SP_ALIGN_SELECTION));
-	gtk_menu_append ((GtkMenu *) menu, menuitem);
+	sp_align_add_menuitem (menu, _("Last selected"), G_CALLBACK (set_base), SP_ALIGN_LAST);
+	sp_align_add_menuitem (menu, _("First selected"), G_CALLBACK (set_base), SP_ALIGN_FIRST);
+	sp_align_add_menuitem (menu, _("Biggest item"), G_CALLBACK (set_base), SP_ALIGN_BIGGEST);
+	sp_align_add_menuitem (menu, _("Smallest item"), G_CALLBACK (set_base), SP_ALIGN_SMALLEST);
+	sp_align_add_menuitem (menu, _("Page"), G_CALLBACK (set_base), SP_ALIGN_PAGE);
+	sp_align_add_menuitem (menu, _("Drawing"), G_CALLBACK (set_base), SP_ALIGN_DRAWING);
+	sp_align_add_menuitem (menu, _("Selection"), G_CALLBACK (set_base), SP_ALIGN_SELECTION);
 
 	gtk_widget_show (menu);
 
@@ -201,67 +198,10 @@ set_base (GtkMenuItem *menuitem, gpointer data)
 
 
 void
-sp_quick_align_top_in (void)
+sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns)
 {
-	sp_quick_align_arrange (0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
-}
-
-
-void
-sp_quick_align_top_out (void) {
-	sp_quick_align_arrange (0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0);
-}
-
-
-void
-sp_quick_align_right_in (void) {
-	sp_quick_align_arrange (0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-}
-
-
-void
-sp_quick_align_right_out (void) {
-	sp_quick_align_arrange (0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
-}
-
-
-void
-sp_quick_align_bottom_in (void) {
-	sp_quick_align_arrange (0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-}
-
-
-void
-sp_quick_align_bottom_out (void) {
-	sp_quick_align_arrange (0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-}
-
-
-void
-sp_quick_align_left_in (void) {
-	sp_quick_align_arrange (1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
-}
-
-void
-sp_quick_align_left_out (void) {
-	sp_quick_align_arrange (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-}
-
-
-void
-sp_quick_align_center_hor (void) {
-	sp_quick_align_arrange (0.5, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0);
-}
-
-void
-sp_quick_align_center_ver (void) {
-	sp_quick_align_arrange (0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5);
-}
-
-static void
-sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
-			gdouble sx0, gdouble sx1, gdouble sy0, gdouble sy1)
-{
+	float mx0, mx1, my0, my1;
+	float sx0, sx1, sy0, sy1;
 	SPDesktop * desktop;
 	SPSelection * selection;
 	GSList * slist;
@@ -270,6 +210,15 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 	NRPointF mp, sp;
 	GSList * l;
 	gboolean changed;
+
+	mx0 = 0.5 * aligns[0];
+	mx1 = 0.5 * aligns[1];
+	my0 = 0.5 * aligns[2];
+	my1 = 0.5 * aligns[3];
+	sx0 = 0.5 * aligns[4];
+	sx1 = 0.5 * aligns[5];
+	sy0 = 0.5 * aligns[6];
+	sy1 = 0.5 * aligns[7];
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (!desktop) return;

@@ -13,7 +13,6 @@
  */
 
 /* fixme: Without that GtkText does not work in Win32 */
-#define GTK_ENABLE_BROKEN
 
 #include <config.h>
 
