@@ -394,12 +394,13 @@ sp_print_document (SPDocument *doc)
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_container_add (GTK_CONTAINER (f), vb);
 
-	l = gtk_label_new (_("Please select destination lpr queue.\n"
-			     "Use '> queuename' to print to file.\n"
+	l = gtk_label_new (_("Please enter destination lpr queue.\n"
+			     "Use '> filename' to print to file.\n"
 			     "Use '| prog arg...' to pipe to program"));
 	gtk_box_pack_start (GTK_BOX (vb), l, FALSE, FALSE, 0);
 
 	e = gtk_entry_new ();
+	gtk_entry_set_text (GTK_ENTRY (e), "lp");
 	gtk_box_pack_start (GTK_BOX (vb), e, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (vbox);

@@ -132,9 +132,7 @@ sp_maintoolbox_create (void)
 		/* Create window */
 		toolbox = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
-		/* Hmmm, this does not shrink, but set_policy is deprecated. */
-		gtk_window_set_resizable (GTK_WINDOW (toolbox), TRUE);
-/*  		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE); */
+		gtk_window_set_resizable (GTK_WINDOW (toolbox), FALSE);
 		g_signal_connect (G_OBJECT (toolbox), "destroy", G_CALLBACK (sp_maintoolbox_destroy), NULL);
 		g_signal_connect (G_OBJECT (toolbox), "delete_event", G_CALLBACK (sp_maintoolbox_delete_event), NULL);
 		g_signal_connect (G_OBJECT (toolbox), "drag_data_received", G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);

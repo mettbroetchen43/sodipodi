@@ -1,5 +1,18 @@
 2003-01-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/file.c (sp_file_open_dialog): Rearrange
+	(sp_file_save_dialog): Ditto
+	(sp_file_save_document): Ditto
+
+2003-01-13  MenTaLguY  <mental@rydia.net>
+
+	* src/toolbox.c (sp_maintoolbox_create): turned off user resizing of toolbox so it autoresizes properly
+
+2003-01-13  MenTaLguY  <mental@rydia.net>
+
+	* src/toolbox.c (sp_maintoolbox_create): turned off user resizing of toolbox so it autoresizes properly
+
+
 	* src/print.c (sp_print_plain_bind): Move generic PS code here
 	(sp_print_plain_release): Ditto
 	(sp_print_plain_fill): Ditto

@@ -844,13 +844,15 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 			gint b;
 			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME (doc));
 			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO, msg);
-			gtk_dialog_add_button (GTK_DIALOG(dlg), GTK_STOCK_CANCEL, GTK_BUTTONS_CANCEL);
+			gtk_dialog_add_button (GTK_DIALOG(dlg), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 			g_free (msg);
 			b = gtk_dialog_run (GTK_DIALOG(dlg));
 			gtk_widget_destroy(dlg);
 			switch (b) {
 			case GTK_RESPONSE_YES:
+				sp_document_ref (doc);
 				sp_file_save_document (doc);
+				sp_document_unref (doc);
 				break;
 			case GTK_RESPONSE_NO:
 				break;
@@ -1025,29 +1027,6 @@ sp_desktop_toggle_borders (GtkWidget * widget)
 
 	sp_desktop_widget_show_decorations (SP_DESKTOP_WIDGET (desktop->owner), !desktop->owner->decorations);
 }
-
-#if 0
-// read and set the zoom factor from the combo box in the desktop window
-void 
-sp_dtw_zoom_activate (GtkEntry *entry, SPDesktopWidget *dtw) {
-	const gchar * zoom_str;
-	NRRectF d;
-	gdouble any;
-	
-	zoom_str = gtk_entry_get_text (entry);
-	
-	//  zoom_str[5] = '\0';
-	any = strtod (zoom_str, NULL) / 100.0;
-	if (any < SP_DESKTOP_ZOOM_MIN / 2) return;
-	
-	sp_desktop_get_display_area (SP_ACTIVE_DESKTOP, &d);
-	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
-	// give focus back to canvas
-#if 1
-	gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
-#endif
-}
-#endif
 
 /*
  * Sooner or later we want to implement two sets of methods

@@ -307,18 +307,18 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				sp_file_print_preview (NULL, NULL);
 			}
 			break;
-	  case GDK_s: // Crtl s - save file
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      ret = TRUE;
-	      sp_file_save (NULL);
-	    }
-	    break;
-	  case GDK_S: // Crtl S - save file as
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      ret = TRUE;
-	      sp_file_save_as (NULL);
-	    }
-	    break;
+		case GDK_s: // Crtl s - save file
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_save (NULL, NULL);
+			}
+			break;
+		case GDK_S: // Crtl S - save file as
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_save_as (NULL, NULL);
+			}
+			break;
 	  case GDK_q: // Ctrl q - quit
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_file_exit ();

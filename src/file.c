@@ -125,36 +125,6 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	gtk_widget_show (w);
 }
 
-void
-sp_file_save_document (SPDocument *document)
-{
-	SPRepr * repr;
-	const gchar * fn;
-
-	repr = sp_document_repr_root (document);
-
-	fn = sp_repr_attr (repr, "sodipodi:docname");
-	if (fn == NULL) {
-		sp_file_save_as (NULL);
-	} else {
-		/* fixme: */
-		sp_document_set_undo_sensitive (document, FALSE);
-		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
-		sp_document_set_undo_sensitive (document, TRUE);
-		sp_repr_save_file (sp_document_repr_doc (document), fn);
-	}
-}
-
-void sp_file_save (GtkWidget *widget)
-{
-	SPDocument * doc;
-
-	doc = SP_ACTIVE_DOCUMENT;
-	if (!SP_IS_DOCUMENT (doc)) return;
-
-	sp_file_save_document (doc);
-}
-
 static void
 file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 {
@@ -167,14 +137,12 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 	type = g_object_get_data (G_OBJECT (fs), "type");
 	spns = !(type && !strcmp (type, "svg"));
 
-	gtk_widget_destroy (GTK_WIDGET (fs));
+	doc = g_object_get_data (G_OBJECT (fs), "document");
+	g_return_if_fail (doc != NULL);
 
 	if (filename != NULL) {
 		const GSList *images, *l;
 		SPReprDoc *rdoc;
-
-		doc = SP_ACTIVE_DOCUMENT;
-		g_return_if_fail (doc != NULL);
 
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
@@ -220,24 +188,20 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 }
 
 static void
-file_save_cancel (GtkButton *b, GtkFileSelection *fs)
-{
-	gtk_widget_destroy (GTK_WIDGET (fs));
-}
-
-static void
 sp_file_save_type_activate (GtkWidget *widget, GObject *dlg)
 {
 	g_object_set_data (dlg, "type", g_object_get_data (G_OBJECT (widget), "type"));
 }
 
-void
-sp_file_save_as (GtkWidget * widget)
+static void
+sp_file_save_dialog (SPDocument *doc)
 {
 	GtkFileSelection *fsel;
 	GtkWidget *dlg, *hb, *l, *om, *m, *mi;
+	int b;
 
 	dlg = gtk_file_selection_new (_("Save file"));
+	g_object_set_data (G_OBJECT (dlg), "document", doc);
 	/* fixme: Remove modality (Lauris) */
 	gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 
@@ -268,14 +232,58 @@ sp_file_save_as (GtkWidget * widget)
 	gtk_widget_show (l);
 	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 
+#if 0
 	g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_save_ok), dlg);
 	g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_save_cancel), dlg);
+#endif
 
 	if (save_path) {
 		gtk_file_selection_set_filename (fsel, save_path);
 	}
 
-	gtk_widget_show (dlg);
+	b = gtk_dialog_run (GTK_DIALOG (dlg));
+
+	if (b == GTK_RESPONSE_OK) {
+		file_save_ok (NULL, GTK_FILE_SELECTION (dlg));
+	}
+
+	gtk_widget_destroy (dlg);
+}
+
+void
+sp_file_save_document (SPDocument *doc)
+{
+	SPRepr * repr;
+	const gchar * fn;
+
+	repr = sp_document_repr_root (doc);
+
+	fn = sp_repr_attr (repr, "sodipodi:docname");
+	if (fn == NULL) {
+		sp_file_save_dialog (doc);
+	} else {
+		/* fixme: */
+		sp_document_set_undo_sensitive (doc, FALSE);
+		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
+		sp_document_set_undo_sensitive (doc, TRUE);
+		sp_repr_save_file (sp_document_repr_doc (doc), fn);
+	}
+}
+
+void
+sp_file_save (gpointer object, gpointer data)
+{
+	if (!SP_ACTIVE_DOCUMENT) return;
+
+	sp_file_save_document (SP_ACTIVE_DOCUMENT);
+}
+
+void
+sp_file_save_as (gpointer object, gpointer data)
+{
+	if (!SP_ACTIVE_DOCUMENT) return;
+
+	sp_file_save_dialog (SP_ACTIVE_DOCUMENT);
 }
 
 static void
