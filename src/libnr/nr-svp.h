@@ -35,6 +35,9 @@ struct _NRSVP {
 
 void nr_svp_free (NRSVP *svp);
 
+int nr_svp_point_wind (NRSVP *svp, float x, float y);
+double nr_svp_point_distance (NRSVP *svp, float x, float y);
+
 /* Sorted vertex lists */
 
 typedef struct _NRVertex NRVertex;

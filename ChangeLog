@@ -1,3 +1,19 @@
+2003-04-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-render.c (nr_svp_render): New method
+	(nr_pixblock_render_svp_mask_or): New method
+	(nr_pixblock_render_svl_mask_or): Renamed old one
+	(nr_svl_render): Ditto
+
+	* src/libnr/nr-svp.c (nr_svp_point_wind): Implement
+	(nr_line_point_distance2): Helper
+	(nr_svp_point_distance): Ditto
+	(nr_svp_from_svl): New method, implemented packed format and
+	renamed old one to S(orted)V(ertex)L(ist)
+	(nr_svp_free): Ditto
+
+	* src/display/nr-arena-shape.h: Port all basics to NRSVP
+
 2003-04-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/knotholder.c (knot_ungrabbed_handler): Flush object here

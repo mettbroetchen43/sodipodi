@@ -349,7 +349,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		NRSVPSegment *seg;
 		seg = svp->segments + sidx;
 		/* g_assert (nsvl->bbox.y0 == nsvl->vertex->y); */
-		if ((seg->bbox.y1 > y0) && (seg->bbox.y1 > seg->bbox.y0)) {
+		if (seg->wind && (seg->bbox.y1 > y0) && (seg->bbox.y1 > seg->bbox.y0)) {
 			NRSlice *newslice;
 			newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y0);
 			slices = nr_slice_insert_sorted (slices, newslice);
@@ -374,7 +374,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		while ((sidx < svp->length) && (svp->segments[sidx].bbox.y0 < (y + 1))) {
 			NRSVPSegment *seg;
 			seg = svp->segments + sidx;
-			if (seg->bbox.y1 > seg->bbox.y0) {
+			if (seg->wind && (seg->bbox.y1 > seg->bbox.y0)) {
 				NRSlice *newslice;
 				/* fixme: we should use safely nsvl->vertex->y here */
 				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, MAX (y, seg->bbox.y0));

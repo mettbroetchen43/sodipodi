@@ -20,25 +20,19 @@
 #include <libnr/nr-path.h>
 #include <libnr/nr-pixops.h>
 #include <libnr/nr-blit.h>
+#include <libnr/nr-svp-render.h>
+
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
+#include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#include <libart_lgpl/art_rect_svp.h>
-#include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
-#include <libart_lgpl/art_svp_wind.h>
-#include <libart_lgpl/art_svp_point.h>
-#include <libart_lgpl/art_gray_svp.h>
+
 #include "../helper/art-utils.h"
 #include "../style.h"
 #include "nr-arena.h"
 #include "nr-arena-shape.h"
-
-#ifdef WITH_NRSVP
-#include <libnr/nr-svp-render.h>
-#endif
 
 static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
@@ -122,12 +116,8 @@ nr_arena_shape_finalize (NRObject *object)
 		shape->markers = nr_arena_item_detach_unref (item, shape->markers);
 	}
 
-#ifdef WITH_NRSVP
-	if (shape->nrsvl) nr_svl_free_list (shape->nrsvl);
-#endif
-
-	if (shape->fill_svp) art_svp_free (shape->fill_svp);
-	if (shape->stroke_svp) art_svp_free (shape->stroke_svp);
+	if (shape->fill_svp) nr_svp_free (shape->fill_svp);
+	if (shape->stroke_svp) nr_svp_free (shape->stroke_svp);
 	if (shape->fill_painter) sp_painter_free (shape->fill_painter);
 	if (shape->stroke_painter) sp_painter_free (shape->stroke_painter);
 	if (shape->style) sp_style_unref (shape->style);
@@ -265,16 +255,12 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (TRUE || !nr_matrix_d_test_transform_equal (&gc->transform, &shape->ctm, NR_EPSILON_D)) {
 		/* Concept test */
 		if (shape->fill_svp) {
-			art_svp_free (shape->fill_svp);
+			nr_svp_free (shape->fill_svp);
 			shape->fill_svp = NULL;
 		}
-#ifdef WITH_NRSVP
-		if (shape->nrsvl) nr_svl_free_list (shape->nrsvl);
-		shape->nrsvl = NULL;
-#endif
 	}
 	if (shape->stroke_svp) {
-		art_svp_free (shape->stroke_svp);
+		nr_svp_free (shape->stroke_svp);
 		shape->stroke_svp = NULL;
 	}
 	if (shape->fill_painter) {
@@ -294,35 +280,16 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
-#ifdef WITH_NRSVP
 				NRMatrixF ctmf;
+				NRSVL *svl;
 				nr_matrix_f_from_d (&ctmf, &gc->transform);
 				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, FALSE, 0.25);
-#if 0
-				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
-#else
-				shape->nrsvl = nr_svl_from_art_vpath (vp);
-#endif
-				shape->fill_svp = nr_art_svp_from_svl (shape->nrsvl);
-#else
-				ArtSVP *svpa, *svpb;
-				NRMatrixF ctmf;
-				nr_matrix_f_from_d (&ctmf, &gc->transform);
-				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, TRUE, 0.25);
-				svpa = art_svp_from_vpath (vp);
-				svpb = art_svp_uncross (svpa);
-				art_svp_free (svpa);
-				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
-
-				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
-				svpa = nr_art_svp_from_svp (shape->nrsvp);
-				art_svp_free (shape->fill_svp);
-				shape->fill_svp = svpa;
-
-				art_svp_free (svpb);
-#endif
+				svl = nr_svl_from_art_vpath (vp);
 				art_free (vp);
+				shape->fill_svp = nr_svp_from_svl (svl, NULL);
+				nr_svl_free_list (svl);
 			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
+#if 0
 				ArtSVP *svpa;
 				/* Concept test */
 				svpa = art_svp_translate (shape->fill_svp,
@@ -330,6 +297,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 							  gc->transform.c[5] - shape->ctm.c[5]);
 				art_svp_free (shape->fill_svp);
 				shape->fill_svp = svpa;
+#endif
 			}
 			shape->ctm = gc->transform;
 		}
@@ -338,6 +306,8 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
 		double width, scale, dlen;
 		int i;
+		ArtSVP *asvp;
+		NRSVL *svl;
 		abp = art_bpath_affine_transform (shape->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
 		vp = art_bez_path_to_vec (abp, 0.25);
 		art_free (abp);
@@ -361,17 +331,69 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			pvp = vp;
 			g_free (dash.dash);
 		}
-		shape->stroke_svp = art_svp_vpath_stroke (pvp,
-							  shape->style->stroke_linejoin.value,
-							  shape->style->stroke_linecap.value,
-							  width,
-							  shape->style->stroke_miterlimit.value, 0.25);
+		asvp = art_svp_vpath_stroke (pvp,
+					     shape->style->stroke_linejoin.value,
+					     shape->style->stroke_linecap.value,
+					     width,
+					     shape->style->stroke_miterlimit.value, 0.25);
 		art_free (pvp);
+		svl = nr_svl_from_art_svp (asvp);
+		art_svp_free (asvp);
+		shape->stroke_svp = nr_svp_from_svl (svl, NULL);
+		nr_svl_free_list (svl);
 	}
 
 	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
-	if (shape->stroke_svp) art_drect_svp_union (&bbox, shape->stroke_svp);
-	if (shape->fill_svp) art_drect_svp_union (&bbox, shape->fill_svp);
+	if (shape->stroke_svp && shape->stroke_svp->length > 0) {
+		unsigned int sidx;
+		float x0, y0, x1, y1;
+		x0 = y0 = NR_HUGE_F;
+		x1 = y1 = -NR_HUGE_F;
+		for (sidx = 0; sidx < shape->stroke_svp->length; sidx++) {
+			x0 = MIN (x0, shape->stroke_svp->segments[sidx].bbox.x0);
+			y0 = MIN (y0, shape->stroke_svp->segments[sidx].bbox.y0);
+			x1 = MAX (x1, shape->stroke_svp->segments[sidx].bbox.x1);
+			y1 = MAX (y1, shape->stroke_svp->segments[sidx].bbox.y1);
+		}
+		if ((x1 > x0) && (y1 > y0)) {
+			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {
+				bbox.x0 = MIN (bbox.x0, x0);
+				bbox.y0 = MIN (bbox.y0, y0);
+				bbox.x1 = MAX (bbox.x1, x1);
+				bbox.y1 = MAX (bbox.y1, y1);
+			} else {
+				bbox.x0 = x0;
+				bbox.y0 = y0;
+				bbox.x1 = x1;
+				bbox.y1 = y1;
+			}
+		}
+	}
+	if (shape->fill_svp && shape->fill_svp->length > 0) {
+		unsigned int sidx;
+		float x0, y0, x1, y1;
+		x0 = y0 = NR_HUGE_F;
+		x1 = y1 = -NR_HUGE_F;
+		for (sidx = 0; sidx < shape->fill_svp->length; sidx++) {
+			x0 = MIN (x0, shape->fill_svp->segments[sidx].bbox.x0);
+			y0 = MIN (y0, shape->fill_svp->segments[sidx].bbox.y0);
+			x1 = MAX (x1, shape->fill_svp->segments[sidx].bbox.x1);
+			y1 = MAX (y1, shape->fill_svp->segments[sidx].bbox.y1);
+		}
+		if ((x1 > x0) && (y1 > y0)) {
+			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {
+				bbox.x0 = MIN (bbox.x0, x0);
+				bbox.y0 = MIN (bbox.y0, y0);
+				bbox.x1 = MAX (bbox.x1, x1);
+				bbox.y1 = MAX (bbox.y1, y1);
+			} else {
+				bbox.x0 = x0;
+				bbox.y0 = y0;
+				bbox.x1 = x1;
+				bbox.y1 = y1;
+			}
+		}
+	}
 	if (art_drect_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
 
 	item->bbox.x0 = bbox.x0 - 1.0;
@@ -421,16 +443,8 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		NRPixBlock m;
 		guint32 rgba;
 
-#ifdef WITH_NRSVP
-		NRSVP *svp;
 		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		svp = nr_svp_from_svl (shape->nrsvl, NULL);
-		nr_pixblock_render_svp_mask_or (&m, svp);
-		nr_svp_free (svp);
-#else
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
-#endif
+		nr_pixblock_render_svp_mask_or (&m, shape->fill_svp);
 		m.empty = FALSE;
 
 		switch (style->fill.type) {
@@ -469,7 +483,7 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		guint32 rgba;
 
 		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		art_gray_svp_aa (shape->stroke_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+		nr_pixblock_render_svp_mask_or (&m, shape->stroke_svp);
 		m.empty = FALSE;
 
 		switch (style->stroke.type) {
@@ -521,8 +535,11 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 	if (shape->fill_svp) {
 		NRPixBlock m;
 		int x, y;
+
+		/* fixme: We can OR in one step (Lauris) */
 		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+		nr_pixblock_render_svp_mask_or (&m, shape->fill_svp);
+
 		for (y = area->y0; y < area->y1; y++) {
 			unsigned char *s, *d;
 			s = NR_PIXBLOCK_PX (&m) + (y - area->y0) * m.rs;
@@ -552,21 +569,17 @@ nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsign
 
 	if (item->state & NR_ARENA_ITEM_STATE_RENDER) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-#ifdef WITH_NRSVP
-			if (nr_svl_point_wind (shape->nrsvl, x, y)) return item;
-#else
-			if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
-#endif
+			if (nr_svp_point_wind (shape->fill_svp, x, y)) return item;
 		}
 		if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-			if (art_svp_point_wind (shape->stroke_svp, x, y)) return item;
+			if (nr_svp_point_wind (shape->stroke_svp, x, y)) return item;
 		}
 		if (delta > 1e-3) {
 			if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-				if (art_svp_point_dist (shape->fill_svp, x, y) <= delta) return item;
+				if (nr_svp_point_distance (shape->fill_svp, x, y) <= delta) return item;
 			}
 			if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-				if (art_svp_point_dist (shape->stroke_svp, x, y) <= delta) return item;
+				if (nr_svp_point_distance (shape->stroke_svp, x, y) <= delta) return item;
 			}
 		}
 	} else {

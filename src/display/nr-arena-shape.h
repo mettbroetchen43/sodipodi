@@ -13,15 +13,12 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define WITH_NRSVP
-
 #define NR_TYPE_ARENA_SHAPE (nr_arena_shape_get_type ())
 #define NR_ARENA_SHAPE(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_SHAPE, NRArenaShape))
 #define NR_IS_ARENA_SHAPE(obj) (NR_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_SHAPE))
 
-#ifdef WITH_NRSVP
 #include <libnr/nr-svp.h>
-#endif
+
 #include "helper/curve.h"
 #include "forward.h"
 #include "sp-paint-server.h"
@@ -32,19 +29,15 @@ struct _NRArenaShape {
 	/* Shape data */
 	SPCurve *curve;
 	SPStyle *style;
-	ArtDRect paintbox;
+	NRRectD paintbox;
 	/* State data */
 	NRMatrixD ctm;
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;
-	ArtSVP *fill_svp;
-	ArtSVP *stroke_svp;
+	NRSVP *fill_svp;
+	NRSVP *stroke_svp;
 	/* Markers */
 	NRArenaItem *markers;
-
-#ifdef WITH_NRSVP
-	NRSVL *nrsvl;
-#endif
 };
 
 struct _NRArenaShapeClass {
