@@ -1,3 +1,33 @@
+2001-11-10  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-anchor.c: New file, implement SVG <a> element. Actual event
+	code is pure experimental and need some serious thinking.
+
+	* src/sp-anchor.h: Ditto
+
+	* src/svg-view.c (arena_handler): Forward arena events to SPEvents
+
+	* src/sp-object-repr.c (sp_object_type_lookup): parse <a> as anchor
+
+	* src/sp-item.h: Added ::event virtual method plus some test code
+
+	* src/sp-item.c (sp_item_event): New method
+
+	* src/desktop.c (sp_desktop_new): Moved drawing behind all other layers
+	(sp_desktop_document_resized): Resize page frame
+
+	* src/helper/sodipodi-ctrlrect.h: More complex structure to represent
+	page frame as well
+
+	* src/helper/sodipodi-ctrlrect.c (sp_ctrlrect_hline): New render method
+	(sp_ctrlrect_vline): Ditto
+	(sp_ctrlrect_area): Ditto
+	(sp_ctrlrect_render): Use more complex structure
+	(sp_ctrlrect_update): Ditto
+	(sp_ctrlrect_set_area): New method
+	(sp_ctrlrect_set_color): Ditto
+	(sp_ctrlrect_set_shadow): Ditto
+
 2001-11-09  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/display/nr-arena-image.c (nr_arena_image_update): Implemented

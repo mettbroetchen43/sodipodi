@@ -54,45 +54,102 @@
      guidehicolor="#ff0000"
      guidehiopacity="0.498039" />
   <rect
-     style="stroke:none;stroke-opacity:100%;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill:url(#linearGradient16);"
+     style="fill:url(#linearGradient16);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
      id="rect12"
      x="-128.849611"
      y="-242.123910"
      width="781.445058"
-     height="823.781382" />
+     height="823.781382"
+     sodipodi:insensitive="1" />
   <text
      style="fill:#ffffff; stroke:#000000; font-family:Book Antiqua; font-style:italic; font-weight:bold; font-size:56.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1.6pt; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="280.561156"
-     y="253.666405"
+     x="16.432306"
+     y="98.641607"
      id="title"
-     transform="matrix(1.28273 0 0 1.28273 -338.806 -177.957)">Sodipodi 0.24</text>
+     transform="scale(1.28273,1.28273)">Sodipodi 0.24</text>
   <text
      style="fill:#ffffff; stroke:#000000; font-family:Book Antiqua; font-style:italic; font-weight:bold; font-size:14.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:0.5pt; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="280.561156"
-     y="253.666405"
+     x="31.387033"
+     y="102.973363"
      id="text13"
-     transform="matrix(1.71212 0 0 1.71212 -426.616 -230.576)">A drawing application with style...</text>
+     transform="scale(1.71212,1.71212)">A drawing application with style...</text>
   <text
      style="fill:#000073; stroke:none; font-family:Helvetica; font-style:normal; font-weight:normal; font-size:12.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="14.867257"
-     y="308.672566"
-     id="text43"
-     transform="matrix(1 0 0 1 1.56462 -22.6883)">Copyright (C) 1999-2001 Ximian, Inc. and authors</text>
+     x="16.431877"
+     y="254.637327"
+     id="text43">Copyright (C) 1999-2001 Ximian, Inc. and authors</text>
   <text
      style="fill:#000073; stroke:none; font-family:Helvetica; font-style:normal; font-weight:normal; font-size:12.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="14.867257"
-     y="308.672566"
-     id="text44"
-     transform="matrix(1 0 0 1 1.93662 -39.6962)">Authors: Lauris Kaplinski, Raph Levien, Frank Felfe, Mitsuru Oka, Chema Celorio</text>
+     x="16.803877"
+     y="237.629427"
+     id="text44">Authors: Lauris Kaplinski, Raph Levien, Frank Felfe, Mitsuru Oka, Chema Celorio</text>
   <text
      style="fill:#000073; stroke:none; font-family:Helvetica; font-style:normal; font-weight:normal; font-size:12.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="14.867257"
-     y="308.672566"
-     id="text48"
-     transform="matrix(1 0 0 1 1.02462 -5.95644)">Released under GNU GPL</text>
-  <text
+     x="15.891877"
+     y="271.369187"
+     id="text48">Released under GNU GPL</text>
+  <a
+     id="a21"
+     xlink:href="http://www.sodipodi.com/"
+     transform="matrix(0.745223,0,0,0.745223,-79.7049,136.648)">    <rect
+       style="stroke:none; fill:#ffffff; fill-opacity:0.34965; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+       id="rect20"
+       x="130.285714"
+       y="205.714286"
+       width="205.061224"
+       height="30.693878" />
+    <g
+       id="g18"
+       transform="matrix(1.28887,0,0,1.28887,-75.0601,-73.3332)"
+       style="fill:#0000ff; fill-opacity:0.426573; ">      <text
+         style="fill:#0000ff; stroke:none; font-family:Helvetica; font-style:normal; font-weight:bold; font-size:16.000000; fill-opacity:0.426573; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+         x="167.070036"
+         y="233.082830"
+         id="text19">www.sodipodi.com</text>
+    </g>
+  </a>
+  <a
+     id="g64"
+     xlink:href="http://www.w3.org/"
+     transform="translate(111.074,0)">    <rect
+       style="stroke:none; fill:#ffffff; fill-opacity:0.34965; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+       id="rect58"
+       x="229.618911"
+       y="289.951017"
+       width="105.874192"
+       height="22.873784" />
+    <g
+       id="a59"
+       transform="matrix(0.960496,0,0,0.960496,76.5905,81.9984)"
+       style="fill:#0000ff; fill-opacity:0.426573; stroke:none; ">      <text
+         style="fill:#0000ff; stroke:none; font-family:Helvetica; font-style:normal; font-weight:bold; font-size:16.000000; fill-opacity:0.426573; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+         x="167.070036"
+         y="233.082830"
+         id="text60">www.w3.org</text>
+    </g>
+  </a>
+  <a
+     id="g71"
+     xlink:href="http://www.gnome.org/"
+     transform="translate(13.2231,0)">    <rect
+       style="stroke:none; fill:#ffffff; fill-opacity:0.34965; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+       id="rect54"
+       x="176.064811"
+       y="289.951017"
+       width="136.287415"
+       height="22.873784" />
+    <g
+       id="a55"
+       transform="matrix(0.960496,0,0,0.960496,23.0364,81.9984)"
+       style="fill:#0000ff; fill-opacity:0.426573; stroke:none; ">      <text
+         style="fill:#0000ff; stroke:none; font-family:Helvetica; font-style:normal; font-weight:bold; font-size:16.000000; fill-opacity:0.426573; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
+         x="167.070036"
+         y="233.082830"
+         id="text56">www.gnome.org</text>
+    </g>
+  </a>
+  <path
      style="fill:#00bffe; stroke:none; font-family:Kochi Gothic; font-style:normal; font-weight:normal; font-size:48.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:1px; stroke-linejoin:miter; stroke-linecap:butt; "
-     x="96.991151"
-     y="75.044248"
-     id="text18">ソディポディ</text>
+     d="M 111.944 43.1393 C 110.351 39.7018 108.132 36.3424 105.288 33.0611 L 108.944 30.9518 C 111.601 33.7643 114.069 37.0924 116.351 40.9361 C 115.132 41.4049 113.663 42.1393 111.944 43.1393 z M 132.147 29.1705 C 132.241 28.6393 132.585 28.4518 133.179 28.608 L 139.038 30.483 C 139.632 30.7018 139.663 31.0143 139.132 31.4205 L 137.585 32.0768 C 136.835 34.7018 135.351 38.0924 133.132 42.2486 C 130.913 46.4049 128.429 50.1236 125.679 53.4049 C 122.929 56.6861 118.944 60.3736 113.726 64.4674 C 112.663 63.0611 111.366 62.0143 109.835 61.3268 L 109.835 60.9518 C 114.21 58.2018 117.913 55.1705 120.944 51.858 C 123.976 48.5143 126.444 44.8424 128.351 40.8424 C 130.288 36.8111 131.46 33.9518 131.866 32.2643 C 132.304 30.5768 132.397 29.5455 132.147 29.1705 z M 186.382 24.4361 C 188.538 25.7799 190.444 27.3111 192.101 29.0299 L 189.476 30.6705 C 188.132 29.0455 186.491 27.608 184.554 26.358 L 186.382 24.4361 z M 183.007 27.7174 C 185.163 29.0611 187.069 30.5924 188.726 32.3111 L 186.101 33.9518 C 184.757 32.3268 183.116 30.8893 181.179 29.6393 L 183.007 27.7174 z M 156.054 28.5143 L 180.147 28.5143 L 180.147 32.3111 L 156.054 32.3111 L 156.054 28.5143 z M 149.116 39.2018 L 187.929 39.2018 L 187.929 42.9986 L 172.226 42.9986 C 172.007 48.2486 170.929 52.2955 168.991 55.1393 C 167.054 57.9518 163.897 60.8736 159.522 63.9049 C 158.147 62.4674 156.897 61.4518 155.772 60.858 L 155.772 60.4361 C 159.804 58.2174 162.71 55.8111 164.491 53.2174 C 166.304 50.5924 167.257 47.1861 167.351 42.9986 L 149.116 42.9986 L 149.116 39.2018 z M 220.976 35.7799 C 221.038 35.3424 221.304 35.1705 221.772 35.2643 L 226.366 36.5299 C 227.022 36.8111 227.038 37.1393 226.413 37.5143 L 225.241 37.983 C 223.71 40.358 222.241 42.2486 220.835 43.6549 C 219.429 45.0299 218.319 46.0768 217.507 46.7955 L 219.241 47.1236 C 219.741 47.3736 219.757 47.6861 219.288 48.0611 L 218.444 48.6236 L 218.444 65.733 L 214.601 65.733 L 214.601 49.1861 C 214.069 49.5611 213.022 50.3111 211.46 51.4361 C 209.929 52.5299 206.788 54.3424 202.038 56.8736 C 201.226 55.5924 200.335 54.6236 199.366 53.9674 L 199.366 53.6861 C 202.991 52.1861 206.288 50.4361 209.257 48.4361 C 212.257 46.4049 214.663 44.4049 216.476 42.4361 C 218.319 40.4674 219.569 38.9361 220.226 37.8424 C 220.913 36.7486 221.163 36.0611 220.976 35.7799 z M 257.913 47.8736 C 255.507 51.8736 252.522 55.8424 248.96 59.7799 C 247.304 58.6549 245.835 57.8893 244.554 57.483 L 244.554 56.9674 C 247.71 53.9361 249.976 51.233 251.351 48.858 C 252.757 46.483 253.476 45.1393 253.507 44.8268 C 253.663 44.358 253.976 44.2643 254.444 44.5455 L 258.663 46.5143 C 259.319 46.8268 259.382 47.1549 258.851 47.4986 L 257.913 47.8736 z M 271.507 45.8111 L 274.976 42.858 C 279.194 45.7955 283.085 49.5299 286.647 54.0611 L 286.694 54.6705 C 285.944 54.8893 284.585 55.9674 282.616 57.9049 C 279.491 52.9049 275.788 48.8736 271.507 45.8111 z M 245.304 34.3268 L 262.319 34.3268 L 262.319 27.9518 C 262.319 26.8893 262.226 26.1705 262.038 25.7955 C 262.007 25.233 262.226 24.983 262.694 25.0455 L 267.851 25.9361 C 268.757 26.1236 268.913 26.4986 268.319 27.0611 L 267.054 27.8111 L 267.054 34.3268 L 284.585 34.3268 L 284.585 38.1236 L 267.054 38.1236 L 267.054 56.733 C 267.085 58.0143 267.069 59.1549 267.007 60.1549 C 266.944 61.1549 266.507 62.0143 265.694 62.733 C 264.913 63.483 263.819 63.733 262.413 63.483 C 261.038 63.2643 259.429 62.8893 257.585 62.358 C 257.96 60.8893 258.226 59.4049 258.382 57.9049 L 258.663 57.8111 C 259.694 58.3424 260.476 58.6549 261.007 58.7486 C 261.569 58.8424 261.929 58.7643 262.085 58.5143 C 262.241 58.2643 262.319 57.8736 262.319 57.3424 L 262.319 38.1236 L 245.304 38.1236 L 245.304 34.3268 z M 276.382 28.7955 C 276.382 27.6705 276.772 26.7174 277.554 25.9361 C 278.335 25.1236 279.288 24.7174 280.413 24.7174 C 281.538 24.7174 282.491 25.1236 283.272 25.9361 C 284.085 26.7174 284.491 27.6705 284.491 28.7955 C 284.491 29.9205 284.085 30.8736 283.272 31.6549 C 282.491 32.4361 281.538 32.8268 280.413 32.8268 C 279.288 32.8268 278.335 32.4361 277.554 31.6549 C 276.772 30.8736 276.382 29.9205 276.382 28.7955 z M 278.022 28.7955 C 278.022 29.5455 278.226 30.1236 278.632 30.5299 C 279.038 30.9361 279.616 31.1393 280.366 31.1393 C 281.085 31.1393 281.663 30.9361 282.101 30.5299 C 282.569 30.1236 282.804 29.5455 282.804 28.7955 C 282.804 28.0768 282.569 27.4986 282.101 27.0611 C 281.663 26.5924 281.085 26.358 280.366 26.358 C 279.616 26.358 279.038 26.5924 278.632 27.0611 C 278.226 27.4986 278.022 28.0768 278.022 28.7955 z M 330.382 24.4361 C 332.538 25.7799 334.444 27.3111 336.101 29.0299 L 333.476 30.6705 C 332.132 29.0455 330.491 27.608 328.554 26.358 L 330.382 24.4361 z M 327.007 27.7174 C 329.163 29.0611 331.069 30.5924 332.726 32.3111 L 330.101 33.9518 C 328.757 32.3268 327.116 30.8893 325.179 29.6393 L 327.007 27.7174 z M 300.054 28.5143 L 324.147 28.5143 L 324.147 32.3111 L 300.054 32.3111 L 300.054 28.5143 z M 293.116 39.2018 L 331.929 39.2018 L 331.929 42.9986 L 316.226 42.9986 C 316.007 48.2486 314.929 52.2955 312.991 55.1393 C 311.054 57.9518 307.897 60.8736 303.522 63.9049 C 302.147 62.4674 300.897 61.4518 299.772 60.858 L 299.772 60.4361 C 303.804 58.2174 306.71 55.8111 308.491 53.2174 C 310.304 50.5924 311.257 47.1861 311.351 42.9986 L 293.116 42.9986 L 293.116 39.2018 z M 364.976 35.7799 C 365.038 35.3424 365.304 35.1705 365.772 35.2643 L 370.366 36.5299 C 371.022 36.8111 371.038 37.1393 370.413 37.5143 L 369.241 37.983 C 367.71 40.358 366.241 42.2486 364.835 43.6549 C 363.429 45.0299 362.319 46.0768 361.507 46.7955 L 363.241 47.1236 C 363.741 47.3736 363.757 47.6861 363.288 48.0611 L 362.444 48.6236 L 362.444 65.733 L 358.601 65.733 L 358.601 49.1861 C 358.069 49.5611 357.022 50.3111 355.46 51.4361 C 353.929 52.5299 350.788 54.3424 346.038 56.8736 C 345.226 55.5924 344.335 54.6236 343.366 53.9674 L 343.366 53.6861 C 346.991 52.1861 350.288 50.4361 353.257 48.4361 C 356.257 46.4049 358.663 44.4049 360.476 42.4361 C 362.319 40.4674 363.569 38.9361 364.226 37.8424 C 364.913 36.7486 365.163 36.0611 364.976 35.7799 z "
+     id="path104" />
 </svg>
