@@ -17,6 +17,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
 
+#ifndef SP_MACROS_SILENT
+#define SP_MACROS_SILENT
+#endif
+
 #include "macros.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
@@ -268,6 +272,7 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 	while (l) {
 		seltrans->items[n] = (SPItem *) sp_object_ref (SP_OBJECT (l->data), NULL);
 		sp_desktop_get_i2d_transform_f (seltrans->desktop, seltrans->items[n], &seltrans->transforms[n]);
+		SP_PRINT_MATRIX ("grabbed", &seltrans->transforms[n]);
 		l = l->next;
 		n += 1;
 	}
@@ -311,6 +316,8 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 	nr_matrix_d_set_translate (&p2n, -norm->x, -norm->y);
 	nr_matrix_multiply_ddd (affine, &p2n, affine);
 	nr_matrix_multiply_ddd (affine, affine, &n2p);
+
+	SP_PRINT_MATRIX ("affine", affine);
 
 	if (seltrans->show == SP_SELTRANS_SHOW_CONTENT) {
 	        // update the content

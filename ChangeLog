@@ -1,3 +1,18 @@
+2004-02-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/xml-tree.c (on_desktop_shutdown): Return TRUE
+
+	* src/sp-item.c (sp_item_get_viewport): Implement properly,
+	also signature change for ::get_viewport
+
+	* src/sp-item-transform.c (sp_desktop_set_i2d_transform_f): Apply
+	extra transformation if parent has one
+
+	* src/sp-item-group.c (sp_vpgroup_init): Set relevant flags
+
+	* src/desktop.c (sp_desktop_root_modified): Use item viewport
+	(almost) correctly
+
 2004-02-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-root.c: Inherit from SPVPGroup

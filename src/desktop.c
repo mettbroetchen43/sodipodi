@@ -281,7 +281,7 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 	/* mask = SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG; */
 	mask = SP_OBJECT_VIEWPORT_MODIFIED_FLAG;
 	if (flags & mask) {
-#if 0
+#if 1
 		SPView *view;
 		SPItem *vpitem;
 		NRRectF vbox;
@@ -291,10 +291,13 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 		/* Only have to think, how to handle vpitem == root case */
 		vpitem = sp_item_get_viewport (view->root, &vbox, &i2vp);
 		if (vpitem) {
-			desktop->doc2dt[5] = vbox.y1 - vbox.y0;
+			desktop->doc2dt[5] = (vbox.y1 - vbox.y0) * 0.8;
 			sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing),
 							NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
-			sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), vbox.x0, vbox.y0, vbox.x1, vbox.y1);
+			/* fixme: Actually we have to transform rect (Lauris) */
+			sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page),
+					      vbox.x0 * 0.8, vbox.y0 * -0.8 + desktop->doc2dt[5],
+					      vbox.x1 * 0.8, vbox.y1 * -0.8 + desktop->doc2dt[5]);
 		} else {
 			/* fixme: Implement (Lauris) */
 		}
@@ -1123,6 +1126,7 @@ sp_dtw_desktop_request_shutdown (SPView *view, SPDesktopWidget *dtw)
 		}
 	}
 
+	/* fixme: This is really evil, because we are relying on signal handler returning TRUE always */
 	sp_desktop_prepare_shutdown (SP_DESKTOP (view));
 
 	return TRUE;

@@ -683,6 +683,13 @@ sp_vpgroup_class_init (SPVPGroupClass *klass)
 static void
 sp_vpgroup_init (SPVPGroup *vpgroup)
 {
+	SPItem *item;
+
+	item = (SPItem *) vpgroup;
+
+	item->has_viewport = 1;
+	item->has_extra_transform = 1;
+
 	sp_svg_length_unset (&vpgroup->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&vpgroup->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&vpgroup->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);

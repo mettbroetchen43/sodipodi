@@ -23,6 +23,8 @@
 
 #include <string.h>
 
+#include <libnr/nr-rect.h>
+
 #include "macros.h"
 #include "helper/sp-intl.h"
 #include "svg/svg.h"
@@ -450,10 +452,10 @@ sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 }
 
 unsigned int
-sp_item_extra_transform (SPItem *item, NRMatrixD *transform)
+sp_item_get_extra_transform (SPItem *item, NRMatrixD *transform)
 {
-	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->extra_transform)
-		return ((SPItemClass *) G_OBJECT_GET_CLASS (item))->extra_transform (item, transform);
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_extra_transform)
+		return ((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_extra_transform (item, transform);
 
 	return 0;
 }
@@ -467,16 +469,27 @@ sp_item_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp)
 
 	object = (SPObject *) item;
 
-	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport)
-		return ((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport (item, viewport, i2vp);
+	nr_matrix_d_set_identity (i2vp);
+	nr_rect_f_set_empty (viewport);
 
-	if (object->parent && SP_IS_ITEM (object->parent)) {
-		SPItem *vpitem;
-		NRMatrixD p2vp;
-		vpitem = sp_item_get_viewport ((SPItem *) object->parent, viewport, &p2vp);
-		if (!vpitem) return NULL;
-		nr_matrix_multiply_dfd (i2vp, &item->transform, &p2vp);
-		return vpitem;
+	/* Walk down the tree searching viewport */
+	while (!item->has_viewport) {
+		/* Fail if no parent or parent is not item */
+		if (!object->parent || !SP_IS_ITEM (object->parent)) return NULL;
+		/* Apply item->parent transform */
+		nr_matrix_multiply_ddf (i2vp, i2vp, &item->transform);
+		object = object->parent;
+		item = (SPItem *) object;
+		if (item->has_extra_transform) {
+			/* Apply extra transform */
+			sp_item_get_extra_transform (item, i2vp);
+		}
+	}
+
+	/* Item has viewport defined itself */
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport) {
+		((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport (item, viewport);
+		return item;
 	}
 
 	return NULL;
@@ -697,7 +710,7 @@ sp_item_i2doc_affine (SPItem *item, NRMatrixF *affine)
 		if (!SP_IS_ITEM (item)) break;
 		if (item->has_extra_transform) {
 			/* Apply parent extra transform so we stay in master coordinates */
-			sp_item_extra_transform (item, &td);
+			sp_item_get_extra_transform (item, &td);
 		}
 	}
 

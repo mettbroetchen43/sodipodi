@@ -88,7 +88,7 @@ struct _SPItem {
 	/* unsigned int stop_paint: 1; */
 
 	/* True if item establishes new viewport */
-	unsigned int has_vieport : 1;
+	unsigned int has_viewport : 1;
 	/* True if item has additional transform (viewBox) */
 	unsigned int has_extra_transform : 1;
 
@@ -125,11 +125,13 @@ struct _SPItemClass {
 	/* Emit event, if applicable */
 	gint (* event) (SPItem *item, SPEvent *event);
 
-	/* Appends item extra transform (child -> item) */
-	unsigned int (* extra_transform) (SPItem *item, NRMatrixD *tranfrom);
-	/* fixme: This does not work at moment (Lauris) */
-	/* Get item establishing viewport, viewport and transform to viewport */
-	SPItem * (* get_viewport) (SPItem *item, NRRectF *vieport, NRMatrixD *i2vp);
+	/* Item master is coordinate system, where item properties are defined */
+	/* Viewport master is where viewport dimensions are defined */
+	/* In case of viewbox, viewport (and item) master differ from propagated coordinates */
+	/* Appends item extra transform from child to item master coordinate system) */
+	unsigned int (* get_extra_transform) (SPItem *item, NRMatrixD *ch2m);
+	/* Get item viewport in master coordinates */
+	unsigned int (* get_viewport) (SPItem *item, NRRectF *vieport);
 };
 
 /* Flag testing macros */
@@ -141,7 +143,7 @@ struct _SPItemClass {
 void sp_item_invoke_bbox (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int clear);
 void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int flags, unsigned int clear);
 
-unsigned int sp_item_extra_transform (SPItem *item, NRMatrixD *transform);
+unsigned int sp_item_get_extra_transform (SPItem *item, NRMatrixD *transform);
 SPItem *sp_item_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp);
 
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);

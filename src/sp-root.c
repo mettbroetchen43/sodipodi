@@ -40,8 +40,8 @@ static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
 static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_root_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
-static unsigned int sp_root_extra_transform (SPItem *item, NRMatrixD *transform);
-static SPItem *sp_root_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp);
+static unsigned int sp_root_get_extra_transform (SPItem *item, NRMatrixD *transform);
+static unsigned int sp_root_get_viewport (SPItem *item, NRRectF *viewport);
 static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
 static SPVPGroupClass *parent_class;
@@ -89,7 +89,7 @@ sp_root_class_init (SPRootClass *klass)
 
 	sp_item_class->show = sp_root_show;
 	sp_item_class->bbox = sp_root_bbox;
-	sp_item_class->extra_transform = sp_root_extra_transform;
+	sp_item_class->get_extra_transform = sp_root_get_extra_transform;
 	sp_item_class->get_viewport = sp_root_get_viewport;
 	sp_item_class->print = sp_root_print;
 }
@@ -662,7 +662,7 @@ sp_root_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned 
 }
 
 static unsigned int
-sp_root_extra_transform (SPItem *item, NRMatrixD *transform)
+sp_root_get_extra_transform (SPItem *item, NRMatrixD *transform)
 {
 	SPRoot *root;
 	root = (SPRoot *) item;
@@ -670,14 +670,12 @@ sp_root_extra_transform (SPItem *item, NRMatrixD *transform)
 	return 1;
 }
 
-static SPItem *
-sp_root_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp)
+static unsigned int
+sp_root_get_viewport (SPItem *item, NRRectF *viewport)
 {
 	SPRoot *root;
 
 	root = (SPRoot *) item;
-
-	*i2vp = root->group.c2p;
 
 	/* lala - this is not correct */
 	/* if dt->root == root, i2vp has to be identity */
@@ -689,7 +687,7 @@ sp_root_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp)
 	viewport->x1 = viewport->x0 + root->group.width.computed;
 	viewport->y1 = viewport->y0 + root->group.height.computed;
 
-	return item;
+	return 1;
 }
 
 static void

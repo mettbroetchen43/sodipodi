@@ -818,12 +818,12 @@ on_desktop_selection_changed (SPSelection * selection)
 }
 
 gboolean
-on_desktop_shutdown (SPDesktop * desktop, gpointer data)
+on_desktop_shutdown (SPDesktop *desktop, gpointer data)
 {
 	g_assert (dialog != NULL);
 	gtk_widget_destroy (dialog);
 
-	return FALSE;
+	return TRUE;
 }
 
 void

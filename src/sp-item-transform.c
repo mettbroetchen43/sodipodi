@@ -32,29 +32,52 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#ifdef SP_MACROS_SILENT
+#undef SP_MACROS_SILENT
+#endif
+
 #include <libart_lgpl/art_affine.h>
+
+#include "macros.h"
 
 void art_affine_skew (double dst[6], double dx, double dy);
 
 void
 sp_desktop_set_i2d_transform_f (SPDesktop *dt, SPItem *item, const NRMatrixF *transform)
 {
+	SPItem *pitem;
 	NRMatrixF p2d, d2p, i2p;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 	g_return_if_fail (transform != NULL);
 
-	if (SP_OBJECT_PARENT (item)) {
+	pitem = (SPItem *) SP_OBJECT_PARENT (item);
+
+	if (pitem && SP_IS_ITEM (pitem)) {
+		/* This finds parent:master -> desktop */
 		sp_desktop_get_i2d_transform_f (dt, (SPItem *) SP_OBJECT_PARENT (item), &p2d);
+		/* But we need parent:child -> desktop */
+		if (pitem->has_extra_transform) {
+			NRMatrixD c2p;
+			nr_matrix_d_set_identity (&c2p);
+			sp_item_get_extra_transform (pitem, &c2p);
+			nr_matrix_multiply_fdf (&p2d, &c2p, &p2d);
+		}
 	} else {
 		nr_matrix_f_set_scale (&p2d, 0.8, -0.8);
 		p2d.c[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
 	}
 
+	SP_PRINT_MATRIX ("p2d", &p2d);
+
 	nr_matrix_f_invert (&d2p, &p2d);
 
+	SP_PRINT_MATRIX ("d2p", &d2p);
+
 	nr_matrix_multiply_fff (&i2p, transform, &d2p);
+
+	SP_PRINT_MATRIX ("i2p", &i2p);
 
 	sp_item_set_item_transform (item, &i2p);
 }
