@@ -24,5 +24,7 @@ libnrtype_a_SOURCES = \
 	$(xft_sources)
 
 EXTRA_DIST = \
+	nr-type-xft.c nr-type-xft.h \
+	nr-type-gnome.c nr-type-gnome.h \
 	nr-type-w32.c nr-type-w32.h \
 	codepages.h

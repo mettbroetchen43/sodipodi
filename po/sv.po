@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2002-09-09 01:47+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1100,11 +1100,11 @@ msgstr "Töm allt"
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Gruppera"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Avgruppera"
 
@@ -1616,12 +1616,12 @@ msgstr "Okänt"
 msgid "Image URI:"
 msgstr "Bild-URI:"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupp med %d objekt"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Gruppegenskaper"
 

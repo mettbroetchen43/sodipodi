@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.19\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2000-09-28 18:52+0200\n"
 "Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
@@ -1165,12 +1165,12 @@ msgstr "Color 1"
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 #, fuzzy
 msgid "Group"
 msgstr "_Agrupa"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 #, fuzzy
 msgid "Ungroup"
 msgstr "_Desagrupa"
@@ -1651,12 +1651,12 @@ msgstr "Element desconegut :-("
 msgid "Image URI:"
 msgstr "Mida de la imatge"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, fuzzy, c-format
 msgid "Group of %d objects"
 msgstr "Grup de %d elements"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 #, fuzzy
 msgid "Group Properties"
 msgstr "Objecte de text"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2000-04-08 16:21+0200\n"
 "Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
 "Language-Team: Estonian\n"
@@ -1124,12 +1124,12 @@ msgstr ""
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 #, fuzzy
 msgid "Group"
 msgstr "Grupeeri"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 #, fuzzy
 msgid "Ungroup"
 msgstr "Vabasta"
@@ -1595,12 +1595,12 @@ msgstr ""
 msgid "Image URI:"
 msgstr ""
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, fuzzy, c-format
 msgid "Group of %d objects"
 msgstr "Grupeerib valitud objektid"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr ""
 

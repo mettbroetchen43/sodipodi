@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.28\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2001-12-04 17:40GMT+0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
@@ -1135,11 +1135,11 @@ msgstr ""
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Qrup"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Qrupu Qaldır"
 
@@ -1651,12 +1651,12 @@ msgstr "Naməlum üzv :-("
 msgid "Image URI:"
 msgstr ""
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "%d cismin qrupu"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Qrup Xassələri"
 

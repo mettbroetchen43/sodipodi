@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2003-01-25 00:49+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1059,11 +1059,11 @@ msgstr "Tøm alle"
 msgid "Cleanup"
 msgstr "Rydd opp"
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Grupper"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Del opp gruppe"
 
@@ -1568,12 +1568,12 @@ msgstr "Ukjent"
 msgid "Image URI:"
 msgstr "Bilde-URI:"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppe med %d objekter"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Egenskaper for gruppe"
 

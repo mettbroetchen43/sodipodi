@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2002-03-03 13:03+0100\n"
 "Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -1141,11 +1141,11 @@ msgstr " Riempi con il colore "
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr ""
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr ""
 
@@ -1661,12 +1661,12 @@ msgstr "Elemento sconosciuto :-("
 msgid "Image URI:"
 msgstr "Immagine"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppo di %d oggetti"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Proprietà del gruppo"
 

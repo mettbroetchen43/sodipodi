@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2000-01-17 14:31+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -1161,11 +1161,11 @@ msgstr "Заповннення кольром"
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Згрупувати"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Розгрупувати"
 
@@ -1635,12 +1635,12 @@ msgstr "Нев╕домий елемент"
 msgid "Image URI:"
 msgstr "Розм╕р аркуш:"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Група з %d об'╓кт╕в"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 #, fuzzy
 msgid "Group Properties"
 msgstr "Властивост╕ тексту"

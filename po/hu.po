@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2001-08-11 22:32+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -1148,11 +1148,11 @@ msgstr "Kitöltés színnel"
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Csoportosítás"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Csoport felbontása"
 
@@ -1625,12 +1625,12 @@ msgstr "Ismeretlen elem :-("
 msgid "Image URI:"
 msgstr "Kép mérete"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr ""
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 #, fuzzy
 msgid "Group Properties"
 msgstr "Szöveg tulajdonságai"

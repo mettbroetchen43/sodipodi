@@ -41,7 +41,6 @@ rm -rf %{buildroot}
 %{_bindir}/*
 %{_datadir}/gnome/apps/Graphics/*
 %{_datadir}/locale/*/LC_MESSAGES/sodipodi.mo
-%{_datadir}/oaf/GNOME_Sodipodi.oaf
 %{_datadir}/pixmaps/*
 %{_datadir}/sodipodi/*
 %{_mandir}/man1/*

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2003-01-21 10:32GMT\n"
 "Last-Translator: Jose Antonio Salgueiro Aquino <developer@telefonica.net>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -1065,11 +1065,11 @@ msgstr "Limpiar todo"
 msgid "Cleanup"
 msgstr "Borrado"
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Agrupar"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Desagrupar"
 
@@ -1575,12 +1575,12 @@ msgstr "Desconocido"
 msgid "Image URI:"
 msgstr "URI de la imagen:"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupo de %d objetos"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Propiedades del grupo"
 

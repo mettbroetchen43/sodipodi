@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2001-12-28 21:07+0000\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -1249,11 +1249,11 @@ msgstr "Αρχείο core"
 msgid "Cleanup"
 msgstr ""
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Ομάδα"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 #, fuzzy
 msgid "Ungroup"
 msgstr "_Απομαδοποίηση"
@@ -1743,12 +1743,12 @@ msgid "Image URI:"
 msgstr "Εικόνα"
 
 #
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, fuzzy, c-format
 msgid "Group of %d objects"
 msgstr "Εισαγωγή αντικειμένων"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 #, fuzzy
 msgid "Group Properties"
 msgstr " Ιδιότητες"

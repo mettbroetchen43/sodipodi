@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.26pre2\n"
-"POT-Creation-Date: 2003-02-07 21:34+0200\n"
+"POT-Creation-Date: 2003-02-08 00:41+0200\n"
 "PO-Revision-Date: 2003-01-19 14:37+0100\n"
 "Last-Translator: raymond ostertag <r.ostertag@caramail.com>\n"
 "Language-Team: français <gnomefr@traduc.org>\n"
@@ -1069,11 +1069,11 @@ msgstr "Tout effacer"
 msgid "Cleanup"
 msgstr "Nettoyage"
 
-#: src/interface.c:252 src/sp-item-group.c:513
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Grouper"
 
-#: src/interface.c:257 src/sp-item-group.c:530
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Dégrouper"
 
@@ -1577,12 +1577,12 @@ msgstr "Inconnu"
 msgid "Image URI:"
 msgstr "Image URI :"
 
-#: src/sp-item-group.c:451
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Groupe de %d objets"
 
-#: src/sp-item-group.c:517
+#: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "Propriétés du groupe"
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS =  m4  intl  src glade po
+SUBDIRS = intl m4   m4  intl  src glade po
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png
@@ -18,7 +18,7 @@ dist-hook:
 
 man_MANS = sodipodi.1
 
-EXTRA_DIST = config.rpath   config.rpath 			\
+EXTRA_DIST = config.rpath  config.rpath   config.rpath 			\
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
