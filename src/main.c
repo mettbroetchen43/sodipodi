@@ -67,6 +67,10 @@
 #include "modules/sp-module-sys.h"
 #endif /* WITH_MODULES */
 
+#ifdef WITH_KDE
+#include "helper/kde.h"
+#endif
+
 #ifdef WITH_POPT
 enum {
 	SP_ARG_NONE,
@@ -248,6 +252,10 @@ sp_main_gui (int argc, const char **argv)
 	poptFreeContext (ctx);
 #endif
 
+#ifdef WITH_KDE
+	sp_kde_init (argc, (char **) argv, "Sodipodi");
+#endif
+
 #if 0
 	/* Set default icon */
 	if (g_file_test (GNOME_ICONDIR "/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
@@ -295,6 +303,10 @@ sp_main_gui (int argc, const char **argv)
 	}
 
 	gtk_main ();
+
+#ifdef WITH_KDE
+	sp_kde_finish ();
+#endif
 
 	return 0;
 }

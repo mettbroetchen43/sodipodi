@@ -4,12 +4,20 @@
 # libspchelp - canvas utilities, specific canvas items, libart add-ons
 #
 
+if USE_KDE
+kdeincludes = $(all_includes)
+kdesources = kde-private.cpp kde-private.h kde.cpp kde.h
+kde-private.cpp: kde-private.h
+	$(MOC) kde-private.h -o kde-private.cpp
+endif
+
 noinst_LIBRARIES = libspchelp.a
 
 INCLUDES = \
 	-I.. \
 	$(cflags) \
-	$(SODIPODI_CFLAGS)
+	$(SODIPODI_CFLAGS) \
+	$(kdeincludes)
 
 libspchelp_a_SOURCES = \
 	sp-intl.h \
@@ -32,7 +40,8 @@ libspchelp_a_SOURCES = \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
 	bezier-utils.c bezier-utils.h \
 	units.c units.h \
-	unit-menu.c unit-menu.h
+	unit-menu.c unit-menu.h \
+	$(kdesources)
 
 #	pathops.c pathops.h
 
@@ -44,5 +53,5 @@ sp-marshal.c: sp-marshal.h sp-marshal.list
 	rm -f $@
 	glib-genmarshal --prefix=sp_marshal --body sp-marshal.list > $@
 
-EXTRA_DIST = sp-marshal.list
+EXTRA_DIST = sp-marshal.list $(kdesources)
 

@@ -8,6 +8,11 @@ else
 extensions_src = extension.c extension.h
 endif
 
+if USE_KDE
+kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_QT)
+kdeldflags = $(KDE_RPATH)
+endif
+
 SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
 
 gladedir = $(datadir)/sodipodi
@@ -143,9 +148,10 @@ sodipodi_LDADD = \
 	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
-	$(FONTCONFIG_LIBS)
+	$(FONTCONFIG_LIBS) \
+	$(kdeldadd)
 
-sodipodi_LDFLAGS = -Wl,--export-dynamic
+sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
 #	$(GNOME_LIBDIR) \
 #	-lpng \

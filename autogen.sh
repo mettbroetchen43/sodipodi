@@ -158,6 +158,7 @@ fi
 $AUTOMAKE --add-missing
 autoconf
 
+libtoolize --copy --force
 glib-gettextize --copy --force
 intltoolize --copy --force --automake
 

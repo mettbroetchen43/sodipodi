@@ -1,3 +1,25 @@
+2003-03-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/Makefile.am: Compile KDE module if needed
+
+	* src/main.c (sp_main_gui): Initialize/shutdown KDE module if WITH_KDE
+
+	* src/file.c (sp_file_open_dialog): Use KDE file dialog, if WITH_KDE
+
+	* src/Makefile.am: Add KDE libraries if needed
+
+	* configure.in: Added --with[out]-kde configuration option
+
+	* autogen.sh: Added (again) libtoolize
+
+	* acinclude.m4: KDE specific autostuff
+
+	* src/helper/kde.cpp: New file
+
+	* src/helper/kde.h: New file
+
+	* src/helper/kde-private.h: SPKDEBridge sefinition for moc preprocessor
+
 2003-03-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/sp-color-slider.h: Use LGPL

@@ -48,6 +48,10 @@
 #include "modules/sp-module-doc.h"
 #endif /* WITH_MODULES */
 
+#ifdef WITH_KDE
+#include "helper/kde.h"
+#endif
+
 gchar * open_path = NULL;
 gchar * save_path = NULL;
 gchar * import_path = NULL;
@@ -139,6 +143,14 @@ sp_file_open_dialog_type_selected (SPMenu *menu, gpointer itemdata, GObject *fse
 
 void sp_file_open_dialog (gpointer object, gpointer data)
 {
+#ifdef WITH_KDE
+	char *filename;
+	filename = sp_kde_get_open_filename ();
+	if (filename) {
+		sp_file_open (filename, NULL);
+		g_free (filename);
+	}
+#else
 	GtkFileSelection *fsel;
 	GtkWidget *hb, *l, *om, *m;
 
@@ -170,6 +182,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	gtk_widget_show_all (hb);
 
 	gtk_widget_show ((GtkWidget *) fsel);
+#endif
 }
 
 /* Save */
