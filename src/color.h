@@ -13,9 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <math.h>
 #include <glib.h>
@@ -84,7 +84,7 @@ void sp_color_hsv_to_rgb_floatv (gfloat *rgb, gfloat h, gfloat s, gfloat v);
 void sp_color_rgb_to_cmyk_floatv (gfloat *cmyk, gfloat r, gfloat g, gfloat b);
 void sp_color_cmyk_to_rgb_floatv (gfloat *rgb, gfloat c, gfloat m, gfloat y, gfloat k);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif
 

@@ -19,6 +19,7 @@
 #include <libnr/nr-pixblock.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
+#include "../helper/sp-intl.h"
 #include "../helper/nr-plain-stuff.h"
 #include "../helper/nr-plain-stuff-gdk.h"
 #include "../macros.h"
@@ -42,7 +43,6 @@ static void sp_gradient_position_realize (GtkWidget *widget);
 static void sp_gradient_position_unrealize (GtkWidget *widget);
 static void sp_gradient_position_size_request (GtkWidget *widget, GtkRequisition *requisition);
 static void sp_gradient_position_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
-static void sp_gradient_position_draw (GtkWidget *widget, GdkRectangle *area);
 static gint sp_gradient_position_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static gint sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event);
@@ -94,29 +94,28 @@ sp_gradient_position_class_init (SPGradientPositionClass *klass)
 
 	position_signals[GRABBED] = gtk_signal_new ("grabbed",
 						    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						    object_class->type,
+						    GTK_CLASS_TYPE(object_class),
 						    GTK_SIGNAL_OFFSET (SPGradientPositionClass, grabbed),
 						    gtk_marshal_NONE__NONE,
 						    GTK_TYPE_NONE, 0);
 	position_signals[DRAGGED] = gtk_signal_new ("dragged",
 						    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						    object_class->type,
+						    GTK_CLASS_TYPE(object_class),
 						    GTK_SIGNAL_OFFSET (SPGradientPositionClass, dragged),
 						    gtk_marshal_NONE__NONE,
 						    GTK_TYPE_NONE, 0);
 	position_signals[RELEASED] = gtk_signal_new ("released",
 						     GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						     object_class->type,
+						     GTK_CLASS_TYPE(object_class),
 						     GTK_SIGNAL_OFFSET (SPGradientPositionClass, released),
 						     gtk_marshal_NONE__NONE,
 						     GTK_TYPE_NONE, 0);
 	position_signals[CHANGED] = gtk_signal_new ("changed",
 						    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						    object_class->type,
+						    GTK_CLASS_TYPE(object_class),
 						    GTK_SIGNAL_OFFSET (SPGradientPositionClass, changed),
 						    gtk_marshal_NONE__NONE,
 						    GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, position_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_gradient_position_destroy;
 
@@ -124,7 +123,7 @@ sp_gradient_position_class_init (SPGradientPositionClass *klass)
 	widget_class->unrealize = sp_gradient_position_unrealize;
 	widget_class->size_request = sp_gradient_position_size_request;
 	widget_class->size_allocate = sp_gradient_position_size_allocate;
-	widget_class->draw = sp_gradient_position_draw;
+/*  	widget_class->draw = sp_gradient_position_draw; */
 	widget_class->expose_event = sp_gradient_position_expose;
 	widget_class->button_press_event = sp_gradient_position_button_press;
 	widget_class->button_release_event = sp_gradient_position_button_release;
@@ -248,6 +247,7 @@ sp_gradient_position_size_allocate (GtkWidget *widget, GtkAllocation *allocation
 	}
 }
 
+#if 0
 static void
 sp_gradient_position_draw (GtkWidget *widget, GdkRectangle *area)
 {
@@ -259,6 +259,7 @@ sp_gradient_position_draw (GtkWidget *widget, GdkRectangle *area)
 		sp_gradient_position_paint (widget, area);
 	}
 }
+#endif
 
 static gint
 sp_gradient_position_expose (GtkWidget *widget, GdkEventExpose *event)

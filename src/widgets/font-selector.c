@@ -23,8 +23,6 @@
 #include <libnr/nr-blit.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 
 #include <libnrtype/nr-type-directory.h>
 #include <libnrtype/nr-rasterfont.h>
@@ -38,9 +36,9 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkdrawingarea.h>
-#include <gal/unicode/gunicode.h>
 
 #include "../helper/nr-plain-stuff-gdk.h"
+#include "../helper/sp-intl.h"
 
 #include "font-selector.h"
 
@@ -123,12 +121,11 @@ sp_font_selector_class_init (SPFontSelectorClass *klass)
 
 	fs_signals[FONT_SET] = gtk_signal_new ("font_set",
 					       GTK_RUN_FIRST,
-					       object_class->type,
+					       GTK_CLASS_TYPE(object_class),
 					       GTK_SIGNAL_OFFSET (SPFontSelectorClass, font_set),
 					       gtk_marshal_NONE__POINTER,
 					       GTK_TYPE_NONE,
 					       1, GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, fs_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_font_selector_destroy;
 }
@@ -298,7 +295,7 @@ sp_font_selector_style_select_row (GtkCList *clist, gint row, gint column, GdkEv
 static void
 sp_font_selector_size_changed (GtkEditable *editable, SPFontSelector *fsel)
 {
-	gchar *sstr;
+	const gchar *sstr;
 
 	sstr = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (fsel->size)->entry));
 	fsel->fontsize = MAX (atof (sstr), 0.1);

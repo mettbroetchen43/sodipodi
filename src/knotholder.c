@@ -4,7 +4,7 @@
  * Container for SPKnot visual handles
  *
  * Authors:
- *   Mitsuru Oka
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
  *
  * Copyright (C) 2001-2002 authors
  *
@@ -48,7 +48,7 @@ sp_knot_holder_new (SPDesktop *desktop, SPItem *item, SPKnotHolderReleasedFunc r
 	knot_holder = g_new (SPKnotHolder, 1);
 	knot_holder->desktop = desktop;
 	knot_holder->item = item;
-	gtk_object_ref (GTK_OBJECT (item));
+	g_object_ref (G_OBJECT (item));
 	knot_holder->entity = NULL;
 
 	knot_holder->released = relhandler;
@@ -65,12 +65,12 @@ void
 sp_knot_holder_destroy	(SPKnotHolder *kh)
 {
 	if (kh) {
-		gtk_object_unref (GTK_OBJECT (kh->item));
+		g_object_unref (G_OBJECT (kh->item));
 		while (kh->entity) {
 			SPKnotHolderEntity *e;
 			e = (SPKnotHolderEntity *) kh->entity->data;
 			/* unref should call destroy */
-			gtk_object_unref (GTK_OBJECT (e->knot));
+			g_object_unref (G_OBJECT (e->knot));
 			g_free (e);
 			kh->entity = g_slist_remove (kh->entity, e);
 		}
@@ -132,7 +132,7 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 	art_affine_point (&p, &p, affine);
 	sp_knot_set_position (e->knot, &p, SP_KNOT_STATE_NORMAL);
 
-	e->handler_id = gtk_signal_connect (ob, "moved", knot_moved_handler, knot_holder);
+	e->handler_id = gtk_signal_connect (ob, "moved", GTK_SIGNAL_FUNC (knot_moved_handler), knot_holder);
 
 	gtk_signal_connect (ob, "ungrabbed", GTK_SIGNAL_FUNC (knot_ungrabbed_handler), knot_holder);
 
@@ -181,18 +181,18 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
 		ArtPoint p1;
-		GtkObject *kob;
+		GObject *kob;
 		
-		kob = GTK_OBJECT (e->knot);
+		kob = G_OBJECT (e->knot);
 
 		e->knot_get (item, &p1);
 		
 		art_affine_point (&p1, &p1, affine);
 
-		gtk_signal_handler_block (kob, e->handler_id);
+		g_signal_handler_block (kob, e->handler_id);
 		sp_knot_set_position (e->knot, &p1,
 				      SP_KNOT_STATE_NORMAL);
-		gtk_signal_handler_unblock (kob, e->handler_id);
+		g_signal_handler_unblock (kob, e->handler_id);
 	}
 }
 

@@ -40,20 +40,24 @@ static void sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCu
 
 static SPItemClass * parent_class;
 
-GtkType
+GType
 sp_path_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
+
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPPath",
-			sizeof (SPPath),
+		GTypeInfo info = {
 			sizeof (SPPathClass),
-			(GtkClassInitFunc) sp_path_class_init,
-			(GtkObjectInitFunc) sp_path_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_path_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPPath),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_path_init,
 		};
-		type = gtk_type_unique (SP_TYPE_ITEM, &info);
+		type = g_type_register_static (SP_TYPE_ITEM, "SPPath", &info, 0);
 	}
 	return type;
 }
@@ -61,15 +65,15 @@ sp_path_get_type (void)
 static void
 sp_path_class_init (SPPathClass * klass)
 {
-	GtkObjectClass *gtk_object_class;
-	SPObjectClass *sp_object_class;
-	SPItemClass *item_class;
+	GObjectClass * object_class;
+	SPObjectClass * sp_object_class;
+	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = gtk_type_class (sp_item_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->build = sp_path_build;
 	sp_object_class->release = sp_path_release;
@@ -297,7 +301,7 @@ sp_path_remove_comp (SPPath * path, SPPathComp * comp)
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (g_slist_find (path->comp, comp) != NULL);
 
-	(* SP_PATH_CLASS (GTK_OBJECT (path)->klass)->remove_comp) (path, comp);
+	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->remove_comp) (path, comp);
 }
 
 void
@@ -308,7 +312,7 @@ sp_path_add_comp (SPPath * path, SPPathComp * comp)
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (g_slist_find (path->comp, comp) == NULL);
 
-	(* SP_PATH_CLASS (GTK_OBJECT (path)->klass)->add_comp) (path, comp);
+	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->add_comp) (path, comp);
 }
 
 void
@@ -320,7 +324,7 @@ sp_path_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 	g_return_if_fail (g_slist_find (path->comp, comp) != NULL);
 	g_return_if_fail (curve != NULL);
 
-	(* SP_PATH_CLASS (GTK_OBJECT (path)->klass)->change_bpath) (path, comp, curve);
+	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->change_bpath) (path, comp, curve);
 }
 
 void

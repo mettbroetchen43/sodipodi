@@ -14,6 +14,8 @@
 
 #include <math.h>
 #include <stdlib.h>
+
+#include <gtk/gtkeditable.h>
 #include <gtk/gtkeditable.h>
 
 #include "rubberband.h"
@@ -33,7 +35,7 @@ static void sp_zoom_context_destroy (GtkObject * object);
 static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
-void sp_zoom_string (gchar * zoom_str);
+void sp_zoom_string (const gchar * zoom_str);
 void sp_zoom_any (void);
 
 static SPEventContextClass * parent_class;
@@ -317,20 +319,23 @@ sp_zoom_2_to_1 (GtkWidget * widget)
 }
 
 void
-sp_zoom_string (gchar * zoom_str) {
-  SPDesktop * desktop;
-  ArtDRect d;
-  gdouble any;
-
-  desktop = SP_ACTIVE_DESKTOP;
-  if (desktop == NULL) return;
-
-  zoom_str[5] = '\0';
-  any = strtod(zoom_str,NULL) /100;
-  if (any < 0.001) return;
-  
-  sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
-  sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, any, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+sp_zoom_string (const gchar * zoom_str) {
+	SPDesktop * desktop;
+	gchar * zoom_str2;
+	ArtDRect d;
+	gdouble any;
+	
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	
+	zoom_str2 = g_strndup(zoom_str, 5); /* g_new'ed 5+1 gchar */
+	zoom_str2[5] = '\0';
+	any = strtod(zoom_str2,NULL) /100;
+	g_free (zoom_str2);
+	if (any < 0.001) return;
+	
+	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, any, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
 }
 
 /*

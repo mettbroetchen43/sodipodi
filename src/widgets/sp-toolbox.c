@@ -14,17 +14,15 @@
  */
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkarrow.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtktogglebutton.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-pixmap.h>
-#include <libgnomeui/gnome-window-icon.h>
+#include <gtk/gtkimage.h>
 #include "sp-toolbox.h"
+#include "../helper/sp-marshal.h"
 
 enum {
 	SET_STATE,
@@ -35,7 +33,12 @@ static void sp_toolbox_class_init (SPToolBoxClass * klass);
 static void sp_toolbox_init (SPToolBox * toolbox);
 static void sp_toolbox_destroy (GtkObject * object);
 
+#if 0
 static void sp_toolbox_size_request (GtkWidget * widget, GtkRequisition * requisition);
+#endif
+
+static gboolean sp_toolbox_real_set_state (SPToolBox * toolbox, guint state);
+static gboolean sp_toolbox_set_state_accumulator (GSignalInvocationHint *ihint, GValue *return_accu, const GValue *handler_return, gpointer data);
 
 static void sp_toolbox_hide (GtkButton * button, gpointer data);
 //static void sp_toolbox_separate (GtkButton * button, gpointer data);
@@ -69,36 +72,38 @@ sp_toolbox_class_init (SPToolBoxClass * klass)
 {
 	GtkObjectClass * object_class;
 	GtkWidgetClass * widget_class;
+	SPToolBoxClass * toolbox_class;
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
+	toolbox_class = (SPToolBoxClass *) klass;
 
 	parent_class = gtk_type_class (gtk_vbox_get_type ());
 
-	toolbox_signals[SET_STATE] = gtk_signal_new ("set_state",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPToolBoxClass, set_state),
-		gtk_marshal_INT__INT,
+	toolbox_signals[SET_STATE] = g_signal_new ("set_state",
+		G_TYPE_FROM_CLASS(object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (SPToolBoxClass, set_state),
+		sp_toolbox_set_state_accumulator, NULL,
+		sp_marshal_BOOLEAN__UINT,
 		GTK_TYPE_BOOL, 1,
-		GTK_TYPE_ENUM);
-
-	gtk_object_class_add_signals (object_class, toolbox_signals, LAST_SIGNAL);
+		GTK_TYPE_UINT);
 
 	object_class->destroy = sp_toolbox_destroy;
 
-	widget_class->size_request = sp_toolbox_size_request;
+/*  	widget_class->size_request = sp_toolbox_size_request; */
+
+	toolbox_class->set_state = sp_toolbox_real_set_state;
 }
 
 static void
 sp_toolbox_init (SPToolBox * toolbox)
 {
-	toolbox->state = 1;//SP_TOOLBOX_VISIBLE;
+	toolbox->state = 7;//SP_TOOLBOX_VISIBLE;
 
 	toolbox->contents = NULL;
 	toolbox->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	toolbox->windowvbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (toolbox->windowvbox);
 	gtk_container_add (GTK_CONTAINER (toolbox->window), toolbox->windowvbox);
 
 	toolbox->width = 0;
@@ -131,6 +136,7 @@ sp_toolbox_destroy (GtkObject * object)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
+#if 0
 static void
 sp_toolbox_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
@@ -146,6 +152,7 @@ sp_toolbox_size_request (GtkWidget *widget, GtkRequisition *requisition)
 	requisition->width = t->width;
 	requisition->height = r.height;
 }
+#endif
 
 void
 sp_toolbox_set_state (SPToolBox * toolbox, guint state)
@@ -157,9 +164,35 @@ sp_toolbox_set_state (SPToolBox * toolbox, guint state)
 
 	if (state == toolbox->state) return;
 
-	gtk_object_ref (GTK_OBJECT (toolbox));
-	consumed = FALSE;
 	gtk_signal_emit (GTK_OBJECT (toolbox), toolbox_signals[SET_STATE], state, &consumed);
+}
+
+static gboolean
+sp_toolbox_set_state_accumulator (GSignalInvocationHint *ihint, GValue *return_accu, const GValue *handler_return, gpointer data)
+{
+	gboolean b;
+
+	b = g_value_get_boolean (handler_return);
+
+	return b ? FALSE : TRUE;
+}
+
+static gboolean
+sp_toolbox_real_set_state (SPToolBox * toolbox, guint state)
+{
+	int consumed;
+
+	if (state == toolbox->state) return TRUE; /* consumed */
+
+	gtk_object_ref (GTK_OBJECT (toolbox));
+
+	consumed = FALSE;
+
+#if 0
+	/* fixme: Why that whole consumed thing? (Lauris) */
+	gtk_signal_emit (GTK_OBJECT (toolbox), toolbox_signals[SET_STATE], state, &consumed);
+#endif
+
 	if (!consumed) {
 		if ((state & SP_TOOLBOX_STANDALONE) && (!(toolbox->state & SP_TOOLBOX_STANDALONE))) {
 			gtk_widget_reparent (toolbox->contents, toolbox->windowvbox);
@@ -179,7 +212,8 @@ sp_toolbox_set_state (SPToolBox * toolbox, guint state)
 		} else {
 			gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
 		}
-		gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle), sp_toolbox_separate, toolbox);
+		gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle),
+						  G_CALLBACK (sp_toolbox_separate), toolbox);
 		if (state & SP_TOOLBOX_STANDALONE) {
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), TRUE);
 			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NORMAL);
@@ -187,12 +221,46 @@ sp_toolbox_set_state (SPToolBox * toolbox, guint state)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), FALSE);
 			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
 		}
-		gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle), sp_toolbox_separate, toolbox);
+		gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle),
+						    G_CALLBACK (sp_toolbox_separate), toolbox);
 		toolbox->state = state;
-
 	}
 
+	if ((state & SP_TOOLBOX_STANDALONE) && (!(toolbox->state & SP_TOOLBOX_STANDALONE))) {
+       		gtk_widget_reparent (toolbox->contents, toolbox->windowvbox);
+       	} else if ((!(state & SP_TOOLBOX_STANDALONE)) && (toolbox->state & SP_TOOLBOX_STANDALONE)) {
+		gtk_widget_reparent (toolbox->contents, GTK_WIDGET (toolbox));
+		gtk_widget_hide (toolbox->window);
+	}
+
+	if (state & SP_TOOLBOX_VISIBLE) {
+		gtk_widget_show (toolbox->contents);
+		if (state & SP_TOOLBOX_STANDALONE) gtk_widget_show (toolbox->window);
+	} else {
+		gtk_widget_hide (toolbox->contents);
+		if (state & SP_TOOLBOX_STANDALONE) gtk_widget_hide (toolbox->window);
+	}
+
+	if ((state & SP_TOOLBOX_VISIBLE) && (!(state & SP_TOOLBOX_STANDALONE))) {
+		gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	} else {
+		gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
+	}
+
+	gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle), GTK_SIGNAL_FUNC(sp_toolbox_separate), toolbox);
+	if (state & SP_TOOLBOX_STANDALONE) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), TRUE);
+		gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NORMAL);
+	} else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), FALSE);
+		gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
+	}
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle), GTK_SIGNAL_FUNC(sp_toolbox_separate), toolbox);
+	toolbox->state = state;
+
 	gtk_object_unref (GTK_OBJECT (toolbox));
+
+	return TRUE;		/* consumed */
 }
 
 GtkWidget *
@@ -230,7 +298,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 2);
 	gtk_widget_show (w);
 	t->arrow = w;
-	w = gnome_pixmap_new_from_file (pixmapname);
+	w = gtk_image_new_from_file (pixmapname);
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 0);
 	gtk_widget_show (w);
 	w = gtk_label_new (t->name);
@@ -247,7 +315,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_box_pack_start (GTK_BOX (hbox), b, FALSE, FALSE, 0);
 	gtk_widget_show (b);
         t->standalonetoggle = b;
-	w = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
+	w = gtk_image_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_widget_show (w);
 	//gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_separate), t);
@@ -261,12 +329,12 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_window_set_policy (GTK_WINDOW (t->window), FALSE, FALSE, FALSE);
 	g_snprintf (c, 256, "toolbox_%s", t->internalname);
 	gtk_window_set_wmclass (GTK_WINDOW (t->window), c, "Sodipodi");
-	gnome_window_icon_set_from_default (GTK_WINDOW (t->window));
+/*  	gnome_window_icon_set_from_default (GTK_WINDOW (t->window)); */
 	gtk_signal_connect (GTK_OBJECT (t->window), "delete_event", GTK_SIGNAL_FUNC (sp_toolbox_delete), t);
 	/* Window vbox */
 	gtk_widget_show (t->windowvbox);
 	/* Close button */
-	b = gnome_stock_button ("Button_Close");
+	b = gtk_button_new_from_stock ("Button_Close");
 	gtk_box_pack_end (GTK_BOX (t->windowvbox), b, TRUE, TRUE, 0);
 	gtk_widget_show (b);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_close), t);

@@ -25,20 +25,23 @@ static void sp_painter_stale_fill (SPPainter *painter, guchar *px, gint x0, gint
 static SPObjectClass *parent_class;
 static GSList *stale_painters = NULL;
 
-GtkType
+GType
 sp_paint_server_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPPaintServer",
-			sizeof (SPPaintServer),
+		GTypeInfo info = {
 			sizeof (SPPaintServerClass),
-			(GtkClassInitFunc) sp_paint_server_class_init,
-			(GtkObjectInitFunc) sp_paint_server_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_paint_server_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPPaintServer),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_paint_server_init,
 		};
-		type = gtk_type_unique (SP_TYPE_OBJECT, &info);
+		type = g_type_register_static (SP_TYPE_OBJECT, "SPPaintServer", &info, 0);
 	}
 	return type;
 }
@@ -50,7 +53,7 @@ sp_paint_server_class_init (SPPaintServerClass *klass)
 
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_OBJECT);
+	parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->release = sp_paint_server_release;
 }
@@ -93,13 +96,13 @@ sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const Art
 	g_return_val_if_fail (bbox != NULL, NULL);
 
 	painter = NULL;
-	if (((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new)
-		painter = (* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new) (ps, affine, bbox);
+	if (((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_new)
+		painter = (* ((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_new) (ps, affine, bbox);
 
 	if (painter) {
 		painter->next = ps->painters;
 		painter->server = ps;
-		painter->type = GTK_OBJECT_TYPE (ps);
+		painter->type = G_OBJECT_TYPE (ps);
 		ps->painters = painter;
 	}
 
@@ -124,8 +127,8 @@ sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter)
 				ps->painters = p->next;
 			}
 			p->next = NULL;
-			if (((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_free)
-				(* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_free) (ps, painter);
+			if (((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_free)
+				(* ((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_free) (ps, painter);
 			return;
 		}
 		r = p;
@@ -141,8 +144,8 @@ sp_painter_free (SPPainter *painter)
 	if (painter->server) {
 		sp_paint_server_painter_free (painter->server, painter);
 	} else {
-		if (((SPPaintServerClass *) gtk_type_class (painter->type))->painter_free)
-			(* ((SPPaintServerClass *) gtk_type_class (painter->type))->painter_free) (NULL, painter);
+		if (((SPPaintServerClass *) g_type_class_ref (painter->type))->painter_free)
+			(* ((SPPaintServerClass *) g_type_class_ref (painter->type))->painter_free) (NULL, painter);
 		stale_painters = g_slist_remove (stale_painters, painter);
 	}
 

@@ -106,8 +106,10 @@ sp_ctrlline_destroy (GtkObject *object)
 
 	ctrlline = SP_CTRLLINE (object);
 
-	if (ctrlline->svp)
+	if (ctrlline->svp) {
 		art_svp_free (ctrlline->svp);
+		ctrlline->svp = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);

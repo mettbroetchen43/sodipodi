@@ -792,7 +792,7 @@ sp_object_ensure_fill_gradient_normalized (SPObject *object)
 	/* Fill has to be set */
 	g_return_if_fail (object->style->fill.set);
 	/* Fill has to be paintserver */
-	g_return_if_fail (object->style->fill.type = SP_PAINT_TYPE_PAINTSERVER);
+	g_return_if_fail (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
 	/* Has to be linear gradient */
 	g_return_if_fail (SP_IS_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object)));
 

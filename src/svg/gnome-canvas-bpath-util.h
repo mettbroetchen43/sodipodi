@@ -13,13 +13,11 @@
 #ifndef PATH_UTIL_H
 #define PATH_UTIL_H
 
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
+#include <glib.h>
 
 #include <libart_lgpl/art_bpath.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef struct _GnomeCanvasBpathDef GnomeCanvasBpathDef;
 
@@ -51,6 +49,6 @@ void gnome_canvas_bpath_def_closepath  (GnomeCanvasBpathDef *bpd);
 
 void gnome_canvas_bpath_def_art_finish (GnomeCanvasBpathDef *bpd);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

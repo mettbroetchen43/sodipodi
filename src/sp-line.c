@@ -15,6 +15,7 @@
 #include <string.h>
 #include "style.h"
 #include "sp-line.h"
+#include "helper/sp-intl.h"
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
@@ -32,22 +33,24 @@ static void sp_line_set_shape (SPLine * line);
 
 static SPShapeClass *parent_class;
 
-GtkType
+GType
 sp_line_get_type (void)
 {
-	static GtkType line_type = 0;
+	static GType line_type = 0;
 
 	if (!line_type) {
-		GtkTypeInfo line_info = {
-			"SPLine",
-			sizeof (SPLine),
+		GTypeInfo line_info = {
 			sizeof (SPLineClass),
-			(GtkClassInitFunc) sp_line_class_init,
-			(GtkObjectInitFunc) sp_line_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_line_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPLine),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_line_init,
 		};
-		line_type = gtk_type_unique (sp_shape_get_type (), &line_info);
+		line_type = g_type_register_static (SP_TYPE_SHAPE, "SPLine", &line_info, 0);
 	}
 	return line_type;
 }
@@ -55,15 +58,15 @@ sp_line_get_type (void)
 static void
 sp_line_class_init (SPLineClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_line_build;
 	sp_object_class->read_attr = sp_line_read_attr;
@@ -79,6 +82,7 @@ sp_line_init (SPLine * line)
 	SP_PATH (line) -> independent = FALSE;
 	line->x1 = line->y1 = line->x2 = line->y2 = 0.0;
 }
+
 
 static void
 sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr)

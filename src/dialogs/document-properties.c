@@ -18,11 +18,9 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-paper.h>
 
 #include "../helper/unit-menu.h"
+#include "../helper/sp-intl.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop.h"
@@ -37,7 +35,9 @@
  */ 
 
 static GtkWidget *dialog = NULL;
+#if 0
 static GList *papers = NULL;
+#endif
 
 static GtkWidget *sp_doc_dialog_new (void);
 static void sp_doc_dialog_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
@@ -62,8 +62,9 @@ sp_document_dialog (void)
 	gtk_widget_show (dialog);
 }
 
+#if 0
 static void
-sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePaper *paper)
+sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePrintPaper *paper)
 {
 	GtkWidget *ww, *hw;
 
@@ -83,11 +84,11 @@ sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePaper *paper)
 		if (!pt) pt = sp_unit_get_by_abbreviation ("pt");
 		us = gtk_object_get_data (GTK_OBJECT (dialog), "units");
 		unit = sp_unit_selector_get_unit (us);
-		w = gnome_paper_pswidth (paper);
+		w = paper->width;
 		a = gtk_object_get_data (GTK_OBJECT (dialog), "width");
 		sp_convert_distance (&w, pt, unit);
 		gtk_adjustment_set_value (a, w);
-		h = gnome_paper_psheight (paper);
+		h = paper->height;
 		a = gtk_object_get_data (GTK_OBJECT (dialog), "height");
 		sp_convert_distance (&h, pt, unit);
 		gtk_adjustment_set_value (a, h);
@@ -96,6 +97,21 @@ sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePaper *paper)
 		gtk_widget_set_sensitive (hw, TRUE);
 	}
 }
+#else
+static void
+sp_doc_dialog_paper_selected (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *ww, *hw;
+
+	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+
+	ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
+	hw = gtk_object_get_data (GTK_OBJECT (dialog), "heightsb");
+
+	gtk_widget_set_sensitive (ww, TRUE);
+	gtk_widget_set_sensitive (hw, TRUE);
+}
+#endif
 
 static void
 sp_doc_dialog_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
@@ -129,7 +145,9 @@ sp_doc_dialog_new (void)
 {
 	GtkWidget *dialog, *nb, *vb, *hb, *l, *om, *m, *i, *f, *t, *us, *sb;
 	GtkObject *a;
+#if 0
 	GList *ll;
+#endif
 
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Document settings"));
@@ -164,16 +182,17 @@ sp_doc_dialog_new (void)
 
 	m = gtk_menu_new ();
 	gtk_widget_show (m);
-	if (!papers) papers = gnome_paper_name_list ();
+#if 0
+	if (!papers) papers = gnome_print_paper_get_list ();
 	for (ll = papers; ll != NULL; ll = ll->next) {
-		const GnomePaper * paper;
-		paper = gnome_paper_with_name (ll->data);
-		i = gtk_menu_item_new_with_label (gnome_paper_name (paper));
+		const GnomePrintPaper * paper = (GnomePrintPaper *)ll->data;
+		i = gtk_menu_item_new_with_label (paper->name);
 		gtk_widget_show (i);
 		gtk_signal_connect (GTK_OBJECT (i), "activate",
 				    GTK_SIGNAL_FUNC (sp_doc_dialog_paper_selected), (gpointer) paper);
 		gtk_menu_append (GTK_MENU (m), i);
 	}
+#endif
 	i = gtk_menu_item_new_with_label (_("Custom"));
 	gtk_widget_show (i);
 	gtk_signal_connect (GTK_OBJECT (i), "activate",
@@ -277,15 +296,16 @@ sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc)
 
 		pos = 1;
 
+#if 0
 		for (l = papers; l != NULL; l = l->next) {
 			gdouble pw, ph;
-			const GnomePaper *paper;
-			paper = gnome_paper_with_name ((gchar *) l->data);
-			pw = gnome_paper_pswidth (paper);
-			ph = gnome_paper_psheight (paper);
+			const GnomePrintPaper *paper = (GnomePrintPaper *)l->data;
+			pw = paper->width;
+			ph = paper->height;
 			if ((fabs (docw - pw) < 1.0) && (fabs (doch - ph) < 1.0)) break;
 			pos += 1;
 		}
+#endif
 
 		ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
 		hw = gtk_object_get_data (GTK_OBJECT (dialog), "heightsb");

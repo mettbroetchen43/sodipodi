@@ -13,11 +13,13 @@
  */
 
 #include <math.h>
+
 #include <ctype.h>
 #include <libart_lgpl/art_affine.h>
+#include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
-#include <gal/widgets/e-unicode.h>
+#include <gtk/gtksignal.h>
 #include <helper/sp-ctrlline.h>
 #include "sp-text.h"
 #include "sodipodi.h"
@@ -32,7 +34,7 @@
 
 static void sp_text_context_class_init (SPTextContextClass * klass);
 static void sp_text_context_init (SPTextContext * text_context);
-static void sp_text_context_finalize (GtkObject *object);
+static void sp_text_context_destroy (GtkObject *object);
 
 static void sp_text_context_setup (SPEventContext *ec);
 static void sp_text_context_finish (SPEventContext *ec);
@@ -83,7 +85,7 @@ sp_text_context_class_init (SPTextContextClass * klass)
 
 	parent_class = gtk_type_class (sp_event_context_get_type ());
 
-	object_class->finalize = sp_text_context_finalize;
+	object_class->destroy = sp_text_context_destroy;
 
 	event_context_class->setup = sp_text_context_setup;
 	event_context_class->finish = sp_text_context_finish;
@@ -116,7 +118,7 @@ sp_text_context_init (SPTextContext *tc)
 }
 
 static void
-sp_text_context_finalize (GtkObject *object)
+sp_text_context_destroy (GtkObject *object)
 {
 	SPEventContext *ec;
 	SPTextContext *tc;
@@ -133,28 +135,37 @@ sp_text_context_finalize (GtkObject *object)
 	}
 
 	if (ec->desktop) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
-		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
+		g_signal_handlers_disconnect_matched(SP_DT_CANVAS(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, tc);
+		g_signal_handlers_disconnect_matched(SP_DT_SELECTION(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, ec);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc); */
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec); */
 	}
 
-	GTK_OBJECT_CLASS (parent_class)->finalize (object);
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static gint
 sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
+#ifdef SP_TC_XIM
+	g_print ("focus in\n");
 	gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (SP_EVENT_CONTEXT (tc)->desktop))->window);
-
+#endif
 	return FALSE;
 }
 
 static gint
 sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
+#ifdef SP_TC_XIM
+	g_print ("focus out\n");
 	gdk_im_end ();
-
+#endif
 	return FALSE;
 }
+#endif
 
 static void
 sp_text_context_setup (SPEventContext *ec)
@@ -234,12 +245,14 @@ sp_text_context_finish (SPEventContext *ec)
 
 	if (tc->cursor) {
 		gtk_object_destroy (GTK_OBJECT (tc->cursor));
-		tc->cursor = 0;
+		tc->cursor = 0; 
 	}
 
 	if (ec->desktop) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
-		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
+		g_signal_handlers_disconnect_matched(SP_DT_CANVAS(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, tc);
+		g_signal_handlers_disconnect_matched(SP_DT_SELECTION(ec->desktop), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, ec);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc); */
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec); */
 	}
 
 	sp_text_context_forget_text (tc);
@@ -282,7 +295,6 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPTextContext *tc;
 	SPTSpan *new;
 	SPStyle *style;
-	guchar *utf8;
 	gint ret;
 
 	tc = SP_TEXT_CONTEXT (ec);
@@ -357,9 +369,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				break;
 			default:
 				if (event->key.string) {
-					utf8 = e_utf8_from_locale_string (event->key.string);
-					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
-					if (utf8) g_free (utf8);
+					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, event->key.string, FALSE);
 				}
 				break;
 			}
@@ -426,9 +436,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					}
 				} else if (event->key.string) {
 					tc->unimode = FALSE;
-					utf8 = e_utf8_from_locale_string (event->key.string);
-					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, utf8, FALSE);
-					if (utf8) g_free (utf8);
+					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, event->key.string, FALSE);
 					break;
 				}
 			}

@@ -14,10 +14,10 @@
  */
 
 #define SP_TYPE_CLIPPATH (sp_clippath_get_type ())
-#define SP_CLIPPATH(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_CLIPPATH, SPClipPath))
-#define SP_CLIPPATH_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_CLIPPATH, SPClipPathClass))
-#define SP_IS_CLIPPATH(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_CLIPPATH))
-#define SP_IS_CLIPPATH_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_CLIPPATH))
+#define SP_CLIPPATH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_CLIPPATH, SPClipPath))
+#define SP_CLIPPATH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_CLIPPATH, SPClipPathClass))
+#define SP_IS_CLIPPATH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_CLIPPATH))
+#define SP_IS_CLIPPATH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_CLIPPATH))
 
 #include "display/nr-arena-forward.h"
 #include "sp-object-group.h"
@@ -30,7 +30,7 @@ struct _SPClipPathClass {
 	SPObjectGroupClass parent_class;
 };
 
-GtkType sp_clippath_get_type (void);
+GType sp_clippath_get_type (void);
 
 NRArenaItem *sp_clippath_show (SPClipPath *cp, NRArena *arena);
 

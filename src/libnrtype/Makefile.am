@@ -1,11 +1,14 @@
 noinst_LIBRARIES = libnrtype.a
 
+if USE_GNOME_PRINT
+	gnome_print_sources = nr-type-gnome.c nr-type-gnome.h
+endif
+
+
 INCLUDES = \
 	-I.. \
-	$(cflags) \
-	$(FREETYPE_CFLAGS) \
 	$(SODIPODI_CFLAGS) \
-	$(SODIPODI_GNOME_PRINT_CFLAGS)
+	$(GNOME_PRINT_CFLAGS)
 
 libnrtype_a_SOURCES = \
 	nr-type-primitives.c nr-type-primitives.h \
@@ -14,5 +17,4 @@ libnrtype_a_SOURCES = \
 	nr-rasterfont.c nr-rasterfont.h \
 	nr-type-directory.c nr-type-directory.h \
 	nr-type-ft2.c nr-type-ft2.h \
-	nr-type-gnome.c nr-type-gnome.h
-
+	$(gnome_print_sources)

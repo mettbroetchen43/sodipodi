@@ -12,10 +12,10 @@
  */
 
 #include <math.h>
-#include <gdk/gdkkeysyms.h>
-#include <libart_lgpl/art_affine.h>
-#include <gtk/gtksignal.h>
 
+#include <libart_lgpl/art_affine.h>
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "sodipodi-private.h"
 #include "sodipodi.h"
@@ -154,16 +154,16 @@ sp_sel_trans_shutdown (SPSelTrans *seltrans)
 
 	for (i = 0; i < 8; i++) {
 		if (seltrans->shandle[i]) {
-			gtk_object_unref (GTK_OBJECT (seltrans->shandle[i]));
+			g_object_unref (G_OBJECT (seltrans->shandle[i]));
 			seltrans->shandle[i] = NULL;
 		}
 		if (seltrans->rhandle[i]) {
-			gtk_object_unref (GTK_OBJECT (seltrans->rhandle[i]));
+			g_object_unref (G_OBJECT (seltrans->rhandle[i]));
 			seltrans->rhandle[i] = NULL;
 		}
 	}
 	if (seltrans->chandle) {
-		gtk_object_unref (GTK_OBJECT (seltrans->chandle));
+		g_object_unref (G_OBJECT (seltrans->chandle));
 		seltrans->chandle = NULL;
 	}
 
@@ -426,7 +426,7 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	/* stamping mode */
 	SPItem * original_item, * copy_item;
 	SPRepr * original_repr, * copy_repr;
-	GSList *l;
+	GSList * l;
 
 	gchar tstr[80];
 	gdouble i2d[6], i2dnew[6];
@@ -436,16 +436,16 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	tstr[79] = '\0';
 	
 	if (!seltrans->empty) {
-		
-		if (seltrans->stamp_cache) {
-			l = seltrans->stamp_cache;
-		} else {
-			/* Build cache */
-			l  = (GSList *) sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
-			l  = g_slist_copy (l);
-			l  = g_slist_sort (l, (GCompareFunc) sp_object_compare_position);
-			seltrans->stamp_cache = l;
-		}
+
+                if (seltrans->stamp_cache) {
+                        l = seltrans->stamp_cache;
+                } else {
+                        /* Build cache */
+                        l  = (GSList *) sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+                        l  = g_slist_copy (l);
+                        l  = g_slist_sort (l, (GCompareFunc) sp_object_compare_position);
+                        seltrans->stamp_cache = l;
+                }
 
 		while (l) {
 			original_item = SP_ITEM(l->data);
@@ -520,31 +520,31 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 	// center handle
 	if (seltrans->chandle == NULL) {
 	  seltrans->chandle = sp_knot_new (seltrans->desktop);
-	  gtk_object_set (GTK_OBJECT (seltrans->chandle),
-			  "anchor", handle_center.anchor, 
-			  "shape", SP_CTRL_SHAPE_BITMAP,
-			  "size", 13,
-			  "mode", SP_CTRL_MODE_COLOR,
-					"fill", 0x00000000,
-					"fill_mouseover", 0x0000007f,
-					"stroke", 0x000000ff,
-					"stroke_mouseover", 0x000000ff,
+	  g_object_set (G_OBJECT (seltrans->chandle),
+			"anchor", handle_center.anchor, 
+			"shape", SP_CTRL_SHAPE_BITMAP,
+			"size", 13,
+			"mode", SP_CTRL_MODE_COLOR,
+			"fill", 0x00000000,
+			"fill_mouseover", 0x0000007f,
+			"stroke", 0x000000ff,
+			"stroke_mouseover", 0x000000ff,
 			  //"fill", 0xff40ffa0,
 			  //"fill_mouseover", 0x40ffffa0,
 			  //"stroke", 0xFFb0b0ff,
 			  //"stroke_mouseover", 0xffffffFF,
-			  "pixbuf", handles[handle_center.control],
-			  "cursor_mouseover", CursorSelectMouseover,
-			  "cursor_dragging", CursorSelectDragging,
-			  NULL);
-	  gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "request",
-			      GTK_SIGNAL_FUNC (sp_sel_trans_handle_request), (gpointer) &handle_center);
-	  gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "moved",
-	  		      GTK_SIGNAL_FUNC (sp_sel_trans_handle_new_event), (gpointer) &handle_center);
-	  gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "grabbed",
-			      GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), (gpointer) &handle_center);
-	  gtk_signal_connect (GTK_OBJECT (seltrans->chandle), "ungrabbed",
-			      GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), (gpointer) &handle_center);
+			"pixbuf", handles[handle_center.control],
+			"cursor_mouseover", CursorSelectMouseover,
+			"cursor_dragging", CursorSelectDragging,
+			NULL);
+	  g_signal_connect (G_OBJECT (seltrans->chandle), "request",
+			    G_CALLBACK (sp_sel_trans_handle_request), (gpointer) &handle_center);
+	  g_signal_connect (G_OBJECT (seltrans->chandle), "moved",
+			    G_CALLBACK (sp_sel_trans_handle_new_event), (gpointer) &handle_center);
+	  g_signal_connect (G_OBJECT (seltrans->chandle), "grabbed",
+			    G_CALLBACK (sp_sel_trans_handle_grab), (gpointer) &handle_center);
+	  g_signal_connect (G_OBJECT (seltrans->chandle), "ungrabbed",
+			    G_CALLBACK (sp_sel_trans_handle_ungrab), (gpointer) &handle_center);
 	}
 	sp_knot_show (seltrans->chandle);
 	sp_knot_set_position (seltrans->chandle, &seltrans->center, 0);
@@ -594,7 +594,7 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 	for (i = 0; i < num; i++) {
 		if (knot[i] == NULL) {
 			knot[i] = sp_knot_new (seltrans->desktop);
-			gtk_object_set (GTK_OBJECT (knot[i]),
+			g_object_set (G_OBJECT (knot[i]),
 					"anchor", handle[i].anchor, 
 					"shape", SP_CTRL_SHAPE_BITMAP,
 					"size", 13,
@@ -612,15 +612,15 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 					"cursor_dragging", CursorSelectDragging,
 					NULL);
 
-			gtk_signal_connect (GTK_OBJECT (knot[i]), "request",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_request), (gpointer) &handle[i]);
- 			gtk_signal_connect (GTK_OBJECT (knot[i]), "moved",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_new_event), (gpointer) &handle[i]);
-			gtk_signal_connect (GTK_OBJECT (knot[i]), "grabbed",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), (gpointer) &handle[i]);
-			gtk_signal_connect (GTK_OBJECT (knot[i]), "ungrabbed",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), (gpointer) &handle[i]);
-			gtk_signal_connect (GTK_OBJECT (knot[i]), "event", GTK_SIGNAL_FUNC (sp_seltrans_handle_event), (gpointer) &handle[i]);
+			g_signal_connect (G_OBJECT (knot[i]), "request",
+					  G_CALLBACK (sp_sel_trans_handle_request), (gpointer) &handle[i]);
+ 			g_signal_connect (G_OBJECT (knot[i]), "moved",
+					  G_CALLBACK (sp_sel_trans_handle_new_event), (gpointer) &handle[i]);
+			g_signal_connect (G_OBJECT (knot[i]), "grabbed",
+					  G_CALLBACK (sp_sel_trans_handle_grab), (gpointer) &handle[i]);
+			g_signal_connect (G_OBJECT (knot[i]), "ungrabbed",
+					  G_CALLBACK (sp_sel_trans_handle_ungrab), (gpointer) &handle[i]);
+			g_signal_connect (G_OBJECT (knot[i]), "event", G_CALLBACK (sp_seltrans_handle_event), (gpointer) &handle[i]);
 		}
 		sp_knot_show (knot[i]);
 

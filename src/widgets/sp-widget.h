@@ -13,15 +13,15 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define SP_TYPE_WIDGET (sp_widget_get_type ())
-#define SP_WIDGET(o) (GTK_CHECK_CAST ((o), SP_TYPE_WIDGET, SPWidget))
-#define SP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_WIDGET, SPWidgetClass))
-#define SP_IS_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_WIDGET))
-#define SP_IS_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_WIDGET))
+#define SP_WIDGET(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_WIDGET, SPWidget))
+#define SP_WIDGET_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_WIDGET, SPWidgetClass))
+#define SP_IS_WIDGET(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_WIDGET))
+#define SP_IS_WIDGET_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_WIDGET))
 
 typedef struct _SPWidget SPWidget;
 typedef struct _SPWidgetClass SPWidgetClass;
@@ -77,6 +77,6 @@ const GSList *sp_widget_get_item_list (SPWidget *spw);
 #define SP_WIDGET_DESKTOP(spw) SP_ACTIVE_DESKTOP
 #define SP_WIDGET_SELECTION(spw) SP_DT_SELECTION (SP_ACTIVE_DESKTOP)
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

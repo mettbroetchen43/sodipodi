@@ -33,9 +33,6 @@ static void sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void sp_cgrid_update (SPCanvasItem *item, double *affine, unsigned int flags);
 static void sp_cgrid_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_cgrid_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem ** actual_item);
-
-
 static SPCanvasItemClass * parent_class;
 
 GtkType
@@ -80,7 +77,6 @@ sp_cgrid_class_init (SPCGridClass *klass)
 
 	item_class->update = sp_cgrid_update;
 	item_class->render = sp_cgrid_render;
-	item_class->point = sp_cgrid_point;
 }
 
 static void
@@ -252,13 +248,5 @@ sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
 	item->x1 = item->y1 = -1000000;
 	item->x2 = item->y2 = 1000000;
 }
-
-static double
-sp_cgrid_point (SPCanvasItem *item, double x, double y,
-	       int cx, int cy, SPCanvasItem **actual_item)
-{
-	return 1e18;
-}
-
 
 

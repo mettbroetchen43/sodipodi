@@ -13,33 +13,42 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-/* Generic */
-#define SP_OBJECT_FLAGS GTK_OBJECT_FLAGS
-#define SP_OBJECT_SET_FLAGS GTK_OBJECT_SET_FLAGS
-#define SP_OBJECT_UNSET_FLAGS GTK_OBJECT_UNSET_FLAGS
-#define SP_OBJECT_CLONED_FLAG (1 << 4)
-/* Async modifiaction flags */
-#define SP_OBJECT_MODIFIED_FLAG (1 << 5)
-#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 6)
-#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 7)
-#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 8)
-#define SP_OBJECT_VIEWPORT_MODIFIED_FLAG (1 << 9)
-#define SP_OBJECT_USER_MODIFIED_FLAG_A (1 << 10)
-#define SP_OBJECT_USER_MODIFIED_FLAG_B (1 << 11)
-#define SP_OBJECT_USER_MODIFIED_FLAG_C (1 << 12)
-#define SP_OBJECT_USER_MODIFIED_FLAG_D (1 << 13)
-#define SP_OBJECT_USER_MODIFIED_FLAG_E (1 << 14)
-#define SP_OBJECT_USER_MODIFIED_FLAG_F (1 << 15)
+/* SPObject flags */
+enum {
+	/* Generic */
+	SP_OBJECT_IN_DESTRUCTION_FLAG = (1 << 0),
+	SP_OBJECT_CLONED_FLAG = (1 << 4),
+
+	/* Async modification flags */
+	SP_OBJECT_MODIFIED_FLAG = (1 << 5),
+	SP_OBJECT_CHILD_MODIFIED_FLAG = (1 << 6),
+	SP_OBJECT_PARENT_MODIFIED_FLAG = (1 << 7),
+	SP_OBJECT_STYLE_MODIFIED_FLAG = (1 << 8),
+	SP_OBJECT_VIEWPORT_MODIFIED_FLAG = (1 << 9),
+	SP_OBJECT_USER_MODIFIED_FLAG_A = (1 << 10),
+	SP_OBJECT_USER_MODIFIED_FLAG_B = (1 << 11),
+	SP_OBJECT_USER_MODIFIED_FLAG_C = (1 << 12),
+	SP_OBJECT_USER_MODIFIED_FLAG_D = (1 << 13),
+	SP_OBJECT_USER_MODIFIED_FLAG_E = (1 << 14),
+	SP_OBJECT_USER_MODIFIED_FLAG_F = (1 << 15),
+};
+
 /* Flags that mark object as modified */
 /* Object, Child, Style, Viewport, User */
 #define SP_OBJECT_MODIFIED_STATE 0xff60
+
 /* Flags that will propagate downstreams */
 /* Parent, Style, Viewport, User */
 #define SP_OBJECT_MODIFIED_CASCADE 0xff80
 
-#define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
-#define SP_OBJECT_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
-#define SP_OBJECT_CHILD_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
+/* Generic */
+#define SP_OBJECT_FLAGS(obj) (SP_OBJECT(obj)->flags)
+#define SP_OBJECT_SET_FLAGS(obj,flag) G_STMT_START{ (SP_OBJECT_FLAGS (obj) |= (flag)); }G_STMT_END
+#define SP_OBJECT_UNSET_FLAGS(obj,flag) G_STMT_START{ (SP_OBJECT_FLAGS (obj) &= ~(flag)); }G_STMT_END
+
+#define SP_OBJECT_IS_CLONED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
+#define SP_OBJECT_IS_MODIFIED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
+#define SP_OBJECT_CHILD_IS_MODIFIED(o) (SP_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
 
 /* Write flags */
 #define SP_OBJECT_WRITE_BUILD (1 << 0)
@@ -56,8 +65,7 @@
 #define SP_OBJECT_TITLE(o) (SP_OBJECT (o)->title)
 #define SP_OBJECT_DESCRIPTION(o) (SP_OBJECT (o)->description)
 
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 #include "xml/repr.h"
 #include "forward.h"
 
@@ -92,8 +100,9 @@ struct _SPException {
 #define SP_EXCEPTION_IS_OK(ex) (!(ex) || ((ex)->code == SP_NO_EXCEPTION))
 
 struct _SPObject {
-	GtkObject object;
+	GObject object;
 	guint hrefcount; /* number os xlink:href references */
+	guint32 flags;
 	SPDocument *document; /* Document we are part of */
 	SPObject *parent; /* Our parent (only one allowed) */
 	SPObject *next; /* Next object in linked list */
@@ -105,7 +114,7 @@ struct _SPObject {
 };
 
 struct _SPObjectClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (* build) (SPObject *object, SPDocument *doc, SPRepr *repr);
 	void (* release) (SPObject *object);

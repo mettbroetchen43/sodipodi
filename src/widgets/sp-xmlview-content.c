@@ -18,7 +18,6 @@
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkadjustment.h>
-#include <gal/widgets/e-unicode.h>
 #include "../xml/repr.h"
 #include "../xml/repr-private.h"
 #include "sp-xmlview-content.h"
@@ -143,7 +142,8 @@ event_content_changed (SPRepr * repr, const guchar * old_content, const guchar *
 	gtk_text_freeze (GTK_TEXT (text));
 	gtk_editable_delete_text (GTK_EDITABLE (text), 0, -1);
 	if (new_content) {
-		e_utf8_gtk_editable_set_text (GTK_EDITABLE (text), new_content);
+		gtk_editable_delete_text (GTK_EDITABLE (text), 0, -1);
+		gtk_editable_insert_text (GTK_EDITABLE (text), new_content, strlen (new_content), 0);
 	}
 	gtk_editable_set_editable (GTK_EDITABLE (text), new_content != NULL);
 	gtk_text_thaw (GTK_TEXT (text));
@@ -159,9 +159,9 @@ sp_xmlview_content_changed (GtkEditable * editable)
 	if (text->blocked) return;
 
 	if (text->repr) {
-		gchar * data;
+		gchar *data;
 		text->blocked = TRUE;
-		data = e_utf8_gtk_editable_get_text (GTK_EDITABLE (editable));
+		data = gtk_editable_get_chars (GTK_EDITABLE (editable), 0, -1);
 		sp_repr_set_content (text->repr, data);
 		g_free (data);
 		text->blocked = FALSE;

@@ -1,13 +1,5 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
-GNOME_Sodipodi.oaf.in
-glade/align.glade
-glade/item.glade
-glade/object_props.glade
-glade/sodipodi.glade
-glade/toolbox.glade
-glade/transformation.glade
-glade/xml-tree.glade
 sodipodi.desktop.in
 src/bonobo/svg-doc-factory.c
 src/desktop.c

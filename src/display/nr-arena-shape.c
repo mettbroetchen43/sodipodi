@@ -37,7 +37,7 @@
 
 static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
-static void nr_arena_shape_destroy (GtkObject *object);
+static void nr_arena_shape_dispose (GObject *object);
 
 static guint nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
@@ -46,20 +46,23 @@ static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y
 
 static NRArenaItemClass *shape_parent_class;
 
-GtkType
+GType
 nr_arena_shape_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaShape",
-			sizeof (NRArenaShape),
+		GTypeInfo info = {
 			sizeof (NRArenaShapeClass),
-			(GtkClassInitFunc) nr_arena_shape_class_init,
-			(GtkObjectInitFunc) nr_arena_shape_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_shape_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArenaShape),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) nr_arena_shape_init,
 		};
-		type = gtk_type_unique (NR_TYPE_ARENA_ITEM, &info);
+		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaShape", &info, 0);
 	}
 	return type;
 }
@@ -67,15 +70,15 @@ nr_arena_shape_get_type (void)
 static void
 nr_arena_shape_class_init (NRArenaShapeClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	shape_parent_class = gtk_type_class (NR_TYPE_ARENA_ITEM);
+	shape_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->destroy = nr_arena_shape_destroy;
+	object_class->dispose = nr_arena_shape_dispose;
 
 	item_class->update = nr_arena_shape_update;
 	item_class->render = nr_arena_shape_render;
@@ -99,7 +102,7 @@ nr_arena_shape_init (NRArenaShape *shape)
 }
 
 static void
-nr_arena_shape_destroy (GtkObject *object)
+nr_arena_shape_dispose (GObject *object)
 {
 	NRArenaShape *shape;
 
@@ -135,8 +138,8 @@ nr_arena_shape_destroy (GtkObject *object)
 		shape->curve = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (shape_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (shape_parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (shape_parent_class)->dispose)
+		(* G_OBJECT_CLASS (shape_parent_class)->dispose) (object);
 }
 
 static guint

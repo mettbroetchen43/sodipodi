@@ -16,6 +16,7 @@ libspchelp_a_SOURCES = \
 	sp-canvas.c sp-canvas.h \
 	art-utils.c art-utils.h \
 	sp-canvas-util.c sp-canvas-util.h \
+	gnome-utils.c gnome-utils.h \
 	curve.c curve.h \
 	gnome-canvas-acetate.c gnome-canvas-acetate.h \
 	sodipodi-ctrl.c sodipodi-ctrl.h \
@@ -30,7 +31,15 @@ libspchelp_a_SOURCES = \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
 	bezier-utils.c bezier-utils.h \
 	units.c units.h \
-	unit-menu.c unit-menu.h
+	unit-menu.c unit-menu.h \
+	sp-marshal.c sp-marshal.h
 
 #	pathops.c pathops.h
 
+sp-marshal.h: sp-marshal.list
+	rm -f $@
+	glib-genmarshal --prefix=sp_marshal --header sp-marshal.list > $@
+
+sp-marshal.c: sp-marshal.h sp-marshal.list
+	rm -f $@
+	glib-genmarshal --prefix=sp_marshal --body sp-marshal.list > $@

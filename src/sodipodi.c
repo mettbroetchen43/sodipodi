@@ -13,22 +13,23 @@
  */
 
 #include <config.h>
+
 #include <string.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
 #include <ctype.h>
+
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-messagebox.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmessagedialog.h>
+
 #include <xml/repr-private.h>
+#include "helper/sp-intl.h"
 #include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -124,76 +125,74 @@ sodipodi_class_init (SodipodiClass * klass)
 
 	sodipodi_signals[MODIFY_SELECTION] = gtk_signal_new ("modify_selection",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, modify_selection),
 		gtk_marshal_NONE__POINTER_UINT,
 		GTK_TYPE_NONE, 2,
 		GTK_TYPE_POINTER, GTK_TYPE_UINT);
 	sodipodi_signals[CHANGE_SELECTION] = gtk_signal_new ("change_selection",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, change_selection),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[SET_SELECTION] = gtk_signal_new ("set_selection",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, set_selection),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[SET_EVENTCONTEXT] = gtk_signal_new ("set_eventcontext",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, set_eventcontext),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[NEW_DESKTOP] = gtk_signal_new ("new_desktop",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, new_desktop),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[DESTROY_DESKTOP] = gtk_signal_new ("destroy_desktop",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, destroy_desktop),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[ACTIVATE_DESKTOP] = gtk_signal_new ("activate_desktop",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, activate_desktop),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[DESACTIVATE_DESKTOP] = gtk_signal_new ("desactivate_desktop",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, desactivate_desktop),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[NEW_DOCUMENT] = gtk_signal_new ("new_document",
 		GTK_RUN_FIRST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, new_document),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
 	sodipodi_signals[DESTROY_DOCUMENT] = gtk_signal_new ("destroy_document",
 		GTK_RUN_LAST,
-		object_class->type,
+		GTK_CLASS_TYPE(object_class),
 		GTK_SIGNAL_OFFSET (SodipodiClass, destroy_document),
 		gtk_marshal_NONE__POINTER,
 		GTK_TYPE_NONE, 1,
 		GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, sodipodi_signals, LAST_SIGNAL);
 
 	object_class->destroy = sodipodi_destroy;
 
@@ -265,7 +264,8 @@ sodipodi_segv_handler (int signum)
 {
 	static gint recursion = FALSE;
 	GSList *savednames, *failednames, *l;
-	gchar *home, *istr, *sstr, *fstr, *b;
+	const gchar *home;
+	gchar *istr, *sstr, *fstr, *b;
 	gint count, nllen, len, pos;
 	time_t sptime;
 	struct tm *sptm;
@@ -407,8 +407,8 @@ sodipodi_segv_handler (int signum)
 		}
 	}
 	*(b + pos) = '\0';
-	msgbox = gnome_message_box_new (b, GNOME_MESSAGE_BOX_ERROR, GNOME_STOCK_BUTTON_CLOSE, NULL);
-	gnome_dialog_run_and_close (GNOME_DIALOG (msgbox));
+	msgbox = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", b);
+	gtk_dialog_run (GTK_DIALOG (msgbox));
 	gtk_widget_destroy (msgbox);
 	g_free (b);
 
@@ -442,7 +442,7 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 	SPReprDoc * doc;
 	SPRepr * root;
 
-	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 	if (stat (fn, &s)) {
 		/* No such file */
 		sodipodi_init_preferences (sodipodi);
@@ -452,12 +452,13 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 
 	if (!S_ISREG (s.st_mode)) {
 		/* Not a regular file */
-		m = g_strdup_printf (_("%s is not regular file.\n"
-				       "Although sodipodi will run, you can\n"
-				       "neither load nor save preferences\n"), fn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("%s is not regular file.\n"
+					      "Although sodipodi will run, you can\n"
+					      "neither load nor save preferences\n"), fn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		g_free (fn);
 		return;
 	}
@@ -465,27 +466,29 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 	doc = sp_repr_read_file (fn);
 	if (doc == NULL) {
 		/* Not an valid xml file */
-		m = g_strdup_printf (_("%s either is not valid xml file or\n"
-				       "you do not have read premissions on it.\n"
-				       "Although sodipodi will run, you\n"
-				       "are neither able to load nor save\n"
-				       "preferences."), fn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("%s either is not valid xml file or\n"
+					      "you do not have read premissions on it.\n"
+					      "Although sodipodi will run, you\n"
+					      "are neither able to load nor save\n"
+					      "preferences."), fn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		g_free (fn);
 		return;
 	}
 
 	root = sp_repr_document_root (doc);
 	if (strcmp (sp_repr_name (root), "sodipodi")) {
-		m = g_strdup_printf (_("%s is not valid sodipodi preferences file.\n"
-				       "Although sodipodi will run, you\n"
-				       "are neither able to load nor save\n"
-				       "preferences."), fn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("%s is not valid sodipodi preferences file.\n"
+					      "Although sodipodi will run, you\n"
+					      "are neither able to load nor save\n"
+					      "preferences."), fn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		sp_repr_document_unref (doc);
 		g_free (fn);
 		return;
@@ -501,7 +504,7 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 {
 	gchar * fn;
 
-	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 
 	sp_repr_save_file (sodipodi->preferences, fn);
 
@@ -756,57 +759,61 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 	gchar * m;
 	GtkWidget * w;
 
-	dn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
+	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
 	if (stat (dn, &s)) {
 		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP)) {
 			/* Cannot create directory */
-			m = g_strdup_printf (_("Cannot create directory %s.\n"
-					       "Although sodipodi will run, you\n"
-					       "are neither able to load nor save\n"
-					       "preferences."), dn);
-			w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+						    _("Cannot create directory %s.\n"
+						      "Although sodipodi will run, you\n"
+						      "are neither able to load nor save\n"
+						      "preferences."), dn);
 			g_free (m);
-			gnome_dialog_run_and_close (GNOME_DIALOG (w));
+			gtk_dialog_run (GTK_DIALOG (w));
+			gtk_widget_destroy (w);
 			g_free (dn);
 			return;
 		}
 	} else if (!S_ISDIR (s.st_mode)) {
 		/* Not a directory */
-		m = g_strdup_printf (_("%s is not a valid directory.\n"
-				       "Although sodipodi will run, you\n"
-				       "are neither able to load nor save\n"
-				       "preferences."), dn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("%s is not a valid directory.\n"
+					      "Although sodipodi will run, you\n"
+					      "are neither able to load nor save\n"
+					      "preferences."), dn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		g_free (dn);
 		return;
 	}
 	g_free (dn);
 
-	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
 	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
 	if (fh < 0) {
 		/* Cannot create file */
-		m = g_strdup_printf (_("Cannot create file %s.\n"
-				       "Although sodipodi will run, you\n"
-				       "are neither able to load nor save\n"
-				       "preferences."), dn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("Cannot create file %s.\n"
+					      "Although sodipodi will run, you\n"
+					      "are neither able to load nor save\n"
+					      "preferences."), dn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		g_free (fn);
 		return;
 	}
 	if (write (fh, preferences_skeleton, PREFERENCES_SKELETON_SIZE) != PREFERENCES_SKELETON_SIZE) {
 		/* Cannot create file */
-		m = g_strdup_printf (_("Cannot write file %s.\n"
-				       "Although sodipodi will run, you\n"
-				       "are neither able to load nor save\n"
-				       "preferences."), dn);
-		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+					    _("Cannot write file %s.\n"
+					      "Although sodipodi will run, you\n"
+					      "are neither able to load nor save\n"
+					      "preferences."), dn);
 		g_free (m);
-		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		gtk_dialog_run (GTK_DIALOG (w));
+		gtk_widget_destroy (w);
 		g_free (fn);
 		close (fh);
 		return;

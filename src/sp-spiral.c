@@ -20,14 +20,13 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "svg/svg.h"
 #include "knotholder.h"
 #include "helper/bezier-utils.h"
 #include "dialogs/object-attributes.h"
+#include "helper/sp-intl.h"
 
 #include "sp-spiral.h"
 
@@ -59,23 +58,24 @@ static void sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor
 
 static SPShapeClass *parent_class;
 
-GtkType
+GType
 sp_spiral_get_type (void)
 {
-	static GtkType spiral_type = 0;
+	static GType spiral_type = 0;
 
 	if (!spiral_type) {
-		GtkTypeInfo spiral_info = {
-			"SPSpiral",
-			sizeof (SPSpiral),
+		GTypeInfo spiral_info = {
 			sizeof (SPSpiralClass),
-			(GtkClassInitFunc) sp_spiral_class_init,
-			(GtkObjectInitFunc) sp_spiral_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_spiral_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPSpiral),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_spiral_init,
 		};
-		spiral_type = gtk_type_unique (sp_shape_get_type (), &spiral_info);
+		spiral_type = g_type_register_static (SP_TYPE_SHAPE, "SPSPiral", &spiral_info, 0);
 	}
 	return spiral_type;
 }
@@ -83,17 +83,17 @@ sp_spiral_get_type (void)
 static void
 sp_spiral_class_init (SPSpiralClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 	SPShapeClass *shape_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 	shape_class = (SPShapeClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_spiral_build;
 	sp_object_class->write = sp_spiral_write;
@@ -124,7 +124,6 @@ sp_spiral_init (SPSpiral * spiral)
 static void
 sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 

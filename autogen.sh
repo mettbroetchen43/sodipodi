@@ -1,22 +1,13 @@
 #!/bin/sh
 # Run this to generate all the initial makefiles, etc.
-
-DIE=0
+# It's come from GNOME2.
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-PKG_NAME="Sodipodi"
+PKG_NAME="sodipodi"
 
-(test -f $srcdir/configure.in \
-  && test -d $srcdir/src \
-  && test -f $srcdir/src/sodipodi.c) || {
-    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
-    echo " top-level sodipodi directory"
-    exit 1
-}
-
-#This is cut'n'paste from macros/autogen.sh
+DIE=0
 
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
   echo
@@ -30,7 +21,7 @@ PKG_NAME="Sodipodi"
   (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
     echo 
     echo "**Error**: You must have \`intltoolize' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/intltool/"
+    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/intltool/intltool-0.10.tar.gz"
     echo "(or a newer version if it is available)"
     DIE=1
   }
@@ -40,7 +31,8 @@ PKG_NAME="Sodipodi"
   (xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
     echo 
     echo "**Error**: You must have \`xml-i18n-toolize' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/xml-i18n-tools/"
+    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/xml-i18n-tools/xml-i18n-tools-0.9.tar.gz"
+    echo "(or a newer version of xml-i18n-tools or intltool if it is available)"
     DIE=1
   }
 }
@@ -49,25 +41,52 @@ PKG_NAME="Sodipodi"
   (libtool --version) < /dev/null > /dev/null 2>&1 || {
     echo
     echo "**Error**: You must have \`libtool' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnu.org/pub/gnu/"
+    echo "Get ftp://ftp.gnu.org/pub/gnu/libtool-1.2d.tar.gz"
+    echo "(or a newer version if it is available)"
     DIE=1
   }
 }
 
-(automake --version) < /dev/null > /dev/null 2>&1 || {
+
+if grep "^AM_[A-Z0-9_]\{1,\}_GETTEXT" $srcdir/configure.in >/dev/null; then
+  if grep "sed.*POTFILES" $srcdir/configure.in >/dev/null; then
+    GETTEXTIZE=""
+  else
+    if grep "^AM_GLIB_GNU_GETTEXT" configure.in >/dev/null; then
+      GETTEXTIZE="glib-gettextize"
+      GETTEXTIZE_URL="ftp://ftp.gtk.org/pub/gtk/v1.3/glib-1.3.11.tar.gz"
+    else
+      GETTEXTIZE="gettextize"
+      GETTEXTIZE_URL="ftp://alpha.gnu.org/gnu/gettext-0.10.35.tar.gz"
+    fi
+
+    if ! $GETTEXTIZE --version < /dev/null > /dev/null 2>&1; then
+      echo
+      echo "**Error**: You must have \`$GETTEXTIZE' installed to compile $PKG_NAME."
+      echo "Get $GETTEXTIZE_URL"
+      echo "(or a newer version if it is available)"
+      DIE=1
+    fi
+  fi
+fi
+
+(automake-1.6 --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: You must have \`automake' installed to compile $PKG_NAME."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/"
+  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.6.tar.gz"
+  echo "(or a newer version if it is available)"
   DIE=1
   NO_AUTOMAKE=yes
 }
 
+
 # if no automake, don't bother testing for aclocal
-test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
+test -n "$NO_AUTOMAKE" || (aclocal-1.6 --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
   echo "installed doesn't appear recent enough."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/"
+  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.6.tar.gz"
+  echo "(or a newer version if it is available)"
   DIE=1
 }
 
@@ -94,52 +113,19 @@ do
     echo skipping $dr -- flagged as no auto-gen
   else
     echo processing $dr
-    macrodirs=`sed -n -e 's,AM_ACLOCAL_INCLUDE(\(.*\)),\1,gp' < $coin`
     ( cd $dr
-      macrosdir=`find . -name macros -print`
-      for i in $macrodirs; do
-	if test -f $i/gnome-gettext.m4; then
-	  DELETEFILES="$DELETEFILES $i/gnome-gettext.m4"
-	fi
-      done
 
-      echo "deletefiles is $DELETEFILES"
       aclocalinclude="$ACLOCAL_FLAGS"
-      for k in $aclocalinclude; do
-  	if test -d $k; then
-	  if [ -f $k/gnome.m4 -a "$GNOME_INTERFACE_VERSION" = "1" ]; then
-	    rm -f $DELETEFILES
-	  fi
-        fi
-      done
-      for k in $macrodirs; do
-  	if test -d $k; then
-          aclocalinclude="$aclocalinclude -I $k"
-	  if [ -f $k/gnome.m4 -a "$GNOME_INTERFACE_VERSION" = "1" ]; then
-	    rm -f $DELETEFILES
-	  fi
-        fi
-      done
-      if grep "^AM_GNU_GETTEXT" configure.in >/dev/null; then
-	if grep "sed.*POTFILES" configure.in >/dev/null; then
-	  : do nothing -- we still have an old unmodified configure.in
-	else
-	  echo "Creating $dr/aclocal.m4 ..."
-	  test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	  echo "Running gettextize...  Ignore non-fatal messages."
-	  echo "no" | gettextize --force --copy --intl
-	  echo "Making $dr/aclocal.m4 writable ..."
-	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-        fi
-      fi
-      if grep "^AM_GNOME_GETTEXT" configure.in >/dev/null; then
+
+      if test "$GETTEXTIZE"; then
 	echo "Creating $dr/aclocal.m4 ..."
 	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	echo "Running gettextize...  Ignore non-fatal messages."
-	echo "no" | gettextize --force --copy --intl
+	echo "Running $GETTEXTIZE...  Ignore non-fatal messages."
+	echo "no" | $GETTEXTIZE --force --copy --intl
 	echo "Making $dr/aclocal.m4 writable ..."
 	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
       fi
+
       if grep "^AC_PROG_INTLTOOL" configure.in >/dev/null; then
         echo "Running intltoolize..."
 	intltoolize --copy --force --automake
@@ -154,10 +140,11 @@ do
 	  libtoolize --force --copy
 	fi
       fi
-      echo "Running aclocal $aclocalinclude ..."
-      aclocal $aclocalinclude || {
+
+      echo "Running aclocal-1.6 $aclocalinclude ..."
+      aclocal-1.6 $aclocalinclude || {
 	echo
-	echo "**Error**: aclocal failed. This may mean that you have not"
+	echo "**Error**: aclocal-1.6 failed. This may mean that you have not"
 	echo "installed all of the packages you need, or you may need to"
 	echo "set ACLOCAL_FLAGS to include \"-I \$prefix/share/aclocal\""
 	echo "for the prefix where you installed the packages whose"
@@ -169,16 +156,16 @@ do
 	echo "Running autoheader..."
 	autoheader || { echo "**Error**: autoheader failed."; exit 1; }
       fi
-      echo "Running automake --gnu $am_opt ..."
-      automake --add-missing --gnu $am_opt ||
-	{ echo "**Error**: automake failed."; exit 1; }
+      echo "Running automake-1.6 --gnu $am_opt ..."
+      automake-1.6 --add-missing --gnu $am_opt ||
+	{ echo "**Error**: automake-1.6 failed."; exit 1; }
       echo "Running autoconf ..."
       autoconf || { echo "**Error**: autoconf failed."; exit 1; }
     ) || exit 1
   fi
 done
 
-conf_flags="--enable-maintainer-mode --enable-compile-warnings"
+conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
 
 if test x$NOCONFIGURE = x; then
   echo Running $srcdir/configure $conf_flags "$@" ...
@@ -187,5 +174,3 @@ if test x$NOCONFIGURE = x; then
 else
   echo Skipping configure process.
 fi
-
-

@@ -43,20 +43,23 @@ static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
 static SPGroupClass *parent_class;
 
-GtkType
+GType
 sp_root_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPRoot",
-			sizeof (SPRoot),
+		GTypeInfo info = {
 			sizeof (SPRootClass),
-			(GtkClassInitFunc) sp_root_class_init,
-			(GtkObjectInitFunc) sp_root_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_root_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPRoot),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_root_init,
 		};
-		type = gtk_type_unique (SP_TYPE_GROUP, &info);
+		type = g_type_register_static (SP_TYPE_GROUP, "SPRoot", &info, 0);
 	}
 	return type;
 }
@@ -64,15 +67,15 @@ sp_root_get_type (void)
 static void
 sp_root_class_init (SPRootClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *object_class;
 	SPObjectClass *sp_object_class;
 	SPItemClass *sp_item_class;
 
-	gtk_object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	sp_object_class = (SPObjectClass *) klass;
 	sp_item_class = (SPItemClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_GROUP);
+	parent_class = g_type_class_ref (SP_TYPE_GROUP);
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->release = sp_root_release;

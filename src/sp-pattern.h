@@ -61,6 +61,6 @@ struct _SPPatternClass {
 	SPPaintServerClass parent_class;
 };
 
-GtkType sp_pattern_get_type (void);
+GType sp_pattern_get_type (void);
 
 #endif

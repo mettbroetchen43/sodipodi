@@ -1,28 +1,27 @@
 ## Process this file with automake to produce Makefile.in
 
-if BONOBO
-bonobo_subdirs = bonobo
-bonobo_libs = bonobo/libspbonobo.a
-endif
+#if BONOBO
+#bonobo_subdirs = bonobo
+#bonobo_libs = bonobo/libspbonobo.a
+#endif
 
-SUBDIRS = libnr libnrtype xml svg widgets helper dialogs display $(bonobo_subdirs)
+SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display
 
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
 
+CPPFLAGS = \
+	-DSODIPODI_VERSION=\""$(VERSION)"\"
+
 INCLUDES = \
-	-DSODIPODI_VERSION=\""$(VERSION)"\" \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
 	-I$(srcdir) \
-	$(cflags) \
+	-I$(srcdir/xml) \
+	-I$(srcdir/svg) \
 	$(SODIPODI_CFLAGS) \
-	$(SODIPODI_GNOME_PRINT_CFLAGS) \
 	$(SODIPODI_BONOBO_CFLAGS)
-
-LDFLAGS = \
-	$(ldflags)
 
 bin_PROGRAMS = sodipodi
 
@@ -99,7 +98,6 @@ sodipodi_SOURCES = \
 	main.c \
 	help.c help.h \
 	sp-cursor.c sp-cursor.h \
-	marshal.c marshal.h \
 	dir-util.c dir-util.h \
 	rubberband.c rubberband.h \
 	event-broker.c event-broker.h \
@@ -115,6 +113,9 @@ sodipodi_SOURCES = \
 	\
 	preferences-skeleton.h
 
+#	font-wrapper.c font-wrapper.h \
+#
+
 sodipodi_private_libs = \
 	dialogs/libspdialogs.a \
 	xml/libspxml.a \
@@ -123,16 +124,27 @@ sodipodi_private_libs = \
 	display/libspdisplay.a \
 	helper/libspchelp.a \
 	libnrtype/libnrtype.a \
-	libnr/libnr.a
+	libnr/libnr.a \
+	libnrtype/libnrtype.a
 
 
 sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
-	$(FREETYPE_LIBS) \
 	$(SODIPODI_LIBS) \
-	$(SODIPODI_GNOME_PRINT_LIBS) \
 	$(SODIPODI_BONOBO_LIBS)
+
+sodipodi_LDFLAGS = -Wl,--export-dynamic
+
+#	$(GNOME_LIBDIR) \
+#	-lpng \
+#	-lglade-gnome \
+#	-lglade \
+#	-lgdk_pixbuf \
+#	$(GNOMEUI_LIBS) \
+#	$(GNOME_PRINT_LIBS) \
+#	$(EXTRA_BONOBO_GNOME_LIBS) \
+#	$(INTLLIBS)
 
 EXTRA_DIST = \
 	brokenimage.xpm

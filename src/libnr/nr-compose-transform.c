@@ -17,7 +17,7 @@
 #include "nr-pixops.h"
 #include "nr-compose-transform.h"
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 /* fixme: */
 int nr_have_mmx (void);
 void nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0 (unsigned char *px, int w, int h, int rs,
@@ -304,7 +304,7 @@ void nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, in
 	}
 
 	if (dbits == 0) {
-#ifdef USE_MMX
+#ifdef WITH_MMX
 		if (NR_PIXOPS_MMX) {
 			/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
 			nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0 (px, w, h, rs, spx, sw, sh, srs, FFd2s, alpha);
@@ -335,7 +335,7 @@ void nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, in
 			}
 		}
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 		if (NR_PIXOPS_MMX) {
 			/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
 			nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_n (px, w, h, rs, spx, sw, sh, srs, FFd2s, FF_S, alpha, dbits);

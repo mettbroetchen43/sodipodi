@@ -24,20 +24,23 @@ static SPRepr *sp_clippath_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectGroupClass *parent_class;
 
-GtkType
+GType
 sp_clippath_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPClipPath",
-			sizeof (SPClipPath),
+		GTypeInfo info = {
 			sizeof (SPClipPathClass),
-			(GtkClassInitFunc) sp_clippath_class_init,
-			(GtkObjectInitFunc) sp_clippath_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_clippath_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPClipPath),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_clippath_init,
 		};
-		type = gtk_type_unique (SP_TYPE_OBJECTGROUP, &info);
+		type = g_type_register_static (SP_TYPE_OBJECTGROUP, "SPClipPath", &info, 0);
 	}
 	return type;
 }
@@ -45,13 +48,13 @@ sp_clippath_get_type (void)
 static void
 sp_clippath_class_init (SPClipPathClass *klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_OBJECTGROUP);
+	parent_class = g_type_class_ref (SP_TYPE_OBJECTGROUP);
 
 	sp_object_class->write = sp_clippath_write;
 }
@@ -98,7 +101,7 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena)
 			ac = sp_item_show (SP_ITEM (child), arena);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
-				gtk_object_unref (GTK_OBJECT(ac));
+				g_object_unref (G_OBJECT(ac));
 				ar = ac;
 			}
 		}

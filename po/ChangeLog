@@ -1,3 +1,22 @@
+2002-11-28  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.11.2.
+
+2002-11-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.11.2.
+
+2002-11-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: New file, from gettext-0.11.2.
+	* boldquot.sed: New file, from gettext-0.11.2.
+	* en@boldquot.header: New file, from gettext-0.11.2.
+	* en@quot.header: New file, from gettext-0.11.2.
+	* insert-header.sin: New file, from gettext-0.11.2.
+	* quot.sed: New file, from gettext-0.11.2.
+	* remove-potcdate.sin: New file, from gettext-0.11.2.
+	* Rules-quot: New file, from gettext-0.11.2.
+
 2002-11-19  Christian Neumair  <chris@gnome-de.org>
 
 	* de.po: Updated German translation (quick&dirty release-rework).

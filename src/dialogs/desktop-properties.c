@@ -14,10 +14,8 @@
 #include <config.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-color-picker.h>
 
+#include "../helper/sp-intl.h"
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
 #include "../sodipodi.h"
@@ -121,6 +119,7 @@ sp_dtw_grid_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 	sp_repr_set_attr (repr, "gridtolerance", c);
 }
 
+#if 0
 static void
 sp_dtw_grid_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
 {
@@ -137,6 +136,7 @@ sp_dtw_grid_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
 	sp_repr_set_attr (repr, "gridcolor", c);
 	sp_repr_set_double (repr, "gridopacity", (a / 65535.0));
 }
+#endif
 
 static void
 sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
@@ -157,6 +157,7 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 	sp_repr_set_attr (repr, "guidetolerance", c);
 }
 
+#if 0
 static void
 sp_dtw_guides_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
 {
@@ -173,7 +174,9 @@ sp_dtw_guides_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint 
 	sp_repr_set_attr (repr, "guidecolor", c);
 	sp_repr_set_double (repr, "guideopacity", (a / 65535.0));
 }
+#endif
 
+#if 0
 static void
 sp_dtw_guides_hi_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, guint a)
 {
@@ -190,6 +193,7 @@ sp_dtw_guides_hi_color_set (GnomeColorPicker *cp, guint r, guint g, guint b, gui
 	sp_repr_set_attr (repr, "guidehicolor", c);
 	sp_repr_set_double (repr, "guidehiopacity", (a / 65535.0));
 }
+#endif
 
 static GtkWidget *
 sp_desktop_dialog_new (void)
@@ -325,12 +329,20 @@ sp_desktop_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+#if 0
 	cp = gnome_color_picker_new ();
+#else
+	cp = gtk_button_new_with_label ("COLOR_PICKER");
+#endif
 	gtk_widget_show (cp);
+#if 0
 	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+#endif
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "gridcolor", cp);
+#if 0
 	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_grid_color_set), dialog);
+#endif
 
 	/* Guidelines page */
 	l = gtk_label_new (_("Guides"));
@@ -385,23 +397,39 @@ sp_desktop_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+#if 0
 	cp = gnome_color_picker_new ();
+#else
+	cp = gtk_button_new_with_label ("COLOR_PICKER");
+#endif
 	gtk_widget_show (cp);
+#if 0
 	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+#endif
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidecolor", cp);
+#if 0
 	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_color_set), dialog);
+#endif
 
 	l = gtk_label_new (_("Highlight color:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+#if 0
 	cp = gnome_color_picker_new ();
+#else
+	cp = gtk_button_new_with_label ("COLOR_PICKER");
+#endif
 	gtk_widget_show (cp);
+#if 0
 	gnome_color_picker_set_use_alpha (GNOME_COLOR_PICKER (cp), TRUE);
+#endif
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
+#if 0
 	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_hi_color_set), dialog);
+#endif
 
 	/* Page page */
 	l = gtk_label_new (_("Page"));
@@ -492,12 +520,14 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridtolerance");
 		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridtolerance);
 
+#if 0
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridcolor");
 		gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (o),
 					   (nv->gridcolor >> 24) & 0xff,
 					   (nv->gridcolor >> 16) & 0xff,
 					   (nv->gridcolor >> 8) & 0xff,
 					   nv->gridcolor & 0xff);
+#endif
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "showguides");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showgrid);
@@ -511,6 +541,7 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "guidetolerance");
 		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->guidetolerance);
 
+#if 0
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "guidecolor");
 		gnome_color_picker_set_i8 (GNOME_COLOR_PICKER (o),
 					   (nv->guidecolor >> 24) & 0xff,
@@ -524,6 +555,7 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 					   (nv->guidehicolor >> 16) & 0xff,
 					   (nv->guidehicolor >> 8) & 0xff,
 					   nv->guidehicolor & 0xff);
+#endif
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "showborder");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), nv->showborder);

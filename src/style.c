@@ -188,7 +188,7 @@ static const SPStyleEnum enum_writing_mode[] = {
 };
 
 static void
-sp_style_object_released (GtkObject *object, SPStyle *style)
+sp_style_object_release (SPObject *object, SPStyle *style)
 {
 	style->object = NULL;
 }
@@ -221,7 +221,7 @@ sp_style_new_from_object (SPObject *object)
 	style = sp_style_new ();
 
 	style->object = object;
-	gtk_signal_connect (GTK_OBJECT (object), "release", GTK_SIGNAL_FUNC (sp_style_object_released), style);
+	g_signal_connect (G_OBJECT (object), "release", G_CALLBACK (sp_style_object_release), style);
 
 	return style;
 }
@@ -246,7 +246,8 @@ sp_style_unref (SPStyle *style)
 	style->refcount -= 1;
 
 	if (style->refcount < 1) {
-		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style);
+/* 		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style); */
+		if (style->object) g_signal_handlers_disconnect_matched (G_OBJECT(style->object), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, style);
 		if (style->text) sp_text_style_unref (style->text);
 		sp_style_paint_clear (style, &style->fill, TRUE, FALSE);
 		sp_style_paint_clear (style, &style->stroke, TRUE, FALSE);
@@ -839,10 +840,10 @@ sp_style_merge_ipaint (SPStyle *style, SPIPaint *paint, SPIPaint *parent)
 		paint->value.server = parent->value.server;
 		if (paint->value.server) {
 			sp_object_href (SP_OBJECT (paint->value.server), style);
-			gtk_signal_connect (GTK_OBJECT (paint->value.server), "release",
-					    GTK_SIGNAL_FUNC (sp_style_paint_server_release), style);
-			gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
-					    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
+			g_signal_connect (G_OBJECT (paint->value.server), "release",
+					  G_CALLBACK (sp_style_paint_server_release), style);
+			g_signal_connect (G_OBJECT (paint->value.server), "modified",
+					  G_CALLBACK (sp_style_paint_server_modified), style);
 		}
 		break;
 	case SP_PAINT_TYPE_NONE:
@@ -1485,10 +1486,10 @@ sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocu
 				paint->type = SP_PAINT_TYPE_PAINTSERVER;
 				paint->value.server = SP_PAINT_SERVER (ps);
 				sp_object_href (SP_OBJECT (paint->value.server), style);
-				gtk_signal_connect (GTK_OBJECT (paint->value.server), "release",
-						    GTK_SIGNAL_FUNC (sp_style_paint_server_release), style);
-				gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
-						    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
+				g_signal_connect (G_OBJECT (paint->value.server), "release",
+						  G_CALLBACK (sp_style_paint_server_release), style);
+				g_signal_connect (G_OBJECT (paint->value.server), "modified",
+						  G_CALLBACK (sp_style_paint_server_modified), style);
 				paint->set = TRUE;
 				paint->inherit = FALSE;
 				return;
@@ -1852,7 +1853,8 @@ sp_style_paint_clear (SPStyle *style, SPIPaint *paint, gboolean hunref, gboolean
 {
 	if ((paint->type == SP_PAINT_TYPE_PAINTSERVER) && paint->value.server) {
 		sp_object_hunref (SP_OBJECT (paint->value.server), style);
-		gtk_signal_disconnect_by_data (GTK_OBJECT (paint->value.server), style);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (paint->value.server), style); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(paint->value.server), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, style);
 		paint->value.server = NULL;
 		paint->type = SP_PAINT_TYPE_NONE;
 	}

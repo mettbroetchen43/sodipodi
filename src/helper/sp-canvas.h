@@ -15,11 +15,10 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
-
-BEGIN_GNOME_DECLS
-
 #include <glib.h>
+
+G_BEGIN_DECLS
+
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_uta.h>
@@ -62,7 +61,7 @@ struct _SPCanvasItemClass {
 	void (* update) (SPCanvasItem *item, double *affine, unsigned int flags);
 
 	void (* render) (SPCanvasItem *item, SPCanvasBuf *buf);
-	double (* point) (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item);
+	double (* point) (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
 
 	int (* event) (SPCanvasItem *item, GdkEvent *event);
 };
@@ -98,15 +97,13 @@ gint sp_canvas_item_order (SPCanvasItem * item);
 /* SPCanvas */
 
 struct _SPCanvas {
-	GtkLayout layout;
+	GtkWidget widget;
 
 	guint idle_id;
 
 	SPCanvasItem *root;
 
-	/* Scrolling region */
-	double scroll_x1, scroll_y1;
-	double scroll_x2, scroll_y2;
+	double x0, y0;
 
 	/* Area that needs redrawing, stored as a microtile array */
 	ArtUta *redraw_area;
@@ -162,6 +159,6 @@ void sp_canvas_request_redraw (SPCanvas *canvas, int x1, int y1, int x2, int y2)
 void sp_canvas_window_to_world (SPCanvas *canvas, double winx, double winy, double *worldx, double *worldy);
 void sp_canvas_world_to_window (SPCanvas *canvas, double worldx, double worldy, double *winx, double *winy);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

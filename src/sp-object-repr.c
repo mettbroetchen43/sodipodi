@@ -26,7 +26,7 @@ SPObject *
 sp_object_repr_build_tree (SPDocument * document, SPRepr * repr)
 {
 	const gchar * name;
-	GtkType type;
+	GType type;
 	SPObject * object;
 
 	g_assert (document != NULL);
@@ -36,15 +36,15 @@ sp_object_repr_build_tree (SPDocument * document, SPRepr * repr)
 	name = sp_repr_name (repr);
 	g_assert (name != NULL);
 	type = sp_object_type_lookup (name);
-	g_assert (gtk_type_is_a (type, SP_TYPE_ROOT));
-	object = gtk_type_new (type);
+	g_assert (g_type_is_a (type, SP_TYPE_ROOT));
+	object = g_object_new (type, 0);
 	g_assert (object != NULL);
 	sp_object_invoke_build (object, document, repr, FALSE);
 
 	return object;
 }
 
-GtkType
+GType
 sp_repr_type_lookup (SPRepr *repr)
 {
 	const guchar *name;
@@ -55,7 +55,7 @@ sp_repr_type_lookup (SPRepr *repr)
 	return sp_object_type_lookup (name);
 }
 
-GtkType
+GType
 sp_object_type_lookup (const guchar * name)
 {
 	static GHashTable *dtable = NULL;

@@ -14,8 +14,8 @@
  */
 
 #include <libart_lgpl/art_point.h>
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkpacker.h>
+#include <gdk/gdk.h>
+#include <gtk/gtkenums.h>
 #include "helper/helper-forward.h"
 #include "forward.h"
 
@@ -53,13 +53,13 @@ typedef struct _SPKnot SPKnot;
 typedef struct _SPKnotClass SPKnotClass;
 
 #define SP_TYPE_KNOT            (sp_knot_get_type ())
-#define SP_KNOT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_KNOT, SPKnot))
-#define SP_KNOT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_KNOT, SPKnotClass))
-#define SP_IS_KNOT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_KNOT))
-#define SP_IS_KNOT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_KNOT))
+#define SP_KNOT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_KNOT, SPKnot))
+#define SP_KNOT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_KNOT, SPKnotClass))
+#define SP_IS_KNOT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_KNOT))
+#define SP_IS_KNOT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_KNOT))
 
 struct _SPKnot {
-	GtkObject object;
+	GObject object;
 	SPDesktop * desktop;		/* Desktop we are on */
 	SPCanvasItem * item;		/* Our CanvasItem */
 	guint flags;
@@ -83,7 +83,7 @@ struct _SPKnot {
 };
 
 struct _SPKnotClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gint (* event) (SPKnot * knot, GdkEvent * event);
 
@@ -110,7 +110,7 @@ struct _SPKnotClass {
 	gdouble (* distance) (SPKnot * knot, ArtPoint * position, guint state);
 };
 
-GtkType sp_knot_get_type (void);
+GType sp_knot_get_type (void);
 
 SPKnot * sp_knot_new (SPDesktop * desktop);
 

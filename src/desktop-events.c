@@ -12,12 +12,13 @@
  */
 
 #include <gtk/gtksignal.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtklabel.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-dialog.h>
-
+#include <gtk/gtkimage.h>
+#include <gtk/gtkstock.h>
 #include "helper/sp-guide.h"
 #include "helper/unit-menu.h"
 #include "sodipodi-private.h"
@@ -112,8 +113,8 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			/* we have to substract (x|y) thickness from the position */
 			/* since there is a frame between ruler and canvas */
 			sp_canvas_window_to_world (dtw->canvas,
-						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
-						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
+						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->xthickness),
+						      event->motion.y - (horiz ? widget->allocation.height + widget->style->ythickness : 0),
 						      &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 			sp_guideline_moveto ((SPGuideLine *) guide, p.x, p.y);
@@ -135,8 +136,8 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			/* we have to substract (x|y) thickness from the position */
 			/* since there is a frame between ruler and canvas */
 			sp_canvas_window_to_world (dtw->canvas,
-						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
-						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
+						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->xthickness),
+						      event->motion.y - (horiz ? widget->allocation.height + widget->style->ythickness : 0),
 						      &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 		        gdk_pointer_ungrab (event->button.time);
@@ -344,9 +345,9 @@ guide_dialog_mode_changed (GtkWidget * widget)
 }
 
 static void
-guide_dialog_close (GtkWidget * widget, GnomeDialog * d)
+guide_dialog_close (GtkWidget * widget, GtkDialog * d)
 {
-  gnome_dialog_close (d);
+	gtk_object_destroy (GTK_OBJECT(d));
 }
 
 static void
@@ -374,8 +375,8 @@ guide_dialog_apply (GtkWidget * widget, SPGuide ** g)
 static void
 guide_dialog_ok (GtkWidget * widget, gpointer g)
 {
-  guide_dialog_apply (NULL, g);
-  guide_dialog_close (NULL, GNOME_DIALOG(d));
+	guide_dialog_apply (NULL, g);
+	guide_dialog_close (NULL, GTK_DIALOG(widget));
 }
 
 static void
@@ -386,7 +387,31 @@ guide_dialog_delete (GtkWidget *widget, SPGuide **guide)
 	doc = SP_OBJECT_DOCUMENT (*guide);
 	sp_guide_remove (*guide);
 	sp_document_done (doc);
-	guide_dialog_close (NULL, GNOME_DIALOG (d));
+	guide_dialog_close (NULL, GTK_DIALOG (widget));
+}
+
+static void
+guide_dialog_response (GtkDialog *dialog, gint response, gpointer data)
+{
+	GtkWidget *widget = GTK_WIDGET(dialog);
+
+	switch (response) {
+	case GTK_RESPONSE_OK:
+		guide_dialog_ok (widget, data);
+		break;
+	case -12:
+		guide_dialog_delete (widget, data);
+		break;
+	case GTK_RESPONSE_CLOSE:
+		guide_dialog_close (widget, data);
+		break;
+/*	case GTK_RESPONSE_APPLY:
+		guide_dialog_apply (widget, data);
+		break;
+*/
+	default:
+		g_assert_not_reached ();
+	}
 }
 
 static void
@@ -399,16 +424,20 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 	if (!GTK_IS_WIDGET (d)) {
 		GtkObject *a;
 		// create dialog
-		d = gnome_dialog_new ("Guideline", 
-				      GNOME_STOCK_BUTTON_OK, 
-				      "Delete",
-				      GNOME_STOCK_BUTTON_CLOSE,
-				      NULL);
-		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
-		gnome_dialog_close_hides (GNOME_DIALOG (d), TRUE);
+		d = gtk_dialog_new_with_buttons ("Guideline",
+						 NULL,
+						 GTK_DIALOG_MODAL,
+						 GTK_STOCK_OK,
+						 GTK_RESPONSE_OK,
+						 GTK_STOCK_DELETE,
+						 -12, /* DELETE */
+						 GTK_STOCK_CLOSE,
+						 GTK_RESPONSE_CLOSE,
+						 NULL);
+		gtk_widget_hide (d);
     
 		b1 = gtk_hbox_new (FALSE,4);
-		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), b1, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), b1, FALSE, FALSE, 0);
 		gtk_container_set_border_width (GTK_CONTAINER (b1), 4);
 		gtk_widget_show (b1);
 
@@ -417,7 +446,7 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 		gtk_widget_show (b2);
     
 		//pixmap
-		pix = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/guide_dialog.png");
+		pix = gtk_image_new_from_file (SODIPODI_GLADEDIR "/guide_dialog.png");
 		gtk_box_pack_start (GTK_BOX (b1), pix, TRUE, TRUE, 0);
 		gtk_widget_show (pix);
 		//labels
@@ -456,7 +485,10 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 		gtk_widget_show (e);
 		gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (e), TRUE);
 		gtk_box_pack_start (GTK_BOX (b4), e, TRUE, TRUE, 0);
-		gnome_dialog_editable_enters (GNOME_DIALOG (d), GTK_EDITABLE (e)); 
+		gtk_signal_connect_object(GTK_OBJECT(e), "activate",
+					  GTK_SIGNAL_FUNC(gtk_window_activate_default), 
+					  GTK_OBJECT(d));
+/*  		gnome_dialog_editable_enters (GNOME_DIALOG (d), GTK_EDITABLE (e));  */
 		// unitmenu
 		/* fixme: We should allow percents here too */
 		u = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
@@ -469,11 +501,8 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 						guide , GTK_OBJECT(u));
 #endif
 		// dialog
-		gnome_dialog_set_default (GNOME_DIALOG (d), 0);
-		gnome_dialog_button_connect (GNOME_DIALOG (d), 0, GTK_SIGNAL_FUNC (guide_dialog_ok), &g);
-		gnome_dialog_button_connect (GNOME_DIALOG (d), 1, GTK_SIGNAL_FUNC (guide_dialog_delete), &g);
-		//gnome_dialog_button_connect (GNOME_DIALOG (d), 1, GTK_SIGNAL_FUNC (guide_dialog_apply), &g);
-		gnome_dialog_button_connect (GNOME_DIALOG (d), 2, GTK_SIGNAL_FUNC (guide_dialog_close), d);
+		gtk_dialog_set_default_response (GTK_DIALOG (d), GTK_RESPONSE_OK);
+		gtk_signal_connect (GTK_OBJECT(d), "response", GTK_SIGNAL_FUNC(guide_dialog_response), &g);
 	}
 
 	// initialize dialog

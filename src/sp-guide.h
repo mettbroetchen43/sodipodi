@@ -19,10 +19,10 @@ typedef enum {
 } SPGuideOrientation;
 
 #define SP_TYPE_GUIDE            (sp_guide_get_type ())
-#define SP_GUIDE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_GUIDE, SPGuide))
-#define SP_GUIDE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GUIDE, SPGuideClass))
-#define SP_IS_GUIDE(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_GUIDE))
-#define SP_IS_GUIDE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GUIDE))
+#define SP_GUIDE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_GUIDE, SPGuide))
+#define SP_GUIDE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_GUIDE, SPGuideClass))
+#define SP_IS_GUIDE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_GUIDE))
+#define SP_IS_GUIDE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_GUIDE))
 
 struct _SPGuide {
 	SPObject object;
@@ -37,7 +37,7 @@ struct _SPGuideClass {
 	SPObjectClass parent_class;
 };
 
-GtkType sp_guide_get_type (void);
+GType sp_guide_get_type (void);
 
 void sp_guide_show (SPGuide * guide, SPCanvasGroup * group, gpointer handler);
 void sp_guide_hide (SPGuide * guide, SPCanvas * canvas);

@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "sp-polygon.h"
+#include "helper/sp-intl.h"
 
 static void sp_polygon_class_init (SPPolygonClass *class);
 static void sp_polygon_init (SPPolygon *polygon);
@@ -28,21 +29,24 @@ static gchar *sp_polygon_description (SPItem *item);
 
 static SPShapeClass *parent_class;
 
-GtkType
+GType
 sp_polygon_get_type (void)
 {
-	static GtkType polygon_type = 0;
+	static GType polygon_type = 0;
 
 	if (!polygon_type) {
-		GtkTypeInfo polygon_info = {
-			"SPPolygon",
-			sizeof (SPPolygon),
+		GTypeInfo polygon_info = {
 			sizeof (SPPolygonClass),
-			(GtkClassInitFunc) sp_polygon_class_init,
-			(GtkObjectInitFunc) sp_polygon_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_polygon_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPPolygon),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_polygon_init,
 		};
-		polygon_type = gtk_type_unique (sp_shape_get_type (), &polygon_info);
+		polygon_type = g_type_register_static (SP_TYPE_SHAPE, "SPPolygon", &polygon_info, 0);
 	}
 	return polygon_type;
 }
@@ -50,15 +54,15 @@ sp_polygon_get_type (void)
 static void
 sp_polygon_class_init (SPPolygonClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_polygon_build;
 	sp_object_class->write = sp_polygon_write;

@@ -19,11 +19,8 @@
 #include <libnr/nr-matrix.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmenuitem.h>
-#include <gdk-pixbuf/gdk-pixbuf-loader.h>
+#include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "display/nr-arena-image.h"
 #include "svg/svg.h"
 #include "print.h"
@@ -32,6 +29,7 @@
 #include "document.h"
 #include "dialogs/object-attributes.h"
 #include "sp-image.h"
+#include "helper/sp-intl.h"
 
 /*
  * SPImage
@@ -67,20 +65,23 @@ static GdkPixbuf * sp_image_repr_read_b64 (const gchar * uri_data);
 
 static SPItemClass *parent_class;
 
-GtkType
+GType
 sp_image_get_type (void)
 {
-	static GtkType image_type = 0;
+	static GType image_type = 0;
 	if (!image_type) {
-		GtkTypeInfo image_info = {
-			"SPImage",
-			sizeof (SPImage),
+		GTypeInfo image_info = {
 			sizeof (SPImageClass),
-			(GtkClassInitFunc) sp_image_class_init,
-			(GtkObjectInitFunc) sp_image_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_image_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPImage),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_image_init,
 		};
-		image_type = gtk_type_unique (sp_item_get_type (), &image_info);
+		image_type = g_type_register_static (sp_item_get_type (), "SPImage", &image_info, 0);
 	}
 	return image_type;
 }
@@ -88,15 +89,15 @@ sp_image_get_type (void)
 static void
 sp_image_class_init (SPImageClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = gtk_type_class (sp_item_get_type ());
+	parent_class = g_type_class_ref (sp_item_get_type ());
 
 	sp_object_class->build = sp_image_build;
 	sp_object_class->release = sp_image_release;
@@ -448,20 +449,20 @@ sp_image_repr_read_image (SPRepr * repr)
 			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
 			if (docbase != NULL) {
 				fullname = g_strconcat (docbase, filename, NULL);
-				pixbuf = gdk_pixbuf_new_from_file (fullname);
+				pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
 				g_free (fullname);
 				if (pixbuf != NULL) return pixbuf;
 			}
 		} else {
 			/* try absolute filename */
-			pixbuf = gdk_pixbuf_new_from_file (filename);
+			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 			if (pixbuf != NULL) return pixbuf;
 		}
 	}
 	/* at last try to load from sp absolute path name */
 	filename = sp_repr_attr (repr, "sodipodi:absref");
 	if (filename != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (filename);
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 		if (pixbuf != NULL) return pixbuf;
 	}
 	/* Nope: We do not find any valid pixmap file :-( */
@@ -785,13 +786,13 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 			}
 		}
 
-		if (!gdk_pixbuf_loader_write (loader, (const guchar *) bd, (size_t) l)) {
+		if (!gdk_pixbuf_loader_write (loader, (const guchar *) bd, (size_t) l, NULL)) {
 			failed = 1;
 			break;
 		}
 	}
 
-	gdk_pixbuf_loader_close (loader);
+	gdk_pixbuf_loader_close (loader, NULL);
 
 	if (!failed) pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
 
@@ -814,9 +815,6 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 
 /* g_strdup_printf */
 #include <glib.h>
-
-/* GnomeMessageBox */
-#include <libgnomeui/libgnomeui.h>
 
 static at_bitmap_type * gdk_pixbuf_to_at_bitmap (GdkPixbuf * pixbuf);
 static void load_trace_result(FrontlineDialog * fl_dialog, gpointer user_data);
@@ -976,11 +974,13 @@ handle_msg(at_string msg, at_msg_type msg_type, at_address client_data)
 	if (msg_type == AT_MSG_FATAL) {
 		long_msg = g_strdup_printf(_("Error to write %s: %s"), 
 					   target, msg);	
-		dialog = gnome_message_box_new(long_msg,
-					       GNOME_MESSAGE_BOX_ERROR,
-					       _("Ok"), NULL);
-		gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-		gnome_dialog_run(GNOME_DIALOG(dialog));
+		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 long_msg,
+						 NULL);
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
 		g_free(long_msg);
 	}
 	else {

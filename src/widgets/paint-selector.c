@@ -29,15 +29,11 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
-
-#include <libgnomeui/gnome-stock.h>
+#include <gtk/gtkimage.h>
 
 #include "../sp-item.h"
 #include "../sp-gradient.h"
+#include "../helper/sp-intl.h"
 
 #include "sp-color-selector.h"
 /* fixme: Move it from dialogs to here */
@@ -105,35 +101,34 @@ sp_paint_selector_class_init (SPPaintSelectorClass *klass)
 
 	psel_signals[MODE_CHANGED] = gtk_signal_new ("mode_changed",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPPaintSelectorClass, mode_changed),
 						 gtk_marshal_NONE__UINT,
 						 GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
 	psel_signals[GRABBED] =  gtk_signal_new ("grabbed",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPPaintSelectorClass, grabbed),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	psel_signals[DRAGGED] =  gtk_signal_new ("dragged",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPPaintSelectorClass, dragged),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	psel_signals[RELEASED] = gtk_signal_new ("released",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPPaintSelectorClass, released),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	psel_signals[CHANGED] =  gtk_signal_new ("changed",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPPaintSelectorClass, changed),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, psel_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_paint_selector_destroy;
 }
@@ -206,8 +201,8 @@ sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap,
 	gtk_widget_show (b);
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 	gtk_object_set_data (GTK_OBJECT (b), "mode", GUINT_TO_POINTER (mode));
-	path = g_concat_dir_and_file (SODIPODI_GLADEDIR, pixmap);
-	w = gnome_stock_pixmap_widget (GTK_WIDGET (psel), path);
+	path = g_build_filename (SODIPODI_GLADEDIR, pixmap, NULL);
+	w = gtk_image_new_from_file (path);
 	g_free (path);
 	gtk_widget_show (w);
 	gtk_container_add (GTK_CONTAINER (b), w);

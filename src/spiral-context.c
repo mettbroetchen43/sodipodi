@@ -17,8 +17,6 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkbutton.h>
@@ -35,6 +33,7 @@
 #include "pixmaps/cursor-spiral.xpm"
 #include "spiral-context.h"
 #include "sp-metrics.h"
+#include "helper/sp-intl.h"
 
 static void sp_spiral_context_class_init (SPSpiralContextClass * klass);
 static void sp_spiral_context_init (SPSpiralContext * spiral_context);

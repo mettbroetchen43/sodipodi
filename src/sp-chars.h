@@ -18,10 +18,10 @@
 #include "sp-item.h"
 
 #define SP_TYPE_CHARS (sp_chars_get_type ())
-#define SP_CHARS(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_CHARS, SPChars))
-#define SP_CHARS_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_CHARS, SPCharsClass))
-#define SP_IS_CHARS(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_CHARS))
-#define SP_IS_CHARS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_CHARS))
+#define SP_CHARS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_CHARS, SPChars))
+#define SP_CHARS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_CHARS, SPCharsClass))
+#define SP_IS_CHARS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_CHARS))
+#define SP_IS_CHARS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_CHARS))
 
 typedef struct _SPCharElement SPCharElement;
 
@@ -42,7 +42,7 @@ struct _SPCharsClass {
 	SPItemClass parent_class;
 };
 
-GtkType sp_chars_get_type (void);
+GType sp_chars_get_type (void);
 
 void sp_chars_clear (SPChars *chars);
 

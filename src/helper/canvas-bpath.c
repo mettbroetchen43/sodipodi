@@ -31,7 +31,7 @@ static void sp_canvas_bpath_destroy (GtkObject *object);
 
 static void sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags);
 static void sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf);
-static double sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, SPCanvasItem **actual_item);
+static double sp_canvas_bpath_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
  
 static SPCanvasItemClass *parent_class;
 
@@ -207,7 +207,7 @@ sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf)
 #define BIGVAL 1e18
 
 static double
-sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, SPCanvasItem **actual_item)
+sp_canvas_bpath_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
 	SPCanvasBPath *cbp;
 	gint wind;
@@ -216,7 +216,7 @@ sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint c
 	cbp = SP_CANVAS_BPATH (item);
 
 	if (cbp->fill_svp) {
-		wind = art_svp_point_wind (cbp->fill_svp, cx, cy);
+		wind = art_svp_point_wind (cbp->fill_svp, x, y);
 		if (wind) {
 			*actual_item = item;
 			return 0.0;
@@ -224,17 +224,17 @@ sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint c
 	}
 
 	if (cbp->stroke_svp) {
-		wind = art_svp_point_wind (cbp->stroke_svp, cx, cy);
+		wind = art_svp_point_wind (cbp->stroke_svp, x, y);
 		if (wind) {
 			*actual_item = item;
 			return 0.0;
 		}
-		dist = art_svp_point_dist (cbp->stroke_svp, cx, cy);
+		dist = art_svp_point_dist (cbp->stroke_svp, x, y);
 		return dist;
 	}
 
 	if (cbp->fill_svp) {
-		dist = art_svp_point_dist (cbp->fill_svp, cx, cy);
+		dist = art_svp_point_dist (cbp->fill_svp, x, y);
 		return dist;
 	}
 

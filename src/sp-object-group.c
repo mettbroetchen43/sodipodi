@@ -30,20 +30,23 @@ static SPObject *sp_objectgroup_get_le_child_by_repr (SPObjectGroup *og, SPRepr 
 
 static SPObjectClass *parent_class;
 
-GtkType
+GType
 sp_objectgroup_get_type (void)
 {
-	static GtkType objectgroup_type = 0;
+	static GType objectgroup_type = 0;
 	if (!objectgroup_type) {
-		GtkTypeInfo objectgroup_info = {
-			"SPObjectGroup",
-			sizeof (SPObjectGroup),
+		GTypeInfo objectgroup_info = {
 			sizeof (SPObjectGroupClass),
-			(GtkClassInitFunc) sp_objectgroup_class_init,
-			(GtkObjectInitFunc) sp_objectgroup_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_objectgroup_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPObjectGroup),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_objectgroup_init,
 		};
-		objectgroup_type = gtk_type_unique (sp_object_get_type (), &objectgroup_info);
+		objectgroup_type = g_type_register_static (SP_TYPE_OBJECT, "SPObjectGroup", &objectgroup_info, 0);
 	}
 	return objectgroup_type;
 }
@@ -51,13 +54,13 @@ sp_objectgroup_get_type (void)
 static void
 sp_objectgroup_class_init (SPObjectGroupClass *klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (sp_object_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_objectgroup_build;
 	sp_object_class->release = sp_objectgroup_release;
@@ -86,11 +89,11 @@ static void sp_objectgroup_build (SPObject *object, SPDocument *document, SPRepr
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
-		GtkType type;
+		GType type;
 		SPObject *child;
 		type = sp_repr_type_lookup (rchild);
-		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-			child = gtk_type_new (type);
+		if (g_type_is_a (type, SP_TYPE_OBJECT)) {
+			child = g_object_new (type, 0);
 			(last) ? last->next : og->children = sp_object_attach_reref (object, child, NULL);
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			last = child;
@@ -117,7 +120,7 @@ static void
 sp_objectgroup_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPObjectGroup * og;
-	GtkType type;
+	GType type;
 
 	og = SP_OBJECTGROUP (object);
 
@@ -125,9 +128,9 @@ sp_objectgroup_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
 	type = sp_repr_type_lookup (child);
-	if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
+	if (g_type_is_a (type, SP_TYPE_OBJECT)) {
 		SPObject *ochild, *prev;
-		ochild = gtk_type_new (type);
+		ochild = g_object_new (type, 0);
 		prev = sp_objectgroup_get_le_child_by_repr (og, ref);
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, ochild, prev->next);

@@ -13,7 +13,10 @@
  */
 
 #include <math.h>
+#include <glib-object.h>
 #include <gtk/gtksignal.h>
+#include "helper/sp-intl.h"
+#include "helper/sp-marshal.h"
 #include "helper/sp-canvas-util.h"
 #include "helper/sodipodi-ctrl.h"
 #include "desktop.h"
@@ -31,16 +34,19 @@
 #define noKNOT_NOGRAB
 
 enum {
-	ARG_NONE,
-	ARG_SIZE,
-	ARG_ANCHOR,
-	ARG_SHAPE,
-	ARG_MODE,
-	ARG_FILL, ARG_FILL_MOUSEOVER, ARG_FILL_DRAGGING,
-	ARG_STROKE, ARG_STROKE_MOUSEOVER, ARG_STROKE_DRAGGING,
-	ARG_IMAGE, ARG_IMAGE_MOUSEOVER, ARG_IMAGE_DRAGGING,
-	ARG_CURSOR, ARG_CURSOR_MOUSEOVER, ARG_CURSOR_DRAGGING,
-	ARG_PIXBUF
+	PROP_0,
+
+	PROP_SIZE,
+	PROP_ANCHOR,
+	PROP_SHAPE,
+	PROP_MODE,
+	PROP_FILL, PROP_FILL_MOUSEOVER, PROP_FILL_DRAGGING,
+	PROP_STROKE, PROP_STROKE_MOUSEOVER, PROP_STROKE_DRAGGING,
+	PROP_IMAGE, PROP_IMAGE_MOUSEOVER, PROP_IMAGE_DRAGGING,
+	PROP_CURSOR, PROP_CURSOR_MOUSEOVER, PROP_CURSOR_DRAGGING,
+	PROP_PIXBUF,
+
+	PROP_LAST
 };
 
 enum {
@@ -54,117 +60,245 @@ enum {
 	LAST_SIGNAL
 };
 
-static void sp_marshal_BOOL__POINTER_UINT (GtkObject * object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
-static void sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
-
 static void sp_knot_class_init (SPKnotClass * klass);
 static void sp_knot_init (SPKnot * knot);
-static void sp_knot_destroy (GtkObject * object);
-static void sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id);
+static void sp_knot_dispose (GObject * object);
+static void sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
 static void sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data);
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 static void sp_knot_update_ctrl (SPKnot * knot);
 static void sp_knot_set_ctrl_state (SPKnot *knot);
 
-static GtkObjectClass * parent_class;
+static GObjectClass * parent_class;
 static guint knot_signals[LAST_SIGNAL] = {0};
 
-GtkType
+GType
 sp_knot_get_type (void)
 {
-	static GtkType knot_type = 0;
-	if (!knot_type) {
-		GtkTypeInfo knot_info = {
-			"SPKnot",
-			sizeof (SPKnot),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPKnotClass),
-			(GtkClassInitFunc) sp_knot_class_init,
-			(GtkObjectInitFunc) sp_knot_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_knot_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPKnot),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_knot_init,
 		};
-		knot_type = gtk_type_unique (gtk_object_get_type (), &knot_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPKnot", &info, 0);
 	}
-	return knot_type;
+	return type;
 }
 
 static void
 sp_knot_class_init (SPKnotClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
+
+	object_class->dispose = sp_knot_dispose;
+	object_class->set_property = sp_knot_set_property;
 
 	/* Huh :) */
 
-	gtk_object_add_arg_type ("SPKnot::size", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_SIZE);
-	gtk_object_add_arg_type ("SPKnot::anchor", GTK_TYPE_ANCHOR_TYPE, GTK_ARG_WRITABLE, ARG_ANCHOR);
-	gtk_object_add_arg_type ("SPKnot::shape", GTK_TYPE_ENUM, GTK_ARG_WRITABLE, ARG_SHAPE);
-	gtk_object_add_arg_type ("SPKnot::mode", GTK_TYPE_ENUM, GTK_ARG_WRITABLE, ARG_MODE);
-	gtk_object_add_arg_type ("SPKnot::fill", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL);
-	gtk_object_add_arg_type ("SPKnot::fill_mouseover", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL_MOUSEOVER);
-	gtk_object_add_arg_type ("SPKnot::fill_dragging", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL_DRAGGING);
-	gtk_object_add_arg_type ("SPKnot::stroke", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_STROKE);
-	gtk_object_add_arg_type ("SPKnot::stroke_mouseover", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_STROKE_MOUSEOVER);
-	gtk_object_add_arg_type ("SPKnot::stroke_dragging", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_STROKE_DRAGGING);
-	gtk_object_add_arg_type ("SPKnot::image", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_IMAGE);
-	gtk_object_add_arg_type ("SPKnot::image_mouseover", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_IMAGE_MOUSEOVER);
-	gtk_object_add_arg_type ("SPKnot::image_dragging", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_IMAGE_DRAGGING);
-	gtk_object_add_arg_type ("SPKnot::cursor", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR);
-	gtk_object_add_arg_type ("SPKnot::cursor_mouseover", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_MOUSEOVER);
-	gtk_object_add_arg_type ("SPKnot::cursor_dragging", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_DRAGGING);
-	gtk_object_add_arg_type ("SPKnot::pixbuf", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_PIXBUF);
+	g_object_class_install_property (object_class,
+					 PROP_SIZE,
+					 g_param_spec_uint ("size",
+							    _("Size"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_ANCHOR,
+					 g_param_spec_enum ("anchor",
+							    _("Anchor"),
+							    _(""),
+							    GTK_TYPE_ANCHOR_TYPE,
+							    GTK_ANCHOR_CENTER,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_SHAPE,
+					 g_param_spec_int ("shape",
+							   _("Shape"),
+							   _(""),
+							   SP_KNOT_SHAPE_SQUARE,
+							   SP_KNOT_SHAPE_IMAGE,
+							   SP_KNOT_SHAPE_SQUARE,
+							   G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_MODE,
+					 g_param_spec_int ("mode",
+							   _("Mode"),
+							   _(""),
+							   SP_KNOT_MODE_COLOR,
+							   SP_KNOT_MODE_XOR,
+							   SP_KNOT_MODE_COLOR,
+							   G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_FILL,
+					 g_param_spec_uint ("fill",
+							    _("Fill"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_FILL_MOUSEOVER,
+					 g_param_spec_uint ("fill_mouseover",
+							    _("Fill mouse over"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_FILL_DRAGGING,
+					 g_param_spec_uint ("fill_dragging",
+							    _("Fill dragging"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_STROKE,
+					 g_param_spec_uint ("stroke",
+							    _("Stroke"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_STROKE_MOUSEOVER,
+					 g_param_spec_uint ("stroke_mouseover",
+							    _("Stroke mouseover"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_STROKE_DRAGGING,
+					 g_param_spec_uint ("stroke_dragging",
+							    _("Stroke dragging"),
+							    _(""),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_IMAGE,
+					 g_param_spec_pointer ("image",
+							       _("Image"),
+							       _(""),
+							       G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_IMAGE_MOUSEOVER,
+					 g_param_spec_pointer ("image_mouseover",
+							       _("Image mouseover"),
+							       _(""),
+							       G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_IMAGE_DRAGGING,
+					 g_param_spec_pointer ("image_dragging",
+							       _("Image dragging"),
+							       _(""),
+							       G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_CURSOR,
+					 g_param_spec_boxed ("cursor",
+							     _("Cursor"),
+							     _(""),
+							     GDK_TYPE_CURSOR,
+							     G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_CURSOR_MOUSEOVER,
+					 g_param_spec_boxed ("cursor_mouseover",
+							     _("Cursor mouseover"),
+							     _(""),
+							     GDK_TYPE_CURSOR,
+							     G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_CURSOR_DRAGGING,
+					 g_param_spec_boxed ("cursor_dragging",
+							     _("Cursor dragging"),
+							     _(""),
+							     GDK_TYPE_CURSOR,
+							     G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+					 PROP_PIXBUF,
+					 g_param_spec_pointer ("pixbuf",
+							       _("Pixbuf"),
+							       _(""),
+							       G_PARAM_READWRITE));
 
-	knot_signals[EVENT] = gtk_signal_new ("event",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, event),
-		gtk_marshal_BOOL__POINTER,
-		GTK_TYPE_BOOL, 1,
-		GTK_TYPE_GDK_EVENT);
-	knot_signals[CLICKED] = gtk_signal_new ("clicked",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, clicked),
-		gtk_marshal_NONE__UINT,
-		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-	knot_signals[GRABBED] = gtk_signal_new ("grabbed",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, grabbed),
-		gtk_marshal_NONE__UINT,
-		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-	knot_signals[UNGRABBED] = gtk_signal_new ("ungrabbed",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, ungrabbed),
-		gtk_marshal_NONE__UINT,
-		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-	knot_signals[MOVED] = gtk_signal_new ("moved",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, moved),
-		gtk_marshal_NONE__POINTER_UINT,
-		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
-	knot_signals[REQUEST] = gtk_signal_new ("request",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, request),
-		sp_marshal_BOOL__POINTER_UINT,
-		GTK_TYPE_BOOL, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
-	knot_signals[DISTANCE] = gtk_signal_new ("distance",
-		GTK_RUN_LAST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, distance),
-		sp_marshal_DOUBLE__POINTER_UINT,
-		GTK_TYPE_DOUBLE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
-
-	gtk_object_class_add_signals (object_class, knot_signals, LAST_SIGNAL);
-
-	object_class->destroy = sp_knot_destroy;
-	object_class->set_arg = sp_knot_set_arg;
+	knot_signals[EVENT] = g_signal_new ("event",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_LAST,
+					    G_STRUCT_OFFSET (SPKnotClass, event),
+					    NULL, NULL,
+					    sp_marshal_BOOLEAN__POINTER,
+					    G_TYPE_BOOLEAN, 1,
+					    GDK_TYPE_EVENT);
+	knot_signals[CLICKED] = g_signal_new ("clicked",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPKnotClass, clicked),
+					    NULL, NULL,
+					    sp_marshal_NONE__UINT,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_UINT);
+	knot_signals[GRABBED] = g_signal_new ("grabbed",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPKnotClass, grabbed),
+					    NULL, NULL,
+					    sp_marshal_NONE__UINT,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_UINT);
+	knot_signals[UNGRABBED] = g_signal_new ("ungrabbed",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPKnotClass, ungrabbed),
+					    NULL, NULL,
+					    sp_marshal_NONE__UINT,
+					    G_TYPE_NONE, 1,
+					    G_TYPE_UINT);
+	knot_signals[MOVED] = g_signal_new ("moved",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET (SPKnotClass, moved),
+					    NULL, NULL,
+					    sp_marshal_NONE__POINTER_UINT,
+					    G_TYPE_NONE, 2,
+					    G_TYPE_POINTER, G_TYPE_UINT);
+	knot_signals[REQUEST] = g_signal_new ("request",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_LAST,
+					    G_STRUCT_OFFSET (SPKnotClass, request),
+					    NULL, NULL,
+					    sp_marshal_BOOLEAN__POINTER_UINT,
+					    G_TYPE_BOOLEAN, 2,
+					    G_TYPE_POINTER, G_TYPE_UINT);
+	knot_signals[DISTANCE] = g_signal_new ("distance",
+					    G_TYPE_FROM_CLASS(klass),
+					    G_SIGNAL_RUN_LAST,
+					    G_STRUCT_OFFSET (SPKnotClass, distance),
+					    NULL, NULL,
+					    sp_marshal_DOUBLE__POINTER_UINT,
+					    G_TYPE_DOUBLE, 2,
+					    G_TYPE_POINTER, G_TYPE_UINT);
 }
 
 static void
@@ -202,28 +336,33 @@ sp_knot_init (SPKnot * knot)
 }
 
 static void
-sp_knot_destroy (GtkObject * object)
+sp_knot_dispose (GObject * object)
 {
 	SPKnot * knot;
+	gint i;
 
 	knot = (SPKnot *) object;
 
 	/* ungrab pointer if still grabbed by mouseover, find a different way */
-	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (gdk_time_get ());
+	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
-	if (knot->item) gtk_object_destroy (GTK_OBJECT (knot->item));
-	/*
-	  for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
+	if (knot->item) {
+		gtk_object_destroy (GTK_OBJECT (knot->item));
+		knot->item = NULL;
+	}
+	for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
 	  
-	  if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
-	  }
-	*/
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+		if (knot->cursor[i]) {
+			gdk_cursor_unref (knot->cursor[i]);
+			knot->cursor[i] = NULL;
+		}
+	}
+	if (((GObjectClass *) (parent_class))->dispose)
+		(* ((GObjectClass *) (parent_class))->dispose) (object);
 }
 
 static void
-sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
+sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	SPKnot * knot;
 	GdkCursor * cursor;
@@ -231,78 +370,77 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 
 	knot = SP_KNOT (object);
 
-	switch (id) {
-	case ARG_SIZE:
-		knot->size = GTK_VALUE_UINT (*arg);
+	switch (prop_id) {
+	case PROP_SIZE:
+		knot->size = g_value_get_uint (value);
 		break;
-	case ARG_ANCHOR:
-		knot->anchor = GTK_VALUE_ENUM (*arg);
+	case PROP_ANCHOR:
+		knot->anchor = g_value_get_enum (value);
 		break;
-	case ARG_SHAPE:
-		knot->shape = GTK_VALUE_ENUM (*arg);
+	case PROP_SHAPE:
+		knot->shape = g_value_get_int (value);
 		break;
-	case ARG_MODE:
-		knot->mode = GTK_VALUE_ENUM (*arg);
+	case PROP_MODE:
+		knot->mode = g_value_get_int (value);
 		break;
-	case ARG_FILL:
+	case PROP_FILL:
 		knot->fill[SP_KNOT_STATE_NORMAL] =
 		knot->fill[SP_KNOT_STATE_MOUSEOVER] =
-		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
+		knot->fill[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_FILL_MOUSEOVER:
+	case PROP_FILL_MOUSEOVER:
 		knot->fill[SP_KNOT_STATE_MOUSEOVER] = 
-		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
+		knot->fill[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_FILL_DRAGGING:
-		knot->fill[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
+	case PROP_FILL_DRAGGING:
+		knot->fill[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_STROKE:
+	case PROP_STROKE:
 		knot->stroke[SP_KNOT_STATE_NORMAL] =
 		knot->stroke[SP_KNOT_STATE_MOUSEOVER] =
-		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_STROKE_MOUSEOVER:
+	case PROP_STROKE_MOUSEOVER:
 		knot->stroke[SP_KNOT_STATE_MOUSEOVER] = 
-		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_STROKE_DRAGGING:
-		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
+	case PROP_STROKE_DRAGGING:
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = g_value_get_uint (value);
 		break;
-	case ARG_IMAGE:
+	case PROP_IMAGE:
 		knot->image[SP_KNOT_STATE_NORMAL] =
 		knot->image[SP_KNOT_STATE_MOUSEOVER] =
-		knot->image[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_POINTER (*arg);
+		knot->image[SP_KNOT_STATE_DRAGGING] = g_value_get_pointer (value);
 		break;
-	case ARG_IMAGE_MOUSEOVER:
-		knot->image[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_POINTER (*arg);
+	case PROP_IMAGE_MOUSEOVER:
+		knot->image[SP_KNOT_STATE_MOUSEOVER] = g_value_get_pointer (value);
 		break;
-	case ARG_IMAGE_DRAGGING:
-		knot->image[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_POINTER (*arg);
+	case PROP_IMAGE_DRAGGING:
+		knot->image[SP_KNOT_STATE_DRAGGING] = g_value_get_pointer (value);
 		break;
-	case ARG_CURSOR:
-		cursor = GTK_VALUE_BOXED (* arg);
+	case PROP_CURSOR:
+		cursor = g_value_get_boxed (value);
 		for (i = 0; i < SP_KNOT_VISIBLE_STATES; i++) {
-			/* fixme: There should be ::unref somewhere */
-			//if (knot->cursor[i]) gdk_cursor_destroy (knot->cursor[i]);
+			if (knot->cursor[i]) gdk_cursor_unref (knot->cursor[i]);
 			knot->cursor[i] = cursor;
 		}
 		break;
-	case ARG_CURSOR_MOUSEOVER:
-		cursor = GTK_VALUE_BOXED (* arg);
+	case PROP_CURSOR_MOUSEOVER:
+		cursor = g_value_get_boxed (value);
 		if (knot->cursor[SP_KNOT_STATE_MOUSEOVER]) {
-			//gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_MOUSEOVER]);
+			gdk_cursor_unref (knot->cursor[SP_KNOT_STATE_MOUSEOVER]);
 		}
 		knot->cursor[SP_KNOT_STATE_MOUSEOVER] = cursor;
 		break;
-	case ARG_CURSOR_DRAGGING:
-		cursor = GTK_VALUE_BOXED (* arg);
+	case PROP_CURSOR_DRAGGING:
+		cursor = g_value_get_boxed (value);
 		if (knot->cursor[SP_KNOT_STATE_DRAGGING]) {
-			//gdk_cursor_destroy (knot->cursor[SP_KNOT_STATE_DRAGGING]);
+			gdk_cursor_unref (knot->cursor[SP_KNOT_STATE_DRAGGING]);
 		}
 		knot->cursor[SP_KNOT_STATE_DRAGGING] = cursor;
 		break;
-	case ARG_PIXBUF:
-	        knot->pixbuf = GTK_VALUE_POINTER (*arg);
+	case PROP_PIXBUF:
+	        knot->pixbuf = g_value_get_pointer (value);
 	        break;
 	default:
 		g_assert_not_reached ();
@@ -329,7 +467,7 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 
 	/* Run client universal event handler, if present */
 
-	gtk_signal_emit (GTK_OBJECT (knot), knot_signals[EVENT], event, &consumed);
+	g_signal_emit (G_OBJECT (knot), knot_signals[EVENT], 0, event, &consumed);
 
 	if (consumed) return;
 
@@ -383,13 +521,13 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 				sp_knot_set_flag (knot,
 					SP_KNOT_DRAGGING,
 					FALSE);
-				gtk_signal_emit (GTK_OBJECT (knot),
-					knot_signals[UNGRABBED],
-					event->button.state);
+				g_signal_emit (G_OBJECT (knot),
+					       knot_signals[UNGRABBED], 0,
+					       event->button.state);
 			} else {
-				gtk_signal_emit (GTK_OBJECT (knot),
-					knot_signals[CLICKED],
-					event->button.state);
+				g_signal_emit (G_OBJECT (knot),
+					       knot_signals[CLICKED], 0,
+					       event->button.state);
 			}
 			grabbed = FALSE;
 			moved = FALSE;
@@ -401,9 +539,9 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 			ArtPoint p;
 			NRPointF fp;
 			if (!moved) {
-				gtk_signal_emit (GTK_OBJECT (knot),
-					knot_signals[GRABBED],
-					event->motion.state);
+				g_signal_emit (G_OBJECT (knot),
+					       knot_signals[GRABBED], 0,
+					       event->motion.state);
 				sp_knot_set_flag (knot,
 					SP_KNOT_DRAGGING,
 					TRUE);
@@ -455,7 +593,7 @@ sp_knot_new (SPDesktop * desktop)
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (SP_DT_IS_EDITABLE (desktop), NULL);
 
-	knot = gtk_type_new (SP_TYPE_KNOT);
+	knot = g_object_new (SP_TYPE_KNOT, 0);
 
 	knot->desktop = desktop;
 	knot->flags = SP_KNOT_VISIBLE;
@@ -505,11 +643,11 @@ sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
 
 	done = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (knot),
-		knot_signals[REQUEST],
-		p,
-		state,
-		&done);
+	g_signal_emit (G_OBJECT (knot),
+		       knot_signals[REQUEST], 0,
+		       p,
+		       state,
+		       &done);
 
 	/* If user did not complete, we simply move knot to new position */
 
@@ -529,11 +667,11 @@ sp_knot_distance (SPKnot * knot, ArtPoint * p, guint state)
 
 	distance = hypot (p->x - knot->x, p->y - knot->y);
 
-	gtk_signal_emit (GTK_OBJECT (knot),
-		knot_signals[DISTANCE],
-		p,
-		state,
-		&distance);
+	g_signal_emit (G_OBJECT (knot),
+		       knot_signals[DISTANCE], 0,
+		       p,
+		       state,
+		       &distance);
 
 	return distance;
 }
@@ -550,10 +688,10 @@ sp_knot_set_position (SPKnot * knot, ArtPoint * p, guint state)
 
 	if (knot->item) sp_ctrl_moveto (SP_CTRL (knot->item), p->x, p->y);
 
-	gtk_signal_emit (GTK_OBJECT (knot),
-		knot_signals[MOVED],
-		p,
-		state);
+	g_signal_emit (G_OBJECT (knot),
+		       knot_signals[MOVED], 0,
+		       p,
+		       state);
 }
 
 ArtPoint *
@@ -647,42 +785,3 @@ sp_knot_set_ctrl_state (SPKnot * knot)
 				NULL);
 	}
 }
-
-typedef gboolean (* SPSignal_BOOL__POINTER_UINT) (GtkObject *object,
-	gpointer arg1, guint arg2, gpointer user_data);
-
-static void
-sp_marshal_BOOL__POINTER_UINT (GtkObject * object,
-	GtkSignalFunc func,
-	gpointer func_data,
-	GtkArg * args)
-{
-	SPSignal_BOOL__POINTER_UINT rfunc;
-	gboolean * return_val;
-	return_val = GTK_RETLOC_BOOL (args[2]);
-	rfunc = (SPSignal_BOOL__POINTER_UINT) func;
-	* return_val =  (* rfunc) (object,
-		GTK_VALUE_POINTER(args[0]),
-		GTK_VALUE_INT(args[1]),
-		func_data);
-}
-
-typedef gdouble (* SPSignal_DOUBLE__POINTER_UINT) (GtkObject *object,
-	gpointer arg1, guint arg2, gpointer user_data);
-
-static void
-sp_marshal_DOUBLE__POINTER_UINT (GtkObject * object,
-	GtkSignalFunc func,
-	gpointer func_data,
-	GtkArg * args)
-{
-	SPSignal_DOUBLE__POINTER_UINT rfunc;
-	gdouble * return_val;
-	return_val = GTK_RETLOC_DOUBLE (args[2]);
-	rfunc = (SPSignal_DOUBLE__POINTER_UINT) func;
-	* return_val =  (* rfunc) (object,
-		GTK_VALUE_POINTER(args[0]),
-		GTK_VALUE_INT(args[1]),
-		func_data);
-}
-

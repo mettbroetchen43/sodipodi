@@ -17,13 +17,7 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 #include "helper/sp-canvas.h"
 #include "sp-rect.h"
 #include "sodipodi.h"
@@ -35,6 +29,7 @@
 #include "pixmaps/cursor-rect.xpm"
 #include "rect-context.h"
 #include "sp-metrics.h"
+#include "helper/sp-intl.h"
 
 static void sp_rect_context_class_init (SPRectContextClass * klass);
 static void sp_rect_context_init (SPRectContext * rect_context);
@@ -199,8 +194,8 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &rc->center);
 			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
+					     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+					     NULL, event->button.time);
 			ret = TRUE;
 		}
 		break;

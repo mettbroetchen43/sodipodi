@@ -1,5 +1,4 @@
 #define __SP_OBJECT_C__
-
 /*
  * Abstract base class for all nodes
  *
@@ -14,6 +13,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <glib-object.h>
+#include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
 #include "xml/repr-private.h"
 #include "document.h"
@@ -21,9 +22,12 @@
 #include "sp-object-repr.h"
 #include "sp-object.h"
 
+#define noSP_OBJECT_DEBUG
+
 static void sp_object_class_init (SPObjectClass * klass);
 static void sp_object_init (SPObject * object);
-static void sp_object_destroy (GtkObject * object);
+static void sp_object_dispose (GObject * object);
+static void sp_object_finalize (GObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_object_release (SPObject *object);
@@ -61,25 +65,26 @@ SPReprEventVector object_event_vector = {
 	sp_object_repr_order_changed
 };
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 static guint object_signals[LAST_SIGNAL] = {0};
 
-GtkType
+unsigned int
 sp_object_get_type (void)
 {
-	static GtkType object_type = 0;
+	static GType object_type = 0;
 	if (!object_type) {
-		GtkTypeInfo object_info = {
-			"SPObject",
-			sizeof (SPObject),
+		GTypeInfo object_info = {
 			sizeof (SPObjectClass),
-			(GtkClassInitFunc) sp_object_class_init,
-			(GtkObjectInitFunc) sp_object_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_object_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPObject),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_object_init,
 		};
-		object_type = gtk_type_unique (gtk_object_get_type (), &object_info);
+		object_type = g_type_register_static (G_TYPE_OBJECT, "SPObject", &object_info, 0);
 	}
 	return object_type;
 }
@@ -87,27 +92,29 @@ sp_object_get_type (void)
 static void
 sp_object_class_init (SPObjectClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	object_signals[RELEASE] =  gtk_signal_new ("release",
-						   GTK_RUN_FIRST,
-						   gtk_object_class->type,
-						   GTK_SIGNAL_OFFSET (SPObjectClass, release),
-						   gtk_marshal_NONE__NONE,
-						   GTK_TYPE_NONE, 0);
-	object_signals[MODIFIED] = gtk_signal_new ("modified",
-						   GTK_RUN_FIRST,
-						   gtk_object_class->type,
-						   GTK_SIGNAL_OFFSET (SPObjectClass, modified),
-						   gtk_marshal_NONE__UINT,
-						   GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-	gtk_object_class_add_signals (gtk_object_class, object_signals, LAST_SIGNAL);
+	object_signals[RELEASE] = g_signal_new ("release",
+						G_TYPE_FROM_CLASS (klass),
+						G_SIGNAL_RUN_CLEANUP | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+						G_STRUCT_OFFSET (SPObjectClass, release),
+						NULL, NULL,
+						g_cclosure_marshal_VOID__VOID,
+						G_TYPE_NONE, 0);
+	object_signals[MODIFIED] = g_signal_new ("modified",
+                                                 G_TYPE_FROM_CLASS (klass),
+                                                 G_SIGNAL_RUN_FIRST,
+                                                 G_STRUCT_OFFSET (SPObjectClass, modified),
+                                                 NULL, NULL,
+                                                 gtk_marshal_NONE__UINT,
+                                                 G_TYPE_NONE, 1, G_TYPE_UINT);
 
-	gtk_object_class->destroy = sp_object_destroy;
+	object_class->dispose = sp_object_dispose;
+	object_class->finalize = sp_object_finalize;
 
 	klass->build = sp_object_build;
 	klass->release = sp_object_release;
@@ -118,6 +125,10 @@ sp_object_class_init (SPObjectClass * klass)
 static void
 sp_object_init (SPObject * object)
 {
+#ifdef SP_OBJECT_DEBUG
+	g_print("sp_object_init: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
+
 	object->hrefcount = 0;
 	object->document = NULL;
 	object->parent = object->next = NULL;
@@ -128,21 +139,45 @@ sp_object_init (SPObject * object)
 	object->description = NULL;
 }
 
+/* fixme: This is complete crap - copy destrouctor from gnome1 version (Lauris) */
+
 static void
-sp_object_destroy (GtkObject * object)
+sp_object_dispose (GObject * object)
 {
 	SPObject *spobject;
 
 	spobject = (SPObject *) object;
 
-	/* fixme: This is here temporarily */
-	/* fixme: I f everything is ported to ::release, we can remove destroy at all */
-	if (spobject->document) {
-		sp_object_invoke_release (spobject);
+#ifdef SP_OBJECT_DEBUG
+	g_print("sp_object_dispose: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
+	if (!(SP_OBJECT_FLAGS (spobject) & SP_OBJECT_IN_DESTRUCTION_FLAG))
+	{
+#ifdef SP_OBJECT_DEBUG
+		g_print("sp_object_dispose: id=%x, typename=%s enter IN_DESTRUCTION\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
+		SP_OBJECT_SET_FLAGS (spobject, SP_OBJECT_IN_DESTRUCTION_FLAG);
+
+/* 		sp_object_invoke_release (spobject); */
+		if (spobject->document) {
+			g_signal_emit (object, object_signals[RELEASE], 0);
+		}
+
+		SP_OBJECT_UNSET_FLAGS (spobject, SP_OBJECT_IN_DESTRUCTION_FLAG);
 	}
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
+sp_object_finalize (GObject * object)
+{
+	SPObject *spobject;
+
+	spobject = (SPObject *) object;
+
+	if (((GObjectClass *) (parent_class))->finalize)
+		(* ((GObjectClass *) (parent_class))->finalize) (object);
 }
 
 /*
@@ -159,7 +194,7 @@ sp_object_ref (SPObject *object, SPObject *owner)
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 	g_return_val_if_fail (!owner || SP_IS_OBJECT (owner), NULL);
 
-	gtk_object_ref (GTK_OBJECT (object));
+	g_object_ref (G_OBJECT (object));
 
 	return object;
 }
@@ -171,7 +206,7 @@ sp_object_unref (SPObject *object, SPObject *owner)
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 	g_return_val_if_fail (!owner || SP_IS_OBJECT (owner), NULL);
 
-	gtk_object_unref (GTK_OBJECT (object));
+	g_object_unref (G_OBJECT (object));
 
 	return NULL;
 }
@@ -215,7 +250,7 @@ sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *next)
 	g_return_val_if_fail (!object->next, NULL);
 
 	sp_object_ref (object, parent);
-	gtk_object_unref (GTK_OBJECT (object));
+	g_object_unref (G_OBJECT (object));
 	object->parent = parent;
 	object->next = next;
 
@@ -272,12 +307,38 @@ static void
 sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	/* Nothing specific here */
+#ifdef SP_OBJECT_DEBUG
+	g_print("sp_object_build: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
 }
 
 static void
 sp_object_release (SPObject * object)
 {
-	/* Nothing specific here */
+#ifdef SP_OBJECT_DEBUG
+	g_print("sp_object_release: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
+	/* href holders HAVE to release it in signal handler */
+	g_assert (object->hrefcount == 0);
+
+	if (object->style) {
+		object->style = sp_style_unref (object->style);
+	}
+
+	if (!SP_OBJECT_IS_CLONED (object)) {
+		g_assert (object->id);
+		sp_document_undef_id (object->document, object->id);
+		g_free (object->id);
+		object->id = NULL;
+	} else {
+		g_assert (!object->id);
+	}
+
+	sp_repr_remove_listener_by_data (object->repr, object);
+	sp_repr_unref (object->repr);
+
+	object->document = NULL;
+	object->repr = NULL;
 }
 
 void
@@ -287,6 +348,9 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	gchar * realid;
 	gboolean ret;
 
+#ifdef SP_OBJECT_DEBUG
+	g_print("sp_object_invoke_build: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+#endif
 	g_assert (object != NULL);
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (document != NULL);
@@ -302,7 +366,7 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	object->document = document;
 	object->repr = repr;
 	sp_repr_ref (repr);
-	if (cloned) GTK_OBJECT_SET_FLAGS (object, SP_OBJECT_CLONED_FLAG);
+	if (cloned) SP_OBJECT_SET_FLAGS (object, SP_OBJECT_CLONED_FLAG);
 
 	/* If we are not cloned, force unique id */
 	if (!SP_OBJECT_IS_CLONED (object)) {
@@ -324,8 +388,8 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 
 	/* Invoke derived methods, if any */
 
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->build)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->build) (object, document, repr);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->build)
+		(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->build) (object, document, repr);
 
 	/* Signalling (should be connected AFTER processing derived methods */
 
@@ -376,8 +440,8 @@ sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer d
 
 	object = SP_OBJECT (data);
 
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->child_added)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->child_added) (object, child, ref);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->child_added)
+		(*((SPObjectClass *)G_OBJECT_GET_CLASS(object))->child_added) (object, child, ref);
 
 	sp_document_child_added (object->document, object, child, ref);
 }
@@ -389,8 +453,8 @@ sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer 
 
 	object = SP_OBJECT (data);
 
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child)
-		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->remove_child) (object, child);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->remove_child)
+		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->remove_child) (object, child);
 
 	sp_document_child_removed (object->document, object, child, ref);
 
@@ -406,8 +470,8 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 
 	object = SP_OBJECT (data);
 
-	if (((SPObjectClass *) (((GtkObject *) object)->klass))->order_changed)
-		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->order_changed) (object, child, old, new);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->order_changed)
+		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->order_changed) (object, child, old, new);
 
 	sp_document_order_changed (object->document, object, child, old, new);
 }
@@ -450,8 +514,8 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 	/* fixme: rething that cloning issue */
 	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
 
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr) (object, key);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_attr)
+		(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_attr) (object, key);
 }
 
 static gboolean
@@ -490,8 +554,8 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 
 	object = SP_OBJECT (data);
 
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_content)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_content)
+		(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_content) (object);
 
 	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
@@ -541,13 +605,13 @@ sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags)
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 
-	if (((SPObjectClass *) (((GtkObject *) object)->klass))->write) {
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->write) {
 		if (!(flags & SP_OBJECT_WRITE_BUILD) && !repr) {
 			repr = SP_OBJECT_REPR (object);
 		}
-		return ((SPObjectClass *) (((GtkObject *) object)->klass))->write (object, repr, flags);
+		return ((SPObjectClass *) G_OBJECT_GET_CLASS(object))->write (object, repr, flags);
 	} else {
-		g_warning ("Class %s does not implement ::write", gtk_type_name (GTK_OBJECT_TYPE (object)));
+		g_warning ("Class %s does not implement ::write", G_OBJECT_TYPE_NAME (object));
 		if (!repr) {
 			if (flags & SP_OBJECT_WRITE_BUILD) {
 				repr = sp_repr_duplicate (SP_OBJECT_REPR (object));
@@ -596,7 +660,7 @@ sp_object_modified (SPObject *object, guint flags)
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
 
-	flags |= (GTK_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
+	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 
 	g_return_if_fail (flags != 0);
 
@@ -610,17 +674,17 @@ sp_object_modified (SPObject *object, guint flags)
 		}
 	}
 
-	gtk_object_ref (GTK_OBJECT (object));
-	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
-	gtk_object_unref (GTK_OBJECT (object));
+	g_object_ref (G_OBJECT (object));
+	g_signal_emit (G_OBJECT (object), object_signals[MODIFIED], 0, flags);
+	g_object_unref (G_OBJECT (object));
 
 	/* If style is modified, invoke style_modified virtual method */
 	/* It is pure convenience, and should be used with caution */
 	/* The cascade is created solely by modified method plus appropriate flag */
 	/* Also, it merely signals, that actual style object has changed */
 	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
-		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
-			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
+		if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified)
+			(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified) (object, flags);
 	}
 
 	/*
@@ -634,8 +698,8 @@ sp_object_modified (SPObject *object, guint flags)
 gint
 sp_object_sequence (SPObject *object, gint seq)
 {
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->sequence)
-		return (*((SPObjectClass *)(((GtkObject *) object)->klass))->sequence) (object, seq);
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence)
+		return (*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence) (object, seq);
 
 	return seq + 1;
 }

@@ -16,8 +16,6 @@
 
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
@@ -28,8 +26,8 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkhseparator.h>
-#include <libgnomeui/gnome-file-entry.h>
 
+#include "helper/sp-intl.h"
 #include "helper/unit-menu.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -219,7 +217,12 @@ sp_export_dialog (void)
 		gtk_widget_show_all (f);
 
 		/* File entry */
+#if 0
 		fe = gnome_file_entry_new ("export", _("Export png file"));
+#else
+		/* fixme: */
+		fe = gtk_entry_new ();
+#endif
 		gtk_widget_show (fe);
 		gtk_box_pack_start (GTK_BOX (vb), fe, FALSE, FALSE, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "filename", fe);
@@ -287,7 +290,11 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	if (!SP_ACTIVE_DESKTOP) return;
 
 	fe = gtk_object_get_data (base, "filename");
+#if 0
 	filename = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (fe), FALSE);
+#else
+	filename = gtk_entry_get_text (GTK_ENTRY (fe));
+#endif
 
 	x0 = sp_export_value_get_pt (base, "x0");
 	y0 = sp_export_value_get_pt (base, "y0");

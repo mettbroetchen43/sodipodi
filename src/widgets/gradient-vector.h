@@ -13,9 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <gtk/gtkvbox.h>
 #include "../forward.h"
@@ -59,6 +59,6 @@ SPGradient *sp_gradient_vector_selector_get_gradient (SPGradientVectorSelector *
 /* fixme: rethink this (Lauris) */
 GtkWidget *sp_gradient_vector_editor_new (SPGradient *gradient);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

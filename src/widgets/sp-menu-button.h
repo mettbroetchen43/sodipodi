@@ -42,7 +42,7 @@ struct _SPMenuButtonClass
 {
 	GtkToggleButtonClass parent_class;
 
-	void (* activate) (SPMenuButton *mb, gpointer data);
+	void (* activate_item) (SPMenuButton *mb, gpointer data);
 };
 
 

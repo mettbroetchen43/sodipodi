@@ -53,7 +53,7 @@ static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_modified (SPObject *object, guint flags);
 
-static void sp_pattern_href_release (SPObject *href, SPPattern *pattern);
+static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
 
 static SPPainter *sp_pattern_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
@@ -61,20 +61,23 @@ static void sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static SPPaintServerClass * pattern_parent_class;
 
-GtkType
+GType
 sp_pattern_get_type (void)
 {
-	static GtkType pattern_type = 0;
+	static GType pattern_type = 0;
 	if (!pattern_type) {
-		GtkTypeInfo pattern_info = {
-			"SPPattern",
-			sizeof (SPPattern),
+		GTypeInfo pattern_info = {
 			sizeof (SPPatternClass),
-			(GtkClassInitFunc) sp_pattern_class_init,
-			(GtkObjectInitFunc) sp_pattern_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_pattern_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPPattern),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_pattern_init,
 		};
-		pattern_type = gtk_type_unique (SP_TYPE_PAINT_SERVER, &pattern_info);
+		pattern_type = g_type_register_static (SP_TYPE_PAINT_SERVER, "SPPattern", &pattern_info, 0);
 	}
 	return pattern_type;
 }
@@ -82,15 +85,13 @@ sp_pattern_get_type (void)
 static void
 sp_pattern_class_init (SPPatternClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
 	SPObjectClass *sp_object_class;
 	SPPaintServerClass *ps_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	ps_class = (SPPaintServerClass *) klass;
 
-	pattern_parent_class = gtk_type_class (SP_TYPE_PAINT_SERVER);
+	pattern_parent_class = g_type_class_ref (SP_TYPE_PAINT_SERVER);
 
 	sp_object_class->build = sp_pattern_build;
 	sp_object_class->release = sp_pattern_release;
@@ -277,7 +278,7 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			href = sp_document_lookup_id (object->document, val + 1);
 			if (SP_IS_PATTERN (href)) {
 				pat->href = (SPPattern *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "release", GTK_SIGNAL_FUNC (sp_pattern_href_release), pat);
+				gtk_signal_connect (GTK_OBJECT (href), "destroy", GTK_SIGNAL_FUNC (sp_pattern_href_destroy), pat);
 				gtk_signal_connect (GTK_OBJECT (href), "modified", GTK_SIGNAL_FUNC (sp_pattern_href_modified), pat);
 			}
 		}
@@ -384,22 +385,22 @@ sp_pattern_modified (SPObject *object, guint flags)
 
 	l = NULL;
 	for (child = pat->children; child != NULL; child = child->next) {
-		gtk_object_ref (GTK_OBJECT (child));
+		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
-		gtk_object_unref (GTK_OBJECT (child));
+		g_object_unref (G_OBJECT (child));
 	}
 }
 
 static void
-sp_pattern_href_release (SPObject *href, SPPattern *pattern)
+sp_pattern_href_destroy (SPObject *href, SPPattern *pattern)
 {
 	pattern->href = (SPPattern *) sp_object_hunref (href, pattern);
 	sp_object_request_modified (SP_OBJECT (pattern), SP_OBJECT_MODIFIED_FLAG);
@@ -571,7 +572,7 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 	}
 
 	if (pp->arena) {
-		gtk_object_unref (GTK_OBJECT (pp->arena));
+		g_object_unref (G_OBJECT (pp->arena));
 	}
 
 	g_free (pp);

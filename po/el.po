@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2002-11-25 12:16+0200\n"
+"POT-Creation-Date: 2002-11-28 00:42-0500\n"
 "PO-Revision-Date: 2001-12-28 21:07+0000\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -13,2035 +13,601 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-7\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr ""
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr ""
-
-#: glade/align.glade.h:1 glade/transformation.glade.h:3
-msgid "Align"
-msgstr "Στοίχιση"
-
-#: glade/align.glade.h:2
-msgid "Align inside object to bottom border"
-msgstr ""
-
-#: glade/align.glade.h:3
-msgid "Align inside object to left border"
-msgstr ""
-
-#: glade/align.glade.h:4
-msgid "Align inside object to right border"
-msgstr ""
-
-#: glade/align.glade.h:5
-#, fuzzy
-msgid "Align inside object to top border"
-msgstr "Προσθήκη νέου αντικειμένου στη βάση"
-
-#: glade/align.glade.h:6
-#, fuzzy
-msgid "Align objects to horizontal mid"
-msgstr "Ορι_ζόντια Στοίχιση"
-
-#: glade/align.glade.h:7
-msgid "Align objects to vertical mid"
-msgstr ""
-
-#: glade/align.glade.h:8
-msgid "Align outside object to bottom border"
-msgstr ""
-
-#: glade/align.glade.h:9
-msgid "Align outside object to left border"
-msgstr ""
-
-#: glade/align.glade.h:10
-msgid "Align outside object to right border"
-msgstr ""
-
-#: glade/align.glade.h:11
-msgid "Align outside object to top border"
-msgstr ""
-
-#: glade/align.glade.h:12
-#, fuzzy
-msgid "Alignment base"
-msgstr "Στοίχιση"
-
-#: glade/align.glade.h:13 src/dialogs/align.c:165
-#, fuzzy
-msgid "Biggest item"
-msgstr "Ρυθμός bit"
-
-#: glade/align.glade.h:14
-#, fuzzy
-msgid "Choose align type"
-msgstr "Επιλογή Τρέχουσας Συνεδρίας"
-
-#: glade/align.glade.h:15
-#, fuzzy
-msgid "Close window"
-msgstr "Κλείσιμο καταγραφών"
-
-#: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:180
-#: src/dialogs/export.c:133 src/interface.c:316
-msgid "Drawing"
-msgstr "Σχεδίαση"
-
-#
-#: glade/align.glade.h:17 src/dialogs/align.c:160
-#, fuzzy
-msgid "First selected"
-msgstr "Επιλέχθησαν \"%s\""
-
-#
-#: glade/align.glade.h:18 src/dialogs/align.c:155
-#, fuzzy
-msgid "Last selected"
-msgstr "Επιλέχθησαν \"%s\""
-
-#. Page page
-#: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:175
-#: src/dialogs/desktop-properties.c:407 src/dialogs/document-properties.c:144
-#: src/dialogs/export.c:128 src/interface.c:317
-msgid "Page"
-msgstr "Σελίδα"
-
-#. Selection submenu
-#: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:185 src/dialogs/export.c:138 src/interface.c:315
-#: src/interface.c:431 src/toolbox.c:420
-msgid "Selection"
-msgstr "Επιλογή"
-
-#: glade/align.glade.h:21 src/dialogs/align.c:170
-#, fuzzy
-msgid "Smallest item"
-msgstr "Μικρή καταιγίδα με χαλάζι"
-
-#
-#: glade/item.glade.h:1 src/dialogs/item-properties.c:86
-msgid "Active"
-msgstr "Ενεργό"
-
-#
-#: glade/item.glade.h:2
-#, fuzzy
-msgid "ID:"
-msgstr "ID"
-
-#. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:766
-#, fuzzy
-msgid "Item"
-msgstr "Επιλογή ένα"
-
-#: glade/item.glade.h:4 src/dialogs/item-properties.c:373
-#, fuzzy
-msgid "Item properties"
-msgstr "Ιδιότητες μενού"
-
-#
-#: glade/item.glade.h:5 src/dialogs/item-properties.c:99
-msgid "Opacity:"
-msgstr "Διαφάνεια:"
-
-#: glade/item.glade.h:6
-#, fuzzy
-msgid "Parent X ="
-msgstr "Πατρική Ομάδα"
-
-#: glade/item.glade.h:7
-#, fuzzy
-msgid "Parent Y ="
-msgstr "Πατρική Ομάδα"
-
-#: glade/item.glade.h:8 src/dialogs/item-properties.c:90
-#, fuzzy
-msgid "Printable"
-msgstr "Εγγράψιμο"
-
-#: glade/item.glade.h:9 src/dialogs/item-properties.c:77
-msgid "Sensitive"
-msgstr "Ευαίσθητο"
-
-#: glade/item.glade.h:10 src/dialogs/item-properties.c:235
-#: src/dialogs/item-properties.c:289
-#, fuzzy
-msgid "The SVG ID of item"
-msgstr "Το Παιχνίδι της Ζωής"
-
-#: glade/item.glade.h:11
-msgid "Transformation"
-msgstr "Μετασχηματισμός"
-
-#: glade/item.glade.h:12 src/dialogs/item-properties.c:82
-msgid "Visible"
-msgstr "Ορατό"
-
-#: glade/item.glade.h:13
-msgid "X +"
-msgstr ""
-
-#: glade/item.glade.h:14
-msgid "Y +"
-msgstr ""
-
-#
-#: glade/object_props.glade.h:1
-#, fuzzy
-msgid " Color fill "
-msgstr "Αρχείο core"
-
-#
-#: glade/object_props.glade.h:2
-msgid " General "
-msgstr " Γενικά "
-
-#: glade/object_props.glade.h:3
-#, fuzzy
-msgid " Style "
-msgstr "Στυλ: "
-
-#
-#: glade/object_props.glade.h:4
-#, fuzzy
-msgid "Add new gradient"
-msgstr "Προσθήκη νέου παροχέα"
-
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:609
-#: src/widgets/sp-color-selector.c:629 src/widgets/sp-color-selector.c:651
-msgid "Alpha:"
-msgstr "Άλφα:"
-
-#
-#: glade/object_props.glade.h:6
-#, fuzzy
-msgid "Behind fill"
-msgstr "Δυαδικό αρχείο"
-
-#: glade/object_props.glade.h:7
-#, fuzzy
-msgid "Bevel join"
-msgstr "Πρώτο επίπεδο"
-
-#
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:608
-msgid "Blue:"
-msgstr "Μπλε:"
-
-#: glade/object_props.glade.h:9
-#, fuzzy
-msgid "Butt endpoints"
-msgstr "Kουμπιά"
-
-#: glade/object_props.glade.h:10
-#, fuzzy
-msgid "Choose fill color"
-msgstr "Επιλέξτε Πιλότου"
-
-#: glade/object_props.glade.h:11
-#, fuzzy
-msgid "Choose stroke color"
-msgstr "Επιλογή Ειδικού Χρώματος"
-
-#
-#: glade/object_props.glade.h:12
-#, fuzzy
-msgid "Color fill"
-msgstr "Αρχείο core"
-
-#: glade/object_props.glade.h:13
-msgid "Color:"
-msgstr "Χρώμα:"
-
-#: glade/object_props.glade.h:14
-msgid "Dimension"
-msgstr "Διάσταση"
-
-#: glade/object_props.glade.h:15
-msgid "Edit..."
-msgstr "Επεξεργασία..."
-
-#: glade/object_props.glade.h:16
-#, fuzzy
-msgid "Endpoints:"
-msgstr "σημεία"
-
-#: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
-#: src/dialogs/object-properties.c:106
-msgid "Fill"
-msgstr "Γέμισμα"
-
-#: glade/object_props.glade.h:18
-#, fuzzy
-msgid "Fill Color:"
-msgstr "Με Χρώμα"
-
-#: glade/object_props.glade.h:19
-#, fuzzy
-msgid "Fractal fill"
-msgstr "Τοπικά αρχεία"
-
-#: glade/object_props.glade.h:20
-#, fuzzy
-msgid "Gradient fill"
-msgstr "Βαθμίδα"
-
-#
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:607
-msgid "Green:"
-msgstr "Πράσινο:"
-
-#: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
-#: src/dialogs/export.c:187 src/dialogs/export.c:212
-#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
-#: src/dialogs/object-properties.c:361
-msgid "Height:"
-msgstr "Ύψος:"
-
-#
-#: glade/object_props.glade.h:23
-#, fuzzy
-msgid "Is stroked"
-msgstr "ε χρήση"
-
-#
-#. Join type
-#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:580
-#, fuzzy
-msgid "Join:"
-msgstr "Όνομα χρήστη:"
-
-#. Layout
-#: glade/object_props.glade.h:25 src/dialogs/text-edit.c:124
-msgid "Layout"
-msgstr "Διάταξη"
-
-#: glade/object_props.glade.h:26
-#, fuzzy
-msgid "Miter join"
-msgstr "Πρωτεύον Μονοφωνικό"
-
-#: glade/object_props.glade.h:27
-#, fuzzy
-msgid "No fill"
-msgstr "Χωρίς Αρχείο"
-
-#: glade/object_props.glade.h:28
-#, fuzzy
-msgid "Pattern fill"
-msgstr "Σχέδιο"
-
-#
-#: glade/object_props.glade.h:29
-msgid "Pick a color"
-msgstr "Διαλέξτε χρώμα"
-
-#
-#: glade/object_props.glade.h:30
-#, fuzzy
-msgid "Pick fill color"
-msgstr "Διαλέξτε χρώμα"
-
-#
-#: glade/object_props.glade.h:31
-#, fuzzy
-msgid "Pick stroke color"
-msgstr "Διαλέξτε χρώμα"
-
-#: glade/object_props.glade.h:32
-msgid "Position"
-msgstr "Θέση"
-
-#
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:606
-msgid "Red:"
-msgstr "Κόκκινο:"
-
-#: glade/object_props.glade.h:34
-#, fuzzy
-msgid "Reread"
-msgstr "Αναγνωσμένα"
-
-#: glade/object_props.glade.h:35
-#, fuzzy
-msgid "Round endpoints"
-msgstr "Σημείο προσάρτησης"
-
-#
-#: glade/object_props.glade.h:36
-#, fuzzy
-msgid "Round join"
-msgstr "Εκτέλεση σε:"
-
-#
-#: glade/object_props.glade.h:37
-#, fuzzy
-msgid "Scale with object"
-msgstr "Αποθήκευση με περιεχόμενα"
-
-#: glade/object_props.glade.h:38
-#, fuzzy
-msgid "Square endpoints"
-msgstr "Λίστα Τετραγώνων"
-
-#: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
-#, fuzzy
-msgid "Stroke"
-msgstr "Καπνός"
-
-#: glade/object_props.glade.h:40
-#, fuzzy
-msgid "Stroke width"
-msgstr "Καπνός με άνεμο"
-
-#. Stroke width
-#: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
-#: src/dialogs/export.c:167 src/dialogs/export.c:202
-#: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
-#: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
-msgid "Width:"
-msgstr "Πλάτος:"
-
-#: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:66
-#: src/dialogs/object-attributes.c:74 src/dialogs/object-properties.c:316
-msgid "X:"
-msgstr "Χ:"
-
-#: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:67
-#: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:331
-msgid "Y:"
-msgstr "Ψ:"
-
-#: glade/object_props.glade.h:44
-msgid "centimeter"
-msgstr "εκατοστά"
-
-#: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/units.c:49
-msgid "cm"
-msgstr "cm"
-
-#: glade/object_props.glade.h:46
-#, fuzzy
-msgid "color"
-msgstr " χρώμα"
-
-#
-#: glade/object_props.glade.h:47 glade/transformation.glade.h:55
-#: src/helper/units.c:51
-#, fuzzy
-msgid "in"
-msgstr "ημ"
-
-#: glade/object_props.glade.h:48
-#, fuzzy
-msgid "inches"
-msgstr "ίντσα"
-
-#: glade/object_props.glade.h:49
-#, fuzzy
-msgid "millimeters"
-msgstr "χιλιοστά"
-
-#: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/units.c:48
-msgid "mm"
-msgstr "mm"
-
-#
-#: glade/object_props.glade.h:51
-msgid "none"
-msgstr "κανένα"
-
-#
-#: glade/object_props.glade.h:52
-#, fuzzy
-msgid "object properties"
-msgstr "Ιδιότητες αντικειμένου"
-
-#
-#: glade/object_props.glade.h:53 glade/sodipodi.glade.h:78
-#: src/dialogs/export.c:202 src/dialogs/export.c:212
-#, fuzzy
-msgid "pixels"
-msgstr "Εικονοστοιχεία"
-
-#: glade/object_props.glade.h:54
-msgid "points"
-msgstr "σημεία"
-
-#: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/units.c:42
-#, fuzzy
-msgid "pt"
-msgstr "στιγ."
-
-#: glade/object_props.glade.h:56 src/helper/units.c:43
-msgid "px"
-msgstr ""
-
-#: glade/sodipodi.glade.h:1
-msgid "1.0MB"
-msgstr "1.0MB"
-
-#
-#: glade/sodipodi.glade.h:2 src/interface.c:324
-msgid "1:1"
-msgstr "1:1"
-
-#
-#: glade/sodipodi.glade.h:3 src/interface.c:323
-msgid "1:2"
-msgstr "1:2"
-
-#
-#: glade/sodipodi.glade.h:4 src/interface.c:325
-msgid "2:1"
-msgstr "2:1"
-
-#: glade/sodipodi.glade.h:5 src/interface.c:338
-msgid "Arc"
-msgstr ""
-
-#
-#: glade/sodipodi.glade.h:6
-#, fuzzy
-msgid "Back One"
-msgstr "Πίσω"
-
-#
-#: glade/sodipodi.glade.h:7 glade/toolbox.glade.h:2
-#, fuzzy
-msgid "Break apart selected node"
-msgstr "Εκκίνηση επιλεγμένου παροχέα"
-
-#: glade/sodipodi.glade.h:8
-msgid "Bring to _Front"
-msgstr "Ανύ_ψωση"
-
-#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:4
-#, fuzzy
-msgid "Close dialog"
-msgstr "Κλείσιμο καταγραφών"
-
-#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:7
-#, fuzzy
-msgid "Convert selected segments to curves"
-msgstr "Μετακίνηση επιλεγμένου μενού πρoς τα επάνω"
-
-#: glade/sodipodi.glade.h:11 glade/toolbox.glade.h:8
-#, fuzzy
-msgid "Convert selected segments to lines"
-msgstr "Μετακίνιση επιλεγμένου μενού πρός τα κάτω"
-
-#: glade/sodipodi.glade.h:12
-#, fuzzy
-msgid "Convert to Cu_rves"
-msgstr "Σύνδεση με %s"
-
-#
-#: glade/sodipodi.glade.h:13 glade/toolbox.glade.h:10
-#, fuzzy
-msgid "Cusp line at selected nodes"
-msgstr "Καθαρισμός όλων των επιλεγμένων γραμμών"
-
-#
-#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:9 src/interface.c:241
-msgid "Delete"
-msgstr "Διαγραφή"
-
-#: glade/sodipodi.glade.h:15 glade/toolbox.glade.h:12 src/toolbox.c:616
-#, fuzzy
-msgid "Delete selected nodes"
-msgstr "Διαγραφή επιλογής"
-
-#
-#: glade/sodipodi.glade.h:16
-msgid "Desktop"
-msgstr "Επιφάνεια εργασίας"
-
-#
-#: glade/sodipodi.glade.h:17
-msgid "Display"
-msgstr "Εμφάνιση"
-
-#: glade/sodipodi.glade.h:18 src/interface.c:357
-msgid "Document"
-msgstr "Έγγραφο"
-
-#: glade/sodipodi.glade.h:20
-#, fuzzy
-msgid "Drawing Context"
-msgstr "Σχεδίαση"
-
-#: glade/sodipodi.glade.h:21 src/interface.c:240
-msgid "Duplicate"
-msgstr "Δημιουργία αντιγράφου"
-
-#: glade/sodipodi.glade.h:22 src/interface.c:342
-msgid "Dynahand"
-msgstr ""
-
-#
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/dialogs/export.c:232
-#: src/interface.c:221
-msgid "Export"
-msgstr "Εξαγωγή"
-
-#: glade/sodipodi.glade.h:24
-msgid "Export picture to png"
-msgstr ""
-
-#: glade/sodipodi.glade.h:25
-#, fuzzy
-msgid "Exported as"
-msgstr "Το %s εισήχθη"
-
-#: glade/sodipodi.glade.h:26
-msgid "Filename:"
-msgstr "Όνομα Αρχείου:"
-
-#
-#: glade/sodipodi.glade.h:28
-#, fuzzy
-msgid "Forward One"
-msgstr "Προώθηση"
-
-#: glade/sodipodi.glade.h:29 src/interface.c:341
-#, fuzzy
-msgid "Freehand"
-msgstr "Γροιλανδία"
-
-#: glade/sodipodi.glade.h:30
-msgid "Height"
-msgstr "Ύψος"
-
-#: glade/sodipodi.glade.h:31
-#, fuzzy
-msgid "Image size"
-msgstr "Μέγεθος Εικόνας:"
-
-#
-#: glade/sodipodi.glade.h:32 src/interface.c:220
-msgid "Import"
-msgstr "Εισαγωγή"
-
-#: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
-#, fuzzy
-msgid "Include one node into selected segments"
-msgstr "Ξε-διαγραφή των επιλεγμένων μηνυμάτων"
-
-#: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
-#, fuzzy
-msgid "Join 2 selected endpoints"
-msgstr "Εκτύπωση επιλεγμένων επαφών"
-
-#: glade/sodipodi.glade.h:35
-#, fuzzy
-msgid "Lock aspect ratio"
-msgstr "Διατήρηση αναλογιών"
-
-#. View:New Preview
-#: glade/sodipodi.glade.h:36 src/interface.c:329
-#, fuzzy
-msgid "New Preview"
-msgstr "Χρήση Προεπισκόπησης"
-
-#. View:New View
-#: glade/sodipodi.glade.h:37 src/interface.c:327
-msgid "New View"
-msgstr "Νέα Προβολή"
-
-#
-#: glade/sodipodi.glade.h:38 src/interface.c:336
-#, fuzzy
-msgid "Node"
-msgstr "Κανένα"
-
-#: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
-#, fuzzy
-msgid "Node Edit"
-msgstr " Επεξεργασία "
-
-#: glade/sodipodi.glade.h:40 src/toolbox.c:609
-#, fuzzy
-msgid "Nodes"
-msgstr "Σημειώσεις"
-
-#. Selection:Order
-#: glade/sodipodi.glade.h:41 src/interface.c:281
-msgid "Order"
-msgstr "Διάταξη"
-
-#: glade/sodipodi.glade.h:43
-#, fuzzy
-msgid "Png file name"
-msgstr "όνομα αρχείου"
-
-#: glade/sodipodi.glade.h:44 src/interface.c:337
-msgid "Rectangle"
-msgstr "Ορθογώνιο"
-
-#
-#: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
-#: src/interface.c:319
-msgid "Scale"
-msgstr "Κλιμάκωση"
-
-#
-#: glade/sodipodi.glade.h:46 src/interface.c:335
-msgid "Select"
-msgstr "Επιλογή"
-
-# # FIX??  (see above)
-#: glade/sodipodi.glade.h:48
-msgid "Send to _Back"
-msgstr "_Βύθιση"
-
-#: glade/sodipodi.glade.h:49
-#, fuzzy
-msgid "Set dimensions"
-msgstr "Διαστάσεις:"
-
-#: glade/sodipodi.glade.h:50
-#, fuzzy
-msgid "Show Toolbox"
-msgstr "Εμφάνιση _Εργαλειοθήκης"
-
-#
-#: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
-#, fuzzy
-msgid "Smooth line at selected nodes"
-msgstr "Εκκίνηση επιλεγμένου παροχέα"
-
-#. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/interface.c:340 src/sp-spiral.c:628
-#, fuzzy
-msgid "Spiral"
-msgstr "Ειδικό"
-
-#. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/interface.c:339 src/sp-star.c:474
-msgid "Star"
-msgstr "Αστερίσκος"
-
-#: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
-msgid "Symmetric "
-msgstr ""
-
-#
-#: glade/sodipodi.glade.h:56 src/dialogs/object-properties.c:197
-#: src/interface.c:343
-msgid "Text"
-msgstr "Κείμενο"
-
-#
-#: glade/sodipodi.glade.h:57
-#, fuzzy
-msgid "Toggle Borders"
-msgstr "Πλαίσιο Πίνακα"
-
-#: glade/sodipodi.glade.h:58
-#, fuzzy
-msgid "Uncompressed file size:"
-msgstr "Συμπίεση αρχείων:"
-
-#: glade/sodipodi.glade.h:59
-#, fuzzy
-msgid "Where to export"
-msgstr "Συγχώνευση στο πιλότο"
-
-#: glade/sodipodi.glade.h:60
-msgid "Width"
-msgstr "Πλάτος"
-
-#: glade/sodipodi.glade.h:61
-#, fuzzy
-msgid "X0"
-msgstr "X509"
-
-#: glade/sodipodi.glade.h:62
-msgid "X1"
-msgstr ""
-
-#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:19
-#, fuzzy
-msgid "XML Tree"
-msgstr "Δένδρο"
-
-#: glade/sodipodi.glade.h:64
-#, fuzzy
-msgid "Y0"
-msgstr "0"
-
-#: glade/sodipodi.glade.h:65
-msgid "Y1"
-msgstr ""
-
-#. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
-#: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
-msgid "Zoom"
-msgstr "Εστίαση"
-
-#: glade/sodipodi.glade.h:67
-#, fuzzy
-msgid "_Align"
-msgstr "Στοίχιση"
-
-#: glade/sodipodi.glade.h:68
-#, fuzzy
-msgid "_Break Apart"
-msgstr "πραγματική διαδρομή"
-
-#: glade/sodipodi.glade.h:69
-#, fuzzy
-msgid "_Combine"
-msgstr "_Μεταγλώττιση"
-
-#: glade/sodipodi.glade.h:70
-#, fuzzy
-msgid "_Drawing"
-msgstr "Σχεδίαση"
-
-#: glade/sodipodi.glade.h:71
-msgid "_Group"
-msgstr "_Ομαδοποίηση"
-
-#: glade/sodipodi.glade.h:72
-#, fuzzy
-msgid "_Interactive"
-msgstr "Δ_ιεπιφάνεια"
-
-#
-#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:75
-msgid "_New"
-msgstr "_Νέο"
-
-#: glade/sodipodi.glade.h:74
-msgid "_Page"
-msgstr "_Σελίδα"
-
-#
-#: glade/sodipodi.glade.h:75
-msgid "_Selection"
-msgstr "_Επιλογή"
-
-#: glade/sodipodi.glade.h:76
-msgid "_Ungroup"
-msgstr "_Απομαδοποίηση"
-
-#: glade/sodipodi.glade.h:77 src/dialogs/export.c:207 src/dialogs/export.c:216
-msgid "dpi"
-msgstr ""
-
-#: glade/toolbox.glade.h:1
-#, fuzzy
-msgid "Align dialog"
-msgstr "Κατακόρυ_φη Στοίχιση"
-
-#: glade/toolbox.glade.h:3
-#, fuzzy
-msgid "Break apart selected paths"
-msgstr "Επανεκκίνηση επιλεγμένων αρχείων"
-
-#: glade/toolbox.glade.h:5
-#, fuzzy
-msgid "Combine selected paths"
-msgstr "Αντιγραφή επιλεγμένης εργασίας"
-
-#
-#: glade/toolbox.glade.h:6
-#, fuzzy
-msgid "Convert selected objects to curves"
-msgstr "Διαγραφή επιλεγμένου αντικειμένου"
-
-#
-#: glade/toolbox.glade.h:9
-msgid "Copy selection to clipboard"
-msgstr "Αντιγραφή επιλογής στο τεμάχιο"
-
-#
-#: glade/toolbox.glade.h:11
-#, fuzzy
-msgid "Cut selection"
-msgstr "Αποκοπή της επιλογής"
-
-#: glade/toolbox.glade.h:13
-#, fuzzy
-msgid "Delete selection"
-msgstr "Διαγραφή επιλογής"
-
-#: glade/toolbox.glade.h:14
-#, fuzzy
-msgid "Draw arc"
-msgstr "Ημέρα έναρξης:"
-
-#: glade/toolbox.glade.h:15
-#, fuzzy
-msgid "Draw dynahand line"
-msgstr "Λαβή συρταριού"
-
-#: glade/toolbox.glade.h:16
-#, fuzzy
-msgid "Draw freehand line"
-msgstr "Λαβή συρταριού"
-
-#
-#: glade/toolbox.glade.h:17
-#, fuzzy
-msgid "Draw rectangle"
-msgstr "Δημιουργία ορθογωνίου"
-
-#: glade/toolbox.glade.h:18
-msgid "Draw spiral"
-msgstr ""
-
-#: glade/toolbox.glade.h:19
-#, fuzzy
-msgid "Draw star"
-msgstr "Ημέρα έναρξης:"
-
-#: glade/toolbox.glade.h:20
-#, fuzzy
-msgid "Draw text"
-msgstr "Αλλα_γή γραμμής"
-
-#
-#: glade/toolbox.glade.h:21
-#, fuzzy
-msgid "Drawing context"
-msgstr "Εκτύπωση περιεχομένων πλέγματος"
-
-#
-#: glade/toolbox.glade.h:22
-#, fuzzy
-msgid "Duplicate selection"
-msgstr "Καθαρισμός της επιλογής"
-
-#
-#. Edit submenu
-#: glade/toolbox.glade.h:23 src/interface.c:425 src/toolbox.c:349
-#: src/widgets/gradient-selector.c:136
-msgid "Edit"
-msgstr "Επεξεργασία"
-
-#: glade/toolbox.glade.h:24
-#, fuzzy
-msgid "Edit fill style of selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: glade/toolbox.glade.h:25
-#, fuzzy
-msgid "Edit font style of selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: glade/toolbox.glade.h:26
-#, fuzzy
-msgid "Edit layout of selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: glade/toolbox.glade.h:27
-#, fuzzy
-msgid "Edit nodes"
-msgstr "Επεξεργασία Φακέλων"
-
-#: glade/toolbox.glade.h:28
-#, fuzzy
-msgid "Edit stroke style of selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#
-#. Generic menu
-#. File submenu
-#: glade/toolbox.glade.h:30 src/interface.c:419 src/toolbox.c:315
-msgid "File"
-msgstr "Αρχείο"
-
-#: glade/toolbox.glade.h:31
-#, fuzzy
-msgid "Flip selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#
-#: glade/toolbox.glade.h:32 src/toolbox.c:426
-#, fuzzy
-msgid "Group selected objects"
-msgstr "Διαγραφή επιλεγμένου αντικειμένου"
-
-#
-#: glade/toolbox.glade.h:33
-#, fuzzy
-msgid "Import "
-msgstr "Εισαγωγή"
-
-#: glade/toolbox.glade.h:36
-#, fuzzy
-msgid "Lower selection one layer"
-msgstr "Δεν έγινε επιλογή"
-
-#
-#: glade/toolbox.glade.h:37
-#, fuzzy
-msgid "New drawing"
-msgstr "Νέο επίθημα:"
-
-#: glade/toolbox.glade.h:38
-msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr ""
-
-#: glade/toolbox.glade.h:40
-#, fuzzy
-msgid "Nope !"
-msgstr "Σημειώματα GNOME!"
-
-#
-#: glade/toolbox.glade.h:41 src/toolbox.c:385
-msgid "Object"
-msgstr "Αντικείμενο"
-
-#: glade/toolbox.glade.h:42
-#, fuzzy
-msgid "Open new drawing"
-msgstr "Άνοιγμα νέου παραθύρου"
-
-#
-#: glade/toolbox.glade.h:43
-msgid "Paste from clipboard"
-msgstr "Επικόλληση από το τεμάχιο"
-
-#: glade/toolbox.glade.h:44
-#, fuzzy
-msgid "Preview print drawing"
-msgstr "Προεπισκόπηση δεδομένων προς εκτύπωση"
-
-#
-#: glade/toolbox.glade.h:45
-#, fuzzy
-msgid "Print drawing"
-msgstr "Σε εκτύπωση"
-
-#: glade/toolbox.glade.h:46
-msgid "Quit or not quit ?"
-msgstr ""
-
-#: glade/toolbox.glade.h:47
-#, fuzzy
-msgid "Raise selection to top"
-msgstr "Αποθήκευση επιλογής"
-
-#: glade/toolbox.glade.h:48
-msgid "Really wanna quit sodipodi ?"
-msgstr ""
-
-#
-#. File:Print Preview
-#: glade/toolbox.glade.h:49 src/interface.c:396
-msgid "Redo"
-msgstr "Επανεκτέλεση"
-
-#: glade/toolbox.glade.h:50
-#, fuzzy
-msgid "Remove transformation"
-msgstr "Μετασχηματισμός"
-
-#: glade/toolbox.glade.h:51
-#, fuzzy
-msgid "Rise selection one layer"
-msgstr "Μόνον επιλογή"
-
-#
-#: glade/toolbox.glade.h:52
-#, fuzzy
-msgid "Rotate selected objects 90deg clockwise"
-msgstr "Διαγραφή επιλεγμένου αντικειμένου"
-
-#: glade/toolbox.glade.h:53
-#, fuzzy
-msgid "Save drawing "
-msgstr "Αποθήκευση τροποποιήσεων"
-
-#: glade/toolbox.glade.h:54
-#, fuzzy
-msgid "Save drawing under new filename"
-msgstr "Αποθήκευση ως γνήσιο όνομα αρχείου"
-
-#
-#: glade/toolbox.glade.h:55
-#, fuzzy
-msgid "Select and transform"
-msgstr "Επιλέξτε ενέργεια"
-
-#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1 src/toolbox.c:145
-#: src/toolbox.c:157
-#, fuzzy
-msgid "Sodipodi"
-msgstr "Συμπαγές"
-
-#: glade/toolbox.glade.h:60
-#, fuzzy
-msgid "Transformation dialog"
-msgstr "Μετασχηματισμός"
-
-#
-#: glade/toolbox.glade.h:61
-#, fuzzy
-msgid "Undo "
-msgstr "Ακύρωση"
-
-#: glade/toolbox.glade.h:62
-#, fuzzy
-msgid "Ungroup selected objects"
-msgstr "Διαγραφή επιλεγμένων αντικειμένων"
-
-#: glade/toolbox.glade.h:63
-#, fuzzy
-msgid "Unsymmetric"
-msgstr "Χρήση Μετρικού Συστήματος"
-
-#: glade/toolbox.glade.h:64
-#, fuzzy
-msgid "Yep !"
-msgstr " Ναι "
-
-#: glade/toolbox.glade.h:65
-msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr ""
-
-#: glade/toolbox.glade.h:67
-msgid "Zoom in"
-msgstr "Μεγέθυνση"
-
-#: glade/toolbox.glade.h:68
-msgid "Zoom out"
-msgstr "Σμίκρυνση"
-
-#
-#: glade/toolbox.glade.h:69
-#, fuzzy
-msgid "Zoom to 1:1"
-msgstr "Μεγέθυνση _1:1"
-
-#: glade/toolbox.glade.h:70
-#, fuzzy
-msgid "Zoom to 1:2"
-msgstr "Κλίμακα 125%"
-
-#: glade/toolbox.glade.h:71
-#, fuzzy
-msgid "Zoom to 2:1"
-msgstr "Κλίμακα 25%"
-
-#: glade/toolbox.glade.h:72
-#, fuzzy
-msgid "Zoom to drawing"
-msgstr "Αλλαγή κλίμακας για _ταίριασμα"
-
-#: glade/toolbox.glade.h:73
-#, fuzzy
-msgid "Zoom to page"
-msgstr "Αλλαγή κλίμακας ώστε να ταιριάξει η σελίδα"
-
-#: glade/toolbox.glade.h:74
-#, fuzzy
-msgid "Zoom to selection"
-msgstr "Αντιγραφή ώρας στο επιλεγμένο"
-
-#
-#: glade/toolbox.glade.h:76
-msgid "_Open"
-msgstr "_Άνοιγμα"
-
-#: glade/toolbox.glade.h:77
-msgid "_Quit"
-msgstr "_Τέλος"
-
-#
-#: glade/toolbox.glade.h:78
-#, fuzzy
-msgid "lower selection to bottom"
-msgstr "Αντιγραφή επιλογής στο τεμάχιο"
-
-#: glade/transformation.glade.h:2 src/helper/units.c:47
-#, no-c-format
-msgid "%"
-msgstr "%"
-
-#: glade/transformation.glade.h:4
-#, fuzzy
-msgid "Align to bottom left"
-msgstr "άδεια θέση στον πάτο"
-
-#: glade/transformation.glade.h:5
-#, fuzzy
-msgid "Align to bottom middle"
-msgstr "Χρώμα δεξιά ή κάτω"
-
-#: glade/transformation.glade.h:6
-#, fuzzy
-msgid "Align to bottom right"
-msgstr "Χρώμα δεξιά ή κάτω"
-
-#: glade/transformation.glade.h:7
-#, fuzzy
-msgid "Align to center"
-msgstr "Στοίχιση"
-
-#: glade/transformation.glade.h:8
-#, fuzzy
-msgid "Align to left middle"
-msgstr "Εκτύπωση σε αρχείο"
-
-#: glade/transformation.glade.h:9
-msgid "Align to right middle"
-msgstr ""
-
-#: glade/transformation.glade.h:10
-#, fuzzy
-msgid "Align to top left"
-msgstr "Δεξιά προς αριστερά"
-
-#: glade/transformation.glade.h:11
-#, fuzzy
-msgid "Align to top middle"
-msgstr "Εκτύπωση σε αρχείο"
-
-#: glade/transformation.glade.h:12
-#, fuzzy
-msgid "Align to top right"
-msgstr "Κύλιση από αριστερά προς δεξιά"
-
-#: glade/transformation.glade.h:13
-msgid "Apply transformation to copy Ctl+m"
-msgstr ""
-
-#: glade/transformation.glade.h:14
-msgid "Center"
-msgstr "Κέντρο"
-
-#: glade/transformation.glade.h:15 src/helper/units.c:49
-#, fuzzy
-msgid "Centimeter"
-msgstr "εκατοστά"
-
-#: glade/transformation.glade.h:16
-#, fuzzy
-msgid "Choose metric for center"
-msgstr "Επιλέξτε γραμματοσειρά"
-
-#: glade/transformation.glade.h:17
-#, fuzzy
-msgid "Close dialog - Ctl+c"
-msgstr "Κλείσιμο διαλόγου"
-
-#: glade/transformation.glade.h:18
-#, fuzzy
-msgid "Degree"
-msgstr "πράσινο"
-
-#: glade/transformation.glade.h:19
-msgid "Expand dialog - Ctl+e"
-msgstr ""
-
-#: glade/transformation.glade.h:20
-msgid "Height: "
-msgstr "Ύψος: "
-
-#: glade/transformation.glade.h:21
-#, fuzzy
-msgid "Horizontal center value"
-msgstr "Οριζόντιες Ρίγες"
-
-#: glade/transformation.glade.h:22 src/helper/units.c:51
-#, fuzzy
-msgid "Inch"
-msgstr "ίντσα"
-
-#: glade/transformation.glade.h:23
-msgid "Keep height of selection during transformation"
-msgstr ""
-
-#: glade/transformation.glade.h:24
-msgid "Keep width of selection during transformation"
-msgstr ""
-
-#: glade/transformation.glade.h:25 src/helper/units.c:48
-#, fuzzy
-msgid "Millimeter"
-msgstr "χιλιοστά"
-
-#: glade/transformation.glade.h:26
-msgid "Move"
-msgstr "Μετακίνηση"
-
-#: glade/transformation.glade.h:27
-#, fuzzy
-msgid "Orig. Width: "
-msgstr "Πλάτος: "
-
-#: glade/transformation.glade.h:28
-#, fuzzy
-msgid "Orig. X: "
-msgstr ""
-"\n"
-"Οργ: "
-
-#. Volatiles do not have default, so there are none here
-#. You can add new elements from this point forward
-#: glade/transformation.glade.h:29 src/helper/units.c:47
-msgid "Percent"
-msgstr "Ποσοστό"
-
-#
-#: glade/transformation.glade.h:30 src/helper/units.c:42
-msgid "Points"
-msgstr "Στιγμές"
-
-#: glade/transformation.glade.h:31
-msgid "Reset dialog to default - Ctl+r"
-msgstr ""
-
-#: glade/transformation.glade.h:32
-msgid "Rotate"
-msgstr "Περιστροφή"
-
-#: glade/transformation.glade.h:34
-msgid "Set angle to 0 degrees"
-msgstr ""
-
-#: glade/transformation.glade.h:35
-msgid "Set angle to 180 degrees"
-msgstr ""
-
-#: glade/transformation.glade.h:36
-msgid "Set angle to 270 degrees"
-msgstr ""
-
-#: glade/transformation.glade.h:37
-msgid "Set angle to 90 degrees"
-msgstr ""
-
-#: glade/transformation.glade.h:38
-#, fuzzy
-msgid "Skew"
-msgstr "Καπνός"
-
-#: glade/transformation.glade.h:39
-#, fuzzy
-msgid "Start transformation - Ctl+a"
-msgstr "Μετασχηματισμός"
-
-#: glade/transformation.glade.h:40
-#, fuzzy
-msgid "Toggle center given in selection/desktop coordiantes"
-msgstr "Σημείο βάσει των συντεταγμένων του"
-
-#: glade/transformation.glade.h:41
-#, fuzzy
-msgid "Transform selection"
-msgstr "Μετασχηματισμός"
-
-#: glade/transformation.glade.h:42
-#, fuzzy
-msgid "Use alignment during transformation"
-msgstr "Πληροφορίες Συνάντησης"
-
-#: glade/transformation.glade.h:43
-msgid "Use center as transformation fixpoint"
-msgstr ""
-
-#: glade/transformation.glade.h:44
-#, fuzzy
-msgid "Vertical center value"
-msgstr "Κατακόρυφες Ρίγες"
-
-#: glade/transformation.glade.h:45
-#, fuzzy
-msgid "Y: "
-msgstr "Υ:"
-
-#: glade/transformation.glade.h:46
-#, fuzzy
-msgid "absolute"
-msgstr "Εκτός χρήσης"
-
-#: glade/transformation.glade.h:47
-#, fuzzy
-msgid "angle"
-msgstr "Διάστημα"
-
-#: glade/transformation.glade.h:49
-#, fuzzy
-msgid "deg"
-msgstr "dec"
-
-#
-#: glade/transformation.glade.h:50
-#, fuzzy
-msgid "desktop"
-msgstr "Επιφάνεια εργασίας"
-
-#: glade/transformation.glade.h:51
-#, fuzzy
-msgid "flip horizontal"
-msgstr "Οριζόντια αντιστροφή"
-
-#: glade/transformation.glade.h:52
-#, fuzzy
-msgid "flip vertical"
-msgstr "Κατακόρυφη αντιστροφή"
-
-#: glade/transformation.glade.h:53
-#, fuzzy
-msgid "horizontal move"
-msgstr "οριζόντιο"
-
-#: glade/transformation.glade.h:54
-#, fuzzy
-msgid "horizontal scale value"
-msgstr "οριζόντιο"
-
-#: glade/transformation.glade.h:56
-#, fuzzy
-msgid "keep aspect"
-msgstr "Διατήρηση αναλογιών"
-
-#: glade/transformation.glade.h:57
-msgid "lock/unlock horizontal and vertical scale"
-msgstr ""
-
-#
-#: glade/transformation.glade.h:60
-#, fuzzy
-msgid "select direction"
-msgstr "Επιλογή λεξικού"
-
-#: glade/transformation.glade.h:61
-msgid "select direction (horizontal/vertical skew)"
-msgstr ""
-
-#: glade/transformation.glade.h:62
-#, fuzzy
-msgid "select metric for scale"
-msgstr "Επιλογή τοπικών ρυθμίσεων"
-
-#: glade/transformation.glade.h:63
-#, fuzzy
-msgid "select metric for values"
-msgstr "Επιλογή εικονιδίου για προσαρτημένο"
-
-#: glade/transformation.glade.h:64
-#, fuzzy
-msgid "skew"
-msgstr "υποδοχή"
-
-#: glade/transformation.glade.h:65
-msgid "toggle absolute/relative move"
-msgstr ""
-
-#: glade/transformation.glade.h:66
-msgid "toggle absolute/relative scale"
-msgstr ""
-
-#: glade/transformation.glade.h:67
-#, fuzzy
-msgid "vertical move"
-msgstr "κάθετο"
-
-#: glade/transformation.glade.h:68
-#, fuzzy
-msgid "vertical scale value"
-msgstr "Μερικό μικρό χαλάζι"
-
-#
-#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:141
-msgid "Add"
-msgstr "Προσθήκη"
-
-#
-#: glade/xml-tree.glade.h:2
-#, fuzzy
-msgid "Add attribute"
-msgstr "Ιδιότητα"
-
-#: glade/xml-tree.glade.h:3
-msgid "Attribute:"
-msgstr "Ιδιότητα:"
-
-#: glade/xml-tree.glade.h:4
-msgid "Attributes"
-msgstr "Ιδιότητες"
-
-#
-#: glade/xml-tree.glade.h:5
-msgid "Change"
-msgstr "Αλλαγή"
-
-#
-#: glade/xml-tree.glade.h:6
-#, fuzzy
-msgid "Change Attribute"
-msgstr "Ιδιότητα"
-
-#: glade/xml-tree.glade.h:7
-#, fuzzy
-msgid "Change Content"
-msgstr "Σχεδίαση"
-
-#: glade/xml-tree.glade.h:8
-msgid "Content"
-msgstr "Περιεχόμενο"
-
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
-#, fuzzy
-msgid "Delete attribute"
-msgstr "εμφάνιση ιδιοτήτων"
-
-#: glade/xml-tree.glade.h:11
-#, fuzzy
-msgid "Do you want to delete attribute?"
-msgstr "Εάν θέλετε αποσφαλμάτωση των ιδιοτήτων εγγραφών"
-
-#: glade/xml-tree.glade.h:12
-msgid "Element:"
-msgstr ""
-
-#: glade/xml-tree.glade.h:13
-msgid "Enter element name:"
-msgstr ""
-
-#: glade/xml-tree.glade.h:14
-#, fuzzy
-msgid "Hierarchy"
-msgstr "ιεραρχία"
-
-#: glade/xml-tree.glade.h:15
-msgid "Key"
-msgstr "Πλήκτρο"
-
-#: glade/xml-tree.glade.h:16
-msgid "New Element"
-msgstr ""
-
-#
-#: glade/xml-tree.glade.h:17
-msgid "Value"
-msgstr "Τιμή"
-
-#
-#: glade/xml-tree.glade.h:18 src/widgets/sp-color-selector.c:628
-msgid "Value:"
-msgstr "Τιμή:"
-
-#
-#: glade/xml-tree.glade.h:20
-msgid "name"
-msgstr "όνομα"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr ""
-
 #: src/bonobo/svg-doc-factory.c:35
 #, fuzzy
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Δεν ήταν δυνατή η δημιουργία του εργοστασίου επεξεργασίας συστατικού"
 
-#. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
-#. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1049
+#: src/desktop.c:1063
 msgid "Welcome !"
 msgstr ""
 
-#: src/desktop.c:1121
+#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/toolbox.c:586
+msgid "Zoom"
+msgstr "Εστίαση"
+
+#: src/desktop.c:1137
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr ""
 
-#: src/desktop.c:1197
+#: src/desktop.c:1213
 #, fuzzy, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Το βιβλίο %s έχει μη αποθηκευμένες αλλαγές, αποθήκευση;"
 
-#: src/desktop.c:1198 src/interface.c:217
-#, fuzzy
-msgid "Save"
-msgstr "Σκίαση"
-
-#: src/desktop.c:1198
-msgid "Don't save"
-msgstr ""
-
 #
-#: src/dialogs/align.c:107 src/toolbox.c:392
+#: src/dialogs/align.c:107 src/toolbox.c:400
 #, fuzzy
 msgid "Align objects"
 msgstr "Αντικείμενο"
 
-#: src/dialogs/desktop-properties.c:201
+#
+#: src/dialogs/align.c:155
+#, fuzzy
+msgid "Last selected"
+msgstr "Επιλέχθησαν \"%s\""
+
+#
+#: src/dialogs/align.c:160
+#, fuzzy
+msgid "First selected"
+msgstr "Επιλέχθησαν \"%s\""
+
+#: src/dialogs/align.c:165
+#, fuzzy
+msgid "Biggest item"
+msgstr "Ρυθμός bit"
+
+#: src/dialogs/align.c:170
+#, fuzzy
+msgid "Smallest item"
+msgstr "Μικρή καταιγίδα με χαλάζι"
+
+#: src/dialogs/align.c:175 src/dialogs/desktop-properties.c:435
+#: src/dialogs/document-properties.c:162 src/dialogs/export.c:126
+#: src/interface.c:310
+msgid "Page"
+msgstr "Σελίδα"
+
+#: src/dialogs/align.c:180 src/dialogs/export.c:131 src/interface.c:309
+msgid "Drawing"
+msgstr "Σχεδίαση"
+
+#: src/dialogs/align.c:185 src/dialogs/export.c:136 src/interface.c:308
+#: src/interface.c:426 src/toolbox.c:430
+msgid "Selection"
+msgstr "Επιλογή"
+
+#: src/dialogs/desktop-properties.c:205
 #, fuzzy
 msgid "Desktop settings"
 msgstr "Ρυθμίσεις επιφάνειας εργασίας"
 
-#. Grid settings
-#. Notebook tab
-#: src/dialogs/desktop-properties.c:210
+#: src/dialogs/desktop-properties.c:214
 msgid "Grid"
 msgstr "Πλέγμα"
 
-#. Checkbuttons
-#: src/dialogs/desktop-properties.c:220
+#: src/dialogs/desktop-properties.c:224
 msgid "Show grid"
 msgstr "Εμφάνιση πλέγματος"
 
-#: src/dialogs/desktop-properties.c:227
+#: src/dialogs/desktop-properties.c:231
 #, fuzzy
 msgid "Snap to grid"
 msgstr "Τοπο_θέτηση Σε Πλέγμα"
 
 #
-#: src/dialogs/desktop-properties.c:234
+#: src/dialogs/desktop-properties.c:238
 #, fuzzy
 msgid "Grid units:"
 msgstr "Γραμματοσειρά Πλέγματος"
 
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:247
 #, fuzzy
 msgid "Origin X:"
 msgstr "Προέλευση:"
 
-#: src/dialogs/desktop-properties.c:257
+#: src/dialogs/desktop-properties.c:261
 #, fuzzy
 msgid "Origin Y:"
 msgstr "Προέλευση:"
 
 #
-#: src/dialogs/desktop-properties.c:271
+#: src/dialogs/desktop-properties.c:275
 #, fuzzy
 msgid "Spacing X:"
 msgstr "Διάστιχο:"
 
 #
-#: src/dialogs/desktop-properties.c:285
+#: src/dialogs/desktop-properties.c:289
 #, fuzzy
 msgid "Spacing Y:"
 msgstr "Διάστιχο:"
 
-#: src/dialogs/desktop-properties.c:299 src/dialogs/desktop-properties.c:360
+#: src/dialogs/desktop-properties.c:303 src/dialogs/desktop-properties.c:372
 #, fuzzy
 msgid "Snap units:"
 msgstr "Τοποθέτηση σε:"
 
-#: src/dialogs/desktop-properties.c:311 src/dialogs/desktop-properties.c:372
+#: src/dialogs/desktop-properties.c:315 src/dialogs/desktop-properties.c:384
 #, fuzzy
 msgid "Snap distance:"
 msgstr "Ίσες Αποστάσεις"
 
-#: src/dialogs/desktop-properties.c:324
+#: src/dialogs/desktop-properties.c:328
 #, fuzzy
 msgid "Grid color:"
 msgstr " χρώμα"
 
-#. Guidelines page
-#: src/dialogs/desktop-properties.c:336
+#: src/dialogs/desktop-properties.c:348
 #, fuzzy
 msgid "Guides"
 msgstr "Γουϊνέα"
 
 #
-#: src/dialogs/desktop-properties.c:345
+#: src/dialogs/desktop-properties.c:357
 #, fuzzy
 msgid "Show guides"
 msgstr "Εμφάνιση κόμβων-δ"
 
-#: src/dialogs/desktop-properties.c:353
+#: src/dialogs/desktop-properties.c:365
 #, fuzzy
 msgid "Snap to guides"
 msgstr "Τοπο_θέτηση Σε Πλέγμα"
 
-#: src/dialogs/desktop-properties.c:384
+#: src/dialogs/desktop-properties.c:396
 #, fuzzy
 msgid "Guides color:"
 msgstr "Χρώμα μη-ολοκληρωμένων εγγραφών:"
 
-#: src/dialogs/desktop-properties.c:395
+#: src/dialogs/desktop-properties.c:415
 #, fuzzy
 msgid "Highlight color:"
 msgstr "Χρώμα Μαρκαρίσματος"
 
-#: src/dialogs/desktop-properties.c:416
+#: src/dialogs/desktop-properties.c:444
 #, fuzzy
 msgid "Show border"
 msgstr "Εμφάνιση πλέγματος"
 
-#: src/dialogs/display-settings.c:85
+#: src/dialogs/display-settings.c:84
 #, fuzzy
 msgid "Display settings"
 msgstr "Εμφάνιση Σταθμών:"
 
-#. Rendering settings
-#. Notebook tab
-#: src/dialogs/display-settings.c:93
+#: src/dialogs/display-settings.c:92
 #, fuzzy
 msgid "Rendering"
 msgstr "3D Rendering"
 
-#: src/dialogs/display-settings.c:105
+#: src/dialogs/display-settings.c:104
 msgid "Oversample bitmaps:"
 msgstr ""
 
 #
-#: src/dialogs/display-settings.c:116
+#: src/dialogs/display-settings.c:115
 msgid "None"
 msgstr "Κανένα"
 
-#: src/dialogs/display-settings.c:120
+#: src/dialogs/display-settings.c:119
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:124
+#: src/dialogs/display-settings.c:123
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:128
+#: src/dialogs/display-settings.c:127
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:132
+#: src/dialogs/display-settings.c:131
 msgid "16x16"
 msgstr "16x16"
 
-#. Input settings
-#. Notebook tab
-#: src/dialogs/display-settings.c:143
+#: src/dialogs/display-settings.c:142
 msgid "Input"
 msgstr ""
 
-#: src/dialogs/display-settings.c:154
+#: src/dialogs/display-settings.c:153
 msgid "Default cursor tolerance:"
 msgstr ""
 
-#: src/dialogs/document-properties.c:135
+#: src/dialogs/document-properties.c:153
 #, fuzzy
 msgid "Document settings"
 msgstr "Δοκιμή ρυθμίσεων"
 
-#: src/dialogs/document-properties.c:156
+#: src/dialogs/document-properties.c:174
 #, fuzzy
 msgid "Paper size:"
 msgstr "Μέγ. _χαρτιού:"
 
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
-#: src/dialogs/document-properties.c:177
+#: src/dialogs/document-properties.c:196
 msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
-#. Custom paper frame
-#: src/dialogs/document-properties.c:185
+#: src/dialogs/document-properties.c:204
 #, fuzzy
 msgid "Custom paper"
 msgstr "Διαστάσεις"
 
-#: src/dialogs/document-properties.c:196 src/dialogs/export.c:146
-#: src/dialogs/object-properties.c:304
+#: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
+#: src/dialogs/object-properties.c:302
 #, fuzzy
 msgid "Units:"
 msgstr "&Μονάδες:"
 
-#: src/dialogs/export.c:108
+#: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
+#: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
+#: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:344
+#: src/dialogs/stroke-style.c:560 src/dialogs/tool-attributes.c:119
+#: src/dyna-draw-context.c:1072
+msgid "Width:"
+msgstr "Πλάτος:"
+
+#: src/dialogs/document-properties.c:239 src/dialogs/export.c:185
+#: src/dialogs/export.c:210 src/dialogs/object-attributes.c:68
+#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:359
+msgid "Height:"
+msgstr "Ύψος:"
+
+#: src/dialogs/export.c:106
 #, fuzzy
 msgid "Export bitmap"
 msgstr "Εξαγωγή Αρχείου"
 
-#. Export area frame
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:115
 #, fuzzy
 msgid "Export area"
 msgstr "Το %s εισήχθη"
 
-#: src/dialogs/export.c:154
+#: src/dialogs/export.c:152
 msgid "x0:"
 msgstr ""
 
 #
-#: src/dialogs/export.c:161
+#: src/dialogs/export.c:159
 #, fuzzy
 msgid "x1:"
 msgstr "1:1"
 
-#: src/dialogs/export.c:174
+#: src/dialogs/export.c:172
 msgid "y0:"
 msgstr ""
 
 #
-#: src/dialogs/export.c:181
+#: src/dialogs/export.c:179
 #, fuzzy
 msgid "y1:"
 msgstr "1:1"
 
-#. Bitmap size frame
-#: src/dialogs/export.c:193
+#: src/dialogs/export.c:191
 #, fuzzy
 msgid "Bitmap size"
 msgstr "Μέγεθος Εικόνας:"
 
-#. File entry
-#: src/dialogs/export.c:222
+#
+#: src/dialogs/export.c:200 src/dialogs/export.c:210
+#, fuzzy
+msgid "pixels"
+msgstr "Εικονοστοιχεία"
+
+#: src/dialogs/export.c:205 src/dialogs/export.c:214
+msgid "dpi"
+msgstr ""
+
+#: src/dialogs/export.c:221
 #, fuzzy
 msgid "Export png file"
 msgstr "Εξαγωγή Αρχείου"
 
-#: src/dialogs/fill-style.c:82
+#
+#: src/dialogs/export.c:235 src/interface.c:214
+msgid "Export"
+msgstr "Εξαγωγή"
+
+#: src/dialogs/fill-style.c:90
 #, fuzzy
 msgid "Fill style"
 msgstr "Όλες οι ρυθμίσεις"
 
-#: src/dialogs/fill-style.c:117
+#: src/dialogs/fill-style.c:125
 #, fuzzy
 msgid "Fill Rule"
 msgstr "Γέμισμα"
 
 #
-#: src/dialogs/fill-style.c:131
+#: src/dialogs/fill-style.c:139
 #, fuzzy
 msgid "nonzero"
 msgstr "κανένα"
 
-#: src/dialogs/fill-style.c:136
+#: src/dialogs/fill-style.c:144
 msgid "evenodd"
 msgstr ""
 
-#: src/dialogs/item-properties.c:111
+#: src/dialogs/item-properties.c:76
+msgid "Sensitive"
+msgstr "Ευαίσθητο"
+
+#: src/dialogs/item-properties.c:81
+msgid "Visible"
+msgstr "Ορατό"
+
+#
+#: src/dialogs/item-properties.c:85
+msgid "Active"
+msgstr "Ενεργό"
+
+#: src/dialogs/item-properties.c:89
+#, fuzzy
+msgid "Printable"
+msgstr "Εγγράψιμο"
+
+#
+#: src/dialogs/item-properties.c:98
+msgid "Opacity:"
+msgstr "Διαφάνεια:"
+
+#: src/dialogs/item-properties.c:110
 #, fuzzy
 msgid "Transformation matrix"
 msgstr "Μετασχηματισμός"
 
 #
-#: src/dialogs/item-properties.c:229
+#: src/dialogs/item-properties.c:228
 #, fuzzy
 msgid "Item is reference"
 msgstr "Προτιμίσεις Ναυτίλου"
 
-#: src/dialogs/item-properties.c:291
+#: src/dialogs/item-properties.c:234 src/dialogs/item-properties.c:288
+#, fuzzy
+msgid "The SVG ID of item"
+msgstr "Το Παιχνίδι της Ζωής"
+
+#: src/dialogs/item-properties.c:290
 #, fuzzy
 msgid "The ID is not valid"
 msgstr "Ένα iid με τιμή NULL δεν είναι έγκυρο"
 
 #
-#: src/dialogs/item-properties.c:293
+#: src/dialogs/item-properties.c:292
 #, fuzzy
 msgid "The ID is already defined"
 msgstr "To %s είναι ήδη εγκατεστημένο"
 
-#: src/dialogs/item-properties.c:296
+#: src/dialogs/item-properties.c:295
 #, fuzzy
 msgid "The ID is valid"
 msgstr "Άκυρη κίνηση."
 
+#: src/dialogs/item-properties.c:372
+#, fuzzy
+msgid "Item properties"
+msgstr "Ιδιότητες μενού"
+
 #
-#: src/dialogs/object-attributes.c:31
+#: src/dialogs/object-attributes.c:30
 #, fuzzy
 msgid "Href:"
 msgstr "Απόχρωση:"
 
-#: src/dialogs/object-attributes.c:32
+#: src/dialogs/object-attributes.c:31
 #, fuzzy
 msgid "Target:"
 msgstr "μώβ"
 
-#: src/dialogs/object-attributes.c:33
+#: src/dialogs/object-attributes.c:32
 msgid "Type:"
 msgstr ""
 
 #
-#: src/dialogs/object-attributes.c:34
+#: src/dialogs/object-attributes.c:33
 #, fuzzy
 msgid "Role:"
 msgstr "Κόκκινο:"
 
-#: src/dialogs/object-attributes.c:35
+#: src/dialogs/object-attributes.c:34
 msgid "Arcrole:"
 msgstr ""
 
 #
-#: src/dialogs/object-attributes.c:36
+#: src/dialogs/object-attributes.c:35
 #, fuzzy
 msgid "Title:"
 msgstr "Αρχείο"
 
-#: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
+#: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:109
 msgid "Show:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:38
+#: src/dialogs/object-attributes.c:37
 #, fuzzy
 msgid "Actuate:"
 msgstr "Ιδιότητα:"
 
-#: src/dialogs/object-attributes.c:43
+#: src/dialogs/object-attributes.c:42
 #, fuzzy
 msgid "Sides:"
 msgstr "Γουϊνέα"
 
-#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
+#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
 #, fuzzy
 msgid "Center X:"
 msgstr "Κέντρο"
 
-#: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
+#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
 #, fuzzy
 msgid "Center Y:"
 msgstr "Κέντρο"
 
 #
-#: src/dialogs/object-attributes.c:46
+#: src/dialogs/object-attributes.c:45
 #, fuzzy
 msgid "R1:"
 msgstr "1:1"
 
 #
-#: src/dialogs/object-attributes.c:47
+#: src/dialogs/object-attributes.c:46
 #, fuzzy
 msgid "R2:"
 msgstr "2:1"
 
-#: src/dialogs/object-attributes.c:48
+#: src/dialogs/object-attributes.c:47
 msgid "ARG1:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:49
+#: src/dialogs/object-attributes.c:48
 msgid "ARG2:"
 msgstr ""
 
-#. Expansion
-#: src/dialogs/object-attributes.c:56 src/spiral-context.c:369
+#: src/dialogs/object-attributes.c:55 src/spiral-context.c:368
 msgid "Expansion:"
 msgstr ""
 
-#. Revolution
-#: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
-#: src/spiral-context.c:357
+#: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:89
+#: src/spiral-context.c:356
 #, fuzzy
 msgid "Revolution:"
 msgstr "Επιλογή"
 
-#: src/dialogs/object-attributes.c:58
+#: src/dialogs/object-attributes.c:57
 msgid "Radius:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:59
+#: src/dialogs/object-attributes.c:58
 msgid "Argument:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:60
+#: src/dialogs/object-attributes.c:59
 msgid "T0:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:65
+#: src/dialogs/object-attributes.c:64
 msgid "URL:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:78
+#: src/dialogs/object-attributes.c:65 src/dialogs/object-attributes.c:73
+#: src/dialogs/object-properties.c:314
+msgid "X:"
+msgstr "Χ:"
+
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:329
+msgid "Y:"
+msgstr "Ψ:"
+
+#: src/dialogs/object-attributes.c:77
 #, fuzzy
 msgid "RX:"
 msgstr "Χ:"
 
-#: src/dialogs/object-attributes.c:79
+#: src/dialogs/object-attributes.c:78
 #, fuzzy
 msgid "RY:"
 msgstr "Ψ:"
 
-#: src/dialogs/object-attributes.c:109
+#: src/dialogs/object-attributes.c:108
 #, fuzzy, c-format
 msgid "%s attributes"
 msgstr "Ιδιότητες"
 
 #
-#: src/dialogs/object-properties.c:91
+#: src/dialogs/object-properties.c:89
 #, fuzzy
 msgid "Object style"
 msgstr "Αντικείμενο"
 
-#: src/dialogs/object-properties.c:120
+#: src/dialogs/object-properties.c:104
+msgid "Fill"
+msgstr "Γέμισμα"
+
+#: src/dialogs/object-properties.c:118
 #, fuzzy
 msgid "Stroke paint"
 msgstr "Καπνός με άνεμο"
 
-#: src/dialogs/object-properties.c:134
+#: src/dialogs/object-properties.c:132
 #, fuzzy
 msgid "Stroke style"
 msgstr "Καπνός με άνεμο"
 
-#: src/dialogs/object-properties.c:154
+#: src/dialogs/object-properties.c:152
 msgid "Apply to:"
 msgstr ""
 
-#: src/dialogs/object-properties.c:165
+#: src/dialogs/object-properties.c:163
 #, fuzzy
 msgid "Selected objects"
 msgstr "Διαγραφή επιλεγμένων αντικειμένων"
 
-#: src/dialogs/object-properties.c:169
+#: src/dialogs/object-properties.c:167
 msgid "All shape tools"
 msgstr ""
 
-#: src/dialogs/object-properties.c:173
+#: src/dialogs/object-properties.c:171
 #, fuzzy
 msgid "Rectangle tool"
 msgstr "Ορθογώνιο"
 
-#: src/dialogs/object-properties.c:177
+#: src/dialogs/object-properties.c:175
 msgid "Arc tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:181
+#: src/dialogs/object-properties.c:179
 #, fuzzy
 msgid "Star tool"
 msgstr " χρώμα"
 
-#: src/dialogs/object-properties.c:185
+#: src/dialogs/object-properties.c:183
 #, fuzzy
 msgid "Spiral tool"
 msgstr "Ειδικό"
 
-#: src/dialogs/object-properties.c:189
+#: src/dialogs/object-properties.c:187
 #, fuzzy
 msgid "Freehand and pen"
 msgstr "Γροιλανδία"
 
-#: src/dialogs/object-properties.c:193
+#: src/dialogs/object-properties.c:191
 msgid "Calligraphic line"
 msgstr ""
 
-#: src/dialogs/object-properties.c:269
+#
+#: src/dialogs/object-properties.c:195 src/interface.c:336
+msgid "Text"
+msgstr "Κείμενο"
+
+#: src/dialogs/object-properties.c:267
 msgid "Object position and size"
 msgstr ""
 
-#: src/dialogs/object-properties.c:291
+#: src/dialogs/object-properties.c:289
 #, fuzzy
 msgid "Position and size"
 msgstr "Θέση"
 
-#: src/dialogs/stroke-style.c:544 src/toolbox.c:388
+#: src/dialogs/stroke-style.c:547 src/toolbox.c:396
 #, fuzzy
 msgid "Stroke settings"
 msgstr "Ρυθμίσεις επιφάνειας εργασίας"
 
-#. Cap type
-#: src/dialogs/stroke-style.c:623
+#
+#: src/dialogs/stroke-style.c:583
+#, fuzzy
+msgid "Join:"
+msgstr "Όνομα χρήστη:"
+
+#: src/dialogs/stroke-style.c:626
 #, fuzzy
 msgid "Cap:"
 msgstr "Κυανό"
 
-#. Dash
-#: src/dialogs/stroke-style.c:666
+#: src/dialogs/stroke-style.c:669
 #, fuzzy
 msgid "Pattern:"
 msgstr "Σχέδιο"
@@ -2050,6 +616,10 @@ msgstr "Σχέδιο"
 #, fuzzy
 msgid "Text properties"
 msgstr " Ιδιότητες"
+
+#: src/dialogs/text-edit.c:124
+msgid "Layout"
+msgstr "Διάταξη"
 
 #: src/dialogs/text-edit.c:134
 #, fuzzy
@@ -2062,84 +632,81 @@ msgstr "Στοίχιση"
 msgid "Orientation:"
 msgstr "Κορεσμός:"
 
-#: src/dialogs/text-edit.c:194
+#: src/dialogs/text-edit.c:196
 msgid "Text and font"
 msgstr ""
 
-#: src/dialogs/text-edit.c:208
+#: src/dialogs/text-edit.c:210
 msgid "Set as default"
 msgstr ""
 
-#: src/dialogs/tool-attributes.c:45
+#: src/dialogs/tool-attributes.c:44
 #, fuzzy
 msgid "Tool attributes"
 msgstr "Ιδιότητες"
 
-#: src/dialogs/tool-attributes.c:90
+#: src/dialogs/tool-attributes.c:89
 msgid "Expansion"
 msgstr ""
 
-#: src/dialogs/tool-attributes.c:90
+#: src/dialogs/tool-attributes.c:89
 msgid "Inner radius"
 msgstr ""
 
-#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
-#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
+#: src/dialogs/tool-attributes.c:93 src/dialogs/tool-attributes.c:103
+#: src/dialogs/tool-attributes.c:113 src/dialogs/tool-attributes.c:123
 msgid "Missing tool preferences"
 msgstr ""
 
-#. Magnitude
-#: src/dialogs/tool-attributes.c:100 src/star-context.c:362
+#: src/dialogs/tool-attributes.c:99 src/star-context.c:361
 msgid "Corners:"
 msgstr ""
 
-#: src/dialogs/tool-attributes.c:100
+#: src/dialogs/tool-attributes.c:99
 #, fuzzy
 msgid "Proportion"
 msgstr "Θέση"
 
-#: src/dialogs/tool-attributes.c:110
+#: src/dialogs/tool-attributes.c:109
 #, fuzzy
 msgid "Transform:"
 msgstr "Μετασχηματισμός"
 
-#. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
+#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1036
 msgid "Mass:"
 msgstr ""
 
-#. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
+#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1048
 #, fuzzy
 msgid "Drag:"
 msgstr "Συρτάρι"
 
-#: src/dialogs/tool-attributes.c:120
+#: src/dialogs/tool-attributes.c:119
 #, fuzzy
 msgid "Angle"
 msgstr "Διάστημα"
 
 #
-#: src/dialogs/tool-attributes.c:127
+#: src/dialogs/tool-attributes.c:126
 #, fuzzy
 msgid "Tool has no attributes"
 msgstr "Ιδιότητα"
 
-#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:92
+#: src/dialogs/tool-attributes.c:129 src/dialogs/tool-options.c:91
 msgid "No active tool"
 msgstr ""
 
-#: src/dialogs/tool-options.c:48
+#: src/dialogs/tool-options.c:47
 #, fuzzy
 msgid "Tool options"
 msgstr "Επιλογές Oaf"
 
-#: src/dialogs/tool-options.c:89
+#: src/dialogs/tool-options.c:88
 #, fuzzy
 msgid "Tool has no options"
 msgstr "Επιλογές Oaf"
 
-#: src/dialogs/xml-tree.c:157
+#: src/dialogs/xml-tree.c:155
 msgid "Drag to reorder nodes"
 msgstr ""
 
@@ -2148,72 +715,77 @@ msgstr ""
 msgid "New element node"
 msgstr "Έγγραφο"
 
-#: src/dialogs/xml-tree.c:170
+#: src/dialogs/xml-tree.c:183
 msgid "New text node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:175
+#: src/dialogs/xml-tree.c:200
 #, fuzzy
 msgid "Duplicate node"
 msgstr "Δημιουργία αντιγράφου"
 
 #
-#: src/dialogs/xml-tree.c:182
+#: src/dialogs/xml-tree.c:216
 #, fuzzy
 msgid "Delete node"
 msgstr "Διαγραφή"
 
-#: src/dialogs/xml-tree.c:189
+#: src/dialogs/xml-tree.c:229
 #, fuzzy
 msgid "Unindent node"
 msgstr "Επεξεργασία Φακέλων"
 
-#: src/dialogs/xml-tree.c:194
+#: src/dialogs/xml-tree.c:240
 #, fuzzy
 msgid "Indent node"
 msgstr "Επεξεργασία Φακέλων"
 
-#: src/dialogs/xml-tree.c:199
+#: src/dialogs/xml-tree.c:250
 #, fuzzy
 msgid "Raise node"
 msgstr "Αρχικοποίηση"
 
-#: src/dialogs/xml-tree.c:204
+#: src/dialogs/xml-tree.c:261
 msgid "Lower node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:259
+#: src/dialogs/xml-tree.c:297
+#, fuzzy
+msgid "Delete attribute"
+msgstr "εμφάνιση ιδιοτήτων"
+
+#: src/dialogs/xml-tree.c:327
 #, fuzzy
 msgid "Attribute name"
 msgstr "Ιδιότητα:"
 
-#: src/dialogs/xml-tree.c:266
+#: src/dialogs/xml-tree.c:334
 #, fuzzy
 msgid "Set attribute"
 msgstr "εμφάνιση ιδιοτήτων"
 
-#: src/dialogs/xml-tree.c:279
+#: src/dialogs/xml-tree.c:347
 #, fuzzy
 msgid "Attribute value"
 msgstr "Ιδιότητες"
 
-#: src/dialogs/xml-tree.c:734
+#: src/dialogs/xml-tree.c:807
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:757
+#: src/dialogs/xml-tree.c:830
 msgid "New element node..."
 msgstr ""
 
 #
-#: src/dialogs/xml-tree.c:777
+#: src/dialogs/xml-tree.c:850
 #, fuzzy
 msgid "Cancel"
 msgstr "Αλλαγή"
 
 #
-#: src/dialogs/xml-tree.c:781
+#: src/dialogs/xml-tree.c:854
 #, fuzzy
 msgid "Create"
 msgstr "Δημιουργία γραμμής"
@@ -2233,474 +805,617 @@ msgstr ""
 msgid "Unnamed document %d"
 msgstr ""
 
-#. Angle
-#: src/dyna-draw-context.c:1061
+#: src/dyna-draw-context.c:1060
 #, fuzzy
 msgid "Angle:"
 msgstr "Διάστημα"
 
-#. Reset
-#: src/dyna-draw-context.c:1085 src/rect-context.c:442
-#: src/spiral-context.c:393 src/star-context.c:393
+#: src/dyna-draw-context.c:1084 src/rect-context.c:437
+#: src/spiral-context.c:392 src/star-context.c:392
 msgid "Defaults"
 msgstr ""
 
-#: src/print.c:291
+#: src/print.c:311
 #, fuzzy, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "GHex (%s): Προεπισκόπηση Εκτύπωσης"
 
-#. rx_ratio
-#: src/rect-context.c:418
+#: src/rect-context.c:413
 msgid "Roundness ratio for x:"
 msgstr ""
 
-#. ry_ratio
-#: src/rect-context.c:430
+#: src/rect-context.c:425
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:638
+#: src/select-context.c:634
 #, fuzzy
 msgid "Visual transformation"
 msgstr "Μετασχηματισμός"
 
-#: src/select-context.c:646
+#: src/select-context.c:642
 #, fuzzy
 msgid "Show content"
 msgstr "Περιεχόμενο"
 
 #
-#: src/select-context.c:653
+#: src/select-context.c:649
 #, fuzzy
 msgid "Show outline"
 msgstr "Εμφάνιση κόμβων-δ"
 
-#: src/select-context.c:660
+#: src/select-context.c:656
 #, fuzzy
 msgid "Object transformation"
 msgstr "Μετασχηματισμός"
 
-#: src/select-context.c:668
+#: src/select-context.c:664
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:675
+#: src/select-context.c:671
 msgid "Preserve"
 msgstr ""
 
-#. T0
-#: src/spiral-context.c:381
+#: src/spiral-context.c:380
 msgid "Inner radius:"
 msgstr ""
 
-#. Proportion
-#: src/star-context.c:374
+#: src/star-context.c:373
 #, fuzzy
 msgid "Proportion:"
 msgstr "Θέση"
 
-#. Making sides flat
-#: src/star-context.c:387
+#: src/star-context.c:386
 #, fuzzy
 msgid "Make sides flat"
 msgstr "Πεζά/κεφαλαία διαφέρουν"
 
-#: src/file.c:116
+#: src/file.c:115
 #, fuzzy
 msgid "Select file to open"
 msgstr "Επιλογή αρχείου προς ανάγνωση"
 
-#: src/file.c:243
+#: src/file.c:242
 msgid "Save file"
 msgstr "Αποθήκευση αρχείου"
 
-#: src/file.c:258
+#: src/file.c:257
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr ""
 
-#: src/file.c:264
+#: src/file.c:263
 msgid "Plain SVG"
 msgstr ""
 
-#: src/file.c:270
+#: src/file.c:269
 msgid "Save as:"
 msgstr ""
 
-#: src/file.c:379
+#: src/file.c:378
 #, fuzzy
 msgid "Select file to import"
 msgstr "Επιλογή αρχείου για φόρτωση"
 
-#: src/help.c:49
+#: src/help.c:48
 #, fuzzy
 msgid "About sodipodi"
 msgstr "Συμπαγές"
 
-#. Do not insert any elements before/between first 4
-#: src/helper/units.c:41
+#: src/helper/units.c:40
 #, fuzzy
 msgid "Unit"
 msgstr "&Μονάδες:"
 
-#: src/helper/units.c:41
+#: src/helper/units.c:40
 #, fuzzy
 msgid "Units"
 msgstr "&Μονάδες:"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:41
 msgid "Point"
 msgstr "Σημείο"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:41
+#, fuzzy
+msgid "pt"
+msgstr "στιγ."
+
+#
+#: src/helper/units.c:41
+msgid "Points"
+msgstr "Στιγμές"
+
+#: src/helper/units.c:41
 msgid "Pt"
 msgstr ""
 
-#: src/helper/units.c:43
+#: src/helper/units.c:42
 msgid "Pixel"
 msgstr "Εικονοστοιχείο"
 
+#: src/helper/units.c:42
+msgid "px"
+msgstr ""
+
 #
-#: src/helper/units.c:43
+#: src/helper/units.c:42
 msgid "Pixels"
 msgstr "Εικονοστοιχεία"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:42
 msgid "Px"
 msgstr ""
 
-#: src/helper/units.c:44
+#: src/helper/units.c:43
 #, fuzzy
 msgid "Userspace unit"
 msgstr "Κατειλλημένος χώρος"
 
-#: src/helper/units.c:44
+#: src/helper/units.c:43
 #, fuzzy
 msgid "User"
 msgstr "Κατειλλημένος χώρος"
 
-#: src/helper/units.c:44
+#: src/helper/units.c:43
 #, fuzzy
 msgid "Userspace units"
 msgstr "Κατειλλημένος χώρος"
 
-#: src/helper/units.c:47
+#: src/helper/units.c:46
+msgid "Percent"
+msgstr "Ποσοστό"
+
+#: src/helper/units.c:46
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:46
 #, fuzzy
 msgid "Percents"
 msgstr "Ποσοστό"
 
-#: src/helper/units.c:48
+#: src/helper/units.c:47
+#, fuzzy
+msgid "Millimeter"
+msgstr "χιλιοστά"
+
+#: src/helper/units.c:47
+msgid "mm"
+msgstr "mm"
+
+#: src/helper/units.c:47
 #, fuzzy
 msgid "Millimeters"
 msgstr "χιλιοστά"
 
-#: src/helper/units.c:49
+#: src/helper/units.c:48
+#, fuzzy
+msgid "Centimeter"
+msgstr "εκατοστά"
+
+#: src/helper/units.c:48
+msgid "cm"
+msgstr "cm"
+
+#: src/helper/units.c:48
 #, fuzzy
 msgid "Centimeters"
 msgstr "εκατοστά"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:49
 #, fuzzy
 msgid "Meter"
 msgstr "Κέντρο"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:49
 #, fuzzy
 msgid "m"
 msgstr "Δείγμα"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:49
 #, fuzzy
 msgid "meters"
 msgstr "χιλιοστά"
 
-#: src/helper/units.c:51
+#: src/helper/units.c:50
+#, fuzzy
+msgid "Inch"
+msgstr "ίντσα"
+
+#
+#: src/helper/units.c:50
+#, fuzzy
+msgid "in"
+msgstr "ημ"
+
+#: src/helper/units.c:50
 #, fuzzy
 msgid "Inches"
 msgstr "Αύξηση"
 
-#: src/helper/units.c:52
+#: src/helper/units.c:51
 #, fuzzy
 msgid "Em square"
 msgstr "Τετράγωνο"
 
-#: src/helper/units.c:52
+#: src/helper/units.c:51
 #, fuzzy
 msgid "em"
 msgstr "Δείγμα"
 
-#: src/helper/units.c:52
+#: src/helper/units.c:51
 #, fuzzy
 msgid "Em squares"
 msgstr "Τετράγωνο"
 
-#: src/helper/units.c:53
+#: src/helper/units.c:52
 #, fuzzy
 msgid "Ex square"
 msgstr "Τετράγωνο"
 
-#: src/helper/units.c:53
+#: src/helper/units.c:52
 #, fuzzy
 msgid "ex"
 msgstr "Δεκαεξαδικό"
 
-#: src/helper/units.c:53
+#: src/helper/units.c:52
 #, fuzzy
 msgid "Ex squares"
 msgstr "Τετράγωνο"
 
 #
-#: src/interface.c:215 src/interface.c:372
+#: src/interface.c:208 src/interface.c:367
 msgid "New"
 msgstr "Νέο"
 
 #
-#: src/interface.c:216 src/interface.c:373
+#: src/interface.c:209 src/interface.c:368
 #, fuzzy
 msgid "Open"
 msgstr "_Άνοιγμα"
 
-#: src/interface.c:218
+#: src/interface.c:210
+#, fuzzy
+msgid "Save"
+msgstr "Σκίαση"
+
+#: src/interface.c:211
 #, fuzzy
 msgid "Save as"
 msgstr "Αποθήκευση αρχείου"
 
-#: src/interface.c:223
+#
+#: src/interface.c:213
+msgid "Import"
+msgstr "Εισαγωγή"
+
+#: src/interface.c:216
 #, fuzzy
 msgid "Print"
 msgstr "Σημείο"
 
-#: src/interface.c:224
+#: src/interface.c:217
 #, fuzzy
 msgid "Print Preview"
 msgstr "Χρήση Προεπισκόπησης"
 
-#: src/interface.c:227
+#: src/interface.c:220
 #, fuzzy
 msgid "Close View"
 msgstr "Νέα Προβολή"
 
-#: src/interface.c:228 src/interface.c:378
+#: src/interface.c:221 src/interface.c:373
 msgid "Exit Program"
 msgstr ""
 
-#: src/interface.c:230 src/interface.c:376
+#: src/interface.c:223 src/interface.c:371
 #, fuzzy
 msgid "About Sodipodi"
 msgstr "Συμπαγές"
 
 #
-#: src/interface.c:236
+#: src/interface.c:229
 msgid "Cut"
 msgstr "Αποκοπή"
 
 #
-#: src/interface.c:237
+#: src/interface.c:230
 msgid "Copy"
 msgstr "Αντιγραφή"
 
 #
-#: src/interface.c:238
+#: src/interface.c:231
 msgid "Paste"
 msgstr "Επικόλληση"
 
+#: src/interface.c:233
+msgid "Duplicate"
+msgstr "Δημιουργία αντιγράφου"
+
 #
-#: src/interface.c:243
+#: src/interface.c:234
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#
+#: src/interface.c:236
 #, fuzzy
 msgid "Clear all"
 msgstr "Αρχείο core"
 
-#: src/interface.c:244
+#: src/interface.c:237
 msgid "Cleanup"
 msgstr ""
 
-#. Selection:Group
-#: src/interface.c:253 src/sp-item-group.c:494
+#: src/interface.c:246 src/sp-item-group.c:496
 msgid "Group"
 msgstr "Ομάδα"
 
-#. Selection:Ungroup
-#: src/interface.c:258 src/sp-item-group.c:511
+#: src/interface.c:251 src/sp-item-group.c:513
 #, fuzzy
 msgid "Ungroup"
 msgstr "_Απομαδοποίηση"
 
-#. Selection:Combine
-#: src/interface.c:267
+#: src/interface.c:260
 #, fuzzy
 msgid "Combine"
 msgstr "_Μεταγλώττιση"
 
-#. Selection:Break apart
-#: src/interface.c:272
+#: src/interface.c:265
 #, fuzzy
 msgid "Break apart"
 msgstr "πραγματική διαδρομή"
 
-#: src/interface.c:285
+#: src/interface.c:274
+msgid "Order"
+msgstr "Διάταξη"
+
+#: src/interface.c:278
 #, fuzzy
 msgid "Bring to Front"
 msgstr "Ανύ_ψωση"
 
 # # FIX??  (see above)
-#: src/interface.c:289
+#: src/interface.c:282
 #, fuzzy
 msgid "Send to Back"
 msgstr "_Βύθιση"
 
-#: src/interface.c:293
+#: src/interface.c:286
 #, fuzzy
 msgid "Raise"
 msgstr "Αρχικοποίηση"
 
-#: src/interface.c:297
+#: src/interface.c:290
 msgid "Lower"
 msgstr ""
 
-#: src/interface.c:350
+#
+#: src/interface.c:312
+msgid "Scale"
+msgstr "Κλιμάκωση"
+
+#
+#: src/interface.c:316
+msgid "1:2"
+msgstr "1:2"
+
+#
+#: src/interface.c:317
+msgid "1:1"
+msgstr "1:1"
+
+#
+#: src/interface.c:318
+msgid "2:1"
+msgstr "2:1"
+
+#: src/interface.c:320
+msgid "New View"
+msgstr "Νέα Προβολή"
+
+#: src/interface.c:322
+#, fuzzy
+msgid "New Preview"
+msgstr "Χρήση Προεπισκόπησης"
+
+#
+#: src/interface.c:328
+msgid "Select"
+msgstr "Επιλογή"
+
+#
+#: src/interface.c:329
+#, fuzzy
+msgid "Node"
+msgstr "Κανένα"
+
+#: src/interface.c:330
+msgid "Rectangle"
+msgstr "Ορθογώνιο"
+
+#: src/interface.c:331
+msgid "Arc"
+msgstr ""
+
+#: src/interface.c:332 src/sp-star.c:476
+msgid "Star"
+msgstr "Αστερίσκος"
+
+#: src/interface.c:333 src/sp-spiral.c:627
+#, fuzzy
+msgid "Spiral"
+msgstr "Ειδικό"
+
+#: src/interface.c:334
+#, fuzzy
+msgid "Freehand"
+msgstr "Γροιλανδία"
+
+#: src/interface.c:335
+msgid "Dynahand"
+msgstr ""
+
+#: src/interface.c:343
 msgid "Fill and Stroke"
 msgstr ""
 
-#: src/interface.c:351
+#: src/interface.c:344
 #, fuzzy
 msgid "Size and Position"
 msgstr "Θέση"
 
 #
-#: src/interface.c:352
+#: src/interface.c:345
 #, fuzzy
 msgid "Align Objects"
 msgstr "Αντικείμενο"
 
-#: src/interface.c:353
+#: src/interface.c:346
 msgid "Text Editing"
 msgstr ""
 
-#: src/interface.c:354
+#: src/interface.c:348
 #, fuzzy
 msgid "Transformations"
 msgstr "Μετασχηματισμός"
 
-#: src/interface.c:355
+#: src/interface.c:350
 #, fuzzy
 msgid "Tool Options"
 msgstr "Επιλογές Oaf"
 
-#: src/interface.c:356
+#: src/interface.c:351
 #, fuzzy
 msgid "Tool Attributes"
 msgstr "Ιδιότητες"
 
-#: src/interface.c:358
+#: src/interface.c:352
+msgid "Document"
+msgstr "Έγγραφο"
+
+#: src/interface.c:353
 msgid "Editing Window"
 msgstr ""
 
-#: src/interface.c:359
+#: src/interface.c:354
 msgid "XML Editor"
 msgstr ""
 
-#: src/interface.c:360
+#: src/interface.c:355
 #, fuzzy
 msgid "Display Properties"
 msgstr " Ιδιότητες"
 
 #
-#. Undo
-#: src/interface.c:394
+#: src/interface.c:389
 #, fuzzy
 msgid "Undo"
 msgstr "Ακύρωση"
 
-#. View submenu
-#: src/interface.c:437
+#
+#: src/interface.c:391
+msgid "Redo"
+msgstr "Επανεκτέλεση"
+
+#
+#: src/interface.c:414 src/toolbox.c:323
+msgid "File"
+msgstr "Αρχείο"
+
+#
+#: src/interface.c:420 src/toolbox.c:357 src/widgets/gradient-selector.c:135
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: src/interface.c:432
 #, fuzzy
 msgid "View"
 msgstr "Νέα Προβολή"
 
 #
-#. Drawing mode submenu
-#: src/interface.c:443
+#: src/interface.c:438
 #, fuzzy
 msgid "Drawing Mode"
 msgstr "Εκτύπωση περιεχομένων πλέγματος"
 
-#. Dialog submenu
-#: src/interface.c:449
+#: src/interface.c:444
 msgid "Dialogs"
 msgstr ""
 
-#: src/main.c:102
+#: src/main.c:98
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 
-#: src/main.c:105
+#: src/main.c:101
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 
-#: src/main.c:108
+#: src/main.c:104
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 
 # gconf/gconftool.c:219
-#: src/main.c:109 src/main.c:112 src/main.c:115 src/main.c:129
+#: src/main.c:105 src/main.c:108 src/main.c:111 src/main.c:125
 msgid "FILENAME"
 msgstr "ΟΝΟΜΑ ΑΡΧΕΙΟΥ"
 
-#: src/main.c:111
+#: src/main.c:107
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:114
+#: src/main.c:110
 msgid "Export document to png file"
 msgstr ""
 
-#: src/main.c:117
+#: src/main.c:113
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
-#: src/main.c:118
+#: src/main.c:114
 msgid "DPI"
 msgstr ""
 
-#: src/main.c:120
+#: src/main.c:116
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:121
+#: src/main.c:117
 msgid "x0:y0:x1:y1"
 msgstr ""
 
-#: src/main.c:123
+#: src/main.c:119
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:123
+#: src/main.c:119
 msgid "WIDTH"
 msgstr ""
 
-#: src/main.c:125
+#: src/main.c:121
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:125
+#: src/main.c:121
 msgid "HEIGHT"
 msgstr ""
 
-#: src/main.c:127
+#: src/main.c:123
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
-#: src/main.c:127
+#: src/main.c:123
 msgid "COLOR"
 msgstr ""
 
-#: src/main.c:129
+#: src/main.c:125
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:131
+#: src/main.c:127
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 
@@ -2708,7 +1423,6 @@ msgstr ""
 msgid "Untitled document"
 msgstr ""
 
-#. Show nice dialog box
 #: src/sodipodi.c:364
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
@@ -2722,8 +1436,7 @@ msgstr ""
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
-#. Not a regular file
-#: src/sodipodi.c:455
+#: src/sodipodi.c:456
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -2731,8 +1444,7 @@ msgid ""
 "neither load nor save preferences\n"
 msgstr ""
 
-#. Not an valid xml file
-#: src/sodipodi.c:468
+#: src/sodipodi.c:470
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -2742,7 +1454,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:482
+#: src/sodipodi.c:485
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -2751,8 +1463,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#. Cannot create directory
-#: src/sodipodi.c:763
+#: src/sodipodi.c:767
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -2761,8 +1472,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#. Not a directory
-#: src/sodipodi.c:775
+#: src/sodipodi.c:780
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -2771,8 +1481,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#. Cannot create file
-#: src/sodipodi.c:791
+#: src/sodipodi.c:797
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -2781,8 +1490,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#. Cannot create file
-#: src/sodipodi.c:803
+#: src/sodipodi.c:810
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -2791,68 +1499,57 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sp-anchor.c:195
+#: src/sp-anchor.c:198
 #, fuzzy, c-format
 msgid "Link to %s"
 msgstr "σύνδεσμος στο %s"
 
 #
-#. Create toplevel menuitem
-#: src/sp-anchor.c:254
+#: src/sp-anchor.c:259
 msgid "Link"
 msgstr "Σύνδεση"
 
-#. Link dialog
-#: src/sp-anchor.c:257
+#: src/sp-anchor.c:262
 #, fuzzy
 msgid "Link Properties"
 msgstr " Ιδιότητες"
 
-#. Select item
-#: src/sp-anchor.c:267
+#: src/sp-anchor.c:272
 #, fuzzy
 msgid "Follow link"
 msgstr "Ακολούθηση συμβολικών συνδέσμων"
 
-#. Reset transformations
-#: src/sp-anchor.c:272
+#: src/sp-anchor.c:277
 msgid "Remove link"
 msgstr "Διαγραφή συνδέσμου"
 
 #
-#: src/sp-image.c:397
+#: src/sp-image.c:398
 #, fuzzy, c-format
 msgid "Image with bad reference: %s"
 msgstr "Προτιμίσεις Ναυτίλου"
 
-#: src/sp-image.c:399
+#: src/sp-image.c:400
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr ""
 
 #
-#. Create toplevel menuitem
-#: src/sp-image.c:621
+#: src/sp-image.c:622
 msgid "Image"
 msgstr "Εικόνα"
 
-#. Link dialog
-#: src/sp-image.c:624
+#: src/sp-image.c:625
 msgid "Image Properties"
 msgstr "Ιδιότητες Εικόνας"
 
-#. Autotrace dialog
-#: src/sp-image.c:632 src/sp-image.c:831
+#: src/sp-image.c:633 src/sp-image.c:829
 msgid "Trace"
 msgstr ""
 
-#: src/sp-image.c:977
+#: src/sp-image.c:975
 #, c-format
 msgid "Error to write %s: %s"
-msgstr ""
-
-#: src/sp-image.c:981
-msgid "Ok"
 msgstr ""
 
 #: src/sp-image.c:1009
@@ -2876,507 +1573,553 @@ msgid "Image URI:"
 msgstr "Εικόνα"
 
 #
-#: src/sp-item-group.c:432
+#: src/sp-item-group.c:434
 #, fuzzy, c-format
 msgid "Group of %d objects"
 msgstr "Εισαγωγή αντικειμένων"
 
-#. Group dialog
-#: src/sp-item-group.c:498
+#: src/sp-item-group.c:500
 #, fuzzy
 msgid "Group Properties"
 msgstr " Ιδιότητες"
 
-#: src/sp-item.c:434
+#: src/sp-item.c:440
 #, fuzzy
 msgid "Unknown item :-("
 msgstr "Άγνωστο σύστημα"
 
-#. Item dialog
-#: src/sp-item.c:769
+#: src/sp-item.c:782
+#, fuzzy
+msgid "Item"
+msgstr "Επιλογή ένα"
+
+#: src/sp-item.c:785
 #, fuzzy
 msgid "Item Properties"
 msgstr " Ιδιότητες"
 
-#. Select item
-#: src/sp-item.c:779
+#: src/sp-item.c:795
 #, fuzzy
 msgid "Select this"
 msgstr "Επιλογή θέματος:"
 
-#. Reset transformations
-#: src/sp-item.c:789
+#: src/sp-item.c:805
 #, fuzzy
 msgid "Reset transformation"
 msgstr "Μετασχηματισμός"
 
-#: src/sp-item.c:795
+#: src/sp-item.c:811
 #, fuzzy
 msgid "Make sensitive"
 msgstr "Πεζά/κεφαλαία διαφέρουν"
 
-#: src/sp-item.c:795
+#: src/sp-item.c:811
 #, fuzzy
 msgid "Make insensitive"
 msgstr "Πεζά/κεφαλαία διαφέρουν"
 
 #
-#. Create link
-#: src/sp-item.c:800
+#: src/sp-item.c:816
 #, fuzzy
 msgid "Create link"
 msgstr "Δημιουργία γραμμής"
 
 #
-#. Create toplevel menuitem
-#: src/sp-rect.c:541
+#: src/sp-rect.c:544
 msgid "Rect"
 msgstr "Ορθογ."
 
-#. Link dialog
-#: src/sp-rect.c:544
+#: src/sp-rect.c:547
 #, fuzzy
 msgid "Rect Properties"
 msgstr " Ιδιότητες"
 
-#: src/sp-shape.c:324
+#: src/sp-shape.c:325
 msgid "A path - whatever it means"
 msgstr ""
 
-#. Create toplevel menuitem
-#: src/sp-shape.c:380
+#: src/sp-shape.c:381
 #, fuzzy
 msgid "Shape"
 msgstr "Σκίαση"
 
-#. Item dialog
-#: src/sp-shape.c:383 src/toolbox.c:389
+#: src/sp-shape.c:384 src/toolbox.c:397
 #, fuzzy
 msgid "Fill settings"
 msgstr "Όλες οι ρυθμίσεις"
 
-#. Link dialog
-#: src/sp-spiral.c:631
+#: src/sp-spiral.c:630
 #, fuzzy
 msgid "Spiral Properties"
 msgstr " Ιδιότητες"
 
-#. Link dialog
-#: src/sp-star.c:477
+#: src/sp-star.c:479
 #, fuzzy
 msgid "Star Properties"
 msgstr " Ιδιότητες"
 
-#. fixme:
-#: src/sp-text.c:1257
+#: src/sp-text.c:1193
 #, fuzzy
 msgid "Text object"
 msgstr "Επιλέξτε αντικείμενο"
 
-#: src/toolbox.c:318
+#: src/toolbox.c:149 src/toolbox.c:164
+#, fuzzy
+msgid "Sodipodi"
+msgstr "Συμπαγές"
+
+#: src/toolbox.c:326
 msgid "Create new SVG document"
 msgstr ""
 
-#: src/toolbox.c:319
+#: src/toolbox.c:327
 msgid "Open existing SVG document"
 msgstr ""
 
-#: src/toolbox.c:320
+#: src/toolbox.c:328
 #, fuzzy
 msgid "Save document"
 msgstr "Έγγραφο"
 
-#: src/toolbox.c:321
+#: src/toolbox.c:329
 #, fuzzy
 msgid "Save document under new name"
 msgstr "Αποθήκευση ως γνήσιο όνομα αρχείου"
 
-#: src/toolbox.c:322
+#: src/toolbox.c:330
 #, fuzzy
 msgid "Print document"
 msgstr "Έγγραφο"
 
-#: src/toolbox.c:323
+#: src/toolbox.c:331
 #, fuzzy
 msgid "Preview document printout"
 msgstr "Προεπισκόπηση δεδομένων προς εκτύπωση"
 
-#: src/toolbox.c:324
+#: src/toolbox.c:332
 msgid "Import bitmap or SVG image into document"
 msgstr ""
 
-#: src/toolbox.c:325
+#: src/toolbox.c:333
 msgid "Export document as PNG bitmap"
 msgstr ""
 
-#: src/toolbox.c:352
+#: src/toolbox.c:360
 #, fuzzy
 msgid "Revert last action"
 msgstr "Μετασχηματισμός"
 
-#: src/toolbox.c:355
+#: src/toolbox.c:363
 msgid "Do again undone action"
 msgstr ""
 
-#: src/toolbox.c:357
+#: src/toolbox.c:365
 #, fuzzy
 msgid "Delete selected objects"
 msgstr "Διαγραφή επιλογής"
 
 #
-#: src/toolbox.c:358
+#: src/toolbox.c:366
 #, fuzzy
 msgid "Cut selected objects to clipboard"
 msgstr "Διαγραφή επιλεγμένου αντικειμένου"
 
 #
-#: src/toolbox.c:359
+#: src/toolbox.c:367
 #, fuzzy
 msgid "Copy selected objects to clipboard"
 msgstr "Αντιγραφή επιλογής στο τεμάχιο"
 
 #
-#: src/toolbox.c:360
+#: src/toolbox.c:368
 #, fuzzy
 msgid "Paste objects from clipboard"
 msgstr "Επικόλληση από το τεμάχιο"
 
-#: src/toolbox.c:361
+#: src/toolbox.c:369
 #, fuzzy
 msgid "Duplicate selected objects"
 msgstr "Διαγραφή επιλεγμένων αντικειμένων"
 
-#: src/toolbox.c:390
+#
+#: src/toolbox.c:393
+msgid "Object"
+msgstr "Αντικείμενο"
+
+#: src/toolbox.c:398
 #, fuzzy
 msgid "Object size and position"
 msgstr "Θέση"
 
-#: src/toolbox.c:391
+#: src/toolbox.c:399
 #, fuzzy
 msgid "Text and font settings"
 msgstr "Ρυθμίσεις επιφάνειας εργασίας"
 
-#: src/toolbox.c:393
+#: src/toolbox.c:402
 #, fuzzy
 msgid "Object transformations"
 msgstr "Μετασχηματισμός"
 
 #
-#: src/toolbox.c:394
+#: src/toolbox.c:404
 #, fuzzy
 msgid "Rotate object 90 deg clockwise"
 msgstr "Διαγραφή επιλεγμένου αντικειμένου"
 
-#: src/toolbox.c:395
+#: src/toolbox.c:405
 #, fuzzy
 msgid "Remove transformations"
 msgstr "Μετασχηματισμός"
 
 #
-#: src/toolbox.c:396
+#: src/toolbox.c:406
 #, fuzzy
 msgid "Convert object to curve"
 msgstr "Διαγραφή επιλεγμένου αντικειμένου"
 
-#: src/toolbox.c:423
+#: src/toolbox.c:433
 #, fuzzy
 msgid "Raise selected objects to top"
 msgstr "Αποθήκευση επιλογής"
 
 #
-#: src/toolbox.c:424
+#: src/toolbox.c:434
 #, fuzzy
 msgid "Raise selected objects one level"
 msgstr "Διαγραφή επιλεγμένου αντικειμένου"
 
-#: src/toolbox.c:425
+#: src/toolbox.c:435
 #, fuzzy
 msgid "Combine multiple paths"
 msgstr "Αντιγραφή επιλεγμένης εργασίας"
 
 #
-#: src/toolbox.c:427
+#: src/toolbox.c:436
+#, fuzzy
+msgid "Group selected objects"
+msgstr "Διαγραφή επιλεγμένου αντικειμένου"
+
+#
+#: src/toolbox.c:437
 #, fuzzy
 msgid "Lower selected objects to bottom"
 msgstr "Αντιγραφή επιλογής στο τεμάχιο"
 
 #
-#: src/toolbox.c:428
+#: src/toolbox.c:438
 #, fuzzy
 msgid "Lower selected objects one level"
 msgstr "Διαγραφή επιλεγμένου αντικειμένου"
 
-#: src/toolbox.c:429
+#: src/toolbox.c:439
 #, fuzzy
 msgid "Break selected path to subpaths"
 msgstr "Επανεκκίνηση επιλεγμένων αρχείων"
 
-#: src/toolbox.c:430
+#: src/toolbox.c:440
 #, fuzzy
 msgid "Ungroup selected group"
 msgstr "Διαγραφή επιλεγμένων αντικειμένων"
 
-#: src/toolbox.c:454
+#: src/toolbox.c:463
 #, fuzzy
 msgid "Draw"
 msgstr "Συρτάρι"
 
 #
-#: src/toolbox.c:463
+#: src/toolbox.c:472
 #, fuzzy
 msgid "Select tool - select and transform objects"
 msgstr "Επιλέξτε ενέργεια"
 
-#: src/toolbox.c:470
+#: src/toolbox.c:479
 msgid "Node tool - modify different aspects of existing objects"
 msgstr ""
 
-#: src/toolbox.c:478
+#: src/toolbox.c:488
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
 
-#: src/toolbox.c:484
+#: src/toolbox.c:494
 msgid "Arc tool - create circles, ellipses and arcs"
 msgstr ""
 
-#: src/toolbox.c:490
+#: src/toolbox.c:500
 msgid "Star tool - create stars and polygons"
 msgstr ""
 
-#: src/toolbox.c:496
+#: src/toolbox.c:506
 msgid "Spiral tool - create spirals"
 msgstr ""
 
-#: src/toolbox.c:515
+#: src/toolbox.c:525
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr ""
 
-#: src/toolbox.c:521
+#: src/toolbox.c:531
 msgid "Pen tool - draw exactly positioned curved lines"
 msgstr ""
 
-#: src/toolbox.c:527
+#: src/toolbox.c:537
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr ""
 
-#: src/toolbox.c:544
+#: src/toolbox.c:555
 msgid "Text tool - create editable text objects"
 msgstr ""
 
-#: src/toolbox.c:551
+#: src/toolbox.c:562
 msgid "Zoom tool - zoom into choosen area"
 msgstr ""
 
-#: src/toolbox.c:578
+#: src/toolbox.c:589
 #, fuzzy
 msgid "Zoom in drawing"
 msgstr "Αλλαγή κλίμακας για _ταίριασμα"
 
-#: src/toolbox.c:579
+#: src/toolbox.c:590
 #, fuzzy
 msgid "Set zoom factor to 2:1"
 msgstr "Κλίμακα 25%"
 
 #
-#: src/toolbox.c:580
+#: src/toolbox.c:591
 #, fuzzy
 msgid "Set zoom factor to 1:1"
 msgstr "Μεγέθυνση _1:1"
 
-#: src/toolbox.c:581
+#: src/toolbox.c:592
 #, fuzzy
 msgid "Set zoom factor to 1:2"
 msgstr "Κλίμακα 125%"
 
-#: src/toolbox.c:582
+#: src/toolbox.c:593
 #, fuzzy
 msgid "Zoom out drawing"
 msgstr "Αλλαγή κλίμακας για _ταίριασμα"
 
-#: src/toolbox.c:583
+#: src/toolbox.c:594
 msgid "Fit the whole page into window"
 msgstr ""
 
-#: src/toolbox.c:584
+#: src/toolbox.c:595
 msgid "Fit the whole drawing into window"
 msgstr ""
 
-#: src/toolbox.c:585
+#: src/toolbox.c:596
 msgid "Fit the whole selection into window"
 msgstr ""
 
-#: src/toolbox.c:612
+#: src/toolbox.c:620
+#, fuzzy
+msgid "Nodes"
+msgstr "Σημειώσεις"
+
+#: src/toolbox.c:623
 #, fuzzy
 msgid "Insert new nodes into selected segments"
 msgstr "Ξε-διαγραφή των επιλεγμένων μηνυμάτων"
 
 #
-#: src/toolbox.c:613
+#: src/toolbox.c:624
 #, fuzzy
 msgid "Break line at selected nodes"
 msgstr "Καθαρισμός όλων των επιλεγμένων γραμμών"
 
-#: src/toolbox.c:614
+#: src/toolbox.c:625
 #, fuzzy
 msgid "Make selected nodes corner"
 msgstr "Διαγραφή επιλογής"
 
-#: src/toolbox.c:615
+#: src/toolbox.c:626
 #, fuzzy
 msgid "Make selected segments lines"
 msgstr "Μετακίνιση επιλεγμένου μενού πρός τα κάτω"
 
+#: src/toolbox.c:627
+#, fuzzy
+msgid "Delete selected nodes"
+msgstr "Διαγραφή επιλογής"
+
 #
-#: src/toolbox.c:617
+#: src/toolbox.c:628
 #, fuzzy
 msgid "Join lines at selected nodes"
 msgstr "Εκκίνηση επιλεγμένου παροχέα"
 
-#: src/toolbox.c:618
+#: src/toolbox.c:629
 #, fuzzy
 msgid "Make selected nodes smooth"
 msgstr "Διαγραφή επιλογής"
 
-#: src/toolbox.c:619
+#: src/toolbox.c:630
 #, fuzzy
 msgid "Make selected segments curves"
 msgstr "Μετακίνηση επιλεγμένου μενού πρoς τα επάνω"
 
-#. Family frame
-#: src/widgets/font-selector.c:147
+#: src/widgets/font-selector.c:144
 msgid "Font family"
 msgstr ""
 
-#. Style frame
-#: src/widgets/font-selector.c:175
+#: src/widgets/font-selector.c:172
 #, fuzzy
 msgid "Style"
 msgstr "Στυλ: "
 
-#: src/widgets/font-selector.c:210
+#: src/widgets/font-selector.c:207
 msgid "Font size:"
 msgstr ""
 
-#: src/widgets/font-selector.c:520
+#: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr ""
 
-#: src/widgets/gradient-selector.c:177
+#
+#: src/widgets/gradient-selector.c:140
+msgid "Add"
+msgstr "Προσθήκη"
+
+#: src/widgets/gradient-selector.c:176
 #, fuzzy
 msgid "gradientUnits"
 msgstr "Βαθμίδα"
 
-#: src/widgets/gradient-selector.c:206
+#: src/widgets/gradient-selector.c:205
 msgid "gradientSpread"
 msgstr ""
 
 #
-#: src/widgets/gradient-vector.c:245
+#: src/widgets/gradient-vector.c:247
 #, fuzzy
 msgid "No document selected"
 msgstr "Επιλέχθησαν \"%s\""
 
-#: src/widgets/gradient-vector.c:251
+#: src/widgets/gradient-vector.c:253
 msgid "No gradients in document"
 msgstr ""
 
 #
-#: src/widgets/gradient-vector.c:257
+#: src/widgets/gradient-vector.c:259
 #, fuzzy
 msgid "No gradient selected"
 msgstr "Επιλέχθησαν \"%s\""
 
-#: src/widgets/gradient-vector.c:413
+#: src/widgets/gradient-vector.c:417
 #, fuzzy
 msgid "Start color"
 msgstr " χρώμα"
 
-#: src/widgets/gradient-vector.c:425
+#: src/widgets/gradient-vector.c:429
 #, fuzzy
 msgid "End color"
 msgstr " χρώμα"
 
-#: src/widgets/gradient-vector.c:452
+#: src/widgets/gradient-vector.c:456
 #, fuzzy
 msgid "Gradient vector"
 msgstr "Βαθμίδα"
 
-#: src/widgets/paint-selector.c:626
+#: src/widgets/paint-selector.c:621
 #, fuzzy
 msgid "No objects"
 msgstr "Επιλέξτε αντικείμενο"
 
-#: src/widgets/paint-selector.c:640
+#: src/widgets/paint-selector.c:635
 msgid "Multiple styles"
 msgstr ""
 
-#: src/widgets/paint-selector.c:654
+#: src/widgets/paint-selector.c:649
 #, fuzzy
 msgid "No paint"
 msgstr "Σημείο"
 
-#. Label
-#: src/widgets/paint-selector.c:745
+#: src/widgets/paint-selector.c:740
 #, fuzzy
 msgid "Mode:"
 msgstr "Μετακίνηση"
 
-#: src/widgets/paint-selector.c:755
+#: src/widgets/paint-selector.c:750
 msgid "RGB"
 msgstr ""
 
-#: src/widgets/paint-selector.c:761
+#: src/widgets/paint-selector.c:756
 msgid "HSV"
 msgstr ""
 
-#: src/widgets/paint-selector.c:767
+#: src/widgets/paint-selector.c:762
 msgid "CMYK"
 msgstr ""
 
-#: src/widgets/paint-selector.c:801
+#: src/widgets/paint-selector.c:796
 #, fuzzy
 msgid "Color paint"
 msgstr "Κολομβία"
 
 #
-#: src/widgets/paint-selector.c:871
+#: src/widgets/paint-selector.c:866
 #, fuzzy
 msgid "Linear gradient"
 msgstr "Προσθήκη νέου παροχέα"
 
 #
-#: src/widgets/paint-selector.c:874
+#: src/widgets/paint-selector.c:869
 #, fuzzy
 msgid "Radial gradient"
 msgstr "Προσθήκη νέου παροχέα"
 
 #
-#: src/widgets/sp-color-selector.c:626
+#: src/widgets/sp-color-selector.c:604
+msgid "Red:"
+msgstr "Κόκκινο:"
+
+#
+#: src/widgets/sp-color-selector.c:605
+msgid "Green:"
+msgstr "Πράσινο:"
+
+#
+#: src/widgets/sp-color-selector.c:606
+msgid "Blue:"
+msgstr "Μπλε:"
+
+#: src/widgets/sp-color-selector.c:607 src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:649
+msgid "Alpha:"
+msgstr "Άλφα:"
+
+#
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "Απόχρωση:"
 
 #
-#: src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "Κορεσμός:"
 
-#: src/widgets/sp-color-selector.c:647
+#
+#: src/widgets/sp-color-selector.c:626
+msgid "Value:"
+msgstr "Τιμή:"
+
+#: src/widgets/sp-color-selector.c:645
 #, fuzzy
 msgid "Cyan:"
 msgstr "Κυανό"
 
-#: src/widgets/sp-color-selector.c:648
+#: src/widgets/sp-color-selector.c:646
 #, fuzzy
 msgid "Magenta:"
 msgstr "μώβ"
 
-#: src/widgets/sp-color-selector.c:649
+#: src/widgets/sp-color-selector.c:647
 #, fuzzy
 msgid "Yellow:"
 msgstr "Κίτρινο"
 
-#: src/widgets/sp-color-selector.c:650
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Μαύρο:"
 
@@ -3387,6 +2130,799 @@ msgstr ""
 #: src/draw-context.c:281
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr ""
+
+#~ msgid "Align"
+#~ msgstr "Στοίχιση"
+
+#, fuzzy
+#~ msgid "Align inside object to top border"
+#~ msgstr "Προσθήκη νέου αντικειμένου στη βάση"
+
+#, fuzzy
+#~ msgid "Align objects to horizontal mid"
+#~ msgstr "Ορι_ζόντια Στοίχιση"
+
+#, fuzzy
+#~ msgid "Alignment base"
+#~ msgstr "Στοίχιση"
+
+#, fuzzy
+#~ msgid "Choose align type"
+#~ msgstr "Επιλογή Τρέχουσας Συνεδρίας"
+
+#, fuzzy
+#~ msgid "Close window"
+#~ msgstr "Κλείσιμο καταγραφών"
+
+#
+#, fuzzy
+#~ msgid "ID:"
+#~ msgstr "ID"
+
+#, fuzzy
+#~ msgid "Parent X ="
+#~ msgstr "Πατρική Ομάδα"
+
+#, fuzzy
+#~ msgid "Parent Y ="
+#~ msgstr "Πατρική Ομάδα"
+
+#~ msgid "Transformation"
+#~ msgstr "Μετασχηματισμός"
+
+#
+#, fuzzy
+#~ msgid " Color fill "
+#~ msgstr "Αρχείο core"
+
+#
+#~ msgid " General "
+#~ msgstr " Γενικά "
+
+#, fuzzy
+#~ msgid " Style "
+#~ msgstr "Στυλ: "
+
+#
+#, fuzzy
+#~ msgid "Add new gradient"
+#~ msgstr "Προσθήκη νέου παροχέα"
+
+#
+#, fuzzy
+#~ msgid "Behind fill"
+#~ msgstr "Δυαδικό αρχείο"
+
+#, fuzzy
+#~ msgid "Bevel join"
+#~ msgstr "Πρώτο επίπεδο"
+
+#, fuzzy
+#~ msgid "Butt endpoints"
+#~ msgstr "Kουμπιά"
+
+#, fuzzy
+#~ msgid "Choose fill color"
+#~ msgstr "Επιλέξτε Πιλότου"
+
+#, fuzzy
+#~ msgid "Choose stroke color"
+#~ msgstr "Επιλογή Ειδικού Χρώματος"
+
+#
+#, fuzzy
+#~ msgid "Color fill"
+#~ msgstr "Αρχείο core"
+
+#~ msgid "Color:"
+#~ msgstr "Χρώμα:"
+
+#~ msgid "Dimension"
+#~ msgstr "Διάσταση"
+
+#~ msgid "Edit..."
+#~ msgstr "Επεξεργασία..."
+
+#, fuzzy
+#~ msgid "Endpoints:"
+#~ msgstr "σημεία"
+
+#, fuzzy
+#~ msgid "Fill Color:"
+#~ msgstr "Με Χρώμα"
+
+#, fuzzy
+#~ msgid "Fractal fill"
+#~ msgstr "Τοπικά αρχεία"
+
+#, fuzzy
+#~ msgid "Gradient fill"
+#~ msgstr "Βαθμίδα"
+
+#
+#, fuzzy
+#~ msgid "Is stroked"
+#~ msgstr "ε χρήση"
+
+#, fuzzy
+#~ msgid "Miter join"
+#~ msgstr "Πρωτεύον Μονοφωνικό"
+
+#, fuzzy
+#~ msgid "No fill"
+#~ msgstr "Χωρίς Αρχείο"
+
+#, fuzzy
+#~ msgid "Pattern fill"
+#~ msgstr "Σχέδιο"
+
+#
+#~ msgid "Pick a color"
+#~ msgstr "Διαλέξτε χρώμα"
+
+#
+#, fuzzy
+#~ msgid "Pick fill color"
+#~ msgstr "Διαλέξτε χρώμα"
+
+#
+#, fuzzy
+#~ msgid "Pick stroke color"
+#~ msgstr "Διαλέξτε χρώμα"
+
+#~ msgid "Position"
+#~ msgstr "Θέση"
+
+#, fuzzy
+#~ msgid "Reread"
+#~ msgstr "Αναγνωσμένα"
+
+#, fuzzy
+#~ msgid "Round endpoints"
+#~ msgstr "Σημείο προσάρτησης"
+
+#
+#, fuzzy
+#~ msgid "Round join"
+#~ msgstr "Εκτέλεση σε:"
+
+#
+#, fuzzy
+#~ msgid "Scale with object"
+#~ msgstr "Αποθήκευση με περιεχόμενα"
+
+#, fuzzy
+#~ msgid "Square endpoints"
+#~ msgstr "Λίστα Τετραγώνων"
+
+#, fuzzy
+#~ msgid "Stroke"
+#~ msgstr "Καπνός"
+
+#, fuzzy
+#~ msgid "Stroke width"
+#~ msgstr "Καπνός με άνεμο"
+
+#~ msgid "centimeter"
+#~ msgstr "εκατοστά"
+
+#, fuzzy
+#~ msgid "color"
+#~ msgstr " χρώμα"
+
+#, fuzzy
+#~ msgid "inches"
+#~ msgstr "ίντσα"
+
+#, fuzzy
+#~ msgid "millimeters"
+#~ msgstr "χιλιοστά"
+
+#
+#~ msgid "none"
+#~ msgstr "κανένα"
+
+#
+#, fuzzy
+#~ msgid "object properties"
+#~ msgstr "Ιδιότητες αντικειμένου"
+
+#~ msgid "points"
+#~ msgstr "σημεία"
+
+#~ msgid "1.0MB"
+#~ msgstr "1.0MB"
+
+#
+#, fuzzy
+#~ msgid "Back One"
+#~ msgstr "Πίσω"
+
+#
+#, fuzzy
+#~ msgid "Break apart selected node"
+#~ msgstr "Εκκίνηση επιλεγμένου παροχέα"
+
+#~ msgid "Bring to _Front"
+#~ msgstr "Ανύ_ψωση"
+
+#, fuzzy
+#~ msgid "Close dialog"
+#~ msgstr "Κλείσιμο καταγραφών"
+
+#, fuzzy
+#~ msgid "Convert selected segments to curves"
+#~ msgstr "Μετακίνηση επιλεγμένου μενού πρoς τα επάνω"
+
+#, fuzzy
+#~ msgid "Convert selected segments to lines"
+#~ msgstr "Μετακίνιση επιλεγμένου μενού πρός τα κάτω"
+
+#, fuzzy
+#~ msgid "Convert to Cu_rves"
+#~ msgstr "Σύνδεση με %s"
+
+#
+#, fuzzy
+#~ msgid "Cusp line at selected nodes"
+#~ msgstr "Καθαρισμός όλων των επιλεγμένων γραμμών"
+
+#
+#~ msgid "Desktop"
+#~ msgstr "Επιφάνεια εργασίας"
+
+#
+#~ msgid "Display"
+#~ msgstr "Εμφάνιση"
+
+#, fuzzy
+#~ msgid "Drawing Context"
+#~ msgstr "Σχεδίαση"
+
+#, fuzzy
+#~ msgid "Exported as"
+#~ msgstr "Το %s εισήχθη"
+
+#~ msgid "Filename:"
+#~ msgstr "Όνομα Αρχείου:"
+
+#
+#, fuzzy
+#~ msgid "Forward One"
+#~ msgstr "Προώθηση"
+
+#~ msgid "Height"
+#~ msgstr "Ύψος"
+
+#, fuzzy
+#~ msgid "Image size"
+#~ msgstr "Μέγεθος Εικόνας:"
+
+#, fuzzy
+#~ msgid "Include one node into selected segments"
+#~ msgstr "Ξε-διαγραφή των επιλεγμένων μηνυμάτων"
+
+#, fuzzy
+#~ msgid "Join 2 selected endpoints"
+#~ msgstr "Εκτύπωση επιλεγμένων επαφών"
+
+#, fuzzy
+#~ msgid "Lock aspect ratio"
+#~ msgstr "Διατήρηση αναλογιών"
+
+#, fuzzy
+#~ msgid "Node Edit"
+#~ msgstr " Επεξεργασία "
+
+#, fuzzy
+#~ msgid "Png file name"
+#~ msgstr "όνομα αρχείου"
+
+# # FIX??  (see above)
+#~ msgid "Send to _Back"
+#~ msgstr "_Βύθιση"
+
+#, fuzzy
+#~ msgid "Set dimensions"
+#~ msgstr "Διαστάσεις:"
+
+#, fuzzy
+#~ msgid "Show Toolbox"
+#~ msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#
+#, fuzzy
+#~ msgid "Smooth line at selected nodes"
+#~ msgstr "Εκκίνηση επιλεγμένου παροχέα"
+
+#
+#, fuzzy
+#~ msgid "Toggle Borders"
+#~ msgstr "Πλαίσιο Πίνακα"
+
+#, fuzzy
+#~ msgid "Uncompressed file size:"
+#~ msgstr "Συμπίεση αρχείων:"
+
+#, fuzzy
+#~ msgid "Where to export"
+#~ msgstr "Συγχώνευση στο πιλότο"
+
+#~ msgid "Width"
+#~ msgstr "Πλάτος"
+
+#, fuzzy
+#~ msgid "X0"
+#~ msgstr "X509"
+
+#, fuzzy
+#~ msgid "XML Tree"
+#~ msgstr "Δένδρο"
+
+#, fuzzy
+#~ msgid "Y0"
+#~ msgstr "0"
+
+#, fuzzy
+#~ msgid "_Align"
+#~ msgstr "Στοίχιση"
+
+#, fuzzy
+#~ msgid "_Break Apart"
+#~ msgstr "πραγματική διαδρομή"
+
+#, fuzzy
+#~ msgid "_Combine"
+#~ msgstr "_Μεταγλώττιση"
+
+#, fuzzy
+#~ msgid "_Drawing"
+#~ msgstr "Σχεδίαση"
+
+#~ msgid "_Group"
+#~ msgstr "_Ομαδοποίηση"
+
+#, fuzzy
+#~ msgid "_Interactive"
+#~ msgstr "Δ_ιεπιφάνεια"
+
+#
+#~ msgid "_New"
+#~ msgstr "_Νέο"
+
+#~ msgid "_Page"
+#~ msgstr "_Σελίδα"
+
+#
+#~ msgid "_Selection"
+#~ msgstr "_Επιλογή"
+
+#~ msgid "_Ungroup"
+#~ msgstr "_Απομαδοποίηση"
+
+#, fuzzy
+#~ msgid "Align dialog"
+#~ msgstr "Κατακόρυ_φη Στοίχιση"
+
+#, fuzzy
+#~ msgid "Break apart selected paths"
+#~ msgstr "Επανεκκίνηση επιλεγμένων αρχείων"
+
+#, fuzzy
+#~ msgid "Combine selected paths"
+#~ msgstr "Αντιγραφή επιλεγμένης εργασίας"
+
+#
+#, fuzzy
+#~ msgid "Convert selected objects to curves"
+#~ msgstr "Διαγραφή επιλεγμένου αντικειμένου"
+
+#
+#~ msgid "Copy selection to clipboard"
+#~ msgstr "Αντιγραφή επιλογής στο τεμάχιο"
+
+#
+#, fuzzy
+#~ msgid "Cut selection"
+#~ msgstr "Αποκοπή της επιλογής"
+
+#, fuzzy
+#~ msgid "Delete selection"
+#~ msgstr "Διαγραφή επιλογής"
+
+#, fuzzy
+#~ msgid "Draw arc"
+#~ msgstr "Ημέρα έναρξης:"
+
+#, fuzzy
+#~ msgid "Draw dynahand line"
+#~ msgstr "Λαβή συρταριού"
+
+#, fuzzy
+#~ msgid "Draw freehand line"
+#~ msgstr "Λαβή συρταριού"
+
+#
+#, fuzzy
+#~ msgid "Draw rectangle"
+#~ msgstr "Δημιουργία ορθογωνίου"
+
+#, fuzzy
+#~ msgid "Draw star"
+#~ msgstr "Ημέρα έναρξης:"
+
+#, fuzzy
+#~ msgid "Draw text"
+#~ msgstr "Αλλα_γή γραμμής"
+
+#
+#, fuzzy
+#~ msgid "Drawing context"
+#~ msgstr "Εκτύπωση περιεχομένων πλέγματος"
+
+#
+#, fuzzy
+#~ msgid "Duplicate selection"
+#~ msgstr "Καθαρισμός της επιλογής"
+
+#, fuzzy
+#~ msgid "Edit fill style of selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#, fuzzy
+#~ msgid "Edit font style of selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#, fuzzy
+#~ msgid "Edit layout of selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#, fuzzy
+#~ msgid "Edit nodes"
+#~ msgstr "Επεξεργασία Φακέλων"
+
+#, fuzzy
+#~ msgid "Edit stroke style of selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#, fuzzy
+#~ msgid "Flip selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#
+#, fuzzy
+#~ msgid "Import "
+#~ msgstr "Εισαγωγή"
+
+#, fuzzy
+#~ msgid "Lower selection one layer"
+#~ msgstr "Δεν έγινε επιλογή"
+
+#
+#, fuzzy
+#~ msgid "New drawing"
+#~ msgstr "Νέο επίθημα:"
+
+#, fuzzy
+#~ msgid "Nope !"
+#~ msgstr "Σημειώματα GNOME!"
+
+#, fuzzy
+#~ msgid "Open new drawing"
+#~ msgstr "Άνοιγμα νέου παραθύρου"
+
+#
+#~ msgid "Paste from clipboard"
+#~ msgstr "Επικόλληση από το τεμάχιο"
+
+#, fuzzy
+#~ msgid "Preview print drawing"
+#~ msgstr "Προεπισκόπηση δεδομένων προς εκτύπωση"
+
+#
+#, fuzzy
+#~ msgid "Print drawing"
+#~ msgstr "Σε εκτύπωση"
+
+#, fuzzy
+#~ msgid "Raise selection to top"
+#~ msgstr "Αποθήκευση επιλογής"
+
+#, fuzzy
+#~ msgid "Remove transformation"
+#~ msgstr "Μετασχηματισμός"
+
+#, fuzzy
+#~ msgid "Rise selection one layer"
+#~ msgstr "Μόνον επιλογή"
+
+#
+#, fuzzy
+#~ msgid "Rotate selected objects 90deg clockwise"
+#~ msgstr "Διαγραφή επιλεγμένου αντικειμένου"
+
+#, fuzzy
+#~ msgid "Save drawing "
+#~ msgstr "Αποθήκευση τροποποιήσεων"
+
+#, fuzzy
+#~ msgid "Save drawing under new filename"
+#~ msgstr "Αποθήκευση ως γνήσιο όνομα αρχείου"
+
+#
+#, fuzzy
+#~ msgid "Select and transform"
+#~ msgstr "Επιλέξτε ενέργεια"
+
+#, fuzzy
+#~ msgid "Transformation dialog"
+#~ msgstr "Μετασχηματισμός"
+
+#
+#, fuzzy
+#~ msgid "Undo "
+#~ msgstr "Ακύρωση"
+
+#, fuzzy
+#~ msgid "Ungroup selected objects"
+#~ msgstr "Διαγραφή επιλεγμένων αντικειμένων"
+
+#, fuzzy
+#~ msgid "Unsymmetric"
+#~ msgstr "Χρήση Μετρικού Συστήματος"
+
+#, fuzzy
+#~ msgid "Yep !"
+#~ msgstr " Ναι "
+
+#~ msgid "Zoom in"
+#~ msgstr "Μεγέθυνση"
+
+#~ msgid "Zoom out"
+#~ msgstr "Σμίκρυνση"
+
+#
+#, fuzzy
+#~ msgid "Zoom to 1:1"
+#~ msgstr "Μεγέθυνση _1:1"
+
+#, fuzzy
+#~ msgid "Zoom to 1:2"
+#~ msgstr "Κλίμακα 125%"
+
+#, fuzzy
+#~ msgid "Zoom to 2:1"
+#~ msgstr "Κλίμακα 25%"
+
+#, fuzzy
+#~ msgid "Zoom to drawing"
+#~ msgstr "Αλλαγή κλίμακας για _ταίριασμα"
+
+#, fuzzy
+#~ msgid "Zoom to page"
+#~ msgstr "Αλλαγή κλίμακας ώστε να ταιριάξει η σελίδα"
+
+#, fuzzy
+#~ msgid "Zoom to selection"
+#~ msgstr "Αντιγραφή ώρας στο επιλεγμένο"
+
+#
+#~ msgid "_Open"
+#~ msgstr "_Άνοιγμα"
+
+#~ msgid "_Quit"
+#~ msgstr "_Τέλος"
+
+#
+#, fuzzy
+#~ msgid "lower selection to bottom"
+#~ msgstr "Αντιγραφή επιλογής στο τεμάχιο"
+
+#, fuzzy
+#~ msgid "Align to bottom left"
+#~ msgstr "άδεια θέση στον πάτο"
+
+#, fuzzy
+#~ msgid "Align to bottom middle"
+#~ msgstr "Χρώμα δεξιά ή κάτω"
+
+#, fuzzy
+#~ msgid "Align to bottom right"
+#~ msgstr "Χρώμα δεξιά ή κάτω"
+
+#, fuzzy
+#~ msgid "Align to center"
+#~ msgstr "Στοίχιση"
+
+#, fuzzy
+#~ msgid "Align to left middle"
+#~ msgstr "Εκτύπωση σε αρχείο"
+
+#, fuzzy
+#~ msgid "Align to top left"
+#~ msgstr "Δεξιά προς αριστερά"
+
+#, fuzzy
+#~ msgid "Align to top middle"
+#~ msgstr "Εκτύπωση σε αρχείο"
+
+#, fuzzy
+#~ msgid "Align to top right"
+#~ msgstr "Κύλιση από αριστερά προς δεξιά"
+
+#~ msgid "Center"
+#~ msgstr "Κέντρο"
+
+#, fuzzy
+#~ msgid "Choose metric for center"
+#~ msgstr "Επιλέξτε γραμματοσειρά"
+
+#, fuzzy
+#~ msgid "Close dialog - Ctl+c"
+#~ msgstr "Κλείσιμο διαλόγου"
+
+#, fuzzy
+#~ msgid "Degree"
+#~ msgstr "πράσινο"
+
+#~ msgid "Height: "
+#~ msgstr "Ύψος: "
+
+#, fuzzy
+#~ msgid "Horizontal center value"
+#~ msgstr "Οριζόντιες Ρίγες"
+
+#~ msgid "Move"
+#~ msgstr "Μετακίνηση"
+
+#, fuzzy
+#~ msgid "Orig. Width: "
+#~ msgstr "Πλάτος: "
+
+#, fuzzy
+#~ msgid "Orig. X: "
+#~ msgstr ""
+#~ "\n"
+#~ "Οργ: "
+
+#~ msgid "Rotate"
+#~ msgstr "Περιστροφή"
+
+#, fuzzy
+#~ msgid "Skew"
+#~ msgstr "Καπνός"
+
+#, fuzzy
+#~ msgid "Start transformation - Ctl+a"
+#~ msgstr "Μετασχηματισμός"
+
+#, fuzzy
+#~ msgid "Toggle center given in selection/desktop coordiantes"
+#~ msgstr "Σημείο βάσει των συντεταγμένων του"
+
+#, fuzzy
+#~ msgid "Transform selection"
+#~ msgstr "Μετασχηματισμός"
+
+#, fuzzy
+#~ msgid "Use alignment during transformation"
+#~ msgstr "Πληροφορίες Συνάντησης"
+
+#, fuzzy
+#~ msgid "Vertical center value"
+#~ msgstr "Κατακόρυφες Ρίγες"
+
+#, fuzzy
+#~ msgid "Y: "
+#~ msgstr "Υ:"
+
+#, fuzzy
+#~ msgid "absolute"
+#~ msgstr "Εκτός χρήσης"
+
+#, fuzzy
+#~ msgid "angle"
+#~ msgstr "Διάστημα"
+
+#, fuzzy
+#~ msgid "deg"
+#~ msgstr "dec"
+
+#
+#, fuzzy
+#~ msgid "desktop"
+#~ msgstr "Επιφάνεια εργασίας"
+
+#, fuzzy
+#~ msgid "flip horizontal"
+#~ msgstr "Οριζόντια αντιστροφή"
+
+#, fuzzy
+#~ msgid "flip vertical"
+#~ msgstr "Κατακόρυφη αντιστροφή"
+
+#, fuzzy
+#~ msgid "horizontal move"
+#~ msgstr "οριζόντιο"
+
+#, fuzzy
+#~ msgid "horizontal scale value"
+#~ msgstr "οριζόντιο"
+
+#, fuzzy
+#~ msgid "keep aspect"
+#~ msgstr "Διατήρηση αναλογιών"
+
+#
+#, fuzzy
+#~ msgid "select direction"
+#~ msgstr "Επιλογή λεξικού"
+
+#, fuzzy
+#~ msgid "select metric for scale"
+#~ msgstr "Επιλογή τοπικών ρυθμίσεων"
+
+#, fuzzy
+#~ msgid "select metric for values"
+#~ msgstr "Επιλογή εικονιδίου για προσαρτημένο"
+
+#, fuzzy
+#~ msgid "skew"
+#~ msgstr "υποδοχή"
+
+#, fuzzy
+#~ msgid "vertical move"
+#~ msgstr "κάθετο"
+
+#, fuzzy
+#~ msgid "vertical scale value"
+#~ msgstr "Μερικό μικρό χαλάζι"
+
+#
+#, fuzzy
+#~ msgid "Add attribute"
+#~ msgstr "Ιδιότητα"
+
+#~ msgid "Attribute:"
+#~ msgstr "Ιδιότητα:"
+
+#~ msgid "Attributes"
+#~ msgstr "Ιδιότητες"
+
+#
+#~ msgid "Change"
+#~ msgstr "Αλλαγή"
+
+#
+#, fuzzy
+#~ msgid "Change Attribute"
+#~ msgstr "Ιδιότητα"
+
+#, fuzzy
+#~ msgid "Change Content"
+#~ msgstr "Σχεδίαση"
+
+#~ msgid "Content"
+#~ msgstr "Περιεχόμενο"
+
+#, fuzzy
+#~ msgid "Do you want to delete attribute?"
+#~ msgstr "Εάν θέλετε αποσφαλμάτωση των ιδιοτήτων εγγραφών"
+
+#, fuzzy
+#~ msgid "Hierarchy"
+#~ msgstr "ιεραρχία"
+
+#~ msgid "Key"
+#~ msgstr "Πλήκτρο"
+
+#
+#~ msgid "Value"
+#~ msgstr "Τιμή"
+
+#
+#~ msgid "name"
+#~ msgstr "όνομα"
 
 #, fuzzy
 #~ msgid "You can't delete 'id' attribute!"

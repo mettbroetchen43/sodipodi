@@ -36,7 +36,7 @@
 
 static void nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass);
 static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
-static void nr_arena_glyphs_destroy (GtkObject *object);
+static void nr_arena_glyphs_dispose (GObject *object);
 
 static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
@@ -44,20 +44,23 @@ static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble 
 
 static NRArenaItemClass *glyphs_parent_class;
 
-GtkType
+GType
 nr_arena_glyphs_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaGlyphs",
-			sizeof (NRArenaGlyphs),
+		GTypeInfo info = {
 			sizeof (NRArenaGlyphsClass),
-			(GtkClassInitFunc) nr_arena_glyphs_class_init,
-			(GtkObjectInitFunc) nr_arena_glyphs_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_glyphs_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArenaGlyphs),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) nr_arena_glyphs_init,
 		};
-		type = gtk_type_unique (NR_TYPE_ARENA_ITEM, &info);
+		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaGlyphs", &info, 0);
 	}
 	return type;
 }
@@ -65,15 +68,15 @@ nr_arena_glyphs_get_type (void)
 static void
 nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	glyphs_parent_class = gtk_type_class (NR_TYPE_ARENA_ITEM);
+	glyphs_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->destroy = nr_arena_glyphs_destroy;
+	object_class->dispose = nr_arena_glyphs_dispose;
 
 	item_class->update = nr_arena_glyphs_update;
 	item_class->clip = nr_arena_glyphs_clip;
@@ -90,7 +93,7 @@ nr_arena_glyphs_init (NRArenaGlyphs *glyphs)
 }
 
 static void
-nr_arena_glyphs_destroy (GtkObject *object)
+nr_arena_glyphs_dispose (GObject *object)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -118,8 +121,8 @@ nr_arena_glyphs_destroy (GtkObject *object)
 		glyphs->curve = sp_curve_unref (glyphs->curve);
 	}
 
-	if (GTK_OBJECT_CLASS (glyphs_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (glyphs_parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (glyphs_parent_class)->dispose)
+		(* G_OBJECT_CLASS (glyphs_parent_class)->dispose) (object);
 }
 
 static guint
@@ -355,7 +358,7 @@ nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRBuffer *b)
 
 static void nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass);
 static void nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group);
-static void nr_arena_glyphs_group_destroy (GtkObject *object);
+static void nr_arena_glyphs_group_dispose (GObject *object);
 
 static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
@@ -363,20 +366,23 @@ static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gd
 
 static NRArenaGroupClass *group_parent_class;
 
-GtkType
+GType
 nr_arena_glyphs_group_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaGlyphsGroup",
-			sizeof (NRArenaGlyphsGroup),
+		GTypeInfo info = {
 			sizeof (NRArenaGlyphsGroupClass),
-			(GtkClassInitFunc) nr_arena_glyphs_group_class_init,
-			(GtkObjectInitFunc) nr_arena_glyphs_group_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_glyphs_group_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArenaGlyphsGroup),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) nr_arena_glyphs_group_init,
 		};
-		type = gtk_type_unique (NR_TYPE_ARENA_GROUP, &info);
+		type = g_type_register_static (NR_TYPE_ARENA_GROUP, "NRArenaGlyphsGroup", &info, 0);
 	}
 	return type;
 }
@@ -384,15 +390,15 @@ nr_arena_glyphs_group_get_type (void)
 static void
 nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	group_parent_class = gtk_type_class (NR_TYPE_ARENA_GROUP);
+	group_parent_class = g_type_class_ref (NR_TYPE_ARENA_GROUP);
 
-	object_class->destroy = nr_arena_glyphs_group_destroy;
+	object_class->dispose = nr_arena_glyphs_group_dispose;
 
 	item_class->update = nr_arena_glyphs_group_update;
 	item_class->render = nr_arena_glyphs_group_render;
@@ -411,7 +417,7 @@ nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group)
 }
 
 static void
-nr_arena_glyphs_group_destroy (GtkObject *object)
+nr_arena_glyphs_group_dispose (GObject *object)
 {
 	NRArenaGlyphsGroup *group;
 
@@ -432,8 +438,8 @@ nr_arena_glyphs_group_destroy (GtkObject *object)
 		group->style = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (group_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (group_parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (group_parent_class)->dispose)
+		(* G_OBJECT_CLASS (group_parent_class)->dispose) (object);
 }
 
 static guint

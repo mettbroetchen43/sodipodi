@@ -11,9 +11,9 @@
  *
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <gtk/gtkwidget.h>
 
@@ -21,6 +21,6 @@ void sp_display_dialog (void);
 void sp_display_dialog_apply (GtkWidget * widget);
 void sp_display_dialog_close (GtkWidget * widget);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

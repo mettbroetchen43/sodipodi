@@ -7,9 +7,8 @@ gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
 	-I.. \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
 	$(SODIPODI_CFLAGS) \
-	-I$(includedir)
+	-DSODIPODI_GLADEDIR=\""$(gladedir)"\"
 
 noinst_LIBRARIES = libspwidgets.a
 
@@ -34,7 +33,8 @@ libspwidgets_a_SOURCES = \
 #	sp-value-winder.c sp-value-winder.h
 #	sp-spin-button.c sp-spin-button.h
 
-#noinst_PROGRAMS = test-widgets
+#noinst_PROGRAMS = test-widgets test-wrapbox
+noinst_PROGRAMS = test-wrapbox
 
 #test_widgets_SOURCES = \
 #	test-widgets.c \
@@ -43,3 +43,11 @@ libspwidgets_a_SOURCES = \
 #	sp-color-selector.c sp-color-selector.h
 
 #test_widgets_LDADD = $(SODIPODI_LIBS)
+
+test_wrapbox_SOURCES = \
+	test-wrapbox.c \
+	sp-wrap-box.c sp-wrap-box.h \
+	sp-hwrap-box.c sp-hwrap-box.h \
+	sp-vwrap-box.c sp-vwrap-box.h
+
+test_wrapbox_LDADD = $(SODIPODI_LIBS)

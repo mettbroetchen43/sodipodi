@@ -12,15 +12,15 @@
  * Licensed under GNU GPL
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <gtk/gtkwidget.h>
 #include "../forward.h"
 
 void sp_object_attributes_dialog (SPObject *object, const guchar *tag);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

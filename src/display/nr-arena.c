@@ -12,10 +12,11 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libnr/nr-rect.h>
-#include <gtk/gtksignal.h>
+#include <glib-object.h>
+#include <gtk/gtkmarshal.h>
 #include "nr-arena-item.h"
 #include "nr-arena.h"
+#include "../libnr/nr-rect.h"
 
 enum {
 	ITEM_ADDED,
@@ -27,25 +28,28 @@ enum {
 
 static void nr_arena_class_init (NRArenaClass *klass);
 static void nr_arena_init (NRArena *arena);
-static void nr_arena_destroy (GtkObject *object);
+static void nr_arena_dispose (GObject *object);
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
-GtkType
+GType
 nr_arena_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArena",
-			sizeof (NRArena),
+		GTypeInfo info = {
 			sizeof (NRArenaClass),
-			(GtkClassInitFunc) nr_arena_class_init,
-			(GtkObjectInitFunc) nr_arena_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArena),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) nr_arena_init,
 		};
-		type = gtk_type_unique (GTK_TYPE_OBJECT, &info);
+		type = g_type_register_static (G_TYPE_OBJECT, "NRArena", &info, 0);
 	}
 	return type;
 }
@@ -53,40 +57,42 @@ nr_arena_get_type (void)
 static void
 nr_arena_class_init (NRArenaClass *klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	signals[ITEM_ADDED] = gtk_signal_new ("item_added",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (NRArenaClass, item_added),
-						  gtk_marshal_NONE__POINTER,
-						  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[REMOVE_ITEM] = gtk_signal_new ("remove_item",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (NRArenaClass, remove_item),
-						  gtk_marshal_NONE__POINTER,
-						  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[REQUEST_UPDATE] = gtk_signal_new ("request_update",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (NRArenaClass, request_update),
-						  gtk_marshal_NONE__POINTER,
-						  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[REQUEST_RENDER] = gtk_signal_new ("request_render",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (NRArenaClass, request_render),
-						  gtk_marshal_NONE__POINTER,
-						  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[ITEM_ADDED] = g_signal_new ("item_added",
+					    G_TYPE_FROM_CLASS (klass),
+					    G_SIGNAL_RUN_FIRST,
+					    G_STRUCT_OFFSET(NRArenaClass, item_added),
+					    NULL, NULL,
+					    gtk_marshal_NONE__POINTER,
+					    G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[REMOVE_ITEM] = g_signal_new ("remove_item",
+					     G_TYPE_FROM_CLASS (klass),
+					     G_SIGNAL_RUN_FIRST,
+					     G_STRUCT_OFFSET (NRArenaClass, remove_item),
+					     NULL, NULL,
+					     gtk_marshal_NONE__POINTER,
+					     G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[REQUEST_UPDATE] = g_signal_new ("request_update",
+						G_TYPE_FROM_CLASS (klass),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (NRArenaClass, request_update),
+						NULL, NULL,
+						gtk_marshal_NONE__POINTER,
+						G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[REQUEST_RENDER] = g_signal_new ("request_render",
+						G_TYPE_FROM_CLASS (klass),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (NRArenaClass, request_render),
+						NULL, NULL,
+						gtk_marshal_NONE__POINTER,
+						G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	object_class->destroy = nr_arena_destroy;
+	object_class->dispose = nr_arena_dispose;
 }
 
 static void
@@ -95,14 +101,14 @@ nr_arena_init (NRArena *arena)
 }
 
 static void
-nr_arena_destroy (GtkObject *object)
+nr_arena_dispose (GObject *object)
 {
 	NRArena *arena;
 
 	arena = NR_ARENA (object);
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose(object);
 }
 
 void
@@ -113,7 +119,7 @@ nr_arena_item_added (NRArena *arena, NRArenaItem *item)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
-	gtk_signal_emit (GTK_OBJECT (arena), signals [ITEM_ADDED], item);
+	g_signal_emit (G_OBJECT (arena), signals [ITEM_ADDED], 0, item);
 }
 
 void
@@ -124,7 +130,7 @@ nr_arena_remove_item (NRArena *arena, NRArenaItem *item)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
-	gtk_signal_emit (GTK_OBJECT (arena), signals [REMOVE_ITEM], item);
+	g_signal_emit (G_OBJECT (arena), signals [REMOVE_ITEM], 0, item);
 }
 
 void
@@ -135,7 +141,7 @@ nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
-	gtk_signal_emit (GTK_OBJECT (arena), signals [REQUEST_UPDATE], item);
+	g_signal_emit (G_OBJECT (arena), signals [REQUEST_UPDATE], 0, item);
 }
 
 void
@@ -146,7 +152,7 @@ nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 	g_return_if_fail (area != NULL);
 
 	if (area && !nr_rect_l_test_empty (area)) {
-		gtk_signal_emit (GTK_OBJECT (arena), signals [REQUEST_RENDER], area);
+		g_signal_emit (G_OBJECT (arena), signals [REQUEST_RENDER], 0, area);
 	}
 }
 

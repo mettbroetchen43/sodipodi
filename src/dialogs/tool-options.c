@@ -16,12 +16,11 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtklabel.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "../forward.h"
 #include "../sodipodi.h"
 #include "../desktop-handles.h"
 #include "../event-context.h"
+#include "../helper/sp-intl.h"
 #if 0
 #include "sp-attribute-widget.h"
 #endif

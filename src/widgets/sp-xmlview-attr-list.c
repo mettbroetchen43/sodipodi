@@ -13,13 +13,12 @@
 
 #include <string.h>
 #include <glib.h>
-#include <libintl.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtklist.h>
 #include <gtk/gtkadjustment.h>
-#include <gal/widgets/e-unicode.h>
+#include "helper/sp-intl.h"
 #include "../xml/repr.h"
 #include "../xml/repr-private.h"
 #include "sp-xmlview-attr-list.h"
@@ -50,13 +49,13 @@ GtkWidget *
 sp_xmlview_attr_list_new (SPRepr * repr)
 {
 	SPXMLViewAttrList * list;
-	static const gchar * titles[2];
-	titles[0] = gettext ("Attribute");
-	titles[1] = gettext ("Value");
 
-	list = gtk_type_new (SP_TYPE_XMLVIEW_ATTR_LIST);
+	list = g_object_new (SP_TYPE_XMLVIEW_ATTR_LIST, "n_columns", 2, NULL);
 
-	gtk_clist_construct (GTK_CLIST (list), 2, (gchar **)titles);
+	gtk_clist_set_column_title (GTK_CLIST (list), 0, _("Attribute"));
+	gtk_clist_set_column_title (GTK_CLIST (list), 1, _("Value"));
+	gtk_clist_column_titles_show (GTK_CLIST (list));
+
 	gtk_clist_column_titles_passive (GTK_CLIST (list));
 	gtk_clist_set_column_auto_resize (GTK_CLIST (list), 0, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (list), 1, TRUE);
@@ -148,14 +147,11 @@ event_attr_changed (SPRepr * repr, const guchar * name, const guchar * old_value
 
 	gtk_clist_freeze (GTK_CLIST (list));
 
-	gtktext = (new_value) ? e_utf8_from_gtk_string (GTK_WIDGET (list), new_value) : NULL;
-
-	if (gtktext) {
-		strncpy (new_text, gtktext, 64);
-		if (strlen (gtktext) >= 64) {
+	if (new_value) {
+		strncpy (new_text, new_value, 64);
+		if (strlen (new_value) >= 64) {
 			strcpy (new_text + 64, "...");
 		}
-		g_free (gtktext);
 		gtktext = new_text;
 	} else {
 		gtktext = NULL;

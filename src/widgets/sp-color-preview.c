@@ -171,8 +171,8 @@ sp_color_preview_paint (SPColorPreview *cp, GdkRectangle *area)
 
 	/* Transparent area */
 
-	bx = widget->style->klass->xthickness;
-	by = widget->style->klass->ythickness;
+	bx = widget->style->xthickness;
+	by = widget->style->ythickness;
 	w2 = warea.width / 2;
 
 	carea.x = warea.x + bx;

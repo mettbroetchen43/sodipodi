@@ -14,9 +14,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef struct _SPFontSelector SPFontSelector;
 typedef struct _SPFontSelectorClass SPFontSelectorClass;
@@ -56,7 +56,7 @@ void sp_font_preview_set_font (SPFontPreview *fprev, NRFont *font);
 void sp_font_preview_set_rgba32 (SPFontPreview *fprev, guint32 rgba);
 void sp_font_preview_set_phrase (SPFontPreview *fprev, const guchar *phrase);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif
 

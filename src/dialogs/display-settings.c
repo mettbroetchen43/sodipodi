@@ -12,8 +12,6 @@
 
 #include <config.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
@@ -25,6 +23,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkspinbutton.h>
 #include "../sodipodi.h"
+#include "../helper/sp-intl.h"
 #include "display-settings.h"
 
 static GtkWidget *dialog = NULL;

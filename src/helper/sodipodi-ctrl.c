@@ -42,7 +42,7 @@ static void sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void sp_ctrl_update (SPCanvasItem *item, double *affine, unsigned int flags);
 static void sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_ctrl_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item);
+static double sp_ctrl_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
 
 
 static SPCanvasItemClass *parent_class;
@@ -52,15 +52,18 @@ sp_ctrl_get_type (void)
 {
 	static GtkType ctrl_type = 0;
 	if (!ctrl_type) {
-		GtkTypeInfo ctrl_info = {
-			"SPCtrl",
-			sizeof (SPCtrl),
+		static const GTypeInfo ctrl_info = {
 			sizeof (SPCtrlClass),
-			(GtkClassInitFunc) sp_ctrl_class_init,
-			(GtkObjectInitFunc) sp_ctrl_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_ctrl_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPCtrl),
+			0,	/* n_preallocs */
+			(GInstanceInitFunc) sp_ctrl_init,
 		};
-		ctrl_type = gtk_type_unique (sp_canvas_item_get_type (), &ctrl_info);
+		ctrl_type = g_type_register_static (SP_TYPE_CANVAS_ITEM, "SPCtrl", &ctrl_info, 0);
 	}
 	return ctrl_type;
 }
@@ -76,8 +79,8 @@ sp_ctrl_class_init (SPCtrlClass *klass)
 
 	parent_class = gtk_type_class (sp_canvas_item_get_type ());
 
-	gtk_object_add_arg_type ("SPCtrl::shape", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_SHAPE);
-	gtk_object_add_arg_type ("SPCtrl::mode", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_MODE);
+	gtk_object_add_arg_type ("SPCtrl::shape", GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_SHAPE);
+	gtk_object_add_arg_type ("SPCtrl::mode", GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_MODE);
 	gtk_object_add_arg_type ("SPCtrl::anchor", GTK_TYPE_ANCHOR_TYPE, GTK_ARG_READWRITE, ARG_ANCHOR);
 	gtk_object_add_arg_type ("SPCtrl::size", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_SIZE);
 	gtk_object_add_arg_type ("SPCtrl::pixbuf", GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_PIXBUF);
@@ -140,17 +143,17 @@ sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 	switch (arg_id) {
 	case ARG_SHAPE:
-		ctrl->shape = GTK_VALUE_ENUM (*arg);
+		ctrl->shape = GTK_VALUE_INT (*arg);
 		ctrl->build = FALSE;
 		sp_canvas_item_request_update (item);
 		break;
 	case ARG_MODE:
-		ctrl->mode = GTK_VALUE_ENUM (*arg);
+		ctrl->mode = GTK_VALUE_INT (*arg);
 		ctrl->build = FALSE;
 		sp_canvas_item_request_update (item);
 		break;
 	case ARG_ANCHOR:
-		ctrl->anchor = GTK_VALUE_ENUM (*arg);
+		ctrl->anchor = GTK_VALUE_INT (*arg);
 		ctrl->build = FALSE;
 		sp_canvas_item_request_update (item);
 		break;
@@ -261,8 +264,7 @@ sp_ctrl_update (SPCanvasItem *item, double *affine, unsigned int flags)
 }
 
 static double
-sp_ctrl_point (SPCanvasItem *item, double x, double y,
-	       int cx, int cy, SPCanvasItem **actual_item)
+sp_ctrl_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
 	SPCtrl *ctrl;
 
@@ -270,7 +272,7 @@ sp_ctrl_point (SPCanvasItem *item, double x, double y,
 
 	*actual_item = item;
 
-	if ((cx >= ctrl->box.x0) && (cx <= ctrl->box.x1) && (cy >= ctrl->box.y0) && (cy <= ctrl->box.y1)) return 0.0;
+	if ((x >= ctrl->box.x0) && (x <= ctrl->box.x1) && (y >= ctrl->box.y0) && (y <= ctrl->box.y1)) return 0.0;
 
 	return 1e18;
 }

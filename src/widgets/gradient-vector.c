@@ -22,8 +22,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkwindow.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include "../helper/sp-intl.h"
 #include "../widgets/gradient-image.h"
 #include "../sodipodi.h"
 #include "../document-private.h"
@@ -40,8 +39,8 @@ static void sp_gradient_vector_selector_class_init (SPGradientVectorSelectorClas
 static void sp_gradient_vector_selector_init (SPGradientVectorSelector *gvs);
 static void sp_gradient_vector_selector_destroy (GtkObject *object);
 
-static void sp_gvs_gradient_destroy (SPGradient *gr, SPGradientVectorSelector *gvs);
-static void sp_gvs_defs_destroy (SPObject *defs, SPGradientVectorSelector *gvs);
+static void sp_gvs_gradient_release (SPGradient *gr, SPGradientVectorSelector *gvs);
+static void sp_gvs_defs_release (SPObject *defs, SPGradientVectorSelector *gvs);
 static void sp_gvs_defs_modified (SPObject *defs, guint flags, SPGradientVectorSelector *gvs);
 
 static void sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs);
@@ -79,12 +78,11 @@ sp_gradient_vector_selector_class_init (SPGradientVectorSelectorClass *klass)
 
 	signals[VECTOR_SET] = gtk_signal_new ("vector_set",
 					      GTK_RUN_LAST,
-					      object_class->type,
+					      GTK_CLASS_TYPE(object_class),
 					      GTK_SIGNAL_OFFSET (SPGradientVectorSelectorClass, vector_set),
 					      gtk_marshal_NONE__POINTER,
 					      GTK_TYPE_NONE, 1,
 					      GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_gradient_vector_selector_destroy;
 }
@@ -110,12 +108,14 @@ sp_gradient_vector_selector_destroy (GtkObject *object)
 	gvs = SP_GRADIENT_VECTOR_SELECTOR (object);
 
 	if (gvs->gr) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 		gvs->gr = NULL;
 	}
 
 	if (gvs->doc) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(SP_DOCUMENT_DEFS(gvs->doc)), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 		gvs->doc = NULL;
 	}
 
@@ -160,20 +160,22 @@ sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPDocum
 	if (doc != gvs->doc) {
 		/* Disconnect signals */
 		if (gvs->gr) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
+/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 			gvs->gr = NULL;
 		}
 		if (gvs->doc) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs);
+/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DOCUMENT_DEFS (gvs->doc)), gvs); */
+			g_signal_handlers_disconnect_matched (G_OBJECT(SP_DOCUMENT_DEFS(gvs->doc)), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 			gvs->doc = NULL;
 		}
 		/* Connect signals */
 		if (doc) {
-			gtk_signal_connect (GTK_OBJECT (SP_DOCUMENT_DEFS (doc)), "destroy", GTK_SIGNAL_FUNC (sp_gvs_defs_destroy), gvs);
-			gtk_signal_connect (GTK_OBJECT (SP_DOCUMENT_DEFS (doc)), "modified", GTK_SIGNAL_FUNC (sp_gvs_defs_modified), gvs);
+			g_signal_connect (G_OBJECT (SP_DOCUMENT_DEFS (doc)), "release", G_CALLBACK (sp_gvs_defs_release), gvs);
+			g_signal_connect (G_OBJECT (SP_DOCUMENT_DEFS (doc)), "modified", G_CALLBACK (sp_gvs_defs_modified), gvs);
 		}
 		if (gr) {
-			gtk_signal_connect (GTK_OBJECT (gr), "destroy", GTK_SIGNAL_FUNC (sp_gvs_gradient_destroy), gvs);
+			g_signal_connect (G_OBJECT (gr), "release", G_CALLBACK (sp_gvs_gradient_release), gvs);
 		}
 		gvs->doc = doc;
 		gvs->gr = gr;
@@ -325,12 +327,13 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 	/* fixme: Really we would want to use _set_vector */
 	/* Detach old */
 	if (gvs->gr) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
 		gvs->gr = NULL;
 	}
 	/* Attach new */
 	if (norm) {
-		gtk_signal_connect (GTK_OBJECT (norm), "destroy", GTK_SIGNAL_FUNC (sp_gvs_gradient_destroy), gvs);
+		g_signal_connect (G_OBJECT (norm), "release", G_CALLBACK (sp_gvs_gradient_release), gvs);
 		/* fixme: Connect 'modified'? (Lauris) */
 		/* fixme: I think we do not need it (Lauris) */
 		gvs->gr = norm;
@@ -346,7 +349,7 @@ sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs)
 }
 
 static void
-sp_gvs_gradient_destroy (SPGradient *gr, SPGradientVectorSelector *gvs)
+sp_gvs_gradient_release (SPGradient *gr, SPGradientVectorSelector *gvs)
 {
 	/* fixme: (Lauris) */
 	/* fixme: Not sure, what to do here (Lauris) */
@@ -354,12 +357,13 @@ sp_gvs_gradient_destroy (SPGradient *gr, SPGradientVectorSelector *gvs)
 }
 
 static void
-sp_gvs_defs_destroy (SPObject *defs, SPGradientVectorSelector *gvs)
+sp_gvs_defs_release (SPObject *defs, SPGradientVectorSelector *gvs)
 {
 	gvs->doc = NULL;
 	/* Disconnect gradient as well */
 	if (gvs->gr) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs);
+		g_signal_handlers_disconnect_matched (G_OBJECT(gvs->gr), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gvs);
+/*  		gtk_signal_disconnect_by_data (GTK_OBJECT (gvs->gr), gvs); */
 		gvs->gr = NULL;
 	}
 
@@ -387,7 +391,7 @@ static void sp_gradient_vector_dialog_close (GtkWidget *widget, GtkWidget *dialo
 static gint sp_gradient_vector_dialog_delete (GtkWidget *widget, GdkEvent *event, GtkWidget *dialog);
 
 static void sp_gradient_vector_widget_destroy (GtkObject *object, gpointer data);
-static void sp_gradient_vector_gradient_destroy (SPGradient *gradient, GtkWidget *widget);
+static void sp_gradient_vector_gradient_release (SPGradient *gradient, GtkWidget *widget);
 static void sp_gradient_vector_gradient_modified (SPGradient *gradient, guint flags, GtkWidget *widget);
 static void sp_gradient_vector_color_dragged (SPColorSelector *csel, GtkObject *object);
 static void sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object);
@@ -476,13 +480,14 @@ sp_gradient_vector_widget_load_gradient (GtkWidget *widget, SPGradient *gradient
 	old = gtk_object_get_data (GTK_OBJECT (widget), "gradient");
 	if (old != gradient) {
 		if (old) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (old), widget);
+			g_signal_handlers_disconnect_matched (G_OBJECT(old), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, widget);
+/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (old), widget); */
 		}
 		if (gradient) {
-			gtk_signal_connect (GTK_OBJECT (gradient), "destroy",
-					    GTK_SIGNAL_FUNC (sp_gradient_vector_gradient_destroy), widget);
-			gtk_signal_connect (GTK_OBJECT (gradient), "modified",
-					    GTK_SIGNAL_FUNC (sp_gradient_vector_gradient_modified), widget);
+			g_signal_connect (G_OBJECT (gradient), "release",
+					  G_CALLBACK (sp_gradient_vector_gradient_release), widget);
+			g_signal_connect (G_OBJECT (gradient), "modified",
+					  G_CALLBACK (sp_gradient_vector_gradient_modified), widget);
 		}
 	}
 
@@ -526,19 +531,20 @@ sp_gradient_vector_dialog_delete (GtkWidget *widget, GdkEvent *event, GtkWidget 
 static void
 sp_gradient_vector_widget_destroy (GtkObject *object, gpointer data)
 {
-	GtkObject *gradient;
+	GObject *gradient;
 
 	gradient = gtk_object_get_data (object, "gradient");
 
 	if (gradient) {
 		/* Remove signals connected to us */
 		/* fixme: may use _connect_while_alive as well */
-		gtk_signal_disconnect_by_data (gradient, object);
+		g_signal_handlers_disconnect_matched (gradient, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, object);
+/*  		gtk_signal_disconnect_by_data (gradient, object); */
 	}
 }
 
 static void
-sp_gradient_vector_gradient_destroy (SPGradient *gradient, GtkWidget *widget)
+sp_gradient_vector_gradient_release (SPGradient *gradient, GtkWidget *widget)
 {
 	sp_gradient_vector_widget_load_gradient (widget, NULL);
 }

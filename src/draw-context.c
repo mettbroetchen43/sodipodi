@@ -21,10 +21,9 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
+#include "helper/sp-intl.h"
 #include "helper/art-utils.h"
 #include "helper/curve.h"
 #include "helper/bezier-utils.h"
@@ -60,7 +59,7 @@ struct _SPDrawAnchor {
 
 static void sp_draw_context_class_init (SPDrawContextClass *klass);
 static void sp_draw_context_init (SPDrawContext *dc);
-static void sp_draw_context_finalize (GtkObject *object);
+static void sp_draw_context_destroy (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext *ec);
 static void sp_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *value);
@@ -119,12 +118,12 @@ sp_draw_context_class_init (SPDrawContextClass *klass)
 	GtkObjectClass *object_class;
 	SPEventContextClass *ec_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GtkObjectClass *)klass;
 	ec_class = (SPEventContextClass *) klass;
 
 	draw_parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
 
-	object_class->finalize = sp_draw_context_finalize;
+	object_class->destroy = sp_draw_context_destroy;
 
 	ec_class->setup = sp_draw_context_setup;
 	ec_class->set = sp_draw_context_set;
@@ -145,13 +144,13 @@ sp_draw_context_init (SPDrawContext *dc)
 }
 
 static void
-sp_draw_context_finalize (GtkObject *object)
+sp_draw_context_destroy (GtkObject *object)
 {
 	SPDrawContext *dc;
 
 	dc = SP_DRAW_CONTEXT (object);
 
-	if (dc->grab) sp_canvas_item_ungrab (dc->grab, gdk_time_get ());
+	if (dc->grab) sp_canvas_item_ungrab (dc->grab, GDK_CURRENT_TIME);
 
 	if (dc->selection) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
@@ -159,7 +158,8 @@ sp_draw_context_finalize (GtkObject *object)
 
 	spdc_free_colors (dc);
 
-	GTK_OBJECT_CLASS (draw_parent_class)->finalize (object);
+	if (GTK_OBJECT_CLASS (draw_parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (draw_parent_class)->destroy) (object);
 }
 
 static void
@@ -208,7 +208,7 @@ sp_draw_context_finish (SPEventContext *ec)
 	dc = SP_DRAW_CONTEXT (ec);
 
 	if (dc->grab) {
-		sp_canvas_item_ungrab (dc->grab, gdk_time_get ());
+		sp_canvas_item_ungrab (dc->grab, GDK_CURRENT_TIME);
 	}
 
 	if (dc->selection) {
@@ -782,7 +782,7 @@ sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean acti
 
 static void sp_pencil_context_class_init (SPPencilContextClass *klass);
 static void sp_pencil_context_init (SPPencilContext *dc);
-static void sp_pencil_context_finalize (GtkObject *object);
+static void sp_pencil_context_destroy (GtkObject *object);
 
 static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
@@ -824,7 +824,7 @@ sp_pencil_context_class_init (SPPencilContextClass *klass)
 
 	pencil_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
 
-	object_class->finalize = sp_pencil_context_finalize;
+	object_class->destroy = sp_pencil_context_destroy;
 
 	event_context_class->root_handler = sp_pencil_context_root_handler;
 }
@@ -836,13 +836,14 @@ sp_pencil_context_init (SPPencilContext *pc)
 }
 
 static void
-sp_pencil_context_finalize (GtkObject *object)
+sp_pencil_context_destroy (GtkObject *object)
 {
 	SPPencilContext *pc;
 
 	pc = SP_PENCIL_CONTEXT (object);
 
-	GTK_OBJECT_CLASS (pencil_parent_class)->finalize (object);
+	if (GTK_OBJECT_CLASS (pencil_parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (pencil_parent_class)->destroy) (object);
 }
 
 gint
@@ -1121,7 +1122,7 @@ spdc_add_freehand_point (SPPencilContext *pc, ArtPoint *p, guint state)
 
 static void sp_pen_context_class_init (SPPenContextClass *klass);
 static void sp_pen_context_init (SPPenContext *pc);
-static void sp_pen_context_finalize (GtkObject *object);
+static void sp_pen_context_destroy (GtkObject *object);
 
 static void sp_pen_context_setup (SPEventContext *ec);
 static void sp_pen_context_finish (SPEventContext *ec);
@@ -1167,7 +1168,7 @@ sp_pen_context_class_init (SPPenContextClass *klass)
 
 	pen_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
 
-	object_class->finalize = sp_pen_context_finalize;
+	object_class->destroy = sp_pen_context_destroy;
 
 	event_context_class->setup = sp_pen_context_setup;
 	event_context_class->finish = sp_pen_context_finish;
@@ -1189,7 +1190,7 @@ sp_pen_context_init (SPPenContext *pc)
 }
 
 static void
-sp_pen_context_finalize (GtkObject *object)
+sp_pen_context_destroy (GtkObject *object)
 {
 	SPPenContext *pc;
 
@@ -1200,7 +1201,8 @@ sp_pen_context_finalize (GtkObject *object)
 	if (pc->cl0) gtk_object_destroy (GTK_OBJECT (pc->cl0));
 	if (pc->cl1) gtk_object_destroy (GTK_OBJECT (pc->cl1));
 
-	GTK_OBJECT_CLASS (pen_parent_class)->finalize (object);
+	if (GTK_OBJECT_CLASS (pen_parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (pen_parent_class)->destroy) (object);
 }
 
 static void

@@ -75,18 +75,16 @@ sp_selection_class_init (SPSelectionClass * klass)
 
 	selection_signals [CHANGED] = gtk_signal_new ("changed",
 						      GTK_RUN_FIRST,
-						      object_class->type,
+						      GTK_CLASS_TYPE(object_class),
 						      GTK_SIGNAL_OFFSET (SPSelectionClass, changed),
 						      gtk_marshal_NONE__NONE,
 						      GTK_TYPE_NONE, 0);
 	selection_signals [MODIFIED] = gtk_signal_new ("modified",
 						       GTK_RUN_FIRST,
-						       object_class->type,
+						       GTK_CLASS_TYPE(object_class),
 						       GTK_SIGNAL_OFFSET (SPSelectionClass, modified),
 						       gtk_marshal_NONE__UINT,
 						       GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-
-	gtk_object_class_add_signals (object_class, selection_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_selection_destroy;
 
@@ -127,7 +125,7 @@ sp_selection_private_changed (SPSelection * selection)
 }
 
 static void
-sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
+sp_selection_selected_item_release (SPItem * item, SPSelection * selection)
 {
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -197,7 +195,8 @@ sp_selection_frozen_empty (SPSelection * selection)
 
 	while (selection->items) {
 		i = (SPItem *) selection->items->data;
-		gtk_signal_disconnect_by_data (GTK_OBJECT (i), selection);
+/* 		gtk_signal_disconnect_by_data (GTK_OBJECT (i), selection); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(i), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, selection);
 		selection->items = g_slist_remove (selection->items, i);
 	}
 
@@ -306,10 +305,10 @@ sp_selection_add_item (SPSelection * selection, SPItem * item)
 	selection->reprs = NULL;
 
 	selection->items = g_slist_prepend (selection->items, item);
-	gtk_signal_connect (GTK_OBJECT (item), "destroy",
-			    GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
-	gtk_signal_connect (GTK_OBJECT (item), "modified",
-			    GTK_SIGNAL_FUNC (sp_selection_selected_item_modified), selection);
+	g_signal_connect (G_OBJECT (item), "release",
+			  G_CALLBACK (sp_selection_selected_item_release), selection);
+	g_signal_connect (G_OBJECT (item), "modified",
+			  G_CALLBACK (sp_selection_selected_item_modified), selection);
 
 	sp_selection_changed (selection);
 
@@ -395,7 +394,8 @@ sp_selection_remove_item (SPSelection * selection, SPItem * item)
 	g_slist_free (selection->reprs);
 	selection->reprs = NULL;
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (item), selection);
+/* 	gtk_signal_disconnect_by_data (GTK_OBJECT (item), selection); */
+	g_signal_handlers_disconnect_matched (G_OBJECT(item), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, selection);
 	selection->items = g_slist_remove (selection->items, item);
 
 	sp_selection_changed (selection);
@@ -445,10 +445,10 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 			i = (SPItem *) l->data;
 			if (!SP_IS_ITEM (i)) break;
 			selection->items = g_slist_prepend (selection->items, i);
-			gtk_signal_connect (GTK_OBJECT (i), "destroy",
-					    GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
-			gtk_signal_connect (GTK_OBJECT (i), "modified",
-					    GTK_SIGNAL_FUNC (sp_selection_selected_item_modified), selection);
+			g_signal_connect (G_OBJECT (i), "release",
+					  G_CALLBACK (sp_selection_selected_item_release), selection);
+			g_signal_connect (G_OBJECT (i), "modified",
+					  G_CALLBACK (sp_selection_selected_item_modified), selection);
 		}
 	}
 

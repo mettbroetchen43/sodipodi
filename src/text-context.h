@@ -13,9 +13,10 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+/*  #include <gdk/gdkic.h> */
 #include "event-context.h"
 
-#define SP_TC_XIM
+/*  #define SP_TC_XIM */
 
 #define SP_TYPE_TEXT_CONTEXT (sp_text_context_get_type ())
 #define SP_TEXT_CONTEXT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT_CONTEXT, SPTextContext))

@@ -20,7 +20,6 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcontainer.h>
-#include <gal/widgets/e-unicode.h>
 #include "../xml/repr.h"
 #include "../xml/repr-private.h"
 #include "sp-xmlview-tree.h"
@@ -94,9 +93,11 @@ sp_xmlview_tree_new (SPRepr * repr, void * factory, void * data)
 {
 	SPXMLViewTree * tree;
 
-	tree = gtk_type_new (SP_TYPE_XMLVIEW_TREE);
+	tree = g_object_new (SP_TYPE_XMLVIEW_TREE, "n_columns", 1, "tree_column", 0, NULL);
 
-	gtk_ctree_construct (GTK_CTREE (tree), 1, 0, NULL);
+#if 0
+	tree = gtk_ctree_construct (GTK_CTREE (tree), 1, 0, NULL);
+#endif
 	gtk_clist_column_titles_hide (GTK_CLIST (tree));
 	gtk_ctree_set_line_style (GTK_CTREE (tree), GTK_CTREE_LINES_NONE);
 	gtk_ctree_set_expander_style (GTK_CTREE (tree), GTK_CTREE_EXPANDER_TRIANGLE);
@@ -256,7 +257,7 @@ void
 element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_value, const guchar * new_value, gpointer ptr)
 {
 	NodeData * data;
-	gchar *label, *gtkstr;
+	gchar *label;
 
 	data = (NodeData *) ptr;
 
@@ -264,9 +265,7 @@ element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_valu
 
 	if (strcmp (key, "id")) return;
 
-	gtkstr = e_utf8_to_gtk_string (GTK_WIDGET (data->tree), new_value);
-	label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), gtkstr);
-	g_free (gtkstr);
+	label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), new_value);
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }
@@ -305,15 +304,13 @@ void
 text_content_changed (SPRepr * repr, const guchar * old_content, const guchar * new_content, gpointer ptr)
 {
 	NodeData *data;
-	gchar *label, *gtkstr;
+	gchar *label;
 
 	data = (NodeData *) ptr;
 
 	if (data->tree->blocked) return;
 
-	gtkstr = e_utf8_to_gtk_string (GTK_WIDGET (data->tree), new_content);
-	label = g_strdup_printf ("\"%s\"", gtkstr);
-	g_free (gtkstr);
+	label = g_strdup_printf ("\"%s\"", new_content);
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
 }

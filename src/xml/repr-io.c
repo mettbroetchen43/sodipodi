@@ -17,9 +17,9 @@
 #include <ctype.h>
 #include "repr.h"
 #include "repr-private.h"
-#include <xmlmemory.h>
-#include <parser.h>
-#include <tree.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 static const guchar *sp_svg_doctype_str =
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
@@ -103,6 +103,12 @@ sp_repr_read_mem (const gchar * buffer, gint length)
 	doc = xmlParseMemory ((gchar *) buffer, length);
 	if (doc == NULL) return NULL;
 
+	if ((node = xmlDocGetRootElement(doc)) == NULL)
+	{
+		xmlFreeDoc(doc);
+		return NULL;
+	}
+
 	rdoc = sp_repr_document_new ("void");
 
 	repr = NULL;
@@ -175,9 +181,9 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 	repr = sp_repr_new (c);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
-		if (prop->val) {
+		if (prop->children) {
 			sp_repr_qualified_name (c, 256, prop->ns, prop->name);
-			sp_repr_set_attr (repr, c, prop->val->content);
+			sp_repr_set_attr (repr, c, prop->children->content);
 		}
 	}
 

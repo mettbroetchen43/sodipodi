@@ -13,9 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef struct _SPGradientSelector SPGradientSelector;
 typedef struct _SPGradientSelectorClass SPGradientSelectorClass;
@@ -85,6 +85,9 @@ SPGradient *sp_gradient_selector_get_vector (SPGradientSelector *sel);
 void sp_gradient_selector_get_lgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
 void sp_gradient_selector_get_rgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
 
-END_GNOME_DECLS
+void sp_gradient_selector_get_lgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
+void sp_gradient_selector_get_rgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
+
+G_END_DECLS
 
 #endif

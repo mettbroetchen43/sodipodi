@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src glade po intl
+SUBDIRS = intl m4 src glade po
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png
@@ -15,10 +15,10 @@ oaf_in_files = GNOME_Sodipodi.oaf.in
 oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 @INTLTOOL_OAF_RULE@
 
-if BONOBO
-install-exec-local:
-	ln -sf sodipodi $(DESTDIR)$(bindir)/sodipodi-bonobo
-endif
+#if BONOBO
+#install-exec-local:
+#	ln -sf sodipodi $(DESTDIR)$(bindir)/sodipodi-bonobo
+#endif
 
 dist-hook:
 	mkdir $(distdir)/samples
@@ -28,13 +28,14 @@ dist-hook:
 
 man_MANS = sodipodi.1
 
-EXTRA_DIST =			\
+EXTRA_DIST = config.rpath 			\
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
 	$(Graphics_in_files)	\
 	$(oaf_in_files)		\
 	sodipodi.spec.in	\
-	sodipodi.spec		\
 	README HACKING		\
 	sodipodi.png
+
+ACLOCAL_AMFLAGS = -I m4

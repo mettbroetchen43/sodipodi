@@ -14,15 +14,17 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <glib.h>
 #include "sp-shape.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
+
 
 #define SP_TYPE_SPIRAL            (sp_spiral_get_type ())
-#define SP_SPIRAL(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SPIRAL, SPSpiral))
-#define SP_SPIRAL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SPIRAL, SPSpiralClass))
-#define SP_IS_SPIRAL(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SPIRAL))
-#define SP_IS_SPIRAL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SPIRAL))
+#define SP_SPIRAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_SPIRAL, SPSpiral))
+#define SP_SPIRAL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_SPIRAL, SPSpiralClass))
+#define SP_IS_SPIRAL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_SPIRAL))
+#define SP_IS_SPIRAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_SPIRAL))
 
 typedef struct _SPSpiral SPSpiral;
 typedef struct _SPSpiralClass SPSpiralClass;
@@ -52,7 +54,7 @@ struct _SPSpiralClass {
 
 
 /* Standard Gtk function */
-GtkType sp_spiral_get_type  (void);
+GType sp_spiral_get_type  (void);
 
 /* Lowlevel interface */
 void    sp_spiral_set		(SPSpiral      *spiral,
@@ -74,6 +76,6 @@ void    sp_spiral_get_polar	(SPSpiral      *spiral,
 gboolean sp_spiral_is_invalid   (SPSpiral      *spiral);
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

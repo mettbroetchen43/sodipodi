@@ -19,7 +19,8 @@
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
 #include <libart_lgpl/art_affine.h>
-#include <gtk/gtksignal.h>
+#include <glib-object.h>
+#include <gtk/gtkmarshal.h>
 #include "../helper/nr-plain-stuff.h"
 #include "nr-arena.h"
 #include "nr-arena-item.h"
@@ -31,25 +32,28 @@ enum {
 
 static void nr_arena_item_class_init (NRArenaItemClass *klass);
 static void nr_arena_item_init (NRArenaItem *item);
-static void nr_arena_item_private_destroy (GtkObject *object);
+static void nr_arena_item_private_dispose (GObject *object);
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
-GtkType
+GType
 nr_arena_item_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaItem",
-			sizeof (NRArenaItem),
+		GTypeInfo info = {
 			sizeof (NRArenaItemClass),
-			(GtkClassInitFunc) nr_arena_item_class_init,
-			(GtkObjectInitFunc) nr_arena_item_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_item_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArenaItem),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) nr_arena_item_init,
 		};
-		type = gtk_type_unique (GTK_TYPE_OBJECT, &info);
+		type = g_type_register_static (G_TYPE_OBJECT, "NRArenaItem", &info, 0);
 	}
 	return type;
 }
@@ -57,21 +61,21 @@ nr_arena_item_get_type (void)
 static void
 nr_arena_item_class_init (NRArenaItemClass *klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	signals[EVENT] = gtk_signal_new ("event",
-					 GTK_RUN_LAST,
-					 object_class->type,
-					 GTK_SIGNAL_OFFSET (NRArenaItemClass, event),
-					 gtk_marshal_INT__POINTER,
-					 GTK_TYPE_INT, 1, GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+	signals[EVENT] = g_signal_new ("event",
+				       G_TYPE_FROM_CLASS (klass),
+				       G_SIGNAL_RUN_LAST,
+				       G_STRUCT_OFFSET (NRArenaItemClass, event),
+				       NULL, NULL,
+				       gtk_marshal_INT__POINTER,
+				       G_TYPE_INT, 1, G_TYPE_POINTER);
 
-	object_class->destroy = nr_arena_item_private_destroy;
+	object_class->dispose = nr_arena_item_private_dispose;
 }
 
 static void
@@ -94,7 +98,7 @@ nr_arena_item_init (NRArenaItem *item)
 }
 
 static void
-nr_arena_item_private_destroy (GtkObject *object)
+nr_arena_item_private_dispose (GObject *object)
 {
 	NRArenaItem *item;
 
@@ -122,8 +126,8 @@ nr_arena_item_private_destroy (GtkObject *object)
 	nr_arena_remove_item (item->arena, item);
 	item->arena = NULL;
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	if (G_OBJECT_CLASS(parent_class)->dispose)
+		G_OBJECT_CLASS(parent_class)->dispose (object);
 }
 
 NRArenaItem *
@@ -132,8 +136,8 @@ nr_arena_item_children (NRArenaItem *item)
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
 
-	if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->children)
-		return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->children (item);
+	if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->children)
+		return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->children (item);
 
 	return NULL;
 }
@@ -306,7 +310,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 				b.h = item->bbox.y1 - item->bbox.y0;
 				b.rs = 4 * b.w;
 				b.px = item->px;
-				ret = ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, &item->bbox, &b);
+				ret = ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->render (item, &item->bbox, &b);
 				if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) return ret;
 			}
 			if (item->px) {
@@ -333,7 +337,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 				b->empty = FALSE;
 				return item->state;
 			} else {
-				return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->render (item, area, b);
+				return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->render (item, area, b);
 			}
 		}
 	}
@@ -356,8 +360,8 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 
 	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
-		if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->clip)
-			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->clip (item, area, b);
+		if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip)
+			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip (item, area, b);
 	}
 
 	return item->state;
@@ -382,8 +386,8 @@ nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delt
 	    ((x - delta) <  item->bbox.x1) &&
 	    ((y + delta) >= item->bbox.y0) &&
 	    ((y - delta) <  item->bbox.y1)) {
-		if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->pick)
-			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->pick (item, x, y, delta, sticky);
+		if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->pick)
+			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->pick (item, x, y, delta, sticky);
 	}
 
 	return NULL;
@@ -399,7 +403,7 @@ nr_arena_item_emit_event (NRArenaItem *item, NREvent *event)
 
 	ret = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (item), signals[EVENT], event, &ret);
+	g_signal_emit (G_OBJECT (item), signals[EVENT], 0, event, &ret);
 
 	return ret;
 }
@@ -441,15 +445,15 @@ nr_arena_item_request_render (NRArenaItem *item)
 /* Public */
 
 NRArenaItem *
-nr_arena_item_new (NRArena *arena, GtkType type)
+nr_arena_item_new (NRArena *arena, GType type)
 {
 	NRArenaItem *item;
 
 	g_return_val_if_fail (arena != NULL, NULL);
 	g_return_val_if_fail (NR_IS_ARENA (arena), NULL);
-	g_return_val_if_fail (gtk_type_is_a (type, NR_TYPE_ARENA_ITEM), NULL);
+	g_return_val_if_fail (g_type_is_a (type, NR_TYPE_ARENA_ITEM), NULL);
 
-	item = gtk_type_new (type);
+	item = (NRArenaItem *)g_object_new (type, NULL);
 
 	item->arena = arena;
 

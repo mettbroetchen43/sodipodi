@@ -13,10 +13,10 @@
  */
 
 #define SP_TYPE_NAMEDVIEW (sp_namedview_get_type ())
-#define SP_NAMEDVIEW(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_NAMEDVIEW, SPNamedView))
-#define SP_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_NAMEDVIEW, SPNamedViewClass))
-#define SP_IS_NAMEDVIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_NAMEDVIEW))
-#define SP_IS_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
+#define SP_NAMEDVIEW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_NAMEDVIEW, SPNamedView))
+#define SP_NAMEDVIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_NAMEDVIEW, SPNamedViewClass))
+#define SP_IS_NAMEDVIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_NAMEDVIEW))
+#define SP_IS_NAMEDVIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
 #include "helper/units.h"
 #include "sp-object-group.h"
@@ -57,7 +57,7 @@ struct _SPNamedViewClass {
 	SPObjectGroupClass parent_class;
 };
 
-GtkType sp_namedview_get_type (void);
+GType sp_namedview_get_type (void);
 
 void sp_namedview_show (SPNamedView * namedview, gpointer desktop);
 void sp_namedview_hide (SPNamedView * namedview, gpointer desktop);

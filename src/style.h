@@ -13,13 +13,13 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_dash.h>
+#include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include "xml/repr.h"
 #include "color.h"
@@ -410,6 +410,6 @@ enum {
 	SP_PROP_WRITING_MODE
 };
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

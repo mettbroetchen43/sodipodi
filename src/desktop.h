@@ -130,6 +130,8 @@ struct _SPDesktopWidget {
         GtkWidget *zoom;
 
 	SPCanvas *canvas;
+
+	GtkAdjustment *hadj, *vadj;
 };
 
 struct _SPDesktopWidgetClass {

@@ -18,6 +18,7 @@
 #include "../helper/sp-canvas-util.h"
 #include "../helper/nr-buffers.h"
 #include "../helper/nr-plain-stuff.h"
+#include "../helper/sp-marshal.h"
 #include "nr-arena.h"
 #include "nr-arena-group.h"
 #include "canvas-arena.h"
@@ -29,15 +30,13 @@ enum {
 
 gdouble nr_arena_global_delta = 1.0;
 
-static void sp_marshal_INT__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg *args);
-
 static void sp_canvas_arena_class_init (SPCanvasArenaClass * klass);
 static void sp_canvas_arena_init (SPCanvasArena * group);
 static void sp_canvas_arena_destroy (GtkObject * object);
 
 static void sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags);
 static void sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf);
-static double sp_canvas_arena_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item);
+static double sp_canvas_arena_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item);
 static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
 
 static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
@@ -81,11 +80,10 @@ sp_canvas_arena_class_init (SPCanvasArenaClass *klass)
 
 	signals[ARENA_EVENT] = gtk_signal_new ("arena_event",
 					       GTK_RUN_LAST,
-					       object_class->type,
+					       GTK_CLASS_TYPE(object_class),
 					       GTK_SIGNAL_OFFSET (SPCanvasArenaClass, arena_event),
 					       sp_marshal_INT__POINTER_POINTER,
 					       GTK_TYPE_INT, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_canvas_arena_destroy;
 
@@ -100,20 +98,20 @@ sp_canvas_arena_init (SPCanvasArena *arena)
 {
 	arena->sticky = FALSE;
 
-	arena->arena = gtk_type_new (NR_TYPE_ARENA);
+	arena->arena = g_object_new (NR_TYPE_ARENA, NULL);
 	arena->root = nr_arena_item_new (arena->arena, NR_TYPE_ARENA_GROUP);
 	nr_arena_group_set_transparent (NR_ARENA_GROUP (arena->root), TRUE);
 
 	arena->active = NULL;
 
-	gtk_signal_connect (GTK_OBJECT (arena->arena), "item_added",
-			    GTK_SIGNAL_FUNC (sp_canvas_arena_item_added), arena);
-	gtk_signal_connect (GTK_OBJECT (arena->arena), "remove_item",
-			    GTK_SIGNAL_FUNC (sp_canvas_arena_remove_item), arena);
-	gtk_signal_connect (GTK_OBJECT (arena->arena), "request_update",
-			    GTK_SIGNAL_FUNC (sp_canvas_arena_request_update), arena);
-	gtk_signal_connect (GTK_OBJECT (arena->arena), "request_render",
-			    GTK_SIGNAL_FUNC (sp_canvas_arena_request_render), arena);
+	g_signal_connect (G_OBJECT (arena->arena), "item_added",
+			  G_CALLBACK (sp_canvas_arena_item_added), arena);
+	g_signal_connect (G_OBJECT (arena->arena), "remove_item",
+			  G_CALLBACK (sp_canvas_arena_remove_item), arena);
+	g_signal_connect (G_OBJECT (arena->arena), "request_update",
+			  G_CALLBACK (sp_canvas_arena_request_update), arena);
+	g_signal_connect (G_OBJECT (arena->arena), "request_render",
+			  G_CALLBACK (sp_canvas_arena_request_render), arena);
 }
 
 static void
@@ -124,7 +122,7 @@ sp_canvas_arena_destroy (GtkObject *object)
 	arena = SP_CANVAS_ARENA (object);
 
 	if (arena->active) {
-		gtk_object_unref (GTK_OBJECT (arena->active));
+		g_object_unref (G_OBJECT (arena->active));
 		arena->active = NULL;
 	}
 
@@ -134,8 +132,9 @@ sp_canvas_arena_destroy (GtkObject *object)
 	}
 
 	if (arena) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (arena->arena), arena);
-		gtk_object_unref (GTK_OBJECT (arena->arena));
+/*  		g_signal_disconnect_by_data (G_OBJECT (arena->arena), arena); */
+		g_signal_handlers_disconnect_matched (G_OBJECT(arena->arena), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, arena);
+		g_object_unref (G_OBJECT (arena->arena));
 		arena->arena = NULL;
 	}
 
@@ -182,12 +181,12 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 			ec.window = GTK_WIDGET (item->canvas)->window;
 			ec.send_event = TRUE;
 			ec.subwindow = ec.window;
-			ec.time = gdk_time_get ();
+			ec.time = GDK_CURRENT_TIME;
 #if 0
 			gnome_canvas_c2w (item->canvas, arena->cx, arena->cy, &ec.x, &ec.y);
 #else
-			ec.x = arena->cx + item->canvas->scroll_x1;
-			ec.y = arena->cy + item->canvas->scroll_y1;
+			ec.x = arena->cx;
+			ec.y = arena->cy;
 #endif
 			/* fixme: */
 			if (arena->active) {
@@ -195,9 +194,9 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
 			/* fixme: This is not optimal - better track ::destroy (Lauris) */
-			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_unref (G_OBJECT (arena->active));
 			arena->active = new;
-			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_ref (G_OBJECT (arena->active));
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
@@ -269,7 +268,7 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 }
 
 static double
-sp_canvas_arena_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item)
+sp_canvas_arena_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
 	SPCanvasArena *arena;
 	NRArenaItem *picked;
@@ -278,7 +277,7 @@ sp_canvas_arena_point (SPCanvasItem *item, double x, double y, int cx, int cy, S
 
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 
-	picked = nr_arena_item_invoke_pick (arena->root, cx, cy, nr_arena_global_delta, arena->sticky);
+	picked = nr_arena_item_invoke_pick (arena->root, x, y, nr_arena_global_delta, arena->sticky);
 
 	arena->picked = picked;
 
@@ -307,26 +306,26 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 		if (!arena->cursor) {
 			if (arena->active) {
 				g_warning ("Cursor entered to arena with already active item");
-				gtk_object_unref (GTK_OBJECT (arena->active));
+				g_object_unref (G_OBJECT (arena->active));
 			}
 			arena->cursor = TRUE;
 #if 0
 			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
 #else
-			arena->cx = event->crossing.x - item->canvas->scroll_x1;
-			arena->cy = event->crossing.y - item->canvas->scroll_y1;
+			arena->cx = event->crossing.x;
+			arena->cy = event->crossing.y;
 #endif
 			/* fixme: Not sure abut this, but seems the right thing (Lauris) */
 			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
-			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_ref (G_OBJECT (arena->active));
 			ret = sp_canvas_arena_send_event (arena, event);
 		}
 		break;
 	case GDK_LEAVE_NOTIFY:
 		if (arena->cursor) {
 			ret = sp_canvas_arena_send_event (arena, event);
-			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_unref (G_OBJECT (arena->active));
 			arena->active = NULL;
 			arena->cursor = FALSE;
 		}
@@ -335,8 +334,8 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 #if 0
 		gnome_canvas_w2c_d (item->canvas, event->motion.x, event->motion.y, &arena->cx, &arena->cy);
 #else
-		arena->cx = event->motion.x - item->canvas->scroll_x1;
-		arena->cy = event->motion.y - item->canvas->scroll_y1;
+		arena->cx = event->motion.x;
+		arena->cy = event->motion.y;
 #endif
 		/* fixme: Not sure abut this, but seems the right thing (Lauris) */
 		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
@@ -354,9 +353,9 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 				ec.type = GDK_LEAVE_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
-			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_unref (G_OBJECT (arena->active));
 			arena->active = new;
-			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
+			if (arena->active) g_object_ref (G_OBJECT (arena->active));
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
@@ -433,20 +432,3 @@ sp_canvas_arena_set_sticky (SPCanvasArena *ca, gboolean sticky)
 	/* fixme: repick? */
 	ca->sticky = sticky;
 }
-
-typedef gint (* SPSignal_INT__POINTER_POINTER) (GtkObject *object, gpointer arg1, gpointer arg2, gpointer user_data);
-
-static void
-sp_marshal_INT__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg *args)
-{
-	SPSignal_INT__POINTER_POINTER rfunc;
-	gint *return_val;
-
-	return_val = GTK_RETLOC_INT (args[2]);
-
-	rfunc = (SPSignal_INT__POINTER_POINTER) func;
-
-	*return_val =  (* rfunc) (object, GTK_VALUE_POINTER (args[0]), GTK_VALUE_POINTER (args[1]), func_data);
-}
-
-

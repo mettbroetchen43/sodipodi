@@ -95,11 +95,10 @@ sp_dash_selector_class_init (SPDashSelectorClass *klass)
 
 	signals[CHANGED] = gtk_signal_new ("changed",
 					   GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-					   object_class->type,
+					   G_TYPE_FROM_CLASS (klass),
 					   GTK_SIGNAL_OFFSET (SPDashSelectorClass, changed),
 					   gtk_marshal_NONE__NONE,
 					   GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -281,7 +280,8 @@ sp_dash_selector_menu_item_new (SPDashSelector *dsel, double *pattern)
 	gtk_container_add (GTK_CONTAINER (mi), px);
 
 	gtk_object_set_data (GTK_OBJECT (mi), "pattern", pattern);
-	gtk_signal_connect (GTK_OBJECT (mi), "activate", sp_dash_selector_dash_activate, dsel);
+	gtk_signal_connect (GTK_OBJECT (mi), "activate",
+			    G_CALLBACK (sp_dash_selector_dash_activate), dsel);
 
 	return mi;
 }

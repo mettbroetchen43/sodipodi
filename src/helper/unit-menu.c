@@ -44,7 +44,7 @@ struct _SPUnitSelectorClass {
 
 static void sp_unit_selector_class_init (SPUnitSelectorClass *klass);
 static void sp_unit_selector_init (SPUnitSelector *selector);
-static void sp_unit_selector_finalize (GtkObject *object);
+static void sp_unit_selector_finalize (GObject *object);
 
 static GtkHBoxClass *unit_selector_parent_class;
 
@@ -69,10 +69,10 @@ sp_unit_selector_get_type (void)
 static void
 sp_unit_selector_class_init (SPUnitSelectorClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 
 	unit_selector_parent_class = gtk_type_class (GTK_TYPE_HBOX);
@@ -94,7 +94,7 @@ sp_unit_selector_init (SPUnitSelector *us)
 }
 
 static void
-sp_unit_selector_finalize (GtkObject *object)
+sp_unit_selector_finalize (GObject *object)
 {
 	SPUnitSelector *selector;
 
@@ -115,7 +115,7 @@ sp_unit_selector_finalize (GtkObject *object)
 
 	selector->unit = NULL;
 
-	GTK_OBJECT_CLASS (unit_selector_parent_class)->finalize (object);
+	G_OBJECT_CLASS (unit_selector_parent_class)->finalize (object);
 }
 
 GtkWidget *

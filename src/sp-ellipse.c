@@ -15,6 +15,7 @@
 
 #include <math.h>
 #include <string.h>
+
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "style.h"
@@ -66,20 +67,23 @@ static void sp_genericellipse_normalize (SPGenericEllipse *ellipse);
 
 static SPShapeClass *ge_parent_class;
 
-GtkType
+GType
 sp_genericellipse_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPGenericEllipse",
-			sizeof (SPGenericEllipse),
+		GTypeInfo info = {
 			sizeof (SPGenericEllipseClass),
-			(GtkClassInitFunc) sp_genericellipse_class_init,
-			(GtkObjectInitFunc) sp_genericellipse_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_genericellipse_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPGenericEllipse),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_genericellipse_init,
 		};
-		type = gtk_type_unique (sp_shape_get_type (), &info);
+		type = g_type_register_static (SP_TYPE_SHAPE, "SPGenericEllipse", &info, 0);
 	}
 	return type;
 }
@@ -87,17 +91,17 @@ sp_genericellipse_get_type (void)
 static void
 sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass *item_class;
 	SPShapeClass *shape_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 	shape_class = (SPShapeClass *) klass;
 
-	ge_parent_class = gtk_type_class (sp_shape_get_type ());
+	ge_parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_genericellipse_build;
 	sp_object_class->read_attr = sp_genericellipse_read_attr;
@@ -375,20 +379,23 @@ static gchar * sp_ellipse_description (SPItem * item);
 
 static SPGenericEllipseClass *ellipse_parent_class;
 
-GtkType
+GType
 sp_ellipse_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPEllipse",
-			sizeof (SPEllipse),
+		GTypeInfo info = {
 			sizeof (SPEllipseClass),
-			(GtkClassInitFunc) sp_ellipse_class_init,
-			(GtkObjectInitFunc) sp_ellipse_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_ellipse_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPEllipse),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_ellipse_init,
 		};
-		type = gtk_type_unique (SP_TYPE_GENERICELLIPSE, &info);
+		type = g_type_register_static (SP_TYPE_GENERICELLIPSE, "SPEllipse", &info, 0);
 	}
 	return type;
 }
@@ -396,15 +403,15 @@ sp_ellipse_get_type (void)
 static void
 sp_ellipse_class_init (SPEllipseClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass *item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	ellipse_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
+	ellipse_parent_class = g_type_class_ref (SP_TYPE_GENERICELLIPSE);
 
 	sp_object_class->build = sp_ellipse_build;
 	sp_object_class->write = sp_ellipse_write;
@@ -541,20 +548,23 @@ static gchar * sp_circle_description (SPItem * item);
 
 static SPGenericEllipseClass *circle_parent_class;
 
-GtkType
+GType
 sp_circle_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPCircle",
-			sizeof (SPCircle),
+		GTypeInfo info = {
 			sizeof (SPCircleClass),
-			(GtkClassInitFunc) sp_circle_class_init,
-			(GtkObjectInitFunc) sp_circle_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_circle_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPCircle),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_circle_init,
 		};
-		type = gtk_type_unique (SP_TYPE_GENERICELLIPSE, &info);
+		type = g_type_register_static (SP_TYPE_GENERICELLIPSE, "SPCircle", &info, 0);
 	}
 	return type;
 }
@@ -562,15 +572,15 @@ sp_circle_get_type (void)
 static void
 sp_circle_class_init (SPCircleClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass *item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	circle_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
+	circle_parent_class = g_type_class_ref (SP_TYPE_GENERICELLIPSE);
 
 	sp_object_class->build = sp_circle_build;
 	sp_object_class->write = sp_circle_write;
@@ -681,20 +691,23 @@ static SPKnotHolder *sp_arc_knot_holder (SPItem * item, SPDesktop *desktop);
 
 static SPGenericEllipseClass *arc_parent_class;
 
-GtkType
+GType
 sp_arc_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPArc",
-			sizeof (SPArc),
+		GTypeInfo info = {
 			sizeof (SPArcClass),
-			(GtkClassInitFunc) sp_arc_class_init,
-			(GtkObjectInitFunc) sp_arc_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_arc_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPArc),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_arc_init,
 		};
-		type = gtk_type_unique (SP_TYPE_GENERICELLIPSE, &info);
+		type = g_type_register_static (SP_TYPE_GENERICELLIPSE, "SPArc", &info, 0);
 	}
 	return type;
 }
@@ -702,15 +715,15 @@ sp_arc_get_type (void)
 static void
 sp_arc_class_init (SPArcClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass *item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	arc_parent_class = gtk_type_class (SP_TYPE_GENERICELLIPSE);
+	arc_parent_class = g_type_class_ref (SP_TYPE_GENERICELLIPSE);
 
 	sp_object_class->build = sp_arc_build;
 	sp_object_class->write = sp_arc_write;
@@ -837,7 +850,6 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 				    fa, fs, p2.x, p2.y);
 		}
 	}
-
 
 	return sp_repr_set_attr (repr, "d", c);
 }

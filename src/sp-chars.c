@@ -33,20 +33,23 @@ static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena);
 
 static SPItemClass *parent_class;
 
-GtkType
+GType
 sp_chars_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPChars",
-			sizeof (SPChars),
+		GTypeInfo info = {
 			sizeof (SPCharsClass),
-			(GtkClassInitFunc) sp_chars_class_init,
-			(GtkObjectInitFunc) sp_chars_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_chars_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPChars),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_chars_init,
 		};
-		type = gtk_type_unique (SP_TYPE_ITEM, &info);
+		type = g_type_register_static (SP_TYPE_ITEM, "SPChars", &info, 0);
 	}
 	return type;
 }
@@ -54,15 +57,15 @@ sp_chars_get_type (void)
 static void
 sp_chars_class_init (SPCharsClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPObjectClass *sp_object_class;
 	SPItemClass *item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_ITEM);
+	parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->release = sp_chars_release;
 	sp_object_class->style_modified = sp_chars_style_modified;

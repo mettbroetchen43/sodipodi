@@ -18,21 +18,21 @@
 #include <libnrtype/nr-type-directory.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkhseparator.h>
-#include <libgnomeui/gnome-stock.h>
-#include <gal/widgets/e-unicode.h>
+#include <gtk/gtkimage.h>
 
+#include "../helper/sp-intl.h"
 #include "../widgets/font-selector.h"
 #include "../forward.h"
 #include "../sodipodi.h"
@@ -135,7 +135,7 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (l);
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 		gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 0, 1, 0, 0, 4, 0);
-		px = gnome_stock_pixmap_widget (dlg, GNOME_STOCK_PIXMAP_ALIGN_LEFT);
+		px = gtk_image_new_from_stock (GTK_STOCK_JUSTIFY_LEFT, GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (NULL);
 		gtk_widget_show (b);
@@ -144,7 +144,7 @@ sp_text_edit_dialog (void)
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 0, 1, 0, 0, 0, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "text_anchor_start", b);
-		px = gnome_stock_pixmap_widget (dlg, GNOME_STOCK_PIXMAP_ALIGN_CENTER);
+		px = gtk_image_new_from_stock (GTK_STOCK_JUSTIFY_CENTER, GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
@@ -153,7 +153,7 @@ sp_text_edit_dialog (void)
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 2, 3, 0, 1, 0, 0, 0, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "text_anchor_middle", b);
-		px = gnome_stock_pixmap_widget (dlg, GNOME_STOCK_PIXMAP_ALIGN_RIGHT);
+		px = gtk_image_new_from_stock (GTK_STOCK_JUSTIFY_RIGHT, GTK_ICON_SIZE_LARGE_TOOLBAR);
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
@@ -167,7 +167,8 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (l);
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 		gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 4, 0);
-		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_lr.xpm");
+		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_lr.xpm");
+/*  		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_lr.xpm"); */
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (NULL);
 		gtk_widget_show (b);
@@ -176,7 +177,8 @@ sp_text_edit_dialog (void)
 		gtk_container_add (GTK_CONTAINER (b), px);
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 1, 2, 0, 0, 0, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "writing_mode_lr", b);
-		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_tb.xpm");
+		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_tb.xpm");
+/*  		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_tb.xpm"); */
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
@@ -211,12 +213,14 @@ sp_text_edit_dialog (void)
 		gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "default", b);
 
-		b = gnome_stock_button (GNOME_STOCK_BUTTON_CLOSE);
+		b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+/*  		b = gnome_stock_button (GTK_STOCK_CLOSE); */
 		gtk_widget_show (b);
 		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_close), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
 
-		b = gnome_stock_button (GNOME_STOCK_BUTTON_APPLY);
+		b = gtk_button_new_from_stock (GTK_STOCK_APPLY);
+/*  		b = gnome_stock_button (GTK_STOCK_APPLY); */
 		gtk_widget_show (b);
 		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_text_edit_dialog_apply), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
@@ -260,7 +264,7 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		textw = gtk_object_get_data (GTK_OBJECT (dlg), "text");
 
 		/* Content */
-		str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
+		str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
 		sp_text_set_repr_text_multiline (text, str);
 		g_free (str);
 	}
@@ -470,14 +474,11 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 			guchar *str;
 			str = sp_text_get_string_multiline (text);
 			if (str && *str) {
-				gchar *gtkstr;
 				int pos;
 				pos = 0;
 				gtk_text_freeze (GTK_TEXT (textw));
 				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
-				gtkstr = e_utf8_to_gtk_string (textw, str);
-				gtk_editable_insert_text (GTK_EDITABLE (textw), gtkstr, strlen (gtkstr), &pos);
-				g_free (gtkstr);
+				gtk_editable_insert_text (GTK_EDITABLE (textw), str, strlen (str), &pos);
 				gtk_text_thaw (GTK_TEXT (textw));
 				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 				g_free (str);
@@ -554,7 +555,7 @@ sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
 	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
 
-	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
+	str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
 	if (str && *str) {
 		sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 	} else {

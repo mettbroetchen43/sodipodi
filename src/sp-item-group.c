@@ -16,10 +16,8 @@
 #include <string.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtksignal.h>
 #include "display/nr-arena-group.h"
 #include "xml/repr-private.h"
 #include "sp-object-repr.h"
@@ -31,6 +29,7 @@
 #include "selection.h"
 #include "sp-root.h"
 #include "sp-item-group.h"
+#include "helper/sp-intl.h"
 
 static void sp_group_class_init (SPGroupClass *klass);
 static void sp_group_init (SPGroup *group);
@@ -56,20 +55,23 @@ static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *grou
 
 static SPItemClass * parent_class;
 
-GtkType
+GType
 sp_group_get_type (void)
 {
-	static GtkType group_type = 0;
+	static GType group_type = 0;
 	if (!group_type) {
-		GtkTypeInfo group_info = {
-			"SPGroup",
-			sizeof (SPGroup),
+		GTypeInfo group_info = {
 			sizeof (SPGroupClass),
-			(GtkClassInitFunc) sp_group_class_init,
-			(GtkObjectInitFunc) sp_group_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_group_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPGroup),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_group_init,
 		};
-		group_type = gtk_type_unique (sp_item_get_type (), &group_info);
+		group_type = g_type_register_static (SP_TYPE_ITEM, "SPGroup", &group_info, 0);
 	}
 	return group_type;
 }
@@ -77,15 +79,15 @@ sp_group_get_type (void)
 static void
 sp_group_class_init (SPGroupClass *klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = gtk_type_class (sp_item_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->build = sp_group_build;
 	sp_object_class->release = sp_group_release;
@@ -125,10 +127,10 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
-		GtkType type;
+		GType type;
 		SPObject * child;
 		type = sp_repr_type_lookup (rchild);
-		child = gtk_type_new (type);
+		child = g_object_new (type, 0);
 		last ? last->next : group->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
@@ -166,7 +168,7 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPGroup *group;
 	SPItem *item;
-	GtkType type;
+	GType type;
 	SPObject *ochild, *prev;
 	gint position;
 
@@ -189,7 +191,7 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	}
 
 	type = sp_repr_type_lookup (child);
-	ochild = gtk_type_new (type);
+	ochild = g_object_new (type, 0);
 	if (prev) {
 		prev->next = sp_object_attach_reref (object, ochild, prev->next);
 	} else {
@@ -206,7 +208,7 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				nr_arena_item_set_order (ac, position);
-				gtk_object_unref (GTK_OBJECT(ac));
+				g_object_unref (G_OBJECT(ac));
 			}
 		}
 	}
@@ -238,7 +240,7 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 
 	ochild->parent = NULL;
 	ochild->next = NULL;
-	gtk_object_unref (GTK_OBJECT (ochild));
+	g_object_unref (G_OBJECT (ochild));
 }
 
 static void
@@ -311,17 +313,17 @@ sp_group_modified (SPObject *object, guint flags)
 
 	l = NULL;
 	for (child = group->children; child != NULL; child = child->next) {
-		gtk_object_ref (GTK_OBJECT (child));
+		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
-		gtk_object_unref (GTK_OBJECT (child));
+		g_object_unref (G_OBJECT (child));
 	}
 }
 
@@ -455,7 +457,7 @@ sp_group_show (SPItem *item, NRArena *arena)
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
-				gtk_object_unref (GTK_OBJECT(ac));
+				g_object_unref (G_OBJECT(ac));
 			}
 		}
 	}

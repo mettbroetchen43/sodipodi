@@ -1,236 +1,77 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(sodipodi, 0.29pre)
+AC_PREREQ(2.50)
+AC_INIT(sodipodi, 0.29pre)
+AC_CONFIG_SRCDIR(src/main.c)
+AM_INIT_AUTOMAKE
+
 AM_CONFIG_HEADER(config.h)
 
-AC_PROG_INTLTOOL(0.11)
+AC_PROG_INTLTOOL(0.22)
 
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
-ifdef([AM_PROG_AS],[AM_PROG_AS],)
+AM_PROG_AS
 AC_HEADER_STDC
 
-CFLAGS="$CFLAGS -Wall -Wunused"
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Localization directory])
+else
+	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Localization directory])
+fi
 
+dnl AM_PROG_LIBTOOL
+
+dnl ******************************
+dnl Gettext stuff
+dnl ******************************
+GETTEXT_PACKAGE=$PACKAGE
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sk sl sv tr uk pl pt_BR pt zh_CN"
 AM_GNU_GETTEXT
 
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
-else
-	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test "x$PKG_CONFIG" == "xno"; then
+	AC_MSG_ERROR(You have to install pkg-config to compile sodipodi.)
 fi
-
-AC_CHECK_HEADER(popt.h,,[
-	AC_MSG_ERROR(You need standalone popt-devel package)
-])
-
-AC_PATH_PROG(GNOME_CONFIG,gnome-config,[
-	AC_MSG_ERROR(Did not find gnome-config on your PATH)
-])
-
-dnl ******************************
-dnl FreeType checking
-dnl ******************************
-AC_PATH_PROG(FREETYPE_CONFIG,freetype-config,[
-	AC_MSG_ERROR(Did not find freetype-config on your PATH)
-])
-
-FREETYPE_LIBS=`$FREETYPE_CONFIG --libs`
-FREETYPE_CFLAGS=`$FREETYPE_CONFIG --cflags`
-AC_SUBST(FREETYPE_CFLAGS)
-AC_SUBST(FREETYPE_LIBS)
-
-dnl ******************************
-dnl Gnome App Lib checking
-dnl ******************************
-AC_MSG_CHECKING(for Gnome App libraries (GAL) >= 0.4)
-if gnome-config --libs gal > /dev/null 2>&1; then 
-    vers=`gnome-config --modversion gal | sed -e "s/gal-//" -e 's/cvs$//' -e 's/pre$//' | \
-        awk 'BEGIN { FS = "."; } { print $1 * 1000000 + $2 * 10000 + $3 * 100 + $4;}'`
-    if test "$vers" -ge 40000; then
-        AC_MSG_RESULT(found)
-    else
-        AC_MSG_ERROR(You need at least GNOME Application libs 0.4 for this version of Sodipodi)
-    fi
-else
-    AC_MSG_ERROR(Did not find GnomeAppLib (GAL) installed)
-fi
-
-dnl ******************************
-dnl Check for Bonobo
-dnl ******************************
-try_bonobo=false
-have_bonobo=false
-using_oaf="no"
-AC_ARG_WITH(bonobo,
-	[--{with,without}-bonobo Compile with Bonobo support or without it],
-	if test x$withval = xyes; then
-		try_bonobo=true
-	fi
-)
-
-if $try_bonobo; then
-	AC_MSG_CHECKING(for Bonobo >= 0.37)
-	if $GNOME_CONFIG --libs bonobox_print > /dev/null 2>&1; then
-		vers=`$GNOME_CONFIG --modversion bonobo | sed -e "s/bonobo-//" | \
-			awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-		if test "$vers" -ge 37; then
-			bonobo_ok=true
-		else
-			bonobo_ok=false
-		fi
-	else
-		bonobo_ok=false
-	fi
-
-	if $bonobo_ok; then
-		AC_MSG_RESULT(found)
-		AC_DEFINE(ENABLE_BONOBO)
-		have_bonobo=true
-		SODIPODI_BONOBO_LIBS=`$GNOME_CONFIG --libs bonobox_print`
-		SODIPODI_BONOBO_CFLAGS=`$GNOME_CONFIG --cflags bonobox_print`
-
-		dnl Check if Bonobo is OAFized
-
-		AC_MSG_CHECKING(if Bonobo uses OAF)
-		if ( gnome-config --libs bonobo | grep oaf ) > /dev/null 2>&1 ; then
-			using_oaf="yes"
-			AC_DEFINE(USING_OAF)
-		else
-			using_oaf="no"
-		fi
-
-		AC_MSG_RESULT("$using_oaf")
-	else    
-		AC_MSG_RESULT(not found)
-		SODIPODI_BONOBO_LIBS=
-		SODIPODI_BONOBO_CFLAGS=
-	fi
-fi
-
-AM_CONDITIONAL(USING_OAF, test x"using_oaf" = "xyes")
-AM_CONDITIONAL(BONOBO, $have_bonobo)
-AC_SUBST(SODIPODI_BONOBO_CFLAGS)
-AC_SUBST(SODIPODI_BONOBO_LIBS)
 
 dnl ******************************
 dnl GnomePrint checking
 dnl ******************************
-try_gnome_print=true
-have_gnome_print=false
-AC_ARG_WITH(gnome-print,
-	[--{with,without}-gnome-print  Use Gnome printing architecture],
-	if test x$withval = xno; then
-		try_gnome_print=false
-	fi
-)
-if $try_gnome_print; then
-	AC_MSG_CHECKING(for GnomePrint libraries >= 0.27)
-	if gnome-config --libs print > /dev/null 2>&1; then
-		vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' | \
-			awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-		if test "$vers" -ge 27; then
-			AC_MSG_RESULT(found)
-			AC_DEFINE(ENABLE_GNOME_PRINT)
-			SODIPODI_GNOME_PRINT_LIBS=`$GNOME_CONFIG --libs print`
-			SODIPODI_GNOME_PRINT_CFLAGS=`$GNOME_CONFIG --cflags print`
-		else
-			AC_MSG_ERROR(You need at least GNOME print 0.21 for this version of sodipodi)
-		fi
-	else
-		AC_MSG_ERROR(Did not find GnomePrint installed)
-	fi
-else
-	SODIPODI_GNOME_PRINT_LIBS=
-	SODIPODI_GNOME_PRINT_CFLAGS=
+
+PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.0 >= 1.116.1  libgnomeprintui-2.0 >= 1.116.0, gp=yes, gp=no)
+AC_SUBST(GNOME_PRINT_CFLAGS)
+AC_SUBST(GNOME_PRINT_LIBS)
+AM_CONDITIONAL(USE_GNOME_PRINT, test "x$gp" == "xyes")
+if test "x$gp" == "xyes"; then
+	AC_DEFINE(WITH_GNOME_PRINT, 1, [Use gnome print font database and spooler frontend])
 fi
 
-AM_CONDITIONAL(USE_GNOME_PRINT, $have_gnome_print)
-AC_SUBST(SODIPODI_GNOME_PRINT_CFLAGS)
-AC_SUBST(SODIPODI_GNOME_PRINT_LIBS)
-
-XML_KEY=xml
-AC_ARG_WITH(gnome-xml2,
-	[--{with,without}-gnome-xml2 Use gnome-config {--cflags|--libs} xml2],
-	if test x$withval = xyes; then
-		XML_KEY=xml2
-	fi
-)
-
-SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade $XML_KEY`
-SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade $XML_KEY`
-SODIPODI_LIBS="$SODIPODI_LIBS -lpng -lz"
 
 dnl ******************************
-dnl system libwmf support
+dnl   Unconditional dependencies
 dnl ******************************
 
-dnl Check for libwmf-0.2.1 or higher (experimental)
-
-_cppflags=$CPPFLAGS
-_ldflags=$LDFLAGS
-
-have_libwmf=no
-
-AC_ARG_WITH(libwmf,
-	[--{with,without}-libwmf=DIR use libwmf(2) in DIR (experimental)],[
-	if [ test "x$withval" != "xno" ]; then
-		if [ test "x$withval" != "xyes" ]; then
-			LIBWMF_DIR=$withval
-		fi
-		search_for_libwmf=yes
-	else
-		search_for_libwmf=no
-	fi
-],[	search_for_libwmf=no
-])
-
-if [ test $search_for_libwmf != no ]; then
-	if [ test -n "$LIBWMF_DIR" ]; then
-		AC_PATH_PROG(LIBWMF_CONFIG,libwmf-config, ,[$LIBWMF_DIR/bin:$PATH])
-	else
-		AC_PATH_PROG(LIBWMF_CONFIG,libwmf-config)
-	fi
-
-	if [ test -n "$LIBWMF_CONFIG" ]; then
-		libwmf_cflags=`$LIBWMF_CONFIG --cflags`
-		libwmf_libs=`$LIBWMF_CONFIG --libs`
-	else
-		AC_MSG_ERROR(* * * unable to find libwmf-config; unable to continue * * *)
-	fi
-
-	CPPFLAGS="$CPPFLAGS $libwmf_cflags"
-	LDFLAGS="$LDFLAGS $libwmf_libs"
-
-	AC_CHECK_HEADER(libwmf/svg.h,[
-		AC_CHECK_LIB(wmf,wmf_stream_create,have_libwmf=yes,[
-			AC_MSG_ERROR(* * * libwmf version 0.2.1 or later * * *)
-		])
-	])
-
-	if [ test $have_libwmf != no]; then
-		SODIPODI_LIBS="$SODIPODI_LIBS $libwmf_libs"
-		SODIPODI_CFLAGS="$SODIPODI_CFLAGS $libwmf_cflags -DHAVE_LIBWMF=1"
-	fi
-fi
-
-CPPFLAGS=$_cppflags
-LDFLAGS=$_ldflags
+PKG_CHECK_MODULES(SODIPODI, gtk+-2.0 >= 2.0.0  libart-2.0 >= 2.3.10  libxml-2.0 >= 2-2.4.24)
+SODIPODI_LIBS="$SODIPODI_LIBS -lpopt -lpng -lz"
 
 dnl ******************************
 dnl Frontline/Autotrace support
 dnl ******************************
 ifdef([AM_PATH_FRONTLINE],
-[AM_PATH_FRONTLINE("0.5.4",[AC_DEFINE(ENABLE_AUTOTRACE)
-SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
-SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
-AC_MSG_WARN([Cannot find Frontline library.])
-AC_MSG_WARN([AutoTrace function are disabled.]))])
+	[AM_PATH_FRONTLINE("0.5.1",[AC_DEFINE(ENABLE_AUTOTRACE)
+		SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
+		SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
+	AC_MSG_WARN([Cannot find Frontline library.])
+	AC_MSG_WARN([AutoTrace function are disabled.]))
+])
+
+AC_SUBST(SODIPODI_CFLAGS)
+AC_SUBST(SODIPODI_LIBS)
 
 #
 # Checks to see if we should compile in MMX support (there will be
@@ -243,13 +84,13 @@ dnl Let people disable the MMX optimization
 AC_ARG_ENABLE(mmx, [  --disable-mmx     Don't use MMX optimization [default=auto]], enable_mmx="$enableval", enable_mmx=auto)
 
 AC_MSG_CHECKING(for x86 platform)
-  case $host_cpu in
-    i386|i486|i586|i686|i786|k6|k7)
-        use_x86_asm=yes
-        ;;
-    *)
-        use_x86_asm=no
-  esac
+case $host_cpu in
+  i386|i486|i586|i686|i786|k6|k7)
+    use_x86_asm=yes
+    ;;
+  *)
+    use_x86_asm=no
+esac
 AC_MSG_RESULT($use_x86_asm)
 
 dnl Are we going to use MMX extensions
@@ -279,18 +120,19 @@ else
 fi
 
 if test $use_mmx_asm = yes; then
-  AC_DEFINE(USE_MMX)
-  AC_MSG_RESULT(yes)
+	AC_DEFINE(WITH_MMX, 1, [Use MMX optimizations, if CPU supports it])
+	AC_MSG_RESULT(yes)
 else
-  AC_MSG_RESULT(no)
+	AC_MSG_RESULT(no)
 fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
-AC_SUBST(SODIPODI_CFLAGS)
-AC_SUBST(SODIPODI_LIBS)
+AC_DEFINE(GTK_ENABLE_BROKEN,1,[Use broken and deprectaded Gtk stuff])
 
-AC_OUTPUT([
+AC_OUTPUT([ intl/Makefile m4/Makefile 
+m4/Makefile
+intl/Makefile 
 Makefile
 src/Makefile
 src/libnr/Makefile
@@ -301,10 +143,8 @@ src/widgets/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
-src/bonobo/Makefile
 glade/Makefile
 po/Makefile.in
-intl/Makefile
 sodipodi.spec
 sodipodi.1
 ])

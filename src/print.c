@@ -20,6 +20,8 @@
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 #include <glib.h>
+
+#ifdef WITH_GNOME_PRINT
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-paper.h>
@@ -27,6 +29,7 @@
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprint/gnome-print-master-preview.h>
 #include <libgnomeprint/gnome-printer-dialog.h>
+#endif
 
 #include "document.h"
 #include "sp-item.h"
@@ -35,13 +38,20 @@
 
 #include "print.h"
 
+#ifdef WITH_GNOME_PRINT
 struct _SPPrintContext {
 	GnomePrintContext *gpc;
 };
+#else
+struct _SPPrintContext {
+	gpointer dummy;
+};
+#endif
 
 unsigned int
 sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 {
+#ifdef WITH_GNOME_PRINT
 	gdouble t[6];
 
 	gnome_print_gsave (ctx->gpc);
@@ -56,6 +66,7 @@ sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 	gnome_print_concat (ctx->gpc, t);
 
 	/* fixme: Opacity? (lauris) */
+#endif
 
 	return 0;
 }
@@ -63,7 +74,9 @@ sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 unsigned int
 sp_print_release (SPPrintContext *ctx)
 {
+#ifdef WITH_GNOME_PRINT
 	gnome_print_grestore (ctx->gpc);
+#endif
 
 	return 0;
 }
@@ -72,6 +85,7 @@ unsigned int
 sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
 	       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
+#ifdef WITH_GNOME_PRINT
 	gdouble t[6];
 
 	/* CTM is for information purposes only */
@@ -167,6 +181,7 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			sp_painter_free (painter);
 		}
 	}
+#endif
 
 	return 0;
 }
@@ -175,6 +190,7 @@ unsigned int
 sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
 		 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
+#ifdef WITH_GNOME_PRINT
 	gdouble t[6];
 
 	/* CTM is for information purposes only */
@@ -210,6 +226,7 @@ sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm
 
 		gnome_print_stroke (ctx->gpc);
 	}
+#endif
 
 	return 0;
 }
@@ -219,6 +236,7 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 			   unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 			   const NRMatrixF *transform, const SPStyle *style)
 {
+#ifdef WITH_GNOME_PRINT
 	gdouble t[6];
 
 	t[0] = transform->c[0];
@@ -255,6 +273,7 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 	}
 
 	gnome_print_grestore (ctx->gpc);
+#endif
 
 	return 0;
 }
@@ -264,6 +283,7 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 void
 sp_print_preview_document (SPDocument *doc)
 {
+#ifdef WITH_GNOME_PRINT
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
         GnomePrintMaster *gpm;
@@ -296,11 +316,13 @@ sp_print_preview_document (SPDocument *doc)
 	gnome_print_master_close (gpm);
 
 	g_free (title);
+#endif
 }
 
 void
 sp_print_document (SPDocument *doc)
 {
+#ifdef WITH_GNOME_PRINT
         GnomePrinter *printer;
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
@@ -323,11 +345,13 @@ sp_print_document (SPDocument *doc)
 	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
+#endif
 }
 
 void
 sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 {
+#ifdef WITH_GNOME_PRINT
         GnomePrinter *printer;
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
@@ -350,5 +374,6 @@ sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
+#endif
 }
 

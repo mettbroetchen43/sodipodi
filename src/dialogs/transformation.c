@@ -11,9 +11,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "config.h"
 #include "align.h"
 #include <math.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkframe.h>
@@ -200,7 +200,7 @@ sp_transformation_dialog_close (void) {
 void 
 sp_transformation_dialog (void)
 {
-  transformation_xml = glade_xml_new (SODIPODI_GLADEDIR "/transformation.glade", NULL);
+  transformation_xml = glade_xml_new (SODIPODI_GLADEDIR "/transformation.glade", NULL, PACKAGE);
   glade_xml_signal_autoconnect (transformation_xml);
   transformation_dialog = glade_xml_get_widget (transformation_xml, "transform_dialog_small");
   

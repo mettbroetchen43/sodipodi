@@ -13,9 +13,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <libart_lgpl/art_rect.h>
 #include "forward.h"
@@ -24,10 +24,10 @@ BEGIN_GNOME_DECLS
 typedef struct _SPPainter SPPainter;
 
 #define SP_TYPE_PAINT_SERVER (sp_paint_server_get_type ())
-#define SP_PAINT_SERVER(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_PAINT_SERVER, SPPaintServer))
-#define SP_PAINT_SERVER_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_PAINT_SERVER, SPPaintServerClass))
-#define SP_IS_PAINT_SERVER(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_PAINT_SERVER))
-#define SP_IS_PAINT_SERVER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_PAINT_SERVER))
+#define SP_PAINT_SERVER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_PAINT_SERVER, SPPaintServer))
+#define SP_PAINT_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_PAINT_SERVER, SPPaintServerClass))
+#define SP_IS_PAINT_SERVER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_PAINT_SERVER))
+#define SP_IS_PAINT_SERVER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_PAINT_SERVER))
 
 typedef enum {
 	SP_PAINTER_IND,
@@ -40,7 +40,7 @@ typedef void (* SPPainterFillFunc) (SPPainter *painter, guchar *px, gint x0, gin
 struct _SPPainter {
 	SPPainter *next;
 	SPPaintServer *server;
-	GtkType server_type;
+	GType server_type;
 	SPPainterType type;
 	SPPainterFillFunc fill;
 };
@@ -59,7 +59,7 @@ struct _SPPaintServerClass {
 	void (* painter_free) (SPPaintServer *ps, SPPainter *painter);
 };
 
-GtkType sp_paint_server_get_type (void);
+GType sp_paint_server_get_type (void);
 
 SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 
@@ -69,6 +69,6 @@ void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 SPPainter *sp_painter_free (SPPainter *painter);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

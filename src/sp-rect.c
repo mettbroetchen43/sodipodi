@@ -18,8 +18,6 @@
 #include <libnr/nr-values.h>
 #include <libnr/nr-macros.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "helper/art-utils.h"
@@ -28,6 +26,7 @@
 #include "document.h"
 #include "dialogs/object-attributes.h"
 #include "sp-rect.h"
+#include "helper/sp-intl.h"
 
 #define noRECT_VERBOSE
 
@@ -52,20 +51,24 @@ static SPKnotHolder *sp_rect_knot_holder (SPItem *item, SPDesktop *desktop);
 
 static SPShapeClass *parent_class;
 
-GtkType
+GType
 sp_rect_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
+
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPRect",
-			sizeof (SPRect),
+		GTypeInfo info = {
 			sizeof (SPRectClass),
-			(GtkClassInitFunc) sp_rect_class_init,
-			(GtkObjectInitFunc) sp_rect_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_rect_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPRect),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_rect_init,
 		};
-		type = gtk_type_unique (SP_TYPE_SHAPE, &info);
+		type = g_type_register_static (SP_TYPE_SHAPE, "SPRect", &info, 0);
 	}
 	return type;
 }
@@ -73,17 +76,17 @@ sp_rect_get_type (void)
 static void
 sp_rect_class_init (SPRectClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 	SPShapeClass * shape_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	object_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 	shape_class = (SPShapeClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->write = sp_rect_write;

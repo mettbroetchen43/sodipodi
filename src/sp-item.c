@@ -15,11 +15,10 @@
 #include <config.h>
 #include <math.h>
 #include <string.h>
-#include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
+
 #include "helper/art-utils.h"
 #include "helper/nr-plain-stuff.h"
 #include "svg/svg.h"
@@ -33,6 +32,7 @@
 #include "desktop-affine.h"
 #include "selection.h"
 #include "style.h"
+#include "helper/sp-intl.h"
 /* fixme: I do not like that (Lauris) */
 #include "dialogs/item-properties.h"
 #include "dialogs/object-attributes.h"
@@ -68,20 +68,23 @@ static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
 static SPObjectClass *parent_class;
 
-GtkType
+GType
 sp_item_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPItem",
-			sizeof (SPItem),
+		GTypeInfo info = {
 			sizeof (SPItemClass),
-			(GtkClassInitFunc) sp_item_class_init,
-			(GtkObjectInitFunc) sp_item_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_item_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPItem),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_item_init,
 		};
-		type = gtk_type_unique (SP_TYPE_OBJECT, &info);
+		type = g_type_register_static (SP_TYPE_OBJECT, "SPItem", &info, 0);
 	}
 	return type;
 }
@@ -89,13 +92,13 @@ sp_item_get_type (void)
 static void
 sp_item_class_init (SPItemClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
-	SPObjectClass *sp_object_class;
+	GObjectClass * object_class;
+	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_OBJECT);
+	parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_item_build;
 	sp_object_class->release = sp_item_release;
@@ -154,7 +157,7 @@ sp_item_release (SPObject * object)
 	}
 
 	if (item->clip) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item);
+		g_signal_handlers_disconnect_matched (G_OBJECT(item->clip), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (gpointer)item);
 		item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
 	}
 
@@ -163,9 +166,9 @@ sp_item_release (SPObject * object)
 }
 
 static void
-sp_item_clip_released (SPClipPath *cp, SPItem *item)
+sp_item_clip_release (SPClipPath *cp, SPItem *item)
 {
-	g_warning ("Item %s clip path %s released", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
+	g_warning ("Item %s clip path %s release", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
 }
 
 static void
@@ -195,14 +198,17 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 		SPObject *cp;
 		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), astr);
 		if (item->clip) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item);
+			g_signal_handlers_disconnect_matched (G_OBJECT(item->clip), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (gpointer)item);
+/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item); */
 			item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
 		}
 		if (SP_IS_CLIPPATH (cp)) {
 			SPItemView *v;
 			item->clip = (SPClipPath *) sp_object_href (cp, object);
-			gtk_signal_connect (GTK_OBJECT (item->clip), "release", GTK_SIGNAL_FUNC (sp_item_clip_released), item);
-			gtk_signal_connect (GTK_OBJECT (item->clip), "modified", GTK_SIGNAL_FUNC (sp_item_clip_modified), item);
+			g_signal_connect (G_OBJECT (item->clip), "release",
+					  G_CALLBACK (sp_item_clip_release), item);
+			g_signal_connect (G_OBJECT (item->clip), "modified",
+					  G_CALLBACK (sp_item_clip_modified), item);
 			for (v = item->display; v != NULL; v = v->next) {
 				NRArenaItem *ai;
 				ai = sp_clippath_show (item->clip, v->arena);
@@ -324,8 +330,8 @@ sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	bbox->x0 = bbox->y0 = 1e18;
 	bbox->x1 = bbox->y1 = -1e18;
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
-		SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox (item, bbox, transform);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->bbox)
+		SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->bbox (item, bbox, transform);
 }
 
 void
@@ -350,8 +356,8 @@ sp_item_knot_holder (SPItem *item, SPDesktop *desktop)
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->knot_holder)
-		knot_holder = (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->knot_holder) (item, desktop);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->knot_holder)
+		knot_holder = (* SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->knot_holder) (item, desktop);
 
 	return knot_holder;
 }
@@ -397,8 +403,8 @@ sp_item_snappoints (SPItem * item)
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->snappoints)
-	        points = (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->snappoints) (item, points);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->snappoints)
+	        points = (* SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->snappoints) (item, points);
 	return points;
 }
 
@@ -409,7 +415,7 @@ sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
 	g_assert (SP_IS_ITEM (item));
 	g_assert (ctx != NULL);
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print) {
+	if (SP_ITEM_GET_CLASS (item)->print) {
 		if (!nr_matrix_d_test_identity ((NRMatrixD *) item->affine, NR_EPSILON_F) ||
 		    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
 			NRMatrixF t;
@@ -420,10 +426,10 @@ sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
 			t.c[4] = item->affine[4];
 			t.c[5] = item->affine[5];
 			sp_print_bind (ctx, &t, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
-			SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print (item, ctx);
+			SP_ITEM_GET_CLASS (item)->print (item, ctx);
 			sp_print_release (ctx);
 		} else {
-			SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print (item, ctx);
+			SP_ITEM_GET_CLASS (item)->print (item, ctx);
 		}
 	}
 }
@@ -440,8 +446,8 @@ sp_item_description (SPItem * item)
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->description)
-		return (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->description) (item);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->description)
+		return (* SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->description) (item);
 
 	g_assert_not_reached ();
 	return NULL;
@@ -465,8 +471,8 @@ sp_item_show (SPItem *item, NRArena *arena)
 
 	ai = NULL;
 
-	if (((SPItemClass *) (((GtkObject *) item)->klass))->show)
-		ai = ((SPItemClass *) (((GtkObject *) item)->klass))->show (item, arena);
+	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->show)
+		ai = ((SPItemClass *) G_OBJECT_GET_CLASS(item))->show (item, arena);
 
 	if (ai != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, arena, ai);
@@ -479,7 +485,7 @@ sp_item_show (SPItem *item, NRArena *arena)
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
-		gtk_object_set_user_data (GTK_OBJECT (ai), item);
+		g_object_set_data (G_OBJECT (ai), "sp-item", item);
 	}
 
 	return ai;
@@ -509,8 +515,8 @@ sp_item_hide (SPItem *item, NRArena *arena)
 	g_assert (arena != NULL);
 	g_assert (NR_IS_ARENA (arena));
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, arena);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->hide)
+		(* SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->hide) (item, arena);
 }
 
 #if 0
@@ -531,7 +537,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (item));
 
 	/* Create new arena */
-	arena = gtk_type_new (NR_TYPE_ARENA);
+	arena = g_object_new (NR_TYPE_ARENA, 0);
 	/* Create ArenaItem and set transform */
 	root = sp_item_show (item, arena);
 	nr_arena_item_set_transform (root, affine);
@@ -549,7 +555,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 	nr_arena_item_invoke_render (root, &bbox, b);
 	/* Free Arena and ArenaItem */
 	sp_item_hide (item, arena);
-	gtk_object_unref (GTK_OBJECT (arena));
+	g_object_unref (G_OBJECT (arena));
 	/* Copy buffer to output */
 	nr_render_r8g8b8a8_r8g8b8a8_alpha (buf->pixels, buf->width, buf->height, buf->rowstride, b->px, b->rs, 255);
 	/* Release RGBA buffer */
@@ -569,10 +575,10 @@ sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	if (!transform) {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	} else {
-		if (((SPItemClass *) (((GtkObject *) item)->klass))->write_transform) {
+		if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->write_transform) {
 			gdouble ltrans[6];
 			memcpy (ltrans, transform, 6 * sizeof (gdouble));
-			((SPItemClass *) (((GtkObject *) item)->klass))->write_transform (item, repr, ltrans);
+			((SPItemClass *) G_OBJECT_GET_CLASS(item))->write_transform (item, repr, ltrans);
 		} else {
 			guchar t[80];
 			if (sp_svg_write_affine (t, 80, item->affine)) {
@@ -591,8 +597,8 @@ sp_item_event (SPItem *item, SPEvent *event)
 	g_return_val_if_fail (SP_IS_ITEM (item), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	if (((SPItemClass *) (((GtkObject *) item)->klass))->event)
-		return ((SPItemClass *) (((GtkObject *) item)->klass))->event (item, event);
+	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->event)
+		return ((SPItemClass *) G_OBJECT_GET_CLASS(item))->event (item, event);
 
 	return FALSE;
 }
@@ -653,6 +659,8 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 gdouble *
 sp_item_i2root_affine (SPItem *item, gdouble affine[])
 {
+	SPRoot *root;
+
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
 	g_return_val_if_fail (affine != NULL, NULL);
@@ -663,6 +671,14 @@ sp_item_i2root_affine (SPItem *item, gdouble affine[])
 		art_affine_multiply (affine, affine, item->affine);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}
+
+	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
+
+	root = SP_ROOT (item);
+
+	/* fixme: (Lauris) */
+	art_affine_multiply (affine, affine, root->viewbox.c);
+	art_affine_multiply (affine, affine, item->affine);
 
 	return affine;
 }
@@ -818,8 +834,8 @@ sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 	g_assert (SP_IS_ITEM (item));
 	g_assert (GTK_IS_MENU (menu));
 
-	if (SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu)
-		(* SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu) (item, desktop, menu);
+	if (SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->menu)
+		(* SP_ITEM_CLASS (G_OBJECT_GET_CLASS(item))->menu) (item, desktop, menu);
 }
 
 static void

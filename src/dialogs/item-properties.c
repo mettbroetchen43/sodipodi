@@ -17,8 +17,6 @@
 #include <ctype.h>
 #include <libnr/nr-values.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
@@ -29,6 +27,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>
 
+#include "helper/sp-intl.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"

@@ -17,13 +17,7 @@
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkradiobutton.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktogglebutton.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include <gtk/gtk.h>
 #include "helper/sp-canvas-util.h"
 #include "rubberband.h"
 #include "sodipodi-private.h"
@@ -35,6 +29,8 @@
 #include "pixmaps/cursor-select-m.xpm"
 #include "pixmaps/cursor-select-d.xpm"
 #include "pixmaps/handles.xpm"
+#include "helper/sp-intl.h"
+
 #include "select-context.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
@@ -140,7 +136,7 @@ sp_select_context_destroy (GtkObject * object)
 	sc = SP_SELECT_CONTEXT (object);
 
 	if (sc->grabbed) {
-		sp_canvas_item_ungrab (sc->grabbed, gdk_time_get ());
+		sp_canvas_item_ungrab (sc->grabbed, GDK_CURRENT_TIME);
 		sc->grabbed = NULL;
 	}
 

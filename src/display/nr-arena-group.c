@@ -22,7 +22,7 @@
 
 static void nr_arena_group_class_init (NRArenaGroupClass *klass);
 static void nr_arena_group_init (NRArenaGroup *group);
-static void nr_arena_group_destroy (GtkObject *object);
+static void nr_arena_group_dispose (GObject *object);
 
 static NRArenaItem *nr_arena_group_children (NRArenaItem *item);
 static void nr_arena_group_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -36,20 +36,23 @@ static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y
 
 static NRArenaItemClass *parent_class;
 
-GtkType
+GType
 nr_arena_group_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"NRArenaGroup",
-			sizeof (NRArenaGroup),
+		GTypeInfo info = {
 			sizeof (NRArenaGroupClass),
-			(GtkClassInitFunc) nr_arena_group_class_init,
-			(GtkObjectInitFunc) nr_arena_group_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) nr_arena_group_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (NRArenaGroup),
+			16,
+			(GInstanceInitFunc) nr_arena_group_init,
 		};
-		type = gtk_type_unique (NR_TYPE_ARENA_ITEM, &info);
+		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaGroup", &info, 0);
 	}
 	return type;
 }
@@ -57,15 +60,15 @@ nr_arena_group_get_type (void)
 static void
 nr_arena_group_class_init (NRArenaGroupClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	parent_class = gtk_type_class (NR_TYPE_ARENA_ITEM);
+	parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
 
-	object_class->destroy = nr_arena_group_destroy;
+	object_class->dispose = nr_arena_group_dispose;
 
 	item_class->children = nr_arena_group_children;
 	item_class->add_child = nr_arena_group_add_child;
@@ -87,7 +90,7 @@ nr_arena_group_init (NRArenaGroup *group)
 }
 
 static void
-nr_arena_group_destroy (GtkObject *object)
+nr_arena_group_dispose (GObject *object)
 {
 	NRArenaItem *item;
 	NRArenaGroup *group;
@@ -101,8 +104,8 @@ nr_arena_group_destroy (GtkObject *object)
 
 	group->last = NULL;
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static NRArenaItem *

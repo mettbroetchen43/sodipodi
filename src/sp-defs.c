@@ -35,20 +35,23 @@ static SPObject * sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr);
 
 static SPObjectClass * parent_class;
 
-GtkType
+GType
 sp_defs_get_type (void)
 {
-	static GtkType defs_type = 0;
+	static GType defs_type = 0;
 	if (!defs_type) {
-		GtkTypeInfo defs_info = {
-			"SPDefs",
-			sizeof (SPDefs),
+		GTypeInfo defs_info = {
 			sizeof (SPDefsClass),
-			(GtkClassInitFunc) sp_defs_class_init,
-			(GtkObjectInitFunc) sp_defs_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_defs_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPDefs),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_defs_init,
 		};
-		defs_type = gtk_type_unique (sp_object_get_type (), &defs_info);
+		defs_type = g_type_register_static (SP_TYPE_OBJECT, "SPDefs", &defs_info, 0);
 	}
 	return defs_type;
 }
@@ -56,13 +59,13 @@ sp_defs_get_type (void)
 static void
 sp_defs_class_init (SPDefsClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (sp_object_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_defs_build;
 	sp_object_class->release = sp_defs_release;
@@ -92,10 +95,10 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
-		GtkType type;
+		GType type;
 		SPObject * child;
 		type = sp_repr_type_lookup (rchild);
-		child = gtk_type_new (type);
+		child = g_object_new (type, 0);
 		last ? last->next : defs->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
@@ -122,7 +125,7 @@ sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
 	SPDefs * defs;
 	SPObject * ochild, * prev;
-	GtkType type;
+	GType type;
 
 	defs = SP_DEFS (object);
 
@@ -130,7 +133,7 @@ sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
 	type = sp_repr_type_lookup (child);
-	ochild = gtk_type_new (type);
+	ochild = g_object_new (type, 0);
 	ochild->parent = object;
 
 	prev = sp_defs_get_child_by_repr (defs, ref);
@@ -171,7 +174,7 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 	}
 	ochild->parent = NULL;
 	ochild->next = NULL;
-	gtk_object_unref (GTK_OBJECT (ochild));
+	g_object_unref (G_OBJECT (ochild));
 }
 
 static void
@@ -218,17 +221,17 @@ sp_defs_modified (SPObject *object, guint flags)
 
 	l = NULL;
 	for (child = defs->children; child != NULL; child = child->next) {
-		gtk_object_ref (GTK_OBJECT (child));
+		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
-		gtk_object_unref (GTK_OBJECT (child));
+		g_object_unref (G_OBJECT (child));
 	}
 }
 

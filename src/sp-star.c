@@ -20,8 +20,6 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "svg/svg.h"
@@ -29,6 +27,7 @@
 #include "desktop.h"
 #include "desktop-affine.h"
 #include "dialogs/object-attributes.h"
+#include "helper/sp-intl.h"
 
 #define noSTAR_VERBOSE
 
@@ -52,21 +51,24 @@ static void sp_star_star_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPPolygonClass *parent_class;
 
-GtkType
+GType
 sp_star_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPStar",
-			sizeof (SPStar),
+		GTypeInfo info = {
 			sizeof (SPStarClass),
-			(GtkClassInitFunc) sp_star_class_init,
-			(GtkObjectInitFunc) sp_star_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_star_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPStar),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_star_init,
 		};
-		type = gtk_type_unique (SP_TYPE_POLYGON, &info);
+		type = g_type_register_static (SP_TYPE_POLYGON, "SPStar", &info, 0);
 	}
 	return type;
 }
@@ -74,19 +76,19 @@ sp_star_get_type (void)
 static void
 sp_star_class_init (SPStarClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 	SPPathClass * path_class;
 	SPShapeClass * shape_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 	path_class = (SPPathClass *) class;
 	shape_class = (SPShapeClass *) class;
 
-	parent_class = gtk_type_class (sp_polygon_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_POLYGON);
 
 	sp_object_class->build = sp_star_build;
 	sp_object_class->write = sp_star_write;

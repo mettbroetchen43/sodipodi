@@ -14,8 +14,6 @@
 
 #include <config.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkbutton.h>
@@ -26,6 +24,8 @@
 #include "../document.h"
 #include "../document-private.h"
 #include "../gradient-chemistry.h"
+
+#include "../helper/sp-intl.h"
 
 #include "gradient-vector.h"
 #include "gradient-position.h"
@@ -86,29 +86,28 @@ sp_gradient_selector_class_init (SPGradientSelectorClass *klass)
 
 	signals[GRABBED] =  gtk_signal_new ("grabbed",
 					    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-					    object_class->type,
+					    GTK_CLASS_TYPE(object_class),
 					    GTK_SIGNAL_OFFSET (SPGradientSelectorClass, grabbed),
 					    gtk_marshal_NONE__NONE,
 					    GTK_TYPE_NONE, 0);
 	signals[DRAGGED] =  gtk_signal_new ("dragged",
 					    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-					    object_class->type,
+					    GTK_CLASS_TYPE(object_class),
 					    GTK_SIGNAL_OFFSET (SPGradientSelectorClass, dragged),
 					    gtk_marshal_NONE__NONE,
 					    GTK_TYPE_NONE, 0);
 	signals[RELEASED] = gtk_signal_new ("released",
 					    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-					    object_class->type,
+					    GTK_CLASS_TYPE(object_class),
 					    GTK_SIGNAL_OFFSET (SPGradientSelectorClass, released),
 					    gtk_marshal_NONE__NONE,
 					    GTK_TYPE_NONE, 0);
 	signals[CHANGED] =  gtk_signal_new ("changed",
 					    GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-					    object_class->type,
+					    GTK_CLASS_TYPE(object_class),
 					    GTK_SIGNAL_OFFSET (SPGradientSelectorClass, changed),
 					    gtk_marshal_NONE__NONE,
 					    GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_gradient_selector_destroy;
 }

@@ -15,14 +15,14 @@
 #include <config.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
-#include <libgnome/gnome-url.h>
+
 #include "helper/sp-canvas.h"
 #include "dialogs/object-attributes.h"
 #include "sp-anchor.h"
+#include "helper/sp-intl.h"
 
 /* fixme: This is insane, and should be removed */
 #include "svg-view.h"
@@ -45,20 +45,23 @@ static void sp_anchor_link_remove (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPGroupClass *parent_class;
 
-GtkType
+GType
 sp_anchor_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPAnchor",
-			sizeof (SPAnchor),
+		GTypeInfo info = {
 			sizeof (SPAnchorClass),
-			(GtkClassInitFunc) sp_anchor_class_init,
-			(GtkObjectInitFunc) sp_anchor_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_anchor_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPAnchor),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_anchor_init,
 		};
-		type = gtk_type_unique (SP_TYPE_GROUP, &info);
+		type = g_type_register_static (SP_TYPE_GROUP, "SPAnchor", &info, 0);
 	}
 	return type;
 }
@@ -66,15 +69,15 @@ sp_anchor_get_type (void)
 static void
 sp_anchor_class_init (SPAnchorClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *gobject_class;
 	SPObjectClass *sp_object_class;
 	SPItemClass *item_class;
 
-	gtk_object_class = GTK_OBJECT_CLASS (klass);
-	sp_object_class = (SPObjectClass *) klass;
-	item_class = (SPItemClass *) klass;
+	gobject_class = G_OBJECT_CLASS (klass);
+	sp_object_class = SP_OBJECT_CLASS (klass);
+	item_class = SP_ITEM_CLASS (klass);
 
-	parent_class = gtk_type_class (SP_TYPE_GROUP);
+	parent_class = g_type_class_ref (SP_TYPE_GROUP);
 
 	sp_object_class->build = sp_anchor_build;
 	sp_object_class->release = sp_anchor_release;
@@ -213,7 +216,9 @@ sp_anchor_event (SPItem *item, SPEvent *event)
 	case SP_EVENT_ACTIVATE:
 		if (anchor->href) {
 			g_print ("Activated xlink:href=\"%s\"\n", anchor->href);
-			gnome_url_show (anchor->href);
+#if 0
+			gnome_url_show (anchor->href, NULL);
+#endif
 			return TRUE;
 		}
 		break;
@@ -295,9 +300,11 @@ sp_anchor_link_follow (GtkMenuItem *menuitem, SPAnchor *anchor)
 	g_return_if_fail (anchor != NULL);
 	g_return_if_fail (SP_IS_ANCHOR (anchor));
 
+#if 0
 	if (anchor->href) {
-		gnome_url_show (anchor->href);
+		gnome_url_show (anchor->href, NULL);
 	}
+#endif
 }
 
 static void

@@ -14,21 +14,21 @@
  */
 
 #define NR_TYPE_ARENA (nr_arena_get_type ())
-#define NR_ARENA(o) (GTK_CHECK_CAST ((o), NR_TYPE_ARENA, NRArena))
-#define NR_ARENA_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA, NRArenaClass))
-#define NR_IS_ARENA(o) (GTK_CHECK_TYPE ((o), NR_TYPE_ARENA))
-#define NR_IS_ARENA_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA))
+#define NR_ARENA(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA, NRArena))
+#define NR_ARENA_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA, NRArenaClass))
+#define NR_IS_ARENA(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA))
+#define NR_IS_ARENA_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA))
 
+#include <glib-object.h>
 #include <libnr/nr-types.h>
-#include <gtk/gtkobject.h>
 #include "nr-arena-forward.h"
 
 struct _NRArena {
-	GtkObject object;
+	GObject object;
 };
 
 struct _NRArenaClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* These may be used for bookkeeping, like snooping highlited item */
 	void (* item_added) (NRArena *arena, NRArenaItem *item);
@@ -38,7 +38,7 @@ struct _NRArenaClass {
 	void (* request_render) (NRArena *arena, NRRectL *area);
 };
 
-GtkType nr_arena_get_type (void);
+GType nr_arena_get_type (void);
 
 /* Following are meant stricktly for subclass/item implementations */
 

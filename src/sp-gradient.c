@@ -43,20 +43,23 @@ static SPRepr *sp_stop_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectClass * stop_parent_class;
 
-GtkType
+GType
 sp_stop_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPStop",
-			sizeof (SPStop),
+		GTypeInfo info = {
 			sizeof (SPStopClass),
-			(GtkClassInitFunc) sp_stop_class_init,
-			(GtkObjectInitFunc) sp_stop_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_stop_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPStop),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_stop_init,
 		};
-		type = gtk_type_unique (SP_TYPE_OBJECT, &info);
+		type = g_type_register_static (sp_object_get_type (), "SPStop", &info, 0);
 	}
 	return type;
 }
@@ -68,7 +71,7 @@ sp_stop_class_init (SPStopClass * klass)
 
 	sp_object_class = (SPObjectClass *) klass;
 
-	stop_parent_class = gtk_type_class (SP_TYPE_OBJECT);
+	stop_parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_stop_build;
 	sp_object_class->read_attr = sp_stop_read_attr;
@@ -189,20 +192,23 @@ static void sp_gradient_rebuild_vector (SPGradient *gr);
 
 static SPPaintServerClass * gradient_parent_class;
 
-GtkType
+GType
 sp_gradient_get_type (void)
 {
-	static GtkType gradient_type = 0;
+	static GType gradient_type = 0;
 	if (!gradient_type) {
-		GtkTypeInfo gradient_info = {
-			"SPGradient",
-			sizeof (SPGradient),
+		GTypeInfo gradient_info = {
 			sizeof (SPGradientClass),
-			(GtkClassInitFunc) sp_gradient_class_init,
-			(GtkObjectInitFunc) sp_gradient_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_gradient_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPGradient),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_gradient_init,
 		};
-		gradient_type = gtk_type_unique (SP_TYPE_PAINT_SERVER, &gradient_info);
+		gradient_type = g_type_register_static (SP_TYPE_PAINT_SERVER, "SPGradient", &gradient_info, 0);
 	}
 	return gradient_type;
 }
@@ -210,13 +216,13 @@ sp_gradient_get_type (void)
 static void
 sp_gradient_class_init (SPGradientClass *klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *gobject_class;
 	SPObjectClass *sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	gradient_parent_class = gtk_type_class (SP_TYPE_PAINT_SERVER);
+	gradient_parent_class = g_type_class_ref (SP_TYPE_PAINT_SERVER);
 
 	sp_object_class->build = sp_gradient_build;
 	sp_object_class->release = sp_gradient_release;
@@ -267,11 +273,11 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	/* fixme: Add all children, not only stops? */
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
-		GtkType type;
+		GType type;
 		SPObject *child;
 		type = sp_repr_type_lookup (rchild);
-		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-			child = gtk_type_new (type);
+		if (g_type_is_a (type, SP_TYPE_OBJECT)) {
+			child = g_object_new(type, 0);
 			(last) ? last->next : gradient->stops = sp_object_attach_reref (object, child, NULL);
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			/* Set has_stops flag */
@@ -375,7 +381,8 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		return;
 	} else if (!strcmp (key, "xlink:href")) {
 		if (gr->href) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (gr->href), gr);
+/* 			gtk_signal_disconnect_by_data (GTK_OBJECT (gr->href), gr); */
+			g_signal_handlers_disconnect_matched (G_OBJECT(gr->href), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, gr);
 			gr->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gr->href), object);
 		}
 		if (val && *val == '#') {
@@ -383,8 +390,8 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			href = sp_document_lookup_id (object->document, val + 1);
 			if (SP_IS_GRADIENT (href)) {
 				gr->href = (SPGradient *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "release", GTK_SIGNAL_FUNC (sp_gradient_href_release), gr);
-				gtk_signal_connect (GTK_OBJECT (href), "modified", GTK_SIGNAL_FUNC (sp_gradient_href_modified), gr);
+				gtk_signal_connect (GTK_OBJECT (href), "release", G_CALLBACK (sp_gradient_href_release), gr);
+				gtk_signal_connect (GTK_OBJECT (href), "modified", G_CALLBACK (sp_gradient_href_modified), gr);
 			}
 		}
 		sp_gradient_invalidate_vector (gr);
@@ -400,7 +407,7 @@ static void
 sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPGradient *gr;
-	GtkType type;
+	GType type;
 	SPObject * ochild, * prev;
 
 	gr = SP_GRADIENT (object);
@@ -411,7 +418,7 @@ sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	sp_gradient_invalidate_vector (gr);
 
 	type = sp_repr_type_lookup (child);
-	ochild = gtk_type_new (type);
+	ochild = g_object_new(type, 0);
 	ochild->parent = object;
 
 	prev = NULL;
@@ -464,7 +471,7 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 
 	ochild->parent = NULL;
 	ochild->next = NULL;
-	gtk_object_unref (GTK_OBJECT (ochild));
+	g_object_unref (G_OBJECT (ochild));
 
 	/* fixme: (Lauris) */
 	gr->has_stops = FALSE;
@@ -496,17 +503,17 @@ sp_gradient_modified (SPObject *object, guint flags)
 
 	l = NULL;
 	for (child = gr->stops; child != NULL; child = child->next) {
-		gtk_object_ref (GTK_OBJECT (child));
+		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
-		gtk_object_unref (GTK_OBJECT (child));
+		g_object_unref (G_OBJECT (child));
 	}
 }
 
@@ -544,6 +551,8 @@ sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
 	}
 	/* fixme: (Lauris) */
 	sp_gradient_flatten_attributes (SP_GRADIENT (object), repr, TRUE);
+
+	return repr;
 }
 
 static void
@@ -647,8 +656,8 @@ sp_gradient_repr_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_
 	g_return_if_fail (SP_IS_GRADIENT (gr));
 	g_return_if_fail (repr != NULL);
 
-	if (((SPGradientClass *) ((GtkObject *) gr)->klass)->flatten_attributes)
-		((SPGradientClass *) ((GtkObject *) gr)->klass)->flatten_attributes (gr, repr, set_missing);
+	if (((SPGradientClass *) G_OBJECT_GET_CLASS(gr))->flatten_attributes)
+		((SPGradientClass *) G_OBJECT_GET_CLASS(gr))->flatten_attributes (gr, repr, set_missing);
 }
 
 void
@@ -1232,20 +1241,23 @@ static void sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint w
 
 static SPGradientClass *lg_parent_class;
 
-GtkType
+GType
 sp_lineargradient_get_type (void)
 {
-	static GtkType lineargradient_type = 0;
+	static GType lineargradient_type = 0;
 	if (!lineargradient_type) {
-		GtkTypeInfo lineargradient_info = {
-			"SPLinearGradient",
-			sizeof (SPLinearGradient),
+		GTypeInfo lineargradient_info = {
 			sizeof (SPLinearGradientClass),
-			(GtkClassInitFunc) sp_lineargradient_class_init,
-			(GtkObjectInitFunc) sp_lineargradient_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_lineargradient_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPLinearGradient),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_lineargradient_init,
 		};
-		lineargradient_type = gtk_type_unique (SP_TYPE_GRADIENT, &lineargradient_info);
+		lineargradient_type = g_type_register_static (SP_TYPE_GRADIENT, "SPLinearGradient", &lineargradient_info, 0);
 	}
 	return lineargradient_type;
 }
@@ -1253,17 +1265,17 @@ sp_lineargradient_get_type (void)
 static void
 sp_lineargradient_class_init (SPLinearGradientClass * klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *gobject_class;
 	SPObjectClass *sp_object_class;
 	SPPaintServerClass *ps_class;
 	SPGradientClass *gr_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	ps_class = (SPPaintServerClass *) klass;
 	gr_class = SP_GRADIENT_CLASS (klass);
 
-	lg_parent_class = gtk_type_class (SP_TYPE_GRADIENT);
+	lg_parent_class = g_type_class_ref (SP_TYPE_GRADIENT);
 
 	sp_object_class->build = sp_lineargradient_build;
 	sp_object_class->read_attr = sp_lineargradient_read_attr;
@@ -1593,20 +1605,23 @@ static void sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint w
 
 static SPGradientClass *rg_parent_class;
 
-GtkType
+GType
 sp_radialgradient_get_type (void)
 {
-	static GtkType radialgradient_type = 0;
+	static GType radialgradient_type = 0;
 	if (!radialgradient_type) {
-		GtkTypeInfo radialgradient_info = {
-			"SPRadialGradient",
-			sizeof (SPRadialGradient),
+		GTypeInfo radialgradient_info = {
 			sizeof (SPRadialGradientClass),
-			(GtkClassInitFunc) sp_radialgradient_class_init,
-			(GtkObjectInitFunc) sp_radialgradient_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_radialgradient_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPRadialGradient),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_radialgradient_init,
 		};
-		radialgradient_type = gtk_type_unique (SP_TYPE_GRADIENT, &radialgradient_info);
+		radialgradient_type = g_type_register_static (SP_TYPE_GRADIENT, "SPRadialGradient", &radialgradient_info, 0);
 	}
 	return radialgradient_type;
 }
@@ -1614,17 +1629,17 @@ sp_radialgradient_get_type (void)
 static void
 sp_radialgradient_class_init (SPRadialGradientClass * klass)
 {
-	GtkObjectClass *gtk_object_class;
+	GObjectClass *gobject_class;
 	SPObjectClass *sp_object_class;
 	SPPaintServerClass *ps_class;
 	SPGradientClass *gr_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	ps_class = (SPPaintServerClass *) klass;
 	gr_class = SP_GRADIENT_CLASS (klass);
 
-	rg_parent_class = gtk_type_class (SP_TYPE_GRADIENT);
+	rg_parent_class = g_type_class_ref (SP_TYPE_GRADIENT);
 
 	sp_object_class->build = sp_radialgradient_build;
 	sp_object_class->read_attr = sp_radialgradient_read_attr;

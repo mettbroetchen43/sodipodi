@@ -18,8 +18,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
 #include "sp-cursor.h"
@@ -32,6 +30,7 @@
 #include "zoom-context.h"
 #include "file.h"
 #include "interface.h"
+#include "helper/sp-intl.h"
 #include "selection-chemistry.h"
 #include "dialogs/desktop-properties.h"
 
@@ -423,8 +422,8 @@ sp_ec_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, 
 
 	ec = SP_EVENT_CONTEXT (data);
 
-	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set)
-		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set (ec, key, newval);
+	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set)
+		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set (ec, key, newval);
 }
 
 SPReprEventVector sp_ec_event_vector = {
@@ -463,8 +462,8 @@ sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
 		sp_repr_add_listener (ec->repr, &sp_ec_event_vector, ec);
 	}
 
-	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->setup)
-		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->setup (ec);
+	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->setup)
+		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->setup (ec);
 
 	return ec;
 }
@@ -475,8 +474,8 @@ sp_event_context_finish (SPEventContext *ec)
 	g_return_if_fail (ec != NULL);
 	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
 
-	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->finish)
-		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->finish (ec);
+	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->finish)
+		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->finish (ec);
 }
 
 void
@@ -489,8 +488,8 @@ sp_event_context_read (SPEventContext *ec, const guchar *key)
 	if (ec->repr) {
 		const guchar *val;
 		val = sp_repr_attr (ec->repr, key);
-		if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set)
-			SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set (ec, key, val);
+		if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set)
+			SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->set (ec, key, val);
 	}
 }
 
@@ -499,7 +498,7 @@ sp_event_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
 	gint ret;
 
-	ret = (* SP_EVENT_CONTEXT_CLASS (event_context->object.klass)->root_handler) (event_context, event);
+	ret = (* SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(event_context))->root_handler) (event_context, event);
 
 	set_event_location (event_context->desktop, event);
 
@@ -511,7 +510,7 @@ sp_event_context_item_handler (SPEventContext * event_context, SPItem * item, Gd
 {
 	gint ret;
 
-	ret = (* SP_EVENT_CONTEXT_CLASS (event_context->object.klass)->item_handler) (event_context, item, event);
+	ret = (* SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(event_context))->item_handler) (event_context, item, event);
 
 	if (! ret) {
 		ret = sp_event_context_root_handler (event_context, event);
@@ -528,8 +527,8 @@ sp_event_context_config_widget (SPEventContext *ec)
 	g_return_val_if_fail (ec != NULL, NULL);
 	g_return_val_if_fail (SP_IS_EVENT_CONTEXT (ec), NULL);
 
-	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->config_widget)
-		return SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->config_widget (ec);
+	if (SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->config_widget)
+		SP_EVENT_CONTEXT_CLASS (G_OBJECT_GET_CLASS(ec))->config_widget (ec);
 
 	return NULL;
 }

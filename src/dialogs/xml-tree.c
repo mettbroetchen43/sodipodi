@@ -16,8 +16,6 @@
 
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
@@ -30,9 +28,9 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtktooltips.h>
-#include <libgnomeui/gnome-stock.h>
-#include <gal/widgets/e-unicode.h>
+#include <gtk/gtkimage.h>
 
+#include "helper/sp-intl.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
@@ -142,7 +140,7 @@ sp_xml_tree_dialog (void)
 		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 4);
 		gtk_window_set_default_size (GTK_WINDOW (dialog), 640, 384);
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", on_destroy, NULL);
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", G_CALLBACK (on_destroy), NULL);
 
 		paned = gtk_hpaned_new ();
 		gtk_paned_set_position (GTK_PANED (paned), 256);
@@ -159,51 +157,116 @@ sp_xml_tree_dialog (void)
 		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", (GtkSignalFunc) on_tree_unselect_row, NULL);
 		gtk_signal_connect_after (GTK_OBJECT (tree), "tree_move", (GtkSignalFunc) after_tree_move, NULL);
 
-		toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_ICONS);
+		toolbar = gtk_toolbar_new ();
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 4);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("New element node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/add_xml_element_node.xpm"), cmd_new_element_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_element, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+						  NULL,
+						  _("New element node"),
+						  NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/add_xml_element_node.xpm"),
+						  G_CALLBACK (cmd_new_element_node),
+						  NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
+						"tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_element),
+						button,
+						GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
+						"tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button,
+						GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("New text node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/add_xml_text_node.xpm"), cmd_new_text_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_element, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+						  NULL, _("New text node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/add_xml_text_node.xpm"),
+						  G_CALLBACK (cmd_new_text_node),
+						  NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
+						"tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_element),
+						button,
+						GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
+						"tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button,
+						GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Duplicate node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/duplicate_xml_node.xpm"), cmd_duplicate_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_non_root, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar),
+						  NULL, _("Duplicate node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/duplicate_xml_node.xpm"),
+						  G_CALLBACK (cmd_duplicate_node),
+						  NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree),
+						"tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_non_root),
+						button,
+						GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/delete_xml_node.xpm"), cmd_delete_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_non_root, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/delete_xml_node.xpm"),
+						  G_CALLBACK (cmd_delete_node), NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_non_root),
+						button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "<", _("Unindent node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/unindent_xml_node.xpm"), cmd_unindent_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_has_grandparent, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "<", _("Unindent node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/unindent_xml_node.xpm"),
+						  G_CALLBACK (cmd_unindent_node), NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_has_grandparent),
+						button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), ">", _("Indent node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/indent_xml_node.xpm"), cmd_indent_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_indentable, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), ">", _("Indent node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/indent_xml_node.xpm"),
+						  G_CALLBACK (cmd_indent_node), NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_indentable),
+						button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						(GCallback) on_tree_unselect_row_disable, button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "^", _("Raise node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/raise_xml_node.xpm"), cmd_raise_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_first_child, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "^", _("Raise node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/raise_xml_node.xpm"),
+						  G_CALLBACK (cmd_raise_node), NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_not_first_child),
+						button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "v", _("Lower node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/lower_xml_node.xpm"), cmd_lower_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_last_child, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "v", _("Lower node"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/lower_xml_node.xpm"),
+						  G_CALLBACK (cmd_lower_node), NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						G_CALLBACK (on_tree_select_row_enable_if_not_last_child),
+						button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						G_CALLBACK (on_tree_unselect_row_disable),
+						button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (box), toolbar, FALSE, TRUE, 0); 
@@ -225,17 +288,22 @@ sp_xml_tree_dialog (void)
 		gtk_box_pack_start (GTK_BOX (box), GTK_WIDGET (attr_container), TRUE, TRUE, 0);
 
 		attributes = SP_XMLVIEW_ATTR_LIST (sp_xmlview_attr_list_new (NULL));
-		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row, NULL);
-		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row, NULL);
+		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", (GCallback) on_attr_select_row, NULL);
+		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", (GCallback) on_attr_unselect_row, NULL);
 
-		toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_ICONS);
+		toolbar = gtk_toolbar_new ();
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 4);
 
-		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete attribute"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/delete_xml_attribute.xpm"), cmd_delete_attr, NULL);
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), NULL, _("Delete attribute"), NULL,
+						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/delete_xml_attribute.xpm"),
+						  (GCallback) cmd_delete_attr, NULL);
 
-		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "select_row", on_attr_select_row_enable_if_not_id, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_disable, button, GTK_OBJECT (button));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "select_row",
+						(GCallback) on_attr_select_row_enable_if_not_id, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "unselect_row",
+						(GCallback) on_attr_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						(GCallback) on_tree_unselect_row_disable, button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (toolbar), FALSE, TRUE, 0);
@@ -257,16 +325,16 @@ sp_xml_tree_dialog (void)
 
 		attr_name = GTK_EDITABLE (gtk_entry_new ());
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_name), _("Attribute name"), NULL);
-		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row_set_name_content, attr_name);
-		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_clear_text, attr_name);
-		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_clear_text, attr_name);
+		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", (GCallback) on_attr_select_row_set_name_content, attr_name);
+		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", (GCallback) on_attr_unselect_row_clear_text, attr_name);
+		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", (GCallback) on_tree_unselect_row_clear_text, attr_name);
 		gtk_box_pack_start (GTK_BOX (box2), GTK_WIDGET (attr_name), TRUE, TRUE, 0);
 
 		set_attr = gtk_button_new ();
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (set_attr), _("Set attribute"), NULL);
-		gtk_container_add (GTK_CONTAINER (set_attr), gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/set.xpm"));
-		gtk_signal_connect (GTK_OBJECT (set_attr), "clicked", cmd_set_attr, NULL);
-		gtk_signal_connect (GTK_OBJECT (attr_name), "changed", on_editable_changed_enable_if_valid_xml_name, set_attr);
+		gtk_container_add (GTK_CONTAINER (set_attr), gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/set.xpm"));
+		gtk_signal_connect (GTK_OBJECT (set_attr), "clicked", (GCallback) cmd_set_attr, NULL);
+		gtk_signal_connect (GTK_OBJECT (attr_name), "changed", (GCallback) on_editable_changed_enable_if_valid_xml_name, set_attr);
 		gtk_widget_set_sensitive (GTK_WIDGET (set_attr), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (box2), set_attr, FALSE, FALSE, 0);
@@ -277,9 +345,9 @@ sp_xml_tree_dialog (void)
 
 		attr_value = GTK_EDITABLE (gtk_text_new (NULL, NULL));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_value), _("Attribute value"), NULL);
-		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row_set_value_content, attr_value);
-		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_clear_text, attr_value);
-		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_clear_text, attr_value);
+		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", (GCallback) on_attr_select_row_set_value_content, attr_value);
+		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", (GCallback) on_attr_unselect_row_clear_text, attr_value);
+		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", (GCallback) on_tree_unselect_row_clear_text, attr_value);
 		gtk_editable_set_editable (GTK_EDITABLE (attr_value), TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attr_value));
 
@@ -300,12 +368,16 @@ sp_xml_tree_dialog (void)
 
 		gtk_widget_show_all (GTK_WIDGET (dialog));
 
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_show_if_element, attr_container, GTK_OBJECT (attr_container));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_hide, attr_container, GTK_OBJECT (attr_container));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						(GCallback) on_tree_select_row_show_if_element, attr_container, GTK_OBJECT (attr_container));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						(GCallback) on_tree_unselect_row_hide, attr_container, GTK_OBJECT (attr_container));
 		gtk_widget_hide (attr_container);
 
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_show_if_text, text_container, GTK_OBJECT (text_container));
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_hide, text_container, GTK_OBJECT (text_container));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
+						(GCallback) on_tree_select_row_show_if_text, text_container, GTK_OBJECT (text_container));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
+						(GCallback) on_tree_unselect_row_hide, text_container, GTK_OBJECT (text_container));
 		gtk_widget_hide (text_container);
 	} else {
 		gdk_window_raise (GTK_WIDGET (dialog)->window);
@@ -325,8 +397,9 @@ set_tree_desktop (SPDesktop * desktop)
 	}
 	current_desktop = desktop;
 	if (desktop) {
-		gtk_signal_connect (GTK_OBJECT (desktop), "destroy", on_desktop_destroy, dialog);
-		gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed", on_desktop_selection_changed, dialog);
+		gtk_signal_connect (GTK_OBJECT (desktop), "destroy", G_CALLBACK (on_desktop_destroy), dialog);
+		gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
+				    G_CALLBACK (on_desktop_selection_changed), dialog);
 		set_tree_document (SP_DT_DOCUMENT (desktop));
 	} else {
 		set_tree_document (NULL);
@@ -342,7 +415,7 @@ set_tree_document (SPDocument * document)
 	}
 	current_document = document;
 	if (current_document) {
-		gtk_signal_connect (GTK_OBJECT (current_document), "uri_set", on_document_uri_set, dialog);
+		gtk_signal_connect (GTK_OBJECT (current_document), "uri_set", G_CALLBACK (on_document_uri_set), dialog);
 		on_document_uri_set (current_document, SP_DOCUMENT_URI (current_document), dialog);
 		set_tree_repr (sp_document_repr_root (current_document));
 	} else {
@@ -752,7 +825,7 @@ cmd_new_element_node (GtkObject * object, gpointer data)
 
 	g_assert (selected_repr != NULL);
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 4);
 	gtk_window_set_title (GTK_WINDOW (window), _("New element node..."));
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, TRUE);
@@ -775,14 +848,14 @@ cmd_new_element_node (GtkObject * object, gpointer data)
 	gtk_box_pack_start (GTK_BOX (vbox), bbox, FALSE, TRUE, 0);
 
 	cancel = gtk_button_new_with_label (_("Cancel"));
-	gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked", gtk_widget_destroy, GTK_OBJECT (window));
+	gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked", G_CALLBACK (gtk_widget_destroy), GTK_OBJECT (window));
 	gtk_container_add (GTK_CONTAINER (bbox), cancel);
 
 	create = gtk_button_new_with_label (_("Create"));
 	gtk_widget_set_sensitive (GTK_WIDGET (create), FALSE);
-	gtk_signal_connect (GTK_OBJECT (entry), "changed", on_editable_changed_enable_if_valid_xml_name, create);
-	gtk_signal_connect (GTK_OBJECT (create), "clicked", on_clicked_get_editable_text, &name);
-	gtk_signal_connect_object (GTK_OBJECT (create), "clicked", gtk_widget_destroy, GTK_OBJECT (window));
+	gtk_signal_connect (GTK_OBJECT (entry), "changed", G_CALLBACK (on_editable_changed_enable_if_valid_xml_name), create);
+	gtk_signal_connect (GTK_OBJECT (create), "clicked", G_CALLBACK (on_clicked_get_editable_text), &name);
+	gtk_signal_connect_object (GTK_OBJECT (create), "clicked", G_CALLBACK (gtk_widget_destroy), GTK_OBJECT (window));
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (create), GTK_CAN_DEFAULT | GTK_RECEIVES_DEFAULT);
 	gtk_container_add (GTK_CONTAINER (bbox), create);
 	
@@ -871,8 +944,8 @@ cmd_set_attr (GtkObject * object, gpointer data)
 
 	g_assert (selected_repr != NULL);
 
-	name = e_utf8_gtk_editable_get_text (attr_name);
-	value = e_utf8_gtk_editable_get_text (attr_value);
+	name = gtk_editable_get_chars (attr_name, 0, -1);
+	value = gtk_editable_get_chars (attr_value, 0, -1);
 
 	sp_repr_set_attr (selected_repr, name, value);
 

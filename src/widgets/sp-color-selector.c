@@ -22,9 +22,8 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkspinbutton.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "../color.h"
+#include "../helper/sp-intl.h"
 #include "sp-color-preview.h"
 #include "sp-color-selector.h"
 
@@ -102,29 +101,28 @@ sp_color_selector_class_init (SPColorSelectorClass *klass)
 
 	csel_signals[GRABBED] =  gtk_signal_new ("grabbed",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPColorSelectorClass, grabbed),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	csel_signals[DRAGGED] =  gtk_signal_new ("dragged",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPColorSelectorClass, dragged),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	csel_signals[RELEASED] = gtk_signal_new ("released",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPColorSelectorClass, released),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
 	csel_signals[CHANGED] =  gtk_signal_new ("changed",
 						 GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
-						 object_class->type,
+						 GTK_CLASS_TYPE(object_class),
 						 GTK_SIGNAL_OFFSET (SPColorSelectorClass, changed),
 						 gtk_marshal_NONE__NONE,
 						 GTK_TYPE_NONE, 0);
-	gtk_object_class_add_signals (object_class, csel_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_color_selector_destroy;
 }
@@ -186,7 +184,7 @@ sp_color_selector_init (SPColorSelector *csel)
 	gtk_widget_show (hb);
 	gtk_table_attach (GTK_TABLE (t), hb, 1, 3, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
 	csel->rgbae = gtk_entry_new_with_max_length (8);
-	gtk_object_set (GTK_OBJECT (csel->rgbae), "width", 64, NULL);
+	gtk_object_set_data (GTK_OBJECT (csel->rgbae), "width", GINT_TO_POINTER(64));
 	gtk_widget_show (csel->rgbae);
 	gtk_box_pack_start (GTK_BOX (hb), csel->rgbae, FALSE, FALSE, 0);
 #ifdef SPCS_PREVIEW
@@ -736,7 +734,8 @@ sp_color_selector_adjustment_changed (SPColorSelector *csel, guint channel)
 static void
 sp_color_selector_rgba_entry_changed (GtkEntry *entry, SPColorSelector *csel)
 {
-	gchar *t, *e;
+	const gchar *t;
+	gchar *e;
 	guint rgba;
 
 	if (csel->updating) return;

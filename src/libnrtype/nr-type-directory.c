@@ -13,6 +13,8 @@
 
 #define noTFDEBUG
 
+#include <config.h>
+
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -23,7 +25,9 @@
 #include <libnr/nr-macros.h>
 #include "nr-type-primitives.h"
 #include "nr-type-ft2.h"
+#ifdef WITH_GNOME_PRINT
 #include "nr-type-gnome.h"
+#endif
 #include "nr-type-directory.h"
 
 typedef struct _NRFamilyDef NRFamilyDef;
@@ -46,20 +50,14 @@ static float nr_type_distance_family_better (const unsigned char *ask, const uns
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
 static void nr_type_read_private_list (void);
+#ifdef WITH_GNOME_PRINT
 static void nr_type_read_gnome_list (void);
+#endif
 
 static NRTypeDict *typedict = NULL;
 static NRTypeDict *familydict = NULL;
 
 static NRFamilyDef *families = NULL;
-
-#if 0
-static NRTypeFaceDef *tdefs = NULL;
-static NRPosDef *pdefs = NULL;
-static NRFamilyDef *fdefs = NULL;
-static unsigned int ntdefs = 0;
-static unsigned int nfdefs = 0;
-#endif
 
 NRTypeFace *
 nr_type_directory_lookup (const unsigned char *name)
@@ -218,7 +216,9 @@ nr_type_directory_build (void)
 
 	nr_type_read_private_list ();
 
+#ifdef WITH_GNOME_PRINT
 	nr_type_read_gnome_list ();
+#endif
 
 	/* Sort families */
 	fnum = 0;
@@ -442,6 +442,7 @@ nr_type_read_private_list (void)
 	nr_free (filename);
 }
 
+#ifdef WITH_GNOME_PRINT
 static void
 nr_type_read_gnome_list (void)
 {
@@ -475,4 +476,5 @@ nr_type_read_gnome_list (void)
 	nr_name_list_release (&gfamilies);
 	nr_name_list_release (&gnames);
 }
+#endif
 

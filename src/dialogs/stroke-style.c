@@ -18,13 +18,14 @@
 
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 
 #include <libnr/nr-values.h>
 
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkadjustment.h>
+#include <gtk/gtkmisc.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktable.h>
@@ -32,8 +33,10 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkradiobutton.h>
-#include <libgnomeui/gnome-stock.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkimage.h>
 
+#include "../helper/sp-intl.h"
 #include "../helper/art-utils.h"
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
@@ -593,7 +596,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "join-miter", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "miter");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_miter.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/join_miter.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -604,7 +607,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "join-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_round.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/join_round.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -615,7 +618,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "join-bevel", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "bevel");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/join_bevel.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/join_bevel.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -636,7 +639,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-butt", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "butt");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_butt.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/cap_butt.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -647,7 +650,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_round.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/cap_round.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
@@ -658,7 +661,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-square", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "square");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
-	px = gnome_stock_pixmap_widget (spw, SODIPODI_GLADEDIR "/cap_square.xpm");
+        px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/cap_square.xpm");
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 

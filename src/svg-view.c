@@ -115,7 +115,7 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGVi
 		if (event->button.button == 1) {
 			if (active && (event->button.x == x) && (event->button.y == y)) {
 				g_print ("Invoking event\n");
-				spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+				spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 				spev.type = SP_EVENT_ACTIVATE;
 				sp_item_event (spitem, &spev);
 			}
@@ -126,13 +126,13 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGVi
 		active = FALSE;
 		break;
 	case GDK_ENTER_NOTIFY:
-		spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+		spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 		spev.type = SP_EVENT_MOUSEOVER;
 		spev.data = svgview;
 		sp_item_event (spitem, &spev);
 		break;
 	case GDK_LEAVE_NOTIFY:
-		spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+		spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 		spev.type = SP_EVENT_MOUSEOUT;
 		spev.data = svgview;
 		sp_item_event (spitem, &spev);
@@ -164,7 +164,7 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (svgview->drawing)->root, ai, NULL);
-			gtk_object_unref (GTK_OBJECT (ai));
+			g_object_unref (G_OBJECT (ai));
 		}
 		sp_svg_view_rescale (svgview, !svgview->rescale);
 	}

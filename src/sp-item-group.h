@@ -15,11 +15,11 @@
 
 #include "sp-item.h"
 
-#define SP_TYPE_GROUP (sp_group_get_type ())
-#define SP_GROUP(o) (GTK_CHECK_CAST ((o), SP_TYPE_GROUP, SPGroup))
-#define SP_GROUP_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_GROUP, SPGroupClass))
-#define SP_IS_GROUP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_GROUP))
-#define SP_IS_GROUP_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_GROUP))
+#define SP_TYPE_GROUP            (sp_group_get_type ())
+#define SP_GROUP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_GROUP, SPGroup))
+#define SP_GROUP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_GROUP, SPGroupClass))
+#define SP_IS_GROUP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_GROUP))
+#define SP_IS_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_GROUP))
 
 struct _SPGroup {
 	SPItem item;
@@ -31,7 +31,7 @@ struct _SPGroupClass {
 	SPItemClass parent_class;
 };
 
-GtkType sp_group_get_type (void);
+GType sp_group_get_type (void);
 
 void sp_item_group_ungroup (SPGroup *group, GSList **children);
 

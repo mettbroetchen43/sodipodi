@@ -13,27 +13,27 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define SP_TYPE_TEXT (sp_text_get_type ())
-#define SP_TEXT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT, SPText))
-#define SP_TEXT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_TEXT, SPTextClass))
-#define SP_IS_TEXT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_TEXT))
-#define SP_IS_TEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_TEXT))
+#define SP_TEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_TEXT, SPText))
+#define SP_TEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_TEXT, SPTextClass))
+#define SP_IS_TEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_TEXT))
+#define SP_IS_TEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_TEXT))
 
 #define SP_TYPE_TSPAN (sp_tspan_get_type ())
-#define SP_TSPAN(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_TSPAN, SPTSpan))
-#define SP_TSPAN_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_TSPAN, SPTSpanClass))
-#define SP_IS_TSPAN(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_TSPAN))
-#define SP_IS_TSPAN_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_TSPAN))
+#define SP_TSPAN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_TSPAN, SPTSpan))
+#define SP_TSPAN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_TSPAN, SPTSpanClass))
+#define SP_IS_TSPAN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_TSPAN))
+#define SP_IS_TSPAN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_TSPAN))
 
 #define SP_TYPE_STRING (sp_string_get_type ())
-#define SP_STRING(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_STRING, SPString))
-#define SP_STRING_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_STRING, SPStringClass))
-#define SP_IS_STRING(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_STRING))
-#define SP_IS_STRING_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_STRING))
+#define SP_STRING(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_STRING, SPString))
+#define SP_STRING_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_STRING, SPStringClass))
+#define SP_IS_STRING(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_STRING))
+#define SP_IS_STRING_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_STRING))
 
 /* Text specific flags */
 #define SP_TEXT_CONTENT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
@@ -85,7 +85,7 @@ struct _SPStringClass {
 
 #define SP_STRING_TEXT(s) (SP_STRING (s)->text)
 
-GtkType sp_string_get_type (void);
+GType sp_string_get_type (void);
 
 /* SPTSpan */
 
@@ -109,7 +109,7 @@ struct _SPTSpanClass {
 	SPItemClass parent_class;
 };
 
-GtkType sp_tspan_get_type (void);
+GType sp_tspan_get_type (void);
 
 /* SPText */
 
@@ -129,19 +129,13 @@ struct _SPTextClass {
 
 #define SP_TEXT_CHILD_STRING(c) (SP_IS_TSPAN (c) ? SP_TSPAN_STRING (c) : SP_STRING (c))
 
-GtkType sp_text_get_type (void);
+GType sp_text_get_type (void);
 
 int sp_text_is_empty (SPText *text);
 gchar *sp_text_get_string_multiline (SPText *text);
 void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
 SPCurve *sp_text_normalized_bpath (SPText *text);
-
-#if 0
-/* fixme: Better place for these */
-gint sp_text_font_weight_to_gp (gint weight);
-#define sp_text_font_italic_to_gp(s) ((s) != SP_CSS_FONT_STYLE_NORMAL)
-#endif
 
 /* fixme: Think about these (Lauris) */
 
@@ -161,6 +155,6 @@ gint sp_text_down (SPText *text, gint pos);
 
 void sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *p1);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

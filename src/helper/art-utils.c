@@ -367,6 +367,7 @@ sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *trans
 		vpath[vpath_len].y = sy;
 		vpath_len += 1;
 	}
+
 	if (vpath_len >= vpath_size) art_expand (vpath, ArtVpath, vpath_size);
 	vpath[vpath_len].code = ART_END;
 

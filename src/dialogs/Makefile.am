@@ -23,7 +23,6 @@ libspdialogs_a_SOURCES = \
 	export.c export.h \
 	xml-tree.c xml-tree.h \
 	align.c align.h	\
-	transformation.c transformation.h \
 	display-settings.c display-settings.h \
 	desktop-properties.c desktop-properties.h \
 	document-properties.c document-properties.h \
@@ -35,6 +34,9 @@ libspdialogs_a_SOURCES = \
 	fill-style.c fill-style.h \
 	stroke-style.c stroke-style.h \
 	node-edit.c node-edit.h
+
+# fixme: Kill glade and re-enable this (Lauris)
+#	transformation.c transformation.h
 
 #	sp-widget.c sp-widget.h \
 #	gradient-vector.c gradient-vector.h \

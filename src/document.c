@@ -20,15 +20,16 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <xml/repr.h>
-#include "marshal.h"
+#include <glib.h>
+#include <gtk/gtk.h>
+#include "helper/sp-marshal.h"
+#include "helper/sp-intl.h"
 #include "sodipodi-private.h"
 #include "sp-object-repr.h"
 #include "sp-root.h"
 #include "sp-namedview.h"
 #include "document-private.h"
 #include "desktop.h"
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 
 #define SP_NAMESPACE_SVG "http://www.w3.org/2000/svg"
 #define SP_NAMESPACE_SODIPODI "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -62,7 +63,7 @@ static GtkObjectClass * parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
 static gint doc_count = 0;
 
-GtkType
+unsigned int
 sp_document_get_type (void)
 {
 	static GtkType document_type = 0;
@@ -91,23 +92,22 @@ sp_document_class_init (SPDocumentClass * klass)
 
 	signals[MODIFIED] = gtk_signal_new ("modified",
 					    GTK_RUN_FIRST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPDocumentClass, modified),
+					    GTK_CLASS_TYPE(object_class),
+					    GTK_SIGNAL_OFFSET(SPDocumentClass, modified),
 					    gtk_marshal_NONE__UINT,
 					    GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
 	signals[URI_SET] =  gtk_signal_new ("uri_set",
 					    GTK_RUN_FIRST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPDocumentClass, uri_set),
+					    GTK_CLASS_TYPE(object_class),
+					    GTK_SIGNAL_OFFSET(SPDocumentClass, uri_set),
 					    gtk_marshal_NONE__STRING,
 					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 	signals[RESIZED] =  gtk_signal_new ("resized",
 					    GTK_RUN_FIRST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPDocumentClass, resized),
+					    GTK_CLASS_TYPE(object_class),
+					    GTK_SIGNAL_OFFSET(SPDocumentClass, resized),
 					    sp_marshal_NONE__DOUBLE_DOUBLE,
 					    GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_document_destroy;
 }
@@ -166,7 +166,7 @@ sp_document_destroy (GtkObject *object)
 		sp_document_clear_redo (doc);
 		sp_document_clear_undo (doc);
 
-		if (doc->root) gtk_object_unref (GTK_OBJECT (doc->root));
+		if (doc->root) g_object_unref (G_OBJECT (doc->root));
 
 		if (private->iddef) g_hash_table_destroy (private->iddef);
 
@@ -628,7 +628,7 @@ sp_document_idle_handler (gpointer data)
 SPObject *
 sp_document_add_repr (SPDocument *document, SPRepr *repr)
 {
-	GtkType type;
+	GType type;
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
@@ -636,10 +636,10 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 
 	type = sp_repr_type_lookup (repr);
 
-	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
-		sp_repr_append_child (document->rroot, repr);
-	} else if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
-		sp_repr_append_child (SP_OBJECT_REPR (SP_ROOT (document->root)->defs), repr);
+	if (g_type_is_a (type, SP_TYPE_ITEM)) {
+		sp_repr_append_child (sp_document_repr_root(document), repr);
+	} else if (g_type_is_a (type, SP_TYPE_OBJECT)) {
+		sp_repr_append_child (SP_OBJECT_REPR (SP_DOCUMENT_DEFS(document)), repr);
 	}
 
 	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
@@ -791,9 +791,6 @@ sp_document_resource_list_free (gpointer key, gpointer value, gpointer data)
 
 #ifdef SP_DOCUMENT_DEBUG_UNDO
 
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-dialog.h>
-
 static GSList *
 sp_action_print_pending_list (SPAction *action)
 {
@@ -848,11 +845,16 @@ sp_action_print_pending_list (SPAction *action)
 static gboolean
 sp_document_warn_undo_stack (SPDocument *doc)
 {
-	GnomeDialog *dlg;
+	GtkDialog *dlg;
 	GtkWidget *l, *t;
 	GSList *al;
 
-	dlg = (GnomeDialog *) gnome_dialog_new ("Stale undo stack warning", GNOME_STOCK_BUTTON_OK, NULL);
+	dlg = (GtkDialog *) gtk_dialog_new_with_buttons ("Stale undo stack warning",
+					    NULL,
+					    GTK_DIALOG_MODAL,
+					    GTK_STOCK_OK,
+					    GTK_RESPONSE_OK,
+					    NULL);
 
 	l = gtk_label_new ("WARNING");
 	gtk_widget_show (l);
@@ -878,7 +880,8 @@ sp_document_warn_undo_stack (SPDocument *doc)
 		al = g_slist_remove (al, al->data);
 	}
 
-	gnome_dialog_run_and_close (dlg);
+	gtk_dialog_run (dlg);
+	gtk_widget_destroy (GTK_WIDGET(dlg));
 
 	return TRUE;
 }

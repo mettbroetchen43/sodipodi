@@ -17,13 +17,13 @@
 #include "svg/svg-types.h"
 #include "sp-item-group.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define SP_TYPE_ROOT (sp_root_get_type ())
-#define SP_ROOT(o) (GTK_CHECK_CAST ((o), SP_TYPE_ROOT, SPRoot))
-#define SP_ROOT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_ROOT, SPRootClass))
-#define SP_IS_ROOT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_ROOT))
-#define SP_IS_ROOT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_ROOT))
+#define SP_ROOT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_ROOT, SPRoot))
+#define SP_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), SP_TYPE_ROOT, SPRootClass))
+#define SP_IS_ROOT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_ROOT))
+#define SP_IS_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), SP_TYPE_ROOT))
 
 struct _SPRoot {
 	SPGroup group;
@@ -48,8 +48,8 @@ struct _SPRootClass {
 	SPGroupClass parent_class;
 };
 
-GtkType sp_root_get_type (void);
+GType sp_root_get_type (void);
 
-END_GNOME_DECLS
+G_BEGIN_DECLS
 
 #endif

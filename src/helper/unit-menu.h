@@ -10,11 +10,11 @@
  *
  */
 
+#include <glib.h>
 #include <gtk/gtkoptionmenu.h>
-#include <libgnome/gnome-defs.h>
 #include "units.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /* Unit selector Widget */
 
@@ -40,12 +40,6 @@ void sp_unit_selector_remove_adjustment (SPUnitSelector *selector, GtkAdjustment
 
 gboolean sp_unit_selector_update_test (SPUnitSelector *selector);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif
-
-
-
-
-
-

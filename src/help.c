@@ -15,12 +15,11 @@
 #include <config.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "document.h"
 #include "sp-text.h"
 #include "svg-view.h"
 #include "help.h"
+#include "helper/sp-intl.h"
 
 static gint
 sp_help_about_delete (GtkWidget *widget, GdkEvent *event, gpointer data)

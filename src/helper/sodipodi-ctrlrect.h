@@ -14,10 +14,11 @@
  *
  */
 
+#include <glib.h>
 #include <libart_lgpl/art_rect.h>
 #include "sp-canvas.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define SP_TYPE_CTRLRECT (sp_ctrlrect_get_type ())
 #define SP_CTRLRECT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_CTRLRECT, SPCtrlRect))
@@ -58,6 +59,6 @@ void sp_ctrlrect_set_shadow (SPCtrlRect *rect, gint shadow_size, guint32 shadow_
 /* Deprecated */
 void sp_ctrlrect_set_rect (SPCtrlRect * rect, ArtDRect * box);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

@@ -12,7 +12,7 @@
 
 #include "sp-canvas.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef enum {
 	SP_GUIDELINE_ORIENTATION_HORIZONTAL,
@@ -51,6 +51,6 @@ GtkType sp_guideline_get_type (void);
 void sp_guideline_moveto (SPGuideLine * guideline, double x, double y);
 void sp_guideline_sensitize (SPGuideLine * guideline, gboolean sensitive);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

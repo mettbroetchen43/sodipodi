@@ -32,5 +32,7 @@ ArtUta *art_uta_from_svp_translated (const ArtSVP *svp, double cx, double cy);
 
 ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness);
 
+ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness);
+
 #endif
 

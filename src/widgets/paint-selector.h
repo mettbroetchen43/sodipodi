@@ -10,9 +10,9 @@
  *
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define SP_TYPE_PAINT_SELECTOR (sp_paint_selector_get_type ())
 #define SP_PAINT_SELECTOR(o) (GTK_CHECK_CAST ((o), SP_TYPE_PAINT_SELECTOR, SPPaintSelector))
@@ -97,6 +97,6 @@ void sp_paint_selector_get_gradient_position_floatv (SPPaintSelector *psel, gflo
 void sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient *lg, SPItem *item);
 void sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient *rg, SPItem *item);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

@@ -1,3 +1,10 @@
+2002-11-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): New variable.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): New variable.
+	* configure.in (AC_OUTPUT): Add intl/Makefile, po/Makefile.in, m4/Makefile.
+
 2002-11-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Version 0.29pre
@@ -435,6 +442,11 @@
 
 	* src/main.c: #include <desktop.h>
 
+Mon Oct 21 13:31:41 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* configure.in: Fixed dependency bug.
+	Removed --with/without-gnome-xml2 config option.
+
 2002-10-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/sp-toolbox.c: Removed whole gtk.h inclusion
@@ -444,6 +456,159 @@
 	* src/print.c (sp_print_image_R8G8B8A8_N): Implement
 	(sp_print_preview): Remove root transform
 	(sp_print_fill): Do not apply ctm twice
+
+Mon Oct 21 02:11:08 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* autogen.sh: Fixed package version in echo message.
+
+	* configure.in: Rewrite using PKG_CHECK_MODULES.
+	It reduced verbose package checks.
+
+	* src/main.c: Removed unused GNOME headers.
+
+	* src/sp-ellipse.c: Ditto.
+
+	* src/sp-image.c: Ditto.
+
+	* src/toolbox.c: Ditto.
+
+	* src/dialogs/align.c: Ditto.
+
+	* src/dialogs/desktop-properties.c: Ditto.
+
+	* src/dialogs/display-settings.c: Ditto.
+
+	* src/dialogs/document-properties.c: Ditto.
+
+	* src/dialogs/object-attributes.c: Ditto.
+	
+	* src/dialogs/object-properties.c: Ditto.
+
+	* src/dialogs/stroke-style.c: Ditto.
+
+	* src/dialogs/text-edit.c: Ditto.
+
+	* src/dialogs/tool-attributes.c: Ditto.
+
+	* src/dialogs/tool-options.c: Ditto.
+
+	* src/helper/units.c: Ditto.
+
+	* src/widgets/font-selector.c: Ditto.
+
+	* src/widgets/gradient-selector.c: Ditto.
+
+	* src/widgets/paint-selector.c: Ditto.
+
+	* src/widgets/sp-color-selector.c: Ditto.
+
+	* src/selection.c: Renamed release handler.
+
+	* src/sp-gradient.c: Fixed non existence destroy signal bug.
+
+	* src/sp-item.c: Ditto.
+
+	* src/style.c: Ditto.
+
+	* src/widgets/gradient-image.c: Ditto.
+
+	* src/widgets/gradient-vector.c: Ditto.
+
+	* src/sp-object.c: Cleanup.
+
+Sun Oct 20 12:22:03 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* autogen.sh: Specify automake version to 1.6.1.
+
+	* configure.in: Cleanup.
+
+	* src/desktop-events.c: Cleanup and removed unused gnome header.
+
+	* src/desktop.c: Ditto.
+
+	* src/draw-context.c: Ditto.
+
+	* src/dyna-draw-context.c: Ditto.
+
+	* src/event-context.c: Ditto.
+
+	* src/rect-context.c: Ditto.
+
+	* src/spiral-context.c: Ditto.
+	
+	* src/star-context.c: Ditto.
+
+	* src/file.c: Ditto.
+
+	* src/help.c: Ditto.
+
+	* src/main.c: Ditto.
+
+	* src/sp-anchor.c: Ditto.
+
+	* src/sp-item-group.c: Ditto.
+
+	* src/sp-item.c: Ditto.
+
+	* src/sp-rect.c: Ditto.
+
+	* src/sp-shape.c: Ditto.
+
+	* src/sp-spiral.c: Ditto.
+
+	* src/sp-star.c: Ditto.
+
+	* src/interface.c: Ditto.
+	We lost icon for sp_about function.
+	
+	* src/sp-image.c: Cleanup and removed unused gnome header.
+	Replaced by GtkDialog.
+
+	* src/document.c: Ditto.
+
+	* src/sodipodi.c: Ditto.
+
+	* src/sp-namedview.c: Fixed bug that SPGuide was unrefed by
+	gtk_object_unref.
+
+	* src/sp-object.c: Fixed up release/disopse/finalize policy.
+	We now got works again.
+	(sp_object_class_init): Fixed object signal handler connection bug
+	at release signal creation.
+
+	* src/sp-pattern.c: Moved to g_object_unref.
+
+	* src/sp-root.c (sp_root_release): Check if namedviews is NULL.
+
+	* src/sp-text.c: Moved to g_object_unref.
+	Removed unused gnome dependency.
+
+	* src/svg-view.c: Moved to g_object_unref and
+	g_object_get/set_data.
+
+	* src/toolbox.c: Reverted from SPWrap to GtkTable.
+	It's not a time to use SPWrap.
+
+	* src/dialogs/export.c: Moved arena object to GObject functions.
+
+	* src/dialogs/item-properties.c: Moved to g_object_unref.
+
+	* src/dialogs/xml-tree.c: Cleanup.
+
+	* src/display/nr-arena-glyphs.c: Moved from finalize to dispose.
+
+	* src/display/nr-arena-group.c: Ditto.
+
+	* src/display/nr-arena-image.c: Ditto.
+
+	* src/display/nr-arena-item.c: Ditto.
+
+	* src/display/nr-arena-shape.c: Ditto.
+
+	* src/display/nr-arena.c: Ditto.
+
+	* src/xml/sp-color-selector.c (sp_color_selector_init): Added
+	GINT_TO_POINTER cast.
 
 2002-10-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -465,6 +630,12 @@
 	* src/libnr/nr-path.c (nr_path_matrix_f_bbox_f_union): Moved bpath
 	bbox calculation here
 	(nr_curve_bbox): Rearrange comparisons
+
+Thu Oct 17 15:25:43 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Removed macros directory.
+
+	* Makefile.am, autogen.sh, configure.in: Corresponding changes.
 
 2002-10-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -504,6 +675,73 @@
 
 	* src/libnrtype/nr-typeface.c: Moved everyting to virtual method vector
 
+Sun Oct 13 20:54:15 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* autogen.sh: Come from GNOME2.
+
+Sun Oct 13 20:27:04 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/desktop-events.c, src/desktop.c,
+	src/dialogs/object-properties.c:
+	Moved gnome_pixmap_new_from_file to gtk_image_new_from_file.
+
+	* src/draw-context.c: Replaced finalize with destory.
+
+	* src/sp-polygon.c: Fixed property bug which did not work
+	correctly.
+
+	* src/widgets/sp-wrap-box.c, src/widgets/sp-wrap-box.h,
+	src/widgets/sp-hwrap-box.c, src/widgets/sp-hwrap-box.h,
+	src/widgets/sp-vwrap-box.c, src/widgets/sp-vwrap-box.h: New files.
+
+	* src/widgets/test-wrapbox.c: New file.
+
+	* src/widgets/Makefile.am: Added wrapbox stuffs.
+
+	* src/widgets/.cvsignore: Added test-wrapbox.
+
+	* src/widgets/sp-toolbox.c: Used g_signal_new instead of
+	gtk_signal_new, because we need accumulater to control signal
+	handler flow, and previous codes are not perfect.
+
+Sun Oct 13 04:18:41 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sodipodi.c, sodipodi.h: sodipodi_get_elapsed_time()
+	was useless, so removed.
+
+	* src/knot.c: Replaced finalize with dispose.
+	use GDK_CURRENT_TIME instead of sodipodi_get_elapsed_time().
+
+	* src/select-context.c: Use GDK_CURRENT_TIME instead of
+	sodipodi_get_elapsed_time().
+
+	* src/style.c: Replaced destroy with release.
+
+	* src/text-context.c: Replaced finalize with destory,
+	because it's not a direct subclass of GObject.
+	Replaced noisy gtk_signal_disconnect_by_data with
+	g_signal_handlers_disconnect_matched.
+
+	* src/toolbox.c: Use normal gtk_menu_item_set_submenu instead of
+	original gtk_menu_popup callback.
+
+	* src/sp-object.c: Fixed illegal signal emission.
+
+	* src/selection.c:
+
+	* src/dialogs/fill-style.c: Added required headler files.
+
+	* src/dialogs/item-properties.c: Depressed warning.
+
+	* src/display/canvas-arena.c: Use GDK_CURRENT_TIME instead of
+	sodipodi_get_elapsed_time().
+
+	* src/helper/sp-guide.c: Cleanup.
+
+	* src/widgets/sp-menu-button.c: Use GDK_CURRENT_TIME instead of
+	sodipodi_get_elapsed_time().
+	Changed popup style.
+	
 2002-10-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.c (uta_clear): Experimental method
@@ -576,6 +814,10 @@
 	not mess with lineargradient skew
 
 	* src/sp-ellipse.c (sp_arc_modified): Continue upstream
+
+Mon Oct  7 01:41:23 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Merged from HEAD branch.
 
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -784,6 +1026,25 @@
 	* src/widgets/gradient-position.c (spgp_clip_line): New method
 	(spgp_draw_rect): Ditto
 
+Sun Sep 29 14:17:31 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/knot.c, knot.h: Moved SPKnot from subclass of GtkObject
+	to GObject.
+
+	* src/knotholder.c: Ditto
+
+	* src/seltrans.c: Ditto
+
+	* src/selection.c: Migrated dispose to destroy for remainder.
+
+	* src/desktop-events.c: Fixed to connect signal handler correctly.
+
+	* src/desktop.c: Fixed to add button correctly.
+
+	* src/sp-use.c: Depressed gchar * warnings.
+
+	* src/sp-guide.c: Indented.
+
 2002-09-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-gradient.c (sp_gradient_set_gs2d_matrix_f): Oops, write the right transform
@@ -835,6 +1096,32 @@
 	(sp_paint_selector_set_mode_gradient): Set correct button
 
 	* glade/Makefile.am (pixmaps): Added fill_radial.xpm
+
+Sat Sep 28 14:35:21 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/toolbox.c: Use gtk_window_set_resizable() instead of
+	gtk_window_set_policy(), because it is deprecated in GTK+2.
+
+	* src/file.c: Depressed warning on gnome_print_master_perview_new.
+
+	* src/sp-object.h, sp-object.c: Added destroy signal and
+	remove dispose signal.
+
+	* src/selection.c, sp-gradient.c, style.c,
+	src/widgets/gradient-vector.c: Moved dispose to destroy.
+
+	* src/sp-guide.c: Added property.
+
+	* src/helper/sp-guide.c: Added property.
+
+	* src/sp-namedview.c: Moved gtk_object_unref to g_object_unref.
+
+	* src/dialogs/text-edit.c: Removed some GNOME dependencies.
+
+	* src/helper/gnome-utils.h gnome-utils.c: New file.
+	Utilities to help to remove GNOME libraries.
+
+	* src/interface.c: Moved some GNOME functions to gnome-utils.h.
 
 2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -930,6 +1217,16 @@
 	(sp_radialgradient_read_attr): Initialize right numbers
 	(sp_radialgradient_init): Ditto
 
+Tue Sep 24 01:01:21 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/interface.c (sp_ui_menu_append_item): Fixed to work well,
+	even if label is exist and stock is not exist.
+
+	* src/widgets/sp-menu-button.c (sp_menu_button_menu_position):
+	Modified for popup menu calculation.
+
+	* src/widgets/sp-toolbox.c: Added GTK_SIGNAL_FUNC cast.
+
 2002-09-24  Masatake YAMATO  <jet@gyve.org>
 
 	* src/select-context.c (sp_select_context_root_handler,
@@ -963,6 +1260,18 @@
 	* src/helper/art-utils.c (sp_bpath_matrix_d_bbox_d_union): Union always,
 	even if computed bbox is empty
 
+Mon Sep 23 01:37:09 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/widgets/sp-menu-button.c: Clean up code.
+
+	* src/widgets/sp-menu-button.c (sp_menu_button_menu_position):
+	In GTK+2, button widget share its window among toplevel window,
+	so I fixed offset calculation.
+
+	* src/knot.c: Clean up unused marshaller.
+
+	* src/knotholder.c: Ported.
+
 2002-09-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas-util.c (sp_canvas_item_grab): new method to
@@ -991,6 +1300,24 @@
 
 	* configure.in: Version 0.27pre
 
+Sun Sep 22 22:06:57 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/desktop.c: add destroy call for GtkDialog.
+
+	* src/sp-object.c, sp-polyline.c, style.c,
+	src/display/canvas-area.c, src/widgets/gradient-image.c,
+	gradient-vector.c: Ported and fixed.
+
+	* src/sp-ruler.c: Bug fixed that
+	misspelling s/GtkHRuler/SPHRuler/ and s/GtkVRuler/SPVRuler/.
+
+	* src/widgets/sp-menu-button.c, sp-menu-button.h, src/toolbox.c:
+	Found duplicated signal "activate".
+	So, renamed SPMenuButton::activate to "activate-item" and
+	did corresponding change for toolbox.c.
+
+	* src/helper/sp-ctrlline.c: Avoid to duplicated free call for ctrlline->svp.
+
 2002-09-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Version 0.26
@@ -1001,6 +1328,21 @@ Sun Sep 22 22:21:14 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-ruler.c: Bug fixed that
 	misspelling s/GtkHRuler/SPHRuler/ and s/GtkVRuler/SPVRuler/.
+
+Sat Sep 21 03:02:21 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Now, sodipodi can build and start up again (but often cause segv).
+
+	* src/display/canvas-arena.c, nr-arena-glyphs.h, nr-arena.c:
+	Ported.
+
+	* src/dialogs/export.c, text-edit.c: Ported.
+
+	* src/widgets/sp-color-slider.c, sp-menu-button.c: Ported.
+
+	* src/*.c, *.h: Ported.
+
+	* glade/*.glade: conveted to glade-2.
 
 2002-09-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -1042,6 +1384,10 @@ Sun Sep 22 22:21:14 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 	* src/xml/repr-io.c (sp_repr_read_file): Set doctype and comment if SVG
 	(sp_repr_read_mem): Ditto
 	(sp_repr_save_stream): Save doctype and comment
+
+Thu Sep 19 19:24:04 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-marshal.*, src/Makefile.am: Removed old marshaller codes.
 
 2002-09-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -1102,6 +1448,37 @@ Sun Sep 22 22:21:14 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 	(sp_root_print): Ditto
 
 	* src/sp-item.c (sp_item_i2doc_affine): Apply viewBox
+
+Tue Sep 17 13:50:40 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/dialogs/stroke-style.c: A few fix from my office.
+
+Mon Sep 16 21:31:33 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/display/*: Really done.
+	
+	* src/*: Half done, but partially adhock.
+
+Mon Sep 16 14:22:10 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Start migration to GTK+2 environment.
+
+	* Makefile.am, configure.in, acconfig.h: Use pkgconfig, GLib2,
+	Pango, GTK+2, GNOME2, etc.
+
+	* src/dialogs/*: Done.
+
+	* src/display/*: Done.
+
+	* src/helper/*: Done.
+
+	* src/svg/*: Done.
+
+	* src/widgets/*: Done.
+
+	* src/xml/*: Done.
+
+	* src/*: Partialy done.
 
 2002-09-16  Lauris Kaplinski  <lauris@kaplinski.com>
 

@@ -12,15 +12,23 @@
  */
 
 #include <string.h>
+#include <glib-object.h>
 #include <gtk/gtksignal.h>
 #include "helper/sp-guide.h"
+#include "helper/sp-intl.h"
 #include "sp-guide.h"
 
-enum {ARG_0, ARG_COLOR, ARG_HICOLOR};
+enum {
+	PROP_0,
+	PROP_COLOR,
+	PROP_HICOLOR,
+};
 
 static void sp_guide_class_init (SPGuideClass * klass);
 static void sp_guide_init (SPGuide * guide);
-static void sp_guide_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
+/*  static void sp_guide_finalize (GObject * object); */
+static void sp_guide_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void sp_guide_get_property (GObject * object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_guide_release (SPObject *object);
@@ -28,22 +36,23 @@ static void sp_guide_read_attr (SPObject * object, const gchar * key);
 
 static SPObjectClass * parent_class;
 
-GtkType
+GType
 sp_guide_get_type (void)
 {
-	static GtkType guide_type = 0;
+	static GType guide_type = 0;
 	if (!guide_type) {
-		GtkTypeInfo guide_info = {
-			"SPGuide",
-			sizeof (SPGuide),
+		GTypeInfo guide_info = {
 			sizeof (SPGuideClass),
-			(GtkClassInitFunc) sp_guide_class_init,
-			(GtkObjectInitFunc) sp_guide_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_guide_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPGuide),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_guide_init,
 		};
-		guide_type = gtk_type_unique (sp_object_get_type (), &guide_info);
+		guide_type = g_type_register_static (SP_TYPE_OBJECT, "SPGuide", &guide_info, 0);
 	}
 	return guide_type;
 }
@@ -51,22 +60,39 @@ sp_guide_get_type (void)
 static void
 sp_guide_class_init (SPGuideClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (sp_object_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
-	gtk_object_add_arg_type ("SPGuide::color", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_COLOR);
-	gtk_object_add_arg_type ("SPGuide::hicolor", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_HICOLOR);
-
-	gtk_object_class->set_arg = sp_guide_set_arg;
+	gobject_class->set_property = sp_guide_set_property;
+	gobject_class->get_property = sp_guide_get_property;
 
 	sp_object_class->build = sp_guide_build;
 	sp_object_class->release = sp_guide_release;
 	sp_object_class->read_attr = sp_guide_read_attr;
+
+	g_object_class_install_property (gobject_class,
+					 PROP_COLOR,
+					 g_param_spec_uint ("color",
+							    _("Color"),
+							    _("Color"),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
+	g_object_class_install_property (gobject_class,
+					 PROP_HICOLOR,
+					 g_param_spec_uint ("hicolor",
+							    _("HiColor"),
+							    _("HiColor"),
+							    0,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
 }
 
 static void
@@ -78,23 +104,58 @@ sp_guide_init (SPGuide * guide)
 	guide->hicolor = 0xff00007f;
 }
 
+#if 0
 static void
-sp_guide_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
+sp_guide_finalize (GObject * object)
+{
+	SPGuide * guide;
+
+	guide = (SPGuide *) object;
+
+	while (guide->views) {
+		gtk_object_destroy (GTK_OBJECT (guide->views->data));
+		guide->views = g_slist_remove (guide->views, guide->views->data);
+	}
+
+	if (((GObjectClass *) (parent_class))->finalize)
+		(* ((GObjectClass *) (parent_class))->finalize) (object);
+}
+#endif
+
+static void
+sp_guide_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	SPGuide * guide;
 	GSList * l;
 
 	guide = SP_GUIDE (object);
 
-	switch (arg_id) {
-	case ARG_COLOR:
-		guide->color = GTK_VALUE_UINT (*arg);
+	switch (prop_id) {
+	case PROP_COLOR:
+		guide->color = g_value_get_uint (value);
 		for (l = guide->views; l != NULL; l = l->next) {
 			gtk_object_set (GTK_OBJECT (l->data), "color", guide->color, NULL);
 		}
 		break;
-	case ARG_HICOLOR:
-		guide->hicolor = GTK_VALUE_UINT (*arg);
+	case PROP_HICOLOR:
+		guide->hicolor = g_value_get_uint (value);
+		break;
+	}
+}
+
+static void
+sp_guide_get_property (GObject * object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+	SPGuide * guide;
+
+	guide = SP_GUIDE (object);
+
+	switch (prop_id) {
+	case PROP_COLOR:
+		g_value_set_uint(value, guide->color);
+		break;
+	case PROP_HICOLOR:
+		g_value_set_uint(value, guide->hicolor);
 		break;
 	}
 }

@@ -15,9 +15,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define GNOME_TYPE_CANVAS_ACETATE (sp_canvas_acetate_get_type ())
 #define SP_CANVAS_ACETATE(obj) (GTK_CHECK_CAST ((obj), GNOME_TYPE_CANVAS_ACETATE, SPCanvasAcetate))
@@ -40,6 +40,6 @@ struct _SPCanvasAcetateClass {
 
 GtkType sp_canvas_acetate_get_type (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

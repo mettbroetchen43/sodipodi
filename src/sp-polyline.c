@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "sp-polyline.h"
+#include "helper/sp-intl.h"
 
 static void sp_polyline_class_init (SPPolyLineClass *class);
 static void sp_polyline_init (SPPolyLine *polyline);
@@ -27,22 +28,24 @@ static gchar * sp_polyline_description (SPItem * item);
 
 static SPShapeClass *parent_class;
 
-GtkType
+GType
 sp_polyline_get_type (void)
 {
-	static GtkType polyline_type = 0;
+	static GType polyline_type = 0;
 
 	if (!polyline_type) {
-		GtkTypeInfo polyline_info = {
-			"SPPolyLine",
-			sizeof (SPPolyLine),
+		GTypeInfo polyline_info = {
 			sizeof (SPPolyLineClass),
-			(GtkClassInitFunc) sp_polyline_class_init,
-			(GtkObjectInitFunc) sp_polyline_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_polyline_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPPolyLine),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_polyline_init,
 		};
-		polyline_type = gtk_type_unique (sp_shape_get_type (), &polyline_info);
+		polyline_type = g_type_register_static (SP_TYPE_SHAPE, "SPPolyLine", &polyline_info, 0);
 	}
 	return polyline_type;
 }
@@ -50,15 +53,15 @@ sp_polyline_get_type (void)
 static void
 sp_polyline_class_init (SPPolyLineClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_polyline_build;
 	sp_object_class->read_attr = sp_polyline_read_attr;

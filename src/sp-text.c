@@ -30,13 +30,12 @@
 #include <libnr/nr-matrix.h>
 #include <libnrtype/nr-type-directory.h>
 #include <libnrtype/nr-font.h>
-#include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <gal/unicode/gunicode.h>
 
-#include "macros.h"
+#include <glib.h>
+#include <gtk/gtk.h>
+
 #include "helper/art-utils.h"
+#include "helper/sp-intl.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
@@ -65,20 +64,23 @@ static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *c
 
 static SPCharsClass *string_parent_class;
 
-GtkType
+GType
 sp_string_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPString",
-			sizeof (SPString),
+		GTypeInfo info = {
 			sizeof (SPStringClass),
-			(GtkClassInitFunc) sp_string_class_init,
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_string_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPString),
+			16,	/* n_preallocs */
 			(GtkObjectInitFunc) sp_string_init,
-			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (SP_TYPE_CHARS, &info);
+		type = g_type_register_static (SP_TYPE_CHARS, "SPString", &info, 0);
 	}
 	return type;
 }
@@ -86,15 +88,13 @@ sp_string_get_type (void)
 static void
 sp_string_class_init (SPStringClass *class)
 {
-	GtkObjectClass *object_class;
 	SPObjectClass *sp_object_class;
 	SPItemClass *item_class;
 
-	object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	string_parent_class = gtk_type_class (SP_TYPE_CHARS);
+	string_parent_class = g_type_class_ref (SP_TYPE_CHARS);
 
 	sp_object_class->build = sp_string_build;
 	sp_object_class->release = sp_string_release;
@@ -174,72 +174,6 @@ sp_string_modified (SPObject *object, guint flags)
 }
 
 /* Vertical metric simulator */
-
-#if 0
-static ArtDRect *
-sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
-{
-	NRBPath bpath;
-	NRRectF hbox;
-
-	/* Find correct bbox (gnome-print does it wrong) */
-	if (!nr_font_glyph_outline_get (font, glyph, &bpath, FALSE)) return NULL;
-	hbox.x0 = hbox.y0 = 1e18;
-	hbox.x1 = hbox.y1 = -1e18;
-	nr_path_matrix_f_bbox_f_union (&bpath, NULL, &hbox, 0.25);
-	if (nr_rect_f_test_empty (&hbox)) return NULL;
-
-	if (mode == SP_CSS_WRITING_MODE_LR) {
-		bbox->x0 = hbox.x0;
-		bbox->y0 = hbox.y0;
-		bbox->x1 = hbox.x1;
-		bbox->y1 = hbox.y1;
-		return bbox;
-	} else {
-		gdouble dy;
-		/* Center horizontally */
-		bbox->x0 = 0.0 - (hbox.x1 - hbox.x0) / 2;
-		bbox->x1 = 0.0 + (hbox.x1 - hbox.x0) / 2;
-		/* Just move down by EM */
-		dy = NR_FONT_SIZE (font);
-		bbox->y0 = hbox.y0 - dy;
-		bbox->y1 = hbox.y1 - dy;
-		return bbox;
-	}
-}
-#endif
-
-#if 0
-static NRPointF *
-sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
-{
-	if (mode == SP_CSS_WRITING_MODE_LR) {
-		return nr_font_glyph_advance_get (font, glyph, adv);
-	} else {
-		adv->x = 0.0;
-		adv->y = -NR_FONT_SIZE (font);
-		return adv;
-	}
-}
-#endif
-
-#if 0
-static void
-sp_font_get_glyph_bbox_lr2tb (NRFont *font, gint glyph, ArtPoint *d)
-{
-	NRRectF hbox;
-
-	d->x = 0.0;
-	d->y = 0.0;
-
-	if (nr_font_glyph_area_get (font, glyph, &hbox)) {
-		/* Center horizontally */
-		d->x = 0.0 - (hbox.x1 + hbox.x0) / 2;
-		/* Just move down by EM */
-		d->y = 0.0 - NR_FONT_SIZE (font);
-	}
-}
-#endif
 
 static void
 sp_string_calculate_dimensions (SPString *string)
@@ -466,20 +400,23 @@ static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, 
 
 static SPItemClass *tspan_parent_class;
 
-GtkType
+GType
 sp_tspan_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPTSpan",
-			sizeof (SPTSpan),
+		GTypeInfo info = {
 			sizeof (SPTSpanClass),
-			(GtkClassInitFunc) sp_tspan_class_init,
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_tspan_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPTSpan),
+			16,	/* n_preallocs */
 			(GtkObjectInitFunc) sp_tspan_init,
-			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (SP_TYPE_ITEM, &info);
+		type = g_type_register_static (SP_TYPE_ITEM, "SPTSpan", &info, 0);
 	}
 	return type;
 }
@@ -487,15 +424,13 @@ sp_tspan_get_type (void)
 static void
 sp_tspan_class_init (SPTSpanClass *class)
 {
-	GtkObjectClass *object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	tspan_parent_class = gtk_type_class (SP_TYPE_ITEM);
+	tspan_parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->build = sp_tspan_build;
 	sp_object_class->release = sp_tspan_release;
@@ -640,7 +575,7 @@ sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	if (!tspan->string && rch->type == SP_XML_TEXT_NODE) {
 		SPString *string;
 		/* fixme: We should really pick up first child always */
-		string = gtk_type_new (SP_TYPE_STRING);
+		string = g_object_new (SP_TYPE_STRING, 0);
 		tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 		string->ly = &tspan->ly;
 		sp_object_invoke_build (tspan->string, SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
@@ -741,7 +676,7 @@ sp_tspan_show (SPItem *item, NRArena *arena)
 		ac = sp_item_show (SP_ITEM (tspan->string), arena);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
-			gtk_object_unref (GTK_OBJECT (ac));
+			g_object_unref (G_OBJECT (ac));
 		}
 		return ai;
 	}
@@ -801,20 +736,23 @@ static SPObject *sp_text_get_child_by_position (SPText *text, gint pos);
 
 static SPItemClass *text_parent_class;
 
-GtkType
+GType
 sp_text_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPText",
-			sizeof (SPText),
+		GTypeInfo info = {
 			sizeof (SPTextClass),
-			(GtkClassInitFunc) sp_text_class_init,
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_text_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPText),
+			16,	/* n_preallocs */
 			(GtkObjectInitFunc) sp_text_init,
-			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (SP_TYPE_ITEM, &info);
+		type = g_type_register_static (SP_TYPE_ITEM, "SPText", &info, 0);
 	}
 	return type;
 }
@@ -822,15 +760,13 @@ sp_text_get_type (void)
 static void
 sp_text_class_init (SPTextClass *class)
 {
-	GtkObjectClass *object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	text_parent_class = gtk_type_class (SP_TYPE_ITEM);
+	text_parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->build = sp_text_build;
 	sp_object_class->release = sp_text_release;
@@ -907,14 +843,14 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
 		if (rch->type == SP_XML_TEXT_NODE) {
 			SPString *string;
-			string = gtk_type_new (SP_TYPE_STRING);
+			string = g_object_new (SP_TYPE_STRING, 0);
 			(ref) ? ref->next : text->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 			string->ly = &text->ly;
 			sp_object_invoke_build (SP_OBJECT (string), doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = SP_OBJECT (string);
 		} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
 			SPObject *child;
-			child = gtk_type_new (SP_TYPE_TSPAN);
+			child = g_object_new (SP_TYPE_TSPAN, 0);
 			ref ? ref->next : text->children = sp_object_attach_reref (object, child, NULL);
 			sp_object_invoke_build (child, doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = child;
@@ -1019,7 +955,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 
 	if (rch->type == SP_XML_TEXT_NODE) {
 		SPString *string;
-		string = gtk_type_new (SP_TYPE_STRING);
+		string = g_object_new (SP_TYPE_STRING, 0);
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, SP_OBJECT (string), prev->next);
 		} else {
@@ -1030,7 +966,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		och = SP_OBJECT (string);
 	} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
 		SPObject *child;
-		child = gtk_type_new (SP_TYPE_TSPAN);
+		child = g_object_new (SP_TYPE_TSPAN, 0);
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, child, prev->next);
 		} else {
@@ -1050,7 +986,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 			ac = sp_item_show (SP_ITEM (och), v->arena);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
-				gtk_object_unref (GTK_OBJECT (ac));
+				g_object_unref (G_OBJECT (ac));
 			}
 		}
 	}
@@ -1217,7 +1153,7 @@ sp_text_show (SPItem *item, NRArena *arena)
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
-				gtk_object_unref (GTK_OBJECT (ac));
+				g_object_unref (G_OBJECT (ac));
 			}
 		}
 	}

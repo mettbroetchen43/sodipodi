@@ -26,10 +26,11 @@
 #include "knotholder.h"
 
 #define SP_TYPE_ITEM (sp_item_get_type ())
-#define SP_ITEM(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
-#define SP_ITEM_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ITEM, SPItemClass))
-#define SP_IS_ITEM(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ITEM))
-#define SP_IS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
+#define SP_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_ITEM, SPItem))
+#define SP_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_ITEM, SPItemClass))
+#define SP_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_ITEM))
+#define SP_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
+#define SP_ITEM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), SP_TYPE_ITEM, SPItemClass))
 
 /* fixme: This is just placeholder */
 /*
@@ -112,7 +113,7 @@ struct _SPItemClass {
 
 /* Standard Gtk function */
 
-GtkType sp_item_get_type (void);
+GType sp_item_get_type (void);
 
 /* Methods */
 

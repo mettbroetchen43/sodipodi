@@ -13,19 +13,20 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "svg/svg-types.h"
 #include "sp-item.h"
 
 #define SP_TYPE_IMAGE (sp_image_get_type ())
-#define SP_IMAGE(o) (GTK_CHECK_CAST ((o), SP_TYPE_IMAGE, SPImage))
-#define SP_IMAGE_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_IMAGE, SPImageClass))
-#define SP_IS_IMAGE(o) (GTK_CHECK_TYPE ((o), SP_TYPE_IMAGE))
-#define SP_IS_IMAGE_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_IMAGE))
+#define SP_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_IMAGE, SPImage))
+#define SP_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_IMAGE, SPImageClass))
+#define SP_IS_IMAGE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_IMAGE))
+#define SP_IS_IMAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_IMAGE))
+
 
 typedef struct _SPImage SPImage;
 typedef struct _SPImageClass SPImageClass;
@@ -47,8 +48,8 @@ struct _SPImageClass {
 	SPItemClass parent_class;
 };
 
-GtkType sp_image_get_type (void);
+GType sp_image_get_type (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

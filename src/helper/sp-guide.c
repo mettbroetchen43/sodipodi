@@ -14,25 +14,25 @@
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sp-guide.h"
+#include "sp-intl.h"
 
 enum {
-	ARG_0,
-	ARG_ORIENTATION,
-	ARG_COLOR
+	PROP_0,
+	PROP_ORIENTATION,
+	PROP_COLOR
 };
 
 
 static void sp_guideline_class_init (SPGuideLineClass *klass);
 static void sp_guideline_init (SPGuideLine *guideline);
 static void sp_guideline_destroy (GtkObject *object);
-static void sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void sp_guideline_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+static void sp_guideline_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void sp_guideline_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags);
 static void sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_guideline_point (SPCanvasItem *item, double x, double y,
-			int cx, int cy, SPCanvasItem ** actual_item);
+static double sp_guideline_point (SPCanvasItem *item, double x, double y, SPCanvasItem ** actual_item);
 
 
 static SPCanvasItemClass * parent_class;
@@ -43,16 +43,19 @@ sp_guideline_get_type (void)
 	static GtkType guideline_type = 0;
 
 	if (!guideline_type) {
-		GtkTypeInfo guideline_info = {
-			"SPGuideLine",
-			sizeof (SPGuideLine),
+		static const GTypeInfo guideline_info =
+		{
 			sizeof (SPGuideLineClass),
-			(GtkClassInitFunc) sp_guideline_class_init,
-			(GtkObjectInitFunc) sp_guideline_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) sp_guideline_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (SPGuideLine),
+			16,             /* n_preallocs */
+			(GInstanceInitFunc) sp_guideline_init,
 		};
-		guideline_type = gtk_type_unique (sp_canvas_item_get_type (), &guideline_info);
+		guideline_type = g_type_register_static (SP_TYPE_CANVAS_ITEM, "SPGuideLine", &guideline_info, 0);
 	}
 	return guideline_type;
 }
@@ -60,24 +63,43 @@ sp_guideline_get_type (void)
 static void
 sp_guideline_class_init (SPGuideLineClass *klass)
 {
+	GObjectClass *g_object_class;
 	GtkObjectClass *object_class;
 	SPCanvasItemClass *item_class;
 
+	g_object_class = G_OBJECT_CLASS (klass);
 	object_class = (GtkObjectClass *) klass;
 	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (sp_canvas_item_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	gtk_object_add_arg_type ("SPGuideLine::orientation", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_ORIENTATION);
-	gtk_object_add_arg_type ("SPGuideLine::color", GTK_TYPE_INT, GTK_ARG_WRITABLE, ARG_COLOR);
+	g_object_class->set_property = sp_guideline_set_property;
+	g_object_class->get_property = sp_guideline_get_property;
 
 	object_class->destroy = sp_guideline_destroy;
-	object_class->set_arg = sp_guideline_set_arg;
-	object_class->get_arg = sp_guideline_get_arg;
 
 	item_class->update = sp_guideline_update;
 	item_class->render = sp_guideline_render;
 	item_class->point = sp_guideline_point;
+
+	g_object_class_install_property (g_object_class,
+					 PROP_ORIENTATION,
+					 g_param_spec_int ("orientation",
+							   _("Orientation"),
+							   _("Orientation of guideline"),
+							   SP_GUIDELINE_ORIENTATION_HORIZONTAL,
+							   SP_GUIDELINE_ORIENTATION_VERTICAL,
+							   SP_GUIDELINE_ORIENTATION_HORIZONTAL,
+							   G_PARAM_READWRITE));
+	g_object_class_install_property (g_object_class,
+					 PROP_COLOR,
+					 g_param_spec_uint ("color",
+							    _("Color"),
+							    _("Guideline color"),
+							    0x00000000,
+							    0xffffffff,
+							    0xff000000,
+							    G_PARAM_READWRITE));
 }
 
 static void
@@ -100,7 +122,7 @@ sp_guideline_destroy (GtkObject *object)
 }
 
 static void
-sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+sp_guideline_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	SPCanvasItem *item;
 	SPGuideLine *guideline;
@@ -108,13 +130,13 @@ sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	item = SP_CANVAS_ITEM (object);
 	guideline = SP_GUIDELINE (object);
 
-	switch (arg_id) {
-	case ARG_ORIENTATION:
-		guideline->orientation = GTK_VALUE_ENUM (* arg);
+	switch (prop_id) {
+	case PROP_ORIENTATION:
+		guideline->orientation = g_value_get_int (value);
 		sp_canvas_item_request_update (item);
 		break;
-	case ARG_COLOR:
-		guideline->color = GTK_VALUE_INT (* arg);
+	case PROP_COLOR:
+		guideline->color = g_value_get_uint (value);
 		sp_canvas_item_request_update (item);
 		break;
 	default:
@@ -123,18 +145,21 @@ sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 static void
-sp_guideline_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+sp_guideline_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	SPGuideLine *guideline;
 
 	guideline = SP_GUIDELINE (object);
 
-	switch (arg_id) {
-	case ARG_ORIENTATION:
-		GTK_VALUE_ENUM (* arg) = guideline->orientation;
+	switch (prop_id) {
+	case PROP_ORIENTATION:
+		g_value_set_int (value, (gint)guideline->orientation);
+		break;
+	case PROP_COLOR:
+		g_value_set_uint (value, (guint)guideline->color);
 		break;
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		value->g_type = G_TYPE_INVALID;
 		break;
 	}
 }
@@ -249,8 +274,7 @@ sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 }
 
 static double
-sp_guideline_point (SPCanvasItem *item, double x, double y,
-	       int cx, int cy, SPCanvasItem **actual_item)
+sp_guideline_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
 	SPGuideLine * guideline;
 	gdouble d;
@@ -262,9 +286,9 @@ sp_guideline_point (SPCanvasItem *item, double x, double y,
 	* actual_item = item;
 
 	if (guideline->orientation == SP_GUIDELINE_ORIENTATION_HORIZONTAL) {
-		d = CLAMP (0, 1e18, fabs ((double) cy - guideline->position) - 1.0);
+		d = CLAMP (0, 1e18, fabs (y - guideline->position) - 1.0);
 	} else {
-		d = CLAMP (0, 1e18, fabs ((double) cx - guideline->position) - 1.0);
+		d = CLAMP (0, 1e18, fabs (x - guideline->position) - 1.0);
 	}
 
 	return d;
@@ -288,5 +312,3 @@ sp_guideline_sensitize (SPGuideLine * guideline, gboolean sensitive)
 
 	guideline->sensitive = sensitive;
 }
-
-

@@ -20,8 +20,6 @@
 #include <libnr/nr-pixops.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
@@ -37,6 +35,7 @@
 #include "dir-util.h"
 #include "helper/png-write.h"
 #include "dialogs/export.h"
+#include "helper/sp-intl.h"
 #include "sodipodi.h"
 #include "desktop.h"
 #include "sp-image.h"
@@ -346,7 +345,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	    (strcmp (e, "xpm") == 0)) {
 		/* Try pixbuf */
 		GdkPixbuf *pb;
-		pb = gdk_pixbuf_new_from_file (filename);
+		pb = gdk_pixbuf_new_from_file (filename, NULL);
 		if (pb) {
 			/* We are readable */
 			repr = sp_repr_new ("image");

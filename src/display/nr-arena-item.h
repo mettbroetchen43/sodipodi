@@ -14,12 +14,12 @@
  */
 
 #define NR_TYPE_ARENA_ITEM (nr_arena_item_get_type ())
-#define NR_ARENA_ITEM(o) (GTK_CHECK_CAST ((o), NR_TYPE_ARENA_ITEM, NRArenaItem))
-#define NR_ARENA_ITEM_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA_ITEM, NRArenaItemClass))
-#define NR_IS_ARENA_ITEM(o) (GTK_CHECK_TYPE ((o), NR_TYPE_ARENA_ITEM))
-#define NR_IS_ARENA_ITEM_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_ITEM))
+#define NR_ARENA_ITEM(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_ITEM, NRArenaItem))
+#define NR_ARENA_ITEM_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA_ITEM, NRArenaItemClass))
+#define NR_IS_ARENA_ITEM(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_ITEM))
+#define NR_IS_ARENA_ITEM_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_ITEM))
 
-#define NR_ARENA_ITEM_VIRTUAL(i,m) (((NRArenaItemClass *) ((GtkObject *) (i))->klass)->m)
+#define NR_ARENA_ITEM_VIRTUAL(i,m) (((NRArenaItemClass *) G_OBJECT_GET_CLASS (i))->m)
 
 typedef struct _NRGC NRGC;
 
@@ -45,8 +45,8 @@ typedef struct _NREvent NREvent;
 #define NR_ARENA_ITEM_SET_STATE(i,s) (NR_ARENA_ITEM (i)->state |= (s))
 #define NR_ARENA_ITEM_UNSET_STATE(i,s) (NR_ARENA_ITEM (i)->state &= ^(s))
 
+#include <glib-object.h>
 #include <libnr/nr-types.h>
-#include <gtk/gtkobject.h>
 #include "../helper/nr-buffers.h"
 #include "nr-arena-forward.h"
 
@@ -55,7 +55,7 @@ struct _NRGC {
 };
 
 struct _NRArenaItem {
-	GtkObject object;
+	GObject object;
 	NRArena *arena;
 	NRArenaItem *parent;
 	NRArenaItem *next;
@@ -78,7 +78,7 @@ struct _NRArenaItem {
 };
 
 struct _NRArenaItemClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	NRArenaItem * (* children) (NRArenaItem *item);
 	void (* add_child) (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -93,10 +93,10 @@ struct _NRArenaItemClass {
 	gint (* event) (NRArenaItem *item, NREvent *event);
 };
 
-GtkType nr_arena_item_get_type (void);
+GType nr_arena_item_get_type (void);
 
-#define nr_arena_item_ref(i) gtk_object_ref (GTK_OBJECT (i))
-#define nr_arena_item_unref(i) gtk_object_unref (GTK_OBJECT (i))
+#define nr_arena_item_ref(i) g_object_ref (G_OBJECT (i))
+#define nr_arena_item_unref(i) g_object_unref (G_OBJECT (i))
 
 NRArenaItem *nr_arena_item_children (NRArenaItem *item);
 void nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -125,7 +125,7 @@ void nr_arena_item_request_render (NRArenaItem *item);
 
 /* Public */
 
-NRArenaItem *nr_arena_item_new (NRArena *arena, GtkType type);
+NRArenaItem *nr_arena_item_new (NRArena *arena, GType type);
 NRArenaItem *nr_arena_item_destroy (NRArenaItem *item);
 
 void nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child);

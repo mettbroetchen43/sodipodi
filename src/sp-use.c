@@ -13,6 +13,8 @@
  */
 
 #include <string.h>
+#include <glib-object.h>
+#include "helper/sp-intl.h"
 #include "display/nr-arena-group.h"
 #include "document.h"
 #include "sp-object-repr.h"
@@ -40,21 +42,23 @@ static void sp_use_href_changed (SPUse * use);
 
 static SPItemClass * parent_class;
 
-GtkType
+GType
 sp_use_get_type (void)
 {
-	static GtkType use_type = 0;
+	static GType use_type = 0;
 	if (!use_type) {
-		GtkTypeInfo use_info = {
-			"SPUse",
-			sizeof (SPUse),
+		GTypeInfo use_info = {
 			sizeof (SPUseClass),
-			(GtkClassInitFunc) sp_use_class_init,
-			(GtkObjectInitFunc) sp_use_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_use_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPUse),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_use_init,
 		};
-		use_type = gtk_type_unique (sp_item_get_type (), &use_info);
+		use_type = g_type_register_static (SP_TYPE_ITEM, "SPUse", &use_info, 0);
 	}
 	return use_type;
 }
@@ -62,15 +66,15 @@ sp_use_get_type (void)
 static void
 sp_use_class_init (SPUseClass *class)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	gtk_object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	parent_class = gtk_type_class (sp_item_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_ITEM);
 
 	sp_object_class->build = sp_use_build;
 	sp_object_class->release = sp_use_release;
@@ -113,13 +117,13 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		refobj = sp_document_lookup_id (document, use->href);
 		if (refobj) {
 			SPRepr *childrepr;
-			GtkType type;
+			GType type;
 			childrepr = SP_OBJECT_REPR (refobj);
 			type = sp_repr_type_lookup (childrepr);
-			g_return_if_fail (type > GTK_TYPE_NONE);
-			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
+			g_return_if_fail (type > G_TYPE_NONE);
+			if (g_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject *childobj;
-				childobj = gtk_type_new (type);
+				childobj = g_object_new (type, 0);
 				use->child = sp_object_attach_reref (object, childobj, NULL);
 				sp_object_invoke_build (childobj, document, childrepr, TRUE);
 			}
@@ -277,7 +281,7 @@ sp_use_show (SPItem *item, NRArena *arena)
 		ac = sp_item_show (SP_ITEM (use->child), arena);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
-			gtk_object_unref (GTK_OBJECT(ac));
+			g_object_unref (G_OBJECT(ac));
 		}
 		return ai;
 	}
@@ -319,14 +323,14 @@ sp_use_href_changed (SPUse * use)
 		refobj = sp_document_lookup_id (SP_OBJECT (use)->document, use->href);
 		if (refobj) {
 			SPRepr * repr;
-			GtkType type;
+			GType type;
 			repr = refobj->repr;
 			type = sp_repr_type_lookup (repr);
-			g_return_if_fail (type > GTK_TYPE_NONE);
-			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
+			g_return_if_fail (type > G_TYPE_NONE);
+			if (g_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject * childobj;
 				SPItemView * v;
-				childobj = gtk_type_new (type);
+				childobj = g_object_new (type, 0);
 				use->child = sp_object_attach_reref (SP_OBJECT (use), childobj, NULL);
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
@@ -334,7 +338,7 @@ sp_use_href_changed (SPUse * use)
 					ai = sp_item_show (SP_ITEM (childobj), v->arena);
 					if (ai) {
 						nr_arena_item_add_child (v->arenaitem, ai, NULL);
-						gtk_object_unref (GTK_OBJECT(ai));
+						g_object_unref (G_OBJECT(ai));
 					}
 				}
 			}

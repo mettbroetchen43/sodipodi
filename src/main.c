@@ -31,15 +31,11 @@
 #include <locale.h>
 
 #include <popt.h>
-#include <tree.h>
+#include <libxml/tree.h>
+#include <glib-object.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <glade/glade.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
-#include <libgnomeui/gnome-window-icon.h>
+#include "helper/sp-intl.h"
 
 #ifdef ENABLE_BONOBO
 #include <liboaf/liboaf.h>
@@ -148,8 +144,9 @@ main (int argc, char **argv)
 	fpsetmask(fpgetmask() & ~(FP_X_DZ|FP_X_INV));
 #endif
 
-	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+/* 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8"); */
+	textdomain (GETTEXT_PACKAGE);
 
 	LIBXML_TEST_VERSION
 
@@ -191,8 +188,12 @@ sp_main_gui (int argc, char **argv)
 	poptContext ctx = NULL;
 	GSList *fl;
 
+#if 0
 	/* Setup gnome */
 	gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv, options, 0, &ctx);
+#else
+	gtk_init (&argc, &argv);
+#endif
 
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */
@@ -201,15 +202,15 @@ sp_main_gui (int argc, char **argv)
 
 	/* Collect own arguments */
 	fl = sp_process_args (ctx);
-	/* Setup libglade */
-	glade_gnome_init ();
 
+#if 0
 	/* Set default icon */
-	if (g_file_test (GNOME_ICONDIR "/sodipodi.png", G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) {
+	if (g_file_test (GNOME_ICONDIR "/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
 		gnome_window_icon_set_default_from_file (GNOME_ICONDIR "/sodipodi.png");
 	} else {
 		g_warning ("Could not find %s", GNOME_ICONDIR "/sodipodi.png");
 	}
+#endif
 
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();
@@ -303,7 +304,7 @@ sp_main_console (int argc, char **argv)
 			gchar *cwd;
 			/* Gnome-print appends relative paths to $HOME by default */
 			cwd = g_get_current_dir ();
-			printer = g_concat_dir_and_file (cwd, sp_global_printer);
+			printer = g_build_filename (cwd, sp_global_printer, NULL);
 			g_free (cwd);
 		} else {
 			printer = g_strdup (sp_global_printer);
@@ -311,7 +312,7 @@ sp_main_console (int argc, char **argv)
 	}
 
 	/* Start up gtk, without requiring X */
-	gtk_type_init();
+	g_type_init();
 	sodipodi = sodipodi_application_new ();
 
 	while (fl) {

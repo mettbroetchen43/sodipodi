@@ -19,14 +19,21 @@
 
 #include <string.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmisc.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenuitem.h>
 
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include <libnr/nr-values.h>
+
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_wind.h>
 
 #include <libnr/nr-values.h>
 
@@ -34,6 +41,7 @@
 #include <libart_lgpl/art_svp_wind.h>
 
 #include "../helper/art-utils.h"
+#include "../helper/sp-intl.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../widgets/paint-selector.h"

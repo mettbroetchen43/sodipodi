@@ -17,7 +17,7 @@
 #include "nr-pixops.h"
 #include "nr-compose.h"
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 /* fixme: */
 int nr_have_mmx (void);
 void nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned char *c);
@@ -686,7 +686,7 @@ nr_R8G8B8A8_P_EMPTY_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const un
 
 	if (a == 0) return;
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 	if (NR_PIXOPS_MMX) {
 		unsigned char c[4];
 		c[0] = NR_PREMUL (r, a);
@@ -807,7 +807,7 @@ nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32 (unsigned char *px, int w, int h, int rs, con
 	b = NR_RGBA32_B (rgba);
 	a = NR_RGBA32_A (rgba);
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 	if (NR_PIXOPS_MMX) {
 		unsigned char c[4];
 		c[0] = NR_PREMUL (r, a);
@@ -859,7 +859,7 @@ nr_R8G8B8_R8G8B8_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsi
 
 	if (alpha == 0) return;
 
-#ifdef USE_MMX
+#ifdef WITH_MMX
 	if (NR_PIXOPS_MMX) {
 		/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
 		nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P (px, w, h, rs, spx, srs, alpha);

@@ -16,14 +16,14 @@
 
 #include <math.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenuitem.h>
-#include <libgnomeui/gnome-stock.h>
+#include <gtk/gtkimage.h>
+#include "../helper/sp-intl.h"
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
@@ -88,7 +88,7 @@ sp_align_add_button (GtkWidget *t, int col, int row, GtkSignalFunc handler, cons
 	unsigned char c[1024];
 
 	g_snprintf (c, 1024, "%s/%s", SODIPODI_PIXMAPDIR, pxname);
-	pm = gnome_stock_pixmap_widget (t, c);
+	pm = gtk_image_new_from_file (pxname);
 	gtk_widget_show (pm);
 	b = gtk_button_new ();
 	gtk_widget_show (b);

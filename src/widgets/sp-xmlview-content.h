@@ -12,6 +12,8 @@
  * Released under the GNU GPL; see COPYING for details
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <gtk/gtktext.h>
 #include "../xml/repr.h"

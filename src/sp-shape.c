@@ -13,19 +13,17 @@
  */
 
 #include <config.h>
-
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include <gtk/gtk.h>
 #include <libnr/nr-pixblock.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 
-#include "macros.h"
+#include "helper/sp-intl.h"
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "dialogs/fill-style.h"
@@ -61,21 +59,24 @@ void sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
 
 static SPPathClass * parent_class;
 
-GtkType
+GType
 sp_shape_get_type (void)
 {
-	static GtkType shape_type = 0;
+	static GType shape_type = 0;
 
 	if (!shape_type) {
-		GtkTypeInfo shape_info = {
-			"SPShape",
-			sizeof (SPShape),
+		GTypeInfo shape_info = {
 			sizeof (SPShapeClass),
-			(GtkClassInitFunc) sp_shape_class_init,
-			(GtkObjectInitFunc) sp_shape_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_shape_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPShape),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_shape_init,
 		};
-		shape_type = gtk_type_unique (sp_path_get_type (), &shape_info);
+		shape_type = g_type_register_static (SP_TYPE_PATH, "SPShape", &shape_info, 0);
 	}
 	return shape_type;
 }
@@ -83,12 +84,12 @@ sp_shape_get_type (void)
 static void
 sp_shape_class_init (SPShapeClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 	SPPathClass * path_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 	path_class = (SPPathClass *) klass;
@@ -460,6 +461,6 @@ sp_shape_set_shape (SPShape *shape)
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (SP_IS_SHAPE (shape));
 
-	if (SP_SHAPE_CLASS (GTK_OBJECT(shape)->klass)->set_shape)
-		SP_SHAPE_CLASS (GTK_OBJECT(shape)->klass)->set_shape (shape);
+	if (SP_SHAPE_CLASS (G_OBJECT_GET_CLASS(shape))->set_shape)
+		SP_SHAPE_CLASS (G_OBJECT_GET_CLASS(shape))->set_shape (shape);
 }

@@ -14,23 +14,22 @@
  */
 
 #include <config.h>
+
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtktooltips.h>
 #include <gtk/gtkdnd.h>
-#include <libgnome/gnome-mime.h>
-#include <libgnomeui/gnome-pixmap.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-window-icon.h>
+
 #include "widgets/sp-toolbox.h"
 #include "widgets/sp-menu-button.h"
+#include "widgets/sp-hwrap-box.h"
 #include "file.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
@@ -42,6 +41,7 @@
 #include "dialogs/transformation.h"
 #include "dialogs/text-edit.h"
 #include "dialogs/align.h"
+#include "dialogs/export.h"
 #include "dialogs/node-edit.h"
 #include "zoom-context.h"
 #include "selection.h"
@@ -49,6 +49,8 @@
 #include "desktop-handles.h"
 #include "interface.h"
 #include "toolbox.h"
+#include "helper/gnome-utils.h"
+#include "helper/sp-intl.h"
 
 static GtkWidget *sp_toolbox_file_create (void);
 static GtkWidget *sp_toolbox_edit_create (void);
@@ -121,6 +123,7 @@ sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer dat
 	return TRUE;
 }
 
+#if 0
 static gint
 sp_maintoolbox_menu_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
@@ -133,6 +136,7 @@ sp_maintoolbox_menu_button_press (GtkWidget *widget, GdkEventButton *event, gpoi
 
 	return TRUE;
 }
+#endif
 
 void
 sp_maintoolbox_create (void)
@@ -143,9 +147,12 @@ sp_maintoolbox_create (void)
 		/* Create window */
 		toolbox = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
-		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE);
+		/* Hmmm, this does not shrink, but set_policy is deprecated. */
+		gtk_window_set_resizable (GTK_WINDOW (toolbox), TRUE);
+/*  		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE); */
 		gtk_signal_connect (GTK_OBJECT (toolbox), "delete_event", GTK_SIGNAL_FUNC (sp_maintoolbox_delete_event), NULL);
-		gtk_signal_connect (GTK_OBJECT (toolbox), "drag_data_received", sp_maintoolbox_drag_data_received, NULL);
+		gtk_signal_connect (GTK_OBJECT (toolbox), "drag_data_received",
+				    G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
 				    
 		vbox = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vbox);
@@ -157,7 +164,8 @@ sp_maintoolbox_create (void)
 		mi = gtk_menu_item_new_with_label (_("Sodipodi"));
 		gtk_widget_show (mi);
 		gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
-		gtk_signal_connect (GTK_OBJECT (mi), "button_press_event", GTK_SIGNAL_FUNC (sp_maintoolbox_menu_button_press), NULL);
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi), sp_ui_main_menu ());
+/*  		gtk_signal_connect (GTK_OBJECT (mi), "button_press_event", GTK_SIGNAL_FUNC (sp_maintoolbox_menu_button_press), NULL); */
 
 		/* File */
 		t = sp_toolbox_file_create ();
@@ -204,7 +212,7 @@ sp_maintoolbox_create (void)
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 	}
 
-	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox));
+/* 	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox)); */
 	gtk_drag_dest_set(toolbox, 
 			  GTK_DEST_DEFAULT_ALL,
 			  toolbox_drop_target_entries,
@@ -273,7 +281,7 @@ sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSi
 	int xpos, ypos;
 
 	g_snprintf (c, 1024, "%s/%s", SODIPODI_PIXMAPDIR, pxname);
-	pm = gnome_stock_pixmap_widget (t, c);
+	pm = gtk_image_new_from_file (c);
 	gtk_widget_show (pm);
 	b = gtk_button_new ();
 	gtk_widget_show (b);
@@ -293,7 +301,7 @@ sp_toolbox_toggle_button_new (const unsigned char *pixmap, unsigned int show)
 {
 	GtkWidget *pm, *b;
 
-	pm = gnome_pixmap_new_from_file (pixmap);
+	pm = gtk_image_new_from_file (pixmap);
 	gtk_widget_show (pm);
 	b = gtk_toggle_button_new ();
 	if (show) gtk_widget_show (b);
@@ -390,7 +398,9 @@ sp_toolbox_object_create (void)
 	sp_toolbox_button_new (t, 2, "object_layout.xpm", GTK_SIGNAL_FUNC (sp_object_properties_layout), tt, _("Object size and position"));
 	sp_toolbox_button_new (t, 3, "object_font.xpm", GTK_SIGNAL_FUNC (sp_text_edit_dialog), tt, _("Text and font settings"));
 	sp_toolbox_button_new (t, 4, "object_align.xpm", GTK_SIGNAL_FUNC (sp_quick_align_dialog), tt, _("Align objects"));
+#if 0
 	sp_toolbox_button_new (t, 5, "object_trans.xpm", GTK_SIGNAL_FUNC (sp_transformation_dialog_move), tt, _("Object transformations"));
+#endif
 	sp_toolbox_button_new (t, 7, "object_rotate.xpm", GTK_SIGNAL_FUNC (sp_selection_rotate_90), tt, _("Rotate object 90 deg clockwise"));
 	sp_toolbox_button_new (t, 8, "object_reset.xpm", GTK_SIGNAL_FUNC (sp_selection_remove_transform), tt, _("Remove transformations"));
 	sp_toolbox_button_new (t, 9, "object_tocurve.xpm", GTK_SIGNAL_FUNC (sp_selected_path_to_curves), tt, _("Convert object to curve"));
@@ -450,7 +460,6 @@ sp_toolbox_draw_create (void)
 	
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
-
 	tb = sp_toolbox_new (t, _("Draw"), "draw", SODIPODI_PIXMAPDIR "/toolbox_draw.xpm");
 	
 	tt = gtk_tooltips_new ();
@@ -469,6 +478,7 @@ sp_toolbox_draw_create (void)
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
 	gtk_tooltips_set_tip (tt, b, _("Node tool - modify different aspects of existing objects"), NULL);
 
+#if 0
 	/* Object */
 	b = sp_menu_button_new ();
 	gtk_widget_show (b);
@@ -535,6 +545,7 @@ sp_toolbox_draw_create (void)
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPenContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPDynaDrawContext", b);
+#endif
 
 	/* Text */
 	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_text.xpm", TRUE);
@@ -796,7 +807,7 @@ gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
 	GtkWidget * ev;
 	GtkTooltips *tt;
 	
-	pm = gnome_pixmap_new_from_file(image_file);
+	pm = gtk_image_new_from_file (image_file);
 	tt = gtk_tooltips_new ();
 	ev = gtk_event_box_new();
 	gtk_tooltips_set_tip (tt, ev, tip_text, tip_private);

@@ -17,8 +17,6 @@
 
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
@@ -29,8 +27,8 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkhseparator.h>
-#include <libgnomeui/gnome-pixmap.h>
-
+#include <gtk/gtkimage.h>
+#include "../helper/sp-intl.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"
 #include "fill-style.h"
@@ -106,7 +104,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Fill"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_fill.xpm");
+		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_fill.xpm");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_fill_style_widget_new ();
@@ -120,7 +118,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Stroke paint"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_stroke_style_paint_widget_new ();
@@ -134,7 +132,7 @@ sp_object_properties_dialog (void)
 		l = gtk_label_new (_("Stroke style"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
 		page = sp_stroke_style_line_widget_new ();
@@ -310,7 +308,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), us, 2, 3, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "units", us);
 
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/arrows_hor.xpm");
+	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/arrows_hor.xpm");
 	gtk_widget_show (px);
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 1, 2, 0, 0, 0, 0);
 	l = gtk_label_new (_("X:"));
@@ -325,7 +323,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/arrows_ver.xpm");
+	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/arrows_ver.xpm");
 	gtk_widget_show (px);
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 2, 3, 0, 0, 0, 0);
 	l = gtk_label_new (_("Y:"));
@@ -340,7 +338,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dimension_hor.xpm");
+	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/dimension_hor.xpm");
 	gtk_widget_show (px);
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 3, 4, 0, 0, 0, 0);
 	l = gtk_label_new (_("Width:"));
@@ -355,7 +353,7 @@ sp_selection_layout_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_object_layout_any_value_changed), spw);
 
-	px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dimension_ver.xpm");
+	px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/dimension_ver.xpm");
 	gtk_widget_show (px);
 	gtk_table_attach (GTK_TABLE (t), px, 0, 1, 4, 5, 0, 0, 0, 0);
 	l = gtk_label_new (_("Height:"));

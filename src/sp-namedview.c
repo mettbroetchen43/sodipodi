@@ -50,20 +50,23 @@ static gboolean sp_nv_read_opacity (const guchar *str, guint32 *color);
 
 static SPObjectGroupClass * parent_class;
 
-GtkType
+GType
 sp_namedview_get_type (void)
 {
-	static GtkType namedview_type = 0;
+	static GType namedview_type = 0;
 	if (!namedview_type) {
-		GtkTypeInfo namedview_info = {
-			"SPNamedView",
-			sizeof (SPNamedView),
+		GTypeInfo namedview_info = {
 			sizeof (SPNamedViewClass),
-			(GtkClassInitFunc) sp_namedview_class_init,
-			(GtkObjectInitFunc) sp_namedview_init,
-			NULL, NULL, NULL
+			NULL,	/* base_init */
+			NULL,	/* base_finalize */
+			(GClassInitFunc) sp_namedview_class_init,
+			NULL,	/* class_finalize */
+			NULL,	/* class_data */
+			sizeof (SPNamedView),
+			16,	/* n_preallocs */
+			(GInstanceInitFunc) sp_namedview_init,
 		};
-		namedview_type = gtk_type_unique (sp_objectgroup_get_type (), &namedview_info);
+		namedview_type = g_type_register_static (SP_TYPE_OBJECTGROUP, "SPNamedView", &namedview_info, 0);
 	}
 	return namedview_type;
 }
@@ -71,13 +74,13 @@ sp_namedview_get_type (void)
 static void
 sp_namedview_class_init (SPNamedViewClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
+	GObjectClass * gobject_class;
 	SPObjectClass * sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	parent_class = gtk_type_class (sp_objectgroup_get_type ());
+	parent_class = g_type_class_ref (SP_TYPE_OBJECTGROUP);
 
 	sp_object_class->build = sp_namedview_build;
 	sp_object_class->release = sp_namedview_release;
@@ -145,7 +148,7 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			} else {
 				nv->vguides = g_slist_prepend (nv->vguides, g);
 			}
-			gtk_object_set (GTK_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
+			g_object_set (G_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
 		}
 	}
 }
@@ -280,20 +283,20 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			nv->guidecolor = (nv->guidecolor & 0xff) | sp_svg_read_color (astr, nv->guidecolor);
 		}
 		for (l = nv->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+			g_object_set (G_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		for (l = nv->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+			g_object_set (G_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "guideopacity")) {
 		nv->guidecolor = (nv->guidecolor & 0xffffff00) | (DEFAULTGUIDECOLOR & 0xff);
 		sp_nv_read_opacity (astr, &nv->guidecolor);
 		for (l = nv->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+			g_object_set (G_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		for (l = nv->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", nv->guidecolor, NULL);
+			g_object_set (G_OBJECT (l->data), "color", nv->guidecolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "guidehicolor")) {
@@ -302,20 +305,20 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 			nv->guidehicolor = (nv->guidehicolor & 0xff) | sp_svg_read_color (astr, nv->guidehicolor);
 		}
 		for (l = nv->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+			g_object_set (G_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		for (l = nv->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+			g_object_set (G_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "guidehiopacity")) {
 		nv->guidehicolor = (nv->guidehicolor & 0xffffff00) | (DEFAULTGUIDEHICOLOR & 0xff);
 		sp_nv_read_opacity (astr, &nv->guidehicolor);
 		for (l = nv->hguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+			g_object_set (G_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		for (l = nv->vguides; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
+			g_object_set (G_OBJECT (l->data), "hicolor", nv->guidehicolor, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "showborder")) {
@@ -352,7 +355,7 @@ sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 		} else {
 			nv->vguides = g_slist_prepend (nv->vguides, g);
 		}
-		gtk_object_set (GTK_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
+		g_object_set (G_OBJECT (g), "color", nv->guidecolor, "hicolor", nv->guidehicolor, NULL);
 		if (nv->editable) {
 			for (l = nv->views; l != NULL; l = l->next) {
 				sp_guide_show (g, SP_DESKTOP (l->data)->guides, sp_dt_guide_event);
@@ -463,7 +466,7 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 
 	g_assert (l);
 
-	gtk_object_destroy (GTK_OBJECT (l->data));
+	g_object_unref (G_OBJECT (l->data));
 	nv->gridviews = g_slist_remove (nv->gridviews, l->data);
 }
 

@@ -17,8 +17,6 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkbutton.h>
@@ -34,6 +32,7 @@
 #include "desktop-snap.h"
 #include "pixmaps/cursor-star.xpm"
 #include "sp-metrics.h"
+#include "helper/sp-intl.h"
 
 #include "star-context.h"
 

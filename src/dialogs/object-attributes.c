@@ -16,8 +16,7 @@
 #include <stdlib.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include "../helper/sp-intl.h"
 #include "../sp-anchor.h"
 #include "sp-attribute-widget.h"
 #include "object-attributes.h"

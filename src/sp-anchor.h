@@ -16,10 +16,10 @@
 #include "sp-item-group.h"
 
 #define SP_TYPE_ANCHOR (sp_anchor_get_type ())
-#define SP_ANCHOR(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ANCHOR, SPAnchor))
-#define SP_ANCHOR_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ANCHOR, SPAnchorClass))
-#define SP_IS_ANCHOR(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ANCHOR))
-#define SP_IS_ANCHOR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ANCHOR))
+#define SP_ANCHOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_ANCHOR, SPAnchor))
+#define SP_ANCHOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_ANCHOR, SPAnchorClass))
+#define SP_IS_ANCHOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_ANCHOR))
+#define SP_IS_ANCHOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_ANCHOR))
 
 struct _SPAnchor {
 	SPGroup group;
@@ -31,6 +31,6 @@ struct _SPAnchorClass {
 	SPGroupClass parent_class;
 };
 
-GtkType sp_anchor_get_type (void);
+GType sp_anchor_get_type (void);
 
 #endif
