@@ -435,6 +435,7 @@ sp_spiral_outer_set (SPItem   *item,
 	spiral = SP_SPIRAL (item);
 
 	spiral->arg = -atan2(p->y, p->x) - 2.0*M_PI*spiral->revo;
+	spiral->rad = hypot(p->x, p->y);
 #if 0 /* we need round function */
 /*  	arg  = -atan2(p->y, p->x) - spiral->arg; */
 	if (state & GDK_CONTROL_MASK) {
