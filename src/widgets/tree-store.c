@@ -20,7 +20,6 @@
 struct _SPTreeStore {
 	GObject parent;
 
-	/* Used to track iterators */
 	int stamp;
 
 	SPDocument *doc;
@@ -168,6 +167,7 @@ sp_tree_store_doc_object_added (SPDocument *doc, SPObject *parent, SPObject *ref
 
 	if (!ref && !parent->children->next) {
 		GtkTreeIter piter = {0};
+		/* We are new child */
 		gtk_tree_path_up (path);
 		piter.stamp = store->stamp;
 		piter.user_data = parent;
@@ -365,11 +365,15 @@ sp_tree_store_get_iter (GtkTreeModel *model, GtkTreeIter *iter, GtkTreePath *pat
 
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
+	if (depth < 1) return FALSE;
 
-	parent.stamp = store->stamp;
-	parent.user_data = store->root;
+	/* path[0] is always root */
+	iter->stamp = store->stamp;
+	iter->user_data = store->root;
 
-	if (!gtk_tree_model_iter_nth_child (model, iter, &parent, indices[0])) return FALSE;
+	/* parent.stamp = store->stamp; */
+	/* parent.user_data = store->root; */
+	/* if (!gtk_tree_model_iter_nth_child (model, iter, &parent, indices[0])) return FALSE; */
 
 	for (i = 1; i < depth; i++) {
 		parent = *iter;
@@ -401,6 +405,10 @@ sp_tree_store_get_path (GtkTreeModel *model, GtkTreeIter *iter)
 		gtk_tree_path_prepend_index (path, pos);
 		object = object->parent;
 	}
+
+	/* Finally prepend 0 */
+	/* fixme: Is this correct (Lauris) */
+	gtk_tree_path_prepend_index (path, 0);
 
 	return path;
 }
@@ -459,13 +467,17 @@ sp_tree_store_iter_next (GtkTreeModel *model, GtkTreeIter *iter)
 
 	store = (SPTreeStore *) model;
 
-	object = (SPObject *) iter->user_data;
-
-	if (object->next) {
-		iter->user_data = object->next;
+	if (iter) {
+		object = (SPObject *) iter->user_data;
+		if (object) {
+			if (object->next) {
+				iter->user_data = object->next;
+			}
+			return object->next != NULL;
+		}
 	}
-
-	return object->next != NULL;
+	/* NULL or [0] iter is tree anchor */
+	return FALSE;
 }
 
 static gboolean
@@ -478,16 +490,18 @@ sp_tree_store_iter_children (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter
 
 	if (parent) {
 		object = (SPObject *) parent->user_data;
-	} else {
-		object = store->root;
+		if (object) {
+			if (object->children) {
+				iter->stamp = store->stamp;
+				iter->user_data = object->children;
+			}
+			return object->children != NULL;
+		}
 	}
-
-	if (object->children) {
-		iter->stamp = store->stamp;
-		iter->user_data = object->children;
-	}
-
-	return object->children != NULL;
+	/* NULL or [0] iter is tree anchor */
+	iter->stamp = store->stamp;
+	iter->user_data = store->root;
+	return TRUE;
 }
 
 static gboolean
@@ -498,9 +512,14 @@ sp_tree_store_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
 
 	store = (SPTreeStore *) model;
 
-	object = (SPObject *) iter->user_data;
-
-	return object->children != NULL;
+	if (iter) {
+		object = (SPObject *) iter->user_data;
+		if (object) {
+			return object->children != NULL;
+		}
+	}
+	/* NULL or [0] iter is tree anchor */
+	return TRUE;
 }
 
 static gint
@@ -514,14 +533,14 @@ sp_tree_store_iter_n_children (GtkTreeModel *model, GtkTreeIter *iter)
 
 	if (iter) {
 		object = (SPObject *) iter->user_data;
-	} else {
-		object = store->root;
+		if (object) {
+			num = 0;
+			for (child = object->children; child; child = child->next) num += 1;
+			return num;
+		}
 	}
-
-	num = 0;
-	for (child = object->children; child; child = child->next) num += 1;
-
-	return num;
+	/* NULL or [0] iter is tree anchor */
+	return 1;
 }
 
 static gboolean
@@ -535,21 +554,25 @@ sp_tree_store_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIte
 
 	if (parent) {
 		object = (SPObject *) parent->user_data;
-	} else {
-		object = store->root;
-	}
-
-	pos = 0;
-	for (child = object->children; child; child = child->next) {
-		if (pos == idx) {
-			iter->stamp = store->stamp;
-			iter->user_data = child;
-			break;
+		if (object) {
+			pos = 0;
+			for (child = object->children; child; child = child->next) {
+				if (pos == idx) {
+					iter->stamp = store->stamp;
+					iter->user_data = child;
+					break;
+				}
+				pos += 1;
+			}
+			return child != NULL;
 		}
-		pos += 1;
 	}
-
-	return child != NULL;
+	/* NULL or [0] iter is tree anchor */
+	if (idx == 0) {
+		iter->stamp = store->stamp;
+		iter->user_data = store->root;
+	}
+	return idx == 0;
 }
 
 static gboolean
@@ -560,13 +583,15 @@ sp_tree_store_iter_parent (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *
 
 	store = (SPTreeStore *) model;
 
-	object = (SPObject *) child->user_data;
-
-	if (object->parent) {
-		iter->stamp = store->stamp;
-		iter->user_data = object->parent;
+	if (child) {
+		object = (SPObject *) child->user_data;
+		if (object) {
+			iter->stamp = store->stamp;
+			iter->user_data = object->parent;
+		}
+		return object != NULL;
 	}
-
-	return object->parent != NULL;
+	/* NULL or [0] iter is tree anchor */
+	return FALSE;
 }
 

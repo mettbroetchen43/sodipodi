@@ -19,6 +19,7 @@
 #include <gtk/gtktreeview.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
+#include <gtk/gtktreeselection.h>
 
 #include "macros.h"
 #include "helper/sp-intl.h"
@@ -26,7 +27,9 @@
 #include "widgets/tree-store.h"
 #include "sodipodi.h"
 #include "document.h"
-#include "sp-object.h"
+#include "desktop.h"
+#include "desktop-handles.h"
+#include "sp-item-group.h"
 
 static GtkWidget *sp_document_tree_new (SPDocument *doc);
 
@@ -65,6 +68,22 @@ sp_document_tree_dialog (void)
 	}
 
 	gtk_window_present ((GtkWindow *) dlg);
+}
+
+static void
+sp_document_tree_selection_changed (GtkTreeSelection *sel, GtkTreeModel *model)
+{
+	SPObject *object;
+	GtkTreeIter iter;
+	gtk_tree_selection_get_selected (sel, NULL, &iter);
+	object = iter.user_data;
+	if (SP_IS_GROUP (object)) {
+		SPDesktop *desktop;
+		desktop = SP_ACTIVE_DESKTOP;
+		if (SP_DT_DOCUMENT (desktop) == object->document) {
+			sp_desktop_set_base (desktop, (SPGroup *) object);
+		}
+	}
 }
 
 static void
@@ -113,6 +132,7 @@ sp_document_tree_new (SPDocument *doc)
 	SPTreeStore *store;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *rtext, *rtoggle;
+	GtkTreeSelection *sel;
 	/* GtkTreeIter iter, piter; */
 	/* GValue val = {0}; */
 
@@ -157,6 +177,10 @@ sp_document_tree_new (SPDocument *doc)
 	gtk_tree_view_column_add_attribute (column, rtoggle, "activatable", SP_TREE_STORE_COLUMN_IS_VISUAL);
 	gtk_tree_view_column_add_attribute (column, rtoggle, "active", SP_TREE_STORE_COLUMN_PRINTABLE);
 	gtk_tree_view_append_column ((GtkTreeView *) tree, column);
+
+	sel = gtk_tree_view_get_selection ((GtkTreeView *) tree);
+	gtk_tree_selection_set_mode (sel, GTK_SELECTION_SINGLE);
+	g_signal_connect ((GObject *) sel, "changed", (GCallback) sp_document_tree_selection_changed, store);
 
 	return sw;
 }
