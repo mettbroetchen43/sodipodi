@@ -75,12 +75,7 @@ sp_defs_destroy (GtkObject * object)
 	defs = (SPDefs *) object;
 
 	while (defs->children) {
-		SPObject * child;
-		child = defs->children;
-		child->parent = NULL;
-		child->next = NULL;
-		defs->children = child->next;
-		gtk_object_unref (GTK_OBJECT (child));
+		defs->children = sp_object_detach_unref (SP_OBJECT (defs), defs->children);
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)

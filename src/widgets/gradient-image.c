@@ -10,9 +10,11 @@
  */
 
 #include <gtk/gtksignal.h>
+#include "../helper/nr-plain-stuff.h"
+#include "../helper/nr-plain-stuff-gdk.h"
 #include "gradient-image.h"
 
-#define VBLOCK 8
+#define VBLOCK 16
 
 static void sp_gradient_image_class_init (SPGradientImageClass *klass);
 static void sp_gradient_image_init (SPGradientImage *image);
@@ -166,15 +168,21 @@ sp_gradient_image_expose (GtkWidget *widget, GdkEventExpose *event)
 		y1 = MIN (event->area.y + event->area.height, widget->allocation.y + widget->allocation.height);
 		if ((x1 > x0) && (y1 > y0)) {
 			if (image->px) {
-				gint y;
-				guchar *p;
-				p = image->px + 3 * (x0 - widget->allocation.x);
-				for (y = y0; y < y1; y += VBLOCK) {
-					gdk_draw_rgb_image (widget->window, widget->style->black_gc,
-							    x0, y,
-							    (x1 - x0), MIN (VBLOCK, y1 - y),
-							    GDK_RGB_DITHER_MAX,
-							    p, widget->allocation.width * 3);
+				if (image->gradient) {
+					gint y;
+					guchar *p;
+					p = image->px + 3 * (x0 - widget->allocation.x);
+					for (y = y0; y < y1; y += VBLOCK) {
+						gdk_draw_rgb_image (widget->window, widget->style->black_gc,
+								    x0, y,
+								    (x1 - x0), MIN (VBLOCK, y1 - y),
+								    GDK_RGB_DITHER_MAX,
+								    p, widget->allocation.width * 3);
+					}
+				} else {
+					nr_gdk_draw_gray_garbage (widget->window, widget->style->black_gc,
+								  x0, y0,
+								  x1 - x0, y1 - y0);
 				}
 			} else {
 				gdk_draw_rectangle (widget->window, widget->style->black_gc,
@@ -247,34 +255,12 @@ sp_gradient_image_update (SPGradientImage *image)
 	allocation = &((GtkWidget *) image)->allocation;
 
 	if (image->gradient) {
-		gint x, y;
-		guchar *p;
-		for (y = 0; y < VBLOCK; y++) {
-			p = image->px + y * 3 * allocation->width;
-			for (x = 0; x < allocation->width; x++) {
-				guchar v;
-				v = ((x ^ y) & 0x8) ? 0xbf : 0x7f;
-				*p++ = v;
-				*p++ = v;
-				*p++ = v;
-			}
-		}
+		nr_render_checkerboard_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
 		sp_gradient_render_vector_block_rgb (image->gradient,
 						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
 						     0, allocation->width, TRUE);
 	} else {
-		gint x, y;
-		guchar *p;
-		for (y = 0; y < VBLOCK; y++) {
-			p = image->px + y * 3 * allocation->width;
-			for (x = 0; x < allocation->width; x++) {
-				guchar v;
-				v = ((x + y) & 1) ? 0xff : 0x00;
-				*p++ = v;
-				*p++ = v;
-				*p++ = v;
-			}
-		}
+		nr_render_gray_garbage_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
 	}
 
 	if (GTK_WIDGET_DRAWABLE (image)) {

@@ -71,12 +71,7 @@ sp_objectgroup_destroy (GtkObject *object)
 	og = SP_OBJECTGROUP (object);
 
 	while (og->children) {
-		SPObject * child;
-		child = og->children;
-		og->children = child->next;
-		child->parent = NULL;
-		child->next = NULL;
-		gtk_object_unref (GTK_OBJECT (child));
+		og->children = sp_object_detach_unref (SP_OBJECT (og), og->children);
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)

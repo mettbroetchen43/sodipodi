@@ -388,6 +388,7 @@ sp_object_ensure_fill_gradient_normalized (SPObject *object)
 		sp_gradient_ensure_vector (SP_GRADIENT (lg));
 		repr = sp_lineargradient_build_repr (lg, TRUE);
 		lg = (SPLinearGradient *) sp_document_add_repr (SP_OBJECT_DOCUMENT (object), repr);
+		sp_repr_unref (repr);
 		val = g_strdup_printf ("url(#%s)", SP_OBJECT_ID (lg));
 		sstr = sp_object_getAttribute (object, "style", NULL);
 		newval = sp_style_change_property (sstr, "fill", val);

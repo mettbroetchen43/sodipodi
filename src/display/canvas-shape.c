@@ -323,67 +323,6 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 							  NULL);
 				}
 				break;
-#if 0
-
-				width = buf->rect.x1 - buf->rect.x0;
-				height = buf->rect.y1 - buf->rect.y0;
-				rgba = g_new (guint32, height * width);
-
-				for (y = 0; y < height; y++) {
-				  for (x = 0; x < width; x++) {
-				    * (rgba + width * y + x) =
-				      (shape->fill->handler.pixel.ind) (buf->rect.x0 + x, buf->rect.y0 + y, shape->fill->handler.data);
-				  }
-				}
-
-				art_rgb_svp_rgba (comp->archetype->svp,
-				  buf->rect.x0 - comp->cx,
-				  buf->rect.y0 - comp->cy,
-				  buf->rect.x1 - comp->cx,
-				  buf->rect.y1 - comp->cy,
-				  rgba,
-				  0,0,
-				  width,
-				  buf->buf, buf->buf_rowstride,
-				  NULL);
-
-				g_free (rgba);
-				break;
-			case SP_FILL_DEP:
-				if (buf->is_bg) {
-				  gnome_canvas_clear_buffer (buf);
-				  buf->is_bg = FALSE;
-				}
-
-				width = buf->rect.x1 - buf->rect.x0;
-				height = buf->rect.y1 - buf->rect.y0;
-				rgba = g_new (guint32, height * width);
-
-				for (y = 0; y < height; y++) {
-				  for (x = 0; x < width; x++) {
-				    b = buf->buf + y * buf->buf_rowstride + 3 * x;
-				    src = ((guint32) * (b    ) << 24) |
-				          ((guint32) * (b + 1) << 16) |
-				          ((guint32) * (b + 2) <<  8);
-				    * (rgba + width * y + x) =
-				      (shape->fill->handler.pixel.dep) (buf->rect.x0 + x, buf->rect.y0 + y, src, shape->fill->handler.data);
-				  }
-				}
-
-				art_rgb_svp_rgba (comp->archetype->svp,
-				  buf->rect.x0 - comp->cx,
-				  buf->rect.y0 - comp->cy,
-				  buf->rect.x1 - comp->cx,
-				  buf->rect.y1 - comp->cy,
-				  rgba,
-				  0,0,
-				  width,
-				  buf->buf, buf->buf_rowstride,
-				  NULL);
-
-				g_free (rgba);
-				break;
-#endif
 			default:
 				if (buf->is_bg) {
 				  gnome_canvas_clear_buffer (buf);

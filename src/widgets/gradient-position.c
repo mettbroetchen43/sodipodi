@@ -13,6 +13,7 @@
 #include <string.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
+#include "../helper/nr-plain-stuff.h"
 #include "gradient-position.h"
 
 #define RADIUS 3
@@ -572,16 +573,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	pos->vbox.y1 = widget->allocation.height - pos->vbox.y0;
 	/* Draw checkerboard */
 	/* fixme: Get rid of uint32 stuff */
-	for (y = 0; y < widget->allocation.height; y++) {
-		p = pos->rgb + 3 * y * widget->allocation.width;
-		for (x = 0; x < widget->allocation.width; x++) {
-			guint32 c;
-			c = ((x ^ y) & 0x8) ? 0xbf : 0x7f;
-			*p++ = c;
-			*p++ = c;
-			*p++ = c;
-		}
-	}
+	nr_render_checkerboard_rgb (pos->rgb, widget->allocation.width, widget->allocation.height, 3 * widget->allocation.width);
 	/* Create painter */
 	art_affine_identity (id);
 	bbox.x0 = xp;

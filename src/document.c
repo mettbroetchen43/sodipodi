@@ -189,6 +189,7 @@ sp_document_new (const gchar * uri)
 	/* A quick hack to get namespaces into doc */
 	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000/svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
+	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
 	/* End of quick hack */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
@@ -267,6 +268,7 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	/* A quick hack to get namespaces into doc */
 	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000.svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
+	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
 	/* End of quick hack */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);

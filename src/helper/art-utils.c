@@ -90,7 +90,6 @@ static void
 art_rgb_run_rgba (art_u8 *buf, art_u32 *src, art_u8 coverage, int n)
 {
   int i;
-  int v;
   int r,g,b,a;
   art_u32 rgba;
 
@@ -100,14 +99,10 @@ art_rgb_run_rgba (art_u8 *buf, art_u32 *src, art_u8 coverage, int n)
       r = rgba >> 24;
       g = (rgba >> 16) & 0xff;
       b = (rgba >> 8) & 0xff;
-      a = ((rgba & 0xff) * coverage + 0x80) >> 8;
-      v = *buf;
-      *buf++ = v + (((r - v) * a + 0x80) >> 8);
-      v = *buf;
-      *buf++ = v + (((g - v) * a + 0x80) >> 8);
-      v = *buf;
-      *buf++ = v + (((b - v) * a + 0x80) >> 8);
-      v = *buf;
+      a = ((rgba & 0xff) * coverage + 0x80) / 255;
+      *buf++ = *buf + (((r - *buf) * a + 0x80) / 255);
+      *buf++ = *buf + (((g - *buf) * a + 0x80) / 255);
+      *buf++ = *buf + (((b - *buf) * a + 0x80) / 255);
     }
 
 }

@@ -25,7 +25,9 @@ libspchelp_a_SOURCES = \
 	sp-guide.c sp-guide.h \
 	canvas-grid.c canvas-grid.h \
 	png-write.c png-write.h \
-	unit-menu.c unit-menu.h
+	unit-menu.c unit-menu.h \
+	nr-plain-stuff.c nr-plain-stuff.h \
+	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h
 
 #	art_rgba.c art_rgba.h \
 #	art_render.c art_render.h \

@@ -18,3 +18,6 @@ config.h.in
 stamp-h.in
 ABOUT-NLS
 sodipodi.spec
+sodipodi.1
+*.svg
+
