@@ -461,6 +461,7 @@ sp_dyna_draw_timeout_handler (gpointer data)
   GnomeCanvas *canvas;
   gint x, y;
   ArtPoint p;
+  NRPointF fp;
 
   dc = SP_DYNA_DRAW_CONTEXT (data);
   desktop = SP_EVENT_CONTEXT(dc)->desktop;
@@ -471,7 +472,9 @@ sp_dyna_draw_timeout_handler (gpointer data)
   
   gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
   gnome_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
-  sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
+  sp_desktop_w2d_xy_point (desktop, &fp, p.x, p.y);
+  p.x = fp.x;
+  p.y = fp.y;
 /*    g_print ("(%d %d)=>(%g %g)\n", x, y, p.x, p.y); */
   if (! sp_dyna_draw_apply (dc, p.x, p.y))
     return TRUE;
@@ -492,144 +495,135 @@ gint
 sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 				   GdkEvent * event)
 {
-  SPDynaDrawContext *dc;
-  SPDesktop *desktop;
-  ArtPoint p;
-  gint ret;
+	SPDynaDrawContext *dc;
+	SPDesktop *desktop;
+	ArtPoint p;
+	gint ret;
+	NRPointF fp;
 
-  dc = SP_DYNA_DRAW_CONTEXT (event_context);
-  desktop = event_context->desktop;
+	dc = SP_DYNA_DRAW_CONTEXT (event_context);
+	desktop = event_context->desktop;
 
-  ret = FALSE;
+	ret = FALSE;
 
-  switch (event->type)
-    {
-    case GDK_BUTTON_PRESS:
-      if (event->button.button == 1)
-	{
-	  sp_desktop_w2d_xy_point (desktop, &p, event->button.x,
-				   event->button.y);
-	  sp_dyna_draw_reset (dc, p.x, p.y);
-          sp_dyna_draw_apply (dc, p.x, p.y);
-          sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			sp_desktop_w2d_xy_point (desktop, &fp, event->button.x, event->button.y);
+			p.x = fp.x;
+			p.y = fp.y;
+			sp_dyna_draw_reset (dc, p.x, p.y);
+			sp_dyna_draw_apply (dc, p.x, p.y);
+			sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-	  sp_desktop_free_snap (desktop, &p);
-	  sp_curve_reset (dc->accumulated);
-	  if (dc->repr) {
-		  dc->repr = NULL;
-	  }
+			sp_desktop_free_snap (desktop, &p);
+			sp_curve_reset (dc->accumulated);
+			if (dc->repr) {
+				dc->repr = NULL;
+			}
 
-	  /* initialize first point */
-          dc->npoints = 0;
+			/* initialize first point */
+			dc->npoints = 0;
          
-          if (dc->use_timeout)
-            gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-                                    GDK_BUTTON_RELEASE_MASK |
-                                    GDK_BUTTON_PRESS_MASK, NULL,
-                                    event->button.time);
-          else
-            gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-                                    GDK_BUTTON_RELEASE_MASK |
-                                    GDK_POINTER_MOTION_MASK |
-                                    GDK_BUTTON_PRESS_MASK, NULL,
-                                    event->button.time);
+			if (dc->use_timeout) {
+				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+							GDK_BUTTON_RELEASE_MASK |
+							GDK_BUTTON_PRESS_MASK, NULL,
+							event->button.time);
+			} else {
+				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+							GDK_BUTTON_RELEASE_MASK |
+							GDK_POINTER_MOTION_MASK |
+							GDK_BUTTON_PRESS_MASK, NULL,
+							event->button.time);
+			}
 
-          if (dc->use_timeout && !dc->timer_id)
-            dc->timer_id = gtk_timeout_add (SAMPLE_TIMEOUT, sp_dyna_draw_timeout_handler, dc);
-	  ret = TRUE;
-	}
-      break;
-    case GDK_MOTION_NOTIFY:
-      if (!dc->use_timeout && (event->motion.state & GDK_BUTTON1_MASK))
-	{
-	  dc->dragging = TRUE;
-	  dc->dynahand = TRUE;
+			if (dc->use_timeout && !dc->timer_id) {
+				dc->timer_id = gtk_timeout_add (SAMPLE_TIMEOUT, sp_dyna_draw_timeout_handler, dc);
+			}
+			ret = TRUE;
+		}
+		break;
+	case GDK_MOTION_NOTIFY:
+		if (!dc->use_timeout && (event->motion.state & GDK_BUTTON1_MASK)) {
+			NRPointF fp;
 
-          sp_desktop_w2d_xy_point (desktop, &p, event->motion.x,
-                                   event->motion.y);
+			dc->dragging = TRUE;
+			dc->dynahand = TRUE;
+
+			sp_desktop_w2d_xy_point (desktop, &fp, event->motion.x, event->motion.y);
+			p.x = fp.x;
+			p.y = fp.y;
 #if 0
-          g_print ("(%g %g)=>(%g %g)\n", event->motion.x, event->motion.y, p.x, p.y);
+			g_print ("(%g %g)=>(%g %g)\n", event->motion.x, event->motion.y, p.x, p.y);
 #endif
-	  if (! sp_dyna_draw_apply (dc, p.x, p.y))
-            {
-              ret = TRUE;
-              break;
-            }
-          sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
+			if (! sp_dyna_draw_apply (dc, p.x, p.y)) {
+				ret = TRUE;
+				break;
+			}
+			sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-	  sp_desktop_free_snap (desktop, &p);
+			sp_desktop_free_snap (desktop, &p);
 
-	  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
-	    {
-              sp_dyna_draw_brush (dc);
-              g_assert (dc->npoints > 0);
-              fit_and_split (dc, FALSE);
-	    }
-	  ret = TRUE;
-	}
-      break;
+			if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty)) {
+				sp_dyna_draw_brush (dc);
+				g_assert (dc->npoints > 0);
+				fit_and_split (dc, FALSE);
+			}
+			ret = TRUE;
+		}
+		break;
 
-    case GDK_BUTTON_RELEASE:
-      if (event->button.button == 1 &&
-          dc->use_timeout && dc->timer_id != 0)
-        {
-          gtk_timeout_remove (dc->timer_id);
-          dc->timer_id = 0;
-        }
-      if (dc->dragging && event->button.button == 1)
-	{
-	  dc->dragging = FALSE;
+	case GDK_BUTTON_RELEASE:
+		if (event->button.button == 1 &&
+		    dc->use_timeout && dc->timer_id != 0) {
+			gtk_timeout_remove (dc->timer_id);
+			dc->timer_id = 0;
+		}
+		if (dc->dragging && event->button.button == 1) {
+			dc->dragging = FALSE;
 
 /*            g_print ("[release]\n"); */
-	  if (dc->dynahand)
-	    {
-	      dc->dynahand = FALSE;
-	      /* Remove all temporary line segments */
-	      while (dc->segments)
-		{
-		  gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-		  dc->segments = g_slist_remove (dc->segments, dc->segments->data);
+			if (dc->dynahand) {
+				dc->dynahand = FALSE;
+				/* Remove all temporary line segments */
+				while (dc->segments) {
+					gtk_object_destroy (GTK_OBJECT (dc->segments->data));
+					dc->segments = g_slist_remove (dc->segments, dc->segments->data);
+				}
+				/* Create object */
+				fit_and_split (dc, TRUE);
+				if (dc->use_calligraphic) {
+					accumulate_calligraphic (dc);
+				} else {
+					concat_current_line (dc);
+				}
+				set_to_accumulated (dc); /* temporal implementation */
+				if (dc->use_calligraphic /* || dc->cinside*/) {
+					/* reset accumulated curve */
+					sp_curve_reset (dc->accumulated);
+					clear_current (dc);
+					if (dc->repr) {
+						dc->repr = NULL;
+					}
+				}
+				
+			}
+
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+			ret = TRUE;
 		}
-	      /* Create object */
-              fit_and_split (dc, TRUE);
-              if (dc->use_calligraphic)
-                {
-                  accumulate_calligraphic (dc);
-                }
-              else
-                {
-                  concat_current_line (dc);
-                }
-              set_to_accumulated (dc); /* temporal implementation */
-              if (dc->use_calligraphic /* || dc->cinside*/)
-                {
-                  /* reset accumulated curve */
-                  sp_curve_reset (dc->accumulated);
-                  clear_current (dc);
-                  if (dc->repr)
-		    {
-		      dc->repr = NULL;
-		    }
-                }
-              
-	    }
-
-	  gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate),
-				    event->button.time);
-	  ret = TRUE;
+		break;
+	default:
+		break;
 	}
-      break;
-    default:
-      break;
-    }
 
-  if (!ret)
-    {
-      if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-	ret = SP_EVENT_CONTEXT_CLASS (parent_class)-> root_handler (event_context, event);
-    }
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (parent_class)-> root_handler (event_context, event);
+	}
 
-  return ret;
+	return ret;
 }
 
 static void
@@ -688,7 +682,7 @@ set_to_accumulated (SPDynaDrawContext * dc)
 	  sp_repr_unref (dc->repr);
 	  sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
 	}
-      sp_desktop_d2doc_affine (desktop, d2doc);
+      sp_desktop_dt2root_affine (desktop, (NRMatrixD *) d2doc);
       abp = art_bpath_affine_transform (sp_curve_first_bpath (dc->accumulated), d2doc);
       str = sp_svg_write_path (abp);
       g_assert (str != NULL);

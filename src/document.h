@@ -25,12 +25,6 @@ typedef enum {
 	SPXMaxYMax
 } SPAspect;
 
-#define SP_TYPE_DOCUMENT (sp_document_get_type ())
-#define SP_DOCUMENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
-#define SP_DOCUMENT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DOCUMENT, SPItemClass))
-#define SP_IS_DOCUMENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
-#define SP_IS_DOCUMENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DOCUMENT))
-
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
 #include <libart_lgpl/art_rect.h>
@@ -69,8 +63,6 @@ struct _SPDocumentClass {
 	void (* resized) (SPDocument *document, gdouble width, gdouble height);
 };
 
-GtkType sp_document_get_type (void);
-
 /*
  * Fetches document from URI, or creates new, if NULL
  * Public document appear in document list
@@ -89,7 +81,7 @@ SPDocument *sp_document_unref (SPDocument *doc);
 #define sp_document_repr_doc(d) (SP_DOCUMENT (d)->rdoc)
 #define sp_document_repr_root(d) (SP_DOCUMENT (d)->rroot)
 #define sp_document_root(d) (SP_DOCUMENT (d)->root)
-#define SP_DOCUMENT_ROOT sp_document_root
+#define SP_DOCUMENT_ROOT(d)  (SP_DOCUMENT (d)->root)
 
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);

@@ -1,5 +1,7 @@
 2002-10-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop-affine.c: Methods for root coordinate system, fixes misplacement bug
+
 	* src/libnrtype/nr-rasterfont.c: Made working
 
 	* src/libnrtype/nr-font.c (nr_font_new_default): Do linking

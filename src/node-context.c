@@ -169,7 +169,7 @@ sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
 	SPDesktop * desktop;
 	SPNodeContext * nc;
-	ArtPoint p;
+	NRPointF p;
 	ArtDRect b;
 	gint ret;
 

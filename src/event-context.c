@@ -534,7 +534,7 @@ sp_event_context_config_widget (SPEventContext *ec)
 static void
 set_event_location (SPDesktop * desktop, GdkEvent * event)
 {
-	ArtPoint p;
+	NRPointF p;
 
 	if (event->type != GDK_MOTION_NOTIFY)
 		return;

@@ -1,5 +1,18 @@
-#ifndef SP_SPIRAL_CONTEXT_H
-#define SP_SPIRAL_CONTEXT_H
+#ifndef __SP_SPIRAL_CONTEXT_H__
+#define __SP_SPIRAL_CONTEXT_H__
+
+/*
+ * Spiral drawing context
+ *
+ * Authors:
+ *   Mitsuru Oka
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2001-2002 Mitsuru Oka
+ *
+ * Released under GNU GPL
+ */
 
 #include "knot.h"
 #include "event-context.h"

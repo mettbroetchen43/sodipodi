@@ -465,6 +465,12 @@ sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *trans
 				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
 				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
 			} else {
+				art_vpath_render_bez (&vpath, &vpath_len, &vpath_size,
+						      x, y,
+						      bp->x1, bp->y1,
+						      bp->x2, bp->y2,
+						      bp->x3, bp->y3,
+						      flatness);
 				x = bp->x3;
 				y = bp->y3;
 			}

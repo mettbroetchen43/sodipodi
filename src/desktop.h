@@ -15,12 +15,6 @@
  *
  */
 
-#define SP_TYPE_DESKTOP (sp_desktop_get_type ())
-#define SP_DESKTOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
-#define SP_DESKTOP_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DESKTOP, SPDesktopClass))
-#define SP_IS_DESKTOP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP))
-#define SP_IS_DESKTOP_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP))
-
 typedef struct _SPDesktopWidget SPDesktopWidget;
 typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 
@@ -54,6 +48,7 @@ struct _SPDesktop {
 	GnomeCanvasGroup *controls;
 	GnomeCanvasItem *page;
 	gdouble d2w[6], w2d[6], doc2dt[6];
+
         gint number;
 	gboolean active;
 	/* Normalized snap distances */
@@ -70,8 +65,6 @@ struct _SPDesktopClass {
 	void (* desactivate) (SPDesktop *desktop);
 	void (* modified) (SPDesktop *desktop, guint flags);
 };
-
-GtkType sp_desktop_get_type (void);
 
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 

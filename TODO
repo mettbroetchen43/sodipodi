@@ -12,7 +12,7 @@ TODO for 0.27
 - Ungroup forgetting font family bug
 - Ungroup forgetting paintserver in group bug
 - Fix places where bbox is not tested for emptyness
-- Fix misplaced draws if viewBox present
+- Fix misplaced draws if viewBox present (DONE)
 
 Other tasks
 ===========

@@ -12,11 +12,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libnr/nr-types.h>
 #include "knot.h"
 #include "desktop-handles.h"
-#if 0
-#include "helper/sodipodi-ctrl.h"
-#endif
 
 typedef struct _SPSelTrans SPSelTrans;
 
@@ -90,7 +88,7 @@ void sp_sel_trans_reset_state (SPSelTrans * seltrans);
 void sp_sel_trans_increase_state (SPSelTrans * seltrans);
 void sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y);
 
-void sp_sel_trans_grab (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y, gboolean show_handles);
+void sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gboolean show_handles);
 void sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm);
 void sp_sel_trans_ungrab (SPSelTrans * seltrans);
 void sp_sel_trans_stamp (SPSelTrans * seltrans);

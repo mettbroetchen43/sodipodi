@@ -136,9 +136,12 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+			NRPointF fp;
 			dragging = TRUE;
 			/* Position center */
-			sp_desktop_w2d_xy_point (event_context->desktop, &ac->center, event->button.x, event->button.y);
+			sp_desktop_w2d_xy_point (event_context->desktop, &fp, event->button.x, event->button.y);
+			ac->center.x = fp.x;
+			ac->center.y = fp.y;
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &ac->center);
 			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
@@ -149,7 +152,7 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging && event->motion.state && GDK_BUTTON1_MASK) {
-			ArtPoint p;
+			NRPointF p;
 			sp_desktop_w2d_xy_point (event_context->desktop, &p, event->motion.x, event->motion.y);
 			sp_arc_drag (ac, p.x, p.y, event->motion.state);
 			ret = TRUE;
@@ -183,6 +186,7 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	gdouble x0, y0, x1, y1;
 	GString * xs, * ys;
 	gchar status[80];
+	NRPointF fp;
 
 	desktop = SP_EVENT_CONTEXT (ac)->desktop;
 
@@ -267,8 +271,12 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 		sp_desktop_free_snap (desktop, &p1);
 	}
 
-	sp_desktop_d2doc_xy_point (desktop, &p0, p0.x, p0.y);
-	sp_desktop_d2doc_xy_point (desktop, &p1, p1.x, p1.y);
+	sp_desktop_dt2root_xy_point (desktop, &fp, p0.x, p0.y);
+	p0.x = fp.x;
+	p0.y = fp.y;
+	sp_desktop_dt2root_xy_point (desktop, &fp, p1.x, p1.y);
+	p1.x = fp.x;
+	p1.y = fp.y;
 
 	x0 = MIN (p0.x, p1.x);
 	y0 = MIN (p0.y, p1.y);

@@ -117,7 +117,7 @@ static gint
 sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
 	SPDesktop * desktop;
-	ArtPoint p;
+	NRPointF p;
 	ArtDRect b;
 	gint ret;
 

@@ -31,8 +31,8 @@ struct _SPTextContext {
 
 	SPItem *text;
 
-	/* Text item position in document coordinates */
-	ArtPoint pdoc;
+	/* Text item position in root coordinates */
+	NRPointF pdoc;
 	/* Insertion point position */
 	gint ipos;
 

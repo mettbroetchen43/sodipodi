@@ -194,7 +194,7 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 	SPSelTrans *seltrans;
 	SPSelection *selection;
 	GdkCursor *cursor;
-	ArtPoint p;
+	NRPointF p;
 	gint ret = FALSE;
 
 	desktop = event_context->desktop;
@@ -313,7 +313,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	SPSelection *selection;
 	SPItem *item;
 	gint ret = FALSE;
-	ArtPoint p;
+	NRPointF p;
 	ArtDRect b;
 	GSList *l;
 

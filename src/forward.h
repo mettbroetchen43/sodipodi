@@ -1,5 +1,5 @@
-#ifndef _FORWARD_H_
-#define _FORWARD_H_
+#ifndef __FORWARD_H__
+#define __FORWARD_H__
 
 /*
  * Forward declarations of most used objects
@@ -15,8 +15,16 @@
 typedef struct _Sodipodi Sodipodi;
 typedef struct _SodipodiClass SodipodiClass;
 
+/* Editing window */
+
 typedef struct _SPDesktop SPDesktop;
 typedef struct _SPDesktopClass SPDesktopClass;
+
+#define SP_TYPE_DESKTOP (sp_desktop_get_type ())
+#define SP_DESKTOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
+#define SP_IS_DESKTOP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP))
+
+unsigned int sp_desktop_get_type (void);
 
 typedef struct _SPSelection SPSelection;
 typedef struct _SPSelectionClass SPSelectionClass;
@@ -28,6 +36,12 @@ typedef struct _SPEventContextClass SPEventContextClass;
 
 typedef struct _SPDocument SPDocument;
 typedef struct _SPDocumentClass SPDocumentClass;
+
+#define SP_TYPE_DOCUMENT (sp_document_get_type ())
+#define SP_DOCUMENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
+#define SP_IS_DOCUMENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
+
+unsigned int sp_document_get_type (void);
 
 /* Objects */
 

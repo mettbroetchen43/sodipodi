@@ -316,7 +316,6 @@ static void
 sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	SPKnot * knot;
-	ArtPoint p;
 	gboolean consumed;
 	static gboolean grabbed = FALSE;
 	static gboolean moved = FALSE;
@@ -337,6 +336,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+			NRPointF p;
 			sp_desktop_w2d_xy_point (knot->desktop,
 				&p,
 				event->button.x,
@@ -398,6 +398,8 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (grabbed) {
+			ArtPoint p;
+			NRPointF fp;
 			if (!moved) {
 				gtk_signal_emit (GTK_OBJECT (knot),
 					knot_signals[GRABBED],
@@ -406,12 +408,9 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 					SP_KNOT_DRAGGING,
 					TRUE);
 			}
-			sp_desktop_w2d_xy_point (knot->desktop,
-				&p,
-				event->motion.x,
-				event->motion.y);
-			p.x -= knot->hx;
-			p.y -= knot->hy;
+			sp_desktop_w2d_xy_point (knot->desktop, &fp, event->motion.x, event->motion.y);
+			p.x = fp.x - knot->hx;
+			p.y = fp.y - knot->hy;
 			sp_knot_request_position (knot, &p, event->motion.state);
 			moved = TRUE;
 			consumed = TRUE;

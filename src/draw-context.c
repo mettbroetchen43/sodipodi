@@ -513,7 +513,7 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		c = sp_curve_transform (c, d2item);
 	} else {
 		gdouble d2item[6];
-		sp_desktop_d2doc_affine (SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
+		sp_desktop_dt2root_affine (SP_EVENT_CONTEXT_DESKTOP (dc), (NRMatrixD *) d2item);
 		c = sp_curve_transform (c, d2item);
 	}
 
@@ -721,6 +721,7 @@ static SPDrawAnchor *
 sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble dx, gdouble dy)
 {
 	SPDrawAnchor *a;
+	NRPointF fp;
 
 	a = g_new (SPDrawAnchor, 1);
 
@@ -730,7 +731,9 @@ sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble d
 	a->active = FALSE;
 	a->dp.x = dx;
 	a->dp.y = dy;
-	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT_DESKTOP (dc), &a->wp, dx, dy);
+	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT_DESKTOP (dc), &fp, dx, dy);
+	a->wp.x = fp.x;
+	a->wp.y = fp.y;
 	a->ctrl = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
 					 "size", 4.0,
 					 "filled", 0,
@@ -850,6 +853,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	ArtPoint p;
 	gint ret;
 	SPDrawAnchor *anchor;
+	NRPointF fp;
 
 	dc = SP_DRAW_CONTEXT (ec);
 	pc = SP_PENCIL_CONTEXT (ec);
@@ -860,13 +864,16 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+			NRPointF fp;
 #if 0
 			/* Grab mouse, so release will not pass unnoticed */
 			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
 			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
 			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
+			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
+			p.x = fp.x;
+			p.y = fp.y;
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -896,7 +903,9 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 #endif
 		/* Find desktop coordinates */
-		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+		sp_desktop_w2d_xy_point (dt, &fp, event->motion.x, event->motion.y);
+		p.x = fp.x;
+		p.y = fp.y;
 		/* Test, whether we hit any anchor */
 		anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -931,8 +940,11 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		break;
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
+			NRPointF fp;
 			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+			sp_desktop_w2d_xy_point (dt, &fp, event->motion.x, event->motion.y);
+			p.x = fp.x;
+			p.y = fp.y;
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -1252,6 +1264,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	ArtPoint p;
 	gint ret;
 	SPDrawAnchor *anchor;
+	NRPointF fp;
 
 	dc = SP_DRAW_CONTEXT (ec);
 	pc = SP_PEN_CONTEXT (ec);
@@ -1268,7 +1281,9 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
 			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
+			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
+			p.x = fp.x;
+			p.y = fp.y;
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -1341,7 +1356,9 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 #endif
 		/* Find desktop coordinates */
-		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+		sp_desktop_w2d_xy_point (dt, &fp, event->motion.x, event->motion.y);
+		p.x = fp.x;
+		p.y = fp.y;
 		/* Test, whether we hit any anchor */
 		anchor = test_inside (dc, event->button.x, event->button.y);
 
@@ -1401,7 +1418,9 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
 			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+			sp_desktop_w2d_xy_point (dt, &fp, event->motion.x, event->motion.y);
+			p.x = fp.x;
+			p.y = fp.y;
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 

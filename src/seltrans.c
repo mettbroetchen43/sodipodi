@@ -226,7 +226,7 @@ sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y)
 }
 
 void
-sp_sel_trans_grab (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y, gboolean show_handles)
+sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gboolean show_handles)
 {
 	SPSelection * selection;
 
@@ -245,7 +245,8 @@ sp_sel_trans_grab (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y, gb
 
 	art_affine_identity (seltrans->current);
 
-	seltrans->point = *p;
+	seltrans->point.x = p->x;
+	seltrans->point.y = p->y;
 
 	seltrans->snappoints = sp_selection_snappoints (selection);
 
@@ -624,7 +625,8 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 	SPSelTrans * seltrans;
 	SPSelTransHandle * handle;
 	ArtPoint p;
-						
+	NRPointF pf;
+
 	desktop = knot->desktop;
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 	handle = (SPSelTransHandle *) data;
@@ -649,7 +651,10 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 	}
 
 	sp_knot_position (knot, &p);
-	sp_sel_trans_grab (seltrans, &p, handle->x, handle->y, FALSE);
+
+	pf.x = p.x;
+	pf.y = p.y;
+	sp_sel_trans_grab (seltrans, &pf, handle->x, handle->y, FALSE);
 }
 
 static void

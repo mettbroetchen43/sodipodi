@@ -285,10 +285,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
-			ArtPoint dtp;
+			NRPointF dtp;
 			/* Button 1, set X & Y & new item */
 			sp_selection_empty (SP_DT_SELECTION (ec->desktop));
-			sp_desktop_w2doc_xy_point (ec->desktop, &tc->pdoc, event->button.x, event->button.y);
+			sp_desktop_w2d_xy_point (ec->desktop, &dtp, event->button.x, event->button.y);
+			sp_desktop_dt2root_xy_point (ec->desktop, &tc->pdoc, dtp.x, dtp.y);
 			/* Cursor */
 			tc->show = TRUE;
 			tc->phase = 1;

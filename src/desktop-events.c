@@ -102,19 +102,15 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging) {
-		    /* we have to substract (x|y)thickness to the position 
-		     * since there is a frame between ruler and canvas */
+			NRPointF p;
+			double px, py;
+			/* we have to substract (x|y) thickness from the position */
+			/* since there is a frame between ruler and canvas */
 			gnome_canvas_window_to_world (dtw->canvas,
-						      event->motion.x - 
-						      (horiz ? 0//-widget->style->klass->xthickness
-						             : widget->allocation.width + 
-						               widget->style->klass->xthickness),
-						      event->motion.y - 
-						      (horiz ? widget->allocation.height +
-						               widget->style->klass->ythickness 
-						             : 0),//-widget->style->klass->ythickness),
-						      &p.x, &p.y);
-			sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
+						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
+						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
+						      &px, &py);
+			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 			sp_guideline_moveto ((SPGuideLine *) guide, p.x, p.y);
 			switch (SP_GUIDELINE(guide)->orientation){
 			case SP_GUIDELINE_ORIENTATION_HORIZONTAL:
@@ -170,7 +166,6 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	static gboolean dragging = FALSE, moved = FALSE;
 	SPGuide * guide;
 	SPDesktop * desktop;
-	ArtPoint p;
 	gint ret = FALSE;
 	GString * msg;
 
@@ -196,6 +191,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging) {
+			NRPointF p;
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
 			sp_guide_moveto (guide, p.x, p.y);
 			moved = TRUE;
@@ -213,8 +209,9 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_RELEASE:
 		if (dragging && event->button.button == 1) {
 			if (moved) {
-				GtkWidget * w;
+				GtkWidget *w;
 				double winx, winy;
+				NRPointF p;
 				w = GTK_WIDGET (item->canvas);
 				gnome_canvas_world_to_window (item->canvas, event->button.x, event->button.y, &winx, &winy);
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
