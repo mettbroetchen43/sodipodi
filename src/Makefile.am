@@ -87,7 +87,9 @@ sodipodi_SOURCES = \
 	sp-node-path-edit.c sp-node-path-edit.h \
 	zoom-context.c zoom-context.h \
 	file.c file.h \
-	interface.c interface.h
+	interface.c interface.h \
+	\
+	preferences-skeleton.h
 
 #	font-wrapper.c font-wrapper.h \
 
@@ -108,7 +110,6 @@ sodipodi_LDADD = \
 	-lglade-gnome \
 	-lglade \
 	-lgdk_pixbuf \
-	-lunicode \
 	$(GNOMEUI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(EXTRA_BONOBO_GNOME_LIBS) \

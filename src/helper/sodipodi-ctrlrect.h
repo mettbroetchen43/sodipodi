@@ -30,8 +30,11 @@ struct _SPCtrlRect {
 	
 	double width;		/* Line width */
 
+	ArtIRect irect;
+#if 0
 	ArtSVP * svp;		/* The SVP for the filled shape */
 	ArtSVP * rdsvp;		/* SVP of redraw region :-( */
+#endif
 };
 
 struct _SPCtrlRectClass {

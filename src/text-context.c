@@ -3,6 +3,7 @@
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include "sp-text.h"
+#include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop-handles.h"
@@ -76,6 +77,8 @@ sp_text_context_init (SPTextContext * text_context)
 	event_context->hot_y = 0;
 
 	text_context->text = NULL;
+	text_context->item = NULL;
+	text_context->canvasitem = NULL;
 }
 
 static void
@@ -150,6 +153,8 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	SPItem * item;
 	ArtPoint p;
 	gint ret;
+	SPRepr * repr, * style;
+	SPCSSAttr * css;
 
 	ret = FALSE;
 
@@ -165,7 +170,16 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 
 			sp_desktop_w2doc_xy_point (desktop, &p, event->button.x, event->button.y);
 
-			text_context->text = sp_repr_new ("text");
+			/* Create object */
+			repr = sp_repr_new ("text");
+			/* Set style */
+			style = sodipodi_get_repr (SODIPODI, "paint.text");
+			if (style) {
+				css = sp_repr_css_attr_inherited (style, "style");
+				sp_repr_css_set (repr, css, "style");
+				sp_repr_css_attr_unref (css);
+			}
+			text_context->text = repr;
 			sp_repr_set_double_attribute (text_context->text, "x", p.x);
 			sp_repr_set_double_attribute (text_context->text, "y", p.y);
 			item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), text_context->text);
@@ -173,8 +187,10 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			sp_repr_unref (text_context->text);
 /* fixme: */
 			if (item != NULL) {
+				text_context->item = item;
+				text_context->canvasitem = sp_item_canvas_item (item, SP_DT_CANVAS (desktop));
 				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-				gnome_canvas_item_grab_focus (sp_item_canvas_item (item, SP_DT_CANVAS (desktop)));
+				gnome_canvas_item_grab_focus (text_context->canvasitem);
 			}
 
 			ret = TRUE;
@@ -205,6 +221,9 @@ sp_text_complete (SPTextContext * text_context)
 	c = (gchar *) sp_repr_content (text_context->text);
 	if (c != NULL) {
 		if (*c != '\0') {
+			gdk_keyboard_ungrab (gdk_time_get ());
+			text_context->canvasitem = NULL;
+			text_context->item = NULL;
 			text_context->text = NULL;
 			return;
 		}
@@ -213,45 +232,7 @@ sp_text_complete (SPTextContext * text_context)
 	sp_document_del_repr (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (text_context)->desktop), text_context->text);
 
 	sp_document_done (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (text_context)->desktop));
-#if 0
-	sp_selection_empty ();
-#endif
+
 	text_context->text = NULL;
 }
 
-#if 0
-#include <libgnomeui/gnome-canvas.h>
-#include "xml/repr.h"
-#include "font-wrapper.h"
-#include "sp-text.h"
-#include "sp-text.h"
-#include "desktop-handles.h"
-#include "desktop-affine.h"
-#include "event-broker.h"
-#include "selection.h"
-#include "text-context.h"
-
-#if 0
-GnomeCanvasItem * cursor = NULL;
-static void sp_text_cursor_move (double x, double y, double size);
-static void sp_text_cursor_move (double x, double y, double size) {
-#if 0
-	if (cursor == NULL) {
-		cursor = gnome_canvas_item_new (
-			gnome_canvas_root (GNOME_CANVAS_ITEM (drawing_root_get ())->canvas),
-			SP_TYPE_TEXT,
-			"x0", x, "y0", y - size,
-			"x1", x+2, "y1", y,
-			NULL);
-	} else {
-g_print ("moving\n");
-		gnome_canvas_item_set (cursor,
-			"x0", x, "y0", y - size,
-			"x1", x+2, "y1", y,
-			NULL);
-	}
-#endif
-}
-#endif
-
-#endif

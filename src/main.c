@@ -33,7 +33,7 @@
 #include "toolbox.h"
 #include "interface.h"
 
-enum {SP_ARG_NONE, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_LAST};
+enum {SP_ARG_NONE, SP_ARG_NOGUI, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_LAST};
 
 static GSList * sp_process_args (poptContext ctx);
 gchar * sp_global_printer = NULL;
@@ -44,7 +44,7 @@ struct poptOption options[] = {
         'z',
         POPT_ARG_NONE,
         NULL,
-        0,
+        SP_ARG_NOGUI,
         N_("Do not use GUI. NB! if exist, should be FIRST argument!"),
         NULL
   },
@@ -68,6 +68,12 @@ struct poptOption options[] = {
   },
   { NULL, '\0', 0, NULL, 0, NULL, NULL }
 };
+
+static void
+main_save_preferences (GtkObject * object, gpointer data)
+{
+	sodipodi_save_preferences (SP_SODIPODI (object));
+}
 
 int
 main (int argc, char *argv[])
@@ -267,6 +273,9 @@ main (int argc, char *argv[])
 #endif
 
 		sodipodi = sodipodi_application_new ();
+		sodipodi_load_preferences (sodipodi);
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
+				    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
 		sp_maintoolbox_create ();
 		sodipodi_unref ();
 
@@ -313,6 +322,7 @@ sp_process_args (poptContext ctx)
 
 	fl = NULL;
 
+#if 0
 	while ((a = poptGetNextOpt (ctx)) >= 0) {
 		switch (a) {
 		case SP_ARG_FILE:
@@ -325,6 +335,7 @@ sp_process_args (poptContext ctx)
 			break;
 		}
 	}
+#endif
 	args = poptGetArgs (ctx);
 	if (args != NULL) {
 		for (i = 0; args[i] != NULL; i++) {

@@ -124,8 +124,9 @@ GtkWidget *
 sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name, const gchar * internalname, const gchar * pxname)
 {
 	GtkWidget * t, * contents;
+	SPRepr * repr;
 	guint state;
-	char c[256];
+	gchar c[256];
 
 	glade_xml_signal_autoconnect (xml);
 	contents = glade_xml_get_widget (xml, widgetname);
@@ -133,11 +134,13 @@ sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name,
 	g_snprintf (c, 256, SODIPODI_GLADEDIR "/%s", pxname);
 	t = sp_toolbox_new (contents, name, internalname, c);
 
-	g_snprintf (c, 256, "toolbox.%s.state", internalname);
-	state = sodipodi_get_key_as_int (SODIPODI, c);
+	g_snprintf (c, 256, "toolboxes.%s", internalname);
+	repr = sodipodi_get_repr (SODIPODI, c);
+	g_return_val_if_fail (repr != NULL, NULL);
+	state = sp_repr_get_int_attribute (repr, "state", 0);
 	sp_toolbox_set_state (SP_TOOLBOX (t), state);
 
-	gtk_signal_connect (GTK_OBJECT (t), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), NULL);
+	gtk_signal_connect (GTK_OBJECT (t), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
 
 	gtk_widget_show (t);
 
@@ -147,10 +150,11 @@ sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name,
 static gint
 sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data)
 {
-	char c[256];
+	SPRepr * repr;
 
-	g_snprintf (c, 256, "toolbox.%s.state", t->internalname);
-	sodipodi_set_key_as_int (SODIPODI, c, state);
+	repr = (SPRepr *) data;
+
+	sp_repr_set_int_attribute (repr, "state", state);
 
 	return FALSE;
 }

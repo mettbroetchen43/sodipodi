@@ -151,24 +151,30 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 }
 
 void
-sp_repr_save_file (SPReprDoc * doc, const gchar * filename)
+sp_repr_save_stream (SPReprDoc * doc, FILE * to_file)
 {
 	SPRepr * repr;
-	FILE * file;
-
-	file = fopen (filename, "w");
-	g_return_if_fail (file != NULL);
-
 	/* fixme: do this The Right Way */
 
 	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n"
 		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
 		"\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">\n",
-		file);
+		to_file);
 
 	repr = sp_repr_document_root (doc);
 
-	repr_write (repr, file, 0);
+	repr_write (repr, to_file, 0);
+}
+
+void
+sp_repr_save_file (SPReprDoc * doc, const gchar * filename)
+{
+	FILE * file;
+
+	file = fopen (filename, "w");
+	g_return_if_fail (file != NULL);
+
+	sp_repr_save_stream (doc, file);
 
 	fclose (file);
 

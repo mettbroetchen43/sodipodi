@@ -23,6 +23,7 @@
 #include "helper/sodipodi-ctrl.h"
 #include "display/canvas-shape.h"
 
+#include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop-events.h"
@@ -363,13 +364,22 @@ set_to_accumulated (SPDrawContext * dc)
 		gchar * str;
 
 		if (!dc->repr) {
-			gchar c[64];
+			SPRepr * repr, * style;
+			SPCSSAttr * css;
 			gdouble d2doc[6];
-
-			dc->repr = sp_repr_new ("path");
+			gchar c[64];
+			/* Create object */
+			repr = sp_repr_new ("path");
+			/* Set style */
+			style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+			if (style) {
+				css = sp_repr_css_attr_inherited (style, "style");
+				sp_repr_css_set (repr, css, "style");
+				sp_repr_css_attr_unref (css);
+			}
+			dc->repr = repr;
 			dc->destroyid = gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
 							    GTK_SIGNAL_FUNC (repr_destroyed), dc);
-			sp_repr_set_attr (dc->repr, "style", "stroke:#000;stroke-width:1");
 			sp_desktop_d2doc_affine (desktop, d2doc);
 			sp_svg_write_affine (c, 64, d2doc);
 			c[63] = '\0';

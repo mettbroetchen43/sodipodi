@@ -1,6 +1,7 @@
 #define SP_ELLIPSE_CONTEXT_C
 
 #include <math.h>
+#include "sodipodi.h"
 #include "sp-ellipse.h"
 #include "document.h"
 #include "selection.h"
@@ -170,8 +171,17 @@ sp_ellipse_drag (SPEllipseContext * ec, double x, double y, guint state)
 	desktop = SP_EVENT_CONTEXT (ec)->desktop;
 
 	if (!ec->item) {
-		SPRepr * repr;
+		SPRepr * repr, * style;
+		SPCSSAttr * css;
+		/* Create object */
 		repr = sp_repr_new ("ellipse");
+		/* Set style */
+		style = sodipodi_get_repr (SODIPODI, "paint.shape.ellipse");
+		if (style) {
+			css = sp_repr_css_attr_inherited (style, "style");
+			sp_repr_css_set (repr, css, "style");
+			sp_repr_css_attr_unref (css);
+		}
 		ec->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 	}

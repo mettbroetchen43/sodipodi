@@ -10,6 +10,7 @@
  */
 
 #include <glib.h>
+#include <stdio.h>
 #include <gtk/gtktypeutils.h>
 
 /*
@@ -81,6 +82,7 @@ void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpoin
 
 SPReprDoc * sp_repr_read_file (const gchar * filename);
 SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length);
+void sp_repr_save_stream (SPReprDoc * doc, FILE * to_file);
 void sp_repr_save_file (SPReprDoc * doc, const gchar * filename);
 
 void sp_repr_print (SPRepr * repr);

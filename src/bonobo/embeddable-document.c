@@ -1,6 +1,12 @@
 #define SP_EMBEDDABLE_DOCUMENT_C
 
 #include <config.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
 #include <bonobo.h>
 #include <bonobo/bonobo-print.h>
 #include <libgnomeprint/gnome-print.h>
@@ -69,7 +75,10 @@ sp_embeddable_document_destroyed (SPEmbeddableDocument * document)
 }
 
 static int
-sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure)
+sp_embeddable_document_pf_load (BonoboPersistFile *pfile,
+				const CORBA_char  *filename,
+				CORBA_Environment *ev,
+				gpointer           closure)
 {
 	SPEmbeddableDocument * document;
 	SPDocument * newdocument;
@@ -78,7 +87,8 @@ sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * fi
 
 	newdocument = sp_document_new (filename);
 
-	if (newdocument == NULL) return -1;
+	if (newdocument == NULL)
+		return -1;
 
 	gtk_object_unref (GTK_OBJECT (document->document));
 	document->document = newdocument;
@@ -93,13 +103,14 @@ sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * fi
 }
 
 static int
-sp_embeddable_document_pf_save (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure)
+sp_embeddable_document_pf_save (BonoboPersistFile *pfile,
+				const CORBA_char  *filename,
+				CORBA_Environment *ev,
+				gpointer           closure)
 {
 	SPEmbeddableDocument * document;
 
 	document = SP_EMBEDDABLE_DOCUMENT (closure);
-
-	/* fixme */
 
 	sp_repr_save_file (sp_document_repr_doc (document->document), filename);
 
@@ -179,11 +190,75 @@ sp_embeddable_document_ps_load (BonoboPersistStream *ps, const Bonobo_Stream str
 }
 
 static void
-sp_embeddable_document_ps_save (BonoboPersistStream *ps, const Bonobo_Stream stream,
-				Bonobo_Persist_ContentType type, gpointer closure,
+sp_embeddable_document_ps_save (BonoboPersistStream *ps,
+				const Bonobo_Stream stream,
+				Bonobo_Persist_ContentType type,
+				gpointer closure,
 				CORBA_Environment *ev)
 {
-	g_warning ("embeddable_document_ps_save unimplemented");
+	int   fd;
+	FILE *file;
+	char *filename = NULL;
+	SPEmbeddableDocument * document;
+
+	document = SP_EMBEDDABLE_DOCUMENT (closure);
+
+	/* FIXME: super dirty but functional */
+	do {
+		if (filename)
+			free (filename);
+		filename = tempnam (NULL, "sodipodi");
+
+		fd = open (filename, O_CREAT | O_EXCL | O_TRUNC | O_RDWR, 0600);
+
+	} while (fd == -1);
+
+	file = fdopen (fd, "w");
+	g_return_if_fail (file != NULL);
+
+	sp_repr_save_stream (sp_document_repr_doc (document->document), file);
+
+	fclose (file);
+
+	{ /* Transfer file to stream ... */
+		guint8 data [4096];
+		gulong more;
+		int    v;
+
+		do {
+			more = sizeof (data);
+
+			do {
+				v = read (fd, data, 
+					  MIN (sizeof (data), more));
+			} while ((v == -1) && (errno == EINTR));
+
+			if (v == -1) 
+				goto copy_to_except;
+
+			if (v <= 0) 
+				break;
+
+			more -= v;
+
+			bonobo_stream_client_write (stream, data, v, ev);
+
+			if (BONOBO_EX (ev))
+				goto copy_to_except;
+
+		} while (v > 0);
+
+	}
+	
+	close (fd);
+	unlink (filename);
+	return;
+
+ copy_to_except:
+	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+			     ex_Bonobo_IOError, NULL);
+	close (fd);
+	unlink (filename);
 }
 
 /*

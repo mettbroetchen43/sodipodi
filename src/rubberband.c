@@ -12,11 +12,10 @@ ArtDRect sp_rb_rect;
 void
 sp_rubberband_start (SPDesktop * desktop, double x, double y)
 {
-	if (sp_rb)
-		sp_rubberband_stop ();
-
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	if (sp_rb) sp_rubberband_stop ();
 
 	sp_rb_desktop = desktop;
 	sp_rb_rect.x0 = x;
@@ -49,8 +48,8 @@ sp_rubberband_move (double x, double y)
 void
 sp_rubberband_stop (void)
 {
-	if (sp_rb)
-		gtk_object_destroy ((GtkObject *) sp_rb);
+	if (sp_rb) gtk_object_destroy ((GtkObject *) sp_rb);
+
 	sp_rb = NULL;
 	sp_rb_desktop = NULL;
 	sp_rb_dragging = FALSE;

@@ -11,6 +11,7 @@
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
+#include "../helper/canvas-helper.h"
 #include "sodipodi-ctrlrect.h"
 
 enum {
@@ -92,8 +93,11 @@ sp_ctrlrect_init (SPCtrlRect * ctrlrect)
 {
 	ctrlrect->rect.x0 = ctrlrect->rect.y0 = ctrlrect->rect.x1 = ctrlrect->rect.y1 = 0.0;
 	ctrlrect->width = 1;
+	ctrlrect->irect.x0 = ctrlrect->irect.y0 = ctrlrect->irect.x1 = ctrlrect->irect.y1 = 0;
+#if 0
 	ctrlrect->svp = NULL;
 	ctrlrect->rdsvp = NULL;
+#endif
 }
 
 static void
@@ -106,10 +110,12 @@ sp_ctrlrect_destroy (GtkObject *object)
 
 	ctrlrect = SP_CTRLRECT (object);
 
+#if 0
 	if (ctrlrect->svp)
 		art_svp_free (ctrlrect->svp);
 	if (ctrlrect->rdsvp)
 		art_svp_free (ctrlrect->rdsvp);
+#endif
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -179,74 +185,113 @@ static void
 sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	SPCtrlRect *ctrlrect;
+	guint fr, fg, fb, fa;
+	gint x0, y0, x1, y1;
+	gint x, y;
+	guchar *b, *bb;
 
 	ctrlrect = SP_CTRLRECT (item);
-	gnome_canvas_render_svp (buf, ctrlrect->svp, 0xbf);
+	
+	if (ctrlrect->irect.x1 < buf->rect.x0) return;
+	if (ctrlrect->irect.y1 < buf->rect.y0) return;
+	if (ctrlrect->irect.x0 >= buf->rect.x1) return;
+	if (ctrlrect->irect.y0 >= buf->rect.y1) return;
+
+	fr = 0x0;
+	fg = 0x0;
+	fb = 0x0;
+	fa = 0xbf;
+
+	x0 = MAX (buf->rect.x0, ctrlrect->irect.x0) - buf->rect.x0;
+	y0 = MAX (buf->rect.y0, ctrlrect->irect.y0) - buf->rect.y0;
+	x1 = MIN (buf->rect.x1 - 1, ctrlrect->irect.x1) - buf->rect.x0;
+	y1 = MIN (buf->rect.y1 - 1, ctrlrect->irect.y1) - buf->rect.y0;
+
+	if (buf->is_bg) {
+		gnome_canvas_clear_buffer (buf);
+		buf->is_bg = FALSE;
+		buf->is_buf = TRUE;
+	}
+
+	/* fixme: corners are possibly drawn twice */
+
+	if (ctrlrect->irect.y0 >= buf->rect.y0) {
+		b = buf->buf + y0 * buf->buf_rowstride + 3 * x0;
+		for (x = x0; x <= x1; x++) {
+			*b++ = *b + (((fr - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fg - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fb - *b) * fa + 0x80) >> 8);
+		}
+	}
+	if (ctrlrect->irect.y1 < buf->rect.y1) {
+		b = buf->buf + y1 * buf->buf_rowstride + 3 * x0;
+		for (x = x0; x <= x1; x++) {
+			*b++ = *b + (((fr - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fg - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fb - *b) * fa + 0x80) >> 8);
+		}
+	}
+	if (ctrlrect->irect.x0 >= buf->rect.x0) {
+		bb = buf->buf + y0 * buf->buf_rowstride + 3 * x0;
+		for (y = y0; y <= y1; y++) {
+			b = bb;
+			*b++ = *b + (((fr - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fg - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fb - *b) * fa + 0x80) >> 8);
+			bb += buf->buf_rowstride;
+		}
+	}
+	if (ctrlrect->irect.x1 < buf->rect.x1) {
+		bb = buf->buf + y0 * buf->buf_rowstride + 3 * x1;
+		for (y = y0; y <= y1; y++) {
+			b = bb;
+			*b++ = *b + (((fr - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fg - *b) * fa + 0x80) >> 8);
+			*b++ = *b + (((fb - *b) * fa + 0x80) >> 8);
+			bb += buf->buf_rowstride;
+		}
+	}
 }
 
 static void
 sp_ctrlrect_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 {
-	SPCtrlRect *ctrlrect;
-	ArtVpath vpath[6];
-	ArtSVP *svp;
-	double x0, y0, x1, y1, width;
-	ArtPoint p;
+	SPCtrlRect *cr;
+	ArtPoint p0, p1;
 
-	ctrlrect = SP_CTRLRECT (item);
+	cr = SP_CTRLRECT (item);
 
 	if (parent_class->update)
 		(* parent_class->update) (item, affine, clip_path, flags);
 
 	gnome_canvas_item_reset_bounds (item);
 
-	width = ctrlrect->width;
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y0 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x0 + 1, cr->irect.y1 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x1 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y1 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
 
-	p.x = ctrlrect->rect.x0;
-	p.y = ctrlrect->rect.y0;
-	art_affine_point (&p, &p, affine);
-	x0 = p.x;
-	y0 = p.y;
-	p.x = ctrlrect->rect.x1;
-	p.y = ctrlrect->rect.y1;
-	art_affine_point (&p, &p, affine);
-	x1 = p.x;
-	y1 = p.y;
+	p0.x = cr->rect.x0;
+	p0.y = cr->rect.y0;
+	art_affine_point (&p0, &p0, affine);
+	p1.x = cr->rect.x1;
+	p1.y = cr->rect.y1;
+	art_affine_point (&p1, &p1, affine);
 
-	vpath[0].code = ART_MOVETO;
-	vpath[0].x = x0;
-	vpath[0].y = y0;
-	vpath[1].code = ART_LINETO;
-	vpath[1].x = x0;
-	vpath[1].y = y1;
-	vpath[2].code = ART_LINETO;
-	vpath[2].x = x1;
-	vpath[2].y = y1;
-	vpath[3].code = ART_LINETO;
-	vpath[3].x = x1;
-	vpath[3].y = y0;
-	vpath[4].code = ART_LINETO;
-	vpath[4].x = x0;
-	vpath[4].y = y0;
-	vpath[5].code = ART_END;
-	vpath[5].x = x0;
-	vpath[5].y = y0;
+	cr->irect.x0 = (int) floor (MIN (p0.x, p1.x) + 0.5);
+	cr->irect.y0 = (int) floor (MIN (p0.y, p1.y) + 0.5);
+	cr->irect.x1 = (int) floor (MAX (p0.x, p1.x) + 0.5);
+	cr->irect.y1 = (int) floor (MAX (p0.y, p1.y) + 0.5);
 
-	svp = art_svp_vpath_stroke (vpath,
-		ART_PATH_STROKE_JOIN_MITER,
-		ART_PATH_STROKE_CAP_BUTT,
-		ctrlrect->width,
-		4, 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y0 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x0 + 1, cr->irect.y1 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x1 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
+	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y1 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
 
-	gnome_canvas_item_update_svp_clip (item, &ctrlrect->svp, svp, clip_path);
-
-	svp = art_svp_vpath_stroke (vpath,
-		ART_PATH_STROKE_JOIN_MITER,
-		ART_PATH_STROKE_CAP_BUTT,
-		ctrlrect->width + 2,
-		4, 1);
-
-	gnome_canvas_item_update_svp_clip (item, &ctrlrect->rdsvp, svp, clip_path);
+	item->x1 = cr->irect.x0 - 1;
+	item->y1 = cr->irect.y0 - 1;
+	item->x2 = cr->irect.x1 + 1;
+	item->y2 = cr->irect.y1 + 1;
 }
 
 void

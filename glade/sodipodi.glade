@@ -2839,7 +2839,7 @@ Released under GPL</comments>
 	  <last_modification_time>Fri, 21 Apr 2000 22:49:22 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_NEW_ITEM</stock_item>
-	<label>_Uus</label>
+	<label>_New</label>
       </widget>
 
       <widget>

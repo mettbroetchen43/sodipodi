@@ -15,6 +15,8 @@ typedef struct _SPTextContextClass SPTextContextClass;
 struct _SPTextContext {
 	SPEventContext event_context;
 	SPRepr * text;
+	SPItem * item;
+	GnomeCanvasItem * canvasitem;
 };
 
 struct _SPTextContextClass {

@@ -1,3 +1,25 @@
+2001-01-04  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/helper/sodipodi-ctrlrect.*: Draw by hand instead of using
+	libart. That fixed ugly-ugly freezing bug in Mandrake
+
+	* src/preferences-skeleton.h: New file, encoding default preferences
+
+	* glade/sodipodi.glade: Changes _Uus to _New in menu ;)
+
+	* src_sodipodi.* (sodipodi_load_preferences): New function
+	(sodipodi_save_preferences): New function
+	(sodipodi_get_repr): New function for retrieving data from preferences
+	DOM tree.
+	
+	* src/draw-context.c (set_to_accumulated): Use style preferences
+	* src/rect-context.c (sp_rect_drag): Ditto
+	* src/ellipse-context.c (sp_ellipse_drag): Ditto
+	* src/text-context.c (sp_text_context_root_handler): Ditto
+	(sp_text_complete): ungrab keyboard
+
+	* src/toolbox.c (sp_toolbox_create): Use preferences
+	
 2001-01-02  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/widgets/sp-toolbox.*: general toolbox implementation
@@ -12,6 +34,14 @@
 
 	* src/xml/repr-io.c (sp_repr_read_file): Load whatever element node as root
 	(sp_repr_read_mem): Ditto
+
+2000-12-31  Michael Meeks  <michael@helixcode.com>
+
+	* src/xml/repr-io.c (sp_repr_save_file): split into
+	(sp_repr_save_stream): here.
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_pf_load),
+	(sp_embeddable_document_pf_save): update signatures for new persistfile API.
 
 2000-12-30  Lauris Kaplinski  <lauris@helixcode.com>
 

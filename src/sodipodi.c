@@ -10,11 +10,17 @@
  */
 
 #include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-messagebox.h>
 #include "desktop-handles.h"
 #include "sodipodi.h"
 #include "sodipodi-private.h"
+#include "preferences-skeleton.h"
 
 enum {
 	CHANGE_SELECTION,
@@ -33,7 +39,7 @@ static void sodipodi_class_init (SodipodiClass * klass);
 static void sodipodi_init (SPObject * object);
 static void sodipodi_destroy (GtkObject * object);
 
-static SPRepr * sp_decode_key (Sodipodi * sodipodi, const gchar ** key);
+static void sodipodi_init_preferences (Sodipodi * sodipodi);
 
 struct _Sodipodi {
 	GtkObject object;
@@ -147,20 +153,14 @@ sodipodi_class_init (SodipodiClass * klass)
 static void
 sodipodi_init (SPObject * object)
 {
-	gchar * filename;
-
 	if (!sodipodi) {
 		sodipodi = (Sodipodi *) object;
 	} else {
 		g_assert_not_reached ();
 	}
-	/* fixme: */
-	filename = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
-	sodipodi->preferences = sp_repr_read_file (filename);
-	g_free (filename);
-	if (!sodipodi->preferences) {
-		sodipodi->preferences = sp_repr_document_new ("sodipodi");
-	}
+
+	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE);
+
 	sodipodi->documents = NULL;
 	sodipodi->desktops = NULL;
 }
@@ -183,10 +183,6 @@ sodipodi_destroy (GtkObject * object)
 	g_assert (!sodipodi->desktops);
 
 	if (sodipodi->preferences) {
-		gchar * filename;
-		filename = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
-		sp_repr_save_file (sodipodi->preferences, filename);
-		g_free (filename);
 		sp_repr_document_unref (sodipodi->preferences);
 		sodipodi->preferences = NULL;
 	}
@@ -208,53 +204,119 @@ sodipodi_application_new (void)
 /* We use '.' as separator */
 
 void
-sodipodi_set_key (Sodipodi * sodipodi, const gchar * key, const gchar * value)
+sodipodi_load_preferences (Sodipodi * sodipodi)
 {
-	SPRepr * repr;
-	const gchar *attr;
+	gchar * fn, * m;
+	struct stat s;
+	GtkWidget * w;
+	SPReprDoc * doc;
+	SPRepr * root;
 
-	attr = key;
+	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
+	if (stat (fn, &s)) {
+		/* No such file */
+		sodipodi_init_preferences (sodipodi);
+		g_free (fn);
+		return;
+	}
 
-	repr = sp_decode_key (sodipodi, &attr);
-	g_assert (attr);
-	g_assert (repr);
+	if (!S_ISREG (s.st_mode)) {
+		/* Not a regular file */
+		m = g_strdup_printf (_("%s is not regular file.\n"
+				       "Although sodipodi will run, you can\n"
+				       "neither load nor save preferences\n"), fn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		g_free (fn);
+		return;
+	}
 
-	sp_repr_set_attr (repr, attr, value);
-}
+	doc = sp_repr_read_file (fn);
+	if (doc == NULL) {
+		/* Not an valid xml file */
+		m = g_strdup_printf (_("%s either is not valid xml file or\n"
+				       "you do not have read premissions on it.\n"
+				       "Although sodipodi will run, you\n"
+				       "are neither able to load nor save\n"
+				       "preferences."), fn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		g_free (fn);
+		return;
+	}
 
-const gchar *
-sodipodi_get_key (Sodipodi * sodipodi, const gchar * key)
-{
-	SPRepr * repr;
-	const gchar *attr;
+	root = sp_repr_document_root (doc);
+	if (strcmp (sp_repr_name (root), "sodipodi")) {
+		m = g_strdup_printf (_("%s is not valid sodipodi preferences file.\n"
+				       "Although sodipodi will run, you\n"
+				       "are neither able to load nor save\n"
+				       "preferences."), fn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		sp_repr_document_unref (doc);
+		g_free (fn);
+		return;
+	}
 
-	attr = key;
-
-	repr = sp_decode_key (sodipodi, &attr);
-	g_assert (attr);
-	g_assert (repr);
-
-	return sp_repr_attr (repr, attr);
+	/* fixme: merge preferences */
+	sp_repr_document_unref (sodipodi->preferences);
+	sodipodi->preferences = doc;
+	g_free (fn);
 }
 
 void
-sodipodi_set_key_as_number (Sodipodi * sodipodi, const gchar * key, gdouble value)
+sodipodi_save_preferences (Sodipodi * sodipodi)
 {
-	gchar c[32];
+	gchar * fn;
 
-	g_snprintf (c, 32, "%g", value);
+	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
 
-	sodipodi_set_key (sodipodi, key, c);
+	sp_repr_save_file (sodipodi->preferences, fn);
+
+	g_free (fn);
 }
 
-gdouble
-sodipodi_get_key_as_number (Sodipodi * sodipodi, const gchar * key)
+/* We use '.' as separator */
+SPRepr *
+sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key)
 {
-	const gchar * value;
+	SPRepr * repr;
+	const gchar * id, * s, * e;
+	gint len;
 
-	value = sodipodi_get_key (sodipodi, key);
+	if (key == NULL) return NULL;
 
-	return (value) ? atof (value) : 0.0;
+	repr = sp_repr_document_root (sodipodi->preferences);
+	g_assert (!(strcmp (sp_repr_name (repr), "sodipodi")));
+
+	s = key;
+	while ((s) && (*s)) {
+		SPRepr * child;
+		const GList * l;
+		/* Find next name */
+		if ((e = strchr (s, '.'))) {
+			len = e++ - s;
+		} else {
+			len = strlen (s);
+		}
+
+		child = NULL;
+		l = sp_repr_children (repr);
+		while (l != NULL) {
+			child = (SPRepr *) l->data;
+			id = sp_repr_attr (child, "id");
+			if ((id) && (strlen (id) == len) && (!strncmp (id, s, len))) break;
+			l = l->next;
+		}
+		if (l == NULL) return NULL;
+
+		repr = child;
+		s = e;
+	}
+	return repr;
 }
 
 void
@@ -398,48 +460,71 @@ sodipodi_active_event_context (void)
 
 /* Helpers */
 
-static SPRepr *
-sp_decode_key (Sodipodi * sodipodi, const gchar ** key)
+static void
+sodipodi_init_preferences (Sodipodi * sodipodi)
 {
-	SPRepr * repr;
-	const gchar * attr, * str, * k;
+	gchar * dn, *fn;
+	struct stat s;
+	int fh;
+	gchar * m;
+	GtkWidget * w;
 
-	repr = sp_repr_document_root (sodipodi->preferences);
-	attr = NULL;
-	k = str = *key;
-
-	while (*str) {
-		k = str;
-		while ((*k) && (*k != '.')) k++;
-		if (*k) {
-			gint len;
-			const GList * children, * l;
-			len = MIN (k - str, 255);
-			children = sp_repr_children (repr);
-			for (l = children; l != NULL; l = l->next) {
-				if (!strncmp (sp_repr_name ((SPRepr *) l->data), str, len)) break;
-			}
-			if (l != NULL) {
-				repr = (SPRepr *) l->data;
-			} else {
-				SPRepr * newrepr;
-				gchar c[256];
-				strncpy (c, str, len);
-				c[len] = '\0';
-				newrepr = sp_repr_new (c);
-				sp_repr_append_child (repr, newrepr);
-				repr = newrepr;
-			}
-			k++;
+	dn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi");
+	if (stat (dn, &s)) {
+		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP)) {
+			/* Cannot create directory */
+			m = g_strdup_printf (_("Cannot create directory %s.\n"
+					       "Although sodipodi will run, you\n"
+					       "are neither able to load nor save\n"
+					       "preferences."), dn);
+			w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+			g_free (m);
+			gnome_dialog_run_and_close (GNOME_DIALOG (w));
+			g_free (dn);
+			return;
 		}
-		attr = str;
-		str = k;
+	} else if (!S_ISDIR (s.st_mode)) {
+		/* Not a directory */
+		m = g_strdup_printf (_("%s is not a valid directory.\n"
+				       "Although sodipodi will run, you\n"
+				       "are neither able to load nor save\n"
+				       "preferences."), dn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		g_free (dn);
+		return;
 	}
-	g_assert (attr);
+	g_free (dn);
 
-	*key = attr;
-
-	return repr;
+	fn = g_concat_dir_and_file (g_get_home_dir (), ".sodipodi/preferences");
+	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
+	if (fh < 0) {
+		/* Cannot create file */
+		m = g_strdup_printf (_("Cannot create file %s.\n"
+				       "Although sodipodi will run, you\n"
+				       "are neither able to load nor save\n"
+				       "preferences."), dn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		g_free (fn);
+		return;
+	}
+	if (write (fh, preferences_skeleton, PREFERENCES_SKELETON_SIZE) != PREFERENCES_SKELETON_SIZE) {
+		/* Cannot create file */
+		m = g_strdup_printf (_("Cannot write file %s.\n"
+				       "Although sodipodi will run, you\n"
+				       "are neither able to load nor save\n"
+				       "preferences."), dn);
+		w = gnome_message_box_new (m, GNOME_MESSAGE_BOX_WARNING, "OK", NULL);
+		g_free (m);
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+		g_free (fn);
+		close (fh);
+		return;
+	}
+	close (fh);
 }
 
 

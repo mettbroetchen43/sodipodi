@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "sp-rect.h"
+#include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop-handles.h"
@@ -174,8 +175,17 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	desktop = SP_EVENT_CONTEXT (rc)->desktop;
 
 	if (!rc->item) {
-		SPRepr * repr;
+		SPRepr * repr, * style;
+		SPCSSAttr * css;
+		/* Create object */
 		repr = sp_repr_new ("rect");
+		/* Set style */
+		style = sodipodi_get_repr (SODIPODI, "paint.shape.rect");
+		if (style) {
+			css = sp_repr_css_attr_inherited (style, "style");
+			sp_repr_css_set (repr, css, "style");
+			sp_repr_css_attr_unref (css);
+		}
 		rc->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 	}
