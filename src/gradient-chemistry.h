@@ -33,6 +33,13 @@ SPGradient *sp_gradient_ensure_vector_normalized (SPGradient *gradient);
 SPGradient *sp_gradient_ensure_private_normalized (SPGradient *gradient, SPGradient *vector);
 
 /*
+ * Releases all stale gradient references to given gradient vector,
+ * preparing it for deletion (if no referenced by real objects)
+ */
+
+void sp_gradient_vector_release_references (SPGradient *gradient);
+
+/*
  * Sets item fill to lineargradient with given vector, creating
  * new private gradient, if needed
  * gr has to be normalized vector

@@ -33,8 +33,8 @@ static const SPUnit sp_units[] = {
 	/* Do not insert any elements before/between first 4 */
 	{0, SP_UNIT_DIMENSIONLESS, 1.0, N_("Unit"), "", N_("Units"), ""},
 	{0, SP_UNIT_ABSOLUTE, 1.0, N_("Point"), N_("Pt"), N_("Points"), N_("Pt")},
-	{0, SP_UNIT_USERSPACE, 1.0, N_("Userspace unit"), N_("User"), N_("Userspace units"), N_("User")},
 	{0, SP_UNIT_DEVICE, 1.0, N_("Pixel"), N_("Px"), N_("Pixels"), N_("Px")},
+	{0, SP_UNIT_USERSPACE, 1.0, N_("Userspace unit"), N_("User"), N_("Userspace units"), N_("User")},
 	/* Volatiles do not have default, so there are none here */
 	/* You can add new elements from this point forward */
 	{0, SP_UNIT_DIMENSIONLESS, 0.01, N_("Percent"), N_("%"), N_("Percents"), N_("%")},

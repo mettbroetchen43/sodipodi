@@ -1,3 +1,20 @@
+2002-02-03  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/units.c: Fix userspace/device confusion
+
+	* src/sp-gradient.c (sp_stop_read_attr): Convert percentages to dimensionless
+	units
+
+	* src/gradient-chemistry.c (sp_gradient_vector_release_references): New
+	method to prepare gradient vector for deletion
+
+	* src/dialogs/gradient-vector.c (sp_gradient_vector_selector_init): Connect
+	button dialogs
+	(sp_gvs_rebuild_gui_full): Set selection to current active gradient
+	(sp_gvs_gradient_edit_clicked): From old gradient selector
+	(sp_gvs_gradient_add_clicked): Ditto
+	(sp_gvs_gradient_delete_clicked): Ditto
+
 2002-02-02  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* glade/object_props.glade: Fix a typo. s/Mitter/Miter/

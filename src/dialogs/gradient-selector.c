@@ -230,57 +230,13 @@ sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw)
 }
 #endif
 
-#if 0
-static void
-sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPWidget *spw)
-{
-	SPGradient *gradient;
-
-	gradient = gtk_object_get_data (GTK_OBJECT (spw), "gradient");
-
-	sp_gradient_vector_dialog (gradient);
-}
-
-static void
-sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPWidget *spw)
-{
-	SPDefs *defs;
-	SPRepr *repr, *stop;
-
-	if (!SP_ACTIVE_DOCUMENT) return;
-
-	defs = SP_DOCUMENT_DEFS (SP_ACTIVE_DOCUMENT);
-
-	repr = sp_repr_new ("linearGradient");
-	stop = sp_repr_new ("stop");
-	sp_repr_set_attr (stop, "offset", "0");
-	sp_repr_set_attr (stop, "style", "stop-color:#000;stop-opacity:1;");
-	sp_repr_append_child (repr, stop);
-	sp_repr_unref (stop);
-	stop = sp_repr_new ("stop");
-	sp_repr_set_attr (stop, "offset", "1");
-	sp_repr_set_attr (stop, "style", "stop-color:#fff;stop-opacity:1;");
-	sp_repr_append_child (repr, stop);
-	sp_repr_unref (stop);
-	sp_repr_add_child (SP_OBJECT_REPR (defs), repr, NULL);
-	sp_repr_unref (repr);
-
-	/* fixme: */
-	sp_gradient_selector_vector_menu_refresh (gtk_object_get_data (GTK_OBJECT (spw), "vectors"), spw);
-	/* fixme: */
-	if (spw->desktop) sp_gradient_selector_load_selection (spw, SP_DT_SELECTION (spw->desktop));
-}
-
-static void
-sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPWidget *spw)
-{
-}
-#endif
 
 static void
 sp_gradient_selector_vector_set (SPGradientVectorSelector *gvs, SPGradient *gr, SPWidget *spw)
 {
 	const GSList *selected, *l;
+
+	g_print ("Set vector %s\n", SP_OBJECT_ID (gr));
 
 	g_assert (gr != NULL);
 	g_assert (SP_IS_GRADIENT (gr));

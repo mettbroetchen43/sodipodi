@@ -53,8 +53,10 @@ GtkWidget *sp_gradient_vector_selector_new (SPGradient *gradient);
 
 void sp_gradient_vector_selector_set_gradient (SPGradientVectorSelector *gvs, SPGradient *gr);
 
+#if 0
 /* fixme: rethink this (Lauris) */
 void sp_gradient_vector_dialog (SPGradient *gradient);
+#endif
 
 END_GNOME_DECLS
 

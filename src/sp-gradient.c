@@ -105,10 +105,13 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		return;
 	}
 	if (strcmp (key, "offset") == 0) {
+		static const SPUnit *percent = NULL;
 		const SPUnit *unit;
 		const guchar *val;
+		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
 		val = sp_repr_attr (object->repr, key);
 		stop->offset = sp_svg_read_length (&unit, val, 0.0);
+		if (unit == percent) stop->offset /= 100.0;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}

@@ -221,6 +221,32 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 }
 
 /*
+ * Releases all stale gradient references to given gradient vector,
+ * preparing it for deletion (if no referenced by real objects)
+ */
+
+void
+sp_gradient_vector_release_references (SPGradient *gradient)
+{
+	g_return_if_fail (gradient != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gradient));
+
+	if (SP_OBJECT_HREFCOUNT (gradient) > 0) {
+		const GSList *glist, *l;
+		glist = sp_document_get_resource_list (SP_OBJECT_DOCUMENT (gradient), "gradient");
+		for (l = glist; l != NULL; l = l->next) {
+			SPGradient *gr;
+			gr = SP_GRADIENT (l->data);
+			if (SP_OBJECT_HREFCOUNT (gr) < 1) {
+				if (gr->href == gradient) {
+					sp_repr_set_attr (SP_OBJECT_REPR (gr), "xlink:href", NULL);
+				}
+			}
+		}
+	}
+}
+
+/*
  * Finds and normalizes first free gradient
  */
 
