@@ -23,7 +23,7 @@ AC_CHECK_HEADER(libgnomeprint/gnome-print-rbuf.h,AC_DEFINE(ENABLE_RBUF))
 AC_CHECK_HEADER(libgnomeprint/gnome-font-face.h,AC_DEFINE(NEW_FONT_MODEL))
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="ca da de et fr ga ja no ru sl sv tr uk"
+ALL_LINGUAS="ca da de et fr ga ja no ru sl sv tr uk pl"
 AM_GNU_GETTEXT
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.

@@ -1,5 +1,9 @@
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
 
+	* configure.in: Added pl to ALL_LINGUAS.
+
+2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
+
 	* sodipodi/src/toolbox.c (sp_maintoolbox_create):
 	Marked strings for translation.
 
