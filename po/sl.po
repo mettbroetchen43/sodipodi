@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-11-11 14:10+0100\n"
+"POT-Creation-Date: 2001-01-20 23:18+0100\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/align.c:7
+#: glade/align.c:7 glade/transformation.c:44 glade/transformation.c:57
 msgid "Align"
 msgstr "Poravnava"
 
@@ -179,7 +179,7 @@ msgstr "Barva vodni¹kih èrt"
 msgid "Show guides"
 msgstr "Ka¾i vodni¹ke èrte"
 
-#: glade/desktop.c:42 glade/transformation.c:52
+#: glade/desktop.c:42
 msgid "Snap to guides"
 msgstr "Preskakuj do vodni¹kih èrt"
 
@@ -280,7 +280,7 @@ msgstr "Barva nagnjenja : "
 
 #: glade/object_props.c:12
 msgid "Valige värv"
-msgstr ""
+msgstr "Valige värv"
 
 #: glade/object_props.c:13
 msgid " Width "
@@ -437,7 +437,6 @@ msgstr ""
 "pt\n"
 "in\n"
 
-
 #: glade/object_props.c:80
 msgid "none"
 msgstr "brez"
@@ -517,7 +516,7 @@ msgid "Zoom"
 msgstr "Poveèava"
 
 #: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:151
-#: glade/transformation.c:35
+#: glade/transformation.c:16
 msgid "Scale"
 msgstr "Faktor poveèave"
 
@@ -641,7 +640,7 @@ msgstr "Natisni"
 msgid "Undo"
 msgstr "Razveljavi"
 
-#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:90
+#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:80
 msgid "Redo"
 msgstr "Obnovi"
 
@@ -775,47 +774,47 @@ msgstr ""
 "Program za Vektorsko Risanje.\n"
 "Dostopen pod GNU Splo¹no Javno Licenco"
 
-#: glade/sodipodi-glade.c:93 glade/toolbox.c:50
+#: glade/sodipodi-glade.c:93 glade/toolbox.c:40
 msgid "Node Edit"
 msgstr "Urejanje kontronih toèk"
 
-#: glade/sodipodi-glade.c:94 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:94 glade/toolbox.c:41
 msgid "Include one node into selected segments"
 msgstr "Vstavi kontrolno toèko v izbrane segmente"
 
-#: glade/sodipodi-glade.c:95 glade/toolbox.c:55
+#: glade/sodipodi-glade.c:95 glade/toolbox.c:45
 msgid "Break apart selected node"
 msgstr "Loèi izbrano kontrolno toèko"
 
-#: glade/sodipodi-glade.c:96 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:96 glade/toolbox.c:44
 msgid "Convert selected segments to curves"
 msgstr "Pretvori izbrane segmente v krivulje"
 
-#: glade/sodipodi-glade.c:97 glade/toolbox.c:56
+#: glade/sodipodi-glade.c:97 glade/toolbox.c:46
 msgid "Join 2 selected endpoints"
 msgstr "Spoji 2 izbrani konèni toèki"
 
-#: glade/sodipodi-glade.c:98 glade/toolbox.c:57
+#: glade/sodipodi-glade.c:98 glade/toolbox.c:47
 msgid "Cusp line at selected nodes"
 msgstr "Pove¾i èrto na izbranih kontrolnih toèkah"
 
-#: glade/sodipodi-glade.c:99 glade/toolbox.c:58
+#: glade/sodipodi-glade.c:99 glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
 msgstr "Zgladi èrto na izbranih kontrolnih toèkah"
 
-#: glade/sodipodi-glade.c:100 glade/toolbox.c:59
+#: glade/sodipodi-glade.c:100 glade/toolbox.c:49
 msgid "Symmetric "
 msgstr "Simetrièno "
 
-#: glade/sodipodi-glade.c:101 glade/toolbox.c:61
+#: glade/sodipodi-glade.c:101 glade/toolbox.c:51
 msgid "Close dialog"
 msgstr "Zapri dialog"
 
-#: glade/sodipodi-glade.c:102 glade/toolbox.c:53
+#: glade/sodipodi-glade.c:102 glade/toolbox.c:43
 msgid "Convert selected segments to lines"
 msgstr "Pretvori izbrane segmente v èrte"
 
-#: glade/sodipodi-glade.c:103 glade/toolbox.c:52
+#: glade/sodipodi-glade.c:103 glade/toolbox.c:42
 msgid "Delete selected nodes"
 msgstr "Zbri¹i izbrane toèke"
 
@@ -833,7 +832,7 @@ msgid "Drawing"
 msgstr "Risanje"
 
 #: glade/sodipodi-glade.c:108 glade/sodipodi-glade.c:133
-#: glade/sodipodi-glade.c:137 glade/toolbox.c:41 src/dialogs/align.c:108
+#: glade/sodipodi-glade.c:137 glade/toolbox.c:31 src/dialogs/align.c:108
 msgid "Selection"
 msgstr "Izbira"
 
@@ -901,15 +900,15 @@ msgstr "1.0MB"
 msgid "Uncompressed file size:"
 msgstr "Velikost nekomprimirane datoteke:"
 
-#: glade/sodipodi-glade.c:129
-msgid "_Uus"
-msgstr ""
+#: glade/sodipodi-glade.c:129 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Nova"
 
 #: glade/sodipodi-glade.c:130
 msgid "Import"
 msgstr "Uvozi"
 
-#: glade/sodipodi-glade.c:131 glade/toolbox.c:64
+#: glade/sodipodi-glade.c:131 glade/toolbox.c:54
 msgid "Export"
 msgstr "Izvozi"
 
@@ -949,13 +948,13 @@ msgstr "Namizje"
 msgid "Document"
 msgstr "Dokument"
 
+#: glade/text-dialog.c:8
+msgid "Text Properties"
+msgstr "Lastnosti besedila"
+
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Datoteka"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Nova"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -981,7 +980,7 @@ msgstr "Naèin risanja"
 msgid "Edit nodes"
 msgstr "Uredi kontrolne toèke"
 
-#: glade/toolbox.c:16 glade/toolbox.c:36
+#: glade/toolbox.c:16 glade/toolbox.c:25
 msgid "Zoom in"
 msgstr "Poveèaj"
 
@@ -1001,218 +1000,187 @@ msgstr "Ri¹i prosto èrto"
 msgid "Draw text"
 msgstr "Ri¹i besedilo"
 
-#: glade/toolbox.c:23
-msgid ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-msgstr ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-
-#: glade/toolbox.c:33
-msgid "Select zom factor"
-msgstr "Izberi faktor poveèave"
-
-#: glade/toolbox.c:34
-#, c-format
-msgid "100%"
-msgstr "100%"
-
-#: glade/toolbox.c:35
-msgid "Zoom out"
-msgstr "Pomanj¹aj"
-
-#: glade/toolbox.c:37
-msgid "Zoom to drawing"
-msgstr "Poveèaj na risbo"
-
-#: glade/toolbox.c:38
-msgid "Zoom to selection"
-msgstr "Poveèaj na izbrano"
-
-#: glade/toolbox.c:39
+#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "Poveèaj na 1:1"
 
-#: glade/toolbox.c:40
+#: glade/toolbox.c:24
 msgid "Zoom to page"
 msgstr "Poveèaj na stran"
 
-#: glade/toolbox.c:42
+#: glade/toolbox.c:26
+msgid "Zoom out"
+msgstr "Pomanj¹aj"
+
+#: glade/toolbox.c:27
+msgid "Zoom to drawing"
+msgstr "Poveèaj na risbo"
+
+#: glade/toolbox.c:28
+msgid "Zoom to selection"
+msgstr "Poveèaj na izbrano"
+
+#: glade/toolbox.c:32
 msgid "lower selection to bottom"
 msgstr "spusti izbrano na dno"
 
-#: glade/toolbox.c:43
+#: glade/toolbox.c:33
 msgid "Raise selection to top"
 msgstr "dvigni izbrano na vrh"
 
-#: glade/toolbox.c:44
+#: glade/toolbox.c:34
 msgid "Lower selection one layer"
 msgstr "Spusti izbrano  za en sloj"
 
-#: glade/toolbox.c:45
+#: glade/toolbox.c:35
 msgid "Rise selection one layer"
 msgstr "Dvigni izbrano za en sloj"
 
-#: glade/toolbox.c:46
+#: glade/toolbox.c:36
 msgid "Break apart selected paths"
 msgstr "Prekini narazen izbrane poti"
 
-#: glade/toolbox.c:47
+#: glade/toolbox.c:37
 msgid "Combine selected paths"
 msgstr "Spoji 2 izbrani poti"
 
-#: glade/toolbox.c:48
+#: glade/toolbox.c:38
 msgid "Group selected objects"
 msgstr "Grupiraj izbrane predmete"
 
-#: glade/toolbox.c:49
+#: glade/toolbox.c:39
 msgid "Ungroup selected objects"
 msgstr "Odgrupiraj izbrane premete"
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Nesimetrièno"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:52
 msgid "File"
 msgstr "Datoteka"
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Nova risba"
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:55
 msgid "Open new drawing"
 msgstr "Odpri novo risbo"
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:56
 msgid "Import "
 msgstr "Uvozi "
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:57
 msgid "Print drawing"
 msgstr "Natisni risbo"
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:58
 msgid "Preview print drawing"
 msgstr "Predogled tiskanja risbe"
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:59
 msgid "Save drawing "
 msgstr "Shrani risbo"
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:60
 msgid "Save drawing under new filename"
 msgstr "Shrani risbo v novo datoteko"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:61
 msgid "Quit or not quit ?"
 msgstr "Zapri ali ne ?"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:62
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Da, hitro! Hoèem zapustiti sodipodi in priti nazaj kasneje."
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:63
 msgid "Yep !"
 msgstr "Da !"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:64
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "Ne, raje bom ¹e naprej vektorsko risal s sodipodijem."
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:65
 msgid "Nope !"
 msgstr "Ne !"
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:66
 msgid "Really wanna quit sodipodi ?"
 msgstr "Zares ¾eli¹ oditi iz sodipodija ?"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:67
 msgid "Object"
 msgstr "Predmet"
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:68
 msgid "Align dialog"
 msgstr "Poravnaj dialog"
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:69
 msgid "Transformation dialog"
 msgstr "Dialog preoblikovanja"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:70
 msgid "Edit font style of selected objects"
 msgstr "Nastavi slog pisave izbranih predmetov"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
 msgstr "Nastavi postavitev izbranih predmetov"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:72
 msgid "Edit fill style of selected objects"
 msgstr "Nastavi naèin polnjenja izbranih predmetov"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:73
 msgid "Edit stroke style of selected objects"
 msgstr "Nastavi naèin obrobe izbranih predmetov"
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:74
 msgid "Flip selected objects"
 msgstr "Prevrni izbrane predmete"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
 msgstr "Obrni izbrane predmete za 90° v smeri urinega kazalca"
 
-#: glade/toolbox.c:86
+#: glade/toolbox.c:76
 msgid "Remove transformation"
 msgstr "Odstrani preoblikovanje"
 
-#: glade/toolbox.c:87
+#: glade/toolbox.c:77
 msgid "Convert selected objects to curves"
 msgstr "Pretvori izbrane predmete v krivulje"
 
-#: glade/toolbox.c:88
+#: glade/toolbox.c:78
 msgid "Edit"
 msgstr "Uredi"
 
-#: glade/toolbox.c:89
+#: glade/toolbox.c:79
 msgid "Undo "
 msgstr "Razveljavi "
 
-#: glade/toolbox.c:91
+#: glade/toolbox.c:81
 msgid "Delete selection"
 msgstr "Zbri¹i izbiro"
 
-#: glade/toolbox.c:92
+#: glade/toolbox.c:82
 msgid "Paste from clipboard"
 msgstr "Prilepi iz odlo¾i¹èa"
 
-#: glade/toolbox.c:93
+#: glade/toolbox.c:83
 msgid "Copy selection to clipboard"
 msgstr "Kopiraj izbiro na odlo¾i¹èe"
 
-#: glade/toolbox.c:94
+#: glade/toolbox.c:84
 msgid "Cut selection"
 msgstr "Izre¾i izbiro"
 
-#: glade/toolbox.c:95
+#: glade/toolbox.c:85
 msgid "Duplicate selection"
 msgstr "Podvoji izbiro"
 
@@ -1226,126 +1194,269 @@ msgid "Transform selection"
 msgstr "Izbira preoblikovanja"
 
 #: glade/transformation.c:8
-msgid " Move "
-msgstr " Premakni "
-
-#: glade/transformation.c:9 glade/transformation.c:29
-#: glade/transformation.c:37
-msgid "horizontal"
-msgstr "vodoravno"
-
-#: glade/transformation.c:10 glade/transformation.c:30
-#: glade/transformation.c:38
-msgid "vertical"
-msgstr "navpièno"
-
-#: glade/transformation.c:11
-msgid "move relative in"
-msgstr "premakni relativno v"
-
-#: glade/transformation.c:12 glade/transformation.c:46
-msgid ""
-"pixel\n"
-"points\n"
-"millimeter\n"
-"centimeter\n"
-"inch\n"
-msgstr ""
-"piksli\n"
-"pike\n"
-"milimetri\n"
-"centimetri\n"
-"palci\n"
-
-#: glade/transformation.c:18
 msgid "Move"
 msgstr "Premakni"
 
+#: glade/transformation.c:9
+msgid "Y: "
+msgstr "Y:"
+
+#: glade/transformation.c:10
+msgid "Orig. X: "
+msgstr "Izhodi¹èe X: "
+
+#: glade/transformation.c:11
+msgid "horizontal move"
+msgstr "vodoravni premik"
+
+#: glade/transformation.c:12
+msgid "vertical move"
+msgstr "navpièni premik"
+
+#: glade/transformation.c:13
+msgid "toggle absolute/relative move"
+msgstr "preklopi med absolutnim in relativnim premikanjem"
+
+#: glade/transformation.c:14 glade/transformation.c:23
+msgid "absolute"
+msgstr "absolutno"
+
+#: glade/transformation.c:15
+msgid "select metric for values"
+msgstr "izberi enote za vrednosti"
+
+#: glade/transformation.c:17
+msgid "Orig. Width: "
+msgstr "Izhodi¹èna ¹irina: "
+
+#: glade/transformation.c:18
+msgid "Height: "
+msgstr "Vi¹ina: "
+
 #: glade/transformation.c:19
-msgid " Rotate "
-msgstr " Zavrti "
+msgid "horizontal scale value"
+msgstr "faktor vodoravne poveèave"
 
 #: glade/transformation.c:20
-msgid "90°"
-msgstr "90°"
+msgid "vertical scale value"
+msgstr "faktor navpiène poveèave"
 
 #: glade/transformation.c:21
-msgid "180°"
-msgstr "180°"
+msgid "lock/unlock horizontal and vertical scale"
+msgstr "zakleni/odkleni vodoravni in navpièni faktor poveèave"
 
 #: glade/transformation.c:22
-msgid "270°"
-msgstr "270°"
+msgid "toggle absolute/relative scale"
+msgstr "preklopi med absolutno in relativno poveèavo"
 
-#: glade/transformation.c:23
-msgid "any"
-msgstr "poljubno"
-
-#: glade/transformation.c:24
-msgid "degree"
-msgstr "stopinj"
+#: glade/transformation.c:24 glade/transformation.c:38
+msgid "select metric for scale"
+msgstr "izberi enote za poveèavo"
 
 #: glade/transformation.c:25
-msgid "right"
-msgstr "desno"
+msgid "flip horizontal"
+msgstr "prevrni vodoravno"
 
 #: glade/transformation.c:26
-msgid "left"
-msgstr "levo"
+msgid "flip vertical"
+msgstr "prevrni navpièno"
 
 #: glade/transformation.c:27
 msgid "Rotate"
 msgstr "Zavrti"
 
 #: glade/transformation.c:28
-msgid " Scale "
-msgstr " Poveèaj "
+msgid "select direction"
+msgstr "izberi smer"
 
-#: glade/transformation.c:31 glade/transformation.c:32
-#, c-format
-msgid "% "
-msgstr "% "
+#: glade/transformation.c:29
+msgid "angle"
+msgstr "kot"
 
-#: glade/transformation.c:33 glade/transformation.c:34
-msgid " flip "
-msgstr " prevrni "
+#: glade/transformation.c:30 glade/transformation.c:104
+msgid "deg"
+msgstr "stopinj"
 
-#: glade/transformation.c:36
-msgid " Skew "
-msgstr " "
+#: glade/transformation.c:31
+msgid "Set angle to 0°"
+msgstr "Nastavi kot na 0°"
 
-#: glade/transformation.c:39 glade/transformation.c:40
-#, c-format
-msgid "%  "
-msgstr "%  "
+#: glade/transformation.c:32
+msgid "Set angle to 90°"
+msgstr "Nastavi kot na 90°"
 
-#: glade/transformation.c:41
+#: glade/transformation.c:33
+msgid "Set angle to 180°"
+msgstr "Nastavi kot na 180°"
+
+#: glade/transformation.c:34
+msgid "Set angle to 270°"
+msgstr "Nastavi kot na 270°"
+
+#: glade/transformation.c:35
 msgid "Skew"
 msgstr ""
 
+#: glade/transformation.c:36
+msgid "select direction (horizontal/vertical skew)"
+msgstr ""
+
+#: glade/transformation.c:37
+msgid "skew"
+msgstr " "
+
+#: glade/transformation.c:39
+msgid "keep aspect"
+msgstr "ohrani razmerja"
+
+#: glade/transformation.c:40
+msgid "Start transformation - Ctl+a"
+msgstr "Zaèni preoblikovanje - Ctl+a"
+
+#: glade/transformation.c:41
+msgid "Close dialog - Ctl+c"
+msgstr "Zapri dialog - Ctl+c"
+
 #: glade/transformation.c:42
-msgid "make copy"
-msgstr "naredi kopijo"
+msgid "Expand dialog - Ctl+e"
+msgstr "Raz¹iri dialog - Ctl+e"
 
 #: glade/transformation.c:43
-msgid "Guidelines setup"
-msgstr "Nastavitev vodni¹kih èrt"
-
-#: glade/transformation.c:44
-msgid "move horizontal"
-msgstr "premakni vodoravno"
+msgid "Use alignment during transformation"
+msgstr "Uporabi poravnavo med preoblikovanjem"
 
 #: glade/transformation.c:45
-msgid "move vertival"
-msgstr "premakni navpièno"
+msgid "Use center as transformation fixpoint"
+msgstr "Uporabi sredi¹èe za negibno toèko preoblikovanja"
+
+#: glade/transformation.c:46 glade/transformation.c:47
+msgid "Center"
+msgstr "Sredi¹èe"
+
+#: glade/transformation.c:48
+msgid "Horizontal center value"
+msgstr "Vodoravna vrednost sredi¹èa"
+
+#: glade/transformation.c:49
+msgid "Vertical center value"
+msgstr "Navpièna vrednost sredi¹èa"
+
+#: glade/transformation.c:50
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr "Preklopi sredi¹èe podan v izbiri/koordinate namizja"
+
+#: glade/transformation.c:51
+msgid "desktop"
+msgstr "namizje"
+
+#: glade/transformation.c:52
+msgid "Choose metric for center"
+msgstr "Izberi enoto za sredi¹èe"
 
 #: glade/transformation.c:53
-msgid "Start transformation"
-msgstr "Zaèni preoblikovanje"
+msgid "Keep width of selection during transformation"
+msgstr "Ohrani ¹irino izbiranega med preoblikovanjem"
 
 #: glade/transformation.c:54
-msgid "close dialog"
-msgstr "zapri dialog"
+msgid "Keep height of selection during transformation"
+msgstr "Ohrani vi¹ino izbiranega med preoblikovanjem"
+
+#: glade/transformation.c:55
+msgid "Apply transformation to copy Ctl+m"
+msgstr "Uporabi preoblikovanje na kopiji Ctl+m"
+
+#: glade/transformation.c:56
+msgid "Reset dialog to default - Ctl+r"
+msgstr "Ponasatavi dialog na privzete vrednosti - Ctl+r"
+
+#: glade/transformation.c:58
+msgid "Align to top middle"
+msgstr "Poravnaj na vrh sredino"
+
+#: glade/transformation.c:59
+msgid "Align to bottom right"
+msgstr "Poravnaj na desno dno"
+
+#: glade/transformation.c:60
+msgid "Align to right middle"
+msgstr "Poravnaj na desno sredino"
+
+#: glade/transformation.c:61
+msgid "Align to top right"
+msgstr "Poravnaj na vrh desno"
+
+#: glade/transformation.c:62
+msgid "Align to left middle"
+msgstr "Poravnaj na levo sredino"
+
+#: glade/transformation.c:63
+msgid "Align to center"
+msgstr "Poravnaj na sredi¹èe"
+
+#: glade/transformation.c:64
+msgid "Align to bottom middle"
+msgstr "Poravnaj dno sredino"
+
+#: glade/transformation.c:65
+msgid "Align to bottom left"
+msgstr "Poravnaj na dno levo"
+
+#: glade/transformation.c:66
+msgid "Align to top left"
+msgstr "Poravnaj na vrh levo"
+
+#: glade/transformation.c:67 glade/transformation.c:77
+#: glade/transformation.c:85 glade/transformation.c:95
+msgid "Points"
+msgstr "Pik"
+
+#: glade/transformation.c:68 glade/transformation.c:78
+#: glade/transformation.c:86 glade/transformation.c:96
+msgid "pt"
+msgstr "pik"
+
+#: glade/transformation.c:69 glade/transformation.c:79
+#: glade/transformation.c:87 glade/transformation.c:97
+msgid "Millimeter"
+msgstr "Milimeter"
+
+#: glade/transformation.c:70 glade/transformation.c:80
+#: glade/transformation.c:88 glade/transformation.c:98
+msgid "mm"
+msgstr "mm"
+
+#: glade/transformation.c:71 glade/transformation.c:81
+#: glade/transformation.c:89 glade/transformation.c:99
+msgid "Centimeter"
+msgstr "Centimeter"
+
+#: glade/transformation.c:72 glade/transformation.c:82
+#: glade/transformation.c:90 glade/transformation.c:100
+msgid "cm"
+msgstr "cm"
+
+#: glade/transformation.c:73 glade/transformation.c:83
+#: glade/transformation.c:91 glade/transformation.c:101
+msgid "Inch"
+msgstr "Palec"
+
+#: glade/transformation.c:74 glade/transformation.c:84
+#: glade/transformation.c:92 glade/transformation.c:102
+msgid "in"
+msgstr "palec"
+
+#: glade/transformation.c:75 glade/transformation.c:93
+msgid "Percent"
+msgstr "Procent"
+
+#: glade/transformation.c:76 glade/transformation.c:94
+#, c-format
+msgid "%"
+msgstr "%"
+
+#: glade/transformation.c:103
+msgid "Degree"
+msgstr "Stopinje"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
@@ -1423,33 +1534,33 @@ msgstr "Zbri¹i atribut"
 msgid "Do you want to delete attribute?"
 msgstr "®elite zbrisati atribut?"
 
-#: src/main.c:47
+#: src/main.c:48
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 "Ne uporabljajte Grafiènega umesnika. NB! èe obstaja, bi moral biti PRVI "
 "argument!"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "Open specified file (option string may be excluded)"
 msgstr "Odpri izbrano datoteko (lahko je vkljuèen niz mo¾nosti)"
 
-#: src/main.c:57 src/main.c:66
+#: src/main.c:58 src/main.c:67
 msgid "FILENAME"
 msgstr "IME DATOTEKE"
 
-#: src/main.c:65
-msgid "Print files to specified file (use '| program' for pipe)"
-msgstr "Natisni datoteke v izbrano datoteko (uporabite '| program' za cev)"
+#: src/main.c:66
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr "Natisni datoteke v izbrano izhodno datoteko (uporabite '| program' za cev)"
 
-#: src/main.c:161
+#: src/main.c:168
 msgid "Oaf options"
 msgstr "Oaf mo¾nosti"
 
-#: src/main.c:169
+#: src/main.c:176
 msgid "Could not initialize Bonobo"
 msgstr "Nisem mogel inicializirati Bonoba"
 
-#: src/bonobo/svg-doc-factory.c:25
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nisem uspel ustvariti sodipodi-svg-doc "
 
@@ -1515,6 +1626,100 @@ msgstr "Najveèji predmet"
 msgid "Smallest item"
 msgstr "Najmanj¹i predmet"
 
+#~ msgid ""
+#~ "10%\n"
+#~ "25%\n"
+#~ "50%\n"
+#~ "75%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "300%\n"
+#~ "500%\n"
+#~ msgstr ""
+#~ "10%\n"
+#~ "25%\n"
+#~ "50%\n"
+#~ "75%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "300%\n"
+#~ "500%\n"
+
+#~ msgid "Select zom factor"
+#~ msgstr "Izberi faktor poveèave"
+
+#~ msgid "100%"
+#~ msgstr "100%"
+
+#~ msgid " Move "
+#~ msgstr " Premakni "
+
+#~ msgid "move relative in"
+#~ msgstr "premakni relativno v"
+
+#~ msgid ""
+#~ "pixel\n"
+#~ "points\n"
+#~ "millimeter\n"
+#~ "centimeter\n"
+#~ "inch\n"
+#~ msgstr ""
+#~ "piksli\n"
+#~ "pike\n"
+#~ "milimetri\n"
+#~ "centimetri\n"
+#~ "palci\n"
+
+#~ msgid " Rotate "
+#~ msgstr " Zavrti "
+
+#~ msgid "90°"
+#~ msgstr "90°"
+
+#~ msgid "180°"
+#~ msgstr "180°"
+
+#~ msgid "270°"
+#~ msgstr "270°"
+
+#~ msgid "any"
+#~ msgstr "poljubno"
+
+#~ msgid "right"
+#~ msgstr "desno"
+
+#~ msgid "left"
+#~ msgstr "levo"
+
+#~ msgid " Scale "
+#~ msgstr " Poveèaj "
+
+#~ msgid "% "
+#~ msgstr "% "
+
+#~ msgid " flip "
+#~ msgstr " prevrni "
+
+#~ msgid "%  "
+#~ msgstr "%  "
+
+#~ msgid "make copy"
+#~ msgstr "naredi kopijo"
+
+#~ msgid "Guidelines setup"
+#~ msgstr "Nastavitev vodni¹kih èrt"
+
+#~ msgid "move horizontal"
+#~ msgstr "premakni vodoravno"
+
+#~ msgid "move vertival"
+#~ msgstr "premakni navpièno"
+
+#~ msgid "close dialog"
+#~ msgstr "zapri dialog"
+
 #~ msgid "Fill type"
 #~ msgstr "Tip polnitve"
 
@@ -1555,14 +1760,8 @@ msgstr "Najmanj¹i predmet"
 #~ msgid "Preview"
 #~ msgstr "Predogled"
 
-#~ msgid "angle"
-#~ msgstr "kot"
-
 #~ msgid "scale horizontal in %"
 #~ msgstr "poveèaj vodoravno v %"
-
-#~ msgid "%"
-#~ msgstr "%"
 
 #~ msgid "scale vertical in %"
 #~ msgstr "poveèaj navpiæno v %"
