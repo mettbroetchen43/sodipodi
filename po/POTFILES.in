@@ -5,7 +5,6 @@ glade/align.glade
 glade/item.glade
 glade/object_props.glade
 glade/sodipodi.glade
-glade/text-dialog.glade
 glade/toolbox.glade
 glade/transformation.glade
 glade/xml-tree.glade
