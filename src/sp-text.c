@@ -1383,6 +1383,8 @@ sp_text_set_shape (SPText *text)
 
 	cp.x = text->ly.x.computed;
 	cp.y = text->ly.y.computed;
+	if (text->ly.dx.set) cp.x += text->ly.dx.computed;
+	if (text->ly.dy.set) cp.y += text->ly.dy.computed;
 
 	isfirstline = TRUE;
 	inspace = FALSE;
@@ -1428,12 +1430,8 @@ sp_text_set_shape (SPText *text)
 				} else {
 					tspan->ly.y.computed = cp.y;
 				}
-				if (tspan->ly.dx.set) {
-					cp.x += tspan->ly.dx.computed;
-				}
-				if (tspan->ly.dy.set) {
-					cp.y += tspan->ly.dy.computed;
-				}
+				if (tspan->ly.dx.set) cp.x += tspan->ly.dx.computed;
+				if (tspan->ly.dy.set) cp.y += tspan->ly.dy.computed;
 				break;
 			default:
 				/* Error */
