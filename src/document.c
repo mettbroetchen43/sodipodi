@@ -809,3 +809,27 @@ sp_document_resource_list_free (gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
+guint
+sp_document_get_version (SPDocument *document, guint version_type)
+{
+	SPRoot *root;
+
+	g_return_val_if_fail (document != NULL, 0);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0);
+
+	root = SP_ROOT (document->root);
+
+	switch (version_type)
+	{
+	case SP_VERSION_SVG:
+		return root->svg;
+	case SP_VERSION_SODIPODI:
+		return root->sodipodi;
+	case SP_VERSION_ORIGINAL:
+		return root->original;
+	default:
+		g_assert_not_reached ();
+	}
+
+	return 0;
+}

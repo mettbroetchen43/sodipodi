@@ -1,5 +1,13 @@
 2003-11-08  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
+	* src/document.h: (SP_VERSION_*): Moved from sp-object.h again
+	(sp_document_get_version): Moved from sp-object.h
+
+	* src/document.c: (sp_document_get_version): Moved from sp-object.c
+	Thanks Lauris for your advice.
+
+2003-11-08  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
 	* src/sp-object.h: (SP_VERSION_*): New enum type
 	(sp_object_get_version): New method come from sp-text.c
 

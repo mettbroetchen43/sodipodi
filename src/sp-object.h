@@ -89,12 +89,6 @@ struct _SPException {
 #define SP_EXCEPTION_INIT(ex) {(ex)->code = SP_NO_EXCEPTION;}
 #define SP_EXCEPTION_IS_OK(ex) (!(ex) || ((ex)->code == SP_NO_EXCEPTION))
 
-enum {
-	SP_VERSION_SVG,
-	SP_VERSION_SODIPODI,
-	SP_VERSION_ORIGINAL,
-};
-
 typedef struct _SPCtx SPCtx;
 
 struct _SPCtx {
@@ -214,8 +208,5 @@ void sp_object_removeAttribute (SPObject *object, const unsigned char *key, SPEx
 /* Style */
 
 const guchar *sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *def);
-
-/* Utility */
-guint sp_object_get_version (SPObject *object, guint version_type);
 
 #endif

@@ -18,6 +18,15 @@
 #include "xml/repr.h"
 #include "forward.h"
 
+
+/* Version type. See SPRoot for more detail */
+enum {
+	SP_VERSION_SVG,
+	SP_VERSION_SODIPODI,
+	SP_VERSION_ORIGINAL,
+};
+
+
 typedef struct _SPDocumentPrivate SPDocumentPrivate;
 
 struct _SPDocument {
@@ -156,5 +165,7 @@ GSList *sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);
+
+guint sp_document_get_version (SPDocument *document, guint version_type);
 
 #endif

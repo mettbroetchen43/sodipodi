@@ -20,8 +20,6 @@
 #include "document.h"
 #include "style.h"
 #include "sp-object-repr.h"
-/* For versioning */
-#include "sp-root.h"
 
 #include "sp-object.h"
 
@@ -894,30 +892,4 @@ sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *d
 	}
 
 	return def;
-}
-
-/* Utility */
-guint
-sp_object_get_version (SPObject *object, guint version_type)
-{
-	SPRoot *root;
-
-	g_return_val_if_fail (object != NULL, 0);
-	g_return_val_if_fail (SP_IS_OBJECT (object), 0);
-
-	root = SP_ROOT (object->document->root);
-
-	switch (version_type)
-	{
-	case SP_VERSION_SVG:
-		return root->svg;
-	case SP_VERSION_SODIPODI:
-		return root->sodipodi;
-	case SP_VERSION_ORIGINAL:
-		return root->original;
-	default:
-		g_assert_not_reached ();
-	}
-
-	return 0;
 }
