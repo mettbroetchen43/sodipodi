@@ -10,7 +10,7 @@
  * Copyright (C) 2000-2001 Ximian, Inc.
  * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <math.h>
@@ -29,7 +29,9 @@ static void sp_rect_context_class_init (SPRectContextClass * klass);
 static void sp_rect_context_init (SPRectContext * rect_context);
 static void sp_rect_context_destroy (GtkObject * object);
 
-static void sp_rect_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+#if 0
+static void sp_rect_context_setup (SPEventContext *ec);
+#endif
 static gint sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -75,7 +77,9 @@ sp_rect_context_class_init (SPRectContextClass * klass)
 
 	object_class->destroy = sp_rect_context_destroy;
 
+#if 0
 	event_context_class->setup = sp_rect_context_setup;
+#endif
 	event_context_class->root_handler = sp_rect_context_root_handler;
 	event_context_class->item_handler = sp_rect_context_item_handler;
 }
@@ -108,8 +112,9 @@ sp_rect_context_destroy (GtkObject * object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
-sp_rect_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_rect_context_setup (SPEventContext *ec)
 {
 	SPRectContext * rc;
 
@@ -118,6 +123,7 @@ sp_rect_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 }
+#endif
 
 static gint
 sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)

@@ -1,16 +1,17 @@
-#ifndef SP_REPR_H
-#define SP_REPR_H
+#ifndef __SP_REPR_H__
+#define __SP_REPR_H__
 
 /*
- * Our fuzzy tyleless DOM implementation
+ * Fuzzy DOM-like tree implementation
  *
  * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
- * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2000-2002 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <glib.h>

@@ -30,7 +30,7 @@ static void sp_text_context_class_init (SPTextContextClass * klass);
 static void sp_text_context_init (SPTextContext * text_context);
 static void sp_text_context_finalize (GtkObject *object);
 
-static void sp_text_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_text_context_setup (SPEventContext *ec);
 static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -151,11 +151,13 @@ sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 }
 
 static void
-sp_text_context_setup (SPEventContext *ec, SPDesktop *desktop)
+sp_text_context_setup (SPEventContext *ec)
 {
 	SPTextContext *tc;
+	SPDesktop *desktop;
 
 	tc = SP_TEXT_CONTEXT (ec);
+	desktop = ec->desktop;
 
 	tc->cursor = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
@@ -197,7 +199,7 @@ sp_text_context_setup (SPEventContext *ec, SPDesktop *desktop)
 	}
 #endif
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
 	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
 			    GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);

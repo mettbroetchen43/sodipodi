@@ -10,10 +10,12 @@ SUBDIRS = xml svg widgets helper dialogs display $(bonobo_subdirs)
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
 
+CPPFLAGS = \
+	-DSODIPODI_VERSION=\""$(VERSION)"\"
+
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
 	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" 	\
-	-DSODIPODI_VERSION=\""$(VERSION)"\" \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
 	-I$(srcdir/xml) 				\
 	-I$(srcdir/svg) 				\

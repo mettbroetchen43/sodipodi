@@ -10,12 +10,13 @@
  * Copyright (C) 2000-2001 Ximian, Inc.
  * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define DRAW_VERBOSE
 
 #include <math.h>
+#include <gdk/gdkkeysyms.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/curve.h"
@@ -51,7 +52,7 @@ static void sp_draw_context_class_init (SPDrawContextClass *klass);
 static void sp_draw_context_init (SPDrawContext *dc);
 static void sp_draw_context_finalize (GtkObject *object);
 
-static void sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_draw_context_setup (SPEventContext *ec);
 
 static void spdc_selection_changed (SPSelection *sel, SPDrawContext *dc);
 static void spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
@@ -130,14 +131,16 @@ sp_draw_context_finalize (GtkObject *object)
 }
 
 static void
-sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
+sp_draw_context_setup (SPEventContext *ec)
 {
 	SPDrawContext *dc;
+	SPDesktop *dt;
 
 	dc = SP_DRAW_CONTEXT (ec);
+	dt = ec->desktop;
 
 	if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup (ec, dt);
+		SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup (ec);
 
 	/* Connect signals to track selection changes */
 	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
@@ -643,7 +646,9 @@ static void sp_pencil_context_class_init (SPPencilContextClass *klass);
 static void sp_pencil_context_init (SPPencilContext *dc);
 static void sp_pencil_context_finalize (GtkObject *object);
 
+#if 0
 static void sp_pencil_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+#endif
 static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
 static void spdc_set_startpoint (SPPencilContext *dc, ArtPoint *p, guint state);
@@ -686,7 +691,9 @@ sp_pencil_context_class_init (SPPencilContextClass *klass)
 
 	object_class->finalize = sp_pencil_context_finalize;
 
+#if 0
 	event_context_class->setup = sp_pencil_context_setup;
+#endif
 	event_context_class->root_handler = sp_pencil_context_root_handler;
 }
 
@@ -706,6 +713,7 @@ sp_pencil_context_finalize (GtkObject *object)
 	GTK_OBJECT_CLASS (pencil_parent_class)->finalize (object);
 }
 
+#if 0
 static void
 sp_pencil_context_setup (SPEventContext *ec, SPDesktop *dt)
 {
@@ -716,6 +724,7 @@ sp_pencil_context_setup (SPEventContext *ec, SPDesktop *dt)
 	if (SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup (ec, dt);
 }
+#endif
 
 gint
 sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
@@ -993,7 +1002,7 @@ static void sp_pen_context_class_init (SPPenContextClass *klass);
 static void sp_pen_context_init (SPPenContext *pc);
 static void sp_pen_context_finalize (GtkObject *object);
 
-static void sp_pen_context_setup (SPEventContext *ec, SPDesktop *dt);
+static void sp_pen_context_setup (SPEventContext *ec);
 static gint sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event);
 
 static void spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state);
@@ -1066,14 +1075,14 @@ sp_pen_context_finalize (GtkObject *object)
 }
 
 static void
-sp_pen_context_setup (SPEventContext *ec, SPDesktop *dt)
+sp_pen_context_setup (SPEventContext *ec)
 {
 	SPPenContext *pc;
 
 	pc = SP_PEN_CONTEXT (ec);
 
 	if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec, dt);
+		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec);
 
 	/* Pen indicators */
 	pc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL,

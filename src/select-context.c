@@ -1,6 +1,7 @@
 #define SP_SELECT_CONTEXT_C
 
 #include <math.h>
+#include <gdk/gdkkeysyms.h>
 #include "rubberband.h"
 #include "sodipodi-private.h"
 #include "document.h"
@@ -27,7 +28,7 @@ static void sp_select_context_class_init (SPSelectContextClass * klass);
 static void sp_select_context_init (SPSelectContext * select_context);
 static void sp_select_context_destroy (GtkObject * object);
 
-static void sp_select_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_select_context_setup (SPEventContext *ec);
 static gint sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -126,16 +127,16 @@ sp_select_context_destroy (GtkObject * object)
 }
 
 static void
-sp_select_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_select_context_setup (SPEventContext *ec)
 {
 	SPSelectContext * select_context;
 
-	select_context = SP_SELECT_CONTEXT (event_context);
+	select_context = SP_SELECT_CONTEXT (ec);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
-	sp_sel_trans_init (&select_context->seltrans, event_context->desktop);
+	sp_sel_trans_init (&select_context->seltrans, ec->desktop);
 }
 
 static gint

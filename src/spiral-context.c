@@ -1,4 +1,17 @@
-#define SP_SPIRAL_CONTEXT_C
+#define __SP_SPIRAL_CONTEXT_C__
+
+/*
+ * Spiral drawing context
+ *
+ * Authors:
+ *   Mitsuru Oka
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2001-2002 Mitsuru Oka
+ *
+ * Released under GNU GPL
+ */
 
 #include <math.h>
 #include "sp-spiral.h"
@@ -16,7 +29,9 @@ static void sp_spiral_context_class_init (SPSpiralContextClass * klass);
 static void sp_spiral_context_init (SPSpiralContext * spiral_context);
 static void sp_spiral_context_destroy (GtkObject * object);
 
-static void sp_spiral_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+#if 0
+static void sp_spiral_context_setup (SPEventContext *ec);
+#endif
 static gint sp_spiral_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_spiral_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -62,7 +77,9 @@ sp_spiral_context_class_init (SPSpiralContextClass * klass)
 
 	object_class->destroy = sp_spiral_context_destroy;
 
+#if 0
 	event_context_class->setup = sp_spiral_context_setup;
+#endif
 	event_context_class->root_handler = sp_spiral_context_root_handler;
 	event_context_class->item_handler = sp_spiral_context_item_handler;
 }
@@ -95,8 +112,9 @@ sp_spiral_context_destroy (GtkObject * object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
-sp_spiral_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_spiral_context_setup (SPEventContext *ec)
 {
 	SPSpiralContext * sc;
 
@@ -105,6 +123,7 @@ sp_spiral_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 }
+#endif
 
 static gint
 sp_spiral_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)

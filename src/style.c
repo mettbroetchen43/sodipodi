@@ -39,7 +39,9 @@ static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 
 static SPTextStyle *sp_text_style_new (void);
 static void sp_text_style_clear (SPTextStyle *ts);
+#if 0
 static SPTextStyle *sp_text_style_ref (SPTextStyle *st);
+#endif
 static SPTextStyle *sp_text_style_unref (SPTextStyle *st);
 static SPTextStyle *sp_text_style_duplicate_unset (SPTextStyle *st);
 static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);

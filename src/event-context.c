@@ -14,11 +14,13 @@
  */
 
 #include <config.h>
+
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <glade/glade.h>
+#include "xml/repr-private.h"
 #include "sp-cursor.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -36,7 +38,7 @@ static void sp_event_context_class_init (SPEventContextClass * klass);
 static void sp_event_context_init (SPEventContext * event_context);
 static void sp_event_context_destroy (GtkObject * object);
 
-static void sp_event_context_private_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_event_context_private_setup (SPEventContext *ec);
 static gint sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -96,41 +98,51 @@ sp_event_context_init (SPEventContext * event_context)
 }
 
 static void
-sp_event_context_destroy (GtkObject * object)
+sp_event_context_destroy (GtkObject *object)
 {
-	SPEventContext * event_context;
+	SPEventContext *ec;
 
-	event_context = SP_EVENT_CONTEXT (object);
+	ec = SP_EVENT_CONTEXT (object);
 
-	if (event_context->cursor != NULL)
-		gdk_cursor_destroy (event_context->cursor);
+	if (ec->cursor != NULL) {
+		gdk_cursor_destroy (ec->cursor);
+	}
+
+	if (ec->desktop) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (ec->desktop), ec);
+		ec->desktop = NULL;
+	}
+
+	if (ec->repr) {
+		sp_repr_remove_listener_by_data (ec->repr, ec);
+		sp_repr_unref (ec->repr);
+		ec->repr = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
-sp_event_context_private_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_event_context_private_setup (SPEventContext *ec)
 {
 	GtkWidget * w;
 	GdkBitmap * bitmap, * mask;
 
-	event_context->desktop = desktop;
-
-	w = GTK_WIDGET (SP_DT_CANVAS (desktop));
+	w = GTK_WIDGET (SP_DT_CANVAS (ec->desktop));
 	if (w->window) {
 		/* fixme: */
-		if (event_context->cursor_shape) {
+		if (ec->cursor_shape) {
 			bitmap = NULL;
 			mask = NULL;
-			sp_cursor_bitmap_and_mask_from_xpm (&bitmap, &mask, event_context->cursor_shape);
+			sp_cursor_bitmap_and_mask_from_xpm (&bitmap, &mask, ec->cursor_shape);
 			if ((bitmap != NULL) && (mask != NULL)) {
-				event_context->cursor = gdk_cursor_new_from_pixmap (bitmap, mask,
+				ec->cursor = gdk_cursor_new_from_pixmap (bitmap, mask,
 					&w->style->black, &w->style->white,
-					event_context->hot_x, event_context->hot_y);
+					ec->hot_x, ec->hot_y);
 			}
 		}
-		gdk_window_set_cursor (w->window, event_context->cursor);
+		gdk_window_set_cursor (w->window, ec->cursor);
 	}
 }
 
@@ -372,19 +384,95 @@ sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEve
 	return FALSE;
 }
 
-SPEventContext *
-sp_event_context_new (SPDesktop * desktop, GtkType type)
+static void
+sp_event_context_desktop_destroy (GtkObject *object, SPEventContext *ec)
 {
-	SPEventContext * event_context;
+	/* This is actually non-event, as desktop should keep the only ref of ec */
+	ec->desktop = NULL;
+}
 
+static void
+sp_ec_repr_destroy (SPRepr *repr, gpointer data)
+{
+	g_warning ("Oops! Repr destroyed while event context still present");
+}
+
+static gboolean
+sp_ec_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
+{
+	SPEventContext *ec;
+
+	ec = SP_EVENT_CONTEXT (data);
+
+	/* In theory we could verify values here */
+
+	return TRUE;
+}
+
+static void
+sp_ec_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
+{
+	SPEventContext *ec;
+
+	ec = SP_EVENT_CONTEXT (data);
+
+	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set)
+		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set (ec, key, newval);
+}
+
+SPReprEventVector sp_ec_event_vector = {
+	sp_ec_repr_destroy,
+	NULL, /* Add child */
+	NULL, /* Child added */
+	NULL, /* Remove child */
+	NULL, /* Child removed */
+	sp_ec_repr_change_attr,
+	sp_ec_repr_attr_changed,
+	NULL, /* Change content */
+	NULL, /* Content changed */
+	NULL, /* Change_order */
+	NULL /* Order changed */
+};
+
+SPEventContext *
+sp_event_context_new (GtkType type, SPDesktop *desktop, SPRepr *repr)
+{
+	SPEventContext *ec;
+
+	g_return_val_if_fail (gtk_type_is_a (type, SP_TYPE_EVENT_CONTEXT), NULL);
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 
-	event_context = gtk_type_new (type);
+	ec = gtk_type_new (type);
 
-	(* SP_EVENT_CONTEXT_CLASS (event_context->object.klass)->setup) (event_context, desktop);
+	ec->desktop = desktop;
+	gtk_signal_connect (GTK_OBJECT (desktop), "destroy", GTK_SIGNAL_FUNC (sp_event_context_desktop_destroy), ec);
 
-	return event_context;
+	ec->repr = repr;
+	if (ec->repr) {
+		sp_repr_ref (ec->repr);
+		sp_repr_add_listener (ec->repr, &sp_ec_event_vector, ec);
+	}
+
+	if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->setup)
+		SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->setup (ec);
+
+	return ec;
+}
+
+void
+sp_event_context_read (SPEventContext *ec, const guchar *key)
+{
+	g_return_if_fail (ec != NULL);
+	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
+	g_return_if_fail (key != NULL);
+
+	if (ec->repr) {
+		const guchar *val;
+		val = sp_repr_attr (ec->repr, key);
+		if (SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set)
+			SP_EVENT_CONTEXT_CLASS (((GtkObject *) ec)->klass)->set (ec, key, val);
+	}
 }
 
 gint

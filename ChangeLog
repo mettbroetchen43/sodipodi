@@ -1,3 +1,11 @@
+2002-08-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dyna-draw-context.c: Removed control knot, as we do not attach to anything
+
+	* src/xml/repr.c (sp_repr_unref): Implemented launching destroy listener
+
+	* src/xml/repr-private.h: Added destroy listener
+
 2002-08-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sodipodi.c (sodipodi_segv_handler): Do better names and inform user about these

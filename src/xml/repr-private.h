@@ -1,6 +1,19 @@
 #ifndef __SP_REPR_PRIVATE_H__
 #define __SP_REPR_PRIVATE_H__
 
+/*
+ * Fuzzy DOM-like tree implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2000-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include "repr.h"
 
 typedef struct _SPReprAttr SPReprAttr;
@@ -27,6 +40,7 @@ struct _SPReprListener {
 
 struct _SPReprEventVector {
 	/* Immediate signals */
+	void (* destroy) (SPRepr *repr, gpointer data);
 	gboolean (* add_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
 	void (* child_added) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
 	gboolean (* remove_child) (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);

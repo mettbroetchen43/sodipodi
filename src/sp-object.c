@@ -42,6 +42,7 @@ static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 enum {MODIFIED, LAST_SIGNAL};
 
 SPReprEventVector object_event_vector = {
+	NULL, /* Destroy */
 	NULL, /* Add child */
 	sp_object_repr_child_added,
 	sp_object_repr_remove_child,

@@ -13,6 +13,7 @@
  */
 
 #include <math.h>
+#include <gdk/gdkkeysyms.h>
 #include "sodipodi.h"
 #include "interface.h"
 #include "document.h"
@@ -24,7 +25,7 @@ static void sp_slide_context_class_init (SPSlideContextClass * klass);
 static void sp_slide_context_init (SPSlideContext * slide_context);
 static void sp_slide_context_destroy (GtkObject * object);
 
-static void sp_slide_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_slide_context_setup (SPEventContext *ec);
 static gint sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 #if 0
 static gint sp_slide_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
@@ -90,14 +91,14 @@ sp_slide_context_destroy (GtkObject * object)
 }
 
 static void
-sp_slide_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_slide_context_setup (SPEventContext *ec)
 {
 	/* fixme: This is not widget after all (Lauris) */
-	sp_desktop_toggle_borders ((GtkWidget *) desktop);
-	sp_slide_context_zoom (desktop);
+	sp_desktop_toggle_borders ((GtkWidget *) ec->desktop);
+	sp_slide_context_zoom (ec->desktop);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 }
 
 static gint

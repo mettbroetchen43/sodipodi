@@ -1,18 +1,34 @@
-#ifndef SP_DYNA_DRAW_CONTEXT_H
-#define SP_DYNA_DRAW_CONTEXT_H
+#ifndef __SP_DYNA_DRAW_CONTEXT_H__
+#define __SP_DYNA_DRAW_CONTEXT_H__
+
+/*
+ * Handwriting-like drawing mode
+ *
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * The original dynadraw code:
+ *   Paul Haeberli <paul@sgi.com>
+ *
+ * Copyright (C) 1998 The Free Software Foundation
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "helper/curve.h"
 #include "event-context.h"
 
-#define SP_TYPE_DYNA_DRAW_CONTEXT            (sp_dyna_draw_context_get_type ())
-#define SP_DYNA_DRAW_CONTEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DYNA_DRAW_CONTEXT, SPDynaDrawContext))
-#define SP_DYNA_DRAW_CONTEXT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DYNA_DRAW_CONTEXT, SPDynaDrawContextClass))
-#define SP_IS_DYNA_DRAW_CONTEXT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DYNA_DRAW_CONTEXT))
-#define SP_IS_DYNA_DRAW_CONTEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DYNA_DRAW_CONTEXT))
+#define SP_TYPE_DYNA_DRAW_CONTEXT (sp_dyna_draw_context_get_type ())
+#define SP_DYNA_DRAW_CONTEXT(o) (GTK_CHECK_CAST ((o), SP_TYPE_DYNA_DRAW_CONTEXT, SPDynaDrawContext))
+#define SP_DYNA_DRAW_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DYNA_DRAW_CONTEXT, SPDynaDrawContextClass))
+#define SP_IS_DYNA_DRAW_CONTEXT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DYNA_DRAW_CONTEXT))
+#define SP_IS_DYNA_DRAW_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DYNA_DRAW_CONTEXT))
 
 typedef struct _SPDynaDrawContext SPDynaDrawContext;
 typedef struct _SPDynaDrawContextClass SPDynaDrawContextClass;
-typedef struct _SPDynaDrawCtrl SPDynaDrawCtrl;
 
 #define SAMPLING_SIZE 16        /* fixme: ?? */
 
@@ -34,12 +50,6 @@ struct _SPDynaDrawContext
 
 	/* repr */
 	SPRepr *repr;
-
-	/* control */
-	GnomeCanvasItem *citem;
-	ArtPoint cpos;
-	guint32 ccolor;
-	gboolean cinside;
 
 	/* time_id if use timeout */
 	gint timer_id;
@@ -65,10 +75,8 @@ struct _SPDynaDrawContext
 
 struct _SPDynaDrawContextClass
 {
-  SPEventContextClass parent_class;
+	SPEventContextClass parent_class;
 };
-
-/* Standard Gtk function */
 
 GtkType sp_dyna_draw_context_get_type (void);
 

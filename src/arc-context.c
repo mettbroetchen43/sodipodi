@@ -16,7 +16,9 @@ static void sp_arc_context_class_init (SPArcContextClass * klass);
 static void sp_arc_context_init (SPArcContext * arc_context);
 static void sp_arc_context_destroy (GtkObject * object);
 
-static void sp_arc_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+#if 0
+static void sp_arc_context_setup (SPEventContext *ec);
+#endif
 static gint sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_arc_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -62,7 +64,9 @@ sp_arc_context_class_init (SPArcContextClass * klass)
 
 	object_class->destroy = sp_arc_context_destroy;
 
+#if 0
 	event_context_class->setup = sp_arc_context_setup;
+#endif
 	event_context_class->root_handler = sp_arc_context_root_handler;
 	event_context_class->item_handler = sp_arc_context_item_handler;
 }
@@ -95,12 +99,14 @@ sp_arc_context_destroy (GtkObject * object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
-sp_arc_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_arc_context_setup (SPEventContext *ec)
 {
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 }
+#endif
 
 static gint
 sp_arc_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)

@@ -1,6 +1,20 @@
-#define SP_STAR_CONTEXT_C
+#define __SP_STAR_CONTEXT_C__
+
+/*
+ * Star drawing context
+ *
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2001-2002 Mitsuru Oka
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
+#include <string.h>
 #include "sp-star.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -9,16 +23,17 @@
 #include "desktop-affine.h"
 #include "desktop-snap.h"
 #include "pixmaps/cursor-star.xpm"
-#include "star-context.h"
 #include "sp-metrics.h"
+
+#include "star-context.h"
 
 static void sp_star_context_class_init (SPStarContextClass * klass);
 static void sp_star_context_init (SPStarContext * star_context);
 static void sp_star_context_destroy (GtkObject * object);
 
-static void sp_star_context_setup (SPEventContext * event_context, SPDesktop * desktop);
-static gint sp_star_context_root_handler (SPEventContext * event_context, GdkEvent * event);
-static gint sp_star_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
+static void sp_star_context_setup (SPEventContext *ec);
+static void sp_star_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
+static gint sp_star_context_root_handler (SPEventContext *ec, GdkEvent *event);
 
 static void sp_star_drag (SPStarContext * sc, double x, double y, guint state);
 static void sp_star_finish (SPStarContext * sc);
@@ -63,8 +78,8 @@ sp_star_context_class_init (SPStarContextClass * klass)
 	object_class->destroy = sp_star_context_destroy;
 
 	event_context_class->setup = sp_star_context_setup;
+	event_context_class->set = sp_star_context_set;
 	event_context_class->root_handler = sp_star_context_root_handler;
-	event_context_class->item_handler = sp_star_context_item_handler;
 }
 
 static void
@@ -96,27 +111,30 @@ sp_star_context_destroy (GtkObject * object)
 }
 
 static void
-sp_star_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_star_context_setup (SPEventContext *ec)
 {
-	SPStarContext * sc;
+	SPStarContext *sc;
 
-	sc = SP_STAR_CONTEXT (event_context);
+	sc = SP_STAR_CONTEXT (ec);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
+
+	sp_star_context_set (ec, "magnitude", "5");
 }
 
-static gint
-sp_star_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
+static void
+sp_star_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 {
-	gint ret;
+	SPStarContext *sc;
 
-	ret = FALSE;
+	sc = SP_STAR_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-		ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
-
-	return ret;
+	if (!strcmp (key, "magnitude")) {
+		gint mag;
+		mag = (val) ? atoi (val) : 0;
+		sc->magnitude = CLAMP (mag, 3, 13);
+	}
 }
 
 static gint
@@ -214,14 +232,13 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 
 	star = SP_STAR(sc->item);
 
-	sides = (gdouble)star->sides;
+	sides = (gdouble) sc->magnitude;
 	dx = p1.x - p0.x;
 	dy = p1.y - p0.y;
 	r1 = hypot (dx, dy);
 	arg1 = atan2 (dy, dx);
 	
-	sp_star_set (star, star->sides,
-		     p0.x, p0.y, r1, r1*(sides-2.0)/sides, arg1, arg1 + M_PI/sides);
+	sp_star_set (star, sc->magnitude, p0.x, p0.y, r1, r1*(sides-2.0)/sides, arg1, arg1 + M_PI/sides);
 
 	/* status text */
 	xs = SP_PT_TO_METRIC_STRING (fabs(p0.x), SP_DEFAULT_METRIC);

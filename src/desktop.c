@@ -310,7 +310,7 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 
 	desktop->selection = sp_selection_new (desktop);
 
-	desktop->event_context = sp_event_context_new (desktop, SP_TYPE_SELECT_CONTEXT);
+	desktop->event_context = sp_event_context_new (SP_TYPE_SELECT_CONTEXT, desktop, NULL);
 
 	/* fixme: Setup display rectangle */
 
@@ -773,7 +773,7 @@ sp_desktop_set_event_context (SPDesktop * desktop, GtkType type)
 	if (desktop->event_context)
 		gtk_object_unref (GTK_OBJECT (desktop->event_context));
 
-	desktop->event_context = sp_event_context_new (desktop, type);
+	desktop->event_context = sp_event_context_new (type, desktop, NULL);
 }
 
 /* Private helpers */

@@ -6,10 +6,9 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
- * Copyright (C) 2002 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "select-context.h"

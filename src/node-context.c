@@ -21,7 +21,7 @@ static void sp_node_context_class_init (SPNodeContextClass * klass);
 static void sp_node_context_init (SPNodeContext * node_context);
 static void sp_node_context_destroy (GtkObject * object);
 
-static void sp_node_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static void sp_node_context_setup (SPEventContext *ec);
 static gint sp_node_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_node_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -103,28 +103,28 @@ sp_node_context_destroy (GtkObject * object)
 }
 
 static void
-sp_node_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_node_context_setup (SPEventContext *ec)
 {
 	SPNodeContext *nc;
-	SPItem        *item;
+	SPItem *item;
 
-	nc = SP_NODE_CONTEXT (event_context);
+	nc = SP_NODE_CONTEXT (ec);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (SP_DT_SELECTION (event_context->desktop)), "changed",
+	gtk_signal_connect_while_alive (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), "changed",
 					GTK_SIGNAL_FUNC (sp_node_context_selection_changed), nc,
 					GTK_OBJECT (nc));
 
-	item = sp_selection_item (SP_DT_SELECTION (desktop));
+	item = sp_selection_item (SP_DT_SELECTION (ec->desktop));
 
 	nc->nodepath = NULL;
 	nc->knot_holder = NULL;
 	if (item) {
-		nc->nodepath = sp_nodepath_new (desktop, item);
+		nc->nodepath = sp_nodepath_new (ec->desktop, item);
 		if (! nc->nodepath) {
-			nc->knot_holder = sp_item_knot_holder (item, desktop);
+			nc->knot_holder = sp_item_knot_holder (item, ec->desktop);
 		}
 	}
 }

@@ -1,5 +1,18 @@
 #define __SP_REPR_C__
 
+/*
+ * Fuzzy DOM-like tree implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2000-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <string.h>
 #include "repr-private.h"
 
@@ -67,9 +80,13 @@ sp_repr_unref (SPRepr *repr)
 	repr->refcount -= 1;
 
 	if (repr->refcount < 1) {
+		SPReprListener *rl;
 		/* Parents reference children */
 		g_assert (repr->parent == NULL);
 		g_assert (repr->next == NULL);
+		for (rl = repr->listeners; rl; rl = rl->next) {
+			if (rl->vector->destroy) (* rl->vector->destroy) (repr, rl->data);
+		}
 		while (repr->children) sp_repr_remove_child (repr, repr->children);
 		while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
 		if (repr->content) g_free (repr->content);

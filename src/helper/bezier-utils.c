@@ -1,18 +1,22 @@
 #define __SP_BEZIER_UTILS_C__
 
 /*
- * An Algorithm for Automatically Fitting Digitized Curves
- * by Philip J. Schneider
- * from "Graphics Gems", Academic Press, 1990
+ * Bezier interpolation for sodipodi drawing code
+ *
+ * Original code published in:
+ *   An Algorithm for Automatically Fitting Digitized Curves
+ *   by Philip J. Schneider
+ *  "Graphics Gems", Academic Press, 1990
  *
  * Authors:
  *   Philip J. Schneider
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) 1990 Philip J. Schneider
- * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2001 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define SP_HUGE 1e5

@@ -1,19 +1,19 @@
-#define _PREFERENCES_SKELETON_H_
+#define __PREFERENCES_SKELETON_H__
 
 static const char preferences_skeleton[] =
-"<sodipodi>\n"
+"<sodipodi version=\"" VERSION "\">\n"
 "  <style id=\"paint\""
 "         style=\"fill:#7f7f7f;fill-opacity:1;fill-rule:evenodd;"
-"                 stroke:#000000;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt\">\n"
+"                 stroke:#000000;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;\">\n"
 "    <style id=\"shape\" style=\"stroke:none\">\n"
 "      <style id=\"rect\"/>\n"
 "      <style id=\"ellipse\"/>\n"
 "      <style id=\"star\"/>\n"
+"      <style id=\"arc\"/>\n"
+"      <style id=\"spiral\"/>\n"
 "    </style>\n"
-"    <style id=\"arc\"/>\n"
-"    <style id=\"spiral\"/>\n"
-"    <style id=\"freehand\"/>\n"
-"    <style id=\"caligraphic\" style=\"stroke:none;fill-rule:nonzero\"/>\n"
+"    <style id=\"freehand\" style=\"fill:none;\"/>\n"
+"    <style id=\"calligraphic\" style=\"stroke:none;fill-rule:nonzero;\"/>\n"
 "    <style id=\"text\""
 "           style=\"fill:#000000;stroke:none;font-family:helvetica;font-style:normal;font-weight:normal;font-size:12px\"/>"
 "  </style>\n"

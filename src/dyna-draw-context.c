@@ -1,22 +1,20 @@
 #define __SP_DYNA_DRAW_CONTEXT_C__
+
 /*
- * dyna-draw-context handlers
+ * Handwriting-like drawing mode
  *
- * todo: use intelligent bpathing, i.e. without copying def all the time
- *       make dynahand generating curves instead of lines
+ * Authors:
+ *   Mitsuru Oka <oka326@parkcity.ne.jp>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Mitsuru Oka (oka326@parkcity.ne.jp), 2001
- * Copyright (C) Lauris Kaplinski (lauris@kaplinski.com), 1999-2000
- *
- * Contains pieces of code published in:
- * "Graphics Gems", Academic Press, 1990 by Philip J. Schneider
- *
- * Dynadraw/Gtk+ code came from:
+ * The original dynadraw code:
+ *   Paul Haeberli <paul@sgi.com>
  *
  * Copyright (C) 1998 The Free Software Foundation
- * Authors: Federico Mena <federico@nuclecu.unam.mx> - Port to Gtk+
- *          Nat Friedman <ndf@mit.edu> - Original port to Xlib
- *          Paul Haeberli <paul@sgi.com> - Original Dynadraw code for GL
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 /*
@@ -24,14 +22,13 @@
  *  - Decide control point behavior when use_calligraphic==1.
  *  - Option dialog box support if it is availabe.
  *  - Decide to use NORMALIZED_COORDINATE or not.
- *  - Remove hard coded sytle attributes and move to customizable style.
+ *  - Remove hard coded style attributes and move to customizable style.
  *  - Bug fix.
  */
 
 #define noDYNA_DRAW_DEBUG
 #define noDYNA_DRAW_VERBOSE
 #define NORMALIZED_COORDINATE
-
 
 #include <math.h>
 #include "xml/repr.h"
@@ -50,57 +47,41 @@
 #include "desktop-snap.h"
 #include "dyna-draw-context.h"
 
+#define DDC_RED_RGBA 0xff0000ff
+#define DDC_GREEN_RGBA 0x000000ff
 
-#define SAMPLE_TIMEOUT            10
-#define TOLERANCE_LINE            1.0
-#define TOLERANCE_CALLIGRAPHIC     3.0
-#define DYNA_EPSILON   1.0e-6
+#define SAMPLE_TIMEOUT 10
+#define TOLERANCE_LINE 1.0
+#define TOLERANCE_CALLIGRAPHIC 3.0
+#define DYNA_EPSILON 1.0e-6
+
 #ifdef NORMALIZED_COORDINATE
 #define DYNA_MIN_WIDTH 1.0e-6
 #else
 #define DYNA_MIN_WIDTH 1.0
 #endif
 
+static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass);
+static void sp_dyna_draw_context_init (SPDynaDrawContext *ddc);
+static void sp_dyna_draw_context_destroy (GtkObject *object);
 
-static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass * klass);
-static void sp_dyna_draw_context_init (SPDynaDrawContext * dyna_draw_context);
-static void sp_dyna_draw_context_destroy (GtkObject * object);
-
-static void sp_dyna_draw_context_setup (SPEventContext * event_context,
-					SPDesktop * desktop);
-static gint sp_dyna_draw_context_root_handler (SPEventContext * event_context,
-					       GdkEvent * event);
-static gint sp_dyna_draw_context_item_handler (SPEventContext * event_context,
-					       SPItem * item,
-					       GdkEvent * event);
+static void sp_dyna_draw_context_setup (SPEventContext *ec);
+static void sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
+static gint sp_dyna_draw_context_root_handler (SPEventContext *ec, GdkEvent *event);
 
 static void clear_current (SPDynaDrawContext * dc);
 static void set_to_accumulated (SPDynaDrawContext * dc);
 static void concat_current_line (SPDynaDrawContext * dc);
 static void accumulate_calligraphic (SPDynaDrawContext * dc);
 
-static void test_inside (SPDynaDrawContext * dc, double x, double y);
-static void move_ctrl (SPDynaDrawContext * dc, double x, double y);
-static void remove_ctrl (SPDynaDrawContext * dc);
+static void fit_and_split (SPDynaDrawContext *ddc, gboolean release);
+static void fit_and_split_line (SPDynaDrawContext *ddc, gboolean release);
+static void fit_and_split_calligraphics (SPDynaDrawContext *ddc, gboolean release);
 
-static void fit_and_split (SPDynaDrawContext * dc, gboolean release);
-static void fit_and_split_line (SPDynaDrawContext * dc, gboolean release);
-static void fit_and_split_calligraphics (SPDynaDrawContext * dc, gboolean release);
-
-static void sp_dyna_draw_reset (SPDynaDrawContext * dc, double x, double y);
-static void sp_dyna_draw_get_npoint (const SPDynaDrawContext *dc,
-                                     gdouble            vx,
-                                     gdouble            vy,
-                                     gdouble           *nx,
-                                     gdouble           *ny);
-static void sp_dyna_draw_get_vpoint (const SPDynaDrawContext *dc,
-                                     gdouble            nx,
-                                     gdouble            ny,
-                                     gdouble           *vx,
-                                     gdouble           *vy);
-static void sp_dyna_draw_get_curr_vpoint (const SPDynaDrawContext * dc,
-                                          gdouble *vx,
-                                          gdouble *vy);
+static void sp_dyna_draw_reset (SPDynaDrawContext *ddc, double x, double y);
+static void sp_dyna_draw_get_npoint (const SPDynaDrawContext *ddc, gdouble vx, gdouble vy, gdouble *nx, gdouble *ny);
+static void sp_dyna_draw_get_vpoint (const SPDynaDrawContext *ddc, gdouble nx, gdouble ny, gdouble *vx, gdouble *vy);
+static void sp_dyna_draw_get_curr_vpoint (const SPDynaDrawContext *ddc, gdouble *vx, gdouble *vy);
 static void draw_temporary_box (SPDynaDrawContext *dc);
 
 
@@ -109,168 +90,143 @@ static SPEventContextClass *parent_class;
 GtkType
 sp_dyna_draw_context_get_type (void)
 {
-  static GtkType dyna_draw_context_type = 0;
+	static GtkType type = 0;
 
-  if (!dyna_draw_context_type)
-    {
+	if (!type) {
+		static const GtkTypeInfo info = {
+			"SPDynaDrawContext",
+			sizeof (SPDynaDrawContext),
+			sizeof (SPDynaDrawContextClass),
+			(GtkClassInitFunc) sp_dyna_draw_context_class_init,
+			(GtkObjectInitFunc) sp_dyna_draw_context_init,
+			NULL, NULL, NULL
+		};
+		type = gtk_type_unique (SP_TYPE_EVENT_CONTEXT, &info);
+	}
 
-      static const GtkTypeInfo dyna_draw_context_info = {
-	"SPDynaDrawContext",
-	sizeof (SPDynaDrawContext),
-	sizeof (SPDynaDrawContextClass),
-	(GtkClassInitFunc) sp_dyna_draw_context_class_init,
-	(GtkObjectInitFunc) sp_dyna_draw_context_init,
-	NULL,
-	NULL,
-	(GtkClassInitFunc) NULL
-      };
-
-      dyna_draw_context_type =
-	gtk_type_unique (sp_event_context_get_type (),
-			 &dyna_draw_context_info);
-    }
-
-  return dyna_draw_context_type;
+	return type;
 }
 
 static void
-sp_dyna_draw_context_class_init (SPDynaDrawContextClass * klass)
+sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass)
 {
-  GtkObjectClass *object_class;
-  SPEventContextClass *event_context_class;
+	GtkObjectClass *object_class;
+	SPEventContextClass *event_context_class;
 
-  object_class = (GtkObjectClass *) klass;
-  event_context_class = (SPEventContextClass *) klass;
+	object_class = (GtkObjectClass *) klass;
+	event_context_class = (SPEventContextClass *) klass;
 
-  parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
 
-  object_class->destroy = sp_dyna_draw_context_destroy;
+	object_class->destroy = sp_dyna_draw_context_destroy;
 
-  event_context_class->setup = sp_dyna_draw_context_setup;
-  event_context_class->root_handler = sp_dyna_draw_context_root_handler;
-  event_context_class->item_handler = sp_dyna_draw_context_item_handler;
+	event_context_class->setup = sp_dyna_draw_context_setup;
+	event_context_class->set = sp_dyna_draw_context_set;
+	event_context_class->root_handler = sp_dyna_draw_context_root_handler;
 }
 
 static void
-sp_dyna_draw_context_init (SPDynaDrawContext * dc)
+sp_dyna_draw_context_init (SPDynaDrawContext *ddc)
 {
-  dc->accumulated = NULL;
-  dc->segments = NULL;
-  dc->currentcurve = NULL;
-  dc->currentshape = NULL;
-  dc->npoints = 0;
-  dc->cal1 = NULL;
-  dc->cal2 = NULL;
-  dc->repr = NULL;
-  dc->citem = NULL;
-  dc->ccolor = 0xff0000ff;
-  dc->cinside = -1;
+	ddc->accumulated = NULL;
+	ddc->segments = NULL;
+	ddc->currentcurve = NULL;
+	ddc->currentshape = NULL;
+	ddc->npoints = 0;
+	ddc->cal1 = NULL;
+	ddc->cal2 = NULL;
+	ddc->repr = NULL;
 
-  /* DynaDraw values */
-  dc->curx = 0.0;
-  dc->cury = 0.0;
-  dc->lastx = 0.0;
-  dc->lasty = 0.0;
-  dc->velx = 0.0;
-  dc->vely = 0.0;
-  dc->accx = 0.0;
-  dc->accy = 0.0;
-  dc->angx = 0.0;
-  dc->angy = 0.0;
-  dc->delx = 0.0;
-  dc->dely = 0.0;
+	/* DynaDraw values */
+	ddc->curx = 0.0;
+	ddc->cury = 0.0;
+	ddc->lastx = 0.0;
+	ddc->lasty = 0.0;
+	ddc->velx = 0.0;
+	ddc->vely = 0.0;
+	ddc->accx = 0.0;
+	ddc->accy = 0.0;
+	ddc->angx = 0.0;
+	ddc->angy = 0.0;
+	ddc->delx = 0.0;
+	ddc->dely = 0.0;
 
-  /* attributes */
-  dc->fixed_angle = FALSE;
-  dc->use_timeout = FALSE;
-  dc->use_calligraphic = TRUE;
-  dc->timer_id = 0;
-  dc->dragging = FALSE;
-  dc->dynahand = FALSE;
+	/* attributes */
+	ddc->fixed_angle = FALSE;
+	ddc->use_timeout = FALSE;
+	ddc->use_calligraphic = TRUE;
+	ddc->timer_id = 0;
+	ddc->dragging = FALSE;
+	ddc->dynahand = FALSE;
 #ifdef NORMALIZED_COORDINATE
-  dc->mass = 0.3;
-  dc->drag = 0.5;
-  dc->angle = 30.0;
-  dc->width = 0.2;
+	ddc->mass = 0.3;
+	ddc->drag = 0.5;
+	ddc->angle = 30.0;
+	ddc->width = 0.2;
 #else
-  dc->mass = 0.2;
-  dc->drag = 0.5;
-  dc->angle = 30.0;
-  dc->width = 0.1;
+	ddc->mass = 0.2;
+	ddc->drag = 0.5;
+	ddc->angle = 30.0;
+	ddc->width = 0.1;
 #endif
 }
 
 static void
-sp_dyna_draw_context_destroy (GtkObject * object)
+sp_dyna_draw_context_destroy (GtkObject *object)
 {
-  SPDynaDrawContext *dc;
+	SPDynaDrawContext *ddc;
 
-  dc = SP_DYNA_DRAW_CONTEXT (object);
+	ddc = SP_DYNA_DRAW_CONTEXT (object);
 
-  if (dc->accumulated)
-    sp_curve_unref (dc->accumulated);
+	if (ddc->accumulated) ddc->accumulated = sp_curve_unref (ddc->accumulated);
 
-  while (dc->segments)
-    {
-      gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-      dc->segments = g_slist_remove (dc->segments, dc->segments->data);
-    }
+	while (ddc->segments) {
+		gtk_object_destroy (GTK_OBJECT (ddc->segments->data));
+		ddc->segments = g_slist_remove (ddc->segments, ddc->segments->data);
+	}
 
-  if (dc->currentcurve)
-    sp_curve_unref (dc->currentcurve);
+	if (ddc->currentcurve) ddc->currentcurve = sp_curve_unref (ddc->currentcurve);
+	if (ddc->cal1) ddc->cal1 = sp_curve_unref (ddc->cal1);
+	if (ddc->cal2) ddc->cal2 = sp_curve_unref (ddc->cal2);
 
-  if (dc->cal1)
-    sp_curve_unref (dc->cal1);
-  if (dc->cal2)
-    sp_curve_unref (dc->cal2);
+	if (ddc->currentshape) {
+		gtk_object_destroy (GTK_OBJECT (ddc->currentshape));
+		ddc->currentshape = NULL;
+	}
 
-  if (dc->currentshape)
-    gtk_object_destroy (GTK_OBJECT (dc->currentshape));
-
-  if (dc->citem)
-    gtk_object_destroy (GTK_OBJECT (dc->citem));
-
-  if (GTK_OBJECT_CLASS (parent_class)->destroy)
-    (*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
-sp_dyna_draw_context_setup (SPEventContext * event_context,
-			    SPDesktop * desktop)
+sp_dyna_draw_context_setup (SPEventContext *ec)
 {
-	SPDynaDrawContext *dc;
+	SPDynaDrawContext *ddc;
+
+	ddc = SP_DYNA_DRAW_CONTEXT (ec);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
-	dc = SP_DYNA_DRAW_CONTEXT (event_context);
+	ddc->accumulated = sp_curve_new_sized (32);
+	ddc->currentcurve = sp_curve_new_sized (4);
 
-	dc->accumulated = sp_curve_new_sized (32);
-	dc->currentcurve = sp_curve_new_sized (4);
-
-	dc->cal1 = sp_curve_new_sized (32);
-	dc->cal2 = sp_curve_new_sized (32);
+	ddc->cal1 = sp_curve_new_sized (32);
+	ddc->cal2 = sp_curve_new_sized (32);
 
 	/* style should be changed when dc->use_calligraphc is touched */  
-	dc->currentshape = gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CANVAS_BPATH, NULL);
-	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (dc->currentshape), 0x00000000, ART_WIND_RULE_ODDEVEN);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->currentshape), 0x000000ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	ddc->currentshape = gnome_canvas_item_new (SP_DT_SKETCH (ec->desktop), SP_TYPE_CANVAS_BPATH, NULL);
+	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (ddc->currentshape), DDC_RED_RGBA, ART_WIND_RULE_ODDEVEN);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* fixme: Cannot we cascade it to root more clearly? */
-	gtk_signal_connect (GTK_OBJECT (dc->currentshape), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
+	gtk_signal_connect (GTK_OBJECT (ddc->currentshape), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), ec->desktop);
 }
 
-static gint
-sp_dyna_draw_context_item_handler (SPEventContext * event_context,
-				   SPItem * item, GdkEvent * event)
+static void
+sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 {
-  gint ret;
+	SPDynaDrawContext *ddc;
 
-  ret = FALSE;
-
-  if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-    ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
-
-  return ret;
+	ddc = SP_DYNA_DRAW_CONTEXT (ec);
 }
 
 static double
@@ -489,12 +445,8 @@ sp_dyna_draw_timeout_handler (gpointer data)
   if (! sp_dyna_draw_apply (dc, p.x, p.y))
     return TRUE;
   sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
-  test_inside (dc, p.x, p.y);
-  
-  if (!dc->cinside)
-    {
-      sp_desktop_free_snap (desktop, &p);
-    }
+
+  sp_desktop_free_snap (desktop, &p);
   
   if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
     {
@@ -530,31 +482,11 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
           sp_dyna_draw_apply (dc, p.x, p.y);
           sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-	  test_inside (dc, p.x, p.y);
-	  if (!dc->cinside)
-	    {
-	      sp_desktop_free_snap (desktop, &p);
-	      sp_curve_reset (dc->accumulated);
-	      if (dc->repr)
-		{
+	  sp_desktop_free_snap (desktop, &p);
+	  sp_curve_reset (dc->accumulated);
+	  if (dc->repr) {
 		  dc->repr = NULL;
-		}
-	      move_ctrl (dc, p.x, p.y);
-	    }
-	  else if (dc->accumulated->end > 1)
-	    {
-	      ArtBpath *bp;
-	      bp = sp_curve_last_bpath (dc->accumulated);
-	      p.x = bp->x3;
-	      p.y = bp->y3;
-	      move_ctrl (dc, dc->accumulated->bpath->x3,
-			 dc->accumulated->bpath->y3);
-	    }
-	  else
-	    {
-	      ret = TRUE;
-	      break;
-	    }
+	  }
 
 	  /* initialize first point */
           dc->npoints = 0;
@@ -594,12 +526,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
             }
           sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
 
-          test_inside (dc, p.x, p.y);
-
-	  if (!dc->cinside)
-	    {
-	      sp_desktop_free_snap (desktop, &p);
-	    }
+	  sp_desktop_free_snap (desktop, &p);
 
 	  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
 	    {
@@ -641,13 +568,9 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
               else
                 {
                   concat_current_line (dc);
-                  if (dc->cinside && dc->accumulated->end > 3)
-                    {
-                      sp_curve_closepath_current (dc->accumulated);
-                    }
                 }
               set_to_accumulated (dc); /* temporal implementation */
-              if (dc->use_calligraphic || dc->cinside)
+              if (dc->use_calligraphic /* || dc->cinside*/)
                 {
                   /* reset accumulated curve */
                   sp_curve_reset (dc->accumulated);
@@ -656,7 +579,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 		    {
 		      dc->repr = NULL;
 		    }
-                  remove_ctrl (dc);
                 }
               
 	    }
@@ -753,12 +675,6 @@ set_to_accumulated (SPDynaDrawContext * dc)
   sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
-#if 0
-static void
-accumulate_line (SPDynaDrawContext *dc)
-{
-}
-#endif
 static void
 concat_current_line (SPDynaDrawContext * dc)
 {
@@ -805,71 +721,6 @@ accumulate_calligraphic (SPDynaDrawContext * dc)
 
       sp_curve_reset (dc->cal1);
       sp_curve_reset (dc->cal2);
-    }
-}
-
-static void
-test_inside (SPDynaDrawContext * dc, double x, double y)
-{
-  ArtPoint p;
-
-  if (dc->citem == NULL)
-    {
-      dc->cinside = FALSE;
-      return;
-    }
-
-  sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &p, x, y);
-
-#define MAX_INSIDE_DISTANCE 4.0
-
-  if ((fabs (p.x - dc->cpos.x) > MAX_INSIDE_DISTANCE) ||
-      (fabs (p.y - dc->cpos.y) > MAX_INSIDE_DISTANCE))
-    {
-      if (dc->cinside != 0)
-	{
-	  gnome_canvas_item_set (dc->citem, "filled", FALSE, NULL);
-	  dc->cinside = 0;
-	}
-    }
-  else
-    {
-      if (dc->cinside != 1)
-	{
-	  gnome_canvas_item_set (dc->citem, "filled", TRUE, NULL);
-	  dc->cinside = 1;
-	}
-    }
-}
-
-
-static void
-move_ctrl (SPDynaDrawContext * dc, double x, double y)
-{
-  if (dc->citem == NULL)
-    {
-      dc->citem =
-	gnome_canvas_item_new (SP_DT_CONTROLS
-			       (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CTRL,
-			       "size", 4.0, "filled", 0, "fill_color",
-			       dc->ccolor, "stroked", 1, "stroke_color",
-			       0x000000ff, NULL);
-      gtk_signal_connect (GTK_OBJECT (dc->citem), "event",
-			  GTK_SIGNAL_FUNC (sp_desktop_root_handler),
-			  SP_EVENT_CONTEXT (dc)->desktop);
-    }
-  sp_ctrl_moveto (SP_CTRL (dc->citem), x, y);
-  sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &dc->cpos, x, y);
-  dc->cinside = -1;
-}
-
-static void
-remove_ctrl (SPDynaDrawContext * dc)
-{
-  if (dc->citem)
-    {
-      gtk_object_destroy (GTK_OBJECT (dc->citem));
-      dc->citem = NULL;
     }
 }
 
@@ -937,7 +788,8 @@ fit_and_split_line (SPDynaDrawContext *dc,
 		curve = sp_curve_copy (dc->currentcurve);
 		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x00000000, ART_WIND_RULE_ODDEVEN);
+		/* fixme: We have to parse style color somehow */
+		sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), DDC_GREEN_RGBA, ART_WIND_RULE_ODDEVEN);
 		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x000000ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 		/* fixme: Cannot we cascade it to root more clearly? */
 		gtk_signal_connect (GTK_OBJECT (cbp), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
@@ -1059,8 +911,8 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 			curve = sp_curve_copy (dc->currentcurve);
 			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 			sp_curve_unref (curve);
-			sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x00000000, ART_WIND_RULE_ODDEVEN);
-			sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x000000ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+			sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x000000ff, ART_WIND_RULE_ODDEVEN);
+			sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 			/* fixme: Cannot we cascade it to root more clearly? */
 			gtk_signal_connect (GTK_OBJECT (cbp), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 
@@ -1078,14 +930,16 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 static void
 draw_temporary_box (SPDynaDrawContext *dc)
 {
-  gint  i;
+	gint  i;
   
-  sp_curve_reset (dc->currentcurve);
-  sp_curve_moveto (dc->currentcurve, dc->point1[0].x, dc->point1[0].y);
-  for (i = 1; i < dc->npoints; i++)
-    sp_curve_lineto (dc->currentcurve, dc->point1[i].x, dc->point1[i].y);
-  for (i = dc->npoints-1; i >= 0; i--)
-    sp_curve_lineto (dc->currentcurve, dc->point2[i].x, dc->point2[i].y);
-  sp_curve_closepath (dc->currentcurve);
-  sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->currentshape), dc->currentcurve);
+	sp_curve_reset (dc->currentcurve);
+	sp_curve_moveto (dc->currentcurve, dc->point1[0].x, dc->point1[0].y);
+	for (i = 1; i < dc->npoints; i++) {
+		sp_curve_lineto (dc->currentcurve, dc->point1[i].x, dc->point1[i].y);
+	}
+	for (i = dc->npoints-1; i >= 0; i--) {
+		sp_curve_lineto (dc->currentcurve, dc->point2[i].x, dc->point2[i].y);
+	}
+	sp_curve_closepath (dc->currentcurve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->currentshape), dc->currentcurve);
 }
