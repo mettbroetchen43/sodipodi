@@ -1,16 +1,16 @@
 # Serbian translation of sodipodi
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
-# 
+# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003, 2004.
+#
 # This file is distributed under the same license as the sodipodi package.
-# 
+#
 # Maintainer: Danilo Šegan <dsegan@gmx.net>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-15 07:04+0100\n"
-"PO-Revision-Date: 2004-01-15 07:05+0100\n"
+"POT-Creation-Date: 2004-01-23 12:33+0100\n"
+"PO-Revision-Date: 2004-01-23 12:35+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,18 +52,18 @@ msgstr "Dokument %s sadrži nesačuvane izmene. Sačuvati ih?"
 #. Page page
 #: src/desktop.c:1537 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:160 src/verbs.c:463
+#: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Strana"
 
 #: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Drawing"
 msgstr "Crtež"
 
 #. Selection submenu
 #: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:591 src/toolbox.c:407 src/verbs.c:465
+#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Izbor"
 
@@ -501,7 +501,7 @@ msgstr "Neispravan ID"
 msgid "ID exists"
 msgstr "ID postoji"
 
-#: src/dialogs/item-properties.c:436 src/verbs.c:478
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
 msgid "Item properties"
 msgstr "Svojstva stavke"
 
@@ -668,7 +668,7 @@ msgstr "Slobodna ruka i olovka"
 msgid "Calligraphic line"
 msgstr "Kaligrafska linija"
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:454
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
 msgid "Text"
 msgstr "Tekst"
 
@@ -676,7 +676,7 @@ msgstr "Tekst"
 msgid "Object Size and Position"
 msgstr "Veličina i pozicija objekta"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:473
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
 msgstr "Veličina i pozicija"
 
@@ -732,7 +732,7 @@ msgstr "Tekst i font"
 msgid "Set as default"
 msgstr "Postavi kao podrazumevano"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:471
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
 msgid "Tool attributes"
 msgstr "Osobine alata"
 
@@ -784,7 +784,7 @@ msgstr "Alat nema osobine"
 msgid "No active tool"
 msgstr "Nema aktivnog alata"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:470
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
 msgid "Tool options"
 msgstr "Opcije alata"
 
@@ -901,13 +901,13 @@ msgstr "Memorijski dokument %d"
 msgid "Unnamed document %d"
 msgstr "Neimenovani dokument %d"
 
-#: src/draw-context.c:285
+#: src/draw-context.c:289
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr ""
 "Dopunjava tekući izbor. Pritisnite „a“ da izmenite da li se dopunjava ili "
 "započinje novi. "
 
-#: src/draw-context.c:290
+#: src/draw-context.c:294
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr ""
 "Pravi novu krivu. Pritisnite „a“ da izmenite da li se dopunjava ili započinje "
@@ -1083,7 +1083,7 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "eks kvadrati"
 
-#: src/interface.c:305 src/interface.c:498
+#: src/interface.c:305 src/interface.c:503
 msgid "Open Recent"
 msgstr "Otvori skorašnje"
 
@@ -1091,12 +1091,12 @@ msgstr "Otvori skorašnje"
 msgid "Close View"
 msgstr "Zatvori pregled"
 
-#: src/interface.c:328 src/interface.c:504
+#: src/interface.c:328 src/interface.c:509
 msgid "About Sodipodi"
 msgstr "O Sodipodiju"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:510
+#: src/interface.c:334 src/interface.c:515
 msgid "About Modules"
 msgstr "O dodacima"
 
@@ -1105,74 +1105,74 @@ msgid "Cleanup"
 msgstr "Očisti"
 
 #. View:Zoom
-#: src/interface.c:424 src/toolbox.c:546 src/verbs.c:455
+#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Uvećaj"
 
 #. View:New View
-#: src/interface.c:436
+#: src/interface.c:441
 msgid "New View"
 msgstr "Novi pogled"
 
 #. View:New Preview
-#: src/interface.c:438
+#: src/interface.c:443
 msgid "New Preview"
 msgstr "Novi pregled"
 
-#: src/interface.c:440
+#: src/interface.c:445
 msgid "New Toplevel Toolbox"
 msgstr "Novi skup alata prvog nivoa"
 
-#: src/interface.c:441
+#: src/interface.c:446
 msgid "New Docked Toolbox"
 msgstr "Novi privezani skup alata"
 
-#: src/interface.c:442
+#: src/interface.c:447
 msgid "Remove Docked Toolbox"
 msgstr "Ukloni privezani skup alata"
 
 #. File
-#: src/interface.c:495 src/verbs.c:405
+#: src/interface.c:500 src/verbs.c:405
 msgid "New"
 msgstr "Nova"
 
-#: src/interface.c:496
+#: src/interface.c:501
 msgid "Open"
 msgstr "Otvori"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:516 src/verbs.c:414
+#: src/interface.c:521 src/verbs.c:414
 msgid "Exit program"
 msgstr "Izlaz iz programa"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:579 src/toolbox.c:270
+#: src/interface.c:584 src/toolbox.c:270
 msgid "File"
 msgstr "Datoteka"
 
 #. Edit submenu
-#: src/interface.c:585 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Uređivanje"
 
 #. View submenu
-#: src/interface.c:597
+#: src/interface.c:602
 msgid "View"
 msgstr "Pregled"
 
 #. Drawing mode submenu
-#: src/interface.c:603
+#: src/interface.c:608
 msgid "Drawing Mode"
 msgstr "Režim crtanja"
 
 #. Dialog submenu
-#: src/interface.c:609
+#: src/interface.c:614
 msgid "Dialogs"
 msgstr "Prozorčići"
 
 #. Have modules menu
-#: src/interface.c:618
+#: src/interface.c:623
 msgid "Modules"
 msgstr "Moduli"
 
@@ -1410,7 +1410,7 @@ msgid "Item"
 msgstr "Stavka"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:482
 msgid "Item Properties"
 msgstr "Osobine stavke"
 
@@ -1514,7 +1514,7 @@ msgid "Rect Properties"
 msgstr "Osobine pravougaonika"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:533 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:453
 msgid "Star"
 msgstr "Zvezda"
 
@@ -1524,7 +1524,7 @@ msgid "Star Properties"
 msgstr "Osobine zvezde"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:569 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:454
 msgid "Spiral"
 msgstr "Spirala"
 
@@ -1825,7 +1825,7 @@ msgstr "Učini stranice ravnim"
 msgid "Object"
 msgstr "Objekat"
 
-#: src/toolbox.c:362 src/verbs.c:473
+#: src/toolbox.c:362 src/verbs.c:477
 msgid "Object size and position"
 msgstr "Veličina i pozicija objekta"
 
@@ -1833,7 +1833,7 @@ msgstr "Veličina i pozicija objekta"
 msgid "Text and font settings"
 msgstr "Podešavanja teksta i fonta"
 
-#: src/toolbox.c:365 src/verbs.c:474
+#: src/toolbox.c:365 src/verbs.c:478
 msgid "Object transformations"
 msgstr "Transformacije objekta"
 
@@ -2097,250 +2097,282 @@ msgid "Break selected path to subpaths"
 msgstr "Razdvoj izabranu putanju na podputanje"
 
 #: src/verbs.c:435
+msgid "Uncross"
+msgstr "Rastavi"
+
+#: src/verbs.c:435
+msgid "Break selected path at crossings"
+msgstr "Razdvoj izabranu putanju na presecima"
+
+#: src/verbs.c:436
+msgid "Union"
+msgstr "Sjedini"
+
+#: src/verbs.c:436
+msgid "Calculate union of selected paths"
+msgstr "Sračunaj uniju izabranih putanja"
+
+#: src/verbs.c:437
+msgid "Intersection"
+msgstr "Presek"
+
+#: src/verbs.c:437
+msgid "Calculate intersection of selected paths"
+msgstr "Sračunaj presek izabranih putanja"
+
+#: src/verbs.c:438
+msgid "Subtraction"
+msgstr "Oduzimanje"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr "Oduzmi putanje od prve"
+
+#: src/verbs.c:439
 msgid "Transform"
 msgstr "Transformiši"
 
-#: src/verbs.c:435
+#: src/verbs.c:439
 msgid "Applies transformation"
 msgstr "Primeni transformaciju"
 
 #. Object
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotate 90 degrees"
 msgstr "Rotiraj za 90 stepeni"
 
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Rotira za 90 stepeni u pravcu kazaljke na satu"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Flatten object"
 msgstr "Izravnaj objekat"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Remove transformations from object"
 msgstr "Ukloni transformacije objekta"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert to Curves"
 msgstr "Pretvori u krive"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert selected object to path"
 msgstr "Pretvori izabrani objekat u putanju"
 
-#: src/verbs.c:440
+#: src/verbs.c:444
 msgid "Flip Horizontally"
 msgstr "Obrni vodoravno"
 
-#: src/verbs.c:441
+#: src/verbs.c:445
 msgid "Flip selected objects horizontally"
 msgstr "Obrni izabrane objekte vodoravno"
 
-#: src/verbs.c:442
+#: src/verbs.c:446
 msgid "Flip Vertically"
 msgstr "Obrni uspravno"
 
-#: src/verbs.c:443
+#: src/verbs.c:447
 msgid "Flip selected objects vertically"
 msgstr "Obrni izabrane objekte uspravno"
 
 #. Event contexts
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select"
 msgstr "Izaberi"
 
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select and transform objects"
 msgstr "Izaberi i transformiši objekte"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Node edit"
 msgstr "Izmena čvora"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
 msgstr "Izmeni postojeće objekte pomoću kontrolnih čvorova"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Rectangle"
 msgstr "Pravougaonik"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr "Napravi pravougaonike i kvadrate sa (po izboru) zaobljenim ćoškovima"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Ellipse"
 msgstr "Elipsa"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
 msgstr "Napravi krugove, elipse i lukove"
 
-#: src/verbs.c:449
+#: src/verbs.c:453
 msgid "Create stars and polygons"
 msgstr "Napravi zvezde i poligone"
 
-#: src/verbs.c:450
+#: src/verbs.c:454
 msgid "Create spirals"
 msgstr "Napravi spirale"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Pencil"
 msgstr "Gruba olovka"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
 msgstr "Crtajte krive slobodnom rukom i prave linije"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Pen"
 msgstr "Olovka"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Crtajte precizno razmeštene krive i prave linije"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Calligraphy"
 msgstr "Kaligrafija"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Draw calligraphic lines"
 msgstr "Crtajte kaligrafske linie"
 
-#: src/verbs.c:454
+#: src/verbs.c:458
 msgid "Create and edit text objects"
 msgstr "Napravite i izmenite objekte za tekst"
 
-#: src/verbs.c:455
+#: src/verbs.c:459
 msgid "Zoom into precisely selected area"
 msgstr "Uvećajte tačno izabranu površinu"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Dropper"
 msgstr "Birač boja"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Pick averaged colors from image"
 msgstr "Izaberite usrednjene boje sa slike"
 
 #. Zooming
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "In"
 msgstr "Uvećaj"
 
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "Zoom in drawing"
 msgstr "Uvećaj crtež"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Out"
 msgstr "Umanji"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Zoom out drawing"
 msgstr "Umanji crtež"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "Set zoom factor to 1:1"
 msgstr "Postavi razmeru na 1:1"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "Set zoom factor to 1:2"
 msgstr "Postavi razmeru na 1:2"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "Set zoom factor to 2:1"
 msgstr "Postavi razmeru na 2:1"
 
-#: src/verbs.c:463
+#: src/verbs.c:467
 msgid "Fit the whole page into window"
 msgstr "Uklopi celu stranicu u prozor"
 
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Fit the whole drawing into window"
 msgstr "Uklopi ceo crtež u prozor"
 
-#: src/verbs.c:465
+#: src/verbs.c:469
 msgid "Fit the whole selection into window"
 msgstr "Uklopi ceo izbor u prozor"
 
 #. Dialogs
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Display"
 msgstr "Prikaz"
 
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Global display settings"
 msgstr "Opšta podešavanja prikaza"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Document"
 msgstr "Dokument"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Page layout"
 msgstr "Izgled strane"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing Window"
 msgstr "Prozor za uređivanje"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing window properties"
 msgstr "Osobine prozora za uređivanje"
 
-#: src/verbs.c:470
+#: src/verbs.c:474
 msgid "Tool Options"
 msgstr "Opcije alata"
 
-#: src/verbs.c:471
+#: src/verbs.c:475
 msgid "Tool Attributes"
 msgstr "Osobine alata"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and Stroke"
 msgstr "Ispunjavanje i potezi"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and stroke settings"
 msgstr "Podešavanja ispunjavanja i poteza"
 
-#: src/verbs.c:474
+#: src/verbs.c:478
 msgid "Transformations"
 msgstr "Transformacije"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and Distribute"
 msgstr "Poravnaj i rasporedi"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and distribute"
 msgstr "Poravnaj i rasporedi"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text and Font"
 msgstr "Tekst i font"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text editing and font settings"
 msgstr "Podešavanja za uređivanje teksta i font"
 
-#: src/verbs.c:477
+#: src/verbs.c:481
 msgid "XML Editor"
 msgstr "XML uređivač"
 
