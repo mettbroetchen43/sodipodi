@@ -381,7 +381,7 @@ sp_spiral_set_shape (SPShape *shape)
 		sp_spiral_fit_and_draw (spiral, c, (1.0 - t)/(SAMPLE_SIZE - 1.0),
 					darray, &hat1, &hat2, t);
   
-	sp_shape_set_curve (SP_SHAPE (spiral), c, TRUE);
+	sp_shape_set_curve_insync ((SPShape *) spiral, c, TRUE);
 	sp_curve_unref (c);
 }
 

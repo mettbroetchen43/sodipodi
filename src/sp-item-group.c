@@ -319,7 +319,7 @@ sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (child->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG))) {
+		if (flags || (child->uflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			if (SP_IS_ITEM (child)) {
 				SPItem *chi;
 				chi = SP_ITEM (child);

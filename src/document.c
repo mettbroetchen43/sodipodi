@@ -542,10 +542,19 @@ sp_document_request_modified (SPDocument *doc)
 gint
 sp_document_ensure_up_to_date (SPDocument *doc)
 {
-	if (doc->modified_id) {
-		/* Remove handler */
-		gtk_idle_remove (doc->modified_id);
-		doc->modified_id = 0;
+	int lc;
+	lc = 16;
+	while (doc->root->uflags || doc->root->mflags) {
+		lc -= 1;
+		if (lc < 0) {
+			g_warning ("More than 16 iterations while updating document '%s'", doc->uri);
+			if (doc->modified_id) {
+				/* Remove handler */
+				gtk_idle_remove (doc->modified_id);
+				doc->modified_id = 0;
+			}
+			return FALSE;
+		}
 		/* Process updates */
 		if (doc->root->uflags) {
 			SPItemCtx ctx;
@@ -564,20 +573,22 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		/* Emit our own "modified" signal */
 		g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
 			       SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
-		return TRUE;
 	}
-
-	return FALSE;
+	if (doc->modified_id) {
+		/* Remove handler */
+		gtk_idle_remove (doc->modified_id);
+		doc->modified_id = 0;
+	}
+	return TRUE;
 }
 
 static gint
 sp_document_idle_handler (gpointer data)
 {
 	SPDocument *doc;
+	int repeat;
 
 	doc = SP_DOCUMENT (data);
-
-	doc->modified_id = 0;
 
 #ifdef SP_DOCUMENT_DEBUG_UNDO
 	/* ------------------------- */
@@ -624,7 +635,9 @@ sp_document_idle_handler (gpointer data)
 	g_print (" S ->\n");
 #endif
 
-	return FALSE;
+	repeat = (doc->root->uflags || doc->root->mflags);
+	if (!repeat) doc->modified_id = 0;
+	return repeat;
 }
 
 SPObject *
