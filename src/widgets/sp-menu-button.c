@@ -27,11 +27,7 @@ static void sp_menu_button_class_init (SPMenuButtonClass *klass);
 static void sp_menu_button_init (SPMenuButton *mb);
 static void sp_menu_button_destroy (GtkObject *object);
 
-#if 0
-static void sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area);
-#endif
 static void sp_menu_button_draw_arrow (GtkWidget * widget);
-
 static void sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req);
 static gint sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event);
 static gint sp_menu_button_button_press (GtkWidget *widget, GdkEventButton *event);
@@ -88,9 +84,6 @@ sp_menu_button_class_init (SPMenuButtonClass *klass)
 						   gtk_marshal_NONE__POINTER,
 						   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
-#if 0
-  	widget_class->draw = sp_menu_button_draw;
-#endif
 	widget_class->size_request = sp_menu_button_size_request;
 	widget_class->expose_event = sp_menu_button_expose;
 	widget_class->button_press_event = sp_menu_button_button_press;
@@ -138,17 +131,6 @@ sp_menu_button_destroy (GtkObject *object)
 
 
 }
-
-#if 0
-static void
-sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area)
-{
-	if (GTK_WIDGET_CLASS (parent_class)->draw)
-		GTK_WIDGET_CLASS (parent_class)->draw (widget, area);
-
-	sp_menu_button_draw_arrow(widget);
-}
-#endif
 
 static void
 sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req)
@@ -370,9 +352,7 @@ sp_menu_button_menu_position (GtkMenu *menu, gint *x, gint *y, gboolean *push_in
 {
 	SPMenuButton *menu_button;
 	GtkWidget *active;
-#if 0
 	GtkWidget *child;
-#endif
 	GtkRequisition requisition;
 	GList *children;
 	gint shift_menu;
@@ -401,340 +381,13 @@ sp_menu_button_menu_position (GtkMenu *menu, gint *x, gint *y, gboolean *push_in
 #if 1	/* if 0 to compatible with sodipodi with gtk+1.2 */
 	menu_ypos += GTK_WIDGET (menu_button)->allocation.height / 2 - 2;
 	
-	if (active != NULL) {
+	if (active != NULL)
+	{
 		gtk_widget_get_child_requisition (active, &requisition);
 		menu_ypos -= requisition.height / 2;
 	}
-
-	children = children->next;
-
-screen_width = gdk_screen_width ();
-screen_height = gdk_screen_height ();
-
-  shift_menu = FALSE;
-  if (menu_ypos < 0)
-    {
-      menu_ypos = 0;
-      shift_menu = TRUE;
-    }
-  else if ((menu_ypos + height) > screen_height)
-    {
-      menu_ypos -= ((menu_ypos + height) - screen_height);
-      shift_menu = TRUE;
-    }
-
-  if (shift_menu)
-    {
-      if ((menu_xpos + GTK_WIDGET (menu_button)->allocation.width + width) <= screen_width)
-	menu_xpos += GTK_WIDGET (menu_button)->allocation.width;
-      else
-	menu_xpos -= width;
-    }
-
-  if (menu_xpos < 0)
-    menu_xpos = 0;
-  else if ((menu_xpos + width) > screen_width)
-    menu_xpos -= ((menu_xpos + width) - screen_width);
-
-  *x = menu_xpos;
-  *y = menu_ypos;
-#endif
-  gdk_window_get_origin (GTK_WIDGET (menu_button)->window, x, y);
-}
-
-#if 0
-GtkWidget*
-sp_menu_button_get_menu (SPMenuButton *menu_button)
-{
-  g_return_val_if_fail (menu_button != NULL, NULL);
-  g_return_val_if_fail (SP_IS_MENU_BUTTON (menu_button), NULL);
-
-  return menu_button->menu;
-}
-
-static void
-sp_menu_button_detacher (GtkWidget     *widget,
-			  GtkMenu	*menu)
-{
-  SPMenuButton *menu_button;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-
-  menu_button = SP_MENU_BUTTON (widget);
-  g_return_if_fail (menu_button->menu == (GtkWidget*) menu);
-
-  sp_menu_button_remove_contents (menu_button);
-  gtk_signal_disconnect_by_data (GTK_OBJECT (menu_button->menu),
-				 menu_button);
-  
-  menu_button->menu = NULL;
-}
-
-void
-sp_menu_button_set_menu (SPMenuButton *menu_button,
-			  GtkWidget     *menu)
-{
-  g_return_if_fail (menu_button != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
-  g_return_if_fail (menu != NULL);
-  g_return_if_fail (GTK_IS_MENU (menu));
-
-  if (menu_button->menu != menu)
-    {
-      sp_menu_button_remove_menu (menu_button);
-
-      menu_button->menu = menu;
-      gtk_menu_attach_to_widget (GTK_MENU (menu),
-				 GTK_WIDGET (menu_button),
-				 sp_menu_button_detacher);
-
-      sp_menu_button_calc_size (menu_button);
-
-      gtk_signal_connect (GTK_OBJECT (menu_button->menu), "deactivate",
-			  (GtkSignalFunc) sp_menu_button_deactivate,
-			  menu_button);
-
-      if (GTK_WIDGET (menu_button)->parent)
-	gtk_widget_queue_resize (GTK_WIDGET (menu_button));
-
-      sp_menu_button_update_contents (menu_button);
-    }
-}
-
-void
-sp_menu_button_remove_menu (SPMenuButton *menu_button)
-{
-  g_return_if_fail (menu_button != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
-
-  if (menu_button->menu)
-    gtk_menu_detach (GTK_MENU (menu_button->menu));
-}
-
-void
-sp_menu_button_set_history (SPMenuButton *menu_button,
-			     guint          index)
-{
-  GtkWidget *menu_item;
-
-  g_return_if_fail (menu_button != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
-
-  if (menu_button->menu)
-    {
-      gtk_menu_set_active (GTK_MENU (menu_button->menu), index);
-      menu_item = gtk_menu_get_active (GTK_MENU (menu_button->menu));
-
-      if (menu_item != menu_button->menu_item)
-	sp_menu_button_update_contents (menu_button);
-    }
-}
-
-static void
-sp_menu_button_get_props (SPMenuButton       *menu_button,
-			   SPMenuButtonProps  *props)
-{
-  GtkWidget *widget =  GTK_WIDGET (menu_button);
-
-  props->indicator_width = gtk_style_get_prop_experimental (widget->style,
-							    "SPMenuButton::indicator_width",
-							    default_props.indicator_width);
-
-  props->indicator_height = gtk_style_get_prop_experimental (widget->style,
-							     "SPMenuButton::indicator_height",
-							     default_props.indicator_height);
-
-  props->indicator_top_spacing = gtk_style_get_prop_experimental (widget->style,
-								  "SPMenuButton::indicator_top_spacing",
-								  default_props.indicator_top_spacing);
-  props->indicator_bottom_spacing = gtk_style_get_prop_experimental (widget->style,
-								     "SPMenuButton::indicator_bottom_spacing",
-								     default_props.indicator_bottom_spacing);
-  props->indicator_left_spacing = gtk_style_get_prop_experimental (widget->style,
-							       "SPMenuButton::indicator_left_spacing",
-							       default_props.indicator_left_spacing);
-  props->indicator_right_spacing = gtk_style_get_prop_experimental (widget->style,
-								    "SPMenuButton::indicator_right_spacing",
-								    default_props.indicator_right_spacing);
-}
-
-static void
-sp_menu_button_size_request (GtkWidget      *widget,
-			      GtkRequisition *requisition)
-{
-  SPMenuButton *menu_button;
-  SPMenuButtonProps props;
-  gint tmp;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-  g_return_if_fail (requisition != NULL);
-
-  menu_button = SP_MENU_BUTTON (widget);
-
-  sp_menu_button_get_props (menu_button, &props);
-
-  requisition->width = ((GTK_CONTAINER (widget)->border_width +
-			 GTK_WIDGET (widget)->style->klass->xthickness) * 2 +
-			menu_button->width +
-			props.indicator_width +
-			props.indicator_left_spacing + props.indicator_right_spacing +
-			CHILD_LEFT_SPACING + CHILD_RIGHT_SPACING + 2);
-  requisition->height = ((GTK_CONTAINER (widget)->border_width +
-			  GTK_WIDGET (widget)->style->klass->ythickness) * 2 +
-			 menu_button->height +
-			 CHILD_TOP_SPACING + CHILD_BOTTOM_SPACING + 2);
-
-  tmp = (requisition->height - menu_button->height +
-	 props.indicator_height + props.indicator_top_spacing + props.indicator_bottom_spacing);
-  requisition->height = MAX (requisition->height, tmp);
-}
-
-static void
-sp_menu_button_size_allocate (GtkWidget     *widget,
-			       GtkAllocation *allocation)
-{
-  GtkWidget *child;
-  GtkAllocation child_allocation;
-  SPMenuButtonProps props;
-    
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-  g_return_if_fail (allocation != NULL);
-
-  sp_menu_button_get_props (SP_MENU_BUTTON (widget), &props);
-
-  widget->allocation = *allocation;
-  if (GTK_WIDGET_REALIZED (widget))
-    gdk_window_move_resize (widget->window,
-			    allocation->x, allocation->y,
-			    allocation->width, allocation->height);
-
-  child = GTK_BIN (widget)->child;
-  if (child && GTK_WIDGET_VISIBLE (child))
-    {
-      child_allocation.x = (GTK_CONTAINER (widget)->border_width +
-			    GTK_WIDGET (widget)->style->klass->xthickness) + 1;
-      child_allocation.y = (GTK_CONTAINER (widget)->border_width +
-			    GTK_WIDGET (widget)->style->klass->ythickness) + 1;
-      child_allocation.width = MAX (1, (gint)allocation->width - child_allocation.x * 2 -
-				    props.indicator_width - props.indicator_left_spacing - props.indicator_right_spacing -
-				    CHILD_LEFT_SPACING - CHILD_RIGHT_SPACING - 2);
-      child_allocation.height = MAX (1, (gint)allocation->height - child_allocation.y * 2 -
-				     CHILD_TOP_SPACING - CHILD_BOTTOM_SPACING - 2);
-      child_allocation.x += CHILD_LEFT_SPACING;
-      child_allocation.y += CHILD_TOP_SPACING;
-
-      gtk_widget_size_allocate (child, &child_allocation);
-    }
-}
-
-static void
-sp_menu_button_paint (GtkWidget    *widget,
-		       GdkRectangle *area)
-{
-  GdkRectangle button_area;
-  SPMenuButtonProps props;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-  g_return_if_fail (area != NULL);
-
-  if (GTK_WIDGET_DRAWABLE (widget))
-    {
-      sp_menu_button_get_props (SP_MENU_BUTTON (widget), &props);
-
-      button_area.x = GTK_CONTAINER (widget)->border_width + 1;
-      button_area.y = GTK_CONTAINER (widget)->border_width + 1;
-      button_area.width = widget->allocation.width - button_area.x * 2;
-      button_area.height = widget->allocation.height - button_area.y * 2;
-
-      /* This is evil, and should be elimated here and in the button
-       * code. The point is to clear the focus, and make it
-       * sort of transparent if it isn't there.
-       */
-      gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
-      gdk_window_clear_area (widget->window, area->x, area->y, area->width, area->height);
-
-      gtk_paint_box(widget->style, widget->window,
-		    GTK_WIDGET_STATE (widget), GTK_SHADOW_OUT,
-		    area, widget, "optionmenu",
-		    button_area.x, button_area.y,
-		    button_area.width, button_area.height);
-      
-      gtk_paint_tab (widget->style, widget->window,
-		     GTK_WIDGET_STATE (widget), GTK_SHADOW_OUT,
-		     area, widget, "optionmenutab",
-		     button_area.x + button_area.width - 
-		     props.indicator_width - props.indicator_right_spacing -
-		     widget->style->klass->xthickness,
-		     button_area.y + (button_area.height - props.indicator_height) / 2,
-		     props.indicator_width, props.indicator_height);
-      
-      if (GTK_WIDGET_HAS_FOCUS (widget))
-       gtk_paint_focus (widget->style, widget->window,
-			area, widget, "button",
-			button_area.x - 1, 
-			button_area.y - 1, 
-			button_area.width + 1,
-			button_area.height + 1);
-    }
-}
-
-static void
-sp_menu_button_draw (GtkWidget    *widget,
-		      GdkRectangle *area)
-{
-  GtkWidget *child;
-  GdkRectangle child_area;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-  g_return_if_fail (area != NULL);
-
-  if (GTK_WIDGET_DRAWABLE (widget))
-    {
-      sp_menu_button_paint (widget, area);
-
-      child = GTK_BIN (widget)->child;
-      if (child && gtk_widget_intersect (child, area, &child_area))
-	gtk_widget_draw (child, &child_area);
-    }
-}
-
-static gint
-sp_menu_button_expose (GtkWidget      *widget,
-			GdkEventExpose *event)
-{
-  GtkWidget *child;
-  GdkEventExpose child_event;
-  gint remove_child;
-
-  g_return_val_if_fail (widget != NULL, FALSE);
-  g_return_val_if_fail (SP_IS_MENU_BUTTON (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
-
-  if (GTK_WIDGET_DRAWABLE (widget))
-    {
-      sp_menu_button_paint (widget, &event->area);
-
-
-      /* The following code tries to draw the child in two places at
-       * once. It fails miserably for several reasons
-       *
-       * - If the child is not no-window, removing generates
-       *   more expose events. Bad, bad, bad.
-       * 
-       * - Even if the child is no-window, removing it now (properly)
-       *   clears the space where it was, so it does no good
-       */
-      
-#if 0
-      remove_child = FALSE;
-      child = GTK_BUTTON (widget)->child;
-
-      if (!child)
+	
+	while (children)
 	{
 		child = children->data;
 		
@@ -783,55 +436,22 @@ sp_menu_button_expose (GtkWidget      *widget,
 	*y = menu_ypos;
 }
 
-
-static void
-sp_menu_button_hide_all (GtkWidget *widget)
-{
-  GtkContainer *container;
-
-  g_return_if_fail (widget != NULL);
-  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
-  container = GTK_CONTAINER (widget);
-
-  gtk_widget_hide (widget);
-  gtk_container_foreach (container, (GtkCallback) gtk_widget_hide_all, NULL);
-}
-#endif
-
-
 #define ASIZE 8
 static void
 sp_menu_button_draw_arrow (GtkWidget * widget)
 {
-
-	GtkWidget * drawing_target = NULL;
-	
-	/* FIXME: If you draw arrow on only child, drawing result 
-	   is clipped out by parent window. The easiest solution is 
-	   drawing twice, once parent and once child. */
-
-	if (GTK_IS_BIN(widget) 
-	    && GTK_BIN(widget)->child 
-	    && GTK_WIDGET_DRAWABLE(GTK_BIN(widget)->child)) {
-		drawing_target = GTK_BIN(widget)->child;
-	} else if (GTK_WIDGET_DRAWABLE (widget)) {
-		drawing_target = widget;
-	}
-	
-	if (drawing_target) {
+	if (GTK_WIDGET_DRAWABLE (widget)) {
 		gint w, h, bw, tx, ty;
-		w = drawing_target->allocation.width;
-		h = drawing_target->allocation.height;
-		bw = GTK_CONTAINER (drawing_target)->border_width;
-		tx = drawing_target->style->xthickness;
-		ty = drawing_target->style->ythickness;
-		gtk_draw_arrow (drawing_target->style, drawing_target->window,
-				drawing_target->state, GTK_SHADOW_IN,
+		w = widget->allocation.width;
+		h = widget->allocation.height;
+		bw = GTK_CONTAINER (widget)->border_width;
+		tx = widget->style->xthickness;
+		ty = widget->style->ythickness;
+		gtk_draw_arrow (widget->style, widget->window,
+				widget->state, GTK_SHADOW_IN,
 				GTK_ARROW_DOWN, TRUE,
-				tx 
-				- ((drawing_target == widget)?0 : (drawing_target->allocation.x)),
-				h - 2 * bw - ty - ASIZE 
-				+ ((drawing_target == widget)?0 : (drawing_target->allocation.y)),
+				widget->allocation.x + tx,
+				widget->allocation.y + h - 2 * bw - ty - ASIZE,
 				ASIZE, ASIZE);
 	}
 }

@@ -484,7 +484,7 @@ sp_toolbox_draw_create (void)
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
 	gtk_tooltips_set_tip (tt, b, _("Node tool - modify different aspects of existing objects"), NULL);
 
-#if 0
+#if 1
 	/* Object */
 	b = sp_menu_button_new ();
 	gtk_widget_show (b);
@@ -820,12 +820,13 @@ gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
 	gtk_container_add(GTK_CONTAINER(ev), pm);
 	gtk_widget_show(pm);
 
+#if 0
 	/* arrow on the button is redraw by the parent. */
 	gtk_signal_connect_after(GTK_OBJECT(ev),
 				 "expose_event",
 				 GTK_SIGNAL_FUNC(gtk_event_box_force_draw_parent),
 				 NULL);
-			   
+#endif		   
 			   
 	return ev;
 }

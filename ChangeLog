@@ -1,3 +1,10 @@
+Wed Dec  4 01:05:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/widget/sp-menu-button.c: Fixed to work well.
+
+	* src/toolbox.c: enable draw buttons.
+	Comment out signal_connect_after.
+
 2002-12-03  Masatake YAMATO  <jet@gyve.org>
 
 	* tools-version.sh (TOOLS): Added automake-1.6 and
