@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
-"POT-Creation-Date: 2000-06-13 19:12+0300\n"
+"POT-Creation-Date: 2000-06-30 18:39+0300\n"
 "PO-Revision-Date: 2000-01-17 14:31+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -443,13 +443,12 @@ msgid "To Curve"
 msgstr "В криву"
 
 #: glade/sodipodi-glade.c:123
-#, fuzzy
 msgid "Join 2 selected endpoints"
-msgstr "Групувати вибран╕ елементи"
+msgstr "Об'╓днати дв╕ вибран╕ к╕нцев╕ точки"
 
 #: glade/sodipodi-glade.c:124 glade/sodipodi-glade.c:142
 msgid "Join"
-msgstr ""
+msgstr "Об'╓днати"
 
 #: glade/sodipodi-glade.c:125
 msgid "Cusp"
@@ -747,7 +746,7 @@ msgstr ""
 
 #: src/main.c:176
 msgid "Could not initialize Bonobo"
-msgstr ""
+msgstr "Не вдалося ╕н╕ц╕ал╕зувати Bonobo"
 
 #: src/bonobo/svg-doc-factory.c:25
 msgid "Could not create sodipodi-svg-doc factory"
@@ -755,7 +754,7 @@ msgstr ""
 
 #: src/file.c:79
 msgid "Select file to open"
-msgstr ""
+msgstr "Вибер╕ть файл для в╕дкривання"
 
 #: src/file.c:149
 msgid "Save file"
@@ -763,7 +762,7 @@ msgstr "Зберегти файл"
 
 #: src/file.c:229
 msgid "Select file to import"
-msgstr ""
+msgstr "Вибер╕ть файл для ╕мпорту"
 
 #: src/file.c:301
 msgid "Export file"
@@ -779,7 +778,7 @@ msgstr ""
 
 #: src/sp-item.c:170
 msgid "Unknown item :-("
-msgstr ""
+msgstr "Нев╕домий елемент"
 
 #: src/sp-item-group.c:325
 #, c-format
