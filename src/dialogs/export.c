@@ -14,6 +14,7 @@
 
 #include <config.h>
 
+#include <math.h>
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
@@ -284,7 +285,8 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 {
 	GtkWidget *fe;
 	const unsigned char *filename;
-	float x0, y0, x1, y1, width, height;
+	float x0, y0, x1, y1;
+	int width, height;
 
 	if (!SP_ACTIVE_DESKTOP) return;
 
@@ -299,8 +301,8 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	y0 = sp_export_value_get_pt (base, "y0");
 	x1 = sp_export_value_get_pt (base, "x1");
 	y1 = sp_export_value_get_pt (base, "y1");
-	width = sp_export_value_get (base, "bmwidth");
-	height = sp_export_value_get (base, "bmheight");
+	width = (int) (sp_export_value_get (base, "bmwidth") + 0.5);
+	height = (int) (sp_export_value_get (base, "bmheight") + 0.5);
 
 	if ((x1 > x0) && (y1 > y0) && (width > 0) && (height > 0)) {
 		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000);
@@ -320,7 +322,7 @@ sp_export_area_x_value_changed (GtkAdjustment *adj, GtkObject *base)
 	x1 = sp_export_value_get_pt (base, "x1");
 	xdpi = sp_export_value_get (base, "xdpi");
 
-	width = (x1 - x0) * xdpi / 72.0;
+	width = floor ((x1 - x0) * xdpi / 72.0 + 0.5);
 
 	if (width < SP_EXPORT_MIN_SIZE) {
 		const unsigned char *key;
@@ -354,7 +356,7 @@ sp_export_area_y_value_changed (GtkAdjustment *adj, GtkObject *base)
 	y1 = sp_export_value_get_pt (base, "y1");
 	ydpi = sp_export_value_get (base, "ydpi");
 
-	height = (y1 - y0) * ydpi / 72.0;
+	height = floor ((y1 - y0) * ydpi / 72.0 + 0.5);
 
 	if (height < SP_EXPORT_MIN_SIZE) {
 		const unsigned char *key;
@@ -388,7 +390,7 @@ sp_export_area_width_value_changed (GtkAdjustment *adj, GtkObject *base)
 	x1 = sp_export_value_get_pt (base, "x1");
 	xdpi = sp_export_value_get (base, "xdpi");
 	width = sp_export_value_get_pt (base, "width");
-	bmwidth = width * xdpi / 72.0;
+	bmwidth = floor (width * xdpi / 72.0 + 0.5);
 
 	if (bmwidth < SP_EXPORT_MIN_SIZE) {
 		bmwidth = SP_EXPORT_MIN_SIZE;
@@ -415,7 +417,7 @@ sp_export_area_height_value_changed (GtkAdjustment *adj, GtkObject *base)
 	y1 = sp_export_value_get_pt (base, "y1");
 	ydpi = sp_export_value_get (base, "ydpi");
 	height = sp_export_value_get_pt (base, "height");
-	bmheight = height * ydpi / 72.0;
+	bmheight = floor (height * ydpi / 72.0 + 0.5);
 
 	if (bmheight < SP_EXPORT_MIN_SIZE) {
 		bmheight = SP_EXPORT_MIN_SIZE;

@@ -606,7 +606,7 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_set_double (repr, "sodipodi:version", (double) root->sodipodi / 100.0);
 	}
 
-	sp_repr_set_double (repr, "version", root->version);
+	sp_repr_set_attr (repr, "version", "1");
 	sp_repr_set_double (repr, "x", root->x.computed);
 	sp_repr_set_double (repr, "y", root->y.computed);
 	sp_repr_set_double (repr, "width", root->width.computed);
