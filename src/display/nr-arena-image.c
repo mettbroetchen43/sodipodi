@@ -72,10 +72,16 @@ nr_arena_image_class_init (NRArenaImageClass *klass)
 static void
 nr_arena_image_init (NRArenaImage *image)
 {
-	image->width = 256.0;
-	image->height = 256.0;
+	NRArenaItem *item;
 
-	nr_matrix_f_set_identity (&image->grid2px);
+	item = (NRArenaItem *) image;
+
+	/* We can safely render opacity ourself */
+	item->render_opacity = TRUE;
+
+	/* image->width = 256.0; */
+	/* image->height = 256.0; */
+	/* nr_matrix_f_set_identity (&image->grid2px); */
 }
 
 static void

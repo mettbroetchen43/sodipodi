@@ -442,6 +442,8 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 			if (shape->fill_painter) {
 				NRPixBlock cb;
 				/* Need separate gradient buffer */
+				/* fixme: We have to port gradient rendering to premultiplied alpha (Lauris) */
+				/* fixme: Or alternately write MMX enhanced blitter for this case */
 				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
 				shape->fill_painter->fill (shape->fill_painter, &cb);
 				cb.empty = FALSE;

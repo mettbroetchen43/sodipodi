@@ -1,5 +1,8 @@
 2003-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/display/nr-arena-image.c (nr_arena_image_init): Mark
+	render_opacity
+
 	* src/widgets/button.h: Added SELECT mode
 
 	* src/widgets/button.c (sp_button_button_release): Ditto
