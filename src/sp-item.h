@@ -104,6 +104,8 @@ gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 GSList * sp_item_snappoints (SPItem * item);
 
+void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
+
 /* Utility */
 
 GnomeCanvasItem * sp_item_canvas_item (SPItem * item, SPDesktop * desktop);

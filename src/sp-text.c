@@ -181,6 +181,7 @@ sp_text_read_content (SPObject * object)
 		text->text = NULL;
 	}
 	sp_text_set_shape (text);
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static char *

@@ -10,6 +10,7 @@
 
 enum {
 	CHANGED,
+	MODIFIED,
 	LAST_SIGNAL
 };
 
@@ -20,6 +21,8 @@ static void sp_selection_destroy (GtkObject * object);
 static void sp_selection_private_changed (SPSelection * selection);
 
 static void sp_selection_frozen_empty (SPSelection * selection);
+
+static gint sp_selection_idle_handler (gpointer data);
 
 static GtkObjectClass * parent_class;
 static guint selection_signals[LAST_SIGNAL] = { 0 };
@@ -37,14 +40,11 @@ sp_selection_get_type (void)
 			sizeof (SPSelectionClass),
 			(GtkClassInitFunc) sp_selection_class_init,
 			(GtkObjectInitFunc) sp_selection_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 
 		selection_type = gtk_type_unique (gtk_object_get_type (), &selection_info);
 	}
-
 	return selection_type;
 }
 
@@ -57,13 +57,19 @@ sp_selection_class_init (SPSelectionClass * klass)
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
 
-	selection_signals [CHANGED] =
-		gtk_signal_new ("changed",
-			GTK_RUN_FIRST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (SPSelectionClass, changed),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	selection_signals [CHANGED] = gtk_signal_new ("changed",
+						      GTK_RUN_FIRST,
+						      object_class->type,
+						      GTK_SIGNAL_OFFSET (SPSelectionClass, changed),
+						      gtk_marshal_NONE__NONE,
+						      GTK_TYPE_NONE, 0);
+	selection_signals [MODIFIED] = gtk_signal_new ("modified",
+						       GTK_RUN_FIRST,
+						       object_class->type,
+						       GTK_SIGNAL_OFFSET (SPSelectionClass, modified),
+						       gtk_marshal_NONE__UINT,
+						       GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+
 	gtk_object_class_add_signals (object_class, selection_signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_selection_destroy;
@@ -78,6 +84,7 @@ sp_selection_init (SPSelection * selection)
 
 	selection->reprs = NULL;
 	selection->items = NULL;
+	selection->idle = 0;
 
 	sp_debug ("end", SP_SELECTION);
 }
@@ -93,8 +100,14 @@ sp_selection_destroy (GtkObject * object)
 
 	sp_selection_frozen_empty (selection);
 
-	if (parent_class->destroy)
-		(* parent_class->destroy) (object);
+	if (selection->idle) {
+		/* Clear pending idle request */
+		gtk_idle_remove (selection->idle);
+		selection->idle = 0;
+	}
+
+	if (((GtkObjectClass *) parent_class)->destroy)
+		(* ((GtkObjectClass *) parent_class)->destroy) (object);
 
 	sp_debug ("end", SP_SELECTION);
 }
@@ -126,6 +139,43 @@ sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 	sp_selection_changed (selection);
 
 	sp_debug ("end", SP_SELECTION);
+}
+
+/* Handler for selected objects "modified" signal */
+
+static void
+sp_selection_selected_item_modified (SPItem *item, guint flags, SPSelection *selection)
+{
+	sp_debug ("start", SP_SELECTION);
+
+	g_return_if_fail (selection != NULL);
+	g_return_if_fail (SP_IS_SELECTION (selection));
+	g_return_if_fail (sp_selection_item_selected (selection, item));
+
+	if (!selection->idle) {
+		/* Request handling to be run in idle loop */
+		selection->idle = gtk_idle_add (sp_selection_idle_handler, selection);
+	}
+
+	sp_debug ("end", SP_SELECTION);
+}
+
+/* Our idle loop handler */
+
+static gint
+sp_selection_idle_handler (gpointer data)
+{
+	SPSelection *selection;
+
+	selection = SP_SELECTION (data);
+
+	/* Clear our id, so next request will be rescheduled */
+	selection->idle = 0;
+	/* Emit our own "modified" signal */
+	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [MODIFIED],
+			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+
+	return FALSE;
 }
 
 void
@@ -253,7 +303,9 @@ sp_selection_add_item (SPSelection * selection, SPItem * item)
 
 	selection->items = g_slist_prepend (selection->items, item);
 	gtk_signal_connect (GTK_OBJECT (item), "destroy",
-		GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
+			    GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
+	gtk_signal_connect (GTK_OBJECT (item), "modified",
+			    GTK_SIGNAL_FUNC (sp_selection_selected_item_modified), selection);
 
 	sp_selection_changed (selection);
 
@@ -390,7 +442,9 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 			if (!SP_IS_ITEM (i)) break;
 			selection->items = g_slist_prepend (selection->items, i);
 			gtk_signal_connect (GTK_OBJECT (i), "destroy",
-				GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
+					    GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
+			gtk_signal_connect (GTK_OBJECT (i), "modified",
+					    GTK_SIGNAL_FUNC (sp_selection_selected_item_modified), selection);
 		}
 	}
 

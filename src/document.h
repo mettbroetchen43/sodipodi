@@ -98,6 +98,10 @@ gboolean sp_document_order_changed (SPDocument * document, SPObject * object, SP
 
 gboolean sp_document_change_content_requested (SPDocument * document, SPObject * object, const gchar * value);
 
+/* Object modification root handler */
+
+void sp_document_request_modified (SPDocument *document);
+
 /* Save all previous actions to stack, as one undo step */
 
 void sp_document_done (SPDocument * document);

@@ -16,8 +16,15 @@
 #define SP_IS_OBJECT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
 #define SP_IS_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
 
+#define SP_OBJECT_SET_FLAGS GTK_OBJECT_SET_FLAGS
+#define SP_OBJECT_UNSET_FLAGS GTK_OBJECT_UNSET_FLAGS
 #define SP_OBJECT_CLONED_FLAG (1 << 4)
+#define SP_OBJECT_MODIFIED_FLAG (1 << 5)
+#define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 6)
+#define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 7)
 #define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
+#define SP_OBJECT_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
+#define SP_OBJECT_CHILD_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
@@ -54,14 +61,14 @@ struct _SPException {
 
 struct _SPObject {
 	GtkObject object;
-	SPDocument * document;		/* Document we are part of */
+	SPDocument * document; /* Document we are part of */
 	SPObject * parent; /* Our parent (only one allowed) */
 	SPObject * next; /* Next object in linked list */
-	SPRepr * repr;			/* Our xml representation */
-	gchar * id;			/* Our very own unique id */
+	SPRepr * repr; /* Our xml representation */
+	gchar * id; /* Our very own unique id */
 	SPStyle * style;
-	const gchar * title;		/* Our title, if any */
-	const gchar * description;	/* Our description, if any */
+	const gchar * title; /* Our title, if any */
+	const gchar * description; /* Our description, if any */
 };
 
 struct _SPObjectClass {
@@ -76,12 +83,20 @@ struct _SPObjectClass {
 
 	void (* read_attr) (SPObject * object, const gchar * key);
 	void (* read_content) (SPObject * object);
+
+	/* Modification handler */
+	void (* modified) (SPObject *object, guint flags);
 };
 
 GtkType sp_object_get_type (void);
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
+
+/* Modification */
+
+void sp_object_request_modified (SPObject *object, guint flags);
+void sp_object_modified (SPObject *object, guint flags);
 
 /* Public */
 

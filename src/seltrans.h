@@ -45,6 +45,7 @@ struct _SPSelTrans {
         GnomeCanvasItem * grip;;
         GnomeCanvasItem * l1, * l2, * l3, * l4;
 	guint sel_changed_id;
+	guint sel_modified_id;
 };
 
 /*

@@ -1,3 +1,23 @@
+2001-07-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/seltrans.c (sp_sel_trans_sel_modified): New function
+
+	* src/sp-item.c (sp_item_set_item_transform): New function
+
+	* src/sp-object.c (sp_object_class_init): Add "modified" signal
+	(sp_object_request_modified): New function
+	(sp_object_modified): New base method
+
+	* src/sp-object.h (SP_OBJECT_UNSET_FLAGS): Added modifiaction state flags
+	and handlers for scheduling and emitting modifiaction signal
+
+	* src/selection.c (sp_selection_class_init): Added "modified" signal
+	(sp_selection_destroy): Remove pending idle, if present
+	(sp_selection_selected_item_modified): Added handler for object signal
+	(sp_selection_idle_handler): Emit our own modified signal in idle loop
+
+	* src/selection.h: Added idle id and ::modified virtual member
+
 2001-07-17  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-namedview.c (sp_namedview_get_name): Initialize exception

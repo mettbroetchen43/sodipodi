@@ -26,6 +26,8 @@ static void sp_document_class_init (SPDocumentClass * klass);
 static void sp_document_init (SPDocument * document);
 static void sp_document_destroy (GtkObject * object);
 
+static gint sp_document_idle_handler (gpointer data);
+
 static GtkObjectClass * parent_class;
 static gint doc_count = 0;
 
@@ -40,9 +42,7 @@ sp_document_get_type (void)
 			sizeof (SPDocumentClass),
 			(GtkClassInitFunc) sp_document_class_init,
 			(GtkObjectInitFunc) sp_document_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		document_type = gtk_type_unique (gtk_object_get_type (), &document_info);
 	}
@@ -88,6 +88,8 @@ sp_document_init (SPDocument * document)
 	p->redo = NULL;
 	p->actions = NULL;
 
+	p->modified_id = 0;
+
 	document->private = p;
 }
 
@@ -118,6 +120,8 @@ sp_document_destroy (GtkObject * object)
 		if (private->iddef) g_hash_table_destroy (private->iddef);
 
 		if (private->rdoc) sp_repr_document_unref (private->rdoc);
+
+		if (private->modified_id) gtk_idle_remove (private->modified_id);
 
 		g_free (private);
 		document->private = NULL;
@@ -408,6 +412,32 @@ SPObject *
 sp_document_lookup_id (SPDocument * document, const gchar * id)
 {
 	return g_hash_table_lookup (document->private->iddef, id);
+}
+
+/* Object modification root handler */
+
+void
+sp_document_request_modified (SPDocument *document)
+{
+	if (!document->private->modified_id) {
+		document->private->modified_id = gtk_idle_add (sp_document_idle_handler, document);
+	}
+}
+
+static gint
+sp_document_idle_handler (gpointer data)
+{
+	SPDocument *document;
+
+	document = SP_DOCUMENT (data);
+
+	document->private->modified_id = 0;
+
+	g_print ("Starting document handling\n");
+	sp_object_modified (SP_OBJECT (document->private->root), 0);
+	g_print ("End of document handling\n");
+
+	return FALSE;
 }
 
 /*

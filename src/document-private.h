@@ -25,6 +25,10 @@ struct _SPDocumentPrivate {
 	GSList * undo;		/* Undo stack of reprs */
 	GSList * redo;		/* Redo stack of reprs */
 	GList * actions;	/* List of current actions */
+
+	/* Handler ID */
+
+	guint modified_id;
 };
 
 #endif

@@ -21,6 +21,7 @@ static void sp_group_read_attr (SPObject * object, const gchar * attr);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static void sp_group_modified (SPObject *object, guint flags);
 
 static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
@@ -73,6 +74,7 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->order_changed = sp_group_order_changed;
+	sp_object_class->modified = sp_group_modified;
 
 	item_class->update = sp_group_update;
 	item_class->bbox = sp_group_bbox;
@@ -301,6 +303,34 @@ sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr 
 
 	if (SP_IS_ITEM (ochild)) {
 		sp_item_change_canvasitem_position (SP_ITEM (ochild), newpos - oldpos);
+	}
+}
+
+static void
+sp_group_modified (SPObject *object, guint flags)
+{
+	SPGroup *group;
+	SPObject *child;
+	GSList *l;
+
+	group = SP_GROUP (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+
+	l = NULL;
+	for (child = group->children; child != NULL; child = child->next) {
+		gtk_object_ref (GTK_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_modified (child, flags);
+		}
+		gtk_object_unref (GTK_OBJECT (child));
 	}
 }
 

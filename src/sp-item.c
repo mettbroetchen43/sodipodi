@@ -122,10 +122,8 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_item_read_attr (SPObject * object, const gchar * key)
 {
-	SPItem * item, * i;
-	SPItemView * v;
-	gdouble a[6];
-	const gchar * astr;
+	SPItem *item;
+	const gchar *astr;
 	SPStyle *style;
 
 	item = SP_ITEM (object);
@@ -133,18 +131,10 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 	astr = sp_repr_attr (object->repr, key);
 
 	if (strcmp (key, "transform") == 0) {
-		art_affine_identity (item->affine);
-		if (astr != NULL) {
-			sp_svg_read_affine (item->affine, astr);
-		}
-		for (v = item->display; v != NULL; v = v->next) {
-			gnome_canvas_item_affine_absolute (v->canvasitem, item->affine);
-		}
+		gdouble a[6];
 		art_affine_identity (a);
-		for (i = item; i != NULL; i = (SPItem *) ((SPObject *)i)->parent) {
-			art_affine_multiply (a, a, i->affine);
-		}
-		sp_item_update (item, a);
+		if (astr != NULL) sp_svg_read_affine (a, astr);
+		sp_item_set_item_transform (item, a);
 		/* fixme: in update */
 		object->style->real_stroke_width_set = FALSE;
 	}
@@ -420,6 +410,32 @@ sp_item_request_canvas_update (SPItem * item)
 	}
 }
 
+/* Sets item private transform (not propagated to repr) */
+
+void
+sp_item_set_item_transform (SPItem *item, const gdouble *transform)
+{
+	SPItemView *v;
+	gint i;
+
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+	g_return_if_fail (transform != NULL);
+
+	for (i = 0; i < 6; i++) {
+		if (fabs (transform[i] - item->affine[i]) > 1e-9) break;
+	}
+	if (i >= 6) return;
+
+	memcpy (item->affine, transform, 6 * sizeof (gdouble));
+
+	for (v = item->display; v != NULL; v = v->next) {
+		gnome_canvas_item_affine_absolute (v->canvasitem, transform);
+	}
+
+	sp_object_request_modified (SP_OBJECT (item), SP_OBJECT_MODIFIED_FLAG);
+}
+
 gdouble *
 sp_item_i2d_affine (SPItem * item, gdouble affine[])
 {
@@ -440,9 +456,7 @@ sp_item_i2d_affine (SPItem * item, gdouble affine[])
 void
 sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
 {
-	SPItemView * v;
 	gdouble p2d[6], d2p[6];
-	gint i;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
@@ -454,16 +468,7 @@ sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
 		art_affine_multiply (affine, affine, d2p);
 	}
 
-	for (i = 0; i < 6; i++) item->affine[i] = affine[i];
-
-#if 0
-	/* fixme: do the updating right way */
-	sp_item_update (item, affine);
-#else
-	for (v = item->display; v != NULL; v = v->next) {
-		gnome_canvas_item_affine_absolute (v->canvasitem, affine);
-	}
-#endif
+	sp_item_set_item_transform (item, affine);
 }
 
 gdouble *

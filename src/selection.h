@@ -22,15 +22,19 @@
 
 struct _SPSelection {
 	GtkObject object;
-	SPDesktop * desktop;
-	GSList * reprs;
-	GSList * items;
+	SPDesktop *desktop;
+	GSList *reprs;
+	GSList *items;
+	guint idle;
 };
 
 struct _SPSelectionClass {
 	GtkObjectClass parent_class;
 
-	void (* changed) (SPSelection * selection);
+	void (* changed) (SPSelection *selection);
+
+	/* fixme: use fine granularity */
+	void (* modified) (SPSelection *selection, guint flags);
 };
 
 /* Standard Gtk function */

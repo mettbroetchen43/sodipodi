@@ -29,6 +29,7 @@ static void sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, g
 static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gboolean * data);
 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
+static void sp_sel_trans_sel_modified (SPSelection * selection, guint flags, gpointer data);
 
 void
 sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
@@ -58,7 +59,9 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	selection = SP_DT_SELECTION (desktop);
 
 	seltrans->sel_changed_id = gtk_signal_connect (GTK_OBJECT (selection), "changed",
-		GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
+						       GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
+	seltrans->sel_modified_id = gtk_signal_connect (GTK_OBJECT (selection), "modified",
+							GTK_SIGNAL_FUNC (sp_sel_trans_sel_modified), seltrans);
 
 	seltrans->norm = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
@@ -110,8 +113,8 @@ sp_sel_trans_shutdown (SPSelTrans * seltrans)
 
 	if (seltrans->sel_changed_id > 0)
 		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (seltrans->desktop)), seltrans->sel_changed_id);
-
-
+	if (seltrans->sel_modified_id > 0)
+		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (seltrans->desktop)), seltrans->sel_modified_id);
 }
 
 void
@@ -540,6 +543,24 @@ static void
 sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)
 {
 	SPSelTrans * seltrans;
+
+	seltrans = (SPSelTrans *) data;
+
+	if (seltrans->grabbed) {
+		seltrans->sel_changed = TRUE;
+	} else {
+		sp_sel_trans_update_volatile_state (seltrans);
+		seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
+		seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
+		sp_sel_trans_update_handles (seltrans);
+	}
+
+}
+
+static void
+sp_sel_trans_sel_modified (SPSelection *selection, guint flags, gpointer data)
+{
+	SPSelTrans *seltrans;
 
 	seltrans = (SPSelTrans *) data;
 

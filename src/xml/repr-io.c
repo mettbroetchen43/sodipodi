@@ -117,7 +117,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 	if (node->type == XML_COMMENT_NODE) return NULL;
 
 	if (node->ns && node->ns->prefix && strcmp (node->ns->prefix, "svg")) {
-		g_snprintf (c, 256, "%s:%s", node->name);
+		g_snprintf (c, 256, "%s:%s", node->ns->prefix, node->name);
 	} else {
 		g_snprintf (c, 256, node->name);
 	}
@@ -128,7 +128,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
         xmlChar *value = xmlGetProp(node,prop->name);
 		if (value != NULL) {
 			if (prop->ns && prop->ns->prefix && strcmp (prop->ns->prefix, "svg")) {
-				g_snprintf (c, 256, "%s:%s", prop->name);
+				g_snprintf (c, 256, "%s:%s", prop->ns->prefix, prop->name);
 			} else {
 				g_snprintf (c, 256, prop->name);
 			}

@@ -28,6 +28,7 @@ struct _SPReprListener {
 };
 
 struct _SPReprEventVector {
+	/* Immediate signals */
 	void (* child_added) (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer data);
 	void (* remove_child) (SPRepr * repr, SPRepr * child, gpointer data);
 	gint (* change_attr) (SPRepr * repr, const gchar * key, const gchar * oldval, const gchar * newval, gpointer data);

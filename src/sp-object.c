@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtksignal.h>
 #include "xml/repr-private.h"
 #include "document.h"
 #include "style.h"
@@ -41,6 +42,8 @@ static gboolean sp_object_repr_content_changed_pre (SPRepr * repr, const gchar *
 
 static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 
+enum {MODIFIED, LAST_SIGNAL};
+
 SPReprEventVector object_event_vector = {
 	sp_object_repr_add_child,
 	sp_object_repr_remove_child,
@@ -52,7 +55,8 @@ SPReprEventVector object_event_vector = {
 	sp_object_repr_order_changed
 };
 
-static GtkObjectClass * parent_class;
+static GtkObjectClass *parent_class;
+static guint object_signals[LAST_SIGNAL] = {0};
 
 GtkType
 sp_object_get_type (void)
@@ -82,6 +86,14 @@ sp_object_class_init (SPObjectClass * klass)
 	gtk_object_class = (GtkObjectClass *) klass;
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
+
+	object_signals[MODIFIED] = gtk_signal_new ("modified",
+						   GTK_RUN_FIRST,
+						   gtk_object_class->type,
+						   GTK_SIGNAL_OFFSET (SPObjectClass, modified),
+						   gtk_marshal_NONE__UINT,
+						   GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	gtk_object_class_add_signals (gtk_object_class, object_signals, LAST_SIGNAL);
 
 	gtk_object_class->destroy = sp_object_destroy;
 
@@ -337,6 +349,56 @@ sp_object_repr_change_content (SPRepr * repr, gpointer data)
 
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->read_content)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
+}
+
+/* Modification */
+
+void
+sp_object_request_modified (SPObject *object, guint flags)
+{
+	gboolean propagate;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail ((flags == SP_OBJECT_MODIFIED_FLAG) || (flags == SP_OBJECT_CHILD_MODIFIED_FLAG));
+
+	/* Check for propagate before we set any flags */
+	propagate = ((GTK_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)) == 0);
+
+	/* Either one is true, so we can simply overwrite flag */
+	if (flags & SP_OBJECT_MODIFIED_FLAG) {
+		SP_OBJECT_SET_FLAGS (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (flags & SP_OBJECT_CHILD_MODIFIED_FLAG) {
+		SP_OBJECT_SET_FLAGS (object, SP_OBJECT_CHILD_MODIFIED_FLAG);
+	}
+
+	if (propagate) {
+		if (object->parent) {
+			sp_object_request_modified (object->parent, SP_OBJECT_CHILD_MODIFIED_FLAG);
+		} else {
+			sp_document_request_modified (object->document);
+		}
+	}
+}
+
+void
+sp_object_modified (SPObject *object, guint flags)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail ((flags == 0) || (flags == SP_OBJECT_PARENT_MODIFIED_FLAG));
+
+	flags |= (GTK_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG));
+
+	g_return_if_fail (flags != 0);
+
+	/* Clear flags to allow reentrancy */
+	SP_OBJECT_UNSET_FLAGS (object, (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG));
+
+	gtk_object_ref (GTK_OBJECT (object));
+	g_print ("Object %s modified %d\n", object->id, flags);
+	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
+	gtk_object_unref (GTK_OBJECT (object));
 }
 
 const guchar *
