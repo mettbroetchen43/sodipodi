@@ -137,8 +137,6 @@ struct _SPText {
 
 	SPLayoutData ly;
 
-	SPObject *children;
-
 	guint relayout : 1;
 };
 

@@ -123,15 +123,9 @@ static void
 sp_object_init (SPObject * object)
 {
 #ifdef SP_OBJECT_DEBUG
-	g_print("sp_object_init: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
+	g_print("sp_object_init: id=%x, typename=%s\n",
+		object, g_type_name_from_instance((GTypeInstance*)object));
 #endif
-
-	object->hrefcount = 0;
-	object->document = NULL;
-	object->parent = object->next = NULL;
-	object->repr = NULL;
-	object->id = NULL;
-	object->style = NULL;
 }
 
 static void
@@ -621,6 +615,31 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 }
 
 void
+sp_object_invoke_children_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	SPObject *child;
+	GSList *l;
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = object->children; child != NULL; child = child->next) {
+		g_object_ref ((GObject *) child);
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = (SPObject *) l->data;
+		l = g_slist_remove (l, child);
+		if (flags || (child->uflags & SP_OBJECT_MODIFIED_FLAG)) {
+			sp_object_invoke_update (child, ctx, flags);
+		}
+		g_object_unref ((GObject *) child);
+	}
+}
+
+void
 sp_object_request_modified (SPObject *object, unsigned int flags)
 {
 	unsigned int propagate;
@@ -677,6 +696,31 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 			(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified) (object, flags);
 	}
 #endif
+}
+
+void
+sp_object_invoke_children_modified (SPObject *object, unsigned int flags)
+{
+	SPObject *child;
+	GSList *l;
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = object->children; child != NULL; child = child->next) {
+		g_object_ref ((GObject *) child);
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = (SPObject *) l->data;
+		l = g_slist_remove (l, child);
+		if (flags || (child->mflags & SP_OBJECT_MODIFIED_FLAG)) {
+			sp_object_invoke_modified (child, flags);
+		}
+		g_object_unref ((GObject *) child);
+	}
 }
 
 /* Calculate sequence number of target */

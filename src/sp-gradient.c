@@ -247,7 +247,6 @@ sp_gradient_init (SPGradient *gr)
 	gr->spread = SP_GRADIENT_SPREAD_PAD;
 	gr->spread_set = FALSE;
 
-	gr->stops = NULL;
 	gr->has_stops = FALSE;
 
 	gr->vector = NULL;
@@ -279,7 +278,7 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 			if (last) {
 				last->next = sp_object_attach_reref (object, child, NULL);
 			} else {
-				gradient->stops = sp_object_attach_reref (object, child, NULL);
+				object->children = sp_object_attach_reref (object, child, NULL);
 			}
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			/* Set has_stops flag */
@@ -328,8 +327,8 @@ sp_gradient_release (SPObject *object)
 		gradient->vector = NULL;
 	}
 
-	while (gradient->stops) {
-		gradient->stops = sp_object_detach_unref (object, gradient->stops);
+	while (object->children) {
+		object->children = sp_object_detach_unref (object, object->children);
 	}
 
 	if (((SPObjectClass *) gradient_parent_class)->release)
@@ -430,13 +429,13 @@ sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 
 	prev = NULL;
 	if (ref) {
-		prev = gr->stops;
+		prev = object->children;
 		while (prev->repr != ref) prev = prev->next;
 	}
 
 	if (!prev) {
-		ochild->next = gr->stops;
-		gr->stops = ochild;
+		ochild->next = object->children;
+		object->children = ochild;
 	} else {
 		ochild->next = prev->next;
 		prev->next = ochild;
@@ -464,7 +463,7 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 	sp_gradient_invalidate_vector (gr);
 
 	prev = NULL;
-	ochild = gr->stops;
+	ochild = object->children;
 	while (ochild->repr != child) {
 		prev = ochild;
 		ochild = ochild->next;
@@ -473,7 +472,7 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 	if (prev) {
 		prev->next = ochild->next;
 	} else {
-		gr->stops = ochild->next;
+		object->children = ochild->next;
 	}
 
 	ochild->parent = NULL;
@@ -482,7 +481,7 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 
 	/* fixme: (Lauris) */
 	gr->has_stops = FALSE;
-	for (ochild = gr->stops; ochild != NULL; ochild = ochild->next) {
+	for (ochild = object->children; ochild != NULL; ochild = ochild->next) {
 		if (SP_IS_STOP (ochild)) {
 			gr->has_stops = TRUE;
 			break;
@@ -509,7 +508,7 @@ sp_gradient_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = gr->stops; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -532,7 +531,7 @@ sp_gradient_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	gr = (SPGradient *) object;
 
-	for (child = gr->stops; child; child = child->next) {
+	for (child = object->children; child; child = child->next) {
 		*seq += 1;
 		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
 	}
@@ -554,7 +553,7 @@ sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
 		SPObject *child;
 		GSList *l;
 		l = NULL;
-		for (child = gr->stops; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			SPRepr *crepr;
 			crepr = sp_object_invoke_write (child, NULL, flags);
 			if (crepr) l = g_slist_prepend (l, crepr);
@@ -763,7 +762,7 @@ sp_gradient_rebuild_vector (SPGradient *gr)
 	opacity = 0.0;
 	offsets = offsete = 0.0;
 	oset = FALSE;
-	for (child = gr->stops; child != NULL; child = child->next) {
+	for (child = ((SPObject *) gr)->children; child != NULL; child = child->next) {
 		if (SP_IS_STOP (child)) {
 			SPStop *stop;
 			stop = SP_STOP (child);
@@ -821,7 +820,7 @@ sp_gradient_rebuild_vector (SPGradient *gr)
 	pos = 0;
 	offset = offsets;
 	gr->vector->stops[0].offset = 0.0;
-	for (child = gr->stops; child != NULL; child = child->next) {
+	for (child = ((SPObject *) gr)->children; child != NULL; child = child->next) {
 		if (SP_IS_STOP (child)) {
 			SPStop *stop;
 			stop = SP_STOP (child);

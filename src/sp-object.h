@@ -105,6 +105,7 @@ struct _SPObject {
 	SPDocument *document; /* Document we are part of */
 	SPObject *parent; /* Our parent (only one allowed) */
 	SPObject *next; /* Next object in linked list */
+	SPObject *children; /* Our children */
 	SPRepr *repr; /* Our xml representation */
 	gchar *id; /* Our very own unique id */
 	SPStyle *style;
@@ -174,8 +175,10 @@ void sp_object_read_attr (SPObject *object, const gchar *key);
 /* Modification */
 void sp_object_request_update (SPObject *object, unsigned int flags);
 void sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags);
+void sp_object_invoke_children_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 void sp_object_request_modified (SPObject *object, unsigned int flags);
 void sp_object_invoke_modified (SPObject *object, unsigned int flags);
+void sp_object_invoke_children_modified (SPObject *object, unsigned int flags);
 
 /* Calculate sequence number of target */
 unsigned int sp_object_invoke_sequence (SPObject *object, SPObject *target, unsigned int *seq);

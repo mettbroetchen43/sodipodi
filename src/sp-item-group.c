@@ -101,8 +101,7 @@ sp_group_class_init (SPGroupClass *klass)
 static void
 sp_group_init (SPGroup *group)
 {
-	group->children = NULL;
-	group->transparent = FALSE;
+	/* Nothing here */
 }
 
 static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * repr)
@@ -125,7 +124,7 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 		if (last) {
 			last->next = sp_object_attach_reref (object, child, NULL);
 		} else {
-			group->children = sp_object_attach_reref (object, child, NULL);
+			object->children = sp_object_attach_reref (object, child, NULL);
 		}
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
@@ -139,8 +138,8 @@ sp_group_release (SPObject *object)
 
 	group = SP_GROUP (object);
 
-	while (group->children) {
-		group->children = sp_object_detach_unref (object, group->children);
+	while (object->children) {
+		object->children = sp_object_detach_unref (object, object->children);
 	}
 
 	if (((SPObjectClass *) parent_class)->release)
@@ -166,7 +165,7 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	prev = NULL;
 	position = 0;
 	if (ref != NULL) {
-		prev = group->children;
+		prev = object->children;
 		while (prev && (prev->repr != ref)) {
 			if (SP_IS_ITEM (prev)) position += 1;
 			prev = prev->next;
@@ -179,7 +178,7 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	if (prev) {
 		prev->next = sp_object_attach_reref (object, ochild, prev->next);
 	} else {
-		group->children = sp_object_attach_reref (object, ochild, group->children);
+		object->children = sp_object_attach_reref (object, ochild, object->children);
 	}
 
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
@@ -214,7 +213,7 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
 	prev = NULL;
-	ochild = group->children;
+	ochild = object->children;
 	while (ochild->repr != child) {
 		prev = ochild;
 		ochild = ochild->next;
@@ -223,7 +222,7 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 	if (prev) {
 		prev->next = sp_object_detach_unref (object, ochild);
 	} else {
-		group->children = sp_object_detach_unref (object, ochild);
+		object->children = sp_object_detach_unref (object, ochild);
 	}
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
@@ -245,7 +244,7 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 
 	/* Scan children list */
 	childpos = 0;
-	for (o = group->children; !childobj || (old && !oldobj) || (new && !newobj); o = o->next) {
+	for (o = object->children; !childobj || (old && !oldobj) || (new && !newobj); o = o->next) {
 		if (o->repr == child) {
 			childobj = o;
 		} else {
@@ -264,14 +263,14 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 	if (oldobj) {
 		oldobj->next = childobj->next;
 	} else {
-		group->children = childobj->next;
+		object->children = childobj->next;
 	}
 	if (newobj) {
 		childobj->next = newobj->next;
 		newobj->next = childobj;
 	} else {
-		childobj->next = group->children;
-		group->children = childobj;
+		childobj->next = object->children;
+		object->children = childobj;
 	}
 
 	if (SP_IS_ITEM (childobj)) {
@@ -303,7 +302,7 @@ sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = group->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -339,7 +338,7 @@ sp_group_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = group->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -362,7 +361,7 @@ sp_group_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	group = (SPGroup *) object;
 
-	for (child = group->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		*seq += 1;
 		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
 	}
@@ -383,7 +382,7 @@ sp_group_write (SPObject *object, SPRepr *repr, guint flags)
 		GSList *l;
 		if (!repr) repr = sp_repr_new ("g");
 		l = NULL;
-		for (child = group->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			crepr = sp_object_invoke_write (child, NULL, flags);
 			if (crepr) l = g_slist_prepend (l, crepr);
 		}
@@ -393,7 +392,7 @@ sp_group_write (SPObject *object, SPRepr *repr, guint flags)
 			l = g_slist_remove (l, l->data);
 		}
 	} else {
-		for (child = group->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
 		}
 	}
@@ -413,7 +412,7 @@ sp_group_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 
 	group = SP_GROUP (item);
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) item)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			NRMatrixD ct;
 			child = SP_ITEM (o);
@@ -432,7 +431,7 @@ sp_group_print (SPItem * item, SPPrintContext *ctx)
 
 	group = SP_GROUP (item);
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) item)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			sp_item_invoke_print (SP_ITEM (o), ctx);
@@ -450,7 +449,7 @@ static gchar * sp_group_description (SPItem * item)
 	group = SP_GROUP (item);
 
 	len = 0;
-	for (o = group->children; o != NULL; o = o->next) len += 1;
+	for (o = ((SPObject *) item)->children; o != NULL; o = o->next) len += 1;
 
 	g_snprintf (c, 128, _("Group of %d objects"), len);
 
@@ -471,7 +470,7 @@ sp_group_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flag
 	nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), group->transparent);
 
 	ar = NULL;
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) item)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			ac = sp_item_invoke_show (child, arena, key, flags);
@@ -495,7 +494,7 @@ sp_group_hide (SPItem *item, unsigned int key)
 
 	group = (SPGroup *) item;
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) item)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			sp_item_invoke_hide (child, key);
@@ -532,7 +531,7 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 	/* Step 1 - generate lists of children objects */
 	items = NULL;
 	objects = NULL;
-	for (child = group->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) group)->children; child != NULL; child = child->next) {
 		SPRepr *nrepr;
 		nrepr = sp_repr_duplicate (SP_OBJECT_REPR (child));
 		if (SP_IS_ITEM (child)) {
@@ -566,9 +565,9 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 	objects = g_slist_reverse (objects);
 
 	/* Step 2 - clear group */
-	while (group->children) {
+	while (((SPObject *) group)->children) {
 		/* Now it is time to remove original */
-		sp_repr_remove_child (grepr, SP_OBJECT_REPR (group->children));
+		sp_repr_remove_child (grepr, SP_OBJECT_REPR (((SPObject *) group)->children));
 	}
 
 	/* Step 3 - add nonitems */
@@ -609,7 +608,7 @@ sp_item_group_item_list (SPGroup * group)
 
 	s = NULL;
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) group)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) s = g_slist_prepend (s, o);
 	}
 
@@ -620,7 +619,7 @@ SPObject *
 sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned char *name)
 {
 	SPObject *child;
-	child = (ref) ? ref->next : group->children;
+	child = (ref) ? ref->next : ((SPObject *) group)->children;
 	while (child && strcmp (sp_repr_name (child->repr), name)) child = child->next;
 	return child;
 }

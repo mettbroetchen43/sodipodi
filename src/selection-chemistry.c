@@ -152,7 +152,7 @@ sp_group_cleanup (SPGroup *group)
 	GSList *l;
 
 	l = NULL;
-	for (child = group->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) group)->children; child != NULL; child = child->next) {
 		sp_object_ref (child, NULL);
 		l = g_slist_prepend (l, child);
 	}
@@ -171,7 +171,7 @@ sp_group_cleanup (SPGroup *group)
 	if (!strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) {
 		gint numitems;
 		numitems = 0;
-		for (child = group->children; child != NULL; child = child->next) {
+		for (child = ((SPObject *) group)->children; child != NULL; child = child->next) {
 			if (SP_IS_ITEM (child)) numitems += 1;
 		}
 		if (numitems <= 1) {
@@ -314,7 +314,7 @@ void sp_selection_raise (GtkWidget * widget)
 
 	/* construct reverse-ordered list of selected children */
 	rev = NULL;
-	for (child = group->children; child; child = child->next) {
+	for (child = ((SPObject *) group)->children; child; child = child->next) {
 		if (g_slist_find ((GSList *) items, child)) {
 			rev = g_slist_prepend (rev, child);
 		}
@@ -388,7 +388,7 @@ sp_selection_lower (GtkWidget *widget)
 	skip = TRUE;
 	newref = NULL;
 	oldref = NULL;
-	child = group->children;
+	child = ((SPObject *) group)->children;
 	while (child != NULL) {
 		if (SP_IS_ITEM (child)) {
 			/* We are item */
@@ -477,7 +477,7 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 		pp = sp_document_lookup_id (document, sp_repr_attr (sp_repr_parent (repr), "id"));
 		minpos = 0;
 		g_assert (SP_IS_GROUP (pp));
-		pc = SP_GROUP (pp)->children;
+		pc = pp->children;
 		while (!SP_IS_ITEM (pc)) {
 			minpos += 1;
 			pc = pc->next;

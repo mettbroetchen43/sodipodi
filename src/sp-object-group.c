@@ -75,7 +75,7 @@ sp_objectgroup_class_init (SPObjectGroupClass *klass)
 static void
 sp_objectgroup_init (SPObjectGroup *objectgroup)
 {
-	objectgroup->children = NULL;
+	/* Nothing here */
 }
 
 static void sp_objectgroup_build (SPObject *object, SPDocument *document, SPRepr *repr)
@@ -99,7 +99,7 @@ static void sp_objectgroup_build (SPObject *object, SPDocument *document, SPRepr
 			if (last) {
 				last->next = sp_object_attach_reref (object, child, NULL);
 			} else {
-				og->children = sp_object_attach_reref (object, child, NULL);
+				object->children = sp_object_attach_reref (object, child, NULL);
 			}
 			sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 			last = child;
@@ -114,8 +114,8 @@ sp_objectgroup_release (SPObject *object)
 
 	og = SP_OBJECTGROUP (object);
 
-	while (og->children) {
-		og->children = sp_object_detach_unref (object, og->children);
+	while (object->children) {
+		object->children = sp_object_detach_unref (object, object->children);
 	}
 
 	if (((SPObjectClass *) parent_class)->release)
@@ -141,7 +141,7 @@ sp_objectgroup_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, ochild, prev->next);
 		} else {
-			og->children = sp_object_attach_reref (object, ochild, og->children);
+			object->children = sp_object_attach_reref (object, ochild, object->children);
 		}
 		sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
@@ -160,7 +160,7 @@ sp_objectgroup_remove_child (SPObject *object, SPRepr *child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
 	ref = NULL;
-	oc = og->children;
+	oc = object->children;
 	while (oc && (SP_OBJECT_REPR (oc) != child)) {
 		ref = oc;
 		oc = oc->next;
@@ -170,7 +170,7 @@ sp_objectgroup_remove_child (SPObject *object, SPRepr *child)
 		if (ref) {
 			ref->next = sp_object_detach_unref (object, oc);
 		} else {
-			og->children = sp_object_detach_unref (object, oc);
+			object->children = sp_object_detach_unref (object, oc);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
@@ -195,12 +195,12 @@ sp_objectgroup_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRe
 		if (oold) {
 			oold->next = sp_object_detach (object, ochild);
 		} else {
-			og->children = sp_object_detach (object, ochild);
+			object->children = sp_object_detach (object, ochild);
 		}
 		if (onew) {
 			onew->next = sp_object_attach_reref (object, ochild, onew->next);
 		} else {
-			og->children = sp_object_attach_reref (object, ochild, og->children);
+			object->children = sp_object_attach_reref (object, ochild, object->children);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
@@ -214,7 +214,7 @@ sp_objectgroup_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	og = (SPObjectGroup *) object;
 
-	for (child = og->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		*seq += 1;
 		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
 	}
@@ -235,7 +235,7 @@ sp_objectgroup_write (SPObject *object, SPRepr *repr, guint flags)
 		GSList *l;
 		if (!repr) repr = sp_repr_new ("g");
 		l = NULL;
-		for (child = group->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			crepr = sp_object_invoke_write (child, NULL, flags);
 			if (crepr) l = g_slist_prepend (l, crepr);
 		}
@@ -245,7 +245,7 @@ sp_objectgroup_write (SPObject *object, SPRepr *repr, guint flags)
 			l = g_slist_remove (l, l->data);
 		}
 	} else {
-		for (child = group->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
 		}
 	}
@@ -267,7 +267,7 @@ sp_objectgroup_get_le_child_by_repr (SPObjectGroup *og, SPRepr *ref)
 	o = NULL;
 	r = SP_OBJECT_REPR (og);
 	rc = r->children;
-	oc = og->children;
+	oc = ((SPObject *) og)->children;
 
 	while (rc) {
 		if (rc == ref) return o;

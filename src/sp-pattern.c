@@ -145,7 +145,7 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		if (last) {
 			last->next = sp_object_attach_reref (object, child, NULL);
 		} else {
-			pat->children = sp_object_attach_reref (object, child, NULL);
+			object->children = sp_object_attach_reref (object, child, NULL);
 		}
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
@@ -328,7 +328,7 @@ sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	prev = NULL;
 	position = 0;
 	if (ref != NULL) {
-		prev = pat->children;
+		prev = object->children;
 		while (prev && (prev->repr != ref)) {
 			if (SP_IS_ITEM (prev)) position += 1;
 			prev = prev->next;
@@ -341,7 +341,7 @@ sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	if (prev) {
 		prev->next = sp_object_attach_reref (object, ochild, prev->next);
 	} else {
-		pat->children = sp_object_attach_reref (object, ochild, pat->children);
+		object->children = sp_object_attach_reref (object, ochild, object->children);
 	}
 
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
@@ -377,7 +377,7 @@ sp_pattern_remove_child (SPObject *object, SPRepr *child)
 		(* ((SPObjectClass *) (pattern_parent_class))->remove_child) (object, child);
 
 	prev = NULL;
-	ochild = pat->children;
+	ochild = object->children;
 	while (ochild->repr != child) {
 		prev = ochild;
 		ochild = ochild->next;
@@ -386,7 +386,7 @@ sp_pattern_remove_child (SPObject *object, SPRepr *child)
 	if (prev) {
 		prev->next = sp_object_detach_unref (object, prev->next);
 	} else {
-		pat->children = sp_object_detach_unref (object, pat->children);
+		object->children = sp_object_detach_unref (object, object->children);
 	}
 }
 
@@ -407,7 +407,7 @@ sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = pat->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		sp_object_ref (child, NULL);
 		l = g_slist_prepend (l, child);
 	}
@@ -435,7 +435,7 @@ sp_pattern_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = pat->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		sp_object_ref (child, NULL);
 		l = g_slist_prepend (l, child);
 	}
@@ -458,7 +458,7 @@ sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	pat = (SPPattern *) object;
 
-	for (child = pat->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		*seq += 1;
 		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
 	}
@@ -598,7 +598,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectF *bb
 
 	/* fixme: Show items */
 	/* fixme: Among other thing we want to traverse href here */
-	for (child = pat->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) pat)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			NRArenaItem *cai;
 			cai = sp_item_invoke_show (SP_ITEM (child), pp->arena, pp->dkey, SP_ITEM_REFERENCE_FLAGS);
@@ -625,7 +625,7 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 	pat = pp->pat;
 
 	/* fixme: Among other thing we want to traverse href here */
-	for (child = pat->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) pat)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			sp_item_invoke_hide (SP_ITEM (child), pp->dkey);
 		}

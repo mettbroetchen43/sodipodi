@@ -465,7 +465,7 @@ sp_object_layout_any_value_changed (GtkAdjustment *adj, SPWidget *spw)
 	sel = SP_WIDGET_SELECTION (spw);
 	us = gtk_object_get_data (GTK_OBJECT (spw), "units");
 	unit = sp_unit_selector_get_unit (SP_UNIT_SELECTOR (us));
-	if (sp_unit_selector_update_test (us)) {
+	if (sp_unit_selector_update_test ((SPUnitSelector *) us)) {
 		/*
 		 * When only units are being changed, don't treat changes
 		 * to adjuster values as object changes.

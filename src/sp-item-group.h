@@ -23,7 +23,6 @@
 
 struct _SPGroup {
 	SPItem item;
-	SPObject *children;
 	gboolean transparent;
 };
 

@@ -71,6 +71,7 @@ sp_desktop_dialog (void)
 	gtk_window_present (GTK_WINDOW (dlg));
 }
 
+#if 0
 static void
 sp_dtw_whatever_toggled (GtkToggleButton *tb, GtkWidget *dialog)
 {
@@ -92,6 +93,7 @@ sp_dtw_whatever_toggled (GtkToggleButton *tb, GtkWidget *dialog)
 	sp_repr_set_boolean (repr, key, gtk_toggle_button_get_active (tb));
 	sp_document_set_undo_sensitive (doc, TRUE);
 }
+#endif
 
 static void
 sp_dtw_border_layer_toggled (GtkToggleButton *tb, GtkWidget *dialog)
@@ -181,8 +183,7 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 static GtkWidget *
 sp_desktop_dialog_new (void)
 {
-	GtkWidget *dialog, *nb, *l, *t, *b, *us, *sb, *cp, *i;
-	GtkObject *a;
+	GtkWidget *dialog, *nb, *l, *t, *b, *us;
 	GCallback cb;
 	int row;
 

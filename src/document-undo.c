@@ -111,8 +111,6 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 void
 sp_document_cancel (SPDocument *doc)
 {
-	SPReprAction *log;
-
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
 	g_assert (doc->priv != NULL);

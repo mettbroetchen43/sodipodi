@@ -120,7 +120,7 @@ sp_gradient_ensure_vector_normalized (SPGradient *gr)
 		}
 		/* Now we can be sure we are in good condition */
 		/* Still have to ensure we are in vector position */
-		for (child = defs->children; child != NULL; child = child->next) {
+		for (child = ((SPObject *) defs)->children; child != NULL; child = child->next) {
 			if (SP_IS_GRADIENT (child)) {
 				SPGradient *gchild;
 				gchild = SP_GRADIENT (child);
@@ -342,7 +342,7 @@ sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector)
 
 	defs = (SPDefs *) SP_DOCUMENT_DEFS (document);
 
-	for (child = defs->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) defs)->children; child != NULL; child = child->next) {
 		if (SP_IS_LINEARGRADIENT (child)) {
 			SPGradient *gr;
 			gr = SP_GRADIENT (child);
@@ -412,7 +412,7 @@ sp_gradient_get_radial_private_normalized (SPDocument *document, SPGradient *vec
 
 	defs = (SPDefs *) SP_DOCUMENT_DEFS (document);
 
-	for (child = defs->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) defs)->children; child != NULL; child = child->next) {
 		if (SP_IS_RADIALGRADIENT (child)) {
 			SPGradient *gr;
 			gr = SP_GRADIENT (child);
@@ -731,7 +731,7 @@ sp_document_default_gradient_vector (SPDocument *document)
 
 	defs = (SPDefs *) SP_DOCUMENT_DEFS (document);
 
-	for (child = defs->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) defs)->children; child != NULL; child = child->next) {
 		if (SP_IS_GRADIENT (child)) {
 			SPGradient *gr;
 			gr = SP_GRADIENT (child);

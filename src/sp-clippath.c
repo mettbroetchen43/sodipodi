@@ -217,7 +217,7 @@ sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = og->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -259,7 +259,7 @@ sp_clippath_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = og->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -305,7 +305,7 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena, unsigned int key)
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 	cp->display = sp_clippath_view_new_prepend (cp->display, key, ai);
 
-	for (child = SP_OBJECTGROUP (cp)->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) cp)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			ac = sp_item_invoke_show (SP_ITEM (child), arena, key, SP_ITEM_REFERENCE_FLAGS);
 			if (ac) {
@@ -336,7 +336,7 @@ sp_clippath_hide (SPClipPath *cp, unsigned int key)
 	g_return_if_fail (cp != NULL);
 	g_return_if_fail (SP_IS_CLIPPATH (cp));
 
-	for (child = SP_OBJECTGROUP (cp)->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) cp)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			sp_item_invoke_hide (SP_ITEM (child), key);
 		}

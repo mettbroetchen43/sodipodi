@@ -83,7 +83,7 @@ sp_defs_class_init (SPDefsClass * klass)
 static void
 sp_defs_init (SPDefs *defs)
 {
-	defs->children = NULL;
+	/* Nothing here */
 }
 
 static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -106,7 +106,7 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 		if (last) {
 			last->next = sp_object_attach_reref (object, child, NULL);
 		} else {
-			defs->children = sp_object_attach_reref (object, child, NULL);
+			object->children = sp_object_attach_reref (object, child, NULL);
 		}
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
@@ -120,8 +120,8 @@ sp_defs_release (SPObject * object)
 
 	defs = (SPDefs *) object;
 
-	while (defs->children) {
-		defs->children = sp_object_detach_unref (SP_OBJECT (defs), defs->children);
+	while (object->children) {
+		object->children = sp_object_detach_unref (SP_OBJECT (defs), object->children);
 	}
 
 	if (((SPObjectClass *) (parent_class))->release)
@@ -147,8 +147,8 @@ sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	prev = sp_defs_get_child_by_repr (defs, ref);
 
 	if (!prev) {
-		ochild->next = defs->children;
-		defs->children = ochild;
+		ochild->next = object->children;
+		object->children = ochild;
 	} else {
 		ochild->next = prev->next;
 		prev->next = ochild;
@@ -169,7 +169,7 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
 
 	prev = NULL;
-	ochild = defs->children;
+	ochild = object->children;
 	while (ochild && ochild->repr != child) {
 		prev = ochild;
 		ochild = ochild->next;
@@ -178,7 +178,7 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 	if (prev) {
 		prev->next = ochild->next;
 	} else {
-		defs->children = ochild->next;
+		object->children = ochild->next;
 	}
 	ochild->parent = NULL;
 	ochild->next = NULL;
@@ -203,14 +203,14 @@ sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr *
 	if (oold) {
 		oold->next = ochild->next;
 	} else {
-		defs->children = ochild->next;
+		object->children = ochild->next;
 	}
 	if (onew) {
 		ochild->next = onew->next;
 		onew->next = ochild;
 	} else {
-		ochild->next = defs->children;
-		defs->children = ochild;
+		ochild->next = object->children;
+		object->children = ochild;
 	}
 }
 
@@ -227,7 +227,7 @@ sp_defs_update (SPObject *object, SPCtx *ctx, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = defs->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -255,7 +255,7 @@ sp_defs_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
-	for (child = defs->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		g_object_ref (G_OBJECT (child));
 		l = g_slist_prepend (l, child);
 	}
@@ -278,7 +278,7 @@ sp_defs_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	defs = SP_DEFS (object);
 
-	for (child = defs->children; child; child = child->next) {
+	for (child = object->children; child; child = child->next) {
 		*seq += 1;
 		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
 	}
@@ -300,7 +300,7 @@ sp_defs_write (SPObject *object, SPRepr *repr, guint flags)
 		GSList *l;
 		if (!repr) repr = sp_repr_new ("defs");
 		l = NULL;
-		for (child = defs->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			crepr = sp_object_invoke_write (child, NULL, flags);
 			l = g_slist_prepend (l, crepr);
 		}
@@ -310,7 +310,7 @@ sp_defs_write (SPObject *object, SPRepr *repr, guint flags)
 			l = g_slist_remove (l, l->data);
 		}
 	} else {
-		for (child = defs->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
 		}
 	}
@@ -328,7 +328,7 @@ sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr)
 
 	if (!repr) return NULL;
 
-	o = defs->children;
+	o = ((SPObject *) defs)->children;
 	while (o->repr != repr) o = o->next;
 
 	return o;

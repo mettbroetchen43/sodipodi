@@ -690,7 +690,7 @@ sp_document_items_in_box (SPDocument *document, NRRectD *box)
 
 	s = NULL;
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) group)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			sp_item_bbox_desktop (child, &b);
@@ -729,7 +729,7 @@ sp_document_partial_items_in_box (SPDocument *document, NRRectD *box)
 
 	s = NULL;
 
-	for (o = group->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) group)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			sp_item_bbox_desktop (child, &b);

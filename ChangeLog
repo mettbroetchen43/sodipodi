@@ -1,3 +1,13 @@
+2003-11-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-object.h: Put generic children link here
+
+	* src/sp-object.c (sp_object_invoke_children_update): New method
+	(sp_object_invoke_children_modified): Ditto
+
+	* src/libnr/nr-stroke.c (nr_svl_stroke_build_finish_subpath): Fail,
+	if only one point, fixes crash on miniature paths
+
 2003-11-03  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/text-context.c: (sp_text_context_root_handler): Add

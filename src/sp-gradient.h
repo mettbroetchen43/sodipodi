@@ -126,7 +126,6 @@ struct _SPGradient {
 	SPGradientSpread spread;
 	guint spread_set : 1;
 	/* Gradient stops */
-	SPObject *stops;
 	guint has_stops : 1;
 	/* Composed vector */
 	SPGradientVector *vector;

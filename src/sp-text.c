@@ -971,7 +971,6 @@ sp_text_init (SPText *text)
 	sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	text->ly.linespacing = 1.0;
 	text->ly.xml_space = SP_XML_SPACE_DEFAULT;
-	text->children = NULL;
 }
 
 /* fixme: Better place (Lauris) */
@@ -1025,7 +1024,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 			if (ref) {
 				ref->next = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 			} else {
-				text->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+				object->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 			}
 			string->ly = &text->ly;
 			sp_object_invoke_build (SP_OBJECT (string), doc, rch, SP_OBJECT_IS_CLONED (object));
@@ -1036,7 +1035,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 			if (ref) {
 				ref->next = sp_object_attach_reref (object, child, NULL);
 			} else {
-				text->children = sp_object_attach_reref (object, child, NULL);
+				object->children = sp_object_attach_reref (object, child, NULL);
 			}
 			sp_object_invoke_build (child, doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = child;
@@ -1064,8 +1063,8 @@ sp_text_release (SPObject *object)
 
 	text = SP_TEXT (object);
 
-	while (text->children) {
-		text->children = sp_object_detach_unref (SP_OBJECT (object), text->children);
+	while (object->children) {
+		object->children = sp_object_detach_unref (SP_OBJECT (object), object->children);
 	}
 
 	if (((SPObjectClass *) text_parent_class)->release)
@@ -1150,7 +1149,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	prev = NULL;
 
 	if (ref != NULL) {
-		prev = text->children;
+		prev = object->children;
 		while (prev && (prev->repr != ref)) prev = prev->next;
 	}
 
@@ -1160,7 +1159,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, SP_OBJECT (string), prev->next);
 		} else {
-			text->children = sp_object_attach_reref (object, SP_OBJECT (string), text->children);
+			object->children = sp_object_attach_reref (object, SP_OBJECT (string), object->children);
 		}
 		string->ly = &text->ly;
 		sp_object_invoke_build (SP_OBJECT (string), SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
@@ -1171,7 +1170,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		if (prev) {
 			prev->next = sp_object_attach_reref (object, child, prev->next);
 		} else {
-			text->children = sp_object_attach_reref (object, child, text->children);
+			object->children = sp_object_attach_reref (object, child, object->children);
 		}
 		sp_object_invoke_build (child, SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
 		och = child;
@@ -1209,7 +1208,7 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 		((SPObjectClass *) text_parent_class)->remove_child (object, rch);
 
 	prev = NULL;
-	och = text->children;
+	och = object->children;
 	while (och->repr != rch) {
 		prev = och;
 		och = och->next;
@@ -1218,7 +1217,7 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 	if (prev) {
 		prev->next = sp_object_detach_unref (object, och);
 	} else {
-		text->children = sp_object_detach_unref (object, och);
+		object->children = sp_object_detach_unref (object, och);
 	}
 
 	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_CONTENT_MODIFIED_FLAG);
@@ -1257,7 +1256,7 @@ sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 
 	/* Create temporary list of children */
 	l = NULL;
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		sp_object_ref (SP_OBJECT (child), object);
 		l = g_slist_prepend (l, child);
 	}
@@ -1299,7 +1298,7 @@ sp_text_modified (SPObject *object, guint flags)
 
 	/* Create temporary list of children */
 	l = NULL;
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		sp_object_ref (SP_OBJECT (child), object);
 		l = g_slist_prepend (l, child);
 	}
@@ -1322,7 +1321,7 @@ sp_text_sequence (SPObject *object, SPObject *target, unsigned int *seq)
 
 	text = (SPText *) object;
 
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = object->children; child != NULL; child = child->next) {
 		if (SP_IS_TSPAN (child)) {
 			*seq += 1;
 			if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
@@ -1345,7 +1344,7 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 		GSList *l;
 		if (!repr) repr = sp_repr_new ("text");
 		l = NULL;
-		for (child = text->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			if (SP_IS_TSPAN (child)) {
 				crepr = sp_object_invoke_write (child, NULL, flags);
 				if (crepr) l = g_slist_prepend (l, crepr);
@@ -1359,7 +1358,7 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 			l = g_slist_remove (l, l->data);
 		}
 	} else {
-		for (child = text->children; child != NULL; child = child->next) {
+		for (child = object->children; child != NULL; child = child->next) {
 			if (SP_IS_TSPAN (child)) {
 				sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
 			} else {
@@ -1391,7 +1390,7 @@ sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned 
 
 	text = SP_TEXT (item);
 
-	for (o = text->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) text)->children; o != NULL; o = o->next) {
 		NRMatrixD a;
 		child = SP_ITEM (o);
 		nr_matrix_multiply_dfd (&a, &child->transform, transform);
@@ -1413,7 +1412,7 @@ sp_text_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags
 	nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
 
 	ar = NULL;
-	for (o = text->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) text)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			ac = sp_item_invoke_show (child, arena, key, flags);
@@ -1437,7 +1436,7 @@ sp_text_hide (SPItem *item, unsigned int key)
 
 	text = SP_TEXT (item);
 
-	for (o = text->children; o != NULL; o = o->next) {
+	for (o = ((SPObject *) text)->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
 			sp_item_invoke_hide (child, key);
@@ -1555,7 +1554,7 @@ sp_text_set_shape (SPText *text)
 	isfirstline = TRUE;
 	inspace = FALSE;
 
-	child = text->children;
+	child = ((SPObject *) text)->children;
 	while (child != NULL) {
 		SPObject *next, *new;
 		SPString *string;
@@ -1681,7 +1680,7 @@ sp_text_set_shape (SPText *text)
 
 	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, NULL, TRUE);
 
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
 		SPString *string;
 		if (SP_IS_TSPAN (child)) {
 			string = SP_TSPAN_STRING (child);
@@ -1742,7 +1741,7 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	y = NR_MATRIX_DF_TRANSFORM_Y (&p2i, px, py);
 	sp_repr_set_double (repr, "x", x);
 	sp_repr_set_double (repr, "y", y);
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
 		if (SP_IS_TSPAN (child)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (child);
@@ -1786,7 +1785,7 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
 	sp_item_i2d_affine (item, &ctm);
 
-	for (ch = text->children; ch != NULL; ch = ch->next) {
+	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
 			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), ctx, &ctm, &pbox, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
@@ -1800,7 +1799,7 @@ sp_text_is_empty (SPText *text)
 {
 	SPObject *ch;
 
-	for (ch = text->children; ch != NULL; ch = ch->next) {
+	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		SPString *str;
 		unsigned char *p;
 		str = SP_TEXT_CHILD_STRING (ch);
@@ -1824,7 +1823,7 @@ sp_text_get_string_multiline (SPText *text)
 	guchar *str, *p;
 
 	strs = NULL;
-	for (ch = text->children; ch != NULL; ch = ch->next) {
+	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (ch);
@@ -1926,7 +1925,7 @@ sp_text_normalized_bpath (SPText *text)
 	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
 
 	cc = NULL;
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
 		SPCurve *c;
 		if (SP_IS_STRING (child)) {
 			c = sp_chars_normalized_bpath (SP_CHARS (child));
@@ -1959,7 +1958,7 @@ sp_text_update_immediate_state (SPText *text)
 	guint start;
 
 	start = 0;
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
 		SPString *string;
 		if (SP_IS_TSPAN (child)) {
 			string = SP_TSPAN_STRING (child);
@@ -1993,9 +1992,9 @@ sp_text_get_length (SPText *text)
 	g_return_val_if_fail (text != NULL, 0);
 	g_return_val_if_fail (SP_IS_TEXT (text), 0);
 
-	if (!text->children) return 0;
+	if (!((SPObject *) text)->children) return 0;
 
-	child = text->children;
+	child = ((SPObject *) text)->children;
 	while (child->next) child = child->next;
 
 	if (SP_IS_STRING (child)) {
@@ -2023,7 +2022,7 @@ sp_text_append_line (SPText *text)
 	cp.x = text->ly.x.computed;
 	cp.y = text->ly.y.computed;
 
-	for (child = text->children; child != NULL; child = child->next) {
+	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
 		if (SP_IS_TSPAN (child)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (child);
@@ -2107,7 +2106,7 @@ sp_text_append (SPText *text, const guchar *utf8)
 	g_return_val_if_fail (SP_IS_TEXT (text), -1);
 	g_return_val_if_fail (utf8 != NULL, -1);
 
-	if (!text->children) {
+	if (!((SPObject *) text)->children) {
 		SPRepr *rtspan, *rstring;
 		/* Create <tspan> */
 		rtspan = sp_repr_new ("tspan");
@@ -2118,10 +2117,10 @@ sp_text_append (SPText *text, const guchar *utf8)
 		/* Add string */
 		sp_repr_add_child (SP_OBJECT_REPR (text), rtspan, NULL);
 		sp_repr_unref (rtspan);
-		g_assert (text->children);
+		g_assert (((SPObject *) text)->children);
 	}
 
-	child = text->children;
+	child = ((SPObject *) text)->children;
 	while (child->next) child = child->next;
 	if (SP_IS_STRING (child)) {
 		string = SP_STRING (child);
@@ -2213,7 +2212,7 @@ sp_text_delete (SPText *text, gint start, gint end)
 	g_return_val_if_fail (start >= 0, -1);
 	g_return_val_if_fail (end >= start, -1);
 
-	if (!text->children) return 0;
+	if (!((SPObject *) text)->children) return 0;
 	if (start == end) return start;
 
 	schild = sp_text_get_child_by_position (text, start);
@@ -2268,11 +2267,11 @@ sp_text_up (SPText *text, gint pos)
 	gint col;
 
 	child = sp_text_get_child_by_position (text, pos);
-	if (!child || child == text->children) return pos;
+	if (!child || child == ((SPObject *) text)->children) return pos;
 	string = SP_TEXT_CHILD_STRING (child);
 	col = pos - string->start;
 
-	up = text->children;
+	up = ((SPObject *) text)->children;
 	while (up->next != child) up = up->next;
 	string = SP_TEXT_CHILD_STRING (up);
 	col = MIN (col, string->length);
@@ -2361,7 +2360,7 @@ sp_text_get_child_by_position (SPText *text, gint pos)
 {
 	SPObject *child;
 
-	for (child = text->children; child && child->next; child = child->next) {
+	for (child = ((SPObject *) text)->children; child && child->next; child = child->next) {
 		SPString *string;
 		if (SP_IS_STRING (child)) {
 			string = SP_STRING (child);
