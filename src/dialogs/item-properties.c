@@ -45,6 +45,7 @@ static void sp_item_widget_modify_selection (SPWidget *spw, SPSelection *selecti
 static void sp_item_widget_change_selection (SPWidget *spw, SPSelection *selection, GtkWidget *itemw);
 static void sp_item_widget_setup (SPWidget *spw, SPSelection *selection);
 static void sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw);
+static void sp_item_widget_printability_toggled (GtkWidget *widget, SPWidget *spw);
 #if 0
 static void sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw);
 #endif
@@ -90,9 +91,9 @@ sp_item_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), cb, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "active", cb);
 	cb = gtk_check_button_new_with_label (_("Printable"));
-	gtk_widget_set_sensitive (GTK_WIDGET (cb), FALSE);
 	gtk_widget_show (cb);
 	gtk_table_attach (GTK_TABLE (t), cb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (cb), "toggled", GTK_SIGNAL_FUNC (sp_item_widget_printability_toggled), spw);
 	gtk_object_set_data (GTK_OBJECT (spw), "printable", cb);
 
 	/* Opacity */
@@ -212,6 +213,10 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 	w = gtk_object_get_data (GTK_OBJECT (spw), "sensitive");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), item->sensitive);
 	
+	/* Printable */
+	w = gtk_object_get_data (GTK_OBJECT (spw), "printable");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), item->printable);
+	
 	/* Opacity */
 	a = gtk_object_get_data (GTK_OBJECT (spw), "opacity");
 	gtk_adjustment_set_value (a, SP_SCALE24_TO_FLOAT (style->opacity.value));
@@ -271,6 +276,31 @@ sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
 	}
 
 	sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:insensitive");
+
+	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (FALSE));
+}
+
+static void
+sp_item_widget_printability_toggled (GtkWidget *widget, SPWidget *spw)
+{
+	SPItem *item;
+	SPException ex;
+
+	if (gtk_object_get_data (GTK_OBJECT (spw), "blocked")) return;
+
+	item = sp_selection_item (SP_WIDGET_SELECTION (spw));
+	g_return_if_fail (item != NULL);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (TRUE));
+
+	SP_EXCEPTION_INIT (&ex);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
+		sp_object_removeAttribute (SP_OBJECT (item), "sodipodi:nonprintable", &ex);
+	} else {
+		sp_object_setAttribute (SP_OBJECT (item), "sodipodi:nonprintable", "true", &ex);
+	}
+
+	sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:nonprintable");
 
 	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (FALSE));
 }

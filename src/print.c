@@ -17,6 +17,7 @@
 #include <ctype.h>
 
 #include <libnr/nr-rect.h>
+#include <libnr/nr-matrix.h>
 #include <libnr/nr-pixblock.h>
 
 #include "helper/sp-intl.h"
@@ -928,7 +929,7 @@ sp_print_document (SPDocument *doc)
 	mod->base = SP_ITEM (sp_document_root (doc));
 	mod->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 	mod->dkey = sp_item_display_key_new (1);
-	mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey);
+	mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey, SP_ITEM_SHOW_PRINT);
 
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
 		ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup (mod);

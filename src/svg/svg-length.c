@@ -29,6 +29,28 @@
 #endif
 
 unsigned int
+sp_svg_boolean_read (const unsigned char *str, unsigned int *val)
+{
+	unsigned int v;
+	char *e;
+	if (!val) return 0;
+	if (!strcasecmp (str, "true") || !strcasecmp (str, "yes")) {
+		*val = 1;
+		return 1;
+	}
+	if (!strcasecmp (str, "false") || !strcasecmp (str, "no")) {
+		*val = 0;
+		return 1;
+	}
+	v = strtoul (str, &e, 10);
+	if ((const unsigned char *) e != str) {
+		*val = v;
+		return 1;
+	}
+	return 0;
+}
+
+unsigned int
 sp_svg_number_read_f (const unsigned char *str, float *val)
 {
 	char *e;

@@ -13,16 +13,28 @@
  */
 
 #include <string.h>
+#include <stddef.h>
+
+#include <glib.h>
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif
+
 #include "repr-private.h"
 
 typedef struct _SPReprListener SPListener;
 
-static SPRepr * sp_repr_new_from_code (gint code);
+static SPRepr * sp_repr_new_from_code (int code);
 static void sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr);
 static void sp_node_remove_listener (SPXMLNode *node, SPListener *listener);
 
 static SPXMLAttribute *sp_attribute_duplicate (const SPXMLAttribute *attr);
-static SPXMLAttribute *sp_attribute_new_from_quark (gint key, const guchar *value);
+static SPXMLAttribute *sp_attribute_new_from_quark (int key, const unsigned char *value);
 
 /* Helpers */
 static SPXMLNode * sp_node_alloc (void);
@@ -33,7 +45,7 @@ static SPListener *sp_listener_alloc (void);
 static void sp_listener_free (SPListener *listener);
 
 SPRepr *
-sp_repr_new_from_code (gint code)
+sp_repr_new_from_code (int code)
 {
 	SPRepr * repr;
 
@@ -51,7 +63,7 @@ sp_repr_new_from_code (gint code)
 }
 
 SPRepr *
-sp_repr_new (const guchar *name)
+sp_repr_new (const unsigned char *name)
 {
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (*name != '\0', NULL);
@@ -60,7 +72,7 @@ sp_repr_new (const guchar *name)
 }
 
 SPRepr *
-sp_repr_new_text (const guchar *content)
+sp_repr_new_text (const unsigned char *content)
 {
 	SPRepr * repr;
 	g_return_val_if_fail (content != NULL, NULL);
@@ -154,7 +166,7 @@ sp_repr_duplicate (const SPRepr *repr)
 	return new;
 }
 
-const guchar *
+const unsigned char *
 sp_repr_name (const SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
@@ -162,7 +174,7 @@ sp_repr_name (const SPRepr *repr)
 	return SP_REPR_NAME (repr);
 }
 
-const guchar *
+const unsigned char *
 sp_repr_content (const SPRepr *repr)
 {
 	g_assert (repr != NULL);
@@ -170,11 +182,11 @@ sp_repr_content (const SPRepr *repr)
 	return SP_REPR_CONTENT (repr);
 }
 
-const guchar *
-sp_repr_attr (const SPRepr *repr, const guchar *key)
+const unsigned char *
+sp_repr_attr (const SPRepr *repr, const unsigned char *key)
 {
 	SPReprAttr *ra;
-	GQuark q;
+	unsigned int q;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
@@ -186,12 +198,12 @@ sp_repr_attr (const SPRepr *repr, const guchar *key)
 	return NULL;
 }
 
-gboolean
-sp_repr_set_content (SPRepr *repr, const guchar *newcontent)
+unsigned int
+sp_repr_set_content (SPRepr *repr, const unsigned char *newcontent)
 {
 	SPReprListener *rl;
-	guchar *oldcontent;
-	gboolean allowed;
+	unsigned char *oldcontent;
+	unsigned int allowed;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 
@@ -217,13 +229,13 @@ sp_repr_set_content (SPRepr *repr, const guchar *newcontent)
 	return allowed;
 }
 
-static gboolean
-sp_repr_del_attr (SPRepr *repr, const guchar *key)
+static unsigned int
+sp_repr_del_attr (SPRepr *repr, const unsigned char *key)
 {
 	SPReprAttr *prev, *attr;
 	SPReprListener *rl;
-	gboolean allowed;
-	GQuark q;
+	unsigned int allowed;
+	unsigned int q;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -236,7 +248,7 @@ sp_repr_del_attr (SPRepr *repr, const guchar *key)
 	for (attr = repr->attributes; attr && (attr->key != q); attr = attr->next) prev = attr;
 
 	if (attr) {
-		guchar *oldval;
+		unsigned char *oldval;
 
 		oldval = attr->value;
 
@@ -262,14 +274,14 @@ sp_repr_del_attr (SPRepr *repr, const guchar *key)
 	return allowed;
 }
 
-static gboolean
-sp_repr_chg_attr (SPRepr *repr, const guchar *key, const guchar *value)
+static unsigned int
+sp_repr_chg_attr (SPRepr *repr, const unsigned char *key, const unsigned char *value)
 {
 	SPReprAttr *prev, *attr;
 	SPReprListener *rl;
-	gboolean allowed;
-	gchar *oldval;
-	GQuark q;
+	unsigned int allowed;
+	char *oldval;
+	unsigned int q;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -311,8 +323,8 @@ sp_repr_chg_attr (SPRepr *repr, const guchar *key, const guchar *value)
 	return allowed;
 }
 
-gboolean
-sp_repr_set_attr (SPRepr *repr, const guchar *key, const guchar *value)
+unsigned int
+sp_repr_set_attr (SPRepr *repr, const unsigned char *key, const unsigned char *value)
 {
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -354,11 +366,11 @@ sp_repr_parent (SPRepr * repr)
 	return repr->parent;
 }
 
-gboolean
+unsigned int
 sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 {
 	SPReprListener * rl;
-	gboolean allowed;
+	unsigned int allowed;
 
 	g_assert (repr != NULL);
 	g_assert (child != NULL);
@@ -390,12 +402,12 @@ sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 	return allowed;
 }
 
-gboolean
+unsigned int
 sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 {
 	SPReprListener *rl;
 	SPRepr *ref;
-	gboolean allowed;
+	unsigned int allowed;
 
 	g_assert (repr != NULL);
 	g_assert (child != NULL);
@@ -431,12 +443,12 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 	return allowed;
 }
 
-gboolean
+unsigned int
 sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref)
 {
 	SPRepr * prev;
 	SPReprListener * rl;
-	gint allowed;
+	int allowed;
 
 	prev = NULL;
 	if (child != repr->children) {
@@ -474,14 +486,14 @@ sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref)
 }
 
 void
-sp_repr_set_position_absolute (SPRepr * repr, gint pos)
+sp_repr_set_position_absolute (SPRepr * repr, int pos)
 {
 	SPRepr * parent;
 	SPRepr * ref, * cur;
 
 	parent = repr->parent;
 
-	if (pos < 0) pos = G_MAXINT;
+	if (pos < 0) pos = 0x7fffffff;
 
 	ref = NULL;
 	cur = parent->children;
@@ -500,7 +512,7 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 }
 
 void
-sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, gpointer data)
+sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void * data)
 {
 	
 	if (vector->attr_changed) {
@@ -523,7 +535,7 @@ sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, gpoint
 }
 
 void
-sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, gpointer data)
+sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data)
 {
 	SPReprListener *rl, *last;
 
@@ -564,7 +576,7 @@ sp_node_remove_listener (SPXMLNode *node, SPListener *listener)
 }
 
 void
-sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data)
+sp_repr_remove_listener_by_data (SPRepr *repr, void *data)
 {
 	SPReprListener * last, * rl;
 
@@ -584,7 +596,7 @@ sp_repr_remove_listener_by_data (SPRepr * repr, gpointer data)
 }
 
 SPRepr *
-sp_repr_nth_child (const SPRepr * repr, gint n)
+sp_repr_nth_child (const SPRepr * repr, int n)
 {
 	SPRepr * child;
 
@@ -602,7 +614,7 @@ sp_repr_nth_child (const SPRepr * repr, gint n)
 /* fixme: Do this somewhere, somehow The Right Way (TM) */
 
 SPReprDoc *
-sp_repr_document_new (const gchar * rootname)
+sp_repr_document_new (const char *rootname)
 {
 	SPRepr * repr, * root;
 
@@ -680,8 +692,8 @@ sp_repr_document_root (const SPReprDoc *doc)
  * Does NOT erase original attributes and children
  */
 
-gboolean
-sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const guchar *key)
+unsigned int
+sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const unsigned char *key)
 {
 	SPRepr *rdoc;
 	const SPRepr *rsrc;
@@ -701,8 +713,8 @@ sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const guchar *key)
  * Does NOT erase original attributes and children
  */
 
-gboolean
-sp_repr_merge (SPRepr *repr, const SPRepr *src, const guchar *key)
+unsigned int
+sp_repr_merge (SPRepr *repr, const SPRepr *src, const unsigned char *key)
 {
 	SPRepr *child;
 	SPReprAttr *attr;
@@ -721,7 +733,7 @@ sp_repr_merge (SPRepr *repr, const SPRepr *src, const guchar *key)
 	
 	for (child = src->children; child != NULL; child = child->next) {
 		SPRepr *rch;
-		const guchar *id;
+		const unsigned char *id;
 		id = sp_repr_attr (child, key);
 		if (id) {
 			rch = sp_repr_lookup_child (repr, key, id);
@@ -759,7 +771,7 @@ sp_attribute_duplicate (const SPXMLAttribute *attr)
 }
 
 static SPXMLAttribute *
-sp_attribute_new_from_quark (gint key, const guchar *value)
+sp_attribute_new_from_quark (int key, const unsigned char *value)
 {
 	SPXMLAttribute *new;
 
@@ -780,7 +792,7 @@ static SPXMLNode *
 sp_node_alloc (void)
 {
 	SPXMLNode *node;
-	gint i;
+	int i;
 
 	if (free_node) {
 		node = free_node;
@@ -809,7 +821,7 @@ static SPXMLAttribute *
 sp_attribute_alloc (void)
 {
 	SPXMLAttribute *attribute;
-	gint i;
+	int i;
 
 	if (free_attribute) {
 		attribute = free_attribute;
@@ -838,7 +850,7 @@ static SPListener *
 sp_listener_alloc (void)
 {
 	SPListener *listener;
-	gint i;
+	int i;
 
 	if (free_listener) {
 		listener = free_listener;

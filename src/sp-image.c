@@ -49,7 +49,7 @@ static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transfo
 static void sp_image_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_image_description (SPItem * item);
 static int sp_image_snappoints (SPItem *item, NRPointF *p, int size);
-static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
@@ -379,7 +379,7 @@ sp_image_description (SPItem * item)
 }
 
 static NRArenaItem *
-sp_image_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPImage * image;
 	NRArenaItem *ai;

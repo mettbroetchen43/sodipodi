@@ -14,7 +14,9 @@
  */
 
 #include <libnr/nr-types.h>
+
 #include <gtk/gtkmenu.h>
+
 #include "helper/units.h"
 #include "display/nr-arena-forward.h"
 #include "forward.h"
@@ -48,15 +50,24 @@ typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
 	SPItemView *next;
+	unsigned int flags;
 	unsigned int key;
 	/* SPItem *item; */
 	NRArenaItem *arenaitem;
 };
 
-enum {
-	SP_ITEM_BBOX_LOGICAL,
-	SP_ITEM_BBOX_VISUAL
-};
+/* flags */
+
+#define SP_ITEM_BBOX_VISUAL 1
+
+#define SP_ITEM_SHOW_DISPLAY (1 << 0)
+#define SP_ITEM_SHOW_PRINT (1 << 1)
+
+/*
+ * We do not differentiate referenced views (i.e. clippaths, maks and patterns)
+ * by display/print targets (they are non-editable anyways)
+ */
+#define SP_ITEM_REFERENCE_FLAGS SP_ITEM_SHOW_PRINT
 
 typedef struct _SPItemCtx SPItemCtx;
 
@@ -73,8 +84,9 @@ struct _SPItemCtx {
 struct _SPItem {
 	SPObject object;
 
-	guint sensitive : 1;
-	guint stop_paint: 1;
+	unsigned int sensitive : 1;
+	unsigned int printable : 1;
+	unsigned int stop_paint: 1;
 
 	NRMatrixF transform;
 
@@ -100,7 +112,7 @@ struct _SPItemClass {
 	/* Give short description of item (for status display) */
 	gchar * (* description) (SPItem * item);
 
-	NRArenaItem * (* show) (SPItem *item, NRArena *arena, unsigned int key);
+	NRArenaItem * (* show) (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 	void (* hide) (SPItem *item, unsigned int key);
 
 	/* Returns a number of points used */ 
@@ -132,7 +144,7 @@ void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 
 /* Shows/Hides item on given arena display list */
 unsigned int sp_item_display_key_new (unsigned int numkeys);
-NRArenaItem *sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key);
+NRArenaItem *sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 void sp_item_invoke_hide (SPItem *item, unsigned int key);
 
 int sp_item_snappoints (SPItem *item, NRPointF *points, int size);
@@ -161,9 +173,6 @@ NRMatrixF *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *transfor
 /* Context menu stuff */
 
 void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-
-SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int key, NRArenaItem *arenaitem);
-SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
 
 /* Convert distances into SVG units */
 

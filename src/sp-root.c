@@ -35,7 +35,7 @@ static void sp_root_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_root_modified (SPObject *object, guint flags);
 static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
-static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_root_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
@@ -620,7 +620,7 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static NRArenaItem *
-sp_root_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_root_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPRoot *root;
 	NRArenaItem *ai;
@@ -628,7 +628,7 @@ sp_root_show (SPItem *item, NRArena *arena, unsigned int key)
 	root = SP_ROOT (item);
 
 	if (((SPItemClass *) (parent_class))->show) {
-		ai = ((SPItemClass *) (parent_class))->show (item, arena, key);
+		ai = ((SPItemClass *) (parent_class))->show (item, arena, key, flags);
 		if (ai) {
 			NRMatrixF vbf;
 			nr_matrix_f_from_d (&vbf, &root->c2p);

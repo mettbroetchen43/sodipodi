@@ -197,7 +197,7 @@ sp_mask_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		SPMaskView *v;
 		for (v = cp->display; v != NULL; v = v->next) {
 			NRArenaItem *ac;
-			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key, SP_ITEM_REFERENCE_FLAGS);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				nr_arena_item_unref (ac);
@@ -323,7 +323,7 @@ sp_mask_show (SPMask *mask, NRArena *arena, unsigned int key)
 
 	for (child = SP_OBJECTGROUP (mask)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
-			ac = sp_item_invoke_show (SP_ITEM (child), arena, key);
+			ac = sp_item_invoke_show (SP_ITEM (child), arena, key, SP_ITEM_REFERENCE_FLAGS);
 			if (ac) {
 				/* The order is not important in mask */
 				nr_arena_item_add_child (ai, ac, NULL);

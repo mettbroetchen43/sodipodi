@@ -16,11 +16,26 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#include <glib.h>
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE (!FALSE)
+#endif
+
+#ifndef MAX
+#define MAX(a,b) (((a) < (b)) ? (b) : (a))
+#endif
+
 #include "repr-private.h"
 
 static void sp_repr_transfer_ids (SPRepr *new_repr, SPRepr *repr);
 static void sp_xml_ns_register_defaults ();
-static gchar *sp_xml_ns_auto_prefix (const gchar *uri);
+static char *sp_xml_ns_auto_prefix (const char *uri);
 
 /* SPXMLNs */
 
@@ -42,11 +57,11 @@ sp_xml_ns_register_defaults ()
 	namespaces = &defaults[0];
 }
 
-gchar *
-sp_xml_ns_auto_prefix (const gchar *uri)
+char *
+sp_xml_ns_auto_prefix (const char *uri)
 {
-	const gchar *start, *end;
-	gchar *new_prefix;
+	const char *start, *end;
+	char *new_prefix;
 	start = uri;
 	while ((end = strpbrk (start, ":/"))) {
 		start = end + 1;
@@ -58,7 +73,7 @@ sp_xml_ns_auto_prefix (const gchar *uri)
 	}
 	new_prefix = g_strndup (start, end - start);
 	if (sp_xml_ns_prefix_uri (new_prefix)) {
-		gchar *temp;
+		char *temp;
 		int counter=0;
 		do {
 			temp = g_strdup_printf ("%s%d", new_prefix, counter++);
@@ -69,12 +84,12 @@ sp_xml_ns_auto_prefix (const gchar *uri)
 	return new_prefix;
 }
 
-const gchar *
-sp_xml_ns_uri_prefix (const gchar *uri, const gchar *suggested)
+const unsigned char *
+sp_xml_ns_uri_prefix (const unsigned char *uri, const unsigned char *suggested)
 {
-	GQuark key;
+	unsigned int key;
 	SPXMLNs *iter;
-	const gchar *prefix;
+	const char *prefix;
 
 	if (!uri) return NULL;
 
@@ -91,7 +106,7 @@ sp_xml_ns_uri_prefix (const gchar *uri, const gchar *suggested)
 		}
 	}
 	if (!prefix) {
-		const gchar *new_prefix;
+		const char *new_prefix;
 		SPXMLNs *ns;
 		if (suggested) {
 			new_prefix = suggested;
@@ -107,18 +122,18 @@ sp_xml_ns_uri_prefix (const gchar *uri, const gchar *suggested)
 			prefix = g_quark_to_string (ns->prefix);
 		}
 		if (!suggested) {
-			g_free ((gchar *)new_prefix);
+			g_free ((char *)new_prefix);
 		}
 	}
 	return prefix;
 }
 
-const gchar *
-sp_xml_ns_prefix_uri (const gchar *prefix)
+const unsigned char *
+sp_xml_ns_prefix_uri (const unsigned char *prefix)
 {
-	GQuark key;
+	unsigned int key;
 	SPXMLNs *iter;
-	const gchar *uri;
+	const char *uri;
 
 	if (!prefix) return NULL;
 
@@ -140,7 +155,7 @@ sp_xml_ns_prefix_uri (const gchar *prefix)
 /* SPXMLDocument */
 
 SPXMLText *
-sp_xml_document_createTextNode (SPXMLDocument *doc, const guchar *data)
+sp_xml_document_createTextNode (SPXMLDocument *doc, const unsigned char *data)
 {
 	SPXMLText *text;
 
@@ -152,13 +167,13 @@ sp_xml_document_createTextNode (SPXMLDocument *doc, const guchar *data)
 }
 
 SPXMLElement *
-sp_xml_document_createElement (SPXMLDocument *doc, const guchar *name)
+sp_xml_document_createElement (SPXMLDocument *doc, const unsigned char *name)
 {
 	return sp_repr_new (name);
 }
 
 SPXMLElement *
-sp_xml_document_createElementNS (SPXMLDocument *doc, const guchar *ns, const guchar *qname)
+sp_xml_document_createElementNS (SPXMLDocument *doc, const unsigned char *ns, const unsigned char *qname)
 {
 	if (!strncmp (qname, "svg:", 4)) qname += 4;
 
@@ -178,7 +193,7 @@ sp_xml_node_get_Document (SPXMLNode *node)
 /* SPXMLElement */
 
 void
-sp_xml_element_setAttributeNS (SPXMLElement *element, const guchar *nr, const guchar *qname, const guchar *val)
+sp_xml_element_setAttributeNS (SPXMLElement *element, const unsigned char *nr, const unsigned char *qname, const unsigned char *val)
 {
 	if (!strncmp (qname, "svg:", 4)) qname += 4;
 
@@ -202,47 +217,47 @@ sp_repr_next (SPRepr *repr)
 	return repr->next;
 }
 
-gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
+int sp_repr_attr_is_set (SPRepr * repr, const char * key)
 {
-	gchar * result;
+	char * result;
 
-	result = (gchar *) sp_repr_attr (repr, key);
+	result = (char *) sp_repr_attr (repr, key);
 
 	return (result != NULL);
 }
 
-gdouble sp_repr_get_double_attribute (SPRepr * repr, const gchar * key, gdouble def)
+double sp_repr_get_double_attribute (SPRepr * repr, const char * key, double def)
 {
-	gchar * result;
+	char * result;
 
 	g_return_val_if_fail (repr != NULL, def);
 	g_return_val_if_fail (key != NULL, def);
 
-	result = (gchar *) sp_repr_attr (repr, key);
+	result = (char *) sp_repr_attr (repr, key);
 
 	if (result == NULL) return def;
 
 	return atof (result);
 }
 
-gint sp_repr_get_int_attribute (SPRepr * repr, const gchar * key, gint def)
+int sp_repr_get_int_attribute (SPRepr * repr, const char * key, int def)
 {
-	gchar * result;
+	char * result;
 
 	g_return_val_if_fail (repr != NULL, def);
 	g_return_val_if_fail (key != NULL, def);
 
-	result = (gchar *) sp_repr_attr (repr, key);
+	result = (char *) sp_repr_attr (repr, key);
 
 	if (result == NULL) return def;
 
 	return atoi (result);
 }
 
-gboolean
-sp_repr_set_double_attribute (SPRepr * repr, const gchar * key, gdouble value)
+unsigned int
+sp_repr_set_double_attribute (SPRepr * repr, const char * key, double value)
 {
-	gchar c[32];
+	char c[32];
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -252,10 +267,10 @@ sp_repr_set_double_attribute (SPRepr * repr, const gchar * key, gdouble value)
 	return sp_repr_set_attr (repr, key, c);
 }
 
-gboolean
-sp_repr_set_int_attribute (SPRepr * repr, const gchar * key, gint value)
+unsigned int
+sp_repr_set_int_attribute (SPRepr * repr, const char * key, int value)
 {
-	gchar c[32];
+	char c[32];
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -265,8 +280,8 @@ sp_repr_set_int_attribute (SPRepr * repr, const gchar * key, gint value)
 	return sp_repr_set_attr (repr, key, c);
 }
 
-const gchar *
-sp_repr_doc_attr (SPRepr * repr, const gchar * key)
+const char *
+sp_repr_doc_attr (SPRepr * repr, const char * key)
 {
 	SPRepr * p;
 
@@ -280,11 +295,11 @@ sp_repr_doc_attr (SPRepr * repr, const gchar * key)
 	return sp_repr_attr (repr, key);
 }
 
-gint
+int
 sp_repr_compare_position (SPRepr * first, SPRepr * second)
 {
 	SPRepr * parent;
-	gint p1, p2;
+	int p1, p2;
 
 	parent = sp_repr_parent (first);
 	g_assert (parent == sp_repr_parent (second));
@@ -297,12 +312,12 @@ sp_repr_compare_position (SPRepr * first, SPRepr * second)
 	return 0;
 }
 
-gint
+int
 sp_repr_position (SPRepr * repr)
 {
 	SPRepr * parent;
 	SPRepr * sibling;
-	gint pos;
+	int pos;
 
 	g_assert (repr != NULL);
 	parent = sp_repr_parent (repr);
@@ -320,9 +335,9 @@ sp_repr_position (SPRepr * repr)
 }
 
 void
-sp_repr_set_position_relative (SPRepr * repr, gint pos)
+sp_repr_set_position_relative (SPRepr * repr, int pos)
 {
-	gint cpos;
+	int cpos;
 
 	g_assert (repr != NULL);
 
@@ -330,11 +345,11 @@ sp_repr_set_position_relative (SPRepr * repr, gint pos)
 	sp_repr_set_position_absolute (repr, cpos + pos);
 }
 
-gint
+int
 sp_repr_n_children (SPRepr * repr)
 {
 	SPRepr * child;
-	gint n;
+	int n;
 
 	g_assert (repr != NULL);
 
@@ -407,11 +422,11 @@ sp_repr_remove_signals (SPRepr * repr)
 #endif
 }
 
-const guchar *
-sp_repr_attr_inherited (SPRepr *repr, const guchar *key)
+const unsigned char *
+sp_repr_attr_inherited (SPRepr *repr, const unsigned char *key)
 {
 	SPRepr *current;
-	const gchar *val;
+	const char *val;
 
 	g_assert (repr != NULL);
 	g_assert (key != NULL);
@@ -424,8 +439,8 @@ sp_repr_attr_inherited (SPRepr *repr, const guchar *key)
 	return NULL;
 }
 
-gboolean
-sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value)
+unsigned int
+sp_repr_set_attr_recursive (SPRepr *repr, const unsigned char *key, const unsigned char *value)
 {
 	SPRepr *child;
 
@@ -448,12 +463,12 @@ sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value
  */
 SPRepr *
 sp_repr_lookup_child (SPRepr       *repr,
-                      const guchar *key,
-                      const guchar *value)
+                      const unsigned char *key,
+                      const unsigned char *value)
 {
 	SPRepr *child;
 	SPReprAttr *attr;
-	GQuark quark;
+	unsigned int quark;
 
 	g_return_val_if_fail (repr != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
@@ -473,10 +488,10 @@ sp_repr_lookup_child (SPRepr       *repr,
 }
 
 /* Convenience */
-gboolean
-sp_repr_get_boolean (SPRepr *repr, const guchar *key, gboolean *val)
+unsigned int
+sp_repr_get_boolean (SPRepr *repr, const unsigned char *key, unsigned int *val)
 {
-	const guchar *v;
+	const unsigned char *v;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -510,10 +525,10 @@ sp_repr_get_boolean (SPRepr *repr, const guchar *key, gboolean *val)
 	return FALSE;
 }
 
-gboolean
-sp_repr_get_int (SPRepr *repr, const guchar *key, gint *val)
+unsigned int
+sp_repr_get_int (SPRepr *repr, const unsigned char *key, int *val)
 {
-	const guchar *v;
+	const unsigned char *v;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -529,10 +544,10 @@ sp_repr_get_int (SPRepr *repr, const guchar *key, gint *val)
 	return FALSE;
 }
 
-gboolean
-sp_repr_get_double (SPRepr *repr, const guchar *key, gdouble *val)
+unsigned int
+sp_repr_get_double (SPRepr *repr, const unsigned char *key, double *val)
 {
-	const guchar *v;
+	const unsigned char *v;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -548,8 +563,8 @@ sp_repr_get_double (SPRepr *repr, const guchar *key, gdouble *val)
 	return FALSE;
 }
 
-gboolean
-sp_repr_set_boolean (SPRepr *repr, const guchar *key, gboolean val)
+unsigned int
+sp_repr_set_boolean (SPRepr *repr, const unsigned char *key, unsigned int val)
 {
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -557,10 +572,10 @@ sp_repr_set_boolean (SPRepr *repr, const guchar *key, gboolean val)
 	return sp_repr_set_attr (repr, key, (val) ? "true" : "false");
 }
 
-gboolean
-sp_repr_set_int (SPRepr *repr, const guchar *key, gint val)
+unsigned int
+sp_repr_set_int (SPRepr *repr, const unsigned char *key, int val)
 {
-	guchar c[32];
+	unsigned char c[32];
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -625,8 +640,8 @@ sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fp
 	return i;
 }
 
-gboolean
-sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
+unsigned int
+sp_repr_set_double (SPRepr *repr, const unsigned char *key, double val)
 {
 	unsigned char c[32];
 
@@ -638,8 +653,8 @@ sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
 	return sp_repr_set_attr (repr, key, c);
 }
 
-gboolean
-sp_repr_set_double_default (SPRepr *repr, const guchar *key, gdouble val, gdouble def, gdouble e)
+unsigned int
+sp_repr_set_double_default (SPRepr *repr, const unsigned char *key, double val, double def, double e)
 {
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);

@@ -1,3 +1,12 @@
+2003-05-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-item.c (nr_arena_item_set_visible): New method
+	(nr_arena_item_invoke_render): Honour visibility
+
+	* src/dialogs/item-properties.c (sp_item_widget_printability_toggled): Implement
+
+	* src/sp-item.c (sp_item_set): Added "sodipodi:printable" attribute
+
 2003-05-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/button.c (sp_button_set_composed_tooltip): Add primary shortcut

@@ -50,7 +50,7 @@ static void sp_style_privatize_text (SPStyle *style);
 
 static void sp_style_read_ifloat (SPIFloat *val, const guchar *str);
 static void sp_style_read_iscale24 (SPIScale24 *val, const guchar *str);
-static void sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
+static void sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, unsigned int inherit);
 static void sp_style_read_istring (SPIString *val, const guchar *str);
 static void sp_style_read_ilength (SPILength *val, const guchar *str);
 static void sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
@@ -59,7 +59,7 @@ static void sp_style_read_ifontsize (SPIFontSize *val, const guchar *str);
 #if 0
 static void sp_style_read_pfloat (SPIFloat *val, SPRepr *repr, const guchar *key);
 #endif
-static void sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, gboolean inherit);
+static void sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, unsigned int inherit);
 static void sp_style_read_plength (SPILength *val, SPRepr *repr, const guchar *key);
 static void sp_style_read_pfontsize (SPIFontSize *val, SPRepr *repr, const guchar *key);
 
@@ -73,7 +73,7 @@ static gint sp_style_write_ifontsize (guchar *p, gint len, const guchar *key, SP
 
 static SPColor *sp_style_read_color_cmyk (SPColor *color, const guchar *str);
 
-static void sp_style_paint_clear (SPStyle *style, SPIPaint *paint, gboolean hunref, gboolean unset);
+static void sp_style_paint_clear (SPStyle *style, SPIPaint *paint, unsigned int hunref, unsigned int unset);
 
 #define SPS_READ_IFLOAT_IF_UNSET(v,s) if (!(v)->set) {sp_style_read_ifloat ((v), (s));}
 #define SPS_READ_PFLOAT_IF_UNSET(v,r,k) if (!(v)->set) {sp_style_read_pfloat ((v), (r), (k));}
@@ -991,7 +991,7 @@ sp_style_clear (SPStyle *style)
 	SPObject *object;
 	gint refcount;
 	SPTextStyle *text;
-	gboolean text_private;
+	unsigned int text_private;
 
 	g_return_if_fail (style != NULL);
 
@@ -1084,7 +1084,7 @@ sp_style_read_dash (ArtVpathDash *dash, const guchar *str)
 }
 
 void
-sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set)
+sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, unsigned int fill_set, unsigned int opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
@@ -1104,7 +1104,7 @@ sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gflo
 }
 
 void
-sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set)
+sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, unsigned int fill_set, unsigned int opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
@@ -1124,7 +1124,7 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 }
 
 void
-sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean stroke_set, gboolean opacity_set)
+sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, unsigned int stroke_set, unsigned int opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
@@ -1144,7 +1144,7 @@ sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gf
 }
 
 void
-sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean stroke_set, gboolean opacity_set)
+sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, unsigned int stroke_set, unsigned int opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
@@ -1164,7 +1164,7 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 }
 
 void
-sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
+sp_style_set_opacity (SPStyle *style, gfloat opacity, unsigned int opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
@@ -1285,7 +1285,7 @@ sp_style_read_iscale24 (SPIScale24 *val, const guchar *str)
 }
 
 static void
-sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit)
+sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, unsigned int inherit)
 {
 	if (inherit && !strcmp (str, "inherit")) {
 		val->set = TRUE;
@@ -1508,7 +1508,7 @@ sp_style_read_pfloat (SPIFloat *val, SPRepr *repr, const guchar *key)
 #endif
 
 static void
-sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, gboolean inherit)
+sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, unsigned int inherit)
 {
 	const guchar *str;
 	str = sp_repr_attr (repr, key);
@@ -1594,7 +1594,7 @@ sp_style_write_istring (guchar *p, gint len, const guchar *key, SPIString *val, 
 	return 0;
 }
 
-static gboolean
+static unsigned int
 sp_length_differ (SPILength *a, SPILength *b)
 {
 	if (a->unit != b->unit) {
@@ -1657,7 +1657,7 @@ sp_style_write_ilength (guchar *p, gint len, const guchar *key, SPILength *val, 
 	return 0;
 }
 
-static gboolean
+static unsigned int
 sp_paint_differ (SPIPaint *a, SPIPaint *b)
 {
 	if (a->type != b->type) return TRUE;
@@ -1669,7 +1669,7 @@ sp_paint_differ (SPIPaint *a, SPIPaint *b)
 static gint
 sp_style_write_ipaint (guchar *b, gint len, const guchar *key, SPIPaint *paint, SPIPaint *base, guint flags)
 {
-	gboolean set;
+	unsigned int set;
 
 	set = FALSE;
 	if (((flags & SP_STYLE_FLAG_IFSET) && paint->set) ||
@@ -1695,7 +1695,7 @@ sp_style_write_ipaint (guchar *b, gint len, const guchar *key, SPIPaint *paint, 
 	return 0;
 }
 
-static gboolean
+static unsigned int
 sp_fontsize_differ (SPIFontSize *a, SPIFontSize *b)
 {
 	if (a->type != b->type) return TRUE;
@@ -1766,7 +1766,7 @@ sp_style_read_color_cmyk (SPColor *color, const guchar *str)
 }
 
 static void
-sp_style_paint_clear (SPStyle *style, SPIPaint *paint, gboolean hunref, gboolean unset)
+sp_style_paint_clear (SPStyle *style, SPIPaint *paint, unsigned int hunref, unsigned int unset)
 {
 	if ((paint->type == SP_PAINT_TYPE_PAINTSERVER) && paint->value.server) {
 		sp_object_hunref (SP_OBJECT (paint->value.server), style);

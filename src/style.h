@@ -15,6 +15,7 @@
 
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_vpath_dash.h>
+
 #include "xml/repr.h"
 #include "color.h"
 #include "forward.h"
@@ -30,10 +31,10 @@ typedef struct _SPIPaint SPIPaint;
 typedef struct _SPIFontSize SPIFontSize;
 
 struct _SPIFloat {
-	guint set : 1;
-	guint inherit : 1;
-	guint data : 30;
-	gfloat value;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int data : 30;
+	float value;
 };
 
 #define SP_SCALE24_MAX ((1 << 24) - 1)
@@ -41,37 +42,37 @@ struct _SPIFloat {
 #define SP_SCALE24_FROM_FLOAT(v) ((int) ((v) * ((double) SP_SCALE24_MAX + 0.9999)))
 
 struct _SPIScale24 {
-	guint set : 1;
-	guint inherit : 1;
-	guint value : 24;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int value : 24;
 };
 
 struct _SPIInt {
-	guint set : 1;
-	guint inherit : 1;
-	guint data : 30;
-	gint value;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int data : 30;
+	int value;
 };
 
 struct _SPIShort {
-	guint set : 1;
-	guint inherit : 1;
-	guint data : 14;
-	gint value : 16;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int data : 14;
+	int value : 16;
 };
 
 struct _SPIEnum {
-	guint set : 1;
-	guint inherit : 1;
-	guint value : 8;
-	guint computed : 8;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int value : 8;
+	unsigned int computed : 8;
 };
 
 struct _SPIString {
-	guint set : 1;
-	guint inherit : 1;
-	guint data : 30;
-	guchar *value;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int data : 30;
+	unsigned char *value;
 };
 
 enum {
@@ -88,11 +89,11 @@ enum {
 };
 
 struct _SPILength {
-	guint set : 1;
-	guint inherit : 1;
-	guint unit : 4;
-	gfloat value;
-	gfloat computed;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int unit : 4;
+	float value;
+	float computed;
 };
 
 #define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.value.server)
@@ -107,9 +108,9 @@ enum {
 };
 
 struct _SPIPaint {
-	guint set : 1;
-	guint inherit : 1;
-	guint type : 2;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int type : 2;
 	union {
 		SPColor color;
 		SPPaintServer *server;
@@ -128,24 +129,24 @@ enum {
 #define SP_F8_16_FROM_FLOAT(v) ((int) ((v) * ((1 << 16) + 0.9999)))
 
 struct _SPIFontSize {
-	guint set : 1;
-	guint inherit : 1;
-	guint type : 2;
-	guint value : 24;
-	gfloat computed;
+	unsigned int set : 1;
+	unsigned int inherit : 1;
+	unsigned int type : 2;
+	unsigned int value : 24;
+	float computed;
 };
 
 typedef struct _SPTextStyle SPTextStyle;
 
 struct _SPStyle {
-	gint refcount;
+	int refcount;
 	/* Object we are attached to */
 	/* fixme: I am not sure, whether style should be SPObject itself */
 	/* fixme: Or alternatively, whole style to be moved inside SPObject[Styled] */
 	SPObject *object;
 	/* Our text style component */
 	SPTextStyle *text;
-	guint text_private : 1;
+	unsigned int text_private : 1;
 
 	/* CSS2 */
 	/* Font */
@@ -156,23 +157,23 @@ struct _SPStyle {
 	SPIEnum font_stretch;
 
 	/* Misc attributes */
-	guint clip_set : 1;
-	guint color_set : 1;
-	guint cursor_set : 1;
-	guint display_set : 1;
-	guint overflow_set : 1;
-	guint visibility_set : 1;
-	guint clip_path_set : 1;
-	guint clip_rule_set : 1;
-	guint mask_set : 1;
+	unsigned int clip_set : 1;
+	unsigned int color_set : 1;
+	unsigned int cursor_set : 1;
+	unsigned int display_set : 1;
+	unsigned int overflow_set : 1;
+	unsigned int visibility_set : 1;
+	unsigned int clip_path_set : 1;
+	unsigned int clip_rule_set : 1;
+	unsigned int mask_set : 1;
 
 	/* opacity */
 	SPIScale24 opacity;
 
 	/* display */
-	guint display : 1;
+	unsigned int display : 1;
 	/* visibility */
-	guint visibility : 1;
+	unsigned int visibility : 1;
 
 	/* fill */
 	SPIPaint fill;
@@ -193,8 +194,8 @@ struct _SPStyle {
 	SPIFloat stroke_miterlimit;
 	/* stroke-dash* */
 	ArtVpathDash stroke_dash;
-	guint stroke_dasharray_set : 1;
-	guint stroke_dashoffset_set : 1;
+	unsigned int stroke_dasharray_set : 1;
+	unsigned int stroke_dashoffset_set : 1;
 	/* stroke-opacity */
 	SPIScale24 stroke_opacity;
 	/* fixme: remove this */
@@ -220,15 +221,15 @@ void sp_style_read_from_object (SPStyle *style, SPObject *object);
 void sp_style_read_from_repr (SPStyle *style, SPRepr *repr);
 void sp_style_merge_from_parent (SPStyle *style, SPStyle *parent);
 
-guchar *sp_style_write_string (SPStyle *style);
-guchar *sp_style_write_difference (SPStyle *from, SPStyle *to);
+unsigned char *sp_style_write_string (SPStyle *style);
+unsigned char *sp_style_write_difference (SPStyle *from, SPStyle *to);
 
-void sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
-void sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
-void sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
-void sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
+void sp_style_set_fill_color_rgba (SPStyle *style, float r, float g, float b, float a, unsigned int fill_set, unsigned int opacity_set);
+void sp_style_set_fill_color_cmyka (SPStyle *style, float c, float m, float y, float k, float a, unsigned int fill_set, unsigned int opacity_set);
+void sp_style_set_stroke_color_rgba (SPStyle *style, float r, float g, float b, float a, unsigned int fill_set, unsigned int opacity_set);
+void sp_style_set_stroke_color_cmyka (SPStyle *style, float c, float m, float y, float k, float a, unsigned int fill_set, unsigned int opacity_set);
 
-void sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set);
+void sp_style_set_opacity (SPStyle *style, float opacity, unsigned int opacity_set);
 
 /* SPTextStyle */
 
@@ -298,27 +299,27 @@ typedef enum {
 } SPWritingMode;
 
 struct _SPTextStyle {
-	gint refcount;
+	int refcount;
 
 	/* CSS font properties */
 	SPIString font_family;
 
-	guint font_size_adjust_set : 1;
+	unsigned int font_size_adjust_set : 1;
 
 	/* fixme: Has to have 'none' option here */
-	gfloat font_size_adjust;
+	float font_size_adjust;
 
 	/* fixme: The 'font' property is ugly, and not working (lauris) */
 	SPIString font;
 
 	/* CSS text properties */
-	guint direction_set : 1;
-	guint text_decoration_set : 1;
-	guint unicode_bidi_set : 1;
+	unsigned int direction_set : 1;
+	unsigned int text_decoration_set : 1;
+	unsigned int unicode_bidi_set : 1;
 
-	guint direction : 2;
-	guint text_decoration : 3;
-	guint unicode_bidi : 2;
+	unsigned int direction : 2;
+	unsigned int text_decoration : 3;
+	unsigned int unicode_bidi : 2;
 };
 
 #endif

@@ -15,23 +15,25 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "repr.h"
-#include "repr-private.h"
+
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <glib/ghash.h>
 
-static const guchar *sp_svg_doctype_str =
+#include <glib.h>
+
+#include "repr-private.h"
+
+static const unsigned char *sp_svg_doctype_str =
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
 "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n";
-static const guchar *sp_comment_str =
+static const unsigned char *sp_comment_str =
 "<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n";
 
 static SPReprDoc *sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns);
 static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns, GHashTable *prefix_map);
-static void sp_repr_set_xmlns_attr (const guchar *prefix, const guchar *uri, SPRepr *repr);
-static gint sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map);
+static void sp_repr_set_xmlns_attr (const unsigned char *prefix, const unsigned char *uri, SPRepr *repr);
+static gint sp_repr_qualified_name (unsigned char *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map);
 
 #ifdef HAVE_LIBWMF
 static xmlDocPtr sp_wmf_convert (const char * file_name);
@@ -137,7 +139,7 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 }
 
 void
-sp_repr_set_xmlns_attr (const guchar *prefix, const guchar *uri, SPRepr *repr)
+sp_repr_set_xmlns_attr (const unsigned char *prefix, const unsigned char *uri, SPRepr *repr)
 {
 	gchar *name;
 	name = g_strconcat ("xmlns:", prefix, NULL);
@@ -146,7 +148,7 @@ sp_repr_set_xmlns_attr (const guchar *prefix, const guchar *uri, SPRepr *repr)
 }
 
 gint
-sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map)
+sp_repr_qualified_name (unsigned char *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map)
 {
 	const gchar *prefix;
 	if (ns) {
@@ -186,10 +188,10 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 		for (p = node->content; p && *p; p++) {
 			if (!isspace (*p)) {
 				xmlChar *e;
-				guchar *s;
+				unsigned char *s;
 				e = p + strlen (p) - 1;
 				while (*e && isspace (*e)) e -= 1;
-				s = g_new (guchar, e - p + 2);
+				s = g_new (unsigned char, e - p + 2);
 				memcpy (s, p, e - p + 1);
 				s[e - p + 1] = '\0';
 				return sp_xml_document_createTextNode (doc, s);
@@ -228,7 +230,7 @@ void
 sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 {
 	SPRepr *repr;
-	const guchar *str;
+	const unsigned char *str;
 
 	/* fixme: do this The Right Way */
 

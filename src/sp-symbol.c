@@ -34,7 +34,7 @@ static void sp_symbol_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_symbol_modified (SPObject *object, guint flags);
 static SPRepr *sp_symbol_write (SPObject *object, SPRepr *repr, guint flags);
 
-static NRArenaItem *sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_symbol_hide (SPItem *item, unsigned int key);
 static void sp_symbol_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_symbol_print (SPItem *item, SPPrintContext *ctx);
@@ -411,7 +411,7 @@ sp_symbol_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static NRArenaItem *
-sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPSymbol *symbol;
 	NRArenaItem *ai;
@@ -421,7 +421,7 @@ sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key)
 	if (SP_OBJECT_IS_CLONED (symbol)) {
 		/* Cloned <symbol> is actually renderable */
 		if (((SPItemClass *) (parent_class))->show) {
-			ai = ((SPItemClass *) (parent_class))->show (item, arena, key);
+			ai = ((SPItemClass *) (parent_class))->show (item, arena, key, flags);
 			if (ai) {
 				NRMatrixF vbf;
 				nr_matrix_f_from_d (&vbf, &symbol->c2p);

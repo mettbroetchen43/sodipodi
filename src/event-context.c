@@ -215,6 +215,14 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		break;
         case GDK_KEY_PRESS:
 		switch (event->key.keyval) {
+			unsigned int shortcut;
+		case GDK_F1:
+			/* Grab it away from Gtk */
+			shortcut = event->key.keyval;
+			if (event->key.state & GDK_SHIFT_MASK) shortcut |= SP_SHORTCUT_SHIFT_MASK;
+			if (event->key.state & GDK_CONTROL_MASK) shortcut |= SP_SHORTCUT_CONTROL_MASK;
+			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_SHORTCUT_ALT_MASK;
+			ret = sp_shortcut_run (shortcut);
 		case GDK_Tab: // disable tab/shift-tab which cycle widget focus
 		case GDK_ISO_Left_Tab: // they will get different functions
 			ret = TRUE;
@@ -314,7 +322,7 @@ sp_ec_repr_destroy (SPRepr *repr, gpointer data)
 	g_warning ("Oops! Repr destroyed while event context still present");
 }
 
-static gboolean
+static unsigned int
 sp_ec_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
 {
 	SPEventContext *ec;

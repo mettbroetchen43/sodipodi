@@ -17,6 +17,8 @@
 
 /* Generic */
 
+unsigned int sp_svg_boolean_read (const unsigned char *str, unsigned int *val);
+
 /*
  * These are very-very simple:
  * - they accept everything libc strtod accepts

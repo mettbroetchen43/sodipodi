@@ -52,7 +52,7 @@ static void sp_shape_modified (SPObject *object, unsigned int flags);
 
 static void sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
-static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_shape_hide (SPItem *item, unsigned int key);
 
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -439,7 +439,7 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 }
 
 static NRArenaItem *
-sp_shape_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_shape_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPObject *object;
 	SPShape *shape;

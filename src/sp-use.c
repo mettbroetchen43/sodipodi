@@ -38,7 +38,7 @@ static void sp_use_modified (SPObject *object, guint flags);
 static void sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_use_print (SPItem *item, SPPrintContext *ctx);
 static gchar * sp_use_description (SPItem * item);
-static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_use_hide (SPItem *item, unsigned int key);
 
 static void sp_use_href_changed (SPUse * use);
@@ -276,7 +276,7 @@ sp_use_description (SPItem * item)
 }
 
 static NRArenaItem *
-sp_use_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_use_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPUse *use;
 
@@ -287,7 +287,7 @@ sp_use_show (SPItem *item, NRArena *arena, unsigned int key)
 		NRMatrixF t;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_invoke_show (SP_ITEM (use->child), arena, key);
+		ac = sp_item_invoke_show (SP_ITEM (use->child), arena, key, flags);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
 			nr_arena_item_unref (ac);
@@ -341,7 +341,7 @@ sp_use_href_changed (SPUse * use)
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					ai = sp_item_invoke_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
+					ai = sp_item_invoke_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key, v->flags);
 					if (ai) {
 						nr_arena_item_add_child (v->arenaitem, ai, NULL);
 						nr_arena_item_unref (ai);

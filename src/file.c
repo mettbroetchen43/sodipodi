@@ -616,7 +616,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 	arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 	dkey = sp_item_display_key_new (1);
 	/* Create ArenaItem and set transform */
-	ebp.root = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), arena, dkey);
+	ebp.root = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), arena, dkey, SP_ITEM_SHOW_PRINT);
 	nr_arena_item_set_transform (ebp.root, &affine);
 
 	if ((width < 256) || ((width * height) < 32768)) {

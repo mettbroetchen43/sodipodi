@@ -335,7 +335,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	desktop->dkey = sp_item_display_key_new (1);
 	ai = sp_item_invoke_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))),
-				  SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey);
+				  SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
 	if (ai) {
 		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 		nr_arena_item_unref (ai);
@@ -440,7 +440,8 @@ sp_desktop_set_document (SPView *view, SPDocument *doc)
 
 		desktop->namedview = sp_document_namedview (doc, NULL);
 
-		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey);
+		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena,
+					  desktop->dkey, SP_ITEM_SHOW_DISPLAY);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 			nr_arena_item_unref (ai);
@@ -602,8 +603,6 @@ static void sp_desktop_widget_destroy (GtkObject *object);
 static void sp_desktop_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
 static void sp_desktop_widget_realize (GtkWidget *widget);
 
-static gint sp_desktop_widget_enter_notify (GtkWidget *widget, GdkEventCrossing *event);
-
 static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
 
 static void sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpointer data);
@@ -656,7 +655,6 @@ sp_desktop_widget_class_init (SPDesktopWidgetClass *klass)
 
 	widget_class->size_allocate = sp_desktop_widget_size_allocate;
 	widget_class->realize = sp_desktop_widget_realize;
-	// widget_class->enter_notify_event = sp_desktop_widget_enter_notify;
 }
 
 static void
@@ -902,15 +900,6 @@ sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dt
 	if (GTK_WIDGET_CLASS (dtw_parent_class)->event)
 		return (* GTK_WIDGET_CLASS (dtw_parent_class)->event) (widget, event);
 
-	return FALSE;
-}
-
-static gint
-sp_desktop_widget_enter_notify (GtkWidget *widget, GdkEventCrossing *event)
-{
-	// gtk_widget_grab_focus ((GtkWidget *) ((SPDesktopWidget *) widget)->canvas);
-	if (((GtkWidgetClass *) dtw_parent_class)->enter_notify_event)
-		return ((GtkWidgetClass *) dtw_parent_class)->enter_notify_event (widget, event);
 	return FALSE;
 }
 

@@ -64,6 +64,7 @@ nr_arena_item_init (NRArenaItem *item)
 {
 	item->state = 0;
 	item->sensitive = TRUE;
+	item->visible = TRUE;
 
 	/* fixme: Initialize bbox */
 	item->transform = NULL;
@@ -267,6 +268,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 	/* Shouldn't be needed anymore with new rect logic (Lauris) */
 	if (NR_RECT_DFLS_TEST_EMPTY (&item->bbox)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
 #endif
+	if (!item->visible) return item->state | NR_ARENA_ITEM_STATE_RENDER;
 	nr_rect_l_intersect (&carea, area, &item->bbox);
 	if (nr_rect_l_test_empty (&carea)) return item->state | NR_ARENA_ITEM_STATE_RENDER;
 
@@ -446,7 +448,7 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 	printf ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
-	if (nr_rect_l_test_intersect (area, &item->bbox)) {
+	if (item->visible && nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
 		if (((NRArenaItemClass *) NR_OBJECT_GET_CLASS (item))->clip)
 			return ((NRArenaItemClass *) NR_OBJECT_GET_CLASS(item))->clip (item, area, pb);
@@ -619,6 +621,17 @@ nr_arena_item_set_sensitive (NRArenaItem *item, unsigned int sensitive)
 	/* fixme: mess with pick/repick... */
 
 	item->sensitive = sensitive;
+}
+
+void
+nr_arena_item_set_visible (NRArenaItem *item, unsigned int visible)
+{
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+
+	item->visible = visible;
+
+	nr_arena_item_request_render (item);
 }
 
 void

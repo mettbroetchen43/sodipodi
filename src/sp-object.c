@@ -38,13 +38,13 @@ static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint fl
 
 /* Real handlers of repr signals */
 
-static gboolean sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
+static unsigned int sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
 static void sp_object_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data);
 
 static void sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const guchar *newcontent, gpointer data);
 
 static void sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
-static gboolean sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data);
+static unsigned int sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, void *data);
 
 static void sp_object_repr_order_changed (SPRepr *repr, SPRepr *child, SPRepr *old, SPRepr *new, gpointer data);
 
@@ -279,11 +279,11 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 }
 
 void
-sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned)
+sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, unsigned int cloned)
 {
 	const gchar * id;
 	gchar * realid;
-	gboolean ret;
+	unsigned int ret;
 
 #ifdef SP_OBJECT_DEBUG
 	g_print("sp_object_invoke_build: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
@@ -382,7 +382,7 @@ sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer d
 	sp_document_child_added (object->document, object, child, ref);
 }
 
-static gboolean
+static unsigned int
 sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data)
 {
 	SPObject * object;
@@ -467,7 +467,7 @@ sp_object_read_attr (SPObject *object, const gchar *key)
 	}
 }
 
-static gboolean
+static unsigned int
 sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
 {
 	SPObject * object;
@@ -578,7 +578,7 @@ sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags)
 void
 sp_object_request_update (SPObject *object, unsigned int flags)
 {
-	gboolean propagate;
+	unsigned int propagate;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
@@ -637,7 +637,7 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 void
 sp_object_request_modified (SPObject *object, unsigned int flags)
 {
-	gboolean propagate;
+	unsigned int propagate;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));

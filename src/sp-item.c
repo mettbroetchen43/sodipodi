@@ -63,6 +63,9 @@ static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
+static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
+static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
+
 static SPObjectClass *parent_class;
 
 unsigned int
@@ -115,6 +118,7 @@ sp_item_init (SPItem *item)
 	object = SP_OBJECT (item);
 
 	item->sensitive = TRUE;
+	item->printable = TRUE;
 
 	nr_matrix_f_set_identity (&item->transform);
 
@@ -137,6 +141,7 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "clip-path");
 	sp_object_read_attr (object, "mask");
 	sp_object_read_attr (object, "sodipodi:insensitive");
+	sp_object_read_attr (object, "sodipodi:nonprintable");
 }
 
 static void
@@ -223,8 +228,9 @@ static void
 sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
+	SPItemView *v;
 
-	item = SP_ITEM (object);
+	item = (SPItem *) object;
 
 	switch (key) {
 	case SP_ATTR_TRANSFORM: {
@@ -309,14 +315,20 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 		}
 		break;
 	}
-	case SP_ATTR_SODIPODI_INSENSITIVE: {
-		SPItemView * v;
-		item->sensitive = (!value);
+	case SP_ATTR_SODIPODI_INSENSITIVE:
+		item->sensitive = !value;
 		for (v = item->display; v != NULL; v = v->next) {
 			nr_arena_item_set_sensitive (v->arenaitem, item->sensitive);
 		}
 		break;
-	}
+	case SP_ATTR_SODIPODI_NONPRINTABLE:
+		item->printable = !value;
+		for (v = item->display; v != NULL; v = v->next) {
+			if (v->flags & SP_ITEM_SHOW_PRINT) {
+				nr_arena_item_set_visible (v->arenaitem, item->printable);
+			}
+		}
+		break;
 	case SP_ATTR_STYLE:
 		sp_style_read_from_object (object->style, object);
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
@@ -557,7 +569,7 @@ sp_item_display_key_new (unsigned int numkeys)
 }
 
 NRArenaItem *
-sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	NRArenaItem *ai;
 
@@ -569,13 +581,16 @@ sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key)
 	ai = NULL;
 
 	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->show)
-		ai = ((SPItemClass *) G_OBJECT_GET_CLASS (item))->show (item, arena, key);
+		ai = ((SPItemClass *) G_OBJECT_GET_CLASS (item))->show (item, arena, key, flags);
 
 	if (ai != NULL) {
-		item->display = sp_item_view_new_prepend (item->display, item, key, ai);
+		item->display = sp_item_view_new_prepend (item->display, item, flags, key, ai);
 		nr_arena_item_set_transform (ai, &item->transform);
 		nr_arena_item_set_opacity (ai, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 		nr_arena_item_set_sensitive (ai, item->sensitive);
+		if (flags & SP_ITEM_SHOW_PRINT) {
+			nr_arena_item_set_visible (ai, item->printable);
+		}
 		if (item->clip) {
 			NRArenaItem *ac;
 			if (!item->display->arenaitem->key) NR_ARENA_ITEM_SET_KEY (item->display->arenaitem, sp_item_display_key_new (3));
@@ -996,8 +1011,8 @@ sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
 
 /* Item views */
 
-SPItemView *
-sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int key, NRArenaItem *arenaitem)
+static SPItemView *
+sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int flags, unsigned int key, NRArenaItem *arenaitem)
 {
 	SPItemView * new;
 
@@ -1009,13 +1024,14 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int key, NR
 	new = g_new (SPItemView, 1);
 
 	new->next = list;
+	new->flags = flags;
 	new->key = key;
 	new->arenaitem = arenaitem;
 
 	return new;
 }
 
-SPItemView *
+static SPItemView *
 sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 {
 	if (view == list) {

@@ -42,7 +42,7 @@ static void sp_marker_set (SPObject *object, unsigned int key, const unsigned ch
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 
-static NRArenaItem *sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key);
+static NRArenaItem *sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_marker_private_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
@@ -502,7 +502,7 @@ sp_marker_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static NRArenaItem *
-sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key)
+sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	/* Break propagation */
 	return NULL;
@@ -566,7 +566,8 @@ sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 			if (pos >= v->size) return NULL;
 			if (!v->items[pos]) {
 				/* Parent class ::show method */
-				v->items[pos] = ((SPItemClass *) parent_class)->show ((SPItem *) marker, parent->arena, key);
+				v->items[pos] = ((SPItemClass *) parent_class)->show ((SPItem *) marker, parent->arena, key,
+										      SP_ITEM_REFERENCE_FLAGS);
 				if (v->items[pos]) {
 					NRMatrixF vbf;
 					/* fixme: Position (Lauris) */

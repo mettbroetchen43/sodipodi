@@ -163,7 +163,8 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 		NRArenaItem *ai;
 		svgview->drawing = sp_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
 		g_signal_connect (G_OBJECT (svgview->drawing), "arena_event", G_CALLBACK (arena_handler), svgview);
-		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena, svgview->dkey);
+		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena,
+					  svgview->dkey, SP_ITEM_SHOW_PRINT);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (svgview->drawing)->root, ai, NULL);
 			nr_arena_item_unref (ai);

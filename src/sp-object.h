@@ -161,7 +161,7 @@ SPObject *sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *
 SPObject *sp_object_detach (SPObject *parent, SPObject *object);
 SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
 
-void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
+void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, unsigned int cloned);
 void sp_object_invoke_release (SPObject *object);
 
 void sp_object_set (SPObject *object, unsigned int key, const unsigned char *value);

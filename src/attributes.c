@@ -26,6 +26,7 @@ static const SPStyleProp props[] = {
 	/* SPItem */
 	{SP_ATTR_TRANSFORM, "transform"},
 	{SP_ATTR_SODIPODI_INSENSITIVE, "sodipodi:insensitive"},
+	{SP_ATTR_SODIPODI_NONPRINTABLE, "sodipodi:nonprintable"},
 	{SP_ATTR_STYLE, "style"},
 	/* SPAnchor */
 	{SP_ATTR_XLINK_HREF, "xlink:href"},

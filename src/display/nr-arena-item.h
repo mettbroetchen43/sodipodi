@@ -74,6 +74,7 @@ struct _NRArenaItem {
 	unsigned int state : 16;
 	unsigned int propagate : 1;
 	unsigned int sensitive : 1;
+	unsigned int visible : 1;
 	/* Whether items renders opacity itself */
 	unsigned int render_opacity : 1;
 	/* Opacity itself */
@@ -159,6 +160,7 @@ void nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child);
 void nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform);
 void nr_arena_item_set_opacity (NRArenaItem *item, double opacity);
 void nr_arena_item_set_sensitive (NRArenaItem *item, unsigned int sensitive);
+void nr_arena_item_set_visible (NRArenaItem *item, unsigned int visible);
 void nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip);
 void nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask);
 void nr_arena_item_set_order (NRArenaItem *item, int order);

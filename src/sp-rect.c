@@ -223,16 +223,20 @@ sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
 	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
 		SPRect *rect;
 		SPStyle *style;
-		double d;
+		SPItemCtx *ictx;
+		double d, w, h;
 		rect = (SPRect *) object;
 		style = object->style;
-		d = 1.0 / NR_MATRIX_DF_EXPANSION (&((SPItemCtx *) ctx)->i2vp);
-		sp_svg_length_update (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_svg_length_update (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_svg_length_update (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_svg_length_update (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_svg_length_update (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_svg_length_update (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
+		ictx = (SPItemCtx *) ctx;
+		d = 1.0 / NR_MATRIX_DF_EXPANSION (&ictx->i2vp);
+		w = d * (ictx->vp.x1 - ictx->vp.x0);
+		h = d * (ictx->vp.y1 - ictx->vp.y0);
+		sp_svg_length_update (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, w);
+		sp_svg_length_update (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, h);
+		sp_svg_length_update (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, w);
+		sp_svg_length_update (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, h);
+		sp_svg_length_update (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, w);
+		sp_svg_length_update (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, h);
 		sp_shape_set_shape ((SPShape *) object);
 	}
 
