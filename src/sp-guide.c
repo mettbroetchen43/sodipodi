@@ -14,7 +14,6 @@
 #include <string.h>
 #include <glib-object.h>
 #include <gtk/gtksignal.h>
-#include "helper/sp-intl.h"
 #include "helper/sp-guide.h"
 #include "svg/svg.h"
 #include "attributes.h"
@@ -79,18 +78,14 @@ sp_guide_class_init (SPGuideClass * klass)
 
 	g_object_class_install_property (gobject_class,
 					 PROP_COLOR,
-					 g_param_spec_uint ("color",
-							    _("Color"),
-							    _("Color"),
+					 g_param_spec_uint ("color", "Color", "Color",
 							    0,
 							    0xffffffff,
 							    0xff000000,
 							    G_PARAM_READWRITE));
 	g_object_class_install_property (gobject_class,
 					 PROP_HICOLOR,
-					 g_param_spec_uint ("hicolor",
-							    _("HiColor"),
-							    _("HiColor"),
+					 g_param_spec_uint ("hicolor", "HiColor", "HiColor",
 							    0,
 							    0xffffffff,
 							    0xff000000,

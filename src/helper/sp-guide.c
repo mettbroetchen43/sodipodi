@@ -14,7 +14,6 @@
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sp-guide.h"
-#include "sp-intl.h"
 
 enum {
 	PROP_0,
@@ -85,8 +84,8 @@ sp_guideline_class_init (SPGuideLineClass *klass)
 	g_object_class_install_property (g_object_class,
 					 PROP_ORIENTATION,
 					 g_param_spec_int ("orientation",
-							   _("Orientation"),
-							   _("Orientation of guideline"),
+							   "Orientation",
+							   "Orientation of guideline",
 							   SP_GUIDELINE_ORIENTATION_HORIZONTAL,
 							   SP_GUIDELINE_ORIENTATION_VERTICAL,
 							   SP_GUIDELINE_ORIENTATION_HORIZONTAL,
@@ -94,8 +93,8 @@ sp_guideline_class_init (SPGuideLineClass *klass)
 	g_object_class_install_property (g_object_class,
 					 PROP_COLOR,
 					 g_param_spec_uint ("color",
-							    _("Color"),
-							    _("Guideline color"),
+							    "Color",
+							    "Guideline color",
 							    0x00000000,
 							    0xffffffff,
 							    0xff000000,

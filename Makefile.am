@@ -10,16 +10,6 @@ Graphics_in_files = sodipodi.desktop.in
 Graphics_DATA = $(Graphics_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
-oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Sodipodi.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
-@INTLTOOL_OAF_RULE@
-
-#if BONOBO
-#install-exec-local:
-#	ln -sf sodipodi $(DESTDIR)$(bindir)/sodipodi-bonobo
-#endif
-
 dist-hook:
 	mkdir $(distdir)/samples
 	cp $(srcdir)/samples/*svg $(distdir)/samples
@@ -33,7 +23,6 @@ EXTRA_DIST =  config.rpath 			\
 	intltool-merge.in	\
 	intltool-update.in	\
 	$(Graphics_in_files)	\
-	$(oaf_in_files)		\
 	sodipodi.spec.in	\
 	README HACKING		\
 	sodipodi.png

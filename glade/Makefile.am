@@ -180,21 +180,8 @@ pixmaps = \
 	guide_dialog.png
 
 glade_DATA = \
-	align.glade \
-	display.glade \
-	desktop.glade \
-	document.glade \
-	item.glade \
-	object_props.glade \
-	sodipodi.glade \
-	toolbox.glade \
-	transformation.glade \
-	xml-tree.glade \
 	$(pixmaps) \
 	$(images)
 
 EXTRA_DIST = $(glade_DATA)
-
-#dist-hook:
-#	cp $(srcdir)/*xpm $(distdir)
 

@@ -1,5 +1,12 @@
 2002-12-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-guide.c (sp_guide_class_init): Removed translatability of properties
+
+	* src/knot.c (sp_knot_class_init): Removed translatability of properties
+
+	* src/helper/sp-guide.c (sp_guideline_class_init): Removed translatability
+	from properties (who needs this?)
+
 	* src/widgets/icon.h: New file, use as frontend to image loading
 
 	* src/widgets/icon.c: New file
