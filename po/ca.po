@@ -1,22 +1,23 @@
 # sodipodi translation to Catalan.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Softcatal‡ <info@softcatala.org>, 2000.
+# Copyright ¬© 2000, 2003 Free Software Foundation, Inc.
+# Quico Llach <quico@softcatala.org>, 2000.
+# Francesc Dorca <f.dorca@filnet.es>, 2003.
 #
-# TraducciÛ per Softcatal‡ <linux@softcatala.org>
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.19\n"
-"POT-Creation-Date: 2003-06-20 13:56+0300\n"
-"PO-Revision-Date: 2000-09-28 18:52+0200\n"
-"Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
-"Language-Team: Catalan <linux@softcatala.org>\n"
+"Project-Id-Version: sodipodi 0.33pre\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-09-11 00:31+0200\n"
+"PO-Revision-Date: 2003-09-11 00:32+0200\n"
+"Last-Translator: Francesc Dorca <f.dorca@filnet.es>\n"
+"Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
-msgstr ""
+msgstr "Il¬∑lustrador vectorial SVG"
 
 #. Create window
 #: sodipodi.desktop.in.h:2 src/toolbox.c:119 src/toolbox.c:140
@@ -27,51 +28,50 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "No s'ha pogut crear un document de la factoria sodipodi-svg-doc"
 
-#: src/desktop.c:737
+#: src/desktop.c:750
 msgid "Zoom drawing if window size changes"
-msgstr ""
+msgstr "Amplia/redueix el dibuix si canvia la mida de la finestra"
 
-#: src/desktop.c:817
+#: src/desktop.c:830
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr ""
+msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:946
+#: src/desktop.c:959
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr ""
+msgstr "El document %s te canvis que no han estat desats. Els voleu desar?"
 
 #. Page page
-#: src/desktop.c:1468 src/dialogs/align.c:286
-#: src/dialogs/desktop-properties.c:422 src/dialogs/document-properties.c:163
-#: src/dialogs/export.c:135 src/verbs.c:478
+#: src/desktop.c:1481 src/dialogs/align.c:286
+#: src/dialogs/desktop-properties.c:385 src/dialogs/document-properties.c:163
+#: src/dialogs/export.c:135 src/verbs.c:484
 msgid "Page"
-msgstr "P‡gina"
+msgstr "P√†gina"
 
-#: src/desktop.c:1472 src/dialogs/align.c:287 src/dialogs/export.c:140
-#: src/verbs.c:479
+#: src/desktop.c:1485 src/dialogs/align.c:287 src/dialogs/export.c:140
+#: src/verbs.c:485
 msgid "Drawing"
 msgstr "Dibuix"
 
 #. Selection submenu
-#: src/desktop.c:1476 src/dialogs/align.c:288 src/dialogs/export.c:145
-#: src/interface.c:553 src/toolbox.c:485 src/verbs.c:480
+#: src/desktop.c:1489 src/dialogs/align.c:288 src/dialogs/export.c:145
+#: src/interface.c:553 src/toolbox.c:484 src/verbs.c:486
 msgid "Selection"
-msgstr "SelecciÛ"
+msgstr "Selecci√≥"
 
-#: src/dialogs/align.c:153 src/toolbox.c:445
-#, fuzzy
+#: src/dialogs/align.c:153 src/toolbox.c:444
 msgid "Align objects"
-msgstr "Recta"
+msgstr "Alinea els objectes"
 
 #: src/dialogs/align.c:172
 #, fuzzy
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "Alinea l'objecte interior amb el lÌmit esquerra"
+msgstr "Alinea l'objecte interior amb el l√≠mit esquerra"
 
 #: src/dialogs/align.c:175
 msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "La cara esquerra dels objectes alineats a la cara esquerra de l'√†ncora"
 
 #: src/dialogs/align.c:178
 #, fuzzy
@@ -81,20 +81,20 @@ msgstr "mou horitzontalment"
 #: src/dialogs/align.c:181
 #, fuzzy
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "Alinea l'objecte interior amb el lÌmit dret"
+msgstr "Alinea l'objecte interior amb el l√≠mit dret"
 
 #: src/dialogs/align.c:184
 msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "La cara esquerra dels objectes alineats a la cara dreta de l'√†ncora"
 
 #: src/dialogs/align.c:188
 msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
+msgstr "La cara inferior dels objectes alineats a la cara superior de l'√†ncora"
 
 #: src/dialogs/align.c:191 src/dialogs/align.c:200
 #, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "Alinea l'objecte interior amb el lÌmit superior"
+msgstr "Alinea l'objecte interior amb el l√≠mit superior"
 
 #: src/dialogs/align.c:194
 #, fuzzy
@@ -104,7 +104,7 @@ msgstr "mou verticalment"
 #: src/dialogs/align.c:197
 #, fuzzy
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "Alinea l'objecte interior amb el lÌmit inferior"
+msgstr "Alinea l'objecte interior amb el l√≠mit inferior"
 
 #: src/dialogs/align.c:203
 msgid "Align"
@@ -112,35 +112,37 @@ msgstr "Alinea"
 
 #: src/dialogs/align.c:221
 msgid "Distribute left sides of objects at even distances"
-msgstr ""
+msgstr "Distribueix les cares esquerres dels objectes a dist√†ncies iguals"
 
 #: src/dialogs/align.c:224
 msgid "Distribute centres of objects at even distances horizontally"
 msgstr ""
+"Distribueix els centres dels objectes horitzontalment a dist√†ncies iguals"
 
 #: src/dialogs/align.c:227
 msgid "Distribute right sides of objects at even distances"
-msgstr ""
+msgstr "Distribueix les cares dretes dels objectes a dist√†ncies iguals"
 
 #: src/dialogs/align.c:230
 msgid "Distribute horizontal distance between objects equally"
 msgstr ""
+"Distribueix la dist√†ncia horitzontal entre objectes de forma equitativa"
 
 #: src/dialogs/align.c:234
 msgid "Distribute top sides of objects at even distances"
-msgstr ""
+msgstr "Distribueix les cares superiors dels objectes a dist√†ncies iguals"
 
 #: src/dialogs/align.c:237
 msgid "Distribute centres of objects at even distances vertically"
-msgstr ""
+msgstr "Distribueix els centres dels objectes verticalment a dist√†ncies iguals"
 
 #: src/dialogs/align.c:240
 msgid "Distribute bottom sides of objects at even distances"
-msgstr ""
+msgstr "Distribueix les cares inferiors dels objectes a dist√†ncies iguals"
 
 #: src/dialogs/align.c:243
 msgid "Distribute vertical distance between objects equally"
-msgstr ""
+msgstr "Distribueix la dist√†ncia vertical entre objectes de forma equitativa"
 
 #: src/dialogs/align.c:246
 #, fuzzy
@@ -157,118 +159,118 @@ msgstr "El primer seleccionat"
 
 #: src/dialogs/align.c:284
 msgid "Biggest item"
-msgstr "L'element mÈs gran"
+msgstr "L'element m√©s gran"
 
 #: src/dialogs/align.c:285
 msgid "Smallest item"
-msgstr "L'element mÈs petit"
+msgstr "L'element m√©s petit"
 
-#: src/dialogs/desktop-properties.c:222
+#: src/dialogs/desktop-properties.c:185
 #, fuzzy
 msgid "Desktop settings"
-msgstr "Par‡metres del contorn"
+msgstr "Par√†metres del contorn"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:231
+#: src/dialogs/desktop-properties.c:194
 msgid "Grid"
-msgstr ""
+msgstr "Graella"
 
 #. Checkbuttons
-#: src/dialogs/desktop-properties.c:241
+#: src/dialogs/desktop-properties.c:204
 msgid "Show grid"
-msgstr ""
+msgstr "Mostra la graella"
 
-#: src/dialogs/desktop-properties.c:248
+#: src/dialogs/desktop-properties.c:211
 #, fuzzy
 msgid "Snap to grid"
 msgstr "Alinea amb les guies"
 
-#: src/dialogs/desktop-properties.c:255
+#: src/dialogs/desktop-properties.c:218
 msgid "Grid units:"
-msgstr ""
+msgstr "Unitats de la graella:"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:227
 msgid "Origin X:"
-msgstr ""
+msgstr "Origen X:"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:241
 msgid "Origin Y:"
-msgstr ""
+msgstr "Origen Y:"
 
-#: src/dialogs/desktop-properties.c:292
+#: src/dialogs/desktop-properties.c:255
 msgid "Spacing X:"
-msgstr ""
+msgstr "Espaiat X:"
 
-#: src/dialogs/desktop-properties.c:306
+#: src/dialogs/desktop-properties.c:269
 msgid "Spacing Y:"
-msgstr ""
+msgstr "Espaiat Y:"
 
-#: src/dialogs/desktop-properties.c:320 src/dialogs/desktop-properties.c:379
+#: src/dialogs/desktop-properties.c:283 src/dialogs/desktop-properties.c:342
 #, fuzzy
 msgid "Snap units:"
 msgstr "Alinea amb les guies"
 
-#: src/dialogs/desktop-properties.c:332 src/dialogs/desktop-properties.c:391
+#: src/dialogs/desktop-properties.c:295 src/dialogs/desktop-properties.c:354
 msgid "Snap distance:"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:345
+#: src/dialogs/desktop-properties.c:308
 #, fuzzy
 msgid "Grid color:"
 msgstr "Color del contorn"
 
-#: src/dialogs/desktop-properties.c:349
+#: src/dialogs/desktop-properties.c:312
 #, fuzzy
 msgid "Grid color"
 msgstr "Color del contorn"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:355
+#: src/dialogs/desktop-properties.c:318
 msgid "Guides"
-msgstr ""
+msgstr "Guies"
 
-#: src/dialogs/desktop-properties.c:364
+#: src/dialogs/desktop-properties.c:327
 #, fuzzy
 msgid "Show guides"
 msgstr "Alinea amb les guies"
 
-#: src/dialogs/desktop-properties.c:372
+#: src/dialogs/desktop-properties.c:335
 msgid "Snap to guides"
 msgstr "Alinea amb les guies"
 
-#: src/dialogs/desktop-properties.c:403
+#: src/dialogs/desktop-properties.c:366
 msgid "Guides color:"
-msgstr ""
+msgstr "Color de les guies:"
 
-#: src/dialogs/desktop-properties.c:407
-#, fuzzy
+#: src/dialogs/desktop-properties.c:370
 msgid "Guideline color"
-msgstr "ConfiguraciÛ de les lÌnies guia"
+msgstr "Color de la l√≠nia guia"
 
-#: src/dialogs/desktop-properties.c:412
+#: src/dialogs/desktop-properties.c:375
 msgid "Highlight color:"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:416
-#, fuzzy
+#: src/dialogs/desktop-properties.c:379
 msgid "Highlighted guideline color"
-msgstr "ConfiguraciÛ de les lÌnies guia"
+msgstr "Color de la l√≠nia guia onfiguraci√≥ de les l√≠nies guia"
 
-#: src/dialogs/desktop-properties.c:431
-#, fuzzy
+#: src/dialogs/desktop-properties.c:394
 msgid "Show border"
-msgstr "Commuta les vores"
+msgstr "Mostra les vores"
 
-#: src/dialogs/desktop-properties.c:675
-#, fuzzy
+#: src/dialogs/desktop-properties.c:401
+msgid "Border on top of drawing"
+msgstr "Les vores a dalt de tot del dibuix"
+
+#: src/dialogs/desktop-properties.c:647
 msgid "Close"
-msgstr "Nova vista"
+msgstr "Tanca"
 
 #: src/dialogs/display-settings.c:85
 #, fuzzy
 msgid "Display settings"
-msgstr "Par‡metres d'emplenat"
+msgstr "Par√†metres d'emplenat"
 
 #. Rendering settings
 #. Notebook tab
@@ -279,64 +281,61 @@ msgstr "Dibuix"
 
 #: src/dialogs/display-settings.c:105
 msgid "Oversample bitmaps:"
-msgstr ""
+msgstr "Sobremostreja els mapes de bits:"
 
-#: src/dialogs/display-settings.c:116 src/verbs.c:421
+#: src/dialogs/display-settings.c:116 src/verbs.c:427
 msgid "None"
 msgstr "Cap"
 
 #: src/dialogs/display-settings.c:120
 msgid "2x2"
-msgstr ""
+msgstr "2x2"
 
 #: src/dialogs/display-settings.c:124
 msgid "4x4"
-msgstr ""
+msgstr "4x4"
 
 #: src/dialogs/display-settings.c:128
 msgid "8x8"
-msgstr ""
+msgstr "8x8"
 
 #: src/dialogs/display-settings.c:132
 msgid "16x16"
-msgstr ""
+msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:143
 msgid "Input"
-msgstr ""
+msgstr "Entrada"
 
 #: src/dialogs/display-settings.c:154
 msgid "Default cursor tolerance:"
-msgstr ""
+msgstr "Toler√†ncia del cursor per defecte:"
 
 #: src/dialogs/document-properties.c:154
-#, fuzzy
 msgid "Document settings"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del document"
 
 #: src/dialogs/document-properties.c:175
-#, fuzzy
 msgid "Paper size:"
-msgstr "Mida de la imatge"
+msgstr "Mida del paper"
 
 #: src/dialogs/document-properties.c:196
-#, fuzzy
 msgid "Custom"
-msgstr "Talla"
+msgstr "A mida"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:203
 msgid "Custom paper"
-msgstr ""
+msgstr "Paper a mida"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:214 src/dialogs/export.c:153
 #: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:401
 #: src/dialogs/transformation.c:576
 msgid "Units:"
-msgstr ""
+msgstr "Unitats:"
 
 #. Stroke width
 #: src/dialogs/document-properties.c:223 src/dialogs/export.c:163
@@ -344,55 +343,48 @@ msgstr ""
 #: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
 #: src/dialogs/stroke-style.c:556 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1079
-#, fuzzy
 msgid "Width:"
-msgstr "Amplada"
+msgstr "Amplada:"
 
 #: src/dialogs/document-properties.c:238 src/dialogs/export.c:172
 #: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
 #: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
-#, fuzzy
 msgid "Height:"
-msgstr "AlÁada"
+msgstr "Al√ßada:"
 
 #: src/dialogs/export.c:115
-#, fuzzy
 msgid "Export bitmap"
-msgstr "Exporta el fitxer"
+msgstr "Exporta el mapa de bits"
 
 #. Export area frame
 #: src/dialogs/export.c:124
-#, fuzzy
 msgid "Export area"
-msgstr "Exportat com"
+msgstr "Exporta l'√†rea"
 
 #: src/dialogs/export.c:157
 msgid "x0:"
-msgstr ""
+msgstr "x0:"
 
 #: src/dialogs/export.c:160
-#, fuzzy
 msgid "x1:"
-msgstr "1:1"
+msgstr "x1:"
 
 #: src/dialogs/export.c:166
 msgid "y0:"
-msgstr ""
+msgstr "y0:"
 
 #: src/dialogs/export.c:169
-#, fuzzy
 msgid "y1:"
-msgstr "1:1"
+msgstr "y1:"
 
 #. Bitmap size frame
 #: src/dialogs/export.c:178
-#, fuzzy
 msgid "Bitmap size"
-msgstr "Mida de la imatge"
+msgstr "Mida del mapa de bits"
 
 #: src/dialogs/export.c:187 src/dialogs/export.c:195
 msgid "pixels"
-msgstr "pÌxels"
+msgstr "p√≠xels"
 
 #: src/dialogs/export.c:191 src/dialogs/export.c:199
 msgid "dpi"
@@ -403,7 +395,7 @@ msgstr "ppp"
 msgid "Export png file"
 msgstr "Exporta el fitxer"
 
-#: src/dialogs/export.c:235 src/verbs.c:431
+#: src/dialogs/export.c:235 src/verbs.c:437
 msgid "Export"
 msgstr "Exporta"
 
@@ -424,19 +416,19 @@ msgstr "Cap"
 
 #: src/dialogs/fill-style.c:143
 msgid "evenodd"
-msgstr ""
+msgstr "parell/imparell"
 
 #: src/dialogs/item-properties.c:78
 msgid "Sensitive"
-msgstr ""
+msgstr "Sensible"
 
 #: src/dialogs/item-properties.c:83
 msgid "Visible"
-msgstr ""
+msgstr "Visible"
 
 #: src/dialogs/item-properties.c:88
 msgid "Active"
-msgstr ""
+msgstr "Activa"
 
 #: src/dialogs/item-properties.c:93
 #, fuzzy
@@ -445,34 +437,34 @@ msgstr "Imprimeix el fitxer"
 
 #: src/dialogs/item-properties.c:104
 msgid "Opacity:"
-msgstr ""
+msgstr "Opacitat:"
 
 #: src/dialogs/item-properties.c:123
 #, fuzzy
 msgid "Transformation matrix"
-msgstr "Transforma la selecciÛ"
+msgstr "Transforma la selecci√≥"
 
 #: src/dialogs/item-properties.c:245
 msgid "Item is reference"
-msgstr ""
+msgstr "L'element √©s una refer√®ncia"
 
 #: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:330
 msgid "The SVG ID of item"
-msgstr ""
+msgstr "L'identificador SVG de l'element"
 
 #: src/dialogs/item-properties.c:332
 msgid "The ID is not valid"
-msgstr ""
+msgstr "L'identificador no √©s v√†lid"
 
 #: src/dialogs/item-properties.c:334
 msgid "The ID is already defined"
-msgstr ""
+msgstr "L'identificador ja est√† definit"
 
 #: src/dialogs/item-properties.c:337
 msgid "The ID is valid"
-msgstr ""
+msgstr "L'identificador √©s v√†lid"
 
-#: src/dialogs/item-properties.c:410 src/verbs.c:493
+#: src/dialogs/item-properties.c:410 src/verbs.c:499
 #, fuzzy
 msgid "Item properties"
 msgstr "Objecte de text"
@@ -484,16 +476,16 @@ msgstr "Valor:"
 
 #: src/dialogs/object-attributes.c:32
 msgid "Target:"
-msgstr ""
+msgstr "Dest√≠:"
 
 #: src/dialogs/object-attributes.c:33
 msgid "Type:"
-msgstr ""
+msgstr "Tipus:"
 
 #: src/dialogs/object-attributes.c:34
 #, fuzzy
 msgid "Role:"
-msgstr "RefÈs"
+msgstr "Ref√©s"
 
 #: src/dialogs/object-attributes.c:35
 msgid "Arcrole:"
@@ -506,7 +498,7 @@ msgstr "Omple"
 
 #: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
 msgid "Show:"
-msgstr ""
+msgstr "Mostra:"
 
 #: src/dialogs/object-attributes.c:38
 #, fuzzy
@@ -515,7 +507,7 @@ msgstr "Atributs:"
 
 #: src/dialogs/object-attributes.c:43
 msgid "Sides:"
-msgstr ""
+msgstr "Cares:"
 
 #: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
 #, fuzzy
@@ -539,57 +531,57 @@ msgstr "2:1"
 
 #: src/dialogs/object-attributes.c:48
 msgid "ARG1:"
-msgstr ""
+msgstr "ARG1:"
 
 #: src/dialogs/object-attributes.c:49
 msgid "ARG2:"
-msgstr ""
+msgstr "ARG2:"
 
 #. Expansion
 #: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
 msgid "Expansion:"
-msgstr ""
+msgstr "Expansi√≥:"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 #, fuzzy
 msgid "Revolution:"
-msgstr "SelecciÛ"
+msgstr "Selecci√≥"
 
 #: src/dialogs/object-attributes.c:58
 msgid "Radius:"
-msgstr ""
+msgstr "Radi:"
 
 #: src/dialogs/object-attributes.c:59
 msgid "Argument:"
-msgstr ""
+msgstr "Argument:"
 
 #: src/dialogs/object-attributes.c:60
 msgid "T0:"
-msgstr ""
+msgstr "T0:"
 
 #: src/dialogs/object-attributes.c:65
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
 #: src/dialogs/object-properties.c:330
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 #: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
 #: src/dialogs/object-properties.c:345
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 #: src/dialogs/object-attributes.c:78
 msgid "RX:"
-msgstr ""
+msgstr "RX:"
 
 #: src/dialogs/object-attributes.c:79
 msgid "RY:"
-msgstr ""
+msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:114
 #, fuzzy, c-format
@@ -613,11 +605,11 @@ msgstr "Gruix del contorn"
 #: src/dialogs/object-properties.c:153
 #, fuzzy
 msgid "Stroke style"
-msgstr "Par‡metres del contorn"
+msgstr "Par√†metres del contorn"
 
 #: src/dialogs/object-properties.c:173
 msgid "Apply to:"
-msgstr ""
+msgstr "Aplicar a:"
 
 #: src/dialogs/object-properties.c:183
 #, fuzzy
@@ -625,8 +617,9 @@ msgid "Selected objects"
 msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
 
 #: src/dialogs/object-properties.c:186
+#, fuzzy
 msgid "All shape tools"
-msgstr ""
+msgstr "Totes les eines de forma"
 
 #: src/dialogs/object-properties.c:189
 #, fuzzy
@@ -635,7 +628,7 @@ msgstr "Rectangle"
 
 #: src/dialogs/object-properties.c:192
 msgid "Arc tool"
-msgstr ""
+msgstr "Eina arc"
 
 #: src/dialogs/object-properties.c:195
 #, fuzzy
@@ -644,32 +637,32 @@ msgstr "Color del contorn"
 
 #: src/dialogs/object-properties.c:198
 msgid "Spiral tool"
-msgstr ""
+msgstr "Eina espiral"
 
 #: src/dialogs/object-properties.c:201
 #, fuzzy
 msgid "Freehand and pen"
-msgstr "A m‡ alÁada"
+msgstr "A m√† al√ßada"
 
 #: src/dialogs/object-properties.c:204
 msgid "Calligraphic line"
-msgstr ""
+msgstr "L√≠nia cal¬∑ligr√†fica"
 
-#: src/dialogs/object-properties.c:207 src/verbs.c:469
+#: src/dialogs/object-properties.c:207 src/verbs.c:475
 msgid "Text"
 msgstr "Text"
 
 #: src/dialogs/object-properties.c:283
 msgid "Object position and size"
-msgstr ""
+msgstr "Posici√≥ i mida de l'objecte"
 
 #: src/dialogs/object-properties.c:305
 msgid "Position and size"
-msgstr ""
+msgstr "Posici√≥ i mida"
 
-#: src/dialogs/stroke-style.c:543 src/toolbox.c:441
+#: src/dialogs/stroke-style.c:543 src/toolbox.c:440
 msgid "Stroke settings"
-msgstr "Par‡metres del contorn"
+msgstr "Par√†metres del contorn"
 
 #. Join type
 #: src/dialogs/stroke-style.c:579
@@ -685,107 +678,101 @@ msgstr "Cobreix"
 
 #. Dash
 #: src/dialogs/stroke-style.c:665
-#, fuzzy
 msgid "Pattern:"
-msgstr "Enganxa"
+msgstr "Patr√≥:"
 
-#: src/dialogs/text-edit.c:87
-#, fuzzy
+#: src/dialogs/text-edit.c:93
 msgid "Text properties"
-msgstr "Objecte de text"
+msgstr "Propietats de text"
 
 #. Layout
 #: src/dialogs/text-edit.c:132
 msgid "Layout"
-msgstr ""
+msgstr "Esquema"
 
-#: src/dialogs/text-edit.c:142
-#, fuzzy
+#: src/dialogs/text-edit.c:140
 msgid "Alignment:"
-msgstr "Alinea"
+msgstr "Aliniament:"
 
-#: src/dialogs/text-edit.c:174
+#: src/dialogs/text-edit.c:165
 msgid "Orientation:"
-msgstr ""
+msgstr "Orientaci√≥:"
 
-#: src/dialogs/text-edit.c:202
+#: src/dialogs/text-edit.c:183
+msgid "Line spacing:"
+msgstr "Espaiat entre l√≠nies:"
+
+#: src/dialogs/text-edit.c:208
 msgid "Text and font"
-msgstr ""
+msgstr "Text i tipus de lletra"
 
-#: src/dialogs/text-edit.c:216
+#: src/dialogs/text-edit.c:219
 msgid "Set as default"
-msgstr ""
+msgstr "Fixa per defecte"
 
-#: src/dialogs/tool-attributes.c:45 src/verbs.c:486
-#, fuzzy
+#: src/dialogs/tool-attributes.c:45 src/verbs.c:492
 msgid "Tool attributes"
-msgstr "Atributs"
+msgstr "Atributs d'eina"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
-msgstr ""
+msgstr "Expansi√≥"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Inner radius"
-msgstr ""
+msgstr "Radi intern"
 
 #: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
 #: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
-msgstr ""
+msgstr "Falten les prefer√®ncies d'eina"
 
 #. Magnitude
 #: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
-msgstr ""
+msgstr "Cantonades:"
 
 #: src/dialogs/tool-attributes.c:100
 msgid "Proportion"
-msgstr ""
+msgstr "Proporci√≥"
 
 #: src/dialogs/tool-attributes.c:110
-#, fuzzy
 msgid "Transform:"
-msgstr "_Transforma"
+msgstr "Transforma:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1043
 msgid "Mass:"
-msgstr ""
+msgstr "Cota:"
 
 #. Drag
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1055
-#, fuzzy
 msgid "Drag:"
-msgstr "Dibuixa\t"
+msgstr "Arrossega:"
 
 #: src/dialogs/tool-attributes.c:120
-#, fuzzy
 msgid "Angle"
-msgstr "Canvi"
+msgstr "Angle"
 
 #: src/dialogs/tool-attributes.c:127
-#, fuzzy
 msgid "Tool has no attributes"
-msgstr "Canvia els atributs"
+msgstr "L'eina no t√© atributs"
 
 #: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:88
 msgid "No active tool"
-msgstr ""
+msgstr "No hi ha cap eina activa"
 
-#: src/dialogs/tool-options.c:44 src/verbs.c:485
-#, fuzzy
+#: src/dialogs/tool-options.c:44 src/verbs.c:491
 msgid "Tool options"
-msgstr "Opcions simples"
+msgstr "Opcions d'eina"
 
 #: src/dialogs/tool-options.c:85
-#, fuzzy
 msgid "Tool has no options"
-msgstr "Opcions simples"
+msgstr "L'eina no t√© opcions"
 
 #: src/dialogs/transformation.c:193
 msgid "Transform selection"
-msgstr "Transforma la selecciÛ"
+msgstr "Transforma la selecci√≥"
 
 #: src/dialogs/transformation.c:365
 msgid "Move"
@@ -793,9 +780,8 @@ msgstr "Mou"
 
 #. Relative moves
 #: src/dialogs/transformation.c:407
-#, fuzzy
 msgid "Relative move"
-msgstr "vertical"
+msgstr "Moviment relatiu"
 
 #: src/dialogs/transformation.c:539
 msgid "Scale"
@@ -806,59 +792,52 @@ msgid "Rotate"
 msgstr "Gira"
 
 #: src/dialogs/transformation.c:684
-#, fuzzy
 msgid "deg"
 msgstr "graus"
 
 #: src/dialogs/xml-tree.c:158
-#, fuzzy
 msgid "Drag to reorder nodes"
-msgstr "Dibuixa lÌnies a m‡ alÁada"
+msgstr "Arrossega per a reordenar els nodes"
 
 #: src/dialogs/xml-tree.c:171
-#, fuzzy
 msgid "New element node"
-msgstr "Nou fitxer"
+msgstr "Node del nou element"
 
 #: src/dialogs/xml-tree.c:189
 msgid "New text node"
-msgstr ""
+msgstr "Nou node de text"
 
 #: src/dialogs/xml-tree.c:206
-#, fuzzy
 msgid "Duplicate node"
-msgstr "Duplica"
+msgstr "Duplica el node"
 
 #: src/dialogs/xml-tree.c:222
-#, fuzzy
 msgid "Delete node"
-msgstr "Suprimeix"
+msgstr "Suprimeix el node"
 
 #: src/dialogs/xml-tree.c:235
 msgid "Unindent node"
-msgstr ""
+msgstr "Desindenta el node"
 
 #: src/dialogs/xml-tree.c:246
 msgid "Indent node"
-msgstr ""
+msgstr "Indenta el node"
 
 #: src/dialogs/xml-tree.c:256
-#, fuzzy
 msgid "Raise node"
-msgstr "Recta"
+msgstr "Puja el node"
 
 #: src/dialogs/xml-tree.c:267
 msgid "Lower node"
-msgstr ""
+msgstr "Baixa el node"
 
 #: src/dialogs/xml-tree.c:304
 msgid "Delete attribute"
 msgstr "Suprimeix l'atribut"
 
 #: src/dialogs/xml-tree.c:334
-#, fuzzy
 msgid "Attribute name"
-msgstr "Atributs:"
+msgstr "Nom de l'atribut"
 
 #: src/dialogs/xml-tree.c:341
 #, fuzzy
@@ -873,7 +852,7 @@ msgstr "Atributs"
 #: src/dialogs/xml-tree.c:826
 #, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr ""
+msgstr "Sodipodi: %s : Vista XML"
 
 #: src/dialogs/xml-tree.c:849
 #, fuzzy
@@ -890,28 +869,28 @@ msgstr "Canvi"
 msgid "Create"
 msgstr "Contingut"
 
-#: src/document.c:340
+#: src/document.c:339
 #, fuzzy, c-format
 msgid "New document %d"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
-#: src/document.c:369
+#: src/document.c:368
 #, c-format
 msgid "Memory document %d"
 msgstr ""
 
-#: src/document.c:455
+#: src/document.c:454
 #, c-format
 msgid "Unnamed document %d"
 msgstr ""
 
 #: src/draw-context.c:280
 msgid "Appending to selection. Press 'a' to toggle Append/New."
-msgstr ""
+msgstr "S'est√† afegint a la selecci√≥. Premeu 'a' per a commutar Afegir/Nou."
 
 #: src/draw-context.c:285
 msgid "Creating new curve. Press 'a' to toggle Append/New."
-msgstr ""
+msgstr "S'est√† creant una nova corba. Premeu 'a' per a commutar Afegir/Nou."
 
 #. Angle
 #: src/dyna-draw-context.c:1067
@@ -920,221 +899,203 @@ msgid "Angle:"
 msgstr "Canvi"
 
 #. Reset
-#: src/dyna-draw-context.c:1091 src/rect-context.c:420
+#: src/dyna-draw-context.c:1091 src/rect-context.c:421
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
-msgstr ""
+msgstr "Per defecte"
 
-#: src/file.c:147 src/file.c:158 src/file.c:170
+#: src/file.c:150 src/file.c:161 src/file.c:173
 msgid "Select file to open"
 msgstr "Seleccioneu el fitxer que s'ha d'obrir"
 
-#: src/file.c:187 src/module.c:548
+#: src/file.c:190 src/module.c:548
 msgid "Scalable Vector Graphic (SVG)"
-msgstr ""
+msgstr "Gr√†fic vectorial escalable (SVG)"
 
-#: src/file.c:187 src/module.c:548
+#: src/file.c:190 src/module.c:548
 msgid "Sodipodi native file format and W3C standard"
-msgstr ""
+msgstr "Format natiu Sodipodi i est√†ndard W3C"
 
-#: src/file.c:193 src/file.c:306
+#: src/file.c:196 src/file.c:309
 #, fuzzy
 msgid "File type:"
 msgstr "Tipus d'emplenat"
 
-#: src/file.c:291
+#: src/file.c:294
 msgid "Save file"
 msgstr "Desa el fitxer"
 
-#: src/file.c:467 src/file.c:477 src/file.c:483
+#: src/file.c:470 src/file.c:480 src/file.c:486
 msgid "Select file to import"
 msgstr "Seleccioneu el fitxer que s'ha de importar"
 
 #: src/help.c:49
-#, fuzzy
 msgid "About sodipodi"
-msgstr "Sodipodi"
+msgstr "Quant a Sodipodi"
 
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
 msgid "Unit"
-msgstr ""
+msgstr "Unitat"
 
 #: src/helper/units.c:40
 msgid "Units"
-msgstr ""
+msgstr "Unitats"
 
 #: src/helper/units.c:41
-#, fuzzy
 msgid "Point"
-msgstr "Imprimeix"
+msgstr "Punt"
 
 #: src/helper/units.c:41
 msgid "pt"
-msgstr ""
+msgstr "pt"
 
 #: src/helper/units.c:41
-#, fuzzy
 msgid "Points"
-msgstr "Imprimeix"
+msgstr "Punts"
 
 #: src/helper/units.c:41
 msgid "Pt"
-msgstr ""
+msgstr "Pt"
 
 #: src/helper/units.c:42
-#, fuzzy
 msgid "Pixel"
-msgstr "pÌxels"
+msgstr "P√≠xel"
 
 #: src/helper/units.c:42
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: src/helper/units.c:42
-#, fuzzy
 msgid "Pixels"
-msgstr "pÌxels"
+msgstr "P√≠xels"
 
 #: src/helper/units.c:42
 msgid "Px"
-msgstr ""
+msgstr "Px"
 
 #: src/helper/units.c:43
 msgid "Userspace unit"
-msgstr ""
+msgstr "Unitat de l'espai de l'usuari"
 
 #: src/helper/units.c:43
 msgid "User"
-msgstr ""
+msgstr "Usuari"
 
 #: src/helper/units.c:43
 msgid "Userspace units"
-msgstr ""
+msgstr "Unitats de l'espai de l'usuari"
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: src/helper/units.c:46
-#, fuzzy
 msgid "Percent"
-msgstr "Imprimeix"
+msgstr "Percentatge"
 
 #: src/helper/units.c:46
-#, fuzzy
 msgid "%"
 msgstr "% "
 
 #: src/helper/units.c:46
-#, fuzzy
 msgid "Percents"
-msgstr "Imprimeix"
+msgstr "Percentatges"
 
 #: src/helper/units.c:47
 msgid "Millimeter"
-msgstr ""
+msgstr "Mil√≠metre"
 
 #: src/helper/units.c:47
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: src/helper/units.c:47
 msgid "Millimeters"
-msgstr ""
+msgstr "Mil√≠metres"
 
 #: src/helper/units.c:48
 msgid "Centimeter"
-msgstr ""
+msgstr "Cent√≠metre"
 
 #: src/helper/units.c:48
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #: src/helper/units.c:48
-#, fuzzy
 msgid "Centimeters"
-msgstr "Contingut"
+msgstr "Cent√≠metres"
 
 #: src/helper/units.c:49
-#, fuzzy
 msgid "Meter"
-msgstr "Contingut"
+msgstr "Metre"
 
 #: src/helper/units.c:49
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #: src/helper/units.c:49
-#, fuzzy
 msgid "meters"
-msgstr "mitra"
+msgstr "metres"
 
 #: src/helper/units.c:50
 msgid "Inch"
-msgstr ""
+msgstr "Polzada"
 
 #: src/helper/units.c:50
-#, fuzzy
 msgid "in"
-msgstr "Uneix"
+msgstr "polzades"
 
 #: src/helper/units.c:50
 msgid "Inches"
-msgstr ""
+msgstr "Polzades"
 
 #: src/helper/units.c:51
-#, fuzzy
 msgid "Em square"
-msgstr "quadrat"
+msgstr "Em quadrat"
 
 #: src/helper/units.c:51
 msgid "em"
-msgstr ""
+msgstr "em"
 
 #: src/helper/units.c:51
-#, fuzzy
 msgid "Em squares"
-msgstr "quadrat"
+msgstr "Em quadrats"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "Ex square"
-msgstr "quadrat"
+msgstr "Ex quadrat"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "ex"
-msgstr "Text"
+msgstr "ex"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "Ex squares"
-msgstr "quadrat"
+msgstr "Ex quadrats"
 
 #: src/interface.c:313
-#, fuzzy
 msgid "Close View"
-msgstr "Nova vista"
+msgstr "Tanca vista"
 
 #: src/interface.c:314 src/interface.c:478
 msgid "Exit Program"
-msgstr ""
+msgstr "Surt del programa"
 
 #: src/interface.c:316 src/interface.c:471
-#, fuzzy
 msgid "About Sodipodi"
-msgstr "Sodipodi"
+msgstr "Quant a Sodipodi"
 
 #. Modules need abouts too
 #: src/interface.c:319 src/interface.c:474
 msgid "About Modules"
-msgstr ""
+msgstr "Quant als m√≤duls"
 
-#: src/interface.c:336
+#: src/interface.c:337
+#, fuzzy
 msgid "Cleanup"
-msgstr ""
+msgstr "Neteja-ho tot"
 
 #. View:Zoom
-#: src/interface.c:407 src/toolbox.c:617 src/verbs.c:470
+#: src/interface.c:407 src/toolbox.c:616 src/verbs.c:476
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -1151,18 +1112,18 @@ msgstr "Previsualitza"
 
 #: src/interface.c:423
 msgid "New Toplevel Toolbox"
-msgstr ""
+msgstr "Nova caixa d'eines de primer nivell"
 
 #: src/interface.c:424
 msgid "New Docked Toolbox"
-msgstr ""
+msgstr "Nova caixa d'eines ancorada"
 
 #: src/interface.c:425
 msgid "Remove Docked Toolbox"
-msgstr ""
+msgstr "Suprimeix caixa d'eines ancorada"
 
 #. File
-#: src/interface.c:467 src/verbs.c:423
+#: src/interface.c:467 src/verbs.c:429
 msgid "New"
 msgstr "Nou"
 
@@ -1172,16 +1133,14 @@ msgstr "Obre"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:541 src/toolbox.c:348
-#, fuzzy
+#: src/interface.c:541 src/toolbox.c:347
 msgid "File"
-msgstr "Omple"
+msgstr "Fitxer"
 
 #. Edit submenu
-#: src/interface.c:547 src/toolbox.c:405 src/widgets/gradient-selector.c:135
-#, fuzzy
+#: src/interface.c:547 src/toolbox.c:404 src/widgets/gradient-selector.c:135
 msgid "Edit"
-msgstr "EdiciÛ del node"
+msgstr "Edici√≥"
 
 #. View submenu
 #: src/interface.c:559
@@ -1191,106 +1150,107 @@ msgstr "Nova vista"
 
 #. Drawing mode submenu
 #: src/interface.c:565
-#, fuzzy
 msgid "Drawing Mode"
-msgstr "Context del dibuix"
+msgstr "Mode de dibuix"
 
 #. Dialog submenu
 #: src/interface.c:571
 msgid "Dialogs"
-msgstr ""
+msgstr "Di√†legs"
 
 #: src/interface.c:578
-#, fuzzy
 msgid "Filters"
-msgstr "Omple"
+msgstr "Filtres"
 
-#: src/main.c:122
+#: src/main.c:126
 msgid "Do not use X server (only process files from console)"
-msgstr ""
+msgstr "No usis el servidor X (nom√©s processa fitxers des de la consola)"
 
-#: src/main.c:125
+#: src/main.c:129
 msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr ""
+msgstr "Prova d'usar el servidor X (encara que $DISPLAY no estigui habilitat)"
 
-#: src/main.c:128
-#, fuzzy
+#: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "Obre el fitxer especificat (les opcions de cadena es poden excloure)"
+msgstr ""
+"Obre el(s) document(s) especificat(s) (la cadena d'opcions es pot excloure)"
 
-#: src/main.c:129 src/main.c:132 src/main.c:135 src/main.c:149
+#: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
 msgstr "NOM DEL FITXER"
 
-#: src/main.c:131
+#: src/main.c:135
 #, fuzzy
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Imprimeix els fitxers al fitxer especificat (utilitzeu '| programa' per al "
 "conducte)"
 
-#: src/main.c:134
+#: src/main.c:138
 #, fuzzy
 msgid "Export document to png file"
 msgstr "Exporta el dibuix a png"
 
-#: src/main.c:137
+#: src/main.c:141
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
+"La resoluci√≥ emprada per a convertir l'SVG en mapa de bits (per defecte 72.0)"
 
-#: src/main.c:138
+#: src/main.c:142
 msgid "DPI"
-msgstr ""
+msgstr "PPP"
 
-#: src/main.c:140
+#: src/main.c:144
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:141
+#: src/main.c:145
 msgid "x0:y0:x1:y1"
-msgstr ""
+msgstr "x0:y0:x1:y1"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "L'amplada del mapa de bits generat en p√≠xels (sobreescriu ppp)"
 
-#: src/main.c:143
+#: src/main.c:147
 msgid "WIDTH"
-msgstr ""
-
-#: src/main.c:145
-msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
-
-#: src/main.c:145
-msgid "HEIGHT"
-msgstr ""
-
-#: src/main.c:147
-msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
-
-#: src/main.c:147
-msgid "COLOR"
-msgstr ""
+msgstr "AMPLADA"
 
 #: src/main.c:149
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "L'al√ßada del mapa de bits generat en p√≠xels (sobreescriu ppp)"
+
+#: src/main.c:149
+msgid "HEIGHT"
+msgstr "AL√áADA"
+
+#: src/main.c:151
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr ""
+"Color de fons del mapa de bits exportat (qualsevol cadena de color admesa "
+"pel SVG)"
+
+#: src/main.c:151
+msgid "COLOR"
+msgstr "COLOR"
+
+#: src/main.c:153
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:151
+#: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 
-#: src/main.c:153
+#: src/main.c:157
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
 #: src/module.c:556
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr ""
+msgstr "SVG amb \"xmlns:sodipodi\" namespace"
 
 #: src/module.c:557
 msgid "Scalable Vector Graphics format with sodipodi extensions"
@@ -1298,26 +1258,26 @@ msgstr ""
 
 #: src/module.c:560
 msgid "Plain SVG"
-msgstr ""
+msgstr "SVG simple"
 
 #: src/module.c:561
 msgid "Scalable Vector Graphics format"
-msgstr ""
+msgstr "Format gr√†fic vectorial escalable (SVG)"
 
 #: src/modules/gnome.c:133
 #, fuzzy
 msgid "Select printer"
-msgstr "SelecciÛ"
+msgstr "Selecci√≥"
 
 #: src/modules/gnome.c:187
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (nom del document %s..): PresentaciÛ preliminar"
+msgstr "Sodipodi (nom del document %s..): Presentaci√≥ preliminar"
 
 #: src/modules/kde.cpp:159
 #, fuzzy
 msgid "Document variant:"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1325,11 +1285,14 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|fitxers SVG\n"
+"*.xmlfitxers |XML\n"
+"*|Tots els fitxers"
 
 #: src/modules/kde.cpp:171
 #, fuzzy
 msgid "Save document as"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
 #. Print destination frame
 #: src/modules/ps.c:157 src/modules/ps.c:218
@@ -1345,7 +1308,7 @@ msgstr "Objecte de text"
 
 #: src/modules/ps.c:176
 msgid "Print using PostScript operators"
-msgstr ""
+msgstr "Imprimeix usant els operadors PostScript"
 
 #: src/modules/ps.c:178
 msgid ""
@@ -1355,9 +1318,8 @@ msgid ""
 msgstr ""
 
 #: src/modules/ps.c:183
-#, fuzzy
 msgid "Print as bitmap"
-msgstr "Exporta el fitxer"
+msgstr "Imprimeix com a mapa de bits"
 
 #: src/modules/ps.c:185
 msgid ""
@@ -1371,9 +1333,8 @@ msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr ""
 
 #: src/modules/ps.c:214
-#, fuzzy
 msgid "Resolution:"
-msgstr "SelecciÛ"
+msgstr "Resoluci√≥:"
 
 #: src/modules/ps.c:224
 msgid ""
@@ -1384,100 +1345,90 @@ msgstr ""
 
 #: src/modules/ps.c:837
 msgid "write error occured"
-msgstr ""
+msgstr "hi ha hagut un error d'escriptura"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:105
 msgid "Item"
-msgstr ""
+msgstr "Element"
 
 #. Item dialog
-#: src/object-ui.c:108 src/verbs.c:493
-#, fuzzy
+#: src/object-ui.c:108 src/verbs.c:499
 msgid "Item Properties"
-msgstr "Objecte de text"
+msgstr "Propietats de l'element"
 
 #. Select item
 #: src/object-ui.c:118
-#, fuzzy
 msgid "Select this"
-msgstr "Selecciona"
+msgstr "Selecciona aix√≤"
 
 #. Reset transformations
 #: src/object-ui.c:128
-#, fuzzy
 msgid "Reset transformation"
-msgstr "Inicia la transformaciÛ"
+msgstr "Reinicialitza la transformaci√≥"
 
 #: src/object-ui.c:134
 msgid "Make sensitive"
-msgstr ""
+msgstr "Fes sensible"
 
 #: src/object-ui.c:134
 msgid "Make insensitive"
-msgstr ""
+msgstr "Fes insensible"
 
 #. Create link
 #: src/object-ui.c:139
 msgid "Create link"
-msgstr ""
+msgstr "Crea un enlla√ß"
 
-#: src/object-ui.c:251 src/verbs.c:447
-#, fuzzy
+#: src/object-ui.c:251 src/verbs.c:453
 msgid "Group"
-msgstr "_Agrupa"
+msgstr "Agrupa"
 
 #. Group dialog
 #: src/object-ui.c:255
-#, fuzzy
 msgid "Group Properties"
-msgstr "Objecte de text"
+msgstr "Propietats del grup"
 
 #. "Ungroup"
-#: src/object-ui.c:268 src/verbs.c:448
-#, fuzzy
+#: src/object-ui.c:268 src/verbs.c:454
 msgid "Ungroup"
-msgstr "_Desagrupa"
+msgstr "Desagrupa"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:316
-#, fuzzy
 msgid "Link"
-msgstr "Uneix"
+msgstr "Enlla√ß"
 
 #. Link dialog
 #: src/object-ui.c:319
-#, fuzzy
 msgid "Link Properties"
-msgstr "Objecte de text"
+msgstr "Propietats de l'enlla√ß"
 
 #. Select item
 #: src/object-ui.c:329
 msgid "Follow link"
-msgstr ""
+msgstr "Segueix un enlla√ß"
 
 #. Reset transformations
 #: src/object-ui.c:334
 msgid "Remove link"
-msgstr ""
+msgstr "Suprimeix un enlla√ß"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:397
-#, fuzzy
 msgid "Image"
-msgstr "Mida de la imatge"
+msgstr "Imatge"
 
 #. Link dialog
 #: src/object-ui.c:400
-#, fuzzy
 msgid "Image Properties"
-msgstr "Objecte de text"
+msgstr "Propietats de la imatge"
 
 #. Autotrace dialog
-#: src/object-ui.c:408 src/sp-image.c:779
+#: src/object-ui.c:408 src/sp-image.c:780
 #, fuzzy
 msgid "Trace"
-msgstr "Toler‡ncia:"
+msgstr "Toler√†ncia:"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:457
@@ -1486,10 +1437,10 @@ msgid "Shape"
 msgstr "Desa\t"
 
 #. Item dialog
-#: src/object-ui.c:460 src/toolbox.c:442
+#: src/object-ui.c:460 src/toolbox.c:441
 #, fuzzy
 msgid "Fill settings"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:487
@@ -1504,7 +1455,7 @@ msgid "Rect Properties"
 msgstr "Objecte de text"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:523 src/verbs.c:464
+#: src/object-ui.c:523 src/verbs.c:470
 #, fuzzy
 msgid "Star"
 msgstr "Contorn"
@@ -1516,7 +1467,7 @@ msgid "Star Properties"
 msgstr "Objecte de text"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:559 src/verbs.c:465
+#: src/object-ui.c:559 src/verbs.c:471
 #, fuzzy
 msgid "Spiral"
 msgstr "Especial"
@@ -1528,19 +1479,19 @@ msgid "Spiral Properties"
 msgstr "Objecte de text"
 
 #. rx_ratio
-#: src/rect-context.c:396
+#: src/rect-context.c:397
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Radi de corbatura per x:"
 
 #. ry_ratio
-#: src/rect-context.c:408
+#: src/rect-context.c:409
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Radi de corbatura per y:"
 
 #: src/select-context.c:564
 #, fuzzy
 msgid "Visual transformation"
-msgstr "Inicia la transformaciÛ"
+msgstr "Inicia la transformaci√≥"
 
 #: src/select-context.c:572
 #, fuzzy
@@ -1555,11 +1506,11 @@ msgstr "Alinea amb les guies"
 #: src/select-context.c:586
 #, fuzzy
 msgid "Object transformation"
-msgstr "Inicia la transformaciÛ"
+msgstr "Inicia la transformaci√≥"
 
 #: src/select-context.c:594
 msgid "Optimize"
-msgstr ""
+msgstr "Optimitza"
 
 #: src/select-context.c:601
 #, fuzzy
@@ -1573,12 +1524,12 @@ msgstr "Sodipodi"
 
 #: src/sodipodi.c:398
 msgid "Untitled document"
-msgstr ""
+msgstr "Document sense t√≠tol"
 
 #. Show nice dialog box
 #: src/sodipodi.c:423
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
+msgstr "Sodipodi ha trobat un error intern i es tancar√† ara.\n"
 
 #: src/sodipodi.c:424
 msgid ""
@@ -1724,26 +1675,26 @@ msgstr ""
 msgid "Color image %d x %d: %s"
 msgstr ""
 
-#: src/sp-image.c:925
+#: src/sp-image.c:926
 #, c-format
 msgid "Error to write %s: %s"
 msgstr ""
 
-#: src/sp-image.c:959
+#: src/sp-image.c:960
 msgid "Untitled"
 msgstr ""
 
-#: src/sp-image.c:964
+#: src/sp-image.c:965
 #, fuzzy
 msgid "Document Name:"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
-#: src/sp-image.c:977
+#: src/sp-image.c:978
 #, fuzzy
 msgid "Unknown"
 msgstr "Element desconegut :-("
 
-#: src/sp-image.c:983
+#: src/sp-image.c:984
 #, fuzzy
 msgid "Image URI:"
 msgstr "Mida de la imatge"
@@ -1758,673 +1709,609 @@ msgid "Unknown item :-("
 msgstr "Element desconegut :-("
 
 #. fixme:
-#: src/sp-text.c:1296
+#: src/sp-text.c:1305
 msgid "Text object"
 msgstr "Objecte de text"
 
 #. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
-msgstr ""
+msgstr "Radi intern:"
 
 #. Proportion
 #: src/star-context.c:367
 msgid "Proportion:"
-msgstr ""
+msgstr "Proporci√≥:"
 
 #. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
 msgstr ""
 
-#: src/toolbox.c:439
+#: src/toolbox.c:438
 #, fuzzy
 msgid "Object"
 msgstr "Recta"
 
-#: src/toolbox.c:443 src/verbs.c:488
+#: src/toolbox.c:442 src/verbs.c:494
 #, fuzzy
 msgid "Object size and position"
-msgstr "Puja una posiciÛ"
+msgstr "Puja una posici√≥"
 
-#: src/toolbox.c:444
+#: src/toolbox.c:443
 #, fuzzy
 msgid "Text and font settings"
-msgstr "Par‡metres del gradient"
+msgstr "Par√†metres del gradient"
 
-#: src/toolbox.c:446 src/verbs.c:489
+#: src/toolbox.c:445 src/verbs.c:495
 #, fuzzy
 msgid "Object transformations"
-msgstr "Inicia la transformaciÛ"
+msgstr "Inicia la transformaci√≥"
 
-#: src/toolbox.c:519
-#, fuzzy
+#: src/toolbox.c:518
 msgid "Draw"
-msgstr "Dibuixa\t"
+msgstr "Dibuixa"
 
-#: src/toolbox.c:574
+#: src/toolbox.c:573
 #, fuzzy
 msgid "Extension"
 msgstr "Defineix les dimensions"
 
-#: src/toolbox.c:651
+#: src/toolbox.c:650
 msgid "Nodes"
 msgstr "Nodes"
 
-#: src/toolbox.c:653
+#: src/toolbox.c:652
 #, fuzzy
 msgid "Insert new nodes into selected segments"
 msgstr "Inclou un node en els segments seleccionats"
 
-#: src/toolbox.c:654
+#: src/toolbox.c:653
 #, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Fes un 'cusp'a la lÌnia als nodes seleccionats"
+msgstr "Fes un 'cusp'a la l√≠nia als nodes seleccionats"
 
-#: src/toolbox.c:655
+#: src/toolbox.c:654
 #, fuzzy
 msgid "Make selected nodes corner"
 msgstr "Suprimeix els nodes seleccionats"
 
-#: src/toolbox.c:656
+#: src/toolbox.c:655
 #, fuzzy
 msgid "Make selected segments lines"
-msgstr "Converteix els segments seleccionats en lÌnies"
+msgstr "Converteix els segments seleccionats en l√≠nies"
 
-#: src/toolbox.c:657
+#: src/toolbox.c:656
 msgid "Delete selected nodes"
 msgstr "Suprimeix els nodes seleccionats"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:657
 #, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Allisa la lÌnia als nodes seleccionats"
+msgstr "Allisa la l√≠nia als nodes seleccionats"
+
+#: src/toolbox.c:658
+msgid "Make selected nodes smooth"
+msgstr "Suavitza els nodes seleccionats"
 
 #: src/toolbox.c:659
-#, fuzzy
-msgid "Make selected nodes smooth"
-msgstr "Suprimeix els nodes seleccionats"
-
-#: src/toolbox.c:660
-#, fuzzy
 msgid "Make selected segments curves"
 msgstr "Converteix els segments seleccionats en corbes"
 
-#: src/verbs.c:421
+#: src/verbs.c:427
 msgid "Does nothing"
 msgstr ""
 
-#: src/verbs.c:423
+#: src/verbs.c:429
 msgid "Create new SVG document"
 msgstr ""
 
-#: src/verbs.c:424
-#, fuzzy
+#: src/verbs.c:430
 msgid "Open..."
 msgstr "Obre"
 
-#: src/verbs.c:424
+#: src/verbs.c:430
 msgid "Open existing SVG document"
 msgstr ""
 
-#: src/verbs.c:425
-#, fuzzy
+#: src/verbs.c:431
 msgid "Save"
-msgstr "Desa\t"
+msgstr "Desa"
 
-#: src/verbs.c:425
-#, fuzzy
+#: src/verbs.c:431
 msgid "Save document"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Desa el document"
 
-#: src/verbs.c:426
-#, fuzzy
+#: src/verbs.c:432
 msgid "Save As..."
-msgstr "Desa el fitxer"
+msgstr "Desa com a..."
 
-#: src/verbs.c:426
+#: src/verbs.c:432
 msgid "Save document under new name"
 msgstr ""
 
-#: src/verbs.c:427
-#, fuzzy
+#: src/verbs.c:433
 msgid "Print..."
-msgstr "Imprimeix"
+msgstr "Imprimeix..."
 
-#: src/verbs.c:427
-#, fuzzy
+#: src/verbs.c:433
 msgid "Print document"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Imprimeix document"
 
-#: src/verbs.c:428
+#: src/verbs.c:434
 msgid "Print Direct..."
 msgstr ""
 
-#: src/verbs.c:428
+#: src/verbs.c:434
 msgid "Print directly to file or pipe"
 msgstr ""
 
-#: src/verbs.c:429
+#: src/verbs.c:435
 #, fuzzy
 msgid "Print Preview"
-msgstr "Pre_visualitzaciÛ d'impressiÛ"
+msgstr "Previsualitzaci√≥ d'impressi√≥"
 
-#: src/verbs.c:429
+#: src/verbs.c:435
 #, fuzzy
 msgid "Preview document printout"
-msgstr "Par‡metres del tipus de lletra"
+msgstr "Par√†metres del tipus de lletra"
 
-#: src/verbs.c:430
+#: src/verbs.c:436
 msgid "Import"
 msgstr "Importa"
 
-#: src/verbs.c:430
+#: src/verbs.c:436
 msgid "Import bitmap or SVG image into document"
 msgstr ""
 
-#: src/verbs.c:431
-#, fuzzy
+#: src/verbs.c:437
 msgid "Export document as PNG bitmap"
-msgstr "Exporta el dibuix a png"
+msgstr "Exporta el document com un mapa de bits PNG"
 
 #. Edit
-#: src/verbs.c:433
+#: src/verbs.c:439
 msgid "Undo"
-msgstr "DesfÈs"
+msgstr "Desf√©s"
 
-#: src/verbs.c:433
-#, fuzzy
+#: src/verbs.c:439
 msgid "Revert last action"
-msgstr "Inicia la transformaciÛ"
+msgstr "Desf√®s l'ultima acci√≥"
 
-#: src/verbs.c:434
+#: src/verbs.c:440
 msgid "Redo"
-msgstr "RefÈs"
+msgstr "Ref√©s"
 
-#: src/verbs.c:434
+#: src/verbs.c:440
 msgid "Do again undone action"
 msgstr ""
 
-#: src/verbs.c:435
+#: src/verbs.c:441
 msgid "Cut"
 msgstr "Talla"
 
-#: src/verbs.c:435
-#, fuzzy
+#: src/verbs.c:441
 msgid "Cut selected objects to clipboard"
-msgstr "Converteix els segments seleccionats en corbes"
+msgstr "Retalla els objectes seleccionats al porta-retalls"
 
-#: src/verbs.c:436
+#: src/verbs.c:442
 msgid "Copy"
 msgstr "Copia"
 
-#: src/verbs.c:436
-#, fuzzy
+#: src/verbs.c:442
 msgid "Copy selected objects to clipboard"
-msgstr "Converteix els segments seleccionats en corbes"
+msgstr "Copia els objectes seleccionats al porta-retalls"
 
-#: src/verbs.c:437
+#: src/verbs.c:443
 msgid "Paste"
 msgstr "Enganxa"
 
-#: src/verbs.c:437
+#: src/verbs.c:443
 msgid "Paste objects from clipboard"
 msgstr ""
 
-#: src/verbs.c:438
+#: src/verbs.c:444
 msgid "Delete"
 msgstr "Suprimeix"
 
-#: src/verbs.c:438
-#, fuzzy
+#: src/verbs.c:444
 msgid "Delete selected objects"
 msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:439
+#: src/verbs.c:445
 msgid "Duplicate"
 msgstr "Duplica"
 
-#: src/verbs.c:439
-#, fuzzy
+#: src/verbs.c:445
 msgid "Duplicate selected objects"
 msgstr "Duplica el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:440
-#, fuzzy
+#: src/verbs.c:446
 msgid "Clear All"
-msgstr "Color 1"
+msgstr "Esborra'ls tots"
 
-#: src/verbs.c:440
+#: src/verbs.c:446
 msgid "Delete all objects from document"
 msgstr ""
 
-#: src/verbs.c:441
-#, fuzzy
+#: src/verbs.c:447
 msgid "Select All"
-msgstr "Selecciona"
+msgstr "Selecciona'ls tots"
 
-#: src/verbs.c:441
-#, fuzzy
+#: src/verbs.c:447
 msgid "Select all objects in document"
-msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
+msgstr "Selecciona tots els objectes del document"
 
 #. Selection
-#: src/verbs.c:443
-#, fuzzy
+#: src/verbs.c:449
 msgid "Bring to Front"
-msgstr "Porta a _primer pla"
+msgstr "Porta a primer pla"
 
-#: src/verbs.c:443
-#, fuzzy
+#: src/verbs.c:449
 msgid "Raise selected objects to top"
-msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
+msgstr "Puja els objectes seleccionats a dalt de tot"
 
-#: src/verbs.c:444
-#, fuzzy
+#: src/verbs.c:450
 msgid "Send to Back"
-msgstr "Envia al _fons"
+msgstr "Envia al fons"
 
-#: src/verbs.c:444
-#, fuzzy
+#: src/verbs.c:450
 msgid "Lower selected objects to bottom"
-msgstr "Baixa el(s) objecte(s) seleccionat(s) a la part inferior"
+msgstr "Baixa els objectes seleccionats a baix de tot"
 
-#: src/verbs.c:445
-#, fuzzy
+#: src/verbs.c:451
 msgid "Raise"
-msgstr "Recta"
+msgstr "Puja"
 
-#: src/verbs.c:445
-#, fuzzy
+#: src/verbs.c:451
 msgid "Raise selected objects one position"
-msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
+msgstr "Puja el(s) objecte(s) seleccionat(s) una posici√≥"
 
-#: src/verbs.c:446
+#: src/verbs.c:452
 msgid "Lower"
 msgstr ""
 
-#: src/verbs.c:446
-#, fuzzy
+#: src/verbs.c:452
 msgid "Lower selected objects one position"
-msgstr "Baixa el(s) objecte(s) seleccionat(s) a la part inferior"
+msgstr "Baixa el(s) objecte(s) seleccionat(s) una posici√≥"
 
-#: src/verbs.c:447
-#, fuzzy
+#: src/verbs.c:453
 msgid "Group selected objects"
-msgstr "Agrupa els elements seleccionats"
+msgstr "Agrupa els objectes seleccionats"
 
-#: src/verbs.c:448
-#, fuzzy
+#: src/verbs.c:454
 msgid "Ungroup selected group"
-msgstr "Desagrupa el grup seleccionat"
+msgstr "Desagrupa els objectes seleccionats"
 
-#: src/verbs.c:449
-#, fuzzy
+#: src/verbs.c:455
 msgid "Combine"
-msgstr "_Combina"
+msgstr "Combina"
 
-#: src/verbs.c:449
-#, fuzzy
+#: src/verbs.c:455
 msgid "Combine multiple paths"
-msgstr "Uneix els 2 punts finals seleccionats"
+msgstr "Combina m√∫ltiples camins"
 
-#: src/verbs.c:450
+#: src/verbs.c:456
 #, fuzzy
 msgid "Break Apart"
-msgstr "_Break Apart"
+msgstr "Trenca Apart"
 
-#: src/verbs.c:450
+#: src/verbs.c:456
 #, fuzzy
 msgid "Break selected path to subpaths"
 msgstr "Separa el node seleccionat"
 
 #. Object
-#: src/verbs.c:452
+#: src/verbs.c:458
 msgid "Rotate 90 degrees"
-msgstr ""
+msgstr "Gira 90 graus"
 
-#: src/verbs.c:452
+#: src/verbs.c:458
 #, fuzzy
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
 
-#: src/verbs.c:453
+#: src/verbs.c:459
 #, fuzzy
 msgid "Flatten object"
 msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:453
+#: src/verbs.c:459
 #, fuzzy
 msgid "Remove transformations from object"
-msgstr "Inicia la transformaciÛ"
+msgstr "Inicia la transformaci√≥"
 
-#: src/verbs.c:454
-#, fuzzy
+#: src/verbs.c:460
 msgid "Convert to Curves"
-msgstr "Converteix en co_rbes"
+msgstr "Converteix en corbes"
 
-#: src/verbs.c:454
-#, fuzzy
+#: src/verbs.c:460
 msgid "Convert selected object to path"
-msgstr "Converteix els segments seleccionats en corbes"
+msgstr "Converteix els objectes seleccionats en corbes"
 
-#: src/verbs.c:455
-#, fuzzy
+#: src/verbs.c:461
 msgid "Flip Horizontally"
-msgstr "horitzontal"
+msgstr "Volteja horitzontalment"
 
-#: src/verbs.c:456
-#, fuzzy
+#: src/verbs.c:462
 msgid "Flip selected objects horizontally"
-msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
+msgstr "Volteja horitzontalment el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:457
-#, fuzzy
+#: src/verbs.c:463
 msgid "Flip Vertically"
-msgstr "vertical"
+msgstr "Volteja verticalment"
 
-#: src/verbs.c:458
-#, fuzzy
+#: src/verbs.c:464
 msgid "Flip selected objects vertically"
-msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
+msgstr "Volteja verticalment el(s) objecte(s) seleccionat(s)"
 
 #. Event contexts
-#: src/verbs.c:460
+#: src/verbs.c:466
 msgid "Select"
 msgstr "Selecciona"
 
-#: src/verbs.c:460
-#, fuzzy
+#: src/verbs.c:466
 msgid "Select and transform objects"
-msgstr "Selecciona i transforma objectes i grups"
+msgstr "Selecciona i transforma els objectes"
 
-#: src/verbs.c:461
-#, fuzzy
+#: src/verbs.c:467
 msgid "Node edit"
-msgstr "EdiciÛ del node"
+msgstr "Edici√≥ del node"
 
-#: src/verbs.c:461
-#, fuzzy
+#: src/verbs.c:467
 msgid "Modify existing objects by control nodes"
-msgstr "Edita objectes utilitzant nodes de control"
+msgstr "Modifica els objectes existents mitjan√ßant els nodes de control"
 
-#: src/verbs.c:462
+#: src/verbs.c:468
 msgid "Rectangle"
 msgstr "Rectangle"
 
-#: src/verbs.c:462
+#: src/verbs.c:468
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr ""
-
-#: src/verbs.c:463
-msgid "Ellipse"
-msgstr "El∑lipse"
-
-#: src/verbs.c:463
-msgid "Create circles, ellipses and arcs"
-msgstr ""
-
-#: src/verbs.c:464
-msgid "Create stars and polygons"
-msgstr ""
-
-#: src/verbs.c:465
-#, fuzzy
-msgid "Create spirals"
-msgstr "Dibuixa rectangles"
-
-#: src/verbs.c:466
-msgid "Pencil"
-msgstr ""
-
-#: src/verbs.c:466
-#, fuzzy
-msgid "Draw freehand curves and straight lines"
-msgstr "Dibuixa lÌnies a m‡ alÁada"
-
-#: src/verbs.c:467
-#, fuzzy
-msgid "Pen"
-msgstr "Imprimeix"
-
-#: src/verbs.c:467
-msgid "Draw precisely positioned curved and straight lines"
-msgstr ""
-
-#: src/verbs.c:468
-msgid "Calligraphy"
-msgstr ""
-
-#: src/verbs.c:468
-#, fuzzy
-msgid "Draw calligraphic lines"
-msgstr "Dibuixa el∑lipses"
+"Crea rectangles i quadrats, opcionalment amb les cantonades arrodonides"
 
 #: src/verbs.c:469
-msgid "Create and edit text objects"
-msgstr ""
+msgid "Ellipse"
+msgstr "El¬∑lipse"
+
+#: src/verbs.c:469
+msgid "Create circles, ellipses and arcs"
+msgstr "Crea cercles, el¬∑lipses i arcs"
 
 #: src/verbs.c:470
-msgid "Zoom into preciely selected area"
-msgstr ""
+msgid "Create stars and polygons"
+msgstr "Crea estrelles i pol√≠gons"
 
 #: src/verbs.c:471
+msgid "Create spirals"
+msgstr "Crea espirals"
+
+#: src/verbs.c:472
+msgid "Pencil"
+msgstr "Ll√†pis"
+
+#: src/verbs.c:472
+msgid "Draw freehand curves and straight lines"
+msgstr "Dibuixa corbes a m√† al√ßada i l√≠nies rectes"
+
+#: src/verbs.c:473
+msgid "Pen"
+msgstr "Ll√†pis"
+
+#: src/verbs.c:473
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Dibuixa corbes posicionades amb precisi√≥ i l√≠nies rectes"
+
+#: src/verbs.c:474
+msgid "Calligraphy"
+msgstr "Cal¬∑ligrafia"
+
+#: src/verbs.c:474
+msgid "Draw calligraphic lines"
+msgstr "Dibuixa l√≠nies de cal¬∑ligrafia"
+
+#: src/verbs.c:475
+msgid "Create and edit text objects"
+msgstr "Crea i edita objectes de text"
+
+#: src/verbs.c:476
+msgid "Zoom into precisely selected area"
+msgstr "Amplia una √†rea seleccionada de forma precisa"
+
+#: src/verbs.c:477
+#, fuzzy
 msgid "Dropper"
-msgstr ""
+msgstr "Comptagotes"
 
-#: src/verbs.c:471
+#: src/verbs.c:477
 msgid "Pick averaged colors from image"
 msgstr ""
 
 #. Zooming
-#: src/verbs.c:473
+#: src/verbs.c:479
 msgid "In"
-msgstr ""
+msgstr "Entrada"
 
-#: src/verbs.c:473
-#, fuzzy
+#: src/verbs.c:479
 msgid "Zoom in drawing"
-msgstr "Imprimeix el fitxer"
+msgstr "Amplia el dibuix"
 
-#: src/verbs.c:474
-#, fuzzy
+#: src/verbs.c:480
 msgid "Out"
-msgstr "Talla"
+msgstr "Sortida"
 
-#: src/verbs.c:474
-#, fuzzy
+#: src/verbs.c:480
 msgid "Zoom out drawing"
-msgstr "Zoom"
+msgstr "Redueix el dibuix"
 
-#: src/verbs.c:475
+#: src/verbs.c:481
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:475
+#: src/verbs.c:481
 msgid "Set zoom factor to 1:1"
-msgstr ""
+msgstr "Fixa el factor d'ampliaci√≥ 1:1"
 
-#: src/verbs.c:476
+#: src/verbs.c:482
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:476
-#, fuzzy
+#: src/verbs.c:482
 msgid "Set zoom factor to 1:2"
-msgstr "Zoom"
+msgstr "Fixa el factor d'ampliaci√≥ a 1:2"
 
-#: src/verbs.c:477
+#: src/verbs.c:483
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:477
-#, fuzzy
+#: src/verbs.c:483
 msgid "Set zoom factor to 2:1"
-msgstr "Zoom"
+msgstr "Fixa el factor d'ampliaci√≥ a 2:1"
 
-#: src/verbs.c:478
+#: src/verbs.c:484
 msgid "Fit the whole page into window"
-msgstr ""
-
-#: src/verbs.c:479
-msgid "Fit the whole drawing into window"
-msgstr ""
-
-#: src/verbs.c:480
-msgid "Fit the whole selection into window"
-msgstr ""
-
-#. Dialogs
-#: src/verbs.c:482
-#, fuzzy
-msgid "Display"
-msgstr "Par‡metres d'emplenat"
-
-#: src/verbs.c:482
-#, fuzzy
-msgid "Global display settings"
-msgstr "Par‡metres d'emplenat"
-
-#: src/verbs.c:483
-#, fuzzy
-msgid "Document"
-msgstr "Par‡metres del tipus de lletra"
-
-#: src/verbs.c:483
-msgid "Page layout"
-msgstr ""
-
-#: src/verbs.c:484
-msgid "Editing Window"
-msgstr ""
-
-#: src/verbs.c:484
-#, fuzzy
-msgid "Editing window properties"
-msgstr "Objecte de text"
+msgstr "Ajusta la p√†gina a la finestra"
 
 #: src/verbs.c:485
-#, fuzzy
-msgid "Tool Options"
-msgstr "Opcions simples"
+msgid "Fit the whole drawing into window"
+msgstr "Ajusta el dibuix a la finestra"
 
 #: src/verbs.c:486
-#, fuzzy
-msgid "Tool Attributes"
-msgstr "Atributs"
+msgid "Fit the whole selection into window"
+msgstr "Ajusta la selecci√≥ a la finestra"
 
-#: src/verbs.c:487
-msgid "Fill and Stroke"
-msgstr ""
-
-#: src/verbs.c:487
+#. Dialogs
+#: src/verbs.c:488
 #, fuzzy
-msgid "Fill and stroke settings"
-msgstr "Par‡metres del contorn"
+msgid "Display"
+msgstr "Par√†metres d'emplenat"
 
 #: src/verbs.c:488
 #, fuzzy
-msgid "Size and Position"
-msgstr "Puja una posiciÛ"
+msgid "Global display settings"
+msgstr "Par√†metres globals de presentaci√≥"
 
 #: src/verbs.c:489
-#, fuzzy
-msgid "Transformations"
-msgstr "Transforma la selecciÛ"
+msgid "Document"
+msgstr "Document"
+
+#: src/verbs.c:489
+msgid "Page layout"
+msgstr "Esquema de la p√†gina"
 
 #: src/verbs.c:490
-#, fuzzy
-msgid "Align and Distribute"
-msgstr "Atributs"
+msgid "Editing Window"
+msgstr "Finestra d'edici√≥"
 
 #: src/verbs.c:490
-#, fuzzy
-msgid "Align and distribute"
-msgstr "Afegeix un atribut"
+msgid "Editing window properties"
+msgstr "Edita les propietats de la finestra"
 
 #: src/verbs.c:491
-#, fuzzy
-msgid "Text and Font"
-msgstr "Par‡metres del gradient"
-
-#: src/verbs.c:491
-#, fuzzy
-msgid "Text editing and font settings"
-msgstr "Par‡metres del gradient"
+msgid "Tool Options"
+msgstr "Opcions de l'eina"
 
 #: src/verbs.c:492
-msgid "XML Editor"
+msgid "Tool Attributes"
+msgstr "Atributs de l'eina"
+
+#: src/verbs.c:493
+msgid "Fill and Stroke"
 msgstr ""
+
+#: src/verbs.c:493
+msgid "Fill and stroke settings"
+msgstr "Par√†metres d'emplenat i contorn"
+
+#: src/verbs.c:494
+msgid "Size and Position"
+msgstr "Mida i posici√≥"
+
+#: src/verbs.c:495
+msgid "Transformations"
+msgstr "Transformacions"
+
+#: src/verbs.c:496
+msgid "Align and Distribute"
+msgstr "Alinea i distribueix"
+
+#: src/verbs.c:496
+msgid "Align and distribute"
+msgstr "Alinea i distribueix"
+
+#: src/verbs.c:497
+msgid "Text and Font"
+msgstr "Text i tipus de lletra"
+
+#: src/verbs.c:497
+msgid "Text editing and font settings"
+msgstr "Par√†metres d'edicio de text i tipus de lletra"
+
+#: src/verbs.c:498
+msgid "XML Editor"
+msgstr "Editor XML"
 
 #. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
-msgstr ""
+msgstr "Tipus de lletra"
 
 #. Style frame
 #: src/widgets/font-selector.c:172
-#, fuzzy
 msgid "Style"
-msgstr " Escala "
+msgstr " Estil"
 
 #: src/widgets/font-selector.c:207
 msgid "Font size:"
-msgstr ""
+msgstr "Mida de la lletra"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:140
 msgid "Add"
 msgstr "Afegeix"
 
 #: src/widgets/gradient-selector.c:176
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Gradient"
+msgstr "unitatsGradient"
 
 #: src/widgets/gradient-selector.c:205
 msgid "gradientSpread"
 msgstr ""
 
 #: src/widgets/gradient-vector.c:245
-#, fuzzy
 msgid "No document selected"
-msgstr "Darrer seleccionat"
+msgstr "No hi ha cap document seleccionat"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
-msgstr ""
+msgstr "No hi ha gradients al document"
 
 #: src/widgets/gradient-vector.c:257
-#, fuzzy
 msgid "No gradient selected"
-msgstr "Darrer seleccionat"
+msgstr "No hi ha cap gradient seleccionat"
 
 #: src/widgets/gradient-vector.c:412
-#, fuzzy
 msgid "Start color"
-msgstr "Color del contorn"
+msgstr "Color inicial"
 
 #: src/widgets/gradient-vector.c:422
-#, fuzzy
 msgid "End color"
-msgstr "Color del contorn"
+msgstr "Color final"
 
 #: src/widgets/gradient-vector.c:447
-#, fuzzy
 msgid "Gradient vector"
-msgstr "Gradient"
+msgstr "Vector de gradient"
 
 #: src/widgets/paint-selector.c:620
-#, fuzzy
 msgid "No objects"
-msgstr "Objecte de text"
+msgstr "No hi ha objectes"
 
 #: src/widgets/paint-selector.c:634
 msgid "Multiple styles"
-msgstr ""
+msgstr "M√∫ltiples estils"
 
 #: src/widgets/paint-selector.c:648
 #, fuzzy
@@ -2433,34 +2320,33 @@ msgstr "Imprimeix"
 
 #. Label
 #: src/widgets/paint-selector.c:738
-#, fuzzy
 msgid "Mode:"
-msgstr "Mou"
+msgstr "Mode:"
 
 #: src/widgets/paint-selector.c:748
 msgid "RGB"
-msgstr ""
+msgstr "RGB"
 
 #: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
 msgid "RGB Colorspace"
-msgstr ""
+msgstr "Espai de color RGB"
 
 #: src/widgets/paint-selector.c:749
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
 #: src/widgets/paint-selector.c:750
 msgid "CMYK"
-msgstr ""
+msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:750
-msgid "CMYK colospace"
-msgstr ""
+msgid "CMYK Colorspace"
+msgstr "Espai de color CMYK"
 
 #. Use dropper
 #: src/widgets/paint-selector.c:757
 msgid "Get from dropper"
-msgstr ""
+msgstr "Agafa del comptagotes"
 
 #: src/widgets/paint-selector.c:788
 #, fuzzy
@@ -2468,43 +2354,37 @@ msgid "Color paint"
 msgstr "Color del mapa de bits"
 
 #: src/widgets/paint-selector.c:858
-#, fuzzy
 msgid "Linear gradient"
-msgstr ""
-"Lineal\n"
-"Radial\n"
+msgstr "Gradient lineal"
 
 #: src/widgets/paint-selector.c:861
 msgid "Radial gradient"
-msgstr ""
+msgstr "Gradient radial"
 
 #: src/widgets/sp-color-selector.c:620
-#, fuzzy
 msgid "Red:"
-msgstr "RefÈs"
+msgstr "Vermell:"
 
 #: src/widgets/sp-color-selector.c:621
 msgid "Green:"
-msgstr ""
+msgstr "Verd:"
 
 #: src/widgets/sp-color-selector.c:622
-#, fuzzy
 msgid "Blue:"
-msgstr "Valor:"
+msgstr "Blau:"
 
 #: src/widgets/sp-color-selector.c:623 src/widgets/sp-color-selector.c:643
 #: src/widgets/sp-color-selector.c:665
 msgid "Alpha:"
-msgstr ""
+msgstr "Alfa:"
 
 #: src/widgets/sp-color-selector.c:640
-#, fuzzy
 msgid "Hue:"
-msgstr "Valor:"
+msgstr "Mat√≠s:"
 
 #: src/widgets/sp-color-selector.c:641
 msgid "Saturation:"
-msgstr ""
+msgstr "Saturaci√≥:"
 
 #: src/widgets/sp-color-selector.c:642
 msgid "Value:"
@@ -2512,873 +2392,28 @@ msgstr "Valor:"
 
 #: src/widgets/sp-color-selector.c:661
 msgid "Cyan:"
-msgstr ""
+msgstr "Cian:"
 
 #: src/widgets/sp-color-selector.c:662
 msgid "Magenta:"
-msgstr ""
+msgstr "Magenta:"
 
 #: src/widgets/sp-color-selector.c:663
 msgid "Yellow:"
-msgstr ""
+msgstr "Groc:"
 
 #: src/widgets/sp-color-selector.c:664
-#, fuzzy
 msgid "Black:"
-msgstr "Al darrere"
+msgstr "Negre:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
 msgstr ""
 
 #: src/widgets/sp-xmlview-attr-list.c:55
-#, fuzzy
 msgid "Attribute"
-msgstr "Atributs"
+msgstr "Atribut"
 
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
 msgstr "Valor"
-
-#, fuzzy
-#~ msgid "Open SVG file"
-#~ msgstr "Obre el fitxer"
-
-#, fuzzy
-#~ msgid "Break apart"
-#~ msgstr "_Break Apart"
-
-#~ msgid "Order"
-#~ msgstr "Ordre"
-
-#~ msgid "Node"
-#~ msgstr "Node"
-
-#~ msgid "Freehand"
-#~ msgstr "A m‡ alÁada"
-
-#, fuzzy
-#~ msgid "Align Objects"
-#~ msgstr "Recta"
-
-#, fuzzy
-#~ msgid "Text Editing"
-#~ msgstr "EdiciÛ de nodes..."
-
-#, fuzzy
-#~ msgid "Display Properties"
-#~ msgstr "Par‡metres d'emplenat"
-
-#, fuzzy
-#~ msgid "Convert object to curve"
-#~ msgstr "Converteix els segments seleccionats en corbes"
-
-#, fuzzy
-#~ msgid "Raise selected objects one level"
-#~ msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
-
-#, fuzzy
-#~ msgid "Lower selected objects one level"
-#~ msgstr "Baixa el(s) objecte(s) seleccionat(s) a la part inferior"
-
-#, fuzzy
-#~ msgid "Select tool - select and transform objects"
-#~ msgstr "Selecciona i transforma objectes i grups"
-
-#~ msgid "A path - whatever it means"
-#~ msgstr "Un camÌ - signifiqui el que signifiqui"
-
-#~ msgid "Align objects to horizontal mid"
-#~ msgstr "Alinea els objectes amb la meitat horitzontal"
-
-#~ msgid "Align objects to vertical mid"
-#~ msgstr "Alinea els objectes amb la meitat vertical"
-
-#~ msgid "Align outside object to bottom border"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit inferior"
-
-#~ msgid "Align outside object to left border"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit esquerra"
-
-#~ msgid "Align outside object to right border"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit dret"
-
-#~ msgid "Align outside object to top border"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit superior"
-
-#, fuzzy
-#~ msgid "Close window"
-#~ msgstr "Tanca el di‡leg"
-
-#, fuzzy
-#~ msgid "Transformation"
-#~ msgstr "Transforma la selecciÛ"
-
-#, fuzzy
-#~ msgid " Color fill "
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid " General "
-#~ msgstr "General"
-
-#, fuzzy
-#~ msgid " Style "
-#~ msgstr " Escala "
-
-#~ msgid "Behind fill"
-#~ msgstr "Emplenat per darrera"
-
-#, fuzzy
-#~ msgid "Butt endpoints"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#, fuzzy
-#~ msgid "Choose fill color"
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Choose stroke color"
-#~ msgstr "Color del contorn"
-
-#, fuzzy
-#~ msgid "Color fill"
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Color:"
-#~ msgstr "Color"
-
-#, fuzzy
-#~ msgid "Edit..."
-#~ msgstr "EdiciÛ del node"
-
-#, fuzzy
-#~ msgid "Endpoints:"
-#~ msgstr "Imprimeix"
-
-#, fuzzy
-#~ msgid "Fill Color:"
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Fractal fill"
-#~ msgstr "Fractal"
-
-#, fuzzy
-#~ msgid "Gradient fill"
-#~ msgstr "Gradient"
-
-#~ msgid "Is stroked"
-#~ msgstr "Est‡ contornejat"
-
-#, fuzzy
-#~ msgid "No fill"
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Pattern fill"
-#~ msgstr "Enganxa"
-
-#, fuzzy
-#~ msgid "Pick fill color"
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Pick stroke color"
-#~ msgstr "Color del contorn"
-
-#, fuzzy
-#~ msgid "Reread"
-#~ msgstr "RefÈs"
-
-#, fuzzy
-#~ msgid "Round endpoints"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#, fuzzy
-#~ msgid "Round join"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#, fuzzy
-#~ msgid "Scale with object"
-#~ msgstr "Escala amb la imatge"
-
-#, fuzzy
-#~ msgid "Square endpoints"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#~ msgid "Stroke"
-#~ msgstr "Contorn"
-
-#, fuzzy
-#~ msgid "Stroke width"
-#~ msgstr "Gruix del contorn"
-
-#, fuzzy
-#~ msgid "centimeter"
-#~ msgstr "Contingut"
-
-#, fuzzy
-#~ msgid "color"
-#~ msgstr "Color"
-
-#, fuzzy
-#~ msgid "millimeters"
-#~ msgstr "mitra"
-
-#, fuzzy
-#~ msgid "none"
-#~ msgstr "Cap"
-
-#, fuzzy
-#~ msgid "points"
-#~ msgstr "Imprimeix"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0MB"
-
-#~ msgid "Back One"
-#~ msgstr "Un endarrere"
-
-#~ msgid "Break apart selected node"
-#~ msgstr "Separa el node seleccionat"
-
-#~ msgid "Bring to _Front"
-#~ msgstr "Porta a _primer pla"
-
-#~ msgid "Close dialog"
-#~ msgstr "Tanca el di‡leg"
-
-#~ msgid "Convert selected segments to curves"
-#~ msgstr "Converteix els segments seleccionats en corbes"
-
-#~ msgid "Convert selected segments to lines"
-#~ msgstr "Converteix els segments seleccionats en lÌnies"
-
-#~ msgid "Cusp line at selected nodes"
-#~ msgstr "Fes un 'cusp'a la lÌnia als nodes seleccionats"
-
-#, fuzzy
-#~ msgid "Desktop"
-#~ msgstr "Par‡metres del contorn"
-
-#~ msgid "Drawing Context"
-#~ msgstr "Context del dibuix"
-
-#~ msgid "Export picture to png"
-#~ msgstr "Exporta el dibuix a png"
-
-#~ msgid "Exported as"
-#~ msgstr "Exportat com"
-
-#~ msgid "Filename:"
-#~ msgstr "Nom del fitxer:"
-
-#~ msgid "Forward One"
-#~ msgstr "Un endavant"
-
-#~ msgid "Height"
-#~ msgstr "AlÁada"
-
-#~ msgid "Image size"
-#~ msgstr "Mida de la imatge"
-
-#~ msgid "Include one node into selected segments"
-#~ msgstr "Inclou un node en els segments seleccionats"
-
-#~ msgid "Join 2 selected endpoints"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "Conserva la proporciÛ entre l'amplada i l'alÁada"
-
-#~ msgid "Png file name"
-#~ msgstr "Nom del fitxer png"
-
-#~ msgid "Send to _Back"
-#~ msgstr "Envia al _fons"
-
-#~ msgid "Set dimensions"
-#~ msgstr "Defineix les dimensions"
-
-#~ msgid "Smooth line at selected nodes"
-#~ msgstr "Allisa la lÌnia als nodes seleccionats"
-
-#~ msgid "Symmetric "
-#~ msgstr "SimËtric "
-
-#~ msgid "Toggle Borders"
-#~ msgstr "Commuta les vores"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "Mida del fitxer descomprimit"
-
-#~ msgid "Where to export"
-#~ msgstr "On exportar"
-
-#~ msgid "Width"
-#~ msgstr "Amplada"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "XML Tree"
-#~ msgstr "Arbre XML"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "_Align"
-#~ msgstr "_Alinea"
-
-#~ msgid "_Combine"
-#~ msgstr "_Combina"
-
-#~ msgid "_Drawing"
-#~ msgstr "_Dibuix"
-
-#, fuzzy
-#~ msgid "_Group"
-#~ msgstr "_Agrupa"
-
-#~ msgid "_Interactive"
-#~ msgstr "_Interactiu"
-
-#, fuzzy
-#~ msgid "_New"
-#~ msgstr "Nou"
-
-#~ msgid "_Page"
-#~ msgstr "_P‡gina"
-
-#~ msgid "_Selection"
-#~ msgstr "_SelecciÛ"
-
-#, fuzzy
-#~ msgid "_Ungroup"
-#~ msgstr "_Desagrupa"
-
-#, fuzzy
-#~ msgid "Align dialog"
-#~ msgstr "Tanca el di‡leg"
-
-#, fuzzy
-#~ msgid "Break apart selected paths"
-#~ msgstr "Separa el node seleccionat"
-
-#, fuzzy
-#~ msgid "Combine selected paths"
-#~ msgstr "Uneix els 2 punts finals seleccionats"
-
-#, fuzzy
-#~ msgid "Cut selection"
-#~ msgstr "SelecciÛ"
-
-#, fuzzy
-#~ msgid "Delete selection"
-#~ msgstr "Suprimeix els nodes seleccionats"
-
-#, fuzzy
-#~ msgid "Draw arc"
-#~ msgstr "Dibuixa\t"
-
-#, fuzzy
-#~ msgid "Draw dynahand line"
-#~ msgstr "Dibuixa lÌnies a m‡ alÁada"
-
-#, fuzzy
-#~ msgid "Draw rectangle"
-#~ msgstr "Dibuixa rectangles"
-
-#, fuzzy
-#~ msgid "Draw star"
-#~ msgstr "Context del dibuix"
-
-#, fuzzy
-#~ msgid "Draw text"
-#~ msgstr "Context del dibuix"
-
-#, fuzzy
-#~ msgid "Drawing context"
-#~ msgstr "Context del dibuix"
-
-#, fuzzy
-#~ msgid "Duplicate selection"
-#~ msgstr "Duplica el(s) objecte(s) seleccionat(s)"
-
-#, fuzzy
-#~ msgid "Edit fill style of selected objects"
-#~ msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
-
-#, fuzzy
-#~ msgid "Edit font style of selected objects"
-#~ msgstr "Duplica el(s) objecte(s) seleccionat(s)"
-
-#, fuzzy
-#~ msgid "Edit layout of selected objects"
-#~ msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
-
-#, fuzzy
-#~ msgid "Edit stroke style of selected objects"
-#~ msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
-
-#, fuzzy
-#~ msgid "Import "
-#~ msgstr "Importa"
-
-#, fuzzy
-#~ msgid "New drawing"
-#~ msgstr "Dibuix"
-
-#, fuzzy
-#~ msgid "Nope !"
-#~ msgstr "Node"
-
-#, fuzzy
-#~ msgid "Raise selection to top"
-#~ msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
-
-#, fuzzy
-#~ msgid "Remove transformation"
-#~ msgstr "Inicia la transformaciÛ"
-
-#, fuzzy
-#~ msgid "Rotate selected objects 90deg clockwise"
-#~ msgstr "Puja el(s) objecte(s) seleccionat(s) a la part superior"
-
-#, fuzzy
-#~ msgid "Save drawing "
-#~ msgstr "Dibuix"
-
-#, fuzzy
-#~ msgid "Transformation dialog"
-#~ msgstr "Transforma la selecciÛ"
-
-#, fuzzy
-#~ msgid "Undo "
-#~ msgstr "DesfÈs"
-
-#, fuzzy
-#~ msgid "Ungroup selected objects"
-#~ msgstr "Desagrupa el grup seleccionat"
-
-#, fuzzy
-#~ msgid "Unsymmetric"
-#~ msgstr "SimËtric "
-
-#, fuzzy
-#~ msgid "Zoom in"
-#~ msgstr "Zoom"
-
-#, fuzzy
-#~ msgid "Zoom out"
-#~ msgstr "Zoom"
-
-#, fuzzy
-#~ msgid "Zoom to 1:2"
-#~ msgstr "Zoom"
-
-#, fuzzy
-#~ msgid "Zoom to 2:1"
-#~ msgstr "Zoom"
-
-#, fuzzy
-#~ msgid "Zoom to selection"
-#~ msgstr "Transforma la selecciÛ"
-
-#, fuzzy
-#~ msgid "_Open"
-#~ msgstr "Obre"
-
-#, fuzzy
-#~ msgid "lower selection to bottom"
-#~ msgstr "Baixa el(s) objecte(s) seleccionat(s) a la part inferior"
-
-#, fuzzy
-#~ msgid "Align to bottom left"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit esquerra"
-
-#, fuzzy
-#~ msgid "Align to bottom middle"
-#~ msgstr "Alinea l'objecte interior amb el lÌmit inferior"
-
-#, fuzzy
-#~ msgid "Align to bottom right"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit dret"
-
-#, fuzzy
-#~ msgid "Align to left middle"
-#~ msgstr "Alinea els objectes amb la meitat vertical"
-
-#, fuzzy
-#~ msgid "Align to right middle"
-#~ msgstr "Alinea els objectes amb la meitat horitzontal"
-
-#, fuzzy
-#~ msgid "Align to top left"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit esquerra"
-
-#, fuzzy
-#~ msgid "Align to top right"
-#~ msgstr "Alinea l'objecte exterior amb el lÌmit dret"
-
-#, fuzzy
-#~ msgid "Center"
-#~ msgstr "Contingut"
-
-#, fuzzy
-#~ msgid "Close dialog - Ctl+c"
-#~ msgstr "Tanca el di‡leg"
-
-#, fuzzy
-#~ msgid "Degree"
-#~ msgstr "graus"
-
-#, fuzzy
-#~ msgid "Height: "
-#~ msgstr "AlÁada"
-
-#~ msgid "Skew"
-#~ msgstr "Inclina"
-
-#, fuzzy
-#~ msgid "Start transformation - Ctl+a"
-#~ msgstr "Inicia la transformaciÛ"
-
-#, fuzzy
-#~ msgid "Use alignment during transformation"
-#~ msgstr "Inicia la transformaciÛ"
-
-#, fuzzy
-#~ msgid "absolute"
-#~ msgstr "Enganxa"
-
-#, fuzzy
-#~ msgid "angle"
-#~ msgstr "Canvi"
-
-#, fuzzy
-#~ msgid "horizontal move"
-#~ msgstr "horitzontal"
-
-#, fuzzy
-#~ msgid "horizontal scale value"
-#~ msgstr "horitzontal"
-
-#, fuzzy
-#~ msgid "select direction"
-#~ msgstr "SelecciÛ"
-
-#, fuzzy
-#~ msgid "skew"
-#~ msgstr "Inclina"
-
-#~ msgid "Attribute:"
-#~ msgstr "Atributs:"
-
-#~ msgid "Change"
-#~ msgstr "Canvi"
-
-#~ msgid "Change Attribute"
-#~ msgstr "Canvia els atributs"
-
-#, fuzzy
-#~ msgid "Change Content"
-#~ msgstr "Context del dibuix"
-
-#~ msgid "Content"
-#~ msgstr "Contingut"
-
-#~ msgid "Do you want to delete attribute?"
-#~ msgstr "Voleu suprimir l'atribut?"
-
-#~ msgid "Hierarchy"
-#~ msgstr "Jerarquia"
-
-#~ msgid "Key"
-#~ msgstr "Clau"
-
-#, fuzzy
-#~ msgid "New Element"
-#~ msgstr "Nou fitxer"
-
-#~ msgid "name"
-#~ msgstr "nom"
-
-#, fuzzy
-#~ msgid "You can't delete 'id' attribute!"
-#~ msgstr "Voleu suprimir l'atribut?"
-
-#, fuzzy
-#~ msgid "Do you want to delete attribute %s?"
-#~ msgstr "Voleu suprimir l'atribut?"
-
-#, fuzzy
-#~ msgid "No"
-#~ msgstr "Node"
-
-#, fuzzy
-#~ msgid "Do you want to delete element %s?"
-#~ msgstr "Voleu suprimir l'atribut?"
-
-#, fuzzy
-#~ msgid "us"
-#~ msgstr "C˙spide"
-
-#, fuzzy
-#~ msgid "Pixels\n"
-#~ msgstr "pÌxels"
-
-#, fuzzy
-#~ msgid "Set page width"
-#~ msgstr "Gruix del contorn"
-
-#~ msgid "window1"
-#~ msgstr "finestra1"
-
-#, fuzzy
-#~ msgid "window2"
-#~ msgstr "finestra1"
-
-#, fuzzy
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Copyright Lauris Kaplinski 1999."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Un programa de dibuix vectorial.\n"
-#~ "DistribuÔt sota la GPL"
-
-#, fuzzy
-#~ msgid "_File"
-#~ msgstr "_Nou fitxer"
-
-#, fuzzy
-#~ msgid "Draw ellipse"
-#~ msgstr "Dibuixa el∑lipses"
-
-#~ msgid "Dup"
-#~ msgstr "Duplica"
-
-#~ msgid "Del"
-#~ msgstr "Suprimeix"
-
-#~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
-#~ msgstr "No utilitzeu GUI. NB! Si existeix, haur‡ de ser el PRIMER argument!"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "No s'ha pogut inicialitzar el Bonobo"
-
-#~ msgid "Broken bitmap"
-#~ msgstr "Mapa de bits trencat"
-
-#~ msgid "Valige v‰rv"
-#~ msgstr "Valige v‰rv"
-
-#, fuzzy
-#~ msgid " Width "
-#~ msgstr "Amplada"
-
-#, fuzzy
-#~ msgid ""
-#~ "pixels\n"
-#~ "millimeters\n"
-#~ "centimeter\n"
-#~ "points\n"
-#~ "inches\n"
-#~ msgstr ""
-#~ "pixels\n"
-#~ "mil∑lÌmetres\n"
-#~ "punts\n"
-#~ "polzades\n"
-
-#~ msgid "Scale with image"
-#~ msgstr "Escala amb la imatge"
-
-#, fuzzy
-#~ msgid " Line "
-#~ msgstr "En lÌnia"
-
-#, fuzzy
-#~ msgid " Join "
-#~ msgstr "Uneix"
-
-#~ msgid "bevel"
-#~ msgstr "xamfr‡"
-
-#~ msgid "round"
-#~ msgstr "arrodoneix"
-
-#~ msgid "butt"
-#~ msgstr "part posterior"
-
-#~ msgid "Color"
-#~ msgstr "Color"
-
-#~ msgid "Fractal"
-#~ msgstr "Fractal"
-
-#, fuzzy
-#~ msgid "Fill Color : "
-#~ msgstr "Color 1"
-
-#, fuzzy
-#~ msgid "Width "
-#~ msgstr "Amplada"
-
-#, fuzzy
-#~ msgid "Height "
-#~ msgstr "AlÁada"
-
-#~ msgid "_New File"
-#~ msgstr "_Nou fitxer"
-
-#~ msgid "_Import"
-#~ msgstr "_Importa"
-
-#~ msgid "_Export"
-#~ msgstr "_Exporta"
-
-#~ msgid "D_uplicate"
-#~ msgstr "D_uplica"
-
-#~ msgid "_Delete"
-#~ msgstr "_Suprimeix"
-
-#~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-#~ msgstr ""
-#~ "Commuta les vores de l'escriptori (activa i desactiva les regles i barres "
-#~ "de desplaÁament)"
-
-#~ msgid "_Arrange"
-#~ msgstr "_Disposa"
-
-#~ msgid "_Order"
-#~ msgstr "_Ordena"
-
-#~ msgid "Groups selected items"
-#~ msgstr "Agrupa els elements seleccionats"
-
-#~ msgid "Save File"
-#~ msgstr "Desa el fitxer"
-
-#~ msgid "Duplic\t"
-#~ msgstr "Duplica\t"
-
-#~ msgid "To Front"
-#~ msgstr "Al davant"
-
-#~ msgid "Up"
-#~ msgstr "Amunt"
-
-#~ msgid "Lower one position"
-#~ msgstr "Baixa una posiciÛ"
-
-#~ msgid "Down"
-#~ msgstr "Avall"
-
-#~ msgid "Draw rectangles"
-#~ msgstr "Dibuixa rectangles"
-
-#~ msgid "Write text"
-#~ msgstr "Escriu text"
-
-#~ msgid "Left button zooms in, right out"
-#~ msgstr "El botÛ esquerre augmenta el zoom, el dret el disminueix"
-
-#~ msgid "Not here"
-#~ msgstr "AquÌ no"
-
-#~ msgid "Color settings"
-#~ msgstr "Par‡metres del color"
-
-#~ msgid "Preview (object binding box)"
-#~ msgstr "Previsualitza (vinculant l'objecte a la caixa)"
-
-#~ msgid "Color2"
-#~ msgstr "Color2"
-
-#~ msgid "Document coordinates"
-#~ msgstr "Coordenades del document"
-
-#~ msgid "Fractal settings"
-#~ msgstr "Par‡metres del fractal"
-
-#~ msgid "_Uus"
-#~ msgstr "_Uus"
-
-#~ msgid " Move "
-#~ msgstr " Mou "
-
-#~ msgid "move relative in"
-#~ msgstr "mou relatiu en"
-
-#~ msgid ""
-#~ "pixel\n"
-#~ "points\n"
-#~ "millimeter\n"
-#~ "centimeter\n"
-#~ "inch\n"
-#~ msgstr ""
-#~ "pixels\n"
-#~ "punts\n"
-#~ "mil∑lÌmetres\n"
-#~ "centÌmetres\n"
-#~ "polzades\n"
-
-#~ msgid " Rotate "
-#~ msgstr " Gira "
-
-#~ msgid "90∞"
-#~ msgstr "90∞"
-
-#~ msgid "180∞"
-#~ msgstr "180∞"
-
-#~ msgid "270∞"
-#~ msgstr "270∞"
-
-#~ msgid "any"
-#~ msgstr "qulasevol"
-
-#~ msgid "right"
-#~ msgstr "dreta"
-
-#~ msgid "left"
-#~ msgstr "esquerra"
-
-#~ msgid " flip "
-#~ msgstr " inverteix "
-
-#~ msgid " Skew "
-#~ msgstr " Inclina "
-
-#~ msgid "%  "
-#~ msgstr "%  "
-
-#~ msgid "make copy"
-#~ msgstr "fes una cÚpia"
-
-#~ msgid "close dialog"
-#~ msgstr "tanca el di‡leg"
-
-#~ msgid "Break"
-#~ msgstr "Trenca"
-
-#~ msgid "To Curve"
-#~ msgstr "En corba"
-
-#~ msgid "Smooth"
-#~ msgstr "Allisa"
-
-#~ msgid "Join & cap"
-#~ msgstr "Uneix & cobreix"
