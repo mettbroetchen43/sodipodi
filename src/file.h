@@ -29,7 +29,8 @@ void sp_file_save_document (SPDocument *document);
 
 void sp_file_import (GtkWidget * widget);
 
-void sp_file_print (gpointer object, gpointer data);
+void sp_file_print (void);
+void sp_file_print_direct (void);
 void sp_file_print_preview (gpointer object, gpointer data);
 
 #if 0

@@ -3,8 +3,6 @@
 
 #include "module.h"
 
-SPModule *sp_module_new (unsigned int type, SPRepr *repr);
-
 SPModuleHandler *   sp_module_set_exec      (SPModule *     object,
 		                                  SPModuleHandler * exec);
 #define sp_module_input_new(r) sp_module_new (SP_TYPE_MODULE_INPUT, r)

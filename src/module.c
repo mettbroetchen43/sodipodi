@@ -19,6 +19,7 @@
 
 #include "helper/sp-intl.h"
 #include "dir-util.h"
+#include "sodipodi.h"
 #include "sp-object.h"
 #include "document.h"
 #include "module.h"
@@ -116,6 +117,33 @@ sp_module_private_build (SPModule *module, SPRepr *repr)
 		sp_repr_get_boolean (repr, "toolbox", &module->toolbox);
 		sp_module_register (module);
 	}
+}
+
+SPModule *
+sp_module_new (unsigned int type, SPRepr *repr)
+{
+	SPModule *module;
+
+	module = g_object_new (type, NULL);
+
+	if (module) {
+		if (repr) sp_repr_ref (repr);
+		module->repr = repr;
+		if (((SPModuleClass *) G_OBJECT_GET_CLASS (module))->build)
+			((SPModuleClass *) G_OBJECT_GET_CLASS (module))->build (module, repr);
+	}
+
+	return module;
+}
+
+SPModule *
+sp_module_new_from_path (unsigned int type, const unsigned char *path)
+{
+	SPRepr *repr;
+
+	repr = sodipodi_get_repr (SODIPODI, path);
+
+	return sp_module_new (type, repr);
 }
 
 SPModule *

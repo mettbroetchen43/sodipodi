@@ -339,6 +339,7 @@ sp_toolbox_file_create (void)
 	GtkWidget *t, *tb, *b;
 	GtkTooltips *tt;
 	SPRepr *repr;
+	SPAction *action;
 
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
@@ -350,10 +351,33 @@ sp_toolbox_file_create (void)
 	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_OPEN, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_SAVE, tt);
 	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_SAVE_AS, tt);
+#ifdef WIN32
+#define PDIRECT
+#endif
+#ifdef WITH_KDE
+#define PDIRECT
+#endif
+#ifdef WIN32
+#define PDIRECT
+#endif
+#ifdef PDIRECT
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_NORMAL, 2, tt);
+	gtk_widget_show (b);
+	action = sp_verb_get_action (SP_VERB_FILE_PRINT);
+	sp_button_add_option (SP_BUTTON (b), 0, action);
+	action = sp_verb_get_action (SP_VERB_FILE_PRINT_DIRECT);
+	sp_button_add_option (SP_BUTTON (b), 1, action);
+	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
+#else
 	sp_toolbox_button_new_from_verb (t, 2, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_PRINT, tt);
+#endif
 	b = sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_PRINT_PREVIEW, tt);
-#ifndef WITH_GNOME_PRINT
 	gtk_widget_set_sensitive (b, FALSE);
+#ifdef WITH_KDE
+	gtk_widget_set_sensitive (b, TRUE);
+#endif
+#ifdef WITH_GNOME_PRINT
+	gtk_widget_set_sensitive (b, TRUE);
 #endif
 	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_IMPORT, tt);
 	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_EXPORT, tt);

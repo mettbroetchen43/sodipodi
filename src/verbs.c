@@ -89,7 +89,10 @@ sp_verb_action_file_perform (SPAction *action, void *data)
 		sp_file_save_as (NULL, NULL);
 		break;
 	case SP_VERB_FILE_PRINT:
-		sp_file_print (NULL, NULL);
+		sp_file_print ();
+		break;
+	case SP_VERB_FILE_PRINT_DIRECT:
+		sp_file_print_direct ();
 		break;
 	case SP_VERB_FILE_PRINT_PREVIEW:
 		sp_file_print_preview (NULL, NULL);
@@ -422,6 +425,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_FILE_SAVE, "FileSave", N_("Save"), N_("Save document"), GTK_STOCK_SAVE },
 	{SP_VERB_FILE_SAVE_AS, "FileSaveAs", N_("Save As..."), N_("Save document under new name"), GTK_STOCK_SAVE_AS },
 	{SP_VERB_FILE_PRINT, "FilePrint", N_("Print..."), N_("Print document"), GTK_STOCK_PRINT },
+	{SP_VERB_FILE_PRINT_DIRECT, "FilePrintDirect", N_("Print Direct..."), N_("Print directly to file or pipe"), "file_print_direct" },
 	{SP_VERB_FILE_PRINT_PREVIEW, "FilePrintPreview", N_("Print Preview"), N_("Preview document printout"), GTK_STOCK_PRINT_PREVIEW },
 	{SP_VERB_FILE_IMPORT, "FileImport", N_("Import"), N_("Import bitmap or SVG image into document"), "file_import"},
 	{SP_VERB_FILE_EXPORT, "FileExport", N_("Export"), N_("Export document as PNG bitmap"), "file_export"},

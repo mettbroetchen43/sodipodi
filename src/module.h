@@ -96,6 +96,9 @@ unsigned int sp_module_get_type (void);
 
 #define SP_MODULE_ID(m) (((SPModule *) (m))->id)
 
+SPModule *sp_module_new (unsigned int type, SPRepr *repr);
+SPModule *sp_module_new_from_path (unsigned int type, const unsigned char *path);
+
 SPModule *sp_module_ref (SPModule *mod);
 SPModule *sp_module_unref (SPModule *mod);
 

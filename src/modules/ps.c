@@ -140,8 +140,11 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	int i;
 	int response;
 	unsigned int ret;
+	SPRepr *repr;
+	unsigned int p2bm;
 
 	pmod = (SPModulePrintPlain *) mod;
+	repr = ((SPModule *) mod)->repr;
 
 	ret = FALSE;
 
@@ -156,17 +159,20 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 
 	vbox = GTK_DIALOG (dlg)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
-	/* Print preperties frame */
+	/* Print properties frame */
 	f = gtk_frame_new (_("Print properties"));
 	gtk_box_pack_start (GTK_BOX (vbox), f, FALSE, FALSE, 4);
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_container_add (GTK_CONTAINER (f), vb);
 	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
 	/* Print type */
+	p2bm = FALSE;
+	if (repr) sp_repr_get_boolean (repr, "bitmap", &p2bm);
 	rb = gtk_radio_button_new_with_label (NULL, _("Print using PostScript operators"));
-	gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
+	if (!p2bm) gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
 	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
 	rb = gtk_radio_button_new_with_label (gtk_radio_button_get_group ((GtkRadioButton *) rb), _("Print as bitmap"));
+	if (p2bm) gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
 	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
 	/* Resolution */
 	hb = gtk_hbox_new (FALSE, 4);
@@ -176,9 +182,6 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	gtk_combo_set_use_arrows (GTK_COMBO (combo), TRUE);
 	gtk_combo_set_use_arrows_always (GTK_COMBO (combo), TRUE);
 	gtk_widget_set_usize (combo, 64, -1);
-	gtk_box_pack_end (GTK_BOX (hb), combo, FALSE, FALSE, 0);
-	l = gtk_label_new (_("Resolution:"));
-	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 	/* Setup strings */
 	sl = NULL;
 	for (i = 0; pdr[i] != NULL; i++) {
@@ -187,6 +190,14 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	sl = g_list_reverse (sl);
 	gtk_combo_set_popdown_strings (GTK_COMBO (combo), sl);
 	g_list_free (sl);
+	if (repr) {
+		const unsigned char *val;
+		val = sp_repr_attr (repr, "resolution");
+		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (combo)->entry), val);
+	}
+	gtk_box_pack_end (GTK_BOX (hb), combo, FALSE, FALSE, 0);
+	l = gtk_label_new (_("Resolution:"));
+	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 
 	/* Print destination frame */
 	f = gtk_frame_new (_("Print destination"));
@@ -201,7 +212,13 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	gtk_box_pack_start (GTK_BOX (vb), l, FALSE, FALSE, 0);
 
 	e = gtk_entry_new ();
-	gtk_entry_set_text (GTK_ENTRY (e), "lp");
+	if (repr && sp_repr_attr (repr, "destination")) {
+		const unsigned char *val;
+		val = sp_repr_attr (repr, "destination");
+		gtk_entry_set_text (GTK_ENTRY (e), val);
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (e), "lp");
+	}
 	gtk_box_pack_start (GTK_BOX (vb), e, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (vbox);
@@ -218,6 +235,11 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 		/* Arrgh, have to do something */
 		fn = gtk_entry_get_text (GTK_ENTRY (e));
 		/* g_print ("Printing to %s\n", fn); */
+		if (repr) {
+			sp_repr_set_attr (repr, "bitmap", (pmod->bitmap) ? "true" : "false");
+			sp_repr_set_attr (repr, "resolution", sstr);
+			sp_repr_set_attr (repr, "destination", fn);
+		}
 		osf = NULL;
 		osp = NULL;
 		if (fn) {

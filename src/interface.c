@@ -290,13 +290,24 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 		SP_VERB_NONE,
 		SP_VERB_FILE_IMPORT, SP_VERB_FILE_EXPORT,
 		SP_VERB_NONE,
-		SP_VERB_FILE_PRINT, SP_VERB_FILE_PRINT_PREVIEW,
-		SP_VERB_NONE,
+		SP_VERB_FILE_PRINT,
 		SP_VERB_LAST
 	};
 
 	sp_ui_menu_append (fm, file_verbs);
 
+#ifdef WIN32
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+#endif
+#ifdef WITH_KDE
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+#endif
+#ifdef WITH_GNOME_PRINT
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
+#endif
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_PREVIEW);
+
+	sp_ui_menu_append_item_from_verb (fm, SP_VERB_NONE);
 	sp_menu_append_recent_documents ((GtkWidget *) fm);
 
 	sp_ui_menu_append_item (fm, GTK_STOCK_CLOSE, _("Close View"), G_CALLBACK (sp_ui_close_view), NULL);

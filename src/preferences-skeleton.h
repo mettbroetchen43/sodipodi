@@ -55,6 +55,9 @@ static const char preferences_skeleton[] =
 "      <dash id=\"dash-4-2-1-2\" style=\"stroke-dasharray:4 2 1 2;\"/>"
 "    </group>"
 "  </group>"
+"  <group id=\"printing\">"
+"    <settings id=\"ps\"/>"
+"  </group>"
 "</sodipodi>";
 
 #define PREFERENCES_SKELETON_SIZE (sizeof (preferences_skeleton) - 1)

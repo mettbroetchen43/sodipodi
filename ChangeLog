@@ -1,3 +1,11 @@
+2003-06-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/verbs.c: Added 'print direct' option
+
+	* src/interface.c (sp_ui_file_menu): Added print direct if needed
+
+	* src/toolbox.c (sp_toolbox_file_create): Compose print + print direct if needed
+
 2003-06-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/modules/ps.c (sp_module_print_plain_setup): Added bitmap/ps choice and

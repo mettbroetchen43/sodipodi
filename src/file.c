@@ -499,15 +499,19 @@ void sp_file_import (GtkWidget * widget)
 }
 
 void
-sp_file_print (gpointer object, gpointer data)
+sp_file_print (void)
 {
 	SPDocument *doc;
-
 	doc = SP_ACTIVE_DOCUMENT;
+	if (doc) sp_print_document (doc, FALSE);
+}
 
-	if (doc) {
-		sp_print_document (doc);
-	}
+void
+sp_file_print_direct (void)
+{
+	SPDocument *doc;
+	doc = SP_ACTIVE_DOCUMENT;
+	if (doc) sp_print_document (doc, TRUE);
 }
 
 void

@@ -118,9 +118,9 @@ sp_print_preview_document (SPDocument *doc)
 	mod = sp_kde_get_module_print ();
 #else
 #ifdef WITH_GNOME_PRINT
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
+	mod = (SPModulePrint *) sp_module_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
 #else
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
+	mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
 #endif
 #endif
 #endif
@@ -155,27 +155,25 @@ sp_print_preview_document (SPDocument *doc)
 }
 
 void
-sp_print_document (SPDocument *doc)
+sp_print_document (SPDocument *doc, unsigned int direct)
 {
 	SPModulePrint *mod;
 	unsigned int ret;
 
 	sp_document_ensure_up_to_date (doc);
 
+	mod = NULL;
+	if (direct) mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
 #ifdef WIN32
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
-#else
-// Some unix probably
+	if (!direct) mod = g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
+#endif
 #ifdef WITH_KDE
-	mod = sp_kde_get_module_print ();
-#else
+	if (!direct) mod = sp_kde_get_module_print ();
+#endif
 #ifdef WITH_GNOME_PRINT
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
-#else
-	mod = g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
+	if (!direct) mod = g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
 #endif
-#endif
-#endif
+	if (!mod) mod = (SPModulePrint *) sp_module_new_from_path (SP_TYPE_MODULE_PRINT_PLAIN, "printing.ps");
 
 	ret = FALSE;
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)

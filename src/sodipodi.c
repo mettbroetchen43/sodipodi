@@ -611,7 +611,7 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 
 /* We use '.' as separator */
 SPRepr *
-sodipodi_get_repr (Sodipodi *sodipodi, const gchar *key)
+sodipodi_get_repr (Sodipodi *sodipodi, const unsigned char *key)
 {
 	SPRepr * repr;
 	const gchar * id, * s, * e;
