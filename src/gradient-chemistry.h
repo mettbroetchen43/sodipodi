@@ -18,6 +18,8 @@
 /*
  * Either normalizes given gradient to vector, or returns fresh normalized
  * vector - in latter case, original gradient is flattened and stops cleared
+ * No transrefing - i.e. caller shouldn't hold reference to original and
+ * does not get one to new automatically (doc holds ref of every object anyways)
  */
 
 SPGradient *sp_gradient_ensure_vector_normalized (SPGradient *gradient);

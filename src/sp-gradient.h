@@ -97,6 +97,13 @@ struct _SPGradient {
 	SPGradient *href;
 	/* State in Sodipodi gradient system */
 	guint state : 2;
+	/* gradientUnits attribute */
+	SPGradientUnits units;
+	guint units_set : 1;
+	/* gradientTransform attribute */
+	gdouble transform[6];
+	guint transform_set : 1;
+	/* spreadMethod attribute */
 	SPGradientSpread spread;
 	guint spread_set : 1;
 	/* Gradient stops */
@@ -112,15 +119,21 @@ struct _SPGradient {
 
 struct _SPGradientClass {
 	SPPaintServerClass parent_class;
+
+	/* Writes all indirectly defined attributes directly to our repr */
+	void (* flatten_attributes) (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 };
 
 GtkType sp_gradient_get_type (void);
 
 /* Forces vector to be built, if not present (i.e. changed) */
-
 void sp_gradient_ensure_vector (SPGradient *gradient);
-
+/* Sets gradient vector to given value, does not update reprs */
 void sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector);
+
+/* Gradient repr methods */
+void sp_gradient_repr_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
+void sp_gradient_repr_set_vector (SPGradient *gradient, SPRepr *repr, SPGradientVector *vector);
 
 /*
  * Renders gradient vector to buffer
@@ -150,10 +163,6 @@ void sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gin
 
 struct _SPLinearGradient {
 	SPGradient gradient;
-	SPGradientUnits units;
-	guint units_set : 1;
-	gdouble transform[6];
-	guint transform_set : 1;
 	SPDistance x1;
 	guint x1_set : 1;
 	SPDistance y1;
@@ -188,10 +197,6 @@ SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector);
 
 struct _SPRadialGradient {
 	SPGradient gradient;
-	SPGradientUnits units;
-	guint units_set : 1;
-	gdouble transform[6];
-	guint transform_set : 1;
 	SPDistance cx;
 	guint cx_set : 1;
 	SPDistance cy;

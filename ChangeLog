@@ -1,5 +1,15 @@
 2001-12-28  Lauris Kaplinski  <lauris@localhost.localdomain>
 
+	* src/sp-gradient.c: Lot of changes due to class member rearrangement
+	(sp_gradient_repr_flatten_attributes): New method
+	(sp_gradient_repr_set_vector): Ditto
+
+	* src/sp-gradient.h: Moved gradientUnits and gradientTransform to
+	base SPGradient class, added ::flatten_attributes virtual method
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_vector_normalized): Works
+	now for lonely gradients as well
+
 	* src/desktop-events.c (guide_dialog_apply): Flush undo
 	(guide_dialog_delete): Ditto
 	(sp_dt_guide_event): Ditto
