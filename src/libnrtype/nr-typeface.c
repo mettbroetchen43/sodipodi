@@ -37,15 +37,15 @@ nr_typeface_unref (NRTypeFace *tf)
 }
 
 unsigned int
-nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
+nr_typeface_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
 {
-	return nr_typeface_attribute_get (tf, "family", str, size);
+	return nr_typeface_attribute_get (tf, "name", str, size);
 }
 
 unsigned int
-nr_typeface_style_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
+nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
 {
-	return nr_typeface_attribute_get (tf, "style", str, size);
+	return nr_typeface_attribute_get (tf, "family", str, size);
 }
 
 unsigned int

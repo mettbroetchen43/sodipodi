@@ -14,6 +14,7 @@
 
 #include <config.h>
 
+#include <string.h>
 #include <libnrtype/nr-type-directory.h>
 
 #include <glib.h>
@@ -369,6 +370,78 @@ sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg)
 	gtk_object_destroy (GTK_OBJECT (dlg));
 }
 
+static guchar *
+sp_text_edit_dialog_font_style_to_lookup (SPStyle *style)
+{
+	static guchar c[256];
+	guchar *wstr, *sstr, *p;
+
+	switch (style->font_weight.computed) {
+	case SP_CSS_FONT_WEIGHT_100:
+		wstr = "extra light";
+		break;
+	case SP_CSS_FONT_WEIGHT_200:
+		wstr = "thin";
+		break;
+	case SP_CSS_FONT_WEIGHT_300:
+		wstr = "light";
+		break;
+	case SP_CSS_FONT_WEIGHT_400:
+	case SP_CSS_FONT_WEIGHT_NORMAL:
+		wstr = NULL;
+		break;
+	case SP_CSS_FONT_WEIGHT_500:
+		wstr = "medium";
+		break;
+	case SP_CSS_FONT_WEIGHT_600:
+		wstr = "semi";
+		break;
+	case SP_CSS_FONT_WEIGHT_700:
+	case SP_CSS_FONT_WEIGHT_BOLD:
+		wstr = "bold";
+		break;
+	case SP_CSS_FONT_WEIGHT_800:
+		wstr = "heavy";
+		break;
+	case SP_CSS_FONT_WEIGHT_900:
+		wstr = "black";
+		break;
+	default:
+		wstr = NULL;
+		break;
+	}
+
+	switch (style->font_style.computed) {
+	case SP_CSS_FONT_STYLE_NORMAL:
+		sstr = NULL;
+		break;
+	case SP_CSS_FONT_STYLE_ITALIC:
+		sstr = "italic";
+		break;
+	case SP_CSS_FONT_STYLE_OBLIQUE:
+		sstr = "oblique";
+		break;
+	default:
+		sstr = NULL;
+		break;
+	}
+
+	p = c;
+	if (wstr) {
+		if (p != c) *p++ = ' ';
+		memcpy (p, wstr, strlen (wstr));
+		p += strlen (wstr);
+	}
+	if (sstr) {
+		if (p != c) *p++ = ' ';
+		memcpy (p, sstr, strlen (sstr));
+		p += strlen (sstr);
+	}
+	*p = '\0';
+
+	return c;
+}
+
 static void
 sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean docontent)
 {
@@ -425,17 +498,13 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 		NRTypeFace *tf;
 		NRFont *font;
 		GtkWidget *b;
+		guchar *c;
 
-#if 0
-		font = gnome_font_new_closest (style->text->font_family.value,
-					       sp_text_font_weight_to_gp (style->font_weight.computed),
-					       sp_text_font_italic_to_gp (style->font_style.computed),
-					       style->font_size.computed);
-#else
-		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, NULL);
+		c = sp_text_edit_dialog_font_style_to_lookup (style);
+		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, c);
 		font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_HORIZONTAL, style->font_size.computed);
 		nr_typeface_unref (tf);
-#endif
+
 		if (font) {
 			sp_font_selector_set_font (SP_FONT_SELECTOR (fontsel), font);
 			sp_font_preview_set_font (SP_FONT_PREVIEW (preview), font);

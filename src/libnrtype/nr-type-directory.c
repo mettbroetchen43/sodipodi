@@ -43,6 +43,20 @@ nr_name_list_release (NRNameList *list)
 }
 
 NRTypeFace *
+nr_type_directory_lookup (const unsigned char *name)
+{
+	NRTypeFace *face;
+	GnomeFontFace *gff;
+
+	gff = gnome_font_face_new (name);
+
+	face = nr_typeface_gnome_new (gff);
+
+	gnome_font_face_unref (gff);
+	return face;
+}
+
+NRTypeFace *
 nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *style)
 {
 	NRTypeFace *face;
@@ -121,9 +135,13 @@ nr_type_directory_style_list_get (const unsigned char *family, NRNameList *style
 	for (l = fl; l; l = l->next) {
 		if (!strncmp (family, (gchar *) l->data, strlen (family))) {
 			gchar *p;
+#if 0
 			p = (gchar *) l->data + strlen (family);
 			while (*p && isspace (*p)) p += 1;
 			if (!*p) p = "Normal";
+#else
+			p = (gchar *) l->data;
+#endif
 			sl = g_list_prepend (sl, p);
 		}
 	}

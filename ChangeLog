@@ -1,3 +1,15 @@
+2002-10-31  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/font-selector.c (struct _SPFontSelector): Use NRNameListss
+	(sp_font_selector_init): Setup family namelist
+	(sp_font_selector_family_select_row): Setup style namelist
+	(sp_font_selector_set_font): Use namelist
+
+	* src/libnrtype/nr-type-directory.c (nr_type_directory_lookup): New method
+	(nr_type_directory_style_list_get): Return list of full names
+
+	* src/libnrtype/nr-typeface.h: Added full name, removed generic style query
+
 2002-10-31  Masatake YAMATO  <jet@gyve.org>
 
 	* src/sp-image.c (autotrace_dialog): invokeed frontline_init

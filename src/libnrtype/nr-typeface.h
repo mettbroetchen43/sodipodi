@@ -60,8 +60,8 @@ struct _NRTypeFace {
 NRTypeFace *nr_typeface_ref (NRTypeFace *tf);
 NRTypeFace *nr_typeface_unref (NRTypeFace *tf);
 
+unsigned int nr_typeface_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
 unsigned int nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
-unsigned int nr_typeface_style_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
 unsigned int nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
 
 NRBPath *nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);

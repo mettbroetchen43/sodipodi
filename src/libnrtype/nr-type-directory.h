@@ -26,6 +26,7 @@ struct _NRNameList {
 
 void nr_name_list_release (NRNameList *list);
 
+NRTypeFace *nr_type_directory_lookup (const unsigned char *name);
 NRTypeFace *nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *style);
 
 NRNameList *nr_type_directory_family_list_get (NRNameList *families);

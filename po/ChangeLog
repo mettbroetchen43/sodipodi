@@ -1,3 +1,7 @@
+2002-10-31  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* POTFILES.in: Added src/print.c
+
 2002-10-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* ru.po: Update from Vitaly Lipatov

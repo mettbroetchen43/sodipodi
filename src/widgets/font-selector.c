@@ -50,14 +50,16 @@ struct _SPFontSelector
 {
 	GtkHBox hbox;
   
-	guint block_emit : 1;
+	unsigned int block_emit : 1;
 
 	GtkWidget *family;
 	GtkWidget *style;
 	GtkWidget *size;
 
-	guchar *familyname;
-	guchar *stylename;
+	NRNameList families;
+	NRNameList styles;
+	int familyidx;
+	int styleidx;
 	gfloat fontsize;
 	NRFont *font;
 };
@@ -135,7 +137,6 @@ static void
 sp_font_selector_init (SPFontSelector *fsel)
 {
 	GtkWidget *f, *sw, *vb, *hb, *l;
-	NRNameList families;
 	GList *sl;
 	int i;
 
@@ -160,14 +161,14 @@ sp_font_selector_init (SPFontSelector *fsel)
 	gtk_signal_connect (GTK_OBJECT (fsel->family), "select_row", GTK_SIGNAL_FUNC (sp_font_selector_family_select_row), fsel);
 	gtk_container_add (GTK_CONTAINER (sw), fsel->family);
 
-	if (nr_type_directory_family_list_get (&families)) {
+	if (nr_type_directory_family_list_get (&fsel->families)) {
 		gint i;
 		gtk_clist_freeze (GTK_CLIST (fsel->family));
-		for (i = 0; i < families.length; i++) {
-			gtk_clist_append (GTK_CLIST (fsel->family), (gchar **) families.names + i);
+		for (i = 0; i < fsel->families.length; i++) {
+			gtk_clist_append (GTK_CLIST (fsel->family), (gchar **) fsel->families.names + i);
+			gtk_clist_set_row_data (GTK_CLIST (fsel->family), i, GUINT_TO_POINTER (i));
 		}
 		gtk_clist_thaw (GTK_CLIST (fsel->family));
-		nr_name_list_release (&families);
 	}
 
 	/* Style frame */
@@ -219,8 +220,8 @@ sp_font_selector_init (SPFontSelector *fsel)
 	gtk_combo_set_popdown_strings (GTK_COMBO (fsel->size), sl);
 	g_list_free (sl);
 
-	fsel->familyname = NULL;
-	fsel->stylename = NULL;
+	fsel->familyidx = 0;
+	fsel->styleidx = 0;
 	fsel->fontsize = 10.0;
 	fsel->font = NULL;
 }
@@ -236,14 +237,14 @@ sp_font_selector_destroy (GtkObject *object)
 		fsel->font = nr_font_unref (fsel->font);
 	}
 
-	if (fsel->stylename) {
-		g_free (fsel->stylename);
-		fsel->stylename = NULL;
+	if (fsel->families.length > 0) {
+		nr_name_list_release (&fsel->families);
+		fsel->families.length = 0;
 	}
 
-	if (fsel->familyname) {
-		g_free (fsel->familyname);
-		fsel->familyname = NULL;
+	if (fsel->styles.length > 0) {
+		nr_name_list_release (&fsel->styles);
+		fsel->styles.length = 0;
 	}
 
   	if (GTK_OBJECT_CLASS (fs_parent_class)->destroy)
@@ -253,47 +254,41 @@ sp_font_selector_destroy (GtkObject *object)
 static void
 sp_font_selector_family_select_row (GtkCList *clist, gint row, gint column, GdkEvent *event, SPFontSelector *fsel)
 {
-	gchar *family;
-	NRNameList styles;
+	fsel->familyidx = GPOINTER_TO_UINT (gtk_clist_get_row_data (clist, row));
 
-	if (fsel->familyname) {
-		g_free (fsel->familyname);
-		fsel->familyname = NULL;
+	if (fsel->styles.length > 0) {
+		nr_name_list_release (&fsel->styles);
+		fsel->styles.length = 0;
+		fsel->styleidx = 0;
 	}
+	gtk_clist_clear (GTK_CLIST (fsel->style));
 
-	gtk_clist_get_text (clist, row, column, &family);
+	if (fsel->familyidx < fsel->families.length) {
+		const unsigned char *family;
+		family = fsel->families.names[fsel->familyidx];
+		if (nr_type_directory_style_list_get (family, &fsel->styles)) {
+			gint i;
+			gtk_clist_freeze (GTK_CLIST (fsel->style));
+			for (i = 0; i < fsel->styles.length; i++) {
+				const unsigned char *p;
 
-	if (family && nr_type_directory_style_list_get (family, &styles)) {
-		gint i;
-		fsel->familyname = g_strdup (family);
-		gtk_clist_freeze (GTK_CLIST (fsel->style));
-		gtk_clist_clear (GTK_CLIST (fsel->style));
-		for (i = 0; i < styles.length; i++) {
-			gtk_clist_append (GTK_CLIST (fsel->style), (gchar **) styles.names + i);
+				p = fsel->styles.names[i] + strlen (family);
+				while (*p && isspace (*p)) p += 1;
+				if (!*p) p = "Normal";
+
+				gtk_clist_append (GTK_CLIST (fsel->style), (gchar **) &p);
+				gtk_clist_set_row_data (GTK_CLIST (fsel->style), i, GUINT_TO_POINTER (i));
+			}
+			gtk_clist_thaw (GTK_CLIST (fsel->style));
+			gtk_clist_select_row (GTK_CLIST (fsel->style), 0, 0);
 		}
-		gtk_clist_thaw (GTK_CLIST (fsel->style));
-		nr_name_list_release (&styles);
-		gtk_clist_select_row (GTK_CLIST (fsel->style), 0, 0);
-	} else {
-		gtk_clist_clear (GTK_CLIST (fsel->style));
 	}
 }
 
 static void
 sp_font_selector_style_select_row (GtkCList *clist, gint row, gint column, GdkEvent *event, SPFontSelector *fsel)
 {
-	gchar *style;
-
-	if (fsel->stylename) {
-		g_free (fsel->stylename);
-		fsel->stylename = NULL;
-	}
-
-	gtk_clist_get_text (clist, row, column, &style);
-
-	if (style) {
-		fsel->stylename = g_strdup (style);
-	}
+	fsel->styleidx = GPOINTER_TO_UINT (gtk_clist_get_row_data (clist, row));
 
 	if (!fsel->block_emit) {
 		sp_font_selector_emit_set (fsel);
@@ -317,14 +312,20 @@ sp_font_selector_emit_set (SPFontSelector *fsel)
 	NRTypeFace *tf;
 	NRFont *font;
 
-	tf = nr_type_directory_lookup_fuzzy (fsel->familyname, fsel->stylename);
-	font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_DEFAULT, fsel->fontsize);
-	nr_typeface_unref (tf);
+	if (fsel->styleidx < fsel->styles.length) {
+		tf = nr_type_directory_lookup (fsel->styles.names[fsel->styleidx]);
+		font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_DEFAULT, fsel->fontsize);
+		nr_typeface_unref (tf);
+	} else {
+		font = NULL;
+	}
+
 	if (font != fsel->font) {
 		if (fsel->font) fsel->font = nr_font_unref (fsel->font);
 		if (font) fsel->font = nr_font_ref (font);
 		gtk_signal_emit (GTK_OBJECT (fsel), fs_signals[FONT_SET], fsel->font);
 	}
+
 	if (font) nr_font_unref (font);
 }
 
@@ -352,25 +353,21 @@ sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font)
 		unsigned char n[256], s[8];
 		int i;
 		nr_typeface_family_name_get (NR_FONT_TYPEFACE (font), n, 256);
-		for (i = 0; i < fcl->rows; i++) {
-			gchar *rtxt;
-			gtk_clist_get_text (fcl, i, 0, &rtxt);
-			if (rtxt && !strcmp (n, rtxt)) {
-				fsel->block_emit = TRUE;
-				gtk_clist_select_row (fcl, i, 0);
-				fsel->block_emit = FALSE;
-				break;
-			}
+		for (i = 0; i < fsel->families.length; i++) {
+			if (!strcmp (n, fsel->families.names[i])) break;
 		}
-		nr_typeface_style_get (NR_FONT_TYPEFACE (font), n, 256);
-		for (i = 0; i < scl->rows; i++) {
-			gchar *rtxt;
-			gtk_clist_get_text (scl, i, 0, &rtxt);
-			if (rtxt && !strcmp (n, rtxt)) {
-				gtk_clist_select_row (scl, i, 0);
-				break;
-			}
+		if (i >= fsel->families.length) return;
+		fsel->block_emit = TRUE;
+		gtk_clist_select_row (GTK_CLIST (fsel->family), i, 0);
+		fsel->block_emit = FALSE;
+
+		nr_typeface_name_get (NR_FONT_TYPEFACE (font), n, 256);
+		for (i = 0; i < fsel->styles.length; i++) {
+			if (!strcmp (n, fsel->styles.names[i])) break;
 		}
+		if (i >= fsel->styles.length) return;
+		gtk_clist_select_row (scl, i, 0);
+
 		g_snprintf (s, 8, "%.2g", NR_FONT_SIZE (font));
 		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (fsel->size)->entry), s);
 	}
@@ -382,7 +379,7 @@ sp_font_selector_set_font_fuzzy (SPFontSelector *fsel, const guchar *family, con
 	NRTypeFace *tf;
 	NRFont *font;
 
-	tf = nr_type_directory_lookup_fuzzy (fsel->familyname, fsel->stylename);
+	tf = nr_type_directory_lookup_fuzzy (family, style);
 	font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_DEFAULT, fsel->fontsize);
 	nr_typeface_unref (tf);
 	sp_font_selector_set_font (fsel, font);
