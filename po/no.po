@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2002-02-02 20:52+0100\n"
-"PO-Revision-Date: 2002-02-02 21:04+0100\n"
+"POT-Creation-Date: 2002-02-02 21:15+0100\n"
+"PO-Revision-Date: 2002-02-02 21:15+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -460,8 +460,8 @@ msgid "Layout"
 msgstr "Plassering"
 
 #: glade/object_props.glade.h:26
-msgid "Mitter join"
-msgstr "Slå sammen med vinkel"
+msgid "Miter join"
+msgstr "Slå sammen i vinkel"
 
 #: glade/object_props.glade.h:27
 msgid "No fill"
