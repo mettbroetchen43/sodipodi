@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
+
 #include "helper/canvas-grid.h"
 #include "svg/svg.h"
 #include "attributes.h"
@@ -25,6 +26,10 @@
 #include "sp-guide.h"
 #include "sp-item-group.h"
 #include "sp-namedview.h"
+
+#ifdef WIN32
+#define strcasecmp _stricmp
+#endif
 
 #define PTPERMM (72.0 / 25.4)
 

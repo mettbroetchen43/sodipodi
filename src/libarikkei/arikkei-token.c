@@ -205,10 +205,12 @@ ArikkeiToken *
 arikkei_token_get_token (const ArikkeiToken *this, ArikkeiToken *dst, int s, unsigned int space_is_separator)
 {
 	if (!arikkei_token_is_empty (this)) {
-		unsigned char *p;
+		const unsigned char *p;
+		p = this->cdata;
 		while ((s < this->end) && (p[s] == 32)) s += 1;
 		if (s < this->end) {
 			int e;
+			e = s;
 			while ((e < this->end) && ((p[e] > 32) || ((p[e] == 32) && !space_is_separator))) e += 1;
 			arikkei_token_set_from_data (dst, this->cdata, s, e);
 		} else {
@@ -246,6 +248,7 @@ arikkei_token_tokenize (ArikkeiToken *this, ArikkeiToken *tokens, int maxtokens,
 	s = this->start;
 	while ((s < this->end) && (ntokens < maxtokens)) {
 		int e;
+		e = s;
 		while ((e < this->end) && ((p[e] > 32) || ((p[e] == 32) && !space_is_separator))) e += 1;
 		if (ntokens == (maxtokens - 1)) {
 			while ((e < this->end) && ((p[e] >= 32) || (p[e] == 9))) e += 1;

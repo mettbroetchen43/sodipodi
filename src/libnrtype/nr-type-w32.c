@@ -44,10 +44,10 @@ static void nr_typeface_w32_font_free (NRFont *font);
 
 static NRTypeFaceClass *parent_class;
 
-NRType
+unsigned int
 nr_typeface_w32_get_type (void)
 {
-	static NRType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_TYPEFACE,
 						"NRTypeFaceW32",
@@ -136,7 +136,7 @@ nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsi
     def->typeface = NULL;
 }
 
-static void
+void
 nr_type_read_w32_list (void)
 {
 	NRNameList wnames, wfamilies;
@@ -1086,4 +1086,71 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
 
 }
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+
+char *
+nr_w32_mmap (const char *filename, int size, const char *name)
+{
+    char *cdata;
+	struct stat st;
+	HANDLE fh, hMapObject;
+
+	char rbuf[32];
+	if (!name) {
+		int rval = rand ();
+		sprintf (rbuf, "%d", rval);
+		name = rbuf;
+	}
+
+	/* Load file into mmaped memory buffer */
+	if (stat (filename, &st) /* || !S_ISREG (st.st_mode)*/) {
+		/* No such file */
+		/* fprintf (stderr, "File %s not found or not regular file\n", filename); */
+		return NULL;
+	}
+
+	fh = CreateFile (filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
+                            FILE_ATTRIBUTE_NORMAL, NULL);
+	if (fh == INVALID_HANDLE_VALUE) {
+		/* No cannot open */
+		/* fprintf (stderr, "File %s cannot be opened for reading\n", filename); */
+		return NULL;
+	}
+
+	hMapObject = CreateFileMapping( 
+           fh,
+           NULL, /* Unused */
+           PAGE_READONLY,
+           0, 0, /* Full file */
+           name); /* name of map object */
+
+    if (hMapObject != NULL) {
+        /* Get a pointer to the file-mapped shared memory. */
+        cdata = (char *) MapViewOfFile( 
+                hMapObject,     /* object to map view of */
+                FILE_MAP_READ, /* read/write access */
+                0,              /* high offset:  map from */
+                0,              /* low offset:   beginning */
+                0);             /* default: map entire file */
+
+        /* if (cdata == NULL) { */
+            CloseHandle(hMapObject);
+        /* } */
+    } else {
+        cdata = NULL;
+    }
+
+	CloseHandle (fh);
+
+	return cdata;
+}
+
+void
+nr_w32_munmap (char *buffer, int size)
+{
+	/* Release data */
+	UnmapViewOfFile(buffer);
+}
 

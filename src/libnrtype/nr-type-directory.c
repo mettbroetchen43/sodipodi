@@ -67,7 +67,7 @@ static float nr_type_distance_family_better (const unsigned char *ask, const uns
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
 static void nr_type_read_private_list (void);
-#ifdef WIN32
+#if 0
 static void nr_type_read_w32_list (void);
 #endif
 
@@ -427,8 +427,10 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 
 static unsigned char privatename[] = "/.sodipodi/private-fonts";
 
+#ifndef WIN32
 #include <unistd.h>
 #include <sys/mman.h>
+#endif
 
 static void
 nr_type_read_private_list (void)
@@ -455,11 +457,15 @@ nr_type_read_private_list (void)
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
 		unsigned char *cdata;
 		ArikkeiToken ft, lt;
+#ifdef WIN32
+		cdata = nr_w32_mmap (filename, st.st_size, "PrivateFonts");
+#else
 		int fd;
 		fd = open (filename, O_RDONLY | O_BINARY);
 		if (!fd) return;
 		cdata = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
 		close (fd);
+#endif
 		if ((cdata == NULL) || (cdata == (unsigned char *) -1)) return;
 		arikkei_token_set_from_data (&ft, cdata, 0, st.st_size);
 		arikkei_token_get_first_line (&ft, &lt);
@@ -500,7 +506,11 @@ nr_type_read_private_list (void)
 			}
 			arikkei_token_next_line (&ft, &lt, &lt);
 		}
+#ifdef WIN32
+		nr_w32_munmap (cdata, st.st_size);
+#else
 		munmap (cdata, st.st_size);
+#endif
 	}
 
 	nr_free (filename);

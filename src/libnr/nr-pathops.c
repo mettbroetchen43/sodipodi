@@ -38,11 +38,10 @@ nr_node_path_group_build (NRPath *path)
 {
 	NRNodePathGroup *npg;
 	int seg, sidx;
+	double x, y, sx, sy;
 
 	npg = (NRNodePathGroup *) malloc (sizeof (NRNodePathGroup) + (path->nsegments - 1) * sizeof (NRNodePath));
 	npg->npaths = path->nsegments;
-
-	double x, y, sx, sy;
 
 	x = y = 0.0;
 	sx = sy = 0.0;

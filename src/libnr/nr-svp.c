@@ -414,7 +414,7 @@ nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, uns
 	double x, y, sx, sy;
 	NRSVL *svl;
 	NRFlat *flats;
-	int seg, sidx;
+	unsigned int seg, sidx;
 
 	/* Initialize NRSVLBuild */
 	svl = NULL;
