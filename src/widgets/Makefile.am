@@ -19,6 +19,7 @@ libspwidgets_a_SOURCES = \
 	sp-color-preview.c sp-color-preview.h \
 	sp-color-slider.c sp-color-slider.h \
 	sp-color-selector.c sp-color-selector.h \
+	dash-selector.c dash-selector.h \
 	gradient-image.c gradient-image.h \
 	gradient-position.c gradient-position.h \
 	paint-selector.c paint-selector.h \

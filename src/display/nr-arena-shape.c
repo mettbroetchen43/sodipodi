@@ -143,11 +143,13 @@ static guint
 nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaShape *shape;
+	SPStyle *style;
 	ArtBpath *abp;
 	ArtVpath *vp, *pvp;
 	ArtDRect bbox;
 
 	shape = NR_ARENA_SHAPE (item);
+	style = shape->style;
 
 	if (!(state & NR_ARENA_ITEM_STATE_RENDER)) {
 		/* We do not have to create rendering structures */
@@ -238,15 +240,29 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		}
 	}
 
-	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
-		gdouble width;
+	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+		gdouble width, scale;
 		abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
 		vp = art_bez_path_to_vec (abp, 0.25);
 		art_free (abp);
 		pvp = art_vpath_perturb (vp);
 		art_free (vp);
-		width = sp_distance_d_matrix_d_transform (shape->style->stroke_width.computed, gc->affine);
-		width = MAX (width, 0.125);
+		scale = sp_distance_d_matrix_d_transform (1.0, gc->affine);
+		width = MAX (0.125, style->stroke_width.computed * scale);
+		if (style->stroke_dash.n_dash) {
+			ArtVpathDash dash;
+			int i;
+			dash.offset = style->stroke_dash.offset * scale;
+			dash.n_dash = style->stroke_dash.n_dash;
+			dash.dash = g_new (double, dash.n_dash);
+			for (i = 0; i < dash.n_dash; i++) {
+				dash.dash[i] = style->stroke_dash.dash[i] * scale;
+			}
+			vp = art_vpath_dash (pvp, &dash);
+			art_free (pvp);
+			pvp = vp;
+			g_free (dash.dash);
+		}
 		shape->stroke_svp = art_svp_vpath_stroke (pvp,
 							  shape->style->stroke_linejoin.value,
 							  shape->style->stroke_linecap.value,

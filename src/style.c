@@ -347,6 +347,20 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 			sp_style_read_iscale24 (&style->stroke_opacity, val);
 		}
 	}
+	if (!style->stroke_dasharray_set) {
+		val = sp_repr_attr (repr, "stroke-dasharray");
+		sp_style_read_dash (&style->stroke_dash, val);
+		style->stroke_dasharray_set = TRUE;
+	}
+	if (!style->stroke_dashoffset_set) {
+		/* fixme */
+		val = sp_repr_attr (repr, "stroke-dashoffset");
+		if (sp_svg_read_number_d (val, &style->stroke_dash.offset)) {
+			style->stroke_dashoffset_set = TRUE;
+		} else {
+			style->stroke_dashoffset_set = FALSE;
+		}
+	}
 
 	/* font-family */
 	if (!style->text_private || !style->text->font_family.set) {
@@ -1047,6 +1061,7 @@ sp_style_read_dash (ArtVpathDash *dash, const guchar *str)
 			n_dash += 1;
 			str = e;
 		}
+		while (str && *str && !isalnum (*str)) str += 1;
 	}
 
 	if (n_dash > 0) {

@@ -38,7 +38,8 @@
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
-#include "../widgets/paint-selector.h"
+#include <widgets/paint-selector.h>
+#include <widgets/dash-selector.h>
 #include "../style.h"
 #include "../gradient-chemistry.h"
 #include "../document.h"
@@ -528,11 +529,12 @@ static void sp_stroke_style_set_join_buttons (SPWidget *spw, GtkWidget *active);
 static void sp_stroke_style_set_cap_buttons (SPWidget *spw, GtkWidget *active);
 static void sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw);
 static void sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw);
+static void sp_stroke_style_line_dash_changed (SPDashSelector *dsel, SPWidget *spw);
 
 GtkWidget *
 sp_stroke_style_line_widget_new (void)
 {
-	GtkWidget *spw, *f, *t, *l, *hb, *sb, *us, *tb, *px;
+	GtkWidget *spw, *f, *t, *l, *hb, *sb, *us, *tb, *px, *ds;
 	GtkObject *a;
 
 	spw = sp_widget_new_global (SODIPODI);
@@ -658,6 +660,18 @@ sp_stroke_style_line_widget_new (void)
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
+	/* Dash */
+	l = gtk_label_new (_("Pattern:"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_FILL, 0, 4, 0);
+
+	ds = sp_dash_selector_new ();
+	gtk_widget_show (ds);
+	gtk_table_attach (GTK_TABLE (t), ds, 1, 4, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "dash", ds);
+	gtk_signal_connect (GTK_OBJECT (ds), "changed", GTK_SIGNAL_FUNC (sp_stroke_style_line_dash_changed), spw);
+
 	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_stroke_style_line_construct), NULL);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_stroke_style_line_modify_selection), NULL);
 	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_stroke_style_line_change_selection), NULL);
@@ -707,7 +721,7 @@ sp_stroke_style_line_attr_changed (SPWidget *spw, const guchar *key, const gucha
 static void
 sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 {
-	GtkWidget *sset, *units;
+	GtkWidget *sset, *units, *dsel;
 	GtkObject *width;
 	const SPUnit *unit;
 	const GSList *objects, *l;
@@ -724,6 +738,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	sset = gtk_object_get_data (GTK_OBJECT (spw), "stroke");
 	width = gtk_object_get_data (GTK_OBJECT (spw), "width");
 	units = gtk_object_get_data (GTK_OBJECT (spw), "units");
+	dsel = gtk_object_get_data (GTK_OBJECT (spw), "dash");
 
 	if (!sel || sp_selection_is_empty (sel)) {
 		/* No objects, set empty */
@@ -788,7 +803,6 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 		tb = NULL;
 		break;
 	}
-
 	sp_stroke_style_set_join_buttons (spw, tb);
 
 	switch (captype) {
@@ -805,8 +819,13 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 		tb = NULL;
 		break;
 	}
-
 	sp_stroke_style_set_cap_buttons (spw, tb);
+
+	/* Dash */
+	sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel),
+				   object->style->stroke_dash.n_dash,
+				   object->style->stroke_dash.dash,
+				   object->style->stroke_dash.offset);
 
 	gtk_widget_set_sensitive (sset, TRUE);
 
@@ -816,7 +835,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 static void
 sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 {
-	GtkWidget *sset, *units;
+	GtkWidget *sset, *units, *dsel;
 	GtkObject *width;
 	SPStyle *style;
 	const SPUnit *unit;
@@ -830,6 +849,7 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 	sset = gtk_object_get_data (GTK_OBJECT (spw), "stroke");
 	width = gtk_object_get_data (GTK_OBJECT (spw), "width");
 	units = gtk_object_get_data (GTK_OBJECT (spw), "units");
+	dsel = gtk_object_get_data (GTK_OBJECT (spw), "dash");
 
 	style = sp_style_new ();
 	sp_style_read_from_repr (style, repr);
@@ -878,6 +898,12 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 		break;
 	}
 	sp_stroke_style_set_cap_buttons (spw, tb);
+
+	/* Dash */
+	sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel),
+				   style->stroke_dash.n_dash,
+				   style->stroke_dash.dash,
+				   style->stroke_dash.offset);
 
 	gtk_widget_set_sensitive (sset, TRUE);
 
@@ -991,6 +1017,62 @@ sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
 
 		g_slist_free (reprs);
 	}
+}
+
+static void
+sp_stroke_style_line_dash_changed (SPDashSelector *dsel, SPWidget *spw)
+{
+	const GSList *items, *i, *r;
+	GSList *reprs;
+	SPCSSAttr *css;
+	int ndash;
+	double *dash, offset;
+
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	if (spw->sodipodi) {
+		reprs = NULL;
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+		}
+	} else {
+		reprs = g_slist_prepend (NULL, spw->repr);
+		items = NULL;
+	}
+
+	/* fixme: Create some standardized method */
+	css = sp_repr_css_attr_new ();
+
+	sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
+	if (ndash > 0) {
+		unsigned char c[1024];
+		int i, pos;
+		pos = 0;
+		for (i = 0; i < ndash; i++) {
+			pos += g_snprintf (c + pos, 1022 - pos, "%g", dash[i]);
+			if ((i < (ndash - 1)) && (pos < 1020)) {
+				c[pos] = ',';
+				pos += 1;
+			}
+		}
+		c[pos] = 0;
+		sp_repr_css_set_property (css, "stroke-dasharray", c);
+		g_snprintf (c, 1024, "%g", offset);
+		sp_repr_css_set_property (css, "stroke-dashoffset", c);
+		g_free (dash);
+	} else {
+		sp_repr_css_set_property (css, "stroke-dasharray", "none");
+		sp_repr_css_set_property (css, "stroke-dashoffset", NULL);
+	}
+	for (r = reprs; r != NULL; r = r->next) {
+		sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+	}
+
+	sp_repr_css_attr_unref (css);
+	if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
+
+	g_slist_free (reprs);
 }
 
 /* Helpers */

@@ -2,14 +2,14 @@
 #define __SP_COLOR_SLIDER_H__
 
 /*
- * SPColorSlider
- *
  * A slider with colored background
  *
- * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 2001
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Licensed under GNU General Public License
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <gtk/gtkwidget.h>

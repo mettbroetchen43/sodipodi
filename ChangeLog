@@ -1,3 +1,18 @@
+2002-11-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c (sp_style_read_dash): Allow comma separators
+	(sp_style_read): Read dash presentation attributes
+
+	* src/widgets/dash-selector.c: New file
+
+	* src/widgets/dash-selector.h: New file
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_line_widget_new): Added dash
+	pattern selector
+	(sp_stroke_style_line_update): Update dash
+	(sp_stroke_style_line_update_repr): Ditto
+	(sp_stroke_style_line_dash_changed): Callback
+
 2002-11-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/xml-tree.c: Naviagtion buttons, better layout and other

@@ -1,12 +1,15 @@
 #define __SP_GRADIENT_IMAGE_C__
 
 /*
- * SPGradientImage
+ * A simple gradient preview
  *
- * A slider with colored background
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 2001
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libnr/nr-pixblock-pattern.h>

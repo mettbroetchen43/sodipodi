@@ -2,15 +2,15 @@
 #define __SP_COLOR_PREVIEW_H__
 
 /*
- * SPColorPreview
- *
  * A simple color preview widget
  *
- * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <gtk/gtkwidget.h>

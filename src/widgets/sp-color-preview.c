@@ -1,15 +1,15 @@
 #define __SP_COLOR_PREVIEW_C__
 
 /*
- * SPColorPreview
- *
  * A simple color preview widget
  *
- * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "../helper/nr-plain-stuff-gdk.h"
@@ -27,12 +27,6 @@ static void sp_color_preview_size_allocate (GtkWidget *widget, GtkAllocation *al
 static gint sp_color_preview_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static void sp_color_preview_paint (SPColorPreview *cp, GdkRectangle *area);
-
-#if 0
-static void sp_color_preview_gradient_destroy (SPGradient *gr, SPColorPreview *im);
-static void sp_color_preview_gradient_modified (SPGradient *gr, guint flags, SPColorPreview *im);
-static void sp_color_preview_update (SPColorPreview *img);
-#endif
 
 static GtkWidgetClass *parent_class;
 
