@@ -332,9 +332,19 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, (GdkEventKey*)event)) {
 			return TRUE;
 		}
+		/* fixme: This is a quick bug fix to avoid to enter infinite loop
+		 * which caused by XIM when we enter into XIM-on mode and user presss
+		 * shift key at any item focus. This code avoid to call
+		 * gtk_im_context_filter_keypress twice for single event.
+		 * The fundamental problem is at sp_desktop_new, it is bad idea to
+		 * connect sp_desktop_root_handler to acetate and main canvas (Oka) */
+		if (!tc->unimode && tc->imc &&
+			((event->key.keyval == GDK_Shift_L) ||
+			 (event->key.keyval == GDK_Shift_R))) {
+			return TRUE;
+		}
 
 		if (!tc->text) sp_text_context_setup_text (tc);
-		else sp_text_context_preedit_reset (tc);
 		g_assert (tc->text != NULL);
 		style = SP_OBJECT_STYLE (tc->text);
 
@@ -357,7 +367,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				if (tc->imc) {
 					gtk_im_context_reset (tc->imc);
 				}
-                                return TRUE;
+				return TRUE;
 			default:
 				break;
 			}
@@ -591,8 +601,11 @@ sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc)
 	gtk_im_context_get_preedit_string (tc->imc,
 					   &tc->preedit_string, NULL,
 					   &cursor_pos);
-	if( tc->preedit_string != NULL )
+	if( tc->preedit_string != NULL ) {
+		if (!tc->text) sp_text_context_setup_text (tc);
+
 		sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
+	}
 	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
 }
 

@@ -1,3 +1,10 @@
+2004-01-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/text-context.c (sp_text_context_root_handler):
+	Fixed XIM relate inifinite loop bug
+	(sptc_preedit_changed): Fixed a bug which caused when XIM commit
+	on new text item
+
 2003-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/xml/repr-io.c (sp_repr_svg_read_node): Parse nsDef-s inot
