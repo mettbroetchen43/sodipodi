@@ -160,23 +160,7 @@ sp_chars_show (SPItem *item, NRArena *arena)
 	nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (arenaitem), SP_OBJECT_STYLE (item));
 
 	for (el = chars->elements; el != NULL; el = el->next) {
-#if 0
-		NRBPath bpath;
-		SPCurve *curve;
-
-		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
-			curve = sp_curve_new_from_static_bpath (bpath.path);
-			if (curve) {
-				gdouble a[6];
-				gint i;
-				for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-				nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (arenaitem), curve, FALSE, a);
-				sp_curve_unref (curve);
-			}
-		}
-#else
 		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (arenaitem), el->font, el->glyph, &el->transform);
-#endif
 	}
 
 	nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (arenaitem), &chars->paintbox);
@@ -278,102 +262,6 @@ sp_chars_print_bpath (SPPrintContext *ctx, const NRBPath *bpath, const SPStyle *
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
 		sp_print_stroke (ctx, bpath, ctm, style, pbox, dbox, bbox);
 	}
-
-#if 0
-	/* fixme: Implement (Lauris) */
-	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
-		gfloat rgb[3], opacity;
-
-		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
-		/* fixme: This is not correct, we should fall back to bitmap here instead */
-		opacity = SP_SCALE24_TO_FLOAT (style->fill_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
-		/* Printing code */
-		gnome_print_gsave (ctx);
-		gnome_print_setrgbcolor (ctx, rgb[0], rgb[1], rgb[2]);
-		gnome_print_setopacity (ctx, opacity);
-		gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
-		if (style->fill_rule.value == 1) {
-			gnome_print_eofill (ctx);
-		} else {
-			gnome_print_fill (ctx);
-		}
-		gnome_print_grestore (ctx);
-
-	} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		SPPainter *painter;
-		/* fixme: */
-		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), ctm, pbox);
-		if (painter) {
-			ArtDRect cbox, pbox;
-			ArtIRect ibox;
-			gdouble d2i[6];
-			gint x, y;
-			guchar *rgba;
-
-			/* Find path bbox */
-			pbox.x0 = pbox.y0 = pbox.x1 = pbox.y1 = 0.0;
-			sp_bpath_matrix_d_bbox_d_union (bpath, ctm, &pbox, 0.25);
-
-			art_drect_intersect (&cbox, dbox, &pbox);
-			art_drect_to_irect (&ibox, &cbox);
-			art_affine_invert (d2i, ctm);
-
-			gnome_print_gsave (ctx);
-
-			gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
-			if (style->fill_rule.value == 1) {
-				gnome_print_eoclip (ctx);
-			} else {
-				gnome_print_clip (ctx);
-			}
-			gnome_print_concat (ctx, d2i);
-
-			/* Now we are in desktop coordinates */
-			gnome_print_newpath (ctx);
-			gnome_print_moveto (ctx, cbox.x0, cbox.y0);
-			gnome_print_lineto (ctx, cbox.x1, cbox.y0);
-			gnome_print_lineto (ctx, cbox.x1, cbox.y1);
-			gnome_print_lineto (ctx, cbox.x0, cbox.y1);
-			gnome_print_closepath (ctx);
-			gnome_print_clip (ctx);
-
-			rgba = nr_pixelstore_16K_new (FALSE, 0x00000000);
-			for (y = ibox.y0; y < ibox.y1; y+= 64) {
-				for (x = ibox.x0; x < ibox.x1; x+= 64) {
-					memset (rgba, 0x0, 4 * 64 * 64);
-					painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
-					gnome_print_gsave (ctx);
-					gnome_print_translate (ctx, x, y + 64);
-					gnome_print_scale (ctx, 64, -64);
-					gnome_print_rgbaimage (ctx, rgba, 64, 64, 4 * 64);
-					gnome_print_grestore (ctx);
-				}
-			}
-			nr_pixelstore_16K_free (rgba);
-			gnome_print_grestore (ctx);
-			sp_painter_free (painter);
-		}
-	}
-
-	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
-		gfloat rgb[3], opacity;
-		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
-		/* fixme: This is not correct, we should fall back to bitmap here instead */
-		opacity = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
-		/* Printing code */
-		gnome_print_gsave (ctx);
-		gnome_print_setrgbcolor (ctx, rgb[0], rgb[1], rgb[2]);
-		gnome_print_setopacity (ctx, opacity);
-		gnome_print_setlinewidth (ctx, style->stroke_width.computed);
-		gnome_print_setlinejoin (ctx, style->stroke_linejoin.value);
-		gnome_print_setlinecap (ctx, style->stroke_linecap.value);
-		gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
-		gnome_print_stroke (ctx);
-		gnome_print_grestore (ctx);
-	}
-
-	/* fixme: Print gradient stroke (Lauris) */
-#endif
 }
 
 /*

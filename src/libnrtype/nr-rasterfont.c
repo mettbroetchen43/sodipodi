@@ -307,7 +307,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 			art_free (pvp);
 			svpb = art_svp_uncross (svpa);
 			art_svp_free (svpa);
-			svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+			svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_NONZERO);
 			art_svp_free (svpb);
 			art_drect_svp (&bbox, svpa);
 			slot->bbox.x0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.x0);
@@ -316,19 +316,6 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 			slot->bbox.y1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.y1);
 			w = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
 			h = NRRF_COORD_INT_SIZE (slot->bbox.y0, slot->bbox.y1);
-#if 0
-			if ((w * h) > NRRF_TINY_SIZE) {
-				art_gray_svp_aa (svpa,
-						 NRRF_COORD_INT_LOWER (slot->bbox.x0),
-						 NRRF_COORD_INT_LOWER (slot->bbox.y0),
-						 NRRF_COORD_INT_UPPER (slot->bbox.x1),
-						 NRRF_COORD_INT_UPPER (slot->bbox.x1),
-						 slot->gmap.d,
-						 w);
-				art_svp_free (svpa);
-				slot->has_gmap = NRRF_GMAP_TINY;
-			}
-#endif
 			if ((w >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    (h >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    ((w * h) > NRRF_MAX_GLYPH_SIZE)) {

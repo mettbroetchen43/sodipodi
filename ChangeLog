@@ -1,3 +1,8 @@
+2002-11-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-gradient.c (sp_gradient_ensure_colors): Fixed writing last color
+	outside of allocated color vector
+
 2002-11-10  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Commented out AM_PROG_AS, as there is not such macro

@@ -822,8 +822,8 @@ sp_gradient_ensure_colors (SPGradient *gr)
 		g1 = (color >> 16) & 0xff;
 		b1 = (color >> 8) & 0xff;
 		a1 = color & 0xff;
-		o0 = (gint) floor (gr->vector->stops[i].offset * (NCOLORS + 0.9999));
-		o1 = (gint) floor (gr->vector->stops[i + 1].offset * (NCOLORS + 0.9999));
+		o0 = (gint) floor (gr->vector->stops[i].offset * (NCOLORS - 0.001));
+		o1 = (gint) floor (gr->vector->stops[i + 1].offset * (NCOLORS - 0.001));
 		if (o1 > o0) {
 			dr = ((r1 - r0) << 16) / (o1 - o0);
 			dg = ((g1 - g0) << 16) / (o1 - o0);

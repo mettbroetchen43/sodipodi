@@ -421,6 +421,8 @@ nr_type_read_private_list (void)
 					}
 					printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp);
 					dft2 = nr_new (NRTypeFaceDefFT2, 1);
+					dft2->def.next = NULL;
+					dft2->def.pdef = NULL;
 					nr_type_ft2_build_def (dft2, img + namep, img + filep, face);
 					nr_type_register ((NRTypeFaceDef *) dft2, img + familyp);
 					nentries += 1;
@@ -451,6 +453,8 @@ nr_type_read_gnome_list (void)
 		NRTypeFaceDef *tdef;
 		const unsigned char *family;
 		tdef = nr_new (NRTypeFaceDef, 1);
+		tdef->next = NULL;
+		tdef->pdef = NULL;
 		nr_type_gnome_build_def (tdef, gnames.names[i]);
 		family = NULL;
 		for (j = gfamilies.length - 1; j >= 0; j--) {

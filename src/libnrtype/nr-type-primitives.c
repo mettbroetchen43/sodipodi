@@ -45,11 +45,15 @@ NRTypeDict *
 nr_type_dict_new (void)
 {
 	NRTypeDict *td;
+	int i;
 
 	td = nr_new (NRTypeDict, 1);
 
 	td->size = NR_DICTSIZE;
 	td->entries = nr_new (NRTDEntry *, td->size);
+	for (i = 0; i < NR_DICTSIZE; i++) {
+		td->entries[i] = NULL;
+	}
 
 	return td;
 }
