@@ -62,7 +62,8 @@ struct _SodipodiClass {
 
 static GtkObjectClass * parent_class;
 static guint sodipodi_signals[LAST_SIGNAL] = {0};
-static Sodipodi * sodipodi = NULL;
+
+Sodipodi * sodipodi = NULL;
 
 GtkType
 sodipodi_get_type (void)

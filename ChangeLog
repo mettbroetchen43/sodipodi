@@ -5,6 +5,9 @@
 	sodipodi object.
 	This introduced many changes mostly everywhere.
 
+	* src/helper/gt1*, src/helper/parseAFM.*: removed gt1 library,
+	as it is now accessible through gnome-print
+
 2000-09-06  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* glade/*: Added Frank Felfe new icons and toolbopx stuff

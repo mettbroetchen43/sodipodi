@@ -86,7 +86,6 @@ sodipodi_LDFLAGS = -export-dynamic
 
 sodipodi_libs = \
 	xml/libspxml.a \
-	helper/libspgt1.a \
 	dialogs/libspdialogs.a \
 	svg/libspsvg.a \
 	display/libspdisplay.a \

@@ -9,7 +9,7 @@ INCLUDES = \
 	-I$(includedir) \
 	-I$(GNOME_INCLUDEDIR)
 
-noinst_LIBRARIES = libspchelp.a libspgt1.a
+noinst_LIBRARIES = libspchelp.a
 
 libspchelp_a_SOURCES = \
 	canvas-helper.h \
@@ -26,13 +26,13 @@ libspchelp_a_SOURCES = \
 	sp-guide.c sp-guide.h \
 	png-write.c png-write.h
 
-libspgt1_a_SOURCES = \
-	gt1.h \
-	gt1-dict.c gt1-dict.h \
-	gt1-misc.h \
-	gt1-namecontext.c gt1-namecontext.h \
-	gt1-parset1.c gt1-parset1.h \
-	gt1-region.c gt1-region.h \
-	gt1-value.h \
-	parseAFM.c parseAFM.h
+#libspgt1_a_SOURCES = \
+#	gt1.h \
+#	gt1-dict.c gt1-dict.h \
+#	gt1-misc.h \
+#	gt1-namecontext.c gt1-namecontext.h \
+#	gt1-parset1.c gt1-parset1.h \
+#	gt1-region.c gt1-region.h \
+#	gt1-value.h \
+#	parseAFM.c parseAFM.h
 
