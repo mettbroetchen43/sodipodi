@@ -271,6 +271,7 @@ sp_paint_selector_set_mode (SPPaintSelector *psel, SPPaintSelectorMode mode)
 		}
 		psel->mode = mode;
 		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[MODE_CHANGED], psel->mode);
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
 		psel->update = FALSE;
 	}
 }
@@ -685,27 +686,34 @@ sp_paint_selector_color_mode_select (GtkWidget *menu, SPColorSelectorMode cselmo
 static void
 sp_paint_selector_color_grabbed (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[GRABBED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[GRABBED]);
+	}
 }
 
 static void
 sp_paint_selector_color_dragged (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[DRAGGED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[DRAGGED]);
+	}
 }
 
 static void
 sp_paint_selector_color_released (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[RELEASED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[RELEASED]);
+	}
 }
 
 static void
 sp_paint_selector_color_changed (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	psel->rgba = sp_color_selector_get_rgba32 (csel);
-
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
+	if (!psel->update) {
+		psel->rgba = sp_color_selector_get_rgba32 (csel);
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
+	}
 }
 
 static void
@@ -797,25 +805,33 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 static void
 sp_paint_selector_gradient_grabbed (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[GRABBED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[GRABBED]);
+	}
 }
 
 static void
 sp_paint_selector_gradient_dragged (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[DRAGGED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[DRAGGED]);
+	}
 }
 
 static void
 sp_paint_selector_gradient_released (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[RELEASED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[RELEASED]);
+	}
 }
 
 static void
 sp_paint_selector_gradient_changed (SPColorSelector *csel, SPPaintSelector *psel)
 {
-	gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
+	if (!psel->update) {
+		gtk_signal_emit (GTK_OBJECT (psel), psel_signals[CHANGED]);
+	}
 }
 
 static void
