@@ -1,12 +1,15 @@
-#define SODIPODI_C
+#define __SODIPODI_C__
 
 /*
- * Sodipodi
+ * Interface to main application
  *
- * This is interface to main application
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@kaplinski.com> 1999-2000
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -236,45 +239,77 @@ static void
 sodipodi_segv_handler (int signum)
 {
 	static gint recursion = FALSE;
-	GSList *l;
+	GSList *savednames, *failednames, *l;
 	gchar *home;
-	gint count, date;
+	gint count;
+	time_t sptime;
+	struct tm *sptm;
+	char sptstr[256];
 
+	/* Kill loops */
 	if (recursion) abort ();
 	recursion = TRUE;
 
 	g_warning ("Emergency save activated");
 
 	home = g_get_home_dir ();
-	date = time (NULL);
+	sptime = time (NULL);
+	sptm = localtime (&sptime);
+	strftime (sptstr, 256, "%Y_%m_%d_%H_%M_%S", sptm);
 
 	count = 0;
+	savednames = NULL;
+	failednames = NULL;
 	for (l = sodipodi->documents; l != NULL; l = l->next) {
 		SPDocument *doc;
 		SPRepr *repr;
 		doc = (SPDocument *) l->data;
 		repr = sp_document_repr_root (doc);
 		if (sp_repr_attr (repr, "sodipodi:modified")) {
-			gchar *path;
+			const guchar *docname;
+			gchar c[1024];
 			FILE *file;
-			path = g_strdup_printf ("%s/.sodipodi/emergency-%d-%d.svg", home, date, count);
-			file = fopen (path, "w");
-			g_free (path);
+			docname = sp_repr_attr (repr, "sodipodi:docname");
+			if (docname) {
+				docname = g_basename (docname);
+			}
+			if (!docname || !*docname) docname = "emergency";
+			g_snprintf (c, 1024, "%s/.sodipodi/%.256s.%s.%d", home, docname, sptstr, count);
+			file = fopen (c, "w");
 			if (!file) {
-				path = g_strdup_printf ("%s/sodipodi-emergency-%d-%d.svg", home, date, count);
-				file = fopen (path, "w");
-				g_free (path);
+				g_snprintf (c, 1024, "%s/sodipodi-%.256s.%s.%d", home, docname, sptstr, count);
+				file = fopen (c, "w");
 			}
 			if (!file) {
-				path = g_strdup_printf ("/tmp/sodipodi-emergency-%d-%d.svg", date, count);
-				file = fopen (path, "w");
-				g_free (path);
+				g_snprintf (c, 1024, "/tmp/sodipodi-%.256s.%s.%d", docname, sptstr, count);
+				file = fopen (c, "w");
 			}
 			if (file) {
 				sp_repr_save_stream (sp_repr_document (repr), file);
+				savednames = g_slist_prepend (savednames, g_strdup (c));
 				fclose (file);
+			} else {
+				docname = sp_repr_attr (repr, "sodipodi:docname");
+				failednames = g_slist_prepend (failednames, (docname) ? g_strdup (docname) : g_strdup (_("Untitled document")));
 			}
 			count++;
+		}
+	}
+
+	savednames = g_slist_reverse (savednames);
+	failednames = g_slist_reverse (failednames);
+	if (savednames) {
+		fprintf (stderr, "\nEmergency save locations:\n");
+		while (savednames) {
+			fprintf (stderr, "  %s\n", (gchar *) savednames->data);
+			savednames = g_slist_remove (savednames, savednames->data);
+		}
+	}
+	if (failednames) {
+		fprintf (stderr, "Failed to do emergency save for:\n");
+		while (failednames) {
+			fprintf (stderr, "  %s\n", (gchar *) failednames->data);
+			failednames = g_slist_remove (failednames, failednames->data);
 		}
 	}
 

@@ -1,12 +1,16 @@
-#define SP_SELECTION_CHEMISTRY_C
+#define __SP_SELECTION_CHEMISTRY_C__
 
 /*
- * sp-selection
+ * Miscellanous operations on selected items
  *
- * selection handling functions
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * TODO: ungrouping destroys group attributes - should inherit to children
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <string.h>

@@ -1,11 +1,17 @@
-#ifndef SP_SELECTION_CHEMISTRY_H
-#define SP_SELECTION_CHEMISTRY_H
+#ifndef __SP_SELECTION_CHEMISTRY_H__
+#define __SP_SELECTION_CHEMISTRY_H__
 
 /*
- * selection-chemistry - find a better name for it!
+ * Miscellanous operations on selected items
  *
- * Here are collected UI handlers, manipulating with selections
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "selection.h"
@@ -52,7 +58,7 @@ typedef enum
   SP_CYCLE_FOCUS =2      // readjust visible area to view selected item
 } SP_Cycle_Type;
 
-#ifndef SP_SELECTION_CHEMISTRY_C
+#ifndef __SP_SELECTION_CHEMISTRY_C__
 extern SP_Cycle_Type  SP_CYCLING;
 #else
 SP_Cycle_Type SP_CYCLING = SP_CYCLE_FOCUS;

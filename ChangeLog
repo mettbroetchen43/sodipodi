@@ -1,5 +1,7 @@
 2002-08-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sodipodi.c (sodipodi_segv_handler): Do better names and inform user about these
+
 	* src/selection-chemistry.c (sp_item_list_common_parent_group): Helper
 	(sp_selection_raise): Made it to work with all item combinations
 	(sp_selection_lower): Ditto, do not lower under non-items
