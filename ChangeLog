@@ -2,6 +2,7 @@
 
 	* src/draw-context.c (sp_draw_context_root_handler): Use 'a' instead of '+'
 	as append/new toggle
+	(spdc_concat_colors_and_flush): Cut continuation tolerance to avoid extra points at corners
 
 2003-02-25  Lauris Kaplinski  <lauris@kaplinski.com>
 

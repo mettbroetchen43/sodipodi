@@ -55,7 +55,8 @@ struct _SPDrawAnchor {
 	SPCurve *curve;
 	guint start : 1;
 	guint active : 1;
-	NRPointF dp, wp;
+	NRPointF dp;
+	NRPointF wp;
 	SPCanvasItem *ctrl;
 };
 
@@ -435,11 +436,11 @@ spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed)
 		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
 	}
 	/* Blue */
-	sp_curve_append_continuous (c, dc->blue_curve, 1e-9);
+	sp_curve_append_continuous (c, dc->blue_curve, 0.0625);
 	sp_curve_reset (dc->blue_curve);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
 	/* Red */
-	sp_curve_append_continuous (c, dc->red_curve, 1e-9);
+	sp_curve_append_continuous (c, dc->red_curve, 0.0625);
 	sp_curve_reset (dc->red_curve);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 
@@ -463,7 +464,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed)
 			sp_curve_unref (c);
 			c = r;
 		}
-		sp_curve_append_continuous (dc->sa->curve, c, 1e-9);
+		sp_curve_append_continuous (dc->sa->curve, c, 0.0625);
 		sp_curve_unref (c);
 		sp_curve_closepath_current (dc->sa->curve);
 		spdc_flush_white (dc, NULL);
@@ -483,7 +484,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed)
 			sp_curve_unref (s);
 			s = r;
 		}
-		sp_curve_append_continuous (s, c, 1e-9);
+		sp_curve_append_continuous (s, c, 0.0625);
 		sp_curve_unref (c);
 		c = s;
 	}
@@ -501,7 +502,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed)
 			sp_curve_unref (e);
 			e = r;
 		}
-		sp_curve_append_continuous (c, e, 1e-9);
+		sp_curve_append_continuous (c, e, 0.0625);
 		sp_curve_unref (e);
 	}
 
@@ -646,7 +647,7 @@ fit_and_split (SPDrawContext * dc)
 		SPCanvasItem *cshape;
 		/* Fit and draw and copy last point */
 		g_assert (!sp_curve_empty (dc->red_curve));
-		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
+		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 0.0625);
 		curve = sp_curve_copy (dc->red_curve);
 
 		/* fixme: */
@@ -755,7 +756,6 @@ static SPDrawAnchor *
 sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble dx, gdouble dy)
 {
 	SPDrawAnchor *a;
-	NRPointF fp;
 
 	g_print ("Creating anchor at %g %g\n", dx, dy);
 
@@ -767,9 +767,7 @@ sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble d
 	a->active = FALSE;
 	a->dp.x = dx;
 	a->dp.y = dy;
-	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT_DESKTOP (dc), &fp, dx, dy);
-	a->wp.x = fp.x;
-	a->wp.y = fp.y;
+	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT_DESKTOP (dc), &a->wp, dx, dy);
 	a->ctrl = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
 					 "size", 4.0,
 					 "filled", 0,
@@ -1710,7 +1708,7 @@ spdc_pen_finish_segment (SPPenContext *pc, NRPointF *p, guint state)
 		SPCurve *curve;
 		SPCanvasItem *cshape;
 
-		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
+		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 0.0625);
 		curve = sp_curve_copy (dc->red_curve);
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
