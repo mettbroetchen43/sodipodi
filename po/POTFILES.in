@@ -48,6 +48,7 @@ src/sp-spiral.c
 src/sp-star.c
 src/sp-text.c
 src/toolbox.c
+src/widgets/font-selector.c
 src/widgets/gradient-selector.c
 src/widgets/gradient-vector.c
 src/widgets/paint-selector.c

@@ -1,5 +1,25 @@
 2002-10-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Use libnrtype
+	(sp_text_edit_dialog_read_selection): Ditto
+	(sp_text_edit_dialog_font_changed): Ditto
+
+	* src/libnrtype/nr-type-directory.h: Implement NRNameList
+
+	* src/libnrtype/nr-type-directory.c (nr_type_directory_lookup_fuzzy): Force lowercase
+	(nr_type_directory_family_list_destructor): Implement
+	(nr_type_directory_family_list_get): Ditto
+	(nr_type_directory_style_list_destructor): Ditto
+	(nr_type_directory_style_list_get): Ditto
+
+	* src/widgets/font-selector.c: New file
+
+	* src/widgets/font-selector.h: New file
+
+	* src/libnrtype/nr-rasterfont.c: New file
+
+	* src/libnrtype/nr-rasterfont.h: New file
+
 	* src/libnr/nr-matrix.c (nr_matrix_f_set_scale): Correct signature
 
 	* src/sp-text.c (sp_font_get_glyph_bbox): Use libnrtype

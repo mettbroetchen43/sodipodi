@@ -24,6 +24,7 @@ libspwidgets_a_SOURCES = \
 	paint-selector.c paint-selector.h \
 	gradient-selector.c gradient-selector.h \
 	gradient-vector.c gradient-vector.h \
+	font-selector.c font-selector.h \
 	sp-widget.c sp-widget.h
 
 #	sp-value-winder.c sp-value-winder.h

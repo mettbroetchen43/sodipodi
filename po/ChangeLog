@@ -1,6 +1,6 @@
-2002-09-30  gettextize  <bug-gnu-utils@gnu.org>
+2002-10-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
+	* POTFILES.in: Added src/widgets/font-selector.c
 
 Sun Sep 29 01:53:59 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 

@@ -14,6 +14,8 @@
 
 #include <config.h>
 
+#include <libnrtype/nr-type-directory.h>
+
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -22,9 +24,9 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktext.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libgnomeprint/gnome-font-dialog.h>
 #include <gal/widgets/e-unicode.h>
 
+#include "../widgets/font-selector.h"
 #include "../forward.h"
 #include "../sodipodi.h"
 #include "../document.h"
@@ -45,7 +47,7 @@ static void sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg);
 static void sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean content);
 
 static void sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg);
-static void sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, GtkWidget *dlg);
+static void sp_text_edit_dialog_font_changed (SPFontSelector *fontsel, NRFont *font, GtkWidget *dlg);
 static void sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg);
 
 static SPText *sp_ted_get_selected_text_item (void);
@@ -75,6 +77,7 @@ sp_text_edit_dialog (void)
 
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Text properties"));
+		gtk_window_set_policy (GTK_WINDOW (dlg), TRUE, TRUE, FALSE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_text_edit_dialog_destroy), dlg);
 		gtk_signal_connect (GTK_OBJECT (dlg), "delete_event", GTK_SIGNAL_FUNC (sp_text_edit_dialog_delete), dlg);
 
@@ -104,7 +107,7 @@ sp_text_edit_dialog (void)
 		gtk_widget_show (hb);
 		gtk_box_pack_start (GTK_BOX (vb), hb, TRUE, TRUE, 0);
 
-		fontsel = gnome_font_selection_new ();
+		fontsel = sp_font_selector_new ();
 		gtk_widget_show (fontsel);
 		gtk_signal_connect (GTK_OBJECT (fontsel), "font_set", GTK_SIGNAL_FUNC (sp_text_edit_dialog_font_changed), dlg);
 		gtk_box_pack_start (GTK_BOX (hb), fontsel, TRUE, TRUE, 0);
@@ -176,7 +179,7 @@ sp_text_edit_dialog (void)
 		gtk_table_attach (GTK_TABLE (tbl), b, 2, 3, 1, 2, 0, 0, 0, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "writing_mode_tb", b);
 
-		preview = gnome_font_preview_new ();
+		preview = sp_font_preview_new ();
 		gtk_widget_show (preview);
 		gtk_box_pack_start (GTK_BOX (vb), preview, TRUE, TRUE, 4);
 		gtk_object_set_data (GTK_OBJECT (dlg), "preview", preview);
@@ -258,9 +261,9 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 	if (repr) {
 		GtkWidget *fontsel, *preview, *b;
 		SPCSSAttr *css;
-		GnomeFont *font;
-		gint weight;
-		const guchar *val;
+		NRTypeFace *tf;
+		NRFont *font;
+		const guchar *fstr, *wstr, *sstr;
 		guchar c[64];
 
 		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
@@ -269,25 +272,17 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		css = sp_repr_css_attr_new ();
 
 		/* font */
-		font = gnome_font_selection_get_font (GNOME_FONT_SELECTION (fontsel));
-		val = gnome_font_get_family_name (font);
-		sp_repr_css_set_property (css, "font-family", val);
-		weight = gnome_font_get_weight_code (font);
-		if (weight < GNOME_FONT_SEMI) {
-			val = "normal";
-		} else {
-			val = "bold";
-		}
-		sp_repr_css_set_property (css, "font-weight", val);
-		if (gnome_font_is_italic (font)) {
-			val = "italic";
-		} else {
-			val = "normal";
-		}
-		sp_repr_css_set_property (css, "font-style", val);
-		snprintf (c, 64, "%g", gnome_font_get_size (font));
+		font = sp_font_selector_get_font (SP_FONT_SELECTOR (fontsel));
+		tf = nr_font_get_typeface (font);
+		fstr = nr_typeface_get_family_name (tf);
+		sp_repr_css_set_property (css, "font-family", fstr);
+		wstr = nr_typeface_get_attribute (tf, "weight");
+		sp_repr_css_set_property (css, "font-weight", wstr);
+		sstr = nr_typeface_get_attribute (tf, "style");
+		sp_repr_css_set_property (css, "font-style", sstr);
+		snprintf (c, 64, "%g", nr_font_get_size (font));
 		sp_repr_css_set_property (css, "font-size", c);
-		gnome_font_unref (font);
+		nr_font_unref (font);
 		/* Layout */
 		b = gtk_object_get_data (GTK_OBJECT (dlg), "text_anchor_start");
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (b))) {
@@ -398,11 +393,11 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 			str = sp_text_get_string_multiline (text);
 			if (str && *str) {
 				e_utf8_gtk_editable_set_text (GTK_EDITABLE (textw), str);
-				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), str);
+				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 				g_free (str);
 			} else {
 				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
-				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), NULL);
+				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), NULL);
 			}
 		}
 	} else {
@@ -422,17 +417,24 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 	}
 
 	if (dostyle) {
-		GnomeFont *font;
+		NRTypeFace *tf;
+		NRFont *font;
 		GtkWidget *b;
 
+#if 0
 		font = gnome_font_new_closest (style->text->font_family.value,
 					       sp_text_font_weight_to_gp (style->font_weight.computed),
 					       sp_text_font_italic_to_gp (style->font_style.computed),
 					       style->font_size.computed);
+#else
+		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, NULL);
+		font = nr_font_new_default (tf, style->font_size.computed);
+		nr_typeface_unref (tf);
+#endif
 		if (font) {
-			gnome_font_selection_set_font (GNOME_FONT_SELECTION (fontsel), font);
-			gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
-			gnome_font_unref (font);
+			sp_font_selector_set_font (SP_FONT_SELECTOR (fontsel), font);
+			sp_font_preview_set_font (SP_FONT_PREVIEW (preview), font);
+			nr_font_unref (font);
 		}
 
 		if (style->text_anchor.computed == SP_CSS_TEXT_ANCHOR_START) {
@@ -472,9 +474,9 @@ sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 
 	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (textw));
 	if (str && *str) {
-		gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), str);
+		sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 	} else {
-		gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), NULL);
+		sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), NULL);
 	}
 	if (str) g_free (str);
 
@@ -485,7 +487,7 @@ sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
 }
 
 static void
-sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, GtkWidget *dlg)
+sp_text_edit_dialog_font_changed (SPFontSelector *fsel, NRFont *font, GtkWidget *dlg)
 {
 	GtkWidget *preview, *apply, *def;
 	SPText *text;
@@ -498,7 +500,7 @@ sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, 
 	apply = gtk_object_get_data (GTK_OBJECT (dlg), "apply");
 	def = gtk_object_get_data (GTK_OBJECT (dlg), "default");
 
-	gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
+	sp_font_preview_set_font (SP_FONT_PREVIEW (preview), font);
 
 	if (text) {
 		gtk_widget_set_sensitive (apply, TRUE);

@@ -26,6 +26,9 @@ enum {
 NRTypeFace *nr_typeface_ref (NRTypeFace *tf);
 NRTypeFace *nr_typeface_unref (NRTypeFace *tf);
 
+const unsigned char *nr_typeface_get_family_name (NRTypeFace *tf);
+const unsigned char *nr_typeface_get_attribute (NRTypeFace *tf, const unsigned char *key);
+
 NRBPath *nr_typeface_get_glyph_outline (NRTypeFace *tf, int glyph, unsigned int metric, NRBPath *d, unsigned int ref);
 void nr_typeface_unref_glyph_outline (NRTypeFace *tf, int glyph);
 

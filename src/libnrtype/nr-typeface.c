@@ -11,6 +11,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <string.h>
 #include <libnr/nr-macros.h>
 #include "nr-type-gnome.h"
 #include "nr-typeface.h"
@@ -34,6 +35,26 @@ nr_typeface_unref (NRTypeFace *tf)
 	}
 
 	return NULL;
+}
+
+const unsigned char *
+nr_typeface_get_family_name (NRTypeFace *tf)
+{
+	return gnome_font_face_get_family_name (tf->face);
+}
+
+const unsigned char *
+nr_typeface_get_attribute (NRTypeFace *tf, const unsigned char *key)
+{
+	if (!strcmp (key, "weight")) {
+		guint wc;
+		wc = gnome_font_face_get_weight_code (tf->face);
+		return (wc >= GNOME_FONT_BOLD) ? "bold" : "normal";
+	} else if (!strcmp (key, "style")) {
+		return gnome_font_face_is_italic (tf->face) ? "italic" : "normal";
+	}
+
+	return "normal";
 }
 
 NRBPath *
