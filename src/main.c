@@ -179,6 +179,7 @@ main (int argc, const char **argv)
 #endif
 
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
 	LIBXML_TEST_VERSION
@@ -299,6 +300,11 @@ sp_main_console (int argc, const char **argv)
 	guchar *printer;
 
 	/* We are started in text mode */
+
+#ifdef WITH_XFT
+	/* Still have to init gdk, or Xft does not work */
+	gdk_init (&argc, (char ***) &argv);
+#endif
 
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */

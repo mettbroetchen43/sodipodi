@@ -70,13 +70,16 @@ nr_type_xft_init (void)
 {
 	XftFontSet *fs;
 	const char *debugenv;
-	int debug;
+	int debug, ret;
 	int i, pos, fpos;
 
 	debugenv = getenv ("SODIPODI_DEBUG_XFT");
 	debug = (debugenv && *debugenv && (*debugenv != '0'));
 
+	ret = XftInit (NULL);
+
 	if (debug) {
+		fprintf (stderr, "XftInit result %d\n", ret);
 		fprintf (stderr, "Reading Xft font database...\n");
 	}
 

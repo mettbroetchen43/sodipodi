@@ -1,5 +1,8 @@
 2003-02-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/main.c (main): Use bind_textdomain_codeset to force utf-8 encoding
+	(sp_main_console): Init gdk if WITH_XFT
+
 	* src/file.c (sp_export_get_rows): Do not set EMPTY flag on pixblock, or background
 	will be forgotten
 
