@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-12 05:20+0100\n"
-"PO-Revision-Date: 2004-01-12 10:24+0100\n"
+"POT-Creation-Date: 2004-01-21 05:10+0100\n"
+"PO-Revision-Date: 2004-01-21 19:14+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -54,18 +54,18 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 #. Notebook tab
 #: src/desktop.c:1537 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:160 src/verbs.c:463
+#: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Strana"
 
 #: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
 #: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:591 src/toolbox.c:407 src/verbs.c:465
+#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Výběr"
 
@@ -504,7 +504,7 @@ msgstr "ID není platné"
 msgid "ID exists"
 msgstr "ID existuje"
 
-#: src/dialogs/item-properties.c:436 src/verbs.c:478
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
 msgid "Item properties"
 msgstr "Vlastnosti položky"
 
@@ -670,7 +670,7 @@ msgstr "Volná ruka a pero"
 msgid "Calligraphic line"
 msgstr "Kaligrafická linie"
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:454
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
 msgid "Text"
 msgstr "Text"
 
@@ -678,7 +678,7 @@ msgstr "Text"
 msgid "Object Size and Position"
 msgstr "Velikost a umístění objektu"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:473
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
 msgstr "Velikost a umístění"
 
@@ -734,7 +734,7 @@ msgstr "Text a písmo"
 msgid "Set as default"
 msgstr "Nastavit jako výchozí"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:471
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
 msgid "Tool attributes"
 msgstr "Vlastnosti nástroje"
 
@@ -786,7 +786,7 @@ msgstr "Nástroj nemá žádné vlastnosti"
 msgid "No active tool"
 msgstr "Žádný aktivní nástroj"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:470
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
 msgid "Tool options"
 msgstr "Volby nástroje"
 
@@ -903,11 +903,11 @@ msgstr "Dokument v paměti %d"
 msgid "Unnamed document %d"
 msgstr "Nepojmenovaný dokument %d"
 
-#: src/draw-context.c:285
+#: src/draw-context.c:289
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "Připojuje se k výběru. Stisknutím 'a' přepnete Přidání/Nový."
 
-#: src/draw-context.c:290
+#: src/draw-context.c:294
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "Vytváří se nová křivka. Stisknutím 'a' přepnete Přidání/Nový."
 
@@ -1081,7 +1081,7 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Čtverčíky ex"
 
-#: src/interface.c:305 src/interface.c:498
+#: src/interface.c:305 src/interface.c:503
 msgid "Open Recent"
 msgstr "Otevřít nedávné"
 
@@ -1089,12 +1089,12 @@ msgstr "Otevřít nedávné"
 msgid "Close View"
 msgstr "Zavřít pohled"
 
-#: src/interface.c:328 src/interface.c:504
+#: src/interface.c:328 src/interface.c:509
 msgid "About Sodipodi"
 msgstr "O aplikaci Sodipodi"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:510
+#: src/interface.c:334 src/interface.c:515
 msgid "About Modules"
 msgstr "O modulech"
 
@@ -1103,74 +1103,74 @@ msgid "Cleanup"
 msgstr "Uklidit"
 
 #. View:Zoom
-#: src/interface.c:424 src/toolbox.c:546 src/verbs.c:455
+#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Zvětšit"
 
 #. View:New View
-#: src/interface.c:436
+#: src/interface.c:441
 msgid "New View"
 msgstr "Nový pohled"
 
 #. View:New Preview
-#: src/interface.c:438
+#: src/interface.c:443
 msgid "New Preview"
 msgstr "Nový náhled"
 
-#: src/interface.c:440
+#: src/interface.c:445
 msgid "New Toplevel Toolbox"
 msgstr "Nová nejvyšší nástrojová lišta"
 
-#: src/interface.c:441
+#: src/interface.c:446
 msgid "New Docked Toolbox"
 msgstr "Nová ukotvená nástrojová lišta"
 
-#: src/interface.c:442
+#: src/interface.c:447
 msgid "Remove Docked Toolbox"
 msgstr "Odstranit ukotvenou nástrojovou lištu"
 
 #. File
-#: src/interface.c:495 src/verbs.c:405
+#: src/interface.c:500 src/verbs.c:405
 msgid "New"
 msgstr "Nový"
 
-#: src/interface.c:496
+#: src/interface.c:501
 msgid "Open"
 msgstr "Otevřít"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:516 src/verbs.c:414
+#: src/interface.c:521 src/verbs.c:414
 msgid "Exit program"
 msgstr "Ukončit program"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:579 src/toolbox.c:270
+#: src/interface.c:584 src/toolbox.c:270
 msgid "File"
 msgstr "Soubor"
 
 #. Edit submenu
-#: src/interface.c:585 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Úpravy"
 
 #. View submenu
-#: src/interface.c:597
+#: src/interface.c:602
 msgid "View"
 msgstr "Zobrazit"
 
 #. Drawing mode submenu
-#: src/interface.c:603
+#: src/interface.c:608
 msgid "Drawing Mode"
 msgstr "Režim kreslení"
 
 #. Dialog submenu
-#: src/interface.c:609
+#: src/interface.c:614
 msgid "Dialogs"
 msgstr "Dialogy"
 
 #. Have modules menu
-#: src/interface.c:618
+#: src/interface.c:623
 msgid "Modules"
 msgstr "Moduly"
 
@@ -1405,7 +1405,7 @@ msgid "Item"
 msgstr "Položka"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:482
 msgid "Item Properties"
 msgstr "Vlastnosti položky"
 
@@ -1507,7 +1507,7 @@ msgid "Rect Properties"
 msgstr "Vlastnosti čtyřúhelníku"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:533 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:453
 msgid "Star"
 msgstr "Hvězda"
 
@@ -1517,7 +1517,7 @@ msgid "Star Properties"
 msgstr "Vlastnosti hvězdy"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:569 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:454
 msgid "Spiral"
 msgstr "Spirála"
 
@@ -1810,7 +1810,7 @@ msgstr "Placaté strany"
 msgid "Object"
 msgstr "Objekt"
 
-#: src/toolbox.c:362 src/verbs.c:473
+#: src/toolbox.c:362 src/verbs.c:477
 msgid "Object size and position"
 msgstr "Velikost a umístění objektu"
 
@@ -1818,7 +1818,7 @@ msgstr "Velikost a umístění objektu"
 msgid "Text and font settings"
 msgstr "Nastavení textu a písma"
 
-#: src/toolbox.c:365 src/verbs.c:474
+#: src/toolbox.c:365 src/verbs.c:478
 msgid "Object transformations"
 msgstr "Transformace objektu"
 
@@ -2081,250 +2081,282 @@ msgid "Break selected path to subpaths"
 msgstr "Rozdělit vybrané cesty do podcest"
 
 #: src/verbs.c:435
+msgid "Uncross"
+msgstr "Nekřížit"
+
+#: src/verbs.c:435
+msgid "Break selected path at crossings"
+msgstr "Rozdělit vybranou cestu v průsečících"
+
+#: src/verbs.c:436
+msgid "Union"
+msgstr "Sjednocení"
+
+#: src/verbs.c:436
+msgid "Calculate union of selected paths"
+msgstr "Spočítat sjednocení vybraných cest"
+
+#: src/verbs.c:437
+msgid "Intersection"
+msgstr "Průnik"
+
+#: src/verbs.c:437
+msgid "Calculate intersection of selected paths"
+msgstr "Spočítat průnik vybraných cest"
+
+#: src/verbs.c:438
+msgid "Subtraction"
+msgstr "Odčítání"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr "Odečíst cesty od první"
+
+#: src/verbs.c:439
 msgid "Transform"
 msgstr "Transformovat"
 
-#: src/verbs.c:435
+#: src/verbs.c:439
 msgid "Applies transformation"
 msgstr "Provede transformaci"
 
 #. Object
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotate 90 degrees"
 msgstr "Otočit o 90°"
 
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Otočit objekt o 90° po směru hodinových ručiček"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Flatten object"
 msgstr "Zploštit objekt"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Remove transformations from object"
 msgstr "Odstranit transformace z objektu"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert to Curves"
 msgstr "Převést na křivky"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert selected object to path"
 msgstr "Převést vybraný objekt na cestu"
 
-#: src/verbs.c:440
+#: src/verbs.c:444
 msgid "Flip Horizontally"
 msgstr "Přehodit vodorovně"
 
-#: src/verbs.c:441
+#: src/verbs.c:445
 msgid "Flip selected objects horizontally"
 msgstr "Přehodit vybrané objekty vodorovně"
 
-#: src/verbs.c:442
+#: src/verbs.c:446
 msgid "Flip Vertically"
 msgstr "Přehodit svisle"
 
-#: src/verbs.c:443
+#: src/verbs.c:447
 msgid "Flip selected objects vertically"
 msgstr "Přehodit vybrané objekty svisle"
 
 #. Event contexts
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select"
 msgstr "Vybrat"
 
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select and transform objects"
 msgstr "Výběr a transformace objektů"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Node edit"
 msgstr "Úpravy s uzly"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
 msgstr "Úprava existujících objektů pomocí ovládacích uzlů"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Rectangle"
 msgstr "Čtyřúhelník"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr "Tvorba čtyřúhelníků a čtverců s volitelně oblými hranami"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Ellipse"
 msgstr "Elipsa"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
 msgstr "Tvorba kruhů, elips a oblouků"
 
-#: src/verbs.c:449
+#: src/verbs.c:453
 msgid "Create stars and polygons"
 msgstr "Tvorba hvězd a polygonů"
 
-#: src/verbs.c:450
+#: src/verbs.c:454
 msgid "Create spirals"
 msgstr "Tvorba spirál"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Pencil"
 msgstr "Tužka"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
 msgstr "Kreslení volnou rukou a přímých čar"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Pen"
 msgstr "Pero"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Kreslení přesně umístěných zahnutých a přímých čar"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Calligraphy"
 msgstr "Kaligrafická linie"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Draw calligraphic lines"
 msgstr "Kreslení kaligrafických linií"
 
-#: src/verbs.c:454
+#: src/verbs.c:458
 msgid "Create and edit text objects"
 msgstr "Tvorba a úprava textových objektů"
 
-#: src/verbs.c:455
+#: src/verbs.c:459
 msgid "Zoom into precisely selected area"
 msgstr "Zvětšení do přesně vybrané oblasti"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Dropper"
 msgstr "Pipeta"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Pick averaged colors from image"
 msgstr "Výběr zprůměrovaných barev z obrázku"
 
 #. Zooming
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "In"
 msgstr "Zvětšit"
 
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "Zoom in drawing"
 msgstr "Zvětšení obrázku"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Out"
 msgstr "Zmenšit"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Zoom out drawing"
 msgstr "Zmenšení obrázku"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "Set zoom factor to 1:1"
 msgstr "Nastavit poměr zvětšení na 1:1"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "Set zoom factor to 1:2"
 msgstr "Nastavit poměr zvětšení na 1:2"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "Set zoom factor to 2:1"
 msgstr "Nastavit poměr zvětšení na 2:1"
 
-#: src/verbs.c:463
+#: src/verbs.c:467
 msgid "Fit the whole page into window"
 msgstr "Přizpůsobit celou stránku oknu"
 
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Fit the whole drawing into window"
 msgstr "Přizpůsobit celý obrázek oknu"
 
-#: src/verbs.c:465
+#: src/verbs.c:469
 msgid "Fit the whole selection into window"
 msgstr "Přizpůsobit celý výběr oknu"
 
 #. Dialogs
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Display"
 msgstr "Zobrazení"
 
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Global display settings"
 msgstr "Globální nastavení zobrazení"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Document"
 msgstr "Dokument"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Page layout"
 msgstr "Rozvržení stránky"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing Window"
 msgstr "Editační okno"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing window properties"
 msgstr "Vlastnosti editačního okna"
 
-#: src/verbs.c:470
+#: src/verbs.c:474
 msgid "Tool Options"
 msgstr "Volby nástroje"
 
-#: src/verbs.c:471
+#: src/verbs.c:475
 msgid "Tool Attributes"
 msgstr "Vlastnosti nástroje"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and Stroke"
 msgstr "Výplň a čáry"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and stroke settings"
 msgstr "Nastavení výplně a tahu"
 
-#: src/verbs.c:474
+#: src/verbs.c:478
 msgid "Transformations"
 msgstr "Transformace"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and Distribute"
 msgstr "Zarovnání a rozmístění"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and distribute"
 msgstr "Zarovnání a rozmístění"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text and Font"
 msgstr "Text a písmo"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text editing and font settings"
 msgstr "Nastavení úprav textu a písma"
 
-#: src/verbs.c:477
+#: src/verbs.c:481
 msgid "XML Editor"
 msgstr "Editor XML"
 
