@@ -31,6 +31,8 @@ typedef struct _SPWidgetClass SPWidgetClass;
 
 struct _SPWidget {
 	GtkBin bin;
+	guint dirty : 1;
+	guint autoupdate : 1;
 	Sodipodi *sodipodi;
 	SPDesktop *desktop;
 	SPDocument *document;
@@ -38,15 +40,21 @@ struct _SPWidget {
 
 struct _SPWidgetClass {
 	GtkBinClass bin_class;
+	/* Selection change handlers */
 	void (* modify_selection) (SPWidget *spw, SPSelection *selection, guint flags);
 	void (* change_selection) (SPWidget *spw, SPSelection *selection);
 	void (* set_selection) (SPWidget *spw, SPSelection *selection);
+	/* Signal */
+	void (* set_dirty) (SPWidget *spw, gboolean dirty);
 };
 
 GtkType sp_widget_get_type (void);
 
 GtkWidget *sp_widget_new (Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document);
 GtkWidget *sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document);
+
+void sp_widget_set_dirty (SPWidget *spw, gboolean dirty);
+void sp_widget_set_autoupdate (SPWidget *spw, gboolean autoupdate);
 
 END_GNOME_DECLS
 

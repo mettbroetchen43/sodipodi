@@ -13,8 +13,12 @@
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_rgb_svp.h>
 
+#include "dialogs/fill-style.h"
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
+#include "desktop.h"
+#include "selection.h"
+#include "desktop-handles.h"
 #include "style.h"
 #include "sp-path-component.h"
 #include "sp-shape.h"
@@ -27,11 +31,13 @@ static void sp_shape_destroy (GtkObject *object);
 
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_read_attr (SPObject * object, const gchar * attr);
+static void sp_shape_style_changed (SPObject *object, guint flags);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
+static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
 void sp_shape_add_comp (SPPath * path, SPPathComp * comp);
@@ -79,11 +85,13 @@ sp_shape_class_init (SPShapeClass * klass)
 
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->read_attr = sp_shape_read_attr;
+	sp_object_class->style_changed = sp_shape_style_changed;
 
 	item_class->print = sp_shape_print;
 	item_class->description = sp_shape_description;
 	item_class->show = sp_shape_show;
 	item_class->paint = sp_shape_paint;
+	item_class->menu = sp_shape_menu;
 
 	path_class->remove_comp = sp_shape_remove_comp;
 	path_class->add_comp = sp_shape_add_comp;
@@ -113,7 +121,6 @@ sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	sp_shape_read_attr (object, "style");
 	sp_shape_read_attr (object, "insensitive");
 }
 
@@ -121,8 +128,6 @@ static void
 sp_shape_read_attr (SPObject * object, const gchar * attr)
 {
 	SPShape * shape;
-	SPCanvasShape * cs;
-	SPItemView * v;
 
 	shape = SP_SHAPE (object);
 
@@ -143,13 +148,22 @@ sp_shape_read_attr (SPObject * object, const gchar * attr)
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, attr);
+}
 
-	if (!strcmp (attr, "style")) {
-		/* Style was read by item */
-		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
-			cs = SP_CANVAS_SHAPE (v->canvasitem);
-			sp_canvas_shape_set_style (cs, object->style);
-		}
+static void
+sp_shape_style_changed (SPObject *object, guint flags)
+{
+	SPShape *shape;
+	SPItemView *v;
+
+	shape = SP_SHAPE (object);
+
+	/* Item class reads style */
+	if (((SPObjectClass *) (parent_class))->style_changed)
+		(* ((SPObjectClass *) (parent_class))->style_changed) (object, flags);
+
+	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+		sp_canvas_shape_set_style (SP_CANVAS_SHAPE (v->canvasitem), object->style);
 	}
 }
 
@@ -385,6 +399,50 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 	}
 
 	return FALSE;
+}
+
+/* Generate context menu item section */
+
+static void
+sp_shape_fill_settings (GtkMenuItem *menuitem, SPItem *item)
+{
+	SPDesktop *desktop;
+
+	g_assert (SP_IS_ITEM (item));
+
+	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
+
+	sp_fill_style_dialog (item);
+}
+
+static void
+sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
+{
+	GtkWidget *i, *m, *w;
+
+	if (SP_ITEM_CLASS (parent_class)->menu)
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
+
+	/* Create toplevel menuitem */
+	i = gtk_menu_item_new_with_label (_("Shape"));
+	m = gtk_menu_new ();
+	/* Item dialog */
+	w = gtk_menu_item_new_with_label (_("Fill settings"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_shape_fill_settings), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
+	gtk_widget_show (m);
+
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
+
+	gtk_menu_append (menu, i);
+	gtk_widget_show (i);
 }
 
 void

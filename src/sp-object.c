@@ -330,6 +330,21 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
 
+/* Styling */
+
+/* fixme: this is potentially dangerous - use load/set style instead (Lauris) */
+void
+sp_object_style_changed (SPObject *object, guint flags)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+
+	if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed)
+		(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed) (object, flags);
+
+	sp_object_request_modified (object, flags);
+}
+
 /* Modification */
 
 void

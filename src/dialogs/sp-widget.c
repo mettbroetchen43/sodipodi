@@ -21,6 +21,7 @@ enum {
 	MODIFY_SELECTION,
 	CHANGE_SELECTION,
 	SET_SELECTION,
+	SET_DIRTY,
 	LAST_SIGNAL
 };
 
@@ -88,13 +89,20 @@ sp_widget_class_init (SPWidgetClass *klass)
 						    gtk_marshal_NONE__POINTER_UINT,
 						    GTK_TYPE_NONE, 1,
 						    GTK_TYPE_POINTER, GTK_TYPE_UINT);
-	signals[SET_SELECTION] = gtk_signal_new ("set_selection",
-						 GTK_RUN_LAST,
-						 object_class->type,
-						 GTK_SIGNAL_OFFSET (SPWidgetClass, set_selection),
-						 gtk_marshal_NONE__POINTER,
-						 GTK_TYPE_NONE, 1,
-						 GTK_TYPE_POINTER);
+	signals[SET_SELECTION] =    gtk_signal_new ("set_selection",
+						    GTK_RUN_LAST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, set_selection),
+						    gtk_marshal_NONE__POINTER,
+						    GTK_TYPE_NONE, 1,
+						    GTK_TYPE_POINTER);
+	signals[SET_DIRTY] =        gtk_signal_new ("set_dirty",
+						    GTK_RUN_LAST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, set_dirty),
+						    gtk_marshal_NONE__BOOL,
+						    GTK_TYPE_NONE, 1,
+						    GTK_TYPE_BOOL);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	widget_class->show = sp_widget_show;
@@ -108,6 +116,8 @@ sp_widget_class_init (SPWidgetClass *klass)
 static void
 sp_widget_init (SPWidget *spw)
 {
+	spw->dirty = FALSE;
+	spw->autoupdate = TRUE;
 	spw->sodipodi = NULL;
 	spw->desktop = NULL;
 	spw->document = NULL;
@@ -260,5 +270,29 @@ sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *s
 	/* Emit "set_selection" signal */
 	gtk_signal_emit (GTK_OBJECT (spw), signals[SET_SELECTION], selection);
 }
+
+void
+sp_widget_set_dirty (SPWidget *spw, gboolean dirty)
+{
+	if (dirty && !spw->dirty) {
+		spw->dirty = TRUE;
+		if (!spw->autoupdate) {
+			gtk_signal_emit (GTK_OBJECT (spw), signals[SET_DIRTY], TRUE);
+		}
+	} else if (!dirty && spw->dirty) {
+		spw->dirty = FALSE;
+		if (!spw->autoupdate) {
+			gtk_signal_emit (GTK_OBJECT (spw), signals[SET_DIRTY], FALSE);
+		}
+	}
+}
+
+void
+sp_widget_set_autoupdate (SPWidget *spw, gboolean autoupdate)
+{
+	if (autoupdate && spw->dirty) spw->dirty = FALSE;
+	spw->autoupdate = autoupdate;
+}
+
 
 

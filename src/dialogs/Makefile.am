@@ -27,5 +27,6 @@ libspdialogs_a_SOURCES = \
 	desktop-properties.c desktop-properties.h \
 	document-properties.c document-properties.h \
 	object-properties.c object-properties.h \
-	item-properties.c item-properties.h
+	item-properties.c item-properties.h \
+	fill-style.c fill-style.h
 

@@ -93,6 +93,8 @@ struct _SPObjectClass {
 	void (* read_attr) (SPObject * object, const gchar * key);
 	void (* read_content) (SPObject * object);
 
+	/* Style change notifier */
+	void (* style_changed) (SPObject *object, guint flags);
 	/* Modification handler */
 	void (* modified) (SPObject *object, guint flags);
 
@@ -104,6 +106,12 @@ GtkType sp_object_get_type (void);
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
+
+/* Styling */
+
+/* fixme: this is potentially dangerous - use load/set style instead (Lauris) */
+/* flags are the same as for modification */
+void sp_object_style_changed (SPObject *object, guint flags);
 
 /* Modification */
 

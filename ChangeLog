@@ -1,3 +1,11 @@
+2001-08-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/widgets/sp-color-selector.c: New file & class
+
+	* src/widgets/sp-color-slider.c: New file & class
+
+	* src/sp-object.c (sp_object_style_changed): New virtual method
+
 2001-08-13  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/selection-chemistry.c (sp_selection_copy): Use prepend/reverse
