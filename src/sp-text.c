@@ -30,9 +30,10 @@
 #include <libnr/nr-matrix.h>
 #include <libnrtype/nr-type-directory.h>
 #include <libnrtype/nr-font.h>
+#include <libnrtype/nr-glyphs.h>
 
-#include <glib.h>
-#include <gtk/gtk.h>
+/* #include <glib.h> */
+/* #include <gtk/gtk.h> */
 
 #include "helper/sp-intl.h"
 #include "xml/repr-private.h"
@@ -107,13 +108,7 @@ sp_string_class_init (SPStringClass *class)
 static void
 sp_string_init (SPString *string)
 {
-	string->text = NULL;
-	string->p = NULL;
-	string->start = 0;
-	string->length = 0;
-	string->bbox.x0 = string->bbox.y0 = 0.0;
-	string->bbox.x1 = string->bbox.y1 = 0.0;
-	string->advance.x = string->advance.y = 0.0;
+	/* Nothing here */
 }
 
 static void
@@ -138,6 +133,10 @@ sp_string_release (SPObject *object)
 	if (string->p) g_free (string->p);
 	if (string->text) g_free (string->text);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	if (string->uchars) nr_free (string->uchars);
+#endif
+
 	if (((SPObjectClass *) string_parent_class)->release)
 		((SPObjectClass *) string_parent_class)->release (object);
 }
@@ -157,6 +156,58 @@ sp_string_read_content (SPObject *object)
 	if (string->text) g_free (string->text);
 	t = sp_repr_content (object->repr);
 	string->text = (t) ? g_strdup (t) : NULL;
+
+#ifdef SP_TEXT_NEW_CONTENT
+	/* New content stuff */
+	if (string->uchars) free (string->uchars);
+	string->uchars = NULL;
+	string->ulen = 0;
+	if (string->text) {
+		unsigned char *p;
+		unsigned int unival;
+		unsigned int preserve, inspace, intext;
+		int pos;
+		preserve = (string->ly->xml_space == SP_XML_SPACE_PRESERVE);
+		inspace = FALSE;
+		intext = FALSE;
+		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+			unival = g_utf8_get_char (p);
+			if (g_unichar_isspace (unival)) {
+				if (preserve) string->ulen += 1;
+				inspace = TRUE;
+			} else {
+				/* Append space if needed */
+				if (!preserve && inspace && intext) string->ulen += 1;
+				/* Append char */
+				string->ulen += 1;
+				inspace = FALSE;
+				intext = TRUE;
+			}
+		}
+		string->uchars = nr_new (NRUShort, string->ulen);
+		string->spstart = FALSE;
+		string->spend = FALSE;
+		inspace = FALSE;
+		intext = FALSE;
+		pos = 0;
+		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+			unival = g_utf8_get_char (p);
+			if (g_unichar_isspace (unival)) {
+				if (preserve) string->uchars[pos++] = unival;
+				if (!intext) string->spstart = TRUE;
+				inspace = TRUE;
+			} else {
+				/* Append space if needed */
+				if (!preserve && inspace && intext) string->uchars[pos++] = 32;
+				/* Append char */
+				string->uchars[pos++] = unival;
+				inspace = FALSE;
+				intext = TRUE;
+			}
+		}
+		string->spend = inspace;
+	}
+#endif
 
 	/* Is this correct? I think so (Lauris) */
 	/* Virtual method will be invoked BEFORE signal, so we can update there */
@@ -187,9 +238,14 @@ sp_string_calculate_dimensions (SPString *string)
 	NRTypeFace *face;
 	NRFont *font;
 	gdouble size;
-	gint spglyph;
 	unsigned int metrics;
+#ifdef SP_TEXT_NEW_CONTENT
+	NRPGL *pgl;
+	NRMatrixF gtr;
+#else
+	gint spglyph;
 	NRPointF spadv;
+#endif
 
 	string->bbox.x0 = string->bbox.y0 = 1e18;
 	string->bbox.x1 = string->bbox.y1 = -1e18;
@@ -207,6 +263,16 @@ sp_string_calculate_dimensions (SPString *string)
 	}
 	font = nr_font_new_default (face, metrics, size);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	/* fixme: SPChars should do this upright instead */
+	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
+	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
+
+	string->bbox = pgl->area;
+	string->advance = pgl->advance;
+	nr_pgl_free (pgl);
+
+#else
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		spadv.x = 0.0;
 		spadv.y = size;
@@ -265,11 +331,12 @@ sp_string_calculate_dimensions (SPString *string)
 			}
 		}
 	}
+#endif
 
 	nr_font_unref (font);
 	nr_typeface_unref (face);
 
-	if (art_drect_empty (&string->bbox)) {
+	if (nr_rect_f_test_empty (&string->bbox)) {
 		string->bbox.x0 = string->bbox.y0 = 0.0;
 		string->bbox.x1 = string->bbox.y1 = 0.0;
 	}
@@ -317,6 +384,25 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	}
 	font = nr_font_new_default (face, metrics, size);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	/* fixme: SPChars should do this upright instead */
+	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
+	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
+
+	/* fixme: Find a way how to manipulate these */
+	x = cp->x;
+	y = cp->y;
+
+	/* fixme: SPChars should do this upright instead */
+	nr_matrix_f_set_scale (&a, 1.0, -1.0);
+
+	for (i = 0; i < string->ulen; i++) {
+	}
+
+	nr_pgl_free (pgl);
+
+
+#else
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		spadv.x = 0.0;
 		spadv.y = size;
@@ -396,8 +482,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	cp->x = x;
 	cp->y = y;
 
-	if (pinspace)
-		*pinspace = inspace;
+	if (pinspace) *pinspace = inspace;
+#endif
 }
 
 /* SPTSpan */

@@ -13,6 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "testing.h"
+
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -78,13 +80,22 @@ struct _SPString {
 	SPLayoutData *ly;
 	/* Content */
 	guchar *text;
+
+#ifdef SP_TEXT_NEW_CONTENT
+	/* New content stuff */
+	NRUShort *uchars;
+	unsigned int ulen;
+	unsigned int spstart : 1;
+	unsigned int spend : 1;
+#endif
+
 	NRPointF *p;
 	/* Bookkeeping */
 	guint start;
 	guint length;
 	/* Using current direction and style */
-	ArtDRect bbox;
-	ArtPoint advance;
+	NRRectF bbox;
+	NRPointF advance;
 };
 
 struct _SPStringClass {

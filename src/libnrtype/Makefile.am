@@ -21,6 +21,7 @@ libnrtype_a_SOURCES = \
 	nr-font.c nr-font.h \
 	nr-rasterfont.c nr-rasterfont.h \
 	nr-type-directory.c nr-type-directory.h \
+	nr-glyphs.c nr-glyphs.h \
 	nr-type-ft2.c nr-type-ft2.h \
 	$(gnome_print_sources) \
 	$(xft_sources)

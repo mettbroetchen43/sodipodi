@@ -408,6 +408,113 @@ nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double 
 }
 
 NRSVL *
+nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness)
+{
+	NRSVLBuild svlb;
+	double x, y, sx, sy;
+	NRSVL *svl;
+	NRFlat *flats;
+	int seg, sidx;
+
+	/* Initialize NRSVLBuild */
+	svl = NULL;
+	flats = NULL;
+	svlb.svl = &svl;
+	svlb.flats = &flats;
+	svlb.refvx = NULL;
+	svlb.bbox.x0 = svlb.bbox.y0 = NR_HUGE_F;
+	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
+	svlb.dir = 0;
+	svlb.reverse = FALSE;
+	svlb.sx = svlb.sy = 0.0;
+
+	x = y = 0.0;
+	sx = sy = 0.0;
+
+	seg = 0;
+	sidx = 0;
+	while (seg < path->nsegments) {
+		NRPathElement *sel;
+		int nelements, idx;
+		/* Close previous path if needed */
+		if (close && ((x != sx) || (y != sy))) {
+			nr_svl_build_lineto (&svlb, (float) sx, (float) sy);
+		}
+		/* Start new path */
+		sel = path->elements + sidx;
+		nelements = sel[0].code.length;
+		if (transform) {
+			sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[1].value, sel[2].value);
+			sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[1].value, sel[2].value);
+		} else {
+			sx = x = sel[1].value;
+			sy = y = sel[2].value;
+		}
+		nr_svl_build_moveto (&svlb, (float) x, (float) y);
+		idx = 3;
+		while (idx < nelements) {
+			int nmulti, i;
+			nmulti = sel[idx].code.length;
+			if (sel[idx].code.code == NR_PATH_LINETO) {
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					if (transform) {
+						x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx].value, sel[idx + 1].value);
+						y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx].value, sel[idx + 1].value);
+					} else {
+						x = sel[idx].value;
+						y = sel[idx + 1].value;
+					}
+					nr_svl_build_lineto (&svlb, (float) x, (float) y);
+					idx += 2;
+				}
+			} else {
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					if (transform) {
+						x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx + 4].value, sel[idx + 5].value);
+						y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx + 4].value, sel[idx + 5].value);
+						nr_svl_build_curveto (&svlb,
+								      svlb.sx, svlb.sy,
+								      NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx].value, sel[idx + 1].value),
+								      NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx].value, sel[idx + 1].value),
+								      NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx + 2].value, sel[idx + 3].value),
+								      NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx + 2].value, sel[idx + 3].value),
+								      (float) x, (float) y, flatness);
+					} else {
+						x = sel[idx + 4].value;
+						y = sel[idx + 5].value;
+						nr_svl_build_curveto (&svlb,
+								      svlb.sx, svlb.sy,
+								      sel[idx].value, sel[idx + 1].value,
+								      sel[idx + 2].value, sel[idx + 3].value,
+								      (float) x, (float) y, flatness);
+					}
+					idx += 6;
+				}
+			}
+		}
+		seg += 1;
+		sidx += nelements;
+	}
+	/* Close last segment id needed */
+	if (close && ((x != sx) || (y != sy))) {
+		nr_svl_build_lineto (&svlb, (float) sx, (float) sy);
+	}
+	nr_svl_build_finish_segment (&svlb);
+	if (svlb.svl) {
+		/* NRSVL *s; */
+		*svlb.svl = nr_svl_uncross_full (*svlb.svl, *svlb.flats, windrule);
+	} else {
+		nr_flat_free_list (*svlb.flats);
+	}
+	/* This happnes in uncross */
+	/* nr_flat_free_list (flats); */
+
+	return *svlb.svl;
+}
+
+NRSVL *
 nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 {
 	NRSVLBuild svlb;

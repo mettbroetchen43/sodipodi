@@ -1,3 +1,28 @@
+2003-10-31  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-glyphs.h: New file
+
+	* src/libnrtype/nr-glyphs.c: New file
+
+	* src/libnr/nr-pathops.h: New file (do not look!)
+
+	* src/libnr/nr-pathops.c: New file (do not look!)
+
+	* src/libnr/nr-path.c (nr_path_setup_from_art_bpath): New method
+	(nr_path_release): Ditto
+
+	* src/libnr/nr-path.h: NRPath datatype
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Added test
+	for new NRPath datatype
+
+	* src/sp-text.c (sp_string_release): UCS2 content testing
+	(sp_string_read_content): Ditto
+	(sp_string_calculate_dimensions): Ditto
+	(sp_string_set_shape): Ditto
+
+	* src/sp-text.h: Added preliminary UCS2 content fields
+
 2003-10-26  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* sodipodi.prj: Add Anjuta project file

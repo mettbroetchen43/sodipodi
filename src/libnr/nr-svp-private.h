@@ -37,6 +37,8 @@ void nr_svl_build_curveto (NRSVLBuild *svlb,
 			   double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
 			   float flatness);
 
+NRSVL *nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
+
 /* fixme: Remove these if ready (Lauris) */
 #include <libart_lgpl/art_svp.h>
 

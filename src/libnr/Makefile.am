@@ -39,6 +39,7 @@ libnr_a_SOURCES = \
 	nr-render.h \
 	nr-gradient.c nr-gradient.h \
 	nr-path.c nr-path.h \
+	nr-pathops.c nr-pathops.h \
 	nr-svp.c nr-svp.h nr-svp-private.h \
 	nr-svp-uncross.c nr-svp-uncross.h \
 	nr-svp-render.c nr-svp-render.h \

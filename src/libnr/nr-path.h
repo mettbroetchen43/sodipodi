@@ -12,6 +12,7 @@
 
 typedef struct _NRVPath NRVPath;
 typedef struct _NRBPath NRBPath;
+typedef struct _NRPath NRPath;
 
 enum {
 	NR_PATH_LINETO,
@@ -46,7 +47,7 @@ union _NRPathElement {
  * VPath structure:
  *   Number of elements
  *   Number of segments
- *   Length + closed
+ *   Length (elements) + closed
  *   x, y, x, y...
  */
 
@@ -59,6 +60,23 @@ struct _NRVPath {
 NRVPath *nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath);
 
 void nr_vpath_release (NRVPath *vpath);
+
+/*
+ * Path structure
+ *   Length (elements) + closed
+ *   x0, y0,
+ *   code x, y, [x1, y1, x2, y2] [...], code, x, y...
+ */
+
+struct _NRPath {
+	unsigned int nelements;
+	unsigned int nsegments;
+	NRPathElement *elements;
+};
+
+NRPath *nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath);
+
+void nr_path_release (NRPath *path);
 
 struct _NRBPath {
 	ArtBpath *path;

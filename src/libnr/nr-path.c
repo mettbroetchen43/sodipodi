@@ -26,15 +26,15 @@ nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath)
 		switch (avp->code) {
 		case ART_MOVETO:
 			nsegments += 1;
-			nelements += 1;
+			nelements += 3;
 			break;
 		case ART_MOVETO_OPEN:
 			/* Number of points in segment */
 			nsegments += 1;
-			nelements += 2;
+			nelements += 3;
 			break;
 		case ART_LINETO:
-			nelements += 1;
+			nelements += 2;
 			break;
 		default:
 			break;
@@ -69,6 +69,7 @@ nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath)
 			break;
 		}
 	}
+	if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
 	return d;
 }
 
@@ -76,6 +77,125 @@ void
 nr_vpath_release (NRVPath *vpath)
 {
 	nr_free (vpath->elements);
+}
+
+enum {
+	MULTI_NONE,
+	MULTI_LINE,
+	MULTI_CURVE
+};
+
+NRPath *
+nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath)
+{
+	const ArtBpath *bp;
+	int nsegments, nelements;
+	int idx, sidx, midx;
+	int multi, nmulti;
+
+	nsegments = 0;
+	nelements = 0;
+	multi = MULTI_NONE;
+	for (bp = bpath; bp->code != ART_END; bp++) {
+		switch (bp->code) {
+		case ART_MOVETO:
+			/* Segment indicator and point coordinates */
+			nsegments += 1;
+			nelements += 3;
+			multi = MULTI_NONE;
+			break;
+		case ART_MOVETO_OPEN:
+			/* Segment indicator and point coordinates */
+			nsegments += 1;
+			nelements += 3;
+			multi = MULTI_NONE;
+			break;
+		case ART_LINETO:
+			/* Possible code and point coordinates */
+			if (multi != MULTI_LINE) nelements += 1;
+			nelements += 2;
+			multi = MULTI_LINE;
+			break;
+		case ART_CURVETO:
+			/* Possible code and point coordinates */
+			if (multi != MULTI_CURVE) nelements += 1;
+			nelements += 6;
+			multi = MULTI_CURVE;
+			break;
+		default:
+			break;
+		}
+	}
+	path->elements = nr_new (NRPathElement, nelements);
+	sidx = 0;
+	midx = 0;
+	idx = 0;
+	multi = MULTI_NONE;
+	nmulti = 0;
+	path->nelements = nelements;
+	path->nsegments = nsegments;
+	for (bp = bpath; bp->code != ART_END; bp++) {
+		switch (bp->code) {
+		case ART_MOVETO:
+			if (idx > 0) path->elements[sidx].code.length = idx - sidx;
+			if (nmulti > 0) path->elements[midx].code.length = nmulti;
+			sidx = idx;
+			path->elements[idx++].code.closed = TRUE;
+			path->elements[idx++].value = (float) bp->x3;
+			path->elements[idx++].value = (float) bp->y3;
+			multi = MULTI_NONE;
+			break;
+		case ART_MOVETO_OPEN:
+			if (idx > 0) path->elements[sidx].code.length = idx - sidx;
+			if (nmulti > 0) path->elements[midx].code.length = nmulti;
+			sidx = idx;
+			path->elements[idx++].code.closed = FALSE;
+			path->elements[idx++].value = (float) bp->x3;
+			path->elements[idx++].value = (float) bp->y3;
+			multi = MULTI_NONE;
+			break;
+		case ART_LINETO:
+			if (multi != MULTI_LINE) {
+				if (nmulti > 0) path->elements[midx].code.length = nmulti;
+				midx = idx;
+				nmulti = 0;
+				multi = MULTI_LINE;
+				path->elements[idx++].code.code = NR_PATH_LINETO;
+			}
+			path->elements[idx++].value = (float) bp->x3;
+			path->elements[idx++].value = (float) bp->y3;
+			nmulti += 1;
+			break;
+		case ART_CURVETO:
+			if (multi != MULTI_CURVE) {
+				if (nmulti > 0) path->elements[midx].code.length = nmulti;
+				midx = idx;
+				nmulti = 0;
+				multi = MULTI_CURVE;
+				path->elements[idx++].code.code = NR_PATH_CURVETO;
+			}
+			path->elements[idx++].value = (float) bp->x1;
+			path->elements[idx++].value = (float) bp->y1;
+			path->elements[idx++].value = (float) bp->x2;
+			path->elements[idx++].value = (float) bp->y2;
+			path->elements[idx++].value = (float) bp->x3;
+			path->elements[idx++].value = (float) bp->y3;
+			nmulti += 1;
+			break;
+		default:
+			break;
+		}
+	}
+	if (idx > 0) path->elements[sidx].code.length = idx - sidx;
+	if (nmulti > 0) path->elements[midx].code.length = nmulti;
+
+	return path;
+}
+
+void
+nr_path_release (NRPath *path)
+{
+	nr_free (path->elements);
 }
 
 static void nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox);
@@ -113,21 +233,15 @@ nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 	return d;
 }
 
-static void
-nr_line_wind_distance (double x0, double y0, double x1, double y1, NRPointF *pt, int *wind, float *best)
+void
+nr_line_wind_distance (double Ax, double Ay, double Bx, double By, double Px, double Py, int *wind, float *best)
 {
-	double Ax, Ay, Bx, By, Dx, Dy, Px, Py, s;
+	double Dx, Dy, s;
 	double dist2;
 
 	/* Find distance */
-	Ax = x0;
-	Ay = y0;
-	Bx = x1;
-	By = y1;
-	Dx = x1 - x0;
-	Dy = y1 - y0;
-	Px = pt->x;
-	Py = pt->y;
+	Dx = Bx - Ax;
+	Dy = By - Ay;
 
 	if (best) {
 		s = ((Px - Ax) * Dx + (Py - Ay) * Dy) / (Dx * Dx + Dy * Dy);
@@ -141,7 +255,6 @@ nr_line_wind_distance (double x0, double y0, double x1, double y1, NRPointF *pt,
 			Qy = Ay + s * Dy;
 			dist2 = (Px - Qx) * (Px - Qx) + (Py - Qy) * (Py - Qy);
 		}
-
 		if (dist2 < (*best * *best)) *best = (float) sqrt (dist2);
 	}
 
@@ -260,7 +373,7 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 		nr_curve_bbox_wind_distance (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, pt, NULL, wind, best, tolerance);
 		nr_curve_bbox_wind_distance (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, pt, NULL, wind, best, tolerance);
 	} else if (1 || needline) {
-		nr_line_wind_distance (x000, y000, x111, y111, pt, wind, best);
+		nr_line_wind_distance (x000, y000, x111, y111, pt->x, pt->y, wind, best);
 	}
 }
 
@@ -306,7 +419,7 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 				bbox->y1 = (float) MAX (bbox->y1, y3);
 			}
 			if (dist || wind) {
-				nr_line_wind_distance (x0, y0, x3, y3, pt, wind, dist);
+				nr_line_wind_distance (x0, y0, x3, y3, pt->x, pt->y, wind, dist);
 			}
 			x0 = x3;
 			y0 = y3;

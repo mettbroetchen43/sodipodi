@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "testing.h"
 
 #include <math.h>
 #include <string.h>
@@ -282,11 +283,20 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
 				NRMatrixF ctmf;
+#ifdef NR_TESTING_PATH
+				NRPath path;
+#endif
 				NRSVL *svl;
 				unsigned int windrule;
 				nr_matrix_f_from_d (&ctmf, &gc->transform);
 				windrule = (shape->style->fill_rule.value == SP_WIND_RULE_EVENODD) ? NR_WIND_RULE_EVENODD : NR_WIND_RULE_NONZERO;
+#ifdef NR_TESTING_PATH
+				nr_path_setup_from_art_bpath (&path, shape->curve->bpath);
+				svl = nr_svl_from_path (&path, &ctmf, windrule, TRUE, 0.25);
+				nr_path_release (&path);
+#else
 				svl = nr_svl_from_art_bpath (shape->curve->bpath, &ctmf, windrule, TRUE, 0.25);
+#endif
 				shape->fill_svp = nr_svp_from_svl (svl, NULL);
 				nr_svl_free_list (svl);
 			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
