@@ -1,3 +1,13 @@
+2004-03-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/testing.h (USE_PRINT_DRIVERS): Use plain printing by default
+
+	* src/modules/Makefile.am: Switched to Plain printing interface
+
+	* src/modules/plain-pdf.c
+	(sp_plain_pdf_begin, sp_plain_pdf_bind, sp_plain_pdf_fill):
+	Improved a little
+
 2004-02-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-item.c (sp_item_set): Parse visibility
