@@ -145,6 +145,9 @@ gboolean sp_repr_get_double (SPRepr *repr, const guchar *key, gdouble *val);
 gboolean sp_repr_set_boolean (SPRepr *repr, const guchar *key, gboolean val);
 gboolean sp_repr_set_int (SPRepr *repr, const guchar *key, gint val);
 gboolean sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val);
+/* Defaults */
+gboolean sp_repr_set_double_default (SPRepr *repr, const guchar *key, gdouble val, gdouble def, gdouble e);
+
 /* Deprecated */
 gdouble sp_repr_get_double_attribute (SPRepr * repr, const gchar * key, gdouble def);
 gint sp_repr_get_int_attribute (SPRepr * repr, const gchar * key, gint def);

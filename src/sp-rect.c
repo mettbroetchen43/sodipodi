@@ -242,12 +242,12 @@ sp_rect_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("rect");
 	}
 
-	sp_repr_set_double_attribute (repr, "width", rect->width.computed);
-	sp_repr_set_double_attribute (repr, "height", rect->height.computed);
-	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed);
-	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed);
-	sp_repr_set_double_attribute (repr, "x", rect->x.computed);
-	sp_repr_set_double_attribute (repr, "y", rect->y.computed);
+	sp_repr_set_double (repr, "width", rect->width.computed);
+	sp_repr_set_double (repr, "height", rect->height.computed);
+	sp_repr_set_double_default (repr, "rx", rect->rx.computed, 0.0, 1e-6);
+	sp_repr_set_double_default (repr, "ry", rect->ry.computed, 0.0, 1e-6);
+	sp_repr_set_double (repr, "x", rect->x.computed);
+	sp_repr_set_double (repr, "y", rect->y.computed);
 
 	if (SP_OBJECT_CLASS (parent_class)->write)
 		SP_OBJECT_CLASS (parent_class)->write (object, repr, flags);

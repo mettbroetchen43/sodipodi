@@ -12,6 +12,7 @@
  * Licensed under GNU GPL
  */
 
+#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -439,6 +440,13 @@ sp_repr_set_int (SPRepr *repr, const guchar *key, gint val)
 	return sp_repr_set_attr (repr, key, c);
 }
 
+#if 0
+static gint
+sp_svg_write_double (guchar *c, gdouble val)
+{
+}
+#endif
+
 gboolean
 sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
 {
@@ -450,5 +458,18 @@ sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
 	g_snprintf (c, 32, "%g", val);
 
 	return sp_repr_set_attr (repr, key, c);
+}
+
+gboolean
+sp_repr_set_double_default (SPRepr *repr, const guchar *key, gdouble val, gdouble def, gdouble e)
+{
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+
+	if (fabs (val - def) <= e) {
+		return sp_repr_set_attr (repr, key, NULL);
+	} else {
+		return sp_repr_set_double (repr, key, val);
+	}
 }
 

@@ -145,7 +145,7 @@ sp_file_save_document (SPDocument *document)
 	}
 }
 
-void sp_file_save (GtkWidget * widget)
+void sp_file_save (GtkWidget *widget)
 {
 	SPDocument * doc;
 
@@ -171,6 +171,7 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 
 	if (filename != NULL) {
 		const GSList *images, *l;
+		SPReprDoc *rdoc;
 
 		doc = SP_ACTIVE_DOCUMENT;
 		g_return_if_fail (doc != NULL);
@@ -180,11 +181,11 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 		if (save_path) save_path = g_strconcat (save_path, "/", NULL);
 
 		if (spns) {
+			rdoc = NULL;
 			repr = sp_document_repr_root (doc);
 			sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 			sp_repr_set_attr (repr, "sodipodi:docname", filename);
 		} else {
-			SPReprDoc *rdoc;
 			rdoc = sp_repr_document_new ("svg");
 			repr = sp_repr_document_root (rdoc);
 			repr = sp_object_invoke_write (sp_document_root (doc), repr, SP_OBJECT_WRITE_BUILD);
@@ -214,7 +215,7 @@ file_save_ok (GtkWidget *widget, GtkFileSelection *fs)
 
 		sp_document_set_uri (doc, filename);
 
-		if (spns) sp_repr_unref (repr);
+		if (!spns) sp_repr_document_unref (rdoc);
 	}
 }
 

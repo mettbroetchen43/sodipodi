@@ -79,6 +79,7 @@ enum {
 	SP_ARG_EXPORT_WIDTH,
 	SP_ARG_EXPORT_HEIGHT,
 	SP_ARG_EXPORT_BACKGROUND,
+	SP_ARG_EXPORT_SVG,
 	SP_ARG_SLIDESHOW,
 	SP_ARG_LAST
 };
@@ -96,6 +97,7 @@ static guchar *sp_export_area = NULL;
 static guchar *sp_export_width = NULL;
 static guchar *sp_export_height = NULL;
 static guchar *sp_export_background = NULL;
+static guchar *sp_export_svg = NULL;
 
 struct poptOption options[] = {
 	{"without-gui", 'z', POPT_ARG_NONE, NULL, SP_ARG_NOGUI,
@@ -122,6 +124,9 @@ struct poptOption options[] = {
 	{"export-width", 'w', POPT_ARG_STRING, &sp_export_width, SP_ARG_EXPORT_WIDTH, NULL, NULL},
 	{"export-height", 'h', POPT_ARG_STRING, &sp_export_height, SP_ARG_EXPORT_HEIGHT, NULL, NULL},
 	{"export-background", 'b', POPT_ARG_STRING, &sp_export_background, SP_ARG_EXPORT_HEIGHT, NULL, NULL},
+	{"export-svg", 0, POPT_ARG_STRING, &sp_export_svg, SP_ARG_EXPORT_SVG,
+	 N_("Export document to plain SVG file"),
+	 N_("FILENAME")},
 	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
 	 N_("Show given files one-by-one, switch to next on any key/mouse event"),
 	 NULL},
@@ -158,7 +163,8 @@ main (int argc, char **argv)
 		    !strcmp (argv[i], "-p") ||
 		    !strncmp (argv[i], "--print", 7) ||
 		    !strcmp (argv[i], "-e") ||
-		    !strncmp (argv[i], "--export-png", 12)) {
+		    !strncmp (argv[i], "--export-png", 12) ||
+		    !strncmp (argv[i], "--export-svg", 12)) {
 			use_gui = FALSE;
 			break;
 		} else if (!strcmp (argv[i], "-x") || !strcmp (argv[i], "--with-gui")) {
@@ -320,6 +326,14 @@ sp_main_console (int argc, char **argv)
 			}
 			if (sp_export_png) {
 				sp_do_export_png (doc);
+			}
+			if (sp_export_svg) {
+				SPReprDoc *rdoc;
+				SPRepr *repr;
+				rdoc = sp_repr_document_new ("svg");
+				repr = sp_repr_document_root (rdoc);
+				repr = sp_object_invoke_write (sp_document_root (doc), repr, SP_OBJECT_WRITE_BUILD);
+				sp_repr_save_file (sp_repr_document (repr), sp_export_svg);
 			}
 		}
 		fl = g_slist_remove (fl, fl->data);

@@ -1,5 +1,13 @@
 2002-09-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-object.c (sp_object_private_write): Duplicate repr if needed
+
+	* src/xml/repr-util.c (sp_repr_set_double_default): New method
+
+	* src/sp-rect.c (sp_rect_write): Set default on radiuses
+
+	* src/sp-root.c (sp_root_write): Set namespaces here
+
 	* src/xml/repr.c (sp_repr_document_new): Set doctype and comment
 
 	* src/xml/repr-io.c (sp_repr_read_file): Set doctype and comment if SVG

@@ -460,7 +460,11 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 static SPRepr *
 sp_object_private_write (SPObject *object, SPRepr *repr, guint flags)
 {
-	sp_repr_set_attr (repr, "id", object->id);
+	if (!repr && (flags & SP_OBJECT_WRITE_BUILD)) {
+		repr = sp_repr_duplicate (SP_OBJECT_REPR (object));
+	} else {
+		sp_repr_set_attr (repr, "id", object->id);
+	}
 }
 
 SPRepr *

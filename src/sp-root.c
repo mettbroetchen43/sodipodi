@@ -328,7 +328,11 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("svg");
 	}
 
+	sp_repr_set_attr (repr, "xmlns", "http://www.w3.org/2000/svg");
+	sp_repr_set_attr (repr, "xmlns:xlink", "http://www.w3.org/1999/xlink");
+
 	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_attr (repr, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 		sp_repr_set_double (repr, "sodipodi:version", (double) root->sodipodi / 100.0);
 	}
 
