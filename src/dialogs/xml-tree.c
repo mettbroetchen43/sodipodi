@@ -463,7 +463,6 @@ on_tree_select_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer 
 
 	if ( selected_repr == repr ) return;
 
-	blocked++;
 	if (selected_repr) {
 		sp_repr_unref (selected_repr);
 		selected_repr = NULL;
@@ -472,8 +471,8 @@ on_tree_select_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer 
 	sp_repr_ref (selected_repr);
 
 	propagate_tree_select (selected_repr);
+
 	set_dt_select (selected_repr);
-	blocked--;
 }
 
 void
@@ -483,7 +482,6 @@ on_tree_unselect_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointe
 
 	if (blocked) return;
 
-	blocked++;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
 	propagate_tree_select (NULL);
 	set_dt_select (NULL);
@@ -492,7 +490,6 @@ on_tree_unselect_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointe
 		selected_repr = NULL;
 		selected_attr = 0;
 	}
-	blocked--;
 }
 
 void

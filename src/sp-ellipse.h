@@ -35,8 +35,8 @@ struct _SPGenericEllipse {
 	SPSVGLength rx;
 	SPSVGLength ry;
 
-	gdouble start, end;
-	gint closed;
+	unsigned int closed : 1;
+	double start, end;
 };
 
 struct _SPGenericEllipseClass {
@@ -93,7 +93,6 @@ GtkType sp_circle_get_type (void);
 
 struct _SPArc {
 	SPGenericEllipse genericellipse;
-	gboolean is_closed;
 };
 
 struct _SPArcClass {

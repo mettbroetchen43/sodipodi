@@ -242,10 +242,11 @@ static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
 	affine[5] = ellipse->cy.computed;
 
 	i = 0;
-	if (ellipse->closed)
+	if (ellipse->closed) {
 		bpath[i].code = ART_MOVETO;
-	else
+	} else {
 		bpath[i].code = ART_MOVETO_OPEN;
+	}
 	bpath[i].x3 = cos (ellipse->start);
 	bpath[i].y3 = sin (ellipse->start);
 	i++;
@@ -723,7 +724,7 @@ sp_arc_class_init (SPArcClass *class)
 static void
 sp_arc_init (SPArc *arc)
 {
-	arc->is_closed = TRUE;
+	/* Nothing special */
 }
 
 /* fixme: Better place (Lauris) */
@@ -822,7 +823,7 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 #ifdef ARC_VERBOSE
 		g_print ("start:%g end:%g fa=%d fs=%d\n", ge->start, ge->end, fa, fs);
 #endif
-		if (arc->is_closed) {
+		if (ge->closed) {
 			g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
 				    p1.x, p1.y,
 				    ge->rx.computed, ge->ry.computed,
@@ -1004,7 +1005,7 @@ sp_arc_start_set (SPItem *item, const ArtPoint *p, guint state)
 	ge = SP_GENERICELLIPSE (item);
 	arc = SP_ARC(item);
 
-	arc->is_closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
+	ge->closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
 
 	dx = p->x - ge->cx.computed;
 	dy = p->y - ge->cy.computed;
@@ -1038,7 +1039,7 @@ sp_arc_end_set (SPItem *item, const ArtPoint *p, guint state)
 	ge = SP_GENERICELLIPSE (item);
 	arc = SP_ARC(item);
 
-	arc->is_closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
+	ge->closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
 
 	dx = p->x - ge->cx.computed;
 	dy = p->y - ge->cy.computed;

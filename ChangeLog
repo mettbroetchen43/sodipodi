@@ -1,3 +1,16 @@
+2002-11-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-ellipse.c (sp_arc_start_set): Use genericellipse closed marker
+	(sp_arc_end_set): Ditto
+	(sp_arc_set_elliptical_path_attribute): Ditto
+
+	* autogen.sh: Added '--intl' to gettextize flags, seems to be safe for
+	older gettexts as well
+
+	* src/dialogs/xml-tree.c (on_tree_select_row): Remove extra blockade
+	counting (thanks to MenTaLguY)
+	(on_tree_unselect_row): Ditto
+
 2002-11-20  Masatake YAMATO  <jet@gyve.org>
 
 	* src/seltrans.c (sp_sel_trans_init): Set null to
