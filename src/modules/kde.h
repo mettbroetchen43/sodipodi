@@ -35,10 +35,6 @@ typedef struct _SPModulePrintKDEClass SPModulePrintKDEClass;
 
 GType sp_module_print_kde_get_type (void);
 
-#if 0
-SPModulePrint *sp_kde_get_module_print (void);
-#endif
-
 G_END_DECLS
 
 #endif

@@ -1,3 +1,11 @@
+2003-12-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.h: Added currentcolor field to paint and
+	color inheritable attribute to style
+
+	* src/style.c (sp_style_merge_ipaint): Support currentColor
+	(sp_style_merge_from_parent): Parse color and currentColor
+
 2003-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-object.h: Changed signature of ::remove_child, added

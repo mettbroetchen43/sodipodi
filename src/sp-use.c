@@ -121,7 +121,7 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	if (use->href) {
 		SPObject *refobj;
-		refobj = sp_document_lookup_id (document, use->href);
+		refobj = sp_document_lookup_id (document, use->href + 1);
 		if (refobj) {
 			SPRepr *childrepr;
 			GType type;
@@ -192,9 +192,9 @@ sp_use_set (SPObject *object, unsigned int key, const unsigned char *value)
 			if (use->href) {
 				if (strcmp (value, use->href) == 0) return;
 				g_free (use->href);
-				use->href = g_strdup (value + 1);
+				use->href = g_strdup (value );
 			} else {
-				use->href = g_strdup (value + 1);
+				use->href = g_strdup (value);
 			}
 		} else {
 			if (use->href) {

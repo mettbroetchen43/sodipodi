@@ -225,15 +225,6 @@ static unsigned int sp_module_print_kde_set_preview (SPModulePrint *mod);
 static unsigned int sp_module_print_kde_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_kde_finish (SPModulePrint *mod);
 
-static unsigned int sp_module_print_kde_bind (SPModulePrint *mod, const NRMatrixF *transform, float opacity);
-static unsigned int sp_module_print_kde_release (SPModulePrint *mod);
-static unsigned int sp_module_print_kde_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
-						const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
-static unsigned int sp_module_print_kde_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
-						  const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
-static unsigned int sp_module_print_kde_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
-						 const NRMatrixF *transform, const SPStyle *style);
-
 static SPModulePrintClass *print_kde_parent_class;
 
 GType
@@ -276,11 +267,6 @@ sp_module_print_kde_class_init (SPModulePrintClass *klass)
 	module_print_class->set_preview = sp_module_print_kde_set_preview;
 	module_print_class->begin = sp_module_print_kde_begin;
 	module_print_class->finish = sp_module_print_kde_finish;
-	module_print_class->bind = sp_module_print_kde_bind;
-	module_print_class->release = sp_module_print_kde_release;
-	module_print_class->fill = sp_module_print_kde_fill;
-	module_print_class->stroke = sp_module_print_kde_stroke;
-	module_print_class->image = sp_module_print_kde_image;
 }
 
 static void
@@ -461,74 +447,3 @@ sp_module_print_kde_finish (SPModulePrint *mod)
 	return 0;
 }
 
-static unsigned int
-sp_module_print_kde_bind (SPModulePrint *mod, const NRMatrixF *t, float opacity)
-{
-	SPModulePrintKDE *kpmod;
-
-	kpmod = (SPModulePrintKDE *) mod;
-
-	// kpmod->painter->save ();
-	// kpmod->painter->setWorldMatrix (QWMatrix (t->c[0], t->c[1], t->c[2], t->c[3], t->c[4], t->c[5]), TRUE);
-
-	return 0;
-}
-
-static unsigned int
-sp_module_print_kde_release (SPModulePrint *mod)
-{
-	SPModulePrintKDE *kpmod;
-
-	kpmod = (SPModulePrintKDE *) mod;
-
-	// kpmod->painter->restore ();
-
-	return 0;
-}
-
-static unsigned int
-sp_module_print_kde_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
-			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
-{
-	SPModulePrintKDE *kpmod;
-
-	kpmod = (SPModulePrintKDE *) mod;
-
-	// if (style->fill->type == SP_FILL_TYPE_COLOR) {
-		// float rgb[3];
-		// sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
-		// kpmod->painter->setBrush (QColor ((int) (rgb[0] * 255.9999), (int) (rgb[1] * 255.9999), (int) (rgb[2] * 255.9999)));
-	// }
-
-	return 0;
-}
-
-static unsigned int
-sp_module_print_kde_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
-			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
-{
-	SPModulePrintKDE *kpmod;
-
-	kpmod = (SPModulePrintKDE *) mod;
-
-	return 0;
-}
-
-static unsigned int
-sp_module_print_kde_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
-			   const NRMatrixF *transform, const SPStyle *style)
-{
-	SPModulePrintKDE *kpmod;
-
-	kpmod = (SPModulePrintKDE *) mod;
-
-	return 0;
-}
-
-#if 0
-SPModulePrint *
-sp_kde_get_module_print (void)
-{
-	return (SPModulePrint *) g_object_new (SP_TYPE_MODULE_PRINT_KDE, NULL);
-}
-#endif

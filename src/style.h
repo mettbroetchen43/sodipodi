@@ -110,6 +110,7 @@ enum {
 struct _SPIPaint {
 	unsigned int set : 1;
 	unsigned int inherit : 1;
+	unsigned int currentcolor : 1;
 	unsigned int type : 2;
 	union {
 		SPColor color;
@@ -174,6 +175,9 @@ struct _SPStyle {
 	unsigned int display : 1;
 	/* visibility */
 	unsigned int visibility : 1;
+
+	/* color */
+	SPIPaint color;
 
 	/* fill */
 	SPIPaint fill;
