@@ -508,14 +508,22 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 
 	/* And last but not least */
 	style = SP_OBJECT_STYLE (item);
-	if ((style->stroke.type != SP_PAINT_TYPE_NONE) &&
-	    (!NR_DF_TEST_CLOSE (sw, 1.0, NR_EPSILON_D) || !NR_DF_TEST_CLOSE (sh, 1.0, NR_EPSILON_D))) {
-		guchar *str;
-		/* Scale changed, so we have to adjust stroke width */
-		style->stroke_width.computed *= sqrt (fabs (sw * sh));
-		str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
-		g_free (str);
+	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+		if (!NR_DF_TEST_CLOSE (sw, 1.0, NR_EPSILON_D) || !NR_DF_TEST_CLOSE (sh, 1.0, NR_EPSILON_D)) {
+			double scale;
+			guchar *str;
+			/* Scale changed, so we have to adjust stroke width */
+			scale = sqrt (fabs (sw * sh));
+			style->stroke_width.computed *= scale;
+			if (style->stroke_dash.n_dash != 0) {
+				int i;
+				for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= scale;
+				style->stroke_dash.offset *= scale;
+			}
+			str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
+			g_free (str);
+		}
 	}
 }
 

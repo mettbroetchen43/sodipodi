@@ -143,6 +143,7 @@ static SPRepr *
 sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPStop *stop;
+	unsigned char c[64], s[1024];
 
 	stop = SP_STOP (object);
 
@@ -150,11 +151,12 @@ sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("stop");
 	}
 
-	if (repr != SP_OBJECT_REPR (object)) {
-		sp_repr_set_attr (repr, "stop-color", sp_repr_attr (object->repr, "stop-color"));
-		sp_repr_set_attr (repr, "stop-opacity", sp_repr_attr (object->repr, "stop-opacity"));
-		sp_repr_set_attr (repr, "offset", sp_repr_attr (object->repr, "offset"));
-	}
+	sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&stop->color, 255));
+	g_snprintf (s, 1024, "stop-color:%s;stop-opacity:%g;", c, stop->opacity);
+	sp_repr_set_attr (repr, "style", s);
+	sp_repr_set_attr (repr, "stop-color", NULL);
+	sp_repr_set_attr (repr, "stop-opacity", NULL);
+	sp_repr_set_double (repr, "offset", stop->offset);
 
 	if (((SPObjectClass *) stop_parent_class)->write)
 		(* ((SPObjectClass *) stop_parent_class)->write) (object, repr, flags);
@@ -534,6 +536,12 @@ sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
 		}
 	}
 
+	if (gr->href) {
+		unsigned char *str;
+		str = g_strdup_printf ("#%s", SP_OBJECT_ID (gr->href));
+		sp_repr_set_attr (repr, "xlink:href", str);
+		g_free (str);
+	}
 	/* fixme: (Lauris) */
 	sp_gradient_flatten_attributes (SP_GRADIENT (object), repr, TRUE);
 }

@@ -475,6 +475,8 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	g_print ("FillStyleWidget: paint changed\n");
 #endif
 	if (spw->sodipodi) {
+		/* fixme: */
+		if (!SP_WIDGET_DOCUMENT (spw)) return;
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {

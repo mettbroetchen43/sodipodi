@@ -1,3 +1,21 @@
+2002-11-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-rect.c (sp_rect_write_transform): Adjust dash in addition to stroke width
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Only dash if
+	total dash length is >= 1.0 pixels
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_line_update_repr): Divide
+	dash values by line width
+	(sp_stroke_style_scale_line): Multiply dash values by line width
+	(sp_stroke_style_line_update): Ditto
+
+	* src/widgets/dash-selector.c (sp_dash_selector_set_dash): Use 1/1000 of
+	total dash distance as delta
+
+	* src/sp-gradient.c (sp_gradient_write): Set xlink:href attribute
+	(sp_stop_write): Do it the right way
+
 2002-11-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/style.c (sp_style_read_dash): Allow comma separators

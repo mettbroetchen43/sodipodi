@@ -410,6 +410,8 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	g_print ("StrokeStyleWidget: paint changed\n");
 #endif
 	if (spw->sodipodi) {
+		/* fixme: */
+		if (!SP_WIDGET_DOCUMENT (spw)) return;
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
@@ -726,6 +728,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	const SPUnit *unit;
 	const GSList *objects, *l;
 	SPObject *object;
+	SPStyle *style;
 	gdouble avgwidth;
 	gboolean stroked;
 	gint jointype, captype;
@@ -779,6 +782,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 
 	/* Join & Cap */
 	object = SP_OBJECT (objects->data);
+	style = SP_OBJECT_STYLE (object);
 	jointype = object->style->stroke_linejoin.value;
 	captype = object->style->stroke_linecap.value;
 
@@ -822,10 +826,17 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	sp_stroke_style_set_cap_buttons (spw, tb);
 
 	/* Dash */
-	sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel),
-				   object->style->stroke_dash.n_dash,
-				   object->style->stroke_dash.dash,
-				   object->style->stroke_dash.offset);
+	if (style->stroke_dash.n_dash > 0) {
+		double d[64];
+		int len, i;
+		len = MIN (style->stroke_dash.n_dash, 64);
+		for (i = 0; i < len; i++) {
+			d[i] = style->stroke_dash.dash[i] / style->stroke_width.computed;
+		}
+		sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel), len, d, style->stroke_dash.offset / style->stroke_width.computed);
+	} else {
+		sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel), 0, NULL, 0.0);
+	}
 
 	gtk_widget_set_sensitive (sset, TRUE);
 
@@ -900,10 +911,17 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 	sp_stroke_style_set_cap_buttons (spw, tb);
 
 	/* Dash */
-	sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel),
-				   style->stroke_dash.n_dash,
-				   style->stroke_dash.dash,
-				   style->stroke_dash.offset);
+	if (style->stroke_dash.n_dash > 0) {
+		double d[64];
+		int len, i;
+		len = MIN (style->stroke_dash.n_dash, 64);
+		for (i = 0; i < len; i++) {
+			d[i] = style->stroke_dash.dash[i] / style->stroke_width.computed;
+		}
+		sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel), len, d, style->stroke_dash.offset / style->stroke_width.computed);
+	} else {
+		sp_dash_selector_set_dash (SP_DASH_SELECTOR (dsel), 0, NULL, 0.0);
+	}
 
 	gtk_widget_set_sensitive (sset, TRUE);
 
@@ -913,19 +931,47 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 }
 
 static void
-sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
+sp_stroke_style_set_scaled_dash (SPCSSAttr *css, int ndash, double *dash, double offset, double scale)
 {
+	if (ndash > 0) {
+		unsigned char c[1024];
+		int i, pos;
+		pos = 0;
+		for (i = 0; i < ndash; i++) {
+			pos += g_snprintf (c + pos, 1022 - pos, "%g", dash[i] * scale);
+			if ((i < (ndash - 1)) && (pos < 1020)) {
+				c[pos] = ',';
+				pos += 1;
+			}
+		}
+		c[pos] = 0;
+		sp_repr_css_set_property (css, "stroke-dasharray", c);
+		g_snprintf (c, 1024, "%g", offset * scale);
+		sp_repr_css_set_property (css, "stroke-dashoffset", c);
+	} else {
+		sp_repr_css_set_property (css, "stroke-dasharray", "none");
+		sp_repr_css_set_property (css, "stroke-dashoffset", NULL);
+	}
+}
+
+static void
+sp_stroke_style_scale_line (SPWidget *spw)
+{
+	GtkAdjustment *wadj;
 	SPUnitSelector *us;
+	SPDashSelector *dsel;
 	const GSList *items, *i, *r;
 	GSList *reprs;
 	SPCSSAttr *css;
 	guchar c[32];
 
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
+	wadj = gtk_object_get_data (GTK_OBJECT (spw), "width");
 	us = gtk_object_get_data (GTK_OBJECT (spw), "units");
+	dsel = gtk_object_get_data (GTK_OBJECT (spw), "dash");
 
 	if (spw->sodipodi) {
+		/* fixme: */
+		if (!SP_WIDGET_DOCUMENT (spw)) return;
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
@@ -941,25 +987,37 @@ sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
 
 	if (items) {
 		for (i = items; i != NULL; i = i->next) {
-			gdouble i2d[6], d2i[6];
-			gdouble length, dist;
-			length = adj->value;
+			double i2d[6], d2i[6];
+			double length, dist;
+			double *dash, offset;
+			int ndash;
+			length = wadj->value;
+			sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
+			/* Set stroke width */
 			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
 			sp_item_i2d_affine (SP_ITEM (i->data), i2d);
 			art_affine_invert (d2i, i2d);
 			dist = sp_distance_d_matrix_d_transform (length, d2i);
 			g_snprintf (c, 32, "%g", sp_distance_d_matrix_d_transform (length, d2i));
 			sp_repr_css_set_property (css, "stroke-width", c);
+			/* Set dash */
+			sp_stroke_style_set_scaled_dash (css, ndash, dash, offset, dist);
 			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+			if (dash) g_free (dash);
 		}
 	} else {
 		for (r = reprs; r != NULL; r = r->next) {
-			gdouble length;
-			length = adj->value;
+			double length;
+			double *dash, offset;
+			int ndash;
+			length = wadj->value;
+			sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
 			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
 			g_snprintf (c, 32, "%g", length * 1.25);
 			sp_repr_css_set_property (css, "stroke-width", c);
+			sp_stroke_style_set_scaled_dash (css, ndash, dash, offset, length);
 			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			if (dash) g_free (dash);
 		}
 	}
 
@@ -967,6 +1025,22 @@ sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
 	if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 
 	g_slist_free (reprs);
+}
+
+static void
+sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
+{
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	sp_stroke_style_scale_line (spw);
+}
+
+static void
+sp_stroke_style_line_dash_changed (SPDashSelector *dsel, SPWidget *spw)
+{
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	sp_stroke_style_scale_line (spw);
 }
 
 static void
@@ -1017,62 +1091,6 @@ sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
 
 		g_slist_free (reprs);
 	}
-}
-
-static void
-sp_stroke_style_line_dash_changed (SPDashSelector *dsel, SPWidget *spw)
-{
-	const GSList *items, *i, *r;
-	GSList *reprs;
-	SPCSSAttr *css;
-	int ndash;
-	double *dash, offset;
-
-	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
-	if (spw->sodipodi) {
-		reprs = NULL;
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
-		}
-	} else {
-		reprs = g_slist_prepend (NULL, spw->repr);
-		items = NULL;
-	}
-
-	/* fixme: Create some standardized method */
-	css = sp_repr_css_attr_new ();
-
-	sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
-	if (ndash > 0) {
-		unsigned char c[1024];
-		int i, pos;
-		pos = 0;
-		for (i = 0; i < ndash; i++) {
-			pos += g_snprintf (c + pos, 1022 - pos, "%g", dash[i]);
-			if ((i < (ndash - 1)) && (pos < 1020)) {
-				c[pos] = ',';
-				pos += 1;
-			}
-		}
-		c[pos] = 0;
-		sp_repr_css_set_property (css, "stroke-dasharray", c);
-		g_snprintf (c, 1024, "%g", offset);
-		sp_repr_css_set_property (css, "stroke-dashoffset", c);
-		g_free (dash);
-	} else {
-		sp_repr_css_set_property (css, "stroke-dasharray", "none");
-		sp_repr_css_set_property (css, "stroke-dashoffset", NULL);
-	}
-	for (r = reprs; r != NULL; r = r->next) {
-		sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
-	}
-
-	sp_repr_css_attr_unref (css);
-	if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
-
-	g_slist_free (reprs);
 }
 
 /* Helpers */

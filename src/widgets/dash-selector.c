@@ -140,24 +140,32 @@ sp_dash_selector_new (void)
 void
 sp_dash_selector_set_dash (SPDashSelector *dsel, int ndash, double *dash, double offset)
 {
-	int pos, i;
+	int pos;
 
 	pos = 0;
 
-	for (i = 0; dashes[i]; i++) {
-		double *pattern;
-		int np;
-		pattern = dashes[i];
-		np = 0;
-		while (pattern[np] >= 0.0) np += 1;
-		if (np == ndash) {
-			int j;
-			for (j = 0; j < ndash; j++) {
-				if (!NR_DF_TEST_CLOSE (dash[j], pattern[j], NR_EPSILON_F)) break;
-			}
-			if (j == ndash) {
-				pos = i;
-				break;
+	if (ndash > 0) {
+		double delta;
+		int i;
+		delta = 0.0;
+		for (i = 0; i < ndash; i++) delta += dash[i];
+		delta = delta / 1000.0;
+
+		for (i = 0; dashes[i]; i++) {
+			double *pattern;
+			int np;
+			pattern = dashes[i];
+			np = 0;
+			while (pattern[np] >= 0.0) np += 1;
+			if (np == ndash) {
+				int j;
+				for (j = 0; j < ndash; j++) {
+					if (!NR_DF_TEST_CLOSE (dash[j], pattern[j], delta)) break;
+				}
+				if (j == ndash) {
+					pos = i;
+					break;
+				}
 			}
 		}
 	}

@@ -241,7 +241,8 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	}
 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-		gdouble width, scale;
+		double width, scale, dlen;
+		int i;
 		abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
 		vp = art_bez_path_to_vec (abp, 0.25);
 		art_free (abp);
@@ -249,7 +250,9 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		art_free (vp);
 		scale = sp_distance_d_matrix_d_transform (1.0, gc->affine);
 		width = MAX (0.125, style->stroke_width.computed * scale);
-		if (style->stroke_dash.n_dash) {
+		dlen = 0.0;
+		for (i = 0; i < style->stroke_dash.n_dash; i++) dlen += style->stroke_dash.dash[i] * scale;
+		if (dlen >= 1.0) {
 			ArtVpathDash dash;
 			int i;
 			dash.offset = style->stroke_dash.offset * scale;
