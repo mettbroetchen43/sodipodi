@@ -110,7 +110,7 @@ nr_arena_item_children (NRArenaItem *item)
 	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, children))
-		NR_ARENA_ITEM_VIRTUAL (item, children) (item);
+		return NR_ARENA_ITEM_VIRTUAL (item, children) (item);
 
 	return NULL;
 }

@@ -323,14 +323,15 @@ static NRSlice *nr_slice_insert_sorted (NRSlice *start, NRSlice *slice);
 static int nr_slice_compare (NRSlice *l, NRSlice *r);
 
 static void
-nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int x0, int y0, int x1, int y1,
+nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int iX0, int iY0, int iX1, int iY1,
 	       void (* run) (unsigned char *px, int len, int c0_24, int s0_24, void *data), void *data)
 {
+	double dX0, dY0, dX1, dY1;
 	NRSlice *slices;
 	int sidx;
 	int ystart;
 	unsigned char *rowbuffer;
-	int y;
+	int iy0;
 
 	if (!svp || !svp->length) return;
 
@@ -340,21 +341,26 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 	while (!svp->segments[sidx].length && (sidx < svp->length)) sidx += 1;
 	if (sidx >= svp->length) return;
 	ystart = (int) NR_SVPSEG_Y0 (svp, sidx);
-	if (ystart >= y1) return;
-	if (ystart > y0) {
-		px += (ystart - y0) * rs;
-		y0 = ystart;
+	if (ystart > iY0) {
+		if (ystart >= iY1) return;
+		px += (ystart - iY0) * rs;
+		iY0 = ystart;
 	}
+
+	dX0 = iX0;
+	dY0 = iY0;
+	dX1 = iX1;
+	dY1 = iY1;
 
 	/* Construct initial slice list */
 	slices = NULL;
-	while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) <= y0)) {
+	while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) <= dY0)) {
 		NRSVPSegment *seg;
 		seg = svp->segments + sidx;
 		/* g_assert (nsvl->bbox.y0 == nsvl->vertex->y); */
-		if (seg->wind && (NR_SVPSEG_Y1 (svp, sidx) > y0)) {
+		if (seg->wind && (NR_SVPSEG_Y1 (svp, sidx) > dY0)) {
 			NRSlice *newslice;
-			newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y0);
+			newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, dY0);
 			slices = nr_slice_insert_sorted (slices, newslice);
 		}
 		sidx += 1;
@@ -366,22 +372,28 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 	rowbuffer = px;
 
 	/* Main iteration */
-	for (y = y0; y < y1; y++) {
+	for (iy0 = iY0; iy0 < iY1; iy0 += 1) {
+		double dy0, dy1;
 		NRSlice *ss, *cs;
 		NRRun *runs;
 		int xstart;
 		float globalval;
 		unsigned char *d;
-		int x;
+		int ix0;
+
+		dy0 = iy0;
+		dy1 = dy0 + 1.0;
 
 		/* Add possible new svls to slice list */
-		while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) < (y + 1))) {
+		while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) < dy1)) {
 			NRSVPSegment *seg;
 			seg = svp->segments + sidx;
 			if (seg->wind) {
+				double y;
 				NRSlice *newslice;
 				/* fixme: we should use safely nsvl->vertex->y here */
-				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, MAX (y, NR_SVPSEG_Y0 (svp, sidx)));
+				y = MAX (dy0, NR_SVPSEG_Y0 (svp, sidx));
+				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y);
 				slices = nr_slice_insert_sorted (slices, newslice);
 			}
 			sidx += 1;
@@ -394,28 +406,28 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		while (cs) {
 			/* g_assert (cs->y >= y0); */
 			/* g_assert (cs->y < (y + 1)); */
-			while ((cs->y < (y + 1)) && (cs->current < cs->last)) {
-				NRCoord x0, y0, x1, y1;
+			while ((cs->y < dy1) && (cs->current < cs->last)) {
+				double rx0, ry0, rx1, ry1;
 				NRRun * newrun;
-				x0 = cs->x;
-				y0 = cs->y;
-				if (cs->points[cs->current + 1].y > (y + 1)) {
+				rx0 = cs->x;
+				ry0 = cs->y;
+				if (cs->points[cs->current + 1].y > dy1) {
 					/* The same slice continues */
-					x1 = x0 + ((y + 1) - y0) * cs->stepx;
-					y1 = y + 1;
-					cs->x = x1;
-					cs->y = y1;
+					rx1 = rx0 + (dy1 - ry0) * cs->stepx;
+					ry1 = dy0 + 1;
+					cs->x = rx1;
+					cs->y = ry1;
 				} else {
 					cs->current += 1;
-					x1 = cs->points[cs->current].x;
-					y1 = cs->points[cs->current].y;
-					cs->x = x1;
-					cs->y = y1;
+					rx1 = cs->points[cs->current].x;
+					ry1 = cs->points[cs->current].y;
+					cs->x = rx1;
+					cs->y = ry1;
 					if (cs->current < cs->last) {
-						cs->stepx = (cs->points[cs->current + 1].x - x1) / (cs->points[cs->current + 1].y - y1);
+						cs->stepx = (cs->points[cs->current + 1].x - rx1) / (cs->points[cs->current + 1].y - ry1);
 					}
 				}
-				newrun = nr_run_new (x0, y0, x1, y1, cs->wind);
+				newrun = nr_run_new (rx0, ry0, rx1, ry1, cs->wind);
 				/* fixme: we should use walking forward/backward instead */
 				runs = nr_run_insert_sorted (runs, newrun);
 			}
@@ -436,17 +448,17 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		/* Run list is generated */
 		/* find initial value */
 		globalval = 0.0;
-		if ((runs) && (x0 < runs->x0)) {
+		if ((runs) && (dX0 < runs->x0)) {
 			/* First run starts right from x0 */
 			xstart = (int) runs->x0;
 		} else {
 			NRRun *sr, *cr;
 			/* First run starts left from x0 */
-			xstart = x0;
+			xstart = iX0;
 			sr = NULL;
 			cr = runs;
-			while ((cr) && (cr->x0 < x0)) {
-				if (cr->x1 <= x0) {
+			while ((cr) && (cr->x0 < dX0)) {
+				if (cr->x1 <= dX0) {
 					globalval += cr->final;
 					/* Remove exhausted current run */
 					cr = nr_run_free_one (cr);
@@ -456,8 +468,8 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 						runs = cr;
 					}
 				} else {
-					cr->x = x0;
-					cr->value = (x0 - cr->x0) * cr->step;
+					cr->x = dX0;
+					cr->value = (dX0 - cr->x0) * cr->step;
 					sr = cr;
 					cr = cr->next;
 				}
@@ -465,18 +477,22 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		}
 
 		/* Running buffer */
-		d = rowbuffer + bpp * (xstart - x0);
+		d = rowbuffer + bpp * (xstart - iX0);
 
-		for (x = xstart; (runs) && (x < x1); x++) {
+		for (ix0 = xstart; (runs) && (ix0 < iX1); ix0++) {
+			double dx0, dx1;
+			int ix1;
 			NRRun *sr, *cr;
-			float xnext;
 			float localval;
 			unsigned int fill;
 			float fillstep;
 			int xstop;
 			int c24;
 
-			xnext = x + 1.0;
+			dx0 = ix0;
+			dx1 = dx0 + 1.0;
+			ix1 = ix0 + 1;
+
 			/* process runs */
 			/* fixme: generate fills */
 			localval = globalval;
@@ -484,9 +500,9 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 			cr = runs;
 			fill = TRUE;
 			fillstep = 0.0;
-			xstop = x1;
-			while ((cr) && (cr->x0 < xnext)) {
-				if (cr->x1 <= xnext) {
+			xstop = iX1;
+			while ((cr) && (cr->x0 < dx1)) {
+				if (cr->x1 <= dx1) {
 					/* Run ends here */
 					/* No fill */
 					fill = FALSE;
@@ -495,7 +511,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 					/* Add initial trapezoid */
 					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
 					/* Add final rectangle */
-					localval += (xnext - cr->x1) * cr->final;
+					localval += (dx1 - cr->x1) * cr->final;
 					/* Remove exhausted run */
 					cr = nr_run_free_one (cr);
 					if (sr) {
@@ -506,16 +522,16 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 				} else {
 					/* Run continues through xnext */
 					if (fill) {
-						if (cr->x0 > x) {
+						if (cr->x0 > ix0) {
 							fill = FALSE;
 						} else {
 							xstop = MIN (xstop, (int) floor (cr->x1));
 							fillstep += cr->step;
 						}
 					}
-					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
-					cr->x = xnext;
-					cr->value = (xnext - cr->x0) * cr->step;
+					localval += (dx1 - cr->x) * (cr->value + (dx1 - cr->x) * cr->step / 2.0);
+					cr->x = dx1;
+					cr->value = (dx1 - cr->x0) * cr->step;
 					sr = cr;
 					cr = cr->next;
 				}
@@ -525,14 +541,14 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 			}
 			localval = CLAMP (localval, 0.0, 1.0);
 			c24 = (int) (16777215 * localval + 0.5);
-			if (fill && (xstop > xnext)) {
+			if (fill && (xstop > ix1)) {
 				int s24;
 				s24 = (int) (16777215 * fillstep + 0.5);
 				if ((s24 != 0) || (c24 > 65535)) {
-					run (d, xstop - x, c24, s24, data);
+					run (d, xstop - ix0, c24, s24, data);
 				}
-				d += bpp * (xstop - x);
-				x = xstop - 1;
+				d += bpp * (xstop - ix0);
+				ix0 = xstop - 1;
 			} else {
 				run (d, 1, c24, 0, data);
 				d += bpp;

@@ -1,3 +1,8 @@
+2003-05-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-item.c (nr_arena_item_children): Return correct
+	value (thanks to MentaLguY)
+
 2003-04-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp.h: Use more compact format for segments
