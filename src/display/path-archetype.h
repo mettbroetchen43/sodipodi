@@ -27,6 +27,7 @@ struct _SPPathAT {
 	/* identifiers */
 	SPCurve * curve;
 	guint private : 1;	/* Whether archetype can be shared */
+	guint rule : 2;
 	double affine[4];
 	double stroke_width;
 	ArtPathStrokeJoinType join;
@@ -46,12 +47,13 @@ struct _SPPathAT {
  * Inreases refcount of returned at (use unref, when done with it)
  */
 
-SPPathAT * sp_path_at (SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap);
+SPPathAT *sp_path_at (SPCurve *curve,
+		      gboolean private,
+		      double affine[],
+		      gint rule,
+		      double stroke_width,
+		      ArtPathStrokeJoinType join,
+		      ArtPathStrokeCapType cap);
 
 void sp_path_at_ref (SPPathAT * at);
 void sp_path_at_unref (SPPathAT * at);

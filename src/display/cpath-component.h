@@ -19,6 +19,7 @@ struct _SPCPathComp {
 	SPCurve * curve;
 	guint private : 1;
 	guint changed : 1;
+	guint rule : 2;
 	double affine[6];
 	double stroke_width;
 	ArtPathStrokeJoinType join;
@@ -61,11 +62,12 @@ void sp_cpath_comp_update (SPCPathComp * comp, double affine[]);
  */
 
 void sp_cpath_comp_change (SPCPathComp * comp,
-	SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap);
+			   SPCurve * curve,
+			   gboolean private,
+			   double affine[],
+			   gint rule,
+			   double stroke_width,
+			   ArtPathStrokeJoinType join,
+			   ArtPathStrokeCapType cap);
 
 #endif

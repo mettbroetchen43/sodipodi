@@ -75,7 +75,7 @@ struct _SPStyle {
 	SPPaint fill;
 	guint fill_set : 1;
 	/* fill-rule: 0 nonzero, 1 evenodd */
-	guint fill_rule : 1;
+	guint fill_rule : 3;
 	guint fill_rule_set : 1;
 	/* fill-opacity */
 	gdouble fill_opacity;

@@ -1,3 +1,24 @@
+2001-09-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/style.c (sp_style_write_string): Write rule
+	(sp_style_read_from_string): Parse rule
+
+	* src/style.h: Made rule libart enum
+
+	* src/display/path-archetype.c (sp_path_at): Search by rule
+	(sp_path_at_new): Rewind with rule
+	(sp_pat_equal): Compare rules
+
+	* src/display/path-archetype.h: Added rule argument
+
+	* src/display/cpath-component.c (sp_cpath_comp_new): Init rule
+	(sp_cpath_comp_update): Use rule
+	(sp_cpath_comp_change): Ditto
+
+	* src/display/cpath-component.h: Added rule member
+
+	* src/display/canvas-shape.c (sp_canvas_shape_update): Set fill rule
+
 2001-09-29  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/selection-chemistry.c (sp_selection_lower_to_bottom): Do not lower

@@ -29,21 +29,23 @@ static gint sp_pat_equal (gconstpointer a, gconstpointer b);
 static void sp_pat_free_state (SPPathAT * at);
 
 static SPPathAT * sp_path_at_new (SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap);
+				  gboolean private,
+				  double affine[],
+				  gint rule,
+				  double stroke_width,
+				  ArtPathStrokeJoinType join,
+				  ArtPathStrokeCapType cap);
 
 GHashTable * archetypes = NULL;
 
 SPPathAT *
 sp_path_at (SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap)
+	    gboolean private,
+	    double affine[],
+	    gint rule,
+	    double stroke_width,
+	    ArtPathStrokeJoinType join,
+	    ArtPathStrokeCapType cap)
 {
 	SPPathAT cat, * at;
 	gint i;
@@ -56,6 +58,7 @@ sp_path_at (SPCurve * curve,
 	if (!private) {
 		cat.curve = curve;
 		for (i = 0; i < 4; i++) cat.affine[i] = affine[i];
+		cat.rule = rule;
 		cat.stroke_width = stroke_width;
 		cat.join = join;
 		cat.cap = cap;
@@ -68,7 +71,7 @@ sp_path_at (SPCurve * curve,
 		}
 	}
 
-	at = sp_path_at_new (curve, private, affine, stroke_width, join, cap);
+	at = sp_path_at_new (curve, private, affine, rule, stroke_width, join, cap);
 
 	if (!private) {
 		g_hash_table_insert (archetypes, at, at);
@@ -105,11 +108,12 @@ sp_path_at_unref (SPPathAT * at)
 
 static SPPathAT *
 sp_path_at_new (SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap)
+		gboolean private,
+		double affine[],
+		gint rule,
+		double stroke_width,
+		ArtPathStrokeJoinType join,
+		ArtPathStrokeCapType cap)
 {
 	SPPathAT * at;
 	gint i;
@@ -135,6 +139,7 @@ sp_path_at_new (SPCurve * curve,
 		fa[i] = affine[i];
 	}
 	fa[4] = fa[5] = 0.0;
+	at->rule = rule;
 	at->stroke_width = stroke_width;
 	at->join = join;
 	at->cap = cap;
@@ -155,7 +160,7 @@ sp_path_at_new (SPCurve * curve,
 	svpa = nr_art_svp_from_svp (nrsvp0);
 	svpb = art_svp_uncross (svpa);
 	art_svp_free (svpa);
-	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+	svpa = art_svp_rewind_uncrossed (svpb, at->rule);
 	art_svp_free (svpb);
 #endif
 	at->nrsvp = nrsvp0;
@@ -166,7 +171,7 @@ sp_path_at_new (SPCurve * curve,
 	svpa = art_svp_from_vpath (at->vpath);
 	svpb = art_svp_uncross (svpa);
 	art_svp_free (svpa);
-	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+	svpa = art_svp_rewind_uncrossed (svpb, at->rule);
 	art_svp_free (svpb);
 #endif
 
@@ -236,6 +241,7 @@ sp_pat_equal (gconstpointer a, gconstpointer b)
 		d = fabs (ata->affine[i] - atb->affine[i]);
 		if (d > 1e-6) return FALSE;
 	}
+	if (ata->rule != atb->rule) return FALSE;
 	if (ata->stroke_width != atb->stroke_width)
 		return FALSE;
 	if (ata->join != atb->join)

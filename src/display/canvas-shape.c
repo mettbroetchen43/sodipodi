@@ -171,6 +171,7 @@ g_print ("sp_canvas_shape_update: entering\n");
 
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
+		comp->rule = shape->style->fill_rule;
 		if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
 			gdouble wx, wy;
 			wx = affine[0] + affine[2];
@@ -469,7 +470,7 @@ sp_canvas_shape_change_bpath (SPCanvasShape * shape, SPCurve * curve)
 		comp = (SPCPathComp *) shape->comp->data;
 		g_assert (comp->private);
 
-		sp_cpath_comp_change (comp, curve, TRUE, comp->affine, comp->stroke_width, comp->join, comp->cap);
+		sp_cpath_comp_change (comp, curve, TRUE, comp->affine, comp->rule, comp->stroke_width, comp->join, comp->cap);
 	}
 
 	gnome_canvas_item_request_update ((GnomeCanvasItem *) shape);

@@ -3,6 +3,8 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_point.h>
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_wind.h>
 #include "cpath-component.h"
 
 #define noDEBUG_PATH_COMP
@@ -38,6 +40,7 @@ sp_cpath_comp_new (SPCurve * curve,
 	} else {
 		for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
 	}
+	comp->rule = ART_WIND_RULE_NONZERO;
 	comp->stroke_width = stroke_width;
 	comp->join = join;
 	comp->cap = cap;
@@ -91,17 +94,18 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 	art_affine_multiply (a, comp->affine, affine);
 
 	if ((comp->private) && (comp->archetype) && (!comp->changed) &&
-		(comp->stroke_width == comp->archetype->stroke_width) &&
-		(comp->join == comp->archetype->join) &&
-		(comp->cap == comp->archetype->cap) &&
-		(a[0] == comp->archetype->affine[0]) &&
-		(a[1] == comp->archetype->affine[1]) &&
-		(a[2] == comp->archetype->affine[2]) &&
-		(a[3] == comp->archetype->affine[3])) {
+	    (comp->rule == comp->archetype->rule) &&
+	    (comp->stroke_width == comp->archetype->stroke_width) &&
+	    (comp->join == comp->archetype->join) &&
+	    (comp->cap == comp->archetype->cap) &&
+	    (a[0] == comp->archetype->affine[0]) &&
+	    (a[1] == comp->archetype->affine[1]) &&
+	    (a[2] == comp->archetype->affine[2]) &&
+	    (a[3] == comp->archetype->affine[3])) {
 		/* Nothing to do */
 	} else {
 		old_at = comp->archetype;
-		comp->archetype = sp_path_at (comp->curve, comp->private, a, comp->stroke_width, comp->join, comp->cap);
+		comp->archetype = sp_path_at (comp->curve, comp->private, a, comp->rule, comp->stroke_width, comp->join, comp->cap);
 		if (old_at != NULL) sp_path_at_unref (old_at);
 	}
 
@@ -120,15 +124,18 @@ sp_cpath_comp_update (SPCPathComp * comp, double affine[])
 
 void
 sp_cpath_comp_change (SPCPathComp * comp,
-	SPCurve * curve,
-	gboolean private,
-	double affine[],
-	double stroke_width,
-	ArtPathStrokeJoinType join,
-	ArtPathStrokeCapType cap)
+		      SPCurve * curve,
+		      gboolean private,
+		      double affine[],
+		      gint rule,
+		      double stroke_width,
+		      ArtPathStrokeJoinType join,
+		      ArtPathStrokeCapType cap)
 {
 	SPCurve * old_curve;
+#if 0
 	SPPathAT * old_at;
+#endif
 	ArtBpath * bp;
 	gint i;
 
@@ -142,6 +149,7 @@ sp_cpath_comp_change (SPCPathComp * comp,
 
 	comp->private = private;
 	for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
+	comp->rule = rule;
 	comp->stroke_width = stroke_width;
 	comp->join = join;
 	comp->cap = cap;

@@ -13,6 +13,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_wind.h>
 #include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "document.h"
@@ -123,9 +125,13 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 		}
 		val = sp_style_str_value (str, "fill-rule");
 		if (val) {
-			/* fixme: */
-			style->fill_rule = strncmp (val, "nonzero", 7);
-			style->fill_rule_set = TRUE;
+			if (!strncmp (val, "evenodd", 7)) {
+				style->fill_rule = ART_WIND_RULE_ODDEVEN;
+				style->fill_rule_set = TRUE;
+			} else if (!strncmp (val, "nonzero", 7)) {
+				style->fill_rule = ART_WIND_RULE_NONZERO;
+				style->fill_rule_set = TRUE;
+			}
 		}
 		val = sp_style_str_value (str, "fill-opacity");
 		if (val) {
@@ -402,6 +408,10 @@ sp_style_write_string (SPStyle *style)
 		p += g_snprintf (p, c + 4096 - p, "fill:");
 		p += sp_style_write_paint (p, c + 4096 - p, &style->fill);
 	}
+	if (style->fill_rule_set) {
+		p += g_snprintf (p, c + 4096 - p, "fill-rule:%s;", (style->fill_rule == ART_WIND_RULE_NONZERO) ? "nonzero" : "evenodd");
+		p += sp_style_write_paint (p, c + 4096 - p, &style->fill);
+	}
 	if (style->fill_opacity_set) {
 		p += g_snprintf (p, c + 4096 - p, "fill-opacity:%g;", style->fill_opacity);
 	}
@@ -517,7 +527,7 @@ sp_style_init (SPStyle *style)
 	style->fill.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_rgb_float (&style->fill.color, 0.0, 0.0, 0.0);
 	style->fill.server = NULL;
-	style->fill_rule = TRUE;
+	style->fill_rule = ART_WIND_RULE_NONZERO;
 	style->fill_opacity = 1.0;
 	style->stroke.type = SP_PAINT_TYPE_NONE;
 	sp_color_set_rgb_float (&style->stroke.color, 0.0, 0.0, 0.0);
