@@ -46,6 +46,10 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkbox.h>
 
+#ifdef WITH_FONTCONFIG
+#include <fontconfig/fontconfig.h>
+#endif
+
 #include "macros.h"
 #include "system.h"
 #include "file.h"
@@ -237,7 +241,7 @@ sp_main_gui (int argc, const char **argv)
 #ifdef _DEBUG
 	g_print ("Initializing modules...\n");
 #endif
-	sp_modules_init (&argc, &argv, TRUE);
+	sp_modules_init (&argc, argv, TRUE);
 
 #ifdef _DEBUG
 	g_print ("Registering objects...\n");
@@ -333,7 +337,7 @@ sp_main_console (int argc, const char **argv)
 	/* We are started in text mode */
 	g_type_init ();
 
-#ifdef WITH_XFT
+#if 0
 	/* Still have to init gdk, or Xft does not work */
 	gdk_init (&argc, (char ***) &argv);
 #endif

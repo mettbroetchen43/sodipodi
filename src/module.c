@@ -609,18 +609,17 @@ static SPModule *module_printing_gnome = NULL;
 #endif
 
 unsigned int
-sp_modules_init (int *argc, const char ***argv, unsigned int gui)
+sp_modules_init (int *argc, const char **argv, unsigned int gui)
 {
 	SPRepr *repr, *parent;
 	SPModule *mod;
 
 #ifdef WITH_KDE
-	sp_kde_init (*argc, (char **) argv, "Sodipodi");
+	sp_kde_init (*argc, argv, "Sodipodi");
 #endif
 #ifdef WIN32
 	sp_win32_init (0, NULL, "Sodipodi");
 #endif
-
 
 	/* Register plain printing module */
 	module_printing_ps = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);

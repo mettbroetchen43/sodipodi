@@ -201,7 +201,7 @@ GType sp_module_print_get_type (void);
 
 /* Global methods */
 
-unsigned int sp_modules_init (int *argc, const char ***argv, unsigned int gui);
+unsigned int sp_modules_init (int *argc, const char **argv, unsigned int gui);
 
 GtkWidget *sp_modules_menu_new (void);
 GtkWidget *sp_modules_menu_about_new (void);
