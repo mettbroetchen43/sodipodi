@@ -101,10 +101,12 @@ sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 	sodipodi_unref ();
 }
 
-static void
+static int
 sp_maintoolbox_event (GtkWidget *widgt, GdkEvent *event)
 {
-	g_print ("Event %d\n", event->type);
+	/* g_print ("Event %d\n", event->type); */
+
+	return FALSE;
 }
 
 void

@@ -10,7 +10,12 @@
  * This code is in public domain
  */
 
+#define NR_TYPE_TYPEFACE_GNOME (nr_typeface_gnome_get_type ())
+#define NR_TYPEFACE_GNOME(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_TYPEFACE_GNOME, NRTypeFaceGnome))
+#define NR_IS_TYPEFACE_GNOME(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_TYPEFACE_GNOME))
+
 typedef struct _NRTypeFaceGnome NRTypeFaceGnome;
+typedef struct _NRTypeFaceGnomeClass NRTypeFaceGnomeClass;
 
 #include <libnrtype/nr-rasterfont.h>
 #include <libnrtype/nr-type-directory.h>
@@ -24,6 +29,12 @@ struct _NRTypeFaceGnome {
 
 	NRBPath *voutlines;
 };
+
+struct _NRTypeFaceGnomeClass {
+	NRTypeFaceClass typeface_class;
+};
+
+unsigned int nr_typeface_gnome_get_type (void);
 
 NRNameList *nr_type_gnome_typefaces_get (NRNameList *typefaces);
 NRNameList *nr_type_gnome_families_get (NRNameList *families);

@@ -56,7 +56,7 @@ typedef struct _NRGC NRGC;
 
 #include <libnr/nr-types.h>
 #include <libnr/nr-pixblock.h>
-#include "nr-object.h"
+#include <libnr/nr-object.h>
 #include "nr-arena-forward.h"
 
 struct _NRGC {

@@ -83,7 +83,7 @@ nr_type_directory_lookup (const unsigned char *name)
 
 	if (tdef) {
 		if (!tdef->typeface) {
-			tdef->typeface = tdef->vmv->new (tdef);
+			tdef->typeface = nr_typeface_new (tdef);
 		} else {
 			nr_typeface_ref (tdef->typeface);
 		}
@@ -133,7 +133,7 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	}
 
 	if (!besttdef->typeface) {
-		besttdef->typeface = besttdef->vmv->new (besttdef);
+		besttdef->typeface = nr_typeface_new (besttdef);
 	} else {
 		nr_typeface_ref (besttdef->typeface);
 	}

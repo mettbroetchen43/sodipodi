@@ -18,7 +18,7 @@
 #define NR_IS_ARENA(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA))
 
 #include <libnr/nr-types.h>
-#include "nr-object.h"
+#include <libnr/nr-object.h>
 #include "nr-arena-forward.h"
 
 typedef struct _NRArenaEventVector NRArenaEventVector;

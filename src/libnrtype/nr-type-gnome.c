@@ -16,43 +16,107 @@
 #include <libart_lgpl/art_misc.h>
 #include "nr-type-gnome.h"
 
-static NRTypeFace *nr_typeface_gnome_new (NRTypeFaceDef *def);
-void nr_typeface_gnome_free (NRTypeFace *tf);
+static void nr_typeface_gnome_class_init (NRTypeFaceGnomeClass *klass);
+static void nr_typeface_gnome_init (NRTypeFaceGnome *tfg);
+static void nr_typeface_gnome_finalize (NRObject *object);
 
-unsigned int nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-NRBPath *nr_typeface_gnome_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
-void nr_typeface_gnome_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
-NRPointF *nr_typeface_gnome_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
-unsigned int nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
+static void nr_typeface_gnome_setup (NRTypeFace *tface, NRTypeFaceDef *def);
+static unsigned int nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
+static NRBPath *nr_typeface_gnome_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static void nr_typeface_gnome_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
+static NRPointF *nr_typeface_gnome_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
+static unsigned int nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
 
-NRFont *nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
-void nr_typeface_gnome_font_free (NRFont *font);
+static NRFont *nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
+static void nr_typeface_gnome_font_free (NRFont *font);
 
-static NRTypeFaceVMV nr_type_gnome_vmv = {
-	nr_typeface_gnome_new,
+static NRTypeFaceClass *parent_class;
 
-	nr_typeface_gnome_free,
-	nr_typeface_gnome_attribute_get,
-	nr_typeface_gnome_glyph_outline_get,
-	nr_typeface_gnome_glyph_outline_unref,
-	nr_typeface_gnome_glyph_advance_get,
-	nr_typeface_gnome_lookup,
+unsigned int
+nr_typeface_gnome_get_type (void)
+{
+	static unsigned int type = 0;
+	if (!type) {
+		type = nr_object_register_type (NR_TYPE_TYPEFACE,
+						"NRTypeFaceGnome",
+						sizeof (NRTypeFaceGnomeClass),
+						sizeof (NRTypeFaceGnome),
+						(void (*) (NRObjectClass *)) nr_typeface_gnome_class_init,
+						(void (*) (NRObject *)) nr_typeface_gnome_init);
+	}
+	return type;
+}
 
-	nr_typeface_gnome_font_new,
-	nr_typeface_gnome_font_free,
+static void
+nr_typeface_gnome_class_init (NRTypeFaceGnomeClass *klass)
+{
+	NRObjectClass *object_class;
+	NRTypeFaceClass *tface_class;
 
-	nr_font_generic_glyph_outline_get,
-	nr_font_generic_glyph_outline_unref,
-	nr_font_generic_glyph_advance_get,
-	nr_font_generic_glyph_area_get,
+	object_class = (NRObjectClass *) klass;
+	tface_class = (NRTypeFaceClass *) klass;
 
-	nr_font_generic_rasterfont_new,
-	nr_font_generic_rasterfont_free,
+	parent_class = (NRTypeFaceClass *) (((NRObjectClass *) klass)->parent);
 
-	nr_rasterfont_generic_glyph_advance_get,
-	nr_rasterfont_generic_glyph_area_get,
-	nr_rasterfont_generic_glyph_mask_render
-};
+	object_class->finalize = nr_typeface_gnome_finalize;
+
+	tface_class->setup = nr_typeface_gnome_setup;
+	tface_class->attribute_get = nr_typeface_gnome_attribute_get;
+	tface_class->glyph_outline_get = nr_typeface_gnome_glyph_outline_get;
+	tface_class->glyph_outline_unref = nr_typeface_gnome_glyph_outline_unref;
+	tface_class->glyph_advance_get = nr_typeface_gnome_glyph_advance_get;
+	tface_class->lookup = nr_typeface_gnome_lookup;
+
+	tface_class->font_new = nr_typeface_gnome_font_new;
+	tface_class->font_free = nr_typeface_gnome_font_free;
+}
+
+static void
+nr_typeface_gnome_init (NRTypeFaceGnome *tfg)
+{
+	NRTypeFace *tface;
+
+	tface = (NRTypeFace *) tfg;
+}
+
+static void
+nr_typeface_gnome_finalize (NRObject *object)
+{
+	NRTypeFace *tf;
+	NRTypeFaceGnome *tfg;
+
+	tf = (NRTypeFace *) object;
+	tfg = (NRTypeFaceGnome *) object;
+
+	if (tfg->voutlines) {
+		int i;
+		for (i = 0; i < tf->nglyphs; i++) {
+			if (tfg->voutlines[i].path) art_free (tfg->voutlines[i].path);
+		}
+		nr_free (tfg->voutlines);
+	}
+
+	gnome_font_face_unref (tfg->face);
+
+	((NRObjectClass *) (parent_class))->finalize (object);
+}
+
+static void
+nr_typeface_gnome_setup (NRTypeFace *tface, NRTypeFaceDef *def)
+{
+	NRTypeFaceGnome *tfg;
+
+	tfg = (NRTypeFaceGnome *) tface;
+
+	((NRTypeFaceClass *) (parent_class))->setup (tface, def);
+
+	tfg->face = gnome_font_face_find (def->name);
+	tfg->fonts = NULL;
+
+	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (tfg->face);
+
+	tfg->voutlines = NULL;
+}
 
 static void
 nr_type_gnome_typefaces_destructor (NRNameList *list)
@@ -121,54 +185,13 @@ nr_type_gnome_families_get (NRNameList *families)
 void
 nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family)
 {
-	def->vmv = &nr_type_gnome_vmv;
+	def->type = NR_TYPE_TYPEFACE_GNOME;
 	def->name = g_strdup (name);
 	def->family = g_strdup (family);
 	def->typeface = NULL;
 }
 
-static NRTypeFace *
-nr_typeface_gnome_new (NRTypeFaceDef *def)
-{
-	NRTypeFaceGnome *tfg;
-
-	tfg = nr_new (NRTypeFaceGnome, 1);
-
-	tfg->typeface.vmv = &nr_type_gnome_vmv;
-	tfg->typeface.refcount = 1;
-	tfg->typeface.def = def;
-
-	tfg->face = gnome_font_face_find (def->name);
-	tfg->fonts = NULL;
-
-	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (tfg->face);
-
-	tfg->voutlines = NULL;
-
-	return (NRTypeFace *) tfg;
-}
-
-void
-nr_typeface_gnome_free (NRTypeFace *tf)
-{
-	NRTypeFaceGnome *tfg;
-
-	tfg = (NRTypeFaceGnome *) tf;
-
-	if (tfg->voutlines) {
-		int i;
-		for (i = 0; i < tf->nglyphs; i++) {
-			if (tfg->voutlines[i].path) art_free (tfg->voutlines[i].path);
-		}
-		nr_free (tfg->voutlines);
-	}
-
-	gnome_font_face_unref (tfg->face);
-
-	nr_free (tfg);
-}
-
-unsigned int
+static unsigned int
 nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size)
 {
 	NRTypeFaceGnome *tfg;
@@ -212,7 +235,7 @@ nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 	return strlen (val);
 }
 
-NRBPath *
+static NRBPath *
 nr_typeface_gnome_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
 {
 	NRTypeFaceGnome *tfg;
@@ -256,7 +279,7 @@ nr_typeface_gnome_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigne
 	return d;
 }
 
-void
+static void
 nr_typeface_gnome_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics)
 {
 	NRTypeFaceGnome *tfg;
@@ -264,7 +287,7 @@ nr_typeface_gnome_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsig
 	tfg = (NRTypeFaceGnome *) tf;
 }
 
-NRPointF *
+static NRPointF *
 nr_typeface_gnome_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv)
 {
 	NRTypeFaceGnome *tfg;
@@ -284,7 +307,7 @@ nr_typeface_gnome_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigne
 	return adv;
 }
 
-unsigned int
+static unsigned int
 nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 {
 	NRTypeFaceGnome *tfg;
@@ -304,7 +327,7 @@ nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival
 	return 0;
 }
 
-NRFont *
+static NRFont *
 nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform)
 {
 	NRTypeFaceGnome *tfg;
@@ -330,7 +353,7 @@ nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *tra
 	return font;
 }
 
-void
+static void
 nr_typeface_gnome_font_free (NRFont *font)
 {
 	NRTypeFaceGnome *tfg;

@@ -19,96 +19,126 @@
 
 #define NR_SLOTS_BLOCK 32
 
-static NRTypeFace *nr_typeface_ft2_new (NRTypeFaceDef *def);
-void nr_typeface_ft2_free (NRTypeFace *tf);
+static void nr_typeface_ft2_class_init (NRTypeFaceFT2Class *klass);
+static void nr_typeface_ft2_init (NRTypeFaceFT2 *tff);
+static void nr_typeface_ft2_finalize (NRObject *object);
 
-unsigned int nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-NRBPath *nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
-void nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
-NRPointF *nr_typeface_ft2_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
-unsigned int nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
+static void nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def);
+static unsigned int nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
+static NRBPath *nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static void nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
+static NRPointF *nr_typeface_ft2_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
+static unsigned int nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
 
-NRFont *nr_typeface_ft2_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
-void nr_typeface_ft2_font_free (NRFont *font);
-
-static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_h (NRTypeFaceFT2 *tff, unsigned int glyph);
-static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph);
-static NRBPath *nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, unsigned int glyph, unsigned int metrics);
-
-static NRTypeFaceVMV nr_type_ft2_vmv = {
-	nr_typeface_ft2_new,
-
-	nr_typeface_ft2_free,
-	nr_typeface_ft2_attribute_get,
-	nr_typeface_ft2_glyph_outline_get,
-	nr_typeface_ft2_glyph_outline_unref,
-	nr_typeface_ft2_glyph_advance_get,
-	nr_typeface_ft2_lookup,
-
-	nr_typeface_ft2_font_new,
-	nr_typeface_ft2_font_free,
-
-	nr_font_generic_glyph_outline_get,
-	nr_font_generic_glyph_outline_unref,
-	nr_font_generic_glyph_advance_get,
-	nr_font_generic_glyph_area_get,
-
-	nr_font_generic_rasterfont_new,
-	nr_font_generic_rasterfont_free,
-
-	nr_rasterfont_generic_glyph_advance_get,
-	nr_rasterfont_generic_glyph_area_get,
-	nr_rasterfont_generic_glyph_mask_render
-};
+static NRFont *nr_typeface_ft2_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
+static void nr_typeface_ft2_font_free (NRFont *font);
 
 static FT_Library ft_library = NULL;
 
-void
-nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
-		       const unsigned char *name,
-		       const unsigned char *family,
-		       const unsigned char *file,
-		       unsigned int face)
+static NRTypeFaceClass *parent_class;
+
+unsigned int
+nr_typeface_ft2_get_type (void)
 {
-	dft2->def.vmv = &nr_type_ft2_vmv;
-	dft2->def.name = strdup (name);
-	dft2->def.family = strdup (family);
-	dft2->def.typeface = NULL;
-	dft2->file = strdup (file);
-	dft2->face = face;
+	static unsigned int type = 0;
+	if (!type) {
+		type = nr_object_register_type (NR_TYPE_TYPEFACE,
+						"NRTypeFaceFT2",
+						sizeof (NRTypeFaceFT2Class),
+						sizeof (NRTypeFaceFT2),
+						(void (*) (NRObjectClass *)) nr_typeface_ft2_class_init,
+						(void (*) (NRObject *)) nr_typeface_ft2_init);
+	}
+	return type;
 }
 
-static NRTypeFace *
-nr_typeface_ft2_new (NRTypeFaceDef *def)
+static void
+nr_typeface_ft2_class_init (NRTypeFaceFT2Class *klass)
 {
-	NRTypeFaceDefFT2 *dft2;
+	NRObjectClass *object_class;
+	NRTypeFaceClass *tface_class;
+
+	object_class = (NRObjectClass *) klass;
+	tface_class = (NRTypeFaceClass *) klass;
+
+	parent_class = (NRTypeFaceClass *) (((NRObjectClass *) klass)->parent);
+
+	object_class->finalize = nr_typeface_ft2_finalize;
+
+	tface_class->setup = nr_typeface_ft2_setup;
+	tface_class->attribute_get = nr_typeface_ft2_attribute_get;
+	tface_class->glyph_outline_get = nr_typeface_ft2_glyph_outline_get;
+	tface_class->glyph_outline_unref = nr_typeface_ft2_glyph_outline_unref;
+	tface_class->glyph_advance_get = nr_typeface_ft2_glyph_advance_get;
+	tface_class->lookup = nr_typeface_ft2_lookup;
+
+	tface_class->font_new = nr_typeface_ft2_font_new;
+	tface_class->font_free = nr_typeface_ft2_font_free;
+}
+
+static void
+nr_typeface_ft2_init (NRTypeFaceFT2 *tff)
+{
+	NRTypeFace *tface;
+
+	tface = (NRTypeFace *) tff;
+
+	tface->nglyphs = 1;
+}
+
+static void
+nr_typeface_ft2_finalize (NRObject *object)
+{
 	NRTypeFaceFT2 *tff;
+
+	tff = (NRTypeFaceFT2 *) object;
+
+	if (tff->ft_face) {
+		FT_Done_Face (tff->ft_face);
+		if (tff->slots) {
+			int i;
+			for (i = 0; i < tff->slots_length; i++) {
+				if (tff->slots[i].outline.path > 0) {
+					nr_free (tff->slots[i].outline.path);
+				}
+			}
+			nr_free (tff->slots);
+		}
+		if (tff->hgidx) nr_free (tff->hgidx);
+		if (tff->vgidx) nr_free (tff->vgidx);
+	}
+
+	((NRObjectClass *) (parent_class))->finalize (object);
+}
+
+static void
+nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def)
+{
+	NRTypeFaceFT2 *tff;
+	NRTypeFaceDefFT2 *dft2;
 	FT_Face ft_face;
 	FT_Error ft_result;
 
+	tff = (NRTypeFaceFT2 *) tface;
 	dft2 = (NRTypeFaceDefFT2 *) def;
+
+	((NRTypeFaceClass *) (parent_class))->setup (tface, def);
 
 	if (!ft_library) {
 		ft_result = FT_Init_FreeType (&ft_library);
 		if (ft_result != FT_Err_Ok) {
 			fprintf (stderr, "Error initializing FreeType2 library");
-			return NULL;
+			return;
 		}
 	}
 
 	ft_result = FT_New_Face (ft_library, dft2->file, dft2->face, &ft_face);
 	if (ft_result != FT_Err_Ok) {
 		fprintf (stderr, "Error loading typeface from file %s:%d", dft2->file, dft2->face);
-		return NULL;
+		return;
 	}
 
 	/* fixme: Test scalability */
-
-	tff = nr_new (NRTypeFaceFT2, 1);
-
-	tff->typeface.vmv = def->vmv;
-	tff->typeface.refcount = 1;
-	tff->typeface.def = def;
 
 	tff->ft_face = ft_face;
 
@@ -132,36 +162,28 @@ nr_typeface_ft2_new (NRTypeFaceDef *def)
 	tff->slots = NULL;
 	tff->slots_length = 0;
 	tff->slots_size = 0;
-
-	return (NRTypeFace *) tff;
 }
+
+static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_h (NRTypeFaceFT2 *tff, unsigned int glyph);
+static NRTypeFaceGlyphFT2 *nr_typeface_ft2_ensure_slot_v (NRTypeFaceFT2 *tff, unsigned int glyph);
+static NRBPath *nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, unsigned int glyph, unsigned int metrics);
 
 void
-nr_typeface_ft2_free (NRTypeFace *tf)
+nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
+		       const unsigned char *name,
+		       const unsigned char *family,
+		       const unsigned char *file,
+		       unsigned int face)
 {
-	NRTypeFaceFT2 *tff;
-
-	tff = (NRTypeFaceFT2 *) tf;
-
-	if (tff->ft_face) {
-		FT_Done_Face (tff->ft_face);
-		if (tff->slots) {
-			int i;
-			for (i = 0; i < tff->slots_length; i++) {
-				if (tff->slots[i].outline.path > 0) {
-					nr_free (tff->slots[i].outline.path);
-				}
-			}
-			nr_free (tff->slots);
-		}
-		if (tff->hgidx) nr_free (tff->hgidx);
-		if (tff->vgidx) nr_free (tff->vgidx);
-	}
-
-	nr_free (tff);
+	dft2->def.type = NR_TYPE_TYPEFACE_FT2;
+	dft2->def.name = strdup (name);
+	dft2->def.family = strdup (family);
+	dft2->def.typeface = NULL;
+	dft2->file = strdup (file);
+	dft2->face = face;
 }
 
-unsigned int
+static unsigned int
 nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size)
 {
 	NRTypeFaceFT2 *tff;
@@ -195,7 +217,7 @@ nr_typeface_ft2_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	return strlen (val);
 }
 
-NRBPath *
+static NRBPath *
 nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
 {
 	NRTypeFaceFT2 *tff;
@@ -226,7 +248,7 @@ nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 	return d;
 }
 
-void
+static void
 nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics)
 {
 	NRTypeFaceFT2 *tff;
@@ -249,7 +271,7 @@ nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 	}
 }
 
-NRPointF *
+static NRPointF *
 nr_typeface_ft2_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv)
 {
 	NRTypeFaceFT2 *tff;
@@ -271,7 +293,7 @@ nr_typeface_ft2_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 	return NULL;
 }
 
-unsigned int
+static unsigned int
 nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 {
 	NRTypeFaceFT2 *tff;
@@ -291,7 +313,7 @@ nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	return 0;
 }
 
-NRFont *
+static NRFont *
 nr_typeface_ft2_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform)
 {
 	NRTypeFaceFT2 *tff;
@@ -317,7 +339,7 @@ nr_typeface_ft2_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *trans
 	return font;
 }
 
-void
+static void
 nr_typeface_ft2_font_free (NRFont *font)
 {
 	NRTypeFaceFT2 *tff;

@@ -10,7 +10,13 @@
  * This code is in public domain
  */
 
+#define NR_TYPE_TYPEFACE_FT2 (nr_typeface_ft2_get_type ())
+#define NR_TYPEFACE_FT2(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_TYPEFACE_FT2, NRTypeFaceFT2))
+#define NR_IS_TYPEFACE_FT2(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_TYPEFACE_FT2))
+
 typedef struct _NRTypeFaceFT2 NRTypeFaceFT2;
+typedef struct _NRTypeFaceFT2Class NRTypeFaceFT2Class;
+
 typedef struct _NRTypeFaceDefFT2 NRTypeFaceDefFT2;
 typedef struct _NRTypeFaceGlyphFT2 NRTypeFaceGlyphFT2;
 
@@ -45,6 +51,10 @@ struct _NRTypeFaceFT2 {
 	NRTypeFaceGlyphFT2 *slots;
 	unsigned int slots_length;
 	unsigned int slots_size;
+};
+
+struct _NRTypeFaceFT2Class {
+	NRTypeFaceClass typeface_class;
 };
 
 void

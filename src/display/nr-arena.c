@@ -12,30 +12,15 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#if 0
-#include <glib-object.h>
-#include <gtk/gtkmarshal.h>
-#endif
 #include "nr-arena-item.h"
 #include "nr-arena.h"
 #include "../libnr/nr-rect.h"
-
-#if 0
-enum {
-	REQUEST_UPDATE,
-	REQUEST_RENDER,
-	LAST_SIGNAL
-};
-#endif
 
 static void nr_arena_class_init (NRArenaClass *klass);
 static void nr_arena_init (NRArena *arena);
 static void nr_arena_finalize (NRObject *object);
 
 static NRActiveObjectClass *parent_class;
-#if 0
-static guint signals[LAST_SIGNAL] = {0};
-#endif
 
 unsigned int
 nr_arena_get_type (void)
@@ -60,37 +45,6 @@ nr_arena_class_init (NRArenaClass *klass)
 	object_class = (NRObjectClass *) klass;
 
 	parent_class = (NRActiveObjectClass *) (((NRObjectClass *) klass)->parent);
-
-#if 0
-	signals[ITEM_ADDED] = g_signal_new ("item_added",
-					    G_TYPE_FROM_CLASS (klass),
-					    G_SIGNAL_RUN_FIRST,
-					    G_STRUCT_OFFSET(NRArenaClass, item_added),
-					    NULL, NULL,
-					    gtk_marshal_NONE__POINTER,
-					    G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[REMOVE_ITEM] = g_signal_new ("remove_item",
-					     G_TYPE_FROM_CLASS (klass),
-					     G_SIGNAL_RUN_FIRST,
-					     G_STRUCT_OFFSET (NRArenaClass, remove_item),
-					     NULL, NULL,
-					     gtk_marshal_NONE__POINTER,
-					     G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[REQUEST_UPDATE] = g_signal_new ("request_update",
-						G_TYPE_FROM_CLASS (klass),
-						G_SIGNAL_RUN_FIRST,
-						G_STRUCT_OFFSET (NRArenaClass, request_update),
-						NULL, NULL,
-						gtk_marshal_NONE__POINTER,
-						G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[REQUEST_RENDER] = g_signal_new ("request_render",
-						G_TYPE_FROM_CLASS (klass),
-						G_SIGNAL_RUN_FIRST,
-						G_STRUCT_OFFSET (NRArenaClass, request_render),
-						NULL, NULL,
-						gtk_marshal_NONE__POINTER,
-						G_TYPE_NONE, 1, G_TYPE_POINTER);
-#endif
 
 	object_class->finalize = nr_arena_finalize;
 }
@@ -154,10 +108,6 @@ nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 			avector->request_update (arena, item, listener->data);
 		}
 	}
-
-#if 0
-	g_signal_emit (G_OBJECT (arena), signals [REQUEST_UPDATE], 0, item);
-#endif
 }
 
 void
@@ -180,9 +130,6 @@ nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 				avector->request_render (arena, area, listener->data);
 			}
 		}
-#if 0
-		g_signal_emit (G_OBJECT (arena), signals [REQUEST_RENDER], 0, area);
-#endif
 	}
 }
 

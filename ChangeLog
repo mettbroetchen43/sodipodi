@@ -1,5 +1,7 @@
 2003-04-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnrtype/nr-typeface.h: Port to NRObject
+
 	* src/display/canvas-arena.c (sp_canvas_arena_init): Use active object
 	listener instead of g-signals
 	(sp_canvas_arena_destroy): Ditto
