@@ -4,7 +4,7 @@ module_libs = modules/libspmodules.a
 module_src = module.c module.h
 
 if USE_KDE
-kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT)
+kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT) $(KDE_LDFLAGS)
 kdeldflags = $(KDE_RPATH)
 endif
 
