@@ -22,9 +22,9 @@ Sodipodi is a SVG based generic vector-drawing program for Linux/Unix/Windows.
 MYCFLAGS="$RPM_OPT_FLAGS"
 
 if [ ! -x configure ]; then
-  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%{_prefix} --localstatedir=%{_localstatedir} --sysconfdir=%{_sysconfdir} --without-bonobo
+  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%{_prefix} --localstatedir=%{_localstatedir} --sysconfdir=%{_sysconfdir}
 else
-  %configure --without-bonobo
+  %configure 
 fi
 make
 
@@ -38,14 +38,18 @@ rm -rf %{buildroot}
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
-%{_bindir}/*
-%{_datadir}/gnome/apps/Graphics/*
+%{_bindir}/sodipodi
+%{_libdir}/sodipodi/extensions/*
+%{_datadir}/applications/sodipodi.desktop
 %{_datadir}/locale/*/LC_MESSAGES/sodipodi.mo
 %{_datadir}/pixmaps/*
 %{_datadir}/sodipodi/*
 %{_mandir}/man1/*
 
 %changelog
+* Thu May 01 2003 Christian Schaller <uraeus@gnome.org>
+- Fix up the spec file for current release
+
 * Mon Sep 23 2002 Dag Wieers <dag@wieers.com>
 - Update to 0.2.6
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-03-03 14:44+0100\n"
+"POT-Creation-Date: 2003-05-01 11:19+0200\n"
 "PO-Revision-Date: 2003-03-03 14:59+0100\n"
 "Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
@@ -14,34 +14,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sodipodi.desktop.in.h:1 src/toolbox.c:111 src/toolbox.c:133
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector illustrator"
+msgstr ""
+
+#: sodipodi.desktop.in.h:2 src/toolbox.c:119 src/toolbox.c:143
 msgid "Sodipodi"
 msgstr "Sodipodi"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr ""
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Impossibile creare la fabbrica di sodipodi-svg-doc"
 
 #. Sticky zoom
-#: src/desktop.c:726
+#: src/desktop.c:735
 msgid "Zoom drawing if window size changes"
 msgstr ""
 
-#: src/desktop.c:806
+#: src/desktop.c:819
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:935
+#: src/desktop.c:948
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Il documento %s ha dei cambiamenti non salvati, salvarli?"
 
-#: src/dialogs/align.c:151 src/toolbox.c:388
+#. Page page
+#: src/desktop.c:1468 src/dialogs/align.c:266
+#: src/dialogs/desktop-properties.c:423 src/dialogs/document-properties.c:164
+#: src/dialogs/export.c:135 src/interface.c:368
+msgid "Page"
+msgstr "Pagina"
+
+#: src/desktop.c:1472 src/dialogs/align.c:267 src/dialogs/export.c:140
+#: src/interface.c:367
+msgid "Drawing"
+msgstr "Disegno"
+
+#. Selection submenu
+#: src/desktop.c:1476 src/dialogs/align.c:268 src/dialogs/export.c:145
+#: src/interface.c:366 src/interface.c:510 src/toolbox.c:437
+msgid "Selection"
+msgstr "Selezione"
+
+#: src/dialogs/align.c:151 src/toolbox.c:398
 msgid "Align objects"
 msgstr "Allinea oggetti"
 
@@ -142,23 +160,6 @@ msgstr "L'elemento piú grosso"
 #: src/dialogs/align.c:265
 msgid "Smallest item"
 msgstr "L'elemento più piccolo"
-
-#. Page page
-#: src/dialogs/align.c:266 src/dialogs/desktop-properties.c:423
-#: src/dialogs/document-properties.c:164 src/dialogs/export.c:135
-#: src/interface.c:368
-msgid "Page"
-msgstr "Pagina"
-
-#: src/dialogs/align.c:267 src/dialogs/export.c:140 src/interface.c:367
-msgid "Drawing"
-msgstr "Disegno"
-
-#. Selection submenu
-#: src/dialogs/align.c:268 src/dialogs/export.c:145 src/interface.c:366
-#: src/interface.c:510 src/toolbox.c:427
-msgid "Selection"
-msgstr "Selezione"
 
 #: src/dialogs/desktop-properties.c:223
 msgid "Desktop settings"
@@ -649,7 +650,7 @@ msgstr ""
 msgid "Position and size"
 msgstr "Posizione"
 
-#: src/dialogs/stroke-style.c:545 src/toolbox.c:384
+#: src/dialogs/stroke-style.c:545 src/toolbox.c:394
 #, fuzzy
 msgid "Stroke settings"
 msgstr "Parametri del desktop"
@@ -901,27 +902,62 @@ msgstr "angolo"
 msgid "Defaults"
 msgstr ""
 
-#: src/print.c:332
-#, c-format
-msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (nome del doc %s..): Anteprima di stampa"
+#: src/helper/kde.cpp:109
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*|All files"
+msgstr ""
 
-#: src/print.c:355
+#: src/helper/kde.cpp:109
+#, fuzzy
+msgid "Open SVG file"
+msgstr "File"
+
+#: src/module.c:520 src/file.c:174
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: src/module.c:520 src/file.c:174
+msgid "Sodipodi native file format and W3C standard"
+msgstr ""
+
+#: src/module.c:528 src/file.c:277
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: src/module.c:529 src/file.c:278
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr ""
+
+#: src/module.c:532 src/file.c:281
+msgid "Plain SVG"
+msgstr ""
+
+#: src/module.c:533 src/file.c:282
+msgid "Scalable Vector Graphics format"
+msgstr ""
+
+#: src/print.c:207
 #, fuzzy
 msgid "Select printer"
 msgstr "Selezione"
 
-#: src/print.c:395 src/print.c:406
+#: src/print.c:612 src/print.c:623
 #, fuzzy
 msgid "Print destination"
 msgstr "Stampa il disegno"
 
-#: src/print.c:413
+#: src/print.c:630
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+
+#: src/print.c:899
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (nome del doc %s..): Anteprima di stampa"
 
 #. rx_ratio
 #: src/rect-context.c:396
@@ -977,44 +1013,20 @@ msgstr "Posizione"
 msgid "Make sides flat"
 msgstr ""
 
-#: src/file.c:145
+#: src/file.c:157
 msgid "Select file to open"
 msgstr "Selezione il file da aprire"
 
-#: src/file.c:162
-msgid "Scalable Vector Graphic (SVG)"
-msgstr ""
-
-#: src/file.c:162
-msgid "Sodipodi native file format and W3C standard"
-msgstr ""
-
-#: src/file.c:168 src/file.c:273
+#: src/file.c:180 src/file.c:286
 #, fuzzy
 msgid "File type:"
 msgstr "Stile di riempimento"
 
-#: src/file.c:247
+#: src/file.c:260
 msgid "Save file"
 msgstr "Salva il file"
 
-#: src/file.c:264
-msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr ""
-
-#: src/file.c:265
-msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr ""
-
-#: src/file.c:268
-msgid "Plain SVG"
-msgstr ""
-
-#: src/file.c:269
-msgid "Scalable Vector Graphics format"
-msgstr ""
-
-#: src/file.c:436
+#: src/file.c:449
 msgid "Select file to import"
 msgstr "Seleziona il file da importare"
 
@@ -1082,7 +1094,6 @@ msgid "Percent"
 msgstr "Percentuale"
 
 #: src/helper/units.c:46
-#, c-format
 msgid "%"
 msgstr "%"
 
@@ -1244,12 +1255,12 @@ msgid "Cleanup"
 msgstr ""
 
 #. Selection:Group
-#: src/interface.c:260 src/sp-item-group.c:516
+#: src/interface.c:260 src/sp-item-group.c:526
 msgid "Group"
 msgstr ""
 
 #. Selection:Ungroup
-#: src/interface.c:265 src/sp-item-group.c:533
+#: src/interface.c:265 src/sp-item-group.c:543
 msgid "Ungroup"
 msgstr ""
 
@@ -1288,7 +1299,7 @@ msgid "Lower"
 msgstr ""
 
 #. View:Zoom
-#: src/interface.c:362 src/interface.c:399 src/toolbox.c:606
+#: src/interface.c:362 src/interface.c:399 src/toolbox.c:616
 msgid "Zoom"
 msgstr "Ingrandimento"
 
@@ -1343,12 +1354,12 @@ msgid "Arc"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/interface.c:394 src/sp-star.c:475
+#: src/interface.c:394 src/sp-star.c:495
 msgid "Star"
 msgstr "Stella"
 
 #. Create toplevel menuitem
-#: src/interface.c:395 src/sp-spiral.c:606
+#: src/interface.c:395 src/sp-spiral.c:620
 msgid "Spiral"
 msgstr "Spirale"
 
@@ -1424,12 +1435,12 @@ msgstr "Rifai"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:498 src/toolbox.c:308
+#: src/interface.c:498 src/toolbox.c:318
 msgid "File"
 msgstr "File"
 
 #. Edit submenu
-#: src/interface.c:504 src/toolbox.c:345 src/widgets/gradient-selector.c:135
+#: src/interface.c:504 src/toolbox.c:355 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Modifica"
 
@@ -1455,87 +1466,87 @@ msgstr ""
 msgid "Filters"
 msgstr "File"
 
-#: src/main.c:113
+#: src/main.c:117
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 
-#: src/main.c:116
+#: src/main.c:120
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 
-#: src/main.c:119
+#: src/main.c:123
 #, fuzzy
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Apri un file specificato (le opzioni possono essere escluse)"
 
-#: src/main.c:120 src/main.c:123 src/main.c:126 src/main.c:140
+#: src/main.c:124 src/main.c:127 src/main.c:130 src/main.c:144
 msgid "FILENAME"
 msgstr "NOMEFILE"
 
-#: src/main.c:122
+#: src/main.c:126
 #, fuzzy
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Stampa i file sullo specifico file di output (usa '| programma' per la pipe)"
 
-#: src/main.c:125
+#: src/main.c:129
 #, fuzzy
 msgid "Export document to png file"
 msgstr "Esporta il disegno come png"
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
-#: src/main.c:129
+#: src/main.c:133
 msgid "DPI"
 msgstr ""
 
-#: src/main.c:131
+#: src/main.c:135
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:132
+#: src/main.c:136
 msgid "x0:y0:x1:y1"
 msgstr ""
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "WIDTH"
 msgstr ""
 
-#: src/main.c:136
+#: src/main.c:140
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:136
+#: src/main.c:140
 msgid "HEIGHT"
 msgstr ""
 
-#: src/main.c:138
+#: src/main.c:142
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
-#: src/main.c:138
+#: src/main.c:142
 msgid "COLOR"
 msgstr ""
 
-#: src/main.c:140
+#: src/main.c:144
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:142
+#: src/main.c:146
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Mostra i file uno per uno, passa al successivo ad ogni evento di tastiera/"
 "mouse"
 
-#: src/main.c:144
+#: src/main.c:148
 msgid "Prefer SVG icons (file icons.svg) to pixmap ones"
 msgstr ""
 
@@ -1544,26 +1555,26 @@ msgstr ""
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/sodipodi.c:391
+#: src/sodipodi.c:393
 #, fuzzy
 msgid "Untitled document"
 msgstr "Documento senza nome %d"
 
 #. Show nice dialog box
-#: src/sodipodi.c:416
+#: src/sodipodi.c:418
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
-#: src/sodipodi.c:417
+#: src/sodipodi.c:419
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
-#: src/sodipodi.c:418
+#: src/sodipodi.c:420
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
-#: src/sodipodi.c:555
+#: src/sodipodi.c:559
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1574,7 +1585,7 @@ msgstr ""
 "Anche se sodipodi sarà eseguito, non sarà \n"
 "possibile caricare o salvare le preferenze\n"
 
-#: src/sodipodi.c:558
+#: src/sodipodi.c:562
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1589,7 +1600,7 @@ msgstr ""
 "non sarà possibile caricare o salvare \n"
 "le preferenze."
 
-#: src/sodipodi.c:563
+#: src/sodipodi.c:567
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1602,7 +1613,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:579
 #, fuzzy, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1613,7 +1624,7 @@ msgstr ""
 "Anche se sodipodi sarà eseguito, non sarà \n"
 "possibile caricare o salvare le preferenze\n"
 
-#: src/sodipodi.c:578
+#: src/sodipodi.c:582
 #, fuzzy, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1627,7 +1638,7 @@ msgstr ""
 "non sarà possibile caricare o salvare \n"
 "le preferenze."
 
-#: src/sodipodi.c:582
+#: src/sodipodi.c:586
 #, fuzzy, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1639,7 +1650,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:925
+#: src/sodipodi.c:929
 #, fuzzy, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1652,7 +1663,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:929
+#: src/sodipodi.c:933
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1661,7 +1672,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:933
+#: src/sodipodi.c:937
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1670,7 +1681,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:937
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1679,7 +1690,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:947
+#: src/sodipodi.c:951
 #, fuzzy, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1691,7 +1702,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:954
 #, fuzzy, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1703,7 +1714,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:953
+#: src/sodipodi.c:957
 #, fuzzy, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1715,7 +1726,7 @@ msgstr ""
 "non sarà possibile caricare o salvare\n"
 "le preferenze."
 
-#: src/sodipodi.c:956
+#: src/sodipodi.c:960
 #, fuzzy, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1803,303 +1814,303 @@ msgstr "Elemento sconosciuto :-("
 msgid "Image URI:"
 msgstr "Immagine"
 
-#: src/sp-item-group.c:454
+#: src/sp-item-group.c:464
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppo di %d oggetti"
 
 #. Group dialog
-#: src/sp-item-group.c:520
+#: src/sp-item-group.c:530
 msgid "Group Properties"
 msgstr "Proprietà del gruppo"
 
-#: src/sp-item.c:560
+#: src/sp-item.c:533
 msgid "Unknown item :-("
 msgstr "Elemento sconosciuto :-("
 
 #. Create toplevel menuitem
-#: src/sp-item.c:880
+#: src/sp-item.c:853
 msgid "Item"
 msgstr "Oggetto"
 
 #. Item dialog
-#: src/sp-item.c:883
+#: src/sp-item.c:856
 msgid "Item Properties"
 msgstr "Proprietà dell'oggetto"
 
 #. Select item
-#: src/sp-item.c:893
+#: src/sp-item.c:866
 msgid "Select this"
 msgstr "Seleziona questo"
 
 #. Reset transformations
-#: src/sp-item.c:903
+#: src/sp-item.c:876
 msgid "Reset transformation"
 msgstr "Annulla la trasformazione"
 
-#: src/sp-item.c:909
+#: src/sp-item.c:882
 msgid "Make sensitive"
 msgstr ""
 
-#: src/sp-item.c:909
+#: src/sp-item.c:882
 msgid "Make insensitive"
 msgstr ""
 
 #. Create link
-#: src/sp-item.c:914
+#: src/sp-item.c:887
 msgid "Create link"
 msgstr "Crea link"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:562
+#: src/sp-rect.c:513
 #, fuzzy
 msgid "Rect"
 msgstr "Oggetto"
 
 #. Link dialog
-#: src/sp-rect.c:565
+#: src/sp-rect.c:516
 #, fuzzy
 msgid "Rect Properties"
 msgstr "Proprietá del testo"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:332
+#: src/sp-shape.c:551
 msgid "Shape"
 msgstr "Forma"
 
 #. Item dialog
-#: src/sp-shape.c:335 src/toolbox.c:385
+#: src/sp-shape.c:554 src/toolbox.c:395
 msgid "Fill settings"
 msgstr "Impostazioni del riempimento"
 
 #. Link dialog
-#: src/sp-spiral.c:609
+#: src/sp-spiral.c:623
 msgid "Spiral Properties"
 msgstr "Proprietà della spirale"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:498
 msgid "Star Properties"
 msgstr "Proprietà della stella"
 
 #. fixme:
-#: src/sp-text.c:1290
+#: src/sp-text.c:1298
 #, fuzzy
 msgid "Text object"
 msgstr "Oggetto del testo"
 
-#: src/toolbox.c:311
+#: src/toolbox.c:321
 msgid "Create new SVG document"
 msgstr "Crea un nuovo documento SVG"
 
-#: src/toolbox.c:312
+#: src/toolbox.c:322
 msgid "Open existing SVG document"
 msgstr "Apri un documento SVG esistente"
 
-#: src/toolbox.c:313
+#: src/toolbox.c:323
 msgid "Save document"
 msgstr "Salva il documento"
 
-#: src/toolbox.c:314
+#: src/toolbox.c:324
 msgid "Save document under new name"
 msgstr "Salva il documento con un nuovo nome"
 
-#: src/toolbox.c:315
+#: src/toolbox.c:325
 #, fuzzy
 msgid "Print document"
 msgstr "Documento senza nome %d"
 
-#: src/toolbox.c:316
+#: src/toolbox.c:326
 #, fuzzy
 msgid "Preview document printout"
 msgstr "Anteprima di stampa"
 
-#: src/toolbox.c:320
+#: src/toolbox.c:330
 msgid "Import bitmap or SVG image into document"
 msgstr ""
 
-#: src/toolbox.c:321
+#: src/toolbox.c:331
 #, fuzzy
 msgid "Export document as PNG bitmap"
 msgstr "Esporta il disegno come png"
 
-#: src/toolbox.c:348
+#: src/toolbox.c:358
 #, fuzzy
 msgid "Revert last action"
 msgstr "Annulla la trasformazione"
 
-#: src/toolbox.c:351
+#: src/toolbox.c:361
 msgid "Do again undone action"
 msgstr ""
 
-#: src/toolbox.c:353
+#: src/toolbox.c:363
 #, fuzzy
 msgid "Delete selected objects"
 msgstr "Cancella i nodi selezionati"
 
-#: src/toolbox.c:354
+#: src/toolbox.c:364
 #, fuzzy
 msgid "Cut selected objects to clipboard"
 msgstr "Converti gli oggetti selezionati in curve"
 
-#: src/toolbox.c:355
+#: src/toolbox.c:365
 #, fuzzy
 msgid "Copy selected objects to clipboard"
 msgstr "Copia la selezione"
 
-#: src/toolbox.c:356
+#: src/toolbox.c:366
 #, fuzzy
 msgid "Paste objects from clipboard"
 msgstr "Incolla dal clipboard"
 
-#: src/toolbox.c:357
+#: src/toolbox.c:367
 msgid "Duplicate selected objects"
 msgstr "Duplica gli oggetti selezionati"
 
-#: src/toolbox.c:381
+#: src/toolbox.c:391
 msgid "Object"
 msgstr "Oggetto"
 
-#: src/toolbox.c:386
+#: src/toolbox.c:396
 #, fuzzy
 msgid "Object size and position"
 msgstr "Alza la selezione al punto piú alto"
 
-#: src/toolbox.c:387
+#: src/toolbox.c:397
 #, fuzzy
 msgid "Text and font settings"
 msgstr "Parametri del desktop"
 
-#: src/toolbox.c:389
+#: src/toolbox.c:399
 #, fuzzy
 msgid "Object transformations"
 msgstr "Annulla la trasformazione"
 
 #. START COMPONENTS
-#: src/toolbox.c:396
+#: src/toolbox.c:406
 #, fuzzy
 msgid "Flip selected objects horizontally"
 msgstr "Capovolgi gli oggetti selezionati"
 
-#: src/toolbox.c:397
+#: src/toolbox.c:407
 #, fuzzy
 msgid "Flip selected objects vertically"
 msgstr "Capovolgi gli oggetti selezionati"
 
-#: src/toolbox.c:401
+#: src/toolbox.c:411
 #, fuzzy
 msgid "Rotate object 90 deg clockwise"
 msgstr "Ruota gli oggetti selezionati di 90° in senso orario"
 
-#: src/toolbox.c:402
+#: src/toolbox.c:412
 #, fuzzy
 msgid "Remove transformations"
 msgstr "Rimuovi la trasformazione"
 
-#: src/toolbox.c:403
+#: src/toolbox.c:413
 #, fuzzy
 msgid "Convert object to curve"
 msgstr "Converti gli oggetti selezionati in curve"
 
-#: src/toolbox.c:430
+#: src/toolbox.c:440
 #, fuzzy
 msgid "Raise selected objects to top"
 msgstr "Alza la selezione al punto piú alto"
 
-#: src/toolbox.c:431
+#: src/toolbox.c:441
 #, fuzzy
 msgid "Raise selected objects one level"
 msgstr "Alza la selezione al punto piú alto"
 
-#: src/toolbox.c:432
+#: src/toolbox.c:442
 #, fuzzy
 msgid "Combine multiple paths"
 msgstr "Combina le parti selezionate"
 
-#: src/toolbox.c:433
+#: src/toolbox.c:443
 msgid "Group selected objects"
 msgstr "Raggruppa le parti selezionate"
 
-#: src/toolbox.c:434
+#: src/toolbox.c:444
 #, fuzzy
 msgid "Lower selected objects to bottom"
 msgstr "Abbassa la selezione al punto piú basso"
 
-#: src/toolbox.c:435
+#: src/toolbox.c:445
 #, fuzzy
 msgid "Lower selected objects one level"
 msgstr "Abbassa la selezione al punto piú basso"
 
-#: src/toolbox.c:436
+#: src/toolbox.c:446
 #, fuzzy
 msgid "Break selected path to subpaths"
 msgstr "Spezza le parti selezionate"
 
-#: src/toolbox.c:437
+#: src/toolbox.c:447
 #, fuzzy
 msgid "Ungroup selected group"
 msgstr "Degruppa le parti selezionate"
 
-#: src/toolbox.c:460
+#: src/toolbox.c:470
 msgid "Draw"
 msgstr "Disegno"
 
 #. Select
-#: src/toolbox.c:465
+#: src/toolbox.c:475
 #, fuzzy
 msgid "Select tool - select and transform objects"
 msgstr "Seleziona e trasforma"
 
 #. Node
-#: src/toolbox.c:472
+#: src/toolbox.c:482
 msgid "Node tool - modify different aspects of existing objects"
 msgstr ""
 
 #. START COMPONENTS
 #. Rect
-#: src/toolbox.c:484
+#: src/toolbox.c:494
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
 
-#: src/toolbox.c:485
+#: src/toolbox.c:495
 msgid "Arc tool - create circles, ellipses and arcs"
 msgstr ""
 
-#: src/toolbox.c:486
+#: src/toolbox.c:496
 msgid "Star tool - create stars and polygons"
 msgstr ""
 
-#: src/toolbox.c:487
+#: src/toolbox.c:497
 msgid "Spiral tool - create spirals"
 msgstr ""
 
 #. START COMPONENTS
 #. Rect
-#: src/toolbox.c:502
+#: src/toolbox.c:512
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr ""
 
-#: src/toolbox.c:503
+#: src/toolbox.c:513
 msgid "Pen tool - draw exactly positioned curved lines"
 msgstr ""
 
-#: src/toolbox.c:504
+#: src/toolbox.c:514
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr ""
 
 #. Text
-#: src/toolbox.c:513
+#: src/toolbox.c:523
 msgid "Text tool - create editable text objects"
 msgstr ""
 
 #. Zoom
-#: src/toolbox.c:519
+#: src/toolbox.c:529
 msgid "Zoom tool - zoom into choosen area"
 msgstr ""
 
 #. Dropper
-#: src/toolbox.c:525
+#: src/toolbox.c:535
 msgid "Dropper tool - pick averaged colors from image"
 msgstr ""
 
@@ -2107,87 +2118,87 @@ msgstr ""
 #. routine for creating them
 #. Create the extension toolbox
 #. Todo: Make it able to create required boxes dynamically
-#: src/toolbox.c:563
+#: src/toolbox.c:573
 #, fuzzy
 msgid "Extension"
 msgstr "Dimensione"
 
-#: src/toolbox.c:609
+#: src/toolbox.c:619
 #, fuzzy
 msgid "Zoom in drawing"
 msgstr "Adatta al disegno"
 
-#: src/toolbox.c:610
+#: src/toolbox.c:620
 #, fuzzy
 msgid "Set zoom factor to 2:1"
 msgstr "Porta a 2:1"
 
-#: src/toolbox.c:611
+#: src/toolbox.c:621
 #, fuzzy
 msgid "Set zoom factor to 1:1"
 msgstr "Porta a 1:1"
 
-#: src/toolbox.c:612
+#: src/toolbox.c:622
 #, fuzzy
 msgid "Set zoom factor to 1:2"
 msgstr "Porta a 1:2"
 
-#: src/toolbox.c:613
+#: src/toolbox.c:623
 #, fuzzy
 msgid "Zoom out drawing"
 msgstr "Adatta al disegno"
 
-#: src/toolbox.c:614
+#: src/toolbox.c:624
 msgid "Fit the whole page into window"
 msgstr ""
 
-#: src/toolbox.c:615
+#: src/toolbox.c:625
 msgid "Fit the whole drawing into window"
 msgstr ""
 
-#: src/toolbox.c:616
+#: src/toolbox.c:626
 msgid "Fit the whole selection into window"
 msgstr ""
 
-#: src/toolbox.c:640
+#: src/toolbox.c:650
 msgid "Nodes"
 msgstr "Nodi"
 
-#: src/toolbox.c:643
+#: src/toolbox.c:653
 #, fuzzy
 msgid "Insert new nodes into selected segments"
 msgstr "Includi un nodo nei segmenti selezionati"
 
-#: src/toolbox.c:644
+#: src/toolbox.c:654
 #, fuzzy
 msgid "Break line at selected nodes"
 msgstr "Aguzza le linee ai nodi selezionati"
 
-#: src/toolbox.c:645
+#: src/toolbox.c:655
 #, fuzzy
 msgid "Make selected nodes corner"
 msgstr "Cancella i nodi selezionati"
 
-#: src/toolbox.c:646
+#: src/toolbox.c:656
 #, fuzzy
 msgid "Make selected segments lines"
 msgstr "Converti i segmenti selezionati in linee"
 
-#: src/toolbox.c:647
+#: src/toolbox.c:657
 msgid "Delete selected nodes"
 msgstr "Cancella i nodi selezionati"
 
-#: src/toolbox.c:648
+#: src/toolbox.c:658
 #, fuzzy
 msgid "Join lines at selected nodes"
 msgstr "Smussa la linea ai nodi selezionati"
 
-#: src/toolbox.c:649
+#: src/toolbox.c:659
 #, fuzzy
 msgid "Make selected nodes smooth"
 msgstr "Cancella i nodi selezionati"
 
-#: src/toolbox.c:650
+#: src/toolbox.c:660
 #, fuzzy
 msgid "Make selected segments curves"
 msgstr "Converti i segmenti selezionati in curve"
@@ -3250,10 +3261,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Groups selected items"
 #~ msgstr "Raggruppa le parti selezionate"
-
-#, fuzzy
-#~ msgid "Open File"
-#~ msgstr "File"
 
 #, fuzzy
 #~ msgid "Save File"

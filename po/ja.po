@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.27\n"
-"POT-Creation-Date: 2003-02-22 15:13+0200\n"
+"POT-Creation-Date: 2003-05-01 11:19+0200\n"
 "PO-Revision-Date: 2003-01-19 17:08+0900\n"
 "Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
@@ -17,111 +17,154 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sodipodi.desktop.in.h:1 src/toolbox.c:109 src/toolbox.c:131
+#: sodipodi.desktop.in.h:1
+#, fuzzy
+msgid "SVG Vector illustrator"
+msgstr "ベクタイラストレータ"
+
+#: sodipodi.desktop.in.h:2 src/toolbox.c:119 src/toolbox.c:143
 msgid "Sodipodi"
 msgstr "Sodipodi"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "ベクタイラストレータ"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-docファクトリを作成できません"
 
 #. Sticky zoom
-#: src/desktop.c:726
+#: src/desktop.c:735
 msgid "Zoom drawing if window size changes"
 msgstr ""
 
-#: src/desktop.c:806
+#: src/desktop.c:819
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:935
+#: src/desktop.c:948
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
 
-#: src/dialogs/align.c:120 src/toolbox.c:384
-msgid "Align objects"
-msgstr "オブジェクトの配置"
-
-#: src/dialogs/align.c:138
-#, fuzzy
-msgid "Right side of aligned objects to left side of anchor"
-msgstr "内部オブジェクトを左の境界に配置する"
-
-#: src/dialogs/align.c:140
-msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
-
-#: src/dialogs/align.c:142
-#, fuzzy
-msgid "Center horizontally"
-msgstr "水平方向に反転"
-
-#: src/dialogs/align.c:144
-#, fuzzy
-msgid "Right side of aligned objects to right side of anchor"
-msgstr "内部オブジェクトを右の境界に配置する"
-
-#: src/dialogs/align.c:146
-msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
-
-#: src/dialogs/align.c:149
-msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
-
-#: src/dialogs/align.c:151 src/dialogs/align.c:157
-#, fuzzy
-msgid "Top of aligned objects to top of anchor"
-msgstr "内部オブジェクトを上の境界に配置する"
-
-#: src/dialogs/align.c:153
-#, fuzzy
-msgid "Center vertically"
-msgstr "垂直方向に反転"
-
-#: src/dialogs/align.c:155
-#, fuzzy
-msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "内部オブジェクトを下の境界に配置する"
-
-#: src/dialogs/align.c:189
-msgid "Last selected"
-msgstr "最後の選択部分"
-
-#: src/dialogs/align.c:190
-msgid "First selected"
-msgstr "最初の選択部分"
-
-#: src/dialogs/align.c:191
-msgid "Biggest item"
-msgstr "最大要素"
-
-#: src/dialogs/align.c:192
-msgid "Smallest item"
-msgstr "最小の要素"
-
 #. Page page
-#: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
-#: src/dialogs/document-properties.c:164 src/dialogs/export.c:135
-#: src/interface.c:360
+#: src/desktop.c:1468 src/dialogs/align.c:266
+#: src/dialogs/desktop-properties.c:423 src/dialogs/document-properties.c:164
+#: src/dialogs/export.c:135 src/interface.c:368
 msgid "Page"
 msgstr "ページ"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:140 src/interface.c:359
+#: src/desktop.c:1472 src/dialogs/align.c:267 src/dialogs/export.c:140
+#: src/interface.c:367
 msgid "Drawing"
 msgstr "描画"
 
 #. Selection submenu
-#: src/dialogs/align.c:195 src/dialogs/export.c:145 src/interface.c:358
-#: src/interface.c:497 src/toolbox.c:423
+#: src/desktop.c:1476 src/dialogs/align.c:268 src/dialogs/export.c:145
+#: src/interface.c:366 src/interface.c:510 src/toolbox.c:437
 msgid "Selection"
 msgstr "選択"
+
+#: src/dialogs/align.c:151 src/toolbox.c:398
+msgid "Align objects"
+msgstr "オブジェクトの配置"
+
+#: src/dialogs/align.c:170
+#, fuzzy
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "内部オブジェクトを左の境界に配置する"
+
+#: src/dialogs/align.c:172
+msgid "Left side of aligned objects to left side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:174
+#, fuzzy
+msgid "Center horizontally"
+msgstr "水平方向に反転"
+
+#: src/dialogs/align.c:176
+#, fuzzy
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "内部オブジェクトを右の境界に配置する"
+
+#: src/dialogs/align.c:178
+msgid "Left side of aligned objects to right side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:181
+msgid "Bottom of aligned objects to top of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:183 src/dialogs/align.c:189
+#, fuzzy
+msgid "Top of aligned objects to top of anchor"
+msgstr "内部オブジェクトを上の境界に配置する"
+
+#: src/dialogs/align.c:185
+#, fuzzy
+msgid "Center vertically"
+msgstr "垂直方向に反転"
+
+#: src/dialogs/align.c:187
+#, fuzzy
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "内部オブジェクトを下の境界に配置する"
+
+#: src/dialogs/align.c:191
+msgid "Align"
+msgstr "配置"
+
+#: src/dialogs/align.c:209
+msgid "Distribute left sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:211
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr ""
+
+#: src/dialogs/align.c:213
+msgid "Distribute right sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:215
+msgid "Distribute horizontal distance between objects equally"
+msgstr ""
+
+#: src/dialogs/align.c:218
+msgid "Distribute top sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:220
+msgid "Distribute centres of objects at even distances vertically"
+msgstr ""
+
+#: src/dialogs/align.c:222
+msgid "Distribute bottom sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:224
+msgid "Distribute vertical distance between objects equally"
+msgstr ""
+
+#: src/dialogs/align.c:226
+#, fuzzy
+msgid "Distribute"
+msgstr "属性"
+
+#: src/dialogs/align.c:262
+msgid "Last selected"
+msgstr "最後の選択部分"
+
+#: src/dialogs/align.c:263
+msgid "First selected"
+msgstr "最初の選択部分"
+
+#: src/dialogs/align.c:264
+msgid "Biggest item"
+msgstr "最大要素"
+
+#: src/dialogs/align.c:265
+msgid "Smallest item"
+msgstr "最小の要素"
 
 #: src/dialogs/desktop-properties.c:223
 msgid "Desktop settings"
@@ -341,7 +384,7 @@ msgstr "dpi"
 msgid "Export png file"
 msgstr "PNGファイルを出力"
 
-#: src/dialogs/export.c:235 src/interface.c:220
+#: src/dialogs/export.c:235 src/interface.c:223
 msgid "Export"
 msgstr "出力"
 
@@ -571,7 +614,7 @@ msgstr "フリーハンドとペン"
 msgid "Calligraphic line"
 msgstr "カリグラフィック線"
 
-#: src/dialogs/object-properties.c:206 src/interface.c:390
+#: src/dialogs/object-properties.c:206 src/interface.c:398
 msgid "Text"
 msgstr "テキスト"
 
@@ -583,7 +626,7 @@ msgstr "オブジェクト位置と大きさ"
 msgid "Position and size"
 msgstr "位置と大きさ"
 
-#: src/dialogs/stroke-style.c:545 src/toolbox.c:380
+#: src/dialogs/stroke-style.c:545 src/toolbox.c:394
 msgid "Stroke settings"
 msgstr "ストローク設定"
 
@@ -700,7 +743,7 @@ msgstr "移動"
 msgid "Relative move"
 msgstr "相対位置で指定"
 
-#: src/dialogs/transformation.c:540 src/interface.c:362
+#: src/dialogs/transformation.c:540 src/interface.c:370
 msgid "Scale"
 msgstr "スケール"
 
@@ -807,21 +850,50 @@ msgstr "角度:"
 msgid "Defaults"
 msgstr "既定値"
 
-#: src/print.c:333
-#, c-format
-msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
+#: src/helper/kde.cpp:109
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*|All files"
+msgstr ""
 
-#: src/print.c:356
+#: src/helper/kde.cpp:109
+msgid "Open SVG file"
+msgstr ""
+
+#: src/module.c:520 src/file.c:174
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: src/module.c:520 src/file.c:174
+msgid "Sodipodi native file format and W3C standard"
+msgstr ""
+
+#: src/module.c:528 src/file.c:277
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "sodipodi ネイティブの SVG"
+
+#: src/module.c:529 src/file.c:278
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr ""
+
+#: src/module.c:532 src/file.c:281
+msgid "Plain SVG"
+msgstr "標準的な SVG"
+
+#: src/module.c:533 src/file.c:282
+msgid "Scalable Vector Graphics format"
+msgstr ""
+
+#: src/print.c:207
 #, fuzzy
 msgid "Select printer"
 msgstr "選択"
 
-#: src/print.c:396 src/print.c:407
+#: src/print.c:612 src/print.c:623
 msgid "Print destination"
 msgstr "印刷出力先"
 
-#: src/print.c:414
+#: src/print.c:630
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -831,6 +903,11 @@ msgstr ""
 "ファイルに出力するには、 '> ファイル名' を使って下さい。\n"
 "パイプを使って他のプログラムに出力を渡すには、'| プログラム 引数...' を使って"
 "下さい。"
+
+#: src/print.c:899
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
 
 #. rx_ratio
 #: src/rect-context.c:396
@@ -881,27 +958,20 @@ msgstr "比率"
 msgid "Make sides flat"
 msgstr "正多角形にする"
 
-#: src/file.c:126
+#: src/file.c:157
 msgid "Select file to open"
 msgstr "開くファイルを選択"
 
-#: src/file.c:214
+#: src/file.c:180 src/file.c:286
+#, fuzzy
+msgid "File type:"
+msgstr "フィルスタイル"
+
+#: src/file.c:260
 msgid "Save file"
 msgstr "ファイルを保存"
 
-#: src/file.c:230
-msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr "sodipodi ネイティブの SVG"
-
-#: src/file.c:236
-msgid "Plain SVG"
-msgstr "標準的な SVG"
-
-#: src/file.c:242
-msgid "Save as:"
-msgstr "名前を付けて保存"
-
-#: src/file.c:407
+#: src/file.c:449
 msgid "Select file to import"
 msgstr "読み込むファイルを選択"
 
@@ -1048,347 +1118,357 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "EX スクエア"
 
-#: src/interface.c:214 src/interface.c:415
+#: src/interface.c:217 src/interface.c:423
 msgid "New"
 msgstr "新規(_N)"
 
-#: src/interface.c:215 src/interface.c:416
+#: src/interface.c:218 src/interface.c:424
 msgid "Open"
 msgstr "開く(_O)"
 
-#: src/interface.c:216
+#: src/interface.c:219
 msgid "Save"
 msgstr "セーブ"
 
-#: src/interface.c:217
+#: src/interface.c:220
 msgid "Save as"
 msgstr "名前をつけて保存"
 
-#: src/interface.c:219
+#: src/interface.c:222
 msgid "Import"
 msgstr "読み込み"
 
-#: src/interface.c:222
+#: src/interface.c:225
 msgid "Print"
 msgstr "印刷"
 
-#: src/interface.c:223
+#: src/interface.c:226
 msgid "Print Preview"
 msgstr "印刷プレビュー"
 
-#: src/interface.c:226
+#: src/interface.c:229
 msgid "Close View"
 msgstr "ビューを閉じる"
 
-#: src/interface.c:227 src/interface.c:421
+#: src/interface.c:230 src/interface.c:434
 msgid "Exit Program"
 msgstr "プログラムを終了"
 
-#: src/interface.c:229 src/interface.c:419
+#: src/interface.c:232 src/interface.c:427
 msgid "About Sodipodi"
 msgstr "Sodipodi について"
 
-#: src/interface.c:235
+#. Modules need abouts too
+#: src/interface.c:235 src/interface.c:430
+msgid "About Modules"
+msgstr ""
+
+#: src/interface.c:243
 msgid "Cut"
 msgstr "カット"
 
-#: src/interface.c:236
+#: src/interface.c:244
 msgid "Copy"
 msgstr "コピー"
 
-#: src/interface.c:237
+#: src/interface.c:245
 msgid "Paste"
 msgstr "貼付け"
 
-#: src/interface.c:239
+#: src/interface.c:247
 msgid "Duplicate"
 msgstr "複製"
 
-#: src/interface.c:240
+#: src/interface.c:248
 msgid "Delete"
 msgstr "削除"
 
-#: src/interface.c:242
+#: src/interface.c:250
 msgid "Clear all"
 msgstr "全て消去"
 
-#: src/interface.c:243
+#: src/interface.c:251
 msgid "Cleanup"
 msgstr "掃除する"
 
 #. Selection:Group
-#: src/interface.c:252 src/sp-item-group.c:516
+#: src/interface.c:260 src/sp-item-group.c:526
 msgid "Group"
 msgstr "グループ化"
 
 #. Selection:Ungroup
-#: src/interface.c:257 src/sp-item-group.c:533
+#: src/interface.c:265 src/sp-item-group.c:543
 msgid "Ungroup"
 msgstr "グループ解除"
 
 #. Selection:Combine
-#: src/interface.c:266
+#: src/interface.c:274
 msgid "Combine"
 msgstr "連結"
 
 #. Selection:Break apart
-#: src/interface.c:271
+#: src/interface.c:279
 msgid "Break apart"
 msgstr "分割"
 
 #. Selection:Order
-#: src/interface.c:280
+#: src/interface.c:288
 msgid "Order"
 msgstr "整列"
 
-#: src/interface.c:284
+#: src/interface.c:292
 msgid "Bring to Front"
 msgstr "前面に持ってくる"
 
-#: src/interface.c:288
+#: src/interface.c:296
 msgid "Send to Back"
 msgstr "背後に持っていく"
 
-#: src/interface.c:292
+#: src/interface.c:300
 msgid "Raise"
 msgstr "上げる"
 
-#: src/interface.c:296
+#: src/interface.c:304
 msgid "Lower"
 msgstr "下げる"
 
 #. View:Zoom
-#: src/interface.c:354 src/interface.c:391 src/toolbox.c:600
+#: src/interface.c:362 src/interface.c:399 src/toolbox.c:616
 msgid "Zoom"
 msgstr "ズーム"
 
-#: src/interface.c:366
+#: src/interface.c:374
 msgid "1:2"
 msgstr "1:2"
 
-#: src/interface.c:367
+#: src/interface.c:375
 msgid "1:1"
 msgstr "1:1"
 
-#: src/interface.c:368
+#: src/interface.c:376
 msgid "2:1"
 msgstr "2:1"
 
 #. View:New View
-#: src/interface.c:370
+#: src/interface.c:378
 msgid "New View"
 msgstr "新規のビュー"
 
 #. View:New Preview
-#: src/interface.c:372
+#: src/interface.c:380
 msgid "New Preview"
 msgstr "新規のプレビュー"
 
-#: src/interface.c:374
+#: src/interface.c:382
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:375
+#: src/interface.c:383
 #, fuzzy
 msgid "New Docked Toolbox"
 msgstr "ツールボックスを表示"
 
-#: src/interface.c:376
+#: src/interface.c:384
 msgid "Remove Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:382
+#: src/interface.c:390
 msgid "Select"
 msgstr "選択"
 
-#: src/interface.c:383
+#: src/interface.c:391
 msgid "Node"
 msgstr "ノード"
 
-#: src/interface.c:384
+#: src/interface.c:392
 msgid "Rectangle"
 msgstr "長方形"
 
-#: src/interface.c:385
+#: src/interface.c:393
 msgid "Arc"
 msgstr "アーク"
 
 #. Create toplevel menuitem
-#: src/interface.c:386 src/sp-star.c:475
+#: src/interface.c:394 src/sp-star.c:495
 msgid "Star"
 msgstr "星"
 
 #. Create toplevel menuitem
-#: src/interface.c:387 src/sp-spiral.c:606
+#: src/interface.c:395 src/sp-spiral.c:620
 msgid "Spiral"
 msgstr "螺旋"
 
-#: src/interface.c:388
+#: src/interface.c:396
 msgid "Freehand"
 msgstr "フリーハンド"
 
-#: src/interface.c:389
+#: src/interface.c:397
 msgid "Dynahand"
 msgstr "ダイナハンド"
 
-#: src/interface.c:397
+#: src/interface.c:405
 msgid "Fill and Stroke"
 msgstr "フィルとストローク"
 
-#: src/interface.c:398
+#: src/interface.c:406
 msgid "Size and Position"
 msgstr "位置と大きさ"
 
-#: src/interface.c:399
+#: src/interface.c:407
 msgid "Align Objects"
 msgstr "オブジェクトの配置"
 
-#: src/interface.c:400
+#: src/interface.c:408
 msgid "Text Editing"
 msgstr "テキスト編集"
 
-#: src/interface.c:401
+#: src/interface.c:409
 msgid "Transformations"
 msgstr "変形"
 
-#: src/interface.c:402
+#: src/interface.c:410
 msgid "Tool Options"
 msgstr "ツールオプション"
 
-#: src/interface.c:403
+#: src/interface.c:411
 msgid "Tool Attributes"
 msgstr "ツール属性"
 
-#: src/interface.c:404
+#: src/interface.c:412
 msgid "Document"
 msgstr "ドキュメント"
 
-#: src/interface.c:405
+#: src/interface.c:413
 msgid "Editing Window"
 msgstr "編集ウィンドウ"
 
-#: src/interface.c:406
+#: src/interface.c:414
 msgid "XML Editor"
 msgstr "XMLエディタ"
 
-#: src/interface.c:407
+#: src/interface.c:415
 msgid "Display Properties"
 msgstr "表示設定"
 
 #. Undo
-#: src/interface.c:460
+#: src/interface.c:473
 msgid "Undo"
 msgstr "元に戻す"
 
 #. File:Print Preview
-#: src/interface.c:462
+#: src/interface.c:475
 msgid "Redo"
 msgstr "やり直し"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:485 src/toolbox.c:304
+#: src/interface.c:498 src/toolbox.c:318
 msgid "File"
 msgstr "ファイル"
 
 #. Edit submenu
-#: src/interface.c:491 src/toolbox.c:341 src/widgets/gradient-selector.c:135
+#: src/interface.c:504 src/toolbox.c:355 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "編集"
 
 #. View submenu
-#: src/interface.c:503
+#: src/interface.c:516
 msgid "View"
 msgstr "ビュー"
 
 #. Drawing mode submenu
-#: src/interface.c:509
+#: src/interface.c:522
 msgid "Drawing Mode"
 msgstr "描画モード"
 
 #. Dialog submenu
-#: src/interface.c:515
+#: src/interface.c:528
 msgid "Dialogs"
 msgstr "ダイアログ"
 
-#: src/main.c:109
+#: src/interface.c:535
+#, fuzzy
+msgid "Filters"
+msgstr "ファイル"
+
+#: src/main.c:117
 msgid "Do not use X server (only process files from console)"
 msgstr "X サーバを使用しません (コンソールでファイルの処理だけを行います)"
 
-#: src/main.c:112
+#: src/main.c:120
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "$DISPLAY 変数が設定されなくても X サーバの利用を試みます"
 
-#: src/main.c:115
+#: src/main.c:123
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "指定した文書を開く (オプション文字列は無視されるでしょう)"
 
-#: src/main.c:116 src/main.c:119 src/main.c:122 src/main.c:136
+#: src/main.c:124 src/main.c:127 src/main.c:130 src/main.c:144
 msgid "FILENAME"
 msgstr "FILENAME"
 
-#: src/main.c:118
+#: src/main.c:126
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr "指定された出力ファイルに文書を印刷 (パイプは '| program' で指定)"
 
-#: src/main.c:121
+#: src/main.c:129
 msgid "Export document to png file"
 msgstr "文書を PNG ファイルに出力"
 
-#: src/main.c:124
+#: src/main.c:132
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "SVGをビットマップに変換するために使用する解像度 (既定値 72.0)"
 
-#: src/main.c:125
+#: src/main.c:133
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:127
+#: src/main.c:135
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 "出力エリアをミリメートルで指定 (既定値はドキュメント全体, 0,0 は左下端)"
 
-#: src/main.c:128
+#: src/main.c:136
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:130
+#: src/main.c:138
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "生成されるビットマップ幅をピクセル値で指定 (dpi を上書き)"
 
-#: src/main.c:130
+#: src/main.c:138
 msgid "WIDTH"
 msgstr "幅"
 
-#: src/main.c:132
+#: src/main.c:140
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "生成されるビットマップの高さをピクセル値で指定 (dpi を上書き)"
 
-#: src/main.c:132
+#: src/main.c:140
 msgid "HEIGHT"
 msgstr "高さ"
 
-#: src/main.c:134
+#: src/main.c:142
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "出力ビットマップの背景の色を指定 (SVG でサポートされる任意のカラー指定文字列)"
 
-#: src/main.c:134
+#: src/main.c:142
 msgid "COLOR"
 msgstr "色"
 
-#: src/main.c:136
+#: src/main.c:144
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "文書を標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
 
-#: src/main.c:138
+#: src/main.c:146
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr "一つずつ与えられたファイルを表示。任意のキー/マウスで次にスイッチ"
 
-#: src/main.c:140
+#: src/main.c:148
 msgid "Prefer SVG icons (file icons.svg) to pixmap ones"
 msgstr ""
 
@@ -1397,25 +1477,25 @@ msgstr ""
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi: %s: XMLビュー"
 
-#: src/sodipodi.c:379
+#: src/sodipodi.c:393
 msgid "Untitled document"
 msgstr "無題文書"
 
 #. Show nice dialog box
-#: src/sodipodi.c:404
+#: src/sodipodi.c:418
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi は内部エラーが発生しました。今すぐ終了します。\n"
 
-#: src/sodipodi.c:405
+#: src/sodipodi.c:419
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr "未保存文書の自動バックアップを次の場所に行いました:\n"
 
-#: src/sodipodi.c:406
+#: src/sodipodi.c:420
 msgid "Automatic backup of following documents failed:\n"
 msgstr "次の文書の自動バックアップに失敗しました:\n"
 
-#: src/sodipodi.c:543
+#: src/sodipodi.c:559
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1426,7 +1506,7 @@ msgstr ""
 "sodipodiは実行されますが、\n"
 "プリファレンスの読み書きはできません。\n"
 
-#: src/sodipodi.c:546
+#: src/sodipodi.c:562
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1440,7 +1520,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:551
+#: src/sodipodi.c:567
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1452,7 +1532,7 @@ msgstr ""
 "ではありません。sodopodi は実行されますが、\n"
 "プロファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:563
+#: src/sodipodi.c:579
 #, fuzzy, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1463,7 +1543,7 @@ msgstr ""
 "sodipodiは実行されますが、\n"
 "プリファレンスの読み書きはできません。\n"
 
-#: src/sodipodi.c:566
+#: src/sodipodi.c:582
 #, fuzzy, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1476,7 +1556,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:570
+#: src/sodipodi.c:586
 #, fuzzy, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1487,7 +1567,7 @@ msgstr ""
 "ではありません。sodopodi は実行されますが、\n"
 "プロファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:913
+#: src/sodipodi.c:929
 #, fuzzy, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1499,7 +1579,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:917
+#: src/sodipodi.c:933
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1511,7 +1591,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:921
+#: src/sodipodi.c:937
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1523,7 +1603,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスは読み書きできません。"
 
-#: src/sodipodi.c:925
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1535,7 +1615,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスは読み書きできません。"
 
-#: src/sodipodi.c:935
+#: src/sodipodi.c:951
 #, fuzzy, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1546,7 +1626,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:954
 #, fuzzy, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1557,7 +1637,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスの読み書きはできません。"
 
-#: src/sodipodi.c:941
+#: src/sodipodi.c:957
 #, fuzzy, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1568,7 +1648,7 @@ msgstr ""
 "sodipodi は実行されますが、\n"
 "プリファレンスは読み書きできません。"
 
-#: src/sodipodi.c:944
+#: src/sodipodi.c:960
 #, fuzzy, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1650,276 +1730,276 @@ msgstr "未知"
 msgid "Image URI:"
 msgstr "画像 URI:"
 
-#: src/sp-item-group.c:454
+#: src/sp-item-group.c:464
 #, c-format
 msgid "Group of %d objects"
 msgstr "%d オブジェクトのグループ"
 
 #. Group dialog
-#: src/sp-item-group.c:520
+#: src/sp-item-group.c:530
 msgid "Group Properties"
 msgstr "グループのプロパティ"
 
-#: src/sp-item.c:579
+#: src/sp-item.c:533
 msgid "Unknown item :-("
 msgstr "未知の要素 :-("
 
 #. Create toplevel menuitem
-#: src/sp-item.c:896
+#: src/sp-item.c:853
 msgid "Item"
 msgstr "アイテム"
 
 #. Item dialog
-#: src/sp-item.c:899
+#: src/sp-item.c:856
 msgid "Item Properties"
 msgstr "アイテムプロパティ"
 
 #. Select item
-#: src/sp-item.c:909
+#: src/sp-item.c:866
 msgid "Select this"
 msgstr "選択"
 
 #. Reset transformations
-#: src/sp-item.c:919
+#: src/sp-item.c:876
 msgid "Reset transformation"
 msgstr "変形をリセット"
 
-#: src/sp-item.c:925
+#: src/sp-item.c:882
 msgid "Make sensitive"
 msgstr "センシティブに設定"
 
-#: src/sp-item.c:925
+#: src/sp-item.c:882
 msgid "Make insensitive"
 msgstr "インセンシティブに設定"
 
 #. Create link
-#: src/sp-item.c:930
+#: src/sp-item.c:887
 msgid "Create link"
 msgstr "リンクの作成"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:572
+#: src/sp-rect.c:513
 msgid "Rect"
 msgstr "矩形"
 
 #. Link dialog
-#: src/sp-rect.c:575
+#: src/sp-rect.c:516
 msgid "Rect Properties"
 msgstr "矩形のプロパティ"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:332
+#: src/sp-shape.c:551
 msgid "Shape"
 msgstr "シェイプ"
 
 #. Item dialog
-#: src/sp-shape.c:335 src/toolbox.c:381
+#: src/sp-shape.c:554 src/toolbox.c:395
 msgid "Fill settings"
 msgstr "フィルの設定"
 
 #. Link dialog
-#: src/sp-spiral.c:609
+#: src/sp-spiral.c:623
 msgid "Spiral Properties"
 msgstr "螺旋のプロパティ"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:498
 msgid "Star Properties"
 msgstr "星のプロパティ"
 
 #. fixme:
-#: src/sp-text.c:1288
+#: src/sp-text.c:1298
 msgid "Text object"
 msgstr "テキストオブジェクト"
 
-#: src/toolbox.c:307
+#: src/toolbox.c:321
 msgid "Create new SVG document"
 msgstr "新規 SVG 文書を作成"
 
-#: src/toolbox.c:308
+#: src/toolbox.c:322
 msgid "Open existing SVG document"
 msgstr "既存の SVG 文書を開く"
 
-#: src/toolbox.c:309
+#: src/toolbox.c:323
 msgid "Save document"
 msgstr "文書の保存"
 
-#: src/toolbox.c:310
+#: src/toolbox.c:324
 msgid "Save document under new name"
 msgstr "新規ファイル名で文書を保存"
 
-#: src/toolbox.c:311
+#: src/toolbox.c:325
 msgid "Print document"
 msgstr "文書を印刷"
 
-#: src/toolbox.c:312
+#: src/toolbox.c:326
 msgid "Preview document printout"
 msgstr "印刷文書のプレビュー"
 
-#: src/toolbox.c:316
+#: src/toolbox.c:330
 msgid "Import bitmap or SVG image into document"
 msgstr "ビットマップまたはSVGイメージを文書に取り込む"
 
-#: src/toolbox.c:317
+#: src/toolbox.c:331
 msgid "Export document as PNG bitmap"
 msgstr "文書を PNG ビットマップとして出力"
 
-#: src/toolbox.c:344
+#: src/toolbox.c:358
 msgid "Revert last action"
 msgstr "最後の操作を戻す"
 
-#: src/toolbox.c:347
+#: src/toolbox.c:361
 msgid "Do again undone action"
 msgstr "戻した操作を再実行"
 
-#: src/toolbox.c:349
+#: src/toolbox.c:363
 msgid "Delete selected objects"
 msgstr "選択したオブジェクトの削除"
 
-#: src/toolbox.c:350
+#: src/toolbox.c:364
 msgid "Cut selected objects to clipboard"
 msgstr "選択オブジェクトをクリップボードへ切り取り"
 
-#: src/toolbox.c:351
+#: src/toolbox.c:365
 msgid "Copy selected objects to clipboard"
 msgstr "選択オブジェクトをクリップボードへ複製"
 
-#: src/toolbox.c:352
+#: src/toolbox.c:366
 msgid "Paste objects from clipboard"
 msgstr "オブジェクトをクリップボードから貼り付け"
 
-#: src/toolbox.c:353
+#: src/toolbox.c:367
 msgid "Duplicate selected objects"
 msgstr "選択オブジェクトの複製"
 
-#: src/toolbox.c:377
+#: src/toolbox.c:391
 msgid "Object"
 msgstr "オブジェクト"
 
-#: src/toolbox.c:382
+#: src/toolbox.c:396
 msgid "Object size and position"
 msgstr "オブジェクトの位置と大きさ"
 
-#: src/toolbox.c:383
+#: src/toolbox.c:397
 msgid "Text and font settings"
 msgstr "テキストとフォント設定"
 
-#: src/toolbox.c:385
+#: src/toolbox.c:399
 msgid "Object transformations"
 msgstr "オブジェクトの変形"
 
 #. START COMPONENTS
-#: src/toolbox.c:392
+#: src/toolbox.c:406
 msgid "Flip selected objects horizontally"
 msgstr "選択オブジェクトを水平方向に反転"
 
-#: src/toolbox.c:393
+#: src/toolbox.c:407
 msgid "Flip selected objects vertically"
 msgstr "選択オブジェクトを垂直方向に反転"
 
-#: src/toolbox.c:397
+#: src/toolbox.c:411
 msgid "Rotate object 90 deg clockwise"
 msgstr "オブジェクトを時計向きに90度回転"
 
-#: src/toolbox.c:398
+#: src/toolbox.c:412
 msgid "Remove transformations"
 msgstr "変形を戻す"
 
-#: src/toolbox.c:399
+#: src/toolbox.c:413
 msgid "Convert object to curve"
 msgstr "オブジェクトを曲線に変換"
 
-#: src/toolbox.c:426
+#: src/toolbox.c:440
 msgid "Raise selected objects to top"
 msgstr "選択オブジェクトを最前面に移動"
 
-#: src/toolbox.c:427
+#: src/toolbox.c:441
 msgid "Raise selected objects one level"
 msgstr "選択オブジェクトを1レベル前面に移動"
 
-#: src/toolbox.c:428
+#: src/toolbox.c:442
 msgid "Combine multiple paths"
 msgstr "複数パスの結合"
 
-#: src/toolbox.c:429
+#: src/toolbox.c:443
 msgid "Group selected objects"
 msgstr "選択したオブジェクトのグループ化"
 
-#: src/toolbox.c:430
+#: src/toolbox.c:444
 msgid "Lower selected objects to bottom"
 msgstr "選択オブジェクトを最背面に移動"
 
-#: src/toolbox.c:431
+#: src/toolbox.c:445
 msgid "Lower selected objects one level"
 msgstr "選択オブジェクトを1レベル背面に移動"
 
-#: src/toolbox.c:432
+#: src/toolbox.c:446
 msgid "Break selected path to subpaths"
 msgstr "選択したパスをサブパスに分割する"
 
-#: src/toolbox.c:433
+#: src/toolbox.c:447
 msgid "Ungroup selected group"
 msgstr "選択したグループのグループ解除"
 
-#: src/toolbox.c:456
+#: src/toolbox.c:470
 msgid "Draw"
 msgstr "描画"
 
 #. Select
-#: src/toolbox.c:461
+#: src/toolbox.c:475
 msgid "Select tool - select and transform objects"
 msgstr "選択ツール - オブジェクトを選択して変形"
 
 #. Node
-#: src/toolbox.c:468
+#: src/toolbox.c:482
 msgid "Node tool - modify different aspects of existing objects"
 msgstr "ノードツール - 実在するオブジェクトの様々な外観を修正"
 
 #. START COMPONENTS
 #. Rect
-#: src/toolbox.c:480
+#: src/toolbox.c:494
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr "矩形ツール - 矩形や正方形を作成、オプションで角を丸められる"
 
-#: src/toolbox.c:481
+#: src/toolbox.c:495
 msgid "Arc tool - create circles, ellipses and arcs"
 msgstr "アークツール - 円、楕円、弧を作成"
 
-#: src/toolbox.c:482
+#: src/toolbox.c:496
 msgid "Star tool - create stars and polygons"
 msgstr "スターツール - 星型やポリゴンを作成"
 
-#: src/toolbox.c:483
+#: src/toolbox.c:497
 msgid "Spiral tool - create spirals"
 msgstr "スパイラルツール - 螺旋形を作成"
 
 #. START COMPONENTS
 #. Rect
-#: src/toolbox.c:498
+#: src/toolbox.c:512
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr "ペンシルツール - フリーハンド線やまっすぐの線分を描画"
 
-#: src/toolbox.c:499
+#: src/toolbox.c:513
 msgid "Pen tool - draw exactly positioned curved lines"
 msgstr "ペンツール - 明示的に位置を指定して曲線を描画"
 
-#: src/toolbox.c:500
+#: src/toolbox.c:514
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr "カリグラフィックツール - カリグラフ線を描画"
 
 #. Text
-#: src/toolbox.c:509
+#: src/toolbox.c:523
 msgid "Text tool - create editable text objects"
 msgstr "テキストツール - 編集可能なテキストオブジェクトを作成"
 
 #. Zoom
-#: src/toolbox.c:515
+#: src/toolbox.c:529
 msgid "Zoom tool - zoom into choosen area"
 msgstr "ズームツール - 選択領域にズーム"
 
 #. Dropper
-#: src/toolbox.c:521
+#: src/toolbox.c:535
 msgid "Dropper tool - pick averaged colors from image"
 msgstr ""
 
@@ -1927,76 +2007,76 @@ msgstr ""
 #. routine for creating them
 #. Create the extension toolbox
 #. Todo: Make it able to create required boxes dynamically
-#: src/toolbox.c:558
+#: src/toolbox.c:573
 #, fuzzy
 msgid "Extension"
 msgstr "展開"
 
-#: src/toolbox.c:603
+#: src/toolbox.c:619
 msgid "Zoom in drawing"
 msgstr "描画領域にズーム"
 
-#: src/toolbox.c:604
+#: src/toolbox.c:620
 msgid "Set zoom factor to 2:1"
 msgstr "拡大比を 2:1 に設定"
 
-#: src/toolbox.c:605
+#: src/toolbox.c:621
 msgid "Set zoom factor to 1:1"
 msgstr "拡大比を 1:1 に設定"
 
-#: src/toolbox.c:606
+#: src/toolbox.c:622
 msgid "Set zoom factor to 1:2"
 msgstr "拡大比を 1:2 に設定"
 
-#: src/toolbox.c:607
+#: src/toolbox.c:623
 msgid "Zoom out drawing"
 msgstr "描画領域にズームアウト"
 
-#: src/toolbox.c:608
+#: src/toolbox.c:624
 msgid "Fit the whole page into window"
 msgstr "ページ全体をウィンドウにフィット"
 
-#: src/toolbox.c:609
+#: src/toolbox.c:625
 msgid "Fit the whole drawing into window"
 msgstr "描画全体をウィンドウにフィット"
 
-#: src/toolbox.c:610
+#: src/toolbox.c:626
 msgid "Fit the whole selection into window"
 msgstr "選択全体をウィンドウにフィット"
 
-#: src/toolbox.c:634
+#: src/toolbox.c:650
 msgid "Nodes"
 msgstr "ノード"
 
-#: src/toolbox.c:637
+#: src/toolbox.c:653
 msgid "Insert new nodes into selected segments"
 msgstr "ノードを選択セグメントに挿入する"
 
-#: src/toolbox.c:638
+#: src/toolbox.c:654
 msgid "Break line at selected nodes"
 msgstr "選択ノードので線を分割"
 
-#: src/toolbox.c:639
+#: src/toolbox.c:655
 msgid "Make selected nodes corner"
 msgstr "選択ノードを尖らせる"
 
-#: src/toolbox.c:640
+#: src/toolbox.c:656
 msgid "Make selected segments lines"
 msgstr "選択セグメントを折線にする"
 
-#: src/toolbox.c:641
+#: src/toolbox.c:657
 msgid "Delete selected nodes"
 msgstr "選択したノードの削除"
 
-#: src/toolbox.c:642
+#: src/toolbox.c:658
 msgid "Join lines at selected nodes"
 msgstr "選択ノードで線を結合"
 
-#: src/toolbox.c:643
+#: src/toolbox.c:659
 msgid "Make selected nodes smooth"
 msgstr "選択ノードを滑かにする"
 
-#: src/toolbox.c:644
+#: src/toolbox.c:660
 msgid "Make selected segments curves"
 msgstr "選択セグメントを曲線にする"
 
@@ -2153,6 +2233,11 @@ msgstr "黄:"
 msgid "Black:"
 msgstr "黒:"
 
+#. Separate button
+#: src/widgets/sp-toolbox.c:313
+msgid "Toggle separate window and main toolbox placement"
+msgstr ""
+
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
 msgstr "属性"
@@ -2161,13 +2246,18 @@ msgstr "属性"
 msgid "Value"
 msgstr "値"
 
-#: src/draw-context.c:280
-msgid "Appending to selection. Press '+' to toggle Append/New."
+#: src/draw-context.c:281
+#, fuzzy
+msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "選択に追加します。追加/新規の切り替えは '+' を押します。"
 
-#: src/draw-context.c:285
-msgid "Creating new curve. Press '+' to toggle Append/New."
+#: src/draw-context.c:286
+#, fuzzy
+msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "新規に曲線を作成します。追加/新規の切替は '+\" を押します。"
+
+#~ msgid "Save as:"
+#~ msgstr "名前を付けて保存"
 
 #~ msgid "Whether zoom follows window size"
 #~ msgstr "ウィンドウサイズに従ってズームするかどうか"
@@ -2183,9 +2273,6 @@ msgstr "新規に曲線を作成します。追加/新規の切替は '+\" を押します。"
 
 #~ msgid "Sodipodi SVG Document factory"
 #~ msgstr "Sodipodi SVG 文書ファクトリ"
-
-#~ msgid "Align"
-#~ msgstr "配置"
 
 #~ msgid "Align objects to horizontal mid"
 #~ msgstr "オブジェクトを水平中心位置に配置する"

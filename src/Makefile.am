@@ -71,7 +71,8 @@ sodipodilib_src = \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \
-	uri-references.c uri-references.h
+	uri-references.c uri-references.h \
+	extension.h
 
 noinst_LTLIBRARIES = libsodipodi.la
 libsodipodi_la_SOURCES = $(sodipodilib_src)

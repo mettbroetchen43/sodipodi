@@ -28,6 +28,7 @@ EXTRA_DIST = \
 	intltool-update.in	\
 	$(Graphics_in_files)	\
 	sodipodi.spec.in	\
+	sodipodi.spec		\
 	README HACKING		\
 	sodipodi.png \
 	sodipodi.ico

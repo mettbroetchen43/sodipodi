@@ -1,3 +1,9 @@
+2003-05-01  Christian Schaller <Uraeus@gnome.org>
+	* Fixed up desktop.in file to conform to latest freedesktop standard
+	* Fixed up spec.in file to actually work
+	* Added missing extensions-skeleton.h to makefile
+	* Added spec file to EXTRA_DIST
+
 2003-05-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-item.c (nr_arena_item_children): Return correct

@@ -1,7 +1,9 @@
 [Desktop Entry]
 _Name=Sodipodi
-_Comment=Vector illustrator
+_Comment=SVG Vector illustrator
 Exec=sodipodi
 Terminal=0
 Type=Application
+Categories=Application;Graphics
+StartupNotify=true
 Icon=sodipodi.png
