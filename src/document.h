@@ -106,7 +106,7 @@ void sp_document_request_modified (SPDocument *document);
 
 /* Save all previous actions to stack, as one undo step */
 void sp_document_done (SPDocument *document);
-void sp_document_maybe_done (SPDocument *document);
+void sp_document_maybe_done (SPDocument *document, const guchar *key);
 
 /* Clear current actions, so these cannot be undone */
 

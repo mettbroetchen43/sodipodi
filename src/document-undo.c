@@ -33,6 +33,9 @@ sp_document_done (SPDocument * document)
 	g_assert (document->private != NULL);
 	g_assert (document->private->sensitive);
 
+	/* Clear modal undo key */
+	document->private->key = NULL;
+
 	if (document->private->actions == NULL) return;
 
 	g_assert (document->private->redo == NULL);
@@ -43,6 +46,7 @@ sp_document_done (SPDocument * document)
 
 	if (g_slist_length (document->private->undo) >= MAX_UNDO) {
 		GSList * last;
+		/* fixme: memleak */
 		last = g_slist_last (document->private->undo);
 		document->private->undo = g_slist_remove (document->private->undo, last);
 	}
@@ -52,9 +56,34 @@ sp_document_done (SPDocument * document)
 }
 
 void
-sp_document_maybe_done (SPDocument *document)
+sp_document_maybe_done (SPDocument *document, const guchar *key)
 {
-	sp_document_done (document);
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->private != NULL);
+	g_assert (document->private->sensitive);
+
+	if (document->private->actions == NULL) return;
+
+	g_assert (document->private->redo == NULL);
+
+	if (key && document->private->key && !strcmp (key, document->private->key)) {
+		g_assert (document->private->undo != NULL);
+		document->private->undo = g_slist_remove (document->private->undo, document->private->undo->data);
+		document->private->key = key;
+		if (!sp_repr_attr (document->private->rroot, "sodipodi:modified")) {
+			sp_repr_set_attr (document->private->rroot, "sodipodi:modified", "true");
+		}
+		if (g_slist_length (document->private->undo) >= MAX_UNDO) {
+			GSList * last;
+			last = g_slist_last (document->private->undo);
+			document->private->undo = g_slist_remove (document->private->undo, last);
+		}
+		document->private->undo = g_slist_prepend (document->private->undo, document->private->actions);
+		document->private->actions = NULL;
+	} else {
+		sp_document_done (document);
+	}
 }
 
 void

@@ -221,7 +221,7 @@ sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
 		sp_object_setAttribute (SP_OBJECT (item), "insensitive", "true", &ex);
 	}
 
-	sp_document_maybe_done (spw->document);
+	sp_document_maybe_done (spw->document, "ItemDialog:insensitive");
 
 	blocked = FALSE;
 }
@@ -257,7 +257,7 @@ sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw)
 		gtk_label_set_text (GTK_LABEL (w), _("The ID is valid"));
 		SP_EXCEPTION_INIT (&ex);
 		sp_object_setAttribute (SP_OBJECT (item), "id", id, &ex);
-		sp_document_maybe_done (spw->document);
+		sp_document_maybe_done (spw->document, "ItemDialog:id");
 	}
 
 	blocked = FALSE;
@@ -291,7 +291,7 @@ sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
 	sp_object_setAttribute (SP_OBJECT (item), "style", s, &ex);
 	g_free (s);
 
-	sp_document_maybe_done (spw->document);
+	sp_document_maybe_done (spw->document, "ItemDialog:style");
 
 	blocked = FALSE;
 }
@@ -321,7 +321,7 @@ sp_item_widget_transform_changed (GtkWidget *widget, SPWidget *spw)
 		SP_EXCEPTION_INIT (&ex);
 		sp_object_setAttribute (SP_OBJECT (item), "transform", c, &ex);
 
-		sp_document_maybe_done (spw->document);
+		sp_document_maybe_done (spw->document, "ItemDialog:transform");
 	}
 
 	blocked = FALSE;
@@ -334,7 +334,7 @@ sp_item_dialog (SPItem *item)
 	g_return_if_fail (SP_IS_ITEM (item));
 
 	if (dialog == NULL) {
-		GtkWidget *itemw, *vb, *b;
+		GtkWidget *itemw;
 		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Item properties"));
 		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event", GTK_SIGNAL_FUNC (sp_item_dialog_delete), NULL);

@@ -1,5 +1,6 @@
 #define SP_GROUP_C
 
+#include <config.h>
 #include <gnome.h>
 #include "helper/sp-canvas-util.h"
 #include "display/canvas-bgroup.h"

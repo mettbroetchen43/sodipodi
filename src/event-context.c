@@ -1,5 +1,6 @@
 #define SP_EVENT_CONTEXT_C
 
+#include <config.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>

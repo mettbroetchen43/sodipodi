@@ -1,3 +1,17 @@
+2001-07-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item-group.c: #include <config.h> for i18n
+
+	* src/sp-item.c: Ditto
+
+	* src/event-context.c: Ditto
+
+	* src/toolbox.c: Ditto
+
+2001-07-25  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document-undo.c (sp_document_maybe_done): New function
+
 2001-07-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/sp-widget.c (sp_widget_modify_selection): New function

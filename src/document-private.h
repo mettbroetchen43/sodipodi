@@ -21,10 +21,11 @@ struct _SPDocumentPrivate {
 
 	/* State */
 
-	guint sensitive: 1;	/* If we save actions to undo stack */
-	GSList * undo;		/* Undo stack of reprs */
-	GSList * redo;		/* Redo stack of reprs */
-	GList * actions;	/* List of current actions */
+	guint sensitive: 1; /* If we save actions to undo stack */
+	guchar *key; /* Last action key */
+	GSList * undo; /* Undo stack of reprs */
+	GSList * redo; /* Redo stack of reprs */
+	GList * actions; /* List of current actions */
 
 	/* Handler ID */
 

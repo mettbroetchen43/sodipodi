@@ -10,6 +10,7 @@
  * Copyright (C) 2000-2001 Helix Code, Inc. and authors
  */
 
+#include <config.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-stock.h>
