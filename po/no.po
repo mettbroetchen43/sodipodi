@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2000-04-29 19:57+0200\n"
-"PO-Revision-Date: 2000-04-29 20:00+02:00\n"
+"POT-Creation-Date: 2000-05-01 01:44+0200\n"
+"PO-Revision-Date: 2000-05-01 01:45+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "Konverér til ku_rver"
 msgid "New File"
 msgstr "Ny fil"
 
-#: glade/sodipodi-glade.c:44
+#: glade/sodipodi-glade.c:44 glade/xml-tree.c:10
 msgid "New"
 msgstr "Ny"
 
@@ -251,7 +251,7 @@ msgid "Delete selected object(s)"
 msgstr "Slett valgte objekt(er)"
 
 #: glade/sodipodi-glade.c:62 glade/sodipodi-glade.c:116
-#: glade/sodipodi-glade.c:181 glade/xml-tree.c:12 glade/xml-tree.c:17
+#: glade/sodipodi-glade.c:181 glade/xml-tree.c:18
 msgid "Delete"
 msgstr "Slett"
 
@@ -434,7 +434,7 @@ msgstr "Forhåndsvisning"
 msgid "Node Edit"
 msgstr "Noderedigering"
 
-#: glade/sodipodi-glade.c:115 glade/xml-tree.c:13 glade/xml-tree.c:18
+#: glade/sodipodi-glade.c:115 glade/xml-tree.c:19
 msgid "Add"
 msgstr "Legg til"
 
@@ -665,49 +665,69 @@ msgid "Hierarchy"
 msgstr "Hierarki"
 
 #: glade/xml-tree.c:9
+msgid "Dup"
+msgstr "Duplikat"
+
+#: glade/xml-tree.c:11
+msgid "Cut"
+msgstr "Klipp ut"
+
+#: glade/xml-tree.c:12
+msgid "Copy"
+msgstr "Kopier"
+
+#: glade/xml-tree.c:13
+msgid "Paste"
+msgstr "Lim inn"
+
+#: glade/xml-tree.c:14
+msgid "Del"
+msgstr "Slett"
+
+#: glade/xml-tree.c:15
 msgid "Attributes"
 msgstr "Attributter"
 
-#: glade/xml-tree.c:10
+#: glade/xml-tree.c:16
 msgid "Key"
 msgstr "Nøkkel"
 
-#: glade/xml-tree.c:11
+#: glade/xml-tree.c:17 glade/xml-tree.c:34
 msgid "Value"
 msgstr "Verdi"
 
-#: glade/xml-tree.c:14 glade/xml-tree.c:16 glade/xml-tree.c:19
+#: glade/xml-tree.c:20 glade/xml-tree.c:22
 msgid "Change"
 msgstr "Endre"
 
-#: glade/xml-tree.c:15
+#: glade/xml-tree.c:21
 msgid "Content"
 msgstr "Innhold"
 
-#: glade/xml-tree.c:20
+#: glade/xml-tree.c:23
 msgid "Change Attribute"
 msgstr "Endre attributt"
 
-#: glade/xml-tree.c:21 glade/xml-tree.c:25
+#: glade/xml-tree.c:24 glade/xml-tree.c:28
 msgid "Value:"
 msgstr "Verdi:"
 
-#: glade/xml-tree.c:22 glade/xml-tree.c:26
+#: glade/xml-tree.c:25 glade/xml-tree.c:29 glade/xml-tree.c:32
 msgid "Attribute:"
 msgstr "Attributt:"
 
-#: glade/xml-tree.c:23
+#: glade/xml-tree.c:26 glade/xml-tree.c:33
 msgid "name"
 msgstr "navn"
 
-#: glade/xml-tree.c:24
+#: glade/xml-tree.c:27
 msgid "Add attribute"
 msgstr "Legg til attributt"
 
-#: glade/xml-tree.c:27
+#: glade/xml-tree.c:30
 msgid "Delete attribute"
 msgstr "Slett attributt"
 
-#: glade/xml-tree.c:28
+#: glade/xml-tree.c:31
 msgid "Do you want to delete attribute?"
 msgstr "Ønsker du å slette attributten?"
