@@ -1399,7 +1399,10 @@
   <modal>True</modal>
   <logo>orav.png</logo>
   <copyright>Copyright Lauris Kaplinski 1999.</copyright>
-  <authors>Lauris Kaplinski &lt;lauris @ariman.ee&gt;
+  <authors>Lauris Kaplinski &lt;lauris@kaplinski.com&gt;
+Chema Celorio &lt;chema@celorio.com&gt;
+Michael Meeks &lt;michael@helixcode.com&gt;
+Frank Felfe &lt;iname@innerspace.com&gt;
 </authors>
   <comments>A Vector Drawing Program.
 Released under GPL</comments>

@@ -23,5 +23,5 @@ libspdialogs_a_SOURCES = \
 	export.c export.h \
 	xml-tree.c xml-tree.h \
 	align.c align.h	\
-	transformation.c transofrmation.h
+	transformation.c transformation.h
 

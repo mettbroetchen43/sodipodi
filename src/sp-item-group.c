@@ -13,6 +13,7 @@ static void sp_group_init (SPGroup *group);
 static void sp_group_destroy (GtkObject *object);
 
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_group_read_attr (SPObject * object, const gchar * attr);
 static void sp_group_add_child (SPObject * object, SPRepr * child);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_set_order (SPObject * object);
@@ -63,6 +64,7 @@ sp_group_class_init (SPGroupClass *klass)
 	gtk_object_class->destroy = sp_group_destroy;
 
 	sp_object_class->build = sp_group_build;
+	sp_object_class->read_attr = sp_group_read_attr;
 	sp_object_class->add_child = sp_group_add_child;
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->set_order = sp_group_set_order;
@@ -143,6 +145,26 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 		}
 		l = l->next;
 	}
+}
+
+static void
+sp_group_read_attr (SPObject * object, const gchar * attr)
+{
+	SPGroup * group;
+	GSList * l;
+
+	group = SP_GROUP (object);
+
+	/* fixme: We are hardcoding "style" attribute here, but I do not know another way */
+
+	if (strcmp (attr, "style") == 0) {
+		for (l = group->children; l != NULL; l = l->next) {
+			sp_object_invoke_read_attr (SP_OBJECT (l->data), attr);
+		}
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->read_attr)
+		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 }
 
 static void

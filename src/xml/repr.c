@@ -474,6 +474,18 @@ sp_repr_document_new (void)
 }
 
 void
+sp_repr_document_ref (SPReprDoc * doc)
+{
+	sp_repr_ref ((SPRepr *) doc);
+}
+
+void
+sp_repr_document_unref (SPReprDoc * doc)
+{
+	sp_repr_unref ((SPRepr *) doc);
+}
+
+void
 sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
 {
 	SPRepr * rdoc;

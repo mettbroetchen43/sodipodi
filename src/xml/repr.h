@@ -39,9 +39,11 @@ SPRepr * sp_repr_copy (SPRepr * repr);
 typedef struct _SPReprDoc SPReprDoc;
 
 SPReprDoc * sp_repr_document_new ();
-void sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr);
-SPReprDoc * sp_repr_document (SPRepr * repr);
+void sp_repr_document_ref (SPReprDoc * doc);
+void sp_repr_document_unref (SPReprDoc * doc);
 SPRepr * sp_repr_document_root (SPReprDoc * doc);
+
+SPReprDoc * sp_repr_document (SPRepr * repr);
 
 /* Contents */
 

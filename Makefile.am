@@ -8,8 +8,8 @@ EXTRA_DIST =			\
 	sodipodi.gnorba		\
 	sodipodi.oafinfo	\
 	README HACKING		\
-	sodipodi.png		\
-	samples/*
+	sodipodi.png
+
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png
@@ -42,13 +42,11 @@ install-data-local:
 	  done \
 	fi
 
-#dist-hook:
-#	if test -d glade; then \
-#	  mkdir $(distdir)/glade; \
-#	  for uifile in glade/*; do \
-#	    if test -f $$uifile; then \
-#	      cp -p $$uifile $(distdir)/glade; \
-#	    fi \
-#	  done \
-#	fi
+dist-hook:
+	mkdir $(distdir)/samples
+	cp $(srcdir)/samples/*svg $(distdir)/samples
+	cp $(srcdir)/samples/*png $(distdir)/samples
+
+
+
 

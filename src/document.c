@@ -113,6 +113,8 @@ sp_document_destroy (GtkObject * object)
 
 		if (private->iddef) g_hash_table_destroy (private->iddef);
 
+		if (private->rdoc) sp_repr_document_unref (private->rdoc);
+
 		g_free (private);
 		document->private = NULL;
 	}
@@ -147,7 +149,7 @@ sp_document_new (const gchar * uri)
 		rroot = sp_repr_document_root (rdoc);
 		g_return_val_if_fail (rroot != NULL, NULL);
 		sp_repr_set_attr (rroot, "style",
-			"fill:#000000;fill-opacity:10%;stroke:none");
+			"fill:#000000;fill-opacity:50%;stroke:none");
 	}
 	/* A quick hack to get namespaces into doc */
 	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/Graphics/SVG/SVG-19991203.dtd");

@@ -3,6 +3,16 @@
 #include "sodipodi.h"
 #include "interface.h"
 
+#include "dialogs/object-fill.h"
+#include "dialogs/object-stroke.h"
+#include "dialogs/text-edit.h"
+#include "dialogs/export.h"
+#include "dialogs/xml-tree.h"
+#include "dialogs/align.h"
+#include "dialogs/transformation.h"
+
+static void fake_dialogs (void);
+
 void
 sp_create_window (SPDesktop * desktop, gboolean editable)
 {
@@ -46,8 +56,26 @@ sp_ui_close_view (GtkWidget * widget)
 	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
 
 	if (w) gtk_object_destroy (GTK_OBJECT (w));
+
+	/*
+	 * We have to fake dialog initialization, or corresponding code is
+	 * not compiled into application.
+	 */
+
+	if (GTK_IS_OBJECT (NULL)) fake_dialogs ();
 }
 
+static void
+fake_dialogs (void)
+{
+	sp_object_fill_dialog ();
+	sp_object_stroke_dialog ();
+	sp_text_edit_dialog ();
+	sp_export_dialog ();
+	sp_xml_tree_dialog ();
+	sp_quick_align_dialog ();
+	sp_transformation_dialog ();
+}
 
 
 

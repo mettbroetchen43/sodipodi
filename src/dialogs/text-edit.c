@@ -35,16 +35,7 @@ GtkText * ttext;
 
 static SPCSSAttr * css = NULL;
 
-#if 0
-static guint view_changed_id = 0;
-static guint sel_destroy_id = 0;
-#endif
-
 static guint sel_changed_id = 0;
-
-#if 0
-static SPSelection * sel_current;
-#endif
 
 void sp_text_edit_dialog (void)
 {
@@ -227,57 +218,6 @@ sp_text_sel_changed (Sodipodi * sodipodi, SPSelection * selection, gpointer data
 	sp_text_read_selection ();
 }
 
-#if 0
-static void
-sp_text_sel_destroy (GtkObject * object, gpointer data)
-{
-	SPSelection * selection;
-
-	selection = SP_SELECTION (object);
-
-	if (selection == sel_current) {
-		if (sel_destroy_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
-			sel_destroy_id = 0;
-		}
-		if (sel_changed_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
-			sel_changed_id = 0;
-		}
-	}
-}
-
-static void
-sp_text_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data)
-{
-	if (sel_current != NULL) {
-		if (sel_destroy_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
-			sel_destroy_id = 0;
-		}
-		if (sel_changed_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
-			sel_changed_id = 0;
-		}
-	}
-
-	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
-
-	if (sel_current != NULL) {
-		if (sel_destroy_id < 1) {
-			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
-				GTK_SIGNAL_FUNC (sp_text_sel_destroy), NULL);
-		}
-		if (sel_changed_id < 1) {
-			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
-				GTK_SIGNAL_FUNC (sp_text_sel_changed), NULL);
-		}
-	}
-
-	sp_text_read_selection ();
-}
-#endif
-
 static void
 sp_text_show_dialog (void)
 {
@@ -287,26 +227,6 @@ sp_text_show_dialog (void)
 		sel_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection",
 						     GTK_SIGNAL_FUNC (sp_text_sel_changed), NULL);
 	}
-
-#if 0
-	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
-
-	if (sel_current != NULL) {
-		if (sel_destroy_id < 1) {
-			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
-				GTK_SIGNAL_FUNC (sp_text_sel_destroy), NULL);
-		}
-		if (sel_changed_id < 1) {
-			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
-				GTK_SIGNAL_FUNC (sp_text_sel_changed), NULL);
-		}
-	}
-
-	if (view_changed_id < 1) {
-		view_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "view_changed",
-			GTK_SIGNAL_FUNC (sp_text_view_changed), NULL);
-	}
-#endif
 
 	if (!GTK_WIDGET_VISIBLE (dialog)) {
 		gtk_widget_show (dialog);
@@ -326,23 +246,5 @@ sp_text_hide_dialog (void)
 		gtk_signal_disconnect (GTK_OBJECT (SODIPODI), sel_changed_id);
 		sel_changed_id = 0;
 	}
-
-#if 0
-	if (view_changed_id > 0) {
-		gtk_signal_disconnect (GTK_OBJECT (SODIPODI), view_changed_id);
-		view_changed_id = 0;
-	}
-
-	if (sel_current != NULL) {
-		if (sel_destroy_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
-			sel_destroy_id = 0;
-		}
-		if (sel_changed_id > 0) {
-			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
-			sel_changed_id = 0;
-		}
-	}
-#endif
 }
 

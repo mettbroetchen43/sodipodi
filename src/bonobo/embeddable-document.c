@@ -54,7 +54,6 @@ sp_embeddable_document_get_type (void)
 	return type;
 }
 
-#if 0
 static void
 sp_embeddable_document_destroyed (SPEmbeddableDocument * document)
 {
@@ -65,10 +64,9 @@ sp_embeddable_document_destroyed (SPEmbeddableDocument * document)
 
 	gtk_main_quit ();
 #else
-	gnome_mdi_unregister (SODIPODI, GTK_OBJECT (document));
+	sp_document_unref (document->document);
 #endif
 }
-#endif
 
 static int
 sp_embeddable_document_pf_load (BonoboPersistFile * pfile, const CORBA_char * filename, gpointer closure)
@@ -291,11 +289,11 @@ sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
 #if 0
 	sp_bonobo_objects++;
 #else
-	gnome_mdi_register (SODIPODI, GTK_OBJECT (document));
+	sodipodi_ref ();
+#endif
 #endif
 	gtk_signal_connect (GTK_OBJECT (document), "destroy",
 		GTK_SIGNAL_FUNC (sp_embeddable_document_destroyed), NULL);
-#endif
 
 	return BONOBO_OBJECT (document);
 }

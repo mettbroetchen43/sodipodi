@@ -20,7 +20,7 @@ INCLUDES = \
 bin_PROGRAMS = sodipodi
 
 sodipodi_SOURCES = \
-	sodipodi.c sodipodi.h \
+	sodipodi.c sodipodi.h sodipodi-private.h \
 	\
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
@@ -107,6 +107,8 @@ sodipodi_LDADD = \
 	$(INTLLIBS)
 
 EXTRA_DIST = \
-	pixmaps/*.xpm \
 	brokenimage.xpm
 
+dist-hook:
+	mkdir $(distdir)/pixmaps
+	cp $(srcdir)/pixmaps/*xpm $(distdir)/pixmaps

@@ -29,5 +29,7 @@ struct _SPReprClass {
 	void (* order_changed) (SPRepr * repr);
 };
 
+void sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr);
+
 
 #endif

@@ -5,21 +5,13 @@
  *
  * This is interface to main application
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 1999-2000
+ * Copyright (C) Lauris Kaplinski <lauris@kaplinski.com> 1999-2000
  *
  */
 
 #include "desktop-handles.h"
 #include "sodipodi.h"
 #include "sodipodi-private.h"
-
-#include "dialogs/object-fill.h"
-#include "dialogs/object-stroke.h"
-#include "dialogs/text-edit.h"
-#include "dialogs/export.h"
-#include "dialogs/xml-tree.h"
-#include "dialogs/align.h"
-#include "dialogs/transformation.h"
 
 enum {
 	CHANGE_SELECTION,
@@ -37,8 +29,6 @@ enum {
 static void sodipodi_class_init (SodipodiClass * klass);
 static void sodipodi_init (SPObject * object);
 static void sodipodi_destroy (GtkObject * object);
-
-static void fake_dialogs (void);
 
 struct _Sodipodi {
 	GtkObject object;
@@ -181,8 +171,6 @@ sodipodi_destroy (GtkObject * object)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 
 	gtk_main_quit ();
-
-	fake_dialogs ();
 }
 
 void
@@ -322,18 +310,6 @@ sodipodi_active_event_context (void)
 	if (SP_ACTIVE_DESKTOP) return SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP);
 
 	return NULL;
-}
-
-static void
-fake_dialogs (void)
-{
-	sp_object_fill_dialog ();
-	sp_object_stroke_dialog ();
-	sp_text_edit_dialog ();
-	sp_export_dialog ();
-	sp_xml_tree_dialog ();
-	sp_quick_align_dialog ();
-	sp_transformation_dialog ();
 }
 
 

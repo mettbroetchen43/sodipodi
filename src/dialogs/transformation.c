@@ -39,6 +39,7 @@ GtkToggleButton * rotate_left;
 GtkNotebook * trans_notebook;
 GtkToggleButton * make_copy;
 
+static void sp_transformation_dialog_reset (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
 
 void
 sp_transformation_dialog (void)
@@ -66,10 +67,42 @@ sp_transformation_dialog (void)
 		trans_notebook = (GtkNotebook *) glade_xml_get_widget (transformation_xml, "trans_notebook");
 		make_copy = (GtkToggleButton *) glade_xml_get_widget (transformation_xml, "make_copy");
 
+		gtk_signal_connect_while_alive (GTK_OBJECT (sodipodi), "activate_desktop",
+						GTK_SIGNAL_FUNC (sp_transformation_dialog_reset), NULL,
+						GTK_OBJECT (transformation_dialog));
 	} else {
 		if (!GTK_WIDGET_VISIBLE (transformation_dialog))
 			gtk_widget_show (transformation_dialog);
 	}
+
+	sp_transformation_dialog_reset (SODIPODI, NULL, NULL);
+}
+
+/*
+ * Fill entries etc. with default values
+ */
+
+static void
+sp_transformation_dialog_reset (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
+{
+	g_assert (transformation_dialog != NULL);
+
+	gtk_toggle_button_set_active (make_copy, FALSE);
+
+	gtk_spin_button_set_value (move_hor, 0.0);
+	gtk_spin_button_set_value (move_ver, 0.0);
+
+	gtk_toggle_button_set_active (rotate_any, TRUE);
+	gtk_spin_button_set_value (rotate_angle, 0.0);
+	gtk_toggle_button_set_active (rotate_right, TRUE);
+
+	gtk_toggle_button_set_active (flip_hor, FALSE);
+	gtk_toggle_button_set_active (flip_ver, FALSE);
+	gtk_spin_button_set_value (scale_hor, 100.0);
+	gtk_spin_button_set_value (scale_ver, 100.0);
+
+	gtk_spin_button_set_value (skew_hor, 0.0);
+	gtk_spin_button_set_value (skew_ver, 0.0);
 }
 
 void
@@ -131,9 +164,9 @@ sp_transformation_dialog_apply (void)
     break;
   case 2 : // scale
     if (gtk_toggle_button_get_active (flip_hor)) dx = -1;
-    else dx = gtk_spin_button_get_value_as_float (scale_hor)/100 +1;
+    else dx = gtk_spin_button_get_value_as_float (scale_hor) / 100.0;
     if (gtk_toggle_button_get_active (flip_ver)) dy = -1;
-    else dy = gtk_spin_button_get_value_as_float (scale_ver)/100 +1;
+    else dy = gtk_spin_button_get_value_as_float (scale_ver) / 100.0;
 
     for (l2 = l; l2 != NULL; l2 = l2-> next) {
       item = SP_ITEM (l2->data);

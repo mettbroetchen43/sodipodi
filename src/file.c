@@ -47,7 +47,7 @@ void sp_file_new (void)
 	sp_create_window (desktop, TRUE);
 }
 
-void
+static void
 file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
 	SPDocument * doc;
@@ -198,15 +198,29 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	e = sp_extension_from_path (filename);
 
 	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
-		/* fixme: leak */
+		const GList * children, * l;
+		SPRepr * newgroup;
+		const gchar * style;
+
 		rnewdoc = sp_repr_read_file (filename);
 		if (rnewdoc == NULL) return;
 		repr = sp_repr_document_root (rnewdoc);
-#if 0
-		sp_repr_set_name (repr, "g");
-#endif
-		sp_document_add_repr (doc, repr);
-		sp_repr_unref (repr);
+		children = sp_repr_children (repr);
+		style = sp_repr_attr (repr, "style");
+
+		newgroup = sp_repr_new ("g");
+		sp_repr_set_attr (newgroup, "style", style);
+
+		for (l = children; l != NULL; l = l->next) {
+			SPRepr * child;
+			child = sp_repr_copy ((SPRepr *) l->data);
+			sp_repr_append_child (newgroup, child);
+		}
+
+		sp_repr_document_unref (rnewdoc);
+
+		sp_document_add_repr (doc, newgroup);
+		sp_repr_unref (newgroup);
 		sp_document_done (doc);
 		return;
 	}

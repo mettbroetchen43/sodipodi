@@ -7,4 +7,8 @@ glade_DATA = 			\
 	text-dialog.glade	\
 	xml-tree.glade
 
-EXTRA_DIST = *.xpm $(glade_DATA)
+EXTRA_DIST = $(glade_DATA)
+
+dist-hook:
+	cp $(srcdir)/*xpm $(distdir)
+
