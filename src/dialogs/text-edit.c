@@ -20,7 +20,6 @@
 #include <glib.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
@@ -33,7 +32,8 @@
 #include <gtk/gtkimage.h>
 
 #include "macros.h"
-#include "../helper/sp-intl.h"
+#include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "../widgets/font-selector.h"
 #include "../forward.h"
 #include "../sodipodi.h"
@@ -84,8 +84,7 @@ sp_text_edit_dialog (void)
 		GtkWidget *mainvb, *nb, *vb, *hb, *txt, *fontsel, *preview, *f, *tbl, *l, *px, *b, *hs;
 		GtkTextBuffer *tb;
 
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Text properties"));
+		dlg = sp_window_new (_("Text properties"), TRUE);
 		gtk_window_set_policy (GTK_WINDOW (dlg), TRUE, TRUE, FALSE);
 		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_text_edit_dialog_destroy), dlg);
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_text_edit_dialog_delete), dlg);

@@ -18,7 +18,6 @@
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkmenubar.h>
@@ -27,6 +26,7 @@
 #include <gtk/gtkdnd.h>
 
 #include "macros.h"
+#include "helper/window.h"
 #include "widgets/icon.h"
 #include "widgets/button.h"
 #include "widgets/sp-toolbox.h"
@@ -105,25 +105,13 @@ sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 	sodipodi_unref ();
 }
 
-static int
-sp_maintoolbox_event (GtkWidget *widgt, GdkEvent *event)
-{
-	/* g_print ("Event %d\n", event->type); */
-
-	return FALSE;
-}
-
 void
 sp_maintoolbox_create_toplevel (void)
 {
 	GtkWidget *window, *toolbox;
 
 	/* Create window */
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (window), _("Sodipodi"));
-	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
-
-	g_signal_connect (G_OBJECT (window), "event", G_CALLBACK (sp_maintoolbox_event), NULL);
+	window = sp_window_new (_("Sodipodi"), FALSE);
 
 	toolbox = sp_maintoolbox_new ();
 	gtk_widget_show (toolbox);
@@ -336,8 +324,6 @@ sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, cons
 	return b;
 }
 
-#include <gtk/gtkstock.h>
-
 static GtkWidget *
 sp_toolbox_file_create (void)
 {
@@ -467,14 +453,14 @@ sp_toolbox_selection_create (void)
 	tb = sp_toolbox_new (t, _("Selection"), "selection", "toolbox_select");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new (t, 0, "selection_top", GTK_SIGNAL_FUNC (sp_selection_raise_to_top), tt, _("Raise selected objects to top"));
-	sp_toolbox_button_new (t, 1, "selection_up", GTK_SIGNAL_FUNC (sp_selection_raise), tt, _("Raise selected objects one level"));
-	sp_toolbox_button_new (t, 2, "selection_combine", GTK_SIGNAL_FUNC (sp_selected_path_combine), tt, _("Combine multiple paths"));
-	sp_toolbox_button_new (t, 3, "selection_group", GTK_SIGNAL_FUNC (sp_selection_group), tt, _("Group selected objects"));
-	sp_toolbox_button_new (t, 4, "selection_bot", GTK_SIGNAL_FUNC (sp_selection_lower_to_bottom), tt, _("Lower selected objects to bottom"));
-	sp_toolbox_button_new (t, 5, "selection_down", GTK_SIGNAL_FUNC (sp_selection_lower), tt, _("Lower selected objects one level"));
-	sp_toolbox_button_new (t, 6, "selection_break", GTK_SIGNAL_FUNC (sp_selected_path_break_apart), tt, _("Break selected path to subpaths"));
-	sp_toolbox_button_new (t, 7, "selection_ungroup", GTK_SIGNAL_FUNC (sp_selection_ungroup), tt, _("Ungroup selected group"));
+	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_SELECTION_TO_FRONT, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_SELECTION_RAISE, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_SELECTION_COMBINE, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_SELECTION_GROUP, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_SELECTION_TO_BACK, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_SELECTION_LOWER, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_SELECTION_BREAK_APART, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_SELECTION_UNGROUP, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.selection");
 	if (repr) {

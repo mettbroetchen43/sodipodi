@@ -18,7 +18,6 @@
 #include <libnr/nr-values.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhscale.h>
@@ -29,6 +28,7 @@
 #include <gtk/gtkframe.h>
 
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"
@@ -380,8 +380,7 @@ sp_item_dialog (SPItem *item)
 
 	if (dlg == NULL) {
 		GtkWidget *itemw;
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Item properties"));
+		dlg = sp_window_new (_("Item properties"), TRUE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_item_dialog_destroy), NULL);
 		itemw = sp_item_widget_new ();
 		gtk_widget_show (itemw);

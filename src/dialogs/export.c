@@ -17,7 +17,6 @@
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkframe.h>
@@ -28,6 +27,7 @@
 #include <gtk/gtkhseparator.h>
 
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "helper/unit-menu.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -111,8 +111,7 @@ sp_export_dialog (void)
 	if (!dlg) {
 		GtkWidget *vb, *f, *t, *hb, *us, *l, *fe, *hs, *b;
 
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Export bitmap"));
+		dlg = sp_window_new (_("Export bitmap"), FALSE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_export_dialog_destroy), NULL);
 
 		vb = gtk_vbox_new (FALSE, 4);

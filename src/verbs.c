@@ -32,6 +32,7 @@
 #include "document.h"
 #include "desktop.h"
 #include "selection-chemistry.h"
+#include "path-chemistry.h"
 #include "shortcuts.h"
 
 #include "verbs.h"
@@ -84,6 +85,79 @@ sp_verb_action_file_perform (SPAction *action, void *data)
 		break;
 	case SP_VERB_FILE_EXPORT:
 		sp_file_export_dialog (NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+sp_verb_action_edit_perform (SPAction *action, void *data)
+{
+	SPDesktop *dt;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+
+	switch ((int) data) {
+	case SP_VERB_EDIT_UNDO:
+		sp_document_undo (SP_DT_DOCUMENT (dt));
+		break;
+	case SP_VERB_EDIT_REDO:
+		sp_document_redo (SP_DT_DOCUMENT (dt));
+		break;
+	case SP_VERB_EDIT_CUT:
+		sp_selection_cut (NULL);
+		break;
+	case SP_VERB_EDIT_COPY:
+		sp_selection_copy (NULL);
+		break;
+	case SP_VERB_EDIT_PASTE:
+		sp_selection_paste (NULL);
+		break;
+	case SP_VERB_EDIT_DELETE:
+		sp_selection_delete (NULL, NULL);
+		break;
+	case SP_VERB_EDIT_DUPLICATE:
+		sp_selection_duplicate (NULL, NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+sp_verb_action_selection_perform (SPAction *action, void *data)
+{
+	SPDesktop *dt;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+
+	switch ((int) data) {
+	case SP_VERB_SELECTION_TO_FRONT:
+		sp_selection_raise_to_top (NULL);
+		break;
+	case SP_VERB_SELECTION_TO_BACK:
+		sp_selection_lower_to_bottom (NULL);
+		break;
+	case SP_VERB_SELECTION_RAISE:
+		sp_selection_raise (NULL);
+		break;
+	case SP_VERB_SELECTION_LOWER:
+		sp_selection_lower (NULL);
+		break;
+	case SP_VERB_SELECTION_GROUP:
+		sp_selection_group (NULL, NULL);
+		break;
+	case SP_VERB_SELECTION_UNGROUP:
+		sp_selection_ungroup (NULL, NULL);
+		break;
+	case SP_VERB_SELECTION_COMBINE:
+		sp_selected_path_combine ();
+		break;
+	case SP_VERB_SELECTION_BREAK_APART:
+		sp_selected_path_break_apart ();
 		break;
 	default:
 		break;
@@ -209,50 +283,17 @@ sp_verb_action_zoom_perform (SPAction *action, void *data)
 	}
 }
 
-static void
-sp_verb_action_edit_perform (SPAction *action, void *data)
-{
-	SPDesktop *dt;
-
-	dt = SP_ACTIVE_DESKTOP;
-	if (!dt) return;
-
-	switch ((int) data) {
-	case SP_VERB_EDIT_UNDO:
-		sp_document_undo (SP_DT_DOCUMENT (dt));
-		break;
-	case SP_VERB_EDIT_REDO:
-		sp_document_redo (SP_DT_DOCUMENT (dt));
-		break;
-	case SP_VERB_EDIT_CUT:
-		sp_selection_cut (NULL);
-		break;
-	case SP_VERB_EDIT_COPY:
-		sp_selection_copy (NULL);
-		break;
-	case SP_VERB_EDIT_PASTE:
-		sp_selection_paste (NULL);
-		break;
-	case SP_VERB_EDIT_DELETE:
-		sp_selection_delete (NULL, NULL);
-		break;
-	case SP_VERB_EDIT_DUPLICATE:
-		sp_selection_duplicate (NULL, NULL);
-		break;
-	default:
-		break;
-	}
-}
-
 static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, sp_verb_action_set_shortcut};
 
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
+#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
+#define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_BREAK_APART))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
 #define SP_VERB_IS_ZOOM(v) ((v >= SP_VERB_ZOOM_IN) && (v <= SP_VERB_ZOOM_SELECTION))
-#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
 
 typedef struct {
 	unsigned int code;
@@ -275,6 +316,25 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_FILE_PRINT_PREVIEW, "FilePrintPreview", N_("Print Preview"), N_("Preview document printout"), GTK_STOCK_PRINT_PREVIEW },
 	{SP_VERB_FILE_IMPORT, "FileImport", N_("Import"), N_("Import bitmap or SVG image into document"), "file_import"},
 	{SP_VERB_FILE_EXPORT, "FileExport", N_("Export"), N_("Export document as PNG bitmap"), "file_export"},
+	/* Edit */
+	{SP_VERB_EDIT_UNDO, "EditUndo", N_("Undo"), N_("Revert last action"), GTK_STOCK_UNDO},
+	{SP_VERB_EDIT_REDO, "EditRedo", N_("Redo"), N_("Do again undone action"), GTK_STOCK_REDO},
+	{SP_VERB_EDIT_CUT, "EditCut", N_("Cut"), N_("Cut selected objects to clipboard"), GTK_STOCK_CUT},
+	{SP_VERB_EDIT_COPY, "EditCopy", N_("Copy"), N_("Copy selected objects to clipboard"), GTK_STOCK_COPY},
+	{SP_VERB_EDIT_PASTE, "EditPaste", N_("Paste"), N_("Paste objects from clipboard"), GTK_STOCK_PASTE},
+	{SP_VERB_EDIT_DELETE, "EditDelete", N_("Delete"), N_("Delete selected objects"), GTK_STOCK_DELETE},
+	{SP_VERB_EDIT_DUPLICATE, "EditDuplicate", N_("Duplicate"), N_("Duplicate selected objects"), "edit_duplicate"},
+	{SP_VERB_EDIT_CLEAR_ALL, "EditClearAll", N_("Clear All"), N_("Delete all objects from document"), NULL},
+	{SP_VERB_EDIT_SELECT_ALL, "EditSelectAll", N_("Select All"), N_("Select all objects in document"), NULL},
+	/* Selection */
+	{SP_VERB_SELECTION_TO_FRONT, "SelectionToFront", N_("Bring to Front"), N_("Raise selected objects to top"), "selection_top"},
+	{SP_VERB_SELECTION_TO_BACK, "SelectionToBack", N_("Send to Back"), N_("Lower selected objects to bottom"), "selection_bot"},
+	{SP_VERB_SELECTION_RAISE, "SelectionRaise", N_("Raise"), N_("Raise selected objects one position"), "selection_up"},
+	{SP_VERB_SELECTION_LOWER, "SelectionLower", N_("Lower"), N_("Lower selected objects one position"), "selection_down"},
+	{SP_VERB_SELECTION_GROUP, "SelectionGroup", N_("Group"), N_("Group selected objects"), "selection_group"},
+	{SP_VERB_SELECTION_UNGROUP, "SelectionUnGroup", N_("Ungroup"), N_("Ungroup selected group"), "selection_ungroup"},
+	{SP_VERB_SELECTION_COMBINE, "SelectionCombine", N_("Combine"), N_("Combine multiple paths"), "selection_combine"},
+	{SP_VERB_SELECTION_BREAK_APART, "SelectionBreakApart", N_("Break Apart"), N_("Break selected path to subpaths"), "selection_break"},
 	/* Event contexts */
 	{SP_VERB_CONTEXT_SELECT, "DrawSelect", N_("Select"), N_("Select and transform objects"), "draw_select"},
 	{SP_VERB_CONTEXT_NODE, "DrawNode", N_("Node edit"), N_("Modify existing objects by control nodes"), "draw_node"},
@@ -297,14 +357,6 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_ZOOM_PAGE, "ZoomPage", N_("Page"), N_("Fit the whole page into window"), "zoom_page"},
 	{SP_VERB_ZOOM_DRAWING, "ZoomDrawing", N_("Drawing"), N_("Fit the whole drawing into window"), "zoom_draw"},
 	{SP_VERB_ZOOM_SELECTION, "ZoomSelection", N_("Selection"), N_("Fit the whole selection into window"), "zoom_select"},
-	/* Edit */
-	{SP_VERB_EDIT_UNDO, "EditUndo", N_("Undo"), N_("Revert last action"), GTK_STOCK_UNDO},
-	{SP_VERB_EDIT_REDO, "EditRedo", N_("Redo"), N_("Do again undone action"), GTK_STOCK_REDO},
-	{SP_VERB_EDIT_CUT, "EditCut", N_("Cut"), N_("Cut selected objects to clipboard"), GTK_STOCK_CUT},
-	{SP_VERB_EDIT_COPY, "EditCopy", N_("Copy"), N_("Copy selected objects to clipboard"), GTK_STOCK_COPY},
-	{SP_VERB_EDIT_PASTE, "EditPaste", N_("Paste"), N_("Paste objects from clipboard"), GTK_STOCK_PASTE},
-	{SP_VERB_EDIT_DELETE, "EditDelete", N_("Delete"), N_("Delete selected objects"), GTK_STOCK_DELETE},
-	{SP_VERB_EDIT_DUPLICATE, "EditDuplicate", N_("Duplicate"), N_("Duplicate selected objects"), "edit_duplicate"},
 	/* Footer */
 	{SP_VERB_LAST, NULL, NULL, NULL, NULL}
 };
@@ -323,6 +375,16 @@ sp_verbs_init (void)
 						       (NRObjectEventVector *) &action_file_vector,
 						       sizeof (SPActionEventVector),
 						       (void *) v);
+		} else if (SP_VERB_IS_EDIT (v)) {
+			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
+						       (NRObjectEventVector *) &action_edit_vector,
+						       sizeof (SPActionEventVector),
+						       (void *) v);
+		} else if (SP_VERB_IS_SELECTION (v)) {
+			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
+						       (NRObjectEventVector *) &action_selection_vector,
+						       sizeof (SPActionEventVector),
+						       (void *) v);
 		} else if (SP_VERB_IS_CONTEXT (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
 						       (NRObjectEventVector *) &action_ctx_vector,
@@ -331,11 +393,6 @@ sp_verbs_init (void)
 		} else if (SP_VERB_IS_ZOOM (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
 						       (NRObjectEventVector *) &action_zoom_vector,
-						       sizeof (SPActionEventVector),
-						       (void *) v);
-		} else if (SP_VERB_IS_EDIT (v)) {
-			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
-						       (NRObjectEventVector *) &action_edit_vector,
 						       sizeof (SPActionEventVector),
 						       (void *) v);
 		}

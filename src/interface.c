@@ -227,15 +227,21 @@ sp_ui_menu_append_item_from_verb (GtkMenu *menu, unsigned int verb)
 	SPAction *action;
 	GtkWidget *item, *icon;
 
-	action = sp_verb_get_action (verb);
-	if (!action) return NULL;
-	/* fixme: Handle stock somehow (Lauris) */
-	item = gtk_image_menu_item_new_with_label (action->name);
+	if (verb == SP_VERB_NONE) {
+		item = gtk_separator_menu_item_new ();
+	} else {
+		action = sp_verb_get_action (verb);
+		if (!action) return NULL;
+		/* fixme: Handle stock somehow (Lauris) */
+		item = gtk_image_menu_item_new_with_label (action->name);
+		if (action->image) {
+			icon = sp_icon_new (20, action->image);
+			gtk_widget_show (icon);
+			gtk_image_menu_item_set_image ((GtkImageMenuItem *) item, icon);
+		}
+		g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_ui_menu_activate), action);
+	}
 	gtk_widget_show (item);
-	icon = sp_icon_new (20, action->image);
-	gtk_widget_show (icon);
-	gtk_image_menu_item_set_image ((GtkImageMenuItem *) item, icon);
-	g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (sp_ui_menu_activate), action);
 	gtk_menu_append (GTK_MENU (menu), item);
 
 	return item;
@@ -278,64 +284,36 @@ sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_DUPLICATE);
 	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_DELETE);
 	sp_ui_menu_append_item (menu, NULL, NULL, NULL, NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Clear all"), G_CALLBACK(sp_edit_clear_all), NULL);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_EDIT_CLEAR_ALL);
 	sp_ui_menu_append_item (menu, NULL, _("Cleanup"), G_CALLBACK(sp_edit_cleanup), NULL);
 }
 
 static void
 sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
 {
-	GtkWidget *i, *sm, *si;
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_SELECTION_GROUP);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_SELECTION_UNGROUP);
 
-	/* Selection:Group */
-	i = gtk_menu_item_new_with_label (_("Group"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_group), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Selection:Ungroup */
-	i = gtk_menu_item_new_with_label (_("Ungroup"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_ungroup), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Selection:Combine */
-	i = gtk_menu_item_new_with_label (_("Combine"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selected_path_combine), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Selection:Break apart */
-	i = gtk_menu_item_new_with_label (_("Break apart"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selected_path_break_apart), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_NONE);
+
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_SELECTION_COMBINE);
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_SELECTION_BREAK_APART);
+
+	sp_ui_menu_append_item_from_verb (menu, SP_VERB_NONE);
+
+	GtkWidget *i, *sm;
+
 	/* Selection:Order */
 	i = gtk_menu_item_new_with_label (_("Order"));
 	gtk_widget_show (i);
 	sm = gtk_menu_new ();
 	gtk_widget_show (sm);
-	si = gtk_menu_item_new_with_label (_("Bring to Front"));
-	gtk_widget_show (si);
-	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_raise_to_top), NULL);
-	gtk_menu_append (GTK_MENU (sm), si);
-	si = gtk_menu_item_new_with_label (_("Send to Back"));
-	gtk_widget_show (si);
-	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_lower_to_bottom), NULL);
-	gtk_menu_append (GTK_MENU (sm), si);
-	si = gtk_menu_item_new_with_label (_("Raise"));
-	gtk_widget_show (si);
-	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_raise), NULL);
-	gtk_menu_append (GTK_MENU (sm), si);
-	si = gtk_menu_item_new_with_label (_("Lower"));
-	gtk_widget_show (si);
-	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_lower), NULL);
-	gtk_menu_append (GTK_MENU (sm), si);
+
+	sp_ui_menu_append_item_from_verb ((GtkMenu *) sm, SP_VERB_SELECTION_TO_FRONT);
+	sp_ui_menu_append_item_from_verb ((GtkMenu *) sm, SP_VERB_SELECTION_TO_BACK);
+	sp_ui_menu_append_item_from_verb ((GtkMenu *) sm, SP_VERB_SELECTION_RAISE);
+	sp_ui_menu_append_item_from_verb ((GtkMenu *) sm, SP_VERB_SELECTION_LOWER);
+
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	gtk_menu_append (GTK_MENU (menu), i);
 }

@@ -20,8 +20,11 @@
 #include <glib.h>
 
 #include "macros.h"
-#include "../helper/unit-menu.h"
-#include "../helper/sp-intl.h"
+
+#include "helper/sp-intl.h"
+#include "helper/window.h"
+#include "helper/unit-menu.h"
+
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop.h"
@@ -147,12 +150,8 @@ sp_doc_dialog_new (void)
 {
 	GtkWidget *dialog, *nb, *vb, *hb, *l, *om, *m, *i, *f, *t, *us, *sb;
 	GtkObject *a;
-#if 0
-	GList *ll;
-#endif
 
-	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Document settings"));
+	dialog = sp_window_new (_("Document settings"), FALSE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

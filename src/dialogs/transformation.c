@@ -14,7 +14,6 @@
 
 #include "config.h"
 
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
@@ -27,6 +26,7 @@
 #include <gtk/gtkstock.h>
 
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "helper/unit-menu.h"
 #include "widgets/icon.h"
 #include "macros.h"
@@ -190,8 +190,7 @@ sp_transformation_dialog_new (void)
 	GtkWidget *hb, *vb, *nbook, *page, *img, *hs, *bb, *b;
 	SPSelection *sel;
 
-	dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (dlg), _("Transform selection"));
+	dlg = sp_window_new (_("Transform selection"), FALSE);
 
 	/* Toplevel hbox */
 	hb = gtk_hbox_new (FALSE, 0);

@@ -13,7 +13,6 @@
 
 #include <config.h>
 
-#include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
@@ -25,6 +24,7 @@
 
 #include "macros.h"
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "helper/unit-menu.h"
 #include "svg/svg.h"
 #include "widgets/sp-color-selector.h"
@@ -219,8 +219,7 @@ sp_desktop_dialog_new (void)
 	GtkWidget *dialog, *nb, *l, *t, *b, *us, *sb, *cp;
 	GtkObject *a;
 
-	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Desktop settings"));
+	dialog = sp_window_new (_("Desktop settings"), FALSE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

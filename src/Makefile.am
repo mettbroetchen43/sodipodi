@@ -21,6 +21,7 @@ AM_CPPFLAGS = \
 INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(datadir)/sodipodi"\" \
+	-DDATADIR=\""$(datadir)"\" \
 	-I$(srcdir) \
 	-I$(srcdir/xml) \
 	-I$(srcdir/svg) \

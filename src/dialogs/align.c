@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <libnr/nr-macros.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
@@ -27,6 +26,7 @@
 #include <gtk/gtklabel.h>
 
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "widgets/button.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -147,8 +147,7 @@ sp_quick_align_dialog (void)
 	if (!dlg) {
 		GtkWidget *nb, *vb, *om, *t, *l;
 
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Align objects"));
+		dlg = sp_window_new (_("Align objects"), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
 
 		nb = gtk_notebook_new ();

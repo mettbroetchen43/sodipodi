@@ -24,7 +24,6 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenuitem.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
@@ -41,6 +40,7 @@
 #include <libart_lgpl/art_svp_wind.h>
 
 #include "../helper/sp-intl.h"
+#include "../helper/window.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../widgets/paint-selector.h"
@@ -86,8 +86,7 @@ sp_fill_style_dialog (void)
 	if (!dialog) {
 		GtkWidget *fs;
 
-		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Fill style"));
+		dialog = sp_window_new (_("Fill style"), TRUE);
 		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_fill_style_dialog_destroy), NULL);
 
 		fs = sp_fill_style_widget_new ();

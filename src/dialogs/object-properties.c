@@ -18,7 +18,6 @@
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
@@ -28,7 +27,8 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkimage.h>
-#include "../helper/sp-intl.h"
+#include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"
 #include "fill-style.h"
@@ -105,8 +105,7 @@ sp_object_properties_dialog (void)
 	if (!dlg) {
 		GtkWidget *vb, *nb, *hb, *l, *px, *page, *hs, *om, *m, *mi;
 
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Object style"));
+		dlg = sp_window_new (_("Object style"), TRUE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_object_properties_dialog_destroy), dlg);
 
 		vb = gtk_vbox_new (FALSE, 0);
@@ -279,8 +278,7 @@ sp_object_properties_layout (void)
 
 	if (!dialog) {
 		GtkWidget *w;
-		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Object position and size"));
+		dialog = sp_window_new (_("Object position and size"), TRUE);
 		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (sp_object_layout_dialog_destroy), &dialog);
 		w = sp_selection_layout_widget_new ();
 		gtk_widget_show (w);

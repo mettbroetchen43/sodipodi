@@ -263,14 +263,10 @@ sp_main_gui (int argc, const char **argv)
 	sp_kde_init (argc, (char **) argv, "Sodipodi");
 #endif
 
-#if 0
 	/* Set default icon */
-	if (g_file_test (GNOME_ICONDIR "/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
-		gnome_window_icon_set_default_from_file (GNOME_ICONDIR "/sodipodi.png");
-	} else {
-		g_warning ("Could not find %s", GNOME_ICONDIR "/sodipodi.png");
+	if (g_file_test (DATADIR "/pixmaps/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
+		gtk_window_set_default_icon_from_file (DATADIR "/pixmaps/sodipodi.png", NULL);
 	}
-#endif
 
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();

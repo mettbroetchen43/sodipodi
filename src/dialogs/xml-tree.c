@@ -17,7 +17,6 @@
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhpaned.h>
@@ -31,6 +30,7 @@
 #include <gtk/gtkimage.h>
 
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "macros.h"
 #include "../sodipodi.h"
 #include "../document.h"
@@ -139,7 +139,7 @@ sp_xml_tree_dialog (void)
 		tooltips = gtk_tooltips_new ();
 		gtk_tooltips_enable (tooltips);
 
-		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		dialog = sp_window_new ("", TRUE);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
 		gtk_window_set_default_size (GTK_WINDOW (dialog), 640, 384);
 		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (on_destroy), NULL);

@@ -13,7 +13,6 @@
 #include <config.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
@@ -22,8 +21,11 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkspinbutton.h>
+
+#include "helper/sp-intl.h"
+#include "helper/window.h"
+
 #include "../sodipodi.h"
-#include "../helper/sp-intl.h"
 #include "display-settings.h"
 
 static GtkWidget *dialog = NULL;
@@ -80,8 +82,7 @@ sp_display_dialog_new (void)
 	GtkWidget *dialog, *nb, *l, *vb, *hb, *om, *m, *i, *sb;
 	GtkObject *a;
 
-	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Display settings"));
+	dialog = sp_window_new (_("Display settings"), FALSE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

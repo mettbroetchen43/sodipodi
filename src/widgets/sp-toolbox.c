@@ -22,6 +22,7 @@
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtktogglebutton.h>
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "icon.h"
 #include "button.h"
 #include "sp-toolbox.h"
@@ -42,7 +43,9 @@ static gboolean sp_toolbox_set_state_accumulator (GSignalInvocationHint *ihint, 
 static void sp_toolbox_hide (GtkButton * button, gpointer data);
 //static void sp_toolbox_separate (GtkButton * button, gpointer data);
 static void sp_toolbox_separate (SPButton *button, SPToolBox *toolbox);
+#if 0
 static void sp_toolbox_close (GtkButton * button, gpointer data);
+#endif
 static gint sp_toolbox_delete (GtkWidget * widget, GdkEventAny * event, gpointer data);
 
 static GtkVBoxClass * parent_class;
@@ -101,7 +104,7 @@ sp_toolbox_init (SPToolBox * toolbox)
 	toolbox->state = 7;//SP_TOOLBOX_VISIBLE;
 
 	toolbox->contents = NULL;
-	toolbox->window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	toolbox->window = sp_window_new (NULL, FALSE);
 	toolbox->windowvbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (toolbox->window), toolbox->windowvbox);
 
@@ -134,24 +137,6 @@ sp_toolbox_destroy (GtkObject * object)
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
-
-#if 0
-static void
-sp_toolbox_size_request (GtkWidget *widget, GtkRequisition *requisition)
-{
-	SPToolBox * t;
-	GtkRequisition r;
-
-	t = (SPToolBox *) widget;
-
-	if (((GtkWidgetClass *) (parent_class))->size_request)
-		(* ((GtkWidgetClass *) (parent_class))->size_request) (widget, &r);
-
-	t->width = MAX (t->width, r.width);
-	requisition->width = t->width;
-	requisition->height = r.height;
-}
-#endif
 
 void
 sp_toolbox_set_state (SPToolBox * toolbox, guint state)
@@ -336,11 +321,13 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_signal_connect (GTK_OBJECT (t->window), "delete_event", GTK_SIGNAL_FUNC (sp_toolbox_delete), t);
 	/* Window vbox */
 	gtk_widget_show (t->windowvbox);
+#if 0
 	/* Close button */
 	b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_box_pack_end (GTK_BOX (t->windowvbox), b, TRUE, TRUE, 0);
 	gtk_widget_show (b);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_close), t);
+#endif
 
 	return GTK_WIDGET (t);
 }
@@ -382,6 +369,7 @@ sp_toolbox_separate (SPButton *button, SPToolBox *toolbox)
 	sp_toolbox_set_state (toolbox, newstate);
 }
 
+#if 0
 static void
 sp_toolbox_close (GtkButton * button, gpointer data)
 {
@@ -391,6 +379,7 @@ sp_toolbox_close (GtkButton * button, gpointer data)
 
 	sp_toolbox_set_state (toolbox, 0);
 }
+#endif
 
 static gint
 sp_toolbox_delete (GtkWidget * widget, GdkEventAny * event, gpointer data)

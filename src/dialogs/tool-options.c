@@ -14,14 +14,14 @@
 #include <config.h>
 #include <string.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtklabel.h>
 #include "macros.h"
+#include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "forward.h"
 #include "sodipodi.h"
 #include "desktop-handles.h"
 #include "event-context.h"
-#include "helper/sp-intl.h"
 
 #include "tool-options.h"
 
@@ -41,8 +41,7 @@ sp_tool_options_dialog (gpointer object, gpointer data)
 	ec = SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP);
 
 	if (!dlg) {
-		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title (GTK_WINDOW (dlg), _("Tool options"));
+		dlg = sp_window_new (_("Tool options"), TRUE);
 		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_tool_options_dialog_destroy), NULL);
 
 		sp_tool_options_dialog_setup (ec);

@@ -15,8 +15,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkwindow.h>
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 #include "macros.h"
 #include "sp-anchor.h"
 #include "sp-attribute-widget.h"
@@ -111,9 +111,8 @@ sp_object_attr_show_dialog (SPObject *object, const SPAttrDesc *desc, const guch
 		attrs[i] = desc[i].attribute;
 	}
 
-	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	title = g_strdup_printf (_("%s attributes"), tag);
-	gtk_window_set_title (GTK_WINDOW (w), title);
+	w = sp_window_new (title, TRUE);
 	g_free (title);
 
 	t = sp_attribute_table_new (object, len, labels, attrs);

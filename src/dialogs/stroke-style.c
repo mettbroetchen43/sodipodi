@@ -27,7 +27,6 @@
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkmisc.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkwindow.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtklabel.h>
@@ -37,8 +36,8 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkimage.h>
 
-#include "../helper/sp-intl.h"
-#include "../helper/unit-menu.h"
+#include "helper/sp-intl.h"
+#include "helper/unit-menu.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include <widgets/paint-selector.h>
