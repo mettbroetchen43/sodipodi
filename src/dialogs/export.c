@@ -148,6 +148,8 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 
 	doc = SP_DT_DOCUMENT (desktop);
 
+	sp_document_ensure_up_to_date (doc);
+
 #ifdef ENABLE_RBUF
 
 	pc = gnome_print_pixbuf_new (x0, y0, x1, y1,

@@ -414,6 +414,8 @@ sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 
         gpc = gnome_print_context_new (printer);
 
+	sp_document_ensure_up_to_date (doc);
+
 	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
 	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
 	gnome_print_scale (gpc, 1.0, -1.0);
@@ -446,6 +448,8 @@ sp_do_file_print_preview (SPDocument * doc)
         GnomePrintMaster * gpm;
 	GnomePrintMasterPreview *gpmp;
 	gchar * title;
+
+	sp_document_ensure_up_to_date (doc);
 
 	gpm = gnome_print_master_new();
 	gpc = gnome_print_master_get_context (gpm);

@@ -5,10 +5,12 @@
  * SPStyle - a style object for SPItems
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>
@@ -26,10 +28,11 @@ BEGIN_GNOME_DECLS
 
 typedef struct _SPIString SPIString;
 typedef struct _SPIFloat SPIFloat;
-typedef struct _SPIScale30 SPIScale30;
+typedef struct _SPIScale24 SPIScale24;
 typedef struct _SPIInt SPIInt;
 typedef struct _SPIShort SPIShort;
 typedef struct _SPIPaint SPIPaint;
+typedef struct _SPIFontSize SPIFontSize;
 
 struct _SPIString {
 	guint set : 1;
@@ -45,14 +48,14 @@ struct _SPIFloat {
 	gfloat value;
 };
 
-#define SP_SCALE30_MAX ((1 << 30) - 1)
-#define SP_SCALE30_TO_FLOAT(v) ((float) (v) / SP_SCALE30_MAX)
-#define SP_SCALE30_FROM_FLOAT(v) ((gint) floor ((v) * (SP_SCALE30_MAX + 0.9999)))
+#define SP_SCALE24_MAX ((1 << 24) - 1)
+#define SP_SCALE24_TO_FLOAT(v) ((float) (v) / SP_SCALE24_MAX)
+#define SP_SCALE24_FROM_FLOAT(v) ((gint) floor ((v) * (SP_SCALE24_MAX + 0.9999)))
 
-struct _SPIScale30 {
+struct _SPIScale24 {
 	guint set : 1;
 	guint inherit : 1;
-	guint value : 30;
+	guint value : 24;
 };
 
 struct _SPIInt {
@@ -69,23 +72,44 @@ struct _SPIShort {
 	gshort value;
 };
 
-#define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.server)
-#define SP_STYLE_STROKE_SERVER(s) (((SPStyle *) (s))->stroke.server)
-#define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
-#define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
+#define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.value.server)
+#define SP_STYLE_STROKE_SERVER(s) (((SPStyle *) (s))->stroke.value.server)
+#define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.value.server)
+#define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.value.server)
 
-typedef enum {
+enum {
 	SP_PAINT_TYPE_NONE,
 	SP_PAINT_TYPE_COLOR,
 	SP_PAINT_TYPE_PAINTSERVER
-} SPPaintType;
+};
 
 struct _SPIPaint {
 	guint set : 1;
 	guint inherit : 1;
-	guint type : 3;
-	SPColor color;
-	SPPaintServer *server;
+	guint type : 2;
+	union {
+		SPColor color;
+		SPPaintServer *server;
+	} value;
+};
+
+enum {
+	SP_FONT_SIZE_LITERAL,
+	SP_FONT_SIZE_LENGTH,
+	SP_FONT_SIZE_PERCENTAGE
+};
+
+#define SP_FONT_SIZE ((1 << 24) - 1)
+
+#define SP_F8_16_TO_FLOAT(v) ((gdouble) (v) / (1 << 16))
+#define SP_F8_16_FROM_FLOAT(v) ((gint) floor ((v) * ((1 << 16) + 0.9999)))
+
+struct _SPIFontSize {
+	guint set : 1;
+	guint inherit : 1;
+	guint type : 2;
+	guint value : 24;
+	gfloat computed;
 };
 
 typedef struct _SPTextStyle SPTextStyle;
@@ -100,6 +124,10 @@ struct _SPStyle {
 	SPTextStyle *text;
 	guint text_private : 1;
 
+	/* CSS2 */
+	/* Font */
+	SPIFontSize font_size;
+
 	/* Misc attributes */
 	guint clip_set : 1;
 	guint color_set : 1;
@@ -112,7 +140,7 @@ struct _SPStyle {
 	guint mask_set : 1;
 
 	/* opacity */
-	SPIScale30 opacity;
+	SPIScale24 opacity;
 
 	/* display */
 	guint display : 1;
@@ -122,7 +150,7 @@ struct _SPStyle {
 	/* fill */
 	SPIPaint fill;
 	/* fill-opacity */
-	SPIScale30 fill_opacity;
+	SPIScale24 fill_opacity;
 	/* fill-rule: 0 nonzero, 1 evenodd */
 	SPIShort fill_rule;
 
@@ -142,7 +170,7 @@ struct _SPStyle {
 	guint stroke_dasharray_set : 1;
 	guint stroke_dashoffset_set : 1;
 	/* stroke-opacity */
-	SPIScale30 stroke_opacity;
+	SPIScale24 stroke_opacity;
 	/* fixme: remove this */
 	/* Computed value */
 	gdouble absolute_stroke_width;
@@ -175,6 +203,18 @@ void sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat
 void sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set);
 
 /* SPTextStyle */
+
+typedef enum {
+	SP_CSS_FONT_SIZE_XX_SMALL,
+	SP_CSS_FONT_SIZE_X_SMALL,
+	SP_CSS_FONT_SIZE_SMALL,
+	SP_CSS_FONT_SIZE_MEDIUM,
+	SP_CSS_FONT_SIZE_LARGE,
+	SP_CSS_FONT_SIZE_X_LARGE,
+	SP_CSS_FONT_SIZE_XX_LARGE,
+	SP_CSS_FONT_SIZE_SMALLER,
+	SP_CSS_FONT_SIZE_LARGER
+} SPCSSFontSize;
 
 typedef enum {
 	SP_CSS_FONT_STYLE_NORMAL,
@@ -232,8 +272,6 @@ struct _SPTextStyle {
 	SPIShort font_variant;
 	SPIShort font_weight;
 	SPIShort font_stretch;
-	/* fixme: Should this be SPDistance ? (Lauris) */
-	SPIFloat font_size;
 
 	guint font_size_adjust_set : 1;
 

@@ -208,6 +208,7 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 
 	/* fixme: */
 	if (!strcmp (key, "style") ||
+	    !strcmp (key, "font-size") ||
 	    !strcmp (key, "fill-cmyk") ||
 	    !strcmp (key, "fill") ||
 	    !strcmp (key, "stroke-cmyk") ||
@@ -257,7 +258,7 @@ sp_item_style_modified (SPObject *object, guint flags)
 	}
 
 	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE30_TO_FLOAT (object->style->opacity.value));
+		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 	}
 }
 
@@ -402,7 +403,7 @@ sp_item_show (SPItem *item, NRArena *arena)
 	if (ai != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, arena, ai);
 		nr_arena_item_set_transform (ai, item->affine);
-		nr_arena_item_set_opacity (ai, SP_SCALE30_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
+		nr_arena_item_set_opacity (ai, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;
@@ -410,11 +411,7 @@ sp_item_show (SPItem *item, NRArena *arena)
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
-#if 0
-		sp_desktop_connect_item (desktop, item, canvasitem);
-#else
 		gtk_object_set_user_data (GTK_OBJECT (ai), item);
-#endif
 	}
 
 	return ai;

@@ -4,12 +4,12 @@
  * SPImage - SVG <image> element
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -258,11 +258,11 @@ sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	gnome_print_scale (gpc, image->width, -image->height);
 	gnome_print_translate (gpc, 0.0, -1.0);
 
-	if (object->style->opacity.value != SP_SCALE30_MAX) {
+	if (object->style->opacity.value != SP_SCALE24_MAX) {
 		guchar *px, *d, *s;
 		gint x, y;
 		guint32 alpha;
-		alpha = (guint32) floor (SP_SCALE30_TO_FLOAT (object->style->opacity.value) * 255.9999);
+		alpha = (guint32) floor (SP_SCALE24_TO_FLOAT (object->style->opacity.value) * 255.9999);
 		px = g_new (guchar, width * height * 4);
 		for (y = 0; y < height; y++) {
 			s = pixels + y * rowstride;

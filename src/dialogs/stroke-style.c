@@ -423,11 +423,11 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 		object = SP_OBJECT (objects->data);
 		/* We know that all objects have lineargradient stroke style */
-		vector = sp_gradient_get_vector (SP_GRADIENT (object->style->stroke.server), FALSE);
+		vector = sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object)), FALSE);
 		for (l = objects->next; l != NULL; l = l->next) {
 			SPObject *next;
 			next = SP_OBJECT (l->data);
-			if (sp_gradient_get_vector (SP_GRADIENT (next->style->stroke.server), FALSE) != vector) {
+			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (next)), FALSE) != vector) {
 				/* Multiple vectors */
 				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
 				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
@@ -701,11 +701,11 @@ sp_stroke_style_get_average_color_rgba (const GSList *objects, gfloat *c)
 		gfloat d[3];
 		object = SP_OBJECT (objects->data);
 		if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
-			sp_color_get_rgb_floatv (&object->style->stroke.color, d);
+			sp_color_get_rgb_floatv (&object->style->stroke.value.color, d);
 			c[0] += d[0];
 			c[1] += d[1];
 			c[2] += d[2];
-			c[3] += SP_SCALE30_TO_FLOAT (object->style->stroke_opacity.value);
+			c[3] += SP_SCALE24_TO_FLOAT (object->style->stroke_opacity.value);
 		}
 		num += 1;
 		objects = objects->next;
@@ -734,12 +734,12 @@ sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c)
 		gfloat d[4];
 		object = SP_OBJECT (objects->data);
 		if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
-			sp_color_get_cmyk_floatv (&object->style->stroke.color, d);
+			sp_color_get_cmyk_floatv (&object->style->stroke.value.color, d);
 			c[0] += d[0];
 			c[1] += d[1];
 			c[2] += d[2];
 			c[3] += d[3];
-			c[4] += SP_SCALE30_TO_FLOAT (object->style->stroke_opacity.value);
+			c[4] += SP_SCALE24_TO_FLOAT (object->style->stroke_opacity.value);
 		}
 		num += 1;
 		objects = objects->next;
@@ -761,7 +761,7 @@ sp_stroke_style_determine_paint_selector_mode (SPObject *object)
 	case SP_PAINT_TYPE_NONE:
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	case SP_PAINT_TYPE_COLOR:
-		cstype = sp_color_get_colorspace_type (&object->style->stroke.color);
+		cstype = sp_color_get_colorspace_type (&object->style->stroke.value.color);
 		switch (cstype) {
 		case SP_COLORSPACE_TYPE_RGB:
 			return SP_PAINT_SELECTOR_MODE_COLOR_RGB;
@@ -772,7 +772,7 @@ sp_stroke_style_determine_paint_selector_mode (SPObject *object)
 			return SP_PAINT_SELECTOR_MODE_NONE;
 		}
 	case SP_PAINT_TYPE_PAINTSERVER:
-		if (SP_IS_LINEARGRADIENT (object->style->stroke.server)) {
+		if (SP_IS_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object))) {
 			return SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR;
 		}
 		g_warning ("file %s: line %d: Unknown paintserver", __FILE__, __LINE__);

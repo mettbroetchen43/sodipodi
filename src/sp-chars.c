@@ -267,9 +267,9 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 		gfloat rgb[3], opacity;
 
-		sp_color_get_rgb_floatv (&style->fill.color, rgb);
+		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
 		/* fixme: This is not correct, we should fall back to bitmap here instead */
-		opacity = SP_SCALE30_TO_FLOAT (style->fill_opacity.value) * SP_SCALE30_TO_FLOAT (style->opacity.value);
+		opacity = SP_SCALE24_TO_FLOAT (style->fill_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
 		/* Printing code */
 		gnome_print_gsave (ctx);
 		gnome_print_setrgbcolor (ctx, rgb[0], rgb[1], rgb[2]);
@@ -286,7 +286,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 		SPPainter *painter;
 		static gdouble id[6] = {1,0,0,1,0,0};
 		/* fixme: */
-		painter = sp_paint_server_painter_new (style->fill.server, id, SP_SCALE30_TO_FLOAT (style->opacity.value), bbox);
+		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), id, SP_SCALE24_TO_FLOAT (style->opacity.value), bbox);
 		if (painter) {
 			ArtDRect cbox, pbox;
 			ArtIRect ibox;

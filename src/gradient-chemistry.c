@@ -4,11 +4,12 @@
  * Various utility methods for gradients
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <string.h>
@@ -323,7 +324,7 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 	style = SP_OBJECT_STYLE (item);
 	g_assert (style != NULL);
 
-	if ((style->fill.type != SP_PAINT_TYPE_PAINTSERVER) || !SP_IS_LINEARGRADIENT (style->fill.server)) {
+	if ((style->fill.type != SP_PAINT_TYPE_PAINTSERVER) || !SP_IS_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style))) {
 		SPGradient *pg;
 		/* Current fill style is not lineargradient, so construct everything */
 		pg = sp_gradient_get_private_normalized (SP_OBJECT_DOCUMENT (item), gr);
@@ -331,7 +332,7 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 	} else {
 		SPGradient *ig;
 		/* Current fill style is lineargradient */
-		ig = SP_GRADIENT (style->fill.server);
+		ig = SP_GRADIENT (SP_STYLE_FILL_SERVER (style));
 		if (ig->state != SP_GRADIENT_STATE_PRIVATE) {
 			SPGradient *pg;
 			/* Check, whether we have to normalize private gradient */
@@ -372,7 +373,7 @@ sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gr)
 	style = SP_OBJECT_STYLE (item);
 	g_assert (style != NULL);
 
-	if ((style->stroke.type != SP_PAINT_TYPE_PAINTSERVER) || !SP_IS_LINEARGRADIENT (style->stroke.server)) {
+	if ((style->stroke.type != SP_PAINT_TYPE_PAINTSERVER) || !SP_IS_LINEARGRADIENT (SP_STYLE_STROKE_SERVER (style))) {
 		SPGradient *pg;
 		/* Current fill style is not lineargradient, so construct everything */
 		pg = sp_gradient_get_private_normalized (SP_OBJECT_DOCUMENT (item), gr);
@@ -380,7 +381,7 @@ sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gr)
 	} else {
 		SPGradient *ig;
 		/* Current fill style is lineargradient */
-		ig = SP_GRADIENT (style->stroke.server);
+		ig = SP_GRADIENT (SP_STYLE_STROKE_SERVER (style));
 		if (ig->state != SP_GRADIENT_STATE_PRIVATE) {
 			SPGradient *pg;
 			/* Check, whether we have to normalize private gradient */
@@ -551,9 +552,9 @@ sp_object_ensure_fill_gradient_normalized (SPObject *object)
 	/* Fill has to be paintserver */
 	g_return_if_fail (object->style->fill.type = SP_PAINT_TYPE_PAINTSERVER);
 	/* Has to be linear gradient */
-	g_return_if_fail (SP_IS_LINEARGRADIENT (object->style->fill.server));
+	g_return_if_fail (SP_IS_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object)));
 
-	lg = SP_LINEARGRADIENT (object->style->fill.server);
+	lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
 
 	if (SP_OBJECT_HREFCOUNT (lg) > 1) {
 		const guchar *sstr;

@@ -4,12 +4,12 @@
  * RGBA display list system for sodipodi
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <string.h>
@@ -122,6 +122,11 @@ sp_canvas_arena_destroy (GtkObject *object)
 
 	arena = SP_CANVAS_ARENA (object);
 
+	if (arena->active) {
+		gtk_object_unref (GTK_OBJECT (arena->active));
+		arena->active = NULL;
+	}
+
 	if (arena->root) {
 		nr_arena_item_unref (arena->root);
 		arena->root = NULL;
@@ -179,7 +184,10 @@ sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 				ec.type = GDK_LEAVE_NOTIFY;
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
+			/* fixme: This is not optimal - better track ::destroy (Lauris) */
+			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
 			arena->active = new;
+			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
@@ -287,15 +295,21 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 	switch (event->type) {
 	case GDK_ENTER_NOTIFY:
 		if (!arena->cursor) {
+			if (arena->active) {
+				g_warning ("Cursor entered to arena with already active item");
+				gtk_object_unref (GTK_OBJECT (arena->active));
+			}
 			arena->cursor = TRUE;
 			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
 			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
+			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
 			ret = sp_canvas_arena_send_event (arena, event);
 		}
 		break;
 	case GDK_LEAVE_NOTIFY:
 		if (arena->cursor) {
 			ret = sp_canvas_arena_send_event (arena, event);
+			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
 			arena->active = NULL;
 			arena->cursor = FALSE;
 		}
@@ -316,7 +330,9 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 				ec.type = GDK_LEAVE_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
+			if (arena->active) gtk_object_unref (GTK_OBJECT (arena->active));
 			arena->active = new;
+			if (arena->active) gtk_object_ref (GTK_OBJECT (arena->active));
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);

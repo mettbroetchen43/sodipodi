@@ -25,7 +25,7 @@ sp_svg_read_number_f (const guchar *str, gfloat *val)
 	if (!str) return FALSE;
 
 	v = strtod (str, &e);
-	if (e) *val = v;
+	if ((const guchar *) e != str) *val = v;
 
 	return (e != NULL);
 }
@@ -39,7 +39,7 @@ sp_svg_read_number_d (const guchar *str, gdouble *val)
 	if (!str) return FALSE;
 
 	v = strtod (str, &e);
-	if (e) *val = v;
+	if ((const guchar *) e != str) *val = v;
 
 	return (e != NULL);
 }

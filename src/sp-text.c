@@ -162,7 +162,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	face = gnome_font_unsized_closest (style->text->font_family.value,
 					   sp_text_font_weight_to_gp (style->text->font_weight.value),
 					   sp_text_font_italic_to_gp (style->text->font_style.value));
-	size = style->text->font_size.value;
+	/* fixme: Adjusted value (Lauris) */
+	size = style->font_size.computed;
 
 	/* fixme: Find a way how to manipulate these */
 	x = cp->x;
@@ -1170,9 +1171,9 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 		if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
 			/* fixme: real line height */
 			/* fixme: What to do with mixed direction tspans? */
-			cp.x -= style->text->font_size.value;
+			cp.x -= style->font_size.computed;
 		} else {
-			cp.y += style->text->font_size.value;
+			cp.y += style->font_size.computed;
 		}
 		sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 		rstr = sp_xml_document_createTextNode (sp_repr_document (repr), p);
@@ -1255,11 +1256,11 @@ sp_text_append_line (SPText *text)
 	if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
 		/* fixme: real line height */
 		/* fixme: What to do with mixed direction tspans? */
-		sp_repr_set_double (rtspan, "x", cp.x - style->text->font_size.value);
+		sp_repr_set_double (rtspan, "x", cp.x - style->font_size.computed);
 		sp_repr_set_double (rtspan, "y", cp.y);
 	} else {
 		sp_repr_set_double (rtspan, "x", cp.x);
-		sp_repr_set_double (rtspan, "y", cp.y + style->text->font_size.value);
+		sp_repr_set_double (rtspan, "y", cp.y + style->font_size.computed);
 	}
 	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
 

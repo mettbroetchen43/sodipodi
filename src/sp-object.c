@@ -512,6 +512,8 @@ sp_object_modified (SPObject *object, guint flags)
 
 	/* Merge style if we have good reasons to think that parent style is changed */
 	/* I am not sure, whether we should check only propagated flag */
+	/* We are currently assuming, that style parsing is done immediately */
+	/* I think this is correct (Lauris) */
 	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		if (object->style && object->parent) {
 			sp_style_merge_from_object_parent (object->style, object->parent);

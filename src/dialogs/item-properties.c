@@ -173,7 +173,7 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 
 	/* Opacity */
 	w = glade_xml_get_widget (xml, "opacity");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), SP_SCALE30_TO_FLOAT (object->style->opacity.value));
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 
 	/* Transform */
 	w = glade_xml_get_widget (xml, "transform_0");
