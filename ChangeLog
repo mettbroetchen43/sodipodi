@@ -10,11 +10,13 @@
 	* src/selection-chemistry.c (sp_selection_delete): So I modified
 	this method instead
 
-	* src/sp-text.c (ucs2_concat_w2): New function
+	* src/sp-text.c (ucs2_concat_ws): New function
 	(sp_text_insert): Better text insertion. This change should also
 	fix space insertion bug reported by Lynn Kerby
 
 	* src/sp-text.h (SP_STRING_IS_SPACE_PRESERVE): New macro
+
+	* TODO: Updated
 
 2004-01-10  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
