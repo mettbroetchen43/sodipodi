@@ -32,7 +32,7 @@
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
-#define noKNOT_NOGRAB
+static int nograb = FALSE;
 
 enum {
 	PROP_0,
@@ -100,6 +100,7 @@ static void
 sp_knot_class_init (SPKnotClass * klass)
 {
 	GObjectClass * object_class;
+	const char *nograbenv;
 
 	object_class = (GObjectClass *) klass;
 
@@ -268,6 +269,9 @@ sp_knot_class_init (SPKnotClass * klass)
 					    sp_marshal_DOUBLE__POINTER_UINT,
 					    G_TYPE_DOUBLE, 2,
 					    G_TYPE_POINTER, G_TYPE_UINT);
+
+	nograbenv = getenv ("SODIPODI_NO_GRAB");
+	nograb = (nograbenv && *nograbenv && (*nograbenv != '0'));
 }
 
 static void
@@ -457,13 +461,12 @@ sp_knot_handler (SPCanvasItem *item, GdkEvent *event, SPKnot *knot)
 				event->button.y);
 			knot->hx = p.x - knot->x;
 			knot->hy = p.y - knot->y;
-#ifndef KNOT_NOGRAB
-			sp_canvas_item_grab (knot->item,
-					     KNOT_EVENT_MASK,
-					     knot->cursor[SP_KNOT_STATE_DRAGGING],
-					     event->button.time);
-			
-#endif
+			if (!nograb) {
+				sp_canvas_item_grab (knot->item,
+						     KNOT_EVENT_MASK,
+						     knot->cursor[SP_KNOT_STATE_DRAGGING],
+						     event->button.time);
+			}
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
 			consumed = TRUE;
@@ -472,9 +475,9 @@ sp_knot_handler (SPCanvasItem *item, GdkEvent *event, SPKnot *knot)
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
-#ifndef KNOT_NOGRAB
-			sp_canvas_item_ungrab (knot->item, event->button.time);
-#endif
+			if (!nograb) {
+				sp_canvas_item_ungrab (knot->item, event->button.time);
+			}
 			if (moved) {
 				sp_knot_set_flag (knot,
 					SP_KNOT_DRAGGING,

@@ -36,13 +36,13 @@ struct _NRRun {
 };
 
 static NRSlice *nr_slice_new (NRSVP *svp, NRCoord y);
-static void nr_slice_free_one (NRSlice *s);
+static NRSlice *nr_slice_free_one (NRSlice *s);
 static void nr_slice_free_list (NRSlice *s);
 static NRSlice *nr_slice_insert_sorted (NRSlice *start, NRSlice *slice);
 static int nr_slice_compare (NRSlice *l, NRSlice *r);
 
 static NRRun *nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, int wind);
-static void nr_run_free_one (NRRun *run);
+static NRRun *nr_run_free_one (NRRun *run);
 static void nr_run_free_list (NRRun *run);
 static NRRun *nr_run_insert_sorted (NRRun *start, NRRun *run);
 
@@ -117,6 +117,7 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 			nsvp = nsvp->next;
 		}
 		/* Construct runs, stretching slices */
+		/* fixme: This step can be optimized by continuing long runs and adding only new ones (Lauris) */
 		runs = NULL;
 		ss = NULL;
 		cs = slices;
@@ -153,14 +154,11 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 				cs = cs->next;
 			} else {
 				/* Slice is exhausted */
+				cs = nr_slice_free_one (cs);
 				if (ss) {
-					ss->next = cs->next;
-					nr_slice_free_one (cs);
-					cs = ss->next;
+					ss->next = cs;
 				} else {
-					slices = cs->next;
-					nr_slice_free_one (cs);
-					cs = slices;
+					slices = cs;
 				}
 			}
 		}
@@ -180,14 +178,12 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 			while ((cr) && (cr->x0 < x0)) {
 				if (cr->x1 <= x0) {
 					globalval += cr->final;
+					/* Remove exhausted current run */
+					cr = nr_run_free_one (cr);
 					if (sr) {
-						sr->next = cr->next;
-						nr_run_free_one (cr);
-						cr = sr->next;
+						sr->next = cr;
 					} else {
-						runs = cr->next;
-						nr_run_free_one (cr);
-						cr = runs;
+						runs = cr;
 					}
 				} else {
 					cr->x = x0;
@@ -207,6 +203,9 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 			float localval;
 			int coverage;
 			unsigned int ca;
+			unsigned int fill;
+			float fillstep;
+			int xstop;
 
 			xnext = x + 1.0;
 			/* process runs */
@@ -214,72 +213,110 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 			localval = globalval;
 			sr = NULL;
 			cr = runs;
+			fill = TRUE;
+			fillstep = 0.0;
+			xstop = x1;
 			while ((cr) && (cr->x0 < xnext)) {
 				if (cr->x1 <= xnext) {
 					/* Run ends here */
+					/* No fill */
+					fill = FALSE;
+					/* Continue with final value */
 					globalval += cr->final;
+					/* Add initial trapezoid */
 					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
+					/* Add final rectangle */
 					localval += (xnext - cr->x1) * cr->final;
-#ifdef NR_VERBOSE
-					if ((localval < -NR_EPSILON) || (localval > 1.0 + NR_EPSILON)) {
-						g_print ("A: localval += (%f - %f) * (%f + %f) / 2\n", cr->x1, cr->x, cr->value, cr->final);
-						g_print ("A: localval += (%f - %f) * %f\n", xnext, cr->x1, cr->final);
-						g_print ("A Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
-					}
-#endif
+					/* Remove exhausted run */
+					cr = nr_run_free_one (cr);
 					if (sr) {
-						sr->next = cr->next;
-						nr_run_free_one (cr);
-						cr = sr->next;
+						sr->next = cr;
 					} else {
-						runs = cr->next;
-						nr_run_free_one (cr);
-						cr = runs;
+						runs = cr;
 					}
 				} else {
 					/* Run continues through xnext */
-					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
-#ifdef NR_VERBOSE
-					if ((localval < -NR_EPSILON) || (localval > 1.0 + NR_EPSILON)) {
-						g_print ("B: Run is %f %f %f %f step %f final %f x %f value %f\n",
-							 cr->x0, cr->y0, cr->x1, cr->y1, cr->step, cr->final, cr->x, cr->value);
-						g_print ("B: localval += (%f - %f) * (%f + %f / 2)\n", xnext, cr->x, cr->value, cr->step);
-						g_print ("B Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
+					if (fill) {
+						if (cr->x0 > x) {
+							fill = FALSE;
+						} else {
+							xstop = MIN (xstop, (int) floor (cr->x1));
+							fillstep += cr->step;
+						}
 					}
-#endif
+					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
 					cr->x = xnext;
 					cr->value = (xnext - cr->x0) * cr->step;
 					sr = cr;
 					cr = cr->next;
 				}
 			}
-			/* Draw */
-			coverage = (int) (localval * 255.9999);
-			coverage = CLAMP (coverage, 0, 255);
-			ca = NR_PREMUL (coverage, fg_a);
-#if 1
-			if (ca == 0) {
-				/* Transparent FG, NOP */
-			} else if ((ca == 255) || (d[3] == 0)) {
-				/* Full coverage, COPY */
-				d[0] = NR_PREMUL (fg_r, ca);
-				d[1] = NR_PREMUL (fg_g, ca);
-				d[2] = NR_PREMUL (fg_b, ca);
-				d[3] = ca;
-			} else {
-				/* Full composition */
-				d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
-				d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
-				d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
-				d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
+			if (fill) {
+				if (cr) xstop = MIN (xstop, (int) floor (cr->x0));
 			}
+			if (fill && (xstop > xnext)) {
+				int c24, s24;
+				localval = CLAMP (localval, 0.0, 1.0);
+				c24 = (int) (16777215 * localval + 0.5);
+				s24 = (int) (16777215 * fillstep + 0.5);
+				if ((s24 != 0) || (c24 > 65535)) {
+					while (x < xstop) {
+						/* Draw */
+						coverage = c24 >> 16;
+						c24 += s24;
+						c24 = CLAMP (c24, 0, 16777216);
+#if 1
+						/* coverage = CLAMP (coverage, 0, 255); */
+						ca = NR_PREMUL (coverage, fg_a);
+						if (ca == 0) {
+							/* Transparent FG, NOP */
+						} else if ((ca == 255) || (d[3] == 0)) {
+							/* Full coverage, COPY */
+							d[0] = NR_PREMUL (fg_r, ca);
+							d[1] = NR_PREMUL (fg_g, ca);
+							d[2] = NR_PREMUL (fg_b, ca);
+							d[3] = ca;
+						} else {
+							/* Full composition */
+							d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
+							d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
+							d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
+							d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
+						}
 #else
-			d[0] = fg_r;
-			d[1] = fg_g;
-			d[2] = fg_b;
-			d[3] = fg_a;
+						d[0] = 255;d[1] = 255;d[2] = 127;d[3] = 255;
 #endif
-			d += 4;
+						d += 4;
+						x += 1;
+					}
+					x -= 1;
+				} else {
+					d += 4 * (xstop - x);
+					x = xstop - 1;
+				}
+			} else {
+				/* Draw */
+				localval = CLAMP (localval, 0.0, 1.0);
+				coverage = (int) (localval * 255.9999);
+				/* coverage = CLAMP (coverage, 0, 255); */
+				ca = NR_PREMUL (coverage, fg_a);
+				if (ca == 0) {
+					/* Transparent FG, NOP */
+				} else if ((ca == 255) || (d[3] == 0)) {
+					/* Full coverage, COPY */
+					d[0] = NR_PREMUL (fg_r, ca);
+					d[1] = NR_PREMUL (fg_g, ca);
+					d[2] = NR_PREMUL (fg_b, ca);
+					d[3] = ca;
+				} else {
+					/* Full composition */
+					d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
+					d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
+					d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
+					d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
+				}
+				d += 4;
+			}
 		}
 		nr_run_free_list (runs);
 		rowbuffer += dpb->rs;
@@ -296,7 +333,7 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 #define NR_SLICE_ALLOC_SIZE 32
 static NRSlice *ffslice = NULL;
 
-NRSlice *
+static NRSlice *
 nr_slice_new (NRSVP * svp, NRCoord y)
 {
 	NRSlice *s;
@@ -341,14 +378,17 @@ nr_slice_new (NRSVP * svp, NRCoord y)
 	return s;
 }
 
-void
-nr_slice_free_one (NRSlice * slice)
+static NRSlice *
+nr_slice_free_one (NRSlice *slice)
 {
+	NRSlice *next;
+	next = slice->next;
 	slice->next = ffslice;
 	ffslice = slice;
+	return next;
 }
 
-void
+static void
 nr_slice_free_list (NRSlice * slice)
 {
 	NRSlice * l;
@@ -361,7 +401,7 @@ nr_slice_free_list (NRSlice * slice)
 	ffslice = slice;
 }
 
-NRSlice *
+static NRSlice *
 nr_slice_insert_sorted (NRSlice * start, NRSlice * slice)
 {
 	NRSlice * s, * l;
@@ -484,11 +524,14 @@ nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, int wind)
 	return r;
 }
 
-static void
-nr_run_free_one (NRRun * run)
+static NRRun *
+nr_run_free_one (NRRun *run)
 {
+	NRRun *next;
+	next = run->next;
 	run->next = ffrun;
 	ffrun = run;
+	return next;
 }
 
 static void

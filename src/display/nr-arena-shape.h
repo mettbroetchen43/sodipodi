@@ -13,7 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define noWITH_NRSVP
+#define WITH_NRSVP
 
 #define NR_TYPE_ARENA_SHAPE (nr_arena_shape_get_type ())
 #define NR_ARENA_SHAPE(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_SHAPE, NRArenaShape))

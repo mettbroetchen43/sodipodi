@@ -1,3 +1,8 @@
+2003-04-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-render.c (nr_pixblock_render_svp_rgba): Do runs properly,
+	skip if coverage stays 0
+
 2003-04-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-render.c: Moved here from old arena code
