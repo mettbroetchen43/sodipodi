@@ -715,8 +715,8 @@ nr_R8G8B8_R8G8B8_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const unsig
 			unsigned int alpha;
 			alpha = NR_PREMUL (a, m[0]);
 			d[0] = NR_COMPOSEN11 (r, alpha, d[0]);
-			d[1] = NR_COMPOSEN11 (g, alpha, d[0]);
-			d[2] = NR_COMPOSEN11 (b, alpha, d[0]);
+			d[1] = NR_COMPOSEN11 (g, alpha, d[1]);
+			d[2] = NR_COMPOSEN11 (b, alpha, d[2]);
 			d += 3;
 			m += 1;
 		}

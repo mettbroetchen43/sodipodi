@@ -250,7 +250,9 @@ nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, flo
 
 	glyph = CLAMP (glyph, 0, rf->nglyphs);
 
-	slot = nr_rasterfont_ensure_glyph_slot (rf, glyph, NR_RASTERFONT_GMAP_FLAG);
+	slot = nr_rasterfont_ensure_glyph_slot (rf, glyph, NR_RASTERFONT_BBOX_FLAG | NR_RASTERFONT_GMAP_FLAG);
+
+	if (nr_rect_s_test_empty (&slot->bbox)) return;
 
 	sx = (int) floor (x + 0.5);
 	sy = (int) floor (y + 0.5);
@@ -268,6 +270,9 @@ nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, flo
 #endif
 	if (slot->has_gmap == NRRF_GMAP_IMAGE) {
 		spx = slot->gmap.px;
+		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
+	} else if (slot->has_gmap == NRRF_GMAP_TINY) {
+		spx = slot->gmap.d;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
 	} else {
 		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, FALSE);
@@ -330,7 +335,8 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 	if (((flags & NR_RASTERFONT_BBOX_FLAG) && !slot->has_bbox) ||
 	    ((flags & NR_RASTERFONT_GMAP_FLAG) && !slot->has_gmap)) {
 		NRBPath gbp;
-		if (nr_font_get_glyph_outline (rf->font, glyph, &gbp, 0)) {
+		if (nr_font_get_glyph_outline (rf->font, glyph, &gbp, 0) &&
+		    gbp.path && (gbp.path->code == ART_MOVETO)) {
 			ArtBpath *abp;
 			ArtVpath *vp, *pvp;
 			ArtSVP *svpa, *svpb;
@@ -374,7 +380,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 				slot->has_gmap = NRRF_GMAP_TINY;
 			}
 #endif
-			if (1 || (w >= NRRF_MAX_GLYPH_DIMENSION) ||
+			if ((w >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    (h >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    ((w * h) > NRRF_MAX_GLYPH_SIZE)) {
 				slot->gmap.svp = svpa;
@@ -396,6 +402,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 			slot->bbox.y0 = 0;
 			slot->bbox.x0 = 0;
 			slot->bbox.x0 = 0;
+			slot->gmap.d[0] = 0;
 			slot->has_gmap = NRRF_GMAP_TINY;
 		}
 		slot->has_bbox = TRUE;

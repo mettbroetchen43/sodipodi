@@ -415,6 +415,7 @@ static void sp_font_preview_class_init (SPFontPreviewClass *klass);
 static void sp_font_preview_init (SPFontPreview *fsel);
 static void sp_font_preview_destroy (GtkObject *object);
 
+void sp_font_preview_size_request (GtkWidget *widget, GtkRequisition *req);
 static gint sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static GtkDrawingAreaClass *fp_parent_class = NULL;
@@ -450,6 +451,7 @@ sp_font_preview_class_init (SPFontPreviewClass *klass)
 
 	object_class->destroy = sp_font_preview_destroy;
 
+	widget_class->size_request = sp_font_preview_size_request;
 	widget_class->expose_event = sp_font_preview_expose;
 }
 
@@ -481,6 +483,13 @@ sp_font_preview_destroy (GtkObject *object)
 
   	if (GTK_OBJECT_CLASS (fp_parent_class)->destroy)
 		GTK_OBJECT_CLASS (fp_parent_class)->destroy (object);
+}
+
+void
+sp_font_preview_size_request (GtkWidget *widget, GtkRequisition *req)
+{
+	req->width = 256;
+	req->height = 32;
 }
 
 #define SPFP_MAX_LEN 64
@@ -534,6 +543,7 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 			starty = widget->allocation.height - (widget->allocation.height - (bbox.y1 - bbox.y0)) / 2 - bbox.y1;
 			for (y = event->area.y; y < event->area.y + event->area.height; y += 64) {
 				for (x = event->area.x; x < event->area.x + event->area.width; x += 64) {
+					unsigned char *ps;
 					NRPixBlock pb, m;
 					int x0, y0, x1, y1;
 					int i;
@@ -541,8 +551,10 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 					y0 = y;
 					x1 = MIN (x0 + 64, event->area.x + event->area.width);
 					y1 = MIN (y0 + 64, event->area.y + event->area.height);
-					nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x0, y0, x1, y1, FALSE);
+					ps = nr_pixelstore_16K_new (TRUE, 0xff);
+					nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8, x0, y0, x1, y1, ps, 3 * (x1 - x0), FALSE, FALSE);
 					nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, x0, y0, x1, y1, TRUE);
+					pb.empty = FALSE;
 					for (i = 0; i < len; i++) {
 						nr_rasterfont_render_glyph_mask (fprev->rfont, glyphs[i], &m, hpos[i] + startx, starty);
 					}
@@ -552,6 +564,7 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 							    GDK_RGB_DITHER_NONE, NR_PIXBLOCK_PX (&pb), pb.rs);
 					nr_pixblock_release (&m);
 					nr_pixblock_release (&pb);
+					nr_pixelstore_16K_free (ps);
 				}
 			}
 		} else {
