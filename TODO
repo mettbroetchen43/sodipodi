@@ -6,7 +6,7 @@ TODO for 0.25
 - Dynamic stroke dialog (Mostly done - needs unit cleanup)
 - Replace static fill dialog with dynamic one (Mostly done)
 - Fix stack order undo (1 day)
-- Pen tool (3 days)
+- Pen tool (Almost done)
 - Tool options (2 days)
 - Fix style/font mess (1 day)
 - Miscellaneous cleanups (5 days)
