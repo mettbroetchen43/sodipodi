@@ -7,9 +7,9 @@ TODO for 0.27
 - Garbage collection on save
 - Stamping (DONE) (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)
-- Toolbox scaling bug
+- Toolbox scaling bug (DONE)
 - Tooltips for tools
-- Update .spec.in file
+- Update .spec.in file (DONE)
 - Ungroup forgetting font family bug (GONE)
 - Ungroup forgetting paintserver in group bug (DONE)
 - Fix places where bbox is not tested for emptyness (DONE)
@@ -21,7 +21,7 @@ Other tasks
 - Text does not update paint dynamically
 - Illustrator import/export
 - Patterns (Lauris) (90% DONE)
-- Radial gradients (Lauris) (95% DONE)
+- Radial gradients (Lauris) (DONE)
 - Interface for clipart collections (Lauris)
 
 Porting to GTK+-2.0

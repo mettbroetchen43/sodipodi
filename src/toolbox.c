@@ -308,7 +308,7 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	gtk_container_add (GTK_CONTAINER (b), pm);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
 
 	/* Node */
@@ -318,7 +318,7 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	gtk_container_add (GTK_CONTAINER (b), pm);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
 
 	/* Object */
@@ -343,7 +343,7 @@ sp_toolbox_draw_create (void)
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
 	/* END COMPONENTS */
 	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPRectContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPArcContext", b);
@@ -368,7 +368,7 @@ sp_toolbox_draw_create (void)
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
 	/* END COMPONENTS */
 	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPenContext", b);
@@ -381,8 +381,8 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	gtk_container_add (GTK_CONTAINER (b), pm);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (tb), "SPtextContext", b);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, 0, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPTextContext", b);
 
 	/* Zoom */
 	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_zoom.xpm");
@@ -391,7 +391,7 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	gtk_container_add (GTK_CONTAINER (b), pm);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
@@ -529,7 +529,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
 		}
 		gtk_object_set_data (GTK_OBJECT (data), "active", new);
-		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDynaDrawContext")))) {
+		if (tname && !strcmp (tname, "SPNodeContext")) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
 			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
 			gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
