@@ -1,4 +1,8 @@
-2000-11-29  Szabolcs Ban  <shooby@gnome.hu>
+2000-11-30  Szabolcs Ban  <shooby@gnome.hu>
+
+	* glade/toolbox.c: corrected "zom factor" to "zoom factor"
+
+2000-11-30  Szabolcs Ban  <shooby@gnome.hu>
 
 	* configure.in (ALL_LINGUAS): add hu.
 
