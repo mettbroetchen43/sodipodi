@@ -137,6 +137,7 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 #ifdef USE_TIMER
 	UINT_PTR timer;
 #endif
+	int caps;
 
 	w32mod = (SPModulePrintWin32 *) mod;
 
@@ -156,6 +157,20 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 
 	w32mod->hDC = pd.hDC;
 
+	caps = GetDeviceCaps (w32mod->hDC, RASTERCAPS);
+	if (caps & RC_BANDING) {
+		printf ("needs banding\n");
+	}
+	if (caps & RC_BITBLT) {
+		printf ("does bitblt\n");
+	}
+	if (caps & RC_DIBTODEV) {
+		printf ("does dibtodev\n");
+	}
+	if (caps & RC_STRETCHDIB) {
+		printf ("does stretchdib\n");
+	}
+ 
 	return TRUE;
 }
 
@@ -168,7 +183,7 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 		NULL, /* lpszDocName */
 		NULL, /* lpszOutput */
 		NULL, /* lpszDatatype */
-		DI_APPBANDING /* fwType */
+		0 /* DI_APPBANDING */ /* fwType */
 	};
 	int res;
 
@@ -202,7 +217,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		{
 			sizeof (BITMAPINFOHEADER), // bV4Size 
 			64, /* biWidth */
-			-64, /* biHeight */
+			64, /* biHeight */
 			1, /* biPlanes */
 			32, /* biBitCount */
 			BI_RGB, /* biCompression */
@@ -214,6 +229,7 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		},
 		{0, 0, 0, 0} /* bmiColors */
 	};
+	RECT wrect;
 	int res;
 
 	w32mod = (SPModulePrintWin32 *) mod;
@@ -261,20 +277,16 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 
 	nr_arena_item_set_transform (mod->root, &affine);
 
-	if ((width < 256) || ((width * height) < 32768)) {
-		px = nr_pixelstore_64K_new (FALSE, 0);
-		sheight = 65536 / (4 * width);
-	} else {
-		px = nr_new (unsigned char, 4 * 64 * width);
-		sheight = 64;
-	}
+	px = nr_new (unsigned char, 4 * 1024 * width);
+	sheight = 1024;
 
 	/* Printing goes here */
-	for (row = 0; row < height; row += sheight) {
+	for (row = 0; row < height; row += 960) {
 		NRPixBlock pb;
 		NRRectL bbox;
 		NRGC gc;
 		int num_rows;
+		int i;
 
 		num_rows = sheight;
 		if ((row + num_rows) > height) num_rows = height - row;
@@ -288,30 +300,64 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 		nr_matrix_d_set_identity (&gc.transform);
 		nr_arena_item_invoke_update (mod->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 
-		nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, bbox.x0, bbox.y0, bbox.x1, bbox.y1, px, 4 * width, FALSE, FALSE);
-		memset (px, 0xff, 4 * num_rows * width);
-
-		/* Render */
-		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
+		nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, bbox.x0, bbox.y0, bbox.x1, bbox.y1, px, 4 * (bbox.x1 - bbox.x0), FALSE, FALSE);
 
 		/* Blitter goes here */
-		bmInfo.bmiHeader.biWidth = width;
-		bmInfo.bmiHeader.biHeight = -num_rows;
+		bmInfo.bmiHeader.biWidth = bbox.x1 - bbox.x0;
+		bmInfo.bmiHeader.biHeight = -(bbox.y1 - bbox.y0);
 
+#if 0
 		res = SetDIBitsToDevice (w32mod->hDC,
 						   0, row, width, num_rows,
 						   0, 0, 0, num_rows, px, &bmInfo, DIB_RGB_COLORS);
+#endif
+#if 0
+		for (i = 0; i < (4 * width * num_rows); i++) {
+			px[i] = (i * 3) & 0xff;
+		}
+#endif
+
+		memset (px, 0xff, 4 * num_rows * width);
+		/* Render */
+		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
+
+#if 0
+		wrect.left = bbox.x0;
+		wrect.top = bbox.y0;
+		wrect.right = bbox.x1;
+		wrect.bottom = bbox.y1;
+		FillRect (w32mod->hDC, &wrect, (HBRUSH) GetStockObject (WHITE_BRUSH));
+		FillRect (w32mod->hDC, &wrect, (HBRUSH) GetStockObject (WHITE_BRUSH));
+#endif
+#if 0
+
+		SelectObject (w32mod->hDC, (HGDIOBJ) GetStockObject (WHITE_BRUSH));
+		SelectObject (w32mod->hDC, (HGDIOBJ) GetStockObject (BLACK_PEN));
+		Rectangle (w32mod->hDC, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+#endif
+#if 0
+		res = SetDIBitsToDevice (w32mod->hDC,
+						   0, row, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
+						   0, 0, 0, num_rows, px, &bmInfo, DIB_RGB_COLORS);
+#else
+#if 1
+		SetStretchBltMode(w32mod->hDC, COLORONCOLOR);
+		res = StretchDIBits (w32mod->hDC,
+						bbox.x0, bbox.y0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
+						0, 0, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0,
+						px,
+						&bmInfo,
+                        DIB_RGB_COLORS,
+                        SRCCOPY);
+#endif
+#endif
 
 		/* Blitter ends here */
 
 		nr_pixblock_release (&pb);
 	}
 
-	if ((width < 256) || ((width * height) < 32768)) {
-		nr_pixelstore_64K_free (px);
-	} else {
-		nr_free (px);
-	}
+	nr_free (px);
 
 	res = EndPage (w32mod->hDC);
 	res = EndDoc (w32mod->hDC);
