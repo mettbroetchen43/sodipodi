@@ -1,3 +1,7 @@
+2003-06-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/modules/ps.c: Ported Ascii85 filter from The GIMP
+
 2003-06-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/modules/kde.cpp (sp_kde_get_save_filename): New method

@@ -6,7 +6,17 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * This code is in public domain
+ * Basic printing code, EXCEPT image and
+ * ascii85 filter is in public domain
+ *
+ * Image printing and Ascii85 filter:
+ *
+ * Copyright (C) 1995 Spencer Kimball and Peter Mattis
+ * Copyright (C) 1997-98 Peter Kirchgessner
+ * George White <aa056@chebucto.ns.ca>
+ * Austin Donnelly <austin@gimp.org>
+ *
+ * Licensed under GNU GPL
  */
 
 /* Plain Print */
@@ -321,6 +331,7 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 	return 0;
 }
 
+#if 0
 static unsigned int
 sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 			     const NRMatrixF *transform, const SPStyle *style)
@@ -367,6 +378,7 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 
 	return 0;
 }
+#endif
 
 /* PostScript helpers */
 
@@ -409,21 +421,278 @@ sp_print_bpath (FILE *stream, const ArtBpath *bp)
 	}
 }
 
-#if 0
-	SPPrintContext ctx;
+/* The following code is licensed under GNU GPL */
 
-	ctx.stream = fopen (filename, "w");
-	if (ctx.stream) {
-		sp_document_ensure_up_to_date (doc);
-		fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
-		fprintf (ctx.stream, "0.8 -0.8 scale\n");
-		sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
-		fprintf (ctx.stream, "showpage\n");
-		fclose (ctx.stream);
+static void
+compress_packbits (int nin,
+                   unsigned char *src,
+                   int *nout,
+                   unsigned char *dst)
+
+{register unsigned char c;
+ int nrepeat, nliteral;
+ unsigned char *run_start;
+ unsigned char *start_dst = dst;
+ unsigned char *last_literal = NULL;
+
+ for (;;)
+ {
+   if (nin <= 0) break;
+
+   run_start = src;
+   c = *run_start;
+
+   /* Search repeat bytes */
+   if ((nin > 1) && (c == src[1]))
+   {
+     nrepeat = 1;
+     nin -= 2;
+     src += 2;
+     while ((nin > 0) && (c == *src))
+     {
+       nrepeat++;
+       src++;
+       nin--;
+       if (nrepeat == 127) break; /* Maximum repeat */
+     }
+
+     /* Add two-byte repeat to last literal run ? */
+     if (   (nrepeat == 1)
+         && (last_literal != NULL) && (((*last_literal)+1)+2 <= 128))
+     {
+       *last_literal += 2;
+       *(dst++) = c;
+       *(dst++) = c;
+       continue;
+     }
+
+     /* Add repeat run */
+     *(dst++) = (unsigned char)((-nrepeat) & 0xff);
+     *(dst++) = c;
+     last_literal = NULL;
+     continue;
+   }
+   /* Search literal bytes */
+   nliteral = 1;
+   nin--;
+   src++;
+
+   for (;;)
+   {
+     if (nin <= 0) break;
+
+     if ((nin >= 2) && (src[0] == src[1])) /* A two byte repeat ? */
+       break;
+
+     nliteral++;
+     nin--;
+     src++;
+     if (nliteral == 128) break; /* Maximum literal run */
+   }
+
+   /* Could be added to last literal run ? */
+   if ((last_literal != NULL) && (((*last_literal)+1)+nliteral <= 128))
+   {
+     *last_literal += nliteral;
+   }
+   else
+   {
+     last_literal = dst;
+     *(dst++) = (unsigned char)(nliteral-1);
+   }
+   while (nliteral-- > 0) *(dst++) = *(run_start++);
+ }
+ *nout = dst - start_dst;
+}
+
+static guint32 ascii85_buf;
+static int ascii85_len = 0;
+static int ascii85_linewidth = 0;
+
+static void
+ascii85_init (void)
+{
+  ascii85_len = 0;
+  ascii85_linewidth = 0;
+}
+
+static void
+ascii85_flush (FILE *ofp)
+{
+  char c[5];
+  int i;
+  gboolean zero_case = (ascii85_buf == 0);
+  static int max_linewidth = 75;
+
+  for (i=4; i >= 0; i--)
+    {
+      c[i] = (ascii85_buf % 85) + '!';
+      ascii85_buf /= 85;
+    }
+  /* check for special case: "!!!!!" becomes "z", but only if not
+   * at end of data. */
+  if (zero_case && (ascii85_len == 4))
+    {
+      if (ascii85_linewidth >= max_linewidth)
+      {
+        putc ('\n', ofp);
+        ascii85_linewidth = 0;
+      }
+      putc ('z', ofp);
+      ascii85_linewidth++;
+    }
+  else
+    {
+      for (i=0; i < ascii85_len+1; i++)
+      {
+        if ((ascii85_linewidth >= max_linewidth) && (c[i] != '%'))
+        {
+          putc ('\n', ofp);
+          ascii85_linewidth = 0;
+        }
+	putc (c[i], ofp);
+        ascii85_linewidth++;
+      }
+    }
+
+  ascii85_len = 0;
+  ascii85_buf = 0;
+}
+
+static inline void
+ascii85_out (unsigned char byte, FILE *ofp)
+{
+  if (ascii85_len == 4)
+    ascii85_flush (ofp);
+
+  ascii85_buf <<= 8;
+  ascii85_buf |= byte;
+  ascii85_len++;
+}
+
+static void
+ascii85_nout (int n, unsigned char *uptr, FILE *ofp)
+{
+ while (n-- > 0)
+ {
+   ascii85_out (*uptr, ofp);
+   uptr++;
+ }
+}
+
+static void
+ascii85_done (FILE *ofp)
+{
+  if (ascii85_len)
+    {
+      /* zero any unfilled buffer portion, then flush */
+      ascii85_buf <<= (8 * (4-ascii85_len));
+      ascii85_flush (ofp);
+    }
+
+  putc ('~', ofp);
+  putc ('>', ofp);
+  putc ('\n', ofp);
+}
+
+static unsigned int
+sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs,
+			     const NRMatrixF *transform, const SPStyle *style)
+{
+	/* static char *hex = "0123456789abcdef"; */
+	SPModulePrintPlain *pmod;
+	/* int r; */
+
+	int i, j;
+	/* guchar *data, *src; */
+	guchar *packb = NULL, *plane = NULL;
+	FILE *ofp;
+
+	pmod = (SPModulePrintPlain *) mod;
+
+	ofp = pmod->stream;
+
+	fprintf (pmod->stream, "gsave\n");
+	fprintf (pmod->stream, "[%g %g %g %g %g %g] concat\n",
+		 transform->c[0],
+		 transform->c[1],
+		 transform->c[2],
+		 transform->c[3],
+		 transform->c[4],
+		 transform->c[5]);
+	fprintf (pmod->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", width, height, width, height, height);
+
+	/* Write read image procedure */
+	fprintf (ofp, "%% Strings to hold RGB-samples per scanline\n");
+	fprintf (ofp, "/rstr %d string def\n", width);
+	fprintf (ofp, "/gstr %d string def\n", width);
+	fprintf (ofp, "/bstr %d string def\n", width);
+	fprintf (ofp, "{currentfile /ASCII85Decode filter /RunLengthDecode filter rstr readstring pop}\n");
+	fprintf (ofp, "{currentfile /ASCII85Decode filter /RunLengthDecode filter gstr readstring pop}\n");
+	fprintf (ofp, "{currentfile /ASCII85Decode filter /RunLengthDecode filter bstr readstring pop}\n");
+	fprintf (ofp, "true 3\n");
+
+	/* Allocate buffer for packbits data. Worst case: Less than 1% increase */
+	packb = (guchar *)g_malloc ((width * 105)/100+2);
+	plane = (guchar *)g_malloc (width);
+
+	/* ps_begin_data (ofp); */
+	fprintf (ofp, "colorimage\n");
+
+#define GET_RGB_TILE(begin) \
+  {int scan_lines; \
+    scan_lines = (i+tile_height-1 < height) ? tile_height : (height-i); \
+    gimp_pixel_rgn_get_rect (&pixel_rgn, begin, 0, i, width, scan_lines); \
+    src = begin; }
+
+	for (i = 0; i < height; i++) {
+		/* if ((i % tile_height) == 0) GET_RGB_TILE (data); */ /* Get more data */
+		guchar *plane_ptr, *src_ptr;
+		int rgb, nout;
+		unsigned char *src;
+
+		src = px + i * rs;
+
+		/* Iterate over RGB */
+		for (rgb = 0; rgb < 3; rgb++) {
+			src_ptr = src + rgb;
+			plane_ptr = plane;
+			for (j = 0; j < width; j++) {
+				*(plane_ptr++) = *src_ptr;
+				src_ptr += 4;
+			}
+			compress_packbits (width, plane, &nout, packb);
+			ascii85_init ();
+			ascii85_nout (nout, packb, ofp);
+			ascii85_out (128, ofp); /* Write EOD of RunLengthDecode filter */
+			ascii85_done (ofp);
+		}
+	}
+	/* ps_end_data (ofp); */
+
+#if 0
+	fprintf (ofp, "showpage\n");
+	g_free (data);
+#endif
+
+	if (packb != NULL) g_free (packb);
+	if (plane != NULL) g_free (plane);
+
+#if 0
+	if (ferror (ofp))
+	{
+		g_message (_("write error occured"));
+		return (FALSE);
 	}
 #endif
 
+	fprintf (pmod->stream, "grestore\n");
 
+	return 0;
+#undef GET_RGB_TILE
+}
+
+/* End of GNU GPL code */
 
 
 
