@@ -5,7 +5,6 @@ TODO for 0.27
 
 - Fix node dialog callbacks (DONE)
 - Fix text dialog (DONE)
-- Garbage collection on save
 - Stamping (DONE) (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)
 - Toolbox scaling bug (DONE)
@@ -18,6 +17,8 @@ TODO for 0.27
 Other tasks
 ===========
 
+- Garbage collection on save
+- Make gradients to normalize transform
 - Tooltips for tools
 - Text does not update paint dynamically
 - Illustrator import/export

@@ -18,6 +18,7 @@
 #include <stdlib.h>
 
 #include <libnr/nr-values.h>
+#include <libnr/nr-matrix.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
@@ -467,8 +468,9 @@ sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient 
 	gfloat p[4];
 	ArtDRect bbox;
 	gdouble ctm[6];
-	NRMatrixF fctm, gs2d;
+	NRMatrixF fctm, gs2d, g2d, d2g, gs2g;
 	NRRectF fbb;
+	double e;
 
 	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 
@@ -485,10 +487,22 @@ sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient 
 	fbb.x1 = bbox.x1;
 	fbb.y1 = bbox.y1;
 	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
+	sp_gradient_get_g2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &g2d);
+	nr_matrix_f_invert (&d2g, &g2d);
+	nr_matrix_multiply_fff (&gs2g, &gs2d, &d2g);
+	e = NR_MATRIX_DF_EXPANSION (&gs2g);
+	if (e < 0.001) e = 0.001;
+	gs2g.c[0] /= e;
+	gs2g.c[1] /= e;
+	gs2g.c[2] /= e;
+	gs2g.c[3] /= e;
+	nr_matrix_multiply_fff (&gs2d, &gs2g, &g2d);
 	sp_gradient_set_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
-
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
-
+	p[0] *= e;
+	p[1] *= e;
+	p[2] *= e;
+	p[3] *= e;
 	sp_lineargradient_set_position (lg, p[0], p[1], p[2], p[3]);
 }
 
@@ -498,8 +512,9 @@ sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient 
 	gfloat p[5];
 	ArtDRect bbox;
 	gdouble ctm[6];
-	NRMatrixF fctm, gs2d;
+	NRMatrixF fctm, gs2d, g2d, d2g, gs2g;
 	NRRectF fbb;
+	double e;
 
 	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL);
 
@@ -516,9 +531,23 @@ sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient 
 	fbb.x1 = bbox.x1;
 	fbb.y1 = bbox.y1;
 	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
+	sp_gradient_get_g2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &g2d);
+	nr_matrix_f_invert (&d2g, &g2d);
+	nr_matrix_multiply_fff (&gs2g, &gs2d, &d2g);
+	e = NR_MATRIX_DF_EXPANSION (&gs2g);
+	if (e < 0.001) e = 0.001;
+	gs2g.c[0] /= e;
+	gs2g.c[1] /= e;
+	gs2g.c[2] /= e;
+	gs2g.c[3] /= e;
+	nr_matrix_multiply_fff (&gs2d, &gs2g, &g2d);
 	sp_gradient_set_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
-
 	sp_paint_selector_get_gradient_position_floatv (psel, p);
+	p[0] *= e;
+	p[1] *= e;
+	p[2] *= e;
+	p[3] *= e;
+	p[4] *= e;
 	sp_radialgradient_set_position (rg, p[0], p[1], p[2], p[3], p[4]);
 }
 
@@ -776,8 +805,10 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 
 	/* Actually we have to set optiomenu history here */
 	if (mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
+		sp_gradient_selector_set_mode (gsel, SP_GRADIENT_SELECTOR_MODE_LINEAR);
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Linear gradient"));
 	} else {
+		sp_gradient_selector_set_mode (gsel, SP_GRADIENT_SELECTOR_MODE_RADIAL);
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Radial gradient"));
 	}
 

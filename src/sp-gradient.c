@@ -1028,6 +1028,27 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 }
 
 NRMatrixF *
+sp_gradient_get_g2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *g2d)
+{
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bb2u;
+
+		bb2u.c[0] = bbox->x1 - bbox->x0;
+		bb2u.c[1] = 0.0;
+		bb2u.c[2] = 0.0;
+		bb2u.c[3] = bbox->y1 - bbox->y0;
+		bb2u.c[4] = bbox->x0;
+		bb2u.c[5] = bbox->y0;
+
+		nr_matrix_multiply_fff (g2d, &bb2u, ctm);
+	} else {
+		*g2d = *ctm;
+	}
+
+	return g2d;
+}
+
+NRMatrixF *
 sp_gradient_get_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *gs2d)
 {
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {

@@ -350,7 +350,9 @@ sp_gradient_get_private_normalized (SPDocument *document, SPGradient *vector)
 					/* fixme: This is plain wrong - what if out gradient is not at private position? */
 					sp_gradient_ensure_vector (gr);
 					if (!gr->has_stops) {
+						SPRepr *repr;
 						gr = sp_gradient_ensure_private_normalized (gr, vector);
+						repr = SP_OBJECT_REPR (gr);
 						sp_repr_set_attr (repr, "gradientUnits", NULL);
 						sp_repr_set_attr (repr, "gradientTransform", NULL);
 						sp_repr_set_attr (repr, "spreadMethod", NULL);
@@ -419,7 +421,9 @@ sp_gradient_get_radial_private_normalized (SPDocument *document, SPGradient *vec
 					/* fixme: This is plain wrong - what if out gradient is not at private position? */
 					sp_gradient_ensure_vector (gr);
 					if (!gr->has_stops) {
+						SPRepr *repr;
 						gr = sp_gradient_ensure_radial_private_normalized (gr, vector);
+						repr = SP_OBJECT_REPR (gr);
 						sp_repr_set_attr (repr, "gradientUnits", NULL);
 						sp_repr_set_attr (repr, "gradientTransform", NULL);
 						sp_repr_set_attr (repr, "spreadMethod", NULL);

@@ -146,6 +146,8 @@ sp_gradient_position_init (SPGradientPosition *pos)
 	pos->bbox.x0 = pos->bbox.y0 = pos->bbox.x1 = pos->bbox.y1 = 0.0;
 	pos->spread = NR_GRADIENT_SPREAD_PAD;
 
+	nr_matrix_f_set_identity (&pos->gs2d);
+
 	pos->gc = NULL;
 	pos->px = NULL;
 }
@@ -387,6 +389,7 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	if (pos->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
 		if (pos->dragging) {
 			if (event->state & GDK_CONTROL_MASK) {
+#if 0
 				NRMatrixF n2gs, gs2n, n2w, w2n, s2n;
 				float x1, y1, x2, y2;
 				float cx, cy, ncx, ncy, nx, ny;
@@ -426,6 +429,10 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 				nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
 				nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
+#else
+				pos->gdata.linear.x2 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				pos->gdata.linear.y2 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+#endif
 			} else {
 				pos->gdata.linear.x2 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				pos->gdata.linear.y2 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
@@ -451,17 +458,22 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 				if (!NR_DF_TEST_CLOSE (pos->w2gs.c[0], pos->w2gs.c[3], NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (pos->w2gs.c[1], 0.0, NR_EPSILON_F) ||
 				    !NR_DF_TEST_CLOSE (pos->w2gs.c[2], 0.0, NR_EPSILON_F)) {
-					double ex, cxw, cyw;
+					double ex, cxw, cyw, dxw, dyw;
 					/* Have to make transform rectilinear */
 					ex = NR_MATRIX_DF_EXPANSION (&pos->w2gs);
 					cxw = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2w, cx, cy);
 					cyw = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2w, cx, cy);
-					pos->w2gs.c[0] = ex;
+					dxw = fabs (event->x - cxw);
+					dyw = fabs (event->y - cyw);
+					dxw = MAX (dxw, 1.0);
+					dyw = MAX (dyw, 1.0);
+					r = CLAMP (r, 0.001, 1000.0);
+					pos->w2gs.c[0] = r / dxw;
 					pos->w2gs.c[1] = 0.0;
 					pos->w2gs.c[2] = 0.0;
-					pos->w2gs.c[3] = ex;
-					pos->w2gs.c[4] = cx - ex * cxw;
-					pos->w2gs.c[5] = cy - ex * cyw;
+					pos->w2gs.c[3] = r / dyw;
+					pos->w2gs.c[4] = cx - pos->w2gs.c[0] * cxw;
+					pos->w2gs.c[5] = cy - pos->w2gs.c[3] * cyw;
 					nr_matrix_f_invert (&pos->gs2w, &pos->w2gs);
 					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
 				}
@@ -533,10 +545,23 @@ sp_gradient_position_gradient_modified (SPGradient *gradient, guint flags, SPGra
 void
 sp_gradient_position_set_mode (SPGradientPosition *pos, guint mode)
 {
-	pos->mode = mode;
-
-	pos->need_update = TRUE;
-	if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+	if (pos->mode != mode) {
+		pos->mode = mode;
+		if (pos->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
+			pos->gdata.linear.x1 = 0.0;
+			pos->gdata.linear.y1 = 0.0;
+			pos->gdata.linear.x2 = 1.0;
+			pos->gdata.linear.y2 = 0.0;
+		} else {
+			pos->gdata.radial.cx = 0.5;
+			pos->gdata.radial.cy = 0.5;
+			pos->gdata.radial.fx = 0.5;
+			pos->gdata.radial.fy = 0.5;
+			pos->gdata.radial.r = 0.5;
+		}
+		pos->need_update = TRUE;
+		if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+	}
 }
 
 void

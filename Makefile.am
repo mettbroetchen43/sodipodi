@@ -35,5 +35,6 @@ EXTRA_DIST =			\
 	$(Graphics_in_files)	\
 	$(oaf_in_files)		\
 	sodipodi.spec.in	\
+	sodipodi.spec		\
 	README HACKING		\
 	sodipodi.png

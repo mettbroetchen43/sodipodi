@@ -1,5 +1,8 @@
 2002-10-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/gradient-position.c (sp_gradient_position_motion_notify): Do
+	not mess with lineargradient skew
+
 	* src/sp-ellipse.c (sp_arc_modified): Continue upstream
 
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
