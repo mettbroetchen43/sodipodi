@@ -1,5 +1,16 @@
-#ifndef SP_SELECT_CONTEXT_H
-#define SP_SELECT_CONTEXT_H
+#ifndef __SP_SELECT_CONTEXT_H__
+#define __SP_SELECT_CONTEXT_H__
+
+/*
+ * Select tool
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "event-context.h"
 #include "seltrans.h"
@@ -19,7 +30,7 @@ struct _SPSelectContext {
 	guint moved : 1;
 	guint button_press_shift : 1;
 	SPItem *item;
-	GnomeCanvasItem *grabbed;
+	SPCanvasItem *grabbed;
 	SPSelTrans seltrans;
 };
 

@@ -12,6 +12,7 @@
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 
+#include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath.h>
@@ -38,13 +39,13 @@ static void sp_ctrl_init (SPCtrl *ctrl);
 static void sp_ctrl_destroy (GtkObject *object);
 static void sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
-static void sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+static void sp_ctrl_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_ctrl_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
+static double sp_ctrl_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item);
 
 
-static GnomeCanvasItemClass *parent_class;
+static SPCanvasItemClass *parent_class;
 
 GtkType
 sp_ctrl_get_type (void)
@@ -59,7 +60,7 @@ sp_ctrl_get_type (void)
 			(GtkObjectInitFunc) sp_ctrl_init,
 			NULL, NULL, NULL
 		};
-		ctrl_type = gtk_type_unique (gnome_canvas_item_get_type (), &ctrl_info);
+		ctrl_type = gtk_type_unique (sp_canvas_item_get_type (), &ctrl_info);
 	}
 	return ctrl_type;
 }
@@ -68,12 +69,12 @@ static void
 sp_ctrl_class_init (SPCtrlClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+	parent_class = gtk_type_class (sp_canvas_item_get_type ());
 
 	gtk_object_add_arg_type ("SPCtrl::shape", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_SHAPE);
 	gtk_object_add_arg_type ("SPCtrl::mode", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_MODE);
@@ -130,54 +131,54 @@ sp_ctrl_destroy (GtkObject *object)
 static void
 sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
-	GnomeCanvasItem *item;
+	SPCanvasItem *item;
 	SPCtrl *ctrl;
 	GdkPixbuf * pixbuf = NULL;
 
-	item = GNOME_CANVAS_ITEM (object);
+	item = SP_CANVAS_ITEM (object);
 	ctrl = SP_CTRL (object);
 
 	switch (arg_id) {
 	case ARG_SHAPE:
 		ctrl->shape = GTK_VALUE_ENUM (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_MODE:
 		ctrl->mode = GTK_VALUE_ENUM (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_ANCHOR:
 		ctrl->anchor = GTK_VALUE_ENUM (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_SIZE:
 		ctrl->span = (gint) ((GTK_VALUE_DOUBLE (*arg) - 1.0) / 2.0 + 0.5);
 		ctrl->defined = (ctrl->span > 0);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_FILLED:
 		ctrl->filled = GTK_VALUE_BOOL (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_FILL_COLOR:
 		ctrl->fill_color = GTK_VALUE_INT (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_STROKED:
 		ctrl->stroked = GTK_VALUE_BOOL (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_STROKE_COLOR:
 		ctrl->stroke_color = GTK_VALUE_INT (*arg);
 		ctrl->build = FALSE;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_PIXBUF:
 	        pixbuf  = GTK_VALUE_POINTER (*arg);
@@ -195,20 +196,20 @@ sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 static void
-sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+sp_ctrl_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCtrl *ctrl;
 	gint x, y;
 
 	ctrl = SP_CTRL (item);
 
-	if (((GnomeCanvasItemClass *) parent_class)->update)
-		(* ((GnomeCanvasItemClass *) parent_class)->update) (item, affine, clip_path, flags);
+	if (((SPCanvasItemClass *) parent_class)->update)
+		(* ((SPCanvasItemClass *) parent_class)->update) (item, affine, flags);
 
-	gnome_canvas_item_reset_bounds (item);
+	sp_canvas_item_reset_bounds (item);
 
 	if (ctrl->shown) {
-		gnome_canvas_request_redraw (item->canvas, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
+		sp_canvas_request_redraw (item->canvas, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
 	}
 
 	if (!ctrl->defined) return;
@@ -255,13 +256,13 @@ sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int fl
 	ctrl->box.x1 = ctrl->box.x0 + 2 * ctrl->span;
 	ctrl->box.y1 = ctrl->box.y0 + 2 * ctrl->span;
 
-	gnome_canvas_update_bbox (item, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
+	sp_canvas_update_bbox (item, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
 
 }
 
 static double
-sp_ctrl_point (GnomeCanvasItem *item, double x, double y,
-	       int cx, int cy, GnomeCanvasItem **actual_item)
+sp_ctrl_point (SPCanvasItem *item, double x, double y,
+	       int cx, int cy, SPCanvasItem **actual_item)
 {
 	SPCtrl *ctrl;
 
@@ -431,7 +432,7 @@ sp_ctrl_build_cache (SPCtrl *ctrl)
 #define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
 
 static void
-sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCtrl *ctrl;
 	gint y0, y1, y, x0,x1,x;
@@ -442,7 +443,7 @@ sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	if (!ctrl->defined) return;
 	if ((!ctrl->filled) && (!ctrl->stroked)) return;
 	
-	gnome_canvas_buf_ensure_buf (buf);
+	sp_canvas_buf_ensure_buf (buf);
 	buf->is_bg = FALSE;
 	
 	// the control-image is rendered into ctrl->cache
@@ -486,5 +487,5 @@ sp_ctrl_moveto (SPCtrl * ctrl, double x, double y)
 
 	art_affine_translate (affine, x, y);
 
-	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (ctrl), affine);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (ctrl), affine);
 }

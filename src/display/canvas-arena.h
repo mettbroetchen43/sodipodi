@@ -26,7 +26,7 @@ typedef struct _SPCanvasArenaClass SPCanvasArenaClass;
 #include "nr-arena-item.h"
 
 struct _SPCanvasArena {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	guint cursor : 1;
 	guint sticky : 1;
@@ -43,7 +43,7 @@ struct _SPCanvasArena {
 };
 
 struct _SPCanvasArenaClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 
 	gint (* arena_event) (SPCanvasArena *carena, NRArenaItem *item, GdkEvent *event);
 };

@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -138,7 +139,7 @@ sp_select_context_destroy (GtkObject * object)
 	sc = SP_SELECT_CONTEXT (object);
 
 	if (sc->grabbed) {
-		gnome_canvas_item_ungrab (sc->grabbed, gdk_time_get ());
+		sp_canvas_item_ungrab (sc->grabbed, gdk_time_get ());
 		sc->grabbed = NULL;
 	}
 
@@ -212,10 +213,10 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 			sc->dragging = TRUE;
 			sc->moved = FALSE;
 			sc->item = item;
-			sp_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->drawing),
+			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->drawing),
 					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 					     NULL, event->button.time);
-			sc->grabbed = GNOME_CANVAS_ITEM (desktop->drawing);
+			sc->grabbed = SP_CANVAS_ITEM (desktop->drawing);
 			ret = TRUE;
 		}
 		break;
@@ -271,7 +272,7 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 			sc->dragging = FALSE;
 			sc->item = NULL;
 			if (sc->grabbed) {
-				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
+				sp_canvas_item_ungrab (sc->grabbed, event->button.time);
 				sc->grabbed = NULL;
 			}
 			ret = TRUE;
@@ -327,10 +328,10 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 		if (event->button.button == 1) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 			sp_rubberband_start (desktop, p.x, p.y);
-			sp_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 					     GDK_KEY_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 					     NULL, event->button.time);
-			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
+			sc->grabbed = SP_CANVAS_ITEM (desktop->acetate);
 #if 0
 			/* We cannot assign shift for partial selects, as it is used for add mode */
 			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
@@ -423,7 +424,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 				ret = TRUE;
 			}
 			if (sc->grabbed) {
-				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
+				sp_canvas_item_ungrab (sc->grabbed, event->button.time);
 				sc->grabbed = NULL;
 			}
 			sc->button_press_shift = FALSE;

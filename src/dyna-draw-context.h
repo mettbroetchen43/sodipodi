@@ -39,7 +39,7 @@ struct _SPDynaDrawContext
 	SPCurve *accumulated;
 	GSList *segments;
 	/* current shape and curves */
-	GnomeCanvasItem *currentshape;
+	SPCanvasItem *currentshape;
 	SPCurve *currentcurve;
 	SPCurve *cal1;
 	SPCurve *cal2;

@@ -42,7 +42,7 @@ static void sp_namedview_remove_child (SPObject *object, SPRepr *child);
 static SPRepr *sp_namedview_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_namedview_setup_grid (SPNamedView * nv);
-static void sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item);
+static void sp_namedview_setup_grid_item (SPNamedView * nv, SPCanvasItem * item);
 
 static gboolean sp_str_to_bool (const guchar *str);
 static gboolean sp_nv_read_length (const guchar *str, guint base, gdouble *val, const SPUnit **unit);
@@ -441,7 +441,7 @@ sp_namedview_show (SPNamedView * nv, gpointer desktop)
 {
 	SPDesktop * dt;
 	GSList * l;
-	GnomeCanvasItem * item;
+	SPCanvasItem * item;
 
 	dt = SP_DESKTOP (desktop);
 
@@ -457,7 +457,7 @@ sp_namedview_show (SPNamedView * nv, gpointer desktop)
 
 	nv->views = g_slist_prepend (nv->views, desktop);
 
-	item = gnome_canvas_item_new (SP_DT_GRID (dt), SP_TYPE_CGRID, NULL);
+	item = sp_canvas_item_new (SP_DT_GRID (dt), SP_TYPE_CGRID, NULL);
 	nv->gridviews = g_slist_prepend (nv->gridviews, item);
 	sp_namedview_setup_grid_item (nv, item);
 }
@@ -487,7 +487,7 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 	nv->views = g_slist_remove (nv->views, desktop);
 
 	for (l = nv->gridviews; l != NULL; l = l->next) {
-		if (GNOME_CANVAS_ITEM (l->data)->canvas == SP_DT_CANVAS (dt)) break;
+		if (SP_CANVAS_ITEM (l->data)->canvas == SP_DT_CANVAS (dt)) break;
 	}
 
 	g_assert (l);
@@ -525,12 +525,12 @@ sp_namedview_setup_grid (SPNamedView * nv)
 	GSList * l;
 
 	for (l = nv->gridviews; l != NULL; l = l->next) {
-		sp_namedview_setup_grid_item (nv, GNOME_CANVAS_ITEM (l->data));
+		sp_namedview_setup_grid_item (nv, SP_CANVAS_ITEM (l->data));
 	}
 }
 
 static void
-sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
+sp_namedview_setup_grid_item (SPNamedView * nv, SPCanvasItem * item)
 {
 	const SPUnit *pt = NULL;
 #if 0
@@ -538,9 +538,9 @@ sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 #endif
 
 	if (nv->showgrid) {
-		gnome_canvas_item_show (item);
+		sp_canvas_item_show (item);
 	} else {
-		gnome_canvas_item_hide (item);
+		sp_canvas_item_hide (item);
 	}
 
 	if (!pt) pt = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
@@ -555,7 +555,7 @@ sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 	ys = nv->gridspacingy;
 	sp_convert_distance (&ys, nv->gridunit, pt);
 
-	gnome_canvas_item_set (item,
+	sp_canvas_item_set (item,
 			       "color", nv->gridcolor,
 			       "originx", x0,
 			       "originy", y0,
@@ -563,7 +563,7 @@ sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 			       "spacingy", ys,
 			       NULL);
 #else
-	gnome_canvas_item_set (item,
+	sp_canvas_item_set ((GtkObject *) item,
 			       "color", nv->gridcolor,
 			       "originx", nv->gridoriginx,
 			       "originy", nv->gridoriginy,

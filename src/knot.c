@@ -62,7 +62,7 @@ static void sp_knot_init (SPKnot * knot);
 static void sp_knot_destroy (GtkObject * object);
 static void sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id);
 
-static void sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
+static void sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data);
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 static void sp_knot_update_ctrl (SPKnot * knot);
 static void sp_knot_set_ctrl_state (SPKnot *knot);
@@ -313,7 +313,7 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 }
 
 static void
-sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	SPKnot * knot;
 	gboolean consumed;
@@ -368,7 +368,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		if (event->button.button == 1) {
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
 #ifndef KNOT_NOGRAB
-			gnome_canvas_item_ungrab (knot->item, event->button.time);
+			sp_canvas_item_ungrab (knot->item, event->button.time);
 #if 0
 			gdk_pointer_grab (knot->item->canvas->layout.bin_window,
 					  FALSE,
@@ -460,7 +460,7 @@ sp_knot_new (SPDesktop * desktop)
 	knot->desktop = desktop;
 	knot->flags = SP_KNOT_VISIBLE;
 
-	knot->item = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
+	knot->item = sp_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
 		"anchor", GTK_ANCHOR_CENTER,
 		"size", 8.0,
@@ -584,9 +584,9 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 	switch (flag) {
 	case SP_KNOT_VISIBLE:
 		if (set) {
-			gnome_canvas_item_show (knot->item);
+			sp_canvas_item_show (knot->item);
 		} else {
-			gnome_canvas_item_hide (knot->item);
+			sp_canvas_item_hide (knot->item);
 		}
 		break;
 	case SP_KNOT_MOUSEOVER:

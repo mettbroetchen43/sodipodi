@@ -35,7 +35,7 @@ struct _SPDrawContext {
 	SPEventContext event_context;
 
 	SPSelection *selection;
-	GnomeCanvasItem *grab;
+	SPCanvasItem *grab;
 
 	guint attach : 1;
 
@@ -44,11 +44,11 @@ struct _SPDrawContext {
 	guint32 green_color;
 
 	/* Red */
-	GnomeCanvasItem *red_bpath;
+	SPCanvasItem *red_bpath;
 	SPCurve *red_curve;
 
 	/* Blue */
-	GnomeCanvasItem *blue_bpath;
+	SPCanvasItem *blue_bpath;
 	SPCurve *blue_curve;
 
 	/* Green */
@@ -135,7 +135,7 @@ struct _SPPenContext {
 
 	guint state : 2;
 
-	GnomeCanvasItem *c0, *c1, *cl0, *cl1;
+	SPCanvasItem *c0, *c1, *cl0, *cl1;
 };
 
 struct _SPPenContextClass {

@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include <ctype.h>
+#include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
 #include <gal/widgets/e-unicode.h>
 #include <helper/sp-ctrlline.h>
@@ -161,9 +162,9 @@ sp_text_context_setup (SPEventContext *ec)
 	tc = SP_TEXT_CONTEXT (ec);
 	desktop = ec->desktop;
 
-	tc->cursor = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	tc->cursor = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
-	gnome_canvas_item_hide (tc->cursor);
+	sp_canvas_item_hide (tc->cursor);
 
 	tc->timeout = gtk_timeout_add (250, (GtkFunction) sp_text_context_timeout, ec);
 
@@ -296,7 +297,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			/* Cursor */
 			tc->show = TRUE;
 			tc->phase = 1;
-			gnome_canvas_item_show (tc->cursor);
+			sp_canvas_item_show (tc->cursor);
 			sp_desktop_w2d_xy_point (ec->desktop, &dtp, event->button.x, event->button.y);
 			sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), dtp.x, dtp.y, dtp.x + 32, dtp.y);
 			/* Processed */
@@ -484,12 +485,12 @@ sp_text_context_update_cursor (SPTextContext *tc)
 		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
 		art_affine_point (&p0, &p0, i2d);
 		art_affine_point (&p1, &p1, i2d);
-		gnome_canvas_item_show (tc->cursor);
+		sp_canvas_item_show (tc->cursor);
 		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
 		tc->show = TRUE;
 		tc->phase = 1;
 	} else {
-		gnome_canvas_item_hide (tc->cursor);
+		sp_canvas_item_hide (tc->cursor);
 		tc->show = FALSE;
 	}
 }
@@ -500,10 +501,10 @@ sp_text_context_timeout (SPTextContext *tc)
 	if (tc->show) {
 		if (tc->phase) {
 			tc->phase = 0;
-			gnome_canvas_item_hide (tc->cursor);
+			sp_canvas_item_hide (tc->cursor);
 		} else {
 			tc->phase = 1;
-			gnome_canvas_item_show (tc->cursor);
+			sp_canvas_item_show (tc->cursor);
 		}
 	}
 

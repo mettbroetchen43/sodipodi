@@ -8,6 +8,9 @@
  */
 
 #include <math.h>
+
+#include <libart_lgpl/art_affine.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sp-guide.h"
@@ -25,14 +28,14 @@ static void sp_guideline_destroy (GtkObject *object);
 static void sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void sp_guideline_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
-static void sp_guideline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_guideline_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+static void sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_guideline_point (GnomeCanvasItem *item, double x, double y,
-			int cx, int cy, GnomeCanvasItem ** actual_item);
+static double sp_guideline_point (SPCanvasItem *item, double x, double y,
+			int cx, int cy, SPCanvasItem ** actual_item);
 
 
-static GnomeCanvasItemClass * parent_class;
+static SPCanvasItemClass * parent_class;
 
 GtkType
 sp_guideline_get_type (void)
@@ -49,7 +52,7 @@ sp_guideline_get_type (void)
 			NULL, NULL,
 			(GtkClassInitFunc) NULL
 		};
-		guideline_type = gtk_type_unique (gnome_canvas_item_get_type (), &guideline_info);
+		guideline_type = gtk_type_unique (sp_canvas_item_get_type (), &guideline_info);
 	}
 	return guideline_type;
 }
@@ -58,12 +61,12 @@ static void
 sp_guideline_class_init (SPGuideLineClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+	parent_class = gtk_type_class (sp_canvas_item_get_type ());
 
 	gtk_object_add_arg_type ("SPGuideLine::orientation", GTK_TYPE_ENUM, GTK_ARG_READWRITE, ARG_ORIENTATION);
 	gtk_object_add_arg_type ("SPGuideLine::color", GTK_TYPE_INT, GTK_ARG_WRITABLE, ARG_COLOR);
@@ -99,20 +102,20 @@ sp_guideline_destroy (GtkObject *object)
 static void
 sp_guideline_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
-	GnomeCanvasItem *item;
+	SPCanvasItem *item;
 	SPGuideLine *guideline;
 
-	item = GNOME_CANVAS_ITEM (object);
+	item = SP_CANVAS_ITEM (object);
 	guideline = SP_GUIDELINE (object);
 
 	switch (arg_id) {
 	case ARG_ORIENTATION:
 		guideline->orientation = GTK_VALUE_ENUM (* arg);
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_COLOR:
 		guideline->color = GTK_VALUE_INT (* arg);
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	default:
 		break;
@@ -137,7 +140,7 @@ sp_guideline_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 
 static void
-sp_guideline_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
+sp_guideline_render (SPCanvasItem * item, SPCanvasBuf * buf)
 {
 	SPGuideLine *guideline;
 	gint ix, iy;
@@ -147,7 +150,7 @@ sp_guideline_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 
 	guideline = SP_GUIDELINE (item);
 
-	gnome_canvas_buf_ensure_buf (buf);
+	sp_canvas_buf_ensure_buf (buf);
 	buf->is_bg = FALSE;
 
 	if (guideline->orientation == SP_GUIDELINE_ORIENTATION_HORIZONTAL) {
@@ -197,7 +200,7 @@ sp_guideline_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 }
 
 static void
-sp_guideline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPGuideLine *guideline;
 	ArtPoint p;
@@ -205,17 +208,17 @@ sp_guideline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, i
 	guideline = SP_GUIDELINE (item);
 
 	if (parent_class->update)
-		(* parent_class->update) (item, affine, clip_path, flags);
+		(* parent_class->update) (item, affine, flags);
 
 	if (guideline->shown) {
 		if (guideline->orientation == SP_GUIDELINE_ORIENTATION_HORIZONTAL) {
-			gnome_canvas_request_redraw (item->canvas,
+			sp_canvas_request_redraw (item->canvas,
 				- 1000000,
 				guideline->position,
 				1000000,
 				guideline->position + 1);
 		} else {
-			gnome_canvas_request_redraw (item->canvas,
+			sp_canvas_request_redraw (item->canvas,
 				guideline->position,
 				-1000000,
 				guideline->position + 1,
@@ -223,21 +226,21 @@ sp_guideline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, i
 		}
 	}
 
-	gnome_canvas_item_reset_bounds (item);
+	sp_canvas_item_reset_bounds (item);
 
 	p.x = p.y = 0.0;
 	art_affine_point (&p, &p, affine);
 
 	if (guideline->orientation == SP_GUIDELINE_ORIENTATION_HORIZONTAL) {
 		guideline->position = (gint) (p.y + 0.5);
-		gnome_canvas_update_bbox (item,
+		sp_canvas_update_bbox (item,
 			- 1000000,
 			guideline->position,
 			1000000,
 			guideline->position + 1);
 	} else {
 		guideline->position = (gint) (p.x + 0.5);
-		gnome_canvas_update_bbox (item,
+		sp_canvas_update_bbox (item,
 			guideline->position,
 			-1000000,
 			guideline->position + 1,
@@ -246,8 +249,8 @@ sp_guideline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, i
 }
 
 static double
-sp_guideline_point (GnomeCanvasItem *item, double x, double y,
-	       int cx, int cy, GnomeCanvasItem **actual_item)
+sp_guideline_point (SPCanvasItem *item, double x, double y,
+	       int cx, int cy, SPCanvasItem **actual_item)
 {
 	SPGuideLine * guideline;
 	gdouble d;
@@ -274,7 +277,7 @@ sp_guideline_moveto (SPGuideLine * guideline, double x, double y)
 
 	art_affine_translate (affine, x, y);
 
-	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (guideline), affine);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (guideline), affine);
 }
 
 void

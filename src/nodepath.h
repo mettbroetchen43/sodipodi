@@ -37,7 +37,7 @@ typedef struct {
 	SPPathNode * other;
 	ArtPoint pos;
 	SPKnot * knot;
-	GnomeCanvasItem * line;
+	SPCanvasItem * line;
 } SPPathNodeSide;
 
 struct _SPPathNode {

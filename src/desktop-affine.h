@@ -2,7 +2,7 @@
 #define __SP_DESKTOP_AFFINE_H__
 
 /*
- * SVG <svg> implementation
+ * Desktop transformations
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>

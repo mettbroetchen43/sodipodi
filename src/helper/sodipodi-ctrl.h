@@ -38,7 +38,7 @@ typedef enum {
 } SPCtrlModeType;
 
 struct _SPCtrl {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	SPCtrlShapeType shape;
 	SPCtrlModeType mode;
@@ -58,7 +58,7 @@ struct _SPCtrl {
 };
 
 struct _SPCtrlClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 };
 
 

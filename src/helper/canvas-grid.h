@@ -10,6 +10,7 @@
  *
  */
 
+#include <libart_lgpl/art_point.h>
 #include "sp-canvas.h"
 
 BEGIN_GNOME_DECLS
@@ -25,7 +26,7 @@ typedef struct _SPCGrid SPCGrid;
 typedef struct _SPCGridClass SPCGridClass;
 
 struct _SPCGrid {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	ArtPoint origin;
 	ArtPoint spacing;
@@ -35,7 +36,7 @@ struct _SPCGrid {
 };
 
 struct _SPCGridClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 };
 
 

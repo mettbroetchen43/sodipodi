@@ -29,11 +29,11 @@ static void sp_canvas_bpath_class_init (SPCanvasBPathClass *klass);
 static void sp_canvas_bpath_init (SPCanvasBPath *path);
 static void sp_canvas_bpath_destroy (GtkObject *object);
 
-static void sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_canvas_bpath, gint flags);
-static void sp_canvas_bpath_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
-static double sp_canvas_bpath_point (GnomeCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, GnomeCanvasItem **actual_item);
+static void sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf);
+static double sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, SPCanvasItem **actual_item);
  
-static GnomeCanvasItemClass *parent_class;
+static SPCanvasItemClass *parent_class;
 
 GtkType
 sp_canvas_bpath_get_type (void)
@@ -48,7 +48,7 @@ sp_canvas_bpath_get_type (void)
 			(GtkObjectInitFunc) sp_canvas_bpath_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (GNOME_TYPE_CANVAS_ITEM, &info);
+		type = gtk_type_unique (SP_TYPE_CANVAS_ITEM, &info);
 	}
 	return type;
 }
@@ -57,12 +57,12 @@ static void
 sp_canvas_bpath_class_init (SPCanvasBPathClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
-	item_class = GNOME_CANVAS_ITEM_CLASS (klass);
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (GNOME_TYPE_CANVAS_ITEM);
+	parent_class = gtk_type_class (SP_TYPE_CANVAS_ITEM);
 
 	object_class->destroy = sp_canvas_bpath_destroy;
 
@@ -113,7 +113,7 @@ sp_canvas_bpath_destroy (GtkObject *object)
 }
 
 static void
-sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_path, gint flags)
+sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCanvasBPath *cbp;
 	ArtDRect dbox, pbox;
@@ -121,12 +121,12 @@ sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_pat
 
 	cbp = SP_CANVAS_BPATH (item);
 
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
-	if (((GnomeCanvasItemClass *) parent_class)->update)
-		((GnomeCanvasItemClass *) parent_class)->update (item, affine, clip_path, flags);
+	if (((SPCanvasItemClass *) parent_class)->update)
+		((SPCanvasItemClass *) parent_class)->update (item, affine, flags);
 
-	gnome_canvas_item_reset_bounds (item);
+	sp_canvas_item_reset_bounds (item);
 
 	if (cbp->fill_svp) {
 		art_svp_free (cbp->fill_svp);
@@ -181,11 +181,11 @@ sp_canvas_bpath_update (GnomeCanvasItem *item, gdouble *affine, ArtSVP *clip_pat
 	item->x2 = ibox.x1;
 	item->y2 = ibox.y1;
 
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
 
 static void
-sp_canvas_bpath_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCanvasBPath *cbp;
 
@@ -207,7 +207,7 @@ sp_canvas_bpath_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 #define BIGVAL 1e18
 
 static double
-sp_canvas_bpath_point (GnomeCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, GnomeCanvasItem **actual_item)
+sp_canvas_bpath_point (SPCanvasItem *item, gdouble x, gdouble y, gint cx, gint cy, SPCanvasItem **actual_item)
 {
 	SPCanvasBPath *cbp;
 	gint wind;
@@ -241,15 +241,15 @@ sp_canvas_bpath_point (GnomeCanvasItem *item, gdouble x, gdouble y, gint cx, gin
 	return BIGVAL;
 }
 
-GnomeCanvasItem *
-sp_canvas_bpath_new (GnomeCanvasGroup *parent, SPCurve *curve)
+SPCanvasItem *
+sp_canvas_bpath_new (SPCanvasGroup *parent, SPCurve *curve)
 {
-	GnomeCanvasItem *item;
+	SPCanvasItem *item;
 
 	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (parent), NULL);
+	g_return_val_if_fail (SP_IS_CANVAS_GROUP (parent), NULL);
 
-	item = gnome_canvas_item_new (parent, SP_TYPE_CANVAS_BPATH, NULL);
+	item = sp_canvas_item_new (parent, SP_TYPE_CANVAS_BPATH, NULL);
 
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (item), curve);
 
@@ -270,7 +270,7 @@ sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve)
 		cbp->curve = sp_curve_ref (curve);
 	}
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cbp));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cbp));
 }
 
 void
@@ -282,7 +282,7 @@ sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule)
 	cbp->fill_rgba = rgba;
 	cbp->fill_rule = rule;
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cbp));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cbp));
 }
 
 void
@@ -296,6 +296,6 @@ sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, Art
 	cbp->stroke_linejoin = join;
 	cbp->stroke_linecap = cap;
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cbp));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cbp));
 }
 

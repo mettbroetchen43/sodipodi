@@ -13,9 +13,10 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libart_lgpl/art_point.h>
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkpacker.h>
-#include "helper/sp-canvas.h"
+#include "helper/helper-forward.h"
 #include "forward.h"
 
 typedef enum {
@@ -60,7 +61,7 @@ typedef struct _SPKnotClass SPKnotClass;
 struct _SPKnot {
 	GtkObject object;
 	SPDesktop * desktop;		/* Desktop we are on */
-	GnomeCanvasItem * item;		/* Our CanvasItem */
+	SPCanvasItem * item;		/* Our CanvasItem */
 	guint flags;
 
 	guint size;			/* Always square */

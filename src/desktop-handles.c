@@ -1,5 +1,18 @@
-#define SP_DESKTOP_HANDLES_C
+#define __SP_DESKTOP_HANDLES_C__
 
+/*
+ * Frontends
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include "helper/sp-canvas.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 
@@ -30,16 +43,16 @@ sp_desktop_document (SPDesktop * desktop)
 	return SP_VIEW_DOCUMENT (desktop);
 }
 
-GnomeCanvas *
+SPCanvas *
 sp_desktop_canvas (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 
-	return ((GnomeCanvasItem *) desktop->main)->canvas;
+	return ((SPCanvasItem *) desktop->main)->canvas;
 }
 
-GnomeCanvasItem *
+SPCanvasItem *
 sp_desktop_acetate (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -48,7 +61,7 @@ sp_desktop_acetate (SPDesktop * desktop)
 	return desktop->acetate;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_main (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -57,7 +70,7 @@ sp_desktop_main (SPDesktop * desktop)
 	return desktop->main;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_grid (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -66,7 +79,7 @@ sp_desktop_grid (SPDesktop * desktop)
 	return desktop->grid;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_guides (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -75,7 +88,7 @@ sp_desktop_guides (SPDesktop * desktop)
 	return desktop->guides;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_drawing (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -84,7 +97,7 @@ sp_desktop_drawing (SPDesktop * desktop)
 	return desktop->drawing;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_sketch (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
@@ -93,7 +106,7 @@ sp_desktop_sketch (SPDesktop * desktop)
 	return desktop->sketch;
 }
 
-GnomeCanvasGroup *
+SPCanvasGroup *
 sp_desktop_controls (SPDesktop * desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);

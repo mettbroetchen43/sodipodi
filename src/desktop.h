@@ -24,7 +24,8 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 #define SP_IS_DESKTOP_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP_WIDGET))
 #define SP_IS_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP_WIDGET))
 
-#include "helper/sp-canvas.h"
+#include <libart_lgpl/art_rect.h>
+#include "helper/helper-forward.h"
 #include "forward.h"
 #include "view.h"
 
@@ -39,14 +40,14 @@ struct _SPDesktop {
 	SPSelection *selection;
 	SPEventContext *event_context;
 
-	GnomeCanvasItem *acetate;
-	GnomeCanvasGroup *main;
-	GnomeCanvasGroup *grid;
-  	GnomeCanvasGroup *guides;
-	GnomeCanvasGroup *drawing;
-	GnomeCanvasGroup *sketch;
-	GnomeCanvasGroup *controls;
-	GnomeCanvasItem *page;
+	SPCanvasItem *acetate;
+	SPCanvasGroup *main;
+	SPCanvasGroup *grid;
+  	SPCanvasGroup *guides;
+	SPCanvasGroup *drawing;
+	SPCanvasGroup *sketch;
+	SPCanvasGroup *controls;
+	SPCanvasItem *page;
 	gdouble d2w[6], w2d[6], doc2dt[6];
 
         gint number;
@@ -127,7 +128,7 @@ struct _SPDesktopWidget {
         gint coord_status_id, select_status_id;
         GtkWidget *zoom;
 
-	GnomeCanvas *canvas;
+	SPCanvas *canvas;
 };
 
 struct _SPDesktopWidgetClass {

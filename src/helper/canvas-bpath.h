@@ -35,7 +35,7 @@ typedef struct _SPCanvasBPathClass SPCanvasBPathClass;
 #include "curve.h"
 
 struct _SPCanvasBPath {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	/* Line def */
 	SPCurve *curve;
@@ -57,12 +57,12 @@ struct _SPCanvasBPath {
 };
 
 struct _SPCanvasBPathClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 };
 
 GtkType sp_canvas_bpath_get_type (void);
 
-GnomeCanvasItem *sp_canvas_bpath_new (GnomeCanvasGroup *parent, SPCurve *curve);
+SPCanvasItem *sp_canvas_bpath_new (SPCanvasGroup *parent, SPCurve *curve);
 
 void sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve);
 void sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule);

@@ -17,6 +17,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>

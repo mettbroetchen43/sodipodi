@@ -13,6 +13,8 @@
  */
 
 #include <libnr/nr-types.h>
+#include <libart_lgpl/art_point.h>
+#include <libart_lgpl/art_rect.h>
 #include "knot.h"
 #include "desktop-handles.h"
 
@@ -64,9 +66,9 @@ struct _SPSelTrans {
 	SPKnot *shandle[8];
 	SPKnot *rhandle[8];
 	SPKnot *chandle;
-        GnomeCanvasItem *norm;
-        GnomeCanvasItem *grip;;
-        GnomeCanvasItem *l1, *l2, *l3, *l4;
+        SPCanvasItem *norm;
+        SPCanvasItem *grip;;
+        SPCanvasItem *l1, *l2, *l3, *l4;
 	guint sel_changed_id;
 	guint sel_modified_id;
 };

@@ -8,6 +8,9 @@
  */
 
 #include <math.h>
+
+#include <libart_lgpl/art_affine.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "canvas-grid.h"
@@ -27,13 +30,13 @@ static void sp_cgrid_init (SPCGrid *grid);
 static void sp_cgrid_destroy (GtkObject *object);
 static void sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
-static void sp_cgrid_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_cgrid_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+static void sp_cgrid_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_cgrid_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-static double sp_cgrid_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem ** actual_item);
+static double sp_cgrid_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem ** actual_item);
 
 
-static GnomeCanvasItemClass * parent_class;
+static SPCanvasItemClass * parent_class;
 
 GtkType
 sp_cgrid_get_type (void)
@@ -50,7 +53,7 @@ sp_cgrid_get_type (void)
 			NULL, NULL,
 			(GtkClassInitFunc) NULL
 		};
-		cgrid_type = gtk_type_unique (gnome_canvas_item_get_type (), &cgrid_info);
+		cgrid_type = gtk_type_unique (sp_canvas_item_get_type (), &cgrid_info);
 	}
 	return cgrid_type;
 }
@@ -59,12 +62,12 @@ static void
 sp_cgrid_class_init (SPCGridClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+	parent_class = gtk_type_class (sp_canvas_item_get_type ());
 
 	gtk_object_add_arg_type ("SPCGrid::originx", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_ORIGINX);
 	gtk_object_add_arg_type ("SPCGrid::originy", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_ORIGINY);
@@ -101,34 +104,34 @@ sp_cgrid_destroy (GtkObject *object)
 static void
 sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
-	GnomeCanvasItem *item;
+	SPCanvasItem *item;
 	SPCGrid *grid;
 
-	item = GNOME_CANVAS_ITEM (object);
+	item = SP_CANVAS_ITEM (object);
 	grid = SP_CGRID (object);
 
 	switch (arg_id) {
 	case ARG_ORIGINX:
 		grid->origin.x = GTK_VALUE_DOUBLE (* arg);
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_ORIGINY:
 		grid->origin.y = GTK_VALUE_DOUBLE (* arg);
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_SPACINGX:
 		grid->spacing.x = GTK_VALUE_DOUBLE (* arg);
 		if (grid->spacing.x < 0.01) grid->spacing.x = 0.01;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_SPACINGY:
 		grid->spacing.y = GTK_VALUE_DOUBLE (* arg);
 		if (grid->spacing.y < 0.01) grid->spacing.y = 0.01;
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	case ARG_COLOR:
 		grid->color = GTK_VALUE_INT (* arg);
-		gnome_canvas_item_request_update (item);
+		sp_canvas_item_request_update (item);
 		break;
 	default:
 		break;
@@ -142,7 +145,7 @@ sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 #define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
 
 static void
-sp_grid_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
+sp_grid_hline (SPCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
 {
 	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
 		guint r, g, b, a;
@@ -165,7 +168,7 @@ sp_grid_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
 }
 
 static void
-sp_grid_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
+sp_grid_vline (SPCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
 {
 	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
 		guint r, g, b, a;
@@ -188,14 +191,14 @@ sp_grid_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
 }
 
 static void
-sp_cgrid_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
+sp_cgrid_render (SPCanvasItem * item, SPCanvasBuf * buf)
 {
 	SPCGrid * grid;
 	gdouble sxg, syg, x, y;
 
 	grid = SP_CGRID (item);
 
-	gnome_canvas_buf_ensure_buf (buf);
+	sp_canvas_buf_ensure_buf (buf);
 	buf->is_bg = FALSE;
 
 	sxg = floor ((buf->rect.x0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
@@ -216,7 +219,7 @@ sp_cgrid_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 }
 
 static void
-sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int flags)
+sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
 {
 	SPCGrid * grid;
 	GtkWidget * w;
@@ -225,7 +228,7 @@ sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int
 	w = GTK_WIDGET (item->canvas);
 
 	if (parent_class->update)
-		(* parent_class->update) (item, affine, clip_path, flags);
+		(* parent_class->update) (item, affine, flags);
 
 	art_affine_point (&grid->ow, &grid->origin, affine);
 	art_affine_point (&grid->sw, &grid->spacing, affine);
@@ -242,7 +245,7 @@ sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int
 		if (grid->sw.y < 8.0) grid->sw.y *= 2.0;
 	}
 
-	gnome_canvas_request_redraw (item->canvas,
+	sp_canvas_request_redraw (item->canvas,
 				     -1000000, -1000000,
 				     1000000, 1000000);
 				     
@@ -251,8 +254,8 @@ sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int
 }
 
 static double
-sp_cgrid_point (GnomeCanvasItem *item, double x, double y,
-	       int cx, int cy, GnomeCanvasItem **actual_item)
+sp_cgrid_point (SPCanvasItem *item, double x, double y,
+	       int cx, int cy, SPCanvasItem **actual_item)
 {
 	return 1e18;
 }

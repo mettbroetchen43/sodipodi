@@ -13,13 +13,13 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "helper/sp-canvas.h"
+#include "helper/helper-forward.h"
 #include "forward.h"
 
 /* Item handlers */
 
-void sp_desktop_root_handler (GnomeCanvasItem *item, GdkEvent *event, SPDesktop *desktop);
-void sp_desktop_item_handler (GnomeCanvasItem *item, GdkEvent *event, gpointer data);
+void sp_desktop_root_handler (SPCanvasItem *item, GdkEvent *event, SPDesktop *desktop);
+void sp_desktop_item_handler (SPCanvasItem *item, GdkEvent *event, gpointer data);
 
 /* Default handlers */
 
@@ -35,7 +35,7 @@ gint sp_dt_vruler_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 
 /* Guides */
 
-gint sp_dt_guide_event (GnomeCanvasItem *item, GdkEvent *event, gpointer data);
+gint sp_dt_guide_event (SPCanvasItem *item, GdkEvent *event, gpointer data);
 
 #endif
 

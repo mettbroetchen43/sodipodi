@@ -34,10 +34,10 @@ static void sp_canvas_arena_class_init (SPCanvasArenaClass * klass);
 static void sp_canvas_arena_init (SPCanvasArena * group);
 static void sp_canvas_arena_destroy (GtkObject * object);
 
-static void sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
-static double sp_canvas_arena_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
-static gint sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event);
+static void sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf);
+static double sp_canvas_arena_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item);
+static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
 
 static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
 
@@ -46,7 +46,7 @@ static void sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCa
 static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
 static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca);
 
-static GnomeCanvasItemClass *parent_class;
+static SPCanvasItemClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
 GtkType
@@ -62,7 +62,7 @@ sp_canvas_arena_get_type (void)
 			(GtkObjectInitFunc) sp_canvas_arena_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (GNOME_TYPE_CANVAS_ITEM, &info);
+		type = gtk_type_unique (SP_TYPE_CANVAS_ITEM, &info);
 	}
 	return type;
 }
@@ -71,12 +71,12 @@ static void
 sp_canvas_arena_class_init (SPCanvasArenaClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (GNOME_TYPE_CANVAS_ITEM);
+	parent_class = gtk_type_class (SP_TYPE_CANVAS_ITEM);
 
 	signals[ARENA_EVENT] = gtk_signal_new ("arena_event",
 					       GTK_RUN_LAST,
@@ -143,23 +143,27 @@ sp_canvas_arena_destroy (GtkObject *object)
 }
 
 static void
-sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCanvasArena *arena;
 	guint reset;
 
 	arena = SP_CANVAS_ARENA (item);
 
-	if (((GnomeCanvasItemClass *) parent_class)->update)
-		(* ((GnomeCanvasItemClass *) parent_class)->update) (item, affine, clip_path, flags);
+	if (((SPCanvasItemClass *) parent_class)->update)
+		(* ((SPCanvasItemClass *) parent_class)->update) (item, affine, flags);
 
 	memcpy (arena->gc.affine, affine, 6 * sizeof (double));
 
+#if 0
 	if (flags & GNOME_CANVAS_UPDATE_AFFINE) {
 		reset = NR_ARENA_ITEM_STATE_ALL;
 	} else {
 		reset = NR_ARENA_ITEM_STATE_NONE;
 	}
+#else
+	reset = NR_ARENA_ITEM_STATE_ALL;
+#endif
 
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_ALL, reset);
 
@@ -202,7 +206,7 @@ sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 }
 
 static void
-sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCanvasArena *arena;
 	gint bw, bh, sw, sh;
@@ -213,7 +217,7 @@ sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_RENDER, NR_ARENA_ITEM_STATE_NONE);
 
 	if (buf->is_bg) {
-		gnome_canvas_clear_buffer (buf);
+		sp_canvas_clear_buffer (buf);
 		buf->is_bg = FALSE;
 		buf->is_buf = TRUE;
 	}
@@ -264,7 +268,7 @@ sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 }
 
 static double
-sp_canvas_arena_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
+sp_canvas_arena_point (SPCanvasItem *item, double x, double y, int cx, int cy, SPCanvasItem **actual_item)
 {
 	SPCanvasArena *arena;
 	NRArenaItem *picked;
@@ -286,7 +290,7 @@ sp_canvas_arena_point (GnomeCanvasItem *item, double x, double y, int cx, int cy
 }
 
 static gint
-sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
+sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 {
 	SPCanvasArena *arena;
 	NRArenaItem *new;
@@ -400,13 +404,13 @@ sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *c
 static void
 sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
 {
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (ca));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (ca));
 }
 
 static void
 sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, SPCanvasArena *ca)
 {
-	gnome_canvas_request_redraw (GNOME_CANVAS_ITEM (ca)->canvas, area->x0, area->y0, area->x1, area->y1);
+	sp_canvas_request_redraw (SP_CANVAS_ITEM (ca)->canvas, area->x0, area->y0, area->x1, area->y1);
 }
 
 void

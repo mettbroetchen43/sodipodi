@@ -19,6 +19,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "helper/sp-canvas.h"
 #include "sp-spiral.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -177,7 +178,7 @@ sp_spiral_context_root_handler (SPEventContext * event_context, GdkEvent * event
 			sc->center.y = fp.y;
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &sc->center);
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			ret = TRUE;
@@ -196,7 +197,7 @@ sp_spiral_context_root_handler (SPEventContext * event_context, GdkEvent * event
 			dragging = FALSE;
 			sp_spiral_finish (sc);
 			ret = TRUE;
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 		}
 		break;
 	default:

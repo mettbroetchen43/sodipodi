@@ -1,7 +1,19 @@
-#define NODEPATH_C
+#define __NODEPATH_C__
+
+/*
+ * Path handler in node edit mode
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
+#include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
 #include "helper/sp-ctrlline.h"
@@ -717,13 +729,13 @@ sp_node_ensure_knot (SPPathNode * node, gint which, gboolean show_knot)
 		p.y = side->pos.y;
 
 		sp_knot_set_position (side->knot, &p, 0);
-		gnome_canvas_item_show (side->line);
+		sp_canvas_item_show (side->line);
 
 	} else {
 		if (SP_KNOT_IS_VISIBLE (side->knot)) {
 			sp_knot_hide (side->knot);
 		}
-		gnome_canvas_item_hide (side->line);
+		sp_canvas_item_hide (side->line);
 	}
 }
 
@@ -1633,9 +1645,9 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	gtk_signal_connect (GTK_OBJECT (n->p.knot), "moved",
 			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
 	sp_knot_hide (n->p.knot);
-	n->p.line = gnome_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
+	n->p.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
 					       SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (n->p.line);
+	sp_canvas_item_hide (n->p.line);
 
 	n->n.knot = sp_knot_new (sp->nodepath->desktop);
 	sp_knot_set_position (n->n.knot, npos, 0);
@@ -1661,9 +1673,9 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	gtk_signal_connect (GTK_OBJECT (n->n.knot), "moved",
 			    GTK_SIGNAL_FUNC (node_ctrl_moved), n);
 	sp_knot_hide (n->n.knot);
-	n->n.line = gnome_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
+	n->n.line = sp_canvas_item_new (SP_DT_CONTROLS (n->subpath->nodepath->desktop),
 					       SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (n->n.line);
+	sp_canvas_item_hide (n->n.line);
 
 	sp->nodes = g_slist_prepend (sp->nodes, n);
 

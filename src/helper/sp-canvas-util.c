@@ -1,7 +1,7 @@
 #define __SP_CANVAS_UTILS_C__
 
 /*
- * Helper stuff for GnomeCanvas
+ * Helper stuff for SPCanvas
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -13,23 +13,24 @@
  */
 
 #include <libart_lgpl/art_misc.h>
+#include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_rgb_svp.h>
 #include "sp-canvas-util.h"
 
 void
-gnome_canvas_update_bbox (GnomeCanvasItem *item, int x1, int y1, int x2, int y2)
+sp_canvas_update_bbox (SPCanvasItem *item, int x1, int y1, int x2, int y2)
 {
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 	item->x1 = x1;
 	item->y1 = y1;
 	item->x2 = x2;
 	item->y2 = y2;
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
 
 void
-gnome_canvas_item_reset_bounds (GnomeCanvasItem *item)
+sp_canvas_item_reset_bounds (SPCanvasItem *item)
 {
 	item->x1 = 0.0;
 	item->y1 = 0.0;
@@ -38,7 +39,7 @@ gnome_canvas_item_reset_bounds (GnomeCanvasItem *item)
 }
 
 void
-gnome_canvas_buf_ensure_buf (GnomeCanvasBuf *buf)
+sp_canvas_buf_ensure_buf (SPCanvasBuf *buf)
 {
 	if (!buf->is_buf) {
 		unsigned int r, g, b;
@@ -59,35 +60,8 @@ gnome_canvas_buf_ensure_buf (GnomeCanvasBuf *buf)
 	}
 }
 
-/*
- * Grabs canvas item, but unlike the original method does not pass
- * illegal key event mask to canvas, who passes it ahead to Gdk, but
- * instead sets event mask in canvas struct by hand
- */
-
-int
-sp_canvas_item_grab (GnomeCanvasItem *item, unsigned int event_mask, GdkCursor *cursor, guint32 etime)
-{
-	int ret;
-
-	g_return_val_if_fail (item != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_CANVAS_ITEM (item), -1);
-
-	ret = gnome_canvas_item_grab (item,
-				      event_mask & (~(GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK)),
-				      cursor,
-				      etime);
-			
-	/* fixme: Top hack (Lauris) */
-	/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
-	/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
-	item->canvas->grabbed_event_mask = event_mask;
-
-	return ret;
-}
-
 void
-gnome_canvas_clear_buffer (GnomeCanvasBuf * buf)
+sp_canvas_clear_buffer (SPCanvasBuf * buf)
 {
 	int x, y, width, height;
 	guchar * ptr, r, g, b;
@@ -110,13 +84,13 @@ gnome_canvas_clear_buffer (GnomeCanvasBuf * buf)
 }
 
 void
-gnome_canvas_render_svp_translated (GnomeCanvasBuf * buf, ArtSVP * svp,
+sp_canvas_render_svp_translated (SPCanvasBuf * buf, ArtSVP * svp,
 	guint32 rgba, gint x, gint y)
 {
 	guint32 fg_color, bg_color;
 	int alpha;
 
-	gnome_canvas_buf_ensure_buf (buf);
+	sp_canvas_buf_ensure_buf (buf);
 
 	if (buf->is_bg) {
 		bg_color = buf->bg_color;
@@ -164,7 +138,7 @@ gnome_canvas_render_svp_translated (GnomeCanvasBuf * buf, ArtSVP * svp,
 	}
 }
 
-void gnome_canvas_item_i2p_affine (GnomeCanvasItem * item, double affine[])
+void sp_canvas_item_i2p_affine (SPCanvasItem * item, double affine[])
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (affine != NULL);
@@ -182,7 +156,7 @@ void gnome_canvas_item_i2p_affine (GnomeCanvasItem * item, double affine[])
 	affine[5] = item->xform[5];
 }
 
-void gnome_canvas_item_i2i_affine (GnomeCanvasItem * from, GnomeCanvasItem * to, double affine[])
+void sp_canvas_item_i2i_affine (SPCanvasItem * from, SPCanvasItem * to, double affine[])
 {
 	double f2w[6], t2w[6], w2t[6];
 
@@ -190,55 +164,50 @@ void gnome_canvas_item_i2i_affine (GnomeCanvasItem * from, GnomeCanvasItem * to,
 	g_return_if_fail (to != NULL);
 	g_return_if_fail (affine != NULL);
 
-	gnome_canvas_item_i2w_affine (from, f2w);
-	gnome_canvas_item_i2w_affine (to, t2w);
+	sp_canvas_item_i2w_affine (from, f2w);
+	sp_canvas_item_i2w_affine (to, t2w);
 	art_affine_invert (w2t, t2w);
 
 	art_affine_multiply (affine, f2w, w2t);
 }
 
-void gnome_canvas_item_set_i2w_affine (GnomeCanvasItem * item, double i2w[])
+void sp_canvas_item_set_i2w_affine (SPCanvasItem * item, double i2w[])
 {
 	double p2w[6],w2p[6],i2p[6];
 	
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (i2w != NULL);
 
-	gnome_canvas_item_i2w_affine (item->parent, p2w);
+	sp_canvas_item_i2w_affine (item->parent, p2w);
 	art_affine_invert (w2p, p2w);
 	art_affine_multiply (i2p, i2w, w2p);
-	gnome_canvas_item_affine_absolute (item, i2p);
+	sp_canvas_item_affine_absolute (item, i2p);
 }
 
-gint gnome_canvas_item_order (GnomeCanvasItem * item)
-{
-	return g_list_index (GNOME_CANVAS_GROUP (item->parent)->items, item);
-}
-
-void gnome_canvas_item_move_to_z (GnomeCanvasItem * item, gint z)
+void sp_canvas_item_move_to_z (SPCanvasItem * item, gint z)
 {
 	gint current_z;
 
 	g_assert (item != NULL);
 
-	current_z = gnome_canvas_item_order (item);
+	current_z = sp_canvas_item_order (item);
 
 	if (z == current_z)
 		return;
 
 	if (z > current_z)
-		gnome_canvas_item_raise (item, z - current_z);
+		sp_canvas_item_raise (item, z - current_z);
 
-	gnome_canvas_item_lower (item, current_z - z);
+	sp_canvas_item_lower (item, current_z - z);
 }
 
 gint
-gnome_canvas_item_compare_z (GnomeCanvasItem * a, GnomeCanvasItem * b)
+sp_canvas_item_compare_z (SPCanvasItem * a, SPCanvasItem * b)
 {
 	gint o_a, o_b;
 
-	o_a = gnome_canvas_item_order (a);
-	o_b = gnome_canvas_item_order (b);
+	o_a = sp_canvas_item_order (a);
+	o_b = sp_canvas_item_order (b);
 
 	if (a > b) return -1;
 	if (a < b) return 1;

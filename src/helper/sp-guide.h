@@ -1,5 +1,5 @@
-#ifndef SODIPODI_GUIDELINE_H
-#define SODIPODI_GUIDELINE_H
+#ifndef __SODIPODI_GUIDELINE_H__
+#define __SODIPODI_GUIDELINE_H__
 
 /*
  * SPGuideLine
@@ -30,7 +30,7 @@ typedef struct _SPGuideLine SPGuideLine;
 typedef struct _SPGuideLineClass SPGuideLineClass;
 
 struct _SPGuideLine {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	SPGuideLineOrientationType orientation;
 	guint32 color;
@@ -41,7 +41,7 @@ struct _SPGuideLine {
 };
 
 struct _SPGuideLineClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 };
 
 

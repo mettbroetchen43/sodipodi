@@ -15,6 +15,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <libart_lgpl/art_affine.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade.h>

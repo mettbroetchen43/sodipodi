@@ -18,6 +18,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-url.h>
+#include "helper/sp-canvas.h"
 #include "dialogs/object-attributes.h"
 #include "sp-anchor.h"
 
@@ -219,7 +220,7 @@ sp_anchor_event (SPItem *item, SPEvent *event)
 		if (SP_IS_SVG_VIEW (event->data)) {
 			svgview = event->data;
 			cursor = gdk_cursor_new (GDK_HAND2);
-			gdk_window_set_cursor (GTK_WIDGET (GNOME_CANVAS_ITEM (svgview->drawing)->canvas)->window, cursor);
+			gdk_window_set_cursor (GTK_WIDGET (SP_CANVAS_ITEM (svgview->drawing)->canvas)->window, cursor);
 			gdk_cursor_destroy (cursor);
 		}
 		break;
@@ -227,7 +228,7 @@ sp_anchor_event (SPItem *item, SPEvent *event)
 		/* fixme: */
 		if (SP_IS_SVG_VIEW (event->data)) {
 			svgview = event->data;
-			gdk_window_set_cursor (GTK_WIDGET (GNOME_CANVAS_ITEM (svgview->drawing)->canvas)->window, NULL);
+			gdk_window_set_cursor (GTK_WIDGET (SP_CANVAS_ITEM (svgview->drawing)->canvas)->window, NULL);
 		}
 		break;
 	default:

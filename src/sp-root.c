@@ -13,6 +13,7 @@
  */
 
 #include <string.h>
+#include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
 #include "document.h"

@@ -1,6 +1,19 @@
-#define SP_DESKTOP_SNAP_C
+#define __SP_DESKTOP_SNAP_C__
+
+/*
+ * Various snapping methods
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
+#include <libart_lgpl/art_affine.h>
 #include "sp-guide.h"
 #include "sp-namedview.h"
 #include "desktop-snap.h"

@@ -10,7 +10,7 @@
  *
  */
 
-#include "helper/sp-canvas.h"
+#include "helper/helper-forward.h"
 #include "sp-object.h"
 
 typedef enum {
@@ -39,9 +39,9 @@ struct _SPGuideClass {
 
 GtkType sp_guide_get_type (void);
 
-void sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler);
-void sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas);
-void sp_guide_sensitize (SPGuide * guide, GnomeCanvas * canvas, gboolean sensitive);
+void sp_guide_show (SPGuide * guide, SPCanvasGroup * group, gpointer handler);
+void sp_guide_hide (SPGuide * guide, SPCanvas * canvas);
+void sp_guide_sensitize (SPGuide * guide, SPCanvas * canvas, gboolean sensitive);
 
 void sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y);
 void sp_guide_set (SPGuide * guide, gdouble x, gdouble y);

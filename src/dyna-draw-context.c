@@ -222,7 +222,7 @@ sp_dyna_draw_context_setup (SPEventContext *ec)
 	ddc->cal2 = sp_curve_new_sized (32);
 
 	/* style should be changed when dc->use_calligraphc is touched */  
-	ddc->currentshape = gnome_canvas_item_new (SP_DT_SKETCH (ec->desktop), SP_TYPE_CANVAS_BPATH, NULL);
+	ddc->currentshape = sp_canvas_item_new (SP_DT_SKETCH (ec->desktop), SP_TYPE_CANVAS_BPATH, NULL);
 	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (ddc->currentshape), DDC_RED_RGBA, ART_WIND_RULE_ODDEVEN);
 	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* fixme: Cannot we cascade it to root more clearly? */
@@ -458,20 +458,20 @@ sp_dyna_draw_timeout_handler (gpointer data)
 {
   SPDynaDrawContext *dc;
   SPDesktop *desktop;
-  GnomeCanvas *canvas;
+  SPCanvas *canvas;
   gint x, y;
   ArtPoint p;
   NRPointF fp;
 
   dc = SP_DYNA_DRAW_CONTEXT (data);
   desktop = SP_EVENT_CONTEXT(dc)->desktop;
-  canvas = GNOME_CANVAS (SP_DT_CANVAS (desktop));
+  canvas = SP_CANVAS (SP_DT_CANVAS (desktop));
 
   dc->dragging = TRUE;
   dc->dynahand = TRUE;
   
   gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
-  gnome_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
+  sp_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
   sp_desktop_w2d_xy_point (desktop, &fp, p.x, p.y);
   p.x = fp.x;
   p.y = fp.y;
@@ -526,12 +526,12 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 			dc->npoints = 0;
          
 			if (dc->use_timeout) {
-				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+				sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 							GDK_BUTTON_RELEASE_MASK |
 							GDK_BUTTON_PRESS_MASK, NULL,
 							event->button.time);
 			} else {
-				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+				sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 							GDK_BUTTON_RELEASE_MASK |
 							GDK_POINTER_MOTION_MASK |
 							GDK_BUTTON_PRESS_MASK, NULL,
@@ -610,7 +610,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 				
 			}
 
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		}
 		break;
@@ -801,7 +801,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
 	else
 	{
 		SPCurve *curve;
-		GnomeCanvasItem *cbp;
+		SPCanvasItem *cbp;
 		/* Fit and draw and copy last point */
 #ifdef DYNA_DRAW_VERBOSE
 		g_print ("[%d]Yup\n", dc->npoints);
@@ -809,7 +809,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
 		g_assert (!sp_curve_empty (dc->currentcurve));
 		concat_current_line (dc);
 
-		cbp = gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CANVAS_BPATH, NULL);
+		cbp = sp_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CANVAS_BPATH, NULL);
 		curve = sp_curve_copy (dc->currentcurve);
 		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 		sp_curve_unref (curve);
@@ -928,11 +928,11 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 		g_print ("[%d]Yup\n", dc->npoints);
 #endif
 		if (!release) {
-			GnomeCanvasItem *cbp;
+			SPCanvasItem *cbp;
 
 			g_assert (!sp_curve_empty (dc->currentcurve));
 
-			cbp = gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CANVAS_BPATH, NULL);
+			cbp = sp_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), SP_TYPE_CANVAS_BPATH, NULL);
 			curve = sp_curve_copy (dc->currentcurve);
 			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 			sp_curve_unref (curve);

@@ -22,14 +22,14 @@ typedef struct _SPSVGViewClass SPSVGViewClass;
 #define SP_IS_SVG_VIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SVG_VIEW))
 #define SP_IS_SVG_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SVG_VIEW))
 
-#include "helper/sp-canvas.h"
+#include "helper/helper-forward.h"
 #include "view.h"
 
 struct _SPSVGView {
 	SPView view;
 
-	GnomeCanvasGroup *parent;
-	GnomeCanvasItem *drawing;
+	SPCanvasGroup *parent;
+	SPCanvasItem *drawing;
 
 	/* Horizontal and vertical scale */
 	gdouble hscale, vscale;
@@ -44,7 +44,7 @@ struct _SPSVGViewClass {
 
 GtkType sp_svg_view_get_type (void);
 
-SPView *sp_svg_view_new (GnomeCanvasGroup *parent);
+SPView *sp_svg_view_new (SPCanvasGroup *parent);
 
 void sp_svg_view_set_scale (SPSVGView *view, gdouble hscale, gdouble vscale);
 void sp_svg_view_set_rescale (SPSVGView *view, gboolean rescale, gboolean keepaspect, gdouble width, gdouble height);

@@ -20,6 +20,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
 #include "sp-cursor.h"
 #include "desktop.h"
@@ -169,9 +170,9 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			s.x = event->button.x;
 			s.y = event->button.y;
 			panning = TRUE;
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
+			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
+					     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+					     NULL, event->button.time);
 
 			ret = TRUE;
 			break;
@@ -192,7 +193,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 2) {
 			panning = FALSE;
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		}
 		break;

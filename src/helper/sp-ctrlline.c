@@ -22,6 +22,7 @@
 #include "sp-canvas-util.h"
 #include "sp-ctrlline.h"
 
+#include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath.h>
@@ -30,18 +31,26 @@
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_rect_svp.h>
 
+struct _SPCtrlLine {
+	SPCanvasItem item;
+
+	guint32 rgba;
+	ArtPoint s, e;
+	ArtSVP *svp;
+};
+
+struct _SPCtrlLineClass {
+	SPCanvasItemClass parent_class;
+};
+
 static void sp_ctrlline_class_init (SPCtrlLineClass *klass);
 static void sp_ctrlline_init (SPCtrlLine *ctrlline);
 static void sp_ctrlline_destroy (GtkObject *object);
 
-static void sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_ctrlline_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+static void sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-#if 0
-static double sp_ctrlline_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
-#endif
-
-static GnomeCanvasItemClass *parent_class;
+static SPCanvasItemClass *parent_class;
 
 GtkType
 sp_ctrlline_get_type (void)
@@ -57,7 +66,7 @@ sp_ctrlline_get_type (void)
 			(GtkObjectInitFunc) sp_ctrlline_init,
 			NULL, NULL, NULL
 		};
-		type = gtk_type_unique (GNOME_TYPE_CANVAS_ITEM, &info);
+		type = gtk_type_unique (SP_TYPE_CANVAS_ITEM, &info);
 	}
 	return type;
 }
@@ -66,20 +75,17 @@ static void
 sp_ctrlline_class_init (SPCtrlLineClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
+	parent_class = gtk_type_class (SP_TYPE_CANVAS_ITEM);
 
 	object_class->destroy = sp_ctrlline_destroy;
 
 	item_class->update = sp_ctrlline_update;
 	item_class->render = sp_ctrlline_render;
-#if 0
-	item_class->point = sp_ctrlline_point;
-#endif
 }
 
 static void
@@ -108,14 +114,14 @@ sp_ctrlline_destroy (GtkObject *object)
 }
 
 static void
-sp_ctrlline_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCtrlLine *ctrlline;
 
 	ctrlline = SP_CTRLLINE (item);
 
 	if (ctrlline->svp) {
-		gnome_canvas_buf_ensure_buf (buf);
+		sp_canvas_buf_ensure_buf (buf);
 		art_rgb_svp_alpha (ctrlline->svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, ctrlline->rgba,
 				   buf->buf, buf->buf_rowstride,
 				   NULL);
@@ -123,7 +129,7 @@ sp_ctrlline_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 }
 
 static void
-sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCtrlLine *cl;
 	ArtPoint p;
@@ -134,12 +140,12 @@ sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, in
 
 	cl = SP_CTRLLINE (item);
 
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
 	if (parent_class->update)
-		(* parent_class->update) (item, affine, clip_path, flags);
+		(* parent_class->update) (item, affine, flags);
 
-	gnome_canvas_item_reset_bounds (item);
+	sp_canvas_item_reset_bounds (item);
 
 	p.x = cl->s.x;
 	p.y = cl->s.y;
@@ -170,16 +176,8 @@ sp_ctrlline_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, in
 	item->x2 = ibox.x1;
 	item->y2 = ibox.y1;
 
-	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
-
-#if 0
-static double
-sp_ctrlline_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
-{
-	return 1000.0;
-}
-#endif
 
 void
 sp_ctrlline_set_rgba32 (SPCtrlLine *cl, guint32 rgba)
@@ -188,10 +186,10 @@ sp_ctrlline_set_rgba32 (SPCtrlLine *cl, guint32 rgba)
 	g_return_if_fail (SP_IS_CTRLLINE (cl));
 
 	if (rgba != cl->rgba) {
-		GnomeCanvasItem *item;
+		SPCanvasItem *item;
 		cl->rgba = rgba;
-		item = GNOME_CANVAS_ITEM (cl);
-		gnome_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
+		item = SP_CANVAS_ITEM (cl);
+		sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 	}
 }
 
@@ -209,6 +207,6 @@ sp_ctrlline_set_coords (SPCtrlLine *cl, gdouble x0, gdouble y0, gdouble x1, gdou
 		cl->s.y = y0;
 		cl->e.x = x1;
 		cl->e.y = y1;
-		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cl));
+		sp_canvas_item_request_update (SP_CANVAS_ITEM (cl));
 	}
 }

@@ -1,5 +1,5 @@
-#ifndef __GNOME_CANVAS_ACETATE_H__
-#define __GNOME_CANVAS_ACETATE_H__
+#ifndef __SP_CANVAS_ACETATE_H__
+#define __SP_CANVAS_ACETATE_H__
 
 /*
  * Infinite invisible canvas item
@@ -19,26 +19,26 @@
 
 BEGIN_GNOME_DECLS
 
-#define GNOME_TYPE_CANVAS_ACETATE (gnome_canvas_acetate_get_type ())
-#define GNOME_CANVAS_ACETATE(obj) (GTK_CHECK_CAST ((obj), GNOME_TYPE_CANVAS_ACETATE, GnomeCanvasAcetate))
-#define GNOME_CANVAS_ACETATE_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_CANVAS_ACETATE, GnomeCanvasAcetateClass))
+#define GNOME_TYPE_CANVAS_ACETATE (sp_canvas_acetate_get_type ())
+#define SP_CANVAS_ACETATE(obj) (GTK_CHECK_CAST ((obj), GNOME_TYPE_CANVAS_ACETATE, SPCanvasAcetate))
+#define SP_CANVAS_ACETATE_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), GNOME_TYPE_CANVAS_ACETATE, SPCanvasAcetateClass))
 #define GNOME_IS_CANVAS_ACETATE(obj) (GTK_CHECK_TYPE ((obj), GNOME_TYPE_CANVAS_ACETATE))
 #define GNOME_IS_CANVAS_ACETATE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), GNOME_TYPE_CANVAS_ACETATE))
 
-typedef struct _GnomeCanvasAcetate GnomeCanvasAcetate;
-typedef struct _GnomeCanvasAcetateClass GnomeCanvasAcetateClass;
+typedef struct _SPCanvasAcetate SPCanvasAcetate;
+typedef struct _SPCanvasAcetateClass SPCanvasAcetateClass;
 
 #include "sp-canvas.h"
 
-struct _GnomeCanvasAcetate {
-	GnomeCanvasItem item;
+struct _SPCanvasAcetate {
+	SPCanvasItem item;
 };
 
-struct _GnomeCanvasAcetateClass {
-	GnomeCanvasItemClass parent_class;
+struct _SPCanvasAcetateClass {
+	SPCanvasItemClass parent_class;
 };
 
-GtkType gnome_canvas_acetate_get_type (void);
+GtkType sp_canvas_acetate_get_type (void);
 
 END_GNOME_DECLS
 

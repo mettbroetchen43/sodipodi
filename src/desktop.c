@@ -18,6 +18,7 @@
 
 #include <math.h>
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-preferences.h>
@@ -68,7 +69,7 @@ static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble 
 
 /* Constructor */
 
-static SPView *sp_desktop_new (SPNamedView *nv, GnomeCanvas *canvas);
+static SPView *sp_desktop_new (SPNamedView *nv, SPCanvas *canvas);
 
 static void sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop);
 static void sp_desktop_selection_modified (SPSelection *selection, guint flags, SPDesktop *desktop);
@@ -205,7 +206,7 @@ sp_desktop_request_redraw (SPView *view)
 	dt = SP_DESKTOP (view);
 
 	if (dt->main) {
-		gtk_widget_queue_draw (GTK_WIDGET (GNOME_CANVAS_ITEM (dt->main)->canvas));
+		gtk_widget_queue_draw (GTK_WIDGET (SP_CANVAS_ITEM (dt->main)->canvas));
 	}
 }
 
@@ -218,7 +219,7 @@ sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdoub
 
 	desktop->doc2dt[5] = height;
 
-	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
 
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, width, height);
 }
@@ -255,10 +256,10 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPDeskt
 /* Constructor */
 
 static SPView *
-sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
+sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 {
 	SPDesktop *desktop;
-	GnomeCanvasGroup *root, *page;
+	SPCanvasGroup *root, *page;
 	NRArenaItem *ai;
 	gdouble dw, dh;
 	SPDocument *document;
@@ -279,28 +280,28 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 	/* Setup Canvas */
 	gtk_object_set_data (GTK_OBJECT (canvas), "SPDesktop", desktop);
 
-	root = gnome_canvas_root (canvas);
+	root = sp_canvas_root (canvas);
 
-	desktop->acetate = gnome_canvas_item_new (root, GNOME_TYPE_CANVAS_ACETATE, NULL);
+	desktop->acetate = sp_canvas_item_new (root, GNOME_TYPE_CANVAS_ACETATE, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->acetate), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	/* Setup adminstrative layers */
-	desktop->main = (GnomeCanvasGroup *) gnome_canvas_item_new (root, GNOME_TYPE_CANVAS_GROUP, NULL);
+	desktop->main = (SPCanvasGroup *) sp_canvas_item_new (root, SP_TYPE_CANVAS_GROUP, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	/* fixme: */
-	page = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main, GNOME_TYPE_CANVAS_GROUP, NULL);
+	page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
-	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
+	desktop->drawing = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), desktop);
 
-	desktop->grid = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
-		GNOME_TYPE_CANVAS_GROUP, NULL);
-	desktop->guides = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
-		GNOME_TYPE_CANVAS_GROUP, NULL);
-	desktop->sketch = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
-		GNOME_TYPE_CANVAS_GROUP, NULL);
-	desktop->controls = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
-		GNOME_TYPE_CANVAS_GROUP, NULL);
+	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
+		SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->guides = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
+		SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->sketch = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
+		SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->controls = (SPCanvasGroup *) sp_canvas_item_new (desktop->main,
+		SP_TYPE_CANVAS_GROUP, NULL);
 
 	desktop->selection = sp_selection_new (desktop);
 
@@ -316,22 +317,22 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
 
-	desktop->page = gnome_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL);
+	desktop->page = sp_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL);
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, sp_document_width (document), sp_document_height (document));
 	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 
 	/* Connect event for page resize */
 	desktop->doc2dt[5] = sp_document_height (document);
-	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
 
 	/* Fixme: Setup initial zooming */
 
 	art_affine_scale (desktop->d2w, 1.0, -1.0);
 	desktop->d2w[5] = dw;
 	art_affine_invert (desktop->w2d, desktop->d2w);
-	gnome_canvas_item_affine_absolute ((GnomeCanvasItem *) desktop->main, desktop->d2w);
+	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
 
-	gnome_canvas_set_scroll_region (canvas, -SP_DESKTOP_SCROLL_LIMIT, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
+	sp_canvas_set_scroll_region (canvas, -SP_DESKTOP_SCROLL_LIMIT, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
 
 	gtk_signal_connect (GTK_OBJECT (canvas), "size-allocate", GTK_SIGNAL_FUNC (sp_desktop_size_allocate), desktop);
 	gtk_signal_connect (GTK_OBJECT (desktop->selection), "modified", GTK_SIGNAL_FUNC (sp_desktop_selection_modified), desktop);
@@ -477,8 +478,8 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   art_affine_point (&wc0, &dc0, desktop->d2w);
   art_affine_point (&wc1, &dc1, desktop->d2w);
   // enlarge to fit desktop / world coordinates 
-  gnome_canvas_window_to_world (desktop->owner->canvas, 0.0, 0.0, &p0.x, &p0.y);
-  gnome_canvas_window_to_world (desktop->owner->canvas, cw, ch, &p1.x, &p1.y);
+  sp_canvas_window_to_world (desktop->owner->canvas, 0.0, 0.0, &p0.x, &p0.y);
+  sp_canvas_window_to_world (desktop->owner->canvas, cw, ch, &p1.x, &p1.y);
   if (p0.x < wc0.x) wc0.x = p0.x;
   if (p0.y < wc0.y) wc0.y = p0.y;
   if (p1.x > wc1.x) wc1.x = p1.x;
@@ -575,8 +576,8 @@ sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
-	gnome_canvas_get_scroll_offsets (desktop->owner->canvas, &x, &y);
-	gnome_canvas_scroll_to (desktop->owner->canvas, x - dx, y - dy);
+	sp_canvas_get_scroll_offsets (desktop->owner->canvas, &x, &y);
+	sp_canvas_scroll_to (desktop->owner->canvas, x - dx, y - dy);
 
 	//	sp_desktop_update_rulers (NULL, desktop);
 }
@@ -596,8 +597,8 @@ sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area)
 	cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width+1;
 	ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height+1;
 
-	gnome_canvas_window_to_world (desktop->owner->canvas, 0.0, 0.0, &p0.x, &p0.y);
-	gnome_canvas_window_to_world (desktop->owner->canvas, cw, ch, &p1.x, &p1.y);
+	sp_canvas_window_to_world (desktop->owner->canvas, 0.0, 0.0, &p0.x, &p0.y);
+	sp_canvas_window_to_world (desktop->owner->canvas, cw, ch, &p1.x, &p1.y);
 
 	art_affine_point (&p0, &p0, desktop->w2d);
 	art_affine_point (&p1, &p1, desktop->w2d);
@@ -653,7 +654,7 @@ sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1,
 	desktop->d2w[5] = p.y * scale + ch / 2;
 	art_affine_invert (desktop->w2d, desktop->d2w);
 
-	gnome_canvas_item_affine_absolute ((GnomeCanvasItem *) desktop->main, desktop->d2w);
+	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
      	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
        	sp_desktop_zoom_update (desktop);
 	sp_dt_update_snap_distances (desktop);
@@ -681,7 +682,7 @@ sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble
         desktop->d2w[5] = -cy * desktop->d2w[3];
         art_affine_invert (desktop->w2d, desktop->d2w);
 
-	gnome_canvas_item_affine_absolute ((GnomeCanvasItem *) desktop->main, desktop->d2w);
+	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
 	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
 	sp_desktop_zoom_update (desktop);
 	sp_dt_update_snap_distances (desktop);
@@ -702,7 +703,7 @@ sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble
 	desktop->d2w[5] = -cy * desktop->d2w[3];
 	art_affine_invert (desktop->w2d, desktop->d2w);
 	
-	gnome_canvas_item_affine_absolute ((GnomeCanvasItem *) desktop->main, desktop->d2w);
+	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
       	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
 	sp_desktop_zoom_update (desktop);
 	sp_dt_update_snap_distances (desktop);
@@ -738,7 +739,7 @@ sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
     
     cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width + 1;
     ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height + 1;
-    gnome_canvas_scroll_to (desktop->owner->canvas, x - cw / 2, y - ch / 2);
+    sp_canvas_scroll_to (desktop->owner->canvas, x - cw / 2, y - ch / 2);
 
     sp_desktop_widget_update_rulers (desktop->owner);
     sp_desktop_update_scrollbars (SODIPODI, SP_DT_SELECTION (desktop));
@@ -887,9 +888,9 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 #endif
-	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
+	desktop->canvas = SP_CANVAS (sp_canvas_new_aa ());
 #if 0
-	gnome_canvas_set_dither (GNOME_CANVAS (desktop->canvas), GDK_RGB_DITHER_MAX);
+	sp_canvas_set_dither (SP_CANVAS (desktop->canvas), GDK_RGB_DITHER_MAX);
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
 #endif
@@ -1276,8 +1277,8 @@ sp_desktop_widget_update_rulers (SPDesktopWidget *dtw)
 {
 	if (dtw->desktop) {
 		double x0, y0, x1, y1, s, e;
-		gnome_canvas_window_to_world (dtw->canvas, 0.0, 0.0, &x0, &y0);
-		gnome_canvas_window_to_world (dtw->canvas,
+		sp_canvas_window_to_world (dtw->canvas, 0.0, 0.0, &x0, &y0);
+		sp_canvas_window_to_world (dtw->canvas,
 					      ((GtkWidget *) dtw->canvas)->allocation.width,
 					      ((GtkWidget *) dtw->canvas)->allocation.height,
 					      &x1, &y1);
@@ -1314,7 +1315,7 @@ sp_desktop_widget_set_focus (GtkWidget *widget, GdkEvent *event, SPDesktopWidget
 	/* give focus to canvas widget */
 	gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
 #if 0
-	gnome_canvas_item_grab_focus ((GnomeCanvasItem *) dtw->desktop->main); 
+	sp_canvas_item_grab_focus ((SPCanvasItem *) dtw->desktop->main); 
 #endif
 
 	return FALSE;

@@ -1,7 +1,19 @@
-#ifndef SP_DESKTOP_HANDLES_H
-#define SP_DESKTOP_HANDLES_H
+#ifndef __SP_DESKTOP_HANDLES_H__
+#define __SP_DESKTOP_HANDLES_H__
 
-#include "helper/sp-canvas.h"
+/*
+ * Frontends
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include "helper/helper-forward.h"
 #include "forward.h"
 
 #define SP_DT_IS_EDITABLE(d) (TRUE)
@@ -21,13 +33,13 @@
 SPEventContext * sp_desktop_event_context (SPDesktop * desktop);
 SPSelection * sp_desktop_selection (SPDesktop * desktop);
 SPDocument * sp_desktop_document (SPDesktop * desktop);
-GnomeCanvas * sp_desktop_canvas (SPDesktop * desktop);
-GnomeCanvasItem * sp_desktop_acetate (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_main (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_grid (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_guides (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_drawing (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_sketch (SPDesktop * desktop);
-GnomeCanvasGroup * sp_desktop_controls (SPDesktop * desktop);
+SPCanvas * sp_desktop_canvas (SPDesktop * desktop);
+SPCanvasItem * sp_desktop_acetate (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_main (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_grid (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_guides (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_drawing (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_sketch (SPDesktop * desktop);
+SPCanvasGroup * sp_desktop_controls (SPDesktop * desktop);
 
 #endif

@@ -1,6 +1,22 @@
-#define SP_ARC_CONTEXT_C
+#define __SP_ARC_CONTEXT_C__
+
+/*
+ * Ellipse drawing context
+ *
+ * Authors:
+ *   Mitsuru Oka
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Mitsuru Oka
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
+#include "helper/sp-canvas.h"
 #include "sodipodi.h"
 #include "sp-ellipse.h"
 #include "document.h"
@@ -144,7 +160,7 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			ac->center.y = fp.y;
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &ac->center);
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			ret = TRUE;
@@ -164,7 +180,7 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			sp_arc_finish (ac);
 			ret = TRUE;
 		}
-		gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+		sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 		break;
 	default:
 		break;

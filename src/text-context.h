@@ -40,7 +40,7 @@ struct _SPTextContext {
 	guchar unimode;
 	guchar unipos;
 
-	GnomeCanvasItem *cursor;
+	SPCanvasItem *cursor;
 	gint timeout;
 	guint show : 1;
 	guint phase : 1;

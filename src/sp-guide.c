@@ -153,11 +153,11 @@ sp_guide_read_attr (SPObject * object, const gchar * key)
 }
 
 void
-sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler)
+sp_guide_show (SPGuide * guide, SPCanvasGroup * group, gpointer handler)
 {
-	GnomeCanvasItem * item;
+	SPCanvasItem * item;
 
-	item = gnome_canvas_item_new (group, SP_TYPE_GUIDELINE,
+	item = sp_canvas_item_new (group, SP_TYPE_GUIDELINE,
 				      "orientation", guide->orientation,
 				      "color", guide->color,
 				      NULL);
@@ -171,17 +171,17 @@ sp_guide_show (SPGuide * guide, GnomeCanvasGroup * group, gpointer handler)
 }
 
 void
-sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas)
+sp_guide_hide (SPGuide * guide, SPCanvas * canvas)
 {
 	GSList * l;
 
 	g_assert (guide != NULL);
 	g_assert (SP_IS_GUIDE (guide));
 	g_assert (canvas != NULL);
-	g_assert (GNOME_IS_CANVAS (canvas));
+	g_assert (SP_IS_CANVAS (canvas));
 
 	for (l = guide->views; l != NULL; l = l->next) {
-		if (canvas == GNOME_CANVAS_ITEM (l->data)->canvas) {
+		if (canvas == SP_CANVAS_ITEM (l->data)->canvas) {
 			gtk_object_destroy (GTK_OBJECT (l->data));
 			guide->views = g_slist_remove (guide->views, l->data);
 			return;
@@ -191,17 +191,17 @@ sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas)
 }
 
 void
-sp_guide_sensitize (SPGuide * guide, GnomeCanvas * canvas, gboolean sensitive)
+sp_guide_sensitize (SPGuide * guide, SPCanvas * canvas, gboolean sensitive)
 {
 	GSList * l;
 
 	g_assert (guide != NULL);
 	g_assert (SP_IS_GUIDE (guide));
 	g_assert (canvas != NULL);
-	g_assert (GNOME_IS_CANVAS (canvas));
+	g_assert (SP_IS_CANVAS (canvas));
 
 	for (l = guide->views; l != NULL; l = l->next) {
-		if (canvas == GNOME_CANVAS_ITEM (l->data)->canvas) {
+		if (canvas == SP_CANVAS_ITEM (l->data)->canvas) {
 			sp_guideline_sensitize (SP_GUIDELINE (l->data), sensitive);
 			return;
 		}

@@ -54,7 +54,7 @@ struct _SPDrawAnchor {
 	guint start : 1;
 	guint active : 1;
 	ArtPoint dp, wp;
-	GnomeCanvasItem *ctrl;
+	SPCanvasItem *ctrl;
 };
 
 static void sp_draw_context_class_init (SPDrawContextClass *klass);
@@ -150,7 +150,7 @@ sp_draw_context_finalize (GtkObject *object)
 
 	dc = SP_DRAW_CONTEXT (object);
 
-	if (dc->grab) gnome_canvas_item_ungrab (dc->grab, gdk_time_get ());
+	if (dc->grab) sp_canvas_item_ungrab (dc->grab, gdk_time_get ());
 
 	if (dc->selection) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
@@ -207,7 +207,7 @@ sp_draw_context_finish (SPEventContext *ec)
 	dc = SP_DRAW_CONTEXT (ec);
 
 	if (dc->grab) {
-		gnome_canvas_item_ungrab (dc->grab, gdk_time_get ());
+		sp_canvas_item_ungrab (dc->grab, gdk_time_get ());
 	}
 
 	if (dc->selection) {
@@ -609,7 +609,7 @@ fit_and_split (SPDrawContext * dc)
 		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
 	} else {
 		SPCurve *curve;
-		GnomeCanvasItem *cshape;
+		SPCanvasItem *cshape;
 		/* Fit and draw and copy last point */
 		g_assert (!sp_curve_empty (dc->red_curve));
 		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
@@ -734,7 +734,7 @@ sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble d
 	sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT_DESKTOP (dc), &fp, dx, dy);
 	a->wp.x = fp.x;
 	a->wp.y = fp.y;
-	a->ctrl = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
+	a->ctrl = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
 					 "size", 4.0,
 					 "filled", 0,
 					 "fill_color", 0xff00007f,
@@ -764,14 +764,14 @@ sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean acti
 {
 	if (activate && (fabs (wx - anchor->wp.x) <= A_SNAP) && (fabs (wy - anchor->wp.y) <= A_SNAP)) {
 		if (!anchor->active) {
-			gnome_canvas_item_set (anchor->ctrl, "filled", TRUE, NULL);
+			sp_canvas_item_set ((GtkObject *) anchor->ctrl, "filled", TRUE, NULL);
 			anchor->active = TRUE;
 		}
 		return anchor;
 	}
 
 	if (anchor->active) {
-		gnome_canvas_item_set (anchor->ctrl, "filled", FALSE, NULL);
+		sp_canvas_item_set ((GtkObject *) anchor->ctrl, "filled", FALSE, NULL);
 		anchor->active = FALSE;
 	}
 	return NULL;
@@ -867,8 +867,8 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			NRPointF fp;
 #if 0
 			/* Grab mouse, so release will not pass unnoticed */
-			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
-			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+			dc->grab = SP_CANVAS_ITEM (dt->acetate);
+			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
 			/* Find desktop coordinates */
 			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
@@ -898,8 +898,8 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 #if 1
 		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
 			/* Grab mouse, so release will not pass unnoticed */
-			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
-			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+			dc->grab = SP_CANVAS_ITEM (dt->acetate);
+			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 		}
 #endif
 		/* Find desktop coordinates */
@@ -989,7 +989,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 #if 1
 			if (dc->grab) {
 				/* Release grab now */
-				gnome_canvas_item_ungrab (dc->grab, event->button.time);
+				sp_canvas_item_ungrab (dc->grab, event->button.time);
 				dc->grab = NULL;
 			}
 #endif
@@ -1213,19 +1213,19 @@ sp_pen_context_setup (SPEventContext *ec)
 		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec);
 
 	/* Pen indicators */
-	pc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
+	pc->c0 = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
+				     "size", 4.0, "filled", 0, "fill_color", 0xff00007f, "stroked", 1, "stroke_color", 0x0000ff7f, NULL);
+	pc->c1 = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
 					"size", 4.0, "filled", 0, "fill_color", 0xff00007f, "stroked", 1, "stroke_color", 0x0000ff7f, NULL);
-	pc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
-					"size", 4.0, "filled", 0, "fill_color", 0xff00007f, "stroked", 1, "stroke_color", 0x0000ff7f, NULL);
-	pc->cl0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
+	pc->cl0 = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_rgba32 (SP_CTRLLINE (pc->cl0), 0x0000007f);
-	pc->cl1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
+	pc->cl1 = sp_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_rgba32 (SP_CTRLLINE (pc->cl1), 0x0000007f);
 
-	gnome_canvas_item_hide (pc->c0);
-	gnome_canvas_item_hide (pc->c1);
-	gnome_canvas_item_hide (pc->cl0);
-	gnome_canvas_item_hide (pc->cl1);
+	sp_canvas_item_hide (pc->c0);
+	sp_canvas_item_hide (pc->c1);
+	sp_canvas_item_hide (pc->cl0);
+	sp_canvas_item_hide (pc->cl1);
 
 	sp_event_context_read (ec, "mode");
 }
@@ -1277,8 +1277,8 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		if (event->button.button == 1) {
 #if 0
 			/* Grab mouse, so release will not pass unnoticed */
-			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
-			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+			dc->grab = SP_CANVAS_ITEM (dt->acetate);
+			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 #endif
 			/* Find desktop coordinates */
 			sp_desktop_w2d_xy_point (dt, &fp, event->button.x, event->button.y);
@@ -1351,8 +1351,8 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 #if 1
 		if ((event->motion.state & GDK_BUTTON1_MASK) && !dc->grab) {
 			/* Grab mouse, so release will not pass unnoticed */
-			dc->grab = GNOME_CANVAS_ITEM (dt->acetate);
-			gnome_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
+			dc->grab = SP_CANVAS_ITEM (dt->acetate);
+			sp_canvas_item_grab (dc->grab, SPDC_EVENT_MASK, NULL, event->button.time);
 		}
 #endif
 		/* Find desktop coordinates */
@@ -1489,7 +1489,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 #if 1
 			if (dc->grab) {
 				/* Release grab now */
-				gnome_canvas_item_ungrab (dc->grab, event->button.time);
+				sp_canvas_item_ungrab (dc->grab, event->button.time);
 				dc->grab = NULL;
 			}
 #endif
@@ -1510,10 +1510,10 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		case GDK_Escape:
 			pc->state = SP_PEN_CONTEXT_STOP;
 			spdc_reset_colors (dc);
-			gnome_canvas_item_hide (pc->c0);
-			gnome_canvas_item_hide (pc->c1);
-			gnome_canvas_item_hide (pc->cl0);
-			gnome_canvas_item_hide (pc->cl1);
+			sp_canvas_item_hide (pc->c0);
+			sp_canvas_item_hide (pc->c1);
+			sp_canvas_item_hide (pc->cl0);
+			sp_canvas_item_hide (pc->cl1);
 			ret = TRUE;
 			break;
 		case GDK_BackSpace:
@@ -1521,10 +1521,10 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				/* Same as cancel */
 				pc->state = SP_PEN_CONTEXT_STOP;
 				spdc_reset_colors (dc);
-				gnome_canvas_item_hide (pc->c0);
-				gnome_canvas_item_hide (pc->c1);
-				gnome_canvas_item_hide (pc->cl0);
-				gnome_canvas_item_hide (pc->cl1);
+				sp_canvas_item_hide (pc->c0);
+				sp_canvas_item_hide (pc->c1);
+				sp_canvas_item_hide (pc->cl0);
+				sp_canvas_item_hide (pc->cl1);
 				ret = TRUE;
 				break;
 			} else {
@@ -1556,10 +1556,10 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				}
 				dc->npoints = 2;
 				sp_curve_backspace (dc->green_curve);
-				gnome_canvas_item_hide (pc->c0);
-				gnome_canvas_item_hide (pc->c1);
-				gnome_canvas_item_hide (pc->cl0);
-				gnome_canvas_item_hide (pc->cl1);
+				sp_canvas_item_hide (pc->c0);
+				sp_canvas_item_hide (pc->c1);
+				sp_canvas_item_hide (pc->cl0);
+				sp_canvas_item_hide (pc->cl1);
 				pc->state = SP_PEN_CONTEXT_POINT;
 				spdc_pen_set_point (pc, &pt, event->motion.state);
 				ret = TRUE;
@@ -1613,19 +1613,19 @@ spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state)
 
 	dc = SP_DRAW_CONTEXT (pc);
 
-	gnome_canvas_item_show (pc->c1);
-	gnome_canvas_item_show (pc->cl1);
+	sp_canvas_item_show (pc->c1);
+	sp_canvas_item_show (pc->cl1);
 
 	if (dc->npoints == 2) {
 		dc->p[1] = *p;
-		gnome_canvas_item_hide (pc->c0);
-		gnome_canvas_item_hide (pc->cl0);
+		sp_canvas_item_hide (pc->c0);
+		sp_canvas_item_hide (pc->cl0);
 		sp_ctrl_moveto (SP_CTRL (pc->c1), dc->p[1].x, dc->p[1].y);
 		sp_ctrlline_set_coords (SP_CTRLLINE (pc->cl1), dc->p[0].x, dc->p[0].y, dc->p[1].x, dc->p[1].y);
 	} else if (dc->npoints == 5) {
 		dc->p[4] = *p;
-		gnome_canvas_item_show (pc->c0);
-		gnome_canvas_item_show (pc->cl0);
+		sp_canvas_item_show (pc->c0);
+		sp_canvas_item_show (pc->cl0);
 		if (((pc->mode == SP_PEN_CONTEXT_MODE_CLICK) && (state & GDK_CONTROL_MASK)) ||
 		    ((pc->mode == SP_PEN_CONTEXT_MODE_DRAG) && !(state & GDK_MOD1_MASK))) {
 			gdouble dx, dy;
@@ -1656,7 +1656,7 @@ spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state)
 
 	if (!sp_curve_empty (dc->red_curve)) {
 		SPCurve *curve;
-		GnomeCanvasItem *cshape;
+		SPCanvasItem *cshape;
 
 		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
 		curve = sp_curve_copy (dc->red_curve);
@@ -1692,10 +1692,10 @@ spdc_pen_finish (SPPenContext *pc, gboolean closed)
 	dc->npoints = 0;
 	pc->state = SP_PEN_CONTEXT_POINT;
 
-	gnome_canvas_item_hide (pc->c0);
-	gnome_canvas_item_hide (pc->c1);
-	gnome_canvas_item_hide (pc->cl0);
-	gnome_canvas_item_hide (pc->cl1);
+	sp_canvas_item_hide (pc->c0);
+	sp_canvas_item_hide (pc->c1);
+	sp_canvas_item_hide (pc->cl0);
+	sp_canvas_item_hide (pc->cl1);
 
 	if (dc->green_anchor) {
 		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);

@@ -14,6 +14,7 @@
 #define noKNOT_HOLDER_DEBUG
 
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
 #include "desktop.h"
 #include "sp-item.h"
 #include "sp-shape.h"

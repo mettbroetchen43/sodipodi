@@ -1,6 +1,7 @@
 #ifndef SP_SELTRANS_HANDLES_H
 #define SP_SELTRANS_HANDLES_H
 
+#include <libart_lgpl/art_point.h>
 #include "helper/sodipodi-ctrl.h"
 #include "seltrans.h"
 

@@ -10,6 +10,7 @@
  *
  */
 
+#include <libart_lgpl/art_point.h>
 #include "desktop.h"
 
 // snap points

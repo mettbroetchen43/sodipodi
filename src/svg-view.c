@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libart_lgpl/art_affine.h>
 #include "display/canvas-arena.h"
 #include "document.h"
 #include "sp-item.h"
@@ -156,7 +157,7 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 
 	if (doc) {
 		NRArenaItem *ai;
-		svgview->drawing = gnome_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
+		svgview->drawing = sp_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
 		gtk_signal_connect (GTK_OBJECT (svgview->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), svgview);
 		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena);
 		if (ai) {
@@ -178,12 +179,12 @@ sp_svg_view_document_resized (SPView *view, SPDocument *doc, gdouble width, gdou
 }
 
 SPView *
-sp_svg_view_new (GnomeCanvasGroup *parent)
+sp_svg_view_new (SPCanvasGroup *parent)
 {
 	SPSVGView *svgview;
 
 	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_CANVAS_GROUP (parent), NULL);
+	g_return_val_if_fail (SP_IS_CANVAS_GROUP (parent), NULL);
 
 	svgview = gtk_type_new (SP_TYPE_SVG_VIEW);
 
@@ -250,7 +251,7 @@ sp_svg_view_rescale (SPSVGView *svgview, gboolean event)
 	if (svgview->drawing) {
 		gdouble affine[6];
 		art_affine_scale (affine, svgview->hscale, svgview->vscale);
-		gnome_canvas_item_affine_absolute (svgview->drawing, affine);
+		sp_canvas_item_affine_absolute (svgview->drawing, affine);
 	}
 
 	if (event) {
@@ -316,7 +317,7 @@ static void
 sp_svg_view_widget_init (SPSVGViewWidget *vw)
 {
 	GtkStyle *style;
-	GnomeCanvasItem *parent;
+	SPCanvasItem *parent;
 	SPView *view;
 
 	/* Settings */
@@ -333,22 +334,22 @@ sp_svg_view_widget_init (SPSVGViewWidget *vw)
 	/* Canvas */
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-	vw->canvas = gnome_canvas_new_aa ();
+	vw->canvas = sp_canvas_new_aa ();
 #if 0
-	gnome_canvas_set_dither (GNOME_CANVAS (vw->canvas), GDK_RGB_DITHER_MAX);
+	sp_canvas_set_dither (SP_CANVAS (vw->canvas), GDK_RGB_DITHER_MAX);
 #endif
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
 	style = gtk_style_copy (vw->canvas->style);
 	style->bg[GTK_STATE_NORMAL] = style->white;
 	gtk_widget_set_style (vw->canvas, style);
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (vw->canvas), 0, 0, 200, 200);
+	sp_canvas_set_scroll_region (SP_CANVAS (vw->canvas), 0, 0, 200, 200);
 	gtk_container_add (GTK_CONTAINER (vw->sw), vw->canvas);
 	gtk_widget_show (vw->canvas);
 
 	/* View */
-	parent = gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (vw->canvas)), GNOME_TYPE_CANVAS_GROUP, NULL);
-	view = sp_svg_view_new (GNOME_CANVAS_GROUP (parent));
+	parent = sp_canvas_item_new (sp_canvas_root (SP_CANVAS (vw->canvas)), SP_TYPE_CANVAS_GROUP, NULL);
+	view = sp_svg_view_new (SP_CANVAS_GROUP (parent));
 #if 0
 	sp_svg_view_set_rescale (SP_SVG_VIEW (view), TRUE, TRUE, 200.0, 200.0);
 #endif
@@ -434,7 +435,7 @@ sp_svg_view_widget_view_resized (SPViewWidget *vw, SPView *view, gdouble width, 
 
 	if (svgvw->canvas) {
 		g_print ("set scroll %g %g\n", width, height);
-		gnome_canvas_set_scroll_region (GNOME_CANVAS (svgvw->canvas), 0, 0, MAX (width, 1.0), MAX (height, 1.0));
+		sp_canvas_set_scroll_region (SP_CANVAS (svgvw->canvas), 0, 0, MAX (width, 1.0), MAX (height, 1.0));
 	}
 
 	if (svgvw->resize) {

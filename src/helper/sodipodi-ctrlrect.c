@@ -18,17 +18,6 @@
 #include "sp-canvas-util.h"
 #include "sodipodi-ctrlrect.h"
 
-#if 0
-enum {
-	ARG_0,
-	ARG_X0,
-	ARG_Y0,
-	ARG_X1,
-	ARG_Y1,
-	ARG_WIDTH
-};
-#endif
-
 /*
  * Currently we do not have point method, as it should always be painted
  * during some transformation, which takes care of events...
@@ -39,16 +28,11 @@ enum {
 static void sp_ctrlrect_class_init (SPCtrlRectClass *klass);
 static void sp_ctrlrect_init (SPCtrlRect *ctrlrect);
 static void sp_ctrlrect_destroy (GtkObject *object);
-#if 0
-static void sp_ctrlrect_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void sp_ctrlrect_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-#endif
 
-static void sp_ctrlrect_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
-static void sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+static void sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags);
+static void sp_ctrlrect_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
-
-static GnomeCanvasItemClass *parent_class;
+static SPCanvasItemClass *parent_class;
 
 GtkType
 sp_ctrlrect_get_type (void)
@@ -64,7 +48,7 @@ sp_ctrlrect_get_type (void)
 			(GtkObjectInitFunc) sp_ctrlrect_init,
 			NULL, NULL, NULL
 		};
-		ctrlrect_type = gtk_type_unique (GNOME_TYPE_CANVAS_ITEM, &ctrlrect_info);
+		ctrlrect_type = gtk_type_unique (SP_TYPE_CANVAS_ITEM, &ctrlrect_info);
 	}
 	return ctrlrect_type;
 }
@@ -73,26 +57,14 @@ static void
 sp_ctrlrect_class_init (SPCtrlRectClass *klass)
 {
 	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *item_class;
+	SPCanvasItemClass *item_class;
 
 	object_class = (GtkObjectClass *) klass;
-	item_class = (GnomeCanvasItemClass *) klass;
+	item_class = (SPCanvasItemClass *) klass;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
-
-#if 0
-	gtk_object_add_arg_type ("SPCtrlRect::x0", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_X0);
-	gtk_object_add_arg_type ("SPCtrlRect::y0", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_Y0);
-	gtk_object_add_arg_type ("SPCtrlRect::x1", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_X1);
-	gtk_object_add_arg_type ("SPCtrlRect::y1", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_Y1);
-	gtk_object_add_arg_type ("SPCtrlRect::width", GTK_TYPE_DOUBLE, GTK_ARG_READWRITE, ARG_WIDTH);
-#endif
+	parent_class = gtk_type_class (sp_canvas_item_get_type ());
 
 	object_class->destroy = sp_ctrlrect_destroy;
-#if 0
-	object_class->set_arg = sp_ctrlrect_set_arg;
-	object_class->get_arg = sp_ctrlrect_get_arg;
-#endif
 
 	item_class->update = sp_ctrlrect_update;
 	item_class->render = sp_ctrlrect_render;
@@ -128,68 +100,6 @@ sp_ctrlrect_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-#if 0
-static void
-sp_ctrlrect_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
-{
-	GnomeCanvasItem *item;
-	SPCtrlRect *ctrlrect;
-
-	item = GNOME_CANVAS_ITEM (object);
-	ctrlrect = SP_CTRLRECT (object);
-
-	switch (arg_id) {
-	case ARG_X0:
-		ctrlrect->rect.x0 = GTK_VALUE_DOUBLE (*arg);
-		break;
-	case ARG_Y0:
-		ctrlrect->rect.y0 = GTK_VALUE_DOUBLE (*arg);
-		break;
-	case ARG_X1:
-		ctrlrect->rect.x1 = GTK_VALUE_DOUBLE (*arg);
-		break;
-	case ARG_Y1:
-		ctrlrect->rect.y1 = GTK_VALUE_DOUBLE (*arg);
-		break;
-	case ARG_WIDTH:
-		ctrlrect->width = GTK_VALUE_DOUBLE (*arg);
-		break;
-	default:
-		break;
-	}
-	gnome_canvas_item_request_update (item);
-}
-
-static void
-sp_ctrlrect_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
-{
-	SPCtrlRect *ctrlrect;
-
-	ctrlrect = SP_CTRLRECT (object);
-
-	switch (arg_id) {
-	case ARG_X0:
-		GTK_VALUE_DOUBLE (*arg) = ctrlrect->rect.x0;
-		break;
-	case ARG_Y0:
-		GTK_VALUE_DOUBLE (*arg) = ctrlrect->rect.y0;
-		break;
-	case ARG_X1:
-		GTK_VALUE_DOUBLE (*arg) = ctrlrect->rect.x1;
-		break;
-	case ARG_Y1:
-		GTK_VALUE_DOUBLE (*arg) = ctrlrect->rect.y1;
-		break;
-	case ARG_WIDTH:
-		GTK_VALUE_DOUBLE (*arg) = ctrlrect->width;
-		break;
-	default:
-		arg->type = GTK_TYPE_INVALID;
-		break;
-	}
-}
-#endif
-
 #define RGBA_R(v) ((v) >> 24)
 #define RGBA_G(v) (((v) >> 16) & 0xff)
 #define RGBA_B(v) (((v) >> 8) & 0xff)
@@ -197,7 +107,7 @@ sp_ctrlrect_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 #define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
 
 static void
-sp_ctrlrect_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
+sp_ctrlrect_hline (SPCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
 {
 	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
 		guint r, g, b, a;
@@ -220,7 +130,7 @@ sp_ctrlrect_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
 }
 
 static void
-sp_ctrlrect_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
+sp_ctrlrect_vline (SPCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
 {
 	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
 		guint r, g, b, a;
@@ -243,7 +153,7 @@ sp_ctrlrect_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
 }
 
 static void
-sp_ctrlrect_area (GnomeCanvasBuf *buf, gint xs, gint ys, gint xe, gint ye, guint32 rgba)
+sp_ctrlrect_area (SPCanvasBuf *buf, gint xs, gint ys, gint xe, gint ye, guint32 rgba)
 {
 	guint r, g, b, a;
 	gint x0, x1, x;
@@ -269,7 +179,7 @@ sp_ctrlrect_area (GnomeCanvasBuf *buf, gint xs, gint ys, gint xe, gint ye, guint
 }
 
 static void
-sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
+sp_ctrlrect_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCtrlRect *cr;
 
@@ -281,7 +191,7 @@ sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	    ((cr->area.y1 + cr->shadow_size) >= buf->rect.y0)) {
 		/* Initialize buffer, if needed */
 		if (buf->is_bg) {
-			gnome_canvas_clear_buffer (buf);
+			sp_canvas_clear_buffer (buf);
 			buf->is_bg = FALSE;
 			buf->is_buf = TRUE;
 		}
@@ -310,38 +220,38 @@ sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 }
 
 static void
-sp_ctrlrect_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCtrlRect *cr;
 	ArtDRect bbox;
 
 	cr = SP_CTRLRECT (item);
 
-	if (((GnomeCanvasItemClass *) parent_class)->update)
-		((GnomeCanvasItemClass *) parent_class)->update (item, affine, clip_path, flags);
+	if (((SPCanvasItemClass *) parent_class)->update)
+		((SPCanvasItemClass *) parent_class)->update (item, affine, flags);
 
-	gnome_canvas_item_reset_bounds (item);
+	sp_canvas_item_reset_bounds (item);
 
 	/* Request redraw old */
 	if (!cr->has_fill) {
 		/* Top */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + 1, cr->area.y0 + 1);
 		/* Left */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x0 + 1, cr->area.y1 + 1);
 		/* Right */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x1 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 		/* Bottom */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y1 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 	} else {
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 	}
@@ -358,23 +268,23 @@ sp_ctrlrect_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, in
 	/* Request redraw new */
 	if (!cr->has_fill) {
 		/* Top */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + 1, cr->area.y0 + 1);
 		/* Left */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x0 + 1, cr->area.y1 + 1);
 		/* Right */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x1 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 		/* Bottom */
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y1 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 	} else {
-		gnome_canvas_request_redraw (item->canvas,
+		sp_canvas_request_redraw (item->canvas,
 					     cr->area.x0 - 1, cr->area.y0 - 1,
 					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
 	}
@@ -396,7 +306,7 @@ sp_ctrlrect_set_area (SPCtrlRect *cr, gint x0, gint y0, gint x1, gint y1)
 	cr->rect.x1 = MAX (x0, x1);
 	cr->rect.y1 = MAX (y0, y1);
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
 }
 
 void
@@ -409,7 +319,7 @@ sp_ctrlrect_set_color (SPCtrlRect *cr, guint32 border_color, gboolean has_fill, 
 	cr->has_fill = has_fill;
 	cr->fill_color = fill_color;
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
 }
 
 void
@@ -421,7 +331,7 @@ sp_ctrlrect_set_shadow (SPCtrlRect *cr, gint shadow_size, guint32 shadow_color)
 	cr->shadow = shadow_size;
 	cr->shadow_color = shadow_color;
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
 }
 
 void
@@ -432,5 +342,5 @@ sp_ctrlrect_set_rect (SPCtrlRect * cr, ArtDRect * r)
 	cr->rect.x1 = MAX (r->x0, r->x1);
 	cr->rect.y1 = MAX (r->y0, r->y1);
 
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
 }

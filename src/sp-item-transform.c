@@ -1,6 +1,7 @@
 #include "svg/svg.h"
 #include "sp-item-transform.h"
 
+#include <libart_lgpl/art_affine.h>
 
 void art_affine_skew (double dst[6], double dx, double dy);
 

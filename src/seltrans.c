@@ -13,6 +13,7 @@
 
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
+#include <libart_lgpl/art_affine.h>
 
 #include "svg/svg.h"
 #include "sodipodi-private.h"
@@ -106,7 +107,7 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "changed", GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
 	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "modified", GTK_SIGNAL_FUNC (sp_sel_trans_sel_modified), seltrans);
 
-	seltrans->norm = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
+	seltrans->norm = sp_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
 		"anchor", GTK_ANCHOR_CENTER,
 		"mode", SP_CTRL_MODE_COLOR,
@@ -118,7 +119,7 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 		"stroke_color", 0x000000a0,
 		"pixbuf", handles[12],				
 		NULL);
-	seltrans->grip = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
+	seltrans->grip = sp_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
 		"anchor", GTK_ANCHOR_CENTER,
 		"mode", SP_CTRL_MODE_XOR,
@@ -130,17 +131,17 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 		"stroke_color", 0xffffffFF,
 		"pixbuf", handles[12],				
 		NULL);
-	gnome_canvas_item_hide (seltrans->grip);
-	gnome_canvas_item_hide (seltrans->norm);
+	sp_canvas_item_hide (seltrans->grip);
+	sp_canvas_item_hide (seltrans->norm);
 
-	seltrans->l1 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (seltrans->l1);
-	seltrans->l2 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (seltrans->l2);
-	seltrans->l3 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (seltrans->l3);
-	seltrans->l4 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
-	gnome_canvas_item_hide (seltrans->l4);
+	seltrans->l1 = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	sp_canvas_item_hide (seltrans->l1);
+	seltrans->l2 = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	sp_canvas_item_hide (seltrans->l2);
+	seltrans->l3 = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	sp_canvas_item_hide (seltrans->l3);
+	seltrans->l4 = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	sp_canvas_item_hide (seltrans->l4);
 }
 
 void
@@ -254,15 +255,15 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 	seltrans->opposit.y = seltrans->box.y0 + (1 - y) * fabs (seltrans->box.y1 - seltrans->box.y0);
 
 	if ((x != -1) && (y != -1)) {
-		gnome_canvas_item_show (seltrans->norm);
-		gnome_canvas_item_show (seltrans->grip);
+		sp_canvas_item_show (seltrans->norm);
+		sp_canvas_item_show (seltrans->grip);
 	}
 
 	if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
-		gnome_canvas_item_show (seltrans->l1);
-		gnome_canvas_item_show (seltrans->l2);
-		gnome_canvas_item_show (seltrans->l3);
-		gnome_canvas_item_show (seltrans->l4);
+		sp_canvas_item_show (seltrans->l1);
+		sp_canvas_item_show (seltrans->l2);
+		sp_canvas_item_show (seltrans->l3);
+		sp_canvas_item_show (seltrans->l4);
 	}
 
 
@@ -392,14 +393,14 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	}
 #endif
 
-	gnome_canvas_item_hide (seltrans->norm);
-	gnome_canvas_item_hide (seltrans->grip);
+	sp_canvas_item_hide (seltrans->norm);
+	sp_canvas_item_hide (seltrans->grip);
 
         if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
-		gnome_canvas_item_hide (seltrans->l1);
-		gnome_canvas_item_hide (seltrans->l2);
-		gnome_canvas_item_hide (seltrans->l3);
-		gnome_canvas_item_hide (seltrans->l4);
+		sp_canvas_item_hide (seltrans->l1);
+		sp_canvas_item_hide (seltrans->l2);
+		sp_canvas_item_hide (seltrans->l3);
+		sp_canvas_item_hide (seltrans->l4);
 	}
 
 	sp_sel_trans_update_volatile_state (seltrans);
@@ -631,15 +632,15 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 			  "shape", SP_CTRL_SHAPE_BITMAP,
 			  "size", 13.0,
 			  NULL);
-	  gnome_canvas_item_show (seltrans->grip);
+	  sp_canvas_item_show (seltrans->grip);
 	  break;
 	default:
 	  gtk_object_set (GTK_OBJECT (seltrans->grip),
 			  "shape", SP_CTRL_SHAPE_CROSS,
 			  "size", 7.0,
 			  NULL);
-	  gnome_canvas_item_show (seltrans->norm);
-	  gnome_canvas_item_show (seltrans->grip);
+	  sp_canvas_item_show (seltrans->norm);
+	  sp_canvas_item_show (seltrans->grip);
 
 	  break;
 	}

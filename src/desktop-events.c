@@ -35,12 +35,12 @@ static void sp_dt_simple_guide_dialog (SPGuide * guide, SPDesktop * desktop);
 
 
 void
-sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
+sp_desktop_root_handler (SPCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
 	if (event->type == GDK_ENTER_NOTIFY) {
 		/* fixme: should it go here? 
 		   moved it to sp_desktop_set_focus (Frank)
-	  gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
+	  sp_canvas_item_grab_focus ((SPCanvasItem *) desktop->main); 
 		*/
 	}
 	sp_event_context_root_handler (desktop->event_context, event);
@@ -53,7 +53,7 @@ sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * d
  */
 
 void
-sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+sp_desktop_item_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	gpointer ddata;
 	SPDesktop * desktop;
@@ -79,7 +79,7 @@ static gint
 sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean horiz)
 {
 	static gboolean dragging = FALSE;
-	static GnomeCanvasItem * guide = NULL;
+	static SPCanvasItem * guide = NULL;
 	SPDesktopWidget *dtw;
 	SPDesktop *desktop;
 
@@ -90,7 +90,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
 			dragging = TRUE;
-			guide = gnome_canvas_item_new (desktop->guides, SP_TYPE_GUIDELINE,
+			guide = sp_canvas_item_new (desktop->guides, SP_TYPE_GUIDELINE,
 						       "orientation",
 						       horiz ? SP_GUIDELINE_ORIENTATION_HORIZONTAL : SP_GUIDELINE_ORIENTATION_VERTICAL,
 						       "color", desktop->namedview->guidehicolor,
@@ -107,7 +107,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			double px, py;
 			/* we have to substract (x|y) thickness from the position */
 			/* since there is a frame between ruler and canvas */
-			gnome_canvas_window_to_world (dtw->canvas,
+			sp_canvas_window_to_world (dtw->canvas,
 						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
 						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
 						      &px, &py);
@@ -130,7 +130,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			double px, py;
 			/* we have to substract (x|y) thickness from the position */
 			/* since there is a frame between ruler and canvas */
-			gnome_canvas_window_to_world (dtw->canvas,
+			sp_canvas_window_to_world (dtw->canvas,
 						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
 						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
 						      &px, &py);
@@ -172,7 +172,7 @@ sp_dt_vruler_event (GtkWidget * widget, GdkEvent * event, gpointer data)
 /* Guides */
 
 gint
-sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+sp_dt_guide_event (SPCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	static gboolean dragging = FALSE, moved = FALSE;
 	SPGuide * guide;
@@ -187,7 +187,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_2BUTTON_PRESS:
 		if (event->button.button == 1) {
 			dragging = FALSE;
-			gnome_canvas_item_ungrab (item, event->button.time);
+			sp_canvas_item_ungrab (item, event->button.time);
 			sp_dt_simple_guide_dialog (guide, desktop);
 			ret = TRUE;
 		}
@@ -195,7 +195,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
 			dragging = TRUE;
-			gnome_canvas_item_grab (item, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+			sp_canvas_item_grab (item, GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			ret = TRUE;
 		}
@@ -225,7 +225,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				double winx, winy;
 				NRPointF p;
 				w = GTK_WIDGET (item->canvas);
-				gnome_canvas_world_to_window (item->canvas, event->button.x, event->button.y, &winx, &winy);
+				sp_canvas_world_to_window (item->canvas, event->button.x, event->button.y, &winx, &winy);
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 				if ((winx >= 0) && (winy >= 0) &&
 				    (winx < w->allocation.width) &&
@@ -240,11 +240,11 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
 			}
 			dragging = FALSE;
-			gnome_canvas_item_ungrab (item, event->button.time);
+			sp_canvas_item_ungrab (item, event->button.time);
 			ret=TRUE;
 		}
 	case GDK_ENTER_NOTIFY:
-		gnome_canvas_item_set (item, "color", guide->hicolor, NULL);
+		sp_canvas_item_set ((GtkObject *) item, "color", guide->hicolor, NULL);
 		msg = SP_PT_TO_METRIC_STRING (guide->position, SP_DEFAULT_METRIC);
 		switch (guide->orientation) {
 		case SP_GUIDE_HORIZONTAL:
@@ -258,7 +258,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		g_string_free (msg, FALSE);
        		break;
 	case GDK_LEAVE_NOTIFY:
-		gnome_canvas_item_set (item, "color", guide->color, NULL);
+		sp_canvas_item_set ((GtkObject *) item, "color", guide->color, NULL);
 		sp_view_set_status (SP_VIEW (desktop), NULL, FALSE);
 		break;
 	default:

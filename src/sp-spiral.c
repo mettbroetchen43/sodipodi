@@ -17,6 +17,7 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"

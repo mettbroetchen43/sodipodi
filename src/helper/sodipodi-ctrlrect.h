@@ -29,7 +29,7 @@ typedef struct _SPCtrlRect SPCtrlRect;
 typedef struct _SPCtrlRectClass SPCtrlRectClass;
 
 struct _SPCtrlRect {
-	GnomeCanvasItem item;
+	SPCanvasItem item;
 
 	guint has_fill : 1;
 
@@ -44,7 +44,7 @@ struct _SPCtrlRect {
 };
 
 struct _SPCtrlRectClass {
-	GnomeCanvasItemClass parent_class;
+	SPCanvasItemClass parent_class;
 };
 
 
