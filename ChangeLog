@@ -1,3 +1,7 @@
+2003-01-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/transformation.c: Implemented scaling percentages
+
 2003-01-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/draw-context.c (spdc_set_startpoint): Snap startpoint (thanks to Nathan)

@@ -155,6 +155,7 @@ sp_convert_distance (gdouble *distance, const SPUnit *from, const SPUnit *to)
 	if (from == to) return TRUE;
 	if ((from->base == SP_UNIT_DIMENSIONLESS) || (to->base == SP_UNIT_DIMENSIONLESS)) {
 		*distance = *distance * from->unittobase / to->unittobase;
+		return TRUE;
 	}
 	if (from->base != to->base) return FALSE;
 	if ((from->base == SP_UNIT_VOLATILE) || (to->base == SP_UNIT_VOLATILE)) return FALSE;
@@ -179,6 +180,7 @@ sp_convert_distance_full (gdouble *distance, const SPUnit *from, const SPUnit *t
 	if (from->base == to->base) return sp_convert_distance (distance, from, to);
 	if ((from->base == SP_UNIT_DIMENSIONLESS) || (to->base == SP_UNIT_DIMENSIONLESS)) {
 		*distance = *distance * from->unittobase / to->unittobase;
+		return TRUE;
 	}
 	if ((from->base == SP_UNIT_VOLATILE) || (to->base == SP_UNIT_VOLATILE)) return FALSE;
 

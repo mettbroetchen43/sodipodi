@@ -185,6 +185,7 @@ sp_transformation_dialog_new (void)
 {
 	GtkWidget *dlg;
 	GtkWidget *hb, *vb, *nbook, *page, *img, *hs, *bb, *b;
+	SPSelection *sel;
 
 	dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dlg), _("Transform selection"));
@@ -251,6 +252,9 @@ sp_transformation_dialog_new (void)
 	g_signal_connect (G_OBJECT (SODIPODI), "change_selection", G_CALLBACK (sp_transformation_dialog_selection_changed), dlg);
 	g_signal_connect (G_OBJECT (SODIPODI), "modify_selection", G_CALLBACK (sp_transformation_dialog_selection_modified), dlg);
 	g_signal_connect (G_OBJECT (nbook), "switch_page", G_CALLBACK (sp_transformation_dialog_switch_page), dlg);
+
+	sel = (SP_ACTIVE_DESKTOP) ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL;
+	sp_transformation_dialog_update_selection (G_OBJECT (dlg), 0, sel);
 
 	return dlg;
 }
@@ -466,6 +470,54 @@ sp_transformation_move_apply (GObject *dlg, SPSelection *selection, unsigned int
  * Scale implementation
  */
 
+static gboolean
+sp_transformation_scale_set_unit (SPUnitSelector *us, const SPUnit *old, const SPUnit *new, GObject *dlg)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return FALSE;
+	selection = SP_DT_SELECTION (desktop);
+	if (sp_selection_is_empty (selection)) return FALSE;
+
+	if ((old->base == SP_UNIT_ABSOLUTE) && (new->base == SP_UNIT_DIMENSIONLESS)) {
+		SPUnitSelector *us;
+		GtkAdjustment *ax, *ay;
+		NRRectF bbox;
+		float x, y;
+		/* Absolute to percentage */
+		g_object_set_data (dlg, "update", GUINT_TO_POINTER (TRUE));
+		us = g_object_get_data (dlg, "scale_units");
+		ax = g_object_get_data (dlg, "scale_dimension_x");
+		ay = g_object_get_data (dlg, "scale_dimension_y");
+		x = sp_units_get_points (ax->value, old);
+		y = sp_units_get_points (ay->value, old);
+		sp_selection_bbox (selection, &bbox);
+		gtk_adjustment_set_value (ax, 100.0 * x / (bbox.x1 - bbox.x0));
+		gtk_adjustment_set_value (ay, 100.0 * y / (bbox.y1 - bbox.y0));
+		g_object_set_data (dlg, "update", GUINT_TO_POINTER (FALSE));
+		return TRUE;
+	} else if ((old->base == SP_UNIT_DIMENSIONLESS) && (new->base == SP_UNIT_ABSOLUTE)) {
+		SPUnitSelector *us;
+		GtkAdjustment *ax, *ay;
+		NRRectF bbox;
+		float x, y;
+		/* Percentage to absolute */
+		g_object_set_data (dlg, "update", GUINT_TO_POINTER (TRUE));
+		us = g_object_get_data (dlg, "scale_units");
+		ax = g_object_get_data (dlg, "scale_dimension_x");
+		ay = g_object_get_data (dlg, "scale_dimension_y");
+		sp_selection_bbox (selection, &bbox);
+		gtk_adjustment_set_value (ax, sp_points_get_units (0.01 * ax->value * (bbox.x1 - bbox.x0), new));
+		gtk_adjustment_set_value (ay, sp_points_get_units (0.01 * ay->value * (bbox.y1 - bbox.y0), new));
+		g_object_set_data (dlg, "update", GUINT_TO_POINTER (FALSE));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 sp_transformation_scale_value_changed (GtkAdjustment *adj, GObject *dlg)
 {
@@ -476,47 +528,6 @@ sp_transformation_scale_value_changed (GtkAdjustment *adj, GObject *dlg)
 	apply = g_object_get_data (dlg, "apply");
 	gtk_widget_set_sensitive (apply, TRUE);
 }
-
-#if 0
-static void
-sp_transformation_scale_relative_toggled (GtkToggleButton *tb, GObject *dlg)
-{
-	SPDesktop *desktop;
-	SPSelection *selection;
-	SPUnitSelector *us;
-	GtkAdjustment *ax, *ay;
-	NRRectF bbox;
-	float x, y;
-
-	desktop = SP_ACTIVE_DESKTOP;
-	if (!desktop) return;
-	selection = SP_DT_SELECTION (desktop);
-	if (sp_selection_is_empty (selection)) return;
-
-	/* Read values from widget */
-	us = g_object_get_data (dlg, "move_units");
-	ax = g_object_get_data (dlg, "move_position_x");
-	ay = g_object_get_data (dlg, "move_position_y");
-	x = sp_unit_selector_get_value_in_points (us, ax);
-	y = sp_unit_selector_get_value_in_points (us, ay);
-
-	sp_selection_bbox (selection, &bbox);
-
-	g_object_set_data (dlg, "update", GUINT_TO_POINTER (TRUE));
-
-	if (gtk_toggle_button_get_active (tb)) {
-		/* From absolute to relative */
-		sp_unit_selector_set_value_in_points (us, ax, x - bbox.x0);
-		sp_unit_selector_set_value_in_points (us, ay, y - bbox.y0);
-	} else {
-		/* From relative to absolute */
-		sp_unit_selector_set_value_in_points (us, ax, bbox.x0 + x);
-		sp_unit_selector_set_value_in_points (us, ay, bbox.y0 + y);
-	}
-
-	g_object_set_data (dlg, "update", GUINT_TO_POINTER (FALSE));
-}
-#endif
 
 static GtkWidget *
 sp_transformation_page_scale_new (GObject *obj)
@@ -539,9 +550,9 @@ sp_transformation_page_scale_new (GObject *obj)
 	/* fixme: Default has to be percentage */
 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
 	g_object_set_data (obj, "scale_units", us);
-	if (SP_ACTIVE_DESKTOP) {
-		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (us), sp_desktop_get_default_unit (SP_ACTIVE_DESKTOP));
-	}
+	sp_unit_selector_add_unit (SP_UNIT_SELECTOR (us), sp_unit_get_by_abbreviation ("%"), 0);
+	sp_unit_selector_set_unit (SP_UNIT_SELECTOR (us), sp_unit_get_by_abbreviation ("%"));
+	g_signal_connect (G_OBJECT (us), "set_unit", G_CALLBACK (sp_transformation_scale_set_unit), obj);
 	/* Horizontal */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "scale_hor");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
@@ -566,15 +577,6 @@ sp_transformation_page_scale_new (GObject *obj)
 	gtk_table_attach (GTK_TABLE (tbl), lbl, 0, 1, 2, 3, 0, 0, 0, 0);
 	gtk_table_attach (GTK_TABLE (tbl), us, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
-#if 0
-	/* Relative moves */
-	cb = gtk_check_button_new_with_label (_("Relative move"));
-	g_object_set_data (obj, "move_relative", cb);
-	gtk_table_attach (GTK_TABLE (tbl), cb, 1, 2, 3, 4, 0, 0, 0, 0);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb), TRUE);
-	g_signal_connect (G_OBJECT (cb), "toggled", G_CALLBACK (sp_transformation_move_relative_toggled), obj);
-#endif
-
 	gtk_widget_show_all (vb);
 
 	return frame;
@@ -590,13 +592,20 @@ sp_transformation_scale_update (GObject *dlg, SPSelection *selection)
 	if (selection && !sp_selection_is_empty (selection)) {
 		GtkAdjustment *ax, *ay;
 		SPUnitSelector *us;
+		const SPUnit *unit;
 		NRRectF bbox;
 		ax = g_object_get_data (dlg, "scale_dimension_x");
 		ay = g_object_get_data (dlg, "scale_dimension_y");
 		us = g_object_get_data (dlg, "scale_units");
 		sp_selection_bbox (selection, &bbox);
-		sp_unit_selector_set_value_in_points (us, ax, bbox.x1 - bbox.x0);
-		sp_unit_selector_set_value_in_points (us, ay, bbox.y1 - bbox.y0);
+		unit = sp_unit_selector_get_unit (us);
+		if (unit->base == SP_UNIT_ABSOLUTE) {
+			sp_unit_selector_set_value_in_points (us, ax, bbox.x1 - bbox.x0);
+			sp_unit_selector_set_value_in_points (us, ay, bbox.y1 - bbox.y0);
+		} else {
+			gtk_adjustment_set_value (ax, 100.0);
+			gtk_adjustment_set_value (ay, 100.0);
+		}
 		gtk_widget_set_sensitive (page, TRUE);
 	} else {
 		gtk_widget_set_sensitive (page, FALSE);
@@ -606,8 +615,9 @@ sp_transformation_scale_update (GObject *dlg, SPSelection *selection)
 static void
 sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned int copy)
 {
-	SPUnitSelector *us;
 	GtkAdjustment *ax, *ay;
+	SPUnitSelector *us;
+	const SPUnit *unit;
 	NRRectF bbox;
 	NRPointF c;
 	float x, y;
@@ -615,143 +625,21 @@ sp_transformation_scale_apply (GObject *dlg, SPSelection *selection, unsigned in
 	us = g_object_get_data (dlg, "scale_units");
 	ax = g_object_get_data (dlg, "scale_dimension_x");
 	ay = g_object_get_data (dlg, "scale_dimension_y");
-	x = sp_unit_selector_get_value_in_points (us, ax);
-	y = sp_unit_selector_get_value_in_points (us, ay);
 
 	sp_selection_bbox (selection, &bbox);
 	c.x = 0.5 * (bbox.x0 + bbox.x1);
 	c.y = 0.5 * (bbox.y0 + bbox.y1);
-	sp_selection_scale_relative (selection, &c, x / (bbox.x1 - bbox.x0), y / (bbox.y1 - bbox.y0));
+	unit = sp_unit_selector_get_unit (us);
+	if (unit->base == SP_UNIT_ABSOLUTE) {
+		x = sp_unit_selector_get_value_in_points (us, ax);
+		y = sp_unit_selector_get_value_in_points (us, ay);
+		sp_selection_scale_relative (selection, &c, x / (bbox.x1 - bbox.x0), y / (bbox.y1 - bbox.y0));
+	} else {
+		sp_selection_scale_relative (selection, &c, 0.01 * ax->value, 0.01 * ay->value);
+	}
 
 	if (selection) sp_document_done (SP_DT_DOCUMENT (selection->desktop));
 }
-
-#if 0
-/*
- * scale
- */
-
-SPMetric 
-sp_transformation_get_scale_metric (void){
-  GtkWidget * selected;
-
-  selected = gtk_menu_get_active ((GtkMenu *) scale_metrics);
-
-  if (selected == scale_pr) return NONE;
-  if (selected == scale_pt) return SP_PT;
-  if (selected == scale_mm) return SP_MM;
-  if (selected == scale_cm) return SP_CM;
-  if (selected == scale_in) return SP_IN;
-
-  return SP_PT;
-}
-
-void
-sp_transformation_display_dimension (ArtDRect * bbox, SPMetric metric) {
-  GString * str;
-  
-  if (metric == NONE) metric = SP_DEFAULT_METRIC;
-  str = SP_PT_TO_METRIC_STRING (bbox->x1 - bbox->x0, metric); 
-  gtk_label_set (old_width, str->str);
-  g_string_free (str, TRUE);
-  str = SP_PT_TO_METRIC_STRING (bbox->y1 - bbox->y0, metric);
-  gtk_label_set (old_height, str->str);
-  g_string_free (str, TRUE);
-}
-
-void
-sp_transformation_select_scale_metric (GtkWidget * widget) {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  ArtDRect  bbox;
-  SPMetric metric;
-
-  desktop = SP_ACTIVE_DESKTOP;
-  if (!SP_IS_DESKTOP (desktop)) return;
-  selection = SP_DT_SELECTION (desktop);
-
-  if (!sp_selection_is_empty (selection)) {
-    sp_selection_bbox (selection, &bbox);
-    metric = sp_transformation_get_scale_metric ();
-    sp_transformation_display_dimension (&bbox, metric);
-  }
-}
-
-void
-sp_transformation_set_scale_metric (SPMetric metric){
-
-  if (metric == SP_PT) gtk_option_menu_set_history (scale_metric_om, 0);
-  if (metric == SP_MM) gtk_option_menu_set_history (scale_metric_om, 1);
-  if (metric == SP_CM) gtk_option_menu_set_history (scale_metric_om, 2);
-  if (metric == SP_IN) gtk_option_menu_set_history (scale_metric_om, 3);
-  if (metric == NONE) gtk_option_menu_set_history (scale_metric_om, 4);
-  sp_transformation_select_scale_metric (NULL);
-}
-
-void
-sp_transformation_scale_update (SPSelection * selection) {
-  ArtDRect  bbox;
-  SPMetric metric;
-
-  g_assert (transformation_dialog != NULL);
-  
-  if (SP_IS_SELECTION (selection)) {
-    if (!sp_selection_is_empty (selection)) {
-      sp_selection_bbox (selection, &bbox);
-      metric = sp_transformation_get_scale_metric ();
-      
-      sp_transformation_display_dimension (&bbox, metric);
-      return;
-    }
-  }
-  gtk_label_set (old_width, "");
-  gtk_label_set (old_height, "");
-}
-
-void
-sp_transformation_apply_scale (SPSelection * selection) {
-  double dx, dy, ax,ay;
-  ArtPoint p;
-  ArtDRect bbox;
-  SPMetric metric;
-
-  g_assert (transformation_dialog != NULL);
-  g_assert (!sp_selection_is_empty (selection));
-
-  metric = sp_transformation_get_scale_metric ();
-  sp_selection_bbox (selection, &bbox);
-
-  if (metric == NONE) {
-    dx = gtk_spin_button_get_value_as_float (scale_hor) / 100.0 ;
-    dy = gtk_spin_button_get_value_as_float (scale_ver) / 100.0 ;
-  } else {
-    if (fabs(bbox.x1-bbox.x0)<1e-15 || fabs(bbox.y1-bbox.y0)<1e-15) return;
-    ax = SP_METRIC_TO_PT (gtk_spin_button_get_value_as_float (scale_hor), metric);
-    dx = ax / fabs(bbox.x1-bbox.x0);
-    ay = SP_METRIC_TO_PT (gtk_spin_button_get_value_as_float (scale_ver), metric);
-    dy = ay / fabs(bbox.y1-bbox.y0);
-  }
-
-  if (tr_scale_type == RELATIVE) {
-    dx += 1;
-    dy += 1;
-  }
-
-  p.x = (bbox.x0 + bbox.x1)/2;
-  p.y = (bbox.y0 + bbox.y1)/2;
-
-  if (GTK_WIDGET_VISIBLE (expansion)) {
-    if (gtk_toggle_button_get_active (use_align)) sp_transformation_get_align (selection,&p);
-    if (gtk_toggle_button_get_active (use_center)) sp_transformation_get_center (selection, &p);
-  } 
-
-  if (gtk_toggle_button_get_active (flip_hor)) dx = -1;
-  if (gtk_toggle_button_get_active (flip_ver)) dy = -1;
- 
-  if ((dx < 1e-15) || (dy < 1e-15)) return;
-  sp_selection_scale_relative (selection, &p, dx, dy);
-}
-#endif
 
 /*
  * Rotate implementation
@@ -837,25 +725,6 @@ sp_transformation_skew_apply (GObject *dlg, SPSelection *selection, unsigned int
 }
 
 #if 0
-
-#include <math.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkarrow.h>
-#include <glade/glade.h>
-#include "../sodipodi.h"
-#include "../document.h"
-#include "../desktop.h"
-#include "../desktop-handles.h"
-#include "../svg/svg.h"
-#include "../selection-chemistry.h"
-#include "transformation.h"
-
 typedef enum {
 	ABSOLUTE,
 	RELATIVE

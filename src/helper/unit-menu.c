@@ -19,6 +19,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include "helper/sp-marshal.h"
 #include "unit-menu.h"
 
 struct _SPUnitSelector {
@@ -40,13 +41,18 @@ struct _SPUnitSelector {
 
 struct _SPUnitSelectorClass {
 	GtkHBoxClass parent_class;
+
+	gboolean (* set_unit) (SPUnitSelector *us, const SPUnit *old, const SPUnit *new);
 };
+
+enum {SET_UNIT, LAST_SIGNAL};
 
 static void sp_unit_selector_class_init (SPUnitSelectorClass *klass);
 static void sp_unit_selector_init (SPUnitSelector *selector);
 static void sp_unit_selector_finalize (GObject *object);
 
 static GtkHBoxClass *unit_selector_parent_class;
+static guint signals[LAST_SIGNAL] = {0};
 
 GtkType
 sp_unit_selector_get_type (void)
@@ -76,6 +82,15 @@ sp_unit_selector_class_init (SPUnitSelectorClass *klass)
 	widget_class = GTK_WIDGET_CLASS (klass);
 
 	unit_selector_parent_class = gtk_type_class (GTK_TYPE_HBOX);
+
+	signals[SET_UNIT] = g_signal_new ("set_unit",
+					  G_TYPE_FROM_CLASS (klass),
+					  G_SIGNAL_RUN_LAST,
+					  G_STRUCT_OFFSET (SPUnitSelectorClass, set_unit),
+					  NULL, NULL,
+					  sp_marshal_BOOLEAN__POINTER_POINTER,
+					  G_TYPE_BOOLEAN, 2,
+					  G_TYPE_POINTER, G_TYPE_POINTER);
 
 	object_class->finalize = sp_unit_selector_finalize;
 }
@@ -143,6 +158,7 @@ static void
 spus_unit_activate (GtkWidget *widget, SPUnitSelector *us)
 {
 	const SPUnit *unit, *old;
+	gboolean consumed;
 	GSList *l;
 
 	unit = gtk_object_get_data (GTK_OBJECT (widget), "unit");
@@ -157,20 +173,25 @@ spus_unit_activate (GtkWidget *widget, SPUnitSelector *us)
 
 	us->update = TRUE;
 
-	/* Recalculate adjustments */
-	for (l = us->adjustments; l != NULL; l = l->next) {
-		GtkAdjustment *adj;
-		gdouble val;
-		adj = GTK_ADJUSTMENT (l->data);
-		val = adj->value;
+	consumed = FALSE;
+	g_signal_emit (G_OBJECT (us), signals[SET_UNIT], 0, old, unit, &consumed);
+
+	if (!consumed && (unit->base == old->base)) {
+		/* Recalculate adjustments */
+		for (l = us->adjustments; l != NULL; l = l->next) {
+			GtkAdjustment *adj;
+			gdouble val;
+			adj = GTK_ADJUSTMENT (l->data);
+			val = adj->value;
 #ifdef UNIT_SELECTOR_VERBOSE
-		g_print ("Old val %g ... ", val);
+			g_print ("Old val %g ... ", val);
 #endif
-		sp_convert_distance_full (&val, old, unit, us->ctmscale, us->devicescale);
+			sp_convert_distance_full (&val, old, unit, us->ctmscale, us->devicescale);
 #ifdef UNIT_SELECTOR_VERBOSE
-		g_print ("new val %g\n", val);
+			g_print ("new val %g\n", val);
 #endif
-		gtk_adjustment_set_value (adj, val);
+			gtk_adjustment_set_value (adj, val);
+		}
 	}
 
 	us->update = FALSE;
@@ -225,6 +246,16 @@ sp_unit_selector_set_bases (SPUnitSelector *us, guint bases)
 	us->unit = units->data;
 
 	spus_rebuild_menu (us);
+}
+
+void
+sp_unit_selector_add_unit (SPUnitSelector *us, const SPUnit *unit, int position)
+{
+	if (!g_slist_find (us->units, (gpointer) unit)) {
+		us->units = g_slist_insert (us->units, (gpointer) unit, position);
+
+		spus_rebuild_menu (us);
+	}
 }
 
 void

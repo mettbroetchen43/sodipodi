@@ -72,7 +72,7 @@ static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 static void sp_knot_update_ctrl (SPKnot * knot);
 static void sp_knot_set_ctrl_state (SPKnot *knot);
 
-static GObjectClass * parent_class;
+static GObjectClass *parent_class;
 static guint knot_signals[LAST_SIGNAL] = {0};
 
 GType

@@ -27,13 +27,15 @@ G_BEGIN_DECLS
 typedef struct _SPUnitSelector SPUnitSelector;
 typedef struct _SPUnitSelectorClass SPUnitSelectorClass;
 
-GtkType sp_unit_selector_get_type (void);
+GType sp_unit_selector_get_type (void);
 
 GtkWidget *sp_unit_selector_new (guint bases);
 
 const SPUnit *sp_unit_selector_get_unit (SPUnitSelector *selector);
 
 void sp_unit_selector_set_bases (SPUnitSelector *selector, guint bases);
+void sp_unit_selector_add_unit (SPUnitSelector *selector, const SPUnit *unit, int position);
+
 void sp_unit_selector_set_unit (SPUnitSelector *selector, const SPUnit *unit);
 void sp_unit_selector_add_adjustment (SPUnitSelector *selector, GtkAdjustment *adjustment);
 void sp_unit_selector_remove_adjustment (SPUnitSelector *selector, GtkAdjustment *adjustment);
