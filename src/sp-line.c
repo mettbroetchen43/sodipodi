@@ -17,16 +17,9 @@
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
-#if 0
-enum {ARG_0, ARG_X1, ARG_Y1, ARG_X2, ARG_Y2};
-#endif
-
 static void sp_line_class_init (SPLineClass *class);
 static void sp_line_init (SPLine *line);
 static void sp_line_destroy (GtkObject *object);
-#if 0
-static void sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
-#endif
 
 static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_line_read_attr (SPObject * object, const gchar * attr);
@@ -71,17 +64,7 @@ sp_line_class_init (SPLineClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-#if 0
-	gtk_object_add_arg_type ("SPLine::x1", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X1);
-	gtk_object_add_arg_type ("SPLine::y1", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y1);
-	gtk_object_add_arg_type ("SPLine::x2", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X2);
-	gtk_object_add_arg_type ("SPLine::y2", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y2);
-#endif
-
 	gtk_object_class->destroy = sp_line_destroy;
-#if 0
-	gtk_object_class->set_arg = sp_line_set_arg;
-#endif
 
 	sp_object_class->build = sp_line_build;
 	sp_object_class->read_attr = sp_line_read_attr;
@@ -107,35 +90,6 @@ sp_line_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
-
-#if 0
-static void
-sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
-{
-	SPLine * line;
-
-	line = SP_LINE (object);
-
-	switch (arg_id) {
-	case ARG_X1:
-		line->x1 = GTK_VALUE_DOUBLE (*arg);
-		sp_line_set_shape (line);
-		break;
-	case ARG_Y1:
-		line->y1 = GTK_VALUE_DOUBLE (*arg);
-		sp_line_set_shape (line);
-		break;
-	case ARG_X2:
-		line->x2 = GTK_VALUE_DOUBLE (*arg);
-		sp_line_set_shape (line);
-		break;
-	case ARG_Y2:
-		line->y2 = GTK_VALUE_DOUBLE (*arg);
-		sp_line_set_shape (line);
-		break;
-	}
-}
-#endif
 
 static void
 sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr)

@@ -1,3 +1,13 @@
+2002-09-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-path.c (sp_path_bbox): Allow empty bboxen
+
+	* src/seltrans.c (sp_sel_trans_update_volatile_state): Increase bbox
+	by 1/8 pixels to behave well with zero-size items
+
+	* src/helper/art-utils.c (sp_bpath_matrix_d_bbox_d_union): Union always,
+	even if computed bbox is empty
+
 2002-09-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas-util.c (sp_canvas_item_grab): new method to

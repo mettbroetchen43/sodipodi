@@ -278,17 +278,9 @@ sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	for (l = path->comp; l != NULL; l = l->next) {
 		SPPathComp *comp;
 		gdouble a[6];
-
 		comp = (SPPathComp *) l->data;
 		art_affine_multiply (a, comp->affine, transform);
 		sp_bpath_matrix_d_bbox_d_union (SP_CURVE_BPATH (comp->curve), a, bbox, 0.25);
-	}
-
-	if (art_drect_empty (bbox)) {
-		bbox->x0 = transform[4];
-		bbox->y0 = transform[5];
-		bbox->x1 = transform[4];
-		bbox->y1 = transform[5];
 	}
 }
 

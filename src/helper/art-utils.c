@@ -181,9 +181,10 @@ sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const double *m, ArtDRect
 		}
 	}
 
-	if (!art_drect_empty (&b)) {
-		art_drect_union (bbox, bbox, &b);
-	}
+	bbox->x0 = MIN (bbox->x0, b.x0);
+	bbox->y0 = MIN (bbox->y0, b.y0);
+	bbox->x1 = MAX (bbox->x1, b.x1);
+	bbox->y1 = MAX (bbox->y1, b.y1);
 
 	return bbox;
 }
