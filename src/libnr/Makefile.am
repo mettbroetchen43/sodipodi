@@ -4,6 +4,7 @@ noinst_PROGRAMS = gen_nr_config testnr
 
 INCLUDES = \
 	-I.. \
+        -I../.. \
 	$(cflags) \
 	$(SODIPODI_CFLAGS)
 

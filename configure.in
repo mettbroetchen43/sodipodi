@@ -28,6 +28,25 @@ dnl fi
 AM_PROG_LIBTOOL
 
 dnl ******************************
+dnl Win32
+dnl ******************************
+AC_MSG_CHECKING([for MinGW platform])
+  case "$host" in
+    *-*-mingw*)
+      platform_win32=yes
+      ;;
+    *)
+      platform_win32=no
+      ;;
+  esac
+  AC_MSG_RESULT([$platform_win32])
+  AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
+if test x"$platform_win32" = xyes; then
+  CFLAGS="$CFLAGS -mms-bitfields"
+fi
+
+
+dnl ******************************
 dnl Gettext stuff
 dnl ******************************
 GETTEXT_PACKAGE=sodipodi
@@ -273,14 +292,35 @@ fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
+dnl KDE dialogs and printing support
 AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with kde support (experimental)]), [kde=$withval], [kde=no])
-
 AM_CONDITIONAL(USE_KDE, test "x$kde" = "xyes")
 if test "x$kde" = "xyes"; then
 	AC_PROG_CXX
 	AC_PATH_KDE
 	KDE_CHECK_NEWLIBS
 	AC_DEFINE(WITH_KDE, 1, [Use experimental kde support])
+fi
+
+dnl Experimental mlview dialog
+AC_ARG_WITH(mlview, AC_HELP_STRING([--with-mlview], [Compile with mlview (experimental)]), [mlview=$withval], [mlview=no])
+AM_CONDITIONAL(USE_MLVIEW, test "x$mlview" = "xyes")
+if test "x$mlview" = "xyes"; then
+	LIBGNOMEUI2_VERSION=2.0.3
+	LIBXML2_VERSION=2.4.30
+	GTK2_VERSION=2.0.6
+	LIBGLADE2_VERSION=0.17
+	GCONF_VERSION=2.4.0
+	PKG_CHECK_MODULES(MLVIEW, libgnomeui-2.0 >= $LIBGNOMEUI2_VERSION
+		libxml-2.0 >= $LIBXML2_VERSION
+		gtk+-2.0 >= $GTK2_VERSION
+		libglade-2.0 >= $LIBGLADE2_VERSION
+		gconf-2.0 >= $GCONF_VERSION, mlv=yes, mlv=no)
+	if test "x$mlv" != "xyes"; then
+		dnl No mlview found
+		AC_MSG_ERROR([--with-mlview was specified, but appropriate libraries could not found])
+	fi
+	AC_DEFINE(WITH_MLVIEW, 1, [Use experimental mlview support])
 fi
 
 dnl Have to add module makefiles (lauris)
@@ -298,6 +338,7 @@ src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
 src/modules/Makefile
+src/modules/mlview/Makefile
 extensions/Makefile
 po/Makefile.in
 glade/Makefile
@@ -318,5 +359,5 @@ Configuration:
         Use gnome-print:          ${gp}
         Use MMX optimizations:    ${use_mmx_asm}
 	KDE support:		  ${kde}
+	MLView support:		  ${mlview}
 "
-

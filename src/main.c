@@ -247,10 +247,12 @@ sp_main_gui (int argc, const char **argv)
 	sp_win32_init (0, NULL, "Sodipodi");
 #endif
 
+#ifdef DATADIR
 	/* Set default icon */
 	if (g_file_test (DATADIR "/pixmaps/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
 		gtk_window_set_default_icon_from_file (DATADIR "/pixmaps/sodipodi.png", NULL);
 	}
+#endif
 
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();

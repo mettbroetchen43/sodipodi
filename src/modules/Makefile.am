@@ -11,6 +11,16 @@ kde-private.cpp: kde-private.h
 	$(MOC) kde-private.h -o kde-private.cpp
 endif
 
+if PLATFORM_WIN32
+win32_source = win32.c win32.h 
+endif
+
+if USE_MLVIEW
+mlviewdir = mlview
+endif
+
+SUBDIRS = $(mlviewdir)
+
 extdir = $(libdir)/sodipodi/extensions
 extdatadir = $(datadir)/sodipodi/extensions
 
@@ -37,6 +47,7 @@ libspmodules_a_SOURCES = \
 	sp-module-sys.c \
 	sp-module-sys.h \
 	ps.c ps.h \
+	${win32_source} \
 	$(gnome_print_sources) \
 	$(kdeprivsources) \
 	$(kdesources)

@@ -8,6 +8,11 @@ kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT) $(KD
 kdeldflags = $(KDE_RPATH)
 endif
 
+if PLATFORM_WIN32
+	win32_sources = winmain.c
+	win32_ldflags = -lcomdlg32
+endif	
+
 SUBDIRS = libarikkei libnr libnrtype xml svg helper widgets dialogs display modules
 
 AM_CPPFLAGS = \
@@ -115,6 +120,7 @@ sodipodi_SOURCES = \
 	knot.c knot.h \
 	\
 	main.c \
+	${win32_sources} \
 	help.c help.h \
 	sp-cursor.c sp-cursor.h \
 	dir-util.c dir-util.h \
@@ -156,7 +162,8 @@ sodipodi_LDADD = \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
-	$(kdeldadd)
+	$(kdeldadd) \
+	${win32_ldflags}
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
@@ -172,6 +179,7 @@ spsvgview_SOURCES = \
 	print.c print.h
 
 spsvgview_LDADD = \
+	$(module_libs) \
 	$(spproglibs) \
 	$(module_libs) \
 	xml/libspxml.a \
@@ -185,8 +193,8 @@ spsvgview_LDADD = \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
-	$(module_libs) \
-	$(kdeldadd)
+	$(kdeldadd) \
+	${win32_ldflags}
 
 # widgets/libspwidgets.a
 # dialogs/libspdialogs.a

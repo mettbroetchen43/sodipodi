@@ -1,3 +1,8 @@
+2003-11-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/modules/mlview/Makefile.am: This is mostly placeholder by
+	now, but brave peole may try to get it compiling
+
 2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* Fixed input method bug completely. The bug was (1)
