@@ -9,6 +9,12 @@
 #------------------------------
 
 
+- for context menu (Right mousebutton)
+--------------------------------------
+
+Shift   - include insensitive item (make desktop sticky)
+
+
 - global bindings in event-context.c
 ------------------------------------
 
