@@ -1,5 +1,7 @@
 2003-03-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/modules/*: Various module implementations by Ted Gould
+
 	* extensions/*: Put various unsorted extensions stuff here
 
 	* src/module.c: New file
