@@ -1,0 +1,14 @@
+LibNR
+
+This is collection of RGB(A) rendering utilities.
+
+The code is in public domain, except linear gradient
+renderer, which contains code developed while working
+at Ximian.
+So you can do whatever with the code here, including
+sub-licensing it etc. etc.
+If you want your changes to be included in
+Sodipodi/LibNR, you have to put these in public
+domain as well.
+
+Lauris Kaplinski <lauris@kaplisnki.com>

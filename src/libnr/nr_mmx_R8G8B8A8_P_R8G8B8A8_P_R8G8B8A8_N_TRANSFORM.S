@@ -3,6 +3,12 @@
 	.align 2
 .globl nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0
 	.type	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0,@function
+
+/*
+ * This code is in public domain
+ *
+ */
+
 nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0:
 	pushl	%ebp
 	movl	%esp, %ebp

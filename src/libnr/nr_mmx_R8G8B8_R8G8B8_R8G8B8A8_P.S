@@ -5,6 +5,8 @@
 	.type	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P,@function
 
 /*
+ * This code is in public domain
+ *
  * alpha 32(%ebp)
  * srs	 28(%ebp)
  * spx	 24(%ebp)

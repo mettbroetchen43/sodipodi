@@ -7,9 +7,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001-2002 Lauris Kaplinski
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 typedef struct _NRNameList NRNameList;
