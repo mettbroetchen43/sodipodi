@@ -1,126 +1,134 @@
 # Turkish translation of sodipodi.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Fatih Demir <kabalak@gmx.net>, 2000.
+# Copyright (C) 2000-2003 Free Software Foundation, Inc.
+# Fatih Demir <kabalak@gtranslator.org>, 2000.
 # Mufit Eribol <meribol@ere.com.tr>, 2000.
+# Arman Aksoy <armish@linux-sevenler.de>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2003-01-28 21:19+0200\n"
-"PO-Revision-Date: 2000-12-01 16:37+0200\n"
-"Last-Translator: Mufit Eribol <meribol@ere.com.tr>\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"Project-Id-Version: sodipodi\n"
+"POT-Creation-Date: 2003-02-02 03:56+0100\n"
+"PO-Revision-Date: 2003-02-03 02:18+0200\n"
+"Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: sodipodi.desktop.in.h:1 src/toolbox.c:137 src/toolbox.c:159
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "VektÃ¶t Ã‡izimcisi"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr "sodipodi-svg-doc'u yaratamadım"
+msgstr "sodipodi-svg-doc Ã¼reticisi yaratÄ±lamadÄ±"
 
-#: src/desktop.c:672
+#. Sticky zoom
+#: src/desktop.c:673
 msgid "Whether zoom follows window size"
-msgstr ""
+msgstr "YakÄ±nlaÅŸtÄ±rma/UzaklaÅŸtÄ±rma pencere boyutuna baÄŸlÄ± olsun"
 
-#: src/desktop.c:751
+#: src/desktop.c:752
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr ""
+msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:872
+#: src/desktop.c:873
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr ""
+msgstr "%s dÃ¶kÃ¼manÄ± kaydedilmemiÅŸ deÄŸiÅŸiklikler iÃ§eriyor, kaydedilsin mi?"
 
 #: src/dialogs/align.c:120 src/toolbox.c:407
-#, fuzzy
 msgid "Align objects"
-msgstr "Nesne"
+msgstr "Nesneleri hizala"
 
 #: src/dialogs/align.c:138
-#, fuzzy
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "Nesne içini sol kenara hizala"
+msgstr "Ã‡apanÄ±n soluna hizalanmÄ±ÅŸ nesnelerin saÄŸ tarafÄ±"
 
 #: src/dialogs/align.c:140
 msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Ã‡apanÄ±n soluna hizalanmÄ±ÅŸ nesnelerin sol tarafÄ±"
 
 #: src/dialogs/align.c:142
-#, fuzzy
 msgid "Center horizontally"
-msgstr "yatay taşı"
+msgstr "Yatay hizala"
 
 #: src/dialogs/align.c:144
-#, fuzzy
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "Nesne içini sağ kenara hizala"
+msgstr "Ã‡apanÄ±n saÄŸÄ±na hizalanmÄ±ÅŸ nesnelerin saÄŸ tarafÄ±"
 
 #: src/dialogs/align.c:146
 msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Ã‡apanÄ±n saÄŸÄ±na hizalanmÄ±ÅŸ nesnelerin sol tarafÄ±"
 
 #: src/dialogs/align.c:149
 msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
+msgstr "Ã‡apanÄ±n Ã¼stÃ¼ne hizalanmÄ±ÅŸ nesnelerin altÄ±"
 
 #: src/dialogs/align.c:151 src/dialogs/align.c:157
-#, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "Nesne içini üst kenara hizala"
+msgstr "Ã‡apanÄ±n Ã¼stÃ¼ne hizalanmÄ±ÅŸ nesnelerin Ã¼stÃ¼"
 
 #: src/dialogs/align.c:153
-#, fuzzy
 msgid "Center vertically"
-msgstr "dikey taşı"
+msgstr "Dikey hizala"
 
 #: src/dialogs/align.c:155
-#, fuzzy
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "Nesne içini alt kenara hizala"
+msgstr "Ã‡apanÄ±n altÄ±na hizalanmÄ±ÅŸ nesnelerin altÄ±"
 
 #: src/dialogs/align.c:189
 msgid "Last selected"
-msgstr "Son seçilen"
+msgstr "Son seÃ§ilen"
 
 #: src/dialogs/align.c:190
 msgid "First selected"
-msgstr "İlk seçilen"
+msgstr "Ä°lk seÃ§ilen"
 
 #: src/dialogs/align.c:191
 msgid "Biggest item"
-msgstr "En büyük birim"
+msgstr "En bÃ¼yÃ¼k birim"
 
 #: src/dialogs/align.c:192
 msgid "Smallest item"
-msgstr "En küçük birim"
+msgstr "En kÃ¼Ã§Ã¼k birim"
 
+#. Page page
 #: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
 #: src/dialogs/document-properties.c:164 src/dialogs/export.c:126
-#: src/interface.c:361
+#: src/interface.c:360
 msgid "Page"
 msgstr "Sayfa"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:360
+#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:359
 msgid "Drawing"
-msgstr "Boyama"
+msgstr "Ã‡izim"
 
-#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:359
-#: src/interface.c:498 src/toolbox.c:446
+#. Selection submenu
+#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:358
+#: src/interface.c:497 src/toolbox.c:446
 msgid "Selection"
-msgstr "Seçim"
+msgstr "SeÃ§im"
 
 #: src/dialogs/desktop-properties.c:223
 msgid "Desktop settings"
-msgstr "Masaüstü ayarları"
+msgstr "MasaÃ¼stÃ¼ ayarlarÄ±"
 
+#. Grid settings
+#. Notebook tab
 #: src/dialogs/desktop-properties.c:232
 msgid "Grid"
 msgstr "Izgara"
 
+#. Checkbuttons
 #: src/dialogs/desktop-properties.c:242
 msgid "Show grid"
-msgstr "Izgarayı göster"
+msgstr "IzgarayÄ± gÃ¶ster"
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Snap to grid"
@@ -140,11 +148,11 @@ msgstr "Orijin Y:"
 
 #: src/dialogs/desktop-properties.c:293
 msgid "Spacing X:"
-msgstr "X aralığı:"
+msgstr "X aralÄ±ÄŸÄ±:"
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Spacing Y:"
-msgstr "Y aralığı:"
+msgstr "Y aralÄ±ÄŸÄ±:"
 
 #: src/dialogs/desktop-properties.c:321 src/dialogs/desktop-properties.c:380
 msgid "Snap units:"
@@ -152,7 +160,7 @@ msgstr "Yakalama birimleri:"
 
 #: src/dialogs/desktop-properties.c:333 src/dialogs/desktop-properties.c:392
 msgid "Snap distance:"
-msgstr "Yakalama uzaklığı:"
+msgstr "Yakalama uzaklÄ±ÄŸÄ±:"
 
 #: src/dialogs/desktop-properties.c:346
 msgid "Grid color:"
@@ -162,17 +170,18 @@ msgstr "Izgara rengi"
 msgid "Grid color"
 msgstr "Izgara rengi"
 
+#. Guidelines page
 #: src/dialogs/desktop-properties.c:356
 msgid "Guides"
 msgstr "Rehberler"
 
 #: src/dialogs/desktop-properties.c:365
 msgid "Show guides"
-msgstr "Şablonu göster"
+msgstr "Rehberleri gÃ¶ster"
 
 #: src/dialogs/desktop-properties.c:373
 msgid "Snap to guides"
-msgstr "Şablona yakala"
+msgstr "Rehberlere yakala"
 
 #: src/dialogs/desktop-properties.c:404
 msgid "Guides color:"
@@ -180,40 +189,37 @@ msgstr "Rehber rengi:"
 
 #: src/dialogs/desktop-properties.c:408
 msgid "Guideline color"
-msgstr "Şablon rengi"
+msgstr "Rehber satÄ±rÄ± rengi"
 
 #: src/dialogs/desktop-properties.c:413
 msgid "Highlight color:"
-msgstr "İşaret rengi:"
+msgstr "Ä°ÅŸaret rengi:"
 
 #: src/dialogs/desktop-properties.c:417
-#, fuzzy
 msgid "Highlighted guideline color"
-msgstr "İşaretli rehber çizgileri rengi"
+msgstr "Ä°ÅŸaretli rehber satÄ±rlarÄ±nÄ±n rengi"
 
 #: src/dialogs/desktop-properties.c:432
-#, fuzzy
 msgid "Show border"
-msgstr "Izgarayı göster"
+msgstr "AyrÄ±racÄ± gÃ¶ster"
 
 #: src/dialogs/desktop-properties.c:670
-#, fuzzy
 msgid "Close"
-msgstr "Yeni Görünüm"
+msgstr "Kapat"
 
 #: src/dialogs/display-settings.c:84
-#, fuzzy
 msgid "Display settings"
-msgstr "Dolgu ayarları"
+msgstr "GÃ¶rÃ¼ntÃ¼ ayarlarÄ±"
 
+#. Rendering settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:92
-#, fuzzy
 msgid "Rendering"
-msgstr "Yeni çizim"
+msgstr "Sunum"
 
 #: src/dialogs/display-settings.c:104
 msgid "Oversample bitmaps:"
-msgstr ""
+msgstr "Ã–rnek bitmapler:"
 
 #: src/dialogs/display-settings.c:115
 msgid "None"
@@ -221,97 +227,98 @@ msgstr "Yok"
 
 #: src/dialogs/display-settings.c:119
 msgid "2x2"
-msgstr ""
+msgstr "2x2"
 
 #: src/dialogs/display-settings.c:123
 msgid "4x4"
-msgstr ""
+msgstr "4x4"
 
 #: src/dialogs/display-settings.c:127
 msgid "8x8"
-msgstr ""
+msgstr "8x8"
 
 #: src/dialogs/display-settings.c:131
 msgid "16x16"
-msgstr ""
+msgstr "16x16"
 
+#. Input settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:142
 msgid "Input"
-msgstr ""
+msgstr "Girdi"
 
 #: src/dialogs/display-settings.c:153
 msgid "Default cursor tolerance:"
-msgstr ""
+msgstr "Ã–ntanÄ±mlÄ± kursor tÃ¶leransÄ±"
 
 #: src/dialogs/document-properties.c:155
 msgid "Document settings"
-msgstr "Döküman ayarları"
+msgstr "DÃ¶kÃ¼man ayarlarÄ±"
 
 #: src/dialogs/document-properties.c:176
 msgid "Paper size:"
-msgstr "Kağıt boyutu:"
+msgstr "KaÄŸÄ±t boyutu:"
 
 #: src/dialogs/document-properties.c:197
-#, fuzzy
 msgid "Custom"
-msgstr "Kes"
+msgstr "Ã–zel"
 
+#. Custom paper frame
 #: src/dialogs/document-properties.c:204
 msgid "Custom paper"
-msgstr "Standart dışı kağıt"
+msgstr "Ã–zel kaÄŸÄ±t"
 
+#. Unit selector
 #: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
 #: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:402
 #: src/dialogs/transformation.c:577
 msgid "Units:"
 msgstr "Birimler:"
 
+#. Stroke width
 #: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
 #: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
 #: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
 #: src/dialogs/stroke-style.c:540 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1074
 msgid "Width:"
-msgstr "Genişlik:"
+msgstr "GeniÅŸlik:"
 
 #: src/dialogs/document-properties.c:239 src/dialogs/export.c:185
 #: src/dialogs/export.c:210 src/dialogs/object-attributes.c:68
 #: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:361
 msgid "Height:"
-msgstr "Yükseklik:"
+msgstr "YÃ¼kseklik:"
 
 #: src/dialogs/export.c:106
-#, fuzzy
 msgid "Export bitmap"
-msgstr "İhraç et"
+msgstr "Bitmap'i dÄ±ÅŸarÄ± aktar"
 
+#. Export area frame
 #: src/dialogs/export.c:115
-#, fuzzy
 msgid "Export area"
-msgstr "İhraç ediliş şekli"
+msgstr "BÃ¶lÃ¼mÃ¼ dÄ±ÅŸarÄ± aktar"
 
 #: src/dialogs/export.c:152
 msgid "x0:"
-msgstr ""
+msgstr "x0:"
 
 #: src/dialogs/export.c:159
-#, fuzzy
 msgid "x1:"
-msgstr "1:1"
+msgstr "x1:"
 
 #: src/dialogs/export.c:172
 msgid "y0:"
-msgstr ""
+msgstr "y0:"
 
 #: src/dialogs/export.c:179
-#, fuzzy
 msgid "y1:"
-msgstr "1:1"
+msgstr "y1:"
 
+#. Bitmap size frame
 #: src/dialogs/export.c:191
-#, fuzzy
 msgid "Bitmap size"
-msgstr "Resim boyutu"
+msgstr "Bitmap boyutu"
 
 #: src/dialogs/export.c:200 src/dialogs/export.c:210
 msgid "pixels"
@@ -322,531 +329,487 @@ msgid "dpi"
 msgstr "dpi"
 
 #: src/dialogs/export.c:221
-#, fuzzy
 msgid "Export png file"
-msgstr "İhraç et"
+msgstr "Png dosyasÄ±nÄ± dÄ±ÅŸarÄ± aktar"
 
-#: src/dialogs/export.c:235 src/interface.c:221
+#: src/dialogs/export.c:235 src/interface.c:220
 msgid "Export"
-msgstr "İhraç et"
+msgstr "DÄ±ÅŸarÄ± aktar"
 
 #: src/dialogs/fill-style.c:91
-#, fuzzy
 msgid "Fill style"
-msgstr "Yazıtipi ayarları"
+msgstr "Doldurma stili"
 
 #: src/dialogs/fill-style.c:126
-#, fuzzy
 msgid "Fill Rule"
-msgstr "Dolgu"
+msgstr "Doldurma KurallarÄ±"
 
 #: src/dialogs/fill-style.c:140
-#, fuzzy
 msgid "nonzero"
-msgstr "yok"
+msgstr "boÅŸ deÄŸil"
 
 #: src/dialogs/fill-style.c:145
 msgid "evenodd"
-msgstr ""
+msgstr "rastgele"
 
 #: src/dialogs/item-properties.c:77
 msgid "Sensitive"
-msgstr ""
+msgstr "DuyarlÄ±"
 
 #: src/dialogs/item-properties.c:82
 msgid "Visible"
-msgstr ""
+msgstr "GÃ¶rÃ¼nÃ¼r"
 
 #: src/dialogs/item-properties.c:87
 msgid "Active"
-msgstr ""
+msgstr "Aktif"
 
 #: src/dialogs/item-properties.c:92
-#, fuzzy
 msgid "Printable"
-msgstr "Dosyayı yazdır"
+msgstr "YazÄ±labilir"
 
 #: src/dialogs/item-properties.c:103
 msgid "Opacity:"
-msgstr ""
+msgstr "Donukluk:"
 
 #: src/dialogs/item-properties.c:122
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "Dönüştürme diyalogu"
+msgstr "DÃ¶Ã¼nÃ¼ÅŸÃ¼m kalÄ±bÄ±"
 
 #: src/dialogs/item-properties.c:240
 msgid "Item is reference"
-msgstr ""
+msgstr "Nesne referans"
 
 #: src/dialogs/item-properties.c:246 src/dialogs/item-properties.c:300
 msgid "The SVG ID of item"
-msgstr ""
+msgstr "Nesnenin SVG numarasÄ±"
 
 #: src/dialogs/item-properties.c:302
 msgid "The ID is not valid"
-msgstr ""
+msgstr "Numara geÃ§erli deÄŸil"
 
 #: src/dialogs/item-properties.c:304
 msgid "The ID is already defined"
-msgstr ""
+msgstr "Numara Ã¶nceden belirlenmiÅŸ"
 
 #: src/dialogs/item-properties.c:307
 msgid "The ID is valid"
-msgstr ""
+msgstr "Numara geÃ§erli"
 
 #: src/dialogs/item-properties.c:384
-#, fuzzy
 msgid "Item properties"
-msgstr "nesne özellikleri"
+msgstr "Nesne Ã¶zellikleri"
 
 #: src/dialogs/object-attributes.c:30
-#, fuzzy
 msgid "Href:"
-msgstr "Değer:"
+msgstr "DeÄŸer:"
 
 #: src/dialogs/object-attributes.c:31
 msgid "Target:"
-msgstr ""
+msgstr "Hedef:"
 
 #: src/dialogs/object-attributes.c:32
 msgid "Type:"
-msgstr ""
+msgstr "Tip:"
 
 #: src/dialogs/object-attributes.c:33
-#, fuzzy
 msgid "Role:"
-msgstr "Yeniden yap"
+msgstr "Ä°ÅŸlev:"
 
 #: src/dialogs/object-attributes.c:34
 msgid "Arcrole:"
-msgstr ""
+msgstr "Arcrole:"
 
 #: src/dialogs/object-attributes.c:35
-#, fuzzy
 msgid "Title:"
-msgstr "Dosya"
+msgstr "BaÅŸlÄ±k:"
 
 #: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:110
 msgid "Show:"
-msgstr ""
+msgstr "GÃ¶ster:"
 
 #: src/dialogs/object-attributes.c:37
-#, fuzzy
 msgid "Actuate:"
-msgstr "Özellik:"
+msgstr "Ã‡alÄ±ÅŸtÄ±r:"
 
 #: src/dialogs/object-attributes.c:42
-#, fuzzy
 msgid "Sides:"
-msgstr "Rehberler"
+msgstr "BÃ¶lÃ¼mler:"
 
 #: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
-#, fuzzy
 msgid "Center X:"
-msgstr "İçerik"
+msgstr "Merkezi X:"
 
 #: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
-#, fuzzy
 msgid "Center Y:"
-msgstr "İçerik"
+msgstr "Merkezi Y:"
 
 #: src/dialogs/object-attributes.c:45
-#, fuzzy
 msgid "R1:"
-msgstr "1:1"
+msgstr "R1:"
 
 #: src/dialogs/object-attributes.c:46
-#, fuzzy
 msgid "R2:"
-msgstr "2:1"
+msgstr "R2:"
 
 #: src/dialogs/object-attributes.c:47
 msgid "ARG1:"
-msgstr ""
+msgstr "ARG1:"
 
 #: src/dialogs/object-attributes.c:48
 msgid "ARG2:"
-msgstr ""
+msgstr "ARG2:"
 
+#. Expansion
 #: src/dialogs/object-attributes.c:55 src/spiral-context.c:362
 msgid "Expansion:"
-msgstr ""
+msgstr "GeniÅŸletme:"
 
+#. Revolution
 #: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
-#, fuzzy
 msgid "Revolution:"
-msgstr "Seçim"
+msgstr "Devir:"
 
 #: src/dialogs/object-attributes.c:57
 msgid "Radius:"
-msgstr ""
+msgstr "Ã‡evre:"
 
 #: src/dialogs/object-attributes.c:58
 msgid "Argument:"
-msgstr ""
+msgstr "ArgÃ¼man:"
 
 #: src/dialogs/object-attributes.c:59
 msgid "T0:"
-msgstr ""
+msgstr "T0:"
 
 #: src/dialogs/object-attributes.c:64
 msgid "URL:"
-msgstr ""
+msgstr "Adres:"
 
 #: src/dialogs/object-attributes.c:65 src/dialogs/object-attributes.c:73
 #: src/dialogs/object-properties.c:316
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
 #: src/dialogs/object-properties.c:331
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 #: src/dialogs/object-attributes.c:77
 msgid "RX:"
-msgstr ""
+msgstr "RX:"
 
 #: src/dialogs/object-attributes.c:78
 msgid "RY:"
-msgstr ""
+msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:108
-#, fuzzy, c-format
+#, c-format
 msgid "%s attributes"
-msgstr "Özellikler"
+msgstr "%s Ã¶zellikleri"
 
 #: src/dialogs/object-properties.c:89
-#, fuzzy
 msgid "Object style"
-msgstr "Nesne"
+msgstr "Nesne stili"
 
 #: src/dialogs/object-properties.c:104
 msgid "Fill"
-msgstr "Dolgu"
+msgstr "Doldur"
 
 #: src/dialogs/object-properties.c:118
-#, fuzzy
 msgid "Stroke paint"
-msgstr "Sayfa genişliğini ayarla"
+msgstr "Resme vuruÅŸ"
 
 #: src/dialogs/object-properties.c:132
-#, fuzzy
 msgid "Stroke style"
-msgstr "Baskı ayarları"
+msgstr "VuruÅŸ stili"
 
 #: src/dialogs/object-properties.c:152
 msgid "Apply to:"
-msgstr ""
+msgstr "Uygula:"
 
 #: src/dialogs/object-properties.c:163
-#, fuzzy
 msgid "Selected objects"
-msgstr "Seçili nesneleri tersine çevir"
+msgstr "SeÃ§ilen nesneler"
 
 #: src/dialogs/object-properties.c:167
 msgid "All shape tools"
-msgstr ""
+msgstr "TÃ¼m ÅŸekillendirme  araÃ§larÄ±"
 
 #: src/dialogs/object-properties.c:171
-#, fuzzy
 msgid "Rectangle tool"
-msgstr "Dörtgen"
+msgstr "DÃ¶rtgen aracÄ±"
 
 #: src/dialogs/object-properties.c:175
 msgid "Arc tool"
-msgstr ""
+msgstr "EÄŸik Ã§izim aracÄ±"
 
 #: src/dialogs/object-properties.c:179
-#, fuzzy
 msgid "Star tool"
-msgstr "Baskı rengi : "
+msgstr "YÄ±ldÄ±z aracÄ±"
 
 #: src/dialogs/object-properties.c:183
 msgid "Spiral tool"
-msgstr ""
+msgstr "Spiral aracÄ±"
 
 #: src/dialogs/object-properties.c:187
-#, fuzzy
 msgid "Freehand and pen"
-msgstr "Serbest"
+msgstr "Serbest ve kalem Ã§izimi"
 
 #: src/dialogs/object-properties.c:191
 msgid "Calligraphic line"
-msgstr ""
+msgstr "Karalama Ã§izgisi"
 
-#: src/dialogs/object-properties.c:195 src/interface.c:391
+#: src/dialogs/object-properties.c:195 src/interface.c:390
 msgid "Text"
 msgstr "Metin"
 
 #: src/dialogs/object-properties.c:269
 msgid "Object position and size"
-msgstr ""
+msgstr "Nesne konumu ve boyutu"
 
 #: src/dialogs/object-properties.c:291
-#, fuzzy
 msgid "Position and size"
-msgstr "Konum"
+msgstr "Konum ve boyut"
 
 #: src/dialogs/stroke-style.c:527 src/toolbox.c:403
 msgid "Stroke settings"
-msgstr "Baskı ayarları"
+msgstr "VuruÅŸ ayarlarÄ±"
 
+#. Join type
 #: src/dialogs/stroke-style.c:563
-#, fuzzy
 msgid "Join:"
-msgstr " Ekle "
+msgstr "Ekle:"
 
+#. Cap type
 #: src/dialogs/stroke-style.c:606
-#, fuzzy
 msgid "Cap:"
-msgstr " Kapak "
+msgstr "Kapak:"
 
+#. Dash
 #: src/dialogs/stroke-style.c:649
-#, fuzzy
 msgid "Pattern:"
-msgstr "Motif"
+msgstr "Motif:"
 
 #: src/dialogs/text-edit.c:88
-#, fuzzy
 msgid "Text properties"
-msgstr "nesne özellikleri"
+msgstr "Metin Ã¶zellikleri"
 
+#. Layout
 #: src/dialogs/text-edit.c:133
 msgid "Layout"
 msgstr "Konumlama"
 
 #: src/dialogs/text-edit.c:143
-#, fuzzy
 msgid "Alignment:"
-msgstr "Hizala"
+msgstr "Hiza:"
 
 #: src/dialogs/text-edit.c:175
 msgid "Orientation:"
-msgstr ""
+msgstr "Oran:"
 
 #: src/dialogs/text-edit.c:203
 msgid "Text and font"
-msgstr ""
+msgstr "Metin ve yazÄ± tipi"
 
 #: src/dialogs/text-edit.c:217
 msgid "Set as default"
-msgstr ""
+msgstr "Ã–ntanÄ±mlÄ± olarak ata"
 
 #: src/dialogs/tool-attributes.c:45
-#, fuzzy
 msgid "Tool attributes"
-msgstr "Özellikler"
+msgstr "AraÃ§ Ã¶zellikleri"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
-msgstr ""
+msgstr "GeniÅŸletme"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Inner radius"
-msgstr ""
+msgstr "Ä°Ã§ Ã§evre"
 
 #: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
 #: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
-msgstr ""
+msgstr "Eksik araÃ§ ayarlarÄ±"
 
+#. Magnitude
 #: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
-msgstr ""
+msgstr "KÃ¶ÅŸeler:"
 
 #: src/dialogs/tool-attributes.c:100
-#, fuzzy
 msgid "Proportion"
-msgstr "Konum"
+msgstr "OrantÄ±"
 
 #: src/dialogs/tool-attributes.c:110
-#, fuzzy
 msgid "Transform:"
-msgstr "_Dönüştür"
+msgstr "DÃ¶nÃ¼ÅŸÃ¼m:"
 
+#. Mass
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1038
 msgid "Mass:"
-msgstr ""
+msgstr "BÃ¼yÃ¼k:"
 
+#. Drag
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1050
-#, fuzzy
 msgid "Drag:"
-msgstr "Çiz\t"
+msgstr "SÃ¼rÃ¼kle:"
 
 #: src/dialogs/tool-attributes.c:120
-#, fuzzy
 msgid "Angle"
-msgstr "Değiştir"
+msgstr "AÃ§Ä±"
 
 #: src/dialogs/tool-attributes.c:127
-#, fuzzy
 msgid "Tool has no attributes"
-msgstr "Özelliği değiştir"
+msgstr "AracÄ±n Ã¶zellikleri yok"
 
 #: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:89
 msgid "No active tool"
-msgstr ""
+msgstr "Aktif araÃ§ yok"
 
 #: src/dialogs/tool-options.c:45
-#, fuzzy
 msgid "Tool options"
-msgstr "Acemi seçenekleri"
+msgstr "AraÃ§ ayarlarÄ±"
 
 #: src/dialogs/tool-options.c:86
-#, fuzzy
 msgid "Tool has no options"
-msgstr "Acemi seçenekleri"
+msgstr "AracÄ±n Ã¶zelliÄŸi yok"
 
 #: src/dialogs/transformation.c:194
 msgid "Transform selection"
-msgstr "Seçileni dönüştür"
+msgstr "SeÃ§ileni dÃ¶nÃ¼ÅŸtÃ¼r"
 
 #: src/dialogs/transformation.c:366
 msgid "Move"
-msgstr "Taşı"
+msgstr "TaÅŸÄ±"
 
+#. Relative moves
 #: src/dialogs/transformation.c:408
-#, fuzzy
 msgid "Relative move"
-msgstr "dikey"
+msgstr "BaÄŸlantÄ±lÄ± taÅŸÄ±"
 
-#: src/dialogs/transformation.c:540 src/interface.c:363
+#: src/dialogs/transformation.c:540 src/interface.c:362
 msgid "Scale"
-msgstr "Boyutla"
+msgstr "Cetvel"
 
 #: src/dialogs/transformation.c:667
 msgid "Rotate"
-msgstr "Dönder"
+msgstr "DÃ¶nder"
 
 #: src/dialogs/transformation.c:685
-#, fuzzy
 msgid "deg"
 msgstr "derece"
 
 #: src/dialogs/xml-tree.c:157
-#, fuzzy
 msgid "Drag to reorder nodes"
-msgstr "Serbest şekil çiz"
+msgstr "Yeni dÃ¼zenlenen dÃ¼ÄŸÃ¼mlere taÅŸÄ±"
 
 #: src/dialogs/xml-tree.c:170
-#, fuzzy
 msgid "New element node"
-msgstr "Yeni dosya"
+msgstr "Yeni Ã¶ÄŸe dÃ¼ÄŸÃ¼mÃ¼"
 
 #: src/dialogs/xml-tree.c:188
 msgid "New text node"
-msgstr ""
+msgstr "Yeni metin dÃ¼ÄŸÃ¼mÃ¼"
 
 #: src/dialogs/xml-tree.c:205
-#, fuzzy
 msgid "Duplicate node"
-msgstr "Klonla"
+msgstr "DÃ¼ÄŸÃ¼mÃ¼ Ã§iftle"
 
 #: src/dialogs/xml-tree.c:221
-#, fuzzy
 msgid "Delete node"
-msgstr "Sil"
+msgstr "DÃ¼ÄŸÃ¼mÃ¼ sil"
 
 #: src/dialogs/xml-tree.c:234
-#, fuzzy
 msgid "Unindent node"
-msgstr "Noktaları değiştir"
+msgstr "DÃ¼ÄŸÃ¼mÃ¼ dÃ¼zelt"
 
 #: src/dialogs/xml-tree.c:245
-#, fuzzy
 msgid "Indent node"
-msgstr "Noktaları değiştir"
+msgstr "DÃ¼ÄŸÃ¼me girinti ekle"
 
 #: src/dialogs/xml-tree.c:255
-#, fuzzy
 msgid "Raise node"
-msgstr "Dörtgen"
+msgstr "DÃ¼ÄŸÃ¼mÃ¼ bÃ¼yÃ¼t"
 
 #: src/dialogs/xml-tree.c:266
 msgid "Lower node"
-msgstr ""
+msgstr "DÃ¼ÄŸÃ¼mÃ¼ kÃ¼Ã§Ã¼lt"
 
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
-msgstr "Özelliği sil"
+msgstr "Ã–zelliÄŸi sil"
 
 #: src/dialogs/xml-tree.c:333
-#, fuzzy
 msgid "Attribute name"
-msgstr "Özellik:"
+msgstr "Ã–zellik adÄ±"
 
 #: src/dialogs/xml-tree.c:340
-#, fuzzy
 msgid "Set attribute"
-msgstr "Özelliği sil"
+msgstr "Ã–zellik ata"
 
 #: src/dialogs/xml-tree.c:353
-#, fuzzy
 msgid "Attribute value"
-msgstr "Özellikler"
+msgstr "Ã–zellik deÄŸeri"
 
 #: src/dialogs/xml-tree.c:825
 #, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr ""
+msgstr "Sodipodi: %s : XML GÃ¶rÃ¼nÃ¼mÃ¼"
 
 #: src/dialogs/xml-tree.c:848
-#, fuzzy
 msgid "New element node..."
-msgstr "Yeni dosya"
+msgstr "Yeni Ã¶ÄŸe dÃ¼ÄŸÃ¼mÃ¼..."
 
 #: src/dialogs/xml-tree.c:868
-#, fuzzy
 msgid "Cancel"
-msgstr "Değiştir"
+msgstr "Ä°ptal"
 
 #: src/dialogs/xml-tree.c:872
-#, fuzzy
 msgid "Create"
-msgstr "İçerik"
+msgstr "Yarat"
 
-#: src/document.c:337
-#, fuzzy, c-format
+#: src/document.c:334
+#, c-format
 msgid "New document %d"
-msgstr "Belge"
+msgstr "Yeni dÃ¶kÃ¼man %d"
 
-#: src/document.c:366
+#: src/document.c:363
 #, c-format
 msgid "Memory document %d"
-msgstr ""
+msgstr "HafÄ±za dÃ¶kÃ¼manÄ± %d"
 
-#: src/document.c:452
+#: src/document.c:449
 #, c-format
 msgid "Unnamed document %d"
-msgstr ""
+msgstr "AdlandÄ±rÄ±lmamÄ±ÅŸ dÃ¶kÃ¼man %d"
 
+#. Angle
 #: src/dyna-draw-context.c:1062
-#, fuzzy
 msgid "Angle:"
-msgstr "Değiştir"
+msgstr "aÃ§Ä±:"
 
+#. Reset
 #: src/dyna-draw-context.c:1086 src/rect-context.c:430
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
-msgstr ""
+msgstr "Ã–ntanÄ±mlÄ±"
 
 #: src/print.c:334
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (döküman %s..): Yazdırma Önizlemesi"
+msgstr "Sodipodi (dÃ¶kÃ¼man %s..): YazdÄ±rma Ã–nizlemesi"
 
 #: src/print.c:357
-#, fuzzy
 msgid "Select printer"
-msgstr "Seçim"
+msgstr "YazÄ±cÄ±yÄ± seÃ§in"
 
 #: src/print.c:397 src/print.c:408
-#, fuzzy
 msgid "Print destination"
-msgstr "Çizimi yazdır"
+msgstr "Hedefi yazdÄ±r"
 
 #: src/print.c:415
 msgid ""
@@ -854,602 +817,582 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+"Hedef lpr kuyruÄŸunu girin.\n"
+"Dosyaya yazmak iÃ§in '>dosyaadi' \n"
+"Programa yÃ¶nlendirmek iÃ§in '|' kullanÄ±n"
 
+#. rx_ratio
 #: src/rect-context.c:406
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "X iÃ§in yuvarlaklÄ±k deÄŸeri:"
 
+#. ry_ratio
 #: src/rect-context.c:418
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Y iÃ§in yuvarlaklÄ±k deÄŸeri:"
 
 #: src/select-context.c:630
-#, fuzzy
 msgid "Visual transformation"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "GÃ¶rÃ¼ntÃ¼lÃ¼ dÃ¶nÃ¼ÅŸÃ¼m"
 
 #: src/select-context.c:638
-#, fuzzy
 msgid "Show content"
-msgstr "İçerik"
+msgstr "Ä°Ã§eriÄŸi gÃ¶ster"
 
 #: src/select-context.c:645
-#, fuzzy
 msgid "Show outline"
-msgstr "Şablonu göster"
+msgstr "TaslaÄŸÄ± gÃ¶ster"
 
 #: src/select-context.c:652
-#, fuzzy
 msgid "Object transformation"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "Nesne dÃ¶nÃ¼ÅŸÃ¼mÃ¼"
 
 #: src/select-context.c:660
 msgid "Optimize"
-msgstr ""
+msgstr "Optimize"
 
 #: src/select-context.c:667
 msgid "Preserve"
-msgstr ""
+msgstr "Koru"
 
+#. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
-msgstr ""
+msgstr "Ä°Ã§ Ã§evre:"
 
+#. Proportion
 #: src/star-context.c:367
-#, fuzzy
 msgid "Proportion:"
-msgstr "Konum"
+msgstr "OrantÄ±:"
 
+#. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
-msgstr ""
+msgstr "KenarlarÄ± dÃ¼zleÅŸtir"
 
 #: src/file.c:115
 msgid "Select file to open"
-msgstr "Açılacak dosyayı seç"
+msgstr "AÃ§Ä±lacak dosyayÄ± seÃ§in"
 
 #: src/file.c:203
 msgid "Save file"
-msgstr "Dosyayı kaydet"
+msgstr "DosyayÄ± kaydet"
 
 #: src/file.c:219
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr ""
+msgstr "\"xmlns:sodipodi\" ad boÅŸluÄŸu ile SVG"
 
 #: src/file.c:225
 msgid "Plain SVG"
-msgstr ""
+msgstr "DÃ¼z SVG"
 
 #: src/file.c:231
 msgid "Save as:"
-msgstr ""
+msgstr "FarklÄ± kaydet:"
 
 #: src/file.c:384
 msgid "Select file to import"
-msgstr "İthal edilecek dosyayı seç"
+msgstr "Ä°Ã§eri aktarÄ±lacak dosyayÄ± seÃ§in"
 
 #: src/help.c:48
-#, fuzzy
 msgid "About sodipodi"
-msgstr "Sodipodi"
+msgstr "Sodipodi hakkÄ±nda"
 
+#. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
-#, fuzzy
 msgid "Unit"
-msgstr "Birimler:"
+msgstr "Birim"
 
 #: src/helper/units.c:40
-#, fuzzy
 msgid "Units"
-msgstr "Birimler:"
+msgstr "Birimler"
 
 #: src/helper/units.c:41
-#, fuzzy
 msgid "Point"
-msgstr "Yazdır"
+msgstr "Nokta"
 
 #: src/helper/units.c:41
 msgid "pt"
-msgstr ""
+msgstr "pt"
 
 #: src/helper/units.c:41
-#, fuzzy
 msgid "Points"
-msgstr "Yazdır"
+msgstr "Noktalar"
 
 #: src/helper/units.c:41
 msgid "Pt"
-msgstr ""
+msgstr "Pt"
 
 #: src/helper/units.c:42
-#, fuzzy
 msgid "Pixel"
-msgstr "Piksel\n"
+msgstr "Piksel"
 
 #: src/helper/units.c:42
-#, fuzzy
 msgid "px"
-msgstr "x"
+msgstr "px"
 
 #: src/helper/units.c:42
-#, fuzzy
 msgid "Pixels"
-msgstr "Piksel\n"
+msgstr "Piksel"
 
 #: src/helper/units.c:42
 msgid "Px"
-msgstr ""
+msgstr "Px"
 
 #: src/helper/units.c:43
 msgid "Userspace unit"
-msgstr ""
+msgstr "KullanÄ±cÄ± boÅŸluk birimi"
 
 #: src/helper/units.c:43
 msgid "User"
-msgstr ""
+msgstr "KullanÄ±cÄ±"
 
 #: src/helper/units.c:43
 msgid "Userspace units"
-msgstr ""
+msgstr "KullanÄ±cÄ± boÅŸluk birimleri"
 
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
 #: src/helper/units.c:46
-#, fuzzy
 msgid "Percent"
-msgstr "Yazdır"
+msgstr "YÃ¼zde"
 
 #: src/helper/units.c:46
-#, fuzzy
 msgid "%"
-msgstr "% "
+msgstr "%"
 
 #: src/helper/units.c:46
-#, fuzzy
 msgid "Percents"
-msgstr "Yazdır"
+msgstr "YÃ¼zde"
 
 #: src/helper/units.c:47
-#, fuzzy
 msgid "Millimeter"
-msgstr "Milimetre\n"
+msgstr "Milimetr"
 
 #: src/helper/units.c:47
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: src/helper/units.c:47
-#, fuzzy
 msgid "Millimeters"
-msgstr "Milimetre\n"
+msgstr "Milimetre"
 
 #: src/helper/units.c:48
 msgid "Centimeter"
-msgstr ""
+msgstr "Santimetre"
 
 #: src/helper/units.c:48
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #: src/helper/units.c:48
-#, fuzzy
 msgid "Centimeters"
-msgstr "İçerik"
+msgstr "Santrimetre"
 
 #: src/helper/units.c:49
-#, fuzzy
 msgid "Meter"
-msgstr "İçerik"
+msgstr "Metre"
 
 #: src/helper/units.c:49
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #: src/helper/units.c:49
-#, fuzzy
 msgid "meters"
-msgstr "miter"
+msgstr "metre"
 
 #: src/helper/units.c:50
 msgid "Inch"
-msgstr ""
+msgstr "Ä°nÃ§"
 
 #: src/helper/units.c:50
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #: src/helper/units.c:50
 msgid "Inches"
-msgstr ""
+msgstr "Ä°nÃ§"
 
 #: src/helper/units.c:51
-#, fuzzy
 msgid "Em square"
-msgstr "kare"
+msgstr "Metrekare"
 
 #: src/helper/units.c:51
 msgid "em"
-msgstr ""
+msgstr "em"
 
 #: src/helper/units.c:51
-#, fuzzy
 msgid "Em squares"
-msgstr "kare"
+msgstr "Metrekare"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "Ex square"
-msgstr "kare"
+msgstr "Ex square"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "ex"
-msgstr "Metin"
+msgstr "ex"
 
 #: src/helper/units.c:52
-#, fuzzy
 msgid "Ex squares"
-msgstr "kare"
+msgstr "Ex squares"
 
-#: src/interface.c:215 src/interface.c:416
+#: src/interface.c:214 src/interface.c:415
 msgid "New"
 msgstr "Yeni"
 
-#: src/interface.c:216 src/interface.c:417
+#: src/interface.c:215 src/interface.c:416
 msgid "Open"
-msgstr "Aç"
+msgstr "AÃ§"
+
+#: src/interface.c:216
+msgid "Save"
+msgstr "Kayde"
 
 #: src/interface.c:217
-#, fuzzy
-msgid "Save"
-msgstr "Kaydet\t"
-
-#: src/interface.c:218
-#, fuzzy
 msgid "Save as"
-msgstr "Dosyayı kaydet"
+msgstr "FarklÄ± kaydet"
 
-#: src/interface.c:220
+#: src/interface.c:219
 msgid "Import"
-msgstr "İthal et"
+msgstr "Ä°Ã§eri Aktar"
+
+#: src/interface.c:222
+msgid "Print"
+msgstr "YazdÄ±r"
 
 #: src/interface.c:223
-msgid "Print"
-msgstr "Yazdır"
-
-#: src/interface.c:224
-#, fuzzy
 msgid "Print Preview"
-msgstr "Önizlemeyi _Yazdır"
+msgstr "Ã–nizleme"
 
-#: src/interface.c:227
-#, fuzzy
+#: src/interface.c:226
 msgid "Close View"
-msgstr "Yeni Görünüm"
+msgstr "GÃ¶rÃ¼nÃ¼mÃ¼ Kapat"
 
-#: src/interface.c:228 src/interface.c:422
+#: src/interface.c:227 src/interface.c:421
 msgid "Exit Program"
-msgstr ""
+msgstr "Programdan Ã‡Ä±k"
 
-#: src/interface.c:230 src/interface.c:420
-#, fuzzy
+#: src/interface.c:229 src/interface.c:419
 msgid "About Sodipodi"
-msgstr "Sodipodi"
+msgstr "Sodipodi HakkÄ±nda"
 
-#: src/interface.c:236
+#: src/interface.c:235
 msgid "Cut"
 msgstr "Kes"
 
-#: src/interface.c:237
+#: src/interface.c:236
 msgid "Copy"
 msgstr "Kopya"
 
-#: src/interface.c:238
+#: src/interface.c:237
 msgid "Paste"
-msgstr "Yapış"
+msgstr "YapÄ±ÅŸtÄ±r"
+
+#: src/interface.c:239
+msgid "Duplicate"
+msgstr "Ã‡iftle"
 
 #: src/interface.c:240
-msgid "Duplicate"
-msgstr "Klonla"
-
-#: src/interface.c:241
 msgid "Delete"
 msgstr "Sil"
 
-#: src/interface.c:243
-#, fuzzy
+#: src/interface.c:242
 msgid "Clear all"
-msgstr " Renkli dolgu "
+msgstr "Hepsini temizle"
 
-#: src/interface.c:244
+#: src/interface.c:243
 msgid "Cleanup"
-msgstr ""
+msgstr "Temizle"
 
-#: src/interface.c:253 src/sp-item-group.c:515
-#, fuzzy
+#. Selection:Group
+#: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
-msgstr "_Grup"
+msgstr "Grupla"
 
-#: src/interface.c:258 src/sp-item-group.c:532
-#, fuzzy
+#. Selection:Ungroup
+#: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
-msgstr "Gr_ubu çöz"
+msgstr "GruplarÄ± KaldÄ±r"
 
-#: src/interface.c:267
-#, fuzzy
+#. Selection:Combine
+#: src/interface.c:266
 msgid "Combine"
-msgstr "_Birleştir"
+msgstr "BirleÅŸtir"
 
-#: src/interface.c:272
-#, fuzzy
+#. Selection:Break apart
+#: src/interface.c:271
 msgid "Break apart"
-msgstr "_Kopar"
+msgstr "Kopar"
 
-#: src/interface.c:281
+#. Selection:Order
+#: src/interface.c:280
 msgid "Order"
-msgstr "Sırala"
+msgstr "SÄ±rala"
 
-#: src/interface.c:285
-#, fuzzy
+#: src/interface.c:284
 msgid "Bring to Front"
-msgstr "Ö_ne Getir"
+msgstr "Ã–ne Getir"
 
-#: src/interface.c:289
-#, fuzzy
+#: src/interface.c:288
 msgid "Send to Back"
-msgstr "Arka_ya it"
+msgstr "Arkaya it"
 
-#: src/interface.c:293
-#, fuzzy
+#: src/interface.c:292
 msgid "Raise"
-msgstr "Dörtgen"
+msgstr "BÃ¼yÃ¼t"
 
-#: src/interface.c:297
+#: src/interface.c:296
 msgid "Lower"
-msgstr ""
+msgstr "KÃ¼Ã§Ã¼lt"
 
-#: src/interface.c:355 src/interface.c:392 src/toolbox.c:565
+#. View:Zoom
+#: src/interface.c:354 src/interface.c:391 src/toolbox.c:565
 msgid "Zoom"
-msgstr "Büyüt"
+msgstr "BÃ¼yÃ¼t"
 
-#: src/interface.c:367
+#: src/interface.c:366
 msgid "1:2"
 msgstr "1:2"
 
-#: src/interface.c:368
+#: src/interface.c:367
 msgid "1:1"
 msgstr "1:1"
 
-#: src/interface.c:369
+#: src/interface.c:368
 msgid "2:1"
 msgstr "2:1"
 
-#: src/interface.c:371
+#. View:New View
+#: src/interface.c:370
 msgid "New View"
-msgstr "Yeni Görünüm"
+msgstr "Yeni GÃ¶rÃ¼nÃ¼m"
 
-#: src/interface.c:373
-#, fuzzy
+#. View:New Preview
+#: src/interface.c:372
 msgid "New Preview"
-msgstr "Yeni Görünüm"
+msgstr "Yeni Ã–nizleme"
+
+#: src/interface.c:374
+msgid "New Toplevel Toolbox"
+msgstr "Yeni YÃ¼ksek Seviye AraÃ§ Kutusu"
 
 #: src/interface.c:375
-msgid "New Toplevel Toolbox"
-msgstr ""
+msgid "New Docked Toolbox"
+msgstr "Yeni KÃ¼Ã§Ã¼k AraÃ§ Kutusu"
 
 #: src/interface.c:376
-msgid "New Docked Toolbox"
-msgstr ""
-
-#: src/interface.c:377
 msgid "Remove Docked Toolbox"
-msgstr ""
+msgstr "KÃ¼Ã§Ã¼k AraÃ§ Kutusunu KaldÄ±r"
+
+#: src/interface.c:382
+msgid "Select"
+msgstr "SeÃ§"
 
 #: src/interface.c:383
-msgid "Select"
-msgstr "Seç"
+msgid "Node"
+msgstr "DÃ¼ÄŸÃ¼m"
 
 #: src/interface.c:384
-msgid "Node"
-msgstr "Nokta"
+msgid "Rectangle"
+msgstr "DÃ¶rtgen"
 
 #: src/interface.c:385
-msgid "Rectangle"
-msgstr "Dörtgen"
-
-#: src/interface.c:386
 msgid "Arc"
-msgstr ""
+msgstr "EÄŸri"
 
-#: src/interface.c:387 src/sp-star.c:481
-#, fuzzy
+#. Create toplevel menuitem
+#: src/interface.c:386 src/sp-star.c:481
 msgid "Star"
-msgstr "Baskı"
+msgstr "YÄ±ldÄ±z"
 
-#: src/interface.c:388 src/sp-spiral.c:610
+#. Create toplevel menuitem
+#: src/interface.c:387 src/sp-spiral.c:610
 msgid "Spiral"
-msgstr ""
+msgstr "Spiral"
 
-#: src/interface.c:389
+#: src/interface.c:388
 msgid "Freehand"
 msgstr "Serbest"
 
-#: src/interface.c:390
+#: src/interface.c:389
 msgid "Dynahand"
-msgstr ""
+msgstr "DÃ¼z"
+
+#: src/interface.c:397
+msgid "Fill and Stroke"
+msgstr "Doldur ve Vur"
 
 #: src/interface.c:398
-msgid "Fill and Stroke"
-msgstr ""
+msgid "Size and Position"
+msgstr "Boyut ve Konum"
 
 #: src/interface.c:399
-#, fuzzy
-msgid "Size and Position"
-msgstr "Bir pozisyon yükselt"
+msgid "Align Objects"
+msgstr "Nesneleri Hizala"
 
 #: src/interface.c:400
-#, fuzzy
-msgid "Align Objects"
-msgstr "Nesne"
+msgid "Text Editing"
+msgstr "Metin DÃ¼zenlemesi"
 
 #: src/interface.c:401
-#, fuzzy
-msgid "Text Editing"
-msgstr "Nokta Değiştirmesi ..."
+msgid "Transformations"
+msgstr "DÃ¶nÃ¼ÅŸÃ¼mler"
 
 #: src/interface.c:402
-#, fuzzy
-msgid "Transformations"
-msgstr "Dönüştürme diyalogu"
+msgid "Tool Options"
+msgstr "AraÃ§ Ã–zellikleri"
 
 #: src/interface.c:403
-#, fuzzy
-msgid "Tool Options"
-msgstr "Acemi seçenekleri"
+msgid "Tool Attributes"
+msgstr "AraÃ§ Ã–zellikleri"
 
 #: src/interface.c:404
-#, fuzzy
-msgid "Tool Attributes"
-msgstr "Özellikler"
-
-#: src/interface.c:405
 msgid "Document"
 msgstr "Belge"
 
-#: src/interface.c:406
+#: src/interface.c:405
 msgid "Editing Window"
-msgstr ""
+msgstr "DÃ¼zenleme Penceresi"
+
+#: src/interface.c:406
+msgid "XML Editor"
+msgstr "XML DÃ¼zenleyicisi"
 
 #: src/interface.c:407
-msgid "XML Editor"
-msgstr ""
-
-#: src/interface.c:408
-#, fuzzy
 msgid "Display Properties"
-msgstr "Dolgu ayarları"
+msgstr "GÃ¶rÃ¼nÃ¼m AyarlarÄ±"
 
-#: src/interface.c:461
+#. Undo
+#: src/interface.c:460
 msgid "Undo"
-msgstr "Geri git"
+msgstr "Geri Al"
 
-#: src/interface.c:463
+#. File:Print Preview
+#: src/interface.c:462
 msgid "Redo"
 msgstr "Yeniden yap"
 
-#: src/interface.c:486 src/toolbox.c:327
+#. Generic menu
+#. File submenu
+#: src/interface.c:485 src/toolbox.c:327
 msgid "File"
 msgstr "Dosya"
 
-#: src/interface.c:492 src/toolbox.c:364 src/widgets/gradient-selector.c:135
+#. Edit submenu
+#: src/interface.c:491 src/toolbox.c:364 src/widgets/gradient-selector.c:135
 msgid "Edit"
-msgstr "Değiştir"
+msgstr "DÃ¼zenle"
 
-#: src/interface.c:504
-#, fuzzy
+#. View submenu
+#: src/interface.c:503
 msgid "View"
-msgstr "Yeni Görünüm"
+msgstr "GÃ¶rÃ¼nÃ¼m"
 
-#: src/interface.c:510
-#, fuzzy
+#. Drawing mode submenu
+#: src/interface.c:509
 msgid "Drawing Mode"
-msgstr "Çizim kapsamı"
+msgstr "Ã‡izim Modu"
 
-#: src/interface.c:516
+#. Dialog submenu
+#: src/interface.c:515
 msgid "Dialogs"
-msgstr ""
-
-#: src/main.c:106
-msgid "Do not use X server (only process files from console)"
-msgstr ""
+msgstr "Pencereler"
 
 #: src/main.c:109
-msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr ""
+msgid "Do not use X server (only process files from console)"
+msgstr "X sunucusunu kullanma (dosyalarÄ± sadece konsoldan sÃ¼rdÃ¼r)"
 
 #: src/main.c:112
-#, fuzzy
-msgid "Open specified document(s) (option string may be excluded)"
-msgstr "Belirlenen dosyayı aç (seçenek metni çıkarılabilir)"
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "$DISPLAY atanmamÄ±ÅŸsa bile X sunucusunu kullanmaya Ã§alÄ±ÅŸ)"
 
-#: src/main.c:113 src/main.c:116 src/main.c:119 src/main.c:133
+#: src/main.c:115
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Belirtilen dÃ¶kÃ¼man(lar)Ä± aÃ§ (seÃ§enekler dahil olmayacaktÄ±r)"
+
+#: src/main.c:116 src/main.c:119 src/main.c:122 src/main.c:136
 msgid "FILENAME"
 msgstr "DOSYA ADI"
 
-#: src/main.c:115
-#, fuzzy
-msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr "Dosyaları istenen dosyaya yazdır (tünel için '|' kullan)"
-
 #: src/main.c:118
-#, fuzzy
-msgid "Export document to png file"
-msgstr "Resmi png olarak ithal et"
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "DÃ¶kÃ¼manlarÄ± belirtilen dosyaya yazdur (baÅŸka programa yÃ¶nlendirmek iÃ§in '|' kullanÄ±n)"
 
 #: src/main.c:121
-msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
-
-#: src/main.c:122
-msgid "DPI"
-msgstr ""
+msgid "Export document to png file"
+msgstr "Resmi png olarak aktar"
 
 #: src/main.c:124
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "SVG'den bitmap'e Ã§evirim iÃ§in kullanÄ±lacak Ã§Ã¶zÃ¼nÃ¼rlÃ¼k (Ã¶ntanÄ±mlÄ± 72.0)"
+
+#: src/main.c:125
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:127
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
+"Milimetre deÄŸerinde aktarÄ±lan bÃ¶lÃ¼m (Ã¶ntanÄ±mlÄ± olarak tÃ¼m dÃ¶kÃ¼man, 0,0 resmin "
+"en alt sol kÃ¶ÅŸesi)"
 
-#: src/main.c:125
+#: src/main.c:128
 msgid "x0:y0:x1:y1"
-msgstr ""
+msgstr "x0:y0:x1:y1"
 
-#: src/main.c:127
+#: src/main.c:130
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "YaratÄ±lan bitmap'in piksel deÄŸerinde geniÅŸliÄŸi (dpi Ã¼zerine yazar)"
 
-#: src/main.c:127
+#: src/main.c:130
 msgid "WIDTH"
-msgstr ""
+msgstr "GENÄ°ÅLÄ°K"
 
-#: src/main.c:129
+#: src/main.c:132
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "YaratÄ±lan bitmap'in piksel deÄŸerinde yÃ¼ksekliÄŸi (dpi Ã¼zerine yazar)"
 
-#: src/main.c:129
+#: src/main.c:132
 msgid "HEIGHT"
-msgstr ""
+msgstr "YÃœKSEKLÄ°K"
 
-#: src/main.c:131
+#: src/main.c:134
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
+msgstr "DÄ±ÅŸarÄ± aktarÄ±lan birmap'in arkaplanÄ± (SVG destekli herhangi bir renk)"
 
-#: src/main.c:131
+#: src/main.c:134
 msgid "COLOR"
-msgstr ""
+msgstr "RENK"
 
-#: src/main.c:133
+#: src/main.c:136
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr ""
+msgstr "DÃ¶kÃ¼manÄ± dÃ¼z SVG dosyasÄ±na aktar (\"xmlns:sodipodi\" alan boÅŸluÄŸu yok)"
 
-#: src/main.c:135
+#: src/main.c:138
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
+"Verilen dosyalarÄ± teker teker gÃ¶ster, herhangi bir tuÅŸa basÄ±ldÄ±ÄŸÄ±nda "
+"sonrakine geÃ§"
 
 #: src/sodipodi.c:351
 msgid "Untitled document"
-msgstr ""
+msgstr "BaÅŸlÄ±ksÄ±z dÃ¶kÃ¼man"
 
+#. Show nice dialog box
 #: src/sodipodi.c:376
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
+msgstr "Sodipodi, dahili bir hata karÅŸÄ±laÅŸtÄ± ve ÅŸimdi kapatÄ±lacak.\n"
 
 #: src/sodipodi.c:377
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr ""
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "Kaydedilmeyen dÃ¶kÃ¼manlarÄ±n otomatik yedekleri aÅŸaÄŸÄ±daki konuma alÄ±nacak.\n"
 
 #: src/sodipodi.c:378
 msgid "Automatic backup of following documents failed:\n"
-msgstr ""
+msgstr "AÅŸaÄŸÄ±daki dÃ¶kÃ¼manlarÄ±n otomatik yedekleri alÄ±nÄ±rken hata oluÅŸtu.\n"
 
 #: src/sodipodi.c:472
 #, c-format
@@ -1458,6 +1401,9 @@ msgid ""
 "Although sodipodi will run, you can\n"
 "neither load nor save preferences\n"
 msgstr ""
+"%s uygun bir dosya deÄŸil.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz.\n"
 
 #: src/sodipodi.c:486
 #, c-format
@@ -1468,6 +1414,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s uygun bir xml dosyasÄ± deÄŸil veya \n"
+"bu dosya Ã¼zerinde gerekli haklarÄ±nÄ±z yok.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sodipodi.c:501
 #, c-format
@@ -1477,6 +1427,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s uygun bir sodipodi ayar dosyasÄ± deÄŸil.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sodipodi.c:795
 #, c-format
@@ -1486,6 +1439,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s dizini yaratÄ±lamÄ±yor.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sodipodi.c:808
 #, c-format
@@ -1495,6 +1451,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s uygun bir dizin deÄŸil.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sodipodi.c:830
 #, c-format
@@ -1504,6 +1463,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s dosyasÄ± yaratÄ±lamÄ±yor.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sodipodi.c:843
 #, c-format
@@ -1513,644 +1475,600 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
+"%s dosyasÄ±na yazÄ±lamÄ±yor.\n"
+"Sodipodi Ã§alÄ±ÅŸacak fakat ayarlarÄ± kaydemeyecek\n"
+"veya yÃ¼kleyemeyeceksiniz."
 
 #: src/sp-anchor.c:205
 #, c-format
 msgid "Link to %s"
-msgstr ""
+msgstr "%s'e baÄŸlantÄ±"
 
+#. Create toplevel menuitem
 #: src/sp-anchor.c:266
-#, fuzzy
 msgid "Link"
-msgstr " Çizgi "
+msgstr "BaÄŸlantÄ±"
 
+#. Link dialog
 #: src/sp-anchor.c:269
-#, fuzzy
 msgid "Link Properties"
-msgstr "nesne özellikleri"
+msgstr "BaÄŸlantÄ± Ã–zellikleri"
 
+#. Select item
 #: src/sp-anchor.c:279
-#, fuzzy
 msgid "Follow link"
-msgstr "devamlı çizgi"
+msgstr "BaÄŸlantÄ±yÄ± takip et"
 
+#. Reset transformations
 #: src/sp-anchor.c:284
 msgid "Remove link"
-msgstr ""
+msgstr "BaÄŸlantÄ±yÄ± kaldÄ±r"
 
-#: src/sp-image.c:398
+#: src/sp-image.c:417
 #, c-format
 msgid "Image with bad reference: %s"
-msgstr ""
+msgstr "KÃ¶tÃ¼ referanslÄ± resim: %s"
 
-#: src/sp-image.c:400
+#: src/sp-image.c:419
 #, c-format
 msgid "Color image %d x %d: %s"
-msgstr ""
+msgstr "Resmi renklendir %d x %d: %s"
 
-#: src/sp-image.c:636
-#, fuzzy
+#. Create toplevel menuitem
+#: src/sp-image.c:655
 msgid "Image"
-msgstr "Resim boyutu"
+msgstr "Resim"
 
-#: src/sp-image.c:639
-#, fuzzy
+#. Link dialog
+#: src/sp-image.c:658
 msgid "Image Properties"
-msgstr "nesne özellikleri"
+msgstr "Resim Ã–zellikleri"
 
-#: src/sp-image.c:647 src/sp-image.c:843
+#. Autotrace dialog
+#: src/sp-image.c:666 src/sp-image.c:862
 msgid "Trace"
-msgstr ""
+msgstr "Ä°pucu"
 
-#: src/sp-image.c:989
+#: src/sp-image.c:1008
 #, c-format
 msgid "Error to write %s: %s"
-msgstr ""
+msgstr "%s dosyasÄ±na yazÄ±lÄ±rken hata oluÅŸtu: %s"
 
-#: src/sp-image.c:1023
+#: src/sp-image.c:1042
 msgid "Untitled"
-msgstr ""
-
-#: src/sp-image.c:1028
-#, fuzzy
-msgid "Document Name:"
-msgstr "Belge"
-
-#: src/sp-image.c:1041
-#, fuzzy
-msgid "Unknown"
-msgstr "Bilinmeyen birim:-("
+msgstr "BaÅŸlÄ±ksÄ±z"
 
 #: src/sp-image.c:1047
-#, fuzzy
+msgid "Document Name:"
+msgstr "DÃ¶kÃ¼man AdÄ±:"
+
+#: src/sp-image.c:1060
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: src/sp-image.c:1066
 msgid "Image URI:"
-msgstr "Resim boyutu"
+msgstr "Resim Adresi:"
 
-#: src/sp-item-group.c:453
-#, fuzzy, c-format
+#: src/sp-item-group.c:454
+#, c-format
 msgid "Group of %d objects"
-msgstr "%d birimden oluşan grup"
+msgstr "%d birimden oluÅŸan grup"
 
-#: src/sp-item-group.c:519
-#, fuzzy
+#. Group dialog
+#: src/sp-item-group.c:520
 msgid "Group Properties"
-msgstr "nesne özellikleri"
+msgstr "Grup Ã–zellikleri"
 
-#: src/sp-item.c:445
+#: src/sp-item.c:472
 msgid "Unknown item :-("
 msgstr "Bilinmeyen birim:-("
 
-#: src/sp-item.c:744
+#. Create toplevel menuitem
+#: src/sp-item.c:782
 msgid "Item"
-msgstr ""
+msgstr "Birim"
 
-#: src/sp-item.c:747
-#, fuzzy
+#. Item dialog
+#: src/sp-item.c:785
 msgid "Item Properties"
-msgstr "nesne özellikleri"
+msgstr "Birim Ã–zellikleri"
 
-#: src/sp-item.c:757
-#, fuzzy
+#. Select item
+#: src/sp-item.c:795
 msgid "Select this"
-msgstr "Seç"
+msgstr "Bunu SeÃ§"
 
-#: src/sp-item.c:767
-#, fuzzy
+#. Reset transformations
+#: src/sp-item.c:805
 msgid "Reset transformation"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "DÃ¶nÃ¼ÅŸÃ¼mÃ¼ sÄ±fÄ±rla"
 
-#: src/sp-item.c:773
+#: src/sp-item.c:811
 msgid "Make sensitive"
-msgstr ""
+msgstr "DuyarlÄ± hale getir"
 
-#: src/sp-item.c:773
+#: src/sp-item.c:811
 msgid "Make insensitive"
-msgstr ""
+msgstr "DuyarsÄ±z hale getir"
 
-#: src/sp-item.c:778
+#. Create link
+#: src/sp-item.c:816
 msgid "Create link"
-msgstr ""
+msgstr "BaÄŸlantÄ± yarat"
 
+#. Create toplevel menuitem
 #: src/sp-rect.c:535
-#, fuzzy
 msgid "Rect"
-msgstr "Dörtgen"
+msgstr "DÃ¶rtgen"
 
+#. Link dialog
 #: src/sp-rect.c:538
-#, fuzzy
 msgid "Rect Properties"
-msgstr "nesne özellikleri"
+msgstr "DÃ¶rtgen Ã–zellikleri"
 
 #: src/sp-shape.c:301
 msgid "A path - whatever it means"
-msgstr "Bir dizinleme"
+msgstr "Bir konum - ne anlama geliyorsa"
 
+#. Create toplevel menuitem
 #: src/sp-shape.c:357
-#, fuzzy
 msgid "Shape"
-msgstr "Kaydet\t"
+msgstr "Åekillendir"
 
+#. Item dialog
 #: src/sp-shape.c:360 src/toolbox.c:404
-#, fuzzy
 msgid "Fill settings"
-msgstr "Yazıtipi ayarları"
+msgstr "Doldurma ayarlarÄ±"
 
+#. Link dialog
 #: src/sp-spiral.c:613
-#, fuzzy
 msgid "Spiral Properties"
-msgstr "nesne özellikleri"
+msgstr "Spiral Ã–zellikleri"
 
+#. Link dialog
 #: src/sp-star.c:484
-#, fuzzy
 msgid "Star Properties"
-msgstr "nesne özellikleri"
+msgstr "YÄ±ldÄ±z AyarlarÄ±"
 
+#. fixme:
 #: src/sp-text.c:1237
 msgid "Text object"
 msgstr "Metin nesnesi"
 
-#: src/toolbox.c:137 src/toolbox.c:159
-msgid "Sodipodi"
-msgstr "Sodipodi"
-
 #: src/toolbox.c:330
 msgid "Create new SVG document"
-msgstr ""
+msgstr "Yeni bir SVG dÃ¶kÃ¼manÄ± oluÅŸtur"
 
 #: src/toolbox.c:331
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "SVG dÃ¶kÃ¼manÄ± aÃ§"
 
 #: src/toolbox.c:332
-#, fuzzy
 msgid "Save document"
-msgstr "Belge"
+msgstr "DÃ¶kÃ¼manÄ± kaydet"
 
 #: src/toolbox.c:333
-#, fuzzy
 msgid "Save document under new name"
-msgstr "Çizimi yeni dosya adıyla kaydet"
+msgstr "DÃ¶kÃ¼manÄ± yeni bir adla kaydet"
 
 #: src/toolbox.c:334
-#, fuzzy
 msgid "Print document"
-msgstr "Belge"
+msgstr "DÃ¶kÃ¼manÄ± yazdÄ±r"
 
 #: src/toolbox.c:335
-#, fuzzy
 msgid "Preview document printout"
-msgstr "Çizim yazdırma öngörünümü"
+msgstr "DÃ¶kÃ¼man Ã–ngÃ¶rÃ¼nÃ¼mÃ¼"
 
 #: src/toolbox.c:339
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "Bitmap veya SVG dosyasÄ±nÄ± dÃ¶kÃ¼man iÃ§ine aktar"
 
 #: src/toolbox.c:340
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "Resmi png olarak ithal et"
+msgstr "DÃ¶kÃ¼manÄ± png olarak aktar"
 
 #: src/toolbox.c:367
-#, fuzzy
 msgid "Revert last action"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "Son eyleme dÃ¶n"
 
 #: src/toolbox.c:370
 msgid "Do again undone action"
-msgstr ""
+msgstr "Geri alÄ±nan eylemi yeniden yap"
 
 #: src/toolbox.c:372
-#, fuzzy
 msgid "Delete selected objects"
-msgstr "Seçili nesneleri sil"
+msgstr "SeÃ§ili nesneleri sil"
 
 #: src/toolbox.c:373
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "Seçili nesneleri eğrilere dönder"
+msgstr "SeÃ§ili nesneleri panoya kes"
 
 #: src/toolbox.c:374
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "Seçileni panoya kopyala"
+msgstr "SeÃ§ili nesneleri panoya kopyala"
 
 #: src/toolbox.c:375
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "Panodan yapıştır"
+msgstr "Panodan nesne yapÄ±ÅŸtÄ±r"
 
 #: src/toolbox.c:376
-#, fuzzy
 msgid "Duplicate selected objects"
-msgstr "Seçili nesneleri klonla"
+msgstr "SeÃ§ili nesneleri Ã§iftle"
 
 #: src/toolbox.c:400
 msgid "Object"
 msgstr "Nesne"
 
 #: src/toolbox.c:405
-#, fuzzy
 msgid "Object size and position"
-msgstr "Bir pozisyon yükselt"
+msgstr "Nesne boyutu ve konumu"
 
 #: src/toolbox.c:406
-#, fuzzy
 msgid "Text and font settings"
-msgstr "Masaüstü ayarları"
+msgstr "Metin ve yazÄ± tipi ayarlarÄ±"
 
 #: src/toolbox.c:408
-#, fuzzy
 msgid "Object transformations"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "Nesne dÃ¶nÃ¼ÅŸÃ¼mleri"
 
+#. START COMPONENTS
 #: src/toolbox.c:415
-#, fuzzy
 msgid "Flip selected objects horizontally"
-msgstr "Seçili nesneleri tersine çevir"
+msgstr "SeÃ§ili nesneleri yatay Ã§evir"
 
 #: src/toolbox.c:416
-#, fuzzy
 msgid "Flip selected objects vertically"
-msgstr "Seçili nesneleri tersine çevir"
+msgstr "SeÃ§ili nesneleri dikey Ã§evir"
 
 #: src/toolbox.c:420
-#, fuzzy
 msgid "Rotate object 90 deg clockwise"
-msgstr "Seçili nesneleri saat yönünde 90° dönder"
+msgstr "SeÃ§ili nesneleri saat yÃ¶nÃ¼nde 90 derece dÃ¶nder"
 
 #: src/toolbox.c:421
-#, fuzzy
 msgid "Remove transformations"
-msgstr "Dönüştürmeyi kaldır"
+msgstr "DÃ¶nÃ¼ÅŸÃ¼mleri kaldÄ±r"
 
 #: src/toolbox.c:422
-#, fuzzy
 msgid "Convert object to curve"
-msgstr "Seçili nesneleri eğrilere dönder"
+msgstr "SeÃ§ili nesneleri eÄŸrilere Ã§evir"
 
 #: src/toolbox.c:449
-#, fuzzy
 msgid "Raise selected objects to top"
-msgstr "Seçili nesneleri öne getir"
+msgstr "SeÃ§ili nesneleri Ã¼ste taÅŸÄ±"
 
 #: src/toolbox.c:450
-#, fuzzy
 msgid "Raise selected objects one level"
-msgstr "Seçili nesneleri öne getir"
+msgstr "SeÃ§ili nesneleri bir seviye Ã¼ste taÅŸÄ±"
 
 #: src/toolbox.c:451
-#, fuzzy
 msgid "Combine multiple paths"
-msgstr "Seçili yolları birleştir"
+msgstr "Ã‡oklu konumlarÄ± birleÅŸtir"
 
 #: src/toolbox.c:452
 msgid "Group selected objects"
-msgstr "Seçili nesneleri grupla"
+msgstr "SeÃ§ili nesneleri grupla"
 
 #: src/toolbox.c:453
-#, fuzzy
 msgid "Lower selected objects to bottom"
-msgstr "Seçili nesneleri arkaya it"
+msgstr "SeÃ§ili nesneleri arkaya it"
 
 #: src/toolbox.c:454
-#, fuzzy
 msgid "Lower selected objects one level"
-msgstr "Seçili nesneleri arkaya it"
+msgstr "SeÃ§ili nesneleri bir seviye arkaya it"
 
 #: src/toolbox.c:455
-#, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "Seçilen yolları kopar"
+msgstr "SeÃ§ilen konumu alt konumlara bÃ¶l"
 
 #: src/toolbox.c:456
-#, fuzzy
 msgid "Ungroup selected group"
-msgstr "Seçili grubu çözer"
+msgstr "SeÃ§ili gruplarÄ±n gruplandÄ±rmasÄ±nÄ± kaldÄ±r"
 
 #: src/toolbox.c:479
-#, fuzzy
 msgid "Draw"
-msgstr "Çiz\t"
+msgstr "Ã‡iz"
 
+#. Select
 #: src/toolbox.c:484
-#, fuzzy
 msgid "Select tool - select and transform objects"
-msgstr "Nesne ve grupları seç ve değiştir"
+msgstr "SeÃ§im AracÄ± - Nesneleri seÃ§er ve ÅŸekillendirir"
 
+#. Node
 #: src/toolbox.c:491
 msgid "Node tool - modify different aspects of existing objects"
-msgstr ""
+msgstr "DÃ¼ÄŸÃ¼m aracÄ± - Varolan nesnelerin Ã¶zelliklerini deÄŸiÅŸtirir"
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:503
-msgid ""
-"Rectangle tool - create rectangles and squares with optional rounded corners"
-msgstr ""
+msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
+msgstr "DÃ¶rtgen aracÄ± - KÃ¶ÅŸeleri belirtilen yuvarlÄ±kta dÃ¶rtgenler ve kareler yaratÄ±r"
 
 #: src/toolbox.c:504
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr ""
+msgstr "EÄŸri aracÄ± - daireler, elipsler ve eÄŸriler yaratÄ±r"
 
 #: src/toolbox.c:505
 msgid "Star tool - create stars and polygons"
-msgstr ""
+msgstr "YÄ±ldÄ±z aracÄ± - yÄ±ldÄ±zlar ve poligonlar yaratÄ±r"
 
 #: src/toolbox.c:506
 msgid "Spiral tool - create spirals"
-msgstr ""
+msgstr "Spiral aracÄ± - spiraller yaratÄ±r"
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:521
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr ""
+msgstr "Kalem aracÄ± - dÃ¼z ve serbest Ã§izgiler Ã§izer"
 
 #: src/toolbox.c:522
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr ""
+msgstr "EÄŸri kalem aracÄ± - belirli noktalarla eÄŸriler Ã§izer"
 
 #: src/toolbox.c:523
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr ""
+msgstr "Karalama aracÄ± - karalama Ã§izgileri Ã§izer"
 
+#. Text
 #: src/toolbox.c:532
 msgid "Text tool - create editable text objects"
-msgstr ""
+msgstr "MEtin aracÄ± - dÃ¼zenlenebilir metin nesneleri yaratÄ±r"
 
+#. Zoom
 #: src/toolbox.c:538
 msgid "Zoom tool - zoom into choosen area"
-msgstr ""
+msgstr "YakÄ±nlaÅŸtÄ±rma aracÄ± - seÃ§ilen alanÄ± yakÄ±ndan gÃ¶sterir"
 
 #: src/toolbox.c:568
-#, fuzzy
 msgid "Zoom in drawing"
-msgstr "Çizimi göster"
+msgstr "Ã‡izimi yakÄ±nlaÅŸtÄ±r"
 
 #: src/toolbox.c:569
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "Büyütme faktörünü seç"
+msgstr "YakÄ±nlaÅŸtÄ±rma faktÃ¶rÃ¼nÃ¼ 2.1 ata"
 
 #: src/toolbox.c:570
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "Büyütme faktörünü seç"
+msgstr "YakÄ±nlaÅŸtÄ±rma faktÃ¶rÃ¼nÃ¼ 1.1 ata"
 
 #: src/toolbox.c:571
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "Büyütme faktörünü seç"
+msgstr "YakÄ±nlaÅŸtÄ±rma faktÃ¶rÃ¼nÃ¼ 1.2 ata"
 
 #: src/toolbox.c:572
-#, fuzzy
 msgid "Zoom out drawing"
-msgstr "Çizimi göster"
+msgstr "Ã‡izimi uzaklaÅŸtÄ±r"
 
 #: src/toolbox.c:573
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "TÃ¼m sayfayÄ± pencereye uydur"
 
 #: src/toolbox.c:574
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Ã‡izimi pencereye uydur"
 
 #: src/toolbox.c:575
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "SeÃ§imi pencereye uydur"
 
 #: src/toolbox.c:599
 msgid "Nodes"
-msgstr "Noktalar"
+msgstr "DÃ¼ÄŸÃ¼mler"
 
 #: src/toolbox.c:602
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "Seçili bölümlere bir nokta koy"
+msgstr "SeÃ§ili bÃ¶lÃ¼mlere dÃ¼ÄŸÃ¼m ekle"
 
 #: src/toolbox.c:603
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Seçili noktalardaki çizgiyi tepele"
+msgstr "Ã‡izgileri seÃ§ilen dÃ¼ÄŸÃ¼mlerden kes"
 
 #: src/toolbox.c:604
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Seçili noktaları sil"
+msgstr "SeÃ§ilen dÃ¼ÄŸÃ¼mleri kÃ¶ÅŸeye Ã§evir"
 
 #: src/toolbox.c:605
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "Seçili bölümleri çizgilere dönüştür"
+msgstr "SeÃ§ilen bÃ¶lÃ¼mleri Ã§izgiye Ã§evir"
 
 #: src/toolbox.c:606
 msgid "Delete selected nodes"
-msgstr "Seçili noktaları sil"
+msgstr "SeÃ§ili dÃ¼ÄŸÃ¼mleri sil"
 
 #: src/toolbox.c:607
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Seçili noktalardaki çizgiyi düzelt"
+msgstr "SeÃ§ilen dÃ¼ÄŸÃ¼mleri Ã§izgilere ekle"
 
 #: src/toolbox.c:608
-#, fuzzy
 msgid "Make selected nodes smooth"
-msgstr "Seçili noktaları sil"
+msgstr "SeÃ§ilen dÃ¼ÄŸÃ¼mleri gÃ¼zelleÅŸtir"
 
 #: src/toolbox.c:609
-#, fuzzy
 msgid "Make selected segments curves"
-msgstr "Seçili bölümleri eğrilere dönüştür"
+msgstr "SeÃ§ilen bÃ¶lÃ¼mleri eÄŸrilere dÃ¶nÃ¼ÅŸtÃ¼r"
 
+#. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
-msgstr ""
+msgstr "YazÄ± tipi ailesi"
 
+#. Style frame
 #: src/widgets/font-selector.c:172
-#, fuzzy
 msgid "Style"
-msgstr " Boyutla "
+msgstr "Stil"
 
 #: src/widgets/font-selector.c:207
 msgid "Font size:"
-msgstr ""
+msgstr "YazÄ± tipi boyutu:"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:140
 msgid "Add"
 msgstr "Ekle"
 
 #: src/widgets/gradient-selector.c:176
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Geçişim"
+msgstr "gradientUnits"
 
 #: src/widgets/gradient-selector.c:205
 msgid "gradientSpread"
-msgstr ""
+msgstr "gradientSpread"
 
 #: src/widgets/gradient-vector.c:245
-#, fuzzy
 msgid "No document selected"
-msgstr "Son seçilen"
+msgstr "DÃ¶kÃ¼man seÃ§ilmedi"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
-msgstr ""
+msgstr "DÃ¶kÃ¼manda geÃ§iÅŸ yok"
 
 #: src/widgets/gradient-vector.c:257
-#, fuzzy
 msgid "No gradient selected"
-msgstr "Son seçilen"
+msgstr "GeÃ§iÅŸ seÃ§ilmedi"
 
 #: src/widgets/gradient-vector.c:412
-#, fuzzy
 msgid "Start color"
-msgstr "Baskı rengi : "
+msgstr "BaÅŸlangÄ±Ã§ rengi"
 
 #: src/widgets/gradient-vector.c:422
-#, fuzzy
 msgid "End color"
-msgstr "Izgara rengi"
+msgstr "BitiÅŸ rengi"
 
 #: src/widgets/gradient-vector.c:447
-#, fuzzy
 msgid "Gradient vector"
-msgstr "Geçişim"
+msgstr "GeÃ§iÅŸ vektÃ¶rÃ¼"
 
 #: src/widgets/paint-selector.c:597
-#, fuzzy
 msgid "No objects"
-msgstr "Metin nesnesi"
+msgstr "Nesne yok"
 
 #: src/widgets/paint-selector.c:611
 msgid "Multiple styles"
-msgstr ""
+msgstr "Ã‡oklu stiller"
 
 #: src/widgets/paint-selector.c:625
-#, fuzzy
 msgid "No paint"
-msgstr "Yazdır"
+msgstr "Ã‡izim yok"
 
+#. Label
 #: src/widgets/paint-selector.c:716
-#, fuzzy
 msgid "Mode:"
-msgstr "Taşı"
+msgstr "Mod:"
 
 #: src/widgets/paint-selector.c:726
 msgid "RGB"
-msgstr ""
+msgstr "RGB"
 
 #: src/widgets/paint-selector.c:732
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
 #: src/widgets/paint-selector.c:738
 msgid "CMYK"
-msgstr ""
+msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:772
-#, fuzzy
 msgid "Color paint"
 msgstr "Renkli resim"
 
 #: src/widgets/paint-selector.c:842
 msgid "Linear gradient"
-msgstr ""
+msgstr "Ã‡izgisel geÃ§iÅŸ"
 
 #: src/widgets/paint-selector.c:845
 msgid "Radial gradient"
-msgstr ""
+msgstr "Radyal geÃ§iÅŸ"
 
 #: src/widgets/sp-color-selector.c:620
-#, fuzzy
 msgid "Red:"
-msgstr "Yeniden yap"
+msgstr "KÄ±rmÄ±zÄ±:"
 
 #: src/widgets/sp-color-selector.c:621
 msgid "Green:"
-msgstr ""
+msgstr "YeÅŸil:"
 
 #: src/widgets/sp-color-selector.c:622
-#, fuzzy
 msgid "Blue:"
-msgstr "Değer:"
+msgstr "Mavi:"
 
 #: src/widgets/sp-color-selector.c:623 src/widgets/sp-color-selector.c:643
 #: src/widgets/sp-color-selector.c:665
 msgid "Alpha:"
-msgstr ""
+msgstr "Alfa:"
 
 #: src/widgets/sp-color-selector.c:640
-#, fuzzy
 msgid "Hue:"
-msgstr "Değer:"
+msgstr "Renk:"
 
 #: src/widgets/sp-color-selector.c:641
 msgid "Saturation:"
-msgstr ""
+msgstr "CanlÄ±lÄ±k"
 
 #: src/widgets/sp-color-selector.c:642
 msgid "Value:"
-msgstr "Değer:"
+msgstr "DeÄŸer:"
 
 #: src/widgets/sp-color-selector.c:661
 msgid "Cyan:"
-msgstr ""
+msgstr "Cyan:"
 
 #: src/widgets/sp-color-selector.c:662
 msgid "Magenta:"
-msgstr ""
+msgstr "Macenta"
 
 #: src/widgets/sp-color-selector.c:663
 msgid "Yellow:"
-msgstr ""
+msgstr "SarÄ±:"
 
 #: src/widgets/sp-color-selector.c:664
-#, fuzzy
 msgid "Black:"
-msgstr "Arkaya"
+msgstr "Siyah:"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
-#, fuzzy
 msgid "Attribute"
-msgstr "Özellikler"
+msgstr "Ã–zellik"
 
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
-msgstr "Değer"
+msgstr "DeÄŸer"
 
 #: src/draw-context.c:279
 msgid "Appending to selection. Press '+' to toggle Append/New."
-msgstr ""
+msgstr "SeÃ§ime ekleme yapÄ±lÄ±yor. '+'a basarak Yeni/Ekleye ulaÅŸabilirsiniz"
 
 #: src/draw-context.c:284
 msgid "Creating new curve. Press '+' to toggle Append/New."
-msgstr ""
+msgstr "Yeni bir eÄŸri yaratÄ±lÄ±yor. '+'a basarak Yeni/Ekleye ulaÅŸabilirsiniz"
 
 #~ msgid "Align"
 #~ msgstr "Hizala"
 
 #~ msgid "Align objects to horizontal mid"
-#~ msgstr "Nesneleri yatay ortasına hizala"
+#~ msgstr "Nesneleri yatay ortasÄ±na hizala"
 
 #~ msgid "Align objects to vertical mid"
-#~ msgstr "Nesneleri dikey ortasına hizala"
+#~ msgstr "Nesneleri dikey ortasÄ±na hizala"
 
 #~ msgid "Align outside object to bottom border"
-#~ msgstr "Nesne dışını alt kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± alt kenara hizala"
 
 #~ msgid "Align outside object to left border"
-#~ msgstr "Nesne dışını sol kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± sol kenara hizala"
 
 #~ msgid "Align outside object to right border"
-#~ msgstr "Nesne dışını sağ kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± saÄŸ kenara hizala"
 
 #~ msgid "Align outside object to top border"
-#~ msgstr "Nesne dışını üst kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± Ã¼st kenara hizala"
 
 #, fuzzy
 #~ msgid "Choose align type"
-#~ msgstr "Birim sistemini seçiniz"
+#~ msgstr "Birim sistemini seÃ§iniz"
 
 #, fuzzy
 #~ msgid "Close window"
@@ -2158,7 +2076,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Transformation"
-#~ msgstr "Dönüştürme diyalogu"
+#~ msgstr "DÃ¶nÃ¼ÅŸtÃ¼rme diyalogu"
 
 #~ msgid " Color fill "
 #~ msgstr " Renkli dolgu "
@@ -2171,19 +2089,19 @@ msgstr ""
 #~ msgstr " Boyutla "
 
 #~ msgid "Behind fill"
-#~ msgstr "Dolgu arkası"
+#~ msgstr "Dolgu arkasÄ±"
 
 #, fuzzy
 #~ msgid "Butt endpoints"
-#~ msgstr "2 seçili bitiş noktasını birleştir"
+#~ msgstr "2 seÃ§ili bitiÅŸ noktasÄ±nÄ± birleÅŸtir"
 
 #, fuzzy
 #~ msgid "Choose fill color"
-#~ msgstr "Izgara rengini seçiniz"
+#~ msgstr "Izgara rengini seÃ§iniz"
 
 #, fuzzy
 #~ msgid "Choose stroke color"
-#~ msgstr "Baskı rengi : "
+#~ msgstr "BaskÄ± rengi : "
 
 #, fuzzy
 #~ msgid "Color fill"
@@ -2198,7 +2116,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Edit..."
-#~ msgstr "Değiştir"
+#~ msgstr "DeÄŸiÅŸtir"
 
 #, fuzzy
 #~ msgid "Endpoints:"
@@ -2214,10 +2132,10 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Gradient fill"
-#~ msgstr "Geçişim"
+#~ msgstr "GeÃ§iÅŸim"
 
 #~ msgid "Is stroked"
-#~ msgstr "Baskılı"
+#~ msgstr "BaskÄ±lÄ±"
 
 #, fuzzy
 #~ msgid "No fill"
@@ -2228,15 +2146,15 @@ msgstr ""
 #~ msgstr "Motif"
 
 #~ msgid "Pick a color"
-#~ msgstr "Renk seçiniz"
+#~ msgstr "Renk seÃ§iniz"
 
 #, fuzzy
 #~ msgid "Pick fill color"
-#~ msgstr "Renk seçiniz"
+#~ msgstr "Renk seÃ§iniz"
 
 #, fuzzy
 #~ msgid "Pick stroke color"
-#~ msgstr "Renk seçiniz"
+#~ msgstr "Renk seÃ§iniz"
 
 #~ msgid "Position"
 #~ msgstr "Konum"
@@ -2246,11 +2164,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Round endpoints"
-#~ msgstr "2 seçili bitiş noktasını birleştir"
+#~ msgstr "2 seÃ§ili bitiÅŸ noktasÄ±nÄ± birleÅŸtir"
 
 #, fuzzy
 #~ msgid "Round join"
-#~ msgstr "2 seçili bitiş noktasını birleştir"
+#~ msgstr "2 seÃ§ili bitiÅŸ noktasÄ±nÄ± birleÅŸtir"
 
 #, fuzzy
 #~ msgid "Scale with object"
@@ -2258,18 +2176,18 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Square endpoints"
-#~ msgstr "2 seçili bitiş noktasını birleştir"
+#~ msgstr "2 seÃ§ili bitiÅŸ noktasÄ±nÄ± birleÅŸtir"
 
 #~ msgid "Stroke"
-#~ msgstr "Baskı"
+#~ msgstr "BaskÄ±"
 
 #, fuzzy
 #~ msgid "Stroke width"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #, fuzzy
 #~ msgid "centimeter"
-#~ msgstr "İçerik"
+#~ msgstr "Ä°Ã§erik"
 
 #~ msgid "color"
 #~ msgstr "renk"
@@ -2282,11 +2200,11 @@ msgstr ""
 #~ msgstr "yok"
 
 #~ msgid "object properties"
-#~ msgstr "nesne özellikleri"
+#~ msgstr "nesne Ã¶zellikleri"
 
 #, fuzzy
 #~ msgid "points"
-#~ msgstr "Yazdır"
+#~ msgstr "YazdÄ±r"
 
 #~ msgid "1.0MB"
 #~ msgstr "1.0 MB"
@@ -2295,92 +2213,92 @@ msgstr ""
 #~ msgstr "Bir geri"
 
 #~ msgid "Break apart selected node"
-#~ msgstr "Seçili noktadan kopart"
+#~ msgstr "SeÃ§ili noktadan kopart"
 
 #~ msgid "Bring to _Front"
-#~ msgstr "Ö_ne Getir"
+#~ msgstr "Ã–_ne Getir"
 
 #~ msgid "Close dialog"
 #~ msgstr "Diyalogu kapat"
 
 #~ msgid "Convert selected segments to curves"
-#~ msgstr "Seçili bölümleri eğrilere dönüştür"
+#~ msgstr "SeÃ§ili bÃ¶lÃ¼mleri eÄŸrilere dÃ¶nÃ¼ÅŸtÃ¼r"
 
 #~ msgid "Convert selected segments to lines"
-#~ msgstr "Seçili bölümleri çizgilere dönüştür"
+#~ msgstr "SeÃ§ili bÃ¶lÃ¼mleri Ã§izgilere dÃ¶nÃ¼ÅŸtÃ¼r"
 
 #~ msgid "Convert to Cu_rves"
-#~ msgstr "_Eğrilere Dönüştür"
+#~ msgstr "_EÄŸrilere DÃ¶nÃ¼ÅŸtÃ¼r"
 
 #~ msgid "Cusp line at selected nodes"
-#~ msgstr "Seçili noktalardaki çizgiyi tepele"
+#~ msgstr "SeÃ§ili noktalardaki Ã§izgiyi tepele"
 
 #~ msgid "Desktop"
-#~ msgstr "Masaüstü"
+#~ msgstr "MasaÃ¼stÃ¼"
 
 #, fuzzy
 #~ msgid "Display"
-#~ msgstr "Dolgu ayarları"
+#~ msgstr "Dolgu ayarlarÄ±"
 
 #~ msgid "Drawing Context"
-#~ msgstr "Çizim Kapsamı"
+#~ msgstr "Ã‡izim KapsamÄ±"
 
 #~ msgid "Export picture to png"
 #~ msgstr "Resmi png olarak ithal et"
 
 #~ msgid "Exported as"
-#~ msgstr "İhraç ediliş şekli"
+#~ msgstr "Ä°hraÃ§ ediliÅŸ ÅŸekli"
 
 #~ msgid "Filename:"
-#~ msgstr "Dosya adı:"
+#~ msgstr "Dosya adÄ±:"
 
 #~ msgid "Forward One"
 #~ msgstr "Bir ileri"
 
 #~ msgid "Height"
-#~ msgstr "Yükseklik"
+#~ msgstr "YÃ¼kseklik"
 
 #~ msgid "Image size"
 #~ msgstr "Resim boyutu"
 
 #~ msgid "Include one node into selected segments"
-#~ msgstr "Seçili bölümlere bir nokta koy"
+#~ msgstr "SeÃ§ili bÃ¶lÃ¼mlere bir nokta koy"
 
 #~ msgid "Join 2 selected endpoints"
-#~ msgstr "2 seçili bitiş noktasını birleştir"
+#~ msgstr "2 seÃ§ili bitiÅŸ noktasÄ±nÄ± birleÅŸtir"
 
 #~ msgid "Lock aspect ratio"
-#~ msgstr "Resim oranlarını kitle"
+#~ msgstr "Resim oranlarÄ±nÄ± kitle"
 
 #~ msgid "Node Edit"
-#~ msgstr "Noktayı Değiştir"
+#~ msgstr "NoktayÄ± DeÄŸiÅŸtir"
 
 #~ msgid "Png file name"
-#~ msgstr "Png dosya adı"
+#~ msgstr "Png dosya adÄ±"
 
 #~ msgid "Send to _Back"
 #~ msgstr "Arka_ya it"
 
 #~ msgid "Set dimensions"
-#~ msgstr "Boyutları belirle"
+#~ msgstr "BoyutlarÄ± belirle"
 
 #~ msgid "Smooth line at selected nodes"
-#~ msgstr "Seçili noktalardaki çizgiyi düzelt"
+#~ msgstr "SeÃ§ili noktalardaki Ã§izgiyi dÃ¼zelt"
 
 #~ msgid "Symmetric "
 #~ msgstr "Simetrik"
 
 #~ msgid "Toggle Borders"
-#~ msgstr "Kenarları aç/kapat"
+#~ msgstr "KenarlarÄ± aÃ§/kapat"
 
 #~ msgid "Uncompressed file size:"
-#~ msgstr "Sıkıştırılmamış dosya boyutu:"
+#~ msgstr "SÄ±kÄ±ÅŸtÄ±rÄ±lmamÄ±ÅŸ dosya boyutu:"
 
 #~ msgid "Where to export"
-#~ msgstr "İthal edilecek yer"
+#~ msgstr "Ä°thal edilecek yer"
 
 #~ msgid "Width"
-#~ msgstr "Genişlik"
+#~ msgstr "GeniÅŸlik"
 
 #~ msgid "X0"
 #~ msgstr "X0"
@@ -2389,7 +2307,7 @@ msgstr ""
 #~ msgstr "X1"
 
 #~ msgid "XML Tree"
-#~ msgstr "XML Ağacı"
+#~ msgstr "XML AÄŸacÄ±"
 
 #~ msgid "Y0"
 #~ msgstr "Y0"
@@ -2404,10 +2322,10 @@ msgstr ""
 #~ msgstr "_Kopar"
 
 #~ msgid "_Combine"
-#~ msgstr "_Birleştir"
+#~ msgstr "_BirleÅŸtir"
 
 #~ msgid "_Drawing"
-#~ msgstr "_Çizim"
+#~ msgstr "_Ã‡izim"
 
 #, fuzzy
 #~ msgid "_Group"
@@ -2423,140 +2341,140 @@ msgstr ""
 #~ msgstr "S_ayfa"
 
 #~ msgid "_Selection"
-#~ msgstr "_Seçim"
+#~ msgstr "_SeÃ§im"
 
 #, fuzzy
 #~ msgid "_Ungroup"
-#~ msgstr "Gr_ubu çöz"
+#~ msgstr "Gr_ubu Ã§Ã¶z"
 
 #~ msgid "Align dialog"
 #~ msgstr "Diyalogu hizala"
 
 #~ msgid "Break apart selected paths"
-#~ msgstr "Seçilen yolları kopar"
+#~ msgstr "SeÃ§ilen yollarÄ± kopar"
 
 #~ msgid "Combine selected paths"
-#~ msgstr "Seçili yolları birleştir"
+#~ msgstr "SeÃ§ili yollarÄ± birleÅŸtir"
 
 #~ msgid "Convert selected objects to curves"
-#~ msgstr "Seçili nesneleri eğrilere dönder"
+#~ msgstr "SeÃ§ili nesneleri eÄŸrilere dÃ¶nder"
 
 #~ msgid "Copy selection to clipboard"
-#~ msgstr "Seçileni panoya kopyala"
+#~ msgstr "SeÃ§ileni panoya kopyala"
 
 #~ msgid "Cut selection"
-#~ msgstr "Seçileni kes"
+#~ msgstr "SeÃ§ileni kes"
 
 #~ msgid "Delete selection"
-#~ msgstr "Seçileni sil"
+#~ msgstr "SeÃ§ileni sil"
 
 #, fuzzy
 #~ msgid "Draw arc"
-#~ msgstr "Çiz\t"
+#~ msgstr "Ã‡iz\t"
 
 #, fuzzy
 #~ msgid "Draw dynahand line"
-#~ msgstr "Serbest şekiller çiz"
+#~ msgstr "Serbest ÅŸekiller Ã§iz"
 
 #~ msgid "Draw freehand line"
-#~ msgstr "Serbest şekiller çiz"
+#~ msgstr "Serbest ÅŸekiller Ã§iz"
 
 #~ msgid "Draw rectangle"
-#~ msgstr "Dörtgen çiz"
+#~ msgstr "DÃ¶rtgen Ã§iz"
 
 #, fuzzy
 #~ msgid "Draw spiral"
-#~ msgstr "Dörtgen çiz"
+#~ msgstr "DÃ¶rtgen Ã§iz"
 
 #, fuzzy
 #~ msgid "Draw star"
-#~ msgstr "Metin çiz"
+#~ msgstr "Metin Ã§iz"
 
 #~ msgid "Draw text"
-#~ msgstr "Metin çiz"
+#~ msgstr "Metin Ã§iz"
 
 #~ msgid "Drawing context"
-#~ msgstr "Çizim kapsamı"
+#~ msgstr "Ã‡izim kapsamÄ±"
 
 #~ msgid "Duplicate selection"
-#~ msgstr "Seçileni klonla"
+#~ msgstr "SeÃ§ileni klonla"
 
 #~ msgid "Edit fill style of selected objects"
-#~ msgstr "Seçili nesnelerin dolgu tipini değiştir"
+#~ msgstr "SeÃ§ili nesnelerin dolgu tipini deÄŸiÅŸtir"
 
 #~ msgid "Edit font style of selected objects"
-#~ msgstr "Seçili nesnelerin yazı tipini değiştir"
+#~ msgstr "SeÃ§ili nesnelerin yazÄ± tipini deÄŸiÅŸtir"
 
 #~ msgid "Edit layout of selected objects"
-#~ msgstr "Seçili nesnelerin yerleşimini değiştir"
+#~ msgstr "SeÃ§ili nesnelerin yerleÅŸimini deÄŸiÅŸtir"
 
 #~ msgid "Edit nodes"
-#~ msgstr "Noktaları değiştir"
+#~ msgstr "NoktalarÄ± deÄŸiÅŸtir"
 
 #~ msgid "Edit stroke style of selected objects"
-#~ msgstr "Seçili nesnelerin baskı tipini değiştir"
+#~ msgstr "SeÃ§ili nesnelerin baskÄ± tipini deÄŸiÅŸtir"
 
 #~ msgid "Import "
-#~ msgstr "İthal et"
+#~ msgstr "Ä°thal et"
 
 #~ msgid "Lower selection one layer"
-#~ msgstr "Seçileni bir katman alçalt"
+#~ msgstr "SeÃ§ileni bir katman alÃ§alt"
 
 #~ msgid "New drawing"
-#~ msgstr "Yeni çizim"
+#~ msgstr "Yeni Ã§izim"
 
 #~ msgid "No I'd rather do some more cool vector drawing with sodipodi."
-#~ msgstr "Hayır! Sodipodi ile çizime devam edeceğim."
+#~ msgstr "HayÄ±r! Sodipodi ile Ã§izime devam edeceÄŸim."
 
 #~ msgid "Nope !"
-#~ msgstr "Hayır !"
+#~ msgstr "HayÄ±r !"
 
 #~ msgid "Open new drawing"
-#~ msgstr "Yeni çizim aç"
+#~ msgstr "Yeni Ã§izim aÃ§"
 
 #~ msgid "Paste from clipboard"
-#~ msgstr "Panodan yapıştır"
+#~ msgstr "Panodan yapÄ±ÅŸtÄ±r"
 
 #~ msgid "Preview print drawing"
-#~ msgstr "Çizim yazdırma öngörünümü"
+#~ msgstr "Ã‡izim yazdÄ±rma Ã¶ngÃ¶rÃ¼nÃ¼mÃ¼"
 
 #~ msgid "Quit or not quit ?"
-#~ msgstr "Çıkıyormusun ?"
+#~ msgstr "Ã‡Ä±kÄ±yormusun ?"
 
 #~ msgid "Raise selection to top"
-#~ msgstr "Seçileni öne getir"
+#~ msgstr "SeÃ§ileni Ã¶ne getir"
 
 #~ msgid "Really wanna quit sodipodi ?"
-#~ msgstr "Gerçekten Sodipodi'den çıkacakmısınız ?"
+#~ msgstr "GerÃ§ekten Sodipodi'den Ã§Ä±kacakmÄ±sÄ±nÄ±z ?"
 
 #~ msgid "Remove transformation"
-#~ msgstr "Dönüştürmeyi kaldır"
+#~ msgstr "DÃ¶nÃ¼ÅŸtÃ¼rmeyi kaldÄ±r"
 
 #~ msgid "Rise selection one layer"
-#~ msgstr "Seçileni bir katman yükselt"
+#~ msgstr "SeÃ§ileni bir katman yÃ¼kselt"
 
 #, fuzzy
 #~ msgid "Rotate selected objects 90deg clockwise"
-#~ msgstr "Seçili nesneleri saat yönünde 90° dönder"
+#~ msgstr "SeÃ§ili nesneleri saat yÃ¶nÃ¼nde 90Â° dÃ¶nder"
 
 #~ msgid "Save drawing "
-#~ msgstr "Çizimi kaydet"
+#~ msgstr "Ã‡izimi kaydet"
 
 #~ msgid "Save drawing under new filename"
-#~ msgstr "Çizimi yeni dosya adıyla kaydet"
+#~ msgstr "Ã‡izimi yeni dosya adÄ±yla kaydet"
 
 #, fuzzy
 #~ msgid "Select and transform"
-#~ msgstr "Nesne ve grupları seç ve değiştir"
+#~ msgstr "Nesne ve gruplarÄ± seÃ§ ve deÄŸiÅŸtir"
 
 #~ msgid "Transformation dialog"
-#~ msgstr "Dönüştürme diyalogu"
+#~ msgstr "DÃ¶nÃ¼ÅŸtÃ¼rme diyalogu"
 
 #~ msgid "Undo "
 #~ msgstr "Geri al"
 
 #~ msgid "Ungroup selected objects"
-#~ msgstr "Seçili nesneleri çöz"
+#~ msgstr "SeÃ§ili nesneleri Ã§Ã¶z"
 
 #~ msgid "Unsymmetric"
 #~ msgstr "Asimetrik"
@@ -2565,78 +2483,78 @@ msgstr ""
 #~ msgstr "Evet !"
 
 #~ msgid "Yes quick! I want to leave sodipodi and come back later."
-#~ msgstr "Evet! Sodipodi'ye daha sonra dönmek üzere."
+#~ msgstr "Evet! Sodipodi'ye daha sonra dÃ¶nmek Ã¼zere."
 
 #~ msgid "Zoom in"
-#~ msgstr "Büyült"
+#~ msgstr "BÃ¼yÃ¼lt"
 
 #~ msgid "Zoom out"
-#~ msgstr "Küçült"
+#~ msgstr "KÃ¼Ã§Ã¼lt"
 
 #~ msgid "Zoom to 1:1"
-#~ msgstr "1:1 göster"
+#~ msgstr "1:1 gÃ¶ster"
 
 #, fuzzy
 #~ msgid "Zoom to 1:2"
-#~ msgstr "1:1 göster"
+#~ msgstr "1:1 gÃ¶ster"
 
 #, fuzzy
 #~ msgid "Zoom to 2:1"
-#~ msgstr "1:1 göster"
+#~ msgstr "1:1 gÃ¶ster"
 
 #~ msgid "Zoom to drawing"
-#~ msgstr "Çizimi göster"
+#~ msgstr "Ã‡izimi gÃ¶ster"
 
 #~ msgid "Zoom to page"
-#~ msgstr "Sayfayı göster"
+#~ msgstr "SayfayÄ± gÃ¶ster"
 
 #~ msgid "Zoom to selection"
-#~ msgstr "Seçileni göster"
+#~ msgstr "SeÃ§ileni gÃ¶ster"
 
 #~ msgid "_Open"
-#~ msgstr "_Aç"
+#~ msgstr "_AÃ§"
 
 #~ msgid "_Quit"
-#~ msgstr "Çı_k"
+#~ msgstr "Ã‡Ä±_k"
 
 #~ msgid "lower selection to bottom"
-#~ msgstr "seçili nesneleri arkaya it"
+#~ msgstr "seÃ§ili nesneleri arkaya it"
 
 #, fuzzy
 #~ msgid "Align to bottom left"
-#~ msgstr "Nesne dışını sol kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± sol kenara hizala"
 
 #, fuzzy
 #~ msgid "Align to bottom middle"
-#~ msgstr "Nesne içini alt kenara hizala"
+#~ msgstr "Nesne iÃ§ini alt kenara hizala"
 
 #, fuzzy
 #~ msgid "Align to bottom right"
-#~ msgstr "Nesne dışını sağ kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± saÄŸ kenara hizala"
 
 #, fuzzy
 #~ msgid "Align to left middle"
-#~ msgstr "Nesneleri dikey ortasına hizala"
+#~ msgstr "Nesneleri dikey ortasÄ±na hizala"
 
 #, fuzzy
 #~ msgid "Align to right middle"
-#~ msgstr "Nesneleri yatay ortasına hizala"
+#~ msgstr "Nesneleri yatay ortasÄ±na hizala"
 
 #, fuzzy
 #~ msgid "Align to top left"
-#~ msgstr "Nesne dışını sol kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± sol kenara hizala"
 
 #, fuzzy
 #~ msgid "Align to top right"
-#~ msgstr "Nesne dışını sağ kenara hizala"
+#~ msgstr "Nesne dÄ±ÅŸÄ±nÄ± saÄŸ kenara hizala"
 
 #, fuzzy
 #~ msgid "Center"
-#~ msgstr "İçerik"
+#~ msgstr "Ä°Ã§erik"
 
 #, fuzzy
 #~ msgid "Choose metric for center"
-#~ msgstr "Rehber çizgileri rengini seçiniz"
+#~ msgstr "Rehber Ã§izgileri rengini seÃ§iniz"
 
 #, fuzzy
 #~ msgid "Close dialog - Ctl+c"
@@ -2648,11 +2566,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Height: "
-#~ msgstr "Yükseklik:"
+#~ msgstr "YÃ¼kseklik:"
 
 #, fuzzy
 #~ msgid "Orig. Width: "
-#~ msgstr " Genişlik "
+#~ msgstr " GeniÅŸlik "
 
 #, fuzzy
 #~ msgid "Orig. X: "
@@ -2660,42 +2578,42 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Set angle to 0 degrees"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #, fuzzy
 #~ msgid "Set angle to 180 degrees"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #, fuzzy
 #~ msgid "Set angle to 270 degrees"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #, fuzzy
 #~ msgid "Set angle to 90 degrees"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #~ msgid "Skew"
-#~ msgstr "Eğilt"
+#~ msgstr "EÄŸilt"
 
 #, fuzzy
 #~ msgid "Start transformation - Ctl+a"
-#~ msgstr "Dönüştürmeye başla"
+#~ msgstr "DÃ¶nÃ¼ÅŸtÃ¼rmeye baÅŸla"
 
 #, fuzzy
 #~ msgid "Use alignment during transformation"
-#~ msgstr "Dönüştürmeyi kaldır"
+#~ msgstr "DÃ¶nÃ¼ÅŸtÃ¼rmeyi kaldÄ±r"
 
 #, fuzzy
 #~ msgid "absolute"
-#~ msgstr "Yapış"
+#~ msgstr "YapÄ±ÅŸ"
 
 #, fuzzy
 #~ msgid "angle"
-#~ msgstr "Değiştir"
+#~ msgstr "DeÄŸiÅŸtir"
 
 #, fuzzy
 #~ msgid "desktop"
-#~ msgstr "Masaüstü"
+#~ msgstr "MasaÃ¼stÃ¼"
 
 #, fuzzy
 #~ msgid "flip horizontal"
@@ -2715,36 +2633,36 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "select direction"
-#~ msgstr "Seçileni sil"
+#~ msgstr "SeÃ§ileni sil"
 
 #, fuzzy
 #~ msgid "skew"
-#~ msgstr "Eğilt"
+#~ msgstr "EÄŸilt"
 
 #~ msgid "Add attribute"
-#~ msgstr "Özellik ekle"
+#~ msgstr "Ã–zellik ekle"
 
 #~ msgid "Attribute:"
-#~ msgstr "Özellik:"
+#~ msgstr "Ã–zellik:"
 
 #~ msgid "Change"
-#~ msgstr "Değiştir"
+#~ msgstr "DeÄŸiÅŸtir"
 
 #~ msgid "Change Attribute"
-#~ msgstr "Özelliği değiştir"
+#~ msgstr "Ã–zelliÄŸi deÄŸiÅŸtir"
 
 #, fuzzy
 #~ msgid "Change Content"
-#~ msgstr "Çizim Kapsamı"
+#~ msgstr "Ã‡izim KapsamÄ±"
 
 #~ msgid "Content"
-#~ msgstr "İçerik"
+#~ msgstr "Ä°Ã§erik"
 
 #~ msgid "Do you want to delete attribute?"
-#~ msgstr "Bu özelliği silmek istiyormusun?"
+#~ msgstr "Bu Ã¶zelliÄŸi silmek istiyormusun?"
 
 #~ msgid "Hierarchy"
-#~ msgstr "Hiyerarşi"
+#~ msgstr "HiyerarÅŸi"
 
 #~ msgid "Key"
 #~ msgstr "Anahtar"
@@ -2758,11 +2676,11 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "You can't delete 'id' attribute!"
-#~ msgstr "Bu özelliği silmek istiyormusun?"
+#~ msgstr "Bu Ã¶zelliÄŸi silmek istiyormusun?"
 
 #, fuzzy
 #~ msgid "Do you want to delete attribute %s?"
-#~ msgstr "Bu özelliği silmek istiyormusun?"
+#~ msgstr "Bu Ã¶zelliÄŸi silmek istiyormusun?"
 
 #, fuzzy
 #~ msgid "No"
@@ -2770,72 +2688,72 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Do you want to delete element %s?"
-#~ msgstr "Bu özelliği silmek istiyormusun?"
+#~ msgstr "Bu Ã¶zelliÄŸi silmek istiyormusun?"
 
 #, fuzzy
 #~ msgid "us"
 #~ msgstr "_Biz"
 
 #~ msgid "Choose base unit system for grid"
-#~ msgstr "Izgara için temel birim sistemini seçiniz"
+#~ msgstr "Izgara iÃ§in temel birim sistemini seÃ§iniz"
 
 #~ msgid "Millimeters\n"
 #~ msgstr "Milimetre\n"
 
 #~ msgid "Choose color for grid"
-#~ msgstr "Izgara rengini seçiniz"
+#~ msgstr "Izgara rengini seÃ§iniz"
 
 #~ msgid "Set maximum distance for grid snapping"
-#~ msgstr "Izgara yakalamasının maksimum uzaklığını ayarla"
+#~ msgstr "Izgara yakalamasÄ±nÄ±n maksimum uzaklÄ±ÄŸÄ±nÄ± ayarla"
 
 #~ msgid "Choose unit system for grid snapping"
-#~ msgstr "Izgara yakalama birim sistemini seçiniz"
+#~ msgstr "Izgara yakalama birim sistemini seÃ§iniz"
 
 #~ msgid "Pixels\n"
 #~ msgstr "Piksel\n"
 
 #~ msgid "Set distance between vertical grid lines"
-#~ msgstr "Dikey ızgara aralığını belirle"
+#~ msgstr "Dikey Ä±zgara aralÄ±ÄŸÄ±nÄ± belirle"
 
 #~ msgid "Set distance between horizontal grid lines"
-#~ msgstr "Yatay ızgara aralığını belirle"
+#~ msgstr "Yatay Ä±zgara aralÄ±ÄŸÄ±nÄ± belirle"
 
 #~ msgid "Set origin of page coordinate system"
 #~ msgstr "Sayfa koordinat sisteminin orijinini ayarla"
 
 #~ msgid "Choose unit system for guideline snapping"
-#~ msgstr "Rehber çizgileri yakalama birim sistemini seç"
+#~ msgstr "Rehber Ã§izgileri yakalama birim sistemini seÃ§"
 
 #~ msgid "Set maximum distance for guideline snapping"
-#~ msgstr "Rehber çizgileri yakalama maksimum aralığını seç"
+#~ msgstr "Rehber Ã§izgileri yakalama maksimum aralÄ±ÄŸÄ±nÄ± seÃ§"
 
 #~ msgid "Choose color for guidelines"
-#~ msgstr "Rehber çizgileri rengini seçiniz"
+#~ msgstr "Rehber Ã§izgileri rengini seÃ§iniz"
 
 #~ msgid "Choose color for highlighted guidelines"
-#~ msgstr "İşaretli rehber çizgileri için renk seçiniz"
+#~ msgstr "Ä°ÅŸaretli rehber Ã§izgileri iÃ§in renk seÃ§iniz"
 
 #~ msgid "Choose paper size"
-#~ msgstr "Sayfa boyutunu seçin"
+#~ msgstr "Sayfa boyutunu seÃ§in"
 
 #~ msgid "A4\n"
 #~ msgstr "A4\n"
 
 #~ msgid "Set page width"
-#~ msgstr "Sayfa genişliğini ayarla"
+#~ msgstr "Sayfa geniÅŸliÄŸini ayarla"
 
 #~ msgid "Set page height"
-#~ msgstr "Sayfa yüksekliğini ayarla"
+#~ msgstr "Sayfa yÃ¼ksekliÄŸini ayarla"
 
 #~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Telif hakkı Lauris Kaplinski 1999-2000"
+#~ msgstr "Telif hakkÄ± Lauris Kaplinski 1999-2000"
 
 #~ msgid ""
 #~ "A Vector Drawing Program.\n"
 #~ "Released under GPL"
 #~ msgstr ""
-#~ "Bir Vektör Çizim Programı.\n"
-#~ "GPL'e göre yayınlanmıştır"
+#~ "Bir VektÃ¶r Ã‡izim ProgramÄ±.\n"
+#~ "GPL'e gÃ¶re yayÄ±nlanmÄ±ÅŸtÄ±r"
 
 #~ msgid "Ellipse"
 #~ msgstr "Elips"
@@ -2844,13 +2762,13 @@ msgstr ""
 #~ msgstr "_Dosya"
 
 #~ msgid "_Help"
-#~ msgstr "_Yardım"
+#~ msgstr "_YardÄ±m"
 
 #~ msgid "_About ..."
-#~ msgstr "Hakkında ..."
+#~ msgstr "HakkÄ±nda ..."
 
 #~ msgid "Draw ellipse"
-#~ msgstr "Elips çiz"
+#~ msgstr "Elips Ã§iz"
 
 #~ msgid "Dup"
 #~ msgstr "Klon"
@@ -2859,19 +2777,19 @@ msgstr ""
 #~ msgstr "Sil"
 
 #~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
-#~ msgstr "Grafik arabirimini kullanma. NB! varsa, İLK argüman olmalı!"
+#~ msgstr "Grafik arabirimini kullanma. NB! varsa, Ä°LK argÃ¼man olmalÄ±!"
 
 #~ msgid "Could not initialize Bonobo"
-#~ msgstr "Bonobo'yu başlatamadım"
+#~ msgstr "Bonobo'yu baÅŸlatamadÄ±m"
 
 #~ msgid "Broken bitmap"
 #~ msgstr "Bozuk resim"
 
-#~ msgid "Valige värv"
+#~ msgid "Valige vÃ¤rv"
 #~ msgstr "Valige (?)"
 
 #~ msgid " Width "
-#~ msgstr " Genişlik "
+#~ msgstr " GeniÅŸlik "
 
 #~ msgid ""
 #~ "pixels\n"
@@ -2884,7 +2802,7 @@ msgstr ""
 #~ "milimetre\n"
 #~ "santimetre\n"
 #~ "nokta\n"
-#~ "inç\n"
+#~ "inÃ§\n"
 
 #~ msgid "Scale with image"
 #~ msgstr "Resimle boyutla"
@@ -2893,7 +2811,7 @@ msgstr ""
 #~ msgstr "kesik"
 
 #~ msgid "double"
-#~ msgstr "çift"
+#~ msgstr "Ã§ift"
 
 #~ msgid " Join "
 #~ msgstr " Ekle "
@@ -2920,10 +2838,10 @@ msgstr ""
 #~ msgstr "y"
 
 #~ msgid "Width "
-#~ msgstr "Genişlik "
+#~ msgstr "GeniÅŸlik "
 
 #~ msgid "Height "
-#~ msgstr "Yükseklik "
+#~ msgstr "YÃ¼kseklik "
 
 #~ msgid ""
 #~ "px\n"
@@ -2968,10 +2886,10 @@ msgstr ""
 #~ msgstr "_Yeni Dosya"
 
 #~ msgid "_Import"
-#~ msgstr "_İthal et"
+#~ msgstr "_Ä°thal et"
 
 #~ msgid "_Export"
-#~ msgstr "_İhraç et"
+#~ msgstr "_Ä°hraÃ§ et"
 
 #~ msgid "D_uplicate"
 #~ msgstr "Kl_onla"
@@ -2980,55 +2898,55 @@ msgstr ""
 #~ msgstr "S_il"
 
 #~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-#~ msgstr "Masaüstü kenarları aç/kapat (cetvel ve çubukları aç/kapat )"
+#~ msgstr "MasaÃ¼stÃ¼ kenarlarÄ± aÃ§/kapat (cetvel ve Ã§ubuklarÄ± aÃ§/kapat )"
 
 #~ msgid "Toggle borders"
-#~ msgstr "Kenarları aç/kapat"
+#~ msgstr "KenarlarÄ± aÃ§/kapat"
 
 #~ msgid "_Arrange"
 #~ msgstr "_Ayarla"
 
 #~ msgid "_Order"
-#~ msgstr "_Sırala"
+#~ msgstr "_SÄ±rala"
 
 #~ msgid "Groups selected items"
-#~ msgstr "Seçili birimlrı gruplar"
+#~ msgstr "SeÃ§ili birimlrÄ± gruplar"
 
 #~ msgid "Open File"
-#~ msgstr "Dosya aç"
+#~ msgstr "Dosya aÃ§"
 
 #~ msgid "Save File"
-#~ msgstr "Dosyayı kaydet"
+#~ msgstr "DosyayÄ± kaydet"
 
 #~ msgid "Duplic\t"
 #~ msgstr "Klonla\t"
 
 #~ msgid "To Front"
-#~ msgstr "Öne getir"
+#~ msgstr "Ã–ne getir"
 
 #~ msgid "Up"
-#~ msgstr "Yukarı"
+#~ msgstr "YukarÄ±"
 
 #~ msgid "Lower one position"
-#~ msgstr "Bir pozisyon alçalt"
+#~ msgstr "Bir pozisyon alÃ§alt"
 
 #~ msgid "Down"
-#~ msgstr "Aşağı"
+#~ msgstr "AÅŸaÄŸÄ±"
 
 #~ msgid "Edit objects using control nodes"
-#~ msgstr "Nesneleri kontrol noktalarıyla değiştir"
+#~ msgstr "Nesneleri kontrol noktalarÄ±yla deÄŸiÅŸtir"
 
 #~ msgid "Draw rectangles"
-#~ msgstr "Dörtgen çiz"
+#~ msgstr "DÃ¶rtgen Ã§iz"
 
 #~ msgid "Draw ellipses"
-#~ msgstr "Elips çiz"
+#~ msgstr "Elips Ã§iz"
 
 #~ msgid "Write text"
 #~ msgstr "Metin yaz"
 
 #~ msgid "Left button zooms in, right out"
-#~ msgstr "Farenin sol tuşu büyültür, sağ tuşu küçültür"
+#~ msgstr "Farenin sol tuÅŸu bÃ¼yÃ¼ltÃ¼r, saÄŸ tuÅŸu kÃ¼Ã§Ã¼ltÃ¼r"
 
 #~ msgid ""
 #~ "10%\n"
@@ -3055,10 +2973,10 @@ msgstr ""
 #~ msgstr "%100"
 
 #~ msgid " Move "
-#~ msgstr " Taşı "
+#~ msgstr " TaÅŸÄ± "
 
 #~ msgid "move relative in"
-#~ msgstr "göreceli içeri taşı"
+#~ msgstr "gÃ¶receli iÃ§eri taÅŸÄ±"
 
 #~ msgid ""
 #~ "pixel\n"
@@ -3071,34 +2989,34 @@ msgstr ""
 #~ "milimetre\n"
 #~ "santimetre\n"
 #~ "nokta\n"
-#~ "inç\n"
+#~ "inÃ§\n"
 
 #~ msgid " Rotate "
-#~ msgstr " Dönder "
+#~ msgstr " DÃ¶nder "
 
-#~ msgid "90°"
-#~ msgstr "90°"
+#~ msgid "90Â°"
+#~ msgstr "90Â°"
 
-#~ msgid "180°"
-#~ msgstr "180°"
+#~ msgid "180Â°"
+#~ msgstr "180Â°"
 
-#~ msgid "270°"
-#~ msgstr "270°"
+#~ msgid "270Â°"
+#~ msgstr "270Â°"
 
 #~ msgid "any"
 #~ msgstr "herhangi"
 
 #~ msgid "right"
-#~ msgstr "sağ"
+#~ msgstr "saÄŸ"
 
 #~ msgid "left"
 #~ msgstr "sol"
 
 #~ msgid " flip "
-#~ msgstr " tersine çevir "
+#~ msgstr " tersine Ã§evir "
 
 #~ msgid " Skew "
-#~ msgstr " Eğilt "
+#~ msgstr " EÄŸilt "
 
 #~ msgid "%  "
 #~ msgstr "%  "
@@ -3107,7 +3025,8 @@ msgstr ""
 #~ msgstr "kopyala"
 
 #~ msgid "Guidelines setup"
-#~ msgstr "Rehber ayarlaması"
+#~ msgstr "Rehber ayarlamasÄ±"
 
 #~ msgid "close dialog"
 #~ msgstr "diyalogu kapat"
+
