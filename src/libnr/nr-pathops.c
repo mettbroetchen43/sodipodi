@@ -295,6 +295,27 @@ nr_node_path_free (struct _NRNodePath *npath)
 	free (npath);
 }
 
+/* We have to copy flat list to avoid recalculating it differently */
+
+static struct _NRFlatNode *
+nr_flat_list_copy (const struct _NRFlatNode *src)
+{
+	struct _NRFlatNode *first, *ref, *dst;
+	first = NULL;
+	ref = NULL;
+	dst = NULL;
+	while (src) {
+		dst = nr_flat_node_new (src->x, src->y, src->s);
+		dst->prev = ref;
+		if (ref) ref->next = dst;
+		if (!first) first = dst;
+		ref = dst;
+		src = src->next;
+	}
+	if (dst) dst->next = NULL;
+	return first;
+}
+
 static struct _NRNode *
 nr_node_list_copy (const struct _NRNode *src)
 {
@@ -302,12 +323,13 @@ nr_node_list_copy (const struct _NRNode *src)
 	const struct _NRNode *snode;
 	first = NULL;
 	ref = NULL;
+	dnode = NULL;
 	for (snode = src; snode; snode = snode->next) {
 		dnode = nr_node_alloc ();
 		memcpy (dnode, snode, sizeof (struct _NRNode));
 		dnode->prev = ref;
 		if (ref) ref->next = dnode;
-		dnode->flats = NULL;
+		dnode->flats = nr_flat_list_copy (snode->flats);
 		if (!first) first = dnode;
 		ref = dnode;
 	}
@@ -315,11 +337,29 @@ nr_node_list_copy (const struct _NRNode *src)
 	return first;
 }
 
+static struct _NRFlatNode *
+nr_flat_list_copy_reverse (const struct _NRFlatNode *src)
+{
+	struct _NRFlatNode *ref, *dst;
+	ref = NULL;
+	dst = NULL;
+	while (src) {
+		dst = nr_flat_node_new (src->x, src->y, src->s);
+		dst->next = ref;
+		if (ref) ref->prev = dst;
+		ref = dst;
+		src = src->next;
+	}
+	if (dst) dst->prev = NULL;
+	return dst;
+}
+
 static struct _NRNode *
 nr_node_list_copy_reverse (const struct _NRNode *src)
 {
 	struct _NRNode *ref, *dnode;
-	const struct _NRNode *snode;
+	const struct _NRNode *sref, *snode;
+	sref = NULL;
 	ref = NULL;
 	for (snode = src; snode->next; snode = snode->next) {
 		dnode = nr_node_alloc ();
@@ -332,16 +372,25 @@ nr_node_list_copy_reverse (const struct _NRNode *src)
 			dnode->y1 = snode->next->y2;
 		}
 		dnode->isline = snode->next->isline;
-		dnode->flats = NULL;
+		if (sref) {
+			dnode->flats = nr_flat_list_copy_reverse (sref->flats);
+		} else {
+			dnode->flats = NULL;
+		}
 		dnode->next = ref;
 		if (ref) ref->prev = dnode;
+		sref = snode;
 		ref = dnode;
 	}
 	dnode = nr_node_alloc ();
 	dnode->x3 = snode->x3;
 	dnode->y3 = snode->y3;
 	dnode->isline = 1;
-	dnode->flats = NULL;
+	if (sref) {
+		dnode->flats = nr_flat_list_copy_reverse (sref->flats);
+	} else {
+		dnode->flats = NULL;
+	}
 	dnode->next = ref;
 	if (ref) ref->prev = dnode;
 
@@ -811,6 +860,8 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 	struct _NRNodeSeg *s0, *s1;
 	struct _NRNode *n0, *n1;
 	double x0, y0, x1, y1;
+	double px, py;
+	double q[4];
 	NRPointD a, b, p;
 	unsigned int skip;
 	int wind, lower, upper;
@@ -845,146 +896,79 @@ nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 		x1 = n0->flats->next->x;
 		y1 = n0->flats->next->y;
 	}
-	p.x = 0.5 * (x0 + x1);
-	p.y = 0.5 * (y0 + y1);
-	if (p.y == n0->y3) {
+	px = 0.5 * (x0 + x1);
+	py = 0.5 * (y0 + y1);
+	if (py == n0->y3) {
 		/* Horizontal */
 		/* Ensure we do not touch endpoints horizontally */
-		if ((p.x == s1->nodes->x3) || (p.x == s1->last->x3)) {
-			p.x = 0.75 * (x0 + x1);
-			p.y = 0.75 * (y0 + y1);
+		if ((px == s1->nodes->x3) || (px == s1->last->x3)) {
+			px = 0.75 * (x0 + x1);
+			py = 0.75 * (y0 + y1);
 		}
-		if ((p.x == s1->nodes->x3) || (p.x == s1->last->x3)) {
-			p.x = 0.875 * (x0 + x1);
-			p.y = 0.875 * (y0 + y1);
+		if ((px == s1->nodes->x3) || (px == s1->last->x3)) {
+			px = 0.25 * (x0 + x1);
+			py = 0.25 * (y0 + y1);
 		}
-		if (p.x > n0->x3) {
-			double t;
-			t = p.x;
-			p.x = -p.y;
-			p.y = t;
-			/* Need vertical wind */
-			/* fixme: */
-			while (n1 && n1->next) {
-				if (n1->next->isline) {
-					a.x = -n1->y3;
-					a.y = n1->x3;
-					b.x = -n1->next->y3;
-					b.y = n1->next->x3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-					skip = 0;
-				} else {
-					struct _NRFlatNode *f;
-					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
-					f = n1->flats;
-					while (f && f->next) {
-						a.x = -f->y;
-						a.y = f->x;
-						b.x = -f->next->y;
-						b.y = f->next->x;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-						skip = 0;
-						f = f->next;
-					}
-				}
-				n1 = n1->next;
-			}
+		if (px > n0->x3) {
+			q[0] = 0.0;
+			q[1] = 1.0;
+			q[2] = -1.0;
+			q[3] = 0.0;
 		} else {
-			double t;
-			t = -p.x;
-			p.x = p.y;
-			p.y = t;
-			/* Need vertical wind */
-			/* fixme: */
-			while (n1 && n1->next) {
-				if (n1->next->isline) {
-					a.x = n1->y3;
-					a.y = -n1->x3;
-					b.x = n1->next->y3;
-					b.y = -n1->next->x3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-					skip = 0;
-				} else {
-					struct _NRFlatNode *f;
-					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
-					f = n1->flats;
-					while (f && f->next) {
-						a.x = f->y;
-						a.y = -f->x;
-						b.x = f->next->y;
-						b.y = -f->next->x;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-						skip = 0;
-						f = f->next;
-					}
-				}
-				n1 = n1->next;
-			}
+			q[0] = 0.0;
+			q[1] = -1.0;
+			q[2] = 1.0;
+			q[3] = 0.0;
 		}
 	} else {
 		/* Ensure we do not touch endpoints vertically */
-		if ((p.y == s1->nodes->y3) || (p.y == s1->last->y3)) {
-			p.x = 0.75 * (x0 + x1);
-			p.y = 0.75 * (y0 + y1);
+		if ((py == s1->nodes->y3) || (py == s1->last->y3)) {
+			px = 0.75 * (x0 + x1);
+			py = 0.75 * (y0 + y1);
 		}
-		if ((p.y == s1->nodes->y3) || (p.y == s1->last->y3)) {
-			p.x = 0.875 * (x0 + x1);
-			p.y = 0.875 * (y0 + y1);
+		if ((py == s1->nodes->y3) || (py == s1->last->y3)) {
+			px = 0.25 * (x0 + x1);
+			py = 0.25 * (y0 + y1);
 		}
-		if (p.y > n0->y3) {
-			/* Classical case */
-			while (n1 && n1->next) {
-				if (n1->next->isline) {
-					a.x = n1->x3;
-					a.y = n1->y3;
-					b.x = n1->next->x3;
-					b.y = n1->next->y3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-					skip = 0;
-				} else {
-					struct _NRFlatNode *f;
-					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
-					f = n1->flats;
-					while (f && f->next) {
-						a.x = f->x;
-						a.y = f->y;
-						b.x = f->next->x;
-						b.y = f->next->y;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-						skip = 0;
-						f = f->next;
-					}
-				}
-				n1 = n1->next;
-			}
+		if (py > n0->y3) {
+			q[0] = 1.0;
+			q[1] = 0.0;
+			q[2] = 0.0;
+			q[3] = 1.0;
 		} else {
-			p.x = -p.x;
-			p.y = -p.y;
-			while (n1 && n1->next) {
-				if (n1->next->isline) {
-					a.x = -n1->x3;
-					a.y = -n1->y3;
-					b.x = -n1->next->x3;
-					b.y = -n1->next->y3;
-					if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-					skip = 0;
-				} else {
-					struct _NRFlatNode *f;
-					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
-					f = n1->flats;
-					while (f && f->next) {
-						a.x = -f->x;
-						a.y = -f->y;
-						b.x = -f->next->x;
-						b.y = -f->next->y;
-						if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
-						skip = 0;
-						f = f->next;
-					}
-				}
-				n1 = n1->next;
+			q[0] = -1.0;
+			q[1] = 0.0;
+			q[2] = 0.0;
+			q[3] = -1.0;
+		}
+	}
+
+	p.x = q[0] * px + q[2] * py;
+	p.y = q[1] * px + q[3] * py;
+
+	while (n1 && n1->next) {
+		if (n1->next->isline) {
+			a.x = q[0] * n1->x3 + q[2] * n1->y3;
+			a.y = q[1] * n1->x3 + q[3] * n1->y3;
+			b.x = q[0] * n1->next->x3 + q[2] * n1->next->y3;
+			b.y = q[1] * n1->next->x3 + q[3] * n1->next->y3;
+			if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
+			skip = 0;
+		} else {
+			struct _NRFlatNode *f;
+			if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+			f = n1->flats;
+			while (f && f->next) {
+				a.x = q[0] * f->x + q[2] * f->y;
+				a.y = q[1] * f->x + q[3] * f->y;
+				b.x = q[0] * f->next->x + q[2] * f->next->y;
+				b.y = q[1] * f->next->x + q[3] * f->next->y;
+				if (!skip) wind += nr_segment_find_wind (a, b, p, &lower, &upper, 1);
+				skip = 0;
+				f = f->next;
 			}
 		}
+		n1 = n1->next;
 	}
 	assert (lower == upper);
 	wind += lower;
