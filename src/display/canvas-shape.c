@@ -3,7 +3,6 @@
 #include <math.h>
 #include <gnome.h>
 #include <libart_lgpl/art_alphagamma.h>
-#include "../helper/art_render.h"
 #include "../helper/canvas-helper.h"
 #include "canvas-shape.h"
 
