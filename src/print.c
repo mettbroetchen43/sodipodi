@@ -123,6 +123,8 @@ static void sp_module_print_gnome_init (SPModulePrintGnome *gpmod);
 static void sp_module_print_gnome_finalize (GObject *object);
 
 static unsigned int sp_module_print_gnome_setup (SPModulePrint *mod);
+static unsigned int sp_module_print_gnome_set_preview (SPModulePrint *mod);
+
 static unsigned int sp_module_print_gnome_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_gnome_finish (SPModulePrint *mod);
 
@@ -170,6 +172,7 @@ sp_module_print_gnome_class_init (SPModulePrintClass *klass)
 	g_object_class->finalize = sp_module_print_gnome_finalize;
 
 	module_print_class->setup = sp_module_print_gnome_setup;
+	module_print_class->set_preview = sp_module_print_gnome_set_preview;
 	module_print_class->begin = sp_module_print_gnome_begin;
 	module_print_class->finish = sp_module_print_gnome_finish;
 	module_print_class->bind = sp_module_print_gnome_bind;
@@ -231,6 +234,46 @@ sp_module_print_gnome_setup (SPModulePrint *mod)
 	gnome_print_config_unref (config);
 
 	return TRUE;
+}
+
+static unsigned int
+sp_module_print_gnome_set_preview (SPModulePrint *mod)
+{
+#if 0
+	SPModulePrintGnome *gpmod;
+	SPPrintContext ctx;
+        GnomePrintContext *gpc;
+        GnomePrintMaster *gpm;
+	GtkWidget *gpmp;
+	gchar *title;
+
+	gpmod = (SPModulePrintGnome *) mod;
+
+	gpm = gnome_print_master_new();
+	gpmod->gpc = gnome_print_master_get_context (gpm);
+
+	g_return_if_fail (gpm != NULL);
+	g_return_if_fail (gpc != NULL);
+
+	/* Print document */
+	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
+	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
+	/* From desktop points to document pixels */
+	gnome_print_scale (gpc, 0.8, -0.8);
+	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+        gnome_print_showpage (gpc);
+        gnome_print_context_close (gpc);
+
+	title = g_strdup_printf (_("Sodipodi (doc name %s..): Print Preview"),"");
+	gpmp = gnome_print_master_preview_new (gpm, title);
+
+	gtk_widget_show (GTK_WIDGET(gpmp));
+
+	gnome_print_master_close (gpm);
+
+	g_free (title);
+#endif
+	return 0;
 }
 
 static unsigned int
@@ -874,40 +917,53 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 void
 sp_print_preview_document (SPDocument *doc)
 {
-#ifdef lalalaWITH_GNOME_PRINT
-	SPPrintContext ctx;
-        GnomePrintContext *gpc;
-        GnomePrintMaster *gpm;
-	GtkWidget *gpmp;
-	gchar *title;
+	SPModulePrint *mod;
+	unsigned int ret;
 
 	sp_document_ensure_up_to_date (doc);
 
-	gpm = gnome_print_master_new();
-	gpc = gnome_print_master_get_context (gpm);
-	ctx.gpc = gpc;
-
-	g_return_if_fail (gpm != NULL);
-	g_return_if_fail (gpc != NULL);
-
-	/* Print document */
-	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
-	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
-	/* From desktop points to document pixels */
-	gnome_print_scale (gpc, 0.8, -0.8);
-	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
-        gnome_print_showpage (gpc);
-        gnome_print_context_close (gpc);
-
-	title = g_strdup_printf (_("Sodipodi (doc name %s..): Print Preview"),"");
-	gpmp = gnome_print_master_preview_new (gpm, title);
-
-	gtk_widget_show (GTK_WIDGET(gpmp));
-
-	gnome_print_master_close (gpm);
-
-	g_free (title);
+#ifdef WIN32
+	mod = g_object_new (SP_TYPE_MODULE_PRINT_WIN32, NULL);
+#else
+// Some unix probably
+#ifdef WITH_KDE
+	mod = sp_kde_get_module_print ();
+#else
+#ifdef WITH_GNOME_PRINT
+	mod = g_object_new (SP_TYPE_MODULE_PRINT_GNOME, NULL);
+#else
+	mod = g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
 #endif
+#endif
+#endif
+
+	ret = FALSE;
+	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->set_preview)
+		ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->set_preview (mod);
+
+	if (ret) {
+		/* fixme: This has to go into module constructor somehow */
+		/* Create new arena */
+		mod->base = SP_ITEM (sp_document_root (doc));
+		mod->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
+		mod->dkey = sp_item_display_key_new (1);
+		mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey, SP_ITEM_SHOW_PRINT);
+		/* Print document */
+		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->begin)
+			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->begin (mod, doc);
+		sp_item_invoke_print (mod->base, (SPPrintContext *) mod);
+		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->finish)
+			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->finish (mod);
+		/* Release arena */
+		sp_item_invoke_hide (mod->base, mod->dkey);
+		mod->base = NULL;
+		nr_arena_item_unref (mod->root);
+		mod->root = NULL;
+		nr_object_unref ((NRObject *) mod->arena);
+		mod->arena = NULL;
+	}
+
+	g_object_unref (G_OBJECT (mod));
 }
 
 void
@@ -933,31 +989,31 @@ sp_print_document (SPDocument *doc)
 #endif
 #endif
 
-	/* fixme: This has to go into module constructor somehow */
-	/* Create new arena */
-	mod->base = SP_ITEM (sp_document_root (doc));
-	mod->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
-	mod->dkey = sp_item_display_key_new (1);
-	mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey, SP_ITEM_SHOW_PRINT);
-
+	ret = FALSE;
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)
 		ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup (mod);
 
 	if (ret) {
+		/* fixme: This has to go into module constructor somehow */
+		/* Create new arena */
+		mod->base = SP_ITEM (sp_document_root (doc));
+		mod->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
+		mod->dkey = sp_item_display_key_new (1);
+		mod->root = sp_item_invoke_show (mod->base, mod->arena, mod->dkey, SP_ITEM_SHOW_PRINT);
 		/* Print document */
 		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->begin)
 			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->begin (mod, doc);
 		sp_item_invoke_print (mod->base, (SPPrintContext *) mod);
 		if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->finish)
 			ret = ((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->finish (mod);
+		/* Release arena */
+		sp_item_invoke_hide (mod->base, mod->dkey);
+		mod->base = NULL;
+		nr_arena_item_unref (mod->root);
+		mod->root = NULL;
+		nr_object_unref ((NRObject *) mod->arena);
+		mod->arena = NULL;
 	}
-
-	sp_item_invoke_hide (mod->base, mod->dkey);
-	mod->base = NULL;
-	nr_arena_item_unref (mod->root);
-	mod->root = NULL;
-	nr_object_unref ((NRObject *) mod->arena);
-	mod->arena = NULL;
 
 	g_object_unref (G_OBJECT (mod));
 }

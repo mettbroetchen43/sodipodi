@@ -162,12 +162,22 @@ sodipodi_LDADD = \
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
-# noinst_PROGRAMS = spsvgview
+#noinst_PROGRAMS = spsvgview
 
-# spsvgview_SOURCES =
+#spsvgview_SOURCES =
 #	spsvgview.c
 #	view.c view.h
 #	svg-view.c svg-view.h
+#	module.c module.h
+#	print.c print.h
+
+# spsvgview_LDADD =
+#	$(sodipodi_private_libs)
+#	$(SODIPODI_LIBS)
+#	$(GNOME_PRINT_LIBS)
+#	$(XFT_LIBS)
+#	$(FREETYPE_LIBS)
+#	$(kdeldadd)
 
 #	sodipodi.c sodipodi.h
 #	desktop.c desktop.h

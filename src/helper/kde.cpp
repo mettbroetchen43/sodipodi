@@ -13,6 +13,9 @@
 
 #include <config.h>
 
+#include <libnr/nr-macros.h>
+#include <libnr/nr-matrix.h>
+
 #include <qtimer.h>
 #include <kapp.h>
 #include <kfiledialog.h>
@@ -152,6 +155,7 @@ static void sp_module_print_kde_init (SPModulePrintKDE *gpmod);
 static void sp_module_print_kde_finalize (GObject *object);
 
 static unsigned int sp_module_print_kde_setup (SPModulePrint *mod);
+static unsigned int sp_module_print_kde_set_preview (SPModulePrint *mod);
 static unsigned int sp_module_print_kde_begin (SPModulePrint *mod, SPDocument *doc);
 static unsigned int sp_module_print_kde_finish (SPModulePrint *mod);
 
@@ -199,6 +203,7 @@ sp_module_print_kde_class_init (SPModulePrintClass *klass)
 	g_object_class->finalize = sp_module_print_kde_finalize;
 
 	module_print_class->setup = sp_module_print_kde_setup;
+	module_print_class->set_preview = sp_module_print_kde_set_preview;
 	module_print_class->begin = sp_module_print_kde_begin;
 	module_print_class->finish = sp_module_print_kde_finish;
 	module_print_class->bind = sp_module_print_kde_bind;
@@ -211,7 +216,7 @@ sp_module_print_kde_class_init (SPModulePrintClass *klass)
 static void
 sp_module_print_kde_init (SPModulePrintKDE *kpmod)
 {
-	kpmod->kprinter = new KPrinter (TRUE, QPrinter::HighResolution);
+	kpmod->kprinter = new KPrinter (TRUE, QPrinter::PrinterResolution);
 	kpmod->kprinter->setFullPage (TRUE);
 	kpmod->kprinter->setPageSelection (KPrinter::ApplicationSide);
 }
@@ -240,13 +245,27 @@ sp_module_print_kde_setup (SPModulePrint *mod)
 	QTimer timer;
 	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
 	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+
 	SPKDEModal = TRUE;
-
 	ret = kpmod->kprinter->setup (NULL);
-
 	SPKDEModal = FALSE;
 
-	return TRUE;
+	return ret;
+}
+
+static unsigned int
+sp_module_print_kde_set_preview (SPModulePrint *mod)
+{
+	SPModulePrintKDE *kpmod;
+	unsigned int ret;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	// use a "clean" KPrinter object (independant from previous print jobs),
+	// this is not necessary, it depends on the application
+
+	// KPrinter prt( false );
+	kpmod->kprinter->setPreviewOnly (TRUE);
 }
 
 static unsigned int
@@ -276,17 +295,24 @@ sp_module_print_kde_finish (SPModulePrint *mod)
 
 	kpmod = (SPModulePrintKDE *) mod;
 
-	/* Go to document coordinates */
+	QTimer timer;
+	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
+	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+	SPKDEModal = TRUE;
+
+	int dpi = kpmod->kprinter->resolution ();
+	float scale = dpi / 72.0;
+
 	y0 = 0.0;
 	x0 = 0.0;
 	x1 = kpmod->width;
 	y1 = kpmod->height;
 
-	int width = (int) (RESOLUTION / 72.0 * kpmod->width + 0.5);
-	int height = (int) (RESOLUTION / 72.0 * kpmod->height + 0.5);
+	int width = (int) (kpmod->width * scale + 0.5);
+	int height = (int) (kpmod->height * scale + 0.5);
 
-	int kpwidth = (int) (kpmod->width * PS2PRINTER + 0.5);
-	int kpheight = (int) (kpmod->height * PS2PRINTER + 0.5);
+	// int kpwidth = (int) (kpmod->width * PS2PRINTER + 0.5);
+	// int kpheight = (int) (kpmod->height * PS2PRINTER + 0.5);
 
 	affine.c[0] = width / ((x1 - x0) * 1.25);
 	affine.c[1] = 0.0;
@@ -318,7 +344,7 @@ sp_module_print_kde_finish (SPModulePrint *mod)
 		nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N,
 					  bbox.x0, bbox.y0, bbox.x1, bbox.y1,
 					  px, 4 * width, FALSE, FALSE);
-		memset (px, 0x7f, 4 * width * 64);
+		memset (px, 0xff, 4 * width * 64);
 		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
 		/* Blit into QImage */
 		int xx, yy;
@@ -332,15 +358,7 @@ sp_module_print_kde_finish (SPModulePrint *mod)
 			}
 		}
 		nr_pixblock_release (&pb);
-		// g_print ("Area %d %d %d %d\n", 0, (int) (y * (72.0 / RESOLUTION) * PS2PRINTER + 0.5),
-		//	 (int) (kpmod->width * PS2PRINTER + 0.5),
-		//	 (int) ((y + 64) * (72.0 / RESOLUTION) * PS2PRINTER + 0.5));
-		kpmod->painter->drawImage (QRect (0, (int) (y * (72.0 / RESOLUTION) * PS2PRINTER + 0.5),
-						  (int) (kpmod->width * PS2PRINTER + 0.5),
-						  (int) (64 / (72.0 / RESOLUTION) / PS2PRINTER + 0.5)
-						  // 128
-						   ),
-					   img);
+		kpmod->painter->drawImage (0, y, img, 0, 0, width, 64);
 	}
 
 	nr_free (px);
@@ -348,6 +366,8 @@ sp_module_print_kde_finish (SPModulePrint *mod)
 	kpmod->painter->end ();
 	delete kpmod->painter;
 	kpmod->painter = NULL;
+
+	SPKDEModal = FALSE;
 
 	return 0;
 }

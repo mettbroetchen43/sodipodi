@@ -1782,19 +1782,7 @@ paint (SPCanvas *canvas)
 		y1 = MIN (rects[i].y1, canvas->y0 + GTK_WIDGET (canvas)->allocation.height);
 
 		if ((x0 < x1) && (y0 < y1)) {
-			GdkEventExpose ex;
-			/* Here we are - have to send synthetic expose */
-			ex.type = GDK_EXPOSE;
-			ex.window = SP_CANVAS_WINDOW (canvas);
-			ex.send_event = TRUE;
-			ex.area.x = x0 - canvas->x0;
-			ex.area.y = y0 - canvas->y0;
-			ex.area.width = x1 - x0;
-			ex.area.height = y1 - y0;
-			ex.region = gdk_region_rectangle (&ex.area);
-			ex.count = 0;
-			gtk_widget_send_expose (widget, (GdkEvent *) &ex);
-			gdk_region_destroy (ex.region);
+			sp_canvas_paint_rect (canvas, x0, y0, x1, y1);
 	  	}
 	}
 
@@ -1814,15 +1802,15 @@ do_update (SPCanvas *canvas)
 		canvas->need_update = FALSE;
 	}
 
+	/* Paint if able to */
+	if (GTK_WIDGET_DRAWABLE (canvas)) {
+		return paint (canvas);
+	}
+
 	/* Pick new current item */
 	while (canvas->need_repick) {
 		canvas->need_repick = FALSE;
 		pick_current_item (canvas, &canvas->pick_event);
-	}
-
-	/* Paint if able to */
-	if (GTK_WIDGET_DRAWABLE (canvas)) {
-		return paint (canvas);
 	}
 
 	return TRUE;

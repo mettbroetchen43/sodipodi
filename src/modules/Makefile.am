@@ -22,3 +22,5 @@ libspmodules_a_SOURCES = \
 		sp-module-sys.c \
 		sp-module-sys.h
 
+EXTRA_DIST = \
+	win32.c win32.h

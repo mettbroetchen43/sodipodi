@@ -22,7 +22,7 @@
 
 #ifdef _WIN32
 #define NR_EXPORT static
-#elif
+#else
 #define NR_EXPORT
 #endif
 

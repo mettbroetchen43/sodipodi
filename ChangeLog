@@ -1,3 +1,12 @@
+2003-05-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c (sp_print_preview_document): Use ::set_preview if present
+
+	* src/module.h: Added virtual methof for setting preview
+
+	* src/helper/kde.cpp (sp_module_print_kde_finish): Got working
+	(sp_module_print_kde_set_preview): New method
+
 2003-05-18  Hans Breuer  <hans.breuer.org>
 
 	* src/monostd.h : (new file) some defines and includes
