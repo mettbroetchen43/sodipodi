@@ -416,7 +416,9 @@ sp_file_print_preview (gpointer object, gpointer data)
 
 void sp_file_exit (void)
 {
-	sodipodi_exit (SODIPODI);
+	if (sp_ui_close_all ()) {
+		sodipodi_exit (SODIPODI);
+	}
 }
 
 void

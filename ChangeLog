@@ -1,5 +1,10 @@
 2002-11-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/file.c (sp_file_exit): Close all views before exiting
+
+	* src/interface.c (sp_ui_close_view): Destroy viewwidget properly
+	(sp_ui_close_all): New method
+
 	* src/sp-rect.c (sp_rect_write_transform): Adjust dash in addition to stroke width
 
 	* src/display/nr-arena-shape.c (nr_arena_shape_update): Only dash if

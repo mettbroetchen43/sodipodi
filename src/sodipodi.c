@@ -824,15 +824,9 @@ sodipodi_refresh_display (Sodipodi *sodipodi)
 	}
 }
 
-/*
- * fixme: This also
- */
-
 void
 sodipodi_exit (Sodipodi *sodipodi)
 {
-	/* fixme: fixme: fixme: This has to allow saving data */
-
 	gtk_main_quit ();
 }
 

@@ -86,6 +86,7 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data (GTK_OBJECT (vw), "window", w);
+	gtk_object_set_data (GTK_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
 
 	/* fixme: */
 	if (editable) {
@@ -154,15 +155,13 @@ sp_ui_new_view_preview (GtkWidget *widget)
 void
 sp_ui_close_view (GtkWidget * widget)
 {
-	gpointer w;
+	GtkObject *w;
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 
-	if (sp_ui_delete (NULL, NULL, SP_VIEW (SP_ACTIVE_DESKTOP))) return;
-
+	if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
 	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
-
-	if (w) gtk_object_destroy (GTK_OBJECT (w));
+	gtk_object_destroy (w);
 
 	/*
 	 * We have to fake dialog initialization, or corresponding code is
@@ -170,6 +169,19 @@ sp_ui_close_view (GtkWidget * widget)
 	 */
 	/* fixme: Remove this if not needed anymore (Lauris) */
 	if (GTK_IS_WIDGET (SODIPODI)) fake_dialogs ();
+}
+
+unsigned int
+sp_ui_close_all (void)
+{
+	while (SP_ACTIVE_DESKTOP) {
+		GtkObject *w;
+		if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return FALSE;
+		w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
+		gtk_object_destroy (w);
+	}
+
+	return TRUE;
 }
 
 static gint
