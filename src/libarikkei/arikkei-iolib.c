@@ -131,7 +131,7 @@ arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *nam
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
 		int fd;
 		fd = open (filename, O_RDONLY);
-		if (!fd) return NULL;
+		if (fd < 0) return NULL;
 		cdata = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
 		close (fd);
 		if ((!cdata) || (cdata == (unsigned char *) -1)) return NULL;

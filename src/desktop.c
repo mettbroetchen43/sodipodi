@@ -854,8 +854,12 @@ sp_desktop_widget_set_title (SPDesktopWidget *dtw)
 	if (window) {
 		nv_name = sp_namedview_get_name (dtw->desktop->namedview);
 		uri = SP_DOCUMENT_NAME (SP_VIEW_WIDGET_DOCUMENT (dtw));
+#if 0
 		if (SPShowFullFielName) fname = uri;
 		else fname = g_basename (uri);
+#else
+		fname = uri;
+#endif
 		name = g_string_new ("");
 		g_string_sprintf (name, _("Sodipodi: %s: %s: %d"), fname, nv_name, dtw->desktop->number);
 		gtk_window_set_title (window, name->str);
@@ -1034,7 +1038,7 @@ sp_desktop_widget_new (SPNamedView *namedview)
 	dtw->ry0 = namedview->gridoriginy;
 
 	dtw->desktop = (SPDesktop *) sp_desktop_new (namedview, dtw->canvas);
-	dtw->desktop->owner = dtw;
+	/* dtw->desktop->owner = dtw; */
 	g_object_set_data (G_OBJECT (dtw->desktop), "widget", dtw);
 
 	/* Once desktop is set, we can update rulers */
@@ -1161,8 +1165,8 @@ sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show)
 	}
 }
 
+#if 0
 /* fixme: this are UI functions - find a better place for them */
-
 void
 sp_desktop_toggle_borders (GtkWidget * widget)
 {
@@ -1174,6 +1178,7 @@ sp_desktop_toggle_borders (GtkWidget * widget)
 
 	sp_desktop_widget_show_decorations (SP_DESKTOP_WIDGET (desktop->owner), !desktop->owner->decorations);
 }
+#endif
 
 /*
  * Sooner or later we want to implement two sets of methods

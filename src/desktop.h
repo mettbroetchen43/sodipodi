@@ -34,9 +34,7 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 struct _SPDesktop {
 	SPView view;
 
-#if 1
-	SPDesktopWidget *owner;
-#endif
+	/* fixme: Remove this and reimplement shutdown (Lauris) */
 	Sodipodi *sodipodi;
 
 	SPNamedView *namedview;
@@ -55,7 +53,7 @@ struct _SPDesktop {
 	SPCanvasItem *page;
 	gdouble d2w[6], w2d[6], doc2dt[6];
 
-        gint number;
+	int number;
 	gboolean active;
 	/* Normalized snap distances */
 	gdouble gridsnap;
@@ -81,10 +79,12 @@ struct _SPDesktopClass {
 
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
+#if 0
 #ifndef __SP_DESKTOP_C__
 extern gboolean SPShowFullFielName;
 #else
 gboolean SPShowFullFielName = TRUE;
+#endif
 #endif
 
 /* Show/hide rulers & scrollbars */
@@ -92,9 +92,6 @@ gboolean SPShowFullFielName = TRUE;
 void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
 void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
-
-/* fixme: */
-void sp_desktop_toggle_borders (GtkWidget * widget);
 
 /* Context */
 void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config);
