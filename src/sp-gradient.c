@@ -18,7 +18,6 @@
 
 #include <libnr/nr-gradient.h>
 
-#include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 
 #include "svg/svg.h"
@@ -246,7 +245,7 @@ sp_gradient_init (SPGradient *gr)
 	gr->state = SP_GRADIENT_STATE_UNKNOWN;
 
 	gr->units = SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX;
-	art_affine_identity (gr->transform);
+	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (gr->transform));
 
 	gr->spread = SP_GRADIENT_SPREAD_PAD;
 	gr->spread_set = FALSE;
@@ -361,7 +360,7 @@ sp_gradient_set (SPObject *object, unsigned int key, const unsigned char *value)
 			for (i = 0; i < 6; i++) gr->transform[i] = t.c[i];
 			gr->transform_set = TRUE;
 		} else {
-			art_affine_identity (gr->transform);
+			nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (gr->transform));
 			gr->transform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
@@ -1420,7 +1419,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRe
 	SP_PRINT_TRANSFORM ("color2norm", color2norm);
 	/* Now we have normalized vector */
 #else
-	art_affine_identity (color2norm);
+	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (color2norm));
 #endif
 
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
@@ -1438,7 +1437,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRe
 		norm2pos[5] = lg->y1.computed;
 		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
 #else
-		art_affine_identity (norm2pos);
+		nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (norm2pos));
 #endif
 
 		/* gradientTransform goes here (Lauris) */
@@ -1456,13 +1455,13 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRe
 		/* CTM goes here */
 		SP_PRINT_TRANSFORM ("ctm", ctm);
 
-		art_affine_multiply (color2pos, color2norm, norm2pos);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2pos), NR_MATRIX_D_FROM_DOUBLE (color2norm), NR_MATRIX_D_FROM_DOUBLE (norm2pos));
 		SP_PRINT_TRANSFORM ("color2pos", color2pos);
-		art_affine_multiply (color2tpos, color2pos, gr->transform);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2tpos), NR_MATRIX_D_FROM_DOUBLE (color2pos), NR_MATRIX_D_FROM_DOUBLE (gr->transform));
 		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
-		art_affine_multiply (color2user, color2tpos, bbox2user);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2user), NR_MATRIX_D_FROM_DOUBLE (color2tpos), NR_MATRIX_D_FROM_DOUBLE (bbox2user));
 		SP_PRINT_TRANSFORM ("color2user", color2user);
-		art_affine_multiply (color2px, color2user, ctm);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2px), NR_MATRIX_D_FROM_DOUBLE (color2user), NR_MATRIX_D_FROM_DOUBLE (ctm));
 		SP_PRINT_TRANSFORM ("color2px", color2px);
 	} else {
 		gdouble norm2pos[6];
@@ -1480,7 +1479,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRe
 		norm2pos[5] = lg->y1.computed;
 		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
 #else
-		art_affine_identity (norm2pos);
+		nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (norm2pos));
 #endif
 
 		/* gradientTransform goes here (Lauris) */
@@ -1489,11 +1488,11 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRe
 		/* CTM goes here */
 		SP_PRINT_TRANSFORM ("ctm", ctm);
 
-		art_affine_multiply (color2pos, color2norm, norm2pos);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2pos), NR_MATRIX_D_FROM_DOUBLE (color2norm), NR_MATRIX_D_FROM_DOUBLE (norm2pos));
 		SP_PRINT_TRANSFORM ("color2pos", color2pos);
-		art_affine_multiply (color2tpos, color2pos, gr->transform);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2tpos), NR_MATRIX_D_FROM_DOUBLE (color2pos), NR_MATRIX_D_FROM_DOUBLE (gr->transform));
 		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
-		art_affine_multiply (color2px, color2tpos, ctm);
+		nr_matrix_multiply_ddd (NR_MATRIX_D_FROM_DOUBLE (color2px), NR_MATRIX_D_FROM_DOUBLE (color2tpos), NR_MATRIX_D_FROM_DOUBLE (ctm));
 		SP_PRINT_TRANSFORM ("color2px", color2px);
 	}
 

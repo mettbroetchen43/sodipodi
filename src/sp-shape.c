@@ -18,8 +18,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <libnr/nr-pixblock.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 

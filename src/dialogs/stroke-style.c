@@ -44,7 +44,8 @@
 #include "../widgets/sp-widget.h"
 #include <widgets/paint-selector.h>
 #include <widgets/dash-selector.h>
-#include "../style.h"
+#include "enums.h"
+#include "style.h"
 #include "../gradient-chemistry.h"
 #include "../document.h"
 #include "../desktop-handles.h"
@@ -777,13 +778,13 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	}
 
 	switch (jointype) {
-	case ART_PATH_STROKE_JOIN_MITER:
+	case SP_STROKE_LINEJOIN_MITER:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-miter");
 		break;
-	case ART_PATH_STROKE_JOIN_ROUND:
+	case SP_STROKE_LINEJOIN_ROUND:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-round");
 		break;
-	case ART_PATH_STROKE_JOIN_BEVEL:
+	case SP_STROKE_LINEJOIN_BEVEL:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-bevel");
 		break;
 	default:
@@ -793,13 +794,13 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	sp_stroke_style_set_join_buttons (spw, tb);
 
 	switch (captype) {
-	case ART_PATH_STROKE_CAP_BUTT:
+	case SP_STROKE_LINECAP_BUTT:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-butt");
 		break;
-	case ART_PATH_STROKE_CAP_ROUND:
+	case SP_STROKE_LINECAP_ROUND:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");
 		break;
-	case ART_PATH_STROKE_CAP_SQUARE:
+	case SP_STROKE_LINECAP_SQUARE:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-square");
 		break;
 	default:
@@ -862,13 +863,13 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 
 	/* Join & Cap */
 	switch (style->stroke_linejoin.value) {
-	case ART_PATH_STROKE_JOIN_MITER:
+	case SP_STROKE_LINEJOIN_MITER:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-miter");
 		break;
-	case ART_PATH_STROKE_JOIN_ROUND:
+	case SP_STROKE_LINEJOIN_ROUND:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-round");
 		break;
-	case ART_PATH_STROKE_JOIN_BEVEL:
+	case SP_STROKE_LINEJOIN_BEVEL:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-bevel");
 		break;
 	default:
@@ -878,13 +879,13 @@ sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
 	sp_stroke_style_set_join_buttons (spw, tb);
 
 	switch (style->stroke_linecap.value) {
-	case ART_PATH_STROKE_CAP_BUTT:
+	case SP_STROKE_LINECAP_BUTT:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-butt");
 		break;
-	case ART_PATH_STROKE_CAP_ROUND:
+	case SP_STROKE_LINECAP_ROUND:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");
 		break;
-	case ART_PATH_STROKE_CAP_SQUARE:
+	case SP_STROKE_LINECAP_SQUARE:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-square");
 		break;
 	default:

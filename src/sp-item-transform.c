@@ -35,8 +35,8 @@ sp_item_rotate_rel (SPItem * item, double angle)
   y = b.y0 + (b.y1 - b.y0)/2;
 
   art_affine_rotate (rotate,angle);
-  art_affine_translate (s,x,y);
-  art_affine_translate (t,-x,-y);
+  nr_matrix_d_set_translate (NR_MATRIX_D_FROM_DOUBLE (s),x,y);
+  nr_matrix_d_set_translate (NR_MATRIX_D_FROM_DOUBLE (t),-x,-y);
 
 
   tstr[79] = '\0';

@@ -15,10 +15,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
 #include <gtk/gtksignal.h>
+
 #include "svg/svg.h"
+
+#include "enums.h"
 #include "attributes.h"
 #include "document.h"
 #include "uri-references.h"
@@ -92,22 +93,22 @@ struct _SPStyleEnum {
 };
 
 static const SPStyleEnum enum_fill_rule[] = {
-	{"nonzero", ART_WIND_RULE_NONZERO},
-	{"evenodd", ART_WIND_RULE_ODDEVEN},
+	{"nonzero", SP_WIND_RULE_NONZERO},
+	{"evenodd", SP_WIND_RULE_EVENODD},
 	{NULL, -1}
 };
 
 static const SPStyleEnum enum_stroke_linecap[] = {
-	{"butt", ART_PATH_STROKE_CAP_BUTT},
-	{"round", ART_PATH_STROKE_CAP_ROUND},
-	{"square", ART_PATH_STROKE_CAP_SQUARE},
+	{"butt", SP_STROKE_LINECAP_BUTT},
+	{"round", SP_STROKE_LINECAP_ROUND},
+	{"square", SP_STROKE_LINECAP_SQUARE},
 	{NULL, -1}
 };
 
 static const SPStyleEnum enum_stroke_linejoin[] = {
-	{"miter", ART_PATH_STROKE_JOIN_MITER},
-	{"round", ART_PATH_STROKE_JOIN_ROUND},
-	{"bevel", ART_PATH_STROKE_JOIN_BEVEL},
+	{"miter", SP_STROKE_LINEJOIN_MITER},
+	{"round", SP_STROKE_LINEJOIN_ROUND},
+	{"bevel", SP_STROKE_LINEJOIN_BEVEL},
 	{NULL, -1}
 };
 
@@ -1022,7 +1023,7 @@ sp_style_clear (SPStyle *style)
 	style->fill.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_rgb_float (&style->fill.value.color, 0.0, 0.0, 0.0);
 	style->fill_opacity.value = SP_SCALE24_MAX;
-	style->fill_rule.value = ART_WIND_RULE_NONZERO;
+	style->fill_rule.value = SP_WIND_RULE_NONZERO;
 
 	style->stroke.set = FALSE;
 	style->stroke.type = SP_PAINT_TYPE_NONE;
@@ -1030,8 +1031,8 @@ sp_style_clear (SPStyle *style)
 	style->stroke_width.set = FALSE;
 	style->stroke_width.unit = SP_CSS_UNIT_NONE;
 	style->stroke_width.computed = 1.0;
-	style->stroke_linecap.value = ART_PATH_STROKE_CAP_BUTT;
-	style->stroke_linejoin.value = ART_PATH_STROKE_JOIN_MITER;
+	style->stroke_linecap.value = SP_STROKE_LINECAP_BUTT;
+	style->stroke_linejoin.value = SP_STROKE_LINEJOIN_MITER;
 	style->stroke_miterlimit.value = 4.0;
 	style->stroke_dash.n_dash = 0;
 	style->stroke_dash.dash = NULL;

@@ -47,6 +47,7 @@
 #include "helper/sodipodi-ctrl.h"
 #include "helper/bezier-utils.h"
 
+#include "enums.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
@@ -231,8 +232,8 @@ sp_dyna_draw_context_setup (SPEventContext *ec)
 
 	/* style should be changed when dc->use_calligraphc is touched */  
 	ddc->currentshape = sp_canvas_item_new (SP_DT_SKETCH (ec->desktop), SP_TYPE_CANVAS_BPATH, NULL);
-	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (ddc->currentshape), DDC_RED_RGBA, ART_WIND_RULE_ODDEVEN);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (ddc->currentshape), DDC_RED_RGBA, SP_WIND_RULE_EVENODD);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 	/* fixme: Cannot we cascade it to root more clearly? */
 	g_signal_connect (G_OBJECT (ddc->currentshape), "event", G_CALLBACK (sp_desktop_root_handler), ec->desktop);
 
@@ -825,8 +826,8 @@ fit_and_split_line (SPDynaDrawContext *dc,
 		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 		sp_curve_unref (curve);
 		/* fixme: We have to parse style color somehow */
-		sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), DDC_GREEN_RGBA, ART_WIND_RULE_ODDEVEN);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x000000ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+		sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), DDC_GREEN_RGBA, SP_WIND_RULE_EVENODD);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x000000ff, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 		/* fixme: Cannot we cascade it to root more clearly? */
 		g_signal_connect (G_OBJECT (cbp), "event", G_CALLBACK (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 
@@ -947,8 +948,8 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 			curve = sp_curve_copy (dc->currentcurve);
 			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (cbp), curve);
 			sp_curve_unref (curve);
-			sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x000000ff, ART_WIND_RULE_ODDEVEN);
-			sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+			sp_canvas_bpath_set_fill (SP_CANVAS_BPATH (cbp), 0x000000ff, SP_WIND_RULE_EVENODD);
+			sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cbp), 0x00000000, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 			/* fixme: Cannot we cascade it to root more clearly? */
 			g_signal_connect (G_OBJECT (cbp), "event", G_CALLBACK (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 

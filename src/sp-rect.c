@@ -486,8 +486,8 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	/* fixme: Would be nice to preserve units here */
 	sp_repr_set_double_attribute (repr, "width", rect->width.computed * sw);
 	sp_repr_set_double_attribute (repr, "height", rect->height.computed * sh);
-	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed * sw);
-	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed * sh);
+	if (rect->rx.set) sp_repr_set_double (repr, "rx", rect->rx.computed * sw);
+	if (rect->ry.set) sp_repr_set_double (repr, "ry", rect->ry.computed * sh);
 
 	/* Find start in item coords */
 	nr_matrix_f_invert (&rev, t);

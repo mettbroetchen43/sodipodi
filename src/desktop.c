@@ -19,7 +19,7 @@
 #include <math.h>
 
 #include <glib.h>
-#include <libart_lgpl/art_affine.h>
+
 #include <gtk/gtk.h>
 
 #include "macros.h"
@@ -159,9 +159,9 @@ sp_desktop_init (SPDesktop *desktop)
 	desktop->sketch = NULL;
 	desktop->controls = NULL;
 
-	art_affine_identity (desktop->d2w);
-	art_affine_identity (desktop->w2d);
-	art_affine_scale (desktop->doc2dt, 0.8, -0.8);
+	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
+	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (desktop->w2d));
+	nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt), 0.8, -0.8);
 
 	desktop->guides_active = FALSE;
 }
@@ -319,9 +319,9 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
 
 	/* Fixme: Setup initial zooming */
-	art_affine_scale (desktop->d2w, 1.0, -1.0);
+	nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), 1.0, -1.0);
 	desktop->d2w[5] = dh;
-	art_affine_invert (desktop->w2d, desktop->d2w);
+	nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (desktop->w2d), NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
 	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
 
 #if 0
@@ -1099,8 +1099,8 @@ sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float 
 
 	if (!NR_DF_TEST_CLOSE (newscale, scale, 1e-4 * scale)) {
 		/* Set zoom factors */
-		art_affine_scale (dt->d2w, newscale, -newscale);
-		art_affine_invert (dt->w2d, dt->d2w);
+		nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (dt->d2w), newscale, -newscale);
+		nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (dt->w2d), NR_MATRIX_D_FROM_DOUBLE (dt->d2w));
 		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (dt->main), dt->d2w);
 		clear = TRUE;
 	} else {

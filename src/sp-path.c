@@ -15,9 +15,7 @@
 #include <string.h>
 #include <libnr/nr-path.h>
 #include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_vpath_bpath.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "attributes.h"

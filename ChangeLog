@@ -1,3 +1,9 @@
+2003-02-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c: Use custom winding rule and stroke parameter enumerations
+
+	* src/enums.h: Define winding rules and stroke parameters
+
 2003-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-rect.c (sp_rect_rx_set): Set ::set value(s)

@@ -14,7 +14,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "xml/repr-private.h"
 #include "document.h"

@@ -12,9 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-/*
- * preserveAspectRatio values
- */
+/* preserveAspectRatio */
 
 enum {
 	SP_ASPECT_NONE,
@@ -34,9 +32,37 @@ enum {
 	SP_ASPECT_SLICE
 };
 
+/* maskUnits */
+/* maskContentUnits */
+
 enum {
 	SP_CONTENT_UNITS_USERSPACEONUSE,
 	SP_CONTENT_UNITS_OBJECTBOUNDINGBOX
+};
+
+/* stroke-linejoin */
+
+enum {
+	SP_STROKE_LINEJOIN_MITER,
+	SP_STROKE_LINEJOIN_ROUND,
+	SP_STROKE_LINEJOIN_BEVEL
+};
+
+/* stroke-linecap */
+
+enum {
+	SP_STROKE_LINECAP_BUTT,
+	SP_STROKE_LINECAP_ROUND,
+	SP_STROKE_LINECAP_SQUARE
+};
+
+/* fill-rule */
+/* clip-rule */
+
+enum {
+	SP_WIND_RULE_NONZERO,
+	SP_WIND_RULE_INVALID_1,
+	SP_WIND_RULE_EVENODD
 };
 
 #endif

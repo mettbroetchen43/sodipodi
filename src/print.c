@@ -19,8 +19,6 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-pixblock.h>
 
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
 #include <glib.h>
 
 #ifdef WITH_GNOME_PRINT
@@ -38,6 +36,7 @@
 #include <gtk/gtkentry.h>
 
 #include "helper/sp-intl.h"
+#include "enums.h"
 #include "document.h"
 #include "sp-item.h"
 #include "style.h"
@@ -131,7 +130,7 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 
 		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 
-		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
+		if (style->fill_rule.value == SP_WIND_RULE_EVENODD) {
 			gnome_print_eofill (ctx->gpc);
 		} else {
 			gnome_print_fill (ctx->gpc);
@@ -168,7 +167,7 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 
 			gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 
-			if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
+			if (style->fill_rule.value == SP_WIND_RULE_EVENODD) {
 				gnome_print_eoclip (ctx->gpc);
 			} else {
 				gnome_print_clip (ctx->gpc);
@@ -555,7 +554,7 @@ sp_print_plain_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF 
 
 		sp_print_bpath (ctx->stream, bpath->path);
 
-		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
+		if (style->fill_rule.value == SP_WIND_RULE_EVENODD) {
 			fprintf (ctx->stream, "eofill\n");
 		} else {
 			fprintf (ctx->stream, "fill\n");

@@ -13,14 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
-
-G_BEGIN_DECLS
-
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_vpath_dash.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
 #include "xml/repr.h"
 #include "color.h"
 #include "forward.h"
@@ -326,7 +320,5 @@ struct _SPTextStyle {
 	guint text_decoration : 3;
 	guint unicode_bidi : 2;
 };
-
-G_END_DECLS
 
 #endif

@@ -32,6 +32,7 @@
 #include "helper/sp-ctrlline.h"
 #include "helper/canvas-bpath.h"
 
+#include "enums.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "sp-path.h"
@@ -185,13 +186,13 @@ sp_draw_context_setup (SPEventContext *ec)
 
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), dc->red_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), dc->red_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 	/* Create red curve */
 	dc->red_curve = sp_curve_new_sized (4);
 
 	/* Create blue bpath */
 	dc->blue_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->blue_bpath), dc->blue_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->blue_bpath), dc->blue_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 	/* Create blue curve */
 	dc->blue_curve = sp_curve_new_sized (8);
 
@@ -651,7 +652,7 @@ fit_and_split (SPDrawContext * dc)
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 
 		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
 
@@ -1714,7 +1715,7 @@ spdc_pen_finish_segment (SPPenContext *pc, NRPointF *p, guint state)
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
 		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), dc->green_color, 1.0, SP_STROKE_LINEJOIN_MITER, SP_STROKE_LINECAP_BUTT);
 
 		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
 
