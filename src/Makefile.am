@@ -1,6 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = xml svg helper dialogs display
+if BONOBO
+bonobo_subdirs = bonobo
+bonobo_libs = bonobo/libspbonobo.a
+endif
+
+SUBDIRS = xml svg helper dialogs display $(bonobo_subdirs)
 
 gladedir = $(PACKAGE_GLADE_DIR)
 
@@ -80,9 +85,11 @@ sodipodi_libs = \
 	svg/libspsvg.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a
+	
 
 sodipodi_LDADD = \
 	$(sodipodi_libs) \
+	$(bonobo_libs) \
 	$(GNOME_LIBDIR) \
 	-lpng \
 	-lglade-gnome \
@@ -90,6 +97,7 @@ sodipodi_LDADD = \
 	-lgdk_pixbuf \
 	$(GNOMEUI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
+	$(EXTRA_BONOBO_GNOME_LIBS) \
 	$(INTLLIBS)
 
 EXTRA_DIST = \

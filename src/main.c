@@ -19,6 +19,12 @@
 #endif
 
 #include "sodipodi.h"
+
+#ifdef ENABLE_BONOBO
+#include "bonobo/sodipodi-bonobo.h"
+#include "bonobo/svg-doc-factory.h"
+#endif
+
 #include "mdi.h"
 #include "mdi-child.h"
 #include "file.h"
@@ -76,6 +82,10 @@ main (int argc, char *argv[])
 	gboolean use_gui;
 	gboolean restored;
 
+#ifdef ENABLE_BONOBO
+	gboolean bonobo_client = FALSE;
+#endif
+
 #ifdef __FreeBSD__
 	fpsetmask(fpgetmask() & ~(FP_X_DZ|FP_X_INV));
 #endif
@@ -132,11 +142,33 @@ main (int argc, char *argv[])
 			fl = g_slist_remove (fl, fl->data);
 		}
 	} else {
-
 		/* Use GUI */
+
+#ifdef ENABLE_BONOBO
+		/* Check, if we are executed as sodipodi-bonobo */
+
+		if (strcmp (argv[0], "sodipodi-bonobo") == 0) {
+			bonobo_client = TRUE;
+		}
+
+		CORBA_exception_init (&ev);
+
+		gnome_CORBA_init_with_popt_table ("sodipodi", VERSION,
+			&argc, argv, options, 0, &ctx,
+			GNORBA_INIT_SERVER_FUNC, &ev);
+
+		CORBA_exception_free (&ev);
+
+		orb = gnome_CORBA_ORB ();
+
+		if (bonobo_init (orb, NULL, NULL) == FALSE)
+			g_error (_("Could not initialize Bonobo"));
+
+#else /* ENABLE_BONOBO */
 
 		gnome_init_with_popt_table ("sodipodi", VERSION, argc, argv,
                                     	    options, 0, &ctx);
+#endif /* ENABLE_BONOBO */
 
 		fl = sp_process_args (ctx);
 
@@ -168,6 +200,14 @@ main (int argc, char *argv[])
 			restored = sp_sm_restore_children ();
 			gnome_config_pop_prefix ();
 		}
+
+#ifdef ENABLE_BONOBO
+
+		/* No reading files & opening windows */
+
+		sp_svg_doc_factory_init ();
+
+#else /* ENABLE_BONOBO */
 
 		if (!restored) {
 
@@ -202,9 +242,15 @@ main (int argc, char *argv[])
 
 		}
 
+#endif /* ENABLE_BONOBO */
+
 		poptFreeContext (ctx);
 
+#ifdef ENABLE_BONOBO
+		bonobo_main ();
+#else
 		gtk_main ();
+#endif
 
 	}
 

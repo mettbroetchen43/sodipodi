@@ -86,6 +86,7 @@ src/svg/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
+src/bonobo/Makefile
 intl/Makefile
 po/Makefile.in
 sodipodi.spec

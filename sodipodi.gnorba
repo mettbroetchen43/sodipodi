@@ -2,7 +2,7 @@
 type=exe
 repo_id=IDL:Bonobo/EmbeddableFactory:1.0 IDL:Bonobo/GenericFactory:1.0
 description=Sodipodi SVG Document factory
-location_info=sodipodi
+location_info=sodipodi-bonobo
 
 [embeddable:sodipodi-svg-doc]
 type=factory

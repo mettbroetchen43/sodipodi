@@ -1,3 +1,8 @@
+200-04-08  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* Makefile.am: create sodipodi-bonobo symlink if we use bonobo
+	* src/sodipodi/*: Added bonobo component, nothing interesting yet
+	
 200-04-07  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* sodipodi.gnorba: added this, embeddable document will follow soon

@@ -3,7 +3,10 @@
 SUBDIRS = intl po macros src
 
 EXTRA_DIST = \
-	sodipodi.desktop \
+	sodipodi.desktop.in \
+	sodipodi.spec.in \
+	sodipodi.gnorba \
+	README HACKING \
 	sodipodi.png \
 	samples/*
 
@@ -12,6 +15,17 @@ appicon_DATA = sodipodi.png
 
 sysdir = $(datadir)/gnome/apps/Graphics
 sys_DATA = sodipodi.desktop
+
+gnorbadir = $(sysconfdir)/CORBA/servers
+gnorba_DATA = sodipodi.gnorba
+
+if BONOBO
+install-exec-local:
+	if test -e $(bindir)/sodipodi-bonobo; then \
+		rm -f $(bindir)/sodipodi-bonobo; \
+	fi ; \
+	ln -s $(bindir)/sodipodi $(bindir)/sodipodi-bonobo
+endif
 
 install-data-local:
 	@$(NORMAL_INSTALL)
