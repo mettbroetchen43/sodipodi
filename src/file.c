@@ -324,7 +324,7 @@ void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 
 #ifdef ENABLE_FRGBA
 	frgba = gnome_print_frgba_new (gpc);
-        sp_item_print (SP_ITEM (doc->root), GNOME_PRINT_CONTEXT (frgba));
+        sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (frgba));
         gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
         gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
 #else

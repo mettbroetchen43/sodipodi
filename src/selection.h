@@ -52,9 +52,10 @@ GtkType sp_selection_get_type (void);
 
 SPSelection * sp_selection_new (SPDesktop * desktop);
 
-/* This is private methid & will be removed from header */
+/* This are private methods & will be removed from this file */
 
 void sp_selection_changed (SPSelection * selection);
+void sp_selection_update_statusbar (SPSelection * selection);
 
 gboolean sp_selection_item_selected (SPSelection * selection, SPItem * item);
 gboolean sp_selection_repr_selected (SPSelection * selection, SPRepr * repr);

@@ -1,3 +1,23 @@
+2000-06-21  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/selection.c (sp_selection_update_statusbar): Added original
+	  idea of printing sp_image_description (), if single item is
+	  selected
+
+	* glade/*.xpm: Jeff's icons. I need to find a way to use png
+	  variants, xpm sucks
+
+2000-06-21  Chema Celorio  <chema@celorio.com>
+
+	* src/desktop.c (sp_desktop_set_status): it was #if'ed out,
+	reenabel it.
+
+	* src/selection.c (SP_SELECTION_C): added debug messages and macro
+	If lauris does not like them I will take them away.
+	(sp_selection_update_statusbar): new function
+
+	* src/mdi.c (sp_mdi_app_created): add statusbar to main window.
+
 2000-06-11  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* configure.in: Added de to ALL_LINGUAS.

@@ -561,7 +561,7 @@ sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
 	sp_desktop_update_rulers (desktop);
 }
 
-/* fixme: this is UI functions - find a better place */
+/* fixme: this are UI functions - find a better place for them */
 
 void
 sp_desktop_toggle_borders (GtkWidget * widget)
@@ -585,9 +585,11 @@ sp_desktop_set_title (const gchar * title)
 	gtk_window_set_title (main_window, title);
 }
 
-void sp_desktop_set_status (const gchar * text)
+#endif
+
+void sp_desktop_set_status (SPDesktop *desktop, const gchar * text)
 {
-	gnome_appbar_set_status (GNOME_APPBAR (status_bar), text);
+	gnome_appbar_set_status (GNOME_APPBAR (sodipodi->active_window->statusbar), text);
 }
 
-#endif
+

@@ -89,11 +89,14 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 	static GladeXML * xmlfile = NULL;
 	static GladeXML * xmledit = NULL;
 	static GladeXML * xmlcontext = NULL;
+	static GladeXML * xmlstatus = NULL;
 	GnomeDockItem * ditem;
+	GtkStatusbar  * statusbar;
 
 	/* fixme: just cannot understand, why libglade does not set */
 	/* gnome_dock_item name ? */
 
+	/* Menu */
 	xmlmenu = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_menu");
 	if (xmlmenu != NULL) {
 		glade_xml_signal_autoconnect (xmlmenu);
@@ -102,9 +105,12 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 		gnome_app_add_dock_item (app, ditem, GNOME_DOCK_TOP, 0, 0, 0);
 	} else {
 		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
-			"sp_mdi_app_created: cannot create menubar\n");
+			"sp_mdi_app_created: cannot create menubar\n"
+			"Most probably you have not glade files installed\n"
+			"These should be in %s", SODIPODI_GLADEDIR);
 	}
 
+	/* File toolbar */
 	xmlfile = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_file");
 	if (xmlfile != NULL) {
 		glade_xml_signal_autoconnect (xmlfile);
@@ -116,6 +122,7 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create file toolbar\n");
 	}
 
+	/* Edit toolbar */
 	xmledit = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_edit");
 	if (xmledit != NULL) {
 		glade_xml_signal_autoconnect (xmledit);
@@ -127,6 +134,7 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create edit toolbar\n");
 	}
 
+	/* Context toolbar */
 	xmlcontext = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_context");
 	if (xmlcontext != NULL) {
 		glade_xml_signal_autoconnect (xmlcontext);
@@ -136,6 +144,17 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 	} else {
 		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
 			"sp_mdi_app_created: cannot create context toolbar\n");
+	}
+
+	/* Status bar  */
+	xmlstatus = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "status_bar");
+	if (xmlstatus != NULL) {
+		glade_xml_signal_autoconnect (xmlstatus);
+		statusbar = GNOME_APPBAR (glade_xml_get_widget (xmlstatus, "status_bar"));
+		gnome_app_set_statusbar (app, GTK_WIDGET(statusbar));
+	} else {
+		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
+			"sp_mdi_app_created: cannot create status bar\n");
 	}
 }
 

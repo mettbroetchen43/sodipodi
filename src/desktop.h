@@ -13,6 +13,7 @@
 
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
+#include <libgnomeui/gnome-appbar.h>
 #include "document.h"
 #include "selection.h"
 #include "event-context.h"
@@ -87,8 +88,9 @@ void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);
 /* FIXME reimplement this somehow */
 
 void sp_desktop_set_title (const gchar * title);
-void sp_desktop_set_status (const gchar * text);
 
 #endif
+
+void sp_desktop_set_status (SPDesktop *desktop, const gchar * text);
 
 #endif

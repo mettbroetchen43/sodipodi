@@ -1,6 +1,10 @@
 #define SP_SELECTION_C
 
+#define sp_debug(str, section) 	if (FALSE) printf ("%s:%d (%s) %s\n", __FILE__, __LINE__, __FUNCTION__, str); 
+
 #include "desktop-handles.h"
+#include "desktop.h"
+#include "mdi-desktop.h"
 #include "selection.h"
 
 enum {
@@ -69,8 +73,12 @@ sp_selection_class_init (SPSelectionClass * klass)
 static void
 sp_selection_init (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	selection->reprs = NULL;
 	selection->items = NULL;
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 static void
@@ -78,22 +86,30 @@ sp_selection_destroy (GtkObject * object)
 {
 	SPSelection * selection;
 
+	sp_debug ("start", SP_SELECTION);
+
 	selection = SP_SELECTION (object);
 
 	sp_selection_frozen_empty (selection);
 
 	if (parent_class->destroy)
 		(* parent_class->destroy) (object);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 static void
 sp_selection_private_changed (SPSelection * selection)
 {
+     	sp_debug ("start", SP_SELECTION);
+     	sp_debug ("end", SP_SELECTION);
 }
 
 static void
 sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (sp_selection_item_selected (selection, item));
@@ -104,12 +120,16 @@ sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 	selection->items = g_slist_remove (selection->items, item);
 
 	sp_selection_changed (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_frozen_empty (SPSelection * selection)
 {
 	SPItem * i;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -122,15 +142,43 @@ sp_selection_frozen_empty (SPSelection * selection)
 		gtk_signal_disconnect_by_data (GTK_OBJECT (i), selection);
 		selection->items = g_slist_remove (selection->items, i);
 	}
+
+	sp_debug ("end", SP_SELECTION);
+}
+
+void
+sp_selection_update_statusbar (SPSelection * selection)
+{
+	gchar * message;
+	gint len;
+
+	len = g_slist_length (selection->items);
+
+	if (len == 1) {
+		message = sp_item_description (SP_ITEM (selection->items->data));
+	} else {
+		message = g_strdup_printf ("%i items selected",
+			 g_slist_length (selection->items));
+	}
+
+	sp_desktop_set_status (SP_ACTIVE_DESKTOP, message);
+	
+	g_free (message);
 }
 
 void
 sp_selection_changed (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [CHANGED]);
+
+	sp_selection_update_statusbar (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 SPSelection *
@@ -138,10 +186,14 @@ sp_selection_new (SPDesktop * desktop)
 {
 	SPSelection * selection;
 
+	sp_debug ("start", SP_SELECTION);
+
 	selection = gtk_type_new (SP_TYPE_SELECTION);
 	g_assert (selection != NULL);
 
 	selection->desktop = desktop;
+
+	sp_debug ("end", SP_SELECTION);
 
 	return selection;
 }
@@ -149,10 +201,14 @@ sp_selection_new (SPDesktop * desktop)
 gboolean
 sp_selection_item_selected (SPSelection * selection, SPItem * item)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_val_if_fail (selection != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), FALSE);
 	g_return_val_if_fail (item != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_ITEM (item), FALSE);
+
+	sp_debug ("end", SP_SELECTION);
 
 	return (g_slist_find (selection->items, item) != NULL);
 }
@@ -162,6 +218,8 @@ sp_selection_repr_selected (SPSelection * selection, SPRepr * repr)
 {
 	GSList * l;
 
+	sp_debug ("start", SP_SELECTION);
+	
 	g_return_val_if_fail (selection != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), FALSE);
 	g_return_val_if_fail (repr != NULL, FALSE);
@@ -169,12 +227,17 @@ sp_selection_repr_selected (SPSelection * selection, SPRepr * repr)
 	for (l = selection->items; l != NULL; l = l->next) {
 		if (((SPObject *)l->data)->repr == repr) return TRUE;
 	}
+
+	sp_debug ("end", SP_SELECTION);
+
 	return FALSE;
 }
 
 void
 sp_selection_add_item (SPSelection * selection, SPItem * item)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -189,6 +252,8 @@ sp_selection_add_item (SPSelection * selection, SPItem * item)
 		GTK_SIGNAL_FUNC (sp_selection_selected_item_destroyed), selection);
 
 	sp_selection_changed (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -196,6 +261,8 @@ sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -209,11 +276,15 @@ sp_selection_add_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_add_item (selection, SP_ITEM (object));
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_set_item (SPSelection * selection, SPItem * item)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -222,6 +293,8 @@ sp_selection_set_item (SPSelection * selection, SPItem * item)
 	sp_selection_frozen_empty (selection);
 
 	sp_selection_add_item (selection, item);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -229,6 +302,8 @@ sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -242,11 +317,15 @@ sp_selection_set_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_set_item (selection, SP_ITEM (object));
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_remove_item (SPSelection * selection, SPItem * item)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (item != NULL);
@@ -260,6 +339,8 @@ sp_selection_remove_item (SPSelection * selection, SPItem * item)
 	selection->items = g_slist_remove (selection->items, item);
 
 	sp_selection_changed (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -267,6 +348,8 @@ sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
 {
 	const gchar * id;
 	SPObject * object;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -280,6 +363,8 @@ sp_selection_remove_repr (SPSelection * selection, SPRepr * repr)
 	g_return_if_fail (SP_IS_ITEM (object));
 
 	sp_selection_remove_item (selection, SP_ITEM (object));
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -287,6 +372,8 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 {
 	SPItem * i;
 	const GSList * l;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -304,6 +391,8 @@ sp_selection_set_item_list (SPSelection * selection, const GSList * list)
 	}
 
 	sp_selection_changed (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
@@ -314,6 +403,8 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 	SPRepr * repr;
 	const gchar * id;
 	SPObject * object;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
@@ -336,24 +427,34 @@ sp_selection_set_repr_list (SPSelection * selection, const GSList * list)
 	sp_selection_set_item_list (selection, itemlist);
 
 	g_slist_free (itemlist);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 void
 sp_selection_empty (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	sp_selection_frozen_empty (selection);
 
 	sp_selection_changed (selection);
+
+	sp_debug ("end", SP_SELECTION);
 }
 
 const GSList *
 sp_selection_item_list (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
+
+	sp_debug ("end", SP_SELECTION);
 
 	return selection->items;
 }
@@ -363,6 +464,8 @@ sp_selection_repr_list (SPSelection * selection)
 {
 	SPItem * i;
 	GSList * l;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
@@ -375,17 +478,23 @@ sp_selection_repr_list (SPSelection * selection)
 		selection->reprs = g_slist_prepend (selection->reprs, SP_OBJECT (i)->repr);
 	}
 
+	sp_debug ("end", SP_SELECTION);
+
 	return selection->reprs;
 }
 
 SPItem *
 sp_selection_item (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
 
 	if (selection->items == NULL) return NULL;
 	if (selection->items->next != NULL) return NULL;
+
+	sp_debug ("end", SP_SELECTION);
 
 	return SP_ITEM (selection->items->data);
 }
@@ -393,11 +502,15 @@ sp_selection_item (SPSelection * selection)
 SPRepr *
 sp_selection_repr (SPSelection * selection)
 {
+	sp_debug ("start", SP_SELECTION);
+
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
 
 	if (selection->items == NULL) return NULL;
 	if (selection->items->next != NULL) return NULL;
+
+	sp_debug ("end", SP_SELECTION);
 
 	return SP_OBJECT (selection->items->data)->repr;
 }
@@ -408,6 +521,8 @@ sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
 	SPItem * item;
 	ArtDRect b;
 	GSList * l;
+
+	sp_debug ("start", SP_SELECTION);
 
 	g_return_val_if_fail (selection != NULL, NULL);
 	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
@@ -430,6 +545,7 @@ sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
 		if (b.y1 > bbox->y1) bbox->y1 = b.y1;
 	}
 
+	sp_debug ("end", SP_SELECTION);
 	return bbox;
 }
 
