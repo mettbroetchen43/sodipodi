@@ -23,6 +23,10 @@ typedef struct _SPModulePrintPlainClass SPModulePrintPlainClass;
 
 struct _SPModulePrintPlain {
 	SPModulePrint module;
+	unsigned int bitmap : 1;
+	unsigned int dpi : 15;
+	float width;
+	float height;
 	FILE *stream;
 };
 

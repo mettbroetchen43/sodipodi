@@ -1,3 +1,10 @@
+2003-06-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/modules/ps.c (sp_module_print_plain_setup): Added bitmap/ps choice and
+	preferred bitmap resolution selector
+	(sp_module_print_plain_finish): If user prefers bitmap printing, composite
+	full page from NRArena here
+
 2003-06-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/event-context.c (sp_event_context_private_root_handler): Removed

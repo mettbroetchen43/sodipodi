@@ -23,17 +23,25 @@
 
 #include <config.h>
 
+#include <string.h>
 #include <ctype.h>
+
+#include <libnr/nr-macros.h>
+#include <libnr/nr-matrix.h>
 
 #include <glib.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
 #include <gtk/gtkframe.h>
+#include <gtk/gtkradiobutton.h>
+#include <gtk/gtkcombo.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
 
 #include "helper/sp-intl.h"
+#include "display/nr-arena-item.h"
 #include "enums.h"
 #include "document.h"
 #include "style.h"
@@ -57,6 +65,8 @@ static unsigned int sp_module_print_plain_image (SPModulePrint *mod, unsigned ch
 						 const NRMatrixF *transform, const SPStyle *style);
 
 static void sp_print_bpath (FILE *stream, const ArtBpath *bp);
+static unsigned int sp_ps_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs,
+				       const NRMatrixF *transform);
 
 static SPModulePrintClass *print_plain_parent_class;
 
@@ -103,9 +113,9 @@ sp_module_print_plain_class_init (SPModulePrintPlainClass *klass)
 }
 
 static void
-sp_module_print_plain_init (SPModulePrintPlain *fmod)
+sp_module_print_plain_init (SPModulePrintPlain *pmod)
 {
-	/* Nothing here */
+	pmod->dpi = 72;
 }
 
 static void
@@ -123,8 +133,11 @@ sp_module_print_plain_finalize (GObject *object)
 static unsigned int
 sp_module_print_plain_setup (SPModulePrint *mod)
 {
+	static const guchar *pdr[] = {"72", "75", "100", "144", "150", "200", "300", "360", "600", "1200", "2400", NULL};
 	SPModulePrintPlain *pmod;
-	GtkWidget *dlg, *vbox, *f, *vb, *l, *e;
+	GtkWidget *dlg, *vbox, *f, *vb, *rb, *hb, *combo, *l, *e;
+	GList *sl;
+	int i;
 	int response;
 	unsigned int ret;
 
@@ -132,6 +145,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 
 	ret = FALSE;
 
+	/* Create dialog */
 	dlg = gtk_dialog_new_with_buttons (_("Print destination"), NULL,
 					   GTK_DIALOG_MODAL,
 					   GTK_STOCK_PRINT,
@@ -142,10 +156,41 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 
 	vbox = GTK_DIALOG (dlg)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
+	/* Print preperties frame */
+	f = gtk_frame_new (_("Print properties"));
+	gtk_box_pack_start (GTK_BOX (vbox), f, FALSE, FALSE, 4);
+	vb = gtk_vbox_new (FALSE, 4);
+	gtk_container_add (GTK_CONTAINER (f), vb);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
+	/* Print type */
+	rb = gtk_radio_button_new_with_label (NULL, _("Print using PostScript operators"));
+	gtk_toggle_button_set_active ((GtkToggleButton *) rb, TRUE);
+	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
+	rb = gtk_radio_button_new_with_label (gtk_radio_button_get_group ((GtkRadioButton *) rb), _("Print as bitmap"));
+	gtk_box_pack_start (GTK_BOX (vb), rb, FALSE, FALSE, 0);
+	/* Resolution */
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+	combo = gtk_combo_new ();
+	gtk_combo_set_value_in_list (GTK_COMBO (combo), FALSE, FALSE);
+	gtk_combo_set_use_arrows (GTK_COMBO (combo), TRUE);
+	gtk_combo_set_use_arrows_always (GTK_COMBO (combo), TRUE);
+	gtk_widget_set_usize (combo, 64, -1);
+	gtk_box_pack_end (GTK_BOX (hb), combo, FALSE, FALSE, 0);
+	l = gtk_label_new (_("Resolution:"));
+	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
+	/* Setup strings */
+	sl = NULL;
+	for (i = 0; pdr[i] != NULL; i++) {
+		sl = g_list_prepend (sl, (gpointer) pdr[i]);
+	}
+	sl = g_list_reverse (sl);
+	gtk_combo_set_popdown_strings (GTK_COMBO (combo), sl);
+	g_list_free (sl);
 
+	/* Print destination frame */
 	f = gtk_frame_new (_("Print destination"));
 	gtk_box_pack_start (GTK_BOX (vbox), f, FALSE, FALSE, 4);
-
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_container_add (GTK_CONTAINER (f), vb);
 	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
@@ -165,10 +210,14 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 
 	if (response == GTK_RESPONSE_OK) {
 		const unsigned char *fn;
+		const char *sstr;
 		FILE *osf, *osp;
+		pmod->bitmap = gtk_toggle_button_get_active ((GtkToggleButton *) rb);
+		sstr = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (combo)->entry));
+		pmod->dpi = MAX (atof (sstr), 1);
 		/* Arrgh, have to do something */
 		fn = gtk_entry_get_text (GTK_ENTRY (e));
-		g_print ("Printing to %s\n", fn);
+		/* g_print ("Printing to %s\n", fn); */
 		osf = NULL;
 		osp = NULL;
 		if (fn) {
@@ -215,6 +264,11 @@ sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 	pmod = (SPModulePrintPlain *) mod;
 
 	res = fprintf (pmod->stream, "%%!\n");
+	pmod->width = sp_document_width (doc);
+	pmod->height = sp_document_height (doc);
+
+	if (pmod->bitmap) return 0;
+
 	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
 	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
 
@@ -230,6 +284,68 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 
 	pmod = (SPModulePrintPlain *) mod;
 
+	if (pmod->bitmap) {
+		double x0, y0, x1, y1;
+		int width, height;
+		float scale;
+		NRMatrixF affine;
+		unsigned char *px;
+		int y;
+
+		scale = pmod->dpi / 72.0;
+
+		y0 = 0.0;
+		x0 = 0.0;
+		x1 = pmod->width;
+		y1 = pmod->height;
+
+		width = (int) (pmod->width * scale + 0.5);
+		height = (int) (pmod->height * scale + 0.5);
+
+		affine.c[0] = width / ((x1 - x0) * 1.25);
+		affine.c[1] = 0.0;
+		affine.c[2] = 0.0;
+		affine.c[3] = height / ((y1 - y0) * 1.25);
+		affine.c[4] = -affine.c[0] * x0 * 1.25;
+		affine.c[5] = -affine.c[3] * y0 * 1.25;
+
+		nr_arena_item_set_transform (mod->root, &affine);
+
+		px = nr_new (unsigned char, 4 * width * 64);
+
+		for (y = 0; y < height; y += 64) {
+			NRRectL bbox;
+			NRGC gc;
+			NRMatrixF imgt;
+			/* Set area of interest */
+			bbox.x0 = 0;
+			bbox.y0 = y;
+			bbox.x1 = width;
+			bbox.y1 = MIN (height, y + 64);
+			/* Update to renderable state */
+			nr_matrix_d_set_identity (&gc.transform);
+			nr_arena_item_invoke_update (mod->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+			/* Render */
+			NRPixBlock pb;
+			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N,
+						  bbox.x0, bbox.y0, bbox.x1, bbox.y1,
+						  px, 4 * width, FALSE, FALSE);
+			memset (px, 0xff, 4 * width * 64);
+			nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
+			/* Blitter goes here */
+			imgt.c[0] = (bbox.x1 - bbox.x0) / scale;
+			imgt.c[1] = 0.0;
+			imgt.c[2] = 0.0;
+			imgt.c[3] = (bbox.y1 - bbox.y0) / scale;
+			imgt.c[4] = 0.0;
+			imgt.c[5] = pmod->height - y / scale - (bbox.y1 - bbox.y0) / scale;
+
+			sp_ps_print_image (pmod->stream, px, bbox.x1 - bbox.x0, bbox.y1 - bbox.y0, 4 * width, &imgt);
+		}
+
+		nr_free (px);
+	}
+
 	res = fprintf (pmod->stream, "showpage\n");
 
 	return res;
@@ -243,6 +359,7 @@ sp_module_print_plain_bind (SPModulePrint *mod, const NRMatrixF *transform, floa
 	pmod = (SPModulePrintPlain *) mod;
 
 	if (!pmod->stream) return -1;
+	if (pmod->bitmap) return 0;
 
 	return fprintf (pmod->stream, "gsave [%g %g %g %g %g %g] concat\n",
 			transform->c[0], transform->c[1],
@@ -258,6 +375,7 @@ sp_module_print_plain_release (SPModulePrint *mod)
 	pmod = (SPModulePrintPlain *) mod;
 
 	if (!pmod->stream) return -1;
+	if (pmod->bitmap) return 0;
 
 	return fprintf (pmod->stream, "grestore\n");
 }
@@ -271,6 +389,7 @@ sp_module_print_plain_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMa
 	pmod = (SPModulePrintPlain *) mod;
 
 	if (!pmod->stream) return -1;
+	if (pmod->bitmap) return 0;
 
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 		float rgb[3];
@@ -300,6 +419,7 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 	pmod = (SPModulePrintPlain *) mod;
 
 	if (!pmod->stream) return -1;
+	if (pmod->bitmap) return 0;
 
 	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
 		float rgb[3];
@@ -331,16 +451,19 @@ sp_module_print_plain_stroke (SPModulePrint *mod, const NRBPath *bpath, const NR
 	return 0;
 }
 
-#if 0
 static unsigned int
 sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
 			     const NRMatrixF *transform, const SPStyle *style)
 {
 	SPModulePrintPlain *pmod;
-	int r;
 
 	pmod = (SPModulePrintPlain *) mod;
 
+	if (!pmod->stream) return -1;
+	if (pmod->bitmap) return 0;
+
+	return sp_ps_print_image (pmod->stream, px, w, h, rs, transform);
+#if 0
 	fprintf (pmod->stream, "gsave\n");
 	fprintf (pmod->stream, "/rowdata %d string def\n", 3 * w);
 	fprintf (pmod->stream, "[%g %g %g %g %g %g] concat\n",
@@ -377,8 +500,8 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 	fprintf (pmod->stream, "grestore\n");
 
 	return 0;
-}
 #endif
+}
 
 /* PostScript helpers */
 
@@ -596,31 +719,22 @@ ascii85_done (FILE *ofp)
 }
 
 static unsigned int
-sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs,
-			     const NRMatrixF *transform, const SPStyle *style)
+sp_ps_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs,
+		   const NRMatrixF *transform)
 {
-	/* static char *hex = "0123456789abcdef"; */
-	SPModulePrintPlain *pmod;
-	/* int r; */
-
 	int i, j;
 	/* guchar *data, *src; */
 	guchar *packb = NULL, *plane = NULL;
-	FILE *ofp;
 
-	pmod = (SPModulePrintPlain *) mod;
-
-	ofp = pmod->stream;
-
-	fprintf (pmod->stream, "gsave\n");
-	fprintf (pmod->stream, "[%g %g %g %g %g %g] concat\n",
+	fprintf (ofp, "gsave\n");
+	fprintf (ofp, "[%g %g %g %g %g %g] concat\n",
 		 transform->c[0],
 		 transform->c[1],
 		 transform->c[2],
 		 transform->c[3],
 		 transform->c[4],
 		 transform->c[5]);
-	fprintf (pmod->stream, "%d %d 8 [%d 0 0 -%d 0 %d]\n", width, height, width, height, height);
+	fprintf (ofp, "%d %d 8 [%d 0 0 -%d 0 %d]\n", width, height, width, height, height);
 
 	/* Write read image procedure */
 	fprintf (ofp, "%% Strings to hold RGB-samples per scanline\n");
@@ -686,7 +800,7 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 	}
 #endif
 
-	fprintf (pmod->stream, "grestore\n");
+	fprintf (ofp, "grestore\n");
 
 	return 0;
 #undef GET_RGB_TILE
