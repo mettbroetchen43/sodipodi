@@ -696,7 +696,7 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	/* I am not sure, whether we should check only propagated flag */
 	/* We are currently assuming, that style parsing is done immediately */
 	/* I think this is correct (Lauris) */
-	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
+	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) && (flags & SP_OBJECT_PARENT_MODIFIED_FLAG)) {
 		if (object->style && object->parent) {
 			sp_style_merge_from_parent (object->style, object->parent->style);
 		}

@@ -225,12 +225,12 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 	}
 	case SP_ATTR_STYLE:
 		sp_style_read_from_object (object->style, object);
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 		break;
 	default:
 		if (SP_ATTRIBUTE_IS_CSS (key)) {
 			sp_style_read_from_object (object->style, object);
-			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+			sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 		} else {
 			if (((SPObjectClass *) (parent_class))->set)
 				(* ((SPObjectClass *) (parent_class))->set) (object, key, value);

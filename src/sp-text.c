@@ -168,6 +168,9 @@ sp_string_read_content (SPObject *object)
 static void
 sp_string_modified (SPObject *object, guint flags)
 {
+	if (((SPObjectClass *) string_parent_class)->modified)
+		((SPObjectClass *) string_parent_class)->modified (object, flags);
+
 	if (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG)) {
 		/* Parent style or we ourselves changed, so recalculate */
 		sp_string_calculate_dimensions (SP_STRING (object));
@@ -192,7 +195,7 @@ sp_string_calculate_dimensions (SPString *string)
 	string->advance.x = 0.0;
 	string->advance.y = 0.0;
 
-	style = SP_OBJECT_STYLE (string);
+	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
@@ -287,7 +290,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	NRPointF spadv;
 
 	chars = SP_CHARS (string);
-	style = SP_OBJECT_STYLE (string);
+	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
 
 	sp_chars_clear (chars);
 
@@ -606,6 +609,9 @@ sp_tspan_modified (SPObject *object, guint flags)
 
 	tspan = SP_TSPAN (object);
 
+	if (((SPObjectClass *) tspan_parent_class)->modified)
+		((SPObjectClass *) tspan_parent_class)->modified (object, flags);
+
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
@@ -719,6 +725,7 @@ static void sp_text_release (SPObject *object);
 static void sp_text_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
+static void sp_text_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_text_modified (SPObject *object, guint flags);
 static SPRepr *sp_text_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -775,6 +782,7 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->set = sp_text_set;
 	sp_object_class->child_added = sp_text_child_added;
 	sp_object_class->remove_child = sp_text_remove_child;
+	sp_object_class->update = sp_text_update;
 	sp_object_class->modified = sp_text_modified;
 	sp_object_class->write = sp_text_write;
 
@@ -1029,6 +1037,39 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 /* fixme: This is wrong, as we schedule relayout every time something changes */
 
 static void
+sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPText *text;
+	SPObject *child;
+	GSList *l;
+	guint cflags;
+
+	text = SP_TEXT (object);
+
+	cflags = (flags & SP_OBJECT_MODIFIED_CASCADE);
+	if (flags & SP_OBJECT_MODIFIED_FLAG) cflags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+
+	/* Create temporary list of children */
+	l = NULL;
+	for (child = text->children; child != NULL; child = child->next) {
+		sp_object_ref (SP_OBJECT (child), object);
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (cflags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			/* fixme: Do we need transform? */
+			sp_object_invoke_update (child, ctx, cflags);
+		}
+		sp_object_unref (SP_OBJECT (child), object);
+	}
+}
+
+/* fixme: This is wrong, as we schedule relayout every time something changes */
+
+static void
 sp_text_modified (SPObject *object, guint flags)
 {
 	SPText *text;
@@ -1037,6 +1078,9 @@ sp_text_modified (SPObject *object, guint flags)
 	guint cflags;
 
 	text = SP_TEXT (object);
+
+	if (((SPObjectClass *) text_parent_class)->modified)
+		((SPObjectClass *) text_parent_class)->modified (object, flags);
 
 	cflags = (flags & SP_OBJECT_MODIFIED_CASCADE);
 	if (flags & SP_OBJECT_MODIFIED_FLAG) cflags |= SP_OBJECT_PARENT_MODIFIED_FLAG;

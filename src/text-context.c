@@ -332,6 +332,27 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				break;
 			}
 		} else {
+			if (tc->unimode && isxdigit (event->key.keyval)) {
+				tc->uni[tc->unipos] = event->key.keyval;
+				if (tc->unipos == 3) {
+					guchar u[7];
+					guint uv, len;
+					sscanf (tc->uni, "%x", &uv);
+					len = g_unichar_to_utf8 (uv, u);
+					u[len] = '\0';
+					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, u, FALSE);
+					tc->unipos = 0;
+					sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+					return TRUE;
+				} else {
+					tc->unipos += 1;
+					return TRUE;
+				}
+			} else if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+				return TRUE;
+			}
+
+			/* Neither unimode nor IM consumed key */
 			switch (event->key.keyval) {
 			case GDK_Return:
 				sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
@@ -379,25 +400,6 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				sp_text_context_update_cursor (tc);
 				return TRUE;
 			default:
-				if (tc->unimode && isxdigit (event->key.keyval)) {
-					tc->uni[tc->unipos] = event->key.keyval;
-					if (tc->unipos == 3) {
-						guchar u[7];
-						guint uv, len;
-						sscanf (tc->uni, "%x", &uv);
-						len = g_unichar_to_utf8 (uv, u);
-						u[len] = '\0';
-						tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, u, FALSE);
-						tc->unipos = 0;
-						sp_document_done (SP_DT_DOCUMENT (ec->desktop));
-						return TRUE;
-					} else {
-						tc->unipos += 1;
-						return TRUE;
-					}
-				} else if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
-					return TRUE;
-				}
 				break;
 			}
 		}

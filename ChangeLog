@@ -1,5 +1,14 @@
 2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/text-context.c (sp_text_context_root_handler): Moved IM back to
+	beginning (thanks to MenTaLguY for pointing this out)
+
+	* src/sp-object.c (sp_object_invoke_update): Merge styles only if parent changed
+
+	* src/sp-text.c (sp_text_update): Implement
+
+	* src/sp-text.c (sp_string_modified): Chain invocation so style gets updated
+
 	* src/widgets/sp-xmlview-content.c: Port to GtkTextView
 
 	* src/dialogs/xml-tree.c: Port to GtkTextView
