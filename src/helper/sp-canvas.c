@@ -1119,12 +1119,6 @@ shutdown_transients (SPCanvas *canvas)
 		canvas->need_redraw = FALSE;
 		art_uta_free (canvas->redraw_area);
 		canvas->redraw_area = NULL;
-#if 0
-		canvas->redraw_x1 = 0;
-		canvas->redraw_y1 = 0;
-		canvas->redraw_x2 = 0;
-		canvas->redraw_y2 = 0;
-#endif
 	}
 
 	if (canvas->grabbed_item) {
@@ -1777,12 +1771,66 @@ sp_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 		return FALSE;
 }
 
+static void
+uta_clear (ArtUta *uta, ArtIRect *rect)
+{
+	int Ux0, Uy0, Ux1, Uy1;
+	int ux0, uy0, ux1, uy1;
+	int x, y;
+
+	Ux0 = rect->x0 / ART_UTILE_SIZE;
+	ux0 = rect->x0 % ART_UTILE_SIZE;
+	Uy0 = rect->y0 / ART_UTILE_SIZE;
+	uy0 = rect->y0 % ART_UTILE_SIZE;
+	Ux1 = (rect->x1 - 1) / ART_UTILE_SIZE;
+	ux1 = rect->x1 % ART_UTILE_SIZE;
+	Uy1 = (rect->y1 - 1) / ART_UTILE_SIZE;
+	uy1 = rect->y1 % ART_UTILE_SIZE;
+
+	for (y = Uy0; y <= Uy1; y++) {
+		for (x = Ux0; x <= Ux1; x++) {
+			ArtUtaBbox *u;
+			int x0, y0, x1, y1;
+			u = uta->utiles + (y - uta->y0) * uta->width + (x - uta->x0);
+			x0 = ART_UTA_BBOX_X0 (*u);
+			y0 = ART_UTA_BBOX_Y0 (*u);
+			x1 = ART_UTA_BBOX_X1 (*u);
+			y1 = ART_UTA_BBOX_Y1 (*u);
+			if (x == Ux0) {
+				x1 = MIN (x1, ux0);
+				x0 = MIN (x0, x1);
+			} else if (x == Ux1) {
+				x0 = MAX (x0, ux1);
+				x1 = MAX (x1, x0);
+			} else {
+				x0 = 0;
+				x1 = 0;
+			}
+			if (y == Uy0) {
+				y1 = MIN (y1, uy0);
+				y0 = MIN (y0, y1);
+			} else if (y == Uy1) {
+				y0 = MAX (y0, uy1);
+				y1 = MAX (y1, y0);
+			} else {
+				y0 = 0;
+				y1 = 0;
+			}
+			if ((x1 > x0) && (y1 > y0)) {
+				*u = ART_UTA_BBOX_CONS (x0, y0, x1, y1);
+			} else {
+				*u = ART_UTA_BBOX_CONS (0, 0, 0, 0);
+			}
+		}
+	}
+}
+
 /* We have to fit into pixelstore 64K */
 #define IMAGE_WIDTH_AA 341
 #define IMAGE_HEIGHT_AA 64
 
 /* Repaints the areas in the canvas that need it */
-static void
+static int
 paint (SPCanvas *canvas)
 {
 	GtkWidget *widget;
@@ -1804,13 +1852,9 @@ paint (SPCanvas *canvas)
 	}
 
 	if (!canvas->need_redraw)
-		return;
+		return TRUE;
 
 	rects = art_rect_list_from_uta (canvas->redraw_area, IMAGE_WIDTH_AA, IMAGE_HEIGHT_AA, &n_rects);
-
-	art_uta_free (canvas->redraw_area);
-
-	canvas->redraw_area = NULL;
 
 	widget = GTK_WIDGET (canvas);
 
@@ -1871,14 +1915,25 @@ paint (SPCanvas *canvas)
 			}
 			nr_pixelstore_64K_free (buf.buf);
 	  	}
+
+		uta_clear (canvas->redraw_area, &rects[i]);
+#if 0
+		if (gdk_events_pending ()) {
+			art_free (rects);
+			return FALSE;
+		}
+#endif
 	}
 
 	art_free (rects);
-
+	art_uta_free (canvas->redraw_area);
+	canvas->redraw_area = NULL;
 	canvas->need_redraw = FALSE;
+
+	return TRUE;
 }
 
-static void
+static int
 do_update (SPCanvas *canvas)
 {
 	/* Cause the update if necessary */
@@ -1900,7 +1955,11 @@ do_update (SPCanvas *canvas)
 	}
 
 	/* Paint if able to */
-	if (GTK_WIDGET_DRAWABLE (canvas)) paint (canvas);
+	if (GTK_WIDGET_DRAWABLE (canvas)) {
+		return paint (canvas);
+	}
+
+	return TRUE;
 }
 
 /* Idle handler for the canvas.  It deals with pending updates and redraws. */
@@ -1908,18 +1967,28 @@ static gint
 idle_handler (gpointer data)
 {
 	SPCanvas *canvas;
+	int ret;
 
+#if 0
 	GDK_THREADS_ENTER ();
+#endif
+
+	g_print ("Idle\n");
 
 	canvas = SP_CANVAS (data);
-	do_update (canvas);
 
-	/* Reset idle id */
-	canvas->idle_id = 0;
+	ret = do_update (canvas);
 
+	if (ret) {
+		/* Reset idle id */
+		canvas->idle_id = 0;
+	}
+
+#if 0
 	GDK_THREADS_LEAVE ();
+#endif
 
-	return FALSE;
+	return !ret;
 }
 
 /* Convenience function to add an idle handler to a canvas */

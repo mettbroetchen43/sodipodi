@@ -1,5 +1,10 @@
 2002-10-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/sp-canvas.c (uta_clear): Experimental method
+	(paint): Return, if events pending (commented out)
+	(do_update): Return value
+	(idle_handler): Use update return value
+
 	* src/libnr/testnr.c: Speed test
 
 	* src/libnr/nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P.S: New file
