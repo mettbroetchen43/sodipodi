@@ -186,7 +186,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			if (TRUE || !shape->fill_svp) {
 				ArtSVP *svpa, *svpb;
 				abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
-				vp = sp_vpath_from_bpath_closepath (abp, 0.25);
+				vp = sp_vpath_from_bpath_transform_closepath (abp, NULL, TRUE, 0.25);
 				art_free (abp);
 				pvp = art_vpath_perturb (vp);
 				art_free (vp);

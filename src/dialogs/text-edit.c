@@ -428,7 +428,7 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 					       style->font_size.computed);
 #else
 		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, NULL);
-		font = nr_font_new_default (tf, style->font_size.computed);
+		font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_HORIZONTAL, style->font_size.computed);
 		nr_typeface_unref (tf);
 #endif
 		if (font) {

@@ -1,5 +1,15 @@
 2002-10-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-chars.c (sp_chars_add_element): Signature change
+	(sp_chars_show): Ditto
+
+	* src/display/nr-arena-glyphs.c (nr_arena_glyphs_group_add_component): Signature change
+
+	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_new): Set it up
+	(nr_rasterfont_unref): Release glyph slots
+	(nr_rasterfont_render_glyph_mask): Implement
+	(nr_rasterfont_ensure_glyph_slot): New helper
+
 	* src/sp-text.c: Port to new chars signature
 
 	* src/sp-chars.h: Use font instead of typeface

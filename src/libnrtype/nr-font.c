@@ -16,15 +16,17 @@
 #include "nr-font.h"
 
 NRFont *
-nr_font_new_default (NRTypeFace *tf, float size)
+nr_font_new_default (NRTypeFace *tf, unsigned int metrics, float size)
 {
 	NRFont *font;
 
 	font = nr_new (NRFont, 1);
 
 	font->refcount = 1;
+	font->metrics = metrics;
 	font->face = nr_typeface_ref (tf);
 	font->font = gnome_font_face_get_font_default (tf->face, size);
+	font->nglyphs = tf->nglyphs;
 
 	return font;
 }
@@ -52,9 +54,9 @@ nr_font_unref (NRFont *font)
 }
 
 NRBPath *
-nr_font_get_glyph_outline (NRFont *font, int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+nr_font_get_glyph_outline (NRFont *font, int glyph, NRBPath *d, unsigned int ref)
 {
-	if (metrics == NR_TYPEFACE_METRIC_VERTICAL) {
+	if (font->metrics == NR_TYPEFACE_METRICS_VERTICAL) {
 		/* fixme: Really should implement this */
 		return NULL;
 	} else {
@@ -73,9 +75,9 @@ nr_font_unref_glyph_outline (NRFont *font, int glyph)
 }
 
 NRPointF *
-nr_font_get_glyph_advance (NRFont *font, int glyph, unsigned int metric, NRPointF *adv)
+nr_font_get_glyph_advance (NRFont *font, int glyph, NRPointF *adv)
 {
-	if (metric == NR_TYPEFACE_METRIC_VERTICAL) {
+	if (font->metrics == NR_TYPEFACE_METRICS_VERTICAL) {
 		/* fixme: Really should implement this */
 		return NULL;
 	} else {

@@ -38,7 +38,6 @@ static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
 static void nr_arena_glyphs_destroy (GtkObject *object);
 
 static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
-static guint nr_arena_glyphs_render (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRBuffer *b);
 static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
@@ -76,7 +75,6 @@ nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass)
 	object_class->destroy = nr_arena_glyphs_destroy;
 
 	item_class->update = nr_arena_glyphs_update;
-	item_class->render = nr_arena_glyphs_render;
 	item_class->clip = nr_arena_glyphs_clip;
 	item_class->pick = nr_arena_glyphs_pick;
 }
@@ -86,10 +84,7 @@ nr_arena_glyphs_init (NRArenaGlyphs *glyphs)
 {
 	glyphs->curve = NULL;
 	glyphs->style = NULL;
-#if 0
-	glyphs->fill_painter = NULL;
-	glyphs->stroke_painter = NULL;
-#endif
+
 	glyphs->fill_svp = NULL;
 	glyphs->stroke_svp = NULL;
 }
@@ -110,18 +105,6 @@ nr_arena_glyphs_destroy (GtkObject *object)
 		art_svp_free (glyphs->stroke_svp);
 		glyphs->stroke_svp = NULL;
 	}
-
-#if 0
-	if (glyphs->fill_painter) {
-		sp_painter_free (glyphs->fill_painter);
-		glyphs->fill_painter = NULL;
-	}
-
-	if (glyphs->stroke_painter) {
-		sp_painter_free (glyphs->stroke_painter);
-		glyphs->stroke_painter = NULL;
-	}
-#endif
 
 	if (glyphs->style) {
 		sp_style_unref (glyphs->style);
@@ -163,16 +146,6 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 		art_svp_free (glyphs->stroke_svp);
 		glyphs->stroke_svp = NULL;
 	}
-#if 0
-	if (glyphs->fill_painter) {
-		sp_painter_free (glyphs->fill_painter);
-		glyphs->fill_painter = NULL;
-	}
-	if (glyphs->stroke_painter) {
-		sp_painter_free (glyphs->stroke_painter);
-		glyphs->stroke_painter = NULL;
-	}
-#endif
 
 	if (!glyphs->curve || !glyphs->style) return NR_ARENA_ITEM_STATE_ALL;
 	if ((glyphs->style->fill.type == SP_PAINT_TYPE_NONE) && (glyphs->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
@@ -218,112 +191,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 	item->bbox.y1 = bbox.y1 + 1.0;
 	nr_arena_request_render_rect (item->arena, &item->bbox);
 
-#if 0
-	if (glyphs->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		g_warning ("Glyphs gradient fill: Implement this");
-		glyphs->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (glyphs->style), gc->affine, &bbox);
-	}
-	if (glyphs->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		glyphs->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (glyphs->style), gc->affine, &bbox);
-	}
-#endif
-
 	return NR_ARENA_ITEM_STATE_ALL;
-}
-
-static guint
-nr_arena_glyphs_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
-{
-#if 0
-	NRArenaGlyphs *glyphs;
-	SPStyle *style;
-
-	glyphs = NR_ARENA_GLYPHS (item);
-
-	if (!glyphs->curve) return item->state;
-	if (!glyphs->style) return item->state;
-
-	style = glyphs->style;
-
-	if (glyphs->fill_svp) {
-		NRBuffer *m;
-		guint32 rgba;
-
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		art_gray_svp_aa (glyphs->fill_svp, area->x0, area->y0, area->x1, area->y1, m->px, m->rs);
-		m->empty = FALSE;
-
-		switch (style->fill.type) {
-		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
-							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
-							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
-			break;
-		case SP_PAINT_TYPE_PAINTSERVER:
-			if (glyphs->fill_painter) {
-				NRBuffer *pb;
-				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				glyphs->fill_painter->fill (glyphs->fill_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
-				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
-			}
-			break;
-		default:
-			break;
-		}
-		nr_buffer_free (m);
-	}
-
-	if (glyphs->stroke_svp) {
-		NRBuffer *m;
-		guint32 rgba;
-
-		m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
-		art_gray_svp_aa (glyphs->stroke_svp, area->x0, area->y0, area->x1, area->y1, m->px, m->rs);
-		m->empty = FALSE;
-
-		switch (style->stroke.type) {
-		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->stroke.value.color,
-							   SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) *
-							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
-			b->empty = FALSE;
-			nr_buffer_free (m);
-			break;
-		case SP_PAINT_TYPE_PAINTSERVER:
-			if (glyphs->stroke_painter) {
-				NRBuffer *pb;
-				/* Need separate gradient buffer */
-				pb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, FALSE);
-				glyphs->stroke_painter->fill (glyphs->stroke_painter, pb->px, area->x0, area->y0, pb->w, pb->h, pb->rs);
-				pb->empty = FALSE;
-				/* Composite */
-				nr_render_buf_buf_mask (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
-							pb, 0, 0,
-							m, 0, 0);
-				b->empty = FALSE;
-				nr_buffer_free (pb);
-			}
-			break;
-		default:
-			break;
-		}
-		nr_buffer_free (m);
-	}
-#endif
-
-	return item->state;
 }
 
 static guint
@@ -372,7 +240,7 @@ nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gb
 }
 
 void
-nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, const gdouble *affine)
+nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, const NRMatrixF *transform)
 {
 	g_return_if_fail (glyphs != NULL);
 	g_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
@@ -385,9 +253,16 @@ nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean privat
 	}
 
 	if (curve) {
-		if (affine) {
+		if (transform) {
 			ArtBpath *abp;
-			abp = art_bpath_affine_transform (curve->bpath, affine);
+			double a[6];
+			a[0] = transform->c[0];
+			a[1] = transform->c[1];
+			a[2] = transform->c[2];
+			a[3] = transform->c[3];
+			a[4] = transform->c[4];
+			a[5] = transform->c[5];
+			abp = art_bpath_affine_transform (curve->bpath, a);
 			curve = sp_curve_new_from_bpath (abp);
 			glyphs->curve = curve;
 		} else {
@@ -723,22 +598,33 @@ nr_arena_glyphs_group_clear (NRArenaGlyphsGroup *sg)
 }
 
 void
-nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, SPCurve *curve, gboolean private, const gdouble *affine)
+nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int glyph, const NRMatrixF *transform)
 {
 	NRArenaGroup *group;
-	NRArenaItem *new;
+	NRBPath bpath;
 
 	group = NR_ARENA_GROUP (sg);
 
-	nr_arena_item_request_render (NR_ARENA_ITEM (group));
+	if (nr_font_get_glyph_outline (font, glyph, &bpath, FALSE)) {
+		SPCurve *curve;
 
-	new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_GLYPHS);
-	nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
-	nr_arena_item_unref (new);
-	nr_arena_glyphs_set_path (NR_ARENA_GLYPHS (new), curve, private, affine);
-	nr_arena_glyphs_set_style (NR_ARENA_GLYPHS (new), sg->style);
+		nr_arena_item_request_render (NR_ARENA_ITEM (group));
+
+		curve = sp_curve_new_from_static_bpath (bpath.path);
+		if (curve) {
+			NRArenaItem *new;
+			new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_GLYPHS);
+			nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
+			nr_arena_item_unref (new);
+			nr_arena_glyphs_set_path (NR_ARENA_GLYPHS (new), curve, FALSE, transform);
+			nr_arena_glyphs_set_style (NR_ARENA_GLYPHS (new), sg->style);
+			sp_curve_unref (curve);
+		}
+	}
+
 }
 
+#if 0
 void
 nr_arena_glyphs_group_set_component (NRArenaGlyphsGroup *sg, SPCurve *curve, gboolean private, const gdouble *affine)
 {
@@ -748,6 +634,7 @@ nr_arena_glyphs_group_set_component (NRArenaGlyphsGroup *sg, SPCurve *curve, gbo
 	nr_arena_glyphs_group_clear (sg);
 	nr_arena_glyphs_group_add_component (sg, curve, private, affine);
 }
+#endif
 
 void
 nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *sg, SPStyle *style)

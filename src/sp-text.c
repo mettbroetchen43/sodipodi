@@ -180,7 +180,7 @@ sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 	ArtDRect hbox;
 
 	/* Find correct bbox (gnome-print does it wrong) */
-	if (!nr_font_get_glyph_outline (font, glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) return NULL;
+	if (!nr_font_get_glyph_outline (font, glyph, &bpath, FALSE)) return NULL;
 	hbox.x0 = hbox.y0 = 1e18;
 	hbox.x1 = hbox.y1 = -1e18;
 	sp_bpath_matrix_d_bbox_d_union (bpath.path, NULL, &hbox, 0.25);
@@ -206,7 +206,7 @@ static NRPointF *
 sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
 {
 	if (mode == SP_CSS_WRITING_MODE_LR) {
-		return nr_font_get_glyph_advance (font, glyph, NR_TYPEFACE_METRIC_HORIZONTAL, adv);
+		return nr_font_get_glyph_advance (font, glyph, adv);
 	} else {
 		adv->x = 0.0;
 		adv->y = -nr_font_get_size (font);
@@ -248,13 +248,13 @@ sp_string_calculate_dimensions (SPString *string)
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
-	font = nr_font_new_default (face, size);
+	font = nr_font_new_default (face, NR_TYPEFACE_METRICS_HORIZONTAL, size);
 
 	spwidth = size;
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
 		NRPointF adv;
-		if (nr_font_get_glyph_advance (font, spglyph, NR_TYPEFACE_METRIC_HORIZONTAL, &adv)) {
+		if (nr_font_get_glyph_advance (font, spglyph, &adv)) {
 			spwidth = adv.x;
 		}
 	}
@@ -357,13 +357,13 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
-	font = nr_font_new_default (face, size);
+	font = nr_font_new_default (face, NR_TYPEFACE_METRICS_HORIZONTAL, size);
 
 	spwidth = size;
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
 		NRPointF adv;
-		if (nr_font_get_glyph_advance (font, spglyph, NR_TYPEFACE_METRIC_HORIZONTAL, &adv)) {
+		if (nr_font_get_glyph_advance (font, spglyph, &adv)) {
 			spwidth = adv.x;
 		}
 	}

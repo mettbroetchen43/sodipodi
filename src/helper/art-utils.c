@@ -14,6 +14,7 @@
  */
 
 #include <libnr/nr-values.h>
+#include <libnr/nr-matrix.h>
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_svp.h>
@@ -397,94 +398,8 @@ art_vpath_render_bez (ArtVpath **p_vpath, int *pn, int *pn_max,
 			x_m, y_m, xb1, yb1, xb2, yb2, x3, y3, flatness);
 }
 
-#if 0
-/**
- * art_bez_path_to_vec: Create vpath from bezier path.
- * @bez: Bezier path.
- * @flatness: Flatness control.
- *
- * Creates a vector path closely approximating the bezier path defined by
- * @bez. The @flatness argument controls the amount of subdivision. In
- * general, the resulting vpath deviates by at most @flatness pixels
- * from the "ideal" path described by @bez.
- *
- * Return value: Newly allocated vpath.
- **/
 ArtVpath *
-art_bez_path_to_vec (const ArtBpath *bez, double flatness)
-{
-  ArtVpath *vec;
-  int vec_n, vec_n_max;
-  int bez_index;
-  double x, y;
-
-  vec_n = 0;
-  vec_n_max = RENDER_SIZE;
-  vec = art_new (ArtVpath, vec_n_max);
-
-  /* Initialization is unnecessary because of the precondition that the
-     bezier path does not begin with LINETO or CURVETO, but is here
-     to make the code warning-free. */
-  x = 0;
-  y = 0;
-
-  bez_index = 0;
-  do
-    {
-#ifdef VERBOSE
-      printf ("%s %g %g\n",
-	      bez[bez_index].code == ART_CURVETO ? "curveto" :
-	      bez[bez_index].code == ART_LINETO ? "lineto" :
-	      bez[bez_index].code == ART_MOVETO ? "moveto" :
-	      bez[bez_index].code == ART_MOVETO_OPEN ? "moveto-open" :
-	      "end", bez[bez_index].x3, bez[bez_index].y3);
-#endif
-      /* make sure space for at least one more code */
-      if (vec_n >= vec_n_max)
-	art_expand (vec, ArtVpath, vec_n_max);
-      switch (bez[bez_index].code)
-	{
-	case ART_MOVETO_OPEN:
-	case ART_MOVETO:
-	case ART_LINETO:
-	  x = bez[bez_index].x3;
-	  y = bez[bez_index].y3;
-	  vec[vec_n].code = bez[bez_index].code;
-	  vec[vec_n].x = x;
-	  vec[vec_n].y = y;
-	  vec_n++;
-	  break;
-	case ART_END:
-	  vec[vec_n].code = bez[bez_index].code;
-	  vec[vec_n].x = 0;
-	  vec[vec_n].y = 0;
-	  vec_n++;
-	  break;
-	case ART_CURVETO:
-#ifdef VERBOSE
-	  printf ("%g,%g %g,%g %g,%g %g,%g\n", x, y,
-			 bez[bez_index].x1, bez[bez_index].y1,
-			 bez[bez_index].x2, bez[bez_index].y2,
-			 bez[bez_index].x3, bez[bez_index].y3);
-#endif
-	  art_vpath_render_bez (&vec, &vec_n, &vec_n_max,
-				x, y,
-				bez[bez_index].x1, bez[bez_index].y1,
-				bez[bez_index].x2, bez[bez_index].y2,
-				bez[bez_index].x3, bez[bez_index].y3,
-				flatness);
-	  x = bez[bez_index].x3;
-	  y = bez[bez_index].y3;
-	  break;
-	}
-    }
-  while (bez[bez_index++].code != ART_END);
-  return vec;
-}
-#endif
-
-ArtVpath *
-sp_vpath_from_bpath_closepath (const ArtBpath *bpath, double flatness)
+sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness)
 {
 	const ArtBpath *bp;
 	ArtVpath *vpath;
@@ -503,7 +418,7 @@ sp_vpath_from_bpath_closepath (const ArtBpath *bpath, double flatness)
 		switch (bp->code) {
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			if ((x != sx) || (y != sy)) {
+			if (close && ((x != sx) || (y != sy))) {
 				/* Add closepath */
 				if (vpath_len >= vpath_size) art_expand (vpath, ArtVpath, vpath_size);
 				vpath[vpath_len].code = ART_LINETO;
@@ -512,25 +427,47 @@ sp_vpath_from_bpath_closepath (const ArtBpath *bpath, double flatness)
 				vpath_len += 1;
 			}
 			vpath[vpath_len].code = ART_MOVETO;
-			vpath[vpath_len].x = sx = x = bp->x3;
-			vpath[vpath_len].y = sy = y = bp->y3;
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
+			vpath[vpath_len].x = x;
+			vpath[vpath_len].y = y;
 			vpath_len += 1;
 			break;
 		case ART_LINETO:
 			vpath[vpath_len].code = ART_LINETO;
-			vpath[vpath_len].x = x = bp->x3;
-			vpath[vpath_len].y = y = bp->y3;
+			if (transform) {
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+			}
+			vpath[vpath_len].x = x;
+			vpath[vpath_len].y = y;
 			vpath_len += 1;
 			break;
 		case ART_CURVETO:
-			art_vpath_render_bez (&vpath, &vpath_len, &vpath_size,
-					      x, y,
-					      bp->x1, bp->y1,
-					      bp->x2, bp->y2,
-					      bp->x3, bp->y3,
-					      flatness);
-			x = bp->x3;
-			y = bp->y3;
+			if (transform) {
+				art_vpath_render_bez (&vpath, &vpath_len, &vpath_size,
+						      x, y,
+						      NR_MATRIX_DF_TRANSFORM_X (transform, bp->x1, bp->y1),
+						      NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x1, bp->y1),
+						      NR_MATRIX_DF_TRANSFORM_X (transform, bp->x2, bp->y2),
+						      NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x2, bp->y2),
+						      NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3),
+						      NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3),
+						      flatness);
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+			}
 			break;
 		default:
 			break;

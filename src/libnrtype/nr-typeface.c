@@ -60,7 +60,7 @@ nr_typeface_get_attribute (NRTypeFace *tf, const unsigned char *key)
 NRBPath *
 nr_typeface_get_glyph_outline (NRTypeFace *tf, int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
 {
-	if (metrics == NR_TYPEFACE_METRIC_VERTICAL) {
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
 		/* fixme: Really should implement this */
 		return NULL;
 	} else {

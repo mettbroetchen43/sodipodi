@@ -48,6 +48,7 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 
 	face->refcount = 1;
 	face->face = gnome_font_unsized_closest (family, weight, italic);
+	face->nglyphs = gnome_font_face_get_num_glyphs (face->face);
 
 	return face;
 }

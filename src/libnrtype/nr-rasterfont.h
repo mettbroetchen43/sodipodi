@@ -14,6 +14,7 @@
 
 typedef struct _NRRasterFont NRRasterFont;
 
+#include <libnr/nr-pixblock.h>
 #include <libnrtype/nr-font.h>
 
 NRRasterFont *nr_rasterfont_new (NRFont *font, NRMatrixF *transform);
@@ -21,9 +22,11 @@ NRRasterFont *nr_rasterfont_new (NRFont *font, NRMatrixF *transform);
 NRRasterFont *nr_rasterfont_ref (NRRasterFont *rf);
 NRRasterFont *nr_rasterfont_unref (NRRasterFont *rf);
 
-NRPointF *nr_rasterfont_get_glyph_advance (NRRasterFont *rf, int glyph, unsigned int metric, NRPointF *adv);
+NRPointF *nr_rasterfont_get_glyph_advance (NRRasterFont *rf, int glyph, NRPointF *adv);
 
 NRFont *nr_rasterfont_get_font (NRRasterFont *rf);
 NRTypeFace *nr_rasterfont_get_typeface (NRRasterFont *rf);
+
+void nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, float x, float y);
 
 #endif

@@ -19,6 +19,8 @@
 #define NR_IS_ARENA_GLYPHS(obj) (GTK_CHECK_TYPE ((obj), NR_TYPE_ARENA_GLYPHS))
 #define NR_IS_ARENA_GLYPHS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_GLYPHS))
 
+#include <libnrtype/nr-font.h>
+
 #include "nr-arena-item.h"
 #include "cpath-component.h"
 #include "../forward.h"
@@ -26,14 +28,11 @@
 
 struct _NRArenaGlyphs {
 	NRArenaItem item;
+
 	/* Glyphs data */
 	SPCurve *curve;
 	SPStyle *style;
-#if 0
-	/* State data */
-	SPPainter *fill_painter;
-	SPPainter *stroke_painter;
-#endif
+
 	ArtSVP *fill_svp;
 	ArtSVP *stroke_svp;
 };
@@ -44,7 +43,7 @@ struct _NRArenaGlyphsClass {
 
 GtkType nr_arena_glyphs_get_type (void);
 
-void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, const gdouble *affine);
+void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, const NRMatrixF *transform);
 void nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style);
 
 /* Integrated group of component glyphss */
@@ -80,8 +79,13 @@ void nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *group, SPStyle *style)
 /* Utility functions */
 
 void nr_arena_glyphs_group_clear (NRArenaGlyphsGroup *group);
-void nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
+
+void nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *group, NRFont *font, int glyph, const NRMatrixF *transform);
+
+#if 0
 void nr_arena_glyphs_group_set_component (NRArenaGlyphsGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
+#endif
+
 void nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *group, const ArtDRect *pbox);
 
 #endif

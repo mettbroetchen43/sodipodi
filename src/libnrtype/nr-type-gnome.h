@@ -18,12 +18,15 @@
 struct _NRTypeFace {
 	unsigned int refcount;
 	GnomeFontFace *face;
+	unsigned int nglyphs;
 };
 
 struct _NRFont {
 	unsigned int refcount;
 	NRTypeFace *face;
+	unsigned int metrics : 2;
 	GnomeFont *font;
+	unsigned int nglyphs;
 };
 
 #endif

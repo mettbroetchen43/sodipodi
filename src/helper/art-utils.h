@@ -13,6 +13,9 @@
  */
 
 #include <math.h>
+
+#include <libnr/nr-types.h>
+
 #include <glib.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
@@ -29,7 +32,7 @@ ArtDRect *sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const double *m
 
 #define sp_distance_d_matrix_d_transform(d,m) (d * sqrt (fabs ((m)[0] * (m)[3] - (m)[1] * (m)[2])))
 
-ArtVpath *sp_vpath_from_bpath_closepath (const ArtBpath *bpath, double flatness);
+ArtVpath *sp_vpath_from_bpath_transform_closepath (const ArtBpath *bpath, NRMatrixF *transform, int close, double flatness);
 
 #endif
 

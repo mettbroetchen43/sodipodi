@@ -304,7 +304,7 @@ sp_font_selector_emit_set (SPFontSelector *fsel)
 	NRFont *font;
 
 	tf = nr_type_directory_lookup_fuzzy (fsel->familyname, fsel->stylename);
-	font = nr_font_new_default (tf, fsel->fontsize);
+	font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_DEFAULT, fsel->fontsize);
 	nr_typeface_unref (tf);
 	if (font != fsel->font) {
 		if (fsel->font) fsel->font = nr_font_unref (fsel->font);

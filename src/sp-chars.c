@@ -129,7 +129,7 @@ sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		NRBPath bpath;
 		gdouble a[6], b[6];
 		gint i;
-		if (nr_font_get_glyph_outline (el->font, el->glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) {
+		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
 			for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
 			art_affine_multiply (b, a, transform);
 			sp_bpath_matrix_d_bbox_d_union (bpath.path, b, bbox, 0.25);
@@ -151,9 +151,11 @@ sp_chars_show (SPItem *item, NRArena *arena)
 	nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (arenaitem), SP_OBJECT_STYLE (item));
 
 	for (el = chars->elements; el != NULL; el = el->next) {
+#if 0
 		NRBPath bpath;
 		SPCurve *curve;
-		if (nr_font_get_glyph_outline (el->font, el->glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) {
+
+		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
 			curve = sp_curve_new_from_static_bpath (bpath.path);
 			if (curve) {
 				gdouble a[6];
@@ -163,6 +165,9 @@ sp_chars_show (SPItem *item, NRArena *arena)
 				sp_curve_unref (curve);
 			}
 		}
+#else
+		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (arenaitem), el->font, el->glyph, &el->transform);
+#endif
 	}
 
 	nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (arenaitem), &chars->paintbox);
@@ -197,8 +202,10 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	SPItem *item;
 	SPItemView *v;
 	SPCharElement * el;
+#if 0
 	NRBPath bpath;
 	SPCurve *curve;
+#endif
 
 	item = SP_ITEM (chars);
 
@@ -213,7 +220,8 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	el->next = chars->elements;
 	chars->elements = el;
 
-	if (nr_font_get_glyph_outline (el->font, el->glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) {
+#if 0
+	if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
 		curve = sp_curve_new_from_static_bpath (bpath.path);
 		if (curve) {
 			gdouble a[6];
@@ -225,6 +233,11 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 			sp_curve_unref (curve);
 		}
 	}
+#else
+	for (v = item->display; v != NULL; v = v->next) {
+		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v->arenaitem), el->font, el->glyph, &el->transform);
+	}
+#endif
 }
 
 SPCurve *
@@ -242,7 +255,7 @@ sp_chars_normalized_bpath (SPChars *chars)
 		gdouble a[6];
 		gint i;
 		for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-		if (nr_font_get_glyph_outline (el->font, el->glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bp, FALSE)) {
+		if (nr_font_get_glyph_outline (el->font, el->glyph, &bp, FALSE)) {
 			abp = art_bpath_affine_transform (bp.path, a);
 			c = sp_curve_new_from_bpath (abp);
 			if (c) cc = g_slist_prepend (cc, c);
@@ -380,7 +393,7 @@ sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, c
 		gint i;
 
 		for (i = 0; i < 6; i++) chela[i] = el->transform.c[i];
-		if (nr_font_get_glyph_outline (el->font, el->glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) {
+		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
 			abp = art_bpath_affine_transform (bpath.path, chela);
 
 			sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
