@@ -16,8 +16,10 @@
 #include <config.h>
 
 #include <string.h>
+
 #include "svg/svg.h"
 #include "xml/repr-private.h"
+#include "verbs.h"
 #include "document.h"
 #include "sodipodi.h"
 #include "desktop.h"
@@ -32,6 +34,337 @@
 
 /* fixme: find a better place */
 GSList *clipboard = NULL;
+
+static SPGroup *sp_item_list_common_parent_group (const GSList *items);
+
+/* Action based functionality */
+
+static void sp_selection_perform_transform (SPDesktop *dt, SPRepr *config);
+
+static void sp_selection_raise (SPDesktop *dt);
+static void sp_selection_raise_to_top (SPDesktop *dt);
+static void sp_selection_lower (SPDesktop *dt);
+static void sp_selection_lower_to_bottom (SPDesktop *dt);
+
+static void sp_selection_group (SPDesktop *dt);
+static void sp_selection_ungroup (SPDesktop *dt);
+
+void
+sp_selection_action_perform (SPAction *action, void *config, void *data)
+{
+	SPDesktop *dt;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+
+	switch ((int) data) {
+	case SP_VERB_SELECTION_TO_FRONT:
+		sp_selection_raise_to_top (dt);
+		break;
+	case SP_VERB_SELECTION_TO_BACK:
+		sp_selection_lower_to_bottom (dt);
+		break;
+	case SP_VERB_SELECTION_RAISE:
+		sp_selection_raise (dt);
+		break;
+	case SP_VERB_SELECTION_LOWER:
+		sp_selection_lower (dt);
+		break;
+	case SP_VERB_SELECTION_GROUP:
+		sp_selection_group (dt);
+		break;
+	case SP_VERB_SELECTION_UNGROUP:
+		sp_selection_ungroup (dt);
+		break;
+	case SP_VERB_SELECTION_COMBINE:
+		sp_selected_path_combine ();
+		break;
+	case SP_VERB_SELECTION_BREAK_APART:
+		sp_selected_path_break_apart ();
+		break;
+	case SP_VERB_SELECTION_TRANSFORM:
+		sp_selection_perform_transform (dt, (SPRepr *) config);
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+sp_selection_perform_transform (SPDesktop *dt, SPRepr *config)
+{
+	unsigned int duplicate;
+	const unsigned char *tstr;
+	NRMatrixF transform;
+	const GSList *l;
+
+	if (!config) return;
+
+	/* Duplication (new objects get selected) */
+	sp_repr_get_boolean (config, "duplicate", &duplicate);
+	if (duplicate) sp_selection_duplicate (NULL, NULL);
+	/* Transformation */
+	tstr = sp_repr_attr (config, "transform");
+	if (!tstr) return;
+	nr_matrix_f_set_identity (&transform);
+	sp_svg_transform_read (tstr, &transform);
+
+	for (l = sp_selection_item_list (SP_DT_SELECTION (dt)); l != NULL; l = l->next) {
+		NRMatrixF curaff, newaff;
+		SPItem *item;
+		item = (SPItem *) l->data;
+		sp_item_i2d_affine (item, &curaff);
+		nr_matrix_multiply_fff (&newaff, &curaff, &transform);
+		/* fixme: This is far from elegant (Lauris) */
+		sp_item_set_i2d_affine (item, &newaff);
+		/* update repr -  needed for undo */
+		sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
+	}
+}
+
+#if 0
+#define PRINT_STR(s) g_print (s)
+#define PRINT_OBJ(s, o) g_print ("%s: %s\n", s, (o) ? (gchar *) sp_repr_attr (SP_OBJECT_REPR (o), "id") : "NULL")
+#else
+#define PRINT_STR(s)
+#define PRINT_OBJ(s, o)
+#endif
+
+static void
+sp_selection_raise (SPDesktop *dt)
+{
+	const GSList *items;
+	SPGroup *group;
+	SPRepr *grepr;
+	SPObject *child, *newref;
+	GSList *rev;
+
+	items = sp_selection_item_list (SP_DT_SELECTION (dt));
+	if (!items) return;
+	group = sp_item_list_common_parent_group (items);
+	if (!group) return;
+	grepr = SP_OBJECT_REPR (group);
+
+	/* construct reverse-ordered list of selected children */
+	rev = NULL;
+	for (child = ((SPObject *) group)->children; child; child = child->next) {
+		if (g_slist_find ((GSList *) items, child)) {
+			rev = g_slist_prepend (rev, child);
+		}
+	}
+
+	while (rev) {
+		child = SP_OBJECT (rev->data);
+		for (newref = child->next; newref; newref = newref->next) {
+			if (SP_IS_ITEM (newref)) {
+				if (!g_slist_find ((GSList *) items, newref)) {
+					/* Found available position */
+					sp_repr_change_order (grepr, SP_OBJECT_REPR (child), SP_OBJECT_REPR (newref));
+				}
+				break;
+			}
+		}
+		rev = g_slist_remove (rev, child);
+	}
+
+	sp_document_done (SP_DT_DOCUMENT (dt));
+}
+
+static void
+sp_selection_raise_to_top (SPDesktop *dt)
+{
+	SPRepr *repr;
+	GSList *rl, *l;
+
+	if (sp_selection_is_empty (SP_DT_SELECTION (dt))) return;
+
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (SP_DT_SELECTION (dt)));
+
+	for (l = rl; l != NULL; l = l->next) {
+		repr = (SPRepr *) l->data;
+		sp_repr_set_position_absolute (repr, -1);
+	}
+
+	g_slist_free (rl);
+
+	sp_document_done (SP_DT_DOCUMENT (dt));
+}
+
+static void
+sp_selection_lower (SPDesktop *dt)
+{
+	const GSList *items;
+	SPGroup *group;
+	SPRepr *grepr;
+	SPObject *child, *newref, *oldref;
+	gboolean skip;
+
+	items = sp_selection_item_list (SP_DT_SELECTION (dt));
+	if (!items) return;
+	group = sp_item_list_common_parent_group (items);
+	if (!group) return;
+	grepr = SP_OBJECT_REPR (group);
+
+	PRINT_STR ("STARTING\n");
+	/* Start from beginning */
+	skip = TRUE;
+	newref = NULL;
+	oldref = NULL;
+	child = ((SPObject *) group)->children;
+	while (child != NULL) {
+		if (SP_IS_ITEM (child)) {
+			/* We are item */
+			skip = FALSE;
+			/* fixme: Remove from list (Lauris) */
+			if (g_slist_find ((GSList *) items, child)) {
+				/* Need lower */
+				if (newref != oldref) {
+					if (sp_repr_change_order (grepr, SP_OBJECT_REPR (child), (newref) ? SP_OBJECT_REPR (newref) : NULL)) {
+						PRINT_STR ("Change order succeeded\n");
+						PRINT_OBJ ("  child", child);
+						PRINT_OBJ ("  oldref", oldref);
+						PRINT_OBJ ("  newref", newref);
+						/* Order change succeeded */
+						/* Next available position */
+						newref = child;
+						/* Oldref is just what it was */
+						/* Continue from oldref */
+						child = oldref->next;
+					} else {
+						PRINT_STR ("Change order failed\n");
+						PRINT_OBJ ("  child", child);
+						PRINT_OBJ ("  oldref", oldref);
+						PRINT_OBJ ("  newref", newref);
+						/* Order change did not succeed */
+						newref = oldref;
+						oldref = child;
+						child = child->next;
+					}
+				} else {
+					/* Item position will not change */
+					/* Other items will lower only following positions */
+					newref = child;
+					oldref = child;
+					child = child->next;
+				}
+			} else {
+				PRINT_STR ("Item not in list\n");
+				PRINT_OBJ ("  child", child);
+				PRINT_OBJ ("  oldref", oldref);
+				PRINT_OBJ ("  newref", newref);
+				/* We were item, but not in list */
+				newref = oldref;
+				oldref = child;
+				child = child->next;
+			}
+		} else {
+			PRINT_STR ("Not an item\n");
+			PRINT_OBJ ("  child", child);
+			PRINT_OBJ ("  oldref", oldref);
+			PRINT_OBJ ("  newref", newref);
+			/* We want to refind newref only to skip initial non-items */
+			if (skip) newref = child;
+			oldref = child;
+			child = child->next;
+		}
+	}
+
+	sp_document_done (SP_DT_DOCUMENT (dt));
+}
+
+static void
+sp_selection_lower_to_bottom (SPDesktop *dt)
+{
+	SPRepr *repr;
+	GSList *rl, *l;
+
+	if (sp_selection_is_empty (SP_DT_SELECTION (dt))) return;
+
+	rl = g_slist_copy ((GSList *) sp_selection_repr_list (SP_DT_SELECTION (dt)));
+
+	rl = g_slist_reverse (rl);
+
+	for (l = rl; l != NULL; l = l->next) {
+		gint minpos;
+		SPObject *pp, *pc;
+		repr = (SPRepr *) l->data;
+		pp = sp_document_lookup_id (SP_DT_DOCUMENT (dt), sp_repr_attr (sp_repr_parent (repr), "id"));
+		minpos = 0;
+		g_assert (SP_IS_GROUP (pp));
+		pc = pp->children;
+		while (!SP_IS_ITEM (pc)) {
+			minpos += 1;
+			pc = pc->next;
+		}
+		sp_repr_set_position_absolute (repr, minpos);
+	}
+
+	g_slist_free (rl);
+
+	sp_document_done (SP_DT_DOCUMENT (dt));
+}
+
+/* fixme: sequencing */
+
+static void
+sp_selection_group (SPDesktop *dt)
+{
+	SPSelection * selection;
+	SPRepr * current;
+	SPRepr * group;
+	SPItem * new;
+	const GSList * l;
+	GSList * p;
+
+	selection = SP_DT_SELECTION (dt);
+	if (sp_selection_is_empty (selection)) return;
+	l = sp_selection_repr_list (selection);
+	if (l->next == NULL) return;
+
+	p = g_slist_copy ((GSList *) l);
+
+	sp_selection_empty (SP_DT_SELECTION (dt));
+	p = g_slist_sort (p, (GCompareFunc) sp_repr_compare_position);
+
+	group = sp_repr_new ("g");
+
+	while (p) {
+		SPRepr *new;
+		current = (SPRepr *) p->data;
+		new = sp_repr_duplicate (current);
+		sp_repr_unparent (current);
+		sp_repr_append_child (group, new);
+		sp_repr_unref (new);
+		p = g_slist_remove (p, current);
+	}
+
+	new = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (dt), group);
+	sp_document_done (SP_DT_DOCUMENT (dt));
+
+	sp_selection_set_repr (selection, group);
+	sp_repr_unref (group);
+}
+
+static void
+sp_selection_ungroup (SPDesktop *dt)
+{
+	SPItem *group;
+	GSList *children;
+
+	group = sp_selection_item (SP_DT_SELECTION (dt));
+	if (!group) return;
+	/* We do not allow ungrouping <svg> etc. */
+	if (strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) return;
+
+	children = NULL;
+	/* This is not strictly required, but is nicer to rely on group ::destroy */
+	sp_selection_empty (SP_DT_SELECTION (dt));
+	sp_item_group_ungroup (SP_GROUP (group), &children);
+	sp_selection_set_item_list (SP_DT_SELECTION (dt), children);
+	g_slist_free (children);
+}
+
+/* Simple stuff */
 
 static void sp_matrix_d_set_rotate (NRMatrixD *m, double theta);
 
@@ -199,78 +532,6 @@ sp_edit_cleanup (gpointer object, gpointer data)
 	sp_document_done (doc);
 }
 
-/* fixme: sequencing */
-
-void
-sp_selection_group (gpointer object, gpointer data)
-{
-	SPDesktop * desktop;
-	SPSelection * selection;
-	SPRepr * current;
-	SPRepr * group;
-	SPItem * new;
-	const GSList * l;
-	GSList * p;
-
-	desktop = SP_ACTIVE_DESKTOP;
-
-	if (desktop == NULL) return;
-
-	selection = SP_DT_SELECTION (desktop);
-
-	if (sp_selection_is_empty (selection)) return;
-
-	l = sp_selection_repr_list (selection);
-
-	if (l->next == NULL) return;
-
-	p = g_slist_copy ((GSList *) l);
-
-	sp_selection_empty (SP_DT_SELECTION (desktop));
-
-	p = g_slist_sort (p, (GCompareFunc) sp_repr_compare_position);
-
-	group = sp_repr_new ("g");
-
-	while (p) {
-		SPRepr *new;
-		current = (SPRepr *) p->data;
-		new = sp_repr_duplicate (current);
-		sp_repr_unparent (current);
-		sp_repr_append_child (group, new);
-		sp_repr_unref (new);
-		p = g_slist_remove (p, current);
-	}
-
-	new = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), group);
-	sp_document_done (SP_DT_DOCUMENT (desktop));
-
-	sp_selection_set_repr (selection, group);
-	sp_repr_unref (group);
-}
-
-void
-sp_selection_ungroup (gpointer object, gpointer data)
-{
-	SPDesktop *dt;
-	SPItem *group;
-	GSList *children;
-
-	dt = SP_ACTIVE_DESKTOP;
-	if (!dt) return;
-	group = sp_selection_item (SP_DT_SELECTION (dt));
-	if (!group) return;
-	/* We do not allow ungrouping <svg> etc. */
-	if (strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) return;
-
-	children = NULL;
-	/* This is not strictly required, but is nicer to rely on group ::destroy */
-	sp_selection_empty (SP_DT_SELECTION (dt));
-	sp_item_group_ungroup (SP_GROUP (group), &children);
-	sp_selection_set_item_list (SP_DT_SELECTION (dt), children);
-	g_slist_free (children);
-}
-
 static SPGroup *
 sp_item_list_common_parent_group (const GSList *items)
 {
@@ -285,209 +546,6 @@ sp_item_list_common_parent_group (const GSList *items)
 	}
 
 	return SP_GROUP (parent);
-}
-
-#if 0
-#define PRINT_STR(s) g_print (s)
-#define PRINT_OBJ(s, o) g_print ("%s: %s\n", s, (o) ? (gchar *) sp_repr_attr (SP_OBJECT_REPR (o), "id") : "NULL")
-#else
-#define PRINT_STR(s)
-#define PRINT_OBJ(s, o)
-#endif
-
-void sp_selection_raise (GtkWidget * widget)
-{
-	SPDesktop *dt;
-	const GSList *items;
-	SPGroup *group;
-	SPRepr *grepr;
-	SPObject *child, *newref;
-	GSList *rev;
-
-	dt = SP_ACTIVE_DESKTOP;
-	if (!dt) return;
-	items = sp_selection_item_list (SP_DT_SELECTION (dt));
-	if (!items) return;
-	group = sp_item_list_common_parent_group (items);
-	if (!group) return;
-	grepr = SP_OBJECT_REPR (group);
-
-	/* construct reverse-ordered list of selected children */
-	rev = NULL;
-	for (child = ((SPObject *) group)->children; child; child = child->next) {
-		if (g_slist_find ((GSList *) items, child)) {
-			rev = g_slist_prepend (rev, child);
-		}
-	}
-
-	while (rev) {
-		child = SP_OBJECT (rev->data);
-		for (newref = child->next; newref; newref = newref->next) {
-			if (SP_IS_ITEM (newref)) {
-				if (!g_slist_find ((GSList *) items, newref)) {
-					/* Found available position */
-					sp_repr_change_order (grepr, SP_OBJECT_REPR (child), SP_OBJECT_REPR (newref));
-				}
-				break;
-			}
-		}
-		rev = g_slist_remove (rev, child);
-	}
-
-	sp_document_done (SP_DT_DOCUMENT (dt));
-}
-
-void sp_selection_raise_to_top (GtkWidget * widget)
-{
-	SPDocument * document;
-	SPSelection * selection;
-	SPDesktop * desktop;
-	SPRepr * repr;
-	GSList * rl;
-	GSList * l;
-
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
-
-	if (sp_selection_is_empty (selection)) return;
-
-	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-
-	for (l = rl; l != NULL; l = l->next) {
-		repr = (SPRepr *) l->data;
-		sp_repr_set_position_absolute (repr, -1);
-	}
-
-	g_slist_free (rl);
-
-	sp_document_done (document);
-}
-
-void
-sp_selection_lower (GtkWidget *widget)
-{
-	SPDesktop *dt;
-	const GSList *items;
-	SPGroup *group;
-	SPRepr *grepr;
-	SPObject *child, *newref, *oldref;
-	gboolean skip;
-
-	dt = SP_ACTIVE_DESKTOP;
-	if (!dt) return;
-	items = sp_selection_item_list (SP_DT_SELECTION (dt));
-	if (!items) return;
-	group = sp_item_list_common_parent_group (items);
-	if (!group) return;
-	grepr = SP_OBJECT_REPR (group);
-
-	PRINT_STR ("STARTING\n");
-	/* Start from beginning */
-	skip = TRUE;
-	newref = NULL;
-	oldref = NULL;
-	child = ((SPObject *) group)->children;
-	while (child != NULL) {
-		if (SP_IS_ITEM (child)) {
-			/* We are item */
-			skip = FALSE;
-			/* fixme: Remove from list (Lauris) */
-			if (g_slist_find ((GSList *) items, child)) {
-				/* Need lower */
-				if (newref != oldref) {
-					if (sp_repr_change_order (grepr, SP_OBJECT_REPR (child), (newref) ? SP_OBJECT_REPR (newref) : NULL)) {
-						PRINT_STR ("Change order succeeded\n");
-						PRINT_OBJ ("  child", child);
-						PRINT_OBJ ("  oldref", oldref);
-						PRINT_OBJ ("  newref", newref);
-						/* Order change succeeded */
-						/* Next available position */
-						newref = child;
-						/* Oldref is just what it was */
-						/* Continue from oldref */
-						child = oldref->next;
-					} else {
-						PRINT_STR ("Change order failed\n");
-						PRINT_OBJ ("  child", child);
-						PRINT_OBJ ("  oldref", oldref);
-						PRINT_OBJ ("  newref", newref);
-						/* Order change did not succeed */
-						newref = oldref;
-						oldref = child;
-						child = child->next;
-					}
-				} else {
-					/* Item position will not change */
-					/* Other items will lower only following positions */
-					newref = child;
-					oldref = child;
-					child = child->next;
-				}
-			} else {
-				PRINT_STR ("Item not in list\n");
-				PRINT_OBJ ("  child", child);
-				PRINT_OBJ ("  oldref", oldref);
-				PRINT_OBJ ("  newref", newref);
-				/* We were item, but not in list */
-				newref = oldref;
-				oldref = child;
-				child = child->next;
-			}
-		} else {
-			PRINT_STR ("Not an item\n");
-			PRINT_OBJ ("  child", child);
-			PRINT_OBJ ("  oldref", oldref);
-			PRINT_OBJ ("  newref", newref);
-			/* We want to refind newref only to skip initial non-items */
-			if (skip) newref = child;
-			oldref = child;
-			child = child->next;
-		}
-	}
-
-	sp_document_done (SP_DT_DOCUMENT (dt));
-}
-
-void sp_selection_lower_to_bottom (GtkWidget * widget)
-{
-	SPDocument * document;
-	SPSelection * selection;
-	SPDesktop * desktop;
-	SPRepr * repr;
-	GSList * rl;
-	GSList * l;
-
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
-
-	if (sp_selection_is_empty (selection)) return;
-
-	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-
-	rl = g_slist_reverse (rl);
-
-	for (l = rl; l != NULL; l = l->next) {
-		gint minpos;
-		SPObject *pp, *pc;
-		repr = (SPRepr *) l->data;
-		pp = sp_document_lookup_id (document, sp_repr_attr (sp_repr_parent (repr), "id"));
-		minpos = 0;
-		g_assert (SP_IS_GROUP (pp));
-		pc = pp->children;
-		while (!SP_IS_ITEM (pc)) {
-			minpos += 1;
-			pc = pc->next;
-		}
-		sp_repr_set_position_absolute (repr, minpos);
-	}
-
-	g_slist_free (rl);
-
-	sp_document_done (document);
 }
 
 #if 0
@@ -590,27 +648,24 @@ sp_selection_paste (GtkWidget * widget)
 }
 
 void
-sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
-	SPItem * item;
-	GSList * l;
+sp_selection_apply_affine (SPSelection *selection, NRMatrixF *transform, unsigned int duplicate, unsigned int repeatable)
+{
+	unsigned char tstr[128];
+	SPRepr *config;
+	config = sp_repr_new ("config");
+	sp_repr_set_boolean (config, "duplicate", duplicate);
+	sp_svg_transform_write (tstr, 128, transform);
+	sp_repr_set_attr (config, "transform", tstr);
 
-	g_assert (SP_IS_SELECTION (selection));
-
-    
-	for (l = selection->items; l != NULL; l = l-> next) {
-		NRMatrixF curaff, newaff;
-
-		item = SP_ITEM (l->data);
-
-		sp_item_i2d_affine (item, &curaff);
-		nr_matrix_multiply_ffd (&newaff, &curaff, NR_MATRIX_D_FROM_DOUBLE (affine));
-		/* fixme: This is far from elegant (Lauris) */
-		sp_item_set_i2d_affine (item, &newaff);
-		/* update repr -  needed for undo */
-		sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
-		/* fixme: Check, whether anything changed */
-		sp_object_read_attr (SP_OBJECT (item), "transform");
+	if (repeatable) {
+		sodipodi_verb_perform (SP_VERB_SELECTION_TRANSFORM, config);
+	} else {
+		SPAction *action;
+		action = sp_verb_get_action (SP_VERB_SELECTION_TRANSFORM);
+		if (action) sp_action_perform (action, config);
 	}
+
+	sp_repr_unref (config);
 }
 
 
@@ -642,7 +697,8 @@ void
 sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, double y0, double y1)
 {
 	NRRectF bbox;
-	NRMatrixD p2o, o2n, scale, final, s;
+	NRMatrixD p2o, o2n, scale, s;
+	NRMatrixF final;
 	double dx, dy, nx, ny;
   
 	g_assert (SP_IS_SELECTION (selection));
@@ -660,48 +716,51 @@ sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, doubl
 	nr_matrix_d_set_translate (&o2n, nx, ny);
 
 	nr_matrix_multiply_ddd (&s, &p2o, &scale);
-	nr_matrix_multiply_ddd (&final, &s, &o2n);
+	nr_matrix_multiply_fdd (&final, &s, &o2n);
 
-	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
+	sp_selection_apply_affine (selection, &final, FALSE, FALSE);
 }
 
 
 void
 sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx, double dy)
 {
-	NRMatrixD scale, n2d, d2n, final, s;
+	NRMatrixD scale, n2d, d2n, s;
+	NRMatrixF final;
 
 	nr_matrix_d_set_translate (&n2d, -align->x, -align->y);
 	nr_matrix_d_set_translate (&d2n, align->x, align->y);
 	nr_matrix_d_set_scale (&scale, dx, dy);
 
 	nr_matrix_multiply_ddd (&s, &n2d, &scale);
-	nr_matrix_multiply_ddd (&final, &s, &d2n);
+	nr_matrix_multiply_fdd (&final, &s, &d2n);
 
-	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
+	sp_selection_apply_affine (selection, &final, FALSE, TRUE);
 }
 
 
 void
 sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, gdouble angle)
 {
-	NRMatrixD rotate, n2d, d2n, final, s;
+	NRMatrixD rotate, n2d, d2n, s;
+	NRMatrixF final;
   
 	nr_matrix_d_set_translate (&n2d, -center->x, -center->y);
 	nr_matrix_d_invert (&d2n, &n2d);
 	sp_matrix_d_set_rotate (&rotate, angle);
 
 	nr_matrix_multiply_ddd (&s, &n2d, &rotate);
-	nr_matrix_multiply_ddd (&final, &s, &d2n);
+	nr_matrix_multiply_fdd (&final, &s, &d2n);
 
-	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
+	sp_selection_apply_affine (selection, &final, FALSE, TRUE);
 }
 
 
 void
 sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, double dy)
 {
-	NRMatrixD skew, n2d, d2n, final, s;
+	NRMatrixD skew, n2d, d2n, s;
+	NRMatrixF final;
   
 	nr_matrix_d_set_translate (&n2d, -align->x, -align->y);
 	nr_matrix_d_invert (&d2n, &n2d);
@@ -714,20 +773,20 @@ sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, 
 	skew.c[5] = 0;
 
 	nr_matrix_multiply_ddd (&s, &n2d, &skew);
-	nr_matrix_multiply_ddd (&final, &s, &d2n);
+	nr_matrix_multiply_fdd (&final, &s, &d2n);
 
-	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
+	sp_selection_apply_affine (selection, &final, FALSE, TRUE);
 }
 
 
 void
 sp_selection_move_relative (SPSelection * selection, double dx, double dy)
 {
-	NRMatrixD move;
+	NRMatrixF move;
   
-	nr_matrix_d_set_translate (&move, dx, dy);
+	nr_matrix_f_set_translate (&move, dx, dy);
 
-	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&move));
+	sp_selection_apply_affine (selection, &move, FALSE, TRUE);
 }
 
 void
@@ -755,24 +814,24 @@ sp_selection_rotate_90 (void)
 void
 sp_selection_move_screen (gdouble sx, gdouble sy)
 {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  gdouble dx,dy,zf;
+	SPDesktop * desktop;
+	SPSelection * selection;
+	gdouble dx,dy,zf;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  g_return_if_fail(SP_IS_DESKTOP (desktop));
-  selection = SP_DT_SELECTION (desktop);
-  if (!SP_IS_SELECTION (selection)) return;
-  if sp_selection_is_empty(selection) return;
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail(SP_IS_DESKTOP (desktop));
+	selection = SP_DT_SELECTION (desktop);
+	if (!SP_IS_SELECTION (selection)) return;
+	if sp_selection_is_empty(selection) return;
 
-  zf = SP_DESKTOP_ZOOM (desktop);
-  dx = sx / zf;
-  dy = sy / zf;
-  sp_selection_move_relative (selection,dx,dy);
+	zf = SP_DESKTOP_ZOOM (desktop);
+	dx = sx / zf;
+	dy = sy / zf;
+	sp_selection_move_relative (selection,dx,dy);
 
-  //
-  sp_selection_changed (selection);
-  sp_document_done (SP_DT_DOCUMENT (desktop));
+	//
+	sp_selection_changed (selection);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 static unsigned int

@@ -1758,12 +1758,6 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 			}
 		}
 	}
-
-	if (sp_svg_transform_write (c, 80, &i2p)) {
-		sp_repr_set_attr (repr, "transform", c);
-	} else {
-		sp_repr_set_attr (repr, "transform", NULL);
-	}
 }
 
 static void

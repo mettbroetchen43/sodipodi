@@ -31,10 +31,11 @@
 
 #include "helper/sp-intl.h"
 #include "helper/sp-marshal.h"
+#include "helper/action.h"
 #include "xml/repr-private.h"
 
+#include "verbs.h"
 #include "shortcuts.h"
-
 #include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -87,6 +88,9 @@ struct _Sodipodi {
 	SPReprDoc *extensions;
 	GSList *documents;
 	GSList *desktops;
+	/* Last action */
+	unsigned int action_verb;
+	SPRepr *action_config;
 };
 
 struct _SodipodiClass {
@@ -263,6 +267,10 @@ sodipodi_dispose (GObject *object)
 	Sodipodi *sodipodi;
 
 	sodipodi = (Sodipodi *) object;
+
+	if (sodipodi->action_config) {
+		sodipodi->action_config = sp_repr_unref (sodipodi->action_config);
+	}
 
 	while (sodipodi->documents) {
 		g_object_unref (G_OBJECT (sodipodi->documents->data));
@@ -958,6 +966,28 @@ sodipodi_init_extensions (Sodipodi *sodipodi)
 			      _("Cannot write file %s.\n"
 				"Although sodipodi will run, you are\n"
 				"not able to use extensions (plugins)\n"));
+}
+
+void
+sodipodi_verb_perform (unsigned int verb, void *config)
+{
+	SPAction *action;
+	action = sp_verb_get_action (verb);
+	if (action) {
+		sodipodi->action_verb = verb;
+		if (config) sp_repr_ref (config);
+		if (sodipodi->action_config) {
+			sodipodi->action_config = sp_repr_unref (sodipodi->action_config);
+		}
+		sodipodi->action_config = config;
+		sp_action_perform (action, config);
+	}
+}
+
+void
+sodipodi_verb_repeat (void)
+{
+	sodipodi_verb_perform (sodipodi->action_verb, sodipodi->action_config);
 }
 
 void

@@ -59,6 +59,9 @@ SPDocument * sodipodi_active_document (void);
 #define SP_ACTIVE_DESKTOP sodipodi_active_desktop ()
 SPDesktop * sodipodi_active_desktop (void);
 
+void sodipodi_verb_perform (unsigned int verb, void *config);
+void sodipodi_verb_repeat (void);
+
 /*
  * fixme: This has to be rethought
  */

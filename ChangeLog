@@ -1,3 +1,20 @@
+2003-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sodipodi.c (sodipodi_verb_perform): Save config
+
+	* src/selection-chemistry.c (sp_selection_action_perform): Moved here
+	(sp_selection_perform_transform): New handler
+	(sp_selection_apply_affine): Set last action and call TRANSFORM metaverb
+
+	* src/verbs.h: Added TRANSFORM and REPEAT metaverbs
+
+	* src/sp-item.c (sp_item_write_transform): Set transform and read attribute
+	back here, instead of relying on implementations
+
+	* src/dialogs/object-properties.c (sp_object_properties_layout): Present
+	window if already existing
+	(sp_object_layout_any_value_changed): Use new transformation signature
+
 2003-11-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/spw-utilities.c (sp_config_check_button_new): New

@@ -144,43 +144,8 @@ sp_verb_action_edit_perform (SPAction *action, void *config, void *data)
 	case SP_VERB_EDIT_SELECT_ALL:
 	  	sp_edit_select_all(NULL, NULL);
 		break;
-	default:
-		break;
-	}
-}
-
-static void
-sp_verb_action_selection_perform (SPAction *action, void *config, void *data)
-{
-	SPDesktop *dt;
-
-	dt = SP_ACTIVE_DESKTOP;
-	if (!dt) return;
-
-	switch ((int) data) {
-	case SP_VERB_SELECTION_TO_FRONT:
-		sp_selection_raise_to_top (NULL);
-		break;
-	case SP_VERB_SELECTION_TO_BACK:
-		sp_selection_lower_to_bottom (NULL);
-		break;
-	case SP_VERB_SELECTION_RAISE:
-		sp_selection_raise (NULL);
-		break;
-	case SP_VERB_SELECTION_LOWER:
-		sp_selection_lower (NULL);
-		break;
-	case SP_VERB_SELECTION_GROUP:
-		sp_selection_group (NULL, NULL);
-		break;
-	case SP_VERB_SELECTION_UNGROUP:
-		sp_selection_ungroup (NULL, NULL);
-		break;
-	case SP_VERB_SELECTION_COMBINE:
-		sp_selected_path_combine ();
-		break;
-	case SP_VERB_SELECTION_BREAK_APART:
-		sp_selected_path_break_apart ();
+	case SP_VERB_EDIT_REPEAT:
+		sodipodi_verb_repeat ();
 		break;
 	default:
 		break;
@@ -399,15 +364,17 @@ sp_verb_action_dialog_perform (SPAction *action, void *config, void *data)
 
 static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_object_vector = {{NULL}, sp_verb_action_object_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_dialog_vector = {{NULL}, sp_verb_action_dialog_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
+/* This one is from selection-chemistry */
+static SPActionEventVector action_selection_vector = {{NULL}, sp_selection_action_perform, NULL, NULL, sp_verb_action_set_shortcut};
+
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
-#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_SELECT_ALL))
-#define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_BREAK_APART))
+#define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_REPEAT))
+#define SP_VERB_IS_SELECTION(v) ((v >= SP_VERB_SELECTION_TO_FRONT) && (v <= SP_VERB_SELECTION_TRANSFORM))
 #define SP_VERB_IS_OBJECT(v) ((v >= SP_VERB_OBJECT_ROTATE_90) && (v <= SP_VERB_OBJECT_FLIP_VERTICAL))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
 #define SP_VERB_IS_ZOOM(v) ((v >= SP_VERB_ZOOM_IN) && (v <= SP_VERB_ZOOM_SELECTION))
@@ -445,6 +412,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_EDIT_DUPLICATE, "EditDuplicate", N_("Duplicate"), N_("Duplicate selected objects"), "edit_duplicate"},
 	{SP_VERB_EDIT_CLEAR_ALL, "EditClearAll", N_("Clear All"), N_("Delete all objects from document"), NULL},
 	{SP_VERB_EDIT_SELECT_ALL, "EditSelectAll", N_("Select All"), N_("Select all objects in document"), NULL},
+	{SP_VERB_EDIT_REPEAT, "EditRepeat", N_("Repeat"), N_("Repeat last saved action"), NULL},
 	/* Selection */
 	{SP_VERB_SELECTION_TO_FRONT, "SelectionToFront", N_("Bring to Front"), N_("Raise selected objects to top"), "selection_top"},
 	{SP_VERB_SELECTION_TO_BACK, "SelectionToBack", N_("Send to Back"), N_("Lower selected objects to bottom"), "selection_bot"},
@@ -454,6 +422,7 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_SELECTION_UNGROUP, "SelectionUnGroup", N_("Ungroup"), N_("Ungroup selected group"), "selection_ungroup"},
 	{SP_VERB_SELECTION_COMBINE, "SelectionCombine", N_("Combine"), N_("Combine multiple paths"), "selection_combine"},
 	{SP_VERB_SELECTION_BREAK_APART, "SelectionBreakApart", N_("Break Apart"), N_("Break selected path to subpaths"), "selection_break"},
+	{SP_VERB_SELECTION_TRANSFORM, "SelectionTransform", N_("Transform"), N_("Applies transformation"), "selection_transform"},
 	/* Object */
 	{SP_VERB_OBJECT_ROTATE_90, "ObjectRotate90", N_("Rotate 90 degrees"), N_("Rotates object 90 degrees clockwise"), "object_rotate"},
 	{SP_VERB_OBJECT_FLATTEN, "ObjectFlatten", N_("Flatten object"), N_("Remove transformations from object"), "object_reset"},

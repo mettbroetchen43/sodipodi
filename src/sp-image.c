@@ -595,12 +595,6 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	nr_matrix_f_invert (&rev, t);
 	sp_repr_set_double_attribute (repr, "x", px * rev.c[0] + py * rev.c[2]);
 	sp_repr_set_double_attribute (repr, "y", px * rev.c[1] + py * rev.c[3]);
-
-	if (sp_svg_transform_write (c, 80, t)) {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", c);
-	} else {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
-	}
 }
 
 #ifdef ENABLE_AUTOTRACE

@@ -256,6 +256,6 @@ sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
 			g_free (str);
 		}
 	}
-	sp_repr_set_attr (repr, "transform", NULL);
+	nr_matrix_f_set_identity (transform);
 }
 

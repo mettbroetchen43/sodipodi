@@ -604,26 +604,28 @@ sp_item_invoke_hide (SPItem *item, unsigned int key)
 void
 sp_item_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
 {
+	unsigned char c[80];
+	NRMatrixF ltrans;
+
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 	g_return_if_fail (repr != NULL);
 
-	if (!transform) {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
-	} else {
-		if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->write_transform) {
-			NRMatrixF lt;
-			lt = *transform;
-			((SPItemClass *) G_OBJECT_GET_CLASS(item))->write_transform (item, repr, &lt);
-		} else {
-			guchar t[80];
-			if (sp_svg_transform_write (t, 80, &item->transform)) {
-				sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
-			} else {
-				sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
-			}
-		}
+	if (transform) {
+		ltrans = *transform;
+		if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->write_transform)
+			((SPItemClass *) G_OBJECT_GET_CLASS (item))->write_transform (item, repr, &ltrans);
+		transform = &ltrans;
 	}
+
+	if (sp_svg_transform_write (c, 80, transform)) {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", c);
+	} else {
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+	}
+
+	/* Due to direct manipulation transforms may be out of sync */
+	sp_object_read_attr (SP_OBJECT (item), "transform");
 }
 
 gint

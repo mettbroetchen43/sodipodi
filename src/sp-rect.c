@@ -468,12 +468,6 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	sp_repr_set_double_attribute (repr, "x", px * rev.c[0] + py * rev.c[2]);
 	sp_repr_set_double_attribute (repr, "y", px * rev.c[1] + py * rev.c[3]);
 
-	if (sp_svg_transform_write (c, 80, t)) {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", c);
-	} else {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
-	}
-
 	/* And last but not least */
 	style = SP_OBJECT_STYLE (item);
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
