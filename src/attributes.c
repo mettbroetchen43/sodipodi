@@ -120,6 +120,27 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_PATTERNUNITS, "patternUnits"},
 	{SP_ATTR_PATTERNCONTENTUNITS, "patternContentUnits"},
 	{SP_ATTR_PATTERNTRANSFORM, "patternTransform"},
+	/* Animations */
+	{SP_ATTR_ATTRIBUTENAME, "attributeName"},
+	{SP_ATTR_ATTRIBUTETYPE, "attributeType"},
+	{SP_ATTR_BEGIN, "begin"},
+	{SP_ATTR_DUR, "dur"},
+	{SP_ATTR_END, "end"},
+	{SP_ATTR_MIN, "min"},
+	{SP_ATTR_MAX, "max"},
+	{SP_ATTR_RESTART, "restart"},
+	{SP_ATTR_REPEATCOUNT, "repeatCount"},
+	{SP_ATTR_REPEATDUR, "repeatDur"},
+	/* Interpolating animations */
+	{SP_ATTR_CALCMODE, "calcMode"},
+	{SP_ATTR_VALUES, "values"},
+	{SP_ATTR_KEYTIMES, "keyTimes"},
+	{SP_ATTR_KEYSPLINES, "keySplines"},
+	{SP_ATTR_FROM, "from"},
+	{SP_ATTR_TO, "to"},
+	{SP_ATTR_BY, "by"},
+	{SP_ATTR_ADDITIVE, "additive"},
+	{SP_ATTR_ACCUMULATE, "accumulate"},
 
 	/* CSS2 */
 	/* Font */

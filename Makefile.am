@@ -28,7 +28,7 @@ dist-hook:
 
 man_MANS = sodipodi.1
 
-EXTRA_DIST = config.rpath  config.rpath 			\
+EXTRA_DIST =  config.rpath 			\
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\

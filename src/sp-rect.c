@@ -35,6 +35,7 @@ static void sp_rect_init (SPRect *rect);
 
 static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_rect_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_rect_modified (SPObject *object, guint flags);
 static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -91,6 +92,7 @@ sp_rect_class_init (SPRectClass *class)
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->write = sp_rect_write;
 	sp_object_class->set = sp_rect_set;
+	sp_object_class->update = sp_rect_update;
 	sp_object_class->modified = sp_rect_modified;
 
 	item_class->description = sp_rect_description;
@@ -142,7 +144,6 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 
 	rect = SP_RECT (object);
 
-	/* fixme: We should really collect updates */
 	/* fixme: We need real error processing some time */
 
 	switch (key) {
@@ -150,37 +151,37 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 		if (!sp_svg_length_read (value, &rect->x)) {
 			sp_svg_length_unset (&rect->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_Y:
 		if (!sp_svg_length_read (value, &rect->y)) {
 			sp_svg_length_unset (&rect->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_WIDTH:
 		if (!sp_svg_length_read (value, &rect->width) || (rect->width.value <= 0.0)) {
 			sp_svg_length_unset (&rect->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_HEIGHT:
 		if (!sp_svg_length_read (value, &rect->height) || (rect->width.value <= 0.0)) {
 			sp_svg_length_unset (&rect->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RX:
 		if (!sp_svg_length_read (value, &rect->rx) || (rect->rx.value <= 0.0)) {
 			sp_svg_length_unset (&rect->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RY:
 		if (!sp_svg_length_read (value, &rect->ry) || (rect->ry.value <= 0.0)) {
 			sp_svg_length_unset (&rect->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_rect_set_shape (rect);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) parent_class)->set)
@@ -190,11 +191,26 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 }
 
 static void
+sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		sp_rect_set_shape (SP_RECT (object));
+	}
+
+	g_print ("Rect update\n");
+
+	if (((SPObjectClass *) parent_class)->update)
+		((SPObjectClass *) parent_class)->update (object, ctx, flags);
+}
+
+static void
 sp_rect_modified (SPObject *object, guint flags)
 {
 	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
 		sp_rect_set_shape (SP_RECT (object));
 	}
+
+	g_print ("Rect modified\n");
 
 	if (((SPObjectClass *) parent_class)->modified)
 		((SPObjectClass *) parent_class)->modified (object, flags);

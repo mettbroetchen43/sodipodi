@@ -35,6 +35,7 @@ static void sp_root_release (SPObject *object);
 static void sp_root_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_root_remove_child (SPObject *object, SPRepr *child);
+static void sp_root_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_root_modified (SPObject *object, guint flags);
 static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -83,6 +84,7 @@ sp_root_class_init (SPRootClass *klass)
 	sp_object_class->set = sp_root_set;
 	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
+	sp_object_class->update = sp_root_update;
 	sp_object_class->modified = sp_root_modified;
 	sp_object_class->write = sp_root_write;
 
@@ -306,6 +308,21 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 
 	if (((SPObjectClass *) (parent_class))->remove_child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+}
+
+static void
+sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPRoot *root;
+	SPItemCtx ictx;
+
+	root = SP_ROOT (object);
+
+	if (ctx) ictx.ctx = *ctx;
+	ictx.ctm = root->viewbox;
+
+	if (((SPObjectClass *) (parent_class))->update)
+		(* ((SPObjectClass *) (parent_class))->update) (object, (SPCtx *) &ictx, flags);
 }
 
 static void

@@ -20,6 +20,7 @@
 #include "sp-pattern.h"
 #include "sp-clippath.h"
 #include "sp-anchor.h"
+#include "sp-animation.h"
 #include "sp-object-repr.h"
 
 SPObject *
@@ -64,30 +65,31 @@ sp_object_type_lookup (const guchar * name)
 	if (dtable == NULL) {
 		dtable = g_hash_table_new (g_str_hash, g_str_equal);
 		g_assert (dtable != NULL);
-		g_hash_table_insert (dtable, "defs", GINT_TO_POINTER (SP_TYPE_DEFS));
-		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
-		g_hash_table_insert (dtable, "g", GINT_TO_POINTER (SP_TYPE_GROUP));
 		g_hash_table_insert (dtable, "a", GINT_TO_POINTER (SP_TYPE_ANCHOR));
-		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));
-		g_hash_table_insert (dtable, "sodipodi:guide", GINT_TO_POINTER (SP_TYPE_GUIDE));
-		g_hash_table_insert (dtable, "svg", GINT_TO_POINTER (SP_TYPE_ROOT));
-		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
-		g_hash_table_insert (dtable, "rect", GINT_TO_POINTER (SP_TYPE_RECT));
-		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
-		g_hash_table_insert (dtable, "star", GINT_TO_POINTER (SP_TYPE_STAR));
-		g_hash_table_insert (dtable, "spiral", GINT_TO_POINTER (SP_TYPE_SPIRAL));
+		g_hash_table_insert (dtable, "animate", GINT_TO_POINTER (SP_TYPE_ANIMATE));
 		g_hash_table_insert (dtable, "arc", GINT_TO_POINTER (SP_TYPE_ARC));
 		g_hash_table_insert (dtable, "circle", GINT_TO_POINTER (SP_TYPE_CIRCLE));
-		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
-		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));
-		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
-		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
-		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
-		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
-		g_hash_table_insert (dtable, "radialGradient", GINT_TO_POINTER (SP_TYPE_RADIALGRADIENT));
-		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
-		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
 		g_hash_table_insert (dtable, "clipPath", GINT_TO_POINTER (SP_TYPE_CLIPPATH));
+		g_hash_table_insert (dtable, "defs", GINT_TO_POINTER (SP_TYPE_DEFS));
+		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
+		g_hash_table_insert (dtable, "g", GINT_TO_POINTER (SP_TYPE_GROUP));
+		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
+		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
+		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
+		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
+		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
+		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
+		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));
+		g_hash_table_insert (dtable, "radialGradient", GINT_TO_POINTER (SP_TYPE_RADIALGRADIENT));
+		g_hash_table_insert (dtable, "rect", GINT_TO_POINTER (SP_TYPE_RECT));
+		g_hash_table_insert (dtable, "spiral", GINT_TO_POINTER (SP_TYPE_SPIRAL));
+		g_hash_table_insert (dtable, "star", GINT_TO_POINTER (SP_TYPE_STAR));
+		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
+		g_hash_table_insert (dtable, "svg", GINT_TO_POINTER (SP_TYPE_ROOT));
+		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
+		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
+		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));
+		g_hash_table_insert (dtable, "sodipodi:guide", GINT_TO_POINTER (SP_TYPE_GUIDE));
 	}
 
 	data = g_hash_table_lookup (dtable, name);

@@ -39,6 +39,7 @@ static void sp_group_release (SPObject *object);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static void sp_group_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
 static SPRepr *sp_group_write (SPObject *object, SPRepr *repr, guint flags);
@@ -93,6 +94,7 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->order_changed = sp_group_order_changed;
+	sp_object_class->update = sp_group_update;
 	sp_object_class->modified = sp_group_modified;
 	sp_object_class->sequence = sp_group_sequence;
 	sp_object_class->write = sp_group_write;
@@ -283,17 +285,17 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
-#if 0
 static void
 sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
 	SPGroup *group;
 	SPObject *child;
-	SPItemCtx *ictx;
+	SPItemCtx *ictx, cctx;
 	GSList *l;
 
 	group = SP_GROUP (object);
 	ictx = (SPItemCtx *) ctx;
+	cctx = *ictx;
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
@@ -309,18 +311,17 @@ sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 		l = g_slist_remove (l, child);
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			if (SP_IS_ITEM (child)) {
-				NRMatrixD ct;
-				child = SP_ITEM (o);
-				nr_matrix_multiply_dfd (&ct, &child->transform, transform);
-				sp_item_invoke_bbox_full (child, bbox, &ct, flags, FALSE);
+				SPItem *chi;
+				chi = SP_ITEM (child);
+				nr_matrix_multiply_dfd (&cctx.ctm, &chi->transform, &ictx->ctm);
+				sp_object_invoke_update (child, (SPCtx *) &cctx, flags);
 			} else {
-				sp_object_invoke_update (child, cctx, flags);
+				sp_object_invoke_update (child, ctx, flags);
 			}
 		}
 		g_object_unref (G_OBJECT (child));
 	}
 }
-#endif
 
 static void
 sp_group_modified (SPObject *object, guint flags)

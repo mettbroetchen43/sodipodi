@@ -48,9 +48,6 @@ typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
 	SPItemView *next;
-#if 0
-	SPItemView *prev;
-#endif
 	SPItem *item;
 	NRArena *arena;
 	NRArenaItem *arenaitem;
@@ -59,6 +56,13 @@ struct _SPItemView {
 enum {
 	SP_ITEM_BBOX_LOGICAL,
 	SP_ITEM_BBOX_VISUAL
+};
+
+typedef struct _SPItemCtx SPItemCtx;
+
+struct _SPItemCtx {
+	SPCtx ctx;
+	NRMatrixD ctm;
 };
 
 struct _SPItem {

@@ -17,6 +17,9 @@ const unsigned char *sp_attribute_name (unsigned char id);
 
 #define SP_ATTRIBUTE_IS_CSS(k) (((k) >= SP_PROP_FONT) && ((k) <= SP_PROP_WRITING_MODE))
 
+/* This is not nice, but we have to ensure name->id works */
+#define SP_ATTR_FILL SP_PROP_FILL
+
 enum {
 	SP_ATTR_INVALID,
 	/* SPObject */
@@ -118,6 +121,27 @@ enum {
 	SP_ATTR_PATTERNUNITS,
 	SP_ATTR_PATTERNCONTENTUNITS,
 	SP_ATTR_PATTERNTRANSFORM,
+	/* Animations */
+	SP_ATTR_ATTRIBUTENAME,
+	SP_ATTR_ATTRIBUTETYPE,
+	SP_ATTR_BEGIN,
+	SP_ATTR_DUR,
+	SP_ATTR_END,
+	SP_ATTR_MIN,
+	SP_ATTR_MAX,
+	SP_ATTR_RESTART,
+	SP_ATTR_REPEATCOUNT,
+	SP_ATTR_REPEATDUR,
+	/* Interpolating animations */
+	SP_ATTR_CALCMODE,
+	SP_ATTR_VALUES,
+	SP_ATTR_KEYTIMES,
+	SP_ATTR_KEYSPLINES,
+	SP_ATTR_FROM,
+	SP_ATTR_TO,
+	SP_ATTR_BY,
+	SP_ATTR_ADDITIVE,
+	SP_ATTR_ACCUMULATE,
 
 	/* CSS2 */
 	/* Font */
