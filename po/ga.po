@@ -5,6 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-11 19:01+0200\n"
 "PO-Revision-Date: 2004-02-03 08:18+0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
@@ -12,7 +13,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -1144,7 +1144,7 @@ msgstr "Nua"
 
 #: src/interface.c:511
 msgid "Open"
-msgstr "Oscáil"
+msgstr "Oscail"
 
 #. For some reason action menu does not work on menubar :-(
 #: src/interface.c:531 src/verbs.c:414
@@ -1824,7 +1824,7 @@ msgstr ""
 
 #: src/verbs.c:406
 msgid "Open..."
-msgstr "Oscáil..."
+msgstr "Oscail..."
 
 #: src/verbs.c:406
 msgid "Open existing SVG document"
