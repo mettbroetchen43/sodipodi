@@ -268,7 +268,6 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	GnomeCanvasItem * ci;
 	GtkAdjustment * hadj, * vadj;
 	gdouble dw, dh;
-	GnomeCanvasItem * pbox;
 	ArtDRect pdim;
 
 	g_return_val_if_fail (document != NULL, NULL);
@@ -322,13 +321,13 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
-#if 1
-	pbox = gnome_canvas_item_new (desktop->grid, SP_TYPE_CTRLRECT, NULL);
+
+	desktop->page = gnome_canvas_item_new (desktop->grid, SP_TYPE_CTRLRECT, NULL);
 	pdim.x0 = pdim.y0 = 0.0;
 	pdim.x1 = dw;
 	pdim.y1 = dh;
-	sp_ctrlrect_set_rect ((SPCtrlRect *) pbox, &pdim);
-#endif
+	sp_ctrlrect_set_rect ((SPCtrlRect *) desktop->page, &pdim);
+
 	/* Fixme: Setup initial zooming */
 
 	art_affine_scale (desktop->d2w, 1.0, -1.0);
@@ -497,8 +496,7 @@ sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 
 	gnome_canvas_get_scroll_offsets (desktop->canvas, &x, &y);
 	gnome_canvas_scroll_to (desktop->canvas, x - dx, y - dy);
-	
-	g_print ("moved  ");
+
 	//	sp_desktop_update_rulers (NULL, desktop);
 }
 

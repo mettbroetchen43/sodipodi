@@ -23,6 +23,7 @@ libspdialogs_a_SOURCES = \
 	align.c align.h	\
 	transformation.c transformation.h \
 	desktop-properties.c desktop-properties.h \
+	document-properties.c document-properties.h \
 	object-properties.c object-properties.h
 
 #	object-fill.c object-fill.h

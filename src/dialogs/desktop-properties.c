@@ -210,6 +210,8 @@ sp_desktop_dialog_apply (GtkWidget * widget)
 	sp_svg_write_color (color, 32, (r << 24) | (g << 16) | (b << 8));
 	sp_repr_set_attr (repr, "guidehicolor", color);
 	sp_repr_set_double_attribute (repr, "guidehiopacity", (gdouble) a / 255.0);
+
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 

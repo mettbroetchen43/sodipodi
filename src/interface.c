@@ -11,6 +11,7 @@
 #include "dialogs/align.h"
 #include "dialogs/transformation.h"
 #include "dialogs/desktop-properties.h"
+#include "dialogs/document-properties.h"
 
 static void fake_dialogs (void);
 
@@ -38,7 +39,7 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	gtk_widget_show (hb);
 	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
 
-
+#if 0
 	b = gtk_toggle_button_new_with_label ("Show guides");
 	gtk_widget_show (b);
 	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
@@ -46,6 +47,7 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	b = gtk_toggle_button_new_with_label ("Snap to guides");
 	gtk_widget_show (b);
 	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
+#endif
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (w));
 
@@ -99,6 +101,7 @@ fake_dialogs (void)
 	sp_quick_align_dialog ();
 	sp_transformation_dialog ();
 	sp_desktop_dialog ();
+	sp_document_dialog ();
 }
 
 

@@ -1,7 +1,9 @@
 #define SP_ROOT_C
 
+#include "helper/sodipodi-ctrlrect.h"
 #include "svg/svg.h"
 #include "document.h"
+#include "desktop.h"
 #include "sp-namedview.h"
 #include "sp-root.h"
 
@@ -150,6 +152,24 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	root->namedviews = g_slist_reverse (root->namedviews);
 }
 
+/* fixme: */
+
+static void
+set_page (SPRoot * root)
+{
+	ArtDRect pdim;
+	GSList * l;
+
+	for (l = SP_ITEM (root)->display; l != NULL; l = l->next) {
+		SPDesktop * dt;
+		dt = gtk_object_get_data (GTK_OBJECT (GNOME_CANVAS_ITEM (l->data)->canvas), "SPDesktop");
+		pdim.x0 = pdim.y0 = 0.0;
+		pdim.x1 = root->width;
+		pdim.y1 = root->height;
+		sp_ctrlrect_set_rect ((SPCtrlRect *) dt->page, &pdim);
+	}
+}
+
 static void
 sp_root_read_attr (SPObject * object, const gchar * key)
 {
@@ -168,6 +188,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 	if (strcmp (key, "width") == 0) {
 		len = sp_svg_read_length (&unit, astr);
 		if (len >= 1.0) root->width = len;
+		set_page (root);
 		return;
 	}
 	if (strcmp (key, "height") == 0) {
@@ -179,6 +200,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 		for (l = item->display; l != NULL; l = l->next) {
 			gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (l->data), item->affine);
 		}
+		set_page (root);
 		return;
 	}
 	/* fixme: */

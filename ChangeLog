@@ -1,3 +1,23 @@
+2000-10-06  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* glade/document.glade: Page setup dialog
+
+	* src/dialogs/document-properties.c: Implement page
+	setup dialog
+
+	* src/desktop.*: Keep page rectangle in SPDesktop
+
+	* src/sp-root.c: Update page rectangle
+
+	* src/file.c (sp_file_print_to_printer): gnome_print_bgeinpage ()
+	Remove FRGBA creation
+
+	* src/dialogs/export.c (sp_export_do_export): gnome_print_beginpage ()
+
+	* glade/sodipodi.glade: Add document & xml tree to properties menu
+
+	* src/interface.c (sp_create_window): Remove ugly buttons
+	
 2000-10-05  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/helper/canvas-grid.*: Grid item for canvas

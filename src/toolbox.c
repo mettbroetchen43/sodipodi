@@ -100,11 +100,9 @@ sp_maintoolbox_create (void)
 		glade_xml_signal_autoconnect (main_toolbox_xml);
 		main_toolbox_dialog = glade_xml_get_widget (main_toolbox_xml, "maintoolbox");
 		if (main_toolbox_dialog == NULL) return;
-#if 0
-		gnome_mdi_register (SODIPODI, (GtkObject *) main_toolbox_dialog);
-#else
+
 		sodipodi_ref ();
-#endif
+
 		main_vbox = glade_xml_get_widget (main_toolbox_xml, "main_vbox");
 
 		// file toolbox

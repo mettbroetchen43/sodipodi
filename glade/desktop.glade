@@ -488,7 +488,7 @@
 	<widget>
 	  <class>GtkSpinButton</class>
 	  <name>grid_origin_x</name>
-	  <tooltip>Set Origin of page coordinate system</tooltip>
+	  <tooltip>Set origin of page coordinate system</tooltip>
 	  <can_focus>True</can_focus>
 	  <climb_rate>1</climb_rate>
 	  <digits>2</digits>
@@ -811,7 +811,7 @@
 	<widget>
 	  <class>GnomeColorPicker</class>
 	  <name>guide_hicolor</name>
-	  <tooltip>Choode color for highlighted guidelines</tooltip>
+	  <tooltip>Choose color for highlighted guidelines</tooltip>
 	  <can_focus>True</can_focus>
 	  <dither>True</dither>
 	  <use_alpha>True</use_alpha>

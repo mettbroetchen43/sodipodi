@@ -17,9 +17,6 @@
 #include "file.h"
 
 #include <libgnomeprint/gnome-print-pixbuf.h>
-#ifdef ENABLE_FRGBA
-#include <libgnomeprint/gnome-print-frgba.h>
-#endif
 
 gchar * open_path = NULL;
 gchar * save_path = NULL;
@@ -340,22 +337,13 @@ void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 {
         GnomePrintContext * gpc;
 
-#ifdef ENABLE_FRGBA
-        GnomePrintFRGBA * frgba;
-#endif
-
         gpc = gnome_print_context_new (printer);
 
-#ifdef ENABLE_FRGBA
-	frgba = gnome_print_frgba_new (gpc);
-        sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (frgba));
-        gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
-        gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
-#else
+	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
         sp_item_print (SP_ITEM (sp_document_root (doc)), gpc);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
-#endif
+
 }
 
 void sp_do_file_print (SPDocument * doc)

@@ -4107,8 +4107,8 @@ Radial
 	<name>fill1</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_object_fill_dialog</handler>
-	  <last_modification_time>Fri, 21 Apr 2000 23:01:35 GMT</last_modification_time>
+	  <handler>sp_object_properties_fill</handler>
+	  <last_modification_time>Fri, 06 Oct 2000 10:24:36 GMT</last_modification_time>
 	</signal>
 	<label>Fill</label>
 	<right_justify>False</right_justify>
@@ -4119,8 +4119,8 @@ Radial
 	<name>stroke1</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_object_stroke_dialog</handler>
-	  <last_modification_time>Fri, 21 Apr 2000 23:01:46 GMT</last_modification_time>
+	  <handler>sp_object_properties_stroke</handler>
+	  <last_modification_time>Fri, 06 Oct 2000 10:24:51 GMT</last_modification_time>
 	</signal>
 	<label>Stroke</label>
 	<right_justify>False</right_justify>
@@ -4152,13 +4152,37 @@ Radial
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>desktop_dialog_menu</name>
+	<name>menuitem_desktop_dialog</name>
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_desktop_dialog</handler>
 	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
 	</signal>
 	<label>Desktop</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>menuitem_document_dialog</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_document_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
+	</signal>
+	<label>Document</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>menuitem_xml_dialog</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_xml_tree_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
+	</signal>
+	<label>XML Tree</label>
 	<right_justify>False</right_justify>
       </widget>
     </widget>

@@ -137,8 +137,8 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	gtk_signal_connect (GTK_OBJECT (pc), "showpixbuf",
 		GTK_SIGNAL_FUNC (sp_export_showpixbuf), filename);
 
+	gnome_print_beginpage (pc, "Sodipodi");
 	sp_item_print (SP_ITEM (sp_document_root (doc)), pc);
-
 	gnome_print_showpage (pc);
 
 	gtk_object_destroy (GTK_OBJECT (pc));

@@ -55,6 +55,7 @@ struct _SPDesktop {
 	GnomeCanvasGroup * drawing;
 	GnomeCanvasGroup * sketch;
 	GnomeCanvasGroup * controls;
+	GnomeCanvasItem * page;
 	gdouble d2w[6], w2d[6];
 };
 
