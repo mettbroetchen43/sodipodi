@@ -1307,7 +1307,31 @@ sp_desktop_zoom_drawing (SPDesktop *dt)
 }
 
 void
-sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy)
+sp_desktop_scroll_absolute_center_desktop (SPDesktop *dt, float x, float y)
+{
+	SPDesktopWidget *dtw;
+	NRRectF viewbox;
+	float wx, wy;
+
+	dtw = g_object_get_data (G_OBJECT (dt), "widget");
+	if (!dtw) return;
+
+	wx = NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (dt->d2w), x, y);
+	wy = NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (dt->d2w), x, y);
+
+	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
+
+	sp_canvas_scroll_to (dtw->canvas,
+			     viewbox.x0 + wx - 0.5 * (viewbox.x0 + viewbox.x1),
+			     viewbox.y0 + wy - 0.5 * (viewbox.y0 + viewbox.y1),
+			     FALSE);
+
+	sp_desktop_widget_update_rulers (dtw);
+	sp_desktop_update_scrollbars (dt);
+}
+
+void
+sp_desktop_scroll_relative_canvas (SPDesktop *dt, float dx, float dy)
 {
 	SPDesktopWidget *dtw;
 	NRRectF viewbox;

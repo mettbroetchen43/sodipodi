@@ -24,6 +24,7 @@ static void sp_objectgroup_release (SPObject *object);
 static void sp_objectgroup_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_objectgroup_remove_child (SPObject * object, SPRepr * child);
 static void sp_objectgroup_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static unsigned int sp_objectgroup_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 static SPRepr *sp_objectgroup_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObject *sp_objectgroup_get_le_child_by_repr (SPObjectGroup *og, SPRepr *ref);
@@ -67,6 +68,7 @@ sp_objectgroup_class_init (SPObjectGroupClass *klass)
 	sp_object_class->child_added = sp_objectgroup_child_added;
 	sp_object_class->remove_child = sp_objectgroup_remove_child;
 	sp_object_class->order_changed = sp_objectgroup_order_changed;
+	sp_object_class->sequence = sp_objectgroup_sequence;
 	sp_object_class->write = sp_objectgroup_write;
 }
 
@@ -202,6 +204,22 @@ sp_objectgroup_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRe
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
+}
+
+static unsigned int
+sp_objectgroup_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	SPObjectGroup *og;
+	SPObject *child;
+
+	og = (SPObjectGroup *) object;
+
+	for (child = og->children; child != NULL; child = child->next) {
+		*seq += 1;
+		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
+	}
+
+	return FALSE;
 }
 
 static SPRepr *

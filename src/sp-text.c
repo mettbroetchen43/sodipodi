@@ -767,6 +767,7 @@ static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_text_modified (SPObject *object, guint flags);
+static unsigned int sp_text_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 static SPRepr *sp_text_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
@@ -824,6 +825,7 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->remove_child = sp_text_remove_child;
 	sp_object_class->update = sp_text_update;
 	sp_object_class->modified = sp_text_modified;
+	sp_object_class->sequence = sp_text_sequence;
 	sp_object_class->write = sp_text_write;
 
 	item_class->bbox = sp_text_bbox;
@@ -1177,6 +1179,24 @@ sp_text_modified (SPObject *object, guint flags)
 		}
 		sp_object_unref (SP_OBJECT (child), object);
 	}
+}
+
+static unsigned int
+sp_text_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	SPText *text;
+	SPObject *child;
+
+	text = (SPText *) object;
+
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_TSPAN (child)) {
+			*seq += 1;
+			if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 static SPRepr *

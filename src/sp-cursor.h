@@ -1,5 +1,16 @@
-#ifndef SP_CURSOR_H
-#define SP_CURSOR_H
+#ifndef __SP_CURSOR_H__
+#define __SP_CURSOR_H__
+
+/*
+ * SVG <clipPath> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2003 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <gdk/gdk.h>
 

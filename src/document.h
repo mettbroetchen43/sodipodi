@@ -122,12 +122,8 @@ void sp_document_redo (SPDocument * document);
 /* Non-item objects will go to root-level defs group */
 SPObject *sp_document_add_repr (SPDocument *document, SPRepr *repr);
 
-#if 0
-/* Deletes repr from document */
-/* fixme: This is not needed anymore - remove it (Lauris) */
-/* Instead simply unparent repr */
-void sp_document_del_repr (SPDocument *document, SPRepr *repr);
-#endif
+/* Returns the sequence number of object */
+unsigned int sp_document_object_sequence_get (SPDocument *doc, SPObject *object);
 
 /* Resource management */
 gboolean sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *object);
@@ -152,8 +148,8 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  * Misc
  */
 
-GSList * sp_document_items_in_box (SPDocument *document, NRRectD *box);
-GSList * sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
+GSList *sp_document_items_in_box (SPDocument *document, NRRectD *box);
+GSList *sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);

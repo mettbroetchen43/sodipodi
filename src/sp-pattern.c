@@ -55,6 +55,7 @@ static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static void sp_pattern_modified (SPObject *object, unsigned int flags);
+static unsigned int sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 
 static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
@@ -103,6 +104,7 @@ sp_pattern_class_init (SPPatternClass *klass)
 	sp_object_class->remove_child = sp_pattern_remove_child;
 	sp_object_class->update = sp_pattern_update;
 	sp_object_class->modified = sp_pattern_modified;
+	sp_object_class->sequence = sp_pattern_sequence;
 
 	ps_class->painter_new = sp_pattern_painter_new;
 	ps_class->painter_free = sp_pattern_painter_free;
@@ -446,6 +448,22 @@ sp_pattern_modified (SPObject *object, guint flags)
 		}
 		sp_object_unref (child, NULL);
 	}
+}
+
+static unsigned int
+sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	SPPattern *pat;
+	SPObject *child;
+
+	pat = (SPPattern *) object;
+
+	for (child = pat->children; child != NULL; child = child->next) {
+		*seq += 1;
+		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void

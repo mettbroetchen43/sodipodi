@@ -131,8 +131,8 @@ struct _SPObjectClass {
 	/* Modification handler */
 	void (* modified) (SPObject *object, unsigned int flags);
 
-	/* Compute next sequence number */
-	gint (* sequence) (SPObject *object, gint seq);
+	/* Find sequence number of target object */
+	unsigned int (* sequence) (SPObject *object, SPObject *target, unsigned int *seq);
 	void (* forall) (SPObject *object, SPObjectMethod func, gpointer data);
 
 	SPRepr * (* write) (SPObject *object, SPRepr *repr, unsigned int flags);
@@ -177,8 +177,8 @@ void sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 void sp_object_request_modified (SPObject *object, unsigned int flags);
 void sp_object_invoke_modified (SPObject *object, unsigned int flags);
 
-/* Sequence */
-gint sp_object_sequence (SPObject *object, gint seq);
+/* Calculate sequence number of target */
+unsigned int sp_object_invoke_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 
 void sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data);
 /* Write object to repr */

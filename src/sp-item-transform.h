@@ -1,5 +1,17 @@
-#ifndef SP_ITEM_TRANSFORM_H
-#define SP_ITEM_TRANSFORM_H
+#ifndef __SP_ITEM_TRANSFORM_H__
+#define __SP_ITEM_TRANSFORM_H__
+
+/*
+ * Item transformations
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "sp-item.h"
 

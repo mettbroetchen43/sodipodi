@@ -114,7 +114,8 @@ void sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom);
 void sp_desktop_zoom_page (SPDesktop *dt);
 void sp_desktop_zoom_drawing (SPDesktop *dt);
 void sp_desktop_zoom_selection (SPDesktop *dt);
-void sp_desktop_scroll_world (SPDesktop *dt, float dx, float dy);
+void sp_desktop_scroll_absolute_center_desktop (SPDesktop *dt, float x, float y);
+void sp_desktop_scroll_relative_canvas (SPDesktop *dt, float dx, float dy);
 
 const SPUnit *sp_desktop_get_default_unit (SPDesktop *dt);
 

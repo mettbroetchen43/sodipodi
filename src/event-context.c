@@ -201,7 +201,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 				ret = TRUE;
 			} else {
-				sp_desktop_scroll_world (event_context->desktop, event->motion.x - s.x, event->motion.y - s.y);
+				sp_desktop_scroll_relative_canvas (event_context->desktop, event->motion.x - s.x, event->motion.y - s.y);
 				ret = TRUE;
 			}
 		}
@@ -249,25 +249,25 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			break;
 		case GDK_Left: // Ctrl Left 
 			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_desktop_scroll_world (event_context->desktop, 10, 0);
+				sp_desktop_scroll_relative_canvas (event_context->desktop, 10, 0);
 				ret = TRUE;
 			}
 			break;
 		case GDK_Up: // Ctrl Up
 			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_desktop_scroll_world (event_context->desktop, 0, +10);
+				sp_desktop_scroll_relative_canvas (event_context->desktop, 0, +10);
 				ret = TRUE;
 			}
 			break;
 		case GDK_Right: // Ctrl Right
 			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_desktop_scroll_world (event_context->desktop, -10, 0);
+				sp_desktop_scroll_relative_canvas (event_context->desktop, -10, 0);
 				ret = TRUE;
 			}
 			break;
 		case GDK_Down: // Ctrl Down
 			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_desktop_scroll_world (event_context->desktop, 0, -10);
+				sp_desktop_scroll_relative_canvas (event_context->desktop, 0, -10);
 				ret = TRUE;
 			}
 			break;
@@ -291,10 +291,10 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		if (event->scroll.state & GDK_CONTROL_MASK) {
 			switch (event->scroll.direction) {
 			case GDK_SCROLL_UP:
-				sp_desktop_scroll_world (desktop, SP_MOUSEMOVE_STEP, 0);
+				sp_desktop_scroll_relative_canvas (desktop, SP_MOUSEMOVE_STEP, 0);
 				break;
 			case GDK_SCROLL_DOWN:
-				sp_desktop_scroll_world (desktop, -SP_MOUSEMOVE_STEP, 0);
+				sp_desktop_scroll_relative_canvas (desktop, -SP_MOUSEMOVE_STEP, 0);
 				break;
 			default:
 				break;
@@ -318,16 +318,16 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 		} else {
 			switch (event->scroll.direction) {
 			case GDK_SCROLL_UP:
-				sp_desktop_scroll_world (desktop, 0, SP_MOUSEMOVE_STEP);
+				sp_desktop_scroll_relative_canvas (desktop, 0, SP_MOUSEMOVE_STEP);
 				break;
 			case GDK_SCROLL_DOWN:
-				sp_desktop_scroll_world (desktop, 0, -SP_MOUSEMOVE_STEP);
+				sp_desktop_scroll_relative_canvas (desktop, 0, -SP_MOUSEMOVE_STEP);
 				break;
 			case GDK_SCROLL_LEFT:
-				sp_desktop_scroll_world (desktop, SP_MOUSEMOVE_STEP, 0);
+				sp_desktop_scroll_relative_canvas (desktop, SP_MOUSEMOVE_STEP, 0);
 				break;
 			case GDK_SCROLL_RIGHT:
-				sp_desktop_scroll_world (desktop, -SP_MOUSEMOVE_STEP, 0);
+				sp_desktop_scroll_relative_canvas (desktop, -SP_MOUSEMOVE_STEP, 0);
 				break;
 			}
 		}

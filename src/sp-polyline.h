@@ -1,7 +1,17 @@
-#ifndef SP_POLYLINE_H
-#define SP_POLYLINE_H
+#ifndef __SP_POLYLINE_H__
+#define __SP_POLYLINE_H__
 
-#include <glib.h>
+/*
+ * SVG <polyline> implementation
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include "sp-shape.h"
 
 G_BEGIN_DECLS

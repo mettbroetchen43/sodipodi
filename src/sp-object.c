@@ -686,14 +686,17 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 #endif
 }
 
-/* Sequence */
-gint
-sp_object_sequence (SPObject *object, gint seq)
-{
-	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence)
-		return (*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence) (object, seq);
+/* Calculate sequence number of target */
 
-	return seq + 1;
+unsigned int
+sp_object_invoke_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	if (object == target) return TRUE;
+
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->sequence)
+		return (*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->sequence) (object, target, seq);
+
+	return FALSE;
 }
 
 /*

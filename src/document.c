@@ -661,6 +661,20 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
 }
 
+/* Returns the sequence number of object */
+
+unsigned int
+sp_document_object_sequence_get (SPDocument *doc, SPObject *object)
+{
+	unsigned int seq;
+
+	seq = 0;
+
+	sp_object_invoke_sequence (doc->root, object, &seq);
+
+	return seq;
+}
+
 /*
  * Return list of items, contained in box
  *

@@ -182,6 +182,7 @@ static void sp_gradient_set (SPObject *object, unsigned int key, const unsigned 
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
 static void sp_gradient_modified (SPObject *object, guint flags);
+static unsigned int sp_gradient_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 static SPRepr *sp_gradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_gradient_href_release (SPObject *href, SPGradient *gradient);
@@ -228,6 +229,7 @@ sp_gradient_class_init (SPGradientClass *klass)
 	sp_object_class->child_added = sp_gradient_child_added;
 	sp_object_class->remove_child = sp_gradient_remove_child;
 	sp_object_class->modified = sp_gradient_modified;
+	sp_object_class->sequence = sp_gradient_sequence;
 	sp_object_class->write = sp_gradient_write;
 }
 
@@ -520,6 +522,22 @@ sp_gradient_modified (SPObject *object, guint flags)
 		}
 		g_object_unref (G_OBJECT (child));
 	}
+}
+
+static unsigned int
+sp_gradient_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	SPGradient *gr;
+	SPObject *child;
+
+	gr = (SPGradient *) object;
+
+	for (child = gr->stops; child; child = child->next) {
+		*seq += 1;
+		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
+	}
+
+	return FALSE;
 }
 
 static SPRepr *

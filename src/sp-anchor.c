@@ -46,13 +46,11 @@ sp_anchor_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPAnchorClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_anchor_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPAnchor),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_anchor_init,
 		};
 		type = g_type_register_static (SP_TYPE_GROUP, "SPAnchor", &info, 0);

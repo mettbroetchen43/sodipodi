@@ -1,3 +1,27 @@
+2003-10-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c (sp_text_sequence): Implement
+
+	* src/sp-pattern.c (sp_pattern_sequence): Implement
+
+	* src/sp-object.c (sp_object_invoke_sequence): Rename and signature change
+
+	* src/sp-object-group.c (sp_objectgroup_sequence): Implement
+
+	* src/sp-item-group.c (sp_group_sequence): update
+
+	* src/sp-gradient.c (sp_gradient_sequence): Implement
+
+	* src/sp-defs.c (sp_defs_sequence): Implement
+
+	* src/selection-chemistry.c (sp_selection_item_next): Cleanup
+	(sp_selection_item_prev): Ditto
+
+	* src/document.c (sp_document_object_sequence_get): New method
+
+	* src/desktop.c (sp_desktop_scroll_absolute_center_desktop): New method
+	(sp_desktop_scroll_relative_canvas): Renamed
+
 2003-10-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/node-context.c (sp_node_context_root_handler): Catch delete, so

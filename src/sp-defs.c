@@ -30,6 +30,7 @@ static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_defs_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_defs_modified (SPObject *object, guint flags);
+static unsigned int sp_defs_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 static SPRepr *sp_defs_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObject * sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr);
@@ -75,6 +76,7 @@ sp_defs_class_init (SPDefsClass * klass)
 	sp_object_class->order_changed = sp_defs_order_changed;
 	sp_object_class->update = sp_defs_update;
 	sp_object_class->modified = sp_defs_modified;
+	sp_object_class->sequence = sp_defs_sequence;
 	sp_object_class->write = sp_defs_write;
 }
 
@@ -266,6 +268,22 @@ sp_defs_modified (SPObject *object, guint flags)
 		}
 		g_object_unref (G_OBJECT (child));
 	}
+}
+
+static unsigned int
+sp_defs_sequence (SPObject *object, SPObject *target, unsigned int *seq)
+{
+	SPDefs *defs;
+	SPObject *child;
+
+	defs = SP_DEFS (object);
+
+	for (child = defs->children; child; child = child->next) {
+		*seq += 1;
+		if (sp_object_invoke_sequence (child, target, seq)) return TRUE;
+	}
+
+	return FALSE;
 }
 
 static SPRepr *
