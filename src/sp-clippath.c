@@ -40,7 +40,7 @@ static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *r
 static void sp_clippath_release (SPObject * object);
 static void sp_clippath_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_clippath_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
-static void sp_clippath_remove_child (SPObject *object, SPRepr *child);
+static unsigned int sp_clippath_remove_child (SPObject *object, SPRepr *child);
 static void sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_clippath_modified (SPObject *object, guint flags);
 static SPRepr *sp_clippath_write (SPObject *object, SPRepr *repr, guint flags);
@@ -190,7 +190,7 @@ sp_clippath_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	}
 }
 
-static void
+static unsigned int
 sp_clippath_remove_child (SPObject *object, SPRepr *child)
 {
 	SPClipPath *cp;
@@ -198,7 +198,7 @@ sp_clippath_remove_child (SPObject *object, SPRepr *child)
 	cp = SP_CLIPPATH (object);
 
 	/* Invoke SPObjectGroup implementation */
-	((SPObjectClass *) (parent_class))->remove_child (object, child);
+	return ((SPObjectClass *) (parent_class))->remove_child (object, child);
 }
 
 static void

@@ -380,12 +380,17 @@ sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer d
 static unsigned int
 sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer data)
 {
-	SPObject * object;
+	SPObject *object, *ochild;
+	const unsigned char *id;
 
 	object = SP_OBJECT (data);
 
-	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->remove_child)
-		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->remove_child) (object, child);
+	id = sp_repr_attr (child, "id");
+	ochild = sp_document_lookup_id (object->document, id);
+	if (ochild->blocked) return FALSE;
+
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->remove_child)
+		return (* ((SPObjectClass *)G_OBJECT_GET_CLASS (object))->remove_child) (object, child);
 
 	return TRUE;
 }

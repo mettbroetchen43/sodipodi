@@ -55,7 +55,7 @@ static void sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *re
 static void sp_pattern_release (SPObject *object);
 static void sp_pattern_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
-static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
+static unsigned int sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static void sp_pattern_modified (SPObject *object, unsigned int flags);
 static unsigned int sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq);
@@ -368,16 +368,19 @@ sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	}
 }
 
-static void
+static unsigned int
 sp_pattern_remove_child (SPObject *object, SPRepr *child)
 {
 	SPPattern *pat;
 	SPObject *prev, *ochild;
+	unsigned int ret;
 
 	pat = SP_PATTERN (object);
 
-	if (((SPObjectClass *) (pattern_parent_class))->remove_child)
-		(* ((SPObjectClass *) (pattern_parent_class))->remove_child) (object, child);
+	if (((SPObjectClass *) (pattern_parent_class))->remove_child) {
+		ret = ((SPObjectClass *) (pattern_parent_class))->remove_child (object, child);
+		if (!ret) return ret;
+	}
 
 	prev = NULL;
 	ochild = object->children;
@@ -391,6 +394,8 @@ sp_pattern_remove_child (SPObject *object, SPRepr *child)
 	} else {
 		object->children = sp_object_detach_unref (object, object->children);
 	}
+
+	return TRUE;
 }
 
 /* fixme: We need ::order_changed handler too (Lauris) */

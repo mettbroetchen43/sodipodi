@@ -33,7 +33,7 @@ static void sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 static void sp_root_release (SPObject *object);
 static void sp_root_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
-static void sp_root_remove_child (SPObject *object, SPRepr *child);
+static unsigned int sp_root_remove_child (SPObject *object, SPRepr *child);
 static void sp_root_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_root_modified (SPObject *object, guint flags);
 static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
@@ -156,6 +156,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	for (o = object->children; o != NULL; o = o->next) {
 		if (SP_IS_DEFS (o)) {
 			root->defs = SP_DEFS (o);
+			sp_object_set_blocked (o, TRUE);
 			break;
 		}
 	}
@@ -168,7 +169,10 @@ sp_root_release (SPObject *object)
 
 	root = (SPRoot *) object;
 
-	root->defs = NULL;
+	if (root->defs) {
+		sp_object_set_blocked (root->defs, FALSE);
+		root->defs = NULL;
+	}
 #if 0
 	g_slist_free (root->namedviews);
 	root->namedviews = NULL;
@@ -378,16 +382,21 @@ sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	if (SP_IS_DEFS (co)) {
 		SPObject *c;
 		/* We search for first <defs> node - it is not beautiful, but works */
+		if (root->defs) {
+			sp_object_set_blocked (root->defs, FALSE);
+			root->defs = NULL;
+		}
 		for (c = object->children; c != NULL; c = c->next) {
 			if (SP_IS_DEFS (c)) {
 				root->defs = SP_DEFS (c);
+				sp_object_set_blocked (root->defs, TRUE);
 				break;
 			}
 		}
 	}
 }
 
-static void
+static unsigned int
 sp_root_remove_child (SPObject * object, SPRepr * child)
 {
 	SPRoot * root;
@@ -400,22 +409,16 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
-#if 0
-	if (SP_IS_NAMEDVIEW (co)) {
-		root->namedviews = g_slist_remove (root->namedviews, co);
-	}
-#endif
-	if (SP_IS_DEFS (co) && root->defs == (SPDefs *) co) {
-		SPObject *c;
-		/* We search for next <defs> node - it is not beautiful, but works */
-		for (c = co->next; c != NULL; c = c->next) {
-			if (SP_IS_DEFS (c)) break;
-		}
-		root->defs = SP_DEFS (c);
-	}
+	/* fixme: test whether it is shown */
+	/* if (SP_IS_NAMEDVIEW (co)) return FALSE; */
+
+	/* fixme: test whether it is empty */
+	if (SP_IS_DEFS (co) && (root->defs == (SPDefs *) co)) return FALSE;
 
 	if (((SPObjectClass *) (parent_class))->remove_child)
-		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+		return (* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+
+	return TRUE;
 }
 
 static void

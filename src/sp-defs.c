@@ -26,7 +26,7 @@ static void sp_defs_init (SPDefs * defs);
 static void sp_defs_build (SPObject *object, SPDocument * document, SPRepr * repr);
 static void sp_defs_release (SPObject *object);
 static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
-static void sp_defs_remove_child (SPObject * object, SPRepr * child);
+static unsigned int sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_defs_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_defs_modified (SPObject *object, guint flags);
@@ -157,16 +157,19 @@ sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 }
 
-static void
+static unsigned int
 sp_defs_remove_child (SPObject * object, SPRepr * child)
 {
-	SPDefs * defs;
-	SPObject * prev, * ochild;
+	SPDefs *defs;
+	SPObject *prev, *ochild;
+	unsigned int ret;
 
 	defs = SP_DEFS (object);
 
-	if (((SPObjectClass *) (parent_class))->remove_child)
-		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child) {
+		ret = ((SPObjectClass *) (parent_class))->remove_child (object, child);
+		if (!ret) return ret;
+	}
 
 	prev = NULL;
 	ochild = object->children;
@@ -183,6 +186,8 @@ sp_defs_remove_child (SPObject * object, SPRepr * child)
 	ochild->parent = NULL;
 	ochild->next = NULL;
 	g_object_unref (G_OBJECT (ochild));
+
+	return TRUE;
 }
 
 static void

@@ -510,7 +510,7 @@ static void sp_tspan_build (SPObject * object, SPDocument * document, SPRepr * r
 static void sp_tspan_release (SPObject *object);
 static void sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
-static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
+static unsigned int sp_tspan_remove_child (SPObject *object, SPRepr *rch);
 static void sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_tspan_modified (SPObject *object, unsigned int flags);
 static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
@@ -708,19 +708,24 @@ sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	}
 }
 
-static void
+static unsigned int
 sp_tspan_remove_child (SPObject *object, SPRepr *rch)
 {
 	SPTSpan *tspan;
+	unsigned int ret;
 
 	tspan = SP_TSPAN (object);
 
-	if (((SPObjectClass *) tspan_parent_class)->remove_child)
-		((SPObjectClass *) tspan_parent_class)->remove_child (object, rch);
+	if (((SPObjectClass *) tspan_parent_class)->remove_child) {
+		ret = ((SPObjectClass *) tspan_parent_class)->remove_child (object, rch);
+		if (!ret) return ret;
+	}
 
 	if (tspan->string && (SP_OBJECT_REPR (tspan->string) == rch)) {
 		tspan->string = sp_object_detach_unref (object, tspan->string);
 	}
+
+	return TRUE;
 }
 
 static void
@@ -881,7 +886,7 @@ static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_text_release (SPObject *object);
 static void sp_text_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
-static void sp_text_remove_child (SPObject *object, SPRepr *rch);
+static unsigned int sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_text_modified (SPObject *object, guint flags);
 static unsigned int sp_text_sequence (SPObject *object, SPObject *target, unsigned int *seq);
@@ -1179,16 +1184,19 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	sp_text_update_immediate_state (text);
 }
 
-static void
+static unsigned int
 sp_text_remove_child (SPObject *object, SPRepr *rch)
 {
 	SPText *text;
 	SPObject *prev, *och;
+	unsigned int ret;
 
 	text = SP_TEXT (object);
 
-	if (((SPObjectClass *) text_parent_class)->remove_child)
-		((SPObjectClass *) text_parent_class)->remove_child (object, rch);
+	if (((SPObjectClass *) text_parent_class)->remove_child) {
+		ret = ((SPObjectClass *) text_parent_class)->remove_child (object, rch);
+		if (!ret) return ret;
+	}
 
 	prev = NULL;
 	och = object->children;
@@ -1205,6 +1213,8 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 
 	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_CONTENT_MODIFIED_FLAG);
 	sp_text_update_immediate_state (text);
+
+	return TRUE;
 }
 
 /* fixme: This is wrong, as we schedule relayout every time something changes */

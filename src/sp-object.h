@@ -110,6 +110,7 @@ struct _SPIXmlSpace {
 struct _SPObject {
 	GObject object;
 	unsigned int cloned : 1;
+	unsigned int blocked : 1;
 	unsigned int uflags : 8;
 	unsigned int mflags : 8;
 	SPIXmlSpace xml_space;
@@ -131,7 +132,7 @@ struct _SPObjectClass {
 
 	/* Virtual handlers of repr signals */
 	void (* child_added) (SPObject *object, SPRepr *child, SPRepr *ref);
-	void (* remove_child) (SPObject *object, SPRepr *child);
+	unsigned int (* remove_child) (SPObject *object, SPRepr *child);
 
 	void (* order_changed) (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *new);
 
@@ -174,6 +175,8 @@ SPObject *sp_object_hunref (SPObject *object, gpointer owner);
 SPObject *sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *next);
 SPObject *sp_object_detach (SPObject *parent, SPObject *object);
 SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
+
+#define sp_object_set_blocked(o,v) (((SPObject *) (o))->blocked = ((v) != 0))
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, unsigned int cloned);
 void sp_object_invoke_release (SPObject *object);

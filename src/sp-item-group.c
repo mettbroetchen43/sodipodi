@@ -35,7 +35,7 @@ static void sp_group_init (SPGroup *group);
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_group_release (SPObject *object);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
-static void sp_group_remove_child (SPObject * object, SPRepr * child);
+static unsigned int sp_group_remove_child (SPObject *object, SPRepr *child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_group_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_group_modified (SPObject *object, guint flags);
@@ -204,16 +204,19 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 
 /* fixme: hide (Lauris) */
 
-static void
+static unsigned int
 sp_group_remove_child (SPObject * object, SPRepr * child)
 {
-	SPGroup * group;
-	SPObject * prev, * ochild;
+	SPGroup *group;
+	SPObject *prev, *ochild;
+	unsigned int ret;
 
 	group = SP_GROUP (object);
 
-	if (((SPObjectClass *) (parent_class))->remove_child)
-		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+	if (((SPObjectClass *) (parent_class))->remove_child) {
+		ret = (* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+		if (!ret) return ret;
+	}
 
 	prev = NULL;
 	ochild = object->children;
@@ -228,6 +231,8 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		object->children = sp_object_detach_unref (object, ochild);
 	}
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+
+	return TRUE;
 }
 
 static void

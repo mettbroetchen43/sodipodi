@@ -183,7 +183,7 @@ static void sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *r
 static void sp_gradient_release (SPObject *object);
 static void sp_gradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
-static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
+static unsigned int sp_gradient_remove_child (SPObject *object, SPRepr *child);
 static void sp_gradient_modified (SPObject *object, guint flags);
 static unsigned int sp_gradient_sequence (SPObject *object, SPObject *target, unsigned int *seq);
 static SPRepr *sp_gradient_write (SPObject *object, SPRepr *repr, guint flags);
@@ -452,16 +452,19 @@ sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	/* fixme: should we schedule "modified" here? */
 }
 
-static void
+static unsigned int
 sp_gradient_remove_child (SPObject *object, SPRepr *child)
 {
 	SPGradient *gr;
 	SPObject *prev, *ochild;
+	unsigned int ret;
 
 	gr = SP_GRADIENT (object);
 
-	if (((SPObjectClass *) gradient_parent_class)->remove_child)
-		(* ((SPObjectClass *) gradient_parent_class)->remove_child) (object, child);
+	if (((SPObjectClass *) gradient_parent_class)->remove_child) {
+		ret = ((SPObjectClass *) gradient_parent_class)->remove_child (object, child);
+		if (!ret) return ret;
+	}
 
 	sp_gradient_invalidate_vector (gr);
 
@@ -492,6 +495,7 @@ sp_gradient_remove_child (SPObject *object, SPRepr *child)
 	}
 
 	/* fixme: should we schedule "modified" here? */
+	return TRUE;
 }
 
 static void

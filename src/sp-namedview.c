@@ -49,7 +49,7 @@ static void sp_namedview_build (SPObject * object, SPDocument * document, SPRepr
 static void sp_namedview_release (SPObject *object);
 static void sp_namedview_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
-static void sp_namedview_remove_child (SPObject *object, SPRepr *child);
+static unsigned int sp_namedview_remove_child (SPObject *object, SPRepr *child);
 static SPRepr *sp_namedview_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_namedview_setup_grid (SPNamedView * nv);
@@ -102,7 +102,7 @@ sp_namedview_class_init (SPNamedViewClass * klass)
 }
 
 static void
-sp_namedview_init (SPNamedView * nv)
+sp_namedview_init (SPNamedView *nv)
 {
 	nv->editable = TRUE;
 	nv->showgrid = FALSE;
@@ -125,6 +125,8 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	nv = (SPNamedView *) object;
 	og = (SPObjectGroup *) object;
+
+	sp_object_set_blocked (nv, TRUE);
 
 	if (((SPObjectClass *) (parent_class))->build)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
@@ -191,6 +193,8 @@ sp_namedview_release (SPObject * object)
 		gtk_object_destroy (GTK_OBJECT (namedview->gridviews->data));
 		namedview->gridviews = g_slist_remove (namedview->gridviews, namedview->gridviews->data);
 	}
+
+	sp_object_set_blocked (namedview, FALSE);
 
 	if (((SPObjectClass *) parent_class)->release)
 		((SPObjectClass *) parent_class)->release (object);
@@ -421,7 +425,7 @@ sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	}
 }
 
-static void
+static unsigned int
 sp_namedview_remove_child (SPObject * object, SPRepr * child)
 {
 	SPNamedView * nv;
@@ -445,7 +449,9 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 	}
 
 	if (((SPObjectClass *) (parent_class))->remove_child)
-		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+		return ((SPObjectClass *) (parent_class))->remove_child (object, child);
+
+	return TRUE;
 }
 
 static SPRepr *
