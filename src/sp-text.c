@@ -427,8 +427,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	cp->x += string->pgl->advance.x;
 	cp->y -= string->pgl->advance.y;
 
-	if (pinspace) *pinspace = inspace;
-
 #else
 	if (!string->text || !*string->text) return;
 	len = g_utf8_strlen (string->text, -1);
