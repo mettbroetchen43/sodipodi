@@ -380,6 +380,9 @@ sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
         gpc = gnome_print_context_new (printer);
 
 	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
+	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
+	gnome_print_scale (gpc, 1.0, -1.0);
+	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);
         sp_item_print (SP_ITEM (sp_document_root (doc)), gpc);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
