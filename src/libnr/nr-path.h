@@ -10,6 +10,10 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 typedef struct _NRPath NRPath;
 
 enum {
@@ -82,6 +86,7 @@ unsigned int nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRP
 unsigned int nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance,
 				  const NRPathGVector *gv, void *data);
 
+#ifdef LIBNR_LIBART
 /* Temporary */
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
@@ -91,6 +96,7 @@ unsigned int nr_path_forall_art (const ArtBpath *path, NRMatrixF *transform, con
 unsigned int nr_path_forall_art_flat (const ArtBpath *path, NRMatrixF *transform, float tolerance,
 				      const NRPathGVector *gv, void *data);
 unsigned int nr_path_forall_art_vpath (const ArtVpath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
+#endif
 
 typedef struct _NRDynamicPath NRDynamicPath;
 
@@ -123,6 +129,7 @@ unsigned int nr_dynamic_path_curveto2 (NRDynamicPath *dpath, float x1, float y1,
 unsigned int nr_dynamic_path_curveto3 (NRDynamicPath *dpath, float x1, float y1, float x2, float y2, float x3, float y3);
 unsigned int nr_dynamic_path_closepath (NRDynamicPath *dpath);
 
+#ifdef LIBNR_LIBART
 /* fixme: Get rid of this (Lauris) */
 
 typedef struct _NRBPath NRBPath;
@@ -138,5 +145,6 @@ void nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, 
 						  float tolerance);
 
 void nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m, NRRectF *bbox, float tolerance);
+#endif
 
 #endif

@@ -10,6 +10,10 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <libnr/nr-path.h>
 #include <libnr/nr-svp.h>
 
@@ -25,6 +29,7 @@ enum {
 	NR_STROKE_JOIN_BEVEL
 };
 
+#ifdef LIBNR_LIBART
 NRSVL *nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 			float width,
 			unsigned int cap, unsigned int join, float miterlimit,
@@ -40,5 +45,6 @@ NRRectF *nr_bpath_stroke_bbox_union (const NRBPath *path, NRMatrixF *transform,
 				     float width,
 				     unsigned int cap, unsigned int join, float miterlimit,
 				     float flatness);
+#endif
 
 #endif

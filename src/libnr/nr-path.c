@@ -22,6 +22,7 @@ enum {
 	MULTI_CURVE3
 };
 
+#ifdef LIBNR_LIBART
 NRPath *
 nr_path_new_from_art_bpath (const ArtBpath *bpath)
 {
@@ -177,6 +178,7 @@ nr_path_new_from_art_bpath (const ArtBpath *bpath)
 	return path;
 #endif
 }
+#endif
 
 unsigned int
 nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data)
@@ -465,6 +467,7 @@ nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance, 
 	return nr_path_forall (path, transform, &fpgv, &fdata);
 }
 
+#ifdef LIBNR_LIBART
 unsigned int
 nr_path_forall_art (const ArtBpath *bpath, NRMatrixF *transform, const NRPathGVector *gv, void *data)
 {
@@ -662,6 +665,7 @@ nr_path_forall_art_vpath (const ArtVpath *vpath, NRMatrixF *transform, const NRP
 	}
 	return TRUE;
 }
+#endif
 
 NRDynamicPath *
 nr_dynamic_path_new (unsigned int nelements)
@@ -912,6 +916,7 @@ nr_dynamic_path_closepath (NRDynamicPath *dpath)
 
 static void nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox);
 
+#ifdef LIBNR_LIBART
 NRBPath *
 nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 {
@@ -944,6 +949,7 @@ nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 
 	return d;
 }
+#endif
 
 void
 nr_line_wind_distance (double Ax, double Ay, double Bx, double By, double Px, double Py, int *wind, float *best)
@@ -1089,6 +1095,7 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 	}
 }
 
+#ifdef LIBNR_LIBART
 void
 nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPointF *pt,
 					     NRRectF *bbox, int *wind, float *dist,
@@ -1155,6 +1162,7 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 		}
 	}
 }
+#endif
 
 /* Fast bbox calculation */
 /* Thanks to Nathan Hurst for suggesting it */
@@ -1269,6 +1277,7 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 	}
 }
 
+#ifdef LIBNR_LIBART
 void
 nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 			       NRRectF *bbox,
@@ -1323,4 +1332,5 @@ nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 		}
 	}
 }
+#endif
 

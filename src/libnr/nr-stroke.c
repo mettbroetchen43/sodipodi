@@ -243,6 +243,7 @@ nr_svl_stroke_build_curveto (NRSVLStrokeBuild *svlb,
 	nr_svl_stroke_build_curveto (svlb, xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, flatness, level + 1);
 }
 
+#ifdef LIBNR_LIBART
 NRSVL *
 nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 		 float width,
@@ -576,6 +577,7 @@ nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 
 	return svlb.svl;
 }
+#endif
 
 static void
 nr_svl_stroke_build_draw_cap (NRSVLStrokeBuild *svlb, float x0, float y0, float x1, float y1, unsigned int finish)

@@ -85,7 +85,9 @@ arikkei_int_equal (const void *l, const void *r)
 }
 
 void
-arikkei_dict_setup_common (ArikkeiDict *dict, unsigned int hashsize)
+arikkei_dict_setup_full (ArikkeiDict *dict, unsigned int hashsize,
+			 unsigned int (* hash) (const void *),
+			 unsigned int (* equal) (const void *, const void *))
 {
 	unsigned int i;
 	if (hashsize < 1) hashsize = 1;
@@ -96,30 +98,26 @@ arikkei_dict_setup_common (ArikkeiDict *dict, unsigned int hashsize)
 	for (i = dict->hashsize; i < dict->size - 1; i++) dict->entries[i].next = i + 1;
 	dict->entries[dict->size - 1].next = -1;
 	dict->free = dict->hashsize;
+	dict->hash = hash;
+	dict->equal = equal;
 }
 
 void
 arikkei_dict_setup_string (ArikkeiDict *dict, unsigned int hashsize)
 {
-	arikkei_dict_setup_common (dict, hashsize);
-	dict->hash = arikkei_string_hash;
-	dict->equal = arikkei_string_equal;
+	arikkei_dict_setup_full (dict, hashsize, arikkei_string_hash, arikkei_string_equal);
 }
 
 void
 arikkei_dict_setup_pointer (ArikkeiDict *dict, unsigned int hashsize)
 {
-	arikkei_dict_setup_common (dict, hashsize);
-	dict->hash = arikkei_pointer_hash;
-	dict->equal = arikkei_pointer_equal;
+	arikkei_dict_setup_full (dict, hashsize, arikkei_pointer_hash, arikkei_pointer_equal);
 }
 
 void
 arikkei_dict_setup_int (ArikkeiDict *dict, unsigned int hashsize)
 {
-	arikkei_dict_setup_common (dict, hashsize);
-	dict->hash = arikkei_int_hash;
-	dict->equal = arikkei_int_equal;
+	arikkei_dict_setup_full (dict, hashsize, arikkei_int_hash, arikkei_int_equal);
 }
 
 void

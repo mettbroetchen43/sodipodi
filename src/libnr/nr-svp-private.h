@@ -10,6 +10,10 @@
  * This code is in public domain
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <libnr/nr-svp.h>
 
 #define NR_QUANT_X 16.0F
@@ -42,6 +46,7 @@ void nr_svl_build_curveto (NRSVLBuild *svlb,
 
 NRSVL *nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
 
+#ifdef LIBNR_LIBART
 /* fixme: Remove these if ready (Lauris) */
 #include <libart_lgpl/art_svp.h>
 
@@ -49,6 +54,7 @@ NRSVL *nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule);
 NRSVL *nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
 NRSVL *nr_svl_from_art_svp (ArtSVP *asvp);
 ArtSVP *nr_art_svp_from_svl (NRSVL *svl);
+#endif
 
 /* NRVertex */
 

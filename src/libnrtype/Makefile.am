@@ -22,7 +22,8 @@ INCLUDES = \
 	$(FREETYPE_CFLAGS) \
 	$(SODIPODI_CFLAGS) \
 	$(GNOME_PRINT_CFLAGS) \
-	$(XFT_CFLAGS)
+	$(XFT_CFLAGS) \
+	$(LIBNR_CFLAGS)
 
 libnrtype_a_SOURCES = \
 	nr-type-primitives.c nr-type-primitives.h \

@@ -25,6 +25,9 @@ struct _ArikkeiDict {
 	unsigned int (* equal) (const void *l, const void *r);
 };
 
+void arikkei_dict_setup_full (ArikkeiDict *dict, unsigned int hashsize,
+			      unsigned int (* hash) (const void *),
+			      unsigned int (* equal) (const void *, const void *));
 void arikkei_dict_setup_string (ArikkeiDict *dict, unsigned int hashsize);
 void arikkei_dict_setup_pointer (ArikkeiDict *dict, unsigned int hashsize);
 void arikkei_dict_setup_int (ArikkeiDict *dict, unsigned int hashsize);

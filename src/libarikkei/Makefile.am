@@ -1,8 +1,7 @@
 noinst_LIBRARIES = libarikkei.a
 
 INCLUDES = \
-	-I.. \
-	$(cflags)
+	-I$(top_srcdir)
 
 libarikkei_a_SOURCES = \
 	arikkei-dict.c arikkei-dict.h \

@@ -347,6 +347,17 @@ arikkei_ucs2_utf8_bytelen (const unsigned short *str)
 	return len;
 }
 
+unsigned short *
+arikkei_ucs2_strdup (const unsigned short *s)
+{
+	unsigned int len;
+	unsigned short *d;
+	len = arikkei_ucs2_strlen (s);
+	d = (unsigned short *) malloc ((len + 1) * sizeof (unsigned short));
+	memcpy (d, s, (len + 1) * sizeof (unsigned short));
+	return d;
+}
+
 unsigned int
 arikkei_ucs2_strncpy (const unsigned short *s, unsigned short *d, unsigned int maxlen)
 {

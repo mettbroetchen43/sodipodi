@@ -279,7 +279,9 @@ nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear)
 	}
 }
 
+#ifdef LIBNR_LIBART
 #include <libart_lgpl/art_misc.h>
+#endif
 
 void
 nr_svl_build_finish_segment (NRSVLBuild *svlb)
@@ -429,6 +431,7 @@ nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, uns
 	return *svlb.svl;
 }
 
+#ifdef LIBNR_LIBART
 NRSVL *
 nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 {
@@ -581,6 +584,7 @@ nr_art_svp_from_svl (NRSVL * svl)
 
 	return asvp;
 }
+#endif
 
 int
 nr_svl_point_wind (NRSVL *svl, float x, float y)
