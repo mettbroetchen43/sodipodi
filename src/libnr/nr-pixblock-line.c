@@ -27,7 +27,6 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 	int dbpp;
 	NRPixBlock spb;
 	unsigned char *spx;
-	unsigned int ytrash;
 
 	if ((x0 < d->area.x0) && (x1 < d->area.x0)) return;
 	if ((x0 >= d->area.x1) && (x1 >= d->area.x1)) return;
@@ -162,9 +161,36 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 			numpixels = pixels;
 		}
 		/* g_print ("line E %d %d %d %d\n", x0, y0, x1, y1); */
-		ytrash = 0;
 	} else {
-		ytrash = 1;
+		if ((y0 >= d->area.y1) && (y1 < d->area.y1)) {
+			int pixels;
+			if (yinc1) {
+				pixels = ((y0 - (d->area.y1 - 1)) * den - num + (numadd - 1)) / numadd;
+			} else {
+				pixels = y0 - (d->area.y1 - 1);
+			}
+			x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
+			y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
+			if (x0 >= d->area.x1) return;
+			if (y0 < d->area.y0) return;
+			num = (num + pixels * numadd) % den;
+			numpixels -= pixels;
+		}
+		if ((y0 >= d->area.y0) && (y1 < d->area.y0)) {
+			int pixels;
+			if (yinc1) {
+				/* We need LAST pixel before step here */
+				pixels = ((y0 - (d->area.y0 - 1)) * den - num + (numadd - 1)) / numadd - 1;
+			} else {
+				pixels = y0 - (d->area.y0 - 1) - 1;
+			}
+			x1 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
+			y1 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
+			if (x1 < d->area.x0) return;
+			if (y1 >= d->area.y1) return;
+			/* num = (num + pixels * numadd) % den; */
+			numpixels = pixels;
+		}
 	}
 
 	/* We can be quite sure 1x1 pixblock is TINY */
@@ -197,13 +223,9 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 		assert (cy == y);
 		assert (x >= d->area.x0);
 		assert (x < d->area.x1);
-		if (!ytrash) {
-			assert (y >= d->area.y0);
-			assert (y < d->area.y1);
-		}
-		if ((x >= d->area.x0) && (y >= d->area.y0) && (x < d->area.x1) && (y < d->area.y1)) {
-			nr_compose_pixblock_pixblock_pixel (d, NR_PIXBLOCK_PX (d) + (y - d->area.y0) * d->rs + (x - d->area.x0) * dbpp, &spb, spx);
-		}
+		assert (y >= d->area.y0);
+		assert (y < d->area.y1);
+		nr_compose_pixblock_pixblock_pixel (d, NR_PIXBLOCK_PX (d) + (y - d->area.y0) * d->rs + (x - d->area.x0) * dbpp, &spb, spx);
 		num += numadd;
 		if (num >= den) {
 			num -= den;
