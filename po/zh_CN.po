@@ -5,13 +5,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
-"POT-Creation-Date: 2002-01-09 10:14+0800\n"
-"PO-Revision-Date: 2002-01-09 11:34+0800\n"
+"POT-Creation-Date: 2002-01-29 23:36+0800\n"
+"PO-Revision-Date: 2002-01-29 23:36+0800\n"
 "Last-Translator: wang li <charlesw1234@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Sodipodi SVG 文档"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Sodipodi SVG 文档车间"
 
 #: glade/align.glade.h:1 glade/transformation.glade.h:3
 msgid "Align"
@@ -164,7 +172,7 @@ msgid "Highlited guideline color"
 msgstr "高亮指示线颜色"
 
 #: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "Millimeters"
 msgstr "毫米"
 
@@ -176,7 +184,8 @@ msgstr "X 原点："
 msgid "Origin Y:"
 msgstr "Y 原点："
 
-#: glade/desktop.glade.h:20 glade/display.glade.h:23 src/helper/unit-menu.c:95
+#: glade/desktop.glade.h:20 glade/display.glade.h:23
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixels"
 msgstr "像素"
 
@@ -304,7 +313,7 @@ msgid "ID:"
 msgstr "标识："
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:646
+#: glade/item.glade.h:3 src/sp-item.c:619
 msgid "Item"
 msgstr "项目"
 
@@ -369,8 +378,8 @@ msgstr " 风格 "
 msgid "Add new gradient"
 msgstr "添加新渐变"
 
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:610
-#: src/widgets/sp-color-selector.c:630 src/widgets/sp-color-selector.c:652
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
 msgid "Alpha:"
 msgstr "Alpha："
 
@@ -382,7 +391,7 @@ msgstr ""
 msgid "Bevel join"
 msgstr ""
 
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:609
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
 msgid "Blue:"
 msgstr "蓝色："
 
@@ -434,7 +443,7 @@ msgstr "分形填充"
 msgid "Gradient fill"
 msgstr "渐变填充"
 
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:608
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
 msgid "Green:"
 msgstr "绿色："
 
@@ -478,7 +487,7 @@ msgstr "选取勾描颜色"
 msgid "Position"
 msgstr "位置"
 
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:607
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
 msgstr "红色："
 
@@ -525,7 +534,7 @@ msgid "centimeter"
 msgstr "厘米"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "cm"
 msgstr "cm"
 
@@ -534,6 +543,7 @@ msgid "color"
 msgstr "颜色"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:44
 msgid "in"
 msgstr "in"
 
@@ -546,7 +556,7 @@ msgid "millimeters"
 msgstr "毫米"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "mm"
 msgstr "mm"
 
@@ -567,11 +577,11 @@ msgid "points"
 msgstr "点"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357
 msgid "pt"
 msgstr "pt"
 
-#: glade/object_props.glade.h:56 src/helper/unit-menu.c:95
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
 msgid "px"
 msgstr "px"
 
@@ -624,7 +634,7 @@ msgid "Cusp line at selected nodes"
 msgstr ""
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:84
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:106
 msgid "Delete"
 msgstr "删除"
 
@@ -770,7 +780,7 @@ msgid "Spiral"
 msgstr "螺旋形"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/sp-star.c:475
+#: glade/sodipodi.glade.h:53 src/sp-star.c:476
 msgid "Star"
 msgstr "星形"
 
@@ -935,8 +945,8 @@ msgstr "绘图上下文"
 msgid "Duplicate selection"
 msgstr "复制选中内容"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:74
-#: src/toolbox.c:78
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
+#: src/dialogs/gradient-vector.c:98 src/toolbox.c:78
 msgid "Edit"
 msgstr " 编辑"
 
@@ -1037,8 +1047,9 @@ msgid "Rise selection one layer"
 msgstr "将选中内容提升一个图层"
 
 #: glade/toolbox.glade.h:52
+#, fuzzy
 msgid "Rotate selected objects 90 clockwise"
-msgstr "将选定对象转换为曲线"
+msgstr "将选定对象顺时针旋转 90 度"
 
 #: glade/toolbox.glade.h:53
 msgid "Save drawing "
@@ -1136,7 +1147,8 @@ msgstr "退出(_Q)"
 msgid "lower selection to bottom"
 msgstr "将选中内容降低到底层"
 
-#: glade/transformation.glade.h:2 src/helper/unit-menu.c:97
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1185,7 +1197,8 @@ msgstr "对副本应用变换 Ctl+m"
 msgid "Center"
 msgstr "中央"
 
-#: glade/transformation.glade.h:15 src/helper/unit-menu.c:92
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:42
 msgid "Centimeter"
 msgstr "厘米"
 
@@ -1213,7 +1226,8 @@ msgstr "高度："
 msgid "Horizontal center value"
 msgstr "水平中心值"
 
-#: glade/transformation.glade.h:22 src/helper/unit-menu.c:93
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:44
 msgid "Inch"
 msgstr "英寸"
 
@@ -1225,7 +1239,8 @@ msgstr "在变换中保持选中内容的高度不变"
 msgid "Keep width of selection during transformation"
 msgstr "在变换中保持选中内容的宽度不变"
 
-#: glade/transformation.glade.h:25 src/helper/unit-menu.c:91
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:41
 msgid "Millimeter"
 msgstr "毫米"
 
@@ -1241,11 +1256,15 @@ msgstr "原点宽度："
 msgid "Orig. X: "
 msgstr "X 原点："
 
-#: glade/transformation.glade.h:29 src/helper/unit-menu.c:97
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 msgid "Percent"
 msgstr "百分比"
 
-#: glade/transformation.glade.h:30 src/helper/unit-menu.c:94
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:35
 msgid "Points"
 msgstr "点"
 
@@ -1381,7 +1400,8 @@ msgstr "垂直移动"
 msgid "vertical scale value"
 msgstr "垂直缩放值"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:79
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
+#: src/dialogs/gradient-vector.c:102
 msgid "Add"
 msgstr "添加"
 
@@ -1453,13 +1473,17 @@ msgstr "粘贴"
 msgid "Value"
 msgstr "值"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:629
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "值："
 
 #: glade/xml-tree.glade.h:22
 msgid "name"
 msgstr "名称"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "向量图解器"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1545,6 +1569,28 @@ msgstr "CMYK"
 msgid "Gradient"
 msgstr "渐变"
 
+#. Reset button
+#: src/dialogs/gradient-selector.c:115
+msgid "Reset"
+msgstr "重置"
+
+#. No document or no gradients
+#: src/dialogs/gradient-vector.c:225
+msgid "No gradients defined"
+msgstr "尚未定义渐变"
+
+#: src/dialogs/gradient-vector.c:378
+msgid "Start color"
+msgstr "起点颜色"
+
+#: src/dialogs/gradient-vector.c:390
+msgid "End color"
+msgstr "终点颜色"
+
+#: src/dialogs/gradient-vector.c:417
+msgid "Gradient vector"
+msgstr "渐变向量"
+
 #: src/dialogs/item-properties.c:175
 msgid "Item is reference"
 msgstr "项目是引用"
@@ -1560,23 +1606,6 @@ msgstr "标识已定义"
 #: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
 msgid "The ID is valid"
 msgstr "标识合法"
-
-#. Reset button
-#: src/dialogs/gradient-selector.c:102
-msgid "Reset"
-msgstr "重置"
-
-#: src/dialogs/gradient-vector.c:58
-msgid "Start color"
-msgstr "起点颜色"
-
-#: src/dialogs/gradient-vector.c:70
-msgid "End color"
-msgstr "终点颜色"
-
-#: src/dialogs/gradient-vector.c:97
-msgid "Gradient vector"
-msgstr "渐变向量"
 
 #: src/dialogs/object-attributes.c:29
 msgid "Href:"
@@ -1715,57 +1744,102 @@ msgstr "Sodipodi (文档名 %s..)：打印预览"
 msgid "About sodipodi"
 msgstr "关于 sodipodi"
 
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "Centimeters"
 msgstr "厘米"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356 src/helper/units.c:44
 msgid "Inches"
 msgstr "英寸"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
 msgid "Point"
 msgstr "点"
 
-#: src/helper/unit-menu.c:95
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixel"
 msgstr "像素"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "用户空间"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "us"
 msgstr ""
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em squares"
 msgstr ""
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em square"
 msgstr ""
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "em"
 msgstr ""
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex squares"
 msgstr ""
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex square"
 msgstr ""
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "ex"
 msgstr ""
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:34
+msgid "Unit"
+msgstr "单位"
+
+#: src/helper/units.c:34
+msgid "Units"
+msgstr "单位"
+
+#: src/helper/units.c:35
+msgid "Pt"
+msgstr ""
+
+#: src/helper/units.c:36
+msgid "Userspace unit"
+msgstr "用户空间单位"
+
+#: src/helper/units.c:36
+msgid "User"
+msgstr "用户"
+
+#: src/helper/units.c:36
+msgid "Userspace units"
+msgstr "用户空间单位"
+
+#: src/helper/units.c:37
+msgid "Px"
+msgstr ""
+
+#: src/helper/units.c:40
+msgid "Percents"
+msgstr "百分比"
+
+#: src/helper/units.c:43
+msgid "Meter"
+msgstr "米"
+
+#: src/helper/units.c:43
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:43
+msgid "meters"
+msgstr "米"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
@@ -1892,6 +1966,31 @@ msgstr ""
 "但您即不能读取也不能保存\n"
 "设置。"
 
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "连接到 %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "连接"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "连接属性"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "跟随连接"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "删除连接"
+
 #: src/sp-image.c:291
 msgid "Broken bitmap"
 msgstr "不完整的位图"
@@ -1910,56 +2009,56 @@ msgstr "图像"
 msgid "Image Properties"
 msgstr "图像属性"
 
-#: src/sp-item.c:386
-msgid "Unknown item :-("
-msgstr "未知项目 :-("
-
-#. Item dialog
-#: src/sp-item.c:649
-msgid "Item Properties"
-msgstr "项目属性"
-
-#. Select item
-#: src/sp-item.c:659
-msgid "Select this"
-msgstr "选择它"
-
-#. Reset transformations
-#: src/sp-item.c:669
-msgid "Reset transformation"
-msgstr "重置变换"
-
-#: src/sp-item.c:675
-msgid "Make sensitive"
-msgstr "使其敏感"
-
-#: src/sp-item.c:675
-msgid "Make insensitive"
-msgstr "使其不敏感"
-
-#. Create link
-#: src/sp-item.c:680
-msgid "Create link"
-msgstr "创建连接"
-
-#: src/sp-item-group.c:434
+#: src/sp-item-group.c:435
 #, c-format
 msgid "Group of %d objects"
 msgstr "含有 %d 个对象的组"
 
-#: src/sp-item-group.c:496
+#: src/sp-item-group.c:497
 msgid "Group"
 msgstr "组"
 
 #. Group dialog
-#: src/sp-item-group.c:500
+#: src/sp-item-group.c:501
 msgid "Group Properties"
 msgstr "组属性"
 
 #. "Ungroup"
-#: src/sp-item-group.c:513
+#: src/sp-item-group.c:514
 msgid "Ungroup"
 msgstr "分解组"
+
+#: src/sp-item.c:359
+msgid "Unknown item :-("
+msgstr "未知项目 :-("
+
+#. Item dialog
+#: src/sp-item.c:622
+msgid "Item Properties"
+msgstr "项目属性"
+
+#. Select item
+#: src/sp-item.c:632
+msgid "Select this"
+msgstr "选择它"
+
+#. Reset transformations
+#: src/sp-item.c:642
+msgid "Reset transformation"
+msgstr "重置变换"
+
+#: src/sp-item.c:648
+msgid "Make sensitive"
+msgstr "使其敏感"
+
+#: src/sp-item.c:648
+msgid "Make insensitive"
+msgstr "使其不敏感"
+
+#. Create link
+#: src/sp-item.c:653
+msgid "Create link"
+msgstr "创建连接"
 
 #. Create toplevel menuitem
 #: src/sp-rect.c:363
@@ -1991,7 +2090,7 @@ msgid "Spiral Properties"
 msgstr "螺旋属性"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:479
 msgid "Star Properties"
 msgstr "星形属性"
 
@@ -1999,67 +2098,30 @@ msgstr "星形属性"
 msgid "Text object"
 msgstr "文本对象"
 
-#: src/sp-anchor.c:158
-#, c-format
-msgid "Link to %s"
-msgstr "连接到 %s"
-
-#. Create toplevel menuitem
-#: src/sp-anchor.c:219
-msgid "Link"
-msgstr "连接"
-
-#. Link dialog
-#: src/sp-anchor.c:222
-msgid "Link Properties"
-msgstr "连接属性"
-
-#. Select item
-#: src/sp-anchor.c:232
-msgid "Follow link"
-msgstr "跟随连接"
-
-#. Reset transformations
-#: src/sp-anchor.c:237
-msgid "Remove link"
-msgstr "删除连接"
-
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "绘制"
 
-#: src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "色调："
 
-#: src/widgets/sp-color-selector.c:628
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "饱和度："
 
-#: src/widgets/sp-color-selector.c:648
+#: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
 msgstr "青蓝："
 
-#: src/widgets/sp-color-selector.c:649
+#: src/widgets/sp-color-selector.c:646
 msgid "Magenta:"
 msgstr "洋红："
 
-#: src/widgets/sp-color-selector.c:650
+#: src/widgets/sp-color-selector.c:647
 msgid "Yellow:"
 msgstr "黄："
 
-#: src/widgets/sp-color-selector.c:651
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "黑："
-
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr "Sodipodi SVG 文档"
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr "Sodipodi SVG 文档车间"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "向量图解器"
