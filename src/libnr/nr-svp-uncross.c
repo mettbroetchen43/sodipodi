@@ -33,7 +33,7 @@ struct _NRSVLSlice {
 	NRSVLSlice *next;
 	NRSVL *svl;
 	NRVertex *vertex;
-        NRCoord x;
+	NRCoord x;
 	NRCoord y;
 };
 

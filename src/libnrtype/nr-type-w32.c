@@ -18,6 +18,9 @@
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_bpath.h>
 
+#include <libnr/nr-macros.h>
+#include <libnr/nr-matrix.h>
+
 #include "codepages.h"
 
 #include "nr-type-w32.h"
