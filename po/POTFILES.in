@@ -1,7 +1,7 @@
 # List of source files containing translatable strings.
 glade/align.c
-glade/display.c
 glade/desktop.c
+glade/display.c
 glade/document.c
 glade/item.c
 glade/object_props.c
@@ -10,17 +10,22 @@ glade/text-dialog.c
 glade/toolbox.c
 glade/transformation.c
 glade/xml-tree.c
-src/main.c
 src/bonobo/svg-doc-factory.c
-src/interface.c
+src/desktop.c
+src/dialogs/align.c
+src/dialogs/display-settings.c
+src/dialogs/document-properties.c
+src/dialogs/item-properties.c
+src/event-context.c
 src/file.c
+src/helper/unit-menu.c
+src/interface.c
+src/main.c
+src/sodipodi.c
 src/sp-image.c
 src/sp-item.c
 src/sp-item-group.c
 src/sp-rect.c
 src/sp-shape.c
 src/sp-text.c
-src/dialogs/align.c
-src/dialogs/display-settings.c
-src/dialogs/item-properties.c
-
+src/toolbox.c
