@@ -101,7 +101,7 @@ sp_toolbox_class_init (SPToolBoxClass * klass)
 static void
 sp_toolbox_init (SPToolBox * toolbox)
 {
-	toolbox->state = 7;//SP_TOOLBOX_VISIBLE;
+	toolbox->state = 1; /* SP_TOOLBOX_VISIBLE */
 
 	toolbox->contents = NULL;
 	toolbox->window = sp_window_new (NULL, FALSE, TRUE);
@@ -361,18 +361,6 @@ sp_toolbox_separate (SPButton *button, SPToolBox *toolbox)
 
 	sp_toolbox_set_state (toolbox, newstate);
 }
-
-#if 0
-static void
-sp_toolbox_close (GtkButton * button, gpointer data)
-{
-	SPToolBox * toolbox;
-
-	toolbox = SP_TOOLBOX (data);
-
-	sp_toolbox_set_state (toolbox, 0);
-}
-#endif
 
 static gint
 sp_toolbox_delete (GtkWidget * widget, GdkEventAny * event, gpointer data)
