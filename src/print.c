@@ -39,7 +39,7 @@ struct _SPPrintContext {
 };
 
 unsigned int
-sp_print_bind (SPPrintContext *ctx, NRMatrixF *transform, float opacity)
+sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity)
 {
 	gdouble t[6];
 
@@ -68,12 +68,12 @@ sp_print_release (SPPrintContext *ctx)
 }
 
 unsigned int
-sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *style,
-	       NRRectF *pbox, NRRectF *dbox, NRRectF *bbox)
+sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+	       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
 	gdouble t[6];
 
-	/* CTM if for information purposes only */
+	/* CTM is for information purposes only */
 	/* We expect user coordinate system to be set up already */
 
 	t[0] = ctm->c[0];
@@ -83,8 +83,6 @@ sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *sty
 	t[4] = ctm->c[4];
 	t[5] = ctm->c[5];
 
-	gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
-
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 		float rgb[3], opacity;
 		sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
@@ -93,6 +91,8 @@ sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *sty
 		/* fixme: */
 		opacity = SP_SCALE24_TO_FLOAT (style->fill_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
 		gnome_print_setopacity (ctx->gpc, opacity);
+
+		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 
 		if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
 			gnome_print_eofill (ctx->gpc);
@@ -133,6 +133,9 @@ sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *sty
 			nr_matrix_f_invert (&d2i, ctm);
 
 			gnome_print_gsave (ctx->gpc);
+
+			gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
+
 			if (style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
 				gnome_print_eoclip (ctx->gpc);
 			} else {
@@ -168,15 +171,46 @@ sp_print_fill (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *ctm, SPStyle *sty
 }
 
 unsigned int
-sp_print_stroke (SPPrintContext *ctx, NRBPath *bpath, NRMatrixF *transform, SPStyle *style)
+sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+		 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
+	gdouble t[6];
+
+	/* CTM is for information purposes only */
+	/* We expect user coordinate system to be set up already */
+
+	t[0] = ctm->c[0];
+	t[1] = ctm->c[1];
+	t[2] = ctm->c[2];
+	t[3] = ctm->c[3];
+	t[4] = ctm->c[4];
+	t[5] = ctm->c[5];
+
+	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
+		float rgb[3], opacity;
+		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
+		gnome_print_setrgbcolor (ctx->gpc, rgb[0], rgb[1], rgb[2]);
+
+		/* fixme: */
+		opacity = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
+		gnome_print_setopacity (ctx->gpc, opacity);
+
+		gnome_print_setlinewidth (ctx->gpc, style->stroke_width.computed);
+		gnome_print_setlinejoin (ctx->gpc, style->stroke_linejoin.value);
+		gnome_print_setlinecap (ctx->gpc, style->stroke_linecap.value);
+
+		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
+
+		gnome_print_stroke (ctx->gpc);
+	}
+
 	return 0;
 }
 
 unsigned int
 sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 			   unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
-			   NRMatrixF *transform, SPStyle *style)
+			   const NRMatrixF *transform, const SPStyle *style)
 {
 	gdouble t[6];
 

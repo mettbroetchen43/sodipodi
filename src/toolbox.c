@@ -18,6 +18,12 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkselection.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtkmenubar.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkdnd.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-stock.h>
@@ -37,6 +43,7 @@
 #include "sp-item-transform.h"
 #include "desktop-handles.h"
 #include "interface.h"
+#include "toolbox.h"
 
 GtkWidget * sp_toolbox_create (GladeXML *xml, const gchar *widgetname, const gchar *name, const gchar *internalname, const gchar *pxname);
 static GtkWidget *sp_toolbox_draw_create (void);

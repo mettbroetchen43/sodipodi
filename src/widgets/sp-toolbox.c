@@ -1,16 +1,28 @@
-#define _SP_TOOLBOX_C_
+#define __SP_TOOLBOX_C__
 
 /*
  * Toolbox widget
  *
  * Authors:
  *   Frank Felfe  <innerspace@iname.com>
- *   Lauris Kaplinski  <lauris@helixcode.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000-2001 Helix Code, Inc. and authors
+ * Copyright (C) 2000-2002 Authors
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <gnome.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkarrow.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhseparator.h>
+#include <gtk/gtktogglebutton.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include "sp-toolbox.h"
 
@@ -37,20 +49,19 @@ static guint toolbox_signals[LAST_SIGNAL] = {0};
 GtkType
 sp_toolbox_get_type (void)
 {
-	static GtkType toolbox_type = 0;
-	if (!toolbox_type) {
-		GtkTypeInfo toolbox_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPToolBox",
 			sizeof (SPToolBox),
 			sizeof (SPToolBoxClass),
 			(GtkClassInitFunc) sp_toolbox_class_init,
 			(GtkObjectInitFunc) sp_toolbox_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		toolbox_type = gtk_type_unique (gtk_vbox_get_type (), &toolbox_info);
+		type = gtk_type_unique (GTK_TYPE_VBOX, &info);
 	}
-	return toolbox_type;
+	return type;
 }
 
 static void
@@ -121,7 +132,7 @@ sp_toolbox_destroy (GtkObject * object)
 }
 
 static void
-sp_toolbox_size_request (GtkWidget * widget, GtkRequisition * requisition)
+sp_toolbox_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
 	SPToolBox * t;
 	GtkRequisition r;
@@ -164,17 +175,17 @@ sp_toolbox_set_state (SPToolBox * toolbox, guint state)
 			if (state & SP_TOOLBOX_STANDALONE) gtk_widget_hide (toolbox->window);
 		}
 		if ((state & SP_TOOLBOX_VISIBLE) && (!(state & SP_TOOLBOX_STANDALONE))) {
-			gtk_arrow_set (toolbox->arrow, GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+			gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 		} else {
-			gtk_arrow_set (toolbox->arrow, GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
+			gtk_arrow_set (GTK_ARROW (toolbox->arrow), GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
 		}
 		gtk_signal_handler_block_by_func (GTK_OBJECT (toolbox->standalonetoggle), sp_toolbox_separate, toolbox);
 		if (state & SP_TOOLBOX_STANDALONE) {
-			gtk_toggle_button_set_active (toolbox->standalonetoggle, TRUE);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), TRUE);
 			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NORMAL);
 		} else {
-			gtk_toggle_button_set_active (toolbox->standalonetoggle, FALSE);
-                       gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toolbox->standalonetoggle), FALSE);
+			gtk_button_set_relief (GTK_BUTTON (toolbox->standalonetoggle), GTK_RELIEF_NONE);
 		}
 		gtk_signal_handler_unblock_by_func (GTK_OBJECT (toolbox->standalonetoggle), sp_toolbox_separate, toolbox);
 		toolbox->state = state;
@@ -215,10 +226,10 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	hbb = gtk_hbox_new (FALSE,0);
 	gtk_container_add (GTK_CONTAINER (b), hbb);
 	gtk_widget_show (hbb);
-	w = gtk_arrow_new (GTK_ARROW_RIGHT, GTK_SHADOW_OUT);
+	w = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 2);
 	gtk_widget_show (w);
-	t->arrow = GTK_ARROW (w);
+	t->arrow = w;
 	w = gnome_pixmap_new_from_file (pixmapname);
 	gtk_box_pack_start (GTK_BOX (hbb), w, FALSE, FALSE, 0);
 	gtk_widget_show (w);
@@ -235,7 +246,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
         b = gtk_toggle_button_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), b, FALSE, FALSE, 0);
 	gtk_widget_show (b);
-        t->standalonetoggle = GTK_TOGGLE_BUTTON (b);
+        t->standalonetoggle = b;
 	w = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/seperate_tool.xpm");
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_widget_show (w);

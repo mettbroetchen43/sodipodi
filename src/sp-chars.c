@@ -18,6 +18,7 @@
 #include "macros.h"
 #include "helper/art-utils.h"
 #include "display/nr-arena-glyphs.h"
+#include "print.h"
 #include "style.h"
 #include "sp-chars.h"
 
@@ -210,10 +211,6 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	SPItem *item;
 	SPItemView *v;
 	SPCharElement * el;
-#if 0
-	NRBPath bpath;
-	SPCurve *curve;
-#endif
 
 	item = SP_ITEM (chars);
 
@@ -228,24 +225,9 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	el->next = chars->elements;
 	chars->elements = el;
 
-#if 0
-	if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
-		curve = sp_curve_new_from_static_bpath (bpath.path);
-		if (curve) {
-			gdouble a[6];
-			gint i;
-			for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-			for (v = item->display; v != NULL; v = v->next) {
-				nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v->arenaitem), curve, FALSE, a);
-			}
-			sp_curve_unref (curve);
-		}
-	}
-#else
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v->arenaitem), el->font, el->glyph, &el->transform);
 	}
-#endif
 }
 
 SPCurve *
@@ -286,9 +268,17 @@ sp_chars_normalized_bpath (SPChars *chars)
 /* This is completely unrelated to SPItem::print */
 
 static void
-sp_chars_print_bpath (SPPrintContext *ctx, const ArtBpath *bpath, const SPStyle *style, const gdouble *ctm,
-		      const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
+sp_chars_print_bpath (SPPrintContext *ctx, const NRBPath *bpath, const SPStyle *style, const NRMatrixF *ctm,
+		      const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
 {
+	if (style->fill.type != SP_PAINT_TYPE_NONE) {
+		sp_print_fill (ctx, bpath, ctm, style, pbox, dbox, bbox);
+	}
+
+	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+		sp_print_stroke (ctx, bpath, ctm, style, pbox, dbox, bbox);
+	}
+
 #if 0
 	/* fixme: Implement (Lauris) */
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
@@ -393,23 +383,46 @@ sp_chars_print_bpath (SPPrintContext *ctx, const ArtBpath *bpath, const SPStyle 
  */
 
 void
-sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *ctm, const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
+sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *dctm, const ArtDRect *pb, const ArtDRect *db, const ArtDRect *bb)
 {
 	SPCharElement *el;
+	NRMatrixF ctm;
+	NRRectF pbox, dbox, bbox;
+
+	ctm.c[0] = dctm[0];
+	ctm.c[1] = dctm[1];
+	ctm.c[2] = dctm[2];
+	ctm.c[3] = dctm[3];
+	ctm.c[4] = dctm[4];
+	ctm.c[5] = dctm[5];
+
+	pbox.x0 = pb->x0;
+	pbox.y0 = pb->y0;
+	pbox.x1 = pb->x1;
+	pbox.y1 = pb->y1;
+
+	dbox.x0 = db->x0;
+	dbox.y0 = db->y0;
+	dbox.x1 = db->x1;
+	dbox.y1 = db->y1;
+
+	bbox.x0 = bb->x0;
+	bbox.y0 = bb->y0;
+	bbox.x1 = bb->x1;
+	bbox.y1 = bb->y1;
+
 
 	for (el = chars->elements; el != NULL; el = el->next) {
 		gdouble chela[6];
 		NRBPath bpath;
-		ArtBpath *abp;
 		gint i;
 
 		for (i = 0; i < 6; i++) chela[i] = el->transform.c[i];
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
-			abp = art_bpath_affine_transform (bpath.path, chela);
-
-			sp_chars_print_bpath (ctx, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
-
-			art_free (abp);
+			NRBPath abp;
+			abp.path = art_bpath_affine_transform (bpath.path, chela);
+			sp_chars_print_bpath (ctx, &abp, SP_OBJECT_STYLE (chars), &ctm, &pbox, &dbox, &bbox);
+			art_free (abp.path);
 		}
 	}
 }

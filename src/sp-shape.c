@@ -311,16 +311,11 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	}
 
 	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {
-		NRMatrixF t;
+		NRMatrixF ctm;
 		NRBPath bp;
-		t.c[0] = comp->affine[0];
-		t.c[1] = comp->affine[1];
-		t.c[2] = comp->affine[2];
-		t.c[3] = comp->affine[3];
-		t.c[4] = comp->affine[4];
-		t.c[5] = comp->affine[5];
+		nr_matrix_multiply_fdd (&ctm, (NRMatrixD *) comp->affine, (NRMatrixD *) i2d);
 		bp.path = comp->curve->bpath;
-		sp_print_stroke (ctx, &bp, &t, SP_OBJECT_STYLE (item));
+		sp_print_stroke (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
 #else
 	gfloat rgb[3], opacity;

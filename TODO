@@ -3,13 +3,13 @@
 TODO for 0.28
 =============
 
-- Print open paths correctly
+- Print open paths correctly (DONE)
 - Enable active desktop indicator for single new desktop
 - Make page border togglable
 - Autoconf test for popt.h
 - Faster move
 - Direct FreeType fonts
-- Toolboxes show arrows to right initially
+- Toolboxes show arrows to right initially (DONE)
 - localise and kill transparency 1.0 bug
 
 TODO for 0.27
