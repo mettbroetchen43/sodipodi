@@ -1764,7 +1764,7 @@ msgstr "新規 SVG ドキュメントを作成"
 
 #: src/verbs.c:430
 msgid "Open..."
-msgstr "開く(_O)..."
+msgstr "開く..."
 
 #: src/verbs.c:430
 msgid "Open existing SVG document"
