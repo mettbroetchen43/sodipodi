@@ -1,12 +1,12 @@
 # Ukrainian translation of sodipodi.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Yuri Syrota <rasta@renome.rovno.ua>, 2000.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
+# Yuri Syrota <rasta@renome.rovno.ua>, 2001-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.17\n"
+"Project-Id-Version: sodipodi 0.32pre\n"
 "POT-Creation-Date: 2003-02-24 11:42+0200\n"
-"PO-Revision-Date: 2003-04-09 04:02--500\n"
+"PO-Revision-Date: 2003-04-09 04:23--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Не вдалося створити фабрику sodipodi-svg-doc"
 #. Sticky zoom
 #: src/desktop.c:726
 msgid "Zoom drawing if window size changes"
-msgstr ""
+msgstr "Масштабувати рисунок із зміною розмірів вікна"
 
 #: src/desktop.c:806
 #, c-format
@@ -40,7 +40,7 @@ msgstr "Sodipodi: %s: %s: %d"
 #: src/desktop.c:935
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr "Документ %s має незебеережені зміни, зберегти їх?"
+msgstr "Документ %s має незбережені зміни, зберегти їх?"
 
 #: src/dialogs/align.c:120
 #: src/toolbox.c:384
@@ -147,7 +147,7 @@ msgstr "Показати сітку"
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Snap to grid"
-msgstr "Проєднаня до сітки"
+msgstr "Приєднувати до сітки"
 
 #: src/dialogs/desktop-properties.c:256
 msgid "Grid units:"
@@ -159,7 +159,7 @@ msgstr "Початок по X:"
 
 #: src/dialogs/desktop-properties.c:279
 msgid "Origin Y:"
-msgstr "Почиток по Y:"
+msgstr "Початок по Y:"
 
 #: src/dialogs/desktop-properties.c:293
 msgid "Spacing X:"
@@ -279,9 +279,8 @@ msgid "Paper size:"
 msgstr "Розмір аркуш:"
 
 #: src/dialogs/document-properties.c:197
-#, fuzzy
 msgid "Custom"
-msgstr "Викрізати"
+msgstr ""
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:204
@@ -320,9 +319,8 @@ msgid "Height:"
 msgstr "Висота:"
 
 #: src/dialogs/export.c:115
-#, fuzzy
 msgid "Export bitmap"
-msgstr "Експортувати файл"
+msgstr "Експортувати растр"
 
 #. Export area frame
 #: src/dialogs/export.c:124
@@ -353,9 +351,8 @@ msgstr "Розмір растру"
 
 #: src/dialogs/export.c:187
 #: src/dialogs/export.c:195
-#, fuzzy
 msgid "pixels"
-msgstr "Пікселі\n"
+msgstr ""
 
 #: src/dialogs/export.c:191
 #: src/dialogs/export.c:199
@@ -363,9 +360,8 @@ msgid "dpi"
 msgstr ""
 
 #: src/dialogs/export.c:206
-#, fuzzy
 msgid "Export png file"
-msgstr "Експортувати файл"
+msgstr "Експортувати файл у форматі PNG"
 
 #: src/dialogs/export.c:235
 #: src/interface.c:220
@@ -624,7 +620,7 @@ msgstr "Текст"
 
 #: src/dialogs/object-properties.c:283
 msgid "Object position and size"
-msgstr "Позіція і розмір об'єкта"
+msgstr "Позиція і розмір об'єкта"
 
 #: src/dialogs/object-properties.c:305
 msgid "Position and size"
@@ -744,7 +740,7 @@ msgstr "Інструмент не має параметрів"
 
 #: src/dialogs/transformation.c:194
 msgid "Transform selection"
-msgstr "Вибір трансвормації"
+msgstr "Вибір перетворення"
 
 #: src/dialogs/transformation.c:366
 msgid "Move"
@@ -1164,7 +1160,7 @@ msgstr "Про Sodipodi"
 
 #: src/interface.c:235
 msgid "Cut"
-msgstr "Викрізати"
+msgstr "Вирізати"
 
 #: src/interface.c:236
 msgid "Copy"
@@ -1318,11 +1314,11 @@ msgstr "Заповнення і обведення"
 
 #: src/interface.c:398
 msgid "Size and Position"
-msgstr "Розімр і позиція"
+msgstr "Розмір і позиція"
 
 #: src/interface.c:399
 msgid "Align Objects"
-msgstr "Вірівняти об'єкти"
+msgstr "Вирівняти об'єкти"
 
 #: src/interface.c:400
 msgid "Text Editing"
@@ -1848,7 +1844,7 @@ msgstr "Позиція і розмір об'єкта"
 
 #: src/toolbox.c:383
 msgid "Text and font settings"
-msgstr "Параметри тексту і шришта"
+msgstr "Параметри тексту і шрифту"
 
 #: src/toolbox.c:385
 msgid "Object transformations"
@@ -1916,30 +1912,30 @@ msgstr "Малювання"
 #. Select
 #: src/toolbox.c:461
 msgid "Select tool - select and transform objects"
-msgstr "Вибір ­ вибір і перетворення об'єктів"
+msgstr "Вибір - вибір і перетворення об'єктів"
 
 #. Node
 #: src/toolbox.c:468
 msgid "Node tool - modify different aspects of existing objects"
-msgstr "Вузол ­ модифікація різних аспектів наявних об'єктів"
+msgstr "Вузол - модифікація різних аспектів наявних об'єктів"
 
 #. START COMPONENTS
 #. Rect
 #: src/toolbox.c:480
 msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
-msgstr "Прямокутник ­ створення прямокутників і квадратів"
+msgstr "Прямокутник - створення прямокутників і квадратів"
 
 #: src/toolbox.c:481
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr "Дуга ­ створення кіл, еліпсів і дуг"
+msgstr "Дуга - створення кіл, еліпсів і дуг"
 
 #: src/toolbox.c:482
 msgid "Star tool - create stars and polygons"
-msgstr "Зірка ­ створення зірок і багатокутників"
+msgstr "Зірка - створення зірок і багатокутників"
 
 #: src/toolbox.c:483
 msgid "Spiral tool - create spirals"
-msgstr "Спіраль ­ створення спіралей"
+msgstr "Спіраль - створення спіралей"
 
 #. START COMPONENTS
 #. Rect
@@ -1953,22 +1949,22 @@ msgstr "Ручка - точне малювання кривих"
 
 #: src/toolbox.c:500
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr "Каліграфія - малювання кліграфічних ліній"
+msgstr "Каліграфія - малювання каліграфічних ліній"
 
 #. Text
 #: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
-msgstr "Текст - створенян текстових об'єктів"
+msgstr "Текст - створення текстових об'єктів"
 
 #. Zoom
 #: src/toolbox.c:515
 msgid "Zoom tool - zoom into choosen area"
-msgstr "Масштабування ­ масштабування вибраної ділянки"
+msgstr "Масштабування - масштабування вибраної ділянки"
 
 #. Dropper
 #: src/toolbox.c:521
 msgid "Dropper tool - pick averaged colors from image"
-msgstr "Піпетка - отримання колорів із зображення"
+msgstr "Піпетка - отримання кольорів із зображення"
 
 #. Todo:  Generalize all the toolbox routines to have general purpose
 #. routine for creating them
@@ -1984,19 +1980,16 @@ msgid "Zoom in drawing"
 msgstr "Збільшити рисунок"
 
 #: src/toolbox.c:604
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "Масштаб 1:1"
+msgstr "Встановити масштаб 2:1"
 
 #: src/toolbox.c:605
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "Масштаб 1:1"
+msgstr "Встановити масштаб 1:1"
 
 #: src/toolbox.c:606
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "Масштаб 1:1"
+msgstr "Встановити масштаб 1:2"
 
 #: src/toolbox.c:607
 msgid "Zoom out drawing"
@@ -2023,19 +2016,16 @@ msgid "Insert new nodes into selected segments"
 msgstr "Вставити нові вузли у вибрані відрізки"
 
 #: src/toolbox.c:638
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Розбити лінію у вибраному вузлі"
+msgstr "Розбити лінію у вибраних вузлах"
 
 #: src/toolbox.c:639
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Стерти вибрані вузли"
+msgstr ""
 
 #: src/toolbox.c:640
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "Перетворити вибряні сегменти в прямі"
+msgstr ""
 
 #: src/toolbox.c:641
 msgid "Delete selected nodes"
@@ -2065,7 +2055,7 @@ msgstr "Стиль"
 
 #: src/widgets/font-selector.c:207
 msgid "Font size:"
-msgstr "Розмір шрифта:"
+msgstr "Розмір шрифту:"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
@@ -2085,18 +2075,16 @@ msgid "gradientSpread"
 msgstr ""
 
 #: src/widgets/gradient-vector.c:245
-#, fuzzy
 msgid "No document selected"
-msgstr "Останній вибраний"
+msgstr "Не вибрано документа"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
 msgstr "У документі немає градієнтів"
 
 #: src/widgets/gradient-vector.c:257
-#, fuzzy
 msgid "No gradient selected"
-msgstr "Останній вибраний"
+msgstr "Не вибрано градієнта"
 
 #: src/widgets/gradient-vector.c:412
 msgid "Start color"
