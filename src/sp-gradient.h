@@ -103,8 +103,8 @@ struct _SPGradient {
 	guint has_stops : 1;
 	/* Composed vector */
 	SPGradientVector *vector;
-	/* Rendered color array */
-	guint32 *color;
+	/* Rendered color array (4 * 1024 bytes at moment) */
+	guchar *color;
 	/* Length of vector */
 	gdouble len;
 };

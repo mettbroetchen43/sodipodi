@@ -89,7 +89,9 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 #endif
 
 	/* fixme: */
+#if 0
 	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)), NULL, drawing->drawing);
+#endif
 
 	return BONOBO_CANVAS_COMPONENT (drawing);
 }
@@ -112,6 +114,8 @@ sp_embeddable_drawing_new_doc (BonoboCanvasComponent * component, gpointer data)
 	drawing->spdocument = drawing->edocument->document;
 
 	/* fixme: */
+#if 0
 	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)), NULL, drawing->drawing);
+#endif
 }
 

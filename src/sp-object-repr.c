@@ -15,6 +15,7 @@
 #include "sp-polygon.h"
 #include "sp-text.h" 
 #include "sp-gradient.h"
+#include "sp-clippath.h"
 #include "sp-object-repr.h"
 
 SPObject *
@@ -40,9 +41,20 @@ sp_object_repr_build_tree (SPDocument * document, SPRepr * repr)
 }
 
 GtkType
-sp_object_type_lookup (const gchar * name)
+sp_repr_type_lookup (SPRepr *repr)
 {
-	static GHashTable * dtable = NULL;
+	const guchar *name;
+
+	name = sp_repr_attr (repr, "sodipodi:type");
+	if (!name) name = sp_repr_name (repr);
+
+	return sp_object_type_lookup (name);
+}
+
+GtkType
+sp_object_type_lookup (const guchar * name)
+{
+	static GHashTable *dtable = NULL;
 	gpointer data;
 
 	if (dtable == NULL) {
@@ -68,6 +80,7 @@ sp_object_type_lookup (const gchar * name)
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
 		g_hash_table_insert (dtable, "radialGradient", GINT_TO_POINTER (SP_TYPE_RADIALGRADIENT));
 		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
+		g_hash_table_insert (dtable, "clipPath", GINT_TO_POINTER (SP_TYPE_CLIPPATH));
 	}
 
 	data = g_hash_table_lookup (dtable, name);

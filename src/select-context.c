@@ -100,18 +100,25 @@ sp_select_context_class_init (SPSelectContextClass * klass)
 }
 
 static void
-sp_select_context_init (SPSelectContext * select_context)
+sp_select_context_init (SPSelectContext * sc)
 {
+	sc->dragging = FALSE;
+	sc->moved = FALSE;
 }
 
 static void
 sp_select_context_destroy (GtkObject * object)
 {
-	SPSelectContext * select_context;
+	SPSelectContext *sc;
 
-	select_context = SP_SELECT_CONTEXT (object);
+	sc = SP_SELECT_CONTEXT (object);
 
-	sp_sel_trans_shutdown (&select_context->seltrans);
+	if (sc->grabbed) {
+		gnome_canvas_item_ungrab (sc->grabbed, gdk_time_get ());
+		sc->grabbed = NULL;
+	}
+
+	sp_sel_trans_shutdown (&sc->seltrans);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -131,100 +138,94 @@ sp_select_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 }
 
 static gint
-sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
+sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, GdkEvent *event)
 {
-	SPDesktop * desktop;
-	SPSelectContext * select_context;
-	SPSelTrans * seltrans;
-	SPSelection * selection;
-	GdkCursor * cursor;
+	SPDesktop *desktop;
+	SPSelectContext *sc;
+	SPSelTrans *seltrans;
+	SPSelection *selection;
+	GdkCursor *cursor;
 	ArtPoint p;
-	static int dragging, moved;
 	gint ret = FALSE;
 
 	desktop = event_context->desktop;
-	select_context = SP_SELECT_CONTEXT (event_context);
-	seltrans = &select_context->seltrans;
+	sc = SP_SELECT_CONTEXT (event_context);
+	seltrans = &sc->seltrans;
 	selection = SP_DT_SELECTION (desktop);
 
 	switch (event->type) {
 	case GDK_2BUTTON_PRESS:
-	  ret = TRUE;
-	  break;
+		ret = TRUE;
+		break;
 	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 1:
-		  //if (!sp_selection_is_empty (selection)) {
-				//sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-				//sp_sel_trans_grab (seltrans, &p, 0, 0, FALSE);
-				dragging = TRUE;
-				moved = FALSE;
-				//}
-			gnome_canvas_item_grab (sp_item_canvas_item (item, desktop), 
+		if (event->button.button == 1) {
+			/* Left mousebutton */
+			sc->dragging = TRUE;
+			sc->moved = FALSE;
+			sc->item = item;
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->drawing),
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
+			sc->grabbed = GNOME_CANVAS_ITEM (desktop->drawing);
 			ret = TRUE;
-			break;
-		default:
-			break;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
-			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-		        if (!moved) {
-			  if (!sp_selection_item_selected (selection, item)) {
-			    // have to select here since selecting is done when releasing
-			    sp_sel_trans_reset_state (seltrans);
-			    sp_selection_set_item (selection, item);
-			  }
-			  sp_sel_trans_grab (seltrans, &p, -1, -1, FALSE);
-			  moved = TRUE;
-			} 
-			sp_selection_moveto (seltrans, p.x, p.y, event->button.state);
-		
-			ret = TRUE;
+		if (event->motion.state & GDK_BUTTON1_MASK) {
+			/* Left mousebutton */
+			if (sc->dragging) {
+				sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
+				if (!sc->moved) {
+					if (!sp_selection_item_selected (selection, sc->item)) {
+						// have to select here since selecting is done when releasing
+						sp_sel_trans_reset_state (seltrans);
+						sp_selection_set_item (selection, sc->item);
+					}
+					sp_sel_trans_grab (seltrans, &p, -1, -1, FALSE);
+					sc->moved = TRUE;
+				}
+				sp_selection_moveto (seltrans, p.x, p.y, event->button.state);
+				ret = TRUE;
+			}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		switch (event->button.button) {
-		case 1:
-			if (moved) {
-			  // item is being moved
-			  sp_sel_trans_ungrab (seltrans);
-			  moved = FALSE;
-			  sp_desktop_clear_status (desktop);
+		if (event->button.button == 1) {
+			if (sc->moved) {
+				// item has been moved
+				sp_sel_trans_ungrab (seltrans);
+				sc->moved = FALSE;
+				sp_desktop_clear_status (desktop);
 			} else {
-			  // item has not been moved -> do selecting
-			  if (!sp_selection_is_empty (selection)) {
-			    if (event->button.state & GDK_SHIFT_MASK) {
-			      sp_sel_trans_reset_state (seltrans);
-			      if (sp_selection_item_selected (selection, item)) {
-				sp_selection_remove_item (selection, item);
-			      } else {
-				sp_selection_add_item (selection, item);
-			      }
-			    } else {
-			      if (sp_selection_item_selected (selection, item)) {
-				sp_sel_trans_increase_state (seltrans);
-			      } else {
-				sp_sel_trans_reset_state (seltrans);
-				sp_selection_set_item (selection, item);
-			      }
-			    }
-			  } else {
-			    sp_sel_trans_reset_state (seltrans);
-			    sp_selection_set_item (selection, item);
-			  }
+				// item has not been moved -> do selecting
+				if (!sp_selection_is_empty (selection)) {
+					if (event->button.state & GDK_SHIFT_MASK) {
+						sp_sel_trans_reset_state (seltrans);
+						if (sp_selection_item_selected (selection, sc->item)) {
+							sp_selection_remove_item (selection, sc->item);
+						} else {
+							sp_selection_add_item (selection, sc->item);
+						}
+					} else {
+						if (sp_selection_item_selected (selection, sc->item)) {
+							sp_sel_trans_increase_state (seltrans);
+						} else {
+							sp_sel_trans_reset_state (seltrans);
+							sp_selection_set_item (selection, sc->item);
+						}
+					}
+				} else {
+					sp_sel_trans_reset_state (seltrans);
+					sp_selection_set_item (selection, sc->item);
+				}
 			}
-
-			dragging = FALSE;
-			//sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
-			gnome_canvas_item_ungrab (sp_item_canvas_item (item, desktop), event->button.time);
+			sc->dragging = FALSE;
+			sc->item = NULL;
+			if (sc->grabbed) {
+				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
+				sc->grabbed = NULL;
+			}
 			ret = TRUE;
-			break;
-		default:
-			break;
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
@@ -248,77 +249,118 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 }
 
 static gint
-sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event)
+sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 {
-	SPDesktop * desktop;
-	SPSelectContext * select_context;
-	SPSelTrans * seltrans;
-	SPSelection * selection;
-	SPItem * item;
+	SPDesktop *desktop;
+	SPSelectContext *sc;
+	SPSelTrans *seltrans;
+	SPSelection *selection;
+	SPItem *item;
 	gint ret = FALSE;
 	ArtPoint p;
 	ArtDRect b;
-	GSList * l;
+	GSList *l;
 
 	desktop = event_context->desktop;
-	select_context = SP_SELECT_CONTEXT (event_context);
-	seltrans = &select_context->seltrans;
+	sc = SP_SELECT_CONTEXT (event_context);
+	seltrans = &sc->seltrans;
 	selection = SP_DT_SELECTION (desktop);
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-			case 1:
-				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-				//sp_sel_trans_grab (seltrans, &p, -1, -1, FALSE);
-				sp_rubberband_start (desktop, p.x, p.y);
-				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-						  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-							NULL, event->button.time);
-				ret = TRUE;
-				break;
-			default:
-				break;
+		if (event->button.button == 1) {
+			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
+			sp_rubberband_start (desktop, p.x, p.y);
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
+			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
+			ret = TRUE;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (event->motion.state & GDK_BUTTON1_MASK) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-			sp_rubberband_move (p.x, p.y);
+			if (sc->dragging) {
+				/* User has dragged fast, so we get events on root */
+				if (!sc->moved) {
+					if (!sp_selection_item_selected (selection, sc->item)) {
+						// have to select here since selecting is done when releasing
+						sp_sel_trans_reset_state (seltrans);
+						sp_selection_set_item (selection, sc->item);
+					}
+					sp_sel_trans_grab (seltrans, &p, -1, -1, FALSE);
+					sc->moved = TRUE;
+				} 
+				sp_selection_moveto (seltrans, p.x, p.y, event->button.state);
+				ret = TRUE;
+			} else {
+				sp_rubberband_move (p.x, p.y);
+			}
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		switch (event->button.button) {
-		case 1:
-		  //sp_sel_trans_ungrab (seltrans);
-			if (sp_rubberband_rect (&b)) {
-				sp_rubberband_stop ();
-				sp_sel_trans_reset_state (seltrans);
-				l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
-				if (event->button.state & GDK_SHIFT_MASK) {
-					while (l) {
-						item = SP_ITEM (l->data);
-						if (sp_selection_item_selected (selection, item)) {
-							sp_selection_remove_item (selection, item);
+		if (event->button.button == 1) {
+			if (sc->dragging) {
+				if (sc->moved) {
+					// item has been moved
+					sp_sel_trans_ungrab (seltrans);
+					sc->moved = FALSE;
+					sp_desktop_clear_status (desktop);
+				} else {
+					// item has not been moved -> do selecting
+					if (!sp_selection_is_empty (selection)) {
+						if (event->button.state & GDK_SHIFT_MASK) {
+							sp_sel_trans_reset_state (seltrans);
+							if (sp_selection_item_selected (selection, sc->item)) {
+								sp_selection_remove_item (selection, sc->item);
+							} else {
+								sp_selection_add_item (selection, sc->item);
+							}
 						} else {
-							sp_selection_add_item (selection, item);
+							if (sp_selection_item_selected (selection, sc->item)) {
+								sp_sel_trans_increase_state (seltrans);
+							} else {
+								sp_sel_trans_reset_state (seltrans);
+								sp_selection_set_item (selection, sc->item);
+							}
 						}
-						l = g_slist_remove (l, item);
+					} else {
+						sp_sel_trans_reset_state (seltrans);
+						sp_selection_set_item (selection, sc->item);
+					}
+				}
+				sc->dragging = FALSE;
+				sc->item = NULL;
+			} else {
+				if (sp_rubberband_rect (&b)) {
+					sp_rubberband_stop ();
+					sp_sel_trans_reset_state (seltrans);
+					l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+					if (event->button.state & GDK_SHIFT_MASK) {
+						while (l) {
+							item = SP_ITEM (l->data);
+							if (sp_selection_item_selected (selection, item)) {
+								sp_selection_remove_item (selection, item);
+							} else {
+								sp_selection_add_item (selection, item);
+							}
+							l = g_slist_remove (l, item);
+						}
+					} else {
+						sp_selection_set_item_list (selection, l);
 					}
 				} else {
-					sp_selection_set_item_list (selection, l);
+					if (!sp_selection_is_empty (selection)) {
+						sp_selection_empty (selection);
+						ret = TRUE;
+					}
 				}
-			} else {
-				if (!sp_selection_is_empty (selection)) {
-					sp_selection_empty (selection);
-					ret = TRUE;
-				}
+				ret = TRUE;
 			}
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
-			ret = TRUE;
-			break;
-		default:
-			break;
+			if (sc->grabbed) {
+				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
+			}
 		}
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context

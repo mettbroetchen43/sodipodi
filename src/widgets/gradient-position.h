@@ -36,7 +36,7 @@ struct _SPGradientPosition {
 	GdkGC *gc;
 	GdkPixmap *px;
 	guchar *rgb;
-	guint32 *rgba;
+	guchar *rgba;
 };
 
 struct _SPGradientPositionClass {

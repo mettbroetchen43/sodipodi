@@ -19,6 +19,7 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "helper/canvas-helper.h"
+#include "display/canvas-arena.h"
 #include "forward.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
@@ -42,7 +43,7 @@ static void sp_desktop_destroy (GtkObject * object);
 
 static void sp_desktop_realize (GtkWidget * widget);
 
-static gint sp_desktop_event (GtkWidget * widget, GdkEvent * event);
+static gint sp_desktop_event (GtkWidget *widget, GdkEvent *event, SPDesktop *dt);
 
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_resized (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
@@ -180,7 +181,7 @@ sp_desktop_init (SPDesktop * desktop)
 	gtk_widget_pop_visual ();
 
 	gtk_signal_connect (GTK_OBJECT (desktop->canvas), "event",
-			    GTK_SIGNAL_FUNC (sp_desktop_event), NULL);
+			    GTK_SIGNAL_FUNC (sp_desktop_event), desktop);
 
 	gtk_widget_show (GTK_WIDGET (desktop->canvas));
 	widget = gtk_frame_new (NULL);
@@ -350,7 +351,7 @@ sp_desktop_destroy (GtkObject * object)
 	if (desktop->document) {
 		if (desktop->canvas) {
 			sp_namedview_hide (desktop->namedview, desktop);
-			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop);
+			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
 		}
 		gtk_object_unref (GTK_OBJECT (desktop->document));
 	}
@@ -381,16 +382,13 @@ sp_desktop_realize (GtkWidget * widget)
 }
 
 static gint
-sp_desktop_event (GtkWidget * widget, GdkEvent * event)
+sp_desktop_event (GtkWidget *widget, GdkEvent *event, SPDesktop *dt)
 {
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button.button == 3)) {
-		SPDesktop *dt;
-		dt = (SPDesktop *) widget;
-		g_print ("Button\n");
 		if (event->button.state & GDK_SHIFT_MASK) {
-			GTK_OBJECT_SET_FLAGS (widget, SP_CANVAS_STICKY_FLAG);
+			sp_canvas_arena_set_sticky (SP_CANVAS_ARENA (dt->drawing), TRUE);
 		} else {
-			GTK_OBJECT_UNSET_FLAGS (widget, SP_CANVAS_STICKY_FLAG);
+			sp_canvas_arena_set_sticky (SP_CANVAS_ARENA (dt->drawing), FALSE);
 		}
 	}
 
@@ -398,6 +396,22 @@ sp_desktop_event (GtkWidget * widget, GdkEvent * event)
 		return (* GTK_WIDGET_CLASS (parent_class)->event) (widget, event);
 
 	return FALSE;
+}
+
+/* fixme: */
+
+static gint
+arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPDesktop *desktop)
+{
+	if (item) {
+		SPItem *spi;
+		spi = gtk_object_get_user_data (GTK_OBJECT (item));
+		sp_event_context_item_handler (desktop->event_context, spi, event);
+	} else {
+		sp_event_context_root_handler (desktop->event_context, event);
+	}
+
+	return TRUE;
 }
 
 /* Constructor */
@@ -446,8 +460,13 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+#if 0
 	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
+#else
+	desktop->drawing = gnome_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
+	gtk_signal_connect (GTK_OBJECT (desktop->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), desktop);
+#endif
 	desktop->grid = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
@@ -496,7 +515,8 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	if (select_set_id<1) select_set_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", 
 								 GTK_SIGNAL_FUNC (sp_desktop_update_scrollbars),NULL);
 
-	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop, desktop->drawing);
+	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
+	if (ci) nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ci, NULL);
 
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
@@ -574,13 +594,15 @@ sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate)
 void
 sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 {
+	NRArenaItem *ai;
+
 	g_assert (desktop != NULL);
 	g_assert (SP_IS_DESKTOP (desktop));
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
 
 	sp_namedview_hide (desktop->namedview, desktop);
-	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop);
+	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
 
 	gtk_object_ref (GTK_OBJECT (document));
 	gtk_object_unref (GTK_OBJECT (desktop->document));
@@ -588,7 +610,8 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	desktop->document = document;
 	desktop->namedview = sp_document_namedview (document, NULL);
 
-	sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop, desktop->drawing);
+	ai = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
+	if (ai) nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
 	sp_desktop_activate_guides (desktop, TRUE);

@@ -251,7 +251,7 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
 		GtkType type;
 		SPObject * child;
-		type = sp_object_type_lookup (sp_repr_name (rchild));
+		type = sp_repr_type_lookup (rchild);
 		if (gtk_type_is_a (type, SP_TYPE_STOP)) {
 			child = gtk_type_new (type);
 			child->parent = object;
@@ -391,7 +391,7 @@ sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 
 	sp_gradient_invalidate_vector (gr);
 
-	type = sp_object_type_lookup (sp_repr_name (child));
+	type = sp_repr_type_lookup (child);
 	ochild = gtk_type_new (type);
 	ochild->parent = object;
 
@@ -590,7 +590,7 @@ sp_gradient_write_colors (SPGradient *gr)
 	}
 
 	if (!gr->color) {
-		gr->color = g_new (guint32, NCOLORS);
+		gr->color = g_new (guchar, 4 * NCOLORS);
 	}
 
 	for (i = 0; i < gr->vector->nstops - 1; i++) {
@@ -625,7 +625,10 @@ sp_gradient_write_colors (SPGradient *gr)
 		g_print ("from %d to %d: %x %x %x %x\n", o0, o1, dr, dg, db, da);
 #endif
 		for (j = o0; j < o1 + 1; j++) {
-			gr->color[j] = ((r & 0xff0000) << 8) | (g & 0xff0000) | ((b & 0xff0000) >> 8) | (a >> 16);
+			gr->color[4 * j] = r >> 16;
+			gr->color[4 * j + 1] = g >> 16;
+			gr->color[4 * j + 2] = b >> 16;
+			gr->color[4 * j + 3] = a >> 16;
 #if 0
 			g_print ("%x\n", gr->color[j]);
 #endif
@@ -670,12 +673,10 @@ sp_gradient_render_vector_line_rgba (SPGradient *gradient, guchar *buf, gint len
 	didx = (1024 << 8) / span;
 
 	for (x = 0; x < len; x++) {
-		guint32 rgba;
-		rgba = gradient->color[idx >> 8];
-		*buf++ = rgba >> 24;
-		*buf++ = (rgba >> 16) & 0xff;
-		*buf++ = (rgba >> 8) & 0xff;
-		*buf++ = rgba & 0xff;
+		*buf++ = gradient->color[4 * (idx >> 8)];
+		*buf++ = gradient->color[4 * (idx >> 8) + 1];
+		*buf++ = gradient->color[4 * (idx >> 8) + 2];
+		*buf++ = gradient->color[4 * (idx >> 8) + 3];
 		idx += didx;
 	}
 }
@@ -701,13 +702,11 @@ sp_gradient_render_vector_line_rgb (SPGradient *gradient, guchar *buf, gint len,
 	didx = (1024 << 8) / span;
 
 	for (x = 0; x < len; x++) {
-		guint32 rgba;
 		gint r, g, b, a, fc;
-		rgba = gradient->color[idx >> 8];
-		r = rgba >> 24;
-		g = (rgba >> 16) & 0xff;
-		b = (rgba >> 8) & 0xff;
-		a = rgba & 0xff;
+		r = gradient->color[4 * (idx >> 8)];
+		g = gradient->color[4 * (idx >> 8) + 1];
+		b = gradient->color[4 * (idx >> 8) + 2];
+		a = gradient->color[4 * (idx >> 8) + 3];
 		fc = (r - *buf) * a;
 		*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 		fc = (g - *buf) * a;
@@ -838,7 +837,7 @@ static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
 static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
-static void sp_lg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 static SPGradientClass *lg_parent_class;
 
@@ -1134,15 +1133,15 @@ sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector)
 }
 
 static void
-sp_lg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
 	SPLGPainter *lgp;
 	SPLinearGradient *lg;
 	SPGradient *g;
 	gdouble pos;
 	gint x, y;
-	guint32 *p;
-	guint32 tmp;
+	guchar *p;
+	guint tmp;
 
 	lgp = (SPLGPainter *) painter;
 	lg = lgp->lg;
@@ -1154,7 +1153,7 @@ sp_lg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint
 	}
 
 	for (y = 0; y < height; y++) {
-		p = buf + y * rowstride;
+		p = px + y * rowstride;
 		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
 		for (x = 0; x < width; x++) {
 			gint ip, idx;
@@ -1176,9 +1175,12 @@ sp_lg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint
 				break;
 			}
 			/* a * b / 255 = a * b * (256 * 256 / 255) / 256 / 256 */
-			tmp = (g->color[idx] & 0xff) * lgp->opacity;
+			tmp = g->color[4 * idx + 3] * lgp->opacity;
 			tmp = (tmp << 16) + tmp + (tmp >> 8);
-			*p++ = (g->color[idx] & 0xffffff00) | (tmp >> 24);
+			*p++ = g->color[4 * idx];
+			*p++ = g->color[4 * idx + 1];
+			*p++ = g->color[4 * idx + 2];
+			*p++ = tmp >> 24;
 			pos += lgp->dx;
 		}
 	}
@@ -1209,7 +1211,7 @@ static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
 static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
-static void sp_rg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 static SPGradientClass *rg_parent_class;
 
@@ -1495,7 +1497,7 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 }
 
 static void
-sp_rg_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
 #if 0
 	SPLGPainter *lgp;

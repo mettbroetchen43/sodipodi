@@ -5,7 +5,7 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include "helper/art-rgba-rgba-affine.h"
-#include "display/canvas-image.h"
+#include "display/nr-arena-image.h"
 #include "style.h"
 #include "brokenimage.xpm"
 #include "sp-image.h"
@@ -26,7 +26,7 @@ static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
-static GnomeCanvasItem * sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
 static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
@@ -91,7 +91,6 @@ static void
 sp_image_init (SPImage *image)
 {
 	image->pixbuf = NULL;
-	image->sensitive = TRUE;
 }
 
 static void
@@ -117,7 +116,6 @@ sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
 
 	sp_image_read_attr (object, "xlink:href");
-	sp_image_read_attr (object, "insensitive");
 }
 
 static void
@@ -141,18 +139,6 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 		image->pixbuf = pixbuf;
 		sp_image_update_canvas_image (image);
 		return;
-	} else if (strcmp (key, "insensitive") == 0) {
-		const gchar * val;
-		gboolean sensitive;
-		SPItemView * v;
-
-		val = sp_repr_attr (object->repr, key);
-		sensitive = (val == NULL);
-
-		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
-			sp_canvas_image_set_sensitive (SP_CANVAS_IMAGE (v->canvasitem), sensitive);
-		}
-		return;
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
@@ -160,7 +146,10 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 
 
 	if (!strcmp (key, "style")) {
+#if 0
+		/* fixme: */
 		sp_image_update_canvas_image (image);
+#endif
 	}
 }
 
@@ -277,22 +266,21 @@ sp_image_description (SPItem * item)
 	return g_strdup (_("Color bitmap"));
 }
 
-static GnomeCanvasItem *
-sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+static NRArenaItem *
+sp_image_show (SPItem *item, NRArena *arena)
 {
 	SPObject *object;
 	SPImage * image;
-	SPCanvasImage * ci;
+	NRArenaItem *arenaitem;
 
 	object = SP_OBJECT (item);
 	image = (SPImage *) item;
 
-	ci = (SPCanvasImage *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_IMAGE, NULL);
-	g_return_val_if_fail (ci != NULL, NULL);
+	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
 
-	sp_canvas_image_set_pixbuf (ci, image->pixbuf, object->style->opacity);
+	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (arenaitem), image->pixbuf);
 
-	return (GnomeCanvasItem *) ci;
+	return arenaitem;
 }
 
 static gboolean
@@ -429,7 +417,7 @@ sp_image_update_canvas_image (SPImage *image)
 	if (!image->pixbuf) return;
 
 	for (v = item->display; v != NULL; v = v->next) {
-		sp_canvas_image_set_pixbuf (SP_CANVAS_IMAGE (v->canvasitem), image->pixbuf, object->style->real_opacity);
+		nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (v->arenaitem), image->pixbuf);
 	}
 }
 

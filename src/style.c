@@ -18,6 +18,7 @@
 #include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "document.h"
+#include "uri-references.h"
 #include "sp-paint-server.h"
 #include "style.h"
 
@@ -573,38 +574,11 @@ static void
 sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document)
 {
 	guint32 color;
+	SPObject *ps;
 
 	if (!strncmp (str, "url", 3)) {
-		const guchar *e;
-		guchar *id;
-		gint len;
 		SPObject *ps;
-		/* fixme: */
-		while (*str != '#') {
-			if (!*str || *str == ';') {
-				paint->type = SP_PAINT_TYPE_NONE;
-				return;
-			}
-			str++;
-		}
-		while (!isalpha (*str)) {
-			if (!*str || *str == ';') {
-				paint->type = SP_PAINT_TYPE_NONE;
-				return;
-			}
-			str++;
-		}
-		for (e = str; *e != ')'; e++) {
-			if (!*e || *e == ';') {
-				paint->type = SP_PAINT_TYPE_NONE;
-				return;
-			}
-		}
-		len = e - str;
-		id = alloca (len + 1);
-		memcpy (id, str, len);
-		id[len] = '\0';
-		ps = sp_document_lookup_id (document, id);
+		ps = sp_uri_reference_resolve (document, str);
 		if (!ps || !SP_IS_PAINT_SERVER (ps)) {
 			paint->type = SP_PAINT_TYPE_NONE;
 			return;

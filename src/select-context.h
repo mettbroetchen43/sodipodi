@@ -15,6 +15,10 @@ typedef struct _SPSelectContextClass SPSelectContextClass;
 
 struct _SPSelectContext {
 	SPEventContext event_context;
+	guint dragging : 1;
+	guint moved : 1;
+	SPItem *item;
+	GnomeCanvasItem *grabbed;
 	SPSelTrans seltrans;
 };
 

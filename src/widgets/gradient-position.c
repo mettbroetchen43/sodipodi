@@ -14,6 +14,7 @@
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include "../helper/nr-plain-stuff.h"
+#include "../helper/nr-plain-stuff-gdk.h"
 #include "gradient-position.h"
 
 #define RADIUS 3
@@ -265,17 +266,7 @@ sp_gradient_position_expose (GtkWidget *widget, GdkEventExpose *event)
 	pos = SP_GRADIENT_POSITION (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-#if 0
-		if (pos->need_update) {
-			sp_gradient_position_update (pos);
-		}
-		gdk_draw_pixmap (widget->window, widget->style->black_gc,
-				 pos->px, event->area.x - widget->allocation.x, event->area.y - widget->allocation.y,
-				 event->area.x, event->area.y,
-				 event->area.width, event->area.height);
-#else
 		sp_gradient_position_draw (widget, &event->area);
-#endif
 	}
 
 	return TRUE;
@@ -515,14 +506,14 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	ArtDRect bbox;
 	gdouble id[6];
 	gint x0, y0, x1, y1;
-	guint32 *t;
+	guchar *t;
 
 	widget = GTK_WIDGET (pos);
 
 	pos->need_update = FALSE;
 
 	/* Create image data */
-	if (!pos->rgba) pos->rgba = g_new (guint32, widget->allocation.height * widget->allocation.width);
+	if (!pos->rgba) pos->rgba = g_new (guchar, 4 * widget->allocation.height * widget->allocation.width);
 	if (!pos->rgb) pos->rgb = g_new (guchar, 3 * widget->allocation.height * widget->allocation.width);
 	if (!pos->px) pos->px = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
 	if (!pos->gc) pos->gc = gdk_gc_new (widget->window);
@@ -534,21 +525,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	    (widget->allocation.width < 1) ||
 	    (widget->allocation.height < 1)) {
 		/* Draw empty thing */
-		for (y = 0; y < widget->allocation.height; y++) {
-			p = pos->rgb + 3 * y * widget->allocation.width;
-			for (x = 0; x < widget->allocation.width; x++) {
-				guint c;
-				c = ((x + y) & 1) ? 0xff : 0x00;
-				*p++ = c;
-				*p++ = c;
-				*p++ = c;
-			}
-		}
-		gdk_draw_rgb_image (pos->px, pos->gc,
-				    0, 0,
-				    widget->allocation.width, widget->allocation.height,
-				    GDK_RGB_DITHER_MAX,
-				    pos->rgb, widget->allocation.width * 3);
+		nr_gdk_draw_gray_garbage (pos->px, pos->gc, 0, 0, widget->allocation.width, widget->allocation.height);
 		return;
 	}
 
@@ -582,21 +559,21 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	bbox.y1 = widget->allocation.height - yp;
 	pos->painter = sp_paint_server_painter_new (SP_PAINT_SERVER (pos->gradient), id, 1.0, &bbox);
 	/* Paint rgb buffer */
-	pos->painter->fill (pos->painter, pos->rgba, 0, 0, widget->allocation.width, widget->allocation.height, widget->allocation.width);
+	pos->painter->fill (pos->painter, pos->rgba, 0, 0, widget->allocation.width, widget->allocation.height, 4 * widget->allocation.width);
 	pos->painter = sp_painter_free (pos->painter);
 	for (y = 0; y < widget->allocation.height; y++) {
-		t = pos->rgba + y * widget->allocation.width;
+		t = pos->rgba + 4 * y * widget->allocation.width;
 		p = pos->rgb + 3 * y * widget->allocation.width;
 		for (x = 0; x < widget->allocation.width; x++) {
 			guint a, fc;
-			a = *t & 0xff;
-			fc = ((*t >> 24) - *p) * a;
+			a = t[3];
+			fc = (t[0] - *p) * a;
 			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			fc = (((*t >> 16) & 0xff) - *p) * a;
+			fc = (t[1] - *p) * a;
 			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			fc = (((*t >> 8) & 0xff) - *p) * a;
+			fc = (t[2] - *p) * a;
 			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
-			t++;
+			t += 4;
 		}
 	}
 	/* Draw pixmap */

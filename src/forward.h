@@ -82,6 +82,9 @@ typedef struct _SPLinearGradientClass SPLinearGradientClass;
 typedef struct _SPRadialGradient SPRadialGradient;
 typedef struct _SPRadialGradientClass SPRadialGradientClass;
 
+typedef struct _SPClipPath SPClipPath;
+typedef struct _SPClipPathClass SPClipPathClass;
+
 typedef struct _SPColorSpace SPColorSpace;
 typedef struct _SPColor SPColor;
 

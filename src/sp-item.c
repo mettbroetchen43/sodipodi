@@ -7,14 +7,17 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
-#include "helper/sp-canvas-util.h"
+#include "display/nr-arena.h"
+#include "display/nr-arena-item.h"
 #include "document.h"
+#include "uri-references.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
 #include "style.h"
 /* fixme: I do not like that (Lauris) */
 #include "dialogs/item-properties.h"
+#include "sp-clippath.h"
 #include "sp-item.h"
 
 static void sp_item_class_init (SPItemClass * klass);
@@ -28,8 +31,8 @@ static void sp_item_style_changed (SPObject *object, guint flags);
 static gchar * sp_item_private_description (SPItem * item);
 static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
 
-static GnomeCanvasItem * sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
-static void sp_item_private_hide (SPItem * item, SPDesktop * desktop);
+static NRArenaItem *sp_item_private_show (SPItem *item, NRArena *arena);
+static void sp_item_private_hide (SPItem * item, NRArena *arena);
 
 static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
@@ -90,8 +93,12 @@ sp_item_init (SPItem *item)
 
 	object = SP_OBJECT (item);
 
+	item->sensitive = TRUE;
+
 	art_affine_identity (item->affine);
 	item->display = NULL;
+
+	item->clip = NULL;
 
 	if (!object->style) object->style = sp_style_new (SP_OBJECT (item));
 }
@@ -104,8 +111,13 @@ sp_item_destroy (GtkObject * object)
 	item = (SPItem *) object;
 
 	while (item->display) {
-		gtk_object_destroy (GTK_OBJECT (item->display->canvasitem));
+		nr_arena_item_destroy (item->display->arenaitem);
 		item->display = sp_item_view_list_remove (item->display, item->display);
+	}
+
+	if (item->clip) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item);
+		item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), SP_OBJECT (item));
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -120,6 +132,20 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	sp_item_read_attr (object, "transform");
 	sp_item_read_attr (object, "style");
+	sp_item_read_attr (object, "clip-path");
+	sp_item_read_attr (object, "sodipodi:insensitive");
+}
+
+static void
+sp_item_clip_destroyed (SPClipPath *cp, SPItem *item)
+{
+	g_warning ("Item %s clip path %s destroyed", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
+}
+
+static void
+sp_item_clip_modified (SPClipPath *cp, guint flags, SPItem *item)
+{
+	g_warning ("Item %s clip path %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
 }
 
 static void
@@ -132,13 +158,44 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 
 	astr = sp_repr_attr (object->repr, key);
 
-	if (strcmp (key, "transform") == 0) {
+	if (!strcmp (key, "transform")) {
 		gdouble a[6];
 		art_affine_identity (a);
 		if (astr != NULL) sp_svg_read_affine (a, astr);
 		sp_item_set_item_transform (item, a);
 		/* fixme: in update */
 		object->style->real_stroke_width_set = FALSE;
+	}
+
+	if (!strcmp (key, "clip-path")) {
+		SPObject *cp;
+		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), astr);
+		if (item->clip) {
+			gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item);
+			item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
+		}
+		if (SP_IS_CLIPPATH (cp)) {
+			SPItemView *v;
+			item->clip = (SPClipPath *) sp_object_href (cp, object);
+			gtk_signal_connect (GTK_OBJECT (item->clip), "destroy",
+					    GTK_SIGNAL_FUNC (sp_item_clip_destroyed), item);
+			gtk_signal_connect (GTK_OBJECT (item->clip), "modified",
+					    GTK_SIGNAL_FUNC (sp_item_clip_modified), item);
+			for (v = item->display; v != NULL; v = v->next) {
+				NRArenaItem *ai;
+				ai = sp_clippath_show (item->clip, v->arena);
+				nr_arena_item_set_clip (v->arenaitem, ai);
+				nr_arena_item_unref (ai);
+			}
+		}
+	}
+
+	if (!strcmp (key, "sodipodi:insensitive")) {
+		SPItemView * v;
+		item->sensitive = (astr == NULL);
+		for (v = item->display; v != NULL; v = v->next) {
+			nr_arena_item_set_sensitive (v->arenaitem, item->sensitive);
+		}
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
@@ -160,6 +217,7 @@ sp_item_style_changed (SPObject *object, guint flags)
 {
 	SPItem *item;
 	SPStyle *style;
+	SPItemView *v;
 
 	item = SP_ITEM (object);
 	style = object->style;
@@ -215,6 +273,10 @@ sp_item_style_changed (SPObject *object, guint flags)
 			break;
 		}
 		style->real_stroke_width_set = TRUE;
+	}
+
+	for (v = item->display; v != NULL; v = v->next) {
+		nr_arena_item_set_opacity (v->arenaitem, object->style->opacity);
 	}
 }
 
@@ -317,51 +379,56 @@ sp_item_description (SPItem * item)
 	return NULL;
 }
 
-static GnomeCanvasItem *
-sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+static NRArenaItem *
+sp_item_private_show (SPItem *item, NRArena *arena)
 {
 	return NULL;
 }
 
-GnomeCanvasItem *
-sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+NRArenaItem *
+sp_item_show (SPItem *item, NRArena *arena)
 {
-	SPObject *object;
-	GnomeCanvasItem * canvasitem;
+	NRArenaItem *ai;
 
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-	g_assert (canvas_group != NULL);
-	g_assert (GNOME_IS_CANVAS_GROUP (canvas_group));
+	g_assert (arena != NULL);
+	g_assert (NR_IS_ARENA (arena));
 
-	object = SP_OBJECT (item);
-	canvasitem = NULL;
+	ai = NULL;
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) {
-		canvasitem =  (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) (item, desktop, canvas_group);
-	} else {
-		canvasitem = NULL;
-	}
+	if (((SPItemClass *) (((GtkObject *) item)->klass))->show)
+		ai = ((SPItemClass *) (((GtkObject *) item)->klass))->show (item, arena);
 
-	if (canvasitem != NULL) {
-		item->display = sp_item_view_new_prepend (item->display, item, desktop, canvasitem);
-		gnome_canvas_item_affine_absolute (canvasitem, item->affine);
+	if (ai != NULL) {
+		item->display = sp_item_view_new_prepend (item->display, item, arena, ai);
+		nr_arena_item_set_transform (ai, item->affine);
+		nr_arena_item_set_opacity (ai, SP_OBJECT_STYLE (item)->opacity);
+		nr_arena_item_set_sensitive (ai, item->sensitive);
+		if (item->clip) {
+			NRArenaItem *ac;
+			ac = sp_clippath_show (item->clip, arena);
+			nr_arena_item_set_clip (ai, ac);
+			nr_arena_item_unref (ac);
+		}
+#if 0
 		sp_desktop_connect_item (desktop, item, canvasitem);
+#else
+		gtk_object_set_user_data (GTK_OBJECT (ai), item);
+#endif
 	}
 
-	return canvasitem;
+	return ai;
 }
 
 static void
-sp_item_private_hide (SPItem * item, SPDesktop * desktop)
+sp_item_private_hide (SPItem * item, NRArena *arena)
 {
-	SPItemView * v;
+	SPItemView *v;
 
 	for (v = item->display; v != NULL; v = v->next) {
-		if (v->desktop == desktop) {
-			gtk_object_destroy (GTK_OBJECT (v->canvasitem));
+		if (v->arena == arena) {
+			nr_arena_item_destroy (v->arenaitem);
 			item->display = sp_item_view_list_remove (item->display, v);
 			return;
 		}
@@ -371,15 +438,15 @@ sp_item_private_hide (SPItem * item, SPDesktop * desktop)
 }
 
 void
-sp_item_hide (SPItem * item, SPDesktop * desktop)
+sp_item_hide (SPItem *item, NRArena *arena)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
+	g_assert (arena != NULL);
+	g_assert (NR_IS_ARENA (arena));
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, desktop);
+		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, arena);
 }
 
 gboolean
@@ -398,6 +465,7 @@ sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 	return FALSE;
 }
 
+#if 0
 GnomeCanvasItem *
 sp_item_canvas_item (SPItem * item, SPDesktop * desktop)
 {
@@ -427,6 +495,7 @@ sp_item_request_canvas_update (SPItem * item)
 		gnome_canvas_item_request_update (v->canvasitem);
 	}
 }
+#endif
 
 /* Sets item private transform (not propagated to repr) */
 
@@ -448,7 +517,7 @@ sp_item_set_item_transform (SPItem *item, const gdouble *transform)
 	memcpy (item->affine, transform, 6 * sizeof (gdouble));
 
 	for (v = item->display; v != NULL; v = v->next) {
-		gnome_canvas_item_affine_absolute (v->canvasitem, transform);
+		nr_arena_item_set_transform (v->arenaitem, transform);
 	}
 
 	sp_object_request_modified (SP_OBJECT (item), SP_OBJECT_MODIFIED_FLAG);
@@ -506,6 +575,7 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 	return affine;
 }
 
+#if 0
 void
 sp_item_change_canvasitem_position (SPItem * item, gint delta)
 {
@@ -537,6 +607,7 @@ sp_item_raise_canvasitem_to_top (SPItem * item)
 		gnome_canvas_item_raise_to_top (v->canvasitem);
 	}
 }
+#endif
 
 /* Generate context menu item section */
 
@@ -575,7 +646,7 @@ sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Toggle sensitivity */
-	insensitive = sp_repr_get_int_attribute (((SPObject *) item)->repr, "insensitive", FALSE);
+	insensitive = (sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive") != NULL);
 	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
 	gtk_widget_show (w);
@@ -646,29 +717,29 @@ sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
 	g_assert (SP_IS_ITEM (item));
 
 	/* fixme: reprs suck */
-	val = sp_repr_attr (SP_OBJECT_REPR (item), "insensitive");
+	val = sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive");
 	if (val != NULL) {
 		val = NULL;
 	} else {
 		val = "1";
 	}
-	sp_repr_set_attr (SP_OBJECT_REPR (item), "insensitive", val);
+	sp_repr_set_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive", val);
 	sp_document_done (SP_OBJECT_DOCUMENT (item));
 }
 
 /* Item views */
 
 SPItemView *
-sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop, GnomeCanvasItem * canvasitem)
+sp_item_view_new_prepend (SPItemView * list, SPItem * item, NRArena *arena, NRArenaItem *arenaitem)
 {
 	SPItemView * new;
 
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-	g_assert (canvasitem != NULL);
-	g_assert (GNOME_IS_CANVAS_ITEM (canvasitem));
+	g_assert (arena != NULL);
+	g_assert (NR_IS_ARENA (arena));
+	g_assert (arenaitem != NULL);
+	g_assert (NR_IS_ARENA_ITEM (arenaitem));
 
 	new = g_new (SPItemView, 1);
 
@@ -676,8 +747,8 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop,
 	new->prev = NULL;
 	if (list) list->prev = new;
 	new->item = item;
-	new->desktop = desktop;
-	new->canvasitem = canvasitem;
+	new->arena = arena;
+	new->arenaitem = arenaitem;
 
 	return new;
 }

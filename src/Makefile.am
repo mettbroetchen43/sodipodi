@@ -48,12 +48,14 @@ sodipodi_SOURCES = \
 	sp-text.c sp-text.h \
 	sp-paint-server.c sp-paint-server.h \
 	sp-gradient.c sp-gradient.h \
+	sp-clippath.c sp-clippath.h \
 	\
 	color.c color.h \
 	style.c style.h \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \
+	uri-references.c uri-references.h \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \

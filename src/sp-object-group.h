@@ -1,28 +1,30 @@
-#ifndef SP_OBJECTGROUP_H
-#define SP_OBJECTGROUP_H
+#ifndef __SP_OBJECTGROUP_H__
+#define __SP_OBJECTGROUP_H__
 
 /*
- * SPObjectGroup
+ * Abstract base class for SPObjects with multiple children, which are not
+ * items themselves (i.e. not directly renderable)
  *
- * Abstract base class for SPObjects with multiple children, who are not
- * SPItems themselves - such as NamedViews
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
  *
- * This should be kept in sync with SPGroup
+ * Copyright (C) 2000-2001 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Released under GNU GPL
  *
  */
 
-#define SP_TYPE_OBJECTGROUP            (sp_objectgroup_get_type ())
-#define SP_OBJECTGROUP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECTGROUP, SPObjectGroup))
-#define SP_OBJECTGROUP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECTGROUP, SPObjectGroupClass))
-#define SP_IS_OBJECTGROUP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECTGROUP))
+#define SP_TYPE_OBJECTGROUP (sp_objectgroup_get_type ())
+#define SP_OBJECTGROUP(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECTGROUP, SPObjectGroup))
+#define SP_OBJECTGROUP_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECTGROUP, SPObjectGroupClass))
+#define SP_IS_OBJECTGROUP(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECTGROUP))
 #define SP_IS_OBJECTGROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECTGROUP))
 
 #include "sp-object.h"
 
 struct _SPObjectGroup {
 	SPObject object;
-	SPObject * children;
-	gboolean transparent;
+	SPObject *children;
 };
 
 struct _SPObjectGroupClass {

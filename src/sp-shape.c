@@ -17,11 +17,12 @@
 
 #include "dialogs/fill-style.h"
 #include "helper/art-rgba-svp.h"
-#include "display/canvas-shape.h"
+#include "display/nr-arena-shape.h"
 #include "document.h"
 #include "desktop.h"
 #include "selection.h"
 #include "desktop-handles.h"
+#include "sp-paint-server.h"
 #include "style.h"
 #include "sp-path-component.h"
 #include "sp-shape.h"
@@ -38,7 +39,7 @@ static void sp_shape_style_changed (SPObject *object, guint flags);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
-static GnomeCanvasItem * sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
+static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena);
 static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
@@ -123,8 +124,6 @@ sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
-
-	sp_shape_read_attr (object, "insensitive");
 }
 
 static void
@@ -133,21 +132,6 @@ sp_shape_read_attr (SPObject * object, const gchar * attr)
 	SPShape * shape;
 
 	shape = SP_SHAPE (object);
-
-	if (strcmp (attr, "insensitive") == 0) {
-		const gchar * val;
-		gboolean sensitive;
-		SPItemView * v;
-
-		val = sp_repr_attr (object->repr, attr);
-		sensitive = (val == NULL);
-
-		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
-			sp_canvas_shape_set_sensitive (SP_CANVAS_SHAPE (v->canvasitem), sensitive);
-		}
-		return;
-	}
-
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, attr);
@@ -166,7 +150,8 @@ sp_shape_style_changed (SPObject *object, guint flags)
 		(* ((SPObjectClass *) (parent_class))->style_changed) (object, flags);
 
 	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
-		sp_canvas_shape_set_style (SP_CANVAS_SHAPE (v->canvasitem), object->style);
+		/* fixme: */
+		nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (v->arenaitem), object->style);
 	}
 }
 
@@ -305,29 +290,13 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 						/* Now we are in desktop coordinates */
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {
 							for (x = ibox.x0; x < ibox.x1; x+= 64) {
-								static guint32 *rgba = NULL;
-								static guchar *rgbp = NULL;
-								gint xx, yy;
-								if (!rgba) rgba = g_new (guint32, 64 * 64);
-								if (!rgbp) rgbp = g_new (guchar, 4 * 64 * 64);
+								static guchar *rgba = NULL;
+								if (!rgba) rgba = g_new (guchar, 4 * 64 * 64);
 								painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 64);
-								for (yy = 0; yy < 64; yy++) {
-									guint32 *sp;
-									guchar *dp;
-									sp = rgba + 64 * yy;
-									dp = rgbp + 4 * yy * 64;
-									for (xx = 0; xx < 64; xx++) {
-										*dp++ = (*sp >> 24);
-										*dp++ = (*sp >> 16) & 0xff;
-										*dp++ = (*sp >> 8) & 0xff;
-										*dp++ = *sp & 0xff;
-										sp++;
-									}
-								}
 								gnome_print_gsave (gpc);
 								gnome_print_translate (gpc, x, y);
 								gnome_print_scale (gpc, 64, 64);
-								gnome_print_rgbaimage (gpc, rgbp, 64, 64, 4 * 64);
+								gnome_print_rgbaimage (gpc, rgba, 64, 64, 4 * 64);
 								gnome_print_grestore (gpc);
 							}
 						}
@@ -360,13 +329,13 @@ sp_shape_description (SPItem * item)
 	return g_strdup (_("A path - whatever it means"));
 }
 
-static GnomeCanvasItem *
-sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+static NRArenaItem *
+sp_shape_show (SPItem *item, NRArena *arena)
 {
 	SPObject *object;
 	SPShape * shape;
 	SPPath * path;
-	SPCanvasShape * cs;
+	NRArenaItem *arenaitem;
 	SPPathComp * comp;
 	GSList * l;
 
@@ -374,17 +343,16 @@ sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_gro
 	shape = SP_SHAPE (item);
 	path = SP_PATH (item);
 
-	cs = (SPCanvasShape *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_SHAPE, NULL);
-	g_return_val_if_fail (cs != NULL, NULL);
+	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE_GROUP);
 
-	sp_canvas_shape_set_style (cs, object->style);
+	nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (arenaitem), object->style);
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		sp_canvas_shape_add_component (cs, comp->curve, comp->private, comp->affine);
+		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (arenaitem), comp->curve, comp->private, comp->affine);
 	}
 
-	return (GnomeCanvasItem *) cs;
+	return arenaitem;
 }
 
 static gboolean
@@ -458,10 +426,10 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 						ibox.y1 = MIN (ibox.y1, buf->height);
 						if ((ibox.x0 < ibox.x1) && (ibox.y0 < ibox.y1)) {
 							static guchar *gray = NULL;
-							static guint32 *rgba = NULL;
+							static guchar *rgba = NULL;
 							gint x, y;
 							if (!gray) gray = g_new (guchar, 64 * 64);
-							if (!rgba) rgba = g_new (guint32, 64 * 64);
+							if (!rgba) rgba = g_new (guchar, 4 * 64 * 64);
 							for (y = ibox.y0; y < ibox.y1; y+= 64) {
 								for (x = ibox.x0; x < ibox.x1; x+= 64) {
 									gint xx, yy, xe, ye;
@@ -474,23 +442,23 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 									ye = MIN (y + 64, ibox.y1) - y;
 									for (yy = 0; yy < ye; yy++) {
 										guchar *gp, *bp;
-										guint32 *pp;
+										guchar *pp;
 										gp = gray + yy * 64;
-										pp = rgba + yy * 64;
+										pp = rgba + 4 * yy * 64;
 										if (buf->n_channels == 3) {
 											/* RGB buffer */
 											bp = buf->pixels + (y + yy) * buf->rowstride + x * 3;
 											for (xx = 0; xx < xe; xx++) {
 												guint a, fc;
 												/* fixme: */
-												a = ((*pp & 0xff) * (*gp) + 0x80) >> 8;
-												fc = (((*pp >> 24) & 0xff) - *bp) * a;
+												a = (pp[3] * (*gp) + 0x80) >> 8;
+												fc = (pp[0] - *bp) * a;
 												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												fc = (((*pp >> 16) & 0xff) - *bp) * a;
+												fc = (pp[1] - *bp) * a;
 												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												fc = (((*pp >> 8) & 0xff) - *bp) * a;
+												fc = (pp[2] - *bp) * a;
 												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												pp++;
+												pp += 4;
 												gp++;
 											}
 										} else {
@@ -610,7 +578,6 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 {
 	SPItem * item;
 	SPShape * shape;
-	SPCanvasShape * cs;
 	SPItemView * v;
 
 	item = SP_ITEM (path);
@@ -618,8 +585,7 @@ sp_shape_remove_comp (SPPath * path, SPPathComp * comp)
 
 	/* fixme: */
 	for (v = item->display; v != NULL; v = v->next) {
-		cs = (SPCanvasShape *) v->canvasitem;
-		sp_canvas_shape_clear (cs);
+		nr_arena_shape_group_clear (NR_ARENA_SHAPE_GROUP (v->arenaitem));
 	}
 
 	if (SP_PATH_CLASS (parent_class)->remove_comp)
@@ -631,15 +597,13 @@ sp_shape_add_comp (SPPath * path, SPPathComp * comp)
 {
 	SPItem * item;
 	SPShape * shape;
-	SPCanvasShape * cs;
 	SPItemView * v;
 
 	item = SP_ITEM (path);
 	shape = SP_SHAPE (path);
 
 	for (v = item->display; v != NULL; v = v->next) {
-		cs = (SPCanvasShape *) v->canvasitem;
-		sp_canvas_shape_add_component (cs, comp->curve, comp->private, comp->affine);
+		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (v->arenaitem), comp->curve, comp->private, comp->affine);
 	}
 
 	if (SP_PATH_CLASS (parent_class)->add_comp)
@@ -651,7 +615,6 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 {
 	SPItem * item;
 	SPShape * shape;
-	SPCanvasShape * cs;
 	SPItemView * v;
 
 	item = SP_ITEM (path);
@@ -659,8 +622,10 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 
 	/* fixme: */
 	for (v = item->display; v != NULL; v = v->next) {
+#if 0
 		cs = (SPCanvasShape *) v->canvasitem;
 		sp_canvas_shape_change_bpath (cs, comp->curve);
+#endif
 	}
 
 	if (SP_PATH_CLASS (parent_class)->change_bpath)

@@ -161,7 +161,7 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 	repr = object->repr;
 
 	/* Sensitive */
-	str = sp_repr_attr (repr, "insensitive");
+	str = sp_repr_attr (repr, "sodipodi:insensitive");
 	w = glade_xml_get_widget (xml, "sensitive");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), (str == NULL));
 	
@@ -216,9 +216,9 @@ sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
 
 	SP_EXCEPTION_INIT (&ex);
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
-		sp_object_removeAttribute (SP_OBJECT (item), "insensitive", &ex);
+		sp_object_removeAttribute (SP_OBJECT (item), "sodipodi:insensitive", &ex);
 	} else {
-		sp_object_setAttribute (SP_OBJECT (item), "insensitive", "true", &ex);
+		sp_object_setAttribute (SP_OBJECT (item), "sodipodi:insensitive", "true", &ex);
 	}
 
 	sp_document_maybe_done (spw->document, "ItemDialog:insensitive");
@@ -413,7 +413,7 @@ sp_item_dialog_apply (GtkWidget * widget)
 
 	/* Sensitive */
 	w = glade_xml_get_widget (xml, "sensitive");
-	sp_repr_set_attr (repr, "insensitive", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? NULL : "true");
+	sp_repr_set_attr (repr, "sodipodi:insensitive", gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)) ? NULL : "true");
 
 	/* Id */
 	w = glade_xml_get_widget (xml, "id");

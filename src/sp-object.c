@@ -226,6 +226,24 @@ sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *next)
 }
 
 SPObject *
+sp_object_detach (SPObject *parent, SPObject *object)
+{
+	SPObject *next;
+
+	g_return_val_if_fail (parent != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (parent), NULL);
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (object->parent == parent, NULL);
+
+	next = object->next;
+	object->parent = NULL;
+	object->next = NULL;
+
+	return next;
+}
+
+SPObject *
 sp_object_detach_unref (SPObject *parent, SPObject *object)
 {
 	SPObject *next;

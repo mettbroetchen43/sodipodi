@@ -35,7 +35,7 @@ typedef enum {
 	SP_PAINTER_DEP
 } SPPainterType;
 
-typedef void (* SPPainterFillFunc) (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
+typedef void (* SPPainterFillFunc) (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 /* fixme: I do not like that class thingie (Lauris) */
 struct _SPPainter {

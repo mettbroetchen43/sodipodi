@@ -22,32 +22,35 @@
 
 #include <gtk/gtkmenu.h>
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_pixbuf.h>
+#include "display/nr-arena-forward.h"
 #include "forward.h"
 #include "sp-object.h"
 
-#define SP_TYPE_ITEM            (sp_item_get_type ())
-#define SP_ITEM(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
-#define SP_ITEM_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ITEM, SPItemClass))
-#define SP_IS_ITEM(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ITEM))
+#define SP_TYPE_ITEM (sp_item_get_type ())
+#define SP_ITEM(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
+#define SP_ITEM_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ITEM, SPItemClass))
+#define SP_IS_ITEM(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ITEM))
 #define SP_IS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
 
 typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
-	SPItemView * next;
-	SPItemView * prev;
-	SPItem * item;
-	SPDesktop * desktop;
-	GnomeCanvasItem * canvasitem;
+	SPItemView *next;
+	SPItemView *prev;
+	SPItem *item;
+	NRArena *arena;
+	NRArenaItem *arenaitem;
 };
 
 struct _SPItem {
 	SPObject object;
+	guint sensitive : 1;
 	guint stop_paint: 1;	/* If set, ::paint returns TRUE */
 	gdouble affine[6];
-	SPItemView * display;
+	SPItemView *display;
+	SPClipPath *clip;
 };
 
 struct _SPItemClass {
@@ -66,8 +69,8 @@ struct _SPItemClass {
 	gchar * (* description) (SPItem * item);
 
 	/* Silly, silly. We should assign handlers a more intelligent way */
-	GnomeCanvasItem * (* show) (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
-	void (* hide) (SPItem * item, SPDesktop * desktop);
+	NRArenaItem * (* show) (SPItem *item, NRArena *arena);
+	void (* hide) (SPItem * item, NRArena *arena);
 
 	/* Who finds better name?
 	 * Basically same as render, but draws to rgba buf,
@@ -98,8 +101,10 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
 
-GnomeCanvasItem * sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
-void sp_item_hide (SPItem * item, SPDesktop * desktop);
+/* Shows/Hides item on given arena display list */
+NRArenaItem *sp_item_show (SPItem *item, NRArena *arena);
+void sp_item_hide (SPItem *item, NRArena *arena);
+
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 GSList * sp_item_snappoints (SPItem * item);
@@ -107,23 +112,25 @@ GSList * sp_item_snappoints (SPItem * item);
 void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
 /* Utility */
-
+#if 0
 GnomeCanvasItem * sp_item_canvas_item (SPItem * item, SPDesktop * desktop);
-
 void sp_item_request_canvas_update (SPItem * item);
+#endif
 
 gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
 gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
 
+#if 0
 void sp_item_change_canvasitem_position (SPItem * item, gint delta);
 void sp_item_raise_canvasitem_to_top (SPItem * item);
+#endif
 
 /* Context menu stuff */
 
 void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
-SPItemView * sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop, GnomeCanvasItem * canvasitem);
-SPItemView * sp_item_view_list_remove (SPItemView * list, SPItemView * view);
+SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, NRArena *arena, NRArenaItem *arenaitem);
+SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
 
 #endif

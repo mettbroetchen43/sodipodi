@@ -1,7 +1,7 @@
 #define SP_USE_C
 
 #include <string.h>
-#include "display/canvas-bgroup.h"
+#include "display/nr-arena-group.h"
 #include "document.h"
 #include "sp-object-repr.h"
 #include "sp-use.h"
@@ -22,8 +22,8 @@ static void sp_use_read_attr (SPObject * object, const gchar * attr);
 static void sp_use_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_use_description (SPItem * item);
-static GnomeCanvasItem * sp_use_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
-static void sp_use_hide (SPItem * item, SPDesktop * desktop);
+static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
+static void sp_use_hide (SPItem *item, NRArena *arena);
 static gboolean sp_use_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 static void sp_use_changed (SPUse * use);
@@ -176,12 +176,9 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		refobj = sp_document_lookup_id (document, use->href);
 		if (refobj) {
 			SPRepr *childrepr;
-			const gchar *name;
 			GtkType type;
 			childrepr = SP_OBJECT_REPR (refobj);
-			name = sp_repr_name (childrepr);
-			g_assert (name != NULL);
-			type = sp_object_type_lookup (name);
+			type = sp_repr_type_lookup (childrepr);
 			g_return_if_fail (type > GTK_TYPE_NONE);
 			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject *childobj;
@@ -290,35 +287,41 @@ sp_use_description (SPItem * item)
 	return g_strdup ("Empty reference [SHOULDN'T HAPPEN]");
 }
 
-static GnomeCanvasItem *
-sp_use_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+static NRArenaItem *
+sp_use_show (SPItem *item, NRArena *arena)
 {
-	SPUse * use;
-	GnomeCanvasItem * ci;
+	SPUse *use;
 
 	use = SP_USE (item);
 
 	if (use->child) {
-		ci = gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_BGROUP, NULL);
+		NRArenaItem *ai, *ac;
+		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
+#if 0
+		/* fixme: */
 		SP_CANVAS_BGROUP (ci)->transparent = FALSE;
-		sp_item_show (use->child, desktop, GNOME_CANVAS_GROUP (ci));
-		return ci;
+#endif
+		ac = sp_item_show (use->child, arena);
+		if (ac) {
+			nr_arena_item_add_child (ai, ac, NULL);
+		}
+		return ai;
 	}
 		
 	return NULL;
 }
 
 static void
-sp_use_hide (SPItem * item, SPDesktop * desktop)
+sp_use_hide (SPItem * item, NRArena *arena)
 {
 	SPUse * use;
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_hide (use->child, desktop);
+	if (use->child) sp_item_hide (use->child, arena);
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, desktop);
+		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
 }
 
 static gboolean
@@ -360,12 +363,9 @@ sp_use_href_changed (SPUse * use)
 		refobj = sp_document_lookup_id (SP_OBJECT (use)->document, use->href);
 		if (refobj) {
 			SPRepr * repr;
-			const gchar * name;
 			GtkType type;
 			repr = refobj->repr;
-			name = sp_repr_name (repr);
-			g_assert (name != NULL);
-			type = sp_object_type_lookup (name);
+			type = sp_repr_type_lookup (repr);
 			g_return_if_fail (type > GTK_TYPE_NONE);
 			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject * childobj;
@@ -375,7 +375,11 @@ sp_use_href_changed (SPUse * use)
 				use->child = SP_ITEM (childobj);
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
-					sp_item_show (SP_ITEM (childobj), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
+					NRArenaItem *ai;
+					ai = sp_item_show (SP_ITEM (childobj), v->arena);
+					if (ai) {
+						nr_arena_item_add_child (v->arenaitem, ai, NULL);
+					}
 				}
 			}
 		}

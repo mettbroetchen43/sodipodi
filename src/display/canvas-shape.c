@@ -292,6 +292,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 				break;
 
 			case SP_PAINT_TYPE_PAINTSERVER:
+#if 0
 				if (shape->painter) {
 					static guint32 *rgba = NULL;
 					static gint rgbaw = 0;
@@ -323,6 +324,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 							  buf->buf, buf->buf_rowstride,
 							  NULL);
 				}
+#endif
 				break;
 			default:
 				if (buf->is_bg) {

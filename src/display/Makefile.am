@@ -11,7 +11,6 @@ endif
 
 if WITH_NEW_RENDER
 nr_sources = \
-	nr-primitives.c nr-primitives.h \
 	nr-uta.c nr-uta.h \
 	nr-canvas.c nr-canvas.h \
 	nr-canvas-item.c nr-canvas-item.h \
@@ -42,6 +41,14 @@ INCLUDES = \
 noinst_LIBRARIES = libspdisplay.a
 
 libspdisplay_a_SOURCES = \
+	nr-primitives.c nr-primitives.h \
+	nr-arena-forward.h \
+	nr-arena.c nr-arena.h \
+	nr-arena-item.c nr-arena-item.h \
+	nr-arena-group.c nr-arena-group.h \
+	nr-arena-image.c nr-arena-image.h \
+	nr-arena-shape.c nr-arena-shape.h \
+	canvas-arena.c canvas-arena.h \
 	canvas-bgroup.c canvas-bgroup.h \
 	canvas-image.c canvas-image.h \
 	cpath-component.c cpath-component.h \

@@ -1,5 +1,6 @@
 #define _NR_PRIMITIVES_C_
 
+#include <math.h>
 #include <glib.h>
 #include "nr-primitives.h"
 
@@ -17,7 +18,7 @@ nr_irect_is_empty (NRIRect * rect)
 {
 	g_return_val_if_fail (rect != NULL, TRUE);
 
-	return ((rect->x0 < rect->x1) && (rect->y0 < rect->y1));
+	return ((rect->x0 >= rect->x1) || (rect->y0 >= rect->y1));
 }
 
 int
@@ -40,6 +41,36 @@ nr_irect_point_is_inside (NRIRect * rect, NRPoint * point)
 
 NRIRect *
 nr_irect_intersection (NRIRect * dst, NRIRect * r0, NRIRect * r1)
+{
+	g_return_val_if_fail (dst != NULL, NULL);
+	g_return_val_if_fail (r0 != NULL, NULL);
+	g_return_val_if_fail (r1 != NULL, NULL);
+
+	if (nr_irect_is_empty (r0)) {
+		if (nr_irect_is_empty (r1)) {
+			nr_irect_set_empty (dst);
+		} else {
+			*dst = *r1;
+		}
+	} else {
+		if (nr_irect_is_empty (r1)) {
+			*dst = *r0;
+		} else {
+			gint t;
+			t = MAX (r0->x0, r1->x0);
+			dst->x1 = MIN (r0->x1, r1->x1);
+			dst->x0 = t;
+			t = MAX (r0->y0, r1->y0);
+			dst->y1 = MIN (r0->y1, r1->y1);
+			dst->y0 = t;
+		}
+	}
+
+	return dst;
+}
+
+NRIRect *
+nr_irect_union (NRIRect *dst, NRIRect *r0, NRIRect *r1)
 {
 	g_return_val_if_fail (dst != NULL, NULL);
 	g_return_val_if_fail (r0 != NULL, NULL);
@@ -127,5 +158,22 @@ nr_affine_multiply (NRAffine * dst, NRAffine * a, NRAffine * b)
 	*dst = d;
 
 	return dst;
+}
+
+#define EPSILON 1e-18
+
+int
+nr_affine_is_identity (const double *affine)
+{
+	g_return_val_if_fail (affine != NULL, TRUE);
+
+	if (fabs (affine[0] - 1.0) > EPSILON) return FALSE;
+	if (fabs (affine[1]) > EPSILON) return FALSE;
+	if (fabs (affine[2]) > EPSILON) return FALSE;
+	if (fabs (affine[3] - 1.0) > EPSILON) return FALSE;
+	if (fabs (affine[4]) > EPSILON) return FALSE;
+	if (fabs (affine[5]) > EPSILON) return FALSE;
+
+	return TRUE;
 }
 

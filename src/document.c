@@ -511,7 +511,7 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 	g_return_val_if_fail (repr != NULL, NULL);
 
-	type = sp_object_type_lookup (sp_repr_name (repr));
+	type = sp_repr_type_lookup (repr);
 
 	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
 		sp_repr_append_child (document->private->rroot, repr);

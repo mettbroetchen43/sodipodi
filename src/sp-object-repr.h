@@ -6,6 +6,7 @@
 
 SPObject * sp_object_repr_build_tree (SPDocument * document, SPRepr * repr);
 
-GtkType sp_object_type_lookup (const gchar * name);
+GtkType sp_repr_type_lookup (SPRepr *repr);
+GtkType sp_object_type_lookup (const guchar *name);
 
 #endif

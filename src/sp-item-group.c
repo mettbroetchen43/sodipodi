@@ -1,9 +1,10 @@
 #define SP_GROUP_C
 
-#include <config.h>
-#include <gnome.h>
-#include "helper/sp-canvas-util.h"
-#include "display/canvas-bgroup.h"
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <gtk/gtkmenuitem.h>
+#include "display/nr-arena-group.h"
 #include "xml/repr-private.h"
 #include "sp-object-repr.h"
 #include "svg/svg.h"
@@ -30,8 +31,8 @@ static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
-static GnomeCanvasItem * sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
-static void sp_group_hide (SPItem * item, SPDesktop * desktop);
+static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
+static void sp_group_hide (SPItem * item, NRArena *arena);
 static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 static void sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
@@ -128,14 +129,12 @@ static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * re
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
 		GtkType type;
 		SPObject * child;
-		type = sp_object_type_lookup (sp_repr_name (rchild));
+		type = sp_repr_type_lookup (rchild);
 		child = gtk_type_new (type);
 		last ? last->next : group->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
-
-	sp_group_read_attr (object, "insensitive");
 }
 
 static void
@@ -144,20 +143,6 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 	SPGroup * group;
 
 	group = SP_GROUP (object);
-
-	if (strcmp (attr, "insensitive") == 0) {
-		const gchar * val;
-		gboolean sensitive;
-		SPItemView * v;
-
-		val = sp_repr_attr (object->repr, attr);
-		sensitive = (val == NULL);
-
-		for (v = ((SPItem *) object)->display; v != NULL; v = v->next) {
-			sp_canvas_bgroup_set_sensitive (SP_CANVAS_BGROUP (v->canvasitem), sensitive);
-		}
-		return;
-	}
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
@@ -169,7 +154,7 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	SPGroup * group;
 	SPItem * item;
 	GtkType type;
-	SPObject * ochild, * prev;
+	SPObject *ochild, *prev;
 	gint position;
 
 	item = SP_ITEM (object);
@@ -190,7 +175,7 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 		if (SP_IS_ITEM (prev)) position += 1;
 	}
 
-	type = sp_object_type_lookup (sp_repr_name (child));
+	type = sp_repr_type_lookup (child);
 	ochild = gtk_type_new (type);
 	if (prev) {
 		prev->next = sp_object_attach_reref (object, ochild, prev->next);
@@ -201,11 +186,14 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
 
 	if (SP_IS_ITEM (ochild)) {
-		SPItemView * v;
+		SPItemView *v;
+		NRArenaItem *ac;
 		for (v = item->display; v != NULL; v = v->next) {
-			GnomeCanvasItem * ci;
-			ci = sp_item_show (SP_ITEM (ochild), v->desktop, GNOME_CANVAS_GROUP (v->canvasitem));
-			gnome_canvas_item_move_to_z (ci, position);
+			ac = sp_item_show (SP_ITEM (ochild), v->arena);
+			if (ac) {
+				nr_arena_item_add_child (v->arenaitem, ac, NULL);
+				nr_arena_item_set_order (ac, position);
+			}
 		}
 	}
 }
@@ -287,7 +275,10 @@ sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr 
 	}
 
 	if (SP_IS_ITEM (ochild)) {
-		sp_item_change_canvasitem_position (SP_ITEM (ochild), newpos - oldpos);
+		SPItemView *v;
+		for (v = SP_ITEM (ochild)->display; v != NULL; v = v->next) {
+			nr_arena_item_set_order (v->arenaitem, newpos);
+		}
 	}
 }
 
@@ -432,31 +423,36 @@ static gchar * sp_group_description (SPItem * item)
 	return g_strdup (c);
 }
 
-static GnomeCanvasItem *
-sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
+static NRArenaItem *
+sp_group_show (SPItem *item, NRArena *arena)
 {
-	SPGroup * group;
-	GnomeCanvasGroup * cg;
+	SPGroup *group;
+	NRArenaItem *ai, *ac, *ar;
 	SPItem * child;
 	SPObject * o;
 
 	group = (SPGroup *) item;
 
-	cg = (GnomeCanvasGroup *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_BGROUP, NULL);
-	SP_CANVAS_BGROUP(cg)->transparent = group->transparent;
+	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
+	nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), group->transparent);
 
+	ar = NULL;
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_show (child, desktop, cg);
+			ac = sp_item_show (child, arena);
+			if (ac) {
+				nr_arena_item_add_child (ai, ac, ar);
+				ar = ac;
+			}
 		}
 	}
 
-	return (GnomeCanvasItem *) cg;
+	return ai;
 }
 
 static void
-sp_group_hide (SPItem * item, SPDesktop * desktop)
+sp_group_hide (SPItem *item, NRArena *arena)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -467,12 +463,12 @@ sp_group_hide (SPItem * item, SPDesktop * desktop)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_hide (child, desktop);
+			sp_item_hide (child, arena);
 		}
 	}
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
-		(* SP_ITEM_CLASS (parent_class)->hide) (item, desktop);
+		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
 }
 
 static gboolean

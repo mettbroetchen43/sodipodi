@@ -13,6 +13,7 @@
  * Released under GNU GPL
  */
 
+#include "helper/nr-plain-stuff.h"
 #include "sp-paint-server.h"
 
 static void sp_paint_server_class_init (SPPaintServerClass *klass);
@@ -20,7 +21,7 @@ static void sp_paint_server_init (SPPaintServer *ps);
 
 static void sp_paint_server_destroy (GtkObject *object);
 
-static void sp_painter_stale_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_painter_stale_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 static SPObjectClass *parent_class;
 static GSList *stale_painters = NULL;
@@ -150,15 +151,9 @@ sp_painter_free (SPPainter *painter)
 }
 
 static void
-sp_painter_stale_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_painter_stale_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-	gint x, y;
-
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
-			*(buf + rowstride * y + x) = ((x + y) & 1) ? 0xff0000ff : 0xffffffff;
-		}
-	}
+	nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
 }
 
 

@@ -19,7 +19,11 @@ static void sp_text_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
+#if 0
 static void sp_text_complete (SPTextContext * text_context);
+#endif
+
+static void sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -66,59 +70,136 @@ sp_text_context_class_init (SPTextContextClass * klass)
 }
 
 static void
-sp_text_context_init (SPTextContext * text_context)
+sp_text_context_init (SPTextContext *tc)
 {
 	SPEventContext * event_context;
 	
-	event_context = SP_EVENT_CONTEXT (text_context);
+	event_context = SP_EVENT_CONTEXT (tc);
 
 	event_context->cursor_shape = cursor_text_xpm;
 	event_context->hot_x = 0;
 	event_context->hot_y = 0;
 
-	text_context->text = NULL;
-	text_context->item = NULL;
-	text_context->canvasitem = NULL;
+	tc->item = NULL;
+	tc->pdoc.x = 0.0;
+	tc->pdoc.y = 0.0;
 }
 
 static void
-sp_text_context_destroy (GtkObject * object)
+sp_text_context_destroy (GtkObject *object)
 {
-	SPTextContext * text_context;
+	SPEventContext *ec;
+	SPTextContext *tc;
 
-	text_context = SP_TEXT_CONTEXT (object);
+	ec = SP_EVENT_CONTEXT (object);
+	tc = SP_TEXT_CONTEXT (object);
 
+#if 0
 	if (text_context->text)
 		sp_text_complete (text_context);
+#endif
+
+	tc->item = NULL;
+
+	if (ec->desktop) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
-sp_text_context_setup (SPEventContext * event_context, SPDesktop * desktop)
+sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
 {
+	SPTextContext *tc;
+
+	tc = SP_TEXT_CONTEXT (event_context);
+
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
+			    GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
+
+	sp_text_context_selection_changed (SP_DT_SELECTION (desktop), tc);
 }
 
 static gint
-sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
+sp_text_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 {
+	SPTextContext *tc;
 	gint ret;
-	gchar k[] = {'\0', '\0'};
-	gchar * c;
+
+	tc = SP_TEXT_CONTEXT (ec);
 
 	ret = FALSE;
 
 	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			if (SP_IS_TEXT (item)) {
+				sp_selection_set_item (SP_DT_SELECTION (ec->desktop), item);
+				ret = TRUE;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (ec, item, event);
+	}
+
+	return ret;
+}
+
+static gint
+sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
+{
+	SPTextContext *tc;
+	gchar k[2];
+	gchar *c;
+	gint ret;
+
+	tc = SP_TEXT_CONTEXT (ec);
+
+	ret = FALSE;
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			/* Button 1, set X & Y & new item */
+			sp_selection_empty (SP_DT_SELECTION (ec->desktop));
+			sp_desktop_w2doc_xy_point (ec->desktop, &tc->pdoc, event->button.x, event->button.y);
+			ret = TRUE;
+		}
+		break;
 	case GDK_KEY_PRESS:
-                // filter control-modifier for desktop shortcuts
+		/* fixme: */
+		// filter control-modifier for desktop shortcuts
                 if (event->key.state & GDK_CONTROL_MASK) return FALSE;
-                                
-		if (!SP_TEXT_CONTEXT (event_context)->text) {
-			ret = FALSE;
-			break;
+
+		if (!tc->item) {
+			SPRepr *repr, *style;
+			/* Create object */
+			repr = sp_repr_new ("text");
+			/* Set style */
+			style = sodipodi_get_repr (SODIPODI, "paint.text");
+			if (style) {
+				SPCSSAttr *css;
+				css = sp_repr_css_attr_inherited (style, "style");
+				sp_repr_css_set (repr, css, "style");
+				sp_repr_css_attr_unref (css);
+			}
+			sp_repr_set_double_attribute (repr, "x", tc->pdoc.x);
+			sp_repr_set_double_attribute (repr, "y", tc->pdoc.y);
+			tc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), repr);
+			sp_selection_set_item (SP_DT_SELECTION (ec->desktop), tc->item);
+			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+			sp_repr_unref (repr);
 		}
 		if (event->key.keyval == GDK_Return) {
 			k[0] = '\n';
@@ -128,11 +209,12 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 			}
 			k[0] = event->key.keyval;
 		}
-		c = (gchar *) sp_repr_content (SP_TEXT_CONTEXT (event_context)->text);
+		k[1] = '\0';
+		c = (gchar *) sp_repr_content (SP_OBJECT_REPR (tc->item));
 		if (c == NULL) c = "";
-		c = g_strconcat (c, &k, NULL);
-		sp_repr_set_content (SP_TEXT_CONTEXT (event_context)->text, c);
-		sp_document_done (SP_DT_DOCUMENT (event_context->desktop));
+		c = g_strconcat (c, k, NULL);
+		sp_repr_set_content (SP_OBJECT_REPR (tc->item), c);
+		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 
 		ret = TRUE;
 		break;
@@ -141,79 +223,14 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 	}
 
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->item_handler (event_context, item, event);
-	}
-
-	return ret;
-}
-
-static gint
-sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
-{
-	SPTextContext * text_context;
-	SPDesktop * desktop;
-	SPItem * item;
-	ArtPoint p;
-	gint ret;
-	SPRepr * repr, * style;
-	SPCSSAttr * css;
-
-	ret = FALSE;
-
-	text_context = SP_TEXT_CONTEXT (event_context);
-	desktop = event_context->desktop;
-
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 1:
-			if (text_context->text)
-				sp_text_complete (SP_TEXT_CONTEXT (event_context));
-
-			sp_desktop_w2doc_xy_point (desktop, &p, event->button.x, event->button.y);
-
-			/* Create object */
-			repr = sp_repr_new ("text");
-			/* Set style */
-			style = sodipodi_get_repr (SODIPODI, "paint.text");
-			if (style) {
-				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (repr, css, "style");
-				sp_repr_css_attr_unref (css);
-			}
-			text_context->text = repr;
-			sp_repr_set_double_attribute (text_context->text, "x", p.x);
-			sp_repr_set_double_attribute (text_context->text, "y", p.y);
-			item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), text_context->text);
-			sp_document_done (SP_DT_DOCUMENT (desktop));
-			sp_repr_unref (text_context->text);
-/* fixme: */
-			if (item != NULL) {
-				text_context->item = item;
-				text_context->canvasitem = sp_item_canvas_item (item, desktop);
-				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-				gnome_canvas_item_grab_focus (text_context->canvasitem);
-			}
-
-			ret = TRUE;
-			break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
-
-	if (!ret) {
 		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (ec, event);
 	}
 
 	return ret;
 }
 
+#if 0
 static void
 sp_text_complete (SPTextContext * text_context)
 {
@@ -238,4 +255,20 @@ sp_text_complete (SPTextContext * text_context)
 
 	text_context->text = NULL;
 }
+#endif
+
+static void
+sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
+{
+	SPItem *item;
+
+	tc->item = NULL;
+
+	item = sp_selection_item (selection);
+
+	if (SP_IS_TEXT (item)) {
+		tc->item = item;
+	}
+}
+
 
