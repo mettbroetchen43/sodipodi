@@ -3429,6 +3429,14 @@
         }
         "Locator"
         {
+            "{328616F4-3D88-44AA-B041-F8100F0FDCF1}:_267FF510D2314C48AB8D1F7D45CB5B3F"
+            {
+            "Name" = "8:Search for Gtk DllPath"
+            "Root" = "2:1"
+            "RegKey" = "8:Software\\GTK\\2.0"
+            "Value" = "8:DllPath"
+            "Property" = "8:GTKDLLPATH"
+            }
             "{328616F4-3D88-44AA-B041-F8100F0FDCF1}:_7D0CF15C0D4E41DD8F34C32A11F9A442"
             {
             "Name" = "8:Search for Gtk"
@@ -3527,7 +3535,7 @@
                                                                     "Condition" = "8:"
                                                                     "Transitive" = "11:FALSE"
                                                                     "ValueTypes" = "3:1"
-                                                                    "Value" = "8:[GTKPATH]\\bin;[GTKPATH]\\lib"
+                                                                    "Value" = "8:[GTKPATH]\\bin;[GTKPATH]\\lib;[GTKDLLPATH]"
                                                                     }
                                                                     "{B73D4F5A-FF29-11D2-8D6B-00A0C9CFCEE6}:_8F4F7EDBD9E640C29CE17E1163BC2DA3"
                                                                     {
@@ -3713,13 +3721,13 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Sodipodi"
-        "ProductCode" = "8:{0BE8D9AE-B72B-47A6-98D1-A811812F9207}"
-        "PackageCode" = "8:{DAA7A934-F299-4CA6-9454-6546D758DC33}"
+        "ProductCode" = "8:{F92716F6-4CB2-4FB7-AC02-C7E9FFD22E45}"
+        "PackageCode" = "8:{E529EC7A-9EBF-4D82-BF5A-17A282954CDC}"
         "UpgradeCode" = "8:{CF5B3218-5E61-4556-951D-EF6295E57B6F}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:0.33.1"
+        "ProductVersion" = "8:0.33.2"
         "Manufacturer" = "8:Sodipodi"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.sodipodi.com/"
