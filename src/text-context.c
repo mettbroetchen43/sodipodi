@@ -329,10 +329,9 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		break;
 	case GDK_KEY_PRESS:
 		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, (GdkEventKey*)event)) {
-			g_print ("Filtered\n");
 			return TRUE;
 		}
-		g_print ("Nonfiltered\n");
+
 		if (!tc->text) sp_text_context_setup_text (tc);
 		else sp_text_context_preedit_reset (tc);
 		g_assert (tc->text != NULL);
