@@ -51,21 +51,21 @@
 #include "spw-utilities.h"
 
 void
-spw_checkbutton(GtkWidget * dialog, GtkWidget * t,
-		const guchar * label, guchar * key, int col, int row,
-		int sensitive, GCallback cb) {
-  GtkWidget *b;
-  b = gtk_check_button_new_with_label (label);
-  gtk_widget_show (b);
-  gtk_table_attach (GTK_TABLE (t), b, col, col+1, row, row+1,
-		    GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  gtk_object_set_data (GTK_OBJECT (b), "key", key);
-  gtk_object_set_data (GTK_OBJECT (dialog), key, b);
-  g_signal_connect (G_OBJECT (b), "toggled",
-		    cb, dialog);
-  if (sensitive == 1) {
-    gtk_widget_set_sensitive (b, FALSE);
-  }
+spw_checkbutton (GtkWidget *dialog, GtkWidget *table, const unsigned char *label, const unsigned char *key,
+		 int col, int row, int sensitive, GCallback cb)
+{
+	GtkWidget *b;
+	b = gtk_check_button_new_with_label (label);
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (table), b, col, col+1, row, row+1,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", (gpointer) key);
+	gtk_object_set_data (GTK_OBJECT (dialog), key, b);
+	g_signal_connect (G_OBJECT (b), "toggled",
+			  cb, dialog);
+	if (sensitive) {
+		gtk_widget_set_sensitive (b, FALSE);
+	}
 }
 
 void

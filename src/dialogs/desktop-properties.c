@@ -48,7 +48,7 @@ static void sp_dtw_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, Gtk
 static void sp_dtw_desactivate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
 static void sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop);
 
-static GtkWidget *sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba);
+static GtkWidget *sp_dtcolor_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba);
 static void sp_color_picker_set_rgba32 (GtkWidget *cp, guint32 rgba);
 static void sp_color_picker_clicked (GObject *cp, void *data);
 static void sp_color_picker_button(GtkWidget * dialog, GtkWidget * t, const guchar * label, guchar * key, guchar * color_dialog_label, guchar * opacity_key, int row);
@@ -449,7 +449,7 @@ sp_color_picker_button (GtkWidget *dialog, GtkWidget *t,
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new (key, opacity_key, color_dialog_label, 0);
+	cp = sp_dtcolor_picker_new (key, opacity_key, color_dialog_label, 0);
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	g_object_set_data (G_OBJECT (dialog), key, cp);
@@ -466,7 +466,7 @@ sp_color_picker_destroy (GtkObject *cp, gpointer data)
 }
 
 static GtkWidget *
-sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba)
+sp_dtcolor_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba)
 {
 	GtkWidget *b, *cpv;
 
@@ -474,7 +474,7 @@ sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned 
 
 	g_object_set_data (G_OBJECT (b), "title", title);
 
-	cpv = sp_color_preview_new (rgba);
+	cpv = sp_color_preview_new (rgba, TRUE, TRUE);
 #if 0
 	sp_color_preview_set_show_solid  (SP_COLOR_PREVIEW (rgba), FALSE);
 #endif

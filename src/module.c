@@ -585,6 +585,8 @@ sp_module_print_finalize (GObject *object)
 
 /* Global methods */
 
+#include <gmodule.h>
+
 #ifdef WITH_KDE
 #include "modules/kde.h"
 #endif
@@ -663,8 +665,8 @@ sp_modules_init (int *argc, const char ***argv, unsigned int gui)
 #endif
 
 	/* XML editor module */
-	module_xml_editor = sp_xml_module_load ();
-	sp_module_setup (module_xml_editor, repr, "xmleditor");
+	/* module_xml_editor = sp_xml_module_load (); */
+	/* sp_module_setup (module_xml_editor, repr, "xmleditor"); */
 
 	/* Default input */
 	mod = g_object_new (SP_TYPE_MODULE_INPUT, NULL);
@@ -688,6 +690,8 @@ sp_modules_finish (void)
 #ifdef WIN32
 	sp_win32_finish ();
 #endif
+
+	/* fixme: Release these */
 	module_printing_ps = sp_module_unref (module_printing_ps);
 
 	return TRUE;
@@ -711,6 +715,40 @@ sp_modules_menu_action_activate (GtkWidget *widget, SPRepr *repr)
 		if (!module) return;
 		sp_module_invoke (module, repr);
 		sp_module_unref (module);
+	} else if (!strcmp (type, "dll")) {
+		const unsigned char *path;
+		SPModule *module;
+		GModule *gmod;
+		path = sp_repr_attr (actrepr, "path");
+		if (!path) return;
+		module = sp_module_find (path);
+		if (module) {
+			sp_module_invoke (module, repr);
+			sp_module_unref (module);
+		} else {
+			const unsigned char *path, *dllpath;
+			dllpath = sp_repr_attr (actrepr, "dllpath");
+			/* fixme: Set as invalid instead */
+			if (!dllpath) return;
+			gmod = g_module_open (dllpath, G_MODULE_BIND_LAZY);
+			if (gmod) {
+				SPModule * (*sp_module_load) (void);
+				if (g_module_symbol (gmod, "sp_module_load", (gpointer *) &sp_module_load)) {
+					module = sp_module_load ();
+					if (module) {
+						sp_module_setup (module, repr, path);
+					} else {
+						g_module_close (gmod);
+					}
+				}
+				if (!module) {
+					sp_repr_set_attr (repr, "invalid", "true");
+				}
+			}
+			if (module) {
+				sp_module_invoke (module, repr);
+			}
+		}
 	}
 }
 
@@ -763,7 +801,10 @@ sp_modules_menu_append_node (SPMenu *menu, SPRepr *repr, SPMenu * (*callback) (S
 				gtk_menu_append ((GtkMenu *) menu, item);
 			}
 		} else if (!strcmp (sp_repr_name (repr), "module")) {
-			menu = callback (menu, repr, name);
+			unsigned int bval;
+			if (!sp_repr_get_boolean (repr, "invalid", &bval) || !bval) {
+				menu = callback (menu, repr, name);
+			}
 		}
 	}
 	return (GtkWidget *) menu;

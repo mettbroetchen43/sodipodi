@@ -32,6 +32,7 @@
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 #include "helper/unit-menu.h"
+#include "widgets/sp-color-preview.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "desktop-handles.h"
@@ -112,7 +113,7 @@ void
 sp_export_dialog (void)
 {
 	if (!dlg) {
-		GtkWidget *vb, *f, *t, *hb, *us, *l, *fe, *hs, *b;
+		GtkWidget *vb, *f, *t, *hb, *us, *l, *cpicker, *fe, *hs, *b;
 
 		dlg = sp_window_new (_("Export bitmap"), FALSE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_export_dialog_destroy), NULL);
@@ -203,6 +204,14 @@ sp_export_dialog (void)
 
 		gtk_widget_show_all (f);
 
+		/* Background color */
+		hb = gtk_hbox_new (FALSE, 0);
+		gtk_box_pack_start ((GtkBox *) vb, hb, FALSE, FALSE, 0);
+		l = gtk_label_new (_("Background color"));
+		gtk_box_pack_start ((GtkBox *) hb, l, FALSE, FALSE, 4);
+		cpicker = sp_color_picker_new (0x00000000, _("Bitmap background:"));
+		gtk_box_pack_start ((GtkBox *) hb, cpicker, FALSE, FALSE, 4);
+		gtk_object_set_data (GTK_OBJECT (dlg), "bgcolor", cpicker);
 		/* File entry */
 #if 0
 		fe = gnome_file_entry_new ("export", _("Export png file"));
@@ -225,26 +234,22 @@ sp_export_dialog (void)
 
 		}
 #endif
-		gtk_widget_show (fe);
 		gtk_box_pack_start (GTK_BOX (vb), fe, FALSE, FALSE, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "filename", fe);
 
 		/* Buttons */
 		hb = gtk_hbox_new (FALSE, 0);
-		gtk_widget_show (hb);
 		gtk_box_pack_end (GTK_BOX (vb), hb, FALSE, FALSE, 0);
 
 		b = gtk_button_new_with_label (_("Export"));
-		gtk_widget_show (b);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
 		gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_export_export_clicked), dlg);
 
 		hs = gtk_hseparator_new ();
-		gtk_widget_show (hs);
 		gtk_box_pack_end (GTK_BOX (vb), hs, FALSE, FALSE, 0);
 	}
 
-	gtk_widget_show (dlg);
+	gtk_widget_show_all (dlg);
 }
 
 static void
@@ -286,9 +291,11 @@ static void
 sp_export_export_clicked (GtkButton *button, GtkObject *base)
 {
 	GtkWidget *fe;
+	SPColorPicker *cpicker;
 	const unsigned char *filename;
 	float x0, y0, x1, y1;
 	int width, height;
+	guint32 rgba;
 
 	if (!SP_ACTIVE_DESKTOP) return;
 
@@ -305,9 +312,12 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	y1 = sp_export_value_get_pt (base, "y1");
 	width = (int) (sp_export_value_get (base, "bmwidth") + 0.5);
 	height = (int) (sp_export_value_get (base, "bmheight") + 0.5);
-
+	cpicker = g_object_get_data ((GObject *) base, "bgcolor");
+	rgba = (cpicker) ? sp_color_picker_get_rgba32 (cpicker) : 0x00000000;
 	if ((x1 > x0) && (y1 > y0) && (width > 0) && (height > 0)) {
-		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000, NULL, NULL);
+		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename,
+				    x0, y0, x1, y1, width, height,
+				    rgba, NULL, NULL);
 	}
 }
 

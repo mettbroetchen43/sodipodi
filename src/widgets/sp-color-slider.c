@@ -21,13 +21,7 @@
 #define SLIDER_HEIGHT 8
 #define ARROW_SIZE 8
 
-enum {
-	GRABBED,
-	DRAGGED,
-	RELEASED,
-	CHANGED,
-	LAST_SIGNAL
-};
+enum {GRABBED, DRAGGED, RELEASED, CHANGED, LAST_SIGNAL};
 
 static void sp_color_slider_class_init (SPColorSliderClass *klass);
 static void sp_color_slider_init (SPColorSlider *slider);

@@ -1,3 +1,13 @@
+2003-12-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/export.c (sp_export_dialog): Added background
+	color picker
+
+	* src/widgets/sp-color-preview.c (sp_color_picker_get_type): New
+	widget type
+	(sp_color_preview_paint): Allow toggling transparent/opaque areas
+	(sp_color_preview_new): Signature change
+
 2003-12-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-stroke.c (nr_bpath_stroke_bbox_union): Implement
