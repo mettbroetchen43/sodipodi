@@ -13,6 +13,8 @@
  */
 
 #include <math.h>
+#include <libnr/nr-matrix.h>
+#include <libnr/nr-compose-transform.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_affine.h>
@@ -83,7 +85,7 @@ nr_arena_image_init (NRArenaImage *image)
 	image->x = image->y = 0.0;
 	image->width = image->height = 1.0;
 
-	art_affine_identity (image->grid2px);
+	nr_matrix_f_set_identity (&image->grid2px);
 }
 
 static void
@@ -107,6 +109,7 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 {
 	NRArenaImage *image;
 	gdouble hscale, vscale;
+	gdouble grid2px[6];
 
 	image = NR_ARENA_IMAGE (item);
 
@@ -114,7 +117,7 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	nr_arena_item_request_render (item);
 
 	/* Copy affine */
-	art_affine_invert (image->grid2px, gc->affine);
+	art_affine_invert (grid2px, gc->affine);
 	if (image->pixbuf) {
 		hscale = (fabs (image->width > 1e-9)) ? gdk_pixbuf_get_width (image->pixbuf) / image->width : 1e9;
 		vscale = (fabs (image->height > 1e-9)) ? gdk_pixbuf_get_height (image->pixbuf) / image->height : 1e9;
@@ -123,15 +126,15 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		vscale = 1e9;
 	}
 
-	image->grid2px[0] *= hscale;
-	image->grid2px[2] *= hscale;
-	image->grid2px[4] *= hscale;
-	image->grid2px[1] *= vscale;
-	image->grid2px[3] *= vscale;
-	image->grid2px[5] *= vscale;
+	image->grid2px.c[0] = grid2px[0] * hscale;
+	image->grid2px.c[2] = grid2px[2] * hscale;
+	image->grid2px.c[4] = grid2px[4] * hscale;
+	image->grid2px.c[1] = grid2px[1] * vscale;
+	image->grid2px.c[3] = grid2px[3] * vscale;
+	image->grid2px.c[5] = grid2px[5] * vscale;
 
-	image->grid2px[4] -= image->x * hscale;
-	image->grid2px[5] -= image->y * vscale;
+	image->grid2px.c[4] -= image->x * hscale;
+	image->grid2px.c[5] -= image->y * vscale;
 
 	/* Calculate bbox */
 	if (image->pixbuf) {
@@ -164,28 +167,14 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 #define YSAMPLE nr_arena_image_y_sample
 #define b2i (image->grid2px)
 
-#define PREMUL(c,a) (((c) * (a) + 127) / 255)
-#define COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
-#define COMPOSEPNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 127) / a)
-#define COMPOSENNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 32512) / 65025)
-#define COMPOSEPNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 32512) / 65025)
-#define COMPOSENPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fa) * (fc) + 127) / 255)
-#define COMPOSEPPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEP11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
-#define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
-
 static guint
 nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 {
 	NRArenaImage *image;
-	guint xnsample, ynsample, dsample;
-	gint x, y, dw, dh, drs, dx0, dy0;
-	gint srs, sw, sh;
-	gdouble Fs_x_x, Fs_x_y, Fs_y_x, Fs_y_y, Fs__x, Fs__y;
-	gint FFs_x_x, FFs_x_y;
-	gint FFs_x_x_S, FFs_x_y_S, FFs_y_x_S, FFs_y_y_S;
-	guchar *spx, *dpx;
 	guint32 Falpha;
+	guchar *spx, *dpx;
+	gint dw, dh, drs, sw, sh, srs;
+	NRMatrixF d2s;
 
 	image = NR_ARENA_IMAGE (item);
 
@@ -194,16 +183,10 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 	Falpha = (guint32) floor (item->opacity * 255.9999);
 	if (Falpha < 1) return item->state;
 
-	xnsample = 1 << XSAMPLE;
-	ynsample = 1 << YSAMPLE;
-	dsample = XSAMPLE + YSAMPLE;
-
 	dpx = buf->px;
 	drs = buf->rs;
 	dw = area->x1 - area->x0;
 	dh = area->y1 - area->y0;
-	dx0 = area->x0;
-	dy0 = area->y0;
 
 	spx = gdk_pixbuf_get_pixels (image->pixbuf);
 	srs = gdk_pixbuf_get_rowstride (image->pixbuf);
@@ -211,104 +194,17 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 	sw = gdk_pixbuf_get_width (image->pixbuf);
 	sh = gdk_pixbuf_get_height (image->pixbuf);
 
-	Fs_x_x = b2i[0];
-	Fs_x_y = b2i[1];
-	Fs_y_x = b2i[2];
-	Fs_y_y = b2i[3];
-	Fs__x = b2i[4];
-	Fs__y = b2i[5];
+	d2s.c[0] = b2i.c[0];
+	d2s.c[1] = b2i.c[1];
+	d2s.c[2] = b2i.c[2];
+	d2s.c[3] = b2i.c[3];
+	d2s.c[4] = b2i.c[0] * area->x0 + b2i.c[2] * area->y0 + b2i.c[4];
+	d2s.c[5] = b2i.c[1] * area->x0 + b2i.c[3] * area->y0 + b2i.c[5];
 
-	FFs_x_x = (gint) floor (Fs_x_x * (1 << FBITS) + 0.5);
-	FFs_x_y = (gint) floor (Fs_x_y * (1 << FBITS) + 0.5);
-
-	FFs_x_x_S = (gint) floor (Fs_x_x * (1 << FBITS) + 0.5) >> XSAMPLE;
-	FFs_x_y_S = (gint) floor (Fs_x_y * (1 << FBITS) + 0.5) >> XSAMPLE;
-	FFs_y_x_S = (gint) floor (Fs_y_x * (1 << FBITS) + 0.5) >> YSAMPLE;
-	FFs_y_y_S = (gint) floor (Fs_y_y * (1 << FBITS) + 0.5) >> YSAMPLE;
-
-	for (y = 0; y < dh; y++) {
-		guchar *s0, *s, *d;
-		gdouble Fsx, Fsy;
-		gint FFsx0, FFsy0, FFdsx, FFdsy, sx, sy;
-		d = buf->px + y * drs;
-		Fsx = (y + dy0) * Fs_y_x + (0 + dx0) * Fs_x_x + Fs__x;
-		Fsy = (y + dy0) * Fs_y_y + (0 + dx0) * Fs_x_y + Fs__y;
-		s0 = spx + (gint) Fsy * srs + (gint) Fsx * 4;
-		FFsx0 = (gint) (floor (Fsx) * (1 << FBITS) + 0.5);
-		FFsy0 = (gint) (floor (Fsy) * (1 << FBITS) + 0.5);
-		FFdsx = (gint) ((Fsx - floor (Fsx)) * (1 << FBITS) + 0.5);
-		FFdsy = (gint) ((Fsy - floor (Fsy)) * (1 << FBITS) + 0.5);
-		for (x = 0; x < dw; x++) {
-			gint FFdsx0, FFdsy0;
-			gint r, g, b, a;
-			gint xx, yy;
-			FFdsy0 = FFdsy;
-			FFdsx0 = FFdsx;
-			r = g = b = a = 0;
-			for (yy = 0; yy < ynsample; yy++) {
-				FFdsy = FFdsy0 + yy * (FFs_y_y_S);
-				FFdsx = FFdsx0 + yy * (FFs_y_x_S);
-				for (xx = 0; xx < xnsample; xx++) {
-					sx = (FFsx0 + FFdsx) >> FBITS;
-					sy = (FFsy0 + FFdsy) >> FBITS;
-					if ((sx >= 0) && (sx < sw) && (sy >= 0) && (sy < sh)) {
-						s = spx + sy * srs + sx * 4;
-						r += s[0];
-						g += s[1];
-						b += s[2];
-						a += s[3];
-					}
-					FFdsx += FFs_x_x_S;
-					FFdsy += FFs_x_y_S;
-				}
-			}
-			if (a > dsample) {
-				/* fixme: do it right, plus premul stuff */
-				r = r >> dsample;
-				g = g >> dsample;
-				b = b >> dsample;
-				a = ((a * Falpha >> dsample) + 127) / 255;
-				if (a > 0) {
-					if (buf->premul) {
-						if ((a == 255) || (d[3] == 0)) {
-							/* Transparent BG, premul src */
-							d[0] = PREMUL (r, a);
-							d[1] = PREMUL (g, a);
-							d[2] = PREMUL (b, a);
-							d[3] = a;
-						} else {
-							d[0] = COMPOSENPP (r, a, d[0], d[3]);
-							d[1] = COMPOSENPP (g, a, d[1], d[3]);
-							d[2] = COMPOSENPP (b, a, d[2], d[3]);
-							d[3] = (65025 - (255 - a) * (255 - d[3]) + 127) / 255;
-						}
-					} else {
-						if ((a == 255) || (d[3] == 0)) {
-							/* Full coverage, COPY */
-							d[0] = r;
-							d[1] = g;
-							d[2] = b;
-							d[3] = a;
-						} else {
-							guint ca;
-							/* Full composition */
-							ca = 65025 - (255 - a) * (255 - d[3]);
-							d[0] = COMPOSENNN_A7 (r, a, d[0], d[3], ca);
-							d[1] = COMPOSENNN_A7 (g, a, d[1], d[3], ca);
-							d[2] = COMPOSENNN_A7 (b, a, d[2], d[3], ca);
-							d[3] = (ca + 127) / 255;
-						}
-					}
-				}
-			}
-			FFdsy = FFdsy0;
-			FFdsx = FFdsx0;
-			/* Advance pointers */
-			FFdsx += FFs_x_x;
-			FFdsy += FFs_x_y;
-			/* Advance destination */
-			d += 4;
-		}
+	if (buf->premul) {
+		nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
+	} else {
+		nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
 	}
 
 	return item->state;
@@ -331,8 +227,8 @@ nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 	width = gdk_pixbuf_get_width (image->pixbuf);
 	height = gdk_pixbuf_get_height (image->pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
-	ix = x * image->grid2px[0] + y * image->grid2px[2] + image->grid2px[4];
-	iy = x * image->grid2px[1] + y * image->grid2px[3] + image->grid2px[5];
+	ix = x * image->grid2px.c[0] + y * image->grid2px.c[2] + image->grid2px.c[4];
+	iy = x * image->grid2px.c[1] + y * image->grid2px.c[3] + image->grid2px.c[5];
 
 	if ((ix < 0) || (iy < 0) || (ix >= width) || (iy >= height)) return NULL;
 

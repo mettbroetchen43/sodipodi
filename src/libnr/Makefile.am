@@ -14,5 +14,6 @@ libnr_a_SOURCES = \
 	nr-rect.c nr-rect.h \
 	nr-pixops.h \
 	nr-compose.c nr-compose.h \
+	nr-compose-transform.c nr-compose-transform.h \
 	nr-pixblock.c nr-pixblock.h \
 	nr-blit.c nr-blit.h

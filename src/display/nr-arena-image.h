@@ -19,6 +19,7 @@
 #define NR_IS_ARENA_IMAGE(o) (GTK_CHECK_TYPE ((o), NR_TYPE_ARENA_IMAGE))
 #define NR_IS_ARENA_IMAGE_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_IMAGE))
 
+#include <libnr/nr-types.h>
 #include "nr-arena-item.h"
 
 struct _NRArenaImage {
@@ -29,7 +30,7 @@ struct _NRArenaImage {
 	gdouble width, height;
 
 	/* From GRID to PIXELS */
-	gdouble grid2px[6];
+	NRMatrixF grid2px;
 };
 
 struct _NRArenaImageClass {

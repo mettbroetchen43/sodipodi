@@ -1,3 +1,12 @@
+2002-09-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-image.c (nr_arena_image_render): Use libnr
+	transformed composition methods
+
+	* src/libnr/nr-compose-transform.c: New file
+
+	* src/libnr/nr-compose-transform.h: New file
+
 2002-09-15  Masatake YAMATO  <jet@gyve.org>
 
 	* src/toolbox.c (sp_maintoolbox_drag_data_received): made

@@ -1,0 +1,45 @@
+#ifndef __NR_COMPOSE_TRANSFORM_H__
+#define __NR_COMPOSE_TRANSFORM_H__
+
+/*
+ * Pixel buffer rendering library
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include <libnr/nr-types.h>
+
+/* FINAL DST SRC */
+
+void nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, int h, int rs,
+					       const unsigned char *spx, int sw, int sh, int srs,
+					       const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_TRANSFORM (unsigned char *px, int w, int h, int rs,
+					       const unsigned char *spx, int sw, int sh, int srs,
+					       const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, int h, int rs,
+					       const unsigned char *spx, int sw, int sh, int srs,
+					       const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P_TRANSFORM (unsigned char *px, int w, int h, int rs,
+					       const unsigned char *spx, int sw, int sh, int srs,
+					       const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+
+void nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, int h, int rs,
+						    const unsigned char *spx, int sw, int sh, int srs,
+						    const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P_TRANSFORM (unsigned char *px, int w, int h, int rs,
+						    const unsigned char *spx, int sw, int sh, int srs,
+						    const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (unsigned char *px, int w, int h, int rs,
+						    const unsigned char *spx, int sw, int sh, int srs,
+						    const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+void nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P_TRANSFORM (unsigned char *px, int w, int h, int rs,
+						    const unsigned char *spx, int sw, int sh, int srs,
+						    const NRMatrixF *d2s, unsigned int alpha, int xd, int yd);
+
+#endif
