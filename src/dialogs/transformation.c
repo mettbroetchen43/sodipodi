@@ -673,7 +673,7 @@ sp_transformation_page_rotate_new (GObject *obj)
 	gtk_table_set_col_spacings (GTK_TABLE (tbl), 4);
 	gtk_box_pack_start (GTK_BOX (vb), tbl, FALSE, FALSE, 0);
 
-	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "rotate_right");
+	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "rotate_left");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
 	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
 	g_object_set_data (obj, "rotate_angle", adj);

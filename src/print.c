@@ -387,14 +387,16 @@ sp_print_document (SPDocument *doc)
 					   NULL);
 
 	vbox = GTK_DIALOG (dlg)->vbox;
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
 
 	f = gtk_frame_new (_("Print destination"));
 	gtk_box_pack_start (GTK_BOX (vbox), f, FALSE, FALSE, 4);
 
 	vb = gtk_vbox_new (FALSE, 4);
 	gtk_container_add (GTK_CONTAINER (f), vb);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
 
-	l = gtk_label_new (_("Please enter destination lpr queue.\n"
+	l = gtk_label_new (_("Enter destination lpr queue.\n"
 			     "Use '> filename' to print to file.\n"
 			     "Use '| prog arg...' to pipe to program"));
 	gtk_box_pack_start (GTK_BOX (vb), l, FALSE, FALSE, 0);
@@ -436,11 +438,12 @@ sp_print_document (SPDocument *doc)
 			}
 		}
 		if (ctx.stream) {
+			int res;
 			sp_document_ensure_up_to_date (doc);
-			fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
-			fprintf (ctx.stream, "0.8 -0.8 scale\n");
-			sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
-			fprintf (ctx.stream, "showpage\n");
+			res = fprintf (ctx.stream, "%g %g translate\n", 0.0, sp_document_height (doc));
+			if (res >= 0) res = fprintf (ctx.stream, "0.8 -0.8 scale\n");
+			if (res > 0) sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+			if (res > 0) res = fprintf (ctx.stream, "showpage\n");
 		}
 		if (osf) fclose (osf);
 		if (osp) fclose (osp);
