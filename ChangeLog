@@ -13,6 +13,22 @@
 	(sp_radialgradient_read_attr): Initialize right numbers
 	(sp_radialgradient_init): Ditto
 
+2002-09-24  Masatake YAMATO  <jet@gyve.org>
+
+	* src/select-context.c (sp_select_context_root_handler,
+	sp_select_context_item_handler): used GDK_space instead
+	of GDK_BUTTON_2. Added Lauris's event mask code after 
+	grabbing an item.
+
+	* src/seltrans.c (sp_sel_trans_handle_stamp): removed.
+	(sp_seltrans_handle_event): handled "pressing space" as 
+	stamping.
+	(gdk/gdkkeysyms.h): included.
+
+	* src/knot.c (sp_knot_class_init): removed "stamped" signal 
+	again.
+	(sp_knot_handler): didn't emit stamped anymore.
+
 2002-09-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-matrix.c (nr_matrix_d_set_scale): new method

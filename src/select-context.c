@@ -215,6 +215,9 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->drawing);
+			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
+			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
+			sc->grabbed->canvas->grabbed_event_mask |= GDK_KEY_PRESS_MASK;
 			ret = TRUE;
 		}
 		break;
@@ -274,11 +277,7 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 				sc->grabbed = NULL;
 			}
 			ret = TRUE;
-		} else if (event->button.button == 2) {	
-			/* stamping mode: show content mode moving */
-			sp_sel_trans_stamp(seltrans);
-			ret = TRUE;
-		}
+		} 
 		break;
 	case GDK_ENTER_NOTIFY:
 		cursor = gdk_cursor_new (GDK_FLEUR);
@@ -287,6 +286,13 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 		break;
 	case GDK_LEAVE_NOTIFY:
 		gdk_window_set_cursor (GTK_WIDGET (SP_DT_CANVAS (desktop))->window, event_context->cursor);
+		break;
+	case GDK_KEY_PRESS:
+		if (event->key.keyval == GDK_space) {
+			/* stamping mode: show content mode moving */
+			sp_sel_trans_stamp(seltrans);
+			ret = TRUE;
+		}
 		break;
 	default:
 		break;
@@ -327,6 +333,9 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
 						NULL, event->button.time);
 			sc->grabbed = GNOME_CANVAS_ITEM (desktop->acetate);
+			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
+			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
+			sc->grabbed->canvas->grabbed_event_mask |= GDK_KEY_PRESS_MASK;
 			sc->button_press_shift = (event->button.state & GDK_SHIFT_MASK) ? TRUE : FALSE;
 			ret = TRUE;
 		}
@@ -418,13 +427,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
 			}
 			sc->button_press_shift = FALSE;
-		} else if (event->button.button == 2) {	
-			/* stamping mode: show outline mode moving */
-			/* FIXME: Is next condition ok? */
-			if (sc->dragging && sc->grabbed) 
-				sp_sel_trans_stamp(seltrans);
-			ret = TRUE;
-		}
+		} 
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  
@@ -530,6 +533,13 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	    break;
 	  case GDK_ISO_Left_Tab: // Tab - cycle selection backward
 	    sp_selection_item_prev ();
+	    ret = TRUE;
+	    break;
+	  case GDK_space:
+	    /* stamping mode: show outline mode moving */
+	    /* FIXME: Is next condition ok? */
+	    if (sc->dragging && sc->grabbed) 
+		    sp_sel_trans_stamp(seltrans);
 	    ret = TRUE;
 	    break;
           }

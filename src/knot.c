@@ -49,7 +49,6 @@ enum {
 	GRABBED,
 	UNGRABBED,
 	MOVED,
-	STAMPED,
 	REQUEST,
 	DISTANCE,
 	LAST_SIGNAL
@@ -149,12 +148,6 @@ sp_knot_class_init (SPKnotClass * klass)
 		GTK_SIGNAL_OFFSET (SPKnotClass, moved),
 		gtk_marshal_NONE__POINTER_UINT,
 		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
-	knot_signals[STAMPED] = gtk_signal_new ("stamped",
-		GTK_RUN_FIRST,
-		object_class->type,
-		GTK_SIGNAL_OFFSET (SPKnotClass, stamped),
-		gtk_marshal_NONE__UINT,
-		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
 	knot_signals[REQUEST] = gtk_signal_new ("request",
 		GTK_RUN_LAST,
 		object_class->type,
@@ -401,11 +394,6 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			grabbed = FALSE;
 			moved = FALSE;
 			consumed = TRUE;
-		} else if (event->button.button == 2) {
-			if (grabbed)
-				gtk_signal_emit (GTK_OBJECT (knot),
-						 knot_signals[STAMPED],
-						 event->button.state);
 		}
 		break;
 	case GDK_MOTION_NOTIFY:

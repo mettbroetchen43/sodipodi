@@ -15,13 +15,31 @@
 #include <libnr/nr-matrix.h>
 #include <gtk/gtksignal.h>
 #include "helper/nr-plain-stuff.h"
+#include "xml/repr-private.h"
 #include "svg/svg.h"
+#include "display/nr-arena.h"
+#include "display/nr-arena-group.h"
 #include "document.h"
+#include "sp-object-repr.h"
+#include "sp-item.h"
 #include "sp-pattern.h"
 
 /*
  * Pattern
  */
+
+typedef struct _SPPatPainter SPPatPainter;
+
+struct _SPPatPainter {
+	SPPainter painter;
+	SPPattern *pat;
+
+	NRMatrixF ps2px;
+	NRMatrixF pcs2px;
+
+	NRArena *arena;
+	NRArenaItem *root;
+};
 
 static void sp_pattern_class_init (SPPatternClass *klass);
 static void sp_pattern_init (SPPattern *gr);
@@ -123,11 +141,24 @@ static void
 sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
 	SPPattern *pat;
+	SPObject *last;
+	SPRepr *rchild;
 
 	pat = SP_PATTERN (object);
 
 	if (SP_OBJECT_CLASS (pattern_parent_class)->build)
 		(* SP_OBJECT_CLASS (pattern_parent_class)->build) (object, document, repr);
+
+	last = NULL;
+	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
+		GtkType type;
+		SPObject * child;
+		type = sp_repr_type_lookup (rchild);
+		child = gtk_type_new (type);
+		last ? last->next : pat->children = sp_object_attach_reref (object, child, NULL);
+		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
+		last = child;
+	}
 
 	sp_pattern_read_attr (object, "patternUnits");
 	sp_pattern_read_attr (object, "patternContentUnits");
@@ -187,6 +218,54 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			pat->patternTransform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "x")) {
+		if (!sp_svg_length_read (val, &pat->x)) {
+			sp_svg_length_unset (&pat->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "y")) {
+		if (!sp_svg_length_read (val, &pat->y)) {
+			sp_svg_length_unset (&pat->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "width")) {
+		if (!sp_svg_length_read (val, &pat->width)) {
+			sp_svg_length_unset (&pat->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "height")) {
+		if (!sp_svg_length_read (val, &pat->height)) {
+			sp_svg_length_unset (&pat->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "viewBox")) {
+		/* fixme: Think (Lauris) */
+		double x, y, width, height;
+		char *eptr;
+
+		if (val) {
+			eptr = (gchar *) val;
+			x = strtod (eptr, &eptr);
+			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+			y = strtod (eptr, &eptr);
+			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+			width = strtod (eptr, &eptr);
+			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+			height = strtod (eptr, &eptr);
+			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
+			if ((width > 0) && (height > 0)) {
+				pat->viewBox.x0 = x;
+				pat->viewBox.y0 = y;
+				pat->viewBox.x1 = x + width;
+				pat->viewBox.y1 = y + height;
+				pat->viewBox_set = TRUE;
+			} else {
+				pat->viewBox_set = FALSE;
+			}
+		} else {
+			pat->viewBox_set = FALSE;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "xlink:href")) {
 		if (pat->href) {
 			gtk_signal_disconnect_by_data (GTK_OBJECT (pat->href), pat);
@@ -212,18 +291,111 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 static void
 sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
+	SPPattern *pat;
+	GtkType type;
+	SPObject *ochild, *prev;
+	gint position;
+
+	pat = SP_PATTERN (object);
+
+	if (((SPObjectClass *) (pattern_parent_class))->child_added)
+		(* ((SPObjectClass *) (pattern_parent_class))->child_added) (object, child, ref);
+
+	/* Search for position reference */
+	prev = NULL;
+	position = 0;
+	if (ref != NULL) {
+		prev = pat->children;
+		while (prev && (prev->repr != ref)) {
+			if (SP_IS_ITEM (prev)) position += 1;
+			prev = prev->next;
+		}
+		if (SP_IS_ITEM (prev)) position += 1;
+	}
+
+	type = sp_repr_type_lookup (child);
+	ochild = gtk_type_new (type);
+	if (prev) {
+		prev->next = sp_object_attach_reref (object, ochild, prev->next);
+	} else {
+		pat->children = sp_object_attach_reref (object, ochild, pat->children);
+	}
+
+	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
+
+	if (SP_IS_ITEM (ochild)) {
+		SPPaintServer *ps;
+		SPPainter *p;
+		/* Huh (Lauris) */
+		ps = SP_PAINT_SERVER (pat);
+		for (p = ps->painters; p != NULL; p = p->next) {
+			SPPatPainter *pp;
+			NRArenaItem *ai;
+			pp = (SPPatPainter *) p;
+			ai = sp_item_show (SP_ITEM (ochild), pp->arena);
+			if (ai) {
+				nr_arena_item_add_child (pp->root, ai, NULL);
+				nr_arena_item_set_order (ai, position);
+				nr_arena_item_unref (ai);
+			}
+		}
+	}
 }
 
 static void
 sp_pattern_remove_child (SPObject *object, SPRepr *child)
 {
+	SPPattern *pat;
+	SPObject *prev, *ochild;
+
+	pat = SP_PATTERN (object);
+
+	if (((SPObjectClass *) (pattern_parent_class))->remove_child)
+		(* ((SPObjectClass *) (pattern_parent_class))->remove_child) (object, child);
+
+	prev = NULL;
+	ochild = pat->children;
+	while (ochild->repr != child) {
+		prev = ochild;
+		ochild = ochild->next;
+	}
+
+	if (prev) {
+		prev->next = sp_object_detach_unref (object, prev->next);
+	} else {
+		pat->children = sp_object_detach_unref (object, pat->children);
+	}
 }
+
+/* fixme: We need ::order_changed handler too (Lauris) */
 
 static void
 sp_pattern_modified (SPObject *object, guint flags)
 {
-}
+	SPPattern *pat;
+	SPObject *child;
+	GSList *l;
 
+	pat = SP_PATTERN (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = pat->children; child != NULL; child = child->next) {
+		gtk_object_ref (GTK_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_modified (child, flags);
+		}
+		gtk_object_unref (GTK_OBJECT (child));
+	}
+}
 
 static void
 sp_pattern_href_destroy (SPObject *href, SPPattern *pattern)
@@ -240,12 +412,167 @@ sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern)
 
 /* Painter */
 
-typedef struct _SPPatPainter SPPatPainter;
+static void sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
-struct _SPPatPainter {
-	SPPainter painter;
+static SPPainter *
+sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *bbox)
+{
 	SPPattern *pat;
-};
+	SPPatPainter *pp;
+	SPObject *child;
+	NRGC gc;
+
+	pat = SP_PATTERN (ps);
+
+	pp = g_new (SPPatPainter, 1);
+
+	pp->painter.type = SP_PAINTER_IND;
+	pp->painter.fill = sp_pat_fill;
+
+	pp->pat = pat;
+
+	/*
+	 * The order should be:
+	 * CTM x [BBOX] x PTRANS
+	 */
+
+	if (pat->patternUnits == SP_PATTERN_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bbox2user;
+		NRMatrixF ps2user;
+
+		/* patternTransform goes here (Lauris) */
+
+		/* BBox to user coordinate system */
+		bbox2user.c[0] = bbox->x1 - bbox->x0;
+		bbox2user.c[1] = 0.0;
+		bbox2user.c[2] = 0.0;
+		bbox2user.c[3] = bbox->y1 - bbox->y0;
+		bbox2user.c[4] = bbox->x0;
+		bbox2user.c[5] = bbox->y0;
+
+		/* fixme: (Lauris) */
+		nr_matrix_multiply_fdf (&ps2user, &pat->patternTransform, &bbox2user);
+		nr_matrix_multiply_ffd (&pp->ps2px, &ps2user, (NRMatrixD *) ctm);
+	} else {
+		/* Problem: What to do, if we have mixed lengths and percentages? */
+		/* Currently we do ignore percentages at all, but that is not good (lauris) */
+
+		/* fixme: We may try to normalize here too, look at linearGradient (Lauris) */
+
+		/* fixme: (Lauris) */
+		nr_matrix_multiply_fdd (&pp->ps2px, &pat->patternTransform, (NRMatrixD *) ctm);
+	}
+
+	/*
+	 * The order should be:
+	 * CTM x [BBOX] x PTRANS x VIEWBOX | UNITS
+	 */
+
+	if (pat->viewBox_set) {
+		NRMatrixF vb2ps, vb2us;
+		/* Forget content units at all */
+		vb2ps.c[0] = pat->width.computed / (pat->viewBox.x1 - pat->viewBox.x0);
+		vb2ps.c[1] = 0.0;
+		vb2ps.c[2] = 0.0;
+		vb2ps.c[3] = pat->width.computed / (pat->viewBox.y1 - pat->viewBox.y0);
+		vb2ps.c[4] = -pat->viewBox.x0 * vb2ps.c[0];
+		vb2ps.c[5] = -pat->viewBox.y0 * vb2ps.c[3];
+		/* Problem: What to do, if we have mixed lengths and percentages? (Lauris) */
+		/* Currently we do ignore percentages at all, but that is not good (Lauris) */
+		/* fixme: (Lauris) */
+		nr_matrix_multiply_ffd (&vb2us, &vb2ps, &pat->patternTransform);
+		nr_matrix_multiply_ffd (&pp->pcs2px, &vb2us, (NRMatrixD *) ctm);
+	} else {
+		NRMatrixF t;
+
+		/* No viewbox, have to parse units */
+		if (pat->patternContentUnits == SP_PATTERN_UNITS_OBJECTBOUNDINGBOX) {
+			NRMatrixF bbox2user;
+			NRMatrixF pcs2user;
+
+			/* patternTransform goes here (Lauris) */
+
+			/* BBox to user coordinate system */
+			bbox2user.c[0] = bbox->x1 - bbox->x0;
+			bbox2user.c[1] = 0.0;
+			bbox2user.c[2] = 0.0;
+			bbox2user.c[3] = bbox->y1 - bbox->y0;
+			bbox2user.c[4] = bbox->x0;
+			bbox2user.c[5] = bbox->y0;
+
+			/* fixme: (Lauris) */
+			nr_matrix_multiply_fdf (&pcs2user, &pat->patternTransform, &bbox2user);
+			nr_matrix_multiply_ffd (&pp->pcs2px, &pcs2user, (NRMatrixD *) ctm);
+		} else {
+			/* Problem: What to do, if we have mixed lengths and percentages? */
+			/* Currently we do ignore percentages at all, but that is not good (lauris) */
+			/* fixme: (Lauris) */
+			nr_matrix_multiply_fdd (&pp->pcs2px, &pat->patternTransform, (NRMatrixD *) ctm);
+		}
+
+		nr_matrix_f_set_translate (&t, pat->x.computed, pat->y.computed);
+		/* fixme: Think about it (Lauris) */
+		nr_matrix_multiply_fff (&pp->pcs2px, &t, &pp->pcs2px);
+	}
+
+	/* fixme: Create arena */
+	/* fixme: Actually we need some kind of constructor function */
+	/* fixme: But to do that, we need actual arena implementaion */
+	pp->arena = gtk_type_new (NR_TYPE_ARENA);
+
+	/* fixme: Create group */
+	pp->root = nr_arena_item_new (pp->arena, NR_TYPE_ARENA_GROUP);
+
+	/* fixme: Show items */
+	/* fixme: Among other thing we want to traverse href here */
+	for (child = pat->children; child != NULL; child = child->next) {
+		if (SP_IS_ITEM (child)) {
+			NRArenaItem *cai;
+			cai = sp_item_show (SP_ITEM (child), pp->arena);
+			nr_arena_item_append_child (pp->root, cai);
+			nr_arena_item_unref (cai);
+		}
+	}
+
+	gc.affine[0] = pp->pcs2px.c[0];
+	gc.affine[1] = pp->pcs2px.c[1];
+	gc.affine[2] = pp->pcs2px.c[2];
+	gc.affine[3] = pp->pcs2px.c[3];
+	gc.affine[4] = pp->pcs2px.c[4];
+	gc.affine[5] = pp->pcs2px.c[5];
+
+	nr_arena_item_invoke_update (pp->root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
+
+	return (SPPainter *) pp;
+}
+
+static void
+sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
+{
+	SPPatPainter *pp;
+	SPPattern *pat;
+	SPObject *child;
+
+	pp = (SPPatPainter *) painter;
+	pat = pp->pat;
+
+	/* fixme: Among other thing we want to traverse href here */
+	for (child = pat->children; child != NULL; child = child->next) {
+		if (SP_IS_ITEM (child)) {
+			sp_item_hide (SP_ITEM (child), pp->arena);
+		}
+	}
+
+	if (pp->root) {
+		nr_arena_item_unref (pp->root);
+	}
+
+	if (pp->arena) {
+		gtk_object_unref (GTK_OBJECT (pp->arena));
+	}
+
+	g_free (pp);
+}
 
 static void
 sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
@@ -290,170 +617,38 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 		}
 	}
 #else
-	nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
-#endif
-}
-
-static SPPainter *
-sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *bbox)
-{
-	SPPattern *pat;
 	SPPatPainter *pp;
-
-	pat = SP_PATTERN (ps);
-
-	pp = g_new (SPPatPainter, 1);
-
-	pp->painter.type = SP_PAINTER_IND;
-	pp->painter.fill = sp_pat_fill;
-
-	pp->pat = pat;
-
-#if 0
-	/* fixme: Technically speaking, we map NCOLORS on line [start,end] onto line [0,1] (Lauris) */
-	/* fixme: I almost think, we should fill color array start and end in that case (Lauris) */
-	/* fixme: The alternative would be to leave these just empty garbage or something similar (Lauris) */
-	/* fixme: Originally I had 1023.9999 here - not sure, whether we have really to cut out ceil int (Lauris) */
-	art_affine_scale (color2norm, gr->len / (gdouble) NCOLORS, gr->len / (gdouble) NCOLORS);
-	SP_PRINT_TRANSFORM ("color2norm", color2norm);
-	/* Now we have normalized vector */
-
-	if (gr->units == SP_PATTERN_UNITS_OBJECTBOUNDINGBOX) {
-		gdouble norm2pos[6], bbox2user[6];
-		gdouble color2pos[6], color2tpos[6], color2user[6], color2px[6], px2color[6];
-
-		/* This is easy case, as we can just ignore percenting here */
-		/* fixme: Still somewhat tricky, but I think I got it correct (lauris) */
-		norm2pos[0] = lg->x2.computed - lg->x1.computed;
-		norm2pos[1] = lg->y2.computed - lg->y1.computed;
-		norm2pos[2] = lg->y2.computed - lg->y1.computed;
-		norm2pos[3] = lg->x1.computed - lg->x2.computed;
-		norm2pos[4] = lg->x1.computed;
-		norm2pos[5] = lg->y1.computed;
-		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
-
-		/* patternTransform goes here (Lauris) */
-		SP_PRINT_TRANSFORM ("patternTransform", gr->transform);
-
-		/* BBox to user coordinate system */
-		bbox2user[0] = bbox->x1 - bbox->x0;
-		bbox2user[1] = 0.0;
-		bbox2user[2] = 0.0;
-		bbox2user[3] = bbox->y1 - bbox->y0;
-		bbox2user[4] = bbox->x0;
-		bbox2user[5] = bbox->y0;
-		SP_PRINT_TRANSFORM ("bbox2user", bbox2user);
-
-		/* CTM goes here */
-		SP_PRINT_TRANSFORM ("ctm", ctm);
-
-		art_affine_multiply (color2pos, color2norm, norm2pos);
-		SP_PRINT_TRANSFORM ("color2pos", color2pos);
-		art_affine_multiply (color2tpos, color2pos, gr->transform);
-		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
-		art_affine_multiply (color2user, color2tpos, bbox2user);
-		SP_PRINT_TRANSFORM ("color2user", color2user);
-		art_affine_multiply (color2px, color2user, ctm);
-		SP_PRINT_TRANSFORM ("color2px", color2px);
-
-		art_affine_invert (px2color, color2px);
-		SP_PRINT_TRANSFORM ("px2color", px2color);
-
-		lgp->x0 = color2px[4];
-		lgp->y0 = color2px[5];
-		lgp->dx = px2color[0];
-		lgp->dy = px2color[2];
-	} else {
-		gdouble norm2pos[6];
-		gdouble color2pos[6], color2tpos[6], color2px[6], px2color[6];
-		/* Problem: What to do, if we have mixed lengths and percentages? */
-		/* Currently we do ignore percentages at all, but that is not good (lauris) */
-
-		/* fixme: Do percentages (Lauris) */
-		norm2pos[0] = lg->x2.computed - lg->x1.computed;
-		norm2pos[1] = lg->y2.computed - lg->y1.computed;
-		norm2pos[2] = lg->y2.computed - lg->y1.computed;
-		norm2pos[3] = lg->x1.computed - lg->x2.computed;
-		norm2pos[4] = lg->x1.computed;
-		norm2pos[5] = lg->y1.computed;
-		SP_PRINT_TRANSFORM ("norm2pos", norm2pos);
-
-		/* patternTransform goes here (Lauris) */
-		SP_PRINT_TRANSFORM ("patternTransform", gr->transform);
-
-		/* CTM goes here */
-		SP_PRINT_TRANSFORM ("ctm", ctm);
-
-		art_affine_multiply (color2pos, color2norm, norm2pos);
-		SP_PRINT_TRANSFORM ("color2pos", color2pos);
-		art_affine_multiply (color2tpos, color2pos, gr->transform);
-		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
-		art_affine_multiply (color2px, color2tpos, ctm);
-		SP_PRINT_TRANSFORM ("color2px", color2px);
-
-		art_affine_invert (px2color, color2px);
-		SP_PRINT_TRANSFORM ("px2color", px2color);
-
-		lgp->x0 = color2px[4];
-		lgp->y0 = color2px[5];
-		lgp->dx = px2color[0];
-		lgp->dy = px2color[2];
-	}
-#endif
-
-	return (SPPainter *) pp;
-}
-
-static void
-sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
-{
-	SPPatPainter *pp;
+	NRGC gc;
+	NRRectL area;
+	/* fixme: (Lauris) */
+	NRBuffer b;
 
 	pp = (SPPatPainter *) painter;
 
-	g_free (pp);
-}
+	area.x0 = x0;
+	area.y0 = y0;
+	area.x1 = x0 + width;
+	area.y1 = y0 + height;
 
 #if 0
-/*
- * Linear Pattern
- */
+	art_affine_identity (gc.affine);
 
+	nr_arena_item_invoke_update (pp->root, &area, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
+#endif
 
-static void
-sp_linearpattern_read_attr (SPObject * object, const gchar * key)
-{
-	SPLinearPattern * lg;
-	const guchar *str;
+	b.size = NR_SIZE_BIG;
+	b.mode = NR_IMAGE_R8G8B8A8;
+	b.empty = FALSE;
+	b.premul = FALSE;
+	b.w = width;
+	b.h = height;
+	b.rs = rowstride;
+	b.px = px;
 
-	lg = SP_LINEARPATTERN (object);
-
-	str = sp_repr_attr (object->repr, key);
-
-	if (!strcmp (key, "x1")) {
-		if (!sp_svg_length_read (str, &lg->x1)) {
-			sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
-		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "y1")) {
-		if (!sp_svg_length_read (str, &lg->y1)) {
-			sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
-		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "x2")) {
-		if (!sp_svg_length_read (str, &lg->x2)) {
-			sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
-		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "y2")) {
-		if (!sp_svg_length_read (str, &lg->y2)) {
-			sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
-		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else {
-		if (SP_OBJECT_CLASS (lg_parent_class)->read_attr)
-			(* SP_OBJECT_CLASS (lg_parent_class)->read_attr) (object, key);
-	}
+	nr_arena_item_invoke_render (pp->root, &area, &b);
+#if 0
+	nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
+#endif
+#endif
 }
 
-#endif

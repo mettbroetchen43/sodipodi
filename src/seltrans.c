@@ -12,6 +12,8 @@
  */
 
 #include <math.h>
+#include <gdk/gdkkeysyms.h>
+
 #include "svg/svg.h"
 #include "sodipodi-private.h"
 #include "sodipodi.h"
@@ -38,7 +40,6 @@ static void sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 static void sp_sel_trans_handle_ungrab (SPKnot * knot, guint state, gpointer data);
 static void sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint32 state, gpointer data);
 static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gboolean * data);
-static void sp_sel_trans_handle_stamp (SPKnot * knot, guint state, gpointer data);
 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 static void sp_sel_trans_sel_modified (SPSelection * selection, guint flags, gpointer data);
@@ -49,8 +50,21 @@ extern GdkPixbuf * handles[];
 static gboolean
 sp_seltrans_handle_event (SPKnot *knot, GdkEvent *event, gpointer data)
 {
+	SPDesktop * desktop;
+	SPSelTrans * seltrans;
+	
 	switch (event->type) {
 	case GDK_MOTION_NOTIFY:
+		break;
+	case GDK_KEY_PRESS:
+		if (event->key.keyval == GDK_space) {
+			/* stamping mode: both mode(show content and outline) operation with knot */
+			if (!SP_KNOT_IS_GRABBED (knot)) return FALSE;
+			desktop = knot->desktop;
+			seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
+			sp_sel_trans_stamp (seltrans);
+			return TRUE;
+		}
 		break;
 	default:
 		g_print ("Event type %d occured\n", event->type);
@@ -587,8 +601,6 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), (gpointer) &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "ungrabbed",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), (gpointer) &handle[i]);
-			gtk_signal_connect (GTK_OBJECT (knot[i]), "stamped",
-				GTK_SIGNAL_FUNC (sp_sel_trans_handle_stamp), (gpointer) &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "event", GTK_SIGNAL_FUNC (sp_seltrans_handle_event), (gpointer) &handle[i]);
 		}
 		sp_knot_show (knot[i]);
@@ -669,21 +681,6 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 	handle->action (seltrans, handle, position, state);
 
 	//sp_desktop_coordinate_status (desktop, position->x, position->y, 4);
-}
-
-static void
-sp_sel_trans_handle_stamp (SPKnot * knot, guint state, gpointer data)
-{
-	/* stamping mode: both mode(show content and outline) operation with knot */
-	SPDesktop * desktop;
-	SPSelTrans * seltrans;
-	
-	if (!SP_KNOT_IS_GRABBED (knot)) return;
-	
-	desktop = knot->desktop;
-	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
-
-	sp_sel_trans_stamp (seltrans);
 }
 
 /* fixme: Highly experimental test :) */
