@@ -402,7 +402,7 @@ sp_object_properties_reread_stroke (void)
 		str = sp_repr_css_property (stroke_css, "stroke-width", "1.0");
 		stroke_width = sp_svg_read_length (&stroke_units, str, 1.0);
 		gtk_spin_button_set_value (sp_stroke_width, stroke_width);
-		gtk_toggle_button_set_active (stroke_scaled, stroke_units != SP_SVG_UNIT_PIXELS);
+		gtk_toggle_button_set_active (stroke_scaled, stroke_units == SP_SVG_UNIT_USER);
 
 		str = sp_repr_css_property (stroke_css, "stroke-linejoin", "miter");
 		stroke_join = sp_svg_read_stroke_join (str);
@@ -475,7 +475,7 @@ sp_object_properties_apply_stroke (void)
 		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_USER);
 		sp_repr_css_set_property (stroke_css, "stroke-width", cstr);
 	} else {
-		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_PIXELS);
+		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_ABSOLUTE);
 		sp_repr_css_set_property (stroke_css, "stroke-width", cstr);
 	}
 

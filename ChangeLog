@@ -1,3 +1,11 @@
+2001-06-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item.c (sp_item_read_attr): Quick noscale hack
+	for style stroke widths
+
+	* src/display/canvas-shape.c (sp_canvas_shape_update): Use
+	stroke_width as well ;)
+
 2001-05-24  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/seltrans-handles.*: Make structs const

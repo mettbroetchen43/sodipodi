@@ -45,9 +45,7 @@ sp_canvas_shape_get_type (void)
 			sizeof (SPCanvasShapeClass),
 			(GtkClassInitFunc) sp_canvas_shape_class_init,
 			(GtkObjectInitFunc) sp_canvas_shape_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		path_type = gtk_type_unique (gnome_canvas_item_get_type (), &shape_info);
 	}
@@ -182,7 +180,7 @@ g_print ("sp_canvas_shape_update: entering\n");
 			gdouble wx, wy;
 			wx = affine[0] + affine[2];
 			wy = affine[1] + affine[3];
-			comp->stroke_width = sqrt (wx * wx + wy * wy) * 0.707106781;
+			comp->stroke_width = shape->style->user_stroke_width * sqrt (wx * wx + wy * wy) * 0.707106781;
 		} else {
 			comp->stroke_width = 0.0;
 		}

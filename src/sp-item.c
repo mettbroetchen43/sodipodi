@@ -123,6 +123,7 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 	SPItemView * v;
 	gdouble a[6];
 	const gchar * astr;
+	SPStyle *style;
 
 	item = SP_ITEM (object);
 
@@ -137,68 +138,72 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 			gnome_canvas_item_affine_absolute (v->canvasitem, item->affine);
 		}
 		art_affine_identity (a);
-		for (i = item; i != NULL; i = (SPItem *) ((SPObject *)i)->parent)
+		for (i = item; i != NULL; i = (SPItem *) ((SPObject *)i)->parent) {
 			art_affine_multiply (a, a, i->affine);
+		}
 		sp_item_update (item, a);
-		return;
+		/* fixme: in update */
+		object->style->real_stroke_width_set = FALSE;
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 
+	style = object->style;
+
 	if (strcmp (key, "style") == 0) {
-		SPStyle *style;
-		style = object->style;
 		sp_style_read_from_object (style, object);
-		if (!style->real_opacity_set) {
-			SPObject *parent;
-			style->real_opacity = style->opacity;
-			parent = object->parent;
-			while (parent && !parent->style) parent = parent->parent;
-			/* fixme: Currently it does not work, if parent has not set real_opacity (but it shouldn't happen) */
-			if (parent) style->real_opacity = style->real_opacity * parent->style->real_opacity;
-			style->real_opacity_set = TRUE;
-		}
-		if (!style->real_stroke_width_set) {
-			gdouble i2doc[6], dx, dy;
-			gdouble a2u, u2a;
-			sp_item_i2doc_affine (item, i2doc);
-			dx = i2doc[0] + i2doc[2];
-			dy = i2doc[1] + i2doc[3];
-			u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
-			a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
-			switch (style->stroke_width.unit) {
-			case SP_UNIT_PIXELS:
-				style->absolute_stroke_width = style->stroke_width.distance * 1.25;
-				style->user_stroke_width = style->absolute_stroke_width * a2u;
-				break;
-			case SP_UNIT_ABSOLUTE:
-				style->absolute_stroke_width = style->stroke_width.distance;
-				style->user_stroke_width = style->absolute_stroke_width * a2u;
-				break;
-			case SP_UNIT_USER:
-				style->user_stroke_width = style->stroke_width.distance;
-				style->absolute_stroke_width = style->user_stroke_width * u2a;
-				break;
-			case SP_UNIT_PERCENT:
-				dx = sp_document_width (object->document);
-				dy = sp_document_height (object->document);
-				style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
-				style->user_stroke_width = style->absolute_stroke_width * a2u;
-				break;
-			case SP_UNIT_EM:
+	}
+
+	if (!style->real_opacity_set) {
+		SPObject *parent;
+		style->real_opacity = style->opacity;
+		parent = object->parent;
+		while (parent && !parent->style) parent = parent->parent;
+		/* fixme: Currently it does not work, if parent has not set real_opacity (but it shouldn't happen) */
+		if (parent) style->real_opacity = style->real_opacity * parent->style->real_opacity;
+		style->real_opacity_set = TRUE;
+	}
+
+	if (!style->real_stroke_width_set) {
+		gdouble i2doc[6], dx, dy;
+		gdouble a2u, u2a;
+		sp_item_i2doc_affine (item, i2doc);
+		dx = i2doc[0] + i2doc[2];
+		dy = i2doc[1] + i2doc[3];
+		u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
+		a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
+		switch (style->stroke_width.unit) {
+		case SP_UNIT_PIXELS:
+			style->absolute_stroke_width = style->stroke_width.distance * 1.25;
+			style->user_stroke_width = style->absolute_stroke_width * a2u;
+			break;
+		case SP_UNIT_ABSOLUTE:
+			style->absolute_stroke_width = style->stroke_width.distance;
+			style->user_stroke_width = style->absolute_stroke_width * a2u;
+			break;
+		case SP_UNIT_USER:
+			style->user_stroke_width = style->stroke_width.distance;
+			style->absolute_stroke_width = style->user_stroke_width * u2a;
+			break;
+		case SP_UNIT_PERCENT:
+			dx = sp_document_width (object->document);
+			dy = sp_document_height (object->document);
+			style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
+			style->user_stroke_width = style->absolute_stroke_width * a2u;
+			break;
+		case SP_UNIT_EM:
 				/* fixme: */
-				style->user_stroke_width = style->stroke_width.distance * 12.0;
-				style->absolute_stroke_width = style->user_stroke_width * u2a;
-				break;
-			case SP_UNIT_EX:
+			style->user_stroke_width = style->stroke_width.distance * 12.0;
+			style->absolute_stroke_width = style->user_stroke_width * u2a;
+			break;
+		case SP_UNIT_EX:
 				/* fixme: */
-				style->user_stroke_width = style->stroke_width.distance * 10.0;
-				style->absolute_stroke_width = style->user_stroke_width * u2a;
-				break;
-			}
-			style->real_stroke_width_set = TRUE;
+			style->user_stroke_width = style->stroke_width.distance * 10.0;
+			style->absolute_stroke_width = style->user_stroke_width * u2a;
+			break;
 		}
+		style->real_stroke_width_set = TRUE;
 	}
 }
 
