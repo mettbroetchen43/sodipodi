@@ -1,3 +1,8 @@
+2003-02-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/file.c (sp_export_get_rows): Do not set EMPTY flag on pixblock, or background
+	will be forgotten
+
 2003-02-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/align.c (sp_quick_align_dialog): Added "distribute" tab
