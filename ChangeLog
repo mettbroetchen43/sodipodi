@@ -1,3 +1,9 @@
+2001-05-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in (use_arena): Added with-arena flag
+
+	* acconfig.h: Added ARENA
+
 2001-04-16  Jesus Bravo Alvarez  <jba@pobox.com>
 
 	* configure.in: Added gl (Galician) to ALL_LINGUAS

@@ -27,6 +27,9 @@ struct _SPCanvasImage {
 	GnomeCanvasItem item;
 
 	GdkPixbuf * pixbuf;
+	GdkPixbuf * realpixbuf;
+	gdouble opacity;
+	gdouble realpixbufopacity;
 	double affine[6];
 	ArtVpath * vpath;
 	gboolean sensitive;

@@ -1,7 +1,7 @@
 #define SP_CANVAS_IMAGE_C
 
 #include <config.h>
-
+#include <math.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_pixbuf.h>
@@ -11,8 +11,10 @@
 #include <libart_lgpl/art_uta_vpath.h>
 #include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-
+#include "canvas-bgroup.h"
 #include "canvas-image.h"
+
+enum {ARG_0, ARG_OPACITY};
 
 /* fixme: This should go to common header */
 #define SP_CANVAS_STICKY_FLAG (1 << 16)
@@ -25,6 +27,7 @@
 static void sp_canvas_image_class_init (SPCanvasImageClass * class);
 static void sp_canvas_image_init (SPCanvasImage * canvas_image);
 static void sp_canvas_image_destroy (GtkObject * object);
+static void sp_canvas_image_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
 static void sp_canvas_image_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static void sp_canvas_image_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
@@ -65,9 +68,12 @@ sp_canvas_image_class_init (SPCanvasImageClass *class)
 	object_class = (GtkObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
 
+	gtk_object_add_arg_type ("SPCanvasImage::opacity", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_OPACITY);
+
 	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
 
 	object_class->destroy = sp_canvas_image_destroy;
+	object_class->set_arg = sp_canvas_image_set_arg;
 
 	item_class->update = sp_canvas_image_update;
 	item_class->render = sp_canvas_image_render;
@@ -77,7 +83,10 @@ sp_canvas_image_class_init (SPCanvasImageClass *class)
 static void
 sp_canvas_image_init (SPCanvasImage * canvas_image)
 {
+	canvas_image->opacity = 1.0;
 	canvas_image->pixbuf = NULL;
+	canvas_image->realpixbuf = NULL;
+	canvas_image->realpixbufopacity = 1.0;
 	canvas_image->vpath = NULL;
 	canvas_image->sensitive = TRUE;
 }
@@ -89,12 +98,28 @@ sp_canvas_image_destroy (GtkObject *object)
 
 	canvas_image = (SPCanvasImage *) object;
 
+	if (canvas_image->realpixbuf) gdk_pixbuf_unref (canvas_image->realpixbuf);
 	if (canvas_image->pixbuf) gdk_pixbuf_unref (canvas_image->pixbuf);
 
 	if (canvas_image->vpath) art_free (canvas_image->vpath);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_canvas_image_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+{
+	SPCanvasImage *image;
+
+	image = SP_CANVAS_IMAGE (object);
+
+	switch (arg_id) {
+	case ARG_OPACITY:
+		image->opacity = GTK_VALUE_DOUBLE (*arg);
+		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (object));
+		break;
+	}
 }
 
 static void
@@ -106,6 +131,7 @@ sp_canvas_image_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 	ArtDRect bbox;
 	gint i;
 	gint width, height;
+	gdouble opacity;
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
@@ -121,7 +147,50 @@ sp_canvas_image_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 		canvas_image->vpath = NULL;
 	}
 
-	if (canvas_image->pixbuf == NULL) return;
+	if (canvas_image->pixbuf == NULL) {
+		g_assert (canvas_image->realpixbuf == NULL);
+		return;
+	}
+
+	g_assert (SP_IS_CANVAS_BGROUP (item->parent));
+	opacity = canvas_image->opacity * SP_CANVAS_BGROUP (item->parent)->realopacity;
+
+	if (opacity == 1.0) {
+		/* We do not need realpixbuf */
+		if (canvas_image->realpixbuf) gdk_pixbuf_unref (canvas_image->realpixbuf);
+		canvas_image->realpixbuf = NULL;
+	} else {
+		/* We need realpixbuf */
+		if (!canvas_image->realpixbuf) {
+			canvas_image->realpixbuf = gdk_pixbuf_copy (canvas_image->pixbuf);
+			canvas_image->realpixbufopacity = 1.0;
+		}
+		if (opacity != canvas_image->realpixbufopacity) {
+			gint width, height, x, y;
+			gint sr, dr;
+			guchar *spx, *dpx;
+			gint io;
+			guchar *s, *d;
+			io = (gint) floor (255.99 * opacity);
+			width = gdk_pixbuf_get_width (canvas_image->pixbuf);
+			height = gdk_pixbuf_get_height (canvas_image->pixbuf);
+			sr = gdk_pixbuf_get_rowstride (canvas_image->pixbuf);
+			dr = gdk_pixbuf_get_rowstride (canvas_image->realpixbuf);
+			spx = gdk_pixbuf_get_pixels (canvas_image->pixbuf);
+			dpx = gdk_pixbuf_get_pixels (canvas_image->realpixbuf);
+			for (y = 0; y < height; y++) {
+				s = spx + y * sr;
+				d = dpx + y * dr;
+				for (x = 0; x < width; x++) {
+					*d++ = *s++;
+					*d++ = *s++;
+					*d++ = *s++;
+					*d++ = ((io * *s++) + 0x80) / 0xff;
+				}
+			}
+			canvas_image->realpixbufopacity = opacity;
+		}
+	}
 
 	width = gdk_pixbuf_get_width (canvas_image->pixbuf);
 	height = gdk_pixbuf_get_height (canvas_image->pixbuf);
@@ -197,17 +266,24 @@ static void
 sp_canvas_image_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	SPCanvasImage *canvas_image;
+	GdkPixbuf *pixbuf;
 	guchar * pixels;
 	gint width, height, rowstride;
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
-	if (canvas_image->pixbuf == NULL) return;
+	if (canvas_image->realpixbuf) {
+		pixbuf = canvas_image->realpixbuf;
+	} else {
+		pixbuf = canvas_image->pixbuf;
+	}
 
-	pixels = gdk_pixbuf_get_pixels (canvas_image->pixbuf);
-	width = gdk_pixbuf_get_width (canvas_image->pixbuf);
-	height = gdk_pixbuf_get_height (canvas_image->pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (canvas_image->pixbuf);
+	if (pixbuf == NULL) return;
+
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 
         gnome_canvas_buf_ensure_buf (buf);
 
@@ -229,7 +305,16 @@ sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf)
 {
 
 	gdk_pixbuf_ref (pixbuf);
-	if (image->pixbuf) gdk_pixbuf_unref (image->pixbuf);
+
+	if (image->pixbuf) {
+		gdk_pixbuf_unref (image->pixbuf);
+		image->pixbuf = NULL;
+	}
+
+	if (image->realpixbuf) {
+		gdk_pixbuf_unref (image->realpixbuf);
+		image->realpixbuf = NULL;
+	}
 
 	image->pixbuf = pixbuf;
 

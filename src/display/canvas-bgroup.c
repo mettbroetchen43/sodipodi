@@ -2,15 +2,18 @@
 
 #include "canvas-bgroup.h"
 
+enum {ARG_0, ARG_OPACITY};
+
 /* fixme: This should go to common header */
 #define SP_CANVAS_STICKY_FLAG (1 << 16)
 
 static void sp_canvas_bgroup_class_init (SPCanvasBgroupClass * klass);
 static void sp_canvas_bgroup_init (SPCanvasBgroup * group);
 static void sp_canvas_bgroup_destroy (GtkObject * object);
+static void sp_canvas_bgroup_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
-static double sp_canvas_bgroup_point (GnomeCanvasItem * item, double x, double y,
-			      int cx, int cy, GnomeCanvasItem **actual_item);
+static void sp_canvas_bgroup_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
+static double sp_canvas_bgroup_point (GnomeCanvasItem * item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
 
 static GnomeCanvasGroupClass *parent_class;
 
@@ -43,16 +46,22 @@ sp_canvas_bgroup_class_init (SPCanvasBgroupClass *klass)
 	object_class = (GtkObjectClass *) klass;
 	item_class = (GnomeCanvasItemClass *) klass;
 
+	gtk_object_add_arg_type ("SPCanvasBgroup::opacity", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_OPACITY);
+
 	parent_class = gtk_type_class (gnome_canvas_group_get_type ());
 
 	object_class->destroy = sp_canvas_bgroup_destroy;
+	object_class->set_arg = sp_canvas_bgroup_set_arg;
 
+	item_class->update = sp_canvas_bgroup_update;
 	item_class->point = sp_canvas_bgroup_point;
 }
 
 static void
 sp_canvas_bgroup_init (SPCanvasBgroup * group)
 {
+	group->opacity = 1.0;
+	group->realopacity = 1.0;
 	group->transparent = FALSE;
 	group->sensitive = TRUE;
 }
@@ -65,8 +74,40 @@ sp_canvas_bgroup_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-static double sp_canvas_bgroup_point (GnomeCanvasItem *item, double x, double y,
-			      int cx, int cy, GnomeCanvasItem **actual_item)
+static void
+sp_canvas_bgroup_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+{
+	SPCanvasBgroup *bgroup;
+
+	bgroup = SP_CANVAS_BGROUP (object);
+
+	switch (arg_id) {
+	case ARG_OPACITY:
+		bgroup->opacity = GTK_VALUE_DOUBLE (*arg);
+		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (object));
+		break;
+	}
+}
+
+static void
+sp_canvas_bgroup_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
+{
+	SPCanvasBgroup *bgroup;
+
+	bgroup = SP_CANVAS_BGROUP (item);
+
+	if (SP_IS_CANVAS_BGROUP (item->parent)) {
+		bgroup->realopacity = bgroup->opacity * SP_CANVAS_BGROUP (item->parent)->realopacity;
+	} else {
+		bgroup->realopacity = bgroup->opacity;
+	}
+
+	if (((GnomeCanvasItemClass *) parent_class)->update)
+		(* ((GnomeCanvasItemClass *) parent_class)->update) (item, affine, clip_path, flags);
+}
+
+static double
+sp_canvas_bgroup_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
 {
 	SPCanvasBgroup * group;
 	double dist = 1e24;

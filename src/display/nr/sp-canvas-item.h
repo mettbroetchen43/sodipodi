@@ -1,19 +1,15 @@
-#ifndef __SP_CANVAS_ITEM_H__
-#define __SP_CANVAS_ITEM_H__
+#ifndef _SP_CANVAS_ITEM_H_
+#define _SP_CANVAS_ITEM_H_
 
 /*
  * SPCanvasItem
  *
- * Abstract base class for Sodipodi specific CanvasItems
+ * Implementing Gdk specific ::event()
  *
- * Author: Lauris Kaplinski <lauris@ximian.com>
- * Copyright (C) 2000-2001 Ximian Code, Inc.
+ * Author: Lauris Kaplinski <lauris@helixcode.com>
+ * Copyright (C) 2000 Helix Code, Inc.
  *
  */
-
-#include <libgnome/gnome-defs.h>
-
-BEGIN_GNOME_DECLS
 
 typedef struct _SPCanvasItem SPCanvasItem;
 typedef struct _SPCanvasItemClass SPCanvasItemClass;
@@ -24,18 +20,21 @@ typedef struct _SPCanvasItemClass SPCanvasItemClass;
 #define SP_IS_CANVAS_ITEM(o) (GTK_CHECK_TYPE ((o), SP_TYPE_CANVAS_ITEM))
 #define SP_IS_CANVAS_ITEM_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_CANVAS_ITEM))
 
-#include <libgnomeui/gnome-canvas.h>
+#include <gdk/gdk.h>
+#include "nr-canvas-item.h"
 
 struct _SPCanvasItem {
-	GnomeCanvasItem item;
+	NRCanvasItem item;
 };
 
 struct _SPCanvasItemClass {
-	GnomeCanvasItemClass parent_class;
+	NRCanvasItemClass parent_class;
+	/* Event */
+	gboolean (* event) (SPCanvasItem * item, GdkEvent * event);
 };
 
 GtkType sp_canvas_item_get_type (void);
 
-END_GNOME_DECLS
+gboolean sp_canvas_item_emit_event (SPCanvasItem * item, GdkEvent * event);
 
 #endif

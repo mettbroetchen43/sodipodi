@@ -25,6 +25,7 @@ typedef struct _SPCanvasShapeClass SPCanvasShapeClass;
 
 struct _SPCanvasShape {
 	GnomeCanvasItem item;
+	gdouble opacity;
 	SPFill * fill;
 	SPStroke * stroke;
 	GList * comp;

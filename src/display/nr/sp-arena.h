@@ -1,15 +1,19 @@
-#ifndef _SP_ARENA_H_
-#define _SP_ARENA_H_
+#ifndef __SP_ARENA_H__
+#define __SP_ARENA_H__
 
 /*
  * SPArena
  *
- * Drawing widget class featuring NRAACanvas
+ * Antialiased drawing engine for Sodipodi
  *
- * Author: Lauris Kaplinski <lauris@helixcode.com>
- * Copyright (C) 2000 Helix Code, Inc.
+ * Author: Lauris Kaplinski <lauris@ximian.com>
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
  */
+
+#include <libgnome/gnome-defs.h>
+
+BEGIN_GNOME_DECLS
 
 typedef struct _SPArena SPArena;
 typedef struct _SPArenaClass SPArenaClass;
@@ -20,23 +24,22 @@ typedef struct _SPArenaClass SPArenaClass;
 #define SP_IS_ARENA(o) (GTK_CHECK_TYPE ((o), SP_TYPE_ARENA))
 #define SP_IS_ARENA_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_ARENA))
 
-#include <gtk/gtkdrawingarea.h>
-#include "nr-uta.h"
-#include "nr-aa-canvas.h"
+#include <gtk/gtkobject.h>
+#include "sp-arena-item.h"
 
 struct _SPArena {
-	GtkDrawingArea drawingarea;
-	NRAACanvas * aacanvas;
-	NRIRect viewport;
-	NRUTA * uta;
+	GtkObject object;
+	SPArenaItem * root;
 };
 
 struct _SPArenaClass {
-	GtkDrawingAreaClass parent_class;
+	GtkObjectClass object_class;
 };
 
 GtkType sp_arena_get_type (void);
 
-GtkWidget * sp_arena_new (void);
+SPArena * sp_arena_new (void);
+
+END_GNOME_DECLS
 
 #endif

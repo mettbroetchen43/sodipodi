@@ -70,6 +70,7 @@ static void
 sp_item_init (SPItem * item)
 {
 	art_affine_identity (item->affine);
+	item->opacity = 1.0;
 	item->display = NULL;
 }
 
@@ -96,6 +97,7 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
 	sp_item_read_attr (object, "transform");
+	sp_item_read_attr (object, "style");
 }
 
 static void
@@ -123,6 +125,20 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 			art_affine_multiply (a, a, i->affine);
 		sp_item_update (item, a);
 		return;
+	} else if (strcmp (key, "style") == 0) {
+		SPCSSAttr *css;
+		const gchar *ostr;
+		char *estr;
+		gdouble opacity;
+		css = sp_repr_css_attr_inherited (object->repr, key);
+		ostr = sp_repr_css_property (css, "opacity", "1.0");
+		opacity = sp_svg_read_percentage (ostr);
+		if (estr != ostr) {
+			item->opacity = opacity;
+			for (v = item->display; v != NULL; v = v->next) {
+				gtk_object_set (GTK_OBJECT (v->canvasitem), "opacity", item->opacity, NULL);
+			}
+		}
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
@@ -212,6 +228,7 @@ sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_grou
 	if (canvasitem != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, desktop, canvasitem);
 		gnome_canvas_item_affine_absolute (canvasitem, item->affine);
+		gtk_object_set (GTK_OBJECT (canvasitem), "opacity", item->opacity, NULL);
 		sp_desktop_connect_item (desktop, item, canvasitem);
 	}
 

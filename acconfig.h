@@ -13,5 +13,5 @@
 #undef ENABLE_RBUF
 #undef NEW_FONT_MODEL
 #undef NEW_RENDER
-
+#undef ARENA
 

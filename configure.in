@@ -136,8 +136,20 @@ AC_ARG_WITH(new-render,
 AM_CONDITIONAL(WITH_NEW_RENDER, $use_new_render)
 AC_SUBST(WITH_NEW_RENDER)
 
+use_arena=false
+AC_ARG_WITH(arena,
+	[--{with,without}-arena Compile with experimental canvas engine],
+	if test x$withval = xyes; then
+		use_arena=true
+		AC_DEFINE(ARENA)
+	fi
+)
+AM_CONDITIONAL(WITH_ARENA, $use_arena)
+AC_SUBST(WITH_ARENA)
+
 SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print xml`
 SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print xml`
+SODIPODI_LIBS="$SODIPODI_LIBS -lpng -lz"
 AC_SUBST(SODIPODI_CFLAGS)
 AC_SUBST(SODIPODI_LIBS)
 
@@ -151,6 +163,7 @@ src/widgets/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
+src/display/nr/Makefile
 src/bonobo/Makefile
 glade/Makefile
 intl/Makefile

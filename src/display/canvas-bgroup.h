@@ -15,6 +15,7 @@ typedef struct _SPCanvasBgroupClass SPCanvasBgroupClass;
 struct _SPCanvasBgroup {
 	GnomeCanvasGroup group;
 	/* Controls, whether events belong to canvas_bgroup or childrens */
+	gdouble opacity, realopacity;
 	gboolean transparent;
 	gboolean sensitive;
 };
