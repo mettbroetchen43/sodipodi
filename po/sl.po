@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: GNOME_Sodipodi.oaf.in.h:1
@@ -47,7 +47,7 @@ msgstr "Poravnaj predmete na vodoravno sredino"
 
 #: glade/align.glade.h:7
 msgid "Align objects to vertical mid"
-msgstr "Poravnaj predmete na navpiπno sredino"
+msgstr "Poravnaj predmete na navpi≈°no sredino"
 
 #: glade/align.glade.h:8
 msgid "Align outside object to bottom border"
@@ -71,7 +71,7 @@ msgstr "Osnova poravnave"
 
 #: glade/align.glade.h:13 src/dialogs/align.c:91
 msgid "Biggest item"
-msgstr "NajveËji predmet"
+msgstr "Najveƒçji predmet"
 
 #: glade/align.glade.h:14
 msgid "Choose align type"
@@ -110,7 +110,7 @@ msgstr "Izbira"
 
 #: glade/align.glade.h:21 src/dialogs/align.c:96
 msgid "Smallest item"
-msgstr "Najmanjπi predmet"
+msgstr "Najmanj≈°i predmet"
 
 #: glade/item.glade.h:1
 msgid "Active"
@@ -135,11 +135,11 @@ msgstr "Prosojnost:"
 
 #: glade/item.glade.h:6
 msgid "Parent X ="
-msgstr "X starπa ="
+msgstr "X star≈°a ="
 
 #: glade/item.glade.h:7
 msgid "Parent Y ="
-msgstr "Y starπa ="
+msgstr "Y star≈°a ="
 
 #: glade/item.glade.h:8
 msgid "Printable"
@@ -147,7 +147,7 @@ msgstr "Natisljiv"
 
 #: glade/item.glade.h:9
 msgid "Sensitive"
-msgstr "ObËutljiv"
+msgstr "Obƒçutljiv"
 
 #: glade/item.glade.h:10 src/dialogs/item-properties.c:181
 #: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:492
@@ -176,7 +176,7 @@ msgstr " Barvno polnjenje "
 
 #: glade/object_props.glade.h:2
 msgid " General "
-msgstr " Sploπno "
+msgstr " Splo≈°no "
 
 #: glade/object_props.glade.h:3
 msgid " Style "
@@ -205,7 +205,7 @@ msgstr "Modra:"
 
 #: glade/object_props.glade.h:9
 msgid "Butt endpoints"
-msgstr "KonËne toËke"
+msgstr "Konƒçne toƒçke"
 
 #: glade/object_props.glade.h:10
 msgid "Choose fill color"
@@ -213,7 +213,7 @@ msgstr "Izberi barvo polnjenja"
 
 #: glade/object_props.glade.h:11
 msgid "Choose stroke color"
-msgstr "Izberi barvo ËopiËa"
+msgstr "Izberi barvo ƒçopiƒça"
 
 #: glade/object_props.glade.h:12
 msgid "Color fill"
@@ -233,7 +233,7 @@ msgstr "Uredi..."
 
 #: glade/object_props.glade.h:16
 msgid "Endpoints:"
-msgstr "KonËne toËke:"
+msgstr "Konƒçne toƒçke:"
 
 #: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
 #: src/dialogs/object-properties.c:59
@@ -260,7 +260,7 @@ msgstr "Zelena:"
 #: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
 #: src/dialogs/object-properties.c:240
 msgid "Height:"
-msgstr "Viπina:"
+msgstr "Vi≈°ina:"
 
 #: glade/object_props.glade.h:23
 msgid "Is stroked"
@@ -297,23 +297,23 @@ msgstr "Izberi barvo polnjenja"
 
 #: glade/object_props.glade.h:31
 msgid "Pick stroke color"
-msgstr "Izberi barvo ËopiËa"
+msgstr "Izberi barvo ƒçopiƒça"
 
 #: glade/object_props.glade.h:32
 msgid "Position"
-msgstr "Poloæaj"
+msgstr "Polo≈æaj"
 
 #: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
-msgstr "RdeËa:"
+msgstr "Rdeƒça:"
 
 #: glade/object_props.glade.h:34
 msgid "Reread"
-msgstr "VnoviË preberi"
+msgstr "Vnoviƒç preberi"
 
 #: glade/object_props.glade.h:35
 msgid "Round endpoints"
-msgstr "Zaokroæi konËne toËke"
+msgstr "Zaokro≈æi konƒçne toƒçke"
 
 #: glade/object_props.glade.h:36
 msgid "Round join"
@@ -325,7 +325,7 @@ msgstr "Raztegni sliko"
 
 #: glade/object_props.glade.h:38
 msgid "Square endpoints"
-msgstr "Kvadratne konËne toËke"
+msgstr "Kvadratne konƒçne toƒçke"
 
 #: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
 #: src/dialogs/object-properties.c:72
@@ -334,14 +334,14 @@ msgstr "Obroba"
 
 #: glade/object_props.glade.h:40
 msgid "Stroke width"
-msgstr "Nastavi πirina ËopiËa"
+msgstr "Nastavi ≈°irina ƒçopiƒça"
 
 #. Stroke width
 #: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
 #: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
 msgid "Width:"
-msgstr "©irina:"
+msgstr "≈†irina:"
 
 #: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
 #: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:195
@@ -436,7 +436,7 @@ msgstr "Nazaj za eno"
 
 #: glade/sodipodi.glade.h:7 glade/toolbox.glade.h:2
 msgid "Break apart selected node"
-msgstr "LoËi izbrano kontrolno toËko"
+msgstr "Loƒçi izbrano kontrolno toƒçko"
 
 #: glade/sodipodi.glade.h:8
 msgid "Bring to _Front"
@@ -452,7 +452,7 @@ msgstr "Pretvori izbrane segmente v krivulje"
 
 #: glade/sodipodi.glade.h:11 glade/toolbox.glade.h:8
 msgid "Convert selected segments to lines"
-msgstr "Pretvori izbrane segmente v Ërte"
+msgstr "Pretvori izbrane segmente v ƒçrte"
 
 #: glade/sodipodi.glade.h:12
 msgid "Convert to Cu_rves"
@@ -460,17 +460,17 @@ msgstr "Pretvori v k_rivulje"
 
 #: glade/sodipodi.glade.h:13 glade/toolbox.glade.h:10
 msgid "Cusp line at selected nodes"
-msgstr "Poveæi Ërto na izbranih kontrolnih toËkah"
+msgstr "Pove≈æi ƒçrto na izbranih kontrolnih toƒçkah"
 
 #. File:Export
 #: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:11 src/interface.c:247
 #: src/widgets/gradient-selector.c:145
 msgid "Delete"
-msgstr "Zbriπi"
+msgstr "Zbri≈°i"
 
 #: glade/sodipodi.glade.h:15 glade/toolbox.glade.h:12
 msgid "Delete selected nodes"
-msgstr "Zbriπi izbrane toËke"
+msgstr "Zbri≈°i izbrane toƒçke"
 
 #: glade/sodipodi.glade.h:16
 msgid "Desktop"
@@ -486,7 +486,7 @@ msgstr "Dokument"
 
 #: glade/sodipodi.glade.h:20
 msgid "Drawing Context"
-msgstr "NaËin Risanja"
+msgstr "Naƒçin Risanja"
 
 #. Edit:Duplicate
 #: glade/sodipodi.glade.h:21 src/interface.c:242
@@ -508,7 +508,7 @@ msgstr "Izvozi sliko v PNG"
 
 #: glade/sodipodi.glade.h:25
 msgid "Exported as"
-msgstr "Izvoæeno kot"
+msgstr "Izvo≈æeno kot"
 
 #: glade/sodipodi.glade.h:26
 msgid "Filename:"
@@ -520,11 +520,11 @@ msgstr "Naprej za eno"
 
 #: glade/sodipodi.glade.h:29 src/interface.c:347
 msgid "Freehand"
-msgstr "ProstoroËno"
+msgstr "Prostoroƒçno"
 
 #: glade/sodipodi.glade.h:30
 msgid "Height"
-msgstr "Viπina"
+msgstr "Vi≈°ina"
 
 #: glade/sodipodi.glade.h:31
 msgid "Image size"
@@ -537,11 +537,11 @@ msgstr "Uvozi"
 
 #: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
 msgid "Include one node into selected segments"
-msgstr "Vstavi kontrolno toËko v izbrane segmente"
+msgstr "Vstavi kontrolno toƒçko v izbrane segmente"
 
 #: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
 msgid "Join 2 selected endpoints"
-msgstr "Spoji 2 izbrani konËni toËki"
+msgstr "Spoji 2 izbrani konƒçni toƒçki"
 
 #: glade/sodipodi.glade.h:35
 msgid "Lock aspect ratio"
@@ -559,15 +559,15 @@ msgstr "Nov pogled"
 
 #: glade/sodipodi.glade.h:38 src/interface.c:342
 msgid "Node"
-msgstr "ToËka"
+msgstr "Toƒçka"
 
 #: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
 msgid "Node Edit"
-msgstr "Urejanje kontronih toËk"
+msgstr "Urejanje kontronih toƒçk"
 
 #: glade/sodipodi.glade.h:40 src/toolbox.c:138
 msgid "Nodes"
-msgstr "Kontrolne toËke"
+msgstr "Kontrolne toƒçke"
 
 #. Selection:Order
 #: glade/sodipodi.glade.h:41 src/interface.c:287
@@ -593,7 +593,7 @@ msgstr "Izberi"
 
 #: glade/sodipodi.glade.h:48
 msgid "Send to _Back"
-msgstr "Poπlji na _dno"
+msgstr "Po≈°lji na _dno"
 
 #: glade/sodipodi.glade.h:49
 msgid "Set dimensions"
@@ -601,11 +601,11 @@ msgstr "Nastavi dimenzije"
 
 #: glade/sodipodi.glade.h:50
 msgid "Show Toolbox"
-msgstr "Kaæi orodjarno"
+msgstr "Ka≈æi orodjarno"
 
 #: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
 msgid "Smooth line at selected nodes"
-msgstr "Zgladi Ërto na izbranih kontrolnih toËkah"
+msgstr "Zgladi ƒçrto na izbranih kontrolnih toƒçkah"
 
 #. Create toplevel menuitem
 #: glade/sodipodi.glade.h:52 src/interface.c:346 src/sp-spiral.c:595
@@ -619,7 +619,7 @@ msgstr "Zvezda"
 
 #: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
 msgid "Symmetric "
-msgstr "SimetriËno "
+msgstr "Simetriƒçno "
 
 #: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:349
 msgid "Text"
@@ -639,7 +639,7 @@ msgstr "Kam izvoziti"
 
 #: glade/sodipodi.glade.h:60
 msgid "Width"
-msgstr "©irina"
+msgstr "≈†irina"
 
 #: glade/sodipodi.glade.h:61
 msgid "X0"
@@ -665,7 +665,7 @@ msgstr "Y1"
 #: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1131
 #: src/interface.c:317 src/interface.c:350 src/toolbox.c:134
 msgid "Zoom"
-msgstr "PoveËava"
+msgstr "Poveƒçava"
 
 #: glade/sodipodi.glade.h:67
 msgid "_Align"
@@ -673,11 +673,11 @@ msgstr "_Poravnava"
 
 #: glade/sodipodi.glade.h:68
 msgid "_Break Apart"
-msgstr "_RazËleni"
+msgstr "_Razƒçleni"
 
 #: glade/sodipodi.glade.h:69
 msgid "_Combine"
-msgstr "_Zdruæi"
+msgstr "_Zdru≈æi"
 
 #: glade/sodipodi.glade.h:70
 msgid "_Drawing"
@@ -721,7 +721,7 @@ msgstr "Poravnaj dialog"
 
 #: glade/toolbox.glade.h:3
 msgid "Break apart selected paths"
-msgstr "LoËi izbrane poti"
+msgstr "Loƒçi izbrane poti"
 
 #: glade/toolbox.glade.h:5
 msgid "Combine selected paths"
@@ -733,47 +733,47 @@ msgstr "Pretvori izbrane predmete v krivulje"
 
 #: glade/toolbox.glade.h:9
 msgid "Copy selection to clipboard"
-msgstr "Kopiraj izbrano na odloæiπËe"
+msgstr "Kopiraj izbrano na odlo≈æi≈°ƒçe"
 
 #: glade/toolbox.glade.h:11
 msgid "Cut selection"
-msgstr "Izreæi izbrano"
+msgstr "Izre≈æi izbrano"
 
 #: glade/toolbox.glade.h:13
 msgid "Delete selection"
-msgstr "Zbriπi izbirano"
+msgstr "Zbri≈°i izbirano"
 
 #: glade/toolbox.glade.h:14
 msgid "Draw arc"
-msgstr "Riπi lok"
+msgstr "Ri≈°i lok"
 
 #: glade/toolbox.glade.h:15
 msgid "Draw dynahand line"
-msgstr "Riπi roËno dinamiËno Ërto"
+msgstr "Ri≈°i roƒçno dinamiƒçno ƒçrto"
 
 #: glade/toolbox.glade.h:16
 msgid "Draw freehand line"
-msgstr "Riπi prosto Ërto"
+msgstr "Ri≈°i prosto ƒçrto"
 
 #: glade/toolbox.glade.h:17
 msgid "Draw rectangle"
-msgstr "Riπi pravokotnik"
+msgstr "Ri≈°i pravokotnik"
 
 #: glade/toolbox.glade.h:18
 msgid "Draw spiral"
-msgstr "Riπi spiralo"
+msgstr "Ri≈°i spiralo"
 
 #: glade/toolbox.glade.h:19
 msgid "Draw star"
-msgstr "Riπi zvezdo"
+msgstr "Ri≈°i zvezdo"
 
 #: glade/toolbox.glade.h:20
 msgid "Draw text"
-msgstr "Riπi besedilo"
+msgstr "Ri≈°i besedilo"
 
 #: glade/toolbox.glade.h:21
 msgid "Drawing context"
-msgstr "NaËin risanja"
+msgstr "Naƒçin risanja"
 
 #: glade/toolbox.glade.h:22
 msgid "Duplicate selection"
@@ -787,7 +787,7 @@ msgstr "Urejanje"
 
 #: glade/toolbox.glade.h:24
 msgid "Edit fill style of selected objects"
-msgstr "Nastavi naËin polnjenja izbranih predmetov"
+msgstr "Nastavi naƒçin polnjenja izbranih predmetov"
 
 #: glade/toolbox.glade.h:25
 msgid "Edit font style of selected objects"
@@ -799,11 +799,11 @@ msgstr "Nastavi postavitev izbranih predmetov"
 
 #: glade/toolbox.glade.h:27
 msgid "Edit nodes"
-msgstr "Uredi kontrolne toËke"
+msgstr "Uredi kontrolne toƒçke"
 
 #: glade/toolbox.glade.h:28
 msgid "Edit stroke style of selected objects"
-msgstr "Nastavi naËin obrobe izbranih predmetov"
+msgstr "Nastavi naƒçin obrobe izbranih predmetov"
 
 #. Generic menu
 #. File submenu
@@ -833,7 +833,7 @@ msgstr "Nova risba"
 
 #: glade/toolbox.glade.h:38
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr "Ne, raje bom πe naprej vektorsko risal s sodipodijem."
+msgstr "Ne, raje bom ≈°e naprej vektorsko risal s sodipodijem."
 
 #: glade/toolbox.glade.h:40
 msgid "Nope !"
@@ -849,7 +849,7 @@ msgstr "Odpri novo risbo"
 
 #: glade/toolbox.glade.h:43
 msgid "Paste from clipboard"
-msgstr "Prilepi iz odloæiπËa"
+msgstr "Prilepi iz odlo≈æi≈°ƒça"
 
 #: glade/toolbox.glade.h:44
 msgid "Preview print drawing"
@@ -869,7 +869,7 @@ msgstr "dvigni izbrano na vrh"
 
 #: glade/toolbox.glade.h:48
 msgid "Really wanna quit sodipodi ?"
-msgstr "Zares æeliπ oditi iz sodipodija ?"
+msgstr "Zares ≈æeli≈° oditi iz sodipodija ?"
 
 #. File:Print Preview
 #: glade/toolbox.glade.h:49 src/interface.c:385
@@ -885,8 +885,8 @@ msgid "Rise selection one layer"
 msgstr "Dvigni izbrano za en sloj"
 
 #: glade/toolbox.glade.h:52
-msgid "Rotate selected objects 90∞ clockwise"
-msgstr "Zasukaj izbrane predmete za 90∞ v smeri urinega kazalca"
+msgid "Rotate selected objects 90¬∞ clockwise"
+msgstr "Zasukaj izbrane predmete za 90¬∞ v smeri urinega kazalca"
 
 #: glade/toolbox.glade.h:53
 msgid "Save drawing "
@@ -918,7 +918,7 @@ msgstr "Odgrupiraj izbrane premete"
 
 #: glade/toolbox.glade.h:63
 msgid "Unsymmetric"
-msgstr "NesimetriËno"
+msgstr "Nesimetriƒçno"
 
 #: glade/toolbox.glade.h:64
 msgid "Yep !"
@@ -926,39 +926,39 @@ msgstr "Da !"
 
 #: glade/toolbox.glade.h:65
 msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr "Da, hitro! HoËem zapustiti sodipodi in priti nazaj kasneje."
+msgstr "Da, hitro! Hoƒçem zapustiti sodipodi in priti nazaj kasneje."
 
 #: glade/toolbox.glade.h:67
 msgid "Zoom in"
-msgstr "PoveËaj"
+msgstr "Poveƒçaj"
 
 #: glade/toolbox.glade.h:68
 msgid "Zoom out"
-msgstr "Pomanjπaj"
+msgstr "Pomanj≈°aj"
 
 #: glade/toolbox.glade.h:69
 msgid "Zoom to 1:1"
-msgstr "PoveËaj na 1:1"
+msgstr "Poveƒçaj na 1:1"
 
 #: glade/toolbox.glade.h:70
 msgid "Zoom to 1:2"
-msgstr "PoveËaj na 1:2"
+msgstr "Poveƒçaj na 1:2"
 
 #: glade/toolbox.glade.h:71
 msgid "Zoom to 2:1"
-msgstr "PoveËaj na 2:1"
+msgstr "Poveƒçaj na 2:1"
 
 #: glade/toolbox.glade.h:72
 msgid "Zoom to drawing"
-msgstr "PoveËaj na risbo"
+msgstr "Poveƒçaj na risbo"
 
 #: glade/toolbox.glade.h:73
 msgid "Zoom to page"
-msgstr "PoveËaj na stran"
+msgstr "Poveƒçaj na stran"
 
 #: glade/toolbox.glade.h:74
 msgid "Zoom to selection"
-msgstr "PoveËaj na izbrano"
+msgstr "Poveƒçaj na izbrano"
 
 #: glade/toolbox.glade.h:75
 msgid "_About ..."
@@ -970,7 +970,7 @@ msgstr "_Datoteka"
 
 #: glade/toolbox.glade.h:77
 msgid "_Help"
-msgstr "_PomoË"
+msgstr "_Pomoƒç"
 
 #: glade/toolbox.glade.h:79
 msgid "_Open"
@@ -1004,7 +1004,7 @@ msgstr "Poravnaj na desno dno"
 
 #: glade/transformation.glade.h:7
 msgid "Align to center"
-msgstr "Poravnaj na srediπËe"
+msgstr "Poravnaj na sredi≈°ƒçe"
 
 #: glade/transformation.glade.h:8
 msgid "Align to left middle"
@@ -1032,7 +1032,7 @@ msgstr "Uporabi preoblikovanje na kopiji Ctl+m"
 
 #: glade/transformation.glade.h:14
 msgid "Center"
-msgstr "SrediπËe"
+msgstr "Sredi≈°ƒçe"
 
 #: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
 #: src/helper/units.c:49
@@ -1041,7 +1041,7 @@ msgstr "Centimeter"
 
 #: glade/transformation.glade.h:16
 msgid "Choose metric for center"
-msgstr "Izberi enoto za srediπËe"
+msgstr "Izberi enoto za sredi≈°ƒçe"
 
 #: glade/transformation.glade.h:17
 msgid "Close dialog - Ctl+c"
@@ -1053,15 +1053,15 @@ msgstr "Stopinje"
 
 #: glade/transformation.glade.h:19
 msgid "Expand dialog - Ctl+e"
-msgstr "Razπiri dialog - Ctl+e"
+msgstr "Raz≈°iri dialog - Ctl+e"
 
 #: glade/transformation.glade.h:20
 msgid "Height: "
-msgstr "Viπina: "
+msgstr "Vi≈°ina: "
 
 #: glade/transformation.glade.h:21
 msgid "Horizontal center value"
-msgstr "Vodoravna vrednost srediπËa"
+msgstr "Vodoravna vrednost sredi≈°ƒça"
 
 #: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
 #: src/helper/units.c:51
@@ -1070,11 +1070,11 @@ msgstr "Palec"
 
 #: glade/transformation.glade.h:23
 msgid "Keep height of selection during transformation"
-msgstr "Ohrani viπino izbiranega med preoblikovanjem"
+msgstr "Ohrani vi≈°ino izbiranega med preoblikovanjem"
 
 #: glade/transformation.glade.h:24
 msgid "Keep width of selection during transformation"
-msgstr "Ohrani πirino izbiranega med preoblikovanjem"
+msgstr "Ohrani ≈°irino izbiranega med preoblikovanjem"
 
 #: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
 #: src/helper/units.c:48
@@ -1087,11 +1087,11 @@ msgstr "Premakni"
 
 #: glade/transformation.glade.h:27
 msgid "Orig. Width: "
-msgstr "IzhodiπËna πirina: "
+msgstr "Izhodi≈°ƒçna ≈°irina: "
 
 #: glade/transformation.glade.h:28
 msgid "Orig. X: "
-msgstr "IzhodiπËe X: "
+msgstr "Izhodi≈°ƒçe X: "
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
@@ -1131,15 +1131,15 @@ msgstr "Nastavi kot na 90 stopinj"
 
 #: glade/transformation.glade.h:38
 msgid "Skew"
-msgstr "Striæi"
+msgstr "Stri≈æi"
 
 #: glade/transformation.glade.h:39
 msgid "Start transformation - Ctl+a"
-msgstr "ZaËni preoblikovanje - Ctl+a"
+msgstr "Zaƒçni preoblikovanje - Ctl+a"
 
 #: glade/transformation.glade.h:40
 msgid "Toggle center given in selection/desktop coordiantes"
-msgstr "Preklopi srediπËe podan v izbiri/koordinate namizja"
+msgstr "Preklopi sredi≈°ƒçe podan v izbiri/koordinate namizja"
 
 #: glade/transformation.glade.h:41
 msgid "Transform selection"
@@ -1151,11 +1151,11 @@ msgstr "Uporabi poravnavo med preoblikovanjem"
 
 #: glade/transformation.glade.h:43
 msgid "Use center as transformation fixpoint"
-msgstr "Uporabi srediπËe za negibno toËko preoblikovanja"
+msgstr "Uporabi sredi≈°ƒçe za negibno toƒçko preoblikovanja"
 
 #: glade/transformation.glade.h:44
 msgid "Vertical center value"
-msgstr "NavpiËna vrednost srediπËa"
+msgstr "Navpiƒçna vrednost sredi≈°ƒça"
 
 #: glade/transformation.glade.h:45
 msgid "Y: "
@@ -1183,7 +1183,7 @@ msgstr "prevrni vodoravno"
 
 #: glade/transformation.glade.h:52
 msgid "flip vertical"
-msgstr "prevrni navpiËno"
+msgstr "prevrni navpiƒçno"
 
 #: glade/transformation.glade.h:53
 msgid "horizontal move"
@@ -1191,7 +1191,7 @@ msgstr "vodoravni premik"
 
 #: glade/transformation.glade.h:54
 msgid "horizontal scale value"
-msgstr "faktor vodoravne poveËave"
+msgstr "faktor vodoravne poveƒçave"
 
 #: glade/transformation.glade.h:56
 msgid "keep aspect"
@@ -1199,7 +1199,7 @@ msgstr "ohrani razmerja"
 
 #: glade/transformation.glade.h:57
 msgid "lock/unlock horizontal and vertical scale"
-msgstr "zakleni/odkleni vodoravni in navpiËni faktor poveËave"
+msgstr "zakleni/odkleni vodoravni in navpiƒçni faktor poveƒçave"
 
 #: glade/transformation.glade.h:60
 msgid "select direction"
@@ -1207,11 +1207,11 @@ msgstr "izberi smer"
 
 #: glade/transformation.glade.h:61
 msgid "select direction (horizontal/vertical skew)"
-msgstr "izberi smer (vodortavno/navpiËno striæenje)"
+msgstr "izberi smer (vodortavno/navpiƒçno stri≈æenje)"
 
 #: glade/transformation.glade.h:62
 msgid "select metric for scale"
-msgstr "izberi enote za poveËavo"
+msgstr "izberi enote za poveƒçavo"
 
 #: glade/transformation.glade.h:63
 msgid "select metric for values"
@@ -1219,7 +1219,7 @@ msgstr "izberi enote za vrednosti"
 
 #: glade/transformation.glade.h:64
 msgid "skew"
-msgstr "striæenje"
+msgstr "stri≈æenje"
 
 #: glade/transformation.glade.h:65
 msgid "toggle absolute/relative move"
@@ -1227,15 +1227,15 @@ msgstr "preklopi med absolutnim in relativnim premikanjem"
 
 #: glade/transformation.glade.h:66
 msgid "toggle absolute/relative scale"
-msgstr "preklopi med absolutno in relativno poveËavo"
+msgstr "preklopi med absolutno in relativno poveƒçavo"
 
 #: glade/transformation.glade.h:67
 msgid "vertical move"
-msgstr "navpiËni premik"
+msgstr "navpiƒçni premik"
 
 #: glade/transformation.glade.h:68
 msgid "vertical scale value"
-msgstr "faktor navpiËne poveËave"
+msgstr "faktor navpiƒçne poveƒçave"
 
 #: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
 msgid "Add"
@@ -1273,19 +1273,19 @@ msgstr "Kopiraj"
 #. Edit:Cut
 #: glade/xml-tree.glade.h:9 src/interface.c:223
 msgid "Cut"
-msgstr "Izreæi"
+msgstr "Izre≈æi"
 
 #: glade/xml-tree.glade.h:10
 msgid "Del"
-msgstr "Briπi"
+msgstr "Bri≈°i"
 
 #: glade/xml-tree.glade.h:12
 msgid "Delete attribute"
-msgstr "Zbriπi atribut"
+msgstr "Zbri≈°i atribut"
 
 #: glade/xml-tree.glade.h:13
 msgid "Do you want to delete attribute?"
-msgstr "Æelite zbrisati atribut?"
+msgstr "≈Ωelite zbrisati atribut?"
 
 #: glade/xml-tree.glade.h:14
 msgid "Dup"
@@ -1297,7 +1297,7 @@ msgstr "Hierarhja"
 
 #: glade/xml-tree.glade.h:16
 msgid "Key"
-msgstr "KljuË"
+msgstr "Kljuƒç"
 
 #. File:New
 #: glade/xml-tree.glade.h:17 src/interface.c:154
@@ -1333,7 +1333,7 @@ msgstr "Nisem uspel ustvariti sodipodi-svg-doc "
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
 #: src/desktop.c:1123
 msgid "Welcome !"
-msgstr "Dobrodoπli !"
+msgstr "Dobrodo≈°li !"
 
 #: src/desktop.c:1195
 #, c-format
@@ -1362,28 +1362,28 @@ msgstr "Nastavite namizja"
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:217
 msgid "Grid"
-msgstr "Mreæa"
+msgstr "Mre≈æa"
 
 #. Checkbuttons
 #: src/dialogs/desktop-properties.c:227
 msgid "Show grid"
-msgstr "Kaæi mreæo"
+msgstr "Ka≈æi mre≈æo"
 
 #: src/dialogs/desktop-properties.c:234
 msgid "Snap to grid"
-msgstr "Preskakuj do mreæe"
+msgstr "Preskakuj do mre≈æe"
 
 #: src/dialogs/desktop-properties.c:241
 msgid "Grid units:"
-msgstr "Enote mreæe:"
+msgstr "Enote mre≈æe:"
 
 #: src/dialogs/desktop-properties.c:250
 msgid "Origin X:"
-msgstr "IzhodiπËe X:"
+msgstr "Izhodi≈°ƒçe X:"
 
 #: src/dialogs/desktop-properties.c:264
 msgid "Origin Y:"
-msgstr "IzhodiπËe Y:"
+msgstr "Izhodi≈°ƒçe Y:"
 
 #: src/dialogs/desktop-properties.c:278
 msgid "Spacing X:"
@@ -1399,28 +1399,28 @@ msgstr "Enote preskoka:"
 
 #: src/dialogs/desktop-properties.c:318 src/dialogs/desktop-properties.c:379
 msgid "Snap distance:"
-msgstr "Dolæina preskokov:"
+msgstr "Dol≈æina preskokov:"
 
 #: src/dialogs/desktop-properties.c:331
 msgid "Grid color:"
-msgstr "Barva mreæe:"
+msgstr "Barva mre≈æe:"
 
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:343
 msgid "Guides"
-msgstr "Vodniπke Ërte"
+msgstr "Vodni≈°ke ƒçrte"
 
 #: src/dialogs/desktop-properties.c:352
 msgid "Show guides"
-msgstr "Kaæi vodniπke Ërte"
+msgstr "Ka≈æi vodni≈°ke ƒçrte"
 
 #: src/dialogs/desktop-properties.c:360
 msgid "Snap to guides"
-msgstr "Preskakuj do vodniπkih Ërt"
+msgstr "Preskakuj do vodni≈°kih ƒçrt"
 
 #: src/dialogs/desktop-properties.c:391
 msgid "Guides color:"
-msgstr "Barva vodniπkih Ërt:"
+msgstr "Barva vodni≈°kih ƒçrt:"
 
 #: src/dialogs/desktop-properties.c:402
 msgid "Highlight color:"
@@ -1438,7 +1438,7 @@ msgstr "Izrisovanje"
 
 #: src/dialogs/display-settings.c:105
 msgid "Oversample bitmaps:"
-msgstr "PrevzorËi rastrske slike:"
+msgstr "Prevzorƒçi rastrske slike:"
 
 #: src/dialogs/display-settings.c:116 src/dialogs/fill-style.c:923
 msgid "None"
@@ -1509,7 +1509,7 @@ msgstr "Barva polnenja"
 #: src/dialogs/fill-style.c:1078 src/widgets/paint-selector.c:513
 #: src/widgets/paint-selector.c:625
 msgid "Mode:"
-msgstr "NaËin:"
+msgstr "Naƒçin:"
 
 #: src/dialogs/fill-style.c:1085 src/widgets/paint-selector.c:523
 msgid "RGB"
@@ -1538,7 +1538,7 @@ msgstr "ID ni veljaven"
 
 #: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
 msgid "The ID is already defined"
-msgstr "ID je æe definiran"
+msgstr "ID je ≈æe definiran"
 
 #: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
 msgid "The ID is valid"
@@ -1570,7 +1570,7 @@ msgstr "Naziv:"
 
 #: src/dialogs/object-attributes.c:35
 msgid "Show:"
-msgstr "Kaæi:"
+msgstr "Ka≈æi:"
 
 #: src/dialogs/object-attributes.c:36
 msgid "Actuate:"
@@ -1582,11 +1582,11 @@ msgstr "Strani:"
 
 #: src/dialogs/object-attributes.c:42 src/dialogs/object-attributes.c:52
 msgid "Center X:"
-msgstr "SrediπËe X:"
+msgstr "Sredi≈°ƒçe X:"
 
 #: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
 msgid "Center Y:"
-msgstr "SrediπËe Y:"
+msgstr "Sredi≈°ƒçe Y:"
 
 #: src/dialogs/object-attributes.c:44
 msgid "R1:"
@@ -1606,7 +1606,7 @@ msgstr "ARG2"
 
 #: src/dialogs/object-attributes.c:54
 msgid "Expansion:"
-msgstr "Razπiritev:"
+msgstr "Raz≈°iritev:"
 
 #: src/dialogs/object-attributes.c:55
 msgid "Revolution:"
@@ -1646,11 +1646,11 @@ msgstr "Slog predmeta"
 
 #: src/dialogs/object-properties.c:148
 msgid "Object position and size"
-msgstr "Poloæaj in velikost predmeta"
+msgstr "Polo≈æaj in velikost predmeta"
 
 #: src/dialogs/object-properties.c:170
 msgid "Position and size"
-msgstr "Poloæaj in velikost"
+msgstr "Polo≈æaj in velikost"
 
 #: src/dialogs/stroke-style.c:66
 msgid "Stroke style"
@@ -1673,7 +1673,7 @@ msgstr "Neimenovan dokument %d"
 #: src/document.c:320
 #, c-format
 msgid "Memory document %d"
-msgstr "Pomnilniπki dokument %d"
+msgstr "Pomnilni≈°ki dokument %d"
 
 #: src/file.c:98
 msgid "Select file to open"
@@ -1730,7 +1730,7 @@ msgstr "piksel"
 
 #: src/helper/unit-menu.c:359
 msgid "Userspace"
-msgstr "Uporabniπki prostor"
+msgstr "Uporabni≈°ki prostor"
 
 #: src/helper/unit-menu.c:359
 msgid "us"
@@ -1771,7 +1771,7 @@ msgstr "Enote"
 
 #: src/helper/units.c:42
 msgid "Pt"
-msgstr "TË"
+msgstr "Tƒç"
 
 #: src/helper/units.c:43
 msgid "Px"
@@ -1779,7 +1779,7 @@ msgstr "Piks"
 
 #: src/helper/units.c:44
 msgid "Userspace unit"
-msgstr "Uporabniπka enota"
+msgstr "Uporabni≈°ka enota"
 
 #: src/helper/units.c:44
 msgid "User"
@@ -1787,7 +1787,7 @@ msgstr "Uporabnik"
 
 #: src/helper/units.c:44
 msgid "Userspace units"
-msgstr "Uporabniπke enote"
+msgstr "Uporabni≈°ke enote"
 
 #: src/helper/units.c:47
 msgid "Percents"
@@ -1848,12 +1848,12 @@ msgstr "Odgrupiraj"
 #. Selection:Combine
 #: src/interface.c:273
 msgid "Combine"
-msgstr "Zdruæi"
+msgstr "Zdru≈æi"
 
 #. Selection:Break apart
 #: src/interface.c:278
 msgid "Break apart"
-msgstr "RazËleni"
+msgstr "Razƒçleni"
 
 #: src/interface.c:291
 msgid "Bring to Front"
@@ -1861,7 +1861,7 @@ msgstr "Prinesi na vrh"
 
 #: src/interface.c:295
 msgid "Send to Back"
-msgstr "Poπlji na dno"
+msgstr "Po≈°lji na dno"
 
 #: src/interface.c:299
 msgid "Raise"
@@ -1877,7 +1877,7 @@ msgstr "Polnenje in obroba"
 
 #: src/interface.c:357
 msgid "Size and Position"
-msgstr "Velikost in poloæaj"
+msgstr "Velikost in polo≈æaj"
 
 #: src/interface.c:358
 msgid "Align Objects"
@@ -1916,7 +1916,7 @@ msgstr "Pogled"
 #. Drawing mode submenu
 #: src/interface.c:432
 msgid "Drawing Mode"
-msgstr "NaËin risanja"
+msgstr "Naƒçin risanja"
 
 #. Dialog submenu
 #: src/interface.c:438
@@ -1926,12 +1926,12 @@ msgstr "Dialogi"
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
-"Ne uporabljajte GrafiËnega umesnika. NB! Ëe obstaja, bi moral biti PRVI "
+"Ne uporabljajte Grafiƒçnega umesnika. NB! ƒçe obstaja, bi moral biti PRVI "
 "argument!"
 
 #: src/main.c:60
 msgid "Open specified file (option string may be excluded)"
-msgstr "Odpri izbrano datoteko (lahko je vkljuËen niz moænosti)"
+msgstr "Odpri izbrano datoteko (lahko je vkljuƒçen niz mo≈ænosti)"
 
 #: src/main.c:61 src/main.c:70
 msgid "FILENAME"
@@ -1945,12 +1945,12 @@ msgstr ""
 #: src/main.c:78
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
-"Kaæi podane datoteke vsako posebaj, preklopi na naslednjo ob kateremkoli "
-"miπkinem ali tipkovniËnem dogodku."
+"Ka≈æi podane datoteke vsako posebaj, preklopi na naslednjo ob kateremkoli "
+"mi≈°kinem ali tipkovniƒçnem dogodku."
 
 #: src/main.c:180
 msgid "Oaf options"
-msgstr "Oaf moænosti"
+msgstr "Oaf mo≈ænosti"
 
 #: src/main.c:188
 msgid "Could not initialize Bonobo"
@@ -1964,8 +1964,8 @@ msgid ""
 "Although sodipodi will run, you can\n"
 "neither load nor save preferences\n"
 msgstr ""
-"%s ni obiËajna datoteka.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"%s ni obiƒçajna datoteka.\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev\n"
 
@@ -1981,7 +1981,7 @@ msgid ""
 msgstr ""
 "Ali %s ni veljavna datoteka XML ali\n"
 "pa nimate bralnega dostopa do nje.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -1994,7 +1994,7 @@ msgid ""
 "preferences."
 msgstr ""
 "%s ni veljavna datoteka nastavitev sodipodi.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -2008,7 +2008,7 @@ msgid ""
 "preferences."
 msgstr ""
 "Ne morem ustvariti imenika %s.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -2022,7 +2022,7 @@ msgid ""
 "preferences."
 msgstr ""
 "%s ni veljaven imenik.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -2036,7 +2036,7 @@ msgid ""
 "preferences."
 msgstr ""
 "Ne morem ustvariti datoteke %s.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -2050,7 +2050,7 @@ msgid ""
 "preferences."
 msgstr ""
 "Ne morem pisati v datoteko %s.\n"
-"»eprav se bo sodipodi zagnal, ne\n"
+"ƒåeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
@@ -2081,7 +2081,7 @@ msgstr "Odstrani povezavo"
 
 #: src/sp-image.c:291
 msgid "Broken bitmap"
-msgstr "Poπkodovana rastrska slika"
+msgstr "Po≈°kodovana rastrska slika"
 
 #: src/sp-image.c:292
 msgid "Color bitmap"
@@ -2128,11 +2128,11 @@ msgstr "Ponastavi preoblikovanje"
 
 #: src/sp-item.c:648
 msgid "Make sensitive"
-msgstr "Naredi obËutljivega"
+msgstr "Naredi obƒçutljivega"
 
 #: src/sp-item.c:648
 msgid "Make insensitive"
-msgstr "Naredi neobËutljivega"
+msgstr "Naredi neobƒçutljivega"
 
 #. Create link
 #: src/sp-item.c:653
@@ -2151,7 +2151,7 @@ msgstr "Lastnosti pravokotnika"
 
 #: src/sp-shape.c:307
 msgid "A path - whatever it means"
-msgstr "Pot - karkoli æe pomeni"
+msgstr "Pot - karkoli ≈æe pomeni"
 
 #. Create toplevel menuitem
 #: src/sp-shape.c:363
@@ -2200,11 +2200,11 @@ msgstr "Izbran ni noben preliv"
 
 #: src/widgets/gradient-vector.c:406
 msgid "Start color"
-msgstr "ZaËetna barva"
+msgstr "Zaƒçetna barva"
 
 #: src/widgets/gradient-vector.c:418
 msgid "End color"
-msgstr "KonËna barva"
+msgstr "Konƒçna barva"
 
 #: src/widgets/gradient-vector.c:445
 msgid "Gradient vector"
@@ -2216,7 +2216,7 @@ msgstr "Ni predmetov"
 
 #: src/widgets/paint-selector.c:410
 msgid "Multiple styles"
-msgstr "VeË slogov"
+msgstr "Veƒç slogov"
 
 #: src/widgets/paint-selector.c:424
 msgid "No paint"
@@ -2232,7 +2232,7 @@ msgstr "Linearna"
 
 #: src/widgets/paint-selector.c:639
 msgid "Radial"
-msgstr "Kroæna"
+msgstr "Kro≈æna"
 
 #: src/widgets/paint-selector.c:670
 msgid "Gradient paint"
@@ -2244,7 +2244,7 @@ msgstr "Odtenek:"
 
 #: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
-msgstr "NasiËenost:"
+msgstr "Nasiƒçenost:"
 
 #: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
@@ -2260,52 +2260,52 @@ msgstr "Rumena:"
 
 #: src/widgets/sp-color-selector.c:648
 msgid "Black:"
-msgstr "»rna:"
+msgstr "ƒårna:"
 
 #~ msgid "Choose base unit system for grid"
-#~ msgstr "Izberi sistem enot za mreæo"
+#~ msgstr "Izberi sistem enot za mre≈æo"
 
 #~ msgid "Millimeters\n"
 #~ msgstr "Milimetri\n"
 
 #~ msgid "Choose color for grid"
-#~ msgstr "Izberi barvo za mreæo"
+#~ msgstr "Izberi barvo za mre≈æo"
 
 #~ msgid "Set maximum distance for grid snapping"
-#~ msgstr "Nastavi najveËjo razadaljo za preskok do mreæe"
+#~ msgstr "Nastavi najveƒçjo razadaljo za preskok do mre≈æe"
 
 #~ msgid "Choose unit system for grid snapping"
-#~ msgstr "Izberi sistem enot za preskok do mreæe"
+#~ msgstr "Izberi sistem enot za preskok do mre≈æe"
 
 #~ msgid "Pixels\n"
 #~ msgstr "pikslov\n"
 
 #~ msgid "Set distance between vertical grid lines"
-#~ msgstr "Nastavi presledek med navpiËnimi Ërtami mreæe"
+#~ msgstr "Nastavi presledek med navpiƒçnimi ƒçrtami mre≈æe"
 
 #~ msgid "Set distance between horizontal grid lines"
-#~ msgstr "Nastavi presledek med vodoravnimi Ërtami mreæe"
+#~ msgstr "Nastavi presledek med vodoravnimi ƒçrtami mre≈æe"
 
 #~ msgid "Set origin of page coordinate system"
-#~ msgstr "Nastavi izhodiπËe koordinatnega sistema strani"
+#~ msgstr "Nastavi izhodi≈°ƒçe koordinatnega sistema strani"
 
 #~ msgid "Choose unit system for guideline snapping"
-#~ msgstr "Izberi sistem enot za vodniπke Ërte"
+#~ msgstr "Izberi sistem enot za vodni≈°ke ƒçrte"
 
 #~ msgid "Set maximum distance for guideline snapping"
-#~ msgstr "Nastavi najveËjo razdaljo za preskakovanje do vodniπkih Ërt"
+#~ msgstr "Nastavi najveƒçjo razdaljo za preskakovanje do vodni≈°kih ƒçrt"
 
 #~ msgid "Choose color for guidelines"
-#~ msgstr "Izberite barvo vodniπkih Ërt"
+#~ msgstr "Izberite barvo vodni≈°kih ƒçrt"
 
 #~ msgid "Guideline color"
-#~ msgstr "Barva vodniπkih Ërt"
+#~ msgstr "Barva vodni≈°kih ƒçrt"
 
 #~ msgid "Choose color for highlighted guidelines"
-#~ msgstr "Izberi barvo ostvetljenih vodniπkih Ërt"
+#~ msgstr "Izberi barvo ostvetljenih vodni≈°kih ƒçrt"
 
 #~ msgid "Highlited guideline color"
-#~ msgstr "Barva osvetljenih vodniπkih Ërt"
+#~ msgstr "Barva osvetljenih vodni≈°kih ƒçrt"
 
 #~ msgid "Choose paper size"
 #~ msgstr "Izberi velikost papirja"
@@ -2314,10 +2314,10 @@ msgstr "»rna:"
 #~ msgstr "A4\n"
 
 #~ msgid "Set page width"
-#~ msgstr "Nastavi πirino strani"
+#~ msgstr "Nastavi ≈°irino strani"
 
 #~ msgid "Set page height"
-#~ msgstr "Nastavi viπino strani"
+#~ msgstr "Nastavi vi≈°ino strani"
 
 #~ msgid "window1"
 #~ msgstr "okno1"
@@ -2329,26 +2329,26 @@ msgstr "»rna:"
 #~ msgstr "Elipsa"
 
 #~ msgid "Draw ellipse"
-#~ msgstr "Riπi elipso"
+#~ msgstr "Ri≈°i elipso"
 
 #~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Avtorske pravice pridræane Lauris Kaplinski 1999-2000."
+#~ msgstr "Avtorske pravice pridr≈æane Lauris Kaplinski 1999-2000."
 
 #~ msgid ""
 #~ "A Vector Drawing Program.\n"
 #~ "Released under GPL"
 #~ msgstr ""
 #~ "Program za vektorsko risanje.\n"
-#~ "Dostopen pod GNU Sploπno Javno Licenco"
+#~ "Dostopen pod GNU Splo≈°no Javno Licenco"
 
 #~ msgid "Pixelss"
 #~ msgstr "piksli"
 
-#~ msgid "Valige v‰rv"
-#~ msgstr "Valige v‰rv"
+#~ msgid "Valige v√§rv"
+#~ msgstr "Valige v√§rv"
 
 #~ msgid " Width "
-#~ msgstr " ©irina "
+#~ msgstr " ≈†irina "
 
 #~ msgid ""
 #~ "pixels\n"
@@ -2367,7 +2367,7 @@ msgstr "»rna:"
 #~ msgstr "Raztegni s sliko"
 
 #~ msgid "dashed"
-#~ msgstr "Ërtkana"
+#~ msgstr "ƒçrtkana"
 
 #~ msgid "double"
 #~ msgstr "dvojna"
@@ -2400,10 +2400,10 @@ msgstr "»rna:"
 #~ msgstr "y"
 
 #~ msgid "Width "
-#~ msgstr "©irina "
+#~ msgstr "≈†irina "
 
 #~ msgid "Height "
-#~ msgstr "Viπina "
+#~ msgstr "Vi≈°ina "
 
 #~ msgid ""
 #~ "px\n"
@@ -2435,7 +2435,7 @@ msgstr "»rna:"
 #~ "cm\n"
 #~ "in\n"
 #~ msgstr ""
-#~ "toËk\n"
+#~ "toƒçk\n"
 #~ "mm\n"
 #~ "cm\n"
 #~ "in\n"
@@ -2453,10 +2453,10 @@ msgstr "»rna:"
 #~ msgstr "Pod_voji"
 
 #~ msgid "_Delete"
-#~ msgstr "_Zbriπi"
+#~ msgstr "_Zbri≈°i"
 
 #~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-#~ msgstr "Vklopi/izklopi rob delovne povπrine (ravnila in drsnike)"
+#~ msgstr "Vklopi/izklopi rob delovne pov≈°rine (ravnila in drsnike)"
 
 #~ msgid "Toggle borders"
 #~ msgstr "Preklopi robove"
@@ -2486,7 +2486,7 @@ msgstr "»rna:"
 #~ msgstr "Shrani datoteko"
 
 #~ msgid "Delete selected object(s)"
-#~ msgstr "Zbriπi izbran(e) predmet(e)"
+#~ msgstr "Zbri≈°i izbran(e) predmet(e)"
 
 #~ msgid "Duplicate selected object(s)"
 #~ msgstr "Podvoji izbran(e) predmet(e)"
@@ -2513,22 +2513,22 @@ msgstr "»rna:"
 #~ msgstr "Dol"
 
 #~ msgid "Edit objects using control nodes"
-#~ msgstr "Spremeni predmete s pomoËjo kontrolnih toËk"
+#~ msgstr "Spremeni predmete s pomoƒçjo kontrolnih toƒçk"
 
 #~ msgid "Draw rectangles"
-#~ msgstr "Riπi pravokotnike"
+#~ msgstr "Ri≈°i pravokotnike"
 
 #~ msgid "Draw ellipses"
-#~ msgstr "Riπi elipse"
+#~ msgstr "Ri≈°i elipse"
 
 #~ msgid "Draw freeform lines"
-#~ msgstr "Riπi proste Ërte"
+#~ msgstr "Ri≈°i proste ƒçrte"
 
 #~ msgid "Write text"
-#~ msgstr "Piπi besedilo"
+#~ msgstr "Pi≈°i besedilo"
 
 #~ msgid "Left button zooms in, right out"
-#~ msgstr "Lev gumb poveËa, desni pomanjπa"
+#~ msgstr "Lev gumb poveƒça, desni pomanj≈°a"
 
 #~ msgid ""
 #~ "10%\n"
@@ -2552,7 +2552,7 @@ msgstr "»rna:"
 #~ "500%\n"
 
 #~ msgid "Select zom factor"
-#~ msgstr "Izberi faktor poveËave"
+#~ msgstr "Izberi faktor poveƒçave"
 
 #~ msgid "100%"
 #~ msgstr "100%"
@@ -2579,14 +2579,14 @@ msgstr "»rna:"
 #~ msgid " Rotate "
 #~ msgstr " Zasukaj "
 
-#~ msgid "90∞"
-#~ msgstr "90∞"
+#~ msgid "90¬∞"
+#~ msgstr "90¬∞"
 
-#~ msgid "180∞"
-#~ msgstr "180∞"
+#~ msgid "180¬∞"
+#~ msgstr "180¬∞"
 
-#~ msgid "270∞"
-#~ msgstr "270∞"
+#~ msgid "270¬∞"
+#~ msgstr "270¬∞"
 
 #~ msgid "any"
 #~ msgstr "poljubno"
@@ -2610,13 +2610,13 @@ msgstr "»rna:"
 #~ msgstr "naredi kopijo"
 
 #~ msgid "Guidelines setup"
-#~ msgstr "Nastavitev vodniπkih Ërt"
+#~ msgstr "Nastavitev vodni≈°kih ƒçrt"
 
 #~ msgid "move horizontal"
 #~ msgstr "premakni vodoravno"
 
 #~ msgid "move vertival"
-#~ msgstr "premakni navpiËno"
+#~ msgstr "premakni navpiƒçno"
 
 #~ msgid "close dialog"
 #~ msgstr "zapri dialog"
@@ -2631,7 +2631,7 @@ msgstr "»rna:"
 #~ msgstr "Nastavitve preliva"
 
 #~ msgid "Preview (object binding box)"
-#~ msgstr "Predogled (πkatla za povezavo predmetov)"
+#~ msgstr "Predogled (≈°katla za povezavo predmetov)"
 
 #~ msgid "Color2"
 #~ msgstr "Barva2"
@@ -2643,13 +2643,13 @@ msgstr "»rna:"
 #~ msgstr "Nastavitve fraktala"
 
 #~ msgid "scale horizontal in %"
-#~ msgstr "poveËaj vodoravno v %"
+#~ msgstr "poveƒçaj vodoravno v %"
 
 #~ msgid "scale vertical in %"
-#~ msgstr "poveËaj navpiÊno v %"
+#~ msgstr "poveƒçaj navpiƒáno v %"
 
 #~ msgid "Break"
-#~ msgstr "LoËi"
+#~ msgstr "Loƒçi"
 
 #~ msgid "To Curve"
 #~ msgstr "V Krivuljo"
