@@ -747,7 +747,7 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 		gtk_widget_show (m);
 		sp_menu_append (SP_MENU (m), _("RGB"), _("RGB Colorspace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_RGB));
 		sp_menu_append (SP_MENU (m), _("HSV"), _("RGB Colorspace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_HSV));
-		sp_menu_append (SP_MENU (m), _("CMYK"), _("CMYK colospace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_CMYK));
+		sp_menu_append (SP_MENU (m), _("CMYK"), _("CMYK Colorspace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_CMYK));
 		gtk_signal_connect (GTK_OBJECT (m), "selected",
 				    GTK_SIGNAL_FUNC (sp_paint_selector_color_mode_select), psel);
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (cselmode), m);

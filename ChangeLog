@@ -1,3 +1,7 @@
+2003-07-21  Christian Neumair  <chris@gnome-de.org>
+
+	* src/widgets/paint-selector.c: Fix a typo (colospace->Colorspace).
+
 2003-07-15  Masatake YAMATO  <jet@gyve.org>
 
 	* src/helper/sp-ctrlline.h: Fix a typo(x2->x1).
