@@ -29,7 +29,7 @@ msgstr "Kunne ikke opprette sodipodi-svg-doc factory"
 #. Sticky zoom
 #: src/desktop.c:735
 msgid "Zoom drawing if window size changes"
-msgstr ""
+msgstr "Zoom tegning hvis et vindu størelse endres"
 
 #: src/desktop.c:819
 #, c-format
@@ -65,11 +65,11 @@ msgstr "Juster objekter"
 
 #: src/dialogs/align.c:170
 msgid "Right side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Høyre side av linjestilte objekter til venstre side av anker "
 
 #: src/dialogs/align.c:172
 msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Venstre side av linjestilte objekter til venstre side av anker"
 
 #: src/dialogs/align.c:174
 #, fuzzy
@@ -78,70 +78,70 @@ msgstr "Vend valgte objekter horisontalt"
 
 #: src/dialogs/align.c:176
 msgid "Right side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Høyre side av linjestilte objekter til høyre side av anker"
 
 #: src/dialogs/align.c:178
 msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Venstre side av linjestilte objekter til høyre side av anker"
 
 #: src/dialogs/align.c:181
 msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
+msgstr "Bunn av linjestilte objekter til topp av anker"
 
 #: src/dialogs/align.c:183 src/dialogs/align.c:189
 #, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "Kopier valgte objekter til utklippstavlen"
+msgstr "Kopier linjestilte objekter til utklippstavlen"
 
 #: src/dialogs/align.c:185
 msgid "Center vertically"
-msgstr ""
+msgstr "Sentrer vertikalt"
 
 #: src/dialogs/align.c:187
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr ""
+msgstr "Bunn av linjestilte objekter til bunn av anker"
 
 #: src/dialogs/align.c:191
 #, fuzzy
 msgid "Align"
-msgstr "Justering:"
+msgstr "Linjestill:"
 
 #: src/dialogs/align.c:209
 msgid "Distribute left sides of objects at even distances"
-msgstr ""
+msgstr "Fordel venstre side av objekter på med jevne mellomrom"
 
 #: src/dialogs/align.c:211
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr ""
+msgstr "Fordel senter av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:213
 msgid "Distribute right sides of objects at even distances"
-msgstr ""
+msgstr "Distribuer høyre side av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:215
 msgid "Distribute horizontal distance between objects equally"
-msgstr ""
+msgstr "Distribuer horisontalt mellomrom mellom objekter jevnt"
 
 #: src/dialogs/align.c:218
 msgid "Distribute top sides of objects at even distances"
-msgstr ""
+msgstr "Distribuer top sider av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:220
 msgid "Distribute centres of objects at even distances vertically"
-msgstr ""
+msgstr "Distribuer senter av objekter med jevne mellomrom vertikalt"
 
 #: src/dialogs/align.c:222
 msgid "Distribute bottom sides of objects at even distances"
-msgstr ""
+msgstr "Distribuer bunn sider av objekter med jevne mellomrom"
 
 #: src/dialogs/align.c:224
 msgid "Distribute vertical distance between objects equally"
-msgstr ""
+msgstr "Distribuer vertikalt mellomrom mellom objekter jevnt"
 
 #: src/dialogs/align.c:226
 #, fuzzy
 msgid "Distribute"
-msgstr "Attributt"
+msgstr "Distribuer"
 
 #: src/dialogs/align.c:262
 msgid "Last selected"

@@ -1,3 +1,6 @@
+2003-05-01  Christian Schaller <uraeus@gnome.org>
+	* no.po: Updated norwegian translation
+
 2003-03-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* POTFILES.in: Added src/module.c
