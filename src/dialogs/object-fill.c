@@ -20,16 +20,19 @@ SPCSSAttr * settings = NULL;
 void
 sp_object_fill_selection_changed (void)
 {
+#if 0
 	if (dialog != NULL) {
 		if (GTK_WIDGET_VISIBLE (dialog)) {
 			read_selection ();
 			show_fill ();
 		}
 	}
+#endif
 }
 
 void sp_object_fill (void)
 {
+#if 0
 	if (xml == NULL) {
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "fill");
 		glade_xml_signal_autoconnect (xml);
@@ -38,11 +41,13 @@ void sp_object_fill (void)
 
 	read_selection ();
 	show_fill ();
+#endif
 };
 
 static void
 read_selection (void)
 {
+#if 0
 	GList * list;
 	SPRepr * repr;
 
@@ -56,6 +61,7 @@ read_selection (void)
 		repr = (SPRepr *) list->data;
 		settings = sp_repr_css_attr_inherited (repr, "style");
 	}
+#endif
 };
 
 static void
