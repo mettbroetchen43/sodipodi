@@ -15,7 +15,7 @@
  */
 
 #include <libgnomeprint/gnome-font.h>
-#include "sp-shape.h"
+#include "sp-item.h"
 
 #define SP_TYPE_CHARS (sp_chars_get_type ())
 #define SP_CHARS(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_CHARS, SPChars))

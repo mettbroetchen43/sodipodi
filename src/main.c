@@ -365,12 +365,12 @@ static GSList *
 sp_process_args (poptContext ctx)
 {
 	GSList * fl;
-	const gchar ** args;
-	gint i;
+	const gchar ** args, *fn;
+	gint i, a;
 
 	fl = NULL;
 
-#if 0
+#if 1
 	while ((a = poptGetNextOpt (ctx)) >= 0) {
 		switch (a) {
 		case SP_ARG_FILE:

@@ -426,7 +426,7 @@ sp_rect_rx_get (SPItem *item, ArtPoint *p)
 }
 
 static void
-sp_rect_rx_set (SPItem *item, ArtPoint *p, guint state)
+sp_rect_rx_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPRect *rect;
 
@@ -453,7 +453,7 @@ sp_rect_ry_get (SPItem *item, ArtPoint *p)
 }
 
 static void
-sp_rect_ry_set (SPItem *item, ArtPoint *p, guint state)
+sp_rect_ry_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPRect *rect;
 

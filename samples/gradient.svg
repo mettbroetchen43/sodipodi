@@ -41,12 +41,12 @@
        y2="1"
        spreadMethod="reflect">
       <stop
-         offset="5%"
+         offset="35%"
          style="stop-color:#fff"
          id="stop8">
       </stop>
       <stop
-         offset="95%"
+         offset="55%"
          style="stop-color:#000"
          id="stop9">
       </stop>

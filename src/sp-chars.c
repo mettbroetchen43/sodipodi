@@ -156,6 +156,8 @@ sp_chars_show (SPItem *item, NRArena *arena)
 
 	nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (arenaitem), SP_OBJECT_STYLE (item));
 
+	g_print ("Chars show\n");
+
 	for (el = chars->elements; el != NULL; el = el->next) {
 		const ArtBpath *bpath;
 		SPCurve *curve;

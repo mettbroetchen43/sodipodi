@@ -1,8 +1,9 @@
-#define SP_REPR_IO_C
+#define __SP_REPR_IO_C__
 
 #include <malloc.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "repr.h"
 #include "repr-private.h"
 #include <xmlmemory.h>
@@ -126,7 +127,21 @@ static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 #endif
 
 	if (node->type == XML_TEXT_NODE) {
-		return sp_xml_document_createTextNode (doc, node->content);
+		xmlChar *p;
+		for (p = node->content; p && *p; p++) {
+			if (!isspace (*p)) {
+				xmlChar *e;
+				guchar *s;
+				e = p + strlen (p) - 1;
+				while (*e && isspace (*e)) e -= 1;
+				s = g_new (guchar, e - p + 2);
+				memcpy (s, p, e - p + 1);
+				s[e - p + 1] = '\0';
+				return sp_xml_document_createTextNode (doc, s);
+				g_free (s);
+			}
+		}
+		return NULL;
 	}
 
 	if (node->type == XML_COMMENT_NODE) return NULL;
@@ -261,7 +276,11 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 		}
 
 		for (child = repr->children; child != NULL; child = child->next) {
-			repr_write (child, file, level + 1);
+			if (child->type == SP_XML_TEXT_NODE) {
+				repr_quote_write (file, sp_repr_content (child));
+			} else {
+				repr_write (child, file, level + 1);
+			}
 		}
 		
 		if (!sp_repr_content (repr)) {

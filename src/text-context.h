@@ -29,7 +29,9 @@ typedef struct _SPTextContextClass SPTextContextClass;
 struct _SPTextContext {
 	SPEventContext event_context;
 
-	SPItem *item;
+	SPItem *text;
+	SPItem *string;
+
 	ArtPoint pdoc;
 
 #ifdef SP_TC_XIM

@@ -14,11 +14,6 @@
  * hide
  */
 
-/*
- * NB! Currently update is intended for changing affine transforms
- * For other changes there should be other methods
- */
-
 #include <gtk/gtkmenu.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libart_lgpl/art_misc.h>
@@ -80,9 +75,6 @@ struct _SPItem {
 struct _SPItemClass {
 	SPObjectClass parent_class;
 
-	/* Update indicates that affine is changed */
-	void (* update) (SPItem * item, gdouble affine[]);
-
 	/* BBox in given coordinate system */
 	void (* bbox) (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 
@@ -121,7 +113,6 @@ GtkType sp_item_get_type (void);
 
 /* Methods */
 
-void sp_item_update (SPItem * item, gdouble affine[]);
 void sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);

@@ -11,6 +11,7 @@
 #include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection.h"
+#include "../sp-text.h"
 #include "text-edit.h"
 
 static void sp_text_read_selection (void);
@@ -69,8 +70,10 @@ static void
 sp_text_read_selection (void)
 {
 	SPSelection * selection;
+	SPItem *item;
 	SPRepr * repr;
 	SPCSSAttr * settings;
+	guchar *txt;
 	const gchar * str;
 	const gchar * family;
 	GnomeFontWeight weight;
@@ -95,17 +98,20 @@ sp_text_read_selection (void)
 
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
-	repr = sp_selection_repr (selection);
+	item = sp_selection_item (selection);
 
-	if (repr == NULL) return;
-	if (strcmp (sp_repr_name (repr), "text") != 0) return;
+	if (item == NULL) return;
+	if (!SP_IS_TEXT (item)) return;
 
-	str = sp_repr_content (repr);
+	repr = SP_OBJECT_REPR (item);
+
+	txt = sp_text_get_string_multiline (SP_TEXT (item));
 #if 0
 	gtk_editable_delete_text (GTK_EDITABLE (ttext), 0, -1);
 #endif
-	if (str) {
-		e_utf8_gtk_editable_set_text (GTK_EDITABLE (ttext), str);
+	if (txt) {
+		e_utf8_gtk_editable_set_text (GTK_EDITABLE (ttext), txt);
+		g_free (txt);
 	}
 
 	css = sp_repr_css_attr_new ();
@@ -133,7 +139,8 @@ sp_text_read_selection (void)
 void
 sp_text_dialog_apply (GtkButton * button, gpointer data)
 {
-	SPRepr * repr;
+	SPItem *item;
+	SPRepr *repr;
 	gchar *str;
 	GnomeFontWeight weight;
 	double size;
@@ -141,12 +148,12 @@ sp_text_dialog_apply (GtkButton * button, gpointer data)
 	gchar c[64];
 	GnomeFont * font;
 
-	repr = sp_selection_repr (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
-	if (repr == NULL) return;
-	if (strcmp (sp_repr_name (repr), "text") != 0) return;
+	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	if (!item || !SP_IS_TEXT (item)) return;
+	repr = SP_OBJECT_REPR (item);
 
 	str = e_utf8_gtk_editable_get_text (GTK_EDITABLE (ttext));
-	sp_repr_set_content (repr, str);
+	sp_text_set_repr_text_multiline (SP_TEXT (item), str);
 	g_free (str);
 
 	css = sp_repr_css_attr_new ();

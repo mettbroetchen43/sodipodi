@@ -10,11 +10,10 @@
  *
  */
 
+/* Generic containers */
+
 typedef struct _Sodipodi Sodipodi;
 typedef struct _SodipodiClass SodipodiClass;
-
-typedef struct _SPDocument SPDocument;
-typedef struct _SPDocumentClass SPDocumentClass;
 
 typedef struct _SPDesktop SPDesktop;
 typedef struct _SPDesktopClass SPDesktopClass;
@@ -24,6 +23,13 @@ typedef struct _SPSelectionClass SPSelectionClass;
 
 typedef struct _SPEventContext SPEventContext;
 typedef struct _SPEventContextClass SPEventContextClass;
+
+/* Document tree */
+
+typedef struct _SPDocument SPDocument;
+typedef struct _SPDocumentClass SPDocumentClass;
+
+/* Objects */
 
 typedef struct _SPObject SPObject;
 typedef struct _SPObjectClass SPObjectClass;
@@ -70,6 +76,15 @@ typedef struct _SPArcClass SPArcClass;
 typedef struct _SPChars SPChars;
 typedef struct _SPCharsClass SPCharsClass;
 
+typedef struct _SPText SPText;
+typedef struct _SPTextClass SPTextClass;
+
+typedef struct _SPTSpan SPTSpan;
+typedef struct _SPTSpanClass SPTSpanClass;
+
+typedef struct _SPString SPString;
+typedef struct _SPStringClass SPStringClass;
+
 typedef struct _SPPaintServer SPPaintServer;
 typedef struct _SPPaintServerClass SPPaintServerClass;
 
@@ -90,6 +105,8 @@ typedef struct _SPClipPathClass SPClipPathClass;
 
 typedef struct _SPAnchor SPAnchor;
 typedef struct _SPAnchorClass SPAnchorClass;
+
+/* Misc */
 
 typedef struct _SPColorSpace SPColorSpace;
 typedef struct _SPColor SPColor;

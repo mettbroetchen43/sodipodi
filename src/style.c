@@ -465,7 +465,15 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
 		}
 	}
-	/* fixme */
+	/* fixme: */
+	if (!style->text->font_family.set) {
+		str = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
+		if (str) sp_style_merge_property (style, SP_PROP_FONT_FAMILY, str);
+	}
+	if (!style->text->font_size_set) {
+		str = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
+		if (str) sp_style_merge_property (style, SP_PROP_FONT_SIZE, str);
+	}
 	if (!style->opacity_set) {
 		str = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
 		if (str) {

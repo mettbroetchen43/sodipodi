@@ -509,9 +509,6 @@ sp_object_modified (SPObject *object, guint flags)
 
 	g_return_if_fail (flags != 0);
 
-	/* Clear flags to allow reentrancy */
-	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
-
 	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
 			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
@@ -520,6 +517,12 @@ sp_object_modified (SPObject *object, guint flags)
 	gtk_object_ref (GTK_OBJECT (object));
 	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
 	gtk_object_unref (GTK_OBJECT (object));
+
+	/*
+	 * fixme: I am not sure - it was before class method, but moved it here
+	 */
+
+	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
 }
 
 /* Sequence */

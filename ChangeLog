@@ -1,3 +1,31 @@
+2002-04-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/text-context.c (sp_text_context_root_handler): Port to new
+	text object (incomplete)
+	(sp_text_context_selection_changed): Ditto
+
+	* src/sp-text.c: Lot of new stuff, shows something on screen at last
+
+	* src/sp-object.c (sp_object_modified): Do not allow reentrancy
+	- think SPText will like it
+
+	* src/sp-item.c: Removed sp_item_update and virtual method
+
+	* src/sp-item-group.c: Removed ::update method
+
+2002-04-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-rect.c (sp_rect_rx_set): Make argument const, kill warning
+	(sp_rect_ry_set): Ditto
+
+2002-04-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-text.h: Broke into SPText, SPTSpan and SPString objects
+
+	* src/sp-text.c (sp_text_build): Build <tspan> and TEXT elements
+
+	* src/forward.h: Moved SPText and SPTSpan here
+
 2002-04-08  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item.h: Changed ::bbox signature

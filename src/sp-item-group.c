@@ -40,7 +40,6 @@ static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * 
 static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
 
-static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
@@ -93,7 +92,6 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->modified = sp_group_modified;
 	sp_object_class->sequence = sp_group_sequence;
 
-	item_class->update = sp_group_update;
 	item_class->bbox = sp_group_bbox;
 	item_class->print = sp_group_print;
 	item_class->description = sp_group_description;
@@ -178,7 +176,7 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	position = 0;
 	if (ref != NULL) {
 		prev = group->children;
-		while (prev->repr != ref) {
+		while (prev && (prev->repr != ref)) {
 			if (SP_IS_ITEM (prev)) position += 1;
 			prev = prev->next;
 		}
@@ -336,28 +334,6 @@ sp_group_sequence (SPObject *object, gint seq)
 	}
 
 	return seq;
-}
-
-static void
-sp_group_update (SPItem *item, gdouble affine[])
-{
-	SPGroup *group;
-	SPItem * child;
-	SPObject * o;
-	gdouble a[6];
-
-	group = SP_GROUP (item);
-
-	if (SP_ITEM_CLASS (parent_class)->update)
-		(* SP_ITEM_CLASS (parent_class)->update) (item, affine);
-
-	for (o = group->children; o != NULL; o = o->next) {
-		if (SP_IS_ITEM (o)) {
-			child = SP_ITEM (o);
-			art_affine_multiply (a, child->affine, affine);
-			sp_item_update (child, a);
-		}
-	}
 }
 
 static void

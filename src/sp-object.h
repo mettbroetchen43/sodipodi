@@ -10,10 +10,10 @@
  *
  */
 
-#define SP_TYPE_OBJECT            (sp_object_get_type ())
-#define SP_OBJECT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECT, SPObject))
-#define SP_OBJECT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
-#define SP_IS_OBJECT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
+#define SP_TYPE_OBJECT (sp_object_get_type ())
+#define SP_OBJECT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_OBJECT, SPObject))
+#define SP_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_OBJECT, SPObjectClass))
+#define SP_IS_OBJECT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_OBJECT))
 #define SP_IS_OBJECT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT))
 
 /* Async modifiaction flags */
@@ -88,6 +88,7 @@ struct _SPObject {
 
 struct _SPObjectClass {
 	GtkObjectClass parent_class;
+
 	void (* build) (SPObject * object, SPDocument * document, SPRepr * repr);
 	void (* write_repr) (SPObject * object, SPRepr * repr);
 
@@ -148,7 +149,6 @@ void sp_object_style_changed (SPObject *object, guint flags);
 #endif
 
 /* Modification */
-
 void sp_object_request_modified (SPObject *object, guint flags);
 void sp_object_modified (SPObject *object, guint flags);
 

@@ -90,7 +90,8 @@ sp_text_context_init (SPTextContext *tc)
 	event_context->hot_x = 0;
 	event_context->hot_y = 0;
 
-	tc->item = NULL;
+	tc->text = NULL;
+	tc->string = NULL;
 	tc->pdoc.x = 0.0;
 	tc->pdoc.y = 0.0;
 }
@@ -104,11 +105,6 @@ sp_text_context_destroy (GtkObject *object)
 	ec = SP_EVENT_CONTEXT (object);
 	tc = SP_TEXT_CONTEXT (object);
 
-#if 0
-	if (text_context->text)
-		sp_text_complete (text_context);
-#endif
-
 	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
 #ifdef SP_TC_XIM
 	gdk_ic_destroy (tc->ic);
@@ -116,7 +112,8 @@ sp_text_context_destroy (GtkObject *object)
 	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
 #endif
 
-	tc->item = NULL;
+	tc->text = NULL;
+	tc->string = NULL;
 
 	if (ec->desktop) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
@@ -247,49 +244,72 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		// filter control-modifier for desktop shortcuts
                 if (event->key.state & GDK_CONTROL_MASK) return FALSE;
 
-		if (!tc->item) {
-			SPRepr *repr, *style;
-			/* Create object */
-			repr = sp_repr_new ("text");
+		if (!tc->string) {
+			SPRepr *rtext, *rtspan, *rstring, *style;
+
+			/* Create <text> */
+			rtext = sp_repr_new ("text");
 			/* Set style */
 			style = sodipodi_get_repr (SODIPODI, "paint.text");
 			if (style) {
 				SPCSSAttr *css;
 				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (repr, css, "style");
+				sp_repr_css_set (rtext, css, "style");
 				sp_repr_css_attr_unref (css);
 			}
-			sp_repr_set_double_attribute (repr, "x", tc->pdoc.x);
-			sp_repr_set_double_attribute (repr, "y", tc->pdoc.y);
-			tc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), repr);
-			sp_selection_set_item (SP_DT_SELECTION (ec->desktop), tc->item);
+			sp_repr_set_double_attribute (rtext, "x", tc->pdoc.x);
+			sp_repr_set_double_attribute (rtext, "y", tc->pdoc.y);
+
+			/* Create <tspan> */
+			rtspan = sp_repr_new ("tspan");
+			sp_repr_add_child (rtext, rtspan, NULL);
+			sp_repr_unref (rtspan);
+
+			/* Create TEXT */
+			rstring = sp_xml_document_createTextNode (sp_repr_document (rtext), "");
+			sp_repr_add_child (rtspan, rstring, NULL);
+			sp_repr_unref (rstring);
+
+			sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);
+			/* fixme: Is selection::changed really immediate? */
+			sp_selection_set_repr (SP_DT_SELECTION (ec->desktop), rtext);
+			sp_repr_unref (rtext);
+
 			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
-			sp_repr_unref (repr);
 		}
+
+		g_assert (tc->string != NULL);
+
 		utf8 = NULL;
 		if (event->key.keyval == GDK_Return) {
-			utf8 = g_strdup ("\n");
+			SPRepr *rtspan, *rstring;
+			/* Create <tspan> */
+			rtspan = sp_repr_new ("tspan");
+			/* Create TEXT */
+			rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+			sp_repr_add_child (rtspan, rstring, NULL);
+			sp_repr_unref (rstring);
+			/* Append to text */
+			sp_repr_add_child (SP_OBJECT_REPR (tc->text), rtspan, NULL);
+			sp_repr_unref (rtspan);
+			tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
 		} else if (event->key.string) {
 			g_print ("Key %d string %s\n", event->key.keyval, event->key.string);
-#if 0
-			utf8 = e_utf8_from_gtk_string (GTK_WIDGET (ec->desktop->owner->canvas), event->key.string);
-#else
 			utf8 = e_utf8_from_locale_string (event->key.string);
-#endif
 			g_print ("UTF8 %s\n", utf8);
+			content = sp_repr_content (SP_OBJECT_REPR (tc->string));
+			if (content) {
+				guchar *new;
+				new = g_strconcat (content, utf8, NULL);
+				g_print ("Old %s new %s\n", content, new);
+				sp_repr_set_content (SP_OBJECT_REPR (tc->string), new);
+				g_free (new);
+			} else {
+				g_print ("Setting %s\n", utf8);
+				sp_repr_set_content (SP_OBJECT_REPR (tc->string), utf8);
+			}
+			if (utf8) g_free (utf8);
 		}
-		content = sp_repr_content (SP_OBJECT_REPR (tc->item));
-		if (content) {
-			guchar *new;
-			new = g_strconcat (content, utf8, NULL);
-			g_print ("Old %s new %s\n", content, new);
-			sp_repr_set_content (SP_OBJECT_REPR (tc->item), new);
-			g_free (new);
-		} else {
-			g_print ("Setting %s\n", utf8);
-			sp_repr_set_content (SP_OBJECT_REPR (tc->item), utf8);
-		}
-		if (utf8) g_free (utf8);
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 
 		ret = TRUE;
@@ -306,44 +326,18 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	return ret;
 }
 
-#if 0
-static void
-sp_text_complete (SPTextContext * text_context)
-{
-	gchar * c;
-
-	if (text_context->text == NULL) return;
-
-	c = (gchar *) sp_repr_content (text_context->text);
-	if (c != NULL) {
-		if (*c != '\0') {
-			gdk_keyboard_ungrab (gdk_time_get ());
-			text_context->canvasitem = NULL;
-			text_context->item = NULL;
-			text_context->text = NULL;
-			return;
-		}
-	}
-	g_print ("empty text created - removing\n");
-	sp_repr_unparent (text_context->text);
-
-	sp_document_done (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (text_context)->desktop));
-
-	text_context->text = NULL;
-}
-#endif
-
 static void
 sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 {
 	SPItem *item;
 
-	tc->item = NULL;
+	tc->text = NULL;
 
 	item = sp_selection_item (selection);
 
 	if (SP_IS_TEXT (item)) {
-		tc->item = item;
+		tc->text = item;
+		tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
 	}
 }
 

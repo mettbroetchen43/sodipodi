@@ -261,19 +261,6 @@ sp_item_style_modified (SPObject *object, guint flags)
 	}
 }
 
-/* Update indicates that affine is changed */
-
-void
-sp_item_update (SPItem * item, gdouble affine[])
-{
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-	g_assert (affine != NULL);
-
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->update)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->update) (item, affine);
-}
-
 void
 sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
