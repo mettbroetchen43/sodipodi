@@ -40,7 +40,7 @@
 #if 1
 /* Hmmm... shouldn't this also qualify */
 /* Whether it is faster or not, well, nobody knows */
-#define sp_round(v,m) (((v) < 0.0) ? (ceil ((v) / (m) - 0.5)) * (m) : (floor ((v) / (m) + 0.5)))
+#define sp_round(v,m) (((v) < 0.0) ? ((ceil ((v) / (m) - 0.5)) * (m)) : ((floor ((v) / (m) + 0.5)) * (m)))
 #else
 /* we do not use C99 round(3) function yet */
 static double sp_round (double x, double y)

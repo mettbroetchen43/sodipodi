@@ -1,3 +1,7 @@
+2003-02-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-ellipse.c (sp_round): Fix sp_round
+
 2003-02-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/paint-selector.c (sp_paint_selector_system_color_set): New method
