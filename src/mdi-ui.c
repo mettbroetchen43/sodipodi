@@ -8,6 +8,7 @@
 #include "dialogs/object-stroke.h"
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
+#include "dialogs/xml-tree.h"
 
 /* Unreachable code, which guarantees that reqd functions are linked */
 
@@ -54,4 +55,5 @@ sp_mdi_dialog_handles (void)
 	sp_object_stroke_dialog ();
 	sp_text_edit_dialog ();
 	sp_export_dialog ();
+	sp_xml_tree_dialog ();
 }

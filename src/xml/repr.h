@@ -46,6 +46,13 @@ const gchar * sp_repr_attr (SPRepr * repr, const gchar * key);
 gboolean sp_repr_set_content (SPRepr * repr, const gchar * content);
 gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value);
 
+/*
+ * Returns list of attribute strings
+ * List should be freed by caller, but attributes not
+ */
+
+GList * sp_repr_attributes (SPRepr * repr);
+
 void sp_repr_set_data (SPRepr * repr, gpointer data);
 gpointer sp_repr_data (SPRepr * repr);
 

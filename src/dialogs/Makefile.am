@@ -20,5 +20,6 @@ libspdialogs_a_SOURCES = \
 	object-fill.c object-fill.h \
 	object-stroke.c object-stroke.h \
 	text-edit.c text-edit.h \
-	export.c export.h
+	export.c export.h \
+	xml-tree.c xml-tree.h
 

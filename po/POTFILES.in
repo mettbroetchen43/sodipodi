@@ -2,3 +2,4 @@
 
 src/main.c
 glade/sodipodi-glade.c
+glade/xml-tree.c

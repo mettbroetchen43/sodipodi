@@ -1,3 +1,9 @@
+2000-04-27  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/dialogs/xml-tree.*: Started implementing direct xml editing
+
+	* glade/xml-tree.glade: XML editing dialogs
+
 2000-04-26  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* helper/curve.c (sp_curve_split): Fixed evil memcpy size bug

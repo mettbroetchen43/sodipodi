@@ -33,9 +33,4 @@ struct _SPRepr {
 	gpointer order_changed_data;
 };
 
-/* Returns list of attribute strings
- * List should be freed by caller, but attributes not */
-
-GList * sp_repr_attributes (SPRepr * repr);
-
 #endif

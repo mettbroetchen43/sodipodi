@@ -399,9 +399,15 @@
 	    </widget>
 
 	    <widget>
-	      <class>GtkPixmapMenuItem</class>
-	      <name>properties1</name>
-	      <stock_item>GNOMEUIINFO_MENU_PROPERTIES_ITEM</stock_item>
+	      <class>GtkMenuItem</class>
+	      <name>xml_tree1</name>
+	      <signal>
+		<name>activate</name>
+		<handler>sp_xml_tree_dialog</handler>
+		<last_modification_time>Thu, 27 Apr 2000 19:41:30 GMT</last_modification_time>
+	      </signal>
+	      <label>XML Tree</label>
+	      <right_justify>False</right_justify>
 	    </widget>
 	  </widget>
 	</widget>

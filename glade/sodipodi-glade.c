@@ -15,6 +15,7 @@ gchar *s = N_("_Page");
 gchar *s = N_("D_uplicate");
 gchar *s = N_("_Delete");
 gchar *s = N_("Node Editing...");
+gchar *s = N_("XML Tree");
 gchar *s = N_("Zoom");
 gchar *s = N_("Scale");
 gchar *s = N_("1:2");
