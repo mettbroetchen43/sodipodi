@@ -1,4 +1,8 @@
- 2002-11-28  gettextize  <bug-gnu-gettext@gnu.org>
+2002-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* po/Makevars: Added this
+
+2002-11-28  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add intl, m4.
 	(EXTRA_DIST): Add config.rpath.
