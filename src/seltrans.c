@@ -1035,12 +1035,14 @@ sp_sel_trans_rotate_request (SPSelTrans * seltrans, SPSelTransHandle * handle, N
 	nr_matrix_multiply_ffd (&rotate, &rotate, &r2);
 	nr_matrix_multiply_ffd (&rotate, &rotate, &n2p);
 
-	// snap
+#if 0
+	/* Snap */
 	sp_desktop_circular_snap_list (desktop, seltrans->spp, seltrans->spp_length, &norm, &rotate);
+#endif
 	p->x = NR_MATRIX_DF_TRANSFORM_X (&rotate, point.x, point.y);
 	p->y = NR_MATRIX_DF_TRANSFORM_Y (&rotate, point.x, point.y);
 
-	// status text
+	/* status text */
 	dx2 = p->x    - norm.x;
 	dy2 = p->y    - norm.y;
 	h2 = hypot (dx2, dy2);

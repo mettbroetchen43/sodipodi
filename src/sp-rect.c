@@ -245,7 +245,7 @@ sp_rect_description (SPItem * item)
 
 	rect = SP_RECT (item);
 
-	return g_strdup_printf ("Rectangle %g %g %g %g", rect->x.computed, rect->y.computed, rect->width.computed, rect->height.computed);
+	return g_strdup_printf ("Rectangle %0.2f %0.2f %0.2f %0.2f", rect->x.computed, rect->y.computed, rect->width.computed, rect->height.computed);
 }
 
 static void
@@ -373,7 +373,7 @@ sp_rect_position_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdoubl
 }
 
 void
-sp_rect_set_rx(SPRect * rect, gboolean set, gdouble value)
+sp_rect_set_rx (SPRect * rect, gboolean set, gdouble value)
 {
 	g_return_if_fail (rect != NULL);
 	g_return_if_fail (SP_IS_RECT (rect));
@@ -385,7 +385,7 @@ sp_rect_set_rx(SPRect * rect, gboolean set, gdouble value)
 }
 
 void
-sp_rect_set_ry(SPRect * rect, gboolean set, gdouble value)
+sp_rect_set_ry (SPRect * rect, gboolean set, gdouble value)
 {
 	g_return_if_fail (rect != NULL);
 	g_return_if_fail (SP_IS_RECT (rect));

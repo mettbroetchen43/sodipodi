@@ -9,6 +9,11 @@
 	* src/libnr/nr-path.c (nr_curve_bbox): Implement fast and exact bbox (thanks to Nathan)
 	(nr_curve_bbox_wind_distance): Use exact bbox
 
+2003-01-25  Nathan Hurst  <Nathan.Hurst@infotech.monash.edu.au>
+
+	* src/desktop-snap.c: Fixed vector snapping code, replaced horizontal and
+	vertical snapping with generic vector versions
+
 2003-01-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/nodepath.c (create_curve): Use NR_MATRIX_DF_TRANSFORM_X (Thanks to

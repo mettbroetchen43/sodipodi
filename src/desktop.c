@@ -838,11 +838,23 @@ sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpoint
 void
 sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw)
 {
+#if 0
+	gtk_widget_set_sensitive (dtw->hruler, TRUE);
+	gtk_widget_set_sensitive (dtw->vruler, TRUE);
+	gtk_widget_set_sensitive (dtw->hscrollbar, TRUE);
+	gtk_widget_set_sensitive (dtw->vscrollbar, TRUE);
+#endif
 }
 
 void
 sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
 {
+#if 0
+	gtk_widget_set_sensitive (dtw->hruler, FALSE);
+	gtk_widget_set_sensitive (dtw->vruler, FALSE);
+	gtk_widget_set_sensitive (dtw->hscrollbar, FALSE);
+	gtk_widget_set_sensitive (dtw->vscrollbar, FALSE);
+#endif
 }
 
 static gboolean
@@ -856,7 +868,8 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
 			GtkWidget *dlg;
 			gint b;
-			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE, _("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME(doc));
+			dlg = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+						      _("Document %s has unsaved changes, save them?"), SP_DOCUMENT_NAME(doc));
 			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_NO, GTK_RESPONSE_NO);
 			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 			gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_SAVE, GTK_RESPONSE_YES);
