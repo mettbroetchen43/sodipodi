@@ -1038,7 +1038,7 @@ msgstr "Dvigni izbrano za en sloj"
 
 #: glade/toolbox.c:36
 msgid "Break apart selected paths"
-msgstr "Prekini narazen izbrane poti"
+msgstr "Loèi izbrane poti"
 
 #: glade/toolbox.c:37
 msgid "Combine selected paths"
@@ -1767,7 +1767,7 @@ msgstr "Najmanj¹i predmet"
 #~ msgstr "poveèaj navpiæno v %"
 
 #~ msgid "Break"
-#~ msgstr "Prekini"
+#~ msgstr "Loèi"
 
 #~ msgid "To Curve"
 #~ msgstr "V Krivuljo"
