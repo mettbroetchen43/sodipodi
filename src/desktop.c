@@ -305,7 +305,7 @@ sp_desktop_init (SPDesktop * desktop)
 
 	//desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 	//desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-        gnome_appbar_set_status (desktop->select_status, "Wellcome !");
+        gnome_appbar_set_status (desktop->select_status, "Welcome !");
 
         // zoom combo
         zoom = desktop->zoom = gtk_combo_text_new (FALSE);

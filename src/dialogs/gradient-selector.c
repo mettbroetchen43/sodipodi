@@ -23,6 +23,8 @@
 #include "../sodipodi.h"
 #include "../document.h"
 #include "../desktop-handles.h"
+#include "../document-private.h"
+#include "../sp-root.h"
 #include "../selection.h"
 #include "../sp-gradient.h"
 #include "../sp-item.h"
@@ -35,6 +37,13 @@ static GtkWidget *sp_gradient_selector_vector_menu_new (SPWidget *spw);
 static void sp_gradient_selector_vector_menu_refresh (GtkOptionMenu *vectors, SPWidget *spw);
 static void sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw);
 static void sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPWidget *spw);
+static void sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPWidget *spw);
+static void sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPWidget *spw);
+
+static void sp_gradient_selector_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data);
+static void sp_gradient_selector_change_selection (SPWidget *spw, SPSelection *selection, gpointer data);
+
+static void sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection);
 
 GtkWidget *
 sp_gradient_widget_new (void)
@@ -61,6 +70,24 @@ sp_gradient_widget_new (void)
 	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked",
 			    GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), spw);
+	b = gtk_button_new_with_label (_("Add vector"));
+	gtk_widget_show (b);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_signal_connect (GTK_OBJECT (b), "clicked",
+			    GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), spw);
+	b = gtk_button_new_with_label (_("Delete vector"));
+	gtk_widget_show (b);
+	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 4);
+	gtk_signal_connect (GTK_OBJECT (b), "clicked",
+			    GTK_SIGNAL_FUNC (sp_gradient_selector_delete_vector_clicked), spw);
+
+	/* Connect selection tracking signal */
+	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection",
+			    GTK_SIGNAL_FUNC (sp_gradient_selector_modify_selection), NULL);
+	gtk_signal_connect (GTK_OBJECT (spw), "change_selection",
+			    GTK_SIGNAL_FUNC (sp_gradient_selector_change_selection), NULL);
+
+	sp_gradient_selector_load_selection (SP_WIDGET (spw), SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 
 	return spw;
 }
@@ -156,6 +183,8 @@ sp_gradient_selector_vector_activate (GtkMenuItem *mi, SPWidget *spw)
 	for (l = selected; l != NULL; l = l->next) {
 		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), gr);
 	}
+
+	sp_document_done (spw->document);
 }
 
 static void
@@ -168,3 +197,96 @@ sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPWidget *spw)
 	sp_gradient_vector_dialog (gradient);
 }
 
+static void
+sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPWidget *spw)
+{
+	SPDefs *defs;
+	SPRepr *repr, *stop;
+
+	if (!SP_ACTIVE_DOCUMENT) return;
+
+	defs = SP_DOCUMENT_DEFS (SP_ACTIVE_DOCUMENT);
+
+	repr = sp_repr_new ("linearGradient");
+	stop = sp_repr_new ("stop");
+	sp_repr_set_attr (stop, "offset", "0");
+	sp_repr_set_attr (stop, "style", "stop-color:#000;stop-opacity:1;");
+	sp_repr_append_child (repr, stop);
+	stop = sp_repr_new ("stop");
+	sp_repr_set_attr (stop, "offset", "1");
+	sp_repr_set_attr (stop, "style", "stop-color:#fff;stop-opacity:1;");
+	sp_repr_append_child (repr, stop);
+
+	sp_repr_add_child (SP_OBJECT_REPR (defs), repr, NULL);
+
+	/* fixme: */
+	sp_gradient_selector_vector_menu_refresh (gtk_object_get_data (GTK_OBJECT (spw), "vectors"), spw);
+	/* fixme: */
+	if (spw->desktop) sp_gradient_selector_load_selection (spw, SP_DT_SELECTION (spw->desktop));
+}
+
+static void
+sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPWidget *spw)
+{
+}
+
+static void
+sp_gradient_selector_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data)
+{
+	sp_gradient_selector_load_selection (spw, selection);
+}
+
+static void
+sp_gradient_selector_change_selection (SPWidget *spw, SPSelection *selection, gpointer data)
+{
+	sp_gradient_selector_load_selection (spw, selection);
+}
+
+static void
+sp_gradient_selector_load_selection (SPWidget *spw, SPSelection *selection)
+{
+	SPGradient *gradient;
+	GtkWidget *vectors, *menu;
+	const GSList *items, *i;
+	GList *children, *l;
+	gint pos;
+
+	if (!selection) return;
+
+	items = sp_selection_item_list (selection);
+
+	gradient = NULL;
+	for (i = items; i != NULL; i = i->next) {
+		SPStyle *style;
+		style = SP_OBJECT_STYLE (i->data);
+		if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && SP_IS_LINEARGRADIENT (style->fill.server)) {
+			gradient = SP_GRADIENT (style->fill.server);
+			while (gradient) {
+				/* Search vector gradient */
+				sp_gradient_ensure_vector (gradient);
+				if (gradient->has_stops) break;
+				gradient = gradient->href;
+			}
+			if (gradient) break;
+		}
+	}
+	/* Return if no vector gradient */
+	if (!gradient) return;
+
+	vectors = gtk_object_get_data (GTK_OBJECT (spw), "vectors");
+	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (vectors));
+	children = gtk_container_children (GTK_CONTAINER (menu));
+
+	pos = 0;
+	for (l = children; l != NULL; l = l->next) {
+		SPGradient *gr;
+		gr = gtk_object_get_data (GTK_OBJECT (l->data), "gradient");
+		if (gr == gradient) break;
+		pos += 1;
+	}
+
+	g_list_free (children);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "gradient", gradient);
+	gtk_option_menu_set_history (GTK_OPTION_MENU (vectors), pos);
+}

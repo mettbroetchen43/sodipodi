@@ -12,10 +12,13 @@ glade/transformation.c
 glade/xml-tree.c
 src/bonobo/svg-doc-factory.c
 src/desktop.c
+src/widgets/sp-color-selector.c
 src/dialogs/align.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
 src/dialogs/item-properties.c
+src/dialogs/gradient-selector.c
+src/dialogs/gradient-vector.c
 src/event-context.c
 src/file.c
 src/helper/unit-menu.c

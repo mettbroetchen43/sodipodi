@@ -1,3 +1,12 @@
+2001-09-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/gradient-selector.c (sp_gradient_selector_add_vector_clicked): 
+	New handler
+	(sp_gradient_selector_delete_vector_clicked): Ditto (empty)
+	(sp_gradient_selector_load_selection): New method
+
+	* src/desktop.c (sp_desktop_init): Typo fix
+
 2001-09-17  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/gradient-vector.c (sp_gradient_vector_widget_destroy): Handler

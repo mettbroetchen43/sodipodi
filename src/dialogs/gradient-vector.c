@@ -18,6 +18,7 @@
 #include <libgnome/gnome-i18n.h>
 #include "../widgets/sp-color-selector.h"
 #include "../widgets/gradient-image.h"
+#include "../document.h"
 #include "../sp-gradient.h"
 #include "../gradient-chemistry.h"
 #include "gradient-vector.h"
@@ -299,6 +300,8 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 			child = child->next;
 		}
 	}
+
+	sp_document_done (SP_OBJECT_DOCUMENT (ngr));
 
 	blocked = FALSE;
 }
