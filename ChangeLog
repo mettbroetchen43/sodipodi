@@ -1,5 +1,12 @@
 2002-09-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/gradient-chemistry.c (sp_gradient_ensure_private_normalized): Normalize
+	if flag is set, but hrefcount > 1
+	(sp_item_force_fill_lineargradient_vector): Check for hrefcount
+	(sp_item_force_stroke_lineargradient_vector): Ditto
+
+	* src/interface.c: Added <config.h>
+
 	* glade/toolbox.glade: Fixed non-ASCII character
 
 2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>

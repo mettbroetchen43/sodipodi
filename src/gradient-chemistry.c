@@ -164,9 +164,12 @@ sp_gradient_ensure_private_normalized (SPGradient *gr, SPGradient *vector)
 	g_return_val_if_fail (vector->state == SP_GRADIENT_STATE_VECTOR, NULL);
 
 	/* If we are already normalized private, change href and return */
-	if (gr->state == SP_GRADIENT_STATE_PRIVATE) {
+	if ((gr->state == SP_GRADIENT_STATE_PRIVATE) && (SP_OBJECT_HREFCOUNT (gr) > 1)) {
+#if 0
+		/* fixme: Have to remove this, because duplicating object clones gradient also */
 		/* This assertion is dangerous - we have to be very-very strict about it */
 		g_assert (SP_OBJECT_HREFCOUNT (gr) == 1);
+#endif
 		if (gr->href != vector) {
 			/* href is not vector */
 			sp_gradient_repr_set_link (SP_OBJECT_REPR (gr), vector);
@@ -334,7 +337,7 @@ sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gr)
 		SPGradient *ig;
 		/* Current fill style is lineargradient */
 		ig = SP_GRADIENT (SP_STYLE_FILL_SERVER (style));
-		if (ig->state != SP_GRADIENT_STATE_PRIVATE) {
+		if ((ig->state != SP_GRADIENT_STATE_PRIVATE) || (SP_OBJECT_HREFCOUNT (ig) != 1)) {
 			SPGradient *pg;
 			/* Check, whether we have to normalize private gradient */
 			pg = sp_gradient_ensure_private_normalized (ig, gr);
@@ -383,7 +386,7 @@ sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gr)
 		SPGradient *ig;
 		/* Current fill style is lineargradient */
 		ig = SP_GRADIENT (SP_STYLE_STROKE_SERVER (style));
-		if (ig->state != SP_GRADIENT_STATE_PRIVATE) {
+		if ((ig->state != SP_GRADIENT_STATE_PRIVATE) || (SP_OBJECT_HREFCOUNT (ig) != 1)) {
 			SPGradient *pg;
 			/* Check, whether we have to normalize private gradient */
 			pg = sp_gradient_ensure_private_normalized (ig, gr);
