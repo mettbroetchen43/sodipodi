@@ -195,12 +195,12 @@ double sp_document_end (SPDocument *doc);
 double sp_document_get_time (SPDocument *doc);
 
 /* Create and set up timer */
-unsigned int sp_document_add_timer (SPDocument *doc, double time, unsigned int class,
+unsigned int sp_document_add_timer (SPDocument *doc, double time, unsigned int klass,
 				    unsigned int (* callback) (double, void *),
 				    void *data);
 /* Remove timer */
 void sp_document_remove_timer (SPDocument *doc, unsigned int id);
 /* Set up timer */
-void sp_document_set_timer (SPDocument *doc, unsigned int id, double time, unsigned int class);
+void sp_document_set_timer (SPDocument *doc, unsigned int id, double time, unsigned int klass);
 
 #endif

@@ -1,3 +1,11 @@
+2004-02-01  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/api.h: KDE building bug reported by Luciano (#883553)
+
+	* src/document.h (sp_document_set_timer): Ditto
+
+	* src/modules/Makefile.am (kde.cpp): Ditto
+
 2004-01-31  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-object.c (sp_object_private_set): Modified to work for

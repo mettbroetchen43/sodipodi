@@ -9,6 +9,7 @@ kdesources = kde-private.h kde.cpp kde.h
 kdeprivsources = kde-private.cpp
 kde-private.cpp: kde-private.h
 	$(MOC) kde-private.h -o kde-private.cpp
+kde.cpp: $(kdeprivsources)
 endif
 
 if PLATFORM_WIN32

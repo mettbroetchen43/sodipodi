@@ -147,7 +147,7 @@ void sp_selection_set_item (SPSelection *selection, SPItem *item);
 SPRepr *sp_selection_get_repr (SPSelection *selection);
 void sp_selection_set_repr (SPSelection *selection, SPRepr *repr);
 
-G_BEGIN_DECLS
+G_END_DECLS
 
 #endif
 
