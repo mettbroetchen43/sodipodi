@@ -228,7 +228,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 				if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
 					sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
 					/* fixme: */
-					opacity = object->style->fill_opacity * SP_SCALE30_TO_FLOAT (object->style->opacity.value);
+					opacity = SP_SCALE30_TO_FLOAT (object->style->fill_opacity.value)
+						* SP_SCALE30_TO_FLOAT (object->style->opacity.value);
 					gnome_print_gsave (gpc);
 					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 					gnome_print_setopacity (gpc, opacity);
@@ -289,7 +290,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
 				sp_color_get_rgb_floatv (&object->style->stroke.color, rgb);
 				/* fixme: */
-				opacity = object->style->stroke_opacity * SP_SCALE30_TO_FLOAT (object->style->opacity.value);
+				opacity = SP_SCALE30_TO_FLOAT (object->style->stroke_opacity.value)
+					* SP_SCALE30_TO_FLOAT (object->style->opacity.value);
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);

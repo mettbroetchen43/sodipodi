@@ -28,9 +28,7 @@ static void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 static void sp_style_merge_from_string (SPStyle *style, const guchar *p);
 static void sp_style_merge_property (SPStyle *style, gint id, const guchar *val);
 
-static void sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent);
-static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
-static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document);
+static void sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInheritedPaint *parent);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 
 static SPTextStyle *sp_text_style_new (void);
@@ -43,7 +41,9 @@ static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);
 static gint sp_style_property_index (const guchar *str);
 
 static void sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str);
+static void sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
 static gint sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val);
+static gint sp_style_write_inherited_paint (guchar *b, gint len, const guchar *key, SPInheritedPaint *paint);
 
 static void
 sp_style_object_destroyed (GtkObject *object, SPStyle *style)
@@ -124,19 +124,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 
 	sp_style_clear (style);
 
-	val = sp_repr_attr (object->repr, "style");
-	if (val) sp_style_merge_from_string (style, val);
-
-	/* FIXME: CSS etc. parsing goes here */
-
-	/* opacity */
-	if (!style->opacity.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
-		if (val) {
-			sp_style_read_inherited_scale30 (&style->opacity, val);
-		}
-	}
-
 	/* CMYK has precedence here */
 	val = sp_repr_attr (object->repr, "fill-cmyk");
 	if (val) {
@@ -158,7 +145,8 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			k = strtod (cptr, &eptr);
 		}
 		if (eptr != cptr) {
-			style->fill_set = TRUE;
+			style->fill.set = TRUE;
+			style->fill.inherit = FALSE;
 			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
 		}
 	}
@@ -182,10 +170,53 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			k = strtod (cptr, &eptr);
 		}
 		if (eptr != cptr) {
-			style->fill_set = TRUE;
+			style->stroke.set = TRUE;
+			style->stroke.inherit = FALSE;
 			sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
 		}
 	}
+
+	val = sp_repr_attr (object->repr, "style");
+	if (val) sp_style_merge_from_string (style, val);
+
+	/* FIXME: CSS etc. parsing goes here */
+
+	/* opacity */
+	if (!style->opacity.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
+		if (val) {
+			sp_style_read_inherited_scale30 (&style->opacity, val);
+		}
+	}
+	/* fill */
+	if (!style->fill.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
+		if (val) {
+			sp_style_read_inherited_paint (&style->fill, val, style, SP_OBJECT_DOCUMENT (object));
+		}
+	}
+	/* fill-opacity */
+	if (!style->fill_opacity.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill-opacity");
+		if (val) {
+			sp_style_read_inherited_scale30 (&style->fill_opacity, val);
+		}
+	}
+	/* stroke */
+	if (!style->stroke.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
+		if (val) {
+			sp_style_read_inherited_paint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (object));
+		}
+	}
+	/* stroke-opacity */
+	if (!style->stroke_opacity.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-opacity");
+		if (val) {
+			sp_style_read_inherited_scale30 (&style->stroke_opacity, val);
+		}
+	}
+
 	/* fixme: */
 	if (!style->text->font_family.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
@@ -194,20 +225,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	if (!style->text->font_size_set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
 		if (val) sp_style_merge_property (style, SP_PROP_FONT_SIZE, val);
-	}
-	if (!style->fill_set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
-		if (val) {
-			sp_style_read_paint (style, &style->fill, val, SP_OBJECT_DOCUMENT (object));
-			style->fill_set = TRUE;
-		}
-	}
-	if (!style->stroke_set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
-		if (val) {
-			sp_style_read_paint (style, &style->stroke, val, SP_OBJECT_DOCUMENT (object));
-			style->stroke_set = TRUE;
-		}
 	}
 
 	if (object->parent) {
@@ -337,15 +354,13 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
 		break;
 	case SP_PROP_FILL:
-		if (!style->fill_set) {
-			sp_style_read_paint (style, &style->fill, val, SP_OBJECT_DOCUMENT (style->object));
-			style->fill_set = TRUE;
+		if (!style->fill.set) {
+			sp_style_read_inherited_paint (&style->fill, val, style, SP_OBJECT_DOCUMENT (style->object));
 		}
 		break;
 	case SP_PROP_FILL_OPACITY:
-		if (!style->fill_opacity_set) {
-			style->fill_opacity = sp_svg_read_percentage (val, style->fill_opacity);
-			style->fill_opacity_set = TRUE;
+		if (!style->fill_opacity.set) {
+			sp_style_read_inherited_scale30 (&style->fill_opacity, val);
 		}
 		break;
 	case SP_PROP_FILL_RULE:
@@ -368,9 +383,8 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
 		break;
 	case SP_PROP_STROKE:
-		if (!style->stroke_set) {
-			sp_style_read_paint (style, &style->stroke, val, SP_OBJECT_DOCUMENT (style->object));
-			style->stroke_set = TRUE;
+		if (!style->stroke.set) {
+			sp_style_read_inherited_paint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (style->object));
 		}
 		break;
 	case SP_PROP_STROKE_DASHARRAY:
@@ -422,9 +436,8 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		}
 		break;
 	case SP_PROP_STROKE_OPACITY:
-		if (!style->stroke_opacity_set) {
-			style->stroke_opacity = sp_svg_read_percentage (val, style->stroke_opacity);
-			style->stroke_opacity_set = TRUE;
+		if (!style->stroke_opacity.set) {
+			sp_style_read_inherited_scale30 (&style->stroke_opacity, val);
 		}
 		break;
 	case SP_PROP_STROKE_WIDTH:
@@ -529,21 +542,18 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			style->visibility = object->style->visibility;
 			style->visibility_set = TRUE;
 		}
-		if (!style->fill_set && object->style->fill_set) {
-			sp_style_merge_paint (style, &style->fill, &object->style->fill);
-			style->fill_set = TRUE;
+		if (!style->fill.set || style->fill.inherit) {
+			sp_style_merge_inherited_paint (style, &style->fill, &object->style->fill);
+		}
+		if (!style->fill_opacity.set || style->fill_opacity.inherit) {
+			style->fill_opacity.value = object->style->fill_opacity.value;
 		}
 		if (!style->fill_rule_set && object->style->fill_rule_set) {
 			style->fill_rule = object->style->fill_rule;
 			style->fill_rule_set = TRUE;
 		}
-		if (!style->fill_opacity_set && object->style->fill_opacity_set) {
-			style->fill_opacity = object->style->fill_opacity;
-			style->fill_opacity_set = TRUE;
-		}
-		if (!style->stroke_set && object->style->stroke_set) {
-			sp_style_merge_paint (style, &style->stroke, &object->style->stroke);
-			style->stroke_set = TRUE;
+		if (!style->stroke.set || style->stroke.inherit) {
+			sp_style_merge_inherited_paint (style, &style->stroke, &object->style->stroke);
 		}
 		if (!style->stroke_width_set && object->style->stroke_width_set) {
 			style->stroke_width = object->style->stroke_width;
@@ -574,9 +584,8 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			style->stroke_dash.offset = object->style->stroke_dash.offset;
 			style->stroke_dashoffset_set = TRUE;
 		}
-		if (!style->stroke_opacity_set && object->style->stroke_opacity_set) {
-			style->stroke_opacity = object->style->stroke_opacity;
-			style->stroke_opacity_set = TRUE;
+		if (!style->stroke_opacity.set || style->stroke_opacity.inherit) {
+			style->stroke_opacity.value = object->style->stroke_opacity.value;
 		}
 	}
 
@@ -591,13 +600,13 @@ static void
 sp_style_paint_server_destroy (SPPaintServer *server, SPStyle *style)
 {
 	if (server == style->fill.server) {
-		g_assert (style->fill_set);
+		g_assert (style->fill.set);
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
 		sp_object_hunref (SP_OBJECT (style->fill.server), style);
 		style->fill.type = SP_PAINT_TYPE_NONE;
 		style->fill.server = NULL;
 	} else if (server == style->stroke.server) {
-		g_assert (style->stroke_set);
+		g_assert (style->stroke.set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
 		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
 		style->stroke.type = SP_PAINT_TYPE_NONE;
@@ -611,13 +620,13 @@ static void
 sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *style)
 {
 	if (server == style->fill.server) {
-		g_assert (style->fill_set);
+		g_assert (style->fill.set);
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
 		/* fixme: We have to use object_modified flag, because parent flag is only available downstreams */
 		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 	} else if (server == style->stroke.server) {
-		g_assert (style->stroke_set);
+		g_assert (style->stroke.set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: */
 		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
@@ -627,10 +636,11 @@ sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *sty
 }
 
 static void
-sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent)
+sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInheritedPaint *parent)
 {
 	if ((paint->type == SP_PAINT_TYPE_PAINTSERVER) && paint->server) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (paint->server), style);
+		sp_object_hunref (SP_OBJECT (paint->server), style);
 	}
 	paint->type = parent->type;
 	switch (paint->type) {
@@ -670,20 +680,17 @@ sp_style_write_string (SPStyle *style)
 	if (style->opacity.set && style->opacity.value != SP_SCALE30_MAX) {
 		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "opacity", &style->opacity);
 	}
-	if (style->fill_set) {
-		p += g_snprintf (p, c + 4096 - p, "fill:");
-		p += sp_style_write_paint (p, c + 4096 - p, &style->fill);
+	if (style->fill.set) {
+		p += sp_style_write_inherited_paint (p, c + 4096 - p, "fill", &style->fill);
+	}
+	if (style->fill_opacity.set) {
+		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "fill-opacity", &style->fill_opacity);
 	}
 	if (style->fill_rule_set) {
 		p += g_snprintf (p, c + 4096 - p, "fill-rule:%s;", (style->fill_rule == ART_WIND_RULE_NONZERO) ? "nonzero" : "evenodd");
-		p += sp_style_write_paint (p, c + 4096 - p, &style->fill);
 	}
-	if (style->fill_opacity_set) {
-		p += g_snprintf (p, c + 4096 - p, "fill-opacity:%g;", style->fill_opacity);
-	}
-	if (style->stroke_set) {
-		p += g_snprintf (p, c + 4096 - p, "stroke:");
-		p += sp_style_write_paint (p, c + 4096 - p, &style->stroke);
+	if (style->stroke.set) {
+		p += sp_style_write_inherited_paint (p, c + 4096 - p, "stroke", &style->stroke);
 	}
 	if (style->stroke_width_set) {
 		p += g_snprintf (p, c + 4096 - p, "stroke-width:");
@@ -734,32 +741,13 @@ sp_style_write_string (SPStyle *style)
 	if (style->stroke_dashoffset_set) {
 		p += g_snprintf (p, c + 4096 - p, "stroke-dashoffset:%g;", style->stroke_dash.offset);
 	}
-	if (style->stroke_opacity_set) {
-		p += g_snprintf (p, c + 4096 - p, "stroke-opacity:%g;", style->stroke_opacity);
+	if (style->stroke_opacity.set) {
+		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "stroke-opacity", &style->stroke_opacity);
 	}
 
 	sp_text_style_write (p, c + 4096 - p, style->text);
 
 	return g_strdup (c);
-}
-
-static gint
-sp_style_write_paint (guchar *b, gint len, SPPaint *paint)
-{
-	switch (paint->type) {
-	case SP_PAINT_TYPE_COLOR:
-		return g_snprintf (b, len, "#%06x;", sp_color_get_rgba32_falpha (&paint->color, 0.0) >> 8);
-		break;
-	case SP_PAINT_TYPE_PAINTSERVER:
-		if (paint->server) {
-			return g_snprintf (b, len, "url(#%s);", SP_OBJECT (paint->server)->id);
-		}
-		break;
-	default:
-		break;
-	}
-
-	return g_snprintf (b, len, "none;");
 }
 
 static void
@@ -804,11 +792,13 @@ sp_style_clear (SPStyle *style)
 	style->opacity.value = SP_SCALE30_MAX;
 	style->display = TRUE;
 	style->visibility = TRUE;
+
 	style->fill.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_rgb_float (&style->fill.color, 0.0, 0.0, 0.0);
 	style->fill.server = NULL;
+	style->fill_opacity.value = SP_SCALE30_MAX;
 	style->fill_rule = ART_WIND_RULE_NONZERO;
-	style->fill_opacity = 1.0;
+
 	style->stroke.type = SP_PAINT_TYPE_NONE;
 	sp_color_set_rgb_float (&style->stroke.color, 0.0, 0.0, 0.0);
 	style->stroke.server = NULL;
@@ -822,38 +812,7 @@ sp_style_clear (SPStyle *style)
 	style->stroke_dash.n_dash = 0;
 	style->stroke_dash.dash = NULL;
 	style->stroke_dash.offset = 0.0;
-	style->stroke_opacity = 1.0;
-}
-
-static void
-sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document)
-{
-	guint32 color;
-
-	if (!strncmp (str, "url", 3)) {
-		SPObject *ps;
-		ps = sp_uri_reference_resolve (document, str);
-		if (!ps || !SP_IS_PAINT_SERVER (ps)) {
-			paint->type = SP_PAINT_TYPE_NONE;
-			return;
-		}
-		paint->type = SP_PAINT_TYPE_PAINTSERVER;
-		paint->server = SP_PAINT_SERVER (ps);
-		sp_object_href (SP_OBJECT (paint->server), style);
-		gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
-				    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
-		gtk_signal_connect (GTK_OBJECT (paint->server), "modified",
-				    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
-		return;
-	} else if (!strncmp (str, "none", 4)) {
-		paint->type = SP_PAINT_TYPE_NONE;
-		return;
-	}
-
-	paint->type = SP_PAINT_TYPE_COLOR;
-	color = sp_color_get_rgba32_ualpha (&paint->color, 0);
-	color = sp_svg_read_color (str, color);
-	sp_color_set_rgb_rgba32 (&paint->color, color);
+	style->stroke_opacity.value = SP_SCALE30_MAX;
 }
 
 static void
@@ -886,15 +845,24 @@ sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gflo
 {
 	g_return_if_fail (style != NULL);
 
+	if (style->fill.server) {
+		sp_object_hunref (SP_OBJECT (style->fill.server), style);
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
+	}
+
+#if 0
 	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		gtk_object_unref (GTK_OBJECT (style->fill.server));
 	}
+#endif
 
-	style->fill_set = fill_set;
+	style->fill.set = fill_set;
+	style->fill.inherit = FALSE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_rgb_float (&style->fill.color, r, g, b);
-	style->fill_opacity_set = opacity_set;
-	style->fill_opacity = a;
+	style->fill_opacity.set = opacity_set;
+	style->fill_opacity.inherit = FALSE;
+	style->fill_opacity.value = SP_SCALE30_FROM_FLOAT (a);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
@@ -904,15 +872,24 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 {
 	g_return_if_fail (style != NULL);
 
+	if (style->fill.server) {
+		sp_object_hunref (SP_OBJECT (style->fill.server), style);
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
+	}
+
+#if 0
 	if (style->fill_set && style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		gtk_object_unref (GTK_OBJECT (style->fill.server));
 	}
+#endif
 
-	style->fill_set = fill_set;
+	style->fill.set = fill_set;
+	style->fill.inherit = FALSE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
-	style->fill_opacity_set = opacity_set;
-	style->fill_opacity = a;
+	style->fill_opacity.set = opacity_set;
+	style->fill_opacity.inherit = FALSE;
+	style->fill_opacity.value = SP_SCALE30_FROM_FLOAT (a);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
@@ -922,15 +899,24 @@ sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gf
 {
 	g_return_if_fail (style != NULL);
 
+	if (style->stroke.server) {
+		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
+	}
+
+#if 0
 	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		gtk_object_unref (GTK_OBJECT (style->stroke.server));
 	}
+#endif
 
-	style->stroke_set = stroke_set;
+	style->stroke.set = stroke_set;
+	style->stroke.inherit = FALSE;
 	style->stroke.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_rgb_float (&style->stroke.color, r, g, b);
-	style->stroke_opacity_set = opacity_set;
-	style->stroke_opacity = a;
+	style->stroke_opacity.set = opacity_set;
+	style->stroke_opacity.inherit = FALSE;
+	style->stroke_opacity.value = SP_SCALE30_FROM_FLOAT (a);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
@@ -940,15 +926,24 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 {
 	g_return_if_fail (style != NULL);
 
+	if (style->stroke.server) {
+		sp_object_hunref (SP_OBJECT (style->stroke.server), style);
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
+	}
+
+#if 0
 	if (style->stroke_set && style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		gtk_object_unref (GTK_OBJECT (style->stroke.server));
 	}
+#endif
 
-	style->stroke_set = stroke_set;
+	style->stroke.set = stroke_set;
+	style->stroke.inherit = FALSE;
 	style->stroke.type = SP_PAINT_TYPE_COLOR;
 	sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
-	style->stroke_opacity_set = opacity_set;
-	style->stroke_opacity = a;
+	style->stroke_opacity.set = opacity_set;
+	style->stroke_opacity.inherit = FALSE;
+	style->stroke_opacity.value = SP_SCALE30_FROM_FLOAT (a);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
@@ -959,6 +954,7 @@ sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
 	g_return_if_fail (style != NULL);
 
 	style->opacity.set = opacity_set;
+	style->opacity.inherit = FALSE;
 	style->opacity.value = SP_SCALE30_FROM_FLOAT (opacity);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
@@ -1235,6 +1231,47 @@ sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str)
 	}
 }
 
+static void
+sp_style_read_inherited_paint (SPInheritedPaint *paint, const guchar *str, SPStyle *style, SPDocument *document)
+{
+	if (!strcmp (str, "inherit")) {
+		paint->set = TRUE;
+		paint->inherit = TRUE;
+	} else {
+		guint32 color;
+		if (!strncmp (str, "url", 3)) {
+			SPObject *ps;
+			ps = sp_uri_reference_resolve (document, str);
+			if (!ps || !SP_IS_PAINT_SERVER (ps)) {
+				paint->type = SP_PAINT_TYPE_NONE;
+				return;
+			}
+			paint->type = SP_PAINT_TYPE_PAINTSERVER;
+			paint->server = SP_PAINT_SERVER (ps);
+			sp_object_href (SP_OBJECT (paint->server), style);
+			gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
+					    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+			gtk_signal_connect (GTK_OBJECT (paint->server), "modified",
+					    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
+			paint->set = TRUE;
+			paint->inherit = FALSE;
+			return;
+		} else if (!strncmp (str, "none", 4)) {
+			paint->type = SP_PAINT_TYPE_NONE;
+			paint->set = TRUE;
+			paint->inherit = FALSE;
+			return;
+		}
+
+		paint->type = SP_PAINT_TYPE_COLOR;
+		color = sp_color_get_rgba32_ualpha (&paint->color, 0);
+		color = sp_svg_read_color (str, color);
+		sp_color_set_rgb_rgba32 (&paint->color, color);
+		paint->set = TRUE;
+		paint->inherit = FALSE;
+	}
+}
+
 static gint
 sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val)
 {
@@ -1244,3 +1281,27 @@ sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInhe
 		return g_snprintf (p, len, "%s:%g;", key, SP_SCALE30_TO_FLOAT (val->value));
 	}
 }
+
+static gint
+sp_style_write_inherited_paint (guchar *p, gint len, const guchar *key, SPInheritedPaint *paint)
+{
+	if (paint->inherit) {
+		return g_snprintf (p, len, "%s:inherit;", key);
+	} else {
+		switch (paint->type) {
+		case SP_PAINT_TYPE_COLOR:
+			return g_snprintf (p, len, "%s:#%06x;", key, sp_color_get_rgba32_falpha (&paint->color, 0.0) >> 8);
+			break;
+		case SP_PAINT_TYPE_PAINTSERVER:
+			if (paint->server) {
+				return g_snprintf (p, len, "%s:url(#%s);", key, SP_OBJECT (paint->server)->id);
+			}
+			break;
+		default:
+			break;
+		}
+
+		return g_snprintf (p, len, "%s:none;", key);
+	}
+}
+

@@ -24,32 +24,12 @@ BEGIN_GNOME_DECLS
 #include "color.h"
 #include "forward.h"
 
-/* Colors */
-
-typedef struct _SPPaint SPPaint;
-
-typedef enum {
-	SP_PAINT_TYPE_NONE,
-	SP_PAINT_TYPE_COLOR,
-	SP_PAINT_TYPE_PAINTSERVER
-} SPPaintType;
-
-struct _SPPaint {
-	SPPaintType type;
-	SPColor color;
-	SPPaintServer *server;
-};
-
-#define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.server)
-#define SP_STYLE_STROKE_SERVER(s) (((SPStyle *) (s))->stroke.server)
-#define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
-#define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
-
 typedef struct _SPInheritedString SPInheritedString;
 typedef struct _SPInheritedFloat SPInheritedFloat;
 typedef struct _SPInheritedScale30 SPInheritedScale30;
 typedef struct _SPInheritedInt SPInheritedInt;
 typedef struct _SPInheritedShort SPInheritedShort;
+typedef struct _SPInheritedPaint SPInheritedPaint;
 
 struct _SPInheritedString {
 	guint set : 1;
@@ -89,6 +69,25 @@ struct _SPInheritedShort {
 	gshort value;
 };
 
+#define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.server)
+#define SP_STYLE_STROKE_SERVER(s) (((SPStyle *) (s))->stroke.server)
+#define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
+#define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
+
+typedef enum {
+	SP_PAINT_TYPE_NONE,
+	SP_PAINT_TYPE_COLOR,
+	SP_PAINT_TYPE_PAINTSERVER
+} SPPaintType;
+
+struct _SPInheritedPaint {
+	guint set : 1;
+	guint inherit : 1;
+	guint type : 3;
+	SPColor color;
+	SPPaintServer *server;
+};
+
 typedef struct _SPTextStyle SPTextStyle;
 
 struct _SPStyle {
@@ -112,25 +111,24 @@ struct _SPStyle {
 	guint clip_rule_set : 1;
 	guint mask_set : 1;
 
-	/* Global opacity */
+	/* opacity */
 	SPInheritedScale30 opacity;
 
 	/* display */
 	guint display : 1;
 	/* visibility */
 	guint visibility : 1;
+
 	/* fill */
-	SPPaint fill;
-	guint fill_set : 1;
+	SPInheritedPaint fill;
+	/* fill-opacity */
+	SPInheritedScale30 fill_opacity;
 	/* fill-rule: 0 nonzero, 1 evenodd */
 	guint fill_rule : 3;
 	guint fill_rule_set : 1;
-	/* fill-opacity */
-	gdouble fill_opacity;
-	guint fill_opacity_set : 1;
+
 	/* stroke */
-	SPPaint stroke;
-	guint stroke_set : 1;
+	SPInheritedPaint stroke;
 	/* stroke-width */
 	SPDistance stroke_width;
 	guint stroke_width_set : 1;
@@ -152,8 +150,7 @@ struct _SPStyle {
 	guint stroke_dasharray_set : 1;
 	guint stroke_dashoffset_set : 1;
 	/* stroke-opacity */
-	gdouble stroke_opacity;
-	guint stroke_opacity_set : 1;
+	SPInheritedScale30 stroke_opacity;
 };
 
 SPStyle *sp_style_new_from_object (SPObject *object);

@@ -243,7 +243,9 @@ nr_arena_glyphs_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 
 		switch (style->fill.type) {
 		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * SP_SCALE30_TO_FLOAT (style->opacity.value));
+			rgba = sp_color_get_rgba32_falpha (&style->fill.color,
+							   SP_SCALE30_TO_FLOAT (style->fill_opacity.value) *
+							   SP_SCALE30_TO_FLOAT (style->opacity.value));
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			break;
@@ -278,7 +280,9 @@ nr_arena_glyphs_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 
 		switch (style->stroke.type) {
 		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * SP_SCALE30_TO_FLOAT (style->opacity.value));
+			rgba = sp_color_get_rgba32_falpha (&style->stroke.color,
+							   SP_SCALE30_TO_FLOAT (style->stroke_opacity.value) *
+							   SP_SCALE30_TO_FLOAT (style->opacity.value));
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			nr_buffer_free (m);

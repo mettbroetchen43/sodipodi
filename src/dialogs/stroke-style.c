@@ -705,7 +705,7 @@ sp_stroke_style_get_average_color_rgba (const GSList *objects, gfloat *c)
 			c[0] += d[0];
 			c[1] += d[1];
 			c[2] += d[2];
-			c[3] += object->style->stroke_opacity;
+			c[3] += SP_SCALE30_TO_FLOAT (object->style->stroke_opacity.value);
 		}
 		num += 1;
 		objects = objects->next;
@@ -739,7 +739,7 @@ sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c)
 			c[1] += d[1];
 			c[2] += d[2];
 			c[3] += d[3];
-			c[4] += object->style->stroke_opacity;
+			c[4] += SP_SCALE30_TO_FLOAT (object->style->stroke_opacity.value);
 		}
 		num += 1;
 		objects = objects->next;
