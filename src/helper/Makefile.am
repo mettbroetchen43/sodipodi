@@ -12,11 +12,6 @@ noinst_LIBRARIES = libspchelp.a
 
 libspchelp_a_SOURCES = \
 	canvas-helper.h \
-	art_render.c art_render.h \
-	art_render_gradient.c art_render_gradient.h \
-	art_render_mask.c art_render_mask.h \
-	art_render_svp.c art_render_svp.h \
-	art_rgba.c art_rgba.h \
 	art-utils.c art-utils.h \
 	art-rgba-svp.c art-rgba-svp.h \
 	art_rgb_affine_private.h \
@@ -32,3 +27,8 @@ libspchelp_a_SOURCES = \
 	png-write.c png-write.h \
 	unit-menu.c unit-menu.h
 
+#	art_rgba.c art_rgba.h \
+#	art_render.c art_render.h \
+#	art_render_gradient.c art_render_gradient.h \
+#	art_render_mask.c art_render_mask.h \
+#	art_render_svp.c art_render_svp.h \
