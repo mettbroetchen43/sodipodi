@@ -1,3 +1,35 @@
+sodipodi (0.27-1) unstable; urgency=low
+
+  * New upstream version:
+   - updating ja.po using the one got from cvs (a merge between the po
+     provided by Junichi Uekawa and the existing one); closes: #163613.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Wed, 16 Oct 2002 19:04:08 +0200
+
+sodipodi (0.26-1) unstable; urgency=low
+
+  * New upstream version:
+   - fixed namespace for generated SVG files; closes: #162882.
+   - fixed a segfault on picking the arrow tool after drawing a curve;
+     closes: #163055.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat,  5 Oct 2002 18:00:49 +0200
+
+sodipodi (0.25-1) unstable; urgency=low
+
+  * New upstream version:
+   - updated ja.po, thanks to Junichi Uekawa; closes: #148339.
+   - fixed a segfault on selecting "gradients" from painting menu;
+     closes: #149510.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Thu, 12 Sep 2002 14:30:33 +0200
+
+sodipodi (0.24.1.0.20020325-1) unstable; urgency=medium
+
+  * CVS sync as of 2002-03-25, closes: #139897.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Tue, 26 Mar 2002 14:50:36 +0100
+
 sodipodi (0.24.1.0.20020317-1) unstable; urgency=medium
 
   * CVS sync as of 2002-03-17, closes: #130140.
