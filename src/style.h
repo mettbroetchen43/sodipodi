@@ -21,8 +21,6 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_dash.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
-#include <libgnomeprint/gnome-font-face.h>
-#include "helper/units.h"
 #include "xml/repr.h"
 #include "color.h"
 #include "forward.h"
@@ -321,20 +319,12 @@ struct _SPTextStyle {
 
 	/* CSS text properties */
 	guint direction_set : 1;
-	guint letter_spacing_set : 1;
 	guint text_decoration_set : 1;
 	guint unicode_bidi_set : 1;
-	guint word_spacing_set : 1;
 
 	guint direction : 2;
-	SPDistance letter_spacing;
 	guint text_decoration : 3;
 	guint unicode_bidi : 2;
-	SPDistance word_spacing;
-
-	/* Parsed values */
-	GnomeFontFace *face;
-	gfloat size;
 };
 
 /*

@@ -1177,10 +1177,8 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->font_size_adjust_set = FALSE;
 
 	ts->direction_set = FALSE;
-	ts->letter_spacing_set = FALSE;
 	ts->text_decoration_set = FALSE;
 	ts->unicode_bidi_set = FALSE;
-	ts->word_spacing_set = FALSE;
 }
 
 #if 0
@@ -1201,7 +1199,6 @@ sp_text_style_unref (SPTextStyle *st)
 	if (st->refcount < 1) {
 		if (st->font.value) g_free (st->font.value);
 		if (st->font_family.value) g_free (st->font_family.value);
-		if (st->face) gnome_font_face_unref (st->face);
 		g_free (st);
 	}
 

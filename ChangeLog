@@ -1,5 +1,10 @@
 2002-10-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-gradient.c (nr_rgradient_renderer_setup): Use different base renderers
+	(nr_rgradient_render_block_symmetric): Split frontend
+	(nr_rgradient_render_block_optimized): Ditto
+	(nr_rgradient_render_generic_optimized): Asymmetric renderer
+
 	* src/sp-object.c (sp_object_invoke_release): new frontend
 	(sp_object_detach): release object
 	(sp_object_detach_unref): Ditto
