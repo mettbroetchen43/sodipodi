@@ -1,3 +1,7 @@
+2003-01-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/interface.c (sp_ui_close_view): Get widget pointer before killing object
+
 2003-01-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Version 0.30pre

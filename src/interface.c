@@ -163,9 +163,8 @@ sp_ui_close_view (GtkWidget * widget)
 	GtkWidget *w;
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
-
-	if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
 	w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
+	if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
 	gtk_widget_destroy (w);
 }
 
@@ -224,8 +223,8 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item (GTK_MENU (fm), GTK_STOCK_PRINT_PREVIEW, _("Print Preview"), G_CALLBACK(sp_file_print_preview), NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	sp_menu_append_recent_documents (GTK_WIDGET (fm));
-	sp_ui_menu_append_item (fm, GTK_STOCK_CLOSE, _("Close View"), G_CALLBACK(sp_ui_close_view), NULL);
-	sp_ui_menu_append_item (fm, GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK(sp_file_exit), NULL);
+	sp_ui_menu_append_item (fm, GTK_STOCK_CLOSE, _("Close View"), G_CALLBACK (sp_ui_close_view), NULL);
+	sp_ui_menu_append_item (fm, GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK (sp_file_exit), NULL);
 	sp_ui_menu_append_item (fm, NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (fm, NULL, _("About Sodipodi"), G_CALLBACK(sp_help_about), NULL);
 }
