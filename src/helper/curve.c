@@ -215,10 +215,10 @@ sp_curve_split (SPCurve * curve)
 	l = NULL;
 
 	while (p < curve->end) {
-		i = 0;
+		i = 1;
 		while ((curve->bpath[p + i].code == ART_LINETO) || (curve->bpath[p + i].code == ART_CURVETO)) i++;
 		new = sp_curve_new_sized (i + 1);
-		memcpy (new->bpath, curve->bpath + p, i);
+		memcpy (new->bpath, curve->bpath + p, i * sizeof (ArtBpath));
 		new->end = i;
 		new->bpath[i].code = ART_END;
 		new->closed = (new->bpath->code == ART_MOVETO);

@@ -1,3 +1,7 @@
+2000-04-26  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* helper/curve.c (sp_curve_split): Fixed evil memcpy size bug
+
 2000-04-24  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/selection-chemistry.c: Implemented Cut/Copy/Paste
