@@ -327,7 +327,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_KEY_PRESS:
-		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, (GdkEventKey*)event)) {
 			return TRUE;
 		}
 
@@ -354,7 +354,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				if (tc->imc) {
 					gtk_im_context_reset (tc->imc);
 				}
-                                return TRUE;				return TRUE;
+                                return TRUE;
 			default:
 				break;
 			}
@@ -439,7 +439,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_KEY_RELEASE:
-		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, (GdkEventKey*)event)) {
 			return TRUE;
 		}
 		break;
@@ -585,6 +585,8 @@ sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc)
 	gtk_im_context_get_preedit_string (tc->imc,
 					   &tc->preedit_string, NULL,
 					   &cursor_pos);
-	sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
+	if( tc->preedit_string != NULL ) {
+		sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
+	}
 	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
 }

@@ -1,3 +1,8 @@
+2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/text-context.c: Fixed a bug which caused segmentation fault
+	when using input method.
+
 2003-11-12  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/document.c: (sp_document_get_version): Add pointer guard.
