@@ -23,6 +23,7 @@
 #ifdef WIN32
 #include <glib.h>
 #define snprintf g_snprintf
+#define strcasecmp _stricmp
 #endif
 
 #ifndef MAX

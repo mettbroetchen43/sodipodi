@@ -67,6 +67,14 @@
 #include "helper/kde.h"
 #endif
 
+/* fixme: (Lauris) */
+#ifndef bind_textdomain_codeset
+#define bind_textdomain_codeset(p,c)
+#endif
+#ifndef gtk_window_set_default_icon_from_file
+#define gtk_window_set_default_icon_from_file(f,v)
+#endif
+
 #ifdef WITH_POPT
 enum {
 	SP_ARG_NONE,
