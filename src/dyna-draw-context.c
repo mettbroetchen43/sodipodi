@@ -30,6 +30,21 @@
 #define noDYNA_DRAW_VERBOSE
 #define NORMALIZED_COORDINATE
 
+#ifdef DYNA_DRAW_DEBUG
+#define BEZIER_ASSERT(b) { \
+      g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0)); \
+      g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0)); \
+      g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0)); \
+      g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0)); \
+      g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0)); \
+      g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0)); \
+      g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0)); \
+      g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0)); \
+      }
+#else
+#define BEZIER_ASSERT(b)
+#endif
+
 #include <config.h>
 #include <math.h>
 #include <string.h>
@@ -760,17 +775,6 @@ accumulate_calligraphic (SPDynaDrawContext * dc)
       sp_curve_reset (dc->cal2);
     }
 }
-
-#define BEZIER_ASSERT(b) { \
-      g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0)); \
-      g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0)); \
-      g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0)); \
-      g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0)); \
-      g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0)); \
-      g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0)); \
-      g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0)); \
-      g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0)); \
-      }
 
 static void
 fit_and_split (SPDynaDrawContext *dc,
