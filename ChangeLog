@@ -1,3 +1,8 @@
+2002-11-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/xml-tree.c: Naviagtion buttons, better layout and other
+	improvements by MenTaLguY <mental@rydia.net>
+
 2002-11-12  Masatake YAMATO  <jet@gyve.org>
 
 	* configure.in: required frontline-0.5.4.

@@ -61,6 +61,7 @@ static SPXMLViewTree * tree = NULL;
 static SPXMLViewAttrList * attributes = NULL;
 static SPXMLViewContent * content = NULL;
 
+static gint blocked = 0;
 static SPDesktop * current_desktop = NULL;
 static SPDocument * current_document = NULL;
 static gint selected_attr = 0;
@@ -69,6 +70,9 @@ static SPRepr * selected_repr = NULL;
 static void set_tree_desktop (SPDesktop * desktop);
 static void set_tree_document (SPDocument * document);
 static void set_tree_repr (SPRepr * repr);
+
+static void set_tree_select (SPRepr * repr);
+static void propagate_tree_select (SPRepr * repr);
 
 static SPRepr * get_dt_select (void);
 static void set_dt_select (SPRepr * repr);
@@ -82,8 +86,11 @@ static void on_tree_select_row_enable_if_element (GtkCTree * tree, GtkCTreeNode 
 static void on_tree_select_row_enable_if_non_root (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_show_if_element (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_show_if_text (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
-static void on_tree_unselect_row_delete_all (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
+static void on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
+static void on_tree_select_row_enable_if_not_last_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
+static void on_tree_select_row_enable_if_has_grandparent (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 
+static void on_tree_unselect_row_clear_text (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_unselect_row_disable (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_unselect_row_hide (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 
@@ -95,10 +102,11 @@ static void on_attr_unselect_row_disable (GtkCList *list, gint row, gint column,
 
 static void on_attr_select_row_set_name_content (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 static void on_attr_select_row_set_value_content (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
-static void on_attr_unselect_row_delete_all (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
+static void on_attr_unselect_row_clear_text (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 
 static void on_editable_changed_enable_if_valid_xml_name (GtkEditable * editable, gpointer data);
 
+static void on_desktop_selection_changed (SPSelection * selection);
 static void on_desktop_destroy (SPDesktop * desktop, gpointer data);
 static void on_document_uri_set (SPDocument * document, const guchar * uri, gpointer data);
 
@@ -108,6 +116,11 @@ static void cmd_new_element_node (GtkObject * object, gpointer data);
 static void cmd_new_text_node (GtkObject * object, gpointer data);
 static void cmd_duplicate_node (GtkObject * object, gpointer data);
 static void cmd_delete_node (GtkObject * object, gpointer data);
+
+static void cmd_raise_node (GtkObject * object, gpointer data);
+static void cmd_lower_node (GtkObject * object, gpointer data);
+static void cmd_indent_node (GtkObject * object, gpointer data);
+static void cmd_unindent_node (GtkObject * object, gpointer data);
 
 static void cmd_delete_attr (GtkObject * object, gpointer data);
 static void cmd_set_attr (GtkObject * object, gpointer data);
@@ -122,7 +135,7 @@ sp_xml_tree_dialog (void)
 	g_assert (SP_IS_DESKTOP (desktop));
 
 	if (dialog == NULL) {
-		GtkWidget *box, *sw, *paned, *toolbar, *button, *label;
+		GtkWidget *box, *sw, *paned, *toolbar, *button;
 		GtkWidget *text_container, *attr_container, *attr_subpaned_container;
 		GtkWidget *set_attr;
 
@@ -174,6 +187,28 @@ sp_xml_tree_dialog (void)
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
+		gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "<", gettext ("Unindent node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/unindent_xml_node.xpm"), cmd_unindent_node, NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_has_grandparent, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), ">", gettext ("Indent node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/indent_xml_node.xpm"), cmd_indent_node, NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_first_child, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "^", gettext ("Raise node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/raise_xml_node.xpm"), cmd_raise_node, NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_first_child, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+
+		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "v", gettext ("Lower node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/lower_xml_node.xpm"), cmd_lower_node, NULL);
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_last_child, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
+		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+
 		gtk_box_pack_start (GTK_BOX (box), toolbar, FALSE, TRUE, 0); 
 
 		sw = gtk_scrolled_window_new (NULL, NULL);
@@ -207,6 +242,7 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (toolbar), FALSE, TRUE, 0);
+
 		attr_subpaned_container = gtk_vpaned_new();
 		gtk_box_pack_start (GTK_BOX (attr_container), GTK_WIDGET (attr_subpaned_container), TRUE, TRUE, 0);
 		gtk_widget_show(attr_subpaned_container);
@@ -216,18 +252,15 @@ sp_xml_tree_dialog (void)
 		gtk_paned_pack1 (GTK_PANED(attr_subpaned_container), GTK_WIDGET (sw), TRUE, TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attributes));
 
-		toolbar = gtk_hbox_new (FALSE, 4);
+		toolbar = gtk_vbox_new (FALSE, 4);
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 4);
 
 		attr_name = GTK_EDITABLE (gtk_entry_new ());
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_name), gettext ("Attribute name"), NULL);
 		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row_set_name_content, attr_name);
-		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_delete_all, attr_name);
-		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_delete_all, attr_name);
+		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_clear_text, attr_name);
+		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_clear_text, attr_name);
 		gtk_box_pack_start (GTK_BOX (toolbar), GTK_WIDGET (attr_name), FALSE, FALSE, 0);
-
-		label = gtk_label_new ("=");
-		gtk_box_pack_start (GTK_BOX (toolbar), label, FALSE, FALSE, 0);
 
 		sw = gtk_scrolled_window_new (NULL, NULL);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -236,8 +269,8 @@ sp_xml_tree_dialog (void)
 		attr_value = GTK_EDITABLE (gtk_text_new (NULL, NULL));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_value), gettext ("Attribute value"), NULL);
 		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row_set_value_content, attr_value);
-		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_delete_all, attr_value);
-		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_delete_all, attr_value);
+		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_clear_text, attr_value);
+		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_clear_text, attr_value);
 		gtk_editable_set_editable (GTK_EDITABLE (attr_value), TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attr_value));
 
@@ -288,13 +321,20 @@ set_tree_desktop (SPDesktop * desktop)
 {
 	if ( desktop == current_desktop ) return;
 	if (current_desktop) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (current_desktop->selection), dialog);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (current_desktop), dialog);
 	}
 	current_desktop = desktop;
-	if (current_desktop) {
-		gtk_signal_connect (GTK_OBJECT (current_desktop), "destroy", on_desktop_destroy, dialog);
-		set_tree_document (SP_DT_DOCUMENT (current_desktop));
+	if (desktop) {
+		GtkWidget * parent;
+		gtk_signal_connect (GTK_OBJECT (desktop), "destroy", on_desktop_destroy, dialog);
+		gtk_signal_connect (GTK_OBJECT (desktop->selection), "changed", on_desktop_selection_changed, dialog);
+		set_tree_document (SP_DT_DOCUMENT (desktop));
+		parent = GTK_WIDGET (desktop->owner);
+		while (parent && !GTK_IS_WINDOW (parent)) parent = parent->parent;
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
 	} else {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), NULL);
 		set_tree_document (NULL);
 	}
 }
@@ -324,20 +364,31 @@ set_tree_repr (SPRepr * repr)
 	gtk_clist_freeze (GTK_CLIST (tree));
 
 	sp_xmlview_tree_set_repr (tree, repr);
-	sp_xmlview_content_set_repr (content, NULL);
-	sp_xmlview_attr_list_set_repr (attributes, NULL);
-
-	if (selected_repr) {
-		sp_repr_unref (selected_repr);
-		selected_repr = NULL;
-	} 
-	selected_attr = 0;
 
 	if (repr) {
+		set_tree_select (get_dt_select ());
+	} else {
+		set_tree_select (NULL);
+	}
+
+	gtk_clist_thaw (GTK_CLIST (tree));
+
+	propagate_tree_select (selected_repr);
+}
+
+void
+set_tree_select (SPRepr * repr)
+{
+	if (selected_repr) {
+		sp_repr_unref (selected_repr);
+	}
+	selected_repr = repr;
+	if (repr) {
 		GtkCTreeNode * node;
-		SPRepr * sel;
-		sel = get_dt_select();
-		node = sp_xmlview_tree_get_repr_node (SP_XMLVIEW_TREE (tree), sel);
+
+		sp_repr_ref (selected_repr);
+
+		node = sp_xmlview_tree_get_repr_node (SP_XMLVIEW_TREE (tree), repr);
 		if (node) {
 			GtkCTreeNode * parent;
 
@@ -348,14 +399,26 @@ set_tree_repr (SPRepr * repr)
 				gtk_ctree_expand (GTK_CTREE (tree), parent);
 				parent = GTK_CTREE_ROW (parent)->parent;
 			}
-			
-			if ( gtk_ctree_node_is_visible (GTK_CTREE (tree), node) != GTK_VISIBILITY_FULL ) {
-				gtk_ctree_node_moveto (GTK_CTREE (tree), node, 0, 0.0, 0.5);
-			}
 		}
+	} else {
+		gtk_clist_unselect_all (GTK_CLIST (tree));
 	}
+	propagate_tree_select (repr);
+}
 
-	gtk_clist_thaw (GTK_CLIST (tree));
+void
+propagate_tree_select (SPRepr * repr)
+{
+	if (repr && SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
+		sp_xmlview_attr_list_set_repr (attributes, repr);
+	} else {
+		sp_xmlview_attr_list_set_repr (attributes, NULL);
+	}
+	if (repr && SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE) {
+		sp_xmlview_content_set_repr (content, repr);
+	} else {
+		sp_xmlview_content_set_repr (content, NULL);
+	}
 }
 
 SPRepr *
@@ -367,6 +430,8 @@ get_dt_select (void)
 	if (!current_desktop) return NULL;
 	selection = SP_DT_SELECTION (current_desktop);
 	if sp_selection_is_empty (selection) return NULL;
+	/* don't bother with multiple selections */
+	if (selection->items->next) return NULL;
 	object = SP_OBJECT (selection->items->data);
 	if (!object) return NULL;
 	return SP_OBJECT_REPR (object);
@@ -391,11 +456,13 @@ set_dt_select (SPRepr *repr)
 		object = NULL;
 	}
 
+	blocked++;
 	if ( object && SP_IS_ITEM (object) ) {
 		sp_selection_set_item (selection, SP_ITEM (object));
 	} else {
 		sp_selection_empty (selection);
 	}
+	blocked--;
 }
 	
 void
@@ -408,19 +475,14 @@ on_tree_select_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer 
 
 	if ( selected_repr == repr ) return;
 
+	if (selected_repr) {
+		sp_repr_unref (selected_repr);
+		selected_repr = NULL;
+	}
 	selected_repr = repr;
 	sp_repr_ref (selected_repr);
 
-	if (SP_REPR_TYPE (selected_repr) == SP_XML_ELEMENT_NODE) {
-		sp_xmlview_attr_list_set_repr (attributes, selected_repr);
-	} else {
-		sp_xmlview_attr_list_set_repr (attributes, NULL);
-	}
-	if (SP_REPR_TYPE (selected_repr) == SP_XML_TEXT_NODE) {
-		sp_xmlview_content_set_repr (content, selected_repr);
-	} else {
-		sp_xmlview_content_set_repr (content, NULL);
-	}
+	propagate_tree_select (selected_repr);
 	set_dt_select (selected_repr);
 }
 
@@ -429,9 +491,9 @@ on_tree_unselect_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointe
 {
 	SPRepr * repr;
 	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
+	propagate_tree_select (NULL);
+	set_dt_select (NULL);
 	if ( selected_repr && ( selected_repr == repr ) ) {
-		sp_xmlview_content_set_repr (content, NULL);
-		sp_xmlview_attr_list_set_repr (attributes, NULL);
 		sp_repr_unref (selected_repr);
 		selected_repr = NULL;
 		selected_attr = 0;
@@ -441,6 +503,8 @@ on_tree_unselect_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointe
 void
 after_tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkCTreeNode * new_sibling, gpointer data)
 {
+	SPRepr * repr;
+	repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), node);
 	sp_document_done (current_document);
 }
 
@@ -517,7 +581,7 @@ on_tree_unselect_row_hide (GtkCTree * tree, GtkCTreeNode * node, gint column, gp
 }
 
 void
-on_tree_unselect_row_delete_all (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
+on_tree_unselect_row_clear_text (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
 	gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
 }
@@ -542,12 +606,6 @@ on_attr_select_row_enable_if_not_id (GtkCList *list, gint row, gint column, GdkE
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 	}
-}
-
-void
-on_attr_unselect_row_disable (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
-{
-	gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 }
 
 void
@@ -579,7 +637,51 @@ on_attr_select_row_set_value_content (GtkCList *list, gint row, gint column, Gdk
 }
 
 void
-on_attr_unselect_row_delete_all (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
+on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
+{
+	GtkCTreeNode * prev, * parent;
+	parent = GTK_CTREE_ROW (node)->parent;
+	prev = GTK_CTREE_NODE_PREV (node);
+	if ( parent && prev && GTK_CTREE_ROW (prev)->parent == parent ) {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+	}
+}
+
+void
+on_tree_select_row_enable_if_not_last_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
+{
+	GtkCTreeNode * parent, * next;
+	parent = GTK_CTREE_ROW (node)->parent;
+	next = GTK_CTREE_NODE_NEXT (node);
+	if ( parent && next && GTK_CTREE_ROW (next)->parent == parent ) {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+	}
+}
+
+void
+on_tree_select_row_enable_if_has_grandparent (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
+{
+	GtkCTreeNode * parent;
+	parent = GTK_CTREE_ROW (node)->parent;
+	if ( parent && GTK_CTREE_ROW (parent)->parent ) {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+	}
+}
+
+void
+on_attr_unselect_row_disable (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+}
+
+void
+on_attr_unselect_row_clear_text (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
 {
 	gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
 }
@@ -596,6 +698,14 @@ on_editable_changed_enable_if_valid_xml_name (GtkEditable * editable, gpointer d
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 	}
 	g_free (text);
+}
+
+void
+on_desktop_selection_changed (SPSelection * selection)
+{
+	if (!blocked) {
+		set_tree_select (get_dt_select ());
+	}
 }
 
 void
@@ -678,15 +788,17 @@ cmd_new_element_node (GtkObject * object, gpointer data)
 		SPRepr * new_repr;
 		new_repr = sp_repr_new (name.text);
 		g_free (name.text);
-		sp_repr_add_child (selected_repr, new_repr, NULL);
+		sp_repr_append_child (selected_repr, new_repr);
+		set_tree_select (new_repr);
+		set_dt_select (new_repr);
 	}
+
 }
 
 void
 cmd_new_text_node (GtkObject * object, gpointer data)
 {
 	SPRepr * text;
-	GtkCTreeNode * node;
 
 	g_assert (selected_repr != NULL);
 
@@ -695,8 +807,8 @@ cmd_new_text_node (GtkObject * object, gpointer data)
 
 	sp_document_done (current_document);
 	
-	node = sp_xmlview_tree_get_repr_node (SP_XMLVIEW_TREE (tree), text);
-	if (node) gtk_ctree_select (GTK_CTREE (tree), node);
+	set_tree_select (text);
+	set_dt_select (text);
 }
 
 void
@@ -762,3 +874,97 @@ cmd_set_attr (GtkObject * object, gpointer data)
 		gtk_clist_select_row (GTK_CLIST (attributes), row, 0);
 	}
 }
+
+void
+cmd_raise_node (GtkObject * object, gpointer data)
+{
+	SPRepr * before, * parent, * ref;
+	g_assert (selected_repr != NULL);
+
+	parent = sp_repr_parent (selected_repr);
+	g_return_if_fail (parent != NULL);
+	g_return_if_fail (parent->children != selected_repr);
+
+	ref = NULL;
+	before = parent->children;
+	while (before && before->next != selected_repr) {
+		ref = before;
+		before = before->next;
+	}
+
+	sp_repr_change_order (parent, selected_repr, ref);
+
+	sp_document_done (current_document);
+}
+
+void
+cmd_lower_node (GtkObject * object, gpointer data)
+{
+	SPRepr * parent;
+	g_assert (selected_repr != NULL);
+	g_return_if_fail (selected_repr->next != NULL);
+	parent = sp_repr_parent (selected_repr);
+
+	sp_repr_change_order (parent, selected_repr, selected_repr->next);
+
+	sp_document_done (current_document);
+}
+
+void
+cmd_indent_node (GtkObject * object, gpointer data)
+{
+	SPRepr * prev, * parent, * repr;
+	gboolean success;
+
+	repr = selected_repr;
+	g_assert (repr != NULL);
+	parent = sp_repr_parent (repr);
+	g_return_if_fail (parent != NULL);
+	g_return_if_fail (parent->children != repr);
+
+	prev = parent->children;
+	while (prev && prev->next != repr) {
+	      prev = prev->next;
+	}
+	g_return_if_fail (prev != NULL);
+
+	sp_repr_ref (repr);
+	success = sp_repr_remove_child (parent, repr);
+	if (success) {
+		sp_repr_append_child (prev, repr);
+	}
+	sp_repr_unref (repr);
+
+	sp_document_done (current_document);
+
+	set_tree_select (repr);
+	set_dt_select (repr);
+}
+
+void
+cmd_unindent_node (GtkObject * object, gpointer data)
+{
+	SPRepr * grandparent, * parent, * repr;
+	gboolean success;
+
+	repr = selected_repr;
+	g_assert (repr != NULL);
+	parent = sp_repr_parent (repr);
+	g_return_if_fail (parent);
+	grandparent = sp_repr_parent (parent);
+	g_return_if_fail (grandparent);
+	
+	sp_repr_ref (repr);
+	success = sp_repr_remove_child (parent, repr);
+	if (success) {
+		success = sp_repr_add_child (grandparent, repr, parent);
+		g_assert (success);
+	}
+	sp_repr_unref (repr);
+
+	sp_document_done (current_document);
+
+	set_tree_select (repr);
+	set_dt_select (repr);
+}
+
