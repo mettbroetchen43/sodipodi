@@ -1,5 +1,9 @@
 2000-04-27  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* src/dialogs/xml-tree.c: Attribute deletion mostly work
+
+2000-04-27  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* src/dialogs/xml-tree.*: Started implementing direct xml editing
 
 	* glade/xml-tree.glade: XML editing dialogs
