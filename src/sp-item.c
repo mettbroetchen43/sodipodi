@@ -450,52 +450,49 @@ sp_item_hide (SPItem *item, NRArena *arena)
 }
 
 gboolean
-sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
+sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 {
+#if 1
+	NRArena *arena;
+	NRArenaItem *root;
+	NRIRect bbox;
+	NRGC gc;
+	NRBuffer *b;
+	gint y;
+#endif
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 	g_assert (buf != NULL);
 	g_assert (affine != NULL);
 
+#if 0
 	if (SP_ITEM_STOP_PAINT (item)) return TRUE;
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint)
 		return (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint) (item, buf, affine);
 
 	return FALSE;
-}
-
-#if 0
-GnomeCanvasItem *
-sp_item_canvas_item (SPItem * item, SPDesktop * desktop)
-{
-	SPItemView * v;
-
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-
-	for (v = item->display; v != NULL; v = v->next) {
-		if (v->desktop == desktop) return v->canvasitem;
+#else
+	arena = gtk_type_new (NR_TYPE_ARENA);
+	root = sp_item_show (item, arena);
+	nr_arena_item_set_transform (root, affine);
+	bbox.x0 = 0;
+	bbox.y0 = 0;
+	bbox.x1 = buf->width;
+	bbox.y1 = buf->height;
+	art_affine_identity (gc.affine);
+	nr_arena_item_invoke_update (root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, buf->width, buf->height, TRUE, FALSE);
+	nr_arena_item_invoke_render (root, &bbox, b);
+	sp_item_hide (item, arena);
+	gtk_object_unref (GTK_OBJECT (arena));
+	for (y = 0; y < buf->height; y++) {
+		memcpy (buf->pixels + y * buf->rowstride, b->px + y * b->rs, 4 * buf->width);
 	}
-
-	return NULL;
-}
-
-void
-sp_item_request_canvas_update (SPItem * item)
-{
-	SPItemView * v;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-
-	for (v = item->display; v != NULL; v = v->next) {
-		gnome_canvas_item_request_update (v->canvasitem);
-	}
-}
+	nr_buffer_free (b);
+	return FALSE;
 #endif
+}
 
 /* Sets item private transform (not propagated to repr) */
 
@@ -574,40 +571,6 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 
 	return affine;
 }
-
-#if 0
-void
-sp_item_change_canvasitem_position (SPItem * item, gint delta)
-{
-	SPItemView * v;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-
-	if (delta == 0) return;
-
-	for (v = item->display; v != NULL; v = v->next) {
-		if (delta > 0) {
-			gnome_canvas_item_raise (v->canvasitem, delta);
-		} else {
-			gnome_canvas_item_lower (v->canvasitem, -delta);
-		}
-	}
-}
-
-void
-sp_item_raise_canvasitem_to_top (SPItem * item)
-{
-	SPItemView * v;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-
-	for (v = item->display; v != NULL; v = v->next) {
-		gnome_canvas_item_raise_to_top (v->canvasitem);
-	}
-}
-#endif
 
 /* Generate context menu item section */
 

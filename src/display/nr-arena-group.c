@@ -225,8 +225,7 @@ nr_arena_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 		NRBuffer *nb;
 		/* Need intermediate composing */
 		/* fixme: */
-		g_assert ((area->x1 - area->x0) * (area->y1 - area->y0) <= 4096);
-		nb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
+		nb = nr_buffer_get (NR_IMAGE_R8G8B8A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, b->premul);
 		/* fixme: */
 		nb->empty = FALSE;
 		for (child = group->children; child != NULL; child = child->next) {

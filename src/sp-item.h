@@ -112,19 +112,10 @@ GSList * sp_item_snappoints (SPItem * item);
 void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
 /* Utility */
-#if 0
-GnomeCanvasItem * sp_item_canvas_item (SPItem * item, SPDesktop * desktop);
-void sp_item_request_canvas_update (SPItem * item);
-#endif
 
 gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
 gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
-
-#if 0
-void sp_item_change_canvasitem_position (SPItem * item, gint delta);
-void sp_item_raise_canvasitem_to_top (SPItem * item);
-#endif
 
 /* Context menu stuff */
 

@@ -238,18 +238,18 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 	case SP_PAINT_TYPE_COLOR:
 		if (comp->archetype->stroke) {
 			guint32 rgba;
-			guchar *mask;
+			NRBuffer *m;
 
-			mask = nr_buffer_1_4096_get (TRUE, 0x00);
+			m = nr_buffer_get (NR_IMAGE_A8, area->x1 - area->x0, area->y1 - area->y0, TRUE, TRUE);
 			art_gray_svp_aa (comp->archetype->stroke,
 					 area->x0 - comp->cx, area->y0 - comp->cy,
 					 area->x1 - comp->cx, area->y1 - comp->cy,
-					 mask, area->x1 - area->x0);
-
+					 m->px, m->rs);
+			m->empty = FALSE;
 			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->real_opacity);
-			nr_render_r8g8b8a8_rgba32_mask_a8 (b->px, area->x1 - area->x0, area->y1 - area->y0, b->rs,
-							   rgba, mask, area->x1 - area->x0);
-			nr_buffer_1_4096_free (mask);
+			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
+			b->empty = FALSE;
+			nr_buffer_free (m);
 		}
 		break;
 	default:

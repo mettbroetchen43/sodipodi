@@ -183,7 +183,7 @@ sp_dyna_draw_context_init (SPDynaDrawContext * dc)
 
   /* attributes */
   dc->fixed_angle = FALSE;
-  dc->use_timeout = TRUE;
+  dc->use_timeout = FALSE;
   dc->use_caligraphic = TRUE;
   dc->timer_id = 0;
   dc->dragging = FALSE;
@@ -264,7 +264,7 @@ sp_dyna_draw_context_setup (SPEventContext * event_context,
 
   /* fixme: */
   style = sp_style_new (NULL);
-  /* these style should be changed when dc->use_caligraphc is touched */  
+  /* style should be changed when dc->use_caligraphc is touched */  
 #ifdef DYNA_DRAW_DEBUG
   style->fill.type = SP_PAINT_TYPE_NONE;
   style->stroke.type = SP_PAINT_TYPE_COLOR;
@@ -447,11 +447,8 @@ sp_dyna_draw_apply (SPDynaDrawContext * dc, double x, double y)
 }
 
 static void
-sp_dyna_draw_brush (SPDynaDrawContext *dc,
-                    gboolean           init)
+sp_dyna_draw_brush (SPDynaDrawContext *dc)
 {
-  if (init)
-    dc->npoints = 0;
 
   g_assert (dc->npoints >= 0 && dc->npoints < SAMPLING_SIZE);
 
@@ -522,8 +519,6 @@ sp_dyna_draw_timeout_handler (gpointer data)
   sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
   test_inside (dc, p.x, p.y);
   
-  g_assert (dc->npoints > 0);
-  
   if (!dc->cinside)
     {
       sp_desktop_free_snap (desktop, &p);
@@ -531,8 +526,8 @@ sp_dyna_draw_timeout_handler (gpointer data)
   
   if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
     {
-      sp_dyna_draw_brush (dc, FALSE);
-      g_assert (dc->npoints > 1);
+      sp_dyna_draw_brush (dc);
+      g_assert (dc->npoints > 0);
       fit_and_split (dc, FALSE);
     }
 #if 0
@@ -598,7 +593,7 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	    }
 
 	  /* initialize first point */
-          sp_dyna_draw_brush (dc, TRUE);
+          dc->npoints = 0;
          
           if (dc->use_timeout)
             gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
@@ -640,8 +635,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 
           test_inside (dc, p.x, p.y);
 
-          g_assert (dc->npoints > 0);
-
 	  if (!dc->cinside)
 	    {
 	      sp_desktop_free_snap (desktop, &p);
@@ -649,8 +642,8 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 
 	  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
 	    {
-              sp_dyna_draw_brush (dc, FALSE);
-              g_assert (dc->npoints > 1);
+              sp_dyna_draw_brush (dc);
+              g_assert (dc->npoints > 0);
               fit_and_split (dc, FALSE);
 	    }
 #if 0
@@ -736,7 +729,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 static void
 clear_current (SPDynaDrawContext * dc)
 {
-  g_print ("[clear_current]\n");
   /* reset canvas_shape */
   sp_canvas_shape_clear (dc->currentshape);
   /* reset curve */
@@ -1147,7 +1139,7 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
           curve = sp_curve_copy (dc->currentcurve);
           /* fixme: */
           style = sp_style_new (NULL);
-          /* these style should be changed when dc->use_caligraphc is touched */
+          /* style should be changed when dc->use_caligraphc is touched */
 #ifdef DYNA_DRAW_DEBUG
           style->fill.type = SP_PAINT_TYPE_NONE;
           style->stroke.type = SP_PAINT_TYPE_COLOR;

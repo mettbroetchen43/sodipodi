@@ -1,13 +1,20 @@
 2001-10-17  Lauris Kaplinski  <lauris@ximian.com>
 
-	* Merged NR_ARENA branch into HEAD. NRArena is new experimental
-	display list engine, that replaces most canvas stuff for SVG
-	items (old canvas code is still used for controls etc.). It
-	is less integrated to Gtk widgetry, and should so allow reuse of
-	it for paint-server type things (patterns, symbols etc.). It
-	also allows higher-level graphic stuff, from masking to filters
-	to be implemented.
+	* src/display/nr-arena*: Merged NR_ARENA branch into HEAD.
+	NRArena is new experimental display list engine, that replaces
+	most canvas stuff for SVG items (old canvas code is still
+	used for controls etc.).
+	It is less integrated with Gtk widgetry, and should also allow reuse
+	of code for paint-server type things (patterns, symbols etc.).
+	NRArena rendering also allows higher-level graphic stuff, from
+	masking to filters, to be implemented.
 	
+2001-10-13  Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/dynadraw-context.c: Removed rotating brush bug
+
+	* src/draw-context.h: Removed duplicate bezier-fitting code
+
 2001-10-12  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-clippath.c: New file
