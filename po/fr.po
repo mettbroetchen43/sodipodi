@@ -1,18 +1,19 @@
 # French translation of sodipodi.
 # Copyright (C) 2000-2002 Free Software Foundation, Inc.
-# Christophe Merlet (RedFox) <christophe@merlet.net>, 2000-2002.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2000-2002.
 # Raymond Ostertag <raymond@linuxgraphic.org>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.26pre\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
-"PO-Revision-Date: 2002-09-18 08:36+0200\n"
-"Last-Translator: raymond ostertag <raymond@linuxgraphic.org>\n"
-"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"Project-Id-Version: sodipodi 0.26pre2\n"
+"POT-Creation-Date: 2002-11-17 17:16+0100\n"
+"PO-Revision-Date: 2002-11-17 16:58+0100\n"
+"Last-Translator: raymond ostertag <r.ostertag@caramail.com>\n"
+"Language-Team: français <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: GNOME_Sodipodi.oaf.in.h:1
 msgid "Sodipodi SVG Document"
@@ -1251,7 +1252,7 @@ msgstr "Changer le contenu"
 msgid "Content"
 msgstr "Contenu"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "Supprimer l'attribut"
 
@@ -1324,7 +1325,6 @@ msgid "Don't save"
 msgstr "Ne pas enregistrer"
 
 #: src/dialogs/align.c:107 src/toolbox.c:392
-#, fuzzy
 msgid "Align objects"
 msgstr "Aligner les objets"
 
@@ -1401,9 +1401,8 @@ msgid "Highlight color:"
 msgstr "Couleur de mise en évidence :"
 
 #: src/dialogs/desktop-properties.c:416
-#, fuzzy
 msgid "Show border"
-msgstr "Afficher la grille"
+msgstr "Montrer les contours"
 
 #: src/dialogs/display-settings.c:85
 msgid "Display settings"
@@ -1472,70 +1471,59 @@ msgid "Units:"
 msgstr "Unités :"
 
 #: src/dialogs/export.c:108
-#, fuzzy
 msgid "Export bitmap"
-msgstr "Exporter le fichier"
+msgstr "Exporter en bitmap"
 
 #. Export area frame
 #: src/dialogs/export.c:117
-#, fuzzy
 msgid "Export area"
-msgstr "Exporter sous"
+msgstr "Zone exportée"
 
 #: src/dialogs/export.c:154
-#, fuzzy
 msgid "x0:"
-msgstr "VERS :"
+msgstr "x0 :"
 
 #: src/dialogs/export.c:161
-#, fuzzy
 msgid "x1:"
-msgstr "R1 :"
+msgstr "x1 :"
 
 #: src/dialogs/export.c:174
-#, fuzzy
 msgid "y0:"
-msgstr "VERS :"
+msgstr "y0 :"
 
 #: src/dialogs/export.c:181
-#, fuzzy
 msgid "y1:"
-msgstr "R1 :"
+msgstr "y1 :"
 
 #. Bitmap size frame
 #: src/dialogs/export.c:193
-#, fuzzy
 msgid "Bitmap size"
-msgstr "Taille de l'image"
+msgstr "Taille du bitmap"
 
 #. File entry
 #: src/dialogs/export.c:222
-#, fuzzy
 msgid "Export png file"
-msgstr "Exporter le fichier"
+msgstr "Exporter un fichier PNG"
 
 #: src/dialogs/fill-style.c:82
 msgid "Fill style"
 msgstr "Style de remplissage"
 
 #: src/dialogs/fill-style.c:117
-#, fuzzy
 msgid "Fill Rule"
 msgstr "Style de remplissage"
 
 #: src/dialogs/fill-style.c:131
-#, fuzzy
 msgid "nonzero"
-msgstr "aucun"
+msgstr "non nul"
 
 #: src/dialogs/fill-style.c:136
 msgid "evenodd"
-msgstr ""
+msgstr "pair-impair"
 
 #: src/dialogs/item-properties.c:111
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "Transformation"
+msgstr "Matrice de transformation"
 
 #: src/dialogs/item-properties.c:229
 msgid "Item is reference"
@@ -1667,7 +1655,7 @@ msgstr "Style du tracé"
 
 #: src/dialogs/object-properties.c:154
 msgid "Apply to:"
-msgstr ""
+msgstr "Appliquer à :"
 
 #: src/dialogs/object-properties.c:165
 msgid "Selected objects"
@@ -1720,9 +1708,8 @@ msgstr "Coiffe :"
 
 #. Dash
 #: src/dialogs/stroke-style.c:666
-#, fuzzy
 msgid "Pattern:"
-msgstr "Motif de remplissage"
+msgstr "Motif de remplissage :"
 
 #: src/dialogs/text-edit.c:86
 msgid "Text properties"
@@ -1804,83 +1791,70 @@ msgstr "Options de l'outil"
 msgid "Tool has no options"
 msgstr "L'outil n'a pas d'options"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
-msgstr ""
+msgstr "Glisser pour réorganiser les noeuds"
 
-#: src/dialogs/xml-tree.c:163
-#, fuzzy
+#: src/dialogs/xml-tree.c:165
 msgid "New element node"
-msgstr "Nouvel élément"
+msgstr "Nouvel élément noeud"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
-msgstr ""
+msgstr "Nouveau texte noeud"
 
-#: src/dialogs/xml-tree.c:173
-#, fuzzy
+#: src/dialogs/xml-tree.c:175
 msgid "Duplicate node"
-msgstr "Dupliquer"
+msgstr "Dupliquer le noeud"
 
-#: src/dialogs/xml-tree.c:180
-#, fuzzy
+#: src/dialogs/xml-tree.c:182
 msgid "Delete node"
-msgstr "Supprimer"
+msgstr "Supprimer le noeud"
 
-#: src/dialogs/xml-tree.c:187
-#, fuzzy
+#: src/dialogs/xml-tree.c:189
 msgid "Unindent node"
-msgstr "Édition des noeuds"
+msgstr "Désindenter les noeuds"
 
-#: src/dialogs/xml-tree.c:192
-#, fuzzy
+#: src/dialogs/xml-tree.c:194
 msgid "Indent node"
-msgstr "Édition des noeuds"
+msgstr "Indentation des noeuds"
 
-#: src/dialogs/xml-tree.c:197
-#, fuzzy
+#: src/dialogs/xml-tree.c:199
 msgid "Raise node"
-msgstr "Monter"
+msgstr "Monter le noeud"
 
-#: src/dialogs/xml-tree.c:202
-#, fuzzy
+#: src/dialogs/xml-tree.c:204
 msgid "Lower node"
-msgstr "Descendre"
+msgstr "Descendre le noeud"
 
-#: src/dialogs/xml-tree.c:254
-#, fuzzy
+#: src/dialogs/xml-tree.c:259
 msgid "Attribute name"
-msgstr "Attribut :"
+msgstr "Nom attribut :"
 
-#: src/dialogs/xml-tree.c:265
-#, fuzzy
-msgid "Attribute value"
-msgstr "Attributs"
-
-#: src/dialogs/xml-tree.c:273
-#, fuzzy
+#: src/dialogs/xml-tree.c:266
 msgid "Set attribute"
-msgstr "Supprimer l'attribut"
+msgstr "Définir l'attribut"
 
-#: src/dialogs/xml-tree.c:729
-#, fuzzy, c-format
+#: src/dialogs/xml-tree.c:279
+msgid "Attribute value"
+msgstr "Valeur d' attribut"
+
+#: src/dialogs/xml-tree.c:737
+#, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi : %s : Vue XML"
 
-#: src/dialogs/xml-tree.c:752
-#, fuzzy
+#: src/dialogs/xml-tree.c:760
 msgid "New element node..."
-msgstr "Nouvel élément"
+msgstr "Nouvel élément noeud"
 
-#: src/dialogs/xml-tree.c:772
-#, fuzzy
+#: src/dialogs/xml-tree.c:780
 msgid "Cancel"
-msgstr "Changer"
+msgstr "Annuler"
 
-#: src/dialogs/xml-tree.c:776
-#, fuzzy
+#: src/dialogs/xml-tree.c:784
 msgid "Create"
-msgstr "Créer un lien"
+msgstr "Créer"
 
 #: src/document.c:252
 #, c-format
@@ -1916,34 +1890,34 @@ msgstr "Sodipodi (nom du doc %s..) : Aperçu avant impression"
 #. rx_ratio
 #: src/rect-context.c:418
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Ratio d'arrondi pour x :"
 
 #. ry_ratio
 #: src/rect-context.c:430
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Ratio d'arrondi pour y :"
 
-#: src/select-context.c:641
+#: src/select-context.c:642
 msgid "Visual transformation"
 msgstr "Transformation visuelle"
 
-#: src/select-context.c:649
+#: src/select-context.c:650
 msgid "Show content"
 msgstr "Montrer le contenu"
 
-#: src/select-context.c:656
+#: src/select-context.c:657
 msgid "Show outline"
 msgstr "Montrer le contour"
 
-#: src/select-context.c:663
+#: src/select-context.c:664
 msgid "Object transformation"
 msgstr "Transformation d'objet"
 
-#: src/select-context.c:671
+#: src/select-context.c:672
 msgid "Optimize"
 msgstr "Optimiser"
 
-#: src/select-context.c:678
+#: src/select-context.c:679
 msgid "Preserve"
 msgstr "Préserver"
 
@@ -2261,18 +2235,19 @@ msgstr "Exporter l'image en PNG"
 
 #: src/main.c:117
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
+msgstr "La résolution utilisée pour convertir SVG en bitmap (défaut 72.0)"
 
 #: src/main.c:118
 msgid "DPI"
 msgstr "PPP"
 
 #: src/main.c:120
-#, fuzzy
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
-msgstr "Zone exportée en millimètres (le document entier par défaut)"
+msgstr ""
+"Zone exportée en millimètres (le document entier par défaut, 0.0 est le "
+"coinbas gauche)"
 
 #: src/main.c:121
 msgid "x0:y0:x1:y1"
@@ -2280,32 +2255,32 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:123
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "La largeur en pixels du bitmap généré (écrase dpi)"
 
 #: src/main.c:123
 msgid "WIDTH"
-msgstr ""
+msgstr "LARGEUR"
 
 #: src/main.c:125
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "La hauteur en pixels du bitmap généré (écrase dpi)"
 
 #: src/main.c:125
 msgid "HEIGHT"
-msgstr ""
+msgstr "HAUTEUR"
 
 #: src/main.c:127
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
+"Couleur de fond du bitmap exporté (chaque SVG supporte le multi-couleur)"
 
 #: src/main.c:127
 msgid "COLOR"
-msgstr ""
+msgstr "COULEUR"
 
 #: src/main.c:129
-#, fuzzy
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr "Exporter l'image en PNG"
+msgstr "Exporter le document en SVG plein (pas de \"xmlns:sodipodi\")"
 
 #: src/main.c:131
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -2583,141 +2558,115 @@ msgstr "Objet texte"
 
 #: src/toolbox.c:318
 msgid "Create new SVG document"
-msgstr ""
+msgstr "Créé un nouveau document SVG"
 
 #: src/toolbox.c:319
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "Ouvre un document SVG existant"
 
 #: src/toolbox.c:320
-#, fuzzy
 msgid "Save document"
-msgstr "Nouveau document %d"
+msgstr "Enregistre le document"
 
 #: src/toolbox.c:321
-#, fuzzy
 msgid "Save document under new name"
-msgstr "Enregsitrer le dessin sous un nouveau nom"
+msgstr "Enregistre le document sous un nouveau nom"
 
 #: src/toolbox.c:322
-#, fuzzy
 msgid "Print document"
-msgstr "Document sans nom"
+msgstr "Imprime le document"
 
 #: src/toolbox.c:323
-#, fuzzy
 msgid "Preview document printout"
-msgstr "Dessin d'aperçu d'impression"
+msgstr "Aperçu d'impression"
 
 #: src/toolbox.c:324
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "Importe des images SVG ou bitmap dans le document"
 
 #: src/toolbox.c:325
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "Exporter l'image en PNG"
+msgstr "Exporter le document en image PNG"
 
 #: src/toolbox.c:352
-#, fuzzy
 msgid "Revert last action"
-msgstr "R. à z. la transformation"
+msgstr "R. à z. la dernière action"
 
 #: src/toolbox.c:355
 msgid "Do again undone action"
-msgstr ""
+msgstr "Refaire l'action annulée"
 
 #: src/toolbox.c:357
-#, fuzzy
 msgid "Delete selected objects"
-msgstr "Supprimer les noeuds sélectionnés"
+msgstr "Supprimer les objets sélectionnés"
 
 #: src/toolbox.c:358
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "Convertir les objets sélectionnés en courbes"
+msgstr "Couper les objets sélectionnés vers le presse-papier"
 
 #: src/toolbox.c:359
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "Copier la sélection dans le presse-papiers"
+msgstr "Copier les objets sélectionés dans le presse-papiers"
 
 #: src/toolbox.c:360
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "Coller depuis le presse-papiers"
+msgstr "Coller les objets depuis le presse-papiers"
 
 #: src/toolbox.c:361
-#, fuzzy
 msgid "Duplicate selected objects"
-msgstr "Retourner les objets sélectionnés"
+msgstr "Dupliquer les objets sélectionnés"
 
 #: src/toolbox.c:390
-#, fuzzy
 msgid "Object size and position"
-msgstr "Taille et Position"
+msgstr "Taille et Position de l'objet"
 
 #: src/toolbox.c:391
-#, fuzzy
 msgid "Text and font settings"
-msgstr "Texte et police"
+msgstr "Réglages des textes et polices"
 
 #: src/toolbox.c:393
-#, fuzzy
 msgid "Object transformations"
 msgstr "Transformation d'objet"
 
 #: src/toolbox.c:394
-#, fuzzy
 msgid "Rotate object 90 deg clockwise"
 msgstr ""
 "Pivoter les objets sélectionnés de 90° dans le sens des aiguilles d'une "
 "montre"
 
 #: src/toolbox.c:395
-#, fuzzy
 msgid "Remove transformations"
-msgstr "Supprimer la transformation"
+msgstr "Supprimer les transformations"
 
 #: src/toolbox.c:396
-#, fuzzy
 msgid "Convert object to curve"
-msgstr "Convertir les objets sélectionnés en courbes"
+msgstr "Convertir les objets en courbes"
 
 #: src/toolbox.c:423
-#, fuzzy
 msgid "Raise selected objects to top"
-msgstr "Monter la sélection tout en haut"
+msgstr "Monter les objets sélectionnés tout en haut"
 
 #: src/toolbox.c:424
-#, fuzzy
 msgid "Raise selected objects one level"
-msgstr ""
-"Pivoter les objets sélectionnés de 90° dans le sens des aiguilles d'une "
-"montre"
+msgstr "Monter les objets sélectionnés d'un niveau"
 
 #: src/toolbox.c:425
-#, fuzzy
 msgid "Combine multiple paths"
-msgstr "Combiner les chemins sélectionnés"
+msgstr "Combiner des chemins multiples"
 
 #: src/toolbox.c:427
-#, fuzzy
 msgid "Lower selected objects to bottom"
-msgstr "Descendre la sélection tout en bas"
+msgstr "Descendre les objets sélectionnés tout en bas"
 
 #: src/toolbox.c:428
-#, fuzzy
 msgid "Lower selected objects one level"
-msgstr "Convertir les objets sélectionnés en courbes"
+msgstr "Descendre les objets sélectionnés d'un niveau"
 
 #: src/toolbox.c:429
-#, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "Briser en morceaux le chemin sélectionné"
+msgstr "Briser le chemin sélectionné en plusieurs chemins"
 
 #: src/toolbox.c:430
-#, fuzzy
 msgid "Ungroup selected group"
 msgstr "Dégrouper les objets sélectionnés"
 
@@ -2726,152 +2675,137 @@ msgid "Draw"
 msgstr "Dessiner"
 
 #: src/toolbox.c:463
-#, fuzzy
 msgid "Select tool - select and transform objects"
-msgstr "Sélectionne et transforme"
+msgstr "Outil Sélection -- sélectionne et transforme les objets"
 
 #: src/toolbox.c:470
 msgid "Node tool - modify different aspects of existing objects"
-msgstr ""
+msgstr "Outil Noeud -- modifie différents aspects d'objets existants"
 
 #: src/toolbox.c:478
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
+"Outil Rectangle -- créé des rectangles et carrés avec des coins arrondis en "
+"option"
 
 #: src/toolbox.c:484
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr ""
+msgstr "Outil Arc -- créé des cercles, ellipses et des arcs"
 
 #: src/toolbox.c:490
 msgid "Star tool - create stars and polygons"
-msgstr ""
+msgstr "Outil Étoile -- créé des étoiles et des polygones"
 
 #: src/toolbox.c:496
 msgid "Spiral tool - create spirals"
-msgstr ""
+msgstr "Outil Spirale -- créé des spirales"
 
 #: src/toolbox.c:515
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr ""
+msgstr "Outil Crayon -- trace des lignes à main levée et des segments droits"
 
 #: src/toolbox.c:521
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr ""
+msgstr "Outil Porte-plume -- trace des courbes précisement positionnées"
 
 #: src/toolbox.c:527
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr ""
+msgstr "Outil Calligraphie -- trace des lignes calligraphiques"
 
 #: src/toolbox.c:544
 msgid "Text tool - create editable text objects"
-msgstr ""
+msgstr "Outil Texte -- créé des objets textes éditables"
 
 #: src/toolbox.c:551
 msgid "Zoom tool - zoom into choosen area"
-msgstr ""
+msgstr "Outil Zoom -- zomm dans la zone choisie"
 
 #: src/toolbox.c:578
-#, fuzzy
 msgid "Zoom in drawing"
-msgstr "Zoom vers dessin"
+msgstr "Zoommer le dessin"
 
 #: src/toolbox.c:579
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "Zoom à 2:1"
+msgstr "Régler le facteur de zoom à 2:1"
 
 #: src/toolbox.c:580
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "Zoom à 1:1"
+msgstr "Régler le facteur de zoom à 1:1"
 
 #: src/toolbox.c:581
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "Zoom à 1:2"
+msgstr "Régler le facteur de zoom à 1:2"
 
 #: src/toolbox.c:582
-#, fuzzy
 msgid "Zoom out drawing"
-msgstr "Zoom vers dessin"
+msgstr "Dézoommer le dessin"
 
 #: src/toolbox.c:583
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "Ajuste la page entière dans la fenêtre"
 
 #: src/toolbox.c:584
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Ajuste le dessin entier dans la fenêtre"
 
 #: src/toolbox.c:585
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "Ajuste la sélection entière dans la fenêtre"
 
 #: src/toolbox.c:612
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "Inclure un noeud dans le segment sélectionné"
+msgstr "Inclure de nouveaux noeuds dans les segments sélectionnés"
 
 #: src/toolbox.c:613
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Ligne cusp aux noeuds sélectionnés"
+msgstr "Briser la ligne aux noeuds sélectionnés"
 
 #: src/toolbox.c:614
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Supprimer les noeuds sélectionnés"
+msgstr "Faire des coins aux noeuds sélectionnés"
 
 #: src/toolbox.c:615
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "Convertir les éléments sélectionnés en lignes"
+msgstr "Faire des lignes des segments sélectionnés"
 
 #: src/toolbox.c:617
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Ligne smooth aux noeuds sélectionnés"
+msgstr "Joindre les lignes aux noeuds sélectionnés"
 
 #: src/toolbox.c:618
-#, fuzzy
 msgid "Make selected nodes smooth"
-msgstr "Supprimer les noeuds sélectionnés"
+msgstr "Adoucir les noeuds sélectionnés"
 
 #: src/toolbox.c:619
-#, fuzzy
 msgid "Make selected segments curves"
 msgstr "Convertir les segments sélectionnés en courbes"
 
 #. Family frame
 #: src/widgets/font-selector.c:147
 msgid "Font family"
-msgstr ""
+msgstr "Police famille"
 
 #. Style frame
 #: src/widgets/font-selector.c:175
-#, fuzzy
 msgid "Style"
-msgstr " Style "
+msgstr "Style"
 
 #: src/widgets/font-selector.c:210
-#, fuzzy
 msgid "Font size:"
-msgstr "Ne pas enregistrer"
+msgstr "Taille de police"
 
 #: src/widgets/font-selector.c:520
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:177
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Dégradé"
+msgstr "Unités de dégradé"
 
 #: src/widgets/gradient-selector.c:206
-#, fuzzy
 msgid "gradientSpread"
-msgstr "Dégradé de peinture"
+msgstr "Diffusion du dégradé"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
@@ -2931,14 +2865,12 @@ msgid "Color paint"
 msgstr "Couleur de peinture"
 
 #: src/widgets/paint-selector.c:871
-#, fuzzy
 msgid "Linear gradient"
-msgstr "Ajouter nouveau dégradé"
+msgstr "Dégradé linéaire"
 
 #: src/widgets/paint-selector.c:874
-#, fuzzy
 msgid "Radial gradient"
-msgstr "Ajouter nouveau dégradé"
+msgstr "Dégragé radial"
 
 #: src/widgets/sp-color-selector.c:626
 msgid "Hue:"
