@@ -1,5 +1,9 @@
 2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
 
+    * xml/repr-io.c: A very quick hack to load real svg code (DTD & stuff).
+
+2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
+
     * document-undo.c, document.c: Undo should now work!
 
 2000-04-01  Lauris Kaplinski <lauris@ariman.ee>

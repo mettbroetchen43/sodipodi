@@ -12,15 +12,22 @@ static void repr_write (SPRepr * repr, FILE * file, gint level);
 SPRepr * sp_repr_read_file (const gchar * filename)
 {
 	xmlDocPtr doc;
+	xmlNodePtr node;
 	SPRepr * repr;
 
 	g_return_val_if_fail (filename != NULL, NULL);
 
 	doc = xmlParseFile (filename);
-	if (doc == NULL)
-		return NULL;
+	if (doc == NULL) return NULL;
 
-	repr = sp_repr_svg_read_node (doc->root);
+	repr = NULL;
+
+	for (node = doc->root; node != NULL; node = node->next) {
+		if (strcmp (node->name, "svg") == 0) {
+			repr = sp_repr_svg_read_node (node);
+			break;
+		}
+	}
 
 	xmlFreeDoc (doc);
 
