@@ -446,20 +446,35 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 void sp_file_import (GtkWidget * widget)
 {
         SPDocument *doc;
-#ifndef WITH_KDE
+#ifdef WITH_KDE
+	char *filename;
+#else
+#ifdef WIN32
+	char *filename;
+#else
 	GtkWidget *w;
 	int b;
+#endif
 #endif
 
         doc = SP_ACTIVE_DOCUMENT;
 	if (!SP_IS_DOCUMENT(doc)) return;
 
 #ifdef WITH_KDE
-	char *filename;
 	filename = sp_kde_get_open_filename (import_path,
 					     "*.png *.jpg *.jpeg *.bmp *.gif *.tiff *.xpm|Image files\n"
 					     "*.svg|SVG files\n"
 					     "*.*|All files", _("Select file to import"));
+	if (filename) {
+		sp_file_do_import (doc, filename);
+		g_free (filename);
+	}
+#else
+#ifdef WIN32
+	filename = sp_win32_get_open_filename (import_path,
+					     "Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.xpm\0"
+					     "SVG files\0*.svg\0"
+					     "All files\0*\0", _("Select file to import"));
 	if (filename) {
 		sp_file_do_import (doc, filename);
 		g_free (filename);
@@ -479,6 +494,7 @@ void sp_file_import (GtkWidget * widget)
 	}
 
 	gtk_widget_destroy (w);
+#endif
 #endif
 }
 

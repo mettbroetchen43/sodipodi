@@ -9,7 +9,7 @@
  * This code is in public domain
  */
 
-#define dontUSE_TIMER
+#define USE_TIMER
 
 #include <config.h>
 
@@ -174,7 +174,7 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 		NULL, /* hDevMode */
 		NULL, /* hDevNames */
 		NULL, /* hDC */
-		PD_NOPAGENUMS | PD_NOSELECTION | PD_RETURNDC, /* Flags */
+		PD_NOPAGENUMS | PD_NOSELECTION | PD_RETURNDC | PD_USEDEVMODECOPIESANDCOLLATE, /* Flags */
 		1, 1, 1, 1, /* nFromPage, nToPage, nMinPage, nMaxPage */
 		1, /* nCoies */
 		NULL, /* hInstance */
@@ -206,6 +206,7 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 
 	w32mod->hDC = pd.hDC;
 
+#if 0
 	caps = GetDeviceCaps (w32mod->hDC, RASTERCAPS);
 	if (caps & RC_BANDING) {
 		printf ("needs banding\n");
@@ -219,7 +220,15 @@ sp_module_print_win32_setup (SPModulePrint *mod)
 	if (caps & RC_STRETCHDIB) {
 		printf ("does stretchdib\n");
 	}
- 
+#endif
+	if (pd.hDevMode) {
+		DEVMODE *devmodep;
+		devmodep = pd.hDevMode;
+		if (devmodep->dmFields & DM_ORIENTATION) {
+			w32mod->landscape = (devmodep->dmOrientation == DMORIENT_LANDSCAPE);
+		}
+	}
+
 	return TRUE;
 }
 

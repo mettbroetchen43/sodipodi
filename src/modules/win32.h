@@ -45,6 +45,8 @@ struct _SPModulePrintWin32 {
 	float PageHeight;
 
 	HDC hDC;
+
+	unsigned int landscape;
 };
 
 struct _SPModulePrintWin32Class {

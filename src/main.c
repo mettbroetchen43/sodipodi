@@ -43,7 +43,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkbox.h>
-#include "helper/sp-intl.h"
 
 #include "macros.h"
 #include "file.h"
@@ -66,6 +65,11 @@
 #ifdef WITH_KDE
 #include "modules/kde.h"
 #endif
+#ifdef WIN32
+#include "modules/win32.h"
+#endif
+
+#include "helper/sp-intl.h"
 
 /* fixme: (Lauris) */
 #ifndef bind_textdomain_codeset
@@ -235,6 +239,9 @@ sp_main_gui (int argc, const char **argv)
 #ifdef WITH_KDE
 	sp_kde_init (argc, (char **) argv, "Sodipodi");
 #endif
+#ifdef WIN32
+	sp_win32_init (0, NULL, "Sodipodi");
+#endif
 
 	/* Set default icon */
 	if (g_file_test (DATADIR "/pixmaps/sodipodi.png", G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_SYMLINK)) {
@@ -282,6 +289,9 @@ sp_main_gui (int argc, const char **argv)
 
 #ifdef WITH_KDE
 	sp_kde_finish ();
+#endif
+#ifdef WIN32
+	sp_win32_finish ();
 #endif
 
 	return 0;
