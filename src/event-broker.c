@@ -16,42 +16,63 @@
 void
 sp_event_context_set_select (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SELECT_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SELECT_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_node_edit (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_rect (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_RECT_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_RECT_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_ellipse (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ELLIPSE_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ELLIPSE_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_freehand (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DRAW_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DRAW_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_text (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_TEXT_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_TEXT_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 
 void
 sp_event_context_set_zoom (GtkWidget * widget)
 {
-	sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ZOOM_CONTEXT);
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ZOOM_CONTEXT);
+    sp_update_draw_toolbox (SP_ACTIVE_DESKTOP);
+  }
 }
 

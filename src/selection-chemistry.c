@@ -109,7 +109,7 @@ sp_selection_group (GtkWidget * widget)
 
 	desktop = SP_ACTIVE_DESKTOP;
 
-	g_return_if_fail (desktop != NULL);
+	if (desktop == NULL) return;
 
 	selection = SP_DT_SELECTION (desktop);
 
@@ -159,7 +159,7 @@ void sp_selection_ungroup (GtkWidget * widget)
 
 	desktop = SP_ACTIVE_DESKTOP;
 
-	g_return_if_fail (desktop != NULL);
+	if (desktop == NULL) return;
 
 	selection = SP_DT_SELECTION (desktop);
 
@@ -210,13 +210,16 @@ void sp_selection_raise (GtkWidget * widget)
 {
 	SPDocument * document;
 	SPSelection * selection;
+	SPDesktop * desktop;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 	GSList * pl;
 
-	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	document = SP_DT_DOCUMENT (desktop);
+	selection = SP_DT_SELECTION (desktop);
 
 	if (sp_selection_is_empty (selection)) return;
 
@@ -244,10 +247,13 @@ void sp_selection_raise_to_top (GtkWidget * widget)
 {
 	SPDocument * document;
 	SPSelection * selection;
+	SPDesktop * desktop;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
 	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
@@ -269,14 +275,17 @@ void sp_selection_lower (GtkWidget * widget)
 {
 	SPDocument * document;
 	SPSelection * selection;
+	SPDesktop * desktop;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 	GSList * pl;
 	gint pos;
 
-	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	document = SP_DT_DOCUMENT (desktop);
+	selection = SP_DT_SELECTION (desktop);
 
 	if (sp_selection_is_empty (selection)) return;
 
@@ -306,10 +315,13 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 {
 	SPDocument * document;
 	SPSelection * selection;
+	SPDesktop * desktop;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
 	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
@@ -335,7 +347,7 @@ sp_undo (GtkWidget * widget)
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop != NULL) {
+	if (SP_IS_DESKTOP(desktop)) {
 		sp_document_undo (SP_DT_DOCUMENT (desktop));
 	}
 }
@@ -346,7 +358,7 @@ sp_redo (GtkWidget * widget)
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop != NULL) {
+	if (SP_IS_DESKTOP(desktop)) {
 		sp_document_redo (SP_DT_DOCUMENT (desktop));
 	}
 }
@@ -368,7 +380,7 @@ sp_selection_copy (GtkWidget * widget)
 	const GSList * sl, * l;
 
 	desktop = SP_ACTIVE_DESKTOP;
-	g_return_if_fail (desktop != NULL);
+	if (desktop == NULL) return;
 
 	selection = SP_DT_SELECTION (desktop);
 	if (sp_selection_is_empty (selection)) return;

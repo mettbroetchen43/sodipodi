@@ -10,6 +10,7 @@
 #include "../mdi-desktop.h"
 #include "../svg/svg.h"
 #include "../selection-chemistry.h"
+#include "../sp-item-transform.h"
 
 /*
  * handler functions for transformation dialog
@@ -82,100 +83,6 @@ sp_transformation_dialog_close (void)
 		gtk_widget_hide (transformation_dialog);
 }
 
-void
-sp_rotate_item_rel (SPItem * item, double angle)
-{
-  ArtDRect  b;
-  double rotate[6], s[6], t[6], u[6], v[6], newaff[6], curaff[6];
-  double x,y;
-  char tstr[80];
-
-  sp_item_bbox(item,&b);
-  x = b.x0 + (b.x1 - b.x0)/2;
-  y = b.y0 + (b.y1 - b.y0)/2;
-  art_affine_rotate (rotate,angle);
-  art_affine_translate (s,x,y);
-  art_affine_translate (t,-x,-y);
-
-
-  tstr[79] = '\0';
-
-  // rotate item
-  sp_item_i2d_affine (item, curaff);
-  art_affine_multiply (u, curaff, t);
-  art_affine_multiply (v, u, rotate);
-  art_affine_multiply (newaff, v, s);
-  sp_item_set_i2d_affine (item, newaff);    
-
-  //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-}
-
-void
-sp_scale_item_rel (SPItem * item, double dx, double dy) {
-  double scale[6], s[6], t[6] ,u[6] ,v[6] ,newaff[6], curaff[6];
-  char tstr[80];
-  double x,y;
-  ArtDRect b;
-
-  sp_item_bbox(item,&b);
-  x = b.x0 + (b.x1 - b.x0)/2;
-  y = b.y0 + (b.y1 - b.y0)/2;
-  art_affine_scale (scale,dx,dy);
-  art_affine_translate (s,x,y);
-  art_affine_translate (t,-x,-y);
-
-  tstr[79] = '\0';
-
-  // scale item
-  sp_item_i2d_affine (item, curaff);
-  art_affine_multiply (u, curaff, t);
-  art_affine_multiply (v, u, scale);
-  art_affine_multiply (newaff, v, s);
-  sp_item_set_i2d_affine (item, newaff);    
-  //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-} 
-
-void
-art_affine_skew (double dst[6], double dx, double dy)
-{
-  dst[0] = 1;
-  dst[1] = dy;
-  dst[2] = dx;
-  dst[3] = 1;
-  dst[4] = 0;
-  dst[5] = 0;
-}
-
-void
-sp_skew_item_rel (SPItem * item, double dx, double dy) {
-  double skew[6], s[6], t[6] ,u[6] ,v[6] ,newaff[6], curaff[6];
-  char tstr[80];
-  double x,y;
-  ArtDRect b;
-
-  sp_item_bbox(item,&b);
-  x = b.x0 + (b.x1 - b.x0)/2;
-  y = b.y0 + (b.y1 - b.y0)/2;
-  art_affine_skew (skew,dx,dy);
-  art_affine_translate (s,x,y);
-  art_affine_translate (t,-x,-y);
-
-  tstr[79] = '\0';
-
-  // skew item
-  sp_item_i2d_affine (item, curaff);
-  art_affine_multiply (u, curaff, t);
-  art_affine_multiply (v, u, skew);
-  art_affine_multiply (newaff, v, s);
-  sp_item_set_i2d_affine (item, newaff);    
-  //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-} 
 
 void
 sp_transformation_dialog_apply (void)
@@ -209,7 +116,7 @@ sp_transformation_dialog_apply (void)
 
     for (l2 = l; l2 != NULL; l2 = l2-> next) {
       item = SP_ITEM (l2->data);
-      sp_move_item_rel (item,dx,dy);
+      sp_item_move_rel (item,dx,dy);
     }
     break;
   case 1 : // rotate
@@ -221,7 +128,7 @@ sp_transformation_dialog_apply (void)
 
     for (l2 = l; l2 != NULL; l2 = l2-> next) {
       item = SP_ITEM (l2->data);
-      sp_rotate_item_rel (item,angle);
+      sp_item_rotate_rel (item,angle);
     }
     break;
   case 2 : // scale
@@ -232,7 +139,7 @@ sp_transformation_dialog_apply (void)
 
     for (l2 = l; l2 != NULL; l2 = l2-> next) {
       item = SP_ITEM (l2->data);
-      sp_scale_item_rel (item,dx,dy);
+      sp_item_scale_rel (item,dx,dy);
     }
     break;
   case 3 : // skew
@@ -241,7 +148,7 @@ sp_transformation_dialog_apply (void)
 
     for (l2 = l; l2 != NULL; l2 = l2-> next) {
       item = SP_ITEM (l2->data);
-      sp_skew_item_rel (item,dx,dy);
+      sp_item_skew_rel (item,dx,dy);
     }
     break;
   }

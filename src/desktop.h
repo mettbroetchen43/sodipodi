@@ -38,6 +38,8 @@ struct _SPDesktop {
 	GtkScrollbar * vscrollbar;
 	GtkRuler * hruler;
 	GtkRuler * vruler;
+        GtkWidget * active;
+        GtkWidget * inactive;
 
 	SPDocument * document;
 	SPNamedView * namedview;
@@ -47,7 +49,7 @@ struct _SPDesktop {
 	GnomeCanvasItem * acetate;
 	GnomeCanvasGroup * main;
 	GnomeCanvasGroup * grid;
-	GnomeCanvasGroup * guides;
+  	GnomeCanvasGroup * guides;
 	GnomeCanvasGroup * drawing;
 	GnomeCanvasGroup * sketch;
 	GnomeCanvasGroup * controls;

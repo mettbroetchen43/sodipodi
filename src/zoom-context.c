@@ -1,5 +1,6 @@
 #define SP_ZOOM_CONTEXT_C
 
+#include "gtk/gtk.h"
 #include <math.h>
 #include "rubberband.h"
 #include "mdi-document.h"
@@ -21,6 +22,8 @@ static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEve
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static SPEventContextClass * parent_class;
+
+extern GtkWidget * zoom_any;
 
 GtkType
 sp_zoom_context_get_type (void)
@@ -180,14 +183,18 @@ sp_zoom_selection (GtkWidget * widget)
 {
 	SPSelection * selection;
 	ArtDRect d;
+	SPDesktop * desktop;
 
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+
+	selection = SP_DT_SELECTION (desktop);
 
 	g_return_if_fail (selection != NULL);
 
 	sp_selection_bbox (selection, &d);
-	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
-	sp_desktop_show_region (SP_ACTIVE_DESKTOP, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	if ((fabs (d.x1 - d.x0) < 0.1) || (fabs (d.y1 - d.y0) < 0.1)) return;
+	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
 }
 
 void
@@ -195,6 +202,12 @@ sp_zoom_drawing (GtkWidget * widget)
 {
 	SPItem * docitem;
 	ArtDRect d;
+	SPDesktop * desktop;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+
+	g_return_if_fail(SP_ACTIVE_DOCUMENT != NULL);
 
 	docitem = SP_ITEM (sp_document_root (SP_ACTIVE_DOCUMENT));
 
@@ -202,15 +215,19 @@ sp_zoom_drawing (GtkWidget * widget)
 
 	sp_item_bbox (docitem, &d);
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
-	sp_desktop_show_region (SP_ACTIVE_DESKTOP, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
 }
 
 void
 sp_zoom_page (GtkWidget * widget)
 {
 	ArtDRect d;
+	SPDesktop * desktop;
 
-	g_return_if_fail (SP_ACTIVE_DOCUMENT != NULL);
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+
+	g_return_if_fail(SP_ACTIVE_DOCUMENT != NULL);
 
 	d.x0 = 0.0;
 	d.y0 = 0.0;
@@ -219,7 +236,37 @@ sp_zoom_page (GtkWidget * widget)
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
-	sp_desktop_show_region (SP_ACTIVE_DESKTOP, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+}
+
+void
+sp_zoom_in (GtkWidget * widget) {
+  SPDesktop * desktop;
+  ArtDRect d;
+
+  desktop = SP_ACTIVE_DESKTOP;
+  if (desktop == NULL) return;
+  sp_desktop_get_visible_area (desktop, &d);
+  sp_desktop_show_region (desktop, 
+			  d.x0 + (d.x1- d.x0)/6, 
+			  d.y0 + (d.y1- d.y0)/6, 
+			  d.x1 - (d.x1- d.x0)/6, 
+			  d.y1 - (d.y1- d.y0)/6);
+}
+
+void
+sp_zoom_out (GtkWidget * widget) {
+  SPDesktop * desktop;
+  ArtDRect d;
+
+  desktop = SP_ACTIVE_DESKTOP;
+  if (desktop == NULL) return;
+  sp_desktop_get_visible_area (desktop, &d);
+  sp_desktop_show_region (desktop, 
+			  d.x0 - (d.x1- d.x0)/4, 
+			  d.y0 - (d.y1- d.y0)/4, 
+			  d.x1 + (d.x1- d.x0)/4, 
+			  d.y1 + (d.y1- d.y0)/4);
 }
 
 void
@@ -230,16 +277,21 @@ sp_zoom_1_to_2 (GtkWidget * widget)
 	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
 
 	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, 0.5, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+
 }
 
 void
 sp_zoom_1_to_1 (GtkWidget * widget)
 {
-	ArtDRect d;
+  SPDesktop * desktop;
+  ArtDRect d;
 
-	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+  desktop = SP_ACTIVE_DESKTOP;
+  if (desktop == NULL) return;
 
-	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, 1.0, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+  sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+  sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, 1.0, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+
 }
 
 void
@@ -250,5 +302,33 @@ sp_zoom_2_to_1 (GtkWidget * widget)
 	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
 
 	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, 2.0, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+}
+
+void
+sp_zoom_string (gchar * zoom_str) {
+  SPDesktop * desktop;
+  ArtDRect d;
+  gdouble any;
+
+  desktop = SP_ACTIVE_DESKTOP;
+  if (desktop == NULL) return;
+
+  zoom_str[5] = '\0';
+  any = strtod(zoom_str,NULL) /100;
+  if (any < 0.001) return;
+  
+  sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+  sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, any, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+}
+
+/*
+ * zoom toolbox
+ */
+
+void
+sp_zoom_any () {
+  gchar * zoom_str;
+  zoom_str = gtk_editable_get_chars ((GtkEditable *) zoom_any, 0, 4);
+  sp_zoom_string (zoom_str);
 }
 

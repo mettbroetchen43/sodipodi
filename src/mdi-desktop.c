@@ -2,6 +2,8 @@
 
 #include "mdi-desktop.h"
 #include "desktop.h"
+// ?
+#include "toolbox.h"
 
 static SPDesktop * active;
 
@@ -17,7 +19,7 @@ sp_active_desktop (GnomeMDI * mdi)
 
 	active_view = gnome_mdi_get_active_view (mdi);
 
-	g_return_val_if_fail (active_view != NULL, NULL);
+	if (active_view == NULL) return NULL;
 	g_return_val_if_fail (SP_IS_DESKTOP (active_view), NULL);
 
 	return SP_DESKTOP (active_view);
@@ -26,9 +28,20 @@ sp_active_desktop (GnomeMDI * mdi)
 void
 sp_active_desktop_set (SPDesktop * desktop)
 {
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
+  SPDesktop * old_desk;
 
-	active = desktop;
+  old_desk = SP_ACTIVE_DESKTOP;
+  if (old_desk) {
+    gtk_widget_hide (old_desk->active);
+    gtk_widget_show (old_desk->inactive);
+  }
+
+  g_assert (desktop != NULL);
+  g_assert (SP_IS_DESKTOP (desktop));
+
+  active = desktop;
+  gtk_widget_hide (desktop->inactive);
+  gtk_widget_show (desktop->active);
+  sp_update_draw_toolbox (active);
 }
 

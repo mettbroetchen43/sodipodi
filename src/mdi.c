@@ -96,6 +96,19 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 	/* fixme: just cannot understand, why libglade does not set */
 	/* gnome_dock_item name ? */
 
+	/* Status bar  */
+	xmlstatus = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "status_bar");
+	if (xmlstatus != NULL) {
+		glade_xml_signal_autoconnect (xmlstatus);
+		statusbar = GNOME_APPBAR (glade_xml_get_widget (xmlstatus, "status_bar"));
+		gnome_app_set_statusbar (app, GTK_WIDGET(statusbar));
+	} else {
+		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
+			"sp_mdi_app_created: cannot create status bar\n");
+	}
+
+	return;
+
 	/* Menu */
 	xmlmenu = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_menu");
 	if (xmlmenu != NULL) {
@@ -146,16 +159,6 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create context toolbar\n");
 	}
 
-	/* Status bar  */
-	xmlstatus = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "status_bar");
-	if (xmlstatus != NULL) {
-		glade_xml_signal_autoconnect (xmlstatus);
-		statusbar = GNOME_APPBAR (glade_xml_get_widget (xmlstatus, "status_bar"));
-		gnome_app_set_statusbar (app, GTK_WIDGET(statusbar));
-	} else {
-		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
-			"sp_mdi_app_created: cannot create status bar\n");
-	}
 }
 
 static void

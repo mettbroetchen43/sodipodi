@@ -17,7 +17,6 @@ static gint sp_event_context_private_item_handler (SPEventContext * event_contex
 
 static void set_event_location (SPDesktop * desktop, GdkEvent * event);
 
-static void sp_event_root_menu_popup (GdkEventButton * event);
 
 static GtkObjectClass * parent_class;
 
@@ -126,7 +125,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			ret = TRUE;
 			break;
 		case 3:
-			sp_event_root_menu_popup (&event->button);
+			sp_event_root_menu_popup (&event->button, &event->button);
 			break;
 		default:
 			break;
@@ -214,8 +213,8 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 	sp_desktop_set_position (desktop, p.x, p.y);
 }
 
-static void
-sp_event_root_menu_popup (GdkEventButton * event)
+void
+sp_event_root_menu_popup (GtkWidget * widget, GdkEventButton * event)
 {
 	static GtkMenu * menu = NULL;
 	GladeXML * xml;

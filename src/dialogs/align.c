@@ -9,6 +9,7 @@
 #include "../desktop-handles.h"
 #include "../mdi-desktop.h"
 #include "../svg/svg.h"
+#include "../sp-item-transform.h"
 
 /*
  * handler functions for quick align dialog
@@ -124,24 +125,6 @@ set_base (GtkMenuItem * menuitem, gpointer data)
 	base = (SPAlignBase) data;
 }
 
-void
-sp_move_item_rel (SPItem * item, double dx, double dy) {
-  double move[6], newaff[6], curaff[6];
-  char tstr[80];
-
-  tstr[79] = '\0';
-
-  // move item
-  art_affine_translate (move, dx, dy);
-  sp_item_i2d_affine (item, curaff);
-  art_affine_multiply (newaff, curaff, move);
-  sp_item_set_i2d_affine (item, newaff);    
-
-  //update repr
-  sp_svg_write_affine (tstr, 79, item->affine);
-  sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-} 
-
 
 void
 sp_quick_align_top_in (void)
@@ -184,7 +167,7 @@ sp_quick_align_top_in (void)
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dy = maxh_y - b.y1;
-      sp_move_item_rel(item,0,dy);
+      sp_item_move_rel(item,0,dy);
     }
   }  
   
@@ -236,7 +219,7 @@ sp_quick_align_top_out (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dy = maxh_y - b.y0;
-      sp_move_item_rel (item, 0, dy);
+      sp_item_move_rel (item, 0, dy);
     }
   }  
   
@@ -286,7 +269,7 @@ sp_quick_align_right_in (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dx = maxw_x - b.x1;
-      sp_move_item_rel (item, dx, 0);
+      sp_item_move_rel (item, dx, 0);
     }
   }  
   
@@ -336,7 +319,7 @@ sp_quick_align_right_out (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dx = maxw_x - b.x0;
-      sp_move_item_rel (item, dx, 0);
+      sp_item_move_rel (item, dx, 0);
     }
   }  
   
@@ -387,7 +370,7 @@ sp_quick_align_bottom_in (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dy = maxh_y - b.y0;
-      sp_move_item_rel (item, 0, dy);
+      sp_item_move_rel (item, 0, dy);
     }
   }  
   
@@ -438,7 +421,7 @@ sp_quick_align_bottom_out (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dy = maxh_y - b.y1;
-      sp_move_item_rel (item, 0, dy);
+      sp_item_move_rel (item, 0, dy);
      }
   }  
   
@@ -489,7 +472,7 @@ sp_quick_align_left_in (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dx = maxw_x - b.x0;
-      sp_move_item_rel (item, dx, 0);
+      sp_item_move_rel (item, dx, 0);
     }
   }  
   
@@ -539,7 +522,7 @@ sp_quick_align_left_out (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dx = maxw_x - b.x1;
-      sp_move_item_rel (item, dx, 0);
+      sp_item_move_rel (item, dx, 0);
     }
   }  
   
@@ -590,7 +573,7 @@ sp_quick_align_center_hor (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dx = mid_x - (b.x0 + (b.x1 -b.x0)/2);
-      sp_move_item_rel (item, dx, 0);
+      sp_item_move_rel (item, dx, 0);
    }
   }  
   
@@ -640,7 +623,7 @@ sp_quick_align_center_ver (void) {
     if (item != maxitem) {
       sp_item_bbox (item, &b);
       dy = mid_y - (b.y0 + (b.y1 -b.y0)/2);
-      sp_move_item_rel (item, 0, dy);
+      sp_item_move_rel (item, 0, dy);
     }
   }  
   
@@ -713,7 +696,7 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 		sp.y = sy0 * b.y0 + sy1 * b.y1;
 
 		if ((fabs (mp.x - sp.x) > 1e-9) || (fabs (mp.y - sp.y) > 1e-9)) {
-			sp_move_item_rel (item, mp.x - sp.x, mp.y - sp.y);
+			sp_item_move_rel (item, mp.x - sp.x, mp.y - sp.y);
 			changed = TRUE;
 		}
 	}

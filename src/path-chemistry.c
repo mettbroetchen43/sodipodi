@@ -8,22 +8,26 @@
 #include "selection.h"
 #include "desktop-handles.h"
 #include "path-chemistry.h"
+#include "desktop.h"
 
 void
 sp_selected_path_combine (void)
 {
-	SPSelection * selection;
-	GSList * il;
-	GSList * l;
-	SPRepr * repr;
-	SPItem * item;
-	SPPath * path;
-	SPCurve * c;
-	ArtBpath * abp;
-	gdouble i2doc[6];
-	gchar * d, * str, * style;
+  SPDesktop * desktop;
+  SPSelection * selection;
+  GSList * il;
+  GSList * l;
+  SPRepr * repr;
+  SPItem * item;
+  SPPath * path;
+  SPCurve * c;
+  ArtBpath * abp;
+  gdouble i2doc[6];
+  gchar * d, * str, * style;
 
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+  desktop = SP_ACTIVE_DESKTOP;
+  if (!SP_IS_DESKTOP(desktop)) return;
+  selection = SP_DT_SELECTION (desktop);
 
 	il = (GSList *) sp_selection_item_list (selection);
 
@@ -50,7 +54,7 @@ sp_selected_path_combine (void)
 		art_free (abp);
 		d = g_strconcat (d, str, NULL);
 		g_free (str);
-		sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (path)->repr);
+		sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (path)->repr);
 	}
 
 	g_slist_free (il);
@@ -60,8 +64,8 @@ sp_selected_path_combine (void)
 	g_free (style);
 	sp_repr_set_attr (repr, "d", d);
 	g_free (d);
-	item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), repr);
-	sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
+	item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 	sp_repr_unref (repr);
 
 	sp_selection_set_item (selection, item);
@@ -79,8 +83,12 @@ sp_selected_path_break_apart (void)
 	double i2doc[6];
 	gchar * style, * str;
 	GSList * list, * l;
+	SPDesktop * desktop;
+	
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!SP_IS_DESKTOP(desktop)) return;
 
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+	selection = SP_DT_SELECTION (desktop);
 
 	item = sp_selection_item (selection);
 
@@ -99,7 +107,7 @@ sp_selected_path_break_apart (void)
 	abp = art_bpath_affine_transform (curve->bpath, i2doc);
 
 	sp_curve_unref (curve);
-	sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (item)->repr);
+	sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (item)->repr);
 
 	curve = sp_curve_new_from_bpath (abp);
 
@@ -115,11 +123,11 @@ sp_selected_path_break_apart (void)
 		str = sp_svg_write_path (curve->bpath);
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
-		item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), repr);
+		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 		sp_selection_add_item (selection, item);
 	}
-	sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 
 	g_slist_free (list);
 	g_free (style);
@@ -135,8 +143,12 @@ sp_selected_path_to_curves (void)
 	SPCurve * curve;
 	gchar * str;
 	const gchar * transform, * style;
+	SPDesktop * desktop;
+	
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!SP_IS_DESKTOP(desktop)) return;
 
-	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+	selection = SP_DT_SELECTION (desktop);
 
 	item = sp_selection_item (selection);
 	if (item == NULL) return;
@@ -157,9 +169,9 @@ sp_selected_path_to_curves (void)
 
 	g_free (str);
 
-	sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (item)->repr);
-	item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), new);
-	sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
+	sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (item)->repr);
+	item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 	sp_repr_unref (new);
 
 	sp_selection_set_item (selection, item);

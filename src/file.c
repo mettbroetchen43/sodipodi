@@ -101,7 +101,8 @@ void sp_file_save (GtkWidget * widget)
 	const gchar * fn;
 
 	doc = SP_ACTIVE_DOCUMENT;
-	g_return_if_fail (doc != NULL);
+	if (!SP_IS_DOCUMENT(doc)) return;
+	//	g_return_if_fail (doc != NULL);
 
 	/* fixme: */
 	repr = sp_document_repr_root (doc);
@@ -178,6 +179,9 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	SPRepr * repr;
 	SPReprDoc * rnewdoc;
 
+	doc = SP_ACTIVE_DOCUMENT;
+	if (!SP_IS_DOCUMENT(doc)) return;
+
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 	file_selection_destroy (NULL, fs);
 
@@ -186,7 +190,6 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	import_path = g_dirname (filename);
 	if (import_path) import_path = g_strconcat (import_path, "/", NULL);
 
-	doc = SP_ACTIVE_DOCUMENT;
 	rdoc = sp_document_repr_root (doc);
 
 	docbase = sp_repr_attr (rdoc, "sodipodi:docbase");
@@ -226,7 +229,11 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 void sp_file_import (GtkWidget * widget)
 {
+        SPDocument * doc;
 	static GtkWidget * w = NULL;
+  
+        doc = SP_ACTIVE_DOCUMENT;
+	if (!SP_IS_DOCUMENT(doc)) return;
 
 	if (w == NULL) {
 		w = gtk_file_selection_new (_("Select file to import"));
@@ -399,7 +406,9 @@ void sp_file_print (GtkWidget * widget)
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
-	g_return_if_fail (doc != NULL);
+	if (!SP_IS_DOCUMENT(doc)) return;
+
+	//	g_return_if_fail (doc != NULL);
 
 	sp_do_file_print (doc);
 }
@@ -409,7 +418,8 @@ void sp_file_print_preview (GtkWidget * widget)
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
-	g_return_if_fail (doc != NULL);
+	if (!SP_IS_DOCUMENT(doc)) return;
+	//	g_return_if_fail (doc != NULL);
 
 	sp_do_file_print_preview (doc);
 }

@@ -22,6 +22,7 @@
 #include "desktop-affine.h"
 #include "desktop.h"
 #include "select-context.h"
+#include "event-context.h"
 
 #define SP_DESKTOP_SCROLL_LIMIT 4000.0
 
@@ -29,10 +30,14 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
-static void sp_desktop_update_rulers (SPDesktop * desktop);
+static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 
 GtkEventBoxClass * parent_class;
+
+void zoom_any_update (gdouble any);
+extern GtkWidget * zoom_any;
+
 
 GtkType
 sp_desktop_get_type (void)
@@ -79,6 +84,10 @@ sp_desktop_class_init (SPDesktopClass * klass)
 static void
 sp_desktop_init (SPDesktop * desktop)
 {
+  GtkWidget * menu_button;
+  GtkWidget * menu_arrow;
+  GtkWidget * hbox; 
+
 	desktop->document = NULL;
 	desktop->namedview = NULL;
 	desktop->selection = NULL;
@@ -145,7 +154,34 @@ sp_desktop_init (SPDesktop * desktop)
 		GTK_EXPAND | GTK_FILL,
 		GTK_EXPAND | GTK_FILL,
 		0,0);
-
+	// menu button
+	menu_button = gtk_button_new ();
+	gtk_widget_show (menu_button);
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (menu_button),
+		0,1,0,1,
+		FALSE,
+		FALSE,
+		0,0);
+	menu_arrow = gtk_arrow_new (GTK_ARROW_RIGHT,GTK_SHADOW_ETCHED_IN);
+	gtk_widget_show (menu_arrow);
+	gtk_container_add ((GtkContainer *)menu_button, menu_arrow);
+	gtk_signal_connect (GTK_OBJECT (menu_button), "button_press_event", GTK_SIGNAL_FUNC (sp_event_root_menu_popup), NULL);
+	// indicator for active desktop
+	hbox = gtk_vbox_new (FALSE, 0);
+	gtk_table_attach (desktop->table,
+		GTK_WIDGET (hbox),
+		2,3,0,1,
+		FALSE,
+		FALSE,
+		0,0);
+	gtk_widget_show (hbox);
+	desktop->active = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dt_active.xpm");
+	gtk_box_pack_start ((GtkBox *) hbox, desktop->active, TRUE, TRUE, 0);
+	desktop->inactive = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dt_inactive.xpm");
+	gtk_box_pack_start ((GtkBox *) hbox, desktop->inactive, TRUE, TRUE, 0);
+	gtk_widget_show (desktop->active);
+	
 }
 
 static void
@@ -256,15 +292,23 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 		SP_DESKTOP_SCROLL_LIMIT,
 		SP_DESKTOP_SCROLL_LIMIT);
 
+
+	// connecting canvas, scrollbars, rulers
 	hadj = gtk_range_get_adjustment (GTK_RANGE (desktop->hscrollbar));
 	vadj = gtk_range_get_adjustment (GTK_RANGE (desktop->vscrollbar));
 	gtk_layout_set_hadjustment (GTK_LAYOUT (desktop->canvas), hadj);
 	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->canvas), vadj);
+	gtk_signal_connect (GTK_OBJECT (hadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
+	gtk_signal_connect (GTK_OBJECT (vadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
+	gtk_signal_connect (GTK_OBJECT (hadj), "changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
+	gtk_signal_connect (GTK_OBJECT (vadj), "changed", GTK_SIGNAL_FUNC (sp_desktop_update_rulers), desktop);
 
 	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
 
 	sp_namedview_show (desktop->namedview, desktop->guides);
 
+	// ?
+	sp_active_desktop_set (desktop);
 	return desktop;
 }
 
@@ -322,7 +366,7 @@ sp_desktop_document_destroyed (SPDocument * document, SPDesktop * desktop)
 /* Private methods */
 
 static void
-sp_desktop_update_rulers (SPDesktop * desktop)
+sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop)
 {
 	ArtPoint p0, p1;
 
@@ -425,8 +469,9 @@ sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 
 	gnome_canvas_get_scroll_offsets (desktop->canvas, &x, &y);
 	gnome_canvas_scroll_to (desktop->canvas, x - dx, y - dy);
-
-	sp_desktop_update_rulers (desktop);
+	
+	g_print ("moved  ");
+	//	sp_desktop_update_rulers (NULL, desktop);
 }
 
 /* Zooming & display */
@@ -470,14 +515,15 @@ sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1,
 	c.x = (x0 + x1) / 2;
 	c.y = (y0 + y1) / 2;
 
-	w = fabs (x1 - x0) + 10.0;
-	h = fabs (y1 - y0) + 10.0;
+	w = fabs (x1 - x0) +10;
+	h = fabs (y1 - y0) +10;
 
 	cw = GTK_WIDGET (desktop->canvas)->allocation.width;
 	ch = GTK_WIDGET (desktop->canvas)->allocation.height;
 
 	sw = cw / w;
 	sh = ch / h;
+
 	scale = MIN (sw, sh);
 	w = cw / scale;
 	h = ch / scale;
@@ -492,7 +538,8 @@ sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1,
 
 	gnome_canvas_item_affine_absolute ((GnomeCanvasItem *) desktop->main, desktop->d2w);
 
-	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
+     	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
+	zoom_any_update (scale);
 }
 
 void
@@ -516,7 +563,7 @@ sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble
 
 	gnome_canvas_scroll_to (desktop->canvas, SP_DESKTOP_SCROLL_LIMIT - cw / 2, SP_DESKTOP_SCROLL_LIMIT - ch / 2);
 
-	sp_desktop_update_rulers (desktop);
+      	sp_desktop_update_rulers (NULL, desktop);
 }
 
 void
@@ -540,7 +587,9 @@ sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble
 
 	gnome_canvas_scroll_to (desktop->canvas, SP_DESKTOP_SCROLL_LIMIT - cw / 2, SP_DESKTOP_SCROLL_LIMIT - ch / 2);
 
-	sp_desktop_update_rulers (desktop);
+      	sp_desktop_update_rulers (NULL, desktop);
+
+	zoom_any_update (zoom);
 }
 
 /* Context switching */
@@ -570,7 +619,7 @@ sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
 
 	gnome_canvas_scroll_to (desktop->canvas, x - cw / 2, y - ch / 2);
 
-	sp_desktop_update_rulers (desktop);
+	sp_desktop_update_rulers (NULL, desktop);
 }
 
 /* fixme: this are UI functions - find a better place for them */
@@ -607,6 +656,31 @@ void sp_desktop_set_status (SPDesktop *desktop, const gchar * text)
 	gnome_appbar_set_status (GNOME_APPBAR (sodipodi->active_window->statusbar), text);
 }
 
+/*
+ * updates the zoom toolbox
+ *
+ * fixme to update allways correctly !
+ */
+
+void
+zoom_any_update (gdouble any) {
+  GString * str = NULL;
+  gint * pos, p0 = 0;
+  gint iany;
+  gchar * format = "%d%c";
+  
+  iany = (gint)(any*100);
+  str = g_string_new("");
+  g_print("\n    %d  to  ",iany);
+  g_string_sprintf (str,format,iany,'%');
+  pos = &p0;
+
+  g_print(str->str);
+  /*
+  gtk_editable_delete_text ((GtkEditable *) zoom_any, 0 ,-1);  
+  gtk_editable_insert_text ((GtkEditable *) zoom_any, str->str, str->len, pos);
+  */
+}
 
 
 

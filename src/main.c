@@ -246,13 +246,15 @@ main (int argc, char *argv[])
 			}
 
 			if (child == NULL) {
-				/* No files were loaded */
+				/* No files were loaded 
 				doc = sp_document_new (NULL);
 				g_return_val_if_fail (doc != NULL, 1);
 				child = sp_mdi_child_new (doc);
 				g_return_val_if_fail (child != NULL, 1);
 				gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
 				gnome_mdi_add_view (SODIPODI, GNOME_MDI_CHILD (child));
+				*/
+			  sp_maintoolbox_create ();
 			}
 
 		}

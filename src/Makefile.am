@@ -55,6 +55,7 @@ sodipodi_SOURCES = \
 	desktop-events.c desktop-events.h \
 	desktop-handles.c desktop-handles.h \
 	desktop-affine.c desktop-affine.h \
+	toolbox.c toolbox.h \
 	\
 	event-context.c event-context.h \
 	seltrans-handles.c seltrans-handles.h \
@@ -78,6 +79,7 @@ sodipodi_SOURCES = \
 	event-broker.c event-broker.h \
 	path-chemistry.c path-chemistry.h \
 	selection-chemistry.c selection-chemistry.h \
+	sp-item-transform.c sp-item-transform.h \
 	\
 	sp-node-path-edit.c sp-node-path-edit.h \
 	zoom-context.c zoom-context.h \
