@@ -367,10 +367,7 @@ sp_color_selector_set_any_rgba_float (SPColorSelector *csel, gfloat r, gfloat g,
 	g_return_if_fail (SP_IS_COLOR_SELECTOR (csel));
 
 	sp_color_selector_get_rgba_floatv (csel, c);
-	g_print ("r %g %g\n", r, c[0]);
-	g_print ("g %g %g\n", g, c[1]);
-	g_print ("b %g %g\n", b, c[2]);
-	g_print ("a %g %g\n", a, c[3]);
+
 	if (CLOSE_ENOUGH (r, c[0]) && CLOSE_ENOUGH (g, c[1]) && CLOSE_ENOUGH (b, c[2]) && CLOSE_ENOUGH (a, c[3])) return;
 
 	switch (csel->mode) {
@@ -767,8 +764,9 @@ static void
 sp_color_selector_update_sliders (SPColorSelector *csel, guint channels)
 {
 	gfloat rgb0[3], rgb1[3];
+#ifdef SPCS_PREVIEW
 	guint32 rgba;
-
+#endif
 	switch (csel->mode) {
 	case SP_COLOR_SELECTOR_MODE_RGB:
 		if ((channels != CSEL_CHANNEL_R) && (channels != CSEL_CHANNEL_A)) {
@@ -880,7 +878,7 @@ sp_color_selector_update_sliders (SPColorSelector *csel, guint channels)
 		g_warning ("file %s: line %d: Illegal color selector mode", __FILE__, __LINE__);
 		break;
 	}
-#ifdef SPC_PREVIEW
+#ifdef SPCS_PREVIEW
 	rgba = sp_color_selector_get_rgba32 (csel);
 	sp_color_preview_set_rgba32 (SP_COLOR_PREVIEW (csel->p), rgba);
 #endif
@@ -890,52 +888,19 @@ static const guchar *
 sp_color_selector_hue_map (void)
 {
 	static guchar *map = NULL;
-	guchar *p;
-	gint i;
 
 	if (!map) {
+		guchar *p;
+		gint h;
 		map = g_new (guchar, 4 * 1024);
 		p = map;
-		for (i = 0; i < 1024; i++) {
-			gdouble d;
-			d = (gdouble) i * 6.0 / 1024.0;
-			if (d < 1.0) {
-				/* Red -> Yellow */
-				*p++ = 0xff;
-				*p++ = (guint) floor ((d - 0.0) * 255.9999);
-				*p++ = 0x0;
-				*p++ = 0xff;
-			} else if (d < 2.0) {
-				/* Yellow -> Green */
-				*p++ = (guint) floor ((2.0 - d) * 255.9999);
-				*p++ = 0xff;
-				*p++ = 0x0;
-				*p++ = 0xff;
-			} else if (d < 3.0) {
-				/* Green -> Cyan */
-				*p++ = 0x0;
-				*p++ = 0xff;
-				*p++ = (guint) floor ((d - 2.0) * 255.9999);
-				*p++ = 0xff;
-			} else if (d < 4.0) {
-				/* Cyan -> Blue */
-				*p++ = 0x0;
-				*p++ = (guint) floor ((4.0 - d) * 255.9999);
-				*p++ = 0xff;
-				*p++ = 0xff;
-			} else if (d < 5.0) {
-				/* Blue -> Magenta */
-				*p++ = (guint) floor ((d - 4.0) * 255.9999);
-				*p++ = 0x0;
-				*p++ = 0xff;
-				*p++ = 0xff;
-			} else {
-				/* Magenta -> Red */
-				*p++ = 0xff;
-				*p++ = 0x0;
-				*p++ = (guint) floor ((6.0 - d) * 255.9999);
-				*p++ = 0xff;
-			}
+		for (h = 0; h < 1024; h++) {
+			gfloat rgb[3];
+			sp_color_hsv_to_rgb_floatv (rgb, h / 1024.0, 1.0, 1.0);
+			*p++ = SP_COLOR_F_TO_U (rgb[0]);
+			*p++ = SP_COLOR_F_TO_U (rgb[1]);
+			*p++ = SP_COLOR_F_TO_U (rgb[2]);
+			*p++ = 255;
 		}
 	}
 

@@ -4,12 +4,14 @@
 #include <glib.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libgnomeprint/gnome-font.h>
+#include "../helper/units.h"
 #include "../style.h"
 #include "../display/fill.h"
 #include "../display/stroke.h"
 
 /* fixme: Currently we copy SPUnit, but this should be removed */
 
+#if 0
 typedef enum {
 	SP_SVG_UNIT_PIXELS   = (1 << 4),
 	SP_SVG_UNIT_ABSOLUTE = (1 << 5),
@@ -20,12 +22,13 @@ typedef enum {
 } SPSVGUnit;
 
 #define SP_SVG_UNIT_MASK 0x3f0
+#endif
 
 /* General CSS Properties */
 /* length */
 
-gdouble sp_svg_read_length (SPSVGUnit * unit, const gchar * str, gdouble def);
-gint sp_svg_write_length (gchar * buf, gint buflen, gdouble val, SPSVGUnit unit);
+gdouble sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def);
+gint sp_svg_write_length (gchar *buf, gint buflen, gdouble val, const SPUnit *unit);
 
 gdouble sp_svg_read_percentage (const gchar * str, gdouble def);
 gint sp_svg_write_percentage (gchar * buf, gint buflen, gdouble val);
