@@ -3,11 +3,13 @@
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
 # Christian Rose <menthos@menthos.com>, 2000.
 #
+# $Id$
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-12-19 02:06+0100\n"
-"PO-Revision-Date: 2000-12-19 02:34+0100\n"
+"POT-Creation-Date: 2001-01-04 02:17+0100\n"
+"PO-Revision-Date: 2001-01-04 02:19+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1168,31 +1170,31 @@ msgstr "Ta bort attribut"
 msgid "Do you want to delete attribute?"
 msgstr "Vill du ta bort attribut?"
 
-#: src/main.c:47
+#: src/main.c:48
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr "Använd inte grafiskt användargränssnitt. Bör vara FÖRSTA argument!"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "Open specified file (option string may be excluded)"
 msgstr "Öppna angiven fil (flaggsträng kan utelämnas)"
 
-#: src/main.c:57 src/main.c:66
+#: src/main.c:58 src/main.c:67
 msgid "FILENAME"
 msgstr "FILNAMN"
 
-#: src/main.c:65
-msgid "Print files to specified file (use '| program' for pipe)"
-msgstr "Skriv ut filer till angiven fil (använd \"| program\" för rör)"
+#: src/main.c:66
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr "Skriv ut filer till angiven utdatafil (använd \"| program\" för rör)"
 
-#: src/main.c:161
+#: src/main.c:162
 msgid "Oaf options"
 msgstr "Oaf-aternativ"
 
-#: src/main.c:169
+#: src/main.c:170
 msgid "Could not initialize Bonobo"
-msgstr "Kunde inte initialisera Bonobo"
+msgstr "Kunde inte initiera Bonobo"
 
-#: src/bonobo/svg-doc-factory.c:25
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
