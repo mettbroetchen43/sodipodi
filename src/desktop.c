@@ -182,6 +182,8 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	GnomeCanvasItem * ci;
 	GtkAdjustment * hadj, * vadj;
 	gdouble dw, dh;
+	GnomeCanvasItem * pbox;
+	ArtDRect pdim;
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
@@ -234,10 +236,12 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
-#if 0
-	gnome_canvas_item_new (desktop->grid, GNOME_TYPE_CANVAS_RECT,
-		"x1", 0.0, "y1", 0.0, "x2", dw, "y2", dh,
-		"outline_color", "black", "width_pixels", 2, NULL);
+#if 1
+	pbox = gnome_canvas_item_new (desktop->grid, SP_TYPE_CTRLRECT, NULL);
+	pdim.x0 = pdim.y0 = 0.0;
+	pdim.x1 = dw;
+	pdim.y1 = dh;
+	sp_ctrlrect_set_rect ((SPCtrlRect *) pbox, &pdim);
 #endif
 	/* Fixme: Setup initial zooming */
 
@@ -597,7 +601,19 @@ sp_desktop_set_title (const gchar * title)
 
 void sp_desktop_set_status (SPDesktop *desktop, const gchar * text)
 {
+	if (!sodipodi->active_window) return;
+	if (!sodipodi->active_window->statusbar) return;
+
 	gnome_appbar_set_status (GNOME_APPBAR (sodipodi->active_window->statusbar), text);
 }
+
+
+
+
+
+
+
+
+
 
 

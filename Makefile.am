@@ -42,13 +42,13 @@ install-data-local:
 	  done \
 	fi
 
-dist-hook:
-	if test -d glade; then \
-	  mkdir $(distdir)/glade; \
-	  for uifile in glade/*; do \
-	    if test -f $$uifile; then \
-	      cp -p $$uifile $(distdir)/glade; \
-	    fi \
-	  done \
-	fi
+#dist-hook:
+#	if test -d glade; then \
+#	  mkdir $(distdir)/glade; \
+#	  for uifile in glade/*; do \
+#	    if test -f $$uifile; then \
+#	      cp -p $$uifile $(distdir)/glade; \
+#	    fi \
+#	  done \
+#	fi
 

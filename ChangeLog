@@ -1,3 +1,19 @@
+2000-08-18  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* configure.in: Version 0.19
+	* Makefile.am: Comment out dist-hook
+	* sodipodi.spec.in: Build 0
+
+	* glade/align.glade: Added alignment base selection
+
+	* po/POTFILES.in: Added src/dialogs/align.c
+
+	* src/desktop.c: Display page borders
+
+	* src/sp-text.c: break text at newlines
+
+	* src/dialogs/align.c: New algorithm plus alignment base selection
+	
 2000-08-15  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* glade/stroke.glade: Moved dialog to separate file

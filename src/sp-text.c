@@ -220,14 +220,19 @@ sp_text_set_shape (SPText * text)
 
 	if (text->text) {
 		for (c = text->text; *c; c++) {
-			glyph = gnome_font_face_lookup_default (face, * c);
+			if (*c == '\n') {
+				x = text->x;
+				y += text->size;
+			} else {
+				glyph = gnome_font_face_lookup_default (face, * c);
 
-			w = gnome_font_face_get_glyph_width (face, glyph);
-			w = w * text->size / 1000.0;
-			art_affine_translate (trans, x, y);
-			art_affine_multiply (a, scale, trans);
-			sp_chars_add_element (chars, glyph, text->face, a);
-			x += w;
+				w = gnome_font_face_get_glyph_width (face, glyph);
+				w = w * text->size / 1000.0;
+				art_affine_translate (trans, x, y);
+				art_affine_multiply (a, scale, trans);
+				sp_chars_add_element (chars, glyph, text->face, a);
+				x += w;
+			}
 		}
 	}
 }
