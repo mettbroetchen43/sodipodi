@@ -15,6 +15,7 @@
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include <gal/widgets/e-unicode.h>
+#include <helper/sp-ctrlline.h>
 #include "sp-text.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -27,13 +28,15 @@
 
 static void sp_text_context_class_init (SPTextContextClass * klass);
 static void sp_text_context_init (SPTextContext * text_context);
-static void sp_text_context_destroy (GtkObject * object);
+static void sp_text_context_finalize (GtkObject *object);
 
 static void sp_text_context_setup (SPEventContext * event_context, SPDesktop * desktop);
 static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static void sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc);
+
+static gint sp_text_context_timeout (SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -72,7 +75,7 @@ sp_text_context_class_init (SPTextContextClass * klass)
 
 	parent_class = gtk_type_class (sp_event_context_get_type ());
 
-	object_class->destroy = sp_text_context_destroy;
+	object_class->finalize = sp_text_context_finalize;
 
 	event_context_class->setup = sp_text_context_setup;
 	event_context_class->root_handler = sp_text_context_root_handler;
@@ -94,10 +97,14 @@ sp_text_context_init (SPTextContext *tc)
 	tc->string = NULL;
 	tc->pdoc.x = 0.0;
 	tc->pdoc.y = 0.0;
+	tc->cursor = NULL;
+	tc->timeout = 0;
+	tc->show = FALSE;
+	tc->phase = 0;
 }
 
 static void
-sp_text_context_destroy (GtkObject *object)
+sp_text_context_finalize (GtkObject *object)
 {
 	SPEventContext *ec;
 	SPTextContext *tc;
@@ -106,6 +113,7 @@ sp_text_context_destroy (GtkObject *object)
 	tc = SP_TEXT_CONTEXT (object);
 
 	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
+
 #ifdef SP_TC_XIM
 	gdk_ic_destroy (tc->ic);
 	gdk_ic_attr_destroy (tc->ic_attr);
@@ -115,12 +123,19 @@ sp_text_context_destroy (GtkObject *object)
 	tc->text = NULL;
 	tc->string = NULL;
 
+	if (tc->timeout) {
+		gtk_timeout_remove (tc->timeout);
+	}
+
+	if (tc->cursor) {
+		gtk_object_destroy (GTK_OBJECT (tc->cursor));
+	}
+
 	if (ec->desktop) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	GTK_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static gint
@@ -138,11 +153,16 @@ sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 }
 
 static void
-sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
+sp_text_context_setup (SPEventContext *ec, SPDesktop *desktop)
 {
 	SPTextContext *tc;
 
-	tc = SP_TEXT_CONTEXT (event_context);
+	tc = SP_TEXT_CONTEXT (ec);
+
+	tc->cursor = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
+	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
+	gnome_canvas_item_hide (tc->cursor);
+	tc->timeout = gtk_timeout_add (500, (GtkFunction) sp_text_context_timeout, ec);
 
 #ifdef SP_TC_XIM
 	if (gdk_im_ready () && (tc->ic_attr = gdk_ic_attr_new ()) != NULL) {
@@ -179,7 +199,7 @@ sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
 	}
 #endif
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, desktop);
 
 	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
 			    GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
@@ -222,7 +242,6 @@ static gint
 sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
-	guchar *utf8;
 	const guchar *content;
 	gint ret;
 
@@ -233,9 +252,17 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
+			ArtPoint dtp;
 			/* Button 1, set X & Y & new item */
 			sp_selection_empty (SP_DT_SELECTION (ec->desktop));
 			sp_desktop_w2doc_xy_point (ec->desktop, &tc->pdoc, event->button.x, event->button.y);
+			/* Cursor */
+			tc->show = TRUE;
+			tc->phase = 1;
+			gnome_canvas_item_show (tc->cursor);
+			sp_desktop_w2d_xy_point (ec->desktop, &dtp, event->button.x, event->button.y);
+			sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), dtp.x, dtp.y, dtp.x + 32, dtp.y);
+			/* Processed */
 			ret = TRUE;
 		}
 		break;
@@ -280,38 +307,21 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 
 		g_assert (tc->string != NULL);
 
-		utf8 = NULL;
 		if (event->key.keyval == GDK_Return) {
-#if 0
-			SPRepr *rtspan, *rstring;
-			/* Create <tspan> */
-			rtspan = sp_repr_new ("tspan");
-			/* Create TEXT */
-			rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
-			sp_repr_add_child (rtspan, rstring, NULL);
-			sp_repr_unref (rstring);
-			/* Append to text */
-			sp_repr_append_child (SP_OBJECT_REPR (tc->text), rtspan);
-			sp_repr_unref (rtspan);
-			tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
-#else
 			SPTSpan *new;
+			/* Append new line */
 			new = sp_text_append_line (SP_TEXT (tc->text));
-			tc->string = SP_TSPAN_STRING (new);
-#endif
+			tc->string = (SPItem *) SP_TSPAN_STRING (new);
 		} else if (event->key.string) {
-			g_print ("Key %d string %s\n", event->key.keyval, event->key.string);
+			guchar *utf8;
 			utf8 = e_utf8_from_locale_string (event->key.string);
-			g_print ("UTF8 %s\n", utf8);
 			content = sp_repr_content (SP_OBJECT_REPR (tc->string));
 			if (content) {
 				guchar *new;
 				new = g_strconcat (content, utf8, NULL);
-				g_print ("Old %s new %s\n", content, new);
 				sp_repr_set_content (SP_OBJECT_REPR (tc->string), new);
 				g_free (new);
 			} else {
-				g_print ("Setting %s\n", utf8);
 				sp_repr_set_content (SP_OBJECT_REPR (tc->string), utf8);
 			}
 			if (utf8) g_free (utf8);
@@ -344,10 +354,29 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 	if (SP_IS_TEXT (item)) {
 		tc->text = item;
 		tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
+		gnome_canvas_item_show (tc->cursor);
+		tc->show = TRUE;
+		tc->phase = 1;
 	} else {
 		tc->text = NULL;
 		tc->string = NULL;
+		gnome_canvas_item_hide (tc->cursor);
+		tc->show = FALSE;
 	}
 }
 
+static gint
+sp_text_context_timeout (SPTextContext *tc)
+{
+	if (tc->show) {
+		if (tc->phase) {
+			tc->phase = 0;
+			gnome_canvas_item_hide (tc->cursor);
+		} else {
+			tc->phase = 1;
+			gnome_canvas_item_show (tc->cursor);
+		}
+	}
 
+	return TRUE;
+}

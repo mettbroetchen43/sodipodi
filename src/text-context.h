@@ -33,6 +33,10 @@ struct _SPTextContext {
 	SPItem *string;
 
 	ArtPoint pdoc;
+	GnomeCanvasItem *cursor;
+	gint timeout;
+	guint show : 1;
+	guint phase : 1;
 
 #ifdef SP_TC_XIM
 	GdkIC *ic;

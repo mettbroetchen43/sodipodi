@@ -1,3 +1,13 @@
+2002-07-31  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/text-context.c (sp_text_context_finalize): Use it instead of ::destroy
+	(sp_text_context_setup): Create cursor
+	(sp_text_context_root_handler): Show cursor
+	(sp_text_context_selection_changed): Update cursor
+	(sp_text_context_timeout): Blink handler
+
+	* src/text-context.h: Added cursor
+
 2002-07-30  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/Makefile.am (sodipodi_SOURCES): Added macros.h
