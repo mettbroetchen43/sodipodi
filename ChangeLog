@@ -1,5 +1,16 @@
 2002-09-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_construct): Handler
+	(sp_stroke_style_paint_attr_changed): Ditto
+	(sp_stroke_style_repr_get_style): Helper
+	(sp_stroke_style_paint_update_repr): For SPRepr associated styles
+	(sp_stroke_style_paint_changed): Write bare repr if needed
+	(sp_stroke_style_line_construct): Handler
+	(sp_stroke_style_line_attr_changed): Ditto
+	(sp_stroke_style_line_update_repr): Alternate parser
+	(sp_stroke_style_width_changed): Write repr if needed
+	(sp_stroke_style_any_toggled): Ditto
+
 	* src/dialogs/object-properties.c (sp_object_properties_dialog): build
 	optionmenu for choosing between selection/tools
 

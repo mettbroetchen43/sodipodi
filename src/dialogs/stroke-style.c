@@ -14,6 +14,7 @@
 
 #include <config.h>
 
+#include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -41,15 +42,20 @@
 
 /* Paint */
 
+static void sp_stroke_style_paint_construct (SPWidget *spw, SPPaintSelector *psel);
 static void sp_stroke_style_paint_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, SPPaintSelector *psel);
 static void sp_stroke_style_paint_change_selection (SPWidget *spw, SPSelection *selection, SPPaintSelector *psel);
+static void sp_stroke_style_paint_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval);
 static void sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel);
+static void sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr);
+
 static void sp_stroke_style_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw);
 static void sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw);
 static void sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw);
+
 static void sp_stroke_style_get_average_color_rgba (const GSList *objects, gfloat *c);
 static void sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c);
-static SPPaintSelectorMode sp_stroke_style_determine_paint_selector_mode (SPObject *object);
+static SPPaintSelectorMode sp_stroke_style_determine_paint_selector_mode (SPStyle *style);
 
 GtkWidget *
 sp_stroke_style_paint_widget_new (void)
@@ -63,8 +69,10 @@ sp_stroke_style_paint_widget_new (void)
 	gtk_container_add (GTK_CONTAINER (spw), psel);
 	gtk_object_set_data (GTK_OBJECT (spw), "paint-selector", psel);
 
+	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_stroke_style_paint_construct), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_stroke_style_paint_modify_selection), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_stroke_style_paint_change_selection), psel);
+	gtk_signal_connect (GTK_OBJECT (spw), "attr_changed", GTK_SIGNAL_FUNC (sp_stroke_style_paint_attr_changed), psel);
 
 	gtk_signal_connect (GTK_OBJECT (psel), "mode_changed", GTK_SIGNAL_FUNC (sp_stroke_style_paint_mode_changed), spw);
 	gtk_signal_connect (GTK_OBJECT (psel), "dragged", GTK_SIGNAL_FUNC (sp_stroke_style_paint_dragged), spw);
@@ -74,6 +82,18 @@ sp_stroke_style_paint_widget_new (void)
 
 	return spw;
 	return spw;
+}
+
+static void
+sp_stroke_style_paint_construct (SPWidget *spw, SPPaintSelector *psel)
+{
+	g_print ("Stroke style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
+
+	if (spw->sodipodi) {
+		sp_stroke_style_paint_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
+	} else if (spw->repr) {
+		sp_stroke_style_paint_update_repr (spw, spw->repr);
+	}
 }
 
 static void
@@ -88,6 +108,15 @@ static void
 sp_stroke_style_paint_change_selection (SPWidget *spw, SPSelection *selection, SPPaintSelector *psel)
 {
 	sp_stroke_style_paint_update (spw, selection);
+}
+
+static void
+sp_stroke_style_paint_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval)
+{
+	if (!strcmp (key, "style")) {
+		/* This sounds interesting */
+		sp_stroke_style_paint_update_repr (spw, spw->repr);
+	}
 }
 
 static void
@@ -117,11 +146,11 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 
 	objects = sp_selection_item_list (sel);
 	object = SP_OBJECT (objects->data);
-	pselmode = sp_stroke_style_determine_paint_selector_mode (object);
+	pselmode = sp_stroke_style_determine_paint_selector_mode (SP_OBJECT_STYLE (object));
 
 	for (l = objects->next; l != NULL; l = l->next) {
 		SPPaintSelectorMode nextmode;
-		nextmode = sp_stroke_style_determine_paint_selector_mode (SP_OBJECT (l->data));
+		nextmode = sp_stroke_style_determine_paint_selector_mode (SP_OBJECT_STYLE (l->data));
 		if (nextmode != pselmode) {
 			/* Multiple styles */
 			sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
@@ -172,6 +201,72 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		sp_paint_selector_set_gradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
 		break;
 	}
+
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+}
+
+static SPStyle *
+sp_stroke_style_repr_get_style (SPRepr *repr)
+{
+	SPStyle *style;
+
+	style = sp_style_new ();
+	sp_style_read_from_repr (style, repr);
+
+	if (sp_repr_parent (repr)) {
+		SPStyle *parent;
+		/* fixme: This is not the prettiest thing (Lauris) */
+		parent = sp_stroke_style_repr_get_style (sp_repr_parent (repr));
+		sp_style_merge_from_parent (style, parent);
+		sp_style_unref (parent);
+	}
+
+	return style;
+}
+
+static void
+sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
+{
+	SPPaintSelector *psel;
+	SPPaintSelectorMode pselmode;
+	SPStyle *style;
+	gfloat c[5];
+
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
+
+	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
+
+	style = sp_stroke_style_repr_get_style (repr);
+
+	pselmode = sp_stroke_style_determine_paint_selector_mode (style);
+
+	g_print ("StrokeStyleWidget: paint selector mode %d\n", pselmode);
+
+	switch (pselmode) {
+	case SP_PAINT_SELECTOR_MODE_NONE:
+		/* No paint at all */
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_NONE);
+		break;
+	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_RGB);
+		sp_color_get_rgb_floatv (&style->stroke.value.color, c);
+		c[3] += SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
+		sp_paint_selector_set_color_rgba_floatv (psel, c);
+		break;
+	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_CMYK);
+		sp_color_get_cmyk_floatv (&style->stroke.value.color, c);
+		c[4] += SP_SCALE24_TO_FLOAT (style->stroke_opacity.value);
+		sp_paint_selector_set_color_cmyka_floatv (psel, c);
+		break;
+	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
+		/* fixme: Think about it (Lauris) */
+		break;
+	}
+
+	sp_style_unref (style);
 
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
@@ -242,7 +337,8 @@ sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 static void
 sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 {
-	const GSList *items, *i;
+	const GSList *items, *i, *r;
+	GSList *reprs;
 	SPCSSAttr *css;
 	gfloat rgba[4], cmyka[5];
 	SPGradient *vector;
@@ -252,6 +348,17 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 
 	g_print ("StrokeStyleWidget: paint changed\n");
 
+	if (spw->sodipodi) {
+		reprs = NULL;
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+		}
+	} else {
+		reprs = g_slist_prepend (NULL, spw->repr);
+		items = NULL;
+	}
+
 	switch (psel->mode) {
 	case SP_PAINT_SELECTOR_MODE_EMPTY:
 	case SP_PAINT_SELECTOR_MODE_MULTIPLE:
@@ -260,13 +367,12 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		css = sp_repr_css_attr_new ();
 		sp_repr_css_set_property (css, "stroke", "none");
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", NULL);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "stroke-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (SP_WIDGET_DOCUMENT (spw));
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
 		css = sp_repr_css_attr_new ();
@@ -275,15 +381,12 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_repr_css_set_property (css, "stroke", b);
 		g_snprintf (b, 64, "%g", rgba[3]);
 		sp_repr_css_set_property (css, "stroke-opacity", b);
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			g_print ("StrokeStyleWidget: Set RGBA stroke style\n");
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			g_print ("StrokeStyleWidget: Set RGBA stroke-cmyk style\n");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", NULL);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "stroke-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (SP_WIDGET_DOCUMENT (spw));
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
 		css = sp_repr_css_attr_new ();
@@ -294,18 +397,14 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		g_snprintf (b, 64, "%g", cmyka[4]);
 		sp_repr_css_set_property (css, "stroke-opacity", b);
 		g_snprintf (b, 64, "(%g %g %g %g)", cmyka[0], cmyka[1], cmyka[2], cmyka[3]);
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			g_print ("StrokeStyleWidget: Set CMYK stroke style\n");
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			g_print ("StrokeStyleWidget: Set CMYK stroke-cmyk style\n");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", b);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "stroke-cmyk", b);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (SP_WIDGET_DOCUMENT (spw));
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
-		items = sp_widget_get_item_list (spw);
 		if (items) {
 			vector = sp_paint_selector_get_gradient_vector (psel);
 			if (!vector) {
@@ -334,13 +433,20 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
 		break;
 	}
+
+	g_slist_free (reprs);
 }
 
 /* Line */
 
+static void sp_stroke_style_line_construct (SPWidget *spw, gpointer data);
 static void sp_stroke_style_line_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, gpointer data);
 static void sp_stroke_style_line_change_selection (SPWidget *spw, SPSelection *selection, gpointer data);
+static void sp_stroke_style_line_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval);
+
 static void sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel);
+static void sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr);
+
 static void sp_stroke_style_set_join_buttons (SPWidget *spw, GtkWidget *active);
 static void sp_stroke_style_set_cap_buttons (SPWidget *spw, GtkWidget *active);
 static void sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw);
@@ -475,8 +581,10 @@ sp_stroke_style_line_widget_new (void)
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (tb), px);
 
+	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_stroke_style_line_construct), NULL);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_stroke_style_line_modify_selection), NULL);
 	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_stroke_style_line_change_selection), NULL);
+	gtk_signal_connect (GTK_OBJECT (spw), "attr_changed", GTK_SIGNAL_FUNC (sp_stroke_style_line_attr_changed), NULL);
 
 	sp_stroke_style_line_update (SP_WIDGET (spw), SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 
@@ -492,9 +600,30 @@ sp_stroke_style_line_modify_selection (SPWidget *spw, SPSelection *selection, gu
 }
 
 static void
+sp_stroke_style_line_construct (SPWidget *spw, gpointer data)
+{
+	g_print ("Stroke style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
+
+	if (spw->sodipodi) {
+		sp_stroke_style_line_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
+	} else if (spw->repr) {
+		sp_stroke_style_line_update_repr (spw, spw->repr);
+	}
+}
+
+static void
 sp_stroke_style_line_change_selection (SPWidget *spw, SPSelection *selection, gpointer data)
 {
 	sp_stroke_style_line_update (spw, selection);
+}
+
+static void
+sp_stroke_style_line_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval)
+{
+	if (!strcmp (key, "style")) {
+		/* This sounds interesting */
+		sp_stroke_style_line_update_repr (spw, spw->repr);
+	}
 }
 
 static void
@@ -605,42 +734,132 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 }
 
 static void
+sp_stroke_style_line_update_repr (SPWidget *spw, SPRepr *repr)
+{
+	GtkWidget *sset, *units;
+	GtkObject *width;
+	SPStyle *style;
+	const SPUnit *unit;
+	gdouble swidth;
+	GtkWidget *tb;
+
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
+
+	sset = gtk_object_get_data (GTK_OBJECT (spw), "stroke");
+	width = gtk_object_get_data (GTK_OBJECT (spw), "width");
+	units = gtk_object_get_data (GTK_OBJECT (spw), "units");
+
+	style = sp_stroke_style_repr_get_style (repr);
+
+	if (style->stroke.type == SP_PAINT_TYPE_NONE) {
+		gtk_widget_set_sensitive (sset, FALSE);
+		gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+		return;
+	}
+
+	/* We need points */
+	swidth = style->stroke_width.computed / 1.25;
+	unit = sp_unit_selector_get_unit (SP_UNIT_SELECTOR (units));
+	sp_convert_distance (&swidth, SP_PS_UNIT, unit);
+	gtk_adjustment_set_value (GTK_ADJUSTMENT (width), swidth);
+
+	/* Join & Cap */
+	switch (style->stroke_linejoin.value) {
+	case ART_PATH_STROKE_JOIN_MITER:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-miter");
+		break;
+	case ART_PATH_STROKE_JOIN_ROUND:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-round");
+		break;
+	case ART_PATH_STROKE_JOIN_BEVEL:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "join-bevel");
+		break;
+	default:
+		tb = NULL;
+		break;
+	}
+	sp_stroke_style_set_join_buttons (spw, tb);
+
+	switch (style->stroke_linecap.value) {
+	case ART_PATH_STROKE_CAP_BUTT:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-butt");
+		break;
+	case ART_PATH_STROKE_CAP_ROUND:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");
+		break;
+	case ART_PATH_STROKE_CAP_SQUARE:
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-square");
+		break;
+	default:
+		tb = NULL;
+		break;
+	}
+	sp_stroke_style_set_cap_buttons (spw, tb);
+
+	gtk_widget_set_sensitive (sset, TRUE);
+
+	sp_style_unref (style);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+}
+
+static void
 sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
 {
 	SPUnitSelector *us;
-	const GSList *items, *i;
+	const GSList *items, *i, *r;
+	GSList *reprs;
 	SPCSSAttr *css;
 	guchar c[32];
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
 	us = gtk_object_get_data (GTK_OBJECT (spw), "units");
-	items = sp_widget_get_item_list (spw);
+
+	if (spw->sodipodi) {
+		reprs = NULL;
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+		}
+	} else {
+		reprs = g_slist_prepend (NULL, spw->repr);
+		items = NULL;
+	}
 
 	/* fixme: Create some standardized method */
 	css = sp_repr_css_attr_new ();
 
-	for (i = items; i != NULL; i = i->next) {
-		gdouble i2d[6], d2i[6];
-		gdouble length, dist;
-
-		length = adj->value;
-		sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
-
-		sp_item_i2d_affine (SP_ITEM (i->data), i2d);
-		art_affine_invert (d2i, i2d);
-
-		dist = sp_distance_d_matrix_d_transform (length, d2i);
-		g_print ("%g on desktop is %g at user\n", length, dist);
-
-		g_snprintf (c, 32, "%g", sp_distance_d_matrix_d_transform (length, d2i));
-		sp_repr_css_set_property (css, "stroke-width", c);
-
-		sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+	if (items) {
+		for (i = items; i != NULL; i = i->next) {
+			gdouble i2d[6], d2i[6];
+			gdouble length, dist;
+			length = adj->value;
+			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
+			sp_item_i2d_affine (SP_ITEM (i->data), i2d);
+			art_affine_invert (d2i, i2d);
+			dist = sp_distance_d_matrix_d_transform (length, d2i);
+			g_snprintf (c, 32, "%g", sp_distance_d_matrix_d_transform (length, d2i));
+			sp_repr_css_set_property (css, "stroke-width", c);
+			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+		}
+	} else {
+		for (r = reprs; r != NULL; r = r->next) {
+			gdouble length;
+			length = adj->value;
+			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
+			g_snprintf (c, 32, "%g", length * 1.25);
+			sp_repr_css_set_property (css, "stroke-width", c);
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+		}
 	}
 
 	sp_repr_css_attr_unref (css);
-	sp_document_done (SP_WIDGET_DOCUMENT (spw));
+	if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
+
+	g_slist_free (reprs);
 }
 
 static void
@@ -649,7 +868,8 @@ sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
 	if (gtk_toggle_button_get_active (tb)) {
-		const GSList *items, *i;
+		const GSList *items, *i, *r;
+		GSList *reprs;
 		const guchar *join, *cap;
 		SPCSSAttr *css;
 
@@ -657,25 +877,38 @@ sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
 		join = gtk_object_get_data (GTK_OBJECT (tb), "join");
 		cap = gtk_object_get_data (GTK_OBJECT (tb), "cap");
 
+		if (spw->sodipodi) {
+			reprs = NULL;
+			items = sp_widget_get_item_list (spw);
+			for (i = items; i != NULL; i = i->next) {
+				reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+			}
+		} else {
+			reprs = g_slist_prepend (NULL, spw->repr);
+			items = NULL;
+		}
+
 		/* fixme: Create some standardized method */
 		css = sp_repr_css_attr_new ();
 
 		if (join) {
 			sp_repr_css_set_property (css, "stroke-linejoin", join);
-			for (i = items; i != NULL; i = i->next) {
-				sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+			for (r = reprs; r != NULL; r = r->next) {
+				sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
 			}
 			sp_stroke_style_set_join_buttons (spw, GTK_WIDGET (tb));
 		} else {
 			sp_repr_css_set_property (css, "stroke-linecap", cap);
-			for (i = items; i != NULL; i = i->next) {
-				sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
+			for (r = reprs; r != NULL; r = r->next) {
+				sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
 			}
 			sp_stroke_style_set_cap_buttons (spw, GTK_WIDGET (tb));
 		}
 
 		sp_repr_css_attr_unref (css);
-		sp_document_done (SP_WIDGET_DOCUMENT (spw));
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
+
+		g_slist_free (reprs);
 	}
 }
 
@@ -749,15 +982,15 @@ sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c)
 }
 
 static SPPaintSelectorMode
-sp_stroke_style_determine_paint_selector_mode (SPObject *object)
+sp_stroke_style_determine_paint_selector_mode (SPStyle *style)
 {
 	SPColorSpaceType cstype;
 
-	switch (object->style->stroke.type) {
+	switch (style->stroke.type) {
 	case SP_PAINT_TYPE_NONE:
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	case SP_PAINT_TYPE_COLOR:
-		cstype = sp_color_get_colorspace_type (&object->style->stroke.value.color);
+		cstype = sp_color_get_colorspace_type (&style->stroke.value.color);
 		switch (cstype) {
 		case SP_COLORSPACE_TYPE_RGB:
 			return SP_PAINT_SELECTOR_MODE_COLOR_RGB;
@@ -768,13 +1001,13 @@ sp_stroke_style_determine_paint_selector_mode (SPObject *object)
 			return SP_PAINT_SELECTOR_MODE_NONE;
 		}
 	case SP_PAINT_TYPE_PAINTSERVER:
-		if (SP_IS_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object))) {
+		if (SP_IS_LINEARGRADIENT (SP_STYLE_STROKE_SERVER (style))) {
 			return SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR;
 		}
 		g_warning ("file %s: line %d: Unknown paintserver", __FILE__, __LINE__);
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	default:
-		g_warning ("file %s: line %d: Unknown paint type %d", __FILE__, __LINE__, object->style->stroke.type);
+		g_warning ("file %s: line %d: Unknown paint type %d", __FILE__, __LINE__, style->stroke.type);
 		break;
 	}
 
@@ -807,17 +1040,4 @@ sp_stroke_style_set_cap_buttons (SPWidget *spw, GtkWidget *active)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), (active == tb));
 }
 
-#if 0
-static void sp_stroke_style_widget_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, SPPaintSelector *psel);
-static void sp_stroke_style_widget_change_selection (SPWidget *spw, SPSelection *selection, SPPaintSelector *psel);
-static void sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel);
 
-static void sp_stroke_style_widget_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw);
-static void sp_stroke_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw);
-static void sp_stroke_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw);
-
-static void sp_stroke_style_get_average_color_rgba (const GSList *objects, gfloat *c);
-static void sp_stroke_style_get_average_color_cmyka (const GSList *objects, gfloat *c);
-static SPPaintSelectorMode sp_stroke_style_determine_paint_selector_mode (SPObject *object);
-
-#endif

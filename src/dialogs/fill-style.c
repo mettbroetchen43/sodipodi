@@ -133,6 +133,7 @@ sp_fill_style_widget_attr_changed (SPWidget *spw, const guchar *key, const gucha
 {
 	if (!strcmp (key, "style")) {
 		/* This sounds interesting */
+		sp_fill_style_widget_update_repr (spw, spw->repr);
 	}
 }
 
@@ -248,13 +249,6 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	SPPaintSelectorMode pselmode;
 	SPStyle *style;
 	gfloat c[5];
-#if 0
-	const GSList *objects, *l;
-	SPObject *object;
-	SPGradient *vector;
-	ArtDRect bbox;
-	SPLinearGradient *lg;
-#endif
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -482,6 +476,8 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
 		break;
 	}
+
+	g_slist_free (reprs);
 }
 
 static void
