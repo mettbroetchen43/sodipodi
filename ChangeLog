@@ -1,5 +1,9 @@
 2002-10-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/sp-canvas.h: Moved update flags back here
+
+	* src/display/canvas-arena.c (sp_canvas_arena_update): Sor updates according to affine (again)
+
 	* src/libnr/have_mmx.S: New file (copied from gdk-pixbuf)
 
 	* configure.in (use_mmx_asm): Check for mmx

@@ -31,14 +31,9 @@
 #include "sp-canvas.h"
 
 enum {
-	SP_CANVAS_ITEM_VISIBLE       = 1 << 7,
-	SP_CANVAS_ITEM_NEED_UPDATE	= 1 << 8,
-	SP_CANVAS_ITEM_NEED_AFFINE	= 1 << 9,
-};
-
-enum {
-	SP_CANVAS_UPDATE_REQUESTED  = 1 << 0,
-	SP_CANVAS_UPDATE_AFFINE     = 1 << 1,
+	SP_CANVAS_ITEM_VISIBLE = 1 << 7,
+	SP_CANVAS_ITEM_NEED_UPDATE = 1 << 8,
+	SP_CANVAS_ITEM_NEED_AFFINE = 1 << 9,
 };
 
 struct _SPCanvasGroup {

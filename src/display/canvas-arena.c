@@ -14,6 +14,7 @@
 
 #include <string.h>
 #include <gtk/gtksignal.h>
+#include "../helper/sp-canvas.h"
 #include "../helper/sp-canvas-util.h"
 #include "../helper/nr-buffers.h"
 #include "../helper/nr-plain-stuff.h"
@@ -155,8 +156,8 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	memcpy (arena->gc.affine, affine, 6 * sizeof (double));
 
-#if 0
-	if (flags & GNOME_CANVAS_UPDATE_AFFINE) {
+#if 1
+	if (flags & SP_CANVAS_UPDATE_AFFINE) {
 		reset = NR_ARENA_ITEM_STATE_ALL;
 	} else {
 		reset = NR_ARENA_ITEM_STATE_NONE;
