@@ -17,7 +17,7 @@ FILE=sodipodi.spec.in
 AUTOCONF_REQUIRED_VERSION=2.52
 AUTOMAKE_REQUIRED_VERSION=1.6
 GLIB_REQUIRED_VERSION=2.0.0
-INTLTOOL_REQUIRED_VERSION=0.17
+INTLTOOL_REQUIRED_VERSION=0.22
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -147,23 +147,31 @@ if test -z "$ACLOCAL_FLAGS"; then
     done
 fi
 
+echo "Running $ACLOCAL $ACLOCAL_FLAGS"
 if ! $ACLOCAL $ACLOCAL_FLAGS; then
    echo "$ACLOCAL gave errors. Please fix the error conditions and try again."
    exit 1
 fi
 
 # optionally feature autoheader
+echo "Running autoheader --version"
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
 
+echo "Running $AUTOMAKE --add-missing"
 $AUTOMAKE --add-missing
+echo "Running autoconf"
 autoconf
 
+echo "Running libtoolize --copy --force"
 libtoolize --copy --force
+echo "Running glib-gettextize --copy --force"
 glib-gettextize --copy --force
+echo "Running intltoolize --copy --force --automake"
 intltoolize --copy --force --automake
 
 cd $ORIGDIR
 
+echo "Running $srcdir/configure --enable-maintainer-mode --enable-gtk-doc \"$@\""
 if $srcdir/configure --enable-maintainer-mode --enable-gtk-doc "$@"; then
   echo
   echo "Now type 'make' to compile $PROJECT."

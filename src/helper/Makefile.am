@@ -43,11 +43,13 @@ libspchelp_a_SOURCES = \
 
 sp-marshal.h: sp-marshal.list
 	rm -f $@
-	glib-genmarshal --prefix=sp_marshal --header sp-marshal.list > $@
+	glib-genmarshal --prefix=sp_marshal --header $(srcdir)/sp-marshal.list > $@
 
 sp-marshal.c: sp-marshal.h sp-marshal.list
 	rm -f $@
-	glib-genmarshal --prefix=sp_marshal --body sp-marshal.list > $@
+	glib-genmarshal --prefix=sp_marshal --body $(srcdir)/sp-marshal.list > $@
 
 EXTRA_DIST = sp-marshal.list
+
+DISTCLEANFILES = sp-marshal.c sp-marshal.h
 

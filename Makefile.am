@@ -19,14 +19,20 @@ dist-hook:
 man_MANS = sodipodi.1
 
 EXTRA_DIST = \
-	intltool-extract.in	\
-	intltool-merge.in	\
-	intltool-update.in	\
 	$(Graphics_in_files)	\
 	sodipodi.spec.in	\
 	sodipodi.spec		\
 	README HACKING		\
-	sodipodi.png \
+	intltool-extract.in	\
+	intltool-merge.in	\
+	intltool-update.in	\
+	sodipodi.png		\
 	sodipodi.ico
+
+DISTCLEANFILES = \
+	sodipodi.desktop	\
+	intltool-extract	\
+	intltool-merge		\
+	intltool-update
 
 #ACLOCAL_AMFLAGS = -I m4

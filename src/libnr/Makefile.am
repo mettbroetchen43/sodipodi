@@ -55,3 +55,6 @@ testnr_SOURCES = \
 
 testnr_LDADD = \
 	libnr.a
+
+DISTCLEANFILES = nr_config.h
+
