@@ -38,6 +38,13 @@ GtkWidget * sp_toolbox_create (GladeXML *xml, const gchar *widgetname, const gch
 static GtkWidget *sp_toolbox_draw_create (void);
 
 static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
+static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
+					       GdkDragContext * drag_context,
+					       gint x, gint y,
+					       GtkSelectionData * data,
+					       guint info,
+					       guint event_time,
+					       gpointer user_data);
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
 void object_flip (GtkWidget * widget, GdkEventButton * event);
 
@@ -108,7 +115,11 @@ sp_maintoolbox_create (void)
 		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
 		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (toolbox), "delete_event", GTK_SIGNAL_FUNC (sp_maintoolbox_delete_event), NULL);
-
+		gtk_signal_connect (GTK_OBJECT (toolbox), 
+				    "drag_data_received",
+				    sp_maintoolbox_drag_data_received,
+				    NULL);
+				    
 		vbox = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vbox);
 		gtk_container_add (GTK_CONTAINER (toolbox), vbox);
@@ -407,7 +418,7 @@ sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data)
 	return FALSE;
 }
 
-void 
+static void 
 sp_maintoolbox_drag_data_received (GtkWidget * widget,
 		       GdkDragContext * drag_context,
 		       gint x, gint y,

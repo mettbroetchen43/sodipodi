@@ -1,3 +1,13 @@
+2002-09-15  Masatake YAMATO  <jet@gyve.org>
+
+	* src/toolbox.c (sp_maintoolbox_drag_data_received): made
+	it a static scoped function.
+	(sp_maintoolbox_create): Connected sp_maintoolbox_drag_data_received
+	to maintoolbox. (glade based version is obsoleted.)
+
+	* src/toolbox.c (sp_maintoolbox_drag_data_received): removed 
+	declaration.
+
 2002-09-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/file.c (sp_file_save_as): Added "file type" optionmenu
