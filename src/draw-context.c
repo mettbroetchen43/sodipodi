@@ -127,7 +127,7 @@ sp_draw_context_destroy (GtkObject * object)
 
 	while (dc->segments) {
 		gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-		dc->segments = g_slist_remove_link (dc->segments, dc->segments);
+		dc->segments = g_slist_remove (dc->segments, dc->segments->data);
 	}
 
 	if (dc->currentcurve) sp_curve_unref (dc->currentcurve);
@@ -315,7 +315,7 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				/* Remove all temporary line segments */
 				while (dc->segments) {
 					gtk_object_destroy (GTK_OBJECT (dc->segments->data));
-					dc->segments = g_slist_remove_link (dc->segments, dc->segments);
+					dc->segments = g_slist_remove (dc->segments, dc->segments->data);
 				}
 				/* Create object */
 				concat_current (dc);

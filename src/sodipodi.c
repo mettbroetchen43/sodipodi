@@ -189,7 +189,7 @@ sodipodi_destroy (GtkObject * object)
 		SPDocument * document;
 		document = (SPDocument *) sodipodi->documents->data;
 		gtk_object_destroy (GTK_OBJECT (document));
-		sodipodi->documents = g_slist_remove_link (sodipodi->documents, sodipodi->documents);
+		sodipodi->documents = g_slist_remove (sodipodi->documents, sodipodi->documents->data);
 	}
 
 	g_assert (!sodipodi->documents);

@@ -131,6 +131,7 @@ sp_path_read_attr (SPObject * object, const gchar * attr)
 			sp_curve_unref (curve);
 			sp_path_add_comp (path, comp);
 		}
+		sp_object_request_modified (SP_OBJECT (path), SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 

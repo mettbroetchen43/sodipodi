@@ -147,6 +147,7 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 
 	if (strcmp (key, "style") == 0) {
 		sp_style_read_from_object (style, object);
+		sp_object_request_modified (SP_OBJECT (item), SP_OBJECT_MODIFIED_FLAG);
 	}
 
 	if (!style->real_opacity_set) {
@@ -618,6 +619,7 @@ sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
 	g_assert (SP_IS_ITEM (item));
 
 	sp_repr_set_attr (((SPObject *) item)->repr, "transform", NULL);
+	sp_document_done (SP_OBJECT_DOCUMENT (item));
 }
 
 static void
@@ -628,13 +630,14 @@ sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
 	g_assert (SP_IS_ITEM (item));
 
 	/* fixme: reprs suck */
-	val = sp_repr_attr (((SPObject *) item)->repr, "insensitive");
+	val = sp_repr_attr (SP_OBJECT_REPR (item), "insensitive");
 	if (val != NULL) {
 		val = NULL;
 	} else {
 		val = "1";
 	}
-	sp_repr_set_attr (((SPObject *) item)->repr, "insensitive", val);
+	sp_repr_set_attr (SP_OBJECT_REPR (item), "insensitive", val);
+	sp_document_done (SP_OBJECT_DOCUMENT (item));
 }
 
 /* Item views */

@@ -23,6 +23,7 @@ static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * re
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_group_modified (SPObject *object, guint flags);
+static gint sp_group_sequence (SPObject *object, gint seq);
 
 static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
@@ -76,6 +77,7 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->order_changed = sp_group_order_changed;
 	sp_object_class->modified = sp_group_modified;
+	sp_object_class->sequence = sp_group_sequence;
 
 	item_class->update = sp_group_update;
 	item_class->bbox = sp_group_bbox;
@@ -333,6 +335,23 @@ sp_group_modified (SPObject *object, guint flags)
 		}
 		gtk_object_unref (GTK_OBJECT (child));
 	}
+}
+
+static gint
+sp_group_sequence (SPObject *object, gint seq)
+{
+	SPGroup *group;
+	SPObject *child;
+
+	group = SP_GROUP (object);
+
+	seq += 1;
+
+	for (child = group->children; child != NULL; child = child->next) {
+		seq = sp_object_sequence (child, seq);
+	}
+
+	return seq;
 }
 
 static void

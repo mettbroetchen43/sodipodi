@@ -379,6 +379,16 @@ sp_object_modified (SPObject *object, guint flags)
 	gtk_object_unref (GTK_OBJECT (object));
 }
 
+/* Sequence */
+gint
+sp_object_sequence (SPObject *object, gint seq)
+{
+	if (((SPObjectClass *)(((GtkObject *) object)->klass))->sequence)
+		return (*((SPObjectClass *)(((GtkObject *) object)->klass))->sequence) (object, seq);
+
+	return seq + 1;
+}
+
 const guchar *
 sp_object_getAttribute (SPObject *object, const guchar *key, SPException *ex)
 {

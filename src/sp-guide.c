@@ -76,7 +76,7 @@ sp_guide_destroy (GtkObject * object)
 
 	while (guide->views) {
 		gtk_object_destroy (GTK_OBJECT (guide->views->data));
-		guide->views = g_slist_remove_link (guide->views, guide->views);
+		guide->views = g_slist_remove (guide->views, guide->views->data);
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
@@ -172,7 +172,7 @@ sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas)
 	for (l = guide->views; l != NULL; l = l->next) {
 		if (canvas == GNOME_CANVAS_ITEM (l->data)->canvas) {
 			gtk_object_destroy (GTK_OBJECT (l->data));
-			guide->views = g_slist_remove_link (guide->views, l);
+			guide->views = g_slist_remove (guide->views, l->data);
 			return;
 		}
 	}

@@ -1,3 +1,17 @@
+2001-08-13  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/selection-chemistry.c (sp_selection_copy): Use prepend/reverse
+	(sp_item_compare_order): New method
+	(sp_item_list_sort_by_visual_order): New method
+
+	* src/sp-path.c (sp_path_read_attr): Req modification
+
+	* src/sp-item.c (sp_item_toggle_sensitivity): Call document::done
+	(sp_item_reset_transformation): Ditto
+	(sp_item_read_attr): Request modifiaction for style change
+
+	* src/sp-object.h (SP_OBJECT_PARENT): Added convenience macros
+
 2001-08-01  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/document-undo.c (sp_document_undo): Fresh logic

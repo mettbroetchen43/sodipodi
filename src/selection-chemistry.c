@@ -54,7 +54,7 @@ sp_selection_delete (GtkWidget * widget)
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
-/* fixme */
+/* fixme: sequencing */
 void sp_selection_duplicate (GtkWidget * widget)
 {
 	SPDesktop * desktop;
@@ -98,6 +98,8 @@ void sp_selection_duplicate (GtkWidget * widget)
 
 	g_slist_free (newsel);
 }
+
+/* fixme: sequencing */
 
 void
 sp_selection_group (GtkWidget * widget)
@@ -367,34 +369,40 @@ sp_selection_cut (GtkWidget * widget)
 void
 sp_selection_copy (GtkWidget * widget)
 {
-	SPDesktop * desktop;
-	SPSelection * selection;
-	SPRepr * repr, * copy;
-	SPCSSAttr * css;
-	const GSList * sl, * l;
+	SPDesktop *desktop;
+	SPSelection *selection;
+	SPRepr *repr, *copy;
+	SPCSSAttr *css;
+	GSList *sl, *l;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
+	/* Return if selection is empty */
 	selection = SP_DT_SELECTION (desktop);
 	if (sp_selection_is_empty (selection)) return;
 
-	sl = sp_selection_repr_list (selection);
+	sl = g_slist_copy (sp_selection_repr_list (selection));
+	sl = g_slist_sort (sl, (GCompareFunc) sp_repr_compare_position);
 
+	/* Clear old clipboard */
 	while (clipboard) {
 		sp_repr_unref ((SPRepr *) clipboard->data);
-		clipboard = g_slist_remove_link (clipboard, clipboard);
+		clipboard = g_slist_remove (clipboard, clipboard->data);
 	}
 
-	for (l = sl; l != NULL; l = l->next) {
-		repr = (SPRepr *) l->data;
+	while (sl != NULL) {
+		repr = (SPRepr *) sl->data;
+		sl = g_slist_remove (sl, repr);
 		css = sp_repr_css_attr_inherited (repr, "style");
 		copy = sp_repr_duplicate (repr);
 		sp_repr_css_set (copy, css, "style");
 		sp_repr_css_attr_unref (css);
 
-		clipboard = g_slist_append (clipboard, copy);
+		clipboard = g_slist_prepend (clipboard, copy);
 	}
+
+	clipboard = g_slist_reverse (clipboard);
 }
 
 void
@@ -416,7 +424,7 @@ sp_selection_paste (GtkWidget * widget)
 	sp_selection_empty (selection);
 
 	for (l = clipboard; l != NULL; l = l->next) {
-		repr = (SPRepr *) clipboard->data;
+		repr = (SPRepr *) l->data;
 		copy = sp_repr_duplicate (repr);
 		sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
 		sp_repr_unref (copy);
@@ -427,27 +435,25 @@ sp_selection_paste (GtkWidget * widget)
 }
 
 void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
-  SPItem * item;
-  GSList * l;
-  double curaff[6], newaff[6];
-  char tstr[80];
+	SPItem * item;
+	GSList * l;
+	double curaff[6], newaff[6];
+	char tstr[80];
 
-  g_assert (SP_IS_SELECTION (selection));
+	g_assert (SP_IS_SELECTION (selection));
 
     
-  for (l = selection->items; l != NULL; l = l-> next) {
-    item = SP_ITEM (l->data);
+	for (l = selection->items; l != NULL; l = l-> next) {
+		item = SP_ITEM (l->data);
+		sp_item_i2d_affine (item, curaff);
+		art_affine_multiply (newaff,curaff,affine);
+		sp_item_set_i2d_affine (item, newaff);    
 
-    sp_item_i2d_affine (item, curaff);
-    art_affine_multiply (newaff,curaff,affine);
-    sp_item_set_i2d_affine (item, newaff);    
-
-    // update repr -  needed for undo 
-    tstr[79] = '\0';
-    sp_svg_write_affine (tstr, 79, item->affine);
-    sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-
-  }
+		// update repr -  needed for undo 
+		tstr[79] = '\0';
+		sp_svg_write_affine (tstr, 79, item->affine);
+		sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+	}
 }
 
 
