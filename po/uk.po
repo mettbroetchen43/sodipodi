@@ -1,12 +1,12 @@
 # Ukrainian translation of sodipodi.
-# Copyright (C) 2001-2003 Free Software Foundation, Inc.
-# Yuri Syrota <rasta@renome.rovno.ua>, 2001-2003.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Yuri Syrota <rasta@renome.rovno.ua>, 2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.32pre\n"
+"Project-Id-Version: sodipodi 0.17\n"
 "POT-Creation-Date: 2003-02-24 11:42+0200\n"
-"PO-Revision-Date: 2003-04-09 04:23--500\n"
+"PO-Revision-Date: 2003-04-09 05:20--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Не вдалося створити фабрику sodipodi-svg-doc"
 #. Sticky zoom
 #: src/desktop.c:726
 msgid "Zoom drawing if window size changes"
-msgstr "Масштабувати рисунок із зміною розмірів вікна"
+msgstr "Масштабувати рисунок, коли змінюються розміри вікна"
 
 #: src/desktop.c:806
 #, c-format
@@ -575,7 +575,7 @@ msgstr "Малювання обведення"
 
 #: src/dialogs/object-properties.c:152
 msgid "Stroke style"
-msgstr "Ширина обведення"
+msgstr "Стиль обведення"
 
 #: src/dialogs/object-properties.c:172
 msgid "Apply to:"
@@ -928,12 +928,12 @@ msgstr ""
 #. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
-msgstr ""
+msgstr "Внутрішній радіус"
 
 #. Proportion
 #: src/star-context.c:367
 msgid "Proportion:"
-msgstr "Позиція:"
+msgstr "Пропорція:"
 
 #. Making sides flat
 #: src/star-context.c:380
