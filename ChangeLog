@@ -1,3 +1,7 @@
+2001-08-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document.c (sp_document_new): Use fill-opacity 0.5, not 50%
+
 2001-08-21  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/fill-style.c: Implement CMYK/RGB colorspace switching
