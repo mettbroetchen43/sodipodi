@@ -508,7 +508,7 @@ sp_verbs_init (void)
 	verb_actions = nr_new (SPAction, SP_VERB_LAST);
 	for (v = 0; v < SP_VERB_LAST; v++) {
 		assert (props[v].code == v);
-		sp_action_setup (&verb_actions[v], props[v].id, props[v].name, props[v].tip, props[v].image);
+		sp_action_setup (&verb_actions[v], props[v].id, _(props[v].name), _(props[v].tip), props[v].image);
 		/* fixme: Make more elegant (Lauris) */
 		if (SP_VERB_IS_FILE (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],

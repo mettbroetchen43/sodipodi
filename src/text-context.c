@@ -54,6 +54,7 @@ static void sp_text_context_forget_text (SPTextContext *tc);
 static gint sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc);
 static gint sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc);
 static void sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc);
+static void sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -122,6 +123,8 @@ sp_text_context_init (SPTextContext *tc)
 	tc->timeout = 0;
 	tc->show = FALSE;
 	tc->phase = 0;
+
+	tc->preedit_string = NULL;
 }
 
 #if 0
@@ -154,12 +157,13 @@ sp_text_context_setup (SPEventContext *ec)
 
 		canvas = GTK_WIDGET (SP_DT_CANVAS (desktop));
 
-		gtk_im_context_set_use_preedit (tc->imc, FALSE);
+		gtk_im_context_set_use_preedit (tc->imc, TRUE);
 		gtk_im_context_set_client_window (tc->imc, canvas->window);
 
 		g_signal_connect (G_OBJECT (canvas), "focus_in_event", G_CALLBACK (sptc_focus_in), tc);
 		g_signal_connect (G_OBJECT (canvas), "focus_out_event", G_CALLBACK (sptc_focus_out), tc);
 		g_signal_connect (G_OBJECT (tc->imc), "commit", G_CALLBACK (sptc_commit), tc);
+		g_signal_connect (G_OBJECT (tc->imc), "preedit_changed", G_CALLBACK (sptc_preedit_changed), tc);
 
 		if (GTK_WIDGET_HAS_FOCUS (canvas)) {
 			sptc_focus_in (canvas, NULL, tc);
@@ -396,9 +400,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				sp_text_context_update_cursor (tc);
 				return TRUE;
 			default:
+				return TRUE;
 				break;
 			}
 		}
+		break;
 	case GDK_KEY_RELEASE:
 		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
 			return TRUE;
@@ -531,3 +537,21 @@ sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc)
 	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
 }
 
+void
+sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc)
+{
+	gint cursor_pos;
+
+	if( tc->preedit_string != NULL ) {
+		sp_text_delete (SP_TEXT (tc->text), tc->ipos, tc->ipos + g_utf8_strlen(tc->preedit_string, -1));
+		
+		g_free(tc->preedit_string);
+		tc->preedit_string = NULL;
+	}
+
+	gtk_im_context_get_preedit_string (tc->imc,
+					   &tc->preedit_string, NULL,
+					   &cursor_pos);
+	sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
+	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
+}

@@ -1,3 +1,11 @@
+2003-07-12  Yukihiro Nakai  <ynakai@redhat.com>
+
+	* src/text-context.c (sptc_preedit_changed): New signal handler
+	(sp_text_context_setup): Connect "preedit_changed" signal
+	(sp_text_context_root_handler): Return TRUE (needed for Gtk+ IM)
+
+	* src/verbs.c (sp_verbs_init): Wrap action name and tip into _()
+
 2003-07-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/event-context.c (sp_event_context_private_root_handler): Handle
