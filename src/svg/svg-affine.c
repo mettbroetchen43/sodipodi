@@ -23,6 +23,10 @@
 #include <glib.h>
 #include "svg.h"
 
+#ifndef M_PI
+#define M_PI 3.1415927
+#endif
+
 unsigned int
 sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform)
 {

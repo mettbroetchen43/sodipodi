@@ -13,6 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <config.h>
+
 #include <string.h>
 #include "svg/svg.h"
 #include "xml/repr-private.h"

@@ -128,12 +128,12 @@ static void sp_extension(SPModule * in_plug, SPModuleDoc * in_doc) {
 	char tempfilename_out_x[] = "/tmp/sp_ext_XXXXXX";
 	char * tempfilename_in;
 	char * tempfilename_out;
+	char * extension_command;
+	SPModuleExecExt * module_exec;
 
 	tempfilename_in = (char *)tempfilename_in_x;
 	tempfilename_out = (char *)tempfilename_out_x;
 	/* Get the name of the extension to be run  */
-	char * extension_command;
-	SPModuleExecExt * module_exec;
 
 	g_return_if_fail(SP_IS_MODULE(in_plug));
 	g_return_if_fail(SP_IS_MODULE_EXEC_EXT(in_plug->exec));

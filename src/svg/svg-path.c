@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <libart_lgpl/art_misc.h>
 #include "gnome-canvas-bpath-util.h"
 #include "svg.h"
 

@@ -804,10 +804,9 @@ sp_module_print_plain_image (SPModulePrint *mod, unsigned char *px, unsigned int
 			     const NRMatrixF *transform, const SPStyle *style)
 {
 	SPModulePrintPlain *pmod;
+	int r;
 
 	pmod = (SPModulePrintPlain *) mod;
-
-	int r;
 
 	fprintf (pmod->stream, "gsave\n");
 	fprintf (pmod->stream, "/rowdata %d string def\n", 3 * w);
