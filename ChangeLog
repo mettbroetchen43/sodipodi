@@ -1,3 +1,10 @@
+2002-01-04  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* src/desktop.c (sp_desktop_widget_init, sp_desktop_widget_set_title,
+	sp_desktop_widget_shutdown): Marked strings for translation.
+
+	* src/document.c (sp_document_new, sp_document_new_from_mem): Ditto.
+
 2002-01-01  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* configure.in: Added "AC_PROG_INTLTOOL(0.11)" line.

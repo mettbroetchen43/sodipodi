@@ -1079,7 +1079,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 
 	//desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 	//desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-        gnome_appbar_set_status (desktop->select_status, "Welcome !");
+        gnome_appbar_set_status (desktop->select_status, _("Welcome !"));
 
         // zoom combo
         zoom = desktop->zoom = gtk_combo_text_new (FALSE);
@@ -1153,7 +1153,7 @@ sp_desktop_widget_set_title (SPDesktopWidget *dtw)
 		if (SPShowFullFielName) fname = uri;
 		else fname = g_basename (uri);
 		name = g_string_new ("");
-		g_string_sprintf (name, "Sodipodi: %s: %s: %d", fname, nv_name, dtw->desktop->number);
+		g_string_sprintf (name, _("Sodipodi: %s: %s: %d"), fname, nv_name, dtw->desktop->number);
 		gtk_window_set_title (window, name->str);
 		g_string_free (name, TRUE);
 	}
@@ -1214,7 +1214,7 @@ sp_desktop_widget_shutdown (SPViewWidget *vw)
 			gchar *msg;
 			gint b;
 			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), sp_document_uri (doc));
-			dlg = gnome_message_box_new (msg, "warning", "Save", "Don't save", GNOME_STOCK_BUTTON_CANCEL, NULL);
+			dlg = gnome_message_box_new (msg, GNOME_MESSAGE_BOX_WARNING, _("Save"), _("Don't save"), GNOME_STOCK_BUTTON_CANCEL, NULL);
 			g_free (msg);
 			b = gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
 			switch (b) {

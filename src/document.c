@@ -10,6 +10,7 @@
  *
  */
 
+#include <config.h>
 #include <string.h>
 #include <xml/repr.h>
 #include "marshal.h"
@@ -19,6 +20,8 @@
 #include "sp-namedview.h"
 #include "document-private.h"
 #include "desktop.h"
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 
 #define A4_WIDTH  (21.0 * 72.0 / 2.54)
 #define A4_HEIGHT (29.7 * 72.0 / 2.54)
@@ -229,7 +232,7 @@ sp_document_new (const gchar * uri)
 		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
 	} else {
-		document->private->uri = g_strdup_printf ("Unnamed document %d", ++doc_count);
+		document->private->uri = g_strdup_printf (_("Unnamed document %d"), ++doc_count);
 	}
 
 	object = sp_object_repr_build_tree (document, rroot);
@@ -301,7 +304,7 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	document->private->rdoc = rdoc;
 	document->private->rroot = rroot;
 
-	document->private->uri = g_strdup_printf ("Memory document %d", ++doc_count);
+	document->private->uri = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
 	object = sp_object_repr_build_tree (document, rroot);
 	g_return_val_if_fail (object != NULL, NULL);
