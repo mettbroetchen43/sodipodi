@@ -13,6 +13,17 @@ Other tasks
 
 - Interface for clipart collections (Lauris)
 
+Porting to GTK+-2.0
+===================
+
+ (go into SODIPODI_GTK2_BRANCH)
+
+- Reduce libgnome-2, libgnomeui-2 dependencies (Mitsuru)
+- GtkIMContext support for text-context?
+- More works for XML Editor
+- Fix unstable SPMenuButton/SPToolbox behavior
+- Merge into HEAD tree
+
 TODO for 0.26
 =============
 
