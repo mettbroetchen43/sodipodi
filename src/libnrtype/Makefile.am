@@ -1,11 +1,9 @@
 noinst_LIBRARIES = libnrtype.a
 
-CFLAGS = \
+INCLUDES = \
+	-I.. \
 	$(cflags) \
 	$(SODIPODI_CFLAGS)
-
-INCLUDES = \
-	-I..
 
 libnrtype_a_SOURCES = \
 	nr-typeface.c nr-typeface.h \

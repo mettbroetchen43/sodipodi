@@ -5,12 +5,12 @@
  * RGBA display list system for sodipodi
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2001-2002 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define NR_TYPE_ARENA_ITEM (nr_arena_item_get_type ())

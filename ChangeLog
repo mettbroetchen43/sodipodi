@@ -1,5 +1,8 @@
 2002-10-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Make
+	style srings lowercase before applying
+
 	* src/dialogs/desktop-properties.c (sp_desktop_dialog_new): Added
 	togglebutton for showing/hiding page border
 

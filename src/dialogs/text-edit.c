@@ -280,8 +280,10 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 		nr_typeface_family_name_get (NR_FONT_TYPEFACE (font), c, 256);
 		sp_repr_css_set_property (css, "font-family", c);
 		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "weight", c, 256);
+		g_strdown (c);
 		sp_repr_css_set_property (css, "font-weight", c);
 		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "style", c, 256);
+		g_strdown (c);
 		sp_repr_css_set_property (css, "font-style", c);
 		snprintf (c, 64, "%g", NR_FONT_SIZE (font));
 		sp_repr_css_set_property (css, "font-size", c);

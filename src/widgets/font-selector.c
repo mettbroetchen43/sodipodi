@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
@@ -49,6 +50,8 @@ struct _SPFontSelector
 {
 	GtkHBox hbox;
   
+	guint block_emit : 1;
+
 	GtkWidget *family;
 	GtkWidget *style;
 	GtkWidget *size;
@@ -292,7 +295,9 @@ sp_font_selector_style_select_row (GtkCList *clist, gint row, gint column, GdkEv
 		fsel->stylename = g_strdup (style);
 	}
 
-	sp_font_selector_emit_set (fsel);
+	if (!fsel->block_emit) {
+		sp_font_selector_emit_set (fsel);
+	}
 }
 
 static void
@@ -351,7 +356,9 @@ sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font)
 			gchar *rtxt;
 			gtk_clist_get_text (fcl, i, 0, &rtxt);
 			if (rtxt && !strcmp (n, rtxt)) {
+				fsel->block_emit = TRUE;
 				gtk_clist_select_row (fcl, i, 0);
+				fsel->block_emit = FALSE;
 				break;
 			}
 		}
