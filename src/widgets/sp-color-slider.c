@@ -231,43 +231,6 @@ sp_color_slider_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	}
 }
 
-#if 0
-static void
-sp_color_slider_draw (GtkWidget *widget, GdkRectangle *area)
-{
-	SPColorSlider *slider;
-
-	slider = SP_COLOR_SLIDER (widget);
-
-	if (GTK_WIDGET_DRAWABLE (widget)) {
-		gint width, height;
-		width = widget->allocation.width;
-		height = widget->allocation.height;
-		sp_color_slider_paint (slider, area);
-	}
-}
-
-static void
-sp_color_slider_draw_focus (GtkWidget *widget)
-{
-	gtk_widget_draw (widget, NULL);
-}
-
-static void
-sp_color_slider_draw_default (GtkWidget *widget)
-{
-	gtk_widget_draw (widget, NULL);
-}
-
-static gint
-sp_color_slider_expose (GtkWidget *widget, GdkEventExpose *event)
-{
-	gtk_widget_draw (widget, NULL);
-
-	return FALSE;
-}
-#endif
-
 static gint
 sp_color_slider_expose (GtkWidget *widget, GdkEventExpose *event)
 {
@@ -466,22 +429,9 @@ sp_color_slider_adjustment_value_changed (GtkAdjustment *adjustment, SPColorSlid
 	}
 }
 
-/* Area is widget relative */
-
-#if 0
-static void
-print_rect (const char *name, GdkRectangle *r)
-{
-	g_print ("%s: %d %d %d %d\n", name, r->x, r->y, r->width, r->height);
-}
-#endif
-
 static void
 sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 {
-	static GdkPixmap *px;
-	static gint pxw = 0;
-	static gint pxh = 0;
 	GtkWidget *widget;
 	GdkRectangle warea, carea, aarea;
 	GdkRectangle wpaint, cpaint, apaint;
@@ -489,35 +439,30 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 
 	widget = GTK_WIDGET (slider);
 
+	/* Widget area */
 	warea.x = 0;
 	warea.y = 0;
 	warea.width = widget->allocation.width;
 	warea.height = widget->allocation.height;
 
+	/* Color gradient area */
 	carea.x = widget->style->xthickness;
 	carea.y = widget->style->ythickness;
 	carea.width = widget->allocation.width - 2 * carea.x;
 	carea.height = widget->allocation.height - 2 * carea.y;
 
+	/* Arrow area */
 	aarea.x = slider->value * carea.width - ARROW_SIZE / 2 + carea.x;
 	aarea.width = ARROW_SIZE;
 	aarea.y = carea.height - ARROW_SIZE + carea.y * 2;
 	aarea.height = ARROW_SIZE;
 
+	/* Actual paintable area */
 	if (!gdk_rectangle_intersect (area, &warea, &wpaint)) return;
-
-	if (px && ((pxw < wpaint.width) || (pxh < wpaint.height))) {
-		gdk_pixmap_unref (px);
-		px = NULL;
-	}
-	if (!px) {
-		px = gdk_pixmap_new (widget->window, wpaint.width, wpaint.height, -1);
-		pxw = wpaint.width;
-		pxh = wpaint.height;
-	}
 
 	b = NULL;
 
+	/* Paintable part of color gradient area */
 	if (gdk_rectangle_intersect (area, &carea, &cpaint)) {
 		if (slider->map) {
 			gint s, d;
@@ -544,15 +489,16 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 	}
 
 	/* Draw shadow */
-	gtk_draw_box (widget->style, px,
-			 widget->state, GTK_SHADOW_IN,
-			 0 - wpaint.x, 0 - wpaint.y,
-			 warea.width, warea.height);
+	gtk_paint_shadow (widget->style, widget->window,
+			  widget->state, GTK_SHADOW_IN,
+			  area, widget, "colorslider",
+			  0, 0,
+			  warea.width, warea.height);
 
 	/* Draw pixelstore */
 	if (b != NULL) {
-		gdk_draw_rgb_image (px, widget->style->black_gc,
-				    cpaint.x - wpaint.x, cpaint.y - wpaint.y,
+		gdk_draw_rgb_image (widget->window, widget->style->black_gc,
+				    cpaint.x, cpaint.y,
 				    cpaint.width, cpaint.height,
 				    GDK_RGB_DITHER_MAX,
 				    (guchar *) b, cpaint.width * 3);
@@ -560,20 +506,12 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 
 	if (gdk_rectangle_intersect (area, &aarea, &apaint)) {
 		/* Draw arrow */
-		gtk_draw_arrow (widget->style, px,
+		gtk_draw_arrow (widget->style, widget->window,
 				widget->state, GTK_SHADOW_OUT,
 				GTK_ARROW_UP, TRUE,
-				aarea.x - wpaint.x, aarea.y - wpaint.y,
+				aarea.x, aarea.y,
 				ARROW_SIZE, ARROW_SIZE);
 	}
-
-	/* Draw everything */
-	gdk_draw_pixmap (widget->window,
-			 widget->style->black_gc,
-			 px,
-			 0, 0,
-			 wpaint.x, wpaint.y,
-			 wpaint.width, wpaint.height);
 }
 
 /* Colors are << 16 */

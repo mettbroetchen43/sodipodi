@@ -1,5 +1,8 @@
 2003-04-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/sp-color-slider.c (sp_color_slider_paint): Use proper style painters,
+	so Gdk/Gtk crash bug does not show up anymore
+
 	* src/xml/repr-io.c (sp_repr_read_file): Substitute entities (by MentaL)
 	(sp_repr_read_mem): Ditto
 
