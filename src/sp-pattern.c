@@ -59,7 +59,6 @@ static unsigned int sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static void sp_pattern_modified (SPObject *object, unsigned int flags);
 static unsigned int sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq);
-static unsigned int sp_pattern_extra_transform (SPItem *item, NRMatrixD *transform);
 
 static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);

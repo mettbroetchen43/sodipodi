@@ -20,9 +20,7 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 
 #define SP_TYPE_DESKTOP_WIDGET (sp_desktop_widget_get_type ())
 #define SP_DESKTOP_WIDGET(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP_WIDGET, SPDesktopWidget))
-#define SP_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DESKTOP_WIDGET, SPDesktopWidgetClass))
 #define SP_IS_DESKTOP_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP_WIDGET))
-#define SP_IS_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP_WIDGET))
 
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
@@ -37,7 +35,11 @@ struct _SPDesktop {
 	/* fixme: Remove this and reimplement shutdown (Lauris) */
 	Sodipodi *sodipodi;
 
+	/* Namedview defines guides grids and such */
 	SPNamedView *namedview;
+	/* Base group where items are created */
+	SPItem *base;
+
 	SPSelection *selection;
 	SPEventContext *event_context;
 
@@ -83,9 +85,14 @@ void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
 void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
+#if 0
 void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
+#endif
 
-/* Context */
+/* Set base group */
+void sp_desktop_set_base (SPDesktop *dt, SPItem *base);
+
+/* Event context */
 void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config);
 void sp_desktop_push_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config, unsigned int key);
 void sp_desktop_pop_event_context (SPDesktop *desktop, unsigned int key);

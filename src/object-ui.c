@@ -268,20 +268,17 @@ sp_group_menu (SPObject *object, SPDesktop *desktop, GtkMenu * menu)
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
 #endif
 	gtk_widget_set_sensitive (w, FALSE);
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Separator */
 	w = gtk_menu_item_new ();
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* "Ungroup" */
 	w = gtk_menu_item_new_with_label (_("Ungroup"));
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_group_ungroup_activate), item);
-	gtk_widget_show (w);
 
 	gtk_menu_append (GTK_MENU (m), w);
-	gtk_widget_show (m);
+	gtk_widget_show_all (m);
 
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
 

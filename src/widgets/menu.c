@@ -125,3 +125,29 @@ sp_menu_append (SPMenu *menu, const unsigned char *label, const unsigned char *t
 	g_list_free (cl);
 }
 
+static void
+sp_menu_action_activate (GObject *object, SPAction *action)
+{
+	sp_action_perform (action, NULL);
+}
+
+void
+sp_menu_append_action (SPMenu *menu, SPAction *action, void *data)
+{
+	GtkWidget *mi;
+	GList *cl;
+
+	mi = gtk_menu_item_new_with_label (action->name);
+	gtk_widget_show (mi);
+	g_object_set_data (G_OBJECT (mi), "itemdata", (gpointer) data);
+	gtk_menu_append (GTK_MENU (menu), mi);
+	gtk_tooltips_set_tip (menu->tt, GTK_WIDGET (mi), action->tip, NULL);
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_menu_item_activate), menu);
+	g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_menu_action_activate), action);
+
+	/* Set data if we are the first item */
+	cl = gtk_container_get_children (GTK_CONTAINER (menu));
+	if (cl && !cl->next) menu->activedata = (gpointer) data;
+	g_list_free (cl);
+}
+

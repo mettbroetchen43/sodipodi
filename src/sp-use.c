@@ -339,11 +339,11 @@ sp_use_href_changed (SPUse * use)
 				childobj = g_object_new (type, 0);
 				use->child = sp_object_attach_reref (SP_OBJECT (use), childobj, NULL);
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
-				for (v = item->display; v != NULL; v = v->next) {
+				for (v = item->display; v != NULL; v = v->view.next) {
 					NRArenaItem *ai;
-					ai = sp_item_invoke_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key, v->flags);
+					ai = sp_item_invoke_show (SP_ITEM (childobj), NR_ARENA_ITEM_ARENA (v), v->view.key, v->view.flags);
 					if (ai) {
-						nr_arena_item_add_child (v->arenaitem, ai, NULL);
+						nr_arena_item_add_child (v, ai, NULL);
 						nr_arena_item_unref (ai);
 					}
 				}
@@ -403,10 +403,10 @@ sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	}
 
 	/* As last step set additional transform of arena group */
-	for (v = item->display; v != NULL; v = v->next) {
+	for (v = item->display; v != NULL; v = v->view.next) {
 		NRMatrixF t;
 		nr_matrix_f_set_translate (&t, use->x.computed, use->y.computed);
-		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &t);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v), &t);
 	}
 }
 

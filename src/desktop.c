@@ -191,27 +191,7 @@ sp_desktop_dispose (GObject *object)
 	dt = (SPDesktop *) object;
 	view = (SPView *) object;
 
-#if 0
-	/* Detach existing namedview if needed */
-	if (dt->namedview) {
-		sp_signal_disconnect_by_data ((GObject *) dt->namedview, dt);
-		sp_namedview_hide (dt->namedview, dt);
-		dt->namedview = NULL;
-	}
-	/* Hide drawing */
-	/* Hide existing root if needed */
-	if (view->root) {
-		sp_item_invoke_hide (view->root, dt->dkey);
-		/* Root and document are detached in base caller */
-	}
-
-	if (dt->drawing) {
-		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
-		dt->drawing = NULL;
-	}
-#else
 	sp_view_set_root (view, NULL, NULL);
-#endif
 
 	if (dt->sodipodi) {
 		sodipodi_remove_desktop (dt);
@@ -509,6 +489,8 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 	newdoc = (root) ? SP_OBJECT_DOCUMENT (root) : NULL;
 	newnv = (SPNamedView *) layout;
 
+	/* Detach root */
+	sp_desktop_set_base (desktop, NULL);
 	/* Detach existing namedview if needed */
 	if (desktop->namedview && (desktop->namedview != newnv)) {
 		sp_signal_disconnect_by_data ((GObject *) desktop->namedview, desktop);
@@ -542,18 +524,34 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 		sp_desktop_activate_guides (desktop, TRUE);
 		/* Ugly hack */
 		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+		/* Attach root */
+		sp_desktop_set_base (desktop, (SPItem *) ((SPView *) desktop)->root);
+	}
+}
+
+/* Set base group */
+
+static void
+sp_desktop_root_release (SPObject *object, SPDesktop *dt)
+{
+	if (((SPView *) dt)->root) {
+		dt->base = (SPItem *) ((SPView *) dt)->root;
+	}
+	if (dt->base) {
+		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
 	}
 }
 
 void
-sp_desktop_change_document (SPDesktop *desktop, SPDocument *document)
+sp_desktop_set_base (SPDesktop *dt, SPItem *base)
 {
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-	g_return_if_fail (document != NULL);
-	g_return_if_fail (SP_IS_DOCUMENT (document));
-
-	sp_view_set_root (SP_VIEW (desktop), (SPItem *) document->root, (SPObject *) sp_document_namedview (document, NULL));
+	if (dt->base) {
+		sp_signal_disconnect_by_data ((GObject *) dt->base, dt);
+	}
+	dt->base = base;
+	if (dt->base) {
+		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
+	}
 }
 
 /* Private methods */

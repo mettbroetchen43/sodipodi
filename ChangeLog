@@ -1,5 +1,15 @@
 2004-02-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_desktop_set_base): New method
+
+	* src/sp-item.h: Moved view into NRArenaItems, saved pointer per view
+
+	* src/display/nr-arena-item.c (nr_arena_item_view_new_prepend):
+	New method, ported over from SPItem
+	(nr_arena_item_view_list_remove): Ditto
+
+	* src/display/nr-arena-item.h: Added NRArenaItemView
+
 	* src/dialogs/xml-tree.c (on_desktop_shutdown): Return TRUE
 
 	* src/sp-item.c (sp_item_get_viewport): Implement properly,

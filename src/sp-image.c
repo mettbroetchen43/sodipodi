@@ -508,13 +508,13 @@ sp_image_update_canvas_image (SPImage *image)
 		}
 	}
 
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_image_set_pixels (NR_ARENA_IMAGE (v->arenaitem),
+	for (v = item->display; v != NULL; v = v->view.next) {
+		nr_arena_image_set_pixels (NR_ARENA_IMAGE (v),
 					   gdk_pixbuf_get_pixels (image->pixbuf),
 					   gdk_pixbuf_get_width (image->pixbuf),
 					   gdk_pixbuf_get_height (image->pixbuf),
 					   gdk_pixbuf_get_rowstride (image->pixbuf));
-		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v->arenaitem),
+		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v),
 					     image->x.computed, image->y.computed,
 					     image->width.computed, image->height.computed);
 	}

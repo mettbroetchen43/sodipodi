@@ -1009,10 +1009,10 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		SPItemView *v;
 		NRArenaItem *ac;
 
-		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_invoke_show (SP_ITEM (och), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key, v->flags);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			ac = sp_item_invoke_show (SP_ITEM (och), NR_ARENA_ITEM_ARENA (v), v->view.key, v->view.flags);
 			if (ac) {
-				nr_arena_item_add_child (v->arenaitem, ac, NULL);
+				nr_arena_item_add_child (v, ac, NULL);
 				nr_arena_item_unref (ac);
 			}
 		}

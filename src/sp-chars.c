@@ -117,8 +117,8 @@ sp_chars_modified (SPObject *object, unsigned int flags)
 
 	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		SPItemView *v;
-		for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
-			nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (v->arenaitem), object->style);
+		for (v = SP_ITEM (chars)->display; v != NULL; v = v->view.next) {
+			nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (v), object->style);
 		}
 	}
 }
@@ -179,8 +179,8 @@ sp_chars_clear (SPChars *chars)
 		g_free (el);
 	}
 
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_glyphs_group_clear (NR_ARENA_GLYPHS_GROUP (v->arenaitem));
+	for (v = item->display; v != NULL; v = v->view.next) {
+		nr_arena_glyphs_group_clear (NR_ARENA_GLYPHS_GROUP (v));
 	}
 }
 
@@ -204,8 +204,8 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	el->next = chars->elements;
 	chars->elements = el;
 
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v->arenaitem), el->font, el->glyph, &el->transform);
+	for (v = item->display; v != NULL; v = v->view.next) {
+		nr_arena_glyphs_group_add_component (NR_ARENA_GLYPHS_GROUP (v), el->font, el->glyph, &el->transform);
 	}
 }
 
@@ -299,8 +299,8 @@ sp_chars_set_paintbox (SPChars *chars, NRRectF *paintbox)
 	chars->paintbox.x1 = paintbox->x1;
 	chars->paintbox.y1 = paintbox->y1;
 
-	for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
-		nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (v->arenaitem), &chars->paintbox);
+	for (v = SP_ITEM (chars)->display; v != NULL; v = v->view.next) {
+		nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (v), &chars->paintbox);
 	}
 }
 

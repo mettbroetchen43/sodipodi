@@ -375,10 +375,10 @@ sp_symbol_update (SPObject *object, SPCtx *ctx, guint flags)
 			((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
 
 		/* As last step set additional transform of arena group */
-		for (v = item->display; v != NULL; v = v->next) {
+		for (v = item->display; v != NULL; v = v->view.next) {
 			NRMatrixF vbf;
 			nr_matrix_f_from_d (&vbf, &symbol->c2p);
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v), &vbf);
 		}
 	} else {
 		/* No-op */

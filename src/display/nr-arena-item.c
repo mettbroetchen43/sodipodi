@@ -751,4 +751,33 @@ nr_arena_item_detach_unref (NRArenaItem *parent, NRArenaItem *child)
 	return next;
 }
 
+#ifdef NR_ARENA_ITEM_HAS_VIEW
 
+NRArenaItem *
+nr_arena_item_view_new_prepend (NRArenaItem *list, unsigned int flags, unsigned int key, NRArenaItem *ai)
+{
+	assert (ai->view.next == NULL);
+
+	ai->view.next = list;
+	ai->view.flags = flags;
+	ai->view.key = key;
+
+	return ai;
+}
+
+NRArenaItem *
+nr_arena_item_view_list_remove (NRArenaItem *list, NRArenaItem *view)
+{
+	if (view == list) {
+		list = list->view.next;
+	} else {
+		NRArenaItem *prev;
+		prev = list;
+		while (prev->view.next != view) prev = prev->view.next;
+		prev->view.next = view->view.next;
+	}
+
+	return list;
+}
+
+#endif

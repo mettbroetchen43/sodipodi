@@ -445,7 +445,7 @@ sp_module_print_plain_begin (SPModulePrint *mod, SPDocument *doc)
 	pmod = (SPModulePrintPlain *) mod;
 	driver = pmod->driver;
 
-	printf ("plain_begin: driver = %x, driver->begin = %x\n", driver, driver->begin);
+	printf ("plain_begin: driver = %p, driver->begin = %p\n", driver, driver->begin);
 	if (driver->begin)
 		driver->begin (driver, doc);
 
@@ -462,7 +462,7 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 	pmod = (SPModulePrintPlain *) mod;
 	driver = pmod->driver;
 	
-	printf ("plain_finish: driver->finish = %x\n", driver->finish);
+	printf ("plain_finish: driver->finish = %p\n", driver->finish);
 	if (!pmod->stream) return 0;
 
 	if (driver->finish)
@@ -480,7 +480,7 @@ sp_module_print_plain_bind (SPModulePrint *mod, const NRMatrixF *transform, floa
 	pmod = (SPModulePrintPlain *) mod;
 	driver = pmod->driver;
 
-	printf ("plain_bind: driver->bind = %x\n", driver->bind);
+	printf ("plain_bind: driver->bind = %p\n", driver->bind);
 	if (!pmod->stream) return -1;
 
 	return driver->bind (driver, transform, opacity);

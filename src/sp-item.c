@@ -36,9 +36,6 @@
 
 #include "style.h"
 #include "print.h"
-#if 0
-#include "sp-root.h"
-#endif
 #include "sp-anchor.h"
 #include "sp-clippath.h"
 #include "sp-mask.h"
@@ -58,8 +55,11 @@ static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 
-static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
+#if 0
+static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item,
+					     unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
 static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
+#endif
 
 static SPObjectClass *parent_class;
 
@@ -145,16 +145,18 @@ sp_item_release (SPObject * object)
 	item = (SPItem *) object;
 
 	while (item->display) {
+		NRArenaItem *ai;
+		ai = item->display;
 		if (item->clip) {
-			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
-			nr_arena_item_set_clip (item->display->arenaitem, NULL);
+			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (ai));
+			nr_arena_item_set_clip (ai, NULL);
 		}
 		if (item->mask) {
-			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
-			nr_arena_item_set_mask (item->display->arenaitem, NULL);
+			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (ai));
+			nr_arena_item_set_mask (ai, NULL);
 		}
-		nr_arena_item_unparent (item->display->arenaitem);
-		item->display = sp_item_view_list_remove (item->display, item->display);
+		item->display = nr_arena_item_view_list_remove (item->display, item->display);
+		nr_arena_item_unparent (ai);
 	}
 
 	if (item->clip) {
@@ -177,9 +179,9 @@ sp_item_clip_release (SPClipPath *cp, SPItem *item)
 	if (item->clip) {
 		SPItemView *v;
 		/* Hide clippath */
-		for (v = item->display; v != NULL; v = v->next) {
-			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-			nr_arena_item_set_clip (v->arenaitem, NULL);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v));
+			nr_arena_item_set_clip (v, NULL);
 		}
 		/* Detach clippath */
 		sp_signal_disconnect_by_data (item->clip, item);
@@ -200,9 +202,9 @@ sp_item_mask_release (SPMask *mask, SPItem *item)
 	if (item->mask) {
 		SPItemView *v;
 		/* Hide mask */
-		for (v = item->display; v != NULL; v = v->next) {
-			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-			nr_arena_item_set_mask (v->arenaitem, NULL);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v));
+			nr_arena_item_set_mask (v, NULL);
 		}
 		/* Detach mask */
 		sp_signal_disconnect_by_data (item->mask, item);
@@ -245,9 +247,9 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				/* Detach clippath */
 				sp_signal_disconnect_by_data (item->clip, item);
 				/* Hide clippath */
-				for (v = item->display; v != NULL; v = v->next) {
-					sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-					nr_arena_item_set_clip (v->arenaitem, NULL);
+				for (v = item->display; v != NULL; v = v->view.next) {
+					sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v));
+					nr_arena_item_set_clip (v, NULL);
 				}
 				item->clip = sp_object_hunref (item->clip, object);
 			}
@@ -258,15 +260,15 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				g_signal_connect (G_OBJECT (item->clip), "release", G_CALLBACK (sp_item_clip_release), item);
 				g_signal_connect (G_OBJECT (item->clip), "modified", G_CALLBACK (sp_item_clip_modified), item);
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
-				for (v = item->display; v != NULL; v = v->next) {
+				for (v = item->display; v != NULL; v = v->view.next) {
 					NRArenaItem *ai;
-					if (!v->arenaitem->key) NR_ARENA_ITEM_SET_KEY (v->arenaitem, sp_item_display_key_new (3));
+					if (!v->view.key) NR_ARENA_ITEM_SET_KEY (v, sp_item_display_key_new (3));
 					ai = sp_clippath_show (SP_CLIPPATH (item->clip),
-							       NR_ARENA_ITEM_ARENA (v->arenaitem),
-							       NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-					nr_arena_item_set_clip (v->arenaitem, ai);
+							       NR_ARENA_ITEM_ARENA (v),
+							       NR_ARENA_ITEM_GET_KEY (v));
+					nr_arena_item_set_clip (v, ai);
 					nr_arena_item_unref (ai);
-					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v), &bbox);
 				}
 			}
 		}
@@ -281,9 +283,9 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				/* Detach mask */
 				sp_signal_disconnect_by_data (item->mask, item);
 				/* Hide mask */
-				for (v = item->display; v != NULL; v = v->next) {
-					sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-					nr_arena_item_set_mask (v->arenaitem, NULL);
+				for (v = item->display; v != NULL; v = v->view.next) {
+					sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v));
+					nr_arena_item_set_mask (v, NULL);
 				}
 				item->mask = sp_object_hunref (item->mask, object);
 			}
@@ -294,15 +296,15 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				g_signal_connect (G_OBJECT (item->mask), "release", G_CALLBACK (sp_item_mask_release), item);
 				g_signal_connect (G_OBJECT (item->mask), "modified", G_CALLBACK (sp_item_mask_modified), item);
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
-				for (v = item->display; v != NULL; v = v->next) {
+				for (v = item->display; v != NULL; v = v->view.next) {
 					NRArenaItem *ai;
-					if (!v->arenaitem->key) NR_ARENA_ITEM_SET_KEY (v->arenaitem, sp_item_display_key_new (3));
+					if (!v->view.key) NR_ARENA_ITEM_SET_KEY (v, sp_item_display_key_new (3));
 					ai = sp_mask_show (SP_MASK (item->mask),
-							   NR_ARENA_ITEM_ARENA (v->arenaitem),
-							   NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-					nr_arena_item_set_mask (v->arenaitem, ai);
+							   NR_ARENA_ITEM_ARENA (v),
+							   NR_ARENA_ITEM_GET_KEY (v));
+					nr_arena_item_set_mask (v, ai);
 					nr_arena_item_unref (ai);
-					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
+					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v), &bbox);
 				}
 			}
 		}
@@ -310,15 +312,15 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 	}
 	case SP_ATTR_SODIPODI_INSENSITIVE:
 		item->sensitive = !value;
-		for (v = item->display; v != NULL; v = v->next) {
-			nr_arena_item_set_sensitive (v->arenaitem, item->sensitive);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			nr_arena_item_set_sensitive (v, item->sensitive);
 		}
 		break;
 	case SP_ATTR_SODIPODI_NONPRINTABLE:
 		item->printable = !value;
-		for (v = item->display; v != NULL; v = v->next) {
-			if (v->flags & SP_ITEM_SHOW_PRINT) {
-				nr_arena_item_set_visible (v->arenaitem, item->printable);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			if (v->view.flags & SP_ITEM_SHOW_PRINT) {
+				nr_arena_item_set_visible (v, item->printable);
 			}
 		}
 		break;
@@ -351,27 +353,27 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 	if (flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)) {
 		SPItemView *v;
 		if (flags & SP_OBJECT_MODIFIED_FLAG) {
-			for (v = item->display; v != NULL; v = v->next) {
-				nr_arena_item_set_transform (v->arenaitem, &item->transform);
+			for (v = item->display; v != NULL; v = v->view.next) {
+				nr_arena_item_set_transform (v, &item->transform);
 			}
 		}
 		if ((item->clip) || (item->mask)) {
 			NRRectF bbox;
 			sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 			if (item->clip) {
-				for (v = item->display; v != NULL; v = v->next) {
-					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
+				for (v = item->display; v != NULL; v = v->view.next) {
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v), &bbox);
 				}
 			}
 			if (item->mask) {
-				for (v = item->display; v != NULL; v = v->next) {
-					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem), &bbox);
+				for (v = item->display; v != NULL; v = v->view.next) {
+					sp_mask_set_bbox (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v), &bbox);
 				}
 			}
 		}
 		if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
-			for (v = item->display; v != NULL; v = v->next) {
-				nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
+			for (v = item->display; v != NULL; v = v->view.next) {
+				nr_arena_item_set_opacity (v, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 			}
 		}
 	}
@@ -571,7 +573,7 @@ sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned in
 		ai = ((SPItemClass *) G_OBJECT_GET_CLASS (item))->show (item, arena, key, flags);
 
 	if (ai != NULL) {
-		item->display = sp_item_view_new_prepend (item->display, item, flags, key, ai);
+		item->display = nr_arena_item_view_new_prepend (item->display, flags, key, ai);
 		nr_arena_item_set_transform (ai, &item->transform);
 		nr_arena_item_set_opacity (ai, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 		nr_arena_item_set_sensitive (ai, item->sensitive);
@@ -580,15 +582,15 @@ sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned in
 		}
 		if (item->clip) {
 			NRArenaItem *ac;
-			if (!item->display->arenaitem->key) NR_ARENA_ITEM_SET_KEY (item->display->arenaitem, sp_item_display_key_new (3));
-			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
+			if (!item->display->key) NR_ARENA_ITEM_SET_KEY (item->display, sp_item_display_key_new (3));
+			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, NR_ARENA_ITEM_GET_KEY (item->display));
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
 		if (item->mask) {
 			NRArenaItem *ac;
-			if (!item->display->arenaitem->key) NR_ARENA_ITEM_SET_KEY (item->display->arenaitem, sp_item_display_key_new (3));
-			ac = sp_mask_show (SP_MASK (item->mask), arena, NR_ARENA_ITEM_GET_KEY (item->display->arenaitem));
+			if (!item->display->key) NR_ARENA_ITEM_SET_KEY (item->display, sp_item_display_key_new (3));
+			ac = sp_mask_show (SP_MASK (item->mask), arena, NR_ARENA_ITEM_GET_KEY (item->display));
 			nr_arena_item_set_mask (ai, ac);
 			nr_arena_item_unref (ac);
 		}
@@ -612,23 +614,24 @@ sp_item_invoke_hide (SPItem *item, unsigned int key)
 	ref = NULL;
 	v = item->display;
 	while (v != NULL) {
-		next = v->next;
-		if (v->key == key) {
+		next = v->view.next;
+		if (v->view.key == key) {
 			if (item->clip) {
-				sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-				nr_arena_item_set_clip (v->arenaitem, NULL);
+				sp_clippath_hide (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_GET_KEY (v));
+				nr_arena_item_set_clip (v, NULL);
 			}
 			if (item->mask) {
-				sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v->arenaitem));
-				nr_arena_item_set_mask (v->arenaitem, NULL);
+				sp_mask_hide (SP_MASK (item->mask), NR_ARENA_ITEM_GET_KEY (v));
+				nr_arena_item_set_mask (v, NULL);
 			}
 			if (!ref) {
-				item->display = v->next;
+				item->display = v->view.next;
 			} else {
-				ref->next = v->next;
+				/* fixme: This is dangerous (Lauris) */
+				ref->view.next = v->view.next;
 			}
-			nr_arena_item_unparent (v->arenaitem);
-			g_free (v);
+			nr_arena_item_unparent (v);
+			/* g_free (v); */
 		} else {
 			ref = v;
 		}
@@ -774,59 +777,7 @@ sp_item_get_bbox_document (SPItem *item, NRRectF *bb, unsigned int flags, unsign
 	sp_item_invoke_bbox_full (item, bb, &i2docd, flags, clear);
 }
 
-/* fixme: This does not work as intended (Lauris) */
-/* Transformation to normalized (0,0-1,1) viewport */
-
-NRMatrixF *
-sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
-{
-	NRMatrixD td;
-	SPVPGroup *vpgroup;
-
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
-	g_return_val_if_fail (affine != NULL, NULL);
-
-	nr_matrix_d_set_identity (&td);
-
-	while (SP_OBJECT_PARENT (item)) {
-		/* if (!SP_IS_ITEM (item)) { g_print ("Lala\n"); } */
-		nr_matrix_multiply_ddf (&td, &td, &item->transform);
-		item = (SPItem *) SP_OBJECT_PARENT (item);
-	}
-
-	g_return_val_if_fail (SP_IS_VPGROUP (item), NULL);
-
-	vpgroup = (SPVPGroup *) item;
-
-	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &vpgroup->c2p);
-
-	td.c[0] /= vpgroup->width.computed;
-	td.c[1] /= vpgroup->height.computed;
-	td.c[2] /= vpgroup->width.computed;
-	td.c[3] /= vpgroup->height.computed;
-
-	nr_matrix_f_from_d (affine, &td);
-
-	return affine;
-}
-
 #if 0
-/* fixme: This is EVIL!!! */
-
-NRMatrixF *
-sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *affine)
-{
-	NRMatrixF i2dt;
-
-	/* fixme: Implement the right way (Lauris) */
-	sp_item_i2d_affine (item, &i2dt);
-	nr_matrix_f_invert (affine, &i2dt);
-
-	return affine;
-}
-#endif
 
 /* Item views */
 
@@ -867,115 +818,7 @@ sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 	return list;
 }
 
-/* Convert distances into SVG units */
-
-static const SPUnit *absolute = NULL;
-static const SPUnit *percent = NULL;
-static const SPUnit *em = NULL;
-static const SPUnit *ex = NULL;
-
-gdouble
-sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *unit)
-{
-	NRMatrixF i2doc;
-	double dx, dy;
-	double a2u, u2a;
-
-	g_return_val_if_fail (item != NULL, distance);
-	g_return_val_if_fail (SP_IS_ITEM (item), distance);
-	g_return_val_if_fail (unit != NULL, distance);
-
-	sp_item_i2doc_affine (item, &i2doc);
-	dx = i2doc.c[0] + i2doc.c[2];
-	dy = i2doc.c[1] + i2doc.c[3];
-	u2a = sqrt (dx * dx + dy * dy) * M_SQRT1_2;
-	a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
-
-	if (unit->base == SP_UNIT_DIMENSIONLESS) {
-		/* Check for percentage */
-		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
-		if (unit == percent) {
-			/* Percentage of viewport */
-			/* fixme: full viewport support (Lauris) */
-			dx = sp_document_width (SP_OBJECT_DOCUMENT (item));
-			dy = sp_document_height (SP_OBJECT_DOCUMENT (item));
-			return 0.01 * distance * sqrt (dx * dx + dy * dy) * M_SQRT1_2;
-		} else {
-			/* Treat as userspace */
-			return distance * unit->unittobase * u2a;
-		}
-	} else if (unit->base == SP_UNIT_VOLATILE) {
-		/* Either em or ex */
-		/* fixme: This need real care */
-		if (!em) em = sp_unit_get_by_abbreviation ("em");
-		if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
-		if (unit == em) {
-			return distance * 12.0;
-		} else {
-			return distance * 10.0;
-		}
-	} else {
-		/* Everything else can be done in one step */
-		/* We just know, that pt == 1.25 * px */
-		if (!absolute) absolute = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		sp_convert_distance_full (&distance, unit, absolute, u2a, 0.8);
-		return distance;
-	}
-}
-
-gdouble
-sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit)
-{
-	NRMatrixF i2doc;
-	double dx, dy;
-	double a2u, u2a;
-
-	g_return_val_if_fail (item != NULL, distance);
-	g_return_val_if_fail (SP_IS_ITEM (item), distance);
-	g_return_val_if_fail (unit != NULL, distance);
-
-	g_return_val_if_fail (item != NULL, distance);
-	g_return_val_if_fail (SP_IS_ITEM (item), distance);
-	g_return_val_if_fail (unit != NULL, distance);
-
-	sp_item_i2doc_affine (item, &i2doc);
-	dx = i2doc.c[0] + i2doc.c[2];
-	dy = i2doc.c[1] + i2doc.c[3];
-	u2a = sqrt (dx * dx + dy * dy) * M_SQRT1_2;
-	a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
-
-	if (unit->base == SP_UNIT_DIMENSIONLESS) {
-		/* Check for percentage */
-		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
-		if (unit == percent) {
-			/* Percentage of viewport */
-			/* fixme: full viewport support (Lauris) */
-			g_warning ("file %s: line %d: Implement real item bbox percentage etc.", __FILE__, __LINE__);
-			dx = sp_document_width (SP_OBJECT_DOCUMENT (item));
-			dy = sp_document_height (SP_OBJECT_DOCUMENT (item));
-			return 0.01 * distance * sqrt (dx * dx + dy * dy) * M_SQRT1_2;
-		} else {
-			/* Treat as userspace */
-			return distance * unit->unittobase * u2a;
-		}
-	} else if (unit->base == SP_UNIT_VOLATILE) {
-		/* Either em or ex */
-		/* fixme: This need real care */
-		if (!em) em = sp_unit_get_by_abbreviation ("em");
-		if (!ex) ex = sp_unit_get_by_abbreviation ("ex");
-		if (unit == em) {
-			return distance * 12.0;
-		} else {
-			return distance * 10.0;
-		}
-	} else {
-		/* Everything else can be done in one step */
-		/* We just know, that pt == 1.25 * px */
-		if (!absolute) absolute = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		sp_convert_distance_full (&distance, unit, absolute, u2a, 0.8);
-		return distance;
-	}
-}
+#endif
 
 /* Utility */
 int

@@ -189,10 +189,10 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	if (SP_IS_ITEM (ochild)) {
 		SPItemView *v;
 		NRArenaItem *ac;
-		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key, v->flags);
+		for (v = item->display; v != NULL; v = v->view.next) {
+			ac = sp_item_invoke_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v), v->view.key, v->view.flags);
 			if (ac) {
-				nr_arena_item_add_child (v->arenaitem, ac, NULL);
+				nr_arena_item_add_child (v, ac, NULL);
 				nr_arena_item_set_order (ac, position);
 				nr_arena_item_unref (ac);
 			}
@@ -283,8 +283,8 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 
 	if (SP_IS_ITEM (childobj)) {
 		SPItemView *v;
-		for (v = SP_ITEM (childobj)->display; v != NULL; v = v->next) {
-			nr_arena_item_set_order (v->arenaitem, newpos);
+		for (v = SP_ITEM (childobj)->display; v != NULL; v = v->view.next) {
+			nr_arena_item_set_order (v, newpos);
 		}
 	}
 
@@ -1004,9 +1004,9 @@ sp_vpgroup_update (SPObject *object, SPCtx *ctx, guint flags)
 		((SPObjectClass *) (vpgroup_parent_class))->update (object, (SPCtx *) &rctx, flags);
 
 	/* As last step set additional transform of arena group */
-	for (v = item->display; v != NULL; v = v->next) {
+	for (v = item->display; v != NULL; v = v->view.next) {
 		NRMatrixF vbf;
 		nr_matrix_f_from_d (&vbf, &vpgroup->c2p);
-		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v), &vbf);
 	}
 }

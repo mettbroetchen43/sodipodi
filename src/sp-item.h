@@ -45,8 +45,9 @@ struct _SPEvent {
 	gpointer data;
 };
 
-typedef struct _SPItemView SPItemView;
+typedef struct _NRArenaItem SPItemView;
 
+#if 0
 struct _SPItemView {
 	SPItemView *next;
 	unsigned int flags;
@@ -54,6 +55,7 @@ struct _SPItemView {
 	/* SPItem *item; */
 	NRArenaItem *arenaitem;
 };
+#endif
 
 /* flags */
 
@@ -168,20 +170,6 @@ NRMatrixF *sp_item_i2doc_affine (SPItem *item, NRMatrixF *transform);
 NRMatrixF *sp_item_i2root_affine (SPItem *item, NRMatrixF *transform);
 
 void sp_item_get_bbox_document (SPItem *item, NRRectF *bb, unsigned int flags, unsigned int clear);
-
-/* Transformation to normalized (0,0-1,1) viewport */
-NRMatrixF *sp_item_i2vp_affine (SPItem *item, NRMatrixF *transform);
-
-#if 0
-/* fixme: - these are evil, but OK */
-void sp_item_set_i2d_affine (SPItem *item, const NRMatrixF *transform);
-NRMatrixF *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *transform);
-#endif
-
-/* Convert distances into SVG units */
-
-gdouble sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *unit);
-gdouble sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit);
 
 /* Utility */
 int sp_corner_snappoints (NRPointF *points, int size, const NRMatrixF *transform, float x0, float y0, float x1, float y1);

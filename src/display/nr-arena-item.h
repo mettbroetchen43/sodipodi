@@ -55,6 +55,10 @@ typedef struct _NRGC NRGC;
 #define NR_ARENA_ITEM_RENDER_NO_CACHE (1 << 0)
 #define NR_ARENA_ITEM_RENDER_WIREFRAME (1 << 1)
 
+/* For multiview documents this saves some space */
+
+#define NR_ARENA_ITEM_HAS_VIEW
+
 #include <libnr/nr-types.h>
 #include <libnr/nr-pixblock.h>
 #include <libnr/nr-object.h>
@@ -63,6 +67,14 @@ typedef struct _NRGC NRGC;
 struct _NRGC {
 	NRMatrixD transform;
 };
+
+#ifdef NR_ARENA_ITEM_HAS_VIEW
+struct _NRArenaItemView {
+	NRArenaItem *next;
+	unsigned int flags;
+	unsigned int key;
+};
+#endif
 
 struct _NRArenaItem {
 	NRObject object;
@@ -83,6 +95,10 @@ struct _NRArenaItem {
 
 	/* Key for secondary rendering */
 	unsigned int key;
+
+#ifdef NR_ARENA_ITEM_HAS_VIEW
+	struct _NRArenaItemView view;
+#endif
 
 	/* BBox in grid coordinates */
 	NRRectL bbox;
@@ -176,5 +192,10 @@ NRArenaItem *nr_arena_item_detach_unref (NRArenaItem *parent, NRArenaItem *child
 
 #define NR_ARENA_ITEM_SET_KEY(i,k) (((NRArenaItem *) (i))->key = (k))
 #define NR_ARENA_ITEM_GET_KEY(i) (((NRArenaItem *) (i))->key)
+
+#ifdef NR_ARENA_ITEM_HAS_VIEW
+NRArenaItem *nr_arena_item_view_new_prepend (NRArenaItem *list, unsigned int flags, unsigned int key, NRArenaItem *ai);
+NRArenaItem *nr_arena_item_view_list_remove (NRArenaItem *list, NRArenaItem *view);
+#endif
 
 #endif
