@@ -10,7 +10,7 @@ endif
 build: build-stamp
 build-stamp:
 	dh_testdir
-	CFLAGS="$(CFLAGS)" ./autogen.sh --prefix=/usr --sysconfdir=/etc --with-gtk-prefix=/usr 
+	CFLAGS="$(CFLAGS)" ./autogen.sh --prefix=/usr --sysconfdir=/etc --with-gtk-prefix=/usr --mandir=$(tmp)/usr/share/man --without-bonobo --without-arena --without-new-render 
 	$(MAKE)
 	touch build-stamp
 
@@ -18,8 +18,9 @@ clean:
 	dh_testdir
 	dh_testroot
 	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -f build-stamp install-sh mkinstalldirs missing config.guess config.sub INSTALL
-	rm -f po/*.gmo po/messages config.log src/bonobo/Makefile src/display/nr/Makefile		
+	rm -f build-stamp 
+	rm -f po/*.gmo po/messages config.log src/bonobo/Makefile src/display/nr/Makefile
+	rm -f po/.intltool-merge-cache config.guess config.sub INSTALL install-sh missing mkinstalldirs intltool-extract intltool-merge intltool-update
 	dh_clean 
 
 binary-indep: 
@@ -41,9 +42,7 @@ endif
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
-#	perl -pi -e "s/libxml1, //" debian/substvars.debhelper
 	dh_gencontrol
-#	dh_makeshlibs -V 'libxml1 (>= 1:1.8.9-1)'
 	dh_md5sums
 	dh_builddeb
 

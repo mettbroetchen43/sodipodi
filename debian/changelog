@@ -1,3 +1,46 @@
+sodipodi (0.24.1.0.20020317-1) unstable; urgency=medium
+
+  * CVS sync as of 2002-03-17, closes: #130140.
+  * This bug should be gone with this CVS snapshot and it's
+    unreproducible by me and upstream author, please try this package.
+    closes: #137422.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sun, 17 Mar 2002 17:05:36 +0100
+
+sodipodi (0.24.1-3) unstable; urgency=high
+
+  * Recompiled against libgal19; closes: #130913.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 26 Jan 2002 16:23:12 +0100
+
+sodipodi (0.24.1-2) unstable; urgency=medium
+
+  * Removed bonobo support, upstream author said that it's still
+    beta and should be disabled by default; closes: #126364.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Fri, 28 Dec 2001 13:48:26 +0100
+
+sodipodi (0.24.1-1) unstable; urgency=high
+
+  * New upstream version.
+  * Recompiled against libgal18, closes: #118819.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 10 Nov 2001 14:40:45 +0100
+
+sodipodi (0.24-2) unstable; urgency=high
+
+  * Recompiled against libgal14; closes: #116319.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 20 Oct 2001 16:42:57 +0200
+
+sodipodi (0.24-1) unstable; urgency=low
+
+  * New upstream version.
+  * &-characters are now escaped, closes: #89804.
+    Thanks to Peter Moulder <pmoulder@poole.csse.monash.edu.au>
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sun,  7 Oct 2001 22:17:26 +0200
+
 sodipodi (0.23.0.20010923-2) unstable; urgency=high
 
   * Fixed Build-Depends, closes: #113410.
