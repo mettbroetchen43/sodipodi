@@ -1175,8 +1175,6 @@ sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	text = SP_TEXT (item);
 
-	bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
-
 	for (o = text->children; o != NULL; o = o->next) {
 		gdouble a[6];
 		child = SP_ITEM (o);

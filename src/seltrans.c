@@ -526,6 +526,10 @@ sp_sel_trans_update_volatile_state (SPSelTrans * seltrans)
 
 	sp_selection_bbox (SP_DT_SELECTION (seltrans->desktop), &seltrans->box);
 
+	if ((seltrans->box.x0 > seltrans->box.x1) || (seltrans->box.y0 > seltrans->box.y1)) {
+		seltrans->empty = TRUE;
+		return;
+	}
 #if 0
 	seltrans->box.x0 -= 0.125;
 	seltrans->box.y0 -= 0.125;

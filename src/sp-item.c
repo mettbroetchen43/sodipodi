@@ -336,8 +336,8 @@ sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	g_assert (bbox != NULL);
 	g_assert (transform != NULL);
 
-	bbox->x0 = bbox->y0 = 0.0;
-	bbox->x1 = bbox->y1 = 0.0;
+	bbox->x0 = bbox->y0 = 1e18;
+	bbox->x1 = bbox->y1 = -1e18;
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
 		SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox (item, bbox, transform);

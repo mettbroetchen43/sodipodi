@@ -125,8 +125,6 @@ sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	chars = SP_CHARS (item);
 
-	bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
-
 	for (el = chars->elements; el != NULL; el = el->next) {
 		const ArtBpath *bpath;
 		gdouble a[6], b[6];

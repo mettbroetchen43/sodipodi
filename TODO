@@ -9,6 +9,8 @@ TODO for 0.27
 - Toolbox scaling bug
 - Tooltips for tools
 - Update .spec.in file
+- Ungroup forgetting font family bug
+- Fix places where bbox is not tested for emptyness
 
 Other tasks
 ===========
