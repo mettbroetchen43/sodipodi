@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2003-02-08 00:41+0200\n"
+"POT-Creation-Date: 2003-02-22 15:13+0200\n"
 "PO-Revision-Date: 2001-08-11 22:32+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -13,21 +13,30 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: sodipodi.desktop.in.h:1 src/toolbox.c:109 src/toolbox.c:131
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr ""
+
 # src/bonobo/svg-doc-factory.c:35
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nem sikerült létrehozni a sodipodi-svg-doc factory-t"
 
-#: src/desktop.c:673
-msgid "Whether zoom follows window size"
+#. Sticky zoom
+#: src/desktop.c:726
+msgid "Zoom drawing if window size changes"
 msgstr ""
 
-#: src/desktop.c:752
+#: src/desktop.c:806
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr ""
 
-#: src/desktop.c:873
+#: src/desktop.c:935
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "%s dokumentum megváltozott. Mented a változásokat?"
@@ -95,17 +104,19 @@ msgstr "Legnagyobb elem"
 msgid "Smallest item"
 msgstr "Legkisebb elem"
 
+#. Page page
 #: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
-#: src/dialogs/document-properties.c:164 src/dialogs/export.c:126
+#: src/dialogs/document-properties.c:164 src/dialogs/export.c:135
 #: src/interface.c:360
 msgid "Page"
 msgstr "Lap"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:359
+#: src/dialogs/align.c:194 src/dialogs/export.c:140 src/interface.c:359
 msgid "Drawing"
 msgstr "Rajz"
 
-#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:358
+#. Selection submenu
+#: src/dialogs/align.c:195 src/dialogs/export.c:145 src/interface.c:358
 #: src/interface.c:497 src/toolbox.c:423
 msgid "Selection"
 msgstr "Kijelölés"
@@ -114,10 +125,13 @@ msgstr "Kijelölés"
 msgid "Desktop settings"
 msgstr "Munkafelület beállításai"
 
+#. Grid settings
+#. Notebook tab
 #: src/dialogs/desktop-properties.c:232
 msgid "Grid"
 msgstr "Rács"
 
+#. Checkbuttons
 #: src/dialogs/desktop-properties.c:242
 msgid "Show grid"
 msgstr "Rács mutatása"
@@ -162,6 +176,7 @@ msgstr "Rács színe:"
 msgid "Grid color"
 msgstr "Rács színe"
 
+#. Guidelines page
 #: src/dialogs/desktop-properties.c:356
 msgid "Guides"
 msgstr "Segédvonalak"
@@ -205,6 +220,8 @@ msgstr "Új nézet"
 msgid "Display settings"
 msgstr "Megjelenítés beállításai"
 
+#. Rendering settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:92
 msgid "Rendering"
 msgstr "Megjelenítés"
@@ -233,6 +250,8 @@ msgstr "8x8"
 msgid "16x16"
 msgstr "16x16"
 
+#. Input settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:142
 msgid "Input"
 msgstr ""
@@ -253,72 +272,77 @@ msgstr "Papír mérete:"
 msgid "Custom"
 msgstr "Egyéni"
 
+#. Custom paper frame
 #: src/dialogs/document-properties.c:204
 msgid "Custom paper"
 msgstr "Saját papír"
 
-#: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
-#: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:402
+#. Unit selector
+#: src/dialogs/document-properties.c:215 src/dialogs/export.c:153
+#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:402
 #: src/dialogs/transformation.c:577
 msgid "Units:"
 msgstr "Mértékegység"
 
-#: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
-#: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
-#: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
-#: src/dialogs/stroke-style.c:541 src/dialogs/tool-attributes.c:120
+#. Stroke width
+#: src/dialogs/document-properties.c:224 src/dialogs/export.c:163
+#: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
+#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
+#: src/dialogs/stroke-style.c:558 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1075
 msgid "Width:"
 msgstr "Szélesség:"
 
-#: src/dialogs/document-properties.c:239 src/dialogs/export.c:185
-#: src/dialogs/export.c:210 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:361
+#: src/dialogs/document-properties.c:239 src/dialogs/export.c:172
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
+#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
 msgid "Height:"
 msgstr "Magasság:"
 
-#: src/dialogs/export.c:106
+#: src/dialogs/export.c:115
 #, fuzzy
 msgid "Export bitmap"
 msgstr "Fájl exportálása"
 
-#: src/dialogs/export.c:115
+#. Export area frame
+#: src/dialogs/export.c:124
 #, fuzzy
 msgid "Export area"
 msgstr "Exportálva a következõként:"
 
-#: src/dialogs/export.c:152
+#: src/dialogs/export.c:157
 msgid "x0:"
 msgstr ""
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:160
 #, fuzzy
 msgid "x1:"
 msgstr "1:1"
 
-#: src/dialogs/export.c:172
+#: src/dialogs/export.c:166
 msgid "y0:"
 msgstr ""
 
-#: src/dialogs/export.c:179
+#: src/dialogs/export.c:169
 #, fuzzy
 msgid "y1:"
 msgstr "1:1"
 
-#: src/dialogs/export.c:191
+#. Bitmap size frame
+#: src/dialogs/export.c:178
 #, fuzzy
 msgid "Bitmap size"
 msgstr "Kép mérete"
 
-#: src/dialogs/export.c:200 src/dialogs/export.c:210
+#: src/dialogs/export.c:187 src/dialogs/export.c:195
 msgid "pixels"
 msgstr "képpont"
 
-#: src/dialogs/export.c:205 src/dialogs/export.c:214
+#: src/dialogs/export.c:191 src/dialogs/export.c:199
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:221
+#: src/dialogs/export.c:206
 #, fuzzy
 msgid "Export png file"
 msgstr "Fájl exportálása"
@@ -395,212 +419,217 @@ msgstr ""
 msgid "Item properties"
 msgstr "Elem tulajdonságai"
 
-#: src/dialogs/object-attributes.c:30
+#: src/dialogs/object-attributes.c:31
 #, fuzzy
 msgid "Href:"
 msgstr "Kék:"
 
-#: src/dialogs/object-attributes.c:31
+#: src/dialogs/object-attributes.c:32
 msgid "Target:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:32
+#: src/dialogs/object-attributes.c:33
 msgid "Type:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:33
+#: src/dialogs/object-attributes.c:34
 #, fuzzy
 msgid "Role:"
 msgstr "Vörös:"
 
-#: src/dialogs/object-attributes.c:34
+#: src/dialogs/object-attributes.c:35
 msgid "Arcrole:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:35
+#: src/dialogs/object-attributes.c:36
 #, fuzzy
 msgid "Title:"
 msgstr "Fájl"
 
-#: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:110
+#: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:37
+#: src/dialogs/object-attributes.c:38
 #, fuzzy
 msgid "Actuate:"
 msgstr "Attribútum:"
 
-#: src/dialogs/object-attributes.c:42
+#: src/dialogs/object-attributes.c:43
 #, fuzzy
 msgid "Sides:"
 msgstr "Segédvonalak"
 
-#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
+#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
 #, fuzzy
 msgid "Center X:"
 msgstr "Centiméter"
 
-#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
+#: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
 #, fuzzy
 msgid "Center Y:"
 msgstr "Centiméter"
 
-#: src/dialogs/object-attributes.c:45
+#: src/dialogs/object-attributes.c:46
 #, fuzzy
 msgid "R1:"
 msgstr "1:1"
 
-#: src/dialogs/object-attributes.c:46
+#: src/dialogs/object-attributes.c:47
 #, fuzzy
 msgid "R2:"
 msgstr "2:1"
 
-#: src/dialogs/object-attributes.c:47
+#: src/dialogs/object-attributes.c:48
 msgid "ARG1:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:48
+#: src/dialogs/object-attributes.c:49
 msgid "ARG2:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:55 src/spiral-context.c:362
+#. Expansion
+#: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
 msgid "Expansion:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:90
+#. Revolution
+#: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 #, fuzzy
 msgid "Revolution:"
 msgstr "Kijelölés"
 
-#: src/dialogs/object-attributes.c:57
+#: src/dialogs/object-attributes.c:58
 msgid "Radius:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:58
+#: src/dialogs/object-attributes.c:59
 msgid "Argument:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:59
+#: src/dialogs/object-attributes.c:60
 msgid "T0:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:64
+#: src/dialogs/object-attributes.c:65
 msgid "URL:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:65 src/dialogs/object-attributes.c:73
-#: src/dialogs/object-properties.c:316
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:330
 msgid "X:"
 msgstr "X:"
 
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:331
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-properties.c:345
 msgid "Y:"
 msgstr "Y:"
 
-#: src/dialogs/object-attributes.c:77
+#: src/dialogs/object-attributes.c:78
 #, fuzzy
 msgid "RX:"
 msgstr "X:"
 
-#: src/dialogs/object-attributes.c:78
+#: src/dialogs/object-attributes.c:79
 #, fuzzy
 msgid "RY:"
 msgstr "Y:"
 
-#: src/dialogs/object-attributes.c:108
+#: src/dialogs/object-attributes.c:115
 #, fuzzy, c-format
 msgid "%s attributes"
 msgstr "Attribútum"
 
-#: src/dialogs/object-properties.c:89
+#: src/dialogs/object-properties.c:109
 #, fuzzy
 msgid "Object style"
 msgstr "Objektum"
 
-#: src/dialogs/object-properties.c:104
+#: src/dialogs/object-properties.c:124
 msgid "Fill"
 msgstr "Kitöltés"
 
-#: src/dialogs/object-properties.c:118
+#: src/dialogs/object-properties.c:138
 #, fuzzy
 msgid "Stroke paint"
 msgstr "Kihúzás szélessége"
 
-#: src/dialogs/object-properties.c:132
+#: src/dialogs/object-properties.c:152
 #, fuzzy
 msgid "Stroke style"
 msgstr "Kihúzás szélessége"
 
-#: src/dialogs/object-properties.c:152
+#: src/dialogs/object-properties.c:172
 msgid "Apply to:"
 msgstr ""
 
-#: src/dialogs/object-properties.c:163
+#: src/dialogs/object-properties.c:182
 #, fuzzy
 msgid "Selected objects"
 msgstr "A kijelölt objektumok tükrözése"
 
-#: src/dialogs/object-properties.c:167
+#: src/dialogs/object-properties.c:185
 msgid "All shape tools"
 msgstr ""
 
-#: src/dialogs/object-properties.c:171
+#: src/dialogs/object-properties.c:188
 #, fuzzy
 msgid "Rectangle tool"
 msgstr "Téglalap"
 
-#: src/dialogs/object-properties.c:175
+#: src/dialogs/object-properties.c:191
 msgid "Arc tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:179
+#: src/dialogs/object-properties.c:194
 #, fuzzy
 msgid "Star tool"
 msgstr "Rács színe"
 
-#: src/dialogs/object-properties.c:183
+#: src/dialogs/object-properties.c:197
 msgid "Spiral tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:187
+#: src/dialogs/object-properties.c:200
 #, fuzzy
 msgid "Freehand and pen"
 msgstr "Szabadkézi"
 
-#: src/dialogs/object-properties.c:191
+#: src/dialogs/object-properties.c:203
 msgid "Calligraphic line"
 msgstr ""
 
-#: src/dialogs/object-properties.c:195 src/interface.c:390
+#: src/dialogs/object-properties.c:206 src/interface.c:390
 msgid "Text"
 msgstr "Szöveg"
 
-#: src/dialogs/object-properties.c:269
+#: src/dialogs/object-properties.c:283
 msgid "Object position and size"
 msgstr ""
 
-#: src/dialogs/object-properties.c:291
+#: src/dialogs/object-properties.c:305
 #, fuzzy
 msgid "Position and size"
 msgstr "Hely"
 
-#: src/dialogs/stroke-style.c:528 src/toolbox.c:380
+#: src/dialogs/stroke-style.c:545 src/toolbox.c:380
 #, fuzzy
 msgid "Stroke settings"
 msgstr "Munkafelület beállításai"
 
-#: src/dialogs/stroke-style.c:564
+#. Join type
+#: src/dialogs/stroke-style.c:581
 msgid "Join:"
 msgstr "Egyesítés:"
 
-#: src/dialogs/stroke-style.c:607
+#. Cap type
+#: src/dialogs/stroke-style.c:624
 msgid "Cap:"
 msgstr ""
 
-#: src/dialogs/stroke-style.c:650
+#. Dash
+#: src/dialogs/stroke-style.c:667
 #, fuzzy
 msgid "Pattern:"
 msgstr "Minta"
@@ -610,6 +639,7 @@ msgstr "Minta"
 msgid "Text properties"
 msgstr "Szöveg tulajdonságai"
 
+#. Layout
 #: src/dialogs/text-edit.c:133
 msgid "Layout"
 msgstr "Elrendezés"
@@ -649,6 +679,7 @@ msgstr ""
 msgid "Missing tool preferences"
 msgstr ""
 
+#. Magnitude
 #: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
 msgstr ""
@@ -663,10 +694,12 @@ msgstr "Hely"
 msgid "Transform:"
 msgstr "Átalakítás"
 
+#. Mass
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
 msgid "Mass:"
 msgstr ""
 
+#. Drag
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1051
 #, fuzzy
 msgid "Drag:"
@@ -706,6 +739,7 @@ msgstr "Kijelölés átalakítása"
 msgid "Move"
 msgstr "Mozgatás"
 
+#. Relative moves
 #: src/dialogs/transformation.c:408
 #, fuzzy
 msgid "Relative move"
@@ -819,12 +853,14 @@ msgstr ""
 msgid "Unnamed document %d"
 msgstr ""
 
+#. Angle
 #: src/dyna-draw-context.c:1063
 #, fuzzy
 msgid "Angle:"
 msgstr "szög"
 
-#: src/dyna-draw-context.c:1087 src/rect-context.c:422
+#. Reset
+#: src/dyna-draw-context.c:1087 src/rect-context.c:420
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
 msgstr ""
@@ -851,76 +887,81 @@ msgid ""
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/rect-context.c:398
+#. rx_ratio
+#: src/rect-context.c:396
 msgid "Roundness ratio for x:"
 msgstr ""
 
-#: src/rect-context.c:410
+#. ry_ratio
+#: src/rect-context.c:408
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:630
+#: src/select-context.c:632
 #, fuzzy
 msgid "Visual transformation"
 msgstr "Átalakítás"
 
-#: src/select-context.c:638
+#: src/select-context.c:640
 #, fuzzy
 msgid "Show content"
 msgstr "Tartalom"
 
-#: src/select-context.c:645
+#: src/select-context.c:647
 #, fuzzy
 msgid "Show outline"
 msgstr "Segédvonalak mutatása"
 
-#: src/select-context.c:652
+#: src/select-context.c:654
 #, fuzzy
 msgid "Object transformation"
 msgstr "Átalakítás törlése"
 
-#: src/select-context.c:660
+#: src/select-context.c:662
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:667
+#: src/select-context.c:669
 msgid "Preserve"
 msgstr ""
 
+#. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
 msgstr ""
 
+#. Proportion
 #: src/star-context.c:367
 #, fuzzy
 msgid "Proportion:"
 msgstr "Hely"
 
+#. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
 msgstr ""
 
-#: src/file.c:114
+#: src/file.c:126
 msgid "Select file to open"
 msgstr "Válaszd ki a megnyitandó fájlt"
 
-#: src/file.c:202
+#: src/file.c:214
 msgid "Save file"
 msgstr "Fájl mentése"
 
-#: src/file.c:218
+#: src/file.c:230
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr ""
 
-#: src/file.c:224
+#: src/file.c:236
 msgid "Plain SVG"
 msgstr ""
 
-#: src/file.c:230
+#: src/file.c:242
 msgid "Save as:"
 msgstr ""
 
-#: src/file.c:383
+#: src/file.c:407
 msgid "Select file to import"
 msgstr "Importálandó fájl kiválasztása"
 
@@ -929,6 +970,7 @@ msgstr "Importálandó fájl kiválasztása"
 msgid "About sodipodi"
 msgstr "Sodipodi"
 
+#. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
 #, fuzzy
 msgid "Unit"
@@ -986,6 +1028,8 @@ msgstr "Userspace"
 msgid "Userspace units"
 msgstr "Userspace"
 
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
 #: src/helper/units.c:46
 msgid "Percent"
 msgstr "Százalék"
@@ -1148,24 +1192,29 @@ msgstr "Kitöltés színnel"
 msgid "Cleanup"
 msgstr ""
 
+#. Selection:Group
 #: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "Csoportosítás"
 
+#. Selection:Ungroup
 #: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Csoport felbontása"
 
+#. Selection:Combine
 #: src/interface.c:266
 #, fuzzy
 msgid "Combine"
 msgstr "Össze_vonás"
 
+#. Selection:Break apart
 #: src/interface.c:271
 #, fuzzy
 msgid "Break apart"
 msgstr "_Széttördelés"
 
+#. Selection:Order
 #: src/interface.c:280
 msgid "Order"
 msgstr "Sorrend"
@@ -1189,7 +1238,8 @@ msgstr "Tégla"
 msgid "Lower"
 msgstr ""
 
-#: src/interface.c:354 src/interface.c:391 src/toolbox.c:594
+#. View:Zoom
+#: src/interface.c:354 src/interface.c:391 src/toolbox.c:600
 msgid "Zoom"
 msgstr "Nagyítás"
 
@@ -1205,10 +1255,12 @@ msgstr "1:1"
 msgid "2:1"
 msgstr "2:1"
 
+#. View:New View
 #: src/interface.c:370
 msgid "New View"
 msgstr "Új nézet"
 
+#. View:New Preview
 #: src/interface.c:372
 #, fuzzy
 msgid "New Preview"
@@ -1243,12 +1295,14 @@ msgstr "Téglalap"
 msgid "Arc"
 msgstr ""
 
-#: src/interface.c:386 src/sp-star.c:481
+#. Create toplevel menuitem
+#: src/interface.c:386 src/sp-star.c:475
 #, fuzzy
 msgid "Star"
 msgstr "Kihúzás"
 
-#: src/interface.c:387 src/sp-spiral.c:610
+#. Create toplevel menuitem
+#: src/interface.c:387 src/sp-spiral.c:606
 msgid "Spiral"
 msgstr ""
 
@@ -1311,129 +1365,147 @@ msgstr ""
 msgid "Display Properties"
 msgstr "Megjelenítés beállításai"
 
+#. Undo
 #: src/interface.c:460
 msgid "Undo"
 msgstr "Visszavonás"
 
+#. File:Print Preview
 #: src/interface.c:462
 msgid "Redo"
 msgstr "Újra"
 
+#. Generic menu
+#. File submenu
 #: src/interface.c:485 src/toolbox.c:304
 msgid "File"
 msgstr "Fájl"
 
+#. Edit submenu
 #: src/interface.c:491 src/toolbox.c:341 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Szerkesztés"
 
+#. View submenu
 #: src/interface.c:503
 #, fuzzy
 msgid "View"
 msgstr "Új nézet"
 
+#. Drawing mode submenu
 #: src/interface.c:509
 #, fuzzy
 msgid "Drawing Mode"
 msgstr "Rajzkörnyezet"
 
+#. Dialog submenu
 #: src/interface.c:515
 msgid "Dialogs"
 msgstr ""
 
-#: src/main.c:105
+#: src/main.c:109
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 
-#: src/main.c:108
+#: src/main.c:112
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 
-#: src/main.c:111
+#: src/main.c:115
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:132
+#: src/main.c:116 src/main.c:119 src/main.c:122 src/main.c:136
 msgid "FILENAME"
 msgstr ""
 
-#: src/main.c:114
+#: src/main.c:118
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:117
+#: src/main.c:121
 #, fuzzy
 msgid "Export document to png file"
 msgstr "Kép exportálása PNG formátumba"
 
-#: src/main.c:120
+#: src/main.c:124
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
-#: src/main.c:121
+#: src/main.c:125
 msgid "DPI"
 msgstr ""
 
-#: src/main.c:123
+#: src/main.c:127
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:124
+#: src/main.c:128
 msgid "x0:y0:x1:y1"
 msgstr ""
 
-#: src/main.c:126
+#: src/main.c:130
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:126
+#: src/main.c:130
 msgid "WIDTH"
 msgstr ""
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "HEIGHT"
 msgstr ""
 
-#: src/main.c:130
+#: src/main.c:134
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
-#: src/main.c:130
+#: src/main.c:134
 msgid "COLOR"
 msgstr ""
 
-#: src/main.c:132
+#: src/main.c:136
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 
-#: src/sodipodi.c:370
+#: src/main.c:140
+msgid "Prefer SVG icons (file icons.svg) to pixmap ones"
+msgstr ""
+
+#: src/slideshow.c:88
+#, fuzzy
+msgid "Sodipodi slideshow"
+msgstr "Sodipodi"
+
+#: src/sodipodi.c:379
 msgid "Untitled document"
 msgstr ""
 
-#: src/sodipodi.c:395
+#. Show nice dialog box
+#: src/sodipodi.c:404
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
-#: src/sodipodi.c:396
+#: src/sodipodi.c:405
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
-#: src/sodipodi.c:397
+#: src/sodipodi.c:406
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
-#: src/sodipodi.c:534
+#: src/sodipodi.c:543
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1441,7 +1513,7 @@ msgid ""
 "neither load nor save preferences\n"
 msgstr ""
 
-#: src/sodipodi.c:537
+#: src/sodipodi.c:546
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1451,7 +1523,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:542
+#: src/sodipodi.c:551
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1460,7 +1532,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:554
+#: src/sodipodi.c:563
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1468,7 +1540,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:557
+#: src/sodipodi.c:566
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1477,7 +1549,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:561
+#: src/sodipodi.c:570
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1485,7 +1557,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:898
+#: src/sodipodi.c:913
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1494,7 +1566,7 @@ msgid ""
 "%s."
 msgstr ""
 
-#: src/sodipodi.c:902
+#: src/sodipodi.c:917
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1503,7 +1575,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:906
+#: src/sodipodi.c:921
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1512,7 +1584,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:910
+#: src/sodipodi.c:925
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1521,7 +1593,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:920
+#: src/sodipodi.c:935
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1529,7 +1601,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:923
+#: src/sodipodi.c:938
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1537,7 +1609,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:926
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1545,7 +1617,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:929
+#: src/sodipodi.c:944
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1558,69 +1630,76 @@ msgstr ""
 msgid "Link to %s"
 msgstr ""
 
+#. Create toplevel menuitem
 #: src/sp-anchor.c:266
 #, fuzzy
 msgid "Link"
 msgstr "in"
 
+#. Link dialog
 #: src/sp-anchor.c:269
 #, fuzzy
 msgid "Link Properties"
 msgstr "Elem tulajdonságai"
 
+#. Select item
 #: src/sp-anchor.c:279
 #, fuzzy
 msgid "Follow link"
 msgstr "teli vonal"
 
+#. Reset transformations
 #: src/sp-anchor.c:284
 msgid "Remove link"
 msgstr ""
 
-#: src/sp-image.c:417
+#: src/sp-image.c:372
 #, c-format
 msgid "Image with bad reference: %s"
 msgstr ""
 
-#: src/sp-image.c:419
+#: src/sp-image.c:374
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr ""
 
-#: src/sp-image.c:655
+#. Create toplevel menuitem
+#: src/sp-image.c:610
 #, fuzzy
 msgid "Image"
 msgstr "Kép mérete"
 
-#: src/sp-image.c:658
+#. Link dialog
+#: src/sp-image.c:613
 #, fuzzy
 msgid "Image Properties"
 msgstr "Elem tulajdonságai"
 
-#: src/sp-image.c:666 src/sp-image.c:862
+#. Autotrace dialog
+#: src/sp-image.c:621 src/sp-image.c:817
 msgid "Trace"
 msgstr ""
 
-#: src/sp-image.c:1008
+#: src/sp-image.c:963
 #, c-format
 msgid "Error to write %s: %s"
 msgstr ""
 
-#: src/sp-image.c:1042
+#: src/sp-image.c:997
 msgid "Untitled"
 msgstr ""
 
-#: src/sp-image.c:1047
+#: src/sp-image.c:1002
 #, fuzzy
 msgid "Document Name:"
 msgstr "Dokumentum"
 
-#: src/sp-image.c:1060
+#: src/sp-image.c:1015
 #, fuzzy
 msgid "Unknown"
 msgstr "Ismeretlen elem :-("
 
-#: src/sp-image.c:1066
+#: src/sp-image.c:1021
 #, fuzzy
 msgid "Image URI:"
 msgstr "Kép mérete"
@@ -1630,6 +1709,7 @@ msgstr "Kép mérete"
 msgid "Group of %d objects"
 msgstr ""
 
+#. Group dialog
 #: src/sp-item-group.c:520
 #, fuzzy
 msgid "Group Properties"
@@ -1639,18 +1719,22 @@ msgstr "Szöveg tulajdonságai"
 msgid "Unknown item :-("
 msgstr "Ismeretlen elem :-("
 
+#. Create toplevel menuitem
 #: src/sp-item.c:896
 msgid "Item"
 msgstr "Elem"
 
+#. Item dialog
 #: src/sp-item.c:899
 msgid "Item Properties"
 msgstr "Elem tulajdonságai"
 
+#. Select item
 #: src/sp-item.c:909
 msgid "Select this"
 msgstr "Kijelölés"
 
+#. Reset transformations
 #: src/sp-item.c:919
 msgid "Reset transformation"
 msgstr ""
@@ -1663,51 +1747,51 @@ msgstr ""
 msgid "Make insensitive"
 msgstr ""
 
+#. Create link
 #: src/sp-item.c:930
 msgid "Create link"
 msgstr ""
 
-#: src/sp-rect.c:571
+#. Create toplevel menuitem
+#: src/sp-rect.c:572
 #, fuzzy
 msgid "Rect"
 msgstr "Tégla"
 
-#: src/sp-rect.c:574
+#. Link dialog
+#: src/sp-rect.c:575
 #, fuzzy
 msgid "Rect Properties"
 msgstr "Szöveg tulajdonságai"
 
-#: src/sp-shape.c:299
-msgid "A path - whatever it means"
-msgstr "Útvonal - bármit is jelentsen"
-
-#: src/sp-shape.c:408
+#. Create toplevel menuitem
+#: src/sp-shape.c:332
 #, fuzzy
 msgid "Shape"
 msgstr "Mentés\t"
 
-#: src/sp-shape.c:411 src/toolbox.c:381
+#. Item dialog
+#: src/sp-shape.c:335 src/toolbox.c:381
 #, fuzzy
 msgid "Fill settings"
 msgstr "Betûkészlet beállításai"
 
-#: src/sp-spiral.c:613
+#. Link dialog
+#: src/sp-spiral.c:609
 #, fuzzy
 msgid "Spiral Properties"
 msgstr "Szöveg tulajdonságai"
 
-#: src/sp-star.c:484
+#. Link dialog
+#: src/sp-star.c:478
 #, fuzzy
 msgid "Star Properties"
 msgstr "Szöveg tulajdonságai"
 
-#: src/sp-text.c:1240
+#. fixme:
+#: src/sp-text.c:1288
 msgid "Text object"
 msgstr "Szövegobjektum"
-
-#: src/toolbox.c:109 src/toolbox.c:131
-msgid "Sodipodi"
-msgstr "Sodipodi"
 
 #: src/toolbox.c:307
 msgid "Create new SVG document"
@@ -1799,6 +1883,7 @@ msgstr "Munkafelület beállításai"
 msgid "Object transformations"
 msgstr "Átalakítás törlése"
 
+#. START COMPONENTS
 #: src/toolbox.c:392
 #, fuzzy
 msgid "Flip selected objects horizontally"
@@ -1865,15 +1950,19 @@ msgstr "A kijelölt csoport felbontása"
 msgid "Draw"
 msgstr "Rajzolás"
 
+#. Select
 #: src/toolbox.c:461
 #, fuzzy
 msgid "Select tool - select and transform objects"
 msgstr "Objektumok és csoportok kijelölése és átalakítása"
 
+#. Node
 #: src/toolbox.c:468
 msgid "Node tool - modify different aspects of existing objects"
 msgstr ""
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:480
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
@@ -1891,6 +1980,8 @@ msgstr ""
 msgid "Spiral tool - create spirals"
 msgstr ""
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:498
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr ""
@@ -1903,103 +1994,116 @@ msgstr ""
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr ""
 
+#. Text
 #: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
 msgstr ""
 
+#. Zoom
 #: src/toolbox.c:515
 msgid "Zoom tool - zoom into choosen area"
 msgstr ""
 
-#: src/toolbox.c:552
+#. Dropper
+#: src/toolbox.c:521
+msgid "Dropper tool - pick averaged colors from image"
+msgstr ""
+
+#. Todo:  Generalize all the toolbox routines to have general purpose
+#. routine for creating them
+#. Create the extension toolbox
+#. Todo: Make it able to create required boxes dynamically
+#: src/toolbox.c:558
 #, fuzzy
 msgid "Extension"
 msgstr "Méret"
 
-#: src/toolbox.c:597
+#: src/toolbox.c:603
 #, fuzzy
 msgid "Zoom in drawing"
 msgstr "Nagyítás a rajzra"
 
-#: src/toolbox.c:598
+#: src/toolbox.c:604
 #, fuzzy
 msgid "Set zoom factor to 2:1"
 msgstr "1:1 méret"
 
-#: src/toolbox.c:599
+#: src/toolbox.c:605
 #, fuzzy
 msgid "Set zoom factor to 1:1"
 msgstr "1:1 méret"
 
-#: src/toolbox.c:600
+#: src/toolbox.c:606
 #, fuzzy
 msgid "Set zoom factor to 1:2"
 msgstr "1:1 méret"
 
-#: src/toolbox.c:601
+#: src/toolbox.c:607
 #, fuzzy
 msgid "Zoom out drawing"
 msgstr "Nagyítás a rajzra"
 
-#: src/toolbox.c:602
+#: src/toolbox.c:608
 msgid "Fit the whole page into window"
 msgstr ""
 
-#: src/toolbox.c:603
+#: src/toolbox.c:609
 msgid "Fit the whole drawing into window"
 msgstr ""
 
-#: src/toolbox.c:604
+#: src/toolbox.c:610
 msgid "Fit the whole selection into window"
 msgstr ""
 
-#: src/toolbox.c:628
+#: src/toolbox.c:634
 msgid "Nodes"
 msgstr "Csomópontok"
 
-#: src/toolbox.c:631
+#: src/toolbox.c:637
 #, fuzzy
 msgid "Insert new nodes into selected segments"
 msgstr "A kijelölt szakaszokat vonallá alakítja"
 
-#: src/toolbox.c:632
+#: src/toolbox.c:638
 #, fuzzy
 msgid "Break line at selected nodes"
 msgstr "Vonal simítása a kijelölt csomópontoknál"
 
-#: src/toolbox.c:633
+#: src/toolbox.c:639
 #, fuzzy
 msgid "Make selected nodes corner"
 msgstr "Törli a kijelölt csomópontokat"
 
-#: src/toolbox.c:634
+#: src/toolbox.c:640
 #, fuzzy
 msgid "Make selected segments lines"
 msgstr "A kijelölt szakaszokat vonallá alakítja"
 
-#: src/toolbox.c:635
+#: src/toolbox.c:641
 msgid "Delete selected nodes"
 msgstr "Törli a kijelölt csomópontokat"
 
-#: src/toolbox.c:636
+#: src/toolbox.c:642
 #, fuzzy
 msgid "Join lines at selected nodes"
 msgstr "Vonal simítása a kijelölt csomópontoknál"
 
-#: src/toolbox.c:637
+#: src/toolbox.c:643
 #, fuzzy
 msgid "Make selected nodes smooth"
 msgstr "Törli a kijelölt csomópontokat"
 
-#: src/toolbox.c:638
+#: src/toolbox.c:644
 #, fuzzy
 msgid "Make selected segments curves"
 msgstr "A kijelölt szakaszokat görbévé alakítja"
 
+#. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
 msgstr ""
 
+#. Style frame
 #: src/widgets/font-selector.c:172
 #, fuzzy
 msgid "Style"
@@ -2055,48 +2159,62 @@ msgstr "Rács színe"
 msgid "Gradient vector"
 msgstr "Gradiens"
 
-#: src/widgets/paint-selector.c:597
+#: src/widgets/paint-selector.c:620
 #, fuzzy
 msgid "No objects"
 msgstr "Szövegobjektum"
 
-#: src/widgets/paint-selector.c:611
+#: src/widgets/paint-selector.c:634
 msgid "Multiple styles"
 msgstr ""
 
-#: src/widgets/paint-selector.c:625
+#: src/widgets/paint-selector.c:648
 #, fuzzy
 msgid "No paint"
 msgstr "Pont"
 
-#: src/widgets/paint-selector.c:716
+#. Label
+#: src/widgets/paint-selector.c:738
 #, fuzzy
 msgid "Mode:"
 msgstr "Mozgatás"
 
-#: src/widgets/paint-selector.c:726
+#: src/widgets/paint-selector.c:748
 msgid "RGB"
 msgstr ""
 
-#: src/widgets/paint-selector.c:732
+#: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
+msgid "RGB Colorspace"
+msgstr ""
+
+#: src/widgets/paint-selector.c:749
 msgid "HSV"
 msgstr ""
 
-#: src/widgets/paint-selector.c:738
+#: src/widgets/paint-selector.c:750
 msgid "CMYK"
 msgstr ""
 
-#: src/widgets/paint-selector.c:772
+#: src/widgets/paint-selector.c:750
+msgid "CMYK colospace"
+msgstr ""
+
+#. Use dropper
+#: src/widgets/paint-selector.c:757
+msgid "Get from dropper"
+msgstr ""
+
+#: src/widgets/paint-selector.c:788
 #, fuzzy
 msgid "Color paint"
 msgstr "Színes bitkép"
 
-#: src/widgets/paint-selector.c:842
+#: src/widgets/paint-selector.c:858
 #, fuzzy
 msgid "Linear gradient"
 msgstr "Új színátmenet hozzáadása"
 
-#: src/widgets/paint-selector.c:845
+#: src/widgets/paint-selector.c:861
 #, fuzzy
 msgid "Radial gradient"
 msgstr "Új színátmenet hozzáadása"
@@ -2164,6 +2282,9 @@ msgstr ""
 #: src/draw-context.c:285
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr ""
+
+#~ msgid "A path - whatever it means"
+#~ msgstr "Útvonal - bármit is jelentsen"
 
 #~ msgid "Align"
 #~ msgstr "Igazítás"

@@ -30,7 +30,6 @@ static const guchar *sp_comment_str =
 
 static SPReprDoc *sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns);
 static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns, GHashTable *prefix_map);
-static void sp_repr_write_stream (SPRepr * repr, FILE * file, gint level);
 static void sp_repr_set_xmlns_attr (const guchar *prefix, const guchar *uri, SPRepr *repr);
 static gint sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map);
 
@@ -279,7 +278,7 @@ repr_quote_write (FILE * file, const gchar * val)
 	}
 }
 
-static void
+void
 sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
 {
 	SPReprAttr *attr;

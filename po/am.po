@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-02-08 00:41+0200\n"
+"POT-Creation-Date: 2003-02-22 15:13+0200\n"
 "PO-Revision-Date: 2003-02-01 10:13+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
@@ -15,20 +15,29 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: sodipodi.desktop.in.h:1 src/toolbox.c:109 src/toolbox.c:131
+msgid "Sodipodi"
+msgstr "ሶዲፖዲ"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr ""
+
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
-#: src/desktop.c:673
-msgid "Whether zoom follows window size"
+#. Sticky zoom
+#: src/desktop.c:726
+msgid "Zoom drawing if window size changes"
 msgstr ""
 
-#: src/desktop.c:752
+#: src/desktop.c:806
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "ሶዲፖዲ፦ %s፦ %s፦ %d"
 
-#: src/desktop.c:873
+#: src/desktop.c:935
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr ""
@@ -89,17 +98,19 @@ msgstr ""
 msgid "Smallest item"
 msgstr ""
 
+#. Page page
 #: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
-#: src/dialogs/document-properties.c:164 src/dialogs/export.c:126
+#: src/dialogs/document-properties.c:164 src/dialogs/export.c:135
 #: src/interface.c:360
 msgid "Page"
 msgstr "ገጽ"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:359
+#: src/dialogs/align.c:194 src/dialogs/export.c:140 src/interface.c:359
 msgid "Drawing"
 msgstr ""
 
-#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:358
+#. Selection submenu
+#: src/dialogs/align.c:195 src/dialogs/export.c:145 src/interface.c:358
 #: src/interface.c:497 src/toolbox.c:423
 msgid "Selection"
 msgstr "ምርጫ"
@@ -108,10 +119,13 @@ msgstr "ምርጫ"
 msgid "Desktop settings"
 msgstr "የሠሌዳ ምርጫዎች"
 
+#. Grid settings
+#. Notebook tab
 #: src/dialogs/desktop-properties.c:232
 msgid "Grid"
 msgstr ""
 
+#. Checkbuttons
 #: src/dialogs/desktop-properties.c:242
 msgid "Show grid"
 msgstr ""
@@ -156,6 +170,7 @@ msgstr ""
 msgid "Grid color"
 msgstr ""
 
+#. Guidelines page
 #: src/dialogs/desktop-properties.c:356
 msgid "Guides"
 msgstr ""
@@ -196,6 +211,8 @@ msgstr "ዝጋ"
 msgid "Display settings"
 msgstr "የእስክሪን ምርጫዎች"
 
+#. Rendering settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:92
 msgid "Rendering"
 msgstr ""
@@ -224,6 +241,8 @@ msgstr "8በ8"
 msgid "16x16"
 msgstr "16በ16"
 
+#. Input settings
+#. Notebook tab
 #: src/dialogs/display-settings.c:142
 msgid "Input"
 msgstr "አስገባ"
@@ -244,67 +263,72 @@ msgstr "የወረከት መጠን፦"
 msgid "Custom"
 msgstr "የተለየ"
 
+#. Custom paper frame
 #: src/dialogs/document-properties.c:204
 msgid "Custom paper"
 msgstr "የተለመደው ወረቀት"
 
-#: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
-#: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:402
+#. Unit selector
+#: src/dialogs/document-properties.c:215 src/dialogs/export.c:153
+#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:402
 #: src/dialogs/transformation.c:577
 msgid "Units:"
 msgstr "ክፍሎች፦"
 
-#: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
-#: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
-#: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
-#: src/dialogs/stroke-style.c:541 src/dialogs/tool-attributes.c:120
+#. Stroke width
+#: src/dialogs/document-properties.c:224 src/dialogs/export.c:163
+#: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
+#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
+#: src/dialogs/stroke-style.c:558 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1075
 msgid "Width:"
 msgstr "ስፋት፦"
 
-#: src/dialogs/document-properties.c:239 src/dialogs/export.c:185
-#: src/dialogs/export.c:210 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:361
+#: src/dialogs/document-properties.c:239 src/dialogs/export.c:172
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
+#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
 msgid "Height:"
 msgstr "እርዝማኔ፦"
 
-#: src/dialogs/export.c:106
+#: src/dialogs/export.c:115
 msgid "Export bitmap"
 msgstr ""
 
-#: src/dialogs/export.c:115
+#. Export area frame
+#: src/dialogs/export.c:124
 msgid "Export area"
 msgstr ""
 
-#: src/dialogs/export.c:152
+#: src/dialogs/export.c:157
 msgid "x0:"
 msgstr "x0፦"
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:160
 msgid "x1:"
 msgstr "x1፦"
 
-#: src/dialogs/export.c:172
+#: src/dialogs/export.c:166
 msgid "y0:"
 msgstr "y0፦"
 
-#: src/dialogs/export.c:179
+#: src/dialogs/export.c:169
 msgid "y1:"
 msgstr "y1፦"
 
-#: src/dialogs/export.c:191
+#. Bitmap size frame
+#: src/dialogs/export.c:178
 msgid "Bitmap size"
 msgstr ""
 
-#: src/dialogs/export.c:200 src/dialogs/export.c:210
+#: src/dialogs/export.c:187 src/dialogs/export.c:195
 msgid "pixels"
 msgstr ""
 
-#: src/dialogs/export.c:205 src/dialogs/export.c:214
+#: src/dialogs/export.c:191 src/dialogs/export.c:199
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:221
+#: src/dialogs/export.c:206
 msgid "Export png file"
 msgstr "የpng ፋይል ላኩ"
 
@@ -376,191 +400,196 @@ msgstr ""
 msgid "Item properties"
 msgstr "የዕቃ ምርጫዎች"
 
-#: src/dialogs/object-attributes.c:30
+#: src/dialogs/object-attributes.c:31
 msgid "Href:"
 msgstr "Href፦"
 
-#: src/dialogs/object-attributes.c:31
+#: src/dialogs/object-attributes.c:32
 msgid "Target:"
 msgstr "ኢላማ፦"
 
-#: src/dialogs/object-attributes.c:32
+#: src/dialogs/object-attributes.c:33
 msgid "Type:"
 msgstr "ዓይነት፦"
 
-#: src/dialogs/object-attributes.c:33
+#: src/dialogs/object-attributes.c:34
 msgid "Role:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:34
+#: src/dialogs/object-attributes.c:35
 msgid "Arcrole:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:35
+#: src/dialogs/object-attributes.c:36
 msgid "Title:"
 msgstr "አርእስት፦"
 
-#: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:110
+#: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr "አሳይ፦"
 
-#: src/dialogs/object-attributes.c:37
+#: src/dialogs/object-attributes.c:38
 msgid "Actuate:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:42
+#: src/dialogs/object-attributes.c:43
 msgid "Sides:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:43 src/dialogs/object-attributes.c:53
+#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
 msgid "Center X:"
 msgstr "መሀከል X፦"
 
-#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
+#: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
 msgid "Center Y:"
 msgstr "መሀከል Y፦"
 
-#: src/dialogs/object-attributes.c:45
+#: src/dialogs/object-attributes.c:46
 msgid "R1:"
 msgstr "R1፦"
 
-#: src/dialogs/object-attributes.c:46
+#: src/dialogs/object-attributes.c:47
 msgid "R2:"
 msgstr "R2፦"
 
-#: src/dialogs/object-attributes.c:47
+#: src/dialogs/object-attributes.c:48
 msgid "ARG1:"
 msgstr "ARG1፦"
 
-#: src/dialogs/object-attributes.c:48
+#: src/dialogs/object-attributes.c:49
 msgid "ARG2:"
 msgstr "ARG2፦"
 
-#: src/dialogs/object-attributes.c:55 src/spiral-context.c:362
+#. Expansion
+#: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
 msgid "Expansion:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:90
+#. Revolution
+#: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 msgid "Revolution:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:57
+#: src/dialogs/object-attributes.c:58
 msgid "Radius:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:58
+#: src/dialogs/object-attributes.c:59
 msgid "Argument:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:59
+#: src/dialogs/object-attributes.c:60
 msgid "T0:"
 msgstr "ወደ፦"
 
-#: src/dialogs/object-attributes.c:64
+#: src/dialogs/object-attributes.c:65
 msgid "URL:"
 msgstr "URL፦"
 
-#: src/dialogs/object-attributes.c:65 src/dialogs/object-attributes.c:73
-#: src/dialogs/object-properties.c:316
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:330
 msgid "X:"
 msgstr "X፦"
 
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:331
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-properties.c:345
 msgid "Y:"
 msgstr "Y፦"
 
-#: src/dialogs/object-attributes.c:77
+#: src/dialogs/object-attributes.c:78
 msgid "RX:"
 msgstr "RX፦"
 
-#: src/dialogs/object-attributes.c:78
+#: src/dialogs/object-attributes.c:79
 msgid "RY:"
 msgstr "RY፦"
 
-#: src/dialogs/object-attributes.c:108
+#: src/dialogs/object-attributes.c:115
 #, c-format
 msgid "%s attributes"
 msgstr ""
 
-#: src/dialogs/object-properties.c:89
+#: src/dialogs/object-properties.c:109
 msgid "Object style"
 msgstr ""
 
-#: src/dialogs/object-properties.c:104
+#: src/dialogs/object-properties.c:124
 msgid "Fill"
 msgstr ""
 
-#: src/dialogs/object-properties.c:118
+#: src/dialogs/object-properties.c:138
 msgid "Stroke paint"
 msgstr ""
 
-#: src/dialogs/object-properties.c:132
+#: src/dialogs/object-properties.c:152
 msgid "Stroke style"
 msgstr ""
 
-#: src/dialogs/object-properties.c:152
+#: src/dialogs/object-properties.c:172
 msgid "Apply to:"
 msgstr "ለ... አውል፦"
 
-#: src/dialogs/object-properties.c:163
+#: src/dialogs/object-properties.c:182
 msgid "Selected objects"
 msgstr ""
 
-#: src/dialogs/object-properties.c:167
+#: src/dialogs/object-properties.c:185
 msgid "All shape tools"
 msgstr ""
 
-#: src/dialogs/object-properties.c:171
+#: src/dialogs/object-properties.c:188
 msgid "Rectangle tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:175
+#: src/dialogs/object-properties.c:191
 msgid "Arc tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:179
+#: src/dialogs/object-properties.c:194
 msgid "Star tool"
 msgstr "የኮከብ መሣሪያ"
 
-#: src/dialogs/object-properties.c:183
+#: src/dialogs/object-properties.c:197
 msgid "Spiral tool"
 msgstr ""
 
-#: src/dialogs/object-properties.c:187
+#: src/dialogs/object-properties.c:200
 msgid "Freehand and pen"
 msgstr ""
 
-#: src/dialogs/object-properties.c:191
+#: src/dialogs/object-properties.c:203
 msgid "Calligraphic line"
 msgstr ""
 
-#: src/dialogs/object-properties.c:195 src/interface.c:390
+#: src/dialogs/object-properties.c:206 src/interface.c:390
 msgid "Text"
 msgstr "ጽሑፍ"
 
-#: src/dialogs/object-properties.c:269
+#: src/dialogs/object-properties.c:283
 msgid "Object position and size"
 msgstr ""
 
-#: src/dialogs/object-properties.c:291
+#: src/dialogs/object-properties.c:305
 msgid "Position and size"
 msgstr ""
 
-#: src/dialogs/stroke-style.c:528 src/toolbox.c:380
+#: src/dialogs/stroke-style.c:545 src/toolbox.c:380
 msgid "Stroke settings"
 msgstr ""
 
-#: src/dialogs/stroke-style.c:564
+#. Join type
+#: src/dialogs/stroke-style.c:581
 msgid "Join:"
 msgstr "አገጣጥም፦"
 
-#: src/dialogs/stroke-style.c:607
+#. Cap type
+#: src/dialogs/stroke-style.c:624
 msgid "Cap:"
 msgstr ""
 
-#: src/dialogs/stroke-style.c:650
+#. Dash
+#: src/dialogs/stroke-style.c:667
 msgid "Pattern:"
 msgstr "ንድፍ፦"
 
@@ -568,6 +597,7 @@ msgstr "ንድፍ፦"
 msgid "Text properties"
 msgstr "የጽሑፍ ምርጫዎች"
 
+#. Layout
 #: src/dialogs/text-edit.c:133
 msgid "Layout"
 msgstr "እቅድ"
@@ -605,6 +635,7 @@ msgstr ""
 msgid "Missing tool preferences"
 msgstr ""
 
+#. Magnitude
 #: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
 msgstr ""
@@ -617,10 +648,12 @@ msgstr ""
 msgid "Transform:"
 msgstr ""
 
+#. Mass
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
 msgid "Mass:"
 msgstr ""
 
+#. Drag
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1051
 msgid "Drag:"
 msgstr ""
@@ -653,6 +686,7 @@ msgstr ""
 msgid "Move"
 msgstr "መንቀሳቅስ"
 
+#. Relative moves
 #: src/dialogs/transformation.c:408
 msgid "Relative move"
 msgstr ""
@@ -753,11 +787,13 @@ msgstr ""
 msgid "Unnamed document %d"
 msgstr ""
 
+#. Angle
 #: src/dyna-draw-context.c:1063
 msgid "Angle:"
 msgstr ""
 
-#: src/dyna-draw-context.c:1087 src/rect-context.c:422
+#. Reset
+#: src/dyna-draw-context.c:1087 src/rect-context.c:420
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
 msgstr "ነባሮች"
@@ -782,71 +818,76 @@ msgid ""
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/rect-context.c:398
+#. rx_ratio
+#: src/rect-context.c:396
 msgid "Roundness ratio for x:"
 msgstr ""
 
-#: src/rect-context.c:410
+#. ry_ratio
+#: src/rect-context.c:408
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:630
+#: src/select-context.c:632
 msgid "Visual transformation"
 msgstr ""
 
-#: src/select-context.c:638
+#: src/select-context.c:640
 msgid "Show content"
 msgstr "ይዞታ አሳይ"
 
-#: src/select-context.c:645
+#: src/select-context.c:647
 msgid "Show outline"
 msgstr ""
 
-#: src/select-context.c:652
+#: src/select-context.c:654
 msgid "Object transformation"
 msgstr ""
 
-#: src/select-context.c:660
+#: src/select-context.c:662
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:667
+#: src/select-context.c:669
 msgid "Preserve"
 msgstr ""
 
+#. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
 msgstr ""
 
+#. Proportion
 #: src/star-context.c:367
 msgid "Proportion:"
 msgstr ""
 
+#. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
 msgstr ""
 
-#: src/file.c:114
+#: src/file.c:126
 msgid "Select file to open"
 msgstr ""
 
-#: src/file.c:202
+#: src/file.c:214
 msgid "Save file"
 msgstr "ፋይልን አስቀምጥ"
 
-#: src/file.c:218
+#: src/file.c:230
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG በ \"xmlns:sodipodi\" namespace"
 
-#: src/file.c:224
+#: src/file.c:236
 msgid "Plain SVG"
 msgstr "ቀላል SVG"
 
-#: src/file.c:230
+#: src/file.c:242
 msgid "Save as:"
 msgstr "በሌላ ስም አስቀምጥ"
 
-#: src/file.c:383
+#: src/file.c:407
 msgid "Select file to import"
 msgstr ""
 
@@ -854,6 +895,7 @@ msgstr ""
 msgid "About sodipodi"
 msgstr "ስለ ሶዲፖዲ"
 
+#. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
 msgid "Unit"
 msgstr "ክፍል"
@@ -906,6 +948,8 @@ msgstr "ተጠቃሚ"
 msgid "Userspace units"
 msgstr ""
 
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
 #: src/helper/units.c:46
 msgid "Percent"
 msgstr "መቶኛ"
@@ -1058,22 +1102,27 @@ msgstr "ሁሉንም ሰርዝ"
 msgid "Cleanup"
 msgstr ""
 
+#. Selection:Group
 #: src/interface.c:252 src/sp-item-group.c:516
 msgid "Group"
 msgstr "መድረክ"
 
+#. Selection:Ungroup
 #: src/interface.c:257 src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr ""
 
+#. Selection:Combine
 #: src/interface.c:266
 msgid "Combine"
 msgstr ""
 
+#. Selection:Break apart
 #: src/interface.c:271
 msgid "Break apart"
 msgstr ""
 
+#. Selection:Order
 #: src/interface.c:280
 msgid "Order"
 msgstr "ቅደም ተከተል"
@@ -1094,7 +1143,8 @@ msgstr "አሳድግ"
 msgid "Lower"
 msgstr "ዝቅተኛ"
 
-#: src/interface.c:354 src/interface.c:391 src/toolbox.c:594
+#. View:Zoom
+#: src/interface.c:354 src/interface.c:391 src/toolbox.c:600
 msgid "Zoom"
 msgstr "በቅርበት አሳይ"
 
@@ -1110,10 +1160,12 @@ msgstr "1:1"
 msgid "2:1"
 msgstr "2:1"
 
+#. View:New View
 #: src/interface.c:370
 msgid "New View"
 msgstr "አዲስ ዕይታ"
 
+#. View:New Preview
 #: src/interface.c:372
 msgid "New Preview"
 msgstr "አዲስ ቅድመ ዕይታ"
@@ -1146,11 +1198,13 @@ msgstr ""
 msgid "Arc"
 msgstr ""
 
-#: src/interface.c:386 src/sp-star.c:481
+#. Create toplevel menuitem
+#: src/interface.c:386 src/sp-star.c:475
 msgid "Star"
 msgstr "ኮከብ"
 
-#: src/interface.c:387 src/sp-spiral.c:610
+#. Create toplevel menuitem
+#: src/interface.c:387 src/sp-spiral.c:606
 msgid "Spiral"
 msgstr ""
 
@@ -1206,126 +1260,144 @@ msgstr "የXML ማቀናጃ"
 msgid "Display Properties"
 msgstr "የእስክሪን ምርጫዎች"
 
+#. Undo
 #: src/interface.c:460
 msgid "Undo"
 msgstr "ወደ ነበረበት መልስ"
 
+#. File:Print Preview
 #: src/interface.c:462
 msgid "Redo"
 msgstr "እንደገና አድርግ"
 
+#. Generic menu
+#. File submenu
 #: src/interface.c:485 src/toolbox.c:304
 msgid "File"
 msgstr "ፋይል"
 
+#. Edit submenu
 #: src/interface.c:491 src/toolbox.c:341 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "አስተካክል"
 
+#. View submenu
 #: src/interface.c:503
 msgid "View"
 msgstr "ተመልከት"
 
+#. Drawing mode submenu
 #: src/interface.c:509
 msgid "Drawing Mode"
 msgstr ""
 
+#. Dialog submenu
 #: src/interface.c:515
 msgid "Dialogs"
 msgstr "መምረጫዎች"
 
-#: src/main.c:105
+#: src/main.c:109
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 
-#: src/main.c:108
+#: src/main.c:112
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 
-#: src/main.c:111
+#: src/main.c:115
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:112 src/main.c:115 src/main.c:118 src/main.c:132
+#: src/main.c:116 src/main.c:119 src/main.c:122 src/main.c:136
 msgid "FILENAME"
 msgstr "የፋይል ስም"
 
-#: src/main.c:114
+#: src/main.c:118
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:117
+#: src/main.c:121
 msgid "Export document to png file"
 msgstr ""
 
-#: src/main.c:120
+#: src/main.c:124
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
-#: src/main.c:121
+#: src/main.c:125
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:123
+#: src/main.c:127
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:124
+#: src/main.c:128
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:126
+#: src/main.c:130
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:126
+#: src/main.c:130
 msgid "WIDTH"
 msgstr "ስፋት"
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:128
+#: src/main.c:132
 msgid "HEIGHT"
 msgstr "እርዝማኔ"
 
-#: src/main.c:130
+#: src/main.c:134
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
-#: src/main.c:130
+#: src/main.c:134
 msgid "COLOR"
 msgstr "ቀለም"
 
-#: src/main.c:132
+#: src/main.c:136
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:134
+#: src/main.c:138
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 
-#: src/sodipodi.c:370
+#: src/main.c:140
+msgid "Prefer SVG icons (file icons.svg) to pixmap ones"
+msgstr ""
+
+#: src/slideshow.c:88
+#, fuzzy
+msgid "Sodipodi slideshow"
+msgstr "ሶዲፖዲ"
+
+#: src/sodipodi.c:379
 msgid "Untitled document"
 msgstr "ያልተሰየመ ሰነድ"
 
-#: src/sodipodi.c:395
+#. Show nice dialog box
+#: src/sodipodi.c:404
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
-#: src/sodipodi.c:396
+#: src/sodipodi.c:405
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
-#: src/sodipodi.c:397
+#: src/sodipodi.c:406
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 
-#: src/sodipodi.c:534
+#: src/sodipodi.c:543
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1333,7 +1405,7 @@ msgid ""
 "neither load nor save preferences\n"
 msgstr ""
 
-#: src/sodipodi.c:537
+#: src/sodipodi.c:546
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1343,7 +1415,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:542
+#: src/sodipodi.c:551
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1352,7 +1424,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:554
+#: src/sodipodi.c:563
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1360,7 +1432,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:557
+#: src/sodipodi.c:566
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1369,7 +1441,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:561
+#: src/sodipodi.c:570
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1377,7 +1449,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:898
+#: src/sodipodi.c:913
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1386,7 +1458,7 @@ msgid ""
 "%s."
 msgstr ""
 
-#: src/sodipodi.c:902
+#: src/sodipodi.c:917
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1395,7 +1467,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:906
+#: src/sodipodi.c:921
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1404,7 +1476,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:910
+#: src/sodipodi.c:925
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1413,7 +1485,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:920
+#: src/sodipodi.c:935
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1421,7 +1493,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:923
+#: src/sodipodi.c:938
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1429,7 +1501,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:926
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1437,7 +1509,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:929
+#: src/sodipodi.c:944
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1450,62 +1522,69 @@ msgstr ""
 msgid "Link to %s"
 msgstr ""
 
+#. Create toplevel menuitem
 #: src/sp-anchor.c:266
 msgid "Link"
 msgstr "አያያዝ"
 
+#. Link dialog
 #: src/sp-anchor.c:269
 msgid "Link Properties"
 msgstr "የአያያዝ ምርጫዎች"
 
+#. Select item
 #: src/sp-anchor.c:279
 msgid "Follow link"
 msgstr ""
 
+#. Reset transformations
 #: src/sp-anchor.c:284
 msgid "Remove link"
 msgstr "አያያዝን አስወግድ"
 
-#: src/sp-image.c:417
+#: src/sp-image.c:372
 #, c-format
 msgid "Image with bad reference: %s"
 msgstr ""
 
-#: src/sp-image.c:419
+#: src/sp-image.c:374
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr "ቀለም ምስል %d በ %d፦ %s"
 
-#: src/sp-image.c:655
+#. Create toplevel menuitem
+#: src/sp-image.c:610
 msgid "Image"
 msgstr "ምስል"
 
-#: src/sp-image.c:658
+#. Link dialog
+#: src/sp-image.c:613
 msgid "Image Properties"
 msgstr "የምስሉ ምርጫዎች"
 
-#: src/sp-image.c:666 src/sp-image.c:862
+#. Autotrace dialog
+#: src/sp-image.c:621 src/sp-image.c:817
 msgid "Trace"
 msgstr ""
 
-#: src/sp-image.c:1008
+#: src/sp-image.c:963
 #, c-format
 msgid "Error to write %s: %s"
 msgstr ""
 
-#: src/sp-image.c:1042
+#: src/sp-image.c:997
 msgid "Untitled"
 msgstr "ያልተሰየመ"
 
-#: src/sp-image.c:1047
+#: src/sp-image.c:1002
 msgid "Document Name:"
 msgstr "የሰነድ ስም፦"
 
-#: src/sp-image.c:1060
+#: src/sp-image.c:1015
 msgid "Unknown"
 msgstr "ያልታወቀ"
 
-#: src/sp-image.c:1066
+#: src/sp-image.c:1021
 msgid "Image URI:"
 msgstr "የምስል URI፦"
 
@@ -1514,6 +1593,7 @@ msgstr "የምስል URI፦"
 msgid "Group of %d objects"
 msgstr ""
 
+#. Group dialog
 #: src/sp-item-group.c:520
 msgid "Group Properties"
 msgstr "የመድረክ ምርጫዎች"
@@ -1522,18 +1602,22 @@ msgstr "የመድረክ ምርጫዎች"
 msgid "Unknown item :-("
 msgstr "ያልታወቀ ዕቃ :-("
 
+#. Create toplevel menuitem
 #: src/sp-item.c:896
 msgid "Item"
 msgstr "ዕቃ"
 
+#. Item dialog
 #: src/sp-item.c:899
 msgid "Item Properties"
 msgstr "ዕቃ ምርጫዎች"
 
+#. Select item
 #: src/sp-item.c:909
 msgid "Select this"
 msgstr ""
 
+#. Reset transformations
 #: src/sp-item.c:919
 msgid "Reset transformation"
 msgstr ""
@@ -1546,45 +1630,45 @@ msgstr ""
 msgid "Make insensitive"
 msgstr ""
 
+#. Create link
 #: src/sp-item.c:930
 msgid "Create link"
 msgstr "አያያዝ ፍጠር"
 
-#: src/sp-rect.c:571
+#. Create toplevel menuitem
+#: src/sp-rect.c:572
 msgid "Rect"
 msgstr ""
 
-#: src/sp-rect.c:574
+#. Link dialog
+#: src/sp-rect.c:575
 msgid "Rect Properties"
 msgstr ""
 
-#: src/sp-shape.c:299
-msgid "A path - whatever it means"
-msgstr ""
-
-#: src/sp-shape.c:408
+#. Create toplevel menuitem
+#: src/sp-shape.c:332
 msgid "Shape"
 msgstr ""
 
-#: src/sp-shape.c:411 src/toolbox.c:381
+#. Item dialog
+#: src/sp-shape.c:335 src/toolbox.c:381
 msgid "Fill settings"
 msgstr ""
 
-#: src/sp-spiral.c:613
+#. Link dialog
+#: src/sp-spiral.c:609
 msgid "Spiral Properties"
 msgstr ""
 
-#: src/sp-star.c:484
+#. Link dialog
+#: src/sp-star.c:478
 msgid "Star Properties"
 msgstr "የኮከብ ምርጫዎች"
 
-#: src/sp-text.c:1240
+#. fixme:
+#: src/sp-text.c:1288
 msgid "Text object"
 msgstr ""
-
-#: src/toolbox.c:109 src/toolbox.c:131
-msgid "Sodipodi"
-msgstr "ሶዲፖዲ"
 
 #: src/toolbox.c:307
 msgid "Create new SVG document"
@@ -1662,6 +1746,7 @@ msgstr ""
 msgid "Object transformations"
 msgstr ""
 
+#. START COMPONENTS
 #: src/toolbox.c:392
 msgid "Flip selected objects horizontally"
 msgstr ""
@@ -1718,14 +1803,18 @@ msgstr ""
 msgid "Draw"
 msgstr ""
 
+#. Select
 #: src/toolbox.c:461
 msgid "Select tool - select and transform objects"
 msgstr ""
 
+#. Node
 #: src/toolbox.c:468
 msgid "Node tool - modify different aspects of existing objects"
 msgstr ""
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:480
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
@@ -1743,6 +1832,8 @@ msgstr ""
 msgid "Spiral tool - create spirals"
 msgstr ""
 
+#. START COMPONENTS
+#. Rect
 #: src/toolbox.c:498
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr ""
@@ -1755,90 +1846,103 @@ msgstr ""
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr ""
 
+#. Text
 #: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
 msgstr ""
 
+#. Zoom
 #: src/toolbox.c:515
 msgid "Zoom tool - zoom into choosen area"
 msgstr ""
 
-#: src/toolbox.c:552
+#. Dropper
+#: src/toolbox.c:521
+msgid "Dropper tool - pick averaged colors from image"
+msgstr ""
+
+#. Todo:  Generalize all the toolbox routines to have general purpose
+#. routine for creating them
+#. Create the extension toolbox
+#. Todo: Make it able to create required boxes dynamically
+#: src/toolbox.c:558
 msgid "Extension"
 msgstr ""
 
-#: src/toolbox.c:597
+#: src/toolbox.c:603
 msgid "Zoom in drawing"
 msgstr ""
 
-#: src/toolbox.c:598
+#: src/toolbox.c:604
 msgid "Set zoom factor to 2:1"
 msgstr ""
 
-#: src/toolbox.c:599
+#: src/toolbox.c:605
 msgid "Set zoom factor to 1:1"
 msgstr ""
 
-#: src/toolbox.c:600
+#: src/toolbox.c:606
 msgid "Set zoom factor to 1:2"
 msgstr ""
 
-#: src/toolbox.c:601
+#: src/toolbox.c:607
 msgid "Zoom out drawing"
 msgstr ""
 
-#: src/toolbox.c:602
+#: src/toolbox.c:608
 msgid "Fit the whole page into window"
 msgstr ""
 
-#: src/toolbox.c:603
+#: src/toolbox.c:609
 msgid "Fit the whole drawing into window"
 msgstr ""
 
-#: src/toolbox.c:604
+#: src/toolbox.c:610
 msgid "Fit the whole selection into window"
 msgstr ""
 
-#: src/toolbox.c:628
+#: src/toolbox.c:634
 msgid "Nodes"
 msgstr ""
 
-#: src/toolbox.c:631
+#: src/toolbox.c:637
 msgid "Insert new nodes into selected segments"
 msgstr ""
 
-#: src/toolbox.c:632
+#: src/toolbox.c:638
 msgid "Break line at selected nodes"
 msgstr ""
 
-#: src/toolbox.c:633
+#: src/toolbox.c:639
 msgid "Make selected nodes corner"
 msgstr ""
 
-#: src/toolbox.c:634
+#: src/toolbox.c:640
 msgid "Make selected segments lines"
 msgstr ""
 
-#: src/toolbox.c:635
+#: src/toolbox.c:641
 msgid "Delete selected nodes"
 msgstr ""
 
-#: src/toolbox.c:636
+#: src/toolbox.c:642
 msgid "Join lines at selected nodes"
 msgstr ""
 
-#: src/toolbox.c:637
+#: src/toolbox.c:643
 msgid "Make selected nodes smooth"
 msgstr ""
 
-#: src/toolbox.c:638
+#: src/toolbox.c:644
 msgid "Make selected segments curves"
 msgstr ""
 
+#. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
 msgstr "የፊደል ቅርጽ ቤተሰብ"
 
+#. Style frame
 #: src/widgets/font-selector.c:172
 msgid "Style"
 msgstr "ዓይነት"
@@ -1887,43 +1991,57 @@ msgstr "የመጨረሺያ ቀለም"
 msgid "Gradient vector"
 msgstr ""
 
-#: src/widgets/paint-selector.c:597
+#: src/widgets/paint-selector.c:620
 msgid "No objects"
 msgstr ""
 
-#: src/widgets/paint-selector.c:611
+#: src/widgets/paint-selector.c:634
 msgid "Multiple styles"
 msgstr ""
 
-#: src/widgets/paint-selector.c:625
+#: src/widgets/paint-selector.c:648
 msgid "No paint"
 msgstr ""
 
-#: src/widgets/paint-selector.c:716
+#. Label
+#: src/widgets/paint-selector.c:738
 msgid "Mode:"
 msgstr "የአሠራሩ ዘዴ፦"
 
-#: src/widgets/paint-selector.c:726
+#: src/widgets/paint-selector.c:748
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:732
+#: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
+msgid "RGB Colorspace"
+msgstr ""
+
+#: src/widgets/paint-selector.c:749
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:738
+#: src/widgets/paint-selector.c:750
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:772
+#: src/widgets/paint-selector.c:750
+msgid "CMYK colospace"
+msgstr ""
+
+#. Use dropper
+#: src/widgets/paint-selector.c:757
+msgid "Get from dropper"
+msgstr ""
+
+#: src/widgets/paint-selector.c:788
 msgid "Color paint"
 msgstr ""
 
-#: src/widgets/paint-selector.c:842
+#: src/widgets/paint-selector.c:858
 msgid "Linear gradient"
 msgstr ""
 
-#: src/widgets/paint-selector.c:845
+#: src/widgets/paint-selector.c:861
 msgid "Radial gradient"
 msgstr ""
 

@@ -5,7 +5,7 @@ SUBDIRS = src glade po
 appicondir = $(datadir)/pixmaps
 appicon_DATA = sodipodi.png
 
-Graphicsdir = $(datadir)/gnome/apps/Graphics
+Graphicsdir = $(datadir)/applications
 Graphics_in_files = sodipodi.desktop.in
 Graphics_DATA = $(Graphics_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
@@ -28,4 +28,4 @@ EXTRA_DIST = config.rpath  config.rpath   config.rpath 			\
 	sodipodi.png \
 	sodipodi.ico
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
