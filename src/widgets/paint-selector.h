@@ -77,6 +77,8 @@ void sp_paint_selector_set_gradient_linear (SPPaintSelector *psel, SPGradient *v
 void sp_paint_selector_set_gradient_bbox (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_paint_selector_set_gradient_position (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 
+void sp_paint_selector_set_gradient_radial (SPPaintSelector *psel, SPGradient *vector);
+
 void sp_paint_selector_get_rgba_floatv (SPPaintSelector *psel, gfloat *rgba);
 void sp_paint_selector_get_cmyka_floatv (SPPaintSelector *psel, gfloat *cmyka);
 

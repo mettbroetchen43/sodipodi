@@ -193,7 +193,7 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	ArtDRect bbox;
 	SPLinearGradient *lg;
 	gdouble ctm[6];
-	ArtPoint p0, p1;
+	NRPointF p0, p1;
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -255,10 +255,36 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 			}
 		}
 		/* fixme: Probably we should set multiple mode here too */
-		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 		sp_paint_selector_set_gradient_linear (psel, vector);
 		sp_selection_bbox_document (sel, &bbox);
 		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		/* fixme: This is plain wrong */
+		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
+		sp_item_i2doc_affine (SP_ITEM (object), ctm);
+		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, lg->x1.computed, lg->y1.computed);
+		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, lg->x2.computed, lg->y2.computed);
+		sp_paint_selector_set_gradient_position (psel, p0.x, p0.y, p1.x, p1.y);
+		break;
+	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
+		object = SP_OBJECT (objects->data);
+		/* We know that all objects have radialgradient fill style */
+		vector = sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object)), FALSE);
+		for (l = objects->next; l != NULL; l = l->next) {
+			SPObject *next;
+			next = SP_OBJECT (l->data);
+			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (next)), FALSE) != vector) {
+				/* Multiple vectors */
+				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
+				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+				return;
+			}
+		}
+		/* fixme: Probably we should set multiple mode here too */
+		sp_paint_selector_set_gradient_radial (psel, vector);
+		sp_selection_bbox_document (sel, &bbox);
+		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+#if 0
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
 		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
@@ -270,6 +296,10 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		p1.y = lg->y2.computed;
 		sp_lineargradient_from_position (lg, ctm, &bbox, &p1);
 		sp_paint_selector_set_gradient_position (psel, p0.x, p0.y, p1.x, p1.y);
+#endif
+		break;
+	default:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
 		break;
 	}
 
@@ -321,11 +351,12 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 		break;
+	default:
+		break;
 	}
 
 	fillrule = gtk_object_get_data (GTK_OBJECT (spw), "fill-rule");
-	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule),
-				     (style->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
+	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule), (style->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
 
 	sp_style_unref (style);
 
@@ -384,7 +415,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 			gfloat p[4];
 			ArtDRect bbox;
 			gdouble ctm[6];
-			ArtPoint p0, p1;
+			NRPointF p0, p1;
 			sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
 
 			/* This gives us position in document coordinates */
@@ -394,18 +425,14 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 			sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 			lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));
-			p0.x = p[0];
-			p0.y = p[1];
-			sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
-			p1.x = p[2];
-			p1.y = p[3];
-			sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
+			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
 
 			sp_lineargradient_set_position (lg, p0.x, p0.y, p1.x, p1.y);
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
-		g_warning ("file %s: line %d: Paint %d should not emit 'dragged'", __FILE__, __LINE__, psel->mode);
+		g_warning ("file %s: line %d: radialGradient 'dragged' unimplemented", __FILE__, __LINE__);
 		break;
 	default:
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
@@ -499,7 +526,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 					gfloat p[4];
 					ArtDRect bbox;
 					gdouble ctm[6];
-					ArtPoint p0, p1;
+					NRPointF p0, p1;
 
 					sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
 
@@ -510,12 +537,8 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 					sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 					lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));
-					p0.x = p[0];
-					p0.y = p[1];
-					sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
-					p1.x = p[2];
-					p1.y = p[3];
-					sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
+					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
 
 					sp_repr_set_double (SP_OBJECT_REPR (lg), "x1", p0.x);
 					sp_repr_set_double (SP_OBJECT_REPR (lg), "y1", p0.y);
@@ -527,7 +550,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
-		g_warning ("file %s: line %d: Paint %d should not emit 'changed'", __FILE__, __LINE__, psel->mode);
+		g_warning ("file %s: line %d: radialGradient 'changed' unimplemented", __FILE__, __LINE__);
 		break;
 	default:
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
@@ -658,6 +681,8 @@ sp_fill_style_determine_paint_selector_mode (SPStyle *style)
 	case SP_PAINT_TYPE_PAINTSERVER:
 		if (SP_IS_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style))) {
 			return SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR;
+		} else if (SP_IS_RADIALGRADIENT (SP_STYLE_FILL_SERVER (style))) {
+			return SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL;
 		}
 		g_warning ("file %s: line %d: Unknown paintserver", __FILE__, __LINE__);
 		return SP_PAINT_SELECTOR_MODE_NONE;

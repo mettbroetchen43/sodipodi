@@ -155,13 +155,13 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8A8N:
 				d[0] = NR_COMPOSEN11 (s[0], s[3], d[0]);
-				d[1] = NR_COMPOSEN11 (s[0], s[3], d[1]);
-				d[2] = NR_COMPOSEN11 (s[0], s[3], d[2]);
+				d[1] = NR_COMPOSEN11 (s[1], s[3], d[1]);
+				d[2] = NR_COMPOSEN11 (s[2], s[3], d[2]);
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8A8P:
 				d[0] = NR_COMPOSEP11 (s[0], s[3], d[0]);
-				d[1] = NR_COMPOSEP11 (s[0], s[3], d[1]);
-				d[2] = NR_COMPOSEP11 (s[0], s[3], d[2]);
+				d[1] = NR_COMPOSEP11 (s[1], s[3], d[1]);
+				d[2] = NR_COMPOSEP11 (s[2], s[3], d[2]);
 				break;
 			default:
 				break;

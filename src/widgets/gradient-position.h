@@ -14,6 +14,11 @@
 #include <gtk/gtkwidget.h>
 #include "../sp-gradient.h"
 
+enum {
+	SP_GRADIENT_POSITION_MODE_LINEAR,
+	SP_GRADIENT_POSITION_MODE_RADIAL
+};
+
 typedef struct _SPGradientPosition SPGradientPosition;
 typedef struct _SPGradientPositionClass SPGradientPositionClass;
 
@@ -28,6 +33,7 @@ struct _SPGradientPosition {
 	guint need_update : 1;
 	guint dragging : 1;
 	guint position : 2;
+	guint mode : 1;
 	SPGradient *gradient;
 	ArtDRect bbox; /* BBox in document coordinates */
 	ArtPoint start, end; /* Start and end in document coordinates */
@@ -41,7 +47,10 @@ struct _SPGradientPosition {
 	guint spread : 2;
 
 	unsigned char *cv;
-	NRLGradientRenderer lgr;
+	union {
+		NRLGradientRenderer lgr;
+		NRRGradientRenderer rgr;
+	} renderer;
 };
 
 struct _SPGradientPositionClass {
@@ -57,9 +66,11 @@ struct _SPGradientPositionClass {
 GtkType sp_gradient_position_get_type (void);
 
 GtkWidget *sp_gradient_position_new (SPGradient *gradient);
+
 /* Set vector gradient vector widget */
 void sp_gradient_position_set_gradient (SPGradientPosition *pos, SPGradient *gradient);
 
+void sp_gradient_position_set_mode (SPGradientPosition *pos, guint mode);
 void sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_vector (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]);

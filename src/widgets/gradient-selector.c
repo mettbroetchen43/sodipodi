@@ -45,10 +45,6 @@ static void sp_gradient_selector_position_dragged (SPGradientPosition *pos, SPGr
 static void sp_gradient_selector_position_changed (SPGradientPosition *pos, SPGradientSelector *sel);
 static void sp_gradient_selector_edit_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
 static void sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
-#if 0
-static void sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *sel);
-#endif
-static void sp_gradient_selector_reset_clicked (GtkWidget *w, SPGradientSelector *sel);
 
 static GtkVBoxClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -114,6 +110,8 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 {
 	GtkWidget *hb, *bb;
 
+	sel->mode = SP_GRADIENT_SELECTOR_MODE_LINEAR;
+
 	/* Create box for vector & buttons */
 	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
@@ -141,27 +139,12 @@ sp_gradient_selector_init (SPGradientSelector *sel)
 	gtk_signal_connect (GTK_OBJECT (sel->add), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->add, FALSE);
 
-#if 0
-	sel->del = gtk_button_new_with_label (_("Delete"));
-	gtk_widget_show (sel->del);
-	gtk_box_pack_start (GTK_BOX (hb), sel->del, TRUE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (sel->del), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_delete_vector_clicked), sel);
-	gtk_widget_set_sensitive (sel->del, FALSE);
-#endif
-
 	/* Create gradient position widget */
 	sel->position = sp_gradient_position_new (NULL);
 	gtk_widget_show (sel->position);
 	gtk_box_pack_start (GTK_BOX (sel), sel->position, TRUE, TRUE, 4);
 	gtk_signal_connect (GTK_OBJECT (sel->position), "dragged", GTK_SIGNAL_FUNC (sp_gradient_selector_position_dragged), sel);
 	gtk_signal_connect (GTK_OBJECT (sel->position), "changed", GTK_SIGNAL_FUNC (sp_gradient_selector_position_changed), sel);
-
-	/* Reset button */
-	sel->reset = gtk_button_new_with_label (_("Reset"));
-	gtk_widget_show (sel->reset);
-	gtk_box_pack_start (GTK_BOX (sel), sel->reset, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT (sel->reset), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_reset_clicked), sel);
-	gtk_widget_set_sensitive (sel->reset, FALSE);
 }
 
 static void
@@ -186,6 +169,17 @@ sp_gradient_selector_new (void)
 }
 
 void
+sp_gradient_selector_set_mode (SPGradientSelector *sel, guint mode)
+{
+	g_return_if_fail (sel != NULL);
+	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
+
+	sel->mode = mode;
+
+	sp_gradient_position_set_mode (SP_GRADIENT_POSITION (sel->position), mode);
+}
+
+void
 sp_gradient_selector_set_vector (SPGradientSelector *sel, SPDocument *doc, SPGradient *vector)
 {
 	g_return_if_fail (sel != NULL);
@@ -202,16 +196,14 @@ sp_gradient_selector_set_vector (SPGradientSelector *sel, SPDocument *doc, SPGra
 	if (vector) {
 		gtk_widget_set_sensitive (sel->edit, TRUE);
 		gtk_widget_set_sensitive (sel->add, TRUE);
-		gtk_widget_set_sensitive (sel->reset, TRUE);
 	} else {
 		gtk_widget_set_sensitive (sel->edit, FALSE);
 		gtk_widget_set_sensitive (sel->add, (doc != NULL));
-		gtk_widget_set_sensitive (sel->reset, FALSE);
 	}
 }
 
 void
-sp_gradient_selector_set_gradient_bbox (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
+sp_gradient_selector_set_bbox (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
 	g_return_if_fail (sel != NULL);
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
@@ -220,12 +212,23 @@ sp_gradient_selector_set_gradient_bbox (SPGradientSelector *sel, gdouble x0, gdo
 }
 
 void
-sp_gradient_selector_set_gradient_position (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
+sp_gradient_selector_set_lgradient_position (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
 	g_return_if_fail (sel != NULL);
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
+	g_return_if_fail (sel->mode == SP_GRADIENT_SELECTOR_MODE_LINEAR);
 
 	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (sel->position), x0, y0, x1, y1);
+}
+
+void
+sp_gradient_selector_set_rgradient_position (SPGradientSelector *sel, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r)
+{
+	g_return_if_fail (sel != NULL);
+	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
+	g_return_if_fail (sel->mode == SP_GRADIENT_SELECTOR_MODE_RADIAL);
+
+	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (sel->position), cx, cy, cx + r, cy);
 }
 
 SPGradient *
@@ -239,9 +242,31 @@ sp_gradient_selector_get_vector (SPGradientSelector *sel)
 }
 
 void
-sp_gradient_selector_get_position_floatv (SPGradientSelector *gsel, gfloat *pos)
+sp_gradient_selector_get_lgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos)
 {
-	return sp_gradient_position_get_position_floatv (SP_GRADIENT_POSITION (gsel->position), pos);
+	g_return_if_fail (gsel != NULL);
+	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (gsel));
+	g_return_if_fail (gsel->mode == SP_GRADIENT_SELECTOR_MODE_LINEAR);
+
+	sp_gradient_position_get_position_floatv (SP_GRADIENT_POSITION (gsel->position), pos);
+}
+
+void
+sp_gradient_selector_get_rgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos)
+{
+	gfloat p[4];
+
+	g_return_if_fail (gsel != NULL);
+	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (gsel));
+	g_return_if_fail (gsel->mode == SP_GRADIENT_SELECTOR_MODE_RADIAL);
+
+	sp_gradient_position_get_position_floatv (SP_GRADIENT_POSITION (gsel->position), p);
+
+	pos[0] = p[0];
+	pos[1] = p[1];
+	pos[2] = p[0];
+	pos[3] = p[1];
+	pos[4] = hypot (p[2] - p[0], p[3] - p[1]);
 }
 
 static void
@@ -256,28 +281,6 @@ sp_gradient_selector_vector_set (SPGradientVectorSelector *gvs, SPGradient *gr, 
 		gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED], gr);
 		blocked = FALSE;
 	}
-
-#if 0
-	const GSList *selected, *l;
-
-	g_print ("Set vector %s\n", SP_OBJECT_ID (gr));
-
-	g_assert (gr != NULL);
-	g_assert (SP_IS_GRADIENT (gr));
-	/* fixme: VectorSelector has to ensure that (Probably) */
-	/* Hmmm... bad things may happen here, as actual gradient is something new */
-	gr = sp_gradient_ensure_vector_normalized (gr);
-
-	gtk_object_set_data (GTK_OBJECT (spw), "gradient", gr);
-
-	selected = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
-
-	for (l = selected; l != NULL; l = l->next) {
-		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), gr);
-	}
-
-	sp_document_done (spw->document);
-#endif
 }
 
 static void
@@ -337,63 +340,4 @@ sp_gradient_selector_add_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
 	gr = (SPGradient *) sp_document_lookup_id (doc, sp_repr_attr (repr, "id"));
 	sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors), doc, gr);
 }
-
-#if 0
-static void
-sp_gradient_selector_delete_vector_clicked (GtkWidget *w, SPGradientSelector *sel)
-{
-	SPGradient *gr;
-
-	gr = sp_gradient_vector_selector_get_gradient (SP_GRADIENT_VECTOR_SELECTOR (sel->vectors));
-	if (gr) {
-		sp_gradient_vector_release_references (gr);
-		if (SP_OBJECT_HREFCOUNT (gr) < 1) {
-			/* fixme: need repick */
-			sp_repr_unparent (SP_OBJECT_REPR (gr));
-		}
-	}
-}
-#endif
-
-static void
-sp_gradient_selector_reset_clicked (GtkWidget *w, SPGradientSelector *sel)
-{
-}
-
-#if 0
-static void
-sp_gradient_selector_reset_clicked (GtkWidget *w, SPWidget *spw)
-{
-	SPSelection *sel;
-	const GSList *items, *l;
-	SPGradient *vector;
-
-	if (!spw->desktop) return;
-	sel = SP_DT_SELECTION (spw->desktop);
-
-	items = sp_selection_item_list (sel);
-	if (!items) return;
-
-	vector = gtk_object_get_data (GTK_OBJECT (spw), "gradient");
-	if (!vector) return;
-	vector = sp_gradient_ensure_vector_normalized (vector);
-	gtk_object_set_data (GTK_OBJECT (spw), "gradient", vector);
-
-	for (l = items; l != NULL; l = l->next) {
-		SPStyle *style;
-		sp_item_force_fill_lineargradient_vector (SP_ITEM (l->data), vector);
-		style = SP_OBJECT_STYLE (l->data);
-		g_return_if_fail (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
-		/* fixme: Managing selection bbox/item bbox stuff is big mess */
-		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "x1", 0.0);
-		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "y1", 0.0);
-		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "x2", 1.0);
-		sp_repr_set_double_attribute (SP_OBJECT_REPR (style->fill.server), "y2", 0.0);
-	}
-
-	sp_document_done (spw->document);
-}
-
-#endif
-
 

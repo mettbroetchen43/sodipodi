@@ -1003,6 +1003,66 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 	}
 }
 
+void
+sp_gradient_from_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y)
+{
+	NRMatrixF gs2d;
+
+	g_return_if_fail (gr != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gr));
+	g_return_if_fail (p != NULL);
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bb2u, gs2u;
+
+		bb2u.c[0] = bbox->x1 - bbox->x0;
+		bb2u.c[1] = 0.0;
+		bb2u.c[2] = 0.0;
+		bb2u.c[3] = bbox->y1 - bbox->y0;
+		bb2u.c[4] = bbox->x0;
+		bb2u.c[5] = bbox->y0;
+
+		nr_matrix_multiply_fdf (&gs2u, (NRMatrixD *) gr->transform, &bb2u);
+		nr_matrix_multiply_ffd (&gs2d, &gs2u, (NRMatrixD *) ctm);
+	} else {
+		nr_matrix_multiply_fdd (&gs2d, (NRMatrixD *) gr->transform, (NRMatrixD *) ctm);
+	}
+
+	p->x = gs2d.c[0] * x + gs2d.c[2] * y + gs2d.c[4];
+	p->y = gs2d.c[1] * x + gs2d.c[3] * y + gs2d.c[5];
+}
+
+void
+sp_gradient_to_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y)
+{
+	NRMatrixF gs2d, d2gs;
+
+	g_return_if_fail (gr != NULL);
+	g_return_if_fail (SP_IS_GRADIENT (gr));
+	g_return_if_fail (p != NULL);
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bb2u, gs2u;
+
+		bb2u.c[0] = bbox->x1 - bbox->x0;
+		bb2u.c[1] = 0.0;
+		bb2u.c[2] = 0.0;
+		bb2u.c[3] = bbox->y1 - bbox->y0;
+		bb2u.c[4] = bbox->x0;
+		bb2u.c[5] = bbox->y0;
+
+		nr_matrix_multiply_fdf (&gs2u, (NRMatrixD *) gr->transform, &bb2u);
+		nr_matrix_multiply_ffd (&gs2d, &gs2u, (NRMatrixD *) ctm);
+	} else {
+		nr_matrix_multiply_fdd (&gs2d, (NRMatrixD *) gr->transform, (NRMatrixD *) ctm);
+	}
+
+	nr_matrix_f_invert (&d2gs, &gs2d);
+
+	p->x = d2gs.c[0] * x + d2gs.c[2] * y + d2gs.c[4];
+	p->y = d2gs.c[1] * x + d2gs.c[3] * y + d2gs.c[5];
+}
+
 /*
  * Linear Gradient
  */
@@ -1301,84 +1361,6 @@ sp_lineargradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set
 	if (set_missing || lg->y1.set) sp_repr_set_double_attribute (repr, "y1", lg->y1.computed);
 	if (set_missing || lg->x2.set) sp_repr_set_double_attribute (repr, "x2", lg->x2.computed);
 	if (set_missing || lg->y2.set) sp_repr_set_double_attribute (repr, "y2", lg->y2.computed);
-}
-
-void
-sp_lineargradient_from_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p)
-{
-	SPGradient *gr;
-	gdouble p2b[6];
-	gdouble x, y;
-
-	g_return_if_fail (lg != NULL);
-	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
-	g_return_if_fail (p != NULL);
-
-	gr = SP_GRADIENT (lg);
-
-	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
-		gdouble bbox2user[6];
-
-		/* BBox to user coordinate system */
-		bbox2user[0] = bbox->x1 - bbox->x0;
-		bbox2user[1] = 0.0;
-		bbox2user[2] = 0.0;
-		bbox2user[3] = bbox->y1 - bbox->y0;
-		bbox2user[4] = bbox->x0;
-		bbox2user[5] = bbox->y0;
-
-		/* CTM goes here */
-
-		art_affine_multiply (p2b, bbox2user, ctm);
-	} else {
-		memcpy (p2b, ctm, 6 * sizeof (gdouble));
-	}
-
-	x = p2b[0] * p->x + p2b[2] * p->y + p2b[4];
-	y = p2b[1] * p->x + p2b[3] * p->y + p2b[5];
-
-	p->x = x;
-	p->y = y;
-}
-
-void
-sp_lineargradient_to_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p)
-{
-	SPGradient *gr;
-	gdouble p2b[6], b2p[6];
-	gdouble x, y;
-
-	g_return_if_fail (lg != NULL);
-	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
-	g_return_if_fail (p != NULL);
-
-	gr = SP_GRADIENT (lg);
-
-	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
-		gdouble bbox2user[6];
-
-		/* BBox to user coordinate system */
-		bbox2user[0] = bbox->x1 - bbox->x0;
-		bbox2user[1] = 0.0;
-		bbox2user[2] = 0.0;
-		bbox2user[3] = bbox->y1 - bbox->y0;
-		bbox2user[4] = bbox->x0;
-		bbox2user[5] = bbox->y0;
-
-		/* CTM goes here */
-
-		art_affine_multiply (p2b, bbox2user, ctm);
-
-		art_affine_invert (b2p, p2b);
-	} else {
-		art_affine_invert (b2p, ctm);
-	}
-
-	x = b2p[0] * p->x + b2p[2] * p->y + b2p[4];
-	y = b2p[1] * p->x + b2p[3] * p->y + b2p[5];
-
-	p->x = x;
-	p->y = y;
 }
 
 void

@@ -28,8 +28,15 @@ typedef struct _SPGradientSelectorClass SPGradientSelectorClass;
 
 #include "../forward.h"
 
+enum {
+	SP_GRADIENT_SELECTOR_MODE_LINEAR,
+	SP_GRADIENT_SELECTOR_MODE_RADIAL
+};
+
 struct _SPGradientSelector {
 	GtkVBox vbox;
+
+	guint mode : 1;
 
 	/* Vector selector */
 	GtkWidget *vectors;
@@ -37,8 +44,6 @@ struct _SPGradientSelector {
 	GtkWidget *edit, *add;
 	/* Position widget */
 	GtkWidget *position;
-	/* Reset button */
-	GtkWidget *reset;
 };
 
 struct _SPGradientSelectorClass {
@@ -54,13 +59,17 @@ GtkType sp_gradient_selector_get_type (void);
 
 GtkWidget *sp_gradient_selector_new (void);
 
+void sp_gradient_selector_set_mode (SPGradientSelector *sel, guint mode);
 void sp_gradient_selector_set_vector (SPGradientSelector *sel, SPDocument *doc, SPGradient *vector);
+void sp_gradient_selector_set_bbox (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 
-void sp_gradient_selector_set_gradient_bbox (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
-void sp_gradient_selector_set_gradient_position (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
+void sp_gradient_selector_set_lgradient_position (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
+void sp_gradient_selector_set_rgradient_position (SPGradientSelector *sel, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r);
 
 SPGradient *sp_gradient_selector_get_vector (SPGradientSelector *sel);
-void sp_gradient_selector_get_position_floatv (SPGradientSelector *gsel, gfloat *pos);
+
+void sp_gradient_selector_get_lgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
+void sp_gradient_selector_get_rgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos);
 
 END_GNOME_DECLS
 

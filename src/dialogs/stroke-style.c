@@ -133,7 +133,7 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 	ArtDRect bbox;
 	SPLinearGradient *lg;
 	gdouble ctm[6];
-	ArtPoint p0, p1;
+	NRPointF p0, p1;
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -203,13 +203,12 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
 		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
-		p0.x = lg->x1.computed;
-		p0.y = lg->y1.computed;
-		sp_lineargradient_from_position (lg, ctm, &bbox, &p0);
-		p1.x = lg->x2.computed;
-		p1.y = lg->y2.computed;
-		sp_lineargradient_from_position (lg, ctm, &bbox, &p1);
+		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, lg->x1.computed, lg->y1.computed);
+		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, lg->x2.computed, lg->y2.computed);
 		sp_paint_selector_set_gradient_position (psel, p0.x, p0.y, p1.x, p1.y);
+		break;
+	default:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
 		break;
 	}
 
@@ -256,6 +255,8 @@ sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 		/* fixme: Think about it (Lauris) */
+		break;
+	default:
 		break;
 	}
 
@@ -315,7 +316,7 @@ sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 			gfloat p[4];
 			ArtDRect bbox;
 			gdouble ctm[6];
-			ArtPoint p0, p1;
+			NRPointF p0, p1;
 			sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
 			/* This gives us position in document coordinates */
 			sp_paint_selector_get_gradient_position_floatv (psel, p);
@@ -324,12 +325,8 @@ sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 			sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 			lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (i->data));
-			p0.x = p[0];
-			p0.y = p[1];
-			sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
-			p1.x = p[2];
-			p1.y = p[3];
-			sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
+			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
 
 			sp_lineargradient_set_position (lg, p0.x, p0.y, p1.x, p1.y);
 		}
@@ -429,7 +426,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 					gfloat p[4];
 					ArtDRect bbox;
 					gdouble ctm[6];
-					ArtPoint p0, p1;
+					NRPointF p0, p1;
 
 					sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
 
@@ -440,12 +437,8 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 					sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
 
 					lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (i->data));
-					p0.x = p[0];
-					p0.y = p[1];
-					sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
-					p1.x = p[2];
-					p1.y = p[3];
-					sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
+					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
 
 					sp_repr_set_double (SP_OBJECT_REPR (lg), "x1", p0.x);
 					sp_repr_set_double (SP_OBJECT_REPR (lg), "y1", p0.y);

@@ -13,12 +13,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "forward.h"
-
-/*
- * Gradient Stop
- */
-
 #define SP_TYPE_STOP (sp_stop_get_type ())
 #define SP_STOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_STOP, SPStop))
 #define SP_STOP_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_STOP, SPStopClass))
@@ -43,10 +37,15 @@
 #define SP_IS_RADIALGRADIENT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_RADIALGRADIENT))
 #define SP_IS_RADIALGRADIENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_RADIALGRADIENT))
 
-#include <libart_lgpl/art_point.h>
+#include <libnr/nr-types.h>
 #include "svg/svg-types.h"
+#include "forward.h"
 #include "color.h"
 #include "sp-paint-server.h"
+
+/*
+ * Gradient Stop
+ */
 
 struct _SPStop {
 	SPObject object;
@@ -164,12 +163,14 @@ void sp_gradient_repr_set_vector (SPGradient *gradient, SPRepr *repr, SPGradient
  *
  * RGB buffer background should be set up before
  */
-void sp_gradient_render_vector_line_rgba (SPGradient *gradient, guchar *buf, gint len, gint pos, gint span);
-void sp_gradient_render_vector_line_rgb (SPGradient *gradient, guchar *buf, gint len, gint pos, gint span);
-void sp_gradient_render_vector_block_rgba (SPGradient *gradient, guchar *buf, gint width, gint height, gint rowstride,
-					   gint pos, gint span, gboolean horizontal);
-void sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint width, gint height, gint rowstride,
-					  gint pos, gint span, gboolean horizontal);
+void sp_gradient_render_vector_line_rgba (SPGradient *gr, guchar *px, gint len, gint pos, gint span);
+void sp_gradient_render_vector_line_rgb (SPGradient *gr, guchar *px, gint len, gint pos, gint span);
+void sp_gradient_render_vector_block_rgba (SPGradient *gr, guchar *px, gint w, gint h, gint rs, gint pos, gint span, gboolean horizontal);
+void sp_gradient_render_vector_block_rgb (SPGradient *gr, guchar *px, gint w, gint h, gint rs, gint pos, gint span, gboolean horizontal);
+
+/* Transforms to/from gradient position space in given environment */
+void sp_gradient_from_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y);
+void sp_gradient_to_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y);
 
 /*
  * Linear Gradient
@@ -189,10 +190,6 @@ struct _SPLinearGradientClass {
 };
 
 GtkType sp_lineargradient_get_type (void);
-
-/* Transforms to/from gradient position space in given environment */
-void sp_lineargradient_from_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p);
-void sp_lineargradient_to_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p);
 
 void sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
 
