@@ -1,3 +1,9 @@
+2000-04-21  Fatih Demir	<kabalak@gmx.net>
+
+	* configure.in : Added tr to ALL_LINGUAS .
+	
+	* sodipodi.desktop : Added [tr] ..
+
 2000-04-20  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* glade/sodipodi.glade: toggling rulers and scrollbars on/off
