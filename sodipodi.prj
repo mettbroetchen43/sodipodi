@@ -1,9 +1,8 @@
-# Anjuta Version 1.1.97 
+# Anjuta Version 1.2.0 
 Compatibility Level: 1 
 
 <PROJECT_DESCRIPTION_START>
 Sodipodi is a vector illustrator program for the GNOME environment.
-It is currently in active development and approaching general usability.
 <PROJECT_DESCRIPTION_END>
 <CONFIG_PROGS_START>
 <CONFIG_PROGS_END>
@@ -24,15 +23,15 @@ It is currently in active development and approaching general usability.
 
 props.file.type=project
 
-anjuta.version=1.1.97
+anjuta.version=1.2.0
 anjuta.compatibility.level=1
 
 project.name=sodipodi
-project.type=GENERIC
+project.type=GTK
 project.target.type=EXECUTABLE
-project.version=0.33
-project.author=me
-project.source.target=sodipodi
+project.version=0.99
+project.author=Sodipodi Developers
+project.source.target=unknown
 project.has.gettext=1
 project.gui.command=
 project.programming.language=C
@@ -59,9 +58,8 @@ preferences.make=make
 preferences.build.option.keep.going=1
 preferences.build.option.warn.undef=0
 preferences.autoformat.custom.style= -i8 -sc -bli0 -bl0 -cbi0 -ss
-preferences.autoformat.style=Style of Kangleipak
 preferences.indent.opening=0
-preferences.autoformat.disable=0
+preferences.autoformat.disable=1
 preferences.indent.automatic=1
 preferences.use.tabs=1
 preferences.indent.size=4
@@ -76,13 +74,14 @@ module.include.files=\
 	src/svg/svg-types.h\
 	src/xml/repr-private.h\
 	src/xml/repr.h\
+	src/xml/repr-action.h\
 	src/sp-anchor.h\
 	src/interface.h\
 	src/monostd.h\
 	src/color.h\
 	src/sodipodi.h\
 	src/desktop-handles.h\
-	src/application.h\
+	src/system.h\
 	src/dialogs/text-edit.h\
 	src/dialogs/export.h\
 	src/dialogs/tool-attributes.h\
@@ -117,6 +116,7 @@ module.include.files=\
 	src/libnrtype/codepages.h\
 	src/libnrtype/nr-typeface.h\
 	src/libnrtype/nr-type-primitives.h\
+	src/libnrtype/nr-glyphs.h\
 	src/libnrtype/nr-type-ft2.h\
 	src/libnrtype/nr-type-w32.h\
 	src/libnrtype/nr-type-xft.h\
@@ -130,7 +130,6 @@ module.include.files=\
 	src/libnr/nr-pixblock-pixel.h\
 	src/libnr/nr-rect.h\
 	src/libnr/nr-render.h\
-	src/libnr/nr_config.h\
 	src/libnr/nr-svp-private.h\
 	src/libnr/nr-macros.h\
 	src/libnr/nr-compose-transform.h\
@@ -148,8 +147,10 @@ module.include.files=\
 	src/libnr/nr-compose.h\
 	src/libnr/nr-blit.h\
 	src/libnr/nr-values.h\
+	src/libnr/nr-pathops.h\
 	src/libnr/nr-stroke.h\
 	src/libnr/nr-gradient.h\
+	src/libnr/nr_config.h\
 	src/extensions-skeleton.h\
 	src/spiral-context.h\
 	src/toolbox.h\
@@ -157,14 +158,12 @@ module.include.files=\
 	src/text-context.h\
 	src/knotholder.h\
 	src/sodipodi-private.h\
-	src/extension.h\
 	src/svg-view.h\
 	src/sp-spiral.h\
 	src/sp-guide.h\
 	src/macros.h\
 	src/event-broker.h\
 	src/sp-object-repr.h\
-	src/marshal.h\
 	src/sp-animation.h\
 	src/enums.h\
 	src/module.h\
@@ -202,6 +201,8 @@ module.include.files=\
 	src/modules/win32.h\
 	src/libarikkei/arikkei-token.h\
 	src/libarikkei/arikkei-dict.h\
+	src/libarikkei/arikkei-iolib.h\
+	src/libarikkei/arikkei-strlib.h\
 	src/sp-marker.h\
 	src/file.h\
 	src/arc-context.h\
@@ -213,7 +214,6 @@ module.include.files=\
 	src/helper/nr-plain-stuff-gdk.h\
 	src/helper/sp-ctrlline.h\
 	src/helper/bezier-utils.h\
-	src/helper/sp-marshal.h\
 	src/helper/sodipodi-ctrlrect.h\
 	src/helper/sp-canvas.h\
 	src/helper/unit-menu.h\
@@ -229,6 +229,7 @@ module.include.files=\
 	src/helper/helper-forward.h\
 	src/helper/sp-canvas-util.h\
 	src/helper/gnome-canvas-acetate.h\
+	src/helper/sp-marshal.h\
 	src/sp-pattern.h\
 	src/object-edit.h\
 	src/knot.h\
@@ -270,6 +271,7 @@ module.include.files=\
 	src/widgets/sp-xmlview-content.h\
 	src/widgets/gradient-image.h\
 	src/widgets/paint-selector.h\
+	src/widgets/spw-utilities.h\
 	src/widgets/sp-vwrap-box.h\
 	src/widgets/ruler.h\
 	src/widgets/font-selector.h\
@@ -288,12 +290,13 @@ module.include.files=\
 	src/widgets/sp-wrap-box.h\
 	src/widgets/button.h\
 	src/widgets/dash-selector.h\
+	src/testing.h\
 	src/rect-context.h\
 	src/sp-clippath.h\
 	src/dyna-draw-context.h\
 	src/shortcuts.h\
 	src/print.h\
-	src/sp-polyline.h\
+	build/vc7/resource.h\
 	config.h
 
 module.source.name=.
@@ -308,13 +311,13 @@ module.source.files=\
 	src/xml/repr-util.c\
 	src/xml/repr-io.c\
 	src/xml/repr.c\
+	src/xml/repr-action.c\
 	src/xml/repr-css.c\
 	src/sp-anchor.c\
 	src/interface.c\
 	src/color.c\
 	src/sodipodi.c\
 	src/desktop-handles.c\
-	src/application.c\
 	src/dialogs/text-edit.c\
 	src/dialogs/export.c\
 	src/dialogs/tool-attributes.c\
@@ -347,6 +350,7 @@ module.source.files=\
 	src/sp-metrics.c\
 	src/libnrtype/nr-typeface.c\
 	src/libnrtype/nr-type-primitives.c\
+	src/libnrtype/nr-glyphs.c\
 	src/libnrtype/nr-type-ft2.c\
 	src/libnrtype/nr-type-w32.c\
 	src/libnrtype/nr-type-xft.c\
@@ -374,6 +378,7 @@ module.source.files=\
 	src/libnr/nr-compose.c\
 	src/libnr/nr-blit.c\
 	src/libnr/nr-values.c\
+	src/libnr/nr-pathops.c\
 	src/libnr/nr-stroke.c\
 	src/libnr/nr-gradient.c\
 	src/spiral-context.c\
@@ -382,13 +387,11 @@ module.source.files=\
 	src/path-chemistry.c\
 	src/text-context.c\
 	src/knotholder.c\
-	src/extension.c\
 	src/svg-view.c\
 	src/sp-spiral.c\
 	src/sp-guide.c\
 	src/event-broker.c\
 	src/sp-object-repr.c\
-	src/marshal.c\
 	src/sp-animation.c\
 	src/module.c\
 	src/sp-item-group.c\
@@ -423,6 +426,8 @@ module.source.files=\
 	src/modules/win32.c\
 	src/libarikkei/arikkei-token.c\
 	src/libarikkei/arikkei-dict.c\
+	src/libarikkei/arikkei-iolib.c\
+	src/libarikkei/arikkei-strlib.c\
 	src/sp-marker.c\
 	src/file.c\
 	src/document-undo.c\
@@ -435,7 +440,6 @@ module.source.files=\
 	src/helper/nr-plain-stuff-gdk.c\
 	src/helper/sp-ctrlline.c\
 	src/helper/bezier-utils.c\
-	src/helper/sp-marshal.c\
 	src/helper/sodipodi-ctrlrect.c\
 	src/helper/sp-canvas.c\
 	src/helper/unit-menu.c\
@@ -449,6 +453,8 @@ module.source.files=\
 	src/helper/nr-plain-stuff.c\
 	src/helper/sp-canvas-util.c\
 	src/helper/gnome-canvas-acetate.c\
+	src/helper/sp-marshal.c\
+	src/helper/marshaller.c\
 	src/sp-pattern.c\
 	src/object-edit.c\
 	src/knot.c\
@@ -490,6 +496,7 @@ module.source.files=\
 	src/widgets/sp-xmlview-content.c\
 	src/widgets/gradient-image.c\
 	src/widgets/paint-selector.c\
+	src/widgets/spw-utilities.c\
 	src/widgets/sp-vwrap-box.c\
 	src/widgets/ruler.c\
 	src/widgets/font-selector.c\
@@ -513,8 +520,7 @@ module.source.files=\
 	src/sp-clippath.c\
 	src/dyna-draw-context.c\
 	src/shortcuts.c\
-	src/print.c\
-	src/sp-polyline.c
+	src/print.c
 
 module.pixmap.name=.
 module.pixmap.type=
@@ -716,7 +722,8 @@ module.pixmap.files=\
 	samples/tux.png\
 	extensions/roundhole.xpm\
 	sodipodi.ico\
-	sodipodi.png
+	sodipodi.png\
+	build/vc7/sodipodi.ico
 
 module.data.name=.
 module.data.type=
@@ -773,7 +780,8 @@ module.po.files=\
 	tr.po\
 	uk.po\
 	sr@Latn.po\
-	pt_BR.po
+	pt_BR.po\
+	hr.po
 
 compiler.options.supports=
 compiler.options.include.paths=\
