@@ -20,7 +20,7 @@ INCLUDES = \
 bin_PROGRAMS = sodipodi
 
 sodipodi_SOURCES = \
-	sodipodi.h \
+	sodipodi.c sodipodi.h \
 	\
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
@@ -44,11 +44,6 @@ sodipodi_SOURCES = \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \
-	mdi.c mdi.h \
-	mdi-child.c mdi-child.h \
-	mdi-desktop.c mdi-desktop.h \
-	mdi-document.c mdi-document.h \
-	mdi-ui.c mdi-ui.h \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \
@@ -71,7 +66,6 @@ sodipodi_SOURCES = \
 	knot.c knot.h \
 	\
 	main.c \
-	session.c session.h \
 	help.c help.h \
 	sp-cursor.c sp-cursor.h \
 	dir-util.c dir-util.h \
@@ -83,7 +77,8 @@ sodipodi_SOURCES = \
 	\
 	sp-node-path-edit.c sp-node-path-edit.h \
 	zoom-context.c zoom-context.h \
-	file.c file.h
+	file.c file.h \
+	interface.c interface.h
 
 #	font-wrapper.c font-wrapper.h \
 

@@ -1,8 +1,8 @@
 #define SP_DESKTOP_EVENTS_C
 
 #include "helper/sp-guide.h"
+#include "sodipodi-private.h"
 #include "desktop.h"
-#include "mdi-desktop.h"
 #include "desktop-affine.h"
 #include "desktop-events.h"
 
@@ -39,7 +39,10 @@ sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data
 gint
 sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 {
+#if 0
 	sp_active_desktop_set (SP_DESKTOP (widget));
+#endif
+	sodipodi_activate_desktop (SP_DESKTOP (widget));
 
 	return FALSE;
 }

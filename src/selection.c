@@ -2,9 +2,9 @@
 
 #define sp_debug(str, section) 	if (FALSE) printf ("%s:%d (%s) %s\n", __FILE__, __LINE__, __FUNCTION__, str); 
 
+#include "sodipodi-private.h"
 #include "desktop-handles.h"
 #include "desktop.h"
-#include "mdi-desktop.h"
 #include "selection.h"
 
 enum {
@@ -102,6 +102,9 @@ static void
 sp_selection_private_changed (SPSelection * selection)
 {
      	sp_debug ("start", SP_SELECTION);
+
+	sodipodi_selection_set (selection);
+
      	sp_debug ("end", SP_SELECTION);
 }
 

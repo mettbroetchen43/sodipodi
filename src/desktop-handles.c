@@ -3,6 +3,15 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 
+SPEventContext *
+sp_desktop_event_context (SPDesktop * desktop)
+{
+	g_return_val_if_fail (desktop != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
+
+	return desktop->event_context;
+}
+
 SPSelection *
 sp_desktop_selection (SPDesktop * desktop)
 {

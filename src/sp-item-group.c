@@ -103,7 +103,7 @@ sp_group_destroy (GtkObject *object)
 		spobject = SP_OBJECT (group->other->data);
 		spobject->parent = NULL;
 		gtk_object_unref ((GtkObject *) spobject);
-		group->children = g_slist_remove_link (group->other, group->other);
+		group->other = g_slist_remove_link (group->other, group->other);
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)

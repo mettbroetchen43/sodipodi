@@ -3,7 +3,7 @@
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "sp-path.h"
-#include "mdi-desktop.h"
+#include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop-handles.h"

@@ -104,8 +104,8 @@ gchar *s = N_("window1");
 gchar *s = N_("Color settings");
 gchar *s = N_("Gradient settings");
 gchar *s = N_("Preview (object binding box)");
-gchar *s = N_("Valige v\344rv");
-gchar *s = N_("Valige v\344rv");
+gchar *s = N_("Valige värv");
+gchar *s = N_("Valige värv");
 gchar *s = N_("Linear\n"
               "Radial\n"
               "");

@@ -4,10 +4,8 @@
 #include <math.h>
 #include <glade/glade.h>
 #include "transformation.h"
-#include "../selection.h"
-#include "../desktop.h"
+#include "../sodipodi.h"
 #include "../desktop-handles.h"
-#include "../mdi-desktop.h"
 #include "../svg/svg.h"
 #include "../selection-chemistry.h"
 #include "../sp-item-transform.h"
@@ -100,7 +98,7 @@ sp_transformation_dialog_apply (void)
   g_return_if_fail (desktop != NULL);
 
   // hm, sp_selection_duplicate updates undo itself, this should be fixed
-  if (gtk_toggle_button_get_active (make_copy)) sp_selection_duplicate (desktop);
+  if (gtk_toggle_button_get_active (make_copy)) sp_selection_duplicate ((GtkWidget *) desktop);
 
   desktop = SP_ACTIVE_DESKTOP;
   g_return_if_fail (desktop != NULL);

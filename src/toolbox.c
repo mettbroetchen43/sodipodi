@@ -2,9 +2,9 @@
 
 #include <gnome.h>
 #include <glade/glade.h>
-#include "sodipodi.h"
+#include "sodipodi-private.h"
 #include "toolbox.h"
-#include "mdi-desktop.h"
+#include "sodipodi.h"
 #include "event-broker.h"
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-stock.h>
@@ -84,6 +84,8 @@ void sp_toolbox_expose (SPToolBox * toolbox);
 void object_flip (GtkWidget * widget, GdkEventButton * event);
 void object_rotate_90 (void);
 
+static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
+
 // our toolboxen
 static SPToolBox draw_box, zoom_box, node_box, select_box, file_box, edit_box, object_box;
 
@@ -98,7 +100,11 @@ sp_maintoolbox_create (void)
 		glade_xml_signal_autoconnect (main_toolbox_xml);
 		main_toolbox_dialog = glade_xml_get_widget (main_toolbox_xml, "maintoolbox");
 		if (main_toolbox_dialog == NULL) return;
+#if 0
 		gnome_mdi_register (SODIPODI, (GtkObject *) main_toolbox_dialog);
+#else
+		sodipodi_ref ();
+#endif
 		main_vbox = glade_xml_get_widget (main_toolbox_xml, "main_vbox");
 
 		// file toolbox
@@ -181,6 +187,11 @@ sp_maintoolbox_create (void)
 		draw_freehand = glade_xml_get_widget (draw_box.DialogXML, "draw_freehand");
 		gtk_toggle_button_set_active ((GtkToggleButton *) draw_select, TRUE);
 		sp_toolbox_expose (&draw_box);
+
+		gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "set_eventcontext",
+						GTK_SIGNAL_FUNC (sp_update_draw_toolbox), NULL,
+						GTK_OBJECT (draw_box.BoxTable));
+
 		// zoom toolbox
 		zoom_box.DialogXML = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "zoom_table");
 		glade_xml_signal_autoconnect (zoom_box.DialogXML);
@@ -290,10 +301,13 @@ void sp_toolbox_expose (SPToolBox * toolbox) {
 }
 
 
-void
-sp_maintoolbox_close (void)
+gint
+sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
 {
-  gtk_main_quit(); 
+	sodipodi_unref ();
+
+	return FALSE;
+#if 0
   // we need save changes and stuff
   	if (!GTK_IS_WIDGET (quit_dialog)) {
   		quit_xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "quit");
@@ -304,6 +318,7 @@ sp_maintoolbox_close (void)
 	}else {
 	  if (!GTK_WIDGET_VISIBLE (quit_dialog)) gtk_widget_show (quit_dialog);
 	}
+#endif
 }
 
 void quit_yep () {	gtk_main_quit();  }
@@ -363,9 +378,14 @@ void toolbox_toggle_seperate (GtkWidget * widget, SPToolBox * toolbox) {
   g_print ("seperate ");
 }
 
+static void 
+sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data) {
+	SPDesktop * desktop;
 
-void 
-sp_update_draw_toolbox (SPDesktop * desktop) {
+	if (eventcontext == NULL) return;
+
+	desktop = eventcontext->desktop;
+
   if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_SELECT_CONTEXT) 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_select), TRUE);
   else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_select), FALSE);

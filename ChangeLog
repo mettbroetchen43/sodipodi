@@ -1,3 +1,10 @@
+2000-09-09  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* sodipodi.c, sodipodi-private.h: New filed. Bye-bye to
+	Gnome-MDI interface, instead we have much more convenient
+	sodipodi object.
+	This introduced many changes mostly everywhere.
+
 2000-09-06  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* glade/*: Added Frank Felfe new icons and toolbopx stuff

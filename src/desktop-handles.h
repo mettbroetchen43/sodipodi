@@ -2,6 +2,7 @@
 #define SP_DESKTOP_HANDLES_H
 
 #include <libgnomeui/gnome-canvas.h>
+#include "event-context.h"
 
 #ifndef SP_DOCUMENT_DEFINED
 #define SP_DOCUMENT_DEFINED
@@ -21,6 +22,7 @@ typedef struct _SPDesktopClass SPDesktopClass;
 
 #define SP_DT_IS_EDITABLE(d) (TRUE)
 
+#define SP_DT_EVENTCONTEXT(d) sp_desktop_event_context (d)
 #define SP_DT_SELECTION(d) sp_desktop_selection (d)
 #define SP_DT_DOCUMENT(d) sp_desktop_document (d)
 #define SP_DT_CANVAS(d) sp_desktop_canvas (d)
@@ -32,6 +34,7 @@ typedef struct _SPDesktopClass SPDesktopClass;
 #define SP_DT_SKETCH(d) sp_desktop_sketch (d)
 #define SP_DT_CONTROLS(d) sp_desktop_controls (d)
 
+SPEventContext * sp_desktop_event_context (SPDesktop * desktop);
 SPSelection * sp_desktop_selection (SPDesktop * desktop);
 SPDocument * sp_desktop_document (SPDesktop * desktop);
 GnomeCanvas * sp_desktop_canvas (SPDesktop * desktop);

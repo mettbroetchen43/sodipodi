@@ -18,23 +18,17 @@
 #include <floatingpoint.h>
 #endif
 
-#include "sodipodi.h"
+#include "sodipodi-private.h"
 
 #ifdef ENABLE_BONOBO
-#if USING_OAF
-#	include <liboaf/liboaf.h>
-#else
-#	include <libgnorba/gnorba.h>
-#endif
+#include <liboaf/liboaf.h>
+
 #include "bonobo/sodipodi-bonobo.h"
 #include "bonobo/svg-doc-factory.h"
 #endif
 
-#include "mdi.h"
-#include "mdi-child.h"
 #include "file.h"
-
-#include "session.h"
+#include "toolbox.h"
 
 enum {SP_ARG_NONE, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_LAST};
 
@@ -75,17 +69,20 @@ struct poptOption options[] = {
 int
 main (int argc, char *argv[])
 {
+#if 0
 	GnomeClient * client;
 	GnomeClientFlags flags;
 	gchar * prefix;
+#endif
 	SPDocument * doc;
-	SPMDIChild * child;
 
 	poptContext ctx = NULL;
 
 	GSList * fl;
 	gboolean use_gui;
+#if 0
 	gboolean restored;
+#endif
 
 #ifdef ENABLE_BONOBO
 	gboolean bonobo_client = FALSE;
@@ -156,18 +153,11 @@ main (int argc, char *argv[])
 		}
 
 		CORBA_exception_init (&ev);
-#if USING_OAF
+
 		gnomelib_register_popt_table (oaf_popt_options, _("Oaf options"));
 		gnome_init_with_popt_table ("sodipodi", VERSION,
 					    argc, argv, options, 0, &ctx);
 		orb = oaf_init (argc, argv);
-
-#else
-		gnome_CORBA_init_with_popt_table ("sodipodi", VERSION,
-			&argc, argv, options, 0, &ctx,
-			GNORBA_INIT_SERVER_FUNC, &ev);
-		orb = gnome_CORBA_ORB ();
-#endif
 
 		CORBA_exception_free (&ev);
 
@@ -193,6 +183,7 @@ main (int argc, char *argv[])
 
 		setlocale (LC_NUMERIC, "C");
 
+#if 0
 		/* Session management stuff */
 
 		client = gnome_master_client ();
@@ -213,6 +204,7 @@ main (int argc, char *argv[])
 			restored = sp_sm_restore_children ();
 			gnome_config_pop_prefix ();
 		}
+#endif
 
 #ifdef ENABLE_BONOBO
 
@@ -224,6 +216,7 @@ main (int argc, char *argv[])
 
 #endif /* ENABLE_BONOBO */
 
+#if 0
 		if (!restored) {
 
 			/* Nothing was restored, continue with local initializing */
@@ -258,6 +251,11 @@ main (int argc, char *argv[])
 			}
 
 		}
+#endif
+
+		sodipodi = gtk_type_new (SP_TYPE_SODIPODI);
+		sp_maintoolbox_create ();
+		sodipodi_unref ();
 
 #ifdef ENABLE_BONOBO
 		}

@@ -86,7 +86,9 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 
 	gtk_widget_show (GTK_WIDGET (desktop->desktop));
 
+#if 0
 	gnome_mdi_register (SODIPODI, GTK_OBJECT (desktop));
+#endif
 
 	gtk_signal_connect (GTK_OBJECT (desktop), "destroy",
 		GTK_SIGNAL_FUNC (sp_embeddable_desktop_destroyed), NULL);
@@ -99,7 +101,9 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 static void
 sp_embeddable_desktop_destroyed (SPEmbeddableDesktop * desktop)
 {
+#if 0
 	gnome_mdi_unregister (SODIPODI, GTK_OBJECT (desktop));
+#endif
 }
 
 static void

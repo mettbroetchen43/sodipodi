@@ -11,7 +11,7 @@
 
 #include "svg/svg.h"
 #include "document.h"
-#include "mdi-desktop.h"
+#include "sodipodi.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection-chemistry.h"

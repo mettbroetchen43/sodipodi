@@ -4,10 +4,8 @@
 #include <glade/glade.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
-#include "../mdi-desktop.h"
-#include "../selection.h"
+#include "../sodipodi.h"
 #include "../desktop-handles.h"
-#include "../document.h"
 #include "object-stroke.h"
 
 static void apply_stroke (void);
@@ -25,9 +23,12 @@ void sp_object_stroke_changed (void);
 
 /* Signal handlers */
 
+static void sp_stroke_sel_changed (Sodipodi * sodipodi, SPSelection * selection, gpointer data);
+
+#if 0
 static void sp_stroke_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data);
-static void sp_stroke_sel_changed (SPSelection * selection, gpointer data);
 static void sp_stroke_sel_destroy (GtkObject * object, gpointer data);
+#endif
 
 static GladeXML * xml = NULL;
 static GtkWidget * dialog = NULL;
@@ -45,10 +46,16 @@ GtkToggleButton * tb_cap_square;
 
 static SPCSSAttr * css = NULL;
 
+#if 0
 static guint view_changed_id = 0;
 static guint sel_destroy_id = 0;
+#endif
+
 static guint sel_changed_id = 0;
+
+#if 0
 static SPSelection * sel_current;
+#endif
 
 void sp_object_stroke_dialog (void)
 {
@@ -269,11 +276,12 @@ apply_stroke (void)
  */
 
 static void
-sp_stroke_sel_changed (SPSelection * selection, gpointer data)
+sp_stroke_sel_changed (Sodipodi * sodipodi, SPSelection * selection, gpointer data)
 {
 	sp_stroke_read_selection ();
 }
 
+#if 0
 static void
 sp_stroke_sel_destroy (GtkObject * object, gpointer data)
 {
@@ -322,12 +330,19 @@ sp_stroke_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data)
 
 	sp_stroke_read_selection ();
 }
+#endif
 
 static void
 sp_stroke_show_dialog (void)
 {
 	g_return_if_fail (dialog != NULL);
 
+	if (sel_changed_id < 1) {
+		sel_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection",
+						     GTK_SIGNAL_FUNC (sp_stroke_sel_changed), NULL);
+	}
+
+#if 0
 	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
 	if (sel_current != NULL) {
@@ -345,6 +360,8 @@ sp_stroke_show_dialog (void)
 		view_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "view_changed",
 			GTK_SIGNAL_FUNC (sp_stroke_view_changed), NULL);
 	}
+#endif
+
 	if (!GTK_WIDGET_VISIBLE (dialog)) {
 		gtk_widget_show (dialog);
 	}
@@ -359,6 +376,12 @@ sp_stroke_hide_dialog (void)
 		gtk_widget_hide (dialog);
 	}
 
+	if (sel_changed_id > 0) {
+		gtk_signal_disconnect (GTK_OBJECT (sodipodi), sel_changed_id);
+		sel_changed_id = 0;
+	}
+
+#if 0
 	if (view_changed_id > 0) {
 		gtk_signal_disconnect (GTK_OBJECT (SODIPODI), view_changed_id);
 		view_changed_id = 0;
@@ -374,5 +397,6 @@ sp_stroke_hide_dialog (void)
 			sel_changed_id = 0;
 		}
 	}
+#endif
 }
 

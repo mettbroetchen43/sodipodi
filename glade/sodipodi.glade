@@ -3473,8 +3473,8 @@ Radial
 	<name>sulge1</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_mdi_close_view</handler>
-	  <last_modification_time>Fri, 21 Apr 2000 22:50:29 GMT</last_modification_time>
+	  <handler>sp_ui_close_view</handler>
+	  <last_modification_time>Sat, 09 Sep 2000 09:19:00 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_CLOSE_ITEM</stock_item>
       </widget>
@@ -3853,8 +3853,8 @@ Radial
 	<name>new_view1</name>
 	<signal>
 	  <name>activate</name>
-	  <handler>sp_mdi_new_view</handler>
-	  <last_modification_time>Fri, 21 Apr 2000 22:56:51 GMT</last_modification_time>
+	  <handler>sp_ui_new_view</handler>
+	  <last_modification_time>Sat, 09 Sep 2000 04:31:11 GMT</last_modification_time>
 	</signal>
 	<label>New View</label>
 	<right_justify>False</right_justify>

@@ -11,6 +11,7 @@
  */
 
 #include <xml/repr.h>
+#include "sodipodi-private.h"
 #include "sp-object-repr.h"
 #include "sp-root.h"
 #include "document-private.h"
@@ -19,7 +20,7 @@
 #define A4_HEIGHT (29.7 * 72.0 / 2.54)
 
 static void sp_document_class_init (SPDocumentClass * klass);
-static void sp_document_init (SPDocument * item);
+static void sp_document_init (SPDocument * document);
 static void sp_document_destroy (GtkObject * object);
 
 static GtkObjectClass * parent_class;
@@ -116,6 +117,8 @@ sp_document_destroy (GtkObject * object)
 		document->private = NULL;
 	}
 
+	sodipodi_unref ();
+
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
@@ -187,6 +190,8 @@ sp_document_new (const gchar * uri)
 		g_assert (document->private->root->namedviews);
 	}
 
+	sodipodi_ref ();
+
 	return document;
 }
 
@@ -237,6 +242,8 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 		sp_repr_add_child (rroot, r, 0);
 		g_assert (document->private->root->namedviews);
 	}
+
+	sodipodi_ref ();
 
 	return document;
 }

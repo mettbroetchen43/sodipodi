@@ -80,8 +80,10 @@ GtkType sp_document_get_type (void);
  */
 
 SPDocument * sp_document_new (const gchar * uri);
-
 SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
+
+#define sp_document_ref(d) gtk_object_ref (GTK_OBJECT (d))
+#define sp_document_unref(d) gtk_object_unref (GTK_OBJECT (d))
 
 /*
  * Access methods

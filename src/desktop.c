@@ -17,7 +17,7 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "helper/canvas-helper.h"
-#include "mdi-desktop.h"
+#include "sodipodi-private.h"
 #include "desktop-events.h"
 #include "desktop-affine.h"
 #include "desktop.h"
@@ -32,6 +32,9 @@ static void sp_desktop_destroy (GtkObject * object);
 
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
+
+/* fixme: */
+void sp_desktop_toggle_borders (GtkWidget * widget);
 
 GtkEventBoxClass * parent_class;
 
@@ -191,6 +194,8 @@ sp_desktop_destroy (GtkObject * object)
 
 	desktop = SP_DESKTOP (object);
 
+	sodipodi_remove_desktop (desktop);
+
 	if (desktop->selection)
 		gtk_object_destroy (GTK_OBJECT (desktop->selection));
 
@@ -308,7 +313,9 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	sp_namedview_show (desktop->namedview, desktop->guides);
 
 	// ?
-	sp_active_desktop_set (desktop);
+	// sp_active_desktop_set (desktop);
+	sodipodi_add_desktop (desktop);
+
 	return desktop;
 }
 
@@ -648,12 +655,15 @@ sp_desktop_set_title (const gchar * title)
 
 #endif
 
+
 void sp_desktop_set_status (SPDesktop *desktop, const gchar * text)
 {
+#if 0
 	if (!sodipodi->active_window) return;
 	if (!sodipodi->active_window->statusbar) return;
 
 	gnome_appbar_set_status (GNOME_APPBAR (sodipodi->active_window->statusbar), text);
+#endif
 }
 
 /*

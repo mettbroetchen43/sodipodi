@@ -3,8 +3,7 @@
 #include "gtk/gtk.h"
 #include <math.h>
 #include "rubberband.h"
-#include "mdi-document.h"
-#include "mdi-desktop.h"
+#include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop.h"

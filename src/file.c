@@ -12,10 +12,8 @@
 #include "dir-util.h"
 #include "helper/png-write.h"
 #include "sodipodi.h"
-#include "mdi.h"
-#include "mdi-child.h"
-#include "mdi-document.h"
 #include "sp-image.h"
+#include "interface.h"
 #include "file.h"
 
 #include <libgnomeprint/gnome-print-pixbuf.h>
@@ -37,22 +35,23 @@ file_selection_destroy (GtkWidget * widget, GtkFileSelection * fs)
 void sp_file_new (void)
 {
 	SPDocument * doc;
-	SPMDIChild * child;
+	SPDesktop * desktop;
 
 	doc = sp_document_new (NULL);
 	g_return_if_fail (doc != NULL);
 
-	child = sp_mdi_child_new (doc);
+	desktop = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+	sp_document_unref (doc);
+	g_return_if_fail (desktop != NULL);
 
-	gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
-	gnome_mdi_add_view (SODIPODI, GNOME_MDI_CHILD (child));
+	sp_create_window (desktop, TRUE);
 }
 
 void
 file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
-	SPMDIChild * child;
 	SPDocument * doc;
+	SPDesktop * desktop;
 	gchar * filename;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
@@ -68,10 +67,11 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = sp_document_new (filename);
 	g_return_if_fail (doc != NULL);
 
-	child = sp_mdi_child_new (doc);
+	desktop = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+	sp_document_unref (doc);
+	g_return_if_fail (desktop != NULL);
 
-	gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
-	gnome_mdi_add_view (SODIPODI, GNOME_MDI_CHILD (child));
+	sp_create_window (desktop, TRUE);
 }
 
 void sp_file_open (void)

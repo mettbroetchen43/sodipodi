@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include "svg/svg.h"
-#include "mdi-desktop.h"
+#include "sodipodi.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"

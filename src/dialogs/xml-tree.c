@@ -3,8 +3,7 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "../sp-object.h"
-#include "../document.h"
-#include "../mdi-document.h"
+#include "../sodipodi.h"
 #include "xml-tree.h"
 
 static GladeXML * xml;

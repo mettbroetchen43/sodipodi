@@ -4,10 +4,8 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "align.h"
-#include "../selection.h"
-#include "../desktop.h"
+#include "../sodipodi.h"
 #include "../desktop-handles.h"
-#include "../mdi-desktop.h"
 #include "../svg/svg.h"
 #include "../sp-item-transform.h"
 

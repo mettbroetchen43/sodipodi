@@ -4,9 +4,7 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "../helper/png-write.h"
-#include "../document.h"
-#include "../selection.h"
-#include "../mdi-desktop.h"
+#include "../sodipodi.h"
 #include "../desktop-units.h"
 #include "../desktop-handles.h"
 #include "../desktop-affine.h"

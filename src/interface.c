@@ -1,0 +1,54 @@
+#define SP_INTERFACE_C
+
+#include "sodipodi.h"
+#include "interface.h"
+
+void
+sp_create_window (SPDesktop * desktop, gboolean editable)
+{
+	GtkWidget * w;
+
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
+	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
+
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (desktop));
+	gtk_widget_show (GTK_WIDGET (desktop));
+	gtk_widget_show (w);
+}
+
+void
+sp_ui_new_view (GtkWidget * widget)
+{
+	SPDocument * document;
+	SPDesktop * desktop;
+
+	document = SP_ACTIVE_DOCUMENT;
+	if (!document) return;
+
+	desktop = sp_desktop_new (document, sp_document_namedview (document, NULL));
+	g_return_if_fail (desktop != NULL);
+
+	sp_create_window (desktop, TRUE);
+}
+
+void
+sp_ui_close_view (GtkWidget * widget)
+{
+	SPDesktop * desktop;
+	gpointer w;
+
+	if (SP_ACTIVE_DESKTOP == NULL) return;
+
+	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
+
+	if (w) gtk_object_destroy (GTK_OBJECT (w));
+}
+
+
+
+
+
