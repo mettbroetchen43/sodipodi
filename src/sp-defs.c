@@ -28,6 +28,7 @@ static void sp_defs_release (SPObject *object);
 static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static void sp_defs_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_defs_modified (SPObject *object, guint flags);
 static SPRepr *sp_defs_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -72,6 +73,7 @@ sp_defs_class_init (SPDefsClass * klass)
 	sp_object_class->child_added = sp_defs_child_added;
 	sp_object_class->remove_child = sp_defs_remove_child;
 	sp_object_class->order_changed = sp_defs_order_changed;
+	sp_object_class->update = sp_defs_update;
 	sp_object_class->modified = sp_defs_modified;
 	sp_object_class->write = sp_defs_write;
 }
@@ -207,6 +209,34 @@ sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr *
 }
 
 static void
+sp_defs_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPDefs *defs;
+	SPObject *child;
+	GSList *l;
+
+	defs = SP_DEFS (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = defs->children; child != NULL; child = child->next) {
+		g_object_ref (G_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_invoke_update (child, ctx, flags);
+		}
+		g_object_unref (G_OBJECT (child));
+	}
+}
+
+static void
 sp_defs_modified (SPObject *object, guint flags)
 {
 	SPDefs *defs;
@@ -216,8 +246,7 @@ sp_defs_modified (SPObject *object, guint flags)
 	defs = SP_DEFS (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	/* fixme: Not sure, whether we should cascade style modification here (Lauris) */
-	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
 	for (child = defs->children; child != NULL; child = child->next) {

@@ -32,6 +32,7 @@ struct _SPClipPathClass {
 
 GType sp_clippath_get_type (void);
 
-NRArenaItem *sp_clippath_show (SPClipPath *cp, NRArena *arena);
+NRArenaItem *sp_clippath_show (SPClipPath *cp, NRArena *arena, unsigned int key);
+void sp_clippath_hide (SPClipPath *cp, unsigned int key);
 
 #endif

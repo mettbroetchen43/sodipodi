@@ -28,6 +28,8 @@ typedef struct _SPSVGViewClass SPSVGViewClass;
 struct _SPSVGView {
 	SPView view;
 
+	unsigned int dkey;
+
 	SPCanvasGroup *parent;
 	SPCanvasItem *drawing;
 

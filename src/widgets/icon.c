@@ -297,13 +297,15 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 		if (!doc) doc = sp_document_new ("glade/icons.svg", FALSE, FALSE);
 		if (doc) {
 			NRMatrixF affine;
+			unsigned int visionkey;
 
 			sp_document_ensure_up_to_date (doc);
 
 			/* Create new arena */
 			arena = g_object_new (NR_TYPE_ARENA, NULL);
 			/* Create ArenaItem and set transform */
-			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena);
+			visionkey = sp_item_display_key_new ();
+			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey);
 			/* Set up matrix */
 			nr_matrix_f_set_scale (&affine, 0.8, 0.8);
 			nr_arena_item_set_transform (root, &affine);

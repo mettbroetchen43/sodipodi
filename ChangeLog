@@ -1,3 +1,22 @@
+2003-02-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_clip): OR masks
+
+	* src/sp-defs.c (sp_defs_update): Implement
+	(sp_defs_modified): Ditto
+
+	* src/sp-clippath.c (sp_clippath_update): Implement
+	(sp_clippath_modified): Ditto
+	(sp_clippath_show): Fix
+	(sp_clippath_hide): Implement
+
+	* src/sp-item.c (sp_item_set): Fix clippath
+	(sp_item_show): Ditto
+	(sp_item_private_hide): Ditto
+	(sp_item_display_key_new): New method
+
+	* src/sp-item.h: Use new signature for ::show and ::hide
+
 2003-02-01  Daniel Yacob  <locales@geez.org>
 
 	* configure.in: Added "am" (Amharic) to ALL_LINGUAS.

@@ -56,8 +56,8 @@ static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
 
-static NRArenaItem *sp_item_private_show (SPItem *item, NRArena *arena);
-static void sp_item_private_hide (SPItem * item, NRArena *arena);
+static NRArenaItem *sp_item_private_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_item_private_hide (SPItem * item, unsigned int key);
 
 static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
@@ -151,12 +151,16 @@ sp_item_release (SPObject * object)
 	item = (SPItem *) object;
 
 	while (item->display) {
+		if (item->clip) {
+			sp_clippath_hide (SP_CLIPPATH (item->clip), item->display->pkey);
+			nr_arena_item_set_clip (item->display->arenaitem, NULL);
+		}
 		nr_arena_item_destroy (item->display->arenaitem);
 		item->display = sp_item_view_list_remove (item->display, item->display);
 	}
 
 	if (item->clip) {
-		g_signal_handlers_disconnect_matched (G_OBJECT(item->clip), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (gpointer)item);
+		sp_signal_disconnect_by_data (item->clip, object);
 		item->clip = sp_object_hunref (SP_OBJECT (item->clip), object);
 	}
 
@@ -167,13 +171,24 @@ sp_item_release (SPObject * object)
 static void
 sp_item_clip_release (SPClipPath *cp, SPItem *item)
 {
-	g_warning ("Item %s clip path %s release", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
+	if (item->clip) {
+		SPItemView *v;
+		/* Hide clippath */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+			nr_arena_item_set_clip (v->arenaitem, NULL);
+		}
+		/* Detach clippath */
+		sp_signal_disconnect_by_data (item->clip, item);
+		item->clip = sp_object_hunref (SP_OBJECT (item->clip), item);
+	}
 }
 
 static void
 sp_item_clip_modified (SPClipPath *cp, guint flags, SPItem *item)
 {
-	g_warning ("Item %s clip path %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (cp));
+	/* I think cliPath does update automagically */
+	/* g_warning ("Item %s clip path %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (cp)); */
 }
 
 static void
@@ -194,23 +209,35 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	}
-	case SP_ATTR_CLIP_PATH: {
+		/* fixme: */
+	case SP_ATTR_CLIP_PATH:
+	case SP_PROP_CLIP_PATH: {
 		SPObject *cp;
 		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
-		if (item->clip) {
-  			sp_signal_disconnect_by_data (item->clip, item);
-			item->clip = sp_object_hunref (SP_OBJECT (item->clip), object);
-		}
-		if (SP_IS_CLIPPATH (cp)) {
-			SPItemView *v;
-			item->clip = sp_object_href (cp, object);
-			g_signal_connect (G_OBJECT (item->clip), "release", G_CALLBACK (sp_item_clip_release), item);
-			g_signal_connect (G_OBJECT (item->clip), "modified", G_CALLBACK (sp_item_clip_modified), item);
-			for (v = item->display; v != NULL; v = v->next) {
-				NRArenaItem *ai;
-				ai = sp_clippath_show (SP_CLIPPATH (item->clip), v->arena);
-				nr_arena_item_set_clip (v->arenaitem, ai);
-				nr_arena_item_unref (ai);
+		if (cp != item->clip) {
+			if (item->clip) {
+				SPItemView *v;
+				/* Detach clippath */
+				sp_signal_disconnect_by_data (item->clip, item);
+				/* Hide clippath */
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+					nr_arena_item_set_clip (v->arenaitem, NULL);
+				}
+				item->clip = sp_object_hunref (item->clip, object);
+			}
+			if (SP_IS_CLIPPATH (cp)) {
+				SPItemView *v;
+				item->clip = sp_object_href (cp, object);
+				g_signal_connect (G_OBJECT (item->clip), "release", G_CALLBACK (sp_item_clip_release), item);
+				g_signal_connect (G_OBJECT (item->clip), "modified", G_CALLBACK (sp_item_clip_modified), item);
+				for (v = item->display; v != NULL; v = v->next) {
+					NRArenaItem *ai;
+					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					ai = sp_clippath_show (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					nr_arena_item_set_clip (v->arenaitem, ai);
+					nr_arena_item_unref (ai);
+				}
 			}
 		}
 		break;
@@ -458,14 +485,22 @@ sp_item_description (SPItem * item)
 	return NULL;
 }
 
+unsigned int
+sp_item_display_key_new (void)
+{
+	static unsigned int dkey = 0;
+
+	return ++dkey;
+}
+
 static NRArenaItem *
-sp_item_private_show (SPItem *item, NRArena *arena)
+sp_item_private_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	return NULL;
 }
 
 NRArenaItem *
-sp_item_show (SPItem *item, NRArena *arena)
+sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	NRArenaItem *ai;
 
@@ -477,16 +512,17 @@ sp_item_show (SPItem *item, NRArena *arena)
 	ai = NULL;
 
 	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->show)
-		ai = ((SPItemClass *) G_OBJECT_GET_CLASS(item))->show (item, arena);
+		ai = ((SPItemClass *) G_OBJECT_GET_CLASS(item))->show (item, arena, key);
 
 	if (ai != NULL) {
-		item->display = sp_item_view_new_prepend (item->display, item, arena, ai);
+		item->display = sp_item_view_new_prepend (item->display, item, key, ai);
 		nr_arena_item_set_transform (ai, &item->transform);
 		nr_arena_item_set_opacity (ai, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;
-			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena);
+			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new ();
+			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, item->display->pkey);
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
@@ -497,12 +533,16 @@ sp_item_show (SPItem *item, NRArena *arena)
 }
 
 static void
-sp_item_private_hide (SPItem * item, NRArena *arena)
+sp_item_private_hide (SPItem * item, unsigned int key)
 {
 	SPItemView *v;
 
 	for (v = item->display; v != NULL; v = v->next) {
-		if (v->arena == arena) {
+		if (v->key == key) {
+			if (item->clip) {
+				sp_clippath_hide (SP_CLIPPATH (item->clip), v->pkey);
+				nr_arena_item_set_clip (v->arenaitem, NULL);
+			}
 			nr_arena_item_destroy (v->arenaitem);
 			item->display = sp_item_view_list_remove (item->display, v);
 			return;
@@ -513,15 +553,13 @@ sp_item_private_hide (SPItem * item, NRArena *arena)
 }
 
 void
-sp_item_hide (SPItem *item, NRArena *arena)
+sp_item_hide (SPItem *item, unsigned int key)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (arena != NULL);
-	g_assert (NR_IS_ARENA (arena));
 
 	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide)
-		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, arena);
+		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, key);
 }
 
 void
@@ -888,26 +926,21 @@ sp_item_create_link (GtkMenuItem *menuitem, SPItem *item)
 /* Item views */
 
 SPItemView *
-sp_item_view_new_prepend (SPItemView * list, SPItem * item, NRArena *arena, NRArenaItem *arenaitem)
+sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int key, NRArenaItem *arenaitem)
 {
 	SPItemView * new;
 
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (arena != NULL);
-	g_assert (NR_IS_ARENA (arena));
 	g_assert (arenaitem != NULL);
 	g_assert (NR_IS_ARENA_ITEM (arenaitem));
 
 	new = g_new (SPItemView, 1);
 
 	new->next = list;
-#if 0
-	new->prev = NULL;
-	if (list) list->prev = new;
-#endif
+	new->key = key;
+	new->pkey = 0;
 	new->item = item;
-	new->arena = arena;
 	new->arenaitem = arenaitem;
 
 	return new;
@@ -916,7 +949,6 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, NRArena *arena, NRAr
 SPItemView *
 sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 {
-#if 1
 	if (view == list) {
 		list = list->next;
 	} else {
@@ -929,30 +961,6 @@ sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 	g_free (view);
 
 	return list;
-
-#else
-	SPItemView * v;
-
-	g_assert (list != NULL);
-	g_assert (view != NULL);
-
-	for (v = list; v != NULL; v = v->next) {
-		if (v == view) {
-			if (v->next) v->next->prev = v->prev;
-			if (v->prev) {
-				v->prev->next = v->next;
-			} else {
-				list = v->next;
-			}
-			g_free (v);
-			return list;
-		}
-	}
-
-	g_assert_not_reached ();
-
-	return NULL;
-#endif
 }
 
 /* Convert distances into SVG units */

@@ -397,8 +397,8 @@ static void sp_tspan_modified (SPObject *object, guint flags);
 static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
-static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
-static void sp_tspan_hide (SPItem *item, NRArena *arena);
+static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_tspan_hide (SPItem *item, unsigned int key);
 
 static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean firstline, gboolean inspace);
 
@@ -671,7 +671,7 @@ sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 }
 
 static NRArenaItem *
-sp_tspan_show (SPItem *item, NRArena *arena)
+sp_tspan_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	SPTSpan *tspan;
 
@@ -681,7 +681,7 @@ sp_tspan_show (SPItem *item, NRArena *arena)
 		NRArenaItem *ai, *ac;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_show (SP_ITEM (tspan->string), arena);
+		ac = sp_item_show (SP_ITEM (tspan->string), arena, key);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
 			g_object_unref (G_OBJECT (ac));
@@ -693,16 +693,16 @@ sp_tspan_show (SPItem *item, NRArena *arena)
 }
 
 static void
-sp_tspan_hide (SPItem *item, NRArena *arena)
+sp_tspan_hide (SPItem *item, unsigned int key)
 {
 	SPTSpan *tspan;
 
 	tspan = SP_TSPAN (item);
 
-	if (tspan->string) sp_item_hide (SP_ITEM (tspan->string), arena);
+	if (tspan->string) sp_item_hide (SP_ITEM (tspan->string), key);
 
 	if (((SPItemClass *) tspan_parent_class)->hide)
-		((SPItemClass *) tspan_parent_class)->hide (item, arena);
+		((SPItemClass *) tspan_parent_class)->hide (item, key);
 }
 
 static void
@@ -730,8 +730,8 @@ static void sp_text_modified (SPObject *object, guint flags);
 static SPRepr *sp_text_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
-static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
-static void sp_text_hide (SPItem *item, NRArena *arena);
+static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_text_hide (SPItem *item, unsigned int key);
 static char * sp_text_description (SPItem *item);
 static int sp_text_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
@@ -993,7 +993,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		NRArenaItem *ac;
 
 		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_show (SP_ITEM (och), v->arena);
+			ac = sp_item_show (SP_ITEM (och), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				g_object_unref (G_OBJECT (ac));
@@ -1177,7 +1177,7 @@ sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned 
 }
 
 static NRArenaItem *
-sp_text_show (SPItem *item, NRArena *arena)
+sp_text_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	SPText *text;
 	NRArenaItem *ai, *ac, *ar;
@@ -1193,7 +1193,7 @@ sp_text_show (SPItem *item, NRArena *arena)
 	for (o = text->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			ac = sp_item_show (child, arena);
+			ac = sp_item_show (child, arena, key);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
@@ -1206,7 +1206,7 @@ sp_text_show (SPItem *item, NRArena *arena)
 }
 
 static void
-sp_text_hide (SPItem *item, NRArena *arena)
+sp_text_hide (SPItem *item, unsigned int key)
 {
 	SPText *text;
 	SPItem * child;
@@ -1217,12 +1217,12 @@ sp_text_hide (SPItem *item, NRArena *arena)
 	for (o = text->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_hide (child, arena);
+			sp_item_hide (child, key);
 		}
 	}
 
 	if (((SPItemClass *) text_parent_class)->hide)
-		((SPItemClass *) text_parent_class)->hide (item, arena);
+		((SPItemClass *) text_parent_class)->hide (item, key);
 }
 
 static char *

@@ -29,7 +29,7 @@ static void sp_chars_release (SPObject *object);
 static void sp_chars_style_modified (SPObject *object, guint flags);
 
 static void sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
-static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena);
+static NRArenaItem *sp_chars_show (SPItem *item, NRArena *arena, unsigned int key);
 
 static SPItemClass *parent_class;
 
@@ -139,7 +139,7 @@ sp_chars_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 }
 
 static NRArenaItem *
-sp_chars_show (SPItem *item, NRArena *arena)
+sp_chars_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	SPChars *chars;
 	NRArenaItem *arenaitem;

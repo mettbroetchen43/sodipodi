@@ -95,6 +95,8 @@ struct _NRArenaItemClass {
 	gint (* event) (NRArenaItem *item, NREvent *event);
 };
 
+#define NR_ARENA_ITEM_ARENA(ai) (NR_ARENA_ITEM (ai)->arena)
+
 GType nr_arena_item_get_type (void);
 
 NRArenaItem *nr_arena_item_ref (NRArenaItem *item);

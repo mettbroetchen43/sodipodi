@@ -50,7 +50,7 @@ static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
 
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static gchar * sp_shape_description (SPItem * item);
-static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena);
+static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key);
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
@@ -302,7 +302,7 @@ sp_shape_description (SPItem * item)
 }
 
 static NRArenaItem *
-sp_shape_show (SPItem *item, NRArena *arena)
+sp_shape_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	SPObject *object;
 	SPShape *shape;

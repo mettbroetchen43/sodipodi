@@ -25,7 +25,7 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_ID, "id"},
 	/* SPItem */
 	{SP_ATTR_TRANSFORM, "transform"},
-	{SP_ATTR_CLIP_PATH, "clipPath"},
+	{SP_ATTR_CLIP_PATH, "clip-path"},
 	{SP_ATTR_SODIPODI_INSENSITIVE, "sodipodi:insensitive"},
 	{SP_ATTR_STYLE, "style"},
 	/* SPAnchor */

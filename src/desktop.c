@@ -190,7 +190,7 @@ sp_desktop_dispose (GObject *object)
 	}
 
 	if (dt->drawing) {
-		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
 		dt->drawing = NULL;
 	}
 
@@ -330,7 +330,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
-	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
+	desktop->dkey = sp_item_display_key_new ();
+	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey);
 	if (ai) {
 		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 		g_object_unref (G_OBJECT(ai));
@@ -374,7 +375,7 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 	}
 
 	if (dt->drawing) {
-		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
 		dt->drawing = NULL;
 	}
 }
@@ -425,7 +426,7 @@ sp_desktop_set_document (SPView *view, SPDocument *doc)
 
 	if (view->doc) {
 		sp_namedview_hide (desktop->namedview, desktop);
-		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), desktop->dkey);
 	}
 
 	/* fixme: */
@@ -434,7 +435,7 @@ sp_desktop_set_document (SPView *view, SPDocument *doc)
 
 		desktop->namedview = sp_document_namedview (doc, NULL);
 
-		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena);
+		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 			g_object_unref (G_OBJECT(ai));

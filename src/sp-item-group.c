@@ -47,8 +47,8 @@ static SPRepr *sp_group_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_group_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_group_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_group_description (SPItem * item);
-static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
-static void sp_group_hide (SPItem * item, NRArena *arena);
+static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_group_hide (SPItem * item, unsigned int key);
 static void sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group);
@@ -193,11 +193,11 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 		SPItemView *v;
 		NRArenaItem *ac;
 		for (v = item->display; v != NULL; v = v->next) {
-			ac = sp_item_show (SP_ITEM (ochild), v->arena);
+			ac = sp_item_show (SP_ITEM (ochild), NR_ARENA_ITEM_ARENA (v->arenaitem), v->key);
 			if (ac) {
 				nr_arena_item_add_child (v->arenaitem, ac, NULL);
 				nr_arena_item_set_order (ac, position);
-				g_object_unref (G_OBJECT(ac));
+				g_object_unref (G_OBJECT (ac));
 			}
 		}
 	}
@@ -457,7 +457,7 @@ static gchar * sp_group_description (SPItem * item)
 }
 
 static NRArenaItem *
-sp_group_show (SPItem *item, NRArena *arena)
+sp_group_show (SPItem *item, NRArena *arena, unsigned int key)
 {
 	SPGroup *group;
 	NRArenaItem *ai, *ac, *ar;
@@ -473,7 +473,7 @@ sp_group_show (SPItem *item, NRArena *arena)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			ac = sp_item_show (child, arena);
+			ac = sp_item_show (child, arena, key);
 			if (ac) {
 				nr_arena_item_add_child (ai, ac, ar);
 				ar = ac;
@@ -486,7 +486,7 @@ sp_group_show (SPItem *item, NRArena *arena)
 }
 
 static void
-sp_group_hide (SPItem *item, NRArena *arena)
+sp_group_hide (SPItem *item, unsigned int key)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -497,12 +497,12 @@ sp_group_hide (SPItem *item, NRArena *arena)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_hide (child, arena);
+			sp_item_hide (child, key);
 		}
 	}
 
 	if (((SPItemClass *) parent_class)->hide)
-		((SPItemClass *) parent_class)->hide (item, arena);
+		((SPItemClass *) parent_class)->hide (item, key);
 }
 
 static void

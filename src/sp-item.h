@@ -48,8 +48,9 @@ typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
 	SPItemView *next;
+	unsigned int key;
+	unsigned int pkey;
 	SPItem *item;
-	NRArena *arena;
 	NRArenaItem *arenaitem;
 };
 
@@ -99,8 +100,8 @@ struct _SPItemClass {
 	/* Give short description of item (for status display) */
 	gchar * (* description) (SPItem * item);
 
-	NRArenaItem * (* show) (SPItem *item, NRArena *arena);
-	void (* hide) (SPItem *item, NRArena *arena);
+	NRArenaItem * (* show) (SPItem *item, NRArena *arena, unsigned int key);
+	void (* hide) (SPItem *item, unsigned int key);
 
 	/* Returns a number of points used */ 
 	int (* snappoints) (SPItem *item, NRPointF *points, int size);
@@ -130,8 +131,9 @@ gchar * sp_item_description (SPItem * item);
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 
 /* Shows/Hides item on given arena display list */
-NRArenaItem *sp_item_show (SPItem *item, NRArena *arena);
-void sp_item_hide (SPItem *item, NRArena *arena);
+unsigned int sp_item_display_key_new (void);
+NRArenaItem *sp_item_show (SPItem *item, NRArena *arena, unsigned int key);
+void sp_item_hide (SPItem *item, unsigned int key);
 
 int sp_item_snappoints (SPItem *item, NRPointF *points, int size);
 
@@ -160,7 +162,7 @@ NRMatrixF *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *transfor
 
 void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
-SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, NRArena *arena, NRArenaItem *arenaitem);
+SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int key, NRArenaItem *arenaitem);
 SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
 
 /* Convert distances into SVG units */

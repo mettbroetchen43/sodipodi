@@ -43,6 +43,8 @@ struct _SPDesktop {
 	SPSelection *selection;
 	SPEventContext *event_context;
 
+	unsigned int dkey;
+
 	SPCanvasItem *acetate;
 	SPCanvasGroup *main;
 	SPCanvasGroup *grid;

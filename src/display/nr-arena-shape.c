@@ -18,6 +18,7 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-path.h>
+#include <libnr/nr-pixops.h>
 #include <libnr/nr-blit.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
@@ -391,7 +392,20 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 	if (!shape->curve) return item->state;
 
 	if (shape->fill_svp) {
-		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (pb), pb->rs);
+		NRPixBlock m;
+		int x, y;
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+		for (y = area->y0; y < area->y1; y++) {
+			unsigned char *s, *d;
+			s = NR_PIXBLOCK_PX (&m) + (y - area->y0) * m.rs;
+			d = NR_PIXBLOCK_PX (pb) + (y - area->y0) * pb->rs;
+			for (x = area->x0; x < area->x1; x++) {
+				*d = (NR_A7 (*s, *d) + 127) / 255;
+				d += 1;
+				s += 1;
+			}
+		}
 		pb->empty = FALSE;
 	}
 
