@@ -32,7 +32,7 @@ gchar * sp_global_printer = NULL;
 
 struct poptOption options[] = {
   {
-        "--without-gui",
+        "without-gui",
         'z',
         POPT_ARG_NONE,
         NULL,

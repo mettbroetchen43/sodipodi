@@ -5,13 +5,15 @@ environment. It is currently in active development and not usable for any
 real work.
 
 If you are interested in production quality program, try sketch
-http://www.sourceforge.org/sketch
+http://sketch.sourceforge.net/
 
 If you are more interested in hacking, you can also try out KIllustrator,
 Gill and GYVE. Sodipodi eagerly borrows code from every other free program
 under the Sun (hey - isn't it the main point about free software?)
 
-You can always find the freshest sodipodi at GNOME CVS.
+You can always find the freshest sodipodi at GNOME CVS. Official homepage is
+http://sodipodi.sourceforge.net/
+There you can also find links to binary/source packages
 
 Compiling should be trivial, but I cannot guarantee that it works on any other
 system aside mine:
@@ -23,6 +25,8 @@ make install
 You need reasonably recent libglade ang gdk-pixbuf.
 If you have very fresh gnome-print, you should manually comment out libspgt1
 in src/Makefile.am.
+You can also add --without-bonobo to configure command line to disable
+HIGHLY EXPERIMENTAL bonobo support
 
 If you modify sodipodi in any usable way, please let me know also.
 
@@ -32,11 +36,12 @@ do not display correctly, tune them with a good text editor.
 Some guidelines:
 
 Command line:
--f filename                 opens file in windows
--p filename -t outputfile   prints file - this does not require X
+-z, --without-gui         do not open GUI, useful for printing SVG documents
+-f --file filename        open file
+-p --print outputfile     prints file (use "| lpr" for pipelining)
 
-Node editing does not update xml objects correctly yet. So before saving
-anything switch to selection mode.
+Node editing has some very bad memory corruption bugs. So if you plan to
+use this SAVE OFTEN.
 Ctrl & Shift modify dragging behaviour in some modes
 Shift click usually toggles selection
 To break line (or add node) select its endpoints
@@ -48,8 +53,9 @@ It does not yet handle following svg shapes:
 - polygon (use path instead)
 - circle
 - square?
-When importing svg, all paths are usually grouped. Ungroup these manually.
-To add more fonts, please tinker with font-wrapper.c & text-dialog.c
+When importing svg generated with ill2svg, all paths are usually grouped.
+Ungroup these manually. To add more fonts, please tinker with font-wrapper.c
+& text-dialog.c
 
 2000/01/09
 

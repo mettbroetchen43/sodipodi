@@ -36,9 +36,9 @@ Sodipodi is a gneneral vector drawing program for GNOME environment.
 MYCFLAGS="$RPM_OPT_FLAGS"
 
 if [ ! -f configure ]; then
-  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc
+  CFLAGS="$MYCFLAGS" ./autogen.sh $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc --without-bonobo
 else
-  CFLAGS="$MYCFLAGS" ./configure $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc
+  CFLAGS="$MYCFLAGS" ./configure $MYARCH_FLAGS --prefix=%prefix --localstatedir=/var/lib --sysconfdir=/etc --without-bonobo
 fi
 
 if [ "$SMP" != "" ]; then
