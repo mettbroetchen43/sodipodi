@@ -5,10 +5,10 @@ TODO for 0.29
 
 - Support for Xft font sources
 - Write replacement for color picker (DONE)
-- Write replacement for combo text
+- Write replacement for combo text (REPLACED)
 - GtkIMContext support for text-context (?)
 - More works for XML Editor (DONE?)
-- Fix unstable SPMenuButton/SPToolbox behavior
+- Fix unstable SPMenuButton/SPToolbox behavior (FIXED)
 - Fix GuideLine bug (DONE)
 - Fix snapping
 - Test gnome-print support

@@ -70,32 +70,10 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 					       guint event_time,
 					       gpointer user_data);
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
-void object_flip (GtkWidget * widget, GdkEventButton * event);
 
-/* helper function */
-static GtkWidget *
-gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
-					       const gchar   *tip_text,
-					       const gchar   *tip_private);
-static guint gtk_event_box_force_draw_parent(GtkWidget * widget, 
-					     GdkEventExpose *event, 
-					     gpointer user_data);
+static void sp_toolbox_object_flip_clicked (SPButton *button, gpointer data);
 
-static GtkWidget * toolbox = NULL;
-
-static GtkWidget * fh_pixmap = NULL;
-static GtkWidget * fv_pixmap = NULL;
-
-#if 0
-GtkWidget * zoom_any = NULL;
-#endif
-
-typedef enum {
-	FLIP_HOR,
-	FLIP_VER,
-} SPObjectFlipMode;
-
-SPObjectFlipMode object_flip_mode = FLIP_HOR;
+static GtkWidget *toolbox = NULL;
 
 /* Drag and Drop */
 typedef enum {
@@ -396,7 +374,7 @@ sp_toolbox_edit_create (void)
 static GtkWidget *
 sp_toolbox_object_create (void)
 {
-	GtkWidget *t, *tb;
+	GtkWidget *t, *tb, *b;
 	GtkTooltips *tt;
 	SPRepr *repr;
 
@@ -412,6 +390,17 @@ sp_toolbox_object_create (void)
 	sp_toolbox_button_new (t, 3, "object_font", GTK_SIGNAL_FUNC (sp_text_edit_dialog), tt, _("Text and font settings"));
 	sp_toolbox_button_new (t, 4, "object_align", GTK_SIGNAL_FUNC (sp_quick_align_dialog), tt, _("Align objects"));
 	sp_toolbox_button_new (t, 5, "object_trans", GTK_SIGNAL_FUNC (sp_transformation_dialog_move), tt, _("Object transformations"));
+
+	/* Mirror */
+	b = sp_button_menu_new (24, 2);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	gtk_widget_show (b);
+	/* START COMPONENTS */
+	sp_button_add_option (SP_BUTTON (b), 0, "object_flip_hor", _("Flip selected objects horizontally"));
+	sp_button_add_option (SP_BUTTON (b), 1, "object_flip_ver", _("Flip selected objects vertically"));
+	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_object_flip_clicked), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 1, 2, 0, 0, 0, 0);
+
 	sp_toolbox_button_new (t, 7, "object_rotate", GTK_SIGNAL_FUNC (sp_selection_rotate_90), tt, _("Rotate object 90 deg clockwise"));
 	sp_toolbox_button_new (t, 8, "object_reset", GTK_SIGNAL_FUNC (sp_selection_remove_transform), tt, _("Remove transformations"));
 	sp_toolbox_button_new (t, 9, "object_tocurve", GTK_SIGNAL_FUNC (sp_selected_path_to_curves), tt, _("Convert object to curve"));
@@ -674,41 +663,29 @@ sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused)
  * object toolbox
  */
 
-void
-object_flip (GtkWidget * widget, GdkEventButton * event) {
-	SPDesktop * desktop;
-	SPSelection * selection;
-	SPItem * item;
-	GSList * l, * l2;
+static void
+sp_toolbox_object_flip_clicked (SPButton *button, gpointer data)
+{
+	SPDesktop *desktop;
+	SPSelection *selection;
+	SPItem *item;
+	GSList *l, *l2;
+	unsigned int axis;
 
-	//right click
-	if (event->button == 3) {
-		if (object_flip_mode == FLIP_HOR) {
-			object_flip_mode = FLIP_VER;
-			gtk_widget_hide (fh_pixmap);
-			gtk_widget_show (fv_pixmap);
-		} else {
-			object_flip_mode = FLIP_HOR;
-			gtk_widget_hide (fv_pixmap);
-			gtk_widget_show (fh_pixmap);
-		};
-	};
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return;
+	selection = SP_DT_SELECTION (desktop);
+	if sp_selection_is_empty (selection) return;
 
-	// left click
-	if (event->button == 1) {
-		desktop = SP_ACTIVE_DESKTOP;
-		if (!SP_IS_DESKTOP(desktop)) return;
-		selection = SP_DT_SELECTION(desktop);
-		if sp_selection_is_empty(selection) return;
-		l = selection->items;  
-		for (l2 = l; l2 != NULL; l2 = l2-> next) {
-			item = SP_ITEM (l2->data);
-			if (object_flip_mode == FLIP_HOR) sp_item_scale_rel (item,-1,1);
-			else sp_item_scale_rel (item,1,-1);
-		}
-		sp_selection_changed (selection);
-		sp_document_done (SP_DT_DOCUMENT (desktop));
+	axis = sp_button_get_option (button);
+
+	l = selection->items;  
+	for (l2 = l; l2 != NULL; l2 = l2-> next) {
+		item = SP_ITEM (l2->data);
+		sp_item_scale_rel (item, (axis) ? 1.0 : -1.0, (axis) ? -1.0 : 1.0);
 	}
+	sp_selection_changed (selection);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 static void 
@@ -770,40 +747,3 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 	}
 }
 
-static GtkWidget *
-gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
-					       const gchar   *tip_text,
-					       const gchar   *tip_private)
-{
-	GtkWidget * pm;
-	GtkWidget * ev;
-	GtkTooltips *tt;
-	
-	pm = sp_icon_new (SP_ICON_SIZE_BUTTON, image_file);
-	tt = gtk_tooltips_new ();
-	ev = gtk_event_box_new();
-	gtk_tooltips_set_tip (tt, ev, tip_text, tip_private);
-	gtk_container_add(GTK_CONTAINER(ev), pm);
-	gtk_widget_show(pm);
-
-#if 0
-	/* arrow on the button is redraw by the parent. */
-	gtk_signal_connect_after(GTK_OBJECT(ev),
-				 "expose_event",
-				 GTK_SIGNAL_FUNC(gtk_event_box_force_draw_parent),
-				 NULL);
-#endif		   
-			   
-	return ev;
-}
-
-static guint
-gtk_event_box_force_draw_parent(GtkWidget * widget, 
-				GdkEventExpose *event,
-				gpointer user_data)
-{
-	/* FIXME: I should calculate the area necessarily redrawn. */
-	if (widget->parent)
-		gtk_widget_draw(widget->parent, NULL);
-	return FALSE;
-}
