@@ -1,3 +1,11 @@
+2004-01-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-compose.c (nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32): Added
+	missing parentheses, thanks to davej
+
+	* src/sp-gradient.c (sp_stop_write): Fixed &/&& bug,
+	thanks to davej
+
 2004-01-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-pathops.c (nr_node_path_rewind): Works

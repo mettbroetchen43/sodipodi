@@ -9,6 +9,8 @@
  * This code is in public domain
  */
 
+#define noDEBUG_REWIND
+
 /* Points are 24 bit (range 2e20 with precision 2e-4) */
 
 #define QUANT 16.0
@@ -405,10 +407,8 @@ nr_node_list_insert_curve_round (struct _NRNode *node, struct _NRFlatNode *flat,
 
 	/* Stop if rounded to the next node */
 	if ((x == flat->next->x) && (y == flat->next->y) && !flat->next->next) return 0;
-
-	/* These kill self-interection - they are probably not needed as well (Lauris) */
-	/* if ((p->x == node->x3) && (p->y == node->y3)) return 0; */
-	/* if ((p->x == node->next->x3) && (p->y == node->next->y3)) return 0; */
+	if ((x == node->x3) && (y == node->y3) && !flat->prev) return 0;
+	if ((x == node->next->x3) && (y == node->next->y3) && !flat->next->next) return 0;
 	dlen = hypot (x - flat->x, y - flat->y);
 	slen = hypot (flat->next->x - flat->x, flat->next->y - flat->y);
 	s = flat->s + (flat->next->s - flat->s) * dlen / slen;
@@ -1084,12 +1084,18 @@ nr_node_path_rewind (struct _NRNodePath *path, int ngroups, int *and, int *or, i
 	int *idx;
 	winds = (int *) malloc (path->nsegs * path->nsegs * sizeof (int));
 	for (i = 0; i < path->nsegs; i++) {
-		/* g_print ("Seg %d (%d): ", i, path->segs[i].value); */
+#ifdef DEBUG_REWIND
+		g_print ("Seg %d (%d): ", i, path->segs[i].value);
+#endif
 		for (j = 0; j < path->nsegs; j++) {
 			winds[i * path->nsegs + j] = nr_node_path_seg_get_wind (path, i, j);
-			/* g_print ("%d ", winds[i * path->nsegs + j]); */
+#ifdef DEBUG_REWIND
+			g_print ("%d ", winds[i * path->nsegs + j]);
+#endif
 		}
-		/* g_print ("\n"); */
+#ifdef DEBUG_REWIND
+		g_print ("\n");
+#endif
 	}
 	nsegs = 0;
 	idx = alloca (path->nsegs * sizeof (int));
