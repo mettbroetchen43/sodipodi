@@ -1,4 +1,21 @@
-2002-07-26  Lauris Kaplinski  <lauris@ximian.com>
+2002-07-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/Makefile.am (sodipodi_SOURCES): Added macros.h
+
+	* src/sp-text.c (sp_text_write_transform): Do multiline transforming
+	the right way
+
+	* src/macros.h: New file for useful macros
+
+2002-07-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-text.c (sp_tspan_build): Get attributes at right place, read role as well
+	(sp_tspan_read_attr): Parse "sodipodi:role" attribute
+	(sp_text_append_line): New method
+
+	* src/sp-text.h: Specify role for <tspan> element
+
+2002-07-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_string_set_shape): Changed signature, pass layout and currentpoint
 	(sp_tspan_set_shape): New method
@@ -10,7 +27,7 @@
 	* src/text-context.c (sp_text_context_selection_changed): Set active object
 	to NULL, if nothing selected
 
-2002-07-24  Lauris Kaplinski  <lauris@ximian.com>
+2002-07-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-object.c (sp_object_modified): Merge style with parent if needed,
 	moved style_modified after signal
@@ -25,7 +42,7 @@
 
 	* src/sp-gradient.c (sp_gradient_modified): Include style flag in cascade
 
-2002-07-22  Lauris Kaplinski  <lauris@ximian.com>
+2002-07-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/style.c (sp_style_new_from_object): Renamed sp_style_new
 	(sp_style_read_from_object): Use SP_SCALE30 for opacity, new paint structure

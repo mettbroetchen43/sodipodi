@@ -282,6 +282,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 
 		utf8 = NULL;
 		if (event->key.keyval == GDK_Return) {
+#if 0
 			SPRepr *rtspan, *rstring;
 			/* Create <tspan> */
 			rtspan = sp_repr_new ("tspan");
@@ -293,6 +294,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			sp_repr_append_child (SP_OBJECT_REPR (tc->text), rtspan);
 			sp_repr_unref (rtspan);
 			tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
+#else
+			SPTSpan *new;
+			new = sp_text_append_line (SP_TEXT (tc->text));
+			tc->string = SP_TSPAN_STRING (new);
+#endif
 		} else if (event->key.string) {
 			g_print ("Key %d string %s\n", event->key.keyval, event->key.string);
 			utf8 = e_utf8_from_locale_string (event->key.string);

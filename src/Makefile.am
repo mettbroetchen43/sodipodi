@@ -25,6 +25,7 @@ bin_PROGRAMS = sodipodi
 sodipodi_SOURCES = \
 	sodipodi.c sodipodi.h sodipodi-private.h \
 	\
+	macros.h \
 	forward.h \
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \

@@ -30,10 +30,12 @@
 #include <libgnome/gnome-i18n.h>
 #include <gal/unicode/gunicode.h>
 
+#include "macros.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
 #include "display/nr-arena-glyphs.h"
+#include "document.h"
 #include "style.h"
 
 #include "sp-text.h"
@@ -324,13 +326,6 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		if (rch->type == SP_XML_TEXT_NODE) break;
 	}
 
-	/* fixme: Having these here is just plain wrong */
-	sp_tspan_read_attr (object, "x");
-	sp_tspan_read_attr (object, "y");
-	sp_tspan_read_attr (object, "dx");
-	sp_tspan_read_attr (object, "dy");
-	sp_tspan_read_attr (object, "rotate");
-
 	if (rch) {
 		SPString *string;
 		/* fixme: We should really pick up first child always */
@@ -340,15 +335,12 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
 	}
 
-#if 0
 	sp_tspan_read_attr (object, "x");
 	sp_tspan_read_attr (object, "y");
 	sp_tspan_read_attr (object, "dx");
 	sp_tspan_read_attr (object, "dy");
 	sp_tspan_read_attr (object, "rotate");
-	/* fixme: We have to notify child somehow */
-#endif
-
+	sp_tspan_read_attr (object, "sodipodi:role");
 }
 
 static void
@@ -367,30 +359,32 @@ sp_tspan_read_attr (SPObject *object, const gchar *attr)
 		tspan->ly.x_set = (astr != NULL);
 		/* fixme: Re-layout it */
 		return;
-	}
-	if (strcmp (attr, "y") == 0) {
+	} else if (strcmp (attr, "y") == 0) {
 		if (astr) tspan->ly.y = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.y_set = (astr != NULL);
 		/* fixme: Re-layout it */
 		return;
-	}
-	if (strcmp (attr, "dx") == 0) {
+	} else if (strcmp (attr, "dx") == 0) {
 		if (astr) tspan->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.dx_set = (astr != NULL);
 		/* fixme: Re-layout it */
 		return;
-	}
-	if (strcmp (attr, "dy") == 0) {
+	} else if (strcmp (attr, "dy") == 0) {
 		if (astr) tspan->ly.dy = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.dy_set = (astr != NULL);
 		/* fixme: Re-layout it */
 		return;
-	}
-	if (strcmp (attr, "rotate") == 0) {
+	} else if (strcmp (attr, "rotate") == 0) {
 		if (astr) tspan->ly.rotate = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.rotate_set = (astr != NULL);
 		/* fixme: Re-layout it */
 		return;
+	} else if (!strcmp (attr, "sodipodi:role")) {
+		if (astr && !strcmp (astr, "line")) {
+			tspan->role = SP_TSPAN_ROLE_LINE;
+		} else {
+			tspan->role = SP_TSPAN_ROLE_UNKNOWN;
+		}
 	}
 
 	if (SP_OBJECT_CLASS (tspan_parent_class)->read_attr)
@@ -1000,31 +994,58 @@ static void
 sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 {
 	SPText *text;
-	gdouble rev[6];
-	gdouble px, py;
+	gdouble d;
 
 	text = SP_TEXT (item);
 
-	/* Calculate text start in parent coords */
-	px = transform[0] * text->ly.x + transform[2] * text->ly.y + transform[4];
-	py = transform[1] * text->ly.x + transform[3] * text->ly.y + transform[5];
-	/* Clear translation */
+	/*
+	 * x * t[0] + y * t[2] = TRANS (lyx);
+	 * x * t[1] + y * t[3] = TRANS (lyy);
+	 * x = (t[3] * TRANS (lyx) - t[2] * TRANS (lyy)) / (t[0] * t[3] - t[1] * t[2]);
+	 * y = (t[0] * TRANS (lyy) - t[1] * TRANS (lyx)) / (t[0] * t[3] - t[1] * t[2]);
+	 */
+
+	d = transform[0] * transform[3] - transform[1] * transform[2];
+
+	if (fabs (d) > 1e-18) {
+		gdouble px, py, x, y;
+		SPObject *child;
+		px = transform[0] * text->ly.x + transform[2] * text->ly.y + transform[4];
+		py = transform[1] * text->ly.x + transform[3] * text->ly.y + transform[5];
+		x = (transform[3] * px - transform[2] * py) / d;
+		y = (transform[0] * py - transform[1] * px) / d;
+		sp_repr_set_double_attribute (repr, "x", x);
+		sp_repr_set_double_attribute (repr, "y", y);
+		for (child = text->children; child != NULL; child = child->next) {
+			if (SP_IS_TSPAN (child)) {
+				SPTSpan *tspan;
+				tspan = SP_TSPAN (child);
+				if (tspan->ly.x_set || tspan->ly.y_set) {
+					x = (tspan->ly.x_set) ? tspan->ly.x : text->ly.x;
+					y = (tspan->ly.y_set) ? tspan->ly.y : text->ly.y;
+					px = transform[0] * x + transform[2] * y + transform[4];
+					py = transform[1] * x + transform[3] * y + transform[5];
+					x = (transform[3] * px - transform[2] * py) / d;
+					y = (transform[0] * py - transform[1] * px) / d;
+					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "x", x);
+					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "y", y);
+				}
+			}
+		}
+	}
+
 	transform[4] = 0.0;
 	transform[5] = 0.0;
-	/* Find text start in item coords */
-	art_affine_invert (rev, transform);
-	sp_repr_set_double_attribute (repr, "x", px * rev[0] + py * rev[2]);
-	sp_repr_set_double_attribute (repr, "y", px * rev[1] + py * rev[3]);
 
 	if ((fabs (transform[0] - 1.0) > 1e-9) ||
 	    (fabs (transform[3] - 1.0) > 1e-9) ||
 	    (fabs (transform[1]) > 1e-9) ||
 	    (fabs (transform[2]) > 1e-9)) {
-		guchar t[80];
-		sp_svg_write_affine (t, 80, transform);
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		guchar str[80];
+		sp_svg_write_affine (str, 80, transform);
+		sp_repr_set_attr (repr, "transform", str);
 	} else {
-		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
+		sp_repr_set_attr (repr, "transform", NULL);
 	}
 }
 
@@ -1127,6 +1148,57 @@ sp_text_get_last_string (SPText *text)
 	}
 
 	return NULL;
+}
+
+SPTSpan *
+sp_text_append_line (SPText *text)
+{
+	SPRepr *rtspan, *rstring;
+	SPObject *child;
+	SPStyle *style;
+	ArtPoint cp;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
+
+	style = SP_OBJECT_STYLE (text);
+
+	cp.x = text->ly.x;
+	cp.y = text->ly.y;
+
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			tspan = SP_TSPAN (child);
+			if (tspan->role == SP_TSPAN_ROLE_LINE) {
+				cp.x = tspan->ly.x;
+				cp.y = tspan->ly.y;
+			}
+		}
+	}
+
+	/* Create <tspan> */
+	rtspan = sp_repr_new ("tspan");
+	if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+		/* fixme: real line height */
+		/* fixme: What to do with mixed direction tspans? */
+		sp_repr_set_double (rtspan, "x", cp.x - style->text->font_size);
+		sp_repr_set_double (rtspan, "y", cp.y);
+	} else {
+		sp_repr_set_double (rtspan, "x", cp.x);
+		sp_repr_set_double (rtspan, "y", cp.y + style->text->font_size);
+	}
+	sp_repr_set_attr (rtspan, "sodipodi:role", "line");
+
+	/* Create TEXT */
+	rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+	sp_repr_add_child (rtspan, rstring, NULL);
+	sp_repr_unref (rstring);
+	/* Append to text */
+	sp_repr_append_child (SP_OBJECT_REPR (text), rtspan);
+	sp_repr_unref (rtspan);
+
+	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
 }
 
 

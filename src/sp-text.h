@@ -5,9 +5,9 @@
  * SPText - a SVG <text> element
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2000, 2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL
@@ -34,6 +34,8 @@ BEGIN_GNOME_DECLS
 #define SP_STRING_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_STRING, SPStringClass))
 #define SP_IS_STRING(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_STRING))
 #define SP_IS_STRING_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_STRING))
+
+#define SP_TSPAN_STRING(t) (SP_TSPAN (t)->string)
 
 #include "sp-chars.h"
 
@@ -75,8 +77,15 @@ GtkType sp_string_get_type (void);
 
 /* SPTSpan */
 
+enum {
+	SP_TSPAN_ROLE_UNKNOWN,
+	SP_TSPAN_ROLE_LINE
+};
+
 struct _SPTSpan {
 	SPItem item;
+
+	guint role : 2;
 
 	SPLayoutData ly;
 
@@ -109,6 +118,8 @@ gchar *sp_text_get_string_multiline (SPText *text);
 void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
 SPItem *sp_text_get_last_string (SPText *text);
+
+SPTSpan *sp_text_append_line (SPText *text);
 
 END_GNOME_DECLS
 
