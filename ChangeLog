@@ -1,3 +1,20 @@
+2002-10-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/toolbox.c: Removed libglade dependency
+
+2002-10-22  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/toolbox.c (sp_toolbox_button_new): Helper
+	(sp_toolbox_toggle_button_new): Ditto
+	(sp_toolbox_file_create): Degladeified method
+
+	* src/file.c (sp_file_export_dialog): Frontend
+
+	* src/toolbox.c (sp_toolbox_toggle_button_new): Helper
+	(sp_toolbox_draw_create): Use previous
+
+	* src/main.c: #include <desktop.h>
+
 2002-10-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/sp-toolbox.c: Removed whole gtk.h inclusion
