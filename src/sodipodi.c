@@ -504,7 +504,7 @@ sodipodi_save_extensions (Sodipodi * sodipodi)
 	gchar * fn;
 
 #ifdef WIN32
-	fn = g_build_filename (SODIPODI_APPDATADIR, "preferences", NULL);
+	fn = g_build_filename (SODIPODI_APPDATADIR, "extensions", NULL);
 #else
 	fn = g_build_filename (g_get_home_dir (), ".sodipodi/extensions", NULL);
 #endif
