@@ -29,11 +29,6 @@
 
 #include "icon.h"
 
-#define SP_ICON_DEFAULT_SIZE 12
-#define SP_ICON_BUTTON_SIZE 16
-#define SP_ICON_MENU_SIZE 12
-#define SP_ICON_NOTEBOOK_SIZE 20
-
 static void sp_icon_class_init (SPIconClass *klass);
 static void sp_icon_init (SPIcon *icon);
 static void sp_icon_destroy (GtkObject *object);
@@ -98,7 +93,9 @@ sp_icon_destroy (GtkObject *object)
 	icon = SP_ICON (object);
 
 	if (icon->px) {
-		nr_free (icon->px);
+		if (!(GTK_OBJECT_FLAGS (icon) & SP_ICON_FLAG_STATIC_DATA)) {
+			nr_free (icon->px);
+		}
 		icon->px = NULL;
 	}
 
@@ -137,33 +134,34 @@ sp_icon_expose (GtkWidget *widget, GdkEventExpose *event)
 }
 
 GtkWidget *
-sp_icon_new (unsigned int type, const unsigned char *name)
+sp_icon_new (unsigned int size, const unsigned char *name)
 {
 	SPIcon *icon;
 
 	icon = g_object_new (SP_TYPE_ICON, NULL);
 
-	switch (type) {
-	case SP_ICON_BUTTON:
-		icon->size = SP_ICON_BUTTON_SIZE;
-		break;
-	case SP_ICON_MENU:
-	case SP_ICON_TITLEBAR:
-		icon->size = SP_ICON_MENU_SIZE;
-		break;
-	case SP_ICON_NOTEBOOK:
-		icon->size = SP_ICON_NOTEBOOK_SIZE;
-		break;
-	default:
-		icon->size = SP_ICON_DEFAULT_SIZE;
-		break;
-	}
+	icon->size = CLAMP (size, 1, 128);
 
+	GTK_OBJECT_UNSET_FLAGS (icon, SP_ICON_FLAG_STATIC_DATA);
 	icon->px = sp_icon_get_image (name, icon->size);
 
 	return (GtkWidget *) icon;
 }
 
+GtkWidget *
+sp_icon_new_from_data (unsigned int size, const unsigned char *px)
+{
+	SPIcon *icon;
+
+	icon = g_object_new (SP_TYPE_ICON, NULL);
+
+	icon->size = CLAMP (size, 1, 128);
+
+	GTK_OBJECT_SET_FLAGS (icon, SP_ICON_FLAG_STATIC_DATA);
+	icon->px = (unsigned char *) px;
+
+	return (GtkWidget *) icon;
+}
 
 
 static void

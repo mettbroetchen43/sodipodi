@@ -1,3 +1,11 @@
+2002-12-26  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/button.c: New file
+
+	* src/widgets/button.h: New file
+
+	* src/toolbox.c (sp_toolbox_draw_create): Port to brand new SPButton
+
 2002-12-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.c (sp_desktop_widget_init): Some cleanup

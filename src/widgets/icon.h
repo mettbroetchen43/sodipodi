@@ -19,15 +19,15 @@ typedef struct _SPIconClass SPIconClass;
 #define SP_ICON(o) (GTK_CHECK_CAST ((o), SP_TYPE_ICON, SPIcon))
 #define SP_IS_ICON(o) (GTK_CHECK_TYPE ((o), SP_TYPE_ICON))
 
-enum {
-	SP_ICON_INVALID,
-	SP_ICON_BUTTON,
-	SP_ICON_MENU,
-	SP_ICON_TITLEBAR,
-	SP_ICON_NOTEBOOK
-};
+#define SP_ICON_SIZE_BORDER 8
+#define SP_ICON_SIZE_BUTTON 16
+#define SP_ICON_SIZE_MENU 12
+#define SP_ICON_SIZE_TITLEBAR 12
+#define SP_ICON_SIZE_NOTEBOOK 20
 
 #include <gtk/gtkwidget.h>
+
+#define SP_ICON_FLAG_STATIC_DATA (1 << 24)
 
 struct _SPIcon {
 	GtkWidget widget;
@@ -43,6 +43,7 @@ struct _SPIconClass {
 
 GType sp_icon_get_type (void);
 
-GtkWidget *sp_icon_new (unsigned int type, const unsigned char *name);
+GtkWidget *sp_icon_new (unsigned int size, const unsigned char *name);
+GtkWidget *sp_icon_new_from_data (unsigned int size, const unsigned char *px);
 
 #endif

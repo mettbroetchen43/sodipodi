@@ -16,6 +16,7 @@ src/dialogs/stroke-style.c
 src/dialogs/text-edit.c
 src/dialogs/tool-attributes.c
 src/dialogs/tool-options.c
+src/dialogs/transformation.c
 src/dialogs/xml-tree.c
 src/document.c
 src/dyna-draw-context.c

@@ -71,8 +71,8 @@ struct _SPDesktopClass {
 
 #define SP_DESKTOP_SCROLL_LIMIT 4000.0
 #define SP_DESKTOP_ZOOM_INC 1.414213562
-#define SP_DESKTOP_ZOOM_MAX 16.0
-#define SP_DESKTOP_ZOOM_MIN 0.0625
+#define SP_DESKTOP_ZOOM_MAX 32.0
+#define SP_DESKTOP_ZOOM_MIN 0.03125
 #define SP_DESKTOP_ZOOM(d) NR_MATRIX_DF_EXPANSION(NR_MATRIX_D_FROM_DOUBLE ((d)->d2w))
 
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
@@ -128,9 +128,10 @@ struct _SPDesktopWidget {
 	double dt2r;
 	double rx0, ry0;
 
-        GtkWidget *active;
-        GtkWidget *inactive;
-        GtkWidget *select_status, *coord_status;
+	GtkWidget *sticky_zoom;
+	GtkWidget *coord_status;
+        GtkWidget *select_status;
+        GtkWidget *zoom_status;
 
         gint coord_status_id, select_status_id;
         GtkWidget *zoom;

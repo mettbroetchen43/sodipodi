@@ -55,13 +55,4 @@ void sp_menu_button_append_child (SPMenuButton *mb, GtkWidget *child, gpointer d
 void sp_menu_button_set_active (SPMenuButton *mb, gpointer data);
 gpointer sp_menu_button_get_active_data (SPMenuButton *mb);
 
-#if 0
-GtkWidget* gtk_option_menu_get_menu    (GtkOptionMenu *option_menu);
-void       gtk_option_menu_set_menu    (GtkOptionMenu *option_menu,
-					GtkWidget     *menu);
-void       gtk_option_menu_remove_menu (GtkOptionMenu *option_menu);
-void       gtk_option_menu_set_history (GtkOptionMenu *option_menu,
-					guint          index);
-#endif
-
 #endif

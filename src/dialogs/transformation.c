@@ -112,7 +112,7 @@ sp_transformation_dialog_new (void)
 	gtk_box_pack_start (GTK_BOX (hb), nbook, TRUE, TRUE, 0);
 	g_object_set_data (G_OBJECT (w), "notebook", nbook);
 
-	img = sp_icon_new (SP_ICON_NOTEBOOK, "move");
+	img = sp_icon_new (SP_ICON_SIZE_NOTEBOOK, "move");
 	gtk_widget_show (img);
 	page = sp_move_page_new ();
 	gtk_widget_show (page);

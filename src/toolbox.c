@@ -28,6 +28,7 @@
 
 #include "macros.h"
 #include "widgets/icon.h"
+#include "widgets/button.h"
 #include "widgets/sp-toolbox.h"
 #include "widgets/sp-menu-button.h"
 #include "widgets/sp-hwrap-box.h"
@@ -202,7 +203,7 @@ sp_maintoolbox_create (void)
 			tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
 			w = gtk_object_get_data (GTK_OBJECT (t), tname);
 			if (w != NULL) {
-				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+				sp_button_toggle_set_down (SP_BUTTON (w), TRUE, TRUE);
 				gtk_object_set_data (GTK_OBJECT (t), "active", t);
 			}
 		}
@@ -282,34 +283,28 @@ sp_toolbox_draw_set_object (GtkButton *button, gpointer itemdata, gpointer data)
 static GtkWidget *
 sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSignalFunc handler, GtkTooltips *tt, unsigned char *tip)
 {
-	GtkWidget *pm, *b;
+	GtkWidget *b;
 	int xpos, ypos;
 
-	pm = sp_icon_new (SP_ICON_BUTTON, pxname);
-	gtk_widget_show (pm);
-	b = gtk_button_new ();
+	b = sp_button_new (24, pxname, tip);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
 	gtk_widget_show (b);
-	gtk_container_add (GTK_CONTAINER (b), pm);
 	if (handler) gtk_signal_connect (GTK_OBJECT (b), "clicked", handler, NULL);
 	xpos = pos % 4;
 	ypos = pos / 4;
 	gtk_table_attach (GTK_TABLE (t), b, xpos, xpos + 1, ypos, ypos + 1, 0, 0, 0, 0);
 
-	gtk_tooltips_set_tip (tt, b, tip, NULL);
-
 	return b;
 }
 
 static GtkWidget *
-sp_toolbox_toggle_button_new (const unsigned char *pixmap, unsigned int show)
+sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, const unsigned char *tip)
 {
-	GtkWidget *pm, *b;
+	GtkWidget *b;
 
-	pm = sp_icon_new (SP_ICON_BUTTON, pixmap);
-	gtk_widget_show (pm);
-	b = gtk_toggle_button_new ();
-	if (show) gtk_widget_show (b);
-	gtk_container_add (GTK_CONTAINER (b), pm);
+	b = sp_button_toggle_new (24, pxname, tip);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	gtk_widget_show (b);
 
 	return b;
 }
@@ -467,50 +462,30 @@ sp_toolbox_draw_create (void)
 	tt = gtk_tooltips_new ();
 	
 	/* Select */
-	b = sp_toolbox_toggle_button_new ("draw_select", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_select", tt, _("Select tool - select and transform objects"));
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
-	gtk_tooltips_set_tip (tt, b, _("Select tool - select and transform objects"), NULL);
 
 	/* Node */
-	b = sp_toolbox_toggle_button_new ("draw_node", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_node", tt, _("Node tool - modify different aspects of existing objects"));
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
-	gtk_tooltips_set_tip (tt, b, _("Node tool - modify different aspects of existing objects"), NULL);
 
-#if 1
-	/* Object */
-	b = sp_menu_button_new ();
+	/* Draw */
+	b = sp_button_toggle_menu_new (24, 4);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Rect */
-	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_rect",
-							    _("Rectangle tool - create rectangles and squares with optional rounded corners"),
-							    NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
-	/* Arc */
-	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_arc",
-							    _("Arc tool - create circles, ellipses and arcs"),
-							    NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
-	/* Star */
-	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_star",
-							    _("Star tool - create stars and polygons"),
-							    NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
-	/* Spiral */
-	ev = gtk_event_box_new_with_image_file_and_tooltips("draw_spiral",
-							    _("Spiral tool - create spirals"),
-							    NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
-	/* END COMPONENTS */
-	gtk_signal_connect (GTK_OBJECT (b), "activate-item", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	sp_button_add_option (SP_BUTTON (b), 0, "draw_rect", _("Rectangle tool - create rectangles and squares with optional rounded corners"));
+	sp_button_add_option (SP_BUTTON (b), 1, "draw_arc", _("Arc tool - create circles, ellipses and arcs"));
+	sp_button_add_option (SP_BUTTON (b), 2, "draw_star", _("Star tool - create stars and polygons"));
+	sp_button_add_option (SP_BUTTON (b), 3, "draw_spiral", _("Spiral tool - create spirals"));
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPRectContext", b);
@@ -519,49 +494,32 @@ sp_toolbox_draw_create (void)
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSpiralContext", b);
 
 	/* Freehand */
-	b = sp_menu_button_new ();
+	b = sp_button_toggle_menu_new (24, 3);
+	sp_button_set_tooltips (SP_BUTTON (b), tt);
 	gtk_widget_show (b);
 	/* START COMPONENTS */
-	/* Freehand */
-	ev = gtk_event_box_new_with_image_file_and_tooltips ("draw_freehand",
-							     _("Pencil tool - draw freehand lines and straight segments"),
-							     NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
-	/* Pen */
-	ev = gtk_event_box_new_with_image_file_and_tooltips ("draw_pen",
-							     _("Pen tool - draw exactly positioned curved lines"),
-							     NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
-	/* Dynahand */
-	ev =  gtk_event_box_new_with_image_file_and_tooltips ("draw_dynahand",
-							      _("Calligraphic tool - draw calligraphic lines"),
-							      NULL);
-	gtk_widget_show (ev);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
-	/* END COMPONENTS */
-	gtk_signal_connect (GTK_OBJECT (b), "activate-item", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	/* Rect */
+	sp_button_add_option (SP_BUTTON (b), 0, "draw_freehand", _("Pencil tool - draw freehand lines and straight segments"));
+	sp_button_add_option (SP_BUTTON (b), 1, "draw_pen", _("Pen tool - draw exactly positioned curved lines"));
+	sp_button_add_option (SP_BUTTON (b), 2, "draw_dynahand", _("Calligraphic tool - draw calligraphic lines"));
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPenContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPDynaDrawContext", b);
-#endif
 
 	/* Text */
-	b = sp_toolbox_toggle_button_new ("draw_text", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_text", tt, _("Text tool - create editable text objects"));
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPTextContext", b);
-	gtk_tooltips_set_tip (tt, b, _("Text tool - create editable text objects"), NULL);
 
 	/* Zoom */
-	b = sp_toolbox_toggle_button_new ("draw_zoom", TRUE);
+	b = sp_toolbox_toggle_button_new ("draw_zoom", tt, _("Zoom tool - zoom into choosen area"));
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
-	gtk_tooltips_set_tip (tt, b, _("Zoom tool - zoom into choosen area"), NULL);
 	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
 	if (repr) {
@@ -757,11 +715,11 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 	}
 
 	if (new != active) {
-		if (active && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (active))) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
+		if (active && SP_BUTTON_IS_DOWN (SP_BUTTON (active))) {
+			sp_button_toggle_set_down (SP_BUTTON (active), FALSE, TRUE);
 		}
-		if (new && !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (new))) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
+		if (new && !SP_BUTTON_IS_DOWN (SP_BUTTON (new))) {
+			sp_button_toggle_set_down (SP_BUTTON (new), TRUE, TRUE);
 		}
 		gtk_object_set_data (GTK_OBJECT (data), "active", new);
 		if (tname && !strcmp (tname, "SPNodeContext")) {
@@ -809,7 +767,7 @@ gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
 	GtkWidget * ev;
 	GtkTooltips *tt;
 	
-	pm = sp_icon_new (SP_ICON_BUTTON, image_file);
+	pm = sp_icon_new (SP_ICON_SIZE_BUTTON, image_file);
 	tt = gtk_tooltips_new ();
 	ev = gtk_event_box_new();
 	gtk_tooltips_set_tip (tt, ev, tip_text, tip_private);
