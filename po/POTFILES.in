@@ -8,6 +8,7 @@ src/dialogs/align.c
 src/dialogs/desktop-properties.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
+src/dialogs/document-tree.c
 src/dialogs/export.c
 src/dialogs/fill-style.c
 src/dialogs/item-properties.c
@@ -57,5 +58,14 @@ src/widgets/gradient-vector.c
 src/widgets/paint-selector.c
 src/widgets/sp-color-preview.c
 src/widgets/sp-color-selector.c
+src/widgets/sp-dock-item.c
+src/widgets/sp-dock-layout.c
+src/widgets/sp-dock-master.c
+src/widgets/sp-dock-notebook.c
+src/widgets/sp-dock-object.c
+src/widgets/sp-dock-paned.c
+src/widgets/sp-dock-placeholder.c
+src/widgets/sp-dock-tablabel.c
+src/widgets/sp-dock.c
 src/widgets/sp-toolbox.c
 src/widgets/sp-xmlview-attr-list.c
