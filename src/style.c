@@ -644,7 +644,8 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 	guchar c[BMAX];
 
 	while (*p) {
-		const guchar *s, *e;
+		const gchar *bp;
+		const guchar *s, *v, *e;
 		gint len, idx;
 		while (!isalpha (*p)) {
 			if (!*p) return;
@@ -655,12 +656,21 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 			g_warning ("No separator at style at: %s", p);
 			return;
 		}
-		e = strchr (p, ';');
+		v = s + 1;
+		while (isspace (*v)) {
+			if (!*v) {
+				g_warning ("Unexpected terminator at style at: %s", p);
+				return;
+			}
+			v += 1;
+		}
+		e = strchr (v, ';');
 		if (!e) {
 			e = p + strlen (p);
 			if (*e) g_warning ("No end marker at style at: %s", p);
 		}
-		len = MIN (s - p, 4095);
+		bp = strpbrk (p, ": ");
+		len = (bp) ? MIN ((gint)(bp - (const gchar *)p), 4095) : 4095;
 		if (len < 1) {
 			g_warning ("Zero length style property at: %s", p);
 			return;
@@ -669,8 +679,9 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 		c[len] = '\0';
 		idx = sp_attribute_lookup (c);
 		if (idx > 0) {
-			len = MIN (e - s - 1, 4095);
-			if (len > 0) memcpy (c, s + 1, len);
+			bp = strpbrk (v, "; ");
+			len = (bp) ? MIN ((gint)(bp - (const gchar *)v), 4095) : 4095;
+			if (len > 0) memcpy (c, v, len);
 			c[len] = '\0';
 			sp_style_merge_property (style, idx, c);
 		} else {

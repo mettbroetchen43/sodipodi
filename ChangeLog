@@ -1,3 +1,8 @@
+2004-01-24  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/style.c (sp_style_merge_from_style_string): Fixed CSS inline
+	style white space handling bug, thanks to rindolf
+
 2004-01-23  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/libnrtype/nr-glyphs.c (nr_pgl_free): Fixed memory leak
