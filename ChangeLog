@@ -1,3 +1,8 @@
+2002-11-30  Masatake YAMATO  <jet@gyve.org>
+
+	* configure.in (ENABLE_AUTOTRACE): Comment out autotrace/frontline
+	checking till frontline becomes gtk+2 based.
+
 2002-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/selection.h: Inherit directly from GObject

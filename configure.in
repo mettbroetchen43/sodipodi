@@ -62,13 +62,13 @@ SODIPODI_LIBS="$SODIPODI_LIBS -lpopt -lpng -lz"
 dnl ******************************
 dnl Frontline/Autotrace support
 dnl ******************************
-ifdef([AM_PATH_FRONTLINE],
-	[AM_PATH_FRONTLINE("0.5.1",[AC_DEFINE(ENABLE_AUTOTRACE)
-		SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
-		SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
-	AC_MSG_WARN([Cannot find Frontline library.])
-	AC_MSG_WARN([AutoTrace function are disabled.]))
-])
+dnl ifdef([AM_PATH_FRONTLINE],
+dnl 	[AM_PATH_FRONTLINE("0.5.1",[AC_DEFINE(ENABLE_AUTOTRACE)
+dnl 		SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
+dnl 		SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
+dnl 	AC_MSG_WARN([Cannot find Frontline library.])
+dnl 	AC_MSG_WARN([AutoTrace function are disabled.]))
+dnl ])
 
 AC_SUBST(SODIPODI_CFLAGS)
 AC_SUBST(SODIPODI_LIBS)
