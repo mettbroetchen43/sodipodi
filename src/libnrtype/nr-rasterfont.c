@@ -219,19 +219,32 @@ nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, N
 	sx = (int) floor (x + 0.5);
 	sy = (int) floor (y + 0.5);
 
-	area.x0 = NRRF_COORD_INT_LOWER (slot->bbox.x0) + sx;
-	area.y0 = NRRF_COORD_INT_LOWER (slot->bbox.y0) + sy;
-	area.x1 = NRRF_COORD_INT_UPPER (slot->bbox.x1) + sx;
-	area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
-
 	spb.empty = 1;
 	if (slot->has_gmap == NRRF_GMAP_IMAGE) {
 		spx = slot->gmap.px;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
+		area.x0 = NRRF_COORD_INT_LOWER (slot->bbox.x0) + sx;
+		area.y0 = NRRF_COORD_INT_LOWER (slot->bbox.y0) + sy;
+		area.x1 = NRRF_COORD_INT_UPPER (slot->bbox.x1) + sx;
+		area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
 	} else if (slot->has_gmap == NRRF_GMAP_TINY) {
 		spx = slot->gmap.d;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
+		area.x0 = NRRF_COORD_INT_LOWER (slot->bbox.x0) + sx;
+		area.y0 = NRRF_COORD_INT_LOWER (slot->bbox.y0) + sy;
+		area.x1 = NRRF_COORD_INT_UPPER (slot->bbox.x1) + sx;
+		area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
 	} else {
+		ArtDRect dbox;
+		art_drect_svp (&dbox, slot->gmap.svp);
+		area.x0 = (int) floor (dbox.x0) + sx;
+		area.y0 = (int) floor (dbox.y0) + sy;
+		area.x1 = (int) ceil (dbox.x1) + sx;
+		area.y1 = (int) ceil (dbox.y1) + sy;
+		area.x0 = MAX (area.x0, m->area.x0);
+		area.y0 = MAX (area.y0, m->area.y0);
+		area.x1 = MIN (area.x1, m->area.x1);
+		area.y1 = MIN (area.y1, m->area.y1);
 		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, 0);
 		art_gray_svp_aa (slot->gmap.svp, area.x0 - sx, area.y0 - sy, area.x1 - sx, area.y1 - sy,
 				 NR_PIXBLOCK_PX (&spb), spb.rs);

@@ -63,7 +63,7 @@ sp_selected_path_combine (void)
 
 	for (l = il; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
-		if (!SP_IS_PATH (item)) return;
+		if (!SP_IS_SHAPE (item)) return;
 	}
 
 	il = g_slist_copy (il);
@@ -216,7 +216,7 @@ sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy)
 	if (!item)
 		return NULL;
 		
-	if (SP_IS_PATH (item)) {
+	if (SP_IS_SHAPE (item)) {
 		curve = sp_shape_get_curve (SP_SHAPE (item));
 	} else if (SP_IS_TEXT (item)) {
 		curve = sp_text_normalized_bpath (SP_TEXT (item));

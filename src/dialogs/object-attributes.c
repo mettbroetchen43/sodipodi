@@ -16,8 +16,9 @@
 #include <stdlib.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-#include "../helper/sp-intl.h"
-#include "../sp-anchor.h"
+#include "helper/sp-intl.h"
+#include "macros.h"
+#include "sp-anchor.h"
 #include "sp-attribute-widget.h"
 #include "object-attributes.h"
 
@@ -80,9 +81,15 @@ static const SPAttrDesc rect_desc[] = {
 };
 
 static void
-object_destroyed (GtkObject *object, GtkWidget *widget)
+object_released (GtkObject *object, GtkWidget *widget)
 {
 	gtk_widget_destroy (widget);
+}
+
+static void
+window_destroyed (GtkObject *window, GtkObject *object)
+{
+	sp_signal_disconnect_by_data (object, window);
 }
 
 static void
@@ -113,8 +120,8 @@ sp_object_attr_show_dialog (SPObject *object, const SPAttrDesc *desc, const guch
 	gtk_widget_show (t);
 	gtk_container_add (GTK_CONTAINER (w), t);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (object), "destroy",
-					GTK_SIGNAL_FUNC (object_destroyed), w, GTK_OBJECT (w));
+	g_signal_connect (G_OBJECT (w), "destroy", G_CALLBACK (window_destroyed), object);
+	g_signal_connect (G_OBJECT (object), "release", G_CALLBACK (object_released), w);
 
 	gtk_widget_show (w);
 }

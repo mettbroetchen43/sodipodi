@@ -1,3 +1,10 @@
+2003-02-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_generic_glyph_mask_render): Get real
+	bounding box, clip to pixblock area for SVP glyphs
+
+	* src/sp-polygon.c (sp_polygon_write): Write points always
+
 2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c (sp_export_dialog): Default to document name + png

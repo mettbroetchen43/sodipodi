@@ -30,7 +30,7 @@ static gchar *sp_polygon_description (SPItem *item);
 
 static SPShapeClass *parent_class;
 
-GType
+unsigned int
 sp_polygon_get_type (void)
 {
 	static GType polygon_type = 0;
@@ -38,13 +38,11 @@ sp_polygon_get_type (void)
 	if (!polygon_type) {
 		GTypeInfo polygon_info = {
 			sizeof (SPPolygonClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_polygon_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPPolygon),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_polygon_init,
 		};
 		polygon_type = g_type_register_static (SP_TYPE_SHAPE, "SPPolygon", &polygon_info, 0);
@@ -137,12 +135,11 @@ sp_polygon_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("polygon");
 	}
 
-	if (flags & SP_POLYGON_WRITE_POINTS) {
-		abp = sp_curve_first_bpath (shape->curve);
-		str = sp_svg_write_polygon (abp);
-		sp_repr_set_attr (repr, "points", str);
-		g_free (str);
-	}
+	/* We can safely write points here, because all subclasses require it too (Lauris) */
+	abp = sp_curve_first_bpath (shape->curve);
+	str = sp_svg_write_polygon (abp);
+	sp_repr_set_attr (repr, "points", str);
+	g_free (str);
 
 	if (((SPObjectClass *) (parent_class))->write)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags);

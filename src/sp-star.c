@@ -150,7 +150,7 @@ sp_star_write (SPObject *object, SPRepr *repr, guint flags)
 	}
 
 	if (((SPObjectClass *) (parent_class))->write)
-		((SPObjectClass *) (parent_class))->write (object, repr, flags | SP_POLYGON_WRITE_POINTS);
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
 
 	return repr;
 }
