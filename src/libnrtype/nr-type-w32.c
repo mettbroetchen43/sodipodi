@@ -179,7 +179,7 @@ nr_typeface_w32_finalize (NRObject *object)
 
 
     if (tfw32->slots) {
-        int i;
+        unsigned int i;
         for (i = 0; i < tfw32->slots_length; i++) {
             if (tfw32->slots[i].outline.path > 0) {
 				art_free (tfw32->slots[i].outline.path);
@@ -551,7 +551,7 @@ nr_typeface_w32_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *trans
 	float size;
 
 	tfw32 = (NRTypeFaceW32 *) tf;
-	size = NR_MATRIX_DF_EXPANSION (transform);
+	size = (float) NR_MATRIX_DF_EXPANSION (transform);
 
 	font = tfw32->fonts;
 	while (font != NULL) {
@@ -700,7 +700,7 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 
 	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
 		if (!tfw32->vgidx) {
-		int i;
+		unsigned int i;
 			tfw32->vgidx = nr_new (int, tfw32->typeface.nglyphs);
 
 		for (i = 0; i < tfw32->typeface.nglyphs; i++) {
@@ -717,7 +717,7 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 
 		if (!tfw32->hgidx) {
 
-			int i;
+			unsigned int i;
 
 			tfw32->hgidx = nr_new (int, tfw32->typeface.nglyphs);
 

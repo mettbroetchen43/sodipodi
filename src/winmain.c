@@ -4,6 +4,10 @@
 #include <glib.h>
 
 #ifdef G_OS_WIN32
+
+#undef DATADIR
+#include <windows.h>
+
 extern int main (int argc, char **argv);
 
 /* In case we build this as a windowed application */

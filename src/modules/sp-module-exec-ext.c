@@ -13,10 +13,10 @@
 
 #include <string.h>
 #include <stdlib.h>
-#ifndef WIN32
-#include <unistd.h>
-#else
+#ifdef WIN32
 #include <monostd.h>
+#else
+#include <unistd.h>
 #endif
 #include <errno.h>
 #include <libart_lgpl/art_affine.h>

@@ -460,8 +460,8 @@ sp_text_context_update_cursor (SPTextContext *tc)
 		sp_canvas_item_show (tc->cursor);
 		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), d0.x, d0.y, d1.x, d1.y);
 		/* fixme: ... need another transformation to get canvas widget coordinate space? */
-		im_cursor.x = floor (d0.x);
-		im_cursor.y = floor (d0.y);
+		im_cursor.x = (int) floor (d0.x);
+		im_cursor.y = (int) floor (d0.y);
 		im_cursor.width = floor (d1.x) - im_cursor.x;
 		im_cursor.height = floor (d1.y) - im_cursor.y;
 

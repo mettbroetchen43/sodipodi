@@ -92,9 +92,9 @@ sp_color_set_rgb_rgba32 (SPColor *color, NRULong value)
 	g_return_if_fail (color != NULL);
 
 	color->colorspace = &RGB;
-	color->v.c[0] = (value >> 24) / 255.0;
-	color->v.c[1] = ((value >> 16) & 0xff) / 255.0;
-	color->v.c[2] = ((value >> 8) & 0xff) / 255.0;
+	color->v.c[0] = (value >> 24) / 255.0F;
+	color->v.c[1] = ((value >> 16) & 0xff) / 255.0F;
+	color->v.c[2] = ((value >> 8) & 0xff) / 255.0F;
 }
 
 void
@@ -182,7 +182,7 @@ sp_color_get_cmyk_floatv (const SPColor *color, float *cmyk)
 void
 sp_color_rgb_to_hsv_floatv (float *hsv, float r, float g, float b)
 {
-	gdouble max, min, delta;
+	float max, min, delta;
 
 	max = MAX (MAX (r, g), b);
 	min = MIN (MIN (r, g), b);

@@ -852,9 +852,9 @@ sp_desktop_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 			sp_desktop_get_display_area (dtw->desktop, &newarea);
 			/* Calculate adjusted zoom */
 			zoom = zpsp * hypot (newarea.x1 - newarea.x0, newarea.y1 - newarea.y0);
-			sp_desktop_zoom_absolute (dtw->desktop, 0.5 * (area.x1 + area.x0), 0.5 * (area.y1 + area.y0), zoom);
+			sp_desktop_zoom_absolute (dtw->desktop, 0.5F * (area.x1 + area.x0), 0.5F * (area.y1 + area.y0), zoom);
 		} else {
-			sp_desktop_zoom_absolute (dtw->desktop, 0.5 * (area.x1 + area.x0), 0.5 * (area.y1 + area.y0), zoom);
+			sp_desktop_zoom_absolute (dtw->desktop, 0.5F * (area.x1 + area.x0), 0.5F * (area.y1 + area.y0), zoom);
 		}
 	} else {
 		if (GTK_WIDGET_CLASS (dtw_parent_class)->size_allocate)

@@ -149,7 +149,8 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			NRPointF fp;
 			dragging = TRUE;
 			/* Position center */
-			sp_desktop_w2d_xy_point (event_context->desktop, &fp, event->button.x, event->button.y);
+			sp_desktop_w2d_xy_point (event_context->desktop, &fp,
+									 (float) event->button.x, (float) event->button.y);
 			ac->center.x = fp.x;
 			ac->center.y = fp.y;
 			/* Snap center to nearest magnetic point */
@@ -163,7 +164,8 @@ sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	case GDK_MOTION_NOTIFY:
 		if (dragging && event->motion.state && GDK_BUTTON1_MASK) {
 			NRPointF p;
-			sp_desktop_w2d_xy_point (event_context->desktop, &p, event->motion.x, event->motion.y);
+			sp_desktop_w2d_xy_point (event_context->desktop, &p,
+					(float) event->motion.x, (float) event->motion.y);
 			sp_arc_drag (ac, p.x, p.y, event->motion.state);
 			ret = TRUE;
 		}
@@ -220,7 +222,7 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	/* This is bit ugly, but so we are */
 
 	if (state & GDK_CONTROL_MASK) {
-		gdouble dx, dy;
+		float dx, dy;
 		/* fixme: Snapping */
 		dx = x - ac->center.x;
 		dy = y - ac->center.y;

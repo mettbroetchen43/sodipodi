@@ -21,8 +21,6 @@
 #include <fcntl.h>
 #ifndef WIN32
 #include <unistd.h>
-#else
-#include "../monostd.h"
 #endif
 #include <stdio.h>
 #include <ctype.h>
@@ -38,6 +36,11 @@
 #endif
 #ifdef WIN32
 #include "nr-type-w32.h"
+#endif
+
+#ifndef S_ISDIR
+#define S_ISDIR(m) (((m) & _S_IFMT) == _S_IFDIR)
+#define S_ISREG(m) (((m) & _S_IFMT) == _S_IFREG)
 #endif
 
 #include "nr-type-directory.h"
@@ -383,9 +386,9 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 	int alen, blen;
 
 #ifndef WIN32
-	if (!strcasecmp (ask, bid)) return MIN (best, 0.0);
+	if (!strcasecmp (ask, bid)) return MIN (best, 0.0F);
 #else
-	if (!stricmp (ask, bid)) return MIN (best, 0.0);
+	if (!stricmp (ask, bid)) return MIN (best, 0.0F);
 #endif
 
 	alen = strlen (ask);
@@ -406,10 +409,10 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 	return 10000.0;
 }
 
-#define NR_TYPE_ITALIC_SCALE 10000.0
-#define NR_TYPE_OBLIQUE_SCALE 1000.0
-#define NR_TYPE_WEIGHT_SCALE 100.0
-#define NR_TYPE_STRETCH_SCALE 2000.0
+#define NR_TYPE_ITALIC_SCALE 10000.0F
+#define NR_TYPE_OBLIQUE_SCALE 1000.0F
+#define NR_TYPE_WEIGHT_SCALE 100.0F
+#define NR_TYPE_STRETCH_SCALE 2000.0F
 
 static float
 nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best)

@@ -325,7 +325,7 @@ nr_typeface_empty_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *tra
 	NRFont *font;
 	float size;
 
-	size = NR_MATRIX_DF_EXPANSION (transform);
+	size = (float) NR_MATRIX_DF_EXPANSION (transform);
 
 	font = empty_fonts;
 	while (font != NULL) {

@@ -229,10 +229,10 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				nr_matrix_f_from_d (&ctm, &gc->transform);
 				bp.path = shape->curve->bpath;
 				nr_path_matrix_f_bbox_f_union (&bp, &ctm, &bbox, 1.0);
-				item->bbox.x0 = bbox.x0 - 1.0;
-				item->bbox.y0 = bbox.y0 - 1.0;
-				item->bbox.x1 = bbox.x1 + 1.9999;
-				item->bbox.y1 = bbox.y1 + 1.9999;
+				item->bbox.x0 = bbox.x0 - 1.0F;
+				item->bbox.y0 = bbox.y0 - 1.0F;
+				item->bbox.x1 = bbox.x1 + 1.9999F;
+				item->bbox.y1 = bbox.y1 + 1.9999F;
 			}
 			if (beststate & NR_ARENA_ITEM_STATE_BBOX) {
 				for (child = shape->markers; child != NULL; child = child->next) {
@@ -360,10 +360,10 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	}
 	if (nr_rect_f_test_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
 
-	item->bbox.x0 = bbox.x0 - 1.0;
-	item->bbox.y0 = bbox.y0 - 1.0;
-	item->bbox.x1 = bbox.x1 + 1.0;
-	item->bbox.y1 = bbox.y1 + 1.0;
+	item->bbox.x0 = bbox.x0 - 1.0F;
+	item->bbox.y0 = bbox.y0 - 1.0F;
+	item->bbox.x1 = bbox.x1 + 1.0F;
+	item->bbox.y1 = bbox.y1 + 1.0F;
 	nr_arena_request_render_rect (item->arena, &item->bbox);
 
 	item->render_opacity = TRUE;
@@ -533,17 +533,17 @@ nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsign
 
 	if (item->state & NR_ARENA_ITEM_STATE_RENDER) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-			if (nr_svp_point_wind (shape->fill_svp, x, y)) return item;
+			if (nr_svp_point_wind (shape->fill_svp, (float) x, (float) y)) return item;
 		}
 		if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-			if (nr_svp_point_wind (shape->stroke_svp, x, y)) return item;
+			if (nr_svp_point_wind (shape->stroke_svp, (float) x, (float) y)) return item;
 		}
 		if (delta > 1e-3) {
 			if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
-				if (nr_svp_point_distance (shape->fill_svp, x, y) <= delta) return item;
+				if (nr_svp_point_distance (shape->fill_svp, (float) x, (float) y) <= delta) return item;
 			}
 			if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-				if (nr_svp_point_distance (shape->stroke_svp, x, y) <= delta) return item;
+				if (nr_svp_point_distance (shape->stroke_svp, (float) x, (float) y) <= delta) return item;
 			}
 		}
 	} else {
@@ -552,14 +552,9 @@ nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsign
 		NRBPath bp;
 		float dist;
 		int wind;
-		pt.x = x;
-		pt.y = y;
-		t.c[0] = shape->ctm.c[0];
-		t.c[1] = shape->ctm.c[1];
-		t.c[2] = shape->ctm.c[2];
-		t.c[3] = shape->ctm.c[3];
-		t.c[4] = shape->ctm.c[4];
-		t.c[5] = shape->ctm.c[5];
+		pt.x = (float) x;
+		pt.y = (float) y;
+		nr_matrix_f_from_d (&t, &shape->ctm);
 		bp.path = shape->curve->bpath;
 		dist = NR_HUGE_F;
 		wind = 0;
