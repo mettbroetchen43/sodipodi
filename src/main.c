@@ -371,12 +371,12 @@ sp_main_console (int argc, char **argv)
 					 * (2) a[5] = -a[3] * y0
 					 */
 
-					affine[0] = width / (area.x1 - area.x0);
+					affine[0] = width / ((area.x1 - area.x0) * 1.25);
 					affine[1] = 0.0;
 					affine[2] = 0.0;
-					affine[3] = height / (area.y1 - area.y0);
-					affine[4] = -affine[0] * area.x0;
-					affine[5] = -affine[3] * area.y0;
+					affine[3] = height / ((area.y1 - area.y0) * 1.25);
+					affine[4] = -affine[0] * area.x0 * 1.25;
+					affine[5] = -affine[3] * area.y0 * 1.25;
 
 					SP_PRINT_TRANSFORM ("SVG2PNG", affine);
 

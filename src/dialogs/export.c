@@ -192,12 +192,12 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	 * (2) a[5] = -a[3] * y1
 	 */
 
-	affine[0] = width / (x1 - x0);
+	affine[0] = width / ((x1 - x0) * 1.25);
 	affine[1] = 0.0;
 	affine[2] = 0.0;
-	affine[3] = height / (y1 - y0);
-	affine[4] = -affine[0] * x0;
-	affine[5] = -affine[3] * y0;
+	affine[3] = height / ((y1 - y0) * 1.25);
+	affine[4] = -affine[0] * x0 * 1.25;
+	affine[5] = -affine[3] * y0 * 1.25;
 
 	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
 
