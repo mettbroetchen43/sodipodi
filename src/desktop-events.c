@@ -8,6 +8,7 @@
 #include "sp-guide.h"
 #include "sp-namedview.h"
 #include "desktop-affine.h"
+#include "desktop-handles.h"
 #include "event-context.h"
 #include "sp-metrics.h"
 #include "sp-item.h"
@@ -126,8 +127,9 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 				repr = sp_repr_new ("sodipodi:guide");
 				sp_repr_set_attr (repr, "orientation", horiz ? "horizontal" : "vertical");
 				sp_repr_set_double_attribute (repr, "position", horiz ? p.y : p.x);
-				sp_repr_append_child (SP_OBJECT (desktop->namedview)->repr, repr);
+				sp_repr_append_child (SP_OBJECT_REPR (desktop->namedview), repr);
 				sp_repr_unref (repr);
+				sp_document_done (SP_DT_DOCUMENT (desktop));
 			}
 			sp_desktop_coordinate_status (desktop, p.x, p.y, 4);
 		}
@@ -213,6 +215,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				sp_guide_remove(guide);
 			}
 			moved = FALSE;
+			sp_document_done (SP_DT_DOCUMENT (desktop));
 			sp_desktop_coordinate_status (desktop, p.x, p.y, 4);
 		  }
 		  dragging = FALSE;
@@ -339,12 +342,14 @@ guide_dialog_apply (GtkWidget * widget, SPGuide ** g)
       newpos = guide->position + SP_METRIC_TO_PT (val, m);
     }
     sp_guide_set (guide, newpos, newpos);
+    sp_document_done (SP_OBJECT_DOCUMENT (guide));
     break;
   case SP_SVG_UNIT_PERCENT:
     len = get_document_len (guide->orientation);
     if (mode) newpos = len * val / 100;
     else newpos = guide->position + len * val / 100;
     sp_guide_set (guide, newpos, newpos);
+    sp_document_done (SP_OBJECT_DOCUMENT (guide));
     break;
   default:
     g_print("system not allowed (should not happen)\n");
@@ -361,13 +366,16 @@ guide_dialog_ok (GtkWidget * widget, gpointer g)
 }
 
 static void
-guide_dialog_delete (GtkWidget * widget, SPGuide ** g)
+guide_dialog_delete (GtkWidget * widget, SPGuide **g)
 {
-  SPGuide * guide;
+	SPDocument *doc;
+	SPGuide *guide;
   
-  guide = *g;
-  sp_guide_remove (guide);
-  guide_dialog_close (NULL, GNOME_DIALOG(d));
+	guide = *g;
+	doc = SP_OBJECT_DOCUMENT (guide);
+	sp_guide_remove (guide);
+	sp_document_done (SP_OBJECT_DOCUMENT (doc));
+	guide_dialog_close (NULL, GNOME_DIALOG(d));
 }
 
 static void

@@ -214,19 +214,19 @@ sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y)
 void
 sp_guide_set (SPGuide * guide, gdouble x, gdouble y)
 {
-  g_assert (SP_IS_GUIDE (guide));
+	g_assert (SP_IS_GUIDE (guide));
 
-  sp_guide_moveto (guide, x, y);
-  sp_repr_set_double_attribute (SP_OBJECT (guide)->repr,
-				"position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? y : x);
+	sp_guide_moveto (guide, x, y);
+	sp_repr_set_double_attribute (SP_OBJECT (guide)->repr,
+				      "position", (guide->orientation == SP_GUIDE_HORIZONTAL) ? y : x);
 }
 
 void
 sp_guide_remove (SPGuide * guide)
 {
-  g_assert (SP_IS_GUIDE (guide));
+	g_assert (SP_IS_GUIDE (guide));
 
-  sp_repr_unparent (SP_OBJECT (guide)->repr);
+	sp_repr_unparent (SP_OBJECT (guide)->repr);
 }
 
 gint

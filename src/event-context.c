@@ -456,6 +456,7 @@ sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 		gtk_menu_popup (menu, NULL, NULL, 0, NULL, 0, event->key.time);
 		break;
 	default:
+		break;
 	}
 }
 

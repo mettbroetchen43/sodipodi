@@ -55,7 +55,7 @@ fi
 dnl ******************************
 dnl Check for Bonobo
 dnl ******************************
-try_bonobo=flase
+try_bonobo=false
 have_bonobo=false
 AC_ARG_WITH(bonobo,
 	[--{with,without}-bonobo Compile with Bonobo support or without it],

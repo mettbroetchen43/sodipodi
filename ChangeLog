@@ -1,5 +1,9 @@
 2001-12-28  Lauris Kaplinski  <lauris@localhost.localdomain>
 
+	* src/desktop-events.c (guide_dialog_apply): Flush undo
+	(guide_dialog_delete): Ditto
+	(sp_dt_guide_event): Ditto
+
 	* src/widgets/sp-color-selector.c: Added 'rrggbbaa' hex value entry,
 	use SPColor helpers instead of doing conversions here, added some
 	generic color methods and renamed/changed signature of old ones.
