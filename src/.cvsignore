@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
 sodipodi
+spsvgview
 .deps
 *.o
 tmp

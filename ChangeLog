@@ -1,3 +1,15 @@
+2003-10-25  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/libnrtype/nr-type-gnome.h
+	(nr_typeface_gnome_get_type): Fixed to work with GnomePrint
+
+	* src/libnrtype/nr-type-gnome.c
+	(nr_typeface_gnome_get_type): Ditto
+
+	* .cvsignore: Arrengement
+	
+	* src/.cvsignore: Add spsvgview
+
 2003-10-22  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* Support `white space handling' in SVG text.

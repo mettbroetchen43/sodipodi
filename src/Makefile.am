@@ -184,6 +184,7 @@ spsvgview_LDADD = \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
+	$(module_libs) \
 	$(kdeldadd)
 
 # widgets/libspwidgets.a
