@@ -12,17 +12,15 @@
  *
  */
 
-#include <libart_lgpl/art_rect.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_point.h>
-#include <libart_lgpl/art_rect_svp.h>
-#include <libart_lgpl/art_rgb_svp.h>
+#include <libnr/nr-rect.h>
+#include <libnr/nr-matrix.h>
+#include <libnr/nr-svp-private.h>
+#include <libnr/nr-stroke.h>
+#include <libnr/nr-svp-render.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
+
 #include "canvas-bpath.h"
 
 static void sp_canvas_bpath_class_init (SPCanvasBPathClass *klass);
@@ -75,12 +73,12 @@ static void
 sp_canvas_bpath_init (SPCanvasBPath * bpath)
 {
 	bpath->fill_rgba = 0x000000ff;
-	bpath->fill_rule = ART_WIND_RULE_ODDEVEN;
+	bpath->fill_rule = NR_WIND_RULE_EVENODD;
 
 	bpath->stroke_rgba = 0x00000000;
 	bpath->stroke_width = 1.0;
-	bpath->stroke_linejoin = ART_PATH_STROKE_JOIN_MITER;
-	bpath->stroke_linecap = ART_PATH_STROKE_CAP_BUTT;
+	bpath->stroke_linejoin = NR_STROKE_JOIN_MITER;
+	bpath->stroke_linecap = NR_STROKE_CAP_BUTT;
 	bpath->stroke_miterlimit = 11.0;
 
 	bpath->fill_svp = NULL;
@@ -95,12 +93,12 @@ sp_canvas_bpath_destroy (GtkObject *object)
 	cbp = SP_CANVAS_BPATH (object);
 
 	if (cbp->fill_svp) {
-		art_svp_free (cbp->fill_svp);
+		nr_svp_free (cbp->fill_svp);
 		cbp->fill_svp = NULL;
 	}
 
 	if (cbp->stroke_svp) {
-		art_svp_free (cbp->stroke_svp);
+		nr_svp_free (cbp->stroke_svp);
 		cbp->stroke_svp = NULL;
 	}
 
@@ -116,8 +114,7 @@ static void
 sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
 	SPCanvasBPath *cbp;
-	ArtDRect dbox, pbox;
-	ArtIRect ibox;
+	NRRectF bbox;
 
 	cbp = SP_CANVAS_BPATH (item);
 
@@ -129,57 +126,48 @@ sp_canvas_bpath_update (SPCanvasItem *item, double *affine, unsigned int flags)
 	sp_canvas_item_reset_bounds (item);
 
 	if (cbp->fill_svp) {
-		art_svp_free (cbp->fill_svp);
+		nr_svp_free (cbp->fill_svp);
 		cbp->fill_svp = NULL;
 	}
 
 	if (cbp->stroke_svp) {
-		art_svp_free (cbp->stroke_svp);
+		nr_svp_free (cbp->stroke_svp);
 		cbp->stroke_svp = NULL;
 	}
 
 	if (!cbp->curve) return;
 
-	dbox.x0 = dbox.y0 = 0.0;
-	dbox.x1 = dbox.y1 = -1.0;
+	nr_rect_f_set_empty (&bbox);
 
 	if ((cbp->fill_rgba & 0xff) || (cbp->stroke_rgba & 0xff)) {
-		ArtBpath *bp;
-		ArtVpath *vp, *pp;
-		bp = art_bpath_affine_transform (cbp->curve->bpath, affine);
-		vp = art_bez_path_to_vec (bp, 0.25);
-		art_free (bp);
-		pp = art_vpath_perturb (vp);
-		art_free (vp);
-
+		NRMatrixF ctmf;
+		nr_matrix_f_from_d (&ctmf, NR_MATRIX_D_FROM_DOUBLE (affine));
 		if ((cbp->fill_rgba & 0xff) && (cbp->curve->end > 2)) {
-			ArtSVP *svpa, *svpb;
-			svpa = art_svp_from_vpath (pp);
-			svpb = art_svp_uncross (svpa);
-			art_svp_free (svpa);
-			cbp->fill_svp = art_svp_rewind_uncrossed (svpb, cbp->fill_rule);
-			art_svp_free (svpb);
-			art_drect_svp (&pbox, cbp->fill_svp);
-			art_drect_union (&dbox, &dbox, &pbox);
+			NRSVL *svl;
+			svl = nr_svl_from_art_bpath (cbp->curve->bpath, &ctmf, NR_WIND_RULE_EVENODD, TRUE, 0.25);
+			cbp->fill_svp = nr_svp_from_svl (svl, NULL);
+			nr_svl_free_list (svl);
+			nr_svp_bbox (cbp->fill_svp, &bbox, FALSE);
 		}
 
 		if ((cbp->stroke_rgba & 0xff) && (cbp->curve->end > 1)) {
-			cbp->stroke_svp = art_svp_vpath_stroke (pp, cbp->stroke_linejoin, cbp->stroke_linecap,
-								cbp->stroke_width, cbp->stroke_miterlimit, 0.25);
-			art_drect_svp (&pbox, cbp->stroke_svp);
-			art_drect_union (&dbox, &dbox, &pbox);
+			NRBPath bpath;
+			NRSVL *svl;
+			bpath.path = cbp->curve->bpath;
+			svl = nr_bpath_stroke (&bpath, &ctmf, cbp->stroke_width,
+								   cbp->stroke_linecap, cbp->stroke_linejoin,
+								   cbp->stroke_miterlimit * M_PI / 180.0,
+								   0.25);
+			cbp->stroke_svp = nr_svp_from_svl (svl, NULL);
+			nr_svl_free_list (svl);
+			nr_svp_bbox (cbp->stroke_svp, &bbox, FALSE);
 		}
-
-		art_free (pp);
 	}
 
-
-	art_drect_to_irect (&ibox, &dbox);
-
-	item->x1 = ibox.x0;
-	item->y1 = ibox.y0;
-	item->x2 = ibox.x1;
-	item->y2 = ibox.y1;
+	item->x1 = (int) floor (bbox.x0);
+	item->y1 = (int) floor (bbox.y0);
+	item->x2 = (int) ceil (bbox.x1);
+	item->y2 = (int) ceil (bbox.y1);
 
 	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
@@ -194,57 +182,41 @@ sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	sp_canvas_buf_ensure_buf (buf);
 
 	if (cbp->fill_svp) {
-		art_rgb_svp_alpha (cbp->fill_svp,
-				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
-				   cbp->fill_rgba,
-				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
-				   NULL);
+		nr_pixblock_render_svp_rgba (&buf->pixblock, cbp->fill_svp, cbp->fill_rgba);
 	}
 
 	if (cbp->stroke_svp) {
-		art_rgb_svp_alpha (cbp->stroke_svp,
-				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
-				   cbp->stroke_rgba,
-				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
-				   NULL);
+		nr_pixblock_render_svp_rgba (&buf->pixblock, cbp->stroke_svp, cbp->stroke_rgba);
 	}
 }
-
-#define BIGVAL 1e18
 
 static double
 sp_canvas_bpath_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actual_item)
 {
 	SPCanvasBPath *cbp;
-	gint wind;
-	gdouble dist;
 
 	cbp = SP_CANVAS_BPATH (item);
 
 	if (cbp->fill_svp) {
-		wind = art_svp_point_wind (cbp->fill_svp, x, y);
-		if (wind) {
+		if (nr_svp_point_wind (cbp->fill_svp, (float) x, (float) y)) {
 			*actual_item = item;
 			return 0.0;
 		}
 	}
-
 	if (cbp->stroke_svp) {
-		wind = art_svp_point_wind (cbp->stroke_svp, x, y);
-		if (wind) {
+		if (nr_svp_point_wind (cbp->stroke_svp, (float) x, (float) y)) {
 			*actual_item = item;
 			return 0.0;
 		}
-		dist = art_svp_point_dist (cbp->stroke_svp, x, y);
-		return dist;
 	}
-
+	if (cbp->stroke_svp) {
+		return nr_svp_point_distance (cbp->stroke_svp, (float) x, (float) y);
+	}
 	if (cbp->fill_svp) {
-		dist = art_svp_point_dist (cbp->fill_svp, x, y);
-		return dist;
+		return nr_svp_point_distance (cbp->fill_svp, (float) x, (float) y);
 	}
 
-	return BIGVAL;
+	return NR_HUGE_F;
 }
 
 SPCanvasItem *
@@ -280,7 +252,7 @@ sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve)
 }
 
 void
-sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule)
+sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, unsigned int rule)
 {
 	g_return_if_fail (cbp != NULL);
 	g_return_if_fail (SP_IS_CANVAS_BPATH (cbp));
@@ -292,7 +264,7 @@ sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule)
 }
 
 void
-sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap)
+sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, unsigned int join, unsigned int cap)
 {
 	g_return_if_fail (cbp != NULL);
 	g_return_if_fail (SP_IS_CANVAS_BPATH (cbp));

@@ -10,7 +10,6 @@
  *
  */
 
-#include <libart_lgpl/art_point.h>
 #include "sp-canvas.h"
 
 G_BEGIN_DECLS
@@ -28,11 +27,11 @@ typedef struct _SPCGridClass SPCGridClass;
 struct _SPCGrid {
 	SPCanvasItem item;
 
-	ArtPoint origin;
-	ArtPoint spacing;
+	NRPointF origin;
+	NRPointF spacing;
 	guint32 color;
 
-	ArtPoint ow, sw;
+	NRPointF ow, sw;
 };
 
 struct _SPCGridClass {

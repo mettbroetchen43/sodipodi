@@ -26,11 +26,8 @@ G_BEGIN_DECLS
 typedef struct _SPCanvasBPath SPCanvasBPath;
 typedef struct _SPCanvasBPathClass SPCanvasBPathClass;
 
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_wind.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
+#include <libnr/nr-svp.h>
+
 #include "sp-canvas.h"
 #include "curve.h"
 
@@ -42,18 +39,18 @@ struct _SPCanvasBPath {
 
 	/* Fill attributes */
 	guint32 fill_rgba;
-	ArtWindRule fill_rule;
+	unsigned int fill_rule;
 
 	/* Line attributes */
 	guint32 stroke_rgba;
 	gdouble stroke_width;
-	ArtPathStrokeJoinType stroke_linejoin;
-	ArtPathStrokeCapType stroke_linecap;
+	unsigned int stroke_linejoin;
+	unsigned int stroke_linecap;
 	gdouble stroke_miterlimit;
 
 	/* State */
-	ArtSVP *fill_svp;
-	ArtSVP *stroke_svp;
+	NRSVP *fill_svp;
+	NRSVP *stroke_svp;
 };
 
 struct _SPCanvasBPathClass {
@@ -65,8 +62,8 @@ GtkType sp_canvas_bpath_get_type (void);
 SPCanvasItem *sp_canvas_bpath_new (SPCanvasGroup *parent, SPCurve *curve);
 
 void sp_canvas_bpath_set_bpath (SPCanvasBPath *cbp, SPCurve *curve);
-void sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, ArtWindRule rule);
-void sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, ArtPathStrokeJoinType join, ArtPathStrokeCapType cap);
+void sp_canvas_bpath_set_fill (SPCanvasBPath *cbp, guint32 rgba, unsigned int rule);
+void sp_canvas_bpath_set_stroke (SPCanvasBPath *cbp, guint32 rgba, gdouble width, unsigned int join, unsigned int cap);
 
 G_END_DECLS
 

@@ -9,14 +9,11 @@
  */
 
 #include <math.h>
+
+#include <libnr/nr-matrix.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
-
-#include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
 
 #include "sodipodi-ctrl.h"
 
@@ -493,9 +490,9 @@ sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf)
 void
 sp_ctrl_moveto (SPCtrl * ctrl, double x, double y)
 {
-	double affine[6];
+	NRMatrixD transform;
 
-	art_affine_translate (affine, x, y);
+	nr_matrix_d_set_translate (&transform, x, y);
 
-	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (ctrl), affine);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (ctrl), NR_MATRIX_D_TO_DOUBLE (&transform));
 }

@@ -284,25 +284,55 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 		switch (bp->code) {
 		case ART_MOVETO:
 			nr_svl_stroke_build_finish_subpath (&svlb);
-			sx = x = bp->x3;
-			sy = y = bp->y3;
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
 			nr_svl_stroke_build_start_closed_subpath (&svlb, (float) x, (float) y);
 			break;
 		case ART_MOVETO_OPEN:
 			nr_svl_stroke_build_finish_subpath (&svlb);
-			sx = x = bp->x3;
-			sy = y = bp->y3;
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
 			nr_svl_stroke_build_start_open_subpath (&svlb, (float) x, (float) y);
 			break;
 		case ART_LINETO:
-			sx = x = bp->x3;
-			sy = y = bp->y3;
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
 			nr_svl_stroke_build_lineto (&svlb, (float) x, (float) y);
 			break;
 		case ART_CURVETO:
-			x = bp->x3;
-			y = bp->y3;
-			nr_svl_stroke_build_curveto (&svlb, sx, sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y, flatness, 0);
+			if (transform) {
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+				nr_svl_stroke_build_curveto (&svlb,
+							     sx, sy,
+							     NR_MATRIX_DF_TRANSFORM_X (transform, bp->x1, bp->y1),
+							     NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x1, bp->y1),
+							     NR_MATRIX_DF_TRANSFORM_X (transform, bp->x2, bp->y2),
+							     NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x2, bp->y2),
+							     x, y,
+							     flatness, 0);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+				nr_svl_stroke_build_curveto (&svlb,
+							     sx, sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y,
+							     flatness, 0);
+			}
 			/* Restore original join type */
 			svlb.curve = FALSE;
 			sx = x;

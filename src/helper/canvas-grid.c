@@ -9,7 +9,7 @@
 
 #include <math.h>
 
-#include <libart_lgpl/art_affine.h>
+#include <libnr/nr-matrix.h>
 
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
@@ -164,6 +164,7 @@ sp_cgrid_render (SPCanvasItem * item, SPCanvasBuf * buf)
 static void
 sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
 {
+	NRMatrixD *ctmd;
 	SPCGrid * grid;
 	GtkWidget * w;
 
@@ -173,8 +174,11 @@ sp_cgrid_update (SPCanvasItem *item, double * affine, unsigned int flags)
 	if (parent_class->update)
 		(* parent_class->update) (item, affine, flags);
 
-	art_affine_point (&grid->ow, &grid->origin, affine);
-	art_affine_point (&grid->sw, &grid->spacing, affine);
+	ctmd = NR_MATRIX_D_FROM_DOUBLE (affine);
+	grid->ow.x = NR_MATRIX_DF_TRANSFORM_X (ctmd, grid->origin.x, grid->origin.y);
+	grid->ow.y = NR_MATRIX_DF_TRANSFORM_Y (ctmd, grid->origin.x, grid->origin.y);
+	grid->sw.x = NR_MATRIX_DF_TRANSFORM_X (ctmd, grid->spacing.x, grid->spacing.y);
+	grid->sw.y = NR_MATRIX_DF_TRANSFORM_Y (ctmd, grid->spacing.x, grid->spacing.y);
 	grid->sw.x -= affine[4];
 	grid->sw.y -= affine[5];
 	grid->sw.x = fabs (grid->sw.x);
