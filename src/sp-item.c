@@ -622,16 +622,26 @@ sp_item_set_item_transform (SPItem *item, const gdouble *transform)
 gdouble *
 sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 {
+	SPRoot *root;
+
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
 	g_return_val_if_fail (affine != NULL, NULL);
 
 	art_affine_identity (affine);
 
-	while (item) {
+	while (SP_OBJECT_PARENT (item)) {
 		art_affine_multiply (affine, affine, item->affine);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}
+
+	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
+
+	root = SP_ROOT (item);
+
+	/* fixme: (Lauris) */
+	art_affine_multiply (affine, affine, root->viewbox.c);
+	art_affine_multiply (affine, affine, item->affine);
 
 	return affine;
 }
@@ -656,10 +666,10 @@ sp_item_i2vp_affine (SPItem *item, gdouble affine[])
 
 	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
 
-	/* fixme: Viewbox is specified using root transformation (Lauris) */
-	art_affine_multiply (affine, affine, item->affine);
-
 	root = SP_ROOT (item);
+
+	/* fixme: (Lauris) */
+	art_affine_multiply (affine, affine, root->viewbox.c);
 
 	affine[0] /= root->width.computed;
 	affine[1] /= root->height.computed;

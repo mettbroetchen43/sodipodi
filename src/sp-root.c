@@ -14,7 +14,7 @@
 
 #include <string.h>
 #include "svg/svg.h"
-#include "display/nr-arena-item.h"
+#include "display/nr-arena-group.h"
 #include "document.h"
 #include "desktop.h"
 #include "sp-defs.h"
@@ -34,6 +34,10 @@ static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_root_remove_child (SPObject *object, SPRepr *child);
 static void sp_root_modified (SPObject *object, guint flags);
 static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
+
+static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena);
+static void sp_root_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
+static void sp_root_print (SPItem *item, GnomePrintContext *ctx);
 
 static SPGroupClass *parent_class;
 
@@ -60,9 +64,11 @@ sp_root_class_init (SPRootClass *klass)
 {
 	GtkObjectClass *gtk_object_class;
 	SPObjectClass *sp_object_class;
+	SPItemClass *sp_item_class;
 
 	gtk_object_class = GTK_OBJECT_CLASS (klass);
 	sp_object_class = SP_OBJECT_CLASS (klass);
+	sp_item_class = SP_ITEM_CLASS (klass);
 
 	parent_class = gtk_type_class (SP_TYPE_GROUP);
 
@@ -74,6 +80,10 @@ sp_root_class_init (SPRootClass *klass)
 	sp_object_class->remove_child = sp_root_remove_child;
 	sp_object_class->modified = sp_root_modified;
 	sp_object_class->write = sp_root_write;
+
+	sp_item_class->show = sp_root_show;
+	sp_item_class->bbox = sp_root_bbox;
+	sp_item_class->print = sp_root_print;
 }
 
 static void
@@ -88,9 +98,7 @@ sp_root_init (SPRoot *root)
 	sp_svg_length_unset (&root->width, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_WIDTH_PX, SP_SVG_DEFAULT_WIDTH_PX);
 	sp_svg_length_unset (&root->height, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_HEIGHT_PX, SP_SVG_DEFAULT_HEIGHT_PX);
 
-	root->viewbox.x0 = root->viewbox.y0 = 0.0;
-	root->viewbox.x1 = root->width.computed;
-	root->viewbox.y1 = root->height.computed;
+	nr_matrix_d_set_identity (&root->viewbox);
 
 	root->namedviews = NULL;
 	root->defs = NULL;
@@ -205,8 +213,7 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 		/* fixme: We have to take original item affine into account */
 		/* fixme: Think (Lauris) */
 		gdouble x, y, width, height;
-		gchar * eptr;
-		gdouble t0[6], s[6], a[6];
+		gchar *eptr;
 
 		if (!str) return;
 		eptr = (gchar *) str;
@@ -219,16 +226,14 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 		height = strtod (eptr, &eptr);
 		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 		if ((width > 0) && (height > 0)) {
-			root->viewbox.x0 = x;
-			root->viewbox.y0 = y;
-			root->viewbox.x1 = x + width;
-			root->viewbox.y1 = y + height;
-			art_affine_translate (t0, x, y);
-			art_affine_scale (s, root->width.computed / width, root->height.computed / height);
-			art_affine_multiply (a, t0, s);
-			memcpy (item->affine, a, 6 * sizeof (gdouble));
+			root->viewbox.c[0] = root->width.computed / width;
+			root->viewbox.c[1] = 0.0;
+			root->viewbox.c[2] = 0.0;
+			root->viewbox.c[3] = root->height.computed / height;
+			root->viewbox.c[4] = -x * root->viewbox.c[0];
+			root->viewbox.c[5] = -y * root->viewbox.c[3];
 			for (v = item->display; v != NULL; v = v->next) {
-				nr_arena_item_set_transform (v->arenaitem, item->affine);
+				nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &root->viewbox);
 			}
 			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		}
@@ -337,3 +342,54 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 	return repr;
 }
 
+static NRArenaItem *
+sp_root_show (SPItem *item, NRArena *arena)
+{
+	SPRoot *root;
+	NRArenaItem *ai;
+
+	root = SP_ROOT (item);
+
+	if (((SPItemClass *) (parent_class))->show) {
+		ai = ((SPItemClass *) (parent_class))->show (item, arena);
+		if (ai) {
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &root->viewbox);
+		}
+	} else {
+		ai = NULL;
+	}
+
+	return ai;
+}
+
+static void
+sp_root_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
+{
+	SPRoot *root;
+	gdouble a[6];
+
+	root = SP_ROOT (item);
+
+	art_affine_multiply (a, root->viewbox.c, transform);
+
+	if (((SPItemClass *) (parent_class))->bbox) {
+		((SPItemClass *) (parent_class))->bbox (item, bbox, a);
+	}
+}
+
+static void
+sp_root_print (SPItem *item, GnomePrintContext *ctx)
+{
+	SPRoot *root;
+
+	root = SP_ROOT (item);
+
+	gnome_print_gsave (ctx);
+	gnome_print_concat (ctx, root->viewbox.c);
+
+	if (((SPItemClass *) (parent_class))->print) {
+		((SPItemClass *) (parent_class))->print (item, ctx);
+	}
+
+	gnome_print_grestore (ctx);
+}

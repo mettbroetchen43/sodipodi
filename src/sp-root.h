@@ -13,6 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libnr/nr-matrix.h>
 #include "svg/svg-types.h"
 #include "sp-item-group.h"
 
@@ -34,7 +35,8 @@ struct _SPRoot {
 	SPSVGLength width;
 	SPSVGLength height;
 
-	ArtDRect viewbox;
+	NRMatrixD viewbox;
+
 	/* List of namedviews */
 	/* fixme: use single container instead */
 	GSList *namedviews;

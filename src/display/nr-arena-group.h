@@ -25,6 +25,7 @@ struct _NRArenaGroup {
 	NRArenaItem item;
 	guint transparent : 1;
 	NRArenaItem *children, *last;
+	NRMatrixD child_transform;
 };
 
 struct _NRArenaGroupClass {
@@ -34,5 +35,7 @@ struct _NRArenaGroupClass {
 GtkType nr_arena_group_get_type (void);
 
 void nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent);
+
+void nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixD *t);
 
 #endif

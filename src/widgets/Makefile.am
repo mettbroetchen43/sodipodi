@@ -6,6 +6,7 @@
 gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
+	-I.. \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
 	$(SODIPODI_CFLAGS) \
 	-I$(includedir)

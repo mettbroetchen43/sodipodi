@@ -1,3 +1,17 @@
+2002-09-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-group.c (nr_arena_group_update): Multiply
+	with group second transformation
+
+	* src/display/nr-arena-group.h: Added child_affine member
+
+	* src/sp-root.c (sp_root_read_attr): Use NRMatrixD for viewbox
+	(sp_root_show): Implement, apply viewBox
+	(sp_root_bbox): Ditto
+	(sp_root_print): Ditto
+
+	* src/sp-item.c (sp_item_i2doc_affine): Apply viewBox
+
 2002-09-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/png-write.c (sp_png_get_block_stripe): Helper
@@ -7,7 +21,7 @@
 	* src/dialogs/export.c (sp_export_get_rows): Renderer
 	(sp_export_do_export): Use striped exporter
 
-	* src/file.c: Added <time.h> - Thanks to Mastake for finding it
+	* src/file.c: Added <time.h> - Thanks to Masatake for finding it
 
 2002-09-15  Lauris Kaplinski  <lauris@kaplinski.com>
 

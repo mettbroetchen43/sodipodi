@@ -14,6 +14,8 @@
 
 #include <math.h>
 #include <libnr/nr-rect.h>
+#include <libnr/nr-matrix.h>
+#include <libart_lgpl/art_affine.h>
 #include "../helper/nr-plain-stuff.h"
 #include "../helper/nr-buffers.h"
 #include "nr-arena-group.h"
@@ -81,6 +83,7 @@ nr_arena_group_init (NRArenaGroup *group)
 	group->transparent = FALSE;
 	group->children = NULL;
 	group->last = NULL;
+	nr_matrix_d_set_identity (&group->child_transform);
 }
 
 static void
@@ -190,7 +193,9 @@ nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	beststate = NR_ARENA_ITEM_STATE_ALL;
 
 	for (child = group->children; child != NULL; child = child->next) {
-		newstate = nr_arena_item_invoke_update (child, area, gc, state, reset);
+		NRGC cgc;
+		art_affine_multiply (cgc.affine, group->child_transform.c, gc->affine);
+		newstate = nr_arena_item_invoke_update (child, area, &cgc, state, reset);
 		g_return_val_if_fail (!(~newstate & state), newstate);
 		beststate = beststate & newstate;
 	}
@@ -292,6 +297,14 @@ nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent)
 	g_return_if_fail (NR_IS_ARENA_GROUP (group));
 
 	group->transparent = transparent;
+}
+
+void
+nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixD *t)
+{
+	group->child_transform = *t;
+
+	nr_arena_item_request_update (NR_ARENA_ITEM (group), NR_ARENA_ITEM_STATE_ALL, TRUE);
 }
 
 
