@@ -106,6 +106,10 @@ else
     AC_MSG_ERROR(Did not find GnomePrint installed)
 fi
 
+dnl Define libxml include path
+SODIPODI_XML_CFLAGS=`$GNOME_CONFIG --cflags xml`
+AC_SUBST(SODIPODI_XML_CFLAGS)
+
 AC_OUTPUT([
 Makefile
 macros/Makefile

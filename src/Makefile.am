@@ -16,7 +16,8 @@ INCLUDES = \
 	-I$(srcdir/xml) 				\
 	-I$(srcdir/svg) 				\
 	-I$(top_srcdir)/intl 				\
-	$(GNOME_INCLUDEDIR)
+	$(GNOME_INCLUDEDIR)				\
+	$(SODIPODI_XML_CFLAGS)
 
 bin_PROGRAMS = sodipodi
 

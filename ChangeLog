@@ -1,3 +1,15 @@
+2000-10-26  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* configure.in: Define libxml include path
+
+	* src/Makefile.am: Use libxml include path
+
+	* src/main.c: Ditto
+
+	* src/xml/Makefile.am: Ditto
+
+	* src/xml/repr-io.c: Ditto
+
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* configure.in: Added pl to ALL_LINGUAS.

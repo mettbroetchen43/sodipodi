@@ -7,6 +7,7 @@
 #
 
 INCLUDES = \
+	$(SODIPODI_XML_CFLAGS) \
 	-I$(includedir)
 
 noinst_LIBRARIES = libspxml.a

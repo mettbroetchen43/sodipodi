@@ -14,7 +14,7 @@
 #include <gnome.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
-#include <libxml/tree.h>
+#include <tree.h> /* libxml */
 
 #ifdef __FreeBSD__
 #include <floatingpoint.h>

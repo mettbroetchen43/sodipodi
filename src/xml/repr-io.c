@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include "repr.h"
 #include "repr-private.h"
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include <xmlmemory.h>
+#include <parser.h>
+#include <tree.h>
 
 static SPRepr * sp_repr_svg_read_node (xmlNodePtr node);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
