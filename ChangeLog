@@ -1,3 +1,7 @@
+2003-08-17  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
 2003-07-23  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS.
