@@ -26,13 +26,14 @@ struct _SPCtrl {
 	GnomeCanvasItem item;
 
 	GtkAnchorType anchor;
-	double size;			/* Width in canvas pixel coords */
+	gint size;			/* Width in pixels */
+	guint defined : 1;
+	guint shown   : 1;
 	guint filled  : 1;
 	guint stroked : 1;
 	guint32 fill_color;
 	guint32 stroke_color;
-	ArtSVP * fill_svp;		/* The SVP for the filled shape */
-	ArtSVP * stroke_svp;
+	ArtIRect box;			/* NB! x1 & y1 are included */
 };
 
 struct _SPCtrlClass {

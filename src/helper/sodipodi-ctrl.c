@@ -1,5 +1,13 @@
 #define SODIPODI_CTRL_C
 
+/*
+ * SPCtrl
+ *
+ * We render it by hand to reduce allocing/freeing svps & to get clean
+ *    (non-aa) images
+ *
+ */
+
 #include <math.h>
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
@@ -91,12 +99,13 @@ sp_ctrl_init (SPCtrl *ctrl)
 {
 	ctrl->anchor = GTK_ANCHOR_CENTER;
 	ctrl->size = 8;
+	ctrl->defined = TRUE;
+	ctrl->shown = FALSE;
 	ctrl->filled = 1;
 	ctrl->stroked = 0;
 	ctrl->fill_color = 0x000000ff;
 	ctrl->stroke_color = 0x000000ff;
-	ctrl->fill_svp = NULL;
-	ctrl->stroke_svp = NULL;
+	ctrl->box.x0 = ctrl->box.y0 = ctrl->box.x1 = ctrl->box.y1 = 0;
 }
 
 static void
@@ -108,11 +117,6 @@ sp_ctrl_destroy (GtkObject *object)
 	g_return_if_fail (SP_IS_CTRL (object));
 
 	ctrl = SP_CTRL (object);
-
-	if (ctrl->fill_svp)
-		art_svp_free (ctrl->fill_svp);
-	if (ctrl->stroke_svp)
-		art_svp_free (ctrl->stroke_svp);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -133,7 +137,8 @@ sp_ctrl_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		gnome_canvas_item_request_update (item);
 		break;
 	case ARG_SIZE:
-		ctrl->size = GTK_VALUE_DOUBLE (*arg);
+		ctrl->size = (gint) (GTK_VALUE_DOUBLE (*arg) + 0.5);
+		ctrl->defined = (ctrl->size > 2);
 		gnome_canvas_item_request_update (item);
 		break;
 	case ARG_FILLED:
@@ -181,14 +186,49 @@ static void
 sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	SPCtrl *ctrl;
+	guint32 color;
+	guchar * p;
+	gint x, y;
+	guint alpha, tmp;
+	guint bg_r, fg_r, bg_g, fg_g, bg_b, fg_b;
+	gboolean doit;
 
 	ctrl = SP_CTRL (item);
 
-	if (ctrl->filled)
-		gnome_canvas_render_svp (buf, ctrl->fill_svp, ctrl->fill_color);
-	if (ctrl->stroked)
-		gnome_canvas_render_svp (buf, ctrl->stroke_svp, ctrl->stroke_color);
+	if (!ctrl->defined) return;
 
+	gnome_canvas_buf_ensure_buf (buf);
+
+	for (y = MAX (ctrl->box.y0, buf->rect.y0); (y <= ctrl->box.y1) && (y < buf->rect.y1); y++)
+	for (x = MAX (ctrl->box.x0, buf->rect.x0); (x <= ctrl->box.x1) && (x < buf->rect.x1); x++) {
+		doit = ctrl->filled;
+		color = ctrl->fill_color;
+		if ((x == ctrl->box.x0) || (y == ctrl->box.y0) || (x == ctrl->box.x1) || (y == ctrl->box.y1)) {
+			if (ctrl->stroked) {
+				color = ctrl->stroke_color;
+				doit = TRUE;
+			}
+		}
+
+		if (doit) {
+		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0);
+		alpha = color & 0xff;
+		bg_r = * p;
+		fg_r = (color >> 24) & 0xff;
+		tmp = (fg_r - bg_r) * alpha;
+		* p = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		bg_g = * (p + 1);
+		fg_g = (color >> 16) & 0xff;
+		tmp = (fg_g - bg_g) * alpha;
+		* (p + 1) = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		bg_b = * (p + 2);
+		fg_b = (color >> 8) & 0xff;
+		tmp = (fg_b - bg_b) * alpha;
+		* (p + 2) = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
+		}
+	}
+
+	ctrl->shown = TRUE;
 }
 
 static void
@@ -196,8 +236,6 @@ sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int fl
 {
 	SPCtrl *ctrl;
 	ArtPoint p;
-	ArtVpath vpath[6];
-	ArtSVP *svp;
 
 	ctrl = SP_CTRL (item);
 
@@ -206,9 +244,17 @@ sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int fl
 
 	gnome_canvas_item_reset_bounds (item);
 
+	if (ctrl->shown)
+		gnome_canvas_request_redraw (item->canvas, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
+
+	if (!ctrl->defined)
+		return;
+
 	p.x = 0.0;
 	p.y = 0.0;
 	art_affine_point (&p, &p, affine);
+	p.x -= ctrl->size / 2;
+	p.y -= ctrl->size / 2;
 
 	switch (ctrl->anchor) {
 		case GTK_ANCHOR_N:
@@ -243,38 +289,13 @@ sp_ctrl_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int fl
 			p.y -= ctrl->size / 2;
 			break;
 	}
-	vpath[0].code = ART_MOVETO;
-	vpath[0].x = p.x - ctrl->size/2;
-	vpath[0].y = p.y - ctrl->size/2;
-	vpath[1].code = ART_LINETO;
-	vpath[1].x = p.x - ctrl->size/2;
-	vpath[1].y = p.y + ctrl->size/2;
-	vpath[2].code = ART_LINETO;
-	vpath[2].x = p.x + ctrl->size/2;
-	vpath[2].y = p.y + ctrl->size/2;
-	vpath[3].code = ART_LINETO;
-	vpath[3].x = p.x + ctrl->size/2;
-	vpath[3].y = p.y - ctrl->size/2;
-	vpath[4].code = ART_LINETO;
-	vpath[4].x = p.x - ctrl->size/2;
-	vpath[4].y = p.y - ctrl->size/2;
-	vpath[5].code = ART_END;
-	vpath[5].x = 0.0;
-	vpath[5].y = 0.0;
-	
-	if (ctrl->filled) {
-		svp = art_svp_from_vpath (vpath);
-		gnome_canvas_item_update_svp_clip (item, &ctrl->fill_svp, svp, clip_path);
-		gnome_canvas_item_request_redraw_svp (item, ctrl->fill_svp);
-	}
-	if (ctrl->stroked) {
-		svp = art_svp_vpath_stroke (vpath,
-			ART_PATH_STROKE_CAP_BUTT,
-			ART_PATH_STROKE_JOIN_MITER,
-			1, 4, 0.25);
-		gnome_canvas_item_update_svp_clip (item, &ctrl->stroke_svp, svp, clip_path);
-		gnome_canvas_item_request_redraw_svp (item, ctrl->stroke_svp);
-	}
+
+	ctrl->box.x0 = (gint) (p.x + 0.5);
+	ctrl->box.y0 = (gint) (p.y + 0.5);
+	ctrl->box.x1 = ctrl->box.x0 + ctrl->size - 1;
+	ctrl->box.y1 = ctrl->box.y0 + ctrl->size - 1;
+
+	gnome_canvas_update_bbox (item, ctrl->box.x0, ctrl->box.y0, ctrl->box.x1 + 1, ctrl->box.y1 + 1);
 
 }
 
