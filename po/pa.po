@@ -1,0 +1,2865 @@
+# translation of pa.po to Punjabi
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-01-17 12:30+0530\n"
+"PO-Revision-Date: 2005-01-17 14:26+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "SVG ਵੈਕਟਰ ਚਿੱਤਰਕਾਰ"
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:144
+#: src/toolbox.c:178
+msgid "Sodipodi"
+msgstr "ਸੋਡਪੋਡੀ"
+
+#: src/arc-context.c:254
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "%s x %s ਦੀ ਚਾਪ ਖਿੱਚੋ"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "sodipodi-svg-doc ਕਾਰਖਾਨਾ ਨਹੀਂ ਬਣ ਸਕਦਾ ਹੈ"
+
+#: src/desktop.c:990
+msgid "Zoom drawing if window size changes"
+msgstr "ਜੇਕਰ ਝਰੋਖਾ ਤਬਦੀਲ ਹੋਵੇ ਤਾਂ ਖਾਕਾ ਨੂੰ ਤਬਦੀਲ ਕਰੋ "
+
+#: src/desktop.c:997
+msgid "Drawing target is constrained to active group"
+msgstr ""
+
+#: src/desktop.c:1089
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "ਸੋਡੀਪੋਡੀ: %s: %s: %d"
+
+#: src/desktop.c:1196
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "ਦਸਤਾਵੇਜ %s ਵਿੱਚ ਕੁਝ ਅਣਸੰਭਾਲੀਆਂ ਤਬਦੀਲੀਆਂ ਹਨ, ਇਹਨਾਂ ਨੂੰ ਸੰਭਾਲਣਾ ਹੈ?"
+
+#. Page page
+#. Page settings
+#. Notebook tab
+#: src/desktop.c:1776 src/dialogs/align.c:291
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:161 src/verbs.c:471 src/widgets/sp-dock-notebook.c:135
+msgid "Page"
+msgstr "ਸਫਾ"
+
+#: src/desktop.c:1780 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/verbs.c:472
+msgid "Drawing"
+msgstr "ਖਾਕਾ (ਡਰਾਇੰਗ)"
+
+#. Selection submenu
+#: src/desktop.c:1784 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
+msgid "Selection"
+msgstr "ਚੋਣ"
+
+#: src/dialogs/align.c:156 src/toolbox.c:405
+msgid "Align objects"
+msgstr "ਇਕਾਈਆਂ ਇਕਸਾਰ"
+
+#: src/dialogs/align.c:175
+msgid "Right side of aligned objects to left side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:178
+msgid "Left side of aligned objects to left side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:181
+msgid "Center horizontally"
+msgstr "ਕੇਂਦਰੀ ਖਿਤਿਜੀ"
+
+#: src/dialogs/align.c:184
+msgid "Right side of aligned objects to right side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:187
+msgid "Left side of aligned objects to right side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:191
+msgid "Bottom of aligned objects to top of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:194
+msgid "Top of aligned objects to top of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:197
+msgid "Center vertically"
+msgstr ""
+
+#: src/dialogs/align.c:200
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:203
+msgid "Top of aligned objects to bottom of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:206
+msgid "Align"
+msgstr ""
+
+#: src/dialogs/align.c:224
+msgid "Distribute left sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:227
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr ""
+
+#: src/dialogs/align.c:230
+msgid "Distribute right sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:233
+msgid "Distribute horizontal distance between objects equally"
+msgstr ""
+
+#: src/dialogs/align.c:237
+msgid "Distribute top sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:240
+msgid "Distribute centres of objects at even distances vertically"
+msgstr ""
+
+#: src/dialogs/align.c:243
+msgid "Distribute bottom sides of objects at even distances"
+msgstr ""
+
+#: src/dialogs/align.c:246
+msgid "Distribute vertical distance between objects equally"
+msgstr ""
+
+#: src/dialogs/align.c:249
+msgid "Distribute"
+msgstr ""
+
+#: src/dialogs/align.c:287
+msgid "Last selected"
+msgstr ""
+
+#: src/dialogs/align.c:288
+msgid "First selected"
+msgstr ""
+
+#: src/dialogs/align.c:289
+msgid "Biggest item"
+msgstr ""
+
+#: src/dialogs/align.c:290
+msgid "Smallest item"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr ""
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr ""
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr ""
+
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
+msgid "Close"
+msgstr ""
+
+#: src/dialogs/display-settings.c:101
+msgid "Display settings"
+msgstr ""
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:108
+msgid "Rendering"
+msgstr ""
+
+#: src/dialogs/display-settings.c:117
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: src/dialogs/display-settings.c:125 src/verbs.c:407
+msgid "None"
+msgstr ""
+
+#: src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr ""
+
+#: src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr ""
+
+#: src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr ""
+
+#: src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr ""
+
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:147
+msgid "Input"
+msgstr ""
+
+#: src/dialogs/display-settings.c:155
+msgid "Default cursor tolerance:"
+msgstr ""
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
+
+#: src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr ""
+
+#: src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr ""
+
+#: src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr ""
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr ""
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr ""
+
+#. Stroke width
+#. Width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:189
+#: src/dialogs/export.c:213 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
+msgid "Width:"
+msgstr ""
+
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
+#: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr ""
+
+#: src/dialogs/document-tree.c:60 src/verbs.c:476
+msgid "Document"
+msgstr ""
+
+#: src/dialogs/export.c:141
+msgid "Export bitmap"
+msgstr ""
+
+#. Export area frame
+#: src/dialogs/export.c:150
+msgid "Export area"
+msgstr ""
+
+#: src/dialogs/export.c:183
+msgid "x0:"
+msgstr ""
+
+#: src/dialogs/export.c:186
+msgid "x1:"
+msgstr ""
+
+#: src/dialogs/export.c:192
+msgid "y0:"
+msgstr ""
+
+#: src/dialogs/export.c:195
+msgid "y1:"
+msgstr ""
+
+#. Bitmap size frame
+#: src/dialogs/export.c:204
+msgid "Bitmap size"
+msgstr ""
+
+#: src/dialogs/export.c:213 src/dialogs/export.c:221
+msgid "pixels"
+msgstr ""
+
+#: src/dialogs/export.c:217 src/dialogs/export.c:225
+msgid "dpi"
+msgstr ""
+
+#: src/dialogs/export.c:233
+msgid "Background color"
+msgstr ""
+
+#: src/dialogs/export.c:235
+msgid "Bitmap background:"
+msgstr ""
+
+#: src/dialogs/export.c:240
+msgid "Export png file"
+msgstr ""
+
+#: src/dialogs/export.c:267 src/verbs.c:417
+msgid "Export"
+msgstr ""
+
+#: src/dialogs/export.c:401
+msgid "Export in progress"
+msgstr ""
+
+#: src/dialogs/export.c:405
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr ""
+
+#: src/dialogs/fill-style.c:87
+msgid "Fill style"
+msgstr ""
+
+#: src/dialogs/fill-style.c:124
+msgid "Fill Rule"
+msgstr ""
+
+#: src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr ""
+
+#: src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr ""
+
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:269
+#: src/dialogs/item-properties.c:368 src/dialogs/item-properties.c:375
+msgid "ID"
+msgstr ""
+
+#: src/dialogs/item-properties.c:95
+msgid "Set ID"
+msgstr ""
+
+#. Sensitive
+#: src/dialogs/item-properties.c:104
+msgid "Sensitive"
+msgstr ""
+
+#. Visible
+#: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
+msgid "Visible"
+msgstr ""
+
+#. Active
+#: src/dialogs/item-properties.c:114
+msgid "Active"
+msgstr ""
+
+#. Printable
+#: src/dialogs/item-properties.c:119
+msgid "Printable"
+msgstr ""
+
+#: src/dialogs/item-properties.c:128
+msgid "Opacity:"
+msgstr ""
+
+#: src/dialogs/item-properties.c:144
+msgid "Transformation matrix"
+msgstr ""
+
+#: src/dialogs/item-properties.c:263
+msgid "Ref"
+msgstr ""
+
+#: src/dialogs/item-properties.c:370
+msgid "ID invalid"
+msgstr ""
+
+#: src/dialogs/item-properties.c:372
+msgid "ID exists"
+msgstr ""
+
+#: src/dialogs/item-properties.c:448 src/verbs.c:487
+msgid "Item properties"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
+msgid "Show:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr ""
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
+msgid "Expansion:"
+msgstr ""
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:331
+msgid "Revolution:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr ""
+
+#: src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr ""
+
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr ""
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr ""
+
+#: src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr ""
+
+#: src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr ""
+
+#: src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr ""
+
+#: src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr ""
+
+#: src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr ""
+
+#: src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr ""
+
+#: src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr ""
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:462
+msgid "Text"
+msgstr ""
+
+#: src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr ""
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:481
+msgid "Size and Position"
+msgstr ""
+
+#: src/dialogs/stroke-style.c:554 src/toolbox.c:401
+msgid "Stroke settings"
+msgstr ""
+
+#. Join type
+#: src/dialogs/stroke-style.c:590
+msgid "Join:"
+msgstr ""
+
+#. Cap type
+#: src/dialogs/stroke-style.c:633
+msgid "Cap:"
+msgstr ""
+
+#. Dash
+#: src/dialogs/stroke-style.c:676
+msgid "Pattern:"
+msgstr ""
+
+#: src/dialogs/text-edit.c:102
+msgid "Text properties"
+msgstr ""
+
+#. Layout
+#: src/dialogs/text-edit.c:141
+msgid "Layout"
+msgstr ""
+
+#: src/dialogs/text-edit.c:149
+msgid "Alignment:"
+msgstr ""
+
+#: src/dialogs/text-edit.c:174
+msgid "Orientation:"
+msgstr ""
+
+#: src/dialogs/text-edit.c:192
+msgid "Line spacing:"
+msgstr ""
+
+#: src/dialogs/text-edit.c:212
+msgid "Spacing:"
+msgstr ""
+
+#: src/dialogs/text-edit.c:235
+msgid "Text and font"
+msgstr ""
+
+#: src/dialogs/text-edit.c:246
+msgid "Set as default"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:479
+msgid "Tool attributes"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Inner radius"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
+msgid "Missing tool preferences"
+msgstr ""
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:343
+msgid "Corners:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:115
+msgid "Transform:"
+msgstr ""
+
+#. Mass
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr ""
+
+#. Drag
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
+msgid "Drag:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:125
+msgid "Angle"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:132
+msgid "Tool has no attributes"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
+msgid "No active tool"
+msgstr ""
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:478
+msgid "Tool options"
+msgstr ""
+
+#: src/dialogs/tool-options.c:90
+msgid "Tool has no options"
+msgstr ""
+
+#: src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr ""
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr ""
+
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr ""
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr ""
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr ""
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:157
+msgid "Drag to reorder nodes"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:170
+msgid "New element node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:188
+msgid "New text node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:205
+msgid "Duplicate node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:221
+msgid "Delete node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:234
+msgid "Unindent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:245
+msgid "Indent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:255
+msgid "Raise node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:266
+msgid "Lower node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:303
+msgid "Delete attribute"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:333
+msgid "Attribute name"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:340
+msgid "Set attribute"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:353
+msgid "Attribute value"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:833
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:856
+msgid "New element node..."
+msgstr ""
+
+#: src/dialogs/xml-tree.c:876
+msgid "Cancel"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:880
+msgid "Create"
+msgstr ""
+
+#: src/document.c:389
+#, c-format
+msgid "New document %d"
+msgstr ""
+
+#: src/document.c:425
+#, c-format
+msgid "Memory document %d"
+msgstr ""
+
+#: src/document.c:572
+#, c-format
+msgid "Unnamed document %d"
+msgstr ""
+
+#: src/draw-context.c:294
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr ""
+
+#: src/draw-context.c:299
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr ""
+
+#. Angle
+#: src/dyna-draw-context.c:1075
+msgid "Angle:"
+msgstr ""
+
+#. Reset
+#: src/dyna-draw-context.c:1099 src/rect-context.c:382
+#: src/spiral-context.c:367 src/star-context.c:374
+msgid "Defaults"
+msgstr ""
+
+#: src/file.c:123 src/file.c:137 src/file.c:149
+msgid "Select file to open"
+msgstr ""
+
+#: src/file.c:174 src/file.c:278
+msgid "File type:"
+msgstr ""
+
+#: src/file.c:263
+msgid "Save file"
+msgstr "ਫਾਇਲ ਸੰਭਾਲੋ"
+
+#: src/file.c:468 src/file.c:478 src/file.c:484
+msgid "Select file to import"
+msgstr ""
+
+#: src/help.c:51
+msgid "About sodipodi"
+msgstr ""
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+msgid "Unit"
+msgstr "ਇਕਾਈ"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr "ਇਕਾਈ"
+
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "ਬਿੰਦੂ"
+
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "ਬਿੰਦੂ"
+
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "ਬਿੰਦੂ"
+
+#: src/helper/units.c:43
+msgid "Pt"
+msgstr "ਬਿੰਦੂ"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr "ਪਿਕਸਲ"
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr "ਪਿਕ"
+
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "ਪਿਕਸਲ"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr "ਪਿਕ"
+
+#: src/helper/units.c:45
+msgid "Userspace unit"
+msgstr ""
+
+#: src/helper/units.c:45
+msgid "User"
+msgstr "ਉਪਭੋਗਤਾ"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr ""
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "ਪ੍ਰਤੀਸ਼ਤ"
+
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr "ਪ੍ਰਤੀਸ਼ਤ"
+
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "ਮਿਲੀਮੀਟਰ"
+
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "ਮਿਮੀ"
+
+#: src/helper/units.c:49
+msgid "Millimeters"
+msgstr "ਮਿਲੀਮੀਟਰ"
+
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "ਸੈਂਟੀਮੀਟਰ"
+
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "ਸੈਂਮੀ"
+
+#: src/helper/units.c:50
+msgid "Centimeters"
+msgstr "ਸੈਂਟੀਮੀਟਰ"
+
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "ਮੀਟਰ"
+
+#: src/helper/units.c:51
+msgid "m"
+msgstr "ਮ"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr "ਮੀਟਰ"
+
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "ਇੰਚ"
+
+#: src/helper/units.c:52
+msgid "in"
+msgstr "ਇੰਚ"
+
+#: src/helper/units.c:52
+msgid "Inches"
+msgstr "ਇੰਚ"
+
+#: src/helper/units.c:53
+msgid "Em square"
+msgstr ""
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr ""
+
+#: src/helper/units.c:53
+msgid "Em squares"
+msgstr ""
+
+#: src/helper/units.c:54
+msgid "Ex square"
+msgstr ""
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr ""
+
+#: src/helper/units.c:54
+msgid "Ex squares"
+msgstr ""
+
+#: src/interface.c:305 src/interface.c:504
+msgid "Open Recent"
+msgstr ""
+
+#: src/interface.c:325
+msgid "Close View"
+msgstr "ਦਰਿਸ਼ ਬੰਦ ਕਰੋ"
+
+#: src/interface.c:328 src/interface.c:510
+msgid "About Sodipodi"
+msgstr ""
+
+#. Have modules about menu
+#: src/interface.c:334 src/interface.c:516
+msgid "About Modules"
+msgstr ""
+
+#: src/interface.c:354
+msgid "Cleanup"
+msgstr "ਸਾਫ਼ ਕਰੋ"
+
+#. View:Zoom
+#: src/interface.c:429 src/toolbox.c:587 src/verbs.c:463
+msgid "Zoom"
+msgstr "ਆਕਾਰ"
+
+#. View:New View
+#: src/interface.c:441
+msgid "New View"
+msgstr "ਨਵਾਂ ਦਰਿਸ਼"
+
+#. View:New Preview
+#: src/interface.c:443
+msgid "New Preview"
+msgstr ""
+
+#: src/interface.c:445
+msgid "New Toplevel Toolbox"
+msgstr ""
+
+#: src/interface.c:446
+msgid "New Docked Toolbox"
+msgstr ""
+
+#: src/interface.c:447
+msgid "Remove Docked Toolbox"
+msgstr ""
+
+#. File
+#: src/interface.c:501 src/verbs.c:409
+msgid "New"
+msgstr "ਨਵਾਂ"
+
+#: src/interface.c:502
+msgid "Open"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:522 src/verbs.c:418
+msgid "Exit program"
+msgstr "ਕਾਰਜ ਬੰਦ"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:585 src/toolbox.c:311
+msgid "File"
+msgstr "ਫਾਇਲ"
+
+#. Edit submenu
+#: src/interface.c:591 src/toolbox.c:362 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "ਸੋਧ"
+
+#. View submenu
+#: src/interface.c:603
+msgid "View"
+msgstr "ਵੇਖੋ"
+
+#. Drawing mode submenu
+#: src/interface.c:609
+msgid "Drawing Mode"
+msgstr ""
+
+#. Dialog submenu
+#: src/interface.c:615
+msgid "Dialogs"
+msgstr "ਵਾਰਤਾਲਾਪ"
+
+#. Have modules menu
+#: src/interface.c:624
+msgid "Modules"
+msgstr "ਮੈਡੀਊਲ"
+
+#: src/main.c:120 src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr ""
+
+#: src/main.c:123 src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr ""
+
+#: src/main.c:126 src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr ""
+
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
+msgid "FILENAME"
+msgstr "ਫਾਇਲ ਨਾਂ"
+
+#: src/main.c:129
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr ""
+
+#: src/main.c:132 src/main.c:615
+msgid "Export document to png file"
+msgstr ""
+
+#: src/main.c:135 src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr ""
+
+#: src/main.c:136
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:138 src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr ""
+
+#: src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:141 src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr ""
+
+#: src/main.c:141
+msgid "WIDTH"
+msgstr "ਚੌੜਾਈ"
+
+#: src/main.c:143 src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr ""
+
+#: src/main.c:143
+msgid "HEIGHT"
+msgstr "ਉਚਾਈ"
+
+#: src/main.c:145 src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr ""
+
+#: src/main.c:145
+msgid "COLOR"
+msgstr "ਰੰਗ"
+
+#: src/main.c:147 src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr ""
+
+#: src/main.c:149
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+
+#: src/main.c:151
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr ""
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr ""
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr ""
+
+#: src/main.c:772
+msgid "Untitled document"
+msgstr "ਬਿਨਾਂ ਨਾਂ ਦਸਤਾਵੇਜ"
+
+#. Show nice dialog box
+#: src/main.c:797
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: src/main.c:798
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: src/main.c:799
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
+
+#: src/module.c:898
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: src/module.c:898
+msgid "Sodipodi native file format and W3C standard"
+msgstr ""
+
+#: src/module.c:905
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: src/module.c:906
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr ""
+
+#: src/module.c:909
+msgid "Plain SVG"
+msgstr ""
+
+#: src/module.c:910
+msgid "Scalable Vector Graphics format"
+msgstr ""
+
+#: src/modules/gnome.c:158
+msgid "Select printer"
+msgstr "ਪ੍ਰਿੰਟਰ ਚੁਣੋ"
+
+#: src/modules/gnome.c:212
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr ""
+
+#: src/modules/kde.cpp:162
+msgid "Document variant:"
+msgstr ""
+
+#: src/modules/kde.cpp:172
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.svg *.svgz|SVG ਫਾਇਲਾਂ\n"
+"*.xml|XML ਫਾਇਲਾਂ\n"
+"*|ਸਭ ਫਾਇਲਾਂ"
+
+#: src/modules/kde.cpp:174
+msgid "Save document as"
+msgstr "ਦਸਤਾਵੇਜ਼ ਇਸਤਰਾਂ ਸੰਭਾਲੋ"
+
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
+#: src/modules/ps.c:961
+msgid "write error occured"
+msgstr ""
+
+#: src/modules/plain.c:178 src/modules/ps.c:264
+msgid "Print using PostScript operators"
+msgstr ""
+
+#: src/modules/plain.c:179 src/modules/ps.c:266
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr ""
+
+#: src/modules/plain.c:184 src/modules/ps.c:271
+msgid "Print as bitmap"
+msgstr ""
+
+#: src/modules/plain.c:185 src/modules/ps.c:273
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr ""
+
+#: src/modules/plain.c:190
+msgid "Print using PDF driver"
+msgstr ""
+
+#: src/modules/plain.c:191
+msgid "Use Portable Document Format for printing"
+msgstr ""
+
+#. Print destination frame
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
+#: src/modules/ps.c:306
+msgid "Print destination"
+msgstr ""
+
+#. Print properties frame
+#: src/modules/plain.c:235 src/modules/ps.c:256
+msgid "Print properties"
+msgstr "ਛਾਪਣ ਵਿਸ਼ੇਸ਼ਤਾ"
+
+#: src/modules/plain.c:274 src/modules/ps.c:287
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr ""
+
+#: src/modules/plain.c:289 src/modules/ps.c:302
+msgid "Resolution:"
+msgstr "ਰੈਜ਼ੋਲੇਸ਼ਨ:"
+
+#: src/modules/plain.c:299 src/modules/ps.c:312
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+
+#. Create toplevel menuitem
+#: src/object-ui.c:111 src/widgets/sp-dock-layout.c:741
+msgid "Item"
+msgstr "ਇਕਾਈ"
+
+#. Item dialog
+#: src/object-ui.c:114 src/verbs.c:487
+msgid "Item Properties"
+msgstr "ਇਕਾਈ ਵਿਸ਼ੇਸਤਾ"
+
+#. Select item
+#: src/object-ui.c:122
+msgid "Select this"
+msgstr "ਇਹ ਚੁਣੋ"
+
+#. Reset transformations
+#: src/object-ui.c:131
+msgid "Reset transformation"
+msgstr ""
+
+#. Apply transformation
+#: src/object-ui.c:135
+msgid "Apply transformation"
+msgstr "ਤਬਦੀਲੀ ਲਾਗੂ ਕਰੋ"
+
+#: src/object-ui.c:140
+msgid "Make sensitive"
+msgstr ""
+
+#: src/object-ui.c:140
+msgid "Make insensitive"
+msgstr ""
+
+#. Create link
+#: src/object-ui.c:144
+msgid "Create link"
+msgstr "ਸੰਬੰਧ ਬਣਾਓ"
+
+#: src/object-ui.c:276 src/verbs.c:435
+msgid "Group"
+msgstr "ਸਮੂਹ"
+
+#. Group dialog
+#: src/object-ui.c:280
+msgid "Group Properties"
+msgstr "ਸਮੂਹ ਵਿਸ਼ੇਸਤਾ"
+
+#. "Ungroup"
+#: src/object-ui.c:291 src/verbs.c:436
+msgid "Ungroup"
+msgstr "ਵੱਖ-ਵੱਖ"
+
+#. Dive
+#: src/object-ui.c:296
+msgid "Set as layer"
+msgstr "ਪਤਰ ਨਿਰਧਾਰਿਤ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:341
+msgid "Link"
+msgstr "ਸੰਬੰਧ"
+
+#. Link dialog
+#: src/object-ui.c:344
+msgid "Link Properties"
+msgstr "ਸੰਬੰਧ ਵਿਸ਼ੇਸਤਾ"
+
+#. Select item
+#: src/object-ui.c:354
+msgid "Follow link"
+msgstr "ਸੰਬੰਧ ਵੇਖੋ"
+
+#. Reset transformations
+#: src/object-ui.c:359
+msgid "Remove link"
+msgstr "ਸੰਬੰਧ ਹਟਾਓ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:422
+msgid "Image"
+msgstr "ਚਿੱਤਰ"
+
+#. Link dialog
+#: src/object-ui.c:425
+msgid "Image Properties"
+msgstr "ਚਿੱਤਰ ਵਿਸ਼ੇਸਤਾ"
+
+#. Autotrace dialog
+#: src/object-ui.c:433 src/sp-image.c:762
+msgid "Trace"
+msgstr ""
+
+#. Create toplevel menuitem
+#: src/object-ui.c:482
+msgid "Shape"
+msgstr "ਸ਼ਕਲ"
+
+#. Item dialog
+#: src/object-ui.c:485 src/toolbox.c:402
+msgid "Fill settings"
+msgstr "ਭਰਨ ਵਿਵਸਥਾ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:516
+msgid "Path"
+msgstr "ਮਾਰਗ"
+
+#. Reverse
+#: src/object-ui.c:519
+msgid "Reverse"
+msgstr "ਉਲਟ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:542
+msgid "Rect"
+msgstr "ਚਤੁਰਭੁਜ"
+
+#. Link dialog
+#: src/object-ui.c:545
+msgid "Rect Properties"
+msgstr "ਚਤੁਰਭੁਜ ਵਿਸ਼ੇਸਤਾ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:578 src/verbs.c:457
+msgid "Star"
+msgstr "ਤਾਰਾ"
+
+#. Link dialog
+#: src/object-ui.c:581
+msgid "Star Properties"
+msgstr "ਤਾਰਾ ਵਿਸ਼ੇਸਤਾ"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:614 src/verbs.c:458
+msgid "Spiral"
+msgstr "ਚੱਕਰਾਕਾਰ"
+
+#. Link dialog
+#: src/object-ui.c:617
+msgid "Spiral Properties"
+msgstr "ਚੱਕਰਾਕਾਰ ਗੁਣ"
+
+#. rx_ratio
+#: src/rect-context.c:358
+msgid "Roundness ratio for x:"
+msgstr ""
+
+#. ry_ratio
+#: src/rect-context.c:370
+msgid "Roundness ratio for y:"
+msgstr ""
+
+#: src/select-context.c:570
+msgid "Visual transformation"
+msgstr ""
+
+#: src/select-context.c:576
+msgid "Show content"
+msgstr ""
+
+#: src/select-context.c:582
+msgid "Show outline"
+msgstr ""
+
+#: src/select-context.c:588
+msgid "Object transformation"
+msgstr "ਇਕਾਈ ਤਬਦੀਲੀ"
+
+#: src/select-context.c:594
+msgid "Optimize"
+msgstr "ਅਨੁਕੂਲ"
+
+#: src/select-context.c:600
+msgid "Preserve"
+msgstr "ਰੱਖੋ"
+
+#: src/select-context.c:606
+msgid "[Tab] Cycling"
+msgstr ""
+
+#: src/select-context.c:611
+msgid "Cycle only among visible items"
+msgstr "ਦਿੱਖ ਇਕਾਈਆਂ ਨੂੰ ਹੀ ਘੁੰਮਾਓ"
+
+#: src/select-context.c:614
+msgid "Center view to selected item"
+msgstr "ਚੁਣੀ ਇਕਾਈ ਲਈ ਕੇਂਦਰੀ ਦਰਿਸ਼"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "ਸੋਡੀਪੋਡੀ ਸਲਾਇਡ-ਸ਼ੋ"
+
+#: src/sodipodi.c:468
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+
+#: src/sodipodi.c:471
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: src/sodipodi.c:476
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: src/sodipodi.c:488
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: src/sodipodi.c:491
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: src/sodipodi.c:495
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: src/sodipodi.c:829
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+"%s ਡਾਇਰੈਕਟਰੀ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ\n"
+"%s ਨੂੰ ਲੋਡ ਕਰਨ ਜਾਂ ਸੰਭਾਲਣ ਦੇ ਯੋਗ\n"
+"ਨਹੀਂ ਹੋ"
+
+#: src/sodipodi.c:833
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ਦੀ ਡਾਇਰੈਕਟਰੀ ਜਾਇਜ ਨਹੀਂ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ\n"
+"ਮੇਰੀ-ਪਸੰਦ ਨੂੰ ਲੋਡ ਕਰਨ ਜਾਂ ਸੰਭਾਲਣ ਦੇ ਯੋਗ\n"
+"ਨਹੀਂ ਹੋ"
+
+#: src/sodipodi.c:837
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ਫਾਇਲ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ\n"
+"ਮੇਰੀ-ਪਸੰਦ ਨੂੰ ਲੋਡ ਕਰਨ ਜਾਂ ਸੰਭਾਲਣ ਦੇ ਯੋਗ\n"
+"ਨਹੀਂ ਹੋ।"
+
+#: src/sodipodi.c:841
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s ਫਾਇਲ ਪੜੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ\n"
+"ਮੇਰੀ-ਪਸੰਦ ਨੂੰ ਲੋਡ ਕਰਨ ਜਾਂ ਸੰਭਾਲਣ ਦੇ ਯੋਗ\n"
+"ਨਹੀਂ ਹੋ।"
+
+#: src/sodipodi.c:851
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਬਣਾਈ ਜਾ ਸਕਦੀ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ ਸਹਿਯੋਗੀ\n"
+"(ਪਲੱਗਿੰਨ) ਵਰਤਣ ਦੇ ਯੋਗ ਨਹੀਂ ਹੋ\n"
+
+#: src/sodipodi.c:854
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ਇੱਕ ਜਾਇਜ ਡਾਇਰੈਕਟਰੀ ਨਹੀਂ ਹੈ\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ ਸਹਿਯੋਗੀ\n"
+"(ਪਲੱਗਿੰਨ) ਵਰਤਣ ਦੇ ਯੋਗ ਨਹੀਂ ਹੋ\n"
+
+#: src/sodipodi.c:857
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s ਫਾਇਲ ਬਣਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ।\n"
+"ਹਾਲਾਂਕਿ ਸੋਡੀਪੋਡੀ ਚੱਲ ਰਿਹਾ ਹੈ, ਤੁਸੀਂ ਸਹਿਯੋਗੀ\n"
+"(ਪਲੱਗਿੰਨ) ਵਰਤਣ ਦੇ ਯੋਗ ਨਹੀਂ ਹੋ\n"
+
+#: src/sodipodi.c:860
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "%s ਨਾਲ ਸੰਬੰਧ"
+
+#: src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "ਗਲਤ ਹਵਾਲੇ ਨਾਲ ਚਿੱਤਰ: %s"
+
+#: src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "%d x %d ਰੰਗਦਾਰ ਚਿੱਤਰ: %s"
+
+#: src/sp-image.c:908
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "%s ਨੂੰ ਲਿਖਣ ਦੌਰਾਨ ਗਲਤੀ: %s"
+
+#: src/sp-image.c:942
+msgid "Untitled"
+msgstr "ਬਿਨਾਂ ਨਾਂ"
+
+#: src/sp-image.c:947
+msgid "Document Name:"
+msgstr "ਦਸਤਾਵੇਜ਼ ਨਾਂ:"
+
+#: src/sp-image.c:960
+msgid "Unknown"
+msgstr "ਅਣਜਾਣ"
+
+#: src/sp-image.c:966
+msgid "Image URI:"
+msgstr "ਚਿੱਤਰ URI:"
+
+#: src/sp-item-group.c:483
+#, c-format
+msgid "Group of %d objects"
+msgstr "%d ਇਕਾਈਆਂ ਦਾ ਸਮੂਹ"
+
+#: src/sp-item.c:554
+msgid "Unknown item :-("
+msgstr "ਅਣਜਾਣੀ ਇਕਾਈ :-("
+
+#. fixme:
+#: src/sp-text.c:1293
+msgid "Text object"
+msgstr "ਪਾਠ ਇਕਾਈ"
+
+#. T0
+#: src/spiral-context.c:355
+msgid "Inner radius:"
+msgstr "ਅੰਦਰੂਨੀ ਅਰਧ-ਵਿਆਸ:"
+
+#. Proportion
+#: src/star-context.c:355
+msgid "Proportion:"
+msgstr "ਅਨੁਪਾਤ:"
+
+#. Making sides flat
+#: src/star-context.c:368
+msgid "Make sides flat"
+msgstr "ਸਲਾਇਡ ਸਮਤਲ ਬਣਾਓ"
+
+#: src/toolbox.c:399
+msgid "Object"
+msgstr "ਇਕਾਈ"
+
+#: src/toolbox.c:403 src/verbs.c:481
+msgid "Object size and position"
+msgstr "ਇਕਾਈ ਆਕਾਰ ਤੇ ਸਥਿਤੀ"
+
+#: src/toolbox.c:404
+msgid "Text and font settings"
+msgstr "ਪਾਠ ਤੇ ਫੋਂਟ ਵਿਵਸਥਾ"
+
+#: src/toolbox.c:406 src/verbs.c:482
+msgid "Object transformations"
+msgstr "ਇਕਾਈ ਤਬਦੀਲੀ"
+
+#: src/toolbox.c:485
+msgid "Draw"
+msgstr "ਖਿੱਚੋ"
+
+#: src/toolbox.c:542
+msgid "Extension"
+msgstr ""
+
+#: src/toolbox.c:624
+msgid "Nodes"
+msgstr "ਨੋਡਾਂ"
+
+#: src/toolbox.c:627
+msgid "Insert new nodes into selected segments"
+msgstr ""
+
+#: src/toolbox.c:629
+msgid "Break line at selected nodes"
+msgstr ""
+
+#: src/toolbox.c:631
+msgid "Make selected nodes corner"
+msgstr ""
+
+#: src/toolbox.c:633
+msgid "Make selected segments lines"
+msgstr ""
+
+#: src/toolbox.c:635
+msgid "Delete selected nodes"
+msgstr ""
+
+#: src/toolbox.c:637
+msgid "Join lines at selected nodes"
+msgstr ""
+
+#: src/toolbox.c:640
+msgid "Join lines at selected nodes with new segment"
+msgstr ""
+
+#: src/toolbox.c:642
+msgid "Make selected nodes smooth"
+msgstr ""
+
+#: src/toolbox.c:644
+msgid "Make selected segments curves"
+msgstr ""
+
+#: src/verbs.c:407
+msgid "Does nothing"
+msgstr "ਕੁਝ ਨਾ ਕਰੋ"
+
+#: src/verbs.c:409
+msgid "Create new SVG document"
+msgstr ""
+
+#: src/verbs.c:410
+msgid "Open..."
+msgstr "ਖੋਲ੍ਹੋ..."
+
+#: src/verbs.c:410
+msgid "Open existing SVG document"
+msgstr ""
+
+#: src/verbs.c:411
+msgid "Save"
+msgstr "ਸੰਭਾਲੋ"
+
+#: src/verbs.c:411
+msgid "Save document"
+msgstr "ਦਸਤਾਵੇਜ਼ ਸੰਭਾਲੋ"
+
+#: src/verbs.c:412
+msgid "Save As..."
+msgstr "ਇਸਤਰ੍ਹਾਂ ਸੰਭਾਲੋ..."
+
+#: src/verbs.c:412
+msgid "Save document under new name"
+msgstr "ਦਸਤਾਵੇਜ਼ ਨੂੰ ਨਵੇਂ ਨਾਂ ਨਾਲ ਸੰਭਾਲੋ"
+
+#: src/verbs.c:413
+msgid "Print..."
+msgstr "ਛਾਪੋ..."
+
+#: src/verbs.c:413
+msgid "Print document"
+msgstr "ਦਸਤਾਵੇਜ਼ ਛਾਪੋ"
+
+#: src/verbs.c:414
+msgid "Print Direct..."
+msgstr "ਸਿੱਧਾ ਛਾਪੋ..."
+
+#: src/verbs.c:414
+msgid "Print directly to file or pipe"
+msgstr "ਫਾਇਲ ਜਾਂ ਪਾਇਪ ਤੋਂ ਸਿੱਧਾ ਛਾਪੋ"
+
+#: src/verbs.c:415
+msgid "Print Preview"
+msgstr "ਛਾਪ ਦਰਿਸ਼"
+
+#: src/verbs.c:415
+msgid "Preview document printout"
+msgstr ""
+
+#: src/verbs.c:416
+msgid "Import"
+msgstr "ਆਯਾਤ"
+
+#: src/verbs.c:416
+msgid "Import bitmap or SVG image into document"
+msgstr ""
+
+#: src/verbs.c:417
+msgid "Export document as PNG bitmap"
+msgstr ""
+
+#: src/verbs.c:418
+msgid "Exit"
+msgstr "ਬਾਹਰ"
+
+#. Edit
+#: src/verbs.c:420
+msgid "Undo"
+msgstr "ਵਾਪਿਸ"
+
+#: src/verbs.c:420
+msgid "Revert last action"
+msgstr ""
+
+#: src/verbs.c:421
+msgid "Redo"
+msgstr "ਮੁੜ-ਵਾਪਿਸ"
+
+#: src/verbs.c:421
+msgid "Do again undone action"
+msgstr ""
+
+#: src/verbs.c:422
+msgid "Cut"
+msgstr "ਕੱਟੋ"
+
+#: src/verbs.c:422
+msgid "Cut selected objects to clipboard"
+msgstr ""
+
+#: src/verbs.c:423
+msgid "Copy"
+msgstr "ਨਕਲ"
+
+#: src/verbs.c:423
+msgid "Copy selected objects to clipboard"
+msgstr ""
+
+#: src/verbs.c:424
+msgid "Paste"
+msgstr "ਚਿਪਕਾਓ"
+
+#: src/verbs.c:424
+msgid "Paste objects from clipboard"
+msgstr "ਕਲਿੱਪਬੋਰਡ ਤੋਂ ਚਿਪਕਾਓ"
+
+#: src/verbs.c:425
+msgid "Delete"
+msgstr "ਹਟਾਓ"
+
+#: src/verbs.c:425
+msgid "Delete selected objects"
+msgstr ""
+
+#: src/verbs.c:426
+msgid "Duplicate"
+msgstr ""
+
+#: src/verbs.c:426
+msgid "Duplicate selected objects"
+msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਦੁਹਰਾਉ"
+
+#: src/verbs.c:427
+msgid "Clear All"
+msgstr "ਸਭ ਸਾਫ ਕਰੋ"
+
+#: src/verbs.c:427
+msgid "Delete all objects from document"
+msgstr ""
+
+#: src/verbs.c:428
+msgid "Select All"
+msgstr "ਸਭ ਚੁਣੋ"
+
+#: src/verbs.c:428
+msgid "Select all objects in document"
+msgstr ""
+
+#: src/verbs.c:429
+msgid "Repeat"
+msgstr "ਦੁਹਰਾਓ"
+
+#: src/verbs.c:429
+msgid "Repeat last saved action"
+msgstr "ਆਖਰੀ ਸੰਭਾਲੀ ਕਾਰਵਾਈ ਦੁਹਰਾਓ"
+
+#. Selection
+#: src/verbs.c:431
+msgid "Bring to Front"
+msgstr "ਅੱਗੇ ਲਿਆਓ"
+
+#: src/verbs.c:431
+msgid "Raise selected objects to top"
+msgstr ""
+
+#: src/verbs.c:432
+msgid "Send to Back"
+msgstr "ਪਿੱਛੇ ਭੇਜੋ"
+
+#: src/verbs.c:432
+msgid "Lower selected objects to bottom"
+msgstr ""
+
+#: src/verbs.c:433
+msgid "Raise"
+msgstr "ਉਭਾਰੋ"
+
+#: src/verbs.c:433
+msgid "Raise selected objects one position"
+msgstr ""
+
+#: src/verbs.c:434
+msgid "Lower"
+msgstr "ਹੇਠਾਂ"
+
+#: src/verbs.c:434
+msgid "Lower selected objects one position"
+msgstr ""
+
+#: src/verbs.c:435
+msgid "Group selected objects"
+msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ ਦਾ ਸਮੂਹ"
+
+#: src/verbs.c:436
+msgid "Ungroup selected group"
+msgstr "ਚੁਣੇ ਸਮੂਹ ਨੂੰ ਵੱਖ ਵੱਖ ਕਰੋ"
+
+#: src/verbs.c:437
+msgid "Combine"
+msgstr "ਜੋੜੋ"
+
+#: src/verbs.c:437
+msgid "Combine multiple paths"
+msgstr ""
+
+#: src/verbs.c:438
+msgid "Break Apart"
+msgstr ""
+
+#: src/verbs.c:438
+msgid "Break selected path to subpaths"
+msgstr ""
+
+#: src/verbs.c:439
+msgid "Uncross"
+msgstr "ਨਾ-ਵੰਡ"
+
+#: src/verbs.c:439
+msgid "Break selected path at crossings"
+msgstr ""
+
+#: src/verbs.c:440
+msgid "Union"
+msgstr "ਯੂਨੀਅਨ"
+
+#: src/verbs.c:440
+msgid "Calculate union of selected paths"
+msgstr ""
+
+#: src/verbs.c:441
+msgid "Intersection"
+msgstr "ਕਾਟ"
+
+#: src/verbs.c:441
+msgid "Calculate intersection of selected paths"
+msgstr ""
+
+#: src/verbs.c:442
+msgid "Subtraction"
+msgstr "ਘਟਾਓ"
+
+#: src/verbs.c:442
+msgid "Subtract paths from first"
+msgstr ""
+
+#: src/verbs.c:443
+msgid "Transform"
+msgstr "ਤਬਦੀਲ"
+
+#: src/verbs.c:443
+msgid "Applies transformation"
+msgstr "ਤਬਦੀਲੀਆਂ ਲਾਗੂ ਕਰੋ"
+
+#. Object
+#: src/verbs.c:445
+msgid "Rotate 90 degrees"
+msgstr "੯੦ ਦਰਜੇ ਤੇ ਘੁੰਮਾਓ"
+
+#: src/verbs.c:445
+msgid "Rotates object 90 degrees clockwise"
+msgstr ""
+
+#: src/verbs.c:446
+msgid "Flatten object"
+msgstr ""
+
+#: src/verbs.c:446
+msgid "Remove transformations from object"
+msgstr ""
+
+#: src/verbs.c:447
+msgid "Convert to Curves"
+msgstr ""
+
+#: src/verbs.c:447
+msgid "Convert selected object to path"
+msgstr ""
+
+#: src/verbs.c:448
+msgid "Flip Horizontally"
+msgstr "ਖਿਤਿਜੀ ਝਟਕੋ"
+
+#: src/verbs.c:449
+msgid "Flip selected objects horizontally"
+msgstr ""
+
+#: src/verbs.c:450
+msgid "Flip Vertically"
+msgstr "ਲੰਬਕਾਰੀ ਝਟਕੋ"
+
+#: src/verbs.c:451
+msgid "Flip selected objects vertically"
+msgstr "ਚੁਣੀ ਇਕਾਈ ਨੂੰ ਲੰਬਾਕਾਰੀ ਝਟਕੋ"
+
+#. Event contexts
+#: src/verbs.c:453
+msgid "Select"
+msgstr "ਚੋਣ"
+
+#: src/verbs.c:453
+msgid "Select and transform objects"
+msgstr "ਇਕਾਈਆਂ ਚੁਣੋ ਤੇ ਤਬਦੀਲ ਕਰੋ"
+
+#: src/verbs.c:454
+msgid "Node edit"
+msgstr "ਨੋਡ ਸੋਧ"
+
+#: src/verbs.c:454
+msgid "Modify existing objects by control nodes"
+msgstr "ਕੰਟਰੋਲ ਨੋਡ ਨਾਲ ਮੌਜੂਦਾ ਇਕਾਈਆਂ ਵਿੱਚ ਸੋਧ"
+
+#: src/verbs.c:455
+msgid "Rectangle"
+msgstr "ਚਤੁਰਭੁਜ"
+
+#: src/verbs.c:455
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "ਚਤੁਰਭੁਜ ਤੇ ਵਰਗ ਗੋਲ ਕੋਨਿਆਂ ਸਮੇਤ ਬਣਾਓ"
+
+#: src/verbs.c:456
+msgid "Ellipse"
+msgstr "ਅੰਡਾਕਾਰ"
+
+#: src/verbs.c:456
+msgid "Create circles, ellipses and arcs"
+msgstr "ਚੱਕਰ, ਅੰਡਾਕਾਰ ਤੇ ਚਾਪਾਂ ਬਣਾਓ"
+
+#: src/verbs.c:457
+msgid "Create stars and polygons"
+msgstr "ਤਾਰੇ ਤੇ ਬਹੁਭੁਜ ਬਣਾਓ"
+
+#: src/verbs.c:458
+msgid "Create spirals"
+msgstr "ਚੱਕਰਦਾਰ ਬਣਾਓ"
+
+#: src/verbs.c:459
+msgid "Pencil"
+msgstr "ਪੈਂਨਸਿਲ"
+
+#: src/verbs.c:459
+msgid "Draw freehand curves and straight lines"
+msgstr ""
+
+#: src/verbs.c:460
+msgid "Pen"
+msgstr "ਪੈਨ"
+
+#: src/verbs.c:460
+msgid "Draw precisely positioned curved and straight lines"
+msgstr ""
+
+#: src/verbs.c:461
+msgid "Calligraphy"
+msgstr "ਸੁਲੇਖ"
+
+#: src/verbs.c:461
+msgid "Draw calligraphic lines"
+msgstr "ਸੁਲੇਖ ਰੇਖਾਵਾਂ ਖਿੱਚੋ"
+
+#: src/verbs.c:462
+msgid "Create and edit text objects"
+msgstr ""
+
+#: src/verbs.c:463
+msgid "Zoom into precisely selected area"
+msgstr ""
+
+#: src/verbs.c:464
+msgid "Dropper"
+msgstr "ਡਕੋਪਰ"
+
+#: src/verbs.c:464
+msgid "Pick averaged colors from image"
+msgstr ""
+
+#. Zooming
+#: src/verbs.c:466
+msgid "In"
+msgstr "ਵੱਡਾ"
+
+#: src/verbs.c:466
+msgid "Zoom in drawing"
+msgstr ""
+
+#: src/verbs.c:467
+msgid "Out"
+msgstr "ਛੋਟਾ"
+
+#: src/verbs.c:467
+msgid "Zoom out drawing"
+msgstr ""
+
+#: src/verbs.c:468
+msgid "1:1"
+msgstr "1:1"
+
+#: src/verbs.c:468
+msgid "Set zoom factor to 1:1"
+msgstr ""
+
+#: src/verbs.c:469
+msgid "1:2"
+msgstr "1:2"
+
+#: src/verbs.c:469
+msgid "Set zoom factor to 1:2"
+msgstr ""
+
+#: src/verbs.c:470
+msgid "2:1"
+msgstr "2:1"
+
+#: src/verbs.c:470
+msgid "Set zoom factor to 2:1"
+msgstr ""
+
+#: src/verbs.c:471
+msgid "Fit the whole page into window"
+msgstr ""
+
+#: src/verbs.c:472
+msgid "Fit the whole drawing into window"
+msgstr ""
+
+#: src/verbs.c:473
+msgid "Fit the whole selection into window"
+msgstr ""
+
+#. Dialogs
+#: src/verbs.c:475
+msgid "Display"
+msgstr "ਦਰਿਸ਼"
+
+#: src/verbs.c:475
+msgid "Global display settings"
+msgstr "ਵਿਆਪਕ ਦਰਿਸ਼ ਵਿਸ਼ੇਸਤਾ"
+
+#: src/verbs.c:476
+msgid "Page layout"
+msgstr "ਸਫਾ ਖਾਕਾ"
+
+#: src/verbs.c:477
+msgid "Editing Window"
+msgstr "ਸੰਪਾਦਨ ਝਰੋਖਾ"
+
+#: src/verbs.c:477
+msgid "Editing window properties"
+msgstr "ਸੰਪਾਦਨ ਝਰੋਖਾ ਵਿਵਸਥਾ"
+
+#: src/verbs.c:478
+msgid "Tool Options"
+msgstr "ਸੰਦ ਚੋਣ"
+
+#: src/verbs.c:479
+msgid "Tool Attributes"
+msgstr "ਸੰਦ ਗੁਣ"
+
+#: src/verbs.c:480
+msgid "Fill and Stroke"
+msgstr "ਭਰਨ ਤੇ ਠੋਲਾ"
+
+#: src/verbs.c:480
+msgid "Fill and stroke settings"
+msgstr "ਭਰਨ ਤੇ ਠੋਲਾ ਵਿਵਸਥਾ"
+
+#: src/verbs.c:482
+msgid "Transformations"
+msgstr "ਤਬਦੀਲ"
+
+#: src/verbs.c:483
+msgid "Align and Distribute"
+msgstr "ਇਕਸਾਰ ਤੇ ਵੰਡ"
+
+#: src/verbs.c:483
+msgid "Align and distribute"
+msgstr "ਇਕਸਾਰ ਤੇ ਵੰਡ"
+
+#: src/verbs.c:484
+msgid "Text and Font"
+msgstr "ਪਾਠ ਤੇ ਫੋਂਟ"
+
+#: src/verbs.c:484
+msgid "Text editing and font settings"
+msgstr "ਪਾਠ ਸੰਪਾਦਨ ਤੇ ਫੋਂਟ ਵਿਵਸਥਾ"
+
+#: src/verbs.c:485
+msgid "Document Tree"
+msgstr "ਦਸਤਾਵੇਜ਼ ਲੜੀ"
+
+#: src/verbs.c:486
+msgid "XML Editor"
+msgstr "XML ਸੰਪਾਦਕ"
+
+#. Family frame
+#: src/widgets/font-selector.c:153
+msgid "Font family"
+msgstr "ਫੋਂਟ ਸਮੂਹ"
+
+#. Style frame
+#: src/widgets/font-selector.c:193
+msgid "Style"
+msgstr "ਸ਼ੈਲੀ"
+
+#: src/widgets/font-selector.c:228
+msgid "Font size:"
+msgstr "ਫੋਂਟ ਆਕਾਰ:"
+
+#: src/widgets/font-selector.c:560
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "AaBbCcIiPpQq12368.;/()"
+
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "ਸ਼ਾਮਿਲ"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "ਗ੍ਰੇਡੀਅਟ-ਇਕਾਈ"
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "ਗ੍ਰੇਡੀਅਟ-ਸਪੈਂਰਡ"
+
+#: src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "ਕੋਈ ਦਸਤਾਵੇਜ਼ ਨਹੀਂ ਚੁਣਿਆ"
+
+#: src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "ਦਸਤਾਵੇਜ਼ ਵਿੱਚ ਕੋਈ ਗ੍ਰੇਡੀਅਟ ਨਹੀਂ"
+
+#: src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "ਕੋਈ ਗ੍ਰੇਡੀਅਟ ਨਹੀਂ ਚੁਣਿਆ"
+
+#: src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "ਸ਼ੁਰੂ ਰੰਗ"
+
+#: src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "ਸਮਾਪਤੀ ਰੰਗ"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "ਗ੍ਰੇਡੀਅਟ ਵੈਕਟਰ"
+
+#: src/widgets/paint-selector.c:622
+msgid "No objects"
+msgstr "ਕੋਈ ਇਕਾਈ ਨਹੀਂ"
+
+#: src/widgets/paint-selector.c:636
+msgid "Multiple styles"
+msgstr "ਬਹੁ-ਸ਼ੈਲੀ"
+
+#: src/widgets/paint-selector.c:650
+msgid "No paint"
+msgstr "ਕੋਈ ਪੇਂਟ ਨਹੀਂ"
+
+#. Label
+#: src/widgets/paint-selector.c:747
+msgid "Mode:"
+msgstr "ਢੰਗ:"
+
+#: src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr "RGB ਰੰਗ-ਪੱਟੀ"
+
+#: src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr "CMYK ਰੰਗ-ਪੱਟੀ"
+
+#. Use dropper
+#: src/widgets/paint-selector.c:766
+msgid "Get from dropper"
+msgstr "ਡਰੋਪਰ ਤੋਂ ਪ੍ਰਾਪਤ ਕਰੋ"
+
+#: src/widgets/paint-selector.c:797
+msgid "Color paint"
+msgstr "ਰੰਗ ਪੇਂਟ"
+
+#: src/widgets/paint-selector.c:875
+msgid "Linear gradient"
+msgstr "ਰੇਖੀ ਗ੍ਰੇਡੀਅਟ"
+
+#: src/widgets/paint-selector.c:878
+msgid "Radial gradient"
+msgstr "ਕੋਣ ਗ੍ਰੇਡੀਅਟ"
+
+#: src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "ਲਾਲ:"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "ਹਰਾ:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "ਨੀਲਾ:"
+
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "ਐਲਫਾ:"
+
+#: src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "ਆਭਾ:"
+
+#: src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "ਸੰਤ੍ਰਿਪਤ:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "ਮੁੱਲ:"
+
+#: src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "ਹਰਾ-ਨੀਲਾ:"
+
+#: src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "ਕਿਰਮਚੀ:"
+
+#: src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "ਪੀਲਾ:"
+
+#: src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "ਕਾਲਾ:"
+
+#: src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "ਸਥਿਤੀ"
+
+#: src/widgets/sp-dock-item.c:244
+msgid "Orientation of the docking item"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr "ਮੁੜ-ਆਕਾਰ ਯੋਗ"
+
+#: src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:267
+msgid "Item behavior"
+msgstr "ਇਕਾਈ ਵਿਵਹਾਰ"
+
+#: src/widgets/sp-dock-item.c:268
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:276
+msgid "Grip size"
+msgstr "ਪਕੜ ਆਕਾਰ"
+
+#: src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:283 src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "ਜਿੰਦਾ"
+
+#: src/widgets/sp-dock-item.c:284
+msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:292
+msgid "Preferred width"
+msgstr "ਪਸੰਦੀਦਾ ਚੌੜਾਈ"
+
+#: src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:299
+msgid "Preferred height"
+msgstr "ਪਸੰਦੀਦਾ ਉਚਾਈ"
+
+#: src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:547
+#, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:554
+#, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr ""
+
+#. Hide menuitem.
+#: src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "ਓਹਲੇ"
+
+#. Lock menuitem
+#: src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr "ਜਿੰਦਾ"
+
+#: src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:144
+msgid "Master"
+msgstr "ਮਾਸਟਰ"
+
+#: src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr "ਭੱਦਾ"
+
+#: src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:500
+msgid "You must provide a name for the layout"
+msgstr ""
+
+#. FIXME: pop up an error dialog
+#: src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "ਨਾਂ"
+
+#: src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr "ਡੋਕ ਇਕਾਈਆਂ"
+
+#: src/widgets/sp-dock-layout.c:836
+msgid "Saved layouts"
+msgstr "ਸੰਭਾਲੇ ਖਾਕੇ"
+
+#: src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr "ਖਾਕਾ ਪ੍ਰਬੰਧਨ"
+
+#: src/widgets/sp-dock-master.c:142 src/widgets/sp-dock.c:184
+msgid "Default title"
+msgstr "ਮੂਲ ਨਾਂ"
+
+#: src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:150
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:741
+#, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:906
+#, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr ""
+
+#: src/widgets/sp-dock-notebook.c:136
+msgid "The index of the current page"
+msgstr "ਮੌਜੂਦਾ ਸਫੇ ਦਾ ਤਤਕਰਾ"
+
+#: src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr "ਡੋਕ ਇਕਾਈ ਦੀ ਪਛਾਣ ਕਰਨ ਲਈ ਵੱਖਰਾ ਨਾਂ"
+
+#: src/widgets/sp-dock-object.c:131
+msgid "Long name"
+msgstr "ਲੰਮਾ ਨਾਂ"
+
+#: src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:138
+msgid "Dock master"
+msgstr "ਡੋਕ ਮਾਸਟਰ"
+
+#: src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:408
+#, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:537
+#, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:586
+#, c-format
+msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr ""
+
+#: src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "ਸਥਿਤੀ"
+
+#: src/widgets/sp-dock-paned.c:135
+msgid "Position of the divider in pixels"
+msgstr "ਡਿਵਾਈਡਰ ਦੀ ਸਥਿਤੀ ਪਿਕਸਲ ਵਿੱਚ"
+
+#: src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr "ਚਿਪਕਾਉ"
+
+#: src/widgets/sp-dock-placeholder.c:126
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "ਮੇਜਬਾਨ"
+
+#: src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:141
+msgid "Next placement"
+msgstr "ਅੱਗੇ ਸਥਿਤੀ"
+
+#: src/widgets/sp-dock-placeholder.c:142
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr ""
+
+#: src/widgets/sp-dock-tablabel.c:131
+msgid "Controlling dock item"
+msgstr ""
+
+#: src/widgets/sp-dock-tablabel.c:132
+msgid "Dockitem which 'owns' this tablabel"
+msgstr ""
+
+#: src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "ਤਰਦਾ"
+
+#: src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr ""
+
+#: src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr ""
+
+#: src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "ਚੌੜਾਈ"
+
+#: src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr ""
+
+#: src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "ਉਚਾਈ"
+
+#: src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr ""
+
+#: src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr "ਤਰਦਾ X"
+
+#: src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr "ਤਰਦੀ ਪੱਟੀ ਦਾ X ਧੁਰਾ"
+
+#: src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr "ਤਰਦਾ Y "
+
+#: src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr "ਤਰਦੀ ਪੱਟੀ ਦਾ Y ਧੁਰਾ"
+
+#: src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr "ਡੋਕ #%d"
+
+#: src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr ""
+
+#: src/widgets/sp-xmlview-attr-list.c:54
+msgid "Attribute"
+msgstr "ਗੁਣ"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Value"
+msgstr "ਮੁੱਲ"
+
