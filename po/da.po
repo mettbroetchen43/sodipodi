@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2000-08-26 14:05+0200\n"
-"PO-Revision-Date: 2000-10-22 03:30+0200\n"
+"PO-Revision-Date: 2000-11-03 03:30+0100\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -74,51 +74,51 @@ msgstr "Skrivebordets indstilinger"
 
 #: glade/desktop.c:8
 msgid "Grid units:"
-msgstr ""
+msgstr "Enheder for gitter:"
 
 #: glade/desktop.c:9
 msgid "Choose base unit system for grid"
-msgstr ""
+msgstr "Vælg basismåleenhed for gitter"
 
 #: glade/desktop.c:10 glade/document.c:17
 msgid "Millimeters\n"
-msgstr ""
+msgstr "Millimeter\n"
 
 #: glade/desktop.c:12
 msgid "Show grid"
-msgstr ""
+msgstr "Vis gitter"
 
 #: glade/desktop.c:13
 msgid "Snap to grid"
-msgstr "Fastsæt til hjælpelinier"
+msgstr "Fastsæt til gitter"
 
 #: glade/desktop.c:14
 msgid "Grid color:"
-msgstr "gitterfarve:"
+msgstr "Gitterfarve:"
 
 #: glade/desktop.c:15
 msgid "Choose color for grid"
-msgstr ""
+msgstr "Vælg farve for gitter"
 
 #: glade/desktop.c:16
 msgid "Grid color"
-msgstr "gitterfarve"
+msgstr "Hjælpelinjefarve"
 
 #: glade/desktop.c:17 glade/desktop.c:36
 msgid "Snap distance:"
-msgstr ""
+msgstr "Fastgørelsesafstand"
 
 #: glade/desktop.c:18
 msgid "Set maximum distance for grid snapping"
-msgstr ""
+msgstr "Sæt største afstand for påsættelse til gitter"
 
 #: glade/desktop.c:19 glade/desktop.c:32
 msgid "Snap units:"
-msgstr "Fastsæt til hjælpelinier"
+msgstr "Fastsætnings enheder:"
 
 #: glade/desktop.c:20
 msgid "Choose unit system for grid snapping"
-msgstr ""
+msgstr "Vælg måleenhed for fastgørelse til gitter"
 
 #: glade/desktop.c:21 glade/desktop.c:34
 msgid "Pixels\n"
@@ -154,15 +154,15 @@ msgstr "Sæt udgangspunkt for koordinatsystem for siden"
 
 #: glade/desktop.c:31
 msgid "Grid"
-msgstr ""
+msgstr "Gitter"
 
 #: glade/desktop.c:33
 msgid "Choose unit system for guideline snapping"
-msgstr ""
+msgstr "Vælg måleenhed for fastgørelse til hjælpelinjer"
 
 #: glade/desktop.c:37
 msgid "Set maximum distance for guideline snapping"
-msgstr ""
+msgstr "Vælg største afstand for fastgørelse til hjælpelinjer"
 
 #: glade/desktop.c:38
 msgid "Guides color:"
@@ -261,7 +261,7 @@ msgstr "Side"
 #.
 #: glade/object_props.c:7
 msgid "object properties"
-msgstr ""
+msgstr "egenskaber for objekt"
 
 #: glade/object_props.c:8
 msgid " General "
@@ -418,7 +418,7 @@ msgstr "Højde "
 
 #: glade/object_props.c:61
 msgid "Layout"
-msgstr ""
+msgstr "Udformning"
 
 #: glade/object_props.c:62
 msgid "Reread"
@@ -1111,7 +1111,7 @@ msgstr "Udskriv tegning"
 
 #: glade/toolbox.c:68
 msgid "Preview print drawing"
-msgstr ""
+msgstr "Smugkig udskriftstegning"
 
 #: glade/toolbox.c:69
 msgid "Save drawing "
@@ -1127,7 +1127,7 @@ msgstr "Afslut eller ej?"
 
 #: glade/toolbox.c:72
 msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr ""
+msgstr "Ja, hurtigt! Jeg ønsker at forlade Sodipodi og komme tilbage senere."
 
 #: glade/toolbox.c:73
 msgid "Yep !"
@@ -1135,7 +1135,7 @@ msgstr "Jahh!"
 
 #: glade/toolbox.c:74
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr "Nej jeg vil hellere lave nogle flere fede tegninger med sodipodi."
+msgstr "Nej jeg vil hellere lave nogle flere fede tegninger med Sodipodi."
 
 #: glade/toolbox.c:75
 msgid "Nope !"
@@ -1143,61 +1143,51 @@ msgstr "Niks!"
 
 #: glade/toolbox.c:76
 msgid "Really wanna quit sodipodi ?"
-msgstr "Vil du virkelig afslutte sodipodi?"
+msgstr "Vil du virkelig afslutte Sodipodi?"
 
 #: glade/toolbox.c:77
 msgid "Object"
 msgstr "Ting"
 
 #: glade/toolbox.c:78
-#, fuzzy
 msgid "Align dialog"
-msgstr "Luk dialog"
+msgstr "Justér dialog"
 
 #: glade/toolbox.c:79
-#, fuzzy
 msgid "Transformation dialog"
-msgstr "Omform valg"
+msgstr "Transformationsdialog"
 
 #: glade/toolbox.c:80
-#, fuzzy
 msgid "Edit font style of selected objects"
-msgstr "Duplikér valgte objekt(er)"
+msgstr "Redigér skriftsnitstil for valgte ting"
 
 #: glade/toolbox.c:81
-#, fuzzy
 msgid "Edit layout of selected objects"
-msgstr "Slet valgte objekt(er)"
+msgstr "Redigér udformning for valgte ting"
 
 #: glade/toolbox.c:82
-#, fuzzy
 msgid "Edit fill style of selected objects"
-msgstr "Slet valgte objekt(er)"
+msgstr "Redigér udfyldningsstil for valgte ting"
 
 #: glade/toolbox.c:83
-#, fuzzy
 msgid "Edit stroke style of selected objects"
-msgstr "Slet valgte objekt(er)"
+msgstr "Redigér stregningsstil for valgte ting"
 
 #: glade/toolbox.c:84
-#, fuzzy
 msgid "Flip selected objects"
-msgstr "Slet valgte objekt(er)"
+msgstr "Vend valgte ting"
 
 #: glade/toolbox.c:85
-#, fuzzy
 msgid "Rotate selected objects 90° clockwise"
-msgstr "Hæv valgte objekt(er) op til toppen"
+msgstr "Drej valgte ting 90° med uret"
 
 #: glade/toolbox.c:86
-#, fuzzy
 msgid "Remove transformation"
-msgstr "Start transformering"
+msgstr "Fjern transformation"
 
 #: glade/toolbox.c:87
-#, fuzzy
 msgid "Convert selected objects to curves"
-msgstr "Konvertér valgte segmenter til kurver"
+msgstr "Omform valgte ting til kurver"
 
 #: glade/toolbox.c:88
 msgid "Edit"
@@ -1208,9 +1198,8 @@ msgid "Undo "
 msgstr "Fortryd "
 
 #: glade/toolbox.c:91
-#, fuzzy
 msgid "Delete selection"
-msgstr "Slet valgte knuder"
+msgstr "Slet det valgte"
 
 #: glade/toolbox.c:92
 msgid "Paste from clipboard"
@@ -1226,7 +1215,7 @@ msgstr "Klip det markerede"
 
 #: glade/toolbox.c:95
 msgid "Duplicate selection"
-msgstr "Duplikér det markerede" 
+msgstr "Duplikér det markerede"
 
 #.
 #. * Translatable strings file generated by Glade.
