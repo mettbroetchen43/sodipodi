@@ -40,6 +40,7 @@ static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
+static SPRepr *sp_group_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
@@ -92,6 +93,7 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->order_changed = sp_group_order_changed;
 	sp_object_class->modified = sp_group_modified;
 	sp_object_class->sequence = sp_group_sequence;
+	sp_object_class->write = sp_group_write;
 
 	item_class->bbox = sp_group_bbox;
 	item_class->print = sp_group_print;
@@ -336,6 +338,40 @@ sp_group_sequence (SPObject *object, gint seq)
 	}
 
 	return seq;
+}
+
+static SPRepr *
+sp_group_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPGroup *group;
+	SPObject *child;
+	SPRepr *crepr;
+
+	group = SP_GROUP (object);
+
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		GSList *l;
+		if (!repr) repr = sp_repr_new ("g");
+		l = NULL;
+		for (child = group->children; child != NULL; child = child->next) {
+			crepr = sp_object_invoke_write (child, NULL, flags);
+			if (crepr) l = g_slist_prepend (l, crepr);
+		}
+		while (l) {
+			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_slist_remove (l, l->data);
+		}
+	} else {
+		for (child = group->children; child != NULL; child = child->next) {
+			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
+		}
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		(* ((SPObjectClass *) (parent_class))->write) (object, repr, flags);
+
+	return repr;
 }
 
 static void

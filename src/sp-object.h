@@ -1,13 +1,16 @@
-#ifndef SP_OBJECT_H
-#define SP_OBJECT_H
+#ifndef __SP_OBJECT_H__
+#define __SP_OBJECT_H__
 
 /*
- * SPObject
+ * Abstract base class for all nodes
  *
- * This is most abstract of all typed objects
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 1999-2000
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define SP_TYPE_OBJECT (sp_object_get_type ())
@@ -43,6 +46,10 @@
 #define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
 #define SP_OBJECT_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
 #define SP_OBJECT_CHILD_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
+
+/* Write flags */
+#define SP_OBJECT_WRITE_BUILD (1 << 0)
+#define SP_OBJECT_WRITE_SODIPODI (1 << 1)
 
 /* Convenience stuff */
 #define SP_OBJECT_ID(o) (SP_OBJECT (o)->id)
@@ -102,8 +109,7 @@ struct _SPObject {
 struct _SPObjectClass {
 	GtkObjectClass parent_class;
 
-	void (* build) (SPObject * object, SPDocument * document, SPRepr * repr);
-	void (* write_repr) (SPObject * object, SPRepr * repr);
+	void (* build) (SPObject *object, SPDocument *document, SPRepr *repr);
 
 	/* Virtual handlers of repr signals */
 	void (* child_added) (SPObject * object, SPRepr * child, SPRepr * ref);
@@ -121,6 +127,8 @@ struct _SPObjectClass {
 
 	/* Compute next sequence number */
 	gint (* sequence) (SPObject *object, gint seq);
+
+	SPRepr * (* write) (SPObject *object, SPRepr *repr, guint flags);
 };
 
 GtkType sp_object_get_type (void);
@@ -150,16 +158,9 @@ SPObject *sp_object_detach (SPObject *parent, SPObject *object);
 SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
-void sp_object_invoke_write_repr (SPObject * object, SPRepr * repr);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 /* Styling */
-
-#if 0
-/* fixme: this is potentially dangerous - use load/set style instead (Lauris) */
-/* flags are the same as for modification */
-void sp_object_style_changed (SPObject *object, guint flags);
-#endif
 
 /* Modification */
 void sp_object_request_modified (SPObject *object, guint flags);
@@ -167,6 +168,9 @@ void sp_object_modified (SPObject *object, guint flags);
 
 /* Sequence */
 gint sp_object_sequence (SPObject *object, gint seq);
+
+/* Write object to repr */
+SPRepr *sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags);
 
 /* Public */
 

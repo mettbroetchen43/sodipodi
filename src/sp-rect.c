@@ -34,11 +34,11 @@ static void sp_rect_destroy (GtkObject *object);
 static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_rect_read_attr (SPObject *object, const gchar *attr);
 static void sp_rect_modified (SPObject *object, guint flags);
+static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_rect_description (SPItem * item);
 static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
-static void sp_rect_write_repr (SPObject * object, SPRepr *repr);
 static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
@@ -85,7 +85,7 @@ sp_rect_class_init (SPRectClass *class)
 	gtk_object_class->destroy = sp_rect_destroy;
 
 	sp_object_class->build = sp_rect_build;
-	sp_object_class->write_repr = sp_rect_write_repr;
+	sp_object_class->write = sp_rect_write;
 	sp_object_class->read_attr = sp_rect_read_attr;
 	sp_object_class->modified = sp_rect_modified;
 
@@ -229,6 +229,30 @@ sp_rect_modified (SPObject *object, guint flags)
 	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
 		sp_rect_set_shape (SP_RECT (object));
 	}
+}
+
+static SPRepr *
+sp_rect_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPRect *rect;
+
+	rect = SP_RECT (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("rect");
+	}
+
+	sp_repr_set_double_attribute (repr, "width", rect->width.computed);
+	sp_repr_set_double_attribute (repr, "height", rect->height.computed);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed);
+	sp_repr_set_double_attribute (repr, "x", rect->x.computed);
+	sp_repr_set_double_attribute (repr, "y", rect->y.computed);
+
+	if (SP_OBJECT_CLASS (parent_class)->write)
+		SP_OBJECT_CLASS (parent_class)->write (object, repr, flags);
+
+	return repr;
 }
 
 static gchar *
@@ -501,21 +525,6 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
 		g_free (str);
 	}
-}
-
-static void
-sp_rect_write_repr (SPObject * object, SPRepr *repr)
-{
-	SPRect *rect;
-
-	rect = SP_RECT (object);
-
-	sp_repr_set_double_attribute (repr, "width", rect->width.computed);
-	sp_repr_set_double_attribute (repr, "height", rect->height.computed);
-	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed);
-	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed);
-	sp_repr_set_double_attribute (repr, "x", rect->x.computed);
-	sp_repr_set_double_attribute (repr, "y", rect->y.computed);
 }
 
 /* Generate context menu item section */

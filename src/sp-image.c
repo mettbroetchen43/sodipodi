@@ -38,6 +38,7 @@ static void sp_image_destroy (GtkObject * object);
 
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_image_read_attr (SPObject * object, const gchar * key);
+static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
@@ -96,6 +97,7 @@ sp_image_class_init (SPImageClass * klass)
 
 	sp_object_class->build = sp_image_build;
 	sp_object_class->read_attr = sp_image_read_attr;
+	sp_object_class->write = sp_image_write;
 
 	item_class->bbox = sp_image_bbox;
 	item_class->print = sp_image_print;
@@ -258,6 +260,27 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 	} else if (((SPObjectClass *) (parent_class))->read_attr) {
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 	}
+}
+
+static SPRepr *
+sp_image_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPImage *image;
+
+	image = SP_IMAGE (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("image");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_merge (repr, SP_OBJECT_REPR (image), "id");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static void

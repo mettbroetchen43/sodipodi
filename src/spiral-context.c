@@ -279,14 +279,12 @@ sp_spiral_finish (SPSpiralContext * sc)
 	if (sc->item != NULL) {
 		SPDesktop *desktop;
 		SPSpiral  *spiral;
-		SPRepr    *repr;
 
 		desktop = SP_EVENT_CONTEXT (sc)->desktop;
 		spiral = SP_SPIRAL (sc->item);
-		repr = SP_OBJECT (sc->item)->repr;
 
 		sp_shape_set_shape(SP_SHAPE(spiral));
-		sp_object_invoke_write_repr (SP_OBJECT(spiral), repr);
+		sp_object_invoke_write (SP_OBJECT (spiral), NULL, SP_OBJECT_WRITE_SODIPODI);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

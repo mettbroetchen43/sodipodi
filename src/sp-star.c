@@ -34,7 +34,7 @@ static void sp_star_init (SPStar *star);
 static void sp_star_destroy (GtkObject *object);
 
 static void sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_star_write_repr (SPObject * object, SPRepr * repr);
+static SPRepr *sp_star_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_star_read_attr (SPObject * object, const gchar * attr);
 
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
@@ -87,7 +87,7 @@ sp_star_class_init (SPStarClass *class)
 	gtk_object_class->destroy = sp_star_destroy;
 
 	sp_object_class->build = sp_star_build;
-	sp_object_class->write_repr = sp_star_write_repr;
+	sp_object_class->write = sp_star_write;
 	sp_object_class->read_attr = sp_star_read_attr;
 
 	item_class->knot_holder = sp_star_knot_holder;
@@ -138,27 +138,32 @@ sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_star_read_attr (object, "sodipodi:arg2");
 }
 
-static void
-sp_star_write_repr (SPObject * object, SPRepr * repr)
+static SPRepr *
+sp_star_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPStar *star;
 
 	star = SP_STAR (object);
 
-	sp_repr_set_int_attribute (repr, "sodipodi:sides", star->sides);
-        if (fabs (star->cx) > SP_EPSILON) {
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("polygon");
+	}
+
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_attr (repr, "sodipodi:type", "star");
+		sp_repr_set_int_attribute (repr, "sodipodi:sides", star->sides);
 		sp_repr_set_double_attribute (repr, "sodipodi:cx", star->cx);
-	}
-        if (fabs (star->cy) > SP_EPSILON) {
 		sp_repr_set_double_attribute (repr, "sodipodi:cy", star->cy);
+		sp_repr_set_double_attribute (repr, "sodipodi:r1", star->r1);
+		sp_repr_set_double_attribute (repr, "sodipodi:r2", star->r2);
+		sp_repr_set_double_attribute (repr, "sodipodi:arg1", star->arg1);
+		sp_repr_set_double_attribute (repr, "sodipodi:arg2", star->arg2);
 	}
-	sp_repr_set_double_attribute (repr, "sodipodi:r1", star->r1);
-	sp_repr_set_double_attribute (repr, "sodipodi:r2", star->r2);
-	sp_repr_set_double_attribute (repr, "sodipodi:arg1", star->arg1);
-	sp_repr_set_double_attribute (repr, "sodipodi:arg2", star->arg2);
-	
-	if (((SPObjectClass *) (parent_class))->write_repr)
-		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags | SP_POLYGON_WRITE_POINTS);
+
+	return repr;
 }
 
 static void

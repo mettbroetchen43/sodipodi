@@ -56,7 +56,6 @@ static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
 static void sp_genericellipse_destroy (GtkObject *object);
 static void sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr);
-static void sp_genericellipse_write_repr (SPObject *object, SPRepr *repr);
 static void sp_genericellipse_read_attr (SPObject * object, const gchar * attr);
 
 static GSList *sp_genericellipse_snappoints (SPItem *item, GSList *points);
@@ -103,7 +102,6 @@ sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 	gtk_object_class->destroy = sp_genericellipse_destroy;
 
 	sp_object_class->build = sp_genericellipse_build;
-	sp_object_class->write_repr = sp_genericellipse_write_repr;
 	sp_object_class->read_attr = sp_genericellipse_read_attr;
 
 	item_class->snappoints = sp_genericellipse_snappoints;
@@ -138,17 +136,6 @@ sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
 	if (SP_OBJECT_CLASS (ge_parent_class)->build)
 		(* SP_OBJECT_CLASS (ge_parent_class)->build) (object, document, repr);
-}
-
-static void
-sp_genericellipse_write_repr (SPObject *object, SPRepr *repr)
-{
-	SPGenericEllipse *ellipse;
-
-	ellipse = SP_GENERICELLIPSE (object);
-
-	if (SP_OBJECT_CLASS (ge_parent_class)->write_repr)
-		(* SP_OBJECT_CLASS (ge_parent_class)->write_repr) (object, repr);
 }
 
 static void
@@ -389,7 +376,7 @@ static void sp_ellipse_init (SPEllipse *ellipse);
 static void sp_ellipse_destroy (GtkObject *object);
 
 static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_ellipse_write_repr (SPObject *object, SPRepr *repr);
+static SPRepr *sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_ellipse_read_attr (SPObject * object, const gchar * attr);
 static gchar * sp_ellipse_description (SPItem * item);
 
@@ -429,7 +416,7 @@ sp_ellipse_class_init (SPEllipseClass *class)
 	gtk_object_class->destroy = sp_ellipse_destroy;
 
 	sp_object_class->build = sp_ellipse_build;
-	sp_object_class->write_repr = sp_ellipse_write_repr;
+	sp_object_class->write = sp_ellipse_write;
 	sp_object_class->read_attr = sp_ellipse_read_attr;
 
 	item_class->description = sp_ellipse_description;
@@ -464,20 +451,26 @@ sp_ellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	sp_ellipse_read_attr (object, "ry");
 }
 
-static void
-sp_ellipse_write_repr (SPObject *object, SPRepr *repr)
+static SPRepr *
+sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPGenericEllipse *ellipse;
 
 	ellipse = SP_GENERICELLIPSE (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("ellipse");
+	}
 
 	sp_repr_set_double_attribute (repr, "cx", ellipse->cx.computed);
 	sp_repr_set_double_attribute (repr, "cy", ellipse->cy.computed);
 	sp_repr_set_double_attribute (repr, "rx", ellipse->rx.computed);
 	sp_repr_set_double_attribute (repr, "ry", ellipse->ry.computed);
 	
-	if (SP_OBJECT_CLASS (ellipse_parent_class)->write_repr)
-		(* SP_OBJECT_CLASS (ellipse_parent_class)->write_repr) (object, repr);
+	if (SP_OBJECT_CLASS (ellipse_parent_class)->write)
+		(* SP_OBJECT_CLASS (ellipse_parent_class)->write) (object, repr, flags);
+
+	return repr;
 }
 
 static void
@@ -563,7 +556,7 @@ static void sp_circle_init (SPCircle *circle);
 static void sp_circle_destroy (GtkObject *object);
 
 static void sp_circle_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_circle_write_repr (SPObject *object, SPRepr *repr);
+static SPRepr *sp_circle_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_circle_read_attr (SPObject * object, const gchar * attr);
 static gchar * sp_circle_description (SPItem * item);
 
@@ -603,7 +596,7 @@ sp_circle_class_init (SPCircleClass *class)
 	gtk_object_class->destroy = sp_circle_destroy;
 
 	sp_object_class->build = sp_circle_build;
-	sp_object_class->write_repr = sp_circle_write_repr;
+	sp_object_class->write = sp_circle_write;
 	sp_object_class->read_attr = sp_circle_read_attr;
 
 	item_class->description = sp_circle_description;
@@ -637,19 +630,25 @@ sp_circle_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	sp_circle_read_attr (object, "r");
 }
 
-static void
-sp_circle_write_repr (SPObject *object, SPRepr *repr)
+static SPRepr *
+sp_circle_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPGenericEllipse *ellipse;
 
 	ellipse = SP_GENERICELLIPSE (object);
 
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("circle");
+	}
+
 	sp_repr_set_double_attribute (repr, "cx", ellipse->cx.computed);
 	sp_repr_set_double_attribute (repr, "cy", ellipse->cy.computed);
 	sp_repr_set_double_attribute (repr, "r", ellipse->rx.computed);
 	
-	if (SP_OBJECT_CLASS (circle_parent_class)->write_repr)
-		(* SP_OBJECT_CLASS (circle_parent_class)->write_repr) (object, repr);
+	if (SP_OBJECT_CLASS (circle_parent_class)->write)
+		SP_OBJECT_CLASS (circle_parent_class)->write (object, repr, flags);
+
+	return repr;
 }
 
 static void
@@ -708,7 +707,7 @@ static void sp_arc_init (SPArc *arc);
 static void sp_arc_destroy (GtkObject *object);
 
 static void sp_arc_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_arc_write_repr (SPObject *object, SPRepr *repr);
+static SPRepr *sp_arc_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_arc_read_attr (SPObject * object, const gchar * attr);
 static gchar * sp_arc_description (SPItem * item);
 static SPKnotHolder *sp_arc_knot_holder (SPItem * item, SPDesktop *desktop);
@@ -749,7 +748,7 @@ sp_arc_class_init (SPArcClass *class)
 	gtk_object_class->destroy = sp_arc_destroy;
 
 	sp_object_class->build = sp_arc_build;
-	sp_object_class->write_repr = sp_arc_write_repr;
+	sp_object_class->write = sp_arc_write;
 	sp_object_class->read_attr = sp_arc_read_attr;
 
 	item_class->description = sp_arc_description;
@@ -819,7 +818,7 @@ sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	if (version < 25) {
 		/* fixme: I am 99.9% sure we can do this here safely, but check nevertheless (Lauris) */
-		sp_arc_write_repr (object, repr);
+		sp_arc_write (object, repr, SP_OBJECT_WRITE_SODIPODI);
 		sp_repr_set_attr (repr, "cx", NULL);
 		sp_repr_set_attr (repr, "cy", NULL);
 		sp_repr_set_attr (repr, "rx", NULL);
@@ -867,8 +866,8 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 	return sp_repr_set_attr (repr, "d", c);
 }
 
-static void
-sp_arc_write_repr (SPObject *object, SPRepr *repr)
+static SPRepr *
+sp_arc_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPGenericEllipse *ellipse;
 	SPArc *arc;
@@ -876,19 +875,27 @@ sp_arc_write_repr (SPObject *object, SPRepr *repr)
 	ellipse = SP_GENERICELLIPSE (object);
 	arc = SP_ARC (object);
 
-	sp_repr_set_double_attribute (repr, "sodipodi:cx", ellipse->cx.computed);
-	sp_repr_set_double_attribute (repr, "sodipodi:cy", ellipse->cy.computed);
-	sp_repr_set_double_attribute (repr, "sodipodi:rx", ellipse->rx.computed);
-	sp_repr_set_double_attribute (repr, "sodipodi:ry", ellipse->ry.computed);
-	sp_repr_set_double_attribute (repr, "sodipodi:start", ellipse->start);
-	sp_repr_set_double_attribute (repr, "sodipodi:end", ellipse->end);
-	if (! ellipse->closed)
-		sp_repr_set_attr (repr, "sodipodi:open", "true");
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("path");
+	}
+
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_attr (repr, "sodipodi:type", "arc");
+		sp_repr_set_double_attribute (repr, "sodipodi:cx", ellipse->cx.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:cy", ellipse->cy.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:rx", ellipse->rx.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:ry", ellipse->ry.computed);
+		sp_repr_set_double_attribute (repr, "sodipodi:start", ellipse->start);
+		sp_repr_set_double_attribute (repr, "sodipodi:end", ellipse->end);
+		sp_repr_set_attr (repr, "sodipodi:open", (!ellipse->closed) ? "true" : NULL);
+	}
 
 	sp_arc_set_elliptical_path_attribute (arc, repr);
 	
-/*  	if (SP_OBJECT_CLASS (arc_parent_class)->write_repr) */
-/*  		(* SP_OBJECT_CLASS (arc_parent_class)->write_repr) (object, repr); */
+	if (SP_OBJECT_CLASS (arc_parent_class)->write)
+		SP_OBJECT_CLASS (arc_parent_class)->write (object, repr, flags);
+
+	return repr;
 }
 
 static void

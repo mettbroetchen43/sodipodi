@@ -1,22 +1,24 @@
-#ifndef SP_DEFS_H
-#define SP_DEFS_H
+#ifndef __SP_DEFS_H__
+#define __SP_DEFS_H__
 
 /*
- * SPDefs
+ * SVG <defs> implementation
  *
- * SVG <defs> node implementation
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski 2000
- * Released under GNU GPL
+ * Copyright (C) 2000-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "sp-object.h"
-
-#define SP_TYPE_DEFS            (sp_defs_get_type ())
-#define SP_DEFS(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DEFS, SPDefs))
-#define SP_DEFS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DEFS, SPDefsClass))
-#define SP_IS_DEFS(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DEFS))
+#define SP_TYPE_DEFS (sp_defs_get_type ())
+#define SP_DEFS(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_DEFS, SPDefs))
+#define SP_DEFS_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DEFS, SPDefsClass))
+#define SP_IS_DEFS(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_DEFS))
 #define SP_IS_DEFS_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DEFS))
+
+#include "sp-object.h"
 
 struct _SPDefs {
 	SPObject object;
@@ -26,8 +28,6 @@ struct _SPDefs {
 struct _SPDefsClass {
 	SPObjectClass parent_class;
 };
-
-/* Standard Gtk function */
 
 GtkType sp_defs_get_type (void);
 

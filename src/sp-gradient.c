@@ -36,6 +36,7 @@ static void sp_stop_init (SPStop * stop);
 
 static void sp_stop_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_stop_read_attr (SPObject * object, const gchar * key);
+static SPRepr *sp_stop_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectClass * stop_parent_class;
 
@@ -68,6 +69,7 @@ sp_stop_class_init (SPStopClass * klass)
 
 	sp_object_class->build = sp_stop_build;
 	sp_object_class->read_attr = sp_stop_read_attr;
+	sp_object_class->write = sp_stop_write;
 }
 
 static void
@@ -132,6 +134,29 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		if (SP_OBJECT_CLASS (stop_parent_class)->read_attr)
 			(* SP_OBJECT_CLASS (stop_parent_class)->read_attr) (object, key);
 	}
+}
+
+static SPRepr *
+sp_stop_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPStop *stop;
+
+	stop = SP_STOP (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) & !repr) {
+		repr = sp_repr_new ("stop");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_set_attr (repr, "stop-color", sp_repr_attr (object->repr, "stop-color"));
+		sp_repr_set_attr (repr, "stop-opacity", sp_repr_attr (object->repr, "stop-opacity"));
+		sp_repr_set_attr (repr, "offset", sp_repr_attr (object->repr, "offset"));
+	}
+
+	if (SP_OBJECT_CLASS (stop_parent_class)->write)
+		(* SP_OBJECT_CLASS (stop_parent_class)->write) (object, repr, flags);
+
+	return repr;
 }
 
 /*

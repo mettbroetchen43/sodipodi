@@ -1,16 +1,15 @@
 #define __SP_OBJECTGROUP_C__
 
 /*
- * Abstract base class for SPObjects with multiple children, which are not
- * items themselves (i.e. not directly renderable)
+ * Abstract base class for all nodes
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000-2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "xml/repr-private.h"

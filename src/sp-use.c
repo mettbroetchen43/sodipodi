@@ -18,6 +18,7 @@ static void sp_use_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_use_read_attr (SPObject * object, const gchar * attr);
+static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
@@ -73,6 +74,7 @@ sp_use_class_init (SPUseClass *class)
 
 	sp_object_class->build = sp_use_build;
 	sp_object_class->read_attr = sp_use_read_attr;
+	sp_object_class->write = sp_use_write;
 
 	item_class->bbox = sp_use_bbox;
 	item_class->description = sp_use_description;
@@ -246,6 +248,27 @@ sp_use_read_attr (SPObject * object, const gchar * attr)
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 
+}
+
+static SPRepr *
+sp_use_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPUse *use;
+
+	use = SP_USE (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("use");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static void

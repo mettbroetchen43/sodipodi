@@ -48,6 +48,7 @@ static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_item_read_attr (SPObject *object, const gchar *key);
 static void sp_item_modified (SPObject *object, guint flags);
 static void sp_item_style_modified (SPObject *object, guint flags);
+static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
 static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
@@ -101,6 +102,7 @@ sp_item_class_init (SPItemClass * klass)
 	sp_object_class->read_attr = sp_item_read_attr;
 	sp_object_class->modified = sp_item_modified;
 	sp_object_class->style_modified = sp_item_style_modified;
+	sp_object_class->write = sp_item_write;
 
 	klass->description = sp_item_private_description;
 	klass->show = sp_item_private_show;
@@ -294,6 +296,36 @@ sp_item_style_modified (SPObject *object, guint flags)
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
 	}
+}
+
+static SPRepr *
+sp_item_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPItem *item;
+	guchar c[256];
+	guchar *s;
+	gint len;
+
+	item = SP_ITEM (object);
+
+	len = sp_svg_write_affine (c, 256, item->affine);
+	sp_repr_set_attr (repr, "transform", (len > 0) ? c : NULL);
+	if (SP_OBJECT_PARENT (object)) {
+		s = sp_style_write_difference (SP_OBJECT_STYLE (object), SP_OBJECT_STYLE (SP_OBJECT_PARENT (object)));
+		sp_repr_set_attr (repr, "style", (s && *s) ? s : NULL);
+		g_free (s);
+	} else {
+		sp_repr_set_attr (repr, "style", NULL);
+	}
+
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_attr (repr, "sodipodi:insensitive", item->sensitive ? NULL : "true");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 void

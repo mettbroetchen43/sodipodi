@@ -1,15 +1,15 @@
 #define __SP_CLIPPATH_C__
 
 /*
- * SVG clipPath element
+ * SVG <g> implementation
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000-2001 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 2001-2002 authors
+ * Copyright (C) 2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "display/nr-arena.h"
@@ -22,6 +22,7 @@ static void sp_clippath_init (SPClipPath *clippath);
 static void sp_clippath_destroy (GtkObject *object);
 
 static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static SPRepr *sp_clippath_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectGroupClass *parent_class;
 
@@ -57,6 +58,7 @@ sp_clippath_class_init (SPClipPathClass *klass)
 	gtk_object_class->destroy = sp_clippath_destroy;
 
 	sp_object_class->build = sp_clippath_build;
+	sp_object_class->write = sp_clippath_write;
 }
 
 static void
@@ -83,6 +85,23 @@ static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *r
 
 	if (((SPObjectClass *) (parent_class))->build)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
+}
+
+static SPRepr *
+sp_clippath_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPClipPath *cp;
+
+	cp = SP_CLIPPATH (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("clipPath");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 NRArenaItem *

@@ -1,3 +1,56 @@
+2002-09-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/file.c (sp_file_save_as): Added "file type" optionmenu
+	(sp_file_save_type_activate): Helper
+	(file_save_ok): Save plain SVG if needed
+
+	* src/sp-namedview.c (sp_namedview_write): Implement
+
+	* src/sp-text.c (sp_text_write): Implement
+
+	* src/sp-use.c (sp_use_write): implement
+
+	* src/sp-root.c (sp_root_write): Implement
+
+	* src/sp-polyline.c (sp_polyline_write): Implement
+
+	* src/sp-line.c (sp_line_write): Implement
+
+	* src/sp-image.c (sp_image_write): Implement
+
+	* src/sp-gradient.c (sp_stop_write): Implement
+
+	* src/sp-defs.c (sp_defs_write): Implement
+
+	* src/sp-clippath.c (sp_clippath_write): Implement
+
+	* src/sp-anchor.c (sp_anchor_write): Implement
+
+	* src/sp-polygon.c (sp_polygon_write): new ::write syntax
+
+	* src/sp-spiral.c (sp_spiral_write): New ::write syntax
+
+	* src/sp-star.c (sp_star_write): New ::write syntax
+
+	* src/sp-ellipse.c (sp_ellipse_write): New ::write syntax
+	(sp_circle_write): Ditto
+	(sp_arc_write): Ditto
+
+	* src/sp-rect.c (sp_rect_write): New ::write syntax
+
+	* src/sp-shape.c (sp_shape_write): New ::write syntax
+
+	* src/star-context.c (sp_star_finish): New ::write syntax
+
+	* src/spiral-context.c (sp_spiral_finish): New ::write syntax
+
+	* src/knotholder.c (knot_moved_handler): new ::write syntax
+
+	* src/sp-object.c (sp_object_invoke_write): Renamed and enhanced
+	::write_repr method, can now construct trees and write plain SVG
+
+	* src/sp-item-group.c (sp_group_write): Implement
+
 2002-09-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/toolbox.c (sp_maintoolbox_menu_button_press): Construct main

@@ -1,4 +1,15 @@
-#define SP_LINE_C
+#define __SP_LINE_C__
+
+/*
+ * SVG <line> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
 #include <string.h>
@@ -6,15 +17,20 @@
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
+#if 0
 enum {ARG_0, ARG_X1, ARG_Y1, ARG_X2, ARG_Y2};
+#endif
 
 static void sp_line_class_init (SPLineClass *class);
 static void sp_line_init (SPLine *line);
 static void sp_line_destroy (GtkObject *object);
+#if 0
 static void sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
+#endif
 
 static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_line_read_attr (SPObject * object, const gchar * attr);
+static SPRepr *sp_line_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_line_description (SPItem * item);
 
@@ -55,16 +71,21 @@ sp_line_class_init (SPLineClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
+#if 0
 	gtk_object_add_arg_type ("SPLine::x1", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X1);
 	gtk_object_add_arg_type ("SPLine::y1", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y1);
 	gtk_object_add_arg_type ("SPLine::x2", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X2);
 	gtk_object_add_arg_type ("SPLine::y2", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y2);
+#endif
 
 	gtk_object_class->destroy = sp_line_destroy;
+#if 0
 	gtk_object_class->set_arg = sp_line_set_arg;
+#endif
 
 	sp_object_class->build = sp_line_build;
 	sp_object_class->read_attr = sp_line_read_attr;
+	sp_object_class->write = sp_line_write;
 
 	item_class->description = sp_line_description;
 }
@@ -87,6 +108,7 @@ sp_line_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
 sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 {
@@ -113,6 +135,7 @@ sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 		break;
 	}
 }
+#endif
 
 static void
 sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -165,6 +188,27 @@ sp_line_read_attr (SPObject * object, const gchar * attr)
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 
+}
+
+static SPRepr *
+sp_line_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPLine *line;
+
+	line = SP_LINE (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("line");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static gchar *

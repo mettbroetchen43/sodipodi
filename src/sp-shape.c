@@ -44,9 +44,9 @@ static void sp_shape_init (SPShape *shape);
 static void sp_shape_destroy (GtkObject *object);
 
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_shape_write_repr (SPObject * object, SPRepr * repr);
 static void sp_shape_modified (SPObject *object, guint flags);
 static void sp_shape_style_modified (SPObject *object, guint flags);
+static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
@@ -98,7 +98,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	gtk_object_class->destroy = sp_shape_destroy;
 
 	sp_object_class->build = sp_shape_build;
-	sp_object_class->write_repr = sp_shape_write_repr;
+	sp_object_class->write = sp_shape_write;
 	sp_object_class->modified = sp_shape_modified;
 	sp_object_class->style_modified = sp_shape_style_modified;
 
@@ -211,28 +211,35 @@ sp_shape_build (SPObject *object, SPDocument *document, SPRepr *repr)
 #endif
 }
 
-static void
-sp_shape_write_repr (SPObject * object, SPRepr * repr)
+static SPRepr *
+sp_shape_write (SPObject *object, SPRepr *repr, guint flags)
 {
-	SPPath     *path;
-	SPPathComp *pathcomp;
-	ArtBpath   *abp;
-	gchar      *str;
+	SPPath *path;
 
-	path = SP_PATH(object);
-	g_assert (path->comp);
-	pathcomp = path->comp->data;
-	g_assert (pathcomp);
-	abp = sp_curve_first_bpath (pathcomp->curve);
-	str = sp_svg_write_path (abp);
-	g_assert (str != NULL);
-	sp_repr_set_attr (repr, "d", str);
-	g_free (str);
+	path = SP_PATH (object);
 
-#if 0
-	if (((SPObjectClass *) (parent_class))->write_repr)
-		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
-#endif
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("path");
+	}
+
+	if (path->independent || (flags & SP_SHAPE_WRITE_PATH)) {
+		SPPathComp *pathcomp;
+		ArtBpath *abp;
+		gchar *str;
+		g_assert (path->comp);
+		pathcomp = path->comp->data;
+		g_assert (pathcomp);
+		abp = sp_curve_first_bpath (pathcomp->curve);
+		str = sp_svg_write_path (abp);
+		g_assert (str != NULL);
+		sp_repr_set_attr (repr, "d", str);
+		g_free (str);
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static void

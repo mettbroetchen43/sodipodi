@@ -698,6 +698,7 @@ static void sp_text_read_attr (SPObject *object, const gchar * attr);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_modified (SPObject *object, guint flags);
+static SPRepr *sp_text_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
@@ -753,6 +754,7 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->child_added = sp_text_child_added;
 	sp_object_class->remove_child = sp_text_remove_child;
 	sp_object_class->modified = sp_text_modified;
+	sp_object_class->write = sp_text_write;
 
 	item_class->bbox = sp_text_bbox;
 	item_class->show = sp_text_show;
@@ -1041,6 +1043,27 @@ sp_text_modified (SPObject *object, guint flags)
 		sp_text_set_shape (text);
 		text->relayout = FALSE;
 	}
+}
+
+static SPRepr *
+sp_text_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPText *text;
+
+	text = SP_TEXT (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("text");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+	}
+
+	if (((SPObjectClass *) (text_parent_class))->write)
+		((SPObjectClass *) (text_parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static void

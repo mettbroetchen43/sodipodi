@@ -1,12 +1,15 @@
-#define SP_OBJECT_C
+#define __SP_OBJECT_C__
 
 /*
- * SPObject
+ * Abstract base class for all nodes
  *
- * This is most abstract of all typed objects
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 1999-2000
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <stdlib.h>
@@ -24,6 +27,7 @@ static void sp_object_destroy (GtkObject * object);
 
 static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_object_read_attr (SPObject * object, const gchar * key);
+static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint flags);
 
 /* Real handlers of repr signals */
 
@@ -98,8 +102,8 @@ sp_object_class_init (SPObjectClass * klass)
 	gtk_object_class->destroy = sp_object_destroy;
 
 	klass->build = sp_object_build;
-	klass->write_repr = NULL;
 	klass->read_attr = sp_object_read_attr;
+	klass->write = sp_object_private_write;
 }
 
 static void
@@ -369,23 +373,6 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 	sp_document_order_changed (object->document, object, child, old, new);
 }
 
-void
-sp_object_invoke_write_repr (SPObject * object,
-			     SPRepr * repr)
-{
-	g_assert (object != NULL);
-	g_assert (SP_IS_OBJECT (object));
-	g_assert (repr != NULL);
-
-	g_assert (SP_IS_DOCUMENT (object->document));
-	g_assert (object->repr != NULL);
-	/* fixme: rething that cloning issue */
-	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
-
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->write_repr)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->write_repr) (object, repr);
-}
-
 static void
 sp_object_read_attr (SPObject * object, const gchar * key)
 {
@@ -468,6 +455,37 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
 
 	sp_document_content_changed (object->document, object, oldcontent, newcontent);
+}
+
+static SPRepr *
+sp_object_private_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	sp_repr_set_attr (repr, "id", object->id);
+}
+
+SPRepr *
+sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+
+	if (((SPObjectClass *) (((GtkObject *) object)->klass))->write) {
+		if (!(flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+			repr = SP_OBJECT_REPR (object);
+		}
+		return ((SPObjectClass *) (((GtkObject *) object)->klass))->write (object, repr, flags);
+	} else {
+		g_warning ("Class %s does not implement ::write", gtk_type_name (GTK_OBJECT_TYPE (object)));
+		if (!repr) {
+			if (flags & SP_OBJECT_WRITE_BUILD) {
+				repr = sp_repr_duplicate (SP_OBJECT_REPR (object));
+			}
+			/* fixme: else probably error (Lauris) */
+		} else {
+			sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+		}
+		return repr;
+	}
 }
 
 /* Modification */

@@ -64,6 +64,9 @@ typedef struct _SPPathClass SPPathClass;
 typedef struct _SPShape SPShape;
 typedef struct _SPShapeClass SPShapeClass;
 
+typedef struct _SPPolygon SPPolygon;
+typedef struct _SPPolygonClass SPPolygonClass;
+
 typedef struct _SPEllipse SPEllipse;
 typedef struct _SPEllipseClass SPEllipseClass;
 

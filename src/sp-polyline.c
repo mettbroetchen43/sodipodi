@@ -1,18 +1,34 @@
-#define SP_POLYLINE_C
+#define __SP_POLYLINE_C__
+
+/*
+ * SVG <polyline> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
 #include <string.h>
 #include "sp-polyline.h"
 
+#if 0
 enum {ARG_0, ARG_POINTS};
+#endif
 
 static void sp_polyline_class_init (SPPolyLineClass *class);
 static void sp_polyline_init (SPPolyLine *polyline);
 static void sp_polyline_destroy (GtkObject *object);
+#if 0
 static void sp_polyline_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
+#endif
 
 static void sp_polyline_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_polyline_read_attr (SPObject * object, const gchar * attr);
+static SPRepr *sp_polyline_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_polyline_description (SPItem * item);
 
@@ -51,13 +67,18 @@ sp_polyline_class_init (SPPolyLineClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
+#if 0
 	gtk_object_add_arg_type ("SPPolyLine::points", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_POINTS);
+#endif
 
 	gtk_object_class->destroy = sp_polyline_destroy;
+#if 0
 	gtk_object_class->set_arg = sp_polyline_set_arg;
+#endif
 
 	sp_object_class->build = sp_polyline_build;
 	sp_object_class->read_attr = sp_polyline_read_attr;
+	sp_object_class->write = sp_polyline_write;
 
 	item_class->description = sp_polyline_description;
 }
@@ -79,6 +100,7 @@ sp_polyline_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
 sp_polyline_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 {
@@ -92,6 +114,7 @@ sp_polyline_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 		break;
 	}
 }
+#endif
 
 static void
 sp_polyline_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -154,6 +177,27 @@ sp_polyline_read_attr (SPObject * object, const gchar * attr)
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 
+}
+
+static SPRepr *
+sp_polyline_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPPolyLine *polyline;
+
+	polyline = SP_POLYLINE (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("polyline");
+	}
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static gchar *

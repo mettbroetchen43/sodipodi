@@ -2,16 +2,15 @@
 #define __SP_ITEM_H__
 
 /*
- * SPItem - the base item of new hierarchy
+ * Abstract base class for all nodes
  *
- * Methods:
- * bbox - return tight bbox in document coordinates
- * print - prints item, using gnome-print API
- * description - gives textual description of item
- *               for example "group of 4 items"
- *               caller has to free string
- * show
- * hide
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <gtk/gtkmenu.h>

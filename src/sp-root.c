@@ -33,6 +33,7 @@ static void sp_root_read_attr (SPObject *object, const gchar *key);
 static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_root_remove_child (SPObject *object, SPRepr *child);
 static void sp_root_modified (SPObject *object, guint flags);
+static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPGroupClass *parent_class;
 
@@ -72,6 +73,7 @@ sp_root_class_init (SPRootClass *klass)
 	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
 	sp_object_class->modified = sp_root_modified;
+	sp_object_class->write = sp_root_write;
 }
 
 static void
@@ -308,5 +310,30 @@ sp_root_modified (SPObject *object, guint flags)
 	if (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG) {
 		sp_document_set_size_px (SP_OBJECT_DOCUMENT (root), root->width.computed, root->height.computed);
 	}
+}
+
+static SPRepr *
+sp_root_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPRoot *root;
+
+	root = SP_ROOT (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("svg");
+	}
+
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_double (repr, "sodipodi:version", (double) root->sodipodi / 100.0);
+	}
+
+	sp_repr_set_double (repr, "width", root->width.computed);
+	sp_repr_set_double (repr, "height", root->height.computed);
+	sp_repr_set_attr (repr, "viewBox", sp_repr_attr (object->repr, "viewBox"));
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 

@@ -1,5 +1,17 @@
 #define __SP_NAMEDVIEW_C__
 
+/*
+ * <sodipodi:namedview> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
@@ -26,7 +38,8 @@ static void sp_namedview_destroy (GtkObject * object);
 static void sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_namedview_read_attr (SPObject * object, const gchar * key);
 static void sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
-static void sp_namedview_remove_child (SPObject * object, SPRepr * child);
+static void sp_namedview_remove_child (SPObject *object, SPRepr *child);
+static SPRepr *sp_namedview_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_namedview_setup_grid (SPNamedView * nv);
 static void sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item);
@@ -74,6 +87,7 @@ sp_namedview_class_init (SPNamedViewClass * klass)
 	sp_object_class->read_attr = sp_namedview_read_attr;
 	sp_object_class->child_added = sp_namedview_child_added;
 	sp_object_class->remove_child = sp_namedview_remove_child;
+	sp_object_class->write = sp_namedview_write;
 }
 
 static void
@@ -396,6 +410,24 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 
 	if (((SPObjectClass *) (parent_class))->remove_child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
+}
+
+static SPRepr *
+sp_namedview_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPNamedView *nv;
+
+	nv = SP_NAMEDVIEW (object);
+
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		if (repr) {
+			sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
+		} else {
+			repr = sp_repr_duplicate (SP_OBJECT_REPR (object));
+		}
+	}
+
+	return repr;
 }
 
 void

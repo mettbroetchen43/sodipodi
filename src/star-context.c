@@ -275,8 +275,9 @@ sp_star_finish (SPStarContext * sc)
 		desktop = SP_EVENT_CONTEXT (sc)->desktop;
 		object  = SP_OBJECT(sc->item);
 		
-                sp_shape_set_shape(SP_SHAPE(sc->item));
-		sp_object_invoke_write_repr (object, object->repr);
+                sp_shape_set_shape (SP_SHAPE (sc->item));
+
+		sp_object_invoke_write (object, NULL, SP_OBJECT_WRITE_SODIPODI);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

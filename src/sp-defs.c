@@ -1,4 +1,15 @@
-#define SP_DEFS_C
+#define __SP_DEFS_C__
+
+/*
+ * SVG <defs> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 /*
  * fixme: We should really check childrens validity - currently everything
@@ -18,6 +29,7 @@ static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
 static void sp_defs_modified (SPObject *object, guint flags);
+static SPRepr *sp_defs_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObject * sp_defs_get_child_by_repr (SPDefs * defs, SPRepr * repr);
 
@@ -59,6 +71,7 @@ sp_defs_class_init (SPDefsClass * klass)
 	sp_object_class->remove_child = sp_defs_remove_child;
 	sp_object_class->order_changed = sp_defs_order_changed;
 	sp_object_class->modified = sp_defs_modified;
+	sp_object_class->write = sp_defs_write;
 }
 
 static void
@@ -218,6 +231,41 @@ sp_defs_modified (SPObject *object, guint flags)
 		}
 		gtk_object_unref (GTK_OBJECT (child));
 	}
+}
+
+static SPRepr *
+sp_defs_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPDefs *defs;
+	SPObject *child;
+	SPRepr *crepr;
+
+
+	defs = SP_DEFS (object);
+
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		GSList *l;
+		if (!repr) repr = sp_repr_new ("defs");
+		l = NULL;
+		for (child = defs->children; child != NULL; child = child->next) {
+			crepr = sp_object_invoke_write (child, NULL, flags);
+			l = g_slist_prepend (l, crepr);
+		}
+		while (l) {
+			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_slist_remove (l, l->data);
+		}
+	} else {
+		for (child = defs->children; child != NULL; child = child->next) {
+			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
+		}
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		(* ((SPObjectClass *) (parent_class))->write) (object, repr, flags);
+
+	return repr;
 }
 
 static SPObject *

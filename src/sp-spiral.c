@@ -42,7 +42,7 @@ static void sp_spiral_init (SPSpiral *spiral);
 static void sp_spiral_destroy (GtkObject *object);
 
 static void sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_spiral_write_repr (SPObject * object, SPRepr * repr);
+static SPRepr *sp_spiral_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_spiral_read_attr (SPObject * object, const gchar * attr);
 
 static SPKnotHolder *sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop);
@@ -94,7 +94,7 @@ sp_spiral_class_init (SPSpiralClass *class)
 	gtk_object_class->destroy = sp_spiral_destroy;
 
 	sp_object_class->build = sp_spiral_build;
-	sp_object_class->write_repr = sp_spiral_write_repr;
+	sp_object_class->write = sp_spiral_write;
 	sp_object_class->read_attr = sp_spiral_read_attr;
 
 	item_class->knot_holder = sp_spiral_knot_holder;
@@ -148,28 +148,35 @@ sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_spiral_read_attr (object, "sodipodi:t0");
 }
 
-static void
-sp_spiral_write_repr (SPObject * object, SPRepr * repr)
+static SPRepr *
+sp_spiral_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPSpiral *spiral;
 
 	spiral = SP_SPIRAL (object);
 
-	/* Fixme: we may replace these attributes by
-	 * sodipodi:spiral="cx cy exp revo rad arg t0"
-	 */
-	if ((spiral->cx > SP_EPSILON) || (spiral->cx < -SP_EPSILON))
-		sp_repr_set_double_attribute (repr, "sodipodi:cx", spiral->cx);
-	if ((spiral->cy > SP_EPSILON) || (spiral->cy < -SP_EPSILON))
-		sp_repr_set_double_attribute (repr, "sodipodi:cy", spiral->cy);
-	sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->exp);
-	sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revo);
-	sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->rad);
-	sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->arg);
-	sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("path");
+	}
 
-	if (((SPObjectClass *) (parent_class))->write_repr)
-		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		/* Fixme: we may replace these attributes by
+		 * sodipodi:spiral="cx cy exp revo rad arg t0"
+		 */
+		sp_repr_set_attr (repr, "sodipodi:type", "arc");
+		sp_repr_set_double_attribute (repr, "sodipodi:cx", spiral->cx);
+		sp_repr_set_double_attribute (repr, "sodipodi:cy", spiral->cy);
+		sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->exp);
+		sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revo);
+		sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->rad);
+		sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->arg);
+		sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags | SP_SHAPE_WRITE_PATH);
+
+	return repr;
 }
 
 #if 0

@@ -1,15 +1,15 @@
 #define __SP_ANCHOR_C__
 
 /*
- * SPAnchor - implementation of SVG <a> element
+ * SVG <a> element implementation
  *
- * Author:
+ * Authors:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
  * Copyright (C) 1999-2000 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -30,6 +30,8 @@ static void sp_anchor_destroy (GtkObject *object);
 
 static void sp_anchor_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_anchor_read_attr (SPObject * object, const gchar * attr);
+static SPRepr *sp_anchor_write (SPObject *object, SPRepr *repr, guint flags);
+
 static gchar *sp_anchor_description (SPItem *item);
 static gint sp_anchor_event (SPItem *item, SPEvent *event);
 static void sp_anchor_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -75,6 +77,7 @@ sp_anchor_class_init (SPAnchorClass *klass)
 
 	sp_object_class->build = sp_anchor_build;
 	sp_object_class->read_attr = sp_anchor_read_attr;
+	sp_object_class->write = sp_anchor_write;
 
 	item_class->description = sp_anchor_description;
 	item_class->event = sp_anchor_event;
@@ -145,6 +148,35 @@ sp_anchor_read_attr (SPObject *object, const gchar *key)
 		if (((SPObjectClass *) (parent_class))->read_attr)
 			((SPObjectClass *) (parent_class))->read_attr (object, key);
 	}
+}
+
+static SPRepr *
+sp_anchor_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPAnchor *anchor;
+
+	anchor = SP_ANCHOR (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("a");
+	}
+
+	sp_repr_set_attr (repr, "xlink:href", anchor->href);
+
+	if (repr != SP_OBJECT_REPR (object)) {
+		sp_repr_set_attr (repr, "xlink:type", sp_repr_attr (object->repr, "xlink:type"));
+		sp_repr_set_attr (repr, "xlink:role", sp_repr_attr (object->repr, "xlink:role"));
+		sp_repr_set_attr (repr, "xlink:arcrole", sp_repr_attr (object->repr, "xlink:arcrole"));
+		sp_repr_set_attr (repr, "xlink:title", sp_repr_attr (object->repr, "xlink:title"));
+		sp_repr_set_attr (repr, "xlink:show", sp_repr_attr (object->repr, "xlink:show"));
+		sp_repr_set_attr (repr, "xlink:actuate", sp_repr_attr (object->repr, "xlink:actuate"));
+		sp_repr_set_attr (repr, "target", sp_repr_attr (object->repr, "target"));
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static gchar *

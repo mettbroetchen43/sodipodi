@@ -2,14 +2,15 @@
 #define __SP_ANCHOR_H__
 
 /*
- * SPAnchor - implementation of SVG <a> element
+ * SVG <a> element implementation
  *
- * Author:
+ * Authors:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "sp-item-group.h"

@@ -1,6 +1,17 @@
-#define KNOT_HOLDER_C
-#define noKNOT_HOLDER_DEBUG
+#define __KNOT_HOLDER_C__
 
+/*
+ * Container for SPKnot visual handles
+ *
+ * Authors:
+ *   Mitsuru Oka
+ *
+ * Copyright (C) 2001-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#define noKNOT_HOLDER_DEBUG
 
 #include <glib.h>
 #include "desktop.h"
@@ -8,10 +19,7 @@
 #include "sp-shape.h"
 #include "knotholder.h"
 
-static void knot_moved_handler (SPKnot      *knot,
-				ArtPoint    *p,
-				guint	state,
-				gpointer	data);
+static void knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data);
 
 #ifdef KNOT_HOLDER_DEBUG
 #include <gtk/gtk.h>
@@ -175,7 +183,8 @@ knot_moved_handler (SPKnot   *knot,
 	}
 	
 	sp_shape_set_shape (SP_SHAPE (item));
-	sp_object_invoke_write_repr (object, object->repr);
+
+	sp_object_invoke_write (object, object->repr, SP_OBJECT_WRITE_SODIPODI);
 	
 	sp_item_i2d_affine(item, affine);
 

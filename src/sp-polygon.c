@@ -1,21 +1,37 @@
-#define SP_POLYGON_C
+#define __SP_POLYGON_C__
+
+/*
+ * SVG <polygon> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
 #include <string.h>
 #include "sp-polygon.h"
 
+#if 0
 enum {ARG_0, ARG_POINTS};
+#endif
 
 static void sp_polygon_class_init (SPPolygonClass *class);
 static void sp_polygon_init (SPPolygon *polygon);
 static void sp_polygon_destroy (GtkObject *object);
+#if 0
 static void sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
+#endif
 
 static void sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_polygon_write_repr (SPObject * object, SPRepr * repr);
+static SPRepr *sp_polygon_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_polygon_read_attr (SPObject * object, const gchar * attr);
 
-static gchar * sp_polygon_description (SPItem * item);
+static gchar *sp_polygon_description (SPItem *item);
 
 static SPShapeClass *parent_class;
 
@@ -31,8 +47,7 @@ sp_polygon_get_type (void)
 			sizeof (SPPolygonClass),
 			(GtkClassInitFunc) sp_polygon_class_init,
 			(GtkObjectInitFunc) sp_polygon_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		polygon_type = gtk_type_unique (sp_shape_get_type (), &polygon_info);
 	}
@@ -52,13 +67,17 @@ sp_polygon_class_init (SPPolygonClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
+#if 0
 	gtk_object_add_arg_type ("SPPolygon::points", GTK_TYPE_POINTER, GTK_ARG_WRITABLE, ARG_POINTS);
+#endif
 
 	gtk_object_class->destroy = sp_polygon_destroy;
+#if 0
 	gtk_object_class->set_arg = sp_polygon_set_arg;
+#endif
 
 	sp_object_class->build = sp_polygon_build;
-	sp_object_class->write_repr = sp_polygon_write_repr;
+	sp_object_class->write = sp_polygon_write;
 	sp_object_class->read_attr = sp_polygon_read_attr;
 
 	item_class->description = sp_polygon_description;
@@ -81,6 +100,7 @@ sp_polygon_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
 static void
 sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 {
@@ -94,6 +114,7 @@ sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 		break;
 	}
 }
+#endif
 
 static void
 sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -141,8 +162,8 @@ sp_svg_write_polygon (const ArtBpath * bpath)
 	return res;
 }
 
-static void
-sp_polygon_write_repr (SPObject *object, SPRepr *repr)
+static SPRepr *
+sp_polygon_write (SPObject *object, SPRepr *repr, guint flags)
 {
         SPPath *path;
         SPPathComp *pathcomp;
@@ -151,23 +172,27 @@ sp_polygon_write_repr (SPObject *object, SPRepr *repr)
 
         path = SP_PATH (object);
 
-	if (path->comp) {
-		pathcomp = path->comp->data;
-		abp = sp_curve_first_bpath (pathcomp->curve);
-		str = sp_svg_write_polygon (abp);
-		sp_repr_set_attr (repr, "points", str);
-		g_free (str);
-	} else {
-		g_warning ("SPPolygon has NULL path");
-		sp_repr_set_attr (repr, "points", "0,0,1,0,1,1,0,1");
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("polygon");
 	}
-#if 0
-	/* stop to propagete to parent class.
-	 * we don't need to generate d="" attribute.
-	 */
-	if (((SPObjectClass *) (parent_class))->write_repr)
-		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
-#endif
+
+	if (flags & SP_POLYGON_WRITE_POINTS) {
+		if (path->comp) {
+			pathcomp = path->comp->data;
+			abp = sp_curve_first_bpath (pathcomp->curve);
+			str = sp_svg_write_polygon (abp);
+			sp_repr_set_attr (repr, "points", str);
+			g_free (str);
+		} else {
+			g_warning ("SPPolygon has NULL path");
+			sp_repr_set_attr (repr, "points", "0,0,1,0,1,1,0,1");
+		}
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static void
