@@ -30,7 +30,7 @@ gchar *s = N_("10%\n"
               "300%\n"
               "500%\n"
               "");
-gchar *s = N_("Select zom factor");
+gchar *s = N_("Select zoom factor");
 gchar *s = N_("100%");
 gchar *s = N_("Zoom out");
 gchar *s = N_("Zoom in");
