@@ -8,10 +8,10 @@
  * Has always NW corner at 0,0 user coords
  */
 
-#include <gdk_imlib.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_pixbuf.h>
 #include <libgnomeui/gnome-canvas.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #define SP_TYPE_CANVAS_IMAGE            (sp_canvas_image_get_type ())
 #define SP_CANVAS_IMAGE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_CANVAS_IMAGE, SPCanvasImage))
@@ -26,7 +26,7 @@ typedef struct _SPCanvasImageClass SPCanvasImageClass;
 struct _SPCanvasImage {
 	GnomeCanvasItem item;
 
-	ArtPixBuf *pixbuf;
+	GdkPixbuf * pixbuf;
 	double affine[6];
 	ArtVpath * vpath;
 };
@@ -40,6 +40,6 @@ struct _SPCanvasImageClass {
 GtkType sp_canvas_image_get_type (void);
 
 /* Utility */
-void sp_canvas_image_set_pixbuf (SPCanvasImage * image, ArtPixBuf * pixbuf);
+void sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf);
 
 #endif

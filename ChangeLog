@@ -1,3 +1,13 @@
+2000-04-17  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/sp-image.c: completed migration to new gdk-pixbuf
+	* src/display/canvas-image.c: completed migration
+
+2000-04-17  Michael Meeks  <michael@helixcode.com>
+
+	* src/sp-image.c (sp_image_pixbuf_force_rgba): fix.
+	(sp_image_bbox): fix.
+
 2000-04-14  Lauris Kaplinski <lauris@ariman.ee>
 
 	* Makefile.am: fixed .desktop inclusion to distribution

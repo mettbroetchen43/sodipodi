@@ -162,22 +162,22 @@ sp_image_bbox (SPItem * item, ArtDRect * bbox)
 	if (image->pixbuf == NULL) return;
 
 	p.x = 0.0;
-	p.y = image->pixbuf->art_pixbuf->height;
+	p.y = gdk_pixbuf_get_height (image->pixbuf);
 	art_affine_point (&p, &p, a);
 	bbox->x0 = MIN (bbox->x0, p.x);
 	bbox->y0 = MIN (bbox->y0, p.y);
 	bbox->x1 = MAX (bbox->x1, p.x);
 	bbox->y1 = MAX (bbox->y1, p.y);
 
-	p.x = image->pixbuf->art_pixbuf->width;
-	p.y = image->pixbuf->art_pixbuf->height;
+	p.x = gdk_pixbuf_get_width (image->pixbuf);
+	p.y = gdk_pixbuf_get_height (image->pixbuf);
 	art_affine_point (&p, &p, a);
 	bbox->x0 = MIN (bbox->x0, p.x);
 	bbox->y0 = MIN (bbox->y0, p.y);
 	bbox->x1 = MAX (bbox->x1, p.x);
 	bbox->y1 = MAX (bbox->y1, p.y);
 
-	p.x = image->pixbuf->art_pixbuf->width;
+	p.x = gdk_pixbuf_get_width (image->pixbuf);
 	p.y = 0.0;
 	art_affine_point (&p, &p, a);
 	bbox->x0 = MIN (bbox->x0, p.x);
@@ -189,81 +189,27 @@ sp_image_bbox (SPItem * item, ArtDRect * bbox)
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 {
 	SPImage * image;
-	ArtPixBuf * abp;
 	double affine[6];
-	art_u8 * buf, * tbuf, * sptr, * dptr;
-	gint x, y;
-	gboolean has_alpha;
+	guchar * pixels;
+	gint width, height, rowstride;
 
 	image = SP_IMAGE (item);
 
 	if (image->pixbuf == NULL) return;
 
-	abp = image->pixbuf->art_pixbuf;
-	tbuf = NULL;	/* Keep gcc happy ;-) */
+	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
+	width = gdk_pixbuf_get_width (image->pixbuf);
+	height = gdk_pixbuf_get_height (image->pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
 
 	gnome_print_gsave (gpc);
 
-	art_affine_scale (affine, abp->width, -abp->height);
+	art_affine_scale (affine, width, -height);
 	gnome_print_concat (gpc, affine);
 	art_affine_translate (affine, 0.0, -1.0);
 	gnome_print_concat (gpc, affine);
 
-	has_alpha = FALSE;
-
-	for (y = 0; y < abp->height; y++) {
-		sptr = abp->pixels + y * abp->rowstride + 3;
-		for (x = 0; x < abp->width; x++) {
-			if (*sptr != 255) {has_alpha = TRUE; break;}
-			sptr += 3;
-		}
-		if (has_alpha) break;
-	}
-
-	if (has_alpha) {
-		gdouble a[6], aa[6];
-
-		/* Chemistry ;-( */
-		sp_item_i2doc_affine (item, a);
-		art_affine_invert (aa, a);
-
-		tbuf = art_new (art_u8, abp->width * abp->height * 4);
-		memset (tbuf, 255, abp->width * abp->height * 4);
-		abp = art_pixbuf_new_rgba (tbuf, abp->width, abp->height, abp->width * 4);
-
-		item->stop_paint = TRUE;
-		sp_item_paint (SP_ITEM (SP_OBJECT (item)->document->root), abp, aa);
-		item->stop_paint = FALSE;
-
-		art_affine_identity (a);
-		art_rgba_rgba_affine (abp->pixels,
-			0, 0, abp->width, abp->height, abp->rowstride,
-			image->pixbuf->art_pixbuf->pixels, abp->width, abp->height,
-			image->pixbuf->art_pixbuf->rowstride,
-			a,
-			ART_FILTER_NEAREST, NULL);
-	}
-
-	buf = g_new (art_u8, abp->width * abp->height * 3);
-
-	for (y = 0; y < abp->height; y++) {
-		sptr = abp->pixels + y * abp->rowstride;
-		dptr = buf + y * abp->width * 3;
-		for (x = 0; x < abp->width; x++) {
-			*dptr++ = *sptr++;
-			*dptr++ = *sptr++;
-			*dptr++ = *sptr++;
-			sptr++;
-		}
-	}
-
-	gnome_print_rgbimage (gpc, buf, abp->width, abp->height, abp->width * 3);
-
-	g_free (buf);
-
-	if (has_alpha) {
-		art_pixbuf_free (abp);
-	}
+	gnome_print_rgbaimage (gpc, pixels, width, height, rowstride);
 
 	gnome_print_grestore (gpc);
 }
@@ -290,7 +236,8 @@ sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler)
 
 	ci = (SPCanvasImage *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_IMAGE, NULL);
 	g_return_val_if_fail (ci != NULL, NULL);
-	sp_canvas_image_set_pixbuf (ci, image->pixbuf->art_pixbuf);
+
+	sp_canvas_image_set_pixbuf (ci, image->pixbuf);
 
 	return (GnomeCanvasItem *) ci;
 }
@@ -299,23 +246,28 @@ static gboolean
 sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 {
 	SPImage * image;
-	ArtPixBuf * ipb;
+	guchar * pixels;
+	gint width, height, rowstride;
 
 	image = SP_IMAGE (item);
-	ipb = image->pixbuf->art_pixbuf;
 
-	if (ipb->n_channels != 4) return FALSE;
+	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
+	width = gdk_pixbuf_get_width (image->pixbuf);
+	height = gdk_pixbuf_get_height (image->pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
+
+	if (gdk_pixbuf_get_n_channels (image->pixbuf) != 4) return FALSE;
 
 	if (pixbuf->n_channels == 3) {
 		art_rgb_rgba_affine (pixbuf->pixels,
 			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-			ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
+			pixels, width, height, rowstride,
 			affine,
 			ART_FILTER_NEAREST, NULL);
 	} else {
 		art_rgba_rgba_affine (pixbuf->pixels,
 			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-			ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
+			pixels, width, height, rowstride,
 			affine,
 			ART_FILTER_NEAREST, NULL);
 	}
@@ -376,26 +328,11 @@ static GdkPixbuf *
 sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf)
 {
 	GdkPixbuf * newbuf;
-	gint x, y;
-	art_u8 * s, * d;
 
-	if (pixbuf->art_pixbuf->n_channels == 4) return pixbuf;
-	g_return_val_if_fail (pixbuf->art_pixbuf->n_channels == 3, NULL);
+	if (gdk_pixbuf_get_has_alpha (pixbuf))
+		return pixbuf;
 
-	newbuf = gdk_pixbuf_new (ART_PIX_RGB, TRUE, 8,
-		pixbuf->art_pixbuf->width, pixbuf->art_pixbuf->height);
-
-	for (y = 0; y < pixbuf->art_pixbuf->height; y++) {
-		s = pixbuf->art_pixbuf->pixels + y * pixbuf->art_pixbuf->rowstride;
-		d = newbuf->art_pixbuf->pixels + y * newbuf->art_pixbuf->rowstride;
-		for (x = 0; x < pixbuf->art_pixbuf->width; x++) {
-			* d++ = * s++;
-			* d++ = * s++;
-			* d++ = * s++;
-			* d++ = 255;
-		}
-	}
-
+	newbuf = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
 	gdk_pixbuf_unref (pixbuf);
 
 	return newbuf;

@@ -5,11 +5,12 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_pixbuf.h>
-#include <libart_lgpl/art_rgb_pixbuf_affine.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_uta_vpath.h>
 #include <gnome.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "canvas-image.h"
 
@@ -84,6 +85,8 @@ sp_canvas_image_destroy (GtkObject *object)
 
 	canvas_image = (SPCanvasImage *) object;
 
+	if (canvas_image->pixbuf) gdk_pixbuf_unref (canvas_image->pixbuf);
+
 	if (canvas_image->vpath) art_free (canvas_image->vpath);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -98,6 +101,7 @@ sp_canvas_image_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 	ArtUta * uta;
 	ArtDRect bbox;
 	gint i;
+	gint width, height;
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
@@ -115,17 +119,20 @@ sp_canvas_image_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 
 	if (canvas_image->pixbuf == NULL) return;
 
+	width = gdk_pixbuf_get_width (canvas_image->pixbuf);
+	height = gdk_pixbuf_get_height (canvas_image->pixbuf);
+
 	vp[0].code = ART_MOVETO;
 	vp[0].x = 0.0;
 	vp[0].y = 0.0;
 	vp[1].code = ART_LINETO;
 	vp[1].x = 0.0;
-	vp[1].y = canvas_image->pixbuf->height;
+	vp[1].y = height;
 	vp[2].code = ART_LINETO;
-	vp[2].x = canvas_image->pixbuf->width;
-	vp[2].y = canvas_image->pixbuf->height;
+	vp[2].x = width;
+	vp[2].y = height;
 	vp[3].code = ART_LINETO;
-	vp[3].x = canvas_image->pixbuf->width;
+	vp[3].x = width;
 	vp[3].y = 0.0;
 	vp[4].code = ART_LINETO;
 	vp[4].x = 0.0;
@@ -152,21 +159,25 @@ sp_canvas_image_point (GnomeCanvasItem *item, double x, double y,
 			  int cx, int cy, GnomeCanvasItem **actual_item)
 {
 	SPCanvasImage *canvas_image;
-	ArtPixBuf * apb;
 	art_u8 * p;
 	gint ix, iy;
+	guchar * pixels;
+	gint width, height, rowstride;
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
 	if (canvas_image->pixbuf == NULL) return 1e18;
 
-	apb = canvas_image->pixbuf;
+	pixels = gdk_pixbuf_get_pixels (canvas_image->pixbuf);
+	width = gdk_pixbuf_get_width (canvas_image->pixbuf);
+	height = gdk_pixbuf_get_height (canvas_image->pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (canvas_image->pixbuf);
 	ix = (gint) x;
 	iy = (gint) y;
 
-	if ((ix < 0) || (iy < 0) || (ix >= apb->width) || (iy >= apb->height)) return 1e18;
+	if ((ix < 0) || (iy < 0) || (ix >= width) || (iy >= height)) return 1e18;
 
-	p = apb->pixels + iy * apb->rowstride + ix * 4;
+	p = pixels + iy * rowstride + ix * 4;
 
 	if (* (p + 3) < 16) return 1e18;
 
@@ -180,17 +191,25 @@ static void
 sp_canvas_image_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	SPCanvasImage *canvas_image;
+	guchar * pixels;
+	gint width, height, rowstride;
 
 	canvas_image = SP_CANVAS_IMAGE (item);
 
 	if (canvas_image->pixbuf == NULL) return;
 
+	pixels = gdk_pixbuf_get_pixels (canvas_image->pixbuf);
+	width = gdk_pixbuf_get_width (canvas_image->pixbuf);
+	height = gdk_pixbuf_get_height (canvas_image->pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (canvas_image->pixbuf);
+
         gnome_canvas_buf_ensure_buf (buf);
 
-	art_rgb_pixbuf_affine (buf->buf,
+	art_rgb_rgba_affine (buf->buf,
 			buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1,
 			buf->buf_rowstride,
-			canvas_image->pixbuf,
+			pixels,
+			width, height, rowstride,
 			canvas_image->affine,
 			ART_FILTER_NEAREST, NULL);
 
@@ -200,9 +219,14 @@ sp_canvas_image_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 /* Utility */
 
 void
-sp_canvas_image_set_pixbuf (SPCanvasImage * image, ArtPixBuf * pixbuf)
+sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf)
 {
+
+	gdk_pixbuf_ref (pixbuf);
+	gdk_pixbuf_unref (image->pixbuf);
+
 	image->pixbuf = pixbuf;
+
 	gnome_canvas_item_request_update ((GnomeCanvasItem *) image);
 }
 

@@ -116,9 +116,9 @@ sp_canvas_translator_draw (GnomeCanvasItem * item, GdkDrawable * drawable, int x
 
 	group = GNOME_CANVAS_GROUP (item);
 
-	pixbuf = gdk_pixbuf_new (ART_PIX_RGB, FALSE, 8, width, height);
-	buf.buf = pixbuf->art_pixbuf->pixels;
-	buf.buf_rowstride = pixbuf->art_pixbuf->rowstride;
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, width, height);
+	buf.buf = gdk_pixbuf_get_pixels (pixbuf);
+	buf.buf_rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	buf.rect.x0 = x;
 	buf.rect.y0 = y;
 	buf.rect.x1 = x + width;
