@@ -62,6 +62,7 @@ static GtkTargetEntry toolbox_drop_target_entries [] = {
 #define ENTRIES_SIZE(n) sizeof(n)/sizeof(n[0]) 
 static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_entries);
 static void sp_maintoolbox_open_files(gchar * buffer);
+static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
 static void sp_maintoolbox_open_one_file(gchar * svg_path);
 
 void
@@ -129,6 +130,8 @@ sp_maintoolbox_create (void)
 		w = glade_xml_get_widget (xml, "draw_freehand");
 		gtk_object_set_data (GTK_OBJECT (t), "SPDrawContext", w);
 		w = glade_xml_get_widget (xml, "draw_dynahand");
+		gtk_object_set_data (GTK_OBJECT (t), "SPDynaDrawContext", w);
+		w = glade_xml_get_widget (xml, "draw_pen");
 		gtk_object_set_data (GTK_OBJECT (t), "SPDynaDrawContext", w);
 		if (SP_ACTIVE_DESKTOP) {
 			const gchar * tname;
@@ -231,49 +234,27 @@ sp_maintoolbox_drag_data_received (GtkWidget * widget,
 	}
 }
 
-/* Most code of this function is copied from 
-   gimp-1.2.1/gimpdnd.c:gimp_dnd_file_open_files */
 static void
 sp_maintoolbox_open_files(gchar * buffer)
 {
-	gchar  name_buffer[1024];
-	const gchar *data_type 	   = "file:";
-	const gint   sig_len 	   = strlen (data_type);
-	gint  name_len;
-	
+  	GList * list = gnome_uri_list_extract_filenames(buffer);
+	if (!list)
+		return;
+	g_list_foreach (list, sp_maintoolbox_open_one_file_with_check, NULL);
+
+}
+
+static void
+sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused)
+{
 	const gchar * svg_suffix   = ".svg";
 	gint  svg_suffix_len = strlen(svg_suffix);
-
-	while (*buffer) {
-		gchar *name = name_buffer;
-		gint len = 0;
-
-		while ((*buffer != 0) && (*buffer != '\n') && len < 1024) {
-			*name++ = *buffer++;
-			len++;
-		}
-		if (len == 0)
-			break;
-
-		if (*(name - 1) == 0xd)   /* gmc uses RETURN+NEWLINE as delimiter */
-			*(name - 1) = '\0';
-		else
-			*name = '\0';
-		name = name_buffer;
-		if ((sig_len < len) && (! strncmp (name, data_type, sig_len)))
-			name += sig_len;
-			
-		name_len = name? strlen(name): 0;
-
-		/* SVG file */
-		if (name_len >  svg_suffix_len) {
-			if (!strcmp(name + name_len - svg_suffix_len, svg_suffix))
-				sp_maintoolbox_open_one_file(name);
-		}
-		/* TODO: other file supports here... */
-		
-		if (*buffer)
-			buffer++;
+	gint  filename_len;
+	if (filename) {
+		filename_len = strlen(filename);
+		if (filename_len > svg_suffix_len
+		    && !strcmp((char *)filename + filename_len - svg_suffix_len, svg_suffix))
+		    sp_maintoolbox_open_one_file(filename);
 	}
 }
 

@@ -47,6 +47,7 @@ static GtkTargetEntry ui_drop_target_entries [] = {
 static guint nui_drop_target_entries = ENTRIES_SIZE(ui_drop_target_entries);
 static void sp_ui_import_files(gchar * buffer);
 static void sp_ui_import_one_file(gchar * filename);
+static void sp_ui_import_one_file_with_check(gpointer filename, gpointer unused);
 static void sp_ui_drag_data_received (GtkWidget * widget,
 				      GdkDragContext * drag_context,
 				      gint x, gint y,
@@ -510,45 +511,21 @@ sp_ui_drag_data_received (GtkWidget * widget,
 	}
 }
 
-/* Most code of this function is copied from 
-   gimp-1.2.1/gimpdnd.c:gimp_dnd_file_open_files */
 static void
 sp_ui_import_files(gchar * buffer)
 {
-	gchar  name_buffer[1024];
-	const gchar *data_type 	   = "file:";
-	const gint   sig_len 	   = strlen (data_type);
-	gint  name_len;
+	GList * list = gnome_uri_list_extract_filenames(buffer);
+	if (!list)
+		return;
+	g_list_foreach (list, sp_ui_import_one_file_with_check, NULL);
+}
 
-	while (*buffer) {
-		gchar *name = name_buffer;
-		gint len = 0;
-
-		while ((*buffer != 0) && (*buffer != '\n') && len < 1024) {
-			*name++ = *buffer++;
-			len++;
-		}
-		if (len == 0)
-			break;
-
-		if (*(name - 1) == 0xd)   /* gmc uses RETURN+NEWLINE as delimiter */
-			*(name - 1) = '\0';
-		else
-			*name = '\0';
-		name = name_buffer;
-		if ((sig_len < len) && (! strncmp (name, data_type, sig_len)))
-			name += sig_len;
-			
-		name_len = name? strlen(name): 0;
-
-		/* SVG file */
-		if (name_len >  2) {
-		  sp_ui_import_one_file(name);
-		}
-		/* TODO: other file supports here... */
-		
-		if (*buffer)
-			buffer++;
+static void
+sp_ui_import_one_file_with_check(gpointer filename, gpointer unused)
+{
+	if (filename) {
+		if (strlen(filename) > 2)
+			sp_ui_import_one_file(filename);
 	}
 }
 

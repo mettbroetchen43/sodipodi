@@ -1,3 +1,10 @@
+2002-04-21  Masatake YAMATO  <jet@gyve.org>
+
+        * src/toolbox.c (sp_maintoolbox_open_files): Use 
+        gnome_uri_list_extract_filenames.
+
+        * src/interface.c (sp_ui_import_files): Ditto.
+
 2002-04-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/text-context.c (sp_text_context_root_handler): Port to new
