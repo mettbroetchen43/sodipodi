@@ -36,14 +36,12 @@ typedef struct _GnomeCanvasGroupClass GnomeCanvasGroupClass;
 #include <libart_lgpl/art_affine.h>
 
 enum {
-#if 0
-	GNOME_CANVAS_ITEM_ALWAYS_REDRAW = 1 << 6,
-#endif
 	GNOME_CANVAS_ITEM_VISIBLE       = 1 << 7,
 	GNOME_CANVAS_ITEM_NEED_UPDATE	= 1 << 8,
 	GNOME_CANVAS_ITEM_NEED_AFFINE	= 1 << 9,
-
+#if 0
 	GNOME_CANVAS_ITEM_AFFINE_FULL	= 1 << 12
+#endif
 };
 
 enum {
@@ -53,23 +51,16 @@ enum {
 
 /* Data for rendering in antialiased mode */
 typedef struct {
-	/* 24-bit RGB buffer for rendering */
 	guchar *buf;
-
-	/* Rowstride for the buffer */
 	int buf_rowstride;
 
-	/* Rectangle describing the rendering area */
 	ArtIRect rect;
-
 	/* Background color, given as 0xrrggbb */
 	guint32 bg_color;
 
 	/* Invariant: at least one of the following flags is true. */
-
 	/* Set when the render rectangle area is the solid color bg_color */
 	unsigned int is_bg : 1;
-
 	/* Set when the render rectangle area is represented by the buf */
 	unsigned int is_buf : 1;
 } GnomeCanvasBuf;
@@ -84,20 +75,10 @@ typedef struct {
 struct _GnomeCanvasItem {
 	GtkObject object;
 
-	/* Parent canvas for this item */
 	GnomeCanvas *canvas;
-
-	/* Parent canvas group for this item (a GnomeCanvasGroup) */
 	GnomeCanvasItem *parent;
 
-	/* Bounding box for this item (in world coordinates) */
 	double x1, y1, x2, y2;
-
-	/* If NULL, assumed to be the identity tranform.  If flags does not have
-	 * AFFINE_FULL, then a two-element array containing a translation.  If
-	 * flags contains AFFINE_FULL, a six-element array containing an affine
-	 * transformation.
-	 */
 	double *xform;
 };
 
@@ -191,23 +172,16 @@ struct _GnomeCanvas {
 	double scroll_x1, scroll_y1;
 	double scroll_x2, scroll_y2;
 
-	/* Scaling factor to be used for display */
+	/* Binary compatibility */
 	double bret_0;
-
-	/* Area that is being redrawn.  Contains (x1, y1) but not (x2, y2).
-	 * Specified in canvas pixel coordinates.
-	 */
-	int bret_x1, bret_y1;
-	int bret_x2, bret_y2;
+	int bret_1, bret_2;
+	int bret_3, bret_4;
 
 	/* Area that needs redrawing, stored as a microtile array */
 	ArtUta *redraw_area;
 
-	/* Offsets of the temprary drawing pixmap */
-	int draw_xofs, draw_yofs;
-
-	/* Internal pixel offsets when zoomed out */
-	int zoom_xofs, zoom_yofs;
+	int bret_5, bret_6;
+	int bret_7, bret_8;
 
 	/* Last known modifier state, for deferred repick when a button is down */
 	int state;
@@ -230,11 +204,9 @@ struct _GnomeCanvas {
 	/* Event on which selection of current item is based */
 	GdkEvent pick_event;
 
-	/* Tolerance distance for picking items */
 	int close_enough;
 
-	/* Color context used for color allocation */
-	GdkColorContext *cc;
+	GdkColorContext *bret_x;
 
 	/* GC for temporary draw pixmap */
 	GdkGC *pixmap_gc;

@@ -174,17 +174,12 @@ void gnome_canvas_item_i2p_affine (GnomeCanvasItem * item, double affine[])
 		return;
 	}
 
-	if (item->object.flags & GNOME_CANVAS_ITEM_AFFINE_FULL) {
-		affine[0] = item->xform[0];
-		affine[1] = item->xform[1];
-		affine[2] = item->xform[2];
-		affine[3] = item->xform[3];
-		affine[4] = item->xform[4];
-		affine[5] = item->xform[5];
-	} else {
-		art_affine_translate (affine, item->xform[0], item->xform[1]);
-	}
-
+	affine[0] = item->xform[0];
+	affine[1] = item->xform[1];
+	affine[2] = item->xform[2];
+	affine[3] = item->xform[3];
+	affine[4] = item->xform[4];
+	affine[5] = item->xform[5];
 }
 
 void gnome_canvas_item_i2i_affine (GnomeCanvasItem * from, GnomeCanvasItem * to, double affine[])
