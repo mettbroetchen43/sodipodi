@@ -1,13 +1,13 @@
-#ifndef SP_CANVAS_GRID_H
-#define SP_CANVAS_GRID_H
+#ifndef __SP_CANVAS_GRID_H__
+#define __SP_CANVAS_GRID_H__
 
 /*
- * SPCGrid
+ * Infinite visual grid
  *
- * Generic (and quite unintelligent) grid item for gnome canvas
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) Lauris Kaplinski 2000
- *
+ * This code is in public domain
  */
 
 #include "sp-canvas.h"

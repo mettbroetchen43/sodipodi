@@ -12,21 +12,11 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <math.h>
-#include <stdlib.h>
-
-#include <gtk/gtkeditable.h>
-#include <gtk/gtkeditable.h>
-
-#include "rubberband.h"
-#include "sodipodi.h"
-#include "document.h"
-#include "selection.h"
-#include "desktop.h"
-#include "desktop-handles.h"
-#include "desktop-affine.h"
-#include "sp-item.h"
 #include "pixmaps/cursor-zoom.xpm"
+#include "rubberband.h"
+#include "desktop.h"
+#include "desktop-affine.h"
+
 #include "zoom-context.h"
 
 static void sp_zoom_context_class_init (SPZoomContextClass * klass);
@@ -152,15 +142,6 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			}
 			ret = TRUE;
 			break;
-#if 0
-		case 3:
-			p.x = event->button.x;
-			p.y = event->button.y;
-			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-			sp_desktop_zoom_relative (desktop, p.x, p.y, 1/SP_DESKTOP_ZOOM_INC);
-			ret = TRUE;
-			break;
-#endif
 		default:
 			break;
 		}
@@ -175,25 +156,5 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	return ret;
-}
-
-void
-sp_zoom_string (const gchar * zoom_str) {
-	SPDesktop * desktop;
-	gchar * zoom_str2;
-	NRRectF d;
-	gdouble any;
-	
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	
-	zoom_str2 = g_strndup(zoom_str, 5); /* g_new'ed 5+1 gchar */
-	zoom_str2[5] = '\0';
-	any = strtod(zoom_str2,NULL) /100;
-	g_free (zoom_str2);
-	if (any < 0.001) return;
-	
-	sp_desktop_get_display_area (SP_ACTIVE_DESKTOP, &d);
-	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
 }
 

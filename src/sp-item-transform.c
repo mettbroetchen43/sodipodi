@@ -17,6 +17,18 @@
 #include "sp-item.h"
 #include "sp-item-transform.h"
 
+/*
+ * Item transformations
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe
+ *
+ * Copyright (C) 1999-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <libart_lgpl/art_affine.h>
 
 void art_affine_skew (double dst[6], double dx, double dy);

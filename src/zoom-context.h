@@ -13,14 +13,14 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "event-context.h"
-
 #define SP_TYPE_ZOOM_CONTEXT (sp_zoom_context_get_type ())
 #define SP_ZOOM_CONTEXT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ZOOM_CONTEXT, SPZoomContext))
 #define SP_IS_ZOOM_CONTEXT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ZOOM_CONTEXT))
 
 typedef struct _SPZoomContext SPZoomContext;
 typedef struct _SPZoomContextClass SPZoomContextClass;
+
+#include "event-context.h"
 
 struct _SPZoomContext {
 	SPEventContext event_context;

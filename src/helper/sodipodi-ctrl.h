@@ -1,10 +1,13 @@
-#ifndef SODIPODI_CTRL_H
-#define SODIPODI_CTRL_H
+#ifndef __SODIPODI_CTRL_H__
+#define __SODIPODI_CTRL_H__
 
-/* sodipodi-ctrl
+/*
+ * Visual handle for various things
  *
- * It is simply small square, which does not scale nor rotate
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * This code is in public domain
  */
 
 #include <gtk/gtkenums.h>

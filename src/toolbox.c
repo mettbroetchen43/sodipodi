@@ -775,6 +775,9 @@ sp_toolbox_verb_activate (unsigned int verb, const unsigned char *tname, const u
 static void 
 sp_update_draw_toolbox (Sodipodi *sodipodi, SPEventContext *eventcontext, GObject *toolbox)
 {
+	/* fixme: We can remove this, but hten have to update action active state */
+	/* Probably form sodipodi::set_eventcontext handler or something (Lauris) */
+#if 1
 	const unsigned char *tname;
 
 	if (eventcontext != NULL) {
@@ -795,5 +798,6 @@ sp_update_draw_toolbox (Sodipodi *sodipodi, SPEventContext *eventcontext, GObjec
 	sp_toolbox_verb_activate (SP_VERB_CONTEXT_TEXT, tname, "SPTextContext");
 	sp_toolbox_verb_activate (SP_VERB_CONTEXT_ZOOM, tname, "SPZoomContext");
 	sp_toolbox_verb_activate (SP_VERB_CONTEXT_DROPPER, tname, "SPDropperContext");
+#endif
 }
 

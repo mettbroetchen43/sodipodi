@@ -2,14 +2,12 @@
 #define __SODIPODI_CTRLLINE_H__
 
 /*
- * Simple straight line
+ * Simple visual line for various things
  *
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 Lauris Kaplinski
- *
- * Released under GNU GPL
+ * This code is in public domain
  */
 
 #include "sp-canvas.h"

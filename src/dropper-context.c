@@ -3,12 +3,10 @@
 /*
  * Tool for picking colors from drawing
  *
- * Authors:
+ * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 Authors
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 #include <libnr/nr-matrix.h>

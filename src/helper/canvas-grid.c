@@ -1,10 +1,12 @@
 #define SP_CANVAS_GRID_C
 
 /*
- * SPCGrid
+ * Infinite visual grid
  *
- * Copyright (C) Lauris Kaplinski 2000
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * This code is in public domain
  */
 
 #include <math.h>

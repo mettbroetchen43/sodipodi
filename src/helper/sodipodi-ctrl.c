@@ -1,11 +1,12 @@
-#define SODIPODI_CTRL_C
+#define __SODIPODI_CTRL_C__
 
 /*
- * SPCtrl
+ * Visual handle for various things
  *
- * We render it by hand to reduce allocing/freeing svps & to get clean
- *    (non-aa) images
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * This code is in public domain
  */
 
 #include <math.h>
