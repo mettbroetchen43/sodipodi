@@ -146,6 +146,9 @@ pixmaps = \
 	selection_top.xpm \
 	selection_ungroup.xpm \
 	selection_up.xpm \
+	selection_union.xpm \
+	selection_intersection.xpm \
+	selection_subtraction.xpm \
 	seperate_tool.xpm \
 	set.xpm \
 	skew.xpm \

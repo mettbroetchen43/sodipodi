@@ -317,6 +317,7 @@ sp_selected_path_uncross (unsigned int operation)
 	struct _NRNodePath **npaths;
 	struct _NRNodePath *np, *nnp;
 	int numpaths, i;
+	int *and;
 
 	sp_selected_path_to_curves0 (FALSE, 0);
 
@@ -356,7 +357,7 @@ sp_selected_path_uncross (unsigned int operation)
 		nrp = nr_path_new_from_art_bpath (abp);
 		art_free (abp);
 
-		npaths[i] = nr_node_path_new_from_path (nrp, (i != 0));
+		npaths[i] = nr_node_path_new_from_path (nrp, i);
 
 		free (nrp);
 		sp_repr_unparent (SP_OBJECT_REPR (path));
@@ -375,20 +376,24 @@ sp_selected_path_uncross (unsigned int operation)
 
 	if (operation == SP_PATH_UNION) {
 		/* everything null */
-		static int and[] = {-1, -1};
-		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		and = alloca (numpaths * sizeof (int));
+		for (i = 0; i < numpaths; i++) and[i] = -1;
+		nnp = nr_node_path_rewind (np, numpaths, and, NULL, NULL);
 		nr_node_path_free (np);
 		np = nnp;
 	} else if (operation == SP_PATH_INTERSECTION) {
 		/* Everything not null */
-		static int and[] = {1, 1};
-		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		and = alloca (numpaths * sizeof (int));
+		for (i = 0; i < numpaths; i++) and[i] = 1;
+		nnp = nr_node_path_rewind (np, numpaths, and, NULL, NULL);
 		nr_node_path_free (np);
 		np = nnp;
 	} else if (operation == SP_PATH_SUBTRACTION) {
 		/* Everything but first null */
-		static int and[] = {1, -1};
-		nnp = nr_node_path_rewind (np, 2, and, NULL, NULL);
+		and = alloca (numpaths * sizeof (int));
+		and[0] = 1;
+		for (i = 1; i < numpaths; i++) and[i] = -1;
+		nnp = nr_node_path_rewind (np, numpaths, and, NULL, NULL);
 		nr_node_path_free (np);
 		np = nnp;
 	}
@@ -406,11 +411,9 @@ sp_selected_path_uncross (unsigned int operation)
 				sp_curve_curveto (c, n->x1, n->y1, n->x2, n->y2, n->x3, n->y3);
 			}
 		}
-#if 0
-		if (np->segs[i].closed) {
+		if (np->segs[i].closed && (n->x3 == np->segs[i].nodes->x3) && (n->y3 == np->segs[i].nodes->y3)) {
 			sp_curve_closepath (c);
 		}
-#endif
 	}
 	nr_node_path_free (np);
 	str = sp_svg_write_path (c->bpath);

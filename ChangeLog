@@ -1,3 +1,14 @@
+2004-01-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-pathops.c (nr_node_path_rewind): Works
+
+	* src/verbs.h: Added boolean verbs
+
+	* src/interface.c (sp_ui_selection_menu): Added booleans to menu
+
+	* src/path-chemistry.c (sp_selected_path_uncross): Added
+	union, intersection and subtraction operations
+
 2004-01-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/path-chemistry.c (sp_selected_path_uncross): New method

@@ -313,6 +313,39 @@ nr_node_list_copy (const struct _NRNode *src)
 	return first;
 }
 
+static struct _NRNode *
+nr_node_list_copy_reverse (const struct _NRNode *src)
+{
+	struct _NRNode *ref, *dnode;
+	const struct _NRNode *snode;
+	ref = NULL;
+	for (snode = src; snode->next; snode = snode->next) {
+		dnode = nr_node_alloc ();
+		dnode->x3 = snode->x3;
+		dnode->y3 = snode->y3;
+		if (!snode->next->isline) {
+			dnode->x2 = snode->next->x1;
+			dnode->y2 = snode->next->y1;
+			dnode->x1 = snode->next->x2;
+			dnode->y1 = snode->next->y2;
+		}
+		dnode->isline = snode->next->isline;
+		dnode->flats = NULL;
+		dnode->next = ref;
+		if (ref) ref->prev = dnode;
+		ref = dnode;
+	}
+	dnode = nr_node_alloc ();
+	dnode->x3 = snode->x3;
+	dnode->y3 = snode->y3;
+	dnode->isline = 1;
+	dnode->flats = NULL;
+	dnode->next = ref;
+	if (ref) ref->prev = dnode;
+
+	return dnode;
+}
+
 struct _NRNodePath *
 nr_node_path_concat (struct _NRNodePath *paths[], unsigned int npaths)
 {
@@ -940,19 +973,25 @@ nr_wind_matrix_test (struct _NRNodePath *path, int *winds, int idx, int ngroups,
 	/* Test AND */
 	if (and) {
 		for (i = 0; i < ngroups; i++) {
-			if (i != sval) {
-				if ((and[i] > 0) && (gwinds[i] == 0)) return 0;
-				if ((and[i] < 0) && (gwinds[i] != 0)) return 0;
-			}
+			unsigned int nonzero;
+			/* Skip self group */
+			if (i == sval) continue;
+			/* nonzero = (gwinds[i] != 0) || (winds[i] == 0); */
+			nonzero = (gwinds[i] != 0);
+			if ((and[i] > 0) && !nonzero) return 0;
+			if ((and[i] < 0) && nonzero) return 0;
 		}
 	}
 	/* Test OR */
 	if (or) {
 		for (i = 0; i < ngroups; i++) {
-			if (i != sval) {
-				if ((or[i] > 0) && (gwinds[i] != 0)) break;
-				if ((or[i] < 0) && (gwinds[i] == 0)) break;
-			}
+			unsigned int nonzero;
+			/* Skip self group */
+			if (i == sval) continue;
+			/* nonzero = (gwinds[i] != 0) || (winds[i] == 0); */
+			nonzero = (gwinds[i] != 0);
+			if ((or[i] > 0) && nonzero) break;
+			if ((or[i] < 0) && !nonzero) break;
 		}
 		if (i >= ngroups) return 0;
 	}
@@ -963,40 +1002,171 @@ nr_wind_matrix_test (struct _NRNodePath *path, int *winds, int idx, int ngroups,
 	return 1;
 }
 
+static void
+nr_node_get_dir (struct _NRNode *node, NRPointF *v, unsigned int dir)
+{
+	if (!dir) {
+		/* Forward */
+		if (node->next->isline) {
+			v->x = node->next->x3 - node->x3;
+			v->y = node->next->y3 - node->y3;
+		} else {
+			if (!node->flats) node->flats = nr_node_flat_list_build (node);
+			v->x = node->flats->next->x - node->flats->x;
+			v->y = node->flats->next->y - node->flats->y;
+		}
+	} else {
+		/* Backward */
+		if (node->isline) {
+			v->x = node->prev->x3 - node->x3;
+			v->y = node->prev->y3 - node->y3;
+		} else {
+			struct _NRFlatNode *flat;
+			if (!node->prev->flats) node->prev->flats = nr_node_flat_list_build (node->prev);
+			flat = node->prev->flats;
+			while (flat->next) flat = flat->next;
+			v->x = flat->prev->x - flat->x;
+			v->y = flat->prev->y - flat->y;
+		}
+	}
+}
+
+static int
+nr_dir_compare (NRPointF *base, NRPointF *d0, NRPointF *d1)
+{
+	double vbd0, vbd1, vd0d1;
+	double sbd0, sbd1;
+	/* Dot base d0 */
+	if ((d1->x == 0.0) && (d1->y == 0.0)) return -1;
+	vbd0 = base->x * d0->y - base->y * d0->x;
+	sbd0 = base->x * d0->y + base->y * d0->x;
+	vbd1 = base->x * d1->y - base->y * d1->x;
+	sbd1 = base->x * d1->y + base->y * d1->x;
+	vd0d1 = d0->x * d1->y - d0->y * d1->x;
+	if (vbd1 < 0) {
+		if (vbd0 < 0) {
+			if (vd0d1 < 0) return -1;
+			if (vd0d1 > 0) return 1;
+			return 0;
+		} else if (vbd0 > 0) {
+			return 1;
+		} else {
+			if (sbd0 > 0) return -1;
+			return 1;
+		}
+	} else if (vbd1 > 0) {
+		if (vbd0 < 0) {
+			return -1;
+		} else if (vbd0 > 0) {
+			if (vd0d1 < 0) return -1;
+			if (vd0d1 > 0) return 1;
+			return 0;
+		} else {
+			if (sbd0 > 0) return -1;
+			return 1;
+		}
+	} else {
+		if (sbd1 > 0) return 1;
+		if (vbd0 < 0) return -1;
+		if (vbd0 > 0) return 1;
+		return 0;
+	}
+
+}
+
 struct _NRNodePath *
 nr_node_path_rewind (struct _NRNodePath *path, int ngroups, int *and, int *or, int *self)
 {
 	struct _NRNodePath *npath;
 	int *winds;
-	int i, j, ss, sd;
-	int len;
+	int i, j, ss;
+	int nsegs;
+	int *idx;
 	winds = (int *) malloc (path->nsegs * path->nsegs * sizeof (int));
 	for (i = 0; i < path->nsegs; i++) {
-		g_print ("Seg %d (%d): ", i, path->segs[i].value);
+		/* g_print ("Seg %d (%d): ", i, path->segs[i].value); */
 		for (j = 0; j < path->nsegs; j++) {
 			winds[i * path->nsegs + j] = nr_node_path_seg_get_wind (path, i, j);
-			g_print ("%d ", winds[i * path->nsegs + j]);
+			/* g_print ("%d ", winds[i * path->nsegs + j]); */
 		}
-		g_print ("\n");
+		/* g_print ("\n"); */
 	}
-	len = 0;
-	for (ss = 0; ss < path->nsegs; ss++) {
-		if (nr_wind_matrix_test (path, winds + ss * path->nsegs, ss, ngroups, and, or, self)) len += 1;
+	nsegs = 0;
+	idx = alloca (path->nsegs * sizeof (int));
+	for (i = 0; i < path->nsegs; i++) {
+		if (nr_wind_matrix_test (path, winds + i * path->nsegs, i, ngroups, and, or, self)) {
+			idx[nsegs] = i;
+			nsegs += 1;
+		}
 	}
+	/* Construct index list */
+
 	/* Dummy copy */
-	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (len - 1) * sizeof (struct _NRNodeSeg));
-	npath->nsegs = len;
-	sd = 0;
-	for (ss = 0; ss < path->nsegs; ss++) {
-		if (nr_wind_matrix_test (path, winds + ss * path->nsegs, ss, ngroups, and, or, self)) {
-			npath->segs[sd].nodes = nr_node_list_copy (path->segs[ss].nodes);
-			npath->segs[sd].last = npath->segs[sd].nodes;
-			while (npath->segs[sd].last->next) npath->segs[sd].last = npath->segs[sd].last->next;
-			npath->segs[sd].closed = path->segs[ss].closed;
-			npath->segs[sd].value = path->segs[ss].value;
-			sd += 1;
+	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (nsegs - 1) * sizeof (struct _NRNodeSeg));
+	for (i = 0; i < nsegs; i++) {
+		struct _NRNodeSeg *dseg;
+		NRPointF dir0, dir1;
+		ss = idx[i];
+		dseg = npath->segs + i;
+		dseg->nodes = nr_node_list_copy (path->segs[ss].nodes);
+		dseg->last = npath->segs[i].nodes;
+		while (dseg->last->next) dseg->last = dseg->last->next;
+		dseg->closed = path->segs[ss].closed;
+		dseg->value = path->segs[ss].value;
+		nr_node_get_dir (dseg->last, &dir0, 1);
+		while (i < nsegs) {
+			int bestidx, bestdir;
+			NRPointF best;
+			/* Search for continuation segment */
+			bestidx = 0;
+			best.x = 0.0;
+			best.y = 0.0;
+			bestdir = 0;
+			for (j = i + 1; j < nsegs; j++) {
+				struct _NRNodeSeg *seg;
+				seg = path->segs + idx[j];
+				if ((seg->nodes->x3 == dseg->last->x3) && (seg->nodes->y3 == dseg->last->y3)) {
+					/* Potential initial continuation */
+					nr_node_get_dir (seg->nodes, &dir1, 0);
+					if (nr_dir_compare (&dir0, &dir1, &best) < 0.0) {
+						bestidx = j;
+						best = dir1;
+						bestdir = 0;
+					}
+				}
+				if ((seg->last->x3 == dseg->last->x3) && (seg->last->y3 == dseg->last->y3)) {
+					/* Potential reverse continuation */
+					nr_node_get_dir (seg->last, &dir1, 1);
+					if (nr_dir_compare (&dir0, &dir1, &best) < 0.0) {
+						bestidx = j;
+						best = dir1;
+						bestdir = 1;
+					}
+				}
+			}
+			if (!bestidx) break;
+			/* Append best segment */
+			if (bestdir == 0) {
+				struct _NRNode *node;
+				node = nr_node_list_copy (path->segs[idx[bestidx]].nodes);
+				dseg->last->next = node->next;
+				dseg->last->next->prev = dseg->last;
+				nr_node_free (node);
+				while (dseg->last->next) dseg->last = dseg->last->next;
+			} else {
+				struct _NRNode *node;
+				node = nr_node_list_copy_reverse (path->segs[idx[bestidx]].nodes);
+				dseg->last->next = node->next;
+				dseg->last->next->prev = dseg->last;
+				nr_node_free (node);
+				while (dseg->last->next) dseg->last = dseg->last->next;
+			}
+			idx[bestidx] = idx[nsegs - 1];
+			nsegs -= 1;
+			nr_node_get_dir (dseg->last, &dir0, 1);
 		}
 	}
+	npath->nsegs = nsegs;
 	free (winds);
 	return npath;
 }
