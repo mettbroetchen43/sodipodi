@@ -1,3 +1,15 @@
+2002-11-20  Masatake YAMATO  <jet@gyve.org>
+
+	* src/seltrans.c (sp_sel_trans_init): Set null to
+	stamp_cache.
+	(sp_sel_trans_ungrab): Clear stamp_cache.
+	(sp_sel_trans_stamp): If available, use stamp_cache.
+	Else build stamp_cache. l0 is removed. Don't
+	free the list here.
+
+	* src/seltrans.h: Included glib.h.
+	(struct _SPSelTrans): added new field stamp_cache.
+
 2002-11-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/interface.c (sp_ui_dialog_menu): Do not bring up > 1 transform dialogs at once

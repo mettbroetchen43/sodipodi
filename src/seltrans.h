@@ -15,6 +15,7 @@
 #include <libnr/nr-types.h>
 #include <libart_lgpl/art_point.h>
 #include <libart_lgpl/art_rect.h>
+#include <glib.h>
 #include "knot.h"
 #include "desktop-handles.h"
 
@@ -71,6 +72,7 @@ struct _SPSelTrans {
         SPCanvasItem *l1, *l2, *l3, *l4;
 	guint sel_changed_id;
 	guint sel_modified_id;
+	GSList * stamp_cache;
 };
 
 /*

@@ -143,6 +143,8 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	sp_canvas_item_hide (seltrans->l3);
 	seltrans->l4 = sp_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_canvas_item_hide (seltrans->l4);
+
+	seltrans->stamp_cache = NULL;
 }
 
 void
@@ -264,6 +266,7 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 
 
 	sp_sel_trans_update_handles (seltrans);
+	g_return_if_fail(seltrans->stamp_cache == NULL);
 }
 
 void
@@ -401,6 +404,11 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 
 	sp_sel_trans_update_volatile_state (seltrans);
 	sp_sel_trans_update_handles (seltrans);
+	if (seltrans->stamp_cache) {
+		g_slist_free(seltrans->stamp_cache);
+		seltrans->stamp_cache = NULL;
+	}
+
 }
 
 /* fixme: This is really bad, as we compare positoons for each stamp (Lauris) */
@@ -418,7 +426,7 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	/* stamping mode */
 	SPItem * original_item, * copy_item;
 	SPRepr * original_repr, * copy_repr;
-	GSList *l, *l0;
+	GSList *l;
 
 	gchar tstr[80];
 	gdouble i2d[6], i2dnew[6];
@@ -428,10 +436,16 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	tstr[79] = '\0';
 	
 	if (!seltrans->empty) {
-		l  = (GSList *) sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
-		l  = g_slist_copy (l);
-		l  = g_slist_sort (l, (GCompareFunc) sp_object_compare_position);
-		l0 = l;
+		
+		if (seltrans->stamp_cache) {
+			l = seltrans->stamp_cache;
+		} else {
+			/* Build cache */
+			l  = (GSList *) sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+			l  = g_slist_copy (l);
+			l  = g_slist_sort (l, (GCompareFunc) sp_object_compare_position);
+			seltrans->stamp_cache = l;
+		}
 
 		while (l) {
 			original_item = SP_ITEM(l->data);
@@ -455,7 +469,6 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 			sp_repr_unref (copy_repr);
 			l = l->next;
 		}
-		g_slist_free(l0);
 		sp_document_done (SP_DT_DOCUMENT (seltrans->desktop));
 	}
 }
