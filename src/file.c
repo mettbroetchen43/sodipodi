@@ -106,11 +106,11 @@ sp_file_save_document (SPDocument *document)
 	if (fn == NULL) {
 		sp_file_save_as (NULL);
 	} else {
-		sp_repr_save_file (sp_document_repr_doc (document), fn);
 		/* fixme: */
 		sp_document_set_undo_sensitive (document, FALSE);
 		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 		sp_document_set_undo_sensitive (document, TRUE);
+		sp_repr_save_file (sp_document_repr_doc (document), fn);
 	}
 }
 
@@ -148,11 +148,12 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 		sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 		sp_repr_set_attr (repr, "sodipodi:docname", filename);
 
-		sp_repr_save_file (sp_document_repr_doc (doc), filename);
 		/* fixme: */
 		sp_document_set_undo_sensitive (doc, FALSE);
 		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 		sp_document_set_undo_sensitive (doc, TRUE);
+
+		sp_repr_save_file (sp_document_repr_doc (doc), filename);
 #if 0
 		sp_desktop_set_title (sp_filename_from_path (filename));
 #endif
