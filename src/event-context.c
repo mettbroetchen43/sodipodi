@@ -147,7 +147,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			break;
 		case 3:
 			/* fixme: */
-			sp_event_root_menu_popup (NULL, NULL, event);
+			sp_event_root_menu_popup (desktop, NULL, event);
 			break;
 		default:
 			break;
@@ -320,7 +320,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	    }
 	    break;
 	  case GDK_space: // Space - root menu
-	    sp_event_root_menu_popup (NULL, NULL, event);
+	    sp_event_root_menu_popup (desktop, NULL, event);
 	    ret= TRUE;
 	    break;
           }
@@ -336,14 +336,14 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 /* fixme: do context sensitive popup menu on items */
 
 static gint
-sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
+sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEvent *event)
 {
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {
 		case 3:
 			/* fixme: */
-			sp_event_root_menu_popup (NULL, item, event);
+			sp_event_root_menu_popup (ctx->desktop, item, event);
 			return TRUE;
 		default:
 			break;
@@ -413,7 +413,7 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 }
 
 void
-sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEvent * event)
+sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 {
 	static GtkMenu * menu = NULL;
 	static GtkWidget * objitem = NULL;
@@ -438,7 +438,7 @@ sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEvent * event)
 		m = gtk_menu_new ();
 		gtk_signal_connect_while_alive (GTK_OBJECT (item), "destroy",
 						GTK_SIGNAL_FUNC (sp_event_grab_item_destroy), objitem, GTK_OBJECT (m));
-		sp_item_menu (item, GTK_MENU (m));
+		sp_item_menu (item, desktop, GTK_MENU (m));
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (objitem), m);
 		gtk_widget_show (m);
 		gtk_widget_set_sensitive (objitem, TRUE);
@@ -449,11 +449,11 @@ sp_event_root_menu_popup (GtkWidget * widget, SPItem * item, GdkEvent * event)
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-	  gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button.button, event->button.time);
-	  break;
+		gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button.button, event->button.time);
+		break;
 	case GDK_KEY_PRESS:
-	  gtk_menu_popup (menu, NULL, NULL, 0, NULL, 0, event->key.time);
-	  break;
+		gtk_menu_popup (menu, NULL, NULL, 0, NULL, 0, event->key.time);
+		break;
 	default:
 	}
 }

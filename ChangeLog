@@ -1,3 +1,24 @@
+2001-07-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-namedview.c (sp_namedview_get_name): Initialize exception
+
+	* src/sp-item-group.c (sp_item_group_ungroup_activate): New function
+	(sp_item_group_ungroup): Implement this
+
+	* src/sp-item.c (sp_item_select_this): New function
+	(sp_item_private_menu): Added "Select this"
+	(sp_item_properties): Select item
+
+	* src/desktop.c (sp_desktop_menu_popup): Use new signature
+
+	* src/event-context.c (sp_event_root_menu_popup): Use desktop
+	in signature instead of widget
+
+	* src/sp-object.c (sp_object_getAttribute): Return NULL, if
+	exception is not clear
+	(sp_object_setAttribute): Ditto
+	(sp_object_removeAttribute): Ditto
+
 2001-07-08  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/xml/repr-io.c (sp_repr_svg_read_node): Preserve namespaces for

@@ -5,6 +5,11 @@
 #include "display/canvas-bgroup.h"
 #include "xml/repr-private.h"
 #include "sp-object-repr.h"
+#include "svg/svg.h"
+#include "document.h"
+#include "desktop.h"
+#include "desktop-handles.h"
+#include "selection.h"
 #include "sp-item-group.h"
 
 static void sp_group_class_init (SPGroupClass *klass);
@@ -24,7 +29,9 @@ static gchar * sp_group_description (SPItem * item);
 static GnomeCanvasItem * sp_group_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static void sp_group_hide (SPItem * item, SPDesktop * desktop);
 static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
-static void sp_group_menu (SPItem * item, GtkMenu * menu);
+static void sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+
+static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group);
 
 static SPItemClass * parent_class;
 
@@ -449,21 +456,23 @@ sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 }
 
 static void
-sp_group_menu (SPItem * item, GtkMenu * menu)
+sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu * menu)
 {
 	GtkWidget * i, * m, * w;
 
 	if (SP_ITEM_CLASS (parent_class)->menu)
-		(* SP_ITEM_CLASS (parent_class)->menu) (item, menu);
+		(* SP_ITEM_CLASS (parent_class)->menu) (item, desktop, menu);
 
 	i = gtk_menu_item_new_with_label (_("Group"));
 
 	m = gtk_menu_new ();
-	w = gtk_menu_item_new_with_label (_("Ungroup"));
-	gtk_signal_connect (GTK_OBJECT (w), "activate",
-			    GTK_SIGNAL_FUNC (sp_item_group_ungroup), item);
 
+	/* "Ungroup" */
+	w = gtk_menu_item_new_with_label (_("Ungroup"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_group_ungroup_activate), item);
 	gtk_widget_show (w);
+
 	gtk_menu_append (GTK_MENU (m), w);
 	gtk_widget_show (m);
 
@@ -473,52 +482,85 @@ sp_group_menu (SPItem * item, GtkMenu * menu)
 	gtk_widget_show (i);
 }
 
-void
-sp_item_group_ungroup (SPGroup *group)
+static void
+sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group)
 {
-#if 0
-	SPItem *object, *item, *root;
-	gdouble pa[6], ca[6];
+	SPDesktop *desktop;
+	GSList *children;
+
+	g_assert (SP_IS_GROUP (group));
+
+	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	children = NULL;
+	sp_item_group_ungroup (group, &children);
+
+	sp_selection_set_item_list (SP_DT_SELECTION (desktop), children);
+	g_slist_free (children);
+}
+
+void
+sp_item_group_ungroup (SPGroup *group, GSList **children)
+{
+	SPDocument *document;
+	SPItem *gitem;
+	SPRepr *grepr;
+	gdouble gtrans[6];
 
 	g_return_if_fail (group != NULL);
 	g_return_if_fail (SP_IS_GROUP (group));
 
-	object = SP_OBJECT (group);
-	parent = object->parent;
+	document = ((SPObject *) group)->document;
 
-	memcpy (
+	gitem = SP_ITEM (group);
 
-	art_affine_identity (pa);
-	pastr = sp_repr_attr (current, "transform");
-	sp_svg_read_affine (pa, pastr);
-
-	while ((list = (GList *) sp_repr_children (current))) {
-		child = (SPRepr *) list->data;
-
-		art_affine_identity (ca);
-		castr = sp_repr_attr (child, "transform");
-		sp_svg_read_affine (ca, castr);
-		art_affine_multiply (ca, ca, pa);
-
-		css = sp_repr_css_attr_inherited (child, "style");
-		sp_repr_ref (child);
-		sp_repr_remove_child (current, child);
-		
-		sp_svg_write_affine (affinestr, 79, ca);
-		affinestr[79] = '\0';
-		sp_repr_set_attr (child, "transform", affinestr);
-
-		sp_repr_css_set (child, css, "style");
-		sp_repr_css_attr_unref (css);
-
-		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), child);
-		sp_repr_unref (child);
-		sp_selection_add_item (selection, item);
+	grepr = ((SPObject *) gitem)->repr;
+	g_return_if_fail (!strcmp (sp_repr_name (grepr), "g"));
+	if (gitem->affine) {
+		memcpy (gtrans, gitem->affine, 6 * sizeof (gdouble));
+	} else {
+		art_affine_identity (gtrans);
 	}
 
-	sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
-	sp_document_done (SP_DT_DOCUMENT (desktop));
-#endif
+	while (group->children) {
+		SPRepr *crepr;
+
+		crepr = group->children->repr;
+
+		if (SP_IS_ITEM (group->children)) {
+			SPRepr *nrepr;
+			SPItem *nitem;
+			gdouble ctrans[6];
+			const gchar *castr;
+			SPCSSAttr * css;
+			gchar affinestr[80];
+
+			nrepr = sp_repr_duplicate (crepr);
+
+			art_affine_identity (ctrans);
+			castr = sp_repr_attr (nrepr, "transform");
+			sp_svg_read_affine (ctrans, castr);
+			art_affine_multiply (ctrans, ctrans, gtrans);
+			sp_svg_write_affine (affinestr, 79, ctrans);
+			affinestr[79] = '\0';
+			sp_repr_set_attr (nrepr, "transform", affinestr);
+
+			css = sp_repr_css_attr_inherited (nrepr, "style");
+			sp_repr_css_set (nrepr, css, "style");
+			sp_repr_css_attr_unref (css);
+
+			nitem = sp_document_add_repr (document, nrepr);
+			sp_repr_unref (nrepr);
+			if (children) *children = g_slist_prepend (*children, nitem);
+		}
+
+		sp_repr_remove_child (grepr, crepr);
+	}
+
+	sp_document_del_repr (document, grepr);
+	sp_document_done (document);
 }
 
 /*

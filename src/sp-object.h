@@ -50,7 +50,7 @@ struct _SPException {
 };
 
 #define SP_EXCEPTION_INIT(ex) {(ex)->code = SP_NO_EXCEPTION;}
-#define SP_EXCEPTION_IS_OK(ex) ((ex)->code == SP_NO_EXCEPTION;}
+#define SP_EXCEPTION_IS_OK(ex) ((ex)->code == SP_NO_EXCEPTION)
 
 struct _SPObject {
 	GtkObject object;
@@ -85,9 +85,9 @@ void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 /* Public */
 
-const gchar * sp_object_getAttribute (SPObject * object, const gchar * key, SPException * ex);
-void sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * value, SPException * ex);
-void sp_object_removeAttribute (SPObject * object, const gchar * key, SPException * ex);
+const guchar *sp_object_getAttribute (SPObject *object, const guchar *key, SPException *ex);
+void sp_object_setAttribute (SPObject *object, const guchar *key, const guchar *value, SPException *ex);
+void sp_object_removeAttribute (SPObject * object, const guchar *key, SPException *ex);
 
 /* Style */
 

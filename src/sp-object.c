@@ -5,7 +5,7 @@
  *
  * This is most abstract of all typed objects
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 1999-2000
+ * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 1999-2000
  *
  */
 
@@ -339,19 +339,22 @@ sp_object_repr_change_content (SPRepr * repr, gpointer data)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_content) (object);
 }
 
-const gchar *
-sp_object_getAttribute (SPObject * object, const gchar * key, SPException * ex)
+const guchar *
+sp_object_getAttribute (SPObject *object, const guchar *key, SPException *ex)
 {
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	g_return_val_if_fail (*key != '\0', NULL);
 
-	return sp_repr_attr (object->repr, key);
+	/* If exception is not clear, return */
+	if (!SP_EXCEPTION_IS_OK (ex)) return NULL;
+
+	return (const guchar *) sp_repr_attr (object->repr, key);
 }
 
 void
-sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * value, SPException * ex)
+sp_object_setAttribute (SPObject *object, const guchar *key, const guchar *value, SPException *ex)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
@@ -359,25 +362,27 @@ sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * valu
 	g_return_if_fail (*key != '\0');
 	g_return_if_fail (value != NULL);
 
+	/* If exception is not clear, return */
+	g_return_if_fail (SP_EXCEPTION_IS_OK (ex));
+
 	if (!sp_repr_set_attr (object->repr, key, value)) {
 		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
-	} else {
-		ex->code = SP_NO_EXCEPTION;
 	}
 }
 
 void
-sp_object_removeAttribute (SPObject * object, const gchar * key, SPException * ex)
+sp_object_removeAttribute (SPObject *object, const guchar *key, SPException *ex)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (*key != '\0');
 
+	/* If exception is not clear, return */
+	g_return_if_fail (SP_EXCEPTION_IS_OK (ex));
+
 	if (!sp_repr_set_attr (object->repr, key, NULL)) {
 		ex->code = SP_NO_MODIFICATION_ALLOWED_ERR;
-	} else {
-		ex->code = SP_NO_EXCEPTION;
 	}
 }
 

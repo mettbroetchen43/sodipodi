@@ -476,10 +476,14 @@ sp_namedview_setup_grid_item (SPNamedView * nv, GnomeCanvasItem * item)
 const gchar *
 sp_namedview_get_name (SPNamedView * nv)
 {
-  gchar * name;
+	SPException ex;
+	gchar * name;
+
+	SP_EXCEPTION_INIT (&ex);
   
-  name = (gchar *)sp_object_getAttribute (SP_OBJECT (nv), "id", NULL);
-  return name;
+	name = (gchar *)sp_object_getAttribute (SP_OBJECT (nv), "id", &ex);
+
+	return name;
 }
 
 guint

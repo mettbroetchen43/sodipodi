@@ -9,6 +9,8 @@
 #include "helper/sp-canvas-util.h"
 #include "document.h"
 #include "desktop.h"
+#include "desktop-handles.h"
+#include "selection.h"
 #include "style.h"
 /* fixme: I do not like that (Lauris) */
 #include "dialogs/item-properties.h"
@@ -27,10 +29,11 @@ static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
 static GnomeCanvasItem * sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static void sp_item_private_hide (SPItem * item, SPDesktop * desktop);
 
-static void sp_item_private_menu (SPItem * item, GtkMenu * menu);
-void sp_item_properties (GtkMenuItem * menuitem, SPItem * item);
-void sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item);
-void sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item);
+static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
+static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
+static void sp_item_select_this (GtkMenuItem *menuitem, SPItem *item);
+static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
+static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
 
 static SPObjectClass * parent_class;
 
@@ -512,38 +515,49 @@ sp_item_raise_canvasitem_to_top (SPItem * item)
 	}
 }
 
+/* Generate context menu item section */
+
 static void
-sp_item_private_menu (SPItem * item, GtkMenu * menu)
+sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	GtkWidget * i, * m, * w;
 	gboolean insensitive;
 
+	/* Create toplevel menuitem */
 	i = gtk_menu_item_new_with_label (_("Item"));
-
 	m = gtk_menu_new ();
 	/* Item dialog */
 	w = gtk_menu_item_new_with_label (_("Item Properties"));
-	gtk_signal_connect (GTK_OBJECT (w), "activate",
-			    GTK_SIGNAL_FUNC (sp_item_properties), item);
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
+	/* Separator */
 	w = gtk_menu_item_new ();
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Select item */
+	w = gtk_menu_item_new_with_label (_("Select this"));
+	if (sp_selection_item_selected (SP_DT_SELECTION (desktop), item)) {
+		gtk_widget_set_sensitive (w, FALSE);
+	} else {
+		gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+		gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_select_this), item);
+	}
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Reset transformations */
 	w = gtk_menu_item_new_with_label (_("Reset transformation"));
-	gtk_signal_connect (GTK_OBJECT (w), "activate",
-			    GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Toggle sensitivity */
 	insensitive = sp_repr_get_int_attribute (((SPObject *) item)->repr, "insensitive", FALSE);
 	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
-	/* fixme: should we add data to menuitem? */
-	gtk_signal_connect (GTK_OBJECT (w), "activate",
-			    GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
+	/* Show menu */
 	gtk_widget_show (m);
 
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
@@ -553,24 +567,46 @@ sp_item_private_menu (SPItem * item, GtkMenu * menu)
 }
 
 void
-sp_item_menu (SPItem * item, GtkMenu * menu)
+sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 {
 	g_assert (SP_IS_ITEM (item));
 	g_assert (GTK_IS_MENU (menu));
 
 	if (SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu)
-		(* SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu) (item, menu);
+		(* SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu) (item, desktop, menu);
 }
 
-void
-sp_item_properties (GtkMenuItem * menuitem, SPItem * item)
+static void
+sp_item_properties (GtkMenuItem *menuitem, SPItem *item)
 {
+	SPDesktop *desktop;
+
 	g_assert (SP_IS_ITEM (item));
+
+	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
 
 	sp_item_dialog (item);
 }
 
-void
+static void
+sp_item_select_this (GtkMenuItem *menuitem, SPItem *item)
+{
+	SPDesktop *desktop;
+
+	g_assert (SP_IS_ITEM (item));
+
+	desktop = gtk_object_get_data (GTK_OBJECT (menuitem), "desktop");
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
+
+	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
+}
+
+static void
 sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
 {
 	g_assert (SP_IS_ITEM (item));
@@ -578,7 +614,7 @@ sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
 	sp_repr_set_attr (((SPObject *) item)->repr, "transform", NULL);
 }
 
-void
+static void
 sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item)
 {
 	const gchar * val;

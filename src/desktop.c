@@ -59,7 +59,7 @@ void sp_desktop_zoom (GtkEntry * caller,SPDesktop * desktop);
 /* fixme: */
 void sp_desktop_toggle_borders (GtkWidget * widget);
 
-static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event);
+static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
 GtkEventBoxClass * parent_class;
 
@@ -244,10 +244,10 @@ sp_desktop_init (SPDesktop * desktop)
 	menu_arrow = gtk_arrow_new (GTK_ARROW_RIGHT,GTK_SHADOW_IN);
 	gtk_widget_show (menu_arrow);
 	gtk_container_add ((GtkContainer *)desktop->menubutton, menu_arrow);
-	gtk_signal_connect (GTK_OBJECT (desktop-> menubutton), 
+	gtk_signal_connect (GTK_OBJECT (desktop->menubutton), 
 			    "button_press_event", 
 			    GTK_SIGNAL_FUNC (sp_desktop_menu_popup), 
-			    NULL);
+			    desktop);
         GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET(desktop->menubutton), GTK_CAN_FOCUS);
 	/* indicator for active desktop */
 	hbox = gtk_vbox_new (FALSE, 0);
@@ -1067,9 +1067,9 @@ sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop
 }
  
 static void
-sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event)
+sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
-	sp_event_root_menu_popup (widget, NULL, (GdkEvent *)event);
+	sp_event_root_menu_popup (SP_DESKTOP (data), NULL, (GdkEvent *)event);
 }
 
 void

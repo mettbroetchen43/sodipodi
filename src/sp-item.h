@@ -78,7 +78,7 @@ struct _SPItemClass {
 	gboolean (* paint) (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
 	/* Append to context menu */
-	void (* menu) (SPItem * item, GtkMenu * menu);
+	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
         /* give list of points for item to be considered for snapping */ 
         GSList * (* snappoints) (SPItem * item, GSList * points);
 };
@@ -119,7 +119,7 @@ void sp_item_raise_canvasitem_to_top (SPItem * item);
 
 /* Context menu stuff */
 
-void sp_item_menu (SPItem * item, GtkMenu * menu);
+void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 SPItemView * sp_item_view_new_prepend (SPItemView * list, SPItem * item, SPDesktop * desktop, GnomeCanvasItem * canvasitem);
 SPItemView * sp_item_view_list_remove (SPItemView * list, SPItemView * view);
