@@ -1,3 +1,7 @@
+2000-09-21  Pablo Saratxaga <pablo@mandrakesoft.com>
+	
+	* configure.in: ALL_LINGUAS: added 'ca' for Catalan translation.
+
 2000-09-18  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/dialogs/object-properties.*: New combined fill + stroke +
