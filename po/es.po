@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
-"POT-Creation-Date: 2002-11-28 00:42-0500\n"
+"POT-Creation-Date: 2002-11-28 15:27-0500\n"
 "PO-Revision-Date: 2002-10-07 23:20+0200\n"
 "Last-Translator: José Antonio Salgueiro <joseantoniosalgueiro@telefonica."
 "net>\n"
@@ -19,11 +19,11 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "No se ha podido crear un documento de la fábrica sodipodi-svg-doc"
 
-#: src/desktop.c:1063
+#: src/desktop.c:1061
 msgid "Welcome !"
 msgstr "¡Bienvenido!"
 
-#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/desktop.c:1070 src/interface.c:304 src/interface.c:337
 #: src/toolbox.c:586
 msgid "Zoom"
 msgstr "Aumentar"

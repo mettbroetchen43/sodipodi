@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-11-28 00:42-0500\n"
+"POT-Creation-Date: 2002-11-28 15:27-0500\n"
 "PO-Revision-Date: 2002-09-09 01:47+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -20,11 +20,11 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
-#: src/desktop.c:1063
+#: src/desktop.c:1061
 msgid "Welcome !"
 msgstr "Välkommen!"
 
-#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/desktop.c:1070 src/interface.c:304 src/interface.c:337
 #: src/toolbox.c:586
 msgid "Zoom"
 msgstr "Zooma"

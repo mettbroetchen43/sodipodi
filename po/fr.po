@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.26pre2\n"
-"POT-Creation-Date: 2002-11-28 00:42-0500\n"
+"POT-Creation-Date: 2002-11-28 15:27-0500\n"
 "PO-Revision-Date: 2002-11-17 16:58+0100\n"
 "Last-Translator: raymond ostertag <r.ostertag@caramail.com>\n"
 "Language-Team: français <gnomefr@traduc.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Ne peut créer l'usine sodipodi-svg-doc"
 
-#: src/desktop.c:1063
+#: src/desktop.c:1061
 msgid "Welcome !"
 msgstr "Bienvenue !"
 
-#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/desktop.c:1070 src/interface.c:304 src/interface.c:337
 #: src/toolbox.c:586
 msgid "Zoom"
 msgstr "Zoom"

@@ -12,6 +12,7 @@ INCLUDES = \
 	$(SODIPODI_CFLAGS)
 
 libspchelp_a_SOURCES = \
+ 	sp-marshal.c sp-marshal.h \
 	helper-forward.h \
 	sp-canvas.c sp-canvas.h \
 	art-utils.c art-utils.h \
@@ -31,8 +32,7 @@ libspchelp_a_SOURCES = \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
 	bezier-utils.c bezier-utils.h \
 	units.c units.h \
-	unit-menu.c unit-menu.h \
-	sp-marshal.c sp-marshal.h
+	unit-menu.c unit-menu.h
 
 #	pathops.c pathops.h
 

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-11-28 00:42-0500\n"
+"POT-Creation-Date: 2002-11-28 15:27-0500\n"
 "PO-Revision-Date: 2002-03-24 01:22+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nie mo¿na stworzyæ generatora sodipodi-svg-doc"
 
-#: src/desktop.c:1063
+#: src/desktop.c:1061
 msgid "Welcome !"
 msgstr "Witaj !"
 
-#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/desktop.c:1070 src/interface.c:304 src/interface.c:337
 #: src/toolbox.c:586
 msgid "Zoom"
 msgstr "Powiêkszenie"

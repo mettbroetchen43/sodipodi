@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2002-11-28 00:42-0500\n"
+"POT-Creation-Date: 2002-11-28 15:27-0500\n"
 "PO-Revision-Date: 2001-08-11 22:32+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -18,11 +18,11 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nem sikerült létrehozni a sodipodi-svg-doc factory-t"
 
-#: src/desktop.c:1063
+#: src/desktop.c:1061
 msgid "Welcome !"
 msgstr ""
 
-#: src/desktop.c:1072 src/interface.c:304 src/interface.c:337
+#: src/desktop.c:1070 src/interface.c:304 src/interface.c:337
 #: src/toolbox.c:586
 msgid "Zoom"
 msgstr "Nagyítás"
