@@ -16,29 +16,27 @@
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
+#include "document.h"
 #include "desktop.h"
 #include "sp-item.h"
 #include "sp-shape.h"
 #include "knotholder.h"
 
 static void knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data);
+static void knot_ungrabbed_handler (SPKnot *knot, unsigned int state, SPKnotHolder *kh);
 
 #ifdef KNOT_HOLDER_DEBUG
 #include <gtk/gtk.h>
 
 static void
-sp_knot_holder_debug (GtkObject *object,
-		gpointer data)
+sp_knot_holder_debug (GtkObject *object, gpointer data)
 {
-	g_print ("sp-knot-holder-debug: [type=%s] [data=%s]\n",
-		 gtk_type_name (GTK_OBJECT_TYPE(object)),
-		 (const gchar *)data);
+	g_print ("sp-knot-holder-debug: [type=%s] [data=%s]\n", gtk_type_name (GTK_OBJECT_TYPE(object)), (const gchar *)data);
 }
 #endif
 
 SPKnotHolder *
-sp_knot_holder_new	(SPDesktop     *desktop,
-			 SPItem	       *item)
+sp_knot_holder_new (SPDesktop *desktop, SPItem *item, SPKnotHolderReleasedFunc relhandler)
 {
 	SPKnotHolder *knot_holder;
 
@@ -49,9 +47,11 @@ sp_knot_holder_new	(SPDesktop     *desktop,
 
 	knot_holder = g_new (SPKnotHolder, 1);
 	knot_holder->desktop = desktop;
-	knot_holder->item    = item;
+	knot_holder->item = item;
 	gtk_object_ref (GTK_OBJECT (item));
-	knot_holder->entity   = NULL;
+	knot_holder->entity = NULL;
+
+	knot_holder->released = relhandler;
 
 #ifdef KNOT_HOLDER_DEBUG
 	gtk_signal_connect (GTK_OBJECT(desktop), "destroy",
@@ -62,37 +62,27 @@ sp_knot_holder_new	(SPDesktop     *desktop,
 }
 
 void
-sp_knot_holder_destroy	(SPKnotHolder       *knot_holder)
+sp_knot_holder_destroy	(SPKnotHolder *kh)
 {
-	if (knot_holder) {
-		GSList *el;
-
-		gtk_object_unref (GTK_OBJECT (knot_holder->item));
-
-		for (el = knot_holder->entity; el; ) {
+	if (kh) {
+		gtk_object_unref (GTK_OBJECT (kh->item));
+		while (kh->entity) {
 			SPKnotHolderEntity *e;
-
-			e = (SPKnotHolderEntity *)el->data;
+			e = (SPKnotHolderEntity *) kh->entity->data;
 			/* unref should call destroy */
-			gtk_object_unref (GTK_OBJECT(e->knot));
+			gtk_object_unref (GTK_OBJECT (e->knot));
 			g_free (e);
-			el = g_slist_remove_link (el, el);
+			kh->entity = g_slist_remove (kh->entity, e);
 		}
 
-		g_free (knot_holder);
+		g_free (kh);
 	}
 }
 
 void
-sp_knot_holder_add	(SPKnotHolder       *knot_holder,
-			 SPKnotHolderSetFunc knot_set,
-			 SPKnotHolderGetFunc knot_get)
+sp_knot_holder_add (SPKnotHolder *knot_holder, SPKnotHolderSetFunc knot_set, SPKnotHolderGetFunc knot_get)
 {
-	sp_knot_holder_add_full (knot_holder,
-				 knot_set,
-				 knot_get,
-				 SP_KNOT_SHAPE_DIAMOND,
-				 SP_KNOT_MODE_COLOR);
+	sp_knot_holder_add_full (knot_holder, knot_set, knot_get, SP_KNOT_SHAPE_DIAMOND, SP_KNOT_MODE_COLOR);
 }
 
 void
@@ -142,8 +132,9 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 	art_affine_point (&p, &p, affine);
 	sp_knot_set_position (e->knot, &p, SP_KNOT_STATE_NORMAL);
 
-	e->handler_id = gtk_signal_connect (ob, "moved",
-					    knot_moved_handler, knot_holder);
+	e->handler_id = gtk_signal_connect (ob, "moved", knot_moved_handler, knot_holder);
+
+	gtk_signal_connect (ob, "ungrabbed", GTK_SIGNAL_FUNC (knot_ungrabbed_handler), knot_holder);
 
 #ifdef KNOT_HOLDER_DEBUG
 	gtk_signal_connect (ob, "destroy",
@@ -153,18 +144,15 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 }
 
 static void
-knot_moved_handler (SPKnot   *knot,
-		    ArtPoint *p,
-		    guint     state,
-		    gpointer  data)
+knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 {
 	SPKnotHolder *knot_holder;
-	SPItem  *item;
+	SPItem *item;
 	SPObject *object;
-	gdouble  affine[6];
-	GSList  *el;
+	gdouble affine[6];
+	GSList *el;
 
-	knot_holder = (SPKnotHolder *)data;
+	knot_holder = (SPKnotHolder *) data;
 	item  = SP_ITEM (knot_holder->item);
 	object = SP_OBJECT (item);
 
@@ -207,3 +195,14 @@ knot_moved_handler (SPKnot   *knot,
 		gtk_signal_handler_unblock (kob, e->handler_id);
 	}
 }
+
+static void
+knot_ungrabbed_handler (SPKnot *knot, unsigned int state, SPKnotHolder *kh)
+{
+	if (kh->released) {
+		kh->released (kh->item);
+	} else {
+		sp_document_done (SP_OBJECT_DOCUMENT (kh->item));
+	}
+}
+

@@ -622,7 +622,7 @@ sp_rect_knot_holder (SPItem *item, SPDesktop *desktop)
 	SPKnotHolder *knot_holder;
 
 	rect = SP_RECT (item);
-	knot_holder = sp_knot_holder_new (desktop, item);
+	knot_holder = sp_knot_holder_new (desktop, item, NULL);
 	
 	sp_knot_holder_add (knot_holder, sp_rect_rx_set, sp_rect_rx_get);
 	sp_knot_holder_add (knot_holder, sp_rect_ry_set, sp_rect_ry_get);

@@ -371,7 +371,7 @@ sp_star_knot_holder (SPItem *item, SPDesktop *desktop)
 		knot_holder = (* SP_ITEM_CLASS(parent_class)->knot_holder) (item);
 #else
 	/* we don't need to get parent knot_holder */
-	knot_holder = sp_knot_holder_new (desktop, item);
+	knot_holder = sp_knot_holder_new (desktop, item, NULL);
 #endif
 
 	sp_knot_holder_add (knot_holder,

@@ -1,5 +1,10 @@
 2002-11-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/knotholder.h: Added hook for knot ungrabbing
+
+	* src/knotholder.c (knot_ungrabbed_handler): Implement
+	(sp_knot_holder_destroy): Free list items
+
 	* src/sp-ellipse.c (sp_arc_start_set): Use genericellipse closed marker
 	(sp_arc_end_set): Ditto
 	(sp_arc_set_elliptical_path_attribute): Ditto

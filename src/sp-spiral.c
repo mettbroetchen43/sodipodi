@@ -500,7 +500,7 @@ sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop)
 	SPKnotHolder *knot_holder;
 
 	spiral = SP_SPIRAL (item);
-	knot_holder = sp_knot_holder_new (desktop, item);
+	knot_holder = sp_knot_holder_new (desktop, item, NULL);
 
 	sp_knot_holder_add (knot_holder,
 			    sp_spiral_inner_set,
