@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2003-09-23 13:22+0200\n"
-"PO-Revision-Date: 2003-09-24 22:13+0200\n"
+"PO-Revision-Date: 2003-10-24 21:14+0200\n"
 "Last-Translator: Jeroen van der Vegt <jeroen@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -568,11 +568,11 @@ msgstr "Vullen"
 
 #: src/dialogs/object-properties.c:139
 msgid "Stroke paint"
-msgstr "Verfveeg"
+msgstr "Lijnkleur"
 
 #: src/dialogs/object-properties.c:153
 msgid "Stroke style"
-msgstr "Veegstijl"
+msgstr "Lijnstijl"
 
 #: src/dialogs/object-properties.c:173
 msgid "Apply to:"
@@ -624,7 +624,7 @@ msgstr "Positie en grootte"
 
 #: src/dialogs/stroke-style.c:543 src/toolbox.c:440
 msgid "Stroke settings"
-msgstr "Veeg voorkeuren"
+msgstr "Lijn instellingen"
 
 #. Join type
 #: src/dialogs/stroke-style.c:579
@@ -634,7 +634,7 @@ msgstr "Samenvoegen:"
 #. Cap type
 #: src/dialogs/stroke-style.c:622
 msgid "Cap:"
-msgstr ""
+msgstr "Uiteinde"
 
 #. Dash
 #: src/dialogs/stroke-style.c:665
@@ -694,7 +694,7 @@ msgstr "Hoeken:"
 
 #: src/dialogs/tool-attributes.c:100
 msgid "Proportion"
-msgstr ""
+msgstr "Verhoudingen"
 
 #: src/dialogs/tool-attributes.c:110
 msgid "Transform:"
@@ -736,7 +736,7 @@ msgstr "Selectie transformeren."
 
 #: src/dialogs/transformation.c:365
 msgid "Move"
-msgstr "Beweeg"
+msgstr "Bewegen"
 
 #. Relative moves
 #: src/dialogs/transformation.c:407
@@ -745,7 +745,7 @@ msgstr "Relatieve verplaatsing"
 
 #: src/dialogs/transformation.c:539
 msgid "Scale"
-msgstr "Schaal"
+msgstr "Schalen"
 
 #: src/dialogs/transformation.c:666
 msgid "Rotate"
@@ -1040,7 +1040,7 @@ msgstr "Over Sodipodi"
 #. Modules need abouts too
 #: src/interface.c:319 src/interface.c:474
 msgid "About Modules"
-msgstr "Over mudules"
+msgstr "Over modules"
 
 #: src/interface.c:337
 msgid "Cleanup"
@@ -1182,7 +1182,7 @@ msgstr "HOOGTE"
 #: src/main.c:151
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
-"Achtergrond kleur van de geëxporteerde· itmap (kan iedere door SVG "
+"Achtergrondkleur van de geëxporteerde bitmap (kan iedere door SVG "
 "ondersteunde kleur zijn)"
 
 #: src/main.c:151
@@ -1232,7 +1232,7 @@ msgstr "Sodipodi (doc. naam %s): Afdrukvoorbeeld"
 
 #: src/modules/kde.cpp:159
 msgid "Document variant:"
-msgstr ""
+msgstr "Document·variant"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1325,7 +1325,7 @@ msgstr "Dit selecteren"
 #. Reset transformations
 #: src/object-ui.c:128
 msgid "Reset transformation"
-msgstr ""
+msgstr "Transformatie herstellen"
 
 #: src/object-ui.c:134
 msgid "Make sensitive"
@@ -1432,12 +1432,12 @@ msgstr "Spiraal eigenschappen"
 #. rx_ratio
 #: src/rect-context.c:397
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Afrondingsfactor·in·x-richting:"
 
 #. ry_ratio
 #: src/rect-context.c:409
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Afrondingsfactor·in·y-richting:"
 
 #: src/select-context.c:564
 msgid "Visual transformation"
@@ -1672,7 +1672,7 @@ msgstr "Afbeelding met slechte referentie: %s"
 #: src/sp-image.c:372
 #, c-format
 msgid "Color image %d x %d: %s"
-msgstr ""
+msgstr "Kleurenafbeelding %d x %d: %s"
 
 #: src/sp-image.c:926
 #, c-format
@@ -1766,7 +1766,7 @@ msgstr "De geselecteerde knooppunten onder een hoek zetten"
 
 #: src/toolbox.c:655
 msgid "Make selected segments lines"
-msgstr "Lijnen maken van de geselecteerde segmenten"
+msgstr "De geselecteerde segmenten omzetten naar rechtelijnen\t"
 
 #: src/toolbox.c:656
 msgid "Delete selected nodes"
@@ -1782,7 +1782,7 @@ msgstr "De geselecteerde knopen vloeiend"
 
 #: src/toolbox.c:659
 msgid "Make selected segments curves"
-msgstr "Van de geselecteerde segmenten gekromte lijnen maken"
+msgstr "Gekromde·lijnen·maken·van de geselecteerde segmenten."
 
 #: src/verbs.c:427
 msgid "Does nothing"
@@ -2098,7 +2098,7 @@ msgstr "Inzoomen op een nauwkeurig geselecteerd gebied"
 
 #: src/verbs.c:477
 msgid "Dropper"
-msgstr "Druppelaar"
+msgstr "Pipet"
 
 #: src/verbs.c:477
 msgid "Pick averaged colors from image"
@@ -2192,11 +2192,11 @@ msgstr "Gereedschaps instellingen"
 
 #: src/verbs.c:493
 msgid "Fill and Stroke"
-msgstr "Verf en veeg"
+msgstr "Opvulling en lijnen"
 
 #: src/verbs.c:493
 msgid "Fill and stroke settings"
-msgstr "Verf- en veeginstellingen"
+msgstr "Opvul- en lijninstellingen"
 
 #: src/verbs.c:494
 msgid "Size and Position"
@@ -2290,7 +2290,7 @@ msgstr "Meerdere stijlen"
 
 #: src/widgets/paint-selector.c:648
 msgid "No paint"
-msgstr "Geen verf"
+msgstr "Geen opvulling"
 
 #. Label
 #: src/widgets/paint-selector.c:738
@@ -2320,11 +2320,11 @@ msgstr "CMYK kleurenpalet"
 #. Use dropper
 #: src/widgets/paint-selector.c:757
 msgid "Get from dropper"
-msgstr "Ophalen via druppelaar"
+msgstr "Ophalen via pipet"
 
 #: src/widgets/paint-selector.c:788
 msgid "Color paint"
-msgstr "Verfkleur"
+msgstr "Effen opvulling"
 
 #: src/widgets/paint-selector.c:858
 msgid "Linear gradient"
