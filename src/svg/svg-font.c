@@ -1,5 +1,6 @@
 #define SP_SVG_FONT_C
 
+#include <string.h>
 #include <stdio.h>
 #include "svg.h"
 

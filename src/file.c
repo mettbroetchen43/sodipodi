@@ -81,8 +81,7 @@ void sp_file_open (void)
 
 	w = gtk_file_selection_new (_("Select file to open"));
 	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
-	gtk_signal_connect (GTK_OBJECT (w), "delete_event",
-			    GTK_SIGNAL_FUNC (file_open_cancel), w);
+
 	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
 			    GTK_SIGNAL_FUNC (file_open_ok), w);
 	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
@@ -108,6 +107,10 @@ sp_file_save_document (SPDocument *document)
 		sp_file_save_as (NULL);
 	} else {
 		sp_repr_save_file (sp_document_repr_doc (document), fn);
+		/* fixme: */
+		sp_document_set_undo_sensitive (document, FALSE);
+		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
+		sp_document_set_undo_sensitive (document, TRUE);
 	}
 }
 
@@ -144,9 +147,12 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 		sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 		sp_repr_set_attr (repr, "sodipodi:docname", filename);
-		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 
 		sp_repr_save_file (sp_document_repr_doc (doc), filename);
+		/* fixme: */
+		sp_document_set_undo_sensitive (doc, FALSE);
+		sp_repr_set_attr (repr, "sodipodi:modified", NULL);
+		sp_document_set_undo_sensitive (doc, TRUE);
 #if 0
 		sp_desktop_set_title (sp_filename_from_path (filename));
 #endif
@@ -170,8 +176,6 @@ void sp_file_save_as (GtkWidget * widget)
 	w = gtk_file_selection_new (_("Save file"));
 	gtk_window_set_modal (GTK_WINDOW (w), TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (w), "delete_event",
-			    GTK_SIGNAL_FUNC (file_save_cancel), w);
 	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
 			    GTK_SIGNAL_FUNC (file_save_ok), w);
 	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
@@ -273,23 +277,21 @@ file_import_cancel (GtkButton *b, GtkFileSelection *fs)
 void sp_file_import (GtkWidget * widget)
 {
         SPDocument * doc;
-	static GtkWidget * w = NULL;
-  
+	GtkWidget * w;
+
         doc = SP_ACTIVE_DOCUMENT;
 	if (!SP_IS_DOCUMENT(doc)) return;
 
-	if (w == NULL) {
-		w = gtk_file_selection_new (_("Select file to import"));
-		gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
-		gtk_signal_connect (GTK_OBJECT (w), "delete_event",
-			GTK_SIGNAL_FUNC (file_import_cancel), w);
-		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
-			GTK_SIGNAL_FUNC (file_import_ok), w);
-		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
-			GTK_SIGNAL_FUNC (file_import_cancel), w);
-	}
+	w = gtk_file_selection_new (_("Select file to import"));
+	gtk_file_selection_hide_fileop_buttons (GTK_FILE_SELECTION (w));
+
+	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
+			    GTK_SIGNAL_FUNC (file_import_ok), w);
+	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
+			    GTK_SIGNAL_FUNC (file_import_cancel), w);
+
 	if (import_path)
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w),import_path);
+		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), import_path);
 
 	gtk_widget_show (w);
 }
@@ -355,17 +357,15 @@ file_export_cancel (GtkButton *b, GtkFileSelection *fs)
 
 void sp_file_export (GtkWidget * widget)
 {
-	static GtkWidget * w = NULL;
+	GtkWidget * w;
 
-	if (w == NULL) {
-		w = gtk_file_selection_new (_("Export file"));
-		gtk_signal_connect (GTK_OBJECT (w), "delete_event",
-			GTK_SIGNAL_FUNC (file_export_cancel), w);
-		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
-			GTK_SIGNAL_FUNC (file_export_ok), w);
-		gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
-			GTK_SIGNAL_FUNC (file_export_cancel), w);
-	}
+	w = gtk_file_selection_new (_("Export file"));
+
+	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
+			    GTK_SIGNAL_FUNC (file_export_ok), w);
+	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
+			    GTK_SIGNAL_FUNC (file_export_cancel), w);
+
 	if (export_path)
 		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), export_path);
 

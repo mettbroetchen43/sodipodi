@@ -7,6 +7,7 @@
 #
 
 INCLUDES = \
+	$(SODIPODI_CFLAGS) \
 	-I$(includedir)
 
 noinst_LIBRARIES = libspsvg.a

@@ -1,5 +1,6 @@
 #define SP_SVG_FILL_C
 
+#include <string.h>
 #include <stdio.h>
 #include "svg.h"
 

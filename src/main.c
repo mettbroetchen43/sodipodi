@@ -34,10 +34,15 @@
 #include "toolbox.h"
 #include "interface.h"
 
-enum {SP_ARG_NONE, SP_ARG_NOGUI, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_LAST};
+/* fixme: These are required for temporary slideshow hack */
+#include "desktop.h"
+#include "slide-context.h"
+
+enum {SP_ARG_NONE, SP_ARG_NOGUI, SP_ARG_FILE, SP_ARG_PRINT, SP_ARG_SLIDESHOW, SP_ARG_LAST};
 
 static GSList * sp_process_args (poptContext ctx);
 gchar * sp_global_printer = NULL;
+gboolean sp_global_slideshow = FALSE;
 
 struct poptOption options[] = {
   {
@@ -66,6 +71,15 @@ struct poptOption options[] = {
         SP_ARG_PRINT,
         N_("Print files to specified output file (use '| program' for pipe)"),
         N_("FILENAME")
+  },
+  {
+        "slideshow",
+        's',
+        POPT_ARG_NONE,
+        &sp_global_slideshow,
+        SP_ARG_SLIDESHOW,
+        N_("Show given files one-by-one, switch to next on any key/mouse event"),
+        NULL
   },
   { NULL, '\0', 0, NULL, 0, NULL, NULL }
 };
@@ -273,23 +287,56 @@ main (int argc, char *argv[])
 		}
 #endif
 
-		sodipodi = sodipodi_application_new ();
-		sodipodi_load_preferences (sodipodi);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
-				    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
-		sp_maintoolbox_create ();
-		sodipodi_unref ();
+		if (!sp_global_slideshow) {
+			sodipodi = sodipodi_application_new ();
+			sodipodi_load_preferences (sodipodi);
+			gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
+					    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
+			sp_maintoolbox_create ();
+			sodipodi_unref ();
 
-		while (fl) {
+			while (fl) {
+				SPDocument * doc;
+				SPDesktop * dt;
+				doc = sp_document_new ((const gchar *) fl->data);
+				if (doc) {
+					dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+					sp_document_unref (doc);
+					if (dt) sp_create_window (dt, TRUE);
+				}
+				fl = g_slist_remove (fl, fl->data);
+			}
+		} else {
+			GSList *slides = NULL;
 			SPDocument * doc;
 			SPDesktop * dt;
-			doc = sp_document_new ((const gchar *) fl->data);
-			if (doc) {
-				dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
-				sp_document_unref (doc);
-				if (dt) sp_create_window (dt, TRUE);
+			/* fixme: This is terrible hack */
+			sodipodi = sodipodi_application_new ();
+			sodipodi_load_preferences (sodipodi);
+			gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
+					    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
+
+			while (fl) {
+				doc = sp_document_new ((const gchar *) fl->data);
+				if (doc) {
+					slides = g_slist_append (slides, doc);
+				}
+				fl = g_slist_remove (fl, fl->data);
 			}
-			fl = g_slist_remove (fl, fl->data);
+
+			if (slides) {
+				doc = slides->data;
+				slides = g_slist_remove (slides, doc);
+				dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+				if (dt) {
+					sp_desktop_set_event_context (dt, SP_TYPE_SLIDE_CONTEXT);
+					gtk_object_set_data (GTK_OBJECT (dt), "slides", slides);
+					sp_create_window (dt, FALSE);
+				}
+				sp_document_unref (doc);
+			}
+
+			sodipodi_unref ();
 		}
 
 #ifdef ENABLE_BONOBO

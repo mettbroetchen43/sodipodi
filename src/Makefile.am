@@ -75,6 +75,7 @@ sodipodi_SOURCES = \
 	ellipse-context.c ellipse-context.h \
 	draw-context.c draw-context.h \
 	text-context.c text-context.h \
+	slide-context.c slide-context.h \
 	\
 	knot.c knot.h \
 	\

@@ -1,3 +1,33 @@
+2001-04-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/file.c (sp_file_open): Do not connect "delete_event"
+	(sp_file_save_as): Ditto
+	(sp_file_import): Ditto, do not use static widget pointer
+	(sp_file_export): Ditto
+	(sp_file_save_document): Clear "modified" attribute
+	(file_save_ok): Ditto
+
+	* src/svg/svg.h: #include glib.h instead of full gtk.h
+
+	* src/svg/svg-stroke.c: #include string.h, kill warning
+
+	* src/svg/svg-font.c: Ditto
+
+	* src/sp-shape-style.c: Ditto
+
+	* src/sp-metrics.h: #include gtkruler.h intead of full gtk.h
+
+	* src/zoom-context.c (sp_zoom_page): Get document from desktop
+	instead of using ACTIVE_DOCUMENT
+
+	* src/slide-context.c: New file, implement slideshow context
+
+	* src/main.c (main): Create slideshow, if requested
+
+2001-03-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/svg/Makefile.am (INCLUDES): Add SODIPODI_CFLAGS
+
 2001-03-21  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sodipodi.h: Remove Sodipodi typedef

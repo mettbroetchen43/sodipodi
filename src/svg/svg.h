@@ -1,7 +1,7 @@
 #ifndef SP_SVG_H
 #define SP_SVG_H
 
-#include <gtk/gtk.h>
+#include <glib.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libgnomeprint/gnome-font.h>
 #include "../display/fill.h"

@@ -1,5 +1,6 @@
 #define SP_SHAPE_STYLE_C
 
+#include <string.h>
 #include "svg/svg.h"
 #include "sp-shape-style.h"
 

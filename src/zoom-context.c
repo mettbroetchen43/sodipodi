@@ -1,6 +1,5 @@
 #define SP_ZOOM_CONTEXT_C
 
-#include "gtk/gtk.h"
 #include <math.h>
 #include "rubberband.h"
 #include "sodipodi.h"
@@ -226,12 +225,10 @@ sp_zoom_page (GtkWidget * widget)
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	g_return_if_fail(SP_ACTIVE_DOCUMENT != NULL);
-
 	d.x0 = 0.0;
 	d.y0 = 0.0;
-	d.x1 = sp_document_width (SP_ACTIVE_DOCUMENT);
-	d.y1 = sp_document_height (SP_ACTIVE_DOCUMENT);
+	d.x1 = sp_document_width (SP_DT_DOCUMENT (desktop));
+	d.y1 = sp_document_height (SP_DT_DOCUMENT (desktop));
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 

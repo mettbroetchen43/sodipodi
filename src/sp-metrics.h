@@ -1,6 +1,7 @@
 #ifndef SP_METRICS_H
 #define SP_METRICS_H
 
+#include <gtk/gtkruler.h>
 #include "svg/svg.h"
 
 // known metrics so far

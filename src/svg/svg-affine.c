@@ -1,5 +1,6 @@
 #define SP_SVG_AFFINE_C
 
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
