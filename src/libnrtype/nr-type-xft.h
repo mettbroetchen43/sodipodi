@@ -10,6 +10,8 @@
  * This code is in public domain
  */
 
+#include <libnr/nr-macros.h>
+
 #include "nr-type-primitives.h"
 #include "nr-type-ft2.h"
 

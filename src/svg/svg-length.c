@@ -79,24 +79,30 @@ unsigned int
 sp_svg_number_write_d (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
 {
 	double dival, fval;
-	int ival, i, j;
+	int idigits, ival, i;
 	i = 0;
 	/* Process sign */
 	if (val < 0.0) {
 		buf[i++] = '-';
 		val = fabs (val);
 	}
+	/* Determine number of integral digits */
+	if (val >= 1.0) {
+		idigits = (int) floor (log10 (val));
+	} else {
+		idigits = 0;
+	}
+	/* Determine the actual number of fractional digits */
+	fprec = MAX (fprec, tprec - idigits);
+	/* Round value */
+	val += 0.5 * pow (10.0, - ((double) fprec));
 	/* Extract integral and fractional parts */
 	dival = floor (val);
 	ival = (int) dival;
 	fval = val - dival;
 	/* Write integra */
-	j = sp_svg_number_write_i (buf + i, ival);
-	i += j;
-	tprec -= j;
-	fprec = MAX (tprec, fprec);
+	i += sp_svg_number_write_i (buf + i, ival);
 	if ((fprec > 0) && (padf || (fval > 0.0))) {
-		fval += 0.5 * pow (10.0, -((double) fprec));
 		buf[i++] = '.';
 		while ((fprec > 0) && (padf || (fval > 0.0))) {
 			fval *= 10.0;

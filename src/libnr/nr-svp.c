@@ -249,7 +249,7 @@ nr_svp_point_distance (NRSVP *svp, float x, float y)
 #define NR_COORD_TO_ART(v) (v)
 
 NRSVL *
-nr_svl_from_art_vpath (ArtVpath *vpath)
+nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 {
 	NRSVL * svl;
 	NRVertex * start, * vertex;
@@ -362,13 +362,15 @@ nr_svl_from_art_vpath (ArtVpath *vpath)
 	}
 
 	if (svl) {
-		NRSVL *s;
-		svl = nr_svl_uncross_full (svl, flats);
+		/* NRSVL *s; */
+		svl = nr_svl_uncross_full (svl, flats, windrule);
+#if 0
 		for (s = svl; s != NULL; s = s->next) {
 			if ((s->wind != 1) && (s->wind != -1)) {
 				printf ("Weird wind %d\n", s->wind);
 			}
 		}
+#endif
 	} else {
 		nr_flat_free_list (flats);
 	}

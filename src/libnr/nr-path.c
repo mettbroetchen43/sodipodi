@@ -9,7 +9,74 @@
  * This code is in public domain
  */
 
+#include "nr-matrix.h"
 #include "nr-path.h"
+
+/* fixme: (Lauris) */
+
+NRVPath *
+nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath)
+{
+	const ArtVpath *avp;
+	int nsegments, nelements, sidx, idx;
+	/* Number of elements and number of segments */
+	nsegments = 0;
+	nelements = 2;
+	for (avp = avpath; avp->code != ART_END; avp += 1) {
+		switch (avp->code) {
+		case ART_MOVETO:
+			nsegments += 1;
+			nelements += 1;
+			break;
+		case ART_MOVETO_OPEN:
+			/* Number of points in segment */
+			nsegments += 1;
+			nelements += 2;
+			break;
+		case ART_LINETO:
+			nelements += 1;
+			break;
+		default:
+			break;
+		}
+	}
+	d->elements = nr_new (NRPathElement, nelements);
+	sidx = 0;
+	idx = 0;
+	d->elements[idx++].code.length = nelements;
+	d->elements[idx++].code.length = nsegments;
+	for (avp = avpath; avp->code != ART_END; avp += 1) {
+		switch (avp->code) {
+		case ART_MOVETO:
+			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
+			sidx = idx;
+			d->elements[idx++].code.closed = TRUE;
+			d->elements[idx++].value = avp->x;
+			d->elements[idx++].value = avp->y;
+			break;
+		case ART_MOVETO_OPEN:
+			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
+			sidx = idx;
+			d->elements[idx++].code.closed = FALSE;
+			d->elements[idx++].value = avp->x;
+			d->elements[idx++].value = avp->y;
+			break;
+		case ART_LINETO:
+			d->elements[idx++].value = avp->x;
+			d->elements[idx++].value = avp->y;
+			break;
+		default:
+			break;
+		}
+	}
+	return d;
+}
+
+void
+nr_vpath_release (NRVPath *vpath)
+{
+	nr_free (vpath->elements);
+}
 
 static void nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox);
 

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <libnr/nr-macros.h>
+#include <libnr/nr-values.h>
 #include "nr-type-primitives.h"
 #include "nr-type-ft2.h"
 #ifdef WITH_GNOME_PRINT

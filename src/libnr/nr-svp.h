@@ -10,8 +10,6 @@
  * This code is in public domain
  */
 
-#include <libnr/nr-types.h>
-
 /* fixme: Move/remove this (Lauris) */
 typedef float NRCoord;
 
@@ -20,6 +18,9 @@ typedef float NRCoord;
 typedef struct _NRSVPSegment NRSVPSegment;
 typedef struct _NRSVPFlat NRSVPFlat;
 typedef struct _NRSVP NRSVP;
+
+#include <libnr/nr-types.h>
+#include <libnr/nr-path.h>
 
 struct _NRSVPSegment {
 	NRShort wind;
@@ -78,10 +79,9 @@ struct _NRFlat {
 NRSVP *nr_svp_from_svl (NRSVL *svl, NRFlat *flat);
 
 /* fixme: Remove these if ready (Lauris) */
-#include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 
-NRSVL *nr_svl_from_art_vpath (ArtVpath *vpath);
+NRSVL *nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule);
 NRSVL *nr_svl_from_art_svp (ArtSVP *asvp);
 ArtSVP *nr_art_svp_from_svl (NRSVL *svl);
 

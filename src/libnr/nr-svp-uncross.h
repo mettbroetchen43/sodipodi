@@ -12,6 +12,6 @@
 
 #include <libnr/nr-svp.h>
 
-NRSVL *nr_svl_uncross_full (NRSVL *svp, NRFlat *flats);
+NRSVL *nr_svl_uncross_full (NRSVL *svp, NRFlat *flats, unsigned int windrule);
 
 #endif

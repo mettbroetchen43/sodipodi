@@ -194,6 +194,8 @@ nr_arena_shape_set_child_position (NRArenaItem *item, NRArenaItem *child, NRAren
 	nr_arena_item_request_render (child);
 }
 
+#include "enums.h"
+
 static guint
 nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
@@ -282,9 +284,11 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			if (TRUE || !shape->fill_svp) {
 				NRMatrixF ctmf;
 				NRSVL *svl;
+				unsigned int windrule;
 				nr_matrix_f_from_d (&ctmf, &gc->transform);
 				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, FALSE, 0.25);
-				svl = nr_svl_from_art_vpath (vp);
+				windrule = (shape->style->fill_rule.value == SP_WIND_RULE_EVENODD) ? NR_WIND_RULE_EVENODD : NR_WIND_RULE_NONZERO;
+				svl = nr_svl_from_art_vpath (vp, windrule);
 				art_free (vp);
 				shape->fill_svp = nr_svp_from_svl (svl, NULL);
 				nr_svl_free_list (svl);

@@ -105,7 +105,7 @@ nr_svl_test_slices (NRSVLSlice *slices, double yslice, const unsigned char *pref
 #endif
 
 NRSVL *
-nr_svl_uncross_full (NRSVL *svl, NRFlat *flats)
+nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 {
 	NRSVL *lsvl, *csvl, *nsvl;
 	NRFlat *nflat, *fl, *f;
@@ -383,12 +383,23 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats)
 		/* Calculate winds */
 		wind = 0;
 		for (s = slices; s != NULL; s = s->next) {
-			wind += s->svl->dir;
+			int cwind;
+			cwind = wind + s->svl->dir;
 			if (s->y == s->svl->vertex->y) {
 				/* Starting SVL */
-				/* fixme: winding rules */
-				s->svl->wind = (wind & 0x1) ? 1 : -1;
+				if (windrule == NR_WIND_RULE_EVENODD) {
+					s->svl->wind = (cwind & 0x1) ? 1 : -1;
+				} else {
+					if (!wind && cwind) {
+						s->svl->wind = 1;
+					} else if (wind && !cwind) {
+						s->svl->wind = -1;
+					} else {
+						s->svl->wind = 0;
+					}
+				}
 			}
+			wind = cwind;
 			/* printf ("Wind: %g %s %d %d\n", s->y, s->y == s->svl->vertex->y ? "+" : " ", s->svl->wind, wind); */
 		}
 		if (wind & 1) printf ("Weird final wind: %d\n", wind);
