@@ -241,13 +241,24 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
 		if (comp->curve != NULL) {
+			const ArtBpath *bp;
+			gboolean closed;
+
 			gnome_print_gsave (gpc);
 			gnome_print_concat (gpc, comp->affine);
 			bpath = comp->curve->bpath;
 
+			closed = TRUE;
+			for (bp = bpath; bp->code != ART_END; bp++) {
+				if (bp->code == ART_MOVETO_OPEN) {
+					closed = FALSE;
+					break;
+				}
+			}
+
 			gnome_print_bpath (gpc, bpath, FALSE);
 
-			if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
+			if (closed && (object->style->fill.type == SP_PAINT_TYPE_COLOR)) {
 				sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
 				opacity = object->style->fill_opacity * object->style->real_opacity;
 				gnome_print_gsave (gpc);

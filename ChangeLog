@@ -1,5 +1,7 @@
 2001-09-04  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sp-shape.c (sp_shape_print): Do not fill open paths
+
 	* src/document.c (sp_document_add_resource): Implemented simple
 	named resource lists
 	(sp_document_remove_resource): Ditto
