@@ -192,72 +192,34 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 }
 
 static void
-sp_ui_file_menu (GtkMenu *menu, SPDocument *doc)
+sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
-	GtkWidget *i;
-
 	/* File:New */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_NEW, _("New"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_new), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_NEW, _("New"), sp_file_new, NULL);
 	/* File:Open */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_OPEN, _("Open"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_open), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open, NULL);
 	/* File:Save */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_SAVE, _("Save"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_save), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE, _("Save"), sp_file_save, NULL);
 	/* File:Save As */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_SAVE_AS, _("Save As"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_save_as), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE_AS, _("Save as"), sp_file_save_as, NULL);
 	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	/* File:Import */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Import"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_import), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Import"), sp_file_import, NULL);
 	/* File:Export */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Export"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_export), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Export"), sp_export_dialog, NULL);
 	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	/* File:Print */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_PRINT, _("Print"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_print), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print"), sp_file_print, NULL);
 	/* File:Print Preview */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Print preview"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_print_preview), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print Preview"), sp_file_print_preview, NULL);
 	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	/* File:Close */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_CLOSE, _("Close view"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_ui_close_view), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_CLOSE, _("Close View"), sp_ui_close_view, NULL);
 	/* File:Exit */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_EXIT, _("Exit"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_exit), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
 }
 
 static void

@@ -1,11 +1,16 @@
-#ifndef PATH_CHEMISTRY_H
-#define PATH_CHEMISTRY_H
+#ifndef __PATH_CHEMISTRY_H__
+#define __PATH_CHEMISTRY_H__
 
 /*
- * path-chemistry
- *
  * Here are handlers for modifying selections, specific to paths
  *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 void sp_selected_path_combine (void);

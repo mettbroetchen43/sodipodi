@@ -7,14 +7,14 @@
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
- * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnomeprint/gnome-font.h>
+#include "helper/curve.h"
 #include "sp-item.h"
 
 #define SP_TYPE_CHARS (sp_chars_get_type ())
@@ -46,6 +46,8 @@ GtkType sp_chars_get_type (void);
 void sp_chars_clear (SPChars *chars);
 
 void sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, const gdouble *affine);
+
+SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 
 #endif
 

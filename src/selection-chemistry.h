@@ -20,7 +20,6 @@ void sp_selection_delete (GtkWidget * widget);
 void sp_selection_duplicate (GtkWidget * widget);
 
 void sp_selection_group (GtkWidget * widget);
-
 void sp_selection_ungroup (gpointer data);
 
 void sp_selection_raise (GtkWidget * widget);
@@ -47,21 +46,20 @@ void sp_selection_move_screen (gdouble sx, gdouble sy);
 void sp_selection_item_next (void);
 void sp_selection_item_prev (void);
 
-
-
-// selection cycling
+/* selection cycling */
 
 typedef enum
 {
-  SP_CYCLE_SIMPLE = 0,  
-  SP_CYCLE_VISIBLE = 1,  // cycle only visible items
-  SP_CYCLE_FOCUS =2      // readjust visible area to view selected item
-} SP_Cycle_Type;
+	SP_CYCLE_SIMPLE,
+	SP_CYCLE_VISIBLE, /* cycle only visible items */
+	SP_CYCLE_FOCUS /* readjust visible area to view selected item */
+} SPCycleType;
 
+/* fixme: This should be moved into preference repr */
 #ifndef __SP_SELECTION_CHEMISTRY_C__
-extern SP_Cycle_Type  SP_CYCLING;
+extern SPCycleType SP_CYCLING;
 #else
-SP_Cycle_Type SP_CYCLING = SP_CYCLE_FOCUS;
+SPCycleType SP_CYCLING = SP_CYCLE_FOCUS;
 #endif
 
 #endif

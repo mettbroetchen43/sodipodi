@@ -1,15 +1,15 @@
 #define __SP_SHAPE_C__
 
 /*
- * SPShape
+ * Base class for shapes, including <path> element
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -187,7 +187,7 @@ sp_shape_style_modified (SPObject *object, guint flags)
 }
 
 void
-sp_shape_print (SPItem * item, GnomePrintContext * gpc)
+sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 {
 
 	gfloat rgb[3], opacity;

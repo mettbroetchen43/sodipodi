@@ -31,6 +31,7 @@ static void sp_text_context_init (SPTextContext * text_context);
 static void sp_text_context_finalize (GtkObject *object);
 
 static void sp_text_context_setup (SPEventContext *ec);
+static void sp_text_context_finish (SPEventContext *ec);
 static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -78,6 +79,7 @@ sp_text_context_class_init (SPTextContextClass * klass)
 	object_class->finalize = sp_text_context_finalize;
 
 	event_context_class->setup = sp_text_context_setup;
+	event_context_class->finish = sp_text_context_finish;
 	event_context_class->root_handler = sp_text_context_root_handler;
 	event_context_class->item_handler = sp_text_context_item_handler;
 }
@@ -113,14 +115,6 @@ sp_text_context_finalize (GtkObject *object)
 	ec = SP_EVENT_CONTEXT (object);
 	tc = SP_TEXT_CONTEXT (object);
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
-
-#ifdef SP_TC_XIM
-	gdk_ic_destroy (tc->ic);
-	gdk_ic_attr_destroy (tc->ic_attr);
-	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
-#endif
-
 	if (tc->timeout) {
 		gtk_timeout_remove (tc->timeout);
 	}
@@ -130,6 +124,7 @@ sp_text_context_finalize (GtkObject *object)
 	}
 
 	if (ec->desktop) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
 		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
 	}
 
@@ -205,6 +200,35 @@ sp_text_context_setup (SPEventContext *ec)
 			    GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
 
 	sp_text_context_selection_changed (SP_DT_SELECTION (desktop), tc);
+}
+
+static void
+sp_text_context_finish (SPEventContext *ec)
+{
+	SPTextContext *tc;
+
+	tc = SP_TEXT_CONTEXT (ec);
+
+#ifdef SP_TC_XIM
+	gdk_ic_destroy (tc->ic);
+	gdk_ic_attr_destroy (tc->ic_attr);
+	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
+#endif
+
+	if (tc->timeout) {
+		gtk_timeout_remove (tc->timeout);
+		tc->timeout = 0;
+	}
+
+	if (tc->cursor) {
+		gtk_object_destroy (GTK_OBJECT (tc->cursor));
+		tc->cursor = 0;
+	}
+
+	if (ec->desktop) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
+		gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (ec->desktop)), ec);
+	}
 }
 
 static gint

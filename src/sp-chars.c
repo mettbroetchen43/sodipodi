@@ -176,7 +176,7 @@ sp_chars_show (SPItem *item, NRArena *arena)
 }
 
 void
-sp_chars_print (SPItem * item, GnomePrintContext * gpc)
+sp_chars_print (SPItem *item, GnomePrintContext *gpc)
 {
 	g_warning ("SPChars::print not implemented");
 }
@@ -238,23 +238,38 @@ sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, const gd
 	}
 }
 
+SPCurve *
+sp_chars_normalized_bpath (SPChars *chars)
+{
+	SPCharElement *el;
+	GSList *cc;
+	SPCurve *curve;
 
+	cc = NULL;
+	for (el = chars->elements; el != NULL; el = el->next) {
+		const ArtBpath *bp;
+		ArtBpath *abp;
+		SPCurve *c;
+		gdouble a[6];
+		gint i;
+		for (i = 0; i < 6; i++) a[i] = el->affine[i];
+		bp = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
+		abp = art_bpath_affine_transform (bp, a);
+		c = sp_curve_new_from_bpath (abp);
+		if (c) {
+			cc = g_slist_prepend (cc, c);
+		}
+	}
 
+	cc = g_slist_reverse (cc);
 
+	curve = sp_curve_concat (cc);
 
+	while (cc) {
+		/* fixme: This is dangerous, as we are mixing art_alloc and g_new */
+		sp_curve_unref ((SPCurve *) cc->data);
+		cc = g_slist_remove (cc, cc->data);
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return curve;
+}

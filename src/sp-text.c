@@ -6,10 +6,10 @@
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 /*
@@ -516,9 +516,10 @@ static void sp_text_modified (SPObject *object, guint flags);
 static void sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
 static void sp_text_hide (SPItem *item, NRArena *arena);
-static char * sp_text_description (SPItem * item);
-static GSList * sp_text_snappoints (SPItem * item, GSList * points);
+static char * sp_text_description (SPItem *item);
+static GSList * sp_text_snappoints (SPItem *item, GSList *points);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_text_print (SPItem *item, GnomePrintContext *gpc);
 
 static void sp_text_request_relayout (SPText *text, guint flags);
 static void sp_text_update_immediate_state (SPText *text);
@@ -573,6 +574,7 @@ sp_text_class_init (SPTextClass *class)
 	item_class->description = sp_text_description;
 	item_class->snappoints = sp_text_snappoints;
 	item_class->write_transform = sp_text_write_transform;
+	item_class->print = sp_text_print;
 }
 
 static void
@@ -1068,6 +1070,27 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	}
 }
 
+static void
+sp_text_print (SPItem *item, GnomePrintContext *gpc)
+{
+	SPText *text;
+	SPObject *ch;
+
+	text = SP_TEXT (item);
+
+	gnome_print_gsave (gpc);
+
+	for (ch = text->children; ch != NULL; ch = ch->next) {
+		if (SP_IS_TSPAN (ch)) {
+			sp_item_print (SP_ITEM (SP_TSPAN (ch)->string), gpc);
+		} else if (SP_IS_STRING (ch)) {
+			sp_item_print (SP_ITEM (ch), gpc);
+		}
+	}
+
+	gnome_print_grestore (gpc);
+}
+
 gchar *
 sp_text_get_string_multiline (SPText *text)
 {
@@ -1165,6 +1188,43 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	g_free (content);
 
 	/* fixme: Calculate line positions (Lauris) */
+}
+
+SPCurve *
+sp_text_normalized_bpath (SPText *text)
+{
+	SPObject *child;
+	GSList *cc;
+	SPCurve *curve;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
+
+	cc = NULL;
+	for (child = text->children; child != NULL; child = child->next) {
+		SPCurve *c;
+		if (SP_IS_STRING (child)) {
+			c = sp_chars_normalized_bpath (SP_CHARS (child));
+		} else if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			tspan = SP_TSPAN (child);
+			c = sp_chars_normalized_bpath (SP_CHARS (tspan->string));
+		} else {
+			c = NULL;
+		}
+		if (c) cc = g_slist_prepend (cc, c);
+	}
+
+	cc = g_slist_reverse (cc);
+
+	curve = sp_curve_concat (cc);
+
+	while (cc) {
+		sp_curve_unref ((SPCurve *) cc->data);
+		cc = g_slist_remove (cc, cc->data);
+	}
+
+	return curve;
 }
 
 SPTSpan *

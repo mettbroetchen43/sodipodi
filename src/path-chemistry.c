@@ -1,8 +1,22 @@
-#define SP_PATH_CHEMISTRY_C
+#define __SP_PATH_CHEMISTRY_C__
+
+/*
+ * Here are handlers for modifying selections, specific to paths
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "sp-path.h"
+#include "sp-text.h"
+#include "style.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
@@ -136,19 +150,60 @@ sp_selected_path_break_apart (void)
 void
 sp_selected_path_to_curves (void)
 {
+	SPDesktop *dt;
+	SPItem *item;
+	SPCurve *curve;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	item = sp_selection_item (SP_DT_SELECTION (dt));
+	if (!item) return;
+
+	if (SP_IS_PATH (item) && !SP_PATH (item)->independent) {
+		curve = sp_path_normalized_bpath (SP_PATH (item));
+	} else if (SP_IS_TEXT (item)) {
+		curve = sp_text_normalized_bpath (SP_TEXT (item));
+	} else {
+		curve = NULL;
+	}
+
+	if (curve) {
+		SPObject *parent;
+		SPRepr *new;
+		guchar *str;
+
+		parent = SP_OBJECT_PARENT (item);
+
+		new = sp_repr_new ("path");
+		/* Transformation */
+		sp_repr_set_attr (new, "transform", sp_repr_attr (SP_OBJECT_REPR (item), "transform"));
+		/* Style */
+		str = sp_style_write_difference (SP_OBJECT_STYLE (item), SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+		sp_repr_set_attr (new, "style", str);
+		g_free (str);
+		/* Definition */
+		str = sp_svg_write_path (curve->bpath);
+		sp_repr_set_attr (new, "d", str);
+		g_free (str);
+		sp_curve_unref (curve);
+
+		sp_repr_add_child (SP_OBJECT_REPR (parent), new, SP_OBJECT_REPR (item));
+		sp_repr_unparent (SP_OBJECT_REPR (item));
+
+		sp_document_done (SP_DT_DOCUMENT (dt));
+		sp_selection_set_repr (SP_DT_SELECTION (dt), new);
+		sp_repr_unref (new);
+	}
+}
+
+#if 0
 	SPSelection * selection;
 	SPRepr * new;
-	SPItem * item;
 	SPPath * path;
-	SPCurve * curve;
 	gchar * str;
 	const gchar * transform, * style;
-	SPDesktop * desktop;
 	GSList * l, * sl = NULL, * nl = NULL;
 	
-	desktop = SP_ACTIVE_DESKTOP;
-	if (!SP_IS_DESKTOP(desktop)) return;
-
 	selection = SP_DT_SELECTION (desktop);
 
 	sl = (GSList *) sp_selection_item_list (selection);
@@ -186,3 +241,4 @@ sp_selected_path_to_curves (void)
 
 	sp_selection_set_item_list (selection, nl);
 }
+#endif

@@ -120,11 +120,13 @@ GtkType sp_text_get_type (void);
 gchar *sp_text_get_string_multiline (SPText *text);
 void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
+SPCurve *sp_text_normalized_bpath (SPText *text);
+
 SPTSpan *sp_text_append_line (SPText *text);
 
 /* fixme: Think about these (Lauris) */
 
-/* This gives us SUM (strings) + (lines - 1) */
+/* This gives us SUM (strlen (STRING)) + (LINES - 1) */
 gint sp_text_get_length (SPText *text);
 gint sp_text_append (SPText *text, const guchar *utf8);
 /* Returns start position */

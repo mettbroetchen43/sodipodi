@@ -25,7 +25,7 @@
 #include "sp-item-group.h"
 
 /* fixme: find a better place */
-GSList * clipboard = NULL;
+GSList *clipboard = NULL;
 
 void
 sp_selection_delete (GtkWidget * widget)
@@ -673,67 +673,72 @@ sp_selection_move_screen (gdouble sx, gdouble sy)
   sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
-
 void
 sp_selection_item_next (void)
 {
-  SPDocument * document;
-  SPDesktop * desktop;
-  SPSelection * selection;
-  SPItem * item = NULL;
-  GSList * children = NULL, * l = NULL;
-  ArtDRect dbox,sbox;
-  ArtPoint s,d;
-  gint dx=0, dy=0;
+	SPDocument *document;
+	SPDesktop *desktop;
+	SPSelection *selection;
+	SPItem *item = NULL;
+	GSList *children = NULL, *l = NULL;
+	ArtDRect dbox,sbox;
+	ArtPoint s,d;
+	gint dx=0, dy=0;
 
-  document = SP_ACTIVE_DOCUMENT;
-  desktop = SP_ACTIVE_DESKTOP;
-  g_return_if_fail(document != NULL);
-  g_return_if_fail(desktop != NULL);
-  if (!SP_IS_DESKTOP (desktop)) return;
-  selection = SP_DT_SELECTION(desktop);
-  g_return_if_fail(selection!=NULL);
+	document = SP_ACTIVE_DOCUMENT;
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail(document != NULL);
+	g_return_if_fail(desktop != NULL);
+	if (!SP_IS_DESKTOP (desktop)) return;
+	selection = SP_DT_SELECTION(desktop);
+	g_return_if_fail(selection!=NULL);
   
-  // get item list
-  if (SP_CYCLING == SP_CYCLE_VISIBLE) {
-    sp_desktop_get_visible_area (desktop, &dbox);
-    children = sp_document_items_in_box (document, &dbox);
-  } else {
-    children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
-  }
+	// get item list
+	if (SP_CYCLING == SP_CYCLE_VISIBLE) {
+		sp_desktop_get_visible_area (desktop, &dbox);
+		children = sp_document_items_in_box (document, &dbox);
+	} else {
+		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+	}
 
-  // compute next item
-  if (children == NULL) return;
-  if sp_selection_is_empty(selection) item = children->data;
-  else {
-    l = g_slist_find(children,selection->items->data);
-    if ((l == NULL) || (l->next == NULL)) item = SP_ITEM (children->data);
-    else item = SP_ITEM (l->next->data);
-  }
+	// compute next item
+	if (children == NULL) return;
+	if sp_selection_is_empty(selection) {
+		item = children->data;
+	} else {
+		l = g_slist_find(children,selection->items->data);
+		if ((l == NULL) || (l->next == NULL)) {
+			item = SP_ITEM (children->data);
+		} else {
+			item = SP_ITEM (l->next->data);
+		}
+	}
 
-  // set selection to item
-  if (item != NULL) sp_selection_set_item (selection, item);
-  else return;
-  
-  g_slist_free (children);
+	// set selection to item
+	if (item != NULL) {
+		sp_selection_set_item (selection, item);
+	} else {
+		return;
+	}
 
-  // adjust visible area to see whole new selection
-  if (SP_CYCLING == SP_CYCLE_FOCUS) {
-    sp_desktop_get_visible_area (desktop, &dbox);
-    sp_item_bbox_desktop (item, &sbox);
-    if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
-      s.x = (sbox.x0+sbox.x1)/2;
-      s.y = (sbox.y0+sbox.y1)/2;
-      d.x = (dbox.x0+dbox.x1)/2;
-      d.y = (dbox.y0+dbox.y1)/2;
-      art_affine_point (&s, &s, desktop->d2w);
-      art_affine_point (&d, &d, desktop->d2w);
-      dx = (gint)(d.x-s.x);
-      dy = (gint)(d.y-s.y);
-      sp_desktop_scroll_world (desktop, dx, dy);
-    }
-  }
+	g_slist_free (children);
 
+	// adjust visible area to see whole new selection
+	if (SP_CYCLING == SP_CYCLE_FOCUS) {
+		sp_desktop_get_visible_area (desktop, &dbox);
+		sp_item_bbox_desktop (item, &sbox);
+		if (dbox.x0 > sbox.x0 || dbox.y0 > sbox.y0 || dbox.x1 < sbox.x1 || dbox.y1 < sbox.y1 ) {
+			s.x = (sbox.x0 + sbox.x1) / 2;
+			s.y = (sbox.y0 + sbox.y1) / 2;
+			d.x = (dbox.x0 + dbox.x1) / 2;
+			d.y = (dbox.y0 + dbox.y1) / 2;
+			art_affine_point (&s, &s, desktop->d2w);
+			art_affine_point (&d, &d, desktop->d2w);
+			dx = (gint) (d.x-s.x);
+			dy = (gint) (d.y-s.y);
+			sp_desktop_scroll_world (desktop, dx, dy);
+		}
+	}
 }
 
 void
