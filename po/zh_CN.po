@@ -1,22 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # Wang Li <charlesw1234@163.com>, 2002
+# Funda Wang <fundawang@linux.net.cn>, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
 "POT-Creation-Date: 2004-02-11 19:01+0200\n"
-"PO-Revision-Date: 2002-03-17 15:51+0800\n"
-"Last-Translator: wang li <charlesw1234@163.com>\n"
+"PO-Revision-Date: 2004-08-14 01:11+0800\n"
+"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sodipodi.desktop.in.h:1
-#, fuzzy
 msgid "SVG Vector Illustrator"
-msgstr "向量图解器"
+msgstr "SVG 向量图解器"
 
 #. Create window
 #: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
@@ -56,7 +56,7 @@ msgstr "页"
 #: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
-msgstr "图画"
+msgstr "绘图"
 
 #. Selection submenu
 #: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
@@ -65,7 +65,6 @@ msgid "Selection"
 msgstr "选择"
 
 #: src/dialogs/align.c:155 src/toolbox.c:364
-#, fuzzy
 msgid "Align objects"
 msgstr "对齐对象"
 
@@ -79,9 +78,8 @@ msgid "Left side of aligned objects to left side of anchor"
 msgstr ""
 
 #: src/dialogs/align.c:180
-#, fuzzy
 msgid "Center horizontally"
-msgstr "水平翻转"
+msgstr "水平居中"
 
 #: src/dialogs/align.c:183
 #, fuzzy
@@ -102,9 +100,8 @@ msgid "Top of aligned objects to top of anchor"
 msgstr "将内部对象对齐到顶边"
 
 #: src/dialogs/align.c:196
-#, fuzzy
 msgid "Center vertically"
-msgstr "垂直翻转"
+msgstr "垂直居中"
 
 #: src/dialogs/align.c:199
 #, fuzzy
@@ -181,38 +178,35 @@ msgstr "桌面设置"
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:204
 msgid "Grid"
-msgstr "栅格"
+msgstr "网格"
 
 #: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
-msgstr "显示栅格"
+msgstr "显示网格"
 
 #: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
-msgstr "定位到栅格"
+msgstr "定位到网格"
 
 #: src/dialogs/desktop-properties.c:221
-#, fuzzy
 msgid "Horizontal lines"
-msgstr "水平移动"
+msgstr "水平线"
 
 #: src/dialogs/desktop-properties.c:222
-#, fuzzy
 msgid "Vertical lines"
-msgstr "垂直中心值"
+msgstr "垂直线"
 
 #: src/dialogs/desktop-properties.c:224
-#, fuzzy
 msgid "Iso grid"
-msgstr "显示栅格"
+msgstr "ISO 网格"
 
 #: src/dialogs/desktop-properties.c:225
 msgid "Hex grid"
-msgstr ""
+msgstr "十六进制网格"
 
 #: src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
-msgstr "栅格单元："
+msgstr "网格单元："
 
 #: src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
@@ -224,11 +218,11 @@ msgstr "Y 原点："
 
 #: src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
-msgstr "X 间据："
+msgstr "X 间距："
 
 #: src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
-msgstr "Y 间据："
+msgstr "Y 间距："
 
 #: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
@@ -240,11 +234,11 @@ msgstr "定位距离："
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
-msgstr "栅格颜色："
+msgstr "网格颜色："
 
 #: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
-msgstr "栅格颜色"
+msgstr "网格颜色"
 
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:254
@@ -261,7 +255,7 @@ msgstr "定位到指示线"
 
 #: src/dialogs/desktop-properties.c:276
 msgid "Guides color:"
-msgstr "指示颜色："
+msgstr "指示线颜色："
 
 #: src/dialogs/desktop-properties.c:277
 msgid "Guideline color"
@@ -272,14 +266,12 @@ msgid "Highlight color:"
 msgstr "高亮颜色："
 
 #: src/dialogs/desktop-properties.c:280
-#, fuzzy
 msgid "Highlighted guideline color"
 msgstr "高亮指示线颜色"
 
 #: src/dialogs/desktop-properties.c:295
-#, fuzzy
 msgid "Show border"
-msgstr "显示栅格"
+msgstr "显示边框"
 
 #: src/dialogs/desktop-properties.c:301
 #, fuzzy
@@ -287,28 +279,24 @@ msgid "Border on top of drawing"
 msgstr "缩放到图画"
 
 #: src/dialogs/desktop-properties.c:306
-#, fuzzy
 msgid "Border color:"
-msgstr "栅格颜色："
+msgstr "边框颜色："
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
-msgstr ""
+msgstr "页面边框颜色"
 
 #: src/dialogs/desktop-properties.c:308
-#, fuzzy
 msgid "Page color:"
-msgstr "选取颜色"
+msgstr "页面颜色："
 
 #: src/dialogs/desktop-properties.c:309
-#, fuzzy
 msgid "Page color"
-msgstr "选取颜色"
+msgstr "页面颜色"
 
 #: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
-#, fuzzy
 msgid "Close"
-msgstr "关闭视图"
+msgstr "关闭"
 
 #: src/dialogs/display-settings.c:101
 msgid "Display settings"
@@ -318,7 +306,7 @@ msgstr "显示设置"
 #. Notebook tab
 #: src/dialogs/display-settings.c:108
 msgid "Rendering"
-msgstr "正在渲染"
+msgstr "渲染"
 
 #: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
@@ -358,7 +346,7 @@ msgstr "默认光标公差："
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "窗口"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
@@ -378,12 +366,12 @@ msgstr "页面大小："
 
 #: src/dialogs/document-properties.c:201
 msgid "Custom"
-msgstr "定制"
+msgstr "自定义"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:208
 msgid "Custom paper"
-msgstr "定制页面"
+msgstr "自定义页面"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
@@ -408,15 +396,13 @@ msgid "Height:"
 msgstr "高度："
 
 #: src/dialogs/export.c:140
-#, fuzzy
 msgid "Export bitmap"
-msgstr "彩色位图"
+msgstr "导出位图"
 
 #. Export area frame
 #: src/dialogs/export.c:149
-#, fuzzy
 msgid "Export area"
-msgstr "导出为"
+msgstr "导出区域"
 
 #: src/dialogs/export.c:182
 #, fuzzy
@@ -440,9 +426,8 @@ msgstr "R1："
 
 #. Bitmap size frame
 #: src/dialogs/export.c:203
-#, fuzzy
 msgid "Bitmap size"
-msgstr "图像大小"
+msgstr "位图大小"
 
 #: src/dialogs/export.c:212 src/dialogs/export.c:220
 msgid "pixels"
@@ -453,27 +438,24 @@ msgid "dpi"
 msgstr "dpi"
 
 #: src/dialogs/export.c:232
-#, fuzzy
 msgid "Background color"
-msgstr "终点颜色"
+msgstr "背景颜色"
 
 #: src/dialogs/export.c:234
 msgid "Bitmap background:"
-msgstr ""
+msgstr "位图背景："
 
 #: src/dialogs/export.c:239
-#, fuzzy
 msgid "Export png file"
-msgstr "导出文件"
+msgstr "导出 PNG 文件"
 
 #: src/dialogs/export.c:266 src/verbs.c:413
 msgid "Export"
 msgstr "导出"
 
 #: src/dialogs/export.c:401
-#, fuzzy
 msgid "Export in progress"
-msgstr "导出为"
+msgstr "导出进行中"
 
 #: src/dialogs/export.c:405
 #, c-format
@@ -482,12 +464,11 @@ msgstr ""
 
 #: src/dialogs/fill-style.c:87
 msgid "Fill style"
-msgstr "填充模式"
+msgstr "填充样式"
 
 #: src/dialogs/fill-style.c:124
-#, fuzzy
 msgid "Fill Rule"
-msgstr "填充模式"
+msgstr "填充规则"
 
 #: src/dialogs/fill-style.c:138
 #, fuzzy
@@ -500,9 +481,8 @@ msgstr ""
 
 #: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
 #: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
-#, fuzzy
 msgid "ID"
-msgstr "标识："
+msgstr "ID"
 
 #: src/dialogs/item-properties.c:99
 msgid "Set ID"
@@ -510,7 +490,7 @@ msgstr ""
 
 #: src/dialogs/item-properties.c:110
 msgid "Sensitive"
-msgstr "敏感的"
+msgstr "敏感"
 
 #: src/dialogs/item-properties.c:115
 msgid "Visible"
@@ -518,11 +498,11 @@ msgstr "可见"
 
 #: src/dialogs/item-properties.c:120
 msgid "Active"
-msgstr "活跃"
+msgstr "激活"
 
 #: src/dialogs/item-properties.c:125
 msgid "Printable"
-msgstr "可打印的"
+msgstr "可打印"
 
 #: src/dialogs/item-properties.c:136
 msgid "Opacity:"
@@ -564,11 +544,11 @@ msgstr "类型："
 
 #: src/dialogs/object-attributes.c:37
 msgid "Role:"
-msgstr "作用："
+msgstr "角色："
 
 #: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
-msgstr "弓形作用："
+msgstr "弧形作用："
 
 #: src/dialogs/object-attributes.c:39
 msgid "Title:"
@@ -679,31 +659,27 @@ msgstr "勾描风格"
 
 #: src/dialogs/object-properties.c:176
 msgid "Apply to:"
-msgstr ""
+msgstr "应用到："
 
 #: src/dialogs/object-properties.c:186
-#, fuzzy
 msgid "Selected objects"
-msgstr "翻转选中对象"
+msgstr "选中的对象"
 
 #: src/dialogs/object-properties.c:189
 msgid "All shape tools"
-msgstr ""
+msgstr "全部形状工具"
 
 #: src/dialogs/object-properties.c:192
-#, fuzzy
 msgid "Rectangle tool"
-msgstr "长方形"
+msgstr "矩形工具"
 
 #: src/dialogs/object-properties.c:195
-#, fuzzy
 msgid "Arc tool"
-msgstr "弓形作用："
+msgstr "弧形工具"
 
 #: src/dialogs/object-properties.c:198
-#, fuzzy
 msgid "Star tool"
-msgstr "起点颜色"
+msgstr "星形工具"
 
 #: src/dialogs/object-properties.c:201
 #, fuzzy
@@ -724,9 +700,8 @@ msgid "Text"
 msgstr "文本"
 
 #: src/dialogs/object-properties.c:289
-#, fuzzy
 msgid "Object Size and Position"
-msgstr "大小和位置"
+msgstr "对象大小和位置"
 
 #: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
@@ -749,12 +724,10 @@ msgstr "青蓝："
 
 #. Dash
 #: src/dialogs/stroke-style.c:675
-#, fuzzy
 msgid "Pattern:"
-msgstr "模式填充"
+msgstr "图案："
 
 #: src/dialogs/text-edit.c:102
-#, fuzzy
 msgid "Text properties"
 msgstr "文本属性"
 
@@ -764,37 +737,32 @@ msgid "Layout"
 msgstr "布局"
 
 #: src/dialogs/text-edit.c:149
-#, fuzzy
 msgid "Alignment:"
-msgstr "对齐基础"
+msgstr "对齐："
 
 #: src/dialogs/text-edit.c:174
-#, fuzzy
 msgid "Orientation:"
-msgstr "渐变颜料"
+msgstr "渐变："
 
 #: src/dialogs/text-edit.c:192
-#, fuzzy
 msgid "Line spacing:"
-msgstr "X 间据："
+msgstr "行间距："
 
 #: src/dialogs/text-edit.c:212
-#, fuzzy
 msgid "Spacing:"
-msgstr "Y 间据："
+msgstr "间距："
 
 #: src/dialogs/text-edit.c:235
 msgid "Text and font"
-msgstr ""
+msgstr "文本和字体"
 
 #: src/dialogs/text-edit.c:246
 msgid "Set as default"
-msgstr ""
+msgstr "设为默认值"
 
 #: src/dialogs/tool-attributes.c:48 src/verbs.c:475
-#, fuzzy
 msgid "Tool attributes"
-msgstr "%s 属性"
+msgstr "工具属性"
 
 #: src/dialogs/tool-attributes.c:95
 #, fuzzy
@@ -813,7 +781,7 @@ msgstr ""
 #. Magnitude
 #: src/dialogs/tool-attributes.c:105 src/star-context.c:356
 msgid "Corners:"
-msgstr ""
+msgstr "角："
 
 #: src/dialogs/tool-attributes.c:105
 #, fuzzy
@@ -821,9 +789,8 @@ msgid "Proportion"
 msgstr "位置"
 
 #: src/dialogs/tool-attributes.c:115
-#, fuzzy
 msgid "Transform:"
-msgstr "转化"
+msgstr "变形："
 
 #. Mass
 #: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
@@ -837,37 +804,33 @@ msgid "Drag:"
 msgstr "绘制"
 
 #: src/dialogs/tool-attributes.c:125
-#, fuzzy
 msgid "Angle"
 msgstr "角度"
 
 #: src/dialogs/tool-attributes.c:132
-#, fuzzy
 msgid "Tool has no attributes"
-msgstr "%s 属性"
+msgstr "工具无属性"
 
 #: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
 msgid "No active tool"
 msgstr ""
 
 #: src/dialogs/tool-options.c:47 src/verbs.c:474
-#, fuzzy
 msgid "Tool options"
-msgstr "Oaf 选项"
+msgstr "工具选项"
 
 #: src/dialogs/tool-options.c:90
-#, fuzzy
 msgid "Tool has no options"
-msgstr "Oaf 选项"
+msgstr "工具无选项"
 
 #: src/dialogs/transformation.c:195
 msgid "Transform selection"
-msgstr "变换选择"
+msgstr "变形选择"
 
 #. Apply to duplicate
 #: src/dialogs/transformation.c:216
 msgid "Apply to duplicate"
-msgstr ""
+msgstr "应用到副本"
 
 #: src/dialogs/transformation.c:313
 msgid "Move"
@@ -899,77 +862,66 @@ msgid "New text node"
 msgstr ""
 
 #: src/dialogs/xml-tree.c:205
-#, fuzzy
 msgid "Duplicate node"
-msgstr "复制"
+msgstr "复制节点"
 
 #: src/dialogs/xml-tree.c:221
-#, fuzzy
 msgid "Delete node"
-msgstr "删除"
+msgstr "删除节点"
 
 #: src/dialogs/xml-tree.c:234
-#, fuzzy
 msgid "Unindent node"
-msgstr "编辑节点"
+msgstr "取消节点缩进"
 
 #: src/dialogs/xml-tree.c:245
-#, fuzzy
 msgid "Indent node"
-msgstr "编辑节点"
+msgstr "缩进节点"
 
 #: src/dialogs/xml-tree.c:255
-#, fuzzy
 msgid "Raise node"
-msgstr "提升"
+msgstr "升起节点"
 
 #: src/dialogs/xml-tree.c:266
-#, fuzzy
 msgid "Lower node"
-msgstr "降低"
+msgstr "降低节点"
 
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
 msgstr "删除属性"
 
 #: src/dialogs/xml-tree.c:333
-#, fuzzy
 msgid "Attribute name"
-msgstr "属性："
+msgstr "属性名称"
 
 #: src/dialogs/xml-tree.c:340
-#, fuzzy
 msgid "Set attribute"
-msgstr "删除属性"
+msgstr "设置属性"
 
 #: src/dialogs/xml-tree.c:353
-#, fuzzy
 msgid "Attribute value"
-msgstr "属性"
+msgstr "属性值"
 
 #: src/dialogs/xml-tree.c:832
-#, fuzzy, c-format
+#, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi：%s：%s：%d"
+msgstr "Sodipodi：%s：XML 视图"
 
 #: src/dialogs/xml-tree.c:855
 msgid "New element node..."
 msgstr ""
 
 #: src/dialogs/xml-tree.c:875
-#, fuzzy
 msgid "Cancel"
-msgstr "改变"
+msgstr "取消"
 
 #: src/dialogs/xml-tree.c:879
-#, fuzzy
 msgid "Create"
-msgstr "创建连接"
+msgstr "创建"
 
 #: src/document.c:353
-#, fuzzy, c-format
+#, c-format
 msgid "New document %d"
-msgstr "内存文档 %d"
+msgstr "新文档 %d"
 
 #: src/document.c:389
 #, c-format
@@ -991,24 +943,22 @@ msgstr ""
 
 #. Angle
 #: src/dyna-draw-context.c:1075
-#, fuzzy
 msgid "Angle:"
-msgstr "角度"
+msgstr "角度："
 
 #. Reset
 #: src/dyna-draw-context.c:1099 src/rect-context.c:420
 #: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
-msgstr ""
+msgstr "默认值"
 
 #: src/file.c:162 src/file.c:176 src/file.c:188
 msgid "Select file to open"
 msgstr "选择打开的文件"
 
 #: src/file.c:207 src/file.c:305
-#, fuzzy
 msgid "File type:"
-msgstr "填充模式"
+msgstr "文件类型："
 
 #: src/file.c:290
 msgid "Save file"
@@ -1163,17 +1113,15 @@ msgstr ""
 
 #: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
-msgstr ""
+msgstr "打开最近"
 
 #: src/interface.c:335
-#, fuzzy
 msgid "Close View"
 msgstr "关闭视图"
 
 #: src/interface.c:338 src/interface.c:519
-#, fuzzy
 msgid "About Sodipodi"
-msgstr "关于 sodipodi"
+msgstr "关于 Sodipodi"
 
 #. Have modules about menu
 #: src/interface.c:344 src/interface.c:525
@@ -1182,7 +1130,7 @@ msgstr ""
 
 #: src/interface.c:364
 msgid "Cleanup"
-msgstr ""
+msgstr "清理"
 
 #. View:Zoom
 #: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
@@ -1201,16 +1149,15 @@ msgstr "新建预览"
 
 #: src/interface.c:455
 msgid "New Toplevel Toolbox"
-msgstr ""
+msgstr "新建顶层工具箱"
 
 #: src/interface.c:456
-#, fuzzy
 msgid "New Docked Toolbox"
-msgstr "显示工具条"
+msgstr "新建停靠工具箱"
 
 #: src/interface.c:457
 msgid "Remove Docked Toolbox"
-msgstr ""
+msgstr "删除停靠工具箱"
 
 #. File
 #: src/interface.c:510 src/verbs.c:405
@@ -1224,7 +1171,7 @@ msgstr "打开"
 #. For some reason action menu does not work on menubar :-(
 #: src/interface.c:531 src/verbs.c:414
 msgid "Exit program"
-msgstr ""
+msgstr "退出程序"
 
 #. Generic menu
 #. File submenu
@@ -1235,7 +1182,7 @@ msgstr "文件"
 #. Edit submenu
 #: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
-msgstr " 编辑"
+msgstr "编辑"
 
 #. View submenu
 #: src/interface.c:612
@@ -1349,9 +1296,8 @@ msgid "Print help about command-line arguments"
 msgstr ""
 
 #: src/main.c:772
-#, fuzzy
 msgid "Untitled document"
-msgstr "未命名文档 %d"
+msgstr "无标题文档"
 
 #. Show nice dialog box
 #: src/main.c:797
@@ -1385,16 +1331,15 @@ msgstr ""
 
 #: src/module.c:884
 msgid "Plain SVG"
-msgstr ""
+msgstr "纯 SVG"
 
 #: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr ""
 
 #: src/modules/gnome.c:158
-#, fuzzy
 msgid "Select printer"
-msgstr "选择"
+msgstr "选择打印机"
 
 #: src/modules/gnome.c:212
 #, c-format
@@ -1412,11 +1357,13 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|SVG 文件\n"
+"*.xml|XML 文件\n"
+"*|全部文件"
 
 #: src/modules/kde.cpp:174
-#, fuzzy
 msgid "Save document as"
-msgstr "内存文档 %d"
+msgstr "文档另存为"
 
 #. Print destination frame
 #: src/modules/ps.c:245 src/modules/ps.c:306
@@ -1426,9 +1373,8 @@ msgstr "打印图画"
 
 #. Print properties frame
 #: src/modules/ps.c:256
-#, fuzzy
 msgid "Print properties"
-msgstr "连接属性"
+msgstr "打印属性"
 
 #: src/modules/ps.c:264
 msgid "Print using PostScript operators"
@@ -1442,9 +1388,8 @@ msgid ""
 msgstr ""
 
 #: src/modules/ps.c:271
-#, fuzzy
 msgid "Print as bitmap"
-msgstr "彩色位图"
+msgstr "打印为位图"
 
 #: src/modules/ps.c:273
 msgid ""
@@ -1455,12 +1400,11 @@ msgstr ""
 
 #: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr ""
+msgstr "位图的首选分辨率(每英寸点数)"
 
 #: src/modules/ps.c:302
-#, fuzzy
 msgid "Resolution:"
-msgstr "旋转："
+msgstr "分辨率："
 
 #: src/modules/ps.c:312
 msgid ""
@@ -1486,18 +1430,17 @@ msgstr "项目属性"
 #. Select item
 #: src/object-ui.c:119
 msgid "Select this"
-msgstr "选择它"
+msgstr "选择此项"
 
 #. Reset transformations
 #: src/object-ui.c:128
 msgid "Reset transformation"
-msgstr "重置变换"
+msgstr "重置变形"
 
 #. Apply transformation
 #: src/object-ui.c:132
-#, fuzzy
 msgid "Apply transformation"
-msgstr "重置变换"
+msgstr "应用变形"
 
 #: src/object-ui.c:137
 msgid "Make sensitive"
@@ -1559,7 +1502,7 @@ msgstr "图像属性"
 #. Autotrace dialog
 #: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
-msgstr ""
+msgstr "跟踪"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:467
@@ -1574,12 +1517,12 @@ msgstr "填充设置"
 #. Create toplevel menuitem
 #: src/object-ui.c:497
 msgid "Rect"
-msgstr "长方形"
+msgstr "矩形"
 
 #. Link dialog
 #: src/object-ui.c:500
 msgid "Rect Properties"
-msgstr "长方形属性"
+msgstr "矩形属性"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:533 src/verbs.c:453
@@ -1612,32 +1555,28 @@ msgid "Roundness ratio for y:"
 msgstr ""
 
 #: src/select-context.c:570
-#, fuzzy
 msgid "Visual transformation"
-msgstr "重置变换"
+msgstr "视觉变形"
 
 #: src/select-context.c:576
-#, fuzzy
 msgid "Show content"
-msgstr "内容"
+msgstr "显示内容"
 
 #: src/select-context.c:582
-#, fuzzy
 msgid "Show outline"
-msgstr "显示指示线"
+msgstr "显示外框"
 
 #: src/select-context.c:588
-#, fuzzy
 msgid "Object transformation"
-msgstr "重置变换"
+msgstr "对象变形"
 
 #: src/select-context.c:594
 msgid "Optimize"
-msgstr ""
+msgstr "优化"
 
 #: src/select-context.c:600
 msgid "Preserve"
-msgstr ""
+msgstr "预留"
 
 #: src/select-context.c:606
 msgid "[Tab] Cycling"
@@ -1653,9 +1592,8 @@ msgid "Center view to selected item"
 msgstr "将一个节点包含到选定段中去"
 
 #: src/slideshow.c:90
-#, fuzzy
 msgid "Sodipodi slideshow"
-msgstr "Sodipodi：%s：%s：%d"
+msgstr "Sodipodi 幻灯片"
 
 #: src/sodipodi.c:468
 #, c-format
@@ -1854,24 +1792,20 @@ msgid "Error to write %s: %s"
 msgstr ""
 
 #: src/sp-image.c:968
-#, fuzzy
 msgid "Untitled"
-msgstr "单位"
+msgstr "无标题"
 
 #: src/sp-image.c:973
-#, fuzzy
 msgid "Document Name:"
-msgstr "文档"
+msgstr "文档名称："
 
 #: src/sp-image.c:986
-#, fuzzy
 msgid "Unknown"
-msgstr "未知项目 :-("
+msgstr "未知"
 
 #: src/sp-image.c:992
-#, fuzzy
 msgid "Image URI:"
-msgstr "图像"
+msgstr "图像 URI："
 
 #: src/sp-item-group.c:462
 #, c-format
@@ -1889,9 +1823,8 @@ msgstr "文本对象"
 
 #. T0
 #: src/spiral-context.c:375
-#, fuzzy
 msgid "Inner radius:"
-msgstr "半径："
+msgstr "内半径："
 
 #. Proportion
 #: src/star-context.c:368
@@ -1910,28 +1843,24 @@ msgid "Object"
 msgstr "对象"
 
 #: src/toolbox.c:362 src/verbs.c:477
-#, fuzzy
 msgid "Object size and position"
-msgstr "大小和位置"
+msgstr "对象大小和位置"
 
 #: src/toolbox.c:363
-#, fuzzy
 msgid "Text and font settings"
-msgstr "桌面设置"
+msgstr "文本和字体设置"
 
 #: src/toolbox.c:365 src/verbs.c:478
-#, fuzzy
 msgid "Object transformations"
-msgstr "重置变换"
+msgstr "对象变形"
 
 #: src/toolbox.c:444
 msgid "Draw"
 msgstr "绘制"
 
 #: src/toolbox.c:501
-#, fuzzy
 msgid "Extension"
-msgstr "扩充："
+msgstr "扩展"
 
 #: src/toolbox.c:583
 msgid "Nodes"
@@ -1987,63 +1916,55 @@ msgstr ""
 
 #: src/verbs.c:405
 msgid "Create new SVG document"
-msgstr ""
+msgstr "创建新的 SVG 文档"
 
 #: src/verbs.c:406
-#, fuzzy
 msgid "Open..."
-msgstr "打开"
+msgstr "打开..."
 
 #: src/verbs.c:406
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "打开已有的 SVG 文档"
 
 #: src/verbs.c:407
 msgid "Save"
 msgstr "保存"
 
 #: src/verbs.c:407
-#, fuzzy
 msgid "Save document"
-msgstr "内存文档 %d"
+msgstr "保存文档"
 
 #: src/verbs.c:408
-#, fuzzy
 msgid "Save As..."
-msgstr "保存为"
+msgstr "另存为..."
 
 #: src/verbs.c:408
-#, fuzzy
 msgid "Save document under new name"
-msgstr "以新文件名保存图画"
+msgstr "以新文件名保存文档"
 
 #: src/verbs.c:409
-#, fuzzy
 msgid "Print..."
-msgstr "打印"
+msgstr "打印..."
 
 #: src/verbs.c:409
-#, fuzzy
 msgid "Print document"
-msgstr "未命名文档 %d"
+msgstr "打印文档"
 
 #: src/verbs.c:410
 msgid "Print Direct..."
-msgstr ""
+msgstr "直接打印..."
 
 #: src/verbs.c:410
 msgid "Print directly to file or pipe"
 msgstr ""
 
 #: src/verbs.c:411
-#, fuzzy
 msgid "Print Preview"
 msgstr "打印预览"
 
 #: src/verbs.c:411
-#, fuzzy
 msgid "Preview document printout"
-msgstr "预览打印图画"
+msgstr "预览文档的输出结果"
 
 #: src/verbs.c:412
 msgid "Import"
@@ -2051,12 +1972,11 @@ msgstr "导入"
 
 #: src/verbs.c:412
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "向文档中导入位图或 SVG 图像"
 
 #: src/verbs.c:413
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "将图形导出为 png"
+msgstr "将文档导出为 PNG 位图"
 
 #: src/verbs.c:414
 msgid "Exit"
@@ -2070,11 +1990,11 @@ msgstr "撤消"
 #: src/verbs.c:416
 #, fuzzy
 msgid "Revert last action"
-msgstr "重置变换"
+msgstr "重置变形"
 
 #: src/verbs.c:417
 msgid "Redo"
-msgstr "恢复"
+msgstr "重做"
 
 #: src/verbs.c:417
 msgid "Do again undone action"
@@ -2085,27 +2005,24 @@ msgid "Cut"
 msgstr "剪切"
 
 #: src/verbs.c:418
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "将选定对象转换为曲线"
+msgstr "将选中对象剪切到剪贴板"
 
 #: src/verbs.c:419
 msgid "Copy"
 msgstr "复制"
 
 #: src/verbs.c:419
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "将选中内容复制到剪贴板"
+msgstr "将选中对象复制到剪贴板"
 
 #: src/verbs.c:420
 msgid "Paste"
 msgstr "粘贴"
 
 #: src/verbs.c:420
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "从剪贴板中粘贴"
+msgstr "从剪贴板中粘贴对象"
 
 #: src/verbs.c:421
 msgid "Delete"
@@ -2118,26 +2035,23 @@ msgstr "删除选定节点"
 
 #: src/verbs.c:422
 msgid "Duplicate"
-msgstr "复制"
+msgstr "副本"
 
 #: src/verbs.c:422
-#, fuzzy
 msgid "Duplicate selected objects"
-msgstr "翻转选中对象"
+msgstr "制作选中对象的副本"
 
 #: src/verbs.c:423
-#, fuzzy
 msgid "Clear All"
-msgstr "色彩填充"
+msgstr "全部清除"
 
 #: src/verbs.c:423
 msgid "Delete all objects from document"
 msgstr ""
 
 #: src/verbs.c:424
-#, fuzzy
 msgid "Select All"
-msgstr "选择"
+msgstr "全选"
 
 #: src/verbs.c:424
 #, fuzzy
@@ -2145,19 +2059,17 @@ msgid "Select all objects in document"
 msgstr "文档中无渐变"
 
 #: src/verbs.c:425
-#, fuzzy
 msgid "Repeat"
-msgstr "重置"
+msgstr "重复"
 
 #: src/verbs.c:425
-#, fuzzy
 msgid "Repeat last saved action"
-msgstr "重置变换"
+msgstr "重复上次保存的动作"
 
 #. Selection
 #: src/verbs.c:427
 msgid "Bring to Front"
-msgstr "放置在前面"
+msgstr "提到最前"
 
 #: src/verbs.c:427
 #, fuzzy
@@ -2166,7 +2078,7 @@ msgstr "将选中内容提升到顶层"
 
 #: src/verbs.c:428
 msgid "Send to Back"
-msgstr "放置在后面"
+msgstr "推到最后"
 
 #: src/verbs.c:428
 #, fuzzy
@@ -2258,23 +2170,19 @@ msgid "Subtract paths from first"
 msgstr ""
 
 #: src/verbs.c:439
-#, fuzzy
 msgid "Transform"
-msgstr "转化"
+msgstr "变形"
 
 #: src/verbs.c:439
-#, fuzzy
 msgid "Applies transformation"
-msgstr "重置变换"
+msgstr "应用变形"
 
 #. Object
 #: src/verbs.c:441
-#, fuzzy
 msgid "Rotate 90 degrees"
-msgstr "将角度设置为 90 度"
+msgstr "旋转 90 度"
 
 #: src/verbs.c:441
-#, fuzzy
 msgid "Rotates object 90 degrees clockwise"
 msgstr "将选定对象顺时针旋转 90 度"
 
@@ -2286,20 +2194,17 @@ msgstr "翻转选中对象"
 #: src/verbs.c:442
 #, fuzzy
 msgid "Remove transformations from object"
-msgstr "删除变换"
+msgstr "删除变形"
 
 #: src/verbs.c:443
-#, fuzzy
 msgid "Convert to Curves"
-msgstr "转换为曲线(_R)"
+msgstr "转换为曲线"
 
 #: src/verbs.c:443
-#, fuzzy
 msgid "Convert selected object to path"
-msgstr "将选定对象转换为曲线"
+msgstr "将选定对象转换为路径"
 
 #: src/verbs.c:444
-#, fuzzy
 msgid "Flip Horizontally"
 msgstr "水平翻转"
 
@@ -2309,7 +2214,6 @@ msgid "Flip selected objects horizontally"
 msgstr "翻转选中对象"
 
 #: src/verbs.c:446
-#, fuzzy
 msgid "Flip Vertically"
 msgstr "垂直翻转"
 
@@ -2324,12 +2228,10 @@ msgid "Select"
 msgstr "选择"
 
 #: src/verbs.c:449
-#, fuzzy
 msgid "Select and transform objects"
-msgstr "选择并变换"
+msgstr "选择并变形对象"
 
 #: src/verbs.c:450
-#, fuzzy
 msgid "Node edit"
 msgstr "节点编辑"
 
@@ -2339,7 +2241,7 @@ msgstr ""
 
 #: src/verbs.c:451
 msgid "Rectangle"
-msgstr "长方形"
+msgstr "矩形"
 
 #: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
@@ -2358,13 +2260,12 @@ msgid "Create stars and polygons"
 msgstr ""
 
 #: src/verbs.c:454
-#, fuzzy
 msgid "Create spirals"
-msgstr "绘制螺旋"
+msgstr "创建螺旋"
 
 #: src/verbs.c:455
 msgid "Pencil"
-msgstr ""
+msgstr "铅笔"
 
 #: src/verbs.c:455
 #, fuzzy
@@ -2372,9 +2273,8 @@ msgid "Draw freehand curves and straight lines"
 msgstr "绘制手绘线"
 
 #: src/verbs.c:456
-#, fuzzy
 msgid "Pen"
-msgstr "百分比"
+msgstr "钢笔"
 
 #: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
@@ -2406,9 +2306,8 @@ msgstr ""
 
 #. Zooming
 #: src/verbs.c:462
-#, fuzzy
 msgid "In"
-msgstr "英寸"
+msgstr "放大"
 
 #: src/verbs.c:462
 #, fuzzy
@@ -2416,9 +2315,8 @@ msgid "Zoom in drawing"
 msgstr "缩放到图画"
 
 #: src/verbs.c:463
-#, fuzzy
 msgid "Out"
-msgstr "剪切"
+msgstr "缩小"
 
 #: src/verbs.c:463
 #, fuzzy
@@ -2470,9 +2368,8 @@ msgid "Display"
 msgstr "显示"
 
 #: src/verbs.c:471
-#, fuzzy
 msgid "Global display settings"
-msgstr "显示设置"
+msgstr "全局显示设置"
 
 #: src/verbs.c:472
 msgid "Document"
@@ -2480,26 +2377,23 @@ msgstr "文档"
 
 #: src/verbs.c:472
 msgid "Page layout"
-msgstr ""
+msgstr "页面布局"
 
 #: src/verbs.c:473
 msgid "Editing Window"
 msgstr "编辑窗口"
 
 #: src/verbs.c:473
-#, fuzzy
 msgid "Editing window properties"
-msgstr "编辑窗口"
+msgstr "编辑窗口属性"
 
 #: src/verbs.c:474
-#, fuzzy
 msgid "Tool Options"
-msgstr "Oaf 选项"
+msgstr "工具选项"
 
 #: src/verbs.c:475
-#, fuzzy
 msgid "Tool Attributes"
-msgstr "属性"
+msgstr "工具属性"
 
 #: src/verbs.c:476
 msgid "Fill and Stroke"
@@ -2512,7 +2406,7 @@ msgstr "勾描设置"
 
 #: src/verbs.c:478
 msgid "Transformations"
-msgstr "变换"
+msgstr "变形"
 
 #: src/verbs.c:479
 #, fuzzy
@@ -2525,14 +2419,12 @@ msgid "Align and distribute"
 msgstr "添加属性"
 
 #: src/verbs.c:480
-#, fuzzy
 msgid "Text and Font"
-msgstr "桌面设置"
+msgstr "文本和字体"
 
 #: src/verbs.c:480
-#, fuzzy
 msgid "Text editing and font settings"
-msgstr "桌面设置"
+msgstr "文本编辑和字体设置"
 
 #: src/verbs.c:481
 msgid "XML Editor"
@@ -2545,14 +2437,12 @@ msgstr ""
 
 #. Style frame
 #: src/widgets/font-selector.c:176
-#, fuzzy
 msgid "Style"
-msgstr " 风格 "
+msgstr "样式"
 
 #: src/widgets/font-selector.c:211
-#, fuzzy
 msgid "Font size:"
-msgstr "不保存"
+msgstr "字体大小："
 
 #: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
@@ -2619,7 +2509,7 @@ msgstr "RGB"
 
 #: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
-msgstr ""
+msgstr "RGB 色彩空间"
 
 #: src/widgets/paint-selector.c:758
 msgid "HSV"
@@ -2631,7 +2521,7 @@ msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
-msgstr ""
+msgstr "CMYK 色彩空间"
 
 #. Use dropper
 #: src/widgets/paint-selector.c:766
@@ -2643,14 +2533,12 @@ msgid "Color paint"
 msgstr "彩色颜料"
 
 #: src/widgets/paint-selector.c:875
-#, fuzzy
 msgid "Linear gradient"
-msgstr "添加新渐变"
+msgstr "线性渐变"
 
 #: src/widgets/paint-selector.c:878
-#, fuzzy
 msgid "Radial gradient"
-msgstr "添加新渐变"
+msgstr "环形渐变"
 
 #: src/widgets/sp-color-selector.c:623
 msgid "Red:"
@@ -2702,7 +2590,6 @@ msgid "Toggle separate window and main toolbox placement"
 msgstr ""
 
 #: src/widgets/sp-xmlview-attr-list.c:54
-#, fuzzy
 msgid "Attribute"
 msgstr "属性"
 
@@ -2710,783 +2597,3 @@ msgstr "属性"
 msgid "Value"
 msgstr "值"
 
-#, fuzzy
-#~ msgid "Filters"
-#~ msgstr "文件"
-
-#~ msgid "Item is reference"
-#~ msgstr "项目是引用"
-
-#~ msgid "The SVG ID of item"
-#~ msgstr "项目的 SVG 标识"
-
-#~ msgid "The ID is not valid"
-#~ msgstr "标识不合法"
-
-#~ msgid "The ID is already defined"
-#~ msgstr "标识已定义"
-
-#~ msgid "Object position and size"
-#~ msgstr "对象位置与尺寸"
-
-#~ msgid "Position and size"
-#~ msgstr "位置与尺寸"
-
-#, fuzzy
-#~ msgid "Relative move"
-#~ msgstr "垂直移动"
-
-#~ msgid "Break apart"
-#~ msgstr "拆分"
-
-#~ msgid "Order"
-#~ msgstr "顺序"
-
-#~ msgid "Node"
-#~ msgstr "节点"
-
-#~ msgid "Arc"
-#~ msgstr "弧线"
-
-#~ msgid "Freehand"
-#~ msgstr "手绘"
-
-#~ msgid "Dynahand"
-#~ msgstr "弹力手绘"
-
-#~ msgid "Align Objects"
-#~ msgstr "对齐对象"
-
-#~ msgid "Text Editing"
-#~ msgstr "文本编辑"
-
-#~ msgid "Display Properties"
-#~ msgstr "显示属性"
-
-#, fuzzy
-#~ msgid "Convert object to curve"
-#~ msgstr "将选定对象转换为曲线"
-
-#, fuzzy
-#~ msgid "Raise selected objects one level"
-#~ msgstr "将选定对象顺时针旋转 90 度"
-
-#, fuzzy
-#~ msgid "Lower selected objects one level"
-#~ msgstr "将选定对象转换为曲线"
-
-#, fuzzy
-#~ msgid "Select tool - select and transform objects"
-#~ msgstr "选择并变换"
-
-#, fuzzy
-#~ msgid "Save as:"
-#~ msgstr "保存为"
-
-#~ msgid "A path - whatever it means"
-#~ msgstr "一条路径 - 任何含义"
-
-#~ msgid "Welcome !"
-#~ msgstr "欢迎 ！"
-
-#~ msgid "Sodipodi SVG Document"
-#~ msgstr "Sodipodi SVG 文档"
-
-#~ msgid "Sodipodi SVG Document factory"
-#~ msgstr "Sodipodi SVG 文档车间"
-
-#~ msgid "Align objects to horizontal mid"
-#~ msgstr "将对象对齐到水平中央"
-
-#~ msgid "Align objects to vertical mid"
-#~ msgstr "将对象对齐到垂直中央"
-
-#~ msgid "Align outside object to bottom border"
-#~ msgstr "将外部对象对齐到底边"
-
-#~ msgid "Align outside object to left border"
-#~ msgstr "将外部对象对齐到左边"
-
-#~ msgid "Align outside object to right border"
-#~ msgstr "将外部对象对齐到右边"
-
-#~ msgid "Align outside object to top border"
-#~ msgstr "将外部对象对齐到顶边"
-
-#~ msgid "Alignment base"
-#~ msgstr "对齐基础"
-
-#~ msgid "Choose align type"
-#~ msgstr "选择对齐类型"
-
-#~ msgid "Close window"
-#~ msgstr "关闭窗口"
-
-#~ msgid "Parent X ="
-#~ msgstr "父坐标 X ="
-
-#~ msgid "Parent Y ="
-#~ msgstr "父坐标 Y ="
-
-#~ msgid "Transformation"
-#~ msgstr "转化"
-
-#~ msgid "X +"
-#~ msgstr "X +"
-
-#~ msgid "Y +"
-#~ msgstr "Y +"
-
-#~ msgid " Color fill "
-#~ msgstr " 色彩填充 "
-
-#~ msgid " General "
-#~ msgstr " 通用 "
-
-#~ msgid " Style "
-#~ msgstr " 风格 "
-
-#~ msgid "Add new gradient"
-#~ msgstr "添加新渐变"
-
-#~ msgid "Bevel join"
-#~ msgstr "斜削连接"
-
-#~ msgid "Choose fill color"
-#~ msgstr "选择填充颜色"
-
-#~ msgid "Choose stroke color"
-#~ msgstr "选择勾描颜色"
-
-#~ msgid "Color fill"
-#~ msgstr "色彩填充"
-
-#~ msgid "Color:"
-#~ msgstr "颜色"
-
-#~ msgid "Dimension"
-#~ msgstr "尺寸"
-
-#~ msgid "Edit..."
-#~ msgstr "编辑..."
-
-#~ msgid "Endpoints:"
-#~ msgstr "端点："
-
-#~ msgid "Fill Color:"
-#~ msgstr "填充颜色："
-
-#~ msgid "Fractal fill"
-#~ msgstr "分形填充"
-
-#~ msgid "Gradient fill"
-#~ msgstr "渐变填充"
-
-#~ msgid "Is stroked"
-#~ msgstr "已被勾描"
-
-#~ msgid "Miter join"
-#~ msgstr "斜角连接"
-
-#~ msgid "No fill"
-#~ msgstr "不填充"
-
-#~ msgid "Pattern fill"
-#~ msgstr "模式填充"
-
-#~ msgid "Pick fill color"
-#~ msgstr "选取填充颜色"
-
-#~ msgid "Pick stroke color"
-#~ msgstr "选取勾描颜色"
-
-#~ msgid "Position"
-#~ msgstr "位置"
-
-#~ msgid "Reread"
-#~ msgstr "重读"
-
-#~ msgid "Round endpoints"
-#~ msgstr "圆形端点"
-
-#~ msgid "Round join"
-#~ msgstr "圆形连接"
-
-#~ msgid "Scale with object"
-#~ msgstr "按对象缩放"
-
-#~ msgid "Square endpoints"
-#~ msgstr "正方形端点"
-
-#~ msgid "Stroke"
-#~ msgstr "勾描"
-
-#~ msgid "Stroke width"
-#~ msgstr "勾描宽度"
-
-#~ msgid "centimeter"
-#~ msgstr "厘米"
-
-#~ msgid "color"
-#~ msgstr "颜色"
-
-#~ msgid "inches"
-#~ msgstr "英寸"
-
-#~ msgid "millimeters"
-#~ msgstr "毫米"
-
-#~ msgid "object properties"
-#~ msgstr "对象属性"
-
-#~ msgid "points"
-#~ msgstr "点"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0MB"
-
-#~ msgid "Back One"
-#~ msgstr "后移一个位置"
-
-#~ msgid "Break apart selected node"
-#~ msgstr "拆分选定的节点"
-
-#~ msgid "Bring to _Front"
-#~ msgstr "放置在前面(_F)"
-
-#~ msgid "Close dialog"
-#~ msgstr "关闭对话框"
-
-#~ msgid "Convert selected segments to curves"
-#~ msgstr "将选定段转换为曲线"
-
-#~ msgid "Convert selected segments to lines"
-#~ msgstr "将选定段转换为连线"
-
-#~ msgid "Cusp line at selected nodes"
-#~ msgstr "选定节点处为尖点线"
-
-#~ msgid "Desktop"
-#~ msgstr "桌面"
-
-#~ msgid "Drawing Context"
-#~ msgstr "绘图上下文"
-
-#~ msgid "Export picture to png"
-#~ msgstr "将图形导出为 png"
-
-#~ msgid "Exported as"
-#~ msgstr "导出为"
-
-#~ msgid "Filename:"
-#~ msgstr "文件名："
-
-#~ msgid "Forward One"
-#~ msgstr "前移一个位置"
-
-#~ msgid "Height"
-#~ msgstr "高度"
-
-#~ msgid "Image size"
-#~ msgstr "图像大小"
-
-#~ msgid "Include one node into selected segments"
-#~ msgstr "将一个节点包含到选定段中去"
-
-#~ msgid "Join 2 selected endpoints"
-#~ msgstr "连接两个选定端点"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "锁定外观比率"
-
-#~ msgid "Png file name"
-#~ msgstr "Png 文件名"
-
-#~ msgid "Send to _Back"
-#~ msgstr "放置在后面(_B)"
-
-#~ msgid "Set dimensions"
-#~ msgstr "设定尺寸"
-
-#~ msgid "Smooth line at selected nodes"
-#~ msgstr "使选定节点处成为光滑线段"
-
-#~ msgid "Symmetric "
-#~ msgstr "对称 "
-
-#~ msgid "Toggle Borders"
-#~ msgstr "切换边框"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "解压文件大小："
-
-#~ msgid "Where to export"
-#~ msgstr "导出到何处"
-
-#~ msgid "Width"
-#~ msgstr "宽度"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "XML Tree"
-#~ msgstr "XML 树"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "_Align"
-#~ msgstr "对齐(_A)"
-
-#~ msgid "_Combine"
-#~ msgstr "组合(_C)"
-
-#~ msgid "_Drawing"
-#~ msgstr "绘图(_D)"
-
-#~ msgid "_Group"
-#~ msgstr "编组(_G)"
-
-#~ msgid "_New"
-#~ msgstr "新建(_N)"
-
-#~ msgid "_Page"
-#~ msgstr "页(_P)"
-
-#~ msgid "_Selection"
-#~ msgstr "选择(_S)"
-
-#~ msgid "_Ungroup"
-#~ msgstr "分解组(_U)"
-
-#~ msgid "Align dialog"
-#~ msgstr "对齐对话框"
-
-#~ msgid "Break apart selected paths"
-#~ msgstr "拆分选定路径"
-
-#~ msgid "Copy selection to clipboard"
-#~ msgstr "将选中内容复制到剪贴板"
-
-#~ msgid "Cut selection"
-#~ msgstr "剪切选中内容"
-
-#~ msgid "Delete selection"
-#~ msgstr "删除选中内容"
-
-#~ msgid "Draw arc"
-#~ msgstr "绘制弧线"
-
-#~ msgid "Draw dynahand line"
-#~ msgstr "绘制弹力手绘线"
-
-#~ msgid "Draw rectangle"
-#~ msgstr "绘制长方形"
-
-#~ msgid "Draw star"
-#~ msgstr "绘制星形"
-
-#~ msgid "Draw text"
-#~ msgstr "绘制文本"
-
-#~ msgid "Drawing context"
-#~ msgstr "绘图上下文"
-
-#~ msgid "Duplicate selection"
-#~ msgstr "复制选中内容"
-
-#~ msgid "Edit fill style of selected objects"
-#~ msgstr "编辑选中对象的填充风格"
-
-#~ msgid "Edit font style of selected objects"
-#~ msgstr "编辑选中对象的字体风格"
-
-#~ msgid "Edit layout of selected objects"
-#~ msgstr "编辑选中对象的布局"
-
-#~ msgid "Edit nodes"
-#~ msgstr "编辑节点"
-
-#~ msgid "Edit stroke style of selected objects"
-#~ msgstr "编辑选中对象的勾描风格"
-
-#~ msgid "Import "
-#~ msgstr "导入 "
-
-#~ msgid "Lower selection one layer"
-#~ msgstr "将选中内容降低一个图层"
-
-#~ msgid "New drawing"
-#~ msgstr "新建图画"
-
-#~ msgid "No I'd rather do some more cool vector drawing with sodipodi."
-#~ msgstr "不，我宁愿用 sodipodi 做些更酷的向量图画。"
-
-#~ msgid "Nope !"
-#~ msgstr "不 ！"
-
-#~ msgid "Open new drawing"
-#~ msgstr "打开新图画"
-
-#~ msgid "Paste from clipboard"
-#~ msgstr "从剪贴板中粘贴"
-
-#~ msgid "Preview print drawing"
-#~ msgstr "预览打印图画"
-
-#~ msgid "Quit or not quit ?"
-#~ msgstr "退出或不退出？"
-
-#~ msgid "Raise selection to top"
-#~ msgstr "将选中内容提升到顶层"
-
-#~ msgid "Really wanna quit sodipodi ?"
-#~ msgstr "真的要退出 sodipodi ？"
-
-#~ msgid "Remove transformation"
-#~ msgstr "删除变换"
-
-#~ msgid "Rise selection one layer"
-#~ msgstr "将选中内容提升一个图层"
-
-#, fuzzy
-#~ msgid "Rotate selected objects 90deg clockwise"
-#~ msgstr "将选定对象顺时针旋转 90 度"
-
-#~ msgid "Save drawing "
-#~ msgstr "保存图画 "
-
-#~ msgid "Save drawing under new filename"
-#~ msgstr "以新文件名保存图画"
-
-#~ msgid "Transformation dialog"
-#~ msgstr "变换对话框"
-
-#~ msgid "Undo "
-#~ msgstr "撤销 "
-
-#~ msgid "Ungroup selected objects"
-#~ msgstr "分解选中对象构成的组"
-
-#~ msgid "Unsymmetric"
-#~ msgstr "不对称"
-
-#~ msgid "Yep !"
-#~ msgstr "是 ！"
-
-#~ msgid "Yes quick! I want to leave sodipodi and come back later."
-#~ msgstr "是的 快点！我希望离开 sodipodi 一会儿再回来。"
-
-#~ msgid "Zoom in"
-#~ msgstr "放大"
-
-#~ msgid "Zoom out"
-#~ msgstr "缩小"
-
-#~ msgid "Zoom to 1:1"
-#~ msgstr "缩放到 1:1"
-
-#~ msgid "Zoom to 1:2"
-#~ msgstr "缩放到 1:2"
-
-#~ msgid "Zoom to 2:1"
-#~ msgstr "缩放到 2:1"
-
-#~ msgid "Zoom to page"
-#~ msgstr "缩放到页"
-
-#~ msgid "Zoom to selection"
-#~ msgstr "缩放到选中内容"
-
-#~ msgid "_Open"
-#~ msgstr "打开(_O)"
-
-#~ msgid "_Quit"
-#~ msgstr "退出(_Q)"
-
-#~ msgid "lower selection to bottom"
-#~ msgstr "将选中内容降低到底层"
-
-#~ msgid "Align to bottom left"
-#~ msgstr "对齐到底部左侧"
-
-#~ msgid "Align to bottom middle"
-#~ msgstr "对齐到底部中央"
-
-#~ msgid "Align to bottom right"
-#~ msgstr "对齐到底部右侧"
-
-#~ msgid "Align to center"
-#~ msgstr "对齐到中央"
-
-#~ msgid "Align to left middle"
-#~ msgstr "对齐到左侧中央"
-
-#~ msgid "Align to right middle"
-#~ msgstr "对齐到右侧中央"
-
-#~ msgid "Align to top left"
-#~ msgstr "对齐到顶部左侧"
-
-#~ msgid "Align to top middle"
-#~ msgstr "对齐到顶部中央"
-
-#~ msgid "Align to top right"
-#~ msgstr "对齐到顶部右侧"
-
-#~ msgid "Apply transformation to copy Ctl+m"
-#~ msgstr "对副本应用变换 Ctl+m"
-
-#~ msgid "Center"
-#~ msgstr "中央"
-
-#~ msgid "Choose metric for center"
-#~ msgstr "为中央选择公制"
-
-#~ msgid "Close dialog - Ctl+c"
-#~ msgstr "关闭对话框 - Ctl+c"
-
-#~ msgid "Degree"
-#~ msgstr "度"
-
-#~ msgid "Expand dialog - Ctl+e"
-#~ msgstr "扩展对话框 - Ctl+e"
-
-#~ msgid "Height: "
-#~ msgstr "高度："
-
-#~ msgid "Horizontal center value"
-#~ msgstr "水平中心值"
-
-#~ msgid "Keep height of selection during transformation"
-#~ msgstr "在变换中保持选中内容的高度不变"
-
-#~ msgid "Keep width of selection during transformation"
-#~ msgstr "在变换中保持选中内容的宽度不变"
-
-#~ msgid "Orig. Width: "
-#~ msgstr "原点宽度："
-
-#~ msgid "Orig. X: "
-#~ msgstr "X 原点："
-
-#~ msgid "Reset dialog to default - Ctl+r"
-#~ msgstr "将对话框内容重置为默认值 - Ctl+r"
-
-#~ msgid "Set angle to 0 degrees"
-#~ msgstr "将角度设置为 0 度"
-
-#~ msgid "Set angle to 180 degrees"
-#~ msgstr "将角度设置为 180 度"
-
-#~ msgid "Set angle to 270 degrees"
-#~ msgstr "将角度设置为 270 度"
-
-#~ msgid "Skew"
-#~ msgstr "扭曲"
-
-#~ msgid "Start transformation - Ctl+a"
-#~ msgstr "开始变换 - Ctl+a"
-
-#~ msgid "Toggle center given in selection/desktop coordiantes"
-#~ msgstr "在选中内容坐标给出的中心和桌面坐标给出的中心间切换"
-
-#~ msgid "Use alignment during transformation"
-#~ msgstr "在变换中对齐"
-
-#~ msgid "Use center as transformation fixpoint"
-#~ msgstr "将中心作为变换的固定点"
-
-#~ msgid "Y: "
-#~ msgstr "Y： "
-
-#~ msgid "absolute"
-#~ msgstr "绝对"
-
-#~ msgid "angle"
-#~ msgstr "角度"
-
-#~ msgid "desktop"
-#~ msgstr "桌面"
-
-#~ msgid "horizontal scale value"
-#~ msgstr "水平缩放值"
-
-#~ msgid "keep aspect"
-#~ msgstr "保持比率"
-
-#~ msgid "lock/unlock horizontal and vertical scale"
-#~ msgstr "锁定/解锁水平及垂直缩放"
-
-#~ msgid "select direction"
-#~ msgstr "选择方向"
-
-#~ msgid "select direction (horizontal/vertical skew)"
-#~ msgstr "选择方向 (水平/垂直 扭曲)"
-
-#~ msgid "select metric for scale"
-#~ msgstr "按公制缩放"
-
-#~ msgid "select metric for values"
-#~ msgstr "按公制计值"
-
-#~ msgid "skew"
-#~ msgstr "扭曲"
-
-#~ msgid "toggle absolute/relative move"
-#~ msgstr "切换绝对/相对移动"
-
-#~ msgid "toggle absolute/relative scale"
-#~ msgstr "切换绝对/相对缩放"
-
-#~ msgid "vertical scale value"
-#~ msgstr "垂直缩放值"
-
-#~ msgid "Attribute:"
-#~ msgstr "属性："
-
-#~ msgid "Change"
-#~ msgstr "改变"
-
-#~ msgid "Change Attribute"
-#~ msgstr "改变属性"
-
-#, fuzzy
-#~ msgid "Change Content"
-#~ msgstr "绘图上下文"
-
-#~ msgid "Content"
-#~ msgstr "内容"
-
-#~ msgid "Do you want to delete attribute?"
-#~ msgstr "你是否需要删除属性？"
-
-#~ msgid "Hierarchy"
-#~ msgstr "层次"
-
-#~ msgid "Key"
-#~ msgstr "键"
-
-#~ msgid "name"
-#~ msgstr "名称"
-
-#~ msgid "Don't save"
-#~ msgstr "不保存"
-
-#, fuzzy
-#~ msgid "You can't delete 'id' attribute!"
-#~ msgstr "你是否需要删除属性？"
-
-#, fuzzy
-#~ msgid "Do you want to delete attribute %s?"
-#~ msgstr "你是否需要删除属性？"
-
-#, fuzzy
-#~ msgid "No"
-#~ msgstr "无"
-
-#, fuzzy
-#~ msgid "Do you want to delete element %s?"
-#~ msgstr "你是否需要删除属性？"
-
-#~ msgid "\""
-#~ msgstr "\""
-
-#~ msgid "Userspace"
-#~ msgstr "用户空间"
-
-#~ msgid "_About ..."
-#~ msgstr "关于(_A)..."
-
-#~ msgid "_File"
-#~ msgstr "文件(_F)"
-
-#~ msgid "_Help"
-#~ msgstr "求助(_H)"
-
-#~ msgid "Del"
-#~ msgstr "删除"
-
-#~ msgid "Dup"
-#~ msgstr "复制"
-
-#~ msgid "Empty"
-#~ msgstr "空"
-
-#~ msgid "Solid color"
-#~ msgstr "纯色"
-
-#~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
-#~ msgstr "不要使用 GUI。若 NB! 存在，应为第一个参数！"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "无法初始化 Bonobo"
-
-#~ msgid "Broken bitmap"
-#~ msgstr "不完整的位图"
-
-#~ msgid "Linear"
-#~ msgstr "线性"
-
-#~ msgid "Radial"
-#~ msgstr "半径"
-
-#~ msgid "Choose base unit system for grid"
-#~ msgstr "为栅格选择基本单位系统"
-
-#~ msgid "Choose color for grid"
-#~ msgstr "选择栅格颜色"
-
-#~ msgid "Choose color for guidelines"
-#~ msgstr "选择指示线颜色"
-
-#~ msgid "Choose color for highlighted guidelines"
-#~ msgstr "选择高亮指示线颜色"
-
-#~ msgid "Choose unit system for grid snapping"
-#~ msgstr "选择栅格定位单位系统"
-
-#~ msgid "Choose unit system for guideline snapping"
-#~ msgstr "选择指示线定位单位系统"
-
-#~ msgid "Set distance between horizontal grid lines"
-#~ msgstr "设置水平栅格线之间的距离"
-
-#~ msgid "Set distance between vertical grid lines"
-#~ msgstr "设置垂直栅格线之间的距离"
-
-#~ msgid "Set maximum distance for grid snapping"
-#~ msgstr "设置栅格定位最大距离"
-
-#~ msgid "Set maximum distance for guideline snapping"
-#~ msgstr "设置指示线定位最大距离"
-
-#~ msgid "Set origin of page coordinate system"
-#~ msgstr "设定页坐标系统原点"
-
-#~ msgid "A4"
-#~ msgstr "A4"
-
-#~ msgid "Choose paper size"
-#~ msgstr "选择页面大小"
-
-#~ msgid "Choose unit system"
-#~ msgstr "选择单位系统"
-
-#~ msgid "Set page height"
-#~ msgstr "设定页面高度"
-
-#~ msgid "Set page width"
-#~ msgstr "设定页面宽度"
-
-#~ msgid "Draw ellipse"
-#~ msgstr "绘制椭圆"
-
-#~ msgid "Dynamic fill"
-#~ msgstr "动态填充"
