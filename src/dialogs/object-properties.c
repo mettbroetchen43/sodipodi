@@ -144,11 +144,11 @@ sp_object_properties_dialog (void)
 		/* Modify style selector */
 		hs = gtk_hseparator_new ();
 		gtk_widget_show (hs);
-		gtk_box_pack_start (GTK_BOX (vb), hs, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (vb), hs, FALSE, FALSE, 0);
 
 		hb = gtk_hbox_new (FALSE, 4);
 		gtk_widget_show (hb);
-		gtk_box_pack_start (GTK_BOX (vb), hb, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
 
 		l = gtk_label_new (_("Style to change:"));
 		gtk_widget_show (l);

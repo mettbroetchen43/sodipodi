@@ -143,8 +143,14 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	sp_path_read_attr (object, "d");
 
 	if (path->independent && (version > 0) && (version < 25)) {
+		SPCSSAttr *css;
+		const guchar *val;
+		gboolean changed;
 		GSList *l;
 		gboolean open;
+		css = sp_repr_css_attr (repr, "style");
+		/* We foce style rewrite at moment (Lauris) */
+		changed = TRUE;
 		open = FALSE;
 		for (l = path->comp; l != NULL; l = l->next) {
 			SPPathComp *comp;
@@ -160,20 +166,20 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 			}
 		}
 		if (open) {
-			SPCSSAttr *css;
-			const guchar *val;
-			gboolean changed;
-			css = sp_repr_css_attr (repr, "style");
-			/* We foce style rewrite at moment (Lauris) */
-			changed = TRUE;
 			val = sp_repr_css_property (css, "fill", NULL);
 			if (val && strcmp (val, "none")) {
 				sp_repr_css_set_property (css, "fill", "none");
 				changed = TRUE;
 			}
-			if (changed) sp_repr_css_set (repr, css, "style");
-			sp_repr_css_attr_unref (css);
+		} else {
+			val = sp_repr_css_property (css, "fill-rule", NULL);
+			if (!val) {
+				sp_repr_css_set_property (css, "fill-rule", "evenodd");
+				changed = TRUE;
+			}
 		}
+		if (changed) sp_repr_css_set (repr, css, "style");
+		sp_repr_css_attr_unref (css);
 	}
 
 	if (SP_OBJECT_CLASS (parent_class)->build)

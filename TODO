@@ -2,8 +2,8 @@
 
 TODO for 0.26
 
-- fill-rule modification (2 hours)
-- backwards compatibility for fill (2 hours)
+- fill-rule modification (DONE)
+- backwards compatibility for fill (DONE)
 - Cursor placement and Backspace in text context (DONE)
 - Save as plain SVG (DONE)
 - Recently opened file list (DONE)

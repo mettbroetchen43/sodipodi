@@ -24,6 +24,9 @@
 
 #include <libnr/nr-values.h>
 
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_wind.h>
+
 #include "../helper/art-utils.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
@@ -48,6 +51,8 @@ static void sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr);
 static void sp_fill_style_widget_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw);
 static void sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw);
 static void sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw);
+
+static void sp_fill_style_widget_fill_rule_activate (GtkWidget *w, SPWidget *spw);
 
 static void sp_fill_style_get_average_color_rgba (const GSList *objects, gfloat *c);
 static void sp_fill_style_get_average_color_cmyka (const GSList *objects, gfloat *c);
@@ -82,23 +87,58 @@ sp_fill_style_dialog (void)
 GtkWidget *
 sp_fill_style_widget_new (void)
 {
-	GtkWidget *spw, *psel;
+	GtkWidget *spw, *vb, *psel, *hb, *l, *om, *m, *mi;
 
 	spw = sp_widget_new_global (SODIPODI);
 
+	vb = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vb);
+	gtk_container_add (GTK_CONTAINER (spw), vb);
+
 	psel = sp_paint_selector_new ();
 	gtk_widget_show (psel);
-	gtk_container_add (GTK_CONTAINER (spw), psel);
+	gtk_box_pack_start (GTK_BOX (vb), psel, TRUE, TRUE, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "paint-selector", psel);
+
+	gtk_signal_connect (GTK_OBJECT (psel), "mode_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_mode_changed), spw);
+	gtk_signal_connect (GTK_OBJECT (psel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_dragged), spw);
+	gtk_signal_connect (GTK_OBJECT (psel), "changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_changed), spw);
+
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+
+	l = gtk_label_new (_("Fill Rule"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 0);
+
+	om = gtk_option_menu_new ();
+	gtk_widget_show (om);
+	gtk_box_pack_start (GTK_BOX (hb), om, FALSE, FALSE, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "fill-rule", om);
+
+	/* 0 - nonzero 1 - evenodd */
+	m = gtk_menu_new ();
+	gtk_widget_show (m);
+
+	mi = gtk_menu_item_new_with_label (_("nonzero"));
+	gtk_widget_show (mi);
+	gtk_menu_append (GTK_MENU (m), mi);
+	gtk_object_set_data (GTK_OBJECT (mi), "fill-rule", "nonzero");
+	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_fill_style_widget_fill_rule_activate), spw);
+	mi = gtk_menu_item_new_with_label (_("evenodd"));
+	gtk_widget_show (mi);
+	gtk_menu_append (GTK_MENU (m), mi);
+	gtk_object_set_data (GTK_OBJECT (mi), "fill-rule", "evenodd");
+	gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_fill_style_widget_fill_rule_activate), spw);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
 
 	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_fill_style_widget_construct), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_modify_selection), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_change_selection), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "attr_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_attr_changed), psel);
-
-	gtk_signal_connect (GTK_OBJECT (psel), "mode_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_mode_changed), spw);
-	gtk_signal_connect (GTK_OBJECT (psel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_dragged), spw);
-	gtk_signal_connect (GTK_OBJECT (psel), "changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_changed), spw);
 
 	sp_fill_style_widget_update (SP_WIDGET (spw), SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 
@@ -144,6 +184,7 @@ static void
 sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 {
 	SPPaintSelector *psel;
+	GtkWidget *fillrule;
 	SPPaintSelectorMode pselmode;
 	const GSList *objects, *l;
 	SPObject *object;
@@ -232,6 +273,10 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		break;
 	}
 
+	fillrule = gtk_object_get_data (GTK_OBJECT (spw), "fill-rule");
+	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule),
+				     (SP_OBJECT_STYLE (object)->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
+
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
@@ -239,6 +284,7 @@ static void
 sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 {
 	SPPaintSelector *psel;
+	GtkWidget *fillrule;
 	SPPaintSelectorMode pselmode;
 	SPStyle *style;
 	gfloat c[5];
@@ -276,6 +322,10 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 		break;
 	}
+
+	fillrule = gtk_object_get_data (GTK_OBJECT (spw), "fill-rule");
+	gtk_option_menu_set_history (GTK_OPTION_MENU (fillrule),
+				     (style->fill_rule.computed == ART_WIND_RULE_NONZERO) ? 0 : 1);
 
 	sp_style_unref (style);
 
@@ -486,6 +536,38 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 
 	g_slist_free (reprs);
 }
+
+static void
+sp_fill_style_widget_fill_rule_activate (GtkWidget *w, SPWidget *spw)
+{
+	const GSList *items, *i, *r;
+	GSList *reprs;
+	SPCSSAttr *css;
+
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
+
+	if (spw->sodipodi) {
+		reprs = NULL;
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+		}
+	} else {
+		reprs = g_slist_prepend (NULL, spw->repr);
+		items = NULL;
+	}
+
+	css = sp_repr_css_attr_new ();
+	sp_repr_css_set_property (css, "fill-rule", gtk_object_get_data (GTK_OBJECT (w), "fill-rule"));
+	for (r = reprs; r != NULL; r = r->next) {
+		sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+	}
+	sp_repr_css_attr_unref (css);
+	if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
+
+	g_slist_free (reprs);
+}
+
 
 static void
 sp_fill_style_get_average_color_rgba (const GSList *objects, gfloat *c)

@@ -1,5 +1,12 @@
 2002-09-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/fill-style.c (sp_fill_style_widget_new): Fill rule selector
+	(sp_fill_style_widget_update): Update fill rule selector
+	(sp_fill_style_widget_update_repr): Ditto
+	(sp_fill_style_widget_fill_rule_activate): Set fill-rule
+
+	* src/document.c (sp_document_new): Do not set style
+
 	* src/xml/repr.c (sp_repr_merge): Duplicate node without id key
 
 	* src/sp-path.c (sp_path_build): Set fill to none for old version open path

@@ -222,7 +222,6 @@ sp_document_new (const gchar *uri, gboolean public)
 	} else {
 		rdoc = sp_repr_document_new ("svg");
 		rroot = sp_repr_document_root (rdoc);
-		sp_repr_set_attr (rroot, "style", "fill:#000000;stroke:none;");
 	}
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
