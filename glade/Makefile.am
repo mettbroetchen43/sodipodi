@@ -1,7 +1,7 @@
 
 gladedir = $(datadir)/sodipodi
 
-images = about.svg
+images = about.svg icons.svg
 
 pixmaps = \
 	add.xpm \
@@ -32,7 +32,6 @@ pixmaps = \
 	angle_any.xpm \
 	arrows_hor.xpm \
 	arrows_ver.xpm \
-	back.xpm \
 	cap_butt.xpm \
 	cap_round.xpm \
 	cap_square.xpm \
@@ -41,7 +40,6 @@ pixmaps = \
 	curve.xpm \
 	cusp.xpm \
 	del.xpm \
-	delete.xpm \
 	delete_xml_node.xpm \
 	delete_xml_attribute.xpm \
 	dimension_hor.xpm \
