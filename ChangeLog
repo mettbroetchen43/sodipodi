@@ -1,6 +1,7 @@
 2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c (sp_export_dialog): Default to document name + png
+	(sp_export_spinbutton_new): Pack more functions here
 
 	* src/sp-chars.c (sp_chars_update): Implement
 

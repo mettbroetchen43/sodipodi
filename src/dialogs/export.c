@@ -64,23 +64,31 @@ sp_export_dialog_destroy (GtkObject *object, gpointer data)
 }
 
 static void
-sp_export_spinbutton_new (GtkTable *t, int x, int y, const unsigned char *ll, const unsigned char *lr,
-			  GtkAdjustment *a, int step, int digits, unsigned int sensitive)
+sp_export_spinbutton_new (unsigned char *key, float val, float min, float max, float step, float page, GtkWidget *us,
+			  GtkWidget *t, int x, int y, const unsigned char *ll, const unsigned char *lr,
+			  int digits, unsigned int sensitive,
+			  GCallback cb, GtkWidget *dlg)
 {
 	GtkWidget *l, *sb;
+	GtkObject *a;
 	int pos;
+
+	a = gtk_adjustment_new (val, min, max, step, page, page);
+	gtk_object_set_data (a, "key", key);
+	gtk_object_set_data (GTK_OBJECT (dlg), key, a);
+	if (us) sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
 
 	pos = 0;
 
 	if (ll) {
 		l = gtk_label_new (ll);
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-		gtk_table_attach (t, l, x + pos, x + pos + 1, y, y + 1, 0, 0, 0, 0);
+		gtk_table_attach (GTK_TABLE (t), l, x + pos, x + pos + 1, y, y + 1, 0, 0, 0, 0);
 		gtk_widget_set_sensitive (l, sensitive);
 		pos += 1;
 	}
 
-	sb = gtk_spin_button_new (a, step, digits);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, digits);
 	gtk_table_attach (GTK_TABLE (t), sb, x + pos, x + pos + 1, y, y + 1, 0, 0, 0, 0);
 	gtk_widget_set_usize (sb, 64, -1);
 	gtk_widget_set_sensitive (sb, sensitive);
@@ -89,10 +97,12 @@ sp_export_spinbutton_new (GtkTable *t, int x, int y, const unsigned char *ll, co
 	if (lr) {
 		l = gtk_label_new (lr);
 		gtk_misc_set_alignment (GTK_MISC (l), 0.0, 0.5);
-		gtk_table_attach (t, l, x + pos, x + pos + 1, y, y + 1, 0, 0, 0, 0);
+		gtk_table_attach (GTK_TABLE (t), l, x + pos, x + pos + 1, y, y + 1, 0, 0, 0, 0);
 		gtk_widget_set_sensitive (l, sensitive);
 		pos += 1;
 	}
+
+	if (cb) gtk_signal_connect (a, "value_changed", cb, dlg);
 }
 
 void
@@ -100,7 +110,6 @@ sp_export_dialog (void)
 {
 	if (!dlg) {
 		GtkWidget *vb, *f, *t, *hb, *us, *l, *fe, *hs, *b;
-		GtkObject *a;
 
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Export bitmap"));
@@ -145,45 +154,23 @@ sp_export_dialog (void)
 		gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 		gtk_object_set_data (GTK_OBJECT (dlg), "units", us);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (a), "key", "x0");
-		gtk_object_set_data (GTK_OBJECT (dlg), "x0", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 0, 1, _("x0:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_x_value_changed), dlg);
+		sp_export_spinbutton_new ("x0", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 0, 1, _("x0:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_x_value_changed), dlg);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (a), "key", "x1");
-		gtk_object_set_data (GTK_OBJECT (dlg), "x1", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 2, 1, _("x1:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_x_value_changed), dlg);
+		sp_export_spinbutton_new ("x1", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 2, 1, _("x1:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_x_value_changed), dlg);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "width", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 4, 1, _("Width:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_width_value_changed), dlg);
+		sp_export_spinbutton_new ("width", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 4, 1, _("Width:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_width_value_changed), dlg);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (a), "key", "y0");
-		gtk_object_set_data (GTK_OBJECT (dlg), "y0", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 0, 2, _("y0:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_y_value_changed), dlg);
+		sp_export_spinbutton_new ("y0", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 0, 2, _("y0:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_y_value_changed), dlg);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (a), "key", "y1");
-		gtk_object_set_data (GTK_OBJECT (dlg), "y1", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 2, 2, _("y1:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_y_value_changed), dlg);
+		sp_export_spinbutton_new ("y1", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 2, 2, _("y1:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_y_value_changed), dlg);
 
-		a = gtk_adjustment_new (0.0, -10000.0, 10000.0, 0.1, 1.0, 1.0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "height", a);
-		sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-		sp_export_spinbutton_new (GTK_TABLE (t), 4, 2, _("Height:"), NULL, GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_area_height_value_changed), dlg);
+		sp_export_spinbutton_new ("height", 0.0, -10000.0, 10000.0, 0.1, 1.0, us, t, 4, 2, _("Height:"), NULL, 2, 1,
+					  G_CALLBACK (sp_export_area_height_value_changed), dlg);
 
 		gtk_widget_show_all (f);
 
@@ -196,23 +183,21 @@ sp_export_dialog (void)
 		gtk_container_set_border_width (GTK_CONTAINER (t), 4);
 		gtk_container_add (GTK_CONTAINER (f), t);
 
-		a = gtk_adjustment_new (16.0, -10000.0, 10000.0, 1, 10.0, 10.0);
-		sp_export_spinbutton_new (GTK_TABLE (t), 0, 0, _("Width:"), _("pixels"), GTK_ADJUSTMENT (a), 1.0, 0, 1);
-		gtk_object_set_data (GTK_OBJECT (dlg), "bmwidth", a);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_bitmap_width_value_changed), dlg);
+		sp_export_spinbutton_new ("bmwidth", 16.0, 16.0, 1000000.0, 1.0, 10.0, NULL, t, 0, 0,
+					  _("Width:"), _("pixels"), 0, 1,
+					  G_CALLBACK (sp_export_bitmap_width_value_changed), dlg);
 
-		a = gtk_adjustment_new (72.0, 1.0, 9600.0, 0.1, 1.0, 1.0);
-		sp_export_spinbutton_new (GTK_TABLE (t), 3, 0, NULL, _("dpi"), GTK_ADJUSTMENT (a), 1.0, 2, 1);
-		gtk_object_set_data (GTK_OBJECT (dlg), "xdpi", a);
-		gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_export_xdpi_value_changed), dlg);
+		sp_export_spinbutton_new ("xdpi", 72.0, 1.0, 9600.0, 0.1, 1.0, NULL, t, 3, 0,
+					  NULL, _("dpi"), 2, 1,
+					  G_CALLBACK (sp_export_xdpi_value_changed), dlg);
 
-		a = gtk_adjustment_new (16.0, -10000.0, 10000.0, 1, 10.0, 10.0);
-		sp_export_spinbutton_new (GTK_TABLE (t), 0, 1, _("Height:"), _("pixels"), GTK_ADJUSTMENT (a), 1.0, 0, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "bmheight", a);
+		sp_export_spinbutton_new ("bmheight", 16.0, 16.0, 1000000.0, 1, 10.0, NULL, t, 0, 1,
+					  _("Height:"), _("pixels"), 0, 0,
+					  NULL, dlg);
 
-		a = gtk_adjustment_new (72.0, 1.0, 9600.0, 0.1, 1.0, 1.0);
-		sp_export_spinbutton_new (GTK_TABLE (t), 3, 1, NULL, _("dpi"), GTK_ADJUSTMENT (a), 1.0, 2, 0);
-		gtk_object_set_data (GTK_OBJECT (dlg), "ydpi", a);
+		sp_export_spinbutton_new ("ydpi", 72.0, 1.0, 9600.0, 0.1, 1.0, NULL, t, 3, 1,
+					  NULL, _("dpi"), 2, 0,
+					  NULL, dlg);
 
 		gtk_widget_show_all (f);
 
