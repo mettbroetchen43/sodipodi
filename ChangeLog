@@ -1,3 +1,13 @@
+2003-06-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/modules/kde.cpp (sp_kde_get_save_filename): New method
+	(sp_kde_get_write_filename): New method
+	(sp_kde_get_open_filename): Use dir/filter/title
+
+	* src/file.c (sp_file_open_dialog): Use KDE file dialog if WITH_KDE
+	(sp_file_save_dialog): Ditto
+	(sp_file_import): Ditto
+
 2003-06-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/print.c: Only high-level stuff

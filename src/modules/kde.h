@@ -21,7 +21,10 @@ G_BEGIN_DECLS
 void sp_kde_init (int argc, char **argv, const char *name);
 void sp_kde_finish (void);
 
-char *sp_kde_get_open_filename (void);
+char *sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
+char *sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
+
+char *sp_kde_get_save_filename (unsigned char *dir, unsigned int *spns);
 
 SPModulePrint *sp_kde_get_module_print (void);
 

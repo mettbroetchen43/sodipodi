@@ -17,8 +17,12 @@
 #include <libnr/nr-matrix.h>
 
 #include <qtimer.h>
+#include <qlayout.h>
+#include <qlabel.h>
+#include <qcombobox.h>
 #include <kapp.h>
 #include <kfiledialog.h>
+#include <ktoolbar.h>
 #include <gtk/gtkmain.h>
 
 #include <helper/sp-intl.h>
@@ -100,7 +104,7 @@ sp_kde_finish (void)
 }
 
 char *
-sp_kde_get_open_filename (void)
+sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
 {
 	QString fileName;
 
@@ -109,7 +113,71 @@ sp_kde_get_open_filename (void)
 	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
 	SPKDEModal = TRUE;
 
-	fileName = KFileDialog::getOpenFileName (QDir::currentDirPath (), _("*.svg *.svgz|SVG files\n*|All files"), NULL, _("Open SVG file"));
+	fileName = KFileDialog::getOpenFileName ((const char *) dir,
+						 (const char *) filter,
+						 NULL,
+						 (const char *) title);
+
+	SPKDEModal = FALSE;
+
+        return g_strdup (fileName);
+}
+
+char *
+sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
+{
+	QString fileName;
+
+	QTimer timer;
+	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
+	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+	SPKDEModal = TRUE;
+
+	fileName = KFileDialog::getSaveFileName ((const char *) dir,
+						 (const char *) filter,
+						 NULL,
+						 (const char *) title);
+
+	SPKDEModal = FALSE;
+
+        return g_strdup (fileName);
+}
+
+char *
+sp_kde_get_save_filename (unsigned char *dir, unsigned int *spns)
+{
+	QString fileName;
+
+	QTimer timer;
+	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
+	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+	SPKDEModal = TRUE;
+
+	QWidget *w = new QWidget;
+	QHBoxLayout *box = new QHBoxLayout (w);
+	box->addStretch ();
+	box->addWidget (new QLabel (_("Document variant:"), w));
+
+	QComboBox *cb = new QComboBox (w, "File type");
+	cb->insertItem ("SVG with sodipodi namespace");
+	cb->insertItem ("Standard SVG");
+
+	box->addWidget (cb);
+
+	// SPSaveFileDialog *dlg = new SPSaveFileDialog (QDir::currentDirPath (), _("*.svg *.svgz|SVG files\n*|All files"), NULL);
+	KFileDialog *dlg = new KFileDialog ((const char *) dir,
+					    _("*.svg *.svgz|SVG files\n*.xml|XML files\n*|All files"), NULL,
+					    NULL, TRUE, w);
+	dlg->setCaption (_("Save document as"));
+	dlg->setOperationMode (KFileDialog::Saving);
+
+	if (dlg->exec () == QDialog::Accepted) {
+		fileName = dlg->selectedFile ();
+		*spns = (cb->currentItem () == 0);
+	} else {
+		fileName = (const char *) NULL;
+	}
+	delete dlg;
 
 	SPKDEModal = FALSE;
 
