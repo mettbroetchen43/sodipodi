@@ -71,6 +71,8 @@ static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble 
 
 static SPView *sp_desktop_new (SPNamedView *nv, SPCanvas *canvas);
 
+static void sp_desktop_prepare_shutdown (SPDesktop *dt);
+
 static void sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop);
 static void sp_desktop_selection_modified (SPSelection *selection, guint flags, SPDesktop *desktop);
 
@@ -171,27 +173,30 @@ sp_desktop_init (SPDesktop *desktop)
 static void
 sp_desktop_destroy (GtkObject *object)
 {
-	SPDesktop *desktop;
+	SPDesktop *dt;
 
-	desktop = SP_DESKTOP (object);
+	dt = SP_DESKTOP (object);
 
-	sodipodi_remove_desktop (desktop);
-
-	if (desktop->event_context) {
-		sp_event_context_finish (desktop->event_context);
-		gtk_object_destroy (GTK_OBJECT (desktop->event_context));
-		desktop->event_context = NULL;
+	if (dt->sodipodi) {
+		sodipodi_remove_desktop (dt);
+		dt->sodipodi = NULL;
 	}
 
-	if (desktop->selection) {
-		gtk_object_destroy (GTK_OBJECT (desktop->selection));
-		desktop->selection = NULL;
+	if (dt->event_context) {
+		sp_event_context_finish (dt->event_context);
+		gtk_object_destroy (GTK_OBJECT (dt->event_context));
+		dt->event_context = NULL;
 	}
 
-	if (desktop->drawing) {
-		sp_namedview_hide (desktop->namedview, desktop);
-		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena);
-		desktop->drawing = NULL;
+	if (dt->selection) {
+		gtk_object_destroy (GTK_OBJECT (dt->selection));
+		dt->selection = NULL;
+	}
+
+	if (dt->drawing) {
+		sp_namedview_hide (dt->namedview, dt);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
+		dt->drawing = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -346,8 +351,35 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	// ?
 	// sp_active_desktop_set (desktop);
 	sodipodi_add_desktop (desktop);
+	desktop->sodipodi = SODIPODI;
 
 	return SP_VIEW (desktop);
+}
+
+static void
+sp_desktop_prepare_shutdown (SPDesktop *dt)
+{
+	if (dt->sodipodi) {
+		sodipodi_remove_desktop (dt);
+		dt->sodipodi = NULL;
+	}
+
+	if (dt->event_context) {
+		sp_event_context_finish (dt->event_context);
+		gtk_object_destroy (GTK_OBJECT (dt->event_context));
+		dt->event_context = NULL;
+	}
+
+	if (dt->selection) {
+		gtk_object_destroy (GTK_OBJECT (dt->selection));
+		dt->selection = NULL;
+	}
+
+	if (dt->drawing) {
+		sp_namedview_hide (dt->namedview, dt);
+		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
+		dt->drawing = NULL;
+	}
 }
 
 static void
@@ -1178,6 +1210,9 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 			}
 		}
 	}
+
+	sp_desktop_prepare_shutdown (SP_DESKTOP (view));
+
 	return FALSE;
 }
 

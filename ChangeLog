@@ -1,5 +1,9 @@
 2002-11-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_desktop_prepare_shutdown): New method, allowing us nice
+	cleanup before ::destroy is invoked
+	(sp_dtw_desktop_shutdown): Prepare desktop for shutdown
+
 	* src/sp-text.c (sp_text_is_empty): Treat unicode private plane as graphical
 
 	* src/libnrtype/nr-type-ft2.c (nr_typeface_ft2_lookup): Use private plane

@@ -35,6 +35,7 @@ struct _SPDesktop {
 #if 1
 	SPDesktopWidget *owner;
 #endif
+	Sodipodi *sodipodi;
 
 	SPNamedView *namedview;
 	SPSelection *selection;
