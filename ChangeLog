@@ -1,5 +1,11 @@
 2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* Makefile.am: Port back to glib gettext
+
+	* configure.in: Port back to glib gettext
+
+	* autogen.sh: Copied working version from The Gimp
+
 	* src/helper/sp-canvas.c (sp_canvas_paint_rect): Try to fit area into pixelstore
 	instead of using default image size always
 

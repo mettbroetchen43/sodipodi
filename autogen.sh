@@ -1,178 +1,173 @@
-#!/bin/sh
-# Run this to generate all the initial makefiles, etc.
-# It's come from GNOME2.
+#!/bin/sh 
+
+# This script does all the magic calls to automake/autoconf and
+# friends that are needed to configure a cvs checkout.  As described in
+# the file HACKING you need a couple of extra tools to run this script
+# successfully.
+#
+# If you are compiling from a released tarball you don't need these
+# tools and you shouldn't use this script.  Just call ./configure
+# directly.
+
+
+PROJECT="Sodipodi"
+TEST_TYPE=-f
+FILE=sodipodi.spec.in
+
+AUTOCONF_REQUIRED_VERSION=2.52
+AUTOMAKE_REQUIRED_VERSION=1.6
+GLIB_REQUIRED_VERSION=2.0.0
+INTLTOOL_REQUIRED_VERSION=0.17
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
-
-PKG_NAME="sodipodi"
-
-DIE=0
+ORIGDIR=`pwd`
+cd $srcdir
 
 ${srcdir}/tools-version.sh
 
-(autoconf --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: You must have \`autoconf' installed to compile $PKG_NAME."
-  echo "Download the appropriate package for your distribution,"
-  echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
-  DIE=1
-}
-
-(grep "^AC_PROG_INTLTOOL" $srcdir/configure.in >/dev/null) && {
-  (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
-    echo 
-    echo "**Error**: You must have \`intltoolize' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/intltool/intltool-0.10.tar.gz"
-    echo "(or a newer version if it is available)"
-    DIE=1
-  }
-}
-
-(grep "^AM_PROG_XML_I18N_TOOLS" $srcdir/configure.in >/dev/null) && {
-  (xml-i18n-toolize --version) < /dev/null > /dev/null 2>&1 || {
-    echo 
-    echo "**Error**: You must have \`xml-i18n-toolize' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnome.org/pub/GNOME/stable/sources/xml-i18n-tools/xml-i18n-tools-0.9.tar.gz"
-    echo "(or a newer version of xml-i18n-tools or intltool if it is available)"
-    DIE=1
-  }
-}
-
-(grep "^AM_PROG_LIBTOOL" $srcdir/configure.in >/dev/null) && {
-  (libtool --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`libtool' installed to compile $PKG_NAME."
-    echo "Get ftp://ftp.gnu.org/pub/gnu/libtool-1.2d.tar.gz"
-    echo "(or a newer version if it is available)"
-    DIE=1
-  }
-}
-
-
-if grep "^AM_[A-Z0-9_]\{1,\}_GETTEXT" $srcdir/configure.in >/dev/null; then
-  if grep "sed.*POTFILES" $srcdir/configure.in >/dev/null; then
-    GETTEXTIZE=""
-  else
-    if grep "^AM_GLIB_GNU_GETTEXT" configure.in >/dev/null; then
-      GETTEXTIZE="glib-gettextize"
-      GETTEXTIZE_URL="ftp://ftp.gtk.org/pub/gtk/v1.3/glib-1.3.11.tar.gz"
+check_version ()
+{
+    if expr $1 \>= $2 > /dev/null; then
+	echo "yes (version $1)"
     else
-      GETTEXTIZE="gettextize"
-      GETTEXTIZE_URL="ftp://alpha.gnu.org/gnu/gettext-0.10.35.tar.gz"
+	echo "Too old (found version $1)!"
+	DIE=1
     fi
+}
 
-    if ! $GETTEXTIZE --version < /dev/null > /dev/null 2>&1; then
-      echo
-      echo "**Error**: You must have \`$GETTEXTIZE' installed to compile $PKG_NAME."
-      echo "Get $GETTEXTIZE_URL"
-      echo "(or a newer version if it is available)"
-      DIE=1
-    fi
-  fi
+echo
+echo "I am testing that you have the required versions of libtool, autoconf," 
+echo "automake, glib-gettextize and intltoolize. This test is not foolproof,"
+echo "so if anything goes wrong, see the file HACKING for more information..."
+echo
+
+DIE=0
+
+echo -n "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
+if (autoconf --version) < /dev/null > /dev/null 2>&1; then
+    VER=`autoconf --version \
+         | grep -iw autoconf | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
+    check_version $VER $AUTOCONF_REQUIRED_VERSION
+else
+    echo
+    echo "  You must have autoconf installed to compile $PROJECT."
+    echo "  Download the appropriate package for your distribution,"
+    echo "  or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
+    DIE=1;
 fi
 
-(automake-1.6 --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: You must have \`automake' installed to compile $PKG_NAME."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.6.tar.gz"
-  echo "(or a newer version if it is available)"
-  DIE=1
-  NO_AUTOMAKE=yes
-}
+echo -n "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
+if (automake-1.6 --version) < /dev/null > /dev/null 2>&1; then
+   AUTOMAKE=automake-1.6
+   ACLOCAL=aclocal-1.6
+elif (automake-1.7 --version) < /dev/null > /dev/null 2>&1; then
+   AUTOMAKE=automake-1.7
+   ACLOCAL=aclocal-1.7
+else
+    echo
+    echo "  You must have automake 1.6 installed to compile $PROJECT."
+    echo "  Get ftp://ftp.gnu.org/pub/gnu/automake/automake-1.6.3.tar.gz"
+    echo "  (or a newer version if it is available)"
+    DIE=1
+fi
 
+if test x$AUTOMAKE != x; then
+    VER=`$AUTOMAKE --version \
+         | grep automake | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
+    check_version $VER $AUTOMAKE_REQUIRED_VERSION
+fi
 
-# if no automake, don't bother testing for aclocal
-test -n "$NO_AUTOMAKE" || (aclocal-1.6 --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
-  echo "installed doesn't appear recent enough."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.6.tar.gz"
-  echo "(or a newer version if it is available)"
-  DIE=1
-}
+echo -n "checking for glib-gettextize >= $GLIB_REQUIRED_VERSION ... "
+if (glib-gettextize --version) < /dev/null > /dev/null 2>&1; then
+    VER=`glib-gettextize --version \
+         | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
+    check_version $VER $GLIB_REQUIRED_VERSION
+else
+    echo
+    echo "  You must have glib-gettextize installed to compile $PROJECT."
+    echo "  glib-gettextize is part of glib-2.0, so you should already"
+    echo "  have it. Make sure it is in your PATH."
+    DIE=1
+fi
+
+echo -n "checking for intltool >= $INTLTOOL_REQUIRED_VERSION ... "
+if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
+    VER=`intltoolize --version \
+         | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
+    check_version $VER $INTLTOOL_REQUIRED_VERSION
+else
+    echo
+    echo "  You must have intltool installed to compile $PROJECT."
+    echo "  Get the latest version from"
+    echo "  ftp://ftp.gnome.org/pub/GNOME/sources/intltool/"
+    DIE=1
+fi
 
 if test "$DIE" -eq 1; then
-  exit 1
+    echo
+    echo "Please install/upgrade the missing tools and call me again."
+    echo	
+    exit 1
 fi
+
+
+test $TEST_TYPE $FILE || {
+    echo
+    echo "You must run this script in the top-level $PROJECT directory."
+    echo
+    exit 1
+}
+
 
 if test -z "$*"; then
-  echo "**Warning**: I am going to run \`configure' with no arguments."
-  echo "If you wish to pass any to it, please specify them on the"
-  echo \`$0\'" command line."
+    echo
+    echo "I am going to run ./configure with no arguments - if you wish "
+    echo "to pass any to it, please specify them on the $0 command line."
+    echo
+fi
+
+if test -z "$ACLOCAL_FLAGS"; then
+
+    acdir=`$ACLOCAL --print-ac-dir`
+    m4list="glib-2.0.m4 glib-gettext.m4 gtk-2.0.m4 intltool.m4 pkg.m4"
+
+    for file in $m4list
+    do
+	if [ ! -f "$acdir/$file" ]; then
+	    echo
+	    echo "WARNING: aclocal's directory is $acdir, but..."
+            echo "         no file $acdir/$file"
+            echo "         You may see fatal macro warnings below."
+            echo "         If these files are installed in /some/dir, set the ACLOCAL_FLAGS "
+            echo "         environment variable to \"-I /some/dir\", or install"
+            echo "         $acdir/$file."
+            echo
+        fi
+    done
+fi
+
+if ! $ACLOCAL $ACLOCAL_FLAGS; then
+   echo "$ACLOCAL gave errors. Please fix the error conditions and try again."
+   exit 1
+fi
+
+# optionally feature autoheader
+(autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
+
+$AUTOMAKE --add-missing
+autoconf
+
+glib-gettextize --copy --force
+intltoolize --copy --force --automake
+
+cd $ORIGDIR
+
+if $srcdir/configure --enable-maintainer-mode --enable-gtk-doc "$@"; then
   echo
-fi
-
-case $CC in
-xlc )
-  am_opt=--include-deps;;
-esac
-
-for coin in `find $srcdir -name configure.in -print`
-do 
-  dr=`dirname $coin`
-  if test -f $dr/NO-AUTO-GEN; then
-    echo skipping $dr -- flagged as no auto-gen
-  else
-    echo processing $dr
-    ( cd $dr
-
-      aclocalinclude="$ACLOCAL_FLAGS"
-
-      if test "$GETTEXTIZE"; then
-	echo "Creating $dr/aclocal.m4 ..."
-	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	echo "Running $GETTEXTIZE...  Ignore non-fatal messages."
-	echo "no" | $GETTEXTIZE --force --copy --intl
-	echo "Making $dr/aclocal.m4 writable ..."
-	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-      fi
-
-      if grep "^AC_PROG_INTLTOOL" configure.in >/dev/null; then
-        echo "Running intltoolize..."
-	intltoolize --copy --force --automake
-      fi
-      if grep "^AM_PROG_XML_I18N_TOOLS" configure.in >/dev/null; then
-        echo "Running xml-i18n-toolize..."
-	xml-i18n-toolize --copy --force --automake
-      fi
-      if grep "^AM_PROG_LIBTOOL" configure.in >/dev/null; then
-	if test -z "$NO_LIBTOOLIZE" ; then 
-	  echo "Running libtoolize..."
-	  libtoolize --force --copy
-	fi
-      fi
-
-      echo "Running aclocal-1.6 $aclocalinclude ..."
-      aclocal-1.6 $aclocalinclude || {
-	echo
-	echo "**Error**: aclocal-1.6 failed. This may mean that you have not"
-	echo "installed all of the packages you need, or you may need to"
-	echo "set ACLOCAL_FLAGS to include \"-I \$prefix/share/aclocal\""
-	echo "for the prefix where you installed the packages whose"
-	echo "macros were not found"
-	exit 1
-      }
-
-      if grep "^AM_CONFIG_HEADER" configure.in >/dev/null; then
-	echo "Running autoheader..."
-	autoheader || { echo "**Error**: autoheader failed."; exit 1; }
-      fi
-      echo "Running automake-1.6 --gnu $am_opt ..."
-      automake-1.6 --add-missing --gnu $am_opt ||
-	{ echo "**Error**: automake-1.6 failed."; exit 1; }
-      echo "Running autoconf ..."
-      autoconf || { echo "**Error**: autoconf failed."; exit 1; }
-    ) || exit 1
-  fi
-done
-
-conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
-
-if test x$NOCONFIGURE = x; then
-  echo Running $srcdir/configure $conf_flags "$@" ...
-  $srcdir/configure $conf_flags "$@" \
-  && echo Now type \`make\' to compile $PKG_NAME || exit 1
+  echo "Now type 'make' to compile $PROJECT."
 else
-  echo Skipping configure process.
+  echo
+  echo "Configure failed or did not finish!"
 fi
+

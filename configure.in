@@ -32,7 +32,7 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="am az ca cs da de el es et fr ga gl hu it ja no ru sk sl sv tr uk pl pt_BR pt zh_CN"
-AM_GNU_GETTEXT
+AM_GLIB_GNU_GETTEXT
 
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test "x$PKG_CONFIG" = "xno"; then
@@ -207,7 +207,7 @@ fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
-AC_OUTPUT([ intl/Makefile po/Makefile.in m4/Makefile 
+AC_OUTPUT([
 Makefile
 src/Makefile
 src/libnr/Makefile
@@ -218,6 +218,7 @@ src/widgets/Makefile
 src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
+po/Makefile.in
 glade/Makefile
 sodipodi.spec
 sodipodi.1
