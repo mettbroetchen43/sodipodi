@@ -1017,7 +1017,7 @@ sp_pencil_context_update_curves (SPPencilContext *pc)
 #define FLERP(f0,f1,p) ((f0) + ((f1) - (f0)) * (p))
 
 #define MASSVAL 0.0
-#define SP_PENCIL_MASS FLERP (0.05, 160.0, MASSVAL)
+#define SP_PENCIL_MASS FLERP (0.025, 160.0, MASSVAL)
 #define DRAGVAL 0.85
 #define SP_PENCIL_DRAG FLERP (0.0, 1.0, DRAGVAL * DRAGVAL)
 
@@ -1032,6 +1032,7 @@ sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 	NRPointF p;
 	double len;
 	double dtime;
+	double dx, dy;
 
 	dt = ((SPEventContext *) pc)->desktop;
 
@@ -1039,26 +1040,70 @@ sp_pencil_draw (SPPencilContext *pc, double xd, double yd, double time)
 	if (dtime <= 0.0) return;
 	if (dtime > 1.0) dtime = 1.0;
 
-	/* Calculate force and acceleration */
-	fval.x = xd - pc->ppos.x;
-	fval.y = yd - pc->ppos.y;
-	len = hypot (fval.x, fval.y);
-	/* if (len < 4.0) return; */
-	/* Skip if changing direction with 2 pixel force */
-	if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
-	pc->fval = fval;
+	dx = xd - pc->ppos.x;
+	dy = yd - pc->ppos.y;
+	len = hypot (dx, dy);
 
-	pc->pvel.x += fval.x / SP_PENCIL_MASS;
-	pc->pvel.y += fval.y / SP_PENCIL_MASS;
+	if ((len > 4.0) || (dtime > 0.02)) {
+		double x0, y0, t0, l, s;
+		x0 = pc->ppos.x;
+		y0 = pc->ppos.y;
+		t0 = pc->tval;
+		s = MIN (4.0, 0.1 * len / dtime);
+		for (l = s; l < len; l += s) {
+			double lf, x, y, t;
+			lf = MIN (l, len) / len;
+			x = x0 + lf * dx;
+			y = y0 + lf * dy;
+			t = t0 + lf * dtime;
 
-	/* Apply drag */
-	pc->pvel.x *= (1.0 - SP_PENCIL_DRAG);
-	pc->pvel.y *= (1.0 - SP_PENCIL_DRAG);
+			/* Calculate force and acceleration */
+			fval.x = x - pc->ppos.x;
+			fval.y = y - pc->ppos.y;
+			/* if (len < 4.0) return; */
+			/* Skip if changing direction with 2 pixel force */
+			if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
+			pc->fval = fval;
 
-	pc->ppos.x += dtime * pc->pvel.x;
-	pc->ppos.y += dtime * pc->pvel.y;
+			/* Apply acceleration */
+			pc->pvel.x += fval.x / SP_PENCIL_MASS;
+			pc->pvel.y += fval.y / SP_PENCIL_MASS;
+			/* Apply drag */
+			pc->pvel.x *= (1.0 - SP_PENCIL_DRAG);
+			pc->pvel.y *= (1.0 - SP_PENCIL_DRAG);
 
-	pc->tval = time;
+			/* Advance position */
+			pc->ppos.x += (t - pc->tval) * pc->pvel.x;
+			pc->ppos.y += (t - pc->tval) * pc->pvel.y;
+
+			pc->tval = t;
+		}
+
+		dtime = (time - pc->tval);
+	}
+
+	if (dtime > 0.0) {
+		/* Calculate force and acceleration */
+		fval.x = xd - pc->ppos.x;
+		fval.y = yd - pc->ppos.y;
+		/* if (len < 4.0) return; */
+		/* Skip if changing direction with 2 pixel force */
+		if (((fval.x * pc->fval.x + fval.y * pc->fval.y) < 0.0) && (hypot (fval.x, fval.y) <= 5.0)) return;
+		pc->fval = fval;
+
+		/* Apply acceleration */
+		pc->pvel.x += fval.x / SP_PENCIL_MASS;
+		pc->pvel.y += fval.y / SP_PENCIL_MASS;
+		/* Apply drag */
+		pc->pvel.x *= (1.0 - SP_PENCIL_DRAG);
+		pc->pvel.y *= (1.0 - SP_PENCIL_DRAG);
+
+		/* Advance position */
+		pc->ppos.x += (time - pc->tval) * pc->pvel.x;
+		pc->ppos.y += (time - pc->tval) * pc->pvel.y;
+
+		pc->tval = time;
+	}
 
 	sp_desktop_w2d_xy_point (dt, &p, pc->ppos.x, pc->ppos.y);
 	nr_synthesizer_add_point (&pc->sz, p.x, p.y, distance++);
