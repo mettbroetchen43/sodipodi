@@ -34,6 +34,31 @@ SPRepr * sp_repr_read_file (const gchar * filename)
 	return repr;
 }
 
+SPRepr * sp_repr_read_mem (const gchar * buffer, gint length)
+{
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	SPRepr * repr;
+
+	g_return_val_if_fail (buffer != NULL, NULL);
+
+	doc = xmlParseMemory (buffer, length);
+	if (doc == NULL) return NULL;
+
+	repr = NULL;
+
+	for (node = doc->root; node != NULL; node = node->next) {
+		if (strcmp (node->name, "svg") == 0) {
+			repr = sp_repr_svg_read_node (node);
+			break;
+		}
+	}
+
+	xmlFreeDoc (doc);
+
+	return repr;
+}
+
 static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 {
 	SPRepr * repr, * crepr;

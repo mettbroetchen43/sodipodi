@@ -74,6 +74,8 @@ GtkType sp_document_get_type (void);
 
 SPDocument * sp_document_new (const gchar * uri);
 
+SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
+
 /*
  * Access methods
  */

@@ -302,6 +302,8 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 	if ((pos < 0) || (pos >= nsiblings)) pos = nsiblings - 1;
 	if (pos == sp_repr_position (repr)) return;
 
+	allowed = TRUE;
+
 	if (repr->order_changed_pre)
 		allowed = repr->order_changed_pre (repr, pos, repr->order_changed_pre_data);
 

@@ -158,6 +158,43 @@ sp_document_new (const gchar * uri)
 	return document;
 }
 
+SPDocument *
+sp_document_new_from_mem (const gchar * buffer, gint length)
+{
+	SPDocument * document;
+	SPRepr * repr;
+	SPObject * object;
+	gchar * b;
+	gint len;
+
+	repr = sp_repr_read_mem (buffer, length);
+
+	/* If it cannot be loaded, return NULL without warning */
+	if (repr == NULL) return NULL;
+
+	/* If xml file is not svg, return NULL without warning */
+	if (strcmp (sp_repr_name (repr), "svg") != 0) return NULL;
+
+	document = gtk_type_new (SP_TYPE_DOCUMENT);
+	g_return_val_if_fail (document != NULL, NULL);
+
+	object = sp_object_repr_build_tree (document, repr);
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
+
+	document->root = SP_ROOT (object);
+
+	/* We assume, that SPRoot requires width and height, and sets these
+	 * if not specified in SVG */
+
+	document->width = document->root->width;
+	document->height = document->root->height;
+
+	/* fixme: docbase */
+
+	return document;
+}
+
 SPRoot *
 sp_document_root (SPDocument * document)
 {

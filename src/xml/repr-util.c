@@ -60,8 +60,8 @@ sp_repr_set_double_attribute (SPRepr * repr, const gchar * key, gdouble value)
 {
 	gchar c[32];
 
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (key != NULL);
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
 
 	g_snprintf (c, 32, "%f", value);
 
@@ -73,8 +73,8 @@ sp_repr_set_int_attribute (SPRepr * repr, const gchar * key, gint value)
 {
 	gchar c[32];
 
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (key != NULL);
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
 
 	g_snprintf (c, 32, "%d", value);
 

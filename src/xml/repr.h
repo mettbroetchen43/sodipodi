@@ -59,6 +59,7 @@ void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpoin
 /* IO */
 
 SPRepr * sp_repr_read_file (const gchar * filename);
+SPRepr * sp_repr_read_mem (const gchar * buffer, gint length);
 
 void sp_repr_save_file (SPRepr * repr, const gchar * filename);
 
