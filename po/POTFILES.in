@@ -44,3 +44,6 @@ src/widgets/gradient-selector.c
 src/widgets/gradient-vector.c
 src/widgets/paint-selector.c
 src/widgets/sp-color-selector.c
+src/dialogs/tool-attributes.c
+src/dialogs/xml-tree.c
+src/draw-context.c

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.25\n"
-"POT-Creation-Date: 2002-02-02 21:15+0100\n"
-"PO-Revision-Date: 2002-02-02 21:15+0100\n"
+"POT-Creation-Date: 2002-08-24 22:17+0200\n"
+"PO-Revision-Date: 2002-08-24 22:23+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -81,7 +81,8 @@ msgstr "Velg type justering"
 msgid "Close window"
 msgstr "Lukk vindu"
 
-#: glade/align.glade.h:16 glade/sodipodi.glade.h:18 src/dialogs/align.c:106
+#: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
+#: src/interface.c:368
 msgid "Drawing"
 msgstr "Tegning"
 
@@ -93,216 +94,23 @@ msgstr "Først valgte"
 msgid "Last selected"
 msgstr "Sist valgte"
 
-#: glade/align.glade.h:19 glade/document.glade.h:8 glade/sodipodi.glade.h:42
-#: src/dialogs/align.c:101
+#. Page settings
+#. Notebook tab
+#: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
+#: src/dialogs/document-properties.c:144 src/interface.c:369
 msgid "Page"
 msgstr "Side"
 
+#. Selection submenu
 #: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:111 src/toolbox.c:95
+#: src/dialogs/align.c:111 src/interface.c:367 src/interface.c:467
+#: src/toolbox.c:114
 msgid "Selection"
 msgstr "Valg"
 
 #: glade/align.glade.h:21 src/dialogs/align.c:96
 msgid "Smallest item"
 msgstr "Minste oppføring"
-
-#: glade/desktop.glade.h:1 glade/display.glade.h:1
-msgid "Choose base unit system for grid"
-msgstr "Velg basisenhet for rutenett"
-
-#: glade/desktop.glade.h:2 glade/display.glade.h:2
-msgid "Choose color for grid"
-msgstr "Velg farge på rutenett"
-
-#: glade/desktop.glade.h:3 glade/display.glade.h:3
-msgid "Choose color for guidelines"
-msgstr "Velg farge for rutenett"
-
-#: glade/desktop.glade.h:4 glade/display.glade.h:4
-msgid "Choose color for highlighted guidelines"
-msgstr "Velg farge for markerte rettesnorer"
-
-#: glade/desktop.glade.h:5 glade/display.glade.h:5
-msgid "Choose unit system for grid snapping"
-msgstr "Velg enhetssystem for festing til rutenett"
-
-#: glade/desktop.glade.h:6 glade/display.glade.h:6
-msgid "Choose unit system for guideline snapping"
-msgstr "Velg enhetssystem for feste til rutenett"
-
-#: glade/desktop.glade.h:7 glade/display.glade.h:7
-msgid "Desktop settings"
-msgstr "Innstillinger for skrivebord"
-
-#: glade/desktop.glade.h:8 glade/display.glade.h:9
-msgid "Grid"
-msgstr "Rutenett"
-
-#: glade/desktop.glade.h:9 glade/display.glade.h:10
-msgid "Grid color"
-msgstr "Farge på rutenett"
-
-#: glade/desktop.glade.h:10 glade/display.glade.h:11
-msgid "Grid color:"
-msgstr "Farge på rutenett:"
-
-#: glade/desktop.glade.h:11 glade/display.glade.h:12
-msgid "Grid units:"
-msgstr "Enhet for rutenett:"
-
-#: glade/desktop.glade.h:12 glade/display.glade.h:13
-msgid "Guideline color"
-msgstr "Rutenettfarge"
-
-#: glade/desktop.glade.h:13 glade/display.glade.h:14
-msgid "Guides"
-msgstr "Rettesnorer"
-
-#: glade/desktop.glade.h:14 glade/display.glade.h:15
-msgid "Guides color:"
-msgstr "Rutenettfarge:"
-
-#: glade/desktop.glade.h:15 glade/display.glade.h:16
-msgid "Highlight color:"
-msgstr "Merk farge:"
-
-#: glade/desktop.glade.h:16 glade/display.glade.h:17
-msgid "Highlited guideline color"
-msgstr "Farge for markerte rettesnorer"
-
-#: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:354 src/helper/units.c:41
-msgid "Millimeters"
-msgstr "Millimeter"
-
-#: glade/desktop.glade.h:18 glade/display.glade.h:20
-msgid "Origin X:"
-msgstr "Opprinnelse X:"
-
-#: glade/desktop.glade.h:19 glade/display.glade.h:21
-msgid "Origin Y:"
-msgstr "Opprinnelse Y:"
-
-#: glade/desktop.glade.h:20 glade/display.glade.h:23
-#: src/helper/unit-menu.c:358 src/helper/units.c:37
-msgid "Pixels"
-msgstr "Piksler"
-
-#: glade/desktop.glade.h:21 glade/display.glade.h:25
-msgid "Set distance between horizontal grid lines"
-msgstr "Sett avstand mellom horisontale linjer i rutenett"
-
-#: glade/desktop.glade.h:22 glade/display.glade.h:26
-msgid "Set distance between vertical grid lines"
-msgstr "Sett avstand mellom vertikale linjer i rutenett"
-
-#: glade/desktop.glade.h:23 glade/display.glade.h:27
-msgid "Set maximum distance for grid snapping"
-msgstr "Sett maksimum avstand for festing til rutenett"
-
-#: glade/desktop.glade.h:24 glade/display.glade.h:28
-msgid "Set maximum distance for guideline snapping"
-msgstr "Sett maksimal avstand for feste til rutenett"
-
-#: glade/desktop.glade.h:25 glade/display.glade.h:29
-msgid "Set origin of page coordinate system"
-msgstr "Sett opprinnelse for sidekoordinatsystem"
-
-#: glade/desktop.glade.h:26 glade/display.glade.h:30
-msgid "Show grid"
-msgstr "Vis rutenett"
-
-#: glade/desktop.glade.h:27 glade/display.glade.h:31
-msgid "Show guides"
-msgstr "Vis rutenett"
-
-#: glade/desktop.glade.h:28 glade/display.glade.h:32
-msgid "Snap distance:"
-msgstr "Festeavstand:"
-
-#: glade/desktop.glade.h:29 glade/display.glade.h:33
-msgid "Snap to grid"
-msgstr "Fest til rutenett"
-
-#: glade/desktop.glade.h:30 glade/display.glade.h:34
-msgid "Snap to guides"
-msgstr "Fest til guider"
-
-#: glade/desktop.glade.h:31 glade/display.glade.h:35
-msgid "Snap units:"
-msgstr "Enheter for festing:"
-
-#: glade/desktop.glade.h:32 glade/display.glade.h:36
-msgid "Spacing X:"
-msgstr "Mellomrom X:"
-
-#: glade/desktop.glade.h:33 glade/display.glade.h:37
-msgid "Spacing Y:"
-msgstr "Mellomrom Y:"
-
-#: glade/display.glade.h:8
-msgid "Display settings"
-msgstr "Skjerminstillinger"
-
-#: glade/display.glade.h:19 src/dialogs/display-settings.c:68
-#: src/dialogs/fill-style.c:404
-msgid "None"
-msgstr "Ingen"
-
-#: glade/display.glade.h:22
-msgid "Oversample bitmaps:"
-msgstr "Oversample bitkart:"
-
-#: glade/display.glade.h:24
-msgid "Rendering"
-msgstr "Rendering"
-
-#: glade/document.glade.h:1
-msgid "A4"
-msgstr "A4"
-
-#: glade/document.glade.h:2
-msgid "Choose paper size"
-msgstr "Velg papirstørrelse"
-
-#: glade/document.glade.h:3
-msgid "Choose unit system"
-msgstr "Velg basisenhet"
-
-#: glade/document.glade.h:4
-msgid "Custom paper"
-msgstr "Egendefinert papir"
-
-#: glade/document.glade.h:5
-msgid "Document settings"
-msgstr "Innstillinger for dokument"
-
-#: glade/document.glade.h:6 glade/object_props.glade.h:22
-#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-msgid "Height:"
-msgstr "Høyde:"
-
-#: glade/document.glade.h:9
-msgid "Paper size:"
-msgstr "Papirstørrelse:"
-
-#: glade/document.glade.h:10
-msgid "Set page height"
-msgstr "Sett sidehøyde"
-
-#: glade/document.glade.h:11
-msgid "Set page width"
-msgstr "Sett sidebredde"
-
-#: glade/document.glade.h:12
-msgid "Units:"
-msgstr "Enheter:"
-
-#: glade/document.glade.h:13 glade/object_props.glade.h:41
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-msgid "Width:"
-msgstr "Bredde:"
 
 #: glade/item.glade.h:1
 msgid "Active"
@@ -313,11 +121,11 @@ msgid "ID:"
 msgstr "ID:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:619
+#: glade/item.glade.h:3 src/sp-item.c:637
 msgid "Item"
 msgstr "Oppføring"
 
-#: glade/item.glade.h:4 src/dialogs/item-properties.c:341
+#: glade/item.glade.h:4 src/dialogs/item-properties.c:318
 msgid "Item properties"
 msgstr "Egenskaper for oppføring"
 
@@ -341,8 +149,8 @@ msgstr "Utskrivbar"
 msgid "Sensitive"
 msgstr "Sensitiv"
 
-#: glade/item.glade.h:10 src/dialogs/item-properties.c:181
-#: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:492
+#: glade/item.glade.h:10 src/dialogs/item-properties.c:171
+#: src/dialogs/item-properties.c:241
 msgid "The SVG ID of item"
 msgstr "SVG ID for oppføringen"
 
@@ -428,6 +236,7 @@ msgid "Endpoints:"
 msgstr "Endepunkter:"
 
 #: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
+#: src/dialogs/object-properties.c:59
 msgid "Fill"
 msgstr "Fyll"
 
@@ -447,11 +256,18 @@ msgstr "Gradient fyll"
 msgid "Green:"
 msgstr "Grønn:"
 
+#: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
+#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-properties.c:240
+msgid "Height:"
+msgstr "Høyde:"
+
 #: glade/object_props.glade.h:23
 msgid "Is stroked"
 msgstr "Er strøket"
 
-#: glade/object_props.glade.h:24
+#. Join type
+#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:189
 msgid "Join:"
 msgstr "Slå sammen:"
 
@@ -512,6 +328,7 @@ msgid "Square endpoints"
 msgstr "Kantete endepunkter"
 
 #: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
+#: src/dialogs/object-properties.c:72
 msgid "Stroke"
 msgstr "Strøk"
 
@@ -519,13 +336,21 @@ msgstr "Strøk"
 msgid "Stroke width"
 msgstr "Bredde på strøk"
 
+#. Stroke width
+#: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
+#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
+#: src/dialogs/tool-attributes.c:99
+msgid "Width:"
+msgstr "Bredde:"
+
 #: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
-#: src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:195
 msgid "X:"
 msgstr "X:"
 
 #: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
-#: src/dialogs/object-attributes.c:73
+#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:210
 msgid "Y:"
 msgstr "Y:"
 
@@ -534,7 +359,7 @@ msgid "centimeter"
 msgstr "centimeter"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:355 src/helper/units.c:42
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "cm"
 msgstr "cm"
 
@@ -543,7 +368,7 @@ msgid "color"
 msgstr "farge"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
-#: src/helper/units.c:44
+#: src/helper/units.c:51
 msgid "in"
 msgstr "in"
 
@@ -556,7 +381,7 @@ msgid "millimeters"
 msgstr "millimeter"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:354 src/helper/units.c:41
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
 msgid "mm"
 msgstr "mm"
 
@@ -577,11 +402,12 @@ msgid "points"
 msgstr "punkter"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:357
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "pt"
 msgstr "pt"
 
 #: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
+#: src/helper/units.c:43
 msgid "px"
 msgstr "px"
 
@@ -589,88 +415,91 @@ msgstr "px"
 msgid "1.0MB"
 msgstr "1.0MB"
 
-#: glade/sodipodi.glade.h:2
+#: glade/sodipodi.glade.h:2 src/interface.c:376
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi.glade.h:3
+#: glade/sodipodi.glade.h:3 src/interface.c:375
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi.glade.h:4
+#: glade/sodipodi.glade.h:4 src/interface.c:377
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi.glade.h:5
+#: glade/sodipodi.glade.h:5 src/interface.c:390
+msgid "Arc"
+msgstr ""
+
+#: glade/sodipodi.glade.h:6
 msgid "Back One"
 msgstr "Ett nivå tilbake"
 
-#: glade/sodipodi.glade.h:6 glade/toolbox.glade.h:2
+#: glade/sodipodi.glade.h:7 glade/toolbox.glade.h:2
 msgid "Break apart selected node"
 msgstr "Bryt opp valgte noder"
 
-#: glade/sodipodi.glade.h:7
+#: glade/sodipodi.glade.h:8
 msgid "Bring to _Front"
 msgstr "Hent til _front"
 
-#: glade/sodipodi.glade.h:8 glade/toolbox.glade.h:4
+#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:4
 msgid "Close dialog"
 msgstr "Lukk dialog"
 
-#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:7
+#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:7
 msgid "Convert selected segments to curves"
 msgstr "Konverter valgte segmenter til ku_rver"
 
-#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:8
+#: glade/sodipodi.glade.h:11 glade/toolbox.glade.h:8
 msgid "Convert selected segments to lines"
 msgstr "Konverter valgte segmenter til linjer"
 
-#: glade/sodipodi.glade.h:11
+#: glade/sodipodi.glade.h:12
 msgid "Convert to Cu_rves"
 msgstr "Konverter til ku_rver"
 
-#: glade/sodipodi.glade.h:12 glade/toolbox.glade.h:10
+#: glade/sodipodi.glade.h:13 glade/toolbox.glade.h:10
 msgid "Cusp line at selected nodes"
 msgstr "Gjør linjen spiss ved valgte noder"
 
-#: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:106
+#. File:Export
+#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:12 src/interface.c:293
+#: src/widgets/gradient-selector.c:145
 msgid "Delete"
 msgstr "Slett"
 
-#: glade/sodipodi.glade.h:14 glade/toolbox.glade.h:12
+#: glade/sodipodi.glade.h:15 glade/toolbox.glade.h:12
 msgid "Delete selected nodes"
 msgstr "Slett valgte noder"
 
-#: glade/sodipodi.glade.h:15
+#: glade/sodipodi.glade.h:16
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: glade/sodipodi.glade.h:16
+#: glade/sodipodi.glade.h:17
 msgid "Display"
 msgstr "Skjerm"
 
-#: glade/sodipodi.glade.h:17
+#: glade/sodipodi.glade.h:18 src/interface.c:408
 msgid "Document"
 msgstr "Dokument"
 
-#: glade/sodipodi.glade.h:19
+#: glade/sodipodi.glade.h:20
 msgid "Drawing Context"
 msgstr "Tegnekontekst"
 
-#: glade/sodipodi.glade.h:20
+#. Edit:Duplicate
+#: glade/sodipodi.glade.h:21 src/interface.c:288
 msgid "Duplicate"
 msgstr "Dupliser"
 
-#: glade/sodipodi.glade.h:21
+#: glade/sodipodi.glade.h:22 src/interface.c:394
 msgid "Dynahand"
 msgstr "Dynahand"
 
-#: glade/sodipodi.glade.h:22
-msgid "Ellipse"
-msgstr "Elipse"
-
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29
+#. File:Export
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:229
 msgid "Export"
 msgstr "Eksporter"
 
@@ -690,7 +519,7 @@ msgstr "Filnavn:"
 msgid "Forward One"
 msgstr "Ett nivå frem"
 
-#: glade/sodipodi.glade.h:29
+#: glade/sodipodi.glade.h:29 src/interface.c:393
 msgid "Freehand"
 msgstr "Frihånd"
 
@@ -702,7 +531,8 @@ msgstr "Høyde"
 msgid "Image size"
 msgstr "Bildestørrelse"
 
-#: glade/sodipodi.glade.h:32
+#. File:Import
+#: glade/sodipodi.glade.h:32 src/interface.c:224
 msgid "Import"
 msgstr "Importer"
 
@@ -718,15 +548,17 @@ msgstr "Slå sammen 2 valgte endepunkter"
 msgid "Lock aspect ratio"
 msgstr "Lås aspektraten"
 
-#: glade/sodipodi.glade.h:36
+#. View:New Preview
+#: glade/sodipodi.glade.h:36 src/interface.c:381
 msgid "New Preview"
 msgstr "Ny forhåndsvisning"
 
-#: glade/sodipodi.glade.h:37
+#. View:New View
+#: glade/sodipodi.glade.h:37 src/interface.c:379
 msgid "New View"
 msgstr "Ny visning"
 
-#: glade/sodipodi.glade.h:38
+#: glade/sodipodi.glade.h:38 src/interface.c:388
 msgid "Node"
 msgstr "Node"
 
@@ -734,11 +566,12 @@ msgstr "Node"
 msgid "Node Edit"
 msgstr "Noderedigering"
 
-#: glade/sodipodi.glade.h:40 src/toolbox.c:138
+#: glade/sodipodi.glade.h:40 src/toolbox.c:139
 msgid "Nodes"
 msgstr "Noder"
 
-#: glade/sodipodi.glade.h:41
+#. Selection:Order
+#: glade/sodipodi.glade.h:41 src/interface.c:333
 msgid "Order"
 msgstr "Rekkefølge"
 
@@ -746,15 +579,16 @@ msgstr "Rekkefølge"
 msgid "Png file name"
 msgstr "Png filnavn"
 
-#: glade/sodipodi.glade.h:44
+#: glade/sodipodi.glade.h:44 src/interface.c:389
 msgid "Rectangle"
 msgstr "Rektangel"
 
 #: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
+#: src/interface.c:371
 msgid "Scale"
 msgstr "Skaler"
 
-#: glade/sodipodi.glade.h:46
+#: glade/sodipodi.glade.h:46 src/interface.c:387
 msgid "Select"
 msgstr "Velg"
 
@@ -775,12 +609,12 @@ msgid "Smooth line at selected nodes"
 msgstr "Jevn ut en linje ved valgte noder"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/sp-spiral.c:595
+#: glade/sodipodi.glade.h:52 src/interface.c:392 src/sp-spiral.c:586
 msgid "Spiral"
 msgstr "Spiral"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/sp-star.c:476
+#: glade/sodipodi.glade.h:53 src/interface.c:391 src/sp-star.c:467
 msgid "Star"
 msgstr "Stjerne"
 
@@ -788,7 +622,7 @@ msgstr "Stjerne"
 msgid "Symmetric "
 msgstr "Symmetrisk "
 
-#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1
+#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:395
 msgid "Text"
 msgstr "Tekst"
 
@@ -816,7 +650,7 @@ msgstr "X0"
 msgid "X1"
 msgstr "X1"
 
-#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:21
+#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:25
 msgid "XML Tree"
 msgstr "XML-tre"
 
@@ -828,8 +662,9 @@ msgstr "Y0"
 msgid "Y1"
 msgstr "Y1"
 
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1090
-#: src/toolbox.c:134
+#. View:Zoom
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1076
+#: src/interface.c:363 src/interface.c:396 src/toolbox.c:135
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -910,12 +745,12 @@ msgid "Delete selection"
 msgstr "Slett utvalg"
 
 #: glade/toolbox.glade.h:14
-msgid "Draw dynahand line"
-msgstr "Tegn dynahand-linje"
+msgid "Draw arc"
+msgstr "Tegn bue"
 
 #: glade/toolbox.glade.h:15
-msgid "Draw ellipse"
-msgstr "Tegn elipse"
+msgid "Draw dynahand line"
+msgstr "Tegn dynahand-linje"
 
 #: glade/toolbox.glade.h:16
 msgid "Draw freehand line"
@@ -945,8 +780,9 @@ msgstr "Tegnekontekst"
 msgid "Duplicate selection"
 msgstr "Dupliser utvalg"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
-#: src/dialogs/gradient-vector.c:98 src/toolbox.c:78
+#. Edit submenu
+#: glade/toolbox.glade.h:23 src/interface.c:461 src/toolbox.c:96
+#: src/widgets/gradient-selector.c:132
 msgid "Edit"
 msgstr "Rediger"
 
@@ -970,7 +806,9 @@ msgstr "Rediger noder"
 msgid "Edit stroke style of selected objects"
 msgstr "Rediger pennestil for valgte objekter"
 
-#: glade/toolbox.glade.h:30 src/toolbox.c:74
+#. Generic menu
+#. File submenu
+#: glade/toolbox.glade.h:30 src/interface.c:455 src/toolbox.c:92
 msgid "File"
 msgstr "Fil"
 
@@ -1002,7 +840,7 @@ msgstr "Nei, jeg vil heller tegne flere kule vektortegniner med sodipodi."
 msgid "Nope !"
 msgstr "Nei!"
 
-#: glade/toolbox.glade.h:41 src/event-context.c:432 src/toolbox.c:87
+#: glade/toolbox.glade.h:41 src/toolbox.c:106
 msgid "Object"
 msgstr "Objekt"
 
@@ -1034,7 +872,8 @@ msgstr "Hev utvalg til toppen"
 msgid "Really wanna quit sodipodi ?"
 msgstr "Vil du virkelig avslutte sodipodi?"
 
-#: glade/toolbox.glade.h:49
+#. File:Print Preview
+#: glade/toolbox.glade.h:49 src/interface.c:432
 msgid "Redo"
 msgstr "Gjenopprett"
 
@@ -1147,7 +986,7 @@ msgid "lower selection to bottom"
 msgstr "senk utvalg til bunnen"
 
 #: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
-#: src/helper/units.c:40
+#: src/helper/units.c:47
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1197,7 +1036,7 @@ msgid "Center"
 msgstr "Senter"
 
 #: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
-#: src/helper/units.c:42
+#: src/helper/units.c:49
 msgid "Centimeter"
 msgstr "Centimeter"
 
@@ -1226,7 +1065,7 @@ msgid "Horizontal center value"
 msgstr "Horisontal verdi for senter"
 
 #: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
-#: src/helper/units.c:44
+#: src/helper/units.c:51
 msgid "Inch"
 msgstr "Tomme"
 
@@ -1239,7 +1078,7 @@ msgid "Keep width of selection during transformation"
 msgstr "Behold bredde for utvalget under transformering"
 
 #: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
-#: src/helper/units.c:41
+#: src/helper/units.c:48
 msgid "Millimeter"
 msgstr "Millimeter"
 
@@ -1258,12 +1097,12 @@ msgstr "Oppr. X: "
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
-#: src/helper/units.c:40
+#: src/helper/units.c:47
 msgid "Percent"
 msgstr "Prosent"
 
 #: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
-#: src/helper/units.c:35
+#: src/helper/units.c:42
 msgid "Points"
 msgstr "Punkter"
 
@@ -1399,8 +1238,7 @@ msgstr "flytting vertikalt"
 msgid "vertical scale value"
 msgstr "vertikal skaleringsverdi"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
-#: src/dialogs/gradient-vector.c:102
+#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
 msgid "Add"
 msgstr "Legg til"
 
@@ -1425,58 +1263,78 @@ msgid "Change Attribute"
 msgstr "Endre attributt"
 
 #: glade/xml-tree.glade.h:7
+msgid "Change Content"
+msgstr "Endre innhold"
+
+#: glade/xml-tree.glade.h:8
 msgid "Content"
 msgstr "Innhold"
 
-#: glade/xml-tree.glade.h:8
+#. Edit:Copy
+#: glade/xml-tree.glade.h:9 src/interface.c:274
 msgid "Copy"
 msgstr "Kopier"
 
-#: glade/xml-tree.glade.h:9
+#. Edit:Cut
+#: glade/xml-tree.glade.h:10 src/interface.c:269
 msgid "Cut"
 msgstr "Klipp ut"
 
-#: glade/xml-tree.glade.h:10
+#: glade/xml-tree.glade.h:11
 msgid "Del"
 msgstr "Slett"
 
-#: glade/xml-tree.glade.h:12
+#: glade/xml-tree.glade.h:13
 msgid "Delete attribute"
 msgstr "Slett attributt"
 
-#: glade/xml-tree.glade.h:13
+#: glade/xml-tree.glade.h:14
 msgid "Do you want to delete attribute?"
 msgstr "Ønsker du å slette attributten?"
 
-#: glade/xml-tree.glade.h:14
+#: glade/xml-tree.glade.h:15
 msgid "Dup"
 msgstr "Duplikat"
 
-#: glade/xml-tree.glade.h:15
+#: glade/xml-tree.glade.h:16
+msgid "Element:"
+msgstr ""
+
+#: glade/xml-tree.glade.h:17
+msgid "Enter element name:"
+msgstr ""
+
+#: glade/xml-tree.glade.h:18
 msgid "Hierarchy"
 msgstr "Hierarki"
 
-#: glade/xml-tree.glade.h:16
+#: glade/xml-tree.glade.h:19
 msgid "Key"
 msgstr "Nøkkel"
 
-#: glade/xml-tree.glade.h:17
+#. File:New
+#: glade/xml-tree.glade.h:20 src/interface.c:200
 msgid "New"
 msgstr "Ny"
 
-#: glade/xml-tree.glade.h:18
+#: glade/xml-tree.glade.h:21
+msgid "New Element"
+msgstr "Nytt element"
+
+#. Edit:Paste
+#: glade/xml-tree.glade.h:22 src/interface.c:279
 msgid "Paste"
 msgstr "Lim inn"
 
-#: glade/xml-tree.glade.h:19
+#: glade/xml-tree.glade.h:23
 msgid "Value"
 msgstr "Verdi"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
+#: glade/xml-tree.glade.h:24 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Verdi:"
 
-#: glade/xml-tree.glade.h:22
+#: glade/xml-tree.glade.h:26
 msgid "name"
 msgstr "navn"
 
@@ -1490,11 +1348,11 @@ msgstr "Kunne ikke opprette sodipodi-svg-doc factory"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1082
+#: src/desktop.c:1068
 msgid "Welcome !"
 msgstr "Velkommen!"
 
-#: src/desktop.c:1156
+#: src/desktop.c:1140
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
@@ -1504,7 +1362,8 @@ msgstr "Sodipodi: %s: %s: %d"
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s har ikke-lagrede endringer, lagre dem?"
 
-#: src/desktop.c:1217
+#. File:Save
+#: src/desktop.c:1217 src/interface.c:210
 msgid "Save"
 msgstr "Lagre"
 
@@ -1512,97 +1371,193 @@ msgstr "Lagre"
 msgid "Don't save"
 msgstr "Ikke lagre"
 
-#: src/dialogs/display-settings.c:72
+#: src/dialogs/desktop-properties.c:208
+msgid "Desktop settings"
+msgstr "Innstillinger for skrivebord"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:217
+msgid "Grid"
+msgstr "Rutenett"
+
+#. Checkbuttons
+#: src/dialogs/desktop-properties.c:227
+msgid "Show grid"
+msgstr "Vis rutenett"
+
+#: src/dialogs/desktop-properties.c:234
+msgid "Snap to grid"
+msgstr "Fest til rutenett"
+
+#: src/dialogs/desktop-properties.c:241
+msgid "Grid units:"
+msgstr "Enhet for rutenett:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Origin X:"
+msgstr "Opprinnelse X:"
+
+#: src/dialogs/desktop-properties.c:264
+msgid "Origin Y:"
+msgstr "Opprinnelse Y:"
+
+#: src/dialogs/desktop-properties.c:278
+msgid "Spacing X:"
+msgstr "Mellomrom X:"
+
+#: src/dialogs/desktop-properties.c:292
+msgid "Spacing Y:"
+msgstr "Mellomrom Y:"
+
+#: src/dialogs/desktop-properties.c:306 src/dialogs/desktop-properties.c:367
+msgid "Snap units:"
+msgstr "Enheter for festing:"
+
+#: src/dialogs/desktop-properties.c:318 src/dialogs/desktop-properties.c:379
+msgid "Snap distance:"
+msgstr "Festeavstand:"
+
+#: src/dialogs/desktop-properties.c:331
+msgid "Grid color:"
+msgstr "Farge på rutenett:"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:343
+msgid "Guides"
+msgstr "Rettesnorer"
+
+#: src/dialogs/desktop-properties.c:352
+msgid "Show guides"
+msgstr "Vis rutenett"
+
+#: src/dialogs/desktop-properties.c:360
+msgid "Snap to guides"
+msgstr "Fest til guider"
+
+#: src/dialogs/desktop-properties.c:391
+msgid "Guides color:"
+msgstr "Rutenettfarge:"
+
+#: src/dialogs/desktop-properties.c:402
+msgid "Highlight color:"
+msgstr "Merk farge:"
+
+#: src/dialogs/display-settings.c:85
+msgid "Display settings"
+msgstr "Skjerminstillinger"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:93
+msgid "Rendering"
+msgstr "Rendering"
+
+#: src/dialogs/display-settings.c:105
+msgid "Oversample bitmaps:"
+msgstr "Oversample bitkart:"
+
+#: src/dialogs/display-settings.c:116 src/dialogs/fill-style.c:921
+msgid "None"
+msgstr "Ingen"
+
+#: src/dialogs/display-settings.c:120
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:76
+#: src/dialogs/display-settings.c:124
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:80
+#: src/dialogs/display-settings.c:128
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:84
+#: src/dialogs/display-settings.c:132
 msgid "16x16"
 msgstr "16x16"
 
-#: src/dialogs/document-properties.c:57
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:143
+msgid "Input"
+msgstr ""
+
+#: src/dialogs/display-settings.c:154
+msgid "Default cursor tolerance:"
+msgstr ""
+
+#: src/dialogs/document-properties.c:135
+msgid "Document settings"
+msgstr "Innstillinger for dokument"
+
+#: src/dialogs/document-properties.c:156
+msgid "Paper size:"
+msgstr "Papirstørrelse:"
+
+#: src/dialogs/document-properties.c:177 src/dialogs/document-properties.c:356
 msgid "Custom"
 msgstr "Tilpasset"
 
-#. Frame
-#: src/dialogs/fill-style.c:156 src/dialogs/fill-style.c:378
-msgid "Empty"
-msgstr "Tom"
+#. Custom paper frame
+#: src/dialogs/document-properties.c:185
+msgid "Custom paper"
+msgstr "Egendefinert papir"
 
-#: src/dialogs/fill-style.c:206
+#: src/dialogs/document-properties.c:196 src/dialogs/object-properties.c:183
+msgid "Units:"
+msgstr "Enheter:"
+
+#: src/dialogs/fill-style.c:59 src/dialogs/fill-style.c:723
 msgid "Fill style"
 msgstr "Fyllstil"
 
+#. Frame
+#: src/dialogs/fill-style.c:673 src/dialogs/fill-style.c:895
+msgid "Empty"
+msgstr "Tom"
+
 #. Set frame label
-#: src/dialogs/fill-style.c:548
+#: src/dialogs/fill-style.c:1065
 msgid "Solid color"
 msgstr "Helfylt farge"
 
 #. Label
-#: src/dialogs/fill-style.c:559
+#: src/dialogs/fill-style.c:1076 src/widgets/paint-selector.c:513
+#: src/widgets/paint-selector.c:625
 msgid "Mode:"
 msgstr "Modus:"
 
-#: src/dialogs/fill-style.c:566
+#: src/dialogs/fill-style.c:1083 src/widgets/paint-selector.c:523
 msgid "RGB"
 msgstr "RGB"
 
-#: src/dialogs/fill-style.c:573
+#: src/dialogs/fill-style.c:1090 src/widgets/paint-selector.c:529
 msgid "HSV"
 msgstr "HSV"
 
-#: src/dialogs/fill-style.c:580
+#: src/dialogs/fill-style.c:1097 src/widgets/paint-selector.c:535
 msgid "CMYK"
 msgstr "CMYK"
 
 #. Set frame label
-#: src/dialogs/fill-style.c:648
+#: src/dialogs/fill-style.c:1165
 msgid "Gradient"
 msgstr "Gradient"
 
-#. Reset button
-#: src/dialogs/gradient-selector.c:115
-msgid "Reset"
-msgstr "Nullstill"
-
-#. No document or no gradients
-#: src/dialogs/gradient-vector.c:225
-msgid "No gradients defined"
-msgstr "Ingen gradienter definert"
-
-#: src/dialogs/gradient-vector.c:378
-msgid "Start color"
-msgstr "Startfarge"
-
-#: src/dialogs/gradient-vector.c:390
-msgid "End color"
-msgstr "Sluttfarge"
-
-#: src/dialogs/gradient-vector.c:417
-msgid "Gradient vector"
-msgstr "Gradientvektor"
-
-#: src/dialogs/item-properties.c:175
+#: src/dialogs/item-properties.c:165
 msgid "Item is reference"
 msgstr "Oppføring er referanse"
 
-#: src/dialogs/item-properties.c:253 src/dialogs/item-properties.c:494
+#: src/dialogs/item-properties.c:243
 msgid "The ID is not valid"
 msgstr "IDen er ikke gyldig"
 
-#: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
+#: src/dialogs/item-properties.c:245
 msgid "The ID is already defined"
 msgstr "IDen er allerede definert"
 
-#: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
+#: src/dialogs/item-properties.c:248
 msgid "The ID is valid"
 msgstr "IDen er gyldig"
 
@@ -1703,38 +1658,58 @@ msgstr "RY:"
 msgid "%s attributes"
 msgstr "%s-attributter"
 
-#. Do some evil things
-#: src/dialogs/object-properties.c:209
-msgid "Dynamic fill"
-msgstr "Dynamisk fyll"
+#: src/dialogs/object-properties.c:48
+msgid "Object style"
+msgstr "Objektstil"
 
-#: src/document.c:235
+#: src/dialogs/object-properties.c:148
+msgid "Object position and size"
+msgstr "Posisjon og størrelse for objekt"
+
+#: src/dialogs/object-properties.c:170
+msgid "Position and size"
+msgstr "Posisjon og størrelse"
+
+#: src/dialogs/stroke-style.c:66
+msgid "Stroke style"
+msgstr "Stil for strøk"
+
+#: src/dialogs/stroke-style.c:153
+msgid "Stroke settings"
+msgstr "Innstillinger for strøk"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:225
+msgid "Cap:"
+msgstr "Cap:"
+
+#: src/document.c:248
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Dokument uten navn %d"
 
-#: src/document.c:307
+#: src/document.c:320
 #, c-format
 msgid "Memory document %d"
 msgstr "Dokument i minne %d"
 
-#: src/file.c:97
+#: src/file.c:98
 msgid "Select file to open"
 msgstr "Velg fil som skal åpnes"
 
-#: src/file.c:207
+#: src/file.c:208
 msgid "Save file"
 msgstr "Lagre fil"
 
-#: src/file.c:324
+#: src/file.c:320
 msgid "Select file to import"
 msgstr "Velg fil som skal importeres"
 
-#: src/file.c:401
+#: src/file.c:397
 msgid "Export file"
 msgstr "Eksporter fil"
 
-#: src/file.c:468
+#: src/file.c:464
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnavn %s..): Forhåndsvisning"
@@ -1743,11 +1718,15 @@ msgstr "Sodipodi (dokumentnavn %s..): Forhåndsvisning"
 msgid "About sodipodi"
 msgstr "Om Sodipodi"
 
-#: src/helper/unit-menu.c:355 src/helper/units.c:42
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
+msgid "Millimeters"
+msgstr "Millimeter"
+
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "Centimeters"
 msgstr "Centimeter"
 
-#: src/helper/unit-menu.c:356 src/helper/units.c:44
+#: src/helper/unit-menu.c:356 src/helper/units.c:51
 msgid "Inches"
 msgstr "Tommer"
 
@@ -1755,11 +1734,15 @@ msgstr "Tommer"
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:357 src/helper/units.c:35
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "Point"
 msgstr "Punkt"
 
-#: src/helper/unit-menu.c:358 src/helper/units.c:37
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
+msgid "Pixels"
+msgstr "Piksler"
+
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
 msgid "Pixel"
 msgstr "Piksel"
 
@@ -1771,106 +1754,273 @@ msgstr "Brukerområde"
 msgid "us"
 msgstr "us"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em squares"
 msgstr "Em kvadrat"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em square"
 msgstr "Em kvadrat"
 
-#: src/helper/unit-menu.c:361 src/helper/units.c:45
+#: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "em"
 msgstr "em"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex squares"
 msgstr "Ex kvadrat"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "Ex square"
 msgstr "Ex kvadrat"
 
-#: src/helper/unit-menu.c:362 src/helper/units.c:46
+#: src/helper/unit-menu.c:362 src/helper/units.c:53
 msgid "ex"
 msgstr "ex"
 
 #. Do not insert any elements before/between first 4
-#: src/helper/units.c:34
+#: src/helper/units.c:41
 msgid "Unit"
 msgstr "Enhet"
 
-#: src/helper/units.c:34
+#: src/helper/units.c:41
 msgid "Units"
 msgstr "Enheter"
 
-#: src/helper/units.c:35
+#: src/helper/units.c:42
 msgid "Pt"
 msgstr "Pkt"
 
-#: src/helper/units.c:36
-msgid "Userspace unit"
-msgstr "Brukerområdeenhet"
-
-#: src/helper/units.c:36
-msgid "User"
-msgstr "Bruker"
-
-#: src/helper/units.c:36
-msgid "Userspace units"
-msgstr "Brukerområdeenheter"
-
-#: src/helper/units.c:37
+#: src/helper/units.c:43
 msgid "Px"
 msgstr "Px"
 
-#: src/helper/units.c:40
+#: src/helper/units.c:44
+msgid "Userspace unit"
+msgstr "Brukerområdeenhet"
+
+#: src/helper/units.c:44
+msgid "User"
+msgstr "Bruker"
+
+#: src/helper/units.c:44
+msgid "Userspace units"
+msgstr "Brukerområdeenheter"
+
+#: src/helper/units.c:47
 msgid "Percents"
 msgstr "Prosent"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "Meter"
 msgstr "Meter"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "m"
 msgstr "m"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:50
 msgid "meters"
 msgstr "meter"
 
-#: src/main.c:51
-msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
-msgstr "Ikke bruk GUI. NB! hvis det oppgis bør dette være FØRSTE argument!"
+#. File:Open
+#: src/interface.c:205
+msgid "Open"
+msgstr "Åpne"
 
-#: src/main.c:60
-msgid "Open specified file (option string may be excluded)"
+#. File:Save As
+#: src/interface.c:215
+msgid "Save As"
+msgstr "Lagre som"
+
+#. File:Print
+#: src/interface.c:238
+msgid "Print"
+msgstr "Skriv ut"
+
+#. File:Print Preview
+#: src/interface.c:243
+msgid "Print preview"
+msgstr "Forhåndsvisning av utskrift"
+
+#. File:Close
+#: src/interface.c:252
+msgid "Close view"
+msgstr "Lukk visning"
+
+#. File:Exit
+#: src/interface.c:257
+msgid "Exit"
+msgstr "Avslutt"
+
+#. Selection:Group
+#: src/interface.c:305 src/sp-item-group.c:458
+msgid "Group"
+msgstr "Grupper"
+
+#. Selection:Ungroup
+#: src/interface.c:310 src/sp-item-group.c:475
+msgid "Ungroup"
+msgstr "Del opp gruppe"
+
+#. Selection:Combine
+#: src/interface.c:319
+msgid "Combine"
+msgstr "Kombiner"
+
+#. Selection:Break apart
+#: src/interface.c:324
+msgid "Break apart"
+msgstr "Bryt opp"
+
+#: src/interface.c:337
+msgid "Bring to Front"
+msgstr "Hent frem"
+
+#: src/interface.c:341
+msgid "Send to Back"
+msgstr "Send til bakgrunn"
+
+#: src/interface.c:345
+msgid "Raise"
+msgstr "Hev"
+
+#: src/interface.c:349
+msgid "Lower"
+msgstr "Senk"
+
+#: src/interface.c:402
+msgid "Fill and Stroke"
+msgstr "Fyll og strøk"
+
+#: src/interface.c:403
+msgid "Size and Position"
+msgstr " Størrelse og posisjon"
+
+#: src/interface.c:404
+msgid "Align Objects"
+msgstr "Juster objekter"
+
+#: src/interface.c:405
+msgid "Text Editing"
+msgstr "Tekstredigering"
+
+#: src/interface.c:406
+msgid "Transformations"
+msgstr "Transformasjoner"
+
+#: src/interface.c:407
+msgid "Tool Attributes"
+msgstr "Verktøyattributter"
+
+#: src/interface.c:409
+msgid "Editing Window"
+msgstr "Redigeringsvindu"
+
+#: src/interface.c:410
+msgid "XML Editor"
+msgstr "XML-redigering"
+
+#: src/interface.c:411
+msgid "Display Properties"
+msgstr "Egenskaper for visning"
+
+#. Undo
+#: src/interface.c:430
+msgid "Undo"
+msgstr "Angre"
+
+#. View submenu
+#: src/interface.c:473
+msgid "View"
+msgstr "Visning"
+
+#. Drawing mode submenu
+#: src/interface.c:479
+msgid "Drawing Mode"
+msgstr "Tegnemodus"
+
+#. Dialog submenu
+#: src/interface.c:485
+msgid "Dialogs"
+msgstr "Dialoger"
+
+#: src/main.c:93
+msgid "Do not use X server (only process files from console)"
+msgstr "Ikke bruk X-tjeneren (prosesser filer fra konsollet)"
+
+#: src/main.c:96
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr ""
+
+#: src/main.c:99
+#, fuzzy
+msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Åpne spesifisert fil (alternativ strenk kan eksluderes)"
 
-#: src/main.c:61 src/main.c:70
+#: src/main.c:100 src/main.c:103 src/main.c:106
 msgid "FILENAME"
 msgstr "FILNAVN"
 
-#: src/main.c:69
-msgid "Print files to specified output file (use '| program' for pipe)"
+#: src/main.c:102
+#, fuzzy
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr "Skriv ut filer til spesifisert utfil (bruk '| program' for rør)"
 
-#: src/main.c:78
+#: src/main.c:105
+#, fuzzy
+msgid "Export document to png file"
+msgstr "Eksporter bilde til png"
+
+#: src/main.c:108
+msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
+msgstr ""
+
+#: src/main.c:109
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:111
+msgid "Exported area in millimeters (default is full document)"
+msgstr ""
+
+#: src/main.c:112
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:114
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Vis oppgitte filer en-etter-en, bytt til neste ved tastatur-/mus-hendelse"
 
-#: src/main.c:180
+#: src/main.c:491
 msgid "Oaf options"
 msgstr "Oaf alternativer"
 
-#: src/main.c:188
+#: src/main.c:499
 msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initialisere Bonobo"
 
+#: src/sodipodi.c:297
+msgid "Untitled document"
+msgstr "Dokument uten navn"
+
+#. Show nice dialog box
+#: src/sodipodi.c:322
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: src/sodipodi.c:323
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: src/sodipodi.c:324
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
+
 #. Not a regular file
-#: src/sodipodi.c:305
+#: src/sodipodi.c:413
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1882,7 +2032,7 @@ msgstr ""
 "ikke kunne lagre eller laste brukervalg\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:318
+#: src/sodipodi.c:426
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1896,7 +2046,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne laste eller lagre brukervalg"
 
-#: src/sodipodi.c:332
+#: src/sodipodi.c:440
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1909,7 +2059,7 @@ msgstr ""
 "ikke kunne laste eller lagre brukervalg."
 
 #. Cannot create directory
-#: src/sodipodi.c:588
+#: src/sodipodi.c:697
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1923,7 +2073,7 @@ msgstr ""
 "brukervalg."
 
 #. Not a directory
-#: src/sodipodi.c:600
+#: src/sodipodi.c:709
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1937,7 +2087,7 @@ msgstr ""
 "brukervalg."
 
 #. Cannot create file
-#: src/sodipodi.c:616
+#: src/sodipodi.c:725
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1951,7 +2101,7 @@ msgstr ""
 "brukervalg."
 
 #. Cannot create file
-#: src/sodipodi.c:628
+#: src/sodipodi.c:737
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1989,116 +2139,195 @@ msgstr "Følg lenke"
 msgid "Remove link"
 msgstr "Fjern lenke"
 
-#: src/sp-image.c:291
+#: src/sp-image.c:293
 msgid "Broken bitmap"
 msgstr "Ødelagt bitkart"
 
-#: src/sp-image.c:292
+#: src/sp-image.c:294
 msgid "Color bitmap"
 msgstr "Farge bitkart"
 
 #. Create toplevel menuitem
-#: src/sp-image.c:508
+#: src/sp-image.c:510
 msgid "Image"
 msgstr "Bilde"
 
 #. Link dialog
-#: src/sp-image.c:511
+#: src/sp-image.c:513
 msgid "Image Properties"
 msgstr "Egenskaper for bilde"
 
-#: src/sp-item-group.c:435
+#. Autotrace dialog
+#: src/sp-image.c:521 src/sp-image.c:721
+msgid "Trace"
+msgstr ""
+
+#: src/sp-image.c:868
+#, c-format
+msgid "Error to write %s: %s"
+msgstr ""
+
+#: src/sp-image.c:872
+msgid "Ok"
+msgstr ""
+
+#: src/sp-image.c:900
+msgid "Untitled"
+msgstr "Uten navn"
+
+#: src/sp-image.c:905
+msgid "Document Name:"
+msgstr "Dokumentnavn:"
+
+#: src/sp-image.c:918
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: src/sp-image.c:924
+msgid "Image URI:"
+msgstr "Bilde-URI:"
+
+#: src/sp-item-group.c:396
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppe med %d objekter"
 
-#: src/sp-item-group.c:497
-msgid "Group"
-msgstr "Grupper"
-
 #. Group dialog
-#: src/sp-item-group.c:501
+#: src/sp-item-group.c:462
 msgid "Group Properties"
 msgstr "Egenskaper for gruppe"
 
-#. "Ungroup"
-#: src/sp-item-group.c:514
-msgid "Ungroup"
-msgstr "Del opp gruppe"
-
-#: src/sp-item.c:359
+#: src/sp-item.c:365
 msgid "Unknown item :-("
 msgstr "Ukjent oppføring :-("
 
 #. Item dialog
-#: src/sp-item.c:622
+#: src/sp-item.c:640
 msgid "Item Properties"
 msgstr "Egenskaper for oppføring"
 
 #. Select item
-#: src/sp-item.c:632
+#: src/sp-item.c:650
 msgid "Select this"
 msgstr "Velg dette"
 
 #. Reset transformations
-#: src/sp-item.c:642
+#: src/sp-item.c:660
 msgid "Reset transformation"
 msgstr "Nullstill transformasjon"
 
-#: src/sp-item.c:648
+#: src/sp-item.c:666
 msgid "Make sensitive"
 msgstr "Gjør sensitiv"
 
-#: src/sp-item.c:648
+#: src/sp-item.c:666
 msgid "Make insensitive"
 msgstr "Gjør insensitiv"
 
 #. Create link
-#: src/sp-item.c:653
+#: src/sp-item.c:671
 msgid "Create link"
 msgstr "Opprett lenke"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:363
+#: src/sp-rect.c:394
 msgid "Rect"
 msgstr "Rektangel"
 
 #. Link dialog
-#: src/sp-rect.c:366
+#: src/sp-rect.c:397
 msgid "Rect Properties"
 msgstr "Egenskaper for rektangel"
 
-#: src/sp-shape.c:364
+#: src/sp-shape.c:313
 msgid "A path - whatever it means"
 msgstr "En sti - hva nå enn det betyr"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:420
+#: src/sp-shape.c:369
 msgid "Shape"
 msgstr "Form"
 
 #. Item dialog
-#: src/sp-shape.c:423
+#: src/sp-shape.c:372
 msgid "Fill settings"
 msgstr "Innstillinger for fyll"
 
 #. Link dialog
-#: src/sp-spiral.c:598
+#: src/sp-spiral.c:589
 msgid "Spiral Properties"
 msgstr "Egenskaper for spiral"
 
 #. Link dialog
-#: src/sp-star.c:479
+#: src/sp-star.c:470
 msgid "Star Properties"
 msgstr "Egenskaper for stjerne"
 
-#: src/sp-text.c:222
+#. fixme:
+#: src/sp-text.c:902
 msgid "Text object"
 msgstr "Tekstobjekt"
 
-#: src/toolbox.c:99
+#: src/toolbox.c:248
 msgid "Draw"
 msgstr "Tegn"
+
+#. Reset button
+#: src/widgets/gradient-selector.c:160
+msgid "Reset"
+msgstr "Nullstill"
+
+#: src/widgets/gradient-vector.c:243
+msgid "No document selected"
+msgstr "Ingen dokumenter valgt"
+
+#: src/widgets/gradient-vector.c:249
+msgid "No gradients in document"
+msgstr "Ingen gradienter i dokumentet"
+
+#: src/widgets/gradient-vector.c:255
+msgid "No gradient selected"
+msgstr "Ingen gradient valgt"
+
+#: src/widgets/gradient-vector.c:406
+msgid "Start color"
+msgstr "Startfarge"
+
+#: src/widgets/gradient-vector.c:418
+msgid "End color"
+msgstr "Sluttfarge"
+
+#: src/widgets/gradient-vector.c:445
+msgid "Gradient vector"
+msgstr "Gradientvektor"
+
+#: src/widgets/paint-selector.c:396
+msgid "No objects"
+msgstr "Ingen objekter"
+
+#: src/widgets/paint-selector.c:410
+msgid "Multiple styles"
+msgstr "Flere stiler"
+
+#: src/widgets/paint-selector.c:424
+msgid "No paint"
+msgstr ""
+
+#: src/widgets/paint-selector.c:566
+msgid "Color paint"
+msgstr ""
+
+#: src/widgets/paint-selector.c:636
+msgid "Linear"
+msgstr "Lineær"
+
+#: src/widgets/paint-selector.c:639
+msgid "Radial"
+msgstr "Radial"
+
+#: src/widgets/paint-selector.c:670
+msgid "Gradient paint"
+msgstr ""
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2124,314 +2353,75 @@ msgstr "Gul:"
 msgid "Black:"
 msgstr "Sort:"
 
-#~ msgid "Millimeters\n"
-#~ msgstr "Millimeter\n"
-
-#~ msgid "Pixels\n"
-#~ msgstr "Piksler\n"
-
-#~ msgid "window1"
-#~ msgstr "vindu1"
-
-#~ msgid "window2"
-#~ msgstr "vindu1"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Copyright Lauris Kaplinski 1999-2000."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Et vektorbasert tegneprogram\n"
-#~ "Utgitt under GPL"
-
-#~ msgid "Pixelss"
-#~ msgstr "Piksler"
-
-#~ msgid "Valige värv"
-#~ msgstr "Valige varv"
-
-#~ msgid " Width "
-#~ msgstr " Bredde "
-
-#~ msgid ""
-#~ "pixels\n"
-#~ "millimeters\n"
-#~ "centimeter\n"
-#~ "points\n"
-#~ "inches\n"
-#~ msgstr ""
-#~ "piksler\n"
-#~ "millimeter\n"
-#~ "centimeter\n"
-#~ "punkter\n"
-#~ "tommer\n"
-
-#~ msgid " Line "
-#~ msgstr " Linje "
-
-#~ msgid "dashed"
-#~ msgstr "prikket"
-
-#~ msgid "double"
-#~ msgstr "dobbel"
-
-#~ msgid "bevel"
-#~ msgstr "kant"
-
-#~ msgid "round"
-#~ msgstr "rund"
-
-#~ msgid " Cap "
-#~ msgstr " Cap "
-
-#~ msgid "butt"
-#~ msgstr "avkort"
-
-#~ msgid "sqare"
-#~ msgstr "kvadrat"
-
-#~ msgid "Pattern"
-#~ msgstr "Mønster"
-
-#~ msgid "Fractal"
-#~ msgstr "Fraktal"
-
-#~ msgid "Fill Color : "
-#~ msgstr "Fyllfarge : "
-
-#~ msgid "y"
-#~ msgstr "y"
-
-#~ msgid "Width "
-#~ msgstr "Bredde "
-
-#~ msgid "Height "
-#~ msgstr "Høyde "
-
-#~ msgid ""
-#~ "px\n"
-#~ "mm\n"
-#~ "cm\n"
-#~ "pt\n"
-#~ "in\n"
-#~ msgstr ""
-#~ "px\n"
-#~ "mm\n"
-#~ "cm\n"
-#~ "pt\n"
-#~ "in\n"
-
-#~ msgid ""
-#~ "pt\n"
-#~ "mm\n"
-#~ "cm\n"
-#~ "in\n"
-#~ msgstr ""
-#~ "px\n"
-#~ "mm\n"
-#~ "cm\n"
-#~ "in\n"
-
-#~ msgid "_New File"
-#~ msgstr "_Ny fil"
-
-#~ msgid "_Import"
-#~ msgstr "_Importer"
-
-#~ msgid "_Export"
-#~ msgstr "_Eksporter"
-
-#~ msgid "Print Pre_view"
-#~ msgstr "Forhånds_visning"
-
-#~ msgid "D_uplicate"
-#~ msgstr "D_upliker"
-
-#~ msgid "_Delete"
-#~ msgstr "S_lett"
-
-#~ msgid "Node Editing..."
-#~ msgstr "Node redigering..."
-
-#~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-#~ msgstr "Slår av/på skrivebordskantene (linjaler og verktøylinjer på og av)"
-
-#~ msgid "Toggle borders"
-#~ msgstr "Slå av/på kanter"
-
-#~ msgid "_Arrange"
-#~ msgstr "_Arranger"
-
-#~ msgid "_Transform"
-#~ msgstr "_Transformer"
-
-#~ msgid "_Order"
-#~ msgstr "_Rekkefølge"
-
-#~ msgid "Groups selected items"
-#~ msgstr "Grupperer valgte oppføringer"
-
-#~ msgid "Ungroups selected group"
-#~ msgstr "Deler opp valgt gruppe"
-
-#~ msgid "New File"
-#~ msgstr "Ny fil"
-
-#~ msgid "Open File"
-#~ msgstr "Åpne fil"
-
-#~ msgid "Open"
-#~ msgstr "Åpne"
-
-#~ msgid "Save File"
-#~ msgstr "Lagre fil"
-
-#~ msgid "Print"
-#~ msgstr "Skriv ut"
-
-#~ msgid "Undo"
-#~ msgstr "Angre"
-
-#~ msgid "Stroke settings"
-#~ msgstr "Innstillinger for strøk"
-
-#~ msgid "Delete selected object(s)"
-#~ msgstr "Slett valgte objekt(er)"
-
-#~ msgid "Duplicate selected object(s)"
-#~ msgstr "Dupliser valgt(e) objekt(er)"
-
-#~ msgid "Duplic\t"
-#~ msgstr "Duplikat\t"
-
-#~ msgid "Raise selected object(s) to top"
-#~ msgstr "Hev valgte objekt(er) til topp"
-
-#~ msgid "To Front"
-#~ msgstr "Til front"
-
-#~ msgid "Lower selected object(s) to bottom"
-#~ msgstr "Senk valgt(e) objekt(er) til bunnen"
-
-#~ msgid "Raise one position"
-#~ msgstr "Hev ett nivå"
-
-#~ msgid "Up"
-#~ msgstr "Opp"
-
-#~ msgid "Lower one position"
-#~ msgstr "Senk ett nivå"
-
-#~ msgid "Down"
-#~ msgstr "Ned"
-
-#~ msgid "Edit objects using control nodes"
-#~ msgstr "Rediger objekter ved bruk av kontrollnoder"
-
-#~ msgid "Draw rectangles"
-#~ msgstr "Tegn rektangler"
-
-#~ msgid "Draw ellipses"
-#~ msgstr "Tegn elipser"
-
-#~ msgid "Draw freeform lines"
-#~ msgstr "Tegn frihåndslinjer"
-
-#~ msgid "Write text"
-#~ msgstr "Skriv tekst"
-
-#~ msgid "Left button zooms in, right out"
-#~ msgstr "Venstre knapp zoomer inn, høyre ut"
-
-#~ msgid ""
-#~ "10%\n"
-#~ "25%\n"
-#~ "50%\n"
-#~ "75%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "300%\n"
-#~ "500%\n"
-#~ msgstr ""
-#~ "10%\n"
-#~ "25%\n"
-#~ "50%\n"
-#~ "75%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "300%\n"
-#~ "500%\n"
-
-#~ msgid "Select zoom factor"
-#~ msgstr "Velg zoom-faktor"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid " Move "
-#~ msgstr " Flytt "
-
-#~ msgid "move relative in"
-#~ msgstr "flytt relativt innen"
-
-#~ msgid ""
-#~ "pixel\n"
-#~ "points\n"
-#~ "millimeter\n"
-#~ "centimeter\n"
-#~ "inch\n"
-#~ msgstr ""
-#~ "piksel\n"
-#~ "punkter\n"
-#~ "millimeter\n"
-#~ "centimeter\n"
-#~ "tomme\n"
-
-#~ msgid " Rotate "
-#~ msgstr " Roter "
-
-#~ msgid "90°"
-#~ msgstr "90°"
-
-#~ msgid "180°"
-#~ msgstr "180°"
-
-#~ msgid "270°"
-#~ msgstr "270°"
-
-#~ msgid "any"
-#~ msgstr "enhver"
-
-#~ msgid "right"
-#~ msgstr "høyre"
-
-#~ msgid "left"
-#~ msgstr "venstre"
-
-#~ msgid " flip "
-#~ msgstr " vend "
-
-#~ msgid " Skew "
-#~ msgstr " Forskyv "
-
-#~ msgid "%  "
-#~ msgstr "%  "
-
-#~ msgid "make copy"
-#~ msgstr "lag kopi"
-
-#~ msgid "Guidelines setup"
-#~ msgstr "Oppsett av rettesnorer"
-
-#~ msgid "move horizontal"
-#~ msgstr "flytt horisontalt"
-
-#~ msgid "move vertical"
-#~ msgstr "flytt vertikalt"
-
-#~ msgid "close dialog"
-#~ msgstr "lukk dialog"
+#: src/dialogs/tool-attributes.c:44
+msgid "Tool attributes"
+msgstr "Verktøyattributter"
+
+#: src/dialogs/tool-attributes.c:89
+msgid "Number of corners:"
+msgstr "Antall hjørner:"
+
+#: src/dialogs/tool-attributes.c:93 src/dialogs/tool-attributes.c:103
+msgid "Missing tool preferences"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Mass:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Drag:"
+msgstr "Dra:"
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Angle"
+msgstr "Vinkel"
+
+#: src/dialogs/tool-attributes.c:106
+msgid "Tool has no attributes"
+msgstr "Verktøy har ingen attributter"
+
+#: src/dialogs/tool-attributes.c:109
+msgid "No active tool"
+msgstr "Ingen aktive verktøy"
+
+#: src/dialogs/xml-tree.c:305
+#, fuzzy
+msgid "You can't delete 'id' attribute!"
+msgstr "Ønsker du å slette attributten?"
+
+#: src/dialogs/xml-tree.c:312
+#, fuzzy, c-format
+msgid "Do you want to delete attribute %s?"
+msgstr "Ønsker du å slette attributten?"
+
+#: src/dialogs/xml-tree.c:317 src/dialogs/xml-tree.c:556
+msgid "Yes"
+msgstr "Ja"
+
+#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
+msgid "No"
+msgstr "Nei"
+
+#: src/dialogs/xml-tree.c:540
+#, c-format
+msgid "You can't delete element %s!"
+msgstr "Du kan ikke slette element %s!"
+
+#: src/dialogs/xml-tree.c:551
+#, fuzzy, c-format
+msgid "Do you want to delete element %s?"
+msgstr "Ønsker du å slette attributten?"
+
+#: src/dialogs/xml-tree.c:691
+#, c-format
+msgid "You can't cut element %s!"
+msgstr "Du kan ikke klippe ut element %s!"
+
+#: src/draw-context.c:233
+msgid "Appending to selection. Press '+' to toggle Append/New."
+msgstr ""
+
+#: src/draw-context.c:238
+msgid "Creating new curve. Press '+' to toggle Append/New."
+msgstr ""
