@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2000-11-22 18:17+0100\n"
+"POT-Creation-Date: 2001-01-26 03:07+0200\n"
 "PO-Revision-Date: 2000-12-1 16:37+0200\n"
 "Last-Translator: Mufit Eribol <meribol@ere.com.tr>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/align.c:7
+#: glade/align.c:7 glade/transformation.c:44 glade/transformation.c:57
 msgid "Align"
 msgstr "Hizala"
 
@@ -179,7 +179,7 @@ msgstr "Þablon rengi"
 msgid "Show guides"
 msgstr "Þablonu göster"
 
-#: glade/desktop.c:42 glade/transformation.c:52
+#: glade/desktop.c:42
 msgid "Snap to guides"
 msgstr "Þablona yakala"
 
@@ -192,7 +192,8 @@ msgid "Choose color for highlighted guidelines"
 msgstr "Ýþaretli rehber çizgileri için renk seçiniz"
 
 #: glade/desktop.c:45
-msgid "Highlighted guideline color"
+#, fuzzy
+msgid "Highlited guideline color"
 msgstr "Ýþaretli rehber çizgileri rengi"
 
 #: glade/desktop.c:46
@@ -516,7 +517,7 @@ msgid "Zoom"
 msgstr "Büyüt"
 
 #: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:151
-#: glade/transformation.c:35
+#: glade/transformation.c:16
 msgid "Scale"
 msgstr "Boyutla"
 
@@ -640,7 +641,7 @@ msgstr "Yazdýr"
 msgid "Undo"
 msgstr "Geri git"
 
-#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:90
+#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:80
 msgid "Redo"
 msgstr "Yeniden yap"
 
@@ -774,47 +775,47 @@ msgstr ""
 "Bir Vektör Çizim Programý.\n"
 "GPL'e göre yayýnlanmýþtýr"
 
-#: glade/sodipodi-glade.c:93 glade/toolbox.c:50
+#: glade/sodipodi-glade.c:93 glade/toolbox.c:40
 msgid "Node Edit"
 msgstr "Noktayý Deðiþtir"
 
-#: glade/sodipodi-glade.c:94 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:94 glade/toolbox.c:41
 msgid "Include one node into selected segments"
 msgstr "Seçili bölümlere bir nokta koy"
 
-#: glade/sodipodi-glade.c:95 glade/toolbox.c:55
+#: glade/sodipodi-glade.c:95 glade/toolbox.c:45
 msgid "Break apart selected node"
 msgstr "Seçili noktadan kopart"
 
-#: glade/sodipodi-glade.c:96 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:96 glade/toolbox.c:44
 msgid "Convert selected segments to curves"
 msgstr "Seçili bölümleri eðrilere dönüþtür"
 
-#: glade/sodipodi-glade.c:97 glade/toolbox.c:56
+#: glade/sodipodi-glade.c:97 glade/toolbox.c:46
 msgid "Join 2 selected endpoints"
 msgstr "2 seçili bitiþ noktasýný birleþtir"
 
-#: glade/sodipodi-glade.c:98 glade/toolbox.c:57
+#: glade/sodipodi-glade.c:98 glade/toolbox.c:47
 msgid "Cusp line at selected nodes"
 msgstr "Seçili noktalardaki çizgiyi tepele"
 
-#: glade/sodipodi-glade.c:99 glade/toolbox.c:58
+#: glade/sodipodi-glade.c:99 glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
 msgstr "Seçili noktalardaki çizgiyi düzelt"
 
-#: glade/sodipodi-glade.c:100 glade/toolbox.c:59
+#: glade/sodipodi-glade.c:100 glade/toolbox.c:49
 msgid "Symmetric "
 msgstr "Simetrik"
 
-#: glade/sodipodi-glade.c:101 glade/toolbox.c:61
+#: glade/sodipodi-glade.c:101 glade/toolbox.c:51
 msgid "Close dialog"
 msgstr "Diyalogu kapat"
 
-#: glade/sodipodi-glade.c:102 glade/toolbox.c:53
+#: glade/sodipodi-glade.c:102 glade/toolbox.c:43
 msgid "Convert selected segments to lines"
 msgstr "Seçili bölümleri çizgilere dönüþtür"
 
-#: glade/sodipodi-glade.c:103 glade/toolbox.c:52
+#: glade/sodipodi-glade.c:103 glade/toolbox.c:42
 msgid "Delete selected nodes"
 msgstr "Seçili noktalarý sil"
 
@@ -832,7 +833,7 @@ msgid "Drawing"
 msgstr "Boyama"
 
 #: glade/sodipodi-glade.c:108 glade/sodipodi-glade.c:133
-#: glade/sodipodi-glade.c:137 glade/toolbox.c:41 src/dialogs/align.c:108
+#: glade/sodipodi-glade.c:137 glade/toolbox.c:31 src/dialogs/align.c:108
 msgid "Selection"
 msgstr "Seçim"
 
@@ -900,15 +901,15 @@ msgstr "1.0 MB"
 msgid "Uncompressed file size:"
 msgstr "Sýkýþtýrýlmamýþ dosya boyutu:"
 
-#: glade/sodipodi-glade.c:129
-msgid "_Uus"
-msgstr "_Biz"
+#: glade/sodipodi-glade.c:129 glade/toolbox.c:9
+msgid "_New"
+msgstr "_Yeni"
 
 #: glade/sodipodi-glade.c:130
 msgid "Import"
 msgstr "Ýthal et"
 
-#: glade/sodipodi-glade.c:131 glade/toolbox.c:64
+#: glade/sodipodi-glade.c:131 glade/toolbox.c:54
 msgid "Export"
 msgstr "Ýhraç et"
 
@@ -948,13 +949,14 @@ msgstr "Masaüstü"
 msgid "Document"
 msgstr "Belge"
 
+#: glade/text-dialog.c:8
+#, fuzzy
+msgid "Text Properties"
+msgstr "nesne özellikleri"
+
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Dosya"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Yeni"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -980,7 +982,7 @@ msgstr "Çizim kapsamý"
 msgid "Edit nodes"
 msgstr "Noktalarý deðiþtir"
 
-#: glade/toolbox.c:16 glade/toolbox.c:36
+#: glade/toolbox.c:16 glade/toolbox.c:25
 msgid "Zoom in"
 msgstr "Büyült"
 
@@ -1000,217 +1002,187 @@ msgstr "Serbest þekiller çiz"
 msgid "Draw text"
 msgstr "Metin çiz"
 
-#: glade/toolbox.c:23
-msgid ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-msgstr ""
-"%10\n"
-"%25\n"
-"%50\n"
-"%75\n"
-"%100\n"
-"%150\n"
-"%200\n"
-"%300\n"
-"%500\n"
-#: glade/toolbox.c:33
-msgid "Select zom factor"
-msgstr "Büyütme faktörünü seç"
-
-#: glade/toolbox.c:34
-#, c-format
-msgid "100%"
-msgstr "%100"
-
-#: glade/toolbox.c:35
-msgid "Zoom out"
-msgstr "Küçült"
-
-#: glade/toolbox.c:37
-msgid "Zoom to drawing"
-msgstr "Çizimi göster"
-
-#: glade/toolbox.c:38
-msgid "Zoom to selection"
-msgstr "Seçileni göster"
-
-#: glade/toolbox.c:39
+#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "1:1 göster"
 
-#: glade/toolbox.c:40
+#: glade/toolbox.c:24
 msgid "Zoom to page"
 msgstr "Sayfayý göster"
 
-#: glade/toolbox.c:42
+#: glade/toolbox.c:26
+msgid "Zoom out"
+msgstr "Küçült"
+
+#: glade/toolbox.c:27
+msgid "Zoom to drawing"
+msgstr "Çizimi göster"
+
+#: glade/toolbox.c:28
+msgid "Zoom to selection"
+msgstr "Seçileni göster"
+
+#: glade/toolbox.c:32
 msgid "lower selection to bottom"
 msgstr "seçili nesneleri arkaya it"
 
-#: glade/toolbox.c:43
+#: glade/toolbox.c:33
 msgid "Raise selection to top"
 msgstr "Seçileni öne getir"
 
-#: glade/toolbox.c:44
+#: glade/toolbox.c:34
 msgid "Lower selection one layer"
 msgstr "Seçileni bir katman alçalt"
 
-#: glade/toolbox.c:45
+#: glade/toolbox.c:35
 msgid "Rise selection one layer"
 msgstr "Seçileni bir katman yükselt"
 
-#: glade/toolbox.c:46
+#: glade/toolbox.c:36
 msgid "Break apart selected paths"
 msgstr "Seçilen yollarý kopar"
 
-#: glade/toolbox.c:47
+#: glade/toolbox.c:37
 msgid "Combine selected paths"
 msgstr "Seçili yollarý birleþtir"
 
-#: glade/toolbox.c:48
+#: glade/toolbox.c:38
 msgid "Group selected objects"
 msgstr "Seçili nesneleri grupla"
 
-#: glade/toolbox.c:49
+#: glade/toolbox.c:39
 msgid "Ungroup selected objects"
 msgstr "Seçili nesneleri çöz"
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Asimetrik"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:52
 msgid "File"
 msgstr "Dosya"
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Yeni çizim"
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:55
 msgid "Open new drawing"
 msgstr "Yeni çizim aç"
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:56
 msgid "Import "
 msgstr "Ýthal et"
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:57
 msgid "Print drawing"
 msgstr "Çizimi yazdýr"
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:58
 msgid "Preview print drawing"
 msgstr "Çizim yazdýrma öngörünümü"
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:59
 msgid "Save drawing "
 msgstr "Çizimi kaydet"
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:60
 msgid "Save drawing under new filename"
 msgstr "Çizimi yeni dosya adýyla kaydet"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:61
 msgid "Quit or not quit ?"
 msgstr "Çýkýyormusun ?"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:62
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Evet! Sodipodi'ye daha sonra dönmek üzere."
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:63
 msgid "Yep !"
 msgstr "Evet !"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:64
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "Hayýr! Sodipodi ile çizime devam edeceðim."
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:65
 msgid "Nope !"
 msgstr "Hayýr !"
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:66
 msgid "Really wanna quit sodipodi ?"
 msgstr "Gerçekten Sodipodi'den çýkacakmýsýnýz ?"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:67
 msgid "Object"
 msgstr "Nesne"
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:68
 msgid "Align dialog"
 msgstr "Diyalogu hizala"
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:69
 msgid "Transformation dialog"
 msgstr "Dönüþtürme diyalogu"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:70
 msgid "Edit font style of selected objects"
 msgstr "Seçili nesnelerin yazý tipini deðiþtir"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
 msgstr "Seçili nesnelerin yerleþimini deðiþtir"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:72
 msgid "Edit fill style of selected objects"
 msgstr "Seçili nesnelerin dolgu tipini deðiþtir"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:73
 msgid "Edit stroke style of selected objects"
 msgstr "Seçili nesnelerin baský tipini deðiþtir"
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:74
 msgid "Flip selected objects"
 msgstr "Seçili nesneleri tersine çevir"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
 msgstr "Seçili nesneleri saat yönünde 90° dönder"
 
-#: glade/toolbox.c:86
+#: glade/toolbox.c:76
 msgid "Remove transformation"
 msgstr "Dönüþtürmeyi kaldýr"
 
-#: glade/toolbox.c:87
+#: glade/toolbox.c:77
 msgid "Convert selected objects to curves"
 msgstr "Seçili nesneleri eðrilere dönder"
 
-#: glade/toolbox.c:88
+#: glade/toolbox.c:78
 msgid "Edit"
 msgstr "Deðiþtir"
 
-#: glade/toolbox.c:89
+#: glade/toolbox.c:79
 msgid "Undo "
 msgstr "Geri al"
 
-#: glade/toolbox.c:91
+#: glade/toolbox.c:81
 msgid "Delete selection"
 msgstr "Seçileni sil"
 
-#: glade/toolbox.c:92
+#: glade/toolbox.c:82
 msgid "Paste from clipboard"
 msgstr "Panodan yapýþtýr"
 
-#: glade/toolbox.c:93
+#: glade/toolbox.c:83
 msgid "Copy selection to clipboard"
 msgstr "Seçileni panoya kopyala"
 
-#: glade/toolbox.c:94
+#: glade/toolbox.c:84
 msgid "Cut selection"
 msgstr "Seçileni kes"
 
-#: glade/toolbox.c:95
+#: glade/toolbox.c:85
 msgid "Duplicate selection"
 msgstr "Seçileni klonla"
 
@@ -1224,126 +1196,301 @@ msgid "Transform selection"
 msgstr "Seçileni dönüþtür"
 
 #: glade/transformation.c:8
-msgid " Move "
-msgstr " Taþý "
-
-#: glade/transformation.c:9 glade/transformation.c:29
-#: glade/transformation.c:37
-msgid "horizontal"
-msgstr "yatay"
-
-#: glade/transformation.c:10 glade/transformation.c:30
-#: glade/transformation.c:38
-msgid "vertical"
-msgstr "dikey"
-
-#: glade/transformation.c:11
-msgid "move relative in"
-msgstr "göreceli içeri taþý"
-
-#: glade/transformation.c:12 glade/transformation.c:46
-msgid ""
-"pixel\n"
-"points\n"
-"millimeter\n"
-"centimeter\n"
-"inch\n"
-msgstr ""
-"piksel\n"
-"milimetre\n"
-"santimetre\n"
-"nokta\n"
-"inç\n"
-
-#: glade/transformation.c:18
 msgid "Move"
 msgstr "Taþý"
 
+#: glade/transformation.c:9
+msgid "Y: "
+msgstr ""
+
+#: glade/transformation.c:10
+#, fuzzy
+msgid "Orig. X: "
+msgstr "Orijin X:"
+
+#: glade/transformation.c:11
+#, fuzzy
+msgid "horizontal move"
+msgstr "yatay"
+
+#: glade/transformation.c:12
+#, fuzzy
+msgid "vertical move"
+msgstr "dikey"
+
+#: glade/transformation.c:13
+msgid "toggle absolute/relative move"
+msgstr ""
+
+#: glade/transformation.c:14 glade/transformation.c:23
+#, fuzzy
+msgid "absolute"
+msgstr "Yapýþ"
+
+#: glade/transformation.c:15
+msgid "select metric for values"
+msgstr ""
+
+#: glade/transformation.c:17
+#, fuzzy
+msgid "Orig. Width: "
+msgstr " Geniþlik "
+
+#: glade/transformation.c:18
+#, fuzzy
+msgid "Height: "
+msgstr "Yükseklik:"
+
 #: glade/transformation.c:19
-msgid " Rotate "
-msgstr " Dönder "
+#, fuzzy
+msgid "horizontal scale value"
+msgstr "yatay"
 
 #: glade/transformation.c:20
-msgid "90°"
-msgstr "90°"
+msgid "vertical scale value"
+msgstr ""
 
 #: glade/transformation.c:21
-msgid "180°"
-msgstr "180°"
+msgid "lock/unlock horizontal and vertical scale"
+msgstr ""
 
 #: glade/transformation.c:22
-msgid "270°"
-msgstr "270°"
+msgid "toggle absolute/relative scale"
+msgstr ""
 
-#: glade/transformation.c:23
-msgid "any"
-msgstr "herhangi"
-
-#: glade/transformation.c:24
-msgid "degree"
-msgstr "derece"
+#: glade/transformation.c:24 glade/transformation.c:38
+msgid "select metric for scale"
+msgstr ""
 
 #: glade/transformation.c:25
-msgid "right"
-msgstr "sað"
+#, fuzzy
+msgid "flip horizontal"
+msgstr "yatay"
 
 #: glade/transformation.c:26
-msgid "left"
-msgstr "sol"
+#, fuzzy
+msgid "flip vertical"
+msgstr "dikey"
 
 #: glade/transformation.c:27
 msgid "Rotate"
 msgstr "Dönder"
 
 #: glade/transformation.c:28
-msgid " Scale "
-msgstr " Boyutla "
+#, fuzzy
+msgid "select direction"
+msgstr "Seçileni sil"
 
-#: glade/transformation.c:31 glade/transformation.c:32
-#, c-format
-msgid "% "
-msgstr "% "
+#: glade/transformation.c:29
+#, fuzzy
+msgid "angle"
+msgstr "Deðiþtir"
 
-#: glade/transformation.c:33 glade/transformation.c:34
-msgid " flip "
-msgstr " tersine çevir "
+#: glade/transformation.c:30 glade/transformation.c:104
+#, fuzzy
+msgid "deg"
+msgstr "derece"
 
-#: glade/transformation.c:36
-msgid " Skew "
-msgstr " Eðilt "
+#: glade/transformation.c:31
+#, fuzzy
+msgid "Set angle to 0°"
+msgstr "Sayfa geniþliðini ayarla"
 
-#: glade/transformation.c:39 glade/transformation.c:40
-#, c-format
-msgid "%  "
-msgstr "%  "
+#: glade/transformation.c:32
+#, fuzzy
+msgid "Set angle to 90°"
+msgstr "Sayfa geniþliðini ayarla"
 
-#: glade/transformation.c:41
+#: glade/transformation.c:33
+msgid "Set angle to 180°"
+msgstr ""
+
+#: glade/transformation.c:34
+msgid "Set angle to 270°"
+msgstr ""
+
+#: glade/transformation.c:35
 msgid "Skew"
 msgstr "Eðilt"
 
-#: glade/transformation.c:42
-msgid "make copy"
-msgstr "kopyala"
+#: glade/transformation.c:36
+msgid "select direction (horizontal/vertical skew)"
+msgstr ""
 
-#: glade/transformation.c:43
-msgid "Guidelines setup"
-msgstr "Rehber ayarlamasý"
+#: glade/transformation.c:37
+#, fuzzy
+msgid "skew"
+msgstr "Eðilt"
 
-#: glade/transformation.c:44
-msgid "move horizontal"
-msgstr "yatay taþý"
+#: glade/transformation.c:39
+msgid "keep aspect"
+msgstr ""
 
-#: glade/transformation.c:45
-msgid "move vertical"
-msgstr "dikey taþý"
-
-#: glade/transformation.c:53
-msgid "Start transformation"
+#: glade/transformation.c:40
+#, fuzzy
+msgid "Start transformation - Ctl+a"
 msgstr "Dönüþtürmeye baþla"
 
+#: glade/transformation.c:41
+#, fuzzy
+msgid "Close dialog - Ctl+c"
+msgstr "Diyalogu kapat"
+
+#: glade/transformation.c:42
+msgid "Expand dialog - Ctl+e"
+msgstr ""
+
+#: glade/transformation.c:43
+#, fuzzy
+msgid "Use alignment during transformation"
+msgstr "Dönüþtürmeyi kaldýr"
+
+#: glade/transformation.c:45
+msgid "Use center as transformation fixpoint"
+msgstr ""
+
+#: glade/transformation.c:46 glade/transformation.c:47
+#, fuzzy
+msgid "Center"
+msgstr "Ýçerik"
+
+#: glade/transformation.c:48
+msgid "Horizontal center value"
+msgstr ""
+
+#: glade/transformation.c:49
+msgid "Vertical center value"
+msgstr ""
+
+#: glade/transformation.c:50
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr ""
+
+#: glade/transformation.c:51
+#, fuzzy
+msgid "desktop"
+msgstr "Masaüstü"
+
+#: glade/transformation.c:52
+#, fuzzy
+msgid "Choose metric for center"
+msgstr "Rehber çizgileri rengini seçiniz"
+
+#: glade/transformation.c:53
+msgid "Keep width of selection during transformation"
+msgstr ""
+
 #: glade/transformation.c:54
-msgid "close dialog"
-msgstr "diyalogu kapat"
+msgid "Keep height of selection during transformation"
+msgstr ""
+
+#: glade/transformation.c:55
+msgid "Apply transformation to copy Ctl+m"
+msgstr ""
+
+#: glade/transformation.c:56
+msgid "Reset dialog to default - Ctl+r"
+msgstr ""
+
+#: glade/transformation.c:58
+msgid "Align to top middle"
+msgstr ""
+
+#: glade/transformation.c:59
+#, fuzzy
+msgid "Align to bottom right"
+msgstr "Nesne dýþýný sað kenara hizala"
+
+#: glade/transformation.c:60
+#, fuzzy
+msgid "Align to right middle"
+msgstr "Nesneleri yatay ortasýna hizala"
+
+#: glade/transformation.c:61
+#, fuzzy
+msgid "Align to top right"
+msgstr "Nesne dýþýný sað kenara hizala"
+
+#: glade/transformation.c:62
+#, fuzzy
+msgid "Align to left middle"
+msgstr "Nesneleri dikey ortasýna hizala"
+
+#: glade/transformation.c:63
+msgid "Align to center"
+msgstr ""
+
+#: glade/transformation.c:64
+#, fuzzy
+msgid "Align to bottom middle"
+msgstr "Nesne içini alt kenara hizala"
+
+#: glade/transformation.c:65
+#, fuzzy
+msgid "Align to bottom left"
+msgstr "Nesne dýþýný sol kenara hizala"
+
+#: glade/transformation.c:66
+#, fuzzy
+msgid "Align to top left"
+msgstr "Nesne dýþýný sol kenara hizala"
+
+#: glade/transformation.c:67 glade/transformation.c:77
+#: glade/transformation.c:85 glade/transformation.c:95
+#, fuzzy
+msgid "Points"
+msgstr "Yazdýr"
+
+#: glade/transformation.c:68 glade/transformation.c:78
+#: glade/transformation.c:86 glade/transformation.c:96
+msgid "pt"
+msgstr ""
+
+#: glade/transformation.c:69 glade/transformation.c:79
+#: glade/transformation.c:87 glade/transformation.c:97
+#, fuzzy
+msgid "Millimeter"
+msgstr "Milimetre\n"
+
+#: glade/transformation.c:70 glade/transformation.c:80
+#: glade/transformation.c:88 glade/transformation.c:98
+msgid "mm"
+msgstr ""
+
+#: glade/transformation.c:71 glade/transformation.c:81
+#: glade/transformation.c:89 glade/transformation.c:99
+msgid "Centimeter"
+msgstr ""
+
+#: glade/transformation.c:72 glade/transformation.c:82
+#: glade/transformation.c:90 glade/transformation.c:100
+msgid "cm"
+msgstr ""
+
+#: glade/transformation.c:73 glade/transformation.c:83
+#: glade/transformation.c:91 glade/transformation.c:101
+msgid "Inch"
+msgstr ""
+
+#: glade/transformation.c:74 glade/transformation.c:84
+#: glade/transformation.c:92 glade/transformation.c:102
+msgid "in"
+msgstr ""
+
+#: glade/transformation.c:75 glade/transformation.c:93
+#, fuzzy
+msgid "Percent"
+msgstr "Yazdýr"
+
+#: glade/transformation.c:76 glade/transformation.c:94
+#, fuzzy, c-format
+msgid "%"
+msgstr "% "
+
+#: glade/transformation.c:103
+#, fuzzy
+msgid "Degree"
+msgstr "derece"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
@@ -1421,31 +1568,32 @@ msgstr "Özelliði sil"
 msgid "Do you want to delete attribute?"
 msgstr "Bu özelliði silmek istiyormusun?"
 
-#: src/main.c:47
+#: src/main.c:48
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr "Grafik arabirimini kullanma. NB! varsa, ÝLK argüman olmalý!"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "Open specified file (option string may be excluded)"
 msgstr "Belirlenen dosyayý aç (seçenek metni çýkarýlabilir)"
 
-#: src/main.c:57 src/main.c:66
+#: src/main.c:58 src/main.c:67
 msgid "FILENAME"
 msgstr "DOSYA ADI"
 
-#: src/main.c:65
-msgid "Print files to specified file (use '| program' for pipe)"
+#: src/main.c:66
+#, fuzzy
+msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr "Dosyalarý istenen dosyaya yazdýr (tünel için '|' kullan)"
 
-#: src/main.c:161
+#: src/main.c:168
 msgid "Oaf options"
 msgstr "Acemi seçenekleri"
 
-#: src/main.c:169
+#: src/main.c:176
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo'yu baþlatamadým"
 
-#: src/bonobo/svg-doc-factory.c:25
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-doc'u yaratamadým"
 
@@ -1510,3 +1658,100 @@ msgstr "En büyük birim"
 #: src/dialogs/align.c:93
 msgid "Smallest item"
 msgstr "En küçük birim"
+
+#~ msgid "_Uus"
+#~ msgstr "_Biz"
+
+#~ msgid ""
+#~ "10%\n"
+#~ "25%\n"
+#~ "50%\n"
+#~ "75%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "300%\n"
+#~ "500%\n"
+#~ msgstr ""
+#~ "%10\n"
+#~ "%25\n"
+#~ "%50\n"
+#~ "%75\n"
+#~ "%100\n"
+#~ "%150\n"
+#~ "%200\n"
+#~ "%300\n"
+#~ "%500\n"
+
+#~ msgid "Select zom factor"
+#~ msgstr "Büyütme faktörünü seç"
+
+#~ msgid "100%"
+#~ msgstr "%100"
+
+#~ msgid " Move "
+#~ msgstr " Taþý "
+
+#~ msgid "move relative in"
+#~ msgstr "göreceli içeri taþý"
+
+#~ msgid ""
+#~ "pixel\n"
+#~ "points\n"
+#~ "millimeter\n"
+#~ "centimeter\n"
+#~ "inch\n"
+#~ msgstr ""
+#~ "piksel\n"
+#~ "milimetre\n"
+#~ "santimetre\n"
+#~ "nokta\n"
+#~ "inç\n"
+
+#~ msgid " Rotate "
+#~ msgstr " Dönder "
+
+#~ msgid "90°"
+#~ msgstr "90°"
+
+#~ msgid "180°"
+#~ msgstr "180°"
+
+#~ msgid "270°"
+#~ msgstr "270°"
+
+#~ msgid "any"
+#~ msgstr "herhangi"
+
+#~ msgid "right"
+#~ msgstr "sað"
+
+#~ msgid "left"
+#~ msgstr "sol"
+
+#~ msgid " Scale "
+#~ msgstr " Boyutla "
+
+#~ msgid " flip "
+#~ msgstr " tersine çevir "
+
+#~ msgid " Skew "
+#~ msgstr " Eðilt "
+
+#~ msgid "%  "
+#~ msgstr "%  "
+
+#~ msgid "make copy"
+#~ msgstr "kopyala"
+
+#~ msgid "Guidelines setup"
+#~ msgstr "Rehber ayarlamasý"
+
+#~ msgid "move horizontal"
+#~ msgstr "yatay taþý"
+
+#~ msgid "move vertical"
+#~ msgstr "dikey taþý"
+
+#~ msgid "close dialog"
+#~ msgstr "diyalogu kapat"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-01-20 23:18+0100\n"
+"POT-Creation-Date: 2001-01-26 03:07+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -1550,7 +1550,8 @@ msgstr "IME DATOTEKE"
 
 #: src/main.c:66
 msgid "Print files to specified output file (use '| program' for pipe)"
-msgstr "Natisni datoteke v izbrano izhodno datoteko (uporabite '| program' za cev)"
+msgstr ""
+"Natisni datoteke v izbrano izhodno datoteko (uporabite '| program' za cev)"
 
 #: src/main.c:168
 msgid "Oaf options"

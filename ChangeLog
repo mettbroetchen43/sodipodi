@@ -1,3 +1,7 @@
+2001-01-26  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.21
+	
 2001-01-24  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/document-undo.c (sp_document_add_repr): Do not expect repr

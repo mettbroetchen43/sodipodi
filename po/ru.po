@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-01-09 18:23+0300\n"
+"POT-Creation-Date: 2001-01-26 03:07+0200\n"
 "PO-Revision-Date: 2001-01-09 18:35+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"

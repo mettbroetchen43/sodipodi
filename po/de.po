@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2001-01-07 19:35+0100\n"
+"POT-Creation-Date: 2001-01-26 03:07+0200\n"
 "PO-Revision-Date: 2001-01-07 19:48+01:00\n"
 "Last-Translator: Benedikt Roth <Benedikt.Roth@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -1557,7 +1557,9 @@ msgstr "DATEINAME"
 
 #: src/main.c:66
 msgid "Print files to specified output file (use '| program' for pipe)"
-msgstr "Dateien in angegebene Datei drucken *benutzen Sie \"| programm\" für die Weiterleitung)"
+msgstr ""
+"Dateien in angegebene Datei drucken *benutzen Sie \"| programm\" für die "
+"Weiterleitung)"
 
 #: src/main.c:168
 msgid "Oaf options"

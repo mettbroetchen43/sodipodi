@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2000-11-30 12:38+0100\n"
+"POT-Creation-Date: 2001-01-26 03:07+0200\n"
 "PO-Revision-Date: 2000-11-30 12:40+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/align.c:7
+#: glade/align.c:7 glade/transformation.c:44 glade/transformation.c:57
 msgid "Align"
 msgstr "Igazítás"
 
@@ -179,7 +179,7 @@ msgstr "Segédvonal színe"
 msgid "Show guides"
 msgstr "Segédvonalak mutatása"
 
-#: glade/desktop.c:42 glade/transformation.c:52
+#: glade/desktop.c:42
 msgid "Snap to guides"
 msgstr "Segédvonalakra ugrás"
 
@@ -516,7 +516,7 @@ msgid "Zoom"
 msgstr "Nagyítás"
 
 #: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:151
-#: glade/transformation.c:35
+#: glade/transformation.c:16
 msgid "Scale"
 msgstr "Méretezés"
 
@@ -538,7 +538,8 @@ msgstr "I_nteraktív"
 
 #: glade/sodipodi-glade.c:29
 msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-msgstr "Ki/be kapcsolja a munkafelület széleit (vonalzó és görgetõsáv ki vagy be)"
+msgstr ""
+"Ki/be kapcsolja a munkafelület széleit (vonalzó és görgetõsáv ki vagy be)"
 
 #: glade/sodipodi-glade.c:30
 msgid "Toggle borders"
@@ -640,7 +641,7 @@ msgstr "Nyomtatás"
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:90
+#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:80
 msgid "Redo"
 msgstr "Újra"
 
@@ -774,47 +775,47 @@ msgstr ""
 "Vektoros rajzoló program.\n"
 "GPL licenc alatt"
 
-#: glade/sodipodi-glade.c:93 glade/toolbox.c:50
+#: glade/sodipodi-glade.c:93 glade/toolbox.c:40
 msgid "Node Edit"
 msgstr "Node szerkesztése"
 
-#: glade/sodipodi-glade.c:94 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:94 glade/toolbox.c:41
 msgid "Include one node into selected segments"
 msgstr ""
 
-#: glade/sodipodi-glade.c:95 glade/toolbox.c:55
+#: glade/sodipodi-glade.c:95 glade/toolbox.c:45
 msgid "Break apart selected node"
 msgstr ""
 
-#: glade/sodipodi-glade.c:96 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:96 glade/toolbox.c:44
 msgid "Convert selected segments to curves"
 msgstr "A kijelölt szakaszokat görbévé alakítja"
 
-#: glade/sodipodi-glade.c:97 glade/toolbox.c:56
+#: glade/sodipodi-glade.c:97 glade/toolbox.c:46
 msgid "Join 2 selected endpoints"
 msgstr "A kijelölt két végpontot összeköti"
 
-#: glade/sodipodi-glade.c:98 glade/toolbox.c:57
+#: glade/sodipodi-glade.c:98 glade/toolbox.c:47
 msgid "Cusp line at selected nodes"
 msgstr ""
 
-#: glade/sodipodi-glade.c:99 glade/toolbox.c:58
+#: glade/sodipodi-glade.c:99 glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
 msgstr "Vonal simítása a kijelölt node-oknál"
 
-#: glade/sodipodi-glade.c:100 glade/toolbox.c:59
+#: glade/sodipodi-glade.c:100 glade/toolbox.c:49
 msgid "Symmetric "
 msgstr "Szimmetrikus"
 
-#: glade/sodipodi-glade.c:101 glade/toolbox.c:61
+#: glade/sodipodi-glade.c:101 glade/toolbox.c:51
 msgid "Close dialog"
 msgstr "Párbeszéd bezárása"
 
-#: glade/sodipodi-glade.c:102 glade/toolbox.c:53
+#: glade/sodipodi-glade.c:102 glade/toolbox.c:43
 msgid "Convert selected segments to lines"
 msgstr "A kijelölt szakaszokat vonallá alakítja"
 
-#: glade/sodipodi-glade.c:103 glade/toolbox.c:52
+#: glade/sodipodi-glade.c:103 glade/toolbox.c:42
 msgid "Delete selected nodes"
 msgstr "Törli a kijelölt node-okat"
 
@@ -832,7 +833,7 @@ msgid "Drawing"
 msgstr "Rajz"
 
 #: glade/sodipodi-glade.c:108 glade/sodipodi-glade.c:133
-#: glade/sodipodi-glade.c:137 glade/toolbox.c:41 src/dialogs/align.c:108
+#: glade/sodipodi-glade.c:137 glade/toolbox.c:31 src/dialogs/align.c:108
 msgid "Selection"
 msgstr "Kijelölés"
 
@@ -900,15 +901,15 @@ msgstr "1,0MB"
 msgid "Uncompressed file size:"
 msgstr "Tömörítetlen fájlméret:"
 
-#: glade/sodipodi-glade.c:129
-msgid "_Uus"
-msgstr ""
+#: glade/sodipodi-glade.c:129 glade/toolbox.c:9
+msgid "_New"
+msgstr "Ú_j"
 
 #: glade/sodipodi-glade.c:130
 msgid "Import"
 msgstr "Importálás"
 
-#: glade/sodipodi-glade.c:131 glade/toolbox.c:64
+#: glade/sodipodi-glade.c:131 glade/toolbox.c:54
 msgid "Export"
 msgstr "Exportálás"
 
@@ -948,13 +949,14 @@ msgstr "Munkafelület"
 msgid "Document"
 msgstr "Dokumentum"
 
+#: glade/text-dialog.c:8
+#, fuzzy
+msgid "Text Properties"
+msgstr "ojektum tulajdonságai"
+
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Fájl"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "Ú_j"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -980,7 +982,7 @@ msgstr ""
 msgid "Edit nodes"
 msgstr ""
 
-#: glade/toolbox.c:16 glade/toolbox.c:36
+#: glade/toolbox.c:16 glade/toolbox.c:25
 msgid "Zoom in"
 msgstr ""
 
@@ -1000,209 +1002,187 @@ msgstr ""
 msgid "Draw text"
 msgstr ""
 
-#: glade/toolbox.c:23
-msgid ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-msgstr ""
-
-#: glade/toolbox.c:33
-msgid "Select zom factor"
-msgstr ""
-
-#: glade/toolbox.c:34
-#, c-format
-msgid "100%"
-msgstr ""
-
-#: glade/toolbox.c:35
-msgid "Zoom out"
-msgstr ""
-
-#: glade/toolbox.c:37
-msgid "Zoom to drawing"
-msgstr ""
-
-#: glade/toolbox.c:38
-msgid "Zoom to selection"
-msgstr ""
-
-#: glade/toolbox.c:39
+#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr ""
 
-#: glade/toolbox.c:40
+#: glade/toolbox.c:24
 msgid "Zoom to page"
 msgstr ""
 
-#: glade/toolbox.c:42
+#: glade/toolbox.c:26
+msgid "Zoom out"
+msgstr ""
+
+#: glade/toolbox.c:27
+msgid "Zoom to drawing"
+msgstr ""
+
+#: glade/toolbox.c:28
+msgid "Zoom to selection"
+msgstr ""
+
+#: glade/toolbox.c:32
 msgid "lower selection to bottom"
 msgstr ""
 
-#: glade/toolbox.c:43
+#: glade/toolbox.c:33
 msgid "Raise selection to top"
 msgstr ""
 
-#: glade/toolbox.c:44
+#: glade/toolbox.c:34
 msgid "Lower selection one layer"
 msgstr ""
 
-#: glade/toolbox.c:45
+#: glade/toolbox.c:35
 msgid "Rise selection one layer"
 msgstr ""
 
-#: glade/toolbox.c:46
+#: glade/toolbox.c:36
 msgid "Break apart selected paths"
 msgstr ""
 
-#: glade/toolbox.c:47
+#: glade/toolbox.c:37
 msgid "Combine selected paths"
 msgstr ""
 
-#: glade/toolbox.c:48
+#: glade/toolbox.c:38
 msgid "Group selected objects"
 msgstr ""
 
-#: glade/toolbox.c:49
+#: glade/toolbox.c:39
 msgid "Ungroup selected objects"
 msgstr ""
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr ""
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:52
 msgid "File"
 msgstr ""
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:53
 msgid "New drawing"
 msgstr ""
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:55
 msgid "Open new drawing"
 msgstr ""
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:56
 msgid "Import "
 msgstr ""
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:57
 msgid "Print drawing"
 msgstr ""
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:58
 msgid "Preview print drawing"
 msgstr ""
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:59
 msgid "Save drawing "
 msgstr ""
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:60
 msgid "Save drawing under new filename"
 msgstr ""
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:61
 msgid "Quit or not quit ?"
 msgstr ""
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:62
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr ""
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:63
 msgid "Yep !"
 msgstr ""
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:64
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr ""
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:65
 msgid "Nope !"
 msgstr ""
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:66
 msgid "Really wanna quit sodipodi ?"
 msgstr ""
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:67
 msgid "Object"
 msgstr ""
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:68
 msgid "Align dialog"
 msgstr ""
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:69
 msgid "Transformation dialog"
 msgstr ""
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:70
 msgid "Edit font style of selected objects"
 msgstr ""
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
 msgstr ""
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:72
 msgid "Edit fill style of selected objects"
 msgstr ""
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:73
 msgid "Edit stroke style of selected objects"
 msgstr ""
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:74
 msgid "Flip selected objects"
 msgstr ""
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
 msgstr ""
 
-#: glade/toolbox.c:86
+#: glade/toolbox.c:76
 msgid "Remove transformation"
 msgstr ""
 
-#: glade/toolbox.c:87
+#: glade/toolbox.c:77
 msgid "Convert selected objects to curves"
 msgstr ""
 
-#: glade/toolbox.c:88
+#: glade/toolbox.c:78
 msgid "Edit"
 msgstr ""
 
-#: glade/toolbox.c:89
+#: glade/toolbox.c:79
 msgid "Undo "
 msgstr ""
 
-#: glade/toolbox.c:91
+#: glade/toolbox.c:81
 msgid "Delete selection"
 msgstr ""
 
-#: glade/toolbox.c:92
+#: glade/toolbox.c:82
 msgid "Paste from clipboard"
 msgstr ""
 
-#: glade/toolbox.c:93
+#: glade/toolbox.c:83
 msgid "Copy selection to clipboard"
 msgstr ""
 
-#: glade/toolbox.c:94
+#: glade/toolbox.c:84
 msgid "Cut selection"
 msgstr ""
 
-#: glade/toolbox.c:95
+#: glade/toolbox.c:85
 msgid "Duplicate selection"
 msgstr ""
 
@@ -1216,66 +1196,74 @@ msgid "Transform selection"
 msgstr ""
 
 #: glade/transformation.c:8
-msgid " Move "
-msgstr ""
-
-#: glade/transformation.c:9 glade/transformation.c:29
-#: glade/transformation.c:37
-msgid "horizontal"
-msgstr ""
-
-#: glade/transformation.c:10 glade/transformation.c:30
-#: glade/transformation.c:38
-msgid "vertical"
-msgstr ""
-
-#: glade/transformation.c:11
-msgid "move relative in"
-msgstr ""
-
-#: glade/transformation.c:12 glade/transformation.c:46
-msgid ""
-"pixel\n"
-"points\n"
-"millimeter\n"
-"centimeter\n"
-"inch\n"
-msgstr ""
-
-#: glade/transformation.c:18
 msgid "Move"
 msgstr ""
 
+#: glade/transformation.c:9
+msgid "Y: "
+msgstr ""
+
+#: glade/transformation.c:10
+#, fuzzy
+msgid "Orig. X: "
+msgstr "X origó:"
+
+#: glade/transformation.c:11
+msgid "horizontal move"
+msgstr ""
+
+#: glade/transformation.c:12
+msgid "vertical move"
+msgstr ""
+
+#: glade/transformation.c:13
+msgid "toggle absolute/relative move"
+msgstr ""
+
+#: glade/transformation.c:14 glade/transformation.c:23
+msgid "absolute"
+msgstr ""
+
+#: glade/transformation.c:15
+msgid "select metric for values"
+msgstr ""
+
+#: glade/transformation.c:17
+#, fuzzy
+msgid "Orig. Width: "
+msgstr " Szélesség "
+
+#: glade/transformation.c:18
+#, fuzzy
+msgid "Height: "
+msgstr "Magasság:"
+
 #: glade/transformation.c:19
-msgid " Rotate "
+msgid "horizontal scale value"
 msgstr ""
 
 #: glade/transformation.c:20
-msgid "90°"
+msgid "vertical scale value"
 msgstr ""
 
 #: glade/transformation.c:21
-msgid "180°"
+msgid "lock/unlock horizontal and vertical scale"
 msgstr ""
 
 #: glade/transformation.c:22
-msgid "270°"
+msgid "toggle absolute/relative scale"
 msgstr ""
 
-#: glade/transformation.c:23
-msgid "any"
-msgstr ""
-
-#: glade/transformation.c:24
-msgid "degree"
+#: glade/transformation.c:24 glade/transformation.c:38
+msgid "select metric for scale"
 msgstr ""
 
 #: glade/transformation.c:25
-msgid "right"
+msgid "flip horizontal"
 msgstr ""
 
 #: glade/transformation.c:26
-msgid "left"
+msgid "flip vertical"
 msgstr ""
 
 #: glade/transformation.c:27
@@ -1283,54 +1271,215 @@ msgid "Rotate"
 msgstr ""
 
 #: glade/transformation.c:28
-msgid " Scale "
+#, fuzzy
+msgid "select direction"
+msgstr "Kijelölés"
+
+#: glade/transformation.c:29
+#, fuzzy
+msgid "angle"
+msgstr "Téglalap"
+
+#: glade/transformation.c:30 glade/transformation.c:104
+msgid "deg"
 msgstr ""
 
-#: glade/transformation.c:31 glade/transformation.c:32
-#, c-format
-msgid "% "
+#: glade/transformation.c:31
+#, fuzzy
+msgid "Set angle to 0°"
+msgstr "Papír szélességének beállítása"
+
+#: glade/transformation.c:32
+#, fuzzy
+msgid "Set angle to 90°"
+msgstr "Papír szélességének beállítása"
+
+#: glade/transformation.c:33
+msgid "Set angle to 180°"
 msgstr ""
 
-#: glade/transformation.c:33 glade/transformation.c:34
-msgid " flip "
+#: glade/transformation.c:34
+msgid "Set angle to 270°"
 msgstr ""
 
-#: glade/transformation.c:36
-msgid " Skew "
-msgstr ""
-
-#: glade/transformation.c:39 glade/transformation.c:40
-#, c-format
-msgid "%  "
-msgstr ""
-
-#: glade/transformation.c:41
+#: glade/transformation.c:35
 msgid "Skew"
 msgstr ""
 
+#: glade/transformation.c:36
+msgid "select direction (horizontal/vertical skew)"
+msgstr ""
+
+#: glade/transformation.c:37
+msgid "skew"
+msgstr ""
+
+#: glade/transformation.c:39
+msgid "keep aspect"
+msgstr ""
+
+#: glade/transformation.c:40
+msgid "Start transformation - Ctl+a"
+msgstr ""
+
+#: glade/transformation.c:41
+#, fuzzy
+msgid "Close dialog - Ctl+c"
+msgstr "Párbeszéd bezárása"
+
 #: glade/transformation.c:42
-msgid "make copy"
+msgid "Expand dialog - Ctl+e"
 msgstr ""
 
 #: glade/transformation.c:43
-msgid "Guidelines setup"
-msgstr ""
-
-#: glade/transformation.c:44
-msgid "move horizontal"
+msgid "Use alignment during transformation"
 msgstr ""
 
 #: glade/transformation.c:45
-msgid "move vertical"
+msgid "Use center as transformation fixpoint"
 msgstr ""
 
+#: glade/transformation.c:46 glade/transformation.c:47
+msgid "Center"
+msgstr ""
+
+#: glade/transformation.c:48
+msgid "Horizontal center value"
+msgstr ""
+
+#: glade/transformation.c:49
+msgid "Vertical center value"
+msgstr ""
+
+#: glade/transformation.c:50
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr ""
+
+#: glade/transformation.c:51
+#, fuzzy
+msgid "desktop"
+msgstr "Munkafelület"
+
+#: glade/transformation.c:52
+#, fuzzy
+msgid "Choose metric for center"
+msgstr "Segédvonal színének kiválasztása"
+
 #: glade/transformation.c:53
-msgid "Start transformation"
+msgid "Keep width of selection during transformation"
 msgstr ""
 
 #: glade/transformation.c:54
-msgid "close dialog"
+msgid "Keep height of selection during transformation"
 msgstr ""
+
+#: glade/transformation.c:55
+msgid "Apply transformation to copy Ctl+m"
+msgstr ""
+
+#: glade/transformation.c:56
+msgid "Reset dialog to default - Ctl+r"
+msgstr ""
+
+#: glade/transformation.c:58
+msgid "Align to top middle"
+msgstr ""
+
+#: glade/transformation.c:59
+#, fuzzy
+msgid "Align to bottom right"
+msgstr "A külsõ objektum igazítása a jobb szélhez"
+
+#: glade/transformation.c:60
+#, fuzzy
+msgid "Align to right middle"
+msgstr "Objektumok igazítása a vízszintes középhez"
+
+#: glade/transformation.c:61
+#, fuzzy
+msgid "Align to top right"
+msgstr "A külsõ objektum igazítása a jobb szélhez"
+
+#: glade/transformation.c:62
+#, fuzzy
+msgid "Align to left middle"
+msgstr "Objektumok igazítása a függõleges középhez"
+
+#: glade/transformation.c:63
+msgid "Align to center"
+msgstr ""
+
+#: glade/transformation.c:64
+#, fuzzy
+msgid "Align to bottom middle"
+msgstr "A belsõ objektum igazítása az alsó szélhez"
+
+#: glade/transformation.c:65
+#, fuzzy
+msgid "Align to bottom left"
+msgstr "A külsõ objektum igazítása a bal szélhez"
+
+#: glade/transformation.c:66
+#, fuzzy
+msgid "Align to top left"
+msgstr "A külsõ objektum igazítása a bal szélhez"
+
+#: glade/transformation.c:67 glade/transformation.c:77
+#: glade/transformation.c:85 glade/transformation.c:95
+#, fuzzy
+msgid "Points"
+msgstr "Nyomtatás"
+
+#: glade/transformation.c:68 glade/transformation.c:78
+#: glade/transformation.c:86 glade/transformation.c:96
+msgid "pt"
+msgstr ""
+
+#: glade/transformation.c:69 glade/transformation.c:79
+#: glade/transformation.c:87 glade/transformation.c:97
+#, fuzzy
+msgid "Millimeter"
+msgstr "Miliméter\n"
+
+#: glade/transformation.c:70 glade/transformation.c:80
+#: glade/transformation.c:88 glade/transformation.c:98
+msgid "mm"
+msgstr ""
+
+#: glade/transformation.c:71 glade/transformation.c:81
+#: glade/transformation.c:89 glade/transformation.c:99
+msgid "Centimeter"
+msgstr ""
+
+#: glade/transformation.c:72 glade/transformation.c:82
+#: glade/transformation.c:90 glade/transformation.c:100
+msgid "cm"
+msgstr ""
+
+#: glade/transformation.c:73 glade/transformation.c:83
+#: glade/transformation.c:91 glade/transformation.c:101
+msgid "Inch"
+msgstr ""
+
+#: glade/transformation.c:74 glade/transformation.c:84
+#: glade/transformation.c:92 glade/transformation.c:102
+msgid "in"
+msgstr ""
+
+#: glade/transformation.c:75 glade/transformation.c:93
+#, fuzzy
+msgid "Percent"
+msgstr "Nyomtatás"
+
+#: glade/transformation.c:76 glade/transformation.c:94
+#, c-format
+msgid "%"
+msgstr ""
+
+#: glade/transformation.c:103
+#, fuzzy
+msgid "Degree"
+msgstr "Törlés"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
@@ -1408,31 +1557,31 @@ msgstr ""
 msgid "Do you want to delete attribute?"
 msgstr ""
 
-#: src/main.c:47
+#: src/main.c:48
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "Open specified file (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:57 src/main.c:66
+#: src/main.c:58 src/main.c:67
 msgid "FILENAME"
 msgstr ""
 
-#: src/main.c:65
-msgid "Print files to specified file (use '| program' for pipe)"
+#: src/main.c:66
+msgid "Print files to specified output file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:161
+#: src/main.c:168
 msgid "Oaf options"
 msgstr ""
 
-#: src/main.c:169
+#: src/main.c:176
 msgid "Could not initialize Bonobo"
 msgstr ""
 
-#: src/bonobo/svg-doc-factory.c:25
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
