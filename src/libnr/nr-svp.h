@@ -15,8 +15,30 @@
 /* fixme: Move/remove this (Lauris) */
 typedef float NRCoord;
 
-typedef struct _NRVertex NRVertex;
+/* Sorted vector paths */
+
+typedef struct _NRSVPSegment NRSVPSegment;
 typedef struct _NRSVP NRSVP;
+
+struct _NRSVPSegment {
+	unsigned int start;
+	unsigned int length;
+	int wind;
+	NRRectF bbox;
+};
+
+struct _NRSVP {
+	unsigned int length;
+	NRPointF *points;
+	NRSVPSegment segments[1];
+};
+
+void nr_svp_free (NRSVP *svp);
+
+/* Sorted vertex lists */
+
+typedef struct _NRVertex NRVertex;
+typedef struct _NRSVL NRSVL;
 typedef struct _NRFlat NRFlat;
 
 struct _NRVertex {
@@ -24,8 +46,8 @@ struct _NRVertex {
 	NRCoord x, y;
 };
 
-struct _NRSVP {
-	NRSVP *next;
+struct _NRSVL {
+	NRSVL *next;
 	NRVertex *vertex;
 	NRRectF bbox;
 	NRShort dir;
@@ -37,15 +59,17 @@ struct _NRFlat {
 	NRCoord y, x0, x1;
 };
 
+NRSVP *nr_svp_from_svl (NRSVL *svl, NRFlat *flat);
+
 /* fixme: Remove these if ready (Lauris) */
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 
-NRSVP *nr_svp_from_art_vpath (ArtVpath *vpath);
-NRSVP *nr_svp_from_art_svp (ArtSVP *asvp);
-ArtSVP * nr_art_svp_from_svp (NRSVP *svp);
+NRSVL *nr_svl_from_art_vpath (ArtVpath *vpath);
+NRSVL *nr_svl_from_art_svp (ArtSVP *asvp);
+ArtSVP *nr_art_svp_from_svl (NRSVL *svl);
 
-int nr_svp_point_wind (NRSVP *svp, float x, float y);
+int nr_svl_point_wind (NRSVL *svl, float x, float y);
 
 /* NRVertex */
 
@@ -58,18 +82,18 @@ NRVertex *nr_vertex_reverse_list (NRVertex *v);
 
 /* NRSVP */
 
-NRSVP *nr_svp_new (void);
-NRSVP *nr_svp_new_full (NRVertex *vertex, NRRectF *bbox, int wind);
-NRSVP *nr_svp_new_vertex_wind (NRVertex *vertex, int wind);
-void nr_svp_free_one (NRSVP *svp);
-void nr_svp_free_list (NRSVP *svp);
+NRSVL *nr_svl_new (void);
+NRSVL *nr_svl_new_full (NRVertex *vertex, NRRectF *bbox, int wind);
+NRSVL *nr_svl_new_vertex_wind (NRVertex *vertex, int wind);
+void nr_svl_free_one (NRSVL *svl);
+void nr_svl_free_list (NRSVL *svl);
 
-NRSVP *nr_svp_remove (NRSVP *start, NRSVP *svp);
-NRSVP *nr_svp_insert_sorted (NRSVP *start, NRSVP *svp);
-NRSVP *nr_svp_move_sorted (NRSVP *start, NRSVP *svp);
-int nr_svp_compare (NRSVP *l, NRSVP *r);
+NRSVL *nr_svl_remove (NRSVL *start, NRSVL *svp);
+NRSVL *nr_svl_insert_sorted (NRSVL *start, NRSVL *svp);
+NRSVL *nr_svl_move_sorted (NRSVL *start, NRSVL *svp);
+int nr_svl_compare (NRSVL *l, NRSVL *r);
 
-void nr_svp_calculate_bbox (NRSVP *svp);
+void nr_svl_calculate_bbox (NRSVL *svl);
 
 /* NRFlat */
 

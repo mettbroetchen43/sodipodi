@@ -123,7 +123,7 @@ nr_arena_shape_finalize (NRObject *object)
 	}
 
 #ifdef WITH_NRSVP
-	if (shape->nrsvp) nr_svp_free_list (shape->nrsvp);
+	if (shape->nrsvl) nr_svl_free_list (shape->nrsvl);
 #endif
 
 	if (shape->fill_svp) art_svp_free (shape->fill_svp);
@@ -269,8 +269,8 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			shape->fill_svp = NULL;
 		}
 #ifdef WITH_NRSVP
-		if (shape->nrsvp) nr_svp_free_list (shape->nrsvp);
-		shape->nrsvp = NULL;
+		if (shape->nrsvl) nr_svl_free_list (shape->nrsvl);
+		shape->nrsvl = NULL;
 #endif
 	}
 	if (shape->stroke_svp) {
@@ -301,9 +301,9 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 #if 0
 				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
 #else
-				shape->nrsvp = nr_svp_from_art_vpath (vp);
+				shape->nrsvl = nr_svl_from_art_vpath (vp);
 #endif
-				shape->fill_svp = nr_art_svp_from_svp (shape->nrsvp);
+				shape->fill_svp = nr_art_svp_from_svl (shape->nrsvl);
 #else
 				ArtSVP *svpa, *svpb;
 				NRMatrixF ctmf;
@@ -421,10 +421,14 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		NRPixBlock m;
 		guint32 rgba;
 
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
 #ifdef WITH_NRSVP
-		nr_pixblock_render_svp_mask_or (&m, shape->nrsvp);
+		NRSVP *svp;
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		svp = nr_svp_from_svl (shape->nrsvl, NULL);
+		nr_pixblock_render_svp_mask_or (&m, svp);
+		nr_svp_free (svp);
 #else
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
 #endif
 		m.empty = FALSE;
@@ -549,7 +553,7 @@ nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsign
 	if (item->state & NR_ARENA_ITEM_STATE_RENDER) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
 #ifdef WITH_NRSVP
-			if (nr_svp_point_wind (shape->nrsvp, x, y)) return item;
+			if (nr_svl_point_wind (shape->nrsvl, x, y)) return item;
 #else
 			if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
 #endif

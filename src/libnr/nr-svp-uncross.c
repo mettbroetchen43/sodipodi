@@ -25,35 +25,35 @@
 #include "nr-values.h"
 #include "nr-svp-uncross.h"
 
-typedef struct _NRSVPSlice NRSVPSlice;
+typedef struct _NRSVLSlice NRSVLSlice;
 
-struct _NRSVPSlice {
-	NRSVPSlice *next;
-	NRSVP *svp;
+struct _NRSVLSlice {
+	NRSVLSlice *next;
+	NRSVL *svl;
 	NRVertex *vertex;
 	NRCoord x;
 	NRCoord y;
 };
 
-static NRSVP *nr_svp_slice_break (NRSVPSlice *s, double x, double y, NRSVP *svp);
-static NRSVP *nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *svp, double ytest, NRFlat **flats);
+static NRSVL *nr_svl_slice_break (NRSVLSlice *s, double x, double y, NRSVL *svl);
+static NRSVL *nr_svl_slice_break_y_and_continue_x (NRSVLSlice *s, double y, double x, NRSVL *svl, double ytest, NRFlat **flats);
 
-static NRSVPSlice *nr_svp_slice_new (NRSVP *svp, NRCoord y);
-static void nr_svp_slice_free_one (NRSVPSlice *slice);
-static int nr_svp_slice_compare (NRSVPSlice *l, NRSVPSlice *r);
-static NRSVPSlice *nr_svp_slice_insert_sorted (NRSVPSlice *start, NRSVPSlice *slice);
+static NRSVLSlice *nr_svl_slice_new (NRSVL *svl, NRCoord y);
+static void nr_svl_slice_free_one (NRSVLSlice *slice);
+static int nr_svl_slice_compare (NRSVLSlice *l, NRSVLSlice *r);
+static NRSVLSlice *nr_svl_slice_insert_sorted (NRSVLSlice *start, NRSVLSlice *slice);
 
-static NRSVPSlice *nr_svp_slice_stretch_list (NRSVPSlice *slices, NRCoord y);
+static NRSVLSlice *nr_svl_slice_stretch_list (NRSVLSlice *slices, NRCoord y);
 
 #ifdef NR_EXTRA_CHECK
 static void
-nr_svp_test_slices (NRSVPSlice *slices, double yslice, const unsigned char *prefix, int colinear, int test, int close)
+nr_svl_test_slices (NRSVLSlice *slices, double yslice, const unsigned char *prefix, int colinear, int test, int close)
 {
-	NRSVPSlice *s;
+	NRSVLSlice *s;
 	int wind;
 	wind = 0;
 	for (s = slices; s && s->next; s = s->next) {
-		NRSVPSlice *cs, *ns;
+		NRSVLSlice *cs, *ns;
 		double cx0, cy0, cx1, cy1, cx;
 		double nx0, ny0, nx1, ny1, nx;
 		cs = s;
@@ -94,31 +94,31 @@ nr_svp_test_slices (NRSVPSlice *slices, double yslice, const unsigned char *pref
 		} else if (cx > (nx - NR_EPSILON_F)) {
 			if (close) printf ("%s: Slice x %g < EPSILON %g\n", prefix, cx, nx);
 		}
-		wind += s->svp->wind;
+		wind += s->svl->wind;
 	}
-	if (s) wind += s->svp->wind;
+	if (s) wind += s->svl->wind;
 	if (wind & 1) printf ("%s: Weird wind %d\n", prefix, wind);
 }
-#define CHECK_SLICES(s,y,p,c,t,n) nr_svp_test_slices (s,y,p,c,t,n)
+#define CHECK_SLICES(s,y,p,c,t,n) nr_svl_test_slices (s,y,p,c,t,n)
 #else
 #define CHECK_SLICES(s,y,p,c,t,n)
 #endif
 
-NRSVP *
-nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
+NRSVL *
+nr_svl_uncross_full (NRSVL *svl, NRFlat *flats)
 {
-	NRSVP *lsvp, *csvp, *nsvp;
+	NRSVL *lsvl, *csvl, *nsvl;
 	NRFlat *nflat, *fl, *f;
-	NRSVPSlice *slices, *s;
+	NRSVLSlice *slices, *s;
 	NRCoord yslice, ynew;
 
-	if (!svp) return NULL;
-	assert (svp->vertex);
+	if (!svl) return NULL;
+	assert (svl->vertex);
 
 	slices = NULL;
 
 	/* First slicing position */
-	yslice = svp->vertex->y;
+	yslice = svl->vertex->y;
 	nflat = flats;
 	/* Drop all flats below initial slice */
 	/* Equal can be dropped too in given case */
@@ -130,25 +130,25 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 		nflat = f;
 	}
 
-	/* fixme: the lsvp stuff is really braindead */
-	lsvp = NULL;
-	csvp = svp;
-	nsvp = svp;
+	/* fixme: the lsvl stuff is really braindead */
+	lsvl = NULL;
+	csvl = svl;
+	nsvl = svl;
 
 	/* Main iteration */
-	while ((slices) || (nsvp)) {
-		NRSVPSlice * ss, * cs, * ns;
+	while ((slices) || (nsvl)) {
+		NRSVLSlice * ss, * cs, * ns;
 		NRVertex * newvertex;
-		NRSVP * newsvp;
+		NRSVL * newsvl;
 		int wind;
 
-		/* Add svps == starting from yslice to slices list */
-		assert (!nsvp || (nsvp->vertex->y >= yslice));
-		while ((nsvp) && (nsvp->vertex->y == yslice)) {
-			NRSVPSlice * newslice;
-			newslice = nr_svp_slice_new (nsvp, yslice);
-			slices = nr_svp_slice_insert_sorted (slices, newslice);
-			nsvp = nsvp->next;
+		/* Add svls == starting from yslice to slices list */
+		assert (!nsvl || (nsvl->vertex->y >= yslice));
+		while ((nsvl) && (nsvl->vertex->y == yslice)) {
+			NRSVLSlice * newslice;
+			newslice = nr_svl_slice_new (nsvl, yslice);
+			slices = nr_svl_slice_insert_sorted (slices, newslice);
+			nsvl = nsvl->next;
 		}
 		/* Now everything should be set up */
 		CHECK_SLICES (slices, yslice, "PRE", 0, 0, 1);
@@ -162,8 +162,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 				/* Something is seriously messed up */
 				/* Try to do, what we can */
 				/* Break slices */
-				csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
-				csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
+				csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+				csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
 				/* Set the new starting point */
 				f = nr_flat_new_full (yslice, ns->x, cs->x);
 				nflat = nr_flat_insert_sorted (nflat, f);
@@ -176,15 +176,15 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 				} else {
 					slices = ns->next;
 				}
-				slices = nr_svp_slice_insert_sorted (slices, cs);
-				slices = nr_svp_slice_insert_sorted (slices, ns);
+				slices = nr_svl_slice_insert_sorted (slices, cs);
+				slices = nr_svl_slice_insert_sorted (slices, ns);
 				CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
 				/* Start the row from the beginning */
 				ss = NULL;
 				cs = slices;
 			} else if (cs->x == ns->x) {
 				/* test continuation direction */
-				if (nr_svp_slice_compare (cs, ns) > 0.0) {
+				if (nr_svl_slice_compare (cs, ns) > 0.0) {
 					/* Swap slices */
 					assert (ns->next != cs);
 					cs->next = ns->next;
@@ -204,8 +204,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 			} else if ((ns->x - cs->x) <= NR_EPSILON_F) {
 				/* Slices are very close at yslice */
 				/* Start by breaking slices */
-				csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
-				csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
+				csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+				csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
 				/* Set the new starting point */
 				if (ns->x > cs->x) {
 					f = nr_flat_new_full (yslice, cs->x, ns->x);
@@ -220,8 +220,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 				} else {
 					slices = ns->next;
 				}
-				slices = nr_svp_slice_insert_sorted (slices, cs);
-				slices = nr_svp_slice_insert_sorted (slices, ns);
+				slices = nr_svl_slice_insert_sorted (slices, cs);
+				slices = nr_svl_slice_insert_sorted (slices, ns);
 				CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
 				ss = NULL;
 				cs = slices;
@@ -258,8 +258,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 						if (y == yslice) {
 							/* Slices are very close at yslice */
 							/* Start by breaking slices */
-							csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
-							csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
+							csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+							csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
 							if ((ns->x - cs->x) <= NR_COORD_TOLERANCE) {
 								/* Merge intersection into cs */
 								x = cs->x;
@@ -290,8 +290,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 							} else {
 								slices = ns->next;
 							}
-							slices = nr_svp_slice_insert_sorted (slices, cs);
-							slices = nr_svp_slice_insert_sorted (slices, ns);
+							slices = nr_svl_slice_insert_sorted (slices, cs);
+							slices = nr_svl_slice_insert_sorted (slices, ns);
 							CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
 							/* Start the row from the beginning */
 							ss = NULL;
@@ -299,9 +299,9 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 						} else {
 							if (((y < cs->vertex->next->y) || cs->vertex->next->next) &&
 							    ((y < ns->vertex->next->y) || ns->vertex->next->next)) {
-								/* Postpone by breaking svp */
-								csvp = nr_svp_slice_break_y_and_continue_x (cs, y, x, csvp, yslice, &nflat);
-								csvp = nr_svp_slice_break_y_and_continue_x (ns, y, x, csvp, yslice, &nflat);
+								/* Postpone by breaking svl */
+								csvl = nr_svl_slice_break_y_and_continue_x (cs, y, x, csvl, yslice, &nflat);
+								csvl = nr_svl_slice_break_y_and_continue_x (ns, y, x, csvl, yslice, &nflat);
 							}
 							/* fixme: Slight disturbance is possible so we should repeat */
 							ss = cs;
@@ -332,42 +332,42 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 				if ((s->x >= f->x0) && (s->x <= f->x1)) {
 					if (s->vertex->y < yslice) {
 						/* Mid-segment intersection */
-						/* Create continuation svp */
+						/* Create continuation svl */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						newvertex->next = s->vertex->next;
-						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->dir);
-						/* Trim starting svp */
+						newsvl = nr_svl_new_vertex_wind (newvertex, s->svl->dir);
+						/* Trim starting svl */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						s->vertex->next = newvertex;
-						nr_svp_calculate_bbox (s->svp);
-						/* Insert new SVP into main list */
-						/* new svp slice is included by definition */
-						csvp = nr_svp_insert_sorted (csvp, newsvp);
-						/* fixme: We should maintain pointer to ssvp */
-						/* New svp is inserted before nsvp by definition, so we can ignore management */
-						/* Old svp will be excluded by definition, so we can shortcut */
-						s->svp = newsvp;
-						s->vertex = newsvp->vertex;
+						nr_svl_calculate_bbox (s->svl);
+						/* Insert new SVL into main list */
+						/* new svl slice is included by definition */
+						csvl = nr_svl_insert_sorted (csvl, newsvl);
+						/* fixme: We should maintain pointer to ssvl */
+						/* New svl is inserted before nsvl by definition, so we can ignore management */
+						/* Old svl will be excluded by definition, so we can shortcut */
+						s->svl = newsvl;
+						s->vertex = newsvl->vertex;
 						/* s->x and s->y are correct by definition */
-					} else if (s->vertex != s->svp->vertex) {
+					} else if (s->vertex != s->svl->vertex) {
 						assert (s->vertex->y == yslice);
 						/* Inter-segment intersection */
 						/* Winding may change here */
-						/* Create continuation svp */
+						/* Create continuation svl */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						newvertex->next = s->vertex->next;
-						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->dir);
-						/* Trim starting svp */
+						newsvl = nr_svl_new_vertex_wind (newvertex, s->svl->dir);
+						/* Trim starting svl */
 						s->vertex->next = NULL;
-						nr_svp_calculate_bbox (s->svp);
-						/* Insert new SVP into main list */
-						/* new svp slice is included by definition */
-						csvp = nr_svp_insert_sorted (csvp, newsvp);
-						/* fixme: We should maintain pointer to ssvp */
-						/* New svp is inserted before nsvp by definition, so we can ignore management */
-						/* Old svp will be excluded by definition, so we can shortcut */
-						s->svp = newsvp;
-						s->vertex = newsvp->vertex;
+						nr_svl_calculate_bbox (s->svl);
+						/* Insert new SVL into main list */
+						/* new svl slice is included by definition */
+						csvl = nr_svl_insert_sorted (csvl, newsvl);
+						/* fixme: We should maintain pointer to ssvl */
+						/* New svl is inserted before nsvl by definition, so we can ignore management */
+						/* Old svl will be excluded by definition, so we can shortcut */
+						s->svl = newsvl;
+						s->vertex = newsvl->vertex;
 						/* s->x and s->y are correct by definition */
 					}
 				}
@@ -383,13 +383,13 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 		/* Calculate winds */
 		wind = 0;
 		for (s = slices; s != NULL; s = s->next) {
-			wind += s->svp->dir;
-			if (s->y == s->svp->vertex->y) {
-				/* Starting SVP */
+			wind += s->svl->dir;
+			if (s->y == s->svl->vertex->y) {
+				/* Starting SVL */
 				/* fixme: winding rules */
-				s->svp->wind = (wind & 0x1) ? 1 : -1;
+				s->svl->wind = (wind & 0x1) ? 1 : -1;
 			}
-			/* printf ("Wind: %g %s %d %d\n", s->y, s->y == s->svp->vertex->y ? "+" : " ", s->svp->wind, wind); */
+			/* printf ("Wind: %g %s %d %d\n", s->y, s->y == s->svl->vertex->y ? "+" : " ", s->svl->wind, wind); */
 		}
 		if (wind & 1) printf ("Weird final wind: %d\n", wind);
 		/* Calculate next yslice */
@@ -399,92 +399,92 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 			assert (s->vertex->next->y > yslice);
 			if (s->vertex->next->y < ynew) ynew = s->vertex->next->y;
 		}
-		/* fixme: Keep svp pointers */
+		/* fixme: Keep svl pointers */
 		if ((nflat) && (nflat->y < ynew)) ynew = nflat->y;
-		nsvp = csvp;
-		while ((nsvp) && (nsvp->vertex->y == yslice)) {
-			nsvp = nsvp->next;
+		nsvl = csvl;
+		while ((nsvl) && (nsvl->vertex->y == yslice)) {
+			nsvl = nsvl->next;
 		}
-		if ((nsvp) && (nsvp->vertex->y < ynew)) ynew = nsvp->vertex->y;
+		if ((nsvl) && (nsvl->vertex->y < ynew)) ynew = nsvl->vertex->y;
 		assert (ynew > yslice);
 		yslice = ynew;
 		/* Stretch existing slices to new position */
-		slices = nr_svp_slice_stretch_list (slices, yslice);
+		slices = nr_svl_slice_stretch_list (slices, yslice);
 		CHECK_SLICES (slices, yslice, "STRETCH", 0, 1, 1);
-		/* Advance svp counters */
-		if (lsvp) {
-			lsvp->next = csvp;
+		/* Advance svl counters */
+		if (lsvl) {
+			lsvl->next = csvl;
 		} else {
-			svp = csvp;
+			svl = csvl;
 		}
-		while (csvp && csvp != nsvp) {
-			lsvp = csvp;
-			csvp = csvp->next;
+		while (csvl && csvl != nsvl) {
+			lsvl = csvl;
+			csvl = csvl->next;
 		}
 	}
 	if (nflat) nr_flat_free_list (nflat);
 
-	return svp;
+	return svl;
 }
 
-static NRSVP *
-nr_svp_slice_break (NRSVPSlice *s, double x, double y, NRSVP *svp)
+static NRSVL *
+nr_svl_slice_break (NRSVLSlice *s, double x, double y, NRSVL *svl)
 {
 	NRVertex *newvx;
-	NRSVP *newsvp;
+	NRSVL *newsvl;
 
 	if (s->vertex->y < y) {
 		/* Mid-segment intersection */
-		/* Create continuation svp */
+		/* Create continuation svl */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
-		assert (newsvp->vertex->y < newsvp->vertex->next->y);
-		/* Trim starting svp */
+		newsvl = nr_svl_new_vertex_wind (newvx, s->svl->dir);
+		assert (newsvl->vertex->y < newsvl->vertex->next->y);
+		/* Trim starting svl */
 		newvx = nr_vertex_new_xy (x, y);
 		s->vertex->next = newvx;
-		nr_svp_calculate_bbox (s->svp);
-		assert (s->svp->vertex->y < s->svp->vertex->next->y);
-		/* Insert new SVP into main list */
-		/* new svp slice is included by definition */
-		svp = nr_svp_insert_sorted (svp, newsvp);
-		/* fixme: We should maintain pointer to ssvp */
-		/* New svp is inserted before nsvp by definition, so we can ignore management */
-		/* Old svp will be excluded by definition, so we can shortcut */
-		s->svp = newsvp;
-		s->vertex = newsvp->vertex;
+		nr_svl_calculate_bbox (s->svl);
+		assert (s->svl->vertex->y < s->svl->vertex->next->y);
+		/* Insert new SVL into main list */
+		/* new svl slice is included by definition */
+		svl = nr_svl_insert_sorted (svl, newsvl);
+		/* fixme: We should maintain pointer to ssvl */
+		/* New svl is inserted before nsvl by definition, so we can ignore management */
+		/* Old svl will be excluded by definition, so we can shortcut */
+		s->svl = newsvl;
+		s->vertex = newsvl->vertex;
 		/* s->x and s->y are correct by definition */
-	} else if (s->vertex != s->svp->vertex) {
+	} else if (s->vertex != s->svl->vertex) {
 		assert (s->vertex->y == y);
 		/* Inter-segment intersection */
 		/* Winding may change here */
-		/* Create continuation svp */
+		/* Create continuation svl */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
-		assert (newsvp->vertex->y < newsvp->vertex->next->y);
-		/* Trim starting svp */
+		newsvl = nr_svl_new_vertex_wind (newvx, s->svl->dir);
+		assert (newsvl->vertex->y < newsvl->vertex->next->y);
+		/* Trim starting svl */
 		s->vertex->next = NULL;
-		nr_svp_calculate_bbox (s->svp);
-		assert (s->svp->vertex->y < s->svp->vertex->next->y);
-		/* Insert new SVP into main list */
-		/* new svp slice is included by definition */
-		svp = nr_svp_insert_sorted (svp, newsvp);
-		/* fixme: We should maintain pointer to ssvp */
-		/* New svp is inserted before nsvp by definition, so we can ignore management */
-		/* Old svp will be excluded by definition, so we can shortcut */
-		s->svp = newsvp;
-		s->vertex = newsvp->vertex;
+		nr_svl_calculate_bbox (s->svl);
+		assert (s->svl->vertex->y < s->svl->vertex->next->y);
+		/* Insert new SVL into main list */
+		/* new svl slice is included by definition */
+		svl = nr_svl_insert_sorted (svl, newsvl);
+		/* fixme: We should maintain pointer to ssvl */
+		/* New svl is inserted before nsvl by definition, so we can ignore management */
+		/* Old svl will be excluded by definition, so we can shortcut */
+		s->svl = newsvl;
+		s->vertex = newsvl->vertex;
 		/* s->x and s->y are correct by definition */
 	}
-	return svp;
+	return svl;
 }
 
-static NRSVP *
-nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *svp, double ytest, NRFlat **flats)
+static NRSVL *
+nr_svl_slice_break_y_and_continue_x (NRSVLSlice *s, double y, double x, NRSVL *svl, double ytest, NRFlat **flats)
 {
 	NRVertex *newvx;
-	NRSVP *newsvp;
+	NRSVL *newsvl;
 
 	assert (y > s->y);
 	assert (y > s->vertex->y);
@@ -493,14 +493,14 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 	if (y < s->vertex->next->y) {
 		double dx, dy;
 		/* Mid-segment intersection */
-		/* Create continuation svp */
+		/* Create continuation svl */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
-		assert (newsvp->vertex->y < newsvp->vertex->next->y);
-		assert (newsvp->vertex->y > s->y);
-		assert (newsvp->vertex->y > ytest);
-		/* Trim starting svp */
+		newsvl = nr_svl_new_vertex_wind (newvx, s->svl->dir);
+		assert (newsvl->vertex->y < newsvl->vertex->next->y);
+		assert (newsvl->vertex->y > s->y);
+		assert (newsvl->vertex->y > ytest);
+		/* Trim starting svl */
 		dx = s->vertex->next->x - s->vertex->x;
 		dy = s->vertex->next->y - s->vertex->y;
 		newvx = nr_vertex_new_xy (s->vertex->x + (y - s->vertex->y) * dx / dy, y);
@@ -516,11 +516,11 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 		}
 
 		s->vertex->next = newvx;
-		nr_svp_calculate_bbox (s->svp);
-		assert (s->svp->vertex->y < s->svp->vertex->next->y);
-		/* Insert new SVP into list */
-		svp = nr_svp_insert_sorted (svp, newsvp);
-		assert (svp);
+		nr_svl_calculate_bbox (s->svl);
+		assert (s->svl->vertex->y < s->svl->vertex->next->y);
+		/* Insert new SVL into list */
+		svl = nr_svl_insert_sorted (svl, newsvl);
+		assert (svl);
 		assert (s->y >= s->vertex->y);
 	} else if (s->vertex->next->next) {
 
@@ -534,20 +534,20 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 			*flats = nr_flat_insert_sorted (*flats, f);
 		}
 
-		/* Create continuation svp */
+		/* Create continuation svl */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
-		assert (newsvp->vertex->y < newsvp->vertex->next->y);
-		assert (newsvp->vertex->y > s->y);
-		assert (newsvp->vertex->y > ytest);
-		/* Trim starting svp */
+		newsvl = nr_svl_new_vertex_wind (newvx, s->svl->dir);
+		assert (newsvl->vertex->y < newsvl->vertex->next->y);
+		assert (newsvl->vertex->y > s->y);
+		assert (newsvl->vertex->y > ytest);
+		/* Trim starting svl */
 		s->vertex->next->next = NULL;
-		nr_svp_calculate_bbox (s->svp);
-		assert (s->svp->vertex->y < s->svp->vertex->next->y);
-		/* Insert new SVP into list */
-		svp = nr_svp_insert_sorted (svp, newsvp);
-		assert (svp);
+		nr_svl_calculate_bbox (s->svl);
+		assert (s->svl->vertex->y < s->svl->vertex->next->y);
+		/* Insert new SVL into list */
+		svl = nr_svl_insert_sorted (svl, newsvl);
+		assert (svl);
 		assert (s->y >= s->vertex->y);
 	} else {
 		/* Still have to place flat */
@@ -560,12 +560,12 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 			*flats = nr_flat_insert_sorted (*flats, f);
 		}
 	}
-	return svp;
+	return svl;
 }
 
 #if 0
 static void
-nr_svp_slice_ensure_vertex_at (NRSVPSlice *s, NRCoord x, NRCoord y)
+nr_svl_slice_ensure_vertex_at (NRSVLSlice *s, NRCoord x, NRCoord y)
 {
 	/* Invariant 1 */
 	assert (y >= s->y);
@@ -598,27 +598,27 @@ nr_svp_slice_ensure_vertex_at (NRSVPSlice *s, NRCoord x, NRCoord y)
 /* Slices */
 
 #define NR_SLICE_ALLOC_SIZE 32
-static NRSVPSlice * ffslice = NULL;
+static NRSVLSlice * ffslice = NULL;
 
-NRSVPSlice *
-nr_svp_slice_new (NRSVP * svp, NRCoord y)
+NRSVLSlice *
+nr_svl_slice_new (NRSVL * svl, NRCoord y)
 {
-	NRSVPSlice * s;
+	NRSVLSlice * s;
 	NRVertex * v;
 
-	assert (svp);
-	assert (svp->vertex);
+	assert (svl);
+	assert (svl->vertex);
 	/* fixme: We try snapped slices - not sure, whether correct */
 	assert (y == NR_COORD_SNAP (y));
 	/* Slices startpoints are included, endpoints excluded */
-	/* g_return_val_if_fail (y >= svp->bbox.y0, NULL); */
-	/* g_return_val_if_fail (y < svp->bbox.y1, NULL); */
+	/* g_return_val_if_fail (y >= svl->bbox.y0, NULL); */
+	/* g_return_val_if_fail (y < svl->bbox.y1, NULL); */
 
 	s = ffslice;
 
 	if (s == NULL) {
 		int i;
-		s = nr_new (NRSVPSlice, NR_SLICE_ALLOC_SIZE);
+		s = nr_new (NRSVLSlice, NR_SLICE_ALLOC_SIZE);
 		for (i = 1; i < (NR_SLICE_ALLOC_SIZE - 1); i++) s[i].next = &s[i + 1];
 		s[NR_SLICE_ALLOC_SIZE - 1].next = NULL;
 		ffslice = s + 1;
@@ -630,9 +630,9 @@ nr_svp_slice_new (NRSVP * svp, NRCoord y)
 	s->prev = NULL;
 #endif
 	s->next = NULL;
-	s->svp = svp;
+	s->svl = svl;
 
-	v = svp->vertex;
+	v = svl->vertex;
 	while ((v->next) && (v->next->y <= y)) v = v->next;
 	assert (v->next);
 
@@ -648,7 +648,7 @@ nr_svp_slice_new (NRSVP * svp, NRCoord y)
 }
 
 void
-nr_svp_slice_free_one (NRSVPSlice * slice)
+nr_svl_slice_free_one (NRSVLSlice * slice)
 {
 	slice->next = ffslice;
 #if 0
@@ -662,9 +662,9 @@ nr_svp_slice_free_one (NRSVPSlice * slice)
 
 #if 0
 void
-nr_svp_slice_free_list (NRSVPSlice * slice)
+nr_svl_slice_free_list (NRSVLSlice * slice)
 {
-	NRSVPSlice * l;
+	NRSVLSlice * l;
 
 	if (!slice) return;
 
@@ -681,10 +681,10 @@ nr_svp_slice_free_list (NRSVPSlice * slice)
 }
 #endif
 
-NRSVPSlice *
-nr_svp_slice_insert_sorted (NRSVPSlice * start, NRSVPSlice * slice)
+NRSVLSlice *
+nr_svl_slice_insert_sorted (NRSVLSlice * start, NRSVLSlice * slice)
 {
-	NRSVPSlice * s, * l;
+	NRSVLSlice * s, * l;
 
 	assert (start != slice);
 
@@ -694,14 +694,14 @@ nr_svp_slice_insert_sorted (NRSVPSlice * start, NRSVPSlice * slice)
 	}
 	if (!slice) return start;
 
-	if (nr_svp_slice_compare (slice, start) <= 0) {
+	if (nr_svl_slice_compare (slice, start) <= 0) {
 		slice->next = start;
 		return slice;
 	}
 
 	s = start;
 	for (l = start->next; l != NULL; l = l->next) {
-		if (nr_svp_slice_compare (slice, l) <= 0) {
+		if (nr_svl_slice_compare (slice, l) <= 0) {
 			assert (l != slice);
 			slice->next = l;
 			assert (slice != s);
@@ -718,10 +718,10 @@ nr_svp_slice_insert_sorted (NRSVPSlice * start, NRSVPSlice * slice)
 	return start;
 }
 
-NRSVPSlice *
-nr_svp_slice_stretch_list (NRSVPSlice * slices, NRCoord y)
+NRSVLSlice *
+nr_svl_slice_stretch_list (NRSVLSlice * slices, NRCoord y)
 {
-	NRSVPSlice * p, * s;
+	NRSVLSlice * p, * s;
 
 	/* fixme: We try snapped slices - not sure, whether correct */
 	assert (y == NR_COORD_SNAP (y));
@@ -730,16 +730,16 @@ nr_svp_slice_stretch_list (NRSVPSlice * slices, NRCoord y)
 	s = slices;
 
 	while (s) {
-		if (s->svp->bbox.y1 <= y) {
+		if (s->svl->bbox.y1 <= y) {
 			/* Remove exhausted slice */
 			if (p) {
 				assert (s->next != p);
 				p->next = s->next;
-				nr_svp_slice_free_one (s);
+				nr_svl_slice_free_one (s);
 				s = p->next;
 			} else {
 				slices = s->next;
-				nr_svp_slice_free_one (s);
+				nr_svl_slice_free_one (s);
 				s = slices;
 			}
 		} else {
@@ -769,7 +769,7 @@ nr_svp_slice_stretch_list (NRSVPSlice * slices, NRCoord y)
 }
 
 static int
-nr_svp_slice_compare (NRSVPSlice *l, NRSVPSlice *r)
+nr_svl_slice_compare (NRSVLSlice *l, NRSVLSlice *r)
 {
 	double ldx, ldy, rdx, rdy;
 	double d;

@@ -43,7 +43,7 @@ struct _NRArenaShape {
 	NRArenaItem *markers;
 
 #ifdef WITH_NRSVP
-	NRSVP *nrsvp;
+	NRSVL *nrsvl;
 #endif
 };
 

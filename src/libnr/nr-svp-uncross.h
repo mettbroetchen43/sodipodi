@@ -12,6 +12,6 @@
 
 #include <libnr/nr-svp.h>
 
-NRSVP *nr_svp_uncross_full (NRSVP *svp, NRFlat *flats);
+NRSVL *nr_svl_uncross_full (NRSVL *svp, NRFlat *flats);
 
 #endif

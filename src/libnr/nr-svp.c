@@ -10,24 +10,103 @@
  */
 
 
+#include <stdio.h>
+
+#include "nr-macros.h"
+#include "nr-svp-uncross.h"
+#include "nr-svp.h"
+
+/* Sorted vector paths */
+
+NRSVP *
+nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
+{
+	NRSVP *svp;
+	NRSVL *si;
+	NRFlat *fi;
+	NRVertex *vi;
+	unsigned int nsegs, npoints;
+	nsegs = 0;
+	npoints = 0;
+	for (si = svl; si; si = si->next) {
+		nsegs += 1;
+		for (vi = si->vertex; vi; vi = vi->next) npoints += 1;
+	}
+	for (fi = flat; fi; fi = fi->next) {
+		nsegs += 1;
+		npoints += 2;
+	}
+	svp = malloc (sizeof (NRSVP) + (nsegs - 1) * sizeof (NRSVPSegment));
+	svp->length = nsegs;
+	if (nsegs > 0) {
+		unsigned int sidx, pidx;
+		svp->points = nr_new (NRPointF, npoints);
+		sidx = 0;
+		pidx = 0;
+		si = svl;
+		fi = flat;
+		while (si || fi) {
+			/* Initial flats */
+			while (fi && (!si || (fi->y < si->vertex->y))) {
+				NRSVPSegment *seg;
+				seg = svp->segments + sidx;
+				seg->start = pidx;
+				seg->length = 2;
+				seg->wind = 0;
+				seg->bbox.x0 = fi->x0;
+				seg->bbox.y0 = fi->y;
+				seg->bbox.x1 = fi->x1;
+				seg->bbox.y1 = fi->y;
+				svp->points[pidx].x = fi->x0;
+				svp->points[pidx].y = fi->y;
+				svp->points[pidx + 1].x = fi->x1;
+				svp->points[pidx + 1].y = fi->y;
+				sidx += 1;
+				pidx += 2;
+				fi = fi->next;
+			}
+			while (si && (!fi || (si->vertex->y <= fi->y))) {
+				NRSVPSegment *seg;
+				seg = svp->segments + sidx;
+				seg->start = pidx;
+				seg->length = 0;
+				seg->wind = si->wind;
+				seg->bbox = si->bbox;
+				for (vi = si->vertex; vi; vi = vi->next) {
+					svp->points[pidx].x = vi->x;
+					svp->points[pidx].y = vi->y;
+					seg->length += 1;
+					pidx += 1;
+				}
+				sidx += 1;
+				si = si->next;
+			}
+		}
+	} else {
+		svp->points = NULL;
+	}
+	return svp;
+}
+
+void
+nr_svp_free (NRSVP *svp)
+{
+	if (svp->points) nr_free (svp->points);
+	free (svp);
+}
+
+#include <libart_lgpl/art_misc.h>
+
 #define NR_QUANT_X 16.0
 #define NR_QUANT_Y 16.0
 #define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
 #define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
 #define NR_COORD_TO_ART(v) (v)
 
-#include <stdio.h>
-
-#include <libart_lgpl/art_misc.h>
-
-#include "nr-macros.h"
-#include "nr-svp-uncross.h"
-#include "nr-svp.h"
-
-NRSVP *
-nr_svp_from_art_vpath (ArtVpath *vpath)
+NRSVL *
+nr_svl_from_art_vpath (ArtVpath *vpath)
 {
-	NRSVP * svp;
+	NRSVL * svl;
 	NRVertex * start, * vertex;
 	NRFlat * flats, * flat;
 	NRRectF bbox;
@@ -35,7 +114,7 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 	NRCoord sx, sy, x, y;
 	ArtVpath * s;
 
-	svp = NULL;
+	svl = NULL;
 	start = NULL;
 	flats = NULL;
 	dir = 0;
@@ -50,14 +129,14 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 			sx = NR_COORD_X_FROM_ART (s->x);
 			sy = NR_COORD_Y_FROM_ART (s->y);
 			if (start) {
-				NRSVP *new;
+				NRSVL *new;
 				/* We have running segment */
 				if (dir > 0) {
 					/* We are upwards, prepended, so reverse */
 					start = nr_vertex_reverse_list (start);
 				}
-				new = nr_svp_new_full (start, &bbox, dir);
-				svp = nr_svp_insert_sorted (svp, new);
+				new = nr_svl_new_full (start, &bbox, dir);
+				svl = nr_svl_insert_sorted (svl, new);
 			}
 			start = NULL;
 			dir = 0;
@@ -71,14 +150,14 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 				if (newdir != dir) {
 					/* We have either start or turn */
 					if (start) {
-						NRSVP * new;
+						NRSVL * new;
 						/* We have running segment */
 						if (dir > 0) {
 							/* We are upwards, prepended, so reverse */
 							start = nr_vertex_reverse_list (start);
 						}
-						new = nr_svp_new_full (start, &bbox, dir);
-						svp = nr_svp_insert_sorted (svp, new);
+						new = nr_svl_new_full (start, &bbox, dir);
+						svl = nr_svl_insert_sorted (svl, new);
 					}
 					start = NULL;
 					dir = newdir;
@@ -102,14 +181,14 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 			} else if (x != sx) {
 				/* Horizontal line ends running segment */
 				if (start) {
-					NRSVP * new;
+					NRSVL * new;
 					/* We have running segment */
 					if (dir > 0) {
 						/* We are upwards, prepended, so reverse */
 						start = nr_vertex_reverse_list (start);
 					}
-					new = nr_svp_new_full (start, &bbox, dir);
-					svp = nr_svp_insert_sorted (svp, new);
+					new = nr_svl_new_full (start, &bbox, dir);
+					svl = nr_svl_insert_sorted (svl, new);
 				}
 				start = NULL;
 				dir = 0;
@@ -127,20 +206,20 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 		}
 	}
 	if (start) {
-		NRSVP * new;
+		NRSVL * new;
 		/* We have running segment */
 		if (dir > 0) {
 			/* We are upwards, prepended, so reverse */
 			start = nr_vertex_reverse_list (start);
 		}
-		new = nr_svp_new_full (start, &bbox, dir);
-		svp = nr_svp_insert_sorted (svp, new);
+		new = nr_svl_new_full (start, &bbox, dir);
+		svl = nr_svl_insert_sorted (svl, new);
 	}
 
-	if (svp) {
-		NRSVP *s;
-		svp = nr_svp_uncross_full (svp, flats);
-		for (s = svp; s != NULL; s = s->next) {
+	if (svl) {
+		NRSVL *s;
+		svl = nr_svl_uncross_full (svl, flats);
+		for (s = svl; s != NULL; s = s->next) {
 			if ((s->wind != 1) && (s->wind != -1)) {
 				printf ("Weird wind %d\n", s->wind);
 			}
@@ -151,60 +230,60 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 	/* This happnes in uncross */
 	/* nr_flat_free_list (flats); */
 
-	return svp;
+	return svl;
 }
 
-NRSVP *
-nr_svp_from_art_svp (ArtSVP *asvp)
+NRSVL *
+nr_svl_from_art_svp (ArtSVP *asvp)
 {
-	NRSVP *svp;
+	NRSVL *svl;
 	int i, j;
-	svp = NULL;
+	svl = NULL;
 	for (i = asvp->n_segs - 1; i >= 0; i--) {
 		ArtSVPSeg *seg;
-		NRSVP *psvp;
+		NRSVL *psvl;
 		seg = &asvp->segs[i];
-		psvp = nr_svp_new ();
-		psvp->next = svp;
-		svp = psvp;
-		svp->vertex = NULL;
+		psvl = nr_svl_new ();
+		psvl->next = svl;
+		svl = psvl;
+		svl->vertex = NULL;
 		for (j = seg->n_points - 1; j >= 0; j--) {
 			NRVertex *vx;
 			vx = nr_vertex_new_xy (seg->points[j].x, seg->points[j].y);
-			vx->next = svp->vertex;
-			svp->vertex = vx;
+			vx->next = svl->vertex;
+			svl->vertex = vx;
 		}
-		svp->dir = seg->dir ? 1 : -1;
-		svp->wind = svp->dir;
-		svp->bbox.x0 = seg->bbox.x0;
-		svp->bbox.y0 = seg->bbox.y0;
-		svp->bbox.x1 = seg->bbox.x1;
-		svp->bbox.y1 = seg->bbox.y1;
+		svl->dir = seg->dir ? 1 : -1;
+		svl->wind = svl->dir;
+		svl->bbox.x0 = seg->bbox.x0;
+		svl->bbox.y0 = seg->bbox.y0;
+		svl->bbox.x1 = seg->bbox.x1;
+		svl->bbox.y1 = seg->bbox.y1;
 	}
-	return svp;
+	return svl;
 }
 
 ArtSVP *
-nr_art_svp_from_svp (NRSVP * svp)
+nr_art_svp_from_svl (NRSVL * svl)
 {
 	ArtSVP * asvp;
-	NRSVP * s;
+	NRSVL * s;
 	int n_segs, sn;
 
-	if (!svp) {
+	if (!svl) {
 		asvp = art_alloc (sizeof (ArtSVP));
 		asvp->n_segs = 0;
 		return asvp;
 	}
 
 	n_segs = 0;
-	for (s = svp; s != NULL; s = s->next) n_segs++;
+	for (s = svl; s != NULL; s = s->next) n_segs++;
 
 	asvp = art_alloc (sizeof (ArtSVP) + (n_segs - 1) * sizeof (ArtSVPSeg));
 	asvp->n_segs = n_segs;
 
 	sn = 0;
-	for (s = svp; s != NULL; s = s->next) {
+	for (s = svl; s != NULL; s = s->next) {
 		ArtSVPSeg * aseg;
 		NRVertex * v;
 		int n_points, pn;
@@ -238,13 +317,13 @@ nr_art_svp_from_svp (NRSVP * svp)
 }
 
 int
-nr_svp_point_wind (NRSVP *svp, float x, float y)
+nr_svl_point_wind (NRSVL *svl, float x, float y)
 {
-	NRSVP *s;
+	NRSVL *s;
 	int wind;
 
 	wind = 0;
-	for (s = svp; s != NULL; s = s->next) {
+	for (s = svl; s != NULL; s = s->next) {
 		if ((s->bbox.x0 < x) && (s->bbox.y0 <= y) && (s->bbox.y1 > y)) {
 			if (s->bbox.x1 <= x) {
 				wind += s->wind;
@@ -357,95 +436,95 @@ nr_vertex_reverse_list (NRVertex * v)
 	return p;
 }
 
-/* NRSVP */
+/* NRSVL */
 
-#define NR_SVP_ALLOC_SIZE 256
-static NRSVP *ffsvp = NULL;
+#define NR_SVL_ALLOC_SIZE 256
+static NRSVL *ffsvl = NULL;
 
-NRSVP *
-nr_svp_new (void)
+NRSVL *
+nr_svl_new (void)
 {
-	NRSVP *svp;
+	NRSVL *svl;
 
-	svp = ffsvp;
+	svl = ffsvl;
 
-	if (svp == NULL) {
+	if (svl == NULL) {
 		int i;
-		svp = nr_new (NRSVP, NR_SVP_ALLOC_SIZE);
-		for (i = 1; i < (NR_SVP_ALLOC_SIZE - 1); i++) svp[i].next = &svp[i + 1];
-		svp[NR_SVP_ALLOC_SIZE - 1].next = NULL;
-		ffsvp = svp + 1;
+		svl = nr_new (NRSVL, NR_SVL_ALLOC_SIZE);
+		for (i = 1; i < (NR_SVL_ALLOC_SIZE - 1); i++) svl[i].next = &svl[i + 1];
+		svl[NR_SVL_ALLOC_SIZE - 1].next = NULL;
+		ffsvl = svl + 1;
 	} else {
-		ffsvp = svp->next;
+		ffsvl = svl->next;
 	}
 
-	svp->next = NULL;
+	svl->next = NULL;
 
-	return svp;
+	return svl;
 }
 
-NRSVP *
-nr_svp_new_full (NRVertex *vertex, NRRectF *bbox, int dir)
+NRSVL *
+nr_svl_new_full (NRVertex *vertex, NRRectF *bbox, int dir)
 {
-	NRSVP *svp;
+	NRSVL *svl;
 
-	svp = nr_svp_new ();
+	svl = nr_svl_new ();
 
-	svp->vertex = vertex;
-	svp->bbox = *bbox;
-	svp->dir = dir;
-	svp->wind = svp->dir;
+	svl->vertex = vertex;
+	svl->bbox = *bbox;
+	svl->dir = dir;
+	svl->wind = svl->dir;
 
-	return svp;
+	return svl;
 }
 
-NRSVP *
-nr_svp_new_vertex_wind (NRVertex *vertex, int dir)
+NRSVL *
+nr_svl_new_vertex_wind (NRVertex *vertex, int dir)
 {
-	NRSVP * svp;
+	NRSVL * svl;
 
-	svp = nr_svp_new ();
+	svl = nr_svl_new ();
 
-	svp->vertex = vertex;
-	svp->dir = dir;
-	svp->wind = svp->wind;
-	nr_svp_calculate_bbox (svp);
+	svl->vertex = vertex;
+	svl->dir = dir;
+	svl->wind = svl->wind;
+	nr_svl_calculate_bbox (svl);
 
-	return svp;
-}
-
-void
-nr_svp_free_one (NRSVP *svp)
-{
-	nr_vertex_free_list (svp->vertex);
-	svp->next = ffsvp;
-	ffsvp = svp;
+	return svl;
 }
 
 void
-nr_svp_free_list (NRSVP *svp)
+nr_svl_free_one (NRSVL *svl)
 {
-	NRSVP *l;
+	nr_vertex_free_list (svl->vertex);
+	svl->next = ffsvl;
+	ffsvl = svl;
+}
 
-	if (svp) {
-		for (l = svp; l->next != NULL; l = l->next) {
+void
+nr_svl_free_list (NRSVL *svl)
+{
+	NRSVL *l;
+
+	if (svl) {
+		for (l = svl; l->next != NULL; l = l->next) {
 			nr_vertex_free_list (l->vertex);
 		}
 		nr_vertex_free_list (l->vertex);
-		l->next = ffsvp;
-		ffsvp = svp;
+		l->next = ffsvl;
+		ffsvl = svl;
 	}
 }
 
 
-NRSVP *
-nr_svp_remove (NRSVP *start, NRSVP *svp)
+NRSVL *
+nr_svl_remove (NRSVL *start, NRSVL *svl)
 {
-	NRSVP * s, * l;
+	NRSVL * s, * l;
 
 	s = NULL;
 	l = start;
-	while (l != svp) {
+	while (l != svl) {
 		s = l;
 		l = l->next;
 	}
@@ -455,60 +534,60 @@ nr_svp_remove (NRSVP *start, NRSVP *svp)
 		return start;
 	}
 
-	return svp->next;
+	return svl->next;
 }
 
-NRSVP *
-nr_svp_insert_sorted (NRSVP *start, NRSVP *svp)
+NRSVL *
+nr_svl_insert_sorted (NRSVL *start, NRSVL *svl)
 {
-	NRSVP * s, * l;
+	NRSVL * s, * l;
 
-	if (!start) return svp;
-	if (!svp) return start;
+	if (!start) return svl;
+	if (!svl) return start;
 
-	if (nr_svp_compare (svp, start) <= 0) {
-		svp->next = start;
-		return svp;
+	if (nr_svl_compare (svl, start) <= 0) {
+		svl->next = start;
+		return svl;
 	}
 
 	s = start;
 	for (l = start->next; l != NULL; l = l->next) {
-		if (nr_svp_compare (svp, l) <= 0) {
-			svp->next = l;
-			s->next = svp;
+		if (nr_svl_compare (svl, l) <= 0) {
+			svl->next = l;
+			s->next = svl;
 			return start;
 		}
 		s = l;
 	}
 
-	svp->next = NULL;
-	s->next = svp;
+	svl->next = NULL;
+	s->next = svl;
 
 	return start;
 }
 
-NRSVP *
-nr_svp_move_sorted (NRSVP *start, NRSVP *svp)
+NRSVL *
+nr_svl_move_sorted (NRSVL *start, NRSVL *svl)
 {
-	NRSVP *s, *l;
+	NRSVL *s, *l;
 
 	s = 0;
 	l = start;
-	while (l != svp) {
+	while (l != svl) {
 		s = l;
 		l = l->next;
 	}
 
 	if (s) {
-		s->next = nr_svp_insert_sorted (svp->next, svp);
+		s->next = nr_svl_insert_sorted (svl->next, svl);
 		return start;
 	}
 
-	return nr_svp_insert_sorted (start, svp);
+	return nr_svl_insert_sorted (start, svl);
 }
 
 int
-nr_svp_compare (NRSVP *l, NRSVP *r)
+nr_svl_compare (NRSVL *l, NRSVL *r)
 {
 	float xx0, yy0, x1x0, y1y0;
 	float d;
@@ -535,18 +614,18 @@ nr_svp_compare (NRSVP *l, NRSVP *r)
 }
 
 void
-nr_svp_calculate_bbox (NRSVP *svp)
+nr_svl_calculate_bbox (NRSVL *svl)
 {
 	NRVertex * v;
 
-	svp->bbox.x0 = svp->bbox.y0 = 1e18;
-	svp->bbox.x1 = svp->bbox.y1 = -1e18;
+	svl->bbox.x0 = svl->bbox.y0 = 1e18;
+	svl->bbox.x1 = svl->bbox.y1 = -1e18;
 
-	for (v = svp->vertex; v != NULL; v = v->next) {
-		svp->bbox.x0 = MIN (svp->bbox.x0, v->x);
-		svp->bbox.y0 = MIN (svp->bbox.y0, v->y);
-		svp->bbox.x1 = MAX (svp->bbox.x1, v->x);
-		svp->bbox.y1 = MAX (svp->bbox.y1, v->y);
+	for (v = svl->vertex; v != NULL; v = v->next) {
+		svl->bbox.x0 = MIN (svl->bbox.x0, v->x);
+		svl->bbox.y0 = MIN (svl->bbox.y0, v->y);
+		svl->bbox.x1 = MAX (svl->bbox.x1, v->x);
+		svl->bbox.y1 = MAX (svl->bbox.y1, v->y);
 	}
 }
 
