@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-02 05:24+0100\n"
-"PO-Revision-Date: 2003-11-02 05:26+0100\n"
+"POT-Creation-Date: 2003-11-15 22:26+0100\n"
+"PO-Revision-Date: 2003-11-15 22:27+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Документ %s садржи несачуване измене. Са
 
 #. Page page
 #: src/desktop.c:1505 src/dialogs/align.c:286
-#: src/dialogs/desktop-properties.c:269 src/dialogs/document-properties.c:163
+#: src/dialogs/desktop-properties.c:275 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:484
 msgid "Page"
 msgstr "Страна"
@@ -58,11 +58,11 @@ msgstr "Цртеж"
 
 #. Selection submenu
 #: src/desktop.c:1513 src/dialogs/align.c:288 src/dialogs/export.c:145
-#: src/interface.c:570 src/toolbox.c:485 src/verbs.c:486
+#: src/interface.c:576 src/toolbox.c:487 src/verbs.c:486
 msgid "Selection"
 msgstr "Избор"
 
-#: src/dialogs/align.c:153 src/toolbox.c:445
+#: src/dialogs/align.c:153 src/toolbox.c:447
 msgid "Align objects"
 msgstr "Поравнавање објеката"
 
@@ -158,114 +158,114 @@ msgstr "Највећа ставка"
 msgid "Smallest item"
 msgstr "Најмања ставка"
 
-#: src/dialogs/desktop-properties.c:191
+#: src/dialogs/desktop-properties.c:188
 msgid "Desktop settings"
 msgstr "Поставке радне површине"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:200
+#: src/dialogs/desktop-properties.c:197
 msgid "Grid"
 msgstr "Мрежа"
 
-#: src/dialogs/desktop-properties.c:211
+#: src/dialogs/desktop-properties.c:210
 msgid "Show grid"
 msgstr "Прикажи мрежу"
 
-#: src/dialogs/desktop-properties.c:212
+#: src/dialogs/desktop-properties.c:211
 msgid "Snap to grid"
 msgstr "Пријањај уз мрежу"
 
-#: src/dialogs/desktop-properties.c:214
+#: src/dialogs/desktop-properties.c:213
 msgid "Horizontal lines"
 msgstr "Водоравне линије"
 
-#: src/dialogs/desktop-properties.c:215
+#: src/dialogs/desktop-properties.c:214
 msgid "Vertical lines"
 msgstr "Усправне линије"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:216
 msgid "Iso grid"
 msgstr "ИСО мрежа"
 
-#: src/dialogs/desktop-properties.c:218
+#: src/dialogs/desktop-properties.c:217
 msgid "Hex grid"
 msgstr "Хекс мрежа"
 
-#: src/dialogs/desktop-properties.c:221
+#: src/dialogs/desktop-properties.c:222
 msgid "Grid units:"
 msgstr "Јединице мреже:"
 
-#: src/dialogs/desktop-properties.c:223
+#: src/dialogs/desktop-properties.c:224
 msgid "Origin X:"
 msgstr "Почетак X:"
 
-#: src/dialogs/desktop-properties.c:225
+#: src/dialogs/desktop-properties.c:226
 msgid "Origin Y:"
 msgstr "Почетак Y:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:229
 msgid "Spacing X:"
 msgstr "Водоравни размаци:"
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:231
 msgid "Spacing Y:"
 msgstr "Усправни размаци:"
 
-#: src/dialogs/desktop-properties.c:235 src/dialogs/desktop-properties.c:258
+#: src/dialogs/desktop-properties.c:235 src/dialogs/desktop-properties.c:262
+msgid "Snap units:"
+msgstr "Јединице пријањања:"
+
+#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
 msgid "Snap distance:"
 msgstr "Удаљеност за пријањање:"
 
-#: src/dialogs/desktop-properties.c:238
+#: src/dialogs/desktop-properties.c:240
 msgid "Grid color:"
 msgstr "Боја мреже:"
 
-#: src/dialogs/desktop-properties.c:239
+#: src/dialogs/desktop-properties.c:241
 msgid "Grid color"
 msgstr "Боја мреже"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:245
 msgid "Guides"
 msgstr "Вођице"
 
-#: src/dialogs/desktop-properties.c:252
+#: src/dialogs/desktop-properties.c:256
 msgid "Show guides"
 msgstr "Прикажи вођице"
 
-#: src/dialogs/desktop-properties.c:253
+#: src/dialogs/desktop-properties.c:257
 msgid "Snap to guides"
 msgstr "Пријањај уз вођице"
 
-#: src/dialogs/desktop-properties.c:256
-msgid "Snap units:"
-msgstr "Јединице пријањања:"
-
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:267
 msgid "Guides color:"
 msgstr "Боја вођица:"
 
-#: src/dialogs/desktop-properties.c:262
+#: src/dialogs/desktop-properties.c:268
 msgid "Guideline color"
 msgstr "Боја линије водиље"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:270
 msgid "Highlight color:"
 msgstr "Боја истицања:"
 
-#: src/dialogs/desktop-properties.c:265
+#: src/dialogs/desktop-properties.c:271
 msgid "Highlighted guideline color"
 msgstr "Боја истакнутих вођица"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:286
 msgid "Show border"
 msgstr "Прикажи ивицу"
 
-#: src/dialogs/desktop-properties.c:280
+#: src/dialogs/desktop-properties.c:288
 msgid "Border on top of drawing"
 msgstr "Ивица на врху цртежа"
 
-#: src/dialogs/desktop-properties.c:543
+#: src/dialogs/desktop-properties.c:551
 msgid "Close"
 msgstr "Затвори"
 
@@ -638,7 +638,7 @@ msgstr "Величина и позиција објекта"
 msgid "Size and Position"
 msgstr "Величина и позиција"
 
-#: src/dialogs/stroke-style.c:543 src/toolbox.c:441
+#: src/dialogs/stroke-style.c:543 src/toolbox.c:443
 msgid "Stroke settings"
 msgstr "Подешавања потеза"
 
@@ -1045,95 +1045,95 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "екс квадрати"
 
-#: src/interface.c:303 src/interface.c:480
+#: src/interface.c:306 src/interface.c:486
 msgid "Open Recent"
 msgstr "Отвори скорашње"
 
-#: src/interface.c:323
+#: src/interface.c:326
 msgid "Close View"
 msgstr "Затвори преглед"
 
-#: src/interface.c:324 src/interface.c:495
+#: src/interface.c:327 src/interface.c:501
 msgid "Exit Program"
 msgstr "Изађи из програма"
 
-#: src/interface.c:326 src/interface.c:487
+#: src/interface.c:329 src/interface.c:493
 msgid "About Sodipodi"
 msgstr "О Содиподију"
 
 #. Modules need abouts too
-#: src/interface.c:329 src/interface.c:490
+#: src/interface.c:332 src/interface.c:496
 msgid "About Modules"
 msgstr "О додацима"
 
-#: src/interface.c:347
+#: src/interface.c:350
 msgid "Cleanup"
 msgstr "Очисти"
 
 #. View:Zoom
-#: src/interface.c:417 src/toolbox.c:617 src/verbs.c:476
+#: src/interface.c:420 src/toolbox.c:619 src/verbs.c:476
 msgid "Zoom"
 msgstr "Увећај"
 
 #. View:New View
-#: src/interface.c:429
+#: src/interface.c:432
 msgid "New View"
 msgstr "Нови поглед"
 
 #. View:New Preview
-#: src/interface.c:431
+#: src/interface.c:434
 msgid "New Preview"
 msgstr "Нови преглед"
 
-#: src/interface.c:433
+#: src/interface.c:436
 msgid "New Toplevel Toolbox"
 msgstr "Нови скуп алата првог нивоа"
 
-#: src/interface.c:434
+#: src/interface.c:437
 msgid "New Docked Toolbox"
 msgstr "Нови привезани скуп алата"
 
-#: src/interface.c:435
+#: src/interface.c:438
 msgid "Remove Docked Toolbox"
 msgstr "Уклони привезани скуп алата"
 
 #. File
-#: src/interface.c:477 src/verbs.c:429
+#: src/interface.c:483 src/verbs.c:429
 msgid "New"
 msgstr "Нова"
 
-#: src/interface.c:478
+#: src/interface.c:484
 msgid "Open"
 msgstr "Отвори"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:558 src/toolbox.c:348
+#: src/interface.c:564 src/toolbox.c:359
 msgid "File"
 msgstr "Датотека"
 
 #. Edit submenu
-#: src/interface.c:564 src/toolbox.c:405 src/widgets/gradient-selector.c:135
+#: src/interface.c:570 src/toolbox.c:407 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Уређивање"
 
 # Преглед
 #. View submenu
-#: src/interface.c:576
+#: src/interface.c:582
 msgid "View"
 msgstr "Погледај"
 
 #. Drawing mode submenu
-#: src/interface.c:582
+#: src/interface.c:588
 msgid "Drawing Mode"
 msgstr "Режим цртања"
 
 #. Dialog submenu
-#: src/interface.c:588
+#: src/interface.c:594
 msgid "Dialogs"
 msgstr "Прозорчићи"
 
-#: src/interface.c:595
+#: src/interface.c:601
 msgid "Filters"
 msgstr "Филтери"
 
@@ -1417,7 +1417,7 @@ msgid "Shape"
 msgstr "Облик"
 
 #. Item dialog
-#: src/object-ui.c:460 src/toolbox.c:442
+#: src/object-ui.c:460 src/toolbox.c:444
 msgid "Fill settings"
 msgstr "Подешавања испуњавања"
 
@@ -1463,29 +1463,41 @@ msgstr "Однос заокружености за x:"
 msgid "Roundness ratio for y:"
 msgstr "Однос заокружености за y:"
 
-#: src/select-context.c:564
+#: src/select-context.c:565
 msgid "Visual transformation"
 msgstr "Визуелна трансформација"
 
-#: src/select-context.c:572
+#: src/select-context.c:571
 msgid "Show content"
 msgstr "Прикажи садржај"
 
-#: src/select-context.c:579
+#: src/select-context.c:577
 msgid "Show outline"
 msgstr "Прикажи обрисе"
 
-#: src/select-context.c:586
+#: src/select-context.c:583
 msgid "Object transformation"
 msgstr "Трансформација објекта"
 
-#: src/select-context.c:594
+#: src/select-context.c:589
 msgid "Optimize"
 msgstr "Оптимизуј"
 
-#: src/select-context.c:601
+#: src/select-context.c:595
 msgid "Preserve"
 msgstr "Сачувај"
+
+#: src/select-context.c:601
+msgid "Cycling"
+msgstr "Пролазак"
+
+#: src/select-context.c:606
+msgid "Cycle only among visible items"
+msgstr "Прођи кроз видљиве ставке"
+
+#: src/select-context.c:609
+msgid "Center view to selected item"
+msgstr "Центрирај поглед на изабрану ставку"
 
 #: src/slideshow.c:88
 msgid "Sodipodi slideshow"
@@ -1719,7 +1731,7 @@ msgid "Image URI:"
 msgstr "Адреса слике:"
 
 # bug: plural-forms
-#: src/sp-item-group.c:455
+#: src/sp-item-group.c:454
 #, c-format
 msgid "Group of %d objects"
 msgstr "Група од %d објеката"
@@ -1729,7 +1741,7 @@ msgid "Unknown item :-("
 msgstr "Непозната ставка :-("
 
 #. fixme:
-#: src/sp-text.c:1463
+#: src/sp-text.c:1459
 msgid "Text object"
 msgstr "Објекат за текст"
 
@@ -1748,68 +1760,68 @@ msgstr "Сразмера:"
 msgid "Make sides flat"
 msgstr "Учини странице равним"
 
-#: src/toolbox.c:439
+#: src/toolbox.c:441
 msgid "Object"
 msgstr "Објекат"
 
-#: src/toolbox.c:443 src/verbs.c:494
+#: src/toolbox.c:445 src/verbs.c:494
 msgid "Object size and position"
 msgstr "Величина и позиција објекта"
 
-#: src/toolbox.c:444
+#: src/toolbox.c:446
 msgid "Text and font settings"
 msgstr "Подешавања текста и фонта"
 
-#: src/toolbox.c:446 src/verbs.c:495
+#: src/toolbox.c:448 src/verbs.c:495
 msgid "Object transformations"
 msgstr "Трансформације објекта"
 
-#: src/toolbox.c:519
+#: src/toolbox.c:521
 msgid "Draw"
 msgstr "Цртај"
 
-#: src/toolbox.c:574
+#: src/toolbox.c:576
 msgid "Extension"
 msgstr "Проширење"
 
-#: src/toolbox.c:651
+#: src/toolbox.c:653
 msgid "Nodes"
 msgstr "Чворови"
 
-#: src/toolbox.c:654
+#: src/toolbox.c:656
 msgid "Insert new nodes into selected segments"
 msgstr "Убаци нове чворове у изабране делове"
 
-#: src/toolbox.c:656
+#: src/toolbox.c:658
 msgid "Break line at selected nodes"
 msgstr "Преломи линију на изабраним чворовима"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:660
 msgid "Make selected nodes corner"
 msgstr "Направи ћошкове од изабраних чворова"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:662
 msgid "Make selected segments lines"
 msgstr "Направи линије од изабраних делова"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:664
 msgid "Delete selected nodes"
 msgstr "Обриши одабране чворове"
 
-#: src/toolbox.c:664
+#: src/toolbox.c:666
 msgid "Join lines at selected nodes"
 msgstr "Споји линије на изабраним чворовима"
 
-#: src/toolbox.c:667
+#: src/toolbox.c:669
 msgid "Join lines at selected nodes with new segment"
 msgstr "Састави линије на изабраним чворовима са новим делом"
 
 # глатка крива се прецизно математички дефинише, и управо делује као „глатка“
-#: src/toolbox.c:669
+#: src/toolbox.c:671
 msgid "Make selected nodes smooth"
 msgstr "Направи глатку криву од изабраних чворова"
 
-#: src/toolbox.c:671
+#: src/toolbox.c:673
 msgid "Make selected segments curves"
 msgstr "Направи криву од изабраних делова"
 
