@@ -234,4 +234,5 @@ glade/Makefile
 intl/Makefile
 po/Makefile.in
 sodipodi.spec
+sodipodi.1
 ])

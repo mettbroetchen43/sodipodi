@@ -30,5 +30,5 @@ dist-hook:
 	cp $(srcdir)/samples/*png $(distdir)/samples
 
 
-
+man_MANS = sodipodi.1
 
