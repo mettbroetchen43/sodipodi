@@ -39,7 +39,7 @@
 #endif
 
 /* fixme: (Lauris) */
-extern gboolean sp_svg_icons;
+extern gboolean sp_bitmap_icons;
 
 static void sp_icon_class_init (SPIconClass *klass);
 static void sp_icon_init (SPIcon *icon);
@@ -202,7 +202,7 @@ sp_icon_image_load (const unsigned char *name, unsigned int size, unsigned int s
 {
 	unsigned char *px;
 
-	if (sp_svg_icons) {
+	if (!sp_bitmap_icons) {
 		px = sp_icon_image_load_svg (name, size, scale);
 		if (!px) px = sp_icon_image_load_pixmap (name, size, scale);
 	} else {
