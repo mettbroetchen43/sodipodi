@@ -52,19 +52,10 @@ static void sp_draw_context_init (SPDrawContext *dc);
 static void sp_draw_context_finalize (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop);
-static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
 static void spdc_selection_changed (SPSelection *sel, SPDrawContext *dc);
 static void spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
 static void spdc_read_selection (SPDrawContext *dc, SPSelection *sel);
-
-static void spdc_set_startpoint (SPDrawContext *dc, ArtPoint *p, guint state);
-static void spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state);
-static void spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, gboolean snap, guint state);
-static void spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state);
-static void spdc_pen_set_point (SPDrawContext *dc, ArtPoint *p, guint state);
-static void spdc_pen_set_ctrl (SPDrawContext *dc, ArtPoint *p, guint state);
-static void spdc_pen_finish_segment (SPDrawContext *dc, ArtPoint *p, guint state);
 
 static void spdc_concat_colors_and_flush (SPDrawContext *dc);
 static void spdc_flush_white (SPDrawContext *dc, SPCurve *gc);
@@ -80,7 +71,7 @@ static void fit_and_split (SPDrawContext * dc);
 static SPDrawAnchor *sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble x, gdouble y);
 static SPDrawAnchor *sp_draw_anchor_destroy (SPDrawAnchor *anchor);
 
-static SPEventContextClass * parent_class;
+static SPEventContextClass *draw_parent_class;
 
 GtkType
 sp_draw_context_get_type (void)
@@ -111,19 +102,16 @@ sp_draw_context_class_init (SPDrawContextClass *klass)
 	object_class = (GtkObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
+	draw_parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
 
 	object_class->finalize = sp_draw_context_finalize;
 
 	event_context_class->setup = sp_draw_context_setup;
-	event_context_class->root_handler = sp_draw_context_root_handler;
 }
 
 static void
 sp_draw_context_init (SPDrawContext *dc)
 {
-	dc->state = SP_DRAW_CONTEXT_IDLE;
-
 	dc->npoints = 0;
 }
 
@@ -138,12 +126,7 @@ sp_draw_context_finalize (GtkObject *object)
 
 	spdc_free_colors (dc);
 
-	gtk_object_destroy (GTK_OBJECT (dc->c0));
-	gtk_object_destroy (GTK_OBJECT (dc->c1));
-	gtk_object_destroy (GTK_OBJECT (dc->cl0));
-	gtk_object_destroy (GTK_OBJECT (dc->cl1));
-
-	GTK_OBJECT_CLASS (parent_class)->finalize (object);
+	GTK_OBJECT_CLASS (draw_parent_class)->finalize (object);
 }
 
 static void
@@ -153,8 +136,8 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 
 	dc = SP_DRAW_CONTEXT (ec);
 
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, dt);
+	if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup)
+		SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup (ec, dt);
 
 	/* Connect signals to track selection changes */
 	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
@@ -177,232 +160,7 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 	/* No green anchor by default */
 	dc->green_anchor = NULL;
 
-	/* Pen indicators */
-	dc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
-					"shape", SP_CTRL_SHAPE_CIRCLE,
-					"size", 4.0,
-					"filled", 0,
-					"fill_color", 0xff00007f,
-					"stroked", 1,
-					"stroke_color", 0x0000ff7f,
-					NULL);
-	dc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
-					"shape", SP_CTRL_SHAPE_CIRCLE,
-					"size", 4.0,
-					"filled", 0,
-					"fill_color", 0xff00007f,
-					"stroked", 1,
-					"stroke_color", 0x0000ff7f,
-					NULL);
-	dc->cl0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRLLINE, NULL);
-	sp_ctrlline_set_rgba32 (SP_CTRLLINE (dc->cl0), 0x0000007f);
-	dc->cl1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRLLINE, NULL);
-	sp_ctrlline_set_rgba32 (SP_CTRLLINE (dc->cl1), 0x0000007f);
-
-	gnome_canvas_item_hide (dc->c0);
-	gnome_canvas_item_hide (dc->c1);
-	gnome_canvas_item_hide (dc->cl0);
-	gnome_canvas_item_hide (dc->cl1);
-
 	spdc_read_selection (dc, SP_DT_SELECTION (dt));
-}
-
-gint
-sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
-{
-	SPDrawContext *dc;
-	SPDesktop *desktop;
-	ArtPoint p;
-	gint ret;
-	SPDrawAnchor *anchor;
-
-	dc = SP_DRAW_CONTEXT (event_context);
-	desktop = event_context->desktop;
-
-	ret = FALSE;
-
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		if (event->button.button == 1) {
-			/* Grab mouse, so release will not pass unnoticed */
-			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
-						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
-						NULL, event->button.time);
-			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-			/* Test, whether we hit any anchor */
-			anchor = test_inside (dc, event->button.x, event->button.y);
-
-			switch (dc->state) {
-			case SP_DRAW_CONTEXT_ADDLINE:
-				/* Current segment will be finished with release */
-				ret = TRUE;
-				break;
-			case SP_DRAW_CONTEXT_PEN_POINT:
-			case SP_DRAW_CONTEXT_PEN_CONTROL:
-				break;
-#if 0
-				/* fixme: Anchor and close if needed */
-				/* fixme: Snapping */
-				spdc_pen_set_point (dc, &p, event->button.state);
-				ret = TRUE;
-				break;
-#endif
-			default:
-				/* Set first point of sequence */
-				if (anchor) {
-					p = anchor->dp;
-				}
-				dc->sa = anchor;
-				spdc_set_startpoint (dc, &p, event->button.state);
-				ret = TRUE;
-				break;
-			}
-		}
-		break;
-	case GDK_MOTION_NOTIFY:
-		/* Find desktop coordinates */
-		sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-		/* Test, whether we hit any anchor */
-		anchor = test_inside (dc, event->button.x, event->button.y);
-
-		switch (dc->state) {
-		case SP_DRAW_CONTEXT_ADDLINE:
-			/* Set red endpoint */
-			if (anchor) {
-				p = anchor->dp;
-			}
-			spdc_set_endpoint (dc, &p, event->motion.state);
-			ret = TRUE;
-			break;
-		case SP_DRAW_CONTEXT_PEN_POINT:
-			if (dc->npoints != 0) {
-				/* Only set point, if we are already appending */
-				/* fixme: Snapping */
-				spdc_pen_set_point (dc, &p, event->motion.state);
-				ret = TRUE;
-			}
-			break;
-		case SP_DRAW_CONTEXT_PEN_CONTROL:
-			/* fixme: Snapping */
-			spdc_pen_set_ctrl (dc, &p, event->motion.state);
-			ret = TRUE;
-			break;
-		default:
-			/* We may be idle or already freehand */
-			if (event->motion.state & GDK_BUTTON1_MASK) {
-				dc->state = SP_DRAW_CONTEXT_FREEHAND;
-				if (!dc->sa && !dc->green_anchor) {
-					/* Create green anchor */
-					dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE, dc->p[0].x, dc->p[0].y);
-				}
-				/* fixme: I am not sure, whether we want to snap to anchors in middle of freehand (Lauris) */
-				if (anchor) {
-					p = anchor->dp;
-				} else {
-					sp_desktop_free_snap (desktop, &p);
-				}
-				spdc_add_freehand_point (dc, &p, event->motion.state);
-				ret = TRUE;
-			}
-			break;
-		}
-		break;
-	case GDK_BUTTON_RELEASE:
-		if (event->button.button == 1) {
-			/* Find desktop coordinates */
-			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
-			/* Test, whether we hit any anchor */
-			anchor = test_inside (dc, event->button.x, event->button.y);
-
-			switch (dc->state) {
-			case SP_DRAW_CONTEXT_IDLE:
-				/* Releasing button in idle mode means single click */
-				/* We have already set up start point/anchor in button_press */
-				dc->state = SP_DRAW_CONTEXT_ADDLINE;
-				ret = TRUE;
-				break;
-			case SP_DRAW_CONTEXT_ADDLINE:
-				/* Finish segment now */
-				if (anchor) {
-					p = anchor->dp;
-				}
-				dc->ea = anchor;
-				spdc_finish_endpoint (dc, &p, !anchor, event->button.state);
-				dc->state = SP_DRAW_CONTEXT_IDLE;
-				ret = TRUE;
-				break;
-			case SP_DRAW_CONTEXT_PEN_POINT:
-				/* fixme: (Lauris) */
-				if (dc->npoints == 0) {
-					spdc_pen_set_point (dc, &p, event->motion.state);
-				}
-				dc->state = SP_DRAW_CONTEXT_PEN_CONTROL;
-				ret = TRUE;
-				break;
-			case SP_DRAW_CONTEXT_PEN_CONTROL:
-				/* End current segment */
-				spdc_pen_finish_segment (dc, &p, event->button.state);
-				dc->state = SP_DRAW_CONTEXT_PEN_POINT;
-				ret = TRUE;
-				break;
-			case SP_DRAW_CONTEXT_FREEHAND:
-				/* Finish segment now */
-				/* fixme: Clean up what follows (Lauris) */
-				if (anchor) {
-					p = anchor->dp;
-				}
-				dc->ea = anchor;
-				/* Write curves to object */
-				g_print ("Finishing freehand\n");
-				spdc_concat_colors_and_flush (dc);
-				dc->state = SP_DRAW_CONTEXT_IDLE;
-				ret = TRUE;
-				break;
-			default:
-				break;
-			}
-			/* Release grab now */
-			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
-			ret = TRUE;
-		}
-		break;
-	case GDK_KEY_PRESS:
-		/* fixme: */
-		switch (event->key.keyval) {
-		case GDK_p:
-			if (dc->state == SP_DRAW_CONTEXT_IDLE) {
-				dc->state = SP_DRAW_CONTEXT_PEN_POINT;
-				dc->npoints = 0;
-				gnome_canvas_item_show (dc->c1);
-				gnome_canvas_item_show (dc->cl1);
-				ret = TRUE;
-			}
-			break;
-		case GDK_f:
-			g_print ("Finishing pen\n");
-			spdc_concat_colors_and_flush (dc);
-			dc->state = SP_DRAW_CONTEXT_IDLE;
-			gnome_canvas_item_hide (dc->c0);
-			gnome_canvas_item_hide (dc->c1);
-			gnome_canvas_item_hide (dc->cl0);
-			gnome_canvas_item_hide (dc->cl1);
-			ret = TRUE;
-			break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
-
-	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
-	}
-
-	return ret;
 }
 
 /*
@@ -491,188 +249,6 @@ spdc_endpoint_snap (SPDrawContext *dc, ArtPoint *p, guint state)
 	} else {
 		/* Free */
 		sp_desktop_free_snap (SP_EVENT_CONTEXT_DESKTOP (dc), p);
-	}
-}
-
-/*
- * Reset points and set new starting point
- */
-
-static void
-spdc_set_startpoint (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	dc->npoints = 0;
-	dc->p[dc->npoints++] = *p;
-}
-
-/*
- * Change moving enpoint position
- *
- * - Ctrl constraints moving to H/V direction, snapping in given direction
- * - otherwise we snap freely to whatever attractors are available
- *
- * Number of points is (re)set to 2 always, 2nd point is modified
- * We change RED curve
- */
-
-static void
-spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	g_assert (dc->npoints > 0);
-
-	spdc_endpoint_snap (dc, p, state);
-
-	dc->p[1] = *p;
-	dc->npoints = 2;
-
-	sp_curve_reset (dc->red_curve);
-	sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
-	sp_curve_lineto (dc->red_curve, dc->p[1].x, dc->p[1].y);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
-}
-
-/*
- * Set endpoint final position and end addline mode
- * fixme: I'd like remove red reset from concat colors (lauris)
- * fixme: Still not sure, how it will make most sense
- */
-
-static void
-spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, gboolean snap, guint state)
-{
-	if (SP_CURVE_LENGTH (dc->red_curve) < 2) {
-		/* Just a click, reset red curve and continue */
-		g_print ("Finishing empty red curve\n");
-		sp_curve_reset (dc->red_curve);
-		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	} else if (SP_CURVE_LENGTH (dc->red_curve) > 2) {
-		g_warning ("Red curve length is %d", SP_CURVE_LENGTH (dc->red_curve));
-		sp_curve_reset (dc->red_curve);
-		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	} else {
-		ArtBpath *s, *e;
-		/* We have actual line */
-		if (snap) {
-			/* Do (bogus?) snap */
-			spdc_endpoint_snap (dc, p, state);
-		}
-		/* fixme: We really should test start and end anchors instead */
-		s = SP_CURVE_SEGMENT (dc->red_curve, 0);
-		e = SP_CURVE_SEGMENT (dc->red_curve, 1);
-		if ((e->x3 == s->x3) && (e->y3 == s->y3)) {
-			/* Empty line, reset red curve and continue */
-			g_print ("Finishing zero length red curve\n");
-			sp_curve_reset (dc->red_curve);
-			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-		} else {
-			/* Write curves to object */
-			g_print ("Finishing real red curve\n");
-			spdc_concat_colors_and_flush (dc);
-		}
-	}
-}
-
-static void
-spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	/* fixme: Cleanup following (Lauris) */
-	g_assert (dc->npoints > 0);
-	if ((p->x != dc->p[dc->npoints - 1].x) || (p->y != dc->p[dc->npoints - 1].y)) {
-		dc->p[dc->npoints++] = *p;
-		fit_and_split (dc);
-	}
-}
-
-static void
-spdc_pen_set_point (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	g_print ("Set pen position %g %g\n", p->x, p->y);
-
-	if (dc->npoints == 0) {
-		/* Just set initial point */
-		dc->p[0] = *p;
-		dc->p[1] = *p;
-		dc->npoints = 2;
-		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	} else {
-#if 0
-		gdouble dx3, dy3;
-		dx3 = (p->x - dc->p[0].x) / 3.0;
-		dy3 = (p->y - dc->p[0].y) / 3.0;
-		dc->p[2].x = p->x - dx3;
-		dc->p[2].y = p->y - dy3;
-#else
-		dc->p[2] = *p;
-#endif
-		dc->p[3] = *p;
-#if 0
-		dc->p[4].x = p->x + dx3;
-		dc->p[4].y = p->y + dy3;
-#else
-		dc->p[4] = *p;
-#endif
-		dc->npoints = 5;
-		sp_curve_reset (dc->red_curve);
-		sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
-		sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
-		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
-	}
-}
-
-static void
-spdc_pen_set_ctrl (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	g_print ("Set pen control %g %g\n", p->x, p->y);
-
-	if (dc->npoints == 2) {
-		dc->p[1] = *p;
-		gnome_canvas_item_hide (dc->c0);
-		gnome_canvas_item_hide (dc->cl0);
-		sp_ctrl_moveto (SP_CTRL (dc->c1), dc->p[1].x, dc->p[1].y);
-		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl1), dc->p[0].x, dc->p[0].y, dc->p[1].x, dc->p[1].y);
-	} else if (dc->npoints == 5) {
-		dc->p[4] = *p;
-		gnome_canvas_item_show (dc->c0);
-		gnome_canvas_item_show (dc->cl0);
-		if (state & GDK_CONTROL_MASK) {
-			gdouble dx, dy;
-			dx = p->x - dc->p[3].x;
-			dy = p->y - dc->p[3].y;
-			dc->p[2].x = dc->p[3].x - dx;
-			dc->p[2].y = dc->p[3].y - dy;
-			sp_curve_reset (dc->red_curve);
-			sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
-			sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
-			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
-		}
-		sp_ctrl_moveto (SP_CTRL (dc->c0), dc->p[2].x, dc->p[2].y);
-		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl0), dc->p[3].x, dc->p[3].y, dc->p[2].x, dc->p[2].y);
-		sp_ctrl_moveto (SP_CTRL (dc->c1), dc->p[4].x, dc->p[4].y);
-		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl1), dc->p[3].x, dc->p[3].y, dc->p[4].x, dc->p[4].y);
-	} else {
-		g_warning ("Something bad happened - npoints is %d", dc->npoints);
-	}
-}
-
-static void
-spdc_pen_finish_segment (SPDrawContext *dc, ArtPoint *p, guint state)
-{
-	if (!sp_curve_empty (dc->red_curve)) {
-		SPCurve *curve;
-		GnomeCanvasItem *cshape;
-
-		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
-		curve = sp_curve_copy (dc->red_curve);
-		/* fixme: */
-		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
-		sp_curve_unref (curve);
-		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
-
-		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
-
-		dc->p[0] = dc->p[3];
-		dc->p[1] = dc->p[4];
-		dc->npoints = 2;
 	}
 }
 
@@ -1059,5 +635,690 @@ sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean acti
 		anchor->active = FALSE;
 	}
 	return NULL;
+}
+
+/* Pencil context */
+
+static void sp_pencil_context_class_init (SPPencilContextClass *klass);
+static void sp_pencil_context_init (SPPencilContext *dc);
+static void sp_pencil_context_finalize (GtkObject *object);
+
+static void sp_pencil_context_setup (SPEventContext * event_context, SPDesktop * desktop);
+static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
+
+static void spdc_set_startpoint (SPPencilContext *dc, ArtPoint *p, guint state);
+static void spdc_set_endpoint (SPPencilContext *dc, ArtPoint *p, guint state);
+static void spdc_finish_endpoint (SPPencilContext *dc, ArtPoint *p, gboolean snap, guint state);
+static void spdc_add_freehand_point (SPPencilContext *dc, ArtPoint *p, guint state);
+
+static SPDrawContextClass *pencil_parent_class;
+
+GtkType
+sp_pencil_context_get_type (void)
+{
+	static GtkType type = 0;
+
+	if (!type) {
+		static const GtkTypeInfo info = {
+			"SPPencilContext",
+			sizeof (SPPencilContext),
+			sizeof (SPPencilContextClass),
+			(GtkClassInitFunc) sp_pencil_context_class_init,
+			(GtkObjectInitFunc) sp_pencil_context_init,
+			NULL, NULL, NULL
+		};
+		type = gtk_type_unique (SP_TYPE_DRAW_CONTEXT, &info);
+	}
+
+	return type;
+}
+
+static void
+sp_pencil_context_class_init (SPPencilContextClass *klass)
+{
+	GtkObjectClass *object_class;
+	SPEventContextClass *event_context_class;
+
+	object_class = (GtkObjectClass *) klass;
+	event_context_class = (SPEventContextClass *) klass;
+
+	pencil_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
+
+	object_class->finalize = sp_pencil_context_finalize;
+
+	event_context_class->setup = sp_pencil_context_setup;
+	event_context_class->root_handler = sp_pencil_context_root_handler;
+}
+
+static void
+sp_pencil_context_init (SPPencilContext *pc)
+{
+	pc->state = SP_PENCIL_CONTEXT_IDLE;
+}
+
+static void
+sp_pencil_context_finalize (GtkObject *object)
+{
+	SPPencilContext *pc;
+
+	pc = SP_PENCIL_CONTEXT (object);
+
+	GTK_OBJECT_CLASS (pencil_parent_class)->finalize (object);
+}
+
+static void
+sp_pencil_context_setup (SPEventContext *ec, SPDesktop *dt)
+{
+	SPPencilContext *pc;
+
+	pc = SP_PENCIL_CONTEXT (ec);
+
+	if (SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup)
+		SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup (ec, dt);
+}
+
+gint
+sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
+{
+	SPDrawContext *dc;
+	SPPencilContext *pc;
+	SPDesktop *dt;
+	ArtPoint p;
+	gint ret;
+	SPDrawAnchor *anchor;
+
+	dc = SP_DRAW_CONTEXT (ec);
+	pc = SP_PENCIL_CONTEXT (ec);
+	dt = ec->desktop;
+
+	ret = FALSE;
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			/* Grab mouse, so release will not pass unnoticed */
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (dt->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
+			/* Find desktop coordinates */
+			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
+			/* Test, whether we hit any anchor */
+			anchor = test_inside (dc, event->button.x, event->button.y);
+
+			switch (pc->state) {
+			case SP_PENCIL_CONTEXT_ADDLINE:
+				/* Current segment will be finished with release */
+				ret = TRUE;
+				break;
+			default:
+				/* Set first point of sequence */
+				if (anchor) {
+					p = anchor->dp;
+				}
+				dc->sa = anchor;
+				spdc_set_startpoint (pc, &p, event->button.state);
+				ret = TRUE;
+				break;
+			}
+		}
+		break;
+	case GDK_MOTION_NOTIFY:
+		/* Find desktop coordinates */
+		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+		/* Test, whether we hit any anchor */
+		anchor = test_inside (dc, event->button.x, event->button.y);
+
+		switch (pc->state) {
+		case SP_PENCIL_CONTEXT_ADDLINE:
+			/* Set red endpoint */
+			if (anchor) {
+				p = anchor->dp;
+			}
+			spdc_set_endpoint (pc, &p, event->motion.state);
+			ret = TRUE;
+			break;
+		default:
+			/* We may be idle or already freehand */
+			if (event->motion.state & GDK_BUTTON1_MASK) {
+				pc->state = SP_PENCIL_CONTEXT_FREEHAND;
+				if (!dc->sa && !dc->green_anchor) {
+					/* Create green anchor */
+					dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE, dc->p[0].x, dc->p[0].y);
+				}
+				/* fixme: I am not sure, whether we want to snap to anchors in middle of freehand (Lauris) */
+				if (anchor) {
+					p = anchor->dp;
+				} else {
+					sp_desktop_free_snap (dt, &p);
+				}
+				spdc_add_freehand_point (pc, &p, event->motion.state);
+				ret = TRUE;
+			}
+			break;
+		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (event->button.button == 1) {
+			/* Find desktop coordinates */
+			sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+			/* Test, whether we hit any anchor */
+			anchor = test_inside (dc, event->button.x, event->button.y);
+
+			switch (pc->state) {
+			case SP_PENCIL_CONTEXT_IDLE:
+				/* Releasing button in idle mode means single click */
+				/* We have already set up start point/anchor in button_press */
+				pc->state = SP_PENCIL_CONTEXT_ADDLINE;
+				ret = TRUE;
+				break;
+			case SP_PENCIL_CONTEXT_ADDLINE:
+				/* Finish segment now */
+				if (anchor) {
+					p = anchor->dp;
+				}
+				dc->ea = anchor;
+				spdc_finish_endpoint (pc, &p, !anchor, event->button.state);
+				pc->state = SP_PENCIL_CONTEXT_IDLE;
+				ret = TRUE;
+				break;
+			case SP_PENCIL_CONTEXT_FREEHAND:
+				/* Finish segment now */
+				/* fixme: Clean up what follows (Lauris) */
+				if (anchor) {
+					p = anchor->dp;
+				}
+				dc->ea = anchor;
+				/* Write curves to object */
+				g_print ("Finishing freehand\n");
+				spdc_concat_colors_and_flush (dc);
+				pc->state = SP_PENCIL_CONTEXT_IDLE;
+				ret = TRUE;
+				break;
+			default:
+				break;
+			}
+			/* Release grab now */
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (dt->acetate), event->button.time);
+			ret = TRUE;
+		}
+		break;
+#if 0
+	case GDK_KEY_PRESS:
+		/* fixme: */
+		switch (event->key.keyval) {
+		case GDK_p:
+			if (dc->state == SP_PENCIL_CONTEXT_IDLE) {
+				dc->state = SP_PENCIL_CONTEXT_PEN_POINT;
+				dc->npoints = 0;
+				gnome_canvas_item_show (dc->c1);
+				gnome_canvas_item_show (dc->cl1);
+				ret = TRUE;
+			}
+			break;
+		case GDK_f:
+			g_print ("Finishing pen\n");
+			spdc_concat_colors_and_flush (dc);
+			dc->state = SP_PENCIL_CONTEXT_IDLE;
+			gnome_canvas_item_hide (dc->c0);
+			gnome_canvas_item_hide (dc->c1);
+			gnome_canvas_item_hide (dc->cl0);
+			gnome_canvas_item_hide (dc->cl1);
+			ret = TRUE;
+			break;
+		default:
+			break;
+		}
+		break;
+#endif
+	default:
+		break;
+	}
+
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->root_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->root_handler (ec, event);
+	}
+
+	return ret;
+}
+
+/*
+ * Reset points and set new starting point
+ */
+
+static void
+spdc_set_startpoint (SPPencilContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	dc->npoints = 0;
+	dc->p[dc->npoints++] = *p;
+}
+
+/*
+ * Change moving enpoint position
+ *
+ * - Ctrl constraints moving to H/V direction, snapping in given direction
+ * - otherwise we snap freely to whatever attractors are available
+ *
+ * Number of points is (re)set to 2 always, 2nd point is modified
+ * We change RED curve
+ */
+
+static void
+spdc_set_endpoint (SPPencilContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	g_assert (dc->npoints > 0);
+
+	spdc_endpoint_snap (dc, p, state);
+
+	dc->p[1] = *p;
+	dc->npoints = 2;
+
+	sp_curve_reset (dc->red_curve);
+	sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+	sp_curve_lineto (dc->red_curve, dc->p[1].x, dc->p[1].y);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+}
+
+/*
+ * Set endpoint final position and end addline mode
+ * fixme: I'd like remove red reset from concat colors (lauris)
+ * fixme: Still not sure, how it will make most sense
+ */
+
+static void
+spdc_finish_endpoint (SPPencilContext *pc, ArtPoint *p, gboolean snap, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	if (SP_CURVE_LENGTH (dc->red_curve) < 2) {
+		/* Just a click, reset red curve and continue */
+		g_print ("Finishing empty red curve\n");
+		sp_curve_reset (dc->red_curve);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else if (SP_CURVE_LENGTH (dc->red_curve) > 2) {
+		g_warning ("Red curve length is %d", SP_CURVE_LENGTH (dc->red_curve));
+		sp_curve_reset (dc->red_curve);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else {
+		ArtBpath *s, *e;
+		/* We have actual line */
+		if (snap) {
+			/* Do (bogus?) snap */
+			spdc_endpoint_snap (dc, p, state);
+		}
+		/* fixme: We really should test start and end anchors instead */
+		s = SP_CURVE_SEGMENT (dc->red_curve, 0);
+		e = SP_CURVE_SEGMENT (dc->red_curve, 1);
+		if ((e->x3 == s->x3) && (e->y3 == s->y3)) {
+			/* Empty line, reset red curve and continue */
+			g_print ("Finishing zero length red curve\n");
+			sp_curve_reset (dc->red_curve);
+			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+		} else {
+			/* Write curves to object */
+			g_print ("Finishing real red curve\n");
+			spdc_concat_colors_and_flush (dc);
+		}
+	}
+}
+
+static void
+spdc_add_freehand_point (SPPencilContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	/* fixme: Cleanup following (Lauris) */
+	g_assert (dc->npoints > 0);
+	if ((p->x != dc->p[dc->npoints - 1].x) || (p->y != dc->p[dc->npoints - 1].y)) {
+		dc->p[dc->npoints++] = *p;
+		fit_and_split (dc);
+	}
+}
+
+/* Pen context */
+
+static void sp_pen_context_class_init (SPPenContextClass *klass);
+static void sp_pen_context_init (SPPenContext *pc);
+static void sp_pen_context_finalize (GtkObject *object);
+
+static void sp_pen_context_setup (SPEventContext *ec, SPDesktop *dt);
+static gint sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event);
+
+static void spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state);
+static void spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state);
+static void spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state);
+
+static SPDrawContextClass *pen_parent_class;
+
+GtkType
+sp_pen_context_get_type (void)
+{
+	static GtkType type = 0;
+
+	if (!type) {
+		static const GtkTypeInfo info = {
+			"SPPenContext",
+			sizeof (SPPenContext),
+			sizeof (SPPenContextClass),
+			(GtkClassInitFunc) sp_pen_context_class_init,
+			(GtkObjectInitFunc) sp_pen_context_init,
+			NULL, NULL, NULL
+		};
+		type = gtk_type_unique (SP_TYPE_DRAW_CONTEXT, &info);
+	}
+
+	return type;
+}
+
+static void
+sp_pen_context_class_init (SPPenContextClass *klass)
+{
+	GtkObjectClass *object_class;
+	SPEventContextClass *event_context_class;
+
+	object_class = (GtkObjectClass *) klass;
+	event_context_class = (SPEventContextClass *) klass;
+
+	pen_parent_class = gtk_type_class (SP_TYPE_DRAW_CONTEXT);
+
+	object_class->finalize = sp_pen_context_finalize;
+
+	event_context_class->setup = sp_pen_context_setup;
+	event_context_class->root_handler = sp_pen_context_root_handler;
+}
+
+static void
+sp_pen_context_init (SPPenContext *pc)
+{
+	pc->state = SP_PEN_CONTEXT_POINT;
+
+	pc->c0 = NULL;
+	pc->c1 = NULL;
+	pc->cl0 = NULL;
+	pc->cl1 = NULL;
+}
+
+static void
+sp_pen_context_finalize (GtkObject *object)
+{
+	SPPenContext *pc;
+
+	pc = SP_PEN_CONTEXT (object);
+
+	if (pc->c0) gtk_object_destroy (GTK_OBJECT (pc->c0));
+	if (pc->c1) gtk_object_destroy (GTK_OBJECT (pc->c1));
+	if (pc->cl0) gtk_object_destroy (GTK_OBJECT (pc->cl0));
+	if (pc->cl1) gtk_object_destroy (GTK_OBJECT (pc->cl1));
+
+	GTK_OBJECT_CLASS (pen_parent_class)->finalize (object);
+}
+
+static void
+sp_pen_context_setup (SPEventContext *ec, SPDesktop *dt)
+{
+	SPPenContext *pc;
+
+	pc = SP_PEN_CONTEXT (ec);
+
+	if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup)
+		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec, dt);
+
+	/* Pen indicators */
+	pc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL,
+					"shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0,
+					"filled", 0,
+					"fill_color", 0xff00007f,
+					"stroked", 1,
+					"stroke_color", 0x0000ff7f,
+					NULL);
+	pc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL,
+					"shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0,
+					"filled", 0,
+					"fill_color", 0xff00007f,
+					"stroked", 1,
+					"stroke_color", 0x0000ff7f,
+					NULL);
+	pc->cl0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
+	sp_ctrlline_set_rgba32 (SP_CTRLLINE (pc->cl0), 0x0000007f);
+	pc->cl1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
+	sp_ctrlline_set_rgba32 (SP_CTRLLINE (pc->cl1), 0x0000007f);
+
+	gnome_canvas_item_hide (pc->c0);
+	gnome_canvas_item_hide (pc->c1);
+	gnome_canvas_item_hide (pc->cl0);
+	gnome_canvas_item_hide (pc->cl1);
+}
+
+gint
+sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
+{
+	SPDrawContext *dc;
+	SPPenContext *pc;
+	SPDesktop *dt;
+	ArtPoint p;
+	gint ret;
+	SPDrawAnchor *anchor;
+
+	dc = SP_DRAW_CONTEXT (ec);
+	pc = SP_PEN_CONTEXT (ec);
+	dt = ec->desktop;
+
+	ret = FALSE;
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			/* Grab mouse, so release will not pass unnoticed */
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (dt->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
+			/* Find desktop coordinates */
+			sp_desktop_w2d_xy_point (dt, &p, event->button.x, event->button.y);
+			/* Test, whether we hit any anchor */
+			anchor = test_inside (dc, event->button.x, event->button.y);
+
+			switch (pc->state) {
+			case SP_PEN_CONTEXT_POINT:
+			case SP_PEN_CONTEXT_CONTROL:
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+	case GDK_MOTION_NOTIFY:
+		/* Find desktop coordinates */
+		sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+		/* Test, whether we hit any anchor */
+		anchor = test_inside (dc, event->button.x, event->button.y);
+
+		switch (pc->state) {
+		case SP_PEN_CONTEXT_POINT:
+			if (dc->npoints != 0) {
+				/* Only set point, if we are already appending */
+				/* fixme: Snapping */
+				spdc_pen_set_point (pc, &p, event->motion.state);
+				ret = TRUE;
+			}
+			break;
+		case SP_PEN_CONTEXT_CONTROL:
+			/* fixme: Snapping */
+			spdc_pen_set_ctrl (pc, &p, event->motion.state);
+			ret = TRUE;
+			break;
+		default:
+			break;
+		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (event->button.button == 1) {
+			/* Find desktop coordinates */
+			sp_desktop_w2d_xy_point (dt, &p, event->motion.x, event->motion.y);
+			/* Test, whether we hit any anchor */
+			anchor = test_inside (dc, event->button.x, event->button.y);
+
+			switch (pc->state) {
+			case SP_PEN_CONTEXT_POINT:
+				if (dc->npoints == 0) {
+					/* Start new thread only with button release */
+					if (anchor) {
+						p = anchor->dp;
+					}
+					dc->sa = anchor;
+					spdc_pen_set_point (pc, &p, event->motion.state);
+				} else {
+					/* Set end anchor here */
+					dc->ea = anchor;
+				}
+				pc->state = SP_PEN_CONTEXT_CONTROL;
+				ret = TRUE;
+				break;
+			case SP_PEN_CONTEXT_CONTROL:
+				/* End current segment */
+				spdc_pen_finish_segment (pc, &p, event->button.state);
+				pc->state = SP_PEN_CONTEXT_POINT;
+				ret = TRUE;
+				break;
+			default:
+				break;
+			}
+			/* Release grab now */
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (dt->acetate), event->button.time);
+			ret = TRUE;
+		}
+		break;
+	case GDK_KEY_PRESS:
+		/* fixme: */
+		switch (event->key.keyval) {
+		case GDK_Return:
+			g_print ("Finishing pen\n");
+			spdc_concat_colors_and_flush (dc);
+			dc->npoints = 0;
+			pc->state = SP_PEN_CONTEXT_POINT;
+			gnome_canvas_item_hide (pc->c0);
+			gnome_canvas_item_hide (pc->c1);
+			gnome_canvas_item_hide (pc->cl0);
+			gnome_canvas_item_hide (pc->cl1);
+			ret = TRUE;
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (pen_parent_class)->root_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (pen_parent_class)->root_handler (ec, event);
+	}
+
+	return ret;
+}
+
+static void
+spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	if (dc->npoints == 0) {
+		/* Just set initial point */
+		dc->p[0] = *p;
+		dc->p[1] = *p;
+		dc->npoints = 2;
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else {
+		dc->p[2] = *p;
+		dc->p[3] = *p;
+		dc->p[4] = *p;
+		dc->npoints = 5;
+		sp_curve_reset (dc->red_curve);
+		sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+		sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+	}
+}
+
+static void
+spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	gnome_canvas_item_show (pc->c1);
+	gnome_canvas_item_show (pc->cl1);
+
+	if (dc->npoints == 2) {
+		dc->p[1] = *p;
+		gnome_canvas_item_hide (pc->c0);
+		gnome_canvas_item_hide (pc->cl0);
+		sp_ctrl_moveto (SP_CTRL (pc->c1), dc->p[1].x, dc->p[1].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (pc->cl1), dc->p[0].x, dc->p[0].y, dc->p[1].x, dc->p[1].y);
+	} else if (dc->npoints == 5) {
+		dc->p[4] = *p;
+		gnome_canvas_item_show (pc->c0);
+		gnome_canvas_item_show (pc->cl0);
+		if (state & GDK_CONTROL_MASK) {
+			gdouble dx, dy;
+			dx = p->x - dc->p[3].x;
+			dy = p->y - dc->p[3].y;
+			dc->p[2].x = dc->p[3].x - dx;
+			dc->p[2].y = dc->p[3].y - dy;
+			sp_curve_reset (dc->red_curve);
+			sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+			sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+		}
+		sp_ctrl_moveto (SP_CTRL (pc->c0), dc->p[2].x, dc->p[2].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (pc->cl0), dc->p[3].x, dc->p[3].y, dc->p[2].x, dc->p[2].y);
+		sp_ctrl_moveto (SP_CTRL (pc->c1), dc->p[4].x, dc->p[4].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (pc->cl1), dc->p[3].x, dc->p[3].y, dc->p[4].x, dc->p[4].y);
+	} else {
+		g_warning ("Something bad happened - npoints is %d", dc->npoints);
+	}
+}
+
+static void
+spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	if (!sp_curve_empty (dc->red_curve)) {
+		SPCurve *curve;
+		GnomeCanvasItem *cshape;
+
+		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
+		curve = sp_curve_copy (dc->red_curve);
+		/* fixme: */
+		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
+		sp_curve_unref (curve);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+
+		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
+
+		dc->p[0] = dc->p[3];
+		dc->p[1] = dc->p[4];
+		dc->npoints = 2;
+	}
 }
 

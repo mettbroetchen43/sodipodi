@@ -19,6 +19,7 @@
 #include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
 #include "widgets/sp-toolbox.h"
+#include "widgets/sp-menu-button.h"
 #include "sodipodi-private.h"
 #include "document.h"
 #include "toolbox.h"
@@ -32,6 +33,7 @@
 #include "interface.h"
 
 GtkWidget * sp_toolbox_create (GladeXML *xml, const gchar *widgetname, const gchar *name, const gchar *internalname, const gchar *pxname);
+static GtkWidget *sp_toolbox_draw_create (void);
 
 static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
@@ -110,31 +112,10 @@ sp_maintoolbox_create (void)
 		t = sp_toolbox_create (xml, "select_table", _("Selection"), "selection", "toolbox_select.xpm");
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 		/* Draw */
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "draw_table");
-		t = sp_toolbox_create (xml, "draw_table", _("Draw"), "draw", "toolbox_draw.xpm");
+		t = sp_toolbox_draw_create ();
+		gtk_widget_show (t);
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-		w = glade_xml_get_widget (xml, "draw_select");
-		gtk_object_set_data (GTK_OBJECT (t), "SPSelectContext", w);
-		w = glade_xml_get_widget (xml, "draw_node");
-		gtk_object_set_data (GTK_OBJECT (t), "SPNodeContext", w);
-		w = glade_xml_get_widget (xml, "draw_zoom");
-		gtk_object_set_data (GTK_OBJECT (t), "SPZoomContext", w);
-		w = glade_xml_get_widget (xml, "draw_text");
-		gtk_object_set_data (GTK_OBJECT (t), "SPTextContext", w);
-		w = glade_xml_get_widget (xml, "draw_rect");
-		gtk_object_set_data (GTK_OBJECT (t), "SPRectContext", w);
-		w = glade_xml_get_widget (xml, "draw_arc");
-		gtk_object_set_data (GTK_OBJECT (t), "SPArcContext", w);
-		w = glade_xml_get_widget (xml, "draw_star");
-		gtk_object_set_data (GTK_OBJECT (t), "SPStarContext", w);
-		w = glade_xml_get_widget (xml, "draw_spiral");
-		gtk_object_set_data (GTK_OBJECT (t), "SPSpiralContext", w);
-		w = glade_xml_get_widget (xml, "draw_freehand");
-		gtk_object_set_data (GTK_OBJECT (t), "SPDrawContext", w);
-		w = glade_xml_get_widget (xml, "draw_dynahand");
-		gtk_object_set_data (GTK_OBJECT (t), "SPDynaDrawContext", w);
-		w = glade_xml_get_widget (xml, "draw_pen");
-		gtk_object_set_data (GTK_OBJECT (t), "SPDynaDrawContext", w);
+
 		if (SP_ACTIVE_DESKTOP) {
 			const gchar * tname;
 			tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
@@ -146,6 +127,7 @@ sp_maintoolbox_create (void)
 		}
 		gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "set_eventcontext",
 						GTK_SIGNAL_FUNC (sp_update_draw_toolbox), t, GTK_OBJECT (t));
+
 		/* Zoom */
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "zoom_table");
 		t = sp_toolbox_create (xml, "zoom_table", _("Zoom"), "zoom", "toolbox_zoom.xpm");
@@ -193,6 +175,179 @@ sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name,
 	gtk_widget_show (t);
 
 	return t;
+}
+
+enum {
+	SP_TOOLBOX_DRAW_RECT,
+	SP_TOOLBOX_DRAW_ARC,
+	SP_TOOLBOX_DRAW_STAR,
+	SP_TOOLBOX_DRAW_SPIRAL,
+	SP_TOOLBOX_DRAW_FREEHAND,
+	SP_TOOLBOX_DRAW_PEN,
+	SP_TOOLBOX_DRAW_DYNAHAND
+};
+
+static void
+sp_toolbox_draw_set_object (GtkButton *button, gpointer itemdata, gpointer data)
+{
+	guint mode;
+
+	mode = GPOINTER_TO_UINT (itemdata);
+
+	g_print ("Draw toolbox set object: %d\n", mode);
+
+	switch (mode) {
+	case SP_TOOLBOX_DRAW_RECT:
+		sp_event_context_set_rect (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_ARC:
+		sp_event_context_set_arc (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_STAR:
+		sp_event_context_set_star (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_SPIRAL:
+		sp_event_context_set_spiral (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_FREEHAND:
+		sp_event_context_set_freehand (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_PEN:
+		sp_event_context_set_pen (NULL);
+		break;
+	case SP_TOOLBOX_DRAW_DYNAHAND:
+		sp_event_context_set_dynahand (NULL);
+		break;
+	default:
+		g_warning ("Illegal draw code %d", mode);
+		break;
+	}
+}
+
+#if 0
+static void
+select_clicked (GtkButton *button, gpointer data)
+{
+	g_print ("Select clicked\n");
+
+	sp_event_context_set_select (button);
+}
+#endif
+
+static GtkWidget *
+sp_toolbox_draw_create (void)
+{
+	GtkWidget *tb, *t, *pm, *b;
+	SPRepr *repr;
+
+	t = gtk_table_new (2, 4, TRUE);
+	gtk_widget_show (t);
+
+	tb = sp_toolbox_new (t, _("Draw"), "draw", SODIPODI_PIXMAPDIR "/toolbox_draw.xpm");
+
+	/* Select */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_select.xpm");
+	gtk_widget_show (pm);
+	b = gtk_toggle_button_new ();
+	gtk_widget_show (b);
+	gtk_container_add (GTK_CONTAINER (b), pm);
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
+
+	/* Node */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_node.xpm");
+	gtk_widget_show (pm);
+	b = gtk_toggle_button_new ();
+	gtk_widget_show (b);
+	gtk_container_add (GTK_CONTAINER (b), pm);
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
+
+	/* Object */
+	b = sp_menu_button_new ();
+	gtk_widget_show (b);
+	/* START COMPONENTS */
+	/* Rect */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_rect.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
+	/* Arc */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_arc.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
+	/* Star */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_star.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
+	/* Spiral */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_spiral.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
+	/* END COMPONENTS */
+	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	/* fixme: */
+	gtk_object_set_data (GTK_OBJECT (tb), "SPRectContext", b);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPArcContext", b);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPStarContext", b);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPSpiralContext", b);
+
+	/* Freehand */
+	b = sp_menu_button_new ();
+	gtk_widget_show (b);
+	/* START COMPONENTS */
+	/* Freehand */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_freehand.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
+	/* Pen */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_pen.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
+	/* Dynahand */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_dynahand.xpm");
+	gtk_widget_show (pm);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
+	/* END COMPONENTS */
+	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	/* fixme: */
+	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPPenContext", b);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPDynaDrawContext", b);
+
+	/* Text */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_text.xpm");
+	gtk_widget_show (pm);
+	b = gtk_toggle_button_new ();
+	gtk_widget_show (b);
+	gtk_container_add (GTK_CONTAINER (b), pm);
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPtextContext", b);
+
+	/* Zoom */
+	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_zoom.xpm");
+	gtk_widget_show (pm);
+	b = gtk_toggle_button_new ();
+	gtk_widget_show (b);
+	gtk_container_add (GTK_CONTAINER (b), pm);
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
+
+	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
+	if (repr) {
+		gint state;
+		state = sp_repr_get_int_attribute (repr, "state", 0);
+		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
+	}
+
+	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+	return tb;
 }
 
 static gint
@@ -334,8 +489,12 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 	}
 
 	if (new != active) {
-		if (active) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
-		if (new) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
+		if (active && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (active))) {
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
+		}
+		if (new && !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (new))) {
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
+		}
 		gtk_object_set_data (GTK_OBJECT (data), "active", new);
 		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDynaDrawContext")))) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
@@ -349,6 +508,26 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 			gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
 			w = gtk_object_get_data (GTK_OBJECT (e), "redo");
 			gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
+		}
+	}
+
+	if (tname) {
+		if (!strcmp (tname, "SPRectContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
+		} else if (!strcmp (tname, "SPArcContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
+		} else if (!strcmp (tname, "SPStarContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
+		} else if (!strcmp (tname, "SPSpiralContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
+		} else if (!strcmp (tname, "SPPencilContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
+		} else if (!strcmp (tname, "SPPenContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
+		} else if (!strcmp (tname, "SPDynaDrawContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
+		} else if (!strcmp (tname, "SPPenContext")) {
+			sp_menu_button_set_active (SP_MENU_BUTTON (new), GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
 		}
 	}
 }

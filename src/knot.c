@@ -150,7 +150,7 @@ sp_knot_class_init (SPKnotClass * klass)
 		object_class->type,
 		GTK_SIGNAL_OFFSET (SPKnotClass, distance),
 		sp_marshal_DOUBLE__POINTER_UINT,
-		GTK_TYPE_DOUBLE, 3, GTK_TYPE_POINTER, GTK_TYPE_UINT);
+		GTK_TYPE_DOUBLE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
 
 	gtk_object_class_add_signals (object_class, knot_signals, LAST_SIGNAL);
 

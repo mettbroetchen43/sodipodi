@@ -44,10 +44,10 @@ pixmaps = \
 	dimension_ver.xpm \
 	div.xpm \
 	draw_arc.xpm \
-	draw_ellipse.xpm \
 	draw_freehand.xpm \
 	draw_dynahand.xpm \
 	draw_node.xpm \
+	draw_pen.xpm \
 	draw_rect.xpm \
 	draw_star.xpm \
 	draw_spiral.xpm \

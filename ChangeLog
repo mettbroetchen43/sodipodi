@@ -1,5 +1,23 @@
 2002-08-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/toolbox.c (sp_maintoolbox_create): Moved draw toolbox to separate method
+	(sp_toolbox_draw_set_object): Callback
+	(sp_toolbox_draw_create): New method, create MenuButtons
+	(sp_update_draw_toolbox): Use MenuButtons
+
+	* src/event-broker.c: Added pen context, use pencil and pen instead of draw
+
+	* src/draw-context.c: Break draw context into parent, pencil and pen
+
+	* src/draw-context.h: Ditto
+
+	* src/widgets/sp-menu-button.h: New file
+
+	* src/widgets/sp-menu-button.c: New file, implement something similar to
+	GtkOptionmenu, but with some sodipodi-specific sugar
+
+	* glade/draw_pen.xpm: New file
+
 	* src/draw-context.c (sp_draw_context_finalize): Destroy pen controls
 	(sp_draw_context_setup): Setup pen controls
 	(sp_draw_context_root_handler): Do pen stuff

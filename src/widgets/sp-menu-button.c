@@ -1,0 +1,1011 @@
+#define __SP_MENU_BUTTON_C__
+
+/*
+ * Button with menu
+ *
+ * Authors:
+ *   The Gtk+ Team
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
+
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmarshal.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+
+#include "sp-menu-button.h"
+
+enum {ACTIVATE, LAST_SIGNAL};
+
+static void sp_menu_button_class_init (SPMenuButtonClass *klass);
+static void sp_menu_button_init (SPMenuButton *mb);
+static void sp_menu_button_destroy (GtkObject *object);
+
+static void sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req);
+static gint sp_menu_button_button_press (GtkWidget *widget, GdkEventButton *event);
+static gint sp_menu_button_button_release (GtkWidget *widget, GdkEventButton *event);
+static void sp_menu_button_released (GtkButton *button);
+
+static gint sp_menu_button_button_timeout (gpointer data);
+static void sp_menu_button_menu_deactivate (GtkMenuShell *shell, SPMenuButton *mb);
+
+static void sp_menu_button_menu_position (GtkMenu *menu, gint *x, gint *y, gpointer data);
+
+#if 0
+static void sp_menu_button_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
+static void sp_menu_button_paint (GtkWidget *widget, GdkRectangle *area);
+static void sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area);
+static gint sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event);
+static gint sp_menu_button_key_press (GtkWidget *widget, GdkEventKey *event);
+static void sp_menu_button_deactivate (GtkMenuShell *menu_shell, SPMenuButton *menu_button);
+static void sp_menu_button_update_contents (SPMenuButton *menu_button);
+static void sp_menu_button_remove_contents (SPMenuButton *menu_button);
+static void sp_menu_button_calc_size (SPMenuButton *menu_button);
+static void sp_menu_button_position (GtkMenu *menu, gint *x, gint *y, gpointer user_data);
+static void sp_menu_button_show_all (GtkWidget *widget);
+static void sp_menu_button_hide_all (GtkWidget *widget);
+static GtkType sp_menu_button_child_type (GtkContainer *container);
+#endif
+				       
+static GtkToggleButtonClass *parent_class = NULL;
+static guint button_signals[LAST_SIGNAL] = {0};
+
+GtkType
+sp_menu_button_get_type (void)
+{
+	static GtkType type = 0;
+
+	if (!type) {
+		static const GtkTypeInfo info = {
+			"SPMenuButton",
+			sizeof (SPMenuButton),
+			sizeof (SPMenuButtonClass),
+			(GtkClassInitFunc) sp_menu_button_class_init,
+			(GtkObjectInitFunc) sp_menu_button_init,
+			NULL, NULL, NULL
+		};
+		type = gtk_type_unique (GTK_TYPE_TOGGLE_BUTTON, &info);
+	}
+
+	return type;
+}
+
+static void
+sp_menu_button_class_init (SPMenuButtonClass *klass)
+{
+	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
+	GtkButtonClass *button_class;
+
+	object_class = (GtkObjectClass*) klass;
+	widget_class = (GtkWidgetClass*) klass;
+	button_class = (GtkButtonClass*) klass;
+
+	parent_class = gtk_type_class (GTK_TYPE_TOGGLE_BUTTON);
+
+	object_class->destroy = sp_menu_button_destroy;
+
+	button_signals[ACTIVATE] = gtk_signal_new ("activate",
+						   GTK_RUN_FIRST,
+						   object_class->type,
+						   GTK_SIGNAL_OFFSET (SPMenuButtonClass, activate),
+						   gtk_marshal_NONE__POINTER,
+						   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	gtk_object_class_add_signals (object_class, button_signals, LAST_SIGNAL);
+
+	widget_class->size_request = sp_menu_button_size_request;
+	widget_class->button_press_event = sp_menu_button_button_press;
+	widget_class->button_release_event = sp_menu_button_button_release;
+
+	button_class->released = sp_menu_button_released;
+}
+
+static void
+sp_menu_button_init (SPMenuButton *mb)
+{
+	GTK_WIDGET_SET_FLAGS (mb, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS (mb, GTK_CAN_DEFAULT | GTK_RECEIVES_DEFAULT);
+
+	mb->menu = gtk_menu_new ();
+	mb->menuitem = NULL;
+	gtk_signal_connect (GTK_OBJECT (mb->menu), "deactivate", GTK_SIGNAL_FUNC (sp_menu_button_menu_deactivate), mb);
+
+	mb->cbid = 0;
+
+	mb->width = 0;
+	mb->height = 0;
+}
+
+static void
+sp_menu_button_destroy (GtkObject *object)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (object);
+
+	if (mb->cbid) {
+		gtk_timeout_remove (mb->cbid);
+		mb->cbid = 0;
+	}
+
+	if (mb->menu) {
+		gtk_widget_destroy (mb->menu);
+		mb->menu = NULL;
+	}
+
+	mb->menuitem = NULL;
+
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+
+
+}
+
+static void
+sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (widget);
+
+	if ((mb->width > 0) || (mb->height > 0)) {
+		req->width = mb->width;
+		req->height = mb->height;
+	} else {
+		if (GTK_WIDGET_CLASS (parent_class)->size_request)
+			GTK_WIDGET_CLASS (parent_class)->size_request (widget, req);
+	}
+}
+
+static gint
+sp_menu_button_button_press (GtkWidget *widget, GdkEventButton *event)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (widget);
+
+	g_print ("Press\n");
+
+	if ((event->button == 1) && !mb->cbid) {
+		mb->cbid = gtk_timeout_add (100, sp_menu_button_button_timeout, mb);
+	}
+
+	if (GTK_WIDGET_CLASS (parent_class)->button_press_event)
+		return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
+
+	return FALSE;
+}
+
+static gint
+sp_menu_button_button_release (GtkWidget *widget, GdkEventButton *event)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (widget);
+
+	g_print ("Release\n");
+
+	if ((event->button == 1) && mb->cbid) {
+		gtk_timeout_remove (mb->cbid);
+		mb->cbid = 0;
+	}
+
+	if (GTK_WIDGET_CLASS (parent_class)->button_release_event)
+		return GTK_WIDGET_CLASS (parent_class)->button_release_event (widget, event);
+
+	return FALSE;
+}
+
+static void
+sp_menu_button_released (GtkButton *button)
+{
+	SPMenuButton *mb;
+	gpointer data;
+
+	mb = SP_MENU_BUTTON (button);
+
+	if (GTK_BUTTON_CLASS (parent_class)->released)
+		GTK_BUTTON_CLASS (parent_class)->released (button);
+
+	if (mb->menuitem) {
+		data = gtk_object_get_data (GTK_OBJECT (mb->menuitem), "user");
+		gtk_signal_emit (GTK_OBJECT (mb), button_signals[ACTIVATE], data);
+	}
+}
+
+GtkWidget*
+sp_menu_button_new (void)
+{
+	SPMenuButton *mb;
+
+	mb = gtk_type_new (SP_TYPE_MENU_BUTTON);
+
+	return (GtkWidget *) mb;
+}
+
+void
+sp_menu_button_append_child (SPMenuButton *mb, GtkWidget *child, gpointer data)
+{
+	GtkWidget *mi;
+
+	g_return_if_fail (mb != NULL);
+	g_return_if_fail (SP_IS_MENU_BUTTON (mb));
+	g_return_if_fail (child != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (child));
+
+	mi = gtk_menu_item_new ();
+	gtk_widget_show (mi);
+	gtk_object_set_data (GTK_OBJECT (mi), "user", data);
+
+	if (mb->menuitem) {
+		/* Put child into menu now */
+		gtk_container_add (GTK_CONTAINER (mi), child);
+	} else {
+		/* Put child into main button */
+		gtk_container_add (GTK_CONTAINER (mb), child);
+		mb->menuitem = mi;
+	}
+
+	gtk_menu_append (GTK_MENU (mb->menu), mi);
+}
+
+void
+sp_menu_button_set_active (SPMenuButton *mb, gpointer data)
+{
+	g_return_if_fail (mb != NULL);
+	g_return_if_fail (SP_IS_MENU_BUTTON (mb));
+
+	if (mb->menu) {
+		GList *children;
+		children = GTK_MENU_SHELL (mb->menu)->children;
+		while (children) {
+			gpointer user;
+			user = gtk_object_get_data (GTK_OBJECT (children->data), "user");
+			if (user == data) {
+				if (children->data != mb->menuitem) {
+					gtk_widget_reparent (GTK_BIN (mb)->child, mb->menuitem);
+					mb->menuitem = GTK_WIDGET (children->data);
+					gtk_widget_reparent (GTK_BIN (mb->menuitem)->child, GTK_WIDGET (mb));
+					gtk_signal_emit (GTK_OBJECT (mb), button_signals[ACTIVATE], data);
+				}
+				return;
+			}
+			children = children->next;
+		}
+
+		g_warning ("Data not associated with any child");
+	}
+
+	g_warning ("No menu");
+}
+
+gpointer
+sp_menu_button_get_active_data (SPMenuButton *mb)
+{
+	g_return_val_if_fail (mb != NULL, NULL);
+	g_return_val_if_fail (SP_IS_MENU_BUTTON (mb), NULL);
+
+	if (mb->menuitem) {
+		return gtk_object_get_data (GTK_OBJECT (mb->menuitem), "user");
+	}
+
+	return NULL;
+}
+
+static gint
+sp_menu_button_button_timeout (gpointer data)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (data);
+
+	g_print ("Menu button timeout\n");
+
+	/* fixme: Think (lauris) */
+	/* We keep original values to prevent resizing */
+	mb->width = GTK_WIDGET (mb)->allocation.width;
+	mb->height = GTK_WIDGET (mb)->allocation.height;
+	gtk_widget_reparent (GTK_BIN (mb)->child, mb->menuitem);
+	gtk_menu_popup (GTK_MENU (mb->menu), NULL, NULL, sp_menu_button_menu_position, mb, 1, gdk_time_get ());
+
+	mb->cbid = 0;
+
+	return FALSE;
+}
+
+static void
+sp_menu_button_menu_deactivate (GtkMenuShell *shell, SPMenuButton *mb)
+{
+	/* fixme: Think (Lauris) */
+	mb->menuitem = gtk_menu_get_active (GTK_MENU (shell));
+
+	if (mb->menuitem) {
+		GtkWidget *child;
+		gpointer data;
+
+		child = GTK_BIN (mb->menuitem)->child;
+
+		if (child) {
+			gtk_widget_reparent (child, GTK_WIDGET (mb));
+		}
+
+		mb->width = 0;
+		mb->height = 0;
+
+		gtk_grab_remove (GTK_WIDGET (mb));
+		gtk_button_released (GTK_BUTTON (mb));
+
+		data = gtk_object_get_data (GTK_OBJECT (mb->menuitem), "user");
+		gtk_signal_emit (GTK_OBJECT (mb), button_signals[ACTIVATE], data);
+	}
+}
+
+static void
+sp_menu_button_menu_position (GtkMenu *menu, gint *x, gint *y, gpointer data)
+{
+	SPMenuButton *mb;
+
+	mb = SP_MENU_BUTTON (data);
+
+#if 0
+  GtkWidget *active;
+  GtkWidget *child;
+  GtkRequisition requisition;
+  GList *children;
+  gint shift_menu;
+  gint screen_width;
+  gint screen_height;
+  gint menu_xpos;
+  gint menu_ypos;
+  gint width;
+  gint height;
+
+  g_return_if_fail (user_data != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (user_data));
+
+
+  gtk_widget_get_child_requisition (GTK_WIDGET (menu), &requisition);
+  width = requisition.width;
+  height = requisition.height;
+
+  active = gtk_menu_get_active (GTK_MENU (menu_button->menu));
+  children = GTK_MENU_SHELL (menu_button->menu)->children;
+  gdk_window_get_origin (GTK_WIDGET (menu_button)->window, &menu_xpos, &menu_ypos);
+
+  menu_ypos += GTK_WIDGET (menu_button)->allocation.height / 2 - 2;
+
+  if (active != NULL)
+    {
+      gtk_widget_get_child_requisition (active, &requisition);
+      menu_ypos -= requisition.height / 2;
+    }
+
+  while (children)
+    {
+      child = children->data;
+
+      if (active == child)
+	break;
+
+      if (GTK_WIDGET_VISIBLE (child))
+	{
+	  gtk_widget_get_child_requisition (child, &requisition);
+	  menu_ypos -= requisition.height;
+	}
+
+      children = children->next;
+    }
+
+  screen_width = gdk_screen_width ();
+  screen_height = gdk_screen_height ();
+
+  shift_menu = FALSE;
+  if (menu_ypos < 0)
+    {
+      menu_ypos = 0;
+      shift_menu = TRUE;
+    }
+  else if ((menu_ypos + height) > screen_height)
+    {
+      menu_ypos -= ((menu_ypos + height) - screen_height);
+      shift_menu = TRUE;
+    }
+
+  if (shift_menu)
+    {
+      if ((menu_xpos + GTK_WIDGET (menu_button)->allocation.width + width) <= screen_width)
+	menu_xpos += GTK_WIDGET (menu_button)->allocation.width;
+      else
+	menu_xpos -= width;
+    }
+
+  if (menu_xpos < 0)
+    menu_xpos = 0;
+  else if ((menu_xpos + width) > screen_width)
+    menu_xpos -= ((menu_xpos + width) - screen_width);
+
+  *x = menu_xpos;
+  *y = menu_ypos;
+#endif
+  gdk_window_get_origin (GTK_WIDGET (mb)->window, x, y);
+}
+
+#if 0
+GtkWidget*
+sp_menu_button_get_menu (SPMenuButton *menu_button)
+{
+  g_return_val_if_fail (menu_button != NULL, NULL);
+  g_return_val_if_fail (SP_IS_MENU_BUTTON (menu_button), NULL);
+
+  return menu_button->menu;
+}
+
+static void
+sp_menu_button_detacher (GtkWidget     *widget,
+			  GtkMenu	*menu)
+{
+  SPMenuButton *menu_button;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+
+  menu_button = SP_MENU_BUTTON (widget);
+  g_return_if_fail (menu_button->menu == (GtkWidget*) menu);
+
+  sp_menu_button_remove_contents (menu_button);
+  gtk_signal_disconnect_by_data (GTK_OBJECT (menu_button->menu),
+				 menu_button);
+  
+  menu_button->menu = NULL;
+}
+
+void
+sp_menu_button_set_menu (SPMenuButton *menu_button,
+			  GtkWidget     *menu)
+{
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+  g_return_if_fail (menu != NULL);
+  g_return_if_fail (GTK_IS_MENU (menu));
+
+  if (menu_button->menu != menu)
+    {
+      sp_menu_button_remove_menu (menu_button);
+
+      menu_button->menu = menu;
+      gtk_menu_attach_to_widget (GTK_MENU (menu),
+				 GTK_WIDGET (menu_button),
+				 sp_menu_button_detacher);
+
+      sp_menu_button_calc_size (menu_button);
+
+      gtk_signal_connect (GTK_OBJECT (menu_button->menu), "deactivate",
+			  (GtkSignalFunc) sp_menu_button_deactivate,
+			  menu_button);
+
+      if (GTK_WIDGET (menu_button)->parent)
+	gtk_widget_queue_resize (GTK_WIDGET (menu_button));
+
+      sp_menu_button_update_contents (menu_button);
+    }
+}
+
+void
+sp_menu_button_remove_menu (SPMenuButton *menu_button)
+{
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  if (menu_button->menu)
+    gtk_menu_detach (GTK_MENU (menu_button->menu));
+}
+
+void
+sp_menu_button_set_history (SPMenuButton *menu_button,
+			     guint          index)
+{
+  GtkWidget *menu_item;
+
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  if (menu_button->menu)
+    {
+      gtk_menu_set_active (GTK_MENU (menu_button->menu), index);
+      menu_item = gtk_menu_get_active (GTK_MENU (menu_button->menu));
+
+      if (menu_item != menu_button->menu_item)
+	sp_menu_button_update_contents (menu_button);
+    }
+}
+
+static void
+sp_menu_button_get_props (SPMenuButton       *menu_button,
+			   SPMenuButtonProps  *props)
+{
+  GtkWidget *widget =  GTK_WIDGET (menu_button);
+
+  props->indicator_width = gtk_style_get_prop_experimental (widget->style,
+							    "SPMenuButton::indicator_width",
+							    default_props.indicator_width);
+
+  props->indicator_height = gtk_style_get_prop_experimental (widget->style,
+							     "SPMenuButton::indicator_height",
+							     default_props.indicator_height);
+
+  props->indicator_top_spacing = gtk_style_get_prop_experimental (widget->style,
+								  "SPMenuButton::indicator_top_spacing",
+								  default_props.indicator_top_spacing);
+  props->indicator_bottom_spacing = gtk_style_get_prop_experimental (widget->style,
+								     "SPMenuButton::indicator_bottom_spacing",
+								     default_props.indicator_bottom_spacing);
+  props->indicator_left_spacing = gtk_style_get_prop_experimental (widget->style,
+							       "SPMenuButton::indicator_left_spacing",
+							       default_props.indicator_left_spacing);
+  props->indicator_right_spacing = gtk_style_get_prop_experimental (widget->style,
+								    "SPMenuButton::indicator_right_spacing",
+								    default_props.indicator_right_spacing);
+}
+
+static void
+sp_menu_button_size_request (GtkWidget      *widget,
+			      GtkRequisition *requisition)
+{
+  SPMenuButton *menu_button;
+  SPMenuButtonProps props;
+  gint tmp;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  g_return_if_fail (requisition != NULL);
+
+  menu_button = SP_MENU_BUTTON (widget);
+
+  sp_menu_button_get_props (menu_button, &props);
+
+  requisition->width = ((GTK_CONTAINER (widget)->border_width +
+			 GTK_WIDGET (widget)->style->klass->xthickness) * 2 +
+			menu_button->width +
+			props.indicator_width +
+			props.indicator_left_spacing + props.indicator_right_spacing +
+			CHILD_LEFT_SPACING + CHILD_RIGHT_SPACING + 2);
+  requisition->height = ((GTK_CONTAINER (widget)->border_width +
+			  GTK_WIDGET (widget)->style->klass->ythickness) * 2 +
+			 menu_button->height +
+			 CHILD_TOP_SPACING + CHILD_BOTTOM_SPACING + 2);
+
+  tmp = (requisition->height - menu_button->height +
+	 props.indicator_height + props.indicator_top_spacing + props.indicator_bottom_spacing);
+  requisition->height = MAX (requisition->height, tmp);
+}
+
+static void
+sp_menu_button_size_allocate (GtkWidget     *widget,
+			       GtkAllocation *allocation)
+{
+  GtkWidget *child;
+  GtkAllocation child_allocation;
+  SPMenuButtonProps props;
+    
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  g_return_if_fail (allocation != NULL);
+
+  sp_menu_button_get_props (SP_MENU_BUTTON (widget), &props);
+
+  widget->allocation = *allocation;
+  if (GTK_WIDGET_REALIZED (widget))
+    gdk_window_move_resize (widget->window,
+			    allocation->x, allocation->y,
+			    allocation->width, allocation->height);
+
+  child = GTK_BIN (widget)->child;
+  if (child && GTK_WIDGET_VISIBLE (child))
+    {
+      child_allocation.x = (GTK_CONTAINER (widget)->border_width +
+			    GTK_WIDGET (widget)->style->klass->xthickness) + 1;
+      child_allocation.y = (GTK_CONTAINER (widget)->border_width +
+			    GTK_WIDGET (widget)->style->klass->ythickness) + 1;
+      child_allocation.width = MAX (1, (gint)allocation->width - child_allocation.x * 2 -
+				    props.indicator_width - props.indicator_left_spacing - props.indicator_right_spacing -
+				    CHILD_LEFT_SPACING - CHILD_RIGHT_SPACING - 2);
+      child_allocation.height = MAX (1, (gint)allocation->height - child_allocation.y * 2 -
+				     CHILD_TOP_SPACING - CHILD_BOTTOM_SPACING - 2);
+      child_allocation.x += CHILD_LEFT_SPACING;
+      child_allocation.y += CHILD_TOP_SPACING;
+
+      gtk_widget_size_allocate (child, &child_allocation);
+    }
+}
+
+static void
+sp_menu_button_paint (GtkWidget    *widget,
+		       GdkRectangle *area)
+{
+  GdkRectangle button_area;
+  SPMenuButtonProps props;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  g_return_if_fail (area != NULL);
+
+  if (GTK_WIDGET_DRAWABLE (widget))
+    {
+      sp_menu_button_get_props (SP_MENU_BUTTON (widget), &props);
+
+      button_area.x = GTK_CONTAINER (widget)->border_width + 1;
+      button_area.y = GTK_CONTAINER (widget)->border_width + 1;
+      button_area.width = widget->allocation.width - button_area.x * 2;
+      button_area.height = widget->allocation.height - button_area.y * 2;
+
+      /* This is evil, and should be elimated here and in the button
+       * code. The point is to clear the focus, and make it
+       * sort of transparent if it isn't there.
+       */
+      gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
+      gdk_window_clear_area (widget->window, area->x, area->y, area->width, area->height);
+
+      gtk_paint_box(widget->style, widget->window,
+		    GTK_WIDGET_STATE (widget), GTK_SHADOW_OUT,
+		    area, widget, "optionmenu",
+		    button_area.x, button_area.y,
+		    button_area.width, button_area.height);
+      
+      gtk_paint_tab (widget->style, widget->window,
+		     GTK_WIDGET_STATE (widget), GTK_SHADOW_OUT,
+		     area, widget, "optionmenutab",
+		     button_area.x + button_area.width - 
+		     props.indicator_width - props.indicator_right_spacing -
+		     widget->style->klass->xthickness,
+		     button_area.y + (button_area.height - props.indicator_height) / 2,
+		     props.indicator_width, props.indicator_height);
+      
+      if (GTK_WIDGET_HAS_FOCUS (widget))
+	gtk_paint_focus (widget->style, widget->window,
+			 area, widget, "button",
+			 button_area.x - 1, 
+			 button_area.y - 1, 
+			 button_area.width + 1,
+			 button_area.height + 1);
+    }
+}
+
+static void
+sp_menu_button_draw (GtkWidget    *widget,
+		      GdkRectangle *area)
+{
+  GtkWidget *child;
+  GdkRectangle child_area;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  g_return_if_fail (area != NULL);
+
+  if (GTK_WIDGET_DRAWABLE (widget))
+    {
+      sp_menu_button_paint (widget, area);
+
+      child = GTK_BIN (widget)->child;
+      if (child && gtk_widget_intersect (child, area, &child_area))
+	gtk_widget_draw (child, &child_area);
+    }
+}
+
+static gint
+sp_menu_button_expose (GtkWidget      *widget,
+			GdkEventExpose *event)
+{
+  GtkWidget *child;
+  GdkEventExpose child_event;
+  gint remove_child;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (SP_IS_MENU_BUTTON (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  if (GTK_WIDGET_DRAWABLE (widget))
+    {
+      sp_menu_button_paint (widget, &event->area);
+
+
+      /* The following code tries to draw the child in two places at
+       * once. It fails miserably for several reasons
+       *
+       * - If the child is not no-window, removing generates
+       *   more expose events. Bad, bad, bad.
+       * 
+       * - Even if the child is no-window, removing it now (properly)
+       *   clears the space where it was, so it does no good
+       */
+      
+#if 0
+      remove_child = FALSE;
+      child = GTK_BUTTON (widget)->child;
+
+      if (!child)
+	{
+	  if (!SP_MENU_BUTTON (widget)->menu)
+	    return FALSE;
+	  sp_menu_button_update_contents (SP_MENU_BUTTON (widget));
+	  child = GTK_BUTTON (widget)->child;
+	  if (!child)
+	    return FALSE;
+	  remove_child = TRUE;
+	}
+
+      child_event = *event;
+
+      if (GTK_WIDGET_NO_WINDOW (child) &&
+	  gtk_widget_intersect (child, &event->area, &child_event.area))
+	gtk_widget_event (child, (GdkEvent*) &child_event);
+
+      if (remove_child)
+	sp_menu_button_remove_contents (SP_MENU_BUTTON (widget));
+#else
+      remove_child = FALSE;
+      child = GTK_BIN (widget)->child;
+      child_event = *event;
+      if (child && GTK_WIDGET_NO_WINDOW (child) &&
+	  gtk_widget_intersect (child, &event->area, &child_event.area))
+	gtk_widget_event (child, (GdkEvent*) &child_event);
+
+#endif /* 0 */
+    }
+
+  return FALSE;
+}
+
+static gint
+sp_menu_button_button_press (GtkWidget      *widget,
+			      GdkEventButton *event)
+{
+  SPMenuButton *menu_button;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (SP_IS_MENU_BUTTON (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  menu_button = SP_MENU_BUTTON (widget);
+
+  if ((event->type == GDK_BUTTON_PRESS) &&
+      (event->button == 1))
+    {
+      sp_menu_button_remove_contents (menu_button);
+      gtk_menu_popup (GTK_MENU (menu_button->menu), NULL, NULL,
+		      sp_menu_button_position, menu_button,
+		      event->button, event->time);
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gint
+sp_menu_button_key_press (GtkWidget   *widget,
+			   GdkEventKey *event)
+{
+  SPMenuButton *menu_button;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (SP_IS_MENU_BUTTON (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  menu_button = SP_MENU_BUTTON (widget);
+
+  switch (event->keyval)
+    {
+    case GDK_space:
+      sp_menu_button_remove_contents (menu_button);
+      gtk_menu_popup (GTK_MENU (menu_button->menu), NULL, NULL,
+		      sp_menu_button_position, menu_button,
+		      0, event->time);
+      return TRUE;
+    }
+  
+  return FALSE;
+}
+
+static void
+sp_menu_button_deactivate (GtkMenuShell  *menu_shell,
+			    SPMenuButton *menu_button)
+{
+  g_return_if_fail (menu_shell != NULL);
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  sp_menu_button_update_contents (menu_button);
+}
+
+static void
+sp_menu_button_select_first_sensitive (SPMenuButton *menu_button)
+{
+  if (menu_button->menu)
+    {
+      GList *children = GTK_MENU_SHELL (menu_button->menu)->children;
+      gint index = 0;
+
+      while (children)
+	{
+	  if (GTK_WIDGET_SENSITIVE (children->data))
+	    {
+	      sp_menu_button_set_history (menu_button, index);
+	      return;
+	    }
+	  
+	  children = children->next;
+	  index++;
+	}
+    }
+}
+
+static void
+sp_menu_button_item_state_changed_cb (GtkWidget      *widget,
+				       GtkStateType    previous_state,
+				       SPMenuButton  *menu_button)
+{
+  GtkWidget *child = GTK_BIN (menu_button)->child;
+
+  if (child && GTK_WIDGET_SENSITIVE (child) != GTK_WIDGET_IS_SENSITIVE (widget))
+    gtk_widget_set_sensitive (child, GTK_WIDGET_IS_SENSITIVE (widget));
+}
+
+static void
+sp_menu_button_item_destroy_cb (GtkWidget     *widget,
+				 SPMenuButton *menu_button)
+{
+  GtkWidget *child = GTK_BIN (menu_button)->child;
+
+  if (child)
+    {
+      gtk_widget_ref (child);
+      sp_menu_button_remove_contents (menu_button);
+      gtk_widget_destroy (child);
+      gtk_widget_unref (child);
+
+      sp_menu_button_select_first_sensitive (menu_button);
+    }
+}
+
+static void
+sp_menu_button_update_contents (SPMenuButton *menu_button)
+{
+  GtkWidget *child;
+  GtkRequisition child_requisition;
+
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  if (menu_button->menu)
+    {
+      sp_menu_button_remove_contents (menu_button);
+
+      menu_button->menu_item = gtk_menu_get_active (GTK_MENU (menu_button->menu));
+      if (menu_button->menu_item)
+	{
+	  gtk_widget_ref (menu_button->menu_item);
+	  child = GTK_BIN (menu_button->menu_item)->child;
+	  if (child)
+	    {
+	      if (!GTK_WIDGET_IS_SENSITIVE (menu_button->menu_item))
+		gtk_widget_set_sensitive (child, FALSE);
+	      gtk_widget_reparent (child, GTK_WIDGET (menu_button));
+	    }
+
+	  gtk_signal_connect (GTK_OBJECT (menu_button->menu_item), "state_changed",
+			      GTK_SIGNAL_FUNC (sp_menu_button_item_state_changed_cb), menu_button);
+	  gtk_signal_connect (GTK_OBJECT (menu_button->menu_item), "destroy",
+			      GTK_SIGNAL_FUNC (sp_menu_button_item_destroy_cb), menu_button);
+
+	  gtk_widget_size_request (child, &child_requisition);
+	  gtk_widget_size_allocate (GTK_WIDGET (menu_button),
+				    &(GTK_WIDGET (menu_button)->allocation));
+
+	  if (GTK_WIDGET_DRAWABLE (menu_button))
+	    gtk_widget_queue_draw (GTK_WIDGET (menu_button));
+	}
+    }
+}
+
+static void
+sp_menu_button_remove_contents (SPMenuButton *menu_button)
+{
+  GtkWidget *child;
+  
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  if (menu_button->menu_item)
+    {
+      child = GTK_BIN (menu_button)->child;
+  
+      if (child)
+	{
+	  gtk_widget_set_sensitive (child, TRUE);
+	  gtk_widget_reparent (child, menu_button->menu_item);
+	}
+
+      gtk_signal_disconnect_by_func (GTK_OBJECT (menu_button->menu_item),
+				     GTK_SIGNAL_FUNC (sp_menu_button_item_state_changed_cb),
+				     menu_button);				     
+      gtk_signal_disconnect_by_func (GTK_OBJECT (menu_button->menu_item),
+				     GTK_SIGNAL_FUNC (sp_menu_button_item_destroy_cb),
+				     menu_button);   
+      
+      gtk_widget_unref (menu_button->menu_item);
+      menu_button->menu_item = NULL;
+    }
+}
+
+static void
+sp_menu_button_calc_size (SPMenuButton *menu_button)
+{
+  GtkWidget *child;
+  GList *children;
+  GtkRequisition child_requisition;
+
+  g_return_if_fail (menu_button != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (menu_button));
+
+  menu_button->width = 0;
+  menu_button->height = 0;
+
+  if (menu_button->menu)
+    {
+      children = GTK_MENU_SHELL (menu_button->menu)->children;
+      while (children)
+	{
+	  child = children->data;
+	  children = children->next;
+
+	  if (GTK_WIDGET_VISIBLE (child))
+	    {
+	      gtk_widget_size_request (child, &child_requisition);
+
+	      menu_button->width = MAX (menu_button->width, child_requisition.width);
+	      menu_button->height = MAX (menu_button->height, child_requisition.height);
+	    }
+	}
+    }
+}
+
+
+static void
+sp_menu_button_show_all (GtkWidget *widget)
+{
+  GtkContainer *container;
+  SPMenuButton *menu_button;
+  
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  container = GTK_CONTAINER (widget);
+  menu_button = SP_MENU_BUTTON (widget);
+
+  gtk_widget_show (widget);
+  gtk_container_foreach (container, (GtkCallback) gtk_widget_show_all, NULL);
+  if (menu_button->menu)
+    gtk_widget_show_all (menu_button->menu);
+  if (menu_button->menu_item)
+    gtk_widget_show_all (menu_button->menu_item);
+}
+
+
+static void
+sp_menu_button_hide_all (GtkWidget *widget)
+{
+  GtkContainer *container;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (SP_IS_MENU_BUTTON (widget));
+  container = GTK_CONTAINER (widget);
+
+  gtk_widget_hide (widget);
+  gtk_container_foreach (container, (GtkCallback) gtk_widget_hide_all, NULL);
+}
+#endif
+

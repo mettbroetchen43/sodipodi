@@ -48,7 +48,7 @@ struct _SPToolBoxClass {
 
 GtkType sp_toolbox_get_type (void);
 
-GtkWidget * sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internalname, const gchar * pixmapname);
-void sp_toolbox_set_state (SPToolBox * toolbox, guint state);
+GtkWidget *sp_toolbox_new (GtkWidget *contents, const gchar *name, const gchar *internalname, const gchar *pixmapname);
+void sp_toolbox_set_state (SPToolBox *toolbox, guint state);
 
 #endif

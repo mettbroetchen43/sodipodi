@@ -416,44 +416,10 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 void
 sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 {
-#if 0
-	static GtkMenu * menu = NULL;
-	static GtkWidget * objitem = NULL;
-	GladeXML * xml;
-
-	if (menu == NULL) {
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "popup_main");
-		g_return_if_fail (xml != NULL);
-
-		glade_xml_signal_autoconnect (xml);
-
-		menu = GTK_MENU (glade_xml_get_widget (xml, "popup_main"));
-		g_return_if_fail (menu != NULL);
-
-		objitem = gtk_menu_item_new_with_label (_("Object"));
-		gtk_menu_append (menu, objitem);
-		gtk_widget_show (objitem);
-	}
-
-	if (item != NULL) {
-		GtkWidget * m;
-		m = gtk_menu_new ();
-		gtk_signal_connect_while_alive (GTK_OBJECT (item), "destroy",
-						GTK_SIGNAL_FUNC (sp_event_grab_item_destroy), objitem, GTK_OBJECT (m));
-		sp_item_menu (item, desktop, GTK_MENU (m));
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (objitem), m);
-		gtk_widget_show (m);
-		gtk_widget_set_sensitive (objitem, TRUE);
-	} else {
-		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (objitem));
-		gtk_widget_set_sensitive (objitem, FALSE);
-	}
-#else
 	GtkWidget *menu;
 
 	menu = sp_ui_generic_menu (SP_VIEW (desktop), item);
 	gtk_widget_show (menu);
-#endif
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:

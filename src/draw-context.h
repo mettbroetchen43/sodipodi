@@ -17,6 +17,8 @@
 #include "helper/curve.h"
 #include "event-context.h"
 
+/* Freehand context */
+
 #define SP_TYPE_DRAW_CONTEXT (sp_draw_context_get_type ())
 #define SP_DRAW_CONTEXT(o) (GTK_CHECK_CAST ((o), SP_TYPE_DRAW_CONTEXT, SPDrawContext))
 #define SP_DRAW_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DRAW_CONTEXT, SPDrawContextClass))
@@ -29,18 +31,8 @@ typedef struct _SPDrawAnchor SPDrawAnchor;
 
 #define SP_DRAW_POINTS_MAX 16
 
-enum {
-	SP_DRAW_CONTEXT_IDLE,
-	SP_DRAW_CONTEXT_ADDLINE,
-	SP_DRAW_CONTEXT_PEN_POINT,
-	SP_DRAW_CONTEXT_PEN_CONTROL,
-	SP_DRAW_CONTEXT_FREEHAND
-};
-
 struct _SPDrawContext {
 	SPEventContext event_context;
-
-	guint state : 3;
 
 	/* Red */
 	GnomeCanvasItem *red_bpath;
@@ -67,8 +59,6 @@ struct _SPDrawContext {
 
 	ArtPoint p[SP_DRAW_POINTS_MAX];
 	gint npoints;
-
-	GnomeCanvasItem *c0, *c1, *cl0, *cl1;
 };
 
 struct _SPDrawContextClass {
@@ -76,5 +66,65 @@ struct _SPDrawContextClass {
 };
 
 GtkType sp_draw_context_get_type (void);
+
+/* Pencil context */
+
+#define SP_TYPE_PENCIL_CONTEXT (sp_pencil_context_get_type ())
+#define SP_PENCIL_CONTEXT(o) (GTK_CHECK_CAST ((o), SP_TYPE_PENCIL_CONTEXT, SPPencilContext))
+#define SP_PENCIL_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_PENCIL_CONTEXT, SPPencilContextClass))
+#define SP_IS_PENCIL_CONTEXT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_PENCIL_CONTEXT))
+#define SP_IS_PENCIL_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_PENCIL_CONTEXT))
+
+typedef struct _SPPencilContext SPPencilContext;
+typedef struct _SPPencilContextClass SPPencilContextClass;
+
+enum {
+	SP_PENCIL_CONTEXT_IDLE,
+	SP_PENCIL_CONTEXT_ADDLINE,
+	SP_PENCIL_CONTEXT_FREEHAND
+};
+
+struct _SPPencilContext {
+	SPDrawContext draw_context;
+
+	guint state : 2;
+};
+
+struct _SPPencilContextClass {
+	SPEventContextClass parent_class;
+};
+
+GtkType sp_pencil_context_get_type (void);
+
+/* Pen context */
+
+#define SP_TYPE_PEN_CONTEXT (sp_pen_context_get_type ())
+#define SP_PEN_CONTEXT(o) (GTK_CHECK_CAST ((o), SP_TYPE_PEN_CONTEXT, SPPenContext))
+#define SP_PEN_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_PEN_CONTEXT, SPPenContextClass))
+#define SP_IS_PEN_CONTEXT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_PEN_CONTEXT))
+#define SP_IS_PEN_CONTEXT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_PEN_CONTEXT))
+
+typedef struct _SPPenContext SPPenContext;
+typedef struct _SPPenContextClass SPPenContextClass;
+
+enum {
+	SP_PEN_CONTEXT_IDLE,
+	SP_PEN_CONTEXT_POINT,
+	SP_PEN_CONTEXT_CONTROL,
+};
+
+struct _SPPenContext {
+	SPDrawContext draw_context;
+
+	guint state : 2;
+
+	GnomeCanvasItem *c0, *c1, *cl0, *cl1;
+};
+
+struct _SPPenContextClass {
+	SPEventContextClass parent_class;
+};
+
+GtkType sp_pen_context_get_type (void);
 
 #endif
