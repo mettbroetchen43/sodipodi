@@ -40,11 +40,11 @@ sp_help_about (void)
 	title = sp_document_lookup_id (doc, "title");
 	if (title) {
 		SPXMLText *text;
+		gchar *t;
 		sp_repr_set_content (SP_OBJECT_REPR (title), NULL);
 		while (sp_repr_children (SP_OBJECT_REPR (title))) {
 			sp_repr_unparent (sp_repr_children (SP_OBJECT_REPR (title)));
 		}
-		gchar *t;
 		t = g_strdup_printf ("Sodipodi %s", SODIPODI_VERSION);
 		text = sp_xml_document_createTextNode (sp_repr_document (SP_OBJECT_REPR (title)), t);
 		sp_repr_add_child (SP_OBJECT_REPR (title), text, NULL);
