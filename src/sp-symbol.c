@@ -12,6 +12,9 @@
  */
 
 #include <string.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
 #include "attributes.h"
@@ -140,13 +143,13 @@ sp_symbol_set (SPObject *object, unsigned int key, const unsigned char *value)
 			/* fixme: We have to take original item affine into account */
 			/* fixme: Think (Lauris) */
 			eptr = (gchar *) value;
-			x = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &x);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			y = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &y);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			width = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &width);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			height = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &height);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 			if ((width > 0) && (height > 0)) {
 				/* Set viewbox */

@@ -14,6 +14,9 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include "attributes.h"
 #include "sp-polyline.h"
 #include "helper/sp-intl.h"
@@ -97,38 +100,44 @@ sp_polyline_set (SPObject *object, unsigned int key, const unsigned char *value)
 	switch (key) {
 	case SP_ATTR_POINTS: {
 		SPCurve * curve;
-		const gchar * cptr;
-		char * eptr;
-		gboolean hascpt;
+		const unsigned char *p;
+		gboolean hascpt, hasshape;
 
 		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
+		hasshape = FALSE;
 
-		cptr = value;
-		eptr = NULL;
+		p = value;
 
 		while (TRUE) {
-			gdouble x, y;
-
-			x = strtod (cptr, &eptr);
-			if (eptr == cptr) break;
-			cptr = strchr (eptr, ',');
-			if (!cptr) break;
-			cptr++;
-			y = strtod (cptr, &eptr);
-			if (eptr == cptr) break;
-			cptr = eptr;
+			double x, y;
+			int len;
+			len = arikkei_strtod_exp (p, 256, &x);
+			if (!len) break;
+			p += len;
+			p = strchr (p, ',');
+			if (!p) break;
+			p += 1;
+			len = arikkei_strtod_exp (p, 256, &y);
+			if (!len) break;
+			p += len;
+			/* fixme: Is comma allowed here? */
 			if (hascpt) {
 				sp_curve_lineto (curve, x, y);
+				hasshape = TRUE;
 			} else {
 				sp_curve_moveto (curve, x, y);
 				hascpt = TRUE;
 			}
 		}
-		
-		sp_shape_set_curve (SP_SHAPE (polyline), curve, TRUE);
-		sp_curve_unref (curve);
+		if (hasshape) {
+			sp_shape_set_curve (SP_SHAPE (polyline), curve, TRUE);
+			sp_curve_unref (curve);
+		} else {
+			sp_shape_set_curve (SP_SHAPE (polyline), NULL, TRUE);
+			sp_curve_unref (curve);
+		}
 		break;
 	}
 	default:

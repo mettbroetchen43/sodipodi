@@ -15,6 +15,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <gtk/gtksignal.h>
 
 #include "svg/svg.h"
@@ -1070,13 +1073,13 @@ sp_style_read_dash (ArtVpathDash *dash, const guchar *str)
 {
 	gint n_dash;
 	gdouble d[64];
-	guchar *e;
+	const unsigned char *e;
 
 	n_dash = 0;
 	e = NULL;
 
 	while (e != str && n_dash < 64) {
-		d[n_dash] = strtod (str, (char **) &e);
+		e = str + arikkei_strtod_simple (str, 1024, &d[n_dash]);
 		if (e != str) {
 			n_dash += 1;
 			str = e;
@@ -1336,10 +1339,10 @@ sp_style_read_ilength (SPILength *val, const guchar *str)
 		val->set = TRUE;
 		val->inherit = TRUE;
 	} else {
-		gdouble value;
-		gchar *e;
+		double value;
+		const unsigned char *e;
 		/* fixme: Move this to standard place (Lauris) */
-		value = strtod (str, &e);
+		e = str + arikkei_strtod_simple (str, 1024, &value);
 		if ((const guchar *) e != str) {
 			if (!*e) {
 				/* Userspace */
@@ -1459,9 +1462,9 @@ sp_style_read_ifontsize (SPIFontSize *val, const guchar *str)
 		return;
 	} else {
 		gdouble value;
-		gchar *e;
+		const unsigned char *e;
 		/* fixme: Move this to standard place (Lauris) */
-		value = strtod (str, &e);
+		e = str + arikkei_strtod_simple (str, 1024, &value);
 		if ((const guchar *) e != str) {
 			if (!*e) {
 				/* Userspace */
@@ -1768,23 +1771,23 @@ sp_style_write_ifontsize (guchar *p, gint len, const guchar *key, SPIFontSize *v
 static SPColor *
 sp_style_read_color_cmyk (SPColor *color, const guchar *str)
 {
-	gdouble c, m, y, k;
+	double c, m, y, k;
 	gchar *cptr, *eptr;
 
 	g_return_val_if_fail (str != NULL, NULL);
 
 	c = m = y = k = 0.0;
 	cptr = (gchar *) str + 1;
-	c = strtod (cptr, &eptr);
+	eptr = cptr + arikkei_strtod_simple (cptr, 1024, &c);
 	if (eptr && (eptr != cptr)) {
 		cptr = eptr;
-		m = strtod (cptr, &eptr);
+		eptr = cptr + arikkei_strtod_simple (cptr, 1024, &m);
 		if (eptr && (eptr != cptr)) {
 			cptr = eptr;
-			y = strtod (cptr, &eptr);
+			eptr = cptr + arikkei_strtod_simple (cptr, 1024, &y);
 			if (eptr && (eptr != cptr)) {
 				cptr = eptr;
-				k = strtod (cptr, &eptr);
+				eptr = cptr + arikkei_strtod_simple (cptr, 1024, &k);
 				if (eptr && (eptr != cptr)) {
 					sp_color_set_cmyk_float (color, c, m, y, k);
 					return color;

@@ -14,6 +14,9 @@
 #include <string.h>
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <gtk/gtksignal.h>
 #include "macros.h"
 #include "xml/repr-private.h"
@@ -265,13 +268,13 @@ sp_pattern_set (SPObject *object, unsigned int key, const unsigned char *value)
 
 		if (value) {
 			eptr = (gchar *) value;
-			x = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &x);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			y = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &y);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			width = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &width);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			height = strtod (eptr, &eptr);
+			eptr += arikkei_strtod_exp (eptr, 1024, &height);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 			if ((width > 0) && (height > 0)) {
 				pat->viewBox.x0 = x;

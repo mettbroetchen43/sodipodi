@@ -16,6 +16,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <libarikkei/arikkei-strlib.h>
+
 #include "helper/canvas-grid.h"
 #include "svg/svg.h"
 #include "attributes.h"
@@ -629,12 +631,14 @@ static gboolean
 sp_nv_read_length (const guchar *str, guint base, gdouble *val, const SPUnit **unit)
 {
 	gdouble v;
-	gchar *u;
+	const unsigned char *u;
+	int len;
 
 	if (!str) return FALSE;
 
-	v = strtod (str, &u);
-	if (!u) return FALSE;
+	len = arikkei_strtod_exp (str, 1024, &v);
+	if (len < 1) return FALSE;
+	u = str + len;
 	while (isspace (*u)) u += 1;
 
 	if (!*u) {
@@ -690,12 +694,12 @@ static gboolean
 sp_nv_read_opacity (const guchar *str, guint32 *color)
 {
 	gdouble v;
-	gchar *u;
+	int len;
 
 	if (!str) return FALSE;
 
-	v = strtod (str, &u);
-	if (!u) return FALSE;
+	len = arikkei_strtod_exp (str, 1024, &v);
+	if (!len) return FALSE;
 	v = CLAMP (v, 0.0, 1.0);
 
 	*color = (*color & 0xffffff00) | (guint32) floor (v * 255.9999);

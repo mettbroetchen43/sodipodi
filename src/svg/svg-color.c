@@ -15,7 +15,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#include <libarikkei/arikkei-strlib.h>
+
 #include <glib.h>
+
 #include "svg.h"
 
 typedef struct _SPSVGColor SPSVGColor;
@@ -227,13 +231,13 @@ sp_svg_read_color (const guchar *str, guint32 def)
 	} else if (!strncmp (str, "rgb(", 4)) {
 		gboolean hasp, hasd;
 		gchar *s, *e;
-		gdouble r, g, b;
+		double r, g, b;
 
 		s = (gchar *) str + 4;
 		hasp = FALSE;
 		hasd = FALSE;
 
-		r = strtod (s, &e);
+		e = s + arikkei_strtod_simple (s, 1024, &r);
 		if (s == e) return def;
 		s = e;
 		if (*s == '%') {
@@ -246,7 +250,7 @@ sp_svg_read_color (const guchar *str, guint32 def)
 		if (*s != ',') return def;
 		s += 1;
 		while (*s && isspace (*s)) s += 1;
-		g = strtod (s, &e);
+		e = s + arikkei_strtod_simple (s, 1024, &g);
 		if (s == e) return def;
 		s = e;
 		if (*s == '%') {
@@ -259,7 +263,7 @@ sp_svg_read_color (const guchar *str, guint32 def)
 		if (*s != ',') return def;
 		s += 1;
 		while (*s && isspace (*s)) s += 1;
-		b = strtod (s, &e);
+		e = s + arikkei_strtod_simple (s, 1024, &b);
 		if (s == e) return def;
 		s = e;
 		if (*s == '%') {

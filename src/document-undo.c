@@ -71,7 +71,10 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 	log = sp_repr_coalesce_log (doc->priv->partial, sp_repr_commit_undoable (doc->rdoc));
 	doc->priv->partial = NULL;
 
-	if (!log) return;
+	if (!log) {
+		sp_repr_begin_transaction (doc->rdoc);
+		return;
+	}
 
 	if (key && doc->actionkey && !strcmp (key, doc->actionkey) && doc->priv->undo) {
 		SPReprAction *saved;
