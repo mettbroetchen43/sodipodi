@@ -7,13 +7,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.x\n"
-"POT-Creation-Date: 2002-01-06 22:13+0100\n"
-"PO-Revision-Date: 2002-01-06 21:50+0100\n"
+"POT-Creation-Date: 2002-02-06 22:30+0100\n"
+"PO-Revision-Date: 2002-02-06 22:30+0100\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Sodipodi SVG-Dokument"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Sodipodi SVG-Dokument-Fabrik"
 
 #: glade/align.glade.h:1 glade/transformation.glade.h:3
 msgid "Align"
@@ -167,7 +175,7 @@ msgid "Highlited guideline color"
 msgstr "Farbe der hervorgehobenen Linien"
 
 #: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "Millimeters"
 msgstr "Millimeter"
 
@@ -179,7 +187,8 @@ msgstr "Ursprung X:"
 msgid "Origin Y:"
 msgstr "Ursprung Y:"
 
-#: glade/desktop.glade.h:20 glade/display.glade.h:23 src/helper/unit-menu.c:95
+#: glade/desktop.glade.h:20 glade/display.glade.h:23
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
 msgid "Pixels"
 msgstr "Pixel"
 
@@ -307,7 +316,7 @@ msgid "ID:"
 msgstr "Kennung:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:646
+#: glade/item.glade.h:3 src/sp-item.c:619
 msgid "Item"
 msgstr "Element"
 
@@ -372,8 +381,8 @@ msgstr " Stil "
 msgid "Add new gradient"
 msgstr "Neuen Verlauf hinzufügen"
 
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:610
-#: src/widgets/sp-color-selector.c:630 src/widgets/sp-color-selector.c:652
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
 msgid "Alpha:"
 msgstr "Alpha:"
 
@@ -385,7 +394,7 @@ msgstr "Hintergrund füllen"
 msgid "Bevel join"
 msgstr "Gefaste Verbindung"
 
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:609
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
 msgid "Blue:"
 msgstr "Blau:"
 
@@ -437,7 +446,7 @@ msgstr "Fraktal füllen"
 msgid "Gradient fill"
 msgstr "Mit Farbverlauf füllen"
 
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:608
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
 msgid "Green:"
 msgstr "Grün:"
 
@@ -454,7 +463,7 @@ msgid "Layout"
 msgstr "Layout"
 
 #: glade/object_props.glade.h:26
-msgid "Mitter join"
+msgid "Miter join"
 msgstr "Mittig verbinden"
 
 #: glade/object_props.glade.h:27
@@ -481,7 +490,7 @@ msgstr "Strichfarbe wählen"
 msgid "Position"
 msgstr "Position"
 
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:607
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
 msgstr "Rot:"
 
@@ -528,7 +537,7 @@ msgid "centimeter"
 msgstr "Zentimeter"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "cm"
 msgstr "cm"
 
@@ -537,6 +546,7 @@ msgid "color"
 msgstr "Farbe"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:44
 msgid "in"
 msgstr "in"
 
@@ -549,7 +559,7 @@ msgid "millimeters"
 msgstr "Millimeter"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "mm"
 msgstr "mm"
 
@@ -570,11 +580,11 @@ msgid "points"
 msgstr "Punkt"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357
 msgid "pt"
 msgstr "pkt"
 
-#: glade/object_props.glade.h:56 src/helper/unit-menu.c:95
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
 msgid "px"
 msgstr "px"
 
@@ -627,7 +637,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Linie am gewählten Knoten begradigen"
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:84
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:115
 msgid "Delete"
 msgstr "Löschen"
 
@@ -773,7 +783,7 @@ msgid "Spiral"
 msgstr "Spirale"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/sp-star.c:475
+#: glade/sodipodi.glade.h:53 src/sp-star.c:476
 msgid "Star"
 msgstr "Stern"
 
@@ -940,8 +950,8 @@ msgstr "Zeichnungsinhalt"
 msgid "Duplicate selection"
 msgstr "Auswahl duplizieren"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:74
-#: src/toolbox.c:78
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
+#: src/dialogs/gradient-vector.c:107 src/toolbox.c:78
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -1144,7 +1154,8 @@ msgstr "_Beenden"
 msgid "lower selection to bottom"
 msgstr "Auswahl nach unter schicken"
 
-#: glade/transformation.glade.h:2 src/helper/unit-menu.c:97
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1193,7 +1204,8 @@ msgstr "Abbildung auf Kopie anwenden Strg+m"
 msgid "Center"
 msgstr "Zentrieren"
 
-#: glade/transformation.glade.h:15 src/helper/unit-menu.c:92
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:42
 msgid "Centimeter"
 msgstr "Zentimeter"
 
@@ -1221,7 +1233,8 @@ msgstr "Höhe: "
 msgid "Horizontal center value"
 msgstr "Horizontaler Mittelpunktswert"
 
-#: glade/transformation.glade.h:22 src/helper/unit-menu.c:93
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:44
 msgid "Inch"
 msgstr "Inch"
 
@@ -1233,7 +1246,8 @@ msgstr "Höhe der Auswahl bei Abbildung beibehalten"
 msgid "Keep width of selection during transformation"
 msgstr "Breite der Auswahl bei Abbildung beibehalten"
 
-#: glade/transformation.glade.h:25 src/helper/unit-menu.c:91
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:41
 msgid "Millimeter"
 msgstr "Millimeter"
 
@@ -1249,11 +1263,15 @@ msgstr "Orig. Breite:"
 msgid "Orig. X: "
 msgstr "Orig. X:"
 
-#: glade/transformation.glade.h:29 src/helper/unit-menu.c:97
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 msgid "Percent"
 msgstr "Prozent"
 
-#: glade/transformation.glade.h:30 src/helper/unit-menu.c:94
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:35
 msgid "Points"
 msgstr "Punkte"
 
@@ -1389,7 +1407,8 @@ msgstr "Vertikale Bewegung"
 msgid "vertical scale value"
 msgstr "Vertikaler Maßstab"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:79
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
+#: src/dialogs/gradient-vector.c:111
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -1461,13 +1480,17 @@ msgstr "Einfügen"
 msgid "Value"
 msgstr "Wert"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:629
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Wert:"
 
 #: glade/xml-tree.glade.h:22
 msgid "name"
 msgstr "Name"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "Vektor-Illustrator"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1553,6 +1576,28 @@ msgstr "CMYK"
 msgid "Gradient"
 msgstr "Farbverlauf"
 
+#. Reset button
+#: src/dialogs/gradient-selector.c:115
+msgid "Reset"
+msgstr "Zürücksetzen"
+
+#. No document or no gradients
+#: src/dialogs/gradient-vector.c:242
+msgid "No gradients defined"
+msgstr "Kein Farbverlauf angegeben"
+
+#: src/dialogs/gradient-vector.c:473
+msgid "Start color"
+msgstr "Startfarbe"
+
+#: src/dialogs/gradient-vector.c:485
+msgid "End color"
+msgstr "Zielfarbe"
+
+#: src/dialogs/gradient-vector.c:512
+msgid "Gradient vector"
+msgstr "Farbverlaufsvektor"
+
 #: src/dialogs/item-properties.c:175
 msgid "Item is reference"
 msgstr "Objekt ist ein Verweis"
@@ -1569,23 +1614,6 @@ msgstr "Die Kennung ist bereits definiert"
 msgid "The ID is valid"
 msgstr "Die Kennung ist gültig"
 
-#. Reset button
-#: src/dialogs/gradient-selector.c:102
-msgid "Reset"
-msgstr "Zürücksetzen"
-
-#: src/dialogs/gradient-vector.c:58
-msgid "Start color"
-msgstr "Startfarbe"
-
-#: src/dialogs/gradient-vector.c:70
-msgid "End color"
-msgstr "Zielfarbe"
-
-#: src/dialogs/gradient-vector.c:97
-msgid "Gradient vector"
-msgstr "Farbverlaufsvektor"
-
 #: src/dialogs/object-attributes.c:29
 msgid "Href:"
 msgstr "Href:"
@@ -1599,9 +1627,8 @@ msgid "Type:"
 msgstr "Typ:"
 
 #: src/dialogs/object-attributes.c:32
-#, fuzzy
 msgid "Role:"
-msgstr "Rot:"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:33
 msgid "Arcrole:"
@@ -1616,9 +1643,8 @@ msgid "Show:"
 msgstr "Zeigen:"
 
 #: src/dialogs/object-attributes.c:36
-#, fuzzy
 msgid "Actuate:"
-msgstr "Attribut:"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:41
 msgid "Sides:"
@@ -1653,9 +1679,8 @@ msgid "Expansion:"
 msgstr "Ausdehnung:"
 
 #: src/dialogs/object-attributes.c:55
-#, fuzzy
 msgid "Revolution:"
-msgstr "Auswahl"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:56
 msgid "Radius:"
@@ -1689,7 +1714,7 @@ msgstr "%s Attribute"
 #. Do some evil things
 #: src/dialogs/object-properties.c:209
 msgid "Dynamic fill"
-msgstr ""
+msgstr "Dynamisches füllen"
 
 #: src/document.c:235
 #, c-format
@@ -1726,62 +1751,107 @@ msgstr "Sodipodi (Dateiname %s): Durckvorschau"
 msgid "About sodipodi"
 msgstr "Über Sodipodi"
 
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "Centimeters"
 msgstr "Zentimeter"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356 src/helper/units.c:44
 msgid "Inches"
 msgstr "Zoll"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
 msgid "Point"
 msgstr "Punkt"
 
-#: src/helper/unit-menu.c:95
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
 msgid "Pixel"
 msgstr "Pixel"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "Userspace"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "us"
 msgstr "us"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em squares"
 msgstr "Em-Quadrate"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em square"
 msgstr "Em-Quadrat"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "em"
 msgstr "em"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex squares"
 msgstr "Ix-Quadrate"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex square"
 msgstr "Ix-Quadrat"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "ex"
 msgstr "ex"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:34
+msgid "Unit"
+msgstr "Einheit"
+
+#: src/helper/units.c:34
+msgid "Units"
+msgstr "Einheiten"
+
+#: src/helper/units.c:35
+msgid "Pt"
+msgstr "Pkt"
+
+#: src/helper/units.c:36
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:37
+msgid "Userspace unit"
+msgstr ""
+
+#: src/helper/units.c:37
+msgid "User"
+msgstr "Benutzer"
+
+#: src/helper/units.c:37
+msgid "Userspace units"
+msgstr ""
+
+#: src/helper/units.c:40
+msgid "Percents"
+msgstr "Prozent"
+
+#: src/helper/units.c:43
+msgid "Meter"
+msgstr "Meter"
+
+#: src/helper/units.c:43
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:43
+msgid "meters"
+msgstr "Meter"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
-"GUI nicht benutzen. Wenn NB! angegeben ist, sollte es das ERSTE Argument "
+"GUI nicht verwenden. Wenn NB! angegeben ist, sollte es das ERSTE Argument "
 "sein!"
 
 #: src/main.c:60
@@ -1909,6 +1979,31 @@ msgstr ""
 "Einstellungen weder laden noch speichern\n"
 "können."
 
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "Mit %s verknüpfen"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "Verknüpfung"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "Verknüpfungs-Eigenschaften"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "Verknüpfung folgen"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "Verknüpfung entfernen"
+
 #: src/sp-image.c:291
 msgid "Broken bitmap"
 msgstr "Defektes Bitmap"
@@ -1927,56 +2022,56 @@ msgstr "Bild"
 msgid "Image Properties"
 msgstr "Bild-Eigenschaften"
 
-#: src/sp-item.c:386
-msgid "Unknown item :-("
-msgstr "Unbekanntes Element :-("
-
-#. Item dialog
-#: src/sp-item.c:649
-msgid "Item Properties"
-msgstr "Objekteigenschaften"
-
-#. Select item
-#: src/sp-item.c:659
-msgid "Select this"
-msgstr "Dies auswählen"
-
-#. Reset transformations
-#: src/sp-item.c:669
-msgid "Reset transformation"
-msgstr "Abbildung zurücksetzen"
-
-#: src/sp-item.c:675
-msgid "Make sensitive"
-msgstr "Empfindlich machen"
-
-#: src/sp-item.c:675
-msgid "Make insensitive"
-msgstr "Unempfindlich machen"
-
-#. Create link
-#: src/sp-item.c:680
-msgid "Create link"
-msgstr "Verknüpfung erzeugen"
-
-#: src/sp-item-group.c:434
+#: src/sp-item-group.c:435
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppe von %d Objekten"
 
-#: src/sp-item-group.c:496
+#: src/sp-item-group.c:497
 msgid "Group"
 msgstr "Gruppieren"
 
 #. Group dialog
-#: src/sp-item-group.c:500
+#: src/sp-item-group.c:501
 msgid "Group Properties"
 msgstr "Gruppen-Eigenschaften"
 
 #. "Ungroup"
-#: src/sp-item-group.c:513
+#: src/sp-item-group.c:514
 msgid "Ungroup"
 msgstr "Gruppierung aufheben"
+
+#: src/sp-item.c:359
+msgid "Unknown item :-("
+msgstr "Unbekanntes Element :-("
+
+#. Item dialog
+#: src/sp-item.c:622
+msgid "Item Properties"
+msgstr "Objekteigenschaften"
+
+#. Select item
+#: src/sp-item.c:632
+msgid "Select this"
+msgstr "Dies auswählen"
+
+#. Reset transformations
+#: src/sp-item.c:642
+msgid "Reset transformation"
+msgstr "Abbildung zurücksetzen"
+
+#: src/sp-item.c:648
+msgid "Make sensitive"
+msgstr "Empfindlich machen"
+
+#: src/sp-item.c:648
+msgid "Make insensitive"
+msgstr "Unempfindlich machen"
+
+#. Create link
+#: src/sp-item.c:653
+msgid "Create link"
+msgstr "Verknüpfung erzeugen"
 
 #. Create toplevel menuitem
 #: src/sp-rect.c:363
@@ -2008,7 +2103,7 @@ msgid "Spiral Properties"
 msgstr "Spiral-Eigenschaften"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:479
 msgid "Star Properties"
 msgstr "Stern-Eigenschaften"
 
@@ -2016,67 +2111,30 @@ msgstr "Stern-Eigenschaften"
 msgid "Text object"
 msgstr "Textobjekt"
 
-#: src/sp-anchor.c:158
-#, c-format
-msgid "Link to %s"
-msgstr "Mit %s verknüpfen"
-
-#. Create toplevel menuitem
-#: src/sp-anchor.c:219
-msgid "Link"
-msgstr "Verknüpfung"
-
-#. Link dialog
-#: src/sp-anchor.c:222
-msgid "Link Properties"
-msgstr "Verknüpfungs-Eigenschaften"
-
-#. Select item
-#: src/sp-anchor.c:232
-msgid "Follow link"
-msgstr "Verknüpfung folgen"
-
-#. Reset transformations
-#: src/sp-anchor.c:237
-msgid "Remove link"
-msgstr "Verknüpfung entfernen"
-
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Zeichnen"
 
-#: src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "Farbe:"
 
-#: src/widgets/sp-color-selector.c:628
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "Deckkraft:"
 
-#: src/widgets/sp-color-selector.c:648
+#: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
 msgstr "Zyan:"
 
-#: src/widgets/sp-color-selector.c:649
+#: src/widgets/sp-color-selector.c:646
 msgid "Magenta:"
 msgstr "Magenta:"
 
-#: src/widgets/sp-color-selector.c:650
+#: src/widgets/sp-color-selector.c:647
 msgid "Yellow:"
 msgstr "Gelb:"
 
-#: src/widgets/sp-color-selector.c:651
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Schwarz:"
-
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr "Sodipodi SVG-Dokument"
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr "Sodipodi SVG-Dokument-Fabrik"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "Vektor-Illustrator"
