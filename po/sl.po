@@ -381,7 +381,7 @@ msgstr "Nastavitve preliva"
 
 #: glade/sodipodi-glade.c:104
 msgid "Preview (object binding box)"
-msgstr "Predogled (¹katla za povezavo objektov)"
+msgstr "Predogled (¹katla za povezavo predmetov)"
 
 #: glade/sodipodi-glade.c:105 glade/sodipodi-glade.c:106
 #: glade/sodipodi-glade.c:131
