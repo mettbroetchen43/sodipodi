@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-18 01:10+0100\n"
-"PO-Revision-Date: 2003-11-18 01:12+0100\n"
+"POT-Creation-Date: 2003-11-20 23:42+0100\n"
+"PO-Revision-Date: 2003-11-20 23:44+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,34 +30,34 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Ne može da obrazuje proizvodnju za sodipodi-svg-doc"
 
-#: src/desktop.c:752
+#: src/desktop.c:767
 msgid "Zoom drawing if window size changes"
 msgstr "Uvećaj crtež kada se promeni veličina prozora"
 
-#: src/desktop.c:832
+#: src/desktop.c:847
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:961
+#: src/desktop.c:976
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s sadrži nesačuvane izmene. Sačuvati ih?"
 
 #. Page page
-#: src/desktop.c:1507 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:277 src/dialogs/document-properties.c:165
+#: src/desktop.c:1522 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1511 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1526 src/dialogs/align.c:289 src/dialogs/export.c:142
 #: src/verbs.c:454
 msgid "Drawing"
 msgstr "Crtež"
 
 #. Selection submenu
-#: src/desktop.c:1515 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/desktop.c:1530 src/dialogs/align.c:290 src/dialogs/export.c:147
 #: src/interface.c:580 src/toolbox.c:489 src/verbs.c:455
 msgid "Selection"
 msgstr "Izbor"
@@ -176,96 +176,112 @@ msgstr "Prikaži mrežu"
 msgid "Snap to grid"
 msgstr "Prijanjaj uz mrežu"
 
-#: src/dialogs/desktop-properties.c:215
+#: src/dialogs/desktop-properties.c:216
 msgid "Horizontal lines"
 msgstr "Vodoravne linije"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:217
 msgid "Vertical lines"
 msgstr "Uspravne linije"
 
-#: src/dialogs/desktop-properties.c:218
+#: src/dialogs/desktop-properties.c:219
 msgid "Iso grid"
 msgstr "ISO mreža"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:220
 msgid "Hex grid"
 msgstr "Heks mreža"
 
-#: src/dialogs/desktop-properties.c:224
+#: src/dialogs/desktop-properties.c:226
 msgid "Grid units:"
 msgstr "Jedinice mreže:"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:228
 msgid "Origin X:"
 msgstr "Početak X:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:230
 msgid "Origin Y:"
 msgstr "Početak Y:"
 
-#: src/dialogs/desktop-properties.c:231
+#: src/dialogs/desktop-properties.c:233
 msgid "Spacing X:"
 msgstr "Vodoravni razmaci:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:235
 msgid "Spacing Y:"
 msgstr "Uspravni razmaci:"
 
-#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
 msgid "Snap units:"
 msgstr "Jedinice prijanjanja:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
 msgid "Snap distance:"
 msgstr "Udaljenost za prijanjanje:"
 
-#: src/dialogs/desktop-properties.c:242
+#: src/dialogs/desktop-properties.c:244
 msgid "Grid color:"
 msgstr "Boja mreže:"
 
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:245
 msgid "Grid color"
 msgstr "Boja mreže"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:247
+#: src/dialogs/desktop-properties.c:249
 msgid "Guides"
 msgstr "Vođice"
 
-#: src/dialogs/desktop-properties.c:258
+#: src/dialogs/desktop-properties.c:260
 msgid "Show guides"
 msgstr "Prikaži vođice"
 
-#: src/dialogs/desktop-properties.c:259
+#: src/dialogs/desktop-properties.c:261
 msgid "Snap to guides"
 msgstr "Prijanjaj uz vođice"
 
-#: src/dialogs/desktop-properties.c:269
+#: src/dialogs/desktop-properties.c:271
 msgid "Guides color:"
 msgstr "Boja vođica:"
 
-#: src/dialogs/desktop-properties.c:270
+#: src/dialogs/desktop-properties.c:272
 msgid "Guideline color"
 msgstr "Boja linije vodilje"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:274
 msgid "Highlight color:"
 msgstr "Boja isticanja:"
 
-#: src/dialogs/desktop-properties.c:273
+#: src/dialogs/desktop-properties.c:275
 msgid "Highlighted guideline color"
 msgstr "Boja istaknutih vođica"
 
-#: src/dialogs/desktop-properties.c:288
+#: src/dialogs/desktop-properties.c:290
 msgid "Show border"
 msgstr "Prikaži ivicu"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:296
 msgid "Border on top of drawing"
 msgstr "Ivica na vrhu crteža"
 
-#: src/dialogs/desktop-properties.c:553
+#: src/dialogs/desktop-properties.c:301
+msgid "Border color:"
+msgstr "Boja ivice:"
+
+#: src/dialogs/desktop-properties.c:302
+msgid "Page border color"
+msgstr "Boja ivice stranice"
+
+#: src/dialogs/desktop-properties.c:303
+msgid "Page color:"
+msgstr "Boja stranice:"
+
+#: src/dialogs/desktop-properties.c:304
+msgid "Page color"
+msgstr "Boja stranice"
+
+#: src/dialogs/desktop-properties.c:575
 msgid "Close"
 msgstr "Zatvori"
 
@@ -1742,7 +1758,7 @@ msgid "Unknown item :-("
 msgstr "Nepoznata stavka :-("
 
 #. fixme:
-#: src/sp-text.c:1461
+#: src/sp-text.c:1432
 msgid "Text object"
 msgstr "Objekat za tekst"
 
