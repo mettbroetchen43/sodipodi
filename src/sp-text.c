@@ -227,7 +227,6 @@ static void sp_tspan_modified (SPObject *object, guint flags);
 static void sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
 static void sp_tspan_hide (SPItem *item, NRArena *arena);
-static void sp_tspan_print (SPItem *item, GnomePrintContext *gpc);
 
 static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
 
@@ -275,7 +274,6 @@ sp_tspan_class_init (SPTSpanClass *class)
 	item_class->bbox = sp_tspan_bbox;
 	item_class->show = sp_tspan_show;
 	item_class->hide = sp_tspan_hide;
-	item_class->print = sp_tspan_print;
 }
 
 static void
@@ -478,18 +476,6 @@ sp_tspan_hide (SPItem *item, NRArena *arena)
 
 	if (SP_ITEM_CLASS (tspan_parent_class)->hide)
 		(* SP_ITEM_CLASS (tspan_parent_class)->hide) (item, arena);
-}
-
-static void
-sp_tspan_print (SPItem *item, GnomePrintContext *gpc)
-{
-	SPTSpan *tspan;
-
-	tspan = SP_TSPAN (item);
-
-	if (tspan->string) {
-		sp_item_print (SP_ITEM (tspan->string), gpc);
-	}
 }
 
 static void

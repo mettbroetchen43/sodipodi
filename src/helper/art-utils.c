@@ -1,11 +1,18 @@
-#define SP_ART_UTILS_C
+#define __SP_ART_UTILS_C__
+
+/*
+ * Libart-related convenience methods
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <libart_lgpl/art_misc.h>
-
 #include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_render_aa.h>
-#include <libart_lgpl/art_rgb.h>
-#include <libart_lgpl/art_rgb_svp.h>
 #include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_uta_svp.h>
 #include <libart_lgpl/art_vpath.h>
@@ -13,14 +20,6 @@
 #include <libart_lgpl/art_vpath_svp.h>
 
 #include "art-utils.h"
-
-double identity[] = {1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-
-int
-art_affine_is_identity (double affine[])
-{
-	return art_affine_equal (affine, identity);
-}
 
 ArtSVP *
 art_svp_translate (const ArtSVP * svp, double dx, double dy)
@@ -65,175 +64,123 @@ art_uta_from_svp_translated (const ArtSVP * svp, double x, double y)
 	return uta;
 }
 
-
-typedef struct _ArtRgbSVPRGBAData ArtRgbSVPRGBAData;
-
-struct _ArtRgbSVPRGBAData {
-/*  int alphatab[256];
-  art_u8 r, g, b, alpha; */
-  art_u8 *buf;
-  int rowstride;
-  int x0, x1;
-  art_u32 *src;
-  int sx, sy;
-  int srs;
-};
-
 static void
-art_rgb_run_rgba (art_u8 *buf, art_u32 *src, art_u8 coverage, int n);
-
-static void
-art_rgb_svp_rgba_callback (void *callback_data, int y,
-			    int start, ArtSVPRenderAAStep *steps, int n_steps);
-
-static void
-art_rgb_run_rgba (art_u8 *buf, art_u32 *src, art_u8 coverage, int n)
+sp_bpath_segment_bbox_d (gdouble x000, gdouble y000,
+			 gdouble x001, gdouble y001,
+			 gdouble x011, gdouble y011,
+			 gdouble x111, gdouble y111,
+			 ArtDRect *bbox,
+			 gdouble tolerance)
 {
-  int i;
-  int r,g,b,a;
-  art_u32 rgba;
+	/* We only check end here to avoid duplication */
+	bbox->x0 = MIN (bbox->x0, x111);
+	bbox->y0 = MIN (bbox->y0, y111);
+	bbox->x1 = MAX (bbox->x1, x111);
+	bbox->y1 = MAX (bbox->y1, y111);
 
-  for (i = 0; i < n; i++)
-    {
-      rgba = *src++;
-      r = rgba >> 24;
-      g = (rgba >> 16) & 0xff;
-      b = (rgba >> 8) & 0xff;
-      a = ((rgba & 0xff) * coverage + 0x80) / 255;
-      *buf++ = *buf + (((r - *buf) * a + 0x80) / 255);
-      *buf++ = *buf + (((g - *buf) * a + 0x80) / 255);
-      *buf++ = *buf + (((b - *buf) * a + 0x80) / 255);
-    }
+	if (((bbox->x0 - x001) > tolerance) ||
+	    ((x001 - bbox->x1) > tolerance) ||
+	    ((bbox->y0 - y001) > tolerance) ||
+	    ((y001 - bbox->y1) > tolerance) ||
+	    ((bbox->x0 - x011) > tolerance) ||
+	    ((x011 - bbox->x1) > tolerance) ||
+	    ((bbox->y0 - y011) > tolerance) ||
+	    ((y011 - bbox->y1) > tolerance)) {
+		gdouble x00t, x0tt, xttt, x1tt, x11t, x01t;
+		gdouble y00t, y0tt, yttt, y1tt, y11t, y01t;
+		gdouble s, t;
 
+		t = 0.5;
+		s = 1 - t;
+
+		x00t = s * x000 + t * x001;
+		x01t = s * x001 + t * x011;
+		x11t = s * x011 + t * x111;
+		x0tt = s * x00t + t * x01t;
+		x1tt = s * x01t + t * x11t;
+		xttt = s * x0tt + t * x1tt;
+
+		y00t = s * y000 + t * y001;
+		y01t = s * y001 + t * y011;
+		y11t = s * y011 + t * y111;
+		y0tt = s * y00t + t * y01t;
+		y1tt = s * y01t + t * y11t;
+		yttt = s * y0tt + t * y1tt;
+
+		sp_bpath_segment_bbox_d (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, bbox, tolerance);
+		sp_bpath_segment_bbox_d (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, bbox, tolerance);
+
+	}
 }
 
-static void
-art_rgb_svp_rgba_callback (void *callback_data, int y,
-			    int start, ArtSVPRenderAAStep *steps, int n_steps)
+ArtDRect *
+sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const gdouble *m, ArtDRect *bbox, gdouble tolerance)
 {
-  ArtRgbSVPRGBAData *data = callback_data;
-  art_u8 *linebuf;
-  int run_x0, run_x1;
-  art_u32 running_sum = start;
-  int x0, x1;
-  int k;
-  
-  art_u32 *srcbuf;
-/*
-  art_u8 r, g, b;
-  int *alphatab;
-*/
-  int alpha;
+	gdouble x0, y0, x3, y3;
+	const ArtBpath *p;
+	ArtDRect b;
 
-  linebuf = data->buf;
-  x0 = data->x0;
-  x1 = data->x1;
+	g_return_val_if_fail (bpath != NULL, NULL);
+	g_return_val_if_fail (bbox != NULL, NULL);
 
-  srcbuf = data->src + data->sy * data->srs + data->sx;
+	x0 = y0 = 0.0;
+	x3 = y3 = 0.0;
 
-/*
-  r = data->r;
-  g = data->g;
-  b = data->b;
-  alphatab = data->alphatab;
-*/
+	b.x0 = b.y0 = 1e18;
+	b.x1 = b.y1 = -1e18;
 
-  if (n_steps > 0)
-    {
-      run_x1 = steps[0].x;
-      if (run_x1 > x0)
-	{
-	  alpha = (running_sum >> 16) & 0xff;
-	  if (alpha)
-	    art_rgb_run_rgba (linebuf, srcbuf,
-			       alpha,
-			       run_x1 - x0);
+	if (!m) m = SP_MATRIX_D_IDENTITY;
+
+	for (p = bpath; p->code != ART_END; p+= 1) {
+		switch (p->code) {
+		case ART_MOVETO_OPEN:
+		case ART_MOVETO:
+			x0 = m[0] * p->x3 + m[2] * p->y3 + m[4];
+			y0 = m[1] * p->x3 + m[3] * p->y3 + m[5];
+			break;
+		case ART_LINETO:
+			x3 = m[0] * p->x3 + m[2] * p->y3 + m[4];
+			y3 = m[1] * p->x3 + m[3] * p->y3 + m[5];
+			b.x0 = MIN (b.x0, x0);
+			b.x0 = MIN (b.x0, x3);
+			b.y0 = MIN (b.y0, y0);
+			b.y0 = MIN (b.y0, y3);
+			b.x1 = MAX (b.x1, x0);
+			b.x1 = MAX (b.x1, x3);
+			b.y1 = MAX (b.y1, y0);
+			b.y1 = MAX (b.y1, y3);
+			x0 = x3;
+			y0 = y3;
+			break;
+		case ART_CURVETO:
+			x3 = m[0] * p->x3 + m[2] * p->y3 + m[4];
+			y3 = m[1] * p->x3 + m[3] * p->y3 + m[5];
+			/* We check start here to avoid duplication */
+			b.x0 = MIN (b.x0, x0);
+			b.y0 = MIN (b.y0, y0);
+			b.x1 = MAX (b.x1, x0);
+			b.y1 = MAX (b.y1, y0);
+			sp_bpath_segment_bbox_d (x0, y0,
+						 m[0] * p->x1 + m[2] * p->y1 + m[4],
+						 m[1] * p->x1 + m[3] * p->y1 + m[5],
+						 m[0] * p->x2 + m[2] * p->y2 + m[4],
+						 m[1] * p->x2 + m[3] * p->y2 + m[5],
+						 x3, y3,
+						 &b,
+						 tolerance);
+			x0 = x3;
+			y0 = y3;
+			break;
+		default:
+			g_warning ("Corrupted bpath: code %d", p->code);
+			break;
+		}
 	}
 
-      /* render the steps into tmpbuf */
-      for (k = 0; k < n_steps - 1; k++)
-	{
-	  running_sum += steps[k].delta;
-	  run_x0 = run_x1;
-	  run_x1 = steps[k + 1].x;
-	  if (run_x1 > run_x0)
-	    {
-	      alpha = (running_sum >> 16) & 0xff;
-	      if (alpha)
-		art_rgb_run_rgba (linebuf + (run_x0 - x0) * 3,
-				   srcbuf + (run_x0 - x0),
-				   alpha,
-				   run_x1 - run_x0);
-	    }
+	if (!art_drect_empty (&b)) {
+		art_drect_union (bbox, bbox, &b);
 	}
-      running_sum += steps[k].delta;
-      if (x1 > run_x1)
-	{
-	  alpha = (running_sum >> 16) & 0xff;
-	  if (alpha)
-	    art_rgb_run_rgba (linebuf + (run_x1 - x0) * 3,
-	    		       srcbuf + (run_x1 - x0),
-			       alpha,
-			       x1 - run_x1);
-	}
-    }
-  else
-    {
-      alpha = (running_sum >> 16) & 0xff;
-      if (alpha)
-	art_rgb_run_rgba (linebuf,
-			   srcbuf,
-			   alpha,
-			   x1 - x0);
-    }
 
-  data->buf += data->rowstride;
-  data->src += data->srs;
-}
-
-void
-art_rgb_svp_rgba (const ArtSVP *svp,
-		   int x0, int y0, int x1, int y1,
-		   art_u32 *src,
-		   int sx, int sy, int srs,
-		   art_u8 *buf, int rowstride,
-		   ArtAlphaGamma *alphagamma)
-{
-  ArtRgbSVPRGBAData data;
-#if 0
-  int r, g, b, alpha;
-  int i;
-  int a, da;
-
-  r = rgba >> 24;
-  g = (rgba >> 16) & 0xff;
-  b = (rgba >> 8) & 0xff;
-  alpha = rgba & 0xff;
-
-  data.r = r;
-  data.g = g;
-  data.b = b;
-  data.alpha = alpha;
-
-  a = 0x8000;
-  da = (alpha * 66051 + 0x80) >> 8; /* 66051 equals 2 ^ 32 / (255 * 255) */
-
-  for (i = 0; i < 256; i++)
-    {
-      data.alphatab[i] = a >> 16;
-      a += da;
-    }
-#endif
-  data.buf = buf;
-  data.rowstride = rowstride;
-  data.x0 = x0;
-  data.x1 = x1;
-  data.src = src;
-  data.sx = sx;
-  data.sy = sy;
-  data.srs = srs;
-
-  art_svp_render_aa (svp, x0, y0, x1, y1, art_rgb_svp_rgba_callback, &data);
-
+	return bbox;
 }
 

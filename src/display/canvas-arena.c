@@ -14,7 +14,7 @@
 
 #include <string.h>
 #include <gtk/gtksignal.h>
-#include "../helper/canvas-helper.h"
+#include "../helper/sp-canvas-util.h"
 #include "../helper/nr-buffers.h"
 #include "../helper/nr-plain-stuff.h"
 #include "nr-arena.h"

@@ -3,6 +3,7 @@
 #include <gnome.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
+#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "sp-path-component.h"
 #include "sp-path.h"
@@ -186,37 +187,24 @@ sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 static void
 sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
-	SPPath * path;
-	SPPathComp * comp;
-	double a[6];
-	GSList * l;
-	ArtBpath * abp;
-	ArtVpath * vpath, * vp;
-	gint has_bbox;
+	SPPath *path;
+	GSList *l;
 
 	path = SP_PATH (item);
 
 	bbox->x0 = bbox->y0 = 1e18;
 	bbox->x1 = bbox->y1 = -1e18;
-	has_bbox = FALSE;
 
 	for (l = path->comp; l != NULL; l = l->next) {
+		SPPathComp *comp;
+		gdouble a[6];
+
 		comp = (SPPathComp *) l->data;
 		art_affine_multiply (a, comp->affine, transform);
-		abp = art_bpath_affine_transform (comp->curve->bpath, a);
-		vpath = art_bez_path_to_vec (abp, 1);
-		art_free (abp);
-		for (vp = vpath; vp->code != ART_END; vp++) {
-			has_bbox = TRUE;
-			if (vp->x < bbox->x0) bbox->x0 = vp->x;
-			if (vp->y < bbox->y0) bbox->y0 = vp->y;
-			if (vp->x > bbox->x1) bbox->x1 = vp->x;
-			if (vp->y > bbox->y1) bbox->y1 = vp->y;
-		}
-		art_free (vpath);
+		sp_bpath_matrix_d_bbox_d_union (SP_CURVE_BPATH (comp->curve), a, bbox, 0.25);
 	}
 
-	if (!has_bbox) {
+	if (art_drect_empty (bbox)) {
 		bbox->x0 = transform[4];
 		bbox->y0 = transform[5];
 		bbox->x1 = transform[4];

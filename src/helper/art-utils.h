@@ -1,24 +1,37 @@
-#ifndef SP_ART_UTILS_H
-#define SP_ART_UTILS_H
+#ifndef __SP_ART_UTILS_H__
+#define __SP_ART_UTILS_H__
 
+/*
+ * Libart-related convenience methods
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include <glib.h>
 #include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_alphagamma.h>
+#include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_uta.h>
+#include <libart_lgpl/art_bpath.h>
 
-void
-art_rgb_svp_rgba (const ArtSVP *svp,
-                  int x0, int y0, int x1, int y1,
-                  art_u32 *src,
-                  int sx, int sy, int srs,
-                  art_u8 *buf, int rowstride,
-                  ArtAlphaGamma *alphagamma);
+#ifdef __SP_ART_UTILS_C__
+double SP_MATRIX_D_IDENTITY[] = {1.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+#else
+extern double SP_MATRIX_D_IDENTITY[];
+#endif
 
-ArtSVP * art_svp_translate (const ArtSVP * svp, double dx, double dy);
-ArtUta * art_uta_from_svp_translated (const ArtSVP * svp, double cx, double cy);
+#define SP_MATRIX_D_IS_IDENTITY(m) art_affine_equal (m, SP_MATRIX_D_IDENTITY);
 
-int art_affine_is_identity (double affine[]);
+ArtSVP *art_svp_translate (const ArtSVP * svp, double dx, double dy);
+ArtUta *art_uta_from_svp_translated (const ArtSVP * svp, double cx, double cy);
+
+ArtDRect *sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const gdouble *m, ArtDRect *bbox, gdouble tolerance);
 
 #endif
 

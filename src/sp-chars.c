@@ -12,9 +12,12 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#if 0
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
+#endif
+#include "helper/art-utils.h"
 #include "display/nr-arena-shape.h"
 #include "style.h"
 #include "sp-chars.h"
@@ -124,20 +127,13 @@ sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	for (el = chars->elements; el != NULL; el = el->next) {
 		const ArtBpath *bpath;
-		ArtBpath *abp;
-		ArtVpath *vpath;
-		ArtDRect bb;
 		gdouble a[6], b[6];
 		gint i;
 		bpath = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
 		for (i = 0; i < 6; i++) a[i] = el->affine[i];
 		art_affine_multiply (b, a, transform);
-		abp = art_bpath_affine_transform (bpath, b);
-		vpath = art_bez_path_to_vec (abp, 0.25);
-		art_free (abp);
-		art_vpath_bbox_drect (vpath, &bb);
-		art_free (vpath);
-		art_drect_union (bbox, bbox, &bb);
+
+		sp_bpath_matrix_d_bbox_d_union (bpath, b, bbox, 0.25);
 	}
 }
 
@@ -298,18 +294,13 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 		if (painter) {
 			ArtDRect cbox, pbox;
 			ArtIRect ibox;
-			ArtBpath *abp;
-			ArtVpath *vpath;
 			gdouble d2i[6];
 			gint x, y;
 			guchar *rgba;
 
 			/* Find path bbox */
-			abp = art_bpath_affine_transform (bpath, ctm);
-			vpath = art_bez_path_to_vec (abp, 0.25);
-			art_free (abp);
-			art_vpath_bbox_drect (vpath, &pbox);
-			art_free (vpath);
+			pbox.x0 = pbox.y0 = pbox.x1 = pbox.y1 = 0.0;
+			sp_bpath_matrix_d_bbox_d_union (bpath, ctm, &pbox, 0.25);
 
 			art_drect_intersect (&cbox, dbox, &pbox);
 			art_drect_to_irect (&ibox, &cbox);
