@@ -1495,7 +1495,7 @@ sp_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	if (canvas->grabbed_event_mask & GDK_POINTER_MOTION_HINT_MASK) {
 		gint x, y;
-		gdk_window_get_pointer (widget->window, &x, &y, 0);
+		gdk_window_get_pointer (widget->window, &x, &y, NULL);
 		event->x = x;
 		event->y = y;
 	}
@@ -2091,7 +2091,7 @@ sp_canvas_window_to_world (SPCanvas *canvas, double winx, double winy, double *w
 	g_return_if_fail (SP_IS_CANVAS (canvas));
 
 	if (worldx) *worldx = canvas->x0 + winx;
-	if (worldy) *worldy = canvas->x0 + winy;
+	if (worldy) *worldy = canvas->y0 + winy;
 }
 
 void
@@ -2101,7 +2101,7 @@ sp_canvas_world_to_window (SPCanvas *canvas, double worldx, double worldy, doubl
 	g_return_if_fail (SP_IS_CANVAS (canvas));
 
 	if (winx) *winx = worldx - canvas->x0;
-	if (winy) *winy = worldy - canvas->x0;
+	if (winy) *winy = worldy - canvas->y0;
 }
 
 NRRectF *

@@ -22,6 +22,7 @@
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtk.h>
 
+#include "macros.h"
 #include "helper/sp-intl.h"
 #include "helper/sp-marshal.h"
 #include "helper/gnome-canvas-acetate.h"
@@ -193,7 +194,6 @@ sp_desktop_dispose (GObject *object)
 	}
 
 	if (dt->drawing) {
-		sp_namedview_hide (dt->namedview, dt);
 		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
 		dt->drawing = NULL;
 	}
@@ -372,8 +372,13 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 		dt->selection = NULL;
 	}
 
-	if (dt->drawing) {
+	if (dt->namedview) {
+		sp_signal_disconnect_by_data (dt->namedview, dt);
 		sp_namedview_hide (dt->namedview, dt);
+		dt->namedview = NULL;
+	}
+
+	if (dt->drawing) {
 		sp_item_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), SP_CANVAS_ARENA (dt->drawing)->arena);
 		dt->drawing = NULL;
 	}

@@ -24,7 +24,7 @@ libspchelp_a_SOURCES = \
 	sodipodi-ctrl.c sodipodi-ctrl.h \
 	sodipodi-ctrlrect.c sodipodi-ctrlrect.h \
 	sp-ctrlline.c sp-ctrlline.h \
-	sp-guide.c sp-guide.h \
+	guideline.c guideline.h \
 	canvas-grid.c canvas-grid.h \
 	canvas-bpath.c canvas-bpath.h \
 	png-write.c png-write.h \

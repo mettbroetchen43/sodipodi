@@ -60,13 +60,11 @@ sp_star_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPStarClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_star_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPStar),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_star_init,
 		};
 		type = g_type_register_static (SP_TYPE_POLYGON, "SPStar", &info, 0);
@@ -175,7 +173,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 	case SP_ATTR_SODIPODI_SIDES:
 		if (value) {
 			star->sides = atoi (value);
-			star->sides = CLAMP (star->sides, 3, 16);
+			star->sides = CLAMP (star->sides, 3, 32);
 		} else {
 			star->sides = 5;
 		}
@@ -394,7 +392,7 @@ sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble 
 	g_return_if_fail (star != NULL);
 	g_return_if_fail (SP_IS_STAR (star));
 	
-	star->sides = CLAMP (sides, 3, 16);
+	star->sides = CLAMP (sides, 3, 32);
 	star->cx = cx;
 	star->cy = cy;
 	star->r1 = MAX (r1, 0.001);

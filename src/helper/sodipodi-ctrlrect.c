@@ -258,10 +258,12 @@ sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	art_drect_affine_transform (&bbox, &cr->rect, affine);
 
-	cr->area.x0 = (gint) floor (bbox.x0 + 0.5);
-	cr->area.y0 = (gint) floor (bbox.y0 + 0.5);
-	cr->area.x1 = (gint) floor (bbox.x1 + 0.5);
-	cr->area.y1 = (gint) floor (bbox.y1 + 0.5);
+	cr->area.x0 = (int) (bbox.x0 + 0.5);
+	cr->area.y0 = (int) (bbox.y0 + 0.5);
+	cr->area.x1 = (int) (bbox.x1 + 0.5);
+	cr->area.y1 = (int) (bbox.y1 + 0.5);
+
+	g_print ("y1 is %d\n", cr->area.y1);
 
 	cr->shadow_size = cr->shadow;
 
@@ -296,7 +298,7 @@ sp_ctrlrect_update (SPCanvasItem *item, double *affine, unsigned int flags)
 }
 
 void
-sp_ctrlrect_set_area (SPCtrlRect *cr, gint x0, gint y0, gint x1, gint y1)
+sp_ctrlrect_set_area (SPCtrlRect *cr, double x0, double y0, double x1, double y1)
 {
 	g_return_if_fail (cr != NULL);
 	g_return_if_fail (SP_IS_CTRLRECT (cr));

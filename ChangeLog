@@ -1,3 +1,18 @@
+2002-12-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-guide.c (sp_guide_set): Fixed horiz/vert
+
+	* src/desktop-events.c (sp_dt_ruler_event): Fixed
+	(sp_dt_guide_event): Fixed
+
+	* src/helper/guideline.h: Renamed to avoid conflict with SPGuide object,
+	several signature changes
+
+	* src/helper/guideline.c: Ditto, removed properties
+
+	* src/helper/sp-canvas.c (sp_canvas_window_to_world): Oops, was meant to be y0
+	(sp_canvas_world_to_window): Ditto
+
 2002-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/desktop-properties.c: Fully functional color picker

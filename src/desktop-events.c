@@ -19,7 +19,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkimage.h>
 #include <gtk/gtkstock.h>
-#include "helper/sp-guide.h"
+#include "helper/guideline.h"
 #include "helper/unit-menu.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
@@ -75,50 +75,46 @@ sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 }
 
 static gint
-sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean horiz)
+sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, gpointer data, gboolean horiz)
 {
 	static gboolean dragging = FALSE;
 	static SPCanvasItem * guide = NULL;
 	SPDesktopWidget *dtw;
 	SPDesktop *desktop;
+	NRPointF p;
+	double px, py;
+	int wx, wy;
 
 	dtw = SP_DESKTOP_WIDGET (data);
 	desktop = dtw->desktop;
+
+	gdk_window_get_pointer (GTK_WIDGET (dtw->canvas)->window, &wx, &wy, NULL);
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
 			dragging = TRUE;
-			guide = sp_canvas_item_new (desktop->guides, SP_TYPE_GUIDELINE,
-						       "orientation",
-						       horiz ? SP_GUIDELINE_ORIENTATION_HORIZONTAL : SP_GUIDELINE_ORIENTATION_VERTICAL,
-						       "color", desktop->namedview->guidehicolor,
-						       NULL);
+			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
+			sp_desktop_w2d_xy_point (desktop, &p, px, py);
+			guide = sp_guideline_new (desktop->guides, (horiz) ? p.y : p.x, !horiz);
+			sp_guideline_set_color (SP_GUIDELINE (guide), desktop->namedview->guidehicolor);
 			gdk_pointer_grab (widget->window, FALSE,
-					  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK,
+					  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK,
 					  NULL, NULL,
 					  event->button.time);
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging) {
-			NRPointF p;
-			double px, py;
 			/* we have to substract (x|y) thickness from the position */
 			/* since there is a frame between ruler and canvas */
-			sp_canvas_window_to_world (dtw->canvas,
-						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->xthickness),
-						      event->motion.y - (horiz ? widget->allocation.height + widget->style->ythickness : 0),
-						      &px, &py);
+			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
-			sp_guideline_moveto ((SPGuideLine *) guide, p.x, p.y);
-			switch (SP_GUIDELINE(guide)->orientation){
-			case SP_GUIDELINE_ORIENTATION_HORIZONTAL:
+			sp_guideline_set_position (SP_GUIDELINE (guide), (horiz) ? p.y : p.x);
+			if (horiz) {
 				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_Y);
-				break;
-			case SP_GUIDELINE_ORIENTATION_VERTICAL:
+			} else {
 				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_X);
-				break;
 			}
 			sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
 		}
@@ -127,12 +123,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 		if (dragging && event->button.button == 1) {
 			NRPointF p;
 			double px, py;
-			/* we have to substract (x|y) thickness from the position */
-			/* since there is a frame between ruler and canvas */
-			sp_canvas_window_to_world (dtw->canvas,
-						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->xthickness),
-						      event->motion.y - (horiz ? widget->allocation.height + widget->style->ythickness : 0),
-						      &px, &py);
+			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 		        gdk_pointer_ungrab (event->button.time);
 			dragging = FALSE;
@@ -140,9 +131,9 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			guide = NULL;
 			if ((horiz && (event->button.y > widget->allocation.height)) ||
 				(!horiz && (event->button.x > widget->allocation.width))) {
-				SPRepr * repr;
+				SPRepr *repr;
 				repr = sp_repr_new ("sodipodi:guide");
-				sp_repr_set_attr (repr, "orientation", horiz ? "horizontal" : "vertical");
+				sp_repr_set_attr (repr, "orientation", (horiz) ? "horizontal" : "vertical");
 				sp_repr_set_double_attribute (repr, "position", horiz ? p.y : p.x);
 				sp_repr_append_child (SP_OBJECT_REPR (desktop->namedview), repr);
 				sp_repr_unref (repr);
@@ -243,7 +234,7 @@ sp_dt_guide_event (SPCanvasItem * item, GdkEvent * event, gpointer data)
 			ret=TRUE;
 		}
 	case GDK_ENTER_NOTIFY:
-		sp_canvas_item_set ((GtkObject *) item, "color", guide->hicolor, NULL);
+		sp_guideline_set_color (SP_GUIDELINE (item), guide->hicolor);
 		msg = SP_PT_TO_METRIC_STRING (guide->position, SP_DEFAULT_METRIC);
 		switch (guide->orientation) {
 		case SP_GUIDE_HORIZONTAL:
@@ -257,7 +248,7 @@ sp_dt_guide_event (SPCanvasItem * item, GdkEvent * event, gpointer data)
 		g_string_free (msg, FALSE);
        		break;
 	case GDK_LEAVE_NOTIFY:
-		sp_canvas_item_set ((GtkObject *) item, "color", guide->color, NULL);
+		sp_guideline_set_color (SP_GUIDELINE (item), guide->color);
 		sp_view_set_status (SP_VIEW (desktop), NULL, FALSE);
 		break;
 	default:

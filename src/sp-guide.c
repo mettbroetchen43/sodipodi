@@ -13,8 +13,7 @@
 
 #include <string.h>
 #include <glib-object.h>
-#include <gtk/gtksignal.h>
-#include "helper/sp-guide.h"
+#include "helper/guideline.h"
 #include "svg/svg.h"
 #include "attributes.h"
 #include "sp-guide.h"
@@ -44,13 +43,11 @@ sp_guide_get_type (void)
 	if (!guide_type) {
 		GTypeInfo guide_info = {
 			sizeof (SPGuideClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_guide_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPGuide),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_guide_init,
 		};
 		guide_type = g_type_register_static (SP_TYPE_OBJECT, "SPGuide", &guide_info, 0);
@@ -113,7 +110,7 @@ sp_guide_set_property (GObject * object, guint prop_id, const GValue *value, GPa
 	case PROP_COLOR:
 		guide->color = g_value_get_uint (value);
 		for (l = guide->views; l != NULL; l = l->next) {
-			g_object_set (G_OBJECT (l->data), "color", guide->color, NULL);
+			sp_guideline_set_color (SP_GUIDELINE (l->data), guide->color);
 		}
 		break;
 	case PROP_HICOLOR:
@@ -175,7 +172,7 @@ sp_guide_set (SPObject *object, unsigned int key, const unsigned char *value)
 
 	switch (key) {
 	case SP_ATTR_ORIENTATION:
-		if (value && strcmp (value, "horizontal")) {
+		if (value && !strcmp (value, "horizontal")) {
 			guide->orientation = SP_GUIDE_HORIZONTAL;
 		} else {
 			guide->orientation = SP_GUIDE_VERTICAL;
@@ -194,17 +191,12 @@ sp_guide_set (SPObject *object, unsigned int key, const unsigned char *value)
 void
 sp_guide_show (SPGuide * guide, SPCanvasGroup * group, gpointer handler)
 {
-	SPCanvasItem * item;
+	SPCanvasItem *item;
 
-	item = sp_canvas_item_new (group, SP_TYPE_GUIDELINE,
-				      "orientation", guide->orientation,
-				      "color", guide->color,
-				      NULL);
-	g_assert (item != NULL);
-	gtk_signal_connect (GTK_OBJECT (item), "event",
-			    GTK_SIGNAL_FUNC (handler), guide);
+	item = sp_guideline_new (group, guide->position, (guide->orientation == SP_GUIDE_VERTICAL));
+	sp_guideline_set_color (SP_GUIDELINE (item), guide->color);
 
-	sp_guideline_moveto ((SPGuideLine *) item, guide->position, guide->position);
+	g_signal_connect (G_OBJECT (item), "event", G_CALLBACK (handler), guide);
 
 	guide->views = g_slist_prepend (guide->views, item);
 }
@@ -241,7 +233,7 @@ sp_guide_sensitize (SPGuide * guide, SPCanvas * canvas, gboolean sensitive)
 
 	for (l = guide->views; l != NULL; l = l->next) {
 		if (canvas == SP_CANVAS_ITEM (l->data)->canvas) {
-			sp_guideline_sensitize (SP_GUIDELINE (l->data), sensitive);
+			sp_guideline_set_sensitive (SP_GUIDELINE (l->data), sensitive);
 			return;
 		}
 	}
@@ -251,13 +243,13 @@ sp_guide_sensitize (SPGuide * guide, SPCanvas * canvas, gboolean sensitive)
 void
 sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y)
 {
-	GSList * l;
+	GSList *l;
 
 	g_assert (guide != NULL);
 	g_assert (SP_IS_GUIDE (guide));
 
 	for (l = guide->views; l != NULL; l = l->next) {
-		sp_guideline_moveto (SP_GUIDELINE (l->data), x, y);
+		sp_guideline_set_position (SP_GUIDELINE (l->data), (guide->orientation == SP_GUIDE_HORIZONTAL) ? y : x);
 	}
 }
 
