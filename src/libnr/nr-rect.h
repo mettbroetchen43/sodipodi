@@ -61,4 +61,7 @@ NRRectS *nr_rect_s_union_xy (NRRectS *d, NRShort x, NRShort y);
 NRRectD *nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m);
 NRRectF *nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m);
 
+NRRectD *nr_rect_d_translate_xy (NRRectD *d, double x, double y);
+NRRectF *nr_rect_f_translate_xy (NRRectF *d, double x, double y);
+
 #endif

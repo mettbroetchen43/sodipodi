@@ -373,3 +373,26 @@ nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m)
 	return d;
 }
 
+NRRectD *
+nr_rect_d_translate_xy (NRRectD *d, double x, double y)
+{
+	if (d) {
+		d->x0 += x;
+		d->x1 += x;
+		d->y0 += y;
+		d->y1 += y;
+	}
+	return d;
+}
+
+NRRectF *
+nr_rect_f_translate_xy (NRRectF *d, double x, double y)
+{
+	if (d) {
+		d->x0 += x;
+		d->x1 += x;
+		d->y0 += y;
+		d->y1 += y;
+	}
+	return d;
+}

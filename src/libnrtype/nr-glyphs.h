@@ -24,6 +24,7 @@ struct _NRPosGlyph {
 
 struct _NRPGL {
 	NRRasterFont *rfont;
+	NRPointF origin;
 	NRRectF area;
 	NRPointF advance;
 	unsigned int length;

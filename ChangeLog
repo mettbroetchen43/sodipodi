@@ -1,3 +1,15 @@
+2003-12-22  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/libnr/nr-rect.c (nr_rect_d_translate_xy): New function
+	(nr_rect_f_translate_xy): Ditto
+
+	* src/libnr/nr-rect.h: Ditto
+
+	* src/libnrtype/nr-glyphs.c (nr_pgl_new_from_string): Fixed to
+	calculate union area correcly
+
+	* src/libnrtype/nr-glyphs.h (NRPGL::origin): New member variable
+
 2003-12-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-ctrlline.c (sp_ctrlline_render): Use pixblock-line

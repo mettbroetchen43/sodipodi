@@ -24,8 +24,10 @@ nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMa
 
 	pgl->rfont = nr_rasterfont_new (font, transform);
 	nr_rect_f_set_empty (&pgl->area);
-	pgl->advance.x = transform->c[4];
-	pgl->advance.y = transform->c[5];
+	pgl->origin.x = transform->c[4];
+	pgl->origin.y = transform->c[5];
+	pgl->advance.x = 0.0;
+	pgl->advance.y = 0.0;
 	pgl->length = length;
 
 	for (i = 0; i < length; i++) {
@@ -34,19 +36,22 @@ nr_pgl_new_from_string (NRUShort *chars, unsigned int length, NRFont *font, NRMa
 		NRRectF area;
 		glyph = nr_typeface_lookup_default (font->face, chars[i]);
 		pgl->glyphs[i].glyph = glyph;
-		pgl->glyphs[i].x = pgl->advance.x;
-		pgl->glyphs[i].y = pgl->advance.y;
+		pgl->glyphs[i].x = pgl->origin.x + pgl->advance.x;
+		pgl->glyphs[i].y = pgl->origin.y + pgl->advance.y;
+
+		nr_rasterfont_glyph_area_get (pgl->rfont, glyph, &area);
+		nr_rect_f_translate_xy (&area, pgl->advance.x, pgl->advance.y);
+		nr_rect_f_union (&pgl->area, &pgl->area, &area);
+
 		nr_rasterfont_glyph_advance_get (pgl->rfont, glyph, &adv);
 		pgl->advance.x += adv.x;
 		pgl->advance.y += adv.y;
-		nr_rasterfont_glyph_area_get (pgl->rfont, glyph, &area);
-		nr_rect_f_union (&pgl->area, &pgl->area, &area);
 	}
 
 	/* terminator */
 	pgl->glyphs[i].glyph = 0;
-	pgl->glyphs[i].x = pgl->advance.x;
-	pgl->glyphs[i].y = pgl->advance.y;
+	pgl->glyphs[i].x = pgl->origin.x + pgl->advance.x;
+	pgl->glyphs[i].y = pgl->origin.y + pgl->advance.y;
 
 	return pgl;
 }
