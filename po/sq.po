@@ -68,11 +68,12 @@ msgstr ""
 msgid "Drawing"
 msgstr "Vizatim"
 
+#. GRUT modified this item
 #. Selection submenu
 #: src/desktop.c:1759 src/dialogs/align.c:293 src/dialogs/export.c:171
 #: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
-msgstr ""
+msgstr "Zgjedhja"
 
 #: src/dialogs/align.c:156 src/toolbox.c:405
 msgid "Align objects"
@@ -784,9 +785,10 @@ msgstr ""
 msgid "Text and font"
 msgstr ""
 
+#. GRUT modified this item
 #: src/dialogs/text-edit.c:246
 msgid "Set as default"
-msgstr ""
+msgstr "Vendose si të prezgjedhur"
 
 #: src/dialogs/tool-attributes.c:48 src/verbs.c:479
 msgid "Tool attributes"
@@ -911,9 +913,10 @@ msgstr ""
 msgid "Lower node"
 msgstr ""
 
+#. GRUT modified this item
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
-msgstr ""
+msgstr "Elemino vlerën"
 
 #: src/dialogs/xml-tree.c:333
 msgid "Attribute name"
@@ -937,9 +940,10 @@ msgid "New element node..."
 msgstr ""
 
 #. GRUT modified this item
+#. GRUT modified this item
 #: src/dialogs/xml-tree.c:876
 msgid "Cancel"
-msgstr "Anulloje"
+msgstr "Anullo"
 
 #. GRUT modified this item
 #: src/dialogs/xml-tree.c:880
@@ -1167,9 +1171,10 @@ msgstr ""
 msgid "Ex squares"
 msgstr ""
 
+#. GRUT modified this item
 #: src/interface.c:305 src/interface.c:504
 msgid "Open Recent"
-msgstr ""
+msgstr "Hap të fundit të përdorur"
 
 #: src/interface.c:325
 msgid "Close View"
@@ -1472,9 +1477,10 @@ msgstr ""
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr ""
 
+#. GRUT modified this item
 #: src/modules/plain.c:289 src/modules/ps.c:302
 msgid "Resolution:"
-msgstr ""
+msgstr "Thellësia e ngjyrave:"
 
 #: src/modules/plain.c:299 src/modules/ps.c:312
 msgid ""
@@ -1572,10 +1578,11 @@ msgstr "Figura"
 msgid "Image Properties"
 msgstr ""
 
+#. GRUT modified this item
 #. Autotrace dialog
 #: src/object-ui.c:433 src/sp-image.c:762
 msgid "Trace"
-msgstr ""
+msgstr "Gjurma"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:482
@@ -1618,10 +1625,11 @@ msgstr ""
 msgid "Star Properties"
 msgstr ""
 
+#. GRUT modified this item
 #. Create toplevel menuitem
 #: src/object-ui.c:614 src/verbs.c:458
 msgid "Spiral"
-msgstr ""
+msgstr "Spirale"
 
 #. Link dialog
 #: src/object-ui.c:617
@@ -2007,9 +2015,10 @@ msgid "Export document as PNG bitmap"
 msgstr ""
 
 #. GRUT modified this item
+#. GRUT modified this item
 #: src/verbs.c:418
 msgid "Exit"
-msgstr "Dil"
+msgstr "Dalja"
 
 #. GRUT modified this item
 #. Edit
@@ -2588,9 +2597,10 @@ msgstr "Tonaliteti:"
 msgid "Saturation:"
 msgstr ""
 
+#. GRUT modified this item
 #: src/widgets/sp-color-selector.c:645
 msgid "Value:"
-msgstr ""
+msgstr "Vlera:"
 
 #: src/widgets/sp-color-selector.c:664
 msgid "Cyan:"
