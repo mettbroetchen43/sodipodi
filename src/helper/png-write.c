@@ -280,10 +280,10 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 	/* Set error handling.  REQUIRED if you aren't supplying your own
 	 * error hadnling functions in the png_create_write_struct() call.
 	 */
-	if (setjmp(png_ptr->jmpbuf)) {
+	if (setjmp (png_ptr->jmpbuf)) {
 		/* If we get here, we had a problem reading the file */
 		fclose(fp);
-		png_destroy_write_struct(&png_ptr, &info_ptr);
+		png_destroy_write_struct (&png_ptr, &info_ptr);
 		return FALSE;
 	}
 
@@ -365,7 +365,7 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 
 		h = MIN (height - r, 64);
 		n = get_rows ((const unsigned char **) row_pointers, r, h, data);
-		if (!n) break;
+		if (!n) longjmp (png_ptr->jmpbuf, 1);
 		png_write_rows (png_ptr, row_pointers, n);
 		r += n;
 	}

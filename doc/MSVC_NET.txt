@@ -138,8 +138,6 @@ Configuration is kept in $APPDATADIR\Sodipodi
 Known issues
 
 
-Font sizes are known to be somewhat incorrect. I hope to
-fix this for release time.
 It uses very hackish way to keep display updated while
 being in Windows dialog, or resizing windows. If there
 are probelms, please report back ;-/

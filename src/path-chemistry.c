@@ -192,21 +192,20 @@ sp_selected_path_to_curves0 (gboolean do_document_done, guint32 text_grouping_po
 		item = (SPItem *)l->data;
 		l    = l->next;
 		repr = sp_selected_item_to_curved_repr (item, 0);
-		if (!repr)
-			continue;
+		if (!repr) continue;
 		parent = SP_OBJECT_PARENT (item);
-		sp_repr_add_child (SP_OBJECT_REPR (parent), 
-				   repr, SP_OBJECT_REPR (item));
+		sp_repr_add_child (SP_OBJECT_REPR (parent), repr, SP_OBJECT_REPR (item));
 		sp_repr_unparent (SP_OBJECT_REPR (item));
 		sp_selection_add_repr (SP_DT_SELECTION (dt), repr);
-		sp_repr_unref(repr);
+		sp_repr_unref (repr);
 	}
-	if (do_document_done)
+	if (do_document_done) {
 		sp_document_done (SP_DT_DOCUMENT (dt));
+	}
 }
 
 static SPRepr *
-sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy)
+sp_selected_item_to_curved_repr (SPItem * item, guint32 text_grouping_policy)
 {
 	SPCurve *curve;
 	SPRepr  *repr;
@@ -219,7 +218,13 @@ sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy)
 	if (SP_IS_SHAPE (item)) {
 		curve = sp_shape_get_curve (SP_SHAPE (item));
 	} else if (SP_IS_TEXT (item)) {
-		curve = sp_text_normalized_bpath (SP_TEXT (item));
+		GSList *cc;
+		cc = sp_text_normalized_bpath_list (SP_TEXT (item));
+		curve = sp_curve_concat (cc);
+		while (cc) {
+			sp_curve_unref ((SPCurve *) cc->data);
+			cc = g_slist_remove (cc, cc->data);
+		}
 	} else {
 		curve = NULL;
 	}

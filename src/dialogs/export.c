@@ -307,7 +307,7 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	height = (int) (sp_export_value_get (base, "bmheight") + 0.5);
 
 	if ((x1 > x0) && (y1 > y0) && (width > 0) && (height > 0)) {
-		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000);
+		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000, NULL, NULL);
 	}
 }
 

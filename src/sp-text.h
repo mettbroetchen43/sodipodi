@@ -147,7 +147,7 @@ int sp_text_is_empty (SPText *text);
 gchar *sp_text_get_string_multiline (SPText *text);
 void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
-SPCurve *sp_text_normalized_bpath (SPText *text);
+GSList *sp_text_normalized_bpath_list (SPText *text);
 
 /* fixme: Think about these (Lauris) */
 

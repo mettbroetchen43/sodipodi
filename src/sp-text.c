@@ -1890,8 +1890,8 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	/* fixme: Calculate line positions (Lauris) */
 }
 
-SPCurve *
-sp_text_normalized_bpath (SPText *text)
+GSList *
+sp_text_normalized_bpath_list (SPText *text)
 {
 	SPObject *child;
 	GSList *cc;
@@ -1902,21 +1902,22 @@ sp_text_normalized_bpath (SPText *text)
 
 	cc = NULL;
 	for (child = ((SPObject *) text)->children; child != NULL; child = child->next) {
-		SPCurve *c;
+		GSList *c;
 		if (SP_IS_STRING (child)) {
-			c = sp_chars_normalized_bpath (SP_CHARS (child));
+			c = sp_chars_normalized_bpath_list (SP_CHARS (child));
 		} else if (SP_IS_TSPAN (child)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (child);
-			c = sp_chars_normalized_bpath (SP_CHARS (tspan->string));
+			c = sp_chars_normalized_bpath_list (SP_CHARS (tspan->string));
 		} else {
 			c = NULL;
 		}
-		if (c) cc = g_slist_prepend (cc, c);
+		if (c) cc = g_slist_concat (cc, c);
 	}
 
 	cc = g_slist_reverse (cc);
 
+#if 0
 	curve = sp_curve_concat (cc);
 
 	while (cc) {
@@ -1925,6 +1926,9 @@ sp_text_normalized_bpath (SPText *text)
 	}
 
 	return curve;
+#endif
+
+	return cc;
 }
 
 static void

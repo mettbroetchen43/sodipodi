@@ -209,8 +209,8 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	}
 }
 
-SPCurve *
-sp_chars_normalized_bpath (SPChars *chars)
+GSList *
+sp_chars_normalized_bpath_list (SPChars *chars)
 {
 	SPCharElement *el;
 	GSList *cc;
@@ -226,22 +226,26 @@ sp_chars_normalized_bpath (SPChars *chars)
 		for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bp, FALSE)) {
 			abp = art_bpath_affine_transform (bp.path, a);
-			c = sp_curve_new_from_bpath (abp);
+			c = sp_curve_new_from_foreign_bpath (abp);
+			art_free (abp);
 			if (c) cc = g_slist_prepend (cc, c);
 		}
 	}
 
 	cc = g_slist_reverse (cc);
 
+#if 0
 	curve = sp_curve_concat (cc);
 
 	while (cc) {
-		/* fixme: This is dangerous, as we are mixing art_alloc and g_new */
 		sp_curve_unref ((SPCurve *) cc->data);
 		cc = g_slist_remove (cc, cc->data);
 	}
 
 	return curve;
+#endif
+
+	return cc;
 }
 
 /* This is completely unrelated to SPItem::print */

@@ -48,7 +48,7 @@ void sp_chars_clear (SPChars *chars);
 
 void sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF *transform);
 
-SPCurve *sp_chars_normalized_bpath (SPChars *chars);
+GSList *sp_chars_normalized_bpath_list (SPChars *chars);
 
 /* This is completely unrelated to SPItem::print */
 void sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const NRMatrixF *ctm,
