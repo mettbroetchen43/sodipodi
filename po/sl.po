@@ -1566,7 +1566,7 @@ msgstr "Palci"
 
 #: src/helper/unit-menu.c:92
 msgid "\""
-msgstr "\"
+msgstr "\""
 
 #: src/helper/unit-menu.c:93
 msgid "Point"
@@ -1748,7 +1748,7 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"Ne morem pisati v datoteko %s.\n
+"Ne morem pisati v datoteko %s.\n"
 "Èeprav se bo sodipodi zagnal, ne\n"
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
