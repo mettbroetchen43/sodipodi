@@ -1,3 +1,7 @@
+2000-12-21  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-svp-render.c: Lot's of cleanup
+
 2000-12-20  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/display/nr-svp-render.c (nr_svp_render_rgb_rgba): It

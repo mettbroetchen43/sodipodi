@@ -45,7 +45,8 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 	NRLine * line;
 	gint32 xstart, ystart;
 	gint32 x1, y1;
-	guchar * b;
+	guchar * bs, * br;
+	guint fg_r, fg_g, fg_b, fg_a;
 	gint y;
 
 	if (!svp) return;
@@ -75,6 +76,15 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 		if (!line) return;
 		ystart = (gint32) floor (line->s.y);
 	}
+
+	/* Get colors */
+	fg_r = (rgba >> 24) & 0xff;
+	fg_g = (rgba >> 16) & 0xff;
+	fg_b = (rgba >> 8) & 0xff;
+	fg_a = rgba & 0xff;
+
+	/* Initial buffer */
+	bs = buffer + (ystart - y0) * rowstride;
 
 	/* Main iteration */
 	for (y = ystart; y < y1; y ++) {
@@ -145,6 +155,10 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 				}
 			}
 		}
+
+		/* Running buffer */
+		br = bs + 3 * (xstart - x0);
+
 		for (x = xstart; (runs) && (x < x1); x++) {
 			float xnext;
 			float localval;
@@ -159,14 +173,13 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 			while ((r) && (r->s.x < xnext)) {
 				if (r->e.x <= xnext) {
 					globalval += r->final;
-#if 0
-					g_print ("A: localval += %f + (%f - %f) * %f / 2\n", r->value, xnext, r->x, r->step);
-#endif
-					localval += r->value + (r->e.x - r->x) * r->step / 2.0;
-#if 0
-					g_print ("B: localval += (%f - %f) * %f\n", xnext, r->e.x, r->final);
-#endif
+					localval +=  (r->e.x - r->x) * (r->value + r->final) / 2.0;
 					localval += (xnext - r->e.x) * r->final;
+					if ((localval < 0.0) || (localval > 1.0)) {
+						g_print ("A: localval += (%f - %f) * (%f + %f) / 2\n", r->e.x, r->x, r->value, r->final);
+						g_print ("A: localval += (%f - %f) * %f\n", xnext, r->e.x, r->final);
+						g_print ("A Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
+					}
 					if (r0) {
 						r0->next = r->next;
 						nr_run_free (r);
@@ -180,7 +193,11 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 #if 0
 					g_print ("C: localval += %f\n", r->value + (xnext - r->x) * r->step / 2.0);
 #endif
-					localval += r->value + (xnext - r->x) * r->step / 2.0;
+					localval += (xnext - r->x) * (r->value + r->step / 2.0);
+					if ((localval < 0.0) || (localval > 1.0)) {
+						g_print ("B: localval += (%f - %f) * (%f + %f / 2)\n", xnext, r->x, r->value, r->step);
+						g_print ("B Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
+					}
 					r->x = xnext;
 					r->value = (xnext - r->s.x) * r->step;
 					r0 = r;
@@ -188,20 +205,11 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 				}
 			}
 			/* Draw */
-			b = buffer + (y - y0) * rowstride + (x - x0) * 3;
 			coverage = (guint) (floor (localval * 255.99));
-#if 1
-#if 0
-			if (x == xstart + 2) g_print ("Y: %d X: %d Localval: %f Coverage %d\n", y, x, localval, coverage);
-#endif
-			*b++ = (((rgba >> 24) & 0xff) * coverage) >> 8;
-			*b++ = (((rgba >> 16) & 0xff) * coverage) >> 8;
-			*b++ = (((rgba >>  8) & 0xff) * coverage) >> 8;
-#else
-			*b++ = 0xff;
-			*b++ = 0x7f;
-			*b++ = 0x00;
-#endif
+			coverage = (coverage * fg_a + 0x80) >> 8;
+			*br++ = *br + (((fg_r - *br) * coverage + 0x80) >> 8);
+			*br++ = *br + (((fg_g - *br) * coverage + 0x80) >> 8);
+			*br++ = *br + (((fg_b - *br) * coverage + 0x80) >> 8);
 		}
 		nr_run_free_list (runs);
 
@@ -226,6 +234,7 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 				s = s->next;
 			}
 		}
+		bs += rowstride;
 	}
 	nr_rspan_free_list (spans);
 }
