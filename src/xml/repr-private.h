@@ -3,6 +3,8 @@
 
 #include "repr.h"
 
+/* fixme: move callbacks to separate structure, so we can share it */
+
 struct _SPRepr {
 	gint ref_count;
 	SPRepr * parent;
@@ -25,6 +27,8 @@ struct _SPRepr {
 	gpointer content_changed_pre_data;
 	void (* content_changed)(SPRepr *, gpointer);
 	gpointer content_changed_data;
+	gint (* order_changed_pre)(SPRepr * repr, gint order, gpointer data);
+	gpointer order_changed_pre_data;
 	void (* order_changed)(SPRepr *, gpointer);
 	gpointer order_changed_data;
 };

@@ -41,6 +41,7 @@ SPRepr * sp_repr_new (const gchar * name)
 	repr->attr_changed = NULL;
 	repr->content_changed_pre = NULL;
 	repr->content_changed = NULL;
+	repr->order_changed_pre = NULL;
 	repr->order_changed = NULL;
 
 	return repr;
@@ -290,6 +291,7 @@ void
 sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 {
 	SPRepr * parent;
+	gint allowed;
 	gint nsiblings;
 
 	g_return_if_fail (repr != NULL);
@@ -299,6 +301,11 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 	nsiblings = g_list_length (parent->children);
 	if ((pos < 0) || (pos >= nsiblings)) pos = nsiblings - 1;
 	if (pos == sp_repr_position (repr)) return;
+
+	if (repr->order_changed_pre)
+		allowed = repr->order_changed_pre (repr, pos, repr->order_changed_pre_data);
+
+	if (!allowed) return;
 
 	parent->children = g_list_remove (parent->children, repr);
 	parent->children = g_list_insert (parent->children, repr, pos);
@@ -352,6 +359,11 @@ sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer d
 	if (strcmp (name, "order_changed") == 0) {
 		repr->order_changed = (void (*)(SPRepr *, gpointer)) func;
 		repr->order_changed_data = data;
+		return;
+	}
+	if (strcmp (name, "order_changed_pre") == 0) {
+		repr->order_changed_pre = (gint (*)(SPRepr *, gint, gpointer)) func;
+		repr->order_changed_pre_data = data;
 		return;
 	}
 	g_assert_not_reached ();

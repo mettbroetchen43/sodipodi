@@ -1,3 +1,10 @@
+2000-04-05  Lauris Kaplinski <lauris@ariman.ee>
+
+    * xml/repr.c: added order_changed_pre callback
+    * document-undo.c: stacking order changes are now undoable
+    * sp-document.c, sp-file.c, sp-image.c: added namespace "sodipodi",
+      still have to do official definition
+
 2000-04-04  Lauris Kaplinski <lauris@ariman.ee>
 
     * xml/repr-io.c: save DTD & standard header

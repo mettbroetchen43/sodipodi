@@ -101,6 +101,7 @@ void sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive);
 void sp_document_clear_undo (SPDocument * document);
 void sp_document_clear_redo (SPDocument * document);
 
+gboolean sp_document_change_order_requested (SPDocument * document, SPObject * object, gint order);
 gboolean sp_document_change_attr_requested (SPDocument * document, SPObject * object, const gchar * key, const gchar * value);
 gboolean sp_document_change_content_requested (SPDocument * document, SPObject * object, const gchar * value);
 

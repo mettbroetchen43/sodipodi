@@ -82,16 +82,19 @@ sp_mdi_view_changed (GnomeMDI * mdi, GtkWidget * view, gpointer data)
 static void
 sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 {
-	GladeXML * xml;
+	static GladeXML * xmlmenu = NULL;
+	static GladeXML * xmlfile = NULL;
+	static GladeXML * xmledit = NULL;
+	static GladeXML * xmlcontext = NULL;
 	GnomeDockItem * ditem;
 
 	/* fixme: just cannot understand, why libglade does not set */
 	/* gnome_dock_item name ? */
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_menu");
-	if (xml != NULL) {
-		glade_xml_signal_autoconnect (xml);
-		ditem = (GnomeDockItem *) glade_xml_get_widget (xml, "dockitem_menu");
+	xmlmenu = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_menu");
+	if (xmlmenu != NULL) {
+		glade_xml_signal_autoconnect (xmlmenu);
+		ditem = (GnomeDockItem *) glade_xml_get_widget (xmlmenu, "dockitem_menu");
 		ditem->name = g_strdup ("dockitem_menu");
 		gnome_app_add_dock_item (app, ditem, GNOME_DOCK_TOP, 0, 0, 0);
 	} else {
@@ -99,10 +102,10 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create menubar\n");
 	}
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_file");
-	if (xml != NULL) {
-		glade_xml_signal_autoconnect (xml);
-		ditem = (GnomeDockItem *) glade_xml_get_widget (xml, "dockitem_file");
+	xmlfile = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_file");
+	if (xmlfile != NULL) {
+		glade_xml_signal_autoconnect (xmlfile);
+		ditem = (GnomeDockItem *) glade_xml_get_widget (xmlfile, "dockitem_file");
 		ditem->name = g_strdup ("dockitem_file");
 		gnome_app_add_dock_item (app, ditem, GNOME_DOCK_TOP, 1, 0, 0);
 	} else {
@@ -110,10 +113,10 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create file toolbar\n");
 	}
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_edit");
-	if (xml != NULL) {
-		glade_xml_signal_autoconnect (xml);
-		ditem = (GnomeDockItem *) glade_xml_get_widget (xml, "dockitem_edit");
+	xmledit = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_edit");
+	if (xmledit != NULL) {
+		glade_xml_signal_autoconnect (xmledit);
+		ditem = (GnomeDockItem *) glade_xml_get_widget (xmledit, "dockitem_edit");
 		ditem->name = g_strdup ("dockitem_edit");
 		gnome_app_add_dock_item (app, ditem, GNOME_DOCK_TOP, 1, 1, 0);
 	} else {
@@ -121,18 +124,16 @@ sp_mdi_app_created (GnomeMDI * mdi, GnomeApp * app, gpointer data)
 			"sp_mdi_app_created: cannot create edit toolbar\n");
 	}
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_context");
-	if (xml != NULL) {
-		glade_xml_signal_autoconnect (xml);
-		ditem = (GnomeDockItem *) glade_xml_get_widget (xml, "dockitem_context");
+	xmlcontext = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "dockitem_context");
+	if (xmlcontext != NULL) {
+		glade_xml_signal_autoconnect (xmlcontext);
+		ditem = (GnomeDockItem *) glade_xml_get_widget (xmlcontext, "dockitem_context");
 		ditem->name = g_strdup ("dockitem_context");
 		gnome_app_add_dock_item (app, ditem, GNOME_DOCK_LEFT, 0, 0, 0);
 	} else {
 		g_log ("Sodipodi", G_LOG_LEVEL_ERROR,
 			"sp_mdi_app_created: cannot create context toolbar\n");
 	}
-
-	g_print ("app: app_created\n");
 }
 
 

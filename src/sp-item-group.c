@@ -193,7 +193,9 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 			group->children = g_slist_remove (group->children, childobject);
 			childobject->parent = NULL;
 			gtk_object_destroy (GTK_OBJECT (childobject));
+#if 0
 			sp_group_set_order (object);
+#endif
 			return;
 		}
 	}
@@ -205,21 +207,42 @@ sp_group_compare_children_pos (gconstpointer a, gconstpointer b)
 	return sp_repr_compare_position (SP_OBJECT (a)->repr, SP_OBJECT (b)->repr);
 }
 
-static
-void sp_group_set_order (SPObject * object)
+/* fixme: all this is horribly ineffective */
+
+static void
+sp_group_set_order (SPObject * object)
 {
 	SPGroup * group;
+	GSList * neworder;
 	GSList * l;
 	SPItem * child;
+	gint delta;
 
 	group = SP_GROUP (object);
 
+	neworder = g_slist_copy (group->children);
+	neworder = g_slist_sort (neworder, sp_group_compare_children_pos);
+
+	for (l = neworder; l != NULL; l = l->next) {
+		if (l->data == group->children->data) {
+			group->children = g_slist_remove (group->children, group->children->data);
+		} else {
+			child = SP_ITEM (l->data);
+			delta = g_slist_index (group->children, child);
+			sp_item_change_canvasitem_position (child, -delta);
+			group->children = g_slist_remove (group->children, child);
+		}
+	}
+
+	group->children = neworder;
+#if 0
 	group->children = g_slist_sort (group->children, sp_group_compare_children_pos);
 
 	for (l = group->children; l != NULL; l = l->next) {
 		child = SP_ITEM (l->data);
 		sp_item_raise_canvasitem_to_top (child);
 	}
+#endif
 }
 
 static void

@@ -364,6 +364,25 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 }
 
 void
+sp_item_change_canvasitem_position (SPItem * item, gint delta)
+{
+	GSList * l;
+
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (SP_IS_ITEM (item));
+
+	if (delta == 0) return;
+
+	for (l = item->display; l != NULL; l = l->next) {
+		if (delta > 0) {
+			gnome_canvas_item_raise (GNOME_CANVAS_ITEM (l->data), delta);
+		} else {
+			gnome_canvas_item_lower (GNOME_CANVAS_ITEM (l->data), -delta);
+		}
+	}
+}
+
+void
 sp_item_raise_canvasitem_to_top (SPItem * item)
 {
 	GSList * l;

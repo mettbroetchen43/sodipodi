@@ -119,6 +119,16 @@ sp_document_undo (SPDocument * document)
 			sp_repr_set_content (object->repr, value);
 			sp_document_set_undo_sensitive (document, TRUE);
 		}
+		if (strcmp (name, "order") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			position = sp_repr_get_int_attribute (action, "old", 0);
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_position_absolute (object->repr, position);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
 	}
 
 	document->redo = g_slist_prepend (document->redo, document->actions);
@@ -137,6 +147,7 @@ sp_document_redo (SPDocument * document)
 	SPRepr * repr, * copy;
 	const gchar * id, * key, * value;
 	SPObject * object;
+	gint position;
 
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
@@ -190,6 +201,16 @@ sp_document_redo (SPDocument * document)
 			value = sp_repr_attr (action, "new");
 			sp_document_set_undo_sensitive (document, FALSE);
 			sp_repr_set_content (object->repr, value);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
+		if (strcmp (name, "order") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			position = sp_repr_get_int_attribute (action, "new", 0);
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_position_absolute (object->repr, position);
 			sp_document_set_undo_sensitive (document, TRUE);
 		}
 	}
@@ -337,6 +358,38 @@ sp_document_change_content_requested (SPDocument * document, SPObject * object, 
 		sp_repr_set_attr (action, "id", object->id);
 		sp_repr_set_attr (action, "old", oldvalue);
 		sp_repr_set_attr (action, "new", value);
+
+		document->actions = g_list_prepend (document->actions, action);
+	}
+
+	return TRUE;
+}
+
+/*
+ * <order id="id" old="old" new="new">
+ */
+
+gboolean
+sp_document_change_order_requested (SPDocument * document, SPObject * object, gint order)
+{
+	SPRepr * action;
+	gint oldorder;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+	g_assert (object->document == document);
+
+	if (document->sensitive) {
+		sp_document_clear_redo (document);
+
+		oldorder = sp_repr_position (object->repr);
+
+		action = sp_repr_new ("order");
+		sp_repr_set_attr (action, "id", object->id);
+		sp_repr_set_int_attribute (action, "old", oldorder);
+		sp_repr_set_int_attribute (action, "new", order);
 
 		document->actions = g_list_prepend (document->actions, action);
 	}

@@ -205,12 +205,14 @@ void sp_selection_ungroup (GtkWidget * widget)
 
 void sp_selection_raise (GtkWidget * widget)
 {
+	SPDocument * document;
 	SPSelection * selection;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 	GSList * pl;
 
+	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
 	if (sp_selection_is_empty (selection)) return;
@@ -231,15 +233,19 @@ void sp_selection_raise (GtkWidget * widget)
 	}
 
 	g_slist_free (rl);
+
+	sp_document_done (document);
 }
 
 void sp_selection_raise_to_top (GtkWidget * widget)
 {
+	SPDocument * document;
 	SPSelection * selection;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 
+	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
 	if (sp_selection_is_empty (selection)) return;
@@ -252,10 +258,13 @@ void sp_selection_raise_to_top (GtkWidget * widget)
 	}
 
 	g_slist_free (rl);
+
+	sp_document_done (document);
 }
 
 void sp_selection_lower (GtkWidget * widget)
 {
+	SPDocument * document;
 	SPSelection * selection;
 	SPRepr * repr;
 	GSList * rl;
@@ -263,6 +272,7 @@ void sp_selection_lower (GtkWidget * widget)
 	GSList * pl;
 	gint pos;
 
+	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
 	if (sp_selection_is_empty (selection)) return;
@@ -285,15 +295,19 @@ void sp_selection_lower (GtkWidget * widget)
 	}
 
 	g_slist_free (rl);
+
+	sp_document_done (document);
 }
 
 void sp_selection_lower_to_bottom (GtkWidget * widget)
 {
+	SPDocument * document;
 	SPSelection * selection;
 	SPRepr * repr;
 	GSList * rl;
 	GSList * l;
 
+	document = SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP);
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
 	if (sp_selection_is_empty (selection)) return;
@@ -308,6 +322,8 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 	}
 
 	g_slist_free (rl);
+
+	sp_document_done (document);
 }
 
 void

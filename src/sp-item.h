@@ -111,6 +111,7 @@ gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
 gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
 
+void sp_item_change_canvasitem_position (SPItem * item, gint delta);
 void sp_item_raise_canvasitem_to_top (SPItem * item);
 
 /* group */

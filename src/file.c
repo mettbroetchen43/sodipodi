@@ -97,7 +97,7 @@ void sp_file_save (GtkWidget * widget)
 	/* fixme: */
 	repr = SP_OBJECT (doc->root)->repr;
 
-	fn = sp_repr_attr (repr, "SP-DOCNAME");
+	fn = sp_repr_attr (repr, "sodipodi:docname");
 	if (fn == NULL) {
 		sp_file_save_as (widget);
 	} else {
@@ -126,8 +126,8 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 	save_path = g_dirname (filename);
 	if (save_path) save_path = g_strconcat (save_path, "/", NULL);
 
-	sp_repr_set_attr (repr, "SP-DOCBASE", save_path);
-	sp_repr_set_attr (repr, "SP-DOCNAME", filename);
+	sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
+	sp_repr_set_attr (repr, "sodipodi:docname", filename);
 
 	sp_repr_save_file (repr, filename);
 #if 0
@@ -205,7 +205,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	    (strcmp (e, "xpm") == 0)) {
 		repr = sp_repr_new ("image");
 		sp_repr_set_attr (repr, "src", relname);
-		sp_repr_set_attr (repr, "sp-absolute-path-name", filename);
+		sp_repr_set_attr (repr, "sodipodi:absref", filename);
 		sp_document_add_repr (doc, repr);
 		sp_repr_unref (repr);
 		sp_document_done (doc);

@@ -152,8 +152,8 @@ sp_document_new (const gchar * uri)
 		g_return_val_if_fail (document->base != NULL, NULL);
 		g_snprintf (document->base, len, "%s/", b);
 		g_free (b);
-		sp_repr_set_attr (repr, "SP-DOCNAME", uri);
-		sp_repr_set_attr (repr, "SP-DOCBASE", document->base);
+		sp_repr_set_attr (repr, "sodipodi:docname", uri);
+		sp_repr_set_attr (repr, "sodipodi:docbase", document->base);
 	}
 
 	return document;
