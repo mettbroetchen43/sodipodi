@@ -1,5 +1,7 @@
 2003-02-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/export.c (sp_export_dialog): Default to document name + png
+
 	* src/sp-chars.c (sp_chars_update): Implement
 
 	* src/sp-text.c (sp_tspan_update): Implement

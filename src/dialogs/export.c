@@ -222,6 +222,21 @@ sp_export_dialog (void)
 #else
 		/* fixme: */
 		fe = gtk_entry_new ();
+		if (SP_ACTIVE_DOCUMENT && SP_DOCUMENT_URI (SP_ACTIVE_DOCUMENT)) {
+			const unsigned char *name, *dot;
+			unsigned char c[1024];
+			int len;
+			name = SP_DOCUMENT_NAME (SP_ACTIVE_DOCUMENT);
+			len = strlen (name);
+			dot = strrchr (name, '.');
+			if (dot && (dot > name)) len = dot - name;
+			len = MIN (len, 1019);
+			memcpy (c, name, len);
+			memcpy (c + len, ".png", 4);
+			c[len + 4] = 0;
+			gtk_entry_set_text (GTK_ENTRY (fe), c);
+
+		}
 #endif
 		gtk_widget_show (fe);
 		gtk_box_pack_start (GTK_BOX (vb), fe, FALSE, FALSE, 0);
@@ -303,7 +318,9 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	width = sp_export_value_get (base, "bmwidth");
 	height = sp_export_value_get (base, "bmheight");
 
-	sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000);
+	if ((x1 > x0) && (y1 > y0) && (width > 0) && (height > 0)) {
+		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename, x0, y0, x1, y1, width, height, 0x00000000);
+	}
 }
 
 static void
