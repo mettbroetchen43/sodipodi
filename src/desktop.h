@@ -53,6 +53,11 @@ struct _SPDesktop {
 	gdouble d2w[6], w2d[6], doc2dt[6];
         gint number;
 	gboolean active;
+	/* Normalized snap distances */
+	gdouble gridsnap;
+	gdouble guidesnap;
+	/* fixme: This has to be implemented in different way */
+	guint guides_active : 1;
 };
 
 struct _SPDesktopClass {
@@ -120,7 +125,6 @@ struct _SPDesktopWidget {
 	SPDesktop *desktop;
 
 	gint decorations : 1;
-	guint guides_active : 1;
 	GtkBox * table;
 	GtkScrollbar * hscrollbar;
 	GtkScrollbar * vscrollbar;

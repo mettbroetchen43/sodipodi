@@ -438,8 +438,12 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 	if (!desktop) {
 		gtk_widget_set_sensitive (dialog, FALSE);
 	} else {
+		static const SPUnit *pt;
 		SPNamedView *nv;
 		GtkObject *o;
+		gdouble val;
+
+		if (!pt) pt = sp_unit_get_by_abbreviation ("pt");
 
 		nv = desktop->namedview;
 
@@ -455,14 +459,22 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "grid_units");
 		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (o), nv->gridunit);
 
+		val = nv->gridoriginx;
+		sp_convert_distance (&val, pt, nv->gridunit);
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridoriginx");
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridoriginx);
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), val);
+		val = nv->gridoriginy;
+		sp_convert_distance (&val, pt, nv->gridunit);
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridoriginy");
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridoriginy);
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), val);
+		val = nv->gridspacingx;
+		sp_convert_distance (&val, pt, nv->gridunit);
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridspacingx");
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridspacingx);
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), val);
+		val = nv->gridspacingy;
+		sp_convert_distance (&val, pt, nv->gridunit);
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "gridspacingy");
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), nv->gridspacingy);
+		gtk_adjustment_set_value (GTK_ADJUSTMENT (o), val);
 
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "grid_snap_units");
 		sp_unit_selector_set_unit (SP_UNIT_SELECTOR (o), nv->gridtoleranceunit);

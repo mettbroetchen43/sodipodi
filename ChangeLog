@@ -1,5 +1,17 @@
 2002-02-09  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sp-namedview.c (sp_namedview_setup_grid_item): Grid settings are
+	always in points, units are there just for user preference
+	(sp_namedview_read_attr): Ditto
+
+	* src/desktop-snap.c (sp_desktop_horizontal_snap): Read snap distances
+	from new desktop members
+	(sp_desktop_vertical_snap): Ditto
+	(sp_desktop_vector_snap): Ditto
+	(sp_desktop_circular_snap): Ditto
+
+	* src/desktop-handles.c (sp_desktop_canvas): Update to new desktop structure
+
 	* src/sodipodi.c (sodipodi_activate_desktop_private): Default method
 	implementation to chain activation signal on desktop
 	(sodipodi_desactivate_desktop_private): Ditto

@@ -36,7 +36,7 @@ sp_desktop_canvas (SPDesktop * desktop)
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 
-	return desktop->owner->canvas;
+	return ((GnomeCanvasItem *) desktop->main)->canvas;
 }
 
 GnomeCanvasItem *

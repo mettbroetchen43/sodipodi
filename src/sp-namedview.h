@@ -29,6 +29,7 @@ struct _SPNamedView {
 	guint snaptoguides : 1;
 
 	const SPUnit *gridunit;
+	/* Grid data is in points regardless of unit */
 	gdouble gridoriginx;
 	gdouble gridoriginy;
 	gdouble gridspacingx;

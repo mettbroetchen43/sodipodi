@@ -10,7 +10,7 @@
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
-#define SNAP_ON(d) (SP_DESKTOP(d)->namedview->snaptoguides || SP_DESKTOP(d)->namedview->snaptogrid)
+#define SNAP_ON(d) (((d)->gridsnap > 0.0) || ((d)->guidesnap > 0.0))
 
 gdouble
 sp_desktop_free_snap (SPDesktop * desktop, ArtPoint * req)
@@ -48,7 +48,7 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 
 	if (nv->snaptoguides) {
 		/* snap distance in desktop units */
-		best = nv->guidetolerance * desktop->w2d[0];
+		best = desktop->guidesnap;
 		for (l = nv->vguides; l != NULL; l = l->next) {
 			if (fabs (SP_GUIDE (l->data)->position - req->x) < best) {
 				best = fabs (SP_GUIDE (l->data)->position - req->x);
@@ -60,7 +60,7 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 
 	if (nv->snaptogrid) {
 		gdouble p;
-		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
+		if (best == 1e18) best = desktop->gridsnap;
 		p = nv->gridoriginx + floor ((req->x - nv->gridoriginx) / nv->gridspacingx) * nv->gridspacingx;
 		if (fabs (req->x - p) < best) {
 			best = fabs (req->x - p);
@@ -102,7 +102,7 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 
 	if (nv->snaptoguides) {
 		/* snap distance in desktop units */
-		best = nv->guidetolerance * desktop->w2d[0];
+		best = desktop->guidesnap;
 		for (l = nv->hguides; l != NULL; l = l->next) {
 			if (fabs (SP_GUIDE (l->data)->position - req->y) < best) {
 				best = fabs (SP_GUIDE (l->data)->position - req->y);
@@ -114,7 +114,7 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 
 	if (nv->snaptogrid) {
 		gdouble p;
-		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
+		if (best == 1e18) best = desktop->gridsnap;
 		p = nv->gridoriginy + floor ((req->y - nv->gridoriginy) / nv->gridspacingy) * nv->gridspacingy;
 		if (fabs (req->y - p) < best) {
 			best = fabs (req->y - p);
@@ -160,7 +160,7 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 	actual = *req;
 
 	if (nv->snaptoguides) {
-	  best = nv->guidetolerance * desktop->w2d[0];
+	  best = desktop->guidesnap;
 	  if (fabs (dx) > 1e-18) {
 		/* Test horizontal snapping */
 		for (l = nv->vguides; l != NULL; l = l->next) {
@@ -192,7 +192,7 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 
 	if (nv->snaptogrid) {
 		gdouble p1, p2;
-		if (best == 1e18) best = nv->gridtolerance * desktop->w2d[0];
+		if (best == 1e18) best = desktop->gridsnap;
 
 		if (fabs (dx) > 1e-15) {
 		  p1 = nv->gridoriginx + floor ((req->x - nv->gridoriginx) / nv->gridspacingx) * nv->gridspacingx;
@@ -270,7 +270,7 @@ sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdoub
 
 	if (nv->snaptoguides) {
 		/* snap distance in desktop units */
-		best = nv->guidetolerance * desktop->w2d[0];
+		best = desktop->guidesnap;
 		best *= best; // best is sqare of best distance 
 		// vertical guides
 		for (l = nv->vguides; l != NULL; l = l->next) {
@@ -330,7 +330,7 @@ sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdoub
 	        gdouble p1, p2;
 		/* snap distance in desktop units */
 		if (best == 1e18) {
-		  best = nv->gridtolerance * desktop->w2d[0];
+		  best = desktop->gridsnap;
 		  best *= best; // best is sqare of best distance 
 		}
 		// horizontal gridlines
