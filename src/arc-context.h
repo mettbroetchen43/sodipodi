@@ -1,5 +1,19 @@
-#ifndef SP_ARC_CONTEXT_H
-#define SP_ARC_CONTEXT_H
+#ifndef __SP_ARC_CONTEXT_H__
+#define __SP_ARC_CONTEXT_H__
+
+/*
+ * Ellipse drawing context
+ *
+ * Authors:
+ *   Mitsuru Oka
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Mitsuru Oka
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "event-context.h"
 
@@ -15,7 +29,7 @@ typedef struct _SPArcContextClass SPArcContextClass;
 struct _SPArcContext {
 	SPEventContext event_context;
 	SPItem * item;
-	ArtPoint center;
+	NRPointF center;
 };
 
 struct _SPArcContextClass {

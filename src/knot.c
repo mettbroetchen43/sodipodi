@@ -494,7 +494,7 @@ sp_knot_handler (SPCanvasItem *item, GdkEvent *event, SPKnot *knot)
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (grabbed) {
-			ArtPoint p;
+			NRPointF p;
 			NRPointF fp;
 			if (!moved) {
 				g_signal_emit (G_OBJECT (knot),
@@ -577,7 +577,7 @@ sp_knot_hide (SPKnot * knot)
 }
 
 void
-sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
+sp_knot_request_position (SPKnot * knot, NRPointF * p, guint state)
 {
 	gboolean done;
 
@@ -601,7 +601,7 @@ sp_knot_request_position (SPKnot * knot, ArtPoint * p, guint state)
 }
 
 gdouble
-sp_knot_distance (SPKnot * knot, ArtPoint * p, guint state)
+sp_knot_distance (SPKnot * knot, NRPointF * p, guint state)
 {
 	gdouble distance;
 
@@ -621,7 +621,7 @@ sp_knot_distance (SPKnot * knot, ArtPoint * p, guint state)
 }
 
 void
-sp_knot_set_position (SPKnot * knot, ArtPoint * p, guint state)
+sp_knot_set_position (SPKnot * knot, NRPointF * p, guint state)
 {
 	g_return_if_fail (knot != NULL);
 	g_return_if_fail (SP_IS_KNOT (knot));
@@ -638,8 +638,8 @@ sp_knot_set_position (SPKnot * knot, ArtPoint * p, guint state)
 		       state);
 }
 
-ArtPoint *
-sp_knot_position (SPKnot * knot, ArtPoint * p)
+NRPointF *
+sp_knot_position (SPKnot * knot, NRPointF * p)
 {
 	g_return_val_if_fail (knot != NULL, NULL);
 	g_return_val_if_fail (SP_IS_KNOT (knot), NULL);

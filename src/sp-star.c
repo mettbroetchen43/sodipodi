@@ -19,7 +19,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <glib.h>
-#include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "svg/svg.h"
@@ -43,7 +42,7 @@ static void sp_star_set (SPObject *object, unsigned int key, const unsigned char
 
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
-static GSList * sp_star_snappoints (SPItem * item, GSList * points);
+static int sp_star_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_star_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_star_set_shape (SPShape *shape);
@@ -256,7 +255,7 @@ sp_star_set_shape (SPShape *shape)
 	gint i;
 	gint sides;
 	SPCurve *c;
-	ArtPoint p;
+	NRPointF p;
 	
 	star = SP_STAR (shape);
 
@@ -291,7 +290,7 @@ sp_star_set_shape (SPShape *shape)
 }
 
 static void
-sp_star_knot1_set (SPItem *item, const ArtPoint *p, guint state)
+sp_star_knot1_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPStar *star;
 	gdouble dx, dy, arg1, darg1;
@@ -314,7 +313,7 @@ sp_star_knot1_set (SPItem *item, const ArtPoint *p, guint state)
 }
 
 static void
-sp_star_knot2_set (SPItem *item, const ArtPoint *p, guint state)
+sp_star_knot2_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPStar *star;
 	gdouble dx, dy;
@@ -334,7 +333,7 @@ sp_star_knot2_set (SPItem *item, const ArtPoint *p, guint state)
 }
 
 static void
-sp_star_knot1_get (SPItem *item, ArtPoint *p)
+sp_star_knot1_get (SPItem *item, NRPointF *p)
 {
 	SPStar *star;
 
@@ -347,7 +346,7 @@ sp_star_knot1_get (SPItem *item, ArtPoint *p)
 }
 
 static void
-sp_star_knot2_get (SPItem *item, ArtPoint *p)
+sp_star_knot2_get (SPItem *item, NRPointF *p)
 {
 	SPStar *star;
 
@@ -403,13 +402,13 @@ sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble 
 	sp_shape_set_shape (SP_SHAPE(star));
 }
 
-static GSList * 
-sp_star_snappoints (SPItem * item, GSList * points)
+/* fixme: We should use all corners of star (Lauris) */
+
+static int
+sp_star_snappoints (SPItem *item, NRPointF *p, int size)
 {
 #if 0
-	/* fixme: We should use all corners of star anyways (Lauris) */
 	SPStar *star;
-	ArtPoint * p, p1, p2, p3;
 	gdouble affine[6];
 	
 	star = SP_STAR(item);
@@ -429,9 +428,12 @@ sp_star_snappoints (SPItem * item, GSList * points)
 	p = g_new (ArtPoint,1);
 	art_affine_point (p, &p3, affine);
 	points = g_slist_append (points, p);
+#else
+	if (((SPItemClass *) parent_class)->snappoints)
+		return ((SPItemClass *) parent_class)->snappoints (item, p, size);
 #endif
 	
-	return points;
+	return 0;
 }
 
 /**
@@ -445,7 +447,7 @@ sp_star_snappoints (SPItem * item, GSList * points)
  */
 
 void
-sp_star_get_xy (SPStar *star, SPStarPoint point, gint index, ArtPoint *p)
+sp_star_get_xy (SPStar *star, SPStarPoint point, gint index, NRPointF *p)
 {
 	gdouble arg, darg;
 

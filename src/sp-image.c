@@ -47,7 +47,7 @@ static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_image_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_image_description (SPItem * item);
-static GSList * sp_image_snappoints (SPItem * item, GSList * points);
+static int sp_image_snappoints (SPItem *item, NRPointF *p, int size);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
 static void sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -524,13 +524,13 @@ sp_image_update_canvas_image (SPImage *image)
 	}
 }
 
-static GSList * 
-sp_image_snappoints (SPItem * item, GSList * points)
+static int
+sp_image_snappoints (SPItem *item, NRPointF *p, int size)
 {
 	SPImage *image;
 	NRMatrixF i2d;
-	ArtPoint *p;
 	float x0, y0, x1, y1;
+	int i;
 
 	image = SP_IMAGE (item);
 
@@ -542,24 +542,29 @@ sp_image_snappoints (SPItem * item, GSList * points)
 	x1 = x0 + image->width.computed;
 	y1 = y0 + image->height.computed;
 
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
-	points = g_slist_prepend (points, p);
+	i = 0;
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
+		i += 1;
+	}
 
-	return points;
+	return i;
 }
 
 /*

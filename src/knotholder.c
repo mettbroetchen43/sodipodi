@@ -14,7 +14,6 @@
 #define noKNOT_HOLDER_DEBUG
 
 #include <glib.h>
-#include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include "document.h"
 #include "desktop.h"
@@ -22,7 +21,7 @@
 #include "sp-shape.h"
 #include "knotholder.h"
 
-static void knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data);
+static void knot_moved_handler (SPKnot *knot, NRPointF *p, guint state, gpointer data);
 static void knot_ungrabbed_handler (SPKnot *knot, unsigned int state, SPKnotHolder *kh);
 
 #ifdef KNOT_HOLDER_DEBUG
@@ -93,7 +92,7 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 {
 	SPKnotHolderEntity *e;
 	SPItem        *item;
-	ArtPoint sp, dp;
+	NRPointF sp, dp;
 	NRMatrixF i2d;
 
 	g_return_if_fail (knot_holder != NULL);
@@ -105,7 +104,7 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 #define KH_EPSILON 1e-6
 	/* Precondition for knot_set and knot_get */
 	{
-		ArtPoint p1, p2;
+		NRPointF p1, p2;
 		knot_get (item, &p1);
 		knot_set (item, &p1, 0);
 		knot_get (item, &p2);
@@ -141,7 +140,7 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 }
 
 static void
-knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
+knot_moved_handler (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 {
 	SPKnotHolder *knot_holder;
 	SPItem *item;
@@ -157,7 +156,7 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
 		if (e->knot == knot) {
 			NRMatrixF d2i;
-			ArtPoint q;
+			NRPointF q;
 
 			sp_item_i2d_affine(item, &i2d);
 			nr_matrix_f_invert (&d2i, &i2d);
@@ -178,7 +177,7 @@ knot_moved_handler (SPKnot *knot, ArtPoint *p, guint state, gpointer data)
 
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
-		ArtPoint sp, dp;
+		NRPointF sp, dp;
 		GObject *kob;
 		
 		kob = G_OBJECT (e->knot);

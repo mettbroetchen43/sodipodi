@@ -57,7 +57,7 @@ static void sp_pattern_modified (SPObject *object, guint flags);
 static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
 
-static SPPainter *sp_pattern_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
+static SPPainter *sp_pattern_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
 static void sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter);
 
 static SPPaintServerClass * pattern_parent_class;
@@ -429,7 +429,7 @@ sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern)
 static void sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
 
 static SPPainter *
-sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *bbox)
+sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bbox)
 {
 	SPPattern *pat;
 	SPPatPainter *pp;

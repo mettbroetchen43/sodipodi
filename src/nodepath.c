@@ -13,7 +13,6 @@
 
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
-#include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
 #include "helper/sp-ctrlline.h"
@@ -62,7 +61,7 @@ static gchar * create_typestr (SPNodePath * np);
 static void sp_node_ensure_ctrls (SPPathNode * node);
 
 void sp_nodepath_node_select (SPPathNode * node, gboolean incremental);
-void sp_nodepath_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental);
+void sp_nodepath_select_rect (SPNodePath * nodepath, NRRectD *b, gboolean incremental);
 
 static void sp_node_set_selected (SPPathNode * node, gboolean selected);
 
@@ -76,12 +75,12 @@ static void sp_node_adjust_knots (SPPathNode * node);
 static void node_clicked (SPKnot * knot, guint state, gpointer data);
 static void node_grabbed (SPKnot * knot, guint state, gpointer data);
 static void node_ungrabbed (SPKnot * knot, guint state, gpointer data);
-static gboolean node_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data);
+static gboolean node_request (SPKnot * knot, NRPointF *p, guint state, gpointer data);
 static void node_ctrl_clicked (SPKnot * knot, guint state, gpointer data);
 static void node_ctrl_grabbed (SPKnot * knot, guint state, gpointer data);
 static void node_ctrl_ungrabbed (SPKnot * knot, guint state, gpointer data);
-static gboolean node_ctrl_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data);
-static void node_ctrl_moved (SPKnot * knot, ArtPoint * p, guint state, gpointer data);
+static gboolean node_ctrl_request (SPKnot * knot, NRPointF *p, guint state, gpointer data);
+static void node_ctrl_moved (SPKnot * knot, NRPointF *p, guint state, gpointer data);
 
 /* Constructors and destrouctos */
 
@@ -90,7 +89,7 @@ static void sp_nodepath_subpath_destroy (SPNodeSubPath * subpath);
 static void sp_nodepath_subpath_close (SPNodeSubPath * sp);
 static void sp_nodepath_subpath_open (SPNodeSubPath * sp, SPPathNode * n);
 static SPPathNode * sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type, ArtPathcode code,
-					  ArtPoint * ppos, ArtPoint * pos, ArtPoint * npos);
+					  NRPointF *ppos, NRPointF *pos, NRPointF *npos);
 static void sp_nodepath_node_destroy (SPPathNode * node);
 
 /* Helpers */
@@ -134,8 +133,8 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 	np->subpaths = NULL;
 	np->selected = NULL;
 	sp_item_i2d_affine (SP_ITEM (path), &i2d);
-	nr_matrix_d_from_f (NR_MATRIX_D_FROM_DOUBLE (np->i2d), &i2d);
-	art_affine_invert (np->d2i, np->i2d);
+	nr_matrix_d_from_f (&np->i2d, &i2d);
+	nr_matrix_d_invert (&np->d2i, &np->i2d);
 
 	/* Now the bitchy part */
 
@@ -156,7 +155,7 @@ subpath_from_bpath (SPNodePath * np, ArtBpath * b, const gchar * t)
 {
 	SPNodeSubPath * sp;
 	SPPathNode * n;
-	ArtPoint ppos, pos, npos;
+	NRPointF ppos, pos, npos;
 	gboolean closed;
 
 	g_assert ((b->code == ART_MOVETO) || (b->code == ART_MOVETO_OPEN));
@@ -164,13 +163,11 @@ subpath_from_bpath (SPNodePath * np, ArtBpath * b, const gchar * t)
 	sp = sp_nodepath_subpath_new (np);
 	closed = (b->code == ART_MOVETO);
 
-	pos.x = b->x3;
-	pos.y = b->y3;
-	art_affine_point (&pos, &pos, np->i2d);
-	if ((b + 1)->code == ART_CURVETO) {
-		npos.x = (b + 1)->x1;
-		npos.y = (b + 1)->y1;
-		art_affine_point (&npos, &npos, np->i2d);
+	pos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b->x3, b->y3);
+	pos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b->x3, b->y3);
+	if (b[1].code == ART_CURVETO) {
+		npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x3, b[1].y3);
+		npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x3, b[1].y3);
 	} else {
 		npos = pos;
 	}
@@ -182,20 +179,17 @@ subpath_from_bpath (SPNodePath * np, ArtBpath * b, const gchar * t)
 	t++;
 
 	while ((b->code == ART_CURVETO) || (b->code == ART_LINETO)) {
-		pos.x = b->x3;
-		pos.y = b->y3;
-		art_affine_point (&pos, &pos, np->i2d);
+		pos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b->x3, b->y3);
+		pos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b->x3, b->y3);
 		if (b->code == ART_CURVETO) {
-			ppos.x = b->x2;
-			ppos.y = b->y2;
-			art_affine_point (&ppos, &ppos, np->i2d);
+			ppos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b->x2, b->y2);
+			ppos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b->x2, b->y2);
 		} else {
 			ppos = pos;
 		}
-		if ((b + 1)->code == ART_CURVETO) {
-			npos.x = (b + 1)->x1;
-			npos.y = (b + 1)->y1;
-			art_affine_point (&npos, &npos, np->i2d);
+		if (b[1].code == ART_CURVETO) {
+			npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x3, b[1].y3);
+			npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x3, b[1].y3);
 		} else {
 			npos = pos;
 		}
@@ -326,7 +320,7 @@ create_curve (SPNodePath * np)
 {
 	SPCurve * curve;
 	GSList * spl;
-	ArtPoint p1, p2, p3;
+	NRPointF p1, p2, p3;
 
 	curve = sp_curve_new ();
 
@@ -334,9 +328,8 @@ create_curve (SPNodePath * np)
 		SPNodeSubPath * sp;
 		SPPathNode * n;
 		sp = (SPNodeSubPath *) spl->data;
-		p3.x = sp->first->pos.x;
-		p3.y = sp->first->pos.y;
-		art_affine_point (&p3, &p3, np->d2i);
+		p3.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, sp->first->pos.x, sp->first->pos.y);
+		p3.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, sp->first->pos.x, sp->first->pos.y);
 		sp_curve_moveto (curve, p3.x, p3.y);
 		n = sp->first->n.other;
 		while (n) {
@@ -712,7 +705,7 @@ sp_nodepath_selected_nodes_move (SPNodePath * nodepath, gdouble dx, gdouble dy)
 
 	for (l = nodepath->selected; l != NULL; l = l->next) {
 		SPPathNode * n;
-		ArtPoint p;
+		NRPointF p;
 		n = (SPPathNode *) l->data;
 		p.x = n->pos.x + dx;
 		p.y = n->pos.y + dy;
@@ -743,7 +736,7 @@ sp_node_ensure_knot (SPPathNode * node, gint which, gboolean show_knot)
 	SPNodePath * nodepath;
 	SPPathNodeSide * side;
 	ArtPathcode code;
-	ArtPoint p;
+	NRPointF p;
 
 	g_assert (node != NULL);
 
@@ -777,7 +770,7 @@ void
 sp_node_ensure_ctrls (SPPathNode * node)
 {
 	SPNodePath * nodepath;
-	ArtPoint p;
+	NRPointF p;
 	gboolean show_knots;
 
 	g_assert (node != NULL);
@@ -890,7 +883,7 @@ sp_node_selected_join (void)
 	SPNodePath * nodepath;
 	SPNodeSubPath * sa, * sb;
 	SPPathNode * a, * b, * n;
-	ArtPoint p, c;
+	NRPointF p, c;
 	ArtPathcode code;
 
 	nodepath = sp_nodepath_current ();
@@ -930,7 +923,7 @@ sp_node_selected_join (void)
 	sb = b->subpath;
 
 	if (a == sa->first) {
-		SPNodeSubPath * t;
+		SPNodeSubPath *t;
 		p = sa->first->n.pos;
 		code = sa->first->n.other->code;
 		t = sp_nodepath_subpath_new (sa->nodepath);
@@ -1087,7 +1080,7 @@ sp_nodepath_node_select (SPPathNode * node, gboolean incremental)
 }
 
 void
-sp_nodepath_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental)
+sp_nodepath_select_rect (SPNodePath *nodepath, NRRectD *b, gboolean incremental)
 {
 	SPNodeSubPath * subpath;
 	SPPathNode * node;
@@ -1392,7 +1385,7 @@ node_ungrabbed (SPKnot * knot, guint state, gpointer data)
 }
 
 static gboolean
-node_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
+node_request (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 {
 	SPPathNode * n;
 
@@ -1438,7 +1431,7 @@ node_ctrl_ungrabbed (SPKnot * knot, guint state, gpointer data)
 }
 
 static gboolean
-node_ctrl_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
+node_ctrl_request (SPKnot * knot, NRPointF *p, guint state, gpointer data)
 {
 	SPPathNode * n;
 	SPPathNodeSide * me, * opposite;
@@ -1490,7 +1483,7 @@ node_ctrl_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 }
 
 static void
-node_ctrl_moved (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
+node_ctrl_moved (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 {
 	SPPathNode * n;
 	SPPathNodeSide * me;
@@ -1623,8 +1616,8 @@ sp_nodepath_subpath_open (SPNodeSubPath * sp, SPPathNode * n)
 }
 
 SPPathNode *
-sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type, ArtPathcode code,
-		      ArtPoint * ppos, ArtPoint * pos, ArtPoint * npos)
+sp_nodepath_node_new (SPNodeSubPath *sp, SPPathNode *next, SPPathNodeType type, ArtPathcode code,
+		      NRPointF *ppos, NRPointF *pos, NRPointF *npos)
 {
 	SPPathNode * n, * prev;
 

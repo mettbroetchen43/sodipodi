@@ -416,87 +416,91 @@ sp_dyna_draw_apply (SPDynaDrawContext * dc, double x, double y)
 static void
 sp_dyna_draw_brush (SPDynaDrawContext *dc)
 {
+	g_assert (dc->npoints >= 0 && dc->npoints < SAMPLING_SIZE);
 
-  g_assert (dc->npoints >= 0 && dc->npoints < SAMPLING_SIZE);
+	if (dc->use_calligraphic) {
+		/* calligraphics */
+		double width;
+		double delx, dely;
+		NRPointF *vp;
+		double xd, yd;
 
-  if (dc->use_calligraphic)
-    {
-      /* calligraphics */
-      double width;
-      double delx, dely;
-      ArtPoint *vp;
-
-      /* fixme: */
+		/* fixme: */
 #ifdef NORMALIZED_COORDINATE
-      width = (0.05 - dc->vel) * dc->width;
+		width = (0.05 - dc->vel) * dc->width;
 #else
-      width = (100.0 - dc->vel) * dc->width;
+		width = (100.0 - dc->vel) * dc->width;
 #endif
-      if (width < DYNA_MIN_WIDTH)
-        width = DYNA_MIN_WIDTH;
-      delx = dc->angx * width;
-      dely = dc->angy * width;
+		if (width < DYNA_MIN_WIDTH)
+			width = DYNA_MIN_WIDTH;
+		delx = dc->angx * width;
+		dely = dc->angy * width;
 
 #if 0
-      g_print ("brush:: [w:%g] [dc->w:%g] [dc->vel:%g]\n", width, dc->width, dc->vel);
-      g_print("brush:: [del: %g, %g]\n", delx, dely);
+		g_print ("brush:: [w:%g] [dc->w:%g] [dc->vel:%g]\n", width, dc->width, dc->vel);
+		g_print("brush:: [del: %g, %g]\n", delx, dely);
 #endif
 
-      vp = &dc->point1[dc->npoints];
-      sp_dyna_draw_get_vpoint (dc, dc->curx + delx, dc->cury + dely,
-                               &vp->x, &vp->y);
-      vp = &dc->point2[dc->npoints];
-      sp_dyna_draw_get_vpoint (dc, dc->curx - delx, dc->cury - dely,
-                               &vp->x, &vp->y);
+		vp = &dc->point1[dc->npoints];
+		sp_dyna_draw_get_vpoint (dc, dc->curx + delx, dc->cury + dely, &xd, &yd);
+		vp->x = xd;
+		vp->y = yd;
+		vp = &dc->point2[dc->npoints];
+		sp_dyna_draw_get_vpoint (dc, dc->curx - delx, dc->cury - dely, &xd, &yd);
+		vp->x = xd;
+		vp->y = yd;
 
-      dc->delx = delx;
-      dc->dely = dely;
-    }
-  else
-    {
-      sp_dyna_draw_get_curr_vpoint (dc, &dc->point1[dc->npoints].x,
-                                    &dc->point1[dc->npoints].y);
-    }
+		dc->delx = delx;
+		dc->dely = dely;
+	} else {
+		double xd, yd;
+		sp_dyna_draw_get_curr_vpoint (dc, &xd, &yd);
+		dc->point1[dc->npoints].x = xd;
+		dc->point1[dc->npoints].y = yd;
+	}
 
-  dc->npoints ++;
+	dc->npoints++;
 }
 
 static gint
 sp_dyna_draw_timeout_handler (gpointer data)
 {
-  SPDynaDrawContext *dc;
-  SPDesktop *desktop;
-  SPCanvas *canvas;
-  gint x, y;
-  ArtPoint p;
-  NRPointF fp;
+	SPDynaDrawContext *dc;
+	SPDesktop *desktop;
+	SPCanvas *canvas;
+	double xd, yd;
+	int x, y;
+	NRPointF p;
 
-  dc = SP_DYNA_DRAW_CONTEXT (data);
-  desktop = SP_EVENT_CONTEXT(dc)->desktop;
-  canvas = SP_CANVAS (SP_DT_CANVAS (desktop));
+	dc = SP_DYNA_DRAW_CONTEXT (data);
+	desktop = SP_EVENT_CONTEXT(dc)->desktop;
+	canvas = SP_CANVAS (SP_DT_CANVAS (desktop));
 
-  dc->dragging = TRUE;
-  dc->dynahand = TRUE;
+	dc->dragging = TRUE;
+	dc->dynahand = TRUE;
   
-  gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
-  sp_canvas_window_to_world (canvas, (double)x, (double)y, &p.x, &p.y);
-  sp_desktop_w2d_xy_point (desktop, &fp, p.x, p.y);
-  p.x = fp.x;
-  p.y = fp.y;
-/*    g_print ("(%d %d)=>(%g %g)\n", x, y, p.x, p.y); */
-  if (! sp_dyna_draw_apply (dc, p.x, p.y))
-    return TRUE;
-  sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
+	gtk_widget_get_pointer (GTK_WIDGET(canvas), &x, &y);
+	sp_canvas_window_to_world (canvas, x, y, &xd, &yd);
+	p.x = xd;
+	p.y = yd;
+	sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
+	/* g_print ("(%d %d)=>(%g %g)\n", x, y, p.x, p.y); */
+	if (! sp_dyna_draw_apply (dc, p.x, p.y)) {
+		return TRUE;
+	}
+	sp_dyna_draw_get_curr_vpoint (dc, &xd, &yd);
+	p.x = xd;
+	p.y = yd;
 
-  sp_desktop_free_snap (desktop, &p);
+	sp_desktop_free_snap (desktop, &p);
   
-  if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty))
-    {
-      sp_dyna_draw_brush (dc);
-      g_assert (dc->npoints > 0);
-      fit_and_split (dc, FALSE);
-    }
-  return TRUE;
+	if ((dc->curx != dc->lastx) || (dc->cury != dc->lasty)) {
+		sp_dyna_draw_brush (dc);
+		g_assert (dc->npoints > 0);
+		fit_and_split (dc, FALSE);
+	}
+
+	return TRUE;
 }
 
 gint
@@ -505,9 +509,8 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 {
 	SPDynaDrawContext *dc;
 	SPDesktop *desktop;
-	ArtPoint p;
+	NRPointF p;
 	gint ret;
-	NRPointF fp;
 
 	dc = SP_DYNA_DRAW_CONTEXT (event_context);
 	desktop = event_context->desktop;
@@ -517,13 +520,13 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 1) {
-			sp_desktop_w2d_xy_point (desktop, &fp, event->button.x, event->button.y);
-			p.x = fp.x;
-			p.y = fp.y;
+			double xd, yd;
+			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 			sp_dyna_draw_reset (dc, p.x, p.y);
 			sp_dyna_draw_apply (dc, p.x, p.y);
-			sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
-
+			sp_dyna_draw_get_curr_vpoint (dc, &xd, &yd);
+			p.x = xd;
+			p.y = yd;
 			sp_desktop_free_snap (desktop, &p);
 			sp_curve_reset (dc->accumulated);
 			if (dc->repr) {
@@ -554,14 +557,12 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (!dc->use_timeout && (event->motion.state & GDK_BUTTON1_MASK)) {
-			NRPointF fp;
+			double xd, yd;
 
 			dc->dragging = TRUE;
 			dc->dynahand = TRUE;
 
-			sp_desktop_w2d_xy_point (desktop, &fp, event->motion.x, event->motion.y);
-			p.x = fp.x;
-			p.y = fp.y;
+			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
 #if 0
 			g_print ("(%g %g)=>(%g %g)\n", event->motion.x, event->motion.y, p.x, p.y);
 #endif
@@ -569,7 +570,9 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 				ret = TRUE;
 				break;
 			}
-			sp_dyna_draw_get_curr_vpoint (dc, &p.x, &p.y);
+			sp_dyna_draw_get_curr_vpoint (dc, &xd, &yd);
+			p.x = xd;
+			p.y = yd;
 
 			sp_desktop_free_snap (desktop, &p);
 
@@ -786,7 +789,7 @@ static void
 fit_and_split_line (SPDynaDrawContext *dc,
                     gboolean           release)
 {
-	ArtPoint b[4];
+	NRPointF b[4];
 	gdouble tolerance;
 
 	tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_LINE;
@@ -858,7 +861,7 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 #define BEZIER_MAX_DEPTH  4
 #define BEZIER_MAX_LENGTH (BEZIER_SIZE * (2 << (BEZIER_MAX_DEPTH-1)))
 		SPCurve *curve;
-		ArtPoint b1[BEZIER_MAX_LENGTH], b2[BEZIER_MAX_LENGTH];
+		NRPointF b1[BEZIER_MAX_LENGTH], b2[BEZIER_MAX_LENGTH];
 		gint nb1, nb2;            /* number of blocks */
 
 #ifdef DYNA_DRAW_VERBOSE
@@ -882,7 +885,7 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc, gboolean release)
 		nb2 = sp_bezier_fit_cubic_r (b2, dc->point2, dc->npoints,
 					     tolerance, BEZIER_MAX_DEPTH);
 		if (nb1 != -1 && nb2 != -1) {
-			ArtPoint *bp1, *bp2;
+			NRPointF *bp1, *bp2;
 			/* Fit and draw and reset state */
 #ifdef DYNA_DRAW_VERBOSE
 			g_print ("nb1:%d nb2:%d\n", nb1, nb2);

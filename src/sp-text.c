@@ -733,7 +733,7 @@ static void sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
 static void sp_text_hide (SPItem *item, NRArena *arena);
 static char * sp_text_description (SPItem *item);
-static GSList * sp_text_snappoints (SPItem *item, GSList *points);
+static int sp_text_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_text_print (SPItem *item, SPPrintContext *gpc);
 
@@ -1507,27 +1507,27 @@ sp_text_set_shape (SPText *text)
 	}
 }
 
-static GSList * 
-sp_text_snappoints (SPItem *item, GSList *points)
+static int
+sp_text_snappoints (SPItem *item, NRPointF *p, int size)
 {
 	SPLayoutData *ly;
-	ArtPoint *p;
 	NRMatrixF i2d;
+	int pos;
 
 	/* we use corners of item and x,y coordinates of ellipse */
+	pos = 0;
 	if (((SPItemClass *) text_parent_class)->snappoints)
-		points = ((SPItemClass *) text_parent_class)->snappoints (item, points);
+		pos = ((SPItemClass *) text_parent_class)->snappoints (item, p, size);
 
-	ly = &SP_TEXT (item)->ly;
+	if (pos < size) {
+		ly = &SP_TEXT (item)->ly;
+		sp_item_i2d_affine (item, &i2d);
 
-	sp_item_i2d_affine (item, &i2d);
+		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ly->x.computed, ly->y.computed);
+		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ly->x.computed, ly->y.computed);
+	}
 
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ly->x.computed, ly->y.computed);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ly->x.computed, ly->y.computed);
-	g_slist_prepend (points, p);
-
-	return points;
+	return pos;
 }
 
 /*

@@ -61,7 +61,7 @@ static double sp_round (double x, double y)
 static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
 
-static GSList *sp_genericellipse_snappoints (SPItem *item, GSList *points);
+static int sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size);
 
 static void sp_genericellipse_glue_set_shape (SPShape *shape);
 static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse);
@@ -278,27 +278,27 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	sp_object_request_modified (SP_OBJECT (ellipse), SP_OBJECT_MODIFIED_FLAG);
 }
 
-static GSList * 
-sp_genericellipse_snappoints (SPItem *item, GSList *points)
+static int
+sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size)
 {
 	SPGenericEllipse *ge;
 	NRMatrixF i2d;
-	ArtPoint *p;
+	int pos;
 
 	ge = SP_GENERICELLIPSE (item);
 
 	/* we use corners of item and center of ellipse */
+	pos = 0;
 	if (((SPItemClass *) ge_parent_class)->snappoints)
-		points = ((SPItemClass *) ge_parent_class)->snappoints (item, points);
+		pos = ((SPItemClass *) ge_parent_class)->snappoints (item, p, size);
 
-	sp_item_i2d_affine (item, &i2d);
+	if (pos < size) {
+		sp_item_i2d_affine (item, &i2d);
+		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ge->cx.computed, ge->cy.computed);
+		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ge->cx.computed, ge->cy.computed);
+	}
 
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ge->cx.computed, ge->cy.computed);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ge->cx.computed, ge->cy.computed);
-	points = g_slist_prepend (points, p);
-
-	return points;
+	return pos;
 }
 
 static void
@@ -325,7 +325,7 @@ sp_genericellipse_normalize (SPGenericEllipse *ellipse)
  *   -1 : outside
  */
 static gint
-sp_genericellipse_side (SPGenericEllipse *ellipse, const ArtPoint *p)
+sp_genericellipse_side (SPGenericEllipse *ellipse, const NRPointF *p)
 {
 	gdouble dx, dy;
 	gdouble s;
@@ -758,7 +758,7 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 {
 #define ARC_BUFSIZE 256
 	SPGenericEllipse *ge;
-	ArtPoint p1, p2;
+	NRPointF p1, p2;
 	gint fa, fs;
 	gdouble  dt;
 	gchar c[ARC_BUFSIZE];
@@ -770,7 +770,7 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 
 	dt = fmod (ge->end - ge->start, SP_2PI);
 	if (fabs (dt) < 1e-6) {
-		ArtPoint ph;
+		NRPointF ph;
 		sp_arc_get_xy (arc, (ge->start + ge->end) / 2.0, &ph);
 		g_snprintf (c, ARC_BUFSIZE, "M %f %f A %f %f 0 %d %d %f,%f A %g %g 0 %d %d %g %g L %f %f z",
 			    p1.x, p1.y,
@@ -961,7 +961,7 @@ sp_arc_position_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry)
 }
 
 static void
-sp_arc_start_set (SPItem *item, const ArtPoint *p, guint state)
+sp_arc_start_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPGenericEllipse *ge;
 	SPArc *arc;
@@ -983,7 +983,7 @@ sp_arc_start_set (SPItem *item, const ArtPoint *p, guint state)
 }
 
 static void
-sp_arc_start_get (SPItem *item, ArtPoint *p)
+sp_arc_start_get (SPItem *item, NRPointF *p)
 {
 	SPGenericEllipse *ge;
 	SPArc *arc;
@@ -995,7 +995,7 @@ sp_arc_start_get (SPItem *item, ArtPoint *p)
 }
 
 static void
-sp_arc_end_set (SPItem *item, const ArtPoint *p, guint state)
+sp_arc_end_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPGenericEllipse *ge;
 	SPArc *arc;
@@ -1016,7 +1016,7 @@ sp_arc_end_set (SPItem *item, const ArtPoint *p, guint state)
 }
 
 static void
-sp_arc_end_get (SPItem *item, ArtPoint *p)
+sp_arc_end_get (SPItem *item, NRPointF *p)
 {
 	SPGenericEllipse *ge;
 	SPArc *arc;
@@ -1047,7 +1047,7 @@ sp_arc_knot_holder (SPItem *item, SPDesktop *desktop)
 }
 
 void
-sp_arc_get_xy (SPArc *arc, gdouble arg, ArtPoint *p)
+sp_arc_get_xy (SPArc *arc, gdouble arg, NRPointF *p)
 {
 	SPGenericEllipse *ge;
 

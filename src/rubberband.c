@@ -1,7 +1,20 @@
-#define RUBBERBAND_C
+#define __RUBBERBAND_C__
+
+/*
+ * Rubberbanding selector
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 
 #include "helper/sodipodi-ctrlrect.h"
 #include "desktop.h"
+#include "desktop-handles.h"
 #include "rubberband.h"
 
 SPDesktop * sp_rb_desktop = NULL;
@@ -55,7 +68,7 @@ sp_rubberband_stop (void)
 }
 
 gboolean
-sp_rubberband_rect (ArtDRect * rect)
+sp_rubberband_rect (NRRectD *rect)
 {
 	if (sp_rb == NULL) return FALSE;
 	rect->x0 = MIN (sp_rb_rect.x0, sp_rb_rect.x1);

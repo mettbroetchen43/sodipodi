@@ -97,8 +97,8 @@ struct _SPItemClass {
 	NRArenaItem * (* show) (SPItem *item, NRArena *arena);
 	void (* hide) (SPItem *item, NRArena *arena);
 
-	/* give list of points for item to be considered for snapping */ 
-	GSList * (* snappoints) (SPItem * item, GSList * points);
+	/* Returns a number of points used */ 
+	int (* snappoints) (SPItem *item, NRPointF *points, int size);
 
 	/* Write item transform to repr optimally */
 	void (* write_transform) (SPItem *item, SPRepr *repr, NRMatrixF *transform);
@@ -128,7 +128,7 @@ void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 NRArenaItem *sp_item_show (SPItem *item, NRArena *arena);
 void sp_item_hide (SPItem *item, NRArena *arena);
 
-GSList * sp_item_snappoints (SPItem * item);
+int sp_item_snappoints (SPItem *item, NRPointF *points, int size);
 
 void sp_item_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 

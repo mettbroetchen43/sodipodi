@@ -40,7 +40,7 @@ static void sp_rect_modified (SPObject *object, guint flags);
 static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_rect_description (SPItem * item);
-static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
+static int sp_rect_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
@@ -396,13 +396,13 @@ sp_rect_set_ry(SPRect * rect, gboolean set, gdouble value)
 	sp_rect_set_shape (rect);
 }
 
-static GSList * 
-sp_rect_snappoints (SPItem *item, GSList *points)
+static int
+sp_rect_snappoints (SPItem *item, NRPointF *p, int size)
 {
 	SPRect *rect;
 	float x0, y0, x1, y1;
-	ArtPoint *p;
 	NRMatrixF i2d;
+	int i;
 
 	rect = SP_RECT (item);
 
@@ -414,24 +414,29 @@ sp_rect_snappoints (SPItem *item, GSList *points)
 
 	sp_item_i2d_affine (item, &i2d);
 
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
-	points = g_slist_prepend (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
-	p->y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
-	points = g_slist_prepend (points, p);
+	i = 0;
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
+		i += 1;
+	}
 
-	return points;
+	return i;
 }
 
 /*
@@ -551,18 +556,18 @@ sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
 }
 
 static void
-sp_rect_rx_get (SPItem *item, ArtPoint *p)
+sp_rect_rx_get (SPItem *item, NRPointF *p)
 {
 	SPRect *rect;
 
-	rect = SP_RECT(item);
+	rect = SP_RECT (item);
 
 	p->x = rect->x.computed + rect->rx.computed;
 	p->y = rect->y.computed;
 }
 
 static void
-sp_rect_rx_set (SPItem *item, const ArtPoint *p, guint state)
+sp_rect_rx_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPRect *rect;
 
@@ -578,7 +583,7 @@ sp_rect_rx_set (SPItem *item, const ArtPoint *p, guint state)
 
 
 static void
-sp_rect_ry_get (SPItem *item, ArtPoint *p)
+sp_rect_ry_get (SPItem *item, NRPointF *p)
 {
 	SPRect *rect;
 
@@ -589,7 +594,7 @@ sp_rect_ry_get (SPItem *item, ArtPoint *p)
 }
 
 static void
-sp_rect_ry_set (SPItem *item, const ArtPoint *p, guint state)
+sp_rect_ry_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPRect *rect;
 

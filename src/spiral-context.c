@@ -215,7 +215,7 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 {
 	SPSpiral *spiral;
 	SPDesktop *desktop;
-	ArtPoint p0, p1;
+	NRPointF p0, p1;
 	gdouble dx, dy, rad, arg;
 	GString *xs, *ys;
 	gchar status[80];

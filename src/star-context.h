@@ -28,7 +28,7 @@ typedef struct _SPStarContextClass SPStarContextClass;
 struct _SPStarContext {
 	SPEventContext event_context;
 	SPItem *item;
-	ArtPoint center;
+	NRPointF center;
 
 	/* Number of corners */
 	gint magnitude;

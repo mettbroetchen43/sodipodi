@@ -28,7 +28,7 @@ typedef struct _SPRectContextClass SPRectContextClass;
 struct _SPRectContext {
 	SPEventContext event_context;
 	SPItem *item;
-	ArtPoint center;
+	NRPointF center;
 	
   	gdouble rx_ratio;	/* roundness ratio (x direction) */
   	gdouble ry_ratio;	/* roundness ratio (y direction) */

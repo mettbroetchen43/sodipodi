@@ -16,32 +16,26 @@
  * Released under GNU GPL
  */
 
+#include <libnr/nr-types.h>
 #include <glib.h>
-#include <libart_lgpl/art_point.h>
 
 /* Bezier approximation utils */
 
-gint sp_bezier_fit_cubic (ArtPoint *bezier, const ArtPoint *data, gint len, gdouble error);
+gint sp_bezier_fit_cubic (NRPointF *bezier, const NRPointF *data, gint len, gdouble error);
 
-gint sp_bezier_fit_cubic_r (ArtPoint *bezier, const ArtPoint *data, gint len, gdouble error, gint max_depth);
+gint sp_bezier_fit_cubic_r (NRPointF *bezier, const NRPointF *data, gint len, gdouble error, gint max_depth);
 
-gint sp_bezier_fit_cubic_full (ArtPoint *bezier, const ArtPoint *data, gint len,
-			       ArtPoint *tHat1, ArtPoint *tHat2, gdouble error, gint max_depth);
+gint sp_bezier_fit_cubic_full (NRPointF *bezier, const NRPointF *data, gint len,
+			       NRPointF *tHat1, NRPointF *tHat2, gdouble error, gint max_depth);
 
 
 /* Data array */
 
-void	sp_darray_left_tangent		(const ArtPoint *d,
-					 gint		first,
-					 ArtPoint      *tHat1);
+void sp_darray_left_tangent (const NRPointF *d, gint first, NRPointF *tHat1);
 
-void	sp_darray_right_tangent		(const ArtPoint *d,
-					 gint            last,
-					 ArtPoint       *tHat2);
+void sp_darray_right_tangent (const NRPointF *d, gint last, NRPointF *tHat2);
 
-void	sp_darray_center_tangent	(const ArtPoint *d,
-					 gint            center,
-					 ArtPoint       *tHatCenter);
+void sp_darray_center_tangent (const NRPointF *d, gint center, NRPointF *tHatCenter);
 
 
 

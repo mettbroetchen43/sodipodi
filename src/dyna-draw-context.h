@@ -44,8 +44,8 @@ struct _SPDynaDrawContext
 	SPCurve *cal1;
 	SPCurve *cal2;
 	/* temporary work area */
-	ArtPoint point1[SAMPLING_SIZE];
-	ArtPoint point2[SAMPLING_SIZE];
+	NRPointF point1[SAMPLING_SIZE];
+	NRPointF point2[SAMPLING_SIZE];
 	gint npoints;
 
 	/* repr */

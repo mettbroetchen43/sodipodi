@@ -210,7 +210,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 {
 	SPStar *star;
 	SPDesktop * desktop;
-	ArtPoint p0, p1;
+	NRPointF p0, p1;
 	gdouble sides, dx, dy, r1, arg1;
 	GString * xs, * ys;
 	gchar status[80];

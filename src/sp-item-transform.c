@@ -13,7 +13,6 @@
  */
 
 #include <libnr/nr-matrix.h>
-#include <libart_lgpl/art_rect.h>
 #include "svg/svg.h"
 #include "sp-item-transform.h"
 

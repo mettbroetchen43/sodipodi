@@ -115,7 +115,7 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
 	SPDesktop * desktop;
 	NRPointF p;
-	ArtDRect b;
+	NRRectD b;
 	gint ret;
 
 	ret = FALSE;
@@ -225,7 +225,7 @@ sp_zoom_drawing (GtkWidget * widget)
 void
 sp_zoom_page (GtkWidget * widget)
 {
-	ArtDRect d;
+	NRRectD d;
 	SPDesktop * desktop;
 
 	desktop = SP_ACTIVE_DESKTOP;

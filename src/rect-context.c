@@ -224,7 +224,7 @@ static void
 sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 {
 	SPDesktop * desktop;
-	ArtPoint p0, p1;
+	NRPointF p0, p1;
 	gdouble x0, y0, x1, y1, w, h;
 	GString * xs, * ys;
 	gchar status[80];

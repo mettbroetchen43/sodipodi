@@ -282,12 +282,12 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style),
-								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
+								   NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
 		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style),
-								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), &shape->paintbox);
+								     NR_MATRIX_D_TO_DOUBLE (&gc->transform), (NRRectD *) &shape->paintbox);
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;

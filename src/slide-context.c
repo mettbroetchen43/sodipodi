@@ -172,7 +172,7 @@ sp_slide_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 static void
 sp_slide_context_zoom (SPDesktop *desktop)
 {
-	ArtDRect d;
+	NRRectD d;
 
 	d.x0 = 0.0;
 	d.y0 = 0.0;

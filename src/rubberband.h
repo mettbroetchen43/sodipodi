@@ -12,16 +12,16 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
-#include <libart_lgpl/art_rect.h>
-#include "desktop-handles.h"
+
+#include <libnr/nr-types.h>
+#include "forward.h"
 
 /* fixme: do multidocument safe */
 
-void sp_rubberband_start (SPDesktop * desktop, double x, double y);
+void sp_rubberband_start (SPDesktop *desktop, double x, double y);
 void sp_rubberband_move (double x, double y);
 void sp_rubberband_stop (void);
 
-gboolean sp_rubberband_rect (ArtDRect * rect);
+gboolean sp_rubberband_rect (NRRectD *rect);
 
 #endif

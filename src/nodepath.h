@@ -12,7 +12,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 #include "knot.h"
 #include "sp-path.h"
@@ -34,7 +33,7 @@ struct _SPNodePath {
 	SPPath * path;
 	GSList * subpaths;
 	GSList * selected;
-	double i2d[6], d2i[6];
+	NRMatrixD i2d, d2i;
 };
 
 struct _SPNodeSubPath {
@@ -47,7 +46,7 @@ struct _SPNodeSubPath {
 
 typedef struct {
 	SPPathNode * other;
-	ArtPoint pos;
+	NRPointF pos;
 	SPKnot * knot;
 	SPCanvasItem * line;
 } SPPathNodeSide;
@@ -57,7 +56,7 @@ struct _SPPathNode {
 	guint type : 4;
 	guint code : 4;
 	guint selected : 1;
-	ArtPoint pos;
+	NRPointF pos;
 	SPKnot * knot;
 	SPPathNodeSide n;
 	SPPathNodeSide p;
@@ -66,7 +65,7 @@ struct _SPPathNode {
 SPNodePath * sp_nodepath_new (SPDesktop * desktop, SPItem * item);
 void sp_nodepath_destroy (SPNodePath * nodepath);
 
-void sp_nodepath_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental);
+void sp_nodepath_select_rect (SPNodePath * nodepath, NRRectD * b, gboolean incremental);
 gboolean node_key (GdkEvent * event);
 
 /* possibly private functions */

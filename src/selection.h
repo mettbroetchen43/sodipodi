@@ -65,6 +65,8 @@ SPRepr *sp_selection_repr (SPSelection * selection);
 
 NRRectF *sp_selection_bbox (SPSelection *selection, NRRectF *bbox);
 NRRectF *sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox);
-GSList *sp_selection_snappoints (SPSelection * selection);
+
+/* Returns number of points used */
+int sp_selection_snappoints (SPSelection *selection, NRPointF *points, int size);
 
 #endif

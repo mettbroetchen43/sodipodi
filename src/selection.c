@@ -561,45 +561,50 @@ sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox)
 	return bbox;
 }
 
-GSList * 
-sp_selection_snappoints (SPSelection * selection)
+int
+sp_selection_snappoints (SPSelection *selection, NRPointF *points, int size)
 /* compute the list of points in the selection 
  * which are to be considered for snapping */
 {
-        GSList * points = NULL, * l;
-	ArtPoint * p;
+        GSList *l;
 	NRRectF bbox;
 
-	g_return_val_if_fail (selection != NULL, NULL);
-	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
+	g_return_val_if_fail (selection != NULL, 0);
+	g_return_val_if_fail (SP_IS_SELECTION (selection), 0);
 
 	l = selection->items;
 
 	if (l == NULL) {
-	  points = NULL;
+		return 0;
 	} else if (l->next == NULL) {
-	  /* selection has only one item -> take snappoints of item */
-	  points = sp_item_snappoints (SP_ITEM (l->data));
+		/* selection has only one item -> take snappoints of item */
+		return sp_item_snappoints (SP_ITEM (l->data), points, size);
 	} else {
-	  /* selection has more than one item -> take corners of selection */
-	  sp_selection_bbox (selection, &bbox);
-	  p = g_new (ArtPoint,1);
-	  p->x = bbox.x0;
-	  p->y = bbox.y0;
-	  points = g_slist_append (points, p);
-	  p = g_new (ArtPoint,1);
-	  p->x = bbox.x1;
-	  p->y = bbox.y0;
-	  points = g_slist_append (points, p);
-	  p = g_new (ArtPoint,1);
-	  p->x = bbox.x1;
-	  p->y = bbox.y1;
-	  points = g_slist_append (points, p);
-	  p = g_new (ArtPoint,1);
-	  p->x = bbox.x0;
-	  p->y = bbox.y1;
-	  points = g_slist_append (points, p);
-	} 
+		int pos;
+		/* selection has more than one item -> take corners of selection */
+		sp_selection_bbox (selection, &bbox);
 
-	return points;
+		pos = 0;
+		if (pos < size) {
+			points[pos].x = bbox.x0;
+			points[pos].y = bbox.y0;
+			pos += 1;
+		}
+		if (pos < size) {
+			points[pos].x = bbox.x1;
+			points[pos].y = bbox.y0;
+			pos += 1;
+		}
+		if (pos < size) {
+			points[pos].x = bbox.x1;
+			points[pos].y = bbox.y1;
+			pos += 1;
+		}
+		if (pos < size) {
+			points[pos].x = bbox.x0;
+			points[pos].y = bbox.y1;
+			pos += 1;
+		}
+		return pos;
+	}
 }

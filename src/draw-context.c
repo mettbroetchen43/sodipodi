@@ -54,7 +54,7 @@ struct _SPDrawAnchor {
 	SPCurve *curve;
 	guint start : 1;
 	guint active : 1;
-	ArtPoint dp, wp;
+	NRPointF dp, wp;
 	SPCanvasItem *ctrl;
 };
 
@@ -370,7 +370,7 @@ spdc_detach_selection (SPDrawContext *dc, SPSelection *sel)
 #define NUMBER_OF_TURNS 12
 
 static void
-spdc_endpoint_snap (SPDrawContext *dc, ArtPoint *p, guint state)
+spdc_endpoint_snap (SPDrawContext *dc, NRPointF *p, guint state)
 {
 	if (state & GDK_CONTROL_MASK) {
 		/* Constrained motion */
@@ -626,7 +626,7 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 static void
 fit_and_split (SPDrawContext * dc)
 {
-	ArtPoint b[4];
+	NRPointF b[4];
 	gdouble tolerance;
 
 	g_assert (dc->npoints > 1);
@@ -820,10 +820,10 @@ static void sp_pencil_context_dispose (GObject *object);
 
 static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
-static void spdc_set_startpoint (SPPencilContext *dc, ArtPoint *p, guint state);
-static void spdc_set_endpoint (SPPencilContext *dc, ArtPoint *p, guint state);
-static void spdc_finish_endpoint (SPPencilContext *dc, ArtPoint *p, gboolean snap, guint state);
-static void spdc_add_freehand_point (SPPencilContext *dc, ArtPoint *p, guint state);
+static void spdc_set_startpoint (SPPencilContext *dc, NRPointF *p, guint state);
+static void spdc_set_endpoint (SPPencilContext *dc, NRPointF *p, guint state);
+static void spdc_finish_endpoint (SPPencilContext *dc, NRPointF *p, gboolean snap, guint state);
+static void spdc_add_freehand_point (SPPencilContext *dc, NRPointF *p, guint state);
 
 static SPDrawContextClass *pencil_parent_class;
 
@@ -884,7 +884,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPDrawContext *dc;
 	SPPencilContext *pc;
 	SPDesktop *dt;
-	ArtPoint p;
+	NRPointF p;
 	gint ret;
 	SPDrawAnchor *anchor;
 	NRPointF fp;
@@ -1048,7 +1048,7 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
  */
 
 static void
-spdc_set_startpoint (SPPencilContext *pc, ArtPoint *p, guint state)
+spdc_set_startpoint (SPPencilContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1069,7 +1069,7 @@ spdc_set_startpoint (SPPencilContext *pc, ArtPoint *p, guint state)
  */
 
 static void
-spdc_set_endpoint (SPPencilContext *pc, ArtPoint *p, guint state)
+spdc_set_endpoint (SPPencilContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1095,7 +1095,7 @@ spdc_set_endpoint (SPPencilContext *pc, ArtPoint *p, guint state)
  */
 
 static void
-spdc_finish_endpoint (SPPencilContext *pc, ArtPoint *p, gboolean snap, guint state)
+spdc_finish_endpoint (SPPencilContext *pc, NRPointF *p, gboolean snap, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1136,7 +1136,7 @@ spdc_finish_endpoint (SPPencilContext *pc, ArtPoint *p, gboolean snap, guint sta
 }
 
 static void
-spdc_add_freehand_point (SPPencilContext *pc, ArtPoint *p, guint state)
+spdc_add_freehand_point (SPPencilContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1161,9 +1161,9 @@ static void sp_pen_context_finish (SPEventContext *ec);
 static void sp_pen_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 static gint sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event);
 
-static void spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state);
-static void spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state);
-static void spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state);
+static void spdc_pen_set_point (SPPenContext *pc, NRPointF *p, guint state);
+static void spdc_pen_set_ctrl (SPPenContext *pc, NRPointF *p, guint state);
+static void spdc_pen_finish_segment (SPPenContext *pc, NRPointF *p, guint state);
 
 static void spdc_pen_finish (SPPenContext *pc, gboolean closed);
 
@@ -1306,7 +1306,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	SPDrawContext *dc;
 	SPPenContext *pc;
 	SPDesktop *dt;
-	ArtPoint p;
+	NRPointF p;
 	gint ret;
 	SPDrawAnchor *anchor;
 	NRPointF fp;
@@ -1573,7 +1573,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				ret = TRUE;
 				break;
 			} else {
-				ArtPoint pt;
+				NRPointF pt;
 				ArtBpath *p;
 				gint e;
 				/* Reset red curve */
@@ -1627,7 +1627,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 }
 
 static void
-spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state)
+spdc_pen_set_point (SPPenContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1652,7 +1652,7 @@ spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state)
 }
 
 static void
-spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state)
+spdc_pen_set_ctrl (SPPenContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 
@@ -1693,7 +1693,7 @@ spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state)
 }
 
 static void
-spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state)
+spdc_pen_finish_segment (SPPenContext *pc, NRPointF *p, guint state)
 {
 	SPDrawContext *dc;
 

@@ -19,7 +19,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <glib.h>
-#include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "svg/svg.h"
@@ -51,7 +50,7 @@ static void sp_spiral_set (SPObject *object, unsigned int key, const unsigned ch
 
 static SPKnotHolder *sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_spiral_description (SPItem * item);
-static GSList * sp_spiral_snappoints (SPItem * item, GSList * points);
+static int sp_spiral_snappoints (SPItem *item, NRPointF *p, int size);
 static void sp_spiral_set_shape (SPShape *shape);
 
 static void sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -259,18 +258,18 @@ static void
 sp_spiral_fit_and_draw (SPSpiral *spiral,
 			SPCurve	 *c,
 			double dstep,
-			ArtPoint *darray,
-			ArtPoint *hat1,
-			ArtPoint *hat2,
+			NRPointF *darray,
+			NRPointF *hat1,
+			NRPointF *hat2,
 			double    t)
 {
 #define BEZIER_SIZE   4
 #define FITTING_DEPTH 3
 #define BEZIER_LENGTH (BEZIER_SIZE * (2 << (FITTING_DEPTH - 1)))
 
-	ArtPoint	bezier[BEZIER_LENGTH];
-	gdouble		d;
-	gint depth, i;
+	NRPointF bezier[BEZIER_LENGTH];
+	double d;
+	int depth, i;
 	
 	for (d = t, i = 0; i <= SAMPLE_SIZE; d += dstep, i++) {
 		sp_spiral_get_xy (spiral, d, &darray[i]);
@@ -312,13 +311,13 @@ sp_spiral_fit_and_draw (SPSpiral *spiral,
 static void
 sp_spiral_set_shape (SPShape *shape)
 {
-	SPSpiral       *spiral;
-	ArtPoint	darray[SAMPLE_SIZE + 1];
-	ArtPoint	hat1, hat2;
-	gint		i;
-	gdouble		tstep, t;
-	gdouble		dstep, d;
-	SPCurve	       *c;
+	SPSpiral *spiral;
+	NRPointF darray[SAMPLE_SIZE + 1];
+	NRPointF hat1, hat2;
+	int i;
+	double tstep, t;
+	double dstep, d;
+	SPCurve *c;
 
 	spiral = SP_SPIRAL(shape);
 
@@ -384,9 +383,7 @@ sp_spiral_set_shape (SPShape *shape)
  *   [control] constrain inner arg to round per PI/4
  */
 static void
-sp_spiral_inner_set (SPItem   *item,
-		     const ArtPoint *p,
-		     guint state)
+sp_spiral_inner_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPSpiral *spiral;
 	gdouble   dx, dy;
@@ -430,9 +427,7 @@ sp_spiral_inner_set (SPItem   *item,
  *   [control] constrain inner arg to round per PI/4
  */
 static void
-sp_spiral_outer_set (SPItem   *item,
-		     const ArtPoint *p,
-		     guint state)
+sp_spiral_outer_set (SPItem *item, const NRPointF *p, guint state)
 {
 	SPSpiral *spiral;
 	gdouble   dx, dy;
@@ -457,8 +452,7 @@ sp_spiral_outer_set (SPItem   *item,
 }
 
 static void
-sp_spiral_inner_get (SPItem *item,
-		     ArtPoint *p)
+sp_spiral_inner_get (SPItem *item, NRPointF *p)
 {
 	SPSpiral *spiral;
 
@@ -468,8 +462,7 @@ sp_spiral_inner_get (SPItem *item,
 }
 
 static void
-sp_spiral_outer_get (SPItem *item,
-		     ArtPoint *p)
+sp_spiral_outer_get (SPItem *item, NRPointF *p)
 {
 	SPSpiral *spiral;
 
@@ -521,8 +514,8 @@ sp_spiral_position_set       (SPSpiral          *spiral,
 	sp_shape_set_shape (SP_SHAPE(spiral));
 }
 
-static GSList * 
-sp_spiral_snappoints (SPItem * item, GSList * points)
+static int
+sp_spiral_snappoints (SPItem *item, NRPointF *p, int size)
 {
 #if 0
 	/* fixme: (Lauris) */
@@ -549,15 +542,16 @@ sp_spiral_snappoints (SPItem * item, GSList * points)
 	p = g_new (ArtPoint,1);
 	art_affine_point (p, &p3, affine);
 	points = g_slist_append (points, p);
+#else
+	if (((SPItemClass *) parent_class)->snappoints)
+		return ((SPItemClass *) parent_class)->snappoints (item, p, size);
 #endif
 	
-	return points;
+	return 0;
 }
 
 void
-sp_spiral_get_xy (SPSpiral *spiral,
-		  gdouble   t,
-		  ArtPoint *p)
+sp_spiral_get_xy (SPSpiral *spiral, gdouble t, NRPointF *p)
 {
 	gdouble rad, arg;
 

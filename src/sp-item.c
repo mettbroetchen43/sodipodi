@@ -54,7 +54,7 @@ static void sp_item_style_modified (SPObject *object, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
-static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
+static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
 
 static NRArenaItem *sp_item_private_show (SPItem *item, NRArena *arena);
 static void sp_item_private_hide (SPItem * item, NRArena *arena);
@@ -371,50 +371,53 @@ sp_item_knot_holder (SPItem *item, SPDesktop *desktop)
 	return knot_holder;
 }
 
-static GSList * 
-sp_item_private_snappoints (SPItem * item, GSList * points) 
+static int
+sp_item_private_snappoints (SPItem *item, NRPointF *p, int size)
 {
         NRRectF bbox;
 	NRMatrixF i2d;
 	NRMatrixD i2dd;
-	ArtPoint *p;
+	int i;
 
 	sp_item_i2d_affine (item, &i2d);
 	nr_matrix_d_from_f (&i2dd, &i2d);
 	sp_item_invoke_bbox (item, &bbox, &i2dd, TRUE);
 
-	p = g_new (ArtPoint,1);
-	p->x = bbox.x0;
-	p->y = bbox.y0;
-	points = g_slist_append (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = bbox.x1;
-	p->y = bbox.y0;
-	points = g_slist_append (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = bbox.x1;
-	p->y = bbox.y1;
-	points = g_slist_append (points, p);
-	p = g_new (ArtPoint,1);
-	p->x = bbox.x0;
-	p->y = bbox.y1;
-	points = g_slist_append (points, p);
+	i = 0;
+	if (i < size) {
+		p[i].x = bbox.x0;
+		p[i].y = bbox.y0;
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = bbox.x1;
+		p[i].y = bbox.y0;
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = bbox.x1;
+		p[i].y = bbox.y1;
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = bbox.x0;
+		p[i].y = bbox.y1;
+		i += 1;
+	}
 
-	return points;
+	return i;
 }
 
-GSList *
-sp_item_snappoints (SPItem *item)
+int
+sp_item_snappoints (SPItem *item, NRPointF *p, int size)
 {
-        GSList * points = NULL;
+	g_return_val_if_fail (item != NULL, 0);
+	g_return_val_if_fail (SP_IS_ITEM (item), 0);
 
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->snappoints)
+	        return ((SPItemClass *) G_OBJECT_GET_CLASS(item))->snappoints (item, p, size);
 
-	if (((SPItemClass *) G_OBJECT_GET_CLASS(item))->snappoints)
-	        points = ((SPItemClass *) G_OBJECT_GET_CLASS(item))->snappoints (item, points);
-
-	return points;
+	return 0;
 }
 
 void

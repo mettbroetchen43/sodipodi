@@ -633,7 +633,7 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
  */
 
 GSList *
-sp_document_items_in_box (SPDocument *document, ArtDRect *box)
+sp_document_items_in_box (SPDocument *document, NRRectD *box)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -672,7 +672,7 @@ sp_document_items_in_box (SPDocument *document, ArtDRect *box)
  */
 
 GSList *
-sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box)
+sp_document_partial_items_in_box (SPDocument *document, NRRectD *box)
 {
 	SPGroup * group;
 	SPItem * child;

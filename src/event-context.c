@@ -139,7 +139,7 @@ sp_event_context_private_setup (SPEventContext *ec)
 static gint
 sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *event)
 {
-	static ArtPoint s;
+	static NRPointF s;
 	static unsigned int panning = 0;
 	gint ret;
 	SPDesktop * desktop;

@@ -13,8 +13,6 @@
  */
 
 #include <libnr/nr-types.h>
-#include <libart_lgpl/art_point.h>
-#include <libart_lgpl/art_rect.h>
 #include <glib.h>
 #include "knot.h"
 #include "desktop-handles.h"
@@ -44,6 +42,8 @@ SPSelTransShowType SelTransViewMode = SP_SELTRANS_CONTENT;
 #endif
 #endif
 
+#define SP_SELTRANS_SPP_SIZE 1024
+
 struct _SPSelTrans {
 	SPDesktop *desktop;
 	SPSelection *selection;
@@ -52,18 +52,20 @@ struct _SPSelTrans {
 	guint show : 1;
 	guint transform : 1;
 
-	GSList *snappoints;
+	NRPointF *spp;
+	int spp_length;
+
 	gboolean grabbed;
 	gboolean show_handles;
 	gboolean empty;
 	gboolean changed;
 	gboolean sel_changed;
-	ArtDRect box;
-        double current[6];
-        ArtPoint opposit;
-        ArtPoint origin;
-	ArtPoint point;
-	ArtPoint center;
+	NRRectF box;
+        NRMatrixD current;
+        NRPointF opposit;
+        NRPointF origin;
+	NRPointF point;
+	NRPointF center;
 	SPKnot *shandle[8];
 	SPKnot *rhandle[8];
 	SPKnot *chandle;
@@ -72,7 +74,7 @@ struct _SPSelTrans {
         SPCanvasItem *l1, *l2, *l3, *l4;
 	guint sel_changed_id;
 	guint sel_modified_id;
-	GSList * stamp_cache;
+	GSList *stamp_cache;
 };
 
 /*
@@ -93,12 +95,12 @@ void sp_sel_trans_increase_state (SPSelTrans * seltrans);
 void sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y);
 
 void sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gboolean show_handles);
-void sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm);
+void sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm);
 void sp_sel_trans_ungrab (SPSelTrans * seltrans);
 void sp_sel_trans_stamp (SPSelTrans * seltrans);
 
-ArtPoint * sp_sel_trans_point_desktop (SPSelTrans * seltrans, ArtPoint * p);
-ArtPoint * sp_sel_trans_origin_desktop (SPSelTrans * seltrans, ArtPoint * p);
+NRPointF *sp_sel_trans_point_desktop (SPSelTrans *seltrans, NRPointF *p);
+NRPointF *sp_sel_trans_origin_desktop (SPSelTrans * seltrans, NRPointF *p);
 
 
 #endif

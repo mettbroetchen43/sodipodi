@@ -25,8 +25,8 @@ typedef enum {
 	SPXMaxYMax
 } SPAspect;
 
+#include <libnr/nr-types.h>
 #include <glib-object.h>
-#include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 #include "forward.h"
 
@@ -162,8 +162,8 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  * Misc
  */
 
-GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
-GSList * sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box);
+GSList * sp_document_items_in_box (SPDocument *document, NRRectD *box);
+GSList * sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);

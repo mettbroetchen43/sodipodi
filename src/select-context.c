@@ -15,7 +15,6 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
-#include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include "helper/sp-canvas-util.h"
@@ -309,7 +308,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	SPItem *item;
 	gint ret = FALSE;
 	NRPointF p;
-	ArtDRect b;
+	NRRectD b;
 	GSList *l;
 
 	desktop = event_context->desktop;
@@ -555,8 +554,8 @@ static void
 sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 {
 	double dx, dy;
-	double move[6];
-	ArtPoint p, norm = {0,0};
+	NRMatrixD move;
+	NRPointF p, norm = {0,0};
 	GString * xs, * ys;
 	gchar status[80];
 	SPDesktop * desktop;
@@ -568,22 +567,23 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	dy = y - p.y;
 
 	if (state & GDK_MOD1_MASK) {
-	  dx /= 10;
-	  dy /= 10;
+		dx /= 10;
+		dy /= 10;
 	}
 
-	dx = sp_desktop_horizontal_snap_list (desktop, seltrans->snappoints, dx);
-	dy = sp_desktop_vertical_snap_list (desktop, seltrans->snappoints, dy);
+	dx = sp_desktop_horizontal_snap_list (desktop, seltrans->spp, seltrans->spp_length, dx);
+	dy = sp_desktop_vertical_snap_list (desktop, seltrans->spp, seltrans->spp_length, dy);
 
 	if (state & GDK_CONTROL_MASK) {
-		if (fabs (dx) > fabs (dy)) 
-		  dy = 0.0;
-		else 
-		  dx = 0.0;
+		if (fabs (dx) > fabs (dy)) {
+			dy = 0.0;
+		} else {
+			dx = 0.0;
+		}
 	}
 
-	art_affine_translate (move, dx, dy);
-	sp_sel_trans_transform (seltrans, move, &norm);
+	nr_matrix_d_set_translate (&move, dx, dy);
+	sp_sel_trans_transform (seltrans, &move, &norm);
 
 	// status text
 	xs = SP_PT_TO_METRIC_STRING (dx, SP_DEFAULT_METRIC);

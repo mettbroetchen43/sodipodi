@@ -13,23 +13,23 @@
  */
 
 #include <math.h>
-#include <libart_lgpl/art_affine.h>
 #include "sp-guide.h"
 #include "sp-namedview.h"
 #include "desktop-snap.h"
 
-// minimal distance to norm before point is considered for snap
-#define PNDist 1
+/* minimal distance to norm before point is considered for snap */
+#define MIN_DIST_NORM 1.0
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
 #define SNAP_ON(d) (((d)->gridsnap > 0.0) || ((d)->guidesnap > 0.0))
 
-gdouble
-sp_desktop_free_snap (SPDesktop * desktop, ArtPoint * req)
-/* snap a point in horizontal and vertical direction */
+/* Snap a point in horizontal and vertical direction */
+
+double
+sp_desktop_free_snap (SPDesktop *desktop, NRPointF *req)
 {
-	gdouble dh, dv;
+	double dh, dv;
 
 	dh = sp_desktop_horizontal_snap (desktop, req);
 	dv = sp_desktop_vertical_snap (desktop, req);
@@ -40,14 +40,14 @@ sp_desktop_free_snap (SPDesktop * desktop, ArtPoint * req)
 	return 1e18;
 }
 
-/* snap a point in horizontal direction */
+/* Snap a point in horizontal direction */
 
-gdouble
-sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
+double
+sp_desktop_horizontal_snap (SPDesktop *desktop, NRPointF *req)
 {
 	SPNamedView * nv;
-	ArtPoint actual;
-	gdouble best = 1e18, dist;
+	NRPointF actual;
+	double best = 1e18, dist;
 	gboolean snapped;
 	GSList * l;
 
@@ -63,8 +63,9 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 		/* snap distance in desktop units */
 		best = desktop->guidesnap;
 		for (l = nv->vguides; l != NULL; l = l->next) {
-			if (fabs (SP_GUIDE (l->data)->position - req->x) < best) {
-				best = fabs (SP_GUIDE (l->data)->position - req->x);
+			dist = fabs (SP_GUIDE (l->data)->position - req->x);
+			if (dist < best) {
+				best = dist;
 				actual.x = SP_GUIDE (l->data)->position;
 				snapped = TRUE;
 			}
@@ -96,11 +97,11 @@ sp_desktop_horizontal_snap (SPDesktop * desktop, ArtPoint * req)
 
 /* snap a point in vertical direction */
 
-gdouble
-sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
+double
+sp_desktop_vertical_snap (SPDesktop *desktop, NRPointF *req)
 {
 	SPNamedView * nv;
-	ArtPoint actual;
+	NRPointF actual;
 	gdouble best = 1e18, dist;
 	gboolean snapped;
 	GSList * l;
@@ -117,8 +118,9 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 		/* snap distance in desktop units */
 		best = desktop->guidesnap;
 		for (l = nv->hguides; l != NULL; l = l->next) {
-			if (fabs (SP_GUIDE (l->data)->position - req->y) < best) {
-				best = fabs (SP_GUIDE (l->data)->position - req->y);
+			dist = fabs (SP_GUIDE (l->data)->position - req->y);
+			if (dist < best) {
+				best = dist;
 				actual.y = SP_GUIDE (l->data)->position;
 				snapped = TRUE;
 			}
@@ -148,14 +150,14 @@ sp_desktop_vertical_snap (SPDesktop * desktop, ArtPoint * req)
 	return dist;
 }
 
-/* look for snappoint along a line given by req and the vector (dx,dy) */
+/* Look for snappoint along a line given by req and the vector (dx,dy) */
 
-gdouble
-sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble dy)
+double
+sp_desktop_vector_snap (SPDesktop * desktop, NRPointF *req, double dx, double dy)
 {
 	SPNamedView * nv;
-	ArtPoint actual;
-	gdouble len, best = 1e18, dist, delta;
+	NRPointF actual;
+	double len, best = 1e18, dist, delta;
 	gboolean snapped;
 	GSList * l;
 
@@ -261,11 +263,11 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 
 /* look for snappoint on a circle given by center (cx,cy) and distance center-req) */
 
-gdouble
-sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdouble cy)
+double
+sp_desktop_circular_snap (SPDesktop * desktop, NRPointF * req, double cx, double cy)
 {
 	SPNamedView * nv;
-	ArtPoint actual;
+	NRPointF actual;
 	gdouble best = 1e18, dist, h, dx, dy;
 	gboolean snapped;
 	GSList * l;
@@ -454,232 +456,245 @@ sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdoub
 /* 
  * functions for lists of points
  *
- * All functions take a list of ArtPoint and parameter indicating the proposed transformation.
+ * All functions take a list of NRPointF and parameter indicating the proposed transformation.
  * They return the upated transformation parameter. 
  */
 
-gdouble
-sp_desktop_horizontal_snap_list (SPDesktop * desktop, GSList * l, gdouble dx)
+double
+sp_desktop_horizontal_snap_list (SPDesktop *desktop, NRPointF *p, int length, double dx)
 {
-  ArtPoint q;
-  GSList * points;
-  gdouble xdist, xpre, dist = 1e18, d;
+	NRPointF q;
+	double xdist, xpre, dist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return dx;
+	if (!SNAP_ON (desktop)) return dx;
 
-  xdist = dx;
+	dist = NR_HUGE_F;
+	xdist = dx;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    xpre = q.x;
-    q.x += dx;
-    d = sp_desktop_horizontal_snap (desktop, &q);
-    if (d < dist) {
-      xdist = q.x - xpre;
-      dist = d;
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		xpre = q.x;
+		q.x += dx;
+		d = sp_desktop_horizontal_snap (desktop, &q);
+		if (d < dist) {
+			xdist = q.x - xpre;
+			dist = d;
+		}
+	}
 
-  return xdist;
+	return xdist;
 }
 
-gdouble
-sp_desktop_vertical_snap_list (SPDesktop * desktop, GSList * l, gdouble dy)
+double
+sp_desktop_vertical_snap_list (SPDesktop *desktop, NRPointF *p, int length, double dy)
 {
-  ArtPoint q;
-  GSList * points;
-  gdouble ydist, ypre, dist = 1e18, d;
+	NRPointF q;
+	double ydist, ypre, dist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return dy;
+	if (!SNAP_ON (desktop)) return dy;
 
-  ydist = dy;
+	dist = NR_HUGE_F;
+	ydist = dy;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    ypre = q.y;
-    q.y += dy;
-    d = sp_desktop_vertical_snap (desktop, &q);
-    if (d < dist) {
-      ydist = q.y - ypre;
-      dist = d;
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		ypre = q.y;
+		q.y += dy;
+		d = sp_desktop_vertical_snap (desktop, &q);
+		if (d < dist) {
+			ydist = q.y - ypre;
+			dist = d;
+		}
+	}
 
-  return ydist;
+	return ydist;
 }
 
-gdouble
-sp_desktop_horizontal_snap_list_scale (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble sx)
+double
+sp_desktop_horizontal_snap_list_scale (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, double sx)
 {
-  ArtPoint q, check;
-  GSList * points;
-  gdouble xscale, xdist = 1e18, d;
+	NRPointF q, check;
+	double xscale, xdist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return sx;
+	if (!SNAP_ON (desktop)) return sx;
 
-  xscale = sx;
+	xdist = NR_HUGE_F;
+	xscale = sx;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    check.x = sx * (q.x - norm->x) + norm->x;
-    if (fabs (q.x - norm->x) > PNDist) {
-      d = sp_desktop_horizontal_snap (desktop, &check);
-      if ((d < 1e18) && (d < fabs (xdist))) {
-	xdist = d;
-	xscale = (check.x - norm->x) / (q.x - norm->x);
-      }
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.x = sx * (q.x - norm->x) + norm->x;
+		if (fabs (q.x - norm->x) > MIN_DIST_NORM) {
+			d = sp_desktop_horizontal_snap (desktop, &check);
+			if ((d < 1e18) && (d < fabs (xdist))) {
+				xdist = d;
+				xscale = (check.x - norm->x) / (q.x - norm->x);
+			}
+		}
+	}
 
-  return xscale;
+	return xscale;
 }
 
-gdouble
-sp_desktop_vertical_snap_list_scale (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble sy)
+double
+sp_desktop_vertical_snap_list_scale (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, double sy)
 {
-  ArtPoint q, check;
-  GSList * points;
-  gdouble yscale, ydist = 1e18, d;
+	NRPointF q, check;
+	double yscale, ydist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return sy;
+	if (!SNAP_ON (desktop)) return sy;
 
-  yscale = sy;
+	ydist = NR_HUGE_F;
+	yscale = sy;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    check.y = sy * (q.y - norm->y) + norm->y;
-    if (fabs (q.y - norm->y) > PNDist) {
-      d = sp_desktop_vertical_snap (desktop, &check);
-      if ((d < 1e18) && (d < fabs (ydist))) {
-	ydist = d;
-	yscale = (check.y - norm->y)/(q.y - norm->y);
-      }
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.y = sy * (q.y - norm->y) + norm->y;
+		if (fabs (q.y - norm->y) > MIN_DIST_NORM) {
+			d = sp_desktop_vertical_snap (desktop, &check);
+			if ((d < 1e18) && (d < fabs (ydist))) {
+				ydist = d;
+				yscale = (check.y - norm->y)/(q.y - norm->y);
+			}
+		}
+	}
 
-  return yscale;
+	return yscale;
 }
 
-gdouble
-sp_desktop_vector_snap_list (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble sx, gdouble sy)
+double
+sp_desktop_vector_snap_list (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, double sx, double sy)
 {
-  ArtPoint q, check;
-  GSList * points;
-  gdouble dist = 1e18, d, ratio ;
+	NRPointF q, check;
+	double dist, d, ratio;
+	int i;
 
-  if (!SNAP_ON (desktop)) return sx;
+	if (!SNAP_ON (desktop)) return sx;
 
-  ratio = fabs (sx);
+	dist = NR_HUGE_F;
+	ratio = fabs (sx);
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    check.x = (q.x - norm->x) * sx + norm->x;
-    check.y = (q.y - norm->y) * sy + norm->y;
-    if ((fabs (q.y - norm->y) > PNDist) || (fabs (q.y - norm->y) > PNDist)) {
-      d = sp_desktop_vector_snap (desktop, &check, check.x - norm->x, check.y - norm->y);
-      if ((d < 1e18) && (d < dist)) {
-	dist = d;
-	ratio = (fabs(q.x - norm->x) > fabs(q.y - norm->y)) ? 
-	  (check.x - norm->x) / (q.x - norm->x) : 
-	  (check.y - norm->y) / (q.y - norm->y); 
-      }
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.x = (q.x - norm->x) * sx + norm->x;
+		check.y = (q.y - norm->y) * sy + norm->y;
+		if ((fabs (q.y - norm->y) > MIN_DIST_NORM) || (fabs (q.y - norm->y) > MIN_DIST_NORM)) {
+			d = sp_desktop_vector_snap (desktop, &check, check.x - norm->x, check.y - norm->y);
+			if ((d < 1e18) && (d < dist)) {
+				dist = d;
+				ratio = (fabs(q.x - norm->x) > fabs(q.y - norm->y)) ? 
+					(check.x - norm->x) / (q.x - norm->x) : 
+					(check.y - norm->y) / (q.y - norm->y); 
+			}
+		}
+	}
   
-  return ratio;
+	return ratio;
 }
 
-gdouble
-sp_desktop_horizontal_snap_list_skew (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble sx)
+double
+sp_desktop_horizontal_snap_list_skew (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, double sx)
 {
-  ArtPoint q, check;
-  GSList * points;
-  gdouble xskew, xdist = 1e18, d;
+	NRPointF q, check;
+	double xskew, xdist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return sx;
+	if (!SNAP_ON (desktop)) return sx;
 
-  xskew = sx;
+	xdist = NR_HUGE_F;
+	xskew = sx;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    check.x = sx * (q.y - norm->y) + q.x;
-    if (fabs (q.y - norm->y) > PNDist) {
-      d = sp_desktop_horizontal_snap (desktop, &check);
-      if ((d < 1e18) && (d < fabs (xdist))) {
-	xdist = d;
-	xskew = (check.x - q.x) / (q.y - norm->y);
-      }
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.x = sx * (q.y - norm->y) + q.x;
+		if (fabs (q.y - norm->y) > MIN_DIST_NORM) {
+			d = sp_desktop_horizontal_snap (desktop, &check);
+			if ((d < 1e18) && (d < fabs (xdist))) {
+				xdist = d;
+				xskew = (check.x - q.x) / (q.y - norm->y);
+			}
+		}
+	}
 
-  return xskew;
+	return xskew;
 }
 
-gdouble
-sp_desktop_vertical_snap_list_skew (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble sy)
+double
+sp_desktop_vertical_snap_list_skew (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, double sy)
 {
-  ArtPoint q, check;
-  GSList * points;
-  gdouble yskew, ydist = 1e18, d;
+	NRPointF q, check;
+	gdouble yskew, ydist, d;
+	int i;
 
-  if (!SNAP_ON (desktop)) return sy;
+	if (!SNAP_ON (desktop)) return sy;
 
-  yskew = sy;
+	ydist = NR_HUGE_F;
+	yskew = sy;
 
-  for (points = l; points != NULL; points = points->next) {
-    q = *((ArtPoint *)(points->data));
-    check.y = sy * (q.x - norm->x) + q.y;
-    if (fabs (q.x - norm->x) > PNDist) {
-      d = sp_desktop_vertical_snap (desktop, &check);
-      if ((d < 1e18) && (d < fabs (ydist))) {
-	ydist = d;
-	yskew = (check.y - q.y)/(q.x - norm->x);
-      }
-    }
-  }
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.y = sy * (q.x - norm->x) + q.y;
+		if (fabs (q.x - norm->x) > MIN_DIST_NORM) {
+			d = sp_desktop_vertical_snap (desktop, &check);
+			if ((d < 1e18) && (d < fabs (ydist))) {
+				ydist = d;
+				yskew = (check.y - q.y)/(q.x - norm->x);
+			}
+		}
+	}
 
-  return yskew;
+	return yskew;
 }
 
 /* 
    this function takes the whole transformation matrix as parameter
    working with angles would be too complex
 */
-gdouble *
-sp_desktop_circular_snap_list (SPDesktop * desktop, GSList * l, ArtPoint * norm, gdouble * rotate)
+NRMatrixF *
+sp_desktop_circular_snap_list (SPDesktop *desktop, NRPointF *p, int length, NRPointF *norm, NRMatrixF *rotate)
 {
-        ArtPoint q1, q2, q, check;
-	GSList * spoints;
-	gdouble d, best=1e18, h1, h2, r1[6], r2[6], p2n[6], n2p[6];
+	NRPointF q1, q2, q, check;
+	gdouble d, best, h1, h2;
+	int i;
 
 	if (!SNAP_ON (desktop)) return rotate;
 
-	for (spoints = l; spoints != NULL; spoints = spoints->next) {
-	  q = *((ArtPoint *)(spoints->data));
-	  art_affine_point (&check, &q, rotate);
-	  d = sp_desktop_circular_snap (desktop, &check, norm->x, norm->y);
-	  if (d < best) {
-	    q1 = q;
-	    q2 = check;
-	    best = d;
-	  }
+	best = NR_HUGE_F;
+
+	for (i = 0; i < length; i++) {
+		q = p[i];
+		check.x = NR_MATRIX_DF_TRANSFORM_X (rotate, q.x, q.y);
+		check.y = NR_MATRIX_DF_TRANSFORM_Y (rotate, q.x, q.y);
+		d = sp_desktop_circular_snap (desktop, &check, norm->x, norm->y);
+		if (d < best) {
+			q1 = q;
+			q2 = check;
+			best = d;
+		}
 	}
 
 	// compute the new transformation (rotation) from the snapped point
 	if (best < 1e18) {
-	  h1 = hypot (q1.x - norm->x, q1.y - norm->y);
-	  q1.x = (q1.x - norm->x) / h1;
-	  q1.y = (q1.y - norm->y) / h1;
-	  h2 = hypot (q2.x - norm->x, q2.y - norm->y);
-	  q2.x = (q2.x - norm->x) / h2;
-	  q2.y = (q2.y - norm->y) / h2;
-	  r1[0] = q1.x;  r1[1] = -q1.y;  r1[2] =  q1.y;  r1[3] = q1.x;  r1[4] = 0;  r1[5] = 0;
-	  r2[0] = q2.x;  r2[1] =  q2.y;  r2[2] = -q2.y;  r2[3] = q2.x;  r2[4] = 0;  r2[5] = 0;
-	  art_affine_translate (n2p, norm->x, norm->y);
-	  art_affine_invert (p2n, n2p);
-	  art_affine_multiply (rotate, p2n, r1);
-	  art_affine_multiply (rotate, rotate, r2);
-	  art_affine_multiply (rotate, rotate, n2p);
+		NRMatrixF r1, r2, p2n, n2p;
+
+		h1 = hypot (q1.x - norm->x, q1.y - norm->y);
+		q1.x = (q1.x - norm->x) / h1;
+		q1.y = (q1.y - norm->y) / h1;
+		h2 = hypot (q2.x - norm->x, q2.y - norm->y);
+		q2.x = (q2.x - norm->x) / h2;
+		q2.y = (q2.y - norm->y) / h2;
+		r1.c[0] = q1.x;  r1.c[1] = -q1.y;  r1.c[2] =  q1.y;  r1.c[3] = q1.x;  r1.c[4] = 0;  r1.c[5] = 0;
+		r2.c[0] = q2.x;  r2.c[1] =  q2.y;  r2.c[2] = -q2.y;  r2.c[3] = q2.x;  r2.c[4] = 0;  r2.c[5] = 0;
+
+		nr_matrix_f_set_translate (&n2p, norm->x, norm->y);
+		nr_matrix_f_invert (&p2n, &n2p);
+		nr_matrix_multiply_fff (rotate, &p2n, &r1);
+		nr_matrix_multiply_fff (rotate, rotate, &r2);
+		nr_matrix_multiply_fff (rotate, rotate, &n2p);
 	}
 
 	return rotate;

@@ -14,7 +14,6 @@
  */
 
 #include <string.h>
-#include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "xml/repr-private.h"
 #include "document.h"
@@ -613,79 +612,81 @@ void
 sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, double y0, double y1)
 {
 	NRRectF bbox;
-	double p2o[6], o2n[6], scale[6], final[6], s[6];
+	NRMatrixD p2o, o2n, scale, final, s;
 	double dx, dy, nx, ny;
   
 	g_assert (SP_IS_SELECTION (selection));
 
 	sp_selection_bbox (selection, &bbox);
 
-	art_affine_translate (p2o, -bbox.x0, -bbox.y0);
+	nr_matrix_d_set_translate (&p2o, -bbox.x0, -bbox.y0);
 
 	dx = (x1-x0) / (bbox.x1 - bbox.x0);
 	dy = (y1-y0) / (bbox.y1 - bbox.y0);
-	art_affine_scale (scale, dx, dy);
+	nr_matrix_d_set_scale (&scale, dx, dy);
 
 	nx = x0;
 	ny = y0;
-	art_affine_translate (o2n, nx, ny);
+	nr_matrix_d_set_translate (&o2n, nx, ny);
 
-	art_affine_multiply (s , p2o, scale);
-	art_affine_multiply (final , s, o2n);
+	nr_matrix_multiply_ddd (&s, &p2o, &scale);
+	nr_matrix_multiply_ddd (&final, &s, &o2n);
 
-	sp_selection_apply_affine (selection, final);
+	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
 }
 
 
 void
-sp_selection_scale_relative (SPSelection * selection, ArtPoint * align, double dx, double dy) {  
-  double scale[6], n2d[6], d2n[6], final[6], s[6];
+sp_selection_scale_relative (SPSelection *selection, NRPointF *align, double dx, double dy)
+{
+	NRMatrixD scale, n2d, d2n, final, s;
 
-  art_affine_translate (n2d, -align->x, -align->y);
-  art_affine_translate (d2n, align->x, align->y);
-  art_affine_scale (scale, dx, dy);
+	nr_matrix_d_set_translate (&n2d, -align->x, -align->y);
+	nr_matrix_d_set_translate (&d2n, align->x, align->y);
+	nr_matrix_d_set_scale (&scale, dx, dy);
 
-  art_affine_multiply (s, n2d, scale);
-  art_affine_multiply (final, s, d2n);
+	nr_matrix_multiply_ddd (&s, &n2d, &scale);
+	nr_matrix_multiply_ddd (&final, &s, &d2n);
 
-  sp_selection_apply_affine (selection, final);
-
+	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
 }
 
 
 void
-sp_selection_rotate_relative (SPSelection * selection, ArtPoint * center, gdouble angle) {
-  double rotate[6], n2d[6], d2n[6], final[6], s[6];
+sp_selection_rotate_relative (SPSelection *selection, NRPointF *center, gdouble angle)
+{
+	NRMatrixD rotate, n2d, d2n, final, s;
   
-  art_affine_translate (n2d, -center->x, -center->y);
-  art_affine_invert (d2n,n2d);
-  art_affine_rotate (rotate, angle);
+	nr_matrix_d_set_translate (&n2d, -center->x, -center->y);
+	nr_matrix_d_invert (&d2n, &n2d);
+	art_affine_rotate (NR_MATRIX_D_TO_DOUBLE (&rotate), angle);
 
-  art_affine_multiply (s, n2d, rotate);
-  art_affine_multiply (final, s, d2n);
+	nr_matrix_multiply_ddd (&s, &n2d, &rotate);
+	nr_matrix_multiply_ddd (&final, &s, &d2n);
 
-  sp_selection_apply_affine (selection, final);
+	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
 }
 
 
 void
-sp_selection_skew_relative (SPSelection * selection, ArtPoint * align, double dx, double dy) {  
-  double skew[6], n2d[6], d2n[6], final[6], s[6];
+sp_selection_skew_relative (SPSelection *selection, NRPointF *align, double dx, double dy)
+{
+	NRMatrixD skew, n2d, d2n, final, s;
   
-  art_affine_translate (n2d, -align->x, -align->y);
-  art_affine_invert (d2n,n2d);
+	nr_matrix_d_set_translate (&n2d, -align->x, -align->y);
+	nr_matrix_d_invert (&d2n, &n2d);
 
-  skew[0] = 1;
-  skew[1] = dy;
-  skew[2] = dx;
-  skew[3] = 1;
-  skew[4] = 0;
-  skew[5] = 0;
+	skew.c[0] = 1;
+	skew.c[1] = dy;
+	skew.c[2] = dx;
+	skew.c[3] = 1;
+	skew.c[4] = 0;
+	skew.c[5] = 0;
 
-  art_affine_multiply (s, n2d, skew);
-  art_affine_multiply (final, s, d2n);
+	nr_matrix_multiply_ddd (&s, &n2d, &skew);
+	nr_matrix_multiply_ddd (&final, &s, &d2n);
 
-  sp_selection_apply_affine (selection, final);
+	sp_selection_apply_affine (selection, NR_MATRIX_D_TO_DOUBLE (&final));
 }
 
 
@@ -766,7 +767,7 @@ sp_selection_item_next (void)
   
 	// get item list
 	if (SP_CYCLING == SP_CYCLE_VISIBLE) {
-		ArtDRect d;
+		NRRectD d;
 		sp_desktop_get_display_area (desktop, &dbox);
 		d.x0 = dbox.x0;
 		d.y0 = dbox.y0;
@@ -840,7 +841,7 @@ sp_selection_item_prev (void)
   
   // get item list
   if (SP_CYCLING == SP_CYCLE_VISIBLE) {
-	  ArtDRect d;
+	  NRRectD d;
 	  sp_desktop_get_display_area (desktop, &dbox);
 	  d.x0 = dbox.x0;
 	  d.y0 = dbox.y0;
