@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-12 04:30+0100\n"
-"PO-Revision-Date: 2004-03-16 11:46+0100\n"
+"POT-Creation-Date: 2004-10-21 12:59+0200\n"
+"PO-Revision-Date: 2004-12-12 21:27+0100\n"
 "Last-Translator: Jeroen van der Vegt <jeroen (at) dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "SVG vector Illustrator"
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/arc-context.c:302
+#: src/arc-context.c:254
 #, c-format
 msgid "Drawing arc %s x %s"
 msgstr "Bezig met tekenen veelhoek %s x %s"
@@ -35,20 +35,20 @@ msgstr "Bezig met tekenen veelhoek %s x %s"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kon de sodipodi-svg fabriek niet maken"
 
-#: src/desktop.c:924
+#: src/desktop.c:990
 msgid "Zoom drawing if window size changes"
 msgstr "Tekening schalen wanneer de schermgrootte veranderd"
 
-#: src/desktop.c:931
+#: src/desktop.c:997
 msgid "Drawing target is constrained to active group"
 msgstr "Teken mogelijkheden zijn beperkt tot de actieve groep"
 
-#: src/desktop.c:1024
+#: src/desktop.c:1089
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1131
+#: src/desktop.c:1196
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
@@ -56,19 +56,19 @@ msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
 #. Page page
 #. Page settings
 #. Notebook tab
-#: src/desktop.c:1684 src/dialogs/align.c:291
+#: src/desktop.c:1776 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:161 src/verbs.c:471
+#: src/dialogs/export.c:161 src/verbs.c:471 src/widgets/sp-dock-notebook.c:135
 msgid "Page"
 msgstr "Pagina"
 
-#: src/desktop.c:1688 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/desktop.c:1780 src/dialogs/align.c:292 src/dialogs/export.c:166
 #: src/verbs.c:472
 msgid "Drawing"
 msgstr "Tekening"
 
 #. Selection submenu
-#: src/desktop.c:1692 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/desktop.c:1784 src/dialogs/align.c:293 src/dialogs/export.c:171
 #: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
 msgstr "Selectie"
@@ -400,6 +400,10 @@ msgstr "Breedte:"
 msgid "Height:"
 msgstr "Hoogte:"
 
+#: src/dialogs/document-tree.c:60 src/verbs.c:476
+msgid "Document"
+msgstr "Document eigenschappen"
+
 #: src/dialogs/export.c:141
 msgid "Export bitmap"
 msgstr "Bitmap exporteren"
@@ -494,7 +498,7 @@ msgid "Sensitive"
 msgstr "Gevoelig"
 
 #. Visible
-#: src/dialogs/item-properties.c:109
+#: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
 msgid "Visible"
 msgstr "Zichtbaar"
 
@@ -593,13 +597,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
 msgid "Expansion:"
 msgstr "Expantie"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
-#: src/spiral-context.c:351
+#: src/spiral-context.c:331
 msgid "Revolution:"
 msgstr "Omwentelingen:"
 
@@ -776,7 +780,7 @@ msgid "Missing tool preferences"
 msgstr "Ontbrekende gereedschap eigenschappen"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:343
 msgid "Corners:"
 msgstr "Hoeken:"
 
@@ -941,8 +945,8 @@ msgid "Angle:"
 msgstr "Hoek:"
 
 #. Reset
-#: src/dyna-draw-context.c:1099 src/rect-context.c:424
-#: src/spiral-context.c:387 src/star-context.c:387
+#: src/dyna-draw-context.c:1099 src/rect-context.c:382
+#: src/spiral-context.c:367 src/star-context.c:374
 msgid "Defaults"
 msgstr "Standaardwaarden"
 
@@ -1373,7 +1377,7 @@ msgstr ""
 msgid "Save document as"
 msgstr "Document opslaan als"
 
-#: src/modules/plain-pdf.c:1050 src/modules/plain-ps.c:651
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
 #: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "schrijffout vond plaats"
@@ -1415,7 +1419,7 @@ msgid "Use Portable Document Format for printing"
 msgstr "Gebruik het Portable Document Format om af te drukken"
 
 #. Print destination frame
-#: src/modules/plain.c:224 src/modules/plain.c:292 src/modules/ps.c:245
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
 #: src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Afdrukbestemming"
@@ -1425,15 +1429,15 @@ msgstr "Afdrukbestemming"
 msgid "Print properties"
 msgstr "Afdruk eigenschappen"
 
-#: src/modules/plain.c:273 src/modules/ps.c:287
+#: src/modules/plain.c:274 src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Gewenste resolutie van de bitmap (in punten per inch)"
 
-#: src/modules/plain.c:288 src/modules/ps.c:302
+#: src/modules/plain.c:289 src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Resolutie:"
 
-#: src/modules/plain.c:298 src/modules/ps.c:312
+#: src/modules/plain.c:299 src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1444,144 +1448,154 @@ msgstr ""
 "om het naar een programma te sturen."
 
 #. Create toplevel menuitem
-#: src/object-ui.c:108
+#: src/object-ui.c:111 src/widgets/sp-dock-layout.c:741
 msgid "Item"
 msgstr "Item"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:487
+#: src/object-ui.c:114 src/verbs.c:487
 msgid "Item Properties"
 msgstr "Item eigenschappen"
 
 #. Select item
-#: src/object-ui.c:119
+#: src/object-ui.c:122
 msgid "Select this"
 msgstr "Dit selecteren"
 
 #. Reset transformations
-#: src/object-ui.c:128
+#: src/object-ui.c:131
 msgid "Reset transformation"
 msgstr "Transformatie herstellen"
 
 #. Apply transformation
-#: src/object-ui.c:132
+#: src/object-ui.c:135
 msgid "Apply transformation"
 msgstr "Transformatie toepassen"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make sensitive"
 msgstr "Maak gevoellig"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make insensitive"
 msgstr "Maak ongevoellig"
 
 #. Create link
-#: src/object-ui.c:141
+#: src/object-ui.c:144
 msgid "Create link"
 msgstr "Koppeling maken"
 
-#: src/object-ui.c:273 src/verbs.c:435
+#: src/object-ui.c:276 src/verbs.c:435
 msgid "Group"
 msgstr "Groep"
 
 #. Group dialog
-#: src/object-ui.c:277
+#: src/object-ui.c:280
 msgid "Group Properties"
 msgstr "Groepsinstellingen"
 
 #. "Ungroup"
-#: src/object-ui.c:288 src/verbs.c:436
+#: src/object-ui.c:291 src/verbs.c:436
 msgid "Ungroup"
 msgstr "Groepering opheffen"
 
 #. Dive
-#: src/object-ui.c:293
+#: src/object-ui.c:296
 msgid "Set as layer"
 msgstr "Instellen als laag"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:338
+#: src/object-ui.c:341
 msgid "Link"
 msgstr "Verwijzing"
 
 #. Link dialog
-#: src/object-ui.c:341
+#: src/object-ui.c:344
 msgid "Link Properties"
 msgstr "Koppeling eigenschappen"
 
 #. Select item
-#: src/object-ui.c:351
+#: src/object-ui.c:354
 msgid "Follow link"
 msgstr "Koppeling volgen"
 
 #. Reset transformations
-#: src/object-ui.c:356
+#: src/object-ui.c:359
 msgid "Remove link"
 msgstr "Verwijder link"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:419
+#: src/object-ui.c:422
 msgid "Image"
 msgstr "Afbeelding"
 
 #. Link dialog
-#: src/object-ui.c:422
+#: src/object-ui.c:425
 msgid "Image Properties"
 msgstr "Afbeeldingseigenschappen"
 
 #. Autotrace dialog
-#: src/object-ui.c:430 src/sp-image.c:762
+#: src/object-ui.c:433 src/sp-image.c:762
 msgid "Trace"
 msgstr "Overtrekken"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:479
+#: src/object-ui.c:482
 msgid "Shape"
 msgstr "Vorm"
 
 #. Item dialog
-#: src/object-ui.c:482 src/toolbox.c:402
+#: src/object-ui.c:485 src/toolbox.c:402
 msgid "Fill settings"
 msgstr "Opvul eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:509
+#: src/object-ui.c:516
+msgid "Path"
+msgstr "Pad"
+
+#. Reverse
+#: src/object-ui.c:519
+msgid "Reverse"
+msgstr "Omdraaien"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:542
 msgid "Rect"
 msgstr "Rechthoek"
 
 #. Link dialog
-#: src/object-ui.c:512
+#: src/object-ui.c:545
 msgid "Rect Properties"
 msgstr "Rechthoek eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:545 src/verbs.c:457
+#: src/object-ui.c:578 src/verbs.c:457
 msgid "Star"
 msgstr "Ster"
 
 #. Link dialog
-#: src/object-ui.c:548
+#: src/object-ui.c:581
 msgid "Star Properties"
 msgstr "Ster eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:581 src/verbs.c:458
+#: src/object-ui.c:614 src/verbs.c:458
 msgid "Spiral"
 msgstr "Spiraal"
 
 #. Link dialog
-#: src/object-ui.c:584
+#: src/object-ui.c:617
 msgid "Spiral Properties"
 msgstr "Spiraal eigenschappen"
 
 #. rx_ratio
-#: src/rect-context.c:400
+#: src/rect-context.c:358
 msgid "Roundness ratio for x:"
 msgstr "Afrondingsfactor in x-richting:"
 
 #. ry_ratio
-#: src/rect-context.c:412
+#: src/rect-context.c:370
 msgid "Roundness ratio for y:"
 msgstr "Afrondingsfactor in y-richting:"
 
@@ -1835,27 +1849,27 @@ msgstr "Afbeeldings URI:"
 msgid "Group of %d objects"
 msgstr "Groep van %d objecten"
 
-#: src/sp-item.c:553
+#: src/sp-item.c:554
 msgid "Unknown item :-("
 msgstr "Onbekend item :-("
 
 #. fixme:
-#: src/sp-text.c:1294
+#: src/sp-text.c:1293
 msgid "Text object"
 msgstr "Tekst object"
 
 #. T0
-#: src/spiral-context.c:375
+#: src/spiral-context.c:355
 msgid "Inner radius:"
 msgstr "Binnen straal"
 
 #. Proportion
-#: src/star-context.c:368
+#: src/star-context.c:355
 msgid "Proportion:"
 msgstr "Verhouding:"
 
 #. Making sides flat
-#: src/star-context.c:381
+#: src/star-context.c:368
 msgid "Make sides flat"
 msgstr "Maak zijkanten vlak"
 
@@ -2359,10 +2373,6 @@ msgid "Global display settings"
 msgstr "Algemene weergave voorkeuren"
 
 #: src/verbs.c:476
-msgid "Document"
-msgstr "Document eigenschappen"
-
-#: src/verbs.c:476
 msgid "Page layout"
 msgstr "Pagina layout"
 
@@ -2432,7 +2442,7 @@ msgstr "Stijl"
 msgid "Font size:"
 msgstr "Tekstgrootte:"
 
-#: src/widgets/font-selector.c:562
+#: src/widgets/font-selector.c:560
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQq12368.;/()"
 
@@ -2570,6 +2580,334 @@ msgstr "Geel (Y):"
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
 msgstr "Zwart (K):"
+
+#: src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "Oriëntatie"
+
+#: src/widgets/sp-dock-item.c:244
+msgid "Orientation of the docking item"
+msgstr "Orientatie van het dock-item"
+
+#: src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr "Zichtbaar"
+
+#: src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:267
+msgid "Item behavior"
+msgstr "Gedrag van het item"
+
+#: src/widgets/sp-dock-item.c:268
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr "Algemeen gedrag van het dock-item (bv. of het kan zweven, of het vergrendeld is etc.)"
+
+#: src/widgets/sp-dock-item.c:276
+msgid "Grip size"
+msgstr "Greep afmeting"
+
+#: src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr "Afmetingen in pixels van de greep om het dock-item te slepen"
+
+#: src/widgets/sp-dock-item.c:283 src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "Vergrendeld"
+
+#: src/widgets/sp-dock-item.c:284
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "Wanneer dit wordt aangezet kan het dock-item niet worden verplaatst"
+
+#: src/widgets/sp-dock-item.c:292
+msgid "Preferred width"
+msgstr "Voorkeursbreedte"
+
+#: src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr "Voorkeursbreedte voor het dock-item"
+
+#: src/widgets/sp-dock-item.c:299
+msgid "Preferred height"
+msgstr "Voorkeurshoogte"
+
+#: src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr "Voorkeurshoogte voor het dock-item"
+
+#: src/widgets/sp-dock-item.c:547
+#, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr "U kunt geen dock-item (%p van het type %s) binnen een %s teovoegen. Gebruik een SPDock of een ander samengesteld dock-item."
+
+#: src/widgets/sp-dock-item.c:554
+#, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr "U probeert een item van het type %s toe te voegen aan een %s, maar het kan maar 1 item per keer bevatten, en het bevat al een item van het type %s."
+
+#: src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr "Niet ondersteunde insluit methode (%s in een dock-item van type %s)."
+
+#. Hide menuitem.
+#: src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "Verbergen"
+
+#. Lock menuitem
+#: src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr "Vergrendelen"
+
+#: src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr "Poging om een niet gebonden item %p te binden."
+
+#: src/widgets/sp-dock-layout.c:144
+msgid "Master"
+msgstr "Meester"
+
+#: src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr "Gewijzigd"
+
+#: src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:500
+msgid "You must provide a name for the layout"
+msgstr "U moet een naam opgeven voor de layout"
+
+#. FIXME: pop up an error dialog
+#: src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr "Het gebruikers-interface bestand '%s' kon niet worden geladen."
+
+#: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "Naam"
+
+#: src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr "Insluit-items"
+
+#: src/widgets/sp-dock-layout.c:836
+msgid "Saved layouts"
+msgstr "Opgeslagen layouts"
+
+#: src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr ""
+
+#: src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr "Layout management"
+
+#: src/widgets/sp-dock-master.c:142 src/widgets/sp-dock.c:184
+msgid "Default title"
+msgstr "Standaard titel"
+
+#: src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr "Standaard titel te gebruiken voor nieuwe zwevende docks."
+
+#: src/widgets/sp-dock-master.c:150
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:741
+#, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr ""
+
+#: src/widgets/sp-dock-master.c:906
+#, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr ""
+
+#: src/widgets/sp-dock-notebook.c:136
+msgid "The index of the current page"
+msgstr "De index van de huidge pagina"
+
+#: src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr "Unieke naam om het dock-object te identificeren"
+
+#: src/widgets/sp-dock-object.c:131
+msgid "Long name"
+msgstr "Omschrijving"
+
+#: src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:138
+msgid "Dock master"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:408
+#, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:537
+#, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr ""
+
+#: src/widgets/sp-dock-object.c:586
+#, c-format
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr ""
+
+#: src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "Positie"
+
+#: src/widgets/sp-dock-paned.c:135
+msgid "Position of the divider in pixels"
+msgstr "Positie van de verdeler in pixels"
+
+#: src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:126
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "Computer"
+
+#: src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:141
+msgid "Next placement"
+msgstr "Volgende plaatsing"
+
+#: src/widgets/sp-dock-placeholder.c:142
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr ""
+
+#: src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr ""
+
+#: src/widgets/sp-dock-tablabel.c:131
+msgid "Controlling dock item"
+msgstr ""
+
+#: src/widgets/sp-dock-tablabel.c:132
+msgid "Dockitem which 'owns' this tablabel"
+msgstr ""
+
+#: src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "Zwevend"
+
+#: src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr "Of de dock zweeft in zijn eigen scherm."
+
+#: src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr ""
+
+#: src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "Breedte"
+
+#: src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr ""
+
+#: src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "Hoogte"
+
+#: src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr ""
+
+#: src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr "Zweef X"
+
+#: src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr "X-cöordinaat voor een zwevend dock"
+
+#: src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr "Zweef-Y"
+
+#: src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr "De Y-coördinaat van een zwevend dock"
+
+#: src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr ""
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
