@@ -21,6 +21,7 @@
 /* fixme: */
 int nr_have_mmx (void);
 void nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned char *c);
+void nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha);
 #define NR_PIXOPS_MMX nr_have_mmx ()
 #endif
 
@@ -842,12 +843,20 @@ nr_R8G8B8_R8G8B8_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsi
 {
 	int r, c;
 
+	if (alpha == 0) return;
+
+#ifdef USE_MMX
+	if (NR_PIXOPS_MMX) {
+		/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
+		nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P (px, w, h, rs, spx, srs, alpha);
+		return;
+	}
+#endif
+
 	for (r = 0; r < h; r++) {
 		const unsigned char *s;
 		unsigned char *d;
-		if (alpha == 0) {
-			/* NOP */
-		} else if (alpha == 255) {
+		if (alpha == 255) {
 			d = px;
 			s = spx;
 			for (c = 0; c < w; c++) {

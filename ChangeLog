@@ -1,5 +1,9 @@
 2002-10-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P.S: New file
+
+	* src/helper/sp-canvas-util.c (sp_canvas_clear_buffer): Be quick
+
 	* src/helper/sp-canvas.h: Moved update flags back here
 
 	* src/display/canvas-arena.c (sp_canvas_arena_update): Sor updates according to affine (again)

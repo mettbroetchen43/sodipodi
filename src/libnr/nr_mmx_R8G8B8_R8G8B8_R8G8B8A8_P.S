@@ -1,11 +1,11 @@
 	.file	"nr-compose.c"
 	.text
 	.align 2
-.globl nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP
-	.type	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP,@function
+.globl nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P
+	.type	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P,@function
 
 /*
- * c	 32(%ebp)
+ * alpha 32(%ebp)
  * srs	 28(%ebp)
  * spx	 24(%ebp)
  * rs	 20(%ebp)
@@ -33,7 +33,7 @@
  *
 */
 
-nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP:
+nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P:
 	pushl	%ebp
 	movl	%esp, %ebp
 	pushl	%ebx
@@ -55,14 +55,14 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP:
 	movd	%eax, %mm5
 	punpcklbw %mm7, %mm5
 
-/* FgC -> %mm0 */
-	movl	32(%ebp), %eax
-	movd	(%eax), %mm0
-	punpcklbw %mm7, %mm0
-
+/* Load %mm0 with [a a a a] */
 /* Check full opacity */
+	movzbl	32(%ebp), %eax
 	cmpb	$0xff, %al
 	jz	.opaque
+	movd	%eax, %mm0
+	punpcklwd %mm0, %mm0
+	punpckldq %mm0, %mm0
 
 /* for (y = ...) */
 	movl    16(%ebp), %ecx
@@ -77,49 +77,53 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP:
 	movl	12(%ebp), %ebx
 .forx:
 
-/* [m m m m] -> %mm1 */
-	movzbl	(%esi), %eax
-	testb	$0xff, %al
+/* Fg -> %mm1 */
+/* fixme: Do we have to bother about alignment here? (Lauris) */
+	movl	(%esi), %eax
+	testl	$0xff000000, %eax
 	jz	.clip
 	movd	%eax, %mm1
-	punpcklwd %mm1, %mm1
-	punpckldq %mm1, %mm1
+	punpcklbw %mm7, %mm1
 
-/* Fg -> mm2 */
-	movq	%mm0, %mm2
-	pmullw	%mm1, %mm2
+/* [Fg * a] -> mm1 */
+	pmullw	%mm0, %mm1
 	paddw	%mm6, %mm2
-	movq	%mm2, %mm3
-	psrlw	$8, %mm3
-	paddw	%mm3, %mm2
+	movq	%mm1, %mm2
 	psrlw	$8, %mm2
+	paddw	%mm2, %mm1
+	psrlw	$8, %mm1
 
-/* [255 - FgA] -> mm1 */
-	movq	%mm2, %mm1
-	punpckhwd %mm1, %mm1
-	punpckhdq %mm1, %mm1
-	pxor	%mm5, %mm1
+/* [255 - FgA] -> mm2 */
+	movq	%mm1, %mm2
+	punpckhwd %mm2, %mm2
+	punpckhdq %mm2, %mm2
+	pxor	%mm5, %mm2
 
 /* Bg -> mm3 */
 	movd	(%edi), %mm3
 	punpcklbw %mm7, %mm3
 
 /* Fg + ((255 - FgA) * Bg) / 255 */
-	pmullw	%mm1, %mm3
+	pmullw	%mm2, %mm3
 	paddw	%mm6, %mm3
 	movq	%mm3, %mm4
 	psrlw	$8, %mm4
 	paddw	%mm4, %mm3
 	psrlw	$8, %mm3
-	paddw	%mm2, %mm3
+	paddw	%mm1, %mm3
 
 /* Store pixel */
 	packuswb %mm3, %mm3
-	movd	%mm3, (%edi)
+	movd	%mm3, %eax
+	movb	%al, 0(%edi)
+	shrl	$8, %eax
+	movb	%al, 1(%edi)
+	shrl	$8, %eax
+	movb	%al, 2(%edi)
 
 .clip:
-	addl	$4, %edi
-	incl	%esi
+	addl	$3, %edi
+	addl	$4, %esi
 
 	decl	%ebx
 	jnz	.forx
@@ -155,57 +159,48 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP:
 	movl	12(%ebp), %ebx
 .o_forx:
 
-/* [m m m m] -> %mm1 */
-	movzbl	(%esi), %eax
-	testb	$0xff, %al
+/* Fg -> %mm1 */
+/* fixme: Do we have to bother about alignment here? (Lauris) */
+	movl	(%esi), %eax
+	testl	$0xff000000, %eax
 	jz	.o_clip
-	cmpb	$0xff, %al
-	jz	.o_full
+	cmpl	$0xff000000, %eax
+	jnb	.o_store
 	movd	%eax, %mm1
-	punpcklwd %mm1, %mm1
-	punpckldq %mm1, %mm1
+	punpcklbw %mm7, %mm1
 
-/* Fg -> mm2 */
-	movq	%mm0, %mm2
-	pmullw	%mm1, %mm2
-	paddw	%mm6, %mm2
-	movq	%mm2, %mm3
-	psrlw	$8, %mm3
-	paddw	%mm3, %mm2
-	psrlw	$8, %mm2
-
-/* [255 - FgA] -> mm1 */
-	movq	%mm2, %mm1
-	punpckhwd %mm1, %mm1
-	punpckhdq %mm1, %mm1
-	pxor	%mm5, %mm1
+/* [255 - FgA] -> mm2 */
+	movq	%mm1, %mm2
+	punpckhwd %mm2, %mm2
+	punpckhdq %mm2, %mm2
+	pxor	%mm5, %mm2
 
 /* Bg -> mm3 */
 	movd	(%edi), %mm3
 	punpcklbw %mm7, %mm3
 
 /* Fg + ((255 - FgA) * Bg) / 255 */
-	pmullw	%mm1, %mm3
+	pmullw	%mm2, %mm3
 	paddw	%mm6, %mm3
 	movq	%mm3, %mm4
 	psrlw	$8, %mm4
 	paddw	%mm4, %mm3
 	psrlw	$8, %mm3
-	paddw	%mm2, %mm3
+	paddw	%mm1, %mm3
 
-	jmp	.o_store
-
-.o_full:
-	movq	%mm0, %mm3
-
-.o_store:	
 /* Store pixel */
 	packuswb %mm3, %mm3
-	movd	%mm3, (%edi)
+	movd	%mm3, %eax
+.o_store:
+	movb	%al, 0(%edi)
+	shrl	$8, %eax
+	movb	%al, 1(%edi)
+	shrl	$8, %eax
+	movb	%al, 2(%edi)
 
 .o_clip:
-	addl	$4, %edi
-	incl	%esi
+	addl	$3, %edi
+	addl	$4, %esi
 
 	decl	%ebx
 	jnz	.o_forx
@@ -217,8 +212,9 @@ nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP:
 
 	decl	%ecx
 	jnz	.o_fory
-	jmp	.exit
+
+	jmp .exit
 
 .Lfe1:
-	.size	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP,.Lfe1-nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP
+	.size	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P,.Lfe1-nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P
 	.ident	"GCC: (GNU) 3.2"

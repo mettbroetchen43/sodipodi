@@ -61,24 +61,29 @@ sp_canvas_buf_ensure_buf (SPCanvasBuf *buf)
 }
 
 void
-sp_canvas_clear_buffer (SPCanvasBuf * buf)
+sp_canvas_clear_buffer (SPCanvasBuf *buf)
 {
-	int x, y, width, height;
-	guchar * ptr, r, g, b;
+	unsigned char r, g, b;
 
 	r = (buf->bg_color >> 16) & 0xff;
-	g = (buf->bg_color >>  8) & 0xff;
-	b = (buf->bg_color      ) & 0xff;
+	g = (buf->bg_color >> 8) & 0xff;
+	b = buf->bg_color & 0xff;
 
-	width = buf->rect.x1 - buf->rect.x0;
-	height = buf->rect.y1 - buf->rect.y0;
-
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
-			ptr = buf->buf + y * buf->buf_rowstride + 3 * x;
-			* (ptr    ) = r;
-			* (ptr + 1) = g;
-			* (ptr + 2) = b;
+	if ((r != g) || (r != b)) {
+		int x, y;
+		for (y = buf->rect.y0; y < buf->rect.y1; y++) {
+			unsigned char *p;
+			p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride;
+			for (x = buf->rect.x0; x < buf->rect.x1; x++) {
+				*p++ = r;
+				*p++ = g;
+				*p++ = b;
+			}
+		}
+	} else {
+		int y;
+		for (y = buf->rect.y0; y < buf->rect.y1; y++) {
+			memset (buf->buf + (y - buf->rect.y0) * buf->buf_rowstride, r, 3 * (buf->rect.x1 - buf->rect.x0));
 		}
 	}
 }
