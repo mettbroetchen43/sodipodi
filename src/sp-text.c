@@ -13,6 +13,7 @@ static void sp_text_read_attr (SPObject * object, const gchar * attr);
 static void sp_text_read_content (SPObject * object);
 
 static char * sp_text_description (SPItem * item);
+static GSList * sp_text_snappoints (SPItem * item, GSList * points);
 
 static void sp_text_set_shape (SPText * text);
 
@@ -59,6 +60,7 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->read_content = sp_text_read_content;
 
 	item_class->description = sp_text_description;
+	item_class->snappoints = sp_text_snappoints;
 }
 
 static void
@@ -240,3 +242,21 @@ sp_text_set_shape (SPText * text)
 	}
 }
 
+static GSList * 
+sp_text_snappoints (SPItem * item, GSList * points)
+{
+  ArtPoint * p;
+  gdouble affine[6];
+
+  /* we use corners of item and x,y coordinates of ellipse */
+  if (SP_ITEM_CLASS (parent_class)->snappoints)
+    points = (SP_ITEM_CLASS (parent_class)->snappoints) (item, points);
+
+  p = g_new (ArtPoint,1);
+  p->x = SP_TEXT(item)->x;
+  p->y = SP_TEXT(item)->y;
+  sp_item_i2d_affine (item, affine);
+  art_affine_point (p, p, affine);
+  g_slist_append (points, p);
+  return points;
+}

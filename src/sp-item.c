@@ -22,6 +22,7 @@ static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_item_read_attr (SPObject * object, const gchar * key);
 
 static gchar * sp_item_private_description (SPItem * item);
+static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
 
 static GnomeCanvasItem * sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static void sp_item_private_hide (SPItem * item, SPDesktop * desktop);
@@ -73,6 +74,7 @@ sp_item_class_init (SPItemClass * klass)
 	klass->show = sp_item_private_show;
 	klass->hide = sp_item_private_hide;
 	klass->menu = sp_item_private_menu;
+	klass->snappoints = sp_item_private_snappoints;
 }
 
 static void
@@ -224,6 +226,49 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox)
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox) (item, bbox);
+}
+
+static GSList * 
+sp_item_private_snappoints (SPItem * item, GSList * points) 
+{
+        ArtDRect bbox;
+	ArtPoint * p;
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+
+	sp_item_bbox (item, &bbox);
+
+	p = g_new (ArtPoint,1);
+	p->x = bbox.x0;
+	p->y = bbox.y0;
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	p->x = bbox.x1;
+	p->y = bbox.y0;
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	p->x = bbox.x1;
+	p->y = bbox.y1;
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	p->x = bbox.x0;
+	p->y = bbox.y1;
+	points = g_slist_append (points, p);
+
+	return points;
+}
+
+GSList * sp_item_snappoints (SPItem * item)
+{
+        GSList * points = NULL;
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+
+	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->snappoints)
+	        points = (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->snappoints) (item, points);
+	return points;
 }
 
 void

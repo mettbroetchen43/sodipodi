@@ -23,6 +23,7 @@ static void sp_image_update (SPItem * item, gdouble affine[]);
 static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
+static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static GnomeCanvasItem * sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
@@ -79,6 +80,7 @@ sp_image_class_init (SPImageClass * klass)
 	item_class->description = sp_image_description;
 	item_class->show = sp_image_show;
 	item_class->paint = sp_image_paint;
+	item_class->snappoints = sp_image_snappoints;
 }
 
 static void
@@ -421,3 +423,41 @@ sp_image_update_canvas_image (SPImage *image)
 	}
 }
 
+static GSList * 
+sp_image_snappoints (SPItem * item, GSList * points)
+{
+  ArtPoint * p, p1, p2, p3, p4;
+  gdouble affine[6], w, h;
+  SPImage * image;
+
+  image = SP_IMAGE (item);
+
+  w = gdk_pixbuf_get_width (image->pixbuf);
+  h = gdk_pixbuf_get_height (image->pixbuf);
+
+  /* we use corners of image only */
+  p1.x = 0.0;
+  p1.y = 0.0;
+  p2.x = w;
+  p2.y = 0.0;
+  p3.x = 0.0;
+  p3.y = h;
+  p4.x = w;
+  p4.y = h;
+  sp_item_i2d_affine (item, affine);
+
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p1, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p2, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p3, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p4, affine);
+  points = g_slist_append (points, p);
+
+  return points;
+}

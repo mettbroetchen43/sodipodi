@@ -78,6 +78,8 @@ struct _SPItemClass {
 
 	/* Append to context menu */
 	void (* menu) (SPItem * item, GtkMenu * menu);
+        /* give list of points for item to be considered for snapping */ 
+        GSList * (* snappoints) (SPItem * item, GSList * points);
 };
 
 /* Flag testing macros */
@@ -98,6 +100,8 @@ void sp_item_print (SPItem * item, GnomePrintContext * gpc);
 GnomeCanvasItem * sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group);
 void sp_item_hide (SPItem * item, SPDesktop * desktop);
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
+
+GSList * sp_item_snappoints (SPItem * item);
 
 /* Utility */
 

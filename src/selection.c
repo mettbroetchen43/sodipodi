@@ -165,7 +165,7 @@ sp_selection_update_statusbar (SPSelection * selection)
 			 g_slist_length (selection->items));
 	}
 
-	sp_desktop_set_status (SP_ACTIVE_DESKTOP, message);
+	sp_desktop_default_status (SP_ACTIVE_DESKTOP, message);
 	
 	g_free (message);
 }
@@ -553,3 +553,45 @@ sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
 	return bbox;
 }
 
+GSList * 
+sp_selection_snappoints (SPSelection * selection)
+/* compute the list of points in the selection 
+ * which are to be considered for snapping */
+{
+        GSList * points = NULL, * l;
+	ArtPoint * p;
+	ArtDRect bbox;
+
+	g_return_val_if_fail (selection != NULL, NULL);
+	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
+
+	l = selection->items;
+
+	if (l == NULL) {
+	  points = NULL;
+	} else if (l->next == NULL) {
+	  /* selection has only one item -> take snappoints of item */
+	  points = sp_item_snappoints (SP_ITEM (l->data));
+	} else {
+	  /* selection has more than one item -> take corners of selection */
+	  sp_selection_bbox (selection, &bbox);
+	  p = g_new (ArtPoint,1);
+	  p->x = bbox.x0;
+	  p->y = bbox.y0;
+	  points = g_slist_append (points, p);
+	  p = g_new (ArtPoint,1);
+	  p->x = bbox.x1;
+	  p->y = bbox.y0;
+	  points = g_slist_append (points, p);
+	  p = g_new (ArtPoint,1);
+	  p->x = bbox.x1;
+	  p->y = bbox.y1;
+	  points = g_slist_append (points, p);
+	  p = g_new (ArtPoint,1);
+	  p->x = bbox.x0;
+	  p->y = bbox.y1;
+	  points = g_slist_append (points, p);
+	} 
+
+	return points;
+}

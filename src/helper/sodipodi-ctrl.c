@@ -345,7 +345,7 @@ sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		}
 		for (y = y0; y <= y1; y++) {
 			draw_point (buf, ctrl->box.x0, y, sr, sg, sb, sa);
-			if (ctrl->filled) draw_line (buf, ctrl->box.x0 + 1, ctrl->box.x1 - 1, y, sr, sg, sb, sa);
+			if (ctrl->filled) draw_line (buf, ctrl->box.x0 + 1, ctrl->box.x1 - 1, y, fr, fg, fb, fa);
 			draw_point (buf, ctrl->box.x1, y, sr, sg, sb, sa);
 		}
 	} else if (ctrl->shape == SP_CTRL_SHAPE_DIAMOND) {
@@ -367,7 +367,7 @@ sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 			r = (cy >= y) ? cy - y : y - cy;
 			s = ctrl->span - r;
 			draw_point (buf, cx - s, y, sr, sg, sb, sa);
-			if (ctrl->filled) draw_line (buf, cx - s + 1, cx + s - 1, y, sr, sg, sb, sa);
+			if (ctrl->filled) draw_line (buf, cx - s + 1, cx + s - 1, y, fr, fg, fb, fa);
 			draw_point (buf, cx + s, y, sr, sg, sb, sa);
 		}
 	}

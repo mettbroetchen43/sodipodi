@@ -83,14 +83,15 @@ Tab - cycle items in desktop
 
 	Shift + drag - add to selection
 
-strech:	Ctrl	- keep aspect
-	Shift	- fix selection center
+	Shift + transform - use center point as center for selection
 
-scale:	Ctrl	- only smaler
-	Shift	- fix selection center
+	Alt + transform - slow movement
+
+strech:	Ctrl	- only smaller
+
+scale:	Ctrl	- keep aspect
 
 skew:	Ctrl	- strech
-	Shift	- fix selection center
 
 move:	Ctrl	- move either horizontal or vertical
 

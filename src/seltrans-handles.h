@@ -6,25 +6,35 @@
 
 typedef struct _SPSelTransHandle SPSelTransHandle;
 
-void sp_handle_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
-void sp_handle_center (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
+// request handlers
+gboolean sp_sel_trans_scale_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+gboolean sp_sel_trans_stretch_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+gboolean sp_sel_trans_skew_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+gboolean sp_sel_trans_rotate_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+gboolean sp_sel_trans_center_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+
+// action handlers
+void sp_sel_trans_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+void sp_sel_trans_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+void sp_sel_trans_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+void sp_sel_trans_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+void sp_sel_trans_center (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+
+
 
 struct _SPSelTransHandle {
 	GtkAnchorType anchor;
 	GdkCursorType cursor;
-	SPCtrl * control;
-	void (* action) (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state);
-	gdouble * affine;
+	SPKnotShapeType control;
+	void (* action) (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);
+	gboolean (* request) (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state);        
 	gdouble x, y;
 };
 
 #ifndef SP_SELTRANS_HANDLES_C
-extern SPSelTransHandle handles_scale[8];
-extern SPSelTransHandle handles_rotate[8];
-extern SPSelTransHandle handle_center;
+extern const SPSelTransHandle handles_scale[9];
+extern const SPSelTransHandle handles_rotate[9];
+extern const SPSelTransHandle handle_center;
 #endif
 
 #endif

@@ -1,3 +1,26 @@
+2001-05-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/seltrans-handles.*: Make structs const
+
+	* src/seltrans.*: Make view type variable, move it to
+	header for adding GUI later
+
+2001-05-23  Frank Felfe  <innerspace@iname.com>
+
+	* src/desktop-snap.*: Implement circualr and list snapping
+
+	* src/sp-item.*: New virtual function ::snappoints()
+
+	* src/seltrans.c: New structure
+
+	* src/sp-rect.c (sp_rect_snappointss): Implement
+
+	* src/sp-ellipse.c (sp_ellipse_snappoints): Ditto
+
+	* src/sp-text.c (sp_text_snappoints): Ditto
+
+	* src/sp-image.c (sp_image_snappoints): Ditto
+	
 2001-05-18  Lauris Kaplinski  <lauris@ximian.com>
 
 	* configure.in: Version 0.23 final

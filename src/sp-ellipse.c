@@ -16,6 +16,7 @@ static void sp_ellipse_destroy (GtkObject *object);
 static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_ellipse_read_attr (SPObject * object, const gchar * attr);
 static gchar * sp_ellipse_description (SPItem * item);
+static GSList * sp_ellipse_snappoints (SPItem * item, GSList * points);
 
 static void sp_ellipse_set_shape (SPEllipse * ellipse);
 
@@ -61,6 +62,7 @@ sp_ellipse_class_init (SPEllipseClass *class)
 	sp_object_class->read_attr = sp_ellipse_read_attr;
 
 	item_class->description = sp_ellipse_description;
+	item_class->snappoints = sp_ellipse_snappoints;
 }
 
 static void
@@ -290,3 +292,21 @@ sp_ellipse_set (SPEllipse * ellipse, gdouble x, gdouble y, gdouble rx, gdouble r
 	sp_ellipse_set_shape (ellipse);
 }
 
+static GSList * 
+sp_ellipse_snappoints (SPItem * item, GSList * points)
+{
+  ArtPoint * p;
+  gdouble affine[6];
+
+  /* we use corners of item and center of ellipse */
+  if (SP_ITEM_CLASS (parent_class)->snappoints)
+    points = (SP_ITEM_CLASS (parent_class)->snappoints) (item, points);
+
+  p = g_new (ArtPoint,1);
+  p->x = SP_ELLIPSE(item)->x;
+  p->y = SP_ELLIPSE(item)->y;
+  sp_item_i2d_affine (item, affine);
+  art_affine_point (p, p, affine);
+  points = g_slist_append (points, p);
+  return points;
+}

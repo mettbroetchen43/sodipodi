@@ -18,6 +18,7 @@ static void sp_rect_read_attr (SPObject * object, const gchar * attr);
 
 static void sp_rect_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_rect_description (SPItem * item);
+static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
 
 static void sp_rect_set_shape (SPRect * rect);
 
@@ -72,6 +73,7 @@ sp_rect_class_init (SPRectClass *class)
 
 	item_class->bbox = sp_rect_bbox;
 	item_class->description = sp_rect_description;
+	item_class->snappoints = sp_rect_snappoints;
 }
 
 static void
@@ -281,4 +283,37 @@ sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
 	rect->height = height;
 
 	sp_rect_set_shape (rect);
+}
+
+static GSList * 
+sp_rect_snappoints (SPItem * item, GSList * points)
+{
+  ArtPoint * p, p1, p2, p3, p4;
+  gdouble affine[6];
+
+  /* we use corners of rect only */
+  p1.x = SP_RECT(item)->x;
+  p1.y = SP_RECT(item)->y;
+  p2.x = p1.x + SP_RECT(item)->width;
+  p2.y = p1.y;
+  p3.x = p1.x;
+  p3.y = p1.y + SP_RECT(item)->height;
+  p4.x = p1.x + SP_RECT(item)->width;
+  p4.y = p1.y + SP_RECT(item)->height;
+  sp_item_i2d_affine (item, affine);
+
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p1, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p2, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p3, affine);
+  points = g_slist_append (points, p);
+  p = g_new (ArtPoint,1);
+  art_affine_point (p, &p4, affine);
+  points = g_slist_append (points, p);
+
+  return points;
 }
