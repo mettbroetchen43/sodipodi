@@ -60,6 +60,41 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 		numpixels = deltay;
 	}
 
+	/* x = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2 */
+
+	if ((x0 < d->area.x0) && (x1 >= d->area.x0)) {
+		int pixels;
+		if (xinc1) {
+			/* xinc1 = 1 */
+			/* yinc1 = 0 */
+			/* deltax <= deltay */
+			/* numadd <= den */
+			/* alpha = numinitial + pixels * numadd;
+			 * area.x0 = x0 + (numinitial + pixels * numadd) / den;
+			 * (numinitial + pixels * numadd) / den = area.x0 - x0;
+			 * numinitial + pixels * numadd = (area.x0 - x0) * den [+ (alpha % den)];
+			 * pixels * numadd = (area.x0 - x0) * den - numinitial + (numadd - 1);
+			 * pixels = ((area.x0 - x0) * den - numinitial + (numadd - 1)) / numadd;
+			 *
+			 * num <- alpha % den;
+			 */
+			pixels = ((d->area.x0 - x0) * den - num + (numadd - 1)) / numadd;
+			x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
+			y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
+			num = (num + pixels * numadd) % den;
+			numpixels -= pixels;
+		} else {
+			/* area.x0 = x0 + pixels;
+			 */
+			pixels = d->area.x0 - x0;
+			x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
+			y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
+			num = (num + pixels * numadd) % den;
+			numpixels -= pixels;
+		}
+	}
+
+
 	/* We can be quite sure 1x1 pixblock is TINY */
 	nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_R8G8B8A8N, 0, 0, 1, 1, 0);
 	spb.empty = 0;

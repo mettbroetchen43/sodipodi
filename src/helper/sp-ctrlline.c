@@ -18,10 +18,15 @@
  */
 
 #include <math.h>
+
+#include <libnr/nr-matrix.h>
+#include <libnr/nr-pixblock-line.h>
+
 #include "sp-canvas.h"
 #include "sp-canvas-util.h"
 #include "sp-ctrlline.h"
 
+#if 0
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
@@ -30,13 +35,15 @@
 #include <libart_lgpl/art_rgb_svp.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_rect_svp.h>
+#endif
 
 struct _SPCtrlLine {
 	SPCanvasItem item;
 
 	guint32 rgba;
-	ArtPoint s, e;
-	ArtSVP *svp;
+
+	float x0, y0, x1, y1;
+	int ix0, iy0, ix1, iy1;
 };
 
 struct _SPCtrlLineClass {
@@ -92,8 +99,6 @@ static void
 sp_ctrlline_init (SPCtrlLine *ctrlline)
 {
 	ctrlline->rgba = 0x0000ff7f;
-	ctrlline->s.x = ctrlline->s.y = ctrlline->e.x = ctrlline->e.y = 0.0;
-	ctrlline->svp = NULL;
 }
 
 static void
@@ -106,82 +111,44 @@ sp_ctrlline_destroy (GtkObject *object)
 
 	ctrlline = SP_CTRLLINE (object);
 
-	if (ctrlline->svp) {
-		art_svp_free (ctrlline->svp);
-		ctrlline->svp = NULL;
-	}
-
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+		GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
 sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
-	SPCtrlLine *ctrlline;
+	SPCtrlLine *cline;
 
-	ctrlline = SP_CTRLLINE (item);
+	cline = SP_CTRLLINE (item);
 
-	if (ctrlline->svp) {
-		sp_canvas_buf_ensure_buf (buf);
-		art_rgb_svp_alpha (ctrlline->svp,
-				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
-				   ctrlline->rgba,
-				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
-				   NULL);
-	}
+	sp_canvas_buf_ensure_buf (buf);
+
+	nr_pixblock_draw_line_rgba32 (&buf->pixblock, cline->ix0, cline->iy0, cline->ix1, cline->iy1, TRUE, cline->rgba);
 }
 
 static void
 sp_ctrlline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 {
-	SPCtrlLine *cl;
-	ArtPoint p;
-	ArtVpath vpath[3];
-	ArtDRect dbox;
-	ArtIRect ibox;
+	SPCtrlLine *cline;
 
-	cl = SP_CTRLLINE (item);
+	cline = SP_CTRLLINE (item);
 
 	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 
-	if (parent_class->update)
-		(* parent_class->update) (item, affine, flags);
+	if (parent_class->update) parent_class->update (item, affine, flags);
 
 	sp_canvas_item_reset_bounds (item);
 
-	if (cl->svp) {
-		art_svp_free (cl->svp);
-		cl->svp = NULL;
-	}
+	cline->ix0 = (int) (NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x0, cline->y0) + 0.5);
+	cline->iy0 = (int) (NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x0, cline->y0) + 0.5);
+	cline->ix1 = (int) (NR_MATRIX_DF_TRANSFORM_X (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x1, cline->y1) + 0.5);
+	cline->iy1 = (int) (NR_MATRIX_DF_TRANSFORM_Y (NR_MATRIX_D_FROM_DOUBLE (affine), cline->x1, cline->y1) + 0.5);
 
-	p.x = cl->s.x;
-	p.y = cl->s.y;
-	art_affine_point (&p, &p, affine);
-
-	vpath[0].code = ART_MOVETO_OPEN;
-	vpath[0].x = p.x;
-	vpath[0].y = p.y;
-
-	p.x = cl->e.x;
-	p.y = cl->e.y;
-	art_affine_point (&p, &p, affine);
-
-	vpath[1].code = ART_LINETO;
-	vpath[1].x = p.x;
-	vpath[1].y = p.y;
-
-	vpath[2].code = ART_END;
-
-	cl->svp = art_svp_vpath_stroke (vpath, ART_PATH_STROKE_CAP_BUTT, ART_PATH_STROKE_JOIN_MITER, 1, 4, 0.25);
-
-	art_drect_svp (&dbox, cl->svp);
-	art_drect_to_irect (&ibox, &dbox);
-
-	item->x1 = ibox.x0;
-	item->y1 = ibox.y0;
-	item->x2 = ibox.x1;
-	item->y2 = ibox.y1;
+	item->x1 = MIN (cline->ix0, cline->ix1);
+	item->y1 = MIN (cline->iy0, cline->iy1);
+	item->x2 = MAX (cline->ix0, cline->ix1) + 1;
+	item->y2 = MAX (cline->iy0, cline->iy1) + 1;
 
 	sp_canvas_request_redraw (item->canvas, item->x1, item->y1, item->x2, item->y2);
 }
@@ -204,16 +171,16 @@ sp_ctrlline_set_rgba32 (SPCtrlLine *cl, guint32 rgba)
 #define DIFFER(a,b) (fabs ((a) - (b)) > EPSILON)
 
 void
-sp_ctrlline_set_coords (SPCtrlLine *cl, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
+sp_ctrlline_set_coords (SPCtrlLine *cline, float x0, float y0, float x1, float y1)
 {
-	g_return_if_fail (cl != NULL);
-	g_return_if_fail (SP_IS_CTRLLINE (cl));
+	g_return_if_fail (cline != NULL);
+	g_return_if_fail (SP_IS_CTRLLINE (cline));
 
-	if (DIFFER (x0, cl->s.x) || DIFFER (y0, cl->s.y) || DIFFER (x1, cl->e.x) || DIFFER (y1, cl->e.y)) {
-		cl->s.x = x0;
-		cl->s.y = y0;
-		cl->e.x = x1;
-		cl->e.y = y1;
-		sp_canvas_item_request_update (SP_CANVAS_ITEM (cl));
+	if ((x0 != cline->x0) || (y0 != cline->y0) || (x1 != cline->x1) || (y1 != cline->y1)) {
+		cline->x0 = x0;
+		cline->y0 = y0;
+		cline->x1 = x1;
+		cline->y1 = y1;
+		sp_canvas_item_request_update (SP_CANVAS_ITEM (cline));
 	}
 }

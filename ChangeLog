@@ -1,3 +1,10 @@
+2003-12-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-ctrlline.c (sp_ctrlline_render): Use pixblock-line
+	(sp_ctrlline_update): Ditto
+
+	* src/libnr/nr-pixblock-line.c (nr_pixblock_draw_line_rgba32): Try clipping
+
 2003-12-18  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/main.c (main): Add --display argument check if we use gui
