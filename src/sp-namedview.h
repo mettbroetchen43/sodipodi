@@ -18,6 +18,8 @@
 #define SP_IS_NAMEDVIEW(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_NAMEDVIEW))
 #define SP_IS_NAMEDVIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
+#include <libnr/nr-types.h>
+
 #include "helper/units.h"
 #include "sp-object-group.h"
 
@@ -52,6 +54,8 @@ struct _SPNamedView {
 	guint32 gridcolor;
 	guint32 guidecolor;
 	guint32 guidehicolor;
+	NRULong bordercolor;
+	NRULong pagecolor;
 	GSList * hguides;
 	GSList * vguides;
 	GSList * views;

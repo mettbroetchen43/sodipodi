@@ -1,3 +1,12 @@
+2003-11-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/desktop-properties.c (sp_dtw_update): Added page and
+	border colors
+
+	* src/sp-namedview.c (sp_namedview_set): Parse page and border colors
+
+	* src/desktop.c (sp_dt_namedview_modified): Set page and border colors
+
 2003-11-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.h: Use NRPixBlock in canvas buffer

@@ -230,14 +230,14 @@ sp_ctrlrect_set_area (SPCtrlRect *cr, double x0, double y0, double x1, double y1
 }
 
 void
-sp_ctrlrect_set_color (SPCtrlRect *cr, guint32 border_color, gboolean has_fill, guint32 fill_color)
+sp_ctrlrect_set_color (SPCtrlRect *cr, unsigned int rgba, unsigned int fill, unsigned int fill_rgba)
 {
 	g_return_if_fail (cr != NULL);
 	g_return_if_fail (SP_IS_CTRLRECT (cr));
 
-	cr->border_color = border_color;
-	cr->has_fill = has_fill;
-	cr->fill_color = fill_color;
+	cr->border_color = rgba;
+	cr->has_fill = (fill != 0);
+	cr->fill_color = fill_rgba;
 
 	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
 }

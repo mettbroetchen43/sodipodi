@@ -409,8 +409,23 @@ sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop)
 				morder = sp_canvas_item_order (desktop->drawing);
 				if (morder > order) sp_canvas_item_raise (desktop->page, morder - order);
 			}
+			sp_ctrlrect_set_color ((SPCtrlRect *) desktop->page,
+					       nv->bordercolor,
+					       (nv->pagecolor & 0xffffff00) != 0xffffff00,
+					       nv->pagecolor | 0xff);
+			sp_ctrlrect_set_shadow ((SPCtrlRect *)desktop->page, 5,
+						nv->bordercolor);
 		} else {
-			sp_canvas_item_hide (desktop->page);
+			if (!(nv->bordercolor & 0xff) && !(nv->pagecolor & 0xff)) {
+				sp_canvas_item_hide (desktop->page);
+			} else {
+				sp_ctrlrect_set_color ((SPCtrlRect *) desktop->page,
+						       0x00000000,
+						       nv->pagecolor & 0xff,
+						       nv->pagecolor);
+				sp_ctrlrect_set_shadow ((SPCtrlRect *)desktop->page, 0,
+							0x00000000);
+			}
 		}
 	}
 }

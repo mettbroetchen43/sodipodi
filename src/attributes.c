@@ -64,6 +64,9 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_GUIDEHIOPACITY, "guidehiopacity"},
 	{SP_ATTR_SHOWBORDER, "showborder"},
 	{SP_ATTR_BORDERLAYER, "borderlayer"},
+	{SP_ATTR_BORDERCOLOR, "bordercolor"},
+	{SP_ATTR_BORDEROPACITY, "borderopacity"},
+	{SP_ATTR_PAGECOLOR, "pagecolor"},
 	/* SPGuide */
 	{SP_ATTR_ORIENTATION, "orientation"},
 	{SP_ATTR_POSITION, "position"},

@@ -49,7 +49,7 @@ static void sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop);
 static GtkWidget *sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba);
 static void sp_color_picker_set_rgba32 (GtkWidget *cp, guint32 rgba);
 static void sp_color_picker_clicked (GObject *cp, void *data);
-void sp_color_picker_button(GtkWidget * dialog, GtkWidget * t, const guchar * label, guchar * key, guchar * color_dialog_label, guchar * opacity_key, int row);
+static void sp_color_picker_button(GtkWidget * dialog, GtkWidget * t, const guchar * label, guchar * key, guchar * color_dialog_label, guchar * opacity_key, int row);
 
 static GtkWidget *dlg = NULL;
 
@@ -212,11 +212,13 @@ sp_desktop_dialog_new (void)
 	spw_checkbutton(dialog, t, _("Show grid"), "showgrid", 0, row, 0, cb);
 	spw_checkbutton(dialog, t, _("Snap to grid"), "snaptogrid", 1, row++, 0, cb);
 
+#if 0
 	spw_checkbutton(dialog, t, _("Horizontal lines"), "vertgrid", 0, row, 0, cb);
 	spw_checkbutton(dialog, t, _("Vertical lines"), "horizgrid", 1, row++, 0, cb);
 
 	spw_checkbutton(dialog, t, _("Iso grid"), "isogrid", 0, row, 0, cb);
 	spw_checkbutton(dialog, t, _("Hex grid"), "hexgrid", 1, row++, 0, cb);
+#endif
 
 	cb = G_CALLBACK(sp_dtw_whatever_changed);
 
@@ -276,7 +278,7 @@ sp_desktop_dialog_new (void)
 	/* Page page */
 	l = gtk_label_new (_("Page"));
 	gtk_widget_show (l);
-	t = gtk_table_new (2, 1, FALSE);
+	t = gtk_table_new (4, 2, FALSE);
 	gtk_widget_show (t);
 	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
@@ -285,13 +287,23 @@ sp_desktop_dialog_new (void)
 
 	cb = G_CALLBACK(sp_dtw_whatever_toggled);
 
-	spw_checkbutton(dialog, t, _("Show border"), "showborder", 0, row, 0, cb);
+	b = gtk_check_button_new_with_label (_("Show border"));
+	gtk_table_attach (GTK_TABLE (t), b, 0, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (b), "key", "showborder");
+	gtk_object_set_data (GTK_OBJECT (dialog), "showborder", b);
+	g_signal_connect (G_OBJECT (b), "toggled", cb, dialog);
 
 	b = gtk_check_button_new_with_label (_("Border on top of drawing"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), b, 0, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "borderlayer", b);
 	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_border_layer_toggled), dialog);
+
+	sp_color_picker_button (dialog, t, _("Border color:"), "bordercolor",
+			       _("Page border color"), "borderopacity", 2);
+	sp_color_picker_button (dialog, t, _("Page color:"), "pagecolor",
+			       _("Page color"), NULL, 3);
+
+	gtk_widget_show_all (t);
 
 	/* fixme: We should listen namedview changes here as well */
 	g_signal_connect (G_OBJECT (SODIPODI), "activate_desktop", G_CALLBACK (sp_dtw_activate_desktop), dialog);
@@ -407,25 +419,35 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 		o = gtk_object_get_data (GTK_OBJECT (dialog), "borderlayer");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (o), (nv->borderlayer == SP_BORDER_LAYER_TOP));
 
+		cp = gtk_object_get_data (GTK_OBJECT (dialog), "bordercolor");
+		sp_color_picker_set_rgba32 (cp, nv->bordercolor);
+		w = g_object_get_data (G_OBJECT (cp), "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
+
+		cp = gtk_object_get_data (GTK_OBJECT (dialog), "pagecolor");
+		sp_color_picker_set_rgba32 (cp, nv->pagecolor);
+		w = g_object_get_data (G_OBJECT (cp), "window");
+		if (w) gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
+
 		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (FALSE));
 	}
 }
 
-void
-sp_color_picker_button(GtkWidget * dialog, GtkWidget * t,
-		       const guchar * label, guchar * key,
-		       guchar * color_dialog_label, guchar * opacity_key,
+static void
+sp_color_picker_button (GtkWidget *dialog, GtkWidget *t,
+		       const guchar *label, guchar *key,
+		       guchar *color_dialog_label, guchar *opacity_key,
 		       int row)
 {
-  GtkWidget *l, *cp;
-  l = gtk_label_new (label);
-  gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-  gtk_widget_show (l);
-  gtk_table_attach (GTK_TABLE (t), l, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  cp = sp_color_picker_new (key, opacity_key, color_dialog_label, 0);
-  gtk_widget_show (cp);
-  gtk_table_attach (GTK_TABLE (t), cp, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  g_object_set_data (G_OBJECT (dialog), key, cp);
+	GtkWidget *l, *cp;
+	l = gtk_label_new (label);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_table_attach (GTK_TABLE (t), l, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	cp = sp_color_picker_new (key, opacity_key, color_dialog_label, 0);
+	gtk_widget_show (cp);
+	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	g_object_set_data (G_OBJECT (dialog), key, cp);
 }
                                                                                                 
 static void
@@ -510,8 +532,8 @@ sp_color_picker_color_mod (SPColorSelector *csel, GObject *cp)
 
 	sp_svg_write_color (c, 32, rgba);
 	sp_repr_set_attr (repr, colorkey, c);
-	sp_repr_set_double (repr, alphakey, (rgba & 0xff) / 255.0);
 
+	if (alphakey) sp_repr_set_double (repr, alphakey, (rgba & 0xff) / 255.0);
 }
 
 static void

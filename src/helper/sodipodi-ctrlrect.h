@@ -53,7 +53,7 @@ struct _SPCtrlRectClass {
 GtkType sp_ctrlrect_get_type (void);
 
 void sp_ctrlrect_set_area (SPCtrlRect *rect, double x0, double y0, double x1, double y1);
-void sp_ctrlrect_set_color (SPCtrlRect *rect, guint32 border_color, gboolean has_fill, guint32 fill_color);
+void sp_ctrlrect_set_color (SPCtrlRect *cr, unsigned int rgba, unsigned int fill, unsigned int fill_rgba);
 void sp_ctrlrect_set_shadow (SPCtrlRect *rect, gint shadow_size, guint32 shadow_color);
 
 /* Deprecated */

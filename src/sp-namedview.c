@@ -37,6 +37,8 @@
 #define DEFAULTGRIDCOLOR 0x3f3fff2f
 #define DEFAULTGUIDECOLOR 0x0000ff7f
 #define DEFAULTGUIDEHICOLOR 0xff00007f
+#define DEFAULTBORDERCOLOR 0x000000ff
+#define DEFAULTPAGECOLOR 0xffffff00
 
 static void sp_namedview_class_init (SPNamedViewClass * klass);
 static void sp_namedview_init (SPNamedView * namedview);
@@ -144,6 +146,9 @@ sp_namedview_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "guidehiopacity");
 	sp_object_read_attr (object, "showborder");
 	sp_object_read_attr (object, "borderlayer");
+	sp_object_read_attr (object, "bordercolor");
+	sp_object_read_attr (object, "borderopacity");
+	sp_object_read_attr (object, "pagecolor");
 
 	/* Construct guideline list */
 
@@ -351,6 +356,25 @@ sp_namedview_set (SPObject *object, unsigned int key, const unsigned char *value
 	case SP_ATTR_BORDERLAYER:
 		nv->borderlayer = SP_BORDER_LAYER_BOTTOM;
 		if (value && !strcasecmp (value, "top")) nv->borderlayer = SP_BORDER_LAYER_TOP;
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_BORDERCOLOR:
+		nv->bordercolor = (nv->bordercolor & 0xff) | (DEFAULTBORDERCOLOR & 0xffffff00);
+		if (value) {
+			nv->bordercolor = (nv->bordercolor & 0xff) | sp_svg_read_color (value, nv->bordercolor);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_BORDEROPACITY:
+		nv->bordercolor = (nv->bordercolor & 0xffffff00) | (DEFAULTBORDERCOLOR & 0xff);
+		sp_nv_read_opacity (value, &nv->bordercolor);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_PAGECOLOR:
+		nv->pagecolor = (nv->pagecolor & 0xff) | (DEFAULTPAGECOLOR & 0xffffff00);
+		if (value) {
+			nv->pagecolor = (nv->pagecolor & 0xff) | sp_svg_read_color (value, nv->pagecolor);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
