@@ -1,3 +1,9 @@
+2004-01-25  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/style.c (trim_space): New function
+	(sp_style_merge_from_style_string): Fixed CSS property space
+	handling again in bit better way
+
 2004-01-24  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/style.c (sp_style_merge_from_style_string): Fixed CSS inline

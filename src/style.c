@@ -634,6 +634,29 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	}
 }
 
+static void
+trim_space (const unsigned char *str, unsigned int length,
+			unsigned int *left, unsigned int *right)
+{
+	const unsigned char *p;
+	unsigned int i;
+	
+	if (left) {
+		for (i = 0, p = str;
+			 p && isspace (*p) && i < length;
+			 i++, p++)
+			;
+		*left = i;
+	}
+	if (right) {
+		for (i = length - 1, p = str + i;
+			 p && isspace (*p) && i >= 0;
+			 i--, p--)
+			;
+		*right = i + 1;
+	}
+}
+
 /*
  * Parses style="fill:red;fill-rule:evenodd;" type string
  */
@@ -644,9 +667,8 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 	guchar c[BMAX];
 
 	while (*p) {
-		const gchar *bp;
-		const guchar *s, *v, *e;
-		gint len, idx;
+		const guchar *s, *e;
+		gint len, idx, left, right;
 		while (!isalpha (*p)) {
 			if (!*p) return;
 			p += 1;
@@ -656,34 +678,30 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 			g_warning ("No separator at style at: %s", p);
 			return;
 		}
-		v = s + 1;
-		while (isspace (*v)) {
-			if (!*v) {
-				g_warning ("Unexpected terminator at style at: %s", p);
-				return;
-			}
-			v += 1;
-		}
-		e = strchr (v, ';');
+		e = strchr (p, ';');
 		if (!e) {
 			e = p + strlen (p);
 			if (*e) g_warning ("No end marker at style at: %s", p);
 		}
-		bp = strpbrk (p, ": ");
-		len = (bp) ? MIN ((gint)(bp - (const gchar *)p), 4095) : 4095;
+		len = MIN (s - p, 4095);
 		if (len < 1) {
 			g_warning ("Zero length style property at: %s", p);
 			return;
 		}
-		memcpy (c, p, len);
-		c[len] = '\0';
+		trim_space (p, len, &left, &right);
+		memcpy (c, &p[left], right);
+		c[right] = '\0';
 		idx = sp_attribute_lookup (c);
 		if (idx > 0) {
-			bp = strpbrk (v, "; ");
-			len = (bp) ? MIN ((gint)(bp - (const gchar *)v), 4095) : 4095;
-			if (len > 0) memcpy (c, v, len);
-			c[len] = '\0';
-			sp_style_merge_property (style, idx, c);
+			len = MIN (e - s - 1, 4095);
+			if (len > 0) {
+				trim_space (s + 1, len, &left, &right);
+				memcpy (c, s + 1 + left, right);
+				c[right] = '\0';
+				sp_style_merge_property (style, idx, c);
+			} else {
+				g_warning ("Strange style property value at: %s", p);
+			}
 		} else {
 			g_warning ("Unknown style property at: %s", p);
 		}
