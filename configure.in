@@ -207,7 +207,7 @@ fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
-AC_OUTPUT([
+AC_OUTPUT([ intl/Makefile m4/Makefile po/Makefile.in
 Makefile
 src/Makefile
 src/libnr/Makefile

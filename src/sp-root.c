@@ -191,7 +191,7 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 		break;
 	case SP_ATTR_SODIPODI_VERSION:
 		if (value) {
-			root->sodipodi = (guint) (atof (value) * 100.0);
+			root->sodipodi = (guint) (atof (value) * 100.0 + 0.5);
 		} else {
 			root->sodipodi = root->original;
 		}

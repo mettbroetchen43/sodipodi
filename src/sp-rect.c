@@ -25,6 +25,7 @@
 #include "style.h"
 #include "document.h"
 #include "dialogs/object-attributes.h"
+#include "sp-root.h"
 #include "sp-rect.h"
 #include "helper/sp-intl.h"
 
@@ -122,9 +123,29 @@ sp_rect_init (SPRect * rect)
 	rect->ry.computed = 0.0;
 }
 
-static void
-sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
+/* fixme: Better place (Lauris) */
+
+static guint
+sp_rect_find_version (SPObject *object)
 {
+
+	while (object) {
+		if (SP_IS_ROOT (object)) {
+			return SP_ROOT (object)->sodipodi;
+		}
+		object = SP_OBJECT_PARENT (object);
+	}
+
+	return 0;
+}
+
+static void
+sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	SPRect *rect;
+	guint version;
+
+	rect = SP_RECT (object);
 
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
@@ -135,6 +156,21 @@ sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_object_read_attr (object, "height");
 	sp_object_read_attr (object, "rx");
 	sp_object_read_attr (object, "ry");
+
+	version = sp_rect_find_version (object);
+
+	if (version == 29) {
+		if (rect->rx.set && rect->ry.set) {
+			/* 0.29 treated 0.0 radius as missing value */
+			if ((rect->rx.value != 0.0) && (rect->ry.value == 0.0)) {
+				sp_repr_set_attr (repr, "ry", NULL);
+				sp_object_read_attr (object, "ry");
+			} else if ((rect->ry.value != 0.0) && (rect->rx.value == 0.0)) {
+				sp_repr_set_attr (repr, "rx", NULL);
+				sp_object_read_attr (object, "rx");
+			}
+		}
+	}
 }
 
 static void
