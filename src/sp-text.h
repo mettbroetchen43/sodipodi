@@ -124,6 +124,10 @@ SPCurve *sp_text_normalized_bpath (SPText *text);
 
 SPTSpan *sp_text_append_line (SPText *text);
 
+/* fixme: Better place for these */
+gint sp_text_font_weight_to_gp (gint weight);
+#define sp_text_font_italic_to_gp(s) ((s) != SP_CSS_FONT_STYLE_NORMAL)
+
 /* fixme: Think about these (Lauris) */
 
 /* This gives us SUM (strlen (STRING)) + (LINES - 1) */

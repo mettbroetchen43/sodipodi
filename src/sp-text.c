@@ -40,10 +40,6 @@
 
 #include "sp-text.h"
 
-/* fixme: Better place for these */
-static gint sp_text_font_weight_to_gp (SPCSSFontWeight weight);
-static gboolean sp_text_font_italic_to_gp (SPCSSFontStyle style);
-
 /* SPString */
 
 static void sp_string_class_init (SPStringClass *class);
@@ -160,8 +156,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	sp_chars_clear (chars);
 
 	face = gnome_font_unsized_closest (style->text->font_family.value,
-					   sp_text_font_weight_to_gp (style->text->font_weight.value),
-					   sp_text_font_italic_to_gp (style->text->font_style.value));
+					   sp_text_font_weight_to_gp (style->font_weight.computed),
+					   sp_text_font_italic_to_gp (style->font_style.computed));
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 
@@ -229,7 +225,7 @@ static void sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transfor
 static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
 static void sp_tspan_hide (SPItem *item, NRArena *arena);
 
-static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
+static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean firstline, gboolean inspace);
 
 static SPItemClass *tspan_parent_class;
 
@@ -349,11 +345,13 @@ sp_tspan_read_attr (SPObject *object, const gchar *attr)
 		if (astr) tspan->ly.x = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.x_set = (astr != NULL);
 		/* fixme: Re-layout it */
+		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (strcmp (attr, "y") == 0) {
 		if (astr) tspan->ly.y = sp_svg_read_length (&unit, astr, 0.0);
 		tspan->ly.y_set = (astr != NULL);
 		/* fixme: Re-layout it */
+		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (strcmp (attr, "dx") == 0) {
 		if (astr) tspan->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
@@ -480,10 +478,28 @@ sp_tspan_hide (SPItem *item, NRArena *arena)
 }
 
 static void
-sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean inspace)
+sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean firstline, gboolean inspace)
 {
-	if (tspan->ly.x_set) cp->x = tspan->ly.x;
-	if (tspan->ly.y_set) cp->y = tspan->ly.y;
+	if (tspan->role == SP_TSPAN_ROLE_LINE) {
+		SPStyle *style;
+		style = SP_OBJECT_STYLE (tspan);
+		if (!firstline) {
+			if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+				cp->x -= style->font_size.computed;
+				cp->y = ly->y;
+			} else {
+				cp->x = ly->x;
+				cp->y += style->font_size.computed;
+			}
+		}
+		/* fixme: This is extremely (EXTREMELY) dangerous (Lauris) */
+		/* fixme: Our only hope is to ensure LINE tspans do not request ::modified */
+		sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", cp->x);
+		sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp->y);
+	} else {
+		if (tspan->ly.x_set) cp->x = tspan->ly.x;
+		if (tspan->ly.y_set) cp->y = tspan->ly.y;
+	}
 
 	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp, inspace);
 }
@@ -891,8 +907,10 @@ sp_text_description (SPItem * item)
 	return g_strdup (_("Text object"));
 }
 
-static gint
-sp_text_font_weight_to_gp (SPCSSFontWeight weight)
+/* 'lighter' and 'darker' have to be resolved earlier */
+
+gint
+sp_text_font_weight_to_gp (gint weight)
 {
 	switch (weight) {
 	case SP_CSS_FONT_WEIGHT_100:
@@ -929,12 +947,10 @@ sp_text_font_weight_to_gp (SPCSSFontWeight weight)
 		break;
 	}
 
-	/* fixme: case SP_CSS_FONT_WEIGHT_LIGHTER: */
-	/* fixme: case SP_CSS_FONT_WEIGHT_DARKER: */
-
 	return GNOME_FONT_BOOK;
 }
 
+#if 0
 static gboolean
 sp_text_font_italic_to_gp (SPCSSFontStyle style)
 {
@@ -942,13 +958,14 @@ sp_text_font_italic_to_gp (SPCSSFontStyle style)
 
 	return TRUE;
 }
+#endif
 
 static void
 sp_text_set_shape (SPText *text)
 {
 	ArtPoint cp;
 	SPObject *child;
-	gboolean haslast, lastwastspan;
+	gboolean isfirst, haslast, lastwastspan;
 
 	/* The logic should be: */
 	/* 1. Calculate attributes */
@@ -958,6 +975,7 @@ sp_text_set_shape (SPText *text)
 	if (text->ly.x_set) cp.x = text->ly.x;
 	if (text->ly.y_set) cp.y = text->ly.y;
 
+	isfirst = TRUE;
 	haslast = FALSE;
 	lastwastspan = FALSE;
 
@@ -967,10 +985,11 @@ sp_text_set_shape (SPText *text)
 			haslast = TRUE;
 			lastwastspan = FALSE;
 		} else {
-			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp, haslast && !lastwastspan);
+			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp, isfirst, haslast && !lastwastspan);
 			haslast = TRUE;
 			lastwastspan = TRUE;
 		}
+		isfirst = FALSE;
 	}
 }
 

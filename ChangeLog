@@ -1,3 +1,14 @@
+2002-08-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c: Created new IEnum type with immediate and computed members,
+	ported font-style, font-variant, font-weight, font-stretch to it
+
+	* src/sp-text.c (sp_string_set_shape): Use computed 'font-style' value
+
+	* glade/Makefile.am (glade_DATA): Removed text-dialog.glade
+
+	* src/dialogs/text-edit.c: Get rid of glade
+
 2002-08-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/canvas-arena.c: Ref active item, so it does not disappear

@@ -1,3 +1,7 @@
+2002-08-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* POTFILES.in: Added src/dialogs/text-edit.c
+
 2002-08-26  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian (bokmål) translation.

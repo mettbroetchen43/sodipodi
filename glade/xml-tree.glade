@@ -21,6 +21,8 @@
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
+  <default_width>512</default_width>
+  <default_height>384</default_height>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -32,9 +34,9 @@
     <child_name>GnomeDialog:vbox</child_name>
     <name>dialog-vbox1</name>
     <homogeneous>False</homogeneous>
-    <spacing>8</spacing>
+    <spacing>0</spacing>
     <child>
-      <padding>4</padding>
+      <padding>0</padding>
       <expand>True</expand>
       <fill>True</fill>
     </child>
@@ -44,10 +46,10 @@
       <child_name>GnomeDialog:action_area</child_name>
       <name>dialog-action_area1</name>
       <layout_style>GTK_BUTTONBOX_END</layout_style>
-      <spacing>8</spacing>
+      <spacing>4</spacing>
       <child_min_width>85</child_min_width>
-      <child_min_height>27</child_min_height>
-      <child_ipad_x>7</child_ipad_x>
+      <child_min_height>24</child_min_height>
+      <child_ipad_x>0</child_ipad_x>
       <child_ipad_y>0</child_ipad_y>
       <child>
 	<padding>0</padding>
@@ -73,8 +75,8 @@
     <widget>
       <class>GtkHPaned</class>
       <name>hpaned1</name>
-      <handle_size>10</handle_size>
-      <gutter_size>6</gutter_size>
+      <handle_size>8</handle_size>
+      <gutter_size>12</gutter_size>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
@@ -84,7 +86,6 @@
       <widget>
 	<class>GtkFrame</class>
 	<name>frame3</name>
-	<border_width>4</border_width>
 	<label>Hierarchy</label>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -96,6 +97,7 @@
 	<widget>
 	  <class>GtkVBox</class>
 	  <name>vbox4</name>
+	  <border_width>4</border_width>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 
@@ -151,7 +153,6 @@
 		<handler>sp_xml_tree_up_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:10:57 GMT</last_modification_time>
 	      </signal>
-	      <stock_button>GNOME_STOCK_BUTTON_UP</stock_button>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>0</left_attach>
@@ -167,6 +168,17 @@
 		<xfill>True</xfill>
 		<yfill>False</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap5</name>
+		<filename>selection_up.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -178,7 +190,6 @@
 		<handler>sp_xml_tree_down_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:10:00 GMT</last_modification_time>
 	      </signal>
-	      <stock_button>GNOME_STOCK_BUTTON_DOWN</stock_button>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>1</left_attach>
@@ -194,6 +205,17 @@
 		<xfill>True</xfill>
 		<yfill>False</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap6</name>
+		<filename>selection_down.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -205,7 +227,6 @@
 		<handler>sp_xml_tree_dup_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:09:16 GMT</last_modification_time>
 	      </signal>
-	      <label>Dup</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>2</left_attach>
@@ -221,6 +242,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap7</name>
+		<filename>edit_duplicate.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -232,7 +264,6 @@
 		<handler>sp_xml_tree_new_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:01:51 GMT</last_modification_time>
 	      </signal>
-	      <label>New</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>3</left_attach>
@@ -248,6 +279,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap8</name>
+		<filename>file_new.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -259,7 +301,6 @@
 		<handler>sp_xml_tree_cut_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:10:39 GMT</last_modification_time>
 	      </signal>
-	      <label>Cut</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>0</left_attach>
@@ -275,6 +316,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap1</name>
+		<filename>edit_cut.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -286,7 +338,6 @@
 		<handler>sp_xml_tree_copy_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:10:19 GMT</last_modification_time>
 	      </signal>
-	      <label>Copy</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>1</left_attach>
@@ -302,6 +353,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap2</name>
+		<filename>edit_copy.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -313,7 +375,6 @@
 		<handler>sp_xml_tree_paste_element</handler>
 		<last_modification_time>Thu, 02 May 2002 16:09:39 GMT</last_modification_time>
 	      </signal>
-	      <label>Paste</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>2</left_attach>
@@ -329,6 +390,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap3</name>
+		<filename>edit_paste.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 
 	    <widget>
@@ -340,7 +412,6 @@
 		<handler>sp_xml_tree_remove_element</handler>
 		<last_modification_time>Thu, 02 May 2002 15:13:22 GMT</last_modification_time>
 	      </signal>
-	      <label>Del</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<left_attach>3</left_attach>
@@ -356,6 +427,17 @@
 		<xfill>True</xfill>
 		<yfill>True</yfill>
 	      </child>
+
+	      <widget>
+		<class>GtkPixmap</class>
+		<name>pixmap4</name>
+		<filename>edit_delete.xpm</filename>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<build_insensitive>True</build_insensitive>
+	      </widget>
 	    </widget>
 	  </widget>
 	</widget>
@@ -374,7 +456,6 @@
 	<widget>
 	  <class>GtkFrame</class>
 	  <name>frame2</name>
-	  <border_width>4</border_width>
 	  <label>Attributes</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -407,6 +488,7 @@
 	      <widget>
 		<class>GtkCList</class>
 		<name>attributes</name>
+		<height>192</height>
 		<can_focus>True</can_focus>
 		<signal>
 		  <name>select_row</name>
@@ -532,7 +614,6 @@
 	<widget>
 	  <class>GtkFrame</class>
 	  <name>frame1</name>
-	  <border_width>4</border_width>
 	  <label>Content</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -558,8 +639,8 @@
 	      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 	      <child>
 		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
+		<expand>False</expand>
+		<fill>False</fill>
 	      </child>
 
 	      <widget>

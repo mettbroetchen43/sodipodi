@@ -178,7 +178,6 @@ glade_DATA = 					\
 	item.glade 			\
 	object_props.glade 	\
 	sodipodi.glade 		\
-	text-dialog.glade 		\
 	toolbox.glade 			\
 	transformation.glade 	\
 	xml-tree.glade  \

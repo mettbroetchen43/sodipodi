@@ -31,6 +31,7 @@ typedef struct _SPIFloat SPIFloat;
 typedef struct _SPIScale24 SPIScale24;
 typedef struct _SPIInt SPIInt;
 typedef struct _SPIShort SPIShort;
+typedef struct _SPIEnum SPIEnum;
 typedef struct _SPIPaint SPIPaint;
 typedef struct _SPIFontSize SPIFontSize;
 
@@ -69,7 +70,14 @@ struct _SPIShort {
 	guint set : 1;
 	guint inherit : 1;
 	guint data : 14;
-	gshort value;
+	gint value : 16;
+};
+
+struct _SPIEnum {
+	guint set : 1;
+	guint inherit : 1;
+	guint value : 8;
+	guint computed : 8;
 };
 
 #define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.value.server)
@@ -127,6 +135,10 @@ struct _SPStyle {
 	/* CSS2 */
 	/* Font */
 	SPIFontSize font_size;
+	SPIEnum font_style;
+	SPIEnum font_variant;
+	SPIEnum font_weight;
+	SPIEnum font_stretch;
 
 	/* Misc attributes */
 	guint clip_set : 1;
@@ -152,7 +164,7 @@ struct _SPStyle {
 	/* fill-opacity */
 	SPIScale24 fill_opacity;
 	/* fill-rule: 0 nonzero, 1 evenodd */
-	SPIShort fill_rule;
+	SPIEnum fill_rule;
 
 	/* stroke */
 	SPIPaint stroke;
@@ -160,9 +172,9 @@ struct _SPStyle {
 	SPDistance stroke_width;
 	guint stroke_width_set : 1;
 	/* stroke-linecap */
-	SPIShort stroke_linecap;
+	SPIEnum stroke_linecap;
 	/* stroke-linejoin */
-	SPIShort stroke_linejoin;
+	SPIEnum stroke_linejoin;
 	/* stroke-miterlimit */
 	SPIFloat stroke_miterlimit;
 	/* stroke-dash* */
@@ -268,10 +280,6 @@ struct _SPTextStyle {
 
 	/* CSS font properties */
 	SPIString font_family;
-	SPIShort font_style;
-	SPIShort font_variant;
-	SPIShort font_weight;
-	SPIShort font_stretch;
 
 	guint font_size_adjust_set : 1;
 
@@ -298,7 +306,7 @@ struct _SPTextStyle {
 	GnomeFontFace *face;
 	gfloat size;
 	/* Text direction */
-	SPIShort writing_mode;
+	SPIEnum writing_mode;
 };
 
 /*

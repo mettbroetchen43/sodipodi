@@ -21,6 +21,9 @@ src/dialogs/item-properties.c
 src/dialogs/object-attributes.c
 src/dialogs/object-properties.c
 src/dialogs/stroke-style.c
+src/dialogs/text-edit.c
+src/dialogs/tool-attributes.c
+src/dialogs/xml-tree.c
 src/document.c
 src/event-context.c
 src/file.c
@@ -44,6 +47,4 @@ src/widgets/gradient-selector.c
 src/widgets/gradient-vector.c
 src/widgets/paint-selector.c
 src/widgets/sp-color-selector.c
-src/dialogs/tool-attributes.c
-src/dialogs/xml-tree.c
 src/draw-context.c

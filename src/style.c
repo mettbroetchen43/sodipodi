@@ -53,7 +53,7 @@ static gint sp_style_property_index (const guchar *str);
 
 static void sp_style_read_ifloat (SPIFloat *val, const guchar *str);
 static void sp_style_read_iscale24 (SPIScale24 *val, const guchar *str);
-static void sp_style_read_ienum (SPIShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
+static void sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit);
 static void sp_style_read_istring (SPIString *val, const guchar *str);
 static void sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocument *document);
 static void sp_style_read_ifontsize (SPIFontSize *val, const guchar *str);
@@ -61,11 +61,12 @@ static void sp_style_read_ifontsize (SPIFontSize *val, const guchar *str);
 #if 0
 static void sp_style_read_pfloat (SPIFloat *val, SPRepr *repr, const guchar *key);
 #endif
+static void sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, gboolean inherit);
 static void sp_style_read_pfontsize (SPIFontSize *val, SPRepr *repr, const guchar *key);
 
 static gint sp_style_write_ifloat (guchar *p, gint len, const guchar *key, SPIFloat *val, SPIFloat *base, guint flags);
 static gint sp_style_write_iscale24 (guchar *p, gint len, const guchar *key, SPIScale24 *val, SPIScale24 *base, guint flags);
-static gint sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIShort *val, SPIShort *base, guint flags);
+static gint sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIEnum *val, SPIEnum *base, guint flags);
 static gint sp_style_write_istring (guchar *p, gint len, const guchar *key, SPIString *val, SPIString *base, guint flags);
 static gint sp_style_write_ipaint (guchar *b, gint len, const guchar *key, SPIPaint *paint, SPIPaint *base, guint flags);
 static gint sp_style_write_ifontsize (guchar *p, gint len, const guchar *key, SPIFontSize *val, SPIFontSize *base, guint flags);
@@ -76,6 +77,9 @@ static void sp_style_paint_clear (SPStyle *style, SPIPaint *paint, gboolean hunr
 
 #define SPS_READ_IFLOAT_IF_UNSET(v,s) if (!(v)->set) {sp_style_read_ifloat ((v), (s));}
 #define SPS_READ_PFLOAT_IF_UNSET(v,r,k) if (!(v)->set) {sp_style_read_pfloat ((v), (r), (k));}
+
+#define SPS_READ_IENUM_IF_UNSET(v,s,d,i) if (!(v)->set) {sp_style_read_ienum ((v), (s), (d), (i));}
+#define SPS_READ_PENUM_IF_UNSET(v,r,k,d,i) if (!(v)->set) {sp_style_read_penum ((v), (r), (k), (d), (i));}
 
 #define SPS_READ_IFONTSIZE_IF_UNSET(v,s) if (!(v)->set) {sp_style_read_ifontsize ((v), (s));}
 #define SPS_READ_PFONTSIZE_IF_UNSET(v,r,k) if (!(v)->set) {sp_style_read_pfontsize ((v), (r), (k));}
@@ -275,6 +279,10 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	/* CSS2 */
 	/* Font */
 	SPS_READ_PFONTSIZE_IF_UNSET (&style->font_size, repr, "font-size");
+	SPS_READ_PENUM_IF_UNSET (&style->font_style, repr, "font-style", enum_font_style, TRUE);
+	SPS_READ_PENUM_IF_UNSET (&style->font_variant, repr, "font-variant", enum_font_variant, TRUE);
+	SPS_READ_PENUM_IF_UNSET (&style->font_weight, repr, "font-weight", enum_font_weight, TRUE);
+	SPS_READ_PENUM_IF_UNSET (&style->font_stretch, repr, "font-stretch", enum_font_stretch, TRUE);
 
 	/* opacity */
 	if (!style->opacity.set) {
@@ -341,38 +349,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			sp_style_read_istring (&style->text->font_family, val);
 		}
 	}
-	/* font-style */
-	if (!style->text_private || !style->text->writing_mode.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-style");
-		if (val) {
-			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_ienum (&style->text->font_style, val, enum_font_style, TRUE);
-		}
-	}
-	/* font-variant */
-	if (!style->text_private || !style->text->writing_mode.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-variant");
-		if (val) {
-			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_ienum (&style->text->font_style, val, enum_font_variant, TRUE);
-		}
-	}
-	/* font-weight */
-	if (!style->text_private || !style->text->writing_mode.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-weight");
-		if (val) {
-			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_ienum (&style->text->font_style, val, enum_font_weight, TRUE);
-		}
-	}
-	/* font-stretch */
-	if (!style->text_private || !style->text->writing_mode.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-stretch");
-		if (val) {
-			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_ienum (&style->text->font_style, val, enum_font_stretch, TRUE);
-		}
-	}
 	/* writing-mode */
 	if (!style->text_private || !style->text->writing_mode.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
@@ -418,28 +394,16 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
 		break;
 	case SP_PROP_FONT_STYLE:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_style.set) {
-			sp_style_read_ienum (&style->text->font_style, val, enum_font_style, TRUE);
-		}
+		SPS_READ_IENUM_IF_UNSET (&style->font_style, val, enum_font_style, TRUE);
 		break;
 	case SP_PROP_FONT_VARIANT:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_variant.set) {
-			sp_style_read_ienum (&style->text->font_variant, val, enum_font_variant, TRUE);
-		}
+		SPS_READ_IENUM_IF_UNSET (&style->font_variant, val, enum_font_variant, TRUE);
 		break;
 	case SP_PROP_FONT_WEIGHT:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_weight.set) {
-			sp_style_read_ienum (&style->text->font_weight, val, enum_font_weight, TRUE);
-		}
+		SPS_READ_IENUM_IF_UNSET (&style->font_weight, val, enum_font_weight, TRUE);
 		break;
 	case SP_PROP_FONT_STRETCH:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_stretch.set) {
-			sp_style_read_ienum (&style->text->font_stretch, val, enum_font_stretch, TRUE);
-		}
+		SPS_READ_IENUM_IF_UNSET (&style->font_stretch, val, enum_font_stretch, TRUE);
 		break;
 	case SP_PROP_FONT:
 		if (!style->text_private) sp_style_privatize_text (style);
@@ -658,43 +622,22 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 	if (object->style) {
 		/* CSS2 */
 		/* Font */
+		/* 'font-size' */
 		if (!style->font_size.set || style->font_size.inherit) {
 			/* I think inheriting computed value is correct here */
 			style->font_size.type = SP_FONT_SIZE_LENGTH;
 			style->font_size.computed = object->style->font_size.computed;
 		} else if (style->font_size.type == SP_FONT_SIZE_LITERAL) {
+			static gfloat sizetable[] = {6.0, 8.0, 10.0, 12.0, 14.0, 18.0, 24.0};
 			/* fixme: SVG and CSS do no specify clearly, whether we should use user or screen coordinates (Lauris) */
-			switch (style->font_size.value) {
-			case SP_CSS_FONT_SIZE_XX_SMALL:
-				style->font_size.computed = 6.0;
-				break;
-			case SP_CSS_FONT_SIZE_X_SMALL:
-				style->font_size.computed = 8.0;
-				break;
-			case SP_CSS_FONT_SIZE_SMALL:
-				style->font_size.computed = 10.0;
-				break;
-			case SP_CSS_FONT_SIZE_MEDIUM:
-				style->font_size.computed = 12.0;
-				break;
-			case SP_CSS_FONT_SIZE_LARGE:
-				style->font_size.computed = 14.0;
-				break;
-			case SP_CSS_FONT_SIZE_X_LARGE:
-				style->font_size.computed = 18.0;
-				break;
-			case SP_CSS_FONT_SIZE_XX_LARGE:
-				style->font_size.computed = 24.0;
-				break;
-			case SP_CSS_FONT_SIZE_SMALLER:
+			if (style->font_size.value < SP_CSS_FONT_SIZE_SMALLER) {
+				style->font_size.computed = sizetable[style->font_size.value];
+			} else if (style->font_size.value == SP_CSS_FONT_SIZE_SMALLER) {
 				style->font_size.computed = object->style->font_size.computed / 1.2;
-				break;
-			case SP_CSS_FONT_SIZE_LARGER:
+			} else if (style->font_size.value == SP_CSS_FONT_SIZE_LARGER) {
 				style->font_size.computed = object->style->font_size.computed * 1.2;
-				break;
-			default:
+			} else {
 				/* Illegal value */
-				break;
 			}
 		} else if (style->font_size.type == SP_FONT_SIZE_PERCENTAGE) {
 			/* fixme: SVG and CSS do no specify clearly, whether we should use parent or viewport values here (Lauris) */
@@ -704,6 +647,44 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 				 style->font_size.computed);
 			style->font_size.computed = object->style->font_size.computed * SP_F8_16_TO_FLOAT (style->font_size.value);
 		}
+		/* 'font-style' */
+		if (!style->font_style.set || style->font_style.inherit) {
+			style->font_style.computed = object->style->font_style.computed;
+		}
+		/* 'font-variant' */
+		if (!style->font_variant.set || style->font_variant.inherit) {
+			style->font_variant.computed = object->style->font_variant.computed;
+		}
+		/* 'font-weight' */
+		if (!style->font_weight.set || style->font_weight.inherit) {
+			style->font_weight.computed = object->style->font_weight.computed;
+		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_NORMAL) {
+			/* fixme: This is unconditional, i.e. happens even if parent not present */
+			style->font_weight.computed = SP_CSS_FONT_WEIGHT_400;
+		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_BOLD) {
+			style->font_weight.computed = SP_CSS_FONT_WEIGHT_700;
+		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_LIGHTER) {
+			style->font_weight.computed = CLAMP (object->style->font_weight.computed - 1,
+							     SP_CSS_FONT_WEIGHT_100,
+							     SP_CSS_FONT_WEIGHT_900);
+		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_DARKER) {
+			style->font_weight.computed = CLAMP (object->style->font_weight.computed + 1,
+							     SP_CSS_FONT_WEIGHT_100,
+							     SP_CSS_FONT_WEIGHT_900);
+		}
+		/* 'font-stretch' */
+		if (!style->font_stretch.set || style->font_stretch.inherit) {
+			style->font_stretch.computed = object->style->font_stretch.computed;
+		} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_NARROWER) {
+			style->font_stretch.computed = CLAMP (object->style->font_stretch.computed - 1,
+							     SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
+							     SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
+		} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_WIDER) {
+			style->font_stretch.computed = CLAMP (object->style->font_stretch.computed + 1,
+							     SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
+							     SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
+		}
+
 		if (style->opacity.inherit) {
 			style->opacity.value = object->style->opacity.value;
 		}
@@ -761,18 +742,6 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			if (!style->text->font_family.set || style->text->font_family.inherit) {
 				if (style->text->font_family.value) g_free (style->text->font_family.value);
 				style->text->font_family.value = g_strdup (object->style->text->font_family.value);
-			}
-			if (!style->text->font_style.set || style->text->font_style.inherit) {
-				style->text->font_style.value = object->style->text->font_style.value;
-			}
-			if (!style->text->font_variant.set || style->text->font_variant.inherit) {
-				style->text->font_variant.value = object->style->text->font_variant.value;
-			}
-			if (!style->text->font_weight.set || style->text->font_weight.inherit) {
-				style->text->font_weight.value = object->style->text->font_weight.value;
-			}
-			if (!style->text->font_stretch.set || style->text->font_stretch.inherit) {
-				style->text->font_stretch.value = object->style->text->font_stretch.value;
 			}
 			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
 				style->text->writing_mode.value = object->style->text->writing_mode.value;
@@ -848,6 +817,11 @@ sp_style_write_string (SPStyle *style)
 	*p = '\0';
 
 	p += sp_style_write_ifontsize (p, c + BMAX - p, "font-size", &style->font_size, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-style", enum_font_style, &style->font_style, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-variant", enum_font_variant, &style->font_variant, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-weight", enum_font_weight, &style->font_weight, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-stretch", enum_font_stretch, &style->font_stretch, NULL, SP_STYLE_FLAG_IFSET);
+
 	/* fixme: Per type methods need default flag too */
 	if (style->opacity.set && style->opacity.value != SP_SCALE24_MAX) {
 		p += sp_style_write_iscale24 (p, c + BMAX - p, "opacity", &style->opacity, NULL, SP_STYLE_FLAG_IFSET);
@@ -902,6 +876,11 @@ sp_style_write_difference (SPStyle *from, SPStyle *to)
 	*p = '\0';
 
 	p += sp_style_write_ifontsize (p, c + BMAX - p, "font-size", &from->font_size, &to->font_size, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-style", enum_font_style, &from->font_style, &to->font_style, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-variant", enum_font_variant, &from->font_variant, &to->font_variant, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-weight", enum_font_weight, &from->font_weight, &to->font_weight, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "font-stretch", enum_font_stretch, &from->font_stretch, &to->font_stretch, SP_STYLE_FLAG_IFDIFF);
+
 	/* fixme: Per type methods need default flag too */
 	if (from->opacity.set && from->opacity.value != SP_SCALE24_MAX) {
 		p += sp_style_write_iscale24 (p, c + BMAX - p, "opacity", &from->opacity, &to->opacity, SP_STYLE_FLAG_IFDIFF);
@@ -972,15 +951,25 @@ sp_style_clear (SPStyle *style)
 	style->text = text;
 	style->text_private = text_private;
 	/* fixme: */
-	style->text->font_family.set = FALSE;
-	style->text->font_style.set = FALSE;
-	style->text->font_weight.set = FALSE;
 	style->text->font.set = FALSE;
+	style->text->font_family.set = FALSE;
 
 	style->font_size.set = FALSE;
 	style->font_size.type = SP_FONT_SIZE_LITERAL;
 	style->font_size.value = SP_CSS_FONT_SIZE_MEDIUM;
 	style->font_size.computed = 12.0;
+
+	style->font_style.set = FALSE;
+	style->font_style.computed = SP_CSS_FONT_STYLE_NORMAL;
+
+	style->font_variant.set = FALSE;
+	style->font_variant.value = SP_CSS_FONT_VARIANT_NORMAL;
+
+	style->font_weight.set = FALSE;
+	style->font_weight.value = SP_CSS_FONT_WEIGHT_400;
+
+	style->font_stretch.set = FALSE;
+	style->font_stretch.value = SP_CSS_FONT_STRETCH_NORMAL;
 
 	style->opacity.value = SP_SCALE24_MAX;
 	style->display = TRUE;
@@ -1130,10 +1119,6 @@ sp_text_style_new (void)
 
 	ts->font.value = g_strdup ("Bitstream Cyberbit 12");
 	ts->font_family.value = g_strdup ("Bitstream Cyberbit");
-	ts->font_style.value = SP_CSS_FONT_STYLE_NORMAL;
-	ts->font_variant.value = SP_CSS_FONT_VARIANT_NORMAL;
-	ts->font_weight.value = SP_CSS_FONT_WEIGHT_NORMAL;
-	ts->font_stretch.value = SP_CSS_FONT_STRETCH_NORMAL;
 
 	ts->writing_mode.value = SP_CSS_WRITING_MODE_LR;
 
@@ -1146,10 +1131,6 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->font.set = FALSE;
 	ts->font_family.set = FALSE;
 	ts->font_size_adjust_set = FALSE;
-	ts->font_stretch.set = FALSE;
-	ts->font_style.set = FALSE;
-	ts->font_variant.set = FALSE;
-	ts->font_weight.set = FALSE;
 
 	ts->direction_set = FALSE;
 	ts->letter_spacing_set = FALSE;
@@ -1197,11 +1178,6 @@ sp_text_style_duplicate_unset (SPTextStyle *st)
 	nt->font.value = g_strdup (st->font.value);
 	nt->font_family.value = g_strdup (st->font_family.value);
 
-	nt->font_style.value = st->font_style.value;
-	nt->font_variant.value = st->font_variant.value;
-	nt->font_weight.value = st->font_weight.value;
-	nt->font_stretch.value = st->font_stretch.value;
-
 	/* fixme: ??? */
 	nt->writing_mode = st->writing_mode;
 
@@ -1238,18 +1214,6 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 
 	if (st->font_family.set) {
 		d += sp_style_write_istring (p + d, len - d, "font-family", &st->font_family, NULL, SP_STYLE_FLAG_IFSET);
-	}
-	if (st->font_style.set) {
-		d += sp_style_write_ienum (p + d, len - d, "font-style", enum_font_style, &st->font_style, NULL, SP_STYLE_FLAG_IFSET);
-	}
-	if (st->font_variant.set) {
-		d += sp_style_write_ienum (p + d, len - d, "font-variant", enum_font_variant, &st->font_variant, NULL, SP_STYLE_FLAG_IFSET);
-	}
-	if (st->font_weight.set) {
-		d += sp_style_write_ienum (p + d, len - d, "font-weight", enum_font_weight, &st->font_weight, NULL, SP_STYLE_FLAG_IFSET);
-	}
-	if (st->font_stretch.set) {
-		d += sp_style_write_ienum (p + d, len - d, "font-stretch", enum_font_stretch, &st->font_stretch, NULL, SP_STYLE_FLAG_IFSET);
 	}
 
 	if (st->writing_mode.set) {
@@ -1389,7 +1353,7 @@ sp_style_read_iscale24 (SPIScale24 *val, const guchar *str)
 }
 
 static void
-sp_style_read_ienum (SPIShort *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit)
+sp_style_read_ienum (SPIEnum *val, const guchar *str, const SPStyleEnum *dict, gboolean inherit)
 {
 	if (inherit && !strcmp (str, "inherit")) {
 		val->set = TRUE;
@@ -1401,6 +1365,8 @@ sp_style_read_ienum (SPIShort *val, const guchar *str, const SPStyleEnum *dict, 
 				val->set = TRUE;
 				val->inherit = FALSE;
 				val->value = dict[i].value;
+				/* Save copying for values not needing it */
+				val->computed = val->value;
 				break;
 			}
 		}
@@ -1542,6 +1508,16 @@ sp_style_read_pfloat (SPIFloat *val, SPRepr *repr, const guchar *key)
 #endif
 
 static void
+sp_style_read_penum (SPIEnum *val, SPRepr *repr, const guchar *key, const SPStyleEnum *dict, gboolean inherit)
+{
+	const guchar *str;
+	str = sp_repr_attr (repr, key);
+	if (str) {
+		sp_style_read_ienum (val, str, dict, inherit);
+	}
+}
+
+static void
 sp_style_read_pfontsize (SPIFontSize *val, SPRepr *repr, const guchar *key)
 {
 	const guchar *str;
@@ -1580,7 +1556,7 @@ sp_style_write_iscale24 (guchar *p, gint len, const guchar *key, SPIScale24 *val
 }
 
 static gint
-sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIShort *val, SPIShort *base, guint flags)
+sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIEnum *val, SPIEnum *base, guint flags)
 {
 	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
 	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->value != base->value))) {

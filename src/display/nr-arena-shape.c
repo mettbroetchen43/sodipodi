@@ -208,12 +208,12 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->fill_painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (shape), gc->affine,
+		shape->fill_painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (shape->style), gc->affine,
 								   SP_SCALE24_TO_FLOAT (shape->style->opacity.value), &bbox);
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->stroke_painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_STROKE_SERVER (shape), gc->affine,
+		shape->stroke_painter = sp_paint_server_painter_new (SP_STYLE_STROKE_SERVER (shape->style), gc->affine,
 								     SP_SCALE24_TO_FLOAT (shape->style->opacity.value), &bbox);
 	}
 
