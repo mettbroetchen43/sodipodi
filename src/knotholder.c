@@ -77,11 +77,25 @@ sp_knot_holder_add	(SPKnotHolder       *knot_holder,
 			 SPKnotHolderSetFunc knot_set,
 			 SPKnotHolderGetFunc knot_get)
 {
+	sp_knot_holder_add_full (knot_holder,
+				 knot_set,
+				 knot_get,
+				 SP_KNOT_SHAPE_DIAMOND,
+				 SP_KNOT_MODE_COLOR);
+}
+
+void
+sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
+			 SPKnotHolderSetFunc knot_set,
+			 SPKnotHolderGetFunc knot_get,
+			 SPKnotShapeType     shape,
+			 SPKnotModeType      mode)
+{
 	SPKnotHolderEntity *e;
 	SPItem        *item;
 	ArtPoint       p;
 	gdouble        affine[6];
-	GtkObject     *kob;
+	GtkObject     *ob;
 
 	g_return_if_fail (knot_holder != NULL);
 	g_return_if_fail (knot_set != NULL);
@@ -105,24 +119,23 @@ sp_knot_holder_add	(SPKnotHolder       *knot_holder,
 	e->knot = sp_knot_new (knot_holder->desktop);
 	e->knot_set = knot_set;
 	e->knot_get = knot_get;
+	ob = GTK_OBJECT (e->knot->item);
+	gtk_object_set (ob, "shape", shape, NULL);
+	gtk_object_set (ob, "mode", mode, NULL);
 	knot_holder->entity = g_slist_append (knot_holder->entity, e);
-	kob = GTK_OBJECT (e->knot);
-#if 0	/* it's useless, if we don't use sink at all */
-	gtk_object_ref (kob);
-	gtk_object_sink (kob);
-#endif
 
+	ob = GTK_OBJECT (e->knot);
 	/* move to current point */
 	e->knot_get (item, &p);
 	sp_item_i2d_affine(item, affine);
 	art_affine_point (&p, &p, affine);
 	sp_knot_set_position (e->knot, &p, SP_KNOT_STATE_NORMAL);
 
-	e->handler_id = gtk_signal_connect (kob, "moved",
+	e->handler_id = gtk_signal_connect (ob, "moved",
 					    knot_moved_handler, knot_holder);
 
 #ifdef KNOT_HOLDER_DEBUG
-	gtk_signal_connect (kob, "destroy",
+	gtk_signal_connect (ob, "destroy",
 			    sp_knot_holder_debug, "SPKnotHolder::knot");
 #endif
 	sp_knot_show (e->knot);

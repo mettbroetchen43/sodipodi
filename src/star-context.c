@@ -214,17 +214,13 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 	p1.y = y;
 	sp_desktop_free_snap (desktop, &p1);
 
-	
-	sp_desktop_d2doc_xy_point (desktop, &p0, p0.x, p0.y);
-	sp_desktop_d2doc_xy_point (desktop, &p1, p1.x, p1.y);
-
 	star = SP_STAR(sc->item);
 
 	sides = (gdouble)star->sides;
 	dx = p1.x - p0.x;
 	dy = p1.y - p0.y;
 	r1 = hypot (dx, dy);
-	arg1 = atan2 (dy, dx);
+	arg1 = -atan2 (dy, dx);
 	
 	sp_star_set (star, star->sides,
 		     p0.x, p0.y, r1, r1*(sides-2.0)/sides, arg1, arg1 + M_PI/sides);

@@ -1,5 +1,17 @@
 2001-12-29  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
+	* src/knotholder.c src/knotholder.h
+	(sp_knot_holder_add_full): New method
+
+	* src/sp-spiral.c: Removed cx, cy attribute,
+	so we use item matrix for that.
+	Fixed up debug code.
+
+	* src/sp-star.c src/sp-star.h src/star-context.c:
+	Removed cx, cy attribute
+
+2001-12-29  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
 	* src/knotholder.c (knot_moved_handler):
 	Lauris found a incorrect invert matrix bug. I just fixed it.
 

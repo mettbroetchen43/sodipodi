@@ -47,12 +47,14 @@ SPKnotHolder   *sp_knot_holder_new	(SPDesktop     *desktop,
 void		sp_knot_holder_destroy	(SPKnotHolder       *knots);
 
 
-void		sp_knot_holder_add	(SPKnotHolder       *knots,
+void		sp_knot_holder_add	(SPKnotHolder       *knot_holder,
 					 SPKnotHolderSetFunc knot_set,
 					 SPKnotHolderGetFunc knot_get);
-
-/* possibly private functions */
-
+void		sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
+					 SPKnotHolderSetFunc knot_set,
+					 SPKnotHolderGetFunc knot_get,
+					 SPKnotShapeType     shape,
+					 SPKnotModeType      mode);
 
 
 #endif

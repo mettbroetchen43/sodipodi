@@ -31,7 +31,6 @@ struct _SPStar {
 	SPPolygon polygon;
 
 	gint   sides;
-	ArtPoint center;
 	double r1;
 	double r2;
 	double arg1;
