@@ -13,7 +13,6 @@
 
 typedef struct _SPDynaDrawContext SPDynaDrawContext;
 typedef struct _SPDynaDrawContextClass SPDynaDrawContextClass;
-
 typedef struct _SPDynaDrawCtrl SPDynaDrawCtrl;
 
 #define SAMPLING_SIZE 16        /* fixme: ?? */
@@ -36,7 +35,6 @@ struct _SPDynaDrawContext
 
   /* repr */
   SPRepr *repr;
-  guint destroyid;
 
   /* control */
   GnomeCanvasItem *citem;
@@ -58,9 +56,8 @@ struct _SPDynaDrawContext
   /* fixme: shuld be merge dragging and dynahand ?? */
   guint dragging : 1;           /* mouse state: mouse is dragging */
   guint dynahand : 1;           /* mouse state: mouse is in draw */
-  guint firstdragging : 1;
   guint use_timeout : 1;
-  guint use_caligraphic : 1;
+  guint use_calligraphic : 1;
   guint fixed_angle : 1;
   double mass, drag;
   double angle;

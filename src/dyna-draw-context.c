@@ -21,7 +21,7 @@
 
 /*
  * TODO: Tue Oct  2 22:57:15 2001
- *  - Decide control point behavior when use_caligraphic==1.
+ *  - Decide control point behavior when use_calligraphic==1.
  *  - Option dialog box support if it is availabe.
  *  - Decide to use NORMALIZED_COORDINATE or not.
  *  - Remove hard coded sytle attributes and move to customizable style.
@@ -53,7 +53,7 @@
 
 #define SAMPLE_TIMEOUT            10
 #define TOLERANCE_LINE            1.0
-#define TOLERANCE_CALIGRAPHIC     3.0
+#define TOLERANCE_CALLIGRAPHIC     3.0
 #define DYNA_EPSILON   1.0e-6
 #ifdef NORMALIZED_COORDINATE
 #define DYNA_MIN_WIDTH 1.0e-6
@@ -62,7 +62,6 @@
 #endif
 
 
-/*  #define hypot(a,b) sqrt ((a) * (a) + (b) * (b)) */
 static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass * klass);
 static void sp_dyna_draw_context_init (SPDynaDrawContext * dyna_draw_context);
 static void sp_dyna_draw_context_destroy (GtkObject * object);
@@ -78,7 +77,7 @@ static gint sp_dyna_draw_context_item_handler (SPEventContext * event_context,
 static void clear_current (SPDynaDrawContext * dc);
 static void set_to_accumulated (SPDynaDrawContext * dc);
 static void concat_current_line (SPDynaDrawContext * dc);
-static void accumulate_caligraphic (SPDynaDrawContext * dc);
+static void accumulate_calligraphic (SPDynaDrawContext * dc);
 
 static void test_inside (SPDynaDrawContext * dc, double x, double y);
 static void move_ctrl (SPDynaDrawContext * dc, double x, double y);
@@ -86,7 +85,7 @@ static void remove_ctrl (SPDynaDrawContext * dc);
 
 static void fit_and_split (SPDynaDrawContext * dc, gboolean release);
 static void fit_and_split_line (SPDynaDrawContext * dc, gboolean release);
-static void fit_and_split_caligraphics (SPDynaDrawContext * dc, gboolean release);
+static void fit_and_split_calligraphics (SPDynaDrawContext * dc, gboolean release);
 
 static void sp_dyna_draw_reset (SPDynaDrawContext * dc, double x, double y);
 static void sp_dyna_draw_get_npoint (const SPDynaDrawContext *dc,
@@ -184,13 +183,10 @@ sp_dyna_draw_context_init (SPDynaDrawContext * dc)
   /* attributes */
   dc->fixed_angle = FALSE;
   dc->use_timeout = FALSE;
-  dc->use_caligraphic = TRUE;
+  dc->use_calligraphic = TRUE;
   dc->timer_id = 0;
   dc->dragging = FALSE;
   dc->dynahand = FALSE;
-#if 0
-  dc->firstdragging = FALSE;
-#endif
 #ifdef NORMALIZED_COORDINATE
   dc->mass = 0.3;
   dc->drag = 0.5;
@@ -210,12 +206,6 @@ sp_dyna_draw_context_destroy (GtkObject * object)
   SPDynaDrawContext *dc;
 
   dc = SP_DYNA_DRAW_CONTEXT (object);
-
-#if 0
-  /* fixme: */
-  if (dc->repr)
-    gtk_signal_disconnect (GTK_OBJECT (dc->repr), dc->destroyid);
-#endif
 
   if (dc->accumulated)
     sp_curve_unref (dc->accumulated);
@@ -264,7 +254,7 @@ sp_dyna_draw_context_setup (SPEventContext * event_context,
 
   /* fixme: */
   style = sp_style_new (NULL);
-  /* style should be changed when dc->use_caligraphc is touched */  
+  /* style should be changed when dc->use_calligraphc is touched */  
 #ifdef DYNA_DRAW_DEBUG
   style->fill.type = SP_PAINT_TYPE_NONE;
   style->stroke.type = SP_PAINT_TYPE_COLOR;
@@ -452,9 +442,9 @@ sp_dyna_draw_brush (SPDynaDrawContext *dc)
 
   g_assert (dc->npoints >= 0 && dc->npoints < SAMPLING_SIZE);
 
-  if (dc->use_caligraphic)
+  if (dc->use_calligraphic)
     {
-      /* caligraphics */
+      /* calligraphics */
       double width;
       double delx, dely;
       ArtPoint *vp;
@@ -530,9 +520,6 @@ sp_dyna_draw_timeout_handler (gpointer data)
       g_assert (dc->npoints > 0);
       fit_and_split (dc, FALSE);
     }
-#if 0
-  dc->firstdragging = FALSE;
-#endif
   return TRUE;
 }
 
@@ -568,10 +555,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	      sp_curve_reset (dc->accumulated);
 	      if (dc->repr)
 		{
-#if 0
-		  gtk_signal_disconnect (GTK_OBJECT (dc->repr),
-					 dc->destroyid);
-#endif
 		  dc->repr = NULL;
 		}
 	      move_ctrl (dc, p.x, p.y);
@@ -587,7 +570,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 	    }
 	  else
 	    {
-/*                dc->firstdragging = TRUE; */
 	      ret = TRUE;
 	      break;
 	    }
@@ -609,9 +591,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 
           if (dc->use_timeout && !dc->timer_id)
             dc->timer_id = gtk_timeout_add (SAMPLE_TIMEOUT, sp_dyna_draw_timeout_handler, dc);
-#if 0
-          dc->firstdragging = TRUE;
-#endif
 	  ret = TRUE;
 	}
       break;
@@ -646,9 +625,6 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
               g_assert (dc->npoints > 0);
               fit_and_split (dc, FALSE);
 	    }
-#if 0
-          dc->firstdragging = FALSE;
-#endif
 	  ret = TRUE;
 	}
       break;
@@ -676,10 +652,9 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
 		}
 	      /* Create object */
               fit_and_split (dc, TRUE);
-              if (dc->use_caligraphic)
+              if (dc->use_calligraphic)
                 {
-                  accumulate_caligraphic (dc);
-/*                    concat_current_polygon (dc); */
+                  accumulate_calligraphic (dc);
                 }
               else
                 {
@@ -690,17 +665,13 @@ sp_dyna_draw_context_root_handler (SPEventContext * event_context,
                     }
                 }
               set_to_accumulated (dc); /* temporal implementation */
-              if (dc->use_caligraphic || dc->cinside)
+              if (dc->use_calligraphic || dc->cinside)
                 {
                   /* reset accumulated curve */
                   sp_curve_reset (dc->accumulated);
                   clear_current (dc);
                   if (dc->repr)
 		    {
-#if 0
-		      gtk_signal_disconnect (GTK_OBJECT (dc->repr),
-					     dc->destroyid);
-#endif
 		      dc->repr = NULL;
 		    }
                   remove_ctrl (dc);
@@ -760,8 +731,8 @@ set_to_accumulated (SPDynaDrawContext * dc)
 	  repr = sp_repr_new ("path");
 	  /* Set style */
 #if 1
-          if (dc->use_caligraphic)
-            style = sodipodi_get_repr (SODIPODI, "paint.caligraphic");
+          if (dc->use_calligraphic)
+            style = sodipodi_get_repr (SODIPODI, "paint.calligraphic");
           else
             style = sodipodi_get_repr (SODIPODI, "paint.freehand");
 #else
@@ -777,11 +748,7 @@ set_to_accumulated (SPDynaDrawContext * dc)
 	      sp_repr_css_attr_unref (css);
 	    }
 	  dc->repr = repr;
-#if 0
-	  dc->destroyid =
-	    gtk_signal_connect (GTK_OBJECT (dc->repr), "destroy",
-				GTK_SIGNAL_FUNC (repr_destroyed), dc);
-#endif
+
 	  sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
 	  sp_repr_unref (dc->repr);
 	  sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
@@ -840,11 +807,11 @@ concat_current_line (SPDynaDrawContext * dc)
 }
 
 static void
-accumulate_caligraphic (SPDynaDrawContext * dc)
+accumulate_calligraphic (SPDynaDrawContext * dc)
 {
   SPCurve *rev_cal2;
 
-  if (!sp_curve_empty (dc->cal1) || !sp_curve_empty(dc->cal2))
+  if (!sp_curve_empty (dc->cal1) && !sp_curve_empty(dc->cal2))
     {
       sp_curve_reset (dc->accumulated); /*  Is this required ?? */
       rev_cal2 = sp_curve_reverse (dc->cal2);
@@ -939,9 +906,9 @@ static void
 fit_and_split (SPDynaDrawContext *dc,
                gboolean           release)
 {
-  if (dc->use_caligraphic)
+  if (dc->use_calligraphic)
     {
-      fit_and_split_caligraphics (dc, release);
+      fit_and_split_calligraphics (dc, release);
     }
   else
     {
@@ -953,7 +920,6 @@ static void
 fit_and_split_line (SPDynaDrawContext *dc,
                     gboolean           release)
 {
-/*    ArtPoint t0, t1; */
   ArtPoint b[4];
   gdouble tolerance;
 
@@ -967,7 +933,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
 #ifdef DYNA_DRAW_VERBOSE
       g_print ("%d", dc->npoints);
 #endif
-      BEZIER_ASSERT (b);
+/*        BEZIER_ASSERT (b); */
       sp_curve_reset (dc->currentcurve);
       sp_curve_moveto (dc->currentcurve, b[0].x, b[0].y);
       sp_curve_curveto (dc->currentcurve, b[1].x, b[1].y, b[2].x, b[2].y,
@@ -1009,7 +975,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
 
       dc->segments = g_slist_prepend (dc->segments, cshape);
 
-#if 1
+#if 0
       dc->point1[0] = dc->point1[dc->npoints - 2];
       dc->point1[1] = dc->point1[dc->npoints - 1];
 #else
@@ -1020,19 +986,21 @@ fit_and_split_line (SPDynaDrawContext *dc,
 }
 
 static void
-fit_and_split_caligraphics (SPDynaDrawContext *dc,
+fit_and_split_calligraphics (SPDynaDrawContext *dc,
                             gboolean           release)
 {
   gdouble tolerance;
 
-  tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_CALIGRAPHIC;
+  tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_CALLIGRAPHIC;
   tolerance = tolerance * tolerance;
 
 #ifdef DYNA_DRAW_VERBOSE
   g_print ("[F&S:R=%c]", release?'T':'F');
 #endif
 
-  if (dc->npoints == SAMPLING_SIZE-1 || (release && dc->npoints > 1))
+  g_assert (dc->npoints > 0 && dc->npoints < SAMPLING_SIZE);
+
+  if (dc->npoints == SAMPLING_SIZE-1 || release)
     {
 #define BEZIER_SIZE       4
 #define BEZIER_MAX_DEPTH  4
@@ -1048,15 +1016,11 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
                dc->npoints, release ? "TRUE" : "FALSE");
 #endif
 
-      /* Current caligraphic */
-#if 0
-      if (dc->firstdragging==TRUE || dc->cal1->end==0 || dc->cal2->end==0)
-#else
+      /* Current calligraphic */
       if (dc->cal1->end==0 || dc->cal2->end==0)
-#endif
         {
           /* dc->npoints > 0 */
-/*            g_print ("caligraphics(1|2) reset\n"); */
+/*            g_print ("calligraphics(1|2) reset\n"); */
           sp_curve_reset (dc->cal1);
           sp_curve_reset (dc->cal2);
           
@@ -1102,7 +1066,7 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
               sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
             }
           
-          /* Current caligraphic */
+          /* Current calligraphic */
           for (bp1 = b1; bp1 < b1 + BEZIER_SIZE*nb1; bp1 += BEZIER_SIZE)
             {
               sp_curve_curveto (dc->cal1, bp1[1].x, bp1[1].y,
@@ -1119,7 +1083,7 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
           gint  i;
           /* fixme: ??? */
 #ifdef DYNA_DRAW_VERBOSE
-          g_print ("[fit_and_split_caligraphics] failed to fit-cubic.\n");
+          g_print ("[fit_and_split_calligraphics] failed to fit-cubic.\n");
 #endif
           draw_temporary_box (dc);
 
@@ -1139,7 +1103,7 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
           curve = sp_curve_copy (dc->currentcurve);
           /* fixme: */
           style = sp_style_new (NULL);
-          /* style should be changed when dc->use_caligraphc is touched */
+          /* style should be changed when dc->use_calligraphc is touched */
 #ifdef DYNA_DRAW_DEBUG
           style->fill.type = SP_PAINT_TYPE_NONE;
           style->stroke.type = SP_PAINT_TYPE_COLOR;
@@ -1169,10 +1133,10 @@ fit_and_split_caligraphics (SPDynaDrawContext *dc,
       dc->point2[0] = dc->point2[dc->npoints - 1];
       dc->npoints = 1;
     }
-  else if (dc->npoints < SAMPLING_SIZE-1)
-    {
-      draw_temporary_box (dc);
-    }
+  else
+  {
+	  draw_temporary_box (dc);
+  }
 }
 
 static void

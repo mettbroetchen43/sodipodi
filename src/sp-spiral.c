@@ -20,12 +20,17 @@
 #include "svg/svg.h"
 #include "sp-shape.h"
 #include "sp-spiral.h"
+#include "knotholder.h"
 #include "helper/bezier-utils.h"
 #include "dialogs/object-attributes.h"
 
 #define noSPIRAL_VERBOSE
+#define noSPIRAL_DEBUG
 
-#define SPIRAL_TOLERANCE 2.0
+#define SP_EPSILON       1e-5
+#define SP_EPSILON_2     (SP_EPSILON * SP_EPSILON)
+
+#define SPIRAL_TOLERANCE 3.0
 #define SAMPLE_STEP      (1.0/4.0) /* step per 2PI */
 #define SAMPLE_SIZE      8      /* sample size per one bezier */
 
@@ -35,9 +40,11 @@ static void sp_spiral_init (SPSpiral *spiral);
 static void sp_spiral_destroy (GtkObject *object);
 
 static void sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_spiral_write_repr (SPObject * object, SPRepr * repr);
 static void sp_spiral_read_attr (SPObject * object, const gchar * attr);
 
 static void sp_spiral_bbox (SPItem * item, ArtDRect * bbox);
+static SPKnotHolder *sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_spiral_description (SPItem * item);
 static GSList * sp_spiral_snappoints (SPItem * item, GSList * points);
 static void sp_spiral_set_shape (SPShape *shape);
@@ -46,6 +53,14 @@ static void sp_spiral_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 static void sp_spiral_spiral_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
 static SPShapeClass *parent_class;
+
+#ifdef SPIRAL_DEBUG
+#define SPIRAL_DEBUG_EXPR(x) x
+static const gchar* debug_state = "default";
+static gint debug_fit_and_draw = 0;
+#else
+#define SPIRAL_DEBUG_EXPR(x)
+#endif
 
 GtkType
 sp_spiral_get_type (void)
@@ -86,9 +101,11 @@ sp_spiral_class_init (SPSpiralClass *class)
 	gtk_object_class->destroy = sp_spiral_destroy;
 
 	sp_object_class->build = sp_spiral_build;
+	sp_object_class->write_repr = sp_spiral_write_repr;
 	sp_object_class->read_attr = sp_spiral_read_attr;
 
 	item_class->bbox = sp_spiral_bbox;
+	item_class->knot_holder = sp_spiral_knot_holder;
 	item_class->description = sp_spiral_description;
 	item_class->snappoints = sp_spiral_snappoints;
 	item_class->menu = sp_spiral_menu;
@@ -101,12 +118,10 @@ sp_spiral_init (SPSpiral * spiral)
 {
 	SP_PATH (spiral)->independent = FALSE;
 	
-	spiral->cx         = 0.0;
-	spiral->cy         = 0.0;
-	spiral->expansion  = 1.0;
-	spiral->revolution = 3.0;
-	spiral->radius     = 0.0;
-	spiral->argument   = 0.0;
+	spiral->exp        = 1.0;
+	spiral->revo       = 3.0;
+	spiral->rad        = 0.0;
+	spiral->arg        = 0.0;
 	spiral->t0         = 0.0;
 }
 
@@ -140,6 +155,26 @@ sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr)
 }
 
 static void
+sp_spiral_write_repr (SPObject * object, SPRepr * repr)
+{
+	SPSpiral *spiral;
+
+	spiral = SP_SPIRAL (object);
+
+	/* Fixme: we'll replace these attributes by
+	 * sodipodi:spiral="exp revo rad arg t0"
+	 */
+	sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->exp);
+	sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revo);
+	sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->rad);
+	sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->arg);
+	sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
+
+	if (((SPObjectClass *) (parent_class))->write_repr)
+		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
+}
+
+static void
 sp_spiral_read_attr (SPObject * object, const gchar * attr)
 {
 	SPSpiral *spiral;
@@ -158,33 +193,38 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 
 	/* fixme: we should really collect updates */
 
-	if (strcmp (attr, "sodipodi:cx") == 0) {
-		spiral->cx = sp_svg_read_length (&unit, astr, 0.0);
+	if (strcmp (attr, "sodipodi:expansion") == 0) {
+		spiral->exp = sp_svg_read_length (&unit, astr, 1.0);
+		SPIRAL_DEBUG_EXPR (debug_state = "read_attr expansion");
 		sp_shape_set_shape (shape);
+		SPIRAL_DEBUG_EXPR (debug_state = "default");
 		return;
-	} else if (strcmp (attr, "sodipodi:cy") == 0) {
-		spiral->cy = sp_svg_read_length (&unit, astr, 0.0);
+	}
+	if (strcmp (attr, "sodipodi:revolution") == 0) {
+		spiral->revo = sp_svg_read_length (&unit, astr, 3.0);
+		SPIRAL_DEBUG_EXPR (debug_state = "read_attr revolution");
 		sp_shape_set_shape (shape);
+		SPIRAL_DEBUG_EXPR (debug_state = "default");
 		return;
-	} else if (strcmp (attr, "sodipodi:expansion") == 0) {
-		spiral->expansion = sp_svg_read_length (&unit, astr, 1.0);
+	}
+	if (strcmp (attr, "sodipodi:radius") == 0) {
+		spiral->rad = sp_svg_read_length (&unit, astr, 0.0);
+		SPIRAL_DEBUG_EXPR (debug_state = "read_attr radius");
 		sp_shape_set_shape (shape);
+		SPIRAL_DEBUG_EXPR (debug_state = "default");
 		return;
-	} else if (strcmp (attr, "sodipodi:revolution") == 0) {
-		spiral->revolution = sp_svg_read_length (&unit, astr, 3.0);
+	}
+	if (strcmp (attr, "sodipodi:argument") == 0) {
+		spiral->arg = sp_svg_read_length (&unit, astr, 0.0);
+		SPIRAL_DEBUG_EXPR (debug_state = "read_attr argument");
 		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:radius") == 0) {
-		spiral->radius = sp_svg_read_length (&unit, astr, 0.0);
-		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:argument") == 0) {
-		spiral->argument = sp_svg_read_length (&unit, astr, 0.0);
-		sp_shape_set_shape (shape);
+		SPIRAL_DEBUG_EXPR (debug_state = "default");
 		return;
 	} else if (strcmp (attr, "sodipodi:t0") == 0) {
 		spiral->t0 = sp_svg_read_length (&unit, astr, 0.0);
+		SPIRAL_DEBUG_EXPR (debug_state = "read_attr t0");
 		sp_shape_set_shape (shape);
+		SPIRAL_DEBUG_EXPR (debug_state = "default");
 		return;
 	}
 
@@ -199,15 +239,68 @@ sp_spiral_description (SPItem * item)
 }
 
 static void
+sp_spiral_fit_and_draw (SPSpiral *spiral,
+			SPCurve	 *c,
+			double dstep,
+			ArtPoint *darray,
+			ArtPoint *hat1,
+			ArtPoint *hat2,
+			double    t)
+{
+#define BEZIER_SIZE   4
+#define FITTING_DEPTH 3
+#define BEZIER_LENGTH (BEZIER_SIZE * (2 << (FITTING_DEPTH - 1)))
+
+	ArtPoint	bezier[BEZIER_LENGTH];
+	gdouble		d;
+	gint depth, i;
+	
+	for (d = t, i = 0; i <= SAMPLE_SIZE; d += dstep, i++) {
+		sp_spiral_get_xy (spiral, d, &darray[i]);
+		SPIRAL_DEBUG_EXPR(g_print ("[%s] d=%g\n", debug_fit_and_draw?"fit-and-draw":"default",d));
+	}
+	
+	sp_darray_center_tangent (darray, SAMPLE_SIZE - 1, hat2);
+	
+	/* Fixme:
+	   we should use better algorithm to specify maximum error.
+	*/
+	depth = sp_bezier_fit_cubic_full (bezier, darray, 0, SAMPLE_SIZE - 1,
+					  hat1, hat2,
+					  SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
+					  FITTING_DEPTH);
+#ifdef SPIRAL_DEBUG
+	if (t==spiral->t0 || t==1.0)
+		g_print ("[%s] depth=%d, dstep=%g, t0=%g, t=%g, arg=%g\n",
+			 debug_state, depth, dstep, spiral->t0, t, spiral->arg);
+#endif
+	if (depth != -1) {
+		for (i = 0; i < 4*depth; i += 4) {
+			sp_curve_curveto (c, bezier[i + 1].x, bezier[i + 1].y,
+					  bezier[i + 2].x, bezier[i + 2].y,
+					  bezier[i + 3].x, bezier[i + 3].y);
+#ifdef SPIRAL_DEBUG
+			if (debug_fit_and_draw)
+				g_print("[(%g,%g)-(%g,%g)-(%g,%g)]\n", bezier[i+1].x, bezier[i+1].y, bezier[i+2].x, bezier[i+2].y, bezier[i+3].x, bezier[i+3].y);
+#endif
+		}
+	} else {
+#ifdef SPIRAL_VERBOSE
+		g_print ("cant_fit_cubic: t=%g\n", t);
+#endif
+		for (i = 1; i < SAMPLE_SIZE; i++)
+			sp_curve_lineto (c, darray[i].x, darray[i].y);
+	}
+}
+
+static void
 sp_spiral_set_shape (SPShape *shape)
 {
-#define FITTING_DEPTH 2
 	SPSpiral       *spiral;
 	ArtPoint	darray[SAMPLE_SIZE + 1];
 	ArtPoint	hat1, hat2;
-	ArtPoint	bezier[4 * FITTING_DEPTH];
 	gint		i;
-	gdouble		tstep,  t;
+	gdouble		tstep, t;
 	gdouble		dstep, d;
 	SPCurve	       *c;
 
@@ -217,72 +310,62 @@ sp_spiral_set_shape (SPShape *shape)
 
 	sp_path_clear (SP_PATH (shape));
 	
-	if (spiral->radius < 1e-12) return;
+	if (spiral->rad < SP_EPSILON) return;
 	
 	c = sp_curve_new ();
 	
 #ifdef SPIRAL_VERBOSE
-	g_print ("cx=%g, cy=%g, ex=%g, rev=%g, rad=%g, arg=%g, t0=%g\n",
-		 spiral->cx,
-		 spiral->cy,
-		 spiral->expansion,
-		 spiral->revolution,
-		 spiral->radius,
-		 spiral->argument,
+	g_print ("ex=%g, revo=%g, rad=%g, arg=%g, t0=%g\n",
+		 spiral->exp,
+		 spiral->revo,
+		 spiral->rad,
+		 spiral->arg,
 		 spiral->t0);
 #endif
 	
-	tstep = SAMPLE_STEP/spiral->revolution;
+	tstep = SAMPLE_STEP/spiral->revo;
 	dstep = tstep/(SAMPLE_SIZE - 1.0);
 
-	for (d = spiral->t0 - dstep, i = 0; i < 2; d += dstep, i++)
-		sp_spiral_get_xy (spiral, d, &darray[i]);
-
 	if (spiral->t0 - dstep >= 0.0) {
+		for (d = spiral->t0 - dstep, i = 0; i <= 2; d += dstep, i++)
+			sp_spiral_get_xy (spiral, d, &darray[i]);
+
 		sp_darray_center_tangent (darray, 1, &hat1);
 		hat1.x = - hat1.x;
 		hat1.y = - hat1.y;
 	} else {
+		for (d = spiral->t0, i = 1; i <= 2; d += dstep, i++)
+			sp_spiral_get_xy (spiral, d, &darray[i]);
+
 		sp_darray_left_tangent (darray, 1, &hat1);
 	}
 
 	sp_curve_moveto (c, darray[1].x, darray[1].y);
 
-	/* Fixme: there is a rest spiral */
-	for (t = spiral->t0; t < 1.0; t += tstep)
+	for (t = spiral->t0; t < (1.0-tstep); t += tstep)
 	{
-		gint depth, j;
-
-		for (d = t - dstep, i = 0; i <= SAMPLE_SIZE; d += dstep, i++)
-			sp_spiral_get_xy (spiral, d, &darray[i]);
-		
-		sp_darray_center_tangent (darray, SAMPLE_SIZE - 1, &hat2);
-
-		/* Fixme:
-		   we shuld specify a maximum error using better algorithm.
-		*/
-		depth = sp_bezier_fit_cubic_full (bezier, darray, 0, SAMPLE_SIZE - 1,
-						  &hat1, &hat2,
-						  SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
-						  FITTING_DEPTH);
-		if (depth != -1) {
-			for (j = 0; j < 4*depth; j += 4)
-				sp_curve_curveto (c, bezier[j + 1].x, bezier[j + 1].y,
-						  bezier[j + 2].x, bezier[j + 2].y,
-						  bezier[j + 3].x, bezier[j + 3].y);
-		} else {
-#ifdef SPIRAL_VERBOSE
-			g_print ("cant_fit_cubic: t=%g\n", t);
-#endif
-			for (i = 1; i < SAMPLE_SIZE; i++)
-				sp_curve_lineto (c, darray[i].x, darray[i].y);
-		}
+		sp_spiral_fit_and_draw (spiral, c, dstep, darray, &hat1, &hat2, t);
 
 		hat1.x = - hat2.x;
 		hat1.y = - hat2.y;
 	}
+	SPIRAL_DEBUG_EXPR(debug_fit_and_draw = 1);
+	if ((1.0 - t) > SP_EPSILON)
+		sp_spiral_fit_and_draw (spiral, c, (1.0 - t)/(SAMPLE_SIZE - 1.0),
+					darray, &hat1, &hat2, t);
+	SPIRAL_DEBUG_EXPR(debug_fit_and_draw = 0);
   
+#if 1
 	sp_path_add_bpath (SP_PATH (spiral), c, TRUE, NULL);
+#else
+	{
+	gdouble dt2doc[6];
+	art_affine_identity (dt2doc);
+	dt2doc[3] = -1.0;
+	dt2doc[5] = sp_document_height (SP_OBJECT_DOCUMENT (SP_ITEM(shape)));
+	sp_path_add_bpath (SP_PATH (spiral), c, TRUE, dt2doc);
+	}
+#endif
 	sp_curve_unref (c);
 }
 
@@ -293,29 +376,149 @@ sp_spiral_bbox (SPItem * item, ArtDRect * bbox)
 		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
 }
 
+/*
+ * set attributes via inner (t=t0) knot point:
+ *   [default] increase/decrease inner point
+ *   [shift]   increase/decrease inner and outer arg synchronizely
+ *   [control] constrain inner arg to round per PI/4
+ */
+static void
+sp_spiral_inner_set (SPItem   *item,
+		     const ArtPoint *p,
+		     guint state)
+{
+	SPSpiral *spiral;
+	gdouble   arg_tmp;
+	gdouble   arg_t0;
+	gdouble   arg_t0_new;
+
+	spiral = SP_SPIRAL (item);
+
+	arg_t0 = 2.0*M_PI*spiral->revo * spiral->t0 + spiral->arg;
+	arg_tmp = -atan2(p->y,p->x) - arg_t0;
+	arg_t0_new = arg_tmp - floor((arg_tmp+M_PI)/(2.0*M_PI))*2.0*M_PI + arg_t0;
+	spiral->t0 = (arg_t0_new - spiral->arg) / (2.0*M_PI*spiral->revo);
+#if 0				/* we need round function */
+	/* round inner arg per PI/4, if CTRL is pressed */
+	if ((state & GDK_CONTROL_MASK) &&
+	    (fabs(spiral->revo) > SP_EPSILON_2)) {
+		gdouble arg = 2.0*M_PI*spiral->revo*spiral->t0 + spiral->arg;
+		t0 = (round(arg/(0.25*M_PI))*0.25*M_PI
+		      - spiral->arg)/(2.0*M_PI*spiral->revo);
+	}
+#endif
+	spiral->t0 = CLAMP (spiral->t0, 0.0, 0.999);
+
+#if 0
+	/* outer point synchronize with inner point, if SHIFT is pressed */
+	if (state & GDK_SHIFT_MASK) {
+		spiral->revo += spiral->revo * (t0 - spiral->t0);
+	}
+	spiral->t0 = t0;
+#endif
+
+}
+
+/*
+ * set attributes via outer (t=1) knot point:
+ *   [default] increase/decrease revolution factor
+ *   [control] constrain inner arg to round per PI/4
+ */
+static void
+sp_spiral_outer_set (SPItem   *item,
+		     const ArtPoint *p,
+		     guint state)
+{
+	SPSpiral *spiral;
+/*  	gdouble arg; */
+	
+	spiral = SP_SPIRAL (item);
+
+	spiral->arg = -atan2(p->y, p->x) - 2.0*M_PI*spiral->revo;
+#if 0 /* we need round function */
+/*  	arg  = -atan2(p->y, p->x) - spiral->arg; */
+	if (state & GDK_CONTROL_MASK) {
+		spiral->revo = (round(arg/(0.25*M_PI))*0.25*M_PI)/(2.0*M_PI);
+	} else {
+		spiral->revo = arg/(2.0*M_PI);
+	}
+	spiral->revo = arg/(2.0*M_PI);
+#endif
+}
+
+static void
+sp_spiral_inner_get (SPItem *item,
+		     ArtPoint *p)
+{
+	SPSpiral *spiral;
+
+	spiral = SP_SPIRAL (item);
+
+	sp_spiral_get_xy (spiral, spiral->t0, p);
+}
+
+static void
+sp_spiral_outer_get (SPItem *item,
+		     ArtPoint *p)
+{
+	SPSpiral *spiral;
+
+	spiral = SP_SPIRAL (item);
+
+	sp_spiral_get_xy (spiral, 1.0, p);
+}
+
+static SPKnotHolder *
+sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop)
+{
+	SPSpiral *spiral;
+	SPKnotHolder *knot_holder;
+
+	spiral = SP_SPIRAL (item);
+	knot_holder = sp_knot_holder_new (desktop, item);
+
+	sp_knot_holder_add (knot_holder,
+			    sp_spiral_inner_set,
+			    sp_spiral_inner_get);
+	sp_knot_holder_add (knot_holder,
+			    sp_spiral_outer_set,
+			    sp_spiral_outer_get);
+
+	return knot_holder;
+}
+
 void
 sp_spiral_set       (SPSpiral          *spiral,
 		     gdouble            cx,
 		     gdouble            cy,
-		     gdouble            expansion,
-		     gdouble            revolution,
-		     gdouble            radius,
-		     gdouble            argument,
+		     gdouble            exp,
+		     gdouble            revo,
+		     gdouble            rad,
+		     gdouble            arg,
 		     gdouble            t0)
 {
 	g_return_if_fail (spiral != NULL);
 	g_return_if_fail (SP_IS_SPIRAL (spiral));
 	
-	spiral->cx         = cx;
-	spiral->cy         = cy;
-	spiral->expansion  = expansion;
-	spiral->revolution = revolution;
-	spiral->radius     = radius;
-	spiral->argument   = argument;
+	{
+		SPItem *item;
+		double affine[6];
+
+		item = SP_ITEM (spiral);
+		art_affine_translate (affine, cx, cy);
+		sp_item_set_i2d_affine (item, affine);
+		sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+		sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
+	}
+	spiral->exp        = exp;
+	spiral->revo       = revo;
+	spiral->rad        = rad;
+	spiral->arg        = arg;
 	spiral->t0         = t0;
 	
+	SPIRAL_DEBUG_EXPR(debug_state = "sp_spiral_set");
 	sp_shape_set_shape (SP_SHAPE(spiral));
-/*  	sp_spiral_set_shape (spiral); */
+	SPIRAL_DEBUG_EXPR(debug_state = "default");
 }
 
 static GSList * 
@@ -353,11 +556,11 @@ sp_spiral_get_xy (SPSpiral *spiral,
 		  gdouble   t,
 		  ArtPoint *p)
 {
-	gdouble rad = spiral->radius * pow(t, spiral->expansion);
-	gdouble arg = 2.0 * M_PI * spiral->revolution * t + spiral->argument;
+	gdouble rad = spiral->rad * pow(t, spiral->exp);
+	gdouble arg = 2.0 * M_PI * spiral->revo * t + spiral->arg;
 	
-	p->x = spiral->cx + rad * cos (arg);
-	p->y = spiral->cy - rad * sin (arg);
+	p->x = rad * cos (arg);
+	p->y = - rad * sin (arg);
 }
 
 void
@@ -366,12 +569,10 @@ sp_spiral_build_repr (SPSpiral *spiral,
 {
 	g_return_if_fail (spiral != NULL);
 	
-	sp_repr_set_double_attribute (repr, "sodipodi:cx", spiral->cx);
-	sp_repr_set_double_attribute (repr, "sodipodi:cy", spiral->cy);
-	sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->expansion);
-	sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revolution);
-	sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->radius);
-	sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->argument);
+	sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->exp);
+	sp_repr_set_double_attribute (repr, "sodipodi:revolution", spiral->revo);
+	sp_repr_set_double_attribute (repr, "sodipodi:radius", spiral->rad);
+	sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->arg);
 	sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
 }
 

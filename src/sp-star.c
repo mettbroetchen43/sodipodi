@@ -72,11 +72,13 @@ sp_star_class_init (SPStarClass *class)
 	GtkObjectClass * gtk_object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
+	SPPathClass * path_class;
 	SPShapeClass * shape_class;
 
 	gtk_object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
+	path_class = (SPPathClass *) class;
 	shape_class = (SPShapeClass *) class;
 
 	parent_class = gtk_type_class (sp_polygon_get_type ());
@@ -285,26 +287,19 @@ sp_star_knot1_set (SPItem   *item,
 
 	star = SP_STAR (item);
 
-#if 0
-	{
-		ArtPoint c;
-		gdouble affine[6];
-		sp_item_i2doc_affine(item, affine);
-		art_affine_invert(affine, affine);
-		art_affine_point (&c, &star->center, affine);
-		dx = p->x - c.x;
-		dy = p->y - c.y;
-	}
-#else
 	dx = p->x - star->center.x;
 	dy = p->y - star->center.y;
-#endif
+
         arg1 = atan2 (dy, dx);
 	darg1 = arg1 - star->arg1;
         
-	star->r1    = hypot(dx, dy);
-	star->arg1  = arg1;
-	star->arg2 += darg1;
+	if (state & GDK_CONTROL_MASK) {
+		star->r1    = hypot(dx, dy);
+	} else {		
+		star->r1    = hypot(dx, dy);
+		star->arg1  = arg1;
+		star->arg2 += darg1;
+	}
 }
 
 static void
@@ -317,20 +312,8 @@ sp_star_knot2_set (SPItem   *item,
 
 	star = SP_STAR (item);
 
-#if 0
-	{
-		ArtPoint c;
-		gdouble affine[6];
-		sp_item_i2doc_affine(item, affine);
-		art_affine_invert(affine, affine);
-		art_affine_point (&c, &star->center, affine);
-		dx = p->x - c.x;
-		dy = p->y - c.y;
-	}
-#else
 	dx = p->x - star->center.x;
 	dy = p->y - star->center.y;
-#endif
 
 	if (state & GDK_CONTROL_MASK) {
 		star->r2   = hypot (dx, dy);
@@ -380,7 +363,14 @@ sp_star_knot_holder (SPItem    *item,
 	
 	star = SP_STAR(item);
 
+#if 0
+	/* if you want to get parent knot_holder, do it */
+	if (SP_ITEM_CLASS(parent_class)->knot_holder)
+		knot_holder = (* SP_ITEM_CLASS(parent_class)->knot_holder) (item);
+#else
+	/* we don't need to get parent knot_holder */
 	knot_holder = sp_knot_holder_new (desktop, item);
+#endif
 
 	sp_knot_holder_add (knot_holder,
 			    sp_star_knot1_set,
@@ -389,10 +379,6 @@ sp_star_knot_holder (SPItem    *item,
 			    sp_star_knot2_set,
 			    sp_star_knot2_get);
 
-#if 0
-	if (SP_ITEM_CLASS(parent_class)->knot_holder)
-		(* SP_ITEM_CLASS(parent_class)->knot_holder) (item);
-#endif
 	return knot_holder;
 }
 

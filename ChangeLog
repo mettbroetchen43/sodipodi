@@ -1,3 +1,14 @@
+2001-12-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-spiral.*, spiral-context.c
+	(sp_spiral_inner_*, sp_spiral_outer_*, sp_spiral_knot_holder):
+	Add SPKnotHolder codes
+	(sp_spiral_set_shape, sp_spiral_fit_and_draw):
+	Fixed some drawing bugs
+
+	* src/dyna-draw-context.*, sp-shape.c, sp-star.c:
+	Clean up codes
+
 2001-12-07  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sodipodi.c (sodipodi_application_new): Catch SIGFPE and SIGILL as well

@@ -33,17 +33,16 @@ struct _SPSpiral {
 	
 	/*
 	 * Spiral shape is defined as:
-	 * x(t) = radius * t^expansion cos(2 * Pi * revolution*t + argument)
-	 * y(t) = radius * t^expansion sin(2 * Pi * revolution*t + argument)
+	 * x(t) = rad * t^exp cos(2 * Pi * revo*t + arg)
+	 * y(t) = rad * t^exp sin(2 * Pi * revo*t + arg)
 	 * where spiral curve is drawn for {t | t0 <= t <= 1}.
-	 * radius and argument parameters can also be represented by
+	 * rad and arg parameters can also be represented by
 	 * transformation. shoud I remove these attributes?
 	 */
-	gdouble  cx, cy;              /* Spiral center (cx,xy) */
-	gdouble  expansion;           /* Spiral expansion factor */
-	gdouble  revolution;          /* Spiral revolution factor */
-	gdouble  radius;              /* Spiral radius */
-	gdouble  argument;            /* Spiral argument */
+	gdouble  exp;           /* Spiral expansion factor */
+	gdouble  revo;		/* Spiral revolution factor */
+	gdouble  rad;		/* Spiral radius */
+	gdouble  arg;		/* Spiral argument */
 	gdouble  t0;
 };
 
@@ -59,10 +58,10 @@ GtkType sp_spiral_get_type  (void);
 void    sp_spiral_set		(SPSpiral      *spiral,
 				 gdouble	cx,
 				 gdouble	cy,
-				 gdouble	expansion,
-				 gdouble	revolution,
-				 gdouble	radius,
-				 gdouble	argument,
+				 gdouble	exp,
+				 gdouble	revo,
+				 gdouble	rad,
+				 gdouble	arg,
 				 gdouble	t0);
 
 void    sp_spiral_get_xy	(SPSpiral      *spiral,

@@ -146,7 +146,6 @@ sp_shape_write_repr (SPObject * object, SPRepr * repr)
 
 	path = SP_PATH(object);
 	g_assert (path->comp);
-	g_assert (path->comp->data);
 	pathcomp = path->comp->data;
 	g_assert (pathcomp);
 	abp = sp_curve_first_bpath (pathcomp->curve);

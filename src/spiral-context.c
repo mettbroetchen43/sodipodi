@@ -217,19 +217,17 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 	p1.y = y;
 	sp_desktop_free_snap (desktop, &p1);
 	
-	sp_desktop_d2doc_xy_point (desktop, &p0, p0.x, p0.y);
-	sp_desktop_d2doc_xy_point (desktop, &p1, p1.x, p1.y);
 	spiral = SP_SPIRAL(sc->item);
 
 	dx = p1.x - p0.x;
 	dy = - (p1.y - p0.y);
 	rad = hypot (dx, dy);
-	arg = atan2 (dy, dx) - 2.0*M_PI*spiral->revolution;
+	arg = atan2 (dy, dx) - 2.0*M_PI*spiral->revo;
 	
         /* Fixme: these parameters should be got from dialog box */
 	sp_spiral_set (spiral, p0.x, p0.y,
-		       /*expansion*/ spiral->expansion,
-		       /*revolution*/ spiral->revolution,
+		       /*expansion*/ spiral->exp,
+		       /*revolution*/ spiral->revo,
 		       rad, arg,
 		       /*t0*/ spiral->t0);
 	
@@ -249,30 +247,13 @@ sp_spiral_finish (SPSpiralContext * sc)
 		SPDesktop *desktop;
 		SPSpiral  *spiral;
 		SPRepr    *repr;
-#if 1  /* d="" */
-		SPPathComp *pathcomp;
-		ArtBpath *abp;
-		gchar *str;
-#endif
 
 		desktop = SP_EVENT_CONTEXT (sc)->desktop;
 		spiral = SP_SPIRAL (sc->item);
 		repr = SP_OBJECT (sc->item)->repr;
 
-#if 1 /* d="" */
 		sp_shape_set_shape(SP_SHAPE(spiral));
-		g_assert (SP_PATH(spiral)->comp);
-		g_assert (SP_PATH(spiral)->comp->data);
-		pathcomp = (SPPathComp *)SP_PATH(spiral)->comp->data;
-		g_assert (pathcomp);
-
-                abp = sp_curve_first_bpath (pathcomp->curve);
-		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
-		sp_repr_set_attr (repr, "d", str);
-		g_free (str);
-#endif
-		sp_spiral_build_repr (spiral, repr);
+		sp_object_invoke_write_repr (SP_OBJECT(spiral), repr);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));
