@@ -1,6 +1,7 @@
-If you are interested in hacking sodipodi source, you are welcome. But be
-cautious, as every single thing in structure/API may change yet. If you ever
-have a good idea, how some subsystem should work, let me too know.
+If you are interested in hacking Sodipodi's source code, you are
+welcome to do so. But be cautious, as every single thing in the
+structure/API may change yet. If you ever have a better idea about how
+some subsystem should work, let me too know.
 
 Some things that should be done (in random order):
 - printing from command line, without display (worked, but is broken now)
@@ -15,34 +16,38 @@ Some things that should be done (in random order):
 - import and export filters
 - port reprs to real XML (libxml, gdome)
 
-Please consult with separate HACKING files in subdirs. Some modules
-are only placeholders for something better and standardized (repr et al.)
+Please consult the individual HACKING files in the respective
+subdirs.  Some modules are only placeholders for something better and
+more standardized (repr et al.)
 
 You are always welcome to correct my spelling (except in variable names,
 of course ;-)).
 
-As of translating, be first sure, that the english phrases are correct
-and meaningful (if they are not, somebody will replace these with better
-ones)
+As far as translating, first be sure that the english phrases are correct
+and meaningful (if they are not, somebody should replace these with better
+ones.)
 
-This code should be quite modular and will become even more. Consult
-doc/architecture.txt for more info, here is only rough blueprint:
+This code should be quite modular and will become even more so in the
+future.  Consult the file doc/architecture.txt for more info, but here
+is a rough plan:
 
 
 1. reprs & cousins
 SPRepr, SPCSSAttr ...
-These are temporary wrappers around xml backbone. As soon as gdome is
-usable for such tasks I'll replace these with DOM.
-Currently reprs (Representation Objects) hold all item attributes. Object
-tree is also constructed of reprs. They emit signals (to be exact - call
-functions), if modified, deleted etc. Most editing should be done directly
-to repr attributes.
+
+These are temporary wrappers around the xml backbone. As soon as gdome
+is usable for such tasks I'll replace these with DOM.  Currently reprs
+(Representation Objects) hold all of the item attributes.  The object
+tree is also constructed of reprs. They emit signals (to be exact -
+call functions), if modified, deleted etc. Most editing should be done
+directly to the repr attributes.
 
 2. Items
 
-These are typed backbone of everything under the Sun. They know both about
-reprs and canvas things, update itself (at least they should) if reprs change
-and update canvas items, if they themselves change.
+These are typed backbone of everything under the Sun. They know both
+about the reprs and canvas things, update themselves (at least they
+should) if reprs change and update canvas items, if they themselves
+change.
 
 3. Graphics layout
 desktop.c, drawing.c
@@ -51,11 +56,11 @@ Canvas root
 Acetate, Desktop
 Grid, Guides, Drawarea, Sketch, Controls
 
-Acetate is borrowed from gill - it is basically infinite empty item, which
-serves as mouse target
+Acetate is borrowed from gill - it is basically an infinite empty
+item, which serves as a mouse target.
 
 grid & guides groups
-drawing - this is most interesting
+drawing - this is of particular interest
 sketch - simply a group I created for temporary items
 controls - group which holds resizing buttons, rubberband etc.
 
@@ -72,14 +77,18 @@ Desktop
 & so on.
 
 4. Selection
-This is per desktop object, that keep track, which items are currently
-selected. It is capable of emitting "changed" signal (probably in future
-"attrmodified" too), to notice all interested parties about selection
-changes (fill & stroke dialogs for example use this method)
+
+This is a per desktop object, that keeps track of which items are
+currently selected. It is capable of emitting "changed" signal
+(probably in the future, "attrmodified" too), to notify all interested
+parties about selection changes (fill & stroke dialogs, for example,
+use this method)
 
 5. Context
-This object (hierarchy) defines, how mouse events on desktop are interpreted.
-Every desktop has its own context (select, node, rect & so on)
+
+This object (hierarchy) defines how mouse events on the desktop are
+interpreted.  Every desktop has its own context (select, node, rect &
+so on).
 
 
 Lauris Kaplinski

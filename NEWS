@@ -1,3 +1,44 @@
+25. Novemeber 2002
+Sodipodi version 0.28
+
+There is now a way to specify custom freetype2-readable fonts
+for sodipodi, bypassing gnome-print font database.
+The font description file is:
+
+  $HOME/.sodipodi/private-fonts
+
+And its syntax is really simple:
+
+  font_file_full_path[: face number in ttc], Font Full Name, Font Family Name
+
+# at the beginning of line introduces comment line. Empty lines
+are ignored. Whitespace around names is cut off.
+
+Most importantly, if you have font file with proper vertical metrics,
+using it directly aloows sodipodi to use correct metrics. Otherwise
+it synthesizes vertical metrics by centering visible glyph horizontally
+at baseline, what is not always correct.
+
+Also all fonts are now accessible from unicode private plane, in addition
+to proper unicode values. For certain fonts (like custom symbols without
+unicode mapping), this is the only way to access glyphs.
+
+Code points are assigned sequentially to glyphs:
+
+U+e000 - glyph 0
+U+e001 - glyph 1
+
+Starting from previous release there is also 'unicode mode' in text
+tool (although it has no visible indication).
+
+Press Ctrl-U to enter unicode mode
+
+type 4-digit code point value(s)
+
+Press Ctr-U to leave unicode mode
+
+
+
 2001/09/27 Version 0.24
 
 This experimental release. While many old bugs have actualy been fixed,

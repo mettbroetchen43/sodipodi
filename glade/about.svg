@@ -11,8 +11,8 @@
    height="600"
    id="svg1212"
    sodipodi:version="0.28pre2"
-   sodipodi:docname="glade/about.svg"
-   sodipodi:docbase="glade/"
+   sodipodi:docname="/home/lauris/cvs/sodipodi/glade/about.svg"
+   sodipodi:docbase="/home/lauris/cvs/sodipodi/glade/"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -114,18 +114,6 @@ SVG</tspan>
 GNOME</tspan>
     </text>
   </a>
-  <text
-     x="91.210991"
-     y="543.105896"
-     style="font-size:18;font-weight:bold;fill:#000000;fill-rule:evenodd;stroke-width:1pt;font-family:Book Antiqua;fill-opacity:1;"
-     id="text1187">
-    <tspan
-       x="91.210953"
-       y="543.105408"
-       id="tspan1190"
-       style="fill:#000000;fill-opacity:1;">
-Lauris Kaplinski, Mitsuru Oka, Frank Felfe, Raph Levien, Masatake Yamato</tspan>
-  </text>
   <text
      x="511.420578"
      y="237.079727"
@@ -258,4 +246,36 @@ Sodipodi 0.28</tspan>
        sodipodi:nodetypes="cccccccccccccccccccccc"
        transform="translate(9.2928,-18.3475)" />
   </g>
+  <text
+     x="218.435017"
+     y="543.105896"
+     style="font-size:18;font-weight:bold;fill-rule:evenodd;stroke-width:1pt;font-family:Book Antiqua;"
+     id="text1187"
+     transform="translate(21.1483,0)">
+    <tspan
+       x="218.435"
+       y="543.106"
+       sodipodi:role="line"
+       id="tspan56">
+Mitsuru Oka, Frank Felfe, Raph Levien, Masatake Yamato</tspan>
+  </text>
+  <a
+     id="a58"
+     xlink:href="http://lauris.kaplinski.com/"
+     transform="translate(21.1483,0)"
+     style="font-size:12;fill:#000000;fill-opacity:0.8;">
+    <text
+       x="213.242222"
+       y="543.105896"
+       style="font-size:18;font-weight:bold;fill:#000000;fill-rule:evenodd;stroke-width:1pt;font-family:Book Antiqua;fill-opacity:0.8;font-style:normal;text-anchor:end;writing-mode:lr;"
+       id="text51">
+      <tspan
+         x="213.242"
+         y="543.106"
+         sodipodi:role="line"
+         id="tspan54"
+         style="fill:#000000;fill-opacity:0.8;">
+Lauris Kaplinski,</tspan>
+    </text>
+  </a>
 </svg>

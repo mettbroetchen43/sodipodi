@@ -1,28 +1,35 @@
+
 Sodipodi
+--------
 
-Sodipodi is (or at least should be) an vector illustrator program for GNOME
-environment. It is currently in active development and approaching general
-usability.
+Sodipodi is (or at least should be) a vector illustrator program for
+the GNOME environment.  It is currently in active development and
+approaching general usability.
 
-If you are more interested in hacking, you can also try out KIllustrator,
-Gill and sketch. Sodipodi eagerly borrows code from every other free program
-under the Sun (hey - isn't it the main point about free software?)
+If you are more interested in hacking, you can also try out
+KIllustrator, Gill and sketch. Sodipodi eagerly borrows code from
+every other free program under the Sun (hey - isn't it the main point
+about free software?)
 
-You can always find the freshest sodipodi at GNOME CVS. Official homepage is
-http://sodipodi.sourceforge.net/
-There you can also find links to binary/source packages
+You can always find the freshest sodipodi at GNOME CVS.  The official
+homepage is http://sodipodi.sourceforge.net/ You can also find links
+to the binary & source code packages there.
 
-Compiling should be trivial, but I cannot guarantee that it works on any other
-system aside mine:
+Sodipodi uses the standard procedure for compilation and installation: 
 
 ./configure
 make
 make install
 
-You need reasonably recent gnome installation. Helix Gnome + gnome-print 0.21
-(or higher) + bonobo 0.17 (or higher) should do it.
-You can also add --without-bonobo to configure command line to disable
-HIGHLY EXPERIMENTAL bonobo support
+If a "./configure" file is not present, you can create it by running
+the "./autogen.sh" command, which calls in turn a number of other
+programs such as automake and autoconf.  See INSTALL for more
+details. 
+
+You need reasonably recent gnome installation including the -devel-
+libraries. Helix Gnome + gnome-print 0.21 (or higher) + bonobo 0.17
+(or higher) should do it.  You can also add --without-bonobo to
+configure command line to disable HIGHLY EXPERIMENTAL bonobo support
 
 If you modify sodipodi in any usable way, please let me know also.
 
@@ -52,3 +59,30 @@ Ungroup these manually.
 
 Lauris Kaplinski
 <lauris@helixcode.com>
+
+
+Dependencies for installation on Mandrake 9.0:
+
+    gnome-print-devel-0.36-1.i386.rpm
+    freetype-devel-1.3.1-17mdk.i586.rpm
+    libunicode-devel-0.4-9.i386.rpm
+    freetype-devel-1.3.1-17mdk.i586.rpm
+    freetype-devel-2.1.2-7.i386.rpm 
+    gnome-print-0.37-1mdk.i586.rpm
+    gnome-print-devel-0.36-1.i386.rpm
+    libart_lgpl2-devel-2.3.10-2mdk.i586.rpm
+    libbonobo2_0-devel-2.0.0-2mdk.i586.rpm
+    libbonobo-activation4-devel-1.0.3-3mdk.i586.rpm
+    libgnomeprint15-devel-0.36-3mdk.i586.rpm
+    libgnomeprint2.0_0-devel-1.116.0-2mdk.i586.rpm
+    liblinc1-devel-0.5.2-1mdk.i586.rpm
+    libORBit2_0-devel-2.4.1-2mdk.i586.rpm
+    libunicode-devel-0.4-9.i386.rpm
+    libatk1.0_0-devel-1.0.3-2mdk.i586.rpm
+    libgdk_pixbuf2.0_0-devel-2.0.6-8mdk.i586.rpm
+    libglade0-devel-0.17-6mdk.i586.rpm
+    libglade2.0_0-devel-2.0.0-2mdk.i586.rpm
+    libglade-bonobo0-0.17-6mdk.i586.rpm
+    libglade-gnome-db0-0.17-6mdk.i586.rpm
+    libgtk+-x11-2.0_0-devel-2.0.6-8mdk.i586.rpm
+
