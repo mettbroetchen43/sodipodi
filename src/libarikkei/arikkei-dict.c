@@ -136,7 +136,7 @@ arikkei_dict_insert (ArikkeiDict *dict, const void *key, void *val)
 	if (!key) return;
 	hval = dict->hash (key) % dict->hashsize;
 	if (dict->entries[hval].key) {
-		for (pos = hval; pos > 0; pos = dict->entries[pos].next) {
+		for (pos = hval; pos >= 0; pos = dict->entries[pos].next) {
 			if (dict->equal (dict->entries[pos].key, key)) {
 				dict->entries[pos].val = val;
 				return;
@@ -188,7 +188,7 @@ arikkei_dict_remove (ArikkeiDict *dict, const void *key)
 	} else {
 		int pos, prev;
 		prev = hval;
-		for (pos = dict->entries[hval].next; pos > 0; pos = dict->entries[pos].next) {
+		for (pos = dict->entries[hval].next; pos >= 0; pos = dict->entries[pos].next) {
 			if (dict->equal (dict->entries[pos].key, key)) {
 				dict->entries[prev].next = dict->entries[pos].next;
 				dict->entries[pos].next = dict->free;
@@ -208,7 +208,7 @@ arikkei_dict_lookup (ArikkeiDict *dict, const void *key)
 	if (!key) return NULL;
 	hval = dict->hash (key) % dict->hashsize;
 	if (dict->entries[hval].key) {
-		for (pos = hval; pos > 0; pos = dict->entries[pos].next) {
+		for (pos = hval; pos >= 0; pos = dict->entries[pos].next) {
 			if (dict->equal (dict->entries[pos].key, key)) {
 				return dict->entries[pos].val;
 			}
