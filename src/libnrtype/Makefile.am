@@ -1,9 +1,12 @@
 noinst_LIBRARIES = libnrtype.a
 
 if USE_GNOME_PRINT
-	gnome_print_sources = nr-type-gnome.c nr-type-gnome.h
+gnome_print_sources = nr-type-gnome.c nr-type-gnome.h
 endif
 
+if USE_XFT
+xft_sources = nr-type-xft.c nr-type-xft.h
+endif
 
 INCLUDES = \
 	-I.. \
@@ -17,4 +20,5 @@ libnrtype_a_SOURCES = \
 	nr-rasterfont.c nr-rasterfont.h \
 	nr-type-directory.c nr-type-directory.h \
 	nr-type-ft2.c nr-type-ft2.h \
-	$(gnome_print_sources)
+	$(gnome_print_sources) \
+	$(xft_sources)

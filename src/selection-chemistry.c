@@ -625,29 +625,30 @@ sp_selection_remove_transform (void)
 
 
 void
-sp_selection_scale_absolute (SPSelection * selection, double x0, double x1, double y0, double y1) {  
-  NRRectF bbox;
-  double p2o[6], o2n[6], scale[6], final[6], s[6];
-  double dx, dy, nx, ny;
+sp_selection_scale_absolute (SPSelection *selection, double x0, double x1, double y0, double y1)
+{
+	NRRectF bbox;
+	double p2o[6], o2n[6], scale[6], final[6], s[6];
+	double dx, dy, nx, ny;
   
-  g_assert (SP_IS_SELECTION (selection));
+	g_assert (SP_IS_SELECTION (selection));
 
-  sp_selection_bbox (selection, &bbox);
+	sp_selection_bbox (selection, &bbox);
 
-  art_affine_translate (p2o, -bbox.x0, -bbox.y0);
+	art_affine_translate (p2o, -bbox.x0, -bbox.y0);
 
-  dx = (x1-x0) / (bbox.x1 - bbox.x0);
-  dy = (y1-y0) / (bbox.y1 - bbox.y0);
-  art_affine_scale (scale, dx, dy);
+	dx = (x1-x0) / (bbox.x1 - bbox.x0);
+	dy = (y1-y0) / (bbox.y1 - bbox.y0);
+	art_affine_scale (scale, dx, dy);
 
-  nx = x0;
-  ny = y0;
-  art_affine_translate (o2n, nx, ny);
+	nx = x0;
+	ny = y0;
+	art_affine_translate (o2n, nx, ny);
 
-  art_affine_multiply (s , p2o, scale);
-  art_affine_multiply (final , s, o2n);
+	art_affine_multiply (s , p2o, scale);
+	art_affine_multiply (final , s, o2n);
 
-  sp_selection_apply_affine (selection, final);
+	sp_selection_apply_affine (selection, final);
 }
 
 

@@ -70,6 +70,34 @@ if test "x$popt_ok" == "xyes"; then
 	AC_DEFINE(WITH_POPT, 1, [Use popt argument parsing library])
 fi
 
+dnl ******************************
+dnl Xft checking
+dnl ******************************
+
+AC_ARG_WITH(xft,
+            AC_HELP_STRING([--with-xft], [use xft scalable font database (default is auto)]),
+            [with_xft=$withval], [with_xft=auto])
+
+if test "x$with_xft" != "xno"; then
+	dnl Have to test xft presence
+	AC_CHECK_HEADER(X11/Xft/Xft.h, xft_ok=yes, xft_ok=no)
+	if test "x$xft_ok" != "xyes"; then
+		dnl No xft found
+		if test "x$with_xft" == "xyes"; then
+			dnl Xft was explicitly asked, so stop
+			AC_MSG_ERROR([--with-xft was specified, but appropriate development packages could not be found])
+		fi
+	fi
+else
+	dnl Asked to ignore xft
+	xft_ok = no
+fi
+
+AM_CONDITIONAL(USE_XFT, test "x$xft_ok" == "xyes")
+if test "x$xft_ok" == "xyes"; then
+	AC_DEFINE(WITH_XFT, 1, [Use Xft font database])
+fi
+
 
 dnl ******************************
 dnl GnomePrint checking

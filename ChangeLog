@@ -1,3 +1,19 @@
+2003-01-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Check for xft
+
+	* src/libnrtype/Makefile.am: Added xft_sources
+
+	* src/libnrtype/nr-type-directory.c (nr_type_read_xft_list): Load xft typefaces
+
+	* src/libnrtype/nr-type-xft.h: New file
+
+	* src/libnrtype/nr-type-xft.c: New file
+
+2003-01-10  MenTaLguY  <mental@rydia.net>
+
+	* src/dialogs/item-properties.c (sp_item_widget_new): made unimplemented controls insensitive
+
 2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/text-context.c (sp_text_context_root_handler): Moved IM back to

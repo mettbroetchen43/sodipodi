@@ -28,6 +28,9 @@
 #ifdef WITH_GNOME_PRINT
 #include "nr-type-gnome.h"
 #endif
+#ifdef WITH_XFT
+#include "nr-type-xft.h"
+#endif
 #ifdef WIN32
 #include "nr-type-w32.h"
 #endif
@@ -59,6 +62,9 @@ static void nr_type_read_w32_list (void);
 #endif
 #ifdef WITH_GNOME_PRINT
 static void nr_type_read_gnome_list (void);
+#endif
+#ifdef WITH_XFT
+static void nr_type_read_xft_list (void);
 #endif
 
 static NRTypeDict *typedict = NULL;
@@ -225,6 +231,10 @@ nr_type_directory_build (void)
 
 #ifdef WIN32
 	nr_type_read_w32_list ();
+#endif
+
+#ifdef WITH_XFT
+	nr_type_read_xft_list ();
 #endif
 
 #ifdef WITH_GNOME_PRINT
@@ -486,6 +496,42 @@ nr_type_read_w32_list (void)
 
 	nr_name_list_release (&wfamilies);
 	nr_name_list_release (&wnames);
+}
+#endif
+
+#ifdef WITH_XFT
+static void
+nr_type_read_xft_list (void)
+{
+	NRNameList gnames, gfamilies;
+	int i, j;
+
+	nr_type_xft_typefaces_get (&gnames);
+	nr_type_xft_families_get (&gfamilies);
+
+	for (i = gnames.length - 1; i >= 0; i--) {
+		NRTypeFaceDefFT2 *tdef;
+		const unsigned char *family;
+		family = NULL;
+		for (j = gfamilies.length - 1; j >= 0; j--) {
+			int len;
+			len = strlen (gfamilies.names[j]);
+			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
+				family = gfamilies.names[j];
+				break;
+			}
+		}
+		if (family) {
+			tdef = nr_new (NRTypeFaceDefFT2, 1);
+			tdef->def.next = NULL;
+			tdef->def.pdef = NULL;
+			nr_type_xft_build_def (tdef, gnames.names[i], family);
+			nr_type_register ((NRTypeFaceDef *) tdef);
+		}
+	}
+
+	nr_name_list_release (&gfamilies);
+	nr_name_list_release (&gnames);
 }
 #endif
 
