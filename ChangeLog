@@ -1,5 +1,9 @@
 2000-10-18  Christophe Merlet  <christophe@merlet.net>
 
+	* configure.in: Oups, forgotten to add French (fr) to $ALL_LINGUAS
+
+2000-10-18  Christophe Merlet  <christophe@merlet.net>
+
 	* sodipodi.desktop: Added French string.
 
 2000-10-17  Lauris Kaplinski  <lauris@helixcode.com>
