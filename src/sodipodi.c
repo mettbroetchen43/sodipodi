@@ -273,6 +273,8 @@ sodipodi_application_new (void)
 	/* fixme: load application defaults */
 
 	segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
+	signal (SIGFPE, sodipodi_segv_handler);
+	signal (SIGILL, sodipodi_segv_handler);
 
 	return sp;
 }

@@ -1,5 +1,7 @@
 2001-12-07  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/sodipodi.c (sodipodi_application_new): Catch SIGFPE and SIGILL as well
+
 	* src/sp-gradient.c (sp_gradient_write_colors): Skip, if integer stop
 	values coincide (fixes div 0 bug with gradients)
 
