@@ -34,11 +34,14 @@ static void sp_rect_read_attr (SPObject * object, const gchar * attr);
 static gchar * sp_rect_description (SPItem * item);
 static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+static void sp_rect_write_repr (SPObject * object, SPRepr *repr);
 static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
+static void sp_rect_glue_set_shape (SPShape * shape);
 static void sp_rect_set_shape (SPRect * rect);
+static SPKnotHolder *sp_rect_knot_holder (SPItem *item, SPDesktop *desktop);
 
 static SPShapeClass *parent_class;
 
@@ -69,22 +72,28 @@ sp_rect_class_init (SPRectClass *class)
 	GtkObjectClass * gtk_object_class;
 	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
+	SPShapeClass * shape_class;
 
 	gtk_object_class = (GtkObjectClass *) class;
 	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
+	shape_class = (SPShapeClass *) class;
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
 	gtk_object_class->destroy = sp_rect_destroy;
 
 	sp_object_class->build = sp_rect_build;
+	sp_object_class->write_repr = sp_rect_write_repr;
 	sp_object_class->read_attr = sp_rect_read_attr;
 
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
 	item_class->write_transform = sp_rect_write_transform;
 	item_class->menu = sp_rect_menu;
+	item_class->knot_holder = sp_rect_knot_holder;
+
+	shape_class->set_shape = sp_rect_glue_set_shape;
 }
 
 static void
@@ -192,6 +201,13 @@ sp_rect_description (SPItem * item)
 }
 
 #define C1 0.554
+
+static void
+sp_rect_glue_set_shape (SPShape *shape)
+{
+	SPRect *rect = SP_RECT(shape);
+	sp_rect_set_shape(rect);
+}
 
 static void
 sp_rect_set_shape (SPRect * rect)
@@ -349,6 +365,21 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 
 }
 
+static void
+sp_rect_write_repr (SPObject * object, SPRepr *repr)
+{
+	SPRect *rect;
+
+	rect = SP_RECT (object);
+
+	sp_repr_set_double_attribute (repr, "width", rect->width);
+	sp_repr_set_double_attribute (repr, "height", rect->height);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry);
+	sp_repr_set_double_attribute (repr, "x", rect->x);
+	sp_repr_set_double_attribute (repr, "y", rect->y);
+}
+
 /* Generate context menu item section */
 
 static void
@@ -383,4 +414,75 @@ sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
 	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPRect");
 }
 
+static void
+sp_rect_rx_get (SPItem *item, ArtPoint *p)
+{
+	SPRect *rect;
 
+	rect = SP_RECT(item);
+
+	p->x = rect->x + rect->rx;
+	p->y = rect->y;
+}
+
+static void
+sp_rect_rx_set (SPItem *item, ArtPoint *p, guint state)
+{
+	SPRect *rect;
+	gdouble temp;
+
+	rect = SP_RECT(item);
+	
+	temp = p->x - rect->x;
+	rect->rx = CLAMP(temp, 0.0, rect->width/2.0);
+	if (state & GDK_CONTROL_MASK) {
+		rect->ry = CLAMP(temp, 0.0, rect->height/2.0);
+	}
+}
+
+
+static void
+sp_rect_ry_get (SPItem *item, ArtPoint *p)
+{
+	SPRect *rect;
+
+	rect = SP_RECT(item);
+
+	p->x = rect->x;
+	p->y = rect->y + rect->ry;
+}
+
+static void
+sp_rect_ry_set (SPItem *item, ArtPoint *p, guint state)
+{
+	SPRect *rect;
+	gdouble temp;
+
+	rect = SP_RECT(item);
+	
+	temp = p->y - rect->y;
+	rect->ry = CLAMP(temp, 0.0, rect->height/2.0);
+	if (state & GDK_CONTROL_MASK) {
+		rect->rx = CLAMP(temp, 0.0, rect->width/2.0);
+	}
+}
+
+
+static SPKnotHolder *
+sp_rect_knot_holder (SPItem *item, SPDesktop *desktop)
+{
+	SPRect *rect;
+	SPKnotHolder *knot_holder;
+
+	rect = SP_RECT (item);
+	knot_holder = sp_knot_holder_new (desktop, item);
+	
+	sp_knot_holder_add (knot_holder,
+			    sp_rect_rx_set,
+			    sp_rect_rx_get);
+	sp_knot_holder_add (knot_holder,
+			    sp_rect_ry_set,
+			    sp_rect_ry_get);
+	
+	return knot_holder;
+}

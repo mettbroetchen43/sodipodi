@@ -1,3 +1,15 @@
+Tue Mar 19 02:30:40 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* New SPRect rx, ry editing feature in node context.
+
+	* src/sp-rect.c (sp_rect_rx_get): New method for KnotHolder
+	(sp_rect_rx_set): Ditto
+	(sp_rect_ry_get): Ditto
+	(sp_rect_ry_set): Ditto
+	(sp_rect_knot_holder): Ditto
+	(sp_rect_write_repr): New method
+	(sp_rect_glue_set_shape): Ditto
+
 2002-03-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
 
 	* configure.in: Added "sk" to ALL_LINGUAS.
