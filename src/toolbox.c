@@ -180,7 +180,9 @@ sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
 {
 	sodipodi_unref ();
 
-	return FALSE;
+	gtk_widget_destroy (GTK_WIDGET (toolbox));
+
+	return TRUE;
 }
 
 /* 

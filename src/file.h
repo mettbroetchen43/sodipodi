@@ -1,11 +1,14 @@
-#ifndef SP_FILE_H
-#define SP__FILE_H
+#ifndef __SP_FILE_H__
+#define __SP_FILE_H__
+
+#include "forward.h"
 
 void sp_file_new (void);
 
 void sp_file_open (void);
 
 void sp_file_save (GtkWidget * widget);
+void sp_file_save_document (SPDocument *document);
 
 void sp_file_save_as (GtkWidget * widget);
 

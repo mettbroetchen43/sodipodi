@@ -1,3 +1,16 @@
+2001-03-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/interface.c (sp_ui_delete): New function presenting close
+	dialog box if needed
+	(sp_ui_close_view): Use sp_ui_delete ()
+	(sp_create_window): Connect "delete_event" and set window title
+
+	* src/file.c (sp_file_save_document): New function
+
+	* src/document-undo.c (sp_document_done):  Set "modified" attribute
+
+	* src/file.c (file_save_ok): Clear "modified" attribute
+
 2001-03-07  Lauris Kaplinski  <lauris@ximian.com>
 
 	* doc/keybindings.txt: Register node editing keystrokes

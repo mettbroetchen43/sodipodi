@@ -36,6 +36,10 @@ sp_document_done (SPDocument * document)
 
 	g_assert (document->private->redo == NULL);
 
+	if (!sp_repr_attr (document->private->rroot, "sodipodi:modified")) {
+		sp_repr_set_attr (document->private->rroot, "sodipodi:modified", "true");
+	}
+
 	if (g_slist_length (document->private->undo) >= MAX_UNDO) {
 		GSList * last;
 		last = g_slist_last (document->private->undo);

@@ -26,6 +26,7 @@ static void sp_document_init (SPDocument * document);
 static void sp_document_destroy (GtkObject * object);
 
 static GtkObjectClass * parent_class;
+static gint doc_count = 0;
 
 GtkType
 sp_document_get_type (void)
@@ -176,6 +177,8 @@ sp_document_new (const gchar * uri)
 		g_free (b);
 		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
+	} else {
+		document->private->uri = g_strdup_printf ("Unnamed document %d", ++doc_count);
 	}
 
 	object = sp_object_repr_build_tree (document, rroot);
@@ -228,6 +231,8 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 
 	document->private->rdoc = rdoc;
 	document->private->rroot = rroot;
+
+	document->private->uri = g_strdup_printf ("Memory document %d", ++doc_count);
 
 	object = sp_object_repr_build_tree (document, rroot);
 	g_return_val_if_fail (object != NULL, NULL);

@@ -1,6 +1,15 @@
 #define SP_INTERFACE_C
 
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include "sodipodi.h"
+#include "document.h"
+#include "desktop-handles.h"
+#include "file.h"
 #include "interface.h"
 
 #include "dialogs/text-edit.h"
@@ -14,23 +23,23 @@
 
 void fake_dialogs (void);
 
+static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPDesktop *desktop);
+
 void
 sp_create_window (SPDesktop * desktop, gboolean editable)
 {
-	GtkWidget * w, * vb, * hb, * b;
+	GtkWidget * w, * vb, * hb;
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (w), sp_document_uri (SP_DT_DOCUMENT (desktop)));
 	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
 	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-
-        gtk_signal_connect (GTK_OBJECT (w),
-                            "focus-in-event",
-                            GTK_SIGNAL_FUNC (sp_desktop_set_focus),
-                            desktop);
+        gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), desktop);
+        gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), desktop);
 
 	vb = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vb);
@@ -42,16 +51,6 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
 	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
-
-#if 0
-	b = gtk_toggle_button_new_with_label ("Show guides");
-	gtk_widget_show (b);
-	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
-
-	b = gtk_toggle_button_new_with_label ("Snap to guides");
-	gtk_widget_show (b);
-	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
-#endif
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (w));
 
@@ -80,6 +79,8 @@ sp_ui_close_view (GtkWidget * widget)
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 
+	if (sp_ui_delete (NULL, NULL, SP_ACTIVE_DESKTOP)) return;
+
 	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
 
 	if (w) gtk_object_destroy (GTK_OBJECT (w));
@@ -90,6 +91,38 @@ sp_ui_close_view (GtkWidget * widget)
 	 */
 
 	if (GTK_IS_WIDGET (SODIPODI)) fake_dialogs ();
+}
+
+static gint
+sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPDesktop *desktop)
+{
+	SPDocument *doc;
+
+	doc = SP_DT_DOCUMENT (desktop);
+
+	if (((GtkObject *) doc)->ref_count == 1) {
+		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
+			GtkWidget *dlg;
+			gchar *msg;
+			gint b;
+			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), sp_document_uri (doc));
+			dlg = gnome_message_box_new (msg, "warning", "Save", "Don't save", GNOME_STOCK_BUTTON_CANCEL, NULL);
+			g_free (msg);
+			b = gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
+			switch (b) {
+			case 0:
+				sp_file_save_document (doc);
+				break;
+			case 1:
+				break;
+			case 2:
+				return TRUE;
+				break;
+			}
+		}
+	}
+
+	return FALSE;
 }
 
 void

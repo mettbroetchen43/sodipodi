@@ -93,25 +93,30 @@ void sp_file_open (void)
 	gtk_widget_show (w);
 }
 
-void sp_file_save (GtkWidget * widget)
+void
+sp_file_save_document (SPDocument *document)
 {
-	SPDocument * doc;
 	SPRepr * repr;
 	const gchar * fn;
 
-	doc = SP_ACTIVE_DOCUMENT;
-	if (!SP_IS_DOCUMENT(doc)) return;
-	//	g_return_if_fail (doc != NULL);
-
-	/* fixme: */
-	repr = sp_document_repr_root (doc);
+	repr = sp_document_repr_root (document);
 
 	fn = sp_repr_attr (repr, "sodipodi:docname");
 	if (fn == NULL) {
-		sp_file_save_as (widget);
+		sp_file_save_as (NULL);
 	} else {
-		sp_repr_save_file (sp_document_repr_doc (doc), fn);
+		sp_repr_save_file (sp_document_repr_doc (document), fn);
 	}
+}
+
+void sp_file_save (GtkWidget * widget)
+{
+	SPDocument * doc;
+
+	doc = SP_ACTIVE_DOCUMENT;
+	if (!SP_IS_DOCUMENT (doc)) return;
+
+	sp_file_save_document (doc);
 }
 
 static void
@@ -137,6 +142,7 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 	sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 	sp_repr_set_attr (repr, "sodipodi:docname", filename);
+	sp_repr_set_attr (repr, "sodipodi:modified", NULL);
 
 	sp_repr_save_file (sp_document_repr_doc (doc), filename);
 #if 0
