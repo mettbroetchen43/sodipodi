@@ -4,8 +4,9 @@ TODO for 0.30
 =============
 
 - Make export dialog honour filename
-- make internal canvas position floating-point
-
+- Make internal canvas position floating-point
+- Split ::Modified and ::Update flags in SPObject
+- Fix zooming into scaled text
 
 TODO for 0.29
 =============
