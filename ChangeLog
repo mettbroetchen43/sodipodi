@@ -1,3 +1,7 @@
+2005-01-17	Amanpreet Singh Alam<amanpreetalam@yahoo.com>
+
+	*configure.in: pa is added to ALL_LINGUAS
+
 2004-09-08  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Add "zh_TW" to ALL_LINGUAS.
