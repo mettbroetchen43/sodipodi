@@ -1,3 +1,10 @@
+2002-11-20  Masatake YAMATO  <jet@gyve.org>
+
+	* src/seltrans.c (sp_sel_trans_stamp): The order of
+	selections is reversed before stamping.
+
+	The bug was reported by Michel Schinz <Michel.Schinz@epfl.ch>.
+
 2002-11-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.c (sp_desktop_prepare_shutdown): New method, allowing us nice

@@ -409,7 +409,7 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	/* stamping mode */
 	SPItem * original_item, * copy_item;
 	SPRepr * original_repr, * copy_repr;
-	const GSList * l;
+	const GSList * l, * l0;
 
 	gchar tstr[80];
 	gdouble i2d[6], i2dnew[6];
@@ -419,7 +419,11 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 	tstr[79] = '\0';
 	
 	if (!seltrans->empty) {
-		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+		l  = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+		l  = g_slist_copy(l);
+		l  = g_slist_reverse(l);
+		l0 = l;
+
 		while (l) {
 			original_item = SP_ITEM(l->data);
 			original_repr = (SPRepr *)(SP_OBJECT (original_item)->repr);
@@ -442,6 +446,7 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 			sp_repr_unref (copy_repr);
 			l = l->next;
 		}
+		g_slist_free(l0);
 		sp_document_done (SP_DT_DOCUMENT (seltrans->desktop));
 	}
 }
