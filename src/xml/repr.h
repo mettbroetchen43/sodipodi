@@ -180,4 +180,6 @@ gboolean      sp_repr_overwrite     (SPRepr             *repr,
 				     const guchar       *key);
 
 
+SPRepr *sp_repr_move (SPRepr *to, SPRepr *repr, SPRepr *ref);
+
 #endif

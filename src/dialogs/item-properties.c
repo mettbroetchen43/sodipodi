@@ -21,6 +21,7 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkhscale.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkspinbutton.h>
@@ -57,7 +58,7 @@ static void sp_item_dialog_destroy (GtkObject *object, gpointer data);
 GtkWidget *
 sp_item_widget_new (void)
 {
-	GtkWidget *spw, *vb, *hb, *t, *cb, *l, *sb, *f;
+	GtkWidget *spw, *vb, *hb, *t, *cb, *l, *sb, *f, *s;
 	GtkObject *a;
 
 	/* Create container widget */
@@ -91,6 +92,7 @@ sp_item_widget_new (void)
 	gtk_table_attach (GTK_TABLE (t), cb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "printable", cb);
 
+	/* Opacity */
 	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
 	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
@@ -100,11 +102,18 @@ sp_item_widget_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
 
-	a = gtk_adjustment_new (1.0, 0.0, 1.0, 0.01, 0.1, 0.1);
-	gtk_object_set_data (GTK_OBJECT (spw), "opacity", a);
+	a = gtk_adjustment_new (1.0, 0.0, 1.0, 0.01, 0.01, 0.01);
+
+	s = gtk_hscale_new (GTK_ADJUSTMENT (a));
+	gtk_scale_set_draw_value (GTK_SCALE (s), FALSE);
+	gtk_widget_show (s);
+	gtk_box_pack_start (GTK_BOX (hb), s, TRUE, TRUE, 0);
+
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_widget_show (sb);
-	gtk_box_pack_start (GTK_BOX (hb), sb, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hb), sb, FALSE, FALSE, 0);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "opacity", a);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_opacity_value_changed), spw);
 
 	f = gtk_frame_new (_("Transformation matrix"));

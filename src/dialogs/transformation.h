@@ -2,7 +2,7 @@
 #define __SP_TRANSFORMATION_H__
 
 /*
- * Object align dialog
+ * Object transformation dialog
  *
  * Authors:
  *   Frank Felfe <innerspace@iname.com>

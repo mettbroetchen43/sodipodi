@@ -356,13 +356,9 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 
 /* Menus */
 
-GtkWidget *
-sp_ui_main_menu (void)
+static void
+sp_ui_populate_main_menu(GtkWidget *m)
 {
-	GtkWidget *m;
-
-	m = gtk_menu_new ();
-
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_NEW, _("New"), G_CALLBACK(sp_file_new), NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_OPEN, _("Open"), G_CALLBACK(sp_file_open_dialog), NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
@@ -370,6 +366,29 @@ sp_ui_main_menu (void)
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Sodipodi"), G_CALLBACK(sp_help_about), NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK(sp_file_exit), NULL);
+}
+
+static void
+sp_ui_remove_child (GtkWidget *child, gpointer parent)
+{
+	gtk_container_remove (GTK_CONTAINER ((GtkWidget *)parent), child);
+}
+
+static void
+sp_ui_remove_all(GtkWidget *m)
+{
+	gtk_container_foreach (GTK_CONTAINER (m), sp_ui_remove_child, m);
+}
+
+GtkWidget *
+sp_ui_main_menu (void)
+{
+	GtkWidget *m;
+
+	m = gtk_menu_new ();
+
+	g_signal_connect (G_OBJECT (m), "show", (GCallback)sp_ui_populate_main_menu, NULL);
+	g_signal_connect (G_OBJECT (m), "hide", (GCallback)sp_ui_remove_all, NULL);
 
 	return m;
 }

@@ -366,9 +366,24 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 /* fixme: do context sensitive popup menu on items */
 
 static gint
-sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEvent *event)
+sp_event_context_private_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 {
-	return FALSE;
+	int ret;
+
+	ret = FALSE;
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if ((event->button.button == 3) && !(event->button.state & GDK_SHIFT_MASK)) {
+			sp_event_root_menu_popup (ec->desktop, item, event);
+			ret = TRUE;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return ret;
 }
 
 static void

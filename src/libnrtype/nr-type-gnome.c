@@ -297,7 +297,7 @@ nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival
 		if ((unival >= 0xe000) && (unival <= 0xf8ff)) {
 			unsigned int idx;
 			idx = CLAMP (unival, 0xe000, 0xf8ff) - 0xe000;
-			return MIN (idx, tf->nglyphs);
+			return MIN (idx, tf->nglyphs - 1);
 		} else {
 			return gnome_font_face_lookup_default (tfg->face, unival);
 		}

@@ -284,7 +284,7 @@ nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 		if (!tff->unimap || ((unival >= 0xe000) && (unival <= 0xf8ff))) {
 			unsigned int idx;
 			idx = CLAMP (unival, 0xe000, 0xf8ff) - 0xe000;
-			return MIN (idx, tf->nglyphs);
+			return MIN (idx, tf->nglyphs - 1);
 		} else {
 			return FT_Get_Char_Index (tff->ft_face, unival);
 		}

@@ -20,6 +20,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <helper/sp-ctrlline.h>
+#include <gtk/gtkimmulticontext.h>
 #include "macros.h"
 #include "sp-text.h"
 #include "sodipodi.h"
@@ -34,7 +35,9 @@
 
 static void sp_text_context_class_init (SPTextContextClass * klass);
 static void sp_text_context_init (SPTextContext * text_context);
+#if 0
 static void sp_text_context_dispose (GObject *object);
+#endif
 
 static void sp_text_context_setup (SPEventContext *ec);
 static void sp_text_context_finish (SPEventContext *ec);
@@ -47,6 +50,10 @@ static void sp_text_context_selection_modified (SPSelection *selection, guint fl
 static void sp_text_context_update_cursor (SPTextContext *tc);
 static gint sp_text_context_timeout (SPTextContext *tc);
 static void sp_text_context_forget_text (SPTextContext *tc);
+
+static gint sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc);
+static gint sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc);
+static void sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -80,7 +87,10 @@ sp_text_context_class_init (SPTextContextClass * klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 
+#if 0
+	/* If dispose is invoked before ::finish this is bug */
 	object_class->dispose = sp_text_context_dispose;
+#endif
 
 	event_context_class->setup = sp_text_context_setup;
 	event_context_class->finish = sp_text_context_finish;
@@ -99,6 +109,8 @@ sp_text_context_init (SPTextContext *tc)
 	event_context->hot_x = 0;
 	event_context->hot_y = 0;
 
+	tc->imc = NULL;
+
 	tc->text = NULL;
 	tc->pdoc.x = 0.0;
 	tc->pdoc.y = 0.0;
@@ -112,15 +124,19 @@ sp_text_context_init (SPTextContext *tc)
 	tc->phase = 0;
 }
 
+/* fixme: Move this into ::finish (Lauris) */
+
 static void
-sp_text_context_dispose (GObject *object)
+sp_text_context_finalize (SPTextContext *tc)
 {
 	SPEventContext *ec;
-	SPTextContext *tc;
+	ec = SP_EVENT_CONTEXT (tc);
 
-	ec = SP_EVENT_CONTEXT (object);
-	tc = SP_TEXT_CONTEXT (object);
-
+	if (tc->imc) {
+		g_object_unref (G_OBJECT (tc->imc));
+		tc->imc = NULL;
+	}
+	
 	if (tc->timeout) {
 		gtk_timeout_remove (tc->timeout);
 		tc->timeout = 0;
@@ -135,29 +151,14 @@ sp_text_context_dispose (GObject *object)
   		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
   		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
 	}
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 #if 0
-static gint
-sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
+static void
+sp_text_context_dispose (GObject *object)
 {
-#ifdef SP_TC_XIM
-	g_print ("focus in\n");
-	gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (SP_EVENT_CONTEXT (tc)->desktop))->window);
-#endif
-	return FALSE;
-}
-
-static gint
-sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
-{
-#ifdef SP_TC_XIM
-	g_print ("focus out\n");
-	gdk_im_end ();
-#endif
-	return FALSE;
+	sp_text_context_finalize (SP_TEXT_CONTEXT (object));
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 #endif
 
@@ -176,40 +177,25 @@ sp_text_context_setup (SPEventContext *ec)
 
 	tc->timeout = gtk_timeout_add (250, (GtkFunction) sp_text_context_timeout, ec);
 
-#ifdef SP_TC_XIM
-	if (gdk_im_ready () && (tc->ic_attr = gdk_ic_attr_new ()) != NULL) {
-		GdkICAttr *attr;
-		GdkColormap *colormap;
-		GdkICAttributesType attrmask;
-		GdkIMStyle style;
-		GdkIMStyle supported_style;
+	tc->imc = gtk_im_multicontext_new();
+	if (tc->imc) {
+		GtkWidget *canvas;
 
-		attr = tc->ic_attr;
-		attrmask = GDK_IC_ALL_REQ;
-		supported_style = GDK_IM_PREEDIT_NONE |
-			GDK_IM_PREEDIT_NOTHING |
-			/* GDK_IM_PREEDIT_POSITION | */
-			GDK_IM_STATUS_NONE |
-			GDK_IM_STATUS_NOTHING;
-		attr->style = style = gdk_im_decide_style (supported_style);
-		/* fixme: is this OK? */
-		attr->client_window = GTK_WIDGET (SP_DT_CANVAS (desktop))->window;
-		if ((colormap = gtk_widget_get_colormap (GTK_WIDGET (SP_DT_CANVAS (desktop)))) != gtk_widget_get_default_colormap ()) {
-			attrmask |= GDK_IC_PREEDIT_COLORMAP;
-			attr->preedit_colormap = colormap;
+		canvas = GTK_WIDGET (SP_DT_CANVAS (desktop));
+
+		gtk_im_context_set_use_preedit (tc->imc, FALSE);
+		gtk_im_context_set_client_window (tc->imc, canvas->window);
+
+		g_signal_connect (G_OBJECT (canvas), "focus_in_event", G_CALLBACK (sptc_focus_in), tc);
+		g_signal_connect (G_OBJECT (canvas), "focus_out_event", G_CALLBACK (sptc_focus_out), tc);
+		g_signal_connect (G_OBJECT (tc->imc), "commit", G_CALLBACK (sptc_commit), tc);
+
+		if (GTK_WIDGET_HAS_FOCUS (canvas)) {
+			sptc_focus_in (canvas, NULL, tc);
 		}
-		tc->ic = gdk_ic_new (attr, attrmask);
-		if (tc->ic) {
-			tc->savedmask = gdk_window_get_events (GTK_WIDGET (SP_DT_CANVAS (desktop))->window);
-			gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (desktop))->window, tc->savedmask | gdk_ic_get_events (tc->ic));
-		}
-		if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (SP_DT_CANVAS (desktop)))) {
-			gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (desktop))->window);
-		}
-		gtk_signal_connect (GTK_OBJECT (SP_DT_CANVAS (desktop)), "focus_in_event", GTK_SIGNAL_FUNC (sptc_focus_in), tc);
-		gtk_signal_connect (GTK_OBJECT (SP_DT_CANVAS (desktop)), "focus_out_event", GTK_SIGNAL_FUNC (sptc_focus_out), tc);
+
 	}
-#endif
+
 	if (((SPEventContextClass *) parent_class)->setup)
 		((SPEventContextClass *) parent_class)->setup (ec);
 
@@ -222,32 +208,8 @@ sp_text_context_setup (SPEventContext *ec)
 static void
 sp_text_context_finish (SPEventContext *ec)
 {
-	SPTextContext *tc;
-
-	tc = SP_TEXT_CONTEXT (ec);
-
-#ifdef SP_TC_XIM
-	gdk_ic_destroy (tc->ic);
-	gdk_ic_attr_destroy (tc->ic_attr);
-	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
-#endif
-
-	if (tc->timeout) {
-		gtk_timeout_remove (tc->timeout);
-		tc->timeout = 0;
-	}
-
-	if (tc->cursor) {
-		gtk_object_destroy (GTK_OBJECT (tc->cursor));
-		tc->cursor = 0; 
-	}
-
-	if (ec->desktop) {
-  		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
-		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
-	}
-
-	sp_text_context_forget_text (tc);
+	sp_text_context_finalize (SP_TEXT_CONTEXT (ec));
+	sp_text_context_forget_text (SP_TEXT_CONTEXT (ec));
 }
 
 static gint
@@ -281,17 +243,48 @@ sp_text_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 	return ret;
 }
 
+static void
+sp_text_context_setup_text (SPTextContext *tc)
+{
+	SPRepr *rtext, *rtspan, *rstring, *style;
+	SPEventContext *ec;
+
+	ec = SP_EVENT_CONTEXT (tc);
+
+	/* Create <text> */
+	rtext = sp_repr_new ("text");
+	/* Set style */
+	style = sodipodi_get_repr (SODIPODI, "tools.text");
+	if (style) {
+		SPCSSAttr *css;
+		css = sp_repr_css_attr_inherited (style, "style");
+		sp_repr_css_set (rtext, css, "style");
+		sp_repr_css_attr_unref (css);
+	}
+	sp_repr_set_double_attribute (rtext, "x", tc->pdoc.x);
+	sp_repr_set_double_attribute (rtext, "y", tc->pdoc.y);
+	/* Create <tspan> */
+	rtspan = sp_repr_new ("tspan");
+	sp_repr_add_child (rtext, rtspan, NULL);
+	sp_repr_unref (rtspan);
+	/* Create TEXT */
+	rstring = sp_xml_document_createTextNode (sp_repr_document (rtext), "");
+	sp_repr_add_child (rtspan, rstring, NULL);
+	sp_repr_unref (rstring);
+	sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);
+	/* fixme: Is selection::changed really immediate? */
+	sp_selection_set_repr (SP_DT_SELECTION (ec->desktop), rtext);
+	sp_repr_unref (rtext);
+	sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+}
+
 static gint
 sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
-	SPTSpan *new;
 	SPStyle *style;
-	gint ret;
 
 	tc = SP_TEXT_CONTEXT (ec);
-
-	ret = FALSE;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -308,39 +301,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			sp_desktop_w2d_xy_point (ec->desktop, &dtp, event->button.x, event->button.y);
 			sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), dtp.x, dtp.y, dtp.x + 32, dtp.y);
 			/* Processed */
-			ret = TRUE;
+			return TRUE;
 		}
 		break;
 	case GDK_KEY_PRESS:
-		if (!tc->text) {
-			SPRepr *rtext, *rtspan, *rstring, *style;
-			/* Create <text> */
-			rtext = sp_repr_new ("text");
-			/* Set style */
-			style = sodipodi_get_repr (SODIPODI, "tools.text");
-			if (style) {
-				SPCSSAttr *css;
-				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (rtext, css, "style");
-				sp_repr_css_attr_unref (css);
-			}
-			sp_repr_set_double_attribute (rtext, "x", tc->pdoc.x);
-			sp_repr_set_double_attribute (rtext, "y", tc->pdoc.y);
-			/* Create <tspan> */
-			rtspan = sp_repr_new ("tspan");
-			sp_repr_add_child (rtext, rtspan, NULL);
-			sp_repr_unref (rtspan);
-			/* Create TEXT */
-			rstring = sp_xml_document_createTextNode (sp_repr_document (rtext), "");
-			sp_repr_add_child (rtspan, rstring, NULL);
-			sp_repr_unref (rstring);
-			sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);
-			/* fixme: Is selection::changed really immediate? */
-			sp_selection_set_repr (SP_DT_SELECTION (ec->desktop), rtext);
-			sp_repr_unref (rtext);
-			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
-		}
-
+		if (!tc->text) sp_text_context_setup_text (tc);
 		g_assert (tc->text != NULL);
 		style = SP_OBJECT_STYLE (tc->text);
 
@@ -349,7 +314,8 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			case GDK_space:
 				/* Nonbreaking space */
 				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, "\302\240", TRUE);
-				break;
+				sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+				return TRUE;
 			case GDK_u:
 				/* fixme: We need indication etc. for unicode mode */
 				if (tc->unimode) {
@@ -358,28 +324,28 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->unimode = TRUE;
 					tc->unipos = 0;
 				}
-				break;
+				return TRUE;
 			default:
-				if (event->key.string) {
-					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, event->key.string, FALSE);
+				if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+					return TRUE;
 				}
 				break;
 			}
 		} else {
 			switch (event->key.keyval) {
 			case GDK_Return:
-				new = sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
+				sp_text_insert_line (SP_TEXT (tc->text), tc->ipos);
 				tc->ipos += 1;
-				break;
-			case GDK_space:
-				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, " ", FALSE);
-				break;
+				sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+				return TRUE;
 			case GDK_BackSpace:
 				tc->ipos = sp_text_delete (SP_TEXT (tc->text), MAX (tc->ipos - 1, 0), tc->ipos);
-				break;
+				sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+				return TRUE;
 			case GDK_Delete:
 				tc->ipos = sp_text_delete (SP_TEXT (tc->text), tc->ipos, MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text))));
-				break;
+				sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+				return TRUE;
 			case GDK_Left:
 				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
@@ -387,7 +353,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->ipos = MAX (tc->ipos - 1, 0);
 				}
 				sp_text_context_update_cursor (tc);
-				break;
+				return TRUE;
 			case GDK_Right:
 				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
@@ -395,7 +361,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
 				}
 				sp_text_context_update_cursor (tc);
-				break;
+				return TRUE;
 			case GDK_Up:
 				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					tc->ipos = MAX (tc->ipos - 1, 0);
@@ -403,7 +369,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->ipos = sp_text_up (SP_TEXT (tc->text), tc->ipos);
 				}
 				sp_text_context_update_cursor (tc);
-				break;
+				return TRUE;
 			case GDK_Down:
 				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					tc->ipos = MIN (tc->ipos + 1, sp_text_get_length (SP_TEXT (tc->text)));
@@ -411,7 +377,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->ipos = sp_text_down (SP_TEXT (tc->text), tc->ipos);
 				}
 				sp_text_context_update_cursor (tc);
-				break;
+				return TRUE;
 			default:
 				if (tc->unimode && isxdigit (event->key.keyval)) {
 					tc->uni[tc->unipos] = event->key.keyval;
@@ -423,31 +389,26 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 						u[len] = '\0';
 						tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, u, FALSE);
 						tc->unipos = 0;
+						sp_document_done (SP_DT_DOCUMENT (ec->desktop));
+						return TRUE;
 					} else {
 						tc->unipos += 1;
 					}
-				} else if (event->key.string) {
-					tc->unimode = FALSE;
-					tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, event->key.string, FALSE);
-					break;
+				} else if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+					return TRUE;
 				}
+				break;
 			}
 		}
-
-		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
-
-		ret = TRUE;
-		break;
 	default:
 		break;
 	}
 
-	if (!ret) {
-		if (((SPEventContextClass *) parent_class)->root_handler)
-			ret = ((SPEventContextClass *) parent_class)->root_handler (ec, event);
+	if (((SPEventContextClass *) parent_class)->root_handler) {
+		return ((SPEventContextClass *) parent_class)->root_handler (ec, event);
+	} else {
+		return FALSE;
 	}
-
-	return ret;
 }
 
 static void
@@ -481,6 +442,8 @@ sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextC
 static void
 sp_text_context_update_cursor (SPTextContext *tc)
 {
+	GdkRectangle im_cursor = { 0, 0, 1, 1 };
+
 	if (tc->text) {
 		ArtPoint p0, p1, d0, d1;
 		NRMatrixF i2d;
@@ -492,11 +455,22 @@ sp_text_context_update_cursor (SPTextContext *tc)
 		d1.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, p1.x, p1.y);
 		sp_canvas_item_show (tc->cursor);
 		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), d0.x, d0.y, d1.x, d1.y);
+		/* fixme: ... need another transformation to get canvas widget coordinate space? */
+		im_cursor.x = floor (d0.x);
+		im_cursor.y = floor (d0.y);
+		im_cursor.width = floor (d1.x) - im_cursor.x;
+		im_cursor.height = floor (d1.y) - im_cursor.y;
+
 		tc->show = TRUE;
 		tc->phase = 1;
 	} else {
+		
 		sp_canvas_item_hide (tc->cursor);
 		tc->show = FALSE;
+	}
+
+	if (tc->imc) {
+		gtk_im_context_set_cursor_location (tc->imc, &im_cursor);
 	}
 }
 
@@ -525,3 +499,32 @@ sp_text_context_forget_text (SPTextContext *tc)
 
 	tc->text = NULL;
 }
+
+gint
+sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
+{
+	g_print ("IM focus in\n");
+	gtk_im_context_focus_in (tc->imc);
+	return FALSE;
+}
+
+gint
+sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
+{
+	g_print ("IM focus out\n");
+	gtk_im_context_focus_out (tc->imc);
+	return FALSE;
+}
+
+void
+sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc)
+{
+	if (!tc->text) sp_text_context_setup_text (tc);
+
+	g_print ("IM commit\n");
+
+	tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, string, TRUE);
+
+	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
+}
+

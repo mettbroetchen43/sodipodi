@@ -1935,6 +1935,7 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	SPObject *child;
 	SPString *string;
 	guchar *new, *ip;
+	int slen, ulen, i;
 
 	g_return_val_if_fail (text != NULL, -1);
 	g_return_val_if_fail (SP_IS_TEXT (text), -1);
@@ -1953,10 +1954,18 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 		return pos;
 	}
 
-	new = g_new (guchar, strlen (string->text) + strlen (utf8) + 1);
-	memcpy (new, string->text, ip - string->text);
-	memcpy (new + (ip - string->text), utf8, strlen (utf8));
-	strcpy (new + (ip - string->text) + strlen (utf8), ip);
+	slen = ip - string->text;
+	ulen = strlen (utf8);
+	new = g_new (guchar, strlen (string->text) + ulen + 1);
+	/* Copy start */
+	memcpy (new, string->text, slen);
+	/* Copy string */
+	memcpy (new + slen, utf8, ulen);
+	for (i = slen; i < slen + ulen; i++) {
+		if ((new[i] < 32) && ((new[i] != 9) && (new[i] != 10) && (new[i] != 13))) new[i] = 32;
+	}
+	/* Copy end */
+	strcpy (new + slen + ulen, ip);
 	sp_repr_set_content (SP_OBJECT_REPR (string), new);
 	g_free (new);
 

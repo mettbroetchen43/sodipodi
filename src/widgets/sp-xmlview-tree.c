@@ -56,6 +56,8 @@ static GtkCTreeNode * ref_to_sibling (GtkCTreeNode * parent, SPRepr * ref);
 static GtkCTreeNode * repr_to_child (GtkCTreeNode * parent, SPRepr * repr);
 static SPRepr * sibling_to_ref (GtkCTreeNode * parent, GtkCTreeNode * sibling);
 
+static void repoint_nodes (GtkCTreeNode * node, SPRepr * new_repr);
+
 static gint match_node_data_by_repr(gconstpointer data_p, gconstpointer repr);
 
 static const SPReprEventVector element_repr_events = {
@@ -95,9 +97,6 @@ sp_xmlview_tree_new (SPRepr * repr, void * factory, void * data)
 
 	tree = g_object_new (SP_TYPE_XMLVIEW_TREE, "n_columns", 1, "tree_column", 0, NULL);
 
-#if 0
-	tree = gtk_ctree_construct (GTK_CTREE (tree), 1, 0, NULL);
-#endif
 	gtk_clist_column_titles_hide (GTK_CLIST (tree));
 	gtk_ctree_set_line_style (GTK_CTREE (tree), GTK_CTREE_LINES_NONE);
 	gtk_ctree_set_expander_style (GTK_CTREE (tree), GTK_CTREE_EXPANDER_TRIANGLE);
@@ -316,11 +315,30 @@ text_content_changed (SPRepr * repr, const guchar * old_content, const guchar * 
 }
 
 void
+repoint_nodes (GtkCTreeNode * node, SPRepr * new_repr) {
+	GtkCTreeNode *child_node;
+	SPRepr *child_repr;
+
+	for ( child_node = GTK_CTREE_ROW (node)->children,
+	      child_repr = new_repr->children ;
+	      child_node && child_repr ;
+	      child_node = GTK_CTREE_ROW (child_node)->sibling,
+	      child_repr = child_repr->next )
+	{
+		repoint_nodes (child_node, child_repr);
+	}
+
+	sp_repr_ref (new_repr);
+	sp_repr_unref (NODE_DATA (node)->repr);
+	NODE_DATA (node)->repr = new_repr;
+}
+
+void
 tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkCTreeNode * new_sibling)
 {
 	GtkCTreeNode * old_parent;
 	SPRepr * ref;
-	gboolean success;
+	SPRepr * new_repr;
 
 	old_parent = GTK_CTREE_ROW (node)->parent;
 	if ( !old_parent || !new_parent ) return;
@@ -330,42 +348,16 @@ tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkC
 	gtk_clist_freeze (GTK_CLIST (tree));
 
 	SP_XMLVIEW_TREE (tree)->blocked++;
-	if ( old_parent == new_parent ) {
-		success = sp_repr_change_order (NODE_DATA (old_parent)->repr, NODE_DATA (node)->repr, ref);
-	} else {
-		/* not strictly necessary, since the widget should hold a ref */
-		sp_repr_ref (NODE_DATA (node)->repr);
-
-		success = sp_repr_remove_child (NODE_DATA (old_parent)->repr, NODE_DATA (node)->repr);
-		if (success) {
-			success = sp_repr_add_child (NODE_DATA (new_parent)->repr, NODE_DATA (node)->repr, ref);
-			if (!success) {
-				SPRepr * lost_repr;
-				/* fixme: unfortunately, there's no way to know beforehand that this would happen -- until it's too late. */
-				/* We need an equivalent of the add_child/remove_child repr events that doesn't have side-effects, */
-				/* so we can check beforehand. */
-				/* fixme: The cleaner alternative is to do repr_duplicate, and if insertion is successful change ids (Lauris) */
-				/* Do not expect it to be perfect in any way, because such messing with tree can have all kinds of nasty */
-				/* side-effect on document tree anyways */
-				SP_XMLVIEW_TREE (tree)->blocked--;
-				lost_repr = NODE_DATA (node)->repr;
-				gtk_ctree_remove_node (tree, node);
-
-				/* try and put it back, at least ... */
-				success = sp_repr_add_child (NODE_DATA (old_parent)->repr, lost_repr, NULL);
-				if (!success) {
-					/* okay, we're screwed now */
-					g_warning ("SPXMLViewTree: lost repr during move");
-				}
-				SP_XMLVIEW_TREE (tree)->blocked++;
-				success = FALSE;
-			}
-		}
-		sp_repr_unref (NODE_DATA (node)->repr);
-	}
+	new_repr = sp_repr_move (NODE_DATA (new_parent)->repr, NODE_DATA (node)->repr, ref);
 	SP_XMLVIEW_TREE (tree)->blocked--;
 
-	if (success) parent_class->tree_move (tree, node, new_parent, new_sibling);
+	if (new_repr) {
+		if ( new_repr != NODE_DATA (node)->repr ) {
+			repoint_nodes (node, new_repr);
+		}
+		parent_class->tree_move (tree, node, new_parent, new_sibling);
+	}
+
 	gtk_clist_thaw (GTK_CLIST (tree));
 }
 

@@ -14,9 +14,8 @@
  */
 
 /*  #include <gdk/gdkic.h> */
+#include <gtk/gtkimcontext.h>
 #include "event-context.h"
-
-/*  #define SP_TC_XIM */
 
 #define SP_TYPE_TEXT_CONTEXT (sp_text_context_get_type ())
 #define SP_TEXT_CONTEXT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT_CONTEXT, SPTextContext))
@@ -30,27 +29,23 @@ typedef struct _SPTextContextClass SPTextContextClass;
 struct _SPTextContext {
 	SPEventContext event_context;
 
+	GtkIMContext *imc;
+
 	SPItem *text;
 
 	/* Text item position in root coordinates */
 	NRPointF pdoc;
 	/* Insertion point position */
-	gint ipos;
+	int ipos;
 
-	guchar uni[5];
-	guchar unimode;
-	guchar unipos;
+	unsigned char uni[5];
+	unsigned char unimode;
+	unsigned char unipos;
 
 	SPCanvasItem *cursor;
 	gint timeout;
 	guint show : 1;
 	guint phase : 1;
-
-#ifdef SP_TC_XIM
-	GdkIC *ic;
-	GdkICAttr *ic_attr;
-	GdkEventMask savedmask;
-#endif
 };
 
 struct _SPTextContextClass {

@@ -35,7 +35,7 @@
 
 #include "sp-canvas.h"
 
-#define SP_CANVAS_UPDATE_PRIORITY (GTK_PRIORITY_REDRAW + 10)
+#define SP_CANVAS_UPDATE_PRIORITY (GTK_PRIORITY_REDRAW - 10)
 
 #define SP_CANVAS_WINDOW(c) (GTK_WIDGET (c)->window)
 #define DISPLAY_X1(canvas) (SP_CANVAS (canvas)->x0)

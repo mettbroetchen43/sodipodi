@@ -1,3 +1,25 @@
+2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/xml/repr-util.c (sp_repr_transfer_ids): Helper by MenTaLguY
+	(sp_repr_move): Ditto
+
+2003-01-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/xml-tree.c: Updated (MenTaLguY)
+
+	* src/dialogs/item-properties.c (sp_item_widget_new): Added slider (MenTaLguY)
+
+	* src/text-context.c (sp_text_context_setup): Set up Gtk IM (thanks to MenTaLguY)
+	(sp_text_context_setup_text): Move code here (MenTaLguY)
+	(sp_text_context_root_handler): Process Gtk IM (MenTaLguY)
+	(sptc_commit): Gtk IM signal handler (MenTaLguY)
+
+	* src/sp-text.c (sp_text_insert): Replace < 32 and not whitespace with space
+
+	* src/selection.c (SP_SELECTION_UPDATE_PRIORITY): Set Gtk - 11
+
+	* src/document.c (SP_DOCUMENT_UPDATE_PRIORITY): Set GTK - 12
+
 2003-01-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/button.c (sp_button_paint_arrow): Draw something
