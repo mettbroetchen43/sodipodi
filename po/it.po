@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2000-12-28 23:29+0100\n"
+"POT-Creation-Date: 2000-12-29 00:08+0100\n"
 "PO-Revision-Date: 2000-12-28 23:49+01:00\n"
 "Last-Translator: Brisa Francesco <fbrisa@yahoo.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -268,7 +268,7 @@ msgstr " Generale "
 
 #: glade/object_props.c:9
 msgid "Is stroked"
-msgstr ""
+msgstr "Stroke"
 
 #: glade/object_props.c:10
 msgid "Behind fill"
@@ -552,7 +552,7 @@ msgstr "Disegna una linea a mano libera"
 msgid "Draw text"
 msgstr "Disegna il testo"
 
-#: glade/toolbox.c:22
+#: glade/toolbox.c:22 src/toolbox.c:200
 msgid "Zoom"
 msgstr "Ingrandimento"
 
@@ -562,21 +562,21 @@ msgstr "Porta a 1:1"
 
 #: glade/toolbox.c:24
 msgid "Zoom to page"
-msgstr "Ingrandisci alla pagina"
+msgstr "Adatta alla pagina"
 
 #: glade/toolbox.c:26
 msgid "Zoom out"
-msgstr "Rimpicciolisci"
+msgstr "Riduci"
 
 #: glade/toolbox.c:27
 msgid "Zoom to drawing"
-msgstr "Ingrandisci al disegno"
+msgstr "Adatta al disegno"
 
 #: glade/toolbox.c:28
 msgid "Zoom to selection"
-msgstr "Ingrandisci alla selezione"
+msgstr "Adatta alla selezione"
 
-#: glade/toolbox.c:31 src/dialogs/align.c:108
+#: glade/toolbox.c:31 src/dialogs/align.c:108 src/toolbox.c:162
 msgid "Selection"
 msgstr "Selezione"
 
@@ -618,19 +618,19 @@ msgstr "Modifica del nodo"
 
 #: glade/toolbox.c:41
 msgid "Include one node into selected segments"
-msgstr "Includi un nodo in un segmento selezionato"
+msgstr "Includi un nodo nei segmenti selezionati"
 
 #: glade/toolbox.c:42
 msgid "Delete selected nodes"
-msgstr "Cancella il nodo selezionato"
+msgstr "Cancella i nodi selezionati"
 
 #: glade/toolbox.c:43
 msgid "Convert selected segments to lines"
-msgstr "Converti il segmento selezionato in linee"
+msgstr "Converti i segmenti selezionati in linee"
 
 #: glade/toolbox.c:44
 msgid "Convert selected segments to curves"
-msgstr "Converti il segmento selezionato in curve"
+msgstr "Converti i segmenti selezionati in curve"
 
 #: glade/toolbox.c:45
 msgid "Break apart selected node"
@@ -638,15 +638,15 @@ msgstr "Spezza via il nodo selezionato"
 
 #: glade/toolbox.c:46
 msgid "Join 2 selected endpoints"
-msgstr "Unisci due finelinea selezionati"
+msgstr "Unisci le due estremità di linea selezionate"
 
 #: glade/toolbox.c:47
 msgid "Cusp line at selected nodes"
-msgstr "Aguzza le linee as nodo selezionato"
+msgstr "Aguzza le linee ai nodi selezionati"
 
 #: glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
-msgstr "Smussa le linee al nodo selezionato"
+msgstr "Smussa la linea ai nodi selezionati"
 
 #: glade/toolbox.c:49
 msgid "Symmetric "
@@ -660,7 +660,7 @@ msgstr "Asimmetrico"
 msgid "Close dialog"
 msgstr "Chiudi dialogo"
 
-#: glade/toolbox.c:52
+#: glade/toolbox.c:52 src/toolbox.c:115
 msgid "File"
 msgstr "File"
 
@@ -686,7 +686,7 @@ msgstr "Stampa il disegno"
 
 #: glade/toolbox.c:58
 msgid "Preview print drawing"
-msgstr "Anteprima del disegno"
+msgstr "Anteprima di stampa"
 
 #: glade/toolbox.c:59
 msgid "Save drawing "
@@ -720,41 +720,41 @@ msgstr "No !"
 msgid "Really wanna quit sodipodi ?"
 msgstr "Vuoi davvero uscire da sodipodi ?"
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:67 src/toolbox.c:143
 msgid "Object"
 msgstr "Oggetto"
 
 #: glade/toolbox.c:68
 msgid "Align dialog"
-msgstr "Alline il dialogo"
+msgstr "Allineamento"
 
 #: glade/toolbox.c:69
 msgid "Transformation dialog"
-msgstr "Trasforma dialogo"
+msgstr "Trasformazione"
 
 #: glade/toolbox.c:70
 msgid "Edit font style of selected objects"
-msgstr "Modifica lo stile dei font dell'oggetto selezionato"
+msgstr "Modifica lo stile del carattere del testo selezionato"
 
 #: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
-msgstr "Modifica lo stile dell'oggetto selezionato"
+msgstr "Modifica l'aspetto degli oggetti selezionati"
 
 #: glade/toolbox.c:72
 msgid "Edit fill style of selected objects"
-msgstr "Modifica lo stile di riempimento dell'oggetto selezionato"
+msgstr "Modifica lo stile di riempimento degli oggetti selezionati"
 
 #: glade/toolbox.c:73
 msgid "Edit stroke style of selected objects"
-msgstr "Modifica lo stile di colpo dell'oggetto selezionato"
+msgstr "Modifica lo stile di disegno degli oggetti selezionati"
 
 #: glade/toolbox.c:74
 msgid "Flip selected objects"
-msgstr "Capovolgi l'oggetto selezionato"
+msgstr "Capovolgi gli oggetti selezionati"
 
 #: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
-msgstr "Ruota l'oggetto selezionato di 90° in senso orario"
+msgstr "Ruota gli oggetti selezionati di 90° in senso orario"
 
 #: glade/toolbox.c:76
 msgid "Remove transformation"
@@ -762,9 +762,9 @@ msgstr "Rimuovi la trasformazione"
 
 #: glade/toolbox.c:77
 msgid "Convert selected objects to curves"
-msgstr "Converti l'oggeto selezionato in curve"
+msgstr "Converti gli oggetti selezionati in curve"
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:78 src/toolbox.c:129
 msgid "Edit"
 msgstr "Modifica"
 
@@ -782,11 +782,11 @@ msgstr "Cancella la selezione"
 
 #: glade/toolbox.c:82
 msgid "Paste from clipboard"
-msgstr "Incolla dalla clipboard"
+msgstr "Incolla dal clipboard"
 
 #: glade/toolbox.c:83
 msgid "Copy selection to clipboard"
-msgstr "Copia la selezione nella clipboard"
+msgstr "Copia la selezione"
 
 #: glade/toolbox.c:84
 msgid "Cut selection"
@@ -1241,6 +1241,14 @@ msgstr "Un percorso - qualunque voglia dire"
 msgid "Text object"
 msgstr "Oggetto del testo"
 
+#: src/toolbox.c:175
+msgid "Draw context"
+msgstr "Disegno"
+
+#: src/toolbox.c:214
+msgid "Node edit"
+msgstr "Modifica nodo"
+
 #: src/dialogs/align.c:78
 msgid "Last selected"
 msgstr "Ultimo selezionato"
@@ -1259,382 +1267,4 @@ msgstr "L'elemento piú piccolo"
 
 #: src/dialogs/align.c:103
 msgid "Drawing"
-msgstr "Disegnando"
-
-#~ msgid "_New File"
-#~ msgstr "_Nuovo File"
-
-#~ msgid "New View"
-#~ msgstr "Nuova vista"
-
-#~ msgid "_Import"
-#~ msgstr "_Importa"
-
-#~ msgid "_Export"
-#~ msgstr "_Esporta"
-
-#~ msgid "_Drawing"
-#~ msgstr "_Disegna"
-
-#~ msgid "_Selection"
-#~ msgstr "_Seleziona"
-
-#~ msgid "_Page"
-#~ msgstr "_Pagina"
-
-#~ msgid "Print Pre_view"
-#~ msgstr "Mostra l' Antepri_ma"
-
-#~ msgid "D_uplicate"
-#~ msgstr "D_uplica"
-
-#~ msgid "_Delete"
-#~ msgstr "_Cancella"
-
-#~ msgid "Node Editing..."
-#~ msgstr "Modifica dei nodi..."
-
-#~ msgid "1:2"
-#~ msgstr "1:2"
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
-
-#~ msgid "2:1"
-#~ msgstr "2:1"
-
-#~ msgid "_Interactive"
-#~ msgstr "_Interattivo"
-
-#~ msgid "Toggles desktop borders (rulers and scrollbars on and off)"
-#~ msgstr ""
-#~ "(De)attiva i bordi del desktop (Righelli e linee di scorrimento ON e OFF)"
-
-#~ msgid "Toggle borders"
-#~ msgstr "(De)attiva i bordi"
-
-#~ msgid "_Arrange"
-#~ msgstr "_Arrangia"
-
-#~ msgid "_Align"
-#~ msgstr "_Allinea"
-
-#~ msgid "_Transform"
-#~ msgstr "_Trasforma"
-
-#~ msgid "_Order"
-#~ msgstr "_Ordina"
-
-#~ msgid "Bring to _Front"
-#~ msgstr "Porta in _primo piano"
-
-#~ msgid "Send to _Back"
-#~ msgstr "Porta in _fondo"
-
-#~ msgid "Forward One"
-#~ msgstr "Prossimo"
-
-#~ msgid "Back One"
-#~ msgstr "Precedente"
-
-#~ msgid "Groups selected items"
-#~ msgstr "Raggruppa gli elementi selezionati"
-
-#~ msgid "_Group"
-#~ msgstr "_Groppo"
-
-#~ msgid "Ungroups selected group"
-#~ msgstr "Togli dal gruppo gli elementi selezionati"
-
-#~ msgid "_Ungroup"
-#~ msgstr "_Degruppa"
-
-#~ msgid "_Combine"
-#~ msgstr "_Combina"
-
-#~ msgid "_Break Apart"
-#~ msgstr "Spezza a parte"
-
-#~ msgid "Convert to Cu_rves"
-#~ msgstr "Converti in cu_rve"
-
-#~ msgid "New File"
-#~ msgstr "Nuovo file"
-
-#~ msgid "Open File"
-#~ msgstr "Apri file"
-
-#~ msgid "Open"
-#~ msgstr "Apri"
-
-#~ msgid "Save File"
-#~ msgstr "Salva il file"
-
-#~ msgid "Save\t"
-#~ msgstr "Salva\t"
-
-#~ msgid "Print file"
-#~ msgstr "Stampa il file"
-
-#~ msgid "Undo"
-#~ msgstr "Annulla"
-
-#~ msgid "Fill settings"
-#~ msgstr "Settaggio del riempimento"
-
-#~ msgid "Font settings"
-#~ msgstr "Settaggio dei caratteri"
-
-#~ msgid "Delete selected object(s)"
-#~ msgstr "Cancella gli oggetti selezionati"
-
-#~ msgid "Duplicate selected object(s)"
-#~ msgstr "Duplica gli oggetti selezionati"
-
-#~ msgid "Duplic\t"
-#~ msgstr "Duplica\t"
-
-#~ msgid "Raise selected object(s) to top"
-#~ msgstr "Porta gli oggetti selezionati al primo piano"
-
-#~ msgid "To Front"
-#~ msgstr "Al primo piano"
-
-#~ msgid "Lower selected object(s) to bottom"
-#~ msgstr "Porta gli oggetti selezionati all' ultimo piano"
-
-#~ msgid "To Back"
-#~ msgstr "Al fondo"
-
-#~ msgid "Raise one position"
-#~ msgstr "Aumenta di una posizione"
-
-#~ msgid "Up"
-#~ msgstr "Su"
-
-#~ msgid "Lower one position"
-#~ msgstr "Abbassa di una posizione"
-
-#~ msgid "Down"
-#~ msgstr "Giú"
-
-#~ msgid "Select and transform objects and groups"
-#~ msgstr "Seleziona e trasforma gli oggetti ed i gruppi"
-
-#~ msgid "Select"
-#~ msgstr "Seleziona"
-
-#~ msgid "Edit objects using control nodes"
-#~ msgstr "Modifica gli oggetti usando i nodi di controllo"
-
-#~ msgid "Node"
-#~ msgstr "Nodo"
-
-#~ msgid "Rect"
-#~ msgstr "Rettangoli"
-
-#~ msgid "Draw ellipses"
-#~ msgstr "Disegna elisse"
-
-#~ msgid "Ellipse"
-#~ msgstr "Elisse"
-
-#~ msgid "Draw freeform lines"
-#~ msgstr "Disegna una linea libera"
-
-#~ msgid "Draw\t"
-#~ msgstr "Disegna\t"
-
-#~ msgid "Write text"
-#~ msgstr "Scrivi testo"
-
-#~ msgid "Left button zooms in, right out"
-#~ msgstr "Bottone sinistro ingrandisce, il destro rimpicciolisce"
-
-#~ msgid "Copyright Lauris Kaplinski 1999-2000."
-#~ msgstr "Copyright Lauris Kaplinski 1999-2000."
-
-#~ msgid ""
-#~ "A Vector Drawing Program.\n"
-#~ "Released under GPL"
-#~ msgstr ""
-#~ "Un programma di disegno vettoriale.\n"
-#~ "Distribuito sotto la GPL"
-
-#~ msgid "Export picture to png"
-#~ msgstr "Esporta l'immagine in png"
-
-#~ msgid "Set dimensions"
-#~ msgstr "Setta le dimensioni"
-
-#~ msgid "Where to export"
-#~ msgstr "Dove esportare"
-
-#~ msgid "Filename:"
-#~ msgstr "Nome del file :"
-
-#~ msgid "Png file name"
-#~ msgstr "Nome del file PNG"
-
-#~ msgid "Image size"
-#~ msgstr "Dimensione dell'immagine"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "Width"
-#~ msgstr "Larghezza"
-
-#~ msgid "Height"
-#~ msgstr "Altezza"
-
-#~ msgid "Exported as"
-#~ msgstr "Esporta come"
-
-#~ msgid "pixels"
-#~ msgstr "pixels"
-
-#~ msgid "dpi"
-#~ msgstr "dpi"
-
-#~ msgid "Lock aspect ratio"
-#~ msgstr "Mantieni le proporzioni"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0 Mb"
-
-#~ msgid "Uncompressed file size:"
-#~ msgstr "Dimensione del file non compressa :"
-
-#~ msgid "_Uus"
-#~ msgstr "_New"
-
-#~ msgid "Import"
-#~ msgstr "Importa"
-
-#~ msgid "Duplicate"
-#~ msgstr "Duplica"
-
-#~ msgid "Order"
-#~ msgstr "Ordina"
-
-#~ msgid "Toggle Borders"
-#~ msgstr "(De)attiva i bordi"
-
-#~ msgid "Drawing Context"
-#~ msgstr "Contesto del disegno"
-
-#~ msgid "Rectangle"
-#~ msgstr "Rettangolo"
-
-#~ msgid "Freehand"
-#~ msgstr "Mano libera"
-
-#~ msgid "Nodes"
-#~ msgstr "Nodi"
-
-#~ msgid "Document"
-#~ msgstr "Documento"
-
-#~ msgid "Disegna rettangolo"
-#~ msgstr "Dessiner un rectangle"
-
-#~ msgid ""
-#~ "10%\n"
-#~ "25%\n"
-#~ "50%\n"
-#~ "75%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "300%\n"
-#~ "500%\n"
-#~ msgstr ""
-#~ "10%\n"
-#~ "25%\n"
-#~ "50%\n"
-#~ "75%\n"
-#~ "100%\n"
-#~ "150%\n"
-#~ "200%\n"
-#~ "300%\n"
-#~ "500%\n"
-
-#~ msgid "Select zom factor"
-#~ msgstr "Seleziona il fattore di ingrandimento"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid " Move "
-#~ msgstr " Muovi "
-
-#~ msgid "move relative in"
-#~ msgstr "Muovi relativamente in"
-
-#~ msgid ""
-#~ "pixel\n"
-#~ "points\n"
-#~ "millimeter\n"
-#~ "centimeter\n"
-#~ "inch\n"
-#~ msgstr ""
-#~ "pixel\n"
-#~ "points\n"
-#~ "millimetri\n"
-#~ "centimetri\n"
-#~ "pollici\n"
-
-#~ msgid " Rotate "
-#~ msgstr " Ruota "
-
-#~ msgid "90°"
-#~ msgstr "90°"
-
-#~ msgid "180°"
-#~ msgstr "180°"
-
-#~ msgid "270°"
-#~ msgstr "270°"
-
-#~ msgid "any"
-#~ msgstr "qualsiasi"
-
-#~ msgid "right"
-#~ msgstr "destra"
-
-#~ msgid "left"
-#~ msgstr "sinistra"
-
-#~ msgid " Scale "
-#~ msgstr " Scala"
-
-#~ msgid " flip "
-#~ msgstr " capovolgi "
-
-#~ msgid "%  "
-#~ msgstr "%  "
-
-#~ msgid "make copy"
-#~ msgstr "fai una copia"
-
-#~ msgid "Guidelines setup"
-#~ msgstr "Impostazione delle guide"
-
-#~ msgid "move horizontal"
-#~ msgstr "muovi orizzontalmente"
-
-#~ msgid "move vertival"
-#~ msgstr "muovi verticalmente"
-
-#~ msgid "close dialog"
-#~ msgstr "chiudi il dialogo"
+msgstr "Disegno"
