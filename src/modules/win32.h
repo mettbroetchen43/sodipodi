@@ -71,4 +71,16 @@ const char *sp_win32_get_doc_dir (void);
 const char *sp_win32_get_locale_dir (void);
 const char *sp_win32_get_appdata_dir (void);
 
+#include <libarikkei/arikkei-strlib.h>
+
+#ifdef _UNICODE
+#define sp_w32_utf8_strdup(T) arikkei_ucs2_utf8_strdup (T)
+#define sp_utf8_w32_strdup(s) arikkei_utf8_ucs2_strdup (s)
+#else
+#define sp_w32_utf8_strdup(T) sp_multibyte_utf8_strdup (T)
+#define sp_utf8_w32_strdup(s) sp_utf8_multibyte_strdup (s)
+unsigned char *sp_multibyte_utf8_strdup (const char *mbs);
+char *sp_utf8_multibyte_strdup (const unsigned char *utf8);
+#endif
+
 #endif

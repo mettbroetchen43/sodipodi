@@ -14,7 +14,9 @@
 
 #include <png.h>
 
-#include <libarikkei/arikkei-strlib.h>
+#ifdef WIN32
+#include "modules/win32.h"
+#endif
 
 #include <glib.h>
 
@@ -246,11 +248,7 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 
 	/* open the file */
 #ifdef WIN32
-#ifdef _UNICODE
-	tfilename = arikkei_utf8_ucs2_strdup (filename);
-#else
-	tfilename = strdup (filename);
-#endif
+	tfilename = sp_utf8_w32_strdup (filename);
 	fp = _tfopen (tfilename, TEXT("wb"));
 	free (tfilename);
 #else

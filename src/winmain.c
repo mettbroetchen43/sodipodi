@@ -31,7 +31,15 @@ WinMain (struct HINSTANCE__ *hInstance,
 	 int                 nCmdShow)
 {
 	int ret;
+
+#ifdef DEBUG
+#ifndef _UNICODE
+	g_warning ("Using ANSI/Multibyte character set");
+#endif
+#endif
+
 	ret = main (__argc, __argv);
+
 	return ret;
 }
 

@@ -411,6 +411,18 @@ sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flag
  *
  */
 
+static GdkPixbuf *
+gdk_pixbuf_new_from_utf8_file (const unsigned char *utf8fn, void *unused)
+{
+	unsigned char *osfn;
+	gsize bytesin, bytesout;
+	GdkPixbuf *pb;
+	osfn = g_filename_from_utf8 (utf8fn, strlen (utf8fn), &bytesin, &bytesout, NULL);
+	pb = gdk_pixbuf_new_from_file (osfn, NULL);
+	g_free (osfn);
+	return pb;
+}
+
 GdkPixbuf *
 sp_image_repr_read_image (SPRepr * repr)
 {
@@ -424,7 +436,7 @@ sp_image_repr_read_image (SPRepr * repr)
 		if (strncmp (filename,"file:",5) == 0) {
 			fullname = g_filename_from_uri(filename, NULL, NULL);
 			if (fullname) {
-				pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
+				pixbuf = gdk_pixbuf_new_from_utf8_file (fullname, NULL);
 				g_free (fullname);
 				if (pixbuf != NULL) return pixbuf;
 			}
@@ -438,19 +450,19 @@ sp_image_repr_read_image (SPRepr * repr)
 			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
 			if (!docbase) docbase = "./";
 			fullname = g_strconcat (docbase, filename, NULL);
-			pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
+			pixbuf = gdk_pixbuf_new_from_utf8_file (fullname, NULL);
 			g_free (fullname);
 			if (pixbuf != NULL) return pixbuf;
 		} else {
 			/* try absolute filename */
-			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+			pixbuf = gdk_pixbuf_new_from_utf8_file (filename, NULL);
 			if (pixbuf != NULL) return pixbuf;
 		}
 	}
 	/* at last try to load from sp absolute path name */
 	filename = sp_repr_attr (repr, "sodipodi:absref");
 	if (filename != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+		pixbuf = gdk_pixbuf_new_from_utf8_file (filename, NULL);
 		if (pixbuf != NULL) return pixbuf;
 	}
 	/* Nope: We do not find any valid pixmap file :-( */

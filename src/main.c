@@ -640,6 +640,9 @@ sp_process_args (int argc, const char **argv)
 		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'b', "export-svg", &val)) {
 			/* --export-svg */
 			sp_export_svg = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'y', "gtk-dialogs", NULL)) {
+			/* --gtk-dialogs */
+			use_gtk_dialogs = TRUE;
 		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'h', "help", NULL)) {
 			/* --help */
 			printusage ();

@@ -808,8 +808,7 @@ sp_modules_menu_about_new (void)
 void
 sp_module_system_menu_open (SPMenu *menu)
 {
-	sp_menu_append (menu, _("Scalable Vector Graphic (SVG)"), _("Sodipodi native file format and W3C standard"),
-			SP_MODULE_KEY_INPUT_SVG);
+	sp_menu_append (menu, _("Scalable Vector Graphic (SVG)"), _("Sodipodi native file format and W3C standard"), SP_MODULE_KEY_INPUT_SVG);
 }
 
 void

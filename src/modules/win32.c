@@ -16,6 +16,14 @@
 #include <config.h>
 #endif
 
+#ifdef _DEBUG
+#ifndef _UNICODE
+#define WIN32MBDEBUG
+#endif
+#endif
+
+#include <tchar.h>
+
 #include <libarikkei/arikkei-strlib.h>
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
@@ -26,25 +34,18 @@
 
 #include "win32.h"
 
-#ifdef _UNICODE
-#define sp_w32_utf8_strdup(T) arikkei_ucs2_utf8_strdup (T)
-#define sp_utf8_w32_strdup(s) arikkei_utf8_ucs2_strdup (s)
-#else
-#define sp_w32_utf8_strdup(T) strdup (T)
-#define sp_utf8_w32_strdup(s) strdup (s)
-#endif
-
 /* Initialization */
 
 static unsigned int SPWin32Modal = FALSE;
+static unsigned int SPWin32TimerBlocked = FALSE;
 
-#define SP_FOREIGN_MAX_ITER 10
+#define SP_FOREIGN_MAX_ITER 4
 
 VOID CALLBACK
 sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	static int cdown = 0;
-	if (!cdown) {
+	if (!cdown	&& !SPWin32TimerBlocked) {
 		while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
 			gtk_main_iteration_do (FALSE);
 		}
@@ -80,7 +81,9 @@ sp_win32_gdk_event_handler (GdkEvent *event)
 			break;
 		}
 	}
+	SPWin32TimerBlocked = FALSE;
 	gtk_main_do_event (event);
+	SPWin32TimerBlocked = FALSE;
 }
 
 #ifdef GLOBAL_USE_TIMER
@@ -526,6 +529,10 @@ sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned 
 		return NULL;
     }
 
+#ifdef WIN32MBDEBUG
+	g_print ("Input file '%s'\n", fnbuf);
+#endif
+
 	return sp_w32_utf8_strdup (fnbuf);
 }
 
@@ -591,10 +598,33 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
     }
 	*spns = (ofn.nFilterIndex != 2);
 
+#ifdef WIN32MBDEBUG
+	g_print ("Output file '%s'\n", fnbuf);
+#endif
+
 	return sp_w32_utf8_strdup (fnbuf);
 }
 
 /* Stuff */
+
+static unsigned char *
+sp_win32_get_regkey_utf8 (HKEY hKey, LPCTSTR lpSubKey, LPCTSTR lpValueName)
+{
+	TCHAR pathval[4096];
+	DWORD len = 4096;
+	LONG ret;
+	HKEY key;
+
+	ret = RegOpenKeyEx (hKey, lpSubKey, 0, KEY_QUERY_VALUE, &key);
+	if (ret == ERROR_SUCCESS) {
+		ret = RegQueryValueEx(key, lpValueName, NULL, NULL, (LPBYTE) pathval, &len);
+		RegCloseKey(hKey);
+		if (ret == ERROR_SUCCESS) {
+			return sp_w32_utf8_strdup (pathval);
+		}
+	}
+	return NULL;
+}
 
 /*
  * config: HKEY_CURRENT_USER\\Volatile Environment
@@ -604,7 +634,7 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 static const char *
 sp_win32_ichigo (void)
 {
-	static char *ichigo = NULL;
+	static unsigned char *ichigo = NULL;
 	TCHAR pathval[4096];
     DWORD len = 4096;
     HKEY hKey;
@@ -612,22 +642,30 @@ sp_win32_ichigo (void)
 
 	if (ichigo) return ichigo;
 
-	ret = RegOpenKeyEx (HKEY_LOCAL_MACHINE, TEXT ("Software\\Sodipodi\\Ichigo"), 0, KEY_QUERY_VALUE, &hKey);
-	if (ret != ERROR_SUCCESS) {
-		ichigo = ".";
-		return ichigo;
+	ichigo = sp_win32_get_regkey_utf8 (HKEY_LOCAL_MACHINE, TEXT ("Software\\Sodipodi\\Ichigo"), TEXT ("Path"));
+	if (!ichigo) ichigo = sp_win32_get_regkey_utf8 (HKEY_CURRENT_USER, TEXT ("Software\\Sodipodi\\Ichigo"), TEXT ("Path"));
+	if (!ichigo) {
+		unsigned char *ppath;
+		/* Try program path */
+		if (GetModuleFileName (NULL, pathval, 4096)) {
+			ppath = sp_w32_utf8_strdup (pathval);
+			ichigo = g_dirname (ppath);
+			free (ppath);
+		}
+	}
+	if (!ichigo) {
+		/* Try current dir */
+		if (_tgetcwd (pathval, 4096)) {
+			ichigo = sp_w32_utf8_strdup (pathval);
+		} else {
+			/* Crap */
+			ichigo = ".";
+		}
 	}
 
-	ret = RegQueryValueEx(hKey, TEXT ("Path"), NULL, NULL, (LPBYTE) pathval, &len);
-
-    RegCloseKey(hKey);
-
-	if(ret != ERROR_SUCCESS) {
-		ichigo = ".";
-		return ichigo;
-	}
-
-	ichigo = sp_w32_utf8_strdup (pathval);
+#ifdef WIN32MBDEBUG
+	g_print ("Ichigo '%s'\n", ichigo);
+#endif
 
 	return ichigo;
 }
@@ -638,6 +676,9 @@ sp_win32_get_data_dir (void)
 	static char *path = NULL;
 	if (path) return path;
 	path = g_build_filename (sp_win32_ichigo (), "share\\sodipodi", NULL);
+#ifdef WIN32MBDEBUG
+	g_print ("Datadir '%s'\n", path);
+#endif
 	return path;
 } 
 
@@ -646,7 +687,20 @@ sp_win32_get_doc_dir (void)
 {
 	static char *path = NULL;
 	if (path) return path;
-	path = g_build_filename (g_get_home_dir (), "My Documents", NULL);
+	path = sp_win32_get_regkey_utf8 (HKEY_CURRENT_USER, TEXT ("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"), TEXT ("Personal"));
+	if (!path) {
+		TCHAR pathval[4096];
+		/* Try current dir */
+		if (_tgetcwd (pathval, 4096)) {
+			path = sp_w32_utf8_strdup (pathval);
+		} else {
+			/* Crap */
+			path = ".";
+		}
+	}
+#ifdef WIN32MBDEBUG
+	g_print ("Docdir '%s'\n", path);
+#endif
 	return path;
 } 
 
@@ -656,6 +710,9 @@ sp_win32_get_locale_dir (void)
 	static char *path = NULL;
 	if (path) return path;
 	path = g_build_filename (sp_win32_ichigo (), "share\\locale", NULL);
+#ifdef WIN32MBDEBUG
+	g_print ("Localedir '%s'\n", path);
+#endif
 	return path;
 } 
 
@@ -663,33 +720,72 @@ const char *
 sp_win32_get_appdata_dir (void)
 {
 	static char *path = NULL;
-	char *pathvalutf8;
-	TCHAR pathval [4096];
-    DWORD len = 4096;
-    HKEY hKey;
-    LONG ret;
-
+	TCHAR pathval[4096];
+	char *base, *subdir;
 	if (path) return path;
-
-	ret = RegOpenKeyEx (HKEY_CURRENT_USER, TEXT ("Volatile Environment"), 0, KEY_QUERY_VALUE, &hKey);
-	if (ret != ERROR_SUCCESS) {
-		path = ".";
-		return path;
+	subdir = "Sodipodi";
+	base = sp_win32_get_regkey_utf8 (HKEY_CURRENT_USER, TEXT ("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"), TEXT ("AppData"));
+	if (!base) {
+		unsigned char *ppath;
+		/* Try program path */
+		if (GetModuleFileName (NULL, pathval, 4096)) {
+			ppath = sp_w32_utf8_strdup (pathval);
+			base = g_dirname (ppath);
+			free (ppath);
+			subdir = "AppData";
+		}
+	}
+	if (!base) {
+		/* Try current dir */
+		if (_tgetcwd (pathval, 4096)) {
+			base = sp_w32_utf8_strdup (pathval);
+		} else {
+			/* Crap */
+			base = strdup (".");
+		}
 	}
 
-	ret = RegQueryValueEx(hKey, TEXT ("APPDATA"), NULL, NULL, (LPBYTE) pathval, &len);
+	path = g_build_filename (base, subdir, NULL);
+	free (base);
 
-    RegCloseKey(hKey);
-
-	if(ret != ERROR_SUCCESS) {
-		path = ".";
-		return path;
-	}
-
-	pathvalutf8 = sp_w32_utf8_strdup (pathval);
-	path = g_build_filename (pathvalutf8, "Sodipodi", NULL);
-	free (pathvalutf8);
+#ifdef WIN32MBDEBUG
+	g_print ("Appdata directory '%s'\n", path);
+#endif
 
 	return path;
 }
+
+#ifndef _UNICODE
+unsigned char *
+sp_multibyte_utf8_strdup (const char *mbs)
+{
+	unsigned char *utf8;
+	LPWSTR ws;
+	int wslen;
+	/* Find the number of wide chars needed */
+	wslen = MultiByteToWideChar (CP_ACP, 0, mbs, strlen (mbs), NULL, 0);
+	ws = malloc ((wslen + 1) * sizeof (wchar_t));
+	MultiByteToWideChar (CP_ACP, 0, mbs, strlen (mbs), ws, wslen);
+	ws[wslen] = 0;
+	utf8 = arikkei_ucs2_utf8_strdup (ws);
+	free (ws);
+	return utf8;
+}
+
+char *
+sp_utf8_multibyte_strdup (const unsigned char *utf8)
+{
+	unsigned short *ucs2;
+	LPSTR mbs;
+	int mbslen;
+	ucs2 = arikkei_utf8_ucs2_strdup (utf8);
+	mbslen = WideCharToMultiByte (CP_ACP, 0, ucs2, arikkei_ucs2_strlen (ucs2), NULL, 0, NULL, NULL);
+	mbs = malloc ((mbslen + 1) * sizeof (char));
+	WideCharToMultiByte (CP_ACP, 0, ucs2, arikkei_ucs2_strlen (ucs2), mbs, mbslen, NULL, NULL);
+	mbs[mbslen] = 0;
+	free (ucs2);
+	return mbs;
+}
+
+#endif
 

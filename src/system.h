@@ -16,6 +16,14 @@
 #include "modules/win32.h"
 #endif
 
+#ifdef __MAIN_C__
+unsigned int use_gtk_dialogs = FALSE;
+#else
+extern unsigned int use_gtk_dialogs;
+#endif
+
+/* Place for icons, including icons.svg  */
+
 #ifndef SODIPODI_PIXMAPDIR
 #ifdef WIN32
 #define SODIPODI_PIXMAPDIR sp_win32_get_data_dir ()
@@ -31,6 +39,8 @@
 #define SODIPODI_APPDATADIR g_get_home_dir ()
 #endif
 #endif
+
+/* Default places for opening and saving */
 
 #ifndef SODIPODI_DOCDIR
 #ifdef WIN32

@@ -101,7 +101,7 @@ sp_file_open (const unsigned char *uri, const unsigned char *key)
 	}
 }
 
-#ifndef WITH_KDE
+#if 0
 static void
 file_open_ok (GtkWidget *widget, GtkFileSelection *fs)
 {
@@ -139,51 +139,58 @@ file_open_cancel (GtkButton *b, GtkFileSelection *fs)
 {
 	gtk_widget_destroy (GTK_WIDGET (fs));
 }
+#endif
 
 static void
 sp_file_open_dialog_type_selected (SPMenu *menu, gpointer itemdata, GObject *fsel)
 {
 	g_object_set_data (fsel, "type-key", itemdata);
 }
-#endif
 
 void sp_file_open_dialog (gpointer object, gpointer data)
 {
-#ifdef WITH_KDE
-	char *filename;
-	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
-	filename = sp_kde_get_open_filename (open_path, "*.svg *.svgz|SVG files\n*.*|All files", _("Select file to open"));
-	if (filename) {
-		if (open_path) g_free (open_path);
-		open_path = g_dirname (filename);
-		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
-		sp_file_open (filename, NULL);
-		g_free (filename);
-	}
-#else
-#ifdef WIN32
-	char *filename;
-	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
-	filename = sp_win32_get_open_filename (open_path, "SVG files|*.svg;*.svgz|All files|*|", _("Select file to open"));
-	if (filename) {
-		if (open_path) g_free (open_path);
-		open_path = g_dirname (filename);
-		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
-		sp_file_open (filename, NULL);
-		free (filename);
-	}
-#else
 	GtkFileSelection *fsel;
 	GtkWidget *hb, *l, *om, *m;
+	int res;
 
+	/* Initialize default open location */
 	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
+
+#ifdef WITH_KDE
+	if (!use_gtk_dialogs) {
+		char *filename;
+		filename = sp_kde_get_open_filename (open_path, "*.svg *.svgz|SVG files\n*.*|All files", _("Select file to open"));
+		if (filename) {
+			if (open_path) g_free (open_path);
+			open_path = g_dirname (filename);
+			if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
+			sp_file_open (filename, NULL);
+			g_free (filename);
+		}
+		return;
+	}
+#endif
+#ifdef WIN32
+	if (!use_gtk_dialogs) {
+		char *filename;
+		filename = sp_win32_get_open_filename (open_path, "SVG files|*.svg;*.svgz|All files|*|", _("Select file to open"));
+		if (filename) {
+			if (open_path) g_free (open_path);
+			open_path = g_dirname (filename);
+			if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
+			sp_file_open (filename, NULL);
+			free (filename);
+		}
+		return;
+	}
+#endif
 
 	fsel = (GtkFileSelection *) gtk_file_selection_new (_("Select file to open"));
 	gtk_file_selection_hide_fileop_buttons (fsel);
 
-	g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_open_ok), fsel);
-	g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_open_cancel), fsel);
-
+	/* g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_open_ok), fsel); */
+	/* g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_open_cancel), fsel); */
+	open_path = NULL;
 	if (open_path) gtk_file_selection_set_filename (fsel, open_path);
 
 	/* Create file type box */
@@ -192,12 +199,8 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	om = gtk_option_menu_new ();
 	gtk_box_pack_end (GTK_BOX (hb), om, FALSE, FALSE, 0);
 	m = sp_menu_new ();
-#ifdef WITH_MODULES
 	sp_module_system_menu_open (SP_MENU (m));
-#else
-	sp_menu_append (SP_MENU (m), _("Scalable Vector Graphic (SVG)"), _("Sodipodi native file format and W3C standard"), NULL);
 	gtk_widget_set_sensitive (m, FALSE);
-#endif
 	g_object_set_data (G_OBJECT (fsel), "type-key", ((SPMenu *) m)->activedata);
 	g_signal_connect (G_OBJECT (m), "selected", G_CALLBACK (sp_file_open_dialog_type_selected), fsel);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
@@ -205,9 +208,35 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 	gtk_widget_show_all (hb);
 
-	gtk_widget_show ((GtkWidget *) fsel);
-#endif
-#endif
+	res = gtk_dialog_run ((GtkDialog *) fsel);
+
+	while (res != GTK_RESPONSE_CANCEL) {
+		unsigned char *filename;
+
+		filename = g_strdup (gtk_file_selection_get_filename (fsel));
+
+		if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+			if (open_path) g_free (open_path);
+			if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
+				open_path = g_strconcat (filename, G_DIR_SEPARATOR_S, NULL);
+				g_free (filename);
+			} else {
+				open_path = filename;
+			}
+			gtk_file_selection_set_filename (fsel, open_path);
+		} else if (filename != NULL) {
+			gpointer key;
+			if (open_path) g_free (open_path);
+			open_path = g_dirname (filename);
+			if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
+			key = g_object_get_data (G_OBJECT (fsel), "type-key");
+			sp_file_open (filename, key);
+			g_free (filename);
+			break;
+		}
+	}
+
+	gtk_widget_destroy ((GtkWidget *) fsel);
 }
 
 /* Save */
@@ -238,7 +267,7 @@ sp_file_save_dialog (SPDocument *doc)
 		sp_file_do_save (doc, filename, (spns) ? SP_MODULE_KEY_OUTPUT_SVG_SODIPODI : SP_MODULE_KEY_OUTPUT_SVG);
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
-		save_path = g_strdup (save_path);
+		if (save_path) save_path = g_strconcat (save_path, G_DIR_SEPARATOR_S, NULL);
 		g_free (filename);
 	}
 #else
@@ -251,7 +280,7 @@ sp_file_save_dialog (SPDocument *doc)
 		sp_file_do_save (doc, filename, (spns) ? SP_MODULE_KEY_OUTPUT_SVG_SODIPODI : SP_MODULE_KEY_OUTPUT_SVG);
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
-		save_path = g_strdup (save_path);
+		if (save_path) save_path = g_strconcat (save_path, G_DIR_SEPARATOR_S, NULL);
 		free (filename);
 	}
 #else
@@ -289,7 +318,7 @@ sp_file_save_dialog (SPDocument *doc)
 		sp_file_do_save (doc, filename, ((SPMenu *) menu)->activedata);
 		if (save_path) g_free (save_path);
 		save_path = g_dirname (filename);
-		save_path = g_strdup (save_path);
+		if (save_path) save_path = g_strconcat (save_path, G_DIR_SEPARATOR_S, NULL);
 	}
 
 	gtk_widget_destroy (dlg);
@@ -398,8 +427,12 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 	    (strcmp (e, "tiff") == 0) ||
 	    (strcmp (e, "xpm") == 0)) {
 		/* Try pixbuf */
+		unsigned char *osfn;
+		gsize bytesin, bytesout;
 		GdkPixbuf *pb;
-		pb = gdk_pixbuf_new_from_file (filename, NULL);
+		osfn = g_filename_from_utf8 (filename, strlen (filename), &bytesin, &bytesout, NULL);
+		pb = gdk_pixbuf_new_from_file (osfn, NULL);
+		g_free (osfn);
 		if (pb) {
 			/* We are readable */
 			repr = sp_repr_new ("image");

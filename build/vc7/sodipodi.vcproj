@@ -15,12 +15,12 @@
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			CharacterSet="1">
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src;..\..\src\libpng;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.33debug\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -32,6 +32,15 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/nod:kernel32.lib /nod:advapi32.lib /nod:user32.lib /nod:gdi32.lib 
+/nod:shell32.lib /nod:comdlg32.lib /nod:version.lib /nod:mpr.lib 
+/nod:rasapi32.lib /nod:winmm.lib /nod:winspool.lib /nod:vfw32.lib 
+/nod:secur32.lib /nod:oleacc.lib /nod:oledlg.lib /nod:sensapi.lib
+unicows.lib
+kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib 
+version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib 
+secur32.lib oleacc.lib oledlg.lib sensapi.lib
+"
 				AdditionalDependencies="libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
 				OutputFile="$(OutDir)/sodipodi.exe"
 				LinkIncremental="2"
@@ -63,14 +72,14 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="1">
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
 				AdditionalIncludeDirectories="..\..\src;..\..\src\libpng;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;VERSION=\&quot;0.33beta\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;VERSION=\&quot;0.33\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
 				RuntimeLibrary="4"
@@ -84,7 +93,16 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="unicows.lib libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
+				AdditionalOptions="/nod:kernel32.lib /nod:advapi32.lib /nod:user32.lib /nod:gdi32.lib 
+/nod:shell32.lib /nod:comdlg32.lib /nod:version.lib /nod:mpr.lib 
+/nod:rasapi32.lib /nod:winmm.lib /nod:winspool.lib /nod:vfw32.lib 
+/nod:secur32.lib /nod:oleacc.lib /nod:oledlg.lib /nod:sensapi.lib
+unicows.lib
+kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib 
+version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib 
+secur32.lib oleacc.lib oledlg.lib sensapi.lib
+"
+				AdditionalDependencies="libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
 				OutputFile="$(OutDir)/sodipodi.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\GnuWin32\lib"
@@ -113,9 +131,6 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
-			<File
-				RelativePath="..\..\src\application.c">
-			</File>
 			<File
 				RelativePath="..\..\src\arc-context.c">
 			</File>
@@ -165,9 +180,6 @@
 				RelativePath="..\..\src\event-context.c">
 			</File>
 			<File
-				RelativePath="..\..\src\extension.c">
-			</File>
-			<File
 				RelativePath="..\..\src\file.c">
 			</File>
 			<File
@@ -187,9 +199,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\main.c">
-			</File>
-			<File
-				RelativePath="..\..\src\marshal.c">
 			</File>
 			<File
 				RelativePath="..\..\src\module.c">
@@ -382,9 +391,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\..\src\application.h">
-			</File>
-			<File
 				RelativePath="..\..\src\arc-context.h">
 			</File>
 			<File
@@ -439,9 +445,6 @@
 				RelativePath="..\..\src\event-context.h">
 			</File>
 			<File
-				RelativePath="..\..\src\extension.h">
-			</File>
-			<File
 				RelativePath="..\..\src\extensions-skeleton.h">
 			</File>
 			<File
@@ -467,9 +470,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\macros.h">
-			</File>
-			<File
-				RelativePath="..\..\src\marshal.h">
 			</File>
 			<File
 				RelativePath="..\..\src\module.h">

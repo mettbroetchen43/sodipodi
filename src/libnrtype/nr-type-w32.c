@@ -561,15 +561,20 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
     return 1;
 }
 
+static LOGFONT *lfdata = NULL;
+static int lfsize = 0;
+static int lflen = 0;
+
 static int CALLBACK
 nr_type_w32_typefaces_enum_proc (LOGFONT *lfp, TEXTMETRIC *metrics, DWORD fontType, LPARAM lParam)
 {
     if (fontType == TRUETYPE_FONTTYPE) {
-        LOGFONT lf;
-
-        lf = *lfp;
-
-        EnumFontFamiliesEx (hdc, &lf, (FONTENUMPROC) nr_type_w32_inner_enum_proc, lParam, 0);
+		if (lflen >= lfsize) {
+			lfsize = MAX (16, (lfsize << 2));
+			lfdata = realloc (lfdata, lfsize * sizeof (LOGFONT));
+		}
+		lfdata[lflen++] = *lfp;
+		/* EnumFontFamiliesEx (hdc, &lf, (FONTENUMPROC) nr_type_w32_inner_enum_proc, lParam, 0); */
     }
 
     return 1;
@@ -583,7 +588,8 @@ nr_type_w32_init (void)
 
 	/* g_print ("Loading W32 type directory...\n"); */
 
-    hdc = CreateDC (TEXT ("DISPLAY"), NULL, NULL, NULL);
+	/* We have to use ANSI version here because MSLU does not work */
+    hdc = CreateDCA ("DISPLAY", NULL, NULL, NULL);
 
 	arikkei_dict_setup_string (&familydict, 131);
 	arikkei_dict_setup_string (&namedict, 537);
@@ -591,7 +597,15 @@ nr_type_w32_init (void)
     /* read system font directory */
     memset (&logfont, 0, sizeof (LOGFONT));
     logfont.lfCharSet = DEFAULT_CHARSET;
+	/* Step 1 - families */
     EnumFontFamiliesEx (hdc, &logfont, (FONTENUMPROC) nr_type_w32_typefaces_enum_proc, 0, 0);
+	/* Step 2 */
+	for (i = 0; i < lflen; i++) {
+		EnumFontFamiliesEx (hdc, &lfdata[i], (FONTENUMPROC) nr_type_w32_inner_enum_proc, 0, 0);
+	}
+	free (lfdata);
+	lflen = 0;
+	lfsize = 0;
 
     /* Fill in lists */
     NRW32Families.length = families_len;
