@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-12 15:52+0100\n"
-"PO-Revision-Date: 2003-12-12 18:09+0100\n"
+"POT-Creation-Date: 2003-12-14 04:53+0100\n"
+"PO-Revision-Date: 2003-12-14 16:14+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -50,17 +50,17 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:138 src/verbs.c:463
+#: src/dialogs/export.c:143 src/verbs.c:463
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:143
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:148
 #: src/verbs.c:464
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:148
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:153
 #: src/interface.c:591 src/toolbox.c:488 src/verbs.c:465
 msgid "Selection"
 msgstr "Výběr"
@@ -354,80 +354,89 @@ msgid "Custom paper"
 msgstr "Vlastní papír"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:156
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:161
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Jednotky:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:166
-#: src/dialogs/export.c:190 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:171
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
 #: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Šířka:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:175
-#: src/dialogs/export.c:198 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:180
+#: src/dialogs/export.c:203 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Výška:"
 
-#: src/dialogs/export.c:118
+#: src/dialogs/export.c:123
 msgid "Export bitmap"
 msgstr "Exportovat bitmapu"
 
 #. Export area frame
-#: src/dialogs/export.c:127
+#: src/dialogs/export.c:132
 msgid "Export area"
 msgstr "Exportovat oblast"
 
-#: src/dialogs/export.c:160
+#: src/dialogs/export.c:165
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:163
+#: src/dialogs/export.c:168
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:169
+#: src/dialogs/export.c:174
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:172
+#: src/dialogs/export.c:177
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:181
+#: src/dialogs/export.c:186
 msgid "Bitmap size"
 msgstr "Velikost bitmapy"
 
-#: src/dialogs/export.c:190 src/dialogs/export.c:198
+#: src/dialogs/export.c:195 src/dialogs/export.c:203
 msgid "pixels"
 msgstr "pixelů"
 
-#: src/dialogs/export.c:194 src/dialogs/export.c:202
+#: src/dialogs/export.c:199 src/dialogs/export.c:207
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:210
+#: src/dialogs/export.c:215
 msgid "Background color"
 msgstr "Barva pozadí"
 
-#: src/dialogs/export.c:212
+#: src/dialogs/export.c:217
 msgid "Bitmap background:"
 msgstr "Bitmapa na pozadí:"
 
-#: src/dialogs/export.c:217
+#: src/dialogs/export.c:222
 msgid "Export png file"
 msgstr "Exportovat soubor PNG"
 
-#: src/dialogs/export.c:244 src/verbs.c:413
+#: src/dialogs/export.c:249 src/verbs.c:413
 msgid "Export"
 msgstr "Export"
+
+#: src/dialogs/export.c:360
+msgid "Export in progress"
+msgstr "Probíhá export"
+
+#: src/dialogs/export.c:364
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Exportuji [%d × %d] %s"
 
 #: src/dialogs/fill-style.c:86
 msgid "Fill style"
@@ -908,15 +917,15 @@ msgstr "Výchozí"
 msgid "Select file to open"
 msgstr "Vyberte soubor pro otevření"
 
-#: src/file.c:207 src/file.c:307
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
 msgstr "Typ souboru:"
 
-#: src/file.c:292
+#: src/file.c:290
 msgid "Save file"
 msgstr "Uložit soubor"
 
-#: src/file.c:474 src/file.c:484 src/file.c:490
+#: src/file.c:472 src/file.c:482 src/file.c:488
 msgid "Select file to import"
 msgstr "Vyberte soubor pro import"
 
@@ -1156,15 +1165,15 @@ msgstr "Dialogy"
 msgid "Modules"
 msgstr "Moduly"
 
-#: src/main.c:120 src/main.c:589
+#: src/main.c:120 src/main.c:617
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívat X server (pouze zpracovat soubory z konzole)"
 
-#: src/main.c:123 src/main.c:590
+#: src/main.c:123 src/main.c:618
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokusit se použít X server i pokud není nastavena proměnná $DISPLAY"
 
-#: src/main.c:126 src/main.c:591
+#: src/main.c:126 src/main.c:619
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otevřít zadané dokumenty (řetězce s volbami lze vypustit)"
 
@@ -1178,11 +1187,11 @@ msgstr ""
 "Tisknout dokumenty do zadaného výstupního souboru (pro rouru použijte '| "
 "program')"
 
-#: src/main.c:132 src/main.c:592
+#: src/main.c:132 src/main.c:620
 msgid "Export document to png file"
 msgstr "Export dokumentu do souboru PNG"
 
-#: src/main.c:135 src/main.c:593
+#: src/main.c:135 src/main.c:621
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 
@@ -1190,7 +1199,7 @@ msgstr "Rozlišení použité pro převod SVG do bitmapy (výchozí je 72,0)"
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:594
+#: src/main.c:138 src/main.c:622
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1202,7 +1211,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:595
+#: src/main.c:141 src/main.c:623
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 
@@ -1210,7 +1219,7 @@ msgstr "Šířka generované bitmapy v pixelech (přepisuje dpi)"
 msgid "WIDTH"
 msgstr "ŠÍŘKA"
 
-#: src/main.c:143 src/main.c:596
+#: src/main.c:143 src/main.c:624
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 
@@ -1218,7 +1227,7 @@ msgstr "Výška generované bitmapy v pixelech (přepisuje dpi)"
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:145 src/main.c:597
+#: src/main.c:145 src/main.c:625
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Barva pozadí exportované bitmapy (jakýkoli řetězec s barvou podporovaný SVG)"
@@ -1227,7 +1236,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "BARVA"
 
-#: src/main.c:147 src/main.c:598
+#: src/main.c:147 src/main.c:626
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Export dokumentu do prostého souboru SVG (bez jmenného prostoru \"xmlns:"
@@ -1243,30 +1252,30 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávat přednost bitmapovým ikonám (XPM) před SVG"
 
-#: src/main.c:599
+#: src/main.c:627
 msgid "Print sodipodi version information"
 msgstr "Vytisknout informace o verzi sodipodi"
 
-#: src/main.c:600
+#: src/main.c:628
 msgid "Print help about command-line arguments"
 msgstr "Vytisknout nápovědu o argumentech na příkazovém řádku"
 
-#: src/main.c:749
+#: src/main.c:777
 msgid "Untitled document"
 msgstr "Nepojmenovaný dokument"
 
 #. Show nice dialog box
-#: src/main.c:774
+#: src/main.c:802
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Aplikace Sodipodi narazila na vnitřní chybu a bude nyní uzavřena.\n"
 
-#: src/main.c:775
+#: src/main.c:803
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatické zálohy neuložených dokumentů byly provedeny do těchto míst:\n"
 
-#: src/main.c:776
+#: src/main.c:804
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatické zálohy následujících dokumentů selhaly:\n"
 
@@ -1382,30 +1391,35 @@ msgid "write error occured"
 msgstr "vyskytla se chyba při zápisu"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr "Položka"
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:478
 msgid "Item Properties"
 msgstr "Vlastnosti položky"
 
 #. Select item
-#: src/object-ui.c:120
+#: src/object-ui.c:119
 msgid "Select this"
 msgstr "Vybrat toto"
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr "Vynulovat transformaci"
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr "Provést transformaci"
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr "Učinit citlivé"
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr "Učinit necitlivé"
 
@@ -1414,92 +1428,92 @@ msgstr "Učinit necitlivé"
 msgid "Create link"
 msgstr "Vytvořit odkaz"
 
-#: src/object-ui.c:253 src/verbs.c:431
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
 msgstr "Seskupit"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
 msgstr "Vlastnosti skupiny"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:432
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Rozeskupit"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr "Odkaz"
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr "Vlastnosti odkazu"
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr "Následovat odkaz"
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr "Odstranit odkaz"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
+#: src/object-ui.c:407
 msgid "Image"
 msgstr "Obrázek"
 
 #. Link dialog
-#: src/object-ui.c:402
+#: src/object-ui.c:410
 msgid "Image Properties"
 msgstr "Vlastnosti obrázku"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:788
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr "Sledovat"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
+#: src/object-ui.c:467
 msgid "Shape"
 msgstr "Tvar"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:445
+#: src/object-ui.c:470 src/toolbox.c:445
 msgid "Fill settings"
 msgstr "Nastavení výplně"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:489
+#: src/object-ui.c:497
 msgid "Rect"
 msgstr "Čtyřúhelník"
 
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr "Vlastnosti čtyřúhelníku"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:449
 msgid "Star"
 msgstr "Hvězda"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
 msgstr "Vlastnosti hvězdy"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:450
 msgid "Spiral"
 msgstr "Spirála"
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr "Vlastnosti spirály"
 
@@ -2359,57 +2373,57 @@ msgstr "Konečná barva"
 msgid "Gradient vector"
 msgstr "Vektor přechodu"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr "Žádné objekty"
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr "Více stylů"
 
-#: src/widgets/paint-selector.c:649
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
 msgstr "Bez barvy"
 
 #. Label
-#: src/widgets/paint-selector.c:739
+#: src/widgets/paint-selector.c:747
 msgid "Mode:"
 msgstr "Režim:"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:757
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr "Barevný prostor RGB"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
 msgstr "Barevný prostor CMYK"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr "Získat z pipety"
 
-#: src/widgets/paint-selector.c:789
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
 msgstr "Kreslení barvy"
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr "Lineární přechod"
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr "Kruhový přechod"
 
