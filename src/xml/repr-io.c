@@ -247,21 +247,23 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 		repr_quote_write (file, val);
 		putc ('"', file);
 	}
-
-	fprintf (file, ">");
-
-	for (child = repr->children; child != NULL; child = child->next) {
-		repr_write (child, file, level + 1);
-	}
-
-	if (sp_repr_content (repr)) {
-		repr_quote_write (file, sp_repr_content (repr));
+	
+	if (repr->children || sp_repr_content(repr)) {
+		fputs (">\n", file);
+		
+		for (child = repr->children; child != NULL; child = child->next) {
+			repr_write (child, file, level + 1);
+		}
+		
+		if (sp_repr_content (repr)) {
+			repr_quote_write (file, sp_repr_content (repr));
+		} else {
+			for (i = 0; i < level; i++) fputs ("  ", file);
+		}
+		fprintf (file, "</%s>\n", sp_repr_name (repr));
 	} else {
-		fputs ("\n", file);
-		for (i = 0; i < level; i++) fputs ("  ", file);
+		fputs (" />\n", file);
 	}
-
-	fprintf (file, "</%s>\n", sp_repr_name (repr));
 }
 
 #ifdef HAVE_LIBWMF

@@ -46,6 +46,8 @@ pixmaps = \
 	draw_dynahand.xpm \
 	draw_node.xpm \
 	draw_rect.xpm \
+	draw_star.xpm \
+	draw_spiral.xpm \
 	draw_select.xpm \
 	draw_text.xpm \
 	draw_zoom.xpm \

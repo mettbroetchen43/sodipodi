@@ -240,3 +240,36 @@ sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value
 	return TRUE;
 }
 
+/**
+ * sp_repr_lookup_child:
+ * @repr: 
+ * @key: 
+ * @value: 
+ *
+ * lookup child by (@key, @value)
+ */
+SPRepr *
+sp_repr_lookup_child (SPRepr       *repr,
+                      const guchar *key,
+                      const guchar *value)
+{
+	SPRepr *child;
+	SPReprAttr *attr;
+	GQuark quark;
+
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (value != NULL, NULL);
+
+	quark = g_quark_from_string (key);
+
+	/* Fixme: we should use hash table for faster lookup? */
+	
+	for (child = repr->children; child != NULL; child = child->next) {
+		for (attr = child->attributes; attr != NULL; attr = attr->next) {
+			if ((attr->key == quark) && !strcmp (attr->value, value)) return child;
+		}
+	}
+
+	return NULL;
+}

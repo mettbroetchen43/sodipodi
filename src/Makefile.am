@@ -41,6 +41,8 @@ sodipodi_SOURCES = \
 	sp-shape.c sp-shape.h \
 	sp-rect.c sp-rect.h \
 	sp-ellipse.c sp-ellipse.h \
+	sp-star.c sp-star.h \
+	sp-spiral.c sp-spiral.h \
 	sp-line.c sp-line.h \
 	sp-polyline.c sp-polyline.h \
 	sp-polygon.c sp-polygon.h \
@@ -77,6 +79,8 @@ sodipodi_SOURCES = \
 	nodepath.c nodepath.h \
 	rect-context.c rect-context.h \
 	ellipse-context.c ellipse-context.h \
+	star-context.c star-context.h \
+	spiral-context.c spiral-context.h \
 	draw-context.c draw-context.h \
 	dyna-draw-context.c dyna-draw-context.h \
 	text-context.c text-context.h \
@@ -104,6 +108,7 @@ sodipodi_SOURCES = \
 	preferences-skeleton.h
 
 #	font-wrapper.c font-wrapper.h \
+#
 
 sodipodi_private_libs = \
 	dialogs/libspdialogs.a \

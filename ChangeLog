@@ -1,3 +1,27 @@
+2001-10-23  Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/sp-star.*, src/sp-spiral.*, src/star-context.* and
+	spiral-context.*:
+	Add SPStar, SPStarContext, SPSpiral and SPSpiralContext classes.
+	SPStar and SPSpiral behave as new shape and they can convert to
+	bezier curves. More works are required.
+
+	* glade/draw_star.xpm, glade/draw_spiral.xpm, src/pixmaps/cursor-star.xpm,
+	src/pixmaps/cursor-spiral.xpm:
+	Add toolbox icon and mouse cursor for star and spiral.
+
+	* src/helper/bezier-utils.*:
+	Add lowlevel APIs and reformat source code.
+
+	* src/xml/repr-io.c:
+	Fix repr_write() to generate more short SVG.
+	New code support <foo /> tags generation.
+
+	* src/xml/repr-util.c, src/xml/repr.*, src/sodipodi.c:
+	Add new SPRepr APIs sp_repr_lookup_child(), sp_repr_overwrite (),
+	and sp_repr_document_overwrite ()
+	Now, we can merge ~/.sodipodi/preferences into preferences_skeleton.
+
 2001-10-23  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/file.c (sp_file_new): Use new signatures

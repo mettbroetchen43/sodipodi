@@ -605,6 +605,83 @@ sp_repr_document_root (SPReprDoc * doc)
 	return repr->children;
 }
 
+/**
+ * sp_repr_document_overwrite:
+ * @doc: overwrite into
+ * @source: overwrite it
+ * @key: identify each node by
+ *
+ * Copy all @source subtree into @doc.
+ */
+void
+sp_repr_document_overwrite (SPReprDoc       *doc,
+			    const SPReprDoc *source,
+			    const guchar    *key)
+{
+	SPRepr       *rdoc;
+	const SPRepr *rsrc;
+	
+	rdoc = sp_repr_document_root (doc);
+	rsrc = sp_repr_document_root ((SPReprDoc *) source);
+	
+	sp_repr_overwrite (rdoc->children, rsrc->children, key);
+}
+
+/**
+ * sp_repr_overwrite:
+ * @repr: overwrite into
+ * @src: overwrite it
+ * @key: identify each node by
+ *
+ * Copy all @src subtree into @doc.
+ */
+gboolean
+sp_repr_overwrite (SPRepr       *repr,
+		   const SPRepr *src,
+		   const guchar *key)
+{
+	SPRepr *child;
+	SPReprAttr *attr, *lastattr;
+	
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (src != NULL, FALSE);
+
+	/* Fixme: we should use hash table for faster lookup? */
+	
+	if (src->content != NULL) {
+		if (repr->content != NULL) g_free (repr->content);
+		repr->content = g_strdup (src->content);
+	}
+	
+	for (child = src->children; child != NULL; child = child->next) {
+		SPRepr *rchild;
+		const guchar *value;
+		
+		value = sp_repr_attr (child, key);
+		rchild = sp_repr_lookup_child (repr, key, value);
+		if (rchild) {
+			sp_repr_overwrite (rchild, child, key);
+		} else {
+			rchild = sp_repr_duplicate (child);
+			sp_repr_append_child (repr, rchild);
+		}
+	}
+	
+	/* fixme: We probably should merge, not replace here (Lauris) */
+	while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
+
+	lastattr = NULL;
+	for (attr = src->attributes; attr != NULL; attr = attr->next) {
+		if (lastattr) {
+			lastattr = lastattr->next = sp_attribute_duplicate (attr);
+		} else {
+			lastattr = repr->attributes = sp_attribute_duplicate (attr);
+		}
+	}
+
+	return TRUE;
+}
+
 static SPAttribute *
 sp_attribute_duplicate (const SPAttribute *attr)
 {
@@ -720,5 +797,4 @@ sp_listener_free (SPListener *listener)
 	listener->next = free_listener;
 	free_listener = listener;
 }
-
 

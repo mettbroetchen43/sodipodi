@@ -2104,6 +2104,30 @@ Released under GPL</comments>
 
       <widget>
 	<class>GtkMenuItem</class>
+	<name>star1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_star</handler>
+	  <last_modification_time>Sat, 20 Oct 2001 10:02:13 GMT</last_modification_time>
+	</signal>
+	<label>Star</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>spiral1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_spiral</handler>
+	  <last_modification_time>Sat, 20 Oct 2001 10:02:13 GMT</last_modification_time>
+	</signal>
+	<label>Spiral</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
 	<name>freehand1</name>
 	<signal>
 	  <name>activate</name>

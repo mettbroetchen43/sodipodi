@@ -338,9 +338,8 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 		return;
 	}
 
-	/* fixme: merge preferences */
-	sp_repr_document_unref (sodipodi->preferences);
-	sodipodi->preferences = doc;
+	sp_repr_document_overwrite (sodipodi->preferences, doc, "id");
+	sp_repr_document_unref (doc);
 	g_free (fn);
 }
 

@@ -110,6 +110,10 @@ sp_maintoolbox_create (void)
 		gtk_object_set_data (GTK_OBJECT (t), "SPRectContext", w);
 		w = glade_xml_get_widget (xml, "draw_ellipse");
 		gtk_object_set_data (GTK_OBJECT (t), "SPEllipseContext", w);
+		w = glade_xml_get_widget (xml, "draw_star");
+		gtk_object_set_data (GTK_OBJECT (t), "SPStarContext", w);
+		w = glade_xml_get_widget (xml, "draw_spiral");
+		gtk_object_set_data (GTK_OBJECT (t), "SPSpiralContext", w);
 		w = glade_xml_get_widget (xml, "draw_freehand");
 		gtk_object_set_data (GTK_OBJECT (t), "SPDrawContext", w);
 		w = glade_xml_get_widget (xml, "draw_dynahand");

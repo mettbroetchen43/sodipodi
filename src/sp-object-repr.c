@@ -10,6 +10,8 @@
 #include "sp-image.h"
 #include "sp-rect.h" 
 #include "sp-ellipse.h"
+#include "sp-star.h" 
+#include "sp-spiral.h" 
 #include "sp-line.h"
 #include "sp-polyline.h"
 #include "sp-polygon.h"
@@ -71,6 +73,8 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
 		g_hash_table_insert (dtable, "rect", GINT_TO_POINTER (SP_TYPE_RECT));
 		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
+		g_hash_table_insert (dtable, "star", GINT_TO_POINTER (SP_TYPE_STAR));
+		g_hash_table_insert (dtable, "spiral", GINT_TO_POINTER (SP_TYPE_SPIRAL));
 		g_hash_table_insert (dtable, "circle", GINT_TO_POINTER (SP_TYPE_CIRCLE));
 		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
 		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));

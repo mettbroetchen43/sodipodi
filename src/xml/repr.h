@@ -35,6 +35,10 @@ void sp_repr_document_unref (SPReprDoc * doc);
 SPRepr * sp_repr_document_root (SPReprDoc * doc);
 
 SPReprDoc * sp_repr_document (SPRepr * repr);
+/* Documents Utility */
+void        sp_repr_document_overwrite (SPReprDoc       *doc,
+					const SPReprDoc *source,
+					const guchar    *key);
 
 /* Contents */
 
@@ -122,6 +126,13 @@ void sp_repr_remove_signals (SPRepr * repr);
 
 const guchar *sp_repr_attr_inherited (SPRepr *repr, const guchar *key);
 gboolean sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value);
+
+SPRepr       *sp_repr_lookup_child  (SPRepr    	        *repr,
+				     const guchar       *key,
+				     const guchar       *value);
+gboolean      sp_repr_overwrite     (SPRepr             *repr,
+				     const SPRepr       *src,
+				     const guchar       *key);
 
 
 #endif

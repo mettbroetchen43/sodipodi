@@ -180,7 +180,7 @@
 	<class>GtkTable</class>
 	<name>draw_table</name>
 	<visible>False</visible>
-	<rows>2</rows>
+	<rows>3</rows>
 	<columns>4</columns>
 	<homogeneous>False</homogeneous>
 	<row_spacing>0</row_spacing>
@@ -349,84 +349,6 @@
 
 	<widget>
 	  <class>GtkToggleButton</class>
-	  <name>draw_freehand</name>
-	  <tooltip>Draw freehand line</tooltip>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>released</name>
-	    <handler>sp_event_context_set_freehand</handler>
-	    <last_modification_time>Sun, 03 Sep 2000 22:42:43 GMT</last_modification_time>
-	  </signal>
-	  <relief>GTK_RELIEF_NORMAL</relief>
-	  <active>False</active>
-	  <child>
-	    <left_attach>2</left_attach>
-	    <right_attach>3</right_attach>
-	    <top_attach>1</top_attach>
-	    <bottom_attach>2</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>False</xfill>
-	    <yfill>False</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkPixmap</class>
-	    <name>pixmap8</name>
-	    <filename>draw_freehand.xpm</filename>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <build_insensitive>True</build_insensitive>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>draw_text</name>
-	  <tooltip>Draw text</tooltip>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>released</name>
-	    <handler>sp_event_context_set_text</handler>
-	    <last_modification_time>Sun, 03 Sep 2000 22:42:20 GMT</last_modification_time>
-	  </signal>
-	  <relief>GTK_RELIEF_NORMAL</relief>
-	  <active>False</active>
-	  <child>
-	    <left_attach>3</left_attach>
-	    <right_attach>4</right_attach>
-	    <top_attach>1</top_attach>
-	    <bottom_attach>2</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>False</xfill>
-	    <yfill>False</yfill>
-	  </child>
-
-	  <widget>
-	    <class>GtkPixmap</class>
-	    <name>pixmap24</name>
-	    <filename>draw_text.xpm</filename>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <build_insensitive>True</build_insensitive>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkToggleButton</class>
 	  <name>draw_select</name>
 	  <tooltip>Select and transform</tooltip>
 	  <can_focus>True</can_focus>
@@ -466,6 +388,45 @@
 
 	<widget>
 	  <class>GtkToggleButton</class>
+	  <name>draw_freehand</name>
+	  <tooltip>Draw freehand line</tooltip>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>released</name>
+	    <handler>sp_event_context_set_freehand</handler>
+	    <last_modification_time>Sun, 03 Sep 2000 22:42:43 GMT</last_modification_time>
+	  </signal>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <active>False</active>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkPixmap</class>
+	    <name>pixmap8</name>
+	    <filename>draw_freehand.xpm</filename>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <build_insensitive>True</build_insensitive>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkToggleButton</class>
 	  <name>draw_dynahand</name>
 	  <tooltip>Draw dynahand line</tooltip>
 	  <can_focus>True</can_focus>
@@ -477,10 +438,10 @@
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <active>False</active>
 	  <child>
-	    <left_attach>3</left_attach>
-	    <right_attach>4</right_attach>
-	    <top_attach>0</top_attach>
-	    <bottom_attach>1</bottom_attach>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>False</xexpand>
@@ -495,6 +456,123 @@
 	    <class>GtkPixmap</class>
 	    <name>pixmap194</name>
 	    <filename>draw_dynahand.xpm</filename>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <build_insensitive>True</build_insensitive>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkToggleButton</class>
+	  <name>draw_text</name>
+	  <tooltip>Draw text</tooltip>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>released</name>
+	    <handler>sp_event_context_set_text</handler>
+	    <last_modification_time>Sun, 03 Sep 2000 22:42:20 GMT</last_modification_time>
+	  </signal>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <active>False</active>
+	  <child>
+	    <left_attach>2</left_attach>
+	    <right_attach>3</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkPixmap</class>
+	    <name>pixmap24</name>
+	    <filename>draw_text.xpm</filename>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <build_insensitive>True</build_insensitive>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkToggleButton</class>
+	  <name>draw_star</name>
+	  <tooltip>Draw star</tooltip>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>released</name>
+	    <handler>sp_event_context_set_star</handler>
+	    <last_modification_time>Tue, 16 Oct 2001 13:57:32 GMT</last_modification_time>
+	  </signal>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <active>False</active>
+	  <child>
+	    <left_attach>2</left_attach>
+	    <right_attach>3</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkPixmap</class>
+	    <name>pixmap195</name>
+	    <filename>draw_star.xpm</filename>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <build_insensitive>True</build_insensitive>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkToggleButton</class>
+	  <name>draw_spiral</name>
+	  <tooltip>Draw spiral</tooltip>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>released</name>
+	    <handler>sp_event_context_set_spiral</handler>
+	    <last_modification_time>Tue, 16 Oct 2001 18:35:56 GMT</last_modification_time>
+	  </signal>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <active>False</active>
+	  <child>
+	    <left_attach>3</left_attach>
+	    <right_attach>4</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkPixmap</class>
+	    <name>pixmap196</name>
+	    <filename>draw_spiral.xpm</filename>
 	    <xalign>0.5</xalign>
 	    <yalign>0.5</yalign>
 	    <xpad>0</xpad>
