@@ -128,6 +128,11 @@ sp_document_new (const gchar * uri)
 			"fill:#000000;fill-opacity:10%;stroke:none");
 	}
 
+	/* A quick hack to get namespaces into doc */
+	sp_repr_set_attr (repr, "xmlns", "http://www.w3.org/Graphics/SVG/SVG-19991203.dtd");
+	sp_repr_set_attr (repr, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
+	/* End of quick hack */
+
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);
 
@@ -154,8 +159,8 @@ sp_document_new (const gchar * uri)
 		g_return_val_if_fail (document->base != NULL, NULL);
 		g_snprintf (document->base, len, "%s/", b);
 		g_free (b);
-		sp_repr_set_attr (repr, "docname", uri);
-		sp_repr_set_attr (repr, "docbase", document->base);
+		sp_repr_set_attr (repr, "sodipodi:docname", uri);
+		sp_repr_set_attr (repr, "sodipodi:docbase", document->base);
 	}
 
 	return document;
@@ -167,8 +172,6 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	SPDocument * document;
 	SPRepr * repr;
 	SPObject * object;
-	gchar * b;
-	gint len;
 
 	repr = sp_repr_read_mem (buffer, length);
 
@@ -177,6 +180,11 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 
 	/* If xml file is not svg, return NULL without warning */
 	if (strcmp (sp_repr_name (repr), "svg") != 0) return NULL;
+
+	/* A quick hack to get namespaces into doc */
+	sp_repr_set_attr (repr, "xmlns", "http://www.w3.org/Graphics/SVG/SVG-19991203.dtd");
+	sp_repr_set_attr (repr, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
+	/* End of quick hack */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
 	g_return_val_if_fail (document != NULL, NULL);

@@ -42,7 +42,7 @@ SPRepr * sp_repr_read_mem (const gchar * buffer, gint length)
 
 	g_return_val_if_fail (buffer != NULL, NULL);
 
-	doc = xmlParseMemory (buffer, length);
+	doc = xmlParseMemory ((gchar *) buffer, length);
 	if (doc == NULL) return NULL;
 
 	repr = NULL;
@@ -64,6 +64,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 	SPRepr * repr, * crepr;
 	xmlAttr * prop;
 	xmlNodePtr child;
+	gchar c[256];
 
 	g_return_val_if_fail (node != NULL, NULL);
 
@@ -71,7 +72,15 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->val) {
-			sp_repr_set_attr (repr, prop->name, prop->val->content);
+			g_snprintf (c, 256, prop->name);
+			if (prop->ns != NULL) {
+			if (prop->ns->prefix != NULL) {
+			if (strcmp (prop->ns->prefix, "sodipodi") == 0) {
+				g_snprintf (c, 256, "sodipodi:%s", prop->name);
+			}
+			}
+			}
+			sp_repr_set_attr (repr, c, prop->val->content);
 		}
 	}
 

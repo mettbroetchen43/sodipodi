@@ -10,14 +10,22 @@
  */
 
 #include <glib.h>
+#include <gtk/gtktypeutils.h>
 
 /*
  * SPRepr is opaque
  */
 
 typedef struct _SPRepr SPRepr;
-typedef struct _SPRepr SPReprDoc;
-typedef struct _SPCSSAttr SPCSSAttr;
+typedef struct _SPReprClass SPReprClass;
+
+#define SP_TYPE_REPR            (sp_repr_get_type ())
+#define SP_REPR(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_REPR, SPRepr))
+#define SP_REPR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_REPR, SPReprClass))
+#define SP_IS_REPR(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_REPR))
+#define SP_IS_REPR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_REPR))
+
+GtkType sp_repr_get_type (void);
 
 /* Create new repr & similar */
 
@@ -25,6 +33,8 @@ SPRepr * sp_repr_new (const gchar * name);
 void sp_repr_ref (SPRepr * repr);
 void sp_repr_unref (SPRepr * repr);
 SPRepr * sp_repr_copy (SPRepr * repr);
+
+typedef struct _SPRepr SPReprDoc;
 
 SPReprDoc * sp_repr_document (SPRepr * repr);
 
@@ -73,6 +83,8 @@ void sp_repr_save_file (SPRepr * repr, const gchar * filename);
 void sp_repr_print (SPRepr * repr);
 
 /* CSS stuff */
+
+typedef struct _SPCSSAttr SPCSSAttr;
 
 SPCSSAttr * sp_repr_css_attr_new (void);
 void sp_repr_css_attr_unref (SPCSSAttr * css);

@@ -294,7 +294,7 @@ sp_image_repr_read_image (SPRepr * repr)
 	if (filename != NULL) {
 		if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
-			docbase = sp_repr_doc_attr (repr, "docbase");
+			docbase = sp_repr_doc_attr (repr, "sodipodi:docbase");
 			if (docbase != NULL) {
 				fullname = g_strconcat (docbase, filename, NULL);
 				pixbuf = gdk_pixbuf_new_from_file (fullname);
@@ -308,7 +308,7 @@ sp_image_repr_read_image (SPRepr * repr)
 		}
 	}
 	/* at last try to load from sp absolute path name */
-	filename = sp_repr_attr (repr, "absref");
+	filename = sp_repr_attr (repr, "sodipodi:absref");
 	if (filename != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (filename);
 		if (pixbuf != NULL) return pixbuf;

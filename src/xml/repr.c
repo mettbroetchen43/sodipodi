@@ -1,8 +1,14 @@
 #define SP_REPR_C
 
+#include <gtk/gtksignal.h>
 #include "repr.h"
 #include "repr-private.h"
 
+static void sp_repr_class_init (SPReprClass * klass);
+static void sp_repr_init (SPRepr * repr);
+static void sp_repr_destroy (GtkObject * object);
+
+static void gtk_marshal_BOOL__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
 static void sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data);
 static void sp_repr_attr_to_list (gpointer key, gpointer value, gpointer user_data);
 static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
@@ -13,6 +19,154 @@ static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
 	gint num_repr = 0;
 #endif
 
+enum {
+	CHILD_ADDED,
+	REMOVE_CHILD,
+	CHANGE_ATTR,
+	ATTR_CHANGED,
+	CHANGE_CONTENT,
+	CONTENT_CHANGED,
+	CHANGE_ORDER,
+	ORDER_CHANGED,
+	LAST_SIGNAL
+};
+
+typedef gboolean (*GtkSignal_BOOL__POINTER_POINTER) (GtkObject *object, gpointer arg1, gpointer arg2, gpointer user_data);
+static GtkObjectClass * parent_class;
+static guint repr_signals[LAST_SIGNAL] = { 0 };
+
+GtkType
+sp_repr_get_type (void)
+{
+	static GtkType repr_type = 0;
+	if (!repr_type) {
+		static const GtkTypeInfo repr_info = {
+			"SPRepr",
+			sizeof (SPRepr),
+			sizeof (SPReprClass),
+			(GtkClassInitFunc) sp_repr_class_init,
+			(GtkObjectInitFunc) sp_repr_init,
+			NULL, NULL,
+			(GtkClassInitFunc) NULL
+		};
+		repr_type = gtk_type_unique (gtk_object_get_type (), &repr_info);
+	}
+	return repr_type;
+}
+
+static void
+sp_repr_class_init (SPReprClass * klass)
+{
+	GtkObjectClass * object_class;
+
+	object_class = (GtkObjectClass *) klass;
+
+	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+
+	repr_signals [CHILD_ADDED] = gtk_signal_new ("child_added",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, child_added),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+	repr_signals [REMOVE_CHILD] = gtk_signal_new ("remove_child",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, remove_child),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+	/* fixme: */
+	repr_signals [CHANGE_ATTR] = gtk_signal_new ("change_attr",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, change_attr),
+		gtk_marshal_BOOL__POINTER_POINTER,
+		GTK_TYPE_BOOL, 2,
+		GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+	repr_signals [ATTR_CHANGED] = gtk_signal_new ("attr_changed",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, attr_changed),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+	repr_signals [CHANGE_CONTENT] = gtk_signal_new ("change_content",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, change_content),
+		gtk_marshal_BOOL__POINTER,
+		GTK_TYPE_BOOL, 1,
+		GTK_TYPE_POINTER);
+	repr_signals [CONTENT_CHANGED] = gtk_signal_new ("content_changed",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, content_changed),
+		gtk_marshal_NONE__NONE,
+		GTK_TYPE_NONE, 0);
+	/* fixme: */
+	repr_signals [CHANGE_ORDER] = gtk_signal_new ("change_order",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, change_order),
+		gtk_marshal_INT__INT,
+		GTK_TYPE_BOOL, 1,
+		GTK_TYPE_INT);
+	repr_signals [ORDER_CHANGED] = gtk_signal_new ("order_changed",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPReprClass, order_changed),
+		gtk_marshal_NONE__NONE,
+		GTK_TYPE_NONE, 0);
+	gtk_object_class_add_signals (object_class, repr_signals, LAST_SIGNAL);
+
+	object_class->destroy = sp_repr_destroy;
+}
+
+static void
+sp_repr_init (SPRepr * repr)
+{
+	repr->parent = NULL;
+	/* repr->name = 0 */
+	repr->content = NULL;
+	repr->attr = g_hash_table_new (NULL, NULL);
+	repr->children = NULL;
+}
+
+static void
+sp_repr_destroy (GtkObject * object)
+{
+	SPRepr * repr;
+	SPRepr * child;
+
+	repr = (SPRepr *) object;
+
+	/* parents have to do refcounting !!! */
+
+	g_assert (repr->parent == NULL);
+
+	while (repr->children) {
+		child = (SPRepr *) repr->children->data;
+		sp_repr_remove_child (repr, child);
+		repr->children = g_list_remove (repr->children, child);
+	}
+
+	if (repr->attr) {
+		g_hash_table_foreach (repr->attr, sp_repr_hash_del_value, repr);
+		g_hash_table_destroy (repr->attr);
+	}
+
+#ifdef DEBUG_REPR
+		num_repr--;
+		g_print ("num_repr = %d\n", num_repr);
+#endif
+
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+#if 0
 SPRepr * sp_repr_new (const gchar * name)
 {
 	SPRepr * repr;
@@ -97,6 +251,44 @@ void sp_repr_unref (SPRepr * repr)
 
 	return;
 }
+#endif
+
+SPRepr *
+sp_repr_new (const gchar * name)
+{
+	SPRepr * repr;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	repr = gtk_type_new (SP_TYPE_REPR);
+
+#ifdef DEBUG_REPR
+	num_repr++;
+	g_print ("num_repr = %d\n", num_repr);
+#endif
+
+	repr->name = g_quark_from_string (name);
+
+	return repr;
+}
+
+void
+sp_repr_ref (SPRepr * repr)
+{
+	g_return_if_fail (repr != NULL);
+	g_return_if_fail (SP_IS_REPR (repr));
+
+	gtk_object_ref (GTK_OBJECT (repr));
+}
+
+void
+sp_repr_unref (SPRepr * repr)
+{
+	g_return_if_fail (repr != NULL);
+	g_return_if_fail (SP_IS_REPR (repr));
+
+	gtk_object_unref (GTK_OBJECT (repr));
+}
 
 SPRepr * sp_repr_copy (SPRepr * repr)
 {
@@ -107,7 +299,7 @@ SPRepr * sp_repr_copy (SPRepr * repr)
 	g_return_val_if_fail (repr != NULL, NULL);
 
 	new = sp_repr_new (g_quark_to_string (repr->name));
-	g_return_val_if_fail (new != NULL, NULL);
+	g_assert (new != NULL);
 
 	if (repr->content != NULL)
 		new->content = g_strdup (repr->content);
@@ -127,17 +319,6 @@ SPRepr * sp_repr_copy (SPRepr * repr)
 	return new;
 }
 
-#if 0
-void
-sp_repr_set_name (SPRepr * repr, const gchar * name)
-{
-	g_assert (repr != NULL);
-	g_assert (name != NULL);
-
-	repr->name = g_quark_from_string (name);
-}
-#endif
-
 const gchar *
 sp_repr_name (SPRepr * repr)
 {
@@ -151,12 +332,15 @@ sp_repr_set_content (SPRepr * repr, const gchar * content)
 {
 	gboolean allowed;
 
-	g_assert (repr != NULL);
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_REPR (repr), FALSE);
 
 	allowed = TRUE;
 
-	if (repr->content_changed_pre)
-		allowed = repr->content_changed_pre (repr, content, repr->content_changed_pre_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[CHANGE_CONTENT],
+		content,
+		&allowed);
 
 	if (allowed) {
 		if (repr->content) g_free (repr->content);
@@ -167,8 +351,8 @@ sp_repr_set_content (SPRepr * repr, const gchar * content)
 			repr->content = NULL;
 		}
 
-		if (repr->content_changed)
-			repr->content_changed (repr, repr->content_changed_data);
+		gtk_signal_emit (GTK_OBJECT (repr),
+			repr_signals[CONTENT_CHANGED]);
 	}
 
 	return allowed;
@@ -189,12 +373,16 @@ gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value
 	gchar * old_value;
 
 	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_REPR (repr), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
 	allowed = TRUE;
 
-	if (repr->attr_changed_pre)
-		allowed = repr->attr_changed_pre (repr, key, value, repr->attr_changed_pre_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[CHANGE_ATTR],
+		key,
+		value,
+		&allowed);
 
 	if (allowed) {
 		q = g_quark_from_string (key);
@@ -208,8 +396,9 @@ gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value
 
 		if (old_value) g_free (old_value);
 
-		if (repr->attr_changed)
-			repr->attr_changed (repr, key, repr->attr_changed_data);
+		gtk_signal_emit (GTK_OBJECT (repr),
+			repr_signals[ATTR_CHANGED],
+			key);
 	}
 
 	return allowed;
@@ -228,16 +417,25 @@ const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
 
 void sp_repr_set_data (SPRepr * repr, gpointer data)
 {
+#if 0
 	g_assert (repr != NULL);
 
 	repr->data = data;
+#else
+	g_warning ("sp_repr_set_data will be removed");
+#endif
 }
 
 gpointer sp_repr_data (SPRepr * repr)
 {
+#if 0
 	g_assert (repr != NULL);
 
 	return repr->data;
+#else
+	g_warning ("sp_repr_data will be removed");
+	return NULL;
+#endif
 }
 
 SPRepr *
@@ -268,8 +466,9 @@ void sp_repr_add_child (SPRepr * repr, SPRepr * child, gint position)
 	child->parent = repr;
 	sp_repr_ref (child);
 
-	if (repr->child_added)
-		repr->child_added (repr, child, repr->child_added_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[CHILD_ADDED],
+		child);
 }
 
 void
@@ -279,8 +478,9 @@ sp_repr_remove_child (SPRepr * repr, SPRepr * child)
 	g_return_if_fail (child != NULL);
 	g_return_if_fail (child->parent == repr);
 
-	if (repr->child_removed)
-		repr->child_removed (repr, child, repr->child_removed_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[REMOVE_CHILD],
+		child);
 
 	repr->children = g_list_remove (repr->children, child);
 	child->parent = NULL;
@@ -304,25 +504,37 @@ sp_repr_set_position_absolute (SPRepr * repr, gint pos)
 
 	allowed = TRUE;
 
-	if (repr->order_changed_pre)
-		allowed = repr->order_changed_pre (repr, pos, repr->order_changed_pre_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[CHANGE_ORDER],
+		pos,
+		&allowed);
 
 	if (!allowed) return;
 
 	parent->children = g_list_remove (parent->children, repr);
 	parent->children = g_list_insert (parent->children, repr, pos);
 
-	if (parent->order_changed)
-		parent->order_changed (parent, parent->order_changed_data);
+	gtk_signal_emit (GTK_OBJECT (repr),
+		repr_signals[ORDER_CHANGED]);
 }
 
 
 void
 sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer data)
 {
+	static gboolean warned = FALSE;
+
 	g_assert (repr != NULL);
 	g_assert (name != NULL);
 
+	if (!warned) {
+		g_warning ("implement signal setting in sp-object");
+		warned = TRUE;
+	}
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (repr), name,
+		GTK_SIGNAL_FUNC (func), data, GTK_OBJECT (data));
+#if 0
 	if (strcmp (name, "destroy") == 0) {
 		repr->destroy = (void (*)(SPRepr *, gpointer)) func;
 		repr->destroy_data = data;
@@ -369,6 +581,7 @@ sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer d
 		return;
 	}
 	g_assert_not_reached ();
+#endif
 }
 
 GList *
@@ -408,3 +621,19 @@ sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash)
 {
 	g_hash_table_insert (new_hash, key, g_strdup (value));
 }
+
+static void gtk_marshal_BOOL__POINTER_POINTER (GtkObject    *object, 
+                            GtkSignalFunc func, 
+                            gpointer      func_data, 
+                            GtkArg       *args)
+{
+  GtkSignal_BOOL__POINTER_POINTER rfunc;
+  gboolean  *return_val;
+  return_val = GTK_RETLOC_BOOL (args[2]);
+  rfunc = (GtkSignal_BOOL__POINTER_POINTER) func;
+  *return_val =  (* rfunc) (object,
+                      GTK_VALUE_POINTER(args[0]),
+                      GTK_VALUE_POINTER(args[1]),
+                             func_data);
+}
+

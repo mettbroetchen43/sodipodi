@@ -98,7 +98,9 @@ sp_object_destroy (GtkObject * object)
 	}
 
 	if (spobject->repr) {
+#if 0
 		sp_repr_remove_signals (spobject->repr);
+#endif
 		sp_repr_unref (spobject->repr);
 	}
 
@@ -146,13 +148,13 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_repr_set_signal (repr, "content_changed", sp_object_repr_change_content, object);
 	sp_repr_set_signal (repr, "order_changed", sp_object_repr_change_order, object);
 	sp_repr_set_signal (repr, "child_added", sp_object_repr_add_child, object);
-	sp_repr_set_signal (repr, "child_removed", sp_object_repr_remove_child, object);
+	sp_repr_set_signal (repr, "remove_child", sp_object_repr_remove_child, object);
 
 	/* Our attribute handler */
 
-	sp_repr_set_signal (repr, "order_changed_pre", sp_object_repr_order_changed_pre, object);
-	sp_repr_set_signal (repr, "attr_changed_pre", sp_object_repr_attr_changed_pre, object);
-	sp_repr_set_signal (repr, "content_changed_pre", sp_object_repr_content_changed_pre, object);
+	sp_repr_set_signal (repr, "change_order", sp_object_repr_order_changed_pre, object);
+	sp_repr_set_signal (repr, "change_attr", sp_object_repr_attr_changed_pre, object);
+	sp_repr_set_signal (repr, "change_content", sp_object_repr_content_changed_pre, object);
 
 	sp_repr_ref (repr);
 }
