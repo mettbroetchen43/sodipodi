@@ -14,16 +14,14 @@
  */
 
 #define NR_TYPE_ARENA_GROUP (nr_arena_group_get_type ())
-#define NR_ARENA_GROUP(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_GROUP, NRArenaGroup))
-#define NR_ARENA_GROUP_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA_GROUP, NRArenaGroupClass))
-#define NR_IS_ARENA_GROUP(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_GROUP))
-#define NR_IS_ARENA_GROUP_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_GROUP))
+#define NR_ARENA_GROUP(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_GROUP, NRArenaGroup))
+#define NR_IS_ARENA_GROUP(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_GROUP))
 
 #include "nr-arena-item.h"
 
 struct _NRArenaGroup {
 	NRArenaItem item;
-	guint transparent : 1;
+	unsigned int transparent : 1;
 	NRArenaItem *children;
 	NRArenaItem *last;
 	NRMatrixF child_transform;
@@ -33,9 +31,9 @@ struct _NRArenaGroupClass {
 	NRArenaItemClass parent_class;
 };
 
-GType nr_arena_group_get_type (void);
+unsigned nr_arena_group_get_type (void);
 
-void nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent);
+void nr_arena_group_set_transparent (NRArenaGroup *group, unsigned int transparent);
 
 void nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixF *t);
 

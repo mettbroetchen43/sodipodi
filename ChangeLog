@@ -1,3 +1,9 @@
+2003-04-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-object.c: Reimplement in standalone way
+
+	* src/display/nr-object.h: Reimplement in standalone way
+
 2003-04-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-marker.c (sp_marker_show_dimension): Reimplement

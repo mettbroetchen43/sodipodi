@@ -14,12 +14,8 @@
  */
 
 #define NR_TYPE_ARENA_GLYPHS (nr_arena_glyphs_get_type ())
-#define NR_ARENA_GLYPHS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_GLYPHS, NRArenaGlyphs))
-#define NR_ARENA_GLYPHS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NR_TYPE_ARENA_GLYPHS, NRArenaGlyphsClass))
-#define NR_IS_ARENA_GLYPHS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_GLYPHS))
-#define NR_IS_ARENA_GLYPHS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_GLYPHS))
-
-#include <libnrtype/nr-rasterfont.h>
+#define NR_ARENA_GLYPHS(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_GLYPHS, NRArenaGlyphs))
+#define NR_IS_ARENA_GLYPHS(obj) (NR_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_GLYPHS))
 
 #include <libnrtype/nr-rasterfont.h>
 
@@ -48,11 +44,11 @@ struct _NRArenaGlyphsClass {
 	NRArenaItemClass parent_class;
 };
 
-GType nr_arena_glyphs_get_type (void);
+unsigned int nr_arena_glyphs_get_type (void);
 
 void nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs,
-			       SPCurve *curve, gboolean private,
-			       NRFont *font, gint glyph,
+			       SPCurve *curve, unsigned int private,
+			       NRFont *font, int glyph,
 			       const NRMatrixF *transform);
 void nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style);
 
@@ -64,10 +60,8 @@ typedef struct _NRArenaGlyphsGroupClass NRArenaGlyphsGroupClass;
 #include "nr-arena-group.h"
 
 #define NR_TYPE_ARENA_GLYPHS_GROUP (nr_arena_glyphs_group_get_type ())
-#define NR_ARENA_GLYPHS_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_GLYPHS_GROUP, NRArenaGlyphsGroup))
-#define NR_ARENA_GLYPHS_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NR_TYPE_ARENA_GLYPHS_GROUP, NRArenaGlyphsGroupClass))
-#define NR_IS_ARENA_GLYPHS_GROUP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_GLYPHS_GROUP))
-#define NR_IS_ARENA_GLYPHS_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_GLYPHS_GROUP))
+#define NR_ARENA_GLYPHS_GROUP(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_GLYPHS_GROUP, NRArenaGlyphsGroup))
+#define NR_IS_ARENA_GLYPHS_GROUP(obj) (NR_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_GLYPHS_GROUP))
 
 struct _NRArenaGlyphsGroup {
 	NRArenaGroup group;
@@ -82,7 +76,7 @@ struct _NRArenaGlyphsGroupClass {
 	NRArenaGroupClass parent_class;
 };
 
-GType nr_arena_glyphs_group_get_type (void);
+unsigned int nr_arena_glyphs_group_get_type (void);
 
 /* Utility functions */
 

@@ -14,10 +14,8 @@
  */
 
 #define NR_TYPE_ARENA_SHAPE (nr_arena_shape_get_type ())
-#define NR_ARENA_SHAPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_SHAPE, NRArenaShape))
-#define NR_ARENA_SHAPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NR_TYPE_ARENA_SHAPE, NRArenaShapeClass))
-#define NR_IS_ARENA_SHAPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_SHAPE))
-#define NR_IS_ARENA_SHAPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), NR_TYPE_ARENA_SHAPE))
+#define NR_ARENA_SHAPE(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_SHAPE, NRArenaShape))
+#define NR_IS_ARENA_SHAPE(obj) (NR_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_SHAPE))
 
 #include "helper/curve.h"
 #include "forward.h"
@@ -44,9 +42,9 @@ struct _NRArenaShapeClass {
 	NRArenaItemClass parent_class;
 };
 
-GType nr_arena_shape_get_type (void);
+unsigned int nr_arena_shape_get_type (void);
 
-void nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, gboolean private, const gdouble *affine);
+void nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, unsigned int private, const double *affine);
 void nr_arena_shape_set_style (NRArenaShape *shape, SPStyle *style);
 void nr_arena_shape_set_paintbox (NRArenaShape *shape, const NRRectF *pbox);
 

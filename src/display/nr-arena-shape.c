@@ -38,7 +38,7 @@
 
 static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
-static void nr_arena_shape_finalize (GObject *object);
+static void nr_arena_shape_finalize (NRObject *object);
 
 static NRArenaItem *nr_arena_shape_children (NRArenaItem *item);
 static void nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
@@ -48,25 +48,21 @@ static void nr_arena_shape_set_child_position (NRArenaItem *item, NRArenaItem *c
 static guint nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 static guint nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 
 static NRArenaItemClass *shape_parent_class;
 
-GType
+unsigned int
 nr_arena_shape_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaShapeClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_shape_class_init,
-			NULL, NULL,
-			sizeof (NRArenaShape),
-			16,
-			(GInstanceInitFunc) nr_arena_shape_init,
-		};
-		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaShape", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
+						"NRArenaShape",
+						sizeof (NRArenaShapeClass),
+						sizeof (NRArenaShape),
+						(void (*) (NRObjectClass *)) nr_arena_shape_class_init,
+						(void (*) (NRObject *)) nr_arena_shape_init);
 	}
 	return type;
 }
@@ -74,13 +70,13 @@ nr_arena_shape_get_type (void)
 static void
 nr_arena_shape_class_init (NRArenaShapeClass *klass)
 {
-	GObjectClass *object_class;
+	NRObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	shape_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
+	shape_parent_class = (NRArenaItemClass *)  ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_shape_finalize;
 
@@ -110,7 +106,7 @@ nr_arena_shape_init (NRArenaShape *shape)
 }
 
 static void
-nr_arena_shape_finalize (GObject *object)
+nr_arena_shape_finalize (NRObject *object)
 {
 	NRArenaItem *item;
 	NRArenaShape *shape;
@@ -129,7 +125,7 @@ nr_arena_shape_finalize (GObject *object)
 	if (shape->style) sp_style_unref (shape->style);
 	if (shape->curve) sp_curve_unref (shape->curve);
 
-	G_OBJECT_CLASS (shape_parent_class)->finalize (object);
+	((NRObjectClass *) shape_parent_class)->finalize (object);
 }
 
 static NRArenaItem *
@@ -503,7 +499,7 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 }
 
 static NRArenaItem *
-nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky)
 {
 	NRArenaShape *shape;
 
@@ -562,7 +558,7 @@ nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 }
 
 void
-nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, gboolean private, const gdouble *affine)
+nr_arena_shape_set_path (NRArenaShape *shape, SPCurve *curve, unsigned int private, const double *affine)
 {
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (NR_IS_ARENA_SHAPE (shape));

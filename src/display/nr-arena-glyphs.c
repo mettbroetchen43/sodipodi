@@ -35,29 +35,25 @@
 
 static void nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass);
 static void nr_arena_glyphs_init (NRArenaGlyphs *glyphs);
-static void nr_arena_glyphs_finalize (GObject *object);
+static void nr_arena_glyphs_finalize (NRObject *object);
 
 static guint nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 
 static NRArenaItemClass *glyphs_parent_class;
 
-GType
+unsigned int
 nr_arena_glyphs_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaGlyphsClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_glyphs_class_init,
-			NULL, NULL,
-			sizeof (NRArenaGlyphs),
-			16,
-			(GInstanceInitFunc) nr_arena_glyphs_init,
-		};
-		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaGlyphs", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
+						"NRArenaGlyphs",
+						sizeof (NRArenaGlyphsClass),
+						sizeof (NRArenaGlyphs),
+						(void (*) (NRObjectClass *)) nr_arena_glyphs_class_init,
+						(void (*) (NRObject *)) nr_arena_glyphs_init);
 	}
 	return type;
 }
@@ -65,13 +61,13 @@ nr_arena_glyphs_get_type (void)
 static void
 nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass)
 {
-	GObjectClass *object_class;
+	NRObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	glyphs_parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
+	glyphs_parent_class = (NRArenaItemClass *) ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_glyphs_finalize;
 
@@ -90,7 +86,7 @@ nr_arena_glyphs_init (NRArenaGlyphs *glyphs)
 }
 
 static void
-nr_arena_glyphs_finalize (GObject *object)
+nr_arena_glyphs_finalize (NRObject *object)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -118,8 +114,7 @@ nr_arena_glyphs_finalize (GObject *object)
 		glyphs->curve = sp_curve_unref (glyphs->curve);
 	}
 
-	if (G_OBJECT_CLASS (glyphs_parent_class)->finalize)
-		(* G_OBJECT_CLASS (glyphs_parent_class)->finalize) (object);
+	((NRObjectClass *) glyphs_parent_class)->finalize (object);
 }
 
 static guint
@@ -222,7 +217,7 @@ nr_arena_glyphs_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 }
 
 static NRArenaItem *
-nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, unsigned int sticky)
 {
 	NRArenaGlyphs *glyphs;
 
@@ -247,10 +242,10 @@ nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gb
 }
 
 void
-nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean private, NRFont *font, gint glyph, const NRMatrixF *transform)
+nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, unsigned int private, NRFont *font, gint glyph, const NRMatrixF *transform)
 {
-	g_return_if_fail (glyphs != NULL);
-	g_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
+	nr_return_if_fail (glyphs != NULL);
+	nr_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
 
 	nr_arena_item_request_render (NR_ARENA_ITEM (glyphs));
 
@@ -290,8 +285,8 @@ nr_arena_glyphs_set_path (NRArenaGlyphs *glyphs, SPCurve *curve, gboolean privat
 void
 nr_arena_glyphs_set_style (NRArenaGlyphs *glyphs, SPStyle *style)
 {
-	g_return_if_fail (glyphs != NULL);
-	g_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
+	nr_return_if_fail (glyphs != NULL);
+	nr_return_if_fail (NR_IS_ARENA_GLYPHS (glyphs));
 
 	if (style) sp_style_ref (style);
 	if (glyphs->style) sp_style_unref (glyphs->style);
@@ -347,30 +342,26 @@ nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m
 
 static void nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass);
 static void nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group);
-static void nr_arena_glyphs_group_finalize (GObject *object);
+static void nr_arena_glyphs_group_finalize (NRObject *object);
 
 static guint nr_arena_glyphs_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 static unsigned int nr_arena_glyphs_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, unsigned int sticky);
 
 static NRArenaGroupClass *group_parent_class;
 
-GType
+unsigned int
 nr_arena_glyphs_group_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaGlyphsGroupClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_glyphs_group_class_init,
-			NULL, NULL,
-			sizeof (NRArenaGlyphsGroup),
-			16,
-			(GInstanceInitFunc) nr_arena_glyphs_group_init,
-		};
-		type = g_type_register_static (NR_TYPE_ARENA_GROUP, "NRArenaGlyphsGroup", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ARENA_GROUP,
+						"NRArenaGlyphsGroup",
+						sizeof (NRArenaGlyphsGroupClass),
+						sizeof (NRArenaGlyphsGroup),
+						(void (*) (NRObjectClass *)) nr_arena_glyphs_group_class_init,
+						(void (*) (NRObject *)) nr_arena_glyphs_group_init);
 	}
 	return type;
 }
@@ -378,13 +369,13 @@ nr_arena_glyphs_group_get_type (void)
 static void
 nr_arena_glyphs_group_class_init (NRArenaGlyphsGroupClass *klass)
 {
-	GObjectClass *object_class;
+	NRObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	group_parent_class = g_type_class_ref (NR_TYPE_ARENA_GROUP);
+	group_parent_class = (NRArenaGroupClass *) ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_glyphs_group_finalize;
 
@@ -406,7 +397,7 @@ nr_arena_glyphs_group_init (NRArenaGlyphsGroup *group)
 }
 
 static void
-nr_arena_glyphs_group_finalize (GObject *object)
+nr_arena_glyphs_group_finalize (NRObject *object)
 {
 	NRArenaGlyphsGroup *group;
 
@@ -427,8 +418,7 @@ nr_arena_glyphs_group_finalize (GObject *object)
 		group->style = NULL;
 	}
 
-	if (G_OBJECT_CLASS (group_parent_class)->finalize)
-		(* G_OBJECT_CLASS (group_parent_class)->finalize) (object);
+		((NRObjectClass *) group_parent_class)->finalize (object);
 }
 
 static guint
@@ -592,7 +582,7 @@ nr_arena_glyphs_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 }
 
 static NRArenaItem *
-nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, unsigned int sticky)
 {
 	NRArenaGroup *group;
 	NRArenaItem *picked;
@@ -656,8 +646,8 @@ nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *sg, SPStyle *style)
 	NRArenaGroup *group;
 	NRArenaItem *child;
 
-	g_return_if_fail (sg != NULL);
-	g_return_if_fail (NR_IS_ARENA_GLYPHS_GROUP (sg));
+	nr_return_if_fail (sg != NULL);
+	nr_return_if_fail (NR_IS_ARENA_GLYPHS_GROUP (sg));
 
 	group = NR_ARENA_GROUP (sg);
 
@@ -666,7 +656,7 @@ nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *sg, SPStyle *style)
 	sg->style = style;
 
 	for (child = group->children; child != NULL; child = child->next) {
-		g_return_if_fail (NR_IS_ARENA_GLYPHS (child));
+		nr_return_if_fail (NR_IS_ARENA_GLYPHS (child));
 		nr_arena_glyphs_set_style (NR_ARENA_GLYPHS (child), sg->style);
 	}
 
@@ -676,9 +666,9 @@ nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *sg, SPStyle *style)
 void
 nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *gg, const ArtDRect *pbox)
 {
-	g_return_if_fail (gg != NULL);
-	g_return_if_fail (NR_IS_ARENA_GLYPHS_GROUP (gg));
-	g_return_if_fail (pbox != NULL);
+	nr_return_if_fail (gg != NULL);
+	nr_return_if_fail (NR_IS_ARENA_GLYPHS_GROUP (gg));
+	nr_return_if_fail (pbox != NULL);
 
 	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
 		memcpy (&gg->paintbox, pbox, sizeof (ArtDRect));

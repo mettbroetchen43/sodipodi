@@ -13,10 +13,11 @@
  */
 
 #include <math.h>
+#include <glib.h>
 #include "color.h"
 
 struct _SPColorSpace {
-	guchar *name;
+	unsigned char *name;
 };
 
 static const SPColorSpace RGB = {"RGB"};
@@ -53,7 +54,7 @@ sp_color_copy (SPColor *dst, const SPColor *src)
 	*dst = *src;
 }
 
-gboolean
+unsigned int
 sp_color_is_equal (SPColor *c0, SPColor *c1)
 {
 	g_return_val_if_fail (c0 != NULL, TRUE);
@@ -69,7 +70,7 @@ sp_color_is_equal (SPColor *c0, SPColor *c1)
 }
 
 void
-sp_color_set_rgb_float (SPColor *color, gfloat r, gfloat g, gfloat b)
+sp_color_set_rgb_float (SPColor *color, float r, float g, float b)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (r >= 0.0);
@@ -97,7 +98,7 @@ sp_color_set_rgb_rgba32 (SPColor *color, guint32 value)
 }
 
 void
-sp_color_set_cmyk_float (SPColor *color, gfloat c, gfloat m, gfloat y, gfloat k)
+sp_color_set_cmyk_float (SPColor *color, float c, float m, float y, float k)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (c >= 0.0);
@@ -127,7 +128,7 @@ sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha)
 	if (color->colorspace == &RGB) {
 		rgba = SP_RGBA32_U_COMPOSE (SP_COLOR_F_TO_U (color->v.c[0]), SP_COLOR_F_TO_U (color->v.c[1]), SP_COLOR_F_TO_U (color->v.c[2]), alpha);
 	} else {
-		gfloat rgb[3];
+		float rgb[3];
 		sp_color_get_rgb_floatv (color, rgb);
 		rgba = SP_RGBA32_U_COMPOSE (SP_COLOR_F_TO_U (rgb[0]), SP_COLOR_F_TO_U (rgb[1]), SP_COLOR_F_TO_U (rgb[2]), alpha);
 	}
@@ -136,7 +137,7 @@ sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha)
 }
 
 guint32
-sp_color_get_rgba32_falpha (const SPColor *color, gfloat alpha)
+sp_color_get_rgba32_falpha (const SPColor *color, float alpha)
 {
 	g_return_val_if_fail (color != NULL, 0x0);
 	g_return_val_if_fail (alpha >= 0.0, 0x0);
@@ -146,7 +147,7 @@ sp_color_get_rgba32_falpha (const SPColor *color, gfloat alpha)
 }
 
 void
-sp_color_get_rgb_floatv (const SPColor *color, gfloat *rgb)
+sp_color_get_rgb_floatv (const SPColor *color, float *rgb)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (rgb != NULL);
@@ -161,7 +162,7 @@ sp_color_get_rgb_floatv (const SPColor *color, gfloat *rgb)
 }
 
 void
-sp_color_get_cmyk_floatv (const SPColor *color, gfloat *cmyk)
+sp_color_get_cmyk_floatv (const SPColor *color, float *cmyk)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (cmyk != NULL);
@@ -179,7 +180,7 @@ sp_color_get_cmyk_floatv (const SPColor *color, gfloat *cmyk)
 /* Plain mode helpers */
 
 void
-sp_color_rgb_to_hsv_floatv (gfloat *hsv, gfloat r, gfloat g, gfloat b)
+sp_color_rgb_to_hsv_floatv (float *hsv, float r, float g, float b)
 {
 	gdouble max, min, delta;
 
@@ -211,7 +212,7 @@ sp_color_rgb_to_hsv_floatv (gfloat *hsv, gfloat r, gfloat g, gfloat b)
 }
 
 void
-sp_color_hsv_to_rgb_floatv (gfloat *rgb, gfloat h, gfloat s, gfloat v)
+sp_color_hsv_to_rgb_floatv (float *rgb, float h, float s, float v)
 {
 	gdouble f, w, q, t, d;
 
@@ -249,9 +250,9 @@ sp_color_hsv_to_rgb_floatv (gfloat *rgb, gfloat h, gfloat s, gfloat v)
 }
 
 void
-sp_color_rgb_to_cmyk_floatv (gfloat *cmyk, gfloat r, gfloat g, gfloat b)
+sp_color_rgb_to_cmyk_floatv (float *cmyk, float r, float g, float b)
 {
-	gfloat c, m, y, k, kd;
+	float c, m, y, k, kd;
 
 	c = 1.0 - r;
 	m = 1.0 - g;
@@ -277,9 +278,9 @@ sp_color_rgb_to_cmyk_floatv (gfloat *cmyk, gfloat r, gfloat g, gfloat b)
 }
 
 void
-sp_color_cmyk_to_rgb_floatv (gfloat *rgb, gfloat c, gfloat m, gfloat y, gfloat k)
+sp_color_cmyk_to_rgb_floatv (float *rgb, float c, float m, float y, float k)
 {
-	gfloat kd;
+	float kd;
 
 	kd = 1.0 - k;
 

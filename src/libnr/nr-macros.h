@@ -20,6 +20,12 @@
 #define nr_free free
 #define nr_renew(p,t,n) ((t *) realloc (p, (n) * sizeof (t)))
 
+#ifndef TRUE
+#define TRUE (!0)
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
 #ifndef MAX
 #define MAX(a,b) (((a) < (b)) ? (b) : (a))
 #endif

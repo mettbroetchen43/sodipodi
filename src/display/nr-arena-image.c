@@ -18,8 +18,8 @@
 #include <libnr/nr-compose-transform.h>
 #include "nr-arena-image.h"
 
-gint nr_arena_image_x_sample = 1;
-gint nr_arena_image_y_sample = 1;
+int nr_arena_image_x_sample = 1;
+int nr_arena_image_y_sample = 1;
 
 /*
  * NRArenaCanvasImage
@@ -28,29 +28,25 @@ gint nr_arena_image_y_sample = 1;
 
 static void nr_arena_image_class_init (NRArenaImageClass *klass);
 static void nr_arena_image_init (NRArenaImage *image);
-static void nr_arena_image_finalize (GObject *object);
+static void nr_arena_image_finalize (NRObject *object);
 
-static guint nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static unsigned int nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
 static unsigned int nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
-static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 
 static NRArenaItemClass *parent_class;
 
-GType
+unsigned int
 nr_arena_image_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaImageClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_image_class_init,
-			NULL, NULL,
-			sizeof (NRArenaImage),
-			16,
-			(GInstanceInitFunc) nr_arena_image_init,
-		};
-		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaImage", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
+						"NRArenaImage",
+						sizeof (NRArenaImageClass),
+						sizeof (NRArenaImage),
+						(void (*) (NRObjectClass *)) nr_arena_image_class_init,
+						(void (*) (NRObject *)) nr_arena_image_init);
 	}
 	return type;
 }
@@ -58,13 +54,13 @@ nr_arena_image_get_type (void)
 static void
 nr_arena_image_class_init (NRArenaImageClass *klass)
 {
-	GObjectClass *object_class;
+	NRObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
+	parent_class = (NRArenaItemClass *) ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_image_finalize;
 
@@ -83,7 +79,7 @@ nr_arena_image_init (NRArenaImage *image)
 }
 
 static void
-nr_arena_image_finalize (GObject *object)
+nr_arena_image_finalize (NRObject *object)
 {
 	NRArenaImage *image;
 
@@ -91,14 +87,14 @@ nr_arena_image_finalize (GObject *object)
 
 	image->px = NULL;
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	((NRObjectClass *) parent_class)->finalize (object);
 }
 
-static guint
-nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
+static unsigned int
+nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset)
 {
 	NRArenaImage *image;
-	gdouble hscale, vscale;
+	double hscale, vscale;
 	NRMatrixD grid2px;
 
 	image = NR_ARENA_IMAGE (item);
@@ -136,13 +132,13 @@ nr_arena_image_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		bbox.y1 = image->y + image->height;
 		nr_rect_d_matrix_d_transform (&bbox, &bbox, &gc->transform);
 
-		item->bbox.x0 = (gint) floor (bbox.x0);
-		item->bbox.y0 = (gint) floor (bbox.y0);
-		item->bbox.x1 = (gint) ceil (bbox.x1);
-		item->bbox.y1 = (gint) ceil (bbox.y1);
+		item->bbox.x0 = (int) floor (bbox.x0);
+		item->bbox.y0 = (int) floor (bbox.y0);
+		item->bbox.x1 = (int) ceil (bbox.x1);
+		item->bbox.y1 = (int) ceil (bbox.y1);
 	} else {
-		item->bbox.x0 = (gint) gc->transform.c[4];
-		item->bbox.y0 = (gint) gc->transform.c[5];
+		item->bbox.x0 = (int) gc->transform.c[4];
+		item->bbox.y0 = (int) gc->transform.c[5];
 		item->bbox.x1 = item->bbox.x0 - 1;
 		item->bbox.y1 = item->bbox.y0 - 1;
 	}
@@ -161,9 +157,9 @@ static unsigned int
 nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaImage *image;
-	guint32 Falpha;
-	guchar *spx, *dpx;
-	gint dw, dh, drs, sw, sh, srs;
+	NRULong Falpha;
+	unsigned char *spx, *dpx;
+	int dw, dh, drs, sw, sh, srs;
 	NRMatrixF d2s;
 
 	image = NR_ARENA_IMAGE (item);
@@ -202,13 +198,13 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 }
 
 static NRArenaItem *
-nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_image_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky)
 {
 	NRArenaImage *image;
 	unsigned char *p;
-	gint ix, iy;
-	guchar *pixels;
-	gint width, height, rowstride;
+	int ix, iy;
+	unsigned char *pixels;
+	int width, height, rowstride;
 
 	image = NR_ARENA_IMAGE (item);
 
@@ -233,8 +229,8 @@ nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 void
 nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigned int pxw, unsigned int pxh, unsigned int pxrs)
 {
-	g_return_if_fail (image != NULL);
-	g_return_if_fail (NR_IS_ARENA_IMAGE (image));
+	nr_return_if_fail (image != NULL);
+	nr_return_if_fail (NR_IS_ARENA_IMAGE (image));
 
 	image->px = (unsigned char *) px;
 	image->pxw = pxw;
@@ -245,10 +241,10 @@ nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigne
 }
 
 void
-nr_arena_image_set_geometry (NRArenaImage *image, gdouble x, gdouble y, gdouble width, gdouble height)
+nr_arena_image_set_geometry (NRArenaImage *image, double x, double y, double width, double height)
 {
-	g_return_if_fail (image != NULL);
-	g_return_if_fail (NR_IS_ARENA_IMAGE (image));
+	nr_return_if_fail (image != NULL);
+	nr_return_if_fail (NR_IS_ARENA_IMAGE (image));
 
 	image->x = x;
 	image->y = y;

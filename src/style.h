@@ -125,7 +125,7 @@ enum {
 #define SP_FONT_SIZE ((1 << 24) - 1)
 
 #define SP_F8_16_TO_FLOAT(v) ((gdouble) (v) / (1 << 16))
-#define SP_F8_16_FROM_FLOAT(v) ((gint) floor ((v) * ((1 << 16) + 0.9999)))
+#define SP_F8_16_FROM_FLOAT(v) ((int) ((v) * ((1 << 16) + 0.9999)))
 
 struct _SPIFontSize {
 	guint set : 1;

@@ -14,10 +14,8 @@
  */
 
 #define NR_TYPE_ARENA_IMAGE (nr_arena_image_get_type ())
-#define NR_ARENA_IMAGE(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_IMAGE, NRArenaImage))
-#define NR_ARENA_IMAGE_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA_IMAGE, NRArenaImageClass))
-#define NR_IS_ARENA_IMAGE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_IMAGE))
-#define NR_IS_ARENA_IMAGE_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_IMAGE))
+#define NR_ARENA_IMAGE(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_IMAGE, NRArenaImage))
+#define NR_IS_ARENA_IMAGE(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_IMAGE))
 
 #include <libnr/nr-types.h>
 #include "nr-arena-item.h"
@@ -30,8 +28,8 @@ struct _NRArenaImage {
 	unsigned int pxh;
 	unsigned int pxrs;
 
-	gdouble x, y;
-	gdouble width, height;
+	double x, y;
+	double width, height;
 
 	/* From GRID to PIXELS */
 	NRMatrixF grid2px;
@@ -41,9 +39,9 @@ struct _NRArenaImageClass {
 	NRArenaItemClass parent_class;
 };
 
-GType nr_arena_image_get_type (void);
+unsigned int nr_arena_image_get_type (void);
 
 void nr_arena_image_set_pixels (NRArenaImage *image, const unsigned char *px, unsigned int pxw, unsigned int pxh, unsigned int pxrs);
-void nr_arena_image_set_geometry (NRArenaImage *image, gdouble x, gdouble y, gdouble width, gdouble height);
+void nr_arena_image_set_geometry (NRArenaImage *image, double x, double y, double width, double height);
 
 #endif

@@ -121,7 +121,7 @@ sp_canvas_arena_destroy (GtkObject *object)
 	arena = SP_CANVAS_ARENA (object);
 
 	if (arena->active) {
-		g_object_unref (G_OBJECT (arena->active));
+		nr_object_unref ((NRObject *) arena->active);
 		arena->active = NULL;
 	}
 
@@ -185,9 +185,9 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
 			/* fixme: This is not optimal - better track ::destroy (Lauris) */
-			if (arena->active) g_object_unref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_unref ((NRObject *) arena->active);
 			arena->active = new;
-			if (arena->active) g_object_ref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_ref ((NRObject *) arena->active);
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
@@ -307,7 +307,7 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 		if (!arena->cursor) {
 			if (arena->active) {
 				g_warning ("Cursor entered to arena with already active item");
-				g_object_unref (G_OBJECT (arena->active));
+				nr_object_unref ((NRObject *) arena->active);
 			}
 			arena->cursor = TRUE;
 #if 0
@@ -319,14 +319,14 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 			/* fixme: Not sure abut this, but seems the right thing (Lauris) */
 			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
-			if (arena->active) g_object_ref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_ref ((NRObject *) arena->active);
 			ret = sp_canvas_arena_send_event (arena, event);
 		}
 		break;
 	case GDK_LEAVE_NOTIFY:
 		if (arena->cursor) {
 			ret = sp_canvas_arena_send_event (arena, event);
-			if (arena->active) g_object_unref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_unref ((NRObject *) arena->active);
 			arena->active = NULL;
 			arena->cursor = FALSE;
 		}
@@ -354,9 +354,9 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 				ec.type = GDK_LEAVE_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);
 			}
-			if (arena->active) g_object_unref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_unref ((NRObject *) arena->active);
 			arena->active = new;
-			if (arena->active) g_object_ref (G_OBJECT (arena->active));
+			if (arena->active) nr_object_ref ((NRObject *) arena->active);
 			if (arena->active) {
 				ec.type = GDK_ENTER_NOTIFY;
 				ret = sp_canvas_arena_send_event (arena, (GdkEvent *) &ec);

@@ -13,12 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
-
-G_BEGIN_DECLS
-
-#include <math.h>
-#include <glib.h>
+#include <libnr/nr-types.h>
 #include "forward.h"
 
 /* Useful composition macros */
@@ -28,7 +23,7 @@ G_BEGIN_DECLS
 #define SP_RGBA32_B_U(v) (((v) >> 8) & 0xff)
 #define SP_RGBA32_A_U(v) ((v) & 0xff)
 #define SP_COLOR_U_TO_F(v) ((v) / 255.0)
-#define SP_COLOR_F_TO_U(v) ((guint) floor ((v) * 255.9999))
+#define SP_COLOR_F_TO_U(v) ((unsigned int) ((v) * 255.9999))
 #define SP_RGBA32_R_F(v) SP_COLOR_U_TO_F (SP_RGBA32_R_U (v))
 #define SP_RGBA32_G_F(v) SP_COLOR_U_TO_F (SP_RGBA32_G_U (v))
 #define SP_RGBA32_B_F(v) SP_COLOR_U_TO_F (SP_RGBA32_B_U (v))
@@ -55,7 +50,7 @@ typedef enum {
 struct _SPColor {
 	const SPColorSpace *colorspace;
 	union {
-		gfloat c[4];
+		float c[4];
 	} v;
 };
 
@@ -64,27 +59,25 @@ SPColorSpaceType sp_color_get_colorspace_type (const SPColor *color);
 
 void sp_color_copy (SPColor *dst, const SPColor *src);
 
-gboolean sp_color_is_equal (SPColor *c0, SPColor *c1);
+unsigned int sp_color_is_equal (SPColor *c0, SPColor *c1);
 
-void sp_color_set_rgb_float (SPColor *color, gfloat r, gfloat g, gfloat b);
-void sp_color_set_rgb_rgba32 (SPColor *color, guint32 value);
+void sp_color_set_rgb_float (SPColor *color, float r, float g, float b);
+void sp_color_set_rgb_rgba32 (SPColor *color, NRULong value);
 
-void sp_color_set_cmyk_float (SPColor *color, gfloat c, gfloat m, gfloat y, gfloat k);
+void sp_color_set_cmyk_float (SPColor *color, float c, float m, float y, float k);
 
-guint32 sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha);
-guint32 sp_color_get_rgba32_falpha (const SPColor *color, gfloat alpha);
+NRULong sp_color_get_rgba32_ualpha (const SPColor *color, NRULong alpha);
+NRULong sp_color_get_rgba32_falpha (const SPColor *color, float alpha);
 
-void sp_color_get_rgb_floatv (const SPColor *color, gfloat *rgb);
-void sp_color_get_cmyk_floatv (const SPColor *color, gfloat *cmyk);
+void sp_color_get_rgb_floatv (const SPColor *color, float *rgb);
+void sp_color_get_cmyk_floatv (const SPColor *color, float *cmyk);
 
 /* Plain mode helpers */
 
-void sp_color_rgb_to_hsv_floatv (gfloat *hsv, gfloat r, gfloat g, gfloat b);
-void sp_color_hsv_to_rgb_floatv (gfloat *rgb, gfloat h, gfloat s, gfloat v);
-void sp_color_rgb_to_cmyk_floatv (gfloat *cmyk, gfloat r, gfloat g, gfloat b);
-void sp_color_cmyk_to_rgb_floatv (gfloat *rgb, gfloat c, gfloat m, gfloat y, gfloat k);
-
-G_END_DECLS
+void sp_color_rgb_to_hsv_floatv (float *hsv, float r, float g, float b);
+void sp_color_hsv_to_rgb_floatv (float *rgb, float h, float s, float v);
+void sp_color_rgb_to_cmyk_floatv (float *cmyk, float r, float g, float b);
+void sp_color_cmyk_to_rgb_floatv (float *rgb, float c, float m, float y, float k);
 
 #endif
 

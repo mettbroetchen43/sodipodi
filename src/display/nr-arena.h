@@ -14,19 +14,21 @@
  */
 
 #define NR_TYPE_ARENA (nr_arena_get_type ())
-#define NR_ARENA(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA, NRArena))
-#define NR_IS_ARENA(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA))
+#define NR_ARENA(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA, NRArena))
+#define NR_IS_ARENA(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA))
 
 #include <libnr/nr-types.h>
 #include "nr-object.h"
 #include "nr-arena-forward.h"
 
+#include <glib-object.h>
+
 struct _NRArena {
-	NRObject object;
+	GObject object;
 };
 
 struct _NRArenaClass {
-	NRObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* These may be used for bookkeeping, like snooping highlited item */
 	void (* item_added) (NRArena *arena, NRArenaItem *item);

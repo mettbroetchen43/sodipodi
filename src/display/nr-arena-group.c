@@ -20,35 +20,31 @@
 
 static void nr_arena_group_class_init (NRArenaGroupClass *klass);
 static void nr_arena_group_init (NRArenaGroup *group);
-static void nr_arena_group_finalize (GObject *object);
+static void nr_arena_group_finalize (NRObject *object);
 
 static NRArenaItem *nr_arena_group_children (NRArenaItem *item);
 static void nr_arena_group_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 static void nr_arena_group_remove_child (NRArenaItem *item, NRArenaItem *child);
 static void nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
-static guint nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+static unsigned int nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
 static unsigned int nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
-static guint nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+static unsigned int nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
+static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 
 static NRArenaItemClass *parent_class;
 
-GType
+unsigned int
 nr_arena_group_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaGroupClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_group_class_init,
-			NULL, NULL,
-			sizeof (NRArenaGroup),
-			16,
-			(GInstanceInitFunc) nr_arena_group_init,
-		};
-		type = g_type_register_static (NR_TYPE_ARENA_ITEM, "NRArenaGroup", &info, 0);
+		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
+						"NRArenaGroup",
+						sizeof (NRArenaGroupClass),
+						sizeof (NRArenaGroup),
+						(void (*) (NRObjectClass *)) nr_arena_group_class_init,
+						(void (*) (NRObject *)) nr_arena_group_init);
 	}
 	return type;
 }
@@ -56,13 +52,13 @@ nr_arena_group_get_type (void)
 static void
 nr_arena_group_class_init (NRArenaGroupClass *klass)
 {
-	GObjectClass *object_class;
+	NRObjectClass *object_class;
 	NRArenaItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 	item_class = (NRArenaItemClass *) klass;
 
-	parent_class = g_type_class_ref (NR_TYPE_ARENA_ITEM);
+	parent_class = (NRArenaItemClass *) ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_group_finalize;
 
@@ -86,7 +82,7 @@ nr_arena_group_init (NRArenaGroup *group)
 }
 
 static void
-nr_arena_group_finalize (GObject *object)
+nr_arena_group_finalize (NRObject *object)
 {
 	NRArenaItem *item;
 	NRArenaGroup *group;
@@ -98,7 +94,7 @@ nr_arena_group_finalize (GObject *object)
 		group->children = nr_arena_item_detach_unref (item, group->children);
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	((NRObjectClass *) (parent_class))->finalize (object);
 }
 
 static NRArenaItem *
@@ -177,12 +173,12 @@ nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *child, NRAren
 	nr_arena_item_request_render (child);
 }
 
-static guint
-nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
+static unsigned int
+nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
-	guint newstate, beststate;
+	unsigned int newstate, beststate;
 
 	group = NR_ARENA_GROUP (item);
 
@@ -210,7 +206,7 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
-	guint ret;
+	unsigned int ret;
 
 	group = NR_ARENA_GROUP (item);
 
@@ -225,12 +221,12 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 	return ret;
 }
 
-static guint
+static unsigned int
 nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child;
-	guint ret;
+	unsigned int ret;
 
 	group = NR_ARENA_GROUP (item);
 
@@ -246,7 +242,7 @@ nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 }
 
 static NRArenaItem *
-nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_group_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child, *picked;
@@ -262,10 +258,10 @@ nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gbo
 }
 
 void
-nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent)
+nr_arena_group_set_transparent (NRArenaGroup *group, unsigned int transparent)
 {
-	g_return_if_fail (group != NULL);
-	g_return_if_fail (NR_IS_ARENA_GROUP (group));
+	nr_return_if_fail (group != NULL);
+	nr_return_if_fail (NR_IS_ARENA_GROUP (group));
 
 	group->transparent = transparent;
 }

@@ -14,12 +14,10 @@
  */
 
 #define NR_TYPE_ARENA_ITEM (nr_arena_item_get_type ())
-#define NR_ARENA_ITEM(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_ITEM, NRArenaItem))
-#define NR_ARENA_ITEM_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), NR_TYPE_ARENA_ITEM, NRArenaItemClass))
-#define NR_IS_ARENA_ITEM(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_ITEM))
-#define NR_IS_ARENA_ITEM_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), NR_TYPE_ARENA_ITEM))
+#define NR_ARENA_ITEM(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_ARENA_ITEM, NRArenaItem))
+#define NR_IS_ARENA_ITEM(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_ARENA_ITEM))
 
-#define NR_ARENA_ITEM_VIRTUAL(i,m) (((NRArenaItemClass *) G_OBJECT_GET_CLASS (i))->m)
+#define NR_ARENA_ITEM_VIRTUAL(i,m) (((NRArenaItemClass *) NR_OBJECT_GET_CLASS (i))->m)
 
 typedef struct _NRGC NRGC;
 
@@ -107,10 +105,10 @@ struct _NRArenaItemClass {
 	void (* remove_child) (NRArenaItem *item, NRArenaItem *child);
 	void (* set_child_position) (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
 
-	guint (* update) (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
+	unsigned int (* update) (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
 	unsigned int (* render) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
-	guint (* clip) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+	unsigned int (* clip) (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
+	NRArenaItem * (* pick) (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 };
 
 #define NR_ARENA_ITEM_ARENA(ai) (((NRArenaItem *) (ai))->arena)
@@ -134,7 +132,7 @@ void nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NR
  * reset - reset to state (bitwise or of flags to reset)
  */
 
-guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
+unsigned int nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset);
 
 /*
  * Render item to pixblock
@@ -144,26 +142,26 @@ guint nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, u
 
 unsigned int nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 
-guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
-NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
+unsigned int nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
+NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky);
 
-void nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate);
+void nr_arena_item_request_update (NRArenaItem *item, unsigned int reset, unsigned int propagate);
 void nr_arena_item_request_render (NRArenaItem *item);
 
 /* Public */
 
-NRArenaItem *nr_arena_item_new (NRArena *arena, GType type);
+NRArenaItem *nr_arena_item_new (NRArena *arena, unsigned int type);
 
 NRArenaItem *nr_arena_item_unparent (NRArenaItem *item);
 
 void nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child);
 
 void nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform);
-void nr_arena_item_set_opacity (NRArenaItem *item, gdouble opacity);
-void nr_arena_item_set_sensitive (NRArenaItem *item, gboolean sensitive);
+void nr_arena_item_set_opacity (NRArenaItem *item, double opacity);
+void nr_arena_item_set_sensitive (NRArenaItem *item, unsigned int sensitive);
 void nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip);
 void nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask);
-void nr_arena_item_set_order (NRArenaItem *item, gint order);
+void nr_arena_item_set_order (NRArenaItem *item, int order);
 
 /* Helpers */
 

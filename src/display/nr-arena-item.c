@@ -16,6 +16,9 @@
 #define noNR_ARENA_ITEM_DEBUG_CASCADE
 
 #include <string.h>
+#include <assert.h>
+
+#include <libnr/nr-macros.h>
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-blit.h>
@@ -25,25 +28,21 @@
 
 static void nr_arena_item_class_init (NRArenaItemClass *klass);
 static void nr_arena_item_init (NRArenaItem *item);
-static void nr_arena_item_private_finalize (GObject *object);
+static void nr_arena_item_private_finalize (NRObject *object);
 
 static NRObjectClass *parent_class;
 
 unsigned int
 nr_arena_item_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
-		GTypeInfo info = {
-			sizeof (NRArenaItemClass),
-			NULL, NULL,
-			(GClassInitFunc) nr_arena_item_class_init,
-			NULL, NULL,
-			sizeof (NRArenaItem),
-			16,
-			(GInstanceInitFunc) nr_arena_item_init,
-		};
-		type = g_type_register_static (G_TYPE_OBJECT, "NRArenaItem", &info, 0);
+		type = nr_object_register_type (NR_TYPE_OBJECT,
+						"NRArenaItem",
+						sizeof (NRArenaItemClass),
+						sizeof (NRArenaItem),
+						(void (*) (NRObjectClass *)) nr_arena_item_class_init,
+						(void (*) (NRObject *)) nr_arena_item_init);
 	}
 	return type;
 }
@@ -51,11 +50,11 @@ nr_arena_item_get_type (void)
 static void
 nr_arena_item_class_init (NRArenaItemClass *klass)
 {
-	GObjectClass * object_class;
+	NRObjectClass *object_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (NRObjectClass *) klass;
 
-	parent_class = g_type_class_peek_parent (klass);
+	parent_class = ((NRObjectClass *) klass)->parent;
 
 	object_class->finalize = nr_arena_item_private_finalize;
 }
@@ -72,16 +71,16 @@ nr_arena_item_init (NRArenaItem *item)
 }
 
 static void
-nr_arena_item_private_finalize (GObject *object)
+nr_arena_item_private_finalize (NRObject *object)
 {
 	NRArenaItem *item;
 
 	item = (NRArenaItem *) object;
 
 	/* Parent has to refcount children */
-	g_assert (!item->parent);
-	g_assert (!item->prev);
-	g_assert (!item->next);
+	assert (!item->parent);
+	assert (!item->prev);
+	assert (!item->next);
 
 	if (item->clip) {
 		nr_arena_item_detach_unref (item, item->clip);
@@ -101,17 +100,17 @@ nr_arena_item_private_finalize (GObject *object)
 		nr_free (item->transform);
 	}
 
-	G_OBJECT_CLASS(parent_class)->finalize (object);
+	((NRObjectClass *) (parent_class))->finalize (object);
 }
 
 NRArenaItem *
 nr_arena_item_children (NRArenaItem *item)
 {
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
+	nr_return_val_if_fail (item != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
 
-	if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->children)
-		return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->children (item);
+	if (NR_ARENA_ITEM_VIRTUAL (item, children))
+		NR_ARENA_ITEM_VIRTUAL (item, children) (item);
 
 	return NULL;
 }
@@ -119,17 +118,17 @@ nr_arena_item_children (NRArenaItem *item)
 void
 nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (child != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (child));
-	g_return_if_fail (child->parent == NULL);
-	g_return_if_fail (child->prev == NULL);
-	g_return_if_fail (child->next == NULL);
-	g_return_if_fail (child->arena == item->arena);
-	g_return_if_fail (child != ref);
-	g_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
-	g_return_if_fail (!ref || (ref->parent == item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (child != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (child));
+	nr_return_if_fail (child->parent == NULL);
+	nr_return_if_fail (child->prev == NULL);
+	nr_return_if_fail (child->next == NULL);
+	nr_return_if_fail (child->arena == item->arena);
+	nr_return_if_fail (child != ref);
+	nr_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
+	nr_return_if_fail (!ref || (ref->parent == item));
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, add_child))
 		NR_ARENA_ITEM_VIRTUAL (item, add_child) (item, child, ref);
@@ -138,11 +137,11 @@ nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref
 void
 nr_arena_item_remove_child (NRArenaItem *item, NRArenaItem *child)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (child != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (child));
-	g_return_if_fail (child->parent == item);
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (child != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (child));
+	nr_return_if_fail (child->parent == item);
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, remove_child))
 		NR_ARENA_ITEM_VIRTUAL (item, remove_child) (item, child);
@@ -151,13 +150,13 @@ nr_arena_item_remove_child (NRArenaItem *item, NRArenaItem *child)
 void
 nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (child != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (child));
-	g_return_if_fail (child->parent == item);
-	g_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
-	g_return_if_fail (!ref || (ref->parent == item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (child != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (child));
+	nr_return_if_fail (child->parent == item);
+	nr_return_if_fail (!ref || NR_IS_ARENA_ITEM (ref));
+	nr_return_if_fail (!ref || (ref->parent == item));
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, set_child_position))
 		NR_ARENA_ITEM_VIRTUAL (item, set_child_position) (item, child, ref);
@@ -166,7 +165,7 @@ nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArena
 NRArenaItem *
 nr_arena_item_ref (NRArenaItem *item)
 {
-	g_object_ref ((GObject *) item);
+	nr_object_ref ((NRObject *) item);
 
 	return item;
 }
@@ -174,22 +173,22 @@ nr_arena_item_ref (NRArenaItem *item)
 NRArenaItem *
 nr_arena_item_unref (NRArenaItem *item)
 {
-	g_object_unref ((GObject *) item);
+	nr_object_unref ((NRObject *) item);
 
 	return NULL;
 }
 
-guint
+unsigned int
 nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, unsigned int state, unsigned int reset)
 {
 	NRGC childgc;
 
-	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (!(state & NR_ARENA_ITEM_STATE_INVALID), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (!(state & NR_ARENA_ITEM_STATE_INVALID), NR_ARENA_ITEM_STATE_INVALID);
 
 #ifdef NR_ARENA_ITEM_DEBUG_CASCADE
-	g_print("Update %s:%p %x %x %x\n", g_type_name_from_instance ((GTypeInstance *) item), item, state, item->state, reset);
+	printf ("Update %s:%p %x %x %x\n", nr_type_name_from_instance ((GTypeInstance *) item), item, state, item->state, reset);
 #endif
 
 	/* return if in error */
@@ -255,12 +254,12 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 	NRPixBlock cpb;
 	unsigned int state;
 
-	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, item->state);
+	nr_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, item->state);
 
 #ifdef NR_ARENA_ITEM_VERBOSE
-	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
+	printf ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
 	/* If we are outside bbox just return successfully */
@@ -432,62 +431,62 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 	return item->state | NR_ARENA_ITEM_STATE_RENDER;
 }
 
-guint
+unsigned int
 nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
-	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
 #if 0
-	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_CLIP, item->state);
+	nr_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_CLIP, item->state);
 #endif
-	g_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
-	g_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
+	nr_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 
 #ifdef NR_ARENA_ITEM_VERBOSE
-	g_print ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
+	printf ("Invoke render %p: %d %d - %d %d\n", item, area->x0, area->y0, area->x1, area->y1);
 #endif
 
 	if (nr_rect_l_test_intersect (area, &item->bbox)) {
 		/* Need render that item */
-		if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip)
-			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->clip (item, area, pb);
+		if (((NRArenaItemClass *) NR_OBJECT_GET_CLASS (item))->clip)
+			return ((NRArenaItemClass *) NR_OBJECT_GET_CLASS(item))->clip (item, area, pb);
 	}
 
 	return item->state;
 }
 
 NRArenaItem *
-nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
+nr_arena_item_invoke_pick (NRArenaItem *item, double x, double y, double delta, unsigned int sticky)
 {
-	gint ix, iy;
+	int ix, iy;
 
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
-	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, NULL);
-	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_PICK, NULL);
+	nr_return_val_if_fail (item != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
+	nr_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, NULL);
+	nr_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_PICK, NULL);
 
 	if (!sticky && !item->sensitive) return NULL;
 
-	ix = (gint) x;
-	iy = (gint) y;
+	ix = (int) x;
+	iy = (int) y;
 
 	if (((x + delta) >= item->bbox.x0) &&
 	    ((x - delta) <  item->bbox.x1) &&
 	    ((y + delta) >= item->bbox.y0) &&
 	    ((y - delta) <  item->bbox.y1)) {
-		if (((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->pick)
-			return ((NRArenaItemClass *) G_OBJECT_GET_CLASS(item))->pick (item, x, y, delta, sticky);
+		if (((NRArenaItemClass *) NR_OBJECT_GET_CLASS (item))->pick)
+			return ((NRArenaItemClass *) NR_OBJECT_GET_CLASS (item))->pick (item, x, y, delta, sticky);
 	}
 
 	return NULL;
 }
 
 void
-nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate)
+nr_arena_item_request_update (NRArenaItem *item, unsigned int reset, unsigned int propagate)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (!(reset & NR_ARENA_ITEM_STATE_INVALID));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (!(reset & NR_ARENA_ITEM_STATE_INVALID));
 
 	if (propagate && !item->propagate) item->propagate = TRUE;
 
@@ -512,8 +511,8 @@ nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate
 void
 nr_arena_item_request_render (NRArenaItem *item)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	nr_arena_request_render_rect (item->arena, &item->bbox);
 }
@@ -521,15 +520,15 @@ nr_arena_item_request_render (NRArenaItem *item)
 /* Public */
 
 NRArenaItem *
-nr_arena_item_new (NRArena *arena, GType type)
+nr_arena_item_new (NRArena *arena, unsigned int type)
 {
 	NRArenaItem *item;
 
-	g_return_val_if_fail (arena != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA (arena), NULL);
-	g_return_val_if_fail (g_type_is_a (type, NR_TYPE_ARENA_ITEM), NULL);
+	nr_return_val_if_fail (arena != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA (arena), NULL);
+	nr_return_val_if_fail (nr_type_is_a (type, NR_TYPE_ARENA_ITEM), NULL);
 
-	item = (NRArenaItem *)g_object_new (type, NULL);
+	item = (NRArenaItem *) nr_object_new (type);
 
 	item->arena = arena;
 
@@ -541,8 +540,8 @@ nr_arena_item_new (NRArena *arena, GType type)
 NRArenaItem *
 nr_arena_item_unparent (NRArenaItem *item)
 {
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
+	nr_return_val_if_fail (item != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (item), NULL);
 
 	nr_arena_item_request_render (item);
 
@@ -558,14 +557,14 @@ nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child)
 {
 	NRArenaItem *ref;
 
-	g_return_if_fail (parent != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (parent));
-	g_return_if_fail (child != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (child));
-	g_return_if_fail (parent->arena == child->arena);
-	g_return_if_fail (child->parent == NULL);
-	g_return_if_fail (child->prev == NULL);
-	g_return_if_fail (child->next == NULL);
+	nr_return_if_fail (parent != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (parent));
+	nr_return_if_fail (child != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (child));
+	nr_return_if_fail (parent->arena == child->arena);
+	nr_return_if_fail (child->parent == NULL);
+	nr_return_if_fail (child->prev == NULL);
+	nr_return_if_fail (child->next == NULL);
 
 	ref = nr_arena_item_children (parent);
 	if (ref) while (ref->next) ref = ref->next;
@@ -578,8 +577,8 @@ nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 {
 	const NRMatrixF *ms, *md;
 
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	if (!transform && !item->transform) return;
 
@@ -590,7 +589,7 @@ nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 		nr_arena_item_request_render (item);
 		if (!transform || nr_matrix_f_test_identity (transform, NR_EPSILON_F)) {
 			/* Set to identity affine */
-			if (item->transform) g_free (item->transform);
+			if (item->transform) nr_free (item->transform);
 			item->transform = NULL;
 		} else {
 			if (!item->transform) item->transform = nr_new (NRMatrixF, 1);
@@ -603,8 +602,8 @@ nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 void
 nr_arena_item_set_opacity (NRArenaItem *item, double opacity)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	nr_arena_item_request_render (item);
 
@@ -612,10 +611,10 @@ nr_arena_item_set_opacity (NRArenaItem *item, double opacity)
 }
 
 void
-nr_arena_item_set_sensitive (NRArenaItem *item, gboolean sensitive)
+nr_arena_item_set_sensitive (NRArenaItem *item, unsigned int sensitive)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	/* fixme: mess with pick/repick... */
 
@@ -625,9 +624,9 @@ nr_arena_item_set_sensitive (NRArenaItem *item, gboolean sensitive)
 void
 nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (!clip || NR_IS_ARENA_ITEM (clip));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (!clip || NR_IS_ARENA_ITEM (clip));
 
 	if (clip != item->clip) {
 		nr_arena_item_request_render (item);
@@ -640,9 +639,9 @@ nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip)
 void
 nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-	g_return_if_fail (!mask || NR_IS_ARENA_ITEM (mask));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (!mask || NR_IS_ARENA_ITEM (mask));
 
 	if (mask != item->mask) {
 		nr_arena_item_request_render (item);
@@ -653,13 +652,13 @@ nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask)
 }
 
 void
-nr_arena_item_set_order (NRArenaItem *item, gint order)
+nr_arena_item_set_order (NRArenaItem *item, int order)
 {
 	NRArenaItem *children, *child, *ref;
-	gint pos;
+	int pos;
 
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
+	nr_return_if_fail (item != NULL);
+	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	if (!item->parent) return;
 
@@ -683,19 +682,19 @@ nr_arena_item_set_order (NRArenaItem *item, gint order)
 NRArenaItem *
 nr_arena_item_attach_ref (NRArenaItem *parent, NRArenaItem *child, NRArenaItem *prev, NRArenaItem *next)
 {
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (parent), NULL);
-	g_return_val_if_fail (child != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (child), NULL);
-	g_return_val_if_fail (child->parent == NULL, NULL);
-	g_return_val_if_fail (child->prev == NULL, NULL);
-	g_return_val_if_fail (child->next == NULL, NULL);
-	g_return_val_if_fail (!prev || NR_IS_ARENA_ITEM (prev), NULL);
-	g_return_val_if_fail (!prev || (prev->parent == parent), NULL);
-	g_return_val_if_fail (!prev || (prev->next == next), NULL);
-	g_return_val_if_fail (!next || NR_IS_ARENA_ITEM (next), NULL);
-	g_return_val_if_fail (!next || (next->parent == parent), NULL);
-	g_return_val_if_fail (!next || (next->prev == prev), NULL);
+	nr_return_val_if_fail (parent != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (parent), NULL);
+	nr_return_val_if_fail (child != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (child), NULL);
+	nr_return_val_if_fail (child->parent == NULL, NULL);
+	nr_return_val_if_fail (child->prev == NULL, NULL);
+	nr_return_val_if_fail (child->next == NULL, NULL);
+	nr_return_val_if_fail (!prev || NR_IS_ARENA_ITEM (prev), NULL);
+	nr_return_val_if_fail (!prev || (prev->parent == parent), NULL);
+	nr_return_val_if_fail (!prev || (prev->next == next), NULL);
+	nr_return_val_if_fail (!next || NR_IS_ARENA_ITEM (next), NULL);
+	nr_return_val_if_fail (!next || (next->parent == parent), NULL);
+	nr_return_val_if_fail (!next || (next->prev == prev), NULL);
 
 	nr_arena_item_ref (child);
 
@@ -714,11 +713,11 @@ nr_arena_item_detach_unref (NRArenaItem *parent, NRArenaItem *child)
 {
 	NRArenaItem *prev, *next;
 
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (parent), NULL);
-	g_return_val_if_fail (child != NULL, NULL);
-	g_return_val_if_fail (NR_IS_ARENA_ITEM (child), NULL);
-	g_return_val_if_fail (child->parent == parent, NULL);
+	nr_return_val_if_fail (parent != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (parent), NULL);
+	nr_return_val_if_fail (child != NULL, NULL);
+	nr_return_val_if_fail (NR_IS_ARENA_ITEM (child), NULL);
+	nr_return_val_if_fail (child->parent == parent, NULL);
 
 	prev = child->prev;
 	next = child->next;

@@ -36,6 +36,7 @@ noinst_LIBRARIES = libspdisplay.a
 libspdisplay_a_SOURCES = \
 	nr-arena-forward.h \
 	nr-arena.c nr-arena.h \
+	nr-object.c nr-object.h \
 	nr-arena-item.c nr-arena-item.h \
 	nr-arena-group.c nr-arena-group.h \
 	nr-arena-image.c nr-arena-image.h \
