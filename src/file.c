@@ -390,153 +390,27 @@ void sp_file_import (GtkWidget * widget)
 	gtk_widget_show (w);
 }
 
-#if 0
-static void
-file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
-{
-	SPDocument * doc;
-	gchar * filename;
-	ArtDRect bbox;
-	gint width, height;
-	art_u8 * pixels;
-	ArtPixBuf * pixbuf;
-	gdouble affine[6], a[6];
-
-	filename = g_strdup (gtk_file_selection_get_filename (fs));
-
-	gtk_widget_destroy (GTK_WIDGET (fs));
-
-	if (filename == NULL) return;
-
-	if (export_path) g_free (export_path);
-	export_path = g_dirname (filename);
-	if (export_path) export_path = g_strconcat (export_path, "/", NULL);
-
-	doc = SP_ACTIVE_DOCUMENT;
-	g_return_if_fail (doc != NULL);
-
-	sp_item_bbox_desktop (SP_ITEM (sp_document_root (doc)), &bbox);
-
-	width = bbox.x1 - bbox.x0 + 2;
-	height = bbox.y1 - bbox.y0 + 2;
-
-	if ((width < 16) || (height < 16)) return;
-
-	pixels = art_new (art_u8, width * height * 4);
-	memset (pixels, 0, width * height * 4);
-	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
-
-	sp_item_i2d_affine (SP_ITEM (sp_document_root (doc)), affine);
-	affine[4] -= bbox.x0;
-	affine[5] -= bbox.y0;
-	art_affine_scale (a, 1.0, -1.0);
-	art_affine_multiply (affine, affine, a);
-	art_affine_translate (a, 0.0, height);
-	art_affine_multiply (affine, affine, a);
-
-	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
-
-	sp_png_write_rgba (filename, pixbuf->pixels, pixbuf->width, pixbuf->height, pixbuf->rowstride);
-
-	art_pixbuf_free (pixbuf);
-#if 0
-	sp_desktop_set_title (sp_filename_from_path (filename));
-#endif
-}
-
-static void
-file_export_cancel (GtkButton *b, GtkFileSelection *fs)
-{
-	gtk_widget_destroy (GTK_WIDGET (fs));
-}
-
-void sp_file_export (GtkWidget * widget)
-{
-	GtkWidget * w;
-
-	w = gtk_file_selection_new (_("Export file"));
-
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->ok_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_export_ok), w);
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (w)->cancel_button), "clicked",
-			    GTK_SIGNAL_FUNC (file_export_cancel), w);
-
-	if (export_path)
-		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w), export_path);
-
-	gtk_widget_show (w);
-}
-#endif
-
-#if 0
-static void
-sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
-{
-        GnomePrintContext * gpc;
-
-        gpc = gnome_print_context_new (printer);
-
-	sp_document_ensure_up_to_date (doc);
-
-	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
-	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
-	gnome_print_scale (gpc, 0.8, -0.8);
-	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);
-        sp_item_print (SP_ITEM (sp_document_root (doc)), gpc);
-        gnome_print_showpage (gpc);
-        gnome_print_context_close (gpc);
-
-}
-#endif
-
-void sp_do_file_print (SPDocument * doc)
-{
-#if 0
-        GnomePrinter * printer;
-
-        printer = gnome_printer_dialog_new_modal ();
-        if (printer == NULL) return;
-
-        sp_do_file_print_to_printer (doc, printer);
-#endif
-}
-
 void
-sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
+sp_file_print (gpointer object, gpointer data)
 {
-#if 0
-        GnomePrinter * printer;
-
-        printer = gnome_printer_new_generic_ps (filename);
-        if (printer == NULL) return;
-
-        sp_do_file_print_to_printer (doc, printer);
-#endif
-}
-
-void sp_file_print (GtkWidget * widget)
-{
-#if 0
-	SPDocument * doc;
-
-	doc = SP_ACTIVE_DOCUMENT;
-	if (!SP_IS_DOCUMENT(doc)) return;
-
-	//	g_return_if_fail (doc != NULL);
-
-	sp_do_file_print (doc);
-#endif
-}
-
-void
-sp_file_print_preview (GtkWidget * widget)
-{
-	SPDocument * doc;
+	SPDocument *doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
 
 	if (doc) {
-		sp_print_preview (doc);
+		sp_print_document (doc);
+	}
+}
+
+void
+sp_file_print_preview (gpointer object, gpointer data)
+{
+	SPDocument *doc;
+
+	doc = SP_ACTIVE_DOCUMENT;
+
+	if (doc) {
+		sp_print_preview_document (doc);
 	}
 }
 

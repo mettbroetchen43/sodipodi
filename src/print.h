@@ -30,7 +30,8 @@ unsigned int sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 
 
 /* UI */
-
-void sp_print_preview (SPDocument *doc);
+void sp_print_preview_document (SPDocument *doc);
+void sp_print_document (SPDocument *doc);
+void sp_print_document_to_file (SPDocument *doc, const unsigned char *filename);
 
 #endif

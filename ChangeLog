@@ -1,5 +1,10 @@
 2002-11-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/file.c: Removed printing code, only frontends remain
+
+	* src/print.c (sp_print_document): Implement
+	(sp_print_document_to_file): Ditto
+
 	* src/sp-gradient.c (sp_gradient_ensure_colors): Fixed writing last color
 	outside of allocated color vector
 

@@ -54,6 +54,7 @@
 #include "sp-object.h"
 #include "toolbox.h"
 #include "interface.h"
+#include "print.h"
 
 #if 1
 /* fixme: This are required for temporary slideshow hack */
@@ -61,12 +62,6 @@
 #endif
 
 #include "svg/svg.h"
-#if 0
-/* fixme: Ths is needed for export, remove if we implement generic helper */
-#include <math.h>
-#include "helper/png-write.h"
-#include "sp-item.h"
-#endif
 
 #include "sodipodi-private.h"
 
@@ -325,7 +320,7 @@ sp_main_console (int argc, char **argv)
 			g_warning ("Specified document %s cannot be opened (is it valid SVG file?)", (gchar *) fl->data);
 		} else {
 			if (printer) {
-				sp_do_file_print_to_file (doc, printer);
+				sp_print_document_to_file (doc, printer);
 			}
 			if (sp_export_png) {
 				sp_do_export_png (doc);

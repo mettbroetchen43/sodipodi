@@ -26,6 +26,7 @@
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprint/gnome-print-master-preview.h>
+#include <libgnomeprint/gnome-printer-dialog.h>
 
 #include "document.h"
 #include "sp-item.h"
@@ -255,7 +256,7 @@ sp_print_image_R8G8B8A8_N (SPPrintContext *ctx,
 /* UI */
 
 void
-sp_print_preview (SPDocument *doc)
+sp_print_preview_document (SPDocument *doc)
 {
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
@@ -289,5 +290,59 @@ sp_print_preview (SPDocument *doc)
 	gnome_print_master_close (gpm);
 
 	g_free (title);
+}
+
+void
+sp_print_document (SPDocument *doc)
+{
+        GnomePrinter *printer;
+	SPPrintContext ctx;
+        GnomePrintContext *gpc;
+
+        printer = gnome_printer_dialog_new_modal ();
+        if (printer == NULL) return;
+
+	sp_document_ensure_up_to_date (doc);
+
+	gpc = gnome_print_context_new (printer);
+	ctx.gpc = gpc;
+
+	g_return_if_fail (gpc != NULL);
+
+	/* Print document */
+	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
+	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
+	/* From desktop points to document pixels */
+	gnome_print_scale (gpc, 0.8, -0.8);
+	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+        gnome_print_showpage (gpc);
+        gnome_print_context_close (gpc);
+}
+
+void
+sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
+{
+        GnomePrinter *printer;
+	SPPrintContext ctx;
+        GnomePrintContext *gpc;
+
+        printer = gnome_printer_new_generic_ps (filename);
+        if (printer == NULL) return;
+
+	sp_document_ensure_up_to_date (doc);
+
+	gpc = gnome_print_context_new (printer);
+	ctx.gpc = gpc;
+
+	g_return_if_fail (gpc != NULL);
+
+	/* Print document */
+	gnome_print_beginpage (gpc, SP_DOCUMENT_NAME (doc));
+	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
+	/* From desktop points to document pixels */
+	gnome_print_scale (gpc, 0.8, -0.8);
+	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
+        gnome_print_showpage (gpc);
+        gnome_print_context_close (gpc);
 }
 

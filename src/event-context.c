@@ -162,8 +162,8 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 
 	switch (event->type) {
 	case GDK_2BUTTON_PRESS:
-	  sp_desktop_dialog ();
-	  break;
+		sp_desktop_dialog ();
+		break;
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {
 		case 2:
@@ -198,118 +198,118 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 		}
 		break;
         case GDK_KEY_PRESS:
-          switch (event->key.keyval) {  
-          case GDK_Tab: // disable tab/shift-tab which cycle widget focus
-          case GDK_ISO_Left_Tab: // they will get different functions
-            ret = TRUE;
-            break;
-	  case GDK_F1: // F1 - select context 
-	    sp_event_context_set_select(NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_F2: // F2 - node edit context 
-	    sp_event_context_set_node_edit(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_F3: // F3 - zoom context
-	    sp_event_context_set_zoom(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_F4: // F4 - rect context
-	    sp_event_context_set_rect(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_F5: // F5 - arc context
-	    sp_event_context_set_arc(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_F6: // F6 - frehand line context
-	    sp_event_context_set_freehand(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_F7: // F7 - text context
-	    sp_event_context_set_text(NULL);	    
-	    ret = TRUE;
-	    break;
-	  case GDK_equal: // = 
-      	  case GDK_plus: // + - zoom in
-	    sp_zoom_in(NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_minus: // - - zoom out
-	    sp_zoom_out(NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_0: // 0 - zoom entire page
-	    sp_zoom_page(NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_1: // 1 - zoom 1 to 1
-	    sp_zoom_1_to_1(NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_z: // Ctrl z - undo
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_undo (NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_r: // Ctrl r - redo
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_redo (NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_w: // Crtl w - close view
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_ui_close_view (NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_n: // Crtl n - new document
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      ret = TRUE;
-	      sp_file_new ();
-	    }
-	    break;
-	  case GDK_N: // Ctrl N - new view
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_ui_new_view (NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_o: // Ctrl o - open file
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_open_dialog (NULL, NULL);
-	      ret = TRUE;
-	    }
-	    break;
+		switch (event->key.keyval) {  
+		case GDK_Tab: // disable tab/shift-tab which cycle widget focus
+		case GDK_ISO_Left_Tab: // they will get different functions
+			ret = TRUE;
+			break;
+		case GDK_F1: // F1 - select context 
+			sp_event_context_set_select(NULL);
+			ret = TRUE;
+			break;
+		case GDK_F2: // F2 - node edit context 
+			sp_event_context_set_node_edit(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_F3: // F3 - zoom context
+			sp_event_context_set_zoom(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_F4: // F4 - rect context
+			sp_event_context_set_rect(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_F5: // F5 - arc context
+			sp_event_context_set_arc(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_F6: // F6 - frehand line context
+			sp_event_context_set_freehand(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_F7: // F7 - text context
+			sp_event_context_set_text(NULL);	    
+			ret = TRUE;
+			break;
+		case GDK_equal: // = 
+		case GDK_plus: // + - zoom in
+			sp_zoom_in(NULL);
+			ret = TRUE;
+			break;
+		case GDK_minus: // - - zoom out
+			sp_zoom_out(NULL);
+			ret = TRUE;
+			break;
+		case GDK_0: // 0 - zoom entire page
+			sp_zoom_page(NULL);
+			ret = TRUE;
+			break;
+		case GDK_1: // 1 - zoom 1 to 1
+			sp_zoom_1_to_1(NULL);
+			ret = TRUE;
+			break;
+		case GDK_z: // Ctrl z - undo
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_undo (NULL);
+				ret = TRUE;
+			}
+			break;
+		case GDK_r: // Ctrl r - redo
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_redo (NULL);
+				ret = TRUE;
+			}
+			break;
+		case GDK_w: // Crtl w - close view
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_ui_close_view (NULL);
+				ret = TRUE;
+			}
+			break;
+		case GDK_n: // Crtl n - new document
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_new ();
+			}
+			break;
+		case GDK_N: // Ctrl N - new view
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_ui_new_view (NULL);
+				ret = TRUE;
+			}
+			break;
+		case GDK_o: // Ctrl o - open file
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_file_open_dialog (NULL, NULL);
+				ret = TRUE;
+			}
+			break;
 #if 0
-	  case GDK_e: // Ctrl e - export file
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_export (NULL);
-	      ret = TRUE;
-	    }
-	    break;
+		case GDK_e: // Ctrl e - export file
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_file_export (NULL);
+				ret = TRUE;
+			}
+			break;
 #endif
-	  case GDK_i: // Ctrl i - import file
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_import (NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_p: // Crtl p - print document
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      ret = TRUE;
-	      sp_file_print (NULL);
-	    }
-	    break;
-	  case GDK_P: // Crtl P - print preview
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      ret = TRUE;
-	      sp_file_print_preview (NULL);
-	    }
-	    break;
+		case GDK_i: // Ctrl i - import file
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_file_import (NULL);
+				ret = TRUE;
+			}
+			break;
+		case GDK_p: // Crtl p - print document
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_print (NULL, NULL);
+			}
+			break;
+		case GDK_P: // Crtl P - print preview
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_print_preview (NULL, NULL);
+			}
+			break;
 	  case GDK_s: // Crtl s - save file
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      ret = TRUE;
