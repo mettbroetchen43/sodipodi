@@ -240,7 +240,7 @@ sp_guide_sensitize (SPGuide * guide, SPCanvas * canvas, gboolean sensitive)
 }
 
 void
-sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y)
+sp_guide_moveto (SPGuide *guide, gdouble x, gdouble y)
 {
 	GSList *l;
 

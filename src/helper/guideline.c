@@ -93,6 +93,7 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	unsigned int r, g, b, a;
 	int p, p0, p1, step;
 	unsigned char *d;
+	int ipos;
 
 	gl = SP_GUIDELINE (item);
 
@@ -104,20 +105,22 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	b = NR_RGBA32_B (gl->rgba);
 	a = NR_RGBA32_A (gl->rgba);
 
+	ipos = (int) (gl->position + 0.5);
+
 	if (gl->vertical) {
-		if (gl->position < buf->rect.x0) return;
-		if (gl->position >= buf->rect.x1) return;
+		if (ipos < buf->rect.x0) return;
+		if (ipos >= buf->rect.x1) return;
 		p0 = buf->rect.y0;
 		p1 = buf->rect.y1;
 		step = buf->buf_rowstride;
-		d = buf->buf + 3 * (gl->position - buf->rect.x0);
+		d = buf->buf + 3 * (ipos - buf->rect.x0);
 	} else {
-		if (gl->position < buf->rect.y0) return;
-		if (gl->position >= buf->rect.y1) return;
+		if (ipos < buf->rect.y0) return;
+		if (ipos >= buf->rect.y1) return;
 		p0 = buf->rect.x0;
 		p1 = buf->rect.x1;
 		step = 3;
-		d = buf->buf + (gl->position - buf->rect.y0) * buf->buf_rowstride;
+		d = buf->buf + (ipos - buf->rect.y0) * buf->buf_rowstride;
 	}
 
 	for (p = p0; p < p1; p++) {
@@ -143,7 +146,6 @@ sp_guideline_update (SPCanvasItem *item, double *affine, unsigned int flags)
 		sp_canvas_update_bbox (item, gl->position, -1000000, gl->position + 1, 1000000);
 	} else {
 		gl->position = (int) (affine[5] + 0.5);
-		g_print ("pos is %d\n", gl->position);
 		sp_canvas_update_bbox (item, -1000000, gl->position, 1000000, gl->position + 1);
 	}
 }
@@ -167,7 +169,7 @@ sp_guideline_point (SPCanvasItem *item, double x, double y, SPCanvasItem **actua
 }
 
 SPCanvasItem *
-sp_guideline_new (SPCanvasGroup *parent, int position, unsigned int vertical)
+sp_guideline_new (SPCanvasGroup *parent, double position, unsigned int vertical)
 {
 	SPCanvasItem *item;
 	SPGuideLine *gl;

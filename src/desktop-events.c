@@ -119,7 +119,6 @@ sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw, gbo
 	case GDK_BUTTON_RELEASE:
 		if (dragging && event->button.button == 1) {
 			NRPointF p;
-			double px, py;
 		        gdk_pointer_ungrab (event->button.time);
 			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
@@ -130,7 +129,7 @@ sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw, gbo
 				SPRepr *repr;
 				repr = sp_repr_new ("sodipodi:guide");
 				sp_repr_set_attr (repr, "orientation", (horiz) ? "horizontal" : "vertical");
-				sp_repr_set_double_attribute (repr, "position", horiz ? p.y : p.x);
+				sp_repr_set_double (repr, "position", horiz ? p.y : p.x);
 				sp_repr_append_child (SP_OBJECT_REPR (desktop->namedview), repr);
 				sp_repr_unref (repr);
 				sp_document_done (SP_DT_DOCUMENT (desktop));

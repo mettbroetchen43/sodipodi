@@ -1,5 +1,9 @@
 2003-01-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/guideline.c (sp_guideline_new): Changed signature, fixes
+	granular new guideline placement bug
+	(sp_guideline_render): Use normal rounding, so guideline and object are aligned
+
 	* src/sp-item.h: Changed the signature of ::snappoints, this forced me to
 	use NRPoints near everywhere else too
 

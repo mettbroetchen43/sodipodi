@@ -10,13 +10,13 @@ TODO for 0.29
 - More works for XML Editor (DONE)
 - Fix unstable SPMenuButton/SPToolbox behavior (FIXED)
 - Fix GuideLine bug (DONE)
-- Fix snapping
+- Fix snapping (DONE)
 - Test gnome-print support
 - Replacement for uri lists
 - Replacement for uri handler
 - Optional libgnome support?
 - Save on close dialog buttons (DONE)
-- Fix freehand
+- Fix freehand (DONE)
 
 TODO for 0.28
 =============

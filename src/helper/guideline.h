@@ -40,7 +40,7 @@ struct _SPGuideLineClass {
 
 GType sp_guideline_get_type (void);
 
-SPCanvasItem *sp_guideline_new (SPCanvasGroup *parent, int position, unsigned int vertical);
+SPCanvasItem *sp_guideline_new (SPCanvasGroup *parent, double position, unsigned int vertical);
 
 void sp_guideline_set_position (SPGuideLine *gl, double position);
 void sp_guideline_set_color (SPGuideLine *gl, unsigned int rgba);
