@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-12 04:59+0100\n"
-"PO-Revision-Date: 2003-12-14 20:36+0100\n"
+"POT-Creation-Date: 2003-12-20 04:59+0100\n"
+"PO-Revision-Date: 2003-12-20 15:25+0100\n"
 "Last-Translator: Jeroen van der Vegt <jeroen (at) dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,14 @@ msgstr "SVG vector Illustrator"
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/bonobo/svg-doc-factory.c:35
-msgid "Could not create sodipodi-svg-doc factory"
-msgstr "Kon de sodipodi-svg fabriek niet maken"
-
 #: src/arc-context.c:303
 #, c-format
 msgid "Drawing arc %s x %s"
 msgstr "Bezig met tekenen veelhoek %s x %s"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Kon de sodipodi-svg fabriek niet maken"
 
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
@@ -51,17 +51,17 @@ msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:138 src/verbs.c:463
+#: src/dialogs/export.c:143 src/verbs.c:463
 msgid "Page"
 msgstr "Pagina"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:143
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:148
 #: src/verbs.c:464
 msgid "Drawing"
 msgstr "Tekening"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:148
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:153
 #: src/interface.c:591 src/toolbox.c:488 src/verbs.c:465
 msgid "Selection"
 msgstr "Selectie"
@@ -291,7 +291,7 @@ msgstr "Pagina kleur:"
 msgid "Page color"
 msgstr "Pagina kleur"
 
-#: src/dialogs/desktop-properties.c:580
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
 msgstr "Sluiten"
 
@@ -357,80 +357,89 @@ msgid "Custom paper"
 msgstr "Eigen papier formaat"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:156
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:161
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Eenheden:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:166
-#: src/dialogs/export.c:190 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:171
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
 #: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Breedte:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:175
-#: src/dialogs/export.c:198 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:180
+#: src/dialogs/export.c:203 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Hoogte:"
 
-#: src/dialogs/export.c:118
+#: src/dialogs/export.c:123
 msgid "Export bitmap"
 msgstr "Bitmap exporteren"
 
 #. Export area frame
-#: src/dialogs/export.c:127
+#: src/dialogs/export.c:132
 msgid "Export area"
 msgstr "Gebied exporteren"
 
-#: src/dialogs/export.c:160
+#: src/dialogs/export.c:165
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:163
+#: src/dialogs/export.c:168
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:169
+#: src/dialogs/export.c:174
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:172
+#: src/dialogs/export.c:177
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:181
+#: src/dialogs/export.c:186
 msgid "Bitmap size"
 msgstr "Bitmap afmeting"
 
-#: src/dialogs/export.c:190 src/dialogs/export.c:198
+#: src/dialogs/export.c:195 src/dialogs/export.c:203
 msgid "pixels"
 msgstr "beeldpunten"
 
-#: src/dialogs/export.c:194 src/dialogs/export.c:202
+#: src/dialogs/export.c:199 src/dialogs/export.c:207
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:210
+#: src/dialogs/export.c:215
 msgid "Background color"
 msgstr "Achergrond kleur"
 
-#: src/dialogs/export.c:212
+#: src/dialogs/export.c:217
 msgid "Bitmap background:"
 msgstr "Bitmap achtergrond:"
 
-#: src/dialogs/export.c:217
+#: src/dialogs/export.c:222
 msgid "Export png file"
 msgstr ".png bestand exporteren"
 
-#: src/dialogs/export.c:244 src/verbs.c:413
+#: src/dialogs/export.c:249 src/verbs.c:413
 msgid "Export"
 msgstr "Exporteren"
+
+#: src/dialogs/export.c:360
+msgid "Export in progress"
+msgstr "Voortgang van het exporteren"
+
+#: src/dialogs/export.c:364
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "KBezig met exporteren [%d x %d] %s"
 
 #: src/dialogs/fill-style.c:86
 msgid "Fill style"
@@ -911,15 +920,15 @@ msgstr "Standaardwaarden"
 msgid "Select file to open"
 msgstr "Selecteer een bestand om te openen"
 
-#: src/file.c:207 src/file.c:307
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
 msgstr "Bestandstype:"
 
-#: src/file.c:292
+#: src/file.c:290
 msgid "Save file"
 msgstr "Bestand opslaan"
 
-#: src/file.c:474 src/file.c:484 src/file.c:490
+#: src/file.c:472 src/file.c:482 src/file.c:488
 msgid "Select file to import"
 msgstr "Selecteer een bestand om te importeren"
 
@@ -1159,15 +1168,15 @@ msgstr "Weergeven"
 msgid "Modules"
 msgstr "Modules"
 
-#: src/main.c:120 src/main.c:589
+#: src/main.c:120 src/main.c:619
 msgid "Do not use X server (only process files from console)"
 msgstr "X-server niet gebruiken (verwerk alleen bestanden van de terminal)"
 
-#: src/main.c:123 src/main.c:590
+#: src/main.c:123 src/main.c:620
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Probeer X-server te gebruiken zelfs als $DISPLAY geen waarde heeft"
 
-#: src/main.c:126 src/main.c:591
+#: src/main.c:126 src/main.c:621
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Open de aangeduidde documenten (optie-tekenreeks hoeft niet te worden "
@@ -1183,11 +1192,11 @@ msgstr ""
 "Druk de documenten af naar het opgegeven bestand (gebruik '| programma' voor "
 "een pipe)"
 
-#: src/main.c:132 src/main.c:592
+#: src/main.c:132 src/main.c:622
 msgid "Export document to png file"
 msgstr "Document exporteren naar .png bestand."
 
-#: src/main.c:135 src/main.c:593
+#: src/main.c:135 src/main.c:623
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "De resolutie die gebruikt is om SVG naar bitmap om te zeten (standaard 72.0)"
@@ -1196,7 +1205,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:594
+#: src/main.c:138 src/main.c:624
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1208,7 +1217,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:595
+#: src/main.c:141 src/main.c:625
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De breedte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
@@ -1217,7 +1226,7 @@ msgstr ""
 msgid "WIDTH"
 msgstr "BREEDTE"
 
-#: src/main.c:143 src/main.c:596
+#: src/main.c:143 src/main.c:626
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De hoogte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
@@ -1226,7 +1235,7 @@ msgstr ""
 msgid "HEIGHT"
 msgstr "HOOGTE"
 
-#: src/main.c:145 src/main.c:597
+#: src/main.c:145 src/main.c:627
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Achtergrondkleur van de geëxporteerde bitmap (kan iedere door SVG "
@@ -1236,7 +1245,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "KLEUR"
 
-#: src/main.c:147 src/main.c:598
+#: src/main.c:147 src/main.c:628
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Document exporteren naar gewoon SVG bestand (geen \"xmlns:sodipodi\" "
@@ -1252,58 +1261,58 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Geef bitmap (xpm) pictogrammen de voorkeur boven de SVG versies."
 
-#: src/main.c:599
+#: src/main.c:629
 msgid "Print sodipodi version information"
 msgstr "Geef Sodipodi versie informatie"
 
-#: src/main.c:600
+#: src/main.c:630
 msgid "Print help about command-line arguments"
 msgstr "Hulp weergeven over de opdracht-regel argumenten"
 
-#: src/main.c:749
+#: src/main.c:779
 msgid "Untitled document"
 msgstr "Naamloos document"
 
 #. Show nice dialog box
-#: src/main.c:774
+#: src/main.c:804
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Er is een fout op getreden in Sodipodi, en het zal nu worden afgesloten.\n"
 
-#: src/main.c:775
+#: src/main.c:805
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatische reservekopieën van niet opgeslagen documenten werden gemaakt op "
 "de volgende lokaties:\n"
 
-#: src/main.c:776
+#: src/main.c:806
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Het automatisch maken van een reservekopie is mislukt voor de volgende "
 "bestanden:\n"
 
-#: src/module.c:852
+#: src/module.c:851
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Schaalbaar Vector Bestand (SVG)"
 
-#: src/module.c:852
+#: src/module.c:851
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Sodipodi's eigen formaat en de W3C standaard."
 
-#: src/module.c:859
+#: src/module.c:858
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG met  \"xmlns:sodipodi\" naamruimte"
 
-#: src/module.c:860
+#: src/module.c:859
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Schaalbare Vector Afbeelding (SVG) met sodipodi uitbreidingen."
 
-#: src/module.c:863
+#: src/module.c:862
 msgid "Plain SVG"
 msgstr "Standaard SVG"
 
-#: src/module.c:864
+#: src/module.c:863
 msgid "Scalable Vector Graphics format"
 msgstr "Schaalbare Vector Afbeelding (SVG) formaat"
 
@@ -1395,30 +1404,35 @@ msgid "write error occured"
 msgstr "schrijffout vond plaats"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr "Item"
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:478
 msgid "Item Properties"
 msgstr "Item eigenschappen"
 
 #. Select item
-#: src/object-ui.c:120
+#: src/object-ui.c:119
 msgid "Select this"
 msgstr "Dit selecteren"
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr "Transformatie herstellen"
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr "Transformatie toepassen"
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr "Maak gevoellig"
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr "Maak ongevoellig"
 
@@ -1427,92 +1441,92 @@ msgstr "Maak ongevoellig"
 msgid "Create link"
 msgstr "Koppeling maken"
 
-#: src/object-ui.c:253 src/verbs.c:431
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
 msgstr "Groep"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
 msgstr "Groepsinstellingen"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:432
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Groepering opheffen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr "Verwijzing"
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr "Koppeling eigenschappen"
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr "Koppeling volgen"
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr "Verwijder link"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
+#: src/object-ui.c:407
 msgid "Image"
 msgstr "Afbeelding"
 
 #. Link dialog
-#: src/object-ui.c:402
+#: src/object-ui.c:410
 msgid "Image Properties"
 msgstr "Afbeeldingseigenschappen"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:788
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr "Overtrekken"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
+#: src/object-ui.c:467
 msgid "Shape"
 msgstr "Vorm"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:445
+#: src/object-ui.c:470 src/toolbox.c:445
 msgid "Fill settings"
 msgstr "Opvul eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:489
+#: src/object-ui.c:497
 msgid "Rect"
 msgstr "Rechthoek"
 
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr "Rechthoek eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:449
 msgid "Star"
 msgstr "Ster"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
 msgstr "Ster eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:450
 msgid "Spiral"
 msgstr "Spiraal"
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr "Spiraal eigenschappen"
 
@@ -1771,7 +1785,7 @@ msgstr "Onbekend"
 msgid "Image URI:"
 msgstr "Afbeeldings URI:"
 
-#: src/sp-item-group.c:457
+#: src/sp-item-group.c:462
 #, c-format
 msgid "Group of %d objects"
 msgstr "Groep van %d objecten"
@@ -1781,7 +1795,7 @@ msgid "Unknown item :-("
 msgstr "Onbekend item :-("
 
 #. fixme:
-#: src/sp-text.c:1441
+#: src/sp-text.c:1450
 msgid "Text object"
 msgstr "Tekst object"
 
@@ -2377,57 +2391,57 @@ msgstr "Eind kleur"
 msgid "Gradient vector"
 msgstr "Overgang vector"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr "Geen objecten"
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr "Meerdere stijlen"
 
-#: src/widgets/paint-selector.c:649
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
 msgstr "Geen opvulling"
 
 #. Label
-#: src/widgets/paint-selector.c:739
+#: src/widgets/paint-selector.c:747
 msgid "Mode:"
 msgstr "Modus:"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:757
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr "RGB kleurenpalet"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
 msgstr "CMYK kleurenpalet"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr "Ophalen via pipet"
 
-#: src/widgets/paint-selector.c:789
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
 msgstr "Effen opvulling"
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr "Lineaire overgang"
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr "Circelvormige overgang"
 
