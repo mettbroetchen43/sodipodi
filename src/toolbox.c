@@ -69,6 +69,15 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
 void object_flip (GtkWidget * widget, GdkEventButton * event);
 
+/* helper function */
+static GtkWidget *
+gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
+					       const gchar   *tip_text,
+					       const gchar   *tip_private);
+static guint gtk_event_box_force_draw_parent(GtkWidget * widget, 
+					     GdkEventExpose *event, 
+					     gpointer user_data);
+
 static GtkWidget * toolbox = NULL;
 
 static GtkWidget * fh_pixmap = NULL;
@@ -435,46 +444,59 @@ sp_toolbox_selection_create (void)
 static GtkWidget *
 sp_toolbox_draw_create (void)
 {
-	GtkWidget *tb, *t, *pm, *b;
+	GtkWidget *tb, *t, *ev, *b;
 	SPRepr *repr;
-
+	GtkTooltips *tt;
+	
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
 	tb = sp_toolbox_new (t, _("Draw"), "draw", SODIPODI_PIXMAPDIR "/toolbox_draw.xpm");
-
+	
+	tt = gtk_tooltips_new ();
+	
 	/* Select */
 	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_select.xpm", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
+	gtk_tooltips_set_tip (tt, b, _("Select tool - select and transform objects"), NULL);
 
 	/* Node */
 	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_node.xpm", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
+	gtk_tooltips_set_tip (tt, b, _("Node tool - modify different aspects of existing objects"), NULL);
 
 	/* Object */
 	b = sp_menu_button_new ();
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Rect */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_rect.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
+	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_rect.xpm",
+							    _("Rectangle tool - create rectangles and squares with optional rounded corners"),
+							    NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_RECT));
 	/* Arc */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_arc.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
+	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_arc.xpm",
+							    _("Arc tool - create circles, ellipses and arcs"),
+							    NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_ARC));
 	/* Star */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_star.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
+	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_star.xpm",
+							    _("Star tool - create stars and polygons"),
+							    NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_STAR));
 	/* Spiral */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_spiral.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
+	ev = gtk_event_box_new_with_image_file_and_tooltips(SODIPODI_PIXMAPDIR "/draw_spiral.xpm",
+							    _("Spiral tool - create spirals"),
+							    NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
 	/* END COMPONENTS */
 	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
@@ -489,17 +511,23 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Freehand */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_freehand.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
+	ev = gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_freehand.xpm",
+							     _("Pencil tool - draw freehand lines and straight segments"),
+							     NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_FREEHAND));
 	/* Pen */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_pen.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
+	ev = gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_pen.xpm",
+							     _("Pen tool - draw exactly positioned curved lines"),
+							     NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_PEN));
 	/* Dynahand */
-	pm = gnome_pixmap_new_from_file (SODIPODI_PIXMAPDIR "/draw_dynahand.xpm");
-	gtk_widget_show (pm);
-	sp_menu_button_append_child (SP_MENU_BUTTON (b), pm, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
+	ev =  gtk_event_box_new_with_image_file_and_tooltips (SODIPODI_PIXMAPDIR "/draw_dynahand.xpm",
+							      _("Calligraphic tool - draw calligraphic lines"),
+							      NULL);
+	gtk_widget_show (ev);
+	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
 	/* END COMPONENTS */
 	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
@@ -513,13 +541,15 @@ sp_toolbox_draw_create (void)
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPTextContext", b);
+	gtk_tooltips_set_tip (tt, b, _("Text tool - create editable text objects"), NULL);
 
 	/* Zoom */
 	b = sp_toolbox_toggle_button_new (SODIPODI_PIXMAPDIR "/draw_zoom.xpm", TRUE);
 	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
-
+	gtk_tooltips_set_tip (tt, b, _("Zoom tool - zoom into choosen area"), NULL);
+	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
 	if (repr) {
 		gint state;
@@ -757,3 +787,39 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 	}
 }
 
+static GtkWidget *
+gtk_event_box_new_with_image_file_and_tooltips(const gchar   *image_file,
+					       const gchar   *tip_text,
+					       const gchar   *tip_private)
+{
+	GtkWidget * pm;
+	GtkWidget * ev;
+	GtkTooltips *tt;
+	
+	pm = gnome_pixmap_new_from_file(image_file);
+	tt = gtk_tooltips_new ();
+	ev = gtk_event_box_new();
+	gtk_tooltips_set_tip (tt, ev, tip_text, tip_private);
+	gtk_container_add(GTK_CONTAINER(ev), pm);
+	gtk_widget_show(pm);
+
+	/* arrow on the button is redraw by the parent. */
+	gtk_signal_connect_after(GTK_OBJECT(ev),
+				 "expose_event",
+				 GTK_SIGNAL_FUNC(gtk_event_box_force_draw_parent),
+				 NULL);
+			   
+			   
+	return ev;
+}
+
+static guint
+gtk_event_box_force_draw_parent(GtkWidget * widget, 
+				GdkEventExpose *event,
+				gpointer user_data)
+{
+	/* FIXME: I should calculate the area necessarily redrawn. */
+	if (widget->parent)
+		gtk_widget_draw(widget->parent, NULL);
+	return FALSE;
+}

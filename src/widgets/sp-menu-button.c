@@ -28,6 +28,7 @@ static void sp_menu_button_init (SPMenuButton *mb);
 static void sp_menu_button_destroy (GtkObject *object);
 
 static void sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area);
+static void sp_menu_button_draw_arrow (GtkWidget * widget);
 static void sp_menu_button_size_request (GtkWidget *widget, GtkRequisition *req);
 static gint sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event);
 static gint sp_menu_button_button_press (GtkWidget *widget, GdkEventButton *event);
@@ -150,28 +151,13 @@ sp_menu_button_destroy (GtkObject *object)
 
 }
 
-#define ASIZE 8
-
 static void
 sp_menu_button_draw (GtkWidget *widget, GdkRectangle *area)
 {
 	if (GTK_WIDGET_CLASS (parent_class)->draw)
 		GTK_WIDGET_CLASS (parent_class)->draw (widget, area);
 
-	if (GTK_WIDGET_DRAWABLE (widget)) {
-		gint w, h, bw, tx, ty;
-		w = widget->allocation.width;
-		h = widget->allocation.height;
-		bw = GTK_CONTAINER (widget)->border_width;
-		tx = widget->style->klass->xthickness;
-		ty = widget->style->klass->ythickness;
-		gtk_draw_arrow (widget->style, widget->window,
-				widget->state, GTK_SHADOW_IN,
-				GTK_ARROW_DOWN, TRUE,
-				tx,
-				h - 2 * bw - ty - ASIZE,
-				ASIZE, ASIZE);
-	}
+	sp_menu_button_draw_arrow(widget);
 }
 
 static void
@@ -201,20 +187,7 @@ sp_menu_button_expose (GtkWidget *widget, GdkEventExpose *event)
 		ret = FALSE;
 	}
 
-	if (GTK_WIDGET_DRAWABLE (widget)) {
-		gint w, h, bw, tx, ty;
-		w = widget->allocation.width;
-		h = widget->allocation.height;
-		bw = GTK_CONTAINER (widget)->border_width;
-		tx = widget->style->klass->xthickness;
-		ty = widget->style->klass->ythickness;
-		gtk_draw_arrow (widget->style, widget->window,
-				widget->state, GTK_SHADOW_IN,
-				GTK_ARROW_DOWN, TRUE,
-				tx,
-				h - 2 * bw - ty - ASIZE,
-				ASIZE, ASIZE);
-	}
+	sp_menu_button_draw_arrow(widget);
 
 	return ret;
 }
@@ -723,12 +696,12 @@ sp_menu_button_paint (GtkWidget    *widget,
 		     props.indicator_width, props.indicator_height);
       
       if (GTK_WIDGET_HAS_FOCUS (widget))
-	gtk_paint_focus (widget->style, widget->window,
-			 area, widget, "button",
-			 button_area.x - 1, 
-			 button_area.y - 1, 
-			 button_area.width + 1,
-			 button_area.height + 1);
+       gtk_paint_focus (widget->style, widget->window,
+			area, widget, "button",
+			button_area.x - 1, 
+			button_area.y - 1, 
+			button_area.width + 1,
+			button_area.height + 1);
     }
 }
 
@@ -1065,3 +1038,40 @@ sp_menu_button_hide_all (GtkWidget *widget)
 }
 #endif
 
+
+#define ASIZE 8
+static void
+sp_menu_button_draw_arrow (GtkWidget * widget)
+{
+
+	GtkWidget * drawing_target = NULL;
+	
+	/* FIXME: If you draw arrow on only child, drawing result 
+	   is clipped out by parent window. The easiest solution is 
+	   drawing twice, once parent and once child. */
+
+	if (GTK_IS_BIN(widget) 
+	    && GTK_BIN(widget)->child 
+	    && GTK_WIDGET_DRAWABLE(GTK_BIN(widget)->child)) {
+		drawing_target = GTK_BIN(widget)->child;
+	} else if (GTK_WIDGET_DRAWABLE (widget)) {
+		drawing_target = widget;
+	}
+	
+	if (drawing_target) {
+		gint w, h, bw, tx, ty;
+		w = drawing_target->allocation.width;
+		h = drawing_target->allocation.height;
+		bw = GTK_CONTAINER (drawing_target)->border_width;
+		tx = drawing_target->style->klass->xthickness;
+		ty = drawing_target->style->klass->ythickness;
+		gtk_draw_arrow (drawing_target->style, drawing_target->window,
+				drawing_target->state, GTK_SHADOW_IN,
+				GTK_ARROW_DOWN, TRUE,
+				tx 
+				- ((drawing_target == widget)?0 : (drawing_target->allocation.x)),
+				h - 2 * bw - ty - ASIZE 
+				+ ((drawing_target == widget)?0 : (drawing_target->allocation.y)),
+				ASIZE, ASIZE);
+	}
+}

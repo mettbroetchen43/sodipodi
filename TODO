@@ -33,7 +33,8 @@ Other tasks
 
 - Garbage collection on save
 - Make gradients to normalize transform
-- Tooltips for tools
+- Tooltips for tools (Temporary done by Masatake. 
+                      rewriting sp-menu-button is needed.)
 - Text does not update paint dynamically
 - Illustrator import/export
 - Patterns (Lauris) (90% DONE)

@@ -1,3 +1,14 @@
+2002-11-09  Masatake YAMATO  <jet@gyve.org>
+
+	* src/toolbox.c (sp_update_draw_toolbox): tooltips
+	are added to the buttons.
+	(gtk_event_box_new_with_image_file_and_tooltips) 
+	(gtk_event_box_force_draw_parent): New functions.
+
+	* src/widgets/sp-menu-button.c 	(sp_menu_button_draw_arrow): New function.
+	(sp_menu_button_draw): used sp_menu_button_draw_arrow.
+	(sp_menu_button_expose): ditto.
+
 2002-11-06  Masatake YAMATO  <jet@gyve.org>
 
 	* src/helper/curve.c (sp_curve_new_from_bpath): Initialize substart
