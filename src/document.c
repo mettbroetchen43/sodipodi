@@ -6,8 +6,13 @@
  * This is toplevel class, implementing a gateway from repr to most
  * editing properties, like canvases (desktops), undo stacks etc.
  *
- * Copyright (C) Lauris Kaplinski <lauris@ariman.ee> 1999-2000
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
  *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2001-2002 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Distributed under GNU General Public License
  */
 
 #define noSP_DOCUMENT_DEBUG_UNDO
