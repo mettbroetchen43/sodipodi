@@ -18,8 +18,6 @@
 #include <glib.h>
 #include "knot.h"
 #include "forward.h"
-#include "desktop.h"
-
 
 typedef void (* SPKnotHolderSetFunc) (SPItem *item, const ArtPoint *p, guint state);
 typedef void (* SPKnotHolderGetFunc) (SPItem *item, ArtPoint *p);

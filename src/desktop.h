@@ -38,9 +38,9 @@ struct _SPDesktop {
 
 	SPDesktopWidget *owner;
 
-	SPNamedView * namedview;
-	SPSelection * selection;
-	SPEventContext * event_context;
+	SPNamedView *namedview;
+	SPSelection *selection;
+	SPEventContext *event_context;
 
 	GnomeCanvasItem * acetate;
 	GnomeCanvasGroup * main;
@@ -52,25 +52,26 @@ struct _SPDesktop {
 	GnomeCanvasItem * page;
 	gdouble d2w[6], w2d[6], doc2dt[6];
         gint number;
+	gboolean active;
 };
 
 struct _SPDesktopClass {
 	GtkEventBoxClass parent_class;
 
+	void (* activate) (SPDesktop *desktop);
+	void (* desactivate) (SPDesktop *desktop);
 	void (* modified) (SPDesktop *desktop, guint flags);
 };
+
+GtkType sp_desktop_get_type (void);
+
+void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
 #ifndef __SP_DESKTOP_C__
 extern gboolean SPShowFullFielName;
 #else
 gboolean SPShowFullFielName = TRUE;
 #endif
-
-GtkType sp_desktop_get_type (void);
-
-/* Constructor */
-
-SPView *sp_desktop_new (SPDesktopWidget *widget);
 
 /* Show/hide rulers & scrollbars */
 
@@ -111,8 +112,10 @@ void sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gi
 struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
 
+#if 0
 	SPDocument *document;
 	SPNamedView *namedview;
+#endif
 
 	SPDesktop *desktop;
 
@@ -142,6 +145,6 @@ GtkType sp_desktop_widget_get_type (void);
 
 /* Constructor */
 
-SPViewWidget *sp_desktop_widget_new (SPDocument *document, SPNamedView *namedview);
+SPViewWidget *sp_desktop_widget_new (SPNamedView *namedview);
 
 #endif

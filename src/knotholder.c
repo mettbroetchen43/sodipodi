@@ -3,6 +3,7 @@
 
 
 #include <glib.h>
+#include "desktop.h"
 #include "sp-item.h"
 #include "sp-shape.h"
 #include "knotholder.h"

@@ -48,13 +48,16 @@ static void sodipodi_class_init (SodipodiClass * klass);
 static void sodipodi_init (SPObject * object);
 static void sodipodi_destroy (GtkObject * object);
 
+static void sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
+static void sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
+
 static void sodipodi_init_preferences (Sodipodi * sodipodi);
 
 struct _Sodipodi {
 	GtkObject object;
-	SPReprDoc * preferences;
-	GSList * documents;
-	GSList * desktops;
+	SPReprDoc *preferences;
+	GSList *documents;
+	GSList *desktops;
 };
 
 struct _SodipodiClass {
@@ -167,6 +170,9 @@ sodipodi_class_init (SodipodiClass * klass)
 	gtk_object_class_add_signals (object_class, sodipodi_signals, LAST_SIGNAL);
 
 	object_class->destroy = sodipodi_destroy;
+
+	klass->activate_desktop = sodipodi_activate_desktop_private;
+	klass->desactivate_desktop = sodipodi_desactivate_desktop_private;
 }
 
 static void
@@ -210,6 +216,18 @@ sodipodi_destroy (GtkObject * object)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 
 	gtk_main_quit ();
+}
+
+static void
+sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop)
+{
+	sp_desktop_set_active (desktop, TRUE);
+}
+
+static void
+sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop)
+{
+	sp_desktop_set_active (desktop, FALSE);
 }
 
 /* fixme: This is EVIL, and belongs to main after all */
@@ -488,8 +506,9 @@ sodipodi_remove_desktop (SPDesktop * desktop)
 			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], NULL);
 			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], NULL);
 		}
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESTROY_DESKTOP], desktop);
 	}
+
+	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESTROY_DESKTOP], desktop);
 
 	sodipodi->desktops = g_slist_remove (sodipodi->desktops, desktop);
 }
@@ -637,6 +656,18 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 		return;
 	}
 	close (fh);
+}
+
+void
+sodipodi_refresh_display (Sodipodi *sodipodi)
+{
+	GSList *l;
+
+	for (l = sodipodi->desktops; l != NULL; l = l->next) {
+		SPDesktop *desktop;
+		desktop = SP_DESKTOP (l->data);
+		gtk_widget_queue_draw (GTK_WIDGET (desktop->owner));
+	}
 }
 
 

@@ -19,10 +19,10 @@
  *
  */
 
-#define SP_TYPE_SODIPODI            (sodipodi_get_type ())
-#define SP_SODIPODI(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
-#define SP_SODIPODI_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SODIPODI, SodipodiClass))
-#define SP_IS_SODIPODI(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
+#define SP_TYPE_SODIPODI (sodipodi_get_type ())
+#define SP_SODIPODI(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
+#define SP_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SODIPODI, SodipodiClass))
+#define SP_IS_SODIPODI(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
 #define SP_IS_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SODIPODI))
 
 #include <gtk/gtktypeutils.h>
@@ -66,5 +66,11 @@ SPDocument * sodipodi_active_document (void);
 
 #define SP_ACTIVE_DESKTOP sodipodi_active_desktop ()
 SPDesktop * sodipodi_active_desktop (void);
+
+/*
+ * fixme: This has to be rethought
+ */
+
+void sodipodi_refresh_display (Sodipodi *sodipodi);
 
 #endif

@@ -1,3 +1,24 @@
+2002-02-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sodipodi.c (sodipodi_activate_desktop_private): Default method
+	implementation to chain activation signal on desktop
+	(sodipodi_desactivate_desktop_private): Ditto
+
+	* src/desktop.c (sp_desktop_new): Owner does not have document pointer
+	any more, so had to change signature here
+	(sp_desktop_widget_init): Moved activation signals to public constructor
+	(sp_dtw_desktop_activate): Activation signal handler
+	(sp_dtw_desktop_desactivate): Ditto
+	(sp_desktop_widget_new): Use desktop "activate" and "desactivate" signals
+	instead of sodipodi ones, signature change
+	(sp_desktop_class_init): Added "activate" and "desactivate" signals
+
+	* src/dialogs/display-settings.c: Removed glade, made mostly dynamic
+
+	* src/sodipodi.c (sodipodi_remove_desktop): Emit "destroy_desktop" if
+	destroyed one was not active too
+	(sodipodi_refresh_display): Convenience method
+
 2002-02-08  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/document-properties.c: Do not use glade anymore, made

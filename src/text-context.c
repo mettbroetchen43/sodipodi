@@ -19,6 +19,7 @@
 #include "sodipodi.h"
 #include "document.h"
 #include "selection.h"
+#include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "pixmaps/cursor-text.xpm"

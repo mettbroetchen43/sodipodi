@@ -70,7 +70,7 @@ sp_ui_new_view (GtkWidget * widget)
 	document = SP_ACTIVE_DOCUMENT;
 	if (!document) return;
 
-	dtw = sp_desktop_widget_new (document, sp_document_namedview (document, NULL));
+	dtw = sp_desktop_widget_new (sp_document_namedview (document, NULL));
 	g_return_if_fail (dtw != NULL);
 
 	sp_create_window (dtw, TRUE);

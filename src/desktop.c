@@ -18,7 +18,6 @@
 #include <config.h>
 #include <math.h>
 #include <gnome.h>
-#include <glade/glade.h>
 #include "helper/canvas-helper.h"
 #include "display/canvas-arena.h"
 #include "forward.h"
@@ -44,6 +43,8 @@
 #define SP_CANVAS_STICKY_FLAG (1 << 16)
 
 enum {
+	ACTIVATE,
+	DESACTIVATE,
 	MODIFIED,
 	LAST_SIGNAL
 };
@@ -55,6 +56,10 @@ static void sp_desktop_destroy (GtkObject * object);
 static void sp_desktop_set_document (SPView *view, SPDocument *doc);
 static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
+/* Constructor */
+
+static SPView *sp_desktop_new (SPNamedView *nv, SPDesktopWidget *owner);
+
 static void sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
 static void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
@@ -62,8 +67,6 @@ static void sp_desktop_zoom_update (SPDesktop * desktop);
 
 static gint select_set_id =0;
 
-void sp_desktop_indicator_on (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
-void sp_desktop_indicator_off (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
 void sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw);
 
 /* fixme: */
@@ -106,6 +109,18 @@ sp_desktop_class_init (SPDesktopClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_VIEW);
 
+	signals[ACTIVATE] = gtk_signal_new ("activate",
+					    GTK_RUN_FIRST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPDesktopClass, activate),
+					    gtk_marshal_NONE__NONE,
+					    GTK_TYPE_NONE, 0);
+	signals[DESACTIVATE] = gtk_signal_new ("desactivate",
+					    GTK_RUN_FIRST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPDesktopClass, desactivate),
+					    gtk_marshal_NONE__NONE,
+					    GTK_TYPE_NONE, 0);
 	signals[MODIFIED] = gtk_signal_new ("modified",
 					    GTK_RUN_FIRST,
 					    object_class->type,
@@ -185,6 +200,19 @@ sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdoub
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, width, height);
 }
 
+void
+sp_desktop_set_active (SPDesktop *desktop, gboolean active)
+{
+	if (active != desktop->active) {
+		desktop->active = active;
+		if (active) {
+			gtk_signal_emit (GTK_OBJECT (desktop), signals[ACTIVATE]);
+		} else {
+			gtk_signal_emit (GTK_OBJECT (desktop), signals[DESACTIVATE]);
+		}
+	}
+}
+
 /* fixme: */
 
 static gint
@@ -203,24 +231,22 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPDeskt
 
 /* Constructor */
 
-SPView *
-sp_desktop_new (SPDesktopWidget *widget)
+static SPView *
+sp_desktop_new (SPNamedView *namedview, SPDesktopWidget *owner)
 {
 	SPDesktop *desktop;
 	GnomeCanvasGroup *root, *page;
 	NRArenaItem *ai;
 	gdouble dw, dh;
 	SPDocument *document;
-	SPNamedView *namedview;
 
-	document = widget->document;
-	namedview = widget->namedview;
+	document = SP_OBJECT_DOCUMENT (namedview);
 
 	/* Setup widget */
 
 	desktop = (SPDesktop *) gtk_type_new (sp_desktop_get_type ());
 
-	desktop->owner = widget;
+	desktop->owner = owner;
 	desktop->owner->desktop = desktop;
 
 	/* Connect document */
@@ -337,30 +363,6 @@ sp_desktop_show_decorations (SPDesktop * desktop, gboolean show)
 		gtk_widget_hide (GTK_WIDGET (desktop->owner->active));
 		gtk_widget_hide (GTK_WIDGET (desktop->owner->inactive));
 		gtk_widget_hide (GTK_WIDGET (desktop->owner->zoom)->parent);		
-	}
-}
-
-void
-sp_desktop_indicator_on (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
-{
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-	
-	if (desktop->owner->decorations) {
-	  gtk_widget_show (GTK_WIDGET (desktop->owner->active));
-	  gtk_widget_hide (GTK_WIDGET (desktop->owner->inactive));
-	}
-}
-
-void
-sp_desktop_indicator_off (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
-{
-	g_assert (desktop != NULL);
-	g_assert (SP_IS_DESKTOP (desktop));
-	
-	if (desktop->owner->decorations) {
-	  gtk_widget_hide (GTK_WIDGET (desktop->owner->active));		
-	  gtk_widget_show (GTK_WIDGET (desktop->owner->inactive));		
 	}
 }
 
@@ -847,6 +849,9 @@ static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDeskt
 
 static gboolean sp_desktop_widget_shutdown (SPViewWidget *vw);
 
+static void sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw);
+static void sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw);
+
 SPViewWidgetClass *dtw_parent_class;
 
 GtkType
@@ -901,8 +906,6 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 #if 0
         GTK_WIDGET_SET_FLAGS (GTK_WIDGET(desktop), GTK_CAN_FOCUS);
 #endif
-	desktop->document = NULL;
-	desktop->namedview = NULL;
 	desktop->desktop = NULL;
 
 	desktop->canvas = NULL;
@@ -1037,15 +1040,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	desktop->inactive = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dt_inactive.xpm");
 	gtk_box_pack_start ((GtkBox *) hbox, desktop->inactive, TRUE, TRUE, 0);
        	gtk_widget_show (desktop->inactive);
-	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "activate_desktop",
-					GTK_SIGNAL_FUNC (sp_desktop_indicator_on),
-					NULL,
-					GTK_OBJECT (desktop));
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "desactivate_desktop",
-					GTK_SIGNAL_FUNC (sp_desktop_indicator_off),
-					NULL,
-					GTK_OBJECT (desktop));
        // status bars
        	hbox = gtk_hbox_new (FALSE,0);
 	gtk_box_set_spacing (GTK_BOX (hbox), 2);
@@ -1123,11 +1118,11 @@ sp_desktop_widget_destroy (GtkObject *object)
 
 	dtw = SP_DESKTOP_WIDGET (object);
 
+	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), object);
+
 	if (dtw->desktop) {
 		gtk_object_unref (GTK_OBJECT (dtw->desktop));
 		dtw->desktop = NULL;
-		dtw->document = NULL;
-		dtw->namedview = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (dtw_parent_class)->destroy)
@@ -1149,7 +1144,7 @@ sp_desktop_widget_set_title (SPDesktopWidget *dtw)
 	window = GTK_WINDOW (gtk_object_get_data (GTK_OBJECT(dtw), "window"));
 	if (window) {
 		nv_name = sp_namedview_get_name (dtw->desktop->namedview);
-		uri = sp_document_uri (dtw->document);
+		uri = sp_document_uri (SP_VIEW_WIDGET_DOCUMENT (dtw));
 		if (SPShowFullFielName) fname = uri;
 		else fname = g_basename (uri);
 		name = g_string_new ("");
@@ -1172,8 +1167,8 @@ sp_desktop_widget_realize (GtkWidget *widget)
 
 	d.x0 = 0.0;
 	d.y0 = 0.0;
-	d.x1 = sp_document_width (dtw->document);
-	d.y1 = sp_document_height (dtw->document);
+	d.x1 = sp_document_width (SP_VIEW_WIDGET_DOCUMENT (dtw));
+	d.y1 = sp_document_height (SP_VIEW_WIDGET_DOCUMENT (dtw));
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
@@ -1232,6 +1227,24 @@ sp_desktop_widget_shutdown (SPViewWidget *vw)
 	return FALSE;
 }
 
+void
+sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw)
+{
+	if (dtw->decorations) {
+		gtk_widget_show (GTK_WIDGET (dtw->active));
+		gtk_widget_hide (GTK_WIDGET (dtw->inactive));
+	}
+}
+
+void
+sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
+{
+	if (dtw->decorations) {
+		gtk_widget_hide (GTK_WIDGET (dtw->active));
+		gtk_widget_show (GTK_WIDGET (dtw->inactive));
+	}
+}
+
 /* Constructor */
 
 
@@ -1242,19 +1255,21 @@ sp_desktop_uri_set (SPView *view, const guchar *uri, SPDesktopWidget *dtw)
 }
 
 SPViewWidget *
-sp_desktop_widget_new (SPDocument *document, SPNamedView *namedview)
+sp_desktop_widget_new (SPNamedView *namedview)
 {
 	SPDesktopWidget *dtw;
 
 	dtw = gtk_type_new (SP_TYPE_DESKTOP_WIDGET);
 
-	dtw->document = document;
-	dtw->namedview = namedview;
-
-	dtw->desktop = (SPDesktop *) sp_desktop_new (dtw);
+	dtw->desktop = (SPDesktop *) sp_desktop_new (namedview, dtw);
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "uri_set", GTK_SIGNAL_FUNC (sp_desktop_uri_set), dtw);
-
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
+
+	/* Connect activation signals to update indicator */
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "activate",
+			    GTK_SIGNAL_FUNC (sp_dtw_desktop_activate), dtw);
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "desactivate",
+			    GTK_SIGNAL_FUNC (sp_dtw_desktop_desactivate), dtw);
 
 	return SP_VIEW_WIDGET (dtw);
 }

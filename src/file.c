@@ -49,7 +49,7 @@ void sp_file_new (void)
 	doc = sp_document_new (NULL);
 	g_return_if_fail (doc != NULL);
 
-	dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
+	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 	sp_document_unref (doc);
 	g_return_if_fail (dtw != NULL);
 
@@ -77,7 +77,7 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	g_free (filename);
 	g_return_if_fail (doc != NULL);
 
-	dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
+	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 	sp_document_unref (doc);
 	g_return_if_fail (dtw != NULL);
 

@@ -297,7 +297,7 @@ main (int argc, char *argv[])
 				SPViewWidget *dtw;
 				doc = sp_document_new ((const gchar *) fl->data);
 				if (doc) {
-					dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
+					dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 					sp_document_unref (doc);
 					if (dtw) sp_create_window (dtw, TRUE);
 				}
@@ -326,7 +326,7 @@ main (int argc, char *argv[])
 			if (slides) {
 				doc = slides->data;
 				slides = g_slist_remove (slides, doc);
-				dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
+				dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 				if (dtw) {
 					sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT);
 					gtk_object_set_data (GTK_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);

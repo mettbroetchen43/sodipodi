@@ -1,3 +1,8 @@
+2002-02-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* POTFILES.in: Removed display, document, desktop glade files,
+	added corresponding c sources
+
 2002-02-06  Christian Meyer  <chrisime@gnome.org>
 
 	* de.po: Updated German translation.

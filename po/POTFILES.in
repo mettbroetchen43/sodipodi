@@ -2,9 +2,6 @@
 # Please keep this file sorted alphabetically.
 GNOME_Sodipodi.oaf.in
 glade/align.glade
-glade/desktop.glade
-glade/display.glade
-glade/document.glade
 glade/item.glade
 glade/object_props.glade
 glade/sodipodi.glade
@@ -16,6 +13,7 @@ sodipodi.desktop.in
 src/bonobo/svg-doc-factory.c
 src/desktop.c
 src/dialogs/align.c
+src/dialogs/desktop-properties.c
 src/dialogs/display-settings.c
 src/dialogs/document-properties.c
 src/dialogs/fill-style.c
