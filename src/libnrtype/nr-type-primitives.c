@@ -32,7 +32,7 @@ nr_type_dict_new (void)
 {
 	ArikkeiDict *dict;
 	dict = nr_new (ArikkeiDict, 1);
-	arikkei_dict_setup (dict, NR_DICTSIZE);
+	arikkei_dict_setup_string (dict, NR_DICTSIZE);
 	return (NRTypeDict *) dict;
 }
 

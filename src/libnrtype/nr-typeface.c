@@ -23,10 +23,10 @@ static void nr_typeface_setup (NRTypeFace *tface, NRTypeFaceDef *def);
 
 static NRObjectClass *parent_class;
 
-NRType
+unsigned int
 nr_typeface_get_type (void)
 {
-	static NRType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_OBJECT,
 						"NRTypeFace",
@@ -166,7 +166,7 @@ struct _NRTypeFaceEmptyClass {
 	NRTypeFaceClass typeface_class;
 };
 
-static NRType nr_typeface_empty_get_type (void);
+static unsigned int nr_typeface_empty_get_type (void);
 
 static void nr_typeface_empty_class_init (NRTypeFaceEmptyClass *klass);
 static void nr_typeface_empty_init (NRTypeFaceEmpty *tfe);
@@ -183,10 +183,10 @@ static void nr_typeface_empty_font_free (NRFont *font);
 
 static NRTypeFaceClass *empty_parent_class;
 
-static NRType
+static unsigned int
 nr_typeface_empty_get_type (void)
 {
-	static NRType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_TYPEFACE,
 						"NRTypeFaceEmpty",

@@ -23,12 +23,69 @@
 
 struct _ArikkeiDictEntry {
 	int next;
-	const unsigned char *key;
+	const void *key;
 	void *val;
 };
 
+static unsigned int
+arikkei_string_hash (const void *data)
+{
+	const unsigned char *p;
+	unsigned int hval;
+	p = data;
+	hval = *p;
+	if (hval) {
+		for (p += 1; *p; p++) hval = (hval << 5) - hval + *p;
+	}
+	return hval;
+}
+
+static unsigned int
+arikkei_string_equal (const void *l, const void *r)
+{
+	return !strcmp (l, r);
+}
+
+static unsigned int
+arikkei_pointer_hash (const void *data)
+{
+	unsigned int hval, p;
+	hval = 0;
+	p = (unsigned int) data;
+	while (p) {
+		hval ^= p;
+		p /= 17;
+	}
+	return hval;
+}
+
+static unsigned int
+arikkei_pointer_equal (const void *l, const void *r)
+{
+	return l == r;
+}
+
+static unsigned int
+arikkei_int_hash (const void *data)
+{
+	unsigned int hval, p;
+	hval = 0;
+	p = (unsigned int) data;
+	while (p) {
+		hval ^= p;
+		p /= 17;
+	}
+	return hval;
+}
+
+static unsigned int
+arikkei_int_equal (const void *l, const void *r)
+{
+	return (unsigned int) l == (unsigned int) r;
+}
+
 void
-arikkei_dict_setup (ArikkeiDict *dict, unsigned int hashsize)
+arikkei_dict_setup_common (ArikkeiDict *dict, unsigned int hashsize)
 {
 	int i;
 	if (hashsize < 1) hashsize = 1;
@@ -42,20 +99,33 @@ arikkei_dict_setup (ArikkeiDict *dict, unsigned int hashsize)
 }
 
 void
+arikkei_dict_setup_string (ArikkeiDict *dict, unsigned int hashsize)
+{
+	arikkei_dict_setup_common (dict, hashsize);
+	dict->hash = arikkei_string_hash;
+	dict->equal = arikkei_string_equal;
+}
+
+void
+arikkei_dict_setup_pointer (ArikkeiDict *dict, unsigned int hashsize)
+{
+	arikkei_dict_setup_common (dict, hashsize);
+	dict->hash = arikkei_pointer_hash;
+	dict->equal = arikkei_pointer_equal;
+}
+
+void
+arikkei_dict_setup_int (ArikkeiDict *dict, unsigned int hashsize)
+{
+	arikkei_dict_setup_common (dict, hashsize);
+	dict->hash = arikkei_int_hash;
+	dict->equal = arikkei_int_equal;
+}
+
+void
 arikkei_dict_release (ArikkeiDict *dict)
 {
 	free (dict->entries);
-}
-
-static unsigned int
-arikkei_str_hash (const unsigned char *p)
-{
-	unsigned int hval;
-	hval = *p;
-	if (hval) {
-		for (p += 1; *p; p++) hval = (hval << 5) - hval + * p;
-	}
-	return hval;
 }
 
 void
@@ -64,10 +134,10 @@ arikkei_dict_insert (ArikkeiDict *dict, const void *key, void *val)
 	unsigned int hval;
 	int pos;
 	if (!key) return;
-	hval = arikkei_str_hash (key) % dict->hashsize;
+	hval = dict->hash (key) % dict->hashsize;
 	if (dict->entries[hval].key) {
 		for (pos = hval; pos > 0; pos = dict->entries[pos].next) {
-			if (!strcmp (dict->entries[pos].key, key)) {
+			if (dict->equal (dict->entries[pos].key, key)) {
 				dict->entries[pos].val = val;
 				return;
 			}
@@ -102,9 +172,9 @@ arikkei_dict_remove (ArikkeiDict *dict, const void *key)
 {
 	unsigned int hval;
 	if (!key) return;
-	hval = arikkei_str_hash (key) % dict->hashsize;
+	hval = dict->hash (key) % dict->hashsize;
 	if (!dict->entries[hval].key) return;
-	if (!strcmp (dict->entries[hval].key, key)) {
+	if (dict->equal (dict->entries[hval].key, key)) {
 		/* Have to remove root key */
 		if (dict->entries[hval].next) {
 			int pos;
@@ -119,7 +189,7 @@ arikkei_dict_remove (ArikkeiDict *dict, const void *key)
 		int pos, prev;
 		prev = hval;
 		for (pos = dict->entries[hval].next; pos > 0; pos = dict->entries[pos].next) {
-			if (!strcmp (dict->entries[pos].key, key)) {
+			if (dict->equal (dict->entries[pos].key, key)) {
 				dict->entries[prev].next = dict->entries[pos].next;
 				dict->entries[pos].next = dict->free;
 				dict->free = pos;
@@ -136,10 +206,10 @@ arikkei_dict_lookup (ArikkeiDict *dict, const void *key)
 	unsigned int hval;
 	int pos;
 	if (!key) return NULL;
-	hval = arikkei_str_hash (key) % dict->hashsize;
+	hval = dict->hash (key) % dict->hashsize;
 	if (dict->entries[hval].key) {
 		for (pos = hval; pos > 0; pos = dict->entries[pos].next) {
-			if (!strcmp (dict->entries[pos].key, key)) {
+			if (dict->equal (dict->entries[pos].key, key)) {
 				return dict->entries[pos].val;
 			}
 		}

@@ -12,8 +12,6 @@
 
 #include <libnr/nr_config.h>
 
-typedef NRULong NRType;
-
 #define NR_TYPE_OBJECT (nr_object_get_type ())
 #define NR_OBJECT(o) (NR_CHECK_INSTANCE_CAST ((o), NR_TYPE_OBJECT, NRObject))
 #define NR_IS_OBJECT(o) (NR_CHECK_INSTANCE_TYPE ((o), NR_TYPE_OBJECT))
@@ -42,12 +40,12 @@ unsigned int nr_emit_fail_warning (const unsigned char *file, unsigned int line,
 #define NR_CHECK_INSTANCE_TYPE(ip, tc) nr_object_check_instance_type (ip, tc)
 #define NR_OBJECT_GET_CLASS(ip) (((NRObject *) ip)->klass)
 
-NRType nr_type_is_a (NRType type, NRType test);
+unsigned int nr_type_is_a (unsigned int type, unsigned int test);
 
-void *nr_object_check_instance_cast (void *ip, NRType tc);
-unsigned int nr_object_check_instance_type (void *ip, NRType tc);
+void *nr_object_check_instance_cast (void *ip, unsigned int tc);
+unsigned int nr_object_check_instance_type (void *ip, unsigned int tc);
 
-NRType nr_object_register_type (NRType parent,
+unsigned int nr_object_register_type (unsigned int parent,
 				      unsigned char *name,
 				      unsigned int csize,
 				      unsigned int isize,
@@ -62,7 +60,7 @@ struct _NRObject {
 };
 
 struct _NRObjectClass {
-	NRType type;
+	unsigned int type;
 	NRObjectClass *parent;
 
 	unsigned char *name;
@@ -74,11 +72,11 @@ struct _NRObjectClass {
 	void (* finalize) (NRObject *object);
 };
 
-NRType nr_object_get_type (void);
+unsigned int nr_object_get_type (void);
 
 /* Dynamic lifecycle */
 
-NRObject *nr_object_new (NRType type);
+NRObject *nr_object_new (unsigned int type);
 NRObject *nr_object_delete (NRObject *object);
 
 NRObject *nr_object_ref (NRObject *object);
@@ -86,7 +84,7 @@ NRObject *nr_object_unref (NRObject *object);
 
 /* Automatic lifecycle */
 
-NRObject *nr_object_setup (NRObject *object, NRType type);
+NRObject *nr_object_setup (NRObject *object, unsigned int type);
 NRObject *nr_object_release (NRObject *object);
 
 /* NRActiveObject */
@@ -120,7 +118,7 @@ struct _NRActiveObjectClass {
 	NRObjectClass parent_class;
 };
 
-NRType nr_active_object_get_type (void);
+unsigned int nr_active_object_get_type (void);
 
 void nr_active_object_add_listener (NRActiveObject *object, const NRObjectEventVector *vector, unsigned int size, void *data);
 void nr_active_object_remove_listener_by_data (NRActiveObject *object, void *data);

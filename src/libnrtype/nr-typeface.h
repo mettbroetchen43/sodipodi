@@ -38,7 +38,7 @@ enum {
 
 struct _NRTypeFaceDef {
 	NRTypeFaceDef *next;
-	NRType type;
+	unsigned int type;
 	NRTypePosDef *pdef;
 	unsigned int idx;
 	unsigned char *name;
@@ -84,7 +84,7 @@ struct _NRTypeFace {
 	unsigned int nglyphs;
 };
 
-NRType nr_typeface_get_type (void);
+unsigned int nr_typeface_get_type (void);
 
 NRTypeFace *nr_typeface_new (NRTypeFaceDef *def);
 
