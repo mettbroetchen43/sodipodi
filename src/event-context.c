@@ -237,12 +237,6 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret = TRUE;
 			}
 			break;
-		case GDK_i: // Ctrl i - import file
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_file_import (NULL);
-				ret = TRUE;
-			}
-			break;
 #if 0
 		case GDK_q: // Ctrl q - quit
 			if (event->key.state & GDK_CONTROL_MASK) {

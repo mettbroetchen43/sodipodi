@@ -66,7 +66,7 @@ static GtkTargetEntry ui_drop_target_entries [] = {
 #define ENTRIES_SIZE(n) sizeof(n)/sizeof(n[0]) 
 static guint nui_drop_target_entries = ENTRIES_SIZE(ui_drop_target_entries);
 static void sp_ui_import_files(gchar * buffer);
-static void sp_ui_import_one_file(gchar * filename);
+/* static void sp_ui_import_one_file(gchar * filename); */
 static void sp_ui_import_one_file_with_check(gpointer filename, gpointer unused);
 static void sp_ui_drag_data_received (GtkWidget * widget,
 				      GdkDragContext * drag_context,
@@ -698,82 +698,8 @@ sp_ui_import_files(gchar * buffer)
 static void
 sp_ui_import_one_file_with_check(gpointer filename, gpointer unused)
 {
-	if (filename) {
-		if (strlen(filename) > 2)
-			sp_ui_import_one_file(filename);
+	if (filename && strlen (filename) > 2) {
+		sp_file_import (SP_ACTIVE_DOCUMENT, filename);
 	}
 }
 
-/* Cut&Paste'ed from file.c:file_import_ok */
-static void
-sp_ui_import_one_file(gchar * filename)
-{
-	SPDocument * doc;
-	SPRepr * rdoc;
-	const gchar * e, * docbase, * relname;
-	SPRepr * repr;
-	SPReprDoc * rnewdoc;
-
-	doc = SP_ACTIVE_DOCUMENT;
-	if (!SP_IS_DOCUMENT(doc)) return;
-	
-	if (filename == NULL) return;  
-
-	rdoc = sp_document_repr_root (doc);
-
-	docbase = sp_repr_attr (rdoc, "sodipodi:docbase");
-	relname = sp_relative_path_from_path (filename, docbase);
-	/* fixme: this should be implemented with mime types */
-	e = sp_extension_from_path (filename);
-
-	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
-		SPRepr * newgroup;
-		const gchar * style;
-		SPRepr * child;
-
-		rnewdoc = sp_repr_doc_new_from_file (filename, SP_SVG_NS_URI);
-		if (rnewdoc == NULL) return;
-		repr = sp_repr_doc_get_root (rnewdoc);
-		style = sp_repr_attr (repr, "style");
-
-		newgroup = sp_repr_new ("g");
-		sp_repr_set_attr (newgroup, "style", style);
-
-		for (child = repr->children; child != NULL; child = child->next) {
-			SPRepr * newchild;
-			newchild = sp_repr_duplicate (child);
-			sp_repr_append_child (newgroup, newchild);
-		}
-
-		sp_repr_doc_unref (rnewdoc);
-
-		sp_document_add_repr (doc, newgroup);
-		sp_repr_unref (newgroup);
-		sp_document_done (doc);
-		return;
-	}
-
-	if ((strcmp (e, "png") == 0) ||
-	    (strcmp (e, "jpg") == 0) ||
-	    (strcmp (e, "jpeg") == 0) ||
-	    (strcmp (e, "bmp") == 0) ||
-	    (strcmp (e, "gif") == 0) ||
-	    (strcmp (e, "tiff") == 0) ||
-	    (strcmp (e, "xpm") == 0)) {
-		/* Try pixbuf */
-		GdkPixbuf *pb;
-		pb = gdk_pixbuf_new_from_file (filename, NULL);
-		if (pb) {
-			/* We are readable */
-			repr = sp_repr_new ("image");
-			sp_repr_set_attr (repr, "xlink:href", relname);
-			sp_repr_set_attr (repr, "sodipodi:absref", filename);
-			sp_repr_set_double (repr, "width", gdk_pixbuf_get_width (pb));
-			sp_repr_set_double (repr, "height", gdk_pixbuf_get_height (pb));
-			sp_document_add_repr (doc, repr);
-			sp_repr_unref (repr);
-			sp_document_done (doc);
-			gdk_pixbuf_unref (pb);
-		}
-	}
-}

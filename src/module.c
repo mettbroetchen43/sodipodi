@@ -768,12 +768,31 @@ sp_modules_menu_action_append (SPMenu *menu, SPRepr *repr, const unsigned char *
 	return menu;
 }
 
+#include <help.h>
+
+static void
+sp_modules_menu_about_activate (GtkWidget *widget, SPRepr *repr)
+{
+	SPRepr *arepr, *lrepr, *trepr;
+	const unsigned char *text;
+	arepr = sp_repr_lookup_child_by_name (repr, "about");
+	if (!arepr) return;
+	lrepr = sp_repr_lookup_child (arepr, "language", "C");
+	if (!lrepr) return;
+	trepr = sp_repr_get_children (lrepr);
+	if (!trepr || !(sp_repr_is_text (trepr) || sp_repr_is_cdata (trepr))) return;
+	text = sp_repr_get_content (trepr);
+	if (!text || !*text) return;
+	sp_help_about_module (text);
+}
+
 static SPMenu *
 sp_modules_menu_about_append (SPMenu *menu, SPRepr *repr, const unsigned char *name)
 {
 	GtkWidget *item;
 	if (!menu) menu = (SPMenu *) sp_menu_new ();
 	item = gtk_image_menu_item_new_with_label (name);
+	g_signal_connect ((GObject *) item, "activate", (GCallback) sp_modules_menu_about_activate, repr);
 	gtk_widget_show (item);
 	gtk_menu_append ((GtkMenu *) menu, item);
 	return menu;

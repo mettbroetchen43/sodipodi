@@ -5,6 +5,11 @@ static const char extensions_skeleton[] =
 "  <group id=\"extensions\">\n"
 "    <module id=\"xmleditor\" name=\"XML Editor\" action=\"yes\">\n"
 "      <action id=\"xmldialog\" type=\"internal\" path=\"xmleditor\"/>"
+"      <about>\n"
+"        <text language=\"C\"><![CDATA[Sodipodi XML Editor\n"
+"Written by Lauris Kaplinski and MenTaLguY]]>"
+"        </text>"
+"      </about>\n"
 "    </module>\n"
 "  </group>\n"
 "</sodipodi>\n";

@@ -15,4 +15,6 @@
 
 void sp_help_about (void);
 
+void sp_help_about_module (const unsigned char *text);
+
 #endif

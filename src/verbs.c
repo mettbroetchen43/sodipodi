@@ -99,7 +99,7 @@ sp_verb_action_file_perform (SPAction *action, void *config, void *data)
 		sp_file_print_preview (NULL, NULL);
 		break;
 	case SP_VERB_FILE_IMPORT:
-		sp_file_import (NULL);
+		sp_file_import_dialog (NULL);
 		break;
 	case SP_VERB_FILE_EXPORT:
 		sp_file_export_dialog (NULL);

@@ -27,7 +27,8 @@ void sp_file_save_as (gpointer object, gpointer data);
 
 void sp_file_save_document (SPDocument *document);
 
-void sp_file_import (GtkWidget * widget);
+unsigned int sp_file_import (SPDocument *doc, const unsigned char *filename);
+void sp_file_import_dialog (GtkWidget *widget);
 
 void sp_file_print (void);
 void sp_file_print_direct (void);

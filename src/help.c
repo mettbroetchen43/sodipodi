@@ -26,12 +26,6 @@
 #include "help.h"
 #include "helper/sp-intl.h"
 
-static gint
-sp_help_about_delete (GtkWidget *widget, GdkEvent *event, gpointer data)
-{
-	return FALSE;
-}
-
 void
 sp_help_about (void)
 {
@@ -59,7 +53,6 @@ sp_help_about (void)
 #if 1
 	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, FALSE);
 #endif
-	gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_help_about_delete), NULL);
 
 	v = sp_svg_view_widget_new (doc);
 	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (v), FALSE, sp_document_width (doc), sp_document_height (doc));
@@ -69,3 +62,15 @@ sp_help_about (void)
 
 	gtk_widget_show (w);
 }
+
+#include <gtk/gtkmessagedialog.h>
+
+void
+sp_help_about_module (const unsigned char *text)
+{
+	GtkWidget *w;
+	w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, text);
+	gtk_dialog_run (GTK_DIALOG (w));
+	gtk_widget_destroy (w);
+}
+

@@ -363,11 +363,6 @@ sp_file_save_as (gpointer object, gpointer data)
 static void
 sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 {
-	SPRepr *rdoc;
-	const gchar *e, *docbase, *relname;
-	SPRepr * repr;
-	SPReprDoc * rnewdoc;
-
 	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
 		if (import_path) g_free (import_path);
 		if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
@@ -383,6 +378,19 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 	import_path = g_dirname (filename);
 	if (import_path) import_path = g_strconcat (import_path, G_DIR_SEPARATOR_S, NULL);
 
+	sp_file_import (doc, filename);
+}
+
+unsigned int
+sp_file_import (SPDocument *doc, const unsigned char *filename)
+{
+	static const char *imgext[] = {"png", "jpg", "jpeg", "tif", "tiff", "bmp", "xpm", NULL};
+	const unsigned char *e, *docbase, *relname;
+	unsigned int i;
+	SPReprDoc *rnewdoc;
+	SPRepr *repr;
+	SPRepr *rdoc;
+
 	rdoc = sp_document_repr_root (doc);
 
 	docbase = sp_repr_attr (rdoc, "sodipodi:docbase");
@@ -390,13 +398,13 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 	/* fixme: this should be implemented with mime types */
 	e = sp_extension_from_path (filename);
 
-	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
+	if (!strcasecmp (e, "svg") || !strcasecmp (e, "svgz") || !strcasecmp (e, "xml")) {
 		SPRepr * newgroup;
 		const gchar * style;
 		SPRepr * child;
 
 		rnewdoc = sp_repr_doc_new_from_file (filename, SP_SVG_NS_URI);
-		if (rnewdoc == NULL) return;
+		if (rnewdoc == NULL) return FALSE;
 		repr = sp_repr_doc_get_root (rnewdoc);
 		style = sp_repr_attr (repr, "style");
 
@@ -414,16 +422,14 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 		sp_document_add_repr (doc, newgroup);
 		sp_repr_unref (newgroup);
 		sp_document_done (doc);
-		return;
+		return TRUE;
 	}
 
-	if ((strcmp (e, "png") == 0) ||
-	    (strcmp (e, "jpg") == 0) ||
-	    (strcmp (e, "jpeg") == 0) ||
-	    (strcmp (e, "bmp") == 0) ||
-	    (strcmp (e, "gif") == 0) ||
-	    (strcmp (e, "tiff") == 0) ||
-	    (strcmp (e, "xpm") == 0)) {
+	for (i = 0; imgext[i]; i++) {
+		if (!strcasecmp (e, imgext[i])) break;
+	}
+
+	if (imgext[i]) {
 		/* Try pixbuf */
 		unsigned char *osfn;
 		gsize bytesin, bytesout;
@@ -442,11 +448,13 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 			sp_repr_unref (repr);
 			sp_document_done (doc);
 			gdk_pixbuf_unref (pb);
+			return TRUE;
 		}
 	}
+	return FALSE;
 }
 
-void sp_file_import (GtkWidget * widget)
+void sp_file_import_dialog (GtkWidget * widget)
 {
         SPDocument *doc;
 #ifdef WITH_KDE
