@@ -43,9 +43,25 @@ dnl ******************************
 dnl GnomePrint checking
 dnl ******************************
 
-PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.0 >= 1.116.1  libgnomeprintui-2.0 >= 1.116.0, gp=yes, gp=no)
+AC_ARG_WITH(gnome-print,
+            AC_HELP_STRING([--with-gnome-print],
+                           [use gnome print font database and spooler frontend (default is auto)]),
+            [with_gp=$withval], [with_gp=auto])
+
+PKG_CHECK_MODULES(GNOME_PRINT, libgnomeprint-2.0 >= 1.116.1  libgnomeprintui-2.0 >= 1.116.0  libgnome-2.0 >= 2.0.4, gp=yes, gp=no)
 AC_SUBST(GNOME_PRINT_CFLAGS)
 AC_SUBST(GNOME_PRINT_LIBS)
+
+if test "x$with_gp" != "xauto"; then
+	if test "x$with_gp" == "xno"; then
+		gp=no
+	else
+		if test "x$gp" != "xyes" ; then
+			AC_MSG_ERROR([--with-gnome-print was specified, but appropriate libgnomeprint development packages could not found])
+		fi
+	fi
+fi
+
 AM_CONDITIONAL(USE_GNOME_PRINT, test "x$gp" == "xyes")
 if test "x$gp" == "xyes"; then
 	AC_DEFINE(WITH_GNOME_PRINT, 1, [Use gnome print font database and spooler frontend])
