@@ -7,7 +7,7 @@ endif
 
 SUBDIRS = xml svg helper dialogs display $(bonobo_subdirs)
 
-gladedir = $(PACKAGE_GLADE_DIR)
+gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 	\

@@ -1,3 +1,8 @@
+2000-05-05  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/Makefile.am: Define $gladedir, which has been forgotten :)
+	* src/sp-image.c (sp_image_print): Do it :)
+
 2000-05-03  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/main.c: Uncommented line interpreting unknown command-line
