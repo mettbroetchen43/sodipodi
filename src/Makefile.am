@@ -32,6 +32,7 @@ sodipodi_SOURCES = \
 	sp-text.c sp-text.h \
 	\
 	document.c document.h \
+	document-undo.c \
 	mdi.c mdi.h \
 	mdi-child.c mdi-child.h \
 	mdi-desktop.c mdi-desktop.h \

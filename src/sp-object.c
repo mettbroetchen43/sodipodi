@@ -29,6 +29,9 @@ static void sp_object_repr_change_order (SPRepr * repr, gpointer data);
 static void sp_object_repr_add_child (SPRepr * repr, SPRepr * child, gpointer data);
 static void sp_object_repr_remove_child (SPRepr * repr, SPRepr * child, gpointer data);
 
+static gboolean sp_object_repr_attr_changed_pre (SPRepr * repr, const gchar * key, const gchar * value, gpointer data);
+static gboolean sp_object_repr_content_changed_pre (SPRepr * repr, const gchar * value, gpointer data);
+
 static gchar * sp_object_get_unique_id (SPObject * object, const gchar * defid);
 
 static GtkObjectClass * parent_class;
@@ -135,6 +138,8 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *)(((GtkObject *) object)->klass))->build)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->build) (object, document, repr);
 
+	/* Our own handled signals */
+
 	sp_repr_set_signal (repr, "destroy", sp_object_repr_destroy, object);
 	sp_repr_set_signal (repr, "attr_changed", sp_object_repr_change_attr, object);
 	sp_repr_set_signal (repr, "content_changed", sp_object_repr_change_content, object);
@@ -142,36 +147,35 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_repr_set_signal (repr, "child_added", sp_object_repr_add_child, object);
 	sp_repr_set_signal (repr, "child_removed", sp_object_repr_remove_child, object);
 
+	/* Our attribute handler */
+
+	sp_repr_set_signal (repr, "attr_changed_pre", sp_object_repr_attr_changed_pre, object);
+	sp_repr_set_signal (repr, "content_changed_pre", sp_object_repr_content_changed_pre, object);
+
 	sp_repr_ref (repr);
 }
 
 static void
 sp_object_read_attr (SPObject * object, const gchar * key)
 {
-	const gchar * reprid;
-	gchar * newid;
+	const gchar * id;
 
 	g_assert (SP_IS_DOCUMENT (object->document));
 	g_assert (object->id != NULL);
 	g_assert (key != NULL);
 
 	if (strcmp (key, "id") == 0) {
-		reprid = sp_repr_attr (object->repr, "id");
-		g_assert (reprid != NULL);
-		if (strcmp (reprid, object->id) == 0) {
-			return;
-		}
-		newid = sp_object_get_unique_id (object, reprid);
-		g_assert (newid != NULL);
-		if (strcmp (reprid, newid) != 0) {
-			sp_repr_set_attr (object->repr, "id", newid);
-			g_free (newid);
-			return;
-		}
+		id = sp_repr_attr (object->repr, "id");
+		g_assert (id != NULL);
+
+		if (strcmp (id, object->id) == 0) return;
+
+		g_assert (!sp_document_lookup_id (object->document, id));
+
 		sp_document_undef_id (object->document, object->id);
 		g_free (object->id);
-		sp_document_def_id (object->document, newid, object);
-		object->id = newid;
+		sp_document_def_id (object->document, id, object);
+		object->id = g_strdup (id);
 		return;
 	}
 }
@@ -243,6 +247,30 @@ sp_object_repr_destroy (SPRepr * repr, gpointer data)
 	g_assert_not_reached ();
 }
 
+static gboolean
+sp_object_repr_attr_changed_pre (SPRepr * repr, const gchar * key, const gchar * value, gpointer data)
+{
+	SPObject * object;
+	gpointer defid;
+
+	g_assert (repr != NULL);
+	g_assert (key != NULL);
+	g_assert (data != NULL);
+	g_assert (SP_IS_OBJECT (data));
+
+	object = SP_OBJECT (data);
+
+	g_assert (object->repr = repr);
+
+	if (strcmp (key, "id") == 0) {
+		defid = sp_document_lookup_id (object->document, value);
+		if (defid == object) return TRUE;
+		if (defid) return FALSE;
+	}
+
+	return sp_document_change_attr_requested (object->document, object, key, value);
+}
+
 static void
 sp_object_repr_change_attr (SPRepr * repr, const gchar * key, gpointer data)
 {
@@ -257,6 +285,21 @@ sp_object_repr_change_attr (SPRepr * repr, const gchar * key, gpointer data)
 	g_assert (object->repr = repr);
 
 	sp_object_invoke_read_attr (object, key);
+}
+
+static gboolean
+sp_object_repr_content_changed_pre (SPRepr * repr, const gchar * value, gpointer data)
+{
+	SPObject * object;
+
+	g_assert (repr != NULL);
+	g_assert (SP_IS_OBJECT (data));
+
+	object = SP_OBJECT (data);
+
+	g_assert (object->repr = repr);
+
+	return sp_document_change_content_requested (object->document, object, value);
 }
 
 static void

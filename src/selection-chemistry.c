@@ -118,7 +118,7 @@ sp_selection_group (GtkWidget * widget)
 
 	p = g_slist_sort (p, (GCompareFunc) sp_repr_compare_position);
 
-	group = sp_repr_new_with_name ("g");
+	group = sp_repr_new ("g");
 
 	while (p) {
 		current = (SPRepr *) p->data;
@@ -132,6 +132,7 @@ sp_selection_group (GtkWidget * widget)
 
 	new = sp_document_add_repr (SP_DT_DOCUMENT (desktop), group);
 	sp_repr_unref (group);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 
 	sp_selection_set_item (selection, new);
 }
@@ -194,7 +195,8 @@ void sp_selection_ungroup (GtkWidget * widget)
 		sp_selection_add_item (selection, item);
 	}
 
-	sp_repr_unparent (current);
+	sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 void sp_selection_raise (GtkWidget * widget)

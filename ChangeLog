@@ -1,3 +1,7 @@
+2000-04-02  Lauris Kaplinski <lauris@ariman.ee>
+
+    * document-undo.c, document.c: Undo should now work!
+
 2000-04-01  Lauris Kaplinski <lauris@ariman.ee>
 
     * document.c: Some undoing/redoing works (duplicate & delete)

@@ -1,0 +1,377 @@
+#define SP_DOCUMENT_UNDO_C
+
+#include <stdlib.h>
+#include "sp-object.h"
+#include "sp-item.h"
+#include "document.h"
+
+/*
+ * Undo & redo
+ */
+
+void
+sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive)
+{
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+
+	document->sensitive = sensitive;
+}
+
+void
+sp_document_done (SPDocument * document)
+{
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->sensitive);
+
+	if (document->actions == NULL) return;
+
+	g_assert (document->redo == NULL);
+
+	document->undo = g_slist_prepend (document->undo, document->actions);
+	document->actions = NULL;
+}
+
+void
+sp_document_clear_actions (SPDocument * document)
+{
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->sensitive);
+
+	while (document->actions) {
+		sp_repr_unref ((SPRepr *) document->actions->data);
+		document->actions = g_list_remove (document->actions, document->actions->data);
+	}
+}
+
+void
+sp_document_undo (SPDocument * document)
+{
+	GList * l;
+	SPRepr * action;
+	const gchar * name;
+	const GList * children;
+	SPRepr * repr, * copy;
+	const gchar * id, * key, * value, * str;
+	SPObject * object;
+	gint position;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->sensitive);
+	g_assert (document->actions == NULL);
+
+	if (document->undo == NULL) return;
+
+	sp_document_set_undo_sensitive (document, FALSE);
+
+	document->actions = (GList *) document->undo->data;
+	document->undo = g_slist_remove (document->undo, document->undo->data);
+
+	for (l = document->actions; l != NULL; l = l->next) {
+		action = (SPRepr *) l->data;
+		name = sp_repr_name (action);
+		if (strcmp (name, "add") == 0) {
+			children = sp_repr_children (action);
+			repr = (SPRepr *) children->data;
+			id = sp_repr_attr (repr, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (id != NULL);
+			sp_repr_unparent (object->repr);
+		}
+		if (strcmp (name, "del") == 0) {
+			id = sp_repr_attr (action, "parent");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_return_if_fail (object != NULL);
+			str = sp_repr_attr (action, "position");
+			g_assert (str != NULL);
+			position = atoi (str);
+			children = sp_repr_children (action);
+			repr = (SPRepr *) children->data;
+			copy = sp_repr_copy (repr);
+			g_assert (copy != NULL);
+			sp_repr_add_child (object->repr, copy, position);
+			sp_repr_unref (copy);
+		}
+		if (strcmp (name, "attr") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			key = sp_repr_attr (action, "key");
+			g_assert (key != NULL);
+			value = sp_repr_attr (action, "old");
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_attr (object->repr, key, value);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
+		if (strcmp (name, "content") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			value = sp_repr_attr (action, "old");
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_content (object->repr, value);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
+	}
+
+	document->redo = g_slist_prepend (document->redo, document->actions);
+	document->actions = NULL;
+
+	sp_document_set_undo_sensitive (document, TRUE);
+}
+
+void
+sp_document_redo (SPDocument * document)
+{
+	GList * l;
+	SPRepr * action;
+	const gchar * name;
+	const GList * children;
+	SPRepr * repr, * copy;
+	const gchar * id, * key, * value;
+	SPObject * object;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->sensitive);
+	g_assert (document->actions == NULL);
+
+	if (document->redo == NULL) return;
+
+	sp_document_set_undo_sensitive (document, FALSE);
+
+	document->actions = (GList *) document->redo->data;
+	document->redo = g_slist_remove (document->redo, document->redo->data);
+
+	for (l = g_list_last (document->actions); l != NULL; l = l->prev) {
+		action = (SPRepr *) l->data;
+		name = sp_repr_name (action);
+		if (strcmp (name, "add") == 0) {
+			children = sp_repr_children (action);
+			repr = (SPRepr *) children->data;
+			copy = sp_repr_copy (repr);
+			g_assert (copy != NULL);
+			sp_repr_append_child (SP_OBJECT (document->root)->repr, copy);
+			sp_repr_unref (copy);
+		}
+		if (strcmp (name, "del") == 0) {
+			children = sp_repr_children (action);
+			repr = (SPRepr *) children->data;
+			id = sp_repr_attr (repr, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (id != NULL);
+			sp_repr_unparent (object->repr);
+		}
+		if (strcmp (name, "attr") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			key = sp_repr_attr (action, "key");
+			g_assert (key != NULL);
+			value = sp_repr_attr (action, "new");
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_attr (object->repr, key, value);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
+		if (strcmp (name, "content") == 0) {
+			id = sp_repr_attr (action, "id");
+			g_assert (id != NULL);
+			object = sp_document_lookup_id (document, id);
+			g_assert (object != NULL);
+			value = sp_repr_attr (action, "new");
+			sp_document_set_undo_sensitive (document, FALSE);
+			sp_repr_set_content (object->repr, value);
+			sp_document_set_undo_sensitive (document, TRUE);
+		}
+	}
+
+	document->undo = g_slist_prepend (document->undo, document->actions);
+	document->actions = NULL;
+
+	sp_document_set_undo_sensitive (document, TRUE);
+}
+
+/*
+ * Actions
+ */
+
+/*
+ * <add><added repr></add>
+ */
+
+SPItem *
+sp_document_add_repr (SPDocument * document, SPRepr * repr)
+{
+	SPRepr * action, * copy;
+	const gchar * id;
+	SPObject * object;
+
+	sp_repr_append_child (SP_OBJECT (document->root)->repr, repr);
+
+	sp_document_clear_redo (document);
+
+	if (document->sensitive) {
+		action = sp_repr_new ("add");
+		copy = sp_repr_copy (repr);
+		sp_repr_append_child (action, copy);
+		sp_repr_unref (copy);
+
+		document->actions = g_list_prepend (document->actions, action);
+	}
+
+	id = sp_repr_attr (repr, "id");
+	g_assert (id != NULL);
+
+	object = sp_document_lookup_id (document, id);
+	g_assert (object != NULL);
+	g_assert (SP_IS_ITEM (object));
+
+	return SP_ITEM (object);
+}
+
+/*
+ * <del parent=parentid position=position><deleted repr></del>
+ */
+
+void
+sp_document_del_repr (SPDocument * document, SPRepr * repr)
+{
+	SPRepr * action;
+	SPRepr * parent;
+	const gchar * parentid;
+	gint position;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (repr != NULL);
+
+	parent = sp_repr_parent (repr);
+	g_assert (parent != NULL);
+	parentid = sp_repr_attr (parent, "id");
+	g_assert (parentid != NULL);
+	position = sp_repr_position (repr);
+
+	sp_repr_ref (repr);
+	sp_repr_unparent (repr);
+
+	sp_document_clear_redo (document);
+
+	if (document->sensitive) {
+		action = sp_repr_new ("del");
+		sp_repr_set_attr (action, "parent", parentid);
+		sp_repr_set_int_attribute (action, "position", position);
+		sp_repr_append_child (action, repr);
+
+		document->actions = g_list_prepend (document->actions, action);
+	}
+
+	sp_repr_unref (repr);
+}
+
+
+/*
+ * <attr id="id" key="key" old="old" new="new">
+ */
+
+gboolean
+sp_document_change_attr_requested (SPDocument * document, SPObject * object, const gchar * key, const gchar * value)
+{
+	SPRepr * action;
+	const gchar * oldvalue;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+	g_assert (object->document == document);
+	g_assert (key != NULL);
+
+	if (document->sensitive) {
+		sp_document_clear_redo (document);
+
+		oldvalue = sp_repr_attr (object->repr, key);
+
+		action = sp_repr_new ("attr");
+		sp_repr_set_attr (action, "id", object->id);
+		sp_repr_set_attr (action, "key", key);
+		sp_repr_set_attr (action, "old", oldvalue);
+		sp_repr_set_attr (action, "new", value);
+
+		document->actions = g_list_prepend (document->actions, action);
+	}
+
+	return TRUE;
+}
+
+/*
+ * <content id="id" old="old" new="new">
+ */
+
+gboolean
+sp_document_change_content_requested (SPDocument * document, SPObject * object, const gchar * value)
+{
+	SPRepr * action;
+	const gchar * oldvalue;
+
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+	g_assert (object->document == document);
+
+	if (document->sensitive) {
+		sp_document_clear_redo (document);
+
+		oldvalue = sp_repr_content (object->repr);
+
+		action = sp_repr_new ("content");
+		sp_repr_set_attr (action, "id", object->id);
+		sp_repr_set_attr (action, "old", oldvalue);
+		sp_repr_set_attr (action, "new", value);
+
+		document->actions = g_list_prepend (document->actions, action);
+	}
+
+	return TRUE;
+}
+
+void
+sp_document_clear_undo (SPDocument * document)
+{
+	GList * l;
+
+	while (document->undo) {
+		l = (GList *) document->undo->data;
+		while (l) {
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_list_remove (l, l->data);
+		}
+		document->undo = g_slist_remove (document->undo, document->undo->data);
+	}
+}
+
+void
+sp_document_clear_redo (SPDocument * document)
+{
+	GList * l;
+
+	while (document->redo) {
+		l = (GList *) document->redo->data;
+		while (l) {
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_list_remove (l, l->data);
+		}
+		document->redo = g_slist_remove (document->redo, document->redo->data);
+	}
+}
+
+

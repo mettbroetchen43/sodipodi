@@ -22,9 +22,6 @@ static void sp_document_class_init (SPDocumentClass * klass);
 static void sp_document_init (SPDocument * item);
 static void sp_document_destroy (GtkObject * object);
 
-static void sp_document_clear_undo (SPDocument * document);
-static void sp_document_clear_redo (SPDocument * document);
-
 static GtkObjectClass * parent_class;
 
 GtkType
@@ -68,6 +65,7 @@ sp_document_init (SPDocument * document)
 	document->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 	document->uri = NULL;
 	document->base = NULL;
+	document->sensitive = TRUE;
 	document->undo = NULL;
 	document->redo = NULL;
 	document->actions = NULL;
@@ -122,7 +120,7 @@ sp_document_new (const gchar * uri)
 		/* If xml file is not svg, return NULL without warning */
 		if (strcmp (sp_repr_name (repr), "svg") != 0) return NULL;
 	} else {
-		repr = sp_repr_new_with_name ("svg");
+		repr = sp_repr_new ("svg");
 		g_return_val_if_fail (repr != NULL, NULL);
 	}
 
@@ -227,198 +225,6 @@ sp_document_lookup_id (SPDocument * document, const gchar * id)
 }
 
 /*
- * Undo & redo
- */
-
-void
-sp_document_done (SPDocument * document)
-{
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-
-	if (document->actions == NULL) return;
-
-	g_assert (document->redo == NULL);
-
-	document->undo = g_slist_prepend (document->undo, document->actions);
-	document->actions = NULL;
-}
-
-void
-sp_document_undo (SPDocument * document)
-{
-	GList * l;
-	SPRepr * action;
-	const gchar * name;
-	const GList * children;
-	SPRepr * repr, * copy;
-	const gchar * id, * str;
-	SPObject * object;
-	gint position;
-
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->actions == NULL);
-
-	if (document->undo == NULL) return;
-
-	document->actions = (GList *) document->undo->data;
-	document->undo = g_slist_remove (document->undo, document->undo->data);
-
-	for (l = document->actions; l != NULL; l = l->next) {
-		action = (SPRepr *) l->data;
-		name = sp_repr_name (action);
-		if (strcmp (name, "add") == 0) {
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			id = sp_repr_attr (repr, "id");
-			g_assert (id != NULL);
-			object = sp_document_lookup_id (document, id);
-			g_assert (id != NULL);
-			sp_repr_unparent (object->repr);
-		}
-		if (strcmp (name, "del") == 0) {
-			id = sp_repr_attr (action, "parent");
-			g_assert (id != NULL);
-			object = sp_document_lookup_id (document, id);
-			g_return_if_fail (object != NULL);
-			str = sp_repr_attr (action, "position");
-			g_assert (str != NULL);
-			position = atoi (str);
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			copy = sp_repr_copy (repr);
-			g_assert (copy != NULL);
-			sp_repr_add_child (object->repr, copy, position);
-			sp_repr_unref (copy);
-		}
-	}
-
-	document->redo = g_slist_prepend (document->redo, document->actions);
-	document->actions = NULL;
-}
-
-void
-sp_document_redo (SPDocument * document)
-{
-	GList * l;
-	SPRepr * action;
-	const gchar * name;
-	const GList * children;
-	SPRepr * repr, * copy;
-	const gchar * id;
-	SPObject * object;
-
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->actions == NULL);
-
-	if (document->redo == NULL) return;
-
-	document->actions = (GList *) document->redo->data;
-	document->redo = g_slist_remove (document->redo, document->redo->data);
-
-	for (l = g_list_last (document->actions); l != NULL; l = l->prev) {
-		action = (SPRepr *) l->data;
-		name = sp_repr_name (action);
-		if (strcmp (name, "add") == 0) {
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			copy = sp_repr_copy (repr);
-			g_assert (copy != NULL);
-			sp_repr_append_child (SP_OBJECT (document->root)->repr, copy);
-			sp_repr_unref (copy);
-		}
-		if (strcmp (name, "del") == 0) {
-			children = sp_repr_children (action);
-			repr = (SPRepr *) children->data;
-			id = sp_repr_attr (repr, "id");
-			g_assert (id != NULL);
-			object = sp_document_lookup_id (document, id);
-			g_assert (id != NULL);
-			sp_repr_unparent (object->repr);
-		}
-	}
-
-	document->undo = g_slist_prepend (document->undo, document->actions);
-	document->actions = NULL;
-}
-
-/*
- * Actions
- */
-
-/*
- * <add><added repr></add>
- */
-
-SPItem *
-sp_document_add_repr (SPDocument * document, SPRepr * repr)
-{
-	SPRepr * action, * copy;
-	const gchar * id;
-	SPObject * object;
-
-	sp_repr_append_child (SP_OBJECT (document->root)->repr, repr);
-
-	sp_document_clear_redo (document);
-
-	action = sp_repr_new_with_name ("add");
-	copy = sp_repr_copy (repr);
-	sp_repr_append_child (action, copy);
-	sp_repr_unref (copy);
-	document->actions = g_list_prepend (document->actions, action);
-
-	id = sp_repr_attr (repr, "id");
-	g_assert (id != NULL);
-
-	object = sp_document_lookup_id (document, id);
-	g_assert (object != NULL);
-	g_assert (SP_IS_ITEM (object));
-
-	return SP_ITEM (object);
-}
-
-/*
- * <del parent=parentid position=position><deleted repr></del>
- */
-
-void
-sp_document_del_repr (SPDocument * document, SPRepr * repr)
-{
-	SPRepr * action;
-	SPRepr * parent;
-	const gchar * parentid;
-	gint position;
-	gchar c[32];
-
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (repr != NULL);
-
-	parent = sp_repr_parent (repr);
-	g_assert (parent != NULL);
-	parentid = sp_repr_attr (parent, "id");
-	g_assert (parentid != NULL);
-	position = sp_repr_position (repr);
-	g_snprintf (c, 32, "%d", position);
-
-	sp_repr_ref (repr);
-	sp_repr_unparent (repr);
-
-	sp_document_clear_redo (document);
-
-	action = sp_repr_new_with_name ("del");
-	sp_repr_set_attr (action, "parent", parentid);
-	sp_repr_set_attr (action, "position", c);
-	sp_repr_append_child (action, repr);
-	sp_repr_unref (repr);
-
-	document->actions = g_list_prepend (document->actions, action);
-}
-
-
-/*
  * Return list of items, contained in box
  *
  * Assumes box is normalized (and g_asserts it!)
@@ -451,35 +257,5 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 	}
 
 	return s;
-}
-
-static void
-sp_document_clear_undo (SPDocument * document)
-{
-	GList * l;
-
-	while (document->undo) {
-		l = (GList *) document->undo->data;
-		while (l) {
-			sp_repr_unref ((SPRepr *) l->data);
-			l = g_list_remove (l, l->data);
-		}
-		document->undo = g_slist_remove (document->undo, document->undo->data);
-	}
-}
-
-static void
-sp_document_clear_redo (SPDocument * document)
-{
-	GList * l;
-
-	while (document->redo) {
-		l = (GList *) document->redo->data;
-		while (l) {
-			sp_repr_unref ((SPRepr *) l->data);
-			l = g_list_remove (l, l->data);
-		}
-		document->redo = g_slist_remove (document->redo, document->redo->data);
-	}
 }
 

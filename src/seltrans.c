@@ -191,6 +191,8 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 		}
 	}
 
+	sp_document_done (SP_DT_DOCUMENT (seltrans->desktop));
+
 	seltrans->grabbed = FALSE;
 	seltrans->show_handles = TRUE;
 

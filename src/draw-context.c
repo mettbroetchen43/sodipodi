@@ -165,7 +165,7 @@ sp_draw_finish_item (SPDrawContext * draw_context)
 		str = sp_svg_write_path (abp);
 		art_free (abp);
 		g_return_if_fail (str != NULL);
-		repr = sp_repr_new_with_name ("path");
+		repr = sp_repr_new ("path");
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
 		sp_repr_set_attr (repr, "style", "stroke:#000; stroke-width:1");

@@ -50,12 +50,12 @@ sp_selected_path_combine (void)
 		art_free (abp);
 		d = g_strconcat (d, str, NULL);
 		g_free (str);
-		sp_repr_unparent (SP_OBJECT (path)->repr);
+		sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (path)->repr);
 	}
 
 	g_slist_free (il);
 
-	repr = sp_repr_new_with_name ("path");
+	repr = sp_repr_new ("path");
 	sp_repr_set_attr (repr, "style", style);
 	g_free (style);
 	sp_repr_set_attr (repr, "d", d);
@@ -99,7 +99,7 @@ sp_selected_path_break_apart (void)
 	abp = art_bpath_affine_transform (curve->bpath, i2doc);
 
 	sp_curve_unref (curve);
-	sp_repr_unparent (SP_OBJECT (item)->repr);
+	sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (item)->repr);
 
 	curve = sp_curve_new_from_bpath (abp);
 
@@ -110,7 +110,7 @@ sp_selected_path_break_apart (void)
 	for (l = list; l != NULL; l = l->next) {
 		curve = (SPCurve *) l->data;
 
-		repr = sp_repr_new_with_name ("path");
+		repr = sp_repr_new ("path");
 		sp_repr_set_attr (repr, "style", style);
 		str = sp_svg_write_path (curve->bpath);
 		sp_repr_set_attr (repr, "d", str);
@@ -150,14 +150,14 @@ sp_selected_path_to_curves (void)
 	transform = sp_repr_attr (SP_OBJECT (item)->repr, "transform");
 	style = sp_repr_attr (SP_OBJECT (item)->repr, "style");
 
-	new = sp_repr_new_with_name ("path");
+	new = sp_repr_new ("path");
 	sp_repr_set_attr (new, "transform", transform);
 	sp_repr_set_attr (new, "style", style);
 	sp_repr_set_attr (new, "d", str);
 
 	g_free (str);
 
-	sp_repr_unparent (SP_OBJECT (item)->repr);
+	sp_document_del_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), SP_OBJECT (item)->repr);
 	item = sp_document_add_repr (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), new);
 	sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
 	sp_repr_unref (new);

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "repr.h"
 
+#if 0
 SPRepr *
 sp_repr_new_with_name (const gchar * name)
 {
@@ -15,6 +16,7 @@ sp_repr_new_with_name (const gchar * name)
 
 	return repr;
 }
+#endif
 
 gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
 {
@@ -25,7 +27,7 @@ gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
 	return (result != NULL);
 }
 
-double sp_repr_get_double_attribute (SPRepr * repr, const gchar * key, double def)
+gdouble sp_repr_get_double_attribute (SPRepr * repr, const gchar * key, gdouble def)
 {
 	gchar * result;
 
@@ -34,25 +36,49 @@ double sp_repr_get_double_attribute (SPRepr * repr, const gchar * key, double de
 
 	result = (gchar *) sp_repr_attr (repr, key);
 
-	if (result == NULL)
-		return def;
+	if (result == NULL) return def;
 
 	return atof (result);
 }
 
-void
-sp_repr_set_double_attribute (SPRepr * repr, const gchar * key, double value)
+gint sp_repr_get_int_attribute (SPRepr * repr, const gchar * key, gint def)
 {
-	gchar c[128];
+	gchar * result;
+
+	g_return_val_if_fail (repr != NULL, def);
+	g_return_val_if_fail (key != NULL, def);
+
+	result = (gchar *) sp_repr_attr (repr, key);
+
+	if (result == NULL) return def;
+
+	return atoi (result);
+}
+
+gboolean
+sp_repr_set_double_attribute (SPRepr * repr, const gchar * key, gdouble value)
+{
+	gchar c[32];
 
 	g_return_if_fail (repr != NULL);
 	g_return_if_fail (key != NULL);
 
-	snprintf (c, 128, "%f", value);
+	g_snprintf (c, 32, "%f", value);
 
-	sp_repr_set_attr (repr, key, c);
+	return sp_repr_set_attr (repr, key, c);
+}
 
-	return;
+gboolean
+sp_repr_set_int_attribute (SPRepr * repr, const gchar * key, gint value)
+{
+	gchar c[32];
+
+	g_return_if_fail (repr != NULL);
+	g_return_if_fail (key != NULL);
+
+	g_snprintf (c, 32, "%d", value);
+
+	return sp_repr_set_attr (repr, key, c);
 }
 
 const gchar *
@@ -173,7 +199,9 @@ sp_repr_remove_signals (SPRepr * repr)
 	sp_repr_set_signal (repr, "destroy", NULL, NULL);
 	sp_repr_set_signal (repr, "child_added", NULL, NULL);
 	sp_repr_set_signal (repr, "child_removed", NULL, NULL);
+	sp_repr_set_signal (repr, "attr_changed_pre", NULL, NULL);
 	sp_repr_set_signal (repr, "attr_changed", NULL, NULL);
+	sp_repr_set_signal (repr, "content_changed_pre", NULL, NULL);
 	sp_repr_set_signal (repr, "content_changed", NULL, NULL);
 	sp_repr_set_signal (repr, "order_changed", NULL, NULL);
 }

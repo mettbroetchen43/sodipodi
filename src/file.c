@@ -187,7 +187,9 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
 		repr = sp_repr_read_file (filename);
 		if (repr == NULL) return;
+#if 0
 		sp_repr_set_name (repr, "g");
+#endif
 		sp_document_add_repr (doc, repr);
 		sp_repr_unref (repr);
 		sp_document_done (doc);
@@ -201,8 +203,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	    (strcmp (e, "gif") == 0) ||
 	    (strcmp (e, "tiff") == 0) ||
 	    (strcmp (e, "xpm") == 0)) {
-		repr = sp_repr_new ();
-		sp_repr_set_name (repr, "image");
+		repr = sp_repr_new ("image");
 		sp_repr_set_attr (repr, "src", relname);
 		sp_repr_set_attr (repr, "sp-absolute-path-name", filename);
 		sp_document_add_repr (doc, repr);

@@ -17,8 +17,12 @@ struct _SPRepr {
 	gpointer child_added_data;
 	void (* child_removed)(SPRepr *, SPRepr *, gpointer);
 	gpointer child_removed_data;
+	gint (* attr_changed_pre)(SPRepr * repr, const gchar * key, const gchar * value, gpointer);
+	gpointer attr_changed_pre_data;
 	void (* attr_changed)(SPRepr *, const gchar *, gpointer);
 	gpointer attr_changed_data;
+	gint (* content_changed_pre)(SPRepr * repr, const gchar * content, gpointer data);
+	gpointer content_changed_pre_data;
 	void (* content_changed)(SPRepr *, gpointer);
 	gpointer content_changed_data;
 	void (* order_changed)(SPRepr *, gpointer);

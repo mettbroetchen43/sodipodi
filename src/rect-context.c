@@ -17,7 +17,7 @@ static void sp_rect_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
-static void sp_rect_set (SPRepr * repr, double x0, double y0, double x1, double y1);
+static void sp_rect_finish (SPRect * rect);
 
 static SPEventContextClass * parent_class;
 
@@ -163,11 +163,11 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			x1 = MAX (s.x, c.x);
 			y1 = MAX (s.y, c.y);
 			if (repr == NULL) {
-				repr = sp_repr_new_with_name ("rect");
+				repr = sp_repr_new ("rect");
 				item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 				sp_repr_unref (repr);
 			}
-			sp_rect_set (repr, x0, y0, x1, y1);
+			sp_rect_set (SP_RECT (item), x0, y0, x1 - x0, y1 - y0);
 			ret = TRUE;
 		}
 		break;
@@ -175,8 +175,10 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		switch (event->button.button) {
 		case 1:
 			dragging = FALSE;
-			if (item != NULL)
+			if (item != NULL) {
+				sp_rect_finish (SP_RECT (item));
 				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
+			}
 			sp_document_done (SP_DT_DOCUMENT (desktop));
 			repr = NULL;
 			ret = TRUE;
@@ -198,11 +200,15 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 }
 
 static void
-sp_rect_set (SPRepr * repr, double x0, double y0, double x1, double y1)
+sp_rect_finish (SPRect * rect)
 {
-	sp_repr_set_double_attribute (repr, "x", x0);
-	sp_repr_set_double_attribute (repr, "y", y0);
-	sp_repr_set_double_attribute (repr, "width", x1 - x0);
-	sp_repr_set_double_attribute (repr, "height", y1 - y0);
+	SPRepr * repr;
+
+	repr = SP_OBJECT (rect)->repr;
+
+	sp_repr_set_double_attribute (repr, "x", rect->x);
+	sp_repr_set_double_attribute (repr, "y", rect->y);
+	sp_repr_set_double_attribute (repr, "width", rect->width);
+	sp_repr_set_double_attribute (repr, "height", rect->height);
 }
 

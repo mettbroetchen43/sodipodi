@@ -16,7 +16,7 @@ SPCSSAttr *
 sp_repr_css_attr_new (void)
 {
 	SPRepr * css;
-	css = sp_repr_new_with_name ("css");
+	css = sp_repr_new ("css");
 	g_return_val_if_fail (css != NULL, NULL);
 	return (SPCSSAttr *) css;
 }

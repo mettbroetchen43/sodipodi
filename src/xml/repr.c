@@ -13,9 +13,11 @@ static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
 	gint num_repr = 0;
 #endif
 
-SPRepr * sp_repr_new (void)
+SPRepr * sp_repr_new (const gchar * name)
 {
 	SPRepr * repr;
+
+	g_return_val_if_fail (name != NULL, NULL);
 
 	repr = g_new (SPRepr, 1);
 	g_return_val_if_fail (repr != NULL, NULL);
@@ -27,7 +29,7 @@ SPRepr * sp_repr_new (void)
 
 	repr->ref_count = 1;
 	repr->parent = NULL;
-	repr->name = g_quark_from_static_string ("unknown");
+	repr->name = g_quark_from_string (name);
 	repr->content = NULL;
 	repr->attr = g_hash_table_new (NULL, NULL);
 	repr->children = NULL;
@@ -35,7 +37,9 @@ SPRepr * sp_repr_new (void)
 	repr->destroy = NULL;
 	repr->child_added = NULL;
 	repr->child_removed = NULL;
+	repr->attr_changed_pre = NULL;
 	repr->attr_changed = NULL;
+	repr->content_changed_pre = NULL;
 	repr->content_changed = NULL;
 	repr->order_changed = NULL;
 
@@ -101,10 +105,8 @@ SPRepr * sp_repr_copy (SPRepr * repr)
 
 	g_return_val_if_fail (repr != NULL, NULL);
 
-	new = sp_repr_new ();
+	new = sp_repr_new (g_quark_to_string (repr->name));
 	g_return_val_if_fail (new != NULL, NULL);
-
-	new->name = repr->name;
 
 	if (repr->content != NULL)
 		new->content = g_strdup (repr->content);
@@ -124,6 +126,7 @@ SPRepr * sp_repr_copy (SPRepr * repr)
 	return new;
 }
 
+#if 0
 void
 sp_repr_set_name (SPRepr * repr, const gchar * name)
 {
@@ -132,6 +135,7 @@ sp_repr_set_name (SPRepr * repr, const gchar * name)
 
 	repr->name = g_quark_from_string (name);
 }
+#endif
 
 const gchar *
 sp_repr_name (SPRepr * repr)
@@ -141,21 +145,32 @@ sp_repr_name (SPRepr * repr)
 	return g_quark_to_string (repr->name);
 }
 
-void
+gint
 sp_repr_set_content (SPRepr * repr, const gchar * content)
 {
+	gboolean allowed;
+
 	g_assert (repr != NULL);
 
-	if (repr->content) g_free (repr->content);
+	allowed = TRUE;
 
-	if (content) {
-		repr->content = g_strdup (content);
-	} else {
-		repr->content = NULL;
+	if (repr->content_changed_pre)
+		allowed = repr->content_changed_pre (repr, content, repr->content_changed_pre_data);
+
+	if (allowed) {
+		if (repr->content) g_free (repr->content);
+
+		if (content) {
+			repr->content = g_strdup (content);
+		} else {
+			repr->content = NULL;
+		}
+
+		if (repr->content_changed)
+			repr->content_changed (repr, repr->content_changed_data);
 	}
 
-	if (repr->content_changed)
-		repr->content_changed (repr, repr->content_changed_data);
+	return allowed;
 }
 
 const gchar *
@@ -166,27 +181,37 @@ sp_repr_content (SPRepr * repr)
 	return repr->content;
 }
 
-void sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
+gboolean sp_repr_set_attr (SPRepr * repr, const gchar * key, const gchar * value)
 {
+	gboolean allowed;
 	GQuark q;
 	gchar * old_value;
 
-	g_return_if_fail (repr != NULL);
-	g_return_if_fail (key != NULL);
+	g_return_val_if_fail (repr != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
 
-	q = g_quark_from_string (key);
-	old_value = g_hash_table_lookup (repr->attr, GINT_TO_POINTER (q));
+	allowed = TRUE;
 
-	if (value == NULL) {
-		g_hash_table_remove (repr->attr, GINT_TO_POINTER (q));
-	} else {
-		g_hash_table_insert (repr->attr, GINT_TO_POINTER (q), g_strdup (value));
+	if (repr->attr_changed_pre)
+		allowed = repr->attr_changed_pre (repr, key, value, repr->attr_changed_pre_data);
+
+	if (allowed) {
+		q = g_quark_from_string (key);
+		old_value = g_hash_table_lookup (repr->attr, GINT_TO_POINTER (q));
+
+		if (value == NULL) {
+			g_hash_table_remove (repr->attr, GINT_TO_POINTER (q));
+		} else {
+			g_hash_table_insert (repr->attr, GINT_TO_POINTER (q), g_strdup (value));
+		}
+
+		if (old_value) g_free (old_value);
+
+		if (repr->attr_changed)
+			repr->attr_changed (repr, key, repr->attr_changed_data);
 	}
 
-	if (old_value) g_free (old_value);
-
-	if (repr->attr_changed)
-		repr->attr_changed (repr, key, repr->attr_changed_data);
+	return allowed;
 }
 
 const gchar * sp_repr_attr (SPRepr * repr, const gchar * key)
@@ -304,9 +329,19 @@ sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer d
 		repr->child_removed_data = data;
 		return;
 	}
+	if (strcmp (name, "attr_changed_pre") == 0) {
+		repr->attr_changed_pre = (gint (*)(SPRepr *, const gchar *, const gchar *, gpointer)) func;
+		repr->attr_changed_pre_data = data;
+		return;
+	}
 	if (strcmp (name, "attr_changed") == 0) {
 		repr->attr_changed = (void (*)(SPRepr *, const gchar *, gpointer)) func;
 		repr->attr_changed_data = data;
+		return;
+	}
+	if (strcmp (name, "content_changed_pre") == 0) {
+		repr->content_changed_pre = (gint (*)(SPRepr *, const gchar *, gpointer)) func;
+		repr->content_changed_pre_data = data;
 		return;
 	}
 	if (strcmp (name, "content_changed") == 0) {

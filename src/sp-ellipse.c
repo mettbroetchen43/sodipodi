@@ -262,41 +262,17 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	sp_curve_unref (c);
 }
 
-#if 0
-static void
-sp_ellipse_bbox (SPItem * item, ArtDRect * bbox)
+void
+sp_ellipse_set (SPEllipse * ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry)
 {
-	SPEllipse * ellipse;
-	double affine[6];
-	ArtPoint c, p;
-	double cx, cy, rx, ry, t;
+	g_return_if_fail (ellipse != NULL);
+	g_return_if_fail (SP_IS_ELLIPSE (ellipse));
 
-	ellipse = SP_ELLIPSE (item);
+	ellipse->x = x;
+	ellipse->y = y;
+	ellipse->rx = rx;
+	ellipse->ry = ry;
 
-	gnome_canvas_item_i2w_affine (GNOME_CANVAS_ITEM (item), affine);
-	
-	cx = ellipse->x;
-	cy = ellipse->y;
-	rx = ellipse->rx;
-	ry = ellipse->ry;
-
-	c.x = cx;
-	c.y = cy;
-	art_affine_point (&c, &c, affine);
-
-	bbox->x0 = bbox->x1 = c.x;
-	bbox->y0 = bbox->y1 = c.y;
-
-	for (t = 0.0; t < SP_2PI; t+= (M_PI_2 / 10)) {
-		p.x = cx + rx * cos (t);
-		p.y = cy + ry * sin (t);
-		art_affine_point (&p, &p, affine);
-		if (p.x < bbox->x0) bbox->x0 = p.x;
-		if (p.y < bbox->y0) bbox->y0 = p.y;
-		if (p.x > bbox->x1) bbox->x1 = p.x;
-		if (p.y > bbox->y1) bbox->y1 = p.y;
-	}
-
-	return;
+	sp_ellipse_set_shape (ellipse);
 }
-#endif
+

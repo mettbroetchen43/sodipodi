@@ -29,4 +29,6 @@ struct _SPEllipseClass {
 /* Standard Gtk function */
 GtkType sp_ellipse_get_type (void);
 
+void sp_ellipse_set (SPEllipse * ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry);
+
 #endif

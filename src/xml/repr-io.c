@@ -35,7 +35,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	g_return_val_if_fail (node != NULL, NULL);
 
-	repr = sp_repr_new_with_name (node->name);
+	repr = sp_repr_new (node->name);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->val) {

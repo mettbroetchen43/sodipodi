@@ -248,6 +248,8 @@ apply_stroke (void)
 		sp_repr_css_change_recursive (repr, css, "style");
 		l = l->next;
 	}
+
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 /*

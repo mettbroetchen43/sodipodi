@@ -54,6 +54,7 @@ struct _SPDocument {
 	GHashTable * iddef;	/* id dictionary */
 	gchar * uri;		/* Document uri */
 	gchar * base;		/* Document base URI */
+	guint sensitive: 1;	/* If we save actions to undo stack */
 	GSList * undo;		/* Undo stack of reprs */
 	GSList * redo;		/* Redo stack of reprs */
 	GList * actions;	/* List of current actions */
@@ -95,9 +96,21 @@ SPObject * sp_document_lookup_id (SPDocument * document, const gchar * id);
  * Undo & redo
  */
 
+void sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive);
+
+void sp_document_clear_undo (SPDocument * document);
+void sp_document_clear_redo (SPDocument * document);
+
+gboolean sp_document_change_attr_requested (SPDocument * document, SPObject * object, const gchar * key, const gchar * value);
+gboolean sp_document_change_content_requested (SPDocument * document, SPObject * object, const gchar * value);
+
 /* Save all previous actions to stack, as one undo step */
 
 void sp_document_done (SPDocument * document);
+
+/* Clear current actions, so these cannot be undone */
+
+void sp_document_clear_actions (SPDocument * document);
 
 void sp_document_undo (SPDocument * document);
 void sp_document_redo (SPDocument * document);

@@ -1692,6 +1692,7 @@ sp_nodepath_flush (SPNodePath * nodepath)
 
 	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", str);
 	g_free (str);
+	sp_document_done (SP_DT_DOCUMENT (nodepath->desktop));
 }
 
 /*

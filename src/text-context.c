@@ -160,7 +160,7 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 
 			sp_desktop_w2doc_xy_point (desktop, &p, event->button.x, event->button.y);
 
-			text_context->text = sp_repr_new_with_name ("text");
+			text_context->text = sp_repr_new ("text");
 			sp_repr_set_double_attribute (text_context->text, "x", p.x);
 			sp_repr_set_double_attribute (text_context->text, "y", p.y);
 			item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), text_context->text);
@@ -205,7 +205,9 @@ sp_text_complete (SPTextContext * text_context)
 		}
 	}
 	g_print ("empty text created - removing\n");
-	sp_repr_unparent (text_context->text);
+	sp_document_del_repr (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (text_context)->desktop), text_context->text);
+
+	sp_document_done (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (text_context)->desktop));
 #if 0
 	sp_selection_empty ();
 #endif

@@ -218,3 +218,16 @@ sp_rect_bbox (SPItem * item, ArtDRect * bbox)
 		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
 }
 
+void
+sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
+{
+	g_return_if_fail (rect != NULL);
+	g_return_if_fail (SP_IS_RECT (rect));
+
+	rect->x = x;
+	rect->y = y;
+	rect->width = width;
+	rect->height = height;
+
+	sp_rect_set_shape (rect);
+}

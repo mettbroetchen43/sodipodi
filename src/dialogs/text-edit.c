@@ -179,6 +179,8 @@ sp_text_dialog_apply (void)
 
 	sp_repr_css_change (repr, css, "style");
 	sp_repr_css_attr_unref (css);
+
+	sp_document_done (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
 }
 
 void

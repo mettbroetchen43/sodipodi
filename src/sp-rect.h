@@ -30,6 +30,9 @@ struct _SPRectClass {
 /* Standard Gtk function */
 GtkType sp_rect_get_type (void);
 
+void sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height);
+
+
 END_GNOME_DECLS
 
 #endif
