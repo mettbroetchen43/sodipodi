@@ -22,12 +22,6 @@ GtkWidget *sp_item_widget_new (void);
 
 void sp_item_dialog (SPItem *item);
 
-#if 0
-void sp_item_dialog_apply (GtkWidget * widget);
-#endif
-
-void sp_item_dialog_close (GtkWidget * widget);
-
 END_GNOME_DECLS
 
 #endif

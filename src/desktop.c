@@ -614,9 +614,9 @@ sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area)
 
 gdouble sp_desktop_zoom_factor (SPDesktop * desktop)
 {
-  g_return_val_if_fail (SP_IS_DESKTOP (desktop), 0.0);
+	g_return_val_if_fail (SP_IS_DESKTOP (desktop), 0.0);
 
-  return sqrt (fabs(desktop->d2w[0] * desktop->d2w[3]));
+	return sqrt (fabs (desktop->d2w[0] * desktop->d2w[3]));
 }
 
 void
@@ -970,12 +970,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
         GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET(desktop->menubutton), GTK_CAN_FOCUS);
 	/* indicator for active desktop */
 	hbox = gtk_vbox_new (FALSE, 0);
-	gtk_table_attach (table,
-		GTK_WIDGET (hbox),
-		2,3,0,1,
-		FALSE,
-		FALSE,
-		0,0);
+	gtk_table_attach (table, GTK_WIDGET (hbox), 2,3,0,1, FALSE, FALSE, 0,0);
 	gtk_widget_show (hbox);
 	desktop->active = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dt_active.xpm");
 	gtk_box_pack_start ((GtkBox *) hbox, desktop->active, TRUE, TRUE, 0);
@@ -1216,6 +1211,16 @@ sp_desktop_widget_new (SPNamedView *namedview)
 
 	/* Listen on namedview modification */
 	gtk_signal_connect (GTK_OBJECT (namedview), "modified", sp_desktop_widget_namedview_modified, dtw);
+
+	if (dtw->decorations) {
+		if (SP_DESKTOP (dtw->desktop) == SP_ACTIVE_DESKTOP) {
+			gtk_widget_show (GTK_WIDGET (dtw->active));
+			gtk_widget_hide (GTK_WIDGET (dtw->inactive));
+		} else {
+			gtk_widget_hide (GTK_WIDGET (dtw->active));
+			gtk_widget_show (GTK_WIDGET (dtw->inactive));
+		}
+	}
 
 	return SP_VIEW_WIDGET (dtw);
 }

@@ -15,6 +15,7 @@
 
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
+#include <gtk/gtksignal.h>
 #include "desktop.h"
 #include "sp-item.h"
 #include "sp-shape.h"

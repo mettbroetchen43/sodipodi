@@ -13,6 +13,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include "sp-polyline.h"
 
 static void sp_polyline_class_init (SPPolyLineClass *class);

@@ -18,6 +18,7 @@
 #include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "display/nr-arena-group.h"
 #include "xml/repr-private.h"

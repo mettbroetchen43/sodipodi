@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include "sp-polygon.h"
 
 static void sp_polygon_class_init (SPPolygonClass *class);

@@ -34,6 +34,10 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 fi
 
+AC_CHECK_HEADER(popt.h,,[
+	AC_MSG_ERROR(You need standalone popt-devel package)
+])
+
 dnl ******************************
 dnl Gnome App Lib checking
 dnl ******************************

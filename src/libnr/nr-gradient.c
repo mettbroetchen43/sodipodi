@@ -516,19 +516,17 @@ nr_rgradient_render_generic_optimized (NRRGradientRenderer *rgr, NRPixBlock *pb)
 			/* INVARIANT: qgx2_4 >= 0.0 */
 			/* qgx2_4 = MAX (qgx2_4, 0.0); */
 			pxgx = gx + sqrt (qgx2_4);
-			if (fabs (pxgx) > NR_EPSILON_F) {
-				pos = gxy2 / pxgx * NR_GRADIENT_VECTOR_LENGTH;
-				if (pos < (1U << 31)) {
-					if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
-						idx = ((int) pos) & (2 * NR_GRADIENT_VECTOR_LENGTH - 1);
-						if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
-					} else if (rgr->spread == NR_GRADIENT_SPREAD_REPEAT) {
-						idx = ((int) pos) & (NR_GRADIENT_VECTOR_LENGTH - 1);
-					} else {
-						idx = CLAMP (((int) pos), 0, (NR_GRADIENT_VECTOR_LENGTH - 1));
-					}
+			/* We can safely divide by 0 here */
+			/* If we are sure pxgx cannot be -0 */
+			pos = gxy2 / pxgx * NR_GRADIENT_VECTOR_LENGTH;
+			if (pos < (1U << 31)) {
+				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
+					idx = ((int) pos) & (2 * NR_GRADIENT_VECTOR_LENGTH - 1);
+					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
+				} else if (rgr->spread == NR_GRADIENT_SPREAD_REPEAT) {
+					idx = ((int) pos) & (NR_GRADIENT_VECTOR_LENGTH - 1);
 				} else {
-					idx = NR_GRADIENT_VECTOR_LENGTH - 1;
+					idx = CLAMP (((int) pos), 0, (NR_GRADIENT_VECTOR_LENGTH - 1));
 				}
 			} else {
 				idx = NR_GRADIENT_VECTOR_LENGTH - 1;

@@ -1,6 +1,18 @@
-#define SP_NODE_CONTEXT_C
+#define __SP_NODE_CONTEXT_C__
+
+/*
+ * Node editing context
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtksignal.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"

@@ -1773,6 +1773,7 @@ sp_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 		return FALSE;
 }
 
+#ifdef SP_CANVAS_INTERRUPLTIBLE
 static void
 uta_clear (ArtUta *uta, ArtIRect *rect)
 {
@@ -1826,6 +1827,7 @@ uta_clear (ArtUta *uta, ArtIRect *rect)
 		}
 	}
 }
+#endif
 
 /* We have to fit into pixelstore 64K */
 #define IMAGE_WIDTH_AA 341
@@ -1918,7 +1920,7 @@ paint (SPCanvas *canvas)
 			nr_pixelstore_64K_free (buf.buf);
 	  	}
 
-#if 0
+#ifdef SP_CANVAS_INTERRUPLTIBLE
 		uta_clear (canvas->redraw_area, &rects[i]);
 
 		if (gdk_events_pending ()) {

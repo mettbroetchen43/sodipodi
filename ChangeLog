@@ -1,4 +1,10 @@
+2002-10-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/item-properties.c: Removed libglade dependency
+
 2002-10-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Added check for popt.h
 
 	* src/dialogs/align.c: Removed libglade dependency
 

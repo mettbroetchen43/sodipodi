@@ -19,7 +19,7 @@
 #include "nr-pixblock.h"
 #include "nr-blit.h"
 
-double
+static double
 get_time (void)
 {
 	struct timeval tv;
@@ -29,7 +29,7 @@ get_time (void)
 	return tv.tv_sec + 1e-6 * tv.tv_usec;
 }
 
-unsigned int
+static unsigned int
 rand_byte (void)
 {
 	return (int) (256.0 * rand () / (RAND_MAX + 1.0));
@@ -91,4 +91,6 @@ main (int argc, const char **argv)
 	printf ("Did %d [64x64] random buffers in %f sec\n", count, end - start);
 	printf ("%f buffers per second\n", count / (end - start));
 	printf ("%f pixels per second\n", count * (64 * 64) / (end - start));
+
+	return 0;
 }

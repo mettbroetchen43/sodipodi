@@ -14,6 +14,7 @@
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include <libart_lgpl/art_affine.h>
+#include <gtk/gtksignal.h>
 
 #include "svg/svg.h"
 #include "sodipodi-private.h"

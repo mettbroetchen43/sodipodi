@@ -15,6 +15,7 @@
 #define sp_debug(str, section) 	if (FALSE) printf ("%s:%d (%s) %s\n", __FILE__, __LINE__, __FUNCTION__, str); 
 
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include "sodipodi-private.h"
 #include "desktop.h"
 #include "desktop-handles.h"
