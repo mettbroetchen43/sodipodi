@@ -33,7 +33,6 @@ static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
 static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
 static void sp_group_hide (SPItem * item, NRArena *arena);
-static gboolean sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 static void sp_group_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_item_group_ungroup_activate (GtkMenuItem *menuitem, SPGroup *group);
@@ -88,7 +87,6 @@ sp_group_class_init (SPGroupClass *klass)
 	item_class->description = sp_group_description;
 	item_class->show = sp_group_show;
 	item_class->hide = sp_group_hide;
-	item_class->paint = sp_group_paint;
 	item_class->menu = sp_group_menu;
 }
 
@@ -469,34 +467,6 @@ sp_group_hide (SPItem *item, NRArena *arena)
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
 		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
-}
-
-static gboolean
-sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
-{
-	SPGroup * group;
-	SPItem * child;
-	gdouble a[6];
-	SPObject * o;
-	gboolean ret;
-
-	group = (SPGroup *) item;
-
-	if (SP_ITEM_CLASS (parent_class)->paint)
-		(* SP_ITEM_CLASS (parent_class)->paint) (item, buf, affine);
-
-	ret = FALSE;
-
-	for (o = group->children; o != NULL; o = o->next) {
-		if (SP_IS_ITEM (o)) {
-			child = SP_ITEM (o);
-			art_affine_multiply (a, child->affine, affine);
-			ret = sp_item_paint (child, buf, a);
-			if (ret) return TRUE;
-		}
-	}
-
-	return FALSE;
 }
 
 static void

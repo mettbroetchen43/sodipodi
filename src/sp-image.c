@@ -27,7 +27,6 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
-static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
@@ -83,7 +82,6 @@ sp_image_class_init (SPImageClass * klass)
 	item_class->print = sp_image_print;
 	item_class->description = sp_image_description;
 	item_class->show = sp_image_show;
-	item_class->paint = sp_image_paint;
 	item_class->snappoints = sp_image_snappoints;
 }
 
@@ -281,57 +279,6 @@ sp_image_show (SPItem *item, NRArena *arena)
 	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (arenaitem), image->pixbuf);
 
 	return arenaitem;
-}
-
-static gboolean
-sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
-{
-	SPObject *object;
-	SPImage * image;
-	guchar * pixels;
-	gint width, height, rowstride;
-
-	object = SP_OBJECT (item);
-	image = SP_IMAGE (item);
-
-	if (!image->pixbuf) return FALSE;
-
-	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
-	width = gdk_pixbuf_get_width (image->pixbuf);
-	height = gdk_pixbuf_get_height (image->pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
-
-	if (object->style->opacity != 1.0) {
-		guchar *px, *d, *s;
-		gint x, y;
-		guint32 alpha;
-		alpha = (guint32) floor (object->style->opacity * 255.9999);
-		px = g_new (guchar, width * height * 4);
-		for (y = 0; y < height; y++) {
-			s = pixels + y * rowstride;
-			d = px + y * width * 4;
-			memcpy (d, s, width * 4);
-			for (x = 0; x < width; x++) {
-				d[3] = (s[3] * alpha) / 255;
-				s += 4;
-				d += 4;
-			}
-		}
-		art_rgba_rgba_affine (pixbuf->pixels,
-				      0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-				      px, width, height, width * 4,
-				      affine,
-				      ART_FILTER_NEAREST, NULL);
-		g_free (px);
-	} else {
-		art_rgba_rgba_affine (pixbuf->pixels,
-				      0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-				      pixels, width, height, rowstride,
-				      affine,
-				      ART_FILTER_NEAREST, NULL);
-	}
-
-	return FALSE;
 }
 
 /*

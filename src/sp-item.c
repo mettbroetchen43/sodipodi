@@ -452,46 +452,46 @@ sp_item_hide (SPItem *item, NRArena *arena)
 gboolean
 sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 {
-#if 1
 	NRArena *arena;
 	NRArenaItem *root;
 	NRIRect bbox;
 	NRGC gc;
 	NRBuffer *b;
 	gint y;
-#endif
+
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 	g_assert (buf != NULL);
 	g_assert (affine != NULL);
 
-#if 0
-	if (SP_ITEM_STOP_PAINT (item)) return TRUE;
-
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint)
-		return (* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->paint) (item, buf, affine);
-
-	return FALSE;
-#else
+	/* Create new arena */
 	arena = gtk_type_new (NR_TYPE_ARENA);
+	/* Create ArenaItem and set transform */
 	root = sp_item_show (item, arena);
 	nr_arena_item_set_transform (root, affine);
+	/* Set area of interest */
 	bbox.x0 = 0;
 	bbox.y0 = 0;
 	bbox.x1 = buf->width;
 	bbox.y1 = buf->height;
+	/* Update to renderable state */
 	art_affine_identity (gc.affine);
 	nr_arena_item_invoke_update (root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+	/* Get RGBA buffer */
 	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, buf->width, buf->height, TRUE, FALSE);
+	/* Render */
 	nr_arena_item_invoke_render (root, &bbox, b);
+	/* Free Arena and ArenaItem */
 	sp_item_hide (item, arena);
 	gtk_object_unref (GTK_OBJECT (arena));
+	/* Copy buffer to output */
 	for (y = 0; y < buf->height; y++) {
 		memcpy (buf->pixels + y * buf->rowstride, b->px + y * b->rs, 4 * buf->width);
 	}
+	/* Release RGBA buffer */
 	nr_buffer_free (b);
+
 	return FALSE;
-#endif
 }
 
 /* Sets item private transform (not propagated to repr) */

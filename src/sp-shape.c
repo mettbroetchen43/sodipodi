@@ -40,7 +40,6 @@ static void sp_shape_style_changed (SPObject *object, guint flags);
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena);
-static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 void sp_shape_remove_comp (SPPath * path, SPPathComp * comp);
@@ -94,7 +93,6 @@ sp_shape_class_init (SPShapeClass * klass)
 	item_class->print = sp_shape_print;
 	item_class->description = sp_shape_description;
 	item_class->show = sp_shape_show;
-	item_class->paint = sp_shape_paint;
 	item_class->menu = sp_shape_menu;
 
 	path_class->remove_comp = sp_shape_remove_comp;
@@ -353,180 +351,6 @@ sp_shape_show (SPItem *item, NRArena *arena)
 	}
 
 	return arenaitem;
-}
-
-static gboolean
-sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
-{
-	SPObject *object;
-	SPPath *path;
-	SPShape * shape;
-	SPStyle *style;
-	SPPathComp * comp;
-	GSList * l;
-	gdouble a[6];
-	ArtBpath * abp;
-	ArtVpath * vp, * perturbed_vpath;
-	ArtSVP * svp, * svpa, * svpb;
-
-	object = SP_OBJECT (item);
-	path = SP_PATH (item);
-	shape = SP_SHAPE (item);
-	style = object->style;
-
-	for (l = path->comp; l != NULL; l = l->next) {
-		comp = (SPPathComp *) l->data;
-		if (comp->curve != NULL) {
-			art_affine_multiply (a, comp->affine, affine);
-			abp = art_bpath_affine_transform (comp->curve->bpath, a);
-			vp = art_bez_path_to_vec (abp, 0.25);
-			art_free (abp);
-
-			if (comp->curve->closed) {
-				perturbed_vpath = art_vpath_perturb (vp);
-				svpa = art_svp_from_vpath (perturbed_vpath);
-				art_free (perturbed_vpath);
-				svpb = art_svp_uncross (svpa);
-				art_svp_free (svpa);
-				svp = art_svp_rewind_uncrossed (svpb, style->fill_rule);
-				art_svp_free (svpb);
-
-				if (style->fill.type == SP_PAINT_TYPE_COLOR) {
-					guint32 rgba;
-					rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * style->real_opacity);
-					if (buf->n_channels == 3) {
-						art_rgb_svp_alpha (svp,
-							0, 0, buf->width, buf->height,
-							rgba,
-							buf->pixels, buf->rowstride, NULL);
-					} else {
-						art_rgba_svp_alpha (svp,
-							0, 0, buf->width, buf->height,
-							rgba,
-							buf->pixels, buf->rowstride, NULL);
-					}
-				} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-					SPPainter *painter;
-					ArtDRect bbox;
-					/* Find item bbox */
-					/* fixme: This does not work for multi-component objects (text) */
-					art_drect_svp (&bbox, svp);
-					painter = sp_paint_server_painter_new (style->fill.server, affine, style->real_opacity, &bbox);
-					if (painter) {
-						ArtDRect abox;
-						ArtIRect ibox;
-						/* Find component bbox */
-						art_drect_svp (&abox, svp);
-						/* Find integer bbox */
-						art_drect_to_irect (&ibox, &abox);
-						/* Clip */
-						ibox.x0 = MAX (ibox.x0, 0);
-						ibox.y0 = MAX (ibox.y0, 0);
-						ibox.x1 = MIN (ibox.x1, buf->width);
-						ibox.y1 = MIN (ibox.y1, buf->height);
-						if ((ibox.x0 < ibox.x1) && (ibox.y0 < ibox.y1)) {
-							static guchar *gray = NULL;
-							static guchar *rgba = NULL;
-							gint x, y;
-							if (!gray) gray = g_new (guchar, 64 * 64);
-							if (!rgba) rgba = g_new (guchar, 4 * 64 * 64);
-							for (y = ibox.y0; y < ibox.y1; y+= 64) {
-								for (x = ibox.x0; x < ibox.x1; x+= 64) {
-									gint xx, yy, xe, ye;
-									/* Draw grayscale image */
-									art_gray_svp_aa (svp, x, y, x + 64, y + 64, gray, 64);
-									/* Render painter */
-									painter->fill (painter, rgba, x, y, 64, 64, 64);
-									/* Compose */
-									xe = MIN (x + 64, ibox.x1) - x;
-									ye = MIN (y + 64, ibox.y1) - y;
-									for (yy = 0; yy < ye; yy++) {
-										guchar *gp, *bp;
-										guchar *pp;
-										gp = gray + yy * 64;
-										pp = rgba + 4 * yy * 64;
-										if (buf->n_channels == 3) {
-											/* RGB buffer */
-											bp = buf->pixels + (y + yy) * buf->rowstride + x * 3;
-											for (xx = 0; xx < xe; xx++) {
-												guint a, fc;
-												/* fixme: */
-												a = (pp[3] * (*gp) + 0x80) >> 8;
-												fc = (pp[0] - *bp) * a;
-												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												fc = (pp[1] - *bp) * a;
-												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												fc = (pp[2] - *bp) * a;
-												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
-												pp += 4;
-												gp++;
-											}
-										} else {
-											/* RGBA buffer */
-											bp = buf->pixels + (y + yy) * buf->rowstride + x * 4;
-											for (xx = 0; xx < xe; xx++) {
-												guint a, bg_r, bg_g, bg_b, bg_a, tmp;
-												/* fixme: */
-												a = ((*pp & 0xff) * (*gp)) / 255;
-												bg_r = bp[0];
-												bg_g = bp[1];
-												bg_b = bp[2];
-												bg_a = bp[3];
-												tmp = (((*pp >> 24) & 0xff) - bg_r) * a;
-												*bp++ = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
-												tmp = (((*pp >> 16) & 0xff) - bg_g) * a;
-												*bp++ = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
-												tmp = (((*pp >> 8) & 0xff) - bg_b) * a;
-												*bp++ = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-												*bp++ = bg_a + (((255 - bg_a) * a + 0x80) >> 8);
-												pp++;
-												gp++;
-											}
-										}
-									}
-								}
-							}
-						}
-						sp_painter_free (painter);
-					}
-				}
-				art_svp_free (svp);
-			}
-
-			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
-				gdouble width, wx, wy;
-				guint32 rgba;
-
-				width = object->style->user_stroke_width;
-				wx = affine[0] + affine[1];
-				wy = affine[2] + affine[3];
-				width *= sqrt (wx * wx + wy * wy) * 0.707106781;
-
-				svp = art_svp_vpath_stroke (vp,
-							    object->style->stroke_linejoin,
-							    object->style->stroke_linecap,
-							    width,
-							    object->style->stroke_miterlimit,
-							    0.25);
-				rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->real_opacity);
-				if (buf->n_channels == 3) {
-					art_rgb_svp_alpha (svp,
-						0, 0, buf->width, buf->height,
-						rgba,
-						buf->pixels, buf->rowstride, NULL);
-				} else {
-					art_rgba_svp_alpha (svp,
-						0, 0, buf->width, buf->height,
-						rgba,
-						buf->pixels, buf->rowstride, NULL);
-				}
-				art_svp_free (svp);
-			}
-			art_free (vp);
-		}
-	}
-
-	return FALSE;
 }
 
 /* Generate context menu item section */

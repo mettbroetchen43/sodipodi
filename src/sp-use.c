@@ -24,7 +24,6 @@ static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_use_description (SPItem * item);
 static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
 static void sp_use_hide (SPItem *item, NRArena *arena);
-static gboolean sp_use_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 
 static void sp_use_changed (SPUse * use);
 static void sp_use_href_changed (SPUse * use);
@@ -80,7 +79,6 @@ sp_use_class_init (SPUseClass *class)
 	item_class->print = sp_use_print;
 	item_class->show = sp_use_show;
 	item_class->hide = sp_use_hide;
-	item_class->paint = sp_use_paint;
 }
 
 static void
@@ -322,21 +320,6 @@ sp_use_hide (SPItem * item, NRArena *arena)
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
 		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
-}
-
-static gboolean
-sp_use_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
-{
-	SPUse * use;
-
-	use = SP_USE (item);
-
-	if (SP_ITEM_CLASS (parent_class)->paint)
-		(* SP_ITEM_CLASS (parent_class)->paint) (item, buf, affine);
-
-	if (use->child) return sp_item_paint (use->child, buf, affine);
-
-	return FALSE;
 }
 
 static void

@@ -58,27 +58,18 @@ struct _SPItemClass {
 
 	void (* update) (SPItem * item, gdouble affine[]);
 
+	/* BBox in desktop coordinates */
 	void (* bbox) (SPItem * item, ArtDRect * bbox);
 
 	/* Printing method. Assumes ctm is set to item affine matrix */
-
 	void (* print) (SPItem * item, GnomePrintContext * gpc);
 
 	/* Give short description of item (for status display) */
-
 	gchar * (* description) (SPItem * item);
 
 	/* Silly, silly. We should assign handlers a more intelligent way */
 	NRArenaItem * (* show) (SPItem *item, NRArena *arena);
 	void (* hide) (SPItem * item, NRArena *arena);
-
-	/* Who finds better name?
-	 * Basically same as render, but draws to rgba buf,
-	 * has separate affine & can be stopped during execution
-	 * Is used for rendering buffer fills & exporting raster images
-	 */
-
-	gboolean (* paint) (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
 	/* Append to context menu */
 	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);

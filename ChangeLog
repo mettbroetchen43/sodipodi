@@ -1,3 +1,19 @@
+2001-10-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item-group.c: Removed paint virtual method implementation
+
+	* src/sp-image.c: Ditto
+
+	* src/sp-shape.c: Ditto
+
+	* src/sp-use.c: Ditto
+
+	* src/sp-item.c (sp_item_paint): Ported to NRArena/::show()
+
+	* src/sp-item.h: Removed ::paint()
+
+	* samples: Removed extra sample files (these are in clipart distribution)
+
 2001-10-17  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/display/nr-arena*: Merged NR_ARENA branch into HEAD.
