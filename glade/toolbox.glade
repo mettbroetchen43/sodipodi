@@ -311,7 +311,7 @@
 	<widget>
 	  <class>GtkToggleButton</class>
 	  <name>draw_arc</name>
-	  <tooltip>Draw ellipse</tooltip>
+	  <tooltip>Draw arc</tooltip>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>released</name>
