@@ -161,7 +161,7 @@ sp_desktop_destroy (GtkObject * object)
 
 	if (desktop->document) {
 		if (desktop->canvas)
-			sp_item_hide (SP_ITEM (desktop->document->root), desktop->canvas);
+			sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
 		gtk_object_unref (GTK_OBJECT (desktop->document));
 	}
 
@@ -251,7 +251,7 @@ sp_desktop_new (SPDocument * document)
 	gtk_layout_set_hadjustment (GTK_LAYOUT (desktop->canvas), hadj);
 	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->canvas), vadj);
 
-	ci = sp_item_show (SP_ITEM (desktop->document->root), desktop->drawing, sp_desktop_item_handler);
+	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
 
 	return desktop;
 }
@@ -287,14 +287,14 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
 
-	sp_item_hide (SP_ITEM (desktop->document->root), desktop->canvas);
+	sp_item_hide (SP_ITEM (sp_document_root (desktop->document)), desktop->canvas);
 
 	gtk_object_ref (GTK_OBJECT (document));
 	gtk_object_unref (GTK_OBJECT (desktop->document));
 
 	desktop->document = document;
 
-	sp_item_show (SP_ITEM (desktop->document->root), desktop->drawing, sp_desktop_item_handler);
+	sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop->drawing, sp_desktop_item_handler);
 }
 
 #if 0

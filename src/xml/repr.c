@@ -452,6 +452,64 @@ sp_repr_attributes (SPRepr * repr)
 	return listptr;
 }
 
+/* Documents - 1st step in migrating to real XML */
+/* fixme: Do this somewhere, somehow The Right Way (TM) */
+
+SPReprDoc *
+sp_repr_document_new (void)
+{
+	SPRepr * repr, * root;
+
+	repr = sp_repr_new ("?xml");
+	sp_repr_set_attr (repr, "version", "1.0");
+	sp_repr_set_attr (repr, "standalone", "no");
+	sp_repr_set_attr (repr, "doctype",
+		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
+		"\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">");
+
+	root = sp_repr_new ("svg");
+	sp_repr_add_child (repr, root, 0);
+
+	return (SPReprDoc *) repr;
+}
+
+void
+sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
+{
+	SPRepr * rdoc;
+
+	g_assert (doc != NULL);
+	g_assert (SP_IS_REPR (doc));
+	g_assert (repr != NULL);
+	g_assert (SP_IS_REPR (repr));
+
+	rdoc = SP_REPR (doc);
+
+	g_assert (rdoc->children != NULL);
+
+	sp_repr_remove_child (rdoc, SP_REPR (rdoc->children->data));
+	sp_repr_add_child (rdoc, repr, 0);
+}
+
+SPReprDoc *
+sp_repr_document (SPRepr * repr)
+{
+	g_warning ("sp_repr_document not implemented");
+	return NULL;
+}
+
+SPRepr *
+sp_repr_document_root (SPReprDoc * doc)
+{
+	SPRepr * repr;
+
+	repr = SP_REPR (doc);
+	g_return_val_if_fail (repr->children != NULL, NULL);
+
+	return SP_REPR (repr->children->data);
+}
+
+
 /* Helpers */
 
 static void

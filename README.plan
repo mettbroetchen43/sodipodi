@@ -1,0 +1,27 @@
+* Rework xml tree - use reprs as lightweight wrappers around gnome-xml,
+  keeping syntax as close to DOM as possible
+
+* Split SPDesktop object into modular inherited objects:
+
+SPDesktop - base, has drawing group, no contexts
+SPEDesktop - editable desktop - more full-featured
+SPNamedDesktop - Desktop, deriving its layout from NamedView - i.e. guides,
+  grid etc. will be saved per-desktop
+
+desktop_show_borders/hide_borders - show/hide rulers & stuff - usable for
+  Bonobo component
+
+* I'm starting next rewrite of object-tree... Completed
+
+Ideas:
+Basic entity will be SPObject, which can well be non-graphical (undo list)
+nontrivial (grid) or conceptually different (namedview) object.
+But still they have to maintain object-repr relationships.
+
+object methods:
+(destroy, set_arg)
+
+void build (SPObject * object, SPDocument * document, SPRepr * repr)
+Reads full tree-definition from repr, building all children, if necessary
+
+

@@ -1,17 +1,40 @@
-Tier 1 todo items
+Tier 1 TODO items
 
+* Page size
 * Fonts - but we need some good library for reading outlines - and how to
   do it portably?
-* Undo
-* etc. etc.
+* CORBA based plugins
+* NamedViews - i.e. saved views into document (preserving guides etc.)
+* Accesible groups - i.e. instead of layers, we can edit different groups
+* Bonobo container - we can get rid of images and still be SVG :)
 
-Tier 2
+Tier 2 TODO items
 
 * Intelligent curve editing
 * Guidelines
 * Aligning
-* etc. etc.
+* Show/hide/print/dontprint attributes
+* Agnostic DOM CORBA interface - i.e. repr tree
+* Gnostic DOM CORBA interface - i.e. document tree
+* Gnostic and agnostic object editors
 
-Middle object level is finally implemented
+File formats
+
+* General plugin-based file format support
+* Disable xmlns:sodipodi if pure SVG is preferred
+* Corel
+* AI
+* Sketch
+* Dia
+
+Interesting, but otherwise useless :)
+
+* Distributed agnostic documents
+* Edit SVG part of any document
+
+Done
+
+* Undo
+* Middle object level
 
 Lauris Kaplinski

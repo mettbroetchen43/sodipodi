@@ -9,10 +9,11 @@
 static SPRepr * sp_repr_svg_read_node (xmlNodePtr node);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
 
-SPRepr * sp_repr_read_file (const gchar * filename)
+SPReprDoc * sp_repr_read_file (const gchar * filename)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
+	SPReprDoc * rdoc;
 	SPRepr * repr;
 
 	g_return_val_if_fail (filename != NULL, NULL);
@@ -20,6 +21,8 @@ SPRepr * sp_repr_read_file (const gchar * filename)
 	doc = xmlParseFile (filename);
 	if (doc == NULL) return NULL;
 
+	rdoc = sp_repr_document_new ();
+
 	repr = NULL;
 
 	for (node = doc->root; node != NULL; node = node->next) {
@@ -29,15 +32,18 @@ SPRepr * sp_repr_read_file (const gchar * filename)
 		}
 	}
 
+	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
+
 	xmlFreeDoc (doc);
 
-	return repr;
+	return rdoc;
 }
 
-SPRepr * sp_repr_read_mem (const gchar * buffer, gint length)
+SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
+	SPReprDoc * rdoc;
 	SPRepr * repr;
 
 	g_return_val_if_fail (buffer != NULL, NULL);
@@ -45,6 +51,8 @@ SPRepr * sp_repr_read_mem (const gchar * buffer, gint length)
 	doc = xmlParseMemory ((gchar *) buffer, length);
 	if (doc == NULL) return NULL;
 
+	rdoc = sp_repr_document_new ();
+
 	repr = NULL;
 
 	for (node = doc->root; node != NULL; node = node->next) {
@@ -54,9 +62,11 @@ SPRepr * sp_repr_read_mem (const gchar * buffer, gint length)
 		}
 	}
 
+	if (repr != NULL) sp_repr_document_set_root (rdoc, repr);
+
 	xmlFreeDoc (doc);
 
-	return repr;
+	return rdoc;
 }
 
 static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
@@ -68,7 +78,16 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	g_return_val_if_fail (node != NULL, NULL);
 
-	repr = sp_repr_new (node->name);
+	g_snprintf (c, 256, node->name);
+	if (node->ns != NULL) {
+	if (node->ns->prefix != NULL) {
+		if (strcmp (node->ns->prefix, "sodipodi") == 0) {
+			g_snprintf (c, 256, "sodipodi:%s", node->name);
+		}
+	}
+	}
+
+	repr = sp_repr_new (c);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->val) {
@@ -108,8 +127,9 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 }
 
 void
-sp_repr_save_file (SPRepr * repr, const gchar * filename)
+sp_repr_save_file (SPReprDoc * doc, const gchar * filename)
 {
+	SPRepr * repr;
 	FILE * file;
 
 	file = fopen (filename, "w");
@@ -121,6 +141,8 @@ sp_repr_save_file (SPRepr * repr, const gchar * filename)
 		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
 		"\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">\n",
 		file);
+
+	repr = sp_repr_document_root (doc);
 
 	repr_write (repr, file, 0);
 

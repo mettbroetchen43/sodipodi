@@ -90,7 +90,7 @@ sp_fill_read_selection (void)
 		repr = (SPRepr *) l->data;
 		css = sp_repr_css_attr_inherited (repr, "style");
 	} else {
-		css = sp_repr_css_attr (SP_OBJECT (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP)->root)->repr, "style");
+		css = sp_repr_css_attr (sp_document_repr_root (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP)), "style");
 	}
 
 	if (css != NULL) {
@@ -220,7 +220,7 @@ apply_fill (void)
 			l = l->next;
 		}
 	} else {
-		sp_repr_css_change (SP_OBJECT (SP_DT_DOCUMENT (desktop)->root)->repr, css, "style");
+		sp_repr_css_change (sp_document_repr_root (SP_DT_DOCUMENT (desktop)), css, "style");
 	}
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));

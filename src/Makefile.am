@@ -41,7 +41,7 @@ sodipodi_SOURCES = \
 	sp-text.c sp-text.h \
 	sp-gradient.c sp-gradient.h \
 	\
-	document.c document.h \
+	document.c document.h document-private.h \
 	document-undo.c \
 	mdi.c mdi.h \
 	mdi-child.c mdi-child.h \

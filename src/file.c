@@ -101,13 +101,13 @@ void sp_file_save (GtkWidget * widget)
 	g_return_if_fail (doc != NULL);
 
 	/* fixme: */
-	repr = SP_OBJECT (doc->root)->repr;
+	repr = sp_document_repr_root (doc);
 
 	fn = sp_repr_attr (repr, "sodipodi:docname");
 	if (fn == NULL) {
 		sp_file_save_as (widget);
 	} else {
-		sp_repr_save_file (repr, fn);
+		sp_repr_save_file (sp_document_repr_doc (doc), fn);
 	}
 }
 
@@ -126,7 +126,7 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	repr = SP_OBJECT (doc->root)->repr;
+	repr = sp_document_repr_root (doc);
 
 	if (save_path) g_free (save_path);
 	save_path = g_dirname (filename);
@@ -135,7 +135,7 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 	sp_repr_set_attr (repr, "sodipodi:docbase", save_path);
 	sp_repr_set_attr (repr, "sodipodi:docname", filename);
 
-	sp_repr_save_file (repr, filename);
+	sp_repr_save_file (sp_document_repr_doc (doc), filename);
 #if 0
 	sp_desktop_set_title (sp_filename_from_path (filename));
 #endif
@@ -173,6 +173,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	gchar * filename;
 	const gchar * e, * docbase, * relname;
 	SPRepr * repr;
+	SPReprDoc * rnewdoc;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 	file_selection_destroy (NULL, fs);
@@ -183,7 +184,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if (import_path) import_path = g_strconcat (import_path, "/", NULL);
 
 	doc = SP_ACTIVE_DOCUMENT;
-	rdoc = SP_OBJECT (doc->root)->repr;
+	rdoc = sp_document_repr_root (doc);
 
 	docbase = sp_repr_attr (rdoc, "sodipodi:docbase");
 	relname = sp_relative_path_from_path (filename, docbase);
@@ -191,8 +192,10 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	e = sp_extension_from_path (filename);
 
 	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
-		repr = sp_repr_read_file (filename);
-		if (repr == NULL) return;
+		/* fixme: leak */
+		rnewdoc = sp_repr_read_file (filename);
+		if (rnewdoc == NULL) return;
+		repr = sp_repr_document_root (rnewdoc);
 #if 0
 		sp_repr_set_name (repr, "g");
 #endif
@@ -261,7 +264,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	sp_item_bbox (SP_ITEM (doc->root), &bbox);
+	sp_item_bbox (SP_ITEM (sp_document_root (doc)), &bbox);
 
 	width = bbox.x1 - bbox.x0 + 2;
 	height = bbox.y1 - bbox.y0 + 2;
@@ -272,7 +275,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
-	sp_item_i2d_affine (SP_ITEM (doc->root), affine);
+	sp_item_i2d_affine (SP_ITEM (sp_document_root (doc)), affine);
 	affine[4] -= bbox.x0;
 	affine[5] -= bbox.y0;
 	art_affine_scale (a, 1.0, -1.0);
@@ -280,7 +283,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	art_affine_translate (a, 0.0, height);
 	art_affine_multiply (affine, affine, a);
 
-	sp_item_paint (SP_ITEM (doc->root), pixbuf, affine);
+	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
 	sp_png_write_rgba (filename, pixbuf);
 
@@ -325,7 +328,7 @@ void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
         gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
         gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
 #else
-        sp_item_print (SP_ITEM (doc->root), gpc);
+        sp_item_print (SP_ITEM (sp_document_root (doc)), gpc);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
 #endif

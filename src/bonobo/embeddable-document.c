@@ -189,7 +189,7 @@ sp_embeddable_document_pf_save (BonoboPersistFile * pfile, const CORBA_char * fi
 
 	/* fixme */
 
-	sp_repr_save_file (SP_OBJECT (document->document->root)->repr, filename);
+	sp_repr_save_file (sp_document_repr_doc (document->document), filename);
 
 	return 0;
 }
@@ -262,7 +262,7 @@ sp_embeddable_document_print (GnomePrintContext * ctx,
 
 	gnome_print_scale (ctx, scale, scale);
 
-	sp_item_print (SP_ITEM (document->document->root), ctx);
+	sp_item_print (SP_ITEM (sp_document_root (document->document)), ctx);
 
 	gnome_print_grestore (ctx);
 }

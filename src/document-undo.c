@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "sp-object.h"
 #include "sp-item.h"
-#include "document.h"
+#include "document-private.h"
 
 /*
  * Undo & redo
@@ -14,8 +14,9 @@ sp_document_set_undo_sensitive (SPDocument * document, gboolean sensitive)
 {
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (document->private != NULL);
 
-	document->sensitive = sensitive;
+	document->private->sensitive = sensitive;
 }
 
 void
@@ -23,14 +24,15 @@ sp_document_done (SPDocument * document)
 {
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->sensitive);
+	g_assert (document->private != NULL);
+	g_assert (document->private->sensitive);
 
-	if (document->actions == NULL) return;
+	if (document->private->actions == NULL) return;
 
-	g_assert (document->redo == NULL);
+	g_assert (document->private->redo == NULL);
 
-	document->undo = g_slist_prepend (document->undo, document->actions);
-	document->actions = NULL;
+	document->private->undo = g_slist_prepend (document->private->undo, document->private->actions);
+	document->private->actions = NULL;
 }
 
 void
@@ -38,11 +40,12 @@ sp_document_clear_actions (SPDocument * document)
 {
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->sensitive);
+	g_assert (document->private != NULL);
+	g_assert (document->private->sensitive);
 
-	while (document->actions) {
-		sp_repr_unref ((SPRepr *) document->actions->data);
-		document->actions = g_list_remove (document->actions, document->actions->data);
+	while (document->private->actions) {
+		sp_repr_unref ((SPRepr *) document->private->actions->data);
+		document->private->actions = g_list_remove_link (document->private->actions, document->private->actions);
 	}
 }
 
@@ -60,17 +63,18 @@ sp_document_undo (SPDocument * document)
 
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->sensitive);
-	g_assert (document->actions == NULL);
+	g_assert (document->private != NULL);
+	g_assert (document->private->sensitive);
+	g_assert (document->private->actions == NULL);
 
-	if (document->undo == NULL) return;
+	if (document->private->undo == NULL) return;
 
 	sp_document_set_undo_sensitive (document, FALSE);
 
-	document->actions = (GList *) document->undo->data;
-	document->undo = g_slist_remove (document->undo, document->undo->data);
+	document->private->actions = (GList *) document->private->undo->data;
+	document->private->undo = g_slist_remove_link (document->private->undo, document->private->undo);
 
-	for (l = document->actions; l != NULL; l = l->next) {
+	for (l = document->private->actions; l != NULL; l = l->next) {
 		action = (SPRepr *) l->data;
 		name = sp_repr_name (action);
 		if (strcmp (name, "add") == 0) {
@@ -131,8 +135,8 @@ sp_document_undo (SPDocument * document)
 		}
 	}
 
-	document->redo = g_slist_prepend (document->redo, document->actions);
-	document->actions = NULL;
+	document->private->redo = g_slist_prepend (document->private->redo, document->private->actions);
+	document->private->actions = NULL;
 
 	sp_document_set_undo_sensitive (document, TRUE);
 }
@@ -151,17 +155,18 @@ sp_document_redo (SPDocument * document)
 
 	g_assert (document != NULL);
 	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (document->sensitive);
-	g_assert (document->actions == NULL);
+	g_assert (document->private != NULL);
+	g_assert (document->private->sensitive);
+	g_assert (document->private->actions == NULL);
 
-	if (document->redo == NULL) return;
+	if (document->private->redo == NULL) return;
 
 	sp_document_set_undo_sensitive (document, FALSE);
 
-	document->actions = (GList *) document->redo->data;
-	document->redo = g_slist_remove (document->redo, document->redo->data);
+	document->private->actions = (GList *) document->private->redo->data;
+	document->private->redo = g_slist_remove_link (document->private->redo, document->private->redo);
 
-	for (l = g_list_last (document->actions); l != NULL; l = l->prev) {
+	for (l = g_list_last (document->private->actions); l != NULL; l = l->prev) {
 		action = (SPRepr *) l->data;
 		name = sp_repr_name (action);
 		if (strcmp (name, "add") == 0) {
@@ -169,7 +174,8 @@ sp_document_redo (SPDocument * document)
 			repr = (SPRepr *) children->data;
 			copy = sp_repr_copy (repr);
 			g_assert (copy != NULL);
-			sp_repr_append_child (SP_OBJECT (document->root)->repr, copy);
+			/* fixme: order! */
+			sp_repr_append_child (document->private->rroot, copy);
 			sp_repr_unref (copy);
 		}
 		if (strcmp (name, "del") == 0) {
@@ -215,8 +221,8 @@ sp_document_redo (SPDocument * document)
 		}
 	}
 
-	document->undo = g_slist_prepend (document->undo, document->actions);
-	document->actions = NULL;
+	document->private->undo = g_slist_prepend (document->private->undo, document->private->actions);
+	document->private->actions = NULL;
 
 	sp_document_set_undo_sensitive (document, TRUE);
 }
@@ -236,17 +242,17 @@ sp_document_add_repr (SPDocument * document, SPRepr * repr)
 	const gchar * id;
 	SPObject * object;
 
-	sp_repr_append_child (SP_OBJECT (document->root)->repr, repr);
+	sp_repr_append_child (document->private->rroot, repr);
 
 	sp_document_clear_redo (document);
 
-	if (document->sensitive) {
+	if (document->private->sensitive) {
 		action = sp_repr_new ("add");
 		copy = sp_repr_copy (repr);
 		sp_repr_append_child (action, copy);
 		sp_repr_unref (copy);
 
-		document->actions = g_list_prepend (document->actions, action);
+		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
 
 	id = sp_repr_attr (repr, "id");
@@ -286,13 +292,13 @@ sp_document_del_repr (SPDocument * document, SPRepr * repr)
 
 	sp_document_clear_redo (document);
 
-	if (document->sensitive) {
+	if (document->private->sensitive) {
 		action = sp_repr_new ("del");
 		sp_repr_set_attr (action, "parent", parentid);
 		sp_repr_set_int_attribute (action, "position", position);
 		sp_repr_append_child (action, repr);
 
-		document->actions = g_list_prepend (document->actions, action);
+		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
 
 	sp_repr_unref (repr);
@@ -316,7 +322,7 @@ sp_document_change_attr_requested (SPDocument * document, SPObject * object, con
 	g_assert (object->document == document);
 	g_assert (key != NULL);
 
-	if (document->sensitive) {
+	if (document->private->sensitive) {
 		sp_document_clear_redo (document);
 
 		oldvalue = sp_repr_attr (object->repr, key);
@@ -327,7 +333,7 @@ sp_document_change_attr_requested (SPDocument * document, SPObject * object, con
 		sp_repr_set_attr (action, "old", oldvalue);
 		sp_repr_set_attr (action, "new", value);
 
-		document->actions = g_list_prepend (document->actions, action);
+		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
 
 	return TRUE;
@@ -349,7 +355,7 @@ sp_document_change_content_requested (SPDocument * document, SPObject * object, 
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (object->document == document);
 
-	if (document->sensitive) {
+	if (document->private->sensitive) {
 		sp_document_clear_redo (document);
 
 		oldvalue = sp_repr_content (object->repr);
@@ -359,7 +365,7 @@ sp_document_change_content_requested (SPDocument * document, SPObject * object, 
 		sp_repr_set_attr (action, "old", oldvalue);
 		sp_repr_set_attr (action, "new", value);
 
-		document->actions = g_list_prepend (document->actions, action);
+		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
 
 	return TRUE;
@@ -381,7 +387,7 @@ sp_document_change_order_requested (SPDocument * document, SPObject * object, gi
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (object->document == document);
 
-	if (document->sensitive) {
+	if (document->private->sensitive) {
 		sp_document_clear_redo (document);
 
 		oldorder = sp_repr_position (object->repr);
@@ -391,7 +397,7 @@ sp_document_change_order_requested (SPDocument * document, SPObject * object, gi
 		sp_repr_set_int_attribute (action, "old", oldorder);
 		sp_repr_set_int_attribute (action, "new", order);
 
-		document->actions = g_list_prepend (document->actions, action);
+		document->private->actions = g_list_prepend (document->private->actions, action);
 	}
 
 	return TRUE;
@@ -402,13 +408,13 @@ sp_document_clear_undo (SPDocument * document)
 {
 	GList * l;
 
-	while (document->undo) {
-		l = (GList *) document->undo->data;
+	while (document->private->undo) {
+		l = (GList *) document->private->undo->data;
 		while (l) {
 			sp_repr_unref ((SPRepr *) l->data);
 			l = g_list_remove (l, l->data);
 		}
-		document->undo = g_slist_remove (document->undo, document->undo->data);
+		document->private->undo = g_slist_remove_link (document->private->undo, document->private->undo);
 	}
 }
 
@@ -417,13 +423,13 @@ sp_document_clear_redo (SPDocument * document)
 {
 	GList * l;
 
-	while (document->redo) {
-		l = (GList *) document->redo->data;
+	while (document->private->redo) {
+		l = (GList *) document->private->redo->data;
 		while (l) {
 			sp_repr_unref ((SPRepr *) l->data);
 			l = g_list_remove (l, l->data);
 		}
-		document->redo = g_slist_remove (document->redo, document->redo->data);
+		document->private->redo = g_slist_remove_link (document->private->redo, document->private->redo);
 	}
 }
 

@@ -53,7 +53,7 @@ sp_xml_tree_dialog (void)
 		g_assert (GTK_IS_TEXT (content));
 	}
 
-	sp_xml_tree_set_contents (SP_OBJECT (document->root)->repr);
+	sp_xml_tree_set_contents (sp_document_repr_root (document));
 
 	gtk_widget_show (dialog);
 }

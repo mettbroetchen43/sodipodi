@@ -34,14 +34,16 @@ void sp_repr_ref (SPRepr * repr);
 void sp_repr_unref (SPRepr * repr);
 SPRepr * sp_repr_copy (SPRepr * repr);
 
-typedef struct _SPRepr SPReprDoc;
+/* Documents - 1st step in migrating to real XML */
 
+typedef struct _SPReprDoc SPReprDoc;
+
+SPReprDoc * sp_repr_document_new ();
+void sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr);
 SPReprDoc * sp_repr_document (SPRepr * repr);
+SPRepr * sp_repr_document_root (SPReprDoc * doc);
 
-#if 0
-/* We make this private */
-void sp_repr_set_name (SPRepr * repr, const gchar * name);
-#endif
+/* Contents */
 
 const gchar * sp_repr_name (SPRepr * repr);
 const gchar * sp_repr_content (SPRepr * repr);
@@ -75,10 +77,9 @@ void sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpoin
 
 /* IO */
 
-SPRepr * sp_repr_read_file (const gchar * filename);
-SPRepr * sp_repr_read_mem (const gchar * buffer, gint length);
-
-void sp_repr_save_file (SPRepr * repr, const gchar * filename);
+SPReprDoc * sp_repr_read_file (const gchar * filename);
+SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length);
+void sp_repr_save_file (SPReprDoc * doc, const gchar * filename);
 
 void sp_repr_print (SPRepr * repr);
 

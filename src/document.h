@@ -52,6 +52,8 @@ typedef struct _SPDocument SPDocument;
 typedef struct _SPDocumentClass SPDocumentClass;
 #endif
 
+typedef struct _SPDocumentPrivate SPDocumentPrivate;
+
 #define SP_TYPE_DOCUMENT            (sp_document_get_type ())
 #define SP_DOCUMENT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPItem))
 #define SP_DOCUMENT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DOCUMENT, SPItemClass))
@@ -60,20 +62,8 @@ typedef struct _SPDocumentClass SPDocumentClass;
 
 struct _SPDocument {
 	GtkObject object;
-	SPRoot * root;		/* Our SPRoot */
-	gdouble width;		/* Width of document */
-	gdouble height;		/* Height of document */
-	GHashTable * iddef;	/* id dictionary */
-	gchar * uri;		/* Document uri */
-	gchar * base;		/* Document base URI */
-	SPAspect aspect;	/* Our aspect ratio preferences */
-	guint clip :1;		/* Whether we clip or meet outer viewport */
 
-	/* State */
-	guint sensitive: 1;	/* If we save actions to undo stack */
-	GSList * undo;		/* Undo stack of reprs */
-	GSList * redo;		/* Redo stack of reprs */
-	GList * actions;	/* List of current actions */
+	SPDocumentPrivate * private;
 };
 
 struct _SPDocumentClass {
@@ -96,6 +86,8 @@ SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
  * Access methods
  */
 
+SPReprDoc * sp_document_repr_doc (SPDocument * document);
+SPRepr * sp_document_repr_root (SPDocument * document);
 SPRoot * sp_document_root (SPDocument * document);
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);

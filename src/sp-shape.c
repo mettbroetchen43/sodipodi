@@ -205,10 +205,10 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 		b = art_new (art_u8, bw * bh * 3);
 		memset (b, 0xff, bw * bh * 3);
 		pb = art_pixbuf_new_rgb (b, bw, bh, bw * 3);
-		sp_item_i2d_affine (SP_ITEM (SP_OBJECT (item)->document->root), doc2d);
+		sp_item_i2d_affine (SP_ITEM (sp_document_root (SP_OBJECT (item)->document)), doc2d);
 		art_affine_multiply (doc2buf, doc2d, d2buf);
 		item->stop_paint = TRUE;
-		sp_item_paint (SP_ITEM (SP_OBJECT (item)->document->root), pb, doc2buf);
+		sp_item_paint (SP_ITEM (sp_document_root (SP_OBJECT (item)->document)), pb, doc2buf);
 		item->stop_paint = FALSE;
 		sp_item_i2d_affine (item, i2d);
 		art_affine_multiply (i2buf, i2d, d2buf);

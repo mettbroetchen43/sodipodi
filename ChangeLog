@@ -1,5 +1,12 @@
 2000-05-12  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* src/xml/repr.h: A bit rearranging, added SPReprDoc, induces
+	changes almost everywhere else
+
+	* src/document-private.h: Hide all document internal structure
+ 
+2000-05-12  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* src/sp-namedview.*: Implemented skeleton
 
 	* src/sp-guide.*: Implemented skeleton

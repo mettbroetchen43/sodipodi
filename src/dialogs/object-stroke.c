@@ -103,7 +103,7 @@ sp_stroke_read_selection (void)
 		repr = (SPRepr *) l->data;
 		css = sp_repr_css_attr_inherited (repr, "style");
 	} else {
-		repr = SP_OBJECT (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP)->root)->repr;
+		repr = sp_document_repr_root (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP));
 		css = sp_repr_css_attr (repr, "style");
 	}
 
@@ -255,7 +255,7 @@ apply_stroke (void)
 			l = l->next;
 		}
 	} else {
-		repr = SP_OBJECT (SP_DT_DOCUMENT (desktop)->root)->repr;
+		repr = sp_document_repr_root (SP_DT_DOCUMENT (desktop));
 		sp_repr_css_change (repr, css, "style");
 	}
 

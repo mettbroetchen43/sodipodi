@@ -53,7 +53,6 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 	SPEmbeddableDrawing * drawing;
 	Bonobo_Canvas_Component corba_drawing;
 	SPEmbeddableDocument * document;
-	gdouble affine[6];
 
 	document = SP_EMBEDDABLE_DOCUMENT (embeddable);
 
@@ -97,7 +96,7 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (drawing->drawing), affine);
 #endif
 
-	sp_item_show (SP_ITEM (drawing->spdocument->root),
+	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)),
 		drawing->drawing,
 		NULL);
 
@@ -113,7 +112,7 @@ sp_embeddable_drawing_new_doc (BonoboCanvasComponent * component, gpointer data)
 
 	drawing = SP_EMBEDDABLE_DRAWING (component);
 
-	sp_item_hide (SP_ITEM (drawing->spdocument->root),
+	sp_item_hide (SP_ITEM (sp_document_root (drawing->spdocument)),
 		GNOME_CANVAS_ITEM (drawing->drawing)->canvas);
 
 	gtk_object_ref (GTK_OBJECT (drawing->edocument->document));
@@ -121,7 +120,7 @@ sp_embeddable_drawing_new_doc (BonoboCanvasComponent * component, gpointer data)
 
 	drawing->spdocument = drawing->edocument->document;
 
-	sp_item_show (SP_ITEM (drawing->spdocument->root),
+	sp_item_show (SP_ITEM (sp_document_root (drawing->spdocument)),
 		drawing->drawing,
 		NULL);
 }
