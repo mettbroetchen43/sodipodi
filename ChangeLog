@@ -1,3 +1,15 @@
+2002-09-09  Masatake YAMATO  <jet@gyve.org>
+
+        * src/sp-image.c (autotrace_dialog): Used 
+        gtk_signal_connect_object_while_alive and 
+        gtk_signal_connect_object instead of gtk_signal_connect_while_alive
+        and gtk_signal_connect. 
+        (object_destroyed): Removed.
+        (load_trace_result): ask the user whehter loading or net.
+
+        * configure.in (AM_PATH_FRONTLINE): Check the version of 
+        frontline(>= 0.5.1).
+
 2002-09-09  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* src/draw-context.c, src/dyna-draw-context.c, src/select-context.c,
