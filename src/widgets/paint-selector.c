@@ -9,7 +9,7 @@
  *
  */
 
-#define noSPPS_PREVIEW
+#define noSP_PS_VERBOSE
 
 #include <config.h>
 
@@ -242,7 +242,9 @@ sp_paint_selector_set_mode (SPPaintSelector *psel, SPPaintSelectorMode mode)
 {
 	if (psel->mode != mode) {
 		psel->update = TRUE;
+#ifdef SP_PS_VERBOSE
 		g_print ("Mode change %d -> %d\n", psel->mode, mode);
+#endif
 		switch (mode) {
 		case SP_PAINT_SELECTOR_MODE_EMPTY:
 			sp_paint_selector_set_mode_empty (psel);
@@ -281,9 +283,9 @@ void
 sp_paint_selector_set_color_rgba_floatv (SPPaintSelector *psel, gfloat *rgba)
 {
 	SPColorSelector *csel;
-
+#ifdef SP_PS_VERBOSE
 	g_print ("PaintSelector set RGBA\n");
-
+#endif
 	sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_RGB);
 
 	csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
@@ -295,9 +297,9 @@ void
 sp_paint_selector_set_color_cmyka_floatv (SPPaintSelector *psel, gfloat *cmyka)
 {
 	SPColorSelector *csel;
-
+#ifdef SP_PS_VERBOSE
 	g_print ("PaintSelector set CMYKA\n");
-
+#endif
 	sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_CMYK);
 
 	csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
@@ -309,9 +311,9 @@ void
 sp_paint_selector_set_gradient_linear (SPPaintSelector *psel, SPGradient *vector)
 {
 	SPGradientSelector *gsel;
-
+#ifdef SP_PS_VERBOSE
 	g_print ("PaintSelector set GRADIENT LINEAR\n");
-
+#endif
 	sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 
 	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
@@ -338,9 +340,9 @@ void
 sp_paint_selector_set_gradient_radial (SPPaintSelector *psel, SPGradient *vector)
 {
 	SPGradientSelector *gsel;
-
+#ifdef SP_PS_VERBOSE
 	g_print ("PaintSelector set GRADIENT RADIAL\n");
-
+#endif
 	sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL);
 
 	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
@@ -797,8 +799,9 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 	}
 
 	gtk_frame_set_label (GTK_FRAME (psel->frame), _("Color paint"));
-
+#ifdef SP_PS_VERBOSE
 	g_print ("Color req\n");
+#endif
 }
 
 /* Gradient */
@@ -870,20 +873,25 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 		sp_gradient_selector_set_mode (SP_GRADIENT_SELECTOR (gsel), SP_GRADIENT_SELECTOR_MODE_RADIAL);
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Radial gradient"));
 	}
-
+#ifdef SP_PS_VERBOSE
 	g_print ("Gradient req\n");
+#endif
 }
 
 static void
 sp_paint_selector_set_mode_pattern (SPPaintSelector *psel)
 {
+#ifdef SP_PS_VERBOSE
 	g_print ("Pattern req\n");
+#endif
 }
 
 static void
 sp_paint_selector_set_mode_fractal (SPPaintSelector *psel)
 {
+#ifdef SP_PS_VERBOSE
 	g_print ("Fractal req\n");
+#endif
 }
 
 static void

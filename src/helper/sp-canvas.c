@@ -1978,8 +1978,6 @@ idle_handler (gpointer data)
 	GDK_THREADS_ENTER ();
 #endif
 
-	g_print ("Idle\n");
-
 	canvas = SP_CANVAS (data);
 
 	ret = do_update (canvas);

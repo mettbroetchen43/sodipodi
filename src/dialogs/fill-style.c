@@ -13,6 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noSP_FS_VERBOSE
+
 #include <config.h>
 
 #include <string.h>
@@ -152,8 +154,9 @@ sp_fill_style_widget_new (void)
 static void
 sp_fill_style_widget_construct (SPWidget *spw, SPPaintSelector *psel)
 {
+#ifdef SP_FS_VERBOSE
 	g_print ("Fill style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
-
+#endif
 	if (spw->sodipodi) {
 		sp_fill_style_widget_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 	} else if (spw->repr) {
@@ -231,9 +234,9 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 			return;
 		}
 	}
-
+#ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint selector mode %d\n", pselmode);
-
+#endif
 	switch (pselmode) {
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		/* No paint at all */
@@ -354,9 +357,9 @@ sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
 	sp_style_read_from_repr (style, repr);
 
 	pselmode = sp_fill_style_determine_paint_selector_mode (style);
-
+#ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint selector mode %d\n", pselmode);
-
+#endif
 	switch (pselmode) {
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		/* No paint at all */
@@ -408,9 +411,9 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 
 	if (!spw->sodipodi) return;
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
+#ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint dragged\n");
-
+#endif
 	switch (psel->mode) {
 	case SP_PAINT_SELECTOR_MODE_EMPTY:
 	case SP_PAINT_SELECTOR_MODE_MULTIPLE:
@@ -468,9 +471,9 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	guchar b[64];
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
+#ifdef SP_FS_VERBOSE
 	g_print ("FillStyleWidget: paint changed\n");
-
+#endif
 	if (spw->sodipodi) {
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);

@@ -418,7 +418,7 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 				pos = hypot (gx, gy);
 				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
 					idx = ((int) pos) & NRG_2MASK;
-					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
+					if (idx > NRG_MASK) idx = NRG_2MASK - idx;
 				} else if (rgr->spread == NR_GRADIENT_SPREAD_REPEAT) {
 					idx = ((int) pos) & NRG_MASK;
 				} else {
@@ -454,7 +454,7 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 				pos = hypot (gx, gy);
 				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
 					idx = ((int) pos) & NRG_2MASK;
-					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
+					if (idx > NRG_MASK) idx = NRG_2MASK - idx;
 				} else if (rgr->spread == NR_GRADIENT_SPREAD_REPEAT) {
 					idx = ((int) pos) & NRG_MASK;
 				} else {
@@ -522,7 +522,7 @@ nr_rgradient_render_generic_optimized (NRRGradientRenderer *rgr, NRPixBlock *pb)
 			if (pos < (1U << 31)) {
 				if (rgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
 					idx = ((int) pos) & (2 * NR_GRADIENT_VECTOR_LENGTH - 1);
-					if (idx & NR_GRADIENT_VECTOR_LENGTH) idx = (2 * NR_GRADIENT_VECTOR_LENGTH) - idx;
+					if (idx > NRG_MASK) idx = NRG_2MASK - idx;
 				} else if (rgr->spread == NR_GRADIENT_SPREAD_REPEAT) {
 					idx = ((int) pos) & (NR_GRADIENT_VECTOR_LENGTH - 1);
 				} else {

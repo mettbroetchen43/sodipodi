@@ -12,6 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noSP_SS_VERBOSE
+
 #include <config.h>
 
 #include <string.h>
@@ -94,8 +96,9 @@ sp_stroke_style_paint_widget_new (void)
 static void
 sp_stroke_style_paint_construct (SPWidget *spw, SPPaintSelector *psel)
 {
+#ifdef SP_SS_VERBOSE
 	g_print ("Stroke style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
-
+#endif
 	if (spw->sodipodi) {
 		sp_stroke_style_paint_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 	} else if (spw->repr) {
@@ -172,9 +175,9 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 			return;
 		}
 	}
-
+#ifdef SP_SS_VERBOSE
 	g_print ("StrokeStyleWidget: paint selector mode %d\n", pselmode);
-
+#endif
 	switch (pselmode) {
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		/* No paint at all */
@@ -262,7 +265,7 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		fbb.y1 = bbox.y1;
 		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
 		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
-		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (lg), SP_GRADIENT_SPREAD (lg));
+		sp_paint_selector_set_gradient_properties (psel, SP_GRADIENT_UNITS (rg), SP_GRADIENT_SPREAD (rg));
 		sp_paint_selector_set_rgradient_position (psel, rg->cx.computed, rg->cy.computed, rg->fx.computed, rg->fy.computed, rg->r.computed);
 		break;
 	default:
@@ -291,9 +294,9 @@ sp_stroke_style_paint_update_repr (SPWidget *spw, SPRepr *repr)
 	sp_style_read_from_repr (style, repr);
 
 	pselmode = sp_stroke_style_determine_paint_selector_mode (style);
-
+#ifdef SP_SS_VERBOSE
 	g_print ("StrokeStyleWidget: paint selector mode %d\n", pselmode);
-
+#endif
 	switch (pselmode) {
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		/* No paint at all */
@@ -342,9 +345,9 @@ sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 	gfloat c[5];
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
+#ifdef SP_SS_VERBOSE
 	g_print ("StrokeStyleWidget: paint dragged\n");
-
+#endif
 	switch (psel->mode) {
 	case SP_PAINT_SELECTOR_MODE_EMPTY:
 	case SP_PAINT_SELECTOR_MODE_MULTIPLE:
@@ -402,9 +405,9 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	guchar b[64];
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
-
+#ifdef SP_SS_VERBOSE
 	g_print ("StrokeStyleWidget: paint changed\n");
-
+#endif
 	if (spw->sodipodi) {
 		reprs = NULL;
 		items = sp_widget_get_item_list (spw);
@@ -668,8 +671,9 @@ sp_stroke_style_line_widget_new (void)
 static void
 sp_stroke_style_line_construct (SPWidget *spw, gpointer data)
 {
+#ifdef SP_SS_VERBOSE
 	g_print ("Stroke style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
-
+#endif
 	if (spw->sodipodi) {
 		sp_stroke_style_line_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 	} else if (spw->repr) {
@@ -739,7 +743,9 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 		sp_item_i2d_affine (SP_ITEM (l->data), i2d);
 		object = SP_OBJECT (l->data);
 		dist = sp_distance_d_matrix_d_transform (object->style->stroke_width.computed, i2d);
+#ifdef SP_SS_VERBOSE
 		g_print ("%g in user is %g on desktop\n", object->style->stroke_width.computed, dist);
+#endif
 		avgwidth += dist;
 		if (object->style->stroke.type == SP_PAINT_TYPE_NONE) stroked = FALSE;
 	}

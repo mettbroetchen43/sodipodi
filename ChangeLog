@@ -1,5 +1,9 @@
 2002-11-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-gradient.c (nr_rgradient_render_generic_symmetric): Fix
+	array read overflow
+	(nr_rgradient_render_generic_optimized): Ditto
+
 	* src/widgets/paint-selector.c (sp_paint_selector_write_lineargradient): Normalize
 	gradient transform and recalculate positions before applying
 	(sp_paint_selector_write_radialgradient): Ditto
