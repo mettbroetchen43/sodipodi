@@ -74,7 +74,6 @@ static void sp_dt_update_snap_distances (SPDesktop *desktop);
 
 static void sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
 static void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection);
-static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 static void sp_desktop_zoom_update (SPDesktop * desktop);
 
 void sp_desktop_zoom (GtkEntry *caller, SPDesktopWidget *dtw);
@@ -620,7 +619,7 @@ sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 
 	sp_canvas_scroll_to (desktop->owner->canvas, viewbox.x0 - dx, viewbox.y0 - dy);
 
-	//	sp_desktop_update_rulers (NULL, desktop);
+	sp_desktop_widget_update_rulers (desktop->owner);
 }
 
 /* Context switching */
@@ -643,23 +642,6 @@ sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *co
 }
 
 /* Private helpers */
-
-/*
- * Set viewport center to x,y in world coordinates
- */
-
-static void
-sp_desktop_set_viewport (SPDesktop * desktop, double x, double y)
-{
-    gdouble cw, ch;
-    
-    cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width + 1;
-    ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height + 1;
-    sp_canvas_scroll_to (desktop->owner->canvas, x - cw / 2, y - ch / 2);
-
-    sp_desktop_widget_update_rulers (desktop->owner);
-    sp_desktop_update_scrollbars (SODIPODI, SP_DT_SELECTION (desktop));
-}
 
 /* fixme: The idea to have underlines is good, but have to fit it into desktop/widget framework (Lauris) */
 
@@ -1217,35 +1199,6 @@ sp_desktop_widget_namedview_modified (SPNamedView *nv, guint flags, SPDesktopWid
 }
 
 static void
-sp_desktop_widget_update_rulers (SPDesktopWidget *dtw)
-{
-	if (dtw->desktop) {
-		double x0, y0, x1, y1, s, e;
-		sp_canvas_window_to_world (dtw->canvas, 0.0, 0.0, &x0, &y0);
-		sp_canvas_window_to_world (dtw->canvas,
-					      ((GtkWidget *) dtw->canvas)->allocation.width,
-					      ((GtkWidget *) dtw->canvas)->allocation.height,
-					      &x1, &y1);
-		s = NR_MATRIX_DF_TRANSFORM_X ((NRMatrixD *) dtw->desktop->w2d, x0, y0);
-		e = NR_MATRIX_DF_TRANSFORM_X ((NRMatrixD *) dtw->desktop->w2d, x1, y1);
-		g_print ("Hruler range %f %f dt2r %f\n", s, e, dtw->dt2r);
-		gtk_ruler_set_range (GTK_RULER (dtw->hruler),
-				     dtw->dt2r * (s - dtw->rx0),
-				     dtw->dt2r * (e - dtw->rx0),
-				     GTK_RULER (dtw->hruler)->position,
-				     dtw->dt2r * e);
-		s = NR_MATRIX_DF_TRANSFORM_Y ((NRMatrixD *) dtw->desktop->w2d, x0, y0);
-		e = NR_MATRIX_DF_TRANSFORM_Y ((NRMatrixD *) dtw->desktop->w2d, x1, y1);
-		g_print ("Vruler range %f %f dt2r %f\n", s, e, dtw->dt2r);
-		gtk_ruler_set_range (GTK_RULER (dtw->vruler),
-				     dtw->dt2r * (s - dtw->ry0),
-				     dtw->dt2r * (e - dtw->ry0),
-				     GTK_RULER (dtw->vruler)->position,
-				     dtw->dt2r * e);
-	}
-}
-
-static void
 sp_desktop_widget_adjustment_value_changed (GtkAdjustment *adj, SPDesktopWidget *dtw)
 {
 	g_print ("Requested scrolling to %g %g\n", dtw->hadj->value, dtw->vadj->value);
@@ -1354,8 +1307,10 @@ sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float 
 	/* Scroll */
 	sp_canvas_scroll_to (dtw->canvas, x0 * scale - border, y1 * -scale - border);
 
+	sp_desktop_widget_update_rulers (dtw);
+
 #if 0
-     	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
+	sp_desktop_update_scrollbars (SODIPODI, SP_DT_SELECTION (desktop));
        	sp_desktop_zoom_update (desktop);
 	sp_dt_update_snap_distances (desktop);
 #endif
@@ -1425,5 +1380,20 @@ sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom)
 	scale = SP_DESKTOP_ZOOM (dt) * zoom;
 
 	sp_desktop_zoom_absolute (dt, cx, cy, scale);
+}
+
+static void
+sp_desktop_widget_update_rulers (SPDesktopWidget *dtw)
+{
+	NRRectF viewbox;
+	double scale, s, e;
+	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
+	scale = SP_DESKTOP_ZOOM (dtw->desktop);
+	s = viewbox.x0 / scale - dtw->rx0;
+	e = viewbox.x1 / scale - dtw->rx0;
+	gtk_ruler_set_range (GTK_RULER (dtw->hruler), dtw->dt2r * s, dtw->dt2r * e, GTK_RULER (dtw->hruler)->position, dtw->dt2r * (e - s));
+	s = viewbox.y0 / -scale - dtw->ry0;
+	e = viewbox.y1 / -scale - dtw->ry0;
+	gtk_ruler_set_range (GTK_RULER (dtw->vruler), dtw->dt2r * s, dtw->dt2r * e, GTK_RULER (dtw->vruler)->position, dtw->dt2r * (e - s));
 }
 

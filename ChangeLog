@@ -1,5 +1,7 @@
 2002-11-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_desktop_widget_update_rulers): Reenabled it
+
 	* src/helper/sp-canvas.c (paint): use full visible are for clipping, fixed
 	type on specifying area dimensionf in event
 	(sp_canvas_get_viewbox): New method
