@@ -427,7 +427,7 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 				if (cs->points[cs->current + 1].y > dy1) {
 					/* The same slice continues */
 					rx1 = rx0 + (dy1 - ry0) * cs->stepx;
-					ry1 = dy0 + 1.0;
+					ry1 = dy1;
 					cs->x = rx1;
 					cs->y = ry1;
 				} else {
@@ -1221,101 +1221,4 @@ nr_run_insert_sorted (NRRun * start, NRRun * run)
 
 	return start;
 }
-
-#if 0
-/*
- * Determinate the exact order of 2 noncrossing lines
- */
-
-static gint
-nr_x_order (NRLine * l0, NRLine * l1)
-{
-	float xx0, yy0, x1x0, y1y0;
-	float ds, de;
-
-	/* Determine l0 start relative to l1 */
-	x1x0 = l1->e.x - l1->s.x;
-	y1y0 = l1->e.y - l1->s.y;
-	xx0 = l0->s.x - l1->s.x;
-	yy0 = l0->s.y - l1->s.y;
-
-	if ((xx0 == 0.0) && (yy0 == 0.0)) {
-		/* l0 start lies on l1 */
-		xx0 = l0->e.x - l1->s.x;
-		yy0 = l0->e.y - l1->s.y;
-		de = xx0 * y1y0 - yy0 * x1x0;
-		if (de < 0.0) return -1;
-		if (de > 0.0) return 1;
-		return 0;
-	}
-
-	ds = xx0 * y1y0 - yy0 * x1x0;
-
-	/* l0 end relative to l1 */
-	xx0 = l0->s.x - l1->s.x;
-	yy0 = l0->s.y - l1->s.y;
-
-	if ((xx0 == 0.0) && (yy0 == 0.0)) {
-		/* l0 end lies on l1 */
-		if (ds < 0.0) return -1;
-		if (ds > 0.0) return 1;
-		return 0;
-	}
-
-	de = xx0 * y1y0 - yy0 * x1x0;
-
-	if (ds == 0.0) {
-		if (de < 0.0) return -1;
-		if (de > 0.0) return 1;
-		return 0;
-	}
-	if (de == 0.0) {
-		if (ds < 0.0) return -1;
-		if (ds > 0.0) return 1;
-		return 0;
-	}
-
-	if ((ds < 0.0) && (de < 0.0)) return -1;
-	if ((de > 0.0) && (de > 0.0)) return 1;
-
-	/* l0 start and end are on opposite sides of l1 */
-	/* Determine l1 start relative to l0 */
-	x1x0 = l0->e.x - l0->s.x;
-	y1y0 = l0->e.y - l0->s.y;
-	xx0 = l1->s.x - l0->s.x;
-	yy0 = l1->s.y - l0->s.y;
-
-	if ((xx0 == 0.0) && (yy0 == 0.0)) {
-		/* l1 start lies on l0 */
-		xx0 = l1->e.x - l0->s.x;
-		yy0 = l1->e.y - l0->s.y;
-		de = xx0 * y1y0 - yy0 * x1x0;
-		if (de < 0.0) return 1;
-		if (de > 0.0) return -1;
-		return 0;
-	}
-
-	ds = xx0 * y1y0 - yy0 * x1x0;
-
-	if (ds < 0.0) return 1;
-	if (ds > 0.0) return -1;
-
-	/* l1 end relative to l0 */
-	xx0 = l1->s.x - l0->s.x;
-	yy0 = l1->s.y - l0->s.y;
-
-	if ((xx0 == 0.0) && (yy0 == 0.0)) {
-		/* l1 end lies on l0 */
-		if (ds < 0.0) return 1;
-		if (ds > 0.0) return -1;
-		return 0;
-	}
-
-	de = xx0 * y1y0 - yy0 * x1x0;
-
-	if (de < 0.0) return 1;
-	if (de > 0.0) return -1;
-	return 0;
-}
-#endif
 

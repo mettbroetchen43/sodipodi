@@ -51,6 +51,8 @@
 
 2003-05-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-item.c (sp_item_invoke_print): Only if item is printable
+
 	* src/display/nr-arena-item.c (nr_arena_item_set_visible): New method
 	(nr_arena_item_invoke_render): Honour visibility
 

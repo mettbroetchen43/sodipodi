@@ -477,35 +477,19 @@ sp_item_private_snappoints (SPItem *item, NRPointF *p, int size)
         NRRectF bbox;
 	NRMatrixF i2d;
 	NRMatrixD i2dd;
-	int i;
-
+	if (size < 4) return 0;
 	sp_item_i2d_affine (item, &i2d);
 	nr_matrix_d_from_f (&i2dd, &i2d);
 	sp_item_invoke_bbox (item, &bbox, &i2dd, TRUE);
-
-	i = 0;
-	if (i < size) {
-		p[i].x = bbox.x0;
-		p[i].y = bbox.y0;
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = bbox.x1;
-		p[i].y = bbox.y0;
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = bbox.x1;
-		p[i].y = bbox.y1;
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = bbox.x0;
-		p[i].y = bbox.y1;
-		i += 1;
-	}
-
-	return i;
+	p[0].x = bbox.x0;
+	p[0].y = bbox.y0;
+	p[1].x = bbox.x1;
+	p[1].y = bbox.y0;
+	p[2].x = bbox.x1;
+	p[2].y = bbox.y1;
+	p[3].x = bbox.x0;
+	p[3].y = bbox.y1;
+	return 4;
 }
 
 int
@@ -523,18 +507,16 @@ sp_item_snappoints (SPItem *item, NRPointF *p, int size)
 void
 sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
 {
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-	g_assert (ctx != NULL);
-
-	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->print) {
-		if (!nr_matrix_f_test_identity (&item->transform, NR_EPSILON_F) ||
-		    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
-			sp_print_bind (ctx, &item->transform, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
-			((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
-			sp_print_release (ctx);
-		} else {
-			((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
+	if (item->printable) {
+		if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->print) {
+			if (!nr_matrix_f_test_identity (&item->transform, NR_EPSILON_F) ||
+			    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
+				sp_print_bind (ctx, &item->transform, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
+				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
+				sp_print_release (ctx);
+			} else {
+				((SPItemClass *) G_OBJECT_GET_CLASS (item))->print (item, ctx);
+			}
 		}
 	}
 }
