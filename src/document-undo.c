@@ -15,6 +15,8 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
+
 #include "xml/repr-private.h"
 #include "xml/repr-action.h"
 #include "api.h"
@@ -81,18 +83,20 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 		SPReprAction *saved;
 		saved = doc->priv->undo->data;
 		doc->priv->undo = g_slist_remove (doc->priv->undo, saved);
+		doc->priv->undo_size -= 1;
 		saved = sp_repr_coalesce_log (saved, log);
 		doc->priv->undo = g_slist_prepend (doc->priv->undo, saved);
+		doc->priv->undo_size += 1;
 	} else {
 		doc->priv->undo = g_slist_prepend (doc->priv->undo, log);
-		doc->priv->undo_size++;
+		doc->priv->undo_size += 1;
 
 		if (doc->priv->undo_size > MAX_UNDO) {
 			GSList *bottom;
 #if 0	
 			g_message ("DEBUG: trimming undo list");
 #endif
-			g_assert (doc->priv->undo != NULL);
+			assert ((!doc->priv->undo_size && !doc->priv->undo) || (doc->priv->undo_size = g_slist_length (doc->priv->undo)));
 			/* fixme: This is evil (Lauris) */
 			bottom = g_slist_nth (doc->priv->undo, MAX_UNDO - 1);
 			g_slist_foreach (bottom->next, (GFunc)sp_repr_free_log, NULL);
@@ -151,9 +155,12 @@ sp_document_undo (SPDocument *doc)
 		return;
 	}
 
+	assert ((!doc->priv->undo_size && !doc->priv->undo) || (doc->priv->undo_size = g_slist_length (doc->priv->undo)));
+
 	if (doc->priv->undo) {
 		log = (SPReprAction *) doc->priv->undo->data;
 		doc->priv->undo = g_slist_remove (doc->priv->undo, log);
+		doc->priv->undo_size -= 1;
 		sp_repr_undo_log (doc->rdoc, log);
 		doc->priv->redo = g_slist_prepend (doc->priv->redo, log);
 	}
@@ -181,11 +188,14 @@ sp_document_redo (SPDocument *doc)
 		return;
 	}
 
+	assert ((!doc->priv->undo_size && !doc->priv->undo) || (doc->priv->undo_size = g_slist_length (doc->priv->undo)));
+
 	if (doc->priv->redo) {
 		log = (SPReprAction *) doc->priv->redo->data;
 		doc->priv->redo = g_slist_remove (doc->priv->redo, log);
 		sp_repr_replay_log (doc->rdoc, log);
 		doc->priv->undo = g_slist_prepend (doc->priv->undo, log);
+		doc->priv->undo_size += 1;
 	}
 
 	sp_repr_begin_transaction (doc->rdoc);
@@ -199,6 +209,7 @@ sp_document_clear_undo (SPDocument *doc)
 		log = (SPReprAction *) doc->priv->undo->data;
 		sp_repr_free_log (log);
 		doc->priv->undo = g_slist_remove (doc->priv->undo, log);
+		doc->priv->undo_size = 0;
 	}
 }
 

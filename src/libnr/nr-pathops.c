@@ -1011,8 +1011,12 @@ nr_wind_matrix_test (struct _NRNodePath *path, int *winds, int idx, int ngroups,
 		if (i >= ngroups) return 0;
 	}
 	/* Test SELF */
-	if (self && self[sval]) {
-		if ((gwinds[sval] == 0) && (winds[idx] != 0)) return 0;
+	if (self) {
+		if (self[sval] == 1) {
+			if ((gwinds[sval] == 0) && (winds[idx] != 0)) return 0;
+		} else if (self[sval] == -1) {
+			if ((gwinds[sval] != 0) || (winds[idx] == 0)) return 0;
+		}
 	}
 	return 1;
 }
