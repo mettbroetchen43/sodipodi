@@ -152,7 +152,7 @@ sp_spiral_write (SPObject *object, SPRepr *repr, guint flags)
 		/* Fixme: we may replace these attributes by
 		 * sodipodi:spiral="cx cy exp revo rad arg t0"
 		 */
-		sp_repr_set_attr (repr, "sodipodi:type", "arc");
+		sp_repr_set_attr (repr, "sodipodi:type", "spiral");
 		sp_repr_set_double_attribute (repr, "sodipodi:cx", spiral->cx);
 		sp_repr_set_double_attribute (repr, "sodipodi:cy", spiral->cy);
 		sp_repr_set_double_attribute (repr, "sodipodi:expansion", spiral->exp);

@@ -1,4 +1,63 @@
-Sodipodi internal layout
+Sodipodi internal architecture
+
+1. Overview
+
+Sodipodi display and editing engine is built using
+MVC paradigm. Unlike most other similar programs,
+we have further split model into two distinct
+layers. This has proven to be extremely powerful
+technique, giving us clear and fast implementation,
+functional granularity and easy expandibility.
+
+1.1. Agnostic XML backbone
+
+The basis of sodipodi document is its plain XML
+representation in memory. This is tree-shaped
+structure, each node being represented by
+lightweight typeless object (SPRepr). These
+objects implement minimal interface of both
+control (methods) and mutation events (callbacks).
+We use term 'agnostic' for describing that
+part of model, to underline the typeless
+nature of SPRepr. More or less this is just
+XML file representation in memory.
+
+1.2. Typed SVG document
+
+The most actively used part of sodipodi document
+model is SVG object tree. This is constructed
+on the top of XML tree, and reacts to all mutation
+events in agnostic tree, thus keeping its internal
+state always synchronized with backbone.
+The opposite is not true - XML backbone is not
+aware of SVG object tree, and thus does not
+react to its modifications. If writeback to
+backbone is needed, it has to be requested
+explicitly by controller.
+SVG tree is constructed of SPObject subclasses
+- in general there is one subclass for each
+SVG element type, plus abstract base classes.
+
+1.3. NRArena view
+NRarena is abstract display engine, that allows
+construction of display caches from NRArenaItem
+subclasses. These are lightweight, having only
+some basic object types, and used for most
+display needs of sodipodi.
+Both editing window, and bitmap export code
+create special NRArena instance, and ask SVG
+document to show itself to given NRArena.
+There is ::show virtual method, implemented
+by all visible object classes, that adds
+NRArenaItem node to display tree. Completed
+display cache is used for fast screen updates
+and stripe based bitmap exports.
+During NRArena lifetime SVG objects keep all
+display cache elements constantly updated,
+thus ensuring display is always up to date.
+
+1.4. Controllers
+
 
 1. Document
 
