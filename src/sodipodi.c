@@ -22,6 +22,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <xml/repr-private.h>
 #include "document.h"
@@ -235,16 +236,19 @@ sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop)
 
 /* fixme: This is EVIL, and belongs to main after all */
 
+#define SP_INDENT 8
+
 static void
 sodipodi_segv_handler (int signum)
 {
 	static gint recursion = FALSE;
 	GSList *savednames, *failednames, *l;
-	gchar *home;
-	gint count;
+	gchar *home, *istr, *sstr, *fstr, *b;
+	gint count, nllen, len, pos;
 	time_t sptime;
 	struct tm *sptm;
 	char sptstr[256];
+	GtkWidget *msgbox;
 
 	/* Kill loops */
 	if (recursion) abort ();
@@ -300,20 +304,71 @@ sodipodi_segv_handler (int signum)
 	failednames = g_slist_reverse (failednames);
 	if (savednames) {
 		fprintf (stderr, "\nEmergency save locations:\n");
-		while (savednames) {
-			fprintf (stderr, "  %s\n", (gchar *) savednames->data);
-			savednames = g_slist_remove (savednames, savednames->data);
+		for (l = savednames; l != NULL; l = l->next) {
+			fprintf (stderr, "  %s\n", (gchar *) l->data);
 		}
 	}
 	if (failednames) {
 		fprintf (stderr, "Failed to do emergency save for:\n");
-		while (failednames) {
-			fprintf (stderr, "  %s\n", (gchar *) failednames->data);
-			failednames = g_slist_remove (failednames, failednames->data);
+		for (l = failednames; l != NULL; l = l->next) {
+			fprintf (stderr, "  %s\n", (gchar *) l->data);
 		}
 	}
 
 	g_warning ("Emergency save completed, now crashing...");
+
+	/* Show nice dialog box */
+
+	istr = N_("Sodipodi encountered an internal error and will close now.\n");
+	sstr = N_("Automatic backups of unsaved documents were done to following locations:\n");
+	fstr = N_("Automatic backup of following documents failed:\n");
+	nllen = strlen ("\n");
+	len = strlen (istr) + strlen (sstr) + strlen (fstr);
+	for (l = savednames; l != NULL; l = l->next) {
+		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
+	}
+	for (l = failednames; l != NULL; l = l->next) {
+		len = len + SP_INDENT + strlen ((gchar *) l->data) + nllen;
+	}
+	len += 1;
+	b = g_new (gchar, len);
+	pos = 0;
+	len = strlen (istr);
+	memcpy (b + pos, istr, len);
+	pos += len;
+	if (savednames) {
+		len = strlen (sstr);
+		memcpy (b + pos, sstr, len);
+		pos += len;
+		for (l = savednames; l != NULL; l = l->next) {
+			memset (b + pos, ' ', SP_INDENT);
+			pos += SP_INDENT;
+			len = strlen ((gchar *) l->data);
+			memcpy (b + pos, l->data, len);
+			pos += len;
+			memcpy (b + pos, "\n", nllen);
+			pos += nllen;
+		}
+	}
+	if (failednames) {
+		len = strlen (fstr);
+		memcpy (b + pos, fstr, len);
+		pos += len;
+		for (l = failednames; l != NULL; l = l->next) {
+			memset (b + pos, ' ', SP_INDENT);
+			pos += SP_INDENT;
+			len = strlen ((gchar *) l->data);
+			memcpy (b + pos, l->data, len);
+			pos += len;
+			memcpy (b + pos, "\n", nllen);
+			pos += nllen;
+		}
+	}
+	*(b + pos) = '\0';
+	msgbox = gnome_message_box_new (b, GNOME_MESSAGE_BOX_ERROR, GNOME_STOCK_BUTTON_CLOSE, NULL);
+	gnome_dialog_run_and_close (GNOME_DIALOG (msgbox));
+	gtk_widget_destroy (msgbox);
+	g_free (b);
 
 	(* segv_handler) (signum);
 }
