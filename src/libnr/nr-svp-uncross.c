@@ -350,6 +350,9 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 						/* fixme: Slight disturbance is possible so we should repeat */
 						ss = cs;
 						cs = ns;
+					} else {
+						ss = cs;
+						cs = ns;
 					}
 				} else {
 					ss = cs;

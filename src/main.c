@@ -114,7 +114,7 @@ gboolean sp_bitmap_icons = FALSE;
 
 static guchar *sp_global_printer = NULL;
 static gboolean sp_global_slideshow = FALSE;
-static guchar *sp_export_png = NULL;
+static const unsigned char *sp_export_png = NULL;
 static guchar *sp_export_dpi = NULL;
 static guchar *sp_export_area = NULL;
 static guchar *sp_export_width = NULL;
@@ -161,6 +161,9 @@ struct poptOption options[] = {
 	 NULL},
 	POPT_AUTOHELP POPT_TABLEEND
 };
+#else
+// Non-popt argument parser
+static GSList *sp_process_args (int argc, const char **argv);
 #endif
 
 int
@@ -241,7 +244,7 @@ sp_main_gui (int argc, const char **argv)
 	fl = sp_process_args (ctx);
 	poptFreeContext (ctx);
 #else
-	/* fl = sp_process_args (argc, argv); */
+	fl = sp_process_args (argc, argv);
 #endif
 
 #ifdef WITH_KDE
@@ -335,7 +338,7 @@ sp_main_console (int argc, const char **argv)
 	fl = sp_process_args (ctx);
 	poptFreeContext (ctx);
 #else
-	/* fl = sp_process_args (argc, argv); */
+	sp_process_args (argc, argv);
 #endif
 
 	if (fl == NULL) {
@@ -517,5 +520,152 @@ sp_process_args (poptContext ctx)
 
 	return fl;
 }
+#else
+
+static int
+startcmp (const char *s, const char *t)
+{
+	int lens, lent, len;
+	lens = strlen (s);
+	lent = strlen (t);
+	len = MIN (lens, lent);
+	return strncmp (s, t, len);
+}
+
+#if 0
+static const char *
+getargparam (int *aidx, const char **argv, int shortarg, const char *longarg)
+{
+	const char *arg, *val;
+	arg = argv[*aidx];
+	if (arg[0] == '-') {
+		if (arg[1] != '-') {
+			// Short arg
+			if ((*aidx + 1) < argc) {
+				// Has parameter
+				*aidx += 1;
+				val = argv[*aidx];
+			} else {
+				// Has not
+				val = NULL;
+			}
+		} else {
+			const char *eqp;
+			// Long arg
+			eqp = strchr (arg, '=');
+			if (eqp && eqp[1]) {
+				// Has parameter
+				val = eqp + 1;
+			} else {
+				// Has not
+				val = NULL;
+			}
+		}
+	}
+	*aidx += 1;
+	return val;
+}
+#endif
+
+static GSList *
+sp_process_args (int argc, const char **argv)
+{
+	GSList *filelist;
+	int aidx;
+
+	filelist = NULL;
+	aidx = 0;
+
+	while (aidx < argc) {
+		const char *arg;
+		arg = argv[aidx];
+		if (arg[0] == '-') {
+			// arg is argument
+			if (arg[1] != '-') {
+				// Short argument
+				if (arg[1] == 'z') {
+					// --without-gui
+				} else if (arg[1] == 'x') {
+					// --with-gui
+				} else if (arg[1] == 'f') {
+					// --file
+					aidx += 1;
+					if (aidx < argc) {
+						filelist = g_slist_append (filelist, (gpointer) argv[aidx]);
+					} else {
+						// Should print usage
+						return filelist;
+					}
+				} else if (arg[1] == 'e') {
+					// --export-png
+					aidx += 1;
+					if (aidx < argc) {
+						sp_export_png = argv[aidx];
+					} else {
+						// Should print usage
+						return filelist;
+					}
+				}
+			} else {
+				char *eqp;
+				// Long argument
+				eqp = strchr (arg, '=');
+				if (!startcmp (arg, "--without-gui")) {
+					// --without-gui
+				} else if (!startcmp (arg, "--with-gui")) {
+					// --with-gui
+				} else if (!startcmp (arg, "--file")) {
+					// --file
+					if (eqp && eqp[1]) {
+						sp_export_png = argv[aidx];
+					} else {
+						// Should print usage
+						return filelist;
+					}
+				} else if (!startcmp (arg, "--export-png")) {
+					// --file
+					if (eqp && eqp[1]) {
+						filelist = g_slist_append (filelist, eqp + 1);
+					} else {
+						// Should print usage
+						return filelist;
+					}
+				}
+			}
+		} else if (arg[0] != '\0') {
+			// Unorganized filename
+			filelist = g_slist_append (filelist, (gpointer) arg);
+		}
+		aidx += 1;
+	}
+#if 0
+	{"print", 'p', POPT_ARG_STRING, &sp_global_printer, SP_ARG_PRINT,
+	 N_("Print document(s) to specified output file (use '| program' for pipe)"),
+	 N_("FILENAME")},
+	{"export-dpi", 'd', POPT_ARG_STRING, &sp_export_dpi, SP_ARG_EXPORT_DPI,
+	 N_("The resolution used for converting SVG into bitmap (default 72.0)"),
+	 N_("DPI")},
+	{"export-area", 'a', POPT_ARG_STRING, &sp_export_area, SP_ARG_EXPORT_AREA,
+	 N_("Exported area in millimeters (default is full document, 0,0 is lower-left corner)"),
+	 N_("x0:y0:x1:y1")},
+	{"export-width", 'w', POPT_ARG_STRING, &sp_export_width, SP_ARG_EXPORT_WIDTH,
+	 N_("The width of generated bitmap in pixels (overwrites dpi)"), N_("WIDTH")},
+	{"export-height", 'h', POPT_ARG_STRING, &sp_export_height, SP_ARG_EXPORT_HEIGHT,
+	 N_("The height of generated bitmap in pixels (overwrites dpi)"), N_("HEIGHT")},
+	{"export-background", 'b', POPT_ARG_STRING, &sp_export_background, SP_ARG_EXPORT_HEIGHT,
+	 N_("Background color of exported bitmap (any SVG supported color string)"), N_("COLOR")},
+	{"export-svg", 0, POPT_ARG_STRING, &sp_export_svg, SP_ARG_EXPORT_SVG,
+	 N_("Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"), N_("FILENAME")},
+	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
+	 N_("Show given files one-by-one, switch to next on any key/mouse event"), NULL},
+	{"bitmap-icons", 'i', POPT_ARG_NONE, &sp_bitmap_icons, SP_ARG_BITMAP_ICONS,
+	 N_("Prefer bitmap (xpm) icons to SVG ones"),
+	 NULL},
+	POPT_AUTOHELP POPT_TABLEEND
+#endif
+
+	return filelist;
+}
+
 #endif
 
