@@ -63,6 +63,20 @@ if $try_bonobo; then
 		have_bonobo=true
 		EXTRA_BONOBO_GNOME_LIBS="`$GNOME_CONFIG --libs bonobo` -lbonobo-print"
 		EXTRA_BONOBO_GNOME_CFLAGS=`$GNOME_CONFIG --cflags bonobo`
+
+		dnl Check if Bonobo is OAFized
+
+		AC_MSG_CHECKING(if Bonobo uses OAF)
+		if ( gnome-config --libs bonobo | grep oaf ) > /dev/null 2>&1 ; then
+			using_oaf="yes"
+			AC_DEFINE(USING_OAF)
+		else
+			using_oaf="no"
+		fi
+
+		AC_MSG_RESULT("$using_oaf")
+
+		AM_CONDITIONAL(USING_OAF, test x"using_oaf" = "xyes")
 	else    
 		AC_MSG_RESULT(not found)
 		EXTRA_BONOBO_GNOME_LIBS=

@@ -21,6 +21,11 @@
 #include "sodipodi.h"
 
 #ifdef ENABLE_BONOBO
+#if USING_OAF
+#	include <liboaf/liboaf.h>
+#else
+#	include <libgnorba/gnorba.h>
+#endif
 #include "bonobo/sodipodi-bonobo.h"
 #include "bonobo/svg-doc-factory.h"
 #endif
@@ -152,14 +157,20 @@ main (int argc, char *argv[])
 		}
 
 		CORBA_exception_init (&ev);
+#if USING_OAF
+		gnomelib_register_popt_table (oaf_popt_options, _("Oaf options"));
+		gnome_init_with_popt_table ("sodipodi", VERSION,
+					    argc, argv, options, 0, &ctx);
+		orb = oaf_init (argc, argv);
 
+#else
 		gnome_CORBA_init_with_popt_table ("sodipodi", VERSION,
 			&argc, argv, options, 0, &ctx,
 			GNORBA_INIT_SERVER_FUNC, &ev);
+		orb = gnome_CORBA_ORB ();
+#endif
 
 		CORBA_exception_free (&ev);
-
-		orb = gnome_CORBA_ORB ();
 
 		if (bonobo_init (orb, NULL, NULL) == FALSE)
 			g_error (_("Could not initialize Bonobo"));

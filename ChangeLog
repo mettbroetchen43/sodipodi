@@ -1,3 +1,14 @@
+2000-05-09  Michael Meeks  <michael@helixcode.com>
+
+	* src/bonobo/svg-doc-factory.c (sp_svg_doc_factory_init): add
+	config.h + OAFIID.
+
+ 	* Makefile.am: Install oaf data.
+ 
+ 	* src/main.c (main): re-tool for oaf.
+
+	* configure.in: Check for oaf.
+ 
 2000-05-06  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/knot.h: Added signals "grab", "ungrab" and "move"

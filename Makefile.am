@@ -2,12 +2,13 @@
 
 SUBDIRS = intl po macros src glade
 
-EXTRA_DIST = \
-	sodipodi.desktop \
-	sodipodi.spec.in \
-	sodipodi.gnorba \
-	README HACKING \
-	sodipodi.png \
+EXTRA_DIST =			\
+	sodipodi.desktop	\
+	sodipodi.spec.in	\
+	sodipodi.gnorba		\
+	sodipodi.oafinfo	\
+	README HACKING		\
+	sodipodi.png		\
 	samples/*
 
 appicondir = $(datadir)/pixmaps
@@ -18,6 +19,9 @@ sys_DATA = sodipodi.desktop
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA = sodipodi.gnorba
+
+oafdir = $(datadir)/oaf
+oaf_DATA = sodipodi.oafinfo
 
 if BONOBO
 install-exec-local:
