@@ -1,16 +1,17 @@
 # Irish language translation of sodipodi
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000,2004 Free Software Foundation, Inc.
 # Alastair McKinstry <mckinstry@computer.org>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
-"POT-Creation-Date: 2003-11-30 17:37+0200\n"
-"PO-Revision-Date: 2000-08-24 20:00-0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-17 04:57+0100\n"
+"PO-Revision-Date: 2004-01-09 08:18+0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <ga@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
 #: sodipodi.desktop.in.h:1
@@ -18,17 +19,17 @@ msgid "SVG Vector Illustrator"
 msgstr ""
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+#: sodipodi.desktop.in.h:2 src/toolbox.c:108 src/toolbox.c:141
 msgid "Sodipodi"
 msgstr "Sodipodi"
-
-#: src/bonobo/svg-doc-factory.c:35
-msgid "Could not create sodipodi-svg-doc factory"
-msgstr ""
 
 #: src/arc-context.c:303
 #, c-format
 msgid "Drawing arc %s x %s"
+msgstr ""
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
 #: src/desktop.c:778
@@ -38,7 +39,7 @@ msgstr ""
 #: src/desktop.c:858
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr ""
+msgstr "Sodipodi: %s: %s: %d"
 
 #: src/desktop.c:987
 #, c-format
@@ -48,25 +49,24 @@ msgstr ""
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:137 src/verbs.c:453
+#: src/dialogs/export.c:143 src/verbs.c:463
 msgid "Page"
 msgstr "Leathanach"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
-#: src/verbs.c:454
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:148
+#: src/verbs.c:464
 msgid "Drawing"
 msgstr ""
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:153
+#: src/interface.c:591 src/toolbox.c:488 src/verbs.c:465
 msgid "Selection"
 msgstr ""
 
-#: src/dialogs/align.c:155 src/toolbox.c:449
-#, fuzzy
+#: src/dialogs/align.c:155 src/toolbox.c:448
 msgid "Align objects"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/align.c:174
 msgid "Right side of aligned objects to left side of anchor"
@@ -77,9 +77,8 @@ msgid "Left side of aligned objects to left side of anchor"
 msgstr ""
 
 #: src/dialogs/align.c:180
-#, fuzzy
 msgid "Center horizontally"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/align.c:183
 msgid "Right side of aligned objects to right side of anchor"
@@ -94,9 +93,8 @@ msgid "Bottom of aligned objects to top of anchor"
 msgstr ""
 
 #: src/dialogs/align.c:193
-#, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/align.c:196
 msgid "Center vertically"
@@ -107,9 +105,8 @@ msgid "Bottom of aligned objects to bottom of anchor"
 msgstr ""
 
 #: src/dialogs/align.c:202
-#, fuzzy
 msgid "Top of aligned objects to bottom of anchor"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -168,9 +165,8 @@ msgid "Smallest item"
 msgstr ""
 
 #: src/dialogs/desktop-properties.c:195
-#, fuzzy
 msgid "Desktop settings"
-msgstr "Roghanna Dath"
+msgstr "Roghnachais Deasc"
 
 #. Grid settings
 #. Notebook tab
@@ -187,9 +183,8 @@ msgid "Snap to grid"
 msgstr ""
 
 #: src/dialogs/desktop-properties.c:221
-#, fuzzy
 msgid "Horizontal lines"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
@@ -236,9 +231,8 @@ msgid "Grid color:"
 msgstr ""
 
 #: src/dialogs/desktop-properties.c:250
-#, fuzzy
 msgid "Grid color"
-msgstr "Dath"
+msgstr ""
 
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:254
@@ -274,38 +268,32 @@ msgid "Show border"
 msgstr ""
 
 #: src/dialogs/desktop-properties.c:301
-#, fuzzy
 msgid "Border on top of drawing"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #: src/dialogs/desktop-properties.c:306
-#, fuzzy
 msgid "Border color:"
-msgstr "Dath"
+msgstr ""
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
 msgstr ""
 
 #: src/dialogs/desktop-properties.c:308
-#, fuzzy
 msgid "Page color:"
-msgstr "Dath"
+msgstr "Dath Leathanach:"
 
 #: src/dialogs/desktop-properties.c:309
-#, fuzzy
 msgid "Page color"
-msgstr "Dath"
+msgstr "Dath leathanach"
 
-#: src/dialogs/desktop-properties.c:580
-#, fuzzy
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
-msgstr "Radharc Nua"
+msgstr "D√∫n"
 
 #: src/dialogs/display-settings.c:88
-#, fuzzy
 msgid "Display settings"
-msgstr "Roghanna Dath"
+msgstr "√Ålbachta√≠ T√°ispeanach"
 
 #. Rendering settings
 #. Notebook tab
@@ -317,50 +305,47 @@ msgstr ""
 msgid "Oversample bitmaps:"
 msgstr ""
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:394
+#: src/dialogs/display-settings.c:119 src/verbs.c:403
 msgid "None"
 msgstr "Tada"
 
 #: src/dialogs/display-settings.c:123
 msgid "2x2"
-msgstr ""
+msgstr "2x2"
 
 #: src/dialogs/display-settings.c:127
 msgid "4x4"
-msgstr ""
+msgstr "4x4"
 
 #: src/dialogs/display-settings.c:131
 msgid "8x8"
-msgstr ""
+msgstr "8x8"
 
 #: src/dialogs/display-settings.c:135
 msgid "16x16"
-msgstr ""
+msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:146
 msgid "Input"
-msgstr ""
+msgstr "Inchur"
 
 #: src/dialogs/display-settings.c:157
 msgid "Default cursor tolerance:"
 msgstr ""
 
 #: src/dialogs/document-properties.c:159
-#, fuzzy
 msgid "Document settings"
-msgstr "Roghanna Dath"
+msgstr ""
 
 #: src/dialogs/document-properties.c:180
-#, fuzzy
 msgid "Paper size:"
-msgstr "Meid picti˙r"
+msgstr "M√©id p√°ip√©ir:"
 
 #: src/dialogs/document-properties.c:201
-#, fuzzy
 msgid "Custom"
-msgstr "Gearr"
+msgstr "F√©indheanamh"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:208
@@ -368,76 +353,88 @@ msgid "Custom paper"
 msgstr ""
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:161
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr ""
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
-#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:171
+#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
 #: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
-#, fuzzy
 msgid "Width:"
-msgstr "Leitheid"
+msgstr "Leitheid:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
-#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:180
+#: src/dialogs/export.c:203 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
-#, fuzzy
 msgid "Height:"
-msgstr "Airde"
+msgstr "Airde:"
 
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:123
 msgid "Export bitmap"
 msgstr ""
 
 #. Export area frame
-#: src/dialogs/export.c:126
+#: src/dialogs/export.c:132
 msgid "Export area"
 msgstr ""
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:165
 msgid "x0:"
-msgstr ""
-
-#: src/dialogs/export.c:162
-#, fuzzy
-msgid "x1:"
-msgstr "1:1"
+msgstr "x0:"
 
 #: src/dialogs/export.c:168
-msgid "y0:"
-msgstr ""
+msgid "x1:"
+msgstr "x1:"
 
-#: src/dialogs/export.c:171
-#, fuzzy
+#: src/dialogs/export.c:174
+msgid "y0:"
+msgstr "y0:"
+
+#: src/dialogs/export.c:177
 msgid "y1:"
-msgstr "1:1"
+msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:180
-#, fuzzy
+#: src/dialogs/export.c:186
 msgid "Bitmap size"
-msgstr "Meid picti˙r"
+msgstr ""
 
-#: src/dialogs/export.c:189 src/dialogs/export.c:197
+#: src/dialogs/export.c:195 src/dialogs/export.c:203
 msgid "pixels"
-msgstr "pixelanna"
+msgstr "picsil"
 
-#: src/dialogs/export.c:193 src/dialogs/export.c:201
+#: src/dialogs/export.c:199 src/dialogs/export.c:207
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:208
+#: src/dialogs/export.c:215
+msgid "Background color"
+msgstr "Dath C√∫lra"
+
+#: src/dialogs/export.c:217
+msgid "Bitmap background:"
+msgstr ""
+
+#: src/dialogs/export.c:222
 msgid "Export png file"
 msgstr ""
 
-#: src/dialogs/export.c:237 src/verbs.c:404
+#: src/dialogs/export.c:249 src/verbs.c:413
 msgid "Export"
+msgstr ""
+
+#: src/dialogs/export.c:360
+msgid "Export in progress"
+msgstr ""
+
+#: src/dialogs/export.c:364
+#, c-format
+msgid "Exporting [%d x %d] %s"
 msgstr ""
 
 #: src/dialogs/fill-style.c:86
@@ -445,14 +442,12 @@ msgid "Fill style"
 msgstr ""
 
 #: src/dialogs/fill-style.c:121
-#, fuzzy
 msgid "Fill Rule"
-msgstr "Comhad Nua"
+msgstr ""
 
 #: src/dialogs/fill-style.c:135
-#, fuzzy
 msgid "nonzero"
-msgstr "Tada"
+msgstr ""
 
 #: src/dialogs/fill-style.c:140
 msgid "evenodd"
@@ -480,18 +475,16 @@ msgid "Active"
 msgstr ""
 
 #: src/dialogs/item-properties.c:124
-#, fuzzy
 msgid "Printable"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #: src/dialogs/item-properties.c:135
 msgid "Opacity:"
 msgstr ""
 
 #: src/dialogs/item-properties.c:154
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "Roghanna Oaf"
+msgstr ""
 
 #: src/dialogs/item-properties.c:275
 msgid "Ref"
@@ -505,14 +498,13 @@ msgstr ""
 msgid "ID exists"
 msgstr ""
 
-#: src/dialogs/item-properties.c:435 src/verbs.c:468
+#: src/dialogs/item-properties.c:435 src/verbs.c:478
 msgid "Item properties"
 msgstr ""
 
 #: src/dialogs/object-attributes.c:34
-#, fuzzy
 msgid "Href:"
-msgstr "Luach:"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:35
 msgid "Target:"
@@ -520,25 +512,23 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:36
 msgid "Type:"
-msgstr ""
+msgstr "Cin√©al:"
 
 #: src/dialogs/object-attributes.c:37
-#, fuzzy
 msgid "Role:"
-msgstr "Luach:"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
 msgstr ""
 
 #: src/dialogs/object-attributes.c:39
-#, fuzzy
 msgid "Title:"
-msgstr "Comhad Nua"
+msgstr "Tide√°l:"
 
 #: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
 msgid "Show:"
-msgstr ""
+msgstr "Taispe√°in:"
 
 #: src/dialogs/object-attributes.c:41
 msgid "Actuate:"
@@ -550,29 +540,27 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
 msgid "Center X:"
-msgstr ""
+msgstr "Sa L√°r X:"
 
 #: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
 msgid "Center Y:"
-msgstr ""
+msgstr "Sa L√°r Y:"
 
 #: src/dialogs/object-attributes.c:49
-#, fuzzy
 msgid "R1:"
-msgstr "1:1"
+msgstr "R1:"
 
 #: src/dialogs/object-attributes.c:50
-#, fuzzy
 msgid "R2:"
-msgstr "2:1"
+msgstr "R2:"
 
 #: src/dialogs/object-attributes.c:51
 msgid "ARG1:"
-msgstr ""
+msgstr "ARG1:"
 
 #: src/dialogs/object-attributes.c:52
 msgid "ARG2:"
-msgstr ""
+msgstr "ARG2:"
 
 #. Expansion
 #: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
@@ -595,29 +583,29 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:63
 msgid "T0:"
-msgstr ""
+msgstr "√ì:"
 
 #: src/dialogs/object-attributes.c:68
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
 #: src/dialogs/object-properties.c:332
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 #: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
 #: src/dialogs/object-properties.c:344
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 #: src/dialogs/object-attributes.c:81
 msgid "RX:"
-msgstr ""
+msgstr "RX:"
 
 #: src/dialogs/object-attributes.c:82
 msgid "RY:"
-msgstr ""
+msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:117
 #, c-format
@@ -645,9 +633,8 @@ msgid "Apply to:"
 msgstr ""
 
 #: src/dialogs/object-properties.c:186
-#, fuzzy
 msgid "Selected objects"
-msgstr "TÛg"
+msgstr ""
 
 #: src/dialogs/object-properties.c:189
 msgid "All shape tools"
@@ -662,9 +649,8 @@ msgid "Arc tool"
 msgstr ""
 
 #: src/dialogs/object-properties.c:198
-#, fuzzy
 msgid "Star tool"
-msgstr "Dath"
+msgstr ""
 
 #: src/dialogs/object-properties.c:201
 msgid "Spiral tool"
@@ -678,23 +664,21 @@ msgstr ""
 msgid "Calligraphic line"
 msgstr ""
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:444
+#: src/dialogs/object-properties.c:210 src/verbs.c:454
 msgid "Text"
 msgstr "Teacs"
 
 #: src/dialogs/object-properties.c:289
-#, fuzzy
 msgid "Object Size and Position"
-msgstr "Roghanna Oaf"
+msgstr ""
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:463
+#: src/dialogs/object-properties.c:312 src/verbs.c:473
 msgid "Size and Position"
 msgstr ""
 
-#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
-#, fuzzy
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:444
 msgid "Stroke settings"
-msgstr "Roghanna Dath"
+msgstr ""
 
 #. Join type
 #: src/dialogs/stroke-style.c:588
@@ -708,13 +692,12 @@ msgstr ""
 
 #. Dash
 #: src/dialogs/stroke-style.c:674
-#, fuzzy
 msgid "Pattern:"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #: src/dialogs/text-edit.c:101
 msgid "Text properties"
-msgstr ""
+msgstr "√Ålbachta√Æ teacs"
 
 #. Layout
 #: src/dialogs/text-edit.c:140
@@ -741,7 +724,7 @@ msgstr ""
 msgid "Set as default"
 msgstr ""
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:471
 msgid "Tool attributes"
 msgstr ""
 
@@ -793,20 +776,17 @@ msgstr ""
 msgid "No active tool"
 msgstr ""
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:460
-#, fuzzy
+#: src/dialogs/tool-options.c:47 src/verbs.c:470
 msgid "Tool options"
-msgstr "Roghanna Oaf"
+msgstr "Rognachais Uirlis√≠"
 
 #: src/dialogs/tool-options.c:88
-#, fuzzy
 msgid "Tool has no options"
-msgstr "Roghanna Oaf"
+msgstr ""
 
 #: src/dialogs/transformation.c:195
-#, fuzzy
 msgid "Transform selection"
-msgstr "Roghanna Oaf"
+msgstr ""
 
 #. Apply to duplicate
 #: src/dialogs/transformation.c:216
@@ -814,9 +794,8 @@ msgid "Apply to duplicate"
 msgstr ""
 
 #: src/dialogs/transformation.c:313
-#, fuzzy
 msgid "Move"
-msgstr "NÛd"
+msgstr ""
 
 #: src/dialogs/transformation.c:457
 msgid "Scale"
@@ -830,76 +809,74 @@ msgstr ""
 msgid "deg"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:162
+#: src/dialogs/xml-tree.c:163
 msgid "Drag to reorder nodes"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:175
+#: src/dialogs/xml-tree.c:176
 msgid "New element node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:193
+#: src/dialogs/xml-tree.c:194
 msgid "New text node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:210
+#: src/dialogs/xml-tree.c:211
 msgid "Duplicate node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:226
-#, fuzzy
+#: src/dialogs/xml-tree.c:227
 msgid "Delete node"
-msgstr "ScrÌos"
+msgstr ""
 
-#: src/dialogs/xml-tree.c:239
+#: src/dialogs/xml-tree.c:240
 msgid "Unindent node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:250
+#: src/dialogs/xml-tree.c:251
 msgid "Indent node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:260
-#, fuzzy
+#: src/dialogs/xml-tree.c:261
 msgid "Raise node"
-msgstr "Greamaigh"
+msgstr ""
 
-#: src/dialogs/xml-tree.c:271
+#: src/dialogs/xml-tree.c:272
 msgid "Lower node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:308
+#: src/dialogs/xml-tree.c:309
 msgid "Delete attribute"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:338
+#: src/dialogs/xml-tree.c:339
 msgid "Attribute name"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:345
+#: src/dialogs/xml-tree.c:346
 msgid "Set attribute"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:358
+#: src/dialogs/xml-tree.c:359
 msgid "Attribute value"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:830
+#: src/dialogs/xml-tree.c:831
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:853
+#: src/dialogs/xml-tree.c:854
 msgid "New element node..."
 msgstr ""
 
-#: src/dialogs/xml-tree.c:873
+#: src/dialogs/xml-tree.c:874
 msgid "Cancel"
-msgstr ""
+msgstr "Cealaigh"
 
-#: src/dialogs/xml-tree.c:877
+#: src/dialogs/xml-tree.c:878
 msgid "Create"
-msgstr ""
+msgstr "Cruthaigh"
 
 #: src/document.c:343
 #, c-format
@@ -935,35 +912,25 @@ msgstr ""
 msgid "Defaults"
 msgstr ""
 
-#: src/file.c:157 src/file.c:169 src/file.c:183
+#: src/file.c:162 src/file.c:176 src/file.c:188
 msgid "Select file to open"
 msgstr ""
 
-#: src/file.c:200 src/module.c:550
-msgid "Scalable Vector Graphic (SVG)"
-msgstr ""
-
-#: src/file.c:200 src/module.c:550
-msgid "Sodipodi native file format and W3C standard"
-msgstr ""
-
-#: src/file.c:206 src/file.c:280
-#, fuzzy
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
-msgstr "Ainm comhad:"
+msgstr "Cin√©al comhad:"
 
-#: src/file.c:265
+#: src/file.c:290
 msgid "Save file"
-msgstr ""
+msgstr "S√°bh√°il comhad"
 
-#: src/file.c:443 src/file.c:453 src/file.c:459
+#: src/file.c:472 src/file.c:482 src/file.c:488
 msgid "Select file to import"
 msgstr ""
 
 #: src/help.c:57
-#, fuzzy
 msgid "About sodipodi"
-msgstr "Sodipodi"
+msgstr "Faoi Sodipodi"
 
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:42
@@ -975,40 +942,36 @@ msgid "Units"
 msgstr ""
 
 #: src/helper/units.c:43
-#, fuzzy
 msgid "Point"
-msgstr "Priont·il"
+msgstr ""
 
 #: src/helper/units.c:43
 msgid "pt"
-msgstr ""
+msgstr "pt"
 
 #: src/helper/units.c:43
-#, fuzzy
 msgid "Points"
-msgstr "Priont·il"
+msgstr ""
 
 #: src/helper/units.c:43
 msgid "Pt"
-msgstr ""
+msgstr "Pt"
 
 #: src/helper/units.c:44
-#, fuzzy
 msgid "Pixel"
-msgstr "pixelanna"
+msgstr "picsil"
 
 #: src/helper/units.c:44
 msgid "px"
-msgstr ""
+msgstr "pl"
 
 #: src/helper/units.c:44
-#, fuzzy
 msgid "Pixels"
-msgstr "pixelanna"
+msgstr "Picsil"
 
 #: src/helper/units.c:44
 msgid "Px"
-msgstr ""
+msgstr "Pl"
 
 #: src/helper/units.c:45
 msgid "Userspace unit"
@@ -1016,7 +979,7 @@ msgstr ""
 
 #: src/helper/units.c:45
 msgid "User"
-msgstr ""
+msgstr "√ös√°ideor"
 
 #: src/helper/units.c:45
 msgid "Userspace units"
@@ -1025,18 +988,16 @@ msgstr ""
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: src/helper/units.c:48
-#, fuzzy
 msgid "Percent"
-msgstr "Priont·il"
-
-#: src/helper/units.c:48
-msgid "%"
 msgstr ""
 
 #: src/helper/units.c:48
-#, fuzzy
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
 msgid "Percents"
-msgstr "Priont·il"
+msgstr ""
 
 #: src/helper/units.c:49
 msgid "Millimeter"
@@ -1044,7 +1005,7 @@ msgstr ""
 
 #: src/helper/units.c:49
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: src/helper/units.c:49
 msgid "Millimeters"
@@ -1056,7 +1017,7 @@ msgstr ""
 
 #: src/helper/units.c:50
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #: src/helper/units.c:50
 msgid "Centimeters"
@@ -1068,7 +1029,7 @@ msgstr ""
 
 #: src/helper/units.c:51
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #: src/helper/units.c:51
 msgid "meters"
@@ -1092,7 +1053,7 @@ msgstr ""
 
 #: src/helper/units.c:53
 msgid "em"
-msgstr ""
+msgstr "em"
 
 #: src/helper/units.c:53
 msgid "Em squares"
@@ -1103,322 +1064,342 @@ msgid "Ex square"
 msgstr ""
 
 #: src/helper/units.c:54
-#, fuzzy
 msgid "ex"
-msgstr "Teacs"
+msgstr "ex"
 
 #: src/helper/units.c:54
 msgid "Ex squares"
 msgstr ""
 
-#: src/interface.c:309 src/interface.c:491
+#: src/interface.c:305 src/interface.c:498
 msgid "Open Recent"
 msgstr ""
 
-#: src/interface.c:329
-#, fuzzy
+#: src/interface.c:325
 msgid "Close View"
-msgstr "Radharc Nua"
+msgstr "D√∫n Radharc"
 
-#: src/interface.c:330 src/interface.c:506
-msgid "Exit Program"
-msgstr ""
-
-#: src/interface.c:332 src/interface.c:498
-#, fuzzy
+#: src/interface.c:328 src/interface.c:504
 msgid "About Sodipodi"
-msgstr "Sodipodi"
+msgstr "Faoi Sodipodi"
 
-#. Modules need abouts too
-#: src/interface.c:335 src/interface.c:501
+#. Have modules about menu
+#: src/interface.c:334 src/interface.c:510
 msgid "About Modules"
 msgstr ""
 
-#: src/interface.c:355
+#: src/interface.c:354
 msgid "Cleanup"
 msgstr ""
 
 #. View:Zoom
-#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:424 src/toolbox.c:618 src/verbs.c:455
 msgid "Zoom"
 msgstr ""
 
 #. View:New View
-#: src/interface.c:437
+#: src/interface.c:436
 msgid "New View"
 msgstr "Radharc Nua"
 
 #. View:New Preview
-#: src/interface.c:439
-#, fuzzy
+#: src/interface.c:438
 msgid "New Preview"
-msgstr "Radharc Nua"
+msgstr "Reamhthaispe√°ntas Nua"
 
-#: src/interface.c:441
+#: src/interface.c:440
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:442
+#: src/interface.c:441
 msgid "New Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:443
+#: src/interface.c:442
 msgid "Remove Docked Toolbox"
 msgstr ""
 
 #. File
-#: src/interface.c:488 src/verbs.c:396
+#: src/interface.c:495 src/verbs.c:405
 msgid "New"
 msgstr "Nua"
 
-#: src/interface.c:489
-#, fuzzy
+#: src/interface.c:496
 msgid "Open"
-msgstr "Osc·il"
+msgstr "Osc√°il"
+
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:516 src/verbs.c:414
+msgid "Exit program"
+msgstr ""
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:569 src/toolbox.c:361
-#, fuzzy
+#: src/interface.c:579 src/toolbox.c:360
 msgid "File"
-msgstr "Comhad Nua"
+msgstr "Comhad"
 
 #. Edit submenu
-#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
-#, fuzzy
+#: src/interface.c:585 src/toolbox.c:408 src/widgets/gradient-selector.c:138
 msgid "Edit"
-msgstr "Eagar NÛd"
+msgstr "Eagar"
 
 #. View submenu
-#: src/interface.c:587
-#, fuzzy
+#: src/interface.c:597
 msgid "View"
-msgstr "Radharc Nua"
+msgstr "Radharc"
 
 #. Drawing mode submenu
-#: src/interface.c:593
+#: src/interface.c:603
 msgid "Drawing Mode"
 msgstr ""
 
 #. Dialog submenu
-#: src/interface.c:599
+#: src/interface.c:609
 msgid "Dialogs"
 msgstr ""
 
-#: src/interface.c:606
-#, fuzzy
-msgid "Filters"
-msgstr "Comhad Nua"
+#. Have modules menu
+#: src/interface.c:618
+msgid "Modules"
+msgstr ""
 
-#: src/main.c:130 src/main.c:612
+#: src/main.c:124 src/main.c:621
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 
-#: src/main.c:133 src/main.c:613
+#: src/main.c:127 src/main.c:622
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 
-#: src/main.c:136 src/main.c:614
+#: src/main.c:130 src/main.c:623
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
+#: src/main.c:131 src/main.c:134 src/main.c:137 src/main.c:151
 msgid "FILENAME"
 msgstr "AINM CHOMAD"
 
-#: src/main.c:139
+#: src/main.c:133
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:142 src/main.c:615
+#: src/main.c:136 src/main.c:624
 msgid "Export document to png file"
 msgstr ""
 
-#: src/main.c:145 src/main.c:616
+#: src/main.c:139 src/main.c:625
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
-#: src/main.c:146
+#: src/main.c:140
 msgid "DPI"
 msgstr ""
 
-#: src/main.c:148 src/main.c:617
+#: src/main.c:142 src/main.c:626
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
 
-#: src/main.c:149
+#: src/main.c:143
 msgid "x0:y0:x1:y1"
-msgstr ""
+msgstr "x0:y0:x1:y1"
 
-#: src/main.c:151 src/main.c:618
+#: src/main.c:145 src/main.c:627
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:151
+#: src/main.c:145
 msgid "WIDTH"
-msgstr ""
+msgstr "LEITHEID"
 
-#: src/main.c:153 src/main.c:619
+#: src/main.c:147 src/main.c:628
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
-#: src/main.c:153
+#: src/main.c:147
 msgid "HEIGHT"
-msgstr ""
+msgstr "AIRDE"
 
-#: src/main.c:155 src/main.c:620
+#: src/main.c:149 src/main.c:629
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
-#: src/main.c:155
+#: src/main.c:149
 msgid "COLOR"
-msgstr ""
+msgstr "DATH"
 
-#: src/main.c:157 src/main.c:621
+#: src/main.c:151 src/main.c:630
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 
-#: src/main.c:159
+#: src/main.c:153
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 
-#: src/main.c:161
+#: src/main.c:155
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
-#: src/main.c:622
-#, fuzzy
+#: src/main.c:631
 msgid "Print sodipodi version information"
-msgstr "Priont·il comhad"
+msgstr ""
 
-#: src/main.c:623
+#: src/main.c:632
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/module.c:558
+#: src/main.c:781
+msgid "Untitled document"
+msgstr ""
+
+#. Show nice dialog box
+#: src/main.c:806
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: src/main.c:807
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: src/main.c:808
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
+
+#: src/module.c:851
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: src/module.c:851
+msgid "Sodipodi native file format and W3C standard"
+msgstr ""
+
+#: src/module.c:858
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr ""
 
-#: src/module.c:559
+#: src/module.c:859
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr ""
 
-#: src/module.c:562
+#: src/module.c:862
 msgid "Plain SVG"
 msgstr ""
 
-#: src/module.c:563
+#: src/module.c:863
 msgid "Scalable Vector Graphics format"
 msgstr ""
 
-#: src/modules/gnome.c:133
-#, fuzzy
+#: src/modules/gnome.c:158
 msgid "Select printer"
-msgstr "TÛg"
+msgstr ""
 
-#: src/modules/gnome.c:187
+#: src/modules/gnome.c:212
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr ""
 
-#: src/modules/kde.cpp:159
-#, fuzzy
+#: src/modules/kde.cpp:162
 msgid "Document variant:"
-msgstr "Roghanna Dath"
+msgstr ""
 
-#: src/modules/kde.cpp:169
+#: src/modules/kde.cpp:172
 msgid ""
 "*.svg *.svgz|SVG files\n"
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|comhaid SVG\n"
+"*.xml|comhaid XML\n"
+"*|Gach comhaid"
 
-#: src/modules/kde.cpp:171
-#, fuzzy
+#: src/modules/kde.cpp:174
 msgid "Save document as"
-msgstr "S·bh·il Comhad"
+msgstr ""
 
 #. Print destination frame
-#: src/modules/ps.c:167 src/modules/ps.c:228
-#, fuzzy
+#: src/modules/ps.c:192 src/modules/ps.c:253
 msgid "Print destination"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #. Print properties frame
-#: src/modules/ps.c:178
-#, fuzzy
+#: src/modules/ps.c:203
 msgid "Print properties"
-msgstr "Priont·il comhad"
+msgstr ""
 
-#: src/modules/ps.c:186
+#: src/modules/ps.c:211
 msgid "Print using PostScript operators"
 msgstr ""
 
-#: src/modules/ps.c:188
+#: src/modules/ps.c:213
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
 
-#: src/modules/ps.c:193
+#: src/modules/ps.c:218
 msgid "Print as bitmap"
 msgstr ""
 
-#: src/modules/ps.c:195
+#: src/modules/ps.c:220
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
 
-#: src/modules/ps.c:209
+#: src/modules/ps.c:234
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr ""
 
-#: src/modules/ps.c:224
+#: src/modules/ps.c:249
 msgid "Resolution:"
 msgstr ""
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:259
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/modules/ps.c:868
+#: src/modules/ps.c:893
 msgid "write error occured"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr ""
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:468
+#: src/object-ui.c:111 src/verbs.c:478
 msgid "Item Properties"
 msgstr ""
 
 #. Select item
-#: src/object-ui.c:120
-#, fuzzy
+#: src/object-ui.c:119
 msgid "Select this"
-msgstr "TÛg"
+msgstr ""
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr ""
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr ""
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr ""
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr ""
 
@@ -1427,99 +1408,92 @@ msgstr ""
 msgid "Create link"
 msgstr ""
 
-#: src/object-ui.c:253 src/verbs.c:421
-#, fuzzy
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
-msgstr "_Grupa"
+msgstr "Grupa"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
-msgstr ""
+msgstr "√Ålbachta√≠ Grupa"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:422
-#, fuzzy
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
-msgstr "_Grupa"
+msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr ""
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr ""
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr ""
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
-#, fuzzy
+#: src/object-ui.c:407
 msgid "Image"
-msgstr "Meid picti˙r"
+msgstr "Dealbh"
 
 #. Link dialog
-#: src/object-ui.c:402
-#, fuzzy
+#: src/object-ui.c:410
 msgid "Image Properties"
-msgstr "Meid picti˙r"
+msgstr "√Ålbachta√≠ Dealbh"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:776
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
-#, fuzzy
+#: src/object-ui.c:467
 msgid "Shape"
-msgstr "S·bh·il\t"
+msgstr ""
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:446
+#: src/object-ui.c:470 src/toolbox.c:445
 msgid "Fill settings"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:489
-#, fuzzy
+#: src/object-ui.c:497
 msgid "Rect"
-msgstr "TÛg"
+msgstr ""
 
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:439
+#: src/object-ui.c:533 src/verbs.c:449
 msgid "Star"
-msgstr ""
+msgstr "Realta"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
-msgstr ""
+msgstr "√Ålbachta√≠ Realta"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:440
-#, fuzzy
+#: src/object-ui.c:569 src/verbs.c:450
 msgid "Spiral"
-msgstr "SpÈisialta"
+msgstr ""
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr ""
 
@@ -1570,29 +1544,10 @@ msgid "Center view to selected item"
 msgstr ""
 
 #: src/slideshow.c:90
-#, fuzzy
 msgid "Sodipodi slideshow"
-msgstr "Sodipodi"
-
-#: src/sodipodi.c:406
-msgid "Untitled document"
 msgstr ""
 
-#. Show nice dialog box
-#: src/sodipodi.c:431
-msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
-
-#: src/sodipodi.c:432
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr ""
-
-#: src/sodipodi.c:433
-msgid "Automatic backup of following documents failed:\n"
-msgstr ""
-
-#: src/sodipodi.c:572
+#: src/sodipodi.c:407
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1600,7 +1555,7 @@ msgid ""
 "neither load nor save preferences\n"
 msgstr ""
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:410
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1610,7 +1565,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:580
+#: src/sodipodi.c:415
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1619,7 +1574,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:592
+#: src/sodipodi.c:427
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1627,7 +1582,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:595
+#: src/sodipodi.c:430
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1636,7 +1591,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:599
+#: src/sodipodi.c:434
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1644,7 +1599,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:789
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1653,7 +1608,7 @@ msgid ""
 "%s."
 msgstr ""
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:793
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1662,7 +1617,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:946
+#: src/sodipodi.c:797
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1671,7 +1626,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:801
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1680,7 +1635,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:960
+#: src/sodipodi.c:811
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1688,7 +1643,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:963
+#: src/sodipodi.c:814
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1696,7 +1651,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:966
+#: src/sodipodi.c:817
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1704,7 +1659,7 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 
-#: src/sodipodi.c:969
+#: src/sodipodi.c:820
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1727,40 +1682,38 @@ msgstr ""
 msgid "Color image %d x %d: %s"
 msgstr ""
 
-#: src/sp-image.c:922
+#: src/sp-image.c:934
 #, c-format
 msgid "Error to write %s: %s"
 msgstr ""
 
-#: src/sp-image.c:956
+#: src/sp-image.c:968
 msgid "Untitled"
-msgstr ""
+msgstr "Gan tid√©al"
 
-#: src/sp-image.c:961
-#, fuzzy
+#: src/sp-image.c:973
 msgid "Document Name:"
-msgstr "Roghanna Dath"
-
-#: src/sp-image.c:974
-msgid "Unknown"
 msgstr ""
 
-#: src/sp-image.c:980
-#, fuzzy
-msgid "Image URI:"
-msgstr "Meid picti˙r"
+#: src/sp-image.c:986
+msgid "Unknown"
+msgstr "Anathnid"
 
-#: src/sp-item-group.c:457
+#: src/sp-image.c:992
+msgid "Image URI:"
+msgstr "URI Dealbh:"
+
+#: src/sp-item-group.c:462
 #, c-format
 msgid "Group of %d objects"
 msgstr ""
 
-#: src/sp-item.c:503
+#: src/sp-item.c:509
 msgid "Unknown item :-("
 msgstr ""
 
 #. fixme:
-#: src/sp-text.c:1428
+#: src/sp-text.c:1450
 msgid "Text object"
 msgstr ""
 
@@ -1779,592 +1732,554 @@ msgstr ""
 msgid "Make sides flat"
 msgstr ""
 
-#: src/toolbox.c:443
+#: src/toolbox.c:442
 msgid "Object"
 msgstr ""
 
-#: src/toolbox.c:447 src/verbs.c:463
+#: src/toolbox.c:446 src/verbs.c:473
 msgid "Object size and position"
 msgstr ""
 
-#: src/toolbox.c:448
-#, fuzzy
+#: src/toolbox.c:447
 msgid "Text and font settings"
-msgstr "Roghanna Dath"
+msgstr "√Ålbachta√≠ Teacs agus ch√≥fhoireann"
 
-#: src/toolbox.c:450 src/verbs.c:464
-#, fuzzy
+#: src/toolbox.c:449 src/verbs.c:474
 msgid "Object transformations"
-msgstr "Roghanna Oaf"
+msgstr ""
 
-#: src/toolbox.c:523
+#: src/toolbox.c:522
 msgid "Draw"
 msgstr ""
 
-#: src/toolbox.c:578
+#: src/toolbox.c:576
 msgid "Extension"
 msgstr ""
 
-#: src/toolbox.c:655
+#: src/toolbox.c:652
 msgid "Nodes"
-msgstr "NÛdanna"
+msgstr "N√≥danna"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:655
 msgid "Insert new nodes into selected segments"
 msgstr ""
 
-#: src/toolbox.c:660
+#: src/toolbox.c:657
 msgid "Break line at selected nodes"
 msgstr ""
 
-#: src/toolbox.c:662
+#: src/toolbox.c:659
 msgid "Make selected nodes corner"
 msgstr ""
 
-#: src/toolbox.c:664
+#: src/toolbox.c:661
 msgid "Make selected segments lines"
 msgstr ""
 
-#: src/toolbox.c:666
+#: src/toolbox.c:663
 msgid "Delete selected nodes"
 msgstr ""
 
-#: src/toolbox.c:668
+#: src/toolbox.c:665
 msgid "Join lines at selected nodes"
 msgstr ""
 
-#: src/toolbox.c:671
+#: src/toolbox.c:668
 msgid "Join lines at selected nodes with new segment"
 msgstr ""
 
-#: src/toolbox.c:673
+#: src/toolbox.c:670
 msgid "Make selected nodes smooth"
 msgstr ""
 
-#: src/toolbox.c:675
+#: src/toolbox.c:672
 msgid "Make selected segments curves"
 msgstr ""
 
-#: src/verbs.c:394
+#: src/verbs.c:403
 msgid "Does nothing"
 msgstr ""
 
-#: src/verbs.c:396
+#: src/verbs.c:405
 msgid "Create new SVG document"
 msgstr ""
 
-#: src/verbs.c:397
-#, fuzzy
+#: src/verbs.c:406
 msgid "Open..."
-msgstr "Osc·il"
+msgstr "Osc√°il..."
 
-#: src/verbs.c:397
+#: src/verbs.c:406
 msgid "Open existing SVG document"
 msgstr ""
 
-#: src/verbs.c:398
-#, fuzzy
+#: src/verbs.c:407
 msgid "Save"
-msgstr "S·bh·il\t"
+msgstr "S√°bh√°il"
 
-#: src/verbs.c:398
+#: src/verbs.c:407
 msgid "Save document"
 msgstr ""
 
-#: src/verbs.c:399
-#, fuzzy
+#: src/verbs.c:408
 msgid "Save As..."
-msgstr "S·bh·il Comhad"
+msgstr "S√°bh√°il Mar..."
 
-#: src/verbs.c:399
+#: src/verbs.c:408
 msgid "Save document under new name"
 msgstr ""
 
-#: src/verbs.c:400
-#, fuzzy
+#: src/verbs.c:409
 msgid "Print..."
-msgstr "Priont·il"
+msgstr "Priont√°il..."
 
-#: src/verbs.c:400
+#: src/verbs.c:409
 msgid "Print document"
 msgstr ""
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print Direct..."
 msgstr ""
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print directly to file or pipe"
 msgstr ""
 
-#: src/verbs.c:402
-#, fuzzy
+#: src/verbs.c:411
 msgid "Print Preview"
-msgstr "Priont·il comhad"
+msgstr ""
 
-#: src/verbs.c:402
+#: src/verbs.c:411
 msgid "Preview document printout"
 msgstr ""
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import"
 msgstr ""
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import bitmap or SVG image into document"
 msgstr ""
 
-#: src/verbs.c:404
+#: src/verbs.c:413
 msgid "Export document as PNG bitmap"
 msgstr ""
 
-#. Edit
-#: src/verbs.c:406
-#, fuzzy
-msgid "Undo"
-msgstr "Leas˙"
+#: src/verbs.c:414
+msgid "Exit"
+msgstr "Eagar"
 
-#: src/verbs.c:406
+#. Edit
+#: src/verbs.c:416
+msgid "Undo"
+msgstr "Leas√∫"
+
+#: src/verbs.c:416
 msgid "Revert last action"
 msgstr ""
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Redo"
 msgstr ""
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Do again undone action"
 msgstr ""
 
-#: src/verbs.c:408
+#: src/verbs.c:418
 msgid "Cut"
 msgstr "Gearr"
 
-#: src/verbs.c:408
-#, fuzzy
+#: src/verbs.c:418
 msgid "Cut selected objects to clipboard"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:409
+#: src/verbs.c:419
 msgid "Copy"
-msgstr "CÛip"
+msgstr "C√≥ip"
 
-#: src/verbs.c:409
-#, fuzzy
+#: src/verbs.c:419
 msgid "Copy selected objects to clipboard"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste"
 msgstr "Greamaigh"
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste objects from clipboard"
 msgstr ""
 
-#: src/verbs.c:411
+#: src/verbs.c:421
 msgid "Delete"
-msgstr "ScrÌos"
+msgstr "Dealaigh"
 
-#: src/verbs.c:411
-#, fuzzy
+#: src/verbs.c:421
 msgid "Delete selected objects"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:412
+#: src/verbs.c:422
 msgid "Duplicate"
 msgstr ""
 
-#: src/verbs.c:412
-#, fuzzy
+#: src/verbs.c:422
 msgid "Duplicate selected objects"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:413
-#, fuzzy
+#: src/verbs.c:423
 msgid "Clear All"
-msgstr "Dath 1"
+msgstr "Glan gach rud"
 
-#: src/verbs.c:413
+#: src/verbs.c:423
 msgid "Delete all objects from document"
 msgstr ""
 
-#: src/verbs.c:414
-#, fuzzy
+#: src/verbs.c:424
 msgid "Select All"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:414
-#, fuzzy
+#: src/verbs.c:424
 msgid "Select all objects in document"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:415
-#, fuzzy
+#: src/verbs.c:425
 msgid "Repeat"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:415
+#: src/verbs.c:425
 msgid "Repeat last saved action"
 msgstr ""
 
 #. Selection
-#: src/verbs.c:417
+#: src/verbs.c:427
 msgid "Bring to Front"
 msgstr ""
 
-#: src/verbs.c:417
-#, fuzzy
+#: src/verbs.c:427
 msgid "Raise selected objects to top"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:418
+#: src/verbs.c:428
 msgid "Send to Back"
 msgstr ""
 
-#: src/verbs.c:418
-#, fuzzy
+#: src/verbs.c:428
 msgid "Lower selected objects to bottom"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:419
-#, fuzzy
+#: src/verbs.c:429
 msgid "Raise"
-msgstr "Greamaigh"
+msgstr ""
 
-#: src/verbs.c:419
-#, fuzzy
+#: src/verbs.c:429
 msgid "Raise selected objects one position"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:420
+#: src/verbs.c:430
 msgid "Lower"
 msgstr ""
 
-#: src/verbs.c:420
-#, fuzzy
+#: src/verbs.c:430
 msgid "Lower selected objects one position"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:421
+#: src/verbs.c:431
 msgid "Group selected objects"
 msgstr ""
 
-#: src/verbs.c:422
+#: src/verbs.c:432
 msgid "Ungroup selected group"
 msgstr ""
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine"
 msgstr ""
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine multiple paths"
 msgstr ""
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break Apart"
 msgstr ""
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break selected path to subpaths"
 msgstr ""
 
-#: src/verbs.c:425
-#, fuzzy
+#: src/verbs.c:435
 msgid "Transform"
-msgstr "Roghanna Oaf"
+msgstr ""
 
-#: src/verbs.c:425
-#, fuzzy
+#: src/verbs.c:435
 msgid "Applies transformation"
-msgstr "Roghanna Oaf"
+msgstr ""
 
 #. Object
-#: src/verbs.c:427
+#: src/verbs.c:437
 msgid "Rotate 90 degrees"
 msgstr ""
 
-#: src/verbs.c:427
+#: src/verbs.c:437
 msgid "Rotates object 90 degrees clockwise"
 msgstr ""
 
-#: src/verbs.c:428
-#, fuzzy
+#: src/verbs.c:438
 msgid "Flatten object"
-msgstr "TÛg"
+msgstr ""
 
-#: src/verbs.c:428
-#, fuzzy
+#: src/verbs.c:438
 msgid "Remove transformations from object"
 msgstr "Roghanna Oaf"
 
-#: src/verbs.c:429
+#: src/verbs.c:439
 msgid "Convert to Curves"
 msgstr ""
 
-#: src/verbs.c:429
-#, fuzzy
-msgid "Convert selected object to path"
-msgstr "TÛg"
-
-#: src/verbs.c:430
-#, fuzzy
-msgid "Flip Horizontally"
-msgstr "TÛg"
-
-#: src/verbs.c:431
-#, fuzzy
-msgid "Flip selected objects horizontally"
-msgstr "TÛg"
-
-#: src/verbs.c:432
-msgid "Flip Vertically"
-msgstr ""
-
-#: src/verbs.c:433
-#, fuzzy
-msgid "Flip selected objects vertically"
-msgstr "TÛg"
-
-#. Event contexts
-#: src/verbs.c:435
-msgid "Select"
-msgstr "TÛg"
-
-#: src/verbs.c:435
-#, fuzzy
-msgid "Select and transform objects"
-msgstr "TÛg"
-
-#: src/verbs.c:436
-#, fuzzy
-msgid "Node edit"
-msgstr "Eagar NÛd"
-
-#: src/verbs.c:436
-msgid "Modify existing objects by control nodes"
-msgstr ""
-
-#: src/verbs.c:437
-msgid "Rectangle"
-msgstr ""
-
-#: src/verbs.c:437
-msgid "Create rectangles and squares with optional rounded corners"
-msgstr ""
-
-#: src/verbs.c:438
-msgid "Ellipse"
-msgstr ""
-
-#: src/verbs.c:438
-msgid "Create circles, ellipses and arcs"
-msgstr ""
-
 #: src/verbs.c:439
-msgid "Create stars and polygons"
+msgid "Convert selected object to path"
 msgstr ""
 
 #: src/verbs.c:440
+msgid "Flip Horizontally"
+msgstr ""
+
+#: src/verbs.c:441
+msgid "Flip selected objects horizontally"
+msgstr ""
+
+#: src/verbs.c:442
+msgid "Flip Vertically"
+msgstr ""
+
+#: src/verbs.c:443
+msgid "Flip selected objects vertically"
+msgstr ""
+
+#. Event contexts
+#: src/verbs.c:445
+msgid "Select"
+msgstr "T√≥g"
+
+#: src/verbs.c:445
+msgid "Select and transform objects"
+msgstr ""
+
+#: src/verbs.c:446
+msgid "Node edit"
+msgstr "Eagar n√≥d"
+
+#: src/verbs.c:446
+msgid "Modify existing objects by control nodes"
+msgstr ""
+
+#: src/verbs.c:447
+msgid "Rectangle"
+msgstr ""
+
+#: src/verbs.c:447
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr ""
+
+#: src/verbs.c:448
+msgid "Ellipse"
+msgstr ""
+
+#: src/verbs.c:448
+msgid "Create circles, ellipses and arcs"
+msgstr ""
+
+#: src/verbs.c:449
+msgid "Create stars and polygons"
+msgstr ""
+
+#: src/verbs.c:450
 msgid "Create spirals"
 msgstr ""
 
-#: src/verbs.c:441
+#: src/verbs.c:451
 msgid "Pencil"
-msgstr ""
+msgstr "Peann Luaidte"
 
-#: src/verbs.c:441
+#: src/verbs.c:451
 msgid "Draw freehand curves and straight lines"
 msgstr ""
 
-#: src/verbs.c:442
-#, fuzzy
+#: src/verbs.c:452
 msgid "Pen"
-msgstr "Priont·il"
+msgstr "Peann"
 
-#: src/verbs.c:442
+#: src/verbs.c:452
 msgid "Draw precisely positioned curved and straight lines"
 msgstr ""
 
-#: src/verbs.c:443
+#: src/verbs.c:453
 msgid "Calligraphy"
 msgstr ""
 
-#: src/verbs.c:443
+#: src/verbs.c:453
 msgid "Draw calligraphic lines"
 msgstr ""
 
-#: src/verbs.c:444
+#: src/verbs.c:454
 msgid "Create and edit text objects"
 msgstr ""
 
-#: src/verbs.c:445
+#: src/verbs.c:455
 msgid "Zoom into precisely selected area"
 msgstr ""
 
-#: src/verbs.c:446
+#: src/verbs.c:456
 msgid "Dropper"
 msgstr ""
 
-#: src/verbs.c:446
+#: src/verbs.c:456
 msgid "Pick averaged colors from image"
 msgstr ""
 
 #. Zooming
-#: src/verbs.c:448
+#: src/verbs.c:458
 msgid "In"
-msgstr ""
+msgstr "In"
 
-#: src/verbs.c:448
+#: src/verbs.c:458
 #, fuzzy
 msgid "Zoom in drawing"
-msgstr "Priont·il comhad"
+msgstr "Priont√°il comhad"
 
-#: src/verbs.c:449
-#, fuzzy
+#: src/verbs.c:459
 msgid "Out"
-msgstr "Gearr"
+msgstr "As"
 
-#: src/verbs.c:449
-#, fuzzy
+#: src/verbs.c:459
 msgid "Zoom out drawing"
-msgstr "Priont·il comhad"
+msgstr ""
 
-#: src/verbs.c:450
+#: src/verbs.c:460
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:450
+#: src/verbs.c:460
 msgid "Set zoom factor to 1:1"
 msgstr ""
 
-#: src/verbs.c:451
+#: src/verbs.c:461
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:451
+#: src/verbs.c:461
 msgid "Set zoom factor to 1:2"
 msgstr ""
 
-#: src/verbs.c:452
+#: src/verbs.c:462
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:452
+#: src/verbs.c:462
 msgid "Set zoom factor to 2:1"
 msgstr ""
 
-#: src/verbs.c:453
+#: src/verbs.c:463
 msgid "Fit the whole page into window"
 msgstr ""
 
-#: src/verbs.c:454
+#: src/verbs.c:464
 msgid "Fit the whole drawing into window"
 msgstr ""
 
-#: src/verbs.c:455
+#: src/verbs.c:465
 msgid "Fit the whole selection into window"
 msgstr ""
 
 #. Dialogs
-#: src/verbs.c:457
-#, fuzzy
+#: src/verbs.c:467
 msgid "Display"
-msgstr "Roghanna Dath"
+msgstr "Taispe√°n"
 
-#: src/verbs.c:457
-#, fuzzy
+#: src/verbs.c:467
 msgid "Global display settings"
-msgstr "Roghanna Dath"
-
-#: src/verbs.c:458
-msgid "Document"
 msgstr ""
 
-#: src/verbs.c:458
+#: src/verbs.c:468
+msgid "Document"
+msgstr "Docum√©id"
+
+#: src/verbs.c:468
 msgid "Page layout"
 msgstr ""
 
-#: src/verbs.c:459
+#: src/verbs.c:469
 msgid "Editing Window"
 msgstr ""
 
-#: src/verbs.c:459
+#: src/verbs.c:469
 msgid "Editing window properties"
 msgstr ""
 
-#: src/verbs.c:460
-#, fuzzy
+#: src/verbs.c:470
 msgid "Tool Options"
-msgstr "Roghanna Oaf"
+msgstr "Roghnachais Uirl√≠s"
 
-#: src/verbs.c:461
+#: src/verbs.c:471
 msgid "Tool Attributes"
 msgstr ""
 
-#: src/verbs.c:462
+#: src/verbs.c:472
 msgid "Fill and Stroke"
 msgstr ""
 
-#: src/verbs.c:462
-#, fuzzy
+#: src/verbs.c:472
 msgid "Fill and stroke settings"
-msgstr "Roghanna Dath"
+msgstr ""
 
-#: src/verbs.c:464
-#, fuzzy
+#: src/verbs.c:474
 msgid "Transformations"
-msgstr "Roghanna Oaf"
+msgstr ""
 
-#: src/verbs.c:465
+#: src/verbs.c:475
 msgid "Align and Distribute"
 msgstr ""
 
-#: src/verbs.c:465
+#: src/verbs.c:475
 msgid "Align and distribute"
 msgstr ""
 
-#: src/verbs.c:466
-#, fuzzy
+#: src/verbs.c:476
 msgid "Text and Font"
-msgstr "Roghanna Dath"
+msgstr "Teacs agus Cl√≥fhoireann"
 
-#: src/verbs.c:466
-#, fuzzy
+#: src/verbs.c:476
 msgid "Text editing and font settings"
-msgstr "Roghanna Dath"
-
-#: src/verbs.c:467
-msgid "XML Editor"
 msgstr ""
+
+#: src/verbs.c:477
+msgid "XML Editor"
+msgstr "Eagarth√≥ir XML"
 
 #. Family frame
 #: src/widgets/font-selector.c:148
 msgid "Font family"
-msgstr ""
+msgstr "Clann chl√≥fhoireann"
 
 #. Style frame
 #: src/widgets/font-selector.c:176
 msgid "Style"
-msgstr ""
+msgstr "St√≠l"
 
 #: src/widgets/font-selector.c:211
 msgid "Font size:"
-msgstr ""
+msgstr "Me√≠d chl√≥fhoireann"
 
 #: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "Aa√ÅaBcCdIiPpQa12368.;/()"
 
 #: src/widgets/gradient-selector.c:143
 msgid "Add"
 msgstr "Suim"
 
 #: src/widgets/gradient-selector.c:179
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #: src/widgets/gradient-selector.c:208
 msgid "gradientSpread"
@@ -2379,104 +2294,96 @@ msgid "No gradients in document"
 msgstr ""
 
 #: src/widgets/gradient-vector.c:262
-#, fuzzy
 msgid "No gradient selected"
-msgstr "Priont·il comhad"
+msgstr ""
 
 #: src/widgets/gradient-vector.c:417
-#, fuzzy
 msgid "Start color"
-msgstr "Dath"
+msgstr ""
 
 #: src/widgets/gradient-vector.c:427
-#, fuzzy
 msgid "End color"
-msgstr "Dath"
+msgstr ""
 
 #: src/widgets/gradient-vector.c:452
 #, fuzzy
 msgid "Gradient vector"
-msgstr "Priont·il comhad"
+msgstr "Priont√°il comhad"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr ""
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr ""
 
-#: src/widgets/paint-selector.c:649
-#, fuzzy
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
-msgstr "Priont·il"
-
-#. Label
-#: src/widgets/paint-selector.c:739
-#, fuzzy
-msgid "Mode:"
-msgstr "NÛd"
-
-#: src/widgets/paint-selector.c:749
-msgid "RGB"
 msgstr ""
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#. Label
+#: src/widgets/paint-selector.c:747
+msgid "Mode:"
+msgstr "M√≥d:"
+
+#: src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr ""
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
-msgstr ""
+msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
 msgstr ""
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr ""
 
-#: src/widgets/paint-selector.c:789
-#, fuzzy
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
-msgstr "Dath 1"
+msgstr ""
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr ""
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr ""
 
 #: src/widgets/sp-color-selector.c:623
 msgid "Red:"
-msgstr ""
+msgstr "Dearg:"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Green:"
-msgstr ""
+msgstr "Glas:"
 
 #: src/widgets/sp-color-selector.c:625
-#, fuzzy
 msgid "Blue:"
-msgstr "Luach:"
+msgstr "Gorm:"
 
 #: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
 #: src/widgets/sp-color-selector.c:668
 msgid "Alpha:"
-msgstr ""
+msgstr "Alpha:"
 
 #: src/widgets/sp-color-selector.c:643
-#, fuzzy
 msgid "Hue:"
-msgstr "Luach:"
+msgstr ""
 
 #: src/widgets/sp-color-selector.c:644
 msgid "Saturation:"
@@ -2496,11 +2403,11 @@ msgstr ""
 
 #: src/widgets/sp-color-selector.c:666
 msgid "Yellow:"
-msgstr ""
+msgstr "Bu√≠:"
 
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
-msgstr ""
+msgstr "Dubh"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
@@ -2513,179 +2420,3 @@ msgstr ""
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
 msgstr "Luach"
-
-#, fuzzy
-#~ msgid "Relative move"
-#~ msgstr "Greamaigh"
-
-#, fuzzy
-#~ msgid "Open SVG file"
-#~ msgstr "Osc·il comhad"
-
-#~ msgid "Node"
-#~ msgstr "NÛd"
-
-#, fuzzy
-#~ msgid "Display Properties"
-#~ msgstr "Roghanna Dath"
-
-#, fuzzy
-#~ msgid "Raise selected objects one level"
-#~ msgstr "TÛg"
-
-#, fuzzy
-#~ msgid "Lower selected objects one level"
-#~ msgstr "TÛg"
-
-#, fuzzy
-#~ msgid "Close window"
-#~ msgstr "fuinneog1"
-
-#, fuzzy
-#~ msgid " Color fill "
-#~ msgstr "Dath 1"
-
-#, fuzzy
-#~ msgid "Choose fill color"
-#~ msgstr "Dath 1"
-
-#, fuzzy
-#~ msgid "Color fill"
-#~ msgstr "Dath 1"
-
-#, fuzzy
-#~ msgid "Color:"
-#~ msgstr "Dath"
-
-#, fuzzy
-#~ msgid "Fill Color:"
-#~ msgstr "Dath"
-
-#, fuzzy
-#~ msgid "Gradient fill"
-#~ msgstr "Priont·il comhad"
-
-#, fuzzy
-#~ msgid "Pattern fill"
-#~ msgstr "Priont·il comhad"
-
-#, fuzzy
-#~ msgid "none"
-#~ msgstr "Tada"
-
-#~ msgid "1.0MB"
-#~ msgstr "1.0MB"
-
-#~ msgid "Height"
-#~ msgstr "Airde"
-
-#~ msgid "Image size"
-#~ msgstr "Meid picti˙r"
-
-#~ msgid "Width"
-#~ msgstr "Leitheid"
-
-#~ msgid "X0"
-#~ msgstr "X0"
-
-#~ msgid "X1"
-#~ msgstr "X1"
-
-#~ msgid "Y0"
-#~ msgstr "Y0"
-
-#~ msgid "Y1"
-#~ msgstr "Y1"
-
-#~ msgid "_Group"
-#~ msgstr "_Grupa"
-
-#, fuzzy
-#~ msgid "_New"
-#~ msgstr "Nua"
-
-#~ msgid "_Page"
-#~ msgstr "_Leathanach"
-
-#, fuzzy
-#~ msgid "Draw star"
-#~ msgstr "ScrÌobh teacs"
-
-#, fuzzy
-#~ msgid "Draw text"
-#~ msgstr "ScrÌobh teacs"
-
-#, fuzzy
-#~ msgid "Nope !"
-#~ msgstr "Tada"
-
-#, fuzzy
-#~ msgid "Undo "
-#~ msgstr "Leas˙"
-
-#, fuzzy
-#~ msgid "_Open"
-#~ msgstr "Osc·il"
-
-#, fuzzy
-#~ msgid "Degree"
-#~ msgstr "ScrÌos"
-
-#, fuzzy
-#~ msgid "Height: "
-#~ msgstr "Airde"
-
-#, fuzzy
-#~ msgid "absolute"
-#~ msgstr "Greamaigh"
-
-#~ msgid "Key"
-#~ msgstr "Eoachair"
-
-#~ msgid "name"
-#~ msgstr "ainm"
-
-#, fuzzy
-#~ msgid "No"
-#~ msgstr "NÛd"
-
-#, fuzzy
-#~ msgid "Pixels\n"
-#~ msgstr "pixelanna"
-
-#~ msgid "window1"
-#~ msgstr "fuinneog1"
-
-#, fuzzy
-#~ msgid "_File"
-#~ msgstr "Comhad _Nua"
-
-#~ msgid "Del"
-#~ msgstr "ScrÌos"
-
-#~ msgid "_Delete"
-#~ msgstr "_ScrÌos"
-
-#~ msgid "Up"
-#~ msgstr "Suas"
-
-#~ msgid "Down"
-#~ msgstr "SÌos"
-
-#~ msgid "Color2"
-#~ msgstr "Dath 2"
-
-#~ msgid "90∞"
-#~ msgstr "90∞"
-
-#~ msgid "180∞"
-#~ msgstr "180∞"
-
-#~ msgid "270∞"
-#~ msgstr "270∞"
-
-#~ msgid "right"
-#~ msgstr "deis"
-
-#~ msgid "left"
-#~ msgstr "clÈ"
